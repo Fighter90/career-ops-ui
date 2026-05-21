@@ -7,6 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -15,7 +16,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
 const AUTO = readFileSync(R('public', 'js', 'views', 'auto.js'), 'utf8');
 const EVAL = readFileSync(R('public', 'js', 'views', 'evaluate.js'), 'utf8');
-const DICT = readFileSync(R('public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+const DICT = legacyDictText();
 
 test('#13 auto: run button shows a busy state, restored in finally', () => {
   assert.match(AUTO, /runBtn\.classList\.add\('is-loading'\)/);

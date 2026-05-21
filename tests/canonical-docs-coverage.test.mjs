@@ -17,6 +17,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { I18N_LANGS, loadAssembledDict } from './helpers/i18n-vm.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -127,27 +128,22 @@ test('v1.28.0 — no help-bundle or README still names the pre-v1.28 broader lis
 });
 
 test('i18n bundle includes every new key from v1.11.x with all 8 locales', () => {
-  // v1.23.0 (N-1) — DICT moved to i18n-dict.js. Read both and grep the
-  // combined source so this canary keeps catching missing-locale drift
-  // regardless of which file the key lives in.
-  const i18n = readFileSync(resolve(ROOT, 'public', 'js', 'lib', 'i18n.js'), 'utf8') +
-               '\n' + readFileSync(resolve(ROOT, 'public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+  // v1.60.0 (I18N-SPLIT) — the dictionary is assembled from per-locale
+  // tables. Load the REAL merged DICT and assert each key carries every
+  // locale, rather than grepping a single megaline (no longer exists).
+  const DICT = loadAssembledDict();
   const NEW_KEYS = [
     'rep.thresholdsTitle', 'rep.thrAction', 'rep.thr45', 'rep.thr40',
     'rep.thr35', 'rep.thrLow', 'rep.thresholdsSource',
     'apply.playwrightHint', 'apply.docsLink', 'common.generatePdf',
   ];
-  // For each key, every locale code MUST appear in the same logical line block.
-  // The bundle has one key per line, so a substring match against the key + locale
-  // is a sufficient regression check (catches accidental locale-drop).
-  const LOCALES = ['en:', 'es:', "'pt-BR':", 'ko:', 'ja:', 'ru:', "'zh-CN':", "'zh-TW':"];
-  const lines = i18n.split('\n');
   for (const key of NEW_KEYS) {
-    const idx = lines.findIndex((l) => l.includes(`'${key}'`));
-    assert.notStrictEqual(idx, -1, `i18n.js missing key ${key}`);
-    const line = lines[idx];
-    for (const lc of LOCALES) {
-      assert.ok(line.includes(lc), `i18n.js key ${key} missing locale ${lc.replace(/['":]/g, '')}`);
+    const row = DICT[key];
+    assert.ok(row, `i18n missing key ${key}`);
+    const entry = row['@alias'] ? DICT[row['@alias']] : row;
+    for (const lc of I18N_LANGS) {
+      assert.ok(entry[lc] && String(entry[lc]).trim(),
+        `i18n key ${key} missing locale ${lc}`);
     }
   }
 });

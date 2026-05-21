@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.60.0] — 2026-05-22
+
+**refactor(i18n): divide el megaarchivo de 8 columnas en archivos por idioma (I18N-SPLIT).** El diccionario de traducciones vivía en un único `public/js/lib/i18n-dict.js`; ahora hay **un archivo por idioma** en `public/js/lib/locales/` más `i18n-dict.aliases.js`, para que un traductor edite un solo idioma de forma aislada (estilo i18next / OpenWA). `i18n-dict.js` es ahora un **ensamblador** que reconstruye exactamente el mismo `window.__I18N_DICT`, así que `t()` y todas las vistas no cambian. Se carga de forma síncrona vía `<script src>` — sin paso de compilación ni fetch. Un snapshot demuestra que la migración no pierde nada (678 claves). Herramientas y ~25 tests adaptados; nuevos `tests/i18n-locale-files.test.mjs` y `tests/playwright-locale-sweep.mjs` (cada página × 8 idiomas en Chromium real). 994 → **1000** unitarios · 62 → **70** Playwright. Sin cambios de comportamiento. (I18N-SPLIT)
+
+---
+
+
+
 ## [1.59.13] — 2026-05-21
 
 **fix(i18n): colapsar claves duplicadas reales con @alias + purga final de datos personales.** Nombre real del maintainer eliminado de fixtures de test y reportes QA (→ `Jane Doe`); `LICENSE`/`package.json` → handle `Fighter90`. Mecanismo `@alias` colapsa las 10 claves idénticas en los 8 locales; `nav.config`/`config.title` NO se fusionan (divergen en español). 991 → **994** tests. (I18N-CL3)

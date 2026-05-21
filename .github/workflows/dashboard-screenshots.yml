@@ -50,6 +50,7 @@ on:
       - 'public/js/views/dashboard.js'
       - 'public/js/lib/i18n.js'
       - 'public/js/lib/i18n-dict.js'
+      - 'public/js/lib/locales/**'
       - 'public/index.html'
       - 'scripts/capture-dashboard-screenshots.mjs'
       - '.github/workflows/dashboard-screenshots.yml'

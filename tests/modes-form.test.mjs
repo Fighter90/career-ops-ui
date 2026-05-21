@@ -16,6 +16,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -25,7 +26,7 @@ const read = (...p) => readFileSync(resolve(__d, '..', ...p), 'utf8');
 const MF = read('public', 'js', 'lib', 'modes-form.js');
 const CFG = read('public', 'js', 'views', 'config.js');
 const HTML = read('public', 'index.html');
-const DICT = read('public', 'js', 'lib', 'i18n-dict.js');
+const DICT = legacyDictText();
 
 test('modes-form.js defines the documented schema (5 canonical fields, ordered)', () => {
   for (const [k, kind] of [

@@ -15,6 +15,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { loadAssembledDict } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -61,10 +62,8 @@ test('dashboard ✨ button routes to #/auto (single coherent flow)', () => {
   assert.match(DASH, /Router\.go\(\s*['"]\/auto['"]\s*\)/);
 });
 
-test('every new WS5 i18n key resolves in all 8 locales', async () => {
-  globalThis.window = {};
-  await import('../public/js/lib/i18n-dict.js');
-  const D = globalThis.window.__I18N_DICT;
+test('every new WS5 i18n key resolves in all 8 locales', () => {
+  const D = loadAssembledDict();
   const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
   const KEYS = [
     'nav.auto', 'auto.subtitle', 'auto.urlLabel', 'auto.urlRequired',

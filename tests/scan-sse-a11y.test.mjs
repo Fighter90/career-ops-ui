@@ -7,6 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -14,7 +15,7 @@ import { dirname, resolve } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
 const SCAN = readFileSync(R('public', 'js', 'views', 'scan.js'), 'utf8');
-const DICT = readFileSync(R('public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+const DICT = legacyDictText();
 
 test('#5: SSE console is an aria-live log region, keyboard-scrollable', () => {
   assert.match(SCAN, /id:\s*'scan-console',\s*\n?\s*role:\s*'log'/);

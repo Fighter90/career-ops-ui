@@ -18,6 +18,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync, writeFileSync, mkdtempSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -44,7 +45,7 @@ function writeEnv(lines) { writeFileSync(resolve(ENV_DIR, '.env'), lines.join('\
 const __d = dirname(fileURLToPath(import.meta.url));
 const APP = readFileSync(resolve(__d, '..', 'public', 'js', 'app.js'), 'utf8');
 const HTML = readFileSync(resolve(__d, '..', 'public', 'index.html'), 'utf8');
-const DICT = readFileSync(resolve(__d, '..', 'public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+const DICT = legacyDictText();
 const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
 
 // ── pure selection logic ────────────────────────────────────────────

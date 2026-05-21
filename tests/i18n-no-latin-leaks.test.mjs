@@ -8,9 +8,10 @@
  * letters (with no whitelisted proper noun, acronym, or product name),
  * it's a leak.
  *
- * The script-style test parses the consolidated DICT in
- * `public/js/lib/i18n-dict.js` (no JSON import — the file is a JS
- * module so we extract per-key rows with a regex).
+ * v1.60.0 (I18N-SPLIT) — the dictionary is now assembled from per-locale
+ * files. We load the REAL assembled DICT (via tests/helpers/i18n-vm.mjs)
+ * instead of regex-parsing a monolithic file, so the guard sees exactly
+ * what the browser sees.
  *
  * Whitelisted tokens stay Latin in every locale by design (proper nouns,
  * acronyms, product names). Anything else in `*.title` keys on the 5
@@ -18,12 +19,9 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
+import { loadAssembledDict } from './helpers/i18n-vm.mjs';
 
-const __d = dirname(fileURLToPath(import.meta.url));
-const DICT = readFileSync(resolve(__d, '..', 'public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+const DICT = loadAssembledDict();
 
 // Tokens that legitimately read as Latin in every locale.
 const WHITELIST = new Set([
@@ -40,24 +38,14 @@ const PURE_LATIN = /^[A-Za-z][A-Za-z0-9\s\-/·:.,()&]*$/;
 // Locales whose UX expects native (non-Latin) script.
 const NON_LATIN_LOCALES = ['ru', 'ko', 'ja', 'zh-CN', 'zh-TW'];
 
-// Parse `'key.path':   { en: '…', es: '…', … }` rows from the DICT and
-// return Map<key, Map<locale, value>>.
+// Adapt the assembled key-major DICT into Map<key, Map<locale, value>>.
+// Alias keys (`{ '@alias': … }`) carry no per-locale strings of their own
+// and are skipped — their canonical target is checked under its own key.
 function parseDict() {
   const map = new Map();
-  const rowRe = /^\s*'([\w.-]+)':\s*\{([^}]+)\}/gm;
-  let m;
-  while ((m = rowRe.exec(DICT)) !== null) {
-    const key = m[1];
-    const body = m[2];
-    const locValues = new Map();
-    const localeRe = /(?:'([\w-]+)'|(\w+))\s*:\s*'((?:\\'|[^'])*)'/g;
-    let lm;
-    while ((lm = localeRe.exec(body)) !== null) {
-      const locale = lm[1] || lm[2];
-      const value = lm[3].replace(/\\'/g, "'");
-      locValues.set(locale, value);
-    }
-    map.set(key, locValues);
+  for (const [key, row] of Object.entries(DICT)) {
+    if (row['@alias']) continue;
+    map.set(key, new Map(Object.entries(row)));
   }
   return map;
 }

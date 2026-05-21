@@ -10,6 +10,14 @@
 
 
 
+## [1.60.0] — 2026-05-22
+
+**refactor(i18n): 將 8 語言合一的大檔案拆分為按語言的檔案 (I18N-SPLIT).** 翻譯字典原先位於單一 `public/js/lib/i18n-dict.js`；現改為 `public/js/lib/locales/` 下**每種語言一個檔案**外加共用的 `i18n-dict.aliases.js`，讓譯者可以獨立編輯單一語言（i18next / OpenWA 佈局）。`i18n-dict.js` 現在是一個**組裝器**，把各語言表重新合併成完全相同的 `window.__I18N_DICT`，因此 `t()` 與所有視圖保持不變。透過 `<script src>` 同步載入——無建置、無 fetch。快照證明遷移無損（678 個鍵）。工具與約 25 個測試已適配拆分；新增 `tests/i18n-locale-files.test.mjs` 與 `tests/playwright-locale-sweep.mjs`（在真實 Chromium 中逐頁 × 8 語言驗證）。994 → **1000** 單元 · 62 → **70** Playwright。無行為變化。(I18N-SPLIT)
+
+---
+
+
+
 ## [1.59.13] — 2026-05-21
 
 **fix(i18n): 用 @alias 合併真正重複的鍵 + 個人資料最終清理.** 從測試夾具/QA 報告中移除維護者真實姓名(→ `Jane Doe`),`LICENSE`/`package.json` 改為 `Fighter90` 帳號。`@alias` 機制合併 8 個語言完全相同的 10 個鍵。`nav.config`/`config.title` 因西班牙語不同而不合併。991 → **994** 測試。(I18N-CL3)

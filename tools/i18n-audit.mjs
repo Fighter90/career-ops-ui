@@ -32,7 +32,9 @@ import { dirname, resolve } from 'node:path';
 import vm from 'node:vm';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DICT_PATH = resolve(__dirname, '..', 'public', 'js', 'lib', 'i18n-dict.js');
+const LIB_DIR = resolve(__dirname, '..', 'public', 'js', 'lib');
+const LOCALES_DIR = resolve(LIB_DIR, 'locales');
+const DICT_PATH = resolve(LIB_DIR, 'i18n-dict.js'); // the assembler
 
 const LOCALES = ['en', 'es', 'pt-BR', 'ru', 'ja', 'ko', 'zh-CN', 'zh-TW'];
 
@@ -52,10 +54,16 @@ const PERSONAL = [
 const BARE_CALENDAR_DATE = /^\s*(?:19|20)\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])\s*$/;
 
 function loadDict() {
-  const src = readFileSync(DICT_PATH, 'utf8');
+  // v1.60.0 (I18N-SPLIT) — replay the browser load order: every per-locale
+  // table, then the alias map, then the assembler that builds __I18N_DICT.
   const sandbox = { window: {} };
   vm.createContext(sandbox);
-  vm.runInContext(src, sandbox, { filename: 'i18n-dict.js' });
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+    const f = resolve(LOCALES_DIR, `i18n-dict.${lang}.js`);
+    vm.runInContext(readFileSync(f, 'utf8'), sandbox, { filename: `i18n-dict.${lang}.js` });
+  }
+  vm.runInContext(readFileSync(resolve(LOCALES_DIR, 'i18n-dict.aliases.js'), 'utf8'), sandbox, { filename: 'i18n-dict.aliases.js' });
+  vm.runInContext(readFileSync(DICT_PATH, 'utf8'), sandbox, { filename: 'i18n-dict.js' });
   return sandbox.window.__I18N_DICT;
 }
 

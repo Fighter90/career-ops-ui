@@ -9,6 +9,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -57,7 +58,7 @@ test('config.js wires an OPENAI_MODEL select FIELD after OPENAI_API_KEY', () => 
 });
 
 test('i18n: config.openaiModel + config.openaiModelHint cover all 8 locales', () => {
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
   for (const key of ['config.openaiModel', 'config.openaiModelHint']) {
     const line = dict.split('\n').find((l) => l.includes(`'${key}'`));

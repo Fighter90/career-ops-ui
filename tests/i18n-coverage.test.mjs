@@ -11,37 +11,19 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createContext, runInContext } from 'node:vm';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { I18N_LANGS as REQUIRED_LANGS, loadI18n } from './helpers/i18n-vm.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const I18N_PATH = resolve(__dirname, '..', 'public', 'js', 'lib', 'i18n.js');
-const I18N_DICT_PATH = resolve(__dirname, '..', 'public', 'js', 'lib', 'i18n-dict.js');
 
-const REQUIRED_LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
-
+// v1.60.0 (I18N-SPLIT) — DICT is now assembled from per-locale tables.
+// helpers/i18n-vm.mjs replays the browser load order in a vm and exposes
+// the merged dictionary via i18n.js's `_DICT` escape hatch, so the test
+// inspects the exact alias-aware dictionary the browser sees.
 function loadDict() {
-  // v1.23.0 (N-1) — DICT lives in i18n-dict.js. Load that first into a
-  // stub `window`, then run i18n.js in the same context. i18n.js reads
-  // `window.__I18N_DICT` at IIFE time, so the wiring is automatic.
-  // We still inject the `_DICT: DICT` escape hatch so the test can
-  // inspect the merged dictionary the way it always could.
-  const dictSrc = readFileSync(I18N_DICT_PATH, 'utf8');
-  let logicSrc = readFileSync(I18N_PATH, 'utf8');
-  logicSrc = logicSrc.replace(
-    /return\s*\{\s*t,\s*setLang,\s*getLang,\s*getLangs,\s*onChange\s*\};/,
-    'return { t, setLang, getLang, getLangs, onChange, _DICT: DICT };'
-  );
-  const ctx = createContext({
-    window: {},
-    localStorage: { getItem: () => null, setItem: () => {} },
-    document: { documentElement: { lang: 'en' }, addEventListener: () => {} },
-    navigator: { language: 'en' },
-  });
-  runInContext(dictSrc, ctx);    // populates window.__I18N_DICT
-  runInContext(logicSrc, ctx);   // reads it, builds window.I18n
-  const I18n = ctx.window.I18n;
+  const I18n = loadI18n();
   if (!I18n || !I18n._DICT) {
     throw new Error('failed to extract DICT — split-load contract changed?');
   }

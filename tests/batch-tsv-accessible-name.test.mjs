@@ -12,6 +12,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -19,7 +20,7 @@ import { dirname, resolve } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
 const BATCH = readFileSync(R('public', 'js', 'views', 'batch.js'), 'utf8');
-const DICT = readFileSync(R('public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+const DICT = legacyDictText();
 
 test('the batch-tsv textarea has an aria-label (accessible name)', () => {
   // the textarea block: id 'batch-tsv' must own an aria-label that

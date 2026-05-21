@@ -7,6 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -14,7 +15,7 @@ import { dirname, resolve } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
 const PIPE = readFileSync(R('public', 'js', 'views', 'pipeline.js'), 'utf8');
-const DICT = readFileSync(R('public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+const DICT = legacyDictText();
 
 test('#8: no native confirm() left anywhere in pipeline.js', () => {
   // strip UI.confirm( first, then any remaining `confirm(` is native.

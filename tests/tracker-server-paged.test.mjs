@@ -12,6 +12,7 @@
  */
 import { test, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
@@ -129,7 +130,7 @@ test('#/tracker renders a clickable funnel chip bar', async () => {
   const { dirname, resolve: r } = await import('node:path');
   const __d = dirname(fileURLToPath(import.meta.url));
   const TR = readFileSync(r(__d, '..', 'public', 'js', 'views', 'tracker.js'), 'utf8');
-  const DICT = readFileSync(r(__d, '..', 'public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+  const DICT = legacyDictText();
   const CSS = readFileSync(r(__d, '..', 'public', 'css', 'app.css'), 'utf8');
   assert.match(TR, /className: 'tracker-funnel'/, 'a .tracker-funnel bar must exist');
   assert.match(TR, /tracker-chip/, 'chips use the .tracker-chip class');

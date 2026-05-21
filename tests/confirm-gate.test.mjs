@@ -6,6 +6,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -15,7 +16,7 @@ const R = (...p) => resolve(__dirname, '..', ...p);
 const API = readFileSync(R('public', 'js', 'api.js'), 'utf8');
 const CONFIG = readFileSync(R('public', 'js', 'views', 'config.js'), 'utf8');
 const TRACKER = readFileSync(R('public', 'js', 'views', 'tracker.js'), 'utf8');
-const DICT = readFileSync(R('public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+const DICT = legacyDictText();
 
 test('UI exports confirm()', () => {
   assert.match(API, /return\s*\{[^}]*\bconfirm\b[^}]*\}/s);

@@ -12,7 +12,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { createContext, runInContext } from 'node:vm';
+import { loadI18n } from './helpers/i18n-vm.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -54,24 +54,10 @@ const REQUIRED_LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']
 const REQUIRED_KEYS = ['nav.help', 'help.title', 'help.subtitle', 'help.toc'];
 
 test('i18n: nav.help / help.* keys present in every supported locale', () => {
-  // v1.23.0 (N-1) — DICT moved to i18n-dict.js (loaded first via
-  // <script src>). Replicate the split-load order so this test sees
-  // the same merged DICT the browser does.
-  const dictSrc = readFileSync(resolve(ROOT, 'public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
-  let logicSrc = readFileSync(resolve(ROOT, 'public', 'js', 'lib', 'i18n.js'), 'utf8');
-  logicSrc = logicSrc.replace(
-    /return\s*\{\s*t,\s*setLang,\s*getLang,\s*getLangs,\s*onChange\s*\};/,
-    'return { t, setLang, getLang, getLangs, onChange, _DICT: DICT };'
-  );
-  const ctx = createContext({
-    window: {},
-    localStorage: { getItem: () => null, setItem: () => {} },
-    document: { documentElement: { lang: 'en' }, addEventListener: () => {} },
-    navigator: { language: 'en' },
-  });
-  runInContext(dictSrc, ctx);
-  runInContext(logicSrc, ctx);
-  const D = ctx.window.I18n._DICT;
+  // v1.60.0 (I18N-SPLIT) — DICT is assembled from per-locale tables.
+  // helpers/i18n-vm.mjs replays the browser load order in a vm so this
+  // test sees the same merged, alias-aware DICT the browser does.
+  const D = loadI18n()._DICT;
   for (const k of REQUIRED_KEYS) {
     assert.ok(D[k], `missing key: ${k}`);
     // v1.59.13 — nav.help is now an @alias to help.title. Resolve one

@@ -8,6 +8,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -51,7 +52,7 @@ test('config.js wires a remote OPENROUTER_MODEL select after OPENROUTER_API_KEY'
 });
 
 test('i18n: all 4 OpenRouter config keys cover the 8 locales', () => {
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
   for (const key of ['config.openrouterKey', 'config.openrouterHint',
     'config.openrouterModel', 'config.openrouterModelHint']) {

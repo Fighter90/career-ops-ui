@@ -10,6 +10,14 @@
 
 
 
+## [1.60.0] — 2026-05-22
+
+**refactor(i18n): 8 言語まとめのメガファイルをロケール別ファイルに分割 (I18N-SPLIT).** 翻訳辞書は単一の `public/js/lib/i18n-dict.js` にありましたが、`public/js/lib/locales/` 配下の**ロケールごとに 1 ファイル**と共通の `i18n-dict.aliases.js` に分割し、翻訳者が 1 言語だけを独立して編集できるようにしました（i18next / OpenWA 方式）。`i18n-dict.js` は同じ `window.__I18N_DICT` を再構築する**アセンブラ**になり、`t()` も各ビューも不変です。`<script src>` で同期読み込み — ビルドも fetch もなし。スナップショットで無損失移行を保証（678 キー）。ツールと約 25 のテストを分割対応に更新。新規 `tests/i18n-locale-files.test.mjs` と `tests/playwright-locale-sweep.mjs`（全ページ × 8 ロケールを実 Chromium で検証）。994 → **1000** ユニット · 62 → **70** Playwright。挙動の変更なし。(I18N-SPLIT)
+
+---
+
+
+
 ## [1.59.13] — 2026-05-21
 
 **fix(i18n): @alias で真の重複キーを統合 + 個人データの最終一掃.** メンテナの実名をテストフィクスチャと QA レポートから除去(→ `Jane Doe`)、`LICENSE`/`package.json` を `Fighter90` ハンドルへ。`@alias` 機構で全 8 ロケール一致の 10 キーを統合。`nav.config`/`config.title` はスペイン語で異なるため統合しない。991 → **994** テスト。(I18N-CL3)

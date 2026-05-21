@@ -6,36 +6,13 @@
  *   2. behaviour — t(aliasKey) === t(canonicalKey) in every locale
  *   3. the specific true-duplicate set collapsed in v1.59.13
  *
- * Loads i18n.js + i18n-dict.js in a vm sandbox (same pattern as
- * i18n-coverage.test.mjs) so we exercise the REAL t() resolver.
+ * Loads the split per-locale tables + assembler + i18n.js in a vm sandbox
+ * (via tests/helpers/i18n-vm.mjs, same path the browser uses) so we
+ * exercise the REAL t() resolver.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { createContext, runInContext } from 'node:vm';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const I18N = resolve(__dirname, '..', 'public', 'js', 'lib', 'i18n.js');
-const DICTP = resolve(__dirname, '..', 'public', 'js', 'lib', 'i18n-dict.js');
-const LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
-
-function loadI18n() {
-  let logic = readFileSync(I18N, 'utf8').replace(
-    /return\s*\{\s*t,\s*setLang,\s*getLang,\s*getLangs,\s*onChange\s*\};/,
-    'return { t, setLang, getLang, getLangs, onChange, _DICT: DICT };',
-  );
-  const ctx = createContext({
-    window: {},
-    localStorage: { getItem: () => null, setItem: () => {} },
-    document: { documentElement: { lang: 'en' }, addEventListener: () => {} },
-    navigator: { language: 'en' },
-  });
-  runInContext(readFileSync(DICTP, 'utf8'), ctx);
-  runInContext(logic, ctx);
-  return ctx.window.I18n;
-}
+import { I18N_LANGS as LANGS, loadI18n } from './helpers/i18n-vm.mjs';
 
 const I18n = loadI18n();
 const DICT = I18n._DICT;

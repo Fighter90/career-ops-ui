@@ -7,6 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -14,7 +15,7 @@ import { dirname, resolve } from 'node:path';
 const __d = dirname(fileURLToPath(import.meta.url));
 const read = (p) => readFileSync(resolve(__d, '..', p), 'utf8');
 const API = read('public/js/api.js');
-const DICT = read('public/js/lib/i18n-dict.js');
+const DICT = legacyDictText();
 const CSS = read('public/css/app.css');
 const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
 

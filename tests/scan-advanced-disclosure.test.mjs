@@ -13,6 +13,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -20,7 +21,7 @@ import { dirname, resolve } from 'node:path';
 const __d = dirname(fileURLToPath(import.meta.url));
 const SCAN = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'scan.js'), 'utf8');
 const CSS = readFileSync(resolve(__d, '..', 'public', 'css', 'app.css'), 'utf8');
-const DICT = readFileSync(resolve(__d, '..', 'public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+const DICT = legacyDictText();
 const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
 
 test('an Advanced-filters <details> disclosure exists', () => {

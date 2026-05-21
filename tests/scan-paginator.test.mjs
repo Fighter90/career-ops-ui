@@ -17,6 +17,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -78,7 +79,7 @@ test('scan.js no longer truncates with rows.slice(0, 200)', () => {
 });
 
 test('i18n-dict: stale scan.shownTop key was removed', () => {
-  const src = readSrc('public', 'js', 'lib', 'i18n-dict.js');
+  const src = legacyDictText();
   assert.doesNotMatch(src, /['"]scan\.shownTop['"]\s*:/,
     'i18n-dict.js still carries the stale `scan.shownTop` key — clean it up after the paginator swap');
 });

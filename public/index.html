@@ -198,6 +198,19 @@
       </div>
     </div>
 
+    <!-- i18n: per-locale tables (I18N-SPLIT v1.60.0) load first, then the
+         aliases map, then i18n-dict.js assembles them into window.__I18N_DICT,
+         then i18n.js consumes it. All synchronous <script src> — no build,
+         no fetch. Order matters: the assembler reads these globals. -->
+    <script src="/js/lib/locales/i18n-dict.en.js"></script>
+    <script src="/js/lib/locales/i18n-dict.es.js"></script>
+    <script src="/js/lib/locales/i18n-dict.pt-BR.js"></script>
+    <script src="/js/lib/locales/i18n-dict.ko.js"></script>
+    <script src="/js/lib/locales/i18n-dict.ja.js"></script>
+    <script src="/js/lib/locales/i18n-dict.ru.js"></script>
+    <script src="/js/lib/locales/i18n-dict.zh-CN.js"></script>
+    <script src="/js/lib/locales/i18n-dict.zh-TW.js"></script>
+    <script src="/js/lib/locales/i18n-dict.aliases.js"></script>
     <script src="/js/lib/i18n-dict.js"></script>
     <script src="/js/lib/i18n.js"></script>
     <script src="/js/api.js"></script>

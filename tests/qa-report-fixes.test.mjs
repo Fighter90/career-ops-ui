@@ -7,6 +7,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -90,7 +91,7 @@ test('UX-A2 (v1.58.65): ModesForm renders all 5 canonical fields as repeatable l
 });
 
 test('UX-A11 (v1.58.64): es/pt-BR copy polish — English loanwords replaced with native equivalents', () => {
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   // The ES eval.subtitle previously used "fit CV", "Score", "header",
   // "reporte"; the polish replaces them with "ajuste del CV",
   // "Puntaje", "cabecera", "informe" — fewer English calques.
@@ -157,7 +158,7 @@ test('UX-A9 (v1.58.62 + v1.59.2): #/config API-keys panel has an Active/Keys sum
   assert.match(cfg, /\{\s*anthropic:\s*'Anthropic'/,
     'NAME map must key on "anthropic" (server contract — not "claude")');
   // i18n keys present in 8 locales.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['config.activeProvider', 'config.keysConfiguredPrefix']) {
     assert.ok(dict.includes(`'${key}'`), `i18n-dict.js must define '${key}'`);
   }
@@ -208,7 +209,7 @@ test('UX-A12 (v1.58.60): notifications drawer supports Clear all + per-entry dis
     'onToast subscriber must detect purge sentinels and skip unread bump');
 
   // i18n keys present in 8 locales.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['notif.clearAll', 'notif.clearAllAria', 'notif.dismiss']) {
     assert.ok(dict.includes(`'${key}'`), `i18n-dict.js must define '${key}'`);
   }
@@ -231,7 +232,7 @@ test('UX-A13 (v1.58.59): #/health failing rows render an actionable "Fix →" CT
   // The CTA copy must be localized (no hardcoded English).
   assert.match(health, /t\('health\.fix',/, 'CTA label must use i18n key health.fix');
   // i18n keys present.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['health.fix', 'health.fixAria']) {
     assert.ok(dict.includes(`'${key}'`), `i18n-dict.js must define '${key}'`);
   }
@@ -249,7 +250,7 @@ test('UX-A10 (v1.58.58): #/cv guards against leaving with unsaved buffer (before
   assert.match(cv, /t\('cv\.unsavedConfirm'/,
     'hashchange guard must use the localized cv.unsavedConfirm prompt');
   // i18n key must exist in 8 locales.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   assert.ok(dict.includes("'cv.unsavedConfirm'"), 'i18n-dict.js must define cv.unsavedConfirm');
 });
 
@@ -315,7 +316,7 @@ test('UX-A3 (v1.58.55): dashboard renders an active-provider chip wired to /api/
   assert.match(dash, /document\.removeEventListener\('providers-changed', refresh\)/,
     'cleanup must remove providers-changed listener');
   // i18n keys present in 8 locales.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['dash.provider.live', 'dash.provider.manual']) {
     assert.ok(dict.includes(`'${key}'`), `i18n-dict.js must define '${key}'`);
   }
@@ -348,7 +349,7 @@ test('UX-A1 (v1.58.54): showResult prepends a brief-warning when ≥3 canonical 
   assert.match(css, /\.brief-warning\s*\{/, 'app.css must define a .brief-warning rule');
 
   // All 8 locales must carry the three UX-A1 i18n keys.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['deep.briefUnstructured.title', 'deep.briefUnstructured.body', 'deep.docsLink']) {
     assert.ok(dict.includes(`'${key}'`), `i18n-dict.js must define '${key}'`);
   }
@@ -481,7 +482,7 @@ test('UX-D-B (v1.58.48): #/dashboard renders a fixture-profile warning banner wh
   assert.match(dash, /t\('onboarding\.fixProfile'/,
     "banner CTA label must come from t('onboarding.fixProfile', …)");
   // i18n parity for both keys.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['onboarding.fixtureWarning', 'onboarding.fixProfile']) {
     const row = dict.match(new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]+)\\}`));
     assert.ok(row, `i18n-dict.js missing '${key}'`);
@@ -505,7 +506,7 @@ test('UX-D-C (v1.58.47): top-bar `Quick scan` renamed to `Open Scan` so the labe
     "pre-fix 'Quick scan' default label must be gone from index.html");
   assert.match(html, /data-i18n="top\.quickscan">Open Scan</,
     "index.html must declare 'Open Scan' as the default label");
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'top\.quickscan':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'top.quickscan'");
   // EN value must be the new label.
@@ -557,7 +558,7 @@ test('UX-D-L (v1.58.44): #/deep saved-research opened brief has an inline × clo
     'showResult must declare an × button with aria-label: t("deep.closeBrief", …)');
   assert.match(deep, /onClick:\s*\(\)\s*=>\s*\{\s*out\.innerHTML = ''/,
     'close button must clear the out container on click');
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'deep\.closeBrief':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'deep.closeBrief'");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -575,7 +576,7 @@ test('UX-D-F (v1.58.43): empty JD on #/evaluate triggers a distinct localized er
     'evaluate.js must distinguish empty JD from short JD via t("eval.emptyJd")');
   assert.match(ev, /jdInput\.focus\(\)/,
     'evaluate.js must call jdInput.focus() after the empty-JD toast');
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'eval\.emptyJd':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'eval.emptyJd'");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -593,7 +594,7 @@ test('UX-D-J (v1.58.42): every advisor view renders a localized ETA chip next to
     assert.match(v, /t\('advisor\.eta'/,
       `${f} must localize the ETA via t('advisor.eta', …)`);
   }
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'advisor\.eta':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'advisor.eta'");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -639,7 +640,7 @@ test('NEW-D2 (v1.58.39): #/dashboard header Refresh button gives explicit toast 
   assert.match(dash, /UI\.toast\(I18n\.t\('dash\.refreshed',[^)]*\),\s*'success'\)/,
     'header Refresh must emit dash.refreshed success toast on completion');
   // i18n parity for the 2 new keys.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['dash.refreshAria', 'dash.refreshed']) {
     const row = dict.match(new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]+)\\}`));
     assert.ok(row, `i18n-dict.js missing '${key}'`);
@@ -664,7 +665,7 @@ test('NEW-D3 (v1.58.38): #/tracker search input has explicit aria-label distinct
   assert.match(tr, /type:\s*'search',[\s\S]{0,200}placeholder:\s*t\('track\.search'\)/,
     'filterText must be type="search"');
   // i18n parity for the new key.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'track\.searchAria':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'track.searchAria'");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -767,7 +768,7 @@ test('v1.58.34: notifications drawer wires bell + onToast subscribe + 4 i18n key
   assert.match(app, /e\.key === 'Escape'/, 'Escape must close the drawer');
 
   // i18n parity for the 4 new keys.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['notif.title', 'notif.empty', 'notif.bellAria', 'notif.closeAria']) {
     const row = dict.match(new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]+)\\}`));
     assert.ok(row, `i18n-dict.js missing '${key}'`);
@@ -817,7 +818,7 @@ test('U-13/U-14/U-15 (v1.58.33): toast journal + page-header spacing safety net 
   assert.match(css, /\.btn\.btn-dirty\s*\{/, '.btn.btn-dirty CSS rule must exist');
 
   // i18n parity for cv.unsaved
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'cv\.unsaved':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'cv.unsaved'");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -844,7 +845,7 @@ test('U-11 (v1.58.31): tracker Legitimacy column header has localized info chip 
     "info chip must declare title: t('track.col.legitimacy.help', …)");
   assert.match(tr, /'aria-label':\s*t\('track\.col\.legitimacy\.help'/,
     "info chip must declare aria-label: t('track.col.legitimacy.help', …)");
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'track\.col\.legitimacy\.help':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'track.col.legitimacy.help'");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -865,7 +866,7 @@ test('U-10 (v1.58.30): tracker Normalize/Dedup/Merge buttons disabled when rows 
   assert.match(tr, /'aria-disabled':\s*empty\s*\?\s*'true'\s*:\s*'false'/,
     "each button must declare aria-disabled mirroring the disabled state");
   assert.match(tr, /t\('track\.fixEmpty'/, 'empty tooltip must come from t("track.fixEmpty", …)');
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'track\.fixEmpty':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'track.fixEmpty'");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -893,7 +894,7 @@ test('U-8 (v1.58.28): mode-page Generate-prompt wraps the <pre> in a collapsible
   assert.match(mp, /t\('prompt\.lines'/,
     "showPrompt must localize the 'lines' word too");
   // i18n parity for the two new keys:
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['prompt.show', 'prompt.lines']) {
     const row = dict.match(new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]+)\\}`));
     assert.ok(row, `i18n-dict.js missing '${key}'`);
@@ -925,7 +926,7 @@ test('U-6 (v1.58.26): scan Active-companies chip exposes localized tooltip + ari
     'toggleBtn must declare aria-label: t("scan.activeCo.help", …)');
 
   // i18n parity:
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'scan\.activeCo\.help':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'scan.activeCo.help'");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -973,7 +974,7 @@ test('U-4 (v1.58.24): toast splits the "(METHOD /path · HTTP NNN)" postfix into
     "summary must use I18n.t('toast.details', 'Details')");
 
   // i18n parity for toast.details:
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'toast\.details':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'toast.details'");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -1015,7 +1016,7 @@ test('I18N-CL2 (v1.59.12): followup.lastPh dict value is a format hint, not a ro
   // (the view always overrides it) but it rots and would trip the
   // i18n-audit bare-date guard. v1.59.12 replaced it with a localized
   // format hint (YYYY-MM-DD / AAAA-MM-DD / ГГГГ-ММ-ДД).
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const m = dict.match(/'followup\.lastPh':\s*\{[^}]*\}/);
   assert.ok(m, 'followup.lastPh must exist');
   assert.equal(/\b20\d{2}-\d{2}-\d{2}\b/.test(m[0]), false,
@@ -1032,7 +1033,7 @@ test('U-2 (v1.58.22): #/auto separates ✨ from the H1 via a .page-icon span', (
   assert.match(auto, /c\('span',\s*\{\s*className:\s*'page-icon',\s*'aria-hidden':\s*'true'\s*\},\s*'✨'\)/,
     'auto.js must emit ✨ as a separate <span class="page-icon" aria-hidden="true">');
   // The H1 i18n value must NOT include the leading ✨ anymore:
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'auto\.title':\s*\{([^}]+)\}/);
   assert.ok(row, 'auto.title row must exist');
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -1069,7 +1070,7 @@ test('I-6 (v1.58.20): footer hotkey uses {hotkey} placeholder + per-platform sub
   // v1.58.3 footer showed 'CTRL+K — search' literally on every platform
   // and locale. The i18n value now embeds {hotkey} so app.js can swap
   // it to ⌘K on Mac and Ctrl+K elsewhere; the localized verb stays.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   assert.match(dict, /'top\.langhint':\s*\{\s*en:\s*'\{hotkey\} — search'/,
     "top.langhint EN must use '{hotkey} — search'");
   for (const lang of ['es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -1091,7 +1092,7 @@ test('I-6 (v1.58.20): footer hotkey uses {hotkey} placeholder + per-platform sub
 test('I-4 (v1.58.19): RU followup strings contain no Latin `cadence`/`follow-up` leakage', () => {
   // v1.58.3: RU `#/followup` H1 was 'Советник по cadence follow-up'; subtitle
   // 'ISO-дата (YYYY-MM-DD) — основа для cadence.'. Translate.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const ruFollowup = dict.split('\n')
     .filter((l) => /^\s*'followup\./.test(l))
     .map((l) => {
@@ -1203,7 +1204,7 @@ test('I-1 (v1.58.15): top-bar search aria-label + visually-hidden label are loca
   // i18n parity — both new keys present + non-trivially translated
   // (at least one non-EN locale differs from EN so the test catches a
   // fresh-add that forgot to translate).
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['top.search.label', 'top.search.aria']) {
     const re = new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]*)\\}`);
     const row = dict.match(re);
@@ -1250,7 +1251,7 @@ test('M-9 (v1.58.14): connection-banner Refresh emits a localized toast (no sile
   );
 
   // i18n parity — both new keys present in all 8 locales.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['common.refreshing', 'common.refreshed']) {
     const re = new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]*)\\}`);
     const row = dict.match(re);
@@ -1300,7 +1301,7 @@ test('M-8 (v1.58.13): apply checklist renders interactive checkboxes + persists 
     '.apply-checklist__actions container must be defined');
 
   // i18n parity — all 5 new checklist keys present in all 8 locales.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of [
     'apply.checklist.copyUnchecked',
     'apply.checklist.resetBtn',
@@ -1336,7 +1337,7 @@ test('M-7 (v1.58.12): cost hint follows active provider; OpenRouter + null-cost 
   assert.match(api, /tr\('cost\.varies',\s*'cost varies/,
     "render path must use t('cost.varies', 'cost varies …') for the null-cost case");
   // i18n parity — cost.varies present in all 8 locales.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'cost\.varies':\s*\{([^}]*)\}/);
   assert.ok(row, "i18n-dict.js missing 'cost.varies'");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -1393,7 +1394,7 @@ test('M-2 (v1.58.10): UI.modal() drains the progress toast at entry (defence-in-
     "cv.js must not use the hardcoded English 'sync-check…' toast");
 
   // i18n parity — both keys present in all 8 locales.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   for (const key of ['cv.syncCheck', 'cv.syncCheckRunning']) {
     const re = new RegExp(`'${key.replace('.', '\\.')}':\\s*\\{([^}]*)\\}`);
     const row = dict.match(re);
@@ -1448,7 +1449,7 @@ test('BUG-008-tb: top-bar Doctor modal title equals the localized button label (
 
   // The localized strings must exist in every locale so the modal title
   // never falls back to the English fallback string mid-flow.
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const row = dict.match(/'top\.doctor':\s*\{([^}]*)\}/);
   assert.ok(row, "i18n-dict.js missing 'top.doctor' entry");
   for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
@@ -1501,7 +1502,7 @@ test('BUG-010: reports empty state renders a page-subtitle', () => {
 });
 
 test('i18n: new QA keys cover all 8 locales', () => {
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
   for (const key of ['followup.lastErr', 'pipe.dup', 'rep.subtitle']) {
     const line = dict.split('\n').find((l) => l.includes(`'${key}'`));
@@ -1514,7 +1515,7 @@ test('i18n: new QA keys cover all 8 locales', () => {
 });
 
 test('I18N-012/013: Deep research is localized in Russian (no leftover English)', () => {
-  const dict = read('public', 'js', 'lib', 'i18n-dict.js');
+  const dict = legacyDictText();
   const title = dict.split('\n').find((l) => l.includes("'deep.title'"));
   assert.ok(!/ru: 'Deep research'/.test(title), 'deep.title ru still English');
   const sub = dict.split('\n').find((l) => l.includes("'deep.subtitle'"));

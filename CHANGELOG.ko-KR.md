@@ -10,6 +10,14 @@
 
 
 
+## [1.60.0] — 2026-05-22
+
+**refactor(i18n): 8개 언어 통합 파일을 로케일별 파일로 분리 (I18N-SPLIT).** 번역 사전이 하나의 `public/js/lib/i18n-dict.js`에 있었으나, 이제 `public/js/lib/locales/` 아래 **언어당 한 파일**과 공용 `i18n-dict.aliases.js`로 나뉘어 번역가가 한 언어만 독립적으로 편집할 수 있습니다(i18next / OpenWA 방식). `i18n-dict.js`는 동일한 `window.__I18N_DICT`를 다시 조립하는 **조립기**가 되어 `t()`와 모든 화면은 그대로입니다. `<script src>`로 동기 로드 — 빌드·fetch 없음. 스냅샷으로 무손실 마이그레이션 검증(678개 키). 도구와 ~25개 테스트를 분리 인식하도록 수정; 신규 `tests/i18n-locale-files.test.mjs`, `tests/playwright-locale-sweep.mjs`(모든 페이지 × 8개 로케일, 실제 Chromium). 994 → **1000** 단위 · 62 → **70** Playwright. 동작 변화 없음. (I18N-SPLIT)
+
+---
+
+
+
 ## [1.59.13] — 2026-05-21
 
 **fix(i18n): @alias 로 진짜 중복 키 통합 + 개인정보 최종 정리.** 메인테이너 실명을 테스트 픽스처/QA 리포트에서 제거(→ `Jane Doe`), `LICENSE`/`package.json` 을 `Fighter90` 핸들로 변경. `@alias` 로 8개 로케일 동일한 10개 키 통합. `nav.config`/`config.title` 은 스페인어에서 달라 통합 안 함. 991 → **994** 테스트. (I18N-CL3)

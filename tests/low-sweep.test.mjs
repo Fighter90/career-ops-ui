@@ -7,13 +7,14 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const __d = dirname(fileURLToPath(import.meta.url));
 const V = (f) => readFileSync(resolve(__d, '..', 'public', 'js', 'views', f), 'utf8');
-const DICT = readFileSync(resolve(__d, '..', 'public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+const DICT = legacyDictText();
 
 test('#33 dashboard: hero CTAs carry a leading icon', () => {
   // v1.58.25 (U-5) — the header `Open Pipeline` CTA was removed (dupe of

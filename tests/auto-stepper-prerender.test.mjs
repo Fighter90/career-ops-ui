@@ -13,13 +13,14 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const __d = dirname(fileURLToPath(import.meta.url));
 const AUTO = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'auto.js'), 'utf8');
-const DICT = readFileSync(resolve(__d, '..', 'public', 'js', 'lib', 'i18n-dict.js'), 'utf8');
+const DICT = legacyDictText();
 
 test('STEPS defines exactly the 5 canonical pipeline stages', () => {
   const m = AUTO.match(/const STEPS = \[([\s\S]*?)\];/);

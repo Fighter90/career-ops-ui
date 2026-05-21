@@ -5,12 +5,12 @@
 
 **English** | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
 
-[![tests](https://img.shields.io/badge/tests-994%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1000%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.59.13-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.59.13)
+[![release](https://img.shields.io/badge/release-v1.60.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.60.0)
 
 > **v1.59.13 — i18n hardening ahead of the French locale PR ([#3](https://github.com/Fighter90/career-ops-ui/issues/3)).** Full-repo personal-data purge (test fixtures + archived QA reports anonymised; `LICENSE`/`package.json` use the `Fighter90` handle). Added an `@alias` mechanism so the 10 keys that are byte-identical across all 8 locales are translated once — while keys that only collapse in English (`nav.config` vs `config.title`, which diverge in Spanish) stay independent. `npm run audit:i18n` (CI-wired) hard-fails on personal data, parity gaps, empty values, rotting dates, and broken alias targets. Full QA hand-off in [`qa/QA-REGRESSION-PROMPT.md`](qa/QA-REGRESSION-PROMPT.md).
 
@@ -311,7 +311,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 988 unit + 62 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.59.11)
+└─ tests/                    # 1000 unit + 70 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.60.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
