@@ -449,7 +449,7 @@ event: error    data: { message }
 npm test                       # 419 个单元 / 集成测试
 npm run test:e2e               # 20 个烟雾 e2e(启动自带服务器)
 npm run test:e2e:full          # 23 个综合 e2e
-npm run test:e2e:browser       # 12 个 Playwright 浏览器烟雾
+npm run test:e2e:browser       # 70 个 Playwright 浏览器烟雾
 npm run test:coverage          # 同 `npm test`,附加 V8 覆盖率
 ```
 
@@ -459,7 +459,7 @@ npm run test:coverage          # 同 `npm test`,附加 V8 覆盖率
 | `tests/e2e.mjs`(smoke)      | 20    | Playwright headless:每个路由可渲染,基础流程。                                                            |
 | `tests/e2e-comprehensive.mjs` | 23    | 完整 Playwright walkthrough:11 个路由 + 12 个功能流程。                                                   |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **12** | 浏览器驱动的烟雾:dashboard 渲染、导航、语言切换、404、health、tracker 往返(BF-1)、pipeline 添加 + 无效 URL 扫描、reports 空、evaluate 手动回退、config keys 遮蔽、CV PUT XSS 清理、pipeline preview 400。 |
-| **总计**                   | **474** | **0 失败,0 flake**                                                                                       |
+| **总计**                   | **1000** | **0 失败,0 flake**                                                                                       |
 
 覆盖率:通过 `--experimental-test-coverage` 得 ~93% 行 / ~83% 分支。
 
@@ -540,7 +540,7 @@ Claude Code 中现有的 `/career-ops apply` Playwright 表单填写流程,仍�
 
 欢迎 issues 与 PR。家规如下:
 
-- 推送前先跑 `npm test` —— **474 项全绿** 是底线(触碰 UI 时再加上 12 个 Playwright)。
+- 推送前先跑 `npm test` —— **1000 项全绿** 是底线(触碰 UI 时再加上 70 个 Playwright)。
 - 非平凡变更走 GSD 流水线。见 [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)。
 - 不要从本仓库内修改父 `career-ops/` 项目的任何文件。这是一个非侵入式叠加层 —— 这是整件事的意义所在。硬性规则见 [`CLAUDE.md`](CLAUDE.md)。
 - 约定式提交:`feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`。可选 scope:`feat(scan):`。破坏性变更:`feat!:`。

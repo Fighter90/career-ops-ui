@@ -312,7 +312,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 474+ unit + 32 Playwright + 23 e2e:full + 20 e2e:smoke
+└─ tests/                    # 1000 unit + 70 Playwright + 23 e2e:full + 20 e2e:smoke
    ├─ parsers.test.mjs       # parsers markdown / pipeline / report (funciones puras)
    ├─ api.test.mjs           # cada endpoint, servidor efímero, sin red
    ├─ {ru,en}-scanner.test.mjs   # fetch mockeado
@@ -446,7 +446,7 @@ Cuando se establece `run: true` en `/api/deep` o `/api/mode/:slug`, el servidor 
 ## Tests
 
 ```bash
-npm test                       # 474+ tests unit/integración
+npm test                       # 1000 tests unit/integración
 npm run test:e2e               # 20 smoke e2e (arranca su propio servidor)
 npm run test:e2e:full          # 23 e2e completos
 npm run test:e2e:browser       # 32 smoke Playwright en navegador
@@ -455,7 +455,7 @@ npm run test:coverage          # igual que `npm test` más cobertura V8
 
 | Suite                       | Tests | Qué cubre                                                                                                  |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integración) | **474+** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
+| `node --test tests/*.test.mjs` (unit + integración) | **1000** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: cada ruta renderiza, flujos básicos.                                                  |
 | `tests/e2e-comprehensive.mjs` | 23   | Walkthrough Playwright completo: 11 rutas + 12 flujos funcionales.                                         |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Smoke con navegador: render del dashboard, navegación, cambio de idioma, 404, health, tracker round-trip (BF-1), añadir a pipeline + barrido de URL inválida, reports vacío, evaluate manual fallback, claves de config enmascaradas, CV PUT XSS strip, pipeline preview 400. |
@@ -540,7 +540,7 @@ Para la evaluación de production-readiness (gates de despliegue, registro de ri
 
 Issues y PRs bienvenidos. Reglas de la casa:
 
-- Ejecuta `npm test` antes de hacer push — **474+ checks en verde** es el mínimo (más 32 Playwright si tocas la UI).
+- Ejecuta `npm test` antes de hacer push — **1000 checks en verde** es el mínimo (más 70 Playwright si tocas la UI).
 - Los cambios no triviales pasan por la pipeline GSD. Ver [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - No modifiques nada del proyecto padre `career-ops/` desde dentro de este repositorio. Todo el sentido es que sea una capa no invasiva. Reglas duras en [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Scope opcional: `feat(scan):`. Breaking change: `feat!:`.

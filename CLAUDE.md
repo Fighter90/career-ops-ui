@@ -71,7 +71,8 @@ See `docs/sdd/SDD-GUIDE.md` for the full workflow.
 - **File size targets** (from `~/.claude/rules/coding-style.md`): <400 lines per file. `server/index.mjs` was 1230 LOC at v1.7.x; **P-2 phase 1** (v1.8.0) split it to 762 LOC, **P-2 phase 2** (v1.9.0) finished the job — now ~130 LOC orchestrator. New routes go into `server/lib/routes/<topic>.mjs` exporting `register<Topic>Routes(app)`. Fifteen route modules cover: activity, auto-pipeline (server-side SSE auto-pipeline), batch (batch evaluate), config, content (cv/profile/portals/modes), health (+ dashboard), help, jds, llm (evaluate/deep/mode/apply/interview-prep), openrouter (GET /api/openrouter/models — model-catalogue proxy), pipeline (+ preview), reports, runners (buffered + streaming + PDFs), scan (in-process), tracker.
 - **Routes follow REST norms:** `GET /api/<resource>`, `POST /api/<resource>` (create/append), `PUT /api/<resource>` (replace), `DELETE /api/<resource>/:id`. Streaming uses `GET /api/stream/<verb>` with SSE.
 - **Conventional commits:** `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Optional scope: `feat(scan): …`, `fix(api): …`. Breaking change: `feat!:`.
-- **Versioning:** `package.json` is the source of truth (currently 1.58.53). The footer reads it via `/api/health`. The parent's `VERSION` file is reported separately as `parentVersion` — they drift independently.
+- **Versioning:** `package.json` is the source of truth (currently 1.60.0). The footer reads it via `/api/health`. The parent's `VERSION` file is reported separately as `parentVersion` — they drift independently.
+- **i18n (per-locale, I18N-SPLIT v1.60.0):** translations live one-file-per-locale in `public/js/lib/locales/i18n-dict.<lang>.js` (each `window.__I18N_DICT_<LANG> = { key: string }`) plus `i18n-dict.aliases.js`. `public/js/lib/i18n-dict.js` is a small **assembler** that merges them into `window.__I18N_DICT`; `i18n.js`'s `t()` is unchanged. Add a new key to **all 8 locale files** (parity is gated). All loaded via `<script src>` — no build, no fetch. Node tests/tooling load the dict through `tests/helpers/i18n-vm.mjs`.
 
 See `docs/sdd/CONVENTIONS.md` for the complete list (CSS, i18n keys, error handling, logging).
 
@@ -80,7 +81,7 @@ See `docs/sdd/CONVENTIONS.md` for the complete list (CSS, i18n keys, error handl
 ## Testing discipline
 
 - **Unit / integration:** `node --test tests/*.test.mjs`. Spawn `createApp()` in-process, hit it with `fetch` against an ephemeral port. Never hardcode `4317`.
-- **Baseline at v1.58.51:** **947** unit · **62** Playwright (smoke + full-cycle + forms) · **20** smoke E2E · **23** comprehensive E2E. The next ship must keep all four ≥ this floor.
+- **Baseline at v1.60.0:** **1000** unit · **70** Playwright (smoke + full-cycle + forms + locale-sweep) · **20** smoke E2E · **23** comprehensive E2E. The next ship must keep all four ≥ this floor.
 - **E2E:** `tests/e2e.mjs` and `tests/e2e-comprehensive.mjs` run the real server end-to-end. They're long but they catch SPA regressions the unit tests can't.
 - **Coverage floor:** 80 % on non-trivial logic. Current baseline is ~93 % line / ~83 % branch — keep it there or above. Run `npm run test:coverage`.
 - **TDD when adding behavior:** red → green → refactor. Skip TDD only for pure refactors with full coverage already present.
