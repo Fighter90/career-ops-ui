@@ -1,0 +1,47 @@
+name: CodeQL
+
+# ────────────────────────────────────────────────────────────────────
+# GitHub-native static security analysis for the JavaScript/ESM codebase
+# (server + SPA). Findings surface under the repo's Security ▸ Code
+# scanning tab. Free on public repos; zero runtime deps. Advisory by
+# nature — it annotates, the deterministic gates in ci.yml still block.
+# ────────────────────────────────────────────────────────────────────
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly re-scan (Mon 03:27 UTC) so newly-published CodeQL queries
+    # catch latent issues even when the code is quiet.
+    - cron: '27 3 * * 1'
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (javascript)
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write   # upload SARIF results
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          # security-and-quality adds maintainability/quality queries on
+          # top of the default security suite — "maximum" coverage.
+          queries: security-and-quality
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: '/language:javascript-typescript'

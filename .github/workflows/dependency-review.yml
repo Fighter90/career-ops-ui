@@ -1,0 +1,31 @@
+name: Dependency Review
+
+# ────────────────────────────────────────────────────────────────────
+# On every PR, diff the dependency manifest/lockfile and block if a PR
+# introduces a dependency with a known HIGH/critical advisory or a
+# disallowed license. Native GitHub action, free on public repos, no
+# runtime deps. The project keeps prod deps minimal (express, js-yaml,
+# multer), so this is a guard against future supply-chain drift.
+# ────────────────────────────────────────────────────────────────────
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write   # post the dependency-diff summary comment
+
+jobs:
+  dependency-review:
+    name: Review dependency changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dependency review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure

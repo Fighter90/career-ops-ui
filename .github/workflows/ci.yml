@@ -73,3 +73,51 @@ jobs:
           name: e2e-screenshots
           path: screenshots/
           if-no-files-found: ignore
+
+  code-quality:
+    name: Code quality (syntax · coverage · audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      # Hard gate: every tracked JS/MJS must parse. `node --check` is
+      # syntax-only (no execution), so browser files using window/document
+      # globals are fine. Catches a fat-fingered locale file or view edit
+      # before it can reach the SPA.
+      - name: Syntax-check every JS / MJS (node --check)
+        run: |
+          set -uo pipefail
+          # NUL-delimited + xargs -0 so a file with spaces can't slip past
+          # the gate (word-splitting would silently skip it). xargs exits
+          # non-zero if any `node --check` fails → the step fails.
+          echo "checking $(git ls-files '*.js' '*.mjs' | wc -l | tr -d ' ') files"
+          git ls-files -z '*.js' '*.mjs' \
+            | xargs -0 -n1 sh -c 'node --check "$1" || { echo "::error file=$1::syntax error"; exit 1; }' _
+      # Coverage floor gate (line >= 90%, branch >= 80%). Fail-soft on a
+      # parse miss so a node-version table-format change can't wedge CI;
+      # gates hard when the summary is readable. Current: ~95.7% / ~87%.
+      - name: Coverage floor (line >= 90% · branch >= 80%)
+        run: |
+          set -uo pipefail
+          npm run test:coverage > /tmp/cov.txt 2>&1 || { echo "::error::coverage run failed"; tail -20 /tmp/cov.txt; exit 1; }
+          SUMMARY=$(grep -E "all files" /tmp/cov.txt | tail -1)
+          LINE=$(echo "$SUMMARY"   | awk -F'|' '{gsub(/ /,"",$2); print $2}')
+          BRANCH=$(echo "$SUMMARY" | awk -F'|' '{gsub(/ /,"",$3); print $3}')
+          echo "coverage summary: line=${LINE:-?}  branch=${BRANCH:-?}"
+          if [ -z "$LINE" ] || [ -z "$BRANCH" ]; then
+            echo "::warning::could not parse coverage summary — skipping floor gate (advisory)"
+            exit 0
+          fi
+          awk -v l="$LINE" -v b="$BRANCH" 'BEGIN{
+            if (l+0 < 90)  { printf "::error::line coverage %s%% below 90%% floor\n", l;   exit 1 }
+            if (b+0 < 80)  { printf "::error::branch coverage %s%% below 80%% floor\n", b; exit 1 }
+            printf "coverage OK — line %s%% / branch %s%%\n", l, b
+          }'
+      # Advisory: surface known-vulnerable production deps (never blocks —
+      # the project keeps deps minimal: express, js-yaml, multer).
+      - name: npm audit (advisory)
+        run: npm audit --omit=dev || echo "::warning::npm audit reported advisories (non-blocking)"

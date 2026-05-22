@@ -43,12 +43,12 @@ name: AI Review (Claude Code)
 on:
   push:
     branches: [main]
-  # NOTE: this repo ships exclusively direct-to-main — it has zero
-  # PRs, ever. A `pull_request`-triggered job would therefore be
-  # permanently "Skipped" on every run, which looks broken and
-  # erodes trust. The PR path (anthropics/claude-code-action@v1) was
-  # intentionally removed; re-add a separate pull_request trigger +
-  # job here if/when the project adopts a PR-based flow.
+  # v1.60.0 — the project adopted a PR-based flow (PRs #4+). Each path
+  # has its own job, guarded by `github.event_name`, so neither ever
+  # shows a misleading "Skipped": push→main posts a COMMIT comment;
+  # pull_request posts a PR comment reviewing the PR diff.
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: write         # checkout + diff AND create commit comments
@@ -56,6 +56,7 @@ permissions:
                           # a write op under the Contents permission —
                           # contents:read is NOT enough; caught by the
                           # pre-commit AI reviewer).
+  pull-requests: write    # post the advisory review comment on PRs
 
 concurrency:
   # One review per pushed commit SHA; never cancel — each main commit
@@ -98,11 +99,10 @@ env:
     restate the diff or the commit message back to the author.
 
 jobs:
-  # Single job — always runs on push→main (no conditional `if:`, so it
-  # can never show as "Skipped"). The repo has no PRs; see the `on:`
-  # note above for why the PR job was removed.
+  # Push→main path: reviews HEAD's diff and posts a COMMIT comment.
   push-review:
     name: Claude review (push → main)
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Check out (full history for the diff)
@@ -211,5 +211,88 @@ jobs:
           fi
           # Echo to the job log too, so the review is visible even if
           # the comment API is unavailable.
+          echo "----- AI REVIEW -----"
+          echo "$REVIEW"
+
+  # Pull-request path: reviews the PR diff (base..head) and posts a PR
+  # comment. Same rubric + same fail-soft curl/jq call as push-review.
+  pr-review:
+    name: Claude review (pull request)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out PR head (full history for the diff)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute reviewable PR diff
+        id: diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          echo "Reviewing $BASE_SHA..$HEAD_SHA"
+          git diff --no-color "$BASE_SHA" "$HEAD_SHA" > /tmp/pr.diff || true
+          BYTES=$(wc -c < /tmp/pr.diff | tr -d ' ')
+          if [ "$BYTES" -gt 204800 ]; then
+            head -c 204800 /tmp/pr.diff > /tmp/pr.diff.cap
+            printf '\n\n[... diff truncated at 200 KB of %s for review ...]\n' "$BYTES" >> /tmp/pr.diff.cap
+            mv /tmp/pr.diff.cap /tmp/pr.diff
+          fi
+          if [ ! -s /tmp/pr.diff ]; then echo "empty=true" >> "$GITHUB_OUTPUT"; else echo "empty=false" >> "$GITHUB_OUTPUT"; fi
+          # NOTE: the PR title is passed to the review step via `env:` (data,
+          # never interpolated into a shell `run:` body) to avoid GitHub
+          # Actions script injection from an attacker-controlled title.
+
+      - name: Claude review → PR comment (fail-soft)
+        if: steps.diff.outputs.empty == 'false'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          # Safe: Actions sets this as an env VALUE; `"$SUBJECT"` below is
+          # plain data, not shell-evaluated (no script-injection surface).
+          SUBJECT: ${{ github.event.pull_request.title }}
+        run: |
+          set -uo pipefail
+          if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+            echo "::warning::ANTHROPIC_API_KEY not set — skipping AI review (advisory; ci.yml + pre-commit still gate). Add it: gh secret set ANTHROPIC_API_KEY"
+            exit 0
+          fi
+          {
+            printf '%s\n\nPR title: %s\n\n=== DIFF ===\n' \
+              "${REVIEW_RUBRIC:-Review this diff for bugs and security.}" \
+              "${SUBJECT:-(no title)}"
+            cat /tmp/pr.diff
+          } > /tmp/prompt.txt
+          jq -Rs '{model:"claude-opus-4-7",max_tokens:1500,messages:[{role:"user",content:.}]}' \
+            /tmp/prompt.txt > /tmp/req.json
+          if ! jq -e . /tmp/req.json >/dev/null 2>&1; then
+            echo "::warning::could not build request JSON — fail-soft, not blocking."
+            exit 0
+          fi
+          HTTP=$(curl -sS -o /tmp/resp.json -w '%{http_code}' --max-time 120 \
+            https://api.anthropic.com/v1/messages \
+            -H "x-api-key: ${ANTHROPIC_API_KEY}" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            --data-binary @/tmp/req.json || echo "000")
+          if [ "$HTTP" != "200" ]; then
+            echo "::warning::AI review API call failed (HTTP $HTTP) — fail-soft, not blocking. Body:"
+            head -c 800 /tmp/resp.json || true
+            exit 0
+          fi
+          REVIEW=$(jq -r '[.content[]? | select(.type=="text") | .text] | join("")' /tmp/resp.json 2>/dev/null)
+          if [ -z "$REVIEW" ]; then REVIEW="(model returned no text — raw: $(head -c 300 /tmp/resp.json))"; fi
+          BODY=$(printf '🤖 **AI review — advisory** (CLAUDE.md bar; ci.yml is the hard gate)\n\n%s\n\n_Posted by the AI Review workflow. Maintainers retain merge authority._' "$REVIEW")
+          if gh api -X POST "repos/${REPO}/issues/${PR_NUMBER}/comments" -f body="$BODY" >/dev/null 2>&1; then
+            echo "✓ AI review posted to PR #${PR_NUMBER}"
+          else
+            echo "::warning::could not post PR comment (fail-soft). Review was:"
+            echo "$REVIEW"
+          fi
           echo "----- AI REVIEW -----"
           echo "$REVIEW"
