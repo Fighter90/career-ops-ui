@@ -69,7 +69,7 @@ const ROUTES = [
   { name: 'tracker',   selector: 'h1.page-title', expectAny: ['Application tracker', 'Трекер заявок', 'Tracker de aplicaciones'] },
   { name: 'reports',   selector: 'h1.page-title', expectAny: ['Reports', 'Отчёты', 'Reportes'] },
   { name: 'cv',        selector: 'h1.page-title', expectAny: ['CV'] },
-  { name: 'settings',  selector: 'h1.page-title', expectAny: ['Profile', 'Профиль', 'Perfil'] },
+  { name: 'settings',  selector: 'h1.page-title', expectAny: ['Profile', 'Профиль', 'Perfil', 'Profil'] },
   { name: 'health',    selector: 'h1.page-title', expectAny: ['Health', 'Estado', 'Saúde'] },
 ];
 
@@ -220,7 +220,7 @@ async function run() {
     console.log(`  ✗ ${err.message}`);
   }
 
-  console.log('\n  Flow 2d: language switcher (8 languages)');
+  console.log('\n  Flow 2d: language switcher (9 languages)');
   try {
     await page.goto(`${baseUrl}/#/dashboard`);
     await page.waitForSelector('h1.page-title');
@@ -248,12 +248,12 @@ async function run() {
     // Reset to English for the rest of the suite
     await page.locator('.lang-btn[data-lang-btn="en"]').click();
     await page.waitForTimeout(200);
-    console.log(`  ✓ 8 languages, switching works, persists across reload`);
+    console.log(`  ✓ 9 languages, switching works, persists across reload`);
     passed++;
 
     // Sub-test: rotate through ALL 8 langs on dashboard, verify the page-title
     // changes to a non-empty string each time and never produces console errors.
-    console.log('  → exercising all 8 languages on dashboard');
+    console.log('  → exercising all 9 languages on dashboard');
     const seenTitles = {};
     for (const code of expected) {
       await page.locator(`.lang-btn[data-lang-btn="${code}"]`).click();
@@ -274,7 +274,11 @@ async function run() {
     const dashTitles = expected.map((c) => seenTitles[c]);
     const uniqDash = new Set(dashTitles);
     if (uniqDash.size < 5) throw new Error(`expected distinct dash titles per lang, got: ${[...uniqDash].join(' | ')}`);
-    console.log(`  ✓ all 8 langs rotated; ${uniqDash.size} distinct dashboard titles`);
+    // Reset to English so the rest of the suite runs in a deterministic locale
+    // (the rotation above ends on the last code, e.g. fr — leaks into later flows).
+    await page.locator('.lang-btn[data-lang-btn="en"]').click();
+    await page.waitForTimeout(200);
+    console.log(`  ✓ all ${expected.length} langs rotated; ${uniqDash.size} distinct dashboard titles`);
   } catch (err) {
     failed++;
     failures.push({ route: 'flow:i18n', message: err.message });
@@ -372,7 +376,7 @@ async function run() {
     await page.goto(`${baseUrl}/#/profile`, { waitUntil: 'networkidle' });
     await page.waitForSelector('h1.page-title', { timeout: 5000 });
     const title = (await page.locator('h1.page-title').first().textContent()).trim();
-    const expected = ['Profile', 'Perfil', 'Профиль', 'プロフィール', '프로필', '个人资料', '個人資料'];
+    const expected = ['Profile', 'Perfil', 'Profil', 'Профиль', 'プロフィール', '프로필', '个人资料', '個人資料'];
     if (!expected.some((s) => title.includes(s))) {
       throw new Error('expected Profile-like title at /#/profile, got: ' + title);
     }
