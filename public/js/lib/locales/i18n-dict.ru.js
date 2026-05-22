@@ -177,6 +177,7 @@ window.__I18N_DICT_RU = {
   'top.search.aria': "Глобальный поиск — Cmd+K для фокуса, вставьте URL и Enter для auto-pipeline",
   'top.doctor': "Диагностика",
   'top.quickscan': "Открыть Scan",
+  'top.themeToggle': "Сменить тему",
   'top.langhint': "{hotkey} — поиск",
   'common.loading': "Загрузка…",
   'common.error': "Ошибка",

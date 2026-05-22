@@ -177,6 +177,7 @@ window.__I18N_DICT_KO = {
   'top.search.aria': "전역 검색 — Cmd+K 로 포커스, URL 을 붙여 넣고 Enter 로 auto-pipeline",
   'top.doctor': "진단",
   'top.quickscan': "Scan 열기",
+  'top.themeToggle': "테마 전환",
   'top.langhint': "{hotkey} — 검색",
   'common.loading': "로딩 중…",
   'common.error': "오류",

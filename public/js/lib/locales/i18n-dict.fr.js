@@ -177,6 +177,7 @@ window.__I18N_DICT_FR = {
   'top.search.aria': "Recherche globale — Cmd+K pour se concentrer, collez une URL et appuyez sur Entrée pour le pipeline automatique", // Global search — Cmd+K to focus, paste a URL and Enter for auto-pipeline
   'top.doctor': "Docteur", // Doctor
   'top.quickscan': "Ouvrir un scan", // Open Scan
+  'top.themeToggle': "Changer de thème", // Toggle theme
   'top.langhint': "{hotkey} — recherche", // {hotkey} — search
   'common.loading': "Chargement…", // Loading…
   'common.error': "Erreur", // Error

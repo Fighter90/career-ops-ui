@@ -7,7 +7,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { legacyDictText } from './helpers/i18n-vm.mjs';
+import { legacyDictText, loadAssembledDict } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -1561,4 +1561,39 @@ test('FIX-C2: i18n.js sets document.documentElement.lang on setLang AND at boot,
   assert.match(src, /navigator\.language/, 'must detect from navigator.language');
   // persisted choice
   assert.match(src, /STORAGE_KEY\s*=\s*'career-ops-ui:lang'/, 'locale persisted to localStorage');
+});
+
+// ── v1.61.1 — MINOR-001: theme-toggle title/aria-label must localize
+// across all 9 locales (the lone LOW finding from the v1.61.0 French
+// sign-off). Pre-fix index.html hardcoded title="Toggle theme"
+// aria-label="Toggle theme"; screen-reader + tooltip never translated.
+// Fix mirrors I-1 (v1.58.15 search aria-label): a data-i18n-* attribute
+// applied by applyI18n() on boot + every lang change. Browser file →
+// asserted statically.
+test('MINOR-001: theme-toggle localizes title + aria-label via data-i18n-*, no hardcoded "Toggle theme"', () => {
+  const html = read('public', 'index.html');
+  // the literal English label must be gone from the markup
+  assert.ok(!/aria-label="Toggle theme"/.test(html), 'theme-toggle aria-label="Toggle theme" must be removed');
+  assert.ok(!/title="Toggle theme"/.test(html), 'theme-toggle title="Toggle theme" must be removed');
+  // the button must drive both attributes off the canonical i18n key
+  assert.match(html, /id="theme-toggle"[^>]*data-i18n-title="top\.themeToggle"/,
+    'theme-toggle must carry data-i18n-title="top.themeToggle"');
+  assert.match(html, /id="theme-toggle"[^>]*data-i18n-aria-label="top\.themeToggle"/,
+    'theme-toggle must carry data-i18n-aria-label="top.themeToggle"');
+  // applyI18n() must handle data-i18n-title (re-applied on every lang change)
+  const app = read('public', 'js', 'app.js');
+  assert.match(app, /\[data-i18n-title\]/, 'applyI18n() must process data-i18n-title');
+});
+
+test('MINOR-001: top.themeToggle key present + non-empty in all 9 locales', () => {
+  const D = loadAssembledDict();
+  const node = D['top.themeToggle'];
+  assert.ok(node && !node['@alias'], 'top.themeToggle must be a real key (not an alias)');
+  for (const loc of ['en', 'es', 'pt-BR', 'fr', 'ru', 'ja', 'ko', 'zh-CN', 'zh-TW']) {
+    assert.ok(node[loc] && String(node[loc]).trim().length > 0,
+      `top.themeToggle missing value in locale "${loc}"`);
+  }
+  // EN is the canonical source string
+  assert.equal(node.en, 'Toggle theme');
+  assert.equal(node.fr, 'Changer de thème');
 });

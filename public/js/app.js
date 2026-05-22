@@ -21,6 +21,14 @@ function applyI18n() {
     const key = el.getAttribute('data-i18n-aria-label');
     el.setAttribute('aria-label', I18n.t(key, el.getAttribute('aria-label') || ''));
   });
+  // MINOR-001 (v1.61.1) — `data-i18n-title` mirrors the aria-label
+  // pattern so a control's tooltip localizes on boot + every language
+  // change. Introduced for the theme toggle, whose title="Toggle theme"
+  // was hardcoded English across all 9 locales (v1.61.0 fr sign-off).
+  document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-title');
+    el.title = I18n.t(key, el.title || '');
+  });
 }
 
 function renderLangSwitcher() {

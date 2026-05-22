@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.61.1] — 2026-05-22
+
+**fix(i18n): localiza el title + aria-label del conmutador de tema en los 9 idiomas (MINOR-001).** El botón de tema claro/oscuro (`#theme-toggle`) tenía `title="Toggle theme"` y `aria-label="Toggle theme"` codificados en `index.html` — el tooltip y el texto para lectores de pantalla nunca se traducían, en ningún idioma. Nueva clave `top.themeToggle` + un manejador `data-i18n-title` en `applyI18n()` (espejo del arreglo de aria-label de búsqueda de v1.58.15) localizan ambos atributos al arrancar y en cada cambio de idioma. Bloqueado por `tests/playwright-theme-toggle-i18n.mjs` (9 idiomas + cambio en runtime) y dos guardas estáticas. Único hallazgo LOW del sign-off de v1.61.0. (MINOR-001)
+
+---
+
+
+
 ## [1.61.0] — 2026-05-22
 
 **feat(i18n): añade el francés como 9.º idioma de la interfaz.** Nuevo diccionario por idioma `public/js/lib/locales/i18n-dict.fr.js` (`window.__I18N_DICT_FR`), con paridad completa de **668 claves** con el inglés; nuevo paquete de ayuda `docs/help/fr.md` (**19 H2 / 73 H3**, paridad estructural exacta con `en`). `fr` queda registrado en el conmutador de idioma y la autodetección del navegador (`i18n.js`), en el ensamblador (`i18n-dict.js`), en `index.html` (etiqueta `<script>` antes del ensamblador), en el snapshot de test y en todas las listas de locales de los tests. La tabla de traducción inicial proviene de la **PR #9** (contribución de la comunidad). Sin cambios de lógica: `t()` y todas las vistas no cambian. **1001 / 1001** pruebas unitarias; el barrido de locales de Playwright crece a 9 subtests. (FR-LOCALE)

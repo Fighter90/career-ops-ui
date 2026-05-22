@@ -177,6 +177,7 @@ window.__I18N_DICT_ZH_TW = {
   'top.search.aria': "全域搜尋 — Cmd+K 聚焦,貼上 URL 並按 Enter 觸發 auto-pipeline",
   'top.doctor': "診斷",
   'top.quickscan': "開啟 Scan",
+  'top.themeToggle': "切換主題",
   'top.langhint': "{hotkey} — 搜尋",
   'common.loading': "載入中…",
   'common.error': "錯誤",

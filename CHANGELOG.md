@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.61.1] — 2026-05-22
+
+**fix(i18n): localize the theme-toggle title + aria-label across all 9 locales (MINOR-001).** The dark/light theme button (`#theme-toggle`) hardcoded `title="Toggle theme"` and `aria-label="Toggle theme"` in `index.html` — the tooltip and screen-reader text never translated, on any locale. A new `top.themeToggle` key + a `data-i18n-title` handler in `applyI18n()` (mirroring the v1.58.15 search-aria-label fix) localize both attributes on boot and on every language switch. Locked by `tests/playwright-theme-toggle-i18n.mjs` (9 locales + runtime-switch) and two static guards in `tests/qa-report-fixes.test.mjs`. The lone LOW finding from the v1.61.0 French sign-off. (MINOR-001)
+
+---
+
+
+
 ## [1.61.0] — 2026-05-22
 
 **feat(i18n): add French as the 9th UI language.** New per-locale dictionary `public/js/lib/locales/i18n-dict.fr.js` (`window.__I18N_DICT_FR`), at full **668-key** parity with English; new help bundle `docs/help/fr.md` (**19 H2 / 73 H3**, exact structural parity with `en`). `fr` is registered in the language switcher and browser auto-detect (`i18n.js`), the assembler (`i18n-dict.js`), `index.html` (a `<script>` tag before the assembler), the test snapshot, and every test locale list. The initial translation table came from **PR #9** (community contribution). No logic change: `t()` and every view are unchanged. **1001 / 1001** unit tests; the Playwright locale-sweep grows to 9 subtests. (FR-LOCALE)

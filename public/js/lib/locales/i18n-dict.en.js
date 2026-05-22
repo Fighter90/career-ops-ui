@@ -177,6 +177,7 @@ window.__I18N_DICT_EN = {
   'top.search.aria': "Global search — Cmd+K to focus, paste a URL and Enter for auto-pipeline",
   'top.doctor': "Doctor",
   'top.quickscan': "Open Scan",
+  'top.themeToggle': "Toggle theme",
   'top.langhint': "{hotkey} — search",
   'common.loading': "Loading…",
   'common.error': "Error",

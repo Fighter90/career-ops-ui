@@ -177,6 +177,7 @@ window.__I18N_DICT_JA = {
   'top.search.aria': "グローバル検索 — Cmd+K でフォーカス、URL を貼り付け Enter で auto-pipeline",
   'top.doctor': "診断",
   'top.quickscan': "Scan を開く",
+  'top.themeToggle': "テーマを切り替え",
   'top.langhint': "{hotkey} — 検索",
   'common.loading': "読み込み中…",
   'common.error': "エラー",

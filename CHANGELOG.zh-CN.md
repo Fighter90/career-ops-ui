@@ -10,6 +10,14 @@
 
 
 
+## [1.61.1] — 2026-05-22
+
+**fix(i18n)：在全部 9 种语言中本地化主题切换按钮的 title 与 aria-label（MINOR-001）。** 明/暗主题按钮(`#theme-toggle`)在 `index.html` 中硬编码了 `title="Toggle theme"` 和 `aria-label="Toggle theme"` —— 所有语言下工具提示和屏幕阅读器文本都未翻译。新增 `top.themeToggle` 键 + `applyI18n()` 中的 `data-i18n-title` 处理器(沿用 v1.58.15 搜索 aria-label 修复的模式),在启动时及每次切换语言时本地化这两个属性。由 `tests/playwright-theme-toggle-i18n.mjs`(9 语言 + 运行时切换)和两个静态守卫锁定。v1.61.0 法语签收中唯一的 LOW 项。(MINOR-001)
+
+---
+
+
+
 ## [1.61.0] — 2026-05-22
 
 **feat(i18n)：新增法语作为第 9 种界面语言。** 新的按语言字典 `public/js/lib/locales/i18n-dict.fr.js`（`window.__I18N_DICT_FR`）与英语完全对等（**668 个键**）；新的帮助包 `docs/help/fr.md`（**19 H2 / 73 H3**，与 `en` 结构完全对等）。`fr` 已注册到语言切换器与浏览器自动检测（`i18n.js`）、装配器（`i18n-dict.js`）、`index.html`（位于装配器之前的 `<script>` 标签）、测试快照以及所有测试语言列表中。初始翻译表来自 **PR #9**（社区贡献）。逻辑无变化：`t()` 与所有视图保持不变。单元测试 **1001 / 1001**；Playwright 语言遍历扩展为 9 个子测试。(FR-LOCALE)

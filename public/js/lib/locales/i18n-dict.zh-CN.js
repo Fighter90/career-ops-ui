@@ -177,6 +177,7 @@ window.__I18N_DICT_ZH_CN = {
   'top.search.aria': "全局搜索 — Cmd+K 聚焦,粘贴 URL 并按 Enter 触发 auto-pipeline",
   'top.doctor': "诊断",
   'top.quickscan': "打开 Scan",
+  'top.themeToggle': "切换主题",
   'top.langhint': "{hotkey} — 搜索",
   'common.loading': "加载中…",
   'common.error': "错误",

@@ -1847,6 +1847,17 @@
     "zh-TW": "開啟 Scan",
     "fr": "Ouvrir un scan"
   },
+  "top.themeToggle": {
+    "en": "Toggle theme",
+    "es": "Cambiar tema",
+    "pt-BR": "Alternar tema",
+    "ko": "테마 전환",
+    "ja": "テーマを切り替え",
+    "ru": "Сменить тему",
+    "zh-CN": "切换主题",
+    "zh-TW": "切換主題",
+    "fr": "Changer de thème"
+  },
   "top.langhint": {
     "en": "{hotkey} — search",
     "es": "{hotkey} — buscar",

@@ -177,6 +177,7 @@ window.__I18N_DICT_PT_BR = {
   'top.search.aria': "Busca global — Cmd+K para focar, cole uma URL e Enter para auto-pipeline",
   'top.doctor': "Diagnóstico",
   'top.quickscan': "Abrir Scan",
+  'top.themeToggle': "Alternar tema",
   'top.langhint': "{hotkey} — buscar",
   'common.loading': "Carregando…",
   'common.error': "Erro",

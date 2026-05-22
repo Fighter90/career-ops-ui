@@ -10,6 +10,14 @@
 
 
 
+## [1.61.1] — 2026-05-22
+
+**fix(i18n): 테마 토글의 title + aria-label을 9개 로케일 전체에서 현지화 (MINOR-001).** 다크/라이트 테마 버튼(`#theme-toggle`)이 `index.html`에 `title="Toggle theme"`과 `aria-label="Toggle theme"`을 하드코딩하여 — 모든 로케일에서 툴팁과 스크린리더 텍스트가 번역되지 않았습니다. 새 `top.themeToggle` 키 + `applyI18n()`의 `data-i18n-title` 핸들러(v1.58.15 검색 aria-label 수정과 동일 패턴)가 부팅 시와 언어 전환 시마다 두 속성을 현지화합니다. `tests/playwright-theme-toggle-i18n.mjs`(9개 로케일 + 런타임 전환)와 정적 가드 2개로 잠금. v1.61.0 프랑스어 사인오프의 유일한 LOW 항목. (MINOR-001)
+
+---
+
+
+
 ## [1.61.0] — 2026-05-22
 
 **feat(i18n): 프랑스어를 9번째 UI 언어로 추가.** 새 로케일별 사전 `public/js/lib/locales/i18n-dict.fr.js`(`window.__I18N_DICT_FR`)는 영어와 **668개 키** 완전 동등성을 가지며, 새 도움말 번들 `docs/help/fr.md`(**19 H2 / 73 H3**, `en`과 정확한 구조 동등성). `fr`는 언어 전환기와 브라우저 자동 감지(`i18n.js`), 어셈블러(`i18n-dict.js`), `index.html`(어셈블러 앞의 `<script>` 태그), 테스트 스냅샷, 모든 테스트 로케일 목록에 등록됨. 초기 번역 표는 **PR #9**(커뮤니티 기여)에서 가져옴. 로직 변경 없음: `t()`와 모든 뷰는 그대로. 단위 테스트 **1001 / 1001**; Playwright 로케일 스윕은 9개 서브테스트로 확장. (FR-LOCALE)
