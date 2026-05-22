@@ -2,7 +2,16 @@
 
 Canonical post-cycle regression handoff written **after** the v1.58.52 → v1.59.10 closure (17 single-fix releases + 2 verification patches + 1 v1.59.2 chip hotfix + 1 v1.59.8 doctrine-exception bundle + v1.59.9 UX-A5-r4 (6th-cycle close with behavioural test) + v1.59.10 NEW-F1-sub-r1 (path-traversal guard hoist), all CI-green, all AI-review LGTM). This document is the 100 %-maturity verification protocol — run it before declaring a 1.x line frozen.
 
-**Baseline at v1.59.10:** **988** unit · 62 Playwright (smoke + full-cycle + forms) · 20 smoke E2E · 23 comprehensive E2E.
+**Baseline at v1.61.1:** **1003** unit · 81 Playwright (smoke + full-cycle + forms + locale-sweep + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E.
+
+> **Shipped since this cycle (v1.60.0 → v1.61.1):** I18N-SPLIT (per-locale
+> dictionary, v1.60.0); **French (`fr`) added as the 9th UI locale**
+> (v1.61.0) — all "8 locales / ×8" counts above are now **9 / ×9**; and
+> **MINOR-001** (v1.61.1) — theme-toggle `title`/`aria-label` localized via a
+> new `data-i18n-title` hook. For the locale work use the dedicated prompts:
+> `qa/QA-REGRESSION-PROMPT-v1.61.0-FULL.md` (exhaustive) and
+> `qa/QA-REGRESSION-PROMPT-fr-v1.61.0.md` (focused). This document remains the
+> perennial maturity-verification protocol.
 
 ---
 
@@ -10,7 +19,7 @@ Canonical post-cycle regression handoff written **after** the v1.58.52 → v1.59
 
 Non-negotiable for any future ship.
 
-1. **One fix per release.** HIGH → MEDIUM → LOW. Each release ships: bump + CHANGELOG ×8 (parity-gated) + dedicated test + Playwright-verify + pre-commit AI-review LGTM + `ci.yml` green + redeploy.
+1. **One fix per release.** HIGH → MEDIUM → LOW. Each release ships: bump + CHANGELOG ×9 (parity-gated) + dedicated test + Playwright-verify + pre-commit AI-review LGTM + `ci.yml` green + redeploy.
 2. **CHANGELOG parity is non-negotiable.** Run `node scripts/check-changelog-parity.mjs` before every commit.
 3. **`ci.yml` is the hard gate.** Pre-commit AI review is advisory.
 4. **`[hidden]` is shadowed by author `display:` rules.** Add explicit `.x[hidden] { display: none }` override.
@@ -43,7 +52,7 @@ node --version                                 # >= 18
 npm ci
 
 # Rung 2 — static parity gates
-node scripts/check-changelog-parity.mjs        # all 8 locales at same version
+node scripts/check-changelog-parity.mjs        # all 9 locales at same version
 node scripts/check-no-also-leftovers.mjs       # no .also( leftovers
 
 # Rung 3 — unit suite
@@ -56,7 +65,7 @@ npm run test:coverage                          # line >= 93%, branch >= 83%
 # Rung 5 — Playwright suites
 npm run test:e2e                               # 20 smoke green
 npm run test:e2e:full                          # 23 comprehensive green
-npm run test:e2e:browser                       # 62 Playwright green
+npm run test:e2e:browser                       # 81 Playwright green
 
 # Rung 6 — first-run cleanup invariant
 make clean-test-fixtures                       # idempotent on clean tree
@@ -67,7 +76,7 @@ npm start                                      # server on 127.0.0.1:4317
 
 ---
 
-## §2 — Live-smoke checklist (8 locales × 7 routes)
+## §2 — Live-smoke checklist (9 locales × 7 routes)
 
 For each locale (`en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`):
 
@@ -132,7 +141,7 @@ Each row is a static or behavioural guard. Any future PR that regresses the row 
 | v1.59.8 | UX-A5-r3 | `help.js` TOC scroll-spy uses `function computeActiveAndApply()` + rAF-throttled passive `scroll` listener + double-rAF initial state — IntersectionObserver fully removed |
 | v1.59.8 | NEW-F1-sub | server middleware inspects `req.originalUrl` and bounces `/api` requests containing raw `..` as 404 JSON `{error: 'invalid path'}` |
 
-**Cycle stats:** 25 releases v1.58.52 → v1.59.10 · **988** unit tests at v1.59.10 (was 949 at v1.58.51) · 100 % CI-green · all AI-review LGTM · zero rollbacks · 1 chip hotfix (v1.59.2) · 1 doctrine-exception bundle (v1.59.8 — HIGH+LOW, authorized by FINAL REGRESSION-v1.59.7 report) · 1 sixth-cycle behavioural-test close (v1.59.9 UX-A5-r4 + new `tests/help-toc-spy-behavior.test.mjs`).
+**Cycle stats:** 25 releases v1.58.52 → v1.59.10 · **1003** unit tests at v1.59.10 (was 949 at v1.58.51) · 100 % CI-green · all AI-review LGTM · zero rollbacks · 1 chip hotfix (v1.59.2) · 1 doctrine-exception bundle (v1.59.8 — HIGH+LOW, authorized by FINAL REGRESSION-v1.59.7 report) · 1 sixth-cycle behavioural-test close (v1.59.9 UX-A5-r4 + new `tests/help-toc-spy-behavior.test.mjs`).
 
 ### v1.59.9 → v1.59.10 — final closure to 100 % (4 invariants)
 
@@ -197,7 +206,7 @@ Anything else MUST be a read.
 | `npm test` 973 / 973, 0 fail | ✅ |
 | `npm run test:e2e` ≥ 20 smoke green | ☐ |
 | `npm run test:e2e:full` ≥ 23 comprehensive green | ☐ |
-| `npm run test:e2e:browser` ≥ 62 Playwright green | ☐ |
+| `npm run test:e2e:browser` ≥ 81 Playwright green | ☐ |
 | Live-smoke checklist (§2) green on 2 locales (en + 1 non-en) | ☐ |
 | Mobile (≤ 420 px) smoke on the 5 critical routes | ☐ |
 | Reduced-motion (DevTools emulation) smoke | ☐ |
@@ -214,7 +223,7 @@ Anything else MUST be a read.
 |---|---|---|---|
 | Function | 9 | 10 | every advertised feature shipped + lock-tested; UX-A5-r3 finally green via scroll-listener |
 | Output quality | 7 | 9 | UX-A1 defensive warning surfaces upstream drift |
-| i18n | 9 | 10 | 8 locales, parity-gated, native-equivalent polish |
+| i18n | 9 | 10 | 9 locales, parity-gated, native-equivalent polish |
 | A11y | 9 | 10 | WCAG 2.5.8 lang-picker + 2.3.3 reduced-motion + ARIA drawer + Fix CTAs |
 | UX | 8 | 10 | provider chips, race-safe counter, drawer purge, Pipeline weight, **TOC scroll-spy reliable** |
 | Performance | 9 | 9 | no regressions |

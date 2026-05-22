@@ -11,7 +11,7 @@
 > `REGRESSION-v1.54.md` (P-31 final). Those stay for historical diff.
 >
 > **Doctrine.** A check that needs a code change → open it as ONE
-> one-fix ship: bump + CHANGELOG ×8 (parity-gated) + a test +
+> one-fix ship: bump + CHANGELOG ×9 (parity-gated) + a test +
 > Playwright-verify + pre-commit AI-review to LGTM + CI-watch to
 > green. Never batch. Never `--no-verify`. HIGH → MEDIUM → LOW.
 
@@ -21,20 +21,20 @@
 
 ```bash
 vX=$(node -p "require('./package.json').version")
-npm ci && npm run test:ci          # MUST: N/N pass · ✓ no .also( · ✓ CHANGELOG parity all 8 @ vX
+npm ci && npm run test:ci          # MUST: N/N pass · ✓ no .also( · ✓ CHANGELOG parity all 9 @ vX
 node tests/e2e.mjs                 # MUST: failed: 0
 node tests/e2e-comprehensive.mjs   # MUST: 0 failed
-npm run test:e2e:browser           # MUST: 62/62 (v1.58.35 baseline) · NO "generated asynchronous activity" / "not ok 2"
+npm run test:e2e:browser           # MUST: 81/81 (v1.61.1 baseline) · NO "generated asynchronous activity" / "not ok 2"
 node --test tests/sh-files.test.mjs        # MUST: green
-node scripts/check-changelog-parity.mjs    # MUST: all 8 locales @ vX
+node scripts/check-changelog-parity.mjs    # MUST: all 9 locales @ vX
 node scripts/check-no-also-leftovers.mjs   # MUST: ✓
 career-ops-ui doctor               # MUST: exit 0
 ```
 
 - `package.json::version` == footer `/api/health.version` == every
-  `CHANGELOG*.md` top entry == README ×8 `release-vX` badge ==
+  `CHANGELOG*.md` top entry == README ×9 `release-vX` badge ==
   `docs/architecture/TESTING.md` totals version.
-- README ×8 `tests-N%20passed` badge == the `npm run test:ci` count ==
+- README ×9 `tests-N%20passed` badge == the `npm run test:ci` count ==
   `TESTING.md` totals count.
 - `git status` clean · HEAD has tag `vX` on `origin/main` · the
   latest CI run on `origin/main` is green on **all 4 jobs**
@@ -205,10 +205,10 @@ non-allowed binary envelopes (415).
 
 ## §9 — i18n & docs parity (top-down vs career-ops.org)
 
-- Every i18n key present in all 8 locales (`tests/i18n-coverage`).
-- CHANGELOG ×8 at vX (`check-changelog-parity`); README ×8 badges
+- Every i18n key present in all 9 locales (`tests/i18n-coverage`).
+- CHANGELOG ×9 at vX (`check-changelog-parity`); README ×9 badges
   at vX/N; `TESTING.md` totals at vX/N/files.
-- Help bundles ×8: 17 H2 / 70 H3 parity gate green; the
+- Help bundles ×9: 19 H2 / 73 H3 parity gate green; the
   "App settings & API keys" section describes the Modes **field-form**
   + the OpenAI/Codex model selector (not raw markdown).
 - `CLAUDE.md` (route-module count, version) and
@@ -245,7 +245,7 @@ the ★ ones live.
   `tests/auto-stepper-prerender.test.mjs`.
 - ★ **`#/cv` editor accessible name** (F-V55-H/UX-5, **CLOSED
   v1.55.2**): `#cv-editor` has a descriptive `aria-label`
-  (`cv.editorAria` ×8); no redundant `aria-labelledby`.
+  (`cv.editorAria` ×9); no redundant `aria-labelledby`.
   `tests/cv-editor-a11y.test.mjs`.
 - ★ **4-provider OR onboarding** (UX-2, **CLOSED v1.55.3**):
   `GET /api/status/providers` → `{activeProvider, activeModel,
@@ -281,7 +281,7 @@ the ★ ones live.
   single-`<h1>` `.cv-breadcrumb` chip (F-V54-A intact);
   UX-10 shared `UI.providerCostHint(t)` cost ballpark next to ⚡ Run
   live on auto/evaluate/deep/`<mode>` (reuses
-  `/api/status/providers`; `cost.estimate`/`cost.manual` ×8);
+  `/api/status/providers`; `cost.estimate`/`cost.manual` ×9);
   UX-11 `#/help` TOC filter → exactly-1-match 300ms-debounced
   autoscroll; UX-12 first-paint `<h1>` is `tabindex=-1` + `#content`
   `aria-live=polite` **without** stealing focus (v1.41.0 skip-link
@@ -328,7 +328,7 @@ the ★ ones live.
   A-G*; the web-ui A-F flip must land **after** the parent
   `santifer/career-ops` commit (see `qa/G-005-closure-kit.md`
   STEP 1) or the model gets contradictory instructions. Renderer is
-  schema-tolerant; help §9 ×8 already canonical A-F (v1.15.0).
+  schema-tolerant; help §9 ×9 already canonical A-F (v1.15.0).
 
 ---
 
@@ -359,7 +359,7 @@ contract for the notifications drawer). None may regress.
   `QWEN_API_KEY`, `OPENROUTER_API_KEY` — same `isUsableKey` gate.
 - **Cost hint tracks OpenRouter** (M-7, **CLOSED v1.58.12**):
   `EST.openrouter = null` → localized `cost varies (router picks)`
-  via the new `cost.varies` i18n key × 8.
+  via the new `cost.varies` i18n key × 9.
 
 **A11y / WCAG (Level AA):**
 
@@ -371,8 +371,18 @@ contract for the notifications drawer). None may regress.
   new generic `data-i18n-aria-label` hook in `applyI18n()` swaps
   `aria-label` on every language change. Reusable for any future
   control.
+- **Theme-toggle title + aria-label localized** (MINOR-001, **CLOSED
+  v1.61.1**): the dark/light `#theme-toggle` hardcoded `title="Toggle
+  theme"` + `aria-label="Toggle theme"` in `index.html` — never
+  translated on any locale. Fix mirrors I-1: a new generic
+  `data-i18n-title` hook in `applyI18n()` + the `top.themeToggle` key in
+  all 9 locales, both attributes re-applied on boot and every language
+  switch. Locked by `tests/playwright-theme-toggle-i18n.mjs` (9 locales
+  + runtime-switch) + 2 static guards in `tests/qa-report-fixes.test.mjs`.
+  The lone LOW finding from the v1.61.0 French (9th-locale) sign-off.
+  Verify: switch to `fr` → tooltip reads "Changer de thème".
 
-**i18n parity (8 locales):**
+**i18n parity (9 locales):**
 
 - **Saved-research relative time** (I-2, **CLOSED v1.58.17**):
   `formatRelative()` uses `Intl.RelativeTimeFormat(I18n.getLang(),
@@ -397,13 +407,13 @@ contract for the notifications drawer). None may regress.
   + semantic `<time datetime="…">`.
 - **Apply checklist interactive** (M-8, **CLOSED v1.58.13**): real
   `<input type=checkbox>` per item, per-URL `localStorage`
-  persistence, Copy-unchecked + Reset buttons. 5 new i18n keys × 8.
+  persistence, Copy-unchecked + Reset buttons. 5 new i18n keys × 9.
 - **Connection-banner Refresh feedback** (M-9, **CLOSED v1.58.14**):
   synchronous `Refreshing…` toast + `sessionStorage['refreshedToast']`
   bridge → localized `Refreshed` success toast on next boot.
 - **Top-bar Doctor modal title** (BUG-008-tb, **CLOSED v1.58.6**):
   `UI.modal(I18n.t('top.doctor', 'Doctor'), …)` matches the button's
-  visible label across all 8 locales.
+  visible label across all 9 locales.
 - **Brand-button hover-flicker** (user-reported, **CLOSED v1.58.16**):
   `.btn-primary` / `.btn-danger` keep gradient on hover, dim via
   `filter: brightness(0.92)`; `.btn` transition list adds `filter`.
@@ -423,13 +433,13 @@ contract for the notifications drawer). None may regress.
 - **Toast detail in `<details>`** (U-4, **CLOSED v1.58.24**): the
   `(METHOD /path · HTTP NNN)` postfix is parsed out of the headline
   and rendered in a collapsible `<details class="toast-detail">`
-  with localized `toast.details` summary × 8 locales. BUG-006
+  with localized `toast.details` summary × 9 locales. BUG-006
   invariant preserved — postfix still reachable in DOM.
 - **Dashboard CTA dedupe** (U-5, **CLOSED v1.58.25**): removed
   `Open Pipeline` header button + `Scan all sources` Quick-action
   tile (both were duplicates of sidebar/hero entry-points).
 - **Scan Active-companies tooltip** (U-6, **CLOSED v1.58.26**):
-  localized `title` + `aria-label` from new `scan.activeCo.help` × 8
+  localized `title` + `aria-label` from new `scan.activeCo.help` × 9
   explain N (active) vs M (total in portals.yml).
 - **verify-pipeline modal `===` strip** (U-7, **CLOSED v1.58.27**):
   `.replace(/^={10,}$/gm, '')` removes the 50-char ASCII dividers
@@ -437,7 +447,7 @@ contract for the notifications drawer). None may regress.
 - **Generate-prompt block collapsed by default** (U-8, **CLOSED
   v1.58.28**): `showPrompt()` wraps the `<pre>` in
   `<details class="prompt-block">`; summary `Show prompt (N lines)`
-  (`prompt.show` / `prompt.lines` × 8). Copy / Run-live stay above
+  (`prompt.show` / `prompt.lines` × 9). Copy / Run-live stay above
   the fold.
 - **Pipeline counter↔filter responsive stack** (U-9, **CLOSED
   v1.58.29**): `.pipeline-controls` class + `@media (max-width: 720px)`
@@ -448,7 +458,7 @@ contract for the notifications drawer). None may regress.
   is empty.
 - **Tracker Legitimacy header info chip** (U-11, **CLOSED v1.58.31**):
   `<span class="th-info" tabindex="0" role="img">ⓘ</span>` with
-  `title` + `aria-label` from `track.col.legitimacy.help` × 8;
+  `title` + `aria-label` from `track.col.legitimacy.help` × 9;
   keyboard-reachable (WCAG 2.4.7).
 - **Help TOC filter min-width** (U-12, **CLOSED v1.58.32**):
   `.help-toc__filter { min-width: 16ch }` so KO `섹션 필터` /
@@ -471,7 +481,7 @@ contract for the notifications drawer). None may regress.
   message, and (when present) the U-4 technical postfix. `UI.onToast(fn)`
   pub/sub layered on top of the v1.58.33 capture so subscribers
   receive the entry just appended (try/catch-guarded; subscriber
-  throws never break the toast pipeline). 4 new i18n keys ×8
+  throws never break the toast pipeline). 4 new i18n keys ×9
   (`notif.{title,empty,bellAria,closeAria}`).
 
 **v1.58.35 — Drawer auto-open fix + help §18 (user-reported):**
@@ -490,7 +500,7 @@ contract for the notifications drawer). None may regress.
   closed bumps unread badge → opening drawer lists the entry and
   resets the badge.
 - ★ **Help §18 Notifications** (**CLOSED v1.58.35**): new H2 in all
-  8 locales of `docs/help/*.md` documents the 3 toast categories
+  9 locales of `docs/help/*.md` documents the 3 toast categories
   (Success / Error / Info-progress) — what triggers each, visual
   cues, what is **NOT** a notification (Doctor/verify modals, SSE
   log lines, spinner-only states), and the keyboard contract
@@ -568,10 +578,10 @@ dedicated file). None may regress.
   extended; only `#/auto` stays at `~1–2 min` (multi-step SSE).
 - **Empty Evaluate submit toast** (UX-D-F, **CLOSED v1.58.43**):
   empty-JD branch precedes the `<50 chars` branch; new
-  `eval.emptyJd` × 8 + `jdInput.focus()` on the error.
+  `eval.emptyJd` × 9 + `jdInput.focus()` on the error.
 - **Deep brief close button** (UX-D-L, **CLOSED v1.58.44**): `×`
   button in the saved-research opened-brief header clears `out.innerHTML`;
-  new `deep.closeBrief` × 8.
+  new `deep.closeBrief` × 9.
 
 **Orientation:**
 
@@ -594,13 +604,13 @@ dedicated file). None may regress.
 
 - **Top-bar Quick scan rename** (UX-D-C, **CLOSED v1.58.47**):
   `top.quickscan` is now `Open Scan` (and localized equivalents) in
-  all 8 locales — matches actual nav-only behavior, not the implied
+  all 9 locales — matches actual nav-only behavior, not the implied
   instant-action.
 - **Dashboard fixture-profile banner** (UX-D-B, **CLOSED v1.58.48**):
   `profileFixtureBanner()` renders a `.hero-banner.hero-banner--warning`
   at the top of the route when `/api/health` returns
   `Profile customized: false`. CTA links to `#/config`. Two new i18n
-  keys (`onboarding.fixtureWarning`, `onboarding.fixProfile`) × 8.
+  keys (`onboarding.fixtureWarning`, `onboarding.fixProfile`) × 9.
 
 **Tooling:**
 
@@ -644,7 +654,7 @@ consolidated v1.55.x→v1.56.0 fix-prompt AND the follow-on
 v1.56.2, key-detection trust fix v1.56.3, UX-N2 v1.56.4 — are all
 fully closed; **G-005** is the sole open item, MINOR, cross-repo,
 blocked on the parent commit). New findings → one-fix ships
-(HIGH→MEDIUM→LOW), each fully shipped (bump + CHANGELOG ×8 + test +
+(HIGH→MEDIUM→LOW), each fully shipped (bump + CHANGELOG ×9 + test +
 Playwright-verify + AI-review LGTM + CI-watch) before the next.
 
 ---
@@ -660,11 +670,11 @@ live-smoke checklist.
 |---|---|---|
 | v1.58.52 | UX-A5 | `help.js` uses `mountTocSpy()` + double `requestAnimationFrame` (not `setTimeout(0)` + `document.querySelectorAll`) |
 | v1.58.53 | UX-A6 | Every saved-research card flows through `renderSavedCard(f)` · `.saved-card__title` + `<time class="saved-card__date">` |
-| v1.58.54 | UX-A1 | `looksLikeStructuredBrief()` checks ≥ 3 of 6 canonical H2s · `.brief-warning` rendered when below threshold · 3 i18n keys × 8 |
+| v1.58.54 | UX-A1 | `looksLikeStructuredBrief()` checks ≥ 3 of 6 canonical H2s · `.brief-warning` rendered when below threshold · 3 i18n keys × 9 |
 | v1.58.55 | UX-A3 | `providerChip()` on `#/dashboard` · subscribes to `providers-changed` + `visibilitychange` · `hashchange` cleanup detaches both |
 | v1.58.56 | UX-A4 | `.lang-btn` `min-height: 28px` + `min-width: 28px` + `padding: 6px 10px` (WCAG 2.5.8) |
 | v1.58.57 | UX-A7 | `config.js` Save dispatches `providers-changed` · `UI.providerCostHint` subscribes · all 4 advisor views call `UI.providerCostHint(t)` |
-| v1.58.58 | UX-A10 | `cv.js` registers `beforeunload` + `hashchange` guards · `isDirty()` reads live · `cv.unsavedConfirm` i18n × 8 |
+| v1.58.58 | UX-A10 | `cv.js` registers `beforeunload` + `hashchange` guards · `isDirty()` reads live · `cv.unsavedConfirm` i18n × 9 |
 | v1.58.59 | UX-A13 | `health.js` `FIX_TARGETS` map · `_API_KEY$` regex fallback → `#/config?tab=api-keys` · `.health-fix` ghost button |
 | v1.58.60 | UX-A12 | `UI.clearToastHistory()` + `UI.dismissToastHistory(ts)` · `notif-clear-all` + per-item `×` · purge sentinels skip unread bump |
 | v1.58.61 | UX-A8 | All 8 READMEs reference `make clean-test-fixtures` + `qa-fixture-*` |
@@ -710,7 +720,7 @@ The 7-release cycle that closed the FIX-PROMPT-FINAL-CONSOLIDATED queue. Each ro
 
 ---
 
-## §A — EXHAUSTIVE MATRIX (every page × every control × 8 locales)
+## §A — EXHAUSTIVE MATRIX (every page × every control × 9 locales)
 
 > Run **after** §0–§11 pass. This is the brute-force sweep: every
 > route, every button, every input, every API, every locale, every
@@ -748,7 +758,7 @@ Canonical: `#/dashboard #/scan #/pipeline #/evaluate #/deep #/cv
 `#/outreach`→contacto (BUG-004). Unknown route `#/zzz-nope` → 404
 page with a working "Back to Dashboard".
 
-For EACH (× 8 locales): no console error, no `pageerror`, `#content`
+For EACH (× 9 locales): no console error, no `pageerror`, `#content`
 non-empty, exactly one `<h1>` (or the deliberate `#/cv` breadcrumb
 chip — BUG-009 is **by design**, do not refile), page-title +
 descriptive subtitle present (incl. `#/reports` empty state —
@@ -838,7 +848,7 @@ silent failure).
   `/api/status/providers`; footer `vX`.
 - **#/help:** TOC filter; every `##`/`>` block renders markdown
   (bold/code/links inside blockquotes — BUG-003); canonical
-  career-ops.org links present ×8; TOC item labels localized
+  career-ops.org links present ×9; TOC item labels localized
   (I18N-011 — CLOSED v1.58.2: TOC headings now localized to the sidebar nav.* term in all 7 locales; verify TOC ↔ sidebar match, do not refile).
 - **#/reports / #/activity:** list renders; chip/type filters change
   the URL + list; empty states have subtitle + guidance.
