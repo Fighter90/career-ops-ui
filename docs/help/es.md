@@ -1679,3 +1679,18 @@ Cada entrada muestra hora local, mensaje humano y, si existe, el postfix técnic
 
 - **Clic** o **Enter / Space** en la campana → abrir.
 - **Esc**, **×**, o nuevo clic en la campana → cerrar; el foco vuelve a la campana.
+
+
+## 19. Localizar la aplicación a tu idioma
+
+La interfaz se distribuye en 8 idiomas (English, Español, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Cada etiqueta en pantalla proviene de un diccionario de traducciones, y puedes añadir o corregir un idioma sin tocar la lógica de la app.
+
+**Dónde viven las traducciones.** Desde la v1.60.0 cada idioma es su propio archivo en `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, etc. — una lista simple de pares `'clave': 'texto'`. Un `i18n-dict.aliases.js` compartido permite que claves que deben leerse igual (una etiqueta del menú y el título de su página) apunten a una sola traducción. `i18n-dict.js` los ensambla al cargar; nunca lo edites.
+
+**Corregir o añadir un texto.** Abre el archivo de tu idioma, busca la clave (p. ej. `'nav.scan'`) y edita el texto. Para añadir una etiqueta nueva, agrega la misma clave a **los 8** archivos de idioma con el valor traducido y úsala en la página con `t('tu.clave')`. Ejecuta `npm test` — falla si a algún idioma le falta la clave, así nada se publica a medio traducir.
+
+**Añadir un idioma nuevo.** Copia `i18n-dict.en.js` a `i18n-dict.<código>.js`, traduce cada valor y registra el código en `i18n.js` (la lista de idiomas + autodetección del navegador), en el ensamblador `i18n-dict.js`, y añade una línea `<script>` en `index.html`. La lista completa — incluido el snapshot de tests y los archivos de ayuda / README — está en `docs/LOCALIZATION.md`.
+
+**Bueno saberlo.** El selector de idioma está en el pie de la barra lateral; tu elección se recuerda por navegador. Los mensajes de diagnóstico del servidor permanecen en inglés a propósito (para que los logs sean consistentes) — solo se traduce la interfaz en pantalla.
+
+Consulta **`docs/LOCALIZATION.md`** en el repositorio para la guía de localización completa, paso a paso.

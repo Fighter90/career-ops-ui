@@ -102,9 +102,9 @@ test('every help-bundle §5 references HH_USER_AGENT for the hh.ru gate', () => 
   }
 });
 
-test('every help-bundle keeps the 17-H2 parity contract after v1.29.1 edit', () => {
+test('every help-bundle keeps the 19-H2 parity contract after v1.29.1 edit', () => {
   // Belt-and-suspenders: the v1.29.1 expansion is a ### subsection of
-  // §5 — H2 count stays at 17. If a future change accidentally
+  // §5 — H2 count stays at 19 (v1.60.0 added §19 Localizing the app). If a future change accidentally
   // promotes the H3 to H2 we want it to fail here.
   let baseline = null;
   for (const lang of LOCALES) {
@@ -113,7 +113,7 @@ test('every help-bundle keeps the 17-H2 parity contract after v1.29.1 edit', () 
     if (baseline === null) baseline = h2;
     assert.equal(h2, baseline, `${lang}.md has ${h2} H2 sections, expected ${baseline}`);
   }
-  assert.equal(baseline, 18, `expected 18 H2 sections, got ${baseline}`);
+  assert.equal(baseline, 19, `expected 19 H2 sections, got ${baseline}`);
 });
 
 test('WS10: every help-bundle has identical H3 parity (en + 7 locales)', () => {

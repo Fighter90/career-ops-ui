@@ -144,7 +144,7 @@ The `ci.yml` "Verify i18n coverage" step now loads the per-locale files + alias 
 ---
 
 ## §5 — i18n parity sweep
-Help bundle parity: **18 H2 / 73 H3 across all 8 locales** (`canonical-docs-coverage`, `help-ru-config-section`, `help-ui` tests).
+Help bundle parity: **19 H2 / 73 H3 across all 8 locales** (`canonical-docs-coverage`, `help-ru-config-section`, `help-ui` tests).
 Per-route H1 spot-checks: `#/pipeline` (es) → `Pipeline de candidaturas`; `#/dashboard` (ru) → `Командный центр`; `#/help` (ja) → `ヘルプ`. Footer hotkey: macOS `⌘K`, else `Ctrl+K`.
 ```bash
 node scripts/check-changelog-parity.mjs    # all 8 locales at v1.60.0
@@ -172,7 +172,7 @@ npm run test:ci           # the aggregate hard gate (unit + no-also + changelog-
 2. Per-locale key parity — every `locales/i18n-dict.<lang>.js` shares en's key set (`i18n-locale-files`).
 3. `@alias` integrity — targets exist, no chains; `nav.config` stays distinct from `config.title` (`i18n-alias`).
 4. `index.html` script order: 8 locales → aliases → assembler → `i18n.js`.
-5. Help bundle parity: 18 H2 / 73 H3.
+5. Help bundle parity: 19 H2 / 73 H3.
 6. CSP excludes `'unsafe-inline'` from `script-src`; the locale `<script>`s are same-origin classic scripts.
 7. `app.all('/api/*')` JSON-404 for every verb; `req.originalUrl` `..` guard hoisted above route registration.
 8. `Cache-Control: no-store` on `GET /api/cv`.

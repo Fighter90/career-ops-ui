@@ -1681,3 +1681,18 @@ Cada entrada mostra hora local, mensagem humana e, se houver, postfix técnico e
 
 - **Clique** ou **Enter / Space** no sino → abrir.
 - **Esc**, **×**, ou novo clique no sino → fechar; foco volta ao sino.
+
+
+## 19. Localizar o app para o seu idioma
+
+A interface é distribuída em 8 idiomas (English, Español, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Cada rótulo na tela vem de um dicionário de traduções, e você pode adicionar ou corrigir um idioma sem mexer na lógica do app.
+
+**Onde ficam as traduções.** Desde a v1.60.0 cada idioma é um arquivo próprio em `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, etc. — uma lista simples de pares `'chave': 'texto'`. Um `i18n-dict.aliases.js` compartilhado faz com que chaves que devem ler igual (um rótulo do menu e o título da sua página) apontem para uma única tradução. `i18n-dict.js` monta tudo no carregamento; você nunca o edita.
+
+**Corrigir ou adicionar um texto.** Abra o arquivo do seu idioma, encontre a chave (ex.: `'nav.scan'`) e edite o texto. Para adicionar um rótulo novo, acrescente a mesma chave aos **8** arquivos de idioma com o valor traduzido e use-a na página via `t('sua.chave')`. Rode `npm test` — ele falha se algum idioma estiver sem a chave, então nada é publicado pela metade.
+
+**Adicionar um idioma novo.** Copie `i18n-dict.en.js` para `i18n-dict.<código>.js`, traduza cada valor e registre o código em `i18n.js` (a lista de idiomas + autodetecção do navegador), no montador `i18n-dict.js`, e adicione uma linha `<script>` em `index.html`. O checklist completo — incluindo o snapshot de testes e os arquivos de ajuda / README — está em `docs/LOCALIZATION.md`.
+
+**Bom saber.** O seletor de idioma fica no rodapé da barra lateral; sua escolha é lembrada por navegador. As mensagens de diagnóstico do servidor permanecem em inglês de propósito (para os logs ficarem consistentes) — apenas a interface na tela é traduzida.
+
+Veja **`docs/LOCALIZATION.md`** no repositório para o guia de localização completo, passo a passo.

@@ -49,11 +49,12 @@ test('every help bundle references all 5 canonical career-ops.org guides', () =>
   }
 });
 
-test('every help bundle keeps the 17-H2 parity contract', () => {
+test('every help bundle keeps the 19-H2 parity contract', () => {
   // Belt-and-suspenders next to tests/help-ui.test.mjs::section-parity.
   // If a future edit splits a section we want the regression here too.
   // v1.29.0 — bar lifted 16 → 17 by adding §17 "How to add a new
-  // job-portal source" across all 8 locales.
+  // job-portal source" across all 8 locales. v1.58.35 — 17 → 18 (§18
+  // Notifications). v1.60.0 — 18 → 19 (§19 "Localizing the app").
   let baseline = null;
   for (const lang of HELP_BUNDLES) {
     const path = resolve(ROOT, 'docs', 'help', `${lang}.md`);
@@ -62,7 +63,7 @@ test('every help bundle keeps the 17-H2 parity contract', () => {
     if (baseline === null) baseline = h2;
     assert.equal(h2, baseline, `${lang}.md has ${h2} H2 sections, expected ${baseline}`);
   }
-  assert.equal(baseline, 18, `expected 18 H2 sections in every bundle, got ${baseline}`);
+  assert.equal(baseline, 19, `expected 19 H2 sections in every bundle, got ${baseline}`);
 });
 
 test('every README references the canonical front page + ≥3 sub-guides', () => {

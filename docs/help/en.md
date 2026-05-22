@@ -1773,3 +1773,18 @@ Every drawer entry shows:
 - **Click** or focus + **Enter / Space** on the bell → opens the drawer.
 - **Esc**, click the **×** close button, or click the bell again → closes the drawer; focus returns to the bell.
 - **Tab** while the drawer is open → moves through the close button and any focusable details inside; the drawer is `aria-modal="false"`, so Tab does not trap (you can still reach the rest of the page).
+
+
+## 19. Localizing the app into your language
+
+The interface ships in 8 languages (English, Español, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Every on-screen label comes from a translation dictionary, and you can add or correct a language without touching the app logic.
+
+**Where the translations live.** Since v1.60.0 each language is its own file under `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, and so on — a simple list of `'key': 'text'` pairs. A shared `i18n-dict.aliases.js` lets keys that must always read identically (a sidebar label and its page title) point at one translation. `i18n-dict.js` merges them all at page load; you never edit it.
+
+**Fix or add a phrase.** Open the file for your language, find the key (e.g. `'nav.scan'`) and edit the text. To add a brand-new label, add the same key to **all 8** language files with the translated value, then reference it in the page via `t('your.key')`. Run `npm test` — it fails if any language is missing the key, so nothing ships half-translated.
+
+**Add a whole new language.** Copy `i18n-dict.en.js` to `i18n-dict.<code>.js`, translate every value, then register the code in `i18n.js` (the language list + browser auto-detect), in the `i18n-dict.js` assembler, and add a `<script>` line in `index.html`. The full checklist — including the test snapshot and the help / README companion files — is in `docs/LOCALIZATION.md`.
+
+**Good to know.** The language switcher is in the sidebar footer; your choice is remembered per browser. Server diagnostic messages stay in English on purpose (so logs read consistently) — only the on-screen interface is translated.
+
+See **`docs/LOCALIZATION.md`** in the repository for the complete, step-by-step localization guide.
