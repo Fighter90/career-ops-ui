@@ -53,7 +53,7 @@ test('config.js wires a remote OPENROUTER_MODEL select after OPENROUTER_API_KEY'
 
 test('i18n: all 4 OpenRouter config keys cover the 8 locales', () => {
   const dict = legacyDictText();
-  const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+  const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
   for (const key of ['config.openrouterKey', 'config.openrouterHint',
     'config.openrouterModel', 'config.openrouterModelHint']) {
     const line = dict.split('\n').find((l) => l.includes(`'${key}'`));

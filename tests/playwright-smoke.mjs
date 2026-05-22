@@ -632,7 +632,7 @@ test('Playwright smoke: zero CSP violations on a representative route walk', { s
   assert.ok(!/script-src[^;]*'unsafe-inline'/.test(csp), "script-src must not allow 'unsafe-inline'");
 
   const routes = ['#/dashboard', '#/pipeline', '#/cv', '#/deep', '#/help', '#/health', '#/config'];
-  for (const lang of ['en', 'ru', 'ja', 'zh-TW']) {
+  for (const lang of ['en', 'ru', 'ja', 'zh-TW', 'fr']) {
     await page.evaluate((l) => {
       try { window.I18n?.setLang?.(l); } catch { /* boot order */ }
     }, lang);

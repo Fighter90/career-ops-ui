@@ -22,7 +22,7 @@ const __d = dirname(fileURLToPath(import.meta.url));
 const SCAN = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'scan.js'), 'utf8');
 const CSS = readFileSync(resolve(__d, '..', 'public', 'css', 'app.css'), 'utf8');
 const DICT = legacyDictText();
-const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
 
 test('an Advanced-filters <details> disclosure exists', () => {
   assert.match(SCAN, /c\('details'/, 'scan.js must build a <details> element');

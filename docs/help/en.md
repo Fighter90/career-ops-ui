@@ -1777,7 +1777,7 @@ Every drawer entry shows:
 
 ## 19. Localizing the app into your language
 
-The interface ships in 8 languages (English, Español, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Every on-screen label comes from a translation dictionary, and you can add or correct a language without touching the app logic.
+The interface ships in 9 languages (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Every on-screen label comes from a translation dictionary, and you can add or correct a language without touching the app logic.
 
 **Where the translations live.** Since v1.60.0 each language is its own file under `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, and so on — a simple list of `'key': 'text'` pairs. A shared `i18n-dict.aliases.js` lets keys that must always read identically (a sidebar label and its page title) point at one translation. `i18n-dict.js` merges them all at page load; you never edit it.
 

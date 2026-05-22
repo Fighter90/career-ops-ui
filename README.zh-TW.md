@@ -3,7 +3,7 @@
 > 為 [career-ops](https://github.com/santifer/career-ops) AI 求職流水線打造的簡潔 docs-style 網頁介面。
 > 在單一瀏覽器分頁中完成搜尋、評估、深度研究、投遞與追蹤每一個職缺 — 無須再於 Claude Code、終端機與 markdown 檔案之間來回切換。
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | **繁體中文**
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | **繁體中文** | [Français](README.fr.md)
 
 [![tests](https://img.shields.io/badge/tests-1000%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)

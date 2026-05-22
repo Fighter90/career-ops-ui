@@ -55,7 +55,7 @@ test('renderStepper() is invoked on mount, not only from setStep/run', () => {
 test('auto.stepperAria present in all 8 locales', () => {
   const line = DICT.split('\n').find((l) => l.includes("'auto.stepperAria'"));
   assert.ok(line, 'i18n key auto.stepperAria missing');
-  for (const loc of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const loc of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const tok = /-/.test(loc) ? `'${loc}':` : `${loc}:`;
     assert.ok(line.includes(tok), `auto.stepperAria missing locale ${loc}`);
   }

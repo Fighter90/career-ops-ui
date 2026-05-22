@@ -2,9 +2,17 @@
 
 Todas as mudanças relevantes do **career-ops-ui** estão documentadas aqui. O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
-Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md)
+Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md)
 
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
+
+---
+
+
+
+## [1.61.0] — 2026-05-22
+
+**feat(i18n): adiciona o francês como 9.º idioma da interface.** Novo dicionário por idioma `public/js/lib/locales/i18n-dict.fr.js` (`window.__I18N_DICT_FR`), com paridade completa de **668 chaves** com o inglês; novo pacote de ajuda `docs/help/fr.md` (**19 H2 / 73 H3**, paridade estrutural exata com `en`). `fr` fica registrado no seletor de idioma e na autodetecção do navegador (`i18n.js`), no montador (`i18n-dict.js`), no `index.html` (tag `<script>` antes do montador), no snapshot de teste e em todas as listas de locales dos testes. A tabela de tradução inicial veio do **PR #9** (contribuição da comunidade). Sem mudança de lógica: `t()` e todas as views permanecem inalterados. **1001 / 1001** testes unitários; o sweep de locales do Playwright cresce para 9 subtests. (FR-LOCALE)
 
 ---
 

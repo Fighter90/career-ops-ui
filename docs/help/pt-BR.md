@@ -1685,7 +1685,7 @@ Cada entrada mostra hora local, mensagem humana e, se houver, postfix técnico e
 
 ## 19. Localizar o app para o seu idioma
 
-A interface é distribuída em 8 idiomas (English, Español, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Cada rótulo na tela vem de um dicionário de traduções, e você pode adicionar ou corrigir um idioma sem mexer na lógica do app.
+A interface é distribuída em 9 idiomas (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Cada rótulo na tela vem de um dicionário de traduções, e você pode adicionar ou corrigir um idioma sem mexer na lógica do app.
 
 **Onde ficam as traduções.** Desde a v1.60.0 cada idioma é um arquivo próprio em `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, etc. — uma lista simples de pares `'chave': 'texto'`. Um `i18n-dict.aliases.js` compartilhado faz com que chaves que devem ler igual (um rótulo do menu e o título da sua página) apontem para uma única tradução. `i18n-dict.js` monta tudo no carregamento; você nunca o edita.
 

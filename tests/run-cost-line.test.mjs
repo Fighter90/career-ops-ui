@@ -17,7 +17,7 @@ const read = (p) => readFileSync(resolve(__d, '..', p), 'utf8');
 const API = read('public/js/api.js');
 const DICT = legacyDictText();
 const CSS = read('public/css/app.css');
-const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
 
 test('UI.providerCostHint helper exists, exported, and is fail-soft', () => {
   assert.match(API, /function providerCostHint\(t\)/, 'helper must be defined');

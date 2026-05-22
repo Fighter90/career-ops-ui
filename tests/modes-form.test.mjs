@@ -68,7 +68,7 @@ test('every canonical field wires a doc-sourced description (career-ops.org §St
     assert.match(MF, new RegExp(`descKey: '${k}'`), `CANON missing ${k}`);
     const line = DICT.split('\n').find((l) => l.includes(`'${k}'`));
     assert.ok(line, `i18n key ${k} missing`);
-    for (const loc of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+    for (const loc of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
       const tok = /-/.test(loc) ? `'${loc}':` : `${loc}:`;
       assert.ok(line.includes(tok), `${k} missing locale ${loc}`);
     }

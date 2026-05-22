@@ -50,7 +50,7 @@ test('public/index.html includes the Help sidebar entry + help.js script tag', (
 
 // ─────────────── i18n coverage ───────────────
 
-const REQUIRED_LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+const REQUIRED_LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
 const REQUIRED_KEYS = ['nav.help', 'help.title', 'help.subtitle', 'help.toc'];
 
 test('i18n: nav.help / help.* keys present in every supported locale', () => {
@@ -76,7 +76,7 @@ test('i18n: nav.help / help.* keys present in every supported locale', () => {
 test('docs/help/{lang}.md exists for every supported locale', () => {
   const helpDir = resolve(ROOT, 'docs', 'help');
   // We accept either ko-KR.md or ko.md to mirror i18n's two naming conventions.
-  for (const lang of ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     assert.ok(existsSync(resolve(helpDir, `${lang}.md`)),
       `docs/help/${lang}.md missing`);
   }
@@ -92,7 +92,7 @@ test('every help doc covers the same 17 sections (all 8 locales — P-8 expanded
   // v1.60.0 — 18 → 19 (added §19 "Localizing the app into your language").
   const helpDir = resolve(ROOT, 'docs', 'help');
   const SECTION_COUNT = 19;
-  const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+  const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
   for (const lang of ALL_LOCALES) {
     const fname = `${lang}.md`;
     const text = readFileSync(resolve(helpDir, fname), 'utf8');

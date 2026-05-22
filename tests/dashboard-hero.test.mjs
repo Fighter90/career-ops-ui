@@ -21,7 +21,7 @@ const __d = dirname(fileURLToPath(import.meta.url));
 const DASH = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'dashboard.js'), 'utf8');
 const CSS = readFileSync(resolve(__d, '..', 'public', 'css', 'app.css'), 'utf8');
 const DICT = legacyDictText();
-const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
 
 test('a .dash-hero block exists and is built near the top', () => {
   assert.match(DASH, /className: 'dash-hero'/, 'dashboard must render a .dash-hero block');

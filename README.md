@@ -3,7 +3,7 @@
 > A clean, docs-style web interface for the [career-ops](https://github.com/santifer/career-ops) AI job-search pipeline.
 > Search, evaluate, deep-dive, apply, and track every offer from a single browser tab — instead of bouncing between Claude Code, terminals, and markdown files.
 
-**English** | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
+**English** | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md)
 
 [![tests](https://img.shields.io/badge/tests-1000%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
@@ -204,7 +204,7 @@ Open http://127.0.0.1:4317. Pipeline counter should now read `0 pending`. The Ma
 | **Profile**      | Read-only view of `config/profile.yml` + archetypes — UI-friendly summary.                                         |
 | **App settings** | In-UI editor for parent `.env` keys: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, model overrides, port / host. Secrets masked on read. |
 | **Health**       | All setup checks in OK / OPTIONAL / FAIL badges + buttons to run `doctor.mjs` and `verify-pipeline.mjs`.           |
-| **Help**         | In-app Markdown user guide (`/#/help`), localized for all 8 supported languages (en / es / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). |
+| **Help**         | In-app Markdown user guide (`/#/help`), localized for all 9 supported languages (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). |
 | **Activity log** | Audit trail of every state-changing request (writes, runs, scans). Secrets redacted. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Top-bar bell with red unread badge. Click to slide-in a drawer listing the last 50 toasts (per tab, per session) — Success / Error / Info-progress, each with a localized timestamp, the human message, and any `(METHOD /path · HTTP NNN)` postfix tucked into a `<details>`. Help **§18** documents every category. Drawer opens **only** on bell click (or keyboard Enter / Space); closes via ×, Esc, or re-clicking the bell. |
 
@@ -533,14 +533,14 @@ For the production-readiness assessment (deployment gates, risk register, deferr
 
 ## Localization
 
-The UI ships **8 locales** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. Since **v1.60.0 (I18N-SPLIT)** translations live **one file per locale** under [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, each a flat `key → string` table — plus a shared `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) assembles them into `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resolves `t('key', 'fallback')`. No build step, no runtime fetch — a translator edits a single language file in isolation.
+The UI ships **9 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. Since **v1.60.0 (I18N-SPLIT)** translations live **one file per locale** under [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, each a flat `key → string` table — plus a shared `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) assembles them into `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resolves `t('key', 'fallback')`. No build step, no runtime fetch — a translator edits a single language file in isolation.
 
 **Add or change a string:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …add the same key to all 8 locale files (parity is gated)
+// …add the same key to all 9 locale files (parity is gated)
 ```
 
 Then use it via `data-i18n="scan.newButton"` in markup or `t('scan.newButton')` in JS, and run `npm test`. To add a brand-new language, register it in `i18n.js` (`LANGS` + `detect()`), the assembler, `index.html`, and the locale-enumerating tooling.
@@ -649,7 +649,7 @@ Refresh the Health page — every required check should be green. Then:
    live deep-research in `interview-prep/`. All visible in the UI.
 
 > Translations of this guide live in each language-specific README:
-> [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) ·
+> [Español](README.es.md) · [Français](README.fr.md) · [Português (Brasil)](README.pt-BR.md) ·
 > [한국어](README.ko-KR.md) · [日本語](README.ja.md) ·
 > [Русский](README.ru.md) · [简体中文](README.zh-CN.md) ·
 > [繁體中文](README.zh-TW.md)

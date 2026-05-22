@@ -46,7 +46,7 @@ const __d = dirname(fileURLToPath(import.meta.url));
 const APP = readFileSync(resolve(__d, '..', 'public', 'js', 'app.js'), 'utf8');
 const HTML = readFileSync(resolve(__d, '..', 'public', 'index.html'), 'utf8');
 const DICT = legacyDictText();
-const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
 
 // ── pure selection logic ────────────────────────────────────────────
 test('selectActiveProvider: auto order → first configured wins', () => {

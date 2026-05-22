@@ -23,7 +23,7 @@ const AUTO = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'auto.js')
 const SCAN = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'scan.js'), 'utf8');
 const DICT = legacyDictText();
 const CSS = readFileSync(resolve(__d, '..', 'public', 'css', 'app.css'), 'utf8');
-const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
 
 test('#/auto renders an ETA hint via auto.eta next to Run', () => {
   assert.match(AUTO, /t\('auto\.eta'/, 'auto.js must render t(auto.eta)');

@@ -142,7 +142,7 @@ test('#/tracker renders a clickable funnel chip bar', async () => {
   assert.match(CSS, /\.tracker-chip--active\b/);
   const line = DICT.split('\n').find((l) => l.includes("'track.funnelAria'"));
   assert.ok(line, 'track.funnelAria i18n key missing');
-  for (const loc of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const loc of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const tok = /-/.test(loc) ? `'${loc}':` : `${loc}:`;
     assert.ok(line.includes(tok), `track.funnelAria missing locale ${loc}`);
   }

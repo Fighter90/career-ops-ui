@@ -2,9 +2,17 @@
 
 **career-ops-ui** 的所有重要变更均记录于此。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/),版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
-翻译版本:[English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [繁體中文](CHANGELOG.zh-TW.md)
+翻译版本:[English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md)
 
 > **说明** — 本文件已完整翻译为出版级简体中文(中国大陆用语规范),包含全部历史版本条目。代码块、提交信息、文件路径、URL、环境变量、命令行片段以及 CSP / SSRF / TOCTOU / WCAG / ATS / JD / SSE / REST / API 等通用英文缩写按原文保留。
+
+---
+
+
+
+## [1.61.0] — 2026-05-22
+
+**feat(i18n)：新增法语作为第 9 种界面语言。** 新的按语言字典 `public/js/lib/locales/i18n-dict.fr.js`（`window.__I18N_DICT_FR`）与英语完全对等（**668 个键**）；新的帮助包 `docs/help/fr.md`（**19 H2 / 73 H3**，与 `en` 结构完全对等）。`fr` 已注册到语言切换器与浏览器自动检测（`i18n.js`）、装配器（`i18n-dict.js`）、`index.html`（位于装配器之前的 `<script>` 标签）、测试快照以及所有测试语言列表中。初始翻译表来自 **PR #9**（社区贡献）。逻辑无变化：`t()` 与所有视图保持不变。单元测试 **1001 / 1001**；Playwright 语言遍历扩展为 9 个子测试。(FR-LOCALE)
 
 ---
 

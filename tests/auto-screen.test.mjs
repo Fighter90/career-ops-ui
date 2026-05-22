@@ -64,7 +64,7 @@ test('dashboard ✨ button routes to #/auto (single coherent flow)', () => {
 
 test('every new WS5 i18n key resolves in all 8 locales', () => {
   const D = loadAssembledDict();
-  const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+  const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
   const KEYS = [
     'nav.auto', 'auto.subtitle', 'auto.urlLabel', 'auto.urlRequired',
     'auto.step.report', 'auto.stepWord', 'auto.doneTitle', 'auto.viewReport',

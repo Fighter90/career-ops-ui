@@ -2,9 +2,17 @@
 
 **career-ops-ui** の主要な変更履歴。形式は [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)、バージョンは [SemVer](https://semver.org/) に準拠します。
 
-翻訳: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md)
+翻訳: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md)
 
 > **翻訳ノート** — このファイルは全エントリが日本語本文で完全に翻訳済みです。コードブロック、コミットメッセージ、ファイルパス、URL、環境変数、コマンド、リンクラベルは原文のまま保持しています。
+
+---
+
+
+
+## [1.61.0] — 2026-05-22
+
+**feat(i18n): フランス語を9番目のUI言語として追加。** 新しいロケール別辞書 `public/js/lib/locales/i18n-dict.fr.js`(`window.__I18N_DICT_FR`)は英語と**668キー**の完全な同等性を持ち、新しいヘルプバンドル `docs/help/fr.md`(**19 H2 / 73 H3**、`en` と正確な構造的同等性)。`fr` は言語スイッチャーとブラウザ自動検出（`i18n.js`）、アセンブラ（`i18n-dict.js`）、`index.html`（アセンブラより前の `<script>` タグ）、テストスナップショット、すべてのテストロケールリストに登録済み。初期翻訳テーブルは **PR #9**（コミュニティ貢献）由来。ロジック変更なし：`t()` とすべてのビューは不変。ユニットテスト **1001 / 1001**；Playwright のロケールスイープは9サブテストに拡大。(FR-LOCALE)
 
 ---
 

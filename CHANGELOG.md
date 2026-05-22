@@ -2,7 +2,15 @@
 
 All notable changes to **career-ops-ui** are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
-Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md)
+Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md)
+
+---
+
+
+
+## [1.61.0] — 2026-05-22
+
+**feat(i18n): add French as the 9th UI language.** New per-locale dictionary `public/js/lib/locales/i18n-dict.fr.js` (`window.__I18N_DICT_FR`), at full **668-key** parity with English; new help bundle `docs/help/fr.md` (**19 H2 / 73 H3**, exact structural parity with `en`). `fr` is registered in the language switcher and browser auto-detect (`i18n.js`), the assembler (`i18n-dict.js`), `index.html` (a `<script>` tag before the assembler), the test snapshot, and every test locale list. The initial translation table came from **PR #9** (community contribution). No logic change: `t()` and every view are unchanged. **1001 / 1001** unit tests; the Playwright locale-sweep grows to 9 subtests. (FR-LOCALE)
 
 ---
 

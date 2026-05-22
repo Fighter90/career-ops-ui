@@ -90,7 +90,7 @@ after(() => {
 });
 
 const FLOW_LOCALES = ['en', 'ru', 'ja'];
-const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
 
 async function runFullFunnel(iteration) {
   // Step 1 — health green

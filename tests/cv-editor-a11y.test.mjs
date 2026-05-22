@@ -25,7 +25,7 @@ const __d = dirname(fileURLToPath(import.meta.url));
 const CV = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'cv.js'), 'utf8');
 const DICT = legacyDictText();
 
-const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
 
 test('#cv-editor textarea carries an aria-label via cv.editorAria', () => {
   const block = CV.match(/const ta = c\('textarea', \{[\s\S]*?\}, data\.markdown[^)]*\);/);

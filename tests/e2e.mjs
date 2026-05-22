@@ -226,7 +226,7 @@ async function run() {
     await page.waitForSelector('h1.page-title');
     await page.waitForSelector('.lang-switcher button', { timeout: 5000 });
     const langs = await page.$$eval('.lang-btn', (els) => els.map((e) => e.dataset.langBtn));
-    const expected = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+    const expected = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
     for (const code of expected) {
       if (!langs.includes(code)) throw new Error(`missing language: ${code}`);
     }

@@ -10,6 +10,14 @@
 
 
 
+## [1.61.0] — 2026-05-22
+
+**feat(i18n)：新增法語作為第 9 種介面語言。** 新的依語言字典 `public/js/lib/locales/i18n-dict.fr.js`（`window.__I18N_DICT_FR`）與英語完全對等（**668 個鍵**）；新的說明包 `docs/help/fr.md`（**19 H2 / 73 H3**，與 `en` 結構完全對等）。`fr` 已註冊至語言切換器與瀏覽器自動偵測（`i18n.js`）、組裝器（`i18n-dict.js`）、`index.html`（位於組裝器之前的 `<script>` 標籤）、測試快照以及所有測試語言清單中。初始翻譯表來自 **PR #9**（社群貢獻）。邏輯無變更：`t()` 與所有視圖保持不變。單元測試 **1001 / 1001**；Playwright 語言巡覽擴充為 9 個子測試。(FR-LOCALE)
+
+---
+
+
+
 ## [1.60.0] — 2026-05-22
 
 **refactor(i18n): 將 8 語言合一的大檔案拆分為按語言的檔案 (I18N-SPLIT).** 翻譯字典原先位於單一 `public/js/lib/i18n-dict.js`；現改為 `public/js/lib/locales/` 下**每種語言一個檔案**外加共用的 `i18n-dict.aliases.js`，讓譯者可以獨立編輯單一語言（i18next / OpenWA 佈局）。`i18n-dict.js` 現在是一個**組裝器**，把各語言表重新合併成完全相同的 `window.__I18N_DICT`，因此 `t()` 與所有視圖保持不變。透過 `<script src>` 同步載入——無建置、無 fetch。快照證明遷移無損（678 個鍵）。工具與約 25 個測試已適配拆分；新增 `tests/i18n-locale-files.test.mjs` 與 `tests/playwright-locale-sweep.mjs`（在真實 Chromium 中逐頁 × 8 語言驗證）。994 → **1000** 單元 · 62 → **70** Playwright。無行為變化。(I18N-SPLIT)

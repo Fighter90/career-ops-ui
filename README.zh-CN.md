@@ -3,7 +3,7 @@
 > 一套简洁的、文档风格 Web 界面,为 [career-ops](https://github.com/santifer/career-ops) AI 求职流水线而生。
 > 在浏览器的一个标签页里完成搜索、评估、深度调研、投递与跟踪 —— 无需在 Claude Code、终端与 markdown 文件之间反复切换。
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | **简体中文** | [繁體中文](README.zh-TW.md)
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | **简体中文** | [繁體中文](README.zh-TW.md) | [Français](README.fr.md)
 
 [![tests](https://img.shields.io/badge/tests-1000%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)

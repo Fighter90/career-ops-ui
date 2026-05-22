@@ -15,6 +15,7 @@
  *   locales/i18n-dict.ru.js     → window.__I18N_DICT_RU
  *   locales/i18n-dict.zh-CN.js  → window.__I18N_DICT_ZH_CN
  *   locales/i18n-dict.zh-TW.js  → window.__I18N_DICT_ZH_TW
+ *   locales/i18n-dict.fr.js     → window.__I18N_DICT_FR
  *   locales/i18n-dict.aliases.js→ window.__I18N_ALIASES      (key → 'canonical.key')
  *
  * This file merges those locale-major tables back into the key-major
@@ -45,7 +46,7 @@
  */
 window.__I18N_DICT = (function buildDict() {
   // en first: it is the fallback locale and the parity reference.
-  const LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+  const LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
   const TABLES = {
     en: window.__I18N_DICT_EN,
     es: window.__I18N_DICT_ES,
@@ -55,6 +56,7 @@ window.__I18N_DICT = (function buildDict() {
     ru: window.__I18N_DICT_RU,
     'zh-CN': window.__I18N_DICT_ZH_CN,
     'zh-TW': window.__I18N_DICT_ZH_TW,
+    fr: window.__I18N_DICT_FR,
   };
 
   const dict = {};

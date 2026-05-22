@@ -3,7 +3,7 @@
 > [career-ops](https://github.com/santifer/career-ops) — AI 駆動の求職パイプラインに、docs スタイルの洗練された Web インターフェースを与えるプロジェクトです。
 > Claude Code、ターミナル、Markdown ファイルを行き来する代わりに、検索・評価・ディープリサーチ・応募・トラッキングを 1 つのブラウザタブから完結できます。
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | **日本語** | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | **日本語** | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md)
 
 [![tests](https://img.shields.io/badge/tests-1000%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)

@@ -2,9 +2,17 @@
 
 **career-ops-ui** 의 모든 주요 변경 사항을 기록합니다. 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 를 따르며, 버전은 [Semantic Versioning](https://semver.org/) 을 준수합니다.
 
-번역: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md)
+번역: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md)
 
 > **i18n 노트** — 이 파일은 완전히 한국어로 번역되었습니다. 모든 버전 항목의 본문이 출판 등급의 한국어로 제공되며, 영어 본문 임시 대체 표기는 더 이상 사용되지 않습니다.
+
+---
+
+
+
+## [1.61.0] — 2026-05-22
+
+**feat(i18n): 프랑스어를 9번째 UI 언어로 추가.** 새 로케일별 사전 `public/js/lib/locales/i18n-dict.fr.js`(`window.__I18N_DICT_FR`)는 영어와 **668개 키** 완전 동등성을 가지며, 새 도움말 번들 `docs/help/fr.md`(**19 H2 / 73 H3**, `en`과 정확한 구조 동등성). `fr`는 언어 전환기와 브라우저 자동 감지(`i18n.js`), 어셈블러(`i18n-dict.js`), `index.html`(어셈블러 앞의 `<script>` 태그), 테스트 스냅샷, 모든 테스트 로케일 목록에 등록됨. 초기 번역 표는 **PR #9**(커뮤니티 기여)에서 가져옴. 로직 변경 없음: `t()`와 모든 뷰는 그대로. 단위 테스트 **1001 / 1001**; Playwright 로케일 스윕은 9개 서브테스트로 확장. (FR-LOCALE)
 
 ---
 

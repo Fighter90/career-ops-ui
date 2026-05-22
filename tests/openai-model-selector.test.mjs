@@ -59,7 +59,7 @@ test('config.js wires an OPENAI_MODEL select FIELD after OPENAI_API_KEY', () => 
 
 test('i18n: config.openaiModel + config.openaiModelHint cover all 8 locales', () => {
   const dict = legacyDictText();
-  const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+  const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
   for (const key of ['config.openaiModel', 'config.openaiModelHint']) {
     const line = dict.split('\n').find((l) => l.includes(`'${key}'`));
     assert.ok(line, `i18n key ${key} missing`);

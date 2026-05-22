@@ -22,6 +22,7 @@
  *   web-ui/images/dashboard-ja.png
  *   web-ui/images/dashboard-zh-CN.png
  *   web-ui/images/dashboard-zh-TW.png
+ *   web-ui/images/dashboard-fr.png
  */
 import { chromium } from 'playwright';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -32,12 +33,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_UI_ROOT = path.resolve(__dirname, '..');
 const IMAGES_DIR = path.join(WEB_UI_ROOT, 'images');
 const BASE_URL = process.env.CAREER_OPS_UI_URL || 'http://127.0.0.1:4317';
-const LOCALES = ['en', 'ru', 'es', 'pt-BR', 'ko', 'ja', 'zh-CN', 'zh-TW'];
+const LOCALES = ['en', 'ru', 'es', 'pt-BR', 'ko', 'ja', 'zh-CN', 'zh-TW', 'fr'];
 // What the lang button click stores in localStorage. Internal locale ID — not
 // always the same as the file naming convention (ko ↔ ko-KR).
 const LOCALE_TO_FILE = {
   en: 'en', ru: 'ru', es: 'es', 'pt-BR': 'pt-BR',
-  ko: 'ko-KR', ja: 'ja', 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW'
+  ko: 'ko-KR', ja: 'ja', 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', fr: 'fr'
 };
 const SETTLE_MS = 2000;
 const VIEWPORT = { width: 1440, height: 900 };

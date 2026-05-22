@@ -36,7 +36,7 @@ test('the batch-tsv textarea has an aria-label (accessible name)', () => {
 test('batch.tsvAria is defined across all 8 locales', () => {
   const line = DICT.split('\n').find((l) => l.includes("'batch.tsvAria'"));
   assert.ok(line, 'i18n key batch.tsvAria missing');
-  for (const loc of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const loc of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const tok = /-/.test(loc) ? `'${loc}':` : `${loc}:`;
     assert.ok(line.includes(tok), `batch.tsvAria missing locale ${loc}`);
   }

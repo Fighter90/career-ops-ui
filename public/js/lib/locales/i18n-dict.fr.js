@@ -422,7 +422,7 @@ window.__I18N_DICT_FR = {
   'router.netError': "Aucune connexion au serveur", // No connection to server
   'router.error': "Erreur", // Error
   'router.runStart': "Exécuter", // Run
-  'notFound.title': "404 — page not found", // 404 — page not found
+  'notFound.title': "404 — page introuvable", // 404 — page not found
   'notFound.body': "La route «{path}» n'existe pas.", // The route “{path}” doesn’t exist.
   'notFound.back': "Retour au tableau de bord", // Back to Dashboard
   'app.runDoctor': "Exécution de doctor.mjs…", // Running doctor.mjs…
@@ -496,7 +496,7 @@ window.__I18N_DICT_FR = {
   'deep.briefUnstructured.title': "Ce bref ne correspond pas à la structure canonique de 6 sections", // This brief doesn't match the canonical 6-section structure
   'deep.briefUnstructured.body': "Réexécuter avec Exécuter en direct, ou vérifiez `modes/deep.md` dans votre projet parent pour imposer le format final.", // Re-run with Run live, or check `modes/deep.md` in your parent project to enforce the final-form output.
   'deep.docsLink': "Lire la référence de recherche approfondie", // Read the deep-research reference
-  'apply.title': "Liste de contrôle d'application", // Apply checklist
+  'apply.title': "Liste de contrôle de candidature", // Apply checklist
   'apply.bannerTitle': "Seulement la liste de contrôle", // Checklist only
   'apply.playwrightHint': "Besoin de Playwright ? Voir ", // Need Playwright? See 
   'apply.docsLink': "Guide d'application", // Apply guide

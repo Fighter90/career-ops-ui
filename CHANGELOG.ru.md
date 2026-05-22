@@ -2,9 +2,17 @@
 
 Все значимые изменения **career-ops-ui** задокументированы здесь. Формат — [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/), версии по [Semantic Versioning](https://semver.org/lang/ru/).
 
-Переводы: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md)
+Переводы: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md)
 
 > **Примечание о переводе.** Файл полностью переведён на русский: тела всех записей переписаны на технический русский без англоязычных заглушек.
+
+---
+
+
+
+## [1.61.0] — 2026-05-22
+
+**feat(i18n): добавлен французский как 9-й язык интерфейса.** Новый словарь по локали `public/js/lib/locales/i18n-dict.fr.js` (`window.__I18N_DICT_FR`) с полным паритетом **668 ключей** с английским; новый пакет справки `docs/help/fr.md` (**19 H2 / 73 H3**, точный структурный паритет с `en`). `fr` зарегистрирован в переключателе языка и автоопределении браузера (`i18n.js`), в ассемблере (`i18n-dict.js`), в `index.html` (тег `<script>` перед ассемблером), в снапшоте тестов и во всех списках локалей тестов. Исходная таблица перевода — из **PR #9** (вклад сообщества). Без изменений логики: `t()` и все представления неизменны. **1001 / 1001** модульных тестов; прогон локалей Playwright расширен до 9 подтестов. (FR-LOCALE)
 
 ---
 

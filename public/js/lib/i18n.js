@@ -23,6 +23,7 @@ window.I18n = (function () {
     { code: 'ru',    label: 'Русский' },
     { code: 'zh-CN', label: '简体中文' },
     { code: 'zh-TW', label: '繁體中文' },
+    { code: 'fr',    label: 'Français' },
   ];
 
   // The dictionary is loaded from `i18n-dict.js` via `<script src>`. If
@@ -52,6 +53,7 @@ window.I18n = (function () {
     if (browser.startsWith('ja')) return 'ja';
     if (browser.startsWith('es')) return 'es';
     if (browser.startsWith('ru')) return 'ru';
+    if (browser.startsWith('fr')) return 'fr';
     return 'en';
   }
 

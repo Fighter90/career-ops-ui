@@ -486,7 +486,7 @@ test('UX-D-B (v1.58.48): #/dashboard renders a fixture-profile warning banner wh
   for (const key of ['onboarding.fixtureWarning', 'onboarding.fixProfile']) {
     const row = dict.match(new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]+)\\}`));
     assert.ok(row, `i18n-dict.js missing '${key}'`);
-    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
       const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
       assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
         `'${key}' must have a non-empty ${lang} value`);
@@ -561,7 +561,7 @@ test('UX-D-L (v1.58.44): #/deep saved-research opened brief has an inline × clo
   const dict = legacyDictText();
   const row = dict.match(/'deep\.closeBrief':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'deep.closeBrief'");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'deep.closeBrief' must have a non-empty ${lang} value`);
@@ -579,7 +579,7 @@ test('UX-D-F (v1.58.43): empty JD on #/evaluate triggers a distinct localized er
   const dict = legacyDictText();
   const row = dict.match(/'eval\.emptyJd':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'eval.emptyJd'");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'eval.emptyJd' must have a non-empty ${lang} value`);
@@ -597,7 +597,7 @@ test('UX-D-J (v1.58.42): every advisor view renders a localized ETA chip next to
   const dict = legacyDictText();
   const row = dict.match(/'advisor\.eta':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'advisor.eta'");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'advisor.eta' must have a non-empty ${lang} value`);
@@ -644,7 +644,7 @@ test('NEW-D2 (v1.58.39): #/dashboard header Refresh button gives explicit toast 
   for (const key of ['dash.refreshAria', 'dash.refreshed']) {
     const row = dict.match(new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]+)\\}`));
     assert.ok(row, `i18n-dict.js missing '${key}'`);
-    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
       const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
       assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
         `'${key}' must have a non-empty ${lang} value`);
@@ -668,7 +668,7 @@ test('NEW-D3 (v1.58.38): #/tracker search input has explicit aria-label distinct
   const dict = legacyDictText();
   const row = dict.match(/'track\.searchAria':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'track.searchAria'");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'track.searchAria' must have a non-empty ${lang} value`);
@@ -677,7 +677,7 @@ test('NEW-D3 (v1.58.38): #/tracker search input has explicit aria-label distinct
   // (per WCAG 4.1.2 — accessible name must convey purpose, not duplicate
   // the placeholder).
   const phRow = dict.match(/'track\.search':\s*\{([^}]+)\}/);
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     const phM = phRow[1].match(new RegExp(`${keyPat}\\s*:\\s*'([^']+)'`));
     const ariaM = row[1].match(new RegExp(`${keyPat}\\s*:\\s*'([^']+)'`));
@@ -722,7 +722,7 @@ test('v1.58.35: notifications drawer hides via `[hidden]` (CSS override) + help 
     `app.js must call open() exactly once (only from the bell click ternary). Found ${openCalls}.`);
 
   // Help §18 — every locale must document the categories.
-  for (const locale of ['en', 'es', 'ja', 'ko-KR', 'pt-BR', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const locale of ['en', 'es', 'ja', 'ko-KR', 'pt-BR', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const help = read('docs', 'help', `${locale}.md`);
     assert.match(help, /^## 18\. /m, `${locale}.md must include H2 "## 18. <Notifications>"`);
     // The categories table must be present (3 rows: success / error / info).
@@ -772,7 +772,7 @@ test('v1.58.34: notifications drawer wires bell + onToast subscribe + 4 i18n key
   for (const key of ['notif.title', 'notif.empty', 'notif.bellAria', 'notif.closeAria']) {
     const row = dict.match(new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]+)\\}`));
     assert.ok(row, `i18n-dict.js missing '${key}'`);
-    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
       const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
       assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
         `'${key}' must have a non-empty ${lang} value`);
@@ -821,7 +821,7 @@ test('U-13/U-14/U-15 (v1.58.33): toast journal + page-header spacing safety net 
   const dict = legacyDictText();
   const row = dict.match(/'cv\.unsaved':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'cv.unsaved'");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'cv.unsaved' must have a non-empty ${lang} value`);
@@ -848,7 +848,7 @@ test('U-11 (v1.58.31): tracker Legitimacy column header has localized info chip 
   const dict = legacyDictText();
   const row = dict.match(/'track\.col\.legitimacy\.help':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'track.col.legitimacy.help'");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'track.col.legitimacy.help' must have a non-empty ${lang} value`);
@@ -869,7 +869,7 @@ test('U-10 (v1.58.30): tracker Normalize/Dedup/Merge buttons disabled when rows 
   const dict = legacyDictText();
   const row = dict.match(/'track\.fixEmpty':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'track.fixEmpty'");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'track.fixEmpty' must have a non-empty ${lang} value`);
@@ -898,7 +898,7 @@ test('U-8 (v1.58.28): mode-page Generate-prompt wraps the <pre> in a collapsible
   for (const key of ['prompt.show', 'prompt.lines']) {
     const row = dict.match(new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]+)\\}`));
     assert.ok(row, `i18n-dict.js missing '${key}'`);
-    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
       const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
       assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
         `'${key}' must have a non-empty ${lang} value`);
@@ -929,7 +929,7 @@ test('U-6 (v1.58.26): scan Active-companies chip exposes localized tooltip + ari
   const dict = legacyDictText();
   const row = dict.match(/'scan\.activeCo\.help':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'scan.activeCo.help'");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'scan.activeCo.help' must have a non-empty ${lang} value`);
@@ -977,7 +977,7 @@ test('U-4 (v1.58.24): toast splits the "(METHOD /path · HTTP NNN)" postfix into
   const dict = legacyDictText();
   const row = dict.match(/'toast\.details':\s*\{([^}]+)\}/);
   assert.ok(row, "i18n-dict.js missing 'toast.details'");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'toast.details' must have a non-empty ${lang} value`);
@@ -1036,7 +1036,7 @@ test('U-2 (v1.58.22): #/auto separates ✨ from the H1 via a .page-icon span', (
   const dict = legacyDictText();
   const row = dict.match(/'auto\.title':\s*\{([^}]+)\}/);
   assert.ok(row, 'auto.title row must exist');
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     const m = row[1].match(new RegExp(`${keyPat}\\s*:\\s*'([^']+)'`));
     assert.ok(m, `auto.title row missing ${lang}`);
@@ -1209,7 +1209,7 @@ test('I-1 (v1.58.15): top-bar search aria-label + visually-hidden label are loca
     const re = new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]*)\\}`);
     const row = dict.match(re);
     assert.ok(row, `i18n-dict.js missing '${key}'`);
-    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
       const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
       assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
         `'${key}' must have a non-empty ${lang} value`);
@@ -1256,7 +1256,7 @@ test('M-9 (v1.58.14): connection-banner Refresh emits a localized toast (no sile
     const re = new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]*)\\}`);
     const row = dict.match(re);
     assert.ok(row, `i18n-dict.js missing '${key}'`);
-    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
       const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
       assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
         `'${key}' must have a non-empty ${lang} value`);
@@ -1312,7 +1312,7 @@ test('M-8 (v1.58.13): apply checklist renders interactive checkboxes + persists 
     const re = new RegExp(`'${key.replace(/\./g, '\\.')}':\\s*\\{([^}]*)\\}`);
     const row = dict.match(re);
     assert.ok(row, `i18n-dict.js missing '${key}'`);
-    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
       const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
       assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
         `'${key}' must have a non-empty ${lang} value`);
@@ -1340,7 +1340,7 @@ test('M-7 (v1.58.12): cost hint follows active provider; OpenRouter + null-cost 
   const dict = legacyDictText();
   const row = dict.match(/'cost\.varies':\s*\{([^}]*)\}/);
   assert.ok(row, "i18n-dict.js missing 'cost.varies'");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'cost.varies' must have a non-empty ${lang} value`);
@@ -1399,7 +1399,7 @@ test('M-2 (v1.58.10): UI.modal() drains the progress toast at entry (defence-in-
     const re = new RegExp(`'${key.replace('.', '\\.')}':\\s*\\{([^}]*)\\}`);
     const row = dict.match(re);
     assert.ok(row, `i18n-dict.js missing '${key}'`);
-    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+    for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
       const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
       assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
         `'${key}' must have a non-empty ${lang} value`);
@@ -1452,7 +1452,7 @@ test('BUG-008-tb: top-bar Doctor modal title equals the localized button label (
   const dict = legacyDictText();
   const row = dict.match(/'top\.doctor':\s*\{([^}]*)\}/);
   assert.ok(row, "i18n-dict.js missing 'top.doctor' entry");
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {
     // i18n-dict uses bare keys for short locales (en, es, ko, ja, ru)
     // and quoted keys for hyphenated locales (pt-BR, zh-CN, zh-TW).
     const keyPat = /-/.test(lang) ? `['"]${lang}['"]` : `(?:['"]${lang}['"]|${lang})`;
@@ -1503,7 +1503,7 @@ test('BUG-010: reports empty state renders a page-subtitle', () => {
 
 test('i18n: new QA keys cover all 8 locales', () => {
   const dict = legacyDictText();
-  const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+  const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
   for (const key of ['followup.lastErr', 'pipe.dup', 'rep.subtitle']) {
     const line = dict.split('\n').find((l) => l.includes(`'${key}'`));
     assert.ok(line, `i18n key ${key} missing`);

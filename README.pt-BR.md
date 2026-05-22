@@ -3,7 +3,7 @@
 > Interface web limpa, estilo docs, para o pipeline de busca de emprego com IA [career-ops](https://github.com/santifer/career-ops).
 > Busque, avalie, faça deep-dive, candidate-se e rastreie cada vaga em uma única aba do navegador — em vez de alternar entre Claude Code, terminais e arquivos markdown.
 
-[English](README.md) | [Español](README.es.md) | **Português (Brasil)** | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
+[English](README.md) | [Español](README.es.md) | **Português (Brasil)** | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md)
 
 [![tests](https://img.shields.io/badge/tests-1000%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)

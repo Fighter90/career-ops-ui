@@ -30,10 +30,11 @@ const CANONICAL_URLS = [
   'https://career-ops.org/docs/introduction/guides/set-up-playwright',
 ];
 
-const HELP_BUNDLES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW'];
+const HELP_BUNDLES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
 const README_FILES = [
   'README.md', 'README.es.md', 'README.pt-BR.md', 'README.ko-KR.md',
   'README.ja.md', 'README.ru.md', 'README.zh-CN.md', 'README.zh-TW.md',
+  'README.fr.md',
 ];
 
 test('every help bundle references all 5 canonical career-ops.org guides', () => {
