@@ -537,6 +537,21 @@ Para a avaliação de production-readiness (deployment gates, registro de riscos
 
 ---
 
+## Localização
+
+A interface inclui **8 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. Desde a **v1.60.0 (I18N-SPLIT)** as traduções ficam **um arquivo por idioma** em [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, uma tabela plana `chave → texto` — mais `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) os monta em `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resolve `t('chave', 'fallback')`. Sem build, sem fetch — o tradutor edita um único arquivo de idioma.
+
+**Adicionar ou alterar um texto:** adicione a mesma chave aos 8 arquivos de idioma (a paridade é garantida por testes), use-a com `data-i18n="scan.newButton"` ou `t('scan.newButton')`, e rode `npm test`.
+
+```js
+// public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
+// public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
+```
+
+📖 **Guia completo:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — o layout por idioma, o mecanismo `@alias`, como adicionar um novo idioma e todos os gates de CI.
+
+---
+
 ## Contribuir
 
 Issues e PRs são bem-vindos. Regras da casa:

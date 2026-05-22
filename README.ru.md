@@ -538,6 +538,21 @@ russian_portals:
 
 ---
 
+## Локализация
+
+Интерфейс поддерживает **8 локалей** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. С **v1.60.0 (I18N-SPLIT)** переводы хранятся **по одному файлу на язык** в [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, плоская таблица `ключ → строка` — плюс общий `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) собирает их в `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) разрешает `t('ключ', 'fallback')`. Без сборки и без fetch — переводчик правит один файл языка.
+
+**Добавить или изменить строку:** добавьте один и тот же ключ во все 8 файлов локалей (паритет проверяется тестами), используйте через `data-i18n="scan.newButton"` или `t('scan.newButton')` и запустите `npm test`.
+
+```js
+// public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
+// public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
+```
+
+📖 **Полное руководство:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — раскладка по локалям, механизм `@alias`, добавление новой локали по шагам и все i18n-проверки CI.
+
+---
+
 ## Contributing
 
 Issues и PR приветствуются. Правила:

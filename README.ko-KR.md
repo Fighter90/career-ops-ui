@@ -537,6 +537,21 @@ production-readiness 평가(배포 게이트, 리스크 등록부, 보류된 작
 
 ---
 
+## 현지화 (Localization)
+
+UI는 **8개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. **v1.60.0 (I18N-SPLIT)**부터 번역은 [`public/js/lib/locales/`](public/js/lib/locales/) 아래 **언어당 한 파일**(`i18n-dict.<lang>.js`, 평면 `키 → 문자열` 테이블) + 공용 `i18n-dict.aliases.js`에 있습니다. [`i18n-dict.js`](public/js/lib/i18n-dict.js)가 이를 `window.__I18N_DICT`로 조립하고, [`i18n.js`](public/js/lib/i18n.js)가 `t('키', 'fallback')`을 해석합니다. 빌드·fetch 없음 — 번역가는 단일 언어 파일만 편집합니다.
+
+**문자열 추가/수정:** 동일한 키를 8개 언어 파일 모두에 추가하고(파리티는 테스트로 강제), `data-i18n="scan.newButton"` 또는 `t('scan.newButton')`로 사용한 뒤 `npm test`를 실행하세요.
+
+```js
+// public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
+// public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
+```
+
+📖 **전체 가이드:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — 언어별 레이아웃, `@alias` 메커니즘, 새 언어 추가 방법, 모든 i18n CI 게이트.
+
+---
+
 ## 기여하기
 
 이슈와 PR을 환영합니다. 하우스 룰은 다음과 같습니다.

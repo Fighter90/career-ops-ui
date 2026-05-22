@@ -531,6 +531,24 @@ For the production-readiness assessment (deployment gates, risk register, deferr
 
 ---
 
+## Localization
+
+The UI ships **8 locales** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. Since **v1.60.0 (I18N-SPLIT)** translations live **one file per locale** under [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, each a flat `key → string` table — plus a shared `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) assembles them into `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resolves `t('key', 'fallback')`. No build step, no runtime fetch — a translator edits a single language file in isolation.
+
+**Add or change a string:**
+
+```js
+// public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
+// public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
+// …add the same key to all 8 locale files (parity is gated)
+```
+
+Then use it via `data-i18n="scan.newButton"` in markup or `t('scan.newButton')` in JS, and run `npm test`. To add a brand-new language, register it in `i18n.js` (`LANGS` + `detect()`), the assembler, `index.html`, and the locale-enumerating tooling.
+
+📖 **Full guide:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — the per-locale layout, the `@alias` mechanism, adding a new locale step-by-step, and every i18n CI gate.
+
+---
+
 ## Contributing
 
 Issues and PRs welcome. House rules:
