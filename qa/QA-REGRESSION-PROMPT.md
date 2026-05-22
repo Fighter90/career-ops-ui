@@ -4,6 +4,7 @@ Single hand-off for a QA tester (human or agent) to verify v1.60.0 end-to-end. S
 
 **Baseline at v1.60.0:** **1000** unit · **70** Playwright (smoke + full-cycle + forms + locale-sweep) · 20 smoke E2E · **23 / 23** comprehensive E2E · CI matrix `success` on Node 18 / 20 / 22 + Playwright e2e.
 **Headline change:** **I18N-SPLIT** — the 8-language translation megafile was split into one file per locale under `public/js/lib/locales/`. `i18n-dict.js` is now an assembler; `t()`, every view, every call-site unchanged. Lossless (assembled dict ≡ pre-split snapshot, **678 keys**). No user-facing behaviour change. See §4.
+**Also in v1.60.0:** localization is now documented in 3 places — `docs/LOCALIZATION.md`, a `## Localization` section in all 8 READMEs, and in-app **Help §19** (§4.7); and the CI pipeline gained a **code-quality** job (syntax + coverage floor + audit), **CodeQL**, **dependency-review**, and a **PR AI-review** job (§6).
 **Server:** `http://127.0.0.1:4317` (start with `npm start`).
 **Browser smoke:** Chrome stable + 1 secondary (Firefox or Safari).
 
@@ -141,6 +142,16 @@ Manual confirm (browser): switch locale, the sidebar **Dashboard** label must re
 ### 4.6 CI inline gate is real again
 The `ci.yml` "Verify i18n coverage" step now loads the per-locale files + alias map + assembler (it had been a silent no-op against an empty dict since the v1.23 split). Confirm it prints `keys 678 × 8 · missing/bad 0` and fails on a `< 600` floor.
 
+### 4.7 Localization is documented in 3 places (verify all present)
+```bash
+test -f docs/LOCALIZATION.md && echo "guide present"
+grep -l "docs/LOCALIZATION.md" README*.md | wc -l        # → 8 (every README links the guide)
+for l in en es pt-BR ko-KR ja ru zh-CN zh-TW; do
+  grep -q "LOCALIZATION.md" "docs/help/$l.md" && echo "$l help §19 ok" || echo "$l help §19 MISSING";
+done
+```
+Manual (browser): open `#/help`, the auto-built TOC must list **§19 "Localizing the app into your language"** (translated title per locale); the section explains the per-locale files, adding a key, `@alias`, and adding a new language. The README ships a `## Localization` section in all 8 languages, each linking `docs/LOCALIZATION.md`.
+
 ---
 
 ## §5 — i18n parity sweep
@@ -163,7 +174,24 @@ npm run test:e2e:full     # 23 / 23 comprehensive
 npm run test:e2e:browser  # 70 Playwright (smoke + full-cycle + forms + locale-sweep)
 npm run test:ci           # the aggregate hard gate (unit + no-also + changelog-parity + i18n-audit)
 ```
-⚠️ Pre-commit AI review is advisory; **`ci.yml` is the hard gate.** Watch the GitHub Actions run after merge — Node 18 / 20 / 22 + Playwright e2e must all finish `success`.
+**CI jobs to confirm green on a PR / push (v1.60.0 pipeline):**
+
+| Check | Type | Gate |
+|---|---|---|
+| Unit + integration (node 18 / 20 / 22) | hard | 1000/1000 |
+| Playwright e2e (smoke + comprehensive + browser) | hard | all pass |
+| Code quality (syntax · coverage · audit) | hard (syntax + coverage floor) / advisory (audit) | `node --check` all JS · line ≥ 90% / branch ≥ 80% |
+| CodeQL (analyze javascript) | advisory (annotates Security tab) | pass |
+| Review dependency changes | hard on PRs | no new HIGH-severity dep advisory |
+| Claude review (push → main / pull request) | advisory (fail-soft) | posts a comment |
+
+Local equivalents of the new code-quality gate:
+```bash
+git ls-files -z '*.js' '*.mjs' | xargs -0 -n1 node --check   # syntax gate (237 files)
+npm run test:coverage                                         # coverage floor (≥90% line / ≥80% branch)
+npm audit --omit=dev                                          # advisory
+```
+⚠️ Pre-commit AI review is advisory; **`ci.yml` is the hard gate.** Watch the GitHub Actions run after merge — all jobs above must finish `success` (CodeQL + Claude review are advisory, never block).
 
 ---
 
