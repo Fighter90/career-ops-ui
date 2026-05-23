@@ -62,7 +62,7 @@
     "prepare": "node scripts/install-hooks.mjs"
   },
   "dependencies": {
-    "express": "^4.21.0",
+    "express": "^4.22.2",
     "js-yaml": "^4.1.0",
     "multer": "^2.1.1"
   }
