@@ -542,7 +542,8 @@ CI прогоняет матрицу unit + e2e + Playwright на каждый p
 | `OPENROUTER_API_KEY` | unset              | Headless live-eval через OpenRouter — один ключ, 300+ моделей (5-й / последний в `auto`). |
 | `OPENROUTER_MODEL`   | `openrouter/auto`  | id `vendor/model`. Каталог грузится вживую из `GET /api/openrouter/models`.         |
 | `LLM_RATE_LIMIT`     | `10/60s`           | Настройка лимита LLM-эндпоинтов в формате `N/Ws` (см. *Заметки по безопасности*).   |
-| `(сервер использует UA по умолчанию)` | unset | Переопределение User-Agent для hh.ru (снижает вероятность 403 с не-RU IP)        |
+| `HH_USER_AGENT`      | `career-ops-web-ui/1.0 …` | Переопределение User-Agent для hh.ru. Важно: блок 403 идёт по **IP**, поэтому один UA его не снимает — используйте `HH_PROXY` или российский IP. |
+| `HH_PROXY`           | unset              | URL российского HTTP/HTTPS-прокси (`http://user:pass@ru-host:port`). Через него идёт **только** запрос к hh.ru в обход гео-блока; остальные источники остаются прямыми. Подхватывается при перезапуске. |
 
 Расширение `portals.yml`, которое распознаёт данный UI (добавьте к существующему файлу в родительском проекте):
 

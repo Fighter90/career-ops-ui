@@ -533,7 +533,8 @@ Environment variables (read at server start, all optional except where noted):
 | `QWEN_MODEL`         | `qwen-max`         | Override Qwen model.                                                               |
 | `OPENROUTER_API_KEY` | unset              | Headless live-eval via OpenRouter — one key, 300+ models (5th / last in `auto`).   |
 | `OPENROUTER_MODEL`   | `openrouter/auto`  | `vendor/model` id. Catalogue loaded live from `GET /api/openrouter/models`.        |
-| `(server uses default UA)`      | unset              | Override hh.ru User-Agent (helps reduce 403 from non-RU IPs)                       |
+| `HH_USER_AGENT`      | `career-ops-web-ui/1.0 …` | Override the hh.ru User-Agent. Note: the 403 block is by **IP**, so UA alone won't lift it — use `HH_PROXY` or a Russian IP. |
+| `HH_PROXY`           | unset              | Russian HTTP/HTTPS proxy URL (`http://user:pass@ru-host:port`). Routes **only** the hh.ru request through it to bypass the geo-block; other sources stay direct. Picked up on restart. |
 
 `portals.yml` extension recognized by this UI (add to your existing file in the parent project):
 

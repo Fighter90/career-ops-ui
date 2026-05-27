@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.64.0] — 2026-05-27
+
+**feat(scan): enruta la petición a hh.ru por un proxy ruso mediante `HH_PROXY`.** hh.ru bloquea su API por **IP**, no por User-Agent — por eso `HH_USER_AGENT` por sí solo nunca levantaba un 403 desde un nodo de salida no ruso. Define `HH_PROXY` con la URL de un proxy ruso HTTP/HTTPS (p. ej. `http://user:pass@ru-host:port`) y **solo** la petición a hh.ru pasa por él; las demás fuentes mantienen su conexión directa. Construido sobre el `ProxyAgent` de `undici` (nueva dependencia de runtime); el dispatcher se omite por completo cuando `HH_PROXY` no está definido. 3 pruebas nuevas; suite 1041/1041.
+
+---
+
+
+
 ## [1.63.2] — 2026-05-27
 
 **feat(scan): % de progreso en vivo + detalle por fuente en la consola de `#/scan`.** La barra ahora es **determinada** — los escáneres emiten eventos de progreso (EN: por empresa; RU: por consulta) vía SSE, y la barra se llena con una etiqueta **«Scanning… NN%»** (la franja animada solo hasta el primer evento). El primer fallo de cada fuente (timeout / 403 / red) se registra en detalle en la consola; los repetidos se suprimen. 1 prueba nueva; suite 1040/1040.

@@ -107,6 +107,47 @@ test('searchHH: builds correct URL with params', async () => {
   assert.match(capturedUrl, /schedule=remote/);
 });
 
+// ───────────────── HH_PROXY (geo-block bypass via Russian proxy) ─────────────────
+
+const okJson = async () =>
+  new Response('{"items": []}', { status: 200, headers: { 'content-type': 'application/json' } });
+
+test('searchHH: no dispatcher option when HH_PROXY unset', async () => {
+  delete process.env.HH_PROXY;
+  let opts = null;
+  const fakeFetch = async (_url, o) => { opts = o; return okJson(); };
+  await searchHH('PHP', { fetchImpl: fakeFetch });
+  assert.equal('dispatcher' in opts, false, 'direct connection must not carry a dispatcher');
+});
+
+test('searchHH: passes a proxy dispatcher when HH_PROXY is set', async () => {
+  process.env.HH_PROXY = 'http://user:pass@127.0.0.1:8080';
+  try {
+    let opts = null;
+    const fakeFetch = async (_url, o) => { opts = o; return okJson(); };
+    await searchHH('PHP', { fetchImpl: fakeFetch });
+    assert.ok(opts.dispatcher, 'dispatcher must be present when HH_PROXY is set');
+    assert.equal(typeof opts.dispatcher.dispatch, 'function', 'dispatcher must be an undici Dispatcher');
+  } finally {
+    delete process.env.HH_PROXY;
+  }
+});
+
+test('hhProxyDispatcher: reflects HH_PROXY and rebuilds on change', async () => {
+  const { hhProxyDispatcher } = await import('../server/lib/sources/hh.mjs');
+  delete process.env.HH_PROXY;
+  assert.equal(hhProxyDispatcher(), undefined, 'undefined when unset');
+
+  process.env.HH_PROXY = 'http://127.0.0.1:8080';
+  const a = hhProxyDispatcher();
+  assert.ok(a, 'agent built when set');
+  assert.equal(hhProxyDispatcher(), a, 'cached for same URL');
+
+  process.env.HH_PROXY = 'http://127.0.0.1:9090';
+  assert.notEqual(hhProxyDispatcher(), a, 'rebuilt when URL changes');
+  delete process.env.HH_PROXY;
+});
+
 // ───────────────────────── HABR ─────────────────────────
 
 test('parseHabrCards: extracts vacancy fields', () => {

@@ -2,18 +2,43 @@
  * hh.ru scanner. Public API at api.hh.ru.
  *
  * Notes for users outside Russia:
- *   • hh.ru blocks API requests from non-RU IPs with 403.
- *   • If you get 403, set HH_USER_AGENT in .env to your registered app's UA
- *     (https://dev.hh.ru/admin) — that reduces but does not eliminate the block.
- *   • Best run from a Russian IP / VPN exit node.
+ *   • hh.ru blocks API requests from non-RU IPs with 403. The block is by IP,
+ *     not User-Agent — HH_USER_AGENT alone does NOT lift it.
+ *   • To reach the API from a non-RU exit node, set HH_PROXY to a Russian
+ *     HTTP/HTTPS proxy URL (e.g. `http://user:pass@ru-host:port`). Only the
+ *     hh.ru request is routed through it; every other source uses the direct
+ *     connection. Requires a process restart to pick up a changed value.
+ *   • Alternatively, run the whole server from a Russian IP / VPN exit node.
  *
  * Schema docs: https://github.com/hhru/api
  */
+
+import { ProxyAgent } from 'undici';
 
 const HH_API = 'https://api.hh.ru/vacancies';
 const DEFAULT_UA =
   process.env.HH_USER_AGENT ||
   'career-ops-web-ui/1.0 (sergey-emelyanov@github.com)';
+
+// Lazily-built proxy dispatcher, cached per HH_PROXY value so a test (or a
+// restart with a new value) rebuilds it instead of reusing a stale agent.
+// ProxyAgent construction is connectionless — it dials only on first request.
+let _proxy = { url: null, agent: null };
+
+/**
+ * Resolve the undici dispatcher for the hh.ru request from HH_PROXY.
+ * Returns `undefined` when no proxy is configured (direct connection).
+ * @returns {import('undici').Dispatcher | undefined}
+ */
+export function hhProxyDispatcher() {
+  const url = process.env.HH_PROXY || '';
+  if (!url) {
+    _proxy = { url: null, agent: null };
+    return undefined;
+  }
+  if (_proxy.url !== url) _proxy = { url, agent: new ProxyAgent(url) };
+  return _proxy.agent;
+}
 
 const AREA_MOSCOW = 1;
 const AREA_RUSSIA = 113;
@@ -41,8 +66,13 @@ export async function searchHH(query, opts = {}) {
   });
   if (onlyRemote) params.set('schedule', 'remote');
 
+  // undici honors a per-request `dispatcher`; the timeout wrapper forwards it
+  // verbatim to native fetch. Omitted entirely when HH_PROXY is unset.
+  const dispatcher = hhProxyDispatcher();
+
   const res = await fetchImpl(`${HH_API}?${params}`, {
     signal,
+    ...(dispatcher ? { dispatcher } : {}),
     headers: {
       'User-Agent': DEFAULT_UA,
       Accept: 'application/json',

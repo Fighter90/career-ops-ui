@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.64.0] — 2026-05-27
+
+**feat(scan): route the hh.ru request through a Russian proxy via `HH_PROXY`.** hh.ru geo-blocks its API by **IP**, not User-Agent — so `HH_USER_AGENT` alone never lifted a 403 from a non-RU exit node. Set `HH_PROXY` to a Russian HTTP/HTTPS proxy URL (e.g. `http://user:pass@ru-host:port`) and **only** the hh.ru request is routed through it; every other source keeps its direct connection. Built on `undici`'s `ProxyAgent` (new runtime dep); the dispatcher is omitted entirely when `HH_PROXY` is unset, and a changed value is picked up on restart. 3 new tests; suite 1041/1041.
+
+---
+
+
+
 ## [1.63.2] — 2026-05-27
 
 **feat(scan): live % progress + per-source detail in the `#/scan` console.** The progress bar is now **determinate** — scanners emit progress events (EN: per company; RU: per query) forwarded over SSE, and the bar fills with a live **"Scanning… NN%"** label (animated indeterminate stripe only until the first event). Each source's first failure (timeout / 403 / network) is now logged to the console in detail (e.g. `⚠ hh timed out: …`), then repeats are suppressed. 1 new test; suite 1040/1040.
