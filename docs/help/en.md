@@ -953,6 +953,33 @@ After scoring, the canonical follow-ups are:
 
 ---
 
+### Scanning hh.ru from outside Russia (`HH_PROXY`)
+
+hh.ru geo-blocks its public API by **IP address**. From a non-Russian exit node every `api.hh.ru` request returns **HTTP 403 forbidden**; the scanner logs a warning, disables hh.ru for that run, and keeps going with the other sources. Setting `HH_USER_AGENT` alone does **not** lift the block, and neither do browser-like headers (Referer, Accept-Language, etc.) — the gate is your **IP**, full stop. To include hh.ru from abroad, route **only its request** through a Russian proxy with `HH_PROXY`; every other source keeps its direct connection.
+
+**1 — Get a Russian proxy. Three independent gates, all required:**
+- **IPv4, not IPv6.** `api.hh.ru` is IPv4-only (no AAAA record). An IPv6 proxy can never reach it — it fails `502 Bad Gateway / Host Not Found` every time. IPv6 is the cheap default, so pick **IPv4** explicitly.
+- **HTTP/HTTPS, not SOCKS.** The proxy tunnels HTTPS via `CONNECT`. **SOCKS5 is not supported** (the implementation uses undici's `ProxyAgent`).
+- **Residential / mobile, not datacenter.** hh.ru returns **403** for hosting/datacenter ranges *even when the IP is Russian* (Selectel, Timeweb, VDSina, …). You need a Russian **residential or mobile** proxy — a real ISP-assigned IP. Order *резидентский / мобильный*, not *серверный*. Caveat: many resold residential **proxy pools are themselves detected and 403'd** — in testing, a Russian datacenter IP, a Russian residential *pool* IP, and full browser headers all still got 403. The most reliable paths are the server's **own home Russian connection** or an OAuth token from a registered **dev.hh.ru** app.
+
+**2 — Test it before wiring it in.** From the server:
+```bash
+curl -x "http://LOGIN:PASS@HOST:PORT" \
+  "https://api.hh.ru/vacancies?text=php&per_page=1" -w "\nHTTP %{http_code}\n"
+```
+- `HTTP 200` + JSON → works, proceed.
+- `HTTP 403 {"type":"forbidden"}` → reaches hh.ru but the IP is blocked → it's a datacenter proxy, switch to residential/mobile.
+- `CONNECT tunnel failed, response 502` → can't reach hh.ru (IPv6 proxy, expired plan, or IP not whitelisted).
+- `407` → wrong credentials.
+
+**3 — Wire it in.** Add to `.env` in the **career-ops project root** (same file as `HH_USER_AGENT`):
+```
+HH_PROXY=http://LOGIN:PASS@HOST:PORT
+```
+Read at startup — **restart the server** after editing. `.env` holds a password; never commit it.
+
+**4 — Verify.** Re-run a scan from `#/scan`; hh.ru rows appear next to Habr Career. Still skipped? Re-run the step-2 `curl` — the proxy, not the app, is the failing link.
+
 ## 8. Pipeline (`#/pipeline`)
 
 Inbox of URLs waiting to be evaluated. Lives in `data/pipeline.md`.

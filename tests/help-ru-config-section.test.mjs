@@ -128,5 +128,5 @@ test('WS10: every help-bundle has identical H3 parity (en + 7 locales)', () => {
     if (baseline === null) baseline = h3;
     assert.equal(h3, baseline, `${lang}.md has ${h3} H3 subsections, expected ${baseline}`);
   }
-  assert.equal(baseline, 74, `expected 74 H3 subsections per bundle, got ${baseline}`); // v1.58.35 §18 added 3 H3s; v1.62.x §5 added "rss (RSS / Atom boards)"
+  assert.equal(baseline, 75, `expected 75 H3 subsections per bundle, got ${baseline}`); // v1.58.35 §18 added 3 H3s; v1.62.x §5 added "rss (RSS / Atom boards)"; v1.64.0 §7 added "Scanning hh.ru from outside Russia"
 });

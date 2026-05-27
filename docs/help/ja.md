@@ -912,6 +912,33 @@ SPA の `#/dashboard` と `#/tracker` は 4.0 以上の行をハイライト
 
 ---
 
+### ロシア国外から hh.ru をスキャンする (`HH_PROXY`)
+
+hh.ru は公開 API を **IP アドレス**で地域ブロックします。ロシア国外の出口ノードからは `api.hh.ru` への各リクエストが **HTTP 403 forbidden** を返し、スキャナは警告を記録してその回は hh.ru を無効化し、他のソースで続行します。`HH_USER_AGENT` 単体ではブロックは解除されず、ブラウザ風ヘッダ（Referer、Accept-Language など）でも解除できません — 関門は **IP** です。国外から hh.ru を含めるには、`HH_PROXY` で**そのリクエストだけ**をロシアのプロキシ経由にします。他のソースは直接接続を維持します。
+
+**1 — ロシアのプロキシを用意。独立した3条件すべてが必要:**
+- **IPv6 ではなく IPv4。** `api.hh.ru` は IPv4 のみ（AAAA レコードなし）。IPv6 プロキシは到達できず毎回 `502 Bad Gateway / Host Not Found`。明示的に **IPv4** を選択。
+- **SOCKS ではなく HTTP/HTTPS。** プロキシは `CONNECT` で HTTPS をトンネルします。**SOCKS5 は非対応**（undici の `ProxyAgent` を使用）。
+- **データセンターではなく residential/モバイル。** hh.ru は *IP がロシアでも* ホスティング/データセンター帯域を **403** で弾きます（Selectel、Timeweb…）。ロシアの **residential（住宅用）またはモバイル**プロキシ（実 ISP の IP）が必要です。
+
+**2 — 設定前にテスト。** サーバから:
+```bash
+curl -x "http://LOGIN:PASS@HOST:PORT" \
+  "https://api.hh.ru/vacancies?text=php&per_page=1" -w "\nHTTP %{http_code}\n"
+```
+- `HTTP 200` + JSON → 動作。
+- `HTTP 403 {"type":"forbidden"}` → hh.ru には到達したが IP がブロック → データセンターなので residential/モバイルへ変更。
+- `CONNECT tunnel failed, response 502` → hh.ru に到達不可（IPv6 プロキシ、期限切れ、IP 未ホワイトリスト）。
+- `407` → 認証情報が誤り。
+
+**3 — 設定。** **career-ops プロジェクトルート**の `.env`（`HH_USER_AGENT` と同じファイル）に追加:
+```
+HH_PROXY=http://LOGIN:PASS@HOST:PORT
+```
+起動時に読み込まれるため、編集後は**サーバを再起動**してください。`.env` にはパスワードが含まれます。絶対にコミットしないこと。
+
+**4 — 確認。** `#/scan` でスキャンを再実行すると、hh.ru の行が Habr Career の隣に表示されます。
+
 ## 8. パイプライン (`#/pipeline`)
 
 評価待ち URL の受信箱です。`data/pipeline.md` に保存されます。

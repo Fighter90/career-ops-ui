@@ -924,6 +924,33 @@ Después del scoring, los seguimientos canónicos son:
 
 ---
 
+### Escanear hh.ru desde fuera de Rusia (`HH_PROXY`)
+
+hh.ru geo-bloquea su API pública por **dirección IP**. Desde un nodo de salida no ruso, cada petición a `api.hh.ru` devuelve **HTTP 403 forbidden**; el escáner registra un aviso, desactiva hh.ru en esa pasada y sigue con las demás fuentes. `HH_USER_AGENT` por sí solo **no** levanta el bloqueo, ni tampoco cabeceras de navegador (Referer, Accept-Language…) — la barrera es tu **IP**. Para incluir hh.ru desde el extranjero, enruta **solo su petición** por un proxy ruso con `HH_PROXY`; el resto mantiene su conexión directa.
+
+**1 — Consigue un proxy ruso. Tres requisitos independientes:**
+- **IPv4, no IPv6.** `api.hh.ru` es solo IPv4 (sin registro AAAA). Un proxy IPv6 nunca lo alcanza — falla con `502 Bad Gateway / Host Not Found`. Elige **IPv4** explícitamente.
+- **HTTP/HTTPS, no SOCKS.** El proxy tuneliza HTTPS vía `CONNECT`. **SOCKS5 no está soportado** (usa `ProxyAgent` de undici).
+- **Residencial / móvil, no datacenter.** hh.ru devuelve **403** para rangos de hosting/datacenter *aunque la IP sea rusa* (Selectel, Timeweb…). Necesitas un proxy ruso **residencial o móvil** (IP real de un ISP).
+
+**2 — Pruébalo antes de configurarlo.** Desde el servidor:
+```bash
+curl -x "http://LOGIN:PASS@HOST:PORT" \
+  "https://api.hh.ru/vacancies?text=php&per_page=1" -w "\nHTTP %{http_code}\n"
+```
+- `HTTP 200` + JSON → funciona.
+- `HTTP 403 {"type":"forbidden"}` → llega a hh.ru pero la IP está bloqueada → es datacenter, cambia a residencial/móvil.
+- `CONNECT tunnel failed, response 502` → no llega a hh.ru (proxy IPv6, plan caducado o IP sin whitelist).
+- `407` → credenciales incorrectas.
+
+**3 — Configúralo.** Añade a `.env` en la **raíz del proyecto career-ops** (el mismo archivo que `HH_USER_AGENT`):
+```
+HH_PROXY=http://LOGIN:PASS@HOST:PORT
+```
+Se lee al arrancar — **reinicia el servidor** tras editar. `.env` contiene una contraseña; nunca lo subas al repo.
+
+**4 — Verifica.** Relanza un escaneo desde `#/scan`; las filas de hh.ru aparecen junto a Habr Career.
+
 ## 8. Vacantes (`#/pipeline`)
 
 Inbox de URLs esperando ser evaluadas. Vive en `data/pipeline.md`.
