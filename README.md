@@ -10,7 +10,7 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.63.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.63.0)
+[![release](https://img.shields.io/badge/release-v1.63.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.63.1)
 
 > **v1.62.x — RSS support for the scanner.** A new generic `rss` adapter lets you scan **any RSS/Atom job board** (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …) outside Greenhouse/Ashby/Lever — add `provider: rss` + an `rss:` (or `feed_url:`) key in `portals.yml`, no code changes. Across the v1.62.* line: **v1.62.0** shipped the adapter (`server/lib/portals/adapters/rss.mjs` + `sources/rss.mjs`, regex feed parser, CDATA + HTML-entity decoding, `ALL_ADAPTERS` 6 → 7, 29 new tests); **v1.62.1** added **RSS** to the `#/scan` source-filter dropdown and fixed RSS location mapping (feed `<category>` is no longer treated as a location, so remote roles aren't dropped); **v1.62.2** made the `#/help` search full-text so subsections like RSS are findable. Zero new dependencies; docs + CHANGELOG in all 9 locales; full suite **1032/1032** green.
 

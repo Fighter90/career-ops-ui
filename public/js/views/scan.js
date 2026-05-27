@@ -69,12 +69,17 @@ Router.register('scan', async () => {
   });
   errBanner.hidden = true;
   // v1.63.0 — indeterminate progress bar; shown while a scan is in flight
-  // (toggled by setScanRunning), hidden otherwise.
+  // (toggled by setScanRunning), hidden otherwise. v1.63.1 — wrapped with a
+  // visible "Scanning…" caption and a taller (8px) bar so it's noticeable.
   const scanProgress = c('progress', {
     id: 'scan-progress', className: 'scan-progress',
     'aria-label': t('scan.progress', 'Scanning…'),
   });
-  scanProgress.hidden = true;
+  const scanProgressWrap = c('div', { className: 'scan-progress-wrap' }, [
+    c('span', { className: 'scan-progress-label', 'aria-hidden': 'true' }, t('scan.progress', 'Scanning…')),
+    scanProgress,
+  ]);
+  scanProgressWrap.hidden = true;
   const resultsEl = c('div', { id: 'scan-results' });
 
   const dryRun = c('input', { type: 'checkbox', id: 'dry-run' });
@@ -155,7 +160,7 @@ Router.register('scan', async () => {
     scanBtn.disabled = running;
     scanBtn.setAttribute('aria-busy', running ? 'true' : 'false');
     stopBtn.hidden = !running;
-    scanProgress.hidden = !running;   // v1.63.0 — progress bar follows scan state
+    scanProgressWrap.hidden = !running;   // v1.63.0/1.63.1 — progress bar + caption follow scan state
     // v1.55.4 — UX-6: while the multi-minute crawl is running, Stop
     // is the primary action — promote it to a prominent destructive
     // button so the user can find and trust it under load. Quiet
@@ -558,7 +563,7 @@ Router.register('scan', async () => {
       ]),
     ]),
 
-    c('div', null, [errBanner, scanProgress, statusRegion, consoleEl]),
+    c('div', null, [errBanner, scanProgressWrap, statusRegion, consoleEl]),
 
     c('section', { className: 'section' }, [
       c('div', { className: 'flex-between mb-3', style: { flexWrap: 'wrap', gap: '12px' } }, [

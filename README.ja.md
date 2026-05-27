@@ -10,7 +10,7 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.63.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.63.0)
+[![release](https://img.shields.io/badge/release-v1.63.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.63.1)
 
 > **v1.62.x — スキャナーへの RSS サポート。** 新しい汎用 `rss` アダプターにより、Greenhouse/Ashby/Lever 以外の**任意の RSS/Atom 求人ボード**（LaraJobs、WeWorkRemotely、RemoteOK、golangprojects など）をスキャンできます — `portals.yml` に `provider: rss` + `rss:`（または `feed_url:`）キーを追加するだけで、コード変更は不要です。v1.62.* ラインの内容：**v1.62.0** がアダプターを追加（`server/lib/portals/adapters/rss.mjs` + `sources/rss.mjs`、正規表現フィードパーサー、CDATA + HTML エンティティデコード、`ALL_ADAPTERS` 6 → 7、29 件の新規テスト）；**v1.62.1** が `#/scan` のソースフィルタードロップダウンに **RSS** を追加し、RSS の場所マッピングを修正（フィードの `<category>` が場所として扱われなくなり、リモート求人が除外されなくなりました）；**v1.62.2** が `#/help` の検索をフルテキスト化し、RSS などのサブセクションが検索可能になりました。新しい依存関係なし；docs + CHANGELOG は全 9 ロケールで更新；全スイート **1032/1032** グリーン。
 

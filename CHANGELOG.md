@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.63.1] — 2026-05-27
+
+**style(scan): make the `#/scan` progress bar more prominent.** Wrapped the in-flight indicator with a visible **"Scanning…"** caption and bumped the bar to **8px** (was a thin 4px) so it's clearly noticeable while a scan runs. No behavior change.
+
+---
+
+
+
 ## [1.63.0] — 2026-05-27
 
 **feat(scan): per-request fetch timeout + `#/scan` progress bar.** Scanner source requests had no deadline, so a stalled upstream (e.g. `api.hh.ru` from a blocked IP) could **hang the whole scan**. A new `server/lib/fetch-timeout.mjs` wraps the scanners' `fetchImpl` (`makeTimeoutFetch`, default **15s**, override via `SCAN_FETCH_TIMEOUT_MS`) so every source request has a hard deadline — a timed-out source is recorded as a non-fatal error and the scan continues (Habr keeps working even when hh.ru is unreachable). The `#/scan` page also shows an indeterminate progress bar while a scan is in flight (localized `scan.progress` across all 9 locales). 7 new tests; suite 1039/1039.

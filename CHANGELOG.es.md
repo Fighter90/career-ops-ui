@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.63.1] — 2026-05-27
+
+**style(scan): barra de progreso de `#/scan` más visible.** El indicador ahora lleva un rótulo visible **«Scanning…»** y la barra pasó a **8px** (antes 4px finos), claramente perceptible durante el escaneo. Sin cambios de comportamiento.
+
+---
+
+
+
 ## [1.63.0] — 2026-05-27
 
 **feat(scan): timeout por petición + barra de progreso en `#/scan`.** Las peticiones de fuentes no tenían límite de tiempo, así que una fuente atascada (p. ej. `api.hh.ru` desde una IP bloqueada) podía **colgar todo el escaneo**. El nuevo `server/lib/fetch-timeout.mjs` envuelve el `fetchImpl` de los escáneres (`makeTimeoutFetch`, por defecto **15s**, configurable con `SCAN_FETCH_TIMEOUT_MS`); una fuente expirada se registra como error no fatal y el escaneo continúa. `#/scan` muestra una barra de progreso durante el escaneo (`scan.progress` en las 9 localizaciones). 7 pruebas nuevas; suite 1039/1039.

@@ -1508,11 +1508,19 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 }
 .scan-error-banner .btn { margin-left: var(--space-3); }
 
-/* v1.63.0 — indeterminate progress bar shown while a scan is in flight. */
+/* v1.63.0/1.63.1 — progress bar + caption shown while a scan is in flight. */
+.scan-progress-wrap { margin: var(--space-2, 8px) 0; }
+.scan-progress-wrap[hidden] { display: none; }
+.scan-progress-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rausch);
+  margin-bottom: 4px;
+}
 .scan-progress {
   width: 100%;
-  height: 4px;
-  margin: var(--space-2, 8px) 0;
+  height: 8px;
   border: none;
   border-radius: var(--radius);
   accent-color: var(--rausch);
