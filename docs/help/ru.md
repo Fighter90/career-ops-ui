@@ -612,6 +612,17 @@ SmartRecruiters / Workday), `enabled: true|false` для
 Компании без распознаваемого ATS пропускаются (карточка **Active
 Companies** на `/#/scan` показывает их серыми с `○`).
 
+### `rss` (RSS / Atom boards)
+
+```yaml
+tracked_companies:
+  - { name: LaraJobs, enabled: true, provider: rss, rss: https://larajobs.com/feed }
+  - { name: WeWorkRemotely, enabled: true, provider: rss, rss: https://weworkremotely.com/remote-jobs.rss }
+```
+
+Нацельте сканер на любой джоб-борд с RSS/Atom-фидом (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …), добавив запись с `provider: rss` и ключом `rss:` (или `feed_url:`) — **без правок кода**. RSS-адаптер парсит каждый `<item>` (CDATA + HTML-сущности, заголовки/компании очищаются от тегов), нормализует в вакансию и прогоняет тот же `title_filter` / `location_filter` + дедуп + добавление в pipeline, что и ATS-источники. После этого **RSS** появляется как выбираемый источник в выпадающем фильтре на `#/scan`. (web-ui v1.62.x)
+
+
 ### `russian_portals`
 
 ```yaml

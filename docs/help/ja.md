@@ -607,6 +607,17 @@ SmartRecruiters / Workday のエンドポイント)、`enabled: true|false`
 ATS を持たない企業はスキップされます (`/#/scan` の **Active
 Companies** カードがグレー `○` で表示します)。
 
+### `rss` (RSS / Atom boards)
+
+```yaml
+tracked_companies:
+  - { name: LaraJobs, enabled: true, provider: rss, rss: https://larajobs.com/feed }
+  - { name: WeWorkRemotely, enabled: true, provider: rss, rss: https://weworkremotely.com/remote-jobs.rss }
+```
+
+RSS/Atom フィードを公開している任意の求人ボード（LaraJobs、WeWorkRemotely、RemoteOK、golangprojects など）に、`provider: rss` と `rss:`（または `feed_url:`）キーを持つエントリを追加するだけでスキャナーを向けられます — **コード変更不要**。RSS アダプターは各 `<item>` を解析し（CDATA + HTML エンティティ、タイトル/会社名はタグ除去）、求人に正規化し、ATS ソースと同じ `title_filter` / `location_filter` + 重複排除 + パイプライン追記のフローを実行します。その後 **RSS** は `#/scan` のフィルタードロップダウンに選択可能なソースとして表示されます。(web-ui v1.62.x)
+
+
 ### `russian_portals`
 
 ```yaml

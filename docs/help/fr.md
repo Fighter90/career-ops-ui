@@ -685,6 +685,17 @@ boards-api publique de chaque entreprise directement. Les entreprises sans
 ATS reconnaissable sont ignorées (la carte **Active Companies** sur `/#/scan`
 les affiche en gris avec `○`).
 
+### `rss` (RSS / Atom boards)
+
+```yaml
+tracked_companies:
+  - { name: LaraJobs, enabled: true, provider: rss, rss: https://larajobs.com/feed }
+  - { name: WeWorkRemotely, enabled: true, provider: rss, rss: https://weworkremotely.com/remote-jobs.rss }
+```
+
+Pointez le scanner vers n'importe quel site d'emploi publiant un flux RSS/Atom (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …) en ajoutant une entrée avec `provider: rss` et une clé `rss:` (ou `feed_url:`) — **sans modification de code**. L'adaptateur RSS analyse chaque `<item>` (CDATA + entités HTML, titres/entreprises nettoyés des balises), le normalise en offre, et applique le même flux `title_filter` / `location_filter` + déduplication + ajout au pipeline que les sources ATS. **RSS** apparaît ensuite comme source sélectionnable dans le menu de filtre de `#/scan`. (web-ui v1.62.x)
+
+
 ### `russian_portals`
 
 ```yaml

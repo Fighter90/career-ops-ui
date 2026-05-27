@@ -552,6 +552,17 @@ Workday 端點)、`enabled: true|false` 可在不刪除條目的情況下
 公司公開的 boards-api。無法辨識 ATS 的公司會被略過(`/#/scan`
 上的 **Active Companies** 卡片會以灰色 `○` 顯示它們)。
 
+### `rss` (RSS / Atom boards)
+
+```yaml
+tracked_companies:
+  - { name: LaraJobs, enabled: true, provider: rss, rss: https://larajobs.com/feed }
+  - { name: WeWorkRemotely, enabled: true, provider: rss, rss: https://weworkremotely.com/remote-jobs.rss }
+```
+
+只需在 `portals.yml` 中加入一筆帶 `provider: rss` 與 `rss:`(或 `feed_url:`)鍵的項目,即可讓掃描器對接任何發佈 RSS/Atom 來源的徵才看板(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 等)—— **無需改動程式碼**。RSS 轉接器解析每個 `<item>`(CDATA + HTML 實體,標題/公司名去除標籤),將其正規化為職缺,並執行與 ATS 來源相同的 `title_filter` / `location_filter` + 去重 + 附加到 pipeline 的流程。隨後 **RSS** 會作為可選來源出現在 `#/scan` 的篩選下拉選單中。(web-ui v1.62.x)
+
+
 ### `russian_portals`
 
 ```yaml

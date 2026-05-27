@@ -593,6 +593,17 @@ Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
 가능한 ATS가 없는 회사는 건너뜁니다 (`/#/scan`의 **Active
 Companies** 카드에서 회색 `○`로 표시).
 
+### `rss` (RSS / Atom boards)
+
+```yaml
+tracked_companies:
+  - { name: LaraJobs, enabled: true, provider: rss, rss: https://larajobs.com/feed }
+  - { name: WeWorkRemotely, enabled: true, provider: rss, rss: https://weworkremotely.com/remote-jobs.rss }
+```
+
+RSS/Atom 피드를 게시하는 모든 채용 보드(LaraJobs, WeWorkRemotely, RemoteOK, golangprojects 등)에 `provider: rss` 와 `rss:`(또는 `feed_url:`) 키를 가진 항목을 추가하기만 하면 스캐너를 연결할 수 있습니다 — **코드 변경 불필요**. RSS 어댑터는 각 `<item>` 을 파싱하고(CDATA + HTML 엔티티, 제목/회사명 태그 제거) 채용 공고로 정규화한 뒤, ATS 소스와 동일한 `title_filter` / `location_filter` + 중복 제거 + 파이프라인 추가 흐름을 실행합니다. 이후 **RSS** 가 `#/scan` 필터 드롭다운에 선택 가능한 소스로 표시됩니다. (web-ui v1.62.x)
+
+
 ### `russian_portals`
 
 ```yaml

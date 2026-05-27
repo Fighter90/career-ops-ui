@@ -549,6 +549,17 @@ Greenhouse 等)并直接调用每家公司的公共 boards-api。没有可识别
 的公司会被跳过(`/#/scan` 上的 **Active Companies** 卡片会用
 `○` 灰色显示)。
 
+### `rss` (RSS / Atom boards)
+
+```yaml
+tracked_companies:
+  - { name: LaraJobs, enabled: true, provider: rss, rss: https://larajobs.com/feed }
+  - { name: WeWorkRemotely, enabled: true, provider: rss, rss: https://weworkremotely.com/remote-jobs.rss }
+```
+
+只需在 `portals.yml` 中添加一条带 `provider: rss` 与 `rss:`(或 `feed_url:`)键的条目,即可让扫描器对接任何发布 RSS/Atom 订阅源的招聘板(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 等)—— **无需改动代码**。RSS 适配器解析每个 `<item>`(CDATA + HTML 实体,标题/公司名去除标签),将其规范化为职位,并执行与 ATS 来源相同的 `title_filter` / `location_filter` + 去重 + 追加到 pipeline 的流程。随后 **RSS** 会作为可选来源出现在 `#/scan` 的筛选下拉框中。(web-ui v1.62.x)
+
+
 ### `russian_portals`
 
 ```yaml
