@@ -10,6 +10,14 @@
 
 
 
+## [1.62.0] — 2026-05-27
+
+**feat(scan): 비-ATS 채용 보드를 위한 범용 RSS 어댑터.** 새 `rss` 어댑터(`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`)를 통해 스캐너가 모든 RSS 피드(LaraJobs, WeWorkRemotely, RemoteOK, golangprojects 등 Greenhouse/Ashby/Lever 외 보드)에서 채용 공고를 가져올 수 있습니다. 새 의존성 없음: 피드 파싱은 정규식 기반이며 CDATA와 HTML 엔티티를 지원합니다(제목/회사명 태그 제거, astral 코드포인트 안전 디코딩). `portals.yml`의 `provider: rss` / `rss:` / `feed_url:`로 회사별 활성화되어 ATS에 이미 매칭된 회사를 가로채지 않습니다. `ALL_ADAPTERS`가 6 → 7로 증가. 신규 테스트 29개; 9개 README 로케일에 문서화.
+
+---
+
+
+
 ## [1.61.1] — 2026-05-22
 
 **fix(i18n): 테마 토글의 title + aria-label을 9개 로케일 전체에서 현지화 (MINOR-001).** 다크/라이트 테마 버튼(`#theme-toggle`)이 `index.html`에 `title="Toggle theme"`과 `aria-label="Toggle theme"`을 하드코딩하여 — 모든 로케일에서 툴팁과 스크린리더 텍스트가 번역되지 않았습니다. 새 `top.themeToggle` 키 + `applyI18n()`의 `data-i18n-title` 핸들러(v1.58.15 검색 aria-label 수정과 동일 패턴)가 부팅 시와 언어 전환 시마다 두 속성을 현지화합니다. `tests/playwright-theme-toggle-i18n.mjs`(9개 로케일 + 런타임 전환)와 정적 가드 2개로 잠금. v1.61.0 프랑스어 사인오프의 유일한 LOW 항목. (MINOR-001)

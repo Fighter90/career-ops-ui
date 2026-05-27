@@ -10,6 +10,14 @@
 
 
 
+## [1.62.0] — 2026-05-27
+
+**feat(scan)：用於非 ATS 徵才看板的通用 RSS 轉接器。** 新增 `rss` 轉接器（`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`），讓掃描器能從任意 RSS 來源擷取職缺 —— LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 以及 Greenhouse/Ashby/Lever 以外的其他看板。無新增相依套件：以正規表示式解析來源，支援 CDATA 與 HTML 實體（標題/公司名去除標籤，星位碼點安全解碼）。透過 `portals.yml` 的 `provider: rss` / `rss:` / `feed_url:` 依公司啟用，不會攔截已比對到 ATS 的公司。`ALL_ADAPTERS` 由 6 增至 7。新增 29 項測試；已於全部 9 個 README 語系中記載。
+
+---
+
+
+
 ## [1.61.1] — 2026-05-22
 
 **fix(i18n)：在全部 9 種語言中在地化主題切換按鈕的 title 與 aria-label（MINOR-001）。** 明/暗主題按鈕(`#theme-toggle`)在 `index.html` 中硬編碼了 `title="Toggle theme"` 和 `aria-label="Toggle theme"` —— 所有語言下工具提示與螢幕閱讀器文字都未翻譯。新增 `top.themeToggle` 鍵 + `applyI18n()` 中的 `data-i18n-title` 處理器(沿用 v1.58.15 搜尋 aria-label 修復的模式),在啟動時及每次切換語言時在地化這兩個屬性。由 `tests/playwright-theme-toggle-i18n.mjs`(9 語言 + 執行階段切換)與兩個靜態守衛鎖定。v1.61.0 法語簽收中唯一的 LOW 項。(MINOR-001)

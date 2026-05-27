@@ -10,6 +10,14 @@
 
 
 
+## [1.62.0] — 2026-05-27
+
+**feat(scan): 非ATS求人ボード向けの汎用RSSアダプター。** 新しい `rss` アダプター（`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`）により、スキャナーは任意のRSSフィード（LaraJobs、WeWorkRemotely、RemoteOK、golangprojects など Greenhouse/Ashby/Lever 以外のボード）から求人を取得できます。新しい依存関係なし：フィード解析は正規表現ベースで、CDATA と HTML エンティティに対応（タイトル/会社名はタグ除去、astral コードポイントは安全にデコード）。`portals.yml` の `provider: rss` / `rss:` / `feed_url:` で企業ごとに有効化され、ATS で一致済みの企業を横取りしません。`ALL_ADAPTERS` は 6 → 7 に増加。29 件の新規テスト。9 つの README ロケールに記載。
+
+---
+
+
+
 ## [1.61.1] — 2026-05-22
 
 **fix(i18n): テーマトグルの title + aria-label を全 9 ロケールでローカライズ (MINOR-001)。** ダーク/ライトのテーマボタン(`#theme-toggle`)が `index.html` に `title="Toggle theme"` と `aria-label="Toggle theme"` をハードコードしており — どのロケールでもツールチップとスクリーンリーダーのテキストが翻訳されませんでした。新しい `top.themeToggle` キー + `applyI18n()` の `data-i18n-title` ハンドラ(v1.58.15 の検索 aria-label 修正と同じパターン)が、起動時と言語切替のたびに両属性をローカライズします。`tests/playwright-theme-toggle-i18n.mjs`(9 ロケール + ランタイム切替)と 2 つの静的ガードでロック。v1.61.0 フランス語サインオフで唯一の LOW 項目。(MINOR-001)

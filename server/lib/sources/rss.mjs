@@ -23,11 +23,20 @@ function djb2(str) {
 // ── HTML entity + CDATA helpers ──────────────────────────────────────
 const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
 
+/** Codepoint → string, guarding against invalid/astral overflow values. */
+function safeFromCodePoint(cp) {
+  try {
+    return Number.isInteger(cp) && cp >= 0 && cp <= 0x10ffff ? String.fromCodePoint(cp) : '';
+  } catch {
+    return '';
+  }
+}
+
 function decodeEntities(str) {
   return str
     .replace(/&([a-z]+);/gi, (_, e) => ENTITIES[e.toLowerCase()] ?? _)
-    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)));
+    .replace(/&#(\d+);/g, (_, n) => safeFromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => safeFromCodePoint(parseInt(h, 16)));
 }
 
 /** Strip CDATA wrapper if present, then decode entities. */
@@ -131,7 +140,7 @@ export function parseRss(xml, feedHostname = '') {
   while ((m = itemRe.exec(xml)) !== null) {
     const itemXml = m[1];
 
-    const title    = extractField(itemXml, 'title');
+    const title    = stripTags(extractField(itemXml, 'title'));
     const link     = extractLink(itemXml);
     const pubDate  = extractField(itemXml, 'pubDate') || extractField(itemXml, 'dc:date');
     const rawDesc  = extractField(itemXml, 'description') || extractField(itemXml, 'content:encoded');
@@ -145,7 +154,7 @@ export function parseRss(xml, feedHostname = '') {
     let company = creator
       || companyFromTitle(title)
       || feedHostname;
-    company = company.trim();
+    company = stripTags(company);
 
     const location = category || '';
 

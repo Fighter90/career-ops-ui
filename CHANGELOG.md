@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.62.0] — 2026-05-27
+
+**feat(scan): generic RSS adapter for non-ATS job boards.** A new `rss` portal adapter (`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`) lets the scanner pull jobs from any RSS feed — LaraJobs, WeWorkRemotely, RemoteOK, golangprojects and other boards outside Greenhouse/Ashby/Lever. Zero new dependencies: feed parsing is regex-based with CDATA + HTML-entity support (titles/companies are tag-stripped, astral code points decoded safely). Activated per-company via `provider: rss` / `rss:` / `feed_url:` in `portals.yml`, so it never intercepts ATS-matched companies. `ALL_ADAPTERS` grows 6 → 7. 29 new tests; documented across all 9 README locales.
+
+---
+
+
+
 ## [1.61.1] — 2026-05-22
 
 **fix(i18n): localize the theme-toggle title + aria-label across all 9 locales (MINOR-001).** The dark/light theme button (`#theme-toggle`) hardcoded `title="Toggle theme"` and `aria-label="Toggle theme"` in `index.html` — the tooltip and screen-reader text never translated, on any locale. A new `top.themeToggle` key + a `data-i18n-title` handler in `applyI18n()` (mirroring the v1.58.15 search-aria-label fix) localize both attributes on boot and on every language switch. Locked by `tests/playwright-theme-toggle-i18n.mjs` (9 locales + runtime-switch) and two static guards in `tests/qa-report-fixes.test.mjs`. The lone LOW finding from the v1.61.0 French sign-off. (MINOR-001)
