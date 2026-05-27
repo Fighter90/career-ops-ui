@@ -158,6 +158,8 @@ career-ops-ui の `#/dashboard` と `#/tracker` は 4.0 以上の行を
 
 ### A. セットアップ (一度のみ、約 5 分)
 
+**career-ops-ui は `career-ops/web-ui/` に配置する必要があります**(親の career-ops プロジェクト内にネスト)。`../` 経由で親フォルダーの `cv.md`、`config/`、`data/` を読み込み、単独では動作しません。`git pull` 後に `career-ops-ui init` が見つからない場合は、`cd career-ops/web-ui && npm install && npx career-ops-ui init` を実行してください。
+
 **ステップ 1 — `http://127.0.0.1:4317` でアプリを開きます。**
 起動していない場合は、リポジトリのルートで `bash bin/start.sh` を
 実行します。Dashboard (`#/dashboard`) が読み込まれます。

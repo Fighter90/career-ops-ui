@@ -156,6 +156,8 @@ batch 처리, apply 흐름, Playwright 설정)는
 
 ### A. 설정 (한 번만 수행, 약 5분)
 
+**career-ops-ui는 `career-ops/web-ui/`에 위치해야 합니다**(상위 career-ops 프로젝트 내부에 중첩). `../`를 통해 부모 폴더의 `cv.md`, `config/`, `data/`를 읽으며 단독으로는 작동하지 않습니다. `git pull` 후 `career-ops-ui init`을 찾을 수 없는 경우, `cd career-ops/web-ui && npm install && npx career-ops-ui init`을 실행하세요.
+
 **1단계 — `http://127.0.0.1:4317`에서 앱을 엽니다.** 실행 중이
 아니라면 저장소 루트에서 터미널로 `bash bin/start.sh`를
 실행하십시오. Dashboard(`#/dashboard`)가 로드됩니다.

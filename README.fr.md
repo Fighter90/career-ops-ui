@@ -12,7 +12,7 @@
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.62.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.62.2)
 
-> **v1.62.1 — Adaptateur RSS : scannez n'importe quel site d'emploi RSS ([#15](https://github.com/Fighter90/career-ops-ui/pull/15)).** Un nouvel adaptateur `rss` (`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`) permet au scanner de récupérer des offres depuis n'importe quel flux RSS/Atom — **LaraJobs, WeWorkRemotely, RemoteOK, golangprojects** et d'autres sites hors Greenhouse/Ashby/Lever. Aucune nouvelle dépendance : l'analyse du flux repose sur des regex avec CDATA et décodage des entités HTML (titres/entreprises nettoyés des balises, points de code astraux décodés en toute sécurité). Activez-le par entreprise avec `provider: rss` + une clé `rss:` (ou `feed_url:`) dans `portals.yml` — sans modification de code — et il n'intercepte jamais les entreprises déjà associées à un ATS. **RSS** apparaît désormais dans le menu déroulant de filtre de sources de `#/scan` aux côtés de Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday. `ALL_ADAPTERS` passe de 6 à 7. 29 nouveaux tests ; suite complète **1032/1032**. Docs + CHANGELOG dans les 9 localisations.
+> **v1.62.x — Support RSS pour le scanner.** Un nouvel adaptateur `rss` générique permet de scanner **n'importe quel portail d'emploi RSS/Atom** (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …) hors de Greenhouse/Ashby/Lever — ajoutez `provider: rss` + une clé `rss:` (ou `feed_url:`) dans `portals.yml`, sans modification de code. Across the v1.62.* line: **v1.62.0** a livré l'adaptateur (`server/lib/portals/adapters/rss.mjs` + `sources/rss.mjs`, parser regex du flux, décodage CDATA + entités HTML, `ALL_ADAPTERS` 6 → 7, 29 nouveaux tests) ; **v1.62.1** a ajouté **RSS** au menu déroulant de filtre de sources dans `#/scan` et corrigé le mappage de localisation RSS (le `<category>` du flux n'est plus traité comme une localisation, ce qui évite que les offres remote soient éliminées) ; **v1.62.2** a rendu la recherche de `#/help` plein texte afin que les sous-sections comme RSS soient trouvables. Zéro nouvelle dépendance ; docs + CHANGELOG dans les 9 localisations ; suite complète **1032/1032** au vert.
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 
@@ -41,40 +41,70 @@
 
 ## Lancer et initialiser en une commande
 
-**Le plus rapide — un seul curl :**
+> **Important — career-ops-ui est un tableau de bord *au-dessus de* [`santifer/career-ops`](https://github.com/santifer/career-ops).** Il s'exécute **à l'intérieur** d'un projet career-ops sous `career-ops/web-ui/` et lit vos `cv.md`, `config/`, `data/` depuis le dossier parent via `../`. Il **ne fonctionne pas de manière autonome** — vous avez également besoin du dépôt parent `career-ops`. Ne le clonez pas seul et ne lancez pas `init` ; utilisez l'une des deux options ci-dessous.
+
+### Option 1 — un seul curl (recommandé : configure tout)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash
 ```
 
-Ceci clone les deux dépôts (career-ops + career-ops-ui), installe les dépendances, lance le doctor et démarre le serveur sur http://127.0.0.1:4317.
+Clone **les deux** dépôts, organise la structure `career-ops/web-ui/`, installe les dépendances, lance le doctor et démarre le serveur sur http://127.0.0.1:4317 — puis ouvre le tableau de bord.
 
-**Ou pas à pas avec le CLI `career-ops-ui`** (clone → setup → init → run) :
+### Option 2 — ajouter l'UI à un projet career-ops existant
+
+Si vous avez déjà career-ops configuré et souhaitez seulement le tableau de bord, clonez l'UI **à l'intérieur** de celui-ci en tant que `web-ui` :
 
 ```bash
-git clone https://github.com/Fighter90/career-ops-ui
-cd career-ops-ui
-npm link                 # exposes the `career-ops-ui` command (or: npx career-ops-ui <verb>)
-
-career-ops-ui setup      # bootstrap: install deps → doctor → run (SKIP_START=1 to stop before run)
-career-ops-ui init       # interactive: pick LLM provider + paste its key → written to parent .env
-career-ops-ui doctor     # verify Node / project / keys / Playwright (exit 0 ⇔ all required green)
-career-ops-ui run        # launch the server at http://127.0.0.1:4317
-career-ops-ui open       # open + RAISE the dashboard tab in your browser
-career-ops-ui help       # list every verb
+cd career-ops                                                   # ← votre projet career-ops existant
+git clone https://github.com/Fighter90/career-ops-ui.git web-ui
+cd web-ui
+npm install
+npx career-ops-ui init        # interactive: pick LLM provider + paste its key → parent career-ops/.env
 ```
 
-Après `setup`/`run`, l'onglet du dashboard est ouvert **et ramené au premier plan** automatiquement ; `career-ops-ui open` fait de même à la demande pour que vous n'ayez jamais à chercher l'onglet. Définissez `NO_OPEN=1` pour désactiver l'ouverture automatique (headless / CI).
+La structure `web-ui/` imbriquée est précisément ce qui permet à l'UI de résoudre vos `../cv.md`, `../config/`, `../data/`. Exécutez `npm link` **une fois** si vous préférez taper `career-ops-ui <verb>` au lieu de `npx career-ops-ui <verb>`.
 
-`setup` enchaîne tout lui-même ; les autres verbes sont aussi utilisables seuls. `init` est l'assistant de fournisseur — choisissez **Claude / Claude Code** (`ANTHROPIC_API_KEY`), **Gemini / Gemini CLI** (`GEMINI_API_KEY`), **Codex / OpenCode CLI** (`OPENAI_API_KEY`), ou **Auto** (repli Anthropic → Gemini). Les clés sont saisies avec l'écho supprimé (rien n'atterrit dans l'historique du shell) et écrites dans le `career-ops/.env` parent via le même chemin validé qu'utilise l'onglet clés-API de `#/config`. Forme non interactive pour la CI :
+### Les verbes CLI
+
+```bash
+career-ops-ui setup    # bootstrap: install deps → doctor → run (SKIP_START=1 to stop before run)
+career-ops-ui init     # pick LLM provider + paste its key (interactive)
+career-ops-ui doctor   # verify Node / project / keys / Playwright (exit 0 ⇔ all required green)
+career-ops-ui run      # launch the server at http://127.0.0.1:4317
+career-ops-ui open     # open + RAISE the dashboard tab in your browser
+career-ops-ui help     # list every verb
+```
+
+Préfixez avec `npx ` (ex. `npx career-ops-ui run`) si vous n'avez pas exécuté `npm link`. Après `setup`/`run` l'onglet s'ouvre **et est ramené au premier plan** automatiquement ; définissez `NO_OPEN=1` pour désactiver l'ouverture automatique (headless / CI).
+
+### Choisir votre fournisseur LLM
+
+`init` est l'assistant de fournisseur — choisissez **Claude / Claude Code** (`ANTHROPIC_API_KEY`), **Gemini / Gemini CLI** (`GEMINI_API_KEY`), **Codex / OpenCode CLI** (`OPENAI_API_KEY`), ou **Auto** (repli Anthropic → Gemini). Les clés sont saisies avec l'écho supprimé et écrites dans le `career-ops/.env` parent via le même chemin validé qu'utilise l'onglet clés-API de `#/config`. Forme non interactive pour la CI :
 
 ```bash
 career-ops-ui init --provider claude --anthropic-key sk-ant-… --yes
-career-ops-ui init --provider gemini --gemini-key …       --yes
-career-ops-ui init --provider auto   --openai-key sk-…    --yes   # Codex/OpenCode side
+career-ops-ui init --provider gemini --gemini-key …          --yes
+career-ops-ui init --provider auto   --openai-key sk-…       --yes
 ```
 
-Le fournisseur choisi définit `LLM_PROVIDER` (`auto` | `claude` | `gemini`) ; les routes live d'évaluation / recherche approfondie / mode / auto-pipeline du serveur le respectent. Vous pouvez en changer à tout moment depuis **`#/config` → clés API** sans redémarrer.
+Ou définissez-le manuellement : `echo "ANTHROPIC_API_KEY=sk-ant-…" >> career-ops/.env`. Le fournisseur définit `LLM_PROVIDER` (`auto` | `claude` | `gemini`) ; changez-le à tout moment depuis **`#/config` → clés API** sans redémarrer.
+
+### Dépannage de `init`
+
+Si `career-ops-ui init` échoue ou si la commande est introuvable (fréquent juste après un `git pull`) :
+
+```bash
+cd career-ops/web-ui
+npm install
+npx career-ops-ui init        # npx runs the local bin even without `npm link`
+```
+
+Assurez-vous :
+
+- D'exécuter depuis **l'intérieur de `career-ops/web-ui/`** — pas depuis un clone autonome `career-ops-ui/`.
+- Que le **dossier parent `career-ops/` existe** et contient `cv.md` et `config/`. Si vous avez cloné career-ops-ui seul, déplacez-le (ou re-clonez-le) pour qu'il se trouve à `career-ops/web-ui/` — ou exécutez simplement le curl de l'option 1, qui organise la structure pour vous.
+- `career-ops-ui doctor` (ou `npx career-ops-ui doctor`) affiche exactement ce qui manque.
 
 ---
 

@@ -144,6 +144,8 @@ career-ops-ui 的 `#/dashboard` 與 `#/tracker` 會把分數達 4.0 以上
 
 ### A. 環境設定(只做一次,約 5 分鐘)
 
+**career-ops-ui 必須位於 `career-ops/web-ui/`**（嵌套在父專案 career-ops 中）。它透過 `../` 讀取父目錄中的 `cv.md`、`config/` 和 `data/`，無法單獨運行。若 `git pull` 後找不到 `career-ops-ui init`，請執行 `cd career-ops/web-ui && npm install && npx career-ops-ui init`。
+
 **第 1 步 — 在 `http://127.0.0.1:4317` 開啟應用程式。** 若伺服器
 未啟動,在終端機從專案根目錄執行 `bash bin/start.sh`。儀表板
 (`#/dashboard`)會載入。

@@ -144,6 +144,8 @@ career-ops-ui 的 `#/dashboard` 与 `#/tracker` 会高亮每一条 ≥ 4.0 的
 
 ### A. 一次性安装(只需做一次,约 5 分钟)
 
+**career-ops-ui 必须位于 `career-ops/web-ui/`**（嵌套在父项目 career-ops 中）。它通过 `../` 读取父目录中的 `cv.md`、`config/` 和 `data/`，无法单独运行。如果 `git pull` 后找不到 `career-ops-ui init`，请执行 `cd career-ops/web-ui && npm install && npx career-ops-ui init`。
+
 **第 1 步 — 在 `http://127.0.0.1:4317` 打开应用。** 如果尚未启动,
 在仓库根目录的终端执行 `bash bin/start.sh`。Dashboard
 (`#/dashboard`)会加载出来。

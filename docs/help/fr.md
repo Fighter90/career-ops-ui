@@ -167,6 +167,8 @@ détaillent chaque phase.
 
 ### A. Setup (à faire une fois, ~5 minutes)
 
+**career-ops-ui doit se trouver à `career-ops/web-ui/`** (imbriqué dans le projet career-ops parent). Il lit vos `cv.md`, `config/` et `data/` depuis le dossier parent via `../` et ne fonctionne pas de manière autonome. Si `career-ops-ui init` n'est pas trouvé après un pull, exécutez `cd career-ops/web-ui && npm install && npx career-ops-ui init`.
+
 **Étape 1 — Ouvrez l'application sur `http://127.0.0.1:4317`.** Si elle ne
 tourne pas, dans un terminal lancez `bash bin/start.sh` depuis la racine du
 dépôt. Le Tableau de bord (`#/dashboard`) se charge.
