@@ -277,7 +277,7 @@ window.__I18N_DICT_ZH_TW = {
   'dash.quick.workspace': "工作區",
   'dash.quick.system': "系統",
   'dash.quick.scanCta': "掃描所有來源",
-  'dash.quick.scanSub': "Greenhouse · Ashby · Lever · hh.ru · Habr",
+  'dash.quick.scanSub': "Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr",
   'dash.quick.pipelineSub': "待處理的 URL",
   'dash.quick.evaluateCta': "評估 JD",
   'dash.quick.evaluateSub': "Anthropic 優先評分",

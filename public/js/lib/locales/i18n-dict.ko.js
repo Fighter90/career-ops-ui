@@ -277,7 +277,7 @@ window.__I18N_DICT_KO = {
   'dash.quick.workspace': "워크스페이스",
   'dash.quick.system': "시스템",
   'dash.quick.scanCta': "모든 소스 스캔",
-  'dash.quick.scanSub': "Greenhouse · Ashby · Lever · hh.ru · Habr",
+  'dash.quick.scanSub': "Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr",
   'dash.quick.pipelineSub': "대기 중인 URL",
   'dash.quick.evaluateCta': "JD 평가",
   'dash.quick.evaluateSub': "Anthropic 우선 채점",

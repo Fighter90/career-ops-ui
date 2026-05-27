@@ -175,7 +175,7 @@ export function parseRss(xml, feedHostname = '') {
       company,
       url:           link  || '',
       salary:        '',
-      location:      category || '',
+      location:      '', // RSS <category> is a topic tag, not a location — leave empty so location_filter passes
       isRemote,
       workplaceType,
       relocates,

@@ -277,7 +277,7 @@ window.__I18N_DICT_FR = {
   'dash.quick.workspace': "Espace de travail", // Workspace
   'dash.quick.system': "Système", // System
   'dash.quick.scanCta': "Scanner toutes les sources", // Scan all sources
-  'dash.quick.scanSub': "Greenhouse · Ashby · Lever · hh.ru · Habr", // Greenhouse · Ashby · Lever · hh.ru · Habr
+  'dash.quick.scanSub': "Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr", // Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr
   'dash.quick.pipelineSub': "URLs en attente", // Pending URLs
   'dash.quick.evaluateCta': "Évaluer une offre d'emploi", // Evaluate a JD
   'dash.quick.evaluateSub': "Scoring Anthropic-first", // Anthropic-first scoring

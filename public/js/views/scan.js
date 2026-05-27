@@ -89,6 +89,7 @@ Router.register('scan', async () => {
     { value: 'ashby',           label: 'Ashby' },
     { value: 'greenhouse',      label: 'Greenhouse' },
     { value: 'lever',           label: 'Lever' },
+    { value: 'rss',             label: 'RSS' },
     { value: 'smartrecruiters', label: 'SmartRecruiters' },
     { value: 'workable',        label: 'Workable' },
     { value: 'workday',         label: 'Workday' },
@@ -135,7 +136,7 @@ Router.register('scan', async () => {
   const scanBtn = c('button', {
     className: 'btn btn-primary scan-run-btn',
     onClick: () => runScanAll(),
-    title: 'Greenhouse + Ashby + Lever + hh.ru + Habr Career',
+    title: 'Greenhouse + Ashby + Lever + Workable + SmartRecruiters + Workday + RSS + hh.ru + Habr Career',
   }, '🌐 ' + t('scan.btnRun', 'Scan'));
   const stopBtn = c('button', {
     className: 'btn btn-ghost scan-stop-btn',
@@ -277,7 +278,7 @@ Router.register('scan', async () => {
         phase = (data.script === 'en-scanner') ? 'ats' : 'regional';
         appendMeta(consoleEl,
           phase === 'ats'
-            ? '▶ ATS scan (Greenhouse + Ashby + Lever)\n'
+            ? '▶ ATS scan (Greenhouse + Ashby + Lever + Workable + SmartRecruiters + Workday + RSS)\n'
             : '\n▶ Regional scan (hh.ru + Habr Career)\n');
       } else if (ev === 'log') {
         const cls = data.stream === 'stderr' ? ' err' : '';

@@ -277,7 +277,7 @@ window.__I18N_DICT_RU = {
   'dash.quick.workspace': "Рабочее пространство",
   'dash.quick.system': "Система",
   'dash.quick.scanCta': "Сканировать все",
-  'dash.quick.scanSub': "Greenhouse · Ashby · Lever · hh.ru · Habr",
+  'dash.quick.scanSub': "Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr",
   'dash.quick.pipelineSub': "URL в очереди",
   'dash.quick.evaluateCta': "Оценить JD",
   'dash.quick.evaluateSub': "Скоринг с Anthropic",

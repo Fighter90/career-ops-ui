@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.62.1] — 2026-05-27
+
+**feat(scan): RSS in the source filter + RSS location fix.** The `#/scan` source-filter dropdown now lists **RSS** (added to `server/lib/sources/registry.mjs` + the SPA fallback list), so RSS-board results (LaraJobs, WeWorkRemotely, …) are filterable like any ATS source. The RSS adapter no longer maps the feed `<category>` tag onto `location` — non-location tags there made `location_filter` wrongly drop remote roles; `location` is now empty so feeds pass location filtering. Scan-button tooltips/labels and the source-list i18n string (`dash.quick.scanSub`) updated across all 9 locales to include Workable / SmartRecruiters / Workday / RSS. i18n snapshot + scan-sources endpoint test (6 → 7 EN sources) updated.
+
+---
+
+
+
 ## [1.62.0] — 2026-05-27
 
 **feat(scan): generic RSS adapter for non-ATS job boards.** A new `rss` portal adapter (`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`) lets the scanner pull jobs from any RSS feed — LaraJobs, WeWorkRemotely, RemoteOK, golangprojects and other boards outside Greenhouse/Ashby/Lever. Zero new dependencies: feed parsing is regex-based with CDATA + HTML-entity support (titles/companies are tag-stripped, astral code points decoded safely). Activated per-company via `provider: rss` / `rss:` / `feed_url:` in `portals.yml`, so it never intercepts ATS-matched companies. `ALL_ADAPTERS` grows 6 → 7. 29 new tests; documented across all 9 README locales.

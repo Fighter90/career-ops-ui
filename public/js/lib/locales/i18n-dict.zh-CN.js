@@ -277,7 +277,7 @@ window.__I18N_DICT_ZH_CN = {
   'dash.quick.workspace': "工作区",
   'dash.quick.system': "系统",
   'dash.quick.scanCta': "扫描所有来源",
-  'dash.quick.scanSub': "Greenhouse · Ashby · Lever · hh.ru · Habr",
+  'dash.quick.scanSub': "Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr",
   'dash.quick.pipelineSub': "待处理的 URL",
   'dash.quick.evaluateCta': "评估 JD",
   'dash.quick.evaluateSub': "Anthropic 优先打分",

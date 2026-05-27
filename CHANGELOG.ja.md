@@ -10,6 +10,14 @@
 
 
 
+## [1.62.1] — 2026-05-27
+
+**feat(scan): ソースフィルターに RSS 追加 + RSS のロケーション修正。** `#/scan` のソースフィルターのドロップダウンに **RSS** が表示されるようになりました（`server/lib/sources/registry.mjs` と SPA のフォールバックリストに追加）。これにより RSS ボード（LaraJobs、WeWorkRemotely など）の結果も他の ATS ソースと同様にフィルターできます。RSS アダプターはフィードの `<category>` タグを `location` に割り当てなくなりました — 非ロケーションのタグが `location_filter` にリモート職を誤って除外させていたためです。現在 `location` は空になり、フィードはロケーションフィルターを通過します。スキャンボタンのツールチップ/ラベルとソース一覧の i18n 文字列を全 9 ロケールで更新（Workable / SmartRecruiters / Workday / RSS）。i18n スナップショットとソースエンドポイントのテスト（EN 6 → 7）を更新。
+
+---
+
+
+
 ## [1.62.0] — 2026-05-27
 
 **feat(scan): 非ATS求人ボード向けの汎用RSSアダプター。** 新しい `rss` アダプター（`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`）により、スキャナーは任意のRSSフィード（LaraJobs、WeWorkRemotely、RemoteOK、golangprojects など Greenhouse/Ashby/Lever 以外のボード）から求人を取得できます。新しい依存関係なし：フィード解析は正規表現ベースで、CDATA と HTML エンティティに対応（タイトル/会社名はタグ除去、astral コードポイントは安全にデコード）。`portals.yml` の `provider: rss` / `rss:` / `feed_url:` で企業ごとに有効化され、ATS で一致済みの企業を横取りしません。`ALL_ADAPTERS` は 6 → 7 に増加。29 件の新規テスト。9 つの README ロケールに記載。

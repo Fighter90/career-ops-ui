@@ -10,6 +10,14 @@
 
 
 
+## [1.62.1] — 2026-05-27
+
+**feat(scan)：來源篩選器加入 RSS + 修正 RSS 地點。** `#/scan` 的來源篩選下拉選單現在會列出 **RSS**(已加入 `server/lib/sources/registry.mjs` 與 SPA 後備清單),因此 RSS 徵才看板(LaraJobs、WeWorkRemotely 等)的結果可像任何 ATS 來源一樣篩選。RSS 轉接器不再將來源的 `<category>` 標籤對應到 `location` —— 這些非地點標籤會讓 `location_filter` 誤刪遠端職缺;現在 `location` 留空,來源即可通過地點篩選。掃描按鈕的提示/標籤與來源清單 i18n 文字已於全部 9 個語系中更新(Workable / SmartRecruiters / Workday / RSS)。已更新 i18n 快照與來源端點測試(EN 6 → 7)。
+
+---
+
+
+
 ## [1.62.0] — 2026-05-27
 
 **feat(scan)：用於非 ATS 徵才看板的通用 RSS 轉接器。** 新增 `rss` 轉接器（`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`），讓掃描器能從任意 RSS 來源擷取職缺 —— LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 以及 Greenhouse/Ashby/Lever 以外的其他看板。無新增相依套件：以正規表示式解析來源，支援 CDATA 與 HTML 實體（標題/公司名去除標籤，星位碼點安全解碼）。透過 `portals.yml` 的 `provider: rss` / `rss:` / `feed_url:` 依公司啟用，不會攔截已比對到 ATS 的公司。`ALL_ADAPTERS` 由 6 增至 7。新增 29 項測試；已於全部 9 個 README 語系中記載。

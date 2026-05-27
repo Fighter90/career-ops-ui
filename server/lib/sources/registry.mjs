@@ -35,6 +35,7 @@ export const SOURCES = [
   { value: 'ashby',           label: 'Ashby',           region: 'en' },
   { value: 'greenhouse',      label: 'Greenhouse',      region: 'en' },
   { value: 'lever',           label: 'Lever',           region: 'en' },
+  { value: 'rss',             label: 'RSS',             region: 'en' },
   { value: 'smartrecruiters', label: 'SmartRecruiters', region: 'en' },
   { value: 'workable',        label: 'Workable',        region: 'en' },
   { value: 'workday',         label: 'Workday',         region: 'en' },

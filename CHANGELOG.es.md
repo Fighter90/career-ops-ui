@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.62.1] — 2026-05-27
+
+**feat(scan): RSS en el filtro de fuentes + corrección de ubicación RSS.** El desplegable de filtro de fuentes en `#/scan` ahora incluye **RSS** (añadido a `server/lib/sources/registry.mjs` + la lista de respaldo del SPA), por lo que los resultados de portales RSS (LaraJobs, WeWorkRemotely, …) se filtran como cualquier fuente ATS. El adaptador RSS ya no asigna la etiqueta `<category>` del feed a `location` — esas etiquetas hacían que `location_filter` descartara erróneamente puestos remotos; ahora `location` queda vacío y los feeds pasan el filtro de ubicación. Tooltips/etiquetas del botón de escaneo y la cadena de lista de fuentes actualizadas en las 9 localizaciones (Workable / SmartRecruiters / Workday / RSS). Snapshot i18n y prueba del endpoint de fuentes (6 → 7 EN) actualizados.
+
+---
+
+
+
 ## [1.62.0] — 2026-05-27
 
 **feat(scan): adaptador RSS genérico para portales de empleo no-ATS.** Un nuevo adaptador `rss` (`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`) permite al escáner extraer ofertas de cualquier feed RSS — LaraJobs, WeWorkRemotely, RemoteOK, golangprojects y otros portales fuera de Greenhouse/Ashby/Lever. Sin nuevas dependencias: el análisis del feed usa regex con soporte de CDATA y entidades HTML (títulos/empresas sin etiquetas, code points astrales decodificados de forma segura). Se activa por empresa con `provider: rss` / `rss:` / `feed_url:` en `portals.yml`, sin interceptar empresas ya emparejadas con ATS. `ALL_ADAPTERS` crece 6 → 7. 29 nuevas pruebas; documentado en las 9 localizaciones del README.

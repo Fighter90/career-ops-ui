@@ -10,6 +10,14 @@
 
 
 
+## [1.62.1] — 2026-05-27
+
+**feat(scan)：来源筛选器加入 RSS + 修复 RSS 地点。** `#/scan` 的来源筛选下拉框现在列出 **RSS**(已加入 `server/lib/sources/registry.mjs` 与 SPA 回退列表),因此 RSS 招聘板(LaraJobs、WeWorkRemotely 等)的结果可像任何 ATS 来源一样筛选。RSS 适配器不再将订阅源的 `<category>` 标签映射到 `location` —— 这些非地点标签会让 `location_filter` 误删远程职位;现在 `location` 留空,订阅源即可通过地点筛选。扫描按钮的提示/标签与来源列表 i18n 文案已在全部 9 个语言版本中更新(Workable / SmartRecruiters / Workday / RSS)。已更新 i18n 快照与来源端点测试(EN 6 → 7)。
+
+---
+
+
+
 ## [1.62.0] — 2026-05-27
 
 **feat(scan)：用于非 ATS 招聘板的通用 RSS 适配器。** 新增 `rss` 适配器（`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`），使扫描器能够从任意 RSS 源抓取职位 —— LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 以及 Greenhouse/Ashby/Lever 之外的其他招聘板。无新增依赖：基于正则的订阅解析，支持 CDATA 与 HTML 实体（标题/公司名去除标签，星位码点安全解码）。通过 `portals.yml` 中的 `provider: rss` / `rss:` / `feed_url:` 按公司启用，不会拦截已匹配 ATS 的公司。`ALL_ADAPTERS` 由 6 增至 7。新增 29 项测试；已在全部 9 个 README 语言版本中记录。
