@@ -10,6 +10,14 @@
 
 
 
+## [1.62.3] — 2026-05-27
+
+**docs:釐清安裝方式(career-ops-ui 執行於 `career-ops/web-ui/` 內)+ `init` 疑難排解,涵蓋全部 9 個語系。** 將安裝小節重寫為 **Option 1**(一條 curl)/ **Option 2**(在既有 career-ops 專案內以 `web-ui` 複製 UI)+ CLI 指令 + 供應商設定 + **Troubleshooting `init`** 區塊。巢狀結構說明亦加入 `/help` §1 Setup;README 重點處彙總整個 v1.62.* 系列。僅文件,無程式碼改動。
+
+---
+
+
+
 ## [1.62.2] — 2026-05-27
 
 **fix(help):`#/help` 篩選現已支援全文檢索(可找到像 RSS 這樣的 H3 子小節)。** 說明頁的搜尋/目錄篩選此前僅比對 H2 小節標題,因此 v1.62.x 的 RSS 文件(§5 Portals & sources 下的 H3)無法被找到。現在每個小節的內文也會被索引到篩選中,因此搜尋如「RSS」即可定位到 §5。純前端改動,無 API 變更。

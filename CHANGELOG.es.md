@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.62.3] — 2026-05-27
+
+**docs: instalación aclarada (career-ops-ui corre dentro de `career-ops/web-ui/`) + solución de problemas de `init`, en las 9 localizaciones.** Sección de instalación reescrita en **Option 1** (un curl) / **Option 2** (clonar la UI *dentro* de un proyecto career-ops existente como `web-ui`) + verbos CLI + configuración del proveedor + bloque **Troubleshooting `init`**. Nota de estructura anidada añadida a `/help` §1 Setup; resumen de toda la línea v1.62.* en el README. Solo documentación; sin cambios de código.
+
+---
+
+
+
 ## [1.62.2] — 2026-05-27
 
 **fix(help): el filtro de `#/help` ahora es de texto completo (encuentra subsecciones H3 como RSS).** El filtro de búsqueda/TOC de la página de ayuda solo coincidía con títulos de sección H2, por lo que la documentación RSS de v1.62.x (un H3 bajo §5 Portals & sources) no se encontraba. Ahora el cuerpo de cada sección se indexa en el filtro, así que buscar p. ej. «RSS» muestra §5. Solo del lado del cliente; sin cambios de API.

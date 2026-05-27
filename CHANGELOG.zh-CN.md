@@ -10,6 +10,14 @@
 
 
 
+## [1.62.3] — 2026-05-27
+
+**docs:明确安装方式(career-ops-ui 运行于 `career-ops/web-ui/` 内)+ `init` 故障排查,覆盖全部 9 个语言版本。** 将安装小节重写为 **Option 1**(一条 curl)/ **Option 2**(在现有 career-ops 项目内以 `web-ui` 克隆 UI)+ CLI 命令 + 提供方配置 + **Troubleshooting `init`** 区块。嵌套结构说明也加入 `/help` §1 Setup;README 高亮处汇总整个 v1.62.* 系列。仅文档,无代码改动。
+
+---
+
+
+
 ## [1.62.2] — 2026-05-27
 
 **fix(help):`#/help` 筛选现已支持全文检索(可找到像 RSS 这样的 H3 子小节)。** 帮助页的搜索/目录筛选此前仅匹配 H2 小节标题,因此 v1.62.x 的 RSS 文档(§5 Portals & sources 下的 H3)无法被找到。现在每个小节的正文也会被索引到筛选中,因此搜索如「RSS」即可定位到 §5。纯客户端改动,无 API 变更。

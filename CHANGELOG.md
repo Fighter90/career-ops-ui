@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.62.3] — 2026-05-27
+
+**docs: clarify install (career-ops-ui runs inside `career-ops/web-ui/`) + `init` troubleshooting, across all 9 locales.** Rewrote the install section into **Option 1** (one curl) / **Option 2** (clone the UI *inside* an existing career-ops project as `web-ui`) + CLI verbs + provider setup + a **Troubleshooting `init`** block — addressing the common confusion of cloning career-ops-ui standalone and running `init` without the parent project. Also added the nested-layout note to the `/help` §1 Setup section and summarized the whole v1.62.* line in the README highlight. Docs-only; no code change.
+
+---
+
+
+
 ## [1.62.2] — 2026-05-27
 
 **fix(help): `#/help` filter is now full-text (finds H3 subsections like RSS).** The help-page search/TOC filter previously matched only H2 section titles, so the v1.62.x RSS docs (an H3 under §5 Portals & sources) weren't findable. Each section's body text is now indexed into the filter, so searching e.g. "RSS" surfaces §5. Pure client-side; no API change.
