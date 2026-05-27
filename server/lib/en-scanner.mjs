@@ -97,7 +97,7 @@ export async function runEnScan(opts = {}) {
   // when the client disconnects.
   // fetchImpl defaults to a timeout-wrapped fetch so one stalled board
   // can't hang the whole ATS sweep (v1.63.0).
-  const { writeFiles = true, companyName, onLog = () => {}, fetchImpl = makeTimeoutFetch(), signal } = opts;
+  const { writeFiles = true, companyName, onLog = () => {}, onProgress = () => {}, fetchImpl = makeTimeoutFetch(), signal } = opts;
   const portals = loadPortals();
   const tf = portals.title_filter || {};
   const positives = tf.positive || [];
@@ -132,6 +132,7 @@ export async function runEnScan(opts = {}) {
   log('stdout', '');
 
   const errors = [];
+  let progressDone = 0;            // v1.63.2 — determinate % progress
   const fetchedPerCo = await pMap(withApi, async (c) => {
     if (signal?.aborted) return [];
     const fetcher = FETCHERS[c._api.type];
@@ -145,6 +146,8 @@ export async function runEnScan(opts = {}) {
       errors.push(`${c.name}: ${e.message}`);
       log('stderr', `  ✗ ${c.name.padEnd(28)} ${c._api.type.padEnd(10)} ${e.message}`);
       return [];
+    } finally {
+      onProgress(++progressDone, withApi.length);
     }
   }, CONCURRENCY);
 

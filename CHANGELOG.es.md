@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.63.2] — 2026-05-27
+
+**feat(scan): % de progreso en vivo + detalle por fuente en la consola de `#/scan`.** La barra ahora es **determinada** — los escáneres emiten eventos de progreso (EN: por empresa; RU: por consulta) vía SSE, y la barra se llena con una etiqueta **«Scanning… NN%»** (la franja animada solo hasta el primer evento). El primer fallo de cada fuente (timeout / 403 / red) se registra en detalle en la consola; los repetidos se suprimen. 1 prueba nueva; suite 1040/1040.
+
+---
+
+
+
 ## [1.63.1] — 2026-05-27
 
 **style(scan): barra de progreso de `#/scan` más visible.** El indicador ahora lleva un rótulo visible **«Scanning…»** y la barra pasó a **8px** (antes 4px finos), claramente perceptible durante el escaneo. Sin cambios de comportamiento.

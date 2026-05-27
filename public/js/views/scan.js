@@ -71,15 +71,34 @@ Router.register('scan', async () => {
   // v1.63.0 — indeterminate progress bar; shown while a scan is in flight
   // (toggled by setScanRunning), hidden otherwise. v1.63.1 — wrapped with a
   // visible "Scanning…" caption and a taller (8px) bar so it's noticeable.
-  const scanProgress = c('progress', {
+  // v1.63.2 — native <progress> with a custom background renders as a static
+  // gray bar. Use a div track + bar: indeterminate animated stripe until the
+  // first `progress` SSE event, then a determinate fill showing live %.
+  const scanProgressBar = c('div', { className: 'scan-progress__bar' });
+  const scanProgress = c('div', {
     id: 'scan-progress', className: 'scan-progress',
-    'aria-label': t('scan.progress', 'Scanning…'),
-  });
-  const scanProgressWrap = c('div', { className: 'scan-progress-wrap' }, [
-    c('span', { className: 'scan-progress-label', 'aria-hidden': 'true' }, t('scan.progress', 'Scanning…')),
-    scanProgress,
-  ]);
+    role: 'progressbar', 'aria-label': t('scan.progress', 'Scanning…'),
+    'aria-valuemin': '0', 'aria-valuemax': '100',
+  }, [scanProgressBar]);
+  const scanProgressLabel = c('span', { className: 'scan-progress-label', 'aria-hidden': 'true' }, t('scan.progress', 'Scanning…'));
+  const scanProgressWrap = c('div', { className: 'scan-progress-wrap' }, [scanProgressLabel, scanProgress]);
   scanProgressWrap.hidden = true;
+
+  // back to indeterminate (animated stripe) for the next run
+  function resetScanProgress() {
+    scanProgress.classList.remove('is-determinate');
+    scanProgressBar.style.width = '';
+    scanProgress.removeAttribute('aria-valuenow');
+    scanProgressLabel.textContent = t('scan.progress', 'Scanning…');
+  }
+  // determinate fill + live "<label> NN%" from a progress SSE event
+  function setScanProgress(done, total) {
+    const pct = total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 0;
+    scanProgress.classList.add('is-determinate');
+    scanProgressBar.style.width = pct + '%';
+    scanProgress.setAttribute('aria-valuenow', String(pct));
+    scanProgressLabel.textContent = t('scan.progress', 'Scanning…') + ' ' + pct + '%';
+  }
   const resultsEl = c('div', { id: 'scan-results' });
 
   const dryRun = c('input', { type: 'checkbox', id: 'dry-run' });
@@ -161,6 +180,7 @@ Router.register('scan', async () => {
     scanBtn.setAttribute('aria-busy', running ? 'true' : 'false');
     stopBtn.hidden = !running;
     scanProgressWrap.hidden = !running;   // v1.63.0/1.63.1 — progress bar + caption follow scan state
+    if (running) resetScanProgress();     // v1.63.2 — start each run indeterminate, then fill on progress events
     // v1.55.4 — UX-6: while the multi-minute crawl is running, Stop
     // is the primary action — promote it to a prominent destructive
     // button so the user can find and trust it under load. Quiet
@@ -212,6 +232,8 @@ Router.register('scan', async () => {
         consoleEl.scrollTop = consoleEl.scrollHeight;
       } else if (ev === 'start') {
         appendMeta(consoleEl, `▶ ${data.script}\n`);
+      } else if (ev === 'progress') {
+        setScanProgress(data.done, data.total);
       } else if (ev === 'done') {
         __cancelActiveScanPoll();
         activeES = null;
@@ -293,6 +315,8 @@ Router.register('scan', async () => {
           phase === 'ats'
             ? '▶ ATS scan (Greenhouse + Ashby + Lever + Workable + SmartRecruiters + Workday + RSS)\n'
             : '\n▶ Regional scan (hh.ru + Habr Career)\n');
+      } else if (ev === 'progress') {
+        setScanProgress(data.done, data.total);
       } else if (ev === 'log') {
         const cls = data.stream === 'stderr' ? ' err' : '';
         consoleEl.appendChild(c('span', { className: cls }, data.line + '\n'));

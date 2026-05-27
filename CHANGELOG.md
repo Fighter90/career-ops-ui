@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.63.2] — 2026-05-27
+
+**feat(scan): live % progress + per-source detail in the `#/scan` console.** The progress bar is now **determinate** — scanners emit progress events (EN: per company; RU: per query) forwarded over SSE, and the bar fills with a live **"Scanning… NN%"** label (animated indeterminate stripe only until the first event). Each source's first failure (timeout / 403 / network) is now logged to the console in detail (e.g. `⚠ hh timed out: …`), then repeats are suppressed. 1 new test; suite 1040/1040.
+
+---
+
+
+
 ## [1.63.1] — 2026-05-27
 
 **style(scan): make the `#/scan` progress bar more prominent.** Wrapped the in-flight indicator with a visible **"Scanning…"** caption and bumped the bar to **8px** (was a thin 4px) so it's clearly noticeable while a scan runs. No behavior change.

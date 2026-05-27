@@ -10,7 +10,7 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.63.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.63.1)
+[![release](https://img.shields.io/badge/release-v1.63.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.63.2)
 
 > **v1.62.x — 掃描器 RSS 支援。** 新的通用 `rss` 轉接器讓您可以掃描 Greenhouse/Ashby/Lever 以外的**任意 RSS/Atom 徵才看板**(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 等) — 只需在 `portals.yml` 中新增 `provider: rss` + `rss:`(或 `feed_url:`)鍵,無需變更程式碼。v1.62.* 系列詳情:**v1.62.0** 交付了轉接器(`server/lib/portals/adapters/rss.mjs` + `sources/rss.mjs`、正規表示式來源解析器、CDATA + HTML 實體解碼、`ALL_ADAPTERS` 6 → 7、29 項新測試);**v1.62.1** 在 `#/scan` 來源篩選下拉選單中新增了 **RSS**,並修正了 RSS 地點對應(來源的 `<category>` 不再被視為地點,遠端職位不會遭到錯誤過濾);**v1.62.2** 將 `#/help` 搜尋改為全文搜尋,使 RSS 等子章節可被檢索到。零新增相依套件;全部 9 個語系的 docs + CHANGELOG 皆已更新;完整套件 **1032/1032** 全綠。
 

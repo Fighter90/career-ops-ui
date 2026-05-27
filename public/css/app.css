@@ -1519,12 +1519,32 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   margin-bottom: 4px;
 }
 .scan-progress {
+  position: relative;
   width: 100%;
   height: 8px;
-  border: none;
   border-radius: var(--radius);
-  accent-color: var(--rausch);
   background: var(--line);
+  overflow: hidden;
+}
+.scan-progress__bar {
+  position: absolute;
+  top: 0;
+  left: -40%;
+  height: 100%;
+  width: 40%;
+  border-radius: var(--radius);
+  background: var(--rausch);
+  animation: scan-indeterminate 1.1s ease-in-out infinite;
+}
+/* once a progress event lands, switch to a determinate fill (width set inline) */
+.scan-progress.is-determinate .scan-progress__bar {
+  animation: none;
+  left: 0;
+  transition: width 0.3s ease;
+}
+@keyframes scan-indeterminate {
+  0%   { left: -40%; }
+  100% { left: 100%; }
 }
 /* explicit override — UA [hidden] is a no-op once an author display: lands */
 .scan-progress[hidden] { display: none; }
@@ -1603,4 +1623,6 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  /* scan loading stripe: no slide — show a calm full bar instead */
+  .scan-progress__bar { left: 0; width: 100%; opacity: 0.65; }
 }

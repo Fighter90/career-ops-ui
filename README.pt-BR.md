@@ -10,7 +10,7 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.63.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.63.1)
+[![release](https://img.shields.io/badge/release-v1.63.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.63.2)
 
 > **v1.62.x — Suporte a RSS para o scanner.** Um novo adaptador `rss` genérico permite escanear **qualquer portal de vagas RSS/Atom** (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …) fora do Greenhouse/Ashby/Lever — adicione `provider: rss` + uma chave `rss:` (ou `feed_url:`) em `portals.yml`, sem alterações de código. Ao longo da linha v1.62.*: **v1.62.0** entregou o adaptador (`server/lib/portals/adapters/rss.mjs` + `sources/rss.mjs`, parser de feed regex, decodificação CDATA + entidades HTML, `ALL_ADAPTERS` 6 → 7, 29 novos testes); **v1.62.1** adicionou **RSS** ao menu suspenso de filtro de fontes no `#/scan` e corrigiu o mapeamento de localização RSS (o `<category>` do feed não é mais tratado como localização, evitando que vagas remotas sejam descartadas); **v1.62.2** tornou a busca do `#/help` em texto completo para que subseções como RSS sejam encontráveis. Zero novas dependências; docs + CHANGELOG nas 9 localidades; suíte completa **1032/1032** verde.
 

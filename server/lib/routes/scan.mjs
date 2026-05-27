@@ -59,6 +59,7 @@ async function driveOne({ res, send, runner, label, query, final = true }) {
       companyName: query.company ? String(query.company) : undefined,
       signal: ctrl.signal,
       onLog: (stream, line) => { if (!aborted) send('log', { stream, line }); },
+      onProgress: (done, total) => { if (!aborted) send('progress', { done, total }); },
     });
     // v1.29.2 — `final` lets the consumer know whether MORE phases follow.
     // The SSE client in public/js/api.js auto-closes the EventSource on

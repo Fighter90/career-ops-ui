@@ -177,3 +177,23 @@ test('runEnScan: continues when one company returns 500', async () => {
     'should not blow up; error count ' + result.errors.length);
   assert.ok(result.counts.fresh >= 0);
 });
+
+// ───────────────────────── progress (v1.63.2) ─────────────────────────
+
+test('runEnScan: onProgress fires per company and reaches total/total', async () => {
+  const emptyFetch = async () => new Response(JSON.stringify({ jobs: [] }), { status: 200 });
+  const progress = [];
+  await runEnScan({
+    writeFiles: false,
+    fetchImpl: emptyFetch,
+    onLog: () => {},
+    onProgress: (done, total) => progress.push([done, total]),
+  });
+  assert.ok(progress.length >= 1, 'onProgress should fire at least once');
+  const [lastDone, lastTotal] = progress[progress.length - 1];
+  assert.equal(lastTotal, 2, 'two API companies (GH-Co, Ash-Co)');
+  assert.equal(lastDone, lastTotal, 'final progress should be done===total');
+  for (let i = 1; i < progress.length; i++) {
+    assert.ok(progress[i][0] >= progress[i - 1][0], 'done is non-decreasing');
+  }
+});

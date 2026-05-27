@@ -184,7 +184,7 @@ export async function runRuScan(opts = {}) {
   // completion and dropping the events on the floor.
   // fetchImpl defaults to a timeout-wrapped fetch so a stalled source
   // (e.g. api.hh.ru from a blocked IP) can't hang the whole scan (v1.63.0).
-  const { writeFiles = true, onLog = () => {}, fetchImpl = makeTimeoutFetch(), signal } = opts;
+  const { writeFiles = true, onLog = () => {}, onProgress = () => {}, fetchImpl = makeTimeoutFetch(), signal } = opts;
   const cfg = loadConfig();
   const seen = loadSeenUrls();
 
@@ -207,6 +207,7 @@ export async function runRuScan(opts = {}) {
   const sourceFailures = {};
   let hhDisabled = false;
 
+  let qDone = 0;                    // v1.63.2 — determinate % progress
   for (const q of cfg.queries) {
     if (signal?.aborted) {
       log('stderr', `aborted — stopping after "${q}" was about to run`);
@@ -215,6 +216,7 @@ export async function runRuScan(opts = {}) {
     log('stdout', `▸ "${q}"`);
     const results = await runQuery(q, cfg, fetchImpl, errors, sourceFailures, hhDisabled, log, signal);
     log('stdout', `  → ${results.length} hits`);
+    onProgress(++qDone, cfg.queries.length);
     allFound.push(...results);
     // First hh.ru 403 → disable for rest of run + log once
     if (sourceFailures.hh?.geoBlocked && !hhDisabled) {
@@ -307,11 +309,19 @@ async function runQuery(query, cfg, fetchImpl, errors, sourceFailures, hhDisable
       log('stdout', `    ${entry.label.padEnd(8)} ${items.length}`);
     } catch (e) {
       const failKey = key;
+      const firstFailure = !sourceFailures[failKey];
       sourceFailures[failKey] = sourceFailures[failKey] || {
         count: 0, firstMessage: e.message, geoBlocked: e.geoBlocked,
       };
       sourceFailures[failKey].count += 1;
       errors.push(`${entry.label} "${query}": ${e.message}`);
+      // v1.63.2 — surface the first detailed failure per source to the
+      // console (timeout / 403 / network), then suppress repeats (the
+      // count keeps accumulating for the run summary).
+      if (firstFailure) {
+        const kind = e?.name === 'TimeoutError' ? 'timed out' : 'failed';
+        log('stderr', `    ⚠ ${entry.label} ${kind}: ${e.message}`);
+      }
     }
   }
   return out;
