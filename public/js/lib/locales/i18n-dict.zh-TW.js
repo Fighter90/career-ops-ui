@@ -336,6 +336,7 @@ window.__I18N_DICT_ZH_TW = {
   'scan.consoleLabel': "掃描輸出日誌",
   'scan.stop': "停止",
   'scan.stopped': "已停止",
+  'scan.progress': "掃描中…",
   'scan.statusDone': "掃描完成",
   'scan.statusFailed': "掃描失敗",
   'scan.statusStopped': "掃描已停止",

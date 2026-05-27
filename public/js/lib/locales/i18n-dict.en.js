@@ -336,6 +336,7 @@ window.__I18N_DICT_EN = {
   'scan.consoleLabel': "Scan output log",
   'scan.stop': "Stop",
   'scan.stopped': "stopped",
+  'scan.progress': "Scanning…",
   'scan.statusDone': "Scan complete",
   'scan.statusFailed': "Scan failed",
   'scan.statusStopped': "Scan stopped",

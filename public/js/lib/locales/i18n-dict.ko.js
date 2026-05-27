@@ -336,6 +336,7 @@ window.__I18N_DICT_KO = {
   'scan.consoleLabel': "스캔 출력 로그",
   'scan.stop': "중지",
   'scan.stopped': "중지됨",
+  'scan.progress': "스캔 중…",
   'scan.statusDone': "스캔 완료",
   'scan.statusFailed': "스캔 실패",
   'scan.statusStopped': "스캔 중지됨",

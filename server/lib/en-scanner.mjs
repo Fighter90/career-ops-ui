@@ -15,6 +15,7 @@ import yaml from 'js-yaml';
 import { PATHS } from './paths.mjs';
 import { addPipelineUrl } from './parsers.mjs';
 import { buildLocationFilter } from './location-filter.mjs';
+import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { fetchGreenhouse } from './sources/greenhouse.mjs';
 import { fetchAshby } from './sources/ashby.mjs';
 import { fetchLever } from './sources/lever.mjs';
@@ -94,7 +95,9 @@ async function pMap(items, mapper, concurrency) {
 export async function runEnScan(opts = {}) {
   // REVIEW-B3 — `signal` lets the SSE handler abort in-flight fetches
   // when the client disconnects.
-  const { writeFiles = true, companyName, onLog = () => {}, fetchImpl, signal } = opts;
+  // fetchImpl defaults to a timeout-wrapped fetch so one stalled board
+  // can't hang the whole ATS sweep (v1.63.0).
+  const { writeFiles = true, companyName, onLog = () => {}, fetchImpl = makeTimeoutFetch(), signal } = opts;
   const portals = loadPortals();
   const tf = portals.title_filter || {};
   const positives = tf.positive || [];

@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.63.0] — 2026-05-27
+
+**feat(scan): timeout por petición + barra de progreso en `#/scan`.** Las peticiones de fuentes no tenían límite de tiempo, así que una fuente atascada (p. ej. `api.hh.ru` desde una IP bloqueada) podía **colgar todo el escaneo**. El nuevo `server/lib/fetch-timeout.mjs` envuelve el `fetchImpl` de los escáneres (`makeTimeoutFetch`, por defecto **15s**, configurable con `SCAN_FETCH_TIMEOUT_MS`); una fuente expirada se registra como error no fatal y el escaneo continúa. `#/scan` muestra una barra de progreso durante el escaneo (`scan.progress` en las 9 localizaciones). 7 pruebas nuevas; suite 1039/1039.
+
+---
+
+
+
 ## [1.62.3] — 2026-05-27
 
 **docs: instalación aclarada (career-ops-ui corre dentro de `career-ops/web-ui/`) + solución de problemas de `init`, en las 9 localizaciones.** Sección de instalación reescrita en **Option 1** (un curl) / **Option 2** (clonar la UI *dentro* de un proyecto career-ops existente como `web-ui`) + verbos CLI + configuración del proveedor + bloque **Troubleshooting `init`**. Nota de estructura anidada añadida a `/help` §1 Setup; resumen de toda la línea v1.62.* en el README. Solo documentación; sin cambios de código.

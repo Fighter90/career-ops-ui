@@ -336,6 +336,7 @@ window.__I18N_DICT_FR = {
   'scan.consoleLabel': "Journal de sortie du scan", // Scan output log
   'scan.stop': "Arrêter", // Stop
   'scan.stopped': "arrêté", // stopped
+  'scan.progress': "Analyse en cours…",
   'scan.statusDone': "Scan terminé", // Scan complete
   'scan.statusFailed': "Scan échoué", // Scan failed
   'scan.statusStopped': "Scan arrêté", // Scan stopped

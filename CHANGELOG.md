@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.63.0] — 2026-05-27
+
+**feat(scan): per-request fetch timeout + `#/scan` progress bar.** Scanner source requests had no deadline, so a stalled upstream (e.g. `api.hh.ru` from a blocked IP) could **hang the whole scan**. A new `server/lib/fetch-timeout.mjs` wraps the scanners' `fetchImpl` (`makeTimeoutFetch`, default **15s**, override via `SCAN_FETCH_TIMEOUT_MS`) so every source request has a hard deadline — a timed-out source is recorded as a non-fatal error and the scan continues (Habr keeps working even when hh.ru is unreachable). The `#/scan` page also shows an indeterminate progress bar while a scan is in flight (localized `scan.progress` across all 9 locales). 7 new tests; suite 1039/1039.
+
+---
+
+
+
 ## [1.62.3] — 2026-05-27
 
 **docs: clarify install (career-ops-ui runs inside `career-ops/web-ui/`) + `init` troubleshooting, across all 9 locales.** Rewrote the install section into **Option 1** (one curl) / **Option 2** (clone the UI *inside* an existing career-ops project as `web-ui`) + CLI verbs + provider setup + a **Troubleshooting `init`** block — addressing the common confusion of cloning career-ops-ui standalone and running `init` without the parent project. Also added the nested-layout note to the `/help` §1 Setup section and summarized the whole v1.62.* line in the README highlight. Docs-only; no code change.

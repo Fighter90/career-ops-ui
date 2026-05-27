@@ -10,6 +10,14 @@
 
 
 
+## [1.63.0] — 2026-05-27
+
+**feat(scan):按请求超时 + `#/scan` 进度条。** 来源请求没有截止时间,因此卡住的上游(例如来自被封 IP 的 `api.hh.ru`)可能**令整个扫描挂起**。新增 `server/lib/fetch-timeout.mjs` 包装扫描器的 `fetchImpl`(`makeTimeoutFetch`,默认 **15 秒**,可用 `SCAN_FETCH_TIMEOUT_MS` 覆盖),为每个请求设置硬性截止;超时来源记为非致命错误,扫描继续。`#/scan` 在扫描期间显示进度条(全部 9 个语言版本的 `scan.progress`)。新增 7 项测试;套件 1039/1039。
+
+---
+
+
+
 ## [1.62.3] — 2026-05-27
 
 **docs:明确安装方式(career-ops-ui 运行于 `career-ops/web-ui/` 内)+ `init` 故障排查,覆盖全部 9 个语言版本。** 将安装小节重写为 **Option 1**(一条 curl)/ **Option 2**(在现有 career-ops 项目内以 `web-ui` 克隆 UI)+ CLI 命令 + 提供方配置 + **Troubleshooting `init`** 区块。嵌套结构说明也加入 `/help` §1 Setup;README 高亮处汇总整个 v1.62.* 系列。仅文档,无代码改动。

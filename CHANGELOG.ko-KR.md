@@ -10,6 +10,14 @@
 
 
 
+## [1.63.0] — 2026-05-27
+
+**feat(scan): 요청별 타임아웃 + `#/scan` 진행 표시줄.** 소스 요청에 마감 시간이 없어, 멈춘 업스트림(예: 차단된 IP에서의 `api.hh.ru`)이 **스캔 전체를 멈출** 수 있었습니다. 새 `server/lib/fetch-timeout.mjs` 가 스캐너의 `fetchImpl` 을 감싸(`makeTimeoutFetch`, 기본 **15초**, `SCAN_FETCH_TIMEOUT_MS` 로 변경) 각 요청에 엄격한 마감을 부여합니다. 타임아웃된 소스는 비치명적 오류로 기록되고 스캔은 계속됩니다. `#/scan` 은 스캔 중 진행 표시줄을 보여줍니다(9개 로케일 `scan.progress`). 신규 테스트 7개, 스위트 1039/1039.
+
+---
+
+
+
 ## [1.62.3] — 2026-05-27
 
 **docs: 설치 명확화(career-ops-ui 는 `career-ops/web-ui/` 안에서 실행)+ `init` 문제 해결, 9개 로케일 전체.** 설치 섹션을 **Option 1**(원커맨드 curl)/ **Option 2**(기존 career-ops 프로젝트 안에 `web-ui` 로 UI 클론)+ CLI 명령어 + 공급자 설정 + **Troubleshooting `init`** 블록으로 재작성. 중첩 구조 안내를 `/help` §1 Setup 에도 추가하고, README 하이라이트에서 v1.62.* 라인 전체를 요약. 문서만 변경, 코드 변경 없음.

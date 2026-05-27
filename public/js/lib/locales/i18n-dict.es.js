@@ -336,6 +336,7 @@ window.__I18N_DICT_ES = {
   'scan.consoleLabel': "Registro de salida del escaneo",
   'scan.stop': "Detener",
   'scan.stopped': "detenido",
+  'scan.progress': "Escaneando…",
   'scan.statusDone': "Escaneo completado",
   'scan.statusFailed': "Escaneo fallido",
   'scan.statusStopped': "Escaneo detenido",

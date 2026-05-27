@@ -336,6 +336,7 @@ window.__I18N_DICT_RU = {
   'scan.consoleLabel': "Журнал вывода сканирования",
   'scan.stop': "Остановить",
   'scan.stopped': "остановлено",
+  'scan.progress': "Сканирование…",
   'scan.statusDone': "Сканирование завершено",
   'scan.statusFailed': "Сканирование не удалось",
   'scan.statusStopped': "Сканирование остановлено",

@@ -336,6 +336,7 @@ window.__I18N_DICT_PT_BR = {
   'scan.consoleLabel': "Registro de saída da varredura",
   'scan.stop': "Parar",
   'scan.stopped': "parado",
+  'scan.progress': "Escaneando…",
   'scan.statusDone': "Varredura concluída",
   'scan.statusFailed': "Falha na varredura",
   'scan.statusStopped': "Varredura parada",

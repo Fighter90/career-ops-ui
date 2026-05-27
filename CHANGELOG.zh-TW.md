@@ -10,6 +10,14 @@
 
 
 
+## [1.63.0] — 2026-05-27
+
+**feat(scan):依請求逾時 + `#/scan` 進度條。** 來源請求沒有截止時間,因此卡住的上游(例如來自被封 IP 的 `api.hh.ru`)可能**讓整個掃描掛起**。新增 `server/lib/fetch-timeout.mjs` 包裝掃描器的 `fetchImpl`(`makeTimeoutFetch`,預設 **15 秒**,可用 `SCAN_FETCH_TIMEOUT_MS` 覆寫),為每個請求設定硬性截止;逾時來源記為非致命錯誤,掃描繼續。`#/scan` 在掃描期間顯示進度條(全部 9 個語系的 `scan.progress`)。新增 7 項測試;套件 1039/1039。
+
+---
+
+
+
 ## [1.62.3] — 2026-05-27
 
 **docs:釐清安裝方式(career-ops-ui 執行於 `career-ops/web-ui/` 內)+ `init` 疑難排解,涵蓋全部 9 個語系。** 將安裝小節重寫為 **Option 1**(一條 curl)/ **Option 2**(在既有 career-ops 專案內以 `web-ui` 複製 UI)+ CLI 指令 + 供應商設定 + **Troubleshooting `init`** 區塊。巢狀結構說明亦加入 `/help` §1 Setup;README 重點處彙總整個 v1.62.* 系列。僅文件,無程式碼改動。

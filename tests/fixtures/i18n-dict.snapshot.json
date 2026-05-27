@@ -3596,6 +3596,17 @@
     "zh-TW": "已停止",
     "fr": "arrêté"
   },
+  "scan.progress": {
+    "en": "Scanning…",
+    "es": "Escaneando…",
+    "pt-BR": "Escaneando…",
+    "ko": "스캔 중…",
+    "ja": "スキャン中…",
+    "ru": "Сканирование…",
+    "zh-CN": "扫描中…",
+    "zh-TW": "掃描中…",
+    "fr": "Analyse en cours…"
+  },
   "scan.statusDone": {
     "en": "Scan complete",
     "es": "Escaneo completado",

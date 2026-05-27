@@ -27,6 +27,7 @@ import { searchGetMatch } from './sources/getmatch.mjs';
 import { searchGeekJob } from './sources/geekjob.mjs';
 import { RU_CONFIG_KEYS } from './sources/registry.mjs';
 import { addPipelineUrl } from './parsers.mjs';
+import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { saveLastScan } from './en-scanner.mjs';
 import { buildLocationFilter } from './location-filter.mjs';
 
@@ -181,7 +182,9 @@ export async function runRuScan(opts = {}) {
   // REVIEW-B3 — `signal` lets the SSE handler abort in-flight fetches
   // when the client disconnects, instead of running every query to
   // completion and dropping the events on the floor.
-  const { writeFiles = true, onLog = () => {}, fetchImpl, signal } = opts;
+  // fetchImpl defaults to a timeout-wrapped fetch so a stalled source
+  // (e.g. api.hh.ru from a blocked IP) can't hang the whole scan (v1.63.0).
+  const { writeFiles = true, onLog = () => {}, fetchImpl = makeTimeoutFetch(), signal } = opts;
   const cfg = loadConfig();
   const seen = loadSeenUrls();
 
