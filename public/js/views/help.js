@@ -69,7 +69,14 @@ Router.register('help', async () => {
         target.focus({ preventScroll: true });
       },
     }, plain);
-    a.dataset.tocText = plain.toLowerCase();
+    // v1.62.x — index each section's BODY too (every node from this H2
+    // up to the next H2), so the filter is full-text: an H3 subsection
+    // like `rss` is findable by content, not just by its H2 title.
+    let bodyText = '';
+    for (let n = h.nextElementSibling; n && n.tagName !== 'H2'; n = n.nextElementSibling) {
+      bodyText += ' ' + (n.textContent || '');
+    }
+    a.dataset.tocText = (plain + ' ' + bodyText).toLowerCase();
     a.dataset.targetId = h.id; // v1.56.0 — UX-11: filter→1-match scroll
     return a;
   });

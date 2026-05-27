@@ -10,6 +10,14 @@
 
 
 
+## [1.62.2] — 2026-05-27
+
+**fix(help): `#/help` 필터가 이제 전문 검색입니다(RSS 같은 H3 하위 섹션도 검색됨).** 도움말 페이지의 검색/TOC 필터는 이전에 H2 섹션 제목만 일치시켰기 때문에 v1.62.x의 RSS 문서(§5 Portals & sources 아래 H3)를 찾을 수 없었습니다. 이제 각 섹션의 본문이 필터에 인덱싱되어 예를 들어 "RSS"를 검색하면 §5가 표시됩니다. 클라이언트 측만 변경, API 변경 없음.
+
+---
+
+
+
 ## [1.62.1] — 2026-05-27
 
 **feat(scan): 소스 필터에 RSS 추가 + RSS 위치 수정.** `#/scan` 소스 필터 드롭다운에 이제 **RSS** 가 표시됩니다(`server/lib/sources/registry.mjs` 와 SPA 폴백 목록에 추가). 따라서 RSS 보드(LaraJobs, WeWorkRemotely 등) 결과도 다른 ATS 소스처럼 필터링됩니다. RSS 어댑터는 더 이상 피드의 `<category>` 태그를 `location` 에 매핑하지 않습니다 — 위치가 아닌 태그가 `location_filter` 로 하여금 원격 직무를 잘못 제외하게 만들었기 때문입니다. 이제 `location` 은 비어 있어 피드가 위치 필터를 통과합니다. 스캔 버튼 툴팁/레이블과 소스 목록 i18n 문자열을 9개 로케일 전체에서 업데이트(Workable / SmartRecruiters / Workday / RSS). i18n 스냅샷과 소스 엔드포인트 테스트(EN 6 → 7) 업데이트.

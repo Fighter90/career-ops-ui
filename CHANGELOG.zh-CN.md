@@ -10,6 +10,14 @@
 
 
 
+## [1.62.2] — 2026-05-27
+
+**fix(help):`#/help` 筛选现已支持全文检索(可找到像 RSS 这样的 H3 子小节)。** 帮助页的搜索/目录筛选此前仅匹配 H2 小节标题,因此 v1.62.x 的 RSS 文档(§5 Portals & sources 下的 H3)无法被找到。现在每个小节的正文也会被索引到筛选中,因此搜索如「RSS」即可定位到 §5。纯客户端改动,无 API 变更。
+
+---
+
+
+
 ## [1.62.1] — 2026-05-27
 
 **feat(scan)：来源筛选器加入 RSS + 修复 RSS 地点。** `#/scan` 的来源筛选下拉框现在列出 **RSS**(已加入 `server/lib/sources/registry.mjs` 与 SPA 回退列表),因此 RSS 招聘板(LaraJobs、WeWorkRemotely 等)的结果可像任何 ATS 来源一样筛选。RSS 适配器不再将订阅源的 `<category>` 标签映射到 `location` —— 这些非地点标签会让 `location_filter` 误删远程职位;现在 `location` 留空,订阅源即可通过地点筛选。扫描按钮的提示/标签与来源列表 i18n 文案已在全部 9 个语言版本中更新(Workable / SmartRecruiters / Workday / RSS)。已更新 i18n 快照与来源端点测试(EN 6 → 7)。

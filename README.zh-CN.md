@@ -10,7 +10,7 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.62.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.62.1)
+[![release](https://img.shields.io/badge/release-v1.62.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.62.2)
 
 > **v1.62.1 — RSS 适配器:扫描任意基于 RSS 的招聘板 ([#15](https://github.com/Fighter90/career-ops-ui/pull/15)).** 新增 `rss` 适配器(`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`),使扫描器能从任意 RSS/Atom 订阅源抓取职位 —— **LaraJobs、WeWorkRemotely、RemoteOK、golangprojects** 以及 Greenhouse/Ashby/Lever 之外的其他招聘板。无新增依赖:基于正则的订阅解析,支持 CDATA 与 HTML 实体解码(标题/公司名去除标签,星位码点安全解码)。通过 `portals.yml` 中的 `provider: rss` + `rss:`(或 `feed_url:`)按公司启用 —— 无需改代码 —— 且不会拦截已匹配 ATS 的公司。**RSS** 现已显示在 `#/scan` 的来源筛选下拉框中,与 Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday 并列。`ALL_ADAPTERS` 由 6 增至 7。新增 29 项测试,完整套件 **1032/1032**。全部 9 个语言版本的 README 与 CHANGELOG 均已更新。
 

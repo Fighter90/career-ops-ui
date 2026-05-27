@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.62.2] — 2026-05-27
+
+**fix(help): `#/help` filter is now full-text (finds H3 subsections like RSS).** The help-page search/TOC filter previously matched only H2 section titles, so the v1.62.x RSS docs (an H3 under §5 Portals & sources) weren't findable. Each section's body text is now indexed into the filter, so searching e.g. "RSS" surfaces §5. Pure client-side; no API change.
+
+---
+
+
+
 ## [1.62.1] — 2026-05-27
 
 **feat(scan): RSS in the source filter + RSS location fix.** The `#/scan` source-filter dropdown now lists **RSS** (added to `server/lib/sources/registry.mjs` + the SPA fallback list), so RSS-board results (LaraJobs, WeWorkRemotely, …) are filterable like any ATS source. The RSS adapter no longer maps the feed `<category>` tag onto `location` — non-location tags there made `location_filter` wrongly drop remote roles; `location` is now empty so feeds pass location filtering. Scan-button tooltips/labels and the source-list i18n string (`dash.quick.scanSub`) updated across all 9 locales to include Workable / SmartRecruiters / Workday / RSS. i18n snapshot + scan-sources endpoint test (6 → 7 EN sources) updated.

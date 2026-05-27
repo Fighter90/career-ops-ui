@@ -10,7 +10,7 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.62.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.62.1)
+[![release](https://img.shields.io/badge/release-v1.62.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.62.2)
 
 > **v1.62.1 — Adaptateur RSS : scannez n'importe quel site d'emploi RSS ([#15](https://github.com/Fighter90/career-ops-ui/pull/15)).** Un nouvel adaptateur `rss` (`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`) permet au scanner de récupérer des offres depuis n'importe quel flux RSS/Atom — **LaraJobs, WeWorkRemotely, RemoteOK, golangprojects** et d'autres sites hors Greenhouse/Ashby/Lever. Aucune nouvelle dépendance : l'analyse du flux repose sur des regex avec CDATA et décodage des entités HTML (titres/entreprises nettoyés des balises, points de code astraux décodés en toute sécurité). Activez-le par entreprise avec `provider: rss` + une clé `rss:` (ou `feed_url:`) dans `portals.yml` — sans modification de code — et il n'intercepte jamais les entreprises déjà associées à un ATS. **RSS** apparaît désormais dans le menu déroulant de filtre de sources de `#/scan` aux côtés de Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday. `ALL_ADAPTERS` passe de 6 à 7. 29 nouveaux tests ; suite complète **1032/1032**. Docs + CHANGELOG dans les 9 localisations.
 

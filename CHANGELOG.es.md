@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.62.2] — 2026-05-27
+
+**fix(help): el filtro de `#/help` ahora es de texto completo (encuentra subsecciones H3 como RSS).** El filtro de búsqueda/TOC de la página de ayuda solo coincidía con títulos de sección H2, por lo que la documentación RSS de v1.62.x (un H3 bajo §5 Portals & sources) no se encontraba. Ahora el cuerpo de cada sección se indexa en el filtro, así que buscar p. ej. «RSS» muestra §5. Solo del lado del cliente; sin cambios de API.
+
+---
+
+
+
 ## [1.62.1] — 2026-05-27
 
 **feat(scan): RSS en el filtro de fuentes + corrección de ubicación RSS.** El desplegable de filtro de fuentes en `#/scan` ahora incluye **RSS** (añadido a `server/lib/sources/registry.mjs` + la lista de respaldo del SPA), por lo que los resultados de portales RSS (LaraJobs, WeWorkRemotely, …) se filtran como cualquier fuente ATS. El adaptador RSS ya no asigna la etiqueta `<category>` del feed a `location` — esas etiquetas hacían que `location_filter` descartara erróneamente puestos remotos; ahora `location` queda vacío y los feeds pasan el filtro de ubicación. Tooltips/etiquetas del botón de escaneo y la cadena de lista de fuentes actualizadas en las 9 localizaciones (Workable / SmartRecruiters / Workday / RSS). Snapshot i18n y prueba del endpoint de fuentes (6 → 7 EN) actualizados.

@@ -10,7 +10,7 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.62.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.62.1)
+[![release](https://img.shields.io/badge/release-v1.62.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.62.2)
 
 > **v1.62.1 — RSS 어댑터: RSS 기반 채용 보드 스캔 ([#15](https://github.com/Fighter90/career-ops-ui/pull/15)).** 새 `rss` 어댑터(`server/lib/portals/adapters/rss.mjs` + `server/lib/sources/rss.mjs`)를 통해 스캐너가 모든 RSS/Atom 피드(**LaraJobs, WeWorkRemotely, RemoteOK, golangprojects** 등 Greenhouse/Ashby/Lever 외 보드)에서 채용 공고를 가져올 수 있습니다. 새 의존성 없음: 피드 파싱은 정규식 기반이며 CDATA와 HTML 엔티티 디코딩을 지원합니다(제목/회사명 태그 제거, astral 코드포인트 안전 디코딩). `portals.yml`의 `provider: rss` + `rss:`(또는 `feed_url:`) 키로 회사별 활성화하며(코드 변경 불필요) ATS에 이미 매칭된 회사를 가로채지 않습니다. 이제 **RSS**가 `#/scan` 소스 필터 드롭다운에 Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday와 함께 표시됩니다. `ALL_ADAPTERS`가 6 → 7로 증가. 신규 테스트 29개, 전체 스위트 **1032/1032**. 9개 로케일 전체에서 README와 CHANGELOG 업데이트.
 
