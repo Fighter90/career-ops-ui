@@ -66,7 +66,7 @@ npx career-ops-ui init        # interactive: pick LLM provider + paste its key �
 
 `web-ui/` のネスト構造こそが、UI が `../cv.md`、`../config/`、`../data/` を解決できる理由です。`npx career-ops-ui <verb>` の代わりに `career-ops-ui <verb>` と入力したい場合は `npm link` を**一度**実行してください。
 
-### CLI verbs
+### CLI コマンド
 
 ```bash
 career-ops-ui setup    # bootstrap: install deps → doctor → run (SKIP_START=1 to stop before run)

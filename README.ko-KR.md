@@ -66,7 +66,7 @@ npx career-ops-ui init        # interactive: pick LLM provider + paste its key �
 
 `web-ui/`가 중첩된 구조인 것이 바로 UI가 `../cv.md`, `../config/`, `../data/`를 해석할 수 있는 이유입니다. `npx career-ops-ui <verb>` 대신 `career-ops-ui <verb>`를 입력하고 싶다면 `npm link`를 **한 번** 실행하세요.
 
-### CLI verbs
+### CLI 명령어
 
 ```bash
 career-ops-ui setup    # bootstrap: install deps → doctor → run (SKIP_START=1 to stop before run)
