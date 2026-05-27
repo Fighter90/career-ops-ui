@@ -219,8 +219,27 @@ npm start
 Сканирование порталов без расхода токенов, которое реально приносит вакансии. **Одна кнопка 🌐 Scan** в UI запускает все настроенные источники в одном проходе:
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — публичный boards-api для каждой компании из `portals.yml::tracked_companies` с распознаваемым ATS-паттерном. Встроенный список включает Stripe, GitLab, Vercel, Cloudflare, Datadog, Discord, Elastic, Grafana Labs, CockroachDB, Fastly, Twilio, Coinbase, Reddit, Robinhood, Affirm, Lyft, Linear, Supabase, PostHog, Ramp, Modal Labs, Railway, Browserbase, JetBrains — расширяйте или сокращайте по своему усмотрению.
+- **RSS-доски** — любой джоб-борд, публикующий RSS/Atom-ленту (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects и др.). Добавьте `provider: rss` и URL ленты в `portals.yml` — изменения в коде не требуются.
 - **hh.ru** — публичный API (с не-российских IP возвращает 403; используйте российский IP или VPN; повторные 403 от одного источника схлопываются, и он отключается прямо на ходу). Сервер отправляет разумный User-Agent по умолчанию; продвинутые пользователи при необходимости работают через VPN.
 - **Habr Career** — парсинг HTML страницы `career.habr.com/vacancies`. Доступен с любого IP и без авторизации.
+
+### RSS-адаптер
+
+Направьте сканер на любую RSS-доску, добавив запись с `provider: rss` и ключом `rss:` (или `feed_url:`) в `portals.yml`:
+
+```yaml
+tracked_companies:
+  - name: LaraJobs
+    provider: rss
+    rss: https://larajobs.com/feed
+    enabled: true
+  - name: WeWorkRemotely
+    provider: rss
+    rss: https://weworkremotely.com/remote-jobs.rss
+    enabled: true
+```
+
+Адаптер разбирает блоки `<item>` с помощью небольшого парсера на регулярных выражениях (XML-библиотека не требуется). Извлекаются `title`, `link` (→ `url`), `pubDate` (→ `date`) и `description` (→ `snippet`, теги удаляются). Удалённый формат работы определяется по паттерну `/remote|anywhere|удалённо/i` в заголовке или описании; название компании берётся из `dc:creator`, паттерна «Компания — Должность» в заголовке или имени хоста ленты как запасного варианта. Применяется тот же конвейер нормализации → фильтрации → дедупликации → добавления в pipeline, что и для ATS-адаптеров.
 
 Все источники проходят через единый конвейер: нормализация → фильтрация (`title_filter.positive` / `title_filter.negative`) → дедупликация относительно `data/scan-history.tsv` + `data/pipeline.md` + `data/applications.md` → добавление в `data/pipeline.md` → сохранение полного набора результатов в `data/last-scan.json` для фильтруемой таблицы UI.
 

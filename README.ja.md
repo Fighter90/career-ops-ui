@@ -221,8 +221,27 @@ http://127.0.0.1:4317 を開きます。Pipeline カウンタが `0 件待機中
 実際に求人を返す、ゼロトークンのポータルスキャン。UI 上の **1 つの 🌐 Scan ボタン** が、設定済みのすべてのソースを 1 回のスイープで実行します。
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — `portals.yml::tracked_companies` に登録された、認識可能な ATS パターンを持つすべての企業に対する公開 boards-api を叩きます。同梱リストは Stripe、GitLab、Vercel、Cloudflare、Datadog、Discord、Elastic、Grafana Labs、CockroachDB、Fastly、Twilio、Coinbase、Reddit、Robinhood、Affirm、Lyft、Linear、Supabase、PostHog、Ramp、Modal Labs、Railway、Browserbase、JetBrains をカバーします。自由に拡張・削減できます。
+- **RSS 求人ボード** — RSS/Atom フィードを公開している求人ボード(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects など)に対応。`portals.yml` に `provider: rss` とフィード URL を追加するだけです。コード変更は不要です。
 - **hh.ru** — 公開 API(RU 以外の IP からは 403 を返します。ロシアの IP / VPN から実行するか、スキップしてください。同一ソースからの連続 403 は集約され、実行中に当該ソースが無効化されます)。サーバーは妥当なデフォルト User-Agent を出荷します。上級ユーザーは Russian IP / VPN 経由でこれを上書きできます。
 - **Habr Career** — `career.habr.com/vacancies` の HTML スクレイプ。任意の IP から動作し、認証は不要です。
+
+### RSS アダプタ
+
+`portals.yml` に `provider: rss` と `rss:`（または `feed_url:`）キーを持つエントリを追加することで、RSS ベースの求人ボードをスキャナに接続できます。
+
+```yaml
+tracked_companies:
+  - name: LaraJobs
+    provider: rss
+    rss: https://larajobs.com/feed
+    enabled: true
+  - name: WeWorkRemotely
+    provider: rss
+    rss: https://weworkremotely.com/remote-jobs.rss
+    enabled: true
+```
+
+アダプタは小さな正規表現ベースのパーサー（XML ライブラリ不要）で `<item>` ブロックを解析します。`title`、`link`（→ `url`）、`pubDate`（→ `date`）、`description`（→ `snippet`、HTML タグを除去）を抽出します。リモート勤務の判定はタイトルや説明文中の `/remote|anywhere/i` パターンで行い、会社名は `dc:creator`、タイトルの「会社名 — 職種」パターン、またはフィードのホスト名の順で取得します。ATS アダプタと同じ正規化 → フィルタリング → 重複排除 → パイプライン追記の流れが適用されます。
 
 すべてのソースは同じパイプラインを通ります。normalize → filter(`title_filter.positive` / `title_filter.negative`)→ `data/scan-history.tsv` + `data/pipeline.md` + `data/applications.md` に対する dedup → `data/pipeline.md` への追記 → UI のフィルタ可能テーブル向けに完全な結果セットを `data/last-scan.json` に保存、という流れです。
 

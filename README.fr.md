@@ -220,8 +220,27 @@ Raccourcis clavier globaux :
 Scan de portails sans coût en tokens qui renvoie réellement des offres. **Un bouton 🌐 Scan** dans l'UI exécute chaque source configurée en une seule passe :
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — boards-api public pour chaque entreprise de `portals.yml::tracked_companies` avec un pattern ATS reconnaissable. La liste fournie couvre Stripe, GitLab, Vercel, Cloudflare, Datadog, Discord, Elastic, Grafana Labs, CockroachDB, Fastly, Twilio, Coinbase, Reddit, Robinhood, Affirm, Lyft, Linear, Supabase, PostHog, Ramp, Modal Labs, Railway, Browserbase, JetBrains — étendez ou réduisez librement.
+- **Tableaux RSS** — tout tableau d'offres d'emploi exposant un flux RSS/Atom (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …). Ajoutez `provider: rss` et l'URL du flux dans `portals.yml` — aucune modification du code nécessaire.
 - **hh.ru** — API publique (renvoie 403 depuis des IP non-RU ; lancez depuis une IP / un VPN russe, ou sautez — les 403 répétés d'une source sont regroupés et la source désactivée en cours de route). Le serveur fournit un User-Agent par défaut raisonnable ; les utilisateurs avancés peuvent toujours surcharger via une IP / un VPN russe.
 - **Habr Career** — scraping HTML de `career.habr.com/vacancies`. Fonctionne depuis n'importe quelle IP, sans auth.
+
+### Adaptateur RSS
+
+Pointez le scanner vers n'importe quel tableau basé sur RSS en ajoutant une entrée avec `provider: rss` et la clé `rss:` (ou `feed_url:`) dans `portals.yml` :
+
+```yaml
+tracked_companies:
+  - name: LaraJobs
+    provider: rss
+    rss: https://larajobs.com/feed
+    enabled: true
+  - name: WeWorkRemotely
+    provider: rss
+    rss: https://weworkremotely.com/remote-jobs.rss
+    enabled: true
+```
+
+L'adaptateur analyse les blocs `<item>` avec un petit parseur basé sur des expressions régulières (aucune bibliothèque XML nécessaire). Il extrait `title`, `link` (→ `url`), `pubDate` (→ `date`) et `description` (→ `snippet`, balises HTML supprimées). Le travail à distance est détecté par `/remote|anywhere/i` dans le titre ou la description ; le nom de l'entreprise est extrait de `dc:creator`, du pattern « Entreprise — Poste » dans le titre, ou du nom d'hôte du flux. Le même flux normalisation → filtrage → déduplification → ajout au pipeline s'applique comme pour les adaptateurs ATS.
 
 Toutes les sources passent par le même pipeline : normaliser → filtrer (`title_filter.positive` / `title_filter.negative`) → dédupliquer contre `data/scan-history.tsv` + `data/pipeline.md` + `data/applications.md` → ajouter à `data/pipeline.md` → enregistrer l'ensemble complet des résultats dans `data/last-scan.json` pour le tableau filtrable de l'UI.
 

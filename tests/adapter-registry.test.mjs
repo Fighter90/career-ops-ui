@@ -97,11 +97,11 @@ test('registry: Workday defaults site=External when careers_url omits site', () 
   assert.match(m.endpoint, /\/wday\/cxs\/bigco\/External\/jobs$/);
 });
 
-test('registry: ALL_ADAPTERS now has 6 entries', async () => {
+test('registry: ALL_ADAPTERS now has 7 entries', async () => {
   const { ALL_ADAPTERS } = await import('../server/lib/portals/registry.mjs');
-  assert.equal(ALL_ADAPTERS.length, 6);
+  assert.equal(ALL_ADAPTERS.length, 7);
   const ids = ALL_ADAPTERS.map((a) => a.id).sort();
-  assert.deepEqual(ids, ['ashby', 'greenhouse', 'lever', 'smartrecruiters', 'workable', 'workday']);
+  assert.deepEqual(ids, ['ashby', 'greenhouse', 'lever', 'rss', 'smartrecruiters', 'workable', 'workday']);
 });
 
 test('registry: detectApi (legacy shape) still returns { type, url }', async () => {

@@ -221,8 +221,27 @@ Global keyboard shortcuts:
 Zero-token portal scanning that actually returns vacancies. **One 🌐 Scan button** in the UI runs every configured source in a single sweep:
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — public boards-api for every company in `portals.yml::tracked_companies` with a recognizable ATS pattern. Bundled list covers Stripe, GitLab, Vercel, Cloudflare, Datadog, Discord, Elastic, Grafana Labs, CockroachDB, Fastly, Twilio, Coinbase, Reddit, Robinhood, Affirm, Lyft, Linear, Supabase, PostHog, Ramp, Modal Labs, Railway, Browserbase, JetBrains — extend or trim freely.
+- **RSS boards** — any job board that exposes an RSS/Atom feed (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …). Add `provider: rss` + the feed URL to `portals.yml` — no code changes required.
 - **hh.ru** — public API (returns 403 from non-RU IPs; run from a Russian IP / VPN, or skip — repeated 403s from one source are coalesced and the source is disabled mid-run). The server ships a sensible default User-Agent; power users can still override via a Russian IP / VPN.
 - **Habr Career** — HTML scrape of `career.habr.com/vacancies`. Works from any IP, no auth.
+
+### RSS adapter
+
+Point the scanner at any RSS-based job board by adding an entry with `provider: rss` and an `rss:` (or `feed_url:`) key to `portals.yml`:
+
+```yaml
+tracked_companies:
+  - name: LaraJobs
+    provider: rss
+    rss: https://larajobs.com/feed
+    enabled: true
+  - name: WeWorkRemotely
+    provider: rss
+    rss: https://weworkremotely.com/remote-jobs.rss
+    enabled: true
+```
+
+The adapter parses `<item>` blocks using a tiny regex-based parser (no XML library needed). It extracts `title`, `link` (→ `url`), `pubDate` (→ `date`), and `description` (→ `snippet`, HTML stripped). Remote status is inferred from `/remote|anywhere/i` in the title or description; company name is pulled from `dc:creator`, a "Company — Role" title pattern, or the feed hostname as a fallback. The same normalize → filter → dedup → pipeline-append flow applies as for ATS adapters.
 
 All sources go through the same pipeline: normalize → filter (`title_filter.positive` / `title_filter.negative`) → dedup against `data/scan-history.tsv` + `data/pipeline.md` + `data/applications.md` → append to `data/pipeline.md` → save full result set to `data/last-scan.json` for the UI's filterable table.
 

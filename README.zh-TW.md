@@ -219,8 +219,27 @@ npm start
 零 token 的入口網站掃描,實際會回傳職缺。UI 中的 **單一 🌐 Scan 按鈕** 會在一次掃描中走過所有已設定的來源:
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — 對 `portals.yml::tracked_companies` 中所有具備可辨識 ATS 樣式的公司呼叫公開 boards-api。內建清單涵蓋 Stripe、GitLab、Vercel、Cloudflare、Datadog、Discord、Elastic、Grafana Labs、CockroachDB、Fastly、Twilio、Coinbase、Reddit、Robinhood、Affirm、Lyft、Linear、Supabase、PostHog、Ramp、Modal Labs、Railway、Browserbase、JetBrains — 可自由擴充或精簡。
+- **RSS 招募看板** — 支援任何提供 RSS/Atom feed 的招募看板(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 等)。只需在 `portals.yml` 中加入 `provider: rss` 與 feed URL 即可,無需修改程式碼。
 - **hh.ru** — 公開 API(非 RU IP 會回傳 403;請從俄羅斯 IP / VPN 執行,或略過 — 來自同一來源的重複 403 會被合併,且該來源會於 run 中途被停用)。伺服器內建合理的預設 User-Agent;進階使用者仍可透過俄羅斯 IP / VPN 進行 override。
 - **Habr Career** — 對 `career.habr.com/vacancies` 進行 HTML 抓取。不受 IP 限制,無需認證。
+
+### RSS 適配器
+
+在 `portals.yml` 中新增包含 `provider: rss` 及 `rss:`(或 `feed_url:`)鍵的條目,即可將任意 RSS 招募看板接入掃描器:
+
+```yaml
+tracked_companies:
+  - name: LaraJobs
+    provider: rss
+    rss: https://larajobs.com/feed
+    enabled: true
+  - name: WeWorkRemotely
+    provider: rss
+    rss: https://weworkremotely.com/remote-jobs.rss
+    enabled: true
+```
+
+適配器使用小型正則運算式解析器(無需 XML 函式庫)解析 `<item>` 區塊。提取 `title`、`link`(→ `url`)、`pubDate`(→ `date`)與 `description`(→ `snippet`,去除 HTML 標籤)。遠端工作狀態透過標題或描述中的 `/remote|anywhere/i` 樣式判定;公司名稱依序從 `dc:creator`、標題中「公司 — 職位」樣式或 feed 主機名稱取得。與 ATS 適配器相同,結果均歷經正規化 → 篩選 → 去重 → 追加至 pipeline 的完整流程。
 
 所有來源皆走相同的 pipeline:normalize → filter(`title_filter.positive` / `title_filter.negative`)→ 對 `data/scan-history.tsv` + `data/pipeline.md` + `data/applications.md` 進行 dedup → append 至 `data/pipeline.md` → 將完整結果集存至 `data/last-scan.json` 以供 UI 的可篩選表使用。
 

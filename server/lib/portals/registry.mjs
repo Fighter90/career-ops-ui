@@ -28,6 +28,7 @@ import { leverAdapter } from './adapters/lever.mjs';
 import { workableAdapter } from './adapters/workable.mjs';
 import { smartRecruitersAdapter } from './adapters/smartrecruiters.mjs';
 import { workdayAdapter } from './adapters/workday.mjs';
+import { rssAdapter } from './adapters/rss.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -36,6 +37,7 @@ export const ALL_ADAPTERS = [
   workableAdapter,
   smartRecruitersAdapter,
   workdayAdapter,
+  rssAdapter,
 ];
 
 /**

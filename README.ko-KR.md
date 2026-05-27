@@ -219,8 +219,27 @@ http://127.0.0.1:4317 를 엽니다. Pipeline 카운터가 `0 대기 중` 으로
 실제로 채용 공고를 반환하는 제로 토큰 포털 스캔입니다. UI의 **🌐 Scan 버튼 하나**가 설정된 모든 소스를 단일 스윕으로 실행합니다.
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — `portals.yml::tracked_companies`에 등록되어 있고 인식 가능한 ATS 패턴을 가진 모든 회사의 공개 boards-api를 호출합니다. 번들 목록에는 Stripe, GitLab, Vercel, Cloudflare, Datadog, Discord, Elastic, Grafana Labs, CockroachDB, Fastly, Twilio, Coinbase, Reddit, Robinhood, Affirm, Lyft, Linear, Supabase, PostHog, Ramp, Modal Labs, Railway, Browserbase, JetBrains가 포함되어 있으며 자유롭게 확장하거나 축소할 수 있습니다.
+- **RSS 채용 게시판** — RSS/Atom 피드를 제공하는 모든 채용 게시판(LaraJobs, WeWorkRemotely, RemoteOK, golangprojects 등)을 지원합니다. `portals.yml`에 `provider: rss`와 피드 URL만 추가하면 됩니다. 코드 변경 불필요.
 - **hh.ru** — 공개 API (RU 외 IP에서는 403을 반환합니다. 러시아 IP / VPN에서 실행하거나 건너뛰십시오. 한 소스에서 반복되는 403은 합쳐지고 해당 소스는 실행 도중 비활성화됩니다). 서버는 합리적인 기본 User-Agent를 제공하며, 파워 유저는 러시아 IP / VPN으로 여전히 override할 수 있습니다.
 - **Habr Career** — `career.habr.com/vacancies`의 HTML 스크레이프. 모든 IP에서 동작하며 인증이 필요하지 않습니다.
+
+### RSS 어댑터
+
+`portals.yml`에 `provider: rss`와 `rss:` (또는 `feed_url:`) 키를 가진 항목을 추가하여 RSS 기반 채용 게시판을 스캐너에 연결합니다.
+
+```yaml
+tracked_companies:
+  - name: LaraJobs
+    provider: rss
+    rss: https://larajobs.com/feed
+    enabled: true
+  - name: WeWorkRemotely
+    provider: rss
+    rss: https://weworkremotely.com/remote-jobs.rss
+    enabled: true
+```
+
+어댑터는 소형 정규식 파서(XML 라이브러리 불필요)로 `<item>` 블록을 분석합니다. `title`, `link` (→ `url`), `pubDate` (→ `date`), `description` (→ `snippet`, HTML 태그 제거)을 추출합니다. 원격 근무 여부는 제목이나 설명의 `/remote|anywhere/i` 패턴으로 판별하고, 회사명은 `dc:creator`, 제목의 «회사 — 직책» 패턴, 또는 피드 호스트명 순으로 추출합니다. ATS 어댑터와 동일한 정규화 → 필터링 → 중복 제거 → 파이프라인 추가 흐름이 적용됩니다.
 
 모든 소스는 동일한 파이프라인을 통과합니다: 정규화 → 필터(`title_filter.positive` / `title_filter.negative`) → `data/scan-history.tsv` + `data/pipeline.md` + `data/applications.md` 대조 dedup → `data/pipeline.md`에 append → 전체 결과셋을 UI 필터 테이블용 `data/last-scan.json`에 저장.
 

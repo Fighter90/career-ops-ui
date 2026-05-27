@@ -219,8 +219,27 @@ npm start
 零 token 的 portal 扫描,实打实地返回职位。UI 中的 **一个 🌐 Scan 按钮**,在单次连接中跑完所有已配置的来源:
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** —— 对 `portals.yml::tracked_companies` 中所有匹配 ATS 模式的公司调用公开 boards-api。预设清单覆盖 Stripe、GitLab、Vercel、Cloudflare、Datadog、Discord、Elastic、Grafana Labs、CockroachDB、Fastly、Twilio、Coinbase、Reddit、Robinhood、Affirm、Lyft、Linear、Supabase、PostHog、Ramp、Modal Labs、Railway、Browserbase、JetBrains —— 可自由增减。
+- **RSS 招聘板** —— 支持任意提供 RSS/Atom Feed 的招聘板(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 等)。只需在 `portals.yml` 中添加 `provider: rss` 与 feed URL,无需修改代码。
 - **hh.ru** —— 公开 API(非俄罗斯 IP 会返回 403;请使用俄罗斯 IP / VPN,或跳过 —— 同一来源连续 403 会被合并提示,该来源在本次扫描中自动禁用)。服务器自带合理的默认 User-Agent;进阶用户仍可通过俄罗斯 IP / VPN 覆盖。
 - **Habr Career** —— 对 `career.habr.com/vacancies` 进行 HTML 抓取。不限 IP、无需鉴权。
+
+### RSS 适配器
+
+在 `portals.yml` 中添加带有 `provider: rss` 和 `rss:`（或 `feed_url:`）键的条目,即可将任意 RSS 招聘板接入扫描器:
+
+```yaml
+tracked_companies:
+  - name: LaraJobs
+    provider: rss
+    rss: https://larajobs.com/feed
+    enabled: true
+  - name: WeWorkRemotely
+    provider: rss
+    rss: https://weworkremotely.com/remote-jobs.rss
+    enabled: true
+```
+
+适配器使用小型正则解析器(无需 XML 库)解析 `<item>` 块。提取 `title`、`link`(→ `url`)、`pubDate`(→ `date`)和 `description`(→ `snippet`,去除 HTML 标签)。远程工作状态通过标题或描述中的 `/remote|anywhere/i` 模式推断;公司名依次从 `dc:creator`、标题中的「公司 — 职位」模式或 feed 主机名获取。与 ATS 适配器相同,结果经过标准化 → 过滤 → 去重 → 追加至 pipeline 的完整流程。
 
 所有来源走同一条流水线:normalize → 过滤(`title_filter.positive` / `title_filter.negative`)→ 对照 `data/scan-history.tsv` + `data/pipeline.md` + `data/applications.md` 去重 → 追加到 `data/pipeline.md` → 完整结果集保存至 `data/last-scan.json`,供 UI 可筛选表格使用。
 

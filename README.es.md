@@ -219,8 +219,27 @@ Atajos de teclado globales:
 Escaneo de portales sin coste de tokens que efectivamente devuelve vacantes. **Un botón 🌐 Scan** en la UI ejecuta cada fuente configurada en una única pasada:
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — boards-api públicas para cada empresa de `portals.yml::tracked_companies` con un patrón ATS reconocible. La lista incluida cubre Stripe, GitLab, Vercel, Cloudflare, Datadog, Discord, Elastic, Grafana Labs, CockroachDB, Fastly, Twilio, Coinbase, Reddit, Robinhood, Affirm, Lyft, Linear, Supabase, PostHog, Ramp, Modal Labs, Railway, Browserbase, JetBrains — amplíala o recórtala libremente.
+- **Tablones RSS** — cualquier tablón de empleo que publique un feed RSS/Atom (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …). Añade `provider: rss` y la URL del feed a `portals.yml` — no se necesitan cambios de código.
 - **hh.ru** — API pública (devuelve 403 desde IPs no rusas; ejecuta desde una IP rusa / VPN, o sáltala — los 403 repetidos de una misma fuente se agrupan y la fuente se deshabilita a mitad del recorrido). El servidor envía un User-Agent por defecto razonable; los usuarios avanzados aún pueden sobreescribirlo vía IP rusa / VPN.
 - **Habr Career** — scraping HTML de `career.habr.com/vacancies`. Funciona desde cualquier IP, sin autenticación.
+
+### Adaptador RSS
+
+Apunta el escáner a cualquier tablón basado en RSS añadiendo una entrada con `provider: rss` y la clave `rss:` (o `feed_url:`) a `portals.yml`:
+
+```yaml
+tracked_companies:
+  - name: LaraJobs
+    provider: rss
+    rss: https://larajobs.com/feed
+    enabled: true
+  - name: WeWorkRemotely
+    provider: rss
+    rss: https://weworkremotely.com/remote-jobs.rss
+    enabled: true
+```
+
+El adaptador analiza bloques `<item>` con un pequeño parser basado en expresiones regulares (sin biblioteca XML). Extrae `title`, `link` (→ `url`), `pubDate` (→ `date`) y `description` (→ `snippet`, sin etiquetas HTML). El trabajo remoto se detecta por `/remote|anywhere/i` en el título o descripción; el nombre de la empresa se obtiene de `dc:creator`, del patrón «Empresa — Puesto» en el título o del hostname del feed. Se aplica el mismo flujo de normalización → filtrado → deduplicación → incorporación al pipeline que para los adaptadores ATS.
 
 Todas las fuentes pasan por la misma pipeline: normalizar → filtrar (`title_filter.positive` / `title_filter.negative`) → deduplicar contra `data/scan-history.tsv` + `data/pipeline.md` + `data/applications.md` → añadir a `data/pipeline.md` → guardar el conjunto completo de resultados en `data/last-scan.json` para la tabla filtrable de la UI.
 
