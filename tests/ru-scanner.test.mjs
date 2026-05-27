@@ -99,6 +99,15 @@ test('parseHhCards: empty / null safe', () => {
   assert.deepEqual(parseHhCards(null), []);
 });
 
+test('parseHhCards: output carries no angle brackets (no HTML injection)', () => {
+  const evil = `<div data-qa="vacancy-serp__vacancy"><a data-qa="serp-item__title" href="https://hh.ru/vacancy/999">Dev &lt;script&gt;x&lt;/script&gt; <b>Y</b></a><a data-qa="vacancy-serp__vacancy-employer-text">A&amp;B</a></div>`;
+  const j = parseHhCards(evil)[0];
+  // tags stripped, &lt;/&gt; NOT decoded back into live markup, no stray < >
+  assert.doesNotMatch(j.title, /[<>]/);
+  assert.doesNotMatch(j.company, /[<>]/);
+  assert.equal(j.company, 'A&B'); // &amp; decoded exactly once (no double-unescape)
+});
+
 test('searchHH: builds the website search URL with params (not the API)', async () => {
   let capturedUrl = '';
   const fakeFetch = async (url) => { capturedUrl = url; return new Response(HH_FIXTURE, { status: 200 }); };

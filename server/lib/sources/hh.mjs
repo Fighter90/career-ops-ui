@@ -79,16 +79,19 @@ export async function searchHH(query, opts = {}) {
 // Zero-width / directional marks + BOM that hh.ru sprinkles into markup.
 const ZWSP = /[​-‏⁠﻿]/g;
 
+// Single-pass HTML-entity decode. Deliberately does NOT decode &lt; / &gt;
+// and the final pass strips any literal angle bracket, so tag-stripping can
+// never be undone into a live `<script>` (no double-unescaping, no HTML
+// element injection — these results are also rendered as text nodes, never
+// innerHTML, but we keep the source clean regardless).
+const ENTITY = { '&nbsp;': ' ', '&amp;': '&', '&quot;': '"', '&#x27;': "'", '&#39;': "'", '&laquo;': '«', '&raquo;': '»', '&mdash;': '—', '&ndash;': '–' };
+
 function stripTags(s) {
   return s
-    .replace(/<[^>]+>/g, '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&(?:nbsp|amp|quot|#x27|#39|laquo|raquo|mdash|ndash);/g, (m) => ENTITY[m] || ' ')
     .replace(ZWSP, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#x27;|&#39;/g, "'")
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
+    .replace(/[<>]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
