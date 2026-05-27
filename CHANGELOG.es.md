@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.66.0] — 2026-05-28
+
+**feat(scan): las fuentes RU ahora recorren TODAS las páginas, no solo la primera.** hh.ru, Habr Career y Trudvsem solo paginaban los primeros ~50 resultados por consulta; ahora siguen la paginación hasta el final — `&page=N` para hh.ru/Habr, `offset`/`meta.total` para Trudvsem — deduplicando entre páginas y parando cuando una página no aporta nada nuevo (o en un tope de seguridad de 50 páginas). Una consulta como "Backend разработчик" devuelve ahora el conjunto completo (p. ej. hh.ru PHP 17 → 55+ en 3 páginas; Trudvsem devuelve los 72). Cada página conserva el timeout + AbortSignal. 4 pruebas nuevas; suite 1045/1045.
+
+---
+
+
+
 ## [1.65.0] — 2026-05-28
 
 **feat(scan): hh.ru ahora se scrapea desde su web pública en vez de la API JSON — funciona desde cualquier IP, sin proxy.** `api.hh.ru` empezó a devolver un `403 forbidden` a cualquier cliente programático sin importar la IP ni el User-Agent (un bloqueo anti-bot de borde). La web (`hh.ru/search/vacancy`) sí sirve resultados completos a cualquier cliente tipo navegador, así que el adaptador ahora parsea ese HTML (como Habr Career). **Elimina la variable `HH_PROXY` de 1.64.0 y la dependencia `undici`** — sin proxy, clave ni User-Agent. Tests reescritos para el parser HTML; suite 1041/1041.

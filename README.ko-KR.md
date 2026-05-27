@@ -5,12 +5,12 @@
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | **한국어** | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md)
 
-[![tests](https://img.shields.io/badge/tests-1041%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1045%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.65.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.65.0)
+[![release](https://img.shields.io/badge/release-v1.66.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.66.0)
 
 > **v1.65.0 — hh.ru를 공개 웹사이트에서 스캔.** hh.ru 어댑터가 JSON API `api.hh.ru` 대신 `hh.ru/search/vacancy`(서버 렌더링 HTML)를 스크랩합니다. API는 이제 IP·User-Agent와 무관하게 모든 프로그램 클라이언트에 `403 forbidden`을 반환합니다. **hh.ru가 어떤 IP에서도 프록시·키·설정 없이 작동합니다.** 단명했던 `HH_PROXY`(v1.64.0) 방식을 대체하고 `undici` 의존성을 제거. `express`+`js-yaml`+`multer` 외 런타임 의존성 0; 9개 로케일 문서+CHANGELOG; 전체 스위트 **1041/1041** 통과.
 

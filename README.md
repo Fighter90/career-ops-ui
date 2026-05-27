@@ -5,12 +5,12 @@
 
 **English** | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md)
 
-[![tests](https://img.shields.io/badge/tests-1041%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1045%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.65.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.65.0)
+[![release](https://img.shields.io/badge/release-v1.66.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.66.0)
 
 > **v1.65.0 — hh.ru now scans from its public website.** The hh.ru adapter scrapes `hh.ru/search/vacancy` (server-rendered HTML) instead of the `api.hh.ru` JSON API, which now returns a bare `403 forbidden` to every programmatic client regardless of IP or User-Agent. **hh.ru works from any IP — no proxy, key, or configuration.** This replaces the short-lived `HH_PROXY` approach (v1.64.0) and drops the `undici` dependency. Zero runtime deps beyond `express` + `js-yaml` + `multer`; docs + CHANGELOG in all 9 locales; full suite **1041/1041** green.
 

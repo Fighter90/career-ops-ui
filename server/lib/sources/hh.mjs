@@ -28,13 +28,21 @@ const AREA_MOSCOW = 1;
 const AREA_RUSSIA = 113;
 const AREA_REMOTE = 1001;
 
+// Hard safety cap on pagination depth per query, so a broad query can't spin
+// forever. hh.ru's own result window also tops out near 2000 (page×per_page),
+// and the "no new vacancies" guard below usually stops us long before this.
+const MAX_PAGES = 50;
+
 /**
- * Search hh.ru for one query string. Returns array of normalized job objects.
+ * Search hh.ru for one query string. Walks ALL result pages (`&page=0,1,2…`)
+ * until a page yields no new vacancies (empty or all-duplicate) or MAX_PAGES
+ * is hit. Returns deduplicated normalized job objects.
  *
  * Options:
  *   area       — hh.ru area id (default 113 = Russia-wide)
  *   perPage    — items_on_page (default 50)
  *   onlyRemote — restrict to remote (schedule=remote)
+ *   maxPages   — pagination cap (default MAX_PAGES)
  *   fetchImpl  — override for tests (default: global fetch)
  *   signal     — AbortSignal propagated to fetch
  */
@@ -43,37 +51,57 @@ export async function searchHH(query, opts = {}) {
     area = AREA_RUSSIA,
     perPage = 50,
     onlyRemote = false,
+    maxPages = MAX_PAGES,
     fetchImpl = fetch,
     signal,
   } = opts;
 
-  const params = new URLSearchParams({
-    text: query,
-    items_on_page: String(perPage),
-    area: String(area),
-  });
-  if (onlyRemote) params.set('schedule', 'remote');
+  const out = [];
+  const seen = new Set();
 
-  const res = await fetchImpl(`${HH_SITE}?${params}`, {
-    signal,
-    headers: {
-      'User-Agent': UA,
-      'Accept-Language': 'ru-RU,ru;q=0.9',
-      Accept: 'text/html',
-    },
-  });
+  for (let page = 0; page < maxPages; page++) {
+    const params = new URLSearchParams({
+      text: query,
+      items_on_page: String(perPage),
+      area: String(area),
+      page: String(page),
+    });
+    if (onlyRemote) params.set('schedule', 'remote');
 
-  if (!res.ok) {
-    const err = new Error(`hh.ru: HTTP ${res.status}`);
-    err.status = res.status;
-    // 403 here would mean the *website* started blocking too (anti-bot
-    // challenge); the scanner treats it as a non-fatal per-source failure.
-    err.geoBlocked = res.status === 403;
-    throw err;
+    const res = await fetchImpl(`${HH_SITE}?${params}`, {
+      signal,
+      headers: {
+        'User-Agent': UA,
+        'Accept-Language': 'ru-RU,ru;q=0.9',
+        Accept: 'text/html',
+      },
+    });
+
+    if (!res.ok) {
+      // Page 0 failing = the source is down/blocked → surface it. A later
+      // page failing is non-fatal: keep what we already collected.
+      if (page === 0) {
+        const err = new Error(`hh.ru: HTTP ${res.status}`);
+        err.status = res.status;
+        err.geoBlocked = res.status === 403;
+        throw err;
+      }
+      break;
+    }
+
+    let added = 0;
+    for (const job of parseHhCards(await res.text())) {
+      if (seen.has(job.id)) continue;
+      seen.add(job.id);
+      out.push(job);
+      added++;
+    }
+    // No new vacancies on this page → we've reached the end (or hh started
+    // repeating the last page past the result window). Stop.
+    if (added === 0) break;
   }
 
-  const html = await res.text();
-  return parseHhCards(html);
+  return out;
 }
 
 // Zero-width / directional marks + BOM that hh.ru sprinkles into markup.

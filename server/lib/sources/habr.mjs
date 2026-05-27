@@ -23,29 +23,46 @@ const UA =
  *   experience   — '1' junior, '2' middle, '3' senior, '4' lead
  *   sort         — 'date' (default) or 'salary_desc'
  */
+// Hard safety cap on pagination depth per query (Habr pages are 1-indexed).
+const MAX_PAGES = 50;
+
 export async function searchHabr(query, opts = {}) {
-  const { onlyRemote = false, experience, sort = 'date', fetchImpl = fetch, signal } = opts;
+  const { onlyRemote = false, experience, sort = 'date', maxPages = MAX_PAGES, fetchImpl = fetch, signal } = opts;
 
-  const params = new URLSearchParams({
-    q: query,
-    type: 'all',
-    sort,
-  });
-  if (onlyRemote) params.set('remote', '1');
-  if (experience) params.set('qid', experience);
+  const out = [];
+  const seen = new Set();
 
-  const url = `${HABR_BASE}/vacancies?${params}`;
-  const res = await fetchImpl(url, {
-    signal, // REVIEW-B3: propagate client-disconnect
-    headers: { 'User-Agent': UA, Accept: 'text/html' },
-  });
-  if (!res.ok) {
-    const err = new Error(`Habr Career: HTTP ${res.status}`);
-    err.status = res.status;
-    throw err;
+  for (let page = 1; page <= maxPages; page++) {
+    const params = new URLSearchParams({ q: query, type: 'all', sort, page: String(page) });
+    if (onlyRemote) params.set('remote', '1');
+    if (experience) params.set('qid', experience);
+
+    const res = await fetchImpl(`${HABR_BASE}/vacancies?${params}`, {
+      signal, // REVIEW-B3: propagate client-disconnect
+      headers: { 'User-Agent': UA, Accept: 'text/html' },
+    });
+    if (!res.ok) {
+      // Page 1 failing = source down → surface it; a later page is non-fatal.
+      if (page === 1) {
+        const err = new Error(`Habr Career: HTTP ${res.status}`);
+        err.status = res.status;
+        throw err;
+      }
+      break;
+    }
+
+    let added = 0;
+    for (const job of parseHabrCards(await res.text())) {
+      const key = job.url || job.id;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(job);
+      added++;
+    }
+    if (added === 0) break; // no new vacancies → end of results
   }
-  const html = await res.text();
-  return parseHabrCards(html);
+
+  return out;
 }
 
 /**

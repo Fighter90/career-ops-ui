@@ -129,6 +129,36 @@ test('searchHH: throws with geoBlocked flag if the website returns 403', async (
   );
 });
 
+const hhPage = (...ids) =>
+  ids.map((id) => `<div data-qa="vacancy-serp__vacancy"><a data-qa="serp-item__title" href="https://hh.ru/vacancy/${id}">Job ${id}</a></div>`).join('');
+
+test('searchHH: walks all pages, dedups across them, stops when a page adds nothing', async () => {
+  const byPage = { '0': hhPage(1, 2, 3), '1': hhPage(4, 5), '2': hhPage(4, 5) }; // page 2 repeats page 1 → no new → stop
+  const fakeFetch = async (url) => new Response(byPage[new URL(url).searchParams.get('page')] ?? '', { status: 200 });
+  const items = await searchHH('x', { perPage: 50, fetchImpl: fakeFetch });
+  assert.deepEqual(items.map((j) => j.id).sort(), ['hh-1', 'hh-2', 'hh-3', 'hh-4', 'hh-5'].sort());
+});
+
+test('searchHH: stops at maxPages even if every page has new results', async () => {
+  let calls = 0;
+  const fakeFetch = async (url) => {
+    calls += 1;
+    const p = Number(new URL(url).searchParams.get('page'));
+    return new Response(hhPage(1000 + p), { status: 200 }); // always a fresh id
+  };
+  const items = await searchHH('x', { perPage: 50, maxPages: 3, fetchImpl: fakeFetch });
+  assert.equal(calls, 3, 'must not exceed the page cap');
+  assert.equal(items.length, 3);
+});
+
+test('searchHabr: paginates from page 1 and dedups across pages', async () => {
+  const card = (id, name) => `<div class="vacancy-card"><a class="vacancy-card__backdrop-link" href="/vacancies/${id}"></a><div class="vacancy-card__inner"><div class="vacancy-card__company"><a class="link-comp" href="/c/x">C</a></div><div class="vacancy-card__title"><a class="vacancy-card__title-link" href="/vacancies/${id}">${name}</a></div></div></div>`;
+  const byPage = { '1': `<section class="vacancies-list">${card(91, 'A')}${card(92, 'B')}</section>`, '2': `<section class="vacancies-list">${card(93, 'C')}</section>`, '3': '<section class="vacancies-list"></section>' };
+  const fakeFetch = async (url) => new Response(byPage[new URL(url).searchParams.get('page')] ?? '<section class="vacancies-list"></section>', { status: 200 });
+  const items = await searchHabr('x', { fetchImpl: fakeFetch });
+  assert.equal(items.length, 3, 'page1 (2) + page2 (1), page3 empty → stop');
+});
+
 // ───────────────────────── HABR ─────────────────────────
 
 test('parseHabrCards: extracts vacancy fields', () => {

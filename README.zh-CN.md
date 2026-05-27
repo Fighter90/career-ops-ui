@@ -5,12 +5,12 @@
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | **简体中文** | [繁體中文](README.zh-TW.md) | [Français](README.fr.md)
 
-[![tests](https://img.shields.io/badge/tests-1041%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1045%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.65.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.65.0)
+[![release](https://img.shields.io/badge/release-v1.66.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.66.0)
 
 > **v1.65.0 —— hh.ru 改从其公开网站扫描。** hh.ru 适配器抓取 `hh.ru/search/vacancy`（服务端渲染 HTML），而非 JSON API `api.hh.ru`——后者现在无论 IP 或 User-Agent 都对所有程序化客户端返回 `403 forbidden`。**hh.ru 现在任何 IP 都可用——无需代理、密钥或配置。** 取代短命的 `HH_PROXY`（v1.64.0）方案并移除 `undici` 依赖。除 `express`+`js-yaml`+`multer` 外零运行时依赖；9 种语言的文档+CHANGELOG；完整套件 **1041/1041** 通过。
 

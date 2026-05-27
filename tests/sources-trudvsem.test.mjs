@@ -111,3 +111,21 @@ test('normalizeTrudvsem skips records with no title', () => {
   assert.equal(normalizeTrudvsem(null), null);
   assert.equal(normalizeTrudvsem({}), null);
 });
+
+test('searchTrudvsem paginates by offset and stops once meta.total is covered', async () => {
+  const rec = (id) => ({ vacancy: { id: String(id), 'job-name': `Dev ${id}`, vac_url: `https://trudvsem.ru/vacancy/${id}` } });
+  const byOffset = {
+    '0': { status: 200, meta: { total: 3, limit: 2, offset: 0 }, results: { vacancies: [rec(1), rec(2)] } },
+    '1': { status: 200, meta: { total: 3, limit: 2, offset: 1 }, results: { vacancies: [rec(3)] } },
+  };
+  let calls = 0;
+  const fetchImpl = async (url) => {
+    calls += 1;
+    const off = new URL(url).searchParams.get('offset');
+    const body = byOffset[off] ?? { status: 200, meta: { total: 3 }, results: { vacancies: [] } };
+    return new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } });
+  };
+  const out = await searchTrudvsem('q', { perPage: 2, fetchImpl });
+  assert.equal(out.length, 3, 'collects across both offset pages');
+  assert.ok(calls <= 2, 'stops once (page+1)*limit >= total');
+});

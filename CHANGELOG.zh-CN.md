@@ -10,6 +10,14 @@
 
 
 
+## [1.66.0] — 2026-05-28
+
+**feat(scan)：RU 来源现在遍历全部结果页，而非仅第一页。** hh.ru、Habr Career 与 Trudvsem 此前每次查询只取前 ~50 条；现在会翻到最后一页——hh.ru/Habr 用 `&page=N`，Trudvsem 用 `offset`/`meta.total`——跨页去重，并在某页没有新结果时（或到 50 页安全上限）停止。像「Backend разработчик」这样的查询现在返回完整结果而非一页（如 hh.ru PHP 17 → 3 页 55+ 条；Trudvsem 返回全部 72 条）。逐页请求保留既有的超时 + AbortSignal。新增 4 项测试；套件 1045/1045。
+
+---
+
+
+
 ## [1.65.0] — 2026-05-28
 
 **feat(scan)：hh.ru 改为从其公开网站抓取，而非 JSON API——任何 IP 都可用，无需代理。** `api.hh.ru` 开始无论 IP 或 User-Agent 都对所有程序化客户端返回 `403 forbidden`（边缘反爬封锁）。而网站（`hh.ru/search/vacancy`）会向任何类浏览器客户端返回完整结果，因此适配器现在解析该 HTML（与 Habr Career 相同）。**移除 1.64.0 的 `HH_PROXY` 变量与 `undici` 依赖**——无需代理、密钥或 User-Agent。测试改写为 HTML 解析；套件 1041/1041。

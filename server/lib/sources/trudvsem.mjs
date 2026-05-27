@@ -24,36 +24,60 @@ const UA =
  * Search Trudvsem for one query string.
  * Returns array of normalized job objects.
  */
+// Hard safety cap on pages per query. Trudvsem's open-data API is paged by
+// offset/limit and reports `meta.total`, so we usually stop on total anyway.
+const MAX_PAGES = 50;
+
 export async function searchTrudvsem(query, opts = {}) {
   const {
     perPage = 50,
     onlyRemote = false,
+    maxPages = MAX_PAGES,
     fetchImpl = fetch,
     signal,
   } = opts;
 
-  const params = new URLSearchParams({
-    text: query,
-    limit: String(perPage),
-    offset: '0',
-  });
+  const out = [];
+  const seen = new Set();
 
-  const res = await fetchImpl(`${TRUDVSEM_API}?${params}`, {
-    signal,
-    headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
+  for (let page = 0; page < maxPages; page++) {
+    const params = new URLSearchParams({
+      text: query,
+      limit: String(perPage),
+      offset: String(page),
+    });
 
-  if (!res.ok) {
-    const err = new Error(`Trudvsem: HTTP ${res.status}`);
-    err.status = res.status;
-    throw err;
+    const res = await fetchImpl(`${TRUDVSEM_API}?${params}`, {
+      signal,
+      headers: { 'User-Agent': UA, Accept: 'application/json' },
+    });
+
+    if (!res.ok) {
+      if (page === 0) {
+        const err = new Error(`Trudvsem: HTTP ${res.status}`);
+        err.status = res.status;
+        throw err;
+      }
+      break;
+    }
+
+    const data = await res.json();
+    const list = data?.results?.vacancies || [];
+    let added = 0;
+    for (const job of list.map(normalizeTrudvsem).filter(Boolean)) {
+      const key = job.url || job.id;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(job);
+      added++;
+    }
+    if (added === 0) break; // empty page or all-duplicate → end of results
+    // `meta.total` is the authoritative end signal (offset is page-indexed here).
+    const total = Number(data?.meta?.total);
+    if (Number.isFinite(total) && (page + 1) * perPage >= total) break;
   }
 
-  const data = await res.json();
-  const list = data?.results?.vacancies || [];
-  const norm = list.map(normalizeTrudvsem).filter(Boolean);
-  if (onlyRemote) return norm.filter((j) => j.isRemote);
-  return norm;
+  return onlyRemote ? out.filter((j) => j.isRemote) : out;
 }
 
 /** Normalize one Trudvsem record into the common job shape. */
