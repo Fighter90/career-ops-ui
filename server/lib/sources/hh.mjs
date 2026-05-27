@@ -33,10 +33,15 @@ let _proxy = { url: null, agent: null };
 export function hhProxyDispatcher() {
   const url = process.env.HH_PROXY || '';
   if (!url) {
+    if (_proxy.agent) _proxy.agent.close().catch(() => {});
     _proxy = { url: null, agent: null };
     return undefined;
   }
-  if (_proxy.url !== url) _proxy = { url, agent: new ProxyAgent(url) };
+  if (_proxy.url !== url) {
+    // Close the superseded agent so its socket pool doesn't leak on rebuild.
+    if (_proxy.agent) _proxy.agent.close().catch(() => {});
+    _proxy = { url, agent: new ProxyAgent(url) };
+  }
   return _proxy.agent;
 }
 
