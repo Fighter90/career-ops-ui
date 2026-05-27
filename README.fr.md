@@ -10,7 +10,7 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.61.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.61.0)
+[![release](https://img.shields.io/badge/release-v1.62.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.62.1)
 
 > **v1.61.0 — le français devient la 9e langue de l'interface.** Le nouveau dictionnaire par locale [`public/js/lib/locales/i18n-dict.fr.js`](public/js/lib/locales/i18n-dict.fr.js) (`window.__I18N_DICT_FR`) est à parité complète de **668 clés** avec l'anglais, et un nouveau bundle d'aide [`docs/help/fr.md`](docs/help/fr.md) reprend les **19 H2 / 73 H3** de la version anglaise. La table de traduction initiale provient de la **PR #9** (contribution communautaire). Aucun changement de logique : `t()` et toutes les vues sont inchangés. Reprise de QA dans [`qa/QA-REGRESSION-PROMPT-fr-v1.61.0.md`](qa/QA-REGRESSION-PROMPT-fr-v1.61.0.md).
 

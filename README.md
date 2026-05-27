@@ -5,12 +5,12 @@
 
 **English** | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md)
 
-[![tests](https://img.shields.io/badge/tests-1000%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1032%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.60.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.60.0)
+[![release](https://img.shields.io/badge/release-v1.62.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.62.1)
 
 > **v1.60.0 — I18N-SPLIT: per-locale dictionary ([#3](https://github.com/Fighter90/career-ops-ui/issues/3)).** The 8-language translation megafile was split into **one file per locale** under [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js` (each `window.__I18N_DICT_<LANG> = { key: string }`) plus a shared `i18n-dict.aliases.js` — the i18next / OpenWA layout, so a translator edits a single language in isolation. [`public/js/lib/i18n-dict.js`](public/js/lib/i18n-dict.js) is now a small **assembler** that merges them back into the identical `window.__I18N_DICT`, so `t()`, every view, and every call-site are byte-for-byte unchanged. All loaded via `<script src>` — no build step, no runtime fetch. Lossless (assembled dict ≡ pre-split snapshot, 678 keys); verified by [`tests/playwright-locale-sweep.mjs`](tests/playwright-locale-sweep.mjs) (every page × 8 locales in real Chromium). 1000 unit · 70 Playwright. Full QA hand-off in [`qa/QA-REGRESSION-PROMPT.md`](qa/QA-REGRESSION-PROMPT.md).
 
