@@ -101,7 +101,7 @@ This is interim defense ahead of v2.0 P-12 auth gate.
 
 `server/lib/ru-scanner.mjs` and `server/lib/en-scanner.mjs` perform HTTPS calls to:
 
-- hh.ru API (`api.hh.ru`)
+- hh.ru search website (`hh.ru/search/vacancy`, HTML scrape — the `api.hh.ru` JSON API now 403s programmatic clients)
 - Habr Career API (`career.habr.com/api/...`)
 - Greenhouse boards (`boards-api.greenhouse.io/v1/boards/<slug>/jobs`)
 - Ashby boards (`api.ashbyhq.com/posting-api/job-board/<slug>`)

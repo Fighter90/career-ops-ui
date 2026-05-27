@@ -102,7 +102,7 @@
 ## Boot sequence
 
 1. `bin/start.sh` → `node server/index.mjs`.
-2. `loadEnvFile(PATHS.envFile)` reads `<parent>/.env` so `HH_USER_AGENT`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` are visible to both this process and any spawned script.
+2. `loadEnvFile(PATHS.envFile)` reads `<parent>/.env` so `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` are visible to both this process and any spawned script.
 3. `ensureRussianPortalsDefaults()` appends a documented `russian_portals:` block to `portals.yml` if missing (idempotent).
 4. `createApp()` wires Express, registers routes.
 5. `app.listen(PORT, HOST)`.

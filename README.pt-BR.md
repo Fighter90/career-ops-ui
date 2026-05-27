@@ -252,7 +252,7 @@ Scanning de portais com zero tokens que de fato devolve vagas. **Um único botã
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — boards-api pública para cada empresa em `portals.yml::tracked_companies` com um padrão de ATS reconhecível. A lista incluída cobre Stripe, GitLab, Vercel, Cloudflare, Datadog, Discord, Elastic, Grafana Labs, CockroachDB, Fastly, Twilio, Coinbase, Reddit, Robinhood, Affirm, Lyft, Linear, Supabase, PostHog, Ramp, Modal Labs, Railway, Browserbase, JetBrains — estenda ou enxugue à vontade.
 - **Quadros RSS** — qualquer quadro de vagas que publique um feed RSS/Atom (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …). Adicione `provider: rss` e a URL do feed em `portals.yml` — sem necessidade de alterações no código.
-- **hh.ru** — API pública (devolve 403 a partir de IPs fora da Rússia; rode com IP / VPN russo, ou simplesmente pule — 403s repetidos da mesma fonte são coalescidos e a fonte é desabilitada no meio do run). O servidor envia um User-Agent default sensato; usuários avançados ainda podem sobrescrever via IP / VPN russo.
+- **hh.ru** — scraping do HTML de `hh.ru/search/vacancy`. Funciona de qualquer IP, sem chave nem proxy. (A API JSON `api.hh.ru` não é mais usada: ela agora retorna 403 a qualquer cliente programático independentemente de IP/User-Agent; o site serve resultados completos a qualquer cliente tipo navegador, igual ao Habr Career.)
 - **Habr Career** — scraping HTML de `career.habr.com/vacancies`. Funciona de qualquer IP, sem autenticação.
 
 ### Adaptador RSS

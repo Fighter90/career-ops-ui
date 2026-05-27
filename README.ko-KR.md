@@ -252,7 +252,7 @@ http://127.0.0.1:4317 를 엽니다. Pipeline 카운터가 `0 대기 중` 으로
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — `portals.yml::tracked_companies`에 등록되어 있고 인식 가능한 ATS 패턴을 가진 모든 회사의 공개 boards-api를 호출합니다. 번들 목록에는 Stripe, GitLab, Vercel, Cloudflare, Datadog, Discord, Elastic, Grafana Labs, CockroachDB, Fastly, Twilio, Coinbase, Reddit, Robinhood, Affirm, Lyft, Linear, Supabase, PostHog, Ramp, Modal Labs, Railway, Browserbase, JetBrains가 포함되어 있으며 자유롭게 확장하거나 축소할 수 있습니다.
 - **RSS 채용 게시판** — RSS/Atom 피드를 제공하는 모든 채용 게시판(LaraJobs, WeWorkRemotely, RemoteOK, golangprojects 등)을 지원합니다. `portals.yml`에 `provider: rss`와 피드 URL만 추가하면 됩니다. 코드 변경 불필요.
-- **hh.ru** — 공개 API (RU 외 IP에서는 403을 반환합니다. 러시아 IP / VPN에서 실행하거나 건너뛰십시오. 한 소스에서 반복되는 403은 합쳐지고 해당 소스는 실행 도중 비활성화됩니다). 서버는 합리적인 기본 User-Agent를 제공하며, 파워 유저는 러시아 IP / VPN으로 여전히 override할 수 있습니다.
+- **hh.ru** — `hh.ru/search/vacancy` HTML 스크랩. 어떤 IP에서도 키·프록시 없이 작동합니다. (JSON API `api.hh.ru`는 더 이상 사용하지 않습니다: 이제 IP/User-Agent와 무관하게 모든 프로그램 클라이언트에 403을 반환합니다. 사이트는 Habr Career처럼 브라우저류 클라이언트에 전체 결과를 제공합니다.)
 - **Habr Career** — `career.habr.com/vacancies`의 HTML 스크레이프. 모든 IP에서 동작하며 인증이 필요하지 않습니다.
 
 ### RSS 어댑터

@@ -42,7 +42,7 @@ import { registerTrackerRoutes } from './lib/routes/tracker.mjs';
 // New code should import from the lib/ modules directly.
 export { isValidJobUrl, sanitizeJobDescription, stripDangerousMarkdown };
 
-// Load parent's .env (HH_USER_AGENT, GEMINI_API_KEY, …) BEFORE createApp
+// Load parent's .env (GEMINI_API_KEY, ANTHROPIC_API_KEY, …) BEFORE createApp
 // runs so health checks and scanner config see the real values.
 loadEnvFile(PATHS.envFile);
 

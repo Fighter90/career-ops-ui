@@ -252,7 +252,7 @@ npm start
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** —— 对 `portals.yml::tracked_companies` 中所有匹配 ATS 模式的公司调用公开 boards-api。预设清单覆盖 Stripe、GitLab、Vercel、Cloudflare、Datadog、Discord、Elastic、Grafana Labs、CockroachDB、Fastly、Twilio、Coinbase、Reddit、Robinhood、Affirm、Lyft、Linear、Supabase、PostHog、Ramp、Modal Labs、Railway、Browserbase、JetBrains —— 可自由增减。
 - **RSS 招聘板** —— 支持任意提供 RSS/Atom Feed 的招聘板(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 等)。只需在 `portals.yml` 中添加 `provider: rss` 与 feed URL,无需修改代码。
-- **hh.ru** —— 公开 API(非俄罗斯 IP 会返回 403;请使用俄罗斯 IP / VPN,或跳过 —— 同一来源连续 403 会被合并提示,该来源在本次扫描中自动禁用)。服务器自带合理的默认 User-Agent;进阶用户仍可通过俄罗斯 IP / VPN 覆盖。
+- **hh.ru** —— 抓取 `hh.ru/search/vacancy` 的 HTML。任何 IP 都可用,无需密钥或代理。(不再使用 JSON API `api.hh.ru`:它现在无论 IP/User-Agent 都对所有程序化客户端返回 403;网站则像 Habr Career 一样向任何类浏览器客户端返回完整结果。)
 - **Habr Career** —— 对 `career.habr.com/vacancies` 进行 HTML 抓取。不限 IP、无需鉴权。
 
 ### RSS 适配器

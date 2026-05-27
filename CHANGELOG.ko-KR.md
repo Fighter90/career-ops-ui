@@ -10,6 +10,14 @@
 
 
 
+## [1.65.0] — 2026-05-28
+
+**feat(scan): hh.ru를 JSON API 대신 공개 웹사이트에서 스크랩 — 어떤 IP에서도 프록시 없이 작동.** `api.hh.ru`가 IP나 User-Agent와 무관하게 모든 프로그램 클라이언트에 `403 forbidden`을 반환하기 시작했습니다(엣지 안티봇 차단). 반면 웹사이트(`hh.ru/search/vacancy`)는 브라우저류 클라이언트에 전체 결과를 제공하므로, 어댑터가 이제 그 HTML을 파싱합니다(Habr Career처럼). **1.64.0의 `HH_PROXY` 변수와 `undici` 의존성을 제거** — 프록시·키·User-Agent 설정이 필요 없습니다. HTML 파서용으로 테스트 재작성; 스위트 1040/1040.
+
+---
+
+
+
 ## [1.64.0] — 2026-05-27
 
 **feat(scan): `HH_PROXY`로 hh.ru 요청을 러시아 프록시로 라우팅.** hh.ru는 API를 User-Agent가 아니라 **IP**로 차단합니다 — 따라서 `HH_USER_AGENT`만으로는 러시아 외 출구 노드의 403을 해제할 수 없었습니다. `HH_PROXY`에 러시아 HTTP/HTTPS 프록시 URL(예: `http://user:pass@ru-host:port`)을 지정하면 **hh.ru 요청만** 그 프록시를 통과하고 나머지 소스는 직접 연결을 유지합니다. `undici`의 `ProxyAgent` 기반(런타임 의존성 추가); `HH_PROXY`가 없으면 dispatcher는 전혀 추가되지 않습니다. 테스트 3개 추가; 스위트 1041/1041.

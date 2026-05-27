@@ -1019,33 +1019,9 @@ Après la notation, les suites canoniques sont :
 - `/career-ops tracker` — Voir le statut du pipeline
 
 ---
+### hh.ru — récupéré depuis le site web (sans configuration ni proxy)
 
-### Scanner hh.ru depuis l'étranger (`HH_PROXY`)
-
-hh.ru géo-bloque son API publique par **adresse IP**. Depuis un nœud de sortie non russe, chaque requête vers `api.hh.ru` renvoie **HTTP 403 forbidden**; le scanner journalise un avertissement, désactive hh.ru pour ce passage et continue avec les autres sources. `HH_USER_AGENT` seul ne lève **pas** le blocage, ni les en-têtes type navigateur (Referer, Accept-Language…) — la barrière est votre **IP**. Pour inclure hh.ru depuis l'étranger, routez **uniquement sa requête** via un proxy russe avec `HH_PROXY`; les autres sources gardent leur connexion directe.
-
-**1 — Procurez-vous un proxy russe. Trois conditions indépendantes, toutes requises :**
-- **IPv4, pas IPv6.** `api.hh.ru` est IPv4 uniquement (pas d'enregistrement AAAA). Un proxy IPv6 ne l'atteint jamais — échec `502 Bad Gateway / Host Not Found` à chaque fois. Choisissez **IPv4** explicitement.
-- **HTTP/HTTPS, pas SOCKS.** Le proxy tunnelise HTTPS via `CONNECT`. **SOCKS5 n'est pas pris en charge** (l'implémentation utilise le `ProxyAgent` d'undici).
-- **Résidentiel / mobile, pas datacenter.** hh.ru renvoie **403** pour les plages hébergement/datacenter *même si l'IP est russe* (Selectel, Timeweb…). Il vous faut un proxy russe **résidentiel ou mobile** (IP réelle d'un FAI).
-
-**2 — Testez-le avant de le brancher.** Depuis le serveur :
-```bash
-curl -x "http://LOGIN:PASS@HOST:PORT" \
-  "https://api.hh.ru/vacancies?text=php&per_page=1" -w "\nHTTP %{http_code}\n"
-```
-- `HTTP 200` + JSON → fonctionne.
-- `HTTP 403 {"type":"forbidden"}` → atteint hh.ru mais l'IP est bloquée → c'est un proxy datacenter, passez au résidentiel/mobile.
-- `CONNECT tunnel failed, response 502` → n'atteint pas hh.ru (proxy IPv6, abonnement expiré ou IP non whitelistée).
-- `407` → identifiants incorrects.
-
-**3 — Branchez-le.** Ajoutez dans `.env` à la **racine du projet career-ops** (le même fichier que `HH_USER_AGENT`) :
-```
-HH_PROXY=http://LOGIN:PASS@HOST:PORT
-```
-Lu au démarrage — **redémarrez le serveur** après modification. `.env` contient un mot de passe ; ne le commitez jamais.
-
-**4 — Vérifiez.** Relancez un scan depuis `#/scan`; les lignes hh.ru apparaissent à côté de Habr Career.
+hh.ru est scanné en lisant son site public de recherche (`hh.ru/search/vacancy`), de la même façon que Habr Career : **fonctionne depuis n'importe quelle IP, sans clé, proxy ni configuration.** L'API JSON (`api.hh.ru`) n'est volontairement *pas* utilisée : elle renvoie désormais `403 forbidden` à tout client programmatique quels que soient l'IP ou le User-Agent (un blocage anti-bot en périphérie, pas une erreur d'API documentée), tandis que le site sert des résultats complets à tout client de type navigateur. hh.ru fonctionne donc exactement comme Habr et Trudvsem — il suffit de le laisser dans `russian_portals.sources` et de lancer le scan.
 
 ## 8. Pipeline (`#/pipeline`)
 

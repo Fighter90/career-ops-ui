@@ -85,7 +85,7 @@ Before deploying v1.9.1:
 2. ✅ `npm run test:e2e:browser` passes (12 / 12).
 3. ✅ `/api/health` returns `ok: true` for all required checks.
 4. ✅ Parent career-ops project is set up (`cv.md`, `config/profile.yml`, `portals.yml` exist and are personalized).
-5. ✅ `.env` in the parent project root contains the keys you intend to use (`ANTHROPIC_API_KEY` / `GEMINI_API_KEY` / `HH_USER_AGENT`).
+5. ✅ `.env` in the parent project root contains the keys you intend to use (`ANTHROPIC_API_KEY` / `GEMINI_API_KEY`).
 6. ✅ If you need to expose beyond loopback: **stop**, wait for v2.0.x P-12.
 
 ## Roadmap to v2.0 (production-grade for any deployment)

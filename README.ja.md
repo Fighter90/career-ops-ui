@@ -254,7 +254,7 @@ http://127.0.0.1:4317 を開きます。Pipeline カウンタが `0 件待機中
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — `portals.yml::tracked_companies` に登録された、認識可能な ATS パターンを持つすべての企業に対する公開 boards-api を叩きます。同梱リストは Stripe、GitLab、Vercel、Cloudflare、Datadog、Discord、Elastic、Grafana Labs、CockroachDB、Fastly、Twilio、Coinbase、Reddit、Robinhood、Affirm、Lyft、Linear、Supabase、PostHog、Ramp、Modal Labs、Railway、Browserbase、JetBrains をカバーします。自由に拡張・削減できます。
 - **RSS 求人ボード** — RSS/Atom フィードを公開している求人ボード(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects など)に対応。`portals.yml` に `provider: rss` とフィード URL を追加するだけです。コード変更は不要です。
-- **hh.ru** — 公開 API(RU 以外の IP からは 403 を返します。ロシアの IP / VPN から実行するか、スキップしてください。同一ソースからの連続 403 は集約され、実行中に当該ソースが無効化されます)。サーバーは妥当なデフォルト User-Agent を出荷します。上級ユーザーは Russian IP / VPN 経由でこれを上書きできます。
+- **hh.ru** — `hh.ru/search/vacancy` の HTML をスクレイプ。どの IP からでも、キーもプロキシも不要で動作します。（JSON API `api.hh.ru` はもう使いません：IP/User-Agent に関係なくすべてのプログラムクライアントに 403 を返すようになったためです。サイトは Habr Career と同様、ブラウザ風クライアントに完全な結果を返します。）
 - **Habr Career** — `career.habr.com/vacancies` の HTML スクレイプ。任意の IP から動作し、認証は不要です。
 
 ### RSS アダプタ

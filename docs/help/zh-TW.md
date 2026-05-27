@@ -844,33 +844,9 @@ SPA 的 `#/dashboard` 與 `#/tracker` 會標亮每一列 score ≥ 4.0
 - `/career-ops tracker` — 檢視 pipeline 狀態
 
 ---
+### hh.ru — 從網站抓取（無需設定與代理）
 
-### 在俄羅斯境外掃描 hh.ru（`HH_PROXY`）
-
-hh.ru 以 **IP 位址**對其公開 API 進行地域封鎖。從非俄羅斯出口節點發出的每個 `api.hh.ru` 請求都會回傳 **HTTP 403 forbidden**；掃描器記錄警告，在本次執行中停用 hh.ru，並繼續其他來源。僅靠 `HH_USER_AGENT` **無法**解除封鎖，瀏覽器式標頭（Referer、Accept-Language 等）也不行——關卡是你的 **IP**。要在境外納入 hh.ru，用 `HH_PROXY` 僅將**它的請求**經俄羅斯代理轉發；其餘來源維持直連。
-
-**1 — 準備一個俄羅斯代理。三個獨立條件，缺一不可：**
-- **IPv4，而非 IPv6。** `api.hh.ru` 僅支援 IPv4（無 AAAA 記錄）。IPv6 代理永遠無法到達——每次都 `502 Bad Gateway / Host Not Found`。請明確選擇 **IPv4**。
-- **HTTP/HTTPS，而非 SOCKS。** 代理透過 `CONNECT` 隧道傳輸 HTTPS。**不支援 SOCKS5**（實作使用 undici 的 `ProxyAgent`）。
-- **住宅/行動，而非資料中心。** *即便 IP 是俄羅斯的*，hh.ru 也會對主機代管/資料中心網段回傳 **403**（Selectel、Timeweb…）。你需要俄羅斯**住宅或行動**代理（真實 ISP 配發的 IP）。
-
-**2 — 接入前先測試。** 在伺服器上：
-```bash
-curl -x "http://LOGIN:PASS@HOST:PORT" \
-  "https://api.hh.ru/vacancies?text=php&per_page=1" -w "\nHTTP %{http_code}\n"
-```
-- `HTTP 200` + JSON → 可用。
-- `HTTP 403 {"type":"forbidden"}` → 到達 hh.ru 但 IP 被封 → 是資料中心代理，改用住宅/行動。
-- `CONNECT tunnel failed, response 502` → 無法到達 hh.ru（IPv6 代理、方案過期或 IP 未加白名單）。
-- `407` → 憑證錯誤。
-
-**3 — 接入。** 在 **career-ops 專案根目錄**的 `.env`（與 `HH_USER_AGENT` 同一檔案）中加入：
-```
-HH_PROXY=http://LOGIN:PASS@HOST:PORT
-```
-啟動時讀取——編輯後請**重新啟動伺服器**。`.env` 含密碼；切勿提交。
-
-**4 — 驗證。** 在 `#/scan` 重新掃描；hh.ru 的項目會出現在 Habr Career 旁邊。
+hh.ru 透過讀取其公開搜尋網站（`hh.ru/search/vacancy`）來掃描，與 Habr Career 相同：**任何 IP 皆可用，無需金鑰、代理或設定。** 刻意*不*使用 JSON API（`api.hh.ru`）：它現在無論 IP 或 User-Agent 都會對所有程式化用戶端回傳 `403 forbidden`（這是邊緣反爬封鎖，而非文件化的 API 錯誤），而網站會向任何類瀏覽器用戶端回傳完整結果。因此 hh.ru 與 Habr、Trudvsem 完全一樣——只需在 `russian_portals.sources` 中保留並掃描即可。
 
 ## 8. 流水線(`#/pipeline`)
 

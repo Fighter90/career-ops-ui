@@ -252,37 +252,8 @@ Zero-token portal scanning that actually returns vacancies. **One 🌐 Scan butt
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — public boards-api for every company in `portals.yml::tracked_companies` with a recognizable ATS pattern. Bundled list covers Stripe, GitLab, Vercel, Cloudflare, Datadog, Discord, Elastic, Grafana Labs, CockroachDB, Fastly, Twilio, Coinbase, Reddit, Robinhood, Affirm, Lyft, Linear, Supabase, PostHog, Ramp, Modal Labs, Railway, Browserbase, JetBrains — extend or trim freely.
 - **RSS boards** — any job board that exposes an RSS/Atom feed (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …). Add `provider: rss` + the feed URL to `portals.yml` — no code changes required.
-- **hh.ru** — public API (returns 403 from non-RU IPs; the block is by **IP**, so set `HH_PROXY` to a Russian IPv4 proxy — see [Scanning hh.ru from outside Russia](#scanning-hhru-from-outside-russia-hh_proxy) — or skip it: repeated 403s from one source are coalesced and the source is disabled mid-run).
+- **hh.ru** — HTML scrape of `hh.ru/search/vacancy`. Works from any IP, no key, no proxy. (The JSON API `api.hh.ru` is not used — it now 403s every programmatic client regardless of IP/User-Agent; the website serves full results to any browser-like client, so we scrape that, the same way Habr Career is scraped.)
 - **Habr Career** — HTML scrape of `career.habr.com/vacancies`. Works from any IP, no auth.
-
-### Scanning hh.ru from outside Russia (`HH_PROXY`)
-
-hh.ru geo-blocks its public API by **IP address**. From a non-Russian exit node every `api.hh.ru` request returns **HTTP 403**; the scanner logs a warning, disables hh.ru for that run, and continues with the other sources. `HH_USER_AGENT` alone does **not** lift the block — the gate is your IP, not the User-Agent. To include hh.ru from abroad, route **only its request** through a Russian proxy with `HH_PROXY`; every other source keeps its direct connection.
-
-**1 — Get a Russian proxy. It must be IPv4, HTTP/HTTPS, and residential.** Three independent gates, learned the hard way:
-- **IPv4, not IPv6.** `api.hh.ru` is IPv4-only (no AAAA record). An **IPv6 proxy can never reach it** — it fails with `502 Bad Gateway / Host Not Found` on every request. IPv6 proxies are the cheap default, so pick **IPv4** explicitly.
-- **HTTP/HTTPS, not SOCKS.** The proxy tunnels HTTPS via `CONNECT`. **SOCKS5 is not supported** by `HH_PROXY` (the implementation uses undici's `ProxyAgent`).
-- **Residential / mobile, not datacenter.** hh.ru blocks hosting/datacenter IP ranges with **HTTP 403 `forbidden`** *even when the IP is Russian*. A Selectel/Timeweb/VDSina datacenter proxy tunnels fine but still gets 403. You need a **Russian residential or mobile proxy** (real ISP-assigned IP). Buy *резидентский* / *мобильный* — not *серверный/датацентр* — from a RU provider (proxy6.net, proxys.io, proxyline.net, ASocks, …). **Caveat:** resold residential *pools* are often detected too — in testing a Russian datacenter IP, a Russian residential *pool* IP (ER-Telecom, Barnaul), and full browser headers **all still returned 403**. The most reliable paths are the server's **own home Russian connection** or an OAuth token from a registered **dev.hh.ru** app.
-- Some providers also require you to **whitelist your server's outgoing IP** in their panel; otherwise `CONNECT` fails with 502 even when the login is correct.
-
-**2 — Test the proxy before wiring it in.** From the server:
-```bash
-curl -x "http://LOGIN:PASS@HOST:PORT" \
-  "https://api.hh.ru/vacancies?text=php&per_page=1" -w "\nHTTP %{http_code}\n"
-```
-- `HTTP 200` + JSON → it works, proceed.
-- `HTTP 403 {"type":"forbidden"}` → the proxy reaches hh.ru but its IP is blocked. Almost always a **datacenter** proxy — switch to a residential/mobile one.
-- `CONNECT tunnel failed, response 502` → the proxy can't reach hh.ru (IPv6 proxy, expired plan, or your IP isn't whitelisted).
-- `400 bad_user_agent` → hh.ru blacklisted the User-Agent; keep the shipped `HH_USER_AGENT` (a real `app/ver (email)` string) rather than a junk one.
-- `407` → wrong proxy credentials.
-
-**3 — Wire it in.** Add to `.env` in the **career-ops project root** (the same file that holds `HH_USER_AGENT`):
-```
-HH_PROXY=http://LOGIN:PASS@HOST:PORT
-```
-The value is read at startup, so **restart the server** after editing. `.env` holds a password — never commit it (it is gitignored).
-
-**4 — Verify.** Re-run a scan from `#/scan`; hh.ru results now appear next to Habr Career. Still skipped? Re-run the step-2 `curl` — the proxy, not the app, is the failing link.
 
 ### RSS adapter
 
@@ -562,8 +533,6 @@ Environment variables (read at server start, all optional except where noted):
 | `QWEN_MODEL`         | `qwen-max`         | Override Qwen model.                                                               |
 | `OPENROUTER_API_KEY` | unset              | Headless live-eval via OpenRouter — one key, 300+ models (5th / last in `auto`).   |
 | `OPENROUTER_MODEL`   | `openrouter/auto`  | `vendor/model` id. Catalogue loaded live from `GET /api/openrouter/models`.        |
-| `HH_USER_AGENT`      | `career-ops-web-ui/1.0 …` | Override the hh.ru User-Agent. Note: the 403 block is by **IP**, so UA alone won't lift it — use `HH_PROXY` or a Russian IP. |
-| `HH_PROXY`           | unset              | Russian HTTP/HTTPS proxy URL (`http://user:pass@ru-host:port`). Routes **only** the hh.ru request through it to bypass the geo-block; other sources stay direct. Picked up on restart. |
 
 `portals.yml` extension recognized by this UI (add to your existing file in the parent project):
 

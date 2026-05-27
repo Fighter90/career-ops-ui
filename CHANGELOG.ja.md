@@ -10,6 +10,14 @@
 
 
 
+## [1.65.0] — 2026-05-28
+
+**feat(scan): hh.ru を JSON API ではなく公開ウェブサイトからスクレイプ — どの IP からでもプロキシ不要で動作。** `api.hh.ru` は IP や User-Agent に関係なくすべてのプログラムクライアントに `403 forbidden` を返すようになりました（エッジのアンチボット遮断）。一方サイト（`hh.ru/search/vacancy`）はブラウザ風クライアントに完全な結果を返すため、アダプタはその HTML を解析します（Habr Career と同様）。**1.64.0 の `HH_PROXY` 変数と `undici` 依存を削除** — プロキシ・キー・User-Agent の設定は不要です。HTML パーサ向けにテストを書き直し、スイート 1040/1040。
+
+---
+
+
+
 ## [1.64.0] — 2026-05-27
 
 **feat(scan): `HH_PROXY` で hh.ru リクエストをロシアのプロキシ経由に.** hh.ru は API を User-Agent ではなく **IP** でブロックするため、`HH_USER_AGENT` だけでは非ロシアの出口ノードからの 403 を解除できませんでした。`HH_PROXY` にロシアの HTTP/HTTPS プロキシ URL（例: `http://user:pass@ru-host:port`）を設定すると、**hh.ru へのリクエストのみ**そのプロキシを経由し、他のソースは直接接続を維持します。`undici` の `ProxyAgent` を利用（ランタイム依存を追加）。`HH_PROXY` 未設定時は dispatcher を一切付与しません。テスト3件追加、スイート 1041/1041。

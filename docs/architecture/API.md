@@ -45,9 +45,9 @@ Returns known env-config keys with values pulled from `<parent>/.env` first, fal
 ```json
 {
   "envFile": "/path/to/.env",
-  "keys": ["GEMINI_API_KEY", "ANTHROPIC_API_KEY", "HH_USER_AGENT", "..."],
+  "keys": ["GEMINI_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY", "..."],
   "secretKeys": ["GEMINI_API_KEY", "ANTHROPIC_API_KEY"],
-  "values": { "GEMINI_API_KEY": "AIza••••", "HH_USER_AGENT": "user@host" }
+  "values": { "GEMINI_API_KEY": "AIza••••", "ANTHROPIC_MODEL": "claude-sonnet-4-6" }
 }
 ```
 

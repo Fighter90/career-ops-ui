@@ -218,11 +218,13 @@ export async function runRuScan(opts = {}) {
     log('stdout', `  → ${results.length} hits`);
     onProgress(++qDone, cfg.queries.length);
     allFound.push(...results);
-    // First hh.ru 403 → disable for rest of run + log once
+    // First hh.ru 403 → disable for rest of run + log once. hh.ru is scraped
+    // from its public website now; a 403 means the site served an anti-bot
+    // challenge (rare), not a geo/API block.
     if (sourceFailures.hh?.geoBlocked && !hhDisabled) {
       hhDisabled = true;
-      log('stderr', '  ⚠ hh.ru disabled for this run (HTTP 403 — geo-blocked)');
-      log('stderr', '    set HH_USER_AGENT in .env or run from a Russian IP');
+      log('stderr', '  ⚠ hh.ru disabled for this run (website returned HTTP 403)');
+      log('stderr', '    hh.ru/search/vacancy served an anti-bot challenge — retry later.');
     }
   }
 

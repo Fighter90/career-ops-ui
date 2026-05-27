@@ -10,6 +10,14 @@
 
 
 
+## [1.65.0] — 2026-05-28
+
+**feat(scan)：hh.ru 改为从其公开网站抓取，而非 JSON API——任何 IP 都可用，无需代理。** `api.hh.ru` 开始无论 IP 或 User-Agent 都对所有程序化客户端返回 `403 forbidden`（边缘反爬封锁）。而网站（`hh.ru/search/vacancy`）会向任何类浏览器客户端返回完整结果，因此适配器现在解析该 HTML（与 Habr Career 相同）。**移除 1.64.0 的 `HH_PROXY` 变量与 `undici` 依赖**——无需代理、密钥或 User-Agent。测试改写为 HTML 解析；套件 1040/1040。
+
+---
+
+
+
 ## [1.64.0] — 2026-05-27
 
 **feat(scan)：通过 `HH_PROXY` 将 hh.ru 请求经俄罗斯代理转发。** hh.ru 按 **IP**（而非 User-Agent）封锁其 API，因此单靠 `HH_USER_AGENT` 无法解除来自非俄罗斯出口节点的 403。将 `HH_PROXY` 设为俄罗斯 HTTP/HTTPS 代理 URL（如 `http://user:pass@ru-host:port`），则**仅** hh.ru 请求经该代理转发，其余来源保持直连。基于 `undici` 的 `ProxyAgent`（新增运行时依赖）；未设置 `HH_PROXY` 时完全不附加 dispatcher。新增 3 项测试；套件 1041/1041。

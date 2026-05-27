@@ -1,136 +1,162 @@
 /**
- * hh.ru scanner. Public API at api.hh.ru.
+ * hh.ru scanner — scrapes the public search HTML at
+ * https://hh.ru/search/vacancy?text=<query>
  *
- * Notes for users outside Russia:
- *   • hh.ru blocks API requests from non-RU IPs with 403. The block is by IP,
- *     not User-Agent — HH_USER_AGENT alone does NOT lift it.
- *   • To reach the API from a non-RU exit node, set HH_PROXY to a Russian
- *     HTTP/HTTPS proxy URL (e.g. `http://user:pass@ru-host:port`). Only the
- *     hh.ru request is routed through it; every other source uses the direct
- *     connection. Requires a process restart to pick up a changed value.
- *   • Alternatively, run the whole server from a Russian IP / VPN exit node.
+ * Why HTML and not the API:
+ *   The JSON API (api.hh.ru/vacancies) now returns a bare
+ *   `{"errors":[{"type":"forbidden"}]}` (403) to every programmatic client —
+ *   from any IP (US, RU datacenter, RU residential, RU mobile) and with any
+ *   User-Agent. That bare `forbidden` is NOT in hh.ru's documented error
+ *   catalogue (UA problems are 400 `bad_user_agent`, auth is 403 `oauth/…`),
+ *   so it's an edge/anti-bot block on the API endpoint, not something a proxy
+ *   or token fixes. The *website* (hh.ru/search/vacancy), however, serves
+ *   server-rendered HTML with full results to any client carrying a browser
+ *   User-Agent — works from any IP, no proxy, no key. So we scrape that, the
+ *   same way the Habr Career adapter scrapes its search page.
  *
- * Schema docs: https://github.com/hhru/api
+ * The page is server-rendered — we parse vacancy cards with regex
+ * (intentionally not pulling in cheerio/JSDOM to keep deps minimal).
  */
 
-import { ProxyAgent } from 'undici';
+const HH_SITE = 'https://hh.ru/search/vacancy';
 
-const HH_API = 'https://api.hh.ru/vacancies';
-const DEFAULT_UA =
-  process.env.HH_USER_AGENT ||
-  'career-ops-web-ui/1.0 (sergey-emelyanov@github.com)';
-
-// Lazily-built proxy dispatcher, cached per HH_PROXY value so a test (or a
-// restart with a new value) rebuilds it instead of reusing a stale agent.
-// ProxyAgent construction is connectionless — it dials only on first request.
-let _proxy = { url: null, agent: null };
-
-/**
- * Resolve the undici dispatcher for the hh.ru request from HH_PROXY.
- * Returns `undefined` when no proxy is configured (direct connection).
- * @returns {import('undici').Dispatcher | undefined}
- */
-export function hhProxyDispatcher() {
-  const url = process.env.HH_PROXY || '';
-  if (!url) {
-    if (_proxy.agent) _proxy.agent.close().catch(() => {});
-    _proxy = { url: null, agent: null };
-    return undefined;
-  }
-  if (_proxy.url !== url) {
-    // Close the superseded agent so its socket pool doesn't leak on rebuild.
-    if (_proxy.agent) _proxy.agent.close().catch(() => {});
-    _proxy = { url, agent: new ProxyAgent(url) };
-  }
-  return _proxy.agent;
-}
+const UA =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
+  '(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
 const AREA_MOSCOW = 1;
 const AREA_RUSSIA = 113;
 const AREA_REMOTE = 1001;
 
 /**
- * Search hh.ru for one query string.
- * Returns array of normalized job objects.
+ * Search hh.ru for one query string. Returns array of normalized job objects.
+ *
+ * Options:
+ *   area       — hh.ru area id (default 113 = Russia-wide)
+ *   perPage    — items_on_page (default 50)
+ *   onlyRemote — restrict to remote (schedule=remote)
+ *   fetchImpl  — override for tests (default: global fetch)
+ *   signal     — AbortSignal propagated to fetch
  */
 export async function searchHH(query, opts = {}) {
   const {
     area = AREA_RUSSIA,
     perPage = 50,
     onlyRemote = false,
-    searchField = 'name',
     fetchImpl = fetch,
-    signal, // REVIEW-B3: propagate client-disconnect
+    signal,
   } = opts;
 
   const params = new URLSearchParams({
     text: query,
+    items_on_page: String(perPage),
     area: String(area),
-    per_page: String(perPage),
-    search_field: searchField,
   });
   if (onlyRemote) params.set('schedule', 'remote');
 
-  // undici honors a per-request `dispatcher`; the timeout wrapper forwards it
-  // verbatim to native fetch. Omitted entirely when HH_PROXY is unset.
-  const dispatcher = hhProxyDispatcher();
-
-  const res = await fetchImpl(`${HH_API}?${params}`, {
+  const res = await fetchImpl(`${HH_SITE}?${params}`, {
     signal,
-    ...(dispatcher ? { dispatcher } : {}),
     headers: {
-      'User-Agent': DEFAULT_UA,
-      Accept: 'application/json',
+      'User-Agent': UA,
+      'Accept-Language': 'ru-RU,ru;q=0.9',
+      Accept: 'text/html',
     },
   });
 
   if (!res.ok) {
-    const body = await res.text().catch(() => '');
-    let detail = '';
-    try {
-      const j = JSON.parse(body);
-      detail = ' · ' + (j.errors?.[0]?.type || j.description || '');
-    } catch {}
-    const err = new Error(`hh.ru: HTTP ${res.status}${detail}`);
+    const err = new Error(`hh.ru: HTTP ${res.status}`);
     err.status = res.status;
+    // 403 here would mean the *website* started blocking too (anti-bot
+    // challenge); the scanner treats it as a non-fatal per-source failure.
     err.geoBlocked = res.status === 403;
     throw err;
   }
 
-  const data = await res.json();
-  return (data.items || []).map(normalizeHH);
+  const html = await res.text();
+  return parseHhCards(html);
 }
 
-function normalizeHH(item) {
-  const sal = item.salary;
-  const salStr = sal
-    ? [
-        sal.from && `от ${sal.from}`,
-        sal.to && `до ${sal.to}`,
-        sal.currency,
-      ]
-        .filter(Boolean)
-        .join(' ')
-    : '';
-  // schedule = 'remote' / 'fullDay' / 'flexible' / 'shift'
-  const schedule = item.schedule?.id || item.schedule?.name || '';
-  const isRemote = schedule === 'remote' || /удал[её]н/i.test(item.schedule?.name || '');
-  return {
-    id: `hh-${item.id}`,
-    title: item.name || '',
-    company: item.employer?.name || '',
-    url: item.alternate_url || `https://hh.ru/vacancy/${item.id}`,
-    salary: salStr,
-    location: item.area?.name || '',
-    isRemote,
-    workplaceType: isRemote ? 'Remote' : (schedule || 'Onsite'),
-    relocates: false, // hh.ru rarely flags this; user must check page
-    date: item.published_at || '',
-    snippet: [item.snippet?.requirement, item.snippet?.responsibility]
-      .filter(Boolean)
-      .join(' / '),
-    source: 'hh.ru',
-  };
+// Zero-width / directional marks + BOM that hh.ru sprinkles into markup.
+const ZWSP = /[​-‏⁠﻿]/g;
+
+function stripTags(s) {
+  return s
+    .replace(/<[^>]+>/g, '')
+    .replace(ZWSP, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;|&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-export const HH = { searchHH, AREA_MOSCOW, AREA_RUSSIA, AREA_REMOTE };
+function qaText(block, qa) {
+  const m = block.match(
+    new RegExp('data-qa="' + qa + '[^"]*"[^>]*>([\\s\\S]*?)</(?:a|span|div)>'),
+  );
+  return m ? stripTags(m[1]) : '';
+}
+
+// Salary amount, not the "Выплаты: …" payment-frequency label. hh.ru hides
+// most salaries, so this is best-effort: a currency run inside the card.
+function extractSalary(block) {
+  const m = block.match(
+    /(?:от|до)?\s?[\d   ]{4,}(?:\s?[–—-]\s?[\d   ]{4,})?\s?(?:₽|руб|€|\$|USD|EUR|KZT|BYN|тенге|сом)/i,
+  );
+  return m ? stripTags(m[0]) : '';
+}
+
+/**
+ * Parse vacancy cards from an hh.ru search-results HTML page.
+ * Pure function — exported for testing.
+ *
+ * Each card container carries data-qa="vacancy-serp__vacancy" (ad blocks use
+ * a different marker and link to adsrv.hh.ru, so they're skipped naturally —
+ * we only accept hh.ru/vacancy/<id> title links).
+ */
+export function parseHhCards(html) {
+  if (!html) return [];
+  const out = [];
+  const seen = new Set();
+  const blocks = html.split('data-qa="vacancy-serp__vacancy"').slice(1);
+
+  for (const b of blocks) {
+    const tm = b.match(
+      /data-qa="serp-item__title[^"]*"[^>]*href="(https:\/\/hh\.ru\/vacancy\/(\d+)[^"]*)"[\s\S]*?>([\s\S]*?)<\/a>/,
+    );
+    if (!tm) continue;
+
+    const id = tm[2];
+    if (seen.has(id)) continue;
+    seen.add(id);
+
+    const title = stripTags(tm[3]);
+    if (!title) continue;
+
+    const remote = /удал[её]н/i.test(b);
+
+    out.push({
+      id: `hh-${id}`,
+      title,
+      company:
+        qaText(b, 'vacancy-serp__vacancy-employer-text') ||
+        qaText(b, 'vacancy-serp__vacancy-employer'),
+      url: `https://hh.ru/vacancy/${id}`,
+      salary: extractSalary(b),
+      location: qaText(b, 'vacancy-serp__vacancy-address'),
+      isRemote: remote,
+      workplaceType: remote ? 'Remote' : 'Onsite',
+      relocates: false,
+      date: '',
+      snippet: qaText(b, 'vacancy-serp__vacancy_snippet_responsibility'),
+      source: 'hh.ru',
+    });
+  }
+
+  return out;
+}
+
+export const HH = { searchHH, parseHhCards, AREA_MOSCOW, AREA_RUSSIA, AREA_REMOTE };

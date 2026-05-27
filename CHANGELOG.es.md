@@ -12,6 +12,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 
 
+## [1.65.0] — 2026-05-28
+
+**feat(scan): hh.ru ahora se scrapea desde su web pública en vez de la API JSON — funciona desde cualquier IP, sin proxy.** `api.hh.ru` empezó a devolver un `403 forbidden` a cualquier cliente programático sin importar la IP ni el User-Agent (un bloqueo anti-bot de borde). La web (`hh.ru/search/vacancy`) sí sirve resultados completos a cualquier cliente tipo navegador, así que el adaptador ahora parsea ese HTML (como Habr Career). **Elimina la variable `HH_PROXY` de 1.64.0 y la dependencia `undici`** — sin proxy, clave ni User-Agent. Tests reescritos para el parser HTML; suite 1040/1040.
+
+---
+
+
+
 ## [1.64.0] — 2026-05-27
 
 **feat(scan): enruta la petición a hh.ru por un proxy ruso mediante `HH_PROXY`.** hh.ru bloquea su API por **IP**, no por User-Agent — por eso `HH_USER_AGENT` por sí solo nunca levantaba un 403 desde un nodo de salida no ruso. Define `HH_PROXY` con la URL de un proxy ruso HTTP/HTTPS (p. ej. `http://user:pass@ru-host:port`) y **solo** la petición a hh.ru pasa por él; las demás fuentes mantienen su conexión directa. Construido sobre el `ProxyAgent` de `undici` (nueva dependencia de runtime); el dispatcher se omite por completo cuando `HH_PROXY` no está definido. 3 pruebas nuevas; suite 1041/1041.

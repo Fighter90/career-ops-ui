@@ -28,18 +28,11 @@ Router.register('scan', async () => {
   const t = (k, f) => I18n.t(k, f);
   let portalsData = null;
   let portalsErr = null;
-  let healthData = null;
   try {
     portalsData = await API.get('/api/portals');
   } catch (e) {
     portalsErr = e;
   }
-  // Probe the HH_USER_AGENT setup so we can warn before the user clicks
-  // RU scan and discovers the 403 the hard way.
-  try {
-    healthData = await API.get('/api/health');
-  } catch {}
-  const hhUaSet = healthData?.checks?.find((x) => x.name === 'HH_USER_AGENT')?.ok === true;
   const p = portalsData?.portals || {};
   const companies = (p.tracked_companies || p.companies || []).filter((c) => c.enabled !== false);
   const apiCompanies = companies.filter((co) =>
@@ -562,9 +555,9 @@ Router.register('scan', async () => {
       ]),
     ]),
 
-    // HH_USER_AGENT diagnostics moved to the Health page only — having
-    // it as a card here was loud, persistent, and irrelevant to anyone
-    // not hitting a 403 from hh.ru. The Health check still surfaces it.
+    // v1.65.0 — hh.ru is now scraped from its public website (works from any
+    // IP, no User-Agent / proxy setup), so the old HH_USER_AGENT diagnostics
+    // card is gone for good.
     null,
 
     c('div', { className: 'card mb-3' }, [

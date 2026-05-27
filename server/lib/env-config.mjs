@@ -1,8 +1,8 @@
 /**
  * Read / write the parent project's .env file in place. Used by the
- * /api/config endpoint so the user can edit ANTHROPIC_API_KEY, GEMINI,
- * HH_USER_AGENT, etc. through the UI and have BOTH career-ops scripts
- * (read by node) AND web-ui (read by dotenv-loader) pick them up.
+ * /api/config endpoint so the user can edit ANTHROPIC_API_KEY, GEMINI_API_KEY,
+ * etc. through the UI and have BOTH career-ops scripts (read by node) AND
+ * web-ui (read by dotenv-loader) pick them up.
  *
  * Preserves existing comments and ordering; only the keys we touch are
  * rewritten, everything else passes through unchanged.
@@ -82,11 +82,9 @@ export function selectActiveProvider(keysConfigured, env = process.env) {
 /**
  * Group classification for the SPA config view (F-013). v1.19.0 collapsed
  * to two groups: `core` (LLM keys) and `runtime` (PORT/HOST). The
- * previous "regional" group (only HH_USER_AGENT) was removed — the
- * bundled default User-Agent in `server/lib/sources/hh.mjs` handles
- * non-RU IPs well enough that exposing the override through the UI
- * was confusing for most users. Power users can still set
- * HH_USER_AGENT directly in `career-ops/.env`.
+ * previous "regional" group (only HH_USER_AGENT) was removed in v1.19.0;
+ * as of v1.65.0 hh.ru is scraped from its public website with a fixed
+ * browser User-Agent and needs no env configuration at all.
  */
 export const KEY_GROUPS = {
   LLM_PROVIDER: 'core',

@@ -892,33 +892,9 @@ SPA의 `#/dashboard`와 `#/tracker`는 4.0 이상 모든 행을 강조하여,
 - `/career-ops tracker` — 파이프라인 상태 보기.
 
 ---
+### hh.ru — 웹사이트에서 스크랩 (설정·프록시 불필요)
 
-### 러시아 밖에서 hh.ru 스캔하기 (`HH_PROXY`)
-
-hh.ru는 공개 API를 **IP 주소**로 지역 차단합니다. 러시아 외 출구 노드에서는 `api.hh.ru` 요청마다 **HTTP 403 forbidden**이 반환되고, 스캐너는 경고를 남기고 그 회차에는 hh.ru를 끄고 다른 소스로 계속합니다. `HH_USER_AGENT`만으로는 차단이 풀리지 않으며, 브라우저 헤더(Referer, Accept-Language 등)로도 안 됩니다 — 관문은 **IP**입니다. 해외에서 hh.ru를 포함하려면 `HH_PROXY`로 **그 요청만** 러시아 프록시를 통과시키세요. 나머지 소스는 직접 연결을 유지합니다.
-
-**1 — 러시아 프록시를 준비하세요. 세 가지 독립 조건 모두 필요:**
-- **IPv6가 아닌 IPv4.** `api.hh.ru`는 IPv4 전용(AAAA 레코드 없음)입니다. IPv6 프록시는 절대 도달하지 못하고 매번 `502 Bad Gateway / Host Not Found`로 실패합니다. **IPv4**를 명시적으로 고르세요.
-- **SOCKS가 아닌 HTTP/HTTPS.** 프록시는 `CONNECT`로 HTTPS를 터널링합니다. **SOCKS5는 지원되지 않습니다**(undici `ProxyAgent` 사용).
-- **데이터센터가 아닌 거주용/모바일.** hh.ru는 *IP가 러시아여도* 호스팅/데이터센터 대역을 **403**으로 막습니다(Selectel, Timeweb…). 러시아 **거주용 또는 모바일** 프록시(실제 ISP IP)가 필요합니다.
-
-**2 — 연결 전 테스트하세요.** 서버에서:
-```bash
-curl -x "http://LOGIN:PASS@HOST:PORT" \
-  "https://api.hh.ru/vacancies?text=php&per_page=1" -w "\nHTTP %{http_code}\n"
-```
-- `HTTP 200` + JSON → 작동.
-- `HTTP 403 {"type":"forbidden"}` → hh.ru에 도달했지만 IP가 차단됨 → 데이터센터 프록시이니 거주용/모바일로 교체.
-- `CONNECT tunnel failed, response 502` → hh.ru에 도달 못 함(IPv6 프록시, 만료된 요금제 또는 IP 미화이트리스트).
-- `407` → 잘못된 자격 증명.
-
-**3 — 적용하세요.** **career-ops 프로젝트 루트**의 `.env`(`HH_USER_AGENT`와 같은 파일)에 추가:
-```
-HH_PROXY=http://LOGIN:PASS@HOST:PORT
-```
-시작 시 읽히므로 편집 후 **서버를 재시작**하세요. `.env`에는 비밀번호가 있으니 절대 커밋하지 마세요.
-
-**4 — 확인하세요.** `#/scan`에서 스캔을 다시 실행하면 hh.ru 행이 Habr Career 옆에 나타납니다.
+hh.ru는 공개 검색 웹사이트(`hh.ru/search/vacancy`)를 읽어 스캔합니다 — Habr Career와 동일하게 **어떤 IP에서도 키·프록시·설정 없이 작동합니다.** JSON API(`api.hh.ru`)는 의도적으로 사용하지 *않습니다*: 이제 IP나 User-Agent와 무관하게 모든 프로그램 클라이언트에 `403 forbidden`을 반환합니다(문서화된 API 오류가 아니라 엣지 안티봇 차단). 반면 웹사이트는 브라우저류 클라이언트에 전체 결과를 제공합니다. 따라서 hh.ru는 Habr·Trudvsem과 똑같이 동작합니다 — `russian_portals.sources`에 그대로 두고 스캔하면 됩니다.
 
 ## 8. 파이프라인 (`#/pipeline`)
 
