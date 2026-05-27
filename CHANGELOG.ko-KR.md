@@ -12,7 +12,7 @@
 
 ## [1.65.0] — 2026-05-28
 
-**feat(scan): hh.ru를 JSON API 대신 공개 웹사이트에서 스크랩 — 어떤 IP에서도 프록시 없이 작동.** `api.hh.ru`가 IP나 User-Agent와 무관하게 모든 프로그램 클라이언트에 `403 forbidden`을 반환하기 시작했습니다(엣지 안티봇 차단). 반면 웹사이트(`hh.ru/search/vacancy`)는 브라우저류 클라이언트에 전체 결과를 제공하므로, 어댑터가 이제 그 HTML을 파싱합니다(Habr Career처럼). **1.64.0의 `HH_PROXY` 변수와 `undici` 의존성을 제거** — 프록시·키·User-Agent 설정이 필요 없습니다. HTML 파서용으로 테스트 재작성; 스위트 1040/1040.
+**feat(scan): hh.ru를 JSON API 대신 공개 웹사이트에서 스크랩 — 어떤 IP에서도 프록시 없이 작동.** `api.hh.ru`가 IP나 User-Agent와 무관하게 모든 프로그램 클라이언트에 `403 forbidden`을 반환하기 시작했습니다(엣지 안티봇 차단). 반면 웹사이트(`hh.ru/search/vacancy`)는 브라우저류 클라이언트에 전체 결과를 제공하므로, 어댑터가 이제 그 HTML을 파싱합니다(Habr Career처럼). **1.64.0의 `HH_PROXY` 변수와 `undici` 의존성을 제거** — 프록시·키·User-Agent 설정이 필요 없습니다. HTML 파서용으로 테스트 재작성; 스위트 1041/1041.
 
 ---
 

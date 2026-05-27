@@ -12,7 +12,7 @@
 
 ## [1.65.0] — 2026-05-28
 
-**feat(scan)：hh.ru 改为从其公开网站抓取，而非 JSON API——任何 IP 都可用，无需代理。** `api.hh.ru` 开始无论 IP 或 User-Agent 都对所有程序化客户端返回 `403 forbidden`（边缘反爬封锁）。而网站（`hh.ru/search/vacancy`）会向任何类浏览器客户端返回完整结果，因此适配器现在解析该 HTML（与 Habr Career 相同）。**移除 1.64.0 的 `HH_PROXY` 变量与 `undici` 依赖**——无需代理、密钥或 User-Agent。测试改写为 HTML 解析；套件 1040/1040。
+**feat(scan)：hh.ru 改为从其公开网站抓取，而非 JSON API——任何 IP 都可用，无需代理。** `api.hh.ru` 开始无论 IP 或 User-Agent 都对所有程序化客户端返回 `403 forbidden`（边缘反爬封锁）。而网站（`hh.ru/search/vacancy`）会向任何类浏览器客户端返回完整结果，因此适配器现在解析该 HTML（与 Habr Career 相同）。**移除 1.64.0 的 `HH_PROXY` 变量与 `undici` 依赖**——无需代理、密钥或 User-Agent。测试改写为 HTML 解析；套件 1041/1041。
 
 ---
 

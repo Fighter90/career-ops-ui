@@ -14,7 +14,7 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 ## [1.65.0] — 2026-05-28
 
-**feat(scan): hh.ru ahora se scrapea desde su web pública en vez de la API JSON — funciona desde cualquier IP, sin proxy.** `api.hh.ru` empezó a devolver un `403 forbidden` a cualquier cliente programático sin importar la IP ni el User-Agent (un bloqueo anti-bot de borde). La web (`hh.ru/search/vacancy`) sí sirve resultados completos a cualquier cliente tipo navegador, así que el adaptador ahora parsea ese HTML (como Habr Career). **Elimina la variable `HH_PROXY` de 1.64.0 y la dependencia `undici`** — sin proxy, clave ni User-Agent. Tests reescritos para el parser HTML; suite 1040/1040.
+**feat(scan): hh.ru ahora se scrapea desde su web pública en vez de la API JSON — funciona desde cualquier IP, sin proxy.** `api.hh.ru` empezó a devolver un `403 forbidden` a cualquier cliente programático sin importar la IP ni el User-Agent (un bloqueo anti-bot de borde). La web (`hh.ru/search/vacancy`) sí sirve resultados completos a cualquier cliente tipo navegador, así que el adaptador ahora parsea ese HTML (como Habr Career). **Elimina la variable `HH_PROXY` de 1.64.0 y la dependencia `undici`** — sin proxy, clave ni User-Agent. Tests reescritos para el parser HTML; suite 1041/1041.
 
 ---
 
