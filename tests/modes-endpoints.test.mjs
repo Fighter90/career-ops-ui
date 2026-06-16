@@ -31,7 +31,7 @@ before(async () => {
   writeFileSync(resolve(dir, 'data', 'pipeline.md'), '# pipeline\n');
   writeFileSync(resolve(dir, 'modes', 'oferta.md'), 'oferta\n');
   // 7 mode templates with distinctive marker strings
-  for (const slug of ['project', 'training', 'followup', 'batch', 'contacto', 'interview-prep', 'patterns']) {
+  for (const slug of ['project', 'training', 'followup', 'batch', 'contacto', 'interview-prep', 'patterns', 'cover']) {
     writeFileSync(resolve(dir, 'modes', `${slug}.md`), `# ${slug}\nMARKER-${slug.toUpperCase()}\nReads cv.md\n`);
   }
   process.env.CAREER_OPS_ROOT = dir;
@@ -60,7 +60,9 @@ async function postMode(slug, body = {}) {
   return { status: res.status, body: await res.json() };
 }
 
-const ALL_SLUGS = ['project', 'training', 'followup', 'batch', 'contacto', 'interview-prep', 'patterns'];
+// v1.70.0 — `cover` (cover-letter mode) ported from the parent; the
+// parametrized loop below asserts it is allowlisted and assembles like the rest.
+const ALL_SLUGS = ['project', 'training', 'followup', 'batch', 'contacto', 'interview-prep', 'patterns', 'cover'];
 
 for (const slug of ALL_SLUGS) {
   test(`POST /api/mode/${slug} returns prompt with mode template content`, async () => {
