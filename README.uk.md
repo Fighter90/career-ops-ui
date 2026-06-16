@@ -16,7 +16,7 @@
 >
 > Інтерфейс тепер підтримує **12 мов UI** — зокрема українську. Повний список змін: [CHANGELOG.md](CHANGELOG.md).
 
-![career-ops-ui](./images/dashboard-en.png)
+![career-ops-ui](./images/dashboard-uk.png)
 
 ## Про проєкт career-ops
 

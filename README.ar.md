@@ -16,7 +16,7 @@
 >
 > تدعم الواجهة الآن **12 لغة** في واجهة المستخدم، بما فيها العربية. السجل الكامل للتغييرات: [CHANGELOG.md](CHANGELOG.md).
 
-![career-ops-ui](./images/dashboard-en.png)
+![career-ops-ui](./images/dashboard-ar.png)
 
 <div dir="rtl">
 

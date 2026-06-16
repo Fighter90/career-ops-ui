@@ -16,7 +16,7 @@
 >
 > Interfejs obsługuje teraz **12 języków UI** — w tym Polski. Pełna lista zmian: [CHANGELOG.md](CHANGELOG.md).
 
-![career-ops-ui](./images/dashboard-en.png)
+![career-ops-ui](./images/dashboard-pl.png)
 
 ## O projekcie career-ops
 
