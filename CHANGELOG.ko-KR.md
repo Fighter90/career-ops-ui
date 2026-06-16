@@ -9,6 +9,16 @@
 ---
 
 
+## [1.71.0] — 2026-06-16
+
+**feat(cover): `#/cover`에서 바로 자기소개서 PDF를 생성합니다.** v1.70.0에 추가된 cover 모드는 편지 텍스트를 생성하며, 이제 결과 화면에 **Generate PDF** 버튼이 제공되어 공유 인라인 markdown→PDF 파이프라인(`POST /api/stream/pdf/inline` → `generate-pdf.mjs`)을 통해 렌더링됩니다. 이는 interview-prep이 사용하는 것과 동일한 경로입니다. 이제 SPA를 벗어나지 않고도 편지를 작성하고 PDF를 제출할 수 있습니다.
+
+**test/docs: v1.70.0 검토 강화.** cover 모드(허용 목록 + 프롬프트 조립), 국기 `<select>` 스위처 + 아랍어 RTL(`dirFor`/`<html dir>`), 모든 로케일의 `top.langLabel`, 자기소개서 PDF 연결, `prompts.mjs` 로케일 지시문 + fr/pl/uk/ar 스캐폴딩에 대한 CI-격리 커버리지를 추가했습니다. `docs/sdd/CONVENTIONS.md` 및 전체 프로젝트 QA 회귀 프롬프트에서 오래된 «8개 전체» → 12개 로케일 참조를 업데이트했습니다.
+
+---
+
+
+
 ## [1.70.0] — 2026-06-16
 
 **feat(i18n): 세 가지 새로운 UI 언어 — 폴란드어(pl), 우크라이나어(uk), 아랍어(ar, 완전한 RTL 지원 포함) — 를 추가하여 SPA를 12개 로케일로 확장하고, 상위 career-ops README의 모든 언어와 일치시킵니다.** 각 새 로케일은 697개 키로 구성된 완전한 사전(`public/js/lib/locales/i18n-dict.{pl,uk,ar}.js`)을 제공하며, 기존의 패리티 / 커버리지 / 라틴 누락 방지 / 개인 데이터 없음 테스트 스위트로 검증됩니다. 아랍어는 진정한 오른쪽에서 왼쪽 지원을 추가합니다: `i18n.js`는 RTL 로케일에 대해 `<html dir="rtl">`을 설정하고, `app.css`의 범위가 지정된 `[dir="rtl"]` 블록이 크롬(사이드바, 알림 드로어, 마크다운 테이블/블록 인용, 인라인 간격)을 미러링합니다 — LTR 로케일은 바이트 단위로 변경되지 않습니다. 새로운 `top.langLabel` 키(×12)가 스크린 리더를 위해 선택기 이름을 지정합니다.

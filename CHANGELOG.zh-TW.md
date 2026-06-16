@@ -9,6 +9,16 @@
 ---
 
 
+## [1.71.0] — 2026-06-16
+
+**feat(cover): 直接從 `#/cover` 產生求職信 PDF。** v1.70.0 新增的 cover 模式可產生信件內文；結果頁面現在提供 **Generate PDF** 按鈕，透過共用的內嵌 markdown→PDF 管線（`POST /api/stream/pdf/inline` → `generate-pdf.mjs`）進行渲染，與 interview-prep 使用的路徑相同。現在無需離開 SPA 即可撰寫信件並產生 PDF 傳送。
+
+**test/docs: v1.70.0 審查強化。** 為 cover 模式（允許清單 + 提示詞組裝）、國旗 `<select>` 切換器 + 阿拉伯語 RTL（`dirFor`/`<html dir>`）、每個語言環境的 `top.langLabel`、求職信 PDF 連接，以及 `prompts.mjs` 語言環境指令 + fr/pl/uk/ar 鷹架新增了 CI 隔離覆蓋率。更新了 `docs/sdd/CONVENTIONS.md` 和完整專案 QA 迴歸提示中過時的「全部 8 個」→ 12 個語言環境參照。
+
+---
+
+
+
 ## [1.70.0] — 2026-06-16
 
 **feat(i18n): 新增三種 UI 語言——波蘭語（pl）、烏克蘭語（uk）和阿拉伯語（ar，含完整 RTL 支援）——將 SPA 擴展至 12 個語言區域，與父專案 career-ops README 中的所有語言保持一致。** 每種新語言區域均附帶包含 697 個鍵的完整詞典（`public/js/lib/locales/i18n-dict.{pl,uk,ar}.js`），並通過現有的奇偶校驗 / 覆蓋率 / 無拉丁字母洩漏 / 無個人資料測試套件驗證。阿拉伯語新增真正的由右至左支援：`i18n.js` 為 RTL 語言區域設定 `<html dir="rtl">`，`app.css` 中有範圍的 `[dir="rtl"]` 區塊鏡像頁面外殼（側邊欄、通知抽屜、markdown 表格/區塊引用、行內間距）——LTR 語言區域的位元組內容完全不變。新增 `top.langLabel` 鍵（×12）為螢幕閱讀器命名語言選擇器。

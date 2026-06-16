@@ -11,6 +11,16 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.71.0] — 2026-06-16
+
+**feat(cover): genera un PDF de carta de presentación directamente desde `#/cover`.** El modo cover (añadido en v1.70.0) produce el texto de la carta; el resultado ofrece ahora un botón **Generate PDF** que lo renderiza a través del pipeline compartido de markdown→PDF en línea (`POST /api/stream/pdf/inline` → `generate-pdf.mjs`), la misma ruta que usa interview-prep. Ahora puedes generar la carta y producir un PDF sin salir del SPA.
+
+**test/docs: endurecimiento de revisión de v1.70.0.** Se añadió cobertura CI-aislada para el modo cover (lista de permisos + ensamblado de prompt), el selector `<select>` de banderas + RTL árabe (`dirFor`/`<html dir>`), `top.langLabel` en cada locale, el cableado del PDF de carta de presentación, y la directiva de locale de `prompts.mjs` + scaffolding para fr/pl/uk/ar. Se actualizaron las referencias obsoletas «todos los 8» → 12 locales en `docs/sdd/CONVENTIONS.md` y el prompt de regresión QA del proyecto completo.
+
+---
+
+
+
 ## [1.70.0] — 2026-06-16
 
 **feat(i18n): tres nuevos idiomas de interfaz — polaco (pl), ucraniano (uk) y árabe (ar, con RTL completo) — llevando la SPA a 12 idiomas, que coinciden con todos los idiomas del README del proyecto padre career-ops.** Cada nuevo idioma incluye un diccionario completo de 697 claves (`public/js/lib/locales/i18n-dict.{pl,uk,ar}.js`), validado por las suites existentes de paridad / cobertura / sin-fugas-latinas / sin-datos-personales. El árabe añade soporte genuino de derecha a izquierda: `i18n.js` establece `<html dir="rtl">` para idiomas RTL y un bloque `[dir="rtl"]` con alcance limitado en `app.css` refleja la interfaz (barra lateral, cajón de notificaciones, tablas y citas en markdown, espaciado en línea) — los idiomas LTR permanecen byte a byte sin cambios. Nueva clave `top.langLabel` (×12) nombra el selector para lectores de pantalla.

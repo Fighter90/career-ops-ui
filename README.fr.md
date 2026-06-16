@@ -5,18 +5,18 @@
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | **Français** | [Polski](README.pl.md) | [Українська](README.uk.md) | [العربية](README.ar.md)
 
-[![tests](https://img.shields.io/badge/tests-1086%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1100%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.70.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.70.0)
+[![release](https://img.shields.io/badge/release-v1.71.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.0)
 
-> **🆕 Dernière version — v1.70.0**
+> **🆕 Dernière version — v1.71.0**
 >
 > **Trois nouveaux langues — Polski, Українська, العربية (RTL) — portent l'UI à 12 paramètres régionaux, correspondant au README principal de career-ops.** L'arabe embarque un vrai support de droite à gauche. Le sélecteur de langue est désormais un `<select>` déroulant avec drapeaux, et le mode lettre de motivation du projet parent arrive sur `#/cover`. Suit career-ops v1.11.0.
 >
-> _Suite complète **1086/1086** verte · 12 paramètres régionaux · documentation synchronisée._
+> _Suite complète **1100/1100** verte · 12 paramètres régionaux · documentation synchronisée._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

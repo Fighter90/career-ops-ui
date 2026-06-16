@@ -11,6 +11,16 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.71.0] — 2026-06-16
+
+**feat(cover): générez un PDF de lettre de motivation directement depuis `#/cover`.** Le mode cover (ajouté dans la v1.70.0) produit le texte de la lettre ; le résultat propose désormais un bouton **Generate PDF** qui le restitue via le pipeline partagé markdown→PDF en ligne (`POST /api/stream/pdf/inline` → `generate-pdf.mjs`), le même chemin qu'utilise interview-prep. Vous pouvez maintenant rédiger la lettre et produire un PDF sans quitter le SPA.
+
+**test/docs: renforcement de la revue v1.70.0.** Ajout d'une couverture CI-isolée pour le mode cover (liste d'autorisation + assemblage du prompt), le sélecteur `<select>` de drapeaux + RTL arabe (`dirFor`/`<html dir>`), `top.langLabel` dans chaque locale, le câblage du PDF de lettre de motivation, et la directive de locale de `prompts.mjs` + le scaffolding pour fr/pl/uk/ar. Mise à jour des références obsolètes « tous les 8 » → 12 locales dans `docs/sdd/CONVENTIONS.md` et dans le prompt de régression QA du projet complet.
+
+---
+
+
+
 ## [1.70.0] — 2026-06-16
 
 **feat(i18n): trois nouvelles langues d'interface — le polonais (pl), l'ukrainien (uk) et l'arabe (ar, avec prise en charge complète du RTL) — portant la SPA à 12 locales, correspondant à toutes les langues du README du projet parent career-ops.** Chaque nouvelle locale est livrée avec un dictionnaire complet de 697 clés (`public/js/lib/locales/i18n-dict.{pl,uk,ar}.js`), validé par les suites existantes de parité / couverture / absence de fuite latine / absence de données personnelles. L'arabe ajoute un véritable support de droite à gauche : `i18n.js` définit `<html dir="rtl">` pour les locales RTL et un bloc `[dir="rtl"]` dans `app.css` reflète le chrome (barre latérale, tiroir de notifications, tableaux et citations markdown, espacement inline) — les locales LTR restent identiques octet pour octet. Nouvelle clé `top.langLabel` (×12) nommant le sélecteur pour les lecteurs d'écran.

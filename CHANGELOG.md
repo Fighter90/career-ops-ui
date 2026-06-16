@@ -8,6 +8,16 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.71.0] — 2026-06-16
+
+**feat(cover): generate a cover-letter PDF straight from `#/cover`.** The cover mode (added in v1.70.0) produces the letter text; the result now offers a **Generate PDF** button that renders it through the shared inline markdown→PDF pipeline (`POST /api/stream/pdf/inline` → `generate-pdf.mjs`), the same path interview-prep uses. You can now produce the letter and ship a PDF without leaving the SPA.
+
+**test/docs: v1.70.0 review hardening.** Added CI-isolated coverage for the cover mode (allowlist + prompt assembly, via `modes-endpoints.test.mjs`), the flag `<select>` switcher + Arabic RTL (`dirFor`/`<html dir>`, new `tests/lang-switcher-rtl.test.mjs`), `top.langLabel` in every locale, the cover-letter PDF wiring (`tests/cover-letter-pdf.test.mjs`), and the `prompts.mjs` locale directive + scaffolding for fr/pl/uk/ar (`tests/locale-scaffold.test.mjs` — locking the latent French gap closed in v1.70.0). Refreshed three stale "all 8" → 12-locale / 9-help-bundle references in `docs/sdd/CONVENTIONS.md`. Refreshed the full-project QA regression prompt (`qa/QA-REGRESSION-PROMPT-v1.71.0-FULL.md`).
+
+---
+
+
+
 ## [1.70.0] — 2026-06-16
 
 **feat(i18n): three new UI languages — Polish (pl), Ukrainian (uk), and Arabic (ar, with full RTL) — bringing the SPA to 12 locales, matching every language in the parent career-ops README.** Each new locale ships a complete 697-key dictionary (`public/js/lib/locales/i18n-dict.{pl,uk,ar}.js`), gated by the existing parity / coverage / no-latin-leak / no-personal-data suites. Arabic adds genuine right-to-left support: `i18n.js` sets `<html dir="rtl">` for RTL locales and a scoped `[dir="rtl"]` block in `app.css` mirrors the chrome (sidebar, notifications drawer, markdown tables/blockquotes, inline spacing) — LTR locales are byte-for-byte unchanged. New `top.langLabel` key (×12) names the picker for screen readers.
