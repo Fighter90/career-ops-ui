@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "express": "^4.22.2",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.2.0",
     "multer": "^2.1.1"
   }
 }
