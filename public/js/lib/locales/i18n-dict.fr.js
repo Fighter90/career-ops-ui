@@ -179,6 +179,7 @@ window.__I18N_DICT_FR = {
   'top.quickscan': "Ouvrir un scan", // Open Scan
   'top.themeToggle': "Changer de thème", // Toggle theme
   'top.langhint': "{hotkey} — recherche", // {hotkey} — search
+  'top.langLabel': "Langue",
   'common.loading': "Chargement…", // Loading…
   'common.error': "Erreur", // Error
   'common.retry': "Réessayer", // Retry
@@ -690,4 +691,19 @@ window.__I18N_DICT_FR = {
   'config.profileRawSave': "Sauvegarder YAML brut", // Save raw YAML
   'config.profileSaved': "Profil sauvegardé", // Profile saved
   'conn.down': "Le serveur n'est pas disponible.", // Server is not responding.
+  'nav.cover': "Lettre de motivation",
+  'cover.title': "Lettre de motivation",
+  'cover.subtitle': "Générez une lettre de motivation personnalisée à partir d'une offre d'emploi et de votre CV.",
+  'cover.jdLbl': "Description du poste",
+  'cover.jdPh': "Collez ici la description du poste…",
+  'cover.jdHint': "Le poste pour lequel vous rédigez la lettre. Le texte collé est assaini avant d'être transmis au modèle.",
+  'cover.companyLbl': "Entreprise",
+  'cover.companyPh': "ex. Acme Corp",
+  'cover.companyHint': "Le nom de l'employeur, utilisé pour adresser et personnaliser la lettre.",
+  'cover.roleLbl': "Poste",
+  'cover.rolePh': "ex. Ingénieur Backend Senior",
+  'cover.roleHint': "L'intitulé du poste auquel vous postulez.",
+  'cover.greetingLbl': "Formule d'appel (optionnel)",
+  'cover.greetingPh': "ex. Madame, Monsieur,",
+  'cover.greetingHint': "Formule d'appel optionnelle pour ouvrir la lettre. Laissez vide pour laisser le modèle choisir.",
 };

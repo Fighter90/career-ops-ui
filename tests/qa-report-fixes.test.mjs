@@ -286,17 +286,16 @@ test('UX-A7 (v1.58.57): cost-line auto-refreshes when LLM_PROVIDER changes (prov
   }
 });
 
-test('UX-A4 (v1.58.56): .lang-btn meets WCAG 2.5.8 minimum touch-target (≥ 28×28 px)', () => {
+test('UX-A4 (v1.70.0): .lang-select meets WCAG 2.5.8 minimum touch-target (≥ 28 px)', () => {
   const css = read('public', 'css', 'app.css');
-  // The pre-fix rule was `padding: 4px 8px` with no min-height — pulling
-  // buttons to 23–25 px tall, below the 24×24 WCAG 2.5.8 floor.
-  assert.match(css, /\.lang-btn\s*\{[^}]*min-height:\s*28px/,
-    '.lang-btn must declare min-height: 28px (WCAG 2.5.8 floor)');
-  assert.match(css, /\.lang-btn\s*\{[^}]*min-width:\s*28px/,
-    '.lang-btn must declare min-width: 28px for short labels (en/ja)');
-  // Padding now 6px 10px (vs pre-fix 4px 8px) for visual balance.
-  assert.ok(/\.lang-btn\s*\{[^}]*padding:\s*6px 10px/.test(css),
-    '.lang-btn padding must be 6px 10px to match the new vertical rhythm');
+  // I18N-EXPAND (v1.70.0) — the wrapping .lang-btn row was replaced by a
+  // native <select> (12 locales). The control keeps the WCAG 2.5.8 target
+  // height carried over from the original UX-A4 fix (now 32 px) and goes
+  // full-width so long native labels never clip.
+  assert.match(css, /\.lang-select\s*\{[^}]*min-height:\s*32px/,
+    '.lang-select must declare min-height: 32px (WCAG 2.5.8 floor)');
+  assert.match(css, /\.lang-select\s*\{[^}]*width:\s*100%/,
+    '.lang-select must be full-width so long locale labels do not clip');
 });
 
 test('UX-A3 (v1.58.55): dashboard renders an active-provider chip wired to /api/status/providers', () => {

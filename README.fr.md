@@ -3,20 +3,20 @@
 > Une interface web épurée, façon documentation, pour le pipeline de recherche d'emploi IA [career-ops](https://github.com/santifer/career-ops).
 > Cherchez, évaluez, approfondissez, postulez et suivez chaque offre depuis un seul onglet de navigateur — au lieu de jongler entre Claude Code, des terminaux et des fichiers markdown.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | **Français**
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | **Français** | [Polski](README.pl.md) | [Українська](README.uk.md) | [العربية](README.ar.md)
 
 [![tests](https://img.shields.io/badge/tests-1086%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.69.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.69.2)
+[![release](https://img.shields.io/badge/release-v1.70.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.70.0)
 
-> **🆕 Dernière version — v1.69.2**
+> **🆕 Dernière version — v1.70.0**
 >
-> **fix(test) : `npm test` n'écrase plus vos `config/profile.yml` / `data/scan-history.tsv` réels.** Un test (`critical-fixes.test.mjs`) importait `prompts.mjs` (→ `paths.mjs`) en haut du fichier, donc `PROJECT_ROOT` se résolvait vers le dossier parent **réel** avant que le test ne fixe `CAREER_OPS_ROOT` sur un dossier temporaire — et `PUT /api/profile` injectait une fixture « Acceptance Test » dans votre profil à chaque exécution. Le module est désormais chargé via `import()` dynamique après avoir fixé la variable d'environnement, et `tests/test-root-isolation.test.mjs` protège toute la suite. Aucun changement de code de production.
+> **Trois nouveaux langues — Polski, Українська, العربية (RTL) — portent l'UI à 12 paramètres régionaux, correspondant au README principal de career-ops.** L'arabe embarque un vrai support de droite à gauche. Le sélecteur de langue est désormais un `<select>` déroulant avec drapeaux, et le mode lettre de motivation du projet parent arrive sur `#/cover`. Suit career-ops v1.11.0.
 >
-> _Suite complète **1086/1086** au vert · i18n + docs synchronisés dans les 9 langues._
+> _Suite complète **1086/1086** verte · 12 paramètres régionaux · documentation synchronisée._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

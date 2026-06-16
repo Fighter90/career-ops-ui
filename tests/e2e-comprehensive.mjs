@@ -347,13 +347,13 @@ async function run() {
   // ─── Language persistence ─────────────────────────
   await step('Language: switch to RU, reload, persists', async () => {
     await goRoute(`#/dashboard`);
-    await page.locator('.lang-btn[data-lang-btn="ru"]').click();
+    await page.locator('#lang-select').selectOption('ru');
     await page.waitForTimeout(300);
     await page.reload();
-    await page.waitForSelector('.lang-btn');
+    await page.waitForSelector('#lang-select');
     const navText = await page.locator('.nav-item[data-route="dashboard"]').textContent();
     if (!navText.includes('Дашборд')) throw new Error(`RU not persisted: "${navText}"`);
-    await page.locator('.lang-btn[data-lang-btn="en"]').click();
+    await page.locator('#lang-select').selectOption('en');
     await page.waitForTimeout(200);
   });
 

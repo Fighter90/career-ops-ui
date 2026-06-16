@@ -1085,39 +1085,27 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 
 /* ───────────────────────── language switcher ───────────────────────── */
 .lang-switcher {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
   padding-bottom: 8px;
 }
-.lang-btn {
-  font-size: 11px;
-  /* UX-A4 (v1.58.56) — WCAG 2.5.8 (AA from WCAG 2.2) requires a 24×24
-     minimum touch-target. Pre-fix lang buttons measured 23–25 px tall
-     with 47–72 px wide depending on the locale label, so KO/JA users
-     consistently undershot the threshold. Bumping min-height to 28 px
-     + symmetric padding gives every label ≥ 28×40 px without changing
-     the sidebar layout (the sidebar grows by 6 px total). */
-  min-height: 28px;
-  min-width: 28px;
+/* I18N-EXPAND (v1.70.0) — native <select> language picker. Replaces the
+   old wrapping .lang-btn row (12 locales wrapped to 3 lines). The control
+   keeps a ≥ 28 px target height (WCAG 2.5.8, carried over from UX-A4) and
+   full-width so long native labels (Українська, 简体中文) never clip. */
+.lang-select {
+  width: 100%;
+  min-height: 32px;
+  font-size: 12px;
   padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--foggy);
+  border: 1px solid var(--slate);
+  background: var(--paper);
+  color: var(--hof);
   cursor: pointer;
   font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition), color var(--transition);
+  transition: border-color var(--transition), background var(--transition);
 }
-.lang-btn:hover { background: var(--beach); color: var(--hof); }
-.lang-btn.active {
-  background: var(--hof);
-  color: var(--paper);
-  font-weight: 600;
-}
+.lang-select:hover { border-color: var(--foggy); }
+.lang-select:focus-visible { outline: 2px solid var(--rausch); outline-offset: 1px; }
 
 /* ───────────────────────── chip filter ───────────────────────── */
 .chip-row {
@@ -1654,4 +1642,73 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   }
   /* scan loading stripe: no slide — show a calm full bar instead */
   .scan-progress__bar { left: 0; width: 100%; opacity: 0.65; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────
+   I18N-EXPAND (v1.70.0) — Right-to-left support (Arabic).
+
+   i18n.js sets <html dir="rtl"> for RTL locales. The dir attribute alone
+   gives correct text alignment, bidi reordering, and list/marker sides for
+   prose. This block mirrors the physical-direction chrome that the layout
+   assumes is on the left/right so the whole shell flips coherently. Scoped
+   under [dir="rtl"] so LTR locales are byte-for-byte unaffected.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* Sidebar pinned to the right; its divider moves to the left edge. */
+[dir="rtl"] .sidebar {
+  left: auto;
+  right: 0;
+  border-right: 0;
+  border-left: 1px solid var(--slate);
+}
+/* Main content clears the sidebar on the right instead of the left. */
+[dir="rtl"] .main {
+  margin-left: 0;
+  margin-right: var(--sidebar-w);
+}
+/* Sidebar-toggle floats top-left in RTL. */
+[dir="rtl"] .sidebar-toggle { left: auto; right: 8px; }
+
+/* Notifications drawer slides in from / docks to the left. */
+[dir="rtl"] .notif-drawer {
+  right: auto;
+  left: 0;
+  border-left: 0;
+  border-right: 1px solid var(--slate, #ddd);
+}
+[dir="rtl"] .notif-item,
+[dir="rtl"] .notif-item--error,
+[dir="rtl"] .notif-item--success {
+  border-left: 0;
+}
+[dir="rtl"] .notif-item { border-right: 3px solid var(--slate, #ddd); }
+[dir="rtl"] .notif-item--error   { border-right-color: var(--rausch, #ff385c); }
+[dir="rtl"] .notif-item--success { border-right-color: var(--kazan, #00a699); }
+[dir="rtl"] .notif-badge { right: auto; left: -4px; }
+[dir="rtl"] .notif-drawer__close { right: auto; left: 8px; }
+
+/* Markdown content: tables, blockquotes, and prose align to the right. */
+[dir="rtl"] .md th,
+[dir="rtl"] .md td { text-align: right; }
+[dir="rtl"] .md blockquote {
+  border-left: 0;
+  border-right: 3px solid var(--rausch);
+  padding-left: 0;
+  padding-right: var(--space-4);
+}
+
+/* Mirror the small physical margins used as inline spacing. */
+[dir="rtl"] .th-info { margin-left: 0; margin-right: 2px; }
+[dir="rtl"] .health-check-row > :last-child { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .scan-error-banner .btn { margin-left: 0; margin-right: var(--space-3); }
+
+/* Off-canvas sidebar slides from the right on mobile. */
+@media (max-width: 768px) {
+  [dir="rtl"] .sidebar { transform: translateX(100%); }
+  [dir="rtl"] body.sidebar-open .sidebar { transform: translateX(0); }
+  [dir="rtl"] .main { margin-left: 0 !important; margin-right: 0 !important; }
+}
+@media (max-width: 600px) {
+  [dir="rtl"] .sidebar { transform: translateX(100%); }
+  [dir="rtl"] .main { margin-right: 0; }
 }

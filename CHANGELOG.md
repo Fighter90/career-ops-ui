@@ -2,7 +2,25 @@
 
 All notable changes to **career-ops-ui** are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
-Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md)
+Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [العربية](CHANGELOG.ar.md)
+
+---
+
+
+
+## [1.70.0] — 2026-06-16
+
+**feat(i18n): three new UI languages — Polish (pl), Ukrainian (uk), and Arabic (ar, with full RTL) — bringing the SPA to 12 locales, matching every language in the parent career-ops README.** Each new locale ships a complete 697-key dictionary (`public/js/lib/locales/i18n-dict.{pl,uk,ar}.js`), gated by the existing parity / coverage / no-latin-leak / no-personal-data suites. Arabic adds genuine right-to-left support: `i18n.js` sets `<html dir="rtl">` for RTL locales and a scoped `[dir="rtl"]` block in `app.css` mirrors the chrome (sidebar, notifications drawer, markdown tables/blockquotes, inline spacing) — LTR locales are byte-for-byte unchanged. New `top.langLabel` key (×12) names the picker for screen readers.
+
+**feat(ui): flag-icon `<select>` language switcher replaces the wrapping button row.** With 12 locales the old `.lang-btn` row wrapped to three lines in the sidebar; a native `<select>` (each option prefixed with a flag emoji) scales cleanly, is keyboard- and screen-reader-friendly out of the box, and stays CSP-safe (change handler via `addEventListener`, no inline JS). Flags degrade to region letters where the platform lacks flag glyphs, so the language label is always the load-bearing identifier.
+
+**feat(cover): port the parent's cover-letter mode (career-ops v1.10.0 + v1.11.0 greeting) into the SPA.** New `#/cover` page under the Application nav group, built on the generic mode runner: Job description + Company/Role + an optional salutation → a tailored letter generated from `cv.md` / `modes/_profile.md`. Added `cover` to the server `MODE_ALLOWLIST` and a `cover.*` i18n block (×12 locales).
+
+**chore(compat): track parent career-ops v1.11.0.** Verified the read/write contract is intact — `data/applications.md` stays the markdown source of truth (the v1.11.0 SQLite tracker index is a derived cache), tracker columns are still header-mapped. `parentVersion` now reports 1.11.0.
+
+**fix(i18n): close a latent gap where French (added v1.61.0) was missing from `server/lib/prompts.mjs` `LOCALE_NAMES` and `SCAFFOLD_STRINGS`** — French LLM calls silently defaulted to English output and English scaffolding. fr/pl/uk/ar are now all wired into the prompt-locale path.
+
+> Known follow-ups (tracked in `qa/v1.70-regression/`): the in-app **help guide** (`docs/help/`) falls back to English for pl/uk/ar (the UI chrome itself is fully localized); the parent's interactive **interview onboarding**, **reverse-ATS discovery**, and newer **scan providers** are not yet surfaced in the SPA.
 
 ---
 

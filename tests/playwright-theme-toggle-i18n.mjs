@@ -139,7 +139,7 @@ test('theme-toggle updates in place on runtime locale switch', { skip: SKIP }, a
     assert.equal(r.title, 'Toggle theme');
 
     // switch to French via the sidebar language picker
-    await page.locator('[data-lang-btn="fr"]').click();
+    await page.locator('#lang-select').selectOption('fr');
     r = await readToggle(page, 'Changer de thème');
     assert.equal(r.title, 'Changer de thème', 'title re-applied on lang switch');
     assert.equal(r.aria, 'Changer de thème', 'aria-label re-applied on lang switch');

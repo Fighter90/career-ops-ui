@@ -1,6 +1,8 @@
 # Localization guide
 
-How translation works in **career-ops-ui**, and how to add or edit a language. The SPA ships **9 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW` — and every user-facing string flows through the i18n layer.
+How translation works in **career-ops-ui**, and how to add or edit a language. The SPA ships **12 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `ar` — and every user-facing string flows through the i18n layer. **Arabic (`ar`) is right-to-left** (I18N-EXPAND, v1.70.0): `i18n.js` sets `<html dir="rtl">` for RTL locales and `app.css` carries a scoped `[dir="rtl"]` block. The in-app language picker is a flag-prefixed `<select>` (`renderLangSwitcher` in `public/js/app.js`).
+
+> **Help-guide caveat (v1.70.0).** The long-form help bundle (`docs/help/<locale>.md`) is still 9 locales; `pl`/`uk`/`ar` fall back to `en.md` through the help resolver. The UI chrome itself is fully localized in all 12.
 
 > Server diagnostics stay **English by policy** (consistency across logs). Only client-owned UI strings are localized. Don't add per-locale text to server error bodies.
 
@@ -47,7 +49,7 @@ The fallback is a dev convenience — a key missing from the dictionary fails CI
 
 ## Common task — add or edit a translation key
 
-1. **Add the key to all 9 locale files** in `public/js/lib/locales/` — same key, translated value:
+1. **Add the key to all 12 locale files** in `public/js/lib/locales/` — same key, translated value:
    ```js
    // i18n-dict.en.js
    'scan.newButton': 'Run scan',
@@ -76,7 +78,7 @@ When several keys must always read identically in **every** locale (e.g. the sid
 - The alias **target must exist** as a real key (in the per-locale files).
 - **No chains** — an alias target must not itself be an alias.
 - An alias key must **not** also appear in the per-locale tables.
-- Only alias keys that are byte-identical in all 9 locales. Keys that merely collapse in English but diverge elsewhere (e.g. `nav.config` "App settings" vs `config.title`, which differ in Spanish) stay **independent**.
+- Only alias keys that are byte-identical in all 12 locales. Keys that merely collapse in English but diverge elsewhere (e.g. `nav.config` "App settings" vs `config.title`, which differ in Spanish) stay **independent**.
 
 ---
 
@@ -96,7 +98,7 @@ Adding, say, French (`fr`) touches a fixed set of files. Work through them in or
 2. **Register the language** in [`public/js/lib/i18n.js`](../public/js/lib/i18n.js): add `{ code: 'fr', label: 'Français' }` to `LANGS`, and a `if (browser.startsWith('fr')) return 'fr';` line in `detect()`.
 3. **Wire the assembler** in [`public/js/lib/i18n-dict.js`](../public/js/lib/i18n-dict.js): add `'fr'` to its `LANGS` array and `fr: window.__I18N_DICT_FR` to `TABLES`.
 4. **Load it** in [`public/index.html`](../public/index.html): add `<script src="/js/lib/locales/i18n-dict.fr.js"></script>` **before** `i18n-dict.aliases.js`.
-5. **Update tooling/tests** that enumerate locales: `tools/i18n-audit.mjs` (`LOCALES`), `tests/helpers/i18n-vm.mjs` (`I18N_LANGS`), and the `ci.yml` inline check's `langs` array.
+5. **Update tooling/tests** that enumerate locales: `tools/i18n-audit.mjs` (`LOCALES`), `tests/helpers/i18n-vm.mjs` (`I18N_LANGS`), `scripts/check-changelog-parity.mjs` (`LOCALES`), and the `ci.yml` inline check's `langs` array.
 6. **Regenerate the snapshot** — a new locale changes `__I18N_DICT`, so `tests/fixtures/i18n-dict.snapshot.json` must be updated. Capture the new assembled dict:
    ```bash
    node --input-type=module -e '
@@ -124,12 +126,12 @@ node scripts/check-changelog-parity.mjs   # all CHANGELOG.<locale>.md at the sam
 
 | Gate | What it locks |
 |---|---|
-| `tests/i18n-coverage.test.mjs` | every key present in all 9 locales; every `t('key')` call maps to a real entry |
+| `tests/i18n-coverage.test.mjs` | every key present in all 12 locales; every `t('key')` call maps to a real entry |
 | `tests/i18n-locale-files.test.mjs` | per-locale key parity · alias integrity · `index.html` load order · assembled dict ≡ snapshot |
 | `tests/i18n-alias.test.mjs` | alias targets exist, no chains, `t(alias) === t(canonical)` in every locale |
 | `tools/i18n-audit.mjs` | no personal data, no empty values, no bare-calendar-date placeholders, no broken aliases |
 | `tests/playwright-locale-sweep.mjs` | every page renders + localizes in every locale, zero console errors |
-| `tests/i18n-no-latin-leaks.test.mjs` | no Latin-only `*.title` on the non-Latin locales (ru/ko/ja/zh-CN/zh-TW) |
+| `tests/i18n-no-latin-leaks.test.mjs` | no Latin-only `*.title` on the non-Latin locales (ru/ko/ja/zh-CN/zh-TW/uk/ar) |
 | `tests/i18n-no-personal-data.test.mjs` | no maintainer PII across any locale file |
 
 > Node tests load the dictionary through `tests/helpers/i18n-vm.mjs` (`loadAssembledDict`, `loadI18n`, `legacyDictText`, `allLocaleSource`) — it replays the browser load order in a `node:vm`. When comparing an assembled-in-vm dict to the JSON snapshot, round-trip through `JSON.parse(JSON.stringify(...))` first (vm objects have a foreign prototype, so `deepStrictEqual` otherwise reports a false mismatch).

@@ -14,17 +14,30 @@
  * stays well under it.
  */
 window.I18n = (function () {
+  // `flag` is a regional-indicator emoji shown in the language <select>
+  // (renderLangSwitcher in app.js). It degrades gracefully to the region
+  // letters on platforms without flag glyphs (e.g. Windows) — the label
+  // still identifies the language, so it's informational, never load-bearing.
   const LANGS = [
-    { code: 'en',    label: 'English' },
-    { code: 'es',    label: 'Español' },
-    { code: 'pt-BR', label: 'Português' },
-    { code: 'ko',    label: '한국어' },
-    { code: 'ja',    label: '日本語' },
-    { code: 'ru',    label: 'Русский' },
-    { code: 'zh-CN', label: '简体中文' },
-    { code: 'zh-TW', label: '繁體中文' },
-    { code: 'fr',    label: 'Français' },
+    { code: 'en',    label: 'English',    flag: '🇬🇧' },
+    { code: 'es',    label: 'Español',    flag: '🇪🇸' },
+    { code: 'pt-BR', label: 'Português',  flag: '🇧🇷' },
+    { code: 'ko',    label: '한국어',      flag: '🇰🇷' },
+    { code: 'ja',    label: '日本語',      flag: '🇯🇵' },
+    { code: 'ru',    label: 'Русский',    flag: '🇷🇺' },
+    { code: 'zh-CN', label: '简体中文',    flag: '🇨🇳' },
+    { code: 'zh-TW', label: '繁體中文',    flag: '🇹🇼' },
+    { code: 'fr',    label: 'Français',   flag: '🇫🇷' },
+    { code: 'pl',    label: 'Polski',     flag: '🇵🇱' },
+    { code: 'uk',    label: 'Українська', flag: '🇺🇦' },
+    { code: 'ar',    label: 'العربية',    flag: '🇸🇦' },
   ];
+
+  // I18N-EXPAND (v1.70.0) — locales whose script is written right-to-left.
+  // setLang() sets <html dir> accordingly so the whole SPA mirrors; the
+  // [dir="rtl"] block in app.css handles the chrome (sidebar, drawer, etc.).
+  const RTL_LANGS = new Set(['ar']);
+  function dirFor(code) { return RTL_LANGS.has(code) ? 'rtl' : 'ltr'; }
 
   // The dictionary is loaded from `i18n-dict.js` via `<script src>`. If
   // that file failed to load (e.g. cached old build, stripped via CDN),
@@ -54,6 +67,9 @@ window.I18n = (function () {
     if (browser.startsWith('es')) return 'es';
     if (browser.startsWith('ru')) return 'ru';
     if (browser.startsWith('fr')) return 'fr';
+    if (browser.startsWith('pl')) return 'pl';
+    if (browser.startsWith('uk')) return 'uk';
+    if (browser.startsWith('ar')) return 'ar';
     return 'en';
   }
 
@@ -86,14 +102,16 @@ window.I18n = (function () {
     current = code;
     _safeStorageSet(STORAGE_KEY, code);
     document.documentElement.lang = code;
+    document.documentElement.dir = dirFor(code);
     subscribers.forEach((fn) => { try { fn(code); } catch {} });
   }
 
   function getLang() { return current; }
   function getLangs() { return LANGS.slice(); }
 
-  // Initial document.lang attribute
+  // Initial document.lang + dir attributes
   document.documentElement.lang = current;
+  document.documentElement.dir = dirFor(current);
 
   return { t, setLang, getLang, getLangs, onChange };
 })();

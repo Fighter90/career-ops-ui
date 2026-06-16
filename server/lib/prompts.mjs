@@ -23,6 +23,10 @@ const LOCALE_NAMES = {
   ru: 'Russian',
   'zh-CN': 'Simplified Chinese',
   'zh-TW': 'Traditional Chinese',
+  fr: 'French',
+  pl: 'Polish',
+  uk: 'Ukrainian',
+  ar: 'Arabic',
 };
 
 /**
@@ -80,6 +84,10 @@ const SCAFFOLD_STRINGS = {
     ru: 'Сначала прочти эти файлы (они в корне проекта):',
     'zh-CN': '请先阅读这些文件 (它们位于项目根目录):',
     'zh-TW': '請先閱讀這些檔案 (位於專案根目錄):',
+    fr: 'Lisez d\'abord ces fichiers (ils existent à la racine du projet) :',
+    pl: 'Najpierw przeczytaj te pliki (znajdują się w katalogu głównym projektu):',
+    uk: 'Спочатку прочитай ці файли (вони в корені проєкту):',
+    ar: 'اقرأ هذه الملفات أولاً (توجد في جذر المشروع):',
   },
   userContext: {
     en: 'User-supplied context:',
@@ -90,6 +98,10 @@ const SCAFFOLD_STRINGS = {
     ru: 'Контекст от пользователя:',
     'zh-CN': '用户提供的上下文:',
     'zh-TW': '使用者提供的內容:',
+    fr: 'Contexte fourni par l\'utilisateur :',
+    pl: 'Kontekst od użytkownika:',
+    uk: 'Контекст від користувача:',
+    ar: 'السياق المقدَّم من المستخدم:',
   },
   modeTemplate: {
     en: 'mode template',
@@ -100,6 +112,10 @@ const SCAFFOLD_STRINGS = {
     ru: 'шаблон режима',
     'zh-CN': '模式模板',
     'zh-TW': '模式模板',
+    fr: 'modèle de mode',
+    pl: 'szablon trybu',
+    uk: 'шаблон режиму',
+    ar: 'قالب الوضع',
   },
   modeRoleLine: {
     en: (slug) => `You are career-ops in ${slug} mode.`,
@@ -110,6 +126,10 @@ const SCAFFOLD_STRINGS = {
     ru: (slug) => `Ты — career-ops в режиме ${slug}.`,
     'zh-CN': (slug) => `你是 ${slug} 模式下的 career-ops。`,
     'zh-TW': (slug) => `你是 ${slug} 模式下的 career-ops。`,
+    fr: (slug) => `Vous êtes career-ops en mode ${slug}.`,
+    pl: (slug) => `Jesteś career-ops w trybie ${slug}.`,
+    uk: (slug) => `Ти — career-ops у режимі ${slug}.`,
+    ar: (slug) => `أنت career-ops في وضع ${slug}.`,
   },
   evalRoleLine: {
     en: 'You are career-ops. Evaluate this Job Description against the user\'s CV.',
@@ -120,6 +140,10 @@ const SCAFFOLD_STRINGS = {
     ru: 'Ты — career-ops. Оцени этот Job Description относительно CV пользователя.',
     'zh-CN': '你是 career-ops。请将此 Job Description 与用户的 CV 进行评估。',
     'zh-TW': '你是 career-ops。請將此 Job Description 與使用者的 CV 進行評估。',
+    fr: 'Vous êtes career-ops. Évaluez cette Job Description par rapport au CV de l\'utilisateur.',
+    pl: 'Jesteś career-ops. Oceń ten Job Description względem CV użytkownika.',
+    uk: 'Ти — career-ops. Оціни цей Job Description відносно CV користувача.',
+    ar: 'أنت career-ops. قيّم هذا الـ Job Description مقابل سيرة المستخدم الذاتية (CV).',
   },
 };
 

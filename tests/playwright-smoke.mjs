@@ -158,14 +158,14 @@ test('Playwright smoke: navigate dashboard → scan → pipeline → cv', { skip
 test('Playwright smoke: language switcher persists in localStorage', { skip: SKIP }, async () => {
   const page = await context.newPage();
   await page.goto(baseUrl + '/#/dashboard');
-  await page.waitForSelector('[data-lang-btn]');
-  // Click ru button if present.
-  const ruBtn = page.locator('[data-lang-btn="ru"]');
-  if (await ruBtn.count()) {
-    await ruBtn.click();
+  await page.waitForSelector('#lang-select');
+  // Pick ru from the language <select> if present.
+  const langSel = page.locator('#lang-select');
+  if (await langSel.count()) {
+    await langSel.selectOption('ru');
     // i18n.onChange triggers Router.render(); wait for the next paint.
     await page.waitForTimeout(200);
-    const lang = await page.evaluate(() => localStorage.getItem('lang') || localStorage.getItem('i18n.lang'));
+    const lang = await page.evaluate(() => localStorage.getItem('career-ops-ui:lang') || localStorage.getItem('lang') || localStorage.getItem('i18n.lang'));
     // The exact key name may vary by i18n.js version; we just assert
     // *some* language preference was persisted.
     assert.ok(lang === 'ru' || lang === null || /ru/.test(lang || ''),

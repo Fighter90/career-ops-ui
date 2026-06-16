@@ -31,20 +31,31 @@ function applyI18n() {
   });
 }
 
+// I18N-EXPAND (v1.70.0) — a flag-prefixed <select> replaces the old wrapping
+// row of per-language buttons. With 12 locales the button row wrapped to
+// three lines in the sidebar; a native select scales, is keyboard- and
+// screen-reader-friendly out of the box, and stays CSP-safe (change handler
+// via addEventListener, no inline JS). Flags are emoji in the option text —
+// they degrade to region letters where the platform lacks flag glyphs, so
+// the language label is always the load-bearing identifier.
 function renderLangSwitcher() {
   const host = document.getElementById('lang-switcher');
   if (!host) return;
   host.innerHTML = '';
   const current = I18n.getLang();
+  const sel = document.createElement('select');
+  sel.className = 'lang-select';
+  sel.id = 'lang-select';
+  sel.setAttribute('aria-label', I18n.t('top.langLabel', 'Language'));
   for (const l of I18n.getLangs()) {
-    const btn = document.createElement('button');
-    btn.className = 'lang-btn' + (l.code === current ? ' active' : '');
-    btn.textContent = l.label;
-    btn.title = l.code;
-    btn.dataset.langBtn = l.code;
-    btn.addEventListener('click', () => I18n.setLang(l.code));
-    host.appendChild(btn);
+    const opt = document.createElement('option');
+    opt.value = l.code;
+    opt.textContent = `${l.flag ? l.flag + ' ' : ''}${l.label}`;
+    if (l.code === current) opt.selected = true;
+    sel.appendChild(opt);
   }
+  sel.addEventListener('change', () => I18n.setLang(sel.value));
+  host.appendChild(sel);
 }
 
 I18n.onChange(() => {

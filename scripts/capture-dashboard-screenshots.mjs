@@ -33,12 +33,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_UI_ROOT = path.resolve(__dirname, '..');
 const IMAGES_DIR = path.join(WEB_UI_ROOT, 'images');
 const BASE_URL = process.env.CAREER_OPS_UI_URL || 'http://127.0.0.1:4317';
-const LOCALES = ['en', 'ru', 'es', 'pt-BR', 'ko', 'ja', 'zh-CN', 'zh-TW', 'fr'];
-// What the lang button click stores in localStorage. Internal locale ID — not
+const LOCALES = ['en', 'ru', 'es', 'pt-BR', 'ko', 'ja', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
+// What the lang switch stores in localStorage. Internal locale ID — not
 // always the same as the file naming convention (ko ↔ ko-KR).
 const LOCALE_TO_FILE = {
   en: 'en', ru: 'ru', es: 'es', 'pt-BR': 'pt-BR',
-  ko: 'ko-KR', ja: 'ja', 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', fr: 'fr'
+  ko: 'ko-KR', ja: 'ja', 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', fr: 'fr',
+  pl: 'pl', uk: 'uk', ar: 'ar'
 };
 const SETTLE_MS = 2000;
 const VIEWPORT = { width: 1440, height: 900 };
@@ -53,11 +54,10 @@ try {
 
   for (const loc of LOCALES) {
     process.stdout.write(`[${loc}] switching locale… `);
-    await page.evaluate((l) => {
-      document.querySelectorAll('[data-lang-btn]').forEach((b) => {
-        if (b.getAttribute('data-lang-btn') === l) b.click();
-      });
-    }, loc);
+    // I18N-EXPAND (v1.70.0) — the picker is a <select>; drive the i18n
+    // module directly (its onChange does the re-render + persists), which
+    // also flips <html dir="rtl"> for Arabic.
+    await page.evaluate((l) => { try { window.I18n && window.I18n.setLang(l); } catch {} }, loc);
     await page.waitForTimeout(SETTLE_MS);
     // Re-navigate just in case the lang switch redirected
     await page.evaluate(() => { location.hash = '/dashboard'; });

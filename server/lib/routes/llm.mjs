@@ -71,7 +71,7 @@ function _tailProvider() {
 // modes the user only runs in Claude Code (apply, scan, pipeline,
 // tracker, pdf, latex, ofertas, auto-pipeline) intentionally stay off
 // this list. Update when a UI page adds support for a new mode.
-const MODE_ALLOWLIST = ['batch', 'contacto', 'followup', 'interview-prep', 'patterns', 'project', 'training'];
+const MODE_ALLOWLIST = ['batch', 'contacto', 'cover', 'followup', 'interview-prep', 'patterns', 'project', 'training'];
 
 // Smoke-test fixture — chosen to be ≥50 chars after sanitization so it
 // passes the same gate as real /api/evaluate calls.

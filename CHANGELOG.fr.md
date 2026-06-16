@@ -11,6 +11,24 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.70.0] — 2026-06-16
+
+**feat(i18n): trois nouvelles langues d'interface — le polonais (pl), l'ukrainien (uk) et l'arabe (ar, avec prise en charge complète du RTL) — portant la SPA à 12 locales, correspondant à toutes les langues du README du projet parent career-ops.** Chaque nouvelle locale est livrée avec un dictionnaire complet de 697 clés (`public/js/lib/locales/i18n-dict.{pl,uk,ar}.js`), validé par les suites existantes de parité / couverture / absence de fuite latine / absence de données personnelles. L'arabe ajoute un véritable support de droite à gauche : `i18n.js` définit `<html dir="rtl">` pour les locales RTL et un bloc `[dir="rtl"]` dans `app.css` reflète le chrome (barre latérale, tiroir de notifications, tableaux et citations markdown, espacement inline) — les locales LTR restent identiques octet pour octet. Nouvelle clé `top.langLabel` (×12) nommant le sélecteur pour les lecteurs d'écran.
+
+**feat(ui): le sélecteur de langue `<select>` avec icônes de drapeaux remplace la rangée de boutons qui débordait.** Avec 12 locales, l'ancienne rangée `.lang-btn` s'étendait sur trois lignes dans la barre latérale ; un `<select>` natif (chaque option préfixée d'un émoji de drapeau) s'adapte proprement, est compatible clavier et lecteur d'écran nativement, et reste sûr vis-à-vis du CSP (gestionnaire de changement via `addEventListener`, sans JS inline). Les drapeaux se dégradent en lettres de région lorsque la plateforme ne dispose pas des glyphes correspondants, de sorte que le libellé de langue est toujours l'identifiant clé.
+
+**feat(cover): portage du mode lettre de motivation du projet parent (career-ops v1.10.0 + formule de salutation v1.11.0) dans la SPA.** Nouvelle page `#/cover` dans le groupe de navigation Candidature, construite sur l'exécuteur de modes générique : description du poste + entreprise/rôle + une formule de salutation optionnelle → une lettre personnalisée générée depuis `cv.md` / `modes/_profile.md`. Ajout de `cover` dans la `MODE_ALLOWLIST` du serveur et d'un bloc i18n `cover.*` (×12 locales).
+
+**chore(compat): suivi du projet parent career-ops v1.11.0.** Vérification que le contrat de lecture/écriture est intact — `data/applications.md` reste la source de vérité en markdown (l'index de suivi SQLite de v1.11.0 est un cache dérivé), les colonnes du tableau de suivi sont toujours mappées par en-tête. `parentVersion` indique désormais 1.11.0.
+
+**fix(i18n): fermeture d'un écart latent où le français (ajouté en v1.61.0) était absent de `LOCALE_NAMES` et `SCAFFOLD_STRINGS` dans `server/lib/prompts.mjs`** — les appels LLM en français retombaient silencieusement sur une sortie en anglais et un échafaudage en anglais. fr/pl/uk/ar sont maintenant tous connectés au chemin de locale des prompts.
+
+> Suites connues : le guide d'aide intégré (`docs/help/`) repasse en anglais pour pl/uk/ar (le chrome de l'interface lui-même est entièrement localisé) ; l'onboarding interactif pour les entretiens, la découverte ATS inversée et les nouveaux fournisseurs de scan du projet parent ne sont pas encore exposés dans la SPA.
+
+---
+
+
+
 
 ## [1.69.2] — 2026-06-12
 

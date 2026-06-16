@@ -9,6 +9,24 @@
 ---
 
 
+## [1.70.0] — 2026-06-16
+
+**feat(i18n): 新增三种 UI 语言——波兰语（pl）、乌克兰语（uk）和阿拉伯语（ar，含完整 RTL 支持）——将 SPA 扩展至 12 个语言区域，与父项目 career-ops README 中的所有语言保持一致。** 每种新语言区域均附带包含 697 个键的完整词典（`public/js/lib/locales/i18n-dict.{pl,uk,ar}.js`），并通过现有的奇偶校验 / 覆盖率 / 无拉丁字母泄漏 / 无个人数据测试套件验证。阿拉伯语新增真正的从右到左支持：`i18n.js` 为 RTL 语言区域设置 `<html dir="rtl">`，`app.css` 中有作用域的 `[dir="rtl"]` 块镜像页面外壳（侧边栏、通知抽屉、markdown 表格/块引用、行内间距）——LTR 语言区域的字节内容完全不变。新增 `top.langLabel` 键（×12）为屏幕阅读器命名语言选择器。
+
+**feat(ui): 带国旗图标的 `<select>` 语言切换器取代了原来会换行的按钮行。** 有 12 个语言区域时，旧的 `.lang-btn` 行在侧边栏中会换行为三行；原生 `<select>`（每个选项以国旗 emoji 为前缀）能够整洁地扩展，开箱即用地支持键盘和屏幕阅读器，并且对 CSP 安全（通过 `addEventListener` 处理变更事件，无内联 JS）。在平台缺少国旗字形的情况下，国旗会降级为地区字母，因此语言标签始终是关键标识符。
+
+**feat(cover): 将父项目的求职信模式（career-ops v1.10.0 + v1.11.0 问候语）移植到 SPA。** 在"申请"导航组下新增 `#/cover` 页面，基于通用模式运行器构建：职位描述 + 公司/职位 + 可选问候语 → 从 `cv.md` / `modes/_profile.md` 生成的定制化求职信。将 `cover` 添加到服务器 `MODE_ALLOWLIST` 和 `cover.*` i18n 块（×12 个语言区域）。
+
+**chore(compat): 跟踪父项目 career-ops v1.11.0。** 已验证读写契约完好无损——`data/applications.md` 仍是 markdown 真实数据源（v1.11.0 SQLite 追踪器索引是派生缓存），追踪器列仍按标题映射。`parentVersion` 现在报告 1.11.0。
+
+**fix(i18n): 修复了一个潜在缺陷，即法语（在 v1.61.0 中添加）缺失于 `server/lib/prompts.mjs` 的 `LOCALE_NAMES` 和 `SCAFFOLD_STRINGS` 中**——法语 LLM 调用静默回退至英语输出和英语脚手架。fr/pl/uk/ar 现已全部接入提示语言区域路径。
+
+> 已知后续工作：应用内帮助指南（`docs/help/`）对 pl/uk/ar 回退至英语（UI 外壳本身已完全本地化）；父项目的交互式面试引导、反向 ATS 发现以及较新的扫描提供商尚未在 SPA 中呈现。
+
+---
+
+
+
 
 ## [1.69.2] — 2026-06-12
 

@@ -88,6 +88,21 @@
       ],
     },
     {
+      // I18N-EXPAND / parent-feature port (v1.70.0) — cover-letter mode
+      // (parent modes/cover.md, shipped career-ops v1.10.0 + greeting in
+      // v1.11.0). Single-shot generic mode: JD + company/role + optional
+      // salutation → tailored letter from cv.md / _profile.md.
+      slug: 'cover',
+      titleKey: 'cover.title',
+      subtitleKey: 'cover.subtitle',
+      fields: [
+        { name: 'jd',       type: 'textarea', i18n: { label: 'cover.jdLbl', placeholder: 'cover.jdPh', hint: 'cover.jdHint' }, required: true, rows: 8 },
+        { name: 'company',  type: 'input',    i18n: { label: 'cover.companyLbl', placeholder: 'cover.companyPh', hint: 'cover.companyHint' }, required: true },
+        { name: 'role',     type: 'input',    i18n: { label: 'cover.roleLbl', placeholder: 'cover.rolePh', hint: 'cover.roleHint' } },
+        { name: 'greeting', type: 'input',    i18n: { label: 'cover.greetingLbl', placeholder: 'cover.greetingPh', hint: 'cover.greetingHint' } },
+      ],
+    },
+    {
       slug: 'interview-prep',
       titleKey: 'interviewPrep.title',
       subtitleKey: 'interviewPrep.subtitle',

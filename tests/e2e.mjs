@@ -220,43 +220,50 @@ async function run() {
     console.log(`  ✗ ${err.message}`);
   }
 
-  console.log('\n  Flow 2d: language switcher (9 languages)');
+  console.log('\n  Flow 2d: language switcher (12 languages)');
   try {
     await page.goto(`${baseUrl}/#/dashboard`);
     await page.waitForSelector('h1.page-title');
-    await page.waitForSelector('.lang-switcher button', { timeout: 5000 });
-    const langs = await page.$$eval('.lang-btn', (els) => els.map((e) => e.dataset.langBtn));
-    const expected = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
+    await page.waitForSelector('#lang-select', { timeout: 5000 });
+    const langs = await page.$$eval('#lang-select option', (els) => els.map((e) => e.value));
+    const expected = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
     for (const code of expected) {
       if (!langs.includes(code)) throw new Error(`missing language: ${code}`);
     }
     // Switch to Russian
-    await page.locator('.lang-btn[data-lang-btn="ru"]').click();
+    await page.locator('#lang-select').selectOption('ru');
     await page.waitForTimeout(300);
     const navTextRu = await page.locator('.nav-item[data-route="dashboard"]').textContent();
     if (!navTextRu.includes('Дашборд')) throw new Error(`RU nav not applied: "${navTextRu}"`);
     // Switch to Japanese
-    await page.locator('.lang-btn[data-lang-btn="ja"]').click();
+    await page.locator('#lang-select').selectOption('ja');
     await page.waitForTimeout(300);
     const navTextJa = await page.locator('.nav-item[data-route="dashboard"]').textContent();
     if (!navTextJa.includes('ダッシュボード')) throw new Error(`JA nav not applied: "${navTextJa}"`);
     // Persist: reload and verify Japanese persisted
     await page.reload();
-    await page.waitForSelector('.lang-btn');
+    await page.waitForSelector('#lang-select');
     const navAfterReload = await page.locator('.nav-item[data-route="dashboard"]').textContent();
     if (!navAfterReload.includes('ダッシュボード')) throw new Error(`lang did not persist after reload: "${navAfterReload}"`);
+    // Switch to Arabic and confirm RTL direction is applied on <html>
+    await page.locator('#lang-select').selectOption('ar');
+    await page.waitForTimeout(300);
+    const dir = await page.evaluate(() => document.documentElement.dir);
+    if (dir !== 'rtl') throw new Error(`Arabic must set <html dir="rtl">, got "${dir}"`);
     // Reset to English for the rest of the suite
-    await page.locator('.lang-btn[data-lang-btn="en"]').click();
+    await page.locator('#lang-select').selectOption('en');
     await page.waitForTimeout(200);
-    console.log(`  ✓ 9 languages, switching works, persists across reload`);
+    const dirAfterEn = await page.evaluate(() => document.documentElement.dir);
+    if (dirAfterEn !== 'ltr') throw new Error(`English must restore <html dir="ltr">, got "${dirAfterEn}"`);
+    console.log(`  ✓ 12 languages, switching works, persists across reload, RTL toggles for Arabic`);
     passed++;
 
-    // Sub-test: rotate through ALL 8 langs on dashboard, verify the page-title
+    // Sub-test: rotate through ALL 12 langs on dashboard, verify the page-title
     // changes to a non-empty string each time and never produces console errors.
-    console.log('  → exercising all 9 languages on dashboard');
+    console.log('  → exercising all 12 languages on dashboard');
     const seenTitles = {};
     for (const code of expected) {
-      await page.locator(`.lang-btn[data-lang-btn="${code}"]`).click();
+      await page.locator('#lang-select').selectOption(code);
       await page.waitForTimeout(150);
       const title = (await page.locator('h1.page-title').first().textContent()).trim();
       if (!title) throw new Error(`page-title empty after switching to ${code}`);
@@ -275,8 +282,8 @@ async function run() {
     const uniqDash = new Set(dashTitles);
     if (uniqDash.size < 5) throw new Error(`expected distinct dash titles per lang, got: ${[...uniqDash].join(' | ')}`);
     // Reset to English so the rest of the suite runs in a deterministic locale
-    // (the rotation above ends on the last code, e.g. fr — leaks into later flows).
-    await page.locator('.lang-btn[data-lang-btn="en"]').click();
+    // (the rotation above ends on the last code, e.g. ar — leaks into later flows).
+    await page.locator('#lang-select').selectOption('en');
     await page.waitForTimeout(200);
     console.log(`  ✓ all ${expected.length} langs rotated; ${uniqDash.size} distinct dashboard titles`);
   } catch (err) {

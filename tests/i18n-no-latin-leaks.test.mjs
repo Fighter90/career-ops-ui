@@ -36,7 +36,7 @@ const WHITELIST = new Set([
 const PURE_LATIN = /^[A-Za-z][A-Za-z0-9\s\-/·:.,()&]*$/;
 
 // Locales whose UX expects native (non-Latin) script.
-const NON_LATIN_LOCALES = ['ru', 'ko', 'ja', 'zh-CN', 'zh-TW'];
+const NON_LATIN_LOCALES = ['ru', 'ko', 'ja', 'zh-CN', 'zh-TW', 'uk', 'ar'];
 
 // Adapt the assembled key-major DICT into Map<key, Map<locale, value>>.
 // Alias keys (`{ '@alias': … }`) carry no per-locale strings of their own
@@ -50,7 +50,7 @@ function parseDict() {
   return map;
 }
 
-test('NEW-D1: no Latin-only *.title leaks on ru / ja / ko / zh-CN / zh-TW', () => {
+test('NEW-D1: no Latin-only *.title leaks on ru / ja / ko / zh-CN / zh-TW / uk / ar', () => {
   const dict = parseDict();
   const failures = [];
   for (const [key, locales] of dict.entries()) {

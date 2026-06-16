@@ -45,7 +45,7 @@
 - **`js/app.js`** — boot: loads `/api/health`, renders the language switcher, kicks off the router, wires up global keyboard shortcuts (`Ctrl+K`, `Esc`), the mobile sidebar drawer, and **(v1.58.34/35)** the right-slide **notifications drawer** that re-surfaces the per-tab toast journal (`UI.getToastHistory()` cap 50 + `UI.onToast(fn)` pub/sub) — see [FRONTEND.md](FRONTEND.md#notifications-drawer-v15834-hardened-v15835).
 - **`js/router.js`** — hash-router. `Router.register('name', renderer)` per view. Renderer returns a DOM Node or HTML string. Aliases (e.g. `#/profile` → `settings`) keep URL stability across renames. Dedicated 404 view.
 - **`js/api.js`** — `API.get/post/put/delete`. Wraps `fetch`, normalises errors, manages the connection-error banner.
-- **`js/lib/i18n.js`** — locale loader + `data-i18n` walker. 8 locales.
+- **`js/lib/i18n.js`** — locale loader + `data-i18n` walker. 12 locales (incl. Arabic RTL via `<html dir>`).
 - **`js/lib/skills.js`** — small UI helpers for skill chips on dashboard / scan.
 - **`js/views/*.js`** — one file per route. Pure render-and-wire functions; no client-side state library.
 
