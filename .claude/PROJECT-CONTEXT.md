@@ -8,8 +8,8 @@
 > **Audience.** Claude Code subagents, Cursor / Codex / Aider sessions,
 > any IDE assistant that doesn't auto-load CLAUDE.md.
 >
-> **Repo state.** v1.69.0 (2026-06-12). **1079** `node --test` cases,
-> **70** Playwright (smoke + full-cycle + forms + locale-sweep). **v1.69.0 (P-14)** made `server/lib/sources/registry.mjs`
+> **Repo state.** v1.71.0 (2026-06-17). **1100** `node --test` cases,
+> Playwright (smoke + full-cycle + forms + locale-sweep ×12 + theme-toggle). **v1.70.0 (I18N-EXPAND)** added 3 locales — Polish (pl), Ukrainian (uk), Arabic (ar, full RTL via `<html dir>` + `[dir="rtl"]` in app.css) — for **12 UI locales**, plus a flag `<select>` language switcher; **v1.71.0** ported the parent's cover-letter mode to `#/cover` with a Generate-PDF button (inline markdown→PDF). Parent tracked at **career-ops v1.11.0**. **v1.69.0 (P-14)** made `server/lib/sources/registry.mjs`
 > auto-discover scanner adapters at boot (drop a `*.mjs` with an `export const meta` block — no registry edit).
 > **v1.60.0 (I18N-SPLIT)** split the 8-language
 > translation megafile into one file per locale under `public/js/lib/locales/`; `i18n-dict.js` is now an
@@ -43,13 +43,13 @@ data files (`cv.md`, `data/applications.md`, `reports/`,
 |---|---|---|
 | Server | Node ≥ 18, Express 4, js-yaml, multer | `server/index.mjs` (~130-LOC orchestrator) + `server/lib/routes/*.mjs` (15 modules) |
 | Helpers (v1.21+) | ESM, no transpiler | `server/lib/{paths,parsers,runner,security,prompts,store,anthropic,env-config,activity-log,dotenv,safe-fetch,file-lock,rate-limit,en-scanner,ru-scanner}.mjs` + `server/lib/sources/{greenhouse,ashby,lever,rss,smartrecruiters,workable,workday,geekjob,getmatch,habr,hh,trudvsem}.mjs` (12 adapters, auto-discovered via `registry.mjs` since v1.69.0/P-14) |
-| SPA | Vanilla JS, hash-router | `public/index.html`, `public/js/{app,router,api}.js`, `public/js/views/*.js`, `public/js/lib/{i18n,i18n-dict,skills,auto-pipeline,pdf-generate}.js`, `public/js/lib/locales/i18n-dict.<lang>.js` (8 + aliases) |
+| SPA | Vanilla JS, hash-router | `public/index.html`, `public/js/{app,router,api}.js`, `public/js/views/*.js`, `public/js/lib/{i18n,i18n-dict,skills,auto-pipeline,pdf-generate}.js`, `public/js/lib/locales/i18n-dict.<lang>.js` (12 + aliases) |
 | Styling | Hand-written CSS + design tokens | `public/css/app.css` |
 | Tests | `node --test` (TAP) + Playwright | `tests/*.test.mjs`, `tests/playwright-smoke.mjs`, `tests/e2e*.mjs` |
 | Build | None | Files served as-is from `public/` |
 | CI | GitHub Actions, Node 18/20/22 | `.github/workflows/{ci,release,publish-package,ai-review,dashboard-screenshots}.yml` |
 
-**Test baseline (v1.69.0):** 1079/1079 unit · 70/70 Playwright (smoke + full-cycle + forms + locale-sweep) · 20/20 smoke E2E · 23/23 comprehensive E2E · coverage ~93% line / ~83% branch.
+**Test baseline (v1.71.0):** 1100/1100 unit · Playwright (smoke + full-cycle + forms + locale-sweep ×12 + theme-toggle) · 20/20 smoke E2E · 23/23 comprehensive E2E · coverage ~93% line / ~83% branch.
 
 ---
 
@@ -99,8 +99,8 @@ When auditing or extending these surfaces, route through the helpers below — d
 ```
 career-ops-ui/
 ├─ AGENTS.md, CLAUDE.md, GEMINI.md            # agent shims (CLAUDE.md is canonical)
-├─ CHANGELOG.{,es,pt-BR,ko-KR,ja,ru,zh-CN,zh-TW}.md
-├─ README.{,es,pt-BR,ko-KR,ja,ru,zh-CN,zh-TW}.md
+├─ CHANGELOG.{,es,pt-BR,ko-KR,ja,ru,zh-CN,zh-TW,fr,pl,uk,ar}.md
+├─ README.{,es,pt-BR,ko-KR,ja,ru,zh-CN,zh-TW,fr,pl,uk,ar}.md
 ├─ LICENSE, package.json, package-lock.json
 ├─ bin/
 │  ├─ start.sh                                  # one-shot launcher
@@ -189,14 +189,14 @@ For trivial work (single file, single concern, < 30 min): just edit, run tests, 
 - **`innerHTML` without `UI.md`** — bypass of XSS strip. Route all markdown through `UI.md(text)`.
 - **`globalThis.fetch` for outbound HTTP** — bypasses DNS-rebind defense. Use `safeGet` from `server/lib/safe-fetch.mjs`.
 - **Read-modify-write on `applications.md` / `pipeline.md`** without `withFileLock(path, fn)` — race condition will silently drop rows.
-- **New i18n key without DICT entry** — `tests/i18n-coverage.test.mjs` (+ `tests/i18n-locale-files.test.mjs` parity) fails. Add the key to **all 8 per-locale files** `public/js/lib/locales/i18n-dict.<lang>.js` (I18N-SPLIT v1.60.0) — NOT to `i18n.js` (logic-only) or `i18n-dict.js` (assembler).
+- **New i18n key without DICT entry** — `tests/i18n-coverage.test.mjs` (+ `tests/i18n-locale-files.test.mjs` parity) fails. Add the key to **all 12 per-locale files** `public/js/lib/locales/i18n-dict.<lang>.js` (I18N-SPLIT v1.60.0) — NOT to `i18n.js` (logic-only) or `i18n-dict.js` (assembler).
 - **`aria-describedby` without matching `id`** — `tests/a11y-form-wires.test.mjs` fails.
 - **New runtime dep** — current production deps are `express`, `js-yaml`, `multer`. Adding more needs a spec.
 - **Real LLM calls in tests** — mock the SDK adapter; never hit Anthropic / Gemini from a unit test.
 
 ## Realizations / hard-won notes (v1.57–v1.60)
 
-- **I18N-SPLIT (v1.60.0) — per-locale dictionary.** Translations live ONLY in `public/js/lib/locales/i18n-dict.<lang>.js` (8 files) + `i18n-dict.aliases.js`; `i18n-dict.js` is an assembler that rebuilds `window.__I18N_DICT` — it stores nothing. Three traps: (1) **vm-realm deepEqual** — objects assembled inside `node:vm` have a foreign `Object.prototype`, so `deepStrictEqual` vs a JSON snapshot throws "same structure but not reference-equal"; round-trip `JSON.parse(JSON.stringify(x))` first. (2) **Load order is load-bearing** — all 9 locale `<script>`s must precede `i18n-dict.js`, which must precede `i18n.js` (locked by `tests/i18n-locale-files.test.mjs`). (3) **A "passing" CI step can be a no-op** — the `ci.yml` inline i18n check validated an *empty* dict for ~37 releases after the v1.23 split (it loaded only `i18n.js`); now it loads the full chain + a `keys < 600` floor. Node tests load the dict via `tests/helpers/i18n-vm.mjs` (`loadAssembledDict` / `loadI18n` / `legacyDictText` / `allLocaleSource`).
+- **I18N-SPLIT (v1.60.0) — per-locale dictionary.** Translations live ONLY in `public/js/lib/locales/i18n-dict.<lang>.js` (12 files) + `i18n-dict.aliases.js`; `i18n-dict.js` is an assembler that rebuilds `window.__I18N_DICT` — it stores nothing. Three traps: (1) **vm-realm deepEqual** — objects assembled inside `node:vm` have a foreign `Object.prototype`, so `deepStrictEqual` vs a JSON snapshot throws "same structure but not reference-equal"; round-trip `JSON.parse(JSON.stringify(x))` first. (2) **Load order is load-bearing** — all 12 locale `<script>`s must precede `i18n-dict.js`, which must precede `i18n.js` (locked by `tests/i18n-locale-files.test.mjs`). (3) **A "passing" CI step can be a no-op** — the `ci.yml` inline i18n check validated an *empty* dict for ~37 releases after the v1.23 split (it loaded only `i18n.js`); now it loads the full chain + a `keys < 600` floor. Node tests load the dict via `tests/helpers/i18n-vm.mjs` (`loadAssembledDict` / `loadI18n` / `legacyDictText` / `allLocaleSource`).
 - **`PATHS` resolves ONCE per process** (`server/lib/paths.mjs`, at module load). Set `CAREER_OPS_ROOT` *before* the first `server/*` import; you cannot switch parent roots mid-process. `node --test` isolates per *file* (child process) — multi-root within one file is infeasible. Path/IO-coupled helpers (`checkProfileCustomized`) → guard **statically** (assert the source contract), not via cache-bust dynamic imports. (v1.58.0 cache-bust test passed locally, failed CI on all Node versions → v1.58.1 static-guard fix.)
 - **Pre-commit AI review is advisory; `ci.yml` is the hard gate.** A green pre-commit + red CI is possible (v1.58.0). Always re-confirm CI/Publish conclusions after a tag push.
 - **`publish-package.yml` runs the test suite** before publishing and is **manual `workflow_dispatch`** — the `GITHUB_TOKEN`-created Release does NOT trigger it. A failing test reds both CI *and* Publish.

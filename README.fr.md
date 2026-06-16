@@ -14,9 +14,9 @@
 
 > **🆕 Dernière version — v1.71.0**
 >
-> **Trois nouveaux langues — Polski, Українська, العربية (RTL) — portent l'UI à 12 paramètres régionaux, correspondant au README principal de career-ops.** L'arabe embarque un vrai support de droite à gauche. Le sélecteur de langue est désormais un `<select>` déroulant avec drapeaux, et le mode lettre de motivation du projet parent arrive sur `#/cover`. Suit career-ops v1.11.0.
+> **PDFs de lettre de motivation depuis `#/cover`.** Le mode cover génère le texte de la lettre ; un bouton **Generate PDF** l'envoie désormais via le pipeline partagé markdown→PDF — sans quitter le SPA. S'appuie sur **v1.70.0**, qui a ajouté 3 langues — Polski, Українська, العربية (RTL) — pour **12 locales**, un sélecteur de langue `<select>` avec drapeau, et la compatibilité avec **career-ops v1.11.0**.
 >
-> _Suite complète **1100/1100** verte · 12 paramètres régionaux · documentation synchronisée._
+> _Suite complète **1100/1100** verte · 12 locales · docs synchronisés._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 
