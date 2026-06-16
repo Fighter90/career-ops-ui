@@ -80,7 +80,7 @@ Route reviewers (`web-ui-route-reviewer` agent) flag every miss.
 - `@alias` keys (sidebar label = page title = dashboard tile) share ONE translated string with their canonical key; alias targets must exist and must not themselves be aliases (`tools/i18n-audit.mjs` + `tests/i18n-alias.test.mjs` enforce it). Keys that merely collapse in English but diverge in another locale (e.g. `nav.config` vs `config.title`) are NOT aliased.
 - Help-bundle markdown lives in `docs/help/<locale>.md` (9 files: `en, es, pt-BR, ko-KR, ja, ru, zh-CN, zh-TW, fr`). The three v1.70.0 locales (pl/uk/ar) intentionally **fall back to `en.md`** via the help resolver — the long-form guide is not yet translated for them (the UI chrome is). CI invariant: **19 H2 sections** (`tests/canonical-docs-coverage.test.mjs` + `tests/help-ui.test.mjs` `SECTION_COUNT`). §19 "Localizing the app into your language" was added in v1.60.0.
 - `tests/i18n-coverage.test.mjs` enforces locale parity. If you add a key and forget a locale, that test fails.
-- CHANGELOG parity: all 8 `CHANGELOG*.md` files must reference the same `## [vX.Y.Z]` top — `scripts/check-changelog-parity.mjs` is the gate (part of `npm run test:ci`).
+- CHANGELOG parity: all 12 `CHANGELOG*.md` files (EN + 11 locales) must reference the same `## [vX.Y.Z]` top — `scripts/check-changelog-parity.mjs` is the gate (part of `npm run test:ci`).
 
 ## Error handling
 
@@ -104,7 +104,7 @@ Route reviewers (`web-ui-route-reviewer` agent) flag every miss.
 - Long-running tests (E2E): keep them under `tests/e2e*.mjs` / `tests/playwright-*.mjs`, not in the default `npm test` matcher. `npm run test:e2e:browser` drives them.
 - CI gates (run via `npm run test:ci`): unit + acceptance + `scripts/check-no-also-leftovers.mjs` (no `.also(` patterns leaking into views) + `scripts/check-changelog-parity.mjs` (all 11 non-EN locales at the same version).
 - Current count as of **v1.53.0**: **716** `node --test` cases across 90 files (unit + functional + acceptance) + 4 Playwright/E2E surfaces + the shell-surface tier (`tests/sh-files.test.mjs` — `bin/*.sh` + `.githooks` + `install-hooks` wiring, WS9). Run `npm run test:coverage` for the V8 report; see `docs/architecture/TESTING.md` for the 4-tier pyramid.
-- The CHANGELOG-parity gate enforces H2 across all 8 help bundles; `tests/help-ru-config-section.test.mjs` additionally locks **H3 parity** (73 per bundle) since WS10 (v1.54.0) — an en-only H3 addition can no longer silently diverge the localized bundles.
+- `tests/canonical-docs-coverage.test.mjs` enforces H2 across all 9 help bundles (pl/uk/ar fall back to `en.md`, so the help set stays 9); `tests/help-ru-config-section.test.mjs` additionally locks **H3 parity** (75 per bundle as of v1.69.0) — an en-only H3 addition can no longer silently diverge the localized bundles.
 
 ## LLM provider selection (v1.39.0, WS8.2)
 
@@ -179,7 +179,7 @@ conventions — match them in new views:
   `aria-sort`. Mouse-only handlers get `role`+`tabindex`+keydown.
 - **Long async relabels** (button text changing under the user) are
   announced via a polite `role=status` region.
-- Every user-facing string is i18n-keyed across all 8 locales (the
+- Every user-facing string is i18n-keyed across all 12 locales (the
   `i18n-coverage` gate enforces it); icons on peer CTAs are consistent.
 
 ## Commits
