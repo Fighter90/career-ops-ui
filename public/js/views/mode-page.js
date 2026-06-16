@@ -263,14 +263,14 @@
           },
         }, '⬇ ' + t('mode.download', 'Download .md')),
       ];
-      // G-002: surface Generate PDF on interview-prep results so the user
-      // can ship the same brief through Playwright as #/deep does.
-      if (slug === 'interview-prep' && window.PdfGenerate) {
+      // Generate-PDF on interview-prep + cover results: both are markdown,
+      // rendered through the shared inline markdown→PDF pipeline.
+      if ((slug === 'interview-prep' || slug === 'cover') && window.PdfGenerate) {
         actions.push(c('button', {
           className: 'btn btn-primary btn-sm',
           onClick: (e) => {
             window.PdfGenerate.run({
-              kind: 'inline', markdown, title, slug: 'interview-prep', button: e.currentTarget,
+              kind: 'inline', markdown, title, slug, button: e.currentTarget,
             });
           },
         }, '📄 ' + t('common.generatePdf', 'Generate PDF')));
