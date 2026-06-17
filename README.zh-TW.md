@@ -5,6 +5,8 @@
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | **繁體中文** | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [العربية](README.ar.md)
 
+_非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
+
 [![tests](https://img.shields.io/badge/tests-1134%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)

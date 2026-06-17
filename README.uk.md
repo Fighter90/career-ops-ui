@@ -5,6 +5,8 @@
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | **Українська** | [العربية](README.ar.md)
 
+_Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
+
 [![tests](https://img.shields.io/badge/tests-1134%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
