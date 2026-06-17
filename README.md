@@ -704,8 +704,7 @@ Refresh the Health page — every required check should be green. Then:
 > [Español](README.es.md) · [Français](README.fr.md) · [Português (Brasil)](README.pt-BR.md) ·
 > [한국어](README.ko-KR.md) · [日本語](README.ja.md) ·
 > [Русский](README.ru.md) · [简体中文](README.zh-CN.md) ·
-> [繁體中文](README.zh-TW.md)
-
+> [繁體中文](README.zh-TW.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [العربية](README.ar.md)
 ---
 
 ## License

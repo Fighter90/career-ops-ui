@@ -47,7 +47,7 @@ async function get(path) {
   return { status: res.status, body: res.status < 400 ? await res.json() : null };
 }
 
-const SUPPORTED = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
+const SUPPORTED = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
 
 for (const lang of SUPPORTED) {
   test(`GET /api/help/${lang} returns markdown`, async () => {

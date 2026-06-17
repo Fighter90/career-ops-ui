@@ -681,8 +681,7 @@ echo "GEMINI_API_KEY=AIza..." >> career-ops/.env
 > [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) ·
 > [한국어](README.ko-KR.md) · [日本語](README.ja.md) ·
 > [Русский](README.ru.md) · [简体中文](README.zh-CN.md) ·
-> [繁體中文](README.zh-TW.md)
-
+> [繁體中文](README.zh-TW.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [العربية](README.ar.md)
 ---
 
 ## 许可证
