@@ -11,6 +11,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.71.2] — 2026-06-17
+
+**docs(i18n):** publica el pase de consistencia de documentación. El bloque "Translations of this guide" de cada README ahora lista los 11 idiomas hermanos (anteriormente algunos omitían English/Français o se enlazaban a sí mismos), con la línea en blanco antes del salto de sección restaurada. El prompt completo de regresión QA se renombra a la versión actual, y la documentación (`CLAUDE.md`, `CONVENTIONS`, `LOCALIZATION`, `PROJECT-CONTEXT`) se sincroniza con la versión actual y el recuento de pruebas (1103). Sin cambios en el código ni en el comportamiento — solo documentación, por lo que las traducciones de ayuda/UI y todas las funciones de 1.70.0–1.71.1 permanecen sin cambios.
+
+---
+
+
+
 ## [1.71.1] — 2026-06-17
 
 **fix(i18n): la guía de ayuda integrada está ahora completamente traducida en los 12 idiomas.** Se añadieron `docs/help/{pl,uk,ar}.md` (cada uno con la estructura validada de 19 H2 / 75 H3) para que `#/help` sirva un paquete nativo en polaco, ucraniano y árabe en lugar de recurrir al inglés — `GET /api/help/{pl,uk,ar}` ahora devuelven su propia configuración regional. Integrado en todas las comprobaciones de ayuda (`help-ui`, `help.test`, `help-ru-config-section`, `canonical-docs-coverage`). También se completaron todas las listas de traducción en 12 idiomas: el bloque «Translations of this guide» del README (9 READMEs), las cabeceras «Translations:» de los CHANGELOG localizados (8 archivos) y se actualizaron los recuentos de documentación obsoletos. Suite 1100 → 1103.

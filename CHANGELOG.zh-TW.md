@@ -9,6 +9,14 @@
 ---
 
 
+## [1.71.2] — 2026-06-17
+
+**docs(i18n):** 發布文件一致性整理結果。每個 README 的 "Translations of this guide" 區塊現在列出了全部 11 種同級語言（此前部分語言遺漏了 English/Français 或存在自連結），並恢復了節分隔符前的空行。完整的 QA 回歸提示詞已重命名為目前版本，文件（`CLAUDE.md`、`CONVENTIONS`、`LOCALIZATION`、`PROJECT-CONTEXT`）已與目前版本和測試數量（1103）同步。無程式碼或行為變更——僅文件變更，因此說明/UI 翻譯及 1.70.0–1.71.1 中的所有功能均保持不變。
+
+---
+
+
+
 ## [1.71.1] — 2026-06-17
 
 **fix(i18n): 應用程式內的說明指南現已完整翻譯為全部 12 種語言。** 新增 `docs/help/{pl,uk,ar}.md`（每個檔案均包含經過驗證的 19 H2 / 75 H3 結構），使 `#/help` 能夠為波蘭語、烏克蘭語和阿拉伯語提供原生語言包，而不再退回英語 — `GET /api/help/{pl,uk,ar}` 現在會回傳各自的語言區域內容。已串接至所有說明檢查項（`help-ui`、`help.test`、`help-ru-config-section`、`canonical-docs-coverage`）。同時完成了所有 12 種語言的翻譯清單：README 中的 «Translations of this guide» 區塊（9 個 README）、本地化 CHANGELOG 中的 «Translations:» 標題（8 個檔案），並更新了過時的文件計數。Suite 1100 → 1103。

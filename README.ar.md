@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.71.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.1)
+[![release](https://img.shields.io/badge/release-v1.71.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.2)
 
-> **جديد — الإصدار v1.71.1**
+> **جديد — الإصدار v1.71.2**
 >
 > تدعم الواجهة الآن **12 لغة** في واجهة المستخدم، بما فيها العربية. السجل الكامل للتغييرات: [CHANGELOG.md](CHANGELOG.md).
 

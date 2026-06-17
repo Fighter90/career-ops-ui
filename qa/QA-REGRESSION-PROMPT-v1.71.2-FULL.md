@@ -1,8 +1,8 @@
-# QA REGRESSION PROMPT — career-ops-ui v1.71.1 · FULL / EXHAUSTIVE (whole project)
+# QA REGRESSION PROMPT — career-ops-ui v1.71.2 · FULL / EXHAUSTIVE (whole project)
 
-> **Scope:** the *entire* career-ops-ui project, *all* functionality, as of `package.json` **1.71.1**. This is the single-pass, full-surface driver — it supersedes the v1.70.0 and v1.69.2 FULL prompts and folds in everything from v1.59 → v1.71.
+> **Scope:** the *entire* career-ops-ui project, *all* functionality, as of `package.json` **1.71.2**. This is the single-pass, full-surface driver — it supersedes the v1.70.0 and v1.69.2 FULL prompts and folds in everything from v1.59 → v1.71.
 > **Role:** strict release-gate QA engineer. Prove the whole app works, correctly and clearly, and that nothing regression-locked has drifted.
-> **Output:** save your run report to `qa/v55-regression/<YYYY-MM-DD>-REGRESSION-v1.71.1.md` with a PASS/FAIL per item and evidence (command output, HTTP traces, screenshots). One finding = one fix-ship (one-fix-per-release doctrine; HIGH → MEDIUM → LOW).
+> **Output:** save your run report to `qa/v55-regression/<YYYY-MM-DD>-REGRESSION-v1.71.2.md` with a PASS/FAIL per item and evidence (command output, HTTP traces, screenshots). One finding = one fix-ship (one-fix-per-release doctrine; HIGH → MEDIUM → LOW).
 >
 > **Sibling perennials (run alongside, do not duplicate):** `REGRESSION-FINAL.md` (invariant ledger), `UX-AUDIT-PROMPT.md`, `FUNCTIONALITY-CHECK.md`.
 
@@ -28,7 +28,7 @@
 npm test                                    # full unit/integration suite
 npm run test:ci                             # unit + check-no-also + check-changelog-parity + i18n-audit
 node tools/i18n-audit.mjs                   # "no hard failures — dictionary is clean"
-node scripts/check-changelog-parity.mjs     # "all 11 locales at v1.71.1"
+node scripts/check-changelog-parity.mjs     # "all 11 locales at v1.71.2"
 npm run test:coverage                       # ≥80% line / ≥83% branch (baseline ~93/~83)
 npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(12) + theme-toggle
 npm run test:e2e && npm run test:e2e:full   # smoke (20) + comprehensive (23) E2E
@@ -41,7 +41,7 @@ Floors: unit suite ≥ its current count (run to confirm) · locale-sweep **12/1
 
 ## §1 — Setup / onboarding / parent contract
 - Cold start with a `mktemp -d` `CAREER_OPS_ROOT`: `/api/health` reports `onboardingNeeded` correctly; missing `cv.md`/`profile.yml`/`portals.yml` surfaced.
-- `parentVersion` reads the parent `VERSION` file (currently **1.11.0**); web-ui `version` from `package.json` (**1.71.1**) — they drift independently.
+- `parentVersion` reads the parent `VERSION` file (currently **1.11.0**); web-ui `version` from `package.json` (**1.71.2**) — they drift independently.
 - **Parent is read-only**: reads always safe; writes ONLY on explicit user actions (`POST /api/pipeline`, `POST /api/tracker`, `PUT /api/cv`, `POST /api/jds`, `DELETE /api/{jds,interview-prep}/:name`, `POST /api/config`, streaming runners). No code path writes the parent unprompted.
 - `data/applications.md` is the markdown source of truth; the parent's v1.11.0 SQLite index (`applications.db`) is a derived cache the web-ui ignores. Tracker columns are header-mapped in the parent — check `server/lib/parsers.mjs` still reads a standard layout correctly (known watch item if a user inserts columns).
 

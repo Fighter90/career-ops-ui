@@ -9,6 +9,14 @@
 ---
 
 
+## [1.71.2] — 2026-06-17
+
+**docs(i18n):** 문서 일관성 검토 결과를 게시합니다. 각 README의 "Translations of this guide" 블록에 이제 11개의 형제 언어가 모두 나열되며(이전에는 일부가 English/Français를 생략하거나 자기 자신에 링크), 섹션 구분 앞의 빈 줄이 복원되었습니다. 전체 QA 회귀 프롬프트가 현재 버전으로 이름이 변경되었고, 문서(`CLAUDE.md`, `CONVENTIONS`, `LOCALIZATION`, `PROJECT-CONTEXT`)가 현재 버전 및 테스트 수(1103)와 동기화되었습니다. 코드 또는 동작 변경 없음 — 문서만 변경되었으므로 도움말/UI 번역 및 1.70.0–1.71.1의 모든 기능은 변경되지 않습니다.
+
+---
+
+
+
 ## [1.71.1] — 2026-06-17
 
 **fix(i18n): 앱 내 도움말 가이드가 이제 12개 언어 모두에서 완전히 번역되었습니다.** `docs/help/{pl,uk,ar}.md`를 추가하여 (각 파일은 검증된 19 H2 / 75 H3 구조를 포함) `#/help`가 영어로 폴백하는 대신 폴란드어, 우크라이나어, 아랍어 네이티브 번들을 제공합니다 — `GET /api/help/{pl,uk,ar}`가 이제 해당 로케일을 반환합니다. 모든 도움말 게이트(`help-ui`, `help.test`, `help-ru-config-section`, `canonical-docs-coverage`)에 연결되었습니다. 또한 12개 언어 번역 목록을 모두 완성했습니다: README의 «Translations of this guide» 블록(9개 README), 로컬화된 CHANGELOG의 «Translations:» 헤더(8개 파일), 그리고 오래된 문서 수치를 업데이트했습니다. Suite 1100 → 1103.

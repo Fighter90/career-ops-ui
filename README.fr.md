@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.71.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.1)
+[![release](https://img.shields.io/badge/release-v1.71.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.2)
 
-> **🆕 Dernière version — v1.71.1**
+> **🆕 Dernière version — v1.71.2**
 >
 > **PDFs de lettre de motivation depuis `#/cover`.** Le mode cover génère le texte de la lettre ; un bouton **Generate PDF** l'envoie désormais via le pipeline partagé markdown→PDF — sans quitter le SPA. S'appuie sur **v1.70.0**, qui a ajouté 3 langues — Polski, Українська, العربية (RTL) — pour **12 locales**, un sélecteur de langue `<select>` avec drapeau, et la compatibilité avec **career-ops v1.11.0**.
 >

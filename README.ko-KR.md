@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.71.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.1)
+[![release](https://img.shields.io/badge/release-v1.71.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.2)
 
-> **🆕 최신 릴리스 — v1.71.1**
+> **🆕 최신 릴리스 — v1.71.2**
 >
 > **`#/cover`에서 커버 레터 PDF.** 커버 모드가 편지 텍스트를 생성하면, 이제 **Generate PDF** 버튼이 공유 markdown→PDF 파이프라인을 통해 처리합니다 — SPA를 벗어날 필요 없이. **v1.70.0**을 기반으로 하며, 해당 버전에서 Polski, Українська, العربية (RTL) 3개 언어를 추가해 **12 locales**, 플래그 `<select>` 언어 선택기, **career-ops v1.11.0** 호환성을 지원합니다.
 >

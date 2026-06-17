@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.71.2] — 2026-06-17
+
+**docs(i18n): publish the documentation-consistency pass.** Every README "Translations of this guide" block now lists all 11 sibling languages (previously some omitted English/Français and self-linked), with the blank line before the section break restored. The full QA regression prompt is renamed to the current version, and the docs (CLAUDE.md, CONVENTIONS, LOCALIZATION, PROJECT-CONTEXT) are synced to the current version and test count (1103). No code or behavior change — docs only, so the help/UI translations and all features from 1.70.0–1.71.1 are unchanged.
+
+---
+
+
+
 ## [1.71.1] — 2026-06-17
 
 **fix(i18n): the in-app help guide is now fully translated in all 12 languages.** Added `docs/help/{pl,uk,ar}.md` (each holding the gated 19 H2 / 75 H3 structure) so `#/help` serves a native bundle for Polish, Ukrainian, and Arabic instead of falling back to English — `GET /api/help/{pl,uk,ar}` now return their own locale. Wired into every help gate (`help-ui`, `help.test`, `help-ru-config-section`, `canonical-docs-coverage`). Also completed every 12-language translation list: the README "Translations of this guide" block (9 READMEs), the localized CHANGELOG "Translations:" headers (8 files), and refreshed stale doc counts (CONVENTIONS test count → 1100; help "fall back" notes → 12 translated bundles). Suite 1100 → 1103.

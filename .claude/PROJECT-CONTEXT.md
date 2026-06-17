@@ -8,7 +8,7 @@
 > **Audience.** Claude Code subagents, Cursor / Codex / Aider sessions,
 > any IDE assistant that doesn't auto-load CLAUDE.md.
 >
-> **Repo state.** v1.71.1 (2026-06-17). **1103** `node --test` cases,
+> **Repo state.** v1.71.2 (2026-06-17). **1103** `node --test` cases,
 > Playwright (smoke + full-cycle + forms + locale-sweep ×12 + theme-toggle). **v1.70.0 (I18N-EXPAND)** added 3 locales — Polish (pl), Ukrainian (uk), Arabic (ar, full RTL via `<html dir>` + `[dir="rtl"]` in app.css) — for **12 UI locales**, plus a flag `<select>` language switcher; **v1.71.0** ported the parent's cover-letter mode to `#/cover` with a Generate-PDF button; **v1.71.1** translated the in-app help guide into all 12 locales (`docs/help/{pl,uk,ar}.md`). Parent tracked at **career-ops v1.11.0**. **v1.69.0 (P-14)** made `server/lib/sources/registry.mjs`
 > auto-discover scanner adapters at boot (drop a `*.mjs` with an `export const meta` block — no registry edit).
 > **v1.60.0 (I18N-SPLIT)** split the 8-language
