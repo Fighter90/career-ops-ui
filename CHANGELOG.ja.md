@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.1] — 2026-06-17
+
+**docs + test: README の「AI アシスタントをインストールする」セクション；Gemini コネクタの完全ブランチカバレッジ。** README にインストール/ログイン一覧表を追加 — Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI のインストールリンク + それぞれの `#/config` プロバイダーマッピング + 「続行前にログインしてください」（career-ops.org/docs のクイックスタートを反映；web-ui が CLI 不要のスタンドアロン代替手段であることを明確化）。新しい `tests/gemini-connector.test.mjs`（8 ケース）は `runGemini` のすべてのブランチをカバー — キーなし、成功、API エラー、空/ブロックされた補完、不正な形式のボディ、タイムアウト、ネットワークエラー、`hasGeminiKey` — `server/lib/gemini.mjs` のステートメントを 100% に到達させる。全体カバレッジ: 96% ライン / 88% ブランチ / 96% 関数。スイート 1126 → 1134。
+
+---
+
+
+
 ## [1.74.0] — 2026-06-17
 
 **feat(llm): GitHub Models (Copilot) を第6のプロバイダーとして追加 + 6アシスタントの標準的な整列.** career-ops.org/docs には、6つのAIコーディングアシスタントが記載されています — Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI。web-ui はこれら6つすべてをサポートするようになりました: 5つは既存のライブプロバイダー (Anthropic / Gemini / OpenAI / Qwen / OpenRouter) に対応し、GitHub Copilot CLI は専用の GitHub Models コネクター — `runGitHubModels` (OpenAI-compatible; `models` スコープを持つ GitHub PAT) を獲得します。これは `#/config` (`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`) で設定可能で、`LLM_PROVIDER=github` で選択でき、auto 順序では6番目です。ヘルプバンドルと README は標準の6つをリストするようになり (Qwen CLI→Qwen Code に改名; Gemini CLI + GitHub Copilot CLI を追加)、README にはすべての機能が親プロジェクトに追跡できるよう、完全なモード参照とポータルアダプターのリンクテーブルが career-ops.org/docs に追加されます。`tests/llm-provider-context.test.mjs` はフェッチ境界マトリックスを6つのプロバイダーすべてに拡張し (`cv.md` + `profile.yml` インライン + アーティファクト返却)、新しい `GITHUB_MODELS_*` キーがすべての12のロケール辞書に追加されます。スイート 1125 → 1126。

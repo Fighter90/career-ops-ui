@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.1] — 2026-06-17
+
+**docs + test: قسم "تثبيت مساعد ذكاء اصطناعي" في README؛ تغطية كاملة للفروع لموصّل Gemini.** تمت إضافة جدول التثبيت/تسجيل الدخول إلى README — روابط التثبيت لـ Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI + تعيين مزوّد `#/config` لكل منها + «سجّل الدخول قبل المتابعة» (يعكس دليل البدء السريع في career-ops.org/docs؛ يوضّح أن واجهة الويب هي البديل المستقل الذي لا يحتاج إلى CLI). يغطّي `tests/gemini-connector.test.mjs` الجديد (8 حالات) كل فرع من فروع `runGemini` — بلا مفتاح، نجاح، خطأ في API، إكمال فارغ/محظور، جسم استجابة مشوّه، انتهاء المهلة، خطأ في الشبكة، `hasGeminiKey` — ليصل `server/lib/gemini.mjs` إلى 100% من التعليمات البرمجية. التغطية الإجمالية: 96% أسطر / 88% فروع / 96% دوال. مجموعة الاختبارات 1126 → 1134.
+
+---
+
+
+
 ## [1.74.0] — 2026-06-17
 
 **feat(llm): GitHub Models (Copilot) كمزوّد سادس + التوافق القانوني لستة مساعدين.** يُدرج career-ops.org/docs ستة مساعدين لترميز الذكاء الاصطناعي — Claude Code، Gemini CLI، Codex، Qwen Code، OpenCode، GitHub Copilot CLI. تدعم web-ui الآن جميع الستة: خمسة منهم يرتبطون بمزوّدين نشطين موجودين (Anthropic / Gemini / OpenAI / Qwen / OpenRouter)، ويحصل GitHub Copilot CLI على موصّل مخصص لـ GitHub Models — `runGitHubModels` (OpenAI-compatible؛ PAT من GitHub بنطاق `models`)، قابل للتهيئة في `#/config` (`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`) وقابل للتحديد عبر `LLM_PROVIDER=github`؛ السادس في ترتيب auto. تُدرج حزم المساعدة وملفات README الآن الستة القانونيين (تمت إعادة تسمية Qwen CLI إلى Qwen Code؛ تمت إضافة Gemini CLI + GitHub Copilot CLI)، ويُضيف README جدولاً كاملاً لمرجع الأوضاع وروابط محوّلات البوابات إلى career-ops.org/docs حتى يمكن تتبّع كل ميزة إلى المشروع الأصل. يُوسّع `tests/llm-provider-context.test.mjs` مصفوفة حدود الجلب لتشمل جميع المزوّدين الستة (`cv.md` + `profile.yml` مضمّنة + العناصر المُعادة)؛ تمت إضافة مفاتيح `GITHUB_MODELS_*` الجديدة إلى جميع قواميس 12 لغة إقليمية. الحزمة 1125 → 1126.

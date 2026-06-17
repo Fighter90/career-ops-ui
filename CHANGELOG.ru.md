@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.1] — 2026-06-17
+
+**docs + test: раздел README «Установка ИИ-ассистента»; полное покрытие ветвей для коннектора Gemini.** В README добавлена таблица установки/входа — ссылки на установку Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI + привязка провайдера `#/config` для каждого + «войдите в систему перед продолжением» (соответствует разделу быстрого старта career-ops.org/docs; поясняет, что web-ui является самостоятельной альтернативой, не требующей CLI). Новый `tests/gemini-connector.test.mjs` (8 сценариев) охватывает каждую ветку `runGemini` — отсутствие ключа, успех, ошибка API, пустое/заблокированное завершение, некорректное тело, тайм-аут, сетевая ошибка, `hasGeminiKey` — доводя `server/lib/gemini.mjs` до 100% по инструкциям. Общее покрытие: 96% строк / 88% ветвей / 96% функций. Набор тестов 1126 → 1134.
+
+---
+
+
+
 ## [1.74.0] — 2026-06-17
 
 **feat(llm): GitHub Models (Copilot) как 6-й провайдер + каноническое выравнивание 6 ассистентов.** career-ops.org/docs перечисляет шесть ИИ-ассистентов для написания кода — Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI. Теперь web-ui поддерживает все шесть: пять сопоставлены с существующими активными провайдерами (Anthropic / Gemini / OpenAI / Qwen / OpenRouter), а GitHub Copilot CLI получает выделенный коннектор GitHub Models — `runGitHubModels` (OpenAI-compatible; PAT GitHub с областью `models`), настраиваемый в `#/config` (`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`) и выбираемый через `LLM_PROVIDER=github`; 6-й в порядке auto. Пакеты справки и README теперь перечисляют канонические шесть (переименован Qwen CLI→Qwen Code; добавлены Gemini CLI + GitHub Copilot CLI), а README добавляет полную таблицу ссылок на режимы и адаптеры порталов на career-ops.org/docs, чтобы каждая функция отслеживалась до родительского проекта. `tests/llm-provider-context.test.mjs` расширяет матрицу границ получения до всех шести провайдеров (`cv.md` + `profile.yml` встроены + возвращаемый артефакт); новые ключи `GITHUB_MODELS_*` добавлены во все 12 словарей локалей. Набор тестов 1125 → 1126.

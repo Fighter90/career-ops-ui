@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.1] — 2026-06-17
+
+**docs + test: README「安装 AI 助手」章节；Gemini 连接器的完整分支覆盖。** 在 README 中新增安装/登录对照表——Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI 的安装链接 + 各自的 `#/config` 提供商映射 + 「继续前请先登录」（与 career-ops.org/docs 快速入门保持一致；说明 web-ui 是无需 CLI 的独立替代方案）。新增 `tests/gemini-connector.test.mjs`（8 个用例），覆盖 `runGemini` 的每个分支——无密钥、成功、API 错误、空/被屏蔽的补全、格式错误的响应体、超时、网络错误、`hasGeminiKey`——使 `server/lib/gemini.mjs` 语句覆盖率达到 100%。整体覆盖率：96% 行 / 88% 分支 / 96% 函数。测试套件 1126 → 1134。
+
+---
+
+
+
 ## [1.74.0] — 2026-06-17
 
 **feat(llm): GitHub Models (Copilot) 作为第6个提供商 + 6个助手的规范对齐。** career-ops.org/docs 列出了六个AI编程助手 — Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI。web-ui 现在支持全部六个：五个映射到现有的在线提供商（Anthropic / Gemini / OpenAI / Qwen / OpenRouter），GitHub Copilot CLI 获得了专用的 GitHub Models 连接器 — `runGitHubModels`（OpenAI-compatible；具有 `models` 权限范围的 GitHub PAT），可在 `#/config` 中配置（`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`），并可通过 `LLM_PROVIDER=github` 选择；在 auto 顺序中排第6位。帮助包和 README 现在列出了规范的六个（将 Qwen CLI 重命名为 Qwen Code；添加了 Gemini CLI + GitHub Copilot CLI），README 还新增了完整的模式参考和门户适配器链接表，指向 career-ops.org/docs，使每个功能都可以追溯到父项目。`tests/llm-provider-context.test.mjs` 将获取边界矩阵扩展到所有六个提供商（`cv.md` + `profile.yml` 内联 + 返回的构件）；新的 `GITHUB_MODELS_*` 键已添加到所有 12 个语言区域字典中。测试套件 1125 → 1126。

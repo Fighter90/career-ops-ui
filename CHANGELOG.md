@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.74.1] — 2026-06-17
+
+**docs + test: README "Install an AI assistant" section; full branch coverage for the Gemini connector.** Added an install/login table to the README — install links for **Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI** + each one's `#/config` provider mapping + "log in before continuing" (mirrors the career-ops.org/docs Quick Start; clarifies the web-ui is the standalone, no-CLI-needed alternative). New `tests/gemini-connector.test.mjs` (8 cases) covers every `runGemini` branch — no-key, success, API error, empty/blocked completion, malformed body, timeout, network error, `hasGeminiKey` — taking `server/lib/gemini.mjs` to **100% statements**. Overall coverage **96% lines / 88% branch / 96% funcs**. Suite 1126 → 1134.
+
+---
+
+
+
 ## [1.74.0] — 2026-06-17
 
 **feat(llm): GitHub Models (Copilot) as the 6th provider + canonical 6-assistant alignment.** [career-ops.org/docs](https://career-ops.org/docs) lists six AI coding assistants — Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI. The web-ui now supports all six: five map to existing live providers (Anthropic / Gemini / OpenAI / Qwen / OpenRouter), and **GitHub Copilot CLI** gains a dedicated **GitHub Models** connector — `runGitHubModels` (OpenAI-compatible; a GitHub PAT with the `models` scope), configurable in `#/config` (`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`) and selectable via `LLM_PROVIDER=github`; 6th in the `auto` order. Help bundles + READMEs now list the canonical six (renamed Qwen CLI→Qwen Code; added Gemini CLI + GitHub Copilot CLI), and the README adds a full **mode-reference + portal-adapter link table** to career-ops.org/docs so every feature traces back to the parent. `tests/llm-provider-context.test.mjs` extends the fetch-boundary matrix to all six providers (cv.md + profile.yml inlined + artifact returned); new `GITHUB_MODELS_*` keys added to all 12 locale dictionaries. Suite 1125 → 1126.

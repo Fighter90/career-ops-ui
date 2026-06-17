@@ -5,18 +5,18 @@
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | **Français** | [Polski](README.pl.md) | [Українська](README.uk.md) | [العربية](README.ar.md)
 
-[![tests](https://img.shields.io/badge/tests-1126%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1134%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.0)
+[![release](https://img.shields.io/badge/release-v1.74.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.1)
 
-> **🆕 Dernière version — v1.74.0**
+> **🆕 Dernière version — v1.74.1**
 >
 > **PDFs de lettre de motivation depuis `#/cover`.** Le mode cover génère le texte de la lettre ; un bouton **Generate PDF** l'envoie désormais via le pipeline partagé markdown→PDF — sans quitter le SPA. S'appuie sur **v1.70.0**, qui a ajouté 3 langues — Polski, Українська, العربية (RTL) — pour **12 locales**, un sélecteur de langue `<select>` avec drapeau, et la compatibilité avec **career-ops v1.11.0**.
 >
-> _Suite complète **1126/1126** verte · 12 locales · docs synchronisés._
+> _Suite complète **1134/1134** verte · 12 locales · docs synchronisés._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

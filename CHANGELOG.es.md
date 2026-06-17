@@ -11,6 +11,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.74.1] — 2026-06-17
+
+**docs + test: sección "Instalar un asistente de IA" del README; cobertura completa de ramas para el conector de Gemini.** Se añadió una tabla de instalación/inicio de sesión al README — enlaces de instalación para Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI + la correspondencia de proveedor `#/config` de cada uno + "inicia sesión antes de continuar" (refleja el inicio rápido de career-ops.org/docs; aclara que la web-ui es la alternativa autónoma que no requiere CLI). El nuevo `tests/gemini-connector.test.mjs` (8 casos) cubre cada rama de `runGemini` — sin clave, éxito, error de API, finalización vacía/bloqueada, cuerpo malformado, tiempo de espera agotado, error de red, `hasGeminiKey` — llevando `server/lib/gemini.mjs` al 100% de sentencias. Cobertura global: 96% líneas / 88% ramas / 96% funciones. Suite 1126 → 1134.
+
+---
+
+
+
 ## [1.74.0] — 2026-06-17
 
 **feat(llm): GitHub Models (Copilot) como el 6.º proveedor + alineación canónica de 6 asistentes.** career-ops.org/docs lista seis asistentes de codificación con IA — Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI. La web-ui ahora admite los seis: cinco se corresponden con proveedores activos existentes (Anthropic / Gemini / OpenAI / Qwen / OpenRouter), y GitHub Copilot CLI obtiene un conector dedicado a GitHub Models — `runGitHubModels` (compatible con OpenAI-compatible; un PAT de GitHub con el alcance `models`), configurable en `#/config` (`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`) y seleccionable mediante `LLM_PROVIDER=github`; 6.º en el orden auto. Los paquetes de ayuda y los READMEs ahora listan los seis canónicos (se renombró Qwen CLI→Qwen Code; se añadieron Gemini CLI + GitHub Copilot CLI), y el README incorpora una tabla completa de referencia de modos y enlaces a adaptadores de portales en career-ops.org/docs para que cada funcionalidad se pueda rastrear hasta el proyecto principal. `tests/llm-provider-context.test.mjs` extiende la matriz de límites de recuperación a los seis proveedores (`cv.md` + `profile.yml` integrados + artefacto devuelto); se añaden las nuevas claves `GITHUB_MODELS_*` a los 12 diccionarios de idiomas. Suite 1125 → 1126.

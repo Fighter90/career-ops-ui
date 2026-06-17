@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.1] — 2026-06-17
+
+**docs + test: розділ README «Встановлення ШІ-асистента»; повне покриття гілок для конектора Gemini.** До README додано таблицю встановлення/входу — посилання для встановлення Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI + відповідність постачальника `#/config` для кожного + «увійдіть перед продовженням» (відповідає розділу швидкого старту career-ops.org/docs; пояснює, що web-ui є автономною альтернативою, яка не потребує CLI). Новий `tests/gemini-connector.test.mjs` (8 сценаріїв) охоплює кожну гілку `runGemini` — без ключа, успіх, помилка API, порожнє/заблоковане завершення, некоректне тіло відповіді, тайм-аут, мережева помилка, `hasGeminiKey` — доводячи `server/lib/gemini.mjs` до 100% за інструкціями. Загальне покриття: 96% рядків / 88% гілок / 96% функцій. Набір тестів 1126 → 1134.
+
+---
+
+
+
 ## [1.74.0] — 2026-06-17
 
 **feat(llm): GitHub Models (Copilot) як 6-й провайдер + канонічне вирівнювання 6 асистентів.** career-ops.org/docs перераховує шість ІІ-асистентів для написання коду — Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI. Тепер web-ui підтримує всі шість: п'ять відповідають наявним активним провайдерам (Anthropic / Gemini / OpenAI / Qwen / OpenRouter), а GitHub Copilot CLI отримує виділений конектор GitHub Models — `runGitHubModels` (OpenAI-compatible; PAT GitHub з областю `models`), що налаштовується в `#/config` (`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`) і вибирається через `LLM_PROVIDER=github`; 6-й у порядку auto. Пакети довідки та README тепер перераховують канонічні шість (перейменовано Qwen CLI→Qwen Code; додано Gemini CLI + GitHub Copilot CLI), а README додає повну таблицю посилань на режими та адаптери порталів на career-ops.org/docs, щоб кожна функція відстежувалась до батьківського проекту. `tests/llm-provider-context.test.mjs` розширює матрицю меж отримання до всіх шести провайдерів (`cv.md` + `profile.yml` вбудовані + повернутий артефакт); нові ключі `GITHUB_MODELS_*` додані до всіх 12 словників локалей. Набір тестів 1125 → 1126.
