@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.0] — 2026-06-17
+
+**feat(llm): GitHub Models (Copilot) を第6のプロバイダーとして追加 + 6アシスタントの標準的な整列.** career-ops.org/docs には、6つのAIコーディングアシスタントが記載されています — Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI。web-ui はこれら6つすべてをサポートするようになりました: 5つは既存のライブプロバイダー (Anthropic / Gemini / OpenAI / Qwen / OpenRouter) に対応し、GitHub Copilot CLI は専用の GitHub Models コネクター — `runGitHubModels` (OpenAI-compatible; `models` スコープを持つ GitHub PAT) を獲得します。これは `#/config` (`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`) で設定可能で、`LLM_PROVIDER=github` で選択でき、auto 順序では6番目です。ヘルプバンドルと README は標準の6つをリストするようになり (Qwen CLI→Qwen Code に改名; Gemini CLI + GitHub Copilot CLI を追加)、README にはすべての機能が親プロジェクトに追跡できるよう、完全なモード参照とポータルアダプターのリンクテーブルが career-ops.org/docs に追加されます。`tests/llm-provider-context.test.mjs` はフェッチ境界マトリックスを6つのプロバイダーすべてに拡張し (`cv.md` + `profile.yml` インライン + アーティファクト返却)、新しい `GITHUB_MODELS_*` キーがすべての12のロケール辞書に追加されます。スイート 1125 → 1126。
+
+---
+
+
+
 ## [1.73.0] — 2026-06-17
 
 **feat(llm): 汎用Geminiコネクター + 全プロバイダーにわたって検証済みのCV/プロフィールコンテキスト。** `server/lib/gemini.mjs` (`runGemini`) を追加しました — Anthropic / OpenAI互換クライアントと同じ `{markdown, usage, error}` の形式を返す、外部依存なしのGemini `generateContent` クライアントです。修正: `/api/mode/:slug` と `/api/deep` はこれまで、オファー評価専用の `gemini-eval.mjs` を通じてプロンプトを処理していたため、Gemini **Run live** が要求されたアーティファクト（カバーレター、アウトリーチ、ブリーフ）の代わりに評価を返していました。現在は `bundleProjectContext` とともに `runGemini` を呼び出すため、他のすべてのプロバイダーと同様に `cv.md` + `config/profile.yml` がGeminiにもインラインで埋め込まれ、レターやブリーフが詳細かつパーソナライズされます。新しい `tests/llm-provider-context.test.mjs` は各プロバイダーのHTTP境界をモックし、5つのプロバイダー（Anthropic / Gemini / OpenAI / Qwen / OpenRouter）すべてが `cv.md` + `profile.yml` をインラインで埋め込み、アーティファクトを返すことを検証します（mode + deep + evaluate マトリックス、9ケース）。`/api/evaluate` はオファー専用の `gemini-eval.mjs` を維持します。Suite 1116 → 1125。

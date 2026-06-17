@@ -12,7 +12,7 @@
 ### career-ops について
 
 [career-ops](https://career-ops.org) は、任意の AI コーディング CLI
-(Claude Code、Codex、OpenCode、Qwen CLI — 同じスラッシュコマンド・サーフェスで他の Claude 互換 CLI も動作します) 内で
+(Claude Code、Gemini CLI、Codex、Qwen Code、OpenCode、GitHub Copilot CLI — 同じスラッシュコマンド・サーフェスで他の Claude 互換 CLI も動作します) 内で
 スラッシュコマンドとして動作するオープンソースの求職システムです。
 モデル非依存です。各求人をあなたの CV と照らし合わせ、6 次元
 0.0–5.0 のルーブリックで評価し、ロールに合わせた PDF レジュメを生成し、
@@ -84,7 +84,7 @@
 
 | | career-ops (CLI) | career-ops-ui (本アプリ) |
 |---|---|---|
-| 実行場所 | Claude Code / Codex / OpenCode / Qwen CLI 内 | ブラウザの `http://127.0.0.1:4317` |
+| 実行場所 | Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI 内 | ブラウザの `http://127.0.0.1:4317` |
 | 表面 | `/career-ops <mode>` スラッシュコマンド | サイドバー、ワークフローごとに 1 ページ |
 | フォーム入力 | あり、Playwright MCP 経由 | なし — チェックリスト生成、CLI で仕上げ |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` (`#/cv`、`#/reports/:slug`、`#/evaluate`、`#/deep`、`#/interview-prep`) |

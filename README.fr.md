@@ -5,24 +5,24 @@
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | **Français** | [Polski](README.pl.md) | [Українська](README.uk.md) | [العربية](README.ar.md)
 
-[![tests](https://img.shields.io/badge/tests-1125%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1126%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.73.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.73.0)
+[![release](https://img.shields.io/badge/release-v1.74.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.0)
 
-> **🆕 Dernière version — v1.73.0**
+> **🆕 Dernière version — v1.74.0**
 >
 > **PDFs de lettre de motivation depuis `#/cover`.** Le mode cover génère le texte de la lettre ; un bouton **Generate PDF** l'envoie désormais via le pipeline partagé markdown→PDF — sans quitter le SPA. S'appuie sur **v1.70.0**, qui a ajouté 3 langues — Polski, Українська, العربية (RTL) — pour **12 locales**, un sélecteur de langue `<select>` avec drapeau, et la compatibilité avec **career-ops v1.11.0**.
 >
-> _Suite complète **1125/1125** verte · 12 locales · docs synchronisés._
+> _Suite complète **1126/1126** verte · 12 locales · docs synchronisés._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 
 ## À propos de career-ops
 
-[career-ops](https://career-ops.org) est un système de recherche d'emploi open-source qui s'exécute sous forme de commandes slash dans n'importe quel CLI de codage IA (Claude Code, Codex, OpenCode, Qwen CLI — d'autres CLI compatibles Claude fonctionnent aussi via la même surface de commandes slash). Indépendant du modèle. Il évalue chaque offre par rapport à votre CV avec une grille à six dimensions de 0,0 à 5,0, génère des CV PDF sur mesure, et suit chaque candidature localement — pas de comptes cloud, pas de télémétrie, pas de soumission automatique.
+[career-ops](https://career-ops.org) est un système de recherche d'emploi open-source qui s'exécute sous forme de commandes slash dans n'importe quel CLI de codage IA (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI — d'autres CLI compatibles Claude fonctionnent aussi via la même surface de commandes slash). Indépendant du modèle. Il évalue chaque offre par rapport à votre CV avec une grille à six dimensions de 0,0 à 5,0, génère des CV PDF sur mesure, et suit chaque candidature localement — pas de comptes cloud, pas de télémétrie, pas de soumission automatique.
 
 **Ce dépôt (career-ops-ui)** est une interface web soignée par-dessus. Le CLI continue de gérer le remplissage de formulaires (via Playwright MCP) et les modes en commandes slash ; la SPA vous offre une surface navigateur de style CRM sur les mêmes fichiers `cv.md` / `data/applications.md` / `reports/`. Les deux partagent les mêmes données.
 

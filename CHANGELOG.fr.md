@@ -11,6 +11,14 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.74.0] — 2026-06-17
+
+**feat(llm): GitHub Models (Copilot) comme 6e fournisseur + alignement canonique des 6 assistants.** career-ops.org/docs répertorie six assistants de codage IA — Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI. La web-ui prend désormais en charge les six : cinq correspondent à des fournisseurs actifs existants (Anthropic / Gemini / OpenAI / Qwen / OpenRouter), et GitHub Copilot CLI bénéficie d'un connecteur dédié à GitHub Models — `runGitHubModels` (OpenAI-compatible ; un PAT GitHub avec la portée `models`), configurable dans `#/config` (`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`) et sélectionnable via `LLM_PROVIDER=github` ; 6e dans l'ordre auto. Les bundles d'aide et les README listent désormais les six canoniques (Qwen CLI renommé en Qwen Code ; Gemini CLI + GitHub Copilot CLI ajoutés), et le README ajoute une table complète de référence des modes et de liens d'adaptateurs de portails vers career-ops.org/docs afin que chaque fonctionnalité soit traçable jusqu'au projet parent. `tests/llm-provider-context.test.mjs` étend la matrice de frontière de récupération aux six fournisseurs (`cv.md` + `profile.yml` intégrés + artefact retourné) ; les nouvelles clés `GITHUB_MODELS_*` sont ajoutées aux 12 dictionnaires de paramètres régionaux. Suite 1125 → 1126.
+
+---
+
+
+
 ## [1.73.0] — 2026-06-17
 
 **feat(llm): connecteur Gemini générique + contexte CV/profil vérifié pour tous les fournisseurs.** Ajout de `server/lib/gemini.mjs` (`runGemini`) — un client Gemini `generateContent` sans dépendance externe renvoyant la même forme `{markdown, usage, error}` que les clients compatibles Anthropic / OpenAI. Correction : `/api/mode/:slug` et `/api/deep` acheminaient auparavant leurs prompts via `gemini-eval.mjs`, conçu uniquement pour l'évaluation d'offres, ce qui faisait que Gemini **Run live** renvoyait une évaluation au lieu de l'artefact demandé (lettre de motivation, prise de contact, note de synthèse). Ils appellent désormais `runGemini` avec `bundleProjectContext`, de sorte que `cv.md` + `config/profile.yml` sont intégrés en ligne pour Gemini exactement comme pour tous les autres fournisseurs — les lettres et notes sont détaillées et personnalisées. Le nouveau `tests/llm-provider-context.test.mjs` simule la frontière HTTP de chaque fournisseur et vérifie que les cinq (Anthropic / Gemini / OpenAI / Qwen / OpenRouter) intègrent `cv.md` + `profile.yml` en ligne et renvoient l'artefact (matrice mode + deep + evaluate, 9 cas). `/api/evaluate` conserve son `gemini-eval.mjs` optimisé pour les offres. Suite 1116 → 1125.

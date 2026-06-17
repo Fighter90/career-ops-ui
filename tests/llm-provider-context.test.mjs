@@ -26,7 +26,7 @@ import { resolve } from 'node:path';
 
 const CV_MARK = 'ZEBRACVMARKER7731';
 const PROFILE_MARK = 'ZEBRAPROFILEMARKER4412';
-const PROVIDER_KEYS = ['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY', 'LLM_PROVIDER'];
+const PROVIDER_KEYS = ['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY', 'GITHUB_MODELS_API_KEY', 'LLM_PROVIDER'];
 
 let server, baseUrl, realFetch;
 
@@ -84,6 +84,7 @@ const PROVIDERS = {
   openai: { key: 'OPENAI_API_KEY', val: 'sk-fakeopenai0123456789abcdefghijklmn', host: 'api.openai.com', resp: RESP.openaiLike, lp: 'openai' },
   qwen: { key: 'QWEN_API_KEY', val: 'sk-fakeqwen0123456789abcdefghijklmnop', host: 'dashscope', resp: RESP.openaiLike, lp: 'qwen' },
   openrouter: { key: 'OPENROUTER_API_KEY', val: 'sk-or-fake0123456789abcdefghijklmnop', host: 'openrouter.ai', resp: RESP.openaiLike, lp: 'openrouter' },
+  github: { key: 'GITHUB_MODELS_API_KEY', val: 'github_pat_fake0123456789abcdefghijklmnop', host: 'models.github.ai', resp: RESP.openaiLike, lp: 'github' },
 };
 
 async function postJSON(path, body) {

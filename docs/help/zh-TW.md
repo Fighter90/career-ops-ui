@@ -10,7 +10,7 @@
 ### 關於 career-ops
 
 [career-ops](https://career-ops.org) 是一個開源求職系統,以 slash
-指令的形式運作於任何 AI 編碼 CLI 內(Claude Code、Codex、OpenCode、Qwen CLI — 其他 Claude 相容 CLI 也透過相同的斜線指令介面運作)。模型無關。它以六維 0.0–5.0 評分
+指令的形式運作於任何 AI 編碼 CLI 內(Claude Code、Gemini CLI、Codex、Qwen Code、OpenCode、GitHub Copilot CLI — 其他 Claude 相容 CLI 也透過相同的斜線指令介面運作)。模型無關。它以六維 0.0–5.0 評分
 量表將每個職缺與你的 CV 進行配對,產生客製化 PDF 履歷,並在本機
 追蹤每一次申請。
 
@@ -73,7 +73,7 @@
 
 | | career-ops (CLI) | career-ops-ui (本應用) |
 |---|---|---|
-| 運行位置 | Claude Code / Codex / OpenCode / Qwen CLI 內 | 瀏覽器中的 `http://127.0.0.1:4317` |
+| 運行位置 | Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI 內 | 瀏覽器中的 `http://127.0.0.1:4317` |
 | 介面 | `/career-ops <mode>` slash 指令 | 側邊欄,每個工作流一個頁面 |
 | 表單填寫 | 有,經 Playwright MCP | 無 — 產生檢查清單,你在 CLI 完成 |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF`,出現在 `#/cv`、`#/reports/:slug`、`#/evaluate`、`#/deep`、`#/interview-prep` |

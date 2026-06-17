@@ -48,7 +48,7 @@ test('config.js wires a remote OPENROUTER_MODEL select after OPENROUTER_API_KEY'
   const iModel = src.indexOf("key: 'OPENROUTER_MODEL'");
   assert.ok(iKey > 0 && iModel > iKey, 'OPENROUTER_MODEL must follow OPENROUTER_API_KEY');
   // openrouter must be a selectable LLM_PROVIDER option
-  assert.match(src, /options: \['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter'\]/);
+  assert.match(src, /options: \['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github'\]/);
 });
 
 test('i18n: all 4 OpenRouter config keys cover the 8 locales', () => {

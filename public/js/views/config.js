@@ -79,14 +79,25 @@ Router.register('config', async () => {
     'qwen/qwen-2.5-72b-instruct',
     'deepseek/deepseek-chat',
   ];
+  // GitHub Models (v1.74.0) — GitHub Copilot CLI's developer API surface.
+  // OpenAI-compatible; auth is a GitHub PAT with the `models` scope. Model
+  // ids are publisher-namespaced. First entry = default when unset.
+  const GITHUB_MODELS = [
+    'openai/gpt-4o-mini',
+    'openai/gpt-4o',
+    'openai/gpt-4.1',
+    'meta/Llama-3.3-70B-Instruct',
+    'mistral-ai/Mistral-Large-2411',
+    'deepseek/DeepSeek-V3',
+  ];
   const FIELDS = [
     {
       // v1.39.0 (WS8.2) — explicit provider preference.
       key: 'LLM_PROVIDER', secret: false, kind: 'select',
-      options: ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter'], defaultValue: 'auto',
+      options: ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github'], defaultValue: 'auto',
       labelKey: 'config.llmProvider', label: 'LLM_PROVIDER',
       hintKey: 'config.llmProviderHint',
-      hintFallback: 'auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = force that one. A forced provider with no key → manual-prompt fallback.',
+      hintFallback: 'auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models. claude / gemini / openai / qwen / openrouter / github = force that one. A forced provider with no key → manual-prompt fallback.',
     },
     {
       key: 'ANTHROPIC_API_KEY', secret: true,
@@ -163,6 +174,22 @@ Router.register('config', async () => {
       labelKey: 'config.openrouterModel', label: 'OPENROUTER_MODEL',
       hintKey: 'config.openrouterModelHint',
       hintFallback: 'Default: openrouter/auto (OpenRouter picks). The full live catalogue loads from OpenRouter; pick any vendor/model id. Falls back to a curated list if the catalogue is unreachable.',
+    },
+    {
+      // v1.74.0 — GitHub Models (GitHub Copilot CLI's API surface). A GitHub
+      // PAT with the `models` scope; OpenAI-compatible endpoint. 6th in the
+      // auto order (tail), after OpenRouter.
+      key: 'GITHUB_MODELS_API_KEY', secret: true,
+      labelKey: 'config.githubKey', label: 'GITHUB_MODELS_API_KEY',
+      hintKey: 'config.githubHint',
+      hintFallback: 'A GitHub personal-access token with the "models" scope (github.com/settings/tokens). This is GitHub Copilot CLI\'s API surface (GitHub Models). When set, runs the web-ui ⚡ live eval (6th in the auto order, after OpenRouter).',
+    },
+    {
+      key: 'GITHUB_MODELS_MODEL', secret: false, kind: 'select',
+      options: GITHUB_MODELS, defaultValue: 'openai/gpt-4o-mini',
+      labelKey: 'config.githubModel', label: 'GITHUB_MODELS_MODEL',
+      hintKey: 'config.githubModelHint',
+      hintFallback: 'Default: openai/gpt-4o-mini. Publisher-namespaced ids — openai/gpt-4o, openai/gpt-4.1, meta/Llama-3.3-70B-Instruct, deepseek/DeepSeek-V3, …',
     },
     // v1.19.0 — HH_USER_AGENT removed from the UI per user direction.
     // The server still honors the env var if a power user sets it via

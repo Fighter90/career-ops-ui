@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.0] — 2026-06-17
+
+**feat(llm): GitHub Models (Copilot) كمزوّد سادس + التوافق القانوني لستة مساعدين.** يُدرج career-ops.org/docs ستة مساعدين لترميز الذكاء الاصطناعي — Claude Code، Gemini CLI، Codex، Qwen Code، OpenCode، GitHub Copilot CLI. تدعم web-ui الآن جميع الستة: خمسة منهم يرتبطون بمزوّدين نشطين موجودين (Anthropic / Gemini / OpenAI / Qwen / OpenRouter)، ويحصل GitHub Copilot CLI على موصّل مخصص لـ GitHub Models — `runGitHubModels` (OpenAI-compatible؛ PAT من GitHub بنطاق `models`)، قابل للتهيئة في `#/config` (`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`) وقابل للتحديد عبر `LLM_PROVIDER=github`؛ السادس في ترتيب auto. تُدرج حزم المساعدة وملفات README الآن الستة القانونيين (تمت إعادة تسمية Qwen CLI إلى Qwen Code؛ تمت إضافة Gemini CLI + GitHub Copilot CLI)، ويُضيف README جدولاً كاملاً لمرجع الأوضاع وروابط محوّلات البوابات إلى career-ops.org/docs حتى يمكن تتبّع كل ميزة إلى المشروع الأصل. يُوسّع `tests/llm-provider-context.test.mjs` مصفوفة حدود الجلب لتشمل جميع المزوّدين الستة (`cv.md` + `profile.yml` مضمّنة + العناصر المُعادة)؛ تمت إضافة مفاتيح `GITHUB_MODELS_*` الجديدة إلى جميع قواميس 12 لغة إقليمية. الحزمة 1125 → 1126.
+
+---
+
+
+
 ## [1.73.0] — 2026-06-17
 
 **feat(llm): موصّل Gemini العام + سياق السيرة الذاتية/الملف الشخصي الموثَّق عبر جميع مزودي الخدمة.** تمت إضافة `server/lib/gemini.mjs` (`runGemini`) — عميل Gemini `generateContent` بدون أي تبعيات خارجية يعيد نفس البنية `{markdown, usage, error}` التي يعيدها العملاء المتوافقون مع Anthropic / OpenAI. الإصلاح: كانت `/api/mode/:slug` و`/api/deep` تُمرّران المطالبات عبر `gemini-eval.mjs` المخصص للتقييم فقط، مما جعل Gemini **Run live** يعيد تقييماً بدلاً من القطعة المطلوبة (رسالة تقديم، تواصل، موجز). تستدعيان الآن `runGemini` مع `bundleProjectContext`، فيُدمَج `cv.md` + `config/profile.yml` مضمَّنَين لـ Gemini تماماً كما مع كل مزود آخر — فتصبح الرسائل والموجزات مفصّلة ومخصَّصة. يحاكي `tests/llm-provider-context.test.mjs` الجديد حدود HTTP لكل مزود ويتحقق من أن المزودين الخمسة جميعهم (Anthropic / Gemini / OpenAI / Qwen / OpenRouter) يُدمجون `cv.md` + `profile.yml` مضمَّنَين ويعيدون القطعة (مصفوفة mode + deep + evaluate، 9 حالات). تحتفظ `/api/evaluate` بـ `gemini-eval.mjs` المضبوط للوظائف. Suite 1116 → 1125.

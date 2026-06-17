@@ -13,7 +13,7 @@ do konkretnej sekcji za pomocą spisu treści w pasku bocznym pomocy.
 ### O career-ops
 
 [career-ops](https://career-ops.org) to system poszukiwania pracy o otwartym kodzie źródłowym,
-działający jako polecenia slash w dowolnym CLI do kodowania AI (Claude Code, Codex, OpenCode, Qwen CLI — inne CLI kompatybilne z Claude też działają przez tę samą powierzchnię poleceń slash). Niezależny od modelu. Ocenia każde ogłoszenie względem Twojego CV według sześciowymiarowej skali 0,0–5,0, generuje dopasowane CV w formacie PDF i śledzi każdą aplikację lokalnie na Twoim komputerze.
+działający jako polecenia slash w dowolnym CLI do kodowania AI (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI — inne CLI kompatybilne z Claude też działają przez tę samą powierzchnię poleceń slash). Niezależny od modelu. Ocenia każde ogłoszenie względem Twojego CV według sześciowymiarowej skali 0,0–5,0, generuje dopasowane CV w formacie PDF i śledzi każdą aplikację lokalnie na Twoim komputerze.
 
 **Kanoniczne odniesienia (czytaj w tej kolejności przy pierwszej instalacji):**
 
@@ -79,7 +79,7 @@ działający jako polecenia slash w dowolnym CLI do kodowania AI (Claude Code, C
 
 | | career-ops (CLI) | career-ops-ui (ta aplikacja) |
 |---|---|---|
-| Gdzie działa | wewnątrz Claude Code / Codex / OpenCode / Qwen CLI | `http://127.0.0.1:4317` w Twojej przeglądarce |
+| Gdzie działa | wewnątrz Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI | `http://127.0.0.1:4317` w Twojej przeglądarce |
 | Powierzchnia | polecenia slash `/career-ops <mode>` | pasek boczny z jedną stroną na workflow |
 | Wypełnianie formularzy | tak, przez Playwright MCP | nie — generuje listę kontrolną, resztę kończysz w CLI |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` na `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |

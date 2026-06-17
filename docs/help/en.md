@@ -13,7 +13,7 @@ help sidebar.
 ### About career-ops
 
 [career-ops](https://career-ops.org) is an open-source job-search system
-that runs as slash commands inside any AI coding CLI (Claude Code, Codex, OpenCode, Qwen CLI — other Claude-compatible CLIs work too via the same slash-command surface). Model-agnostic. It
+that runs as slash commands inside any AI coding CLI (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI — other Claude-compatible CLIs work too via the same slash-command surface). Model-agnostic. It
 evaluates each posting against your CV with a six-dimension 0.0–5.0
 rubric, generates tailored PDF résumés, and tracks every application
 locally on your machine.
@@ -83,7 +83,7 @@ locally on your machine.
 
 | | career-ops (CLI) | career-ops-ui (this app) |
 |---|---|---|
-| Where it runs | inside Claude Code / Codex / OpenCode / Qwen CLI | `http://127.0.0.1:4317` in your browser |
+| Where it runs | inside Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI | `http://127.0.0.1:4317` in your browser |
 | Surface | `/career-ops <mode>` slash commands | sidebar with one page per workflow |
 | Form-fill | yes, via Playwright MCP | no — generates the checklist, you finish in the CLI |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` on `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |

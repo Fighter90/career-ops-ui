@@ -147,6 +147,27 @@ export function hasOpenRouterKey() {
   return isUsableKey(envKey('OPENROUTER_API_KEY'));
 }
 
+// GitHub Models (v1.74.0) — GitHub Copilot CLI's developer API surface. The
+// inference endpoint is OpenAI-compatible; auth is a GitHub PAT with the
+// `models` scope. Model ids are publisher-namespaced (`openai/gpt-4o-mini`).
+const GITHUB_MODELS_URL = 'https://models.github.ai/inference/chat/completions';
+
+/** Run a prompt via GitHub Models (Copilot). OpenAI-compatible. */
+export async function runGitHubModels(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || envKey('GITHUB_MODELS_URL') || GITHUB_MODELS_URL,
+    apiKey: opts.apiKey || envKey('GITHUB_MODELS_API_KEY'),
+    model: opts.model || envKey('GITHUB_MODELS_MODEL') || 'openai/gpt-4o-mini',
+    label: 'GitHub Models',
+    ...opts,
+  });
+}
+
+/** "Is the GitHub Models key set?" — same effectiveEnv view (v1.74.0). */
+export function hasGitHubModelsKey() {
+  return isUsableKey(envKey('GITHUB_MODELS_API_KEY'));
+}
+
 /**
  * Curated fallback model list (v1.57.0) — used when the live
  * OpenRouter catalogue can't be fetched (offline, rate-limited, 5xx)

@@ -92,20 +92,20 @@ test('#/reports view source contains the score-thresholds card scaffold', () => 
   }
 });
 
-test('v1.28.0 — every help-bundle + README lists OpenCode + Qwen CLI (canonical upstream)', () => {
-  // v1.28.0 (Issue #1) — career-ops.org/docs Quick Start canonical AI-assistant
-  // list is Claude Code / Codex / OpenCode / Qwen CLI. Pre-v1.28 we drifted to
-  // Claude Code / Codex / Cursor / Gemini CLI / GitHub Copilot CLI. This canary
-  // keeps the alignment from regressing.
+test('v1.74.0 — every help-bundle + README lists the canonical 6 AI assistants', () => {
+  // career-ops.org/docs Quick Start canonical AI-assistant list (v1.74.0):
+  // Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI.
+  // (Pre-v1.28 stale list "Cursor, Gemini CLI, GitHub Copilot CLI" — with
+  // Cursor — is still banned by the next test.) This canary keeps the web-ui
+  // docs aligned with the parent's six supported assistants.
+  const CANON = ['Claude Code', 'Gemini CLI', 'Codex', 'Qwen Code', 'OpenCode', 'GitHub Copilot CLI'];
   for (const lang of HELP_BUNDLES) {
     const text = readFileSync(resolve(ROOT, 'docs', 'help', `${lang}.md`), 'utf8');
-    assert.ok(text.includes('OpenCode'), `docs/help/${lang}.md missing "OpenCode" — AI-list drift`);
-    assert.ok(text.includes('Qwen CLI'), `docs/help/${lang}.md missing "Qwen CLI" — AI-list drift`);
+    for (const a of CANON) assert.ok(text.includes(a), `docs/help/${lang}.md missing "${a}" — AI-list drift`);
   }
   for (const name of README_FILES) {
     const text = readFileSync(resolve(ROOT, name), 'utf8');
-    assert.ok(text.includes('OpenCode'), `${name} missing "OpenCode" — AI-list drift`);
-    assert.ok(text.includes('Qwen CLI'), `${name} missing "Qwen CLI" — AI-list drift`);
+    for (const a of CANON) assert.ok(text.includes(a), `${name} missing "${a}" — AI-list drift`);
   }
 });
 

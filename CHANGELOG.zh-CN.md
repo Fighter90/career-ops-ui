@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.0] — 2026-06-17
+
+**feat(llm): GitHub Models (Copilot) 作为第6个提供商 + 6个助手的规范对齐。** career-ops.org/docs 列出了六个AI编程助手 — Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI。web-ui 现在支持全部六个：五个映射到现有的在线提供商（Anthropic / Gemini / OpenAI / Qwen / OpenRouter），GitHub Copilot CLI 获得了专用的 GitHub Models 连接器 — `runGitHubModels`（OpenAI-compatible；具有 `models` 权限范围的 GitHub PAT），可在 `#/config` 中配置（`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`），并可通过 `LLM_PROVIDER=github` 选择；在 auto 顺序中排第6位。帮助包和 README 现在列出了规范的六个（将 Qwen CLI 重命名为 Qwen Code；添加了 Gemini CLI + GitHub Copilot CLI），README 还新增了完整的模式参考和门户适配器链接表，指向 career-ops.org/docs，使每个功能都可以追溯到父项目。`tests/llm-provider-context.test.mjs` 将获取边界矩阵扩展到所有六个提供商（`cv.md` + `profile.yml` 内联 + 返回的构件）；新的 `GITHUB_MODELS_*` 键已添加到所有 12 个语言区域字典中。测试套件 1125 → 1126。
+
+---
+
+
+
 ## [1.73.0] — 2026-06-17
 
 **feat(llm): 通用 Gemini 连接器 + 跨所有提供商验证的简历/配置文件上下文。** 新增 `server/lib/gemini.mjs`（`runGemini`）——一个无外部依赖的 Gemini `generateContent` 客户端，返回与 Anthropic / OpenAI 兼容客户端相同的 `{markdown, usage, error}` 结构。修复：`/api/mode/:slug` 和 `/api/deep` 此前将提示词路由至仅用于职位评估的 `gemini-eval.mjs`，导致 Gemini **Run live** 返回评估结果而非请求的产物（求职信、外联信、简报）。现在它们通过 `bundleProjectContext` 调用 `runGemini`，因此 `cv.md` + `config/profile.yml` 对 Gemini 的内联嵌入方式与其他所有提供商完全一致——信件和简报更加详尽且个性化。新增的 `tests/llm-provider-context.test.mjs` 模拟每个提供商的 HTTP 边界，并验证全部五个提供商（Anthropic / Gemini / OpenAI / Qwen / OpenRouter）均内联嵌入 `cv.md` + `profile.yml` 并返回产物（mode + deep + evaluate 矩阵，9 个用例）。`/api/evaluate` 保留其针对职位调优的 `gemini-eval.mjs`。Suite 1116 → 1125。

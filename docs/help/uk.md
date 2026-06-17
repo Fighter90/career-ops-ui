@@ -6,7 +6,7 @@
 
 ### Про career-ops
 
-[career-ops](https://career-ops.org) — це система пошуку роботи з відкритим кодом, яка працює як slash-команди всередині будь-якого AI coding CLI (Claude Code, Codex, OpenCode, Qwen CLI — інші CLI, сумісні з Claude, теж працюють через той самий slash-command поверхней). Не залежить від моделі. Оцінює кожну вакансію порівняно з вашим CV за шестивимірною рубрикою 0.0–5.0, генерує адаптовані PDF-резюме та відстежує кожну заявку локально на вашому комп'ютері.
+[career-ops](https://career-ops.org) — це система пошуку роботи з відкритим кодом, яка працює як slash-команди всередині будь-якого AI coding CLI (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI — інші CLI, сумісні з Claude, теж працюють через той самий slash-command поверхней). Не залежить від моделі. Оцінює кожну вакансію порівняно з вашим CV за шестивимірною рубрикою 0.0–5.0, генерує адаптовані PDF-резюме та відстежує кожну заявку локально на вашому комп'ютері.
 
 **Канонічні посилання (читайте в порядку при першому встановленні):**
 
@@ -56,7 +56,7 @@
 
 | | career-ops (CLI) | career-ops-ui (цей застосунок) |
 |---|---|---|
-| Де працює | всередині Claude Code / Codex / OpenCode / Qwen CLI | `http://127.0.0.1:4317` у браузері |
+| Де працює | всередині Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI | `http://127.0.0.1:4317` у браузері |
 | Поверхня | slash-команди `/career-ops <mode>` | бічна панель з окремою сторінкою для кожного кроку |
 | Заповнення форм | так, через Playwright MCP | ні — генерує чеклист, ви завершуєте в CLI |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` на `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |

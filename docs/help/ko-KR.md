@@ -11,7 +11,7 @@
 
 ### career-ops 소개
 
-[career-ops](https://career-ops.org)는 모든 AI 코딩 CLI(Claude Code, Codex, OpenCode, Qwen CLI — 다른 Claude 호환 CLI도 동일한 슬래시 커맨드 인터페이스에서 작동합니다) 안에서
+[career-ops](https://career-ops.org)는 모든 AI 코딩 CLI(Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI — 다른 Claude 호환 CLI도 동일한 슬래시 커맨드 인터페이스에서 작동합니다) 안에서
 슬래시 명령으로 동작하는 오픈소스 구직 시스템입니다. 모델
 무관(model-agnostic). 각 채용 공고를 여러분의 CV에 대해 6차원
 0.0–5.0 루브릭으로 평가하고, 맞춤형 PDF 이력서를 생성하며, 모든
@@ -83,7 +83,7 @@
 
 | | career-ops (CLI) | career-ops-ui (이 앱) |
 |---|---|---|
-| 실행 위치 | Claude Code / Codex / OpenCode / Qwen CLI 내부 | 브라우저의 `http://127.0.0.1:4317` |
+| 실행 위치 | Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI 내부 | 브라우저의 `http://127.0.0.1:4317` |
 | 표면 | `/career-ops <mode>` 슬래시 명령 | 워크플로우당 한 페이지를 가진 사이드바 |
 | 폼 채우기 | 예, Playwright MCP 경유 | 아니오 — 체크리스트만 생성. CLI에서 마무리 |
 | PDF | `generate-pdf.mjs` | `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep`의 `📄 Generate PDF` |

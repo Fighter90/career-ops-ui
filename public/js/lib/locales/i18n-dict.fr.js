@@ -156,6 +156,10 @@ window.__I18N_DICT_FR = {
   'config.openrouterHint': "openrouter.ai/keys — une clé devant 300+ modèles (Anthropic, OpenAI, Google, Meta, Qwen, DeepSeek …). Quand définie, exécute l'évaluation en direct de l'interface web (5e dans l'ordre automatique, après Qwen). Point d'accès compatible avec OpenAI.", // openrouter.ai/keys — one key fronts 300+ models (Anthropic, OpenAI, Google, Meta, Qwen, DeepSeek …). When set, runs the web-ui live eval (5th in the auto order, after Qwen). OpenAI-compatible endpoint.
   'config.openrouterModel': "OPENROUTER_MODEL", // OPENROUTER_MODEL
   'config.openrouterModelHint': "Par défaut : openrouter/auto (OpenRouter choisit). Le catalogue complet charge depuis OpenRouter — choisissez tout fournisseur/model id. Retourne à une liste curatée si le catalogue est inaccessible.", // Default: openrouter/auto (OpenRouter picks). The full live catalogue loads from OpenRouter — pick any vendor/model id. Falls back to a curated list if the catalogue is unreachable.
+  'config.githubKey': "GITHUB_MODELS_API_KEY",
+  'config.githubHint': "Un jeton d'accès personnel GitHub avec la portée \"models\" (github.com/settings/tokens). Il s'agit de la surface d'API de GitHub Copilot CLI (GitHub Models). Une fois configuré, lance l'évaluation en direct du web-ui (6e dans l'ordre automatique, après OpenRouter). Endpoint compatible OpenAI.",
+  'config.githubModel': "GITHUB_MODELS_MODEL",
+  'config.githubModelHint': "Par défaut : openai/gpt-4o-mini. Identifiants avec espace de noms d'éditeur — openai/gpt-4o, openai/gpt-4.1, meta/Llama-3.3-70B-Instruct, deepseek/DeepSeek-V3, …",
   'config.hhUserAgent': "User-Agent HH", // HH user agent
   'config.hhUserAgentHint': "User-Agent de navigateur réel pour l'API hh.ru. Obligatoire lors du scan depuis des IP non-RU.", // Real-browser User-Agent for hh.ru API. Required when scanning from non-RU IPs.
   'config.port': "Port du serveur", // Server port

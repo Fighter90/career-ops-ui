@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.0] — 2026-06-17
+
+**feat(llm): GitHub Models (Copilot) як 6-й провайдер + канонічне вирівнювання 6 асистентів.** career-ops.org/docs перераховує шість ІІ-асистентів для написання коду — Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI. Тепер web-ui підтримує всі шість: п'ять відповідають наявним активним провайдерам (Anthropic / Gemini / OpenAI / Qwen / OpenRouter), а GitHub Copilot CLI отримує виділений конектор GitHub Models — `runGitHubModels` (OpenAI-compatible; PAT GitHub з областю `models`), що налаштовується в `#/config` (`GITHUB_MODELS_API_KEY` + `GITHUB_MODELS_MODEL`) і вибирається через `LLM_PROVIDER=github`; 6-й у порядку auto. Пакети довідки та README тепер перераховують канонічні шість (перейменовано Qwen CLI→Qwen Code; додано Gemini CLI + GitHub Copilot CLI), а README додає повну таблицю посилань на режими та адаптери порталів на career-ops.org/docs, щоб кожна функція відстежувалась до батьківського проекту. `tests/llm-provider-context.test.mjs` розширює матрицю меж отримання до всіх шести провайдерів (`cv.md` + `profile.yml` вбудовані + повернутий артефакт); нові ключі `GITHUB_MODELS_*` додані до всіх 12 словників локалей. Набір тестів 1125 → 1126.
+
+---
+
+
+
 ## [1.73.0] — 2026-06-17
 
 **feat(llm): універсальний конектор Gemini + верифікований контекст CV/профілю для всіх провайдерів.** Додано `server/lib/gemini.mjs` (`runGemini`) — клієнт Gemini `generateContent` без зовнішніх залежностей, що повертає ту саму форму `{markdown, usage, error}`, що й клієнти, сумісні з Anthropic / OpenAI. Виправлення: `/api/mode/:slug` і `/api/deep` раніше спрямовували промпти через `gemini-eval.mjs`, призначений виключно для оцінювання вакансій, через що Gemini **Run live** повертав оцінку замість запитаного артефакту (супровідний лист, аутрич, бриф). Тепер вони викликають `runGemini` з `bundleProjectContext`, тому `cv.md` + `config/profile.yml` вбудовуються інлайн для Gemini так само, як і для всіх інших провайдерів — листи та брифи є детальними й персоналізованими. Новий `tests/llm-provider-context.test.mjs` імітує HTTP-межу кожного провайдера та перевіряє, що всі п'ять (Anthropic / Gemini / OpenAI / Qwen / OpenRouter) вбудовують `cv.md` + `profile.yml` інлайн і повертають артефакт (матриця mode + deep + evaluate, 9 випадків). `/api/evaluate` зберігає свій `gemini-eval.mjs`, налаштований під вакансії. Suite 1116 → 1125.

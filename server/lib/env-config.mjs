@@ -28,6 +28,8 @@ export const KNOWN_KEYS = [
   'QWEN_MODEL',
   'OPENROUTER_API_KEY',    // headless live-eval via OpenRouter (v1.57.0); one key → 300+ models
   'OPENROUTER_MODEL',
+  'GITHUB_MODELS_API_KEY', // headless live-eval via GitHub Models (v1.74.0) — GitHub Copilot CLI's API surface; a GitHub PAT with the `models` scope, OpenAI-compatible
+  'GITHUB_MODELS_MODEL',
   // ── Server runtime ──
   'PORT',
   'HOST',
@@ -39,7 +41,7 @@ export const KNOWN_KEYS = [
  * one provider; with no key it falls through to the manual-prompt
  * path exactly like the pre-v1.39 no-key behaviour.
  */
-export const LLM_PROVIDERS = ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter'];
+export const LLM_PROVIDERS = ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github'];
 
 /**
  * Effective provider preference order from LLM_PROVIDER:
@@ -59,10 +61,11 @@ export function providerOrder(env = process.env) {
   if (v === 'openai') return ['openai'];
   if (v === 'qwen') return ['qwen'];
   if (v === 'openrouter') return ['openrouter'];
-  // OpenRouter sits at the TAIL of the auto order: a user who already
-  // had Anthropic/Gemini/OpenAI/Qwen working keeps that exact routing;
-  // OpenRouter only kicks in when it's the sole configured key.
-  return ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter'];
+  if (v === 'github') return ['github'];
+  // OpenRouter + GitHub Models sit at the TAIL of the auto order: a user who
+  // already had Anthropic/Gemini/OpenAI/Qwen working keeps that exact routing;
+  // they only kick in when one is the sole configured key.
+  return ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github'];
 }
 
 /**
@@ -98,12 +101,14 @@ export const KEY_GROUPS = {
   QWEN_MODEL: 'core',
   OPENROUTER_API_KEY: 'core',
   OPENROUTER_MODEL: 'core',
+  GITHUB_MODELS_API_KEY: 'core',
+  GITHUB_MODELS_MODEL: 'core',
   PORT: 'runtime',
   HOST: 'runtime',
 };
 
 /** Keys whose values are secret and must never be returned in plain text. */
-export const SECRET_KEYS = new Set(['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY']);
+export const SECRET_KEYS = new Set(['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY', 'GITHUB_MODELS_API_KEY']);
 
 /**
  * Parse an .env file body into a plain object. Preserves the raw text
