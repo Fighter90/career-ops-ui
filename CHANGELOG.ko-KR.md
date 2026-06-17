@@ -9,6 +9,14 @@
 ---
 
 
+## [1.72.0] — 2026-06-17
+
+**feat(modes): **Run live** 가 이제 최종 결과물을 직접 반환합니다 (단일 실행 출력 계약).** 상위 `modes/<slug>.md` 템플릿은 Claude Code 대화형 세션을 위해 작성되었으며, 일부(cover, contacto 등)는 결과를 생성하기 전에 확인 질문을 위해 일시 중지합니다. 이로 인해 웹 UI의 **Run live** 가 결과물 대신 설문지를 출력했습니다. `buildModePrompt` 는 이제 모든 모드를 비대화형 출력 계약으로 감쌉니다: 분석(JD 분석, 회사 노트, ATS 키워드, 프로필↔JD 간극, 톤/방향 선택)을 자동으로 수행하고, 템플릿이 보통 물어볼 내용에 대해 `cv.md` / `config/profile.yml` 에서 합리적인 기본값을 선택하며, 최종 결과물만 출력합니다 — 모드별 «output ONLY {the cover letter / outreach message / …}» 알림으로 마무리됩니다. 이제 `#/cover` 에서 **Run live** 를 클릭하면 커버 레터 자체가 반환됩니다. 동일한 수정이 모든 일반 모드(cover, contacto, interview-prep, project, training, followup, patterns)의 12개 로케일 전체에 적용됩니다(결과물은 로케일 지시어를 통해 UI 언어로 작성됩니다). Suite 1103 → 1116.
+
+---
+
+
+
 ## [1.71.2] — 2026-06-17
 
 **docs(i18n):** 문서 일관성 검토 결과를 게시합니다. 각 README의 "Translations of this guide" 블록에 이제 11개의 형제 언어가 모두 나열되며(이전에는 일부가 English/Français를 생략하거나 자기 자신에 링크), 섹션 구분 앞의 빈 줄이 복원되었습니다. 전체 QA 회귀 프롬프트가 현재 버전으로 이름이 변경되었고, 문서(`CLAUDE.md`, `CONVENTIONS`, `LOCALIZATION`, `PROJECT-CONTEXT`)가 현재 버전 및 테스트 수(1103)와 동기화되었습니다. 코드 또는 동작 변경 없음 — 문서만 변경되었으므로 도움말/UI 번역 및 1.70.0–1.71.1의 모든 기능은 변경되지 않습니다.

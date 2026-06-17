@@ -9,6 +9,14 @@
 ---
 
 
+## [1.72.0] — 2026-06-17
+
+**feat(modes): **Run live** 現在直接傳回最終產出物（單次執行輸出契約）。** 父模板 `modes/<slug>.md` 是為 Claude Code 的互動式工作階段所撰寫的——其中幾個（cover、contacto 等）在產生結果前會暫停以詢問釐清問題，導致 Web UI 的 **Run live** 輸出問卷而非產出物。`buildModePrompt` 現在將每個模式包裹在非互動式輸出契約中：靜默執行分析（職缺說明拆解、公司備註、ATS 關鍵字、個人檔案↔職缺差距、語氣/角度選擇），從 `cv.md` / `config/profile.yml` 為模板通常會詢問的內容選取合理的預設值，並僅輸出最終產出物——以每種模式的「output ONLY {the cover letter / outreach message / …}」提示作為結尾。因此，在 `#/cover` 上點擊 **Run live** 現在將直接傳回求職信本身；相同的修正適用於所有通用模式（cover、contacto、interview-prep、project、training、followup、patterns）的全部 12 個語言環境（產出物透過語言環境指令以 UI 語言撰寫）。Suite 1103 → 1116。
+
+---
+
+
+
 ## [1.71.2] — 2026-06-17
 
 **docs(i18n):** 發布文件一致性整理結果。每個 README 的 "Translations of this guide" 區塊現在列出了全部 11 種同級語言（此前部分語言遺漏了 English/Français 或存在自連結），並恢復了節分隔符前的空行。完整的 QA 回歸提示詞已重命名為目前版本，文件（`CLAUDE.md`、`CONVENTIONS`、`LOCALIZATION`、`PROJECT-CONTEXT`）已與目前版本和測試數量（1103）同步。無程式碼或行為變更——僅文件變更，因此說明/UI 翻譯及 1.70.0–1.71.1 中的所有功能均保持不變。

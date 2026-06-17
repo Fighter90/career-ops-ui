@@ -11,6 +11,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.72.0] — 2026-06-17
+
+**feat(modes): **Run live** ahora devuelve el artefacto final directamente (contrato de salida de un solo disparo).** Las plantillas padre `modes/<slug>.md` están escritas para sesiones interactivas de Claude Code — varias (cover, contacto, …) hacen una pausa para formular preguntas aclaratorias antes de producir el resultado, lo que hacía que el **Run live** de la interfaz web emitiera un cuestionario en lugar del artefacto. `buildModePrompt` ahora envuelve cada modo en un contrato de salida no interactivo: realiza el análisis (desglose de la oferta, notas sobre la empresa, palabras clave ATS, diferencias perfil↔oferta, elecciones de tono/enfoque) de forma silenciosa, elige valores predeterminados razonables de `cv.md` / `config/profile.yml` para todo lo que la plantilla normalmente preguntaría, y genera únicamente el artefacto final — cerrado con un recordatorio por modo «output ONLY {the cover letter / outreach message / …}». Así, al hacer clic en **Run live** sobre `#/cover` ahora se devuelve la carta de presentación en sí; la misma corrección se aplica a todos los modos genéricos (cover, contacto, interview-prep, project, training, followup, patterns) en los 12 idiomas (el artefacto se redacta en el idioma de la interfaz mediante la directiva de configuración regional). Suite 1103 → 1116.
+
+---
+
+
+
 ## [1.71.2] — 2026-06-17
 
 **docs(i18n):** publica el pase de consistencia de documentación. El bloque "Translations of this guide" de cada README ahora lista los 11 idiomas hermanos (anteriormente algunos omitían English/Français o se enlazaban a sí mismos), con la línea en blanco antes del salto de sección restaurada. El prompt completo de regresión QA se renombra a la versión actual, y la documentación (`CLAUDE.md`, `CONVENTIONS`, `LOCALIZATION`, `PROJECT-CONTEXT`) se sincroniza con la versión actual y el recuento de pruebas (1103). Sin cambios en el código ni en el comportamiento — solo documentación, por lo que las traducciones de ayuda/UI y todas las funciones de 1.70.0–1.71.1 permanecen sin cambios.

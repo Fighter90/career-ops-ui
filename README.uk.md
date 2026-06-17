@@ -5,14 +5,14 @@
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | **Українська** | [العربية](README.ar.md)
 
-[![tests](https://img.shields.io/badge/tests-1100%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-1116%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.71.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.2)
+[![release](https://img.shields.io/badge/release-v1.72.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.72.0)
 
-> **Новинка — v1.71.2**
+> **Новинка — v1.72.0**
 >
 > Інтерфейс тепер підтримує **12 мов UI** — зокрема українську. Повний список змін: [CHANGELOG.md](CHANGELOG.md).
 

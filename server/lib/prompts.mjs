@@ -206,16 +206,57 @@ export function bundleProjectContext(opts = {}) {
  * fields the user filled in. Strips any { run: ... } toggle so it
  * doesn't leak into the rendered prompt.
  */
+// Per-mode name of the final artifact, used in the single-shot reminder so the
+// model knows exactly what to emit. Falls back to "the final result".
+const MODE_ARTIFACT = {
+  cover: 'the cover letter',
+  contacto: 'the outreach message(s)',
+  'interview-prep': 'the interview-prep brief',
+  project: 'the project evaluation',
+  training: 'the course/certification evaluation',
+  followup: 'the follow-up message',
+  patterns: 'the rejection-pattern analysis',
+  batch: 'the result',
+};
+
+// SINGLE-SHOT OUTPUT CONTRACT. The parent `modes/<slug>.md` templates are
+// written for interactive Claude Code sessions — several (cover, contacto, …)
+// pause to ask the user clarifying questions before producing the artifact.
+// In the web-ui the runner is single-shot: the model's reply is shown verbatim
+// as the result and there is no way to answer follow-ups. This directive makes
+// every "Run live" do the analysis silently and emit ONLY the final artifact.
+function singleShotContract() {
+  return [
+    '# Output contract — single-shot, non-interactive',
+    'You are running via a web UI, NOT an interactive chat. Your reply is shown',
+    'to the user verbatim as the FINAL result; there is no chance to ask a',
+    'follow-up question or receive an answer.',
+    '- Do NOT ask the user any questions and do NOT wait for input.',
+    '- Do the mode\'s analysis (job/vacancy breakdown, company notes, keywords,',
+    '  profile↔JD gaps, etc.) SILENTLY/internally — do not print it as numbered',
+    '  steps or a questionnaire.',
+    '- Wherever the mode template would normally pause to ask the user (tone,',
+    '  angle, how to handle gaps, which option to pick), choose the most',
+    '  reasonable default yourself from cv.md / config/profile.yml + the supplied',
+    '  context, and proceed.',
+    '- Output ONLY the final artifact — no preamble, no analysis dump, no questions.',
+    '',
+    '',
+  ].join('\n');
+}
+
 export function buildModePrompt(template, slug, context, lang) {
   const ctx = { ...context };
   delete ctx.run;
   delete ctx.lang;
   delete ctx.locale;
   const roleLineFn = SCAFFOLD_STRINGS.modeRoleLine[lang] || SCAFFOLD_STRINGS.modeRoleLine.en;
+  const artifact = MODE_ARTIFACT[slug] || 'the final result';
   const parts = [
     buildLocaleDirective(lang),
     roleLineFn(slug),
     '',
+    singleShotContract(),
     scaffold('readFiles', lang),
     '  • cv.md',
     '  • config/profile.yml',
@@ -230,6 +271,11 @@ export function buildModePrompt(template, slug, context, lang) {
     '─── modes/' + slug + '.md ───',
     '',
     template,
+    '',
+    '─── Output now ───',
+    `Per the single-shot output contract above: skip every interactive question in`,
+    `the mode template, assume sensible defaults from cv.md / config/profile.yml,`,
+    `and output ONLY ${artifact}. Begin now.`,
   ];
   return parts.join('\n');
 }

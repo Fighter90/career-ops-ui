@@ -73,6 +73,30 @@ for (const lang of ['fr', 'pl', 'uk', 'ar']) {
   });
 }
 
+// Single-shot output contract (v1.72.0) — every mode "Run live" must do its
+// analysis silently and emit ONLY the final artifact, in EVERY locale. The
+// contract/reminder are English meta-instructions; the artifact itself is
+// produced in the UI locale via the locale directive.
+const ALL_12 = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
+for (const lang of ALL_12) {
+  test(`buildModePrompt: single-shot contract + cover artifact + locale directive (${lang})`, () => {
+    const p = buildModePrompt('TEMPLATE BODY', 'cover', { company: 'Acme' }, lang);
+    assert.match(p, /# Output contract — single-shot, non-interactive/, `${lang}: contract block`);
+    assert.match(p, /Do NOT ask the user any questions/, `${lang}: no-questions rule`);
+    assert.match(p, /output ONLY the cover letter\. Begin now\./, `${lang}: artifact reminder`);
+    assert.match(p, /TEMPLATE BODY/, `${lang}: mode body preserved`);
+    // en emits no locale directive (it's the default); every other locale must.
+    if (lang === 'en') assert.doesNotMatch(p, /# Output language/, 'en: no locale directive');
+    else assert.match(p, /# Output language/, `${lang}: locale directive present`);
+  });
+}
+
+test('buildModePrompt: artifact reminder is per-mode (contacto / project / training)', () => {
+  assert.match(buildModePrompt('X', 'contacto', {}, 'en'), /output ONLY the outreach message/);
+  assert.match(buildModePrompt('X', 'project', {}, 'en'), /output ONLY the project evaluation/);
+  assert.match(buildModePrompt('X', 'training', {}, 'en'), /output ONLY the course\/certification evaluation/);
+});
+
 test('scaffold: fr/pl/uk/ar readFiles are localized (not the English fallback)', () => {
   assert.match(scaffold('readFiles', 'fr'), /Lisez/);
   assert.match(scaffold('readFiles', 'pl'), /przeczytaj/);

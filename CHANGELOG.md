@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.72.0] — 2026-06-17
+
+**feat(modes): "Run live" now returns the final artifact directly (single-shot output contract).** The parent `modes/<slug>.md` templates are written for interactive Claude Code sessions — several (cover, contacto, …) pause to ask clarifying questions before producing the result, which made the web-ui's single-shot **Run live** emit a questionnaire instead of the artifact. `buildModePrompt` now wraps every mode in a non-interactive **output contract**: do the analysis (JD breakdown, company notes, ATS keywords, profile↔JD gaps, tone/angle choices) **silently**, pick sensible defaults from `cv.md` / `config/profile.yml` for anything the template would normally ask, and output **only the final artifact** — closed with a per-mode "output ONLY {the cover letter / outreach message / …}" reminder. So clicking **Run live** on `#/cover` now returns the cover letter itself; the same fix applies to every generic mode (cover, contacto, interview-prep, project, training, followup, patterns) in all 12 locales (the artifact is written in the UI language via the locale directive). Suite 1103 → 1116.
+
+---
+
+
+
 ## [1.71.2] — 2026-06-17
 
 **docs(i18n): publish the documentation-consistency pass.** Every README "Translations of this guide" block now lists all 11 sibling languages (previously some omitted English/Français and self-linked), with the blank line before the section break restored. The full QA regression prompt is renamed to the current version, and the docs (CLAUDE.md, CONVENTIONS, LOCALIZATION, PROJECT-CONTEXT) are synced to the current version and test count (1103). No code or behavior change — docs only, so the help/UI translations and all features from 1.70.0–1.71.1 are unchanged.
