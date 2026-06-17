@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.2] — 2026-06-17
+
+**fix(health): 在 `#/health` 和 `/api/status/providers` 中将 `GITHUB_MODELS_API_KEY` 作为可选检查项呈现。** v1.74.0 的 GitHub Models 提供商可在 `#/config` 中配置，但在 Health 页面上没有对应行，且在 `keysConfigured` 提供商表面中缺失。新增了可选检查项（与其他五个在线评估提供商相同的 "set / unset (manual mode)" 措辞），并将 `github`（及其 `GITHUB_MODELS_MODEL`）添加到 `/api/status/providers`，因此活动提供商路由和 Health 页面现在均反映全部六个。`tests/api.test.mjs` 的健康行测试已扩展到全部六个提供商。
+
+---
+
+
+
 ## [1.74.1] — 2026-06-17
 
 **docs + test: README「安装 AI 助手」章节；Gemini 连接器的完整分支覆盖。** 在 README 中新增安装/登录对照表——Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI 的安装链接 + 各自的 `#/config` 提供商映射 + 「继续前请先登录」（与 career-ops.org/docs 快速入门保持一致；说明 web-ui 是无需 CLI 的独立替代方案）。新增 `tests/gemini-connector.test.mjs`（8 个用例），覆盖 `runGemini` 的每个分支——无密钥、成功、API 错误、空/被屏蔽的补全、格式错误的响应体、超时、网络错误、`hasGeminiKey`——使 `server/lib/gemini.mjs` 语句覆盖率达到 100%。整体覆盖率：96% 行 / 88% 分支 / 96% 函数。测试套件 1126 → 1134。

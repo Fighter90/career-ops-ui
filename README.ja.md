@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.1)
+[![release](https://img.shields.io/badge/release-v1.74.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.2)
 
-> **🆕 最新リリース — v1.74.1**
+> **🆕 最新リリース — v1.74.2**
 >
 > **`#/cover` からカバーレター PDF を生成。** カバーモードが本文を生成し、**Generate PDF** ボタンで共有の markdown→PDF パイプラインに送信できます — SPA を離れることなく。**v1.70.0** をベースとしており、Polski、Українська、العربية (RTL) の 3 言語を追加し **12 locales** に対応、フラグ付き `<select>` 言語セレクター、**career-ops v1.11.0** 互換性を追加しました。
 >

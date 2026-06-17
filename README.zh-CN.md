@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.1)
+[![release](https://img.shields.io/badge/release-v1.74.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.2)
 
-> **🆕 最新版本 — v1.74.1**
+> **🆕 最新版本 — v1.74.2**
 >
 > **从 `#/cover` 生成求职信 PDF。** 封面模式生成信件内容；**Generate PDF** 按钮现在可通过共享的 markdown→PDF 流水线导出——无需离开 SPA。基于 **v1.70.0**，该版本新增了 3 种语言——Polski、Українська、العربية（RTL）——共支持 **12 locales**，并新增了带国旗的 `<select>` 语言选择器及 **career-ops v1.11.0** 兼容性。
 >

@@ -24,7 +24,7 @@ import {
 } from '../store.mjs';
 import { effectiveEnv, selectActiveProvider } from '../env-config.mjs';
 import { hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
-import { hasOpenAIKey, hasQwenKey, hasOpenRouterKey } from '../openai.mjs';
+import { hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey } from '../openai.mjs';
 
 export function registerHealthRoutes(app) {
   app.get('/api/health', async (_req, res) => {
@@ -59,6 +59,7 @@ export function registerHealthRoutes(app) {
     const openaiSet = hasOpenAIKey();
     const qwenSet = hasQwenKey();
     const openrouterSet = hasOpenRouterKey();
+    const githubSet = hasGitHubModelsKey();
     checks.push({ name: 'GEMINI_API_KEY', required: false, ok: geminiSet, value: geminiSet ? 'set' : 'unset (manual mode)' });
     checks.push({ name: 'ANTHROPIC_API_KEY', required: false, ok: anthropicSet, value: anthropicSet ? 'set' : 'unset (set to enable live "Run" buttons)' });
     // v1.58.8 — every headless live-eval provider gets a row on `#/health`,
@@ -69,6 +70,9 @@ export function registerHealthRoutes(app) {
     checks.push({ name: 'OPENAI_API_KEY',     required: false, ok: openaiSet,     value: openaiSet     ? 'set' : 'unset (manual mode)' });
     checks.push({ name: 'QWEN_API_KEY',       required: false, ok: qwenSet,       value: qwenSet       ? 'set' : 'unset (manual mode)' });
     checks.push({ name: 'OPENROUTER_API_KEY', required: false, ok: openrouterSet, value: openrouterSet ? 'set' : 'unset (manual mode)' });
+    // v1.74.2 — GitHub Models (GitHub Copilot CLI's API) joins the optional
+    // live-eval provider rows; same isUsableKey gate as the others.
+    checks.push({ name: 'GITHUB_MODELS_API_KEY', required: false, ok: githubSet, value: githubSet ? 'set' : 'unset (manual mode)' });
     // v1.28.1 — HH_USER_AGENT health row removed. The hh.ru adapter falls
     // back to a baked-in UA when the env var is unset; the 403-from-non-RU
     // gate is documented in help-bundle §16 troubleshooting and the
@@ -121,12 +125,13 @@ export function registerHealthRoutes(app) {
       ['openai', hasOpenAIKey()],
       ['qwen', hasQwenKey()],
       ['openrouter', hasOpenRouterKey()],
+      ['github', hasGitHubModelsKey()],
     ].filter(([, set]) => set).map(([p]) => p);
     const activeProvider = selectActiveProvider(keysConfigured);
     const MODEL_KEY = {
       anthropic: 'ANTHROPIC_MODEL', gemini: 'GEMINI_MODEL',
       openai: 'OPENAI_MODEL', qwen: 'QWEN_MODEL',
-      openrouter: 'OPENROUTER_MODEL',
+      openrouter: 'OPENROUTER_MODEL', github: 'GITHUB_MODELS_MODEL',
     };
     const activeModel = activeProvider
       ? (effectiveEnv(MODEL_KEY[activeProvider], PATHS.envFile) || null)

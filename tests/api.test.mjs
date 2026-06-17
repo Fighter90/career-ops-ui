@@ -107,7 +107,7 @@ test('GET /api/health: every headless live-eval provider has an optional check r
   // OPENAI_API_KEY, QWEN_API_KEY and OPENROUTER_API_KEY so the Health
   // page reports the real state of every provider that
   // /api/status/providers can route to.
-  const keys = ['OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY'];
+  const keys = ['OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY', 'GITHUB_MODELS_API_KEY'];
   const prev = Object.fromEntries(keys.map((k) => [k, process.env[k]]));
   for (const k of keys) delete process.env[k];
   try {

@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.1)
+[![release](https://img.shields.io/badge/release-v1.74.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.2)
 
-> **🆕 Последний релиз — v1.74.1**
+> **🆕 Последний релиз — v1.74.2**
 >
 > **PDF сопроводительных писем из `#/cover`.** Режим cover генерирует текст письма; кнопка **Generate PDF** теперь отправляет его через общий конвейер markdown→PDF — не выходя из SPA. Основан на **v1.70.0**, в котором добавлены 3 языка — Polski, Українська, العربية (RTL) — итого **12 locales**, переключатель языка `<select>` с флагом и совместимость с **career-ops v1.11.0**.
 >

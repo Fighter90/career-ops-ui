@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.2] — 2026-06-17
+
+**fix(health): `#/health` 및 `/api/status/providers`에서 `GITHUB_MODELS_API_KEY`를 선택적 점검 항목으로 노출.** v1.74.0의 GitHub Models 프로바이더는 `#/config`에서 설정할 수 있었지만 Health 페이지에 행이 없었고 `keysConfigured` 프로바이더 표면에서 누락되어 있었습니다. 선택적 점검 항목(다른 다섯 개 라이브 평가 프로바이더와 동일한 "set / unset (manual mode)" 문구)과 `github`(+ 해당 `GITHUB_MODELS_MODEL`)를 `/api/status/providers`에 추가하여, 활성 프로바이더 라우팅과 Health 페이지가 이제 여섯 개 모두를 반영합니다. `tests/api.test.mjs` 헬스 행 테스트를 여섯 개 프로바이더 모두로 확장했습니다.
+
+---
+
+
+
 ## [1.74.1] — 2026-06-17
 
 **docs + test: README "AI 어시스턴트 설치" 섹션; Gemini 커넥터의 전체 브랜치 커버리지.** README에 설치/로그인 표 추가 — Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI 설치 링크 + 각각의 `#/config` 공급자 매핑 + "계속하기 전에 로그인" (career-ops.org/docs 빠른 시작 반영; web-ui가 CLI 없이도 사용 가능한 독립형 대안임을 명확히 설명). 새로운 `tests/gemini-connector.test.mjs` (8개 케이스)는 `runGemini`의 모든 브랜치를 다룸 — 키 없음, 성공, API 오류, 빈/차단된 완료, 잘못된 형식의 본문, 타임아웃, 네트워크 오류, `hasGeminiKey` — `server/lib/gemini.mjs`를 구문 100%로 끌어올림. 전체 커버리지: 96% 라인 / 88% 브랜치 / 96% 함수. 스위트 1126 → 1134.

@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.74.2] — 2026-06-17
+
+**fix(health): surface `GITHUB_MODELS_API_KEY` as an optional check on `#/health` and in `/api/status/providers`.** The v1.74.0 GitHub Models provider was configurable in `#/config` but had no row on the Health page and was missing from the `keysConfigured` provider surface. Added the optional check (same "set / unset (manual mode)" wording as the other five live-eval providers) and `github` (+ its `GITHUB_MODELS_MODEL`) to `/api/status/providers`, so the active-provider routing and Health page now reflect all six. `tests/api.test.mjs` health-row test extended to all six providers.
+
+---
+
+
+
 ## [1.74.1] — 2026-06-17
 
 **docs + test: README "Install an AI assistant" section; full branch coverage for the Gemini connector.** Added an install/login table to the README — install links for **Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI** + each one's `#/config` provider mapping + "log in before continuing" (mirrors the career-ops.org/docs Quick Start; clarifies the web-ui is the standalone, no-CLI-needed alternative). New `tests/gemini-connector.test.mjs` (8 cases) covers every `runGemini` branch — no-key, success, API error, empty/blocked completion, malformed body, timeout, network error, `hasGeminiKey` — taking `server/lib/gemini.mjs` to **100% statements**. Overall coverage **96% lines / 88% branch / 96% funcs**. Suite 1126 → 1134.

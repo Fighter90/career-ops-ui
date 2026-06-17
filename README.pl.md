@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.1)
+[![release](https://img.shields.io/badge/release-v1.74.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.2)
 
-> **Nowość — v1.74.1**
+> **Nowość — v1.74.2**
 >
 > Interfejs obsługuje teraz **12 języków UI** — w tym Polski. Pełna lista zmian: [CHANGELOG.md](CHANGELOG.md).
 

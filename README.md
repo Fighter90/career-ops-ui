@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.1)
+[![release](https://img.shields.io/badge/release-v1.74.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.2)
 
-> **🆕 Latest release — v1.74.1**
+> **🆕 Latest release — v1.74.2**
 >
 > **All 6 career-ops AI assistants supported.** Added a **GitHub Models** connector (GitHub Copilot CLI's API) as the 6th live provider — configurable in `#/config` alongside Anthropic / Gemini / OpenAI / Qwen / OpenRouter. Docs aligned to the canonical six (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI) + a full mode/portal reference-link table. Builds on v1.73.0 (generic Gemini connector + verified CV/profile context for every provider) and v1.70–72 (12 locales incl. Arabic RTL, flag picker, cover-letter + PDF, single-shot Run-live).
 >

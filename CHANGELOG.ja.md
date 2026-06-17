@@ -9,6 +9,14 @@
 ---
 
 
+## [1.74.2] — 2026-06-17
+
+**fix(health): `#/health` と `/api/status/providers` で `GITHUB_MODELS_API_KEY` をオプションのチェック項目として表示。** v1.74.0 の GitHub Models プロバイダーは `#/config` で設定可能でしたが、Health ページに行がなく、`keysConfigured` プロバイダーサーフェスからも欠落していました。オプションのチェック項目（他の5つのライブ評価プロバイダーと同じ "set / unset (manual mode)" の文言）と `github`（+ その `GITHUB_MODELS_MODEL`）を `/api/status/providers` に追加したため、アクティブプロバイダーのルーティングと Health ページが6つすべてを反映するようになりました。`tests/api.test.mjs` のヘルス行テストを6つのプロバイダーすべてに拡張しました。
+
+---
+
+
+
 ## [1.74.1] — 2026-06-17
 
 **docs + test: README の「AI アシスタントをインストールする」セクション；Gemini コネクタの完全ブランチカバレッジ。** README にインストール/ログイン一覧表を追加 — Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI のインストールリンク + それぞれの `#/config` プロバイダーマッピング + 「続行前にログインしてください」（career-ops.org/docs のクイックスタートを反映；web-ui が CLI 不要のスタンドアロン代替手段であることを明確化）。新しい `tests/gemini-connector.test.mjs`（8 ケース）は `runGemini` のすべてのブランチをカバー — キーなし、成功、API エラー、空/ブロックされた補完、不正な形式のボディ、タイムアウト、ネットワークエラー、`hasGeminiKey` — `server/lib/gemini.mjs` のステートメントを 100% に到達させる。全体カバレッジ: 96% ライン / 88% ブランチ / 96% 関数。スイート 1126 → 1134。

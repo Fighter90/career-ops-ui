@@ -11,6 +11,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.74.2] — 2026-06-17
+
+**fix(health): mostrar `GITHUB_MODELS_API_KEY` como verificación opcional en `#/health` y en `/api/status/providers`.** El proveedor GitHub Models de la v1.74.0 era configurable en `#/config`, pero no tenía fila en la página de Salud y faltaba en la superficie de proveedores `keysConfigured`. Se añadió la verificación opcional (con la misma redacción "set / unset (manual mode)" que los otros cinco proveedores de evaluación en vivo) y `github` (+ su `GITHUB_MODELS_MODEL`) a `/api/status/providers`, de modo que el enrutamiento del proveedor activo y la página de Salud ahora reflejan los seis. La prueba de fila de salud de `tests/api.test.mjs` se amplió a los seis proveedores.
+
+---
+
+
+
 ## [1.74.1] — 2026-06-17
 
 **docs + test: sección "Instalar un asistente de IA" del README; cobertura completa de ramas para el conector de Gemini.** Se añadió una tabla de instalación/inicio de sesión al README — enlaces de instalación para Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI + la correspondencia de proveedor `#/config` de cada uno + "inicia sesión antes de continuar" (refleja el inicio rápido de career-ops.org/docs; aclara que la web-ui es la alternativa autónoma que no requiere CLI). El nuevo `tests/gemini-connector.test.mjs` (8 casos) cubre cada rama de `runGemini` — sin clave, éxito, error de API, finalización vacía/bloqueada, cuerpo malformado, tiempo de espera agotado, error de red, `hasGeminiKey` — llevando `server/lib/gemini.mjs` al 100% de sentencias. Cobertura global: 96% líneas / 88% ramas / 96% funciones. Suite 1126 → 1134.
