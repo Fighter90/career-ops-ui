@@ -9,6 +9,14 @@
 ---
 
 
+## [1.71.1] — 2026-06-17
+
+**fix(i18n): 앱 내 도움말 가이드가 이제 12개 언어 모두에서 완전히 번역되었습니다.** `docs/help/{pl,uk,ar}.md`를 추가하여 (각 파일은 검증된 19 H2 / 75 H3 구조를 포함) `#/help`가 영어로 폴백하는 대신 폴란드어, 우크라이나어, 아랍어 네이티브 번들을 제공합니다 — `GET /api/help/{pl,uk,ar}`가 이제 해당 로케일을 반환합니다. 모든 도움말 게이트(`help-ui`, `help.test`, `help-ru-config-section`, `canonical-docs-coverage`)에 연결되었습니다. 또한 12개 언어 번역 목록을 모두 완성했습니다: README의 «Translations of this guide» 블록(9개 README), 로컬화된 CHANGELOG의 «Translations:» 헤더(8개 파일), 그리고 오래된 문서 수치를 업데이트했습니다. Suite 1100 → 1103.
+
+---
+
+
+
 ## [1.71.0] — 2026-06-16
 
 **feat(cover): `#/cover`에서 바로 자기소개서 PDF를 생성합니다.** v1.70.0에 추가된 cover 모드는 편지 텍스트를 생성하며, 이제 결과 화면에 **Generate PDF** 버튼이 제공되어 공유 인라인 markdown→PDF 파이프라인(`POST /api/stream/pdf/inline` → `generate-pdf.mjs`)을 통해 렌더링됩니다. 이는 interview-prep이 사용하는 것과 동일한 경로입니다. 이제 SPA를 벗어나지 않고도 편지를 작성하고 PDF를 제출할 수 있습니다.

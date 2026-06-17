@@ -11,6 +11,14 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.71.1] — 2026-06-17
+
+**fix(i18n): le guide d'aide intégré est désormais entièrement traduit dans les 12 langues.** Ajout de `docs/help/{pl,uk,ar}.md` (contenant chacun la structure validée de 19 H2 / 75 H3) afin que `#/help` serve un bundle natif en polonais, ukrainien et arabe au lieu de basculer vers l'anglais — `GET /api/help/{pl,uk,ar}` retournent maintenant leur propre locale. Câblé dans toutes les vérifications d'aide (`help-ui`, `help.test`, `help-ru-config-section`, `canonical-docs-coverage`). Toutes les listes de traduction en 12 langues ont également été complétées : le bloc «Translations of this guide» du README (9 READMEs), les en-têtes «Translations:» des CHANGELOG localisés (8 fichiers), et les compteurs de documentation obsolètes ont été mis à jour. Suite 1100 → 1103.
+
+---
+
+
+
 ## [1.71.0] — 2026-06-16
 
 **feat(cover): générez un PDF de lettre de motivation directement depuis `#/cover`.** Le mode cover (ajouté dans la v1.70.0) produit le texte de la lettre ; le résultat propose désormais un bouton **Generate PDF** qui le restitue via le pipeline partagé markdown→PDF en ligne (`POST /api/stream/pdf/inline` → `generate-pdf.mjs`), le même chemin qu'utilise interview-prep. Vous pouvez maintenant rédiger la lettre et produire un PDF sans quitter le SPA.

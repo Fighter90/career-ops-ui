@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.71.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.0)
+[![release](https://img.shields.io/badge/release-v1.71.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.1)
 
-> **🆕 Latest release — v1.71.0**
+> **🆕 Latest release — v1.71.1**
 >
 > **Cover-letter PDFs from `#/cover`.** The cover mode generates the letter text; a **Generate PDF** button now ships it through the shared markdown→PDF pipeline — no leaving the SPA. Builds on **v1.70.0**, which added 3 languages — Polski, Українська, العربية (RTL) — for **12 locales**, a flag `<select>` language picker, and parent **career-ops v1.11.0** compatibility.
 >

@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.71.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.0)
+[![release](https://img.shields.io/badge/release-v1.71.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.1)
 
-> **Новинка — v1.71.0**
+> **Новинка — v1.71.1**
 >
 > Інтерфейс тепер підтримує **12 мов UI** — зокрема українську. Повний список змін: [CHANGELOG.md](CHANGELOG.md).
 

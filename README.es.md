@@ -10,9 +10,9 @@
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.71.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.0)
+[![release](https://img.shields.io/badge/release-v1.71.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.71.1)
 
-> **🆕 Última versión — v1.71.0**
+> **🆕 Última versión — v1.71.1**
 >
 > **PDFs de carta de presentación desde `#/cover`.** El modo cover genera el texto de la carta; un botón **Generate PDF** lo envía ahora a través del pipeline compartido markdown→PDF — sin salir del SPA. Se basa en **v1.70.0**, que añadió 3 idiomas — Polski, Українська, العربية (RTL) — para **12 locales**, un selector de idioma `<select>` con bandera, y compatibilidad con **career-ops v1.11.0**.
 >

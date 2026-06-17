@@ -9,6 +9,14 @@
 ---
 
 
+## [1.71.1] — 2026-06-17
+
+**fix(i18n): 應用程式內的說明指南現已完整翻譯為全部 12 種語言。** 新增 `docs/help/{pl,uk,ar}.md`（每個檔案均包含經過驗證的 19 H2 / 75 H3 結構），使 `#/help` 能夠為波蘭語、烏克蘭語和阿拉伯語提供原生語言包，而不再退回英語 — `GET /api/help/{pl,uk,ar}` 現在會回傳各自的語言區域內容。已串接至所有說明檢查項（`help-ui`、`help.test`、`help-ru-config-section`、`canonical-docs-coverage`）。同時完成了所有 12 種語言的翻譯清單：README 中的 «Translations of this guide» 區塊（9 個 README）、本地化 CHANGELOG 中的 «Translations:» 標題（8 個檔案），並更新了過時的文件計數。Suite 1100 → 1103。
+
+---
+
+
+
 ## [1.71.0] — 2026-06-16
 
 **feat(cover): 直接從 `#/cover` 產生求職信 PDF。** v1.70.0 新增的 cover 模式可產生信件內文；結果頁面現在提供 **Generate PDF** 按鈕，透過共用的內嵌 markdown→PDF 管線（`POST /api/stream/pdf/inline` → `generate-pdf.mjs`）進行渲染，與 interview-prep 使用的路徑相同。現在無需離開 SPA 即可撰寫信件並產生 PDF 傳送。

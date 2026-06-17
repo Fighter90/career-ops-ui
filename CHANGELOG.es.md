@@ -11,6 +11,14 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.71.1] — 2026-06-17
+
+**fix(i18n): la guía de ayuda integrada está ahora completamente traducida en los 12 idiomas.** Se añadieron `docs/help/{pl,uk,ar}.md` (cada uno con la estructura validada de 19 H2 / 75 H3) para que `#/help` sirva un paquete nativo en polaco, ucraniano y árabe en lugar de recurrir al inglés — `GET /api/help/{pl,uk,ar}` ahora devuelven su propia configuración regional. Integrado en todas las comprobaciones de ayuda (`help-ui`, `help.test`, `help-ru-config-section`, `canonical-docs-coverage`). También se completaron todas las listas de traducción en 12 idiomas: el bloque «Translations of this guide» del README (9 READMEs), las cabeceras «Translations:» de los CHANGELOG localizados (8 archivos) y se actualizaron los recuentos de documentación obsoletos. Suite 1100 → 1103.
+
+---
+
+
+
 ## [1.71.0] — 2026-06-16
 
 **feat(cover): genera un PDF de carta de presentación directamente desde `#/cover`.** El modo cover (añadido en v1.70.0) produce el texto de la carta; el resultado ofrece ahora un botón **Generate PDF** que lo renderiza a través del pipeline compartido de markdown→PDF en línea (`POST /api/stream/pdf/inline` → `generate-pdf.mjs`), la misma ruta que usa interview-prep. Ahora puedes generar la carta y producir un PDF sin salir del SPA.

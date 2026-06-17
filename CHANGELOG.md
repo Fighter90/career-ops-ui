@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.71.1] — 2026-06-17
+
+**fix(i18n): the in-app help guide is now fully translated in all 12 languages.** Added `docs/help/{pl,uk,ar}.md` (each holding the gated 19 H2 / 75 H3 structure) so `#/help` serves a native bundle for Polish, Ukrainian, and Arabic instead of falling back to English — `GET /api/help/{pl,uk,ar}` now return their own locale. Wired into every help gate (`help-ui`, `help.test`, `help-ru-config-section`, `canonical-docs-coverage`). Also completed every 12-language translation list: the README "Translations of this guide" block (9 READMEs), the localized CHANGELOG "Translations:" headers (8 files), and refreshed stale doc counts (CONVENTIONS test count → 1100; help "fall back" notes → 12 translated bundles). Suite 1100 → 1103.
+
+---
+
+
+
 ## [1.71.0] — 2026-06-16
 
 **feat(cover): generate a cover-letter PDF straight from `#/cover`.** The cover mode (added in v1.70.0) produces the letter text; the result now offers a **Generate PDF** button that renders it through the shared inline markdown→PDF pipeline (`POST /api/stream/pdf/inline` → `generate-pdf.mjs`), the same path interview-prep uses. You can now produce the letter and ship a PDF without leaving the SPA.

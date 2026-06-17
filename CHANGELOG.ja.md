@@ -9,6 +9,14 @@
 ---
 
 
+## [1.71.1] — 2026-06-17
+
+**fix(i18n): アプリ内ヘルプガイドが全12言語で完全に翻訳されました。** `docs/help/{pl,uk,ar}.md` を追加し（それぞれゲート済みの 19 H2 / 75 H3 構造を含む）、`#/help` が英語へのフォールバックではなくポーランド語・ウクライナ語・アラビア語のネイティブバンドルを提供するようになりました — `GET /api/help/{pl,uk,ar}` がそれぞれのロケールを返すようになりました。すべてのヘルプゲート（`help-ui`, `help.test`, `help-ru-config-section`, `canonical-docs-coverage`）に接続されています。また、12言語すべての翻訳リストを完成させました: READMEの «Translations of this guide» ブロック（9つのREADME）、ローカライズされたCHANGELOGの «Translations:» ヘッダー（8ファイル）、そして古くなったドキュメントの数値を更新しました。Suite 1100 → 1103.
+
+---
+
+
+
 ## [1.71.0] — 2026-06-16
 
 **feat(cover): `#/cover` から直接カバーレターPDFを生成します。** v1.70.0で追加されたcoverモードはレター本文を生成します。結果画面に **Generate PDF** ボタンが追加され、共有インラインmarkdown→PDFパイプライン（`POST /api/stream/pdf/inline` → `generate-pdf.mjs`）を通じてレンダリングされます。これはinterview-prepが使用するのと同じパスです。SPA を離れることなく、レターを作成してPDFを送付できるようになりました。
