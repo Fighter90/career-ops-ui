@@ -2,7 +2,7 @@
 
 How translation works in **career-ops-ui**, and how to add or edit a language. The SPA ships **12 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `ar` — and every user-facing string flows through the i18n layer. **Arabic (`ar`) is right-to-left** (I18N-EXPAND, v1.70.0): `i18n.js` sets `<html dir="rtl">` for RTL locales and `app.css` carries a scoped `[dir="rtl"]` block. The in-app language picker is a flag-prefixed `<select>` (`renderLangSwitcher` in `public/js/app.js`).
 
-> **Help guide (v1.71.0).** The long-form help bundle (`docs/help/<locale>.md`) is fully translated in all **12 locales** — `pl`/`uk`/`ar` bundles were added in v1.71.0, each holding the gated 19 H2 / 75 H3 structure.
+> **Help guide (v1.71.1).** The long-form help bundle (`docs/help/<locale>.md`) is fully translated in all **12 locales** — `pl`/`uk`/`ar` bundles were added in v1.71.1, each holding the gated 19 H2 / 75 H3 structure.
 
 > Server diagnostics stay **English by policy** (consistency across logs). Only client-owned UI strings are localized. Don't add per-locale text to server error bodies.
 

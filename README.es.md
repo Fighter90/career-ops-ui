@@ -706,10 +706,8 @@ Refresca la página Health — cada check obligatorio debería estar en verde. D
    la investigación profunda en vivo en `interview-prep/`. Todo visible en la UI.
 
 > Las traducciones de esta guía viven en cada README específico por idioma:
-> [English](README.md) · [Português (Brasil)](README.pt-BR.md) ·
-> [한국어](README.ko-KR.md) · [日本語](README.ja.md) ·
-> [Русский](README.ru.md) · [简体中文](README.zh-CN.md) ·
-> [繁體中文](README.zh-TW.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [العربية](README.ar.md)
+> [English](README.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [العربية](README.ar.md)
+
 ---
 
 ## Licencia

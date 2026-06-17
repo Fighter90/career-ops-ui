@@ -1,8 +1,8 @@
-# QA REGRESSION PROMPT — career-ops-ui v1.71.0 · FULL / EXHAUSTIVE (whole project)
+# QA REGRESSION PROMPT — career-ops-ui v1.71.1 · FULL / EXHAUSTIVE (whole project)
 
-> **Scope:** the *entire* career-ops-ui project, *all* functionality, as of `package.json` **1.71.0**. This is the single-pass, full-surface driver — it supersedes the v1.70.0 and v1.69.2 FULL prompts and folds in everything from v1.59 → v1.71.
+> **Scope:** the *entire* career-ops-ui project, *all* functionality, as of `package.json` **1.71.1**. This is the single-pass, full-surface driver — it supersedes the v1.70.0 and v1.69.2 FULL prompts and folds in everything from v1.59 → v1.71.
 > **Role:** strict release-gate QA engineer. Prove the whole app works, correctly and clearly, and that nothing regression-locked has drifted.
-> **Output:** save your run report to `qa/v55-regression/<YYYY-MM-DD>-REGRESSION-v1.71.0.md` with a PASS/FAIL per item and evidence (command output, HTTP traces, screenshots). One finding = one fix-ship (one-fix-per-release doctrine; HIGH → MEDIUM → LOW).
+> **Output:** save your run report to `qa/v55-regression/<YYYY-MM-DD>-REGRESSION-v1.71.1.md` with a PASS/FAIL per item and evidence (command output, HTTP traces, screenshots). One finding = one fix-ship (one-fix-per-release doctrine; HIGH → MEDIUM → LOW).
 >
 > **Sibling perennials (run alongside, do not duplicate):** `REGRESSION-FINAL.md` (invariant ledger), `UX-AUDIT-PROMPT.md`, `FUNCTIONALITY-CHECK.md`.
 
@@ -28,7 +28,7 @@
 npm test                                    # full unit/integration suite
 npm run test:ci                             # unit + check-no-also + check-changelog-parity + i18n-audit
 node tools/i18n-audit.mjs                   # "no hard failures — dictionary is clean"
-node scripts/check-changelog-parity.mjs     # "all 11 locales at v1.71.0"
+node scripts/check-changelog-parity.mjs     # "all 11 locales at v1.71.1"
 npm run test:coverage                       # ≥80% line / ≥83% branch (baseline ~93/~83)
 npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(12) + theme-toggle
 npm run test:e2e && npm run test:e2e:full   # smoke (20) + comprehensive (23) E2E
@@ -41,7 +41,7 @@ Floors: unit suite ≥ its current count (run to confirm) · locale-sweep **12/1
 
 ## §1 — Setup / onboarding / parent contract
 - Cold start with a `mktemp -d` `CAREER_OPS_ROOT`: `/api/health` reports `onboardingNeeded` correctly; missing `cv.md`/`profile.yml`/`portals.yml` surfaced.
-- `parentVersion` reads the parent `VERSION` file (currently **1.11.0**); web-ui `version` from `package.json` (**1.71.0**) — they drift independently.
+- `parentVersion` reads the parent `VERSION` file (currently **1.11.0**); web-ui `version` from `package.json` (**1.71.1**) — they drift independently.
 - **Parent is read-only**: reads always safe; writes ONLY on explicit user actions (`POST /api/pipeline`, `POST /api/tracker`, `PUT /api/cv`, `POST /api/jds`, `DELETE /api/{jds,interview-prep}/:name`, `POST /api/config`, streaming runners). No code path writes the parent unprompted.
 - `data/applications.md` is the markdown source of truth; the parent's v1.11.0 SQLite index (`applications.db`) is a derived cache the web-ui ignores. Tracker columns are header-mapped in the parent — check `server/lib/parsers.mjs` still reads a standard layout correctly (known watch item if a user inserts columns).
 
@@ -82,7 +82,7 @@ Floors: unit suite ≥ its current count (run to confirm) · locale-sweep **12/1
 - `#/config`: Profile field-form (canonical §Step-5 schema, non-destructive merge), Modes tab, API-keys tab (race-safe summary chip, WAI-ARIA tabs, confirm-gates). `POST /api/config` → `validateConfig` → `updateEnvFile`. **Watch:** newer profile.yml keys (`cover_letter.*`, `followup_cadence.*`, `auto_pdf_score_threshold`, `cv.output_format`, `location.*`, `candidate.telegram`) are NOT yet in the config UI — confirm absence is graceful (raw-YAML editor still edits them).
 - `#/health`: OK/OPTIONAL/FAIL cards (no overflow — `.health-check-row`); run `doctor.mjs`/`verify-pipeline.mjs`; Playwright-MCP warning surfaced.
 - `#/activity` log; notifications drawer (bell + unread badge, last 50 toasts, journal of `(METHOD /path · HTTP NNN)` postfixes).
-- `#/help`: **12 markdown bundles** (en/es/pt-BR/ko-KR/ja/ru/zh-CN/zh-TW/fr/pl/uk/ar — pl/uk/ar fully translated in v1.71.0). `GET /api/help/<lang>` serves each locale's own bundle (verify pl→pl, uk→uk, ar→ar, no 404). Help invariant: 19 H2 / 75 H3 per bundle (`canonical-docs-coverage` + `help-ui` + `help-ru-config-section`).
+- `#/help`: **12 markdown bundles** (en/es/pt-BR/ko-KR/ja/ru/zh-CN/zh-TW/fr/pl/uk/ar — pl/uk/ar fully translated in v1.71.1). `GET /api/help/<lang>` serves each locale's own bundle (verify pl→pl, uk→uk, ar→ar, no 404). Help invariant: 19 H2 / 75 H3 per bundle (`canonical-docs-coverage` + `help-ui` + `help-ru-config-section`).
 
 ## §9 — i18n (12 locales) + Arabic RTL
 - 12 locales: en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, ar. Parity (697 keys) + snapshot (707) gated. No Latin-only `*.title` on non-Latin locales (ru/ko/ja/zh-CN/zh-TW/uk/ar). No PII.
@@ -96,4 +96,4 @@ Floors: unit suite ≥ its current count (run to confirm) · locale-sweep **12/1
 - PDFs embed fonts (parent `08d1e9a` data-URL fonts). **Screenshots privacy:** `images/dashboard-*.png` are generated from a fixture (no real job data) — if regenerated, confirm no live data leaks before commit.
 
 ## §11 — Deferred / backlog (verify absent-by-design; triage for future)
-- Parent features not yet in the SPA: interactive **interview** onboarding (multi-turn — needs chat UI), **reverse-ATS** discovery (`scan-ats-full.mjs` — clean `/api/stream/scan-ats-full` candidate), **follow-up cadence** API (`followup-cadence.mjs` exports — in-process dashboard widget), **rejection-pattern** data (`analyze-patterns.mjs` — `/api/patterns`), **portals validator** (`validate-portals.mjs`), **update-check** badge (`update-system.mjs check`), **SQLite tracker query** (Node ≥22.5 gate), **ofertas** multi-job compare. None should be half-wired; confirm clean. (The pl/uk/ar **help-guide** translation — previously deferred — shipped in v1.71.0; all 12 help bundles are now fully translated.)
+- Parent features not yet in the SPA: interactive **interview** onboarding (multi-turn — needs chat UI), **reverse-ATS** discovery (`scan-ats-full.mjs` — clean `/api/stream/scan-ats-full` candidate), **follow-up cadence** API (`followup-cadence.mjs` exports — in-process dashboard widget), **rejection-pattern** data (`analyze-patterns.mjs` — `/api/patterns`), **portals validator** (`validate-portals.mjs`), **update-check** badge (`update-system.mjs check`), **SQLite tracker query** (Node ≥22.5 gate), **ofertas** multi-job compare. None should be half-wired; confirm clean. (The pl/uk/ar **help-guide** translation — previously deferred — shipped in v1.71.1; all 12 help bundles are now fully translated.)
