@@ -9,6 +9,14 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.73.0] — 2026-06-17
+
+**feat(llm): conector Gemini genérico + contexto de CV/perfil verificado em todos os provedores.** Adicionado `server/lib/gemini.mjs` (`runGemini`) — um cliente Gemini `generateContent` sem dependências externas que retorna o mesmo formato `{markdown, usage, error}` que os clientes compatíveis com Anthropic / OpenAI. Correção: `/api/mode/:slug` e `/api/deep` anteriormente roteavam seus prompts pelo `gemini-eval.mjs`, voltado exclusivamente para ofertas, fazendo com que o Gemini **Run live** retornasse uma avaliação em vez do artefato solicitado (carta de apresentação, contato, resumo). Agora chamam `runGemini` com `bundleProjectContext`, de modo que `cv.md` + `config/profile.yml` são embutidos inline para o Gemini exatamente como em qualquer outro provedor — cartas e resumos ficam detalhados e personalizados. O novo `tests/llm-provider-context.test.mjs` simula o limite HTTP de cada provedor e verifica que os cinco (Anthropic / Gemini / OpenAI / Qwen / OpenRouter) embutem `cv.md` + `profile.yml` inline e retornam o artefato (matriz mode + deep + evaluate, 9 casos). `/api/evaluate` mantém seu `gemini-eval.mjs` ajustado para ofertas. Suite 1116 → 1125.
+
+---
+
+
+
 ## [1.72.0] — 2026-06-17
 
 **feat(modes): **Run live** agora retorna o artefato final diretamente (contrato de saída de disparo único).** Os templates pai `modes/<slug>.md` foram escritos para sessões interativas do Claude Code — vários (cover, contacto, …) pausam para fazer perguntas de esclarecimento antes de produzir o resultado, o que fazia o **Run live** da interface web emitir um questionário em vez do artefato. `buildModePrompt` agora envolve cada modo em um contrato de saída não interativo: realiza a análise (detalhamento da vaga, notas sobre a empresa, palavras-chave ATS, lacunas perfil↔vaga, escolhas de tom/ângulo) silenciosamente, escolhe padrões sensatos de `cv.md` / `config/profile.yml` para tudo o que o template normalmente perguntaria, e gera apenas o artefato final — encerrado com um lembrete por modo «output ONLY {the cover letter / outreach message / …}». Assim, clicar em **Run live** em `#/cover` agora retorna a própria carta de apresentação; a mesma correção se aplica a todos os modos genéricos (cover, contacto, interview-prep, project, training, followup, patterns) em todos os 12 idiomas (o artefato é redigido no idioma da interface via diretiva de localidade). Suite 1103 → 1116.

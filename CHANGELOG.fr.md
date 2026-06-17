@@ -11,6 +11,14 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.73.0] — 2026-06-17
+
+**feat(llm): connecteur Gemini générique + contexte CV/profil vérifié pour tous les fournisseurs.** Ajout de `server/lib/gemini.mjs` (`runGemini`) — un client Gemini `generateContent` sans dépendance externe renvoyant la même forme `{markdown, usage, error}` que les clients compatibles Anthropic / OpenAI. Correction : `/api/mode/:slug` et `/api/deep` acheminaient auparavant leurs prompts via `gemini-eval.mjs`, conçu uniquement pour l'évaluation d'offres, ce qui faisait que Gemini **Run live** renvoyait une évaluation au lieu de l'artefact demandé (lettre de motivation, prise de contact, note de synthèse). Ils appellent désormais `runGemini` avec `bundleProjectContext`, de sorte que `cv.md` + `config/profile.yml` sont intégrés en ligne pour Gemini exactement comme pour tous les autres fournisseurs — les lettres et notes sont détaillées et personnalisées. Le nouveau `tests/llm-provider-context.test.mjs` simule la frontière HTTP de chaque fournisseur et vérifie que les cinq (Anthropic / Gemini / OpenAI / Qwen / OpenRouter) intègrent `cv.md` + `profile.yml` en ligne et renvoient l'artefact (matrice mode + deep + evaluate, 9 cas). `/api/evaluate` conserve son `gemini-eval.mjs` optimisé pour les offres. Suite 1116 → 1125.
+
+---
+
+
+
 ## [1.72.0] — 2026-06-17
 
 **feat(modes): **Run live** retourne désormais l'artefact final directement (contrat de sortie en un seul appel).** Les templates parents `modes/<slug>.md` sont conçus pour les sessions interactives de Claude Code — plusieurs (cover, contacto, …) font une pause pour poser des questions de clarification avant de produire le résultat, ce qui amenait le **Run live** de l'interface web à émettre un questionnaire plutôt que l'artefact. `buildModePrompt` enveloppe désormais chaque mode dans un contrat de sortie non interactif : il effectue l'analyse (décomposition de l'offre d'emploi, notes sur l'entreprise, mots-clés ATS, écarts profil↔offre, choix de ton/angle) en silence, sélectionne des valeurs par défaut sensées depuis `cv.md` / `config/profile.yml` pour tout ce que le template demanderait normalement, et ne génère que l'artefact final — clôturé par un rappel par mode «output ONLY {the cover letter / outreach message / …}». Ainsi, cliquer sur **Run live** dans `#/cover` retourne désormais la lettre de motivation elle-même ; le même correctif s'applique à tous les modes génériques (cover, contacto, interview-prep, project, training, followup, patterns) dans les 12 locales (l'artefact est rédigé dans la langue de l'interface via la directive de locale). Suite 1103 → 1116.

@@ -21,6 +21,7 @@ import { PATHS, path as projPath } from '../paths.mjs';
 import { slugify, today } from '../parsers.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
+import { runGemini } from '../gemini.mjs';
 import { runOpenAI, runQwen, runOpenRouter, hasOpenAIKey, hasQwenKey, hasOpenRouterKey } from '../openai.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
@@ -239,14 +240,21 @@ export function registerLlmRoutes(app) {
         if (r.error) return res.status(502).json({ mode, prompt, error: r.error });
         result = { markdown: r.markdown, code: 0 };
       } else if (_provGate().wantGemini && hasGeminiKey()) {
+        // v1.73.0 — generic Gemini client with the real deep-research prompt
+        // (cv.md + profile.yml + modes/deep.md inlined), NOT oferta-only
+        // gemini-eval.mjs. runGemini already pipes through cleanLlmMarkdown.
         mode = 'gemini';
-        const tmp = projPath('output', `web-deep-${Date.now()}.txt`);
-        mkdirSync(PATHS.outputDir, { recursive: true });
-        writeFileSync(tmp, prompt);
-        const sub = await runNodeScript('gemini-eval.mjs', ['--file', tmp], { timeoutMs: 180_000 });
-        // v1.58.0 — strip echoed tool/agent scaffolding (the Gemini
-        // subprocess path; the in-process providers clean at source).
-        result = { markdown: cleanLlmMarkdown(sub.stdout || ''), code: sub.code };
+        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'] });
+        const fullPrompt = ctx + prompt;
+        if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
+          return res.status(413).json({
+            error: 'prompt too large',
+            details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}.`],
+          });
+        }
+        const r = await runGemini(fullPrompt, { maxTokens: 8192 });
+        if (r.error) return res.status(502).json({ mode, prompt, error: r.error });
+        result = { markdown: r.markdown, code: 0 };
       } else {
         // v1.55.0 — OpenAI / Qwen tail (in-process, inline context).
         const tp = _tailProvider();
@@ -356,11 +364,21 @@ export function registerLlmRoutes(app) {
         return res.json({ mode: 'anthropic', slug, prompt, markdown: r.markdown, usage: r.usage });
       }
       if (_provGate().wantGemini && hasGeminiKey()) {
-        const tmp = projPath('output', `web-${slug}-${Date.now()}.txt`);
-        mkdirSync(PATHS.outputDir, { recursive: true });
-        writeFileSync(tmp, prompt);
-        const result = await runNodeScript('gemini-eval.mjs', ['--file', tmp], { timeoutMs: 180_000 });
-        return res.json({ mode: 'gemini', slug, prompt, markdown: (result.stdout || '').trim(), code: result.code });
+        // v1.73.0 — use the generic Gemini client with the real mode prompt
+        // (cv.md + profile.yml inlined via bundleProjectContext), NOT the
+        // oferta-only gemini-eval.mjs which would mis-evaluate the prompt as
+        // a JD. Now matches the Anthropic / OpenAI-compatible branches.
+        const ctx = bundleProjectContext({ modeSlugs: ['_shared'] });
+        const fullPrompt = ctx + prompt;
+        if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
+          return res.status(413).json({
+            error: 'prompt too large',
+            details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}.`],
+          });
+        }
+        const r = await runGemini(fullPrompt);
+        if (r.error) return res.status(502).json({ mode: 'gemini', slug, prompt, error: r.error });
+        return res.json({ mode: 'gemini', slug, prompt, markdown: r.markdown, usage: r.usage });
       }
       // v1.55.0 — OpenAI / Qwen tail (in-process, inline _shared ctx).
       const tp = _tailProvider();

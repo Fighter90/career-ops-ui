@@ -9,6 +9,14 @@
 ---
 
 
+## [1.73.0] — 2026-06-17
+
+**feat(llm): 汎用Geminiコネクター + 全プロバイダーにわたって検証済みのCV/プロフィールコンテキスト。** `server/lib/gemini.mjs` (`runGemini`) を追加しました — Anthropic / OpenAI互換クライアントと同じ `{markdown, usage, error}` の形式を返す、外部依存なしのGemini `generateContent` クライアントです。修正: `/api/mode/:slug` と `/api/deep` はこれまで、オファー評価専用の `gemini-eval.mjs` を通じてプロンプトを処理していたため、Gemini **Run live** が要求されたアーティファクト（カバーレター、アウトリーチ、ブリーフ）の代わりに評価を返していました。現在は `bundleProjectContext` とともに `runGemini` を呼び出すため、他のすべてのプロバイダーと同様に `cv.md` + `config/profile.yml` がGeminiにもインラインで埋め込まれ、レターやブリーフが詳細かつパーソナライズされます。新しい `tests/llm-provider-context.test.mjs` は各プロバイダーのHTTP境界をモックし、5つのプロバイダー（Anthropic / Gemini / OpenAI / Qwen / OpenRouter）すべてが `cv.md` + `profile.yml` をインラインで埋め込み、アーティファクトを返すことを検証します（mode + deep + evaluate マトリックス、9ケース）。`/api/evaluate` はオファー専用の `gemini-eval.mjs` を維持します。Suite 1116 → 1125。
+
+---
+
+
+
 ## [1.72.0] — 2026-06-17
 
 **feat(modes): **Run live** が最終成果物を直接返すようになりました（シングルショット出力コントラクト）。** 親テンプレート `modes/<slug>.md` はClaude Codeのインタラクティブセッション向けに書かれており、いくつか（cover、contactoなど）は結果を生成する前に確認の質問のために一時停止します。これにより、WebUIの **Run live** が成果物ではなくアンケートを出力していました。`buildModePrompt` は現在、すべてのモードを非インタラクティブな出力コントラクトでラップします: 分析（JD分析、企業ノート、ATSキーワード、プロフィール↔JDのギャップ、トーン/アングルの選択）をサイレントに実行し、テンプレートが通常尋ねるものについては `cv.md` / `config/profile.yml` から適切なデフォルト値を選択し、最終成果物のみを出力します — モードごとの «output ONLY {the cover letter / outreach message / …}» リマインダーで締めくくられます。これにより、`#/cover` で **Run live** をクリックするとカバーレター自体が返されます。同じ修正がすべての汎用モード（cover、contacto、interview-prep、project、training、followup、patterns）の12ロケール全体に適用されます（成果物はロケールディレクティブによりUI言語で記述されます）。Suite 1103 → 1116。

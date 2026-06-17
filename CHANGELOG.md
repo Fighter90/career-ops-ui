@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.73.0] — 2026-06-17
+
+**feat(llm): generic Gemini connector + verified CV/profile context across all providers.** Added `server/lib/gemini.mjs` (`runGemini`) — a zero-dependency Gemini `generateContent` client returning the same `{markdown, usage, error}` shape as the Anthropic / OpenAI-compatible clients. **Fix:** `/api/mode/:slug` and `/api/deep` previously piped their prompts through the oferta-only `gemini-eval.mjs`, so Gemini **Run live** returned an *evaluation* instead of the requested artifact (cover letter, outreach, brief). They now call `runGemini` with `bundleProjectContext`, so `cv.md` + `config/profile.yml` are inlined for Gemini exactly like every other provider — letters/briefs are detailed and personalized. New `tests/llm-provider-context.test.mjs` mocks each provider's HTTP boundary and asserts all five (Anthropic / Gemini / OpenAI / Qwen / OpenRouter) inline `cv.md` + `profile.yml` and return the artifact (mode + deep + evaluate matrix, 9 cases). `/api/evaluate` keeps its oferta-tuned `gemini-eval.mjs`. Suite 1116 → 1125.
+
+---
+
+
+
 ## [1.72.0] — 2026-06-17
 
 **feat(modes): "Run live" now returns the final artifact directly (single-shot output contract).** The parent `modes/<slug>.md` templates are written for interactive Claude Code sessions — several (cover, contacto, …) pause to ask clarifying questions before producing the result, which made the web-ui's single-shot **Run live** emit a questionnaire instead of the artifact. `buildModePrompt` now wraps every mode in a non-interactive **output contract**: do the analysis (JD breakdown, company notes, ATS keywords, profile↔JD gaps, tone/angle choices) **silently**, pick sensible defaults from `cv.md` / `config/profile.yml` for anything the template would normally ask, and output **only the final artifact** — closed with a per-mode "output ONLY {the cover letter / outreach message / …}" reminder. So clicking **Run live** on `#/cover` now returns the cover letter itself; the same fix applies to every generic mode (cover, contacto, interview-prep, project, training, followup, patterns) in all 12 locales (the artifact is written in the UI language via the locale directive). Suite 1103 → 1116.

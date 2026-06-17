@@ -9,6 +9,14 @@
 ---
 
 
+## [1.73.0] — 2026-06-17
+
+**feat(llm): 범용 Gemini 커넥터 + 모든 공급자에 걸쳐 검증된 CV/프로필 컨텍스트.** `server/lib/gemini.mjs` (`runGemini`)를 추가했습니다 — Anthropic / OpenAI 호환 클라이언트와 동일한 `{markdown, usage, error}` 형태를 반환하는 외부 의존성 없는 Gemini `generateContent` 클라이언트입니다. 수정 사항: `/api/mode/:slug`와 `/api/deep`이 이전에는 채용 공고 전용인 `gemini-eval.mjs`를 통해 프롬프트를 라우팅하여, Gemini **Run live**가 요청된 결과물(자기소개서, 아웃리치, 브리프) 대신 평가를 반환했습니다. 이제 `bundleProjectContext`와 함께 `runGemini`를 호출하므로 `cv.md` + `config/profile.yml`이 다른 모든 공급자와 동일하게 Gemini에도 인라인으로 삽입되어 편지와 브리프가 상세하고 개인화됩니다. 새로운 `tests/llm-provider-context.test.mjs`는 각 공급자의 HTTP 경계를 목킹하고 다섯 개 공급자(Anthropic / Gemini / OpenAI / Qwen / OpenRouter) 모두 `cv.md` + `profile.yml`을 인라인으로 삽입하고 결과물을 반환함을 검증합니다(mode + deep + evaluate 매트릭스, 9개 케이스). `/api/evaluate`는 채용 공고 전용 `gemini-eval.mjs`를 유지합니다. Suite 1116 → 1125.
+
+---
+
+
+
 ## [1.72.0] — 2026-06-17
 
 **feat(modes): **Run live** 가 이제 최종 결과물을 직접 반환합니다 (단일 실행 출력 계약).** 상위 `modes/<slug>.md` 템플릿은 Claude Code 대화형 세션을 위해 작성되었으며, 일부(cover, contacto 등)는 결과를 생성하기 전에 확인 질문을 위해 일시 중지합니다. 이로 인해 웹 UI의 **Run live** 가 결과물 대신 설문지를 출력했습니다. `buildModePrompt` 는 이제 모든 모드를 비대화형 출력 계약으로 감쌉니다: 분석(JD 분석, 회사 노트, ATS 키워드, 프로필↔JD 간극, 톤/방향 선택)을 자동으로 수행하고, 템플릿이 보통 물어볼 내용에 대해 `cv.md` / `config/profile.yml` 에서 합리적인 기본값을 선택하며, 최종 결과물만 출력합니다 — 모드별 «output ONLY {the cover letter / outreach message / …}» 알림으로 마무리됩니다. 이제 `#/cover` 에서 **Run live** 를 클릭하면 커버 레터 자체가 반환됩니다. 동일한 수정이 모든 일반 모드(cover, contacto, interview-prep, project, training, followup, patterns)의 12개 로케일 전체에 적용됩니다(결과물은 로케일 지시어를 통해 UI 언어로 작성됩니다). Suite 1103 → 1116.

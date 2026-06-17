@@ -9,6 +9,14 @@
 ---
 
 
+## [1.73.0] — 2026-06-17
+
+**feat(llm): 通用 Gemini 連接器 + 跨所有提供商驗證的履歷/設定檔上下文。** 新增 `server/lib/gemini.mjs`（`runGemini`）——一個無外部依賴的 Gemini `generateContent` 客戶端，回傳與 Anthropic / OpenAI 相容客戶端相同的 `{markdown, usage, error}` 結構。修正：`/api/mode/:slug` 與 `/api/deep` 先前將提示詞路由至僅用於職缺評估的 `gemini-eval.mjs`，導致 Gemini **Run live** 回傳評估結果而非請求的產物（求職信、外聯信、簡報）。現在它們透過 `bundleProjectContext` 呼叫 `runGemini`，因此 `cv.md` + `config/profile.yml` 對 Gemini 的內嵌方式與其他所有提供商完全一致——信件和簡報更加詳盡且個人化。新增的 `tests/llm-provider-context.test.mjs` 模擬每個提供商的 HTTP 邊界，並驗證全部五個提供商（Anthropic / Gemini / OpenAI / Qwen / OpenRouter）均內嵌 `cv.md` + `profile.yml` 並回傳產物（mode + deep + evaluate 矩陣，9 個案例）。`/api/evaluate` 保留其針對職缺調優的 `gemini-eval.mjs`。Suite 1116 → 1125。
+
+---
+
+
+
 ## [1.72.0] — 2026-06-17
 
 **feat(modes): **Run live** 現在直接傳回最終產出物（單次執行輸出契約）。** 父模板 `modes/<slug>.md` 是為 Claude Code 的互動式工作階段所撰寫的——其中幾個（cover、contacto 等）在產生結果前會暫停以詢問釐清問題，導致 Web UI 的 **Run live** 輸出問卷而非產出物。`buildModePrompt` 現在將每個模式包裹在非互動式輸出契約中：靜默執行分析（職缺說明拆解、公司備註、ATS 關鍵字、個人檔案↔職缺差距、語氣/角度選擇），從 `cv.md` / `config/profile.yml` 為模板通常會詢問的內容選取合理的預設值，並僅輸出最終產出物——以每種模式的「output ONLY {the cover letter / outreach message / …}」提示作為結尾。因此，在 `#/cover` 上點擊 **Run live** 現在將直接傳回求職信本身；相同的修正適用於所有通用模式（cover、contacto、interview-prep、project、training、followup、patterns）的全部 12 個語言環境（產出物透過語言環境指令以 UI 語言撰寫）。Suite 1103 → 1116。

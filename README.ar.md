@@ -5,14 +5,14 @@
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | **العربية**
 
-[![tests](https://img.shields.io/badge/tests-1116%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-1125%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.72.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.72.0)
+[![release](https://img.shields.io/badge/release-v1.73.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.73.0)
 
-> **جديد — الإصدار v1.72.0**
+> **جديد — الإصدار v1.73.0**
 >
 > تدعم الواجهة الآن **12 لغة** في واجهة المستخدم، بما فيها العربية. السجل الكامل للتغييرات: [CHANGELOG.md](CHANGELOG.md).
 
