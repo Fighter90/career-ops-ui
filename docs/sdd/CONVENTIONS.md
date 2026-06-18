@@ -114,7 +114,7 @@ contract: `auto`→`[anthropic,gemini]` (legacy), `claude`→`[anthropic]`,
 `gemini`→`[gemini]`. All 6 provider-gate sites in
 `server/lib/routes/llm.mjs` (evaluate/deep/mode × Anthropic/Gemini)
 consult it via the local `_provGate()` — never re-derive provider
-preference elsewhere. Provider keys = exactly what santifer/career-ops
+preference elsewhere. Provider keys = exactly what Fighter90/career-ops
 implements: `GEMINI_API_KEY` (parent gemini-eval), `ANTHROPIC_API_KEY`
 (web-ui SDK + Claude Code), `OPENAI_API_KEY` (Codex/OpenCode CLI side).
 Do NOT add speculative keys for providers the parent doesn't wire.

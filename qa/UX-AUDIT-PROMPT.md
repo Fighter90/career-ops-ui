@@ -214,7 +214,7 @@ re-open one with concrete live evidence that it regressed:
 Senior-obs ledger: S-7→v1.54.6, W-001→v1.54.7, S-1→UX-3, S-2→UX-7,
 S-3→UX-4, S-4→UX-1, S-5→UX-9, S-6→UX-8. The **only open backlog
 item** is **G-005** (cross-repo nomenclature, MINOR): the parent
-`santifer/career-ops :: modes/oferta.md` still emits the legacy
+`Fighter90/career-ops :: modes/oferta.md` still emits the legacy
 7-block A-G report vs the canonical 6-block A-F; the renderer is
 schema-tolerant so both display correctly. It is blocked on a
 parent commit (see `qa/G-005-closure-kit.md`) — not a web-ui UX

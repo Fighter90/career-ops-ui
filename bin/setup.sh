@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # career-ops-ui — one-command bootstrap.
 #
-# Sets up BOTH repos (santifer/career-ops + Fighter90/career-ops-ui) in
+# Sets up BOTH repos (Fighter90/career-ops + Fighter90/career-ops-ui) in
 # the current directory and starts the web UI. Idempotent: safe to re-run.
 #
 # Usage:
@@ -11,7 +11,7 @@
 #   bash web-ui/bin/setup.sh
 #
 # What it does:
-#   1. Clones (or updates) santifer/career-ops into ./career-ops
+#   1. Clones (or updates) Fighter90/career-ops into ./career-ops
 #   2. Clones (or updates) Fighter90/career-ops-ui into career-ops/web-ui
 #   3. Adds /web-ui/ to career-ops/.gitignore (so the parent doesn't track it)
 #   4. Installs npm deps for web-ui (only on first run, three deps: express + js-yaml + multer)
@@ -25,7 +25,7 @@
 
 set -euo pipefail
 
-CAREER_OPS_REPO="${CAREER_OPS_REPO:-https://github.com/santifer/career-ops.git}"
+CAREER_OPS_REPO="${CAREER_OPS_REPO:-https://github.com/Fighter90/career-ops.git}"
 CAREER_OPS_UI_REPO="${CAREER_OPS_UI_REPO:-https://github.com/Fighter90/career-ops-ui.git}"
 CAREER_OPS_DIR="${CAREER_OPS_DIR:-career-ops}"
 PORT="${PORT:-4317}"

@@ -27,7 +27,7 @@
 
 `career-ops-ui` is an Express + vanilla-JS SPA that puts a polished
 web interface on top of
-[`santifer/career-ops`](https://github.com/santifer/career-ops) —
+[`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) —
 a Claude-Code-driven AI job-search pipeline. It sits inside the
 parent project as `career-ops/web-ui/` and reads/writes the same
 data files (`cv.md`, `data/applications.md`, `reports/`,

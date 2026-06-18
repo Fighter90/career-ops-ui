@@ -4,7 +4,7 @@
 
 ## What
 
-**`career-ops-ui`** is a single-page web interface for the [`santifer/career-ops`](https://github.com/santifer/career-ops) AI job-search pipeline. It runs as an Express server bound to `127.0.0.1:4317`, reads the user's career-ops project (CV, applications tracker, reports, pipeline, portals), and exposes a CRM-style UI for browsing, scanning, evaluating, and tracking job offers without leaving the browser.
+**`career-ops-ui`** is a single-page web interface for the [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) AI job-search pipeline. It runs as an Express server bound to `127.0.0.1:4317`, reads the user's career-ops project (CV, applications tracker, reports, pipeline, portals), and exposes a CRM-style UI for browsing, scanning, evaluating, and tracking job offers without leaving the browser.
 
 It is **purely additive** — nothing inside `career-ops/` changes when this UI is dropped in. The user's customizations (`cv.md`, `config/profile.yml`, `modes/*`) remain authoritative.
 
@@ -77,6 +77,6 @@ The UI is **single-tenant by design** — it binds to loopback by default, has n
 
 ## Links
 
-- Parent project: <https://github.com/santifer/career-ops>
+- Parent project: <https://github.com/Fighter90/career-ops>
 - This repo: <https://github.com/Fighter90/career-ops-ui>
 - License: MIT

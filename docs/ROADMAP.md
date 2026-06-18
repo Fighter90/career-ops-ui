@@ -11,7 +11,7 @@
 | P-13 | Persistent SSE log archive | pending | Today scan logs vanish on page reload. Persist last N runs under `data/scan-logs/`. Provide a `/#/activity` filter to browse them. |
 | P-14 | Public Plug-in scanners | **done (v1.69.0)** | `server/lib/sources/registry.mjs` now DYNAMICALLY auto-discovers every `server/lib/sources/*.mjs` via `readdirSync` + dynamic `import()`, collecting each adapter's `export const meta` block at boot. Users drop in an adapter file with a `meta` export — no core-file edit. Foundation laid in v1.29.0; dynamic discovery completed in v1.69.0 (PR #28). |
 | P-15 | UI views split | pending | `public/js/views/scan.js` is now ~670 LOC (was 461 at last measurement) — past 400-LOC soft target. Extract Active Companies card to `views/scan/active-companies.js`; consider splitting source-filter logic. `public/css/app.css` at ~958 LOC is past the 800-LOC hard target — split candidates: paginator → `views/paginator.css`, sidebar → `views/sidebar.css`. |
-| P-16 | G-005 report-block alignment | deferred | A-G → canonical A-F (`apply-for-a-job §step-8` still names "Section G"). Requires coordinated parent commit on `santifer/career-ops :: modes/oferta.md`. Renderer is schema-tolerant — legacy A-G files still display correctly, so this is vocabulary alignment, not a behavioural fix. |
+| P-16 | G-005 report-block alignment | deferred | A-G → canonical A-F (`apply-for-a-job §step-8` still names "Section G"). Requires coordinated parent commit on `Fighter90/career-ops :: modes/oferta.md`. Renderer is schema-tolerant — legacy A-G files still display correctly, so this is vocabulary alignment, not a behavioural fix. |
 
 ## Completed milestones
 

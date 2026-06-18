@@ -11,6 +11,13 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.74.3] — 2026-06-18
+
+**docs(parent-source): apunta el repo padre `career-ops` al fork [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** La web-ui ahora referencia el fork del mantenedor como proyecto padre en todos los puntos donde es una fuente real: el valor por defecto `CAREER_OPS_REPO` del instalador `bin/setup.sh`, cada enlace de `git clone` / "encima de" / onboarding en los 12 READMEs, y la documentación de agentes (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `docs/`). El crédito al autor santifer (y el aviso de UI no oficial) no cambia — solo se movieron las URLs de origen/clonado. `tests/sh-files.test.mjs` ahora verifica que el instalador clona el fork.
+
+---
+
+
 ## [1.74.2] — 2026-06-17
 
 **fix(health): mostrar `GITHUB_MODELS_API_KEY` como verificación opcional en `#/health` y en `/api/status/providers`.** El proveedor GitHub Models de la v1.74.0 era configurable en `#/config`, pero no tenía fila en la página de Salud y faltaba en la superficie de proveedores `keysConfigured`. Se añadió la verificación opcional (con la misma redacción "set / unset (manual mode)" que los otros cinco proveedores de evaluación en vivo) y `github` (+ su `GITHUB_MODELS_MODEL`) a `/api/status/providers`, de modo que el enrutamiento del proveedor activo y la página de Salud ahora reflejan los seis. La prueba de fila de salud de `tests/api.test.mjs` se amplió a los seis proveedores.

@@ -8,7 +8,7 @@
  * explicit user action (CLAUDE.md hard rule #1 allows parent writes
  * on explicit user action, same as POST /api/config).
  *
- * Provider keys mirror what santifer/career-ops actually implements:
+ * Provider keys mirror what Fighter90/career-ops actually implements:
  *   - GEMINI_API_KEY    — parent's own gemini-eval.mjs
  *   - ANTHROPIC_API_KEY — web-ui Anthropic SDK + Claude Code CLI
  *   - OPENAI_API_KEY    — Codex / OpenCode CLI side

@@ -32,7 +32,7 @@ Eliminates the manual tracking-via-spreadsheets / cover-letters-from-scratch loo
 ## 2. Onboarding (first run)
 
 1. **Prerequisites.** Node.js ≥ 18, Git, and at least one AI coding CLI installed.
-2. **Clone career-ops.** `git clone https://github.com/santifer/career-ops.git && cd career-ops`.
+2. **Clone career-ops.** `git clone https://github.com/Fighter90/career-ops.git && cd career-ops`.
 3. **Create `cv.md`** — paste / convert your résumé into clean markdown. Concrete metrics (`"reduced p99 by 38%"`, not `"improved performance"`).
 4. **Fill `config/profile.yml`** — name, email, location, target archetypes (**most important field**), salary band.
 5. **Fill `portals.yml`** — `cp templates/portals.example.yml portals.yml`. Customize three sections: title filter, tracked companies, search queries.

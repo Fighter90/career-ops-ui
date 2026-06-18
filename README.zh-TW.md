@@ -1,6 +1,6 @@
 # career-ops-ui
 
-> 為 [career-ops](https://github.com/santifer/career-ops) AI 求職流水線打造的簡潔 docs-style 網頁介面。
+> 為 [career-ops](https://github.com/Fighter90/career-ops) AI 求職流水線打造的簡潔 docs-style 網頁介面。
 > 在單一瀏覽器分頁中完成搜尋、評估、深度研究、投遞與追蹤每一個職缺 — 無須再於 Claude Code、終端機與 markdown 檔案之間來回切換。
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | **繁體中文** | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [العربية](README.ar.md)
@@ -12,9 +12,9 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.2)
+[![release](https://img.shields.io/badge/release-v1.74.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.3)
 
-> **🆕 最新版本 — v1.74.2**
+> **🆕 最新版本 — v1.74.3**
 >
 > **從 `#/cover` 產生求職信 PDF。** 封面模式產生信件內容；**Generate PDF** 按鈕現在可透過共用的 markdown→PDF 流水線匯出——無需離開 SPA。基於 **v1.70.0**，該版本新增了 3 種語言——Polski、Українська、العربية（RTL）——共支援 **12 locales**，並新增了附國旗的 `<select>` 語言選擇器及 **career-ops v1.11.0** 相容性。
 >
@@ -48,7 +48,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 ## 一鍵啟動並初始化
 
-> **重要 — career-ops-ui 是建構於 [`santifer/career-ops`](https://github.com/santifer/career-ops) *之上*的儀表板。** 它作為 `career-ops/web-ui/` **運行在** career-ops 專案**內部**,並透過 `../` 讀取父目錄中的 `cv.md`、`config/`、`data/`。它**無法單獨運行** — 你還需要父儲存庫 `career-ops`。請勿單獨 clone 後直接執行 `init`;請使用以下兩個選項之一。
+> **重要 — career-ops-ui 是建構於 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) *之上*的儀表板。** 它作為 `career-ops/web-ui/` **運行在** career-ops 專案**內部**,並透過 `../` 讀取父目錄中的 `cv.md`、`config/`、`data/`。它**無法單獨運行** — 你還需要父儲存庫 `career-ops`。請勿單獨 clone 後直接執行 `init`;請使用以下兩個選項之一。
 
 ### 選項 1 — 單一 curl（推薦:一鍵配置一切）
 
@@ -117,7 +117,7 @@ npx career-ops-ui init        # npx runs the local bin even without `npm link`
 
 ## 為什麼?
 
-[career-ops](https://github.com/santifer/career-ops) 是一套強大、由 Claude Code 驅動的求職系統:貼上 JD → 取得 0-5 適配分數、ATS 最佳化的 PDF,以及一筆追蹤器條目。它在 Claude Code 中運作良好,但資料散落於 `cv.md`、`data/applications.md`、`reports/*.md`、`data/pipeline.md`、`portals.yml`、`config/profile.yml` — 容易遺失,難以瀏覽。
+[career-ops](https://github.com/Fighter90/career-ops) 是一套強大、由 Claude Code 驅動的求職系統:貼上 JD → 取得 0-5 適配分數、ATS 最佳化的 PDF,以及一筆追蹤器條目。它在 Claude Code 中運作良好,但資料散落於 `cv.md`、`data/applications.md`、`reports/*.md`、`data/pipeline.md`、`portals.yml`、`config/profile.yml` — 容易遺失,難以瀏覽。
 
 `career-ops-ui` 在其上加上一層精緻 UI:
 
@@ -139,11 +139,11 @@ npx career-ops-ui init        # npx runs the local bin even without `npm link`
 ### 1. 先安裝 career-ops
 
 ```bash
-git clone https://github.com/santifer/career-ops.git
+git clone https://github.com/Fighter90/career-ops.git
 cd career-ops
 ```
 
-依照 [career-ops onboarding](https://github.com/santifer/career-ops#first-run--onboarding) 完成設定,使 `cv.md`、`config/profile.yml`、`portals.yml` 皆已存在。
+依照 [career-ops onboarding](https://github.com/Fighter90/career-ops#first-run--onboarding) 完成設定,使 `cv.md`、`config/profile.yml`、`portals.yml` 皆已存在。
 
 ### 2. 將 career-ops-ui 放入其中
 
@@ -699,7 +699,7 @@ echo "GEMINI_API_KEY=AIza..." >> career-ops/.env
 
 MIT。詳見 [LICENSE](LICENSE)。
 
-基於 [santifer](https://santifer.io) 的 [career-ops](https://github.com/santifer/career-ops) 構建。感謝這條精彩的流水線。
+基於 [santifer](https://santifer.io) 的 [career-ops](https://github.com/Fighter90/career-ops) 構建。感謝這條精彩的流水線。
 
 ## 貢獻者
 

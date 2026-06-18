@@ -9,6 +9,13 @@
 ---
 
 
+## [1.74.3] — 2026-06-18
+
+**docs(parent-source): توجيه مستودع `career-ops` الأصلي إلى تفرع [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** تشير واجهة web-ui الآن إلى تفرع المشرف بوصفه المشروع الأصلي في كل موضع يُستخدم فيه كمصدر فعلي: القيمة الافتراضية `CAREER_OPS_REPO` في مُثبِّت `bin/setup.sh`، وكل رابط `git clone` / «مبني فوقه» / الإعداد في جميع ملفات README الاثني عشر، ووثائق الوكلاء (`CLAUDE.md` و`AGENTS.md` و`GEMINI.md` و`.github/copilot-instructions.md` و`docs/`). يبقى إسناد التأليف إلى santifer (وإخلاء المسؤولية عن الواجهة غير الرسمية) دون تغيير — انتقلت فقط روابط المصدر/الاستنساخ. يتحقق `tests/sh-files.test.mjs` الآن من أن المُثبِّت يستنسخ التفرع.
+
+---
+
+
 ## [1.74.2] — 2026-06-17
 
 **fix(health): إظهار `GITHUB_MODELS_API_KEY` كفحص اختياري في `#/health` وفي `/api/status/providers`.** كان مزوّد GitHub Models في الإصدار v1.74.0 قابلاً للتهيئة في `#/config` لكنه لم يكن له صف في صفحة Health وكان مفقوداً من سطح المزوّدين `keysConfigured`. تمت إضافة الفحص الاختياري (بنفس صياغة "set / unset (manual mode)" المستخدمة مع المزوّدين الخمسة الآخرين للتقييم المباشر) و`github` (+ `GITHUB_MODELS_MODEL` الخاص به) إلى `/api/status/providers`، بحيث أصبح توجيه المزوّد النشط وصفحة Health يعكسان الآن جميع المزوّدين الستة. تم توسيع اختبار صف health في `tests/api.test.mjs` ليشمل جميع المزوّدين الستة.

@@ -8,6 +8,13 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.74.3] — 2026-06-18
+
+**docs(parent-source): point the parent `career-ops` repo at the [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) fork.** The web-ui now references the maintainer's fork as the parent project everywhere it is a live source: the `bin/setup.sh` installer's `CAREER_OPS_REPO` clone default, every `git clone` / "sits on top of" / onboarding link across all 12 READMEs, and the agent docs (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `docs/`). Author credit to santifer (and the unofficial-UI disclaimer) is unchanged — only the source/clone URLs moved. `tests/sh-files.test.mjs` now asserts the installer clones the fork.
+
+---
+
+
 ## [1.74.2] — 2026-06-17
 
 **fix(health): surface `GITHUB_MODELS_API_KEY` as an optional check on `#/health` and in `/api/status/providers`.** The v1.74.0 GitHub Models provider was configurable in `#/config` but had no row on the Health page and was missing from the `keysConfigured` provider surface. Added the optional check (same "set / unset (manual mode)" wording as the other five live-eval providers) and `github` (+ its `GITHUB_MODELS_MODEL`) to `/api/status/providers`, so the active-provider routing and Health page now reflect all six. `tests/api.test.mjs` health-row test extended to all six providers.

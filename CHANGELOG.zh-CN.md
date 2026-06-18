@@ -9,6 +9,13 @@
 ---
 
 
+## [1.74.3] — 2026-06-18
+
+**docs(parent-source): 将父 `career-ops` 仓库指向 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) 分叉。** web-ui 现在在所有作为实际来源的位置都将维护者的分叉作为父项目引用:`bin/setup.sh` 安装脚本的 `CAREER_OPS_REPO` 克隆默认值、12 个 README 中的每个 `git clone` /“构建于其上”/ 入门链接,以及代理文档(`CLAUDE.md`、`AGENTS.md`、`GEMINI.md`、`.github/copilot-instructions.md`、`docs/`)。对作者 santifer 的署名(以及非官方 UI 免责声明)保持不变 —— 仅移动了来源/克隆 URL。`tests/sh-files.test.mjs` 现在断言安装脚本克隆的是分叉。
+
+---
+
+
 ## [1.74.2] — 2026-06-17
 
 **fix(health): 在 `#/health` 和 `/api/status/providers` 中将 `GITHUB_MODELS_API_KEY` 作为可选检查项呈现。** v1.74.0 的 GitHub Models 提供商可在 `#/config` 中配置，但在 Health 页面上没有对应行，且在 `keysConfigured` 提供商表面中缺失。新增了可选检查项（与其他五个在线评估提供商相同的 "set / unset (manual mode)" 措辞），并将 `github`（及其 `GITHUB_MODELS_MODEL`）添加到 `/api/status/providers`，因此活动提供商路由和 Health 页面现在均反映全部六个。`tests/api.test.mjs` 的健康行测试已扩展到全部六个提供商。

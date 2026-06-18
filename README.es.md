@@ -1,6 +1,6 @@
 # career-ops-ui
 
-> Una interfaz web limpia, estilo documentación técnica, para la pipeline de búsqueda de empleo con IA [career-ops](https://github.com/santifer/career-ops).
+> Una interfaz web limpia, estilo documentación técnica, para la pipeline de búsqueda de empleo con IA [career-ops](https://github.com/Fighter90/career-ops).
 > Busca, evalúa, investiga a fondo, postula y haz seguimiento de cada oferta desde una sola pestaña del navegador — en lugar de saltar entre Claude Code, terminales y archivos markdown.
 
 [English](README.md) | **Español** | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [العربية](README.ar.md)
@@ -12,9 +12,9 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.2)
+[![release](https://img.shields.io/badge/release-v1.74.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.3)
 
-> **🆕 Última versión — v1.74.2**
+> **🆕 Última versión — v1.74.3**
 >
 > **PDFs de carta de presentación desde `#/cover`.** El modo cover genera el texto de la carta; un botón **Generate PDF** lo envía ahora a través del pipeline compartido markdown→PDF — sin salir del SPA. Se basa en **v1.70.0**, que añadió 3 idiomas — Polski, Українська, العربية (RTL) — para **12 locales**, un selector de idioma `<select>` con bandera, y compatibilidad con **career-ops v1.11.0**.
 >
@@ -48,7 +48,7 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
 ## Lanza e inicializa con un solo comando
 
-> **Importante — career-ops-ui es un panel *encima de* [`santifer/career-ops`](https://github.com/santifer/career-ops).** Se ejecuta **dentro** de un proyecto career-ops como `career-ops/web-ui/` y lee tu `cv.md`, `config/`, `data/` desde la carpeta padre mediante `../`. **No funciona de forma independiente** — también necesitas el repositorio padre `career-ops`. No lo clones por separado y ejecutes `init`; usa una de las dos opciones siguientes.
+> **Importante — career-ops-ui es un panel *encima de* [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** Se ejecuta **dentro** de un proyecto career-ops como `career-ops/web-ui/` y lee tu `cv.md`, `config/`, `data/` desde la carpeta padre mediante `../`. **No funciona de forma independiente** — también necesitas el repositorio padre `career-ops`. No lo clones por separado y ejecutes `init`; usa una de las dos opciones siguientes.
 
 ### Opción 1 — un solo curl (recomendado: configura todo)
 
@@ -117,7 +117,7 @@ Asegúrate de:
 
 ## ¿Por qué?
 
-[career-ops](https://github.com/santifer/career-ops) es un potente sistema de búsqueda de empleo basado en Claude Code: pegas una oferta (JD) → obtienes una puntuación de encaje 0-5, un PDF optimizado para ATS y una entrada en el tracker. Funciona muy bien dentro de Claude Code, pero los datos quedan repartidos entre `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml` y `config/profile.yml` — fácil de perder y difícil de revisar de un vistazo.
+[career-ops](https://github.com/Fighter90/career-ops) es un potente sistema de búsqueda de empleo basado en Claude Code: pegas una oferta (JD) → obtienes una puntuación de encaje 0-5, un PDF optimizado para ATS y una entrada en el tracker. Funciona muy bien dentro de Claude Code, pero los datos quedan repartidos entre `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml` y `config/profile.yml` — fácil de perder y difícil de revisar de un vistazo.
 
 `career-ops-ui` añade encima una UI pulida:
 
@@ -139,11 +139,11 @@ Es puramente aditivo: nada dentro de `career-ops/` se modifica. Tus personalizac
 ### 1. Instala primero career-ops
 
 ```bash
-git clone https://github.com/santifer/career-ops.git
+git clone https://github.com/Fighter90/career-ops.git
 cd career-ops
 ```
 
-Sigue el [onboarding de career-ops](https://github.com/santifer/career-ops#first-run--onboarding) para que existan `cv.md`, `config/profile.yml` y `portals.yml`.
+Sigue el [onboarding de career-ops](https://github.com/Fighter90/career-ops#first-run--onboarding) para que existan `cv.md`, `config/profile.yml` y `portals.yml`.
 
 ### 2. Coloca career-ops-ui dentro
 
@@ -716,7 +716,7 @@ Refresca la página Health — cada check obligatorio debería estar en verde. D
 
 MIT. Ver [LICENSE](LICENSE).
 
-Construido sobre [career-ops](https://github.com/santifer/career-ops) por [santifer](https://santifer.io). Gracias por la brillante pipeline.
+Construido sobre [career-ops](https://github.com/Fighter90/career-ops) por [santifer](https://santifer.io). Gracias por la brillante pipeline.
 
 ## Colaboradores
 

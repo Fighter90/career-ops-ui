@@ -6,7 +6,7 @@ Read `CLAUDE.md` next.
 
 ## Why a shim
 
-The parent career-ops project supports multiple CLIs (Claude Code, Codex, Gemini, OpenCode) via the [Open Agent Skill standard](https://github.com/santifer/career-ops). This UI sub-project adopts the same convention: one source of truth (`CLAUDE.md`) plus thin shims (`AGENTS.md` for Codex, this file for Gemini).
+The parent career-ops project supports multiple CLIs (Claude Code, Codex, Gemini, OpenCode) via the [Open Agent Skill standard](https://github.com/Fighter90/career-ops). This UI sub-project adopts the same convention: one source of truth (`CLAUDE.md`) plus thin shims (`AGENTS.md` for Codex, this file for Gemini).
 
 ## Gemini-specific notes
 

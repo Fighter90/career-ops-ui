@@ -326,7 +326,7 @@ the ★ ones live.
   remaining backlog item. `server/lib/prompts.mjs` still references
   the A-G `modes/oferta.md` schema *because the parent still emits
   A-G*; the web-ui A-F flip must land **after** the parent
-  `santifer/career-ops` commit (see `qa/G-005-closure-kit.md`
+  `Fighter90/career-ops` commit (see `qa/G-005-closure-kit.md`
   STEP 1) or the model gets contradictory instructions. Renderer is
   schema-tolerant; help §9 ×9 already canonical A-F (v1.15.0).
 

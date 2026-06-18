@@ -9,7 +9,7 @@
 ## Snapshot
 
 `career-ops-ui` is an Express + vanilla-JS SPA on top of the
-[`santifer/career-ops`](https://github.com/santifer/career-ops) job-search
+[`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) job-search
 pipeline. Single-tenant, loopback-by-default, no telemetry, no build
 step.
 

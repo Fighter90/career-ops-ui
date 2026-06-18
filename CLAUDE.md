@@ -4,7 +4,7 @@
 
 ## What this repo is
 
-`career-ops-ui` is an **Express + vanilla-JS SPA** that puts a polished web interface on top of [`santifer/career-ops`](https://github.com/santifer/career-ops) — a Claude-Code-driven AI job-search pipeline. It does **not** replace career-ops; it sits inside it as `career-ops/web-ui/` and reads/writes the same files (`cv.md`, `data/applications.md`, `reports/`, `portals.yml`, …).
+`career-ops-ui` is an **Express + vanilla-JS SPA** that puts a polished web interface on top of [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) — a Claude-Code-driven AI job-search pipeline. It does **not** replace career-ops; it sits inside it as `career-ops/web-ui/` and reads/writes the same files (`cv.md`, `data/applications.md`, `reports/`, `portals.yml`, …).
 
 Stack at a glance:
 

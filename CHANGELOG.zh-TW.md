@@ -9,6 +9,13 @@
 ---
 
 
+## [1.74.3] — 2026-06-18
+
+**docs(parent-source): 將父 `career-ops` 儲存庫指向 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) 分叉。** web-ui 現在在所有作為實際來源的位置都將維護者的分叉作為父專案引用:`bin/setup.sh` 安裝腳本的 `CAREER_OPS_REPO` clone 預設值、12 個 README 中的每個 `git clone` /「建構於其上」/ onboarding 連結,以及代理文件(`CLAUDE.md`、`AGENTS.md`、`GEMINI.md`、`.github/copilot-instructions.md`、`docs/`)。對作者 santifer 的署名(以及非官方 UI 免責聲明)保持不變 —— 僅移動了來源/clone URL。`tests/sh-files.test.mjs` 現在斷言安裝腳本 clone 的是分叉。
+
+---
+
+
 ## [1.74.2] — 2026-06-17
 
 **fix(health): 在 `#/health` 與 `/api/status/providers` 中將 `GITHUB_MODELS_API_KEY` 作為可選檢查項目呈現。** v1.74.0 的 GitHub Models 提供商可在 `#/config` 中設定，但在 Health 頁面上沒有對應列，且在 `keysConfigured` 提供商表面中缺失。新增了可選檢查項目（與其他五個線上評估提供商相同的 "set / unset (manual mode)" 措辭），並將 `github`（及其 `GITHUB_MODELS_MODEL`）新增至 `/api/status/providers`，因此活動提供商路由與 Health 頁面現在均反映全部六個。`tests/api.test.mjs` 的健康列測試已擴展到全部六個提供商。

@@ -1,6 +1,6 @@
 # career-ops-ui
 
-> واجهة ويب أنيقة بأسلوب التوثيق التقني لخط أنابيب البحث عن عمل بالذكاء الاصطناعي — [career-ops](https://github.com/santifer/career-ops).
+> واجهة ويب أنيقة بأسلوب التوثيق التقني لخط أنابيب البحث عن عمل بالذكاء الاصطناعي — [career-ops](https://github.com/Fighter90/career-ops).
 > ابحث عن الوظائف وقيّمها واستكشفها وقدّم طلباتك وتتبّع كل عرض من تبويب واحد في المتصفح — بدلاً من التنقل بين Claude Code والطرفية وملفات markdown.
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | **العربية**
@@ -12,9 +12,9 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.2)
+[![release](https://img.shields.io/badge/release-v1.74.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.3)
 
-> **جديد — الإصدار v1.74.2**
+> **جديد — الإصدار v1.74.3**
 >
 > تدعم الواجهة الآن **12 لغة** في واجهة المستخدم، بما فيها العربية. السجل الكامل للتغييرات: [CHANGELOG.md](CHANGELOG.md).
 
@@ -61,7 +61,7 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 ## البداية السريعة
 
-> **مهم — career-ops-ui لوحة تحكم *فوق* [`santifer/career-ops`](https://github.com/santifer/career-ops).** يعمل **داخل** مشروع career-ops بوصفه `career-ops/web-ui/` ويقرأ ملفات `cv.md` و`config/` و`data/` من المجلد الأصلي عبر `../`. **لا يعمل بشكل مستقل** — تحتاج أيضاً إلى مستودع career-ops الأصلي.
+> **مهم — career-ops-ui لوحة تحكم *فوق* [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** يعمل **داخل** مشروع career-ops بوصفه `career-ops/web-ui/` ويقرأ ملفات `cv.md` و`config/` و`data/` من المجلد الأصلي عبر `../`. **لا يعمل بشكل مستقل** — تحتاج أيضاً إلى مستودع career-ops الأصلي.
 
 ### الخيار 1 — أمر curl واحد (موصى به)
 
@@ -179,7 +179,7 @@ npm run test:coverage       # مثل npm test + تغطية V8
 
 MIT. التفاصيل: [LICENSE](LICENSE).
 
-مبني على [career-ops](https://github.com/santifer/career-ops) بقلم [santifer](https://santifer.io).
+مبني على [career-ops](https://github.com/Fighter90/career-ops) بقلم [santifer](https://santifer.io).
 
 [![المساهمون](https://contrib.rocks/image?repo=Fighter90/career-ops-ui)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
 

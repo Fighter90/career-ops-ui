@@ -9,6 +9,13 @@
 ---
 
 
+## [1.74.3] — 2026-06-18
+
+**docs(parent-source): 부모 `career-ops` 저장소를 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) 포크로 변경.** web-ui는 이제 실제 소스로 쓰이는 모든 곳에서 메인테이너의 포크를 부모 프로젝트로 참조합니다: `bin/setup.sh` 설치 스크립트의 `CAREER_OPS_REPO` 클론 기본값, 12개 README의 모든 `git clone` / "위에 올라가는" / 온보딩 링크, 그리고 에이전트 문서(`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `docs/`). 작성자 santifer 크레딧(및 비공식 UI 고지)은 변경되지 않았으며 — 소스/클론 URL만 이동했습니다. `tests/sh-files.test.mjs`는 이제 설치 스크립트가 포크를 클론하는지 검증합니다.
+
+---
+
+
 ## [1.74.2] — 2026-06-17
 
 **fix(health): `#/health` 및 `/api/status/providers`에서 `GITHUB_MODELS_API_KEY`를 선택적 점검 항목으로 노출.** v1.74.0의 GitHub Models 프로바이더는 `#/config`에서 설정할 수 있었지만 Health 페이지에 행이 없었고 `keysConfigured` 프로바이더 표면에서 누락되어 있었습니다. 선택적 점검 항목(다른 다섯 개 라이브 평가 프로바이더와 동일한 "set / unset (manual mode)" 문구)과 `github`(+ 해당 `GITHUB_MODELS_MODEL`)를 `/api/status/providers`에 추가하여, 활성 프로바이더 라우팅과 Health 페이지가 이제 여섯 개 모두를 반영합니다. `tests/api.test.mjs` 헬스 행 테스트를 여섯 개 프로바이더 모두로 확장했습니다.

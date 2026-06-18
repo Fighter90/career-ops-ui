@@ -9,6 +9,13 @@
 ---
 
 
+## [1.74.3] — 2026-06-18
+
+**docs(parent-source): 親 `career-ops` リポジトリを [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) フォークに向ける。** web-ui は実際のソースとして使われるすべての箇所でメンテナーのフォークを親プロジェクトとして参照するようになりました: `bin/setup.sh` インストーラーの `CAREER_OPS_REPO` クローン既定値、12 個の README にあるすべての `git clone` /「の上に乗る」/ オンボーディングリンク、そしてエージェントドキュメント(`CLAUDE.md`、`AGENTS.md`、`GEMINI.md`、`.github/copilot-instructions.md`、`docs/`)。作者 santifer へのクレジット(および非公式 UI の免責表示)は変更なし — ソース/クローン URL のみ移動しました。`tests/sh-files.test.mjs` はインストーラーがフォークをクローンすることを検証するようになりました。
+
+---
+
+
 ## [1.74.2] — 2026-06-17
 
 **fix(health): `#/health` と `/api/status/providers` で `GITHUB_MODELS_API_KEY` をオプションのチェック項目として表示。** v1.74.0 の GitHub Models プロバイダーは `#/config` で設定可能でしたが、Health ページに行がなく、`keysConfigured` プロバイダーサーフェスからも欠落していました。オプションのチェック項目（他の5つのライブ評価プロバイダーと同じ "set / unset (manual mode)" の文言）と `github`（+ その `GITHUB_MODELS_MODEL`）を `/api/status/providers` に追加したため、アクティブプロバイダーのルーティングと Health ページが6つすべてを反映するようになりました。`tests/api.test.mjs` のヘルス行テストを6つのプロバイダーすべてに拡張しました。

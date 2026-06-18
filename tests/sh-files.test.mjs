@@ -130,7 +130,7 @@ test('setup.sh: strict mode, SKIP_START honored, clones both repos, needs git', 
   assert.match(s, /set -euo pipefail/);
   assert.match(s, /SKIP_START/);
   assert.match(s, /need git/);
-  assert.match(s, /santifer\/career-ops/);
+  assert.match(s, /Fighter90\/career-ops\.git/);
   assert.match(s, /Fighter90\/career-ops-ui/);
 });
 

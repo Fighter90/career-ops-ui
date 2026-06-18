@@ -6,7 +6,7 @@ v1.31→v1.54).
 
 **What it is.** Canonical [career-ops.org/docs apply-for-a-job](https://career-ops.org/docs/introduction/guides/apply-for-a-job)
 specifies a **6-block A–F** evaluation report. The parent project's
-`santifer/career-ops :: modes/oferta.md` still emits the legacy
+`Fighter90/career-ops :: modes/oferta.md` still emits the legacy
 **7-block A–G** schema (`C=Risks`, `F=Verdict`, `G=Legitimacy`). The
 web-ui renderer is **schema-tolerant** — it displays both A–G and A–F
 reports correctly — so this is cosmetic/nomenclature drift, not a
@@ -33,10 +33,10 @@ is verified in `tests/canonical-docs-coverage.test.mjs`.
 
 ---
 
-## STEP 1 — Parent repo (`santifer/career-ops`) — NOT this repo
+## STEP 1 — Parent repo (`Fighter90/career-ops`) — NOT this repo
 
 > CLAUDE.md hard rule #1: this repo never edits the parent. A maintainer
-> applies this in `santifer/career-ops`.
+> applies this in `Fighter90/career-ops`.
 
 Rewrite `modes/oferta.md` so the evaluation output is the canonical
 **A–F** schema (matches career-ops.org/docs and web-ui help §9):

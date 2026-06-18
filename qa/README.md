@@ -104,7 +104,7 @@ v1.27 and **blocked on a cross-repo parent commit** (CLAUDE.md hard
 rule #1 forbids editing the parent from here). The full
 ready-to-apply plan is in
 **[`G-005-closure-kit.md`](./G-005-closure-kit.md)**: STEP 1 = a
-parent `santifer/career-ops` commit rewriting `modes/oferta.md`
+parent `Fighter90/career-ops` commit rewriting `modes/oferta.md`
 A-G → A-F; STEP 2 = a one-line web-ui `prompts.mjs` follow-up
 (help §9 ×8 already canonical A-F since v1.15.0 — no change);
 STEP 3 = a lock test. STEP 2/3 must land **only after** STEP 1, or

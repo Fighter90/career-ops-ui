@@ -4,7 +4,7 @@
 
 ## Quick orientation
 
-- This is `career-ops-ui` v1.69.x — an Express + vanilla-JS SPA that puts a polished web interface on top of [`santifer/career-ops`](https://github.com/santifer/career-ops).
+- This is `career-ops-ui` v1.69.x — an Express + vanilla-JS SPA that puts a polished web interface on top of [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).
 - It runs as a regular Node ≥18 process. It is **CLI-agnostic** at runtime — the choice of agent CLI affects only the *development* workflow inside this repo, not the deployed UI.
 - Hard rules and parent-project boundary live in `CLAUDE.md` (root). Codex's CODEOWNERS-style additions, if any, layer on top.
 
