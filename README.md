@@ -7,14 +7,14 @@
 
 _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1181%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1190%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.75.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.0)
+[![release](https://img.shields.io/badge/release-v1.75.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.1)
 
-> **🆕 Latest release — v1.75.0**
+> **🆕 Latest release — v1.75.1**
 >
 > **Parent career-ops v1.12.0 parity — seven new job sources land in the scanner.** Three board-wide remote aggregators (**RemoteOK**, **Remotive**, **Working Nomads**) and four config-driven regional aggregators (**IBM**, **Arbeitsagentur**, **Glints**, **Jobstreet / SEEK**) are now selectable in `#/scan`. Plus an optional `content_filter` (description/snippet keyword gating), scan-write hardening against TSV-row and spreadsheet-formula injection (#1098), richer Ashby `secondaryLocations` so EU-eligible roles surface (#1073), evaluation report-shape validation on the in-process providers (#819), and Antigravity CLI in the assistant docs. Builds on v1.74.0 (6 AI assistants incl. GitHub Models) and v1.70–73 (12 locales incl. Arabic RTL, cover-letter + PDF).
 >

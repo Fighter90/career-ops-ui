@@ -10,14 +10,22 @@
  *
  * Without sanitization a posting whose company name contains a newline could
  * inject a whole extra TSV row, and a value beginning with `= + - @` becomes a
- * live formula when the TSV is opened in a spreadsheet. These helpers mirror
- * the parent's scan.mjs sanitizers exactly so both code paths agree.
+ * live formula when the TSV is opened in a spreadsheet. These helpers follow
+ * the parent's scan.mjs sanitizers; the control-character class is a strict
+ * superset of the parent's (`\r\n\t` plus the vertical tab, form feed, and the
+ * Unicode line/paragraph separators), so any record/line separator a viewer
+ * might honor is collapsed — never weaker than the parent.
  */
 
-/** Collapse all control/whitespace runs to single spaces and trim. */
+// Record/line/column separators (and their close cousins) that must never
+// survive into a TSV cell or a fenced pipeline line. `\r\n\t` are the TSV
+// separators proper; \v \f and U+2028/U+2029 are line breaks some viewers honor.
+const SCAN_SEPARATORS = /[\r\n\t\v\f\u2028\u2029]+/g;
+
+/** Collapse all control/line/separator runs to single spaces and trim. */
 export function normalizeScanScalar(value) {
   return String(value ?? '')
-    .replace(/[\r\n\t]+/g, ' ')
+    .replace(SCAN_SEPARATORS, ' ')
     .replace(/ {2,}/g, ' ')
     .trim();
 }

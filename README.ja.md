@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-1181%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1190%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.75.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.0)
+[![release](https://img.shields.io/badge/release-v1.75.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.1)
 
-> **🆕 最新リリース — v1.75.0**
+> **🆕 最新リリース — v1.75.1**
 >
 > **親 career-ops v1.12.0 パリティ — スキャナに新規求人ソース7件が登場。** ボード横断のリモート集約サイト3件(**RemoteOK**、**Remotive**、**Working Nomads**)と設定駆動の地域集約サイト4件(**IBM**、**Arbeitsagentur**、**Glints**、**Jobstreet / SEEK**)を `#/scan` で選択できるようになりました。さらに、任意の `content_filter`(説明/スニペットのキーワードゲーティング)、TSV 行およびスプレッドシート数式インジェクションに対するスキャン書き込みの堅牢化(#1098)、EU 対象の職務が表面化するよう拡充された Ashby `secondaryLocations`(#1073)、インプロセスプロバイダにおける評価レポート形状の検証(#819)、そしてアシスタントドキュメントへの Antigravity CLI を追加。v1.74.0(GitHub Models を含む 6 つの AI アシスタント)および v1.70–73(アラビア語 RTL を含む 12 locales、カバーレター + PDF)をベースにしています。
 >

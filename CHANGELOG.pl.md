@@ -9,6 +9,17 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.75.1] — 2026-06-19
+
+**fix(scan): dopracowanie odporności źródeł sterowanych konfiguracją z v1.75.0.** Trzy drobne poprawki wzmacniające z przeglądu poreleasowego (bez zmiany zachowania przy poprawnym skanowaniu):
+
+- **Opóźnienia paginacji uwzględniające przerwanie.** Międzystronicowe pauzy grzecznościowe Glints (300 ms) oraz Jobstreet/SEEK (200 ms) są teraz rozwiązywane natychmiast po wyzwoleniu `AbortSignal` skanowania, dzięki nowemu pomocnikowi `delay(ms, signal)` w `server/lib/http-json.mjs`, tak aby rozłączony klient nie mógł utrzymywać paginowanego skanu otwartego przez dodatkową pauzę.
+- **Opisowy błąd dla odpowiedzi nie-JSON.** `fetchJson` opakowuje teraz nie-JSON-owe ciało `2xx` (np. stronę konserwacyjną HTML serwowaną ze statusem 200) jako `non-JSON 2xx response from <url>`, zamiast ujawniać goły `SyntaxError`, tak aby dziennik błędów skanera dla danego źródła nazwał nieprawidłowo działający punkt końcowy.
+- **Silniejsza normalizacja zapisu skanu.** `normalizeScanScalar` zwija teraz tabulację pionową, wysuw strony oraz uniksowe separatory wiersza/akapitu Unicode (`\v \f U+2028 U+2029`) oprócz `\r \n \t` — to ścisły nadzbiór, więc żaden separator rekordu/wiersza, który arkusz kalkulacyjny lub przeglądarka mogłyby uwzględnić, nie przetrwa do `scan-history.tsv`.
+
+---
+
+
 ## [1.75.0] — 2026-06-19
 
 **feat(scan): przenosi parytet z nadrzędnym career-ops v1.12.0 — siedem nowych źródeł ofert, filtrowanie treści oraz poprawki bezpieczeństwa/jakości.** web-ui uruchamia własne skanery w procesie (nie wywołuje shell out do nadrzędnego `scan.mjs`), więc zmiany dostawców i skanowania z nadrzędnej v1.12.0 nie przenoszą się automatycznie — to wydanie reimplementuje te mające zastosowanie zgodnie z kontraktem adapterów web-ui.

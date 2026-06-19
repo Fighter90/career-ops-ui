@@ -31,5 +31,33 @@ export async function fetchJson(fetchImpl, url, opts = {}) {
     err.status = res.status;
     throw err;
   }
-  return res.json();
+  try {
+    return await res.json();
+  } catch (e) {
+    // A 2xx that isn't JSON (e.g. an HTML error/maintenance page served with
+    // status 200) would otherwise surface as a bare SyntaxError. Wrap it so the
+    // scanner's per-source error log says which endpoint misbehaved.
+    throw new Error(`non-JSON 2xx response from ${url}: ${e.message}`);
+  }
+}
+
+/**
+ * Abort-aware delay. Resolves after `ms`, or immediately if `signal` is (or
+ * becomes) aborted — so a courtesy rate-limit pause between pagination pages
+ * can't hold a scan open after the client disconnects.
+ *
+ * @param {number} ms
+ * @param {AbortSignal} [signal]
+ */
+export function delay(ms, signal) {
+  if (!ms || ms <= 0 || signal?.aborted) return Promise.resolve();
+  return new Promise((resolve) => {
+    const timer = setTimeout(done, ms);
+    function done() {
+      clearTimeout(timer);
+      signal?.removeEventListener?.('abort', done);
+      resolve();
+    }
+    signal?.addEventListener?.('abort', done, { once: true });
+  });
 }

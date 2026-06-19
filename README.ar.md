@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-1181%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-1190%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.75.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.0)
+[![release](https://img.shields.io/badge/release-v1.75.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.1)
 
-> **🆕 أحدث إصدار — v1.75.0**
+> **🆕 أحدث إصدار — v1.75.1**
 >
 > **التكافؤ مع المشروع الأصلي career-ops v1.12.0 — سبعة مصادر وظائف جديدة تصل إلى الماسح.** أصبح بالإمكان الآن اختيار ثلاثة مُجمِّعات للعمل عن بُعد على مستوى اللوحة بأكملها (**RemoteOK** و**Remotive** و**Working Nomads**) وأربعة مُجمِّعات إقليمية مُوجَّهة بالتهيئة (**IBM** و**Arbeitsagentur** و**Glints** و**Jobstreet / SEEK**) في `#/scan`. إضافةً إلى `content_filter` اختياري (تبويب بالكلمات المفتاحية للوصف/المقتطف)، وتقوية كتابة المسح ضد حقن صف TSV وصيغ جداول البيانات (#1098)، و`secondaryLocations` أغنى في Ashby لإظهار الأدوار المؤهَّلة للعمل في الاتحاد الأوروبي (#1073)، والتحقق من شكل تقرير التقييم لدى المزوّدات داخل العملية (#819)، وAntigravity CLI في وثائق المساعدين. يُبنى على v1.74.0 (6 مساعدي ذكاء اصطناعي، منها GitHub Models) وv1.70–73 (12 locales، منها العربية RTL، خطاب التغطية + PDF).
 >

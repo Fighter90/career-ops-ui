@@ -11,6 +11,14 @@ test('normalizeScanScalar: collapses control + whitespace, trims', () => {
   assert.equal(normalizeScanScalar(null), '');
 });
 
+test('normalizeScanScalar: also collapses \\v \\f and U+2028/U+2029 (v1.75.1)', () => {
+  // Vertical tab, form feed, and the Unicode line/paragraph separators are
+  // line breaks some viewers honor \u2014 they must not survive into a TSV cell.
+  assert.equal(normalizeScanScalar('a\vb\fc'), 'a b c');
+  assert.equal(normalizeScanScalar('a\u2028b\u2029c'), 'a b c');
+  assert.doesNotMatch(normalizeScanScalar('x\v\f\u2028\u2029y'), /[\r\n\t\v\f\u2028\u2029]/);
+})
+
 test('normalizeScanUrl: takes the first token, drops smuggled fields', () => {
   assert.equal(normalizeScanUrl('https://x/job\tEVIL\textra'), 'https://x/job');
   assert.equal(normalizeScanUrl('  https://x/job  '), 'https://x/job');

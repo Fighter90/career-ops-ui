@@ -8,6 +8,17 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.75.1] — 2026-06-19
+
+**fix(scan): robustness polish on the v1.75.0 config-driven sources.** Three small hardening fixes from the post-release review (no behavior change for a healthy scan):
+
+- **Abort-aware pagination delays.** The Glints (300 ms) and Jobstreet/SEEK (200 ms) inter-page courtesy pauses now resolve immediately when the scan's `AbortSignal` fires, via a new `delay(ms, signal)` helper in `server/lib/http-json.mjs`, so a disconnected client can't hold a paginating scan open for an extra pause.
+- **Descriptive non-JSON error.** `fetchJson` now wraps a non-JSON `2xx` body (e.g. an HTML maintenance page served with status 200) as `non-JSON 2xx response from <url>` instead of surfacing a bare `SyntaxError`, so the scanner's per-source error log names the misbehaving endpoint.
+- **Stronger scan-write normalization.** `normalizeScanScalar` now collapses the vertical tab, form feed, and the Unicode line/paragraph separators (`\v \f U+2028 U+2029`) in addition to `\r \n \t` — a strict superset, so no record/line separator a spreadsheet or viewer might honor survives into `scan-history.tsv`.
+
+---
+
+
 ## [1.75.0] — 2026-06-19
 
 **feat(scan): port parent career-ops v1.12.0 — seven new job sources, content filtering, and security/quality fixes.** The web-ui runs its own in-process scanners (it does not shell out to the parent's `scan.mjs`), so parent v1.12.0's provider and scan changes do not flow through automatically — this release reimplements the applicable ones in the web-ui's adapter contract.

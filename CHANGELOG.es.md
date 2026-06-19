@@ -11,6 +11,17 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.75.1] — 2026-06-19
+
+**fix(scan): pulido de robustez sobre las fuentes basadas en configuración de la v1.75.0.** Tres pequeñas correcciones de endurecimiento surgidas de la revisión posterior al lanzamiento (sin cambio de comportamiento para un escaneo sano):
+
+- **Pausas de paginación conscientes del abort.** Las pausas de cortesía entre páginas de Glints (300 ms) y Jobstreet/SEEK (200 ms) ahora se resuelven de inmediato cuando se dispara el `AbortSignal` del escaneo, mediante un nuevo helper `delay(ms, signal)` en `server/lib/http-json.mjs`, de modo que un cliente desconectado no pueda mantener abierto un escaneo paginado durante una pausa extra.
+- **Error descriptivo para respuestas no JSON.** `fetchJson` ahora envuelve un cuerpo `2xx` no JSON (p. ej. una página HTML de mantenimiento servida con estado 200) como `non-JSON 2xx response from <url>` en lugar de exponer un `SyntaxError` desnudo, de modo que el registro de errores por fuente del escáner nombre el endpoint que se comporta mal.
+- **Normalización de escritura de escaneo más fuerte.** `normalizeScanScalar` ahora colapsa la tabulación vertical, el avance de página y los separadores Unicode de línea/párrafo (`\v \f U+2028 U+2029`) además de `\r \n \t` — un superconjunto estricto, de modo que ningún separador de registro/línea que una hoja de cálculo o un visor pudiera respetar sobreviva en `scan-history.tsv`.
+
+---
+
+
 ## [1.75.0] — 2026-06-19
 
 **feat(scan): incorpora la paridad con el career-ops padre v1.12.0 — siete nuevas fuentes de empleo, filtrado de contenido y correcciones de seguridad/calidad.** La web-ui ejecuta sus propios escáneres en proceso (no delega en el `scan.mjs` del padre), por lo que los cambios de proveedor y de escaneo de la v1.12.0 del padre no se propagan automáticamente — esta versión reimplementa los aplicables conforme al contrato de adaptadores de la web-ui.

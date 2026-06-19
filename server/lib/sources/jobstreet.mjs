@@ -22,7 +22,7 @@
  *
  * Used by the jobstreet adapter (server/lib/portals/adapters/jobstreet.mjs).
  */
-import { fetchJson } from '../http-json.mjs';
+import { fetchJson, delay } from '../http-json.mjs';
 
 export const DEFAULT_API = 'https://id.jobstreet.com/api/chalice-search/v4/search';
 const DEFAULT_SITE_KEY = 'ID-Main';
@@ -190,7 +190,7 @@ export async function fetchJobstreet(apiUrl = DEFAULT_API, opts = {}) {
     }
 
     if (data.length < pageSize) break;
-    await new Promise((resolve) => setTimeout(resolve, 200)); // rate-limit courtesy
+    await delay(200, signal); // rate-limit courtesy; abort-aware
   }
 
   return allJobs;

@@ -19,7 +19,7 @@
  *
  * Used by the glints adapter (server/lib/portals/adapters/glints.mjs).
  */
-import { fetchJson } from '../http-json.mjs';
+import { fetchJson, delay } from '../http-json.mjs';
 
 export const DEFAULT_API = 'https://glints.com/api/graphql';
 const DEFAULT_COUNTRY = 'ID';
@@ -201,7 +201,7 @@ export async function fetchGlints(apiUrl = DEFAULT_API, opts = {}) {
 
     if (totalCount != null && allJobs.length >= totalCount) break;
     if (data.length < pageSize) break;
-    await new Promise((resolve) => setTimeout(resolve, 300)); // rate-limit courtesy
+    await delay(300, signal); // rate-limit courtesy; abort-aware
   }
 
   return allJobs;

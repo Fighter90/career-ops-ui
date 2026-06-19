@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-1181%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1190%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.75.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.0)
+[![release](https://img.shields.io/badge/release-v1.75.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.1)
 
-> **🆕 최신 릴리스 — v1.75.0**
+> **🆕 최신 릴리스 — v1.75.1**
 >
 > **상위 career-ops v1.12.0 패리티 — 스캐너에 신규 채용 소스 7종 추가.** 보드 전반 원격 집계기 3종(**RemoteOK**, **Remotive**, **Working Nomads**)과 설정 기반 지역 집계기 4종(**IBM**, **Arbeitsagentur**, **Glints**, **Jobstreet / SEEK**)을 이제 `#/scan`에서 선택할 수 있습니다. 여기에 선택적 `content_filter`(설명/스니펫 키워드 게이팅), TSV 행 및 스프레드시트 수식 주입에 대비한 스캔 쓰기 강화(#1098), EU 자격 직무가 노출되도록 더 풍부해진 Ashby `secondaryLocations`(#1073), 인프로세스 프로바이더의 평가 보고서 형태 검증(#819), 그리고 어시스턴트 문서의 Antigravity CLI가 더해졌습니다. v1.74.0(GitHub Models 포함 6개 AI 어시스턴트)과 v1.70–73(아랍어 RTL 포함 12 locales, 커버 레터 + PDF)을 기반으로 합니다.
 >
