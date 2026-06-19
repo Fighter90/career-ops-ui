@@ -495,6 +495,23 @@ Backend Engineer」排在「Engineer」之前。預設值:
 
 一開始用 3–5 個 positive 關鍵字以保持清晰;之後再擴展。
 
+**`content_filter`(可選 —— web-ui 1.75.0,parent #974)。** 與 `location_filter`
+平級的頂層鍵,擁有相同的 `positive` / `negative` 關鍵字清單,但比對的是職缺的
+**描述 / 摘要** 文字,而非其地點:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+語義與 `location_filter` 完全一致:無該鍵 → 全部通過;描述 **為空 / 缺失** 的
+職缺通過(缺失資料不受懲罰);`negative` 命中 → 拒絕;`positive` 為空 → 通過;
+`positive` 非空 → 必須命中至少一個關鍵字(不分大小寫的子字串)。ATS 掃描與
+區域掃描皆會套用。只有攜帶描述 / 摘要的來源(如 RSS)會受影響 —— 其餘職缺
+一律通過 —— 因此啟用它絕不會悄悄丟棄不帶內文的來源的列。可用它丟棄標題已
+通過、但內文暴露出決定性硬傷的職缺。
+
 ### `location_filter`(可選 —— web-ui 1.33.0,parent #570)
 
 ```yaml
@@ -746,6 +763,7 @@ $EDITOR portals.yml
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (ATS 大掃描)針對 `tracked_companies` 中每家能辨識 ATS URL 的
   公司。
+- v1.75.0 聚合器,針對每個選擇啟用其一的 `tracked_companies` 條目:RemoteOK / Remotive / Working Nomads(全板塊遠端訂閱源,`provider: <slug>`)以及 IBM / Arbeitsagentur / Glints / Jobstreet · SEEK(設定驅動,每條目一個 `<provider>:` 區塊)。
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob,針對 `russian_portals` 中的每個
   query。
 
@@ -767,7 +785,7 @@ HTTPS 請求。
 篩選器:
 
 - **自由文字** — 對職稱 / 公司做子字串比對。
-- **Source** 下拉 — Ashby / GeekJob / Greenhouse / GetMatch / Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday。
+- **Source** 下拉 — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads(從 `GET /api/scan/sources` 自動填入)。
 - **Remote / Hybrid / Onsite** 下拉。
 - **Stack chips**(PHP / Go / Backend / Senior / …)— 由
   `Skills.detectTech` 與 `Skills.detectLevel` 自動偵測每一列。
@@ -1409,7 +1427,7 @@ scan 執行、設定變更、mode 執行。
 
 ## 17. 如何新增職位入口網站來源
 
-career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。v1.29.0 內建 11 個 adapter(6 個英文 ATS、5 個俄文板塊)。
+career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。截至 v1.75.0,`server/lib/sources/` 註冊表內建 **19** 個 adapter —— 14 個英文(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday 等 ATS、RSS,以及 v1.75.0 聚合器 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)和 5 個俄文板塊。v1.75.0 新增的 7 個聚合器並非按公司的 ATS,而是全板塊或設定驅動的來源:三個遠端訂閱源以 `provider: remoteok|remotive|workingnomads` 選擇,四個區域來源(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)讀取每條目的 `<provider>:` 設定區塊 —— YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 直接放入即自動探索。** 新增第 12 個來源現在只需**純粹的檔案放入**。registry
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

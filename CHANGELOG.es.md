@@ -11,6 +11,19 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.75.2] — 2026-06-19
+
+**docs: paridad documental completa para los agregadores del escáner de la v1.75.0 en los 12 idiomas.** Sin cambio de código — alinea la documentación de cara al usuario con las siete fuentes que aterrizaron en la v1.75.0:
+
+- **Guía de ayuda (12 idiomas).** §5 gana un bloque `content_filter` (gating por palabras clave de descripción/fragmento, hermano de `location_filter`) y una nota sobre agregadores; §7 enumera las siete nuevas fuentes en el barrido de escaneo de un clic y en la enumeración completa del desplegable **Source**; el recuento de adaptadores de §17 se corrige del obsoleto "11 adapters" a "19 adapters — 14 English + 5 Russian". No se añadió ningún encabezado `##`/`###`, por lo que la estructura cerrada de 19 H2 / 75 H3 queda intacta.
+- **README (9 idiomas completos).** Nueva viñeta "Aggregator boards (v1.75.0)" bajo las fuentes de escaneo, más la insignia de versión actualizada a v1.75.2. (Los README abreviados pl/uk/ar no tienen lista por fuente y quedan intencionadamente intactos ahí.)
+- **Documentación de referencia.** `docs/portals-examples.md` gana una sección "Aggregator boards" de copiar y pegar con bloques de configuración `provider:` / `<provider>:` precisos para las siete; `docs/PROJECT.md` actualizado a **19 adapters**; `docs/sdd/CONVENTIONS.md` documenta la distinción de los dos registros (`sources/registry.mjs` para el desplegable frente a `portals/registry.mjs` para el fetching), la selección de agregador basada en `provider:` enhebrada como `opts.company`, el saneador de escritura de escaneo (`scan-sanitize.mjs`) y el recuento de tests de la v1.75.1 (1190).
+- **QA.** Añadido `qa/QA-REGRESSION-PROMPT-v1.75.2-FULL.md` — el driver de compuerta de lanzamiento de superficie completa, renovado para el ciclo de agregadores de escaneo de la v1.75.x.
+
+---
+
+
+
 ## [1.75.1] — 2026-06-19
 
 **fix(scan): pulido de robustez sobre las fuentes basadas en configuración de la v1.75.0.** Tres pequeñas correcciones de endurecimiento surgidas de la revisión posterior al lanzamiento (sin cambio de comportamiento para un escaneo sano):

@@ -555,6 +555,16 @@ Ajusta para que coincida con cómo se titulan tus roles objetivo.
 
 Empieza con 3–5 keywords positivas por claridad; amplía después.
 
+**`content_filter` (opcional — web-ui 1.75.0, parent #974).** Un hermano de nivel superior de `location_filter` con las mismas listas de keywords `positive` / `negative`, pero comparadas contra el texto de la **descripción / snippet** de una oferta en lugar de su ubicación:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+Semántica idéntica a `location_filter`: sin clave → todo pasa; una oferta con descripción **vacía/ausente** pasa (no se penaliza la falta de datos); un match `negative` → rechazada; `positive` vacía → pasa; `positive` no vacía → debe coincidir al menos una keyword (substring sin distinción de mayúsculas/minúsculas). Lo aplican tanto las pasadas ATS como las regionales. Solo se ven afectadas las fuentes que incluyen una descripción/snippet (p. ej. RSS) — todas las demás ofertas pasan — así que habilitarlo nunca descarta silenciosamente filas de fuentes que no llevan cuerpo. Úsalo para descartar una oferta que pasa el filtro de título pero cuyo cuerpo revela un deal-breaker.
+
 ### `location_filter` (opcional — web-ui 1.33.0, parent #570)
 
 ```yaml
@@ -816,6 +826,10 @@ historia, y escribe los hits a `data/last-scan.json` y
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (la pasada ATS) para cada empresa de `tracked_companies` con una
   URL ATS reconocible.
+- Los agregadores de v1.75.0 para cada entrada de `tracked_companies`
+  que opte por uno: RemoteOK / Remotive / Working Nomads (feeds remotos
+  de todo el board, `provider: <slug>`) e IBM / Arbeitsagentur / Glints /
+  Jobstreet · SEEK (config-driven, bloque `<provider>:` por entrada).
 - API de hh.ru + HTML de Habr Career para cada query de
   `russian_portals`.
 
@@ -839,7 +853,7 @@ Debajo del log, la tabla de resultados renderiza filas de
 Filtros:
 
 - **Texto libre** — match de substring contra título / empresa.
-- Dropdown **Source** — Ashby / GeekJob / Greenhouse / GetMatch / Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday.
+- Dropdown **Source** — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (auto-rellenado desde `GET /api/scan/sources`).
 - Dropdown **Remote / Hybrid / Onsite**.
 - **Chips de stack** (PHP / Go / Backend / Senior / …) —
   auto-detectados por fila por `Skills.detectTech` y
@@ -1556,8 +1570,16 @@ Health, copia el output, y busca el issue en el tracker en
 
 career-ops-ui trata cada bolsa de empleo como un **adapter** — un único archivo bajo
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe
-cómo obtener y normalizar los resultados de una bolsa concreta. v1.29.0 incluye 11
-adapters (6 ATS en inglés, 5 portales rusos).
+cómo obtener y normalizar los resultados de una bolsa concreta. A partir de v1.75.0 el
+registro `server/lib/sources/` incluye **19** adapters — 14 en inglés (los ATS de
+Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday, RSS y los agregadores
+de v1.75.0 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints /
+Jobstreet · SEEK) y 5 portales rusos. Los siete agregadores añadidos en v1.75.0 son
+fuentes de todo el board o config-driven en lugar de ATS por empresa: los tres feeds
+remotos se seleccionan con `provider: remoteok|remotive|workingnomads`, y los cuatro
+regionales (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) leen un bloque de
+configuración `<provider>:` por entrada — ver §5 para el YAML y `docs/portals-examples.md`
+para entradas listas para copiar y pegar.
 
 > **v1.69.0 (P-14) — auto-descubrimiento drop-in.** Añadir una 12.ª fuente es ahora
 > una **operación de soltar el archivo**. El registro

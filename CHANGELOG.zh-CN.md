@@ -9,6 +9,19 @@
 ---
 
 
+## [1.75.2] — 2026-06-19
+
+**docs：在全部 12 个语言环境中为 v1.75.0 的扫描器聚合器提供完整的文档对等。** 无代码改动 — 将面向用户的文档与 v1.75.0 中落地的七个来源对齐:
+
+- **帮助指南（12 个语言环境）。** §5 新增一个 `content_filter` 块（按描述/摘要关键词门控,是 `location_filter` 的同类项）以及一条关于聚合器的说明;§7 在一键扫描的遍历和完整的 **Source** 下拉枚举中列出这七个新来源;§17 的适配器计数从过时的 "11 adapters" 更正为 "19 adapters — 14 English + 5 Russian"。没有新增 `##`/`###` 标题,因此受门控的 19 H2 / 75 H3 结构保持不变。
+- **README（9 个完整语言环境）。** 在扫描来源下新增 "Aggregator boards (v1.75.0)" 条目,并将发布徽章提升至 v1.75.2。（精简版的 pl/uk/ar README 没有按来源的列表,该处刻意不作改动。）
+- **参考文档。** `docs/portals-examples.md` 新增一个可复制粘贴的 "Aggregator boards" 章节,为这七个来源提供准确的 `provider:` / `<provider>:` 配置块;`docs/PROJECT.md` 更新为 **19 adapters**;`docs/sdd/CONVENTIONS.md` 记录了两个注册表的区分（用于下拉的 `sources/registry.mjs` 对用于抓取的 `portals/registry.mjs`）、以 `opts.company` 形式传递的基于 `provider:` 的聚合器选择、扫描写入清洗器（`scan-sanitize.mjs`）以及 v1.75.1 的测试数量（1190）。
+- **QA。** 新增 `qa/QA-REGRESSION-PROMPT-v1.75.2-FULL.md` — 全表面发布闸驱动器,已为 v1.75.x 扫描聚合器周期翻新。
+
+---
+
+
+
 ## [1.75.1] — 2026-06-19
 
 **fix(scan): 对 v1.75.0 配置驱动来源的健壮性打磨。** 来自发布后复盘的三处小型加固修复(正常扫描下行为不变):

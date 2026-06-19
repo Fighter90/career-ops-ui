@@ -577,6 +577,16 @@ location_filter:
 
 Ключ верхнего уровня в `portals.yml` (сосед `title_filter`, не вложен в `russian_portals`).
 
+**`content_filter` (опционально — web-ui 1.75.0, parent #974).** Опциональный sibling верхнего уровня для `location_filter` с теми же списками ключевых слов `positive` / `negative`, но сопоставляемыми с текстом **описания / сниппета** вакансии, а не с её локацией:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+Семантика идентична `location_filter`: нет ключа → проходит всё; вакансия с **пустым/отсутствующим** описанием проходит (отсутствие данных не штрафуется); совпадение в `negative` → отклонена; `positive` пуст → проходит; `positive` непуст → должна совпасть хотя бы с одним ключевым словом (подстрока, регистронезависимо). Применяется и в ATS-проходе, и в регионарном. Затрагиваются только источники, которые отдают описание/сниппет (например, RSS) — любая другая вакансия проходит — поэтому включение фильтра никогда не отбрасывает молча строки из источников, не несущих тело. Используйте его, чтобы отбросить прошедшую по заголовку вакансию, чьё тело вскрывает deal-breaker.
+
 ### `search_queries`
 
 ```yaml
@@ -811,6 +821,11 @@ $EDITOR portals.yml
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (ATS-проход) для каждой компании в `tracked_companies` с
   распознаваемым ATS-URL.
+- Агрегаторы v1.75.0 для каждой записи `tracked_companies`, которая
+  их включает: RemoteOK / Remotive / Working Nomads (ленты удалёнки
+  на уровне доски, `provider: <slug>`) и IBM / Arbeitsagentur /
+  Glints / Jobstreet · SEEK (config-driven, блок `<provider>:` на
+  каждую запись).
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob для каждого query из `russian_portals`.
 
 **Две фазы — один клик (v1.29.2).** Единственная кнопка 🌐 Scan запускает И ATS-проход, И регионарный — в одном SSE-стриме. В логе появятся два заголовка фаз, по очереди:
@@ -831,7 +846,7 @@ $EDITOR portals.yml
 Фильтры:
 
 - **Free text** — подстрочное совпадение по title / company.
-- **Source** dropdown — Ashby / GeekJob / Greenhouse / GetMatch / Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday.
+- **Source** dropdown — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (автозаполняется из `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite** dropdown.
 - **Stack chips** (PHP / Go / Backend / Senior / …) —
   авто-определяются по строке через `Skills.detectTech` и
@@ -1531,7 +1546,7 @@ Health, скопируйте вывод и поищите проблему в is
 
 ## 17. Как добавить новый источник для скана
 
-career-ops-ui рассматривает каждый job-сайт как **adapter** — единый файл в [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), который умеет fetch'ить и нормализовать результаты одного сайта. v1.29.0 поставляется с 11 адаптерами (6 английских ATS, 5 русских платформ).
+career-ops-ui рассматривает каждый job-сайт как **adapter** — единый файл в [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), который умеет fetch'ить и нормализовать результаты одного сайта. По состоянию на v1.75.0 registry `server/lib/sources/` поставляется с **19** адаптерами — 14 английских (ATSes Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday, RSS и агрегаторы v1.75.0 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) и 5 русских досок. Семь агрегаторов, добавленных в v1.75.0, — это источники уровня доски или config-driven, а не ATSes на каждую компанию: три ленты удалёнки выбираются через `provider: remoteok|remotive|workingnomads`, а четыре региональных (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) читают config-блок `<provider>:` на каждую запись — см. §5 для YAML и `docs/portals-examples.md` для готовых copy-paste-записей.
 
 > **v1.69.0 (P-14) — авторегистрация по принципу drop-in.** Добавление 12-го источника теперь — это **просто одни файл**. Реестр
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

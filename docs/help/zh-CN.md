@@ -492,6 +492,23 @@ title_filter:
 
 刚开始时先用 3–5 个 positive 关键词以保持清晰;之后再扩大。
 
+**`content_filter`(可选 —— web-ui 1.75.0,parent #974)。** 与 `location_filter`
+平级的顶层键,拥有相同的 `positive` / `negative` 关键词列表,但匹配的是职位的
+**描述 / 摘要** 文本,而非其地点:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+语义与 `location_filter` 完全一致:无该键 → 全部通过;描述 **为空 / 缺失** 的
+职位通过(缺失数据不受惩罚);`negative` 命中 → 拒绝;`positive` 为空 → 通过;
+`positive` 非空 → 必须命中至少一个关键词(不分大小写的子字符串)。ATS 扫描与
+区域扫描均会应用。只有携带描述 / 摘要的来源(如 RSS)会受影响 —— 其余职位
+一律通过 —— 因此启用它绝不会悄悄丢弃不带正文的来源的行。可用它丢弃标题已
+通过、但正文暴露出决定性硬伤的职位。
+
 ### `location_filter`(可选 —— web-ui 1.33.0,parent #570)
 
 ```yaml
@@ -741,6 +758,7 @@ $EDITOR portals.yml
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (ATS 全量扫描)针对 `tracked_companies` 中每家有可识别 ATS URL 的
   公司。
+- v1.75.0 聚合器,针对每个选择启用其一的 `tracked_companies` 条目:RemoteOK / Remotive / Working Nomads(全板块远程订阅源,`provider: <slug>`)以及 IBM / Arbeitsagentur / Glints / Jobstreet · SEEK(配置驱动,每条目一个 `<provider>:` 块)。
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob,针对 `russian_portals` 中的每个查询。
 
 **一键两阶段(v1.29.2)。** 唯一的 🌐 Scan 按钮在一个 SSE 流中同时驱动 ATS 与区域两次扫描。日志会按顺序出现两个阶段标题:
@@ -761,7 +779,7 @@ $EDITOR portals.yml
 过滤器:
 
 - **自由文本** — 对 title / company 做子串匹配。
-- **Source** 下拉 — Ashby / GeekJob / Greenhouse / GetMatch / Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday。
+- **Source** 下拉 — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads(从 `GET /api/scan/sources` 自动填充)。
 - **Remote / Hybrid / Onsite** 下拉。
 - **技术栈标签**(PHP / Go / Backend / Senior / …)— 每行由
   `Skills.detectTech` 与 `Skills.detectLevel` 自动检测。多选交集 —
@@ -1395,7 +1413,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 
 ## 17. 如何添加新的招聘门户来源
 
-career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。v1.29.0 自带 11 个 adapter(6 个英文 ATS、5 个俄文板块)。
+career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。截至 v1.75.0,`server/lib/sources/` 注册表自带 **19** 个 adapter —— 14 个英文(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday 等 ATS、RSS,以及 v1.75.0 聚合器 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)和 5 个俄文板块。v1.75.0 新增的 7 个聚合器并非按公司的 ATS,而是全板块或配置驱动的来源:三个远程订阅源以 `provider: remoteok|remotive|workingnomads` 选择,四个区域来源(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)读取每条目的 `<provider>:` 配置块 —— YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 即插即用自动发现。** 添加第 12 个来源现在是**纯粹的文件投放**。注册表
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

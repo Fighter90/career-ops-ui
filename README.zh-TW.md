@@ -12,9 +12,9 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.75.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.1)
+[![release](https://img.shields.io/badge/release-v1.75.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.2)
 
-> **🆕 最新版本 — v1.75.1**
+> **🆕 最新版本 — v1.75.2**
 >
 > **與父層 career-ops v1.12.0 對齊 — 七個新的職缺來源進入掃描器。** 三個涵蓋整個職缺板的遠端彙整器（**RemoteOK**、**Remotive**、**Working Nomads**）和四個由設定驅動的區域彙整器（**IBM**、**Arbeitsagentur**、**Glints**、**Jobstreet / SEEK**）現在可在 `#/scan` 中選擇。此外還有可選的 `content_filter`（描述/摘要關鍵字門控）、針對 TSV 列與試算表公式注入的掃描寫入強化（#1098）、更豐富的 Ashby `secondaryLocations` 以浮現可在歐盟工作的職缺（#1073）、程序內提供者的評估報告形狀驗證（#819），以及助手文件中的 Antigravity CLI。在 v1.74.0（含 GitHub Models 的 6 個 AI 助手）和 v1.70–73（含阿拉伯語 RTL 的 12 locales、求職信 + PDF）的基礎上構建。
 >
@@ -258,6 +258,7 @@ npm start
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — 對 `portals.yml::tracked_companies` 中所有具備可辨識 ATS 樣式的公司呼叫公開 boards-api。內建清單涵蓋 Stripe、GitLab、Vercel、Cloudflare、Datadog、Discord、Elastic、Grafana Labs、CockroachDB、Fastly、Twilio、Coinbase、Reddit、Robinhood、Affirm、Lyft、Linear、Supabase、PostHog、Ramp、Modal Labs、Railway、Browserbase、JetBrains — 可自由擴充或精簡。
 - **RSS 招募看板** — 支援任何提供 RSS/Atom feed 的招募看板(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 等)。只需在 `portals.yml` 中加入 `provider: rss` 與 feed URL 即可,無需修改程式碼。
+- **聚合招募看板(v1.75.0)** — 在按公司的 ATS 之外,新增七個全板塊 / 設定驅動來源:**RemoteOK / Remotive / Working Nomads**(全板塊遠端訂閱源,用 `provider: remoteok|remotive|workingnomads` 選擇)以及 **IBM / Arbeitsagentur / Glints / Jobstreet · SEEK**(設定驅動,各自讀取每條目的 `<provider>:` 區塊)。可複製貼上的 `tracked_companies` 條目見 `docs/portals-examples.md`。它們與其他所有來源一樣,執行相同的 `title_filter` / `location_filter` / `content_filter` + 去重 + 附加到 pipeline 的流程。
 - **hh.ru** — 抓取 `hh.ru/search/vacancy` 的 HTML。任何 IP 皆可用,無需金鑰或代理。(不再使用 JSON API `api.hh.ru`:它現在無論 IP/User-Agent 都對所有程式化用戶端回傳 403;網站則像 Habr Career 一樣向任何類瀏覽器用戶端回傳完整結果。)
 - **Habr Career** — 對 `career.habr.com/vacancies` 進行 HTML 抓取。不受 IP 限制,無需認證。
 

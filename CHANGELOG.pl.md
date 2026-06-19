@@ -9,6 +9,19 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.75.2] — 2026-06-19
+
+**docs: pełna parytetowa dokumentacja dla agregatorów skanera z v1.75.0 we wszystkich 12 lokalizacjach.** Bez zmiany kodu — dostraja dokumentację dla użytkownika do siedmiu źródeł, które pojawiły się w v1.75.0:
+
+- **Przewodnik pomocy (12 lokalizacji).** §5 zyskuje blok `content_filter` (bramkowanie po słowach kluczowych opisu/fragmentu, odpowiednik `location_filter`) oraz notkę o agregatorach; §7 wymienia siedem nowych źródeł w przebiegu skanowania jednym kliknięciem oraz w pełnym wyliczeniu listy rozwijanej **Source**; liczba adapterów w §17 zostaje skorygowana z przestarzałego „11 adapters” na „19 adapters — 14 English + 5 Russian”. Nie dodano żadnego nagłówka `##`/`###`, więc zablokowana struktura 19 H2 / 75 H3 pozostaje niezmieniona.
+- **README (9 pełnych lokalizacji).** Nowy punkt „Aggregator boards (v1.75.0)” pod źródłami skanowania oraz odznaka wydania podniesiona do v1.75.2. (Skrócone README pl/uk/ar nie mają listy per źródło i są tam celowo nietknięte.)
+- **Dokumentacja referencyjna.** `docs/portals-examples.md` zyskuje gotową do skopiowania sekcję „Aggregator boards” z dokładnymi blokami konfiguracji `provider:` / `<provider>:` dla wszystkich siedmiu; `docs/PROJECT.md` zaktualizowano do **19 adapters**; `docs/sdd/CONVENTIONS.md` dokumentuje rozróżnienie dwóch rejestrów (`sources/registry.mjs` dla listy rozwijanej kontra `portals/registry.mjs` dla pobierania), wybór agregatora oparty na `provider:` przekazywany jako `opts.company`, sanityzator zapisu skanowania (`scan-sanitize.mjs`) oraz liczbę testów z v1.75.1 (1190).
+- **QA.** Dodano `qa/QA-REGRESSION-PROMPT-v1.75.2-FULL.md` — pełnopowierzchniowy sterownik bramki wydania, odświeżony pod cykl agregatorów skanowania v1.75.x.
+
+---
+
+
+
 ## [1.75.1] — 2026-06-19
 
 **fix(scan): dopracowanie odporności źródeł sterowanych konfiguracją z v1.75.0.** Trzy drobne poprawki wzmacniające z przeglądu poreleasowego (bez zmiany zachowania przy poprawnym skanowaniu):

@@ -387,6 +387,24 @@ location_filter:
 
 ابدأ بـ 3–5 كلمات مفتاحية إيجابية للوضوح؛ وسّع لاحقاً.
 
+**`content_filter` (اختياري — web-ui 1.75.0، الأب #974).** مفتاح على مستوى المشروع،
+أخ لـ `location_filter`، بنفس قائمتي الكلمات المفتاحية `positive` / `negative`،
+لكنه يُطابَق مع نص **الوصف / المقتطف** للوظيفة بدلاً من موقعها:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+دلالات مطابقة لـ `location_filter`: لا مفتاح → كل شيء يجتاز؛ وظيفة بوصف **فارغ/مفقود**
+تجتاز (البيانات المفقودة لا تُعاقَب)؛ تطابق `negative` → مرفوضة؛ `positive` فارغ →
+يجتاز؛ `positive` غير فارغ → يجب أن يطابق كلمة مفتاحية واحدة على الأقل (سلسلة فرعية
+دون حساسية لحالة الأحرف). يُطبَّق بواسطة مسحَي ATS والمسح الإقليمي معاً. يؤثر فقط على
+المصادر التي تُرسل وصفاً/مقتطفاً (مثل RSS) — أي وظيفة أخرى تجتاز — لذا فإن تفعيله لا
+يُسقط أبداً صفوفاً بصمت من مصادر لا تحمل نصاً. استخدمه لإسقاط وظيفة اجتازت مرشح العنوان
+لكن نصها يكشف عاملاً مانعاً.
+
 ### `search_queries`
 
 ```yaml
@@ -580,6 +598,7 @@ $EDITOR portals.yml
 **🌐 مسح** يُشغّل كل مصدر مفعّل في تمريرة واحدة:
 
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (المسح ATS) لكل شركة في `tracked_companies` بـ URL ATS قابل للتعرف.
+- مُجمّعات v1.75.0 لكل إدخال `tracked_companies` يختارها: RemoteOK / Remotive / Working Nomads (تغذيات عمل عن بُعد على مستوى اللوحة، `provider: <slug>`) وَ IBM / Arbeitsagentur / Glints / Jobstreet · SEEK (مدفوعة بالإعداد، كتلة `<provider>:` لكل إدخال).
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob لكل استعلام في `russian_portals`.
 
 **مرحلتان، نقرة واحدة (v1.29.2).** زر 🌐 المسح الواحد يُشغّل كلاً من المسح ATS والمسح الإقليمي في دفق SSE واحد. ستلاحظ ترويستَي مرحلتين في السجل، بالترتيب:
@@ -598,7 +617,7 @@ $EDITOR portals.yml
 المرشحات:
 
 - **نص حر** — مطابقة جزئية مقابل العنوان / الشركة.
-- قائمة **المصدر** المنسدلة — Ashby / GeekJob / Greenhouse / GetMatch / Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday.
+- قائمة **المصدر** المنسدلة — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (تُملأ تلقائياً من `GET /api/scan/sources`).
 - قائمة **عن بُعد / هجين / حضوري** المنسدلة.
 - **شرائح التقنية** (PHP / Go / Backend / Senior / …) — مُكتشَفة تلقائياً لكل صف بواسطة `Skills.detectTech` و`Skills.detectLevel`. تقاطع متعدد الاختيارات — اختيار `PHP + Senior` يعرض الصفوف التي تحتوي على كليهما.
 - **شرائح ديناميكية** أسفل الشرائح الثابتة — أعلى 25 رمزاً مُكبَّراً متكرراً في العناوين، حتى تتكيف الواجهة مع الأدوار التي تمسحها فعلاً (تسويق، تصميم، مالية…) بدلاً من الانحصار في قاموس مهندس الخلفية.
@@ -1082,7 +1101,7 @@ npm run doctor
 ## 17. كيفية إضافة مصدر بوابة وظائف جديد
 
 يُعامِل career-ops-ui كل بوابة وظائف بوصفها **محوّلاً** — ملف واحد ضمن
-[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. يشحن v1.29.0 مع 11 محوّلاً (6 ATSes إنجليزية، 5 بوابات روسية).
+[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. اعتباراً من v1.75.0 يشحن سجل `server/lib/sources/` مع **19** محوّلاً — 14 إنجليزية (محولات ATS: Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday، وَ RSS، ومُجمّعات v1.75.0: RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) وَ 5 بوابات روسية. المُجمّعات السبعة المضافة في v1.75.0 هي مصادر على مستوى اللوحة أو مدفوعة بالإعداد بدلاً من ATSes لكل شركة: التغذيات عن بُعد الثلاث تُختار بـ `provider: remoteok|remotive|workingnomads`، والأربع الإقليمية (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) تقرأ كتلة إعداد `<provider>:` لكل إدخال — انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
 
 > **v1.69.0 (P-14) — اكتشاف تلقائي عند الإضافة.** إضافة مصدر ثاني عشر الآن **مجرد إسقاط ملف**. لم يعد السجل
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

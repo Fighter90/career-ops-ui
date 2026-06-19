@@ -8,6 +8,19 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.75.2] — 2026-06-19
+
+**docs: full documentation parity for the v1.75.0 scanner aggregators across all 12 locales.** No code change — brings the user-facing docs in line with the seven sources that landed in v1.75.0:
+
+- **Help guide (12 locales).** §5 gains a `content_filter` block (description/snippet keyword gating, sibling of `location_filter`) and an aggregators note; §7 lists the seven new sources in the one-click-scan sweep and the full **Source** dropdown enumeration; §17's adapter count is corrected from the stale "11 adapters" to "19 adapters — 14 English + 5 Russian". No `##`/`###` heading was added, so the gated 19 H2 / 75 H3 structure is unchanged.
+- **README (9 full locales).** New "Aggregator boards (v1.75.0)" bullet under the scan sources, plus the release badge bumped to v1.75.2. (The abbreviated pl/uk/ar READMEs have no per-source list and are intentionally untouched there.)
+- **Reference docs.** `docs/portals-examples.md` gains a copy-paste "Aggregator boards" section with accurate `provider:` / `<provider>:` config blocks for all seven; `docs/PROJECT.md` updated to **19 adapters**; `docs/sdd/CONVENTIONS.md` documents the two-registry distinction (`sources/registry.mjs` for the dropdown vs `portals/registry.mjs` for fetching), the `provider:`-based aggregator selection threaded as `opts.company`, the scan-write sanitizer (`scan-sanitize.mjs`), and the v1.75.1 test count (1190).
+- **QA.** Added `qa/QA-REGRESSION-PROMPT-v1.75.2-FULL.md` — the full-surface release-gate driver, refreshed for the v1.75.x scan-aggregator cycle.
+
+---
+
+
+
 ## [1.75.1] — 2026-06-19
 
 **fix(scan): robustness polish on the v1.75.0 config-driven sources.** Three small hardening fixes from the post-release review (no behavior change for a healthy scan):

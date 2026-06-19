@@ -58,6 +58,7 @@ These functions live in `server/lib/security.mjs` (after v1.21.0 H-4 consolidati
 | LLM rate limiting | `llmRateLimit` middleware | `server/lib/rate-limit.mjs` (v1.21 H-5) |
 | Env-config writes | `validateConfig(body)` then `updateEnvFile(...)` | `server/lib/env-config.mjs` |
 | Activity log redaction | handled by `activityMiddleware` | `server/lib/activity.mjs` |
+| Scan-write (external feed metadata → `scan-history.tsv`) | `normalizeScanScalar` / `normalizeScanUrl` / `sanitizeTsvField` | `server/lib/scan-sanitize.mjs` (v1.75.0; v1.75.1 widened the separator set to `\r \n \t \v \f U+2028 U+2029`) |
 
 Route reviewers (`web-ui-route-reviewer` agent) flag every miss.
 
@@ -69,7 +70,9 @@ Route reviewers (`web-ui-route-reviewer` agent) flag every miss.
 - **SSE consumers** via `API.stream(path, onEvent)`. Auto-closes the `EventSource` on `done` (single-phase) or on the final `done` with `data.final !== false` (multi-phase, see v1.29.2 invariant M-13 in `qa/REGRESSION-v1.29.2.md`).
 - **Navigation** via `Router.go('/path')`. Never set `window.location.hash` directly outside `router.js`. The router strips `?query` from the route-name lookup (v1.28.1 fix); views parse query params from `window.location.hash.split('?')[1]` themselves via `URLSearchParams`.
 - **Paginator** via `UI.paginate({ pageSize, onChange })`. Used by `#/tracker` / `#/reports` / `#/activity` / `#/scan` (v1.30.0). Filter inputs MUST call `pager.reset()` so a deep-page user lands on page 1 when their search narrows the result set.
-- **Source-list lookups** (`#/scan` filter dropdown, regional scanner dispatch) read from `server/lib/sources/registry.mjs` via `GET /api/scan/sources`. Since v1.69.0 (P-14) the registry auto-discovers adapters: adding a source = dropping a `<slug>.mjs` with an `export const meta` block into `server/lib/sources/` (no registry edit). Never hardcode a source list in a view or the dispatcher.
+- **Source-list lookups** (`#/scan` filter dropdown, regional scanner dispatch) read from `server/lib/sources/registry.mjs` via `GET /api/scan/sources`. Since v1.69.0 (P-14) this registry auto-discovers adapters: a `<slug>.mjs` with an `export const meta` block dropped into `server/lib/sources/` shows up in the dropdown with no registry edit. Never hardcode a source list in a view or the dispatcher.
+  - **Two registries, don't conflate them (v1.75.0).** `server/lib/sources/registry.mjs` (auto-discovered `meta`, drives the *dropdown* + RU dispatch) is distinct from `server/lib/portals/registry.mjs` — the hand-maintained `ALL_ADAPTERS` array the EN scanner walks to actually *fetch* a board (`adapter.matches(company)` → `buildEndpoint` → fetch). A genuinely new EN board needs **both**: the auto-discovered `meta` file under `sources/`, AND an adapter under `portals/adapters/<slug>.mjs` imported into `ALL_ADAPTERS`. So "drop a file, no registry edit" is true only for dropdown visibility, not for fetching.
+  - **Aggregators select by `provider:`, not `careers_url` (v1.75.0).** The seven v1.75.0 aggregators (RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) match on an explicit `provider: <slug>` field on a `tracked_companies` entry. The four config-driven ones read a per-entry `<provider>:` block (e.g. `glints: { searchKeywords, countryCode }`) which `en-scanner.mjs` threads to every fetcher as `opts.company`. URL-detected ATS fetchers ignore the extra opt. `buildEndpoint` must always return a string.
 
 ## i18n
 
@@ -103,7 +106,7 @@ Route reviewers (`web-ui-route-reviewer` agent) flag every miss.
 - Real network is **forbidden** in tests (CI-isolation contract). Source adapters take a `fetchImpl` opt that defaults to `globalThis.fetch`; tests inject a mock that returns canned responses. Safe-fetch supports the same via `_setTransport()`.
 - Long-running tests (E2E): keep them under `tests/e2e*.mjs` / `tests/playwright-*.mjs`, not in the default `npm test` matcher. `npm run test:e2e:browser` drives them.
 - CI gates (run via `npm run test:ci`): unit + acceptance + `scripts/check-no-also-leftovers.mjs` (no `.also(` patterns leaking into views) + `scripts/check-changelog-parity.mjs` (all 11 non-EN locales at the same version).
-- Current count as of **v1.74.1**: **1134** `node --test` cases (unit + functional + acceptance) + Playwright/E2E surfaces (smoke + full-cycle + forms + locale-sweep ×12 + theme-toggle) + the shell-surface tier (`tests/sh-files.test.mjs` — `bin/*.sh` + `.githooks` + `install-hooks` wiring, WS9). Run `npm run test:coverage` for the V8 report; see `docs/architecture/TESTING.md` for the 4-tier pyramid.
+- Current count as of **v1.75.1**: **1190** `node --test` cases (unit + functional + acceptance) + Playwright/E2E surfaces (smoke + full-cycle + forms + locale-sweep ×12 + theme-toggle) + the shell-surface tier (`tests/sh-files.test.mjs` — `bin/*.sh` + `.githooks` + `install-hooks` wiring, WS9). v1.75.0 added the seven aggregator-source suites (`tests/sources/<slug>.test.mjs`) + `tests/scan-sanitize.test.mjs`; v1.75.1 added `tests/http-json.test.mjs` (abort-aware `delay` + non-JSON `2xx` wrap). Run `npm run test:coverage` for the V8 report; see `docs/architecture/TESTING.md` for the 4-tier pyramid.
 - `tests/canonical-docs-coverage.test.mjs` enforces H2 across all 12 help bundles; `tests/help-ru-config-section.test.mjs` additionally locks **H3 parity** (75 per bundle) — an en-only H3 addition can no longer silently diverge the localized bundles.
 
 ## LLM provider selection (v1.39.0, WS8.2)

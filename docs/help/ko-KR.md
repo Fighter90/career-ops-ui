@@ -534,6 +534,25 @@ title_filter:
 명확성을 위해 positive 키워드 3–5개로 시작하고 나중에
 넓히십시오.
 
+**`content_filter`(선택 — web-ui 1.75.0, parent #974).** `location_filter`
+의 최상위 형제 키로, 동일한 `positive` / `negative` 키워드 목록을 가지지만
+위치가 아닌 채용 공고의 **설명 / 스니펫** 텍스트에 대해 매칭됩니다:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+`location_filter`와 동일한 의미: 키 없음 → 모두 통과. 설명이 **비어 있거나
+누락된** 공고는 통과(누락 데이터는 불이익 없음). `negative` 일치 → 거부.
+`positive` 비어 있음 → 통과. `positive` 비어 있지 않음 → 최소 한 개의 키워드
+일치 필요(대소문자 구분 없는 부분 문자열). ATS 스윕과 지역 스윕 모두에
+적용됩니다. 설명 / 스니펫을 제공하는 소스(예: RSS)만 영향을 받으며 — 나머지
+공고는 모두 통과 — 본문이 없는 소스의 행이 활성화로 인해 조용히 제거되는
+일은 없습니다. 제목은 통과했지만 본문에서 결정적 결격 사유가 드러나는
+공고를 제거하는 데 사용합니다.
+
 ### `location_filter` (선택 — web-ui 1.33.0, parent #570)
 
 ```yaml
@@ -790,6 +809,7 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (ATS 스윕) — 인식 가능한 ATS URL을 가진 `tracked_companies`의
   모든 회사.
+- v1.75.0 애그리게이터 — 하나에 옵트인한 `tracked_companies`의 각 항목: RemoteOK / Remotive / Working Nomads(보드 전체 리모트 피드, `provider: <slug>`)와 IBM / Arbeitsagentur / Glints / Jobstreet · SEEK(설정 기반, 항목별 `<provider>:` 블록).
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob — `russian_portals`의 모든 쿼리.
 
 **한 번의 클릭으로 두 단계 (v1.29.2).** 단일 🌐 Scan 버튼이 ATS 스윕과 지역 스윕을 모두 하나의 SSE 스트림으로 실행합니다. 로그에는 두 개의 단계 헤더가 순서대로 나타납니다:
@@ -811,7 +831,7 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 필터:
 
 - **자유 텍스트** — 제목/회사에 대한 부분 문자열 일치.
-- **Source** 드롭다운 — Ashby / GeekJob / Greenhouse / GetMatch / Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday.
+- **Source** 드롭다운 — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads(`GET /api/scan/sources`에서 자동 생성).
 - **Remote / Hybrid / Onsite** 드롭다운.
 - **스택 칩** (PHP / Go / Backend / Senior / …) — 각 행에 대해
   `Skills.detectTech`와 `Skills.detectLevel`이 자동 감지합니다.
@@ -1484,7 +1504,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 
 ## 17. 새 채용 포털 소스를 추가하는 방법
 
-career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. v1.29.0은 11개의 어댑터(영문 ATS 6개, 러시아 보드 5개)를 포함합니다.
+career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. v1.75.0 기준으로 `server/lib/sources/` 레지스트리는 **19**개의 어댑터를 포함합니다 — 영문 14개(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday ATS, RSS, 그리고 v1.75.0 애그리게이터 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)와 러시아 보드 5개. v1.75.0에 추가된 7개의 애그리게이터는 회사별 ATS가 아니라 보드 전체 또는 설정 기반 소스입니다: 세 개의 리모트 피드는 `provider: remoteok|remotive|workingnomads`로 선택하고, 네 개의 지역 소스(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)는 항목별 `<provider>:` 설정 블록을 읽습니다 — YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
 
 > **v1.69.0 (P-14) — 드롭인 자동 검색.** 12번째 소스 추가는 이제
 > **순수 파일 드롭**입니다. 레지스트리

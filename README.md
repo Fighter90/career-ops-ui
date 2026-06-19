@@ -12,9 +12,9 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.75.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.1)
+[![release](https://img.shields.io/badge/release-v1.75.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.2)
 
-> **🆕 Latest release — v1.75.1**
+> **🆕 Latest release — v1.75.2**
 >
 > **Parent career-ops v1.12.0 parity — seven new job sources land in the scanner.** Three board-wide remote aggregators (**RemoteOK**, **Remotive**, **Working Nomads**) and four config-driven regional aggregators (**IBM**, **Arbeitsagentur**, **Glints**, **Jobstreet / SEEK**) are now selectable in `#/scan`. Plus an optional `content_filter` (description/snippet keyword gating), scan-write hardening against TSV-row and spreadsheet-formula injection (#1098), richer Ashby `secondaryLocations` so EU-eligible roles surface (#1073), evaluation report-shape validation on the in-process providers (#819), and Antigravity CLI in the assistant docs. Builds on v1.74.0 (6 AI assistants incl. GitHub Models) and v1.70–73 (12 locales incl. Arabic RTL, cover-letter + PDF).
 >
@@ -291,6 +291,7 @@ Zero-token portal scanning that actually returns vacancies. **One 🌐 Scan butt
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — public boards-api for every company in `portals.yml::tracked_companies` with a recognizable ATS pattern. Bundled list covers Stripe, GitLab, Vercel, Cloudflare, Datadog, Discord, Elastic, Grafana Labs, CockroachDB, Fastly, Twilio, Coinbase, Reddit, Robinhood, Affirm, Lyft, Linear, Supabase, PostHog, Ramp, Modal Labs, Railway, Browserbase, JetBrains — extend or trim freely.
 - **RSS boards** — any job board that exposes an RSS/Atom feed (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …). Add `provider: rss` + the feed URL to `portals.yml` — no code changes required.
+- **Aggregator boards (v1.75.0)** — seven board-wide / config-driven sources beyond per-company ATSes: **RemoteOK / Remotive / Working Nomads** (board-wide remote feeds, select with `provider: remoteok|remotive|workingnomads`) and **IBM / Arbeitsagentur / Glints / Jobstreet · SEEK** (config-driven, each reads a per-entry `<provider>:` block). See `docs/portals-examples.md` for copy-paste `tracked_companies` entries. They run the same `title_filter` / `location_filter` / `content_filter` + dedup + pipeline-append flow as every other source.
 - **hh.ru** — HTML scrape of `hh.ru/search/vacancy`. Works from any IP, no key, no proxy. (The JSON API `api.hh.ru` is not used — it now 403s every programmatic client regardless of IP/User-Agent; the website serves full results to any browser-like client, so we scrape that, the same way Habr Career is scraped.)
 - **Habr Career** — HTML scrape of `career.habr.com/vacancies`. Works from any IP, no auth.
 

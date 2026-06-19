@@ -610,6 +610,27 @@ tytułu, ale są w regionie, do którego nie możesz dojechać.
 
 Zacznij od 3–5 pozytywnych słów kluczowych dla jasności; później poszerzaj.
 
+**`content_filter` (opcjonalnie — web-ui 1.75.0, parent #974).** Klucz najwyższego
+poziomu, rodzeństwo `location_filter`, z tymi samymi listami słów kluczowych
+`positive` / `negative`, ale dopasowywany do tekstu **opisu / fragmentu** oferty
+zamiast jej lokalizacji:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+Semantyka identyczna z `location_filter`: brak klucza → wszystko przechodzi; oferta
+z **pustym/brakującym** opisem przechodzi (brakujące dane nie są karane);
+dopasowanie `negative` → odrzucona; `positive` puste → przechodzi; `positive`
+niepuste → musi pasować do co najmniej jednego słowa kluczowego (podciąg bez
+rozróżnienia wielkości liter). Stosowany zarówno przez sweep ATS, jak i regionalny.
+Dotyczy tylko źródeł, które dostarczają opis/fragment (np. RSS) — każda inna oferta
+przechodzi — więc włączenie go nigdy po cichu nie usuwa wierszy ze źródeł, które nie
+przenoszą treści. Użyj go, aby usunąć ofertę przechodzącą filtr tytułu, której treść
+ujawnia czynnik dyskwalifikujący.
+
 ### `search_queries`
 
 ```yaml
@@ -842,6 +863,7 @@ historii i zapisuje trafienia do `data/last-scan.json` i
 
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (sweep ATS) dla każdej firmy w
   `tracked_companies` z rozpoznawalnym URL ATS.
+- Agregatory z v1.75.0 dla każdego wpisu `tracked_companies`, który się na nie zdecyduje: RemoteOK / Remotive / Working Nomads (ogólnoportalowe kanały zdalne, `provider: <slug>`) oraz IBM / Arbeitsagentur / Glints / Jobstreet · SEEK (sterowane konfiguracją, blok `<provider>:` na wpis).
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob dla każdego zapytania w `russian_portals`.
 
 **Dwie fazy, jedno kliknięcie (v1.29.2).** Pojedynczy przycisk 🌐 Scan napędza OBIE sweep ATS i sweep regionalny w jednym strumieniu SSE. W logu zobaczysz dwa nagłówki faz, w kolejności:
@@ -862,7 +884,7 @@ Poniżej logu tabela wyników renderuje wiersze z `data/last-scan.json`.
 Filtry:
 
 - **Tekst wolny** — dopasowanie podciągu względem tytułu / firmy.
-- Menu rozwijane **Source** — Ashby / GeekJob / Greenhouse / GetMatch / Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday.
+- Menu rozwijane **Source** — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (auto-wypełniane z `GET /api/scan/sources`).
 - Menu rozwijane **Remote / Hybrid / Onsite**.
 - **Chipy stack** (PHP / Go / Backend / Senior / …) — auto-wykrywane
   na wiersz przez `Skills.detectTech` i `Skills.detectLevel`. Wielokrotny wybór
@@ -1534,8 +1556,17 @@ wynik i przeszukaj tracker problemów na
 
 career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie
-jak pobrać i znormalizować wyniki jednego portalu. v1.29.0 dostarcza 11
-adapterów (6 angielskich ATS-ów, 5 rosyjskich portali).
+jak pobrać i znormalizować wyniki jednego portalu. Od v1.75.0 rejestr
+`server/lib/sources/` dostarcza **19** adapterów — 14 angielskich (ATS-y
+Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday, RSS oraz
+agregatory z v1.75.0 RemoteOK / Remotive / Working Nomads / IBM /
+Arbeitsagentur / Glints / Jobstreet · SEEK) i 5 rosyjskich portali. Siedem
+agregatorów dodanych w v1.75.0 to źródła ogólnoportalowe lub sterowane
+konfiguracją, a nie ATS-y per-firma: trzy kanały zdalne wybierane są przez
+`provider: remoteok|remotive|workingnomads`, a cztery regionalne
+(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) czytają blok konfiguracyjny
+`<provider>:` na wpis — patrz §5 po YAML oraz `docs/portals-examples.md`
+po gotowe wpisy do skopiowania.
 
 > **v1.69.0 (P-14) — plug-in z auto-odkrywaniem.** Dodanie 12. źródła to teraz
 > **czyste wrzucenie pliku**. Rejestr

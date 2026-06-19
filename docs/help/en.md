@@ -622,6 +622,26 @@ title filter but are in a region you can't take.
 
 Start with 3–5 positive keywords for clarity; broaden later.
 
+**`content_filter` (optional — web-ui 1.75.0, parent #974).** A top-level
+sibling of `location_filter` with the same `positive` / `negative` keyword
+lists, but matched against a posting's **description / snippet** text instead
+of its location:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+Identical semantics to `location_filter`: no key → everything passes; a posting
+with an **empty/missing** description passes (missing data isn't penalized); a
+`negative` match → rejected; `positive` empty → passes; `positive` non-empty →
+must match at least one keyword (case-insensitive substring). Applied by both
+the ATS and the regional sweeps. Only sources that ship a description/snippet
+(e.g. RSS) are affected — every other posting passes — so enabling it never
+silently drops rows from sources that don't carry a body. Use it to drop a
+title-passing posting whose body reveals a deal-breaker.
+
 ### `search_queries`
 
 ```yaml
@@ -854,6 +874,7 @@ history, and writes hits into `data/last-scan.json` and
 
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (the ATS sweep) for every company in
   `tracked_companies` with a recognizable ATS URL.
+- The v1.75.0 aggregators for every `tracked_companies` entry that opts into one: RemoteOK / Remotive / Working Nomads (board-wide remote feeds, `provider: <slug>`) and IBM / Arbeitsagentur / Glints / Jobstreet · SEEK (config-driven, per-entry `<provider>:` block).
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob for every query in `russian_portals`.
 
 **Two phases, one click (v1.29.2).** The single 🌐 Scan button drives BOTH the ATS sweep and the regional sweep in one SSE stream. You'll see two phase headers in the log, in order:
@@ -874,7 +895,7 @@ Below the log, the results table renders rows from `data/last-scan.json`.
 Filters:
 
 - **Free text** — substring match against title / company.
-- **Source** dropdown — Ashby / GeekJob / Greenhouse / GetMatch / Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday.
+- **Source** dropdown — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (auto-populated from `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite** dropdown.
 - **Stack chips** (PHP / Go / Backend / Senior / …) — auto-detected
   per row by `Skills.detectTech` and `Skills.detectLevel`. Multi-select
@@ -1553,8 +1574,17 @@ output, and search the issue tracker on
 
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
-how to fetch + normalize one board's results. v1.29.0 ships with 11
-adapters (6 English ATSes, 5 Russian boards).
+how to fetch + normalize one board's results. As of v1.75.0 the
+`server/lib/sources/` registry ships **19** adapters — 14 English (the
+Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday ATSes, RSS,
+and the v1.75.0 aggregators RemoteOK / Remotive / Working Nomads / IBM /
+Arbeitsagentur / Glints / Jobstreet · SEEK) and 5 Russian boards. The seven
+aggregators added in v1.75.0 are board-wide or config-driven sources rather
+than per-company ATSes: the three remote feeds are selected with
+`provider: remoteok|remotive|workingnomads`, and the four regional ones
+(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) read a per-entry
+`<provider>:` config block — see §5 for the YAML and `docs/portals-examples.md`
+for copy-paste entries.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** Adding a 12th source is now
 > a **pure file drop**. The registry

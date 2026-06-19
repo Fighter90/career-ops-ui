@@ -651,6 +651,16 @@ pas prendre.
 
 Commencez avec 3–5 mots-clés positifs pour la clarté ; élargissez plus tard.
 
+**`content_filter` (optionnel — web-ui 1.75.0, parent #974).** Une clé de premier niveau sœur de `location_filter`, avec les mêmes listes de mots-clés `positive` / `negative`, mais comparée au texte de la **description / de l'extrait** d'une offre plutôt qu'à sa localisation :
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+Sémantique identique à `location_filter` : pas de clé → tout passe ; une offre avec une description **vide/manquante** passe (une donnée manquante n'est pas pénalisée) ; une correspondance `negative` → rejetée ; `positive` vide → passe ; `positive` non vide → doit correspondre à au moins un mot-clé (sous-chaîne insensible à la casse). Appliqué à la fois par la passe ATS et par les passes régionales. Seules les sources qui livrent une description/un extrait (p. ex. RSS) sont concernées — toute autre offre passe — donc l'activer ne supprime jamais silencieusement des lignes des sources qui ne portent pas de corps. Utilisez-la pour écarter une offre qui a survécu au title-filter mais dont le corps révèle un facteur rédhibitoire.
+
 ### `search_queries`
 
 ```yaml
@@ -907,6 +917,10 @@ historique, et écrit les trouvailles dans `data/last-scan.json` et
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (la passe
   ATS) pour chaque entreprise de `tracked_companies` avec une URL ATS
   reconnaissable.
+- Les agrégateurs de la v1.75.0 pour chaque entrée de `tracked_companies` qui
+  en active un : RemoteOK / Remotive / Working Nomads (flux remote couvrant
+  tout le board, `provider: <slug>`) et IBM / Arbeitsagentur / Glints /
+  Jobstreet · SEEK (pilotés par config, bloc `<provider>:` par entrée).
 - API hh.ru + Habr Career + Trudvsem + GetMatch + GeekJob pour chaque
   requête de `russian_portals`.
 
@@ -935,8 +949,10 @@ Sous le journal, le tableau de résultats affiche les lignes de
 Filtres :
 
 - **Texte libre** — correspondance de sous-chaîne sur le titre / l'entreprise.
-- Menu déroulant **Source** — Ashby / GeekJob / Greenhouse / GetMatch / Habr
-  Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday.
+- Menu déroulant **Source** — Arbeitsagentur / Ashby / GeekJob / Glints /
+  Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK /
+  Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable /
+  Workday / Working Nomads (auto-rempli depuis `GET /api/scan/sources`).
 - Menu déroulant **Remote / Hybrid / Onsite**.
 - **Puces de stack** (PHP / Go / Backend / Senior / …) — auto-détectées par
   ligne par `Skills.detectTech` et `Skills.detectLevel`. Intersection
@@ -1634,8 +1650,18 @@ copiez la sortie, et cherchez le problème sur le tracker d'incidents à
 career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un
 fichier unique sous
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait
-récupérer + normaliser les résultats d'un site. La v1.29.0 livre 11
-adaptateurs (6 ATS anglais, 5 sites russes).
+récupérer + normaliser les résultats d'un site. Depuis la v1.75.0, le
+registre [`server/lib/sources/`](../../server/lib/sources/) livre **19**
+adaptateurs — 14 anglais (les ATS Greenhouse / Ashby / Lever / Workable /
+SmartRecruiters / Workday, RSS, et les agrégateurs de la v1.75.0 RemoteOK /
+Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)
+et 5 sites russes. Les sept agrégateurs ajoutés en v1.75.0 sont des sources
+couvrant tout un board ou pilotées par config plutôt que des ATS par
+entreprise : les trois flux remote se sélectionnent avec
+`provider: remoteok|remotive|workingnomads`, et les quatre régionaux (IBM /
+Arbeitsagentur / Glints / Jobstreet · SEEK) lisent un bloc de config
+`<provider>:` par entrée — voir le §5 pour le YAML et `docs/portals-examples.md`
+pour des entrées à copier-coller.
 
 > **v1.69.0 (P-14) — auto-découverte par dépôt de fichier.** Ajouter une 12e source est désormais
 > un **simple dépôt de fichier**. Le registre

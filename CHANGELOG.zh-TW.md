@@ -9,6 +9,19 @@
 ---
 
 
+## [1.75.2] — 2026-06-19
+
+**docs：在全部 12 個語言環境中為 v1.75.0 的掃描器彙整器提供完整的文件對等。** 無程式碼改動 — 將面向使用者的文件與 v1.75.0 中落地的七個來源對齊:
+
+- **說明指南（12 個語言環境）。** §5 新增一個 `content_filter` 區塊（依描述/摘要關鍵字門控,是 `location_filter` 的同類項）以及一則關於彙整器的說明;§7 在一鍵掃描的巡覽與完整的 **Source** 下拉列舉中列出這七個新來源;§17 的轉接器計數從過時的 "11 adapters" 更正為 "19 adapters — 14 English + 5 Russian"。沒有新增 `##`/`###` 標題,因此受門控的 19 H2 / 75 H3 結構保持不變。
+- **README（9 個完整語言環境）。** 在掃描來源下新增 "Aggregator boards (v1.75.0)" 條目,並將發布徽章提升至 v1.75.2。（精簡版的 pl/uk/ar README 沒有依來源的清單,該處刻意不作改動。）
+- **參考文件。** `docs/portals-examples.md` 新增一個可複製貼上的 "Aggregator boards" 章節,為這七個來源提供準確的 `provider:` / `<provider>:` 設定區塊;`docs/PROJECT.md` 更新為 **19 adapters**;`docs/sdd/CONVENTIONS.md` 記錄了兩個註冊表的區分（用於下拉的 `sources/registry.mjs` 對用於抓取的 `portals/registry.mjs`）、以 `opts.company` 形式傳遞的基於 `provider:` 的彙整器選擇、掃描寫入清理器（`scan-sanitize.mjs`）以及 v1.75.1 的測試數量（1190）。
+- **QA。** 新增 `qa/QA-REGRESSION-PROMPT-v1.75.2-FULL.md` — 全表面發布閘驅動器,已為 v1.75.x 掃描彙整器週期翻新。
+
+---
+
+
+
 ## [1.75.1] — 2026-06-19
 
 **fix(scan): 對 v1.75.0 組態驅動來源的健全性打磨。** 來自發布後檢討的三處小型強化修正(正常掃描下行為不變):

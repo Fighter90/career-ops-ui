@@ -11,6 +11,19 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.75.2] — 2026-06-19
+
+**docs : parité documentaire complète pour les agrégateurs du scanner de la v1.75.0 dans les 12 langues.** Aucun changement de code — aligne la documentation destinée à l'utilisateur sur les sept sources arrivées en v1.75.0 :
+
+- **Guide d'aide (12 langues).** §5 gagne un bloc `content_filter` (gating par mots-clés de description/extrait, frère de `location_filter`) et une note sur les agrégateurs ; §7 énumère les sept nouvelles sources dans le balayage de scan en un clic et dans l'énumération complète de la liste déroulante **Source** ; le décompte d'adaptateurs de §17 est corrigé de l'obsolète « 11 adapters » vers « 19 adapters — 14 English + 5 Russian ». Aucun en-tête `##`/`###` n'a été ajouté, de sorte que la structure verrouillée de 19 H2 / 75 H3 reste inchangée.
+- **README (9 langues complètes).** Nouvelle puce « Aggregator boards (v1.75.0) » sous les sources de scan, plus le badge de version porté à v1.75.2. (Les README abrégés pl/uk/ar n'ont pas de liste par source et restent volontairement intacts à cet endroit.)
+- **Documentation de référence.** `docs/portals-examples.md` gagne une section « Aggregator boards » prête à copier-coller avec des blocs de configuration `provider:` / `<provider>:` précis pour les sept ; `docs/PROJECT.md` mis à jour à **19 adapters** ; `docs/sdd/CONVENTIONS.md` documente la distinction des deux registres (`sources/registry.mjs` pour la liste déroulante contre `portals/registry.mjs` pour le fetching), la sélection d'agrégateur basée sur `provider:` acheminée en tant que `opts.company`, le sanitiseur d'écriture de scan (`scan-sanitize.mjs`) et le nombre de tests de la v1.75.1 (1190).
+- **QA.** Ajout de `qa/QA-REGRESSION-PROMPT-v1.75.2-FULL.md` — le pilote de porte de publication pleine surface, rafraîchi pour le cycle d'agrégateurs de scan de la v1.75.x.
+
+---
+
+
+
 ## [1.75.1] — 2026-06-19
 
 **fix(scan) : peaufinage de robustesse sur les sources pilotées par configuration de la v1.75.0.** Trois petits correctifs de durcissement issus de la revue post-publication (aucun changement de comportement pour un scan sain) :

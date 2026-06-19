@@ -400,6 +400,27 @@ location_filter:
 
 Починайте з 3–5 позитивних ключових слів для ясності; розширюйте пізніше.
 
+**`content_filter` (необов'язково — web-ui 1.75.0, parent #974).** Ключ верхнього
+рівня, сусід `location_filter`, з тими самими списками ключових слів
+`positive` / `negative`, але зіставлюваний із текстом **опису / фрагмента**
+вакансії замість її місця розташування:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+Семантика ідентична `location_filter`: немає ключа → усе проходить; вакансія з
+**порожнім/відсутнім** описом проходить (відсутні дані не караються); збіг
+`negative` → відхилена; `positive` порожнє → проходить; `positive` непорожнє →
+має збігтися щонайменше з одним ключовим словом (підрядок без урахування
+регістру). Застосовується як ATS-, так і регіональним sweep. Стосується лише
+джерел, що постачають опис/фрагмент (наприклад RSS) — будь-яка інша вакансія
+проходить — тож його ввімкнення ніколи мовчки не видаляє рядки з джерел, що не
+несуть тіла. Використовуйте його, щоб відсіяти вакансію, яка пройшла фільтр назви,
+але тіло якої виявляє неприйнятну умову.
+
 ### `search_queries`
 
 ```yaml
@@ -595,6 +616,7 @@ $EDITOR portals.yml
 **🌐 Scan** запускає кожне увімкнене джерело в одному проході:
 
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (ATS-прохід) для кожної компанії в `tracked_companies` із розпізнаваним URL ATS.
+- Агрегатори з v1.75.0 для кожного запису `tracked_companies`, який їх обирає: RemoteOK / Remotive / Working Nomads (загальнодошкові віддалені стрічки, `provider: <slug>`) та IBM / Arbeitsagentur / Glints / Jobstreet · SEEK (керовані конфігурацією, блок `<provider>:` на запис).
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob для кожного запиту в `russian_portals`.
 
 **Дві фази, один клік (v1.29.2).** Одна кнопка 🌐 Scan керує як ATS-проходом, так і регіональним проходом в одному SSE-потоці. У журналі ви побачите два заголовки фаз по порядку:
@@ -613,7 +635,7 @@ $EDITOR portals.yml
 Фільтри:
 
 - **Вільний текст** — підрядковий збіг за назвою / компанією.
-- Випадаючий список **Source** — Ashby / GeekJob / Greenhouse / GetMatch / Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday.
+- Випадаючий список **Source** — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (автозаповнюється з `GET /api/scan/sources`).
 - Випадаючий список **Remote / Hybrid / Onsite**.
 - **Стекові чипи** (PHP / Go / Backend / Senior / …) — автовизначаються для кожного рядка через `Skills.detectTech` і `Skills.detectLevel`. Множинний вибір з перетином — вибір `PHP + Senior` показує рядки, що мають ОБИДВА.
 - **Динамічні чипи** під статичними стековими — топ-25 найчастіших токенів із великої літери в назвах, тому UI адаптується до ролей, які ви фактично сканували (маркетинг, дизайн, фінанси…), замість того щоб бути прив'язаним до словника backend-розробника.
@@ -1100,7 +1122,7 @@ npm run doctor
 
 ## 17. Як додати нове джерело вакансій
 
-career-ops-ui розглядає кожну дошку вакансій як **адаптер** — один файл у [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), що знає, як отримати та нормалізувати результати однієї дошки. v1.29.0 постачається з 11 адаптерами (6 англомовних ATS, 5 російськомовних дошок).
+career-ops-ui розглядає кожну дошку вакансій як **адаптер** — один файл у [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), що знає, як отримати та нормалізувати результати однієї дошки. Станом на v1.75.0 реєстр `server/lib/sources/` постачається з **19** адаптерами — 14 англомовних (ATS Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday, RSS та агрегатори з v1.75.0 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) і 5 російськомовних дошок. Сім агрегаторів, доданих у v1.75.0, — це загальнодошкові або керовані конфігурацією джерела, а не ATS per-компанія: три віддалені стрічки вибираються через `provider: remoteok|remotive|workingnomads`, а чотири регіональні (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) читають блок конфігурації `<provider>:` на запис — дивіться §5 щодо YAML та `docs/portals-examples.md` щодо готових записів для копіювання.
 
 > **v1.69.0 (P-14) — підключи та використовуй з автовідкриттям.** Додавання 12-го джерела тепер — це **просто скинути файл**. Реєстр ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs)) більше не містить вручну підтримуваного списку — при завантаженні він сканує цю папку (`readdirSync` + динамічний `import()`) та збирає блок `export const meta` з кожного `*.mjs`. Напишіть адаптер, оголосіть його `meta` — і він одразу видимий для сканера, випадаючого фільтра `#/scan` та RU-диспетчера — **редагування `registry.mjs` не потрібне**. (RU-джерела все одно потребують одного рядка в `portals.yml` батьківського проєкту; дивіться Крок 5.)
 

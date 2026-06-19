@@ -331,3 +331,89 @@ defaults `site=External` when not present in the URL.
     enabled: false
     notes: "BETA — some tenants gate CXS behind CAPTCHA; fallback to /career-ops scan."
 ```
+
+## Aggregator boards (v1.75.0)
+
+Seven board-wide / config-driven sources ported from parent career-ops v1.12.0.
+Unlike the ATSes above they are **not** detected from a `careers_url` — each is
+selected by an explicit `provider:` field on a `tracked_companies` entry. All
+seven run the same `title_filter` / `location_filter` / `content_filter` + dedup
++ pipeline-append flow as every other source.
+
+### Board-wide remote feeds — RemoteOK / Remotive / Working Nomads
+
+Whole-board remote-jobs feeds. No per-entry config — just the `provider:` slug.
+The board returns its full feed and your `title_filter` (and optional
+`content_filter`) gate the rows. One entry pulls the entire board, so one each is
+plenty:
+
+```yaml
+  - { name: RemoteOK,       provider: remoteok,      enabled: true }
+  - { name: Remotive,       provider: remotive,      enabled: true }
+  - { name: Working Nomads, provider: workingnomads, enabled: true }
+```
+
+### IBM careers (config-driven — global, language-agnostic)
+
+POSTs to IBM's careers search API. One endpoint serves every locale. Reads the
+entry's `ibm:` block:
+
+```yaml
+  - name: IBM Germany — SWE & Data
+    provider: ibm
+    ibm:
+      country: Germany                                          # field_keyword_05
+      categories: ["Software Engineering", "Data & Analytics"]  # field_keyword_08
+    enabled: true
+```
+
+### Arbeitsagentur (config-driven — German national job board)
+
+Hits the public Bundesagentur für Arbeit Jobsuche API (recall-first; the scanner
+filters afterwards). Reads the entry's `arbeitsagentur:` block:
+
+```yaml
+  - name: Arbeitsagentur — ML/KI Deutschland
+    provider: arbeitsagentur
+    arbeitsagentur:
+      keywords: ["Machine Learning Engineer", "Data Scientist"]  # required
+      wo: Berlin              # optional anchor city; omit for nationwide
+      umkreis: 50             # km radius around `wo` (default 50)
+      days: 30                # recency window in days (default 30)
+      size: 100               # results per keyword (1–100, default 100)
+      remoteNationwide: true  # also run a nationwide pass keeping remote-titled hits
+    enabled: true
+```
+
+### Glints (config-driven — SE Asia: SG / ID / MY / VN)
+
+Hits the public GraphQL endpoint behind glints.com search. Reads the entry's
+`glints:` block:
+
+```yaml
+  - name: Glints Indonesia
+    provider: glints
+    glints:
+      searchKeywords: "Machine Learning"
+      countryCode: ID        # SG | ID | MY | VN (default ID)
+      pageSize: 30
+      maxPages: 3
+    enabled: true
+```
+
+### Jobstreet / SEEK (config-driven — APAC chalice-search)
+
+Jobstreet and SEEK share SEEK's no-auth chalice-search JSON API. Reads the
+entry's `jobstreet:` block:
+
+```yaml
+  - name: Jobstreet Indonesia
+    provider: jobstreet
+    jobstreet:
+      siteKey: ID-Main       # e.g. ID-Main, MY-Main, SEEK-AU, SEEK-NZ
+      searchKeywords: "Data Scientist"
+      searchLocation: "Jakarta"
+      pageSize: 30
+      maxPages: 3
+    enabled: true
+```

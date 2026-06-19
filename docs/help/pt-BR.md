@@ -557,6 +557,16 @@ para combinar com como seus papéis-alvo são titulados.
 
 Comece com 3–5 palavras-chave positivas para clareza; amplie depois.
 
+**`content_filter` (opcional — web-ui 1.75.0, parent #974).** Uma irmã de nível superior do `location_filter` com as mesmas listas de palavras-chave `positive` / `negative`, mas comparada com o texto da **descrição / snippet** de uma vaga em vez da localização:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+Semântica idêntica ao `location_filter`: sem a chave → tudo passa; uma vaga com descrição **vazia/ausente** passa (dado faltante não é penalizado); um match em `negative` → rejeitada; `positive` vazio → passa; `positive` não vazio → precisa casar ao menos uma palavra-chave (substring case-insensitive). Aplicado tanto pela varredura ATS quanto pelas regionais. Apenas fontes que entregam uma descrição/snippet (ex.: RSS) são afetadas — toda outra vaga passa — então habilitá-lo nunca descarta silenciosamente linhas de fontes que não carregam corpo. Use-o para descartar uma vaga que passou pelo filtro de título mas cujo corpo revela um deal-breaker.
+
 ### `location_filter` (opcional — web-ui 1.33.0, parent #570)
 
 ```yaml
@@ -815,6 +825,11 @@ histórico, e grava hits em `data/last-scan.json` e
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (a varredura ATS) para cada empresa em `tracked_companies` com URL
   ATS reconhecível.
+- Os agregadores da v1.75.0 para cada entrada de `tracked_companies`
+  que opte por um deles: RemoteOK / Remotive / Working Nomads (feeds
+  remotos de todo o board, `provider: <slug>`) e IBM / Arbeitsagentur /
+  Glints / Jobstreet · SEEK (orientados a configuração, com bloco
+  `<provider>:` por entrada).
 - API hh.ru + HTML Habr Career para cada query em `russian_portals`.
 
 **Duas fases em um clique (v1.29.2).** O único botão 🌐 Scan dispara TANTO o sweep ATS QUANTO o regional em um único stream SSE. No log verá dois cabeçalhos de fase, na ordem:
@@ -837,7 +852,7 @@ Abaixo do log, a tabela de resultados renderiza linhas de
 Filtros:
 
 - **Texto livre** — match de substring contra título / empresa.
-- Dropdown de **Fonte** — Ashby / GeekJob / Greenhouse / GetMatch / Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable / Workday.
+- Dropdown de **Fonte** — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (preenchido automaticamente a partir de `GET /api/scan/sources`).
 - Dropdown **Remote / Hybrid / Onsite**.
 - **Chips de stack** (PHP / Go / Backend / Senior / …) —
   auto-detectados por linha por `Skills.detectTech` e
@@ -1558,8 +1573,17 @@ copie a saída, e busque a issue no rastreador em
 
 O career-ops-ui trata cada job board como um **adapter** — um único arquivo em
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe
-como buscar e normalizar os resultados de um portal. v1.29.0 inclui 11
-adapters (6 ATSes em inglês, 5 portais russos).
+como buscar e normalizar os resultados de um portal. A partir da v1.75.0 o
+registry [`server/lib/sources/`](../../server/lib/sources/) inclui **19**
+adapters — 14 em inglês (os ATSes Greenhouse / Ashby / Lever / Workable /
+SmartRecruiters / Workday, RSS e os agregadores da v1.75.0 RemoteOK /
+Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)
+e 5 boards russos. Os sete agregadores adicionados na v1.75.0 são fontes de
+todo o board ou orientadas a configuração, e não ATSes por empresa: os três
+feeds remotos são selecionados com `provider: remoteok|remotive|workingnomads`,
+e os quatro regionais (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) leem
+um bloco de configuração `<provider>:` por entrada — veja a §5 para o YAML e
+`docs/portals-examples.md` para entradas prontas para copiar e colar.
 
 > **v1.69.0 (P-14) — auto-descoberta drop-in.** Adicionar uma 12.ª fonte é agora
 > um **drop puro de arquivo**. O registry

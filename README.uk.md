@@ -12,9 +12,9 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.75.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.1)
+[![release](https://img.shields.io/badge/release-v1.75.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.2)
 
-> **🆕 Останній реліз — v1.75.1**
+> **🆕 Останній реліз — v1.75.2**
 >
 > **Паритет із батьківським career-ops v1.12.0 — до сканера додано сім нових джерел вакансій.** Три глобальні агрегатори віддалених вакансій (**RemoteOK**, **Remotive**, **Working Nomads**) і чотири керовані конфігурацією регіональні агрегатори (**IBM**, **Arbeitsagentur**, **Glints**, **Jobstreet / SEEK**) тепер можна обрати в `#/scan`. Плюс необов'язковий `content_filter` (фільтрація за ключовими словами опису/сніпета), посилення запису під час сканування проти ін'єкції рядка TSV і формул електронних таблиць (#1098), багатші `secondaryLocations` Ashby, щоб спливали ролі з правом працювати в ЄС (#1073), валідація форми звіту про оцінку для внутрішньопроцесних провайдерів (#819) та Antigravity CLI у документації асистентів. Базується на v1.74.0 (6 AI-асистентів, зокрема GitHub Models) і v1.70–73 (12 locales, зокрема арабська RTL, супровідний лист + PDF).
 >

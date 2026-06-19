@@ -12,9 +12,9 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.75.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.1)
+[![release](https://img.shields.io/badge/release-v1.75.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.2)
 
-> **🆕 Última versão — v1.75.1**
+> **🆕 Última versão — v1.75.2**
 >
 > **Paridade com o career-ops pai v1.12.0 — sete novas fontes de vagas chegam ao scanner.** Três agregadores remotos de alcance global (**RemoteOK**, **Remotive**, **Working Nomads**) e quatro agregadores regionais orientados por configuração (**IBM**, **Arbeitsagentur**, **Glints**, **Jobstreet / SEEK**) já são selecionáveis em `#/scan`. Além disso, um `content_filter` opcional (filtragem por palavras-chave de descrição/trecho), endurecimento da escrita de varredura contra injeção de linha TSV e de fórmula de planilha (#1098), `secondaryLocations` do Ashby mais ricos para que vagas elegíveis para a UE apareçam (#1073), validação da forma do relatório de avaliação nos provedores em processo (#819) e Antigravity CLI na documentação de assistentes. Baseia-se na v1.74.0 (6 assistentes de IA, incl. GitHub Models) e na v1.70–73 (12 locales, incl. árabe RTL, carta de apresentação + PDF).
 >
@@ -258,6 +258,7 @@ Scanning de portais com zero tokens que de fato devolve vagas. **Um único botã
 
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — boards-api pública para cada empresa em `portals.yml::tracked_companies` com um padrão de ATS reconhecível. A lista incluída cobre Stripe, GitLab, Vercel, Cloudflare, Datadog, Discord, Elastic, Grafana Labs, CockroachDB, Fastly, Twilio, Coinbase, Reddit, Robinhood, Affirm, Lyft, Linear, Supabase, PostHog, Ramp, Modal Labs, Railway, Browserbase, JetBrains — estenda ou enxugue à vontade.
 - **Quadros RSS** — qualquer quadro de vagas que publique um feed RSS/Atom (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …). Adicione `provider: rss` e a URL do feed em `portals.yml` — sem necessidade de alterações no código.
+- **Quadros agregadores (v1.75.0)** — sete fontes de todo o board / orientadas a configuração além dos ATSes por empresa: **RemoteOK / Remotive / Working Nomads** (feeds remotos de todo o board, selecione com `provider: remoteok|remotive|workingnomads`) e **IBM / Arbeitsagentur / Glints / Jobstreet · SEEK** (orientadas a configuração, cada uma lê um bloco `<provider>:` por entrada). Veja `docs/portals-examples.md` para entradas de `tracked_companies` prontas para copiar e colar. Elas executam o mesmo fluxo `title_filter` / `location_filter` / `content_filter` + dedup + acréscimo ao pipeline que toda outra fonte.
 - **hh.ru** — scraping do HTML de `hh.ru/search/vacancy`. Funciona de qualquer IP, sem chave nem proxy. (A API JSON `api.hh.ru` não é mais usada: ela agora retorna 403 a qualquer cliente programático independentemente de IP/User-Agent; o site serve resultados completos a qualquer cliente tipo navegador, igual ao Habr Career.)
 - **Habr Career** — scraping HTML de `career.habr.com/vacancies`. Funciona de qualquer IP, sem autenticação.
 

@@ -548,6 +548,26 @@ title_filter:
 
 明確化のため、最初は 3–5 個のポジティブキーワードで始め、後で広げます。
 
+**`content_filter`(任意 — web-ui 1.75.0, parent #974)。** `location_filter`
+のトップレベルの兄弟キーで、同じ `positive` / `negative` キーワードリストを
+持ちますが、勤務地ではなく求人の **説明 / スニペット** テキストに対して
+マッチします:
+
+```yaml
+content_filter:
+  positive: ["python", "machine learning"]
+  negative: ["security clearance", "on-site only"]
+```
+
+`location_filter` と同じセマンティクス: キーなし → すべて通過。説明が
+**空 / 欠落** の求人は通過(欠落データはペナルティなし)。`negative` 一致 →
+拒否。`positive` が空 → 通過。`positive` が非空 → 少なくとも 1 つのキーワードに
+一致が必要(大文字小文字を区別しない部分文字列)。ATS スイープとリージョナル
+スイープの両方で適用されます。説明 / スニペットを提供するソース(例: RSS)
+のみが影響を受け — それ以外の求人はすべて通過 — 本文を持たないソースの行が
+有効化により黙って落とされることはありません。タイトルは通過したが本文に
+決定的な問題が現れる求人を落とすのに使います。
+
 ### `location_filter` (任意 — web-ui 1.33.0, parent #570)
 
 ```yaml
@@ -808,6 +828,7 @@ $EDITOR portals.yml
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (ATS スイープ) を、認識可能な ATS URL を持つ `tracked_companies`
   のすべての企業に対して実行。
+- v1.75.0 のアグリゲーターを、いずれかにオプトインしている `tracked_companies` の各エントリに対して実行: RemoteOK / Remotive / Working Nomads(ボード全体のリモートフィード、`provider: <slug>`)および IBM / Arbeitsagentur / Glints / Jobstreet · SEEK(設定駆動、エントリごとの `<provider>:` ブロック)。
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob を、`russian_portals` の各クエリに
   対して実行。
 
@@ -830,9 +851,10 @@ $EDITOR portals.yml
 フィルタ:
 
 - **フリーテキスト** — タイトル / 会社名に対する部分一致。
-- **Source** ドロップダウン — Ashby / GeekJob / Greenhouse / GetMatch /
-  Habr Career / hh.ru / Lever / SmartRecruiters / Trudvsem / Workable /
-  Workday(全 11 件、レジストリから動的構築)。
+- **Source** ドロップダウン — Arbeitsagentur / Ashby / GeekJob / Glints /
+  Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK /
+  Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable /
+  Workday / Working Nomads(`GET /api/scan/sources` から自動構築)。
 - **Remote / Hybrid / Onsite** ドロップダウン。
 - **スタックチップ** (PHP / Go / Backend / Senior / …) — 行ごとに
   `Skills.detectTech` と `Skills.detectLevel` で自動検出。複数選択は
@@ -1526,7 +1548,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 
 ## 17. 新しい求人ポータルソースを追加する方法
 
-career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。v1.29.0 では 11 個のアダプタ(英語圏 ATS 6 個、ロシア系ボード 5 個)が同梱されています。
+career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。v1.75.0 時点で `server/lib/sources/` レジストリは **19** 個のアダプタを同梱しています — 英語圏 14 個(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday の各 ATS、RSS、そして v1.75.0 のアグリゲーター RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)とロシア系ボード 5 個。v1.75.0 で追加された 7 つのアグリゲーターは、企業ごとの ATS ではなくボード全体または設定駆動のソースです: 3 つのリモートフィードは `provider: remoteok|remotive|workingnomads` で選択し、4 つのリージョナルなもの(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)はエントリごとの `<provider>:` 設定ブロックを読みます — YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
 
 > **v1.69.0 (P-14) — ドロップイン自動検出。** 12 個目のソース追加はいまや **ファイルを置くだけ** で完結します。レジストリ
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))
