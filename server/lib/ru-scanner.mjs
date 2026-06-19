@@ -27,9 +27,10 @@ import { searchGetMatch } from './sources/getmatch.mjs';
 import { searchGeekJob } from './sources/geekjob.mjs';
 import { RU_CONFIG_KEYS } from './sources/registry.mjs';
 import { addPipelineUrl } from './parsers.mjs';
+import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { saveLastScan, MAX_STORED_RESULTS } from './en-scanner.mjs';
-import { buildLocationFilter } from './location-filter.mjs';
+import { buildLocationFilter, buildContentFilter } from './location-filter.mjs';
 
 /**
  * v1.29.0 — dispatch table from `russian_portals.sources[*]` key to its
@@ -103,6 +104,8 @@ export function loadConfig() {
     // v1.33.0 (WS4 / parent #570) — optional portals.yml location_filter.
     // Top-level key (same as parent scan.mjs), not under russian_portals.
     locationFilter: portals.location_filter || null,
+    // v1.75.0 (#974) — optional content_filter (top-level key, like parent).
+    contentFilter: portals.content_filter || null,
     warnings,
   };
 }
@@ -238,7 +241,10 @@ export async function runRuScan(opts = {}) {
   // change which rows are returned, only marks the boosted ones so the
   // SPA can render a "⬆ boosted" badge on them.
   const locOk = buildLocationFilter(cfg.locationFilter);
-  const filteredRaw = flat.filter((j) => passesNegative(j.title, cfg.negative) && locOk(j.location));
+  const contentOk = buildContentFilter(cfg.contentFilter);
+  const filteredRaw = flat.filter((j) => passesNegative(j.title, cfg.negative)
+    && locOk(j.location)
+    && contentOk(j.description ?? j.snippet));
   const filtered = applyBoostStamps(filteredRaw, cfg.boosts);
   const removedNeg = flat.length - filtered.length;
   const fresh = filtered.filter((j) => !seen.has(j.url));
@@ -335,13 +341,15 @@ function appendToPipeline(jobs) {
     content = readFileSync(PATHS.pipeline, 'utf8');
   } catch {}
   let updated = content;
-  for (const j of jobs) updated = addPipelineUrl(updated, j.url);
+  // v1.75.0 (#1098) — see en-scanner: normalize external URLs before write.
+  for (const j of jobs) updated = addPipelineUrl(updated, normalizeScanUrl(j.url));
   mkdirSync(PATHS.pipeline.replace(/\/[^/]+$/, ''), { recursive: true });
   writeFileSync(PATHS.pipeline, updated);
 }
 
 function appendToHistory(jobs) {
   mkdirSync(PATHS.scanHistory.replace(/\/[^/]+$/, ''), { recursive: true });
+  // v1.75.0 (#1098) — sanitize every TSV cell (newline-row-injection + formula).
   const lines = jobs.map((j) =>
     [
       new Date().toISOString().slice(0, 10),
@@ -349,9 +357,9 @@ function appendToHistory(jobs) {
       j.id,
       j.company,
       j.title,
-      j.url,
+      normalizeScanUrl(j.url),
     ]
-      .map((x) => String(x ?? '').replace(/\t/g, ' '))
+      .map(sanitizeTsvField)
       .join('\t')
   );
   appendFileSync(PATHS.scanHistory, lines.join('\n') + '\n');

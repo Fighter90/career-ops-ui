@@ -22,6 +22,7 @@ import { slugify, today } from '../parsers.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { runGemini } from '../gemini.mjs';
+import { validateEvaluationReport } from '../eval-validate.mjs';
 import { runOpenAI, runQwen, runOpenRouter, runGitHubModels, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey } from '../openai.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
@@ -137,7 +138,10 @@ export function registerLlmRoutes(app) {
       }
       const r = await runAnthropic(fullPrompt, { maxTokens: 8192 });
       if (r.error) return res.status(502).json({ mode: 'anthropic', prompt: promptText, error: r.error, saved });
-      return res.json({ mode: 'anthropic', prompt: promptText, markdown: r.markdown, usage: r.usage, saved });
+      // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
+      // warning so the user knows the report may be truncated/off-format.
+      const warnings = validateEvaluationReport(r.markdown);
+      return res.json({ mode: 'anthropic', prompt: promptText, markdown: r.markdown, usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
 
     if (_provGate().wantGemini && hasGeminiKey()) {
@@ -164,7 +168,9 @@ export function registerLlmRoutes(app) {
       }
       const r = await tp.run(fullPrompt, { maxTokens: 8192 });
       if (r.error) return res.status(502).json({ mode: tp.mode, prompt: promptText, error: r.error, saved });
-      return res.json({ mode: tp.mode, prompt: promptText, markdown: r.markdown, usage: r.usage, saved });
+      // v1.75.0 (#819) — same shape guard for the OpenAI/Qwen/OpenRouter/GitHub tail.
+      const warnings = validateEvaluationReport(r.markdown);
+      return res.json({ mode: tp.mode, prompt: promptText, markdown: r.markdown, usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
 
     return res.json({

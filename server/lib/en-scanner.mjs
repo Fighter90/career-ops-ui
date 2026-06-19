@@ -14,7 +14,8 @@ import { readFileSync, existsSync, writeFileSync, appendFileSync, mkdirSync } fr
 import yaml from 'js-yaml';
 import { PATHS } from './paths.mjs';
 import { addPipelineUrl } from './parsers.mjs';
-import { buildLocationFilter } from './location-filter.mjs';
+import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
+import { buildLocationFilter, buildContentFilter } from './location-filter.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { fetchGreenhouse } from './sources/greenhouse.mjs';
 import { fetchAshby } from './sources/ashby.mjs';
@@ -145,7 +146,10 @@ export async function runEnScan(opts = {}) {
     if (signal?.aborted) return [];
     const fetcher = FETCHERS[c._api.type];
     try {
-      const items = await fetcher(c._api.url, { fetchImpl, signal });
+      // v1.75.0 — thread the resolved company entry through so config-driven
+      // sources (ibm / arbeitsagentur / glints / jobstreet) can read their
+      // `<provider>:` block. URL-detected ATS fetchers ignore the extra opt.
+      const items = await fetcher(c._api.url, { fetchImpl, signal, company: c });
       // Stamp company name on each (Greenhouse fills its own; Ashby/Lever do not)
       const withCo = items.map((i) => ({ ...i, company: i.company || c.name }));
       log('stdout', `  ✓ ${c.name.padEnd(28)} ${c._api.type.padEnd(10)} ${items.length} jobs`);
@@ -163,6 +167,9 @@ export async function runEnScan(opts = {}) {
   // v1.33.0 (WS4 / parent #570) — optional portals.yml location_filter.
   // Mirrors the parent scan.mjs semantics exactly. No key → pass-all.
   const locOk = buildLocationFilter(portals.location_filter);
+  // v1.75.0 (#974) — optional content_filter on a posting's description/snippet.
+  // No key → pass-all; only sources that ship a description are affected.
+  const contentOk = buildContentFilter(portals.content_filter);
   // Apply title filter (positive must match, negative must NOT match)
   // + location filter, and stamp `_boosted` for any title containing a
   // seniority_boost keyword. The boost stamp is INFORMATIONAL — it
@@ -171,7 +178,8 @@ export async function runEnScan(opts = {}) {
   const filtered = allRaw
     .filter((j) => passesPositive(j.title, positives)
       && passesNegative(j.title, negatives)
-      && locOk(j.location))
+      && locOk(j.location)
+      && contentOk(j.description ?? j.snippet))
     .map((j) => {
       if (!boosts.length || !j.title) return j;
       const t = j.title.toLowerCase();
@@ -224,15 +232,19 @@ function appendToPipeline(jobs) {
   let content = '';
   try { content = readFileSync(PATHS.pipeline, 'utf8'); } catch {}
   let updated = content;
-  for (const j of jobs) updated = addPipelineUrl(updated, j.url);
+  // v1.75.0 (#1098) — normalize external URLs (drop smuggled whitespace/newlines)
+  // before they reach the fenced pipeline list.
+  for (const j of jobs) updated = addPipelineUrl(updated, normalizeScanUrl(j.url));
   mkdirSync(PATHS.pipeline.replace(/\/[^/]+$/, ''), { recursive: true });
   writeFileSync(PATHS.pipeline, updated);
 }
 function appendToHistory(jobs) {
   mkdirSync(PATHS.scanHistory.replace(/\/[^/]+$/, ''), { recursive: true });
+  // v1.75.0 (#1098) — sanitize every TSV cell so an external company/title with
+  // a newline can't inject a row and a leading =+-@ can't become a formula.
   const lines = jobs.map((j) =>
-    [new Date().toISOString().slice(0, 10), j.source, j.id, j.company, j.title, j.url]
-      .map((x) => String(x ?? '').replace(/\t/g, ' '))
+    [new Date().toISOString().slice(0, 10), j.source, j.id, j.company, j.title, normalizeScanUrl(j.url)]
+      .map(sanitizeTsvField)
       .join('\t')
   );
   appendFileSync(PATHS.scanHistory, lines.join('\n') + '\n');

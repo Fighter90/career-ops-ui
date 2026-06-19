@@ -7,16 +7,18 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-1134%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-1181%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.3)
+[![release](https://img.shields.io/badge/release-v1.75.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.0)
 
-> **جديد — الإصدار v1.74.3**
+> **🆕 أحدث إصدار — v1.75.0**
 >
-> تدعم الواجهة الآن **12 لغة** في واجهة المستخدم، بما فيها العربية. السجل الكامل للتغييرات: [CHANGELOG.md](CHANGELOG.md).
+> **التكافؤ مع المشروع الأصلي career-ops v1.12.0 — سبعة مصادر وظائف جديدة تصل إلى الماسح.** أصبح بالإمكان الآن اختيار ثلاثة مُجمِّعات للعمل عن بُعد على مستوى اللوحة بأكملها (**RemoteOK** و**Remotive** و**Working Nomads**) وأربعة مُجمِّعات إقليمية مُوجَّهة بالتهيئة (**IBM** و**Arbeitsagentur** و**Glints** و**Jobstreet / SEEK**) في `#/scan`. إضافةً إلى `content_filter` اختياري (تبويب بالكلمات المفتاحية للوصف/المقتطف)، وتقوية كتابة المسح ضد حقن صف TSV وصيغ جداول البيانات (#1098)، و`secondaryLocations` أغنى في Ashby لإظهار الأدوار المؤهَّلة للعمل في الاتحاد الأوروبي (#1073)، والتحقق من شكل تقرير التقييم لدى المزوّدات داخل العملية (#819)، وAntigravity CLI في وثائق المساعدين. يُبنى على v1.74.0 (6 مساعدي ذكاء اصطناعي، منها GitHub Models) وv1.70–73 (12 locales، منها العربية RTL، خطاب التغطية + PDF).
+>
+> _12 locales · 6 مزوّدات LLM · 14 محوّل ماسح · التكافؤ مع المشروع الأصلي v1.12.0._
 
 ![career-ops-ui](./images/dashboard-ar.png)
 
@@ -24,7 +26,7 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 ## نبذة عن career-ops
 
-[career-ops](https://career-ops.org) نظام مفتوح المصدر للبحث عن عمل يعمل على شكل أوامر slash داخل أي واجهة سطر أوامر للذكاء الاصطناعي (Claude Code وGemini CLI وCodex وQwen Code وOpenCode وGitHub Copilot CLI — وتعمل واجهات CLI الأخرى المتوافقة مع Claude أيضاً). يقيّم كل وظيفة مقارنةً بسيرتك الذاتية وفق مقياس سداسي الأبعاد من 0,0 إلى 5,0، ويُنشئ ملفات PDF لسيرة ذاتية مخصّصة، ويتتبّع كل طلب محلياً — دون حسابات سحابية أو إرسال تلقائي أو جمع بيانات.
+[career-ops](https://career-ops.org) نظام مفتوح المصدر للبحث عن عمل يعمل على شكل أوامر slash داخل أي واجهة سطر أوامر للذكاء الاصطناعي (Claude Code وGemini CLI وCodex وQwen Code وOpenCode وGitHub Copilot CLI وAntigravity CLI — وتعمل واجهات CLI الأخرى المتوافقة مع Claude أيضاً). يقيّم كل وظيفة مقارنةً بسيرتك الذاتية وفق مقياس سداسي الأبعاد من 0,0 إلى 5,0، ويُنشئ ملفات PDF لسيرة ذاتية مخصّصة، ويتتبّع كل طلب محلياً — دون حسابات سحابية أو إرسال تلقائي أو جمع بيانات.
 
 **هذا المستودع (career-ops-ui)** واجهة ويب متكاملة فوق career-ops. تظل واجهة CLI مسؤولة عن ملء النماذج (عبر Playwright MCP) وأوامر slash؛ أما تطبيق الصفحة الواحدة (SPA) فيمنحك سطحاً يشبه نظام CRM في المتصفح فوق نفس الملفات `cv.md` و`data/applications.md` و`reports/`. كلاهما يشتركان في البيانات ذاتها.
 

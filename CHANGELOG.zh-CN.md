@@ -9,6 +9,22 @@
 ---
 
 
+## [1.75.0] — 2026-06-19
+
+**feat(scan)：移植父级 career-ops v1.12.0 — 七个新的招聘来源、内容过滤以及安全/质量修复。** web-ui 运行自己的进程内扫描器（不会向父级的 `scan.mjs` 进行 shell out），因此父级 v1.12.0 的提供方与扫描改动不会自动流入 — 本次发布将其中适用的部分按 web-ui 的适配器契约重新实现。
+
+- **七个新的扫描器来源。** 三个覆盖整个招聘板的远程聚合器 — **RemoteOK**、**Remotive**、**Working Nomads** — 接入自动发现的 `server/lib/sources/*.mjs` 模式（用 `provider: remoteok` / `remotive` / `workingnomads` 选择）。四个由配置驱动的区域聚合器 — **IBM** careers、**Arbeitsagentur**（德国联邦劳动局）、**Glints**（东南亚）、**Jobstreet / SEEK** — 读取按条目的 `<provider>:` 配置块；en-scanner 现在会将解析后的公司条目一路传递到每个 fetcher，以便它们能够读取。这七个来源都会自动出现在 `#/scan` 的来源下拉菜单中。
+- **`content_filter`（父级 #974）。** 可选的 `portals.yml` 块（`positive` / `negative` 关键词列表），根据职位的描述/摘要文本对其进行门控 — 沿用 `location_filter` 的语义；没有描述的职位始终通过。已接入 EN 与 RU 两个扫描器。
+- **扫描写入加固（父级 #1098）。** 外部信息流元数据现在会在落入 `data/scan-history.tsv` 和 `data/pipeline.md` 之前进行清洗：控制字符被折叠（公司名/职位标题中的换行不再能注入一行 TSV），开头的 `= + - @` 被中和以防电子表格公式注入。
+- **Ashby `secondaryLocations`（父级 #1073）。** Ashby 来源现在会将每个次要位置的地区标签连同邮政 `addressLocality` / `addressCountry` 折叠进位置字符串（去重），因此主标签显示为例如 "Canada" 的可在欧盟工作的职位会被 `location_filter` 浮现出来。
+- **评估报告形状校验（父级 #819）。** `/api/evaluate` 的进程内提供方（Anthropic / OpenAI / Qwen / OpenRouter / GitHub Models）现在会将格式错误的 A–G / `SCORE_SUMMARY` 报告标记为非致命的 `warnings` 数组；Gemini 评估路径已从父级的 `gemini-eval.mjs` 继承该防护。
+- **docs：** 在全部 12 个 README 的受支持助手列表中加入 Antigravity CLI（映射到 Gemini 提供方）。
+
+从父级 `git pull` 免费继承（web-ui 会向这些 shell out）：日语 CJK PDF 字体回退（#1053）、ATS 安全的 PDF 字体（#1074）、LaTeX CJK 防护（#1054）、tracker/merge/followup/dashboard 修复，以及 `modes/zh` 中文模式（web-ui 会动态列出模式）。
+
+---
+
+
 ## [1.74.3] — 2026-06-18
 
 **docs(parent-source): 将父 `career-ops` 仓库指向 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) 分叉。** web-ui 现在在所有作为实际来源的位置都将维护者的分叉作为父项目引用:`bin/setup.sh` 安装脚本的 `CAREER_OPS_REPO` 克隆默认值、12 个 README 中的每个 `git clone` /“构建于其上”/ 入门链接,以及代理文档(`CLAUDE.md`、`AGENTS.md`、`GEMINI.md`、`.github/copilot-instructions.md`、`docs/`)。对作者 santifer 的署名(以及非官方 UI 免责声明)保持不变 —— 仅移动了来源/克隆 URL。`tests/sh-files.test.mjs` 现在断言安装脚本克隆的是分叉。

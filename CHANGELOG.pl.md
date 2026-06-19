@@ -9,6 +9,22 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.75.0] — 2026-06-19
+
+**feat(scan): przenosi parytet z nadrzędnym career-ops v1.12.0 — siedem nowych źródeł ofert, filtrowanie treści oraz poprawki bezpieczeństwa/jakości.** web-ui uruchamia własne skanery w procesie (nie wywołuje shell out do nadrzędnego `scan.mjs`), więc zmiany dostawców i skanowania z nadrzędnej v1.12.0 nie przenoszą się automatycznie — to wydanie reimplementuje te mające zastosowanie zgodnie z kontraktem adapterów web-ui.
+
+- **Siedem nowych źródeł skanera.** Trzy ogólnoportalowe agregatory pracy zdalnej — **RemoteOK**, **Remotive**, **Working Nomads** — wpasowują się w automatycznie wykrywany wzorzec `server/lib/sources/*.mjs` (wybierane przez `provider: remoteok` / `remotive` / `workingnomads`). Cztery sterowane konfiguracją agregatory regionalne — careers **IBM**, **Arbeitsagentur** (niemiecki Federalny Urząd Pracy), **Glints** (Azja Południowo-Wschodnia), **Jobstreet / SEEK** — odczytują blok konfiguracyjny `<provider>:` na wpis; en-scanner przekazuje teraz rozwiązany wpis firmy aż do każdego fetchera, aby mogły go odczytać. Wszystkie siedem pojawia się automatycznie w rozwijanej liście źródeł `#/scan`.
+- **`content_filter` (nadrzędny #974).** Opcjonalny blok `portals.yml` (listy słów kluczowych `positive` / `negative`), który bramkuje ofertę na podstawie tekstu jej opisu/fragmentu — odwzorowuje semantykę `location_filter`; oferty bez opisu zawsze przechodzą. Podłączony do obu skanerów EN i RU.
+- **Wzmocnienie zapisu skanowania (nadrzędny #1098).** Metadane zewnętrznych kanałów są teraz oczyszczane, zanim trafią do `data/scan-history.tsv` i `data/pipeline.md`: znaki sterujące są zwijane (znak nowej linii w nazwie firmy/tytule nie może już wstrzyknąć wiersza TSV), a wiodące `= + - @` jest neutralizowane przeciwko wstrzyknięciu formuł arkusza kalkulacyjnego.
+- **`secondaryLocations` Ashby (nadrzędny #1073).** Źródło Ashby zwija teraz etykietę regionu każdej lokalizacji dodatkowej wraz z pocztowymi `addressLocality` / `addressCountry` do ciągu lokalizacji (z deduplikacją), więc stanowisko z prawem do pracy w UE, którego główna etykieta brzmi np. „Canada”, wypływa dla `location_filter`.
+- **Walidacja kształtu raportu oceny (nadrzędny #819).** Dostawcy w procesie dla `/api/evaluate` (Anthropic / OpenAI / Qwen / OpenRouter / GitHub Models) flagują teraz źle sformowany raport A–G / `SCORE_SUMMARY` jako niekrytyczną tablicę `warnings`; ścieżka oceny Gemini już dziedziczy tę ochronę z nadrzędnego `gemini-eval.mjs`.
+- **docs:** Antigravity CLI dodane do list wspieranych asystentów we wszystkich 12 plikach README (mapuje się na dostawcę Gemini).
+
+Odziedziczone za darmo z `git pull` nadrzędnego (web-ui wywołuje je przez shell out): zapasowe czcionki CJK do japońskich PDF (#1053), czcionki PDF bezpieczne dla ATS (#1074), ochrona CJK dla LaTeX (#1054), poprawki tracker/merge/followup/dashboard oraz chińskie tryby `modes/zh` (web-ui wymienia tryby dynamicznie).
+
+---
+
+
 ## [1.74.3] — 2026-06-18
 
 **docs(parent-source): wskazuje nadrzędne repozytorium `career-ops` na fork [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** web-ui odwołuje się teraz do forka opiekuna jako projektu nadrzędnego wszędzie tam, gdzie jest to rzeczywiste źródło: domyślna wartość `CAREER_OPS_REPO` w instalatorze `bin/setup.sh`, każdy link `git clone` / „zbudowane na” / onboarding we wszystkich 12 plikach README oraz dokumentacja agentów (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `docs/`). Przypisanie autorstwa santifer (oraz informacja o nieoficjalnym UI) pozostaje bez zmian — przeniesiono jedynie adresy URL źródła/klonowania. `tests/sh-files.test.mjs` weryfikuje teraz, że instalator klonuje fork.

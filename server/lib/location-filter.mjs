@@ -41,3 +41,44 @@ export function buildLocationFilter(locationFilter) {
     return allow.some((k) => lower.includes(k));
   };
 }
+
+/**
+ * v1.75.0 — `content_filter` parity with parent career-ops 1.12.0 (#974).
+ *
+ * Like `location_filter` but matches against a posting's free-text
+ * description/snippet rather than its location. Only sources that populate a
+ * `description` (or `snippet`) field are affected — every other posting passes,
+ * so enabling this never silently drops postings from sources that don't ship a
+ * body. Semantics mirror the parent's `buildContentFilter` exactly.
+ *
+ * portals.yml:
+ *   content_filter:
+ *     positive: ["python", "machine learning"]
+ *     negative: ["clearance", "on-site only"]
+ *
+ * Semantics (verbatim from parent scan.mjs):
+ *   - No `content_filter` key            → everything passes.
+ *   - Empty/missing description on a job → pass (don't penalize missing data).
+ *   - `negative` match                   → reject.
+ *   - `positive` empty                   → pass.
+ *   - `positive` non-empty               → must match ≥ 1 keyword.
+ *   - All matches: case-insensitive substring.
+ *
+ * @param {{positive?: string[], negative?: string[]}|null|undefined} contentFilter
+ * @returns {(description: string) => boolean} predicate — true = keep the job
+ */
+export function buildContentFilter(contentFilter) {
+  if (!contentFilter || typeof contentFilter !== 'object') return () => true;
+  const positive = (Array.isArray(contentFilter.positive) ? contentFilter.positive : [])
+    .map((k) => String(k).toLowerCase());
+  const negative = (Array.isArray(contentFilter.negative) ? contentFilter.negative : [])
+    .map((k) => String(k).toLowerCase());
+
+  return (description) => {
+    if (typeof description !== 'string' || description.trim() === '') return true;
+    const lower = description.toLowerCase();
+    if (negative.length > 0 && negative.some((k) => lower.includes(k))) return false;
+    if (positive.length === 0) return true;
+    return positive.some((k) => lower.includes(k));
+  };
+}

@@ -11,6 +11,22 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.75.0] — 2026-06-19
+
+**feat(scan) : porte la parité avec le career-ops parent v1.12.0 — sept nouvelles sources d'offres, filtrage de contenu et corrections de sécurité/qualité.** La web-ui exécute ses propres scanners in-process (elle ne délègue pas au `scan.mjs` du parent), de sorte que les changements de fournisseur et de scan du parent v1.12.0 ne se propagent pas automatiquement — cette version réimplémente ceux qui s'appliquent selon le contrat d'adaptateurs de la web-ui.
+
+- **Sept nouvelles sources de scanner.** Trois agrégateurs distants couvrant tout le tableau d'offres — **RemoteOK**, **Remotive**, **Working Nomads** — s'insèrent dans le motif auto-découvert `server/lib/sources/*.mjs` (sélectionnés avec `provider: remoteok` / `remotive` / `workingnomads`). Quatre agrégateurs régionaux pilotés par configuration — careers d'**IBM**, **Arbeitsagentur** (Agence fédérale allemande pour l'emploi), **Glints** (Asie du Sud-Est), **Jobstreet / SEEK** — lisent un bloc de configuration `<provider>:` par entrée ; l'en-scanner fait désormais transiter l'entreprise résolue jusqu'à chaque fetcher afin qu'ils puissent la lire. Les sept apparaissent automatiquement dans la liste déroulante des sources de `#/scan`.
+- **`content_filter` (parent #974).** Bloc `portals.yml` optionnel (listes de mots-clés `positive` / `negative`) qui filtre une offre selon le texte de sa description/extrait — reflète la sémantique de `location_filter` ; les offres sans description passent toujours. Branché dans les deux scanners EN et RU.
+- **Durcissement de l'écriture de scan (parent #1098).** Les métadonnées des flux externes sont désormais assainies avant d'atterrir dans `data/scan-history.tsv` et `data/pipeline.md` : les caractères de contrôle sont réduits (un saut de ligne dans le nom d'entreprise/intitulé ne peut plus injecter une ligne TSV) et un `= + - @` en tête est neutralisé contre l'injection de formules de tableur.
+- **`secondaryLocations` d'Ashby (parent #1073).** La source Ashby replie désormais l'étiquette de région de chaque localisation secondaire ainsi que les `addressLocality` / `addressCountry` postaux dans la chaîne de localisation (dédupliquée), de sorte qu'un poste éligible à l'UE dont l'étiquette principale indique p. ex. « Canada » remonte pour le `location_filter`.
+- **Validation de la forme du rapport d'évaluation (parent #819).** Les fournisseurs in-process de `/api/evaluate` (Anthropic / OpenAI / Qwen / OpenRouter / GitHub Models) signalent désormais un rapport A–G / `SCORE_SUMMARY` malformé via un tableau `warnings` non fatal ; le chemin d'évaluation Gemini hérite déjà du garde-fou du `gemini-eval.mjs` du parent.
+- **docs :** Antigravity CLI ajouté aux listes d'assistants pris en charge dans les 12 READMEs (correspond au fournisseur Gemini).
+
+Hérité gratuitement du `git pull` du parent (la web-ui délègue à ceux-ci) : repli de polices CJK pour les PDF japonais (#1053), polices PDF compatibles ATS (#1074), garde-fou CJK pour LaTeX (#1054), corrections tracker/merge/followup/dashboard, et les modes chinois `modes/zh` (la web-ui liste les modes dynamiquement).
+
+---
+
+
 ## [1.74.3] — 2026-06-18
 
 **docs(parent-source): pointe le dépôt parent `career-ops` vers le fork [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** La web-ui référence désormais le fork du mainteneur comme projet parent partout où c'est une source réelle : la valeur par défaut `CAREER_OPS_REPO` de l'installeur `bin/setup.sh`, chaque lien `git clone` / « au-dessus de » / onboarding dans les 12 READMEs, et la documentation des agents (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `docs/`). Le crédit à l'auteur santifer (et l'avertissement d'interface non officielle) est inchangé — seules les URL de source/clonage ont changé. `tests/sh-files.test.mjs` vérifie maintenant que l'installeur clone le fork.

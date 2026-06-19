@@ -26,9 +26,33 @@ export async function fetchAshby(apiUrl, opts = {}) {
   return (data.jobs || []).map((j) => normalize(j));
 }
 
+// v1.75.0 (parent #1073) — build the full location from primary +
+// secondaryLocations. Ashby puts extra hiring regions in `secondaryLocations[]`
+// (each with a region label and a postalAddress). Using only `j.location` drops
+// them, so an EU-eligible role whose PRIMARY label is e.g. "Canada" reads as
+// Canada-only and is wrongly removed by the location_filter. Fold in each
+// secondary's region label, locality, and country (deduped, joined with " · ")
+// so the filter can match e.g. "Europe", "Berlin", "Germany".
+function formatLocation(j) {
+  const parts = [];
+  if (typeof j.location === 'string' && j.location.trim()) parts.push(j.location.trim());
+  if (Array.isArray(j.secondaryLocations)) {
+    for (const s of j.secondaryLocations) {
+      if (!s || typeof s !== 'object') continue;
+      const label = s.location || s.name;
+      if (typeof label === 'string' && label.trim()) parts.push(label.trim());
+      const pa = s.address && s.address.postalAddress;
+      if (pa) {
+        for (const k of ['addressLocality', 'addressCountry']) {
+          if (typeof pa[k] === 'string' && pa[k].trim()) parts.push(pa[k].trim());
+        }
+      }
+    }
+  }
+  return [...new Set(parts)].join(' · ');
+}
+
 function normalize(j) {
-  const loc = j.location || '';
-  const secLoc = (j.secondaryLocations || []).map((l) => l.location || l.name).filter(Boolean);
   const isRemote = j.isRemote === true || /remote/i.test(j.workplaceType || '');
   const wt = j.workplaceType || (isRemote ? 'Remote' : 'Onsite');
 
@@ -48,7 +72,7 @@ function normalize(j) {
     company: '',
     url: j.jobUrl || j.applyUrl || '',
     salary,
-    location: [loc, ...secLoc].filter(Boolean).join(' · '),
+    location: formatLocation(j),
     isRemote,
     workplaceType: wt,
     relocates: false,

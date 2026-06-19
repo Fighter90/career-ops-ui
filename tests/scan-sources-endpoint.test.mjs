@@ -65,13 +65,17 @@ test('GET /api/scan/sources includes the 5 RU sources (v1.29.0 baseline)', async
   );
 });
 
-test('GET /api/scan/sources includes the 7 EN ATS sources', async () => {
+test('GET /api/scan/sources includes the EN ATS + aggregator sources', async () => {
   const r = await fetch(baseUrl + '/api/scan/sources');
   const d = await r.json();
   const enValues = d.sources.filter((s) => s.region === 'en').map((s) => s.value).sort();
   assert.deepEqual(
     enValues,
-    ['ashby', 'greenhouse', 'lever', 'rss', 'smartrecruiters', 'workable', 'workday'],
+    [
+      'arbeitsagentur', 'ashby', 'glints', 'greenhouse', 'ibm', 'jobstreet',
+      'lever', 'remoteok', 'remotive', 'rss', 'smartrecruiters', 'workable',
+      'workday', 'workingnomads',
+    ],
   );
 });
 

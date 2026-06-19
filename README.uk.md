@@ -7,22 +7,24 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-1134%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-1181%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.3)
+[![release](https://img.shields.io/badge/release-v1.75.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.0)
 
-> **Новинка — v1.74.3**
+> **🆕 Останній реліз — v1.75.0**
 >
-> Інтерфейс тепер підтримує **12 мов UI** — зокрема українську. Повний список змін: [CHANGELOG.md](CHANGELOG.md).
+> **Паритет із батьківським career-ops v1.12.0 — до сканера додано сім нових джерел вакансій.** Три глобальні агрегатори віддалених вакансій (**RemoteOK**, **Remotive**, **Working Nomads**) і чотири керовані конфігурацією регіональні агрегатори (**IBM**, **Arbeitsagentur**, **Glints**, **Jobstreet / SEEK**) тепер можна обрати в `#/scan`. Плюс необов'язковий `content_filter` (фільтрація за ключовими словами опису/сніпета), посилення запису під час сканування проти ін'єкції рядка TSV і формул електронних таблиць (#1098), багатші `secondaryLocations` Ashby, щоб спливали ролі з правом працювати в ЄС (#1073), валідація форми звіту про оцінку для внутрішньопроцесних провайдерів (#819) та Antigravity CLI у документації асистентів. Базується на v1.74.0 (6 AI-асистентів, зокрема GitHub Models) і v1.70–73 (12 locales, зокрема арабська RTL, супровідний лист + PDF).
+>
+> _12 locales · 6 LLM-провайдерів · 14 адаптерів сканера · паритет із батьківським v1.12.0._
 
 ![career-ops-ui](./images/dashboard-uk.png)
 
 ## Про проєкт career-ops
 
-[career-ops](https://career-ops.org) — це система пошуку роботи з відкритим кодом, що працює як набір slash-команд усередині будь-якого AI-CLI для програмістів (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI — інші CLI, сумісні з Claude, також підтримуються через той самий інтерфейс slash-команд). Незалежна від моделі. Оцінює кожну вакансію відносно вашого CV за шестивимірною шкалою 0,0–5,0, генерує індивідуалізовані PDF-резюме та веде локальний трекер заявок — без хмарних акаунтів, телеметрії та автоматичного надсилання.
+[career-ops](https://career-ops.org) — це система пошуку роботи з відкритим кодом, що працює як набір slash-команд усередині будь-якого AI-CLI для програмістів (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI, Antigravity CLI — інші CLI, сумісні з Claude, також підтримуються через той самий інтерфейс slash-команд). Незалежна від моделі. Оцінює кожну вакансію відносно вашого CV за шестивимірною шкалою 0,0–5,0, генерує індивідуалізовані PDF-резюме та веде локальний трекер заявок — без хмарних акаунтів, телеметрії та автоматичного надсилання.
 
 **Це репозиторій (career-ops-ui)** — доопрацьований веб-інтерфейс поверх career-ops. CLI і надалі відповідає за заповнення форм (через Playwright MCP) та slash-команди; SPA додає CRM-подібну браузерну поверхню над тими самими файлами `cv.md` / `data/applications.md` / `reports/`. Обидва спільно використовують одні й ті самі дані.
 

@@ -7,24 +7,24 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1134%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1181%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.74.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.74.3)
+[![release](https://img.shields.io/badge/release-v1.75.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.0)
 
-> **🆕 Dernière version — v1.74.3**
+> **🆕 Dernière version — v1.75.0**
 >
-> **PDFs de lettre de motivation depuis `#/cover`.** Le mode cover génère le texte de la lettre ; un bouton **Generate PDF** l'envoie désormais via le pipeline partagé markdown→PDF — sans quitter le SPA. S'appuie sur **v1.70.0**, qui a ajouté 3 langues — Polski, Українська, العربية (RTL) — pour **12 locales**, un sélecteur de langue `<select>` avec drapeau, et la compatibilité avec **career-ops v1.11.0**.
+> **Parité avec le career-ops parent v1.12.0 — sept nouvelles sources d'offres arrivent dans le scanner.** Trois agrégateurs distants couvrant tout le tableau d'offres (**RemoteOK**, **Remotive**, **Working Nomads**) et quatre agrégateurs régionaux pilotés par configuration (**IBM**, **Arbeitsagentur**, **Glints**, **Jobstreet / SEEK**) sont désormais sélectionnables dans `#/scan`. S'y ajoutent un `content_filter` optionnel (filtrage par mots-clés de description/extrait), un durcissement de l'écriture de scan contre l'injection de ligne TSV et de formule de tableur (#1098), des `secondaryLocations` Ashby plus riches pour faire remonter les postes éligibles à l'UE (#1073), la validation de la forme du rapport d'évaluation sur les fournisseurs in-process (#819) et Antigravity CLI dans la documentation des assistants. S'appuie sur la v1.74.0 (6 assistants IA, dont GitHub Models) et la v1.70–73 (12 locales, dont l'arabe RTL, lettre de motivation + PDF).
 >
-> _Suite complète **1134/1134** verte · 12 locales · docs synchronisés._
+> _12 locales · 6 fournisseurs LLM · 14 adaptateurs de scanner · parité avec le parent v1.12.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 
 ## À propos de career-ops
 
-[career-ops](https://career-ops.org) est un système de recherche d'emploi open-source qui s'exécute sous forme de commandes slash dans n'importe quel CLI de codage IA (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI — d'autres CLI compatibles Claude fonctionnent aussi via la même surface de commandes slash). Indépendant du modèle. Il évalue chaque offre par rapport à votre CV avec une grille à six dimensions de 0,0 à 5,0, génère des CV PDF sur mesure, et suit chaque candidature localement — pas de comptes cloud, pas de télémétrie, pas de soumission automatique.
+[career-ops](https://career-ops.org) est un système de recherche d'emploi open-source qui s'exécute sous forme de commandes slash dans n'importe quel CLI de codage IA (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI, Antigravity CLI — d'autres CLI compatibles Claude fonctionnent aussi via la même surface de commandes slash). Indépendant du modèle. Il évalue chaque offre par rapport à votre CV avec une grille à six dimensions de 0,0 à 5,0, génère des CV PDF sur mesure, et suit chaque candidature localement — pas de comptes cloud, pas de télémétrie, pas de soumission automatique.
 
 **Ce dépôt (career-ops-ui)** est une interface web soignée par-dessus. Le CLI continue de gérer le remplissage de formulaires (via Playwright MCP) et les modes en commandes slash ; la SPA vous offre une surface navigateur de style CRM sur les mêmes fichiers `cv.md` / `data/applications.md` / `reports/`. Les deux partagent les mêmes données.
 

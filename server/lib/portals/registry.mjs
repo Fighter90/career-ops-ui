@@ -29,6 +29,17 @@ import { workableAdapter } from './adapters/workable.mjs';
 import { smartRecruitersAdapter } from './adapters/smartrecruiters.mjs';
 import { workdayAdapter } from './adapters/workday.mjs';
 import { rssAdapter } from './adapters/rss.mjs';
+// v1.75.0 — parent v1.12.0 parity: board-wide remote aggregators.
+import { remoteokAdapter } from './adapters/remoteok.mjs';
+import { remotiveAdapter } from './adapters/remotive.mjs';
+import { workingNomadsAdapter } from './adapters/workingnomads.mjs';
+// v1.75.0 — parent v1.12.0 parity: config-driven regional aggregators.
+// These read per-entry config (the `<provider>:` block) from `opts.company`,
+// which en-scanner now threads through to every fetcher.
+import { ibmAdapter } from './adapters/ibm.mjs';
+import { arbeitsagenturAdapter } from './adapters/arbeitsagentur.mjs';
+import { glintsAdapter } from './adapters/glints.mjs';
+import { jobstreetAdapter } from './adapters/jobstreet.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -38,6 +49,13 @@ export const ALL_ADAPTERS = [
   smartRecruitersAdapter,
   workdayAdapter,
   rssAdapter,
+  remoteokAdapter,
+  remotiveAdapter,
+  workingNomadsAdapter,
+  ibmAdapter,
+  arbeitsagenturAdapter,
+  glintsAdapter,
+  jobstreetAdapter,
 ];
 
 /**

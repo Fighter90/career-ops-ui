@@ -123,13 +123,20 @@ Router.register('scan', async () => {
   // if the fetch fails (offline / server starting up / cached SPA hits
   // a temporarily-unreachable backend). Kept alphabetical by label.
   const FALLBACK_SOURCES = [
+    { value: 'arbeitsagentur',  label: 'Arbeitsagentur' },
     { value: 'ashby',           label: 'Ashby' },
+    { value: 'glints',          label: 'Glints' },
     { value: 'greenhouse',      label: 'Greenhouse' },
+    { value: 'ibm',             label: 'IBM' },
+    { value: 'jobstreet',       label: 'Jobstreet / SEEK' },
     { value: 'lever',           label: 'Lever' },
+    { value: 'remoteok',        label: 'RemoteOK' },
+    { value: 'remotive',        label: 'Remotive' },
     { value: 'rss',             label: 'RSS' },
     { value: 'smartrecruiters', label: 'SmartRecruiters' },
     { value: 'workable',        label: 'Workable' },
     { value: 'workday',         label: 'Workday' },
+    { value: 'workingnomads',   label: 'Working Nomads' },
     { value: 'geekjob',         label: 'GeekJob' },
     { value: 'getmatch',        label: 'GetMatch' },
     { value: 'habr-career',     label: 'Habr Career' },

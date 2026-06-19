@@ -9,6 +9,22 @@
 ---
 
 
+## [1.75.0] — 2026-06-19
+
+**feat(scan)：移植父層 career-ops v1.12.0 — 七個新的職缺來源、內容過濾以及安全/品質修正。** web-ui 執行自己的程序內掃描器（不會向父層的 `scan.mjs` 進行 shell out），因此父層 v1.12.0 的提供者與掃描變更不會自動流入 — 本次發布將其中適用的部分按 web-ui 的轉接器契約重新實作。
+
+- **七個新的掃描器來源。** 三個涵蓋整個職缺板的遠端彙整器 — **RemoteOK**、**Remotive**、**Working Nomads** — 接入自動探索的 `server/lib/sources/*.mjs` 模式（以 `provider: remoteok` / `remotive` / `workingnomads` 選擇）。四個由設定驅動的區域彙整器 — **IBM** careers、**Arbeitsagentur**（德國聯邦勞動局）、**Glints**（東南亞）、**Jobstreet / SEEK** — 讀取依條目的 `<provider>:` 設定區塊；en-scanner 現在會將解析後的公司條目一路傳遞到每個 fetcher，以便它們能夠讀取。這七個來源都會自動出現在 `#/scan` 的來源下拉選單中。
+- **`content_filter`（父層 #974）。** 可選的 `portals.yml` 區塊（`positive` / `negative` 關鍵字清單），依職缺的描述/摘要文字對其進行門控 — 沿用 `location_filter` 的語意；沒有描述的職缺一律通過。已接入 EN 與 RU 兩個掃描器。
+- **掃描寫入強化（父層 #1098）。** 外部資訊來源的中繼資料現在會在落入 `data/scan-history.tsv` 與 `data/pipeline.md` 之前進行清理：控制字元會被摺疊（公司名/職稱中的換行不再能注入一列 TSV），開頭的 `= + - @` 會被中和以防試算表公式注入。
+- **Ashby `secondaryLocations`（父層 #1073）。** Ashby 來源現在會將每個次要地點的地區標籤連同郵政 `addressLocality` / `addressCountry` 摺疊進地點字串（去重），因此主標籤顯示為例如 "Canada" 的可在歐盟工作的職缺會被 `location_filter` 浮現出來。
+- **評估報告形狀驗證（父層 #819）。** `/api/evaluate` 的程序內提供者（Anthropic / OpenAI / Qwen / OpenRouter / GitHub Models）現在會將格式錯誤的 A–G / `SCORE_SUMMARY` 報告標記為非致命的 `warnings` 陣列；Gemini 評估路徑已從父層的 `gemini-eval.mjs` 繼承該防護。
+- **docs：** 在全部 12 個 README 的受支援助手清單中加入 Antigravity CLI（對應到 Gemini 提供者）。
+
+從父層 `git pull` 免費繼承（web-ui 會向這些 shell out）：日語 CJK PDF 字型回退（#1053）、ATS 安全的 PDF 字型（#1074）、LaTeX CJK 防護（#1054）、tracker/merge/followup/dashboard 修正，以及 `modes/zh` 中文模式（web-ui 會動態列出模式）。
+
+---
+
+
 ## [1.74.3] — 2026-06-18
 
 **docs(parent-source): 將父 `career-ops` 儲存庫指向 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) 分叉。** web-ui 現在在所有作為實際來源的位置都將維護者的分叉作為父專案引用:`bin/setup.sh` 安裝腳本的 `CAREER_OPS_REPO` clone 預設值、12 個 README 中的每個 `git clone` /「建構於其上」/ onboarding 連結,以及代理文件(`CLAUDE.md`、`AGENTS.md`、`GEMINI.md`、`.github/copilot-instructions.md`、`docs/`)。對作者 santifer 的署名(以及非官方 UI 免責聲明)保持不變 —— 僅移動了來源/clone URL。`tests/sh-files.test.mjs` 現在斷言安裝腳本 clone 的是分叉。

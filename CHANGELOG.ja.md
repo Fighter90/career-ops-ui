@@ -9,6 +9,22 @@
 ---
 
 
+## [1.75.0] — 2026-06-19
+
+**feat(scan): 親 career-ops v1.12.0 のパリティを移植 — 新規求人ソース7件、コンテンツフィルタリング、セキュリティ/品質修正。** web-ui は独自のインプロセススキャナを実行し(親の `scan.mjs` へシェルアウトしない)、そのため親 v1.12.0 のプロバイダおよびスキャン変更は自動的には流れ込みません — 本リリースでは、適用可能なものを web-ui のアダプタ契約に沿って再実装します。
+
+- **新規スキャナソース7件。** ボード横断のリモート集約サイト3件 — **RemoteOK**、**Remotive**、**Working Nomads** — は自動検出される `server/lib/sources/*.mjs` パターンに収まります(`provider: remoteok` / `remotive` / `workingnomads` で選択)。設定駆動の地域集約サイト4件 — **IBM** careers、**Arbeitsagentur**(ドイツ連邦雇用庁)、**Glints**(東南アジア)、**Jobstreet / SEEK** — はエントリごとの `<provider>:` 設定ブロックを読み取ります。en-scanner は解決済みの企業エントリを各フェッチャーまで通すようになり、フェッチャーがそれを読めるようになりました。7件すべてが `#/scan` のソースドロップダウンに自動的に表示されます。
+- **`content_filter`(親 #974)。** 求人をその説明/スニペットのテキストでゲートする任意の `portals.yml` ブロック(`positive` / `negative` キーワードリスト) — `location_filter` のセマンティクスを踏襲し、説明のない求人は常に通過します。EN と RU の両スキャナに組み込まれました。
+- **スキャン書き込みの堅牢化(親 #1098)。** 外部フィードのメタデータは `data/scan-history.tsv` および `data/pipeline.md` に書き込まれる前にサニタイズされるようになりました: 制御文字は折りたたまれ(企業名/タイトルの改行が TSV 行を注入できなくなりました)、先頭の `= + - @` はスプレッドシートの数式インジェクションに対して無効化されます。
+- **Ashby `secondaryLocations`(親 #1073)。** Ashby ソースは各セカンダリロケーションの地域ラベルに加えて郵便の `addressLocality` / `addressCountry` をロケーション文字列に畳み込む(重複排除)ようになり、主ラベルが例えば "Canada" と表示される EU 対象の職務が `location_filter` で表面化します。
+- **評価レポート形状の検証(親 #819)。** `/api/evaluate` のインプロセスプロバイダ(Anthropic / OpenAI / Qwen / OpenRouter / GitHub Models)は、不正な形式の A–G / `SCORE_SUMMARY` レポートを致命的でない `warnings` 配列としてフラグするようになりました。Gemini 評価パスは親の `gemini-eval.mjs` から既にこのガードを継承しています。
+- **docs:** Antigravity CLI を12のすべての README のサポート対象アシスタント一覧に追加(Gemini プロバイダにマッピング)。
+
+親の `git pull` から無償で継承(web-ui はこれらへシェルアウトします): 日本語 CJK PDF フォントのフォールバック(#1053)、ATS セーフな PDF フォント(#1074)、LaTeX CJK ガード(#1054)、tracker/merge/followup/dashboard の修正、および `modes/zh` 中国語モード(web-ui はモードを動的に列挙します)。
+
+---
+
+
 ## [1.74.3] — 2026-06-18
 
 **docs(parent-source): 親 `career-ops` リポジトリを [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) フォークに向ける。** web-ui は実際のソースとして使われるすべての箇所でメンテナーのフォークを親プロジェクトとして参照するようになりました: `bin/setup.sh` インストーラーの `CAREER_OPS_REPO` クローン既定値、12 個の README にあるすべての `git clone` /「の上に乗る」/ オンボーディングリンク、そしてエージェントドキュメント(`CLAUDE.md`、`AGENTS.md`、`GEMINI.md`、`.github/copilot-instructions.md`、`docs/`)。作者 santifer へのクレジット(および非公式 UI の免責表示)は変更なし — ソース/クローン URL のみ移動しました。`tests/sh-files.test.mjs` はインストーラーがフォークをクローンすることを検証するようになりました。

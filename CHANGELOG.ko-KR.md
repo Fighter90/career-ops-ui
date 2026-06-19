@@ -9,6 +9,22 @@
 ---
 
 
+## [1.75.0] — 2026-06-19
+
+**feat(scan): 상위 career-ops v1.12.0 패리티 이식 — 신규 채용 소스 7종, 콘텐츠 필터링, 보안/품질 수정.** web-ui는 자체 인프로세스 스캐너를 실행하며(상위의 `scan.mjs`로 셸 아웃하지 않음) 따라서 상위 v1.12.0의 프로바이더 및 스캔 변경 사항은 자동으로 전파되지 않습니다 — 이번 릴리스는 적용 가능한 변경 사항을 web-ui의 어댑터 계약에 맞춰 재구현합니다.
+
+- **신규 스캐너 소스 7종.** 보드 전반 원격 집계기 3종 — **RemoteOK**, **Remotive**, **Working Nomads** — 은 자동 탐색되는 `server/lib/sources/*.mjs` 패턴에 들어맞습니다(`provider: remoteok` / `remotive` / `workingnomads` 로 선택). 설정 기반 지역 집계기 4종 — **IBM** careers, **Arbeitsagentur**(독일 연방고용청), **Glints**(동남아시아), **Jobstreet / SEEK** — 은 항목별 `<provider>:` 설정 블록을 읽으며, en-scanner는 이제 해결된 회사 항목을 각 페처까지 전달하여 페처가 이를 읽을 수 있게 합니다. 일곱 개 모두 `#/scan` 소스 드롭다운에 자동으로 표시됩니다.
+- **`content_filter` (상위 #974).** 게시물을 설명/스니펫 텍스트로 게이팅하는 선택적 `portals.yml` 블록(`positive` / `negative` 키워드 목록) — `location_filter` 시맨틱을 따르며, 설명이 없는 게시물은 항상 통과합니다. EN 및 RU 스캐너 모두에 연결되었습니다.
+- **스캔 쓰기 강화 (상위 #1098).** 외부 피드 메타데이터는 이제 `data/scan-history.tsv` 및 `data/pipeline.md`에 기록되기 전에 정제됩니다: 제어 문자가 축약되고(회사/직함의 줄바꿈이 더 이상 TSV 행을 주입할 수 없음) 선행 `= + - @` 는 스프레드시트 수식 주입에 대비해 무력화됩니다.
+- **Ashby `secondaryLocations` (상위 #1073).** Ashby 소스는 이제 각 보조 위치의 지역 레이블과 우편 `addressLocality` / `addressCountry` 를 위치 문자열에 접어 넣으므로(중복 제거), 기본 레이블이 예컨대 "Canada"로 표시되는 EU 자격 직무가 `location_filter`에 노출됩니다.
+- **평가 보고서 형태 검증 (상위 #819).** `/api/evaluate`의 인프로세스 프로바이더(Anthropic / OpenAI / Qwen / OpenRouter / GitHub Models)는 이제 형식이 잘못된 A–G / `SCORE_SUMMARY` 보고서를 치명적이지 않은 `warnings` 배열로 플래그합니다; Gemini 평가 경로는 이미 상위 `gemini-eval.mjs`로부터 해당 가드를 상속합니다.
+- **docs:** Antigravity CLI를 12개 README 전반의 지원 어시스턴트 목록에 추가(Gemini 프로바이더에 매핑).
+
+상위의 `git pull`에서 무상으로 상속됨(web-ui가 이들로 셸 아웃함): 일본어 CJK PDF 폰트 폴백(#1053), ATS 안전 PDF 폰트(#1074), LaTeX CJK 가드(#1054), tracker/merge/followup/dashboard 수정, 그리고 `modes/zh` 중국어 모드(web-ui는 모드를 동적으로 나열함).
+
+---
+
+
 ## [1.74.3] — 2026-06-18
 
 **docs(parent-source): 부모 `career-ops` 저장소를 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) 포크로 변경.** web-ui는 이제 실제 소스로 쓰이는 모든 곳에서 메인테이너의 포크를 부모 프로젝트로 참조합니다: `bin/setup.sh` 설치 스크립트의 `CAREER_OPS_REPO` 클론 기본값, 12개 README의 모든 `git clone` / "위에 올라가는" / 온보딩 링크, 그리고 에이전트 문서(`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `docs/`). 작성자 santifer 크레딧(및 비공식 UI 고지)은 변경되지 않았으며 — 소스/클론 URL만 이동했습니다. `tests/sh-files.test.mjs`는 이제 설치 스크립트가 포크를 클론하는지 검증합니다.
