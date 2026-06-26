@@ -2,12 +2,16 @@
 
 جميع التغييرات المهمة في **career-ops-ui**. التنسيق وفق [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)، والإصدارات وفق [SemVer](https://semver.org/).
 
-الترجمات: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md)
+الترجمات: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md)
 
 > **ملاحظة بشأن الترجمة (v1.70.0)** — أُضيفت العربية كإحدى ثلاث لغات واجهة جديدة. يترجم هذا الملف أحدث الإدخالات؛ السجل الكامل في [CHANGELOG الإنجليزي](CHANGELOG.md) وهو المرجع المعتمد.
 
 ---
 
+
+## [1.77.0] — 2026-06-27
+
+**إضافة الدنماركية (Dansk) كلغة الواجهة الثالثة عشرة.** ترجمة كاملة لواجهة المستخدم ودليل المساعدة المدمج (19 H2 / 75 H3) وREADME وCHANGELOG. تنضم الدنماركية إلى منتقي اللغات بالأعلام؛ وتغطي الآن منظومة i18n (المُجمِّع، التدقيق، بوابات التكافؤ، اللقطة) 13 لغة.
 
 ## [1.76.0] — 2026-06-26
 

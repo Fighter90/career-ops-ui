@@ -2,12 +2,16 @@
 
 **career-ops-ui** 의 모든 주요 변경 사항을 기록합니다. 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 를 따르며, 버전은 [Semantic Versioning](https://semver.org/) 을 준수합니다.
 
-번역: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [العربية](CHANGELOG.ar.md)
+번역: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
 
 > **i18n 노트** — 이 파일은 완전히 한국어로 번역되었습니다. 모든 버전 항목의 본문이 출판 등급의 한국어로 제공되며, 영어 본문 임시 대체 표기는 더 이상 사용되지 않습니다.
 
 ---
 
+
+## [1.77.0] — 2026-06-27
+
+**덴마크어(Dansk)를 13번째 인터페이스 언어로 추가.** UI, 인앱 도움말 가이드(19 H2 / 75 H3), README, CHANGELOG의 완전한 덴마크어 번역. 덴마크어가 국기 언어 선택기에 추가되었고, i18n 체계(어셈블러, 감사, 패리티 게이트, 스냅샷)가 이제 13개 로케일을 포함합니다.
 
 ## [1.76.0] — 2026-06-26
 

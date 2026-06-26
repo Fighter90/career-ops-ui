@@ -2,12 +2,16 @@
 
 **career-ops-ui** の主要な変更履歴。形式は [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)、バージョンは [SemVer](https://semver.org/) に準拠します。
 
-翻訳: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [العربية](CHANGELOG.ar.md)
+翻訳: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
 
 > **翻訳ノート** — このファイルは全エントリが日本語本文で完全に翻訳済みです。コードブロック、コミットメッセージ、ファイルパス、URL、環境変数、コマンド、リンクラベルは原文のまま保持しています。
 
 ---
 
+
+## [1.77.0] — 2026-06-27
+
+**デンマーク語 (Dansk) を 13 番目の UI 言語として追加。** UI、アプリ内ヘルプガイド（19 H2 / 75 H3）、README、CHANGELOG をデンマーク語に完全翻訳。デンマーク語は国旗付き言語ピッカーに追加され、i18n の仕組み（アセンブラ、監査、パリティゲート、スナップショット）は 13 ロケールに対応しました。
 
 ## [1.76.0] — 2026-06-26
 

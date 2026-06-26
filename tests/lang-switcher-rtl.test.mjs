@@ -39,14 +39,14 @@ function bootI18n() {
   return { I18n: ctx.window.I18n, doc };
 }
 
-test('i18n: getLangs() exposes all 12 locales, each with code/label/flag', () => {
+test('i18n: getLangs() exposes all 13 locales, each with code/label/flag', () => {
   const { I18n } = bootI18n();
   const langs = [...I18n.getLangs()]; // spread → main-realm array (getLangs is vm-realm)
   const codes = langs.map((l) => l.code);
   assert.deepEqual(
     codes.sort(),
-    ['ar', 'en', 'es', 'fr', 'ja', 'ko', 'pl', 'pt-BR', 'ru', 'uk', 'zh-CN', 'zh-TW'].sort(),
-    '12 locales must be registered',
+    ['ar', 'da', 'en', 'es', 'fr', 'ja', 'ko', 'pl', 'pt-BR', 'ru', 'uk', 'zh-CN', 'zh-TW'].sort(),
+    '13 locales must be registered',
   );
   for (const l of langs) {
     assert.ok(l.label && l.label.length, `${l.code} must have a label`);

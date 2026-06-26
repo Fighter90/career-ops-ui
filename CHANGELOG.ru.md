@@ -2,12 +2,16 @@
 
 Все значимые изменения **career-ops-ui** задокументированы здесь. Формат — [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/), версии по [Semantic Versioning](https://semver.org/lang/ru/).
 
-Переводы: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [العربية](CHANGELOG.ar.md)
+Переводы: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
 
 > **Примечание о переводе.** Файл полностью переведён на русский: тела всех записей переписаны на технический русский без англоязычных заглушек.
 
 ---
 
+
+## [1.77.0] — 2026-06-27
+
+**Добавлен датский (Dansk) — 13-й язык интерфейса.** Полный перевод UI, встроенного руководства Help (19 H2 / 75 H3), README и CHANGELOG. Датский добавлен в переключатель языков с флагами; механика i18n (ассемблер, аудит, проверки паритета, снапшот) теперь охватывает 13 локалей.
 
 ## [1.76.0] — 2026-06-26
 

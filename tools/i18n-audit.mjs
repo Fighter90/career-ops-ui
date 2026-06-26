@@ -36,7 +36,7 @@ const LIB_DIR = resolve(__dirname, '..', 'public', 'js', 'lib');
 const LOCALES_DIR = resolve(LIB_DIR, 'locales');
 const DICT_PATH = resolve(LIB_DIR, 'i18n-dict.js'); // the assembler
 
-const LOCALES = ['en', 'es', 'pt-BR', 'ru', 'ja', 'ko', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
+const LOCALES = ['en', 'es', 'pt-BR', 'ru', 'ja', 'ko', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar'];
 
 const PERSONAL = [
   /AWS\s+Solutions\s+Architect/i,
@@ -58,7 +58,7 @@ function loadDict() {
   // table, then the alias map, then the assembler that builds __I18N_DICT.
   const sandbox = { window: {} };
   vm.createContext(sandbox);
-  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar']) {
     const f = resolve(LOCALES_DIR, `i18n-dict.${lang}.js`);
     vm.runInContext(readFileSync(f, 'utf8'), sandbox, { filename: `i18n-dict.${lang}.js` });
   }

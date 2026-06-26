@@ -3,7 +3,7 @@
 > Une interface web épurée, façon documentation, pour le pipeline de recherche d'emploi IA [career-ops](https://github.com/Fighter90/career-ops).
 > Cherchez, évaluez, approfondissez, postulez et suivez chaque offre depuis un seul onglet de navigateur — au lieu de jongler entre Claude Code, des terminaux et des fichiers markdown.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | **Français** | [Polski](README.pl.md) | [Українська](README.uk.md) | [العربية](README.ar.md)
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | **Français** | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md)
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.76.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.76.0)
+[![release](https://img.shields.io/badge/release-v1.77.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.77.0)
 
-> **🆕 Dernière version — v1.76.0**
+> **🆕 Dernière version — v1.77.0**
 >
-> **Parité avec le career-ops parent v1.12.0 — sept nouvelles sources d'offres arrivent dans le scanner.** Trois agrégateurs distants couvrant tout le tableau d'offres (**RemoteOK**, **Remotive**, **Working Nomads**) et quatre agrégateurs régionaux pilotés par configuration (**IBM**, **Arbeitsagentur**, **Glints**, **Jobstreet / SEEK**) sont désormais sélectionnables dans `#/scan`. S'y ajoutent un `content_filter` optionnel (filtrage par mots-clés de description/extrait), un durcissement de l'écriture de scan contre l'injection de ligne TSV et de formule de tableur (#1098), des `secondaryLocations` Ashby plus riches pour faire remonter les postes éligibles à l'UE (#1073), la validation de la forme du rapport d'évaluation sur les fournisseurs in-process (#819) et Antigravity CLI dans la documentation des assistants. S'appuie sur la v1.74.0 (6 assistants IA, dont GitHub Models) et la v1.70–73 (12 locales, dont l'arabe RTL, lettre de motivation + PDF).
+> **Le danois (Dansk) ajouté comme 13ᵉ langue d'interface.** Traduction complète en danois de l'interface, du **guide d'aide** intégré (19 H2 / 75 H3), du README et du CHANGELOG. Le danois rejoint le sélecteur de langue à drapeaux, et toute la machinerie i18n (assembleur, audit, contrôles de parité, snapshot) couvre désormais **13 locales**. S'appuie sur la v1.76.0 (parité avec le career-ops parent v1.13.0 — six sources ATS par tenant BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, `trust_filter`, résultats de scan sans plafond, robustesse du filtre de titres) et la v1.70–74 (arabe RTL, 6 fournisseurs LLM).
 >
-> _12 locales · 6 fournisseurs LLM · 14 adaptateurs de scanner · parité avec le parent v1.12.0._
+> _13 locales · 6 fournisseurs LLM · 25 adaptateurs de scanner · parité avec le career-ops parent v1.13.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

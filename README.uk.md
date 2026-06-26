@@ -3,7 +3,7 @@
 > Лаконічний веб-інтерфейс у стилі технічної документації для AI-конвеєра пошуку роботи [career-ops](https://github.com/Fighter90/career-ops).
 > Шукайте вакансії, оцінюйте їх, досліджуйте компанії, подавайте заявки та відстежуйте кожну пропозицію з однієї вкладки браузера — замість перемикання між Claude Code, терміналом і markdown-файлами.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | **Українська** | [العربية](README.ar.md)
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | **Українська** | [Dansk](README.da.md) | [العربية](README.ar.md)
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
@@ -12,13 +12,13 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.76.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.76.0)
+[![release](https://img.shields.io/badge/release-v1.77.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.77.0)
 
-> **🆕 Останній реліз — v1.76.0**
+> **🆕 Останній реліз — v1.77.0**
 >
-> **Паритет із батьківським career-ops v1.12.0 — до сканера додано сім нових джерел вакансій.** Три глобальні агрегатори віддалених вакансій (**RemoteOK**, **Remotive**, **Working Nomads**) і чотири керовані конфігурацією регіональні агрегатори (**IBM**, **Arbeitsagentur**, **Glints**, **Jobstreet / SEEK**) тепер можна обрати в `#/scan`. Плюс необов'язковий `content_filter` (фільтрація за ключовими словами опису/сніпета), посилення запису під час сканування проти ін'єкції рядка TSV і формул електронних таблиць (#1098), багатші `secondaryLocations` Ashby, щоб спливали ролі з правом працювати в ЄС (#1073), валідація форми звіту про оцінку для внутрішньопроцесних провайдерів (#819) та Antigravity CLI у документації асистентів. Базується на v1.74.0 (6 AI-асистентів, зокрема GitHub Models) і v1.70–73 (12 locales, зокрема арабська RTL, супровідний лист + PDF).
+> **Данську (Dansk) додано як 13-ту мову інтерфейсу.** Повний переклад данською інтерфейсу, вбудованого **довідкового посібника** (19 H2 / 75 H3), README та CHANGELOG. Данська приєднується до вибору мови з прапорцями, а вся механіка i18n (асемблер, аудит, перевірки паритету, знімок) тепер охоплює **13 locales**. Базується на v1.76.0 (паритет із батьківським career-ops v1.13.0 — шість джерел ATS на тенант BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, `trust_filter`, необмежені результати сканування, стійкість фільтра заголовків) і v1.70–74 (арабська RTL, 6 LLM-провайдерів).
 >
-> _12 locales · 6 LLM-провайдерів · 14 адаптерів сканера · паритет із батьківським v1.12.0._
+> _13 locales · 6 LLM-провайдерів · 25 адаптерів сканера · паритет із батьківським career-ops v1.13.0._
 
 ![career-ops-ui](./images/dashboard-uk.png)
 

@@ -46,7 +46,7 @@
  */
 window.__I18N_DICT = (function buildDict() {
   // en first: it is the fallback locale and the parity reference.
-  const LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
+  const LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar'];
   const TABLES = {
     en: window.__I18N_DICT_EN,
     es: window.__I18N_DICT_ES,
@@ -59,6 +59,7 @@ window.__I18N_DICT = (function buildDict() {
     fr: window.__I18N_DICT_FR,
     pl: window.__I18N_DICT_PL,
     uk: window.__I18N_DICT_UK,
+    da: window.__I18N_DICT_DA,
     ar: window.__I18N_DICT_AR,
   };
 

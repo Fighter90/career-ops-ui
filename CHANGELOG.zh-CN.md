@@ -2,12 +2,16 @@
 
 **career-ops-ui** 的所有重要变更均记录于此。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/),版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
-翻译版本:[English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [العربية](CHANGELOG.ar.md)
+翻译版本:[English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
 
 > **说明** — 本文件已完整翻译为出版级简体中文(中国大陆用语规范),包含全部历史版本条目。代码块、提交信息、文件路径、URL、环境变量、命令行片段以及 CSP / SSRF / TOCTOU / WCAG / ATS / JD / SSE / REST / API 等通用英文缩写按原文保留。
 
 ---
 
+
+## [1.77.0] — 2026-06-27
+
+**新增丹麦语（Dansk）作为第 13 种界面语言。** 完整翻译 UI、应用内帮助指南（19 H2 / 75 H3）、README 和 CHANGELOG。丹麦语加入带国旗的语言选择器；i18n 机制（汇编器、审计、对等校验、快照）现已覆盖 13 个语言环境。
 
 ## [1.76.0] — 2026-06-26
 

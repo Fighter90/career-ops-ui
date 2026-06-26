@@ -220,13 +220,13 @@ async function run() {
     console.log(`  ✗ ${err.message}`);
   }
 
-  console.log('\n  Flow 2d: language switcher (12 languages)');
+  console.log('\n  Flow 2d: language switcher (13 languages)');
   try {
     await page.goto(`${baseUrl}/#/dashboard`);
     await page.waitForSelector('h1.page-title');
     await page.waitForSelector('#lang-select', { timeout: 5000 });
     const langs = await page.$$eval('#lang-select option', (els) => els.map((e) => e.value));
-    const expected = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
+    const expected = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar'];
     for (const code of expected) {
       if (!langs.includes(code)) throw new Error(`missing language: ${code}`);
     }
@@ -255,12 +255,12 @@ async function run() {
     await page.waitForTimeout(200);
     const dirAfterEn = await page.evaluate(() => document.documentElement.dir);
     if (dirAfterEn !== 'ltr') throw new Error(`English must restore <html dir="ltr">, got "${dirAfterEn}"`);
-    console.log(`  ✓ 12 languages, switching works, persists across reload, RTL toggles for Arabic`);
+    console.log(`  ✓ 13 languages, switching works, persists across reload, RTL toggles for Arabic`);
     passed++;
 
-    // Sub-test: rotate through ALL 12 langs on dashboard, verify the page-title
+    // Sub-test: rotate through ALL 13 langs on dashboard, verify the page-title
     // changes to a non-empty string each time and never produces console errors.
-    console.log('  → exercising all 12 languages on dashboard');
+    console.log('  → exercising all 13 languages on dashboard');
     const seenTitles = {};
     for (const code of expected) {
       await page.locator('#lang-select').selectOption(code);

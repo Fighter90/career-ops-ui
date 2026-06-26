@@ -2,12 +2,16 @@
 
 **career-ops-ui** 的所有重要變更記錄於此。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),版本號遵循 [Semantic Versioning](https://semver.org/)。
 
-翻譯版本: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [العربية](CHANGELOG.ar.md)
+翻譯版本: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
 
 > **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [CHANGELOG.md](CHANGELOG.md) 為準。
 
 ---
 
+
+## [1.77.0] — 2026-06-27
+
+**新增丹麥語（Dansk）作為第 13 種介面語言。** 完整翻譯 UI、應用內說明指南（19 H2 / 75 H3）、README 與 CHANGELOG。丹麥語加入帶國旗的語言選擇器；i18n 機制（組譯器、稽核、對等檢查、快照）現已涵蓋 13 個語言環境。
 
 ## [1.76.0] — 2026-06-26
 

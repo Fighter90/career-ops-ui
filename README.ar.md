@@ -3,7 +3,7 @@
 > واجهة ويب أنيقة بأسلوب التوثيق التقني لخط أنابيب البحث عن عمل بالذكاء الاصطناعي — [career-ops](https://github.com/Fighter90/career-ops).
 > ابحث عن الوظائف وقيّمها واستكشفها وقدّم طلباتك وتتبّع كل عرض من تبويب واحد في المتصفح — بدلاً من التنقل بين Claude Code والطرفية وملفات markdown.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | **العربية**
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | **العربية**
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
@@ -12,13 +12,13 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.76.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.76.0)
+[![release](https://img.shields.io/badge/release-v1.77.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.77.0)
 
-> **🆕 أحدث إصدار — v1.76.0**
+> **🆕 أحدث إصدار — v1.77.0**
 >
-> **التكافؤ مع المشروع الأصلي career-ops v1.12.0 — سبعة مصادر وظائف جديدة تصل إلى الماسح.** أصبح بالإمكان الآن اختيار ثلاثة مُجمِّعات للعمل عن بُعد على مستوى اللوحة بأكملها (**RemoteOK** و**Remotive** و**Working Nomads**) وأربعة مُجمِّعات إقليمية مُوجَّهة بالتهيئة (**IBM** و**Arbeitsagentur** و**Glints** و**Jobstreet / SEEK**) في `#/scan`. إضافةً إلى `content_filter` اختياري (تبويب بالكلمات المفتاحية للوصف/المقتطف)، وتقوية كتابة المسح ضد حقن صف TSV وصيغ جداول البيانات (#1098)، و`secondaryLocations` أغنى في Ashby لإظهار الأدوار المؤهَّلة للعمل في الاتحاد الأوروبي (#1073)، والتحقق من شكل تقرير التقييم لدى المزوّدات داخل العملية (#819)، وAntigravity CLI في وثائق المساعدين. يُبنى على v1.74.0 (6 مساعدي ذكاء اصطناعي، منها GitHub Models) وv1.70–73 (12 locales، منها العربية RTL، خطاب التغطية + PDF).
+> **أُضيفت الدنماركية (Dansk) لغةً للواجهة رقم 13.** ترجمة دنماركية كاملة للواجهة و**دليل المساعدة** المدمج (19 H2 / 75 H3) وملف README وملف CHANGELOG. تنضم الدنماركية إلى منتقي اللغات بالأعلام، وأصبحت منظومة i18n بأكملها (المُجمِّع، التدقيق، بوابات التكافؤ، اللقطة) تغطي الآن **13 locales**. يُبنى على v1.76.0 (التكافؤ مع المشروع الأصلي career-ops v1.13.0 — ستة مصادر ATS لكل مستأجر BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs، و`trust_filter`، ونتائج مسح بلا حد أقصى، ومتانة مرشّح العناوين) وv1.70–74 (العربية RTL، 6 مزوّدات LLM).
 >
-> _12 locales · 6 مزوّدات LLM · 14 محوّل ماسح · التكافؤ مع المشروع الأصلي v1.12.0._
+> _13 locales · 6 مزوّدات LLM · 25 محوّل ماسح · التكافؤ مع المشروع الأصلي career-ops v1.13.0._
 
 ![career-ops-ui](./images/dashboard-ar.png)
 

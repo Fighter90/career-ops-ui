@@ -18,7 +18,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const LIB = resolve(__dirname, '..', '..', 'public', 'js', 'lib');
 const LOCALES = resolve(LIB, 'locales');
 
-export const I18N_LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
+export const I18N_LANGS = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar'];
 
 /** Raw source text of one per-locale table file. */
 export function localeSource(lang) {

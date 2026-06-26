@@ -1,8 +1,10 @@
-# Changelog
+# Ændringslog
 
-All notable changes to **career-ops-ui** are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to [Semantic Versioning](https://semver.org/).
+Alle væsentlige ændringer i **career-ops-ui** er dokumenteret her. Formatet følger [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), og projektet følger [Semantic Versioning](https://semver.org/).
 
-Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
+Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [العربية](CHANGELOG.ar.md)
+
+> **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 
 ---
 
@@ -10,32 +12,32 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 ## [1.77.0] — 2026-06-27
 
-**Danish (Dansk) added as the 13th interface language.** Full Danish UI translation, in-app Help guide (19 H2 / 75 H3), README, and CHANGELOG. Danish joins the flag language picker; the i18n machinery (assembler, audit, parity gates, snapshot) now spans 13 locales.
+**Dansk tilføjet som det 13. sprog i grænsefladen.** Fuld dansk oversættelse af brugerfladen, den indbyggede hjælpeguide (19 H2 / 75 H3), README og CHANGELOG. Dansk er nu med i sprogvælgeren med flag; i18n-maskineriet (assembler, audit, paritetsporte, snapshot) dækker nu 13 sprog.
 
 ## [1.76.0] — 2026-06-26
 
-**Parent career-ops v1.13.0 parity — six new job sources, scanner hardening, and an uncapped results table.**
+**Paritet med forælderens career-ops v1.13.0 — seks nye jobkilder, hærdning af scanneren og en resultattabel uden loft.**
 
-### Added
-- **Six per-tenant ATS sources** — BambooHR, Breezy HR, Comeet, Personio, Recruitee, SolidJobs. They auto-detect from the `careers_url` host (Comeet needs the full `api:` careers-api URL) and each pins its host with an anchored regex + `redirect:'error'` (SSRF-safe). All selectable in the `#/scan` **Source** dropdown — the registry now ships **25 adapters** (20 EN + 5 RU). Adds a `fetchText` helper for Personio's XML feed.
-- **`trust_filter`** — optional, annotate-only trust scoring (0–100, level high/medium/low, flags) for each scanned posting. Sub-`high` rows get a language-neutral ⚠ badge in `#/scan`; nothing is ever dropped.
-- **Arbeitsagentur `remoteMatch` + `remoteMaxPages`** — config-driven remote detection: `title` (regex), `filter` (server-side `homeoffice=nv_true` + pagination), or `off`.
+### Tilføjet
+- **Seks ATS-kilder pr. tenant** — BambooHR, Breezy HR, Comeet, Personio, Recruitee, SolidJobs. De registreres automatisk ud fra `careers_url`-værten (Comeet kræver den fulde `api:` careers-api-URL), og hver enkelt fastlåser sin vært med et forankret regex + `redirect:'error'` (SSRF-sikret). Alle kan vælges i **Source**-rullemenuen på `#/scan` — registret leverer nu **25 adaptere** (20 EN + 5 RU). Tilføjer en `fetchText`-hjælper til Personios XML-feed.
+- **`trust_filter`** — valgfri tillidsscoring, der kun annoterer (0–100, niveau high/medium/low, flag), for hver scannet opslag. Rækker under `high` får et sprogneutralt ⚠-badge i `#/scan`; intet kasseres nogensinde.
+- **Arbeitsagentur `remoteMatch` + `remoteMaxPages`** — konfigurationsstyret registrering af fjernarbejde: `title` (regex), `filter` (server-side `homeoffice=nv_true` + paginering) eller `off`.
 
-### Changed
-- **No scan result cap.** The `MAX_STORED_RESULTS` display cap (2000) was removed — every matched posting is stored and the `#/scan` table pages through them (200/page). Large sweeps no longer lose their tail.
-- **Title-filter robustness** — short all-letter acronyms (COO, SDR…) now match on word boundaries (no more “COO” in “Coordinator”); malformed `title_filter` config can no longer crash a scan. Both the ATS and regional scanners.
+### Ændret
+- **Intet loft på scanresultater.** Visningsloftet `MAX_STORED_RESULTS` (2000) er fjernet — hvert matchet opslag gemmes, og tabellen på `#/scan` pagerer gennem dem (200/side). Store gennemløb mister ikke længere deres hale.
+- **Robusthed i titelfilteret** — korte akronymer kun med bogstaver (COO, SDR …) matcher nu på ordgrænser (ikke længere "COO" i "Coordinator"); fejlbehæftet `title_filter`-konfiguration kan ikke længere få en scanning til at gå ned. Gælder både ATS- og den regionale scanner.
 
 ### Tests
-- +32 cases (1190 → **1222**): `sources-ats-providers`, `title-filter`, `arbeitsagentur-remote`, `trust-validator`, and a rewritten `scan-result-cap` “no cap” guard.
+- +32 cases (1190 → **1222**): `sources-ats-providers`, `title-filter`, `arbeitsagentur-remote`, `trust-validator` og en omskrevet `scan-result-cap`-vagt ("intet loft").
 
 ## [1.75.2] — 2026-06-19
 
-**docs: full documentation parity for the v1.75.0 scanner aggregators across all 12 locales.** No code change — brings the user-facing docs in line with the seven sources that landed in v1.75.0:
+**docs: fuld dokumentationsparitet for v1.75.0-scanneraggregatorerne på tværs af alle 12 lokaliteter.** Ingen kodeændring — bringer den brugervendte dokumentation på linje med de syv kilder, der kom i v1.75.0:
 
-- **Help guide (12 locales).** §5 gains a `content_filter` block (description/snippet keyword gating, sibling of `location_filter`) and an aggregators note; §7 lists the seven new sources in the one-click-scan sweep and the full **Source** dropdown enumeration; §17's adapter count is corrected from the stale "11 adapters" to "19 adapters — 14 English + 5 Russian". No `##`/`###` heading was added, so the gated 19 H2 / 75 H3 structure is unchanged.
-- **README (9 full locales).** New "Aggregator boards (v1.75.0)" bullet under the scan sources, plus the release badge bumped to v1.75.2. (The abbreviated pl/uk/ar READMEs have no per-source list and are intentionally untouched there.)
-- **Reference docs.** `docs/portals-examples.md` gains a copy-paste "Aggregator boards" section with accurate `provider:` / `<provider>:` config blocks for all seven; `docs/PROJECT.md` updated to **19 adapters**; `docs/sdd/CONVENTIONS.md` documents the two-registry distinction (`sources/registry.mjs` for the dropdown vs `portals/registry.mjs` for fetching), the `provider:`-based aggregator selection threaded as `opts.company`, the scan-write sanitizer (`scan-sanitize.mjs`), and the v1.75.1 test count (1190).
-- **QA.** Added `qa/QA-REGRESSION-PROMPT-v1.75.2-FULL.md` — the full-surface release-gate driver, refreshed for the v1.75.x scan-aggregator cycle.
+- **Hjælpevejledning (12 lokaliteter).** §5 får en `content_filter`-blok (gating på nøgleord i beskrivelse/uddrag, søskende til `location_filter`) og en note om aggregatorer; §7 oplister de syv nye kilder i ét-klik-scangennemløbet og i den fulde **Source**-rullemenu; adaptertallet i §17 er rettet fra de forældede "11 adapters" til "19 adapters — 14 English + 5 Russian". Ingen `##`/`###`-overskrift blev tilføjet, så den fastlåste struktur med 19 H2 / 75 H3 er uændret.
+- **README (9 fulde lokaliteter).** Nyt punkt "Aggregator boards (v1.75.0)" under scankilderne, plus release-badget hævet til v1.75.2. (De forkortede README'er for pl/uk/ar har ingen liste pr. kilde og er bevidst urørte der.)
+- **Referencedokumenter.** `docs/portals-examples.md` får et "Aggregator boards"-afsnit klar til kopiering med korrekte `provider:` / `<provider>:`-konfigurationsblokke for alle syv; `docs/PROJECT.md` opdateret til **19 adapters**; `docs/sdd/CONVENTIONS.md` dokumenterer skellet mellem de to registre (`sources/registry.mjs` til rullemenuen kontra `portals/registry.mjs` til hentning), det `provider:`-baserede aggregatorvalg, der videreføres som `opts.company`, scan-skrivesanitizeren (`scan-sanitize.mjs`) og v1.75.1-testtallet (1190).
+- **QA.** Tilføjet `qa/QA-REGRESSION-PROMPT-v1.75.2-FULL.md` — release-gate-driveren for hele fladen, opdateret til v1.75.x-scanaggregatorcyklussen.
 
 ---
 
@@ -43,27 +45,27 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 ## [1.75.1] — 2026-06-19
 
-**fix(scan): robustness polish on the v1.75.0 config-driven sources.** Three small hardening fixes from the post-release review (no behavior change for a healthy scan):
+**fix(scan): robusthedsforbedring på de konfigurationsstyrede kilder fra v1.75.0.** Tre små hærdningsrettelser fra gennemgangen efter udgivelsen (ingen adfærdsændring for en sund scanning):
 
-- **Abort-aware pagination delays.** The Glints (300 ms) and Jobstreet/SEEK (200 ms) inter-page courtesy pauses now resolve immediately when the scan's `AbortSignal` fires, via a new `delay(ms, signal)` helper in `server/lib/http-json.mjs`, so a disconnected client can't hold a paginating scan open for an extra pause.
-- **Descriptive non-JSON error.** `fetchJson` now wraps a non-JSON `2xx` body (e.g. an HTML maintenance page served with status 200) as `non-JSON 2xx response from <url>` instead of surfacing a bare `SyntaxError`, so the scanner's per-source error log names the misbehaving endpoint.
-- **Stronger scan-write normalization.** `normalizeScanScalar` now collapses the vertical tab, form feed, and the Unicode line/paragraph separators (`\v \f U+2028 U+2029`) in addition to `\r \n \t` — a strict superset, so no record/line separator a spreadsheet or viewer might honor survives into `scan-history.tsv`.
+- **Pagineringspauser med afbrydelseshensyn.** Glints' (300 ms) og Jobstreet/SEEK's (200 ms) høflighedspauser mellem sider afsluttes nu øjeblikkeligt, når scanningens `AbortSignal` udløses, via en ny `delay(ms, signal)`-hjælper i `server/lib/http-json.mjs`, så en frakoblet klient ikke kan holde en paginerende scanning åben en ekstra pause.
+- **Beskrivende fejl ved ikke-JSON.** `fetchJson` ombryder nu et ikke-JSON `2xx`-svar (f.eks. en HTML-vedligeholdelsesside leveret med status 200) som `non-JSON 2xx response from <url>` i stedet for at vise en bar `SyntaxError`, så scannerens fejllog pr. kilde navngiver det fejlbehæftede endpoint.
+- **Stærkere normalisering ved scan-skrivning.** `normalizeScanScalar` sammenfolder nu lodret tabulator, sideskift og Unicode-linje-/afsnitsseparatorerne (`\v \f U+2028 U+2029`) ud over `\r \n \t` — en streng overmængde, så ingen post-/linjeseparator, som et regneark eller en fremviser måtte respektere, overlever ind i `scan-history.tsv`.
 
 ---
 
 
 ## [1.75.0] — 2026-06-19
 
-**feat(scan): port parent career-ops v1.12.0 — seven new job sources, content filtering, and security/quality fixes.** The web-ui runs its own in-process scanners (it does not shell out to the parent's `scan.mjs`), so parent v1.12.0's provider and scan changes do not flow through automatically — this release reimplements the applicable ones in the web-ui's adapter contract.
+**feat(scan): overfør forælderens career-ops v1.12.0 — syv nye jobkilder, indholdsfiltrering og sikkerheds-/kvalitetsrettelser.** web-ui kører sine egne in-process-scannere (den kalder ikke forælderens `scan.mjs`), så forælderens provider- og scanændringer fra v1.12.0 forplanter sig ikke automatisk — denne udgivelse genimplementerer de relevante i web-ui'ens adapterkontrakt.
 
-- **Seven new scanner sources.** Three board-wide remote aggregators — **RemoteOK**, **Remotive**, **Working Nomads** — drop into the auto-discovered `server/lib/sources/*.mjs` pattern (select with `provider: remoteok` / `remotive` / `workingnomads`). Four config-driven regional aggregators — **IBM** careers, **Arbeitsagentur** (German Federal Labor Agency), **Glints** (SE Asia), **Jobstreet / SEEK** — read a per-entry `<provider>:` config block; en-scanner now threads the resolved company entry through to every fetcher so they can read it. All seven appear in the `#/scan` source dropdown automatically.
-- **`content_filter` (parent #974).** Optional `portals.yml` block (`positive` / `negative` keyword lists) that gates a posting on its description/snippet text — mirrors `location_filter` semantics; postings without a description always pass. Wired into both EN and RU scanners.
-- **Scan-write hardening (parent #1098).** External feed metadata is now sanitized before it lands in `data/scan-history.tsv` and `data/pipeline.md`: control characters are collapsed (a company/title newline can no longer inject a TSV row) and a leading `= + - @` is neutralized against spreadsheet formula injection.
-- **Ashby `secondaryLocations` (parent #1073).** The Ashby source now folds each secondary location's region label plus postal `addressLocality` / `addressCountry` into the location string (deduped), so an EU-eligible role whose primary label reads e.g. "Canada" surfaces for the `location_filter`.
-- **Evaluation report-shape validation (parent #819).** `/api/evaluate`'s in-process providers (Anthropic / OpenAI / Qwen / OpenRouter / GitHub Models) now flag a malformed A–G / `SCORE_SUMMARY` report as a non-fatal `warnings` array; the Gemini eval path already inherits the guard from the parent's `gemini-eval.mjs`.
-- **docs:** Antigravity CLI added to the supported-assistant lists across all 12 READMEs (maps to the Gemini provider).
+- **Syv nye scannerkilder.** Tre board-brede aggregatorer for fjernarbejde — **RemoteOK**, **Remotive**, **Working Nomads** — passer ind i det automatisk opdagede `server/lib/sources/*.mjs`-mønster (vælges med `provider: remoteok` / `remotive` / `workingnomads`). Fire konfigurationsstyrede regionale aggregatorer — **IBM** careers, **Arbeitsagentur** (det tyske føderale arbejdsformidlingsagentur), **Glints** (Sydøstasien), **Jobstreet / SEEK** — læser en `<provider>:`-konfigurationsblok pr. post; en-scanner videregiver nu den løste virksomhedspost til hver fetcher, så de kan læse den. Alle syv vises automatisk i kilde-rullemenuen på `#/scan`.
+- **`content_filter` (forælder #974).** Valgfri `portals.yml`-blok (nøgleordslister `positive` / `negative`), der gater et opslag på dets beskrivelses-/uddragstekst — afspejler `location_filter`-semantikken; opslag uden en beskrivelse passerer altid. Tilkoblet både EN- og RU-scanneren.
+- **Hærdning ved scan-skrivning (forælder #1098).** Metadata fra eksterne feeds saniteres nu, før de havner i `data/scan-history.tsv` og `data/pipeline.md`: kontroltegn sammenfoldes (et linjeskift i virksomhed/titel kan ikke længere indsætte en TSV-række), og et indledende `= + - @` neutraliseres mod formelinjektion i regneark.
+- **Ashby `secondaryLocations` (forælder #1073).** Ashby-kilden folder nu hver sekundær lokations regionsmærkat plus postnummer-`addressLocality` / `addressCountry` ind i lokationsstrengen (dedupliceret), så en EU-berettiget rolle, hvis primære mærkat f.eks. lyder "Canada", dukker op for `location_filter`.
+- **Validering af evalueringsrapportens form (forælder #819).** In-process-providerne i `/api/evaluate` (Anthropic / OpenAI / Qwen / OpenRouter / GitHub Models) markerer nu en fejlbehæftet A–G- / `SCORE_SUMMARY`-rapport som et ikke-fatalt `warnings`-array; Gemini-evalueringsstien arver allerede beskyttelsen fra forælderens `gemini-eval.mjs`.
+- **docs:** Antigravity CLI tilføjet til listerne over understøttede assistenter på tværs af alle 12 README'er (afbildes til Gemini-provideren).
 
-Inherited for free from the `git pull` of the parent (web-ui shells out to these): Japanese CJK PDF font fallback (#1053), ATS-safe PDF fonts (#1074), LaTeX CJK guard (#1054), tracker/merge/followup/dashboard fixes, and the `modes/zh` Chinese modes (the web-ui lists modes dynamically).
+Arvet gratis fra `git pull` af forælderen (web-ui kalder ud til disse): japansk CJK-PDF-fontfallback (#1053), ATS-sikre PDF-fonte (#1074), LaTeX-CJK-vagt (#1054), rettelser i tracker/merge/followup/dashboard og de kinesiske `modes/zh`-modes (web-ui oplister modes dynamisk).
 
 ---
 

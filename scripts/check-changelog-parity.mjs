@@ -20,7 +20,7 @@ import { join, dirname } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO = join(__dirname, '..');
 
-const LOCALES = ['es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
+const LOCALES = ['es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar'];
 
 function newestEntry(path) {
   const src = readFileSync(path, 'utf8');

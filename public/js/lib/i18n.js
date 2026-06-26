@@ -30,6 +30,7 @@ window.I18n = (function () {
     { code: 'fr',    label: 'Français',   flag: '🇫🇷' },
     { code: 'pl',    label: 'Polski',     flag: '🇵🇱' },
     { code: 'uk',    label: 'Українська', flag: '🇺🇦' },
+    { code: 'da',    label: 'Dansk',      flag: '🇩🇰' },
     { code: 'ar',    label: 'العربية',    flag: '🇸🇦' },
   ];
 

@@ -2,12 +2,16 @@
 
 Усі важливі зміни **career-ops-ui**. Формат — [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), версії за [SemVer](https://semver.org/).
 
-Переклади: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [العربية](CHANGELOG.ar.md)
+Переклади: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
 
 > **Примітка щодо перекладу (v1.70.0)** — українську додано як одну з трьох нових мов інтерфейсу. Цей файл перекладає найновіші записи; повна історія — в [англійському CHANGELOG](CHANGELOG.md), який є нормативним джерелом.
 
 ---
 
+
+## [1.77.0] — 2026-06-27
+
+**Додано данську (Dansk) — 13-ту мову інтерфейсу.** Повний переклад UI, вбудованого довідника Help (19 H2 / 75 H3), README та CHANGELOG. Данська додана до перемикача мов із прапорцями; механіка i18n (асемблер, аудит, перевірки паритету, знімок) тепер охоплює 13 локалей.
 
 ## [1.76.0] — 2026-06-26
 

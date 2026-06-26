@@ -11,6 +11,7 @@
     "fr": "Tableau de bord",
     "pl": "Panel",
     "uk": "Дашборд",
+    "da": "Oversigt",
     "ar": "لوحة التحكم"
   },
   "nav.scan": {
@@ -25,6 +26,7 @@
     "fr": "Scanner",
     "pl": "Skanowanie",
     "uk": "Пошук",
+    "da": "Scanning",
     "ar": "البحث"
   },
   "nav.pipeline": {
@@ -39,6 +41,7 @@
     "fr": "Pipeline",
     "pl": "Pipeline",
     "uk": "Воронка",
+    "da": "Pipeline",
     "ar": "خط الأنابيب"
   },
   "nav.evaluate": {
@@ -53,6 +56,7 @@
     "fr": "Évaluer",
     "pl": "Ocena",
     "uk": "Оцінити",
+    "da": "Vurdering",
     "ar": "التقييم"
   },
   "nav.batch": {
@@ -67,6 +71,7 @@
     "fr": "Lot",
     "pl": "Partia",
     "uk": "Пакетна обробка",
+    "da": "Batch",
     "ar": "الدُفعة"
   },
   "nav.deep": {
@@ -81,6 +86,7 @@
     "fr": "Recherche approfondie",
     "pl": "Dogłębny research",
     "uk": "Глибокий рісьорч",
+    "da": "Dybdegående research",
     "ar": "بحث معمّق"
   },
   "nav.tracker": {
@@ -95,6 +101,7 @@
     "fr": "Suivi",
     "pl": "Tracker",
     "uk": "Трекер",
+    "da": "Tracker",
     "ar": "المتتبع"
   },
   "nav.profile": {
@@ -109,6 +116,7 @@
     "fr": "Profil",
     "pl": "Profil",
     "uk": "Профіль",
+    "da": "Profil",
     "ar": "الملف الشخصي"
   },
   "nav.settings": {
@@ -123,6 +131,7 @@
     "fr": "Paramètres",
     "pl": "Profil",
     "uk": "Профіль",
+    "da": "Profil",
     "ar": "الملف الشخصي"
   },
   "nav.group.sourcing": {
@@ -137,6 +146,7 @@
     "fr": "Sourcing",
     "pl": "Pozyskiwanie",
     "uk": "Пошук",
+    "da": "Sourcing",
     "ar": "الاستقطاب"
   },
   "nav.group.decision": {
@@ -151,6 +161,7 @@
     "fr": "Prise de décision",
     "pl": "Decyzja",
     "uk": "Рішення",
+    "da": "Beslutning",
     "ar": "القرار"
   },
   "nav.group.application": {
@@ -165,6 +176,7 @@
     "fr": "Candidature",
     "pl": "Aplikacja",
     "uk": "Заявка",
+    "da": "Ansøgning",
     "ar": "التقديم"
   },
   "nav.group.networking": {
@@ -179,6 +191,7 @@
     "fr": "Réseautage",
     "pl": "Networking",
     "uk": "Нетворкінг",
+    "da": "Netværk",
     "ar": "التواصل"
   },
   "nav.group.analytics": {
@@ -193,6 +206,7 @@
     "fr": "Analytique",
     "pl": "Analityka",
     "uk": "Аналітика",
+    "da": "Analyse",
     "ar": "التحليلات"
   },
   "nav.group.setup": {
@@ -207,6 +221,7 @@
     "fr": "Configuration",
     "pl": "Konfiguracja",
     "uk": "Налаштування",
+    "da": "Opsætning",
     "ar": "الإعداد"
   },
   "nav.project": {
@@ -221,6 +236,7 @@
     "fr": "Projet",
     "pl": "Projekt",
     "uk": "Проєкт",
+    "da": "Projekt",
     "ar": "المشروع"
   },
   "nav.training": {
@@ -235,6 +251,7 @@
     "fr": "Formation",
     "pl": "Szkolenie",
     "uk": "Навчання",
+    "da": "Uddannelse",
     "ar": "التدريب"
   },
   "nav.followup": {
@@ -249,6 +266,7 @@
     "fr": "Suivi",
     "pl": "Follow-up",
     "uk": "Нагадування",
+    "da": "Opfølgning",
     "ar": "المتابعة"
   },
   "nav.contacto": {
@@ -263,6 +281,7 @@
     "fr": "Relations publiques",
     "pl": "Outreach",
     "uk": "Контакти",
+    "da": "Outreach",
     "ar": "التواصل"
   },
   "nav.patterns": {
@@ -277,6 +296,7 @@
     "fr": "Modèles",
     "pl": "Wzorce",
     "uk": "Патерни",
+    "da": "Mønstre",
     "ar": "الأنماط"
   },
   "mode.required": {
@@ -291,6 +311,7 @@
     "fr": "Veuillez remplir les champs obligatoires",
     "pl": "Wypełnij wymagane pola",
     "uk": "Заповніть обов'язкові поля",
+    "da": "Udfyld venligst de påkrævede felter",
     "ar": "يرجى ملء الحقول المطلوبة"
   },
   "mode.generating": {
@@ -305,6 +326,7 @@
     "fr": "Génération…",
     "pl": "Generowanie…",
     "uk": "Генерація…",
+    "da": "Genererer…",
     "ar": "جارٍ الإنشاء…"
   },
   "mode.runManual": {
@@ -319,6 +341,7 @@
     "fr": "Générer un prompt",
     "pl": "Generuj prompt",
     "uk": "Згенерувати промпт",
+    "da": "Generér prompt",
     "ar": "إنشاء الأمر"
   },
   "mode.runLive": {
@@ -333,6 +356,7 @@
     "fr": "Exécuter en direct",
     "pl": "Uruchom na żywo",
     "uk": "Запустити наживо",
+    "da": "Kør live",
     "ar": "تشغيل مباشر"
   },
   "mode.download": {
@@ -347,6 +371,7 @@
     "fr": "Télécharger .md",
     "pl": "Pobierz .md",
     "uk": "Завантажити .md",
+    "da": "Download .md",
     "ar": "تنزيل .md"
   },
   "mode.liveReadyAnnounce": {
@@ -361,6 +386,7 @@
     "fr": "L'évaluation directe est disponible — le bouton principal l'exécute directement.",
     "pl": "Ocena na żywo jest dostępna — główny przycisk uruchamia ją bezpośrednio.",
     "uk": "Live-оцінка тепер доступна — основна кнопка запускає її напряму.",
+    "da": "Live-vurdering er nu tilgængelig — den primære knap kører den direkte.",
     "ar": "التقييم المباشر متاح الآن — الزر الرئيسي يشغّله مباشرةً."
   },
   "project.title": {
@@ -375,6 +401,7 @@
     "fr": "Conseiller pour les projets de portfolio",
     "pl": "Doradca projektów portfolio",
     "uk": "Порадник з портфоліо-проєктів",
+    "da": "Rådgiver for porteføljeprojekter",
     "ar": "مستشار مشاريع الأعمال"
   },
   "project.subtitle": {
@@ -389,6 +416,7 @@
     "fr": "Présentez une idée de projet, recevez des commentaires sur la portée et l'adéquation du signal avant de construire.",
     "pl": "Przedstaw pomysł na projekt i uzyskaj opinię o zakresie i dopasowaniu do sygnału przed budowaniem.",
     "uk": "Опишіть ідею проєкту — отримайте оцінку scope і signal-fit до початку розробки.",
+    "da": "Præsentér en projektidé og få feedback på omfang og signaltilpasning, før du bygger.",
     "ar": "اعرض فكرة مشروع واحصل على تغذية راجعة حول النطاق ومدى الملاءمة قبل البناء."
   },
   "project.ideaLbl": {
@@ -403,6 +431,7 @@
     "fr": "Idée de projet",
     "pl": "Pomysł na projekt",
     "uk": "Ідея проєкту",
+    "da": "Projektidé",
     "ar": "فكرة المشروع"
   },
   "project.ideaPh": {
@@ -417,6 +446,7 @@
     "fr": "\"Créez un CLI qui…\"",
     "pl": "\"Zbuduj CLI, które…\"",
     "uk": "\"Створити CLI, який…\"",
+    "da": "\"Byg en CLI, der…\"",
     "ar": "\"أبني أداة CLI تقوم بـ…\""
   },
   "project.roleLbl": {
@@ -431,6 +461,7 @@
     "fr": "Rôle cible (facultatif)",
     "pl": "Docelowa rola (opcjonalnie)",
     "uk": "Цільова роль (необов.)",
+    "da": "Mål-rolle (valgfrit)",
     "ar": "الدور المستهدف (اختياري)"
   },
   "project.rolePh": {
@@ -445,6 +476,7 @@
     "fr": "Ingénieur Backend Senior",
     "pl": "Starszy inżynier backendowy",
     "uk": "Senior Backend Engineer",
+    "da": "Senior Backend Engineer",
     "ar": "مهندس خلفية أول"
   },
   "project.ideaHint": {
@@ -459,6 +491,7 @@
     "fr": "Un paragraphe décrivant le projet : problème, surface et portée que vous avez en tête.",
     "pl": "Jeden akapit opisujący projekt: problem, powierzchnia, planowany zakres.",
     "uk": "Один абзац про проєкт: проблема, поверхня, передбачуваний scope.",
+    "da": "Ét afsnit, der beskriver projektet: problem, flade, det omfang du har i tankerne.",
     "ar": "فقرة واحدة تصف المشروع: المشكلة والواجهة والنطاق الذي تفكر فيه."
   },
   "project.roleHint": {
@@ -473,6 +506,7 @@
     "fr": "Facultatif — restreint les commentaires sur l'adéquation du signal vers cette famille de rôles.",
     "pl": "Opcjonalnie — zawęża opinię o dopasowaniu do sygnału do tej rodziny ról.",
     "uk": "Необов'язково — зосередить feedback на цій родині ролей.",
+    "da": "Valgfrit — indsnævrer feedback om signaltilpasning til denne rollefamilie.",
     "ar": "اختياري — يضيّق تغذية الملاءمة نحو هذه الفئة الوظيفية."
   },
   "training.title": {
@@ -487,6 +521,7 @@
     "fr": "Conseiller pour les cours / certifications",
     "pl": "Doradca kursów i certyfikatów",
     "uk": "Порадник з курсів / сертифікацій",
+    "da": "Rådgiver for kurser og certificeringer",
     "ar": "مستشار الدورات والشهادات"
   },
   "training.subtitle": {
@@ -501,6 +536,7 @@
     "fr": "Décidez si un cours ou une certification vaut le coup en fonction de vos objectifs.",
     "pl": "Oceń, czy kurs lub certyfikat jest wart Twojego czasu biorąc pod uwagę Twoje cele.",
     "uk": "Вирішіть, чи вартий курс або сертифікат ваших зусиль.",
+    "da": "Afgør, om et kursus eller en certificering er din tid værd ud fra dine mål.",
     "ar": "قرّر ما إذا كانت الدورة أو الشهادة تستحق وقتك بالنظر إلى أهدافك."
   },
   "training.courseLbl": {
@@ -515,6 +551,7 @@
     "fr": "Cours / certification",
     "pl": "Kurs / certyfikat",
     "uk": "Курс / сертифікація",
+    "da": "Kursus / certificering",
     "ar": "الدورة / الشهادة"
   },
   "training.coursePh": {
@@ -529,6 +566,7 @@
     "fr": "Certification d'architecture cloud",
     "pl": "Certyfikacja z architektury chmury",
     "uk": "Сертифікація з хмарної архітектури",
+    "da": "Certificering i cloud-arkitektur",
     "ar": "شهادة في هندسة السحابة"
   },
   "training.goalsLbl": {
@@ -543,6 +581,7 @@
     "fr": "Objectifs professionnels",
     "pl": "Cele zawodowe",
     "uk": "Кар'єрні цілі",
+    "da": "Karrieremål",
     "ar": "الأهداف المهنية"
   },
   "training.goalsPh": {
@@ -557,6 +596,7 @@
     "fr": "Quels sont vos objectifs pour les 12 prochains mois?",
     "pl": "Na co optimalizujesz przez najbliższe 12 miesięcy?",
     "uk": "Що ви оптимізуєте на горизонті 12 місяців?",
+    "da": "Hvad optimerer du for de næste 12 måneder?",
     "ar": "ما الذي تسعى لتحقيقه في الـ 12 شهرًا القادمة؟"
   },
   "training.courseHint": {
@@ -571,6 +611,7 @@
     "fr": "Nom exact tel que l'organisme le mentionne — améliore la comparaison.",
     "pl": "Dokładna nazwa używana przez wystawcę — poprawia sygnał porównania.",
     "uk": "Точна назва від провайдера — покращує signal порівняння.",
+    "da": "Det præcise navn, som udstederen bruger — forbedrer sammenligningssignalet.",
     "ar": "الاسم الدقيق كما تستخدمه الجهة المانحة — يحسّن دقة المقارنة."
   },
   "training.goalsHint": {
@@ -585,6 +626,7 @@
     "fr": "Salaire, rôle cible, géographie ou compétence spécifique à acquérir — le contexte guide le verdict.",
     "pl": "Widełki płacowe, docelowa rola, lokalizacja lub konkretna luka kompetencyjna — kontekst ukierunkowuje werdykt.",
     "uk": "Зарплатна вилка, цільова роль, географія або прогалина у навичках — контекст визначає вердикт.",
+    "da": "Lønbånd, mål-rolle, geografi eller en konkret kompetencekløft — kontekst styrer afgørelsen.",
     "ar": "نطاق الراتب أو الدور المستهدف أو الموقع الجغرافي أو الفجوة المهارية المحددة — السياق يوجّه الحكم."
   },
   "followup.title": {
@@ -599,6 +641,7 @@
     "fr": "Conseiller sur les rappels",
     "pl": "Doradca rytmu follow-up",
     "uk": "Порадник з ритму контактів",
+    "da": "Rådgiver for opfølgningsrytme",
     "ar": "مستشار جدول المتابعة"
   },
   "followup.subtitle": {
@@ -613,6 +656,7 @@
     "fr": "Quand relancer, quoi dire, quand abandonner. Calendrier par application.",
     "pl": "Kiedy napisać, co powiedzieć, kiedy odpuścić. Harmonogram dla każdej aplikacji.",
     "uk": "Коли нагадати, що писати, коли здатися. Таймінг для кожної заявки.",
+    "da": "Hvornår du skal følge op, hvad du skal sige, og hvornår du skal slippe. Timing pr. ansøgning.",
     "ar": "متى تُذكّر، وماذا تقول، ومتى تتوقف. توقيت لكل تقديم على حدة."
   },
   "followup.companyLbl": {
@@ -627,6 +671,7 @@
     "fr": "Entreprise",
     "pl": "Firma",
     "uk": "Компанія",
+    "da": "Virksomhed",
     "ar": "الشركة"
   },
   "followup.companyPh": {
@@ -641,6 +686,7 @@
     "fr": "Stripe",
     "pl": "Stripe",
     "uk": "Stripe",
+    "da": "Stripe",
     "ar": "Stripe"
   },
   "followup.roleLbl": {
@@ -655,6 +701,7 @@
     "fr": "Rôle",
     "pl": "Stanowisko",
     "uk": "Роль",
+    "da": "Rolle",
     "ar": "الدور"
   },
   "followup.rolePh": {
@@ -669,6 +716,7 @@
     "fr": "Ingénieur Backend Senior",
     "pl": "Starszy inżynier backendowy",
     "uk": "Senior Backend Engineer",
+    "da": "Senior Backend Engineer",
     "ar": "مهندس خلفية أول"
   },
   "followup.lastLbl": {
@@ -683,6 +731,7 @@
     "fr": "Dernier contact (date)",
     "pl": "Ostatni kontakt (data)",
     "uk": "Останній контакт (дата)",
+    "da": "Seneste kontakt (dato)",
     "ar": "آخر تواصل (التاريخ)"
   },
   "followup.lastErr": {
@@ -697,6 +746,7 @@
     "fr": "La date du dernier contact doit être au format ISO : AAAA-MM-JJ (par exemple 2026-05-19).",
     "pl": "Ostatni kontakt musi być datą ISO: YYYY-MM-DD (np. 2026-05-19).",
     "uk": "Останній контакт має бути датою ISO: РРРР-ММ-ДД (наприклад, 2026-05-19).",
+    "da": "Seneste kontakt skal være en ISO-dato: YYYY-MM-DD (f.eks. 2026-05-19).",
     "ar": "يجب أن يكون تاريخ آخر تواصل بتنسيق ISO: YYYY-MM-DD (مثال: 2026-05-19)."
   },
   "followup.lastPh": {
@@ -711,6 +761,7 @@
     "fr": "YYYY-MM-DD",
     "pl": "YYYY-MM-DD",
     "uk": "РРРР-ММ-ДД",
+    "da": "YYYY-MM-DD",
     "ar": "YYYY-MM-DD"
   },
   "followup.notesLbl": {
@@ -725,6 +776,7 @@
     "fr": "Remarques",
     "pl": "Notatki",
     "uk": "Нотатки",
+    "da": "Noter",
     "ar": "ملاحظات"
   },
   "followup.notesPh": {
@@ -739,6 +791,7 @@
     "fr": "Ils ont dit 1 à 2 semaines. Le recruteur est en congé.",
     "pl": "Powiedzieli 1-2 tygodnie. Rekruter jest na urlopie.",
     "uk": "Сказали 1-2 тижні. Рекрутер у відпустці.",
+    "da": "De sagde 1-2 uger. Rekrutteringskonsulenten er på ferie.",
     "ar": "قالوا 1-2 أسابيع. المسؤول في إجازة."
   },
   "followup.companyHint": {
@@ -753,6 +806,7 @@
     "fr": "Nom de l'entreprise dans votre suivi — utilisé pour définir le calendrier des rappels.",
     "pl": "Nazwa firmy z trackera — służy do doprecyzowania porady dotyczącej rytmu.",
     "uk": "Назва компанії з вашого трекера — задає область поради щодо ритму контактів.",
+    "da": "Virksomhedsnavn fra din tracker — bruges til at afgrænse rådet om rytme.",
     "ar": "اسم الشركة من المتتبع — يُستخدم لتحديد نطاق نصائح الجدول."
   },
   "followup.roleHint": {
@@ -767,6 +821,7 @@
     "fr": "Titre exact du poste tel que mentionné dans la description — important pour le ton du message.",
     "pl": "Dokładny tytuł stanowiska z JD — wpływa na ton wiadomości.",
     "uk": "Точна назва ролі з JD — впливає на тон повідомлення.",
+    "da": "Den præcise rolletitel fra jobopslaget — har betydning for tonen i beskeden.",
     "ar": "العنوان الدقيق للدور من JD — مهم لضبط نبرة الرسالة."
   },
   "followup.lastHint": {
@@ -781,6 +836,7 @@
     "fr": "Date ISO (AAAA-MM-JJ) — détermine les calculs de rappel.",
     "pl": "Data ISO (YYYY-MM-DD) — podstawa obliczeń rytmu.",
     "uk": "ISO-дата (РРРР-ММ-ДД) — основа для розрахунку ритму контактів.",
+    "da": "ISO-dato (YYYY-MM-DD) — driver beregningen af rytmen.",
     "ar": "تاريخ ISO (YYYY-MM-DD) — يُحرّك حسابات الجدول الزمني."
   },
   "followup.notesHint": {
@@ -795,6 +851,7 @@
     "fr": "Tout ce qu'ils vous ont dit : délai, pause interne, vacances — l'avis s'adaptera en conséquence.",
     "pl": "Cokolwiek Ci powiedzieli: harmonogram, wewnętrzne wstrzymanie, urlop — porada się dostosuje.",
     "uk": "Будь-яка інформація від них: терміни, внутрішня пауза, свята — порада адаптується.",
+    "da": "Alt hvad de fortalte dig: tidslinje, intern pause, ferie — rådet tilpasser sig.",
     "ar": "أي شيء أخبروك به: جدول زمني، توقف داخلي، عطلة — النصيحة ستتكيّف."
   },
   "batch.title": {
@@ -809,6 +866,7 @@
     "fr": "Évaluation par lots",
     "pl": "Ocena partiami",
     "uk": "Пакетна оцінка",
+    "da": "Batch-vurdering",
     "ar": "التقييم الدُفعي"
   },
   "batch.subtitle": {
@@ -823,6 +881,7 @@
     "fr": "Notez 10+ offres d'emploi à la fois via batch/batch-runner.sh — voir ",
     "pl": "Oceń 10+ JD naraz przez batch/batch-runner.sh — zobacz ",
     "uk": "Оцінка 10+ JD за раз через batch/batch-runner.sh — дивіться ",
+    "da": "Vurdér 10+ jobopslag på én gang via batch/batch-runner.sh — se ",
     "ar": "قيّم أكثر من 10 JDs دفعةً واحدة عبر batch/batch-runner.sh — انظر "
   },
   "batch.urlsLbl": {
@@ -837,6 +896,7 @@
     "fr": "URLs (une par ligne)",
     "pl": "URL-e (jeden w wierszu)",
     "uk": "URL-и (по одному на рядок)",
+    "da": "URL'er (én pr. linje)",
     "ar": "الروابط (واحد في كل سطر)"
   },
   "batch.urlsPh": {
@@ -851,6 +911,7 @@
     "fr": "https://…\nhttps://…",
     "pl": "https://…\nhttps://…",
     "uk": "https://…\nhttps://…",
+    "da": "https://…\nhttps://…",
     "ar": "https://…\nhttps://…"
   },
   "batch.workersLbl": {
@@ -865,6 +926,7 @@
     "fr": "Workers en parallèle (par défaut 4)",
     "pl": "Równoległe procesy (domyślnie 4)",
     "uk": "Паралельні воркери (за замовч. 4)",
+    "da": "Parallelle processer (standard 4)",
     "ar": "العمال المتوازيون (الافتراضي 4)"
   },
   "batch.workersPh": {
@@ -879,6 +941,7 @@
     "fr": "4",
     "pl": "4",
     "uk": "4",
+    "da": "4",
     "ar": "4"
   },
   "batch.minScorePh": {
@@ -893,6 +956,7 @@
     "fr": "score minimal (ex. 4,0)",
     "pl": "minimalny wynik (np. 4.0)",
     "uk": "мін. score (напр. 4.0)",
+    "da": "min. score (f.eks. 4.0)",
     "ar": "الحد الأدنى للنتيجة (مثال: 4.0)"
   },
   "batch.maxRetriesPh": {
@@ -907,6 +971,7 @@
     "fr": "(par défaut 2)",
     "pl": "(domyślnie 2)",
     "uk": "(за замовч. 2)",
+    "da": "(standard 2)",
     "ar": "(الافتراضي 2)"
   },
   "batch.modelPh": {
@@ -921,6 +986,7 @@
     "fr": "(Claude Max par défaut)",
     "pl": "(domyślnie Claude Max)",
     "uk": "(за замовч. Claude Max)",
+    "da": "(Claude Max standard)",
     "ar": "(Claude Max افتراضيًا)"
   },
   "batch.startFromPh": {
@@ -935,6 +1001,7 @@
     "fr": "(à partir du #1)",
     "pl": "(od #1)",
     "uk": "(з #1)",
+    "da": "(fra #1)",
     "ar": "(من #1)"
   },
   "batch.urlsHint": {
@@ -949,6 +1016,7 @@
     "fr": "Une URL d'emploi par ligne — le runner évalue chacune en parallèle.",
     "pl": "Jeden URL oferty w wierszu — runner ocenia każdy równolegle.",
     "uk": "Один URL на рядок — runner оцінює кожен паралельно.",
+    "da": "Én job-URL pr. linje — runneren vurderer hver enkelt parallelt.",
     "ar": "رابط وظيفة واحد في كل سطر — يقيّم المشغّل كلًا منها بالتوازي."
   },
   "batch.workersHint": {
@@ -963,6 +1031,7 @@
     "fr": "Nombre de travailleurs simultanés — trop élevé et vous atteignez les limites des taux LLM, trop bas et cela prend des heures.",
     "pl": "Liczba równoległych workerów — zbyt duża uderza w limity LLM, zbyt mała zajmuje godziny.",
     "uk": "Кількість паралельних воркерів — забагато упреться в rate limit LLM, замало — займе години.",
+    "da": "Antal samtidige workers — for højt rammer LLM'ens rate-grænser, for lavt tager timer.",
     "ar": "عدد العمال المتزامنين — الكثير يصطدم بحدود LLM، والقليل يستغرق ساعات."
   },
   "contacto.title": {
@@ -977,6 +1046,7 @@
     "fr": "Contact LinkedIn",
     "pl": "Outreach na LinkedIn",
     "uk": "Аутріч через LinkedIn",
+    "da": "LinkedIn-outreach",
     "ar": "التواصل عبر LinkedIn"
   },
   "contacto.subtitle": {
@@ -991,6 +1061,7 @@
     "fr": "Trouvez le bon contact dans une entreprise cible et rédigez le message.",
     "pl": "Znajdź właściwą osobę w docelowej firmie i przygotuj wiadomość.",
     "uk": "Знайти потрібний контакт у цільовій компанії та скласти повідомлення.",
+    "da": "Find den rette kontakt i en målvirksomhed og udform beskeden.",
     "ar": "ابحث عن الشخص المناسب في الشركة المستهدفة وصِغ الرسالة."
   },
   "contacto.recipientLbl": {
@@ -1005,6 +1076,7 @@
     "fr": "Nom du destinataire (facultatif)",
     "pl": "Imię i nazwisko odbiorcy (opcjonalnie)",
     "uk": "Ім'я одержувача (необов.)",
+    "da": "Modtagerens navn (valgfrit)",
     "ar": "اسم المستلم (اختياري)"
   },
   "contacto.recipientPh": {
@@ -1019,6 +1091,7 @@
     "fr": "Jane Doe",
     "pl": "Jan Kowalski",
     "uk": "Jane Doe",
+    "da": "Jane Doe",
     "ar": "Jane Doe"
   },
   "contacto.companyLbl": {
@@ -1033,6 +1106,7 @@
     "fr": "Société",
     "pl": "Firma",
     "uk": "Компанія",
+    "da": "Virksomhed",
     "ar": "الشركة"
   },
   "contacto.companyPh": {
@@ -1047,6 +1121,7 @@
     "fr": "Stripe",
     "pl": "Stripe",
     "uk": "Stripe",
+    "da": "Stripe",
     "ar": "Stripe"
   },
   "contacto.roleLbl": {
@@ -1061,6 +1136,7 @@
     "fr": "Poste (facultatif)",
     "pl": "Stanowisko (opcjonalnie)",
     "uk": "Роль (необов.)",
+    "da": "Rolle (valgfrit)",
     "ar": "الدور (اختياري)"
   },
   "contacto.rolePh": {
@@ -1075,6 +1151,7 @@
     "fr": "Ingénieur Backend Sénior",
     "pl": "Starszy inżynier backendowy",
     "uk": "Senior Backend Engineer",
+    "da": "Senior Backend Engineer",
     "ar": "مهندس خلفية أول"
   },
   "contacto.contextLbl": {
@@ -1089,6 +1166,7 @@
     "fr": "Contexte",
     "pl": "Kontekst",
     "uk": "Контекст",
+    "da": "Kontekst",
     "ar": "السياق"
   },
   "contacto.contextPh": {
@@ -1103,6 +1181,7 @@
     "fr": "Pourquoi écrivez-vous ? Quel est votre angle ?",
     "pl": "Dlaczego piszesz? Jaki jest cel?",
     "uk": "Навіщо пишете? Який кут?",
+    "da": "Hvorfor henvender du dig? Hvad er vinklen?",
     "ar": "لماذا تتواصل؟ ما زاوية الاتصال؟"
   },
   "contacto.recipientHint": {
@@ -1117,6 +1196,7 @@
     "fr": "Laissez vide si vous ne le savez pas encore — la suggestion ciblera les profils appropriés.",
     "pl": "Zostaw puste, jeśli jeszcze nie wiesz — prompt zasugeruje docelowe persony.",
     "uk": "Залиште порожнім, якщо ще не знаєте — промпт запропонує target-персони.",
+    "da": "Lad feltet stå tomt, hvis du ikke ved det endnu — prompten foreslår mål-personaer.",
     "ar": "اتركه فارغًا إن لم تعرف بعد — سيقترح الأمر شخصيات مستهدفة."
   },
   "contacto.companyHint": {
@@ -1131,6 +1211,7 @@
     "fr": "Aide à trouver un profil d'employé pertinent pour l'adresse.",
     "pl": "Pomaga promptowi znaleźć odpowiedni profil pracownika do zaadresowania.",
     "uk": "Допомагає промпту знайти відповідний профіль співробітника для звернення.",
+    "da": "Hjælper prompten med at finde en relevant medarbejderprofil at henvende sig til.",
     "ar": "يساعد الأمر على إيجاد ملف موظف ذي صلة لمخاطبته."
   },
   "contacto.roleHint": {
@@ -1145,6 +1226,7 @@
     "fr": "Facultatif — le poste spécifique que vous souhaitez interroger.",
     "pl": "Opcjonalnie — konkretne stanowisko, o które chcesz zapytać.",
     "uk": "Необов'язково — конкретна роль для запитання.",
+    "da": "Valgfrit — den specifikke rolle, du vil spørge om.",
     "ar": "اختياري — الدور المحدد الذي تريد السؤال عنه."
   },
   "contacto.contextHint": {
@@ -1159,6 +1241,7 @@
     "fr": "Pourquoi écrivez-vous ? Référence interne ? Contact froid ? Introduction chaleureuse ? Cela détermine le ton de votre message.",
     "pl": "Powód pisania — polecenie wewnętrzne? zimny kontakt? ciepłe intro? — wpływa na ton.",
     "uk": "Навіщо пишете — внутрішній реф? cold? warm intro? — задає тон.",
+    "da": "Hvorfor du skriver — intern henvisning? kold kontakt? varm introduktion? — styrer tonen.",
     "ar": "سبب كتابتك — إحالة داخلية؟ تواصل بارد؟ مقدمة دافئة؟ — يحدد النبرة."
   },
   "interviewPrep.title": {
@@ -1173,6 +1256,7 @@
     "fr": "Préparation à l'entretien",
     "pl": "Przygotowanie do rozmowy",
     "uk": "Підготовка до інтерв'ю",
+    "da": "Interviewforberedelse",
     "ar": "التحضير للمقابلة"
   },
   "interviewPrep.subtitle": {
@@ -1187,6 +1271,7 @@
     "fr": "Préparation spécifique au stade d'un entretien connu.",
     "pl": "Przygotowanie do konkretnego etapu rozmowy kwalifikacyjnej.",
     "uk": "Підготовка під конкретний етап інтерв'ю.",
+    "da": "Etapespecifik forberedelse til et kendt interviewtidspunkt.",
     "ar": "تحضير محدد للمرحلة لموعد مقابلة معروف."
   },
   "interviewPrep.companyLbl": {
@@ -1201,6 +1286,7 @@
     "fr": "Société",
     "pl": "Firma",
     "uk": "Компанія",
+    "da": "Virksomhed",
     "ar": "الشركة"
   },
   "interviewPrep.companyPh": {
@@ -1215,6 +1301,7 @@
     "fr": "Stripe",
     "pl": "Stripe",
     "uk": "Stripe",
+    "da": "Stripe",
     "ar": "Stripe"
   },
   "interviewPrep.roleLbl": {
@@ -1229,6 +1316,7 @@
     "fr": "Poste",
     "pl": "Stanowisko",
     "uk": "Роль",
+    "da": "Rolle",
     "ar": "الدور"
   },
   "interviewPrep.rolePh": {
@@ -1243,6 +1331,7 @@
     "fr": "Ingénieur Backend Sénior",
     "pl": "Starszy inżynier backendowy",
     "uk": "Senior Backend Engineer",
+    "da": "Senior Backend Engineer",
     "ar": "مهندس خلفية أول"
   },
   "interviewPrep.stageLbl": {
@@ -1257,6 +1346,7 @@
     "fr": "Stade (entretien initial / conception système / comportemental / final)",
     "pl": "Etap (rozmowa z rekruterem / projektowanie systemu / pytania behawioralne / finał)",
     "uk": "Етап (дзвінок з рекрутером / system design / поведінкове / фінал)",
+    "da": "Etape (rekrutteringssamtale / systemdesign / adfærdsbaseret / sidste)",
     "ar": "المرحلة (مقابلة المسؤول / تصميم النظام / سلوكية / نهائية)"
   },
   "interviewPrep.stagePh": {
@@ -1271,6 +1361,7 @@
     "fr": "conception système",
     "pl": "projektowanie systemu",
     "uk": "system design",
+    "da": "systemdesign",
     "ar": "تصميم النظام"
   },
   "interviewPrep.companyHint": {
@@ -1285,6 +1376,7 @@
     "fr": "Reprend les correspondances du CV et les rapports récents de votre suivi pour le bref.",
     "pl": "Pobiera dopasowanie CV i ostatnie raporty z trackera do briefu.",
     "uk": "Підтягує відповідність CV і останні звіти з вашого трекера для брифу.",
+    "da": "Henter cv-match og seneste rapporter fra din tracker til briefingen.",
     "ar": "يسحب تطابق CV والتقارير الأخيرة من متتبعك للملخص."
   },
   "interviewPrep.roleHint": {
@@ -1299,6 +1391,7 @@
     "fr": "Titre exact — restreint le bref au bon niveau + portée.",
     "pl": "Dokładny tytuł — zawęża brief do właściwego szczebla i zakresu.",
     "uk": "Точна назва — звужує бриф до правильного рівня та scope.",
+    "da": "Den præcise titel — indsnævrer briefingen til det rette niveau og omfang.",
     "ar": "العنوان الدقيق — يضيّق الملخص نحو السلّم والنطاق الصحيح."
   },
   "interviewPrep.stageHint": {
@@ -1313,6 +1406,7 @@
     "fr": "Le stade détermine la forme du bref : conception système, comportemental, discussion sur les salaires, etc.",
     "pl": "Etap decyduje o kształcie briefu: projektowanie systemu, pytania behawioralne, rozmowa o wynagrodzeniu itp.",
     "uk": "Етап визначає форму брифу: system design, поведінкове, обговорення компенсації тощо.",
+    "da": "Etapen styrer briefingens form: systemdesign, adfærd, lønforhandling osv.",
     "ar": "المرحلة تحدد شكل الملخص: تصميم النظام، سلوكية، حديث التعويض، إلخ."
   },
   "patterns.title": {
@@ -1327,6 +1421,7 @@
     "fr": "Modèles de refus",
     "pl": "Wzorce odrzuceń",
     "uk": "Патерни відмов",
+    "da": "Afslagsmønstre",
     "ar": "أنماط الرفض"
   },
   "patterns.subtitle": {
@@ -1341,6 +1436,7 @@
     "fr": "Repérez les points faibles récurrents dans vos candidatures passées et affinez votre ciblage.",
     "pl": "Wykryj powtarzające się słabe punkty w poprzednich aplikacjach i popraw targetowanie.",
     "uk": "Виявіть recurring слабкі місця в минулих заявках і покращіть таргетинг.",
+    "da": "Find tilbagevendende svage punkter på tværs af tidligere ansøgninger og skærp din målretning.",
     "ar": "اكتشف نقاط الضعف المتكررة في طلباتك السابقة وحسّن الاستهداف."
   },
   "patterns.windowLbl": {
@@ -1355,6 +1451,7 @@
     "fr": "Période (par ex. 30j, 6m, tout)",
     "pl": "Przedział czasowy (np. 30d, 6m, all)",
     "uk": "Часове вікно (напр. 30d, 6m, all)",
+    "da": "Tidsvindue (f.eks. 30d, 6m, all)",
     "ar": "النافذة الزمنية (مثال: 30d, 6m, all)"
   },
   "patterns.windowPh": {
@@ -1369,6 +1466,7 @@
     "fr": "90d",
     "pl": "90d",
     "uk": "90d",
+    "da": "90d",
     "ar": "90d"
   },
   "patterns.focusLbl": {
@@ -1383,6 +1481,7 @@
     "fr": "Focus spécifique (facultatif)",
     "pl": "Konkretny fokus (opcjonalnie)",
     "uk": "Конкретний фокус (необов.)",
+    "da": "Specifikt fokus (valgfrit)",
     "ar": "تركيز محدد (اختياري)"
   },
   "patterns.focusPh": {
@@ -1397,6 +1496,7 @@
     "fr": "Refus de salaire, abandon des tests à domicile, fantômer du recruteur…",
     "pl": "Odrzucenia wynagrodzenia, rezygnacje po zadaniu domowym, ghostowanie rekrutera…",
     "uk": "Відмови через компенсацію, провали після тестового, ігнорування рекрутерів…",
+    "da": "Lønafslag, frafald på hjemmeopgaver, ghosting fra rekrutteringskonsulenter…",
     "ar": "رفض التعويض، التسرب عند المهام المنزلية، تجاهل المسؤولين…"
   },
   "patterns.windowHint": {
@@ -1411,6 +1511,7 @@
     "fr": "Combien de jours d'historique scanner : 30 / 60 / 90 / 180 / tout. Par défaut à 90.",
     "pl": "Ile dni historii przeskanować: 30 / 60 / 90 / 180 / all. Domyślnie 90.",
     "uk": "Скільки днів історії сканувати: 30 / 60 / 90 / 180 / all. За замовчуванням 90.",
+    "da": "Hvor mange dages historik der skal scannes: 30 / 60 / 90 / 180 / all. Standard er 90.",
     "ar": "عدد أيام السجل للمسح: 30 / 60 / 90 / 180 / الكل. الافتراضي 90."
   },
   "patterns.focusHint": {
@@ -1425,6 +1526,7 @@
     "fr": "Facultatif — restreint le rapport à un mode de défaillance spécifique que vous soupçonnez.",
     "pl": "Opcjonalnie — zawęź raport do konkretnego trybu awarii, który podejrzewasz.",
     "uk": "Необов'язково — звужує звіт до конкретного режиму відмов, який ви підозрюєте.",
+    "da": "Valgfrit — afgræns rapporten til en bestemt fejltype, du har mistanke om.",
     "ar": "اختياري — يضيّق التقرير نحو نمط فشل محدد تشك فيه."
   },
   "nav.activity": {
@@ -1439,6 +1541,7 @@
     "fr": "Activité",
     "pl": "Aktywność",
     "uk": "Активність",
+    "da": "Aktivitet",
     "ar": "النشاط"
   },
   "help.title": {
@@ -1453,6 +1556,7 @@
     "fr": "Aide",
     "pl": "Pomoc",
     "uk": "Довідка",
+    "da": "Hjælp",
     "ar": "المساعدة"
   },
   "help.subtitle": {
@@ -1467,6 +1571,7 @@
     "fr": "Guide étape par étape de chaque page.",
     "pl": "Krok po kroku przez każdą stronę.",
     "uk": "Покроковий огляд кожної сторінки.",
+    "da": "Trin-for-trin gennemgang af hver side.",
     "ar": "شرح خطوة بخطوة لكل صفحة."
   },
   "help.toc": {
@@ -1481,6 +1586,7 @@
     "fr": "Sur cette page",
     "pl": "Na tej stronie",
     "uk": "На цій сторінці",
+    "da": "På denne side",
     "ar": "في هذه الصفحة"
   },
   "help.tocFilter": {
@@ -1495,6 +1601,7 @@
     "fr": "Filtrer les sections",
     "pl": "Filtruj sekcje",
     "uk": "Фільтр розділів",
+    "da": "Filtrér sektioner",
     "ar": "تصفية الأقسام"
   },
   "help.backToTop": {
@@ -1509,6 +1616,7 @@
     "fr": "Retour en haut",
     "pl": "Powrót na górę",
     "uk": "Вгору",
+    "da": "Tilbage til toppen",
     "ar": "العودة إلى الأعلى"
   },
   "nav.config": {
@@ -1523,6 +1631,7 @@
     "fr": "Paramètres de l'application",
     "pl": "Ustawienia aplikacji",
     "uk": "Налаштування застосунку",
+    "da": "App-indstillinger",
     "ar": "إعدادات التطبيق"
   },
   "config.title": {
@@ -1537,6 +1646,7 @@
     "fr": "Paramètres de l'application",
     "pl": "Ustawienia aplikacji",
     "uk": "Налаштування застосунку",
+    "da": "App-indstillinger",
     "ar": "إعدادات التطبيق"
   },
   "config.subtitle": {
@@ -1551,6 +1661,7 @@
     "fr": "Clés d'API + paramètres du scanner. Enregistré dans",
     "pl": "Klucze API i parametry skanera. Zapisywane do",
     "uk": "API-ключі та параметри сканера. Збережено до",
+    "da": "API-nøgler + scanner-indstillinger. Gemmes til",
     "ar": "مفاتيح API وضبط الماسح. محفوظ في"
   },
   "config.bannerTitle": {
@@ -1565,6 +1676,7 @@
     "fr": "Les deux projets récupèrent cela",
     "pl": "Oba projekty korzystają z tych ustawień",
     "uk": "Обидва проєкти використовують це",
+    "da": "Begge projekter bruger dette",
     "ar": "كلا المشروعين يقرآن هذا"
   },
   "config.bannerBody": {
@@ -1579,6 +1691,7 @@
     "fr": "Les valeurs enregistrées se retrouvent dans le fichier .env parent, donc les scripts Node de career-ops ET l'interface web (via dotenv loader) lisent la même source. Aucun redémarrage n'est nécessaire.",
     "pl": "Zapisane wartości trafiają do .env nadrzędnego projektu, więc skrypty Node career-ops I web-ui (przez moduł dotenv) czytają to samo źródło. Restart nie jest wymagany.",
     "uk": "Збережені значення потрапляють у батьківський .env, тож скрипти career-ops Node І web-ui (через dotenv loader) читають одне джерело. Перезапуск не потрібен.",
+    "da": "Gemte værdier lander i det overordnede projekts .env, så career-ops Node-scripts OG web-ui (via dotenv-loader) læser den samme kilde. Ingen genstart nødvendig.",
     "ar": "القيم المحفوظة تُكتب في ملف .env الأصلي، لذا تقرأ نصوص career-ops وweb-ui (عبر محمّل dotenv) من المصدر ذاته. لا يلزم إعادة التشغيل."
   },
   "config.saved": {
@@ -1593,6 +1706,7 @@
     "fr": "Paramètres enregistrés",
     "pl": "Ustawienia zapisane",
     "uk": "Налаштування збережено",
+    "da": "Indstillinger gemt",
     "ar": "تم حفظ الإعدادات"
   },
   "config.groupCore": {
@@ -1607,6 +1721,7 @@
     "fr": "Clés d'API",
     "pl": "Klucze API",
     "uk": "API-ключі",
+    "da": "API-nøgler",
     "ar": "مفاتيح API"
   },
   "config.groupRuntime": {
@@ -1621,6 +1736,7 @@
     "fr": "Exécution",
     "pl": "Środowisko wykonawcze",
     "uk": "Середовище виконання",
+    "da": "Runtime",
     "ar": "وقت التشغيل"
   },
   "config.groupRegional": {
@@ -1635,6 +1751,7 @@
     "fr": "Sources régionales",
     "pl": "Źródła regionalne",
     "uk": "Регіональні джерела",
+    "da": "Regionale kilder",
     "ar": "المصادر الإقليمية"
   },
   "config.profileEmpty": {
@@ -1649,6 +1766,7 @@
     "fr": "Le profil YAML est vide",
     "pl": "Profil YAML jest pusty",
     "uk": "YAML профілю порожній",
+    "da": "Profil-YAML er tom",
     "ar": "ملف YAML للملف الشخصي فارغ"
   },
   "config.rawConfirmTitle": {
@@ -1663,6 +1781,7 @@
     "fr": "Écraser tout le fichier ?",
     "pl": "Nadpisać cały plik?",
     "uk": "Перезаписати весь файл?",
+    "da": "Overskriv hele filen?",
     "ar": "الكتابة فوق الملف بأكمله؟"
   },
   "config.rawConfirmOk": {
@@ -1677,6 +1796,7 @@
     "fr": "Écraser",
     "pl": "Nadpisz",
     "uk": "Перезаписати",
+    "da": "Overskriv",
     "ar": "الكتابة فوقه"
   },
   "config.profileRawConfirmBody": {
@@ -1691,6 +1811,7 @@
     "fr": "Cela remplace TOUT le fichier config/profile.yml dans le projet parent par le texte ci-dessus. Toutes les clés non affichées ici seront perdues. Continuer ?",
     "pl": "To zastąpi CAŁY plik config/profile.yml w projekcie nadrzędnym powyższym tekstem. Klucze niewidoczne tutaj zostaną utracone. Kontynuować?",
     "uk": "Це замінить УВЕСЬ файл config/profile.yml у батьківському проєкті текстом вище. Будь-які ключі, не показані тут, буде втрачено. Продовжити?",
+    "da": "Dette erstatter HELE config/profile.yml i det overordnede projekt med teksten ovenfor. Nøgler, der ikke vises her, går tabt. Fortsæt?",
     "ar": "سيحل هذا محل ملف config/profile.yml بأكمله في المشروع الأصلي بالنص أعلاه. أي مفاتيح غير ظاهرة هنا ستُفقد. المتابعة؟"
   },
   "config.modesRawConfirmBody": {
@@ -1705,6 +1826,7 @@
     "fr": "Cela remplace TOUT le fichier modes/_profile.md dans le projet parent par le texte ci-dessus. Les sections non affichées ici seront perdues. Continuer ?",
     "pl": "To zastąpi CAŁY plik modes/_profile.md w projekcie nadrzędnym powyższym tekstem. Sekcje niewidoczne tutaj zostaną utracone. Kontynuować?",
     "uk": "Це замінить УВЕСЬ файл modes/_profile.md у батьківському проєкті текстом вище. Розділи, не показані тут, буде втрачено. Продовжити?",
+    "da": "Dette erstatter HELE modes/_profile.md i det overordnede projekt med teksten ovenfor. Sektioner, der ikke vises her, går tabt. Fortsæt?",
     "ar": "سيحل هذا محل ملف modes/_profile.md بأكمله في المشروع الأصلي بالنص أعلاه. الأقسام غير الظاهرة هنا ستُفقد. المتابعة؟"
   },
   "config.viewProfile": {
@@ -1719,6 +1841,7 @@
     "fr": "Afficher la vue d'ensemble en lecture seule →",
     "pl": "Zobacz podsumowanie tylko do odczytu →",
     "uk": "Переглянути зведення лише для читання →",
+    "da": "Vis skrivebeskyttet oversigt →",
     "ar": "عرض الملخص للقراءة فقط ←"
   },
   "config.gotoHealth": {
@@ -1733,6 +1856,7 @@
     "fr": "Vérifier sur Health",
     "pl": "Zweryfikuj w Health",
     "uk": "Перевірити в Health",
+    "da": "Bekræft på Health",
     "ar": "التحقق في الصحة"
   },
   "config.llmProvider": {
@@ -1747,6 +1871,7 @@
     "fr": "Fournisseur LLM",
     "pl": "Dostawca LLM",
     "uk": "Провайдер LLM",
+    "da": "LLM-udbyder",
     "ar": "مزوّد LLM"
   },
   "config.llmProviderHint": {
@@ -1761,6 +1886,7 @@
     "fr": "auto = utiliser la clé définie, préférant Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = forcer celui-ci. Un fournisseur forcé sans clé → remplacement par un prompt manuel.",
     "pl": "auto = użyj whichever klucz jest ustawiony, preferując Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = wymuś ten jeden. Wymuszony dostawca bez klucza → fallback do ręcznego promptu.",
     "uk": "auto = використовувати будь-який встановлений ключ, перевага Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = примусово вибрати. Примусовий провайдер без ключа → ручний режим промптів.",
+    "da": "auto = brug den nøgle der er sat, med præference for Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = tving denne ene. En tvungen udbyder uden nøgle → fallback til manuel prompt.",
     "ar": "auto = استخدام أي مفتاح متاح، مع تفضيل Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = إجبار هذا المزوّد. مزوّد مجبر بدون مفتاح → وضع الأمر اليدوي."
   },
   "config.providerModelNote": {
@@ -1775,6 +1901,7 @@
     "fr": "career-ops est indépendant de la CLI — vous l'exécutez à l'intérieur d'une quelconque interface CLI AI (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi), chacune avec son propre login. Cette interface web est séparée : ses évaluations en direct ⚡ s'exécutent sans interface et utilisent votre clé API Anthropic ou Gemini ci-dessous. La clé/model OpenAI sont stockés pour le flux Codex/OpenAI CLI parent — non utilisés par l'interface web elle-même.",
     "pl": "career-ops jest niezależny od CLI — uruchamiasz go w dowolnym AI coding CLI (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi), każdym z własnym logowaniem. To web UI jest osobne: jego ⚡ ocena na żywo działa bezgłowo i używa Twojego klucza API Anthropic lub Gemini poniżej. Klucz/model OpenAI są przechowywane dla przepływu Codex/OpenAI CLI nadrzędnego — web UI ich nie używa.",
     "uk": "career-ops агностичний до CLI — ви запускаєте його в будь-якому AI coding CLI (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi), кожен зі своїм входом. Цей web UI окремий: його ⚡ live eval запускається headless і використовує ваш ключ Anthropic або Gemini нижче. Ключ/модель OpenAI зберігаються для батьківського Codex/OpenAI CLI — web UI їх не використовує.",
+    "da": "career-ops er CLI-agnostisk — du kører det i enhver AI-coding-CLI (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi), hver med sit eget login. Denne web-UI er adskilt: dens ⚡ live-vurdering kører headless og bruger din Anthropic- eller Gemini-API-nøgle nedenfor. OpenAI-nøglen/-modellen gemmes til det overordnede Codex/OpenAI CLI-flow — bruges ikke af web-UI'en selv.",
     "ar": "career-ops محايد للأداة — يمكنك تشغيله داخل أي أداة برمجة ذكاء اصطناعي (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi)، لكل منها تسجيل دخول خاص بها. واجهة الويب هذه منفصلة: تقييمها المباشر ⚡ يعمل بدون واجهة ويستخدم مفتاح Anthropic أو Gemini API أدناه. مفتاح/نموذج OpenAI مخزّن لتدفق Codex/OpenAI CLI الأصلي — غير مستخدم من واجهة الويب نفسها."
   },
   "config.openaiKey": {
@@ -1789,6 +1916,7 @@
     "fr": "OPENAI_API_KEY",
     "pl": "OPENAI_API_KEY",
     "uk": "OPENAI_API_KEY",
+    "da": "OPENAI_API_KEY",
     "ar": "OPENAI_API_KEY"
   },
   "config.openaiHint": {
@@ -1803,6 +1931,7 @@
     "fr": "platform.openai.com → Clés d'API. v1.55.0 : exécute également l'évaluation en direct de l'interface web (3e dans l'ordre automatique, après Anthropic & Gemini) ; toujours lu par le flux Codex/OpenAI CLI parent aussi.",
     "pl": "platform.openai.com → API keys. v1.55.0: obsługuje też ocenę na żywo web-ui (3. w kolejności auto, po Anthropic i Gemini); nadal odczytywany przez przepływ Codex/OpenAI CLI nadrzędnego.",
     "uk": "platform.openai.com → API keys. v1.55.0: також запускає live eval web-ui (3-й у порядку auto, після Anthropic & Gemini); також читається батьківським Codex/OpenAI CLI.",
+    "da": "platform.openai.com → API keys. v1.55.0: kører også web-ui live-vurderingen (3. i auto-rækkefølgen, efter Anthropic og Gemini); læses stadig af det overordnede Codex/OpenAI CLI-flow.",
     "ar": "platform.openai.com → مفاتيح API. v1.55.0: يشغّل أيضًا التقييم المباشر لواجهة الويب (الثالث في الترتيب التلقائي، بعد Anthropic وGemini)؛ لا يزال يُقرأ أيضًا بواسطة تدفق Codex/OpenAI CLI الأصلي."
   },
   "config.anthropicKey": {
@@ -1817,6 +1946,7 @@
     "fr": "Clé API Anthropic (Claude)",
     "pl": "Klucz API Anthropic (Claude)",
     "uk": "Anthropic API key (Claude)",
+    "da": "Anthropic API-nøgle (Claude)",
     "ar": "مفتاح Anthropic API (Claude)"
   },
   "config.anthropicHint": {
@@ -1831,6 +1961,7 @@
     "fr": "Obtenez-en une sur console.anthropic.com → Clés d'API. Quand définie, \"⚡ Exécuter en direct\" exécute les prompts via Claude.",
     "pl": "Uzyskaj na console.anthropic.com → API keys. Po ustawieniu \"⚡ Uruchom na żywo\" wykonuje prompty przez Claude.",
     "uk": "Отримайте на console.anthropic.com → API keys. Коли встановлено, \"⚡ Запустити наживо\" виконує промпти через Claude.",
+    "da": "Få en på console.anthropic.com → API keys. Når den er sat, kører \"⚡ Kør live\" prompts via Claude.",
     "ar": "احصل على مفتاح من console.anthropic.com → مفاتيح API. عند الضبط، يُنفّذ \"⚡ تشغيل مباشر\" الأوامر عبر Claude."
   },
   "config.anthropicModel": {
@@ -1845,6 +1976,7 @@
     "fr": "Modèle Anthropic",
     "pl": "Model Anthropic",
     "uk": "Модель Anthropic",
+    "da": "Anthropic-model",
     "ar": "نموذج Anthropic"
   },
   "config.anthropicModelHint": {
@@ -1859,6 +1991,7 @@
     "fr": "Par défaut : claude-sonnet-4-6. Autres options : claude-opus-4-7, claude-haiku-4-5.",
     "pl": "Domyślnie: claude-sonnet-4-6. Inne opcje: claude-opus-4-7, claude-haiku-4-5.",
     "uk": "За замовчуванням: claude-sonnet-4-6. Інші варіанти: claude-opus-4-7, claude-haiku-4-5.",
+    "da": "Standard: claude-sonnet-4-6. Andre muligheder: claude-opus-4-7, claude-haiku-4-5.",
     "ar": "الافتراضي: claude-sonnet-4-6. خيارات أخرى: claude-opus-4-7، claude-haiku-4-5."
   },
   "config.geminiKey": {
@@ -1873,6 +2006,7 @@
     "fr": "Clé API Gemini (de secours)",
     "pl": "Klucz API Gemini (fallback)",
     "uk": "Gemini API key (резервний)",
+    "da": "Gemini API-nøgle (fallback)",
     "ar": "مفتاح Gemini API (بديل)"
   },
   "config.geminiHint": {
@@ -1887,6 +2021,7 @@
     "fr": "Niveau gratuit sur aistudio.google.com/apikey. Utilisé comme de secours quand Anthropic n'est pas défini.",
     "pl": "Bezpłatny tier na aistudio.google.com/apikey. Używany jako fallback gdy Anthropic nie jest ustawiony.",
     "uk": "Безкоштовний рівень на aistudio.google.com/apikey. Використовується як резерв, коли Anthropic не встановлено.",
+    "da": "Gratis niveau på aistudio.google.com/apikey. Bruges som fallback, når Anthropic ikke er sat.",
     "ar": "المستوى المجاني على aistudio.google.com/apikey. يُستخدم بديلًا عند عدم ضبط Anthropic."
   },
   "config.geminiModel": {
@@ -1901,6 +2036,7 @@
     "fr": "Modèle Gemini",
     "pl": "Model Gemini",
     "uk": "Модель Gemini",
+    "da": "Gemini-model",
     "ar": "نموذج Gemini"
   },
   "config.geminiModelHint": {
@@ -1915,6 +2051,7 @@
     "fr": "Par défaut : gemini-2.0-flash.",
     "pl": "Domyślnie: gemini-2.0-flash.",
     "uk": "За замовчуванням: gemini-2.0-flash.",
+    "da": "Standard: gemini-2.0-flash.",
     "ar": "الافتراضي: gemini-2.0-flash."
   },
   "config.openaiModel": {
@@ -1929,6 +2066,7 @@
     "fr": "Modèle OpenAI / Codex",
     "pl": "Model OpenAI / Codex",
     "uk": "Модель OpenAI / Codex",
+    "da": "OpenAI / Codex-model",
     "ar": "نموذج OpenAI / Codex"
   },
   "config.openaiModelHint": {
@@ -1943,6 +2081,7 @@
     "fr": "Par défaut : gpt-5-codex. gpt-5 / gpt-5-mini pour un usage général ; o4-mini / o3 pour la réflexion. Utilisé par l'évaluation en direct de l'interface web OpenAI et le flux Codex/OpenAI CLI parent.",
     "pl": "Domyślnie: gpt-5-codex. gpt-5 / gpt-5-mini do ogólnego użytku; o4-mini / o3 do rozumowania. Używany przez ocenę na żywo OpenAI web-ui i przepływ Codex/OpenAI CLI nadrzędnego.",
     "uk": "За замовчуванням: gpt-5-codex. gpt-5 / gpt-5-mini для загального використання; o4-mini / o3 для міркувань. Використовується live eval OpenAI у web-ui та батьківським Codex/OpenAI CLI.",
+    "da": "Standard: gpt-5-codex. gpt-5 / gpt-5-mini til generel brug; o4-mini / o3 til ræsonnement. Bruges af web-ui OpenAI live-vurderingen og det overordnede Codex/OpenAI CLI-flow.",
     "ar": "الافتراضي: gpt-5-codex. gpt-5 / gpt-5-mini للاستخدام العام؛ o4-mini / o3 للاستدلال. يُستخدم من قِبل تقييم OpenAI المباشر لواجهة الويب وتدفق Codex/OpenAI CLI الأصلي."
   },
   "config.qwenKey": {
@@ -1957,6 +2096,7 @@
     "fr": "QWEN_API_KEY",
     "pl": "QWEN_API_KEY",
     "uk": "QWEN_API_KEY",
+    "da": "QWEN_API_KEY",
     "ar": "QWEN_API_KEY"
   },
   "config.qwenHint": {
@@ -1971,6 +2111,7 @@
     "fr": "Clé API Alibaba Model Studio / DashScope (dashscope.console.aliyun.com). Quand définie, exécute l'évaluation en direct de l'interface web (4e dans l'ordre automatique, après OpenAI). Point d'accès compatible avec OpenAI.",
     "pl": "Klucz API Alibaba Model Studio / DashScope (dashscope.console.aliyun.com). Po ustawieniu uruchamia ocenę na żywo web-ui (4. w kolejności auto, po OpenAI). Endpoint zgodny z OpenAI.",
     "uk": "Alibaba Model Studio / DashScope API key (dashscope.console.aliyun.com). Коли встановлено, запускає live eval web-ui (4-й у порядку auto, після OpenAI). OpenAI-сумісний ендпоінт.",
+    "da": "Alibaba Model Studio / DashScope API-nøgle (dashscope.console.aliyun.com). Når den er sat, kører web-ui live-vurderingen (4. i auto-rækkefølgen, efter OpenAI). OpenAI-kompatibelt endpoint.",
     "ar": "مفتاح Alibaba Model Studio / DashScope API (dashscope.console.aliyun.com). عند الضبط، يشغّل التقييم المباشر لواجهة الويب (الرابع في الترتيب التلقائي، بعد OpenAI). نقطة نهاية متوافقة مع OpenAI."
   },
   "config.qwenModel": {
@@ -1985,6 +2126,7 @@
     "fr": "QWEN_MODEL",
     "pl": "QWEN_MODEL",
     "uk": "QWEN_MODEL",
+    "da": "QWEN_MODEL",
     "ar": "QWEN_MODEL"
   },
   "config.qwenModelHint": {
@@ -1999,6 +2141,7 @@
     "fr": "Par défaut : qwen-max (le plus puissant). qwen-plus / qwen-turbo pour la vitesse/coût ; qwen2.5-coder-32b-instruct pour la réflexion axée sur le code.",
     "pl": "Domyślnie: qwen-max (najsilniejszy). qwen-plus / qwen-turbo dla szybkości/kosztu; qwen2.5-coder-32b-instruct do rozumowania code-heavy.",
     "uk": "За замовчуванням: qwen-max (найпотужніший). qwen-plus / qwen-turbo для швидкості/вартості; qwen2.5-coder-32b-instruct для коду.",
+    "da": "Standard: qwen-max (stærkest). qwen-plus / qwen-turbo for hastighed/pris; qwen2.5-coder-32b-instruct til kodetungt ræsonnement.",
     "ar": "الافتراضي: qwen-max (الأقوى). qwen-plus / qwen-turbo للسرعة/التكلفة؛ qwen2.5-coder-32b-instruct للاستدلال الكثيف بالكود."
   },
   "config.openrouterKey": {
@@ -2013,6 +2156,7 @@
     "fr": "OPENROUTER_API_KEY",
     "pl": "OPENROUTER_API_KEY",
     "uk": "OPENROUTER_API_KEY",
+    "da": "OPENROUTER_API_KEY",
     "ar": "OPENROUTER_API_KEY"
   },
   "config.openrouterHint": {
@@ -2027,6 +2171,7 @@
     "fr": "openrouter.ai/keys — une clé devant 300+ modèles (Anthropic, OpenAI, Google, Meta, Qwen, DeepSeek …). Quand définie, exécute l'évaluation en direct de l'interface web (5e dans l'ordre automatique, après Qwen). Point d'accès compatible avec OpenAI.",
     "pl": "openrouter.ai/keys — jeden klucz do 300+ modeli (Anthropic, OpenAI, Google, Meta, Qwen, DeepSeek …). Po ustawieniu uruchamia ocenę na żywo web-ui (5. w kolejności auto, po Qwen). Endpoint zgodny z OpenAI.",
     "uk": "openrouter.ai/keys — один ключ відкриває 300+ моделей (Anthropic, OpenAI, Google, Meta, Qwen, DeepSeek …). Коли встановлено, запускає live eval web-ui (5-й у порядку auto, після Qwen). OpenAI-сумісний ендпоінт.",
+    "da": "openrouter.ai/keys — én nøgle giver adgang til 300+ modeller (Anthropic, OpenAI, Google, Meta, Qwen, DeepSeek …). Når den er sat, kører web-ui live-vurderingen (5. i auto-rækkefølgen, efter Qwen). OpenAI-kompatibelt endpoint.",
     "ar": "openrouter.ai/keys — مفتاح واحد يغطي أكثر من 300 نموذج (Anthropic، OpenAI، Google، Meta، Qwen، DeepSeek …). عند الضبط، يشغّل التقييم المباشر لواجهة الويب (الخامس في الترتيب التلقائي، بعد Qwen). نقطة نهاية متوافقة مع OpenAI."
   },
   "config.openrouterModel": {
@@ -2041,6 +2186,7 @@
     "fr": "OPENROUTER_MODEL",
     "pl": "OPENROUTER_MODEL",
     "uk": "OPENROUTER_MODEL",
+    "da": "OPENROUTER_MODEL",
     "ar": "OPENROUTER_MODEL"
   },
   "config.openrouterModelHint": {
@@ -2055,6 +2201,7 @@
     "fr": "Par défaut : openrouter/auto (OpenRouter choisit). Le catalogue complet charge depuis OpenRouter — choisissez tout fournisseur/model id. Retourne à une liste curatée si le catalogue est inaccessible.",
     "pl": "Domyślnie: openrouter/auto (OpenRouter wybiera). Pełny katalog na żywo ładuje się z OpenRouter — wybierz dowolne id dostawcy/modelu. Fallback do wyselekcjonowanej listy gdy katalog jest niedostępny.",
     "uk": "За замовчуванням: openrouter/auto (OpenRouter обирає). Повний live-каталог завантажується з OpenRouter — оберіть будь-який vendor/model id. Повертається до кураторського списку, якщо каталог недоступний.",
+    "da": "Standard: openrouter/auto (OpenRouter vælger). Det fulde live-katalog indlæses fra OpenRouter — vælg et hvilket som helst udbyder-/model-id. Falder tilbage til en kurateret liste, hvis kataloget ikke kan nås.",
     "ar": "الافتراضي: openrouter/auto (يختار OpenRouter). يتحمّل الكتالوج المباشر الكامل من OpenRouter — اختر أي معرّف بائع/نموذج. يعود إلى قائمة منتقاة إذا كان الكتالوج غير متاح."
   },
   "config.githubKey": {
@@ -2069,6 +2216,7 @@
     "fr": "GITHUB_MODELS_API_KEY",
     "pl": "GITHUB_MODELS_API_KEY",
     "uk": "GITHUB_MODELS_API_KEY",
+    "da": "GITHUB_MODELS_API_KEY",
     "ar": "GITHUB_MODELS_API_KEY"
   },
   "config.githubHint": {
@@ -2083,6 +2231,7 @@
     "fr": "Un jeton d'accès personnel GitHub avec la portée \"models\" (github.com/settings/tokens). Il s'agit de la surface d'API de GitHub Copilot CLI (GitHub Models). Une fois configuré, lance l'évaluation en direct du web-ui (6e dans l'ordre automatique, après OpenRouter). Endpoint compatible OpenAI.",
     "pl": "Osobisty token dostępu GitHub z zakresem \"models\" (github.com/settings/tokens). To jest powierzchnia API GitHub Copilot CLI (GitHub Models). Po ustawieniu uruchamia ocenę na żywo web-ui (6. w kolejności automatycznej, po OpenRouter). Endpoint zgodny z OpenAI.",
     "uk": "Особистий токен доступу GitHub із областю \"models\" (github.com/settings/tokens). Це API-поверхня GitHub Copilot CLI (GitHub Models). Після встановлення запускає живу оцінку web-ui (6-е в автоматичному порядку, після OpenRouter). Endpoint, сумісний з OpenAI.",
+    "da": "En GitHub personal-access-token med scopet \"models\" (github.com/settings/tokens). Dette er GitHub Copilot CLI's API-flade (GitHub Models). Når den er sat, kører web-ui live-vurderingen (6. i auto-rækkefølgen, efter OpenRouter). OpenAI-kompatibelt endpoint.",
     "ar": "رمز وصول شخصي من GitHub بنطاق \"models\" (github.com/settings/tokens). هذا هو سطح API الخاص بـ GitHub Copilot CLI (GitHub Models). عند تعيينه، يُشغِّل التقييم المباشر لـ web-ui (السادس في الترتيب التلقائي، بعد OpenRouter). نقطة نهاية متوافقة مع OpenAI."
   },
   "config.githubModel": {
@@ -2097,6 +2246,7 @@
     "fr": "GITHUB_MODELS_MODEL",
     "pl": "GITHUB_MODELS_MODEL",
     "uk": "GITHUB_MODELS_MODEL",
+    "da": "GITHUB_MODELS_MODEL",
     "ar": "GITHUB_MODELS_MODEL"
   },
   "config.githubModelHint": {
@@ -2111,6 +2261,7 @@
     "fr": "Par défaut : openai/gpt-4o-mini. Identifiants avec espace de noms d'éditeur — openai/gpt-4o, openai/gpt-4.1, meta/Llama-3.3-70B-Instruct, deepseek/DeepSeek-V3, …",
     "pl": "Domyślnie: openai/gpt-4o-mini. Identyfikatory z przestrzenią nazw wydawcy — openai/gpt-4o, openai/gpt-4.1, meta/Llama-3.3-70B-Instruct, deepseek/DeepSeek-V3, …",
     "uk": "За замовчуванням: openai/gpt-4o-mini. Ідентифікатори з простором імен видавця — openai/gpt-4o, openai/gpt-4.1, meta/Llama-3.3-70B-Instruct, deepseek/DeepSeek-V3, …",
+    "da": "Standard: openai/gpt-4o-mini. Udgiver-namespacede id'er — openai/gpt-4o, openai/gpt-4.1, meta/Llama-3.3-70B-Instruct, deepseek/DeepSeek-V3, …",
     "ar": "الافتراضي: openai/gpt-4o-mini. معرّفات بفضاء أسماء الناشر — openai/gpt-4o, openai/gpt-4.1, meta/Llama-3.3-70B-Instruct, deepseek/DeepSeek-V3, …"
   },
   "config.hhUserAgent": {
@@ -2125,6 +2276,7 @@
     "fr": "User-Agent HH",
     "pl": "User agent HH",
     "uk": "HH user agent",
+    "da": "HH user agent",
     "ar": "وكيل مستخدم hh.ru"
   },
   "config.hhUserAgentHint": {
@@ -2139,6 +2291,7 @@
     "fr": "User-Agent de navigateur réel pour l'API hh.ru. Obligatoire lors du scan depuis des IP non-RU.",
     "pl": "User-Agent prawdziwej przeglądarki dla API hh.ru. Wymagany przy skanowaniu spoza IP z Rosji.",
     "uk": "User-Agent реального браузера для API hh.ru. Потрібен під час сканування з не-RU IP.",
+    "da": "Rigtig browser-User-Agent til hh.ru API. Påkrævet ved scanning fra ikke-russiske IP'er.",
     "ar": "User-Agent للمتصفح الحقيقي لـ hh.ru API. مطلوب عند المسح من عناوين IP غير روسية."
   },
   "config.port": {
@@ -2153,6 +2306,7 @@
     "fr": "Port du serveur",
     "pl": "Port serwera",
     "uk": "Порт сервера",
+    "da": "Serverport",
     "ar": "منفذ الخادم"
   },
   "config.portHint": {
@@ -2167,6 +2321,7 @@
     "fr": "Par défaut 4317. Redémarrez le serveur après modification.",
     "pl": "Domyślnie 4317. Zrestartuj serwer po zmianie.",
     "uk": "За замовчуванням 4317. Перезапустіть сервер після зміни.",
+    "da": "Standard 4317. Genstart serveren efter ændring.",
     "ar": "الافتراضي 4317. أعد تشغيل الخادم بعد التغيير."
   },
   "config.host": {
@@ -2181,6 +2336,7 @@
     "fr": "Hôte du serveur",
     "pl": "Host serwera",
     "uk": "Хост сервера",
+    "da": "Serverhost",
     "ar": "مضيف الخادم"
   },
   "config.hostHint": {
@@ -2195,6 +2351,7 @@
     "fr": "Par défaut 127.0.0.1 (boucle). 0.0.0.0 expose l'interface à votre réseau local — uniquement sur un réseau de confiance.",
     "pl": "Domyślnie 127.0.0.1 (loopback). 0.0.0.0 udostępnia UI w sieci LAN — tylko w zaufanej sieci.",
     "uk": "За замовчуванням 127.0.0.1 (loopback). 0.0.0.0 відкриває UI для вашої LAN — тільки в довіреній мережі.",
+    "da": "Standard 127.0.0.1 (loopback). 0.0.0.0 eksponerer UI'en for dit LAN — kun på et betroet netværk.",
     "ar": "الافتراضي 127.0.0.1 (loopback). 0.0.0.0 يعرض الواجهة على شبكتك المحلية — فقط على شبكة موثوقة."
   },
   "activity.title": {
@@ -2209,6 +2366,7 @@
     "fr": "Journal d’activité",
     "pl": "Dziennik aktywności",
     "uk": "Журнал активності",
+    "da": "Aktivitetslog",
     "ar": "سجل النشاط"
   },
   "activity.subtitle": {
@@ -2223,6 +2381,7 @@
     "fr": "Toutes les actions que vous déclenchez via l’interface — du plus récent au plus ancien.",
     "pl": "Każda akcja wywołana przez UI — najnowsze pierwsze.",
     "uk": "Кожна дія, яку ви виконуєте через UI — від найновішої до найстарішої.",
+    "da": "Hver handling du udløser gennem UI'en — nyeste først.",
     "ar": "كل إجراء تقوم به عبر الواجهة — الأحدث أولًا."
   },
   "activity.filter.all": {
@@ -2237,6 +2396,7 @@
     "fr": "Toutes les actions",
     "pl": "Wszystkie akcje",
     "uk": "Усі дії",
+    "da": "Alle handlinger",
     "ar": "جميع الإجراءات"
   },
   "activity.col.time": {
@@ -2251,6 +2411,7 @@
     "fr": "Heure",
     "pl": "Czas",
     "uk": "Час",
+    "da": "Tid",
     "ar": "الوقت"
   },
   "activity.col.action": {
@@ -2265,6 +2426,7 @@
     "fr": "Action réalisée",
     "pl": "Akcja",
     "uk": "Дія",
+    "da": "Handling",
     "ar": "الإجراء"
   },
   "activity.col.target": {
@@ -2279,6 +2441,7 @@
     "fr": "Cible",
     "pl": "Cel",
     "uk": "Ціль",
+    "da": "Mål",
     "ar": "الهدف"
   },
   "activity.col.result": {
@@ -2293,6 +2456,7 @@
     "fr": "Résultat",
     "pl": "Wynik",
     "uk": "Результат",
+    "da": "Resultat",
     "ar": "النتيجة"
   },
   "activity.empty": {
@@ -2307,6 +2471,7 @@
     "fr": "Aucune activité encore — essayez d’ajouter une URL ou de lancer un scan.",
     "pl": "Brak aktywności — dodaj URL lub uruchom skanowanie.",
     "uk": "Активності немає — спробуйте додати URL або запустити сканування.",
+    "da": "Ingen aktivitet endnu — prøv at tilføje en URL eller køre en scanning.",
     "ar": "لا نشاط بعد — جرّب إضافة رابط أو تشغيل مسح."
   },
   "activity.refresh": {
@@ -2321,6 +2486,7 @@
     "fr": "Actualiser",
     "pl": "Odśwież",
     "uk": "Оновити",
+    "da": "Opdatér",
     "ar": "تحديث"
   },
   "activity.truncated": {
@@ -2335,6 +2501,7 @@
     "fr": "Affichage des {n} événements les plus récents ; l'historique plus ancien n'est pas affiché.",
     "pl": "Wyświetlanie {n} ostatnich zdarzeń; starsza historia nie jest pokazywana.",
     "uk": "Показано {n} останніх подій; старіша історія не відображається.",
+    "da": "Viser de seneste {n} hændelser; ældre historik vises ikke.",
     "ar": "يعرض {n} حدثًا من الأحدث؛ السجل الأقدم غير معروض."
   },
   "top.search": {
@@ -2349,6 +2516,7 @@
     "fr": "Rechercher une entreprise, un rôle ou une URL…",
     "pl": "Znajdź firmę, stanowisko lub URL…",
     "uk": "Знайти компанію, роль або URL…",
+    "da": "Find en virksomhed, rolle eller URL…",
     "ar": "ابحث عن شركة أو دور أو رابط…"
   },
   "top.search.label": {
@@ -2363,6 +2531,7 @@
     "fr": "Recherche d'entreprises, de rôles ou d'URLs",
     "pl": "Szukaj firm, stanowisk lub URL-i",
     "uk": "Пошук компаній, ролей або URL",
+    "da": "Søg i virksomheder, roller eller URL'er",
     "ar": "بحث في الشركات والأدوار والروابط"
   },
   "top.search.aria": {
@@ -2377,6 +2546,7 @@
     "fr": "Recherche globale — Cmd+K pour se concentrer, collez une URL et appuyez sur Entrée pour le pipeline automatique",
     "pl": "Wyszukiwanie globalne — Cmd+K aby skupić, wklej URL i Enter dla auto-pipeline",
     "uk": "Глобальний пошук — Cmd+K для фокусу, вставте URL і Enter для auto-pipeline",
+    "da": "Global søgning — Cmd+K for fokus, indsæt en URL og Enter for auto-pipeline",
     "ar": "بحث شامل — Cmd+K للتركيز، الصق رابطًا واضغط Enter للخط التلقائي"
   },
   "top.doctor": {
@@ -2391,6 +2561,7 @@
     "fr": "Docteur",
     "pl": "Doctor",
     "uk": "Doctor",
+    "da": "Doctor",
     "ar": "الفحص"
   },
   "top.quickscan": {
@@ -2405,6 +2576,7 @@
     "fr": "Ouvrir un scan",
     "pl": "Otwórz Skanowanie",
     "uk": "Відкрити сканування",
+    "da": "Åbn Scanning",
     "ar": "فتح المسح"
   },
   "top.themeToggle": {
@@ -2419,6 +2591,7 @@
     "fr": "Changer de thème",
     "pl": "Przełącz motyw",
     "uk": "Переключити тему",
+    "da": "Skift tema",
     "ar": "تبديل المظهر"
   },
   "top.langhint": {
@@ -2433,6 +2606,7 @@
     "fr": "{hotkey} — recherche",
     "pl": "{hotkey} — wyszukaj",
     "uk": "{hotkey} — пошук",
+    "da": "{hotkey} — søg",
     "ar": "{hotkey} — بحث"
   },
   "top.langLabel": {
@@ -2447,6 +2621,7 @@
     "fr": "Langue",
     "pl": "Język",
     "uk": "Мова",
+    "da": "Sprog",
     "ar": "اللغة"
   },
   "common.loading": {
@@ -2461,6 +2636,7 @@
     "fr": "Chargement…",
     "pl": "Ładowanie…",
     "uk": "Завантаження…",
+    "da": "Indlæser…",
     "ar": "جارٍ التحميل…"
   },
   "common.error": {
@@ -2475,6 +2651,7 @@
     "fr": "Erreur",
     "pl": "Błąd",
     "uk": "Помилка",
+    "da": "Fejl",
     "ar": "خطأ"
   },
   "common.retry": {
@@ -2489,6 +2666,7 @@
     "fr": "Réessayer",
     "pl": "Ponów",
     "uk": "Повторити",
+    "da": "Prøv igen",
     "ar": "إعادة المحاولة"
   },
   "common.save": {
@@ -2503,6 +2681,7 @@
     "fr": "Enregistrer",
     "pl": "Zapisz",
     "uk": "Зберегти",
+    "da": "Gem",
     "ar": "حفظ"
   },
   "common.cancel": {
@@ -2517,6 +2696,7 @@
     "fr": "Annuler",
     "pl": "Anuluj",
     "uk": "Скасувати",
+    "da": "Annullér",
     "ar": "إلغاء"
   },
   "common.confirm": {
@@ -2531,6 +2711,7 @@
     "fr": "Confirmer",
     "pl": "Potwierdź",
     "uk": "Підтвердити",
+    "da": "Bekræft",
     "ar": "تأكيد"
   },
   "common.add": {
@@ -2545,6 +2726,7 @@
     "fr": "Ajouter",
     "pl": "Dodaj",
     "uk": "Додати",
+    "da": "Tilføj",
     "ar": "إضافة"
   },
   "common.delete": {
@@ -2559,6 +2741,7 @@
     "fr": "Supprimer",
     "pl": "Usuń",
     "uk": "Видалити",
+    "da": "Slet",
     "ar": "حذف"
   },
   "common.run": {
@@ -2573,6 +2756,7 @@
     "fr": "Exécuter",
     "pl": "Uruchom",
     "uk": "Запустити",
+    "da": "Kør",
     "ar": "تشغيل"
   },
   "common.open": {
@@ -2587,6 +2771,7 @@
     "fr": "Ouvrir",
     "pl": "Otwórz",
     "uk": "Відкрити",
+    "da": "Åbn",
     "ar": "فتح"
   },
   "common.close": {
@@ -2601,6 +2786,7 @@
     "fr": "Fermer",
     "pl": "Zamknij",
     "uk": "Закрити",
+    "da": "Luk",
     "ar": "إغلاق"
   },
   "common.empty": {
@@ -2615,6 +2801,7 @@
     "fr": "Aucun résultat",
     "pl": "Brak wyników",
     "uk": "Немає результатів",
+    "da": "Ingen resultater",
     "ar": "لا نتائج"
   },
   "common.items": {
@@ -2629,6 +2816,7 @@
     "fr": "éléments",
     "pl": "pozycji",
     "uk": "елементів",
+    "da": "elementer",
     "ar": "عناصر"
   },
   "pg.prev": {
@@ -2643,6 +2831,7 @@
     "fr": "Précédent",
     "pl": "Poprzednia",
     "uk": "Назад",
+    "da": "Forrige",
     "ar": "السابق"
   },
   "pg.next": {
@@ -2657,6 +2846,7 @@
     "fr": "Suivant",
     "pl": "Następna",
     "uk": "Вперед",
+    "da": "Næste",
     "ar": "التالي"
   },
   "pg.first": {
@@ -2671,6 +2861,7 @@
     "fr": "Premier",
     "pl": "Pierwsza",
     "uk": "Перша",
+    "da": "Første",
     "ar": "الأول"
   },
   "pg.last": {
@@ -2685,6 +2876,7 @@
     "fr": "Dernier",
     "pl": "Ostatnia",
     "uk": "Остання",
+    "da": "Sidste",
     "ar": "الأخير"
   },
   "pg.of": {
@@ -2699,6 +2891,7 @@
     "fr": "sur",
     "pl": "z",
     "uk": "з",
+    "da": "af",
     "ar": "من"
   },
   "common.refresh": {
@@ -2713,6 +2906,7 @@
     "fr": "Actualiser",
     "pl": "Odśwież",
     "uk": "Оновити",
+    "da": "Opdatér",
     "ar": "تحديث"
   },
   "common.refreshing": {
@@ -2727,6 +2921,7 @@
     "fr": "Actualisation en cours…",
     "pl": "Odświeżanie…",
     "uk": "Оновлення…",
+    "da": "Opdaterer…",
     "ar": "جارٍ التحديث…"
   },
   "common.refreshed": {
@@ -2741,6 +2936,7 @@
     "fr": "Actualisé",
     "pl": "Odświeżono",
     "uk": "Оновлено",
+    "da": "Opdateret",
     "ar": "تم التحديث"
   },
   "dash.refreshAria": {
@@ -2755,6 +2951,7 @@
     "fr": "Actualiser les compteurs du tableau de bord",
     "pl": "Odśwież liczniki panelu",
     "uk": "Оновити лічильники дашборду",
+    "da": "Opdatér oversigtens tællere",
     "ar": "تحديث عدادات لوحة التحكم"
   },
   "dash.refreshed": {
@@ -2769,6 +2966,7 @@
     "fr": "Tableau de bord actualisé",
     "pl": "Panel odświeżony",
     "uk": "Дашборд оновлено",
+    "da": "Oversigt opdateret",
     "ar": "تم تحديث لوحة التحكم"
   },
   "onboarding.fixtureWarning": {
@@ -2783,6 +2981,7 @@
     "fr": "Votre profil utilise toujours le modèle par défaut. Chaque rapport et email utilisera ce nom jusqu'à ce que vous le corrigiez.",
     "pl": "Twój profil nadal korzysta z domyślnego szablonu. Każdy raport i e-mail będzie używał tej nazwy, dopóki tego nie poprawisz.",
     "uk": "Ваш профіль все ще використовує шаблон за замовчуванням. Кожен звіт та email використовуватиме це ім'я, поки ви не виправите це.",
+    "da": "Din profil bruger stadig standardskabelonen. Hver rapport og e-mail vil bruge dette navn, indtil du retter det.",
     "ar": "ملفك الشخصي لا يزال على القالب الافتراضي. كل تقرير ورسالة ستستخدم هذا الاسم حتى تصلحه."
   },
   "onboarding.fixProfile": {
@@ -2797,6 +2996,7 @@
     "fr": "Ouvrir les paramètres du profil",
     "pl": "Otwórz ustawienia profilu",
     "uk": "Відкрити налаштування профілю",
+    "da": "Åbn profilindstillinger",
     "ar": "فتح إعدادات الملف الشخصي"
   },
   "toast.details": {
@@ -2811,6 +3011,7 @@
     "fr": "Détails",
     "pl": "Szczegóły",
     "uk": "Деталі",
+    "da": "Detaljer",
     "ar": "التفاصيل"
   },
   "prompt.show": {
@@ -2825,6 +3026,7 @@
     "fr": "Afficher la suggestion",
     "pl": "Pokaż prompt",
     "uk": "Показати промпт",
+    "da": "Vis prompt",
     "ar": "عرض الأمر"
   },
   "prompt.lines": {
@@ -2839,6 +3041,7 @@
     "fr": "lignes",
     "pl": "wierszy",
     "uk": "рядків",
+    "da": "linjer",
     "ar": "سطور"
   },
   "track.fixEmpty": {
@@ -2853,6 +3056,7 @@
     "fr": "Ajoutez une ligne au suivi d'abord — cela réécrit data/applications.md et il n'y a rien à réécrire pour le moment.",
     "pl": "Najpierw dodaj wiersz do trackera — to przepisuje data/applications.md, a nie ma nic do przepisania.",
     "uk": "Спочатку додайте рядок у трекер — ця операція перезаписує data/applications.md, але поки що нічого перезаписувати.",
+    "da": "Tilføj først en række til trackeren — dette omskriver data/applications.md, og der er endnu intet at omskrive.",
     "ar": "أضف صفًا إلى المتتبع أولًا — هذا يعيد كتابة data/applications.md ولا يوجد شيء لإعادة الكتابة حتى الآن."
   },
   "a11y.skipToContent": {
@@ -2867,6 +3071,7 @@
     "fr": "Passer au contenu principal",
     "pl": "Przejdź do treści głównej",
     "uk": "Перейти до основного вмісту",
+    "da": "Spring til hovedindhold",
     "ar": "الانتقال إلى المحتوى الرئيسي"
   },
   "common.generatePdf": {
@@ -2881,6 +3086,7 @@
     "fr": "Générer un PDF",
     "pl": "Generuj PDF",
     "uk": "Згенерувати PDF",
+    "da": "Generér PDF",
     "ar": "إنشاء PDF"
   },
   "dash.title": {
@@ -2895,6 +3101,7 @@
     "fr": "Centre de commandes",
     "pl": "Centrum dowodzenia",
     "uk": "Командний центр",
+    "da": "Kommandocenter",
     "ar": "مركز القيادة"
   },
   "dash.subtitle": {
@@ -2909,6 +3116,7 @@
     "fr": "Tous les emplois, rapports et processus actifs — en un seul endroit.",
     "pl": "Każda oferta, raport i aktywny proces — w jednym miejscu.",
     "uk": "Кожна вакансія, звіт і активний процес — в одному місці.",
+    "da": "Hvert job, hver rapport og hver aktiv proces — på ét sted.",
     "ar": "كل وظيفة وتقرير وعملية نشطة — في مكان واحد."
   },
   "dash.apps": {
@@ -2923,6 +3131,7 @@
     "fr": "Candidatures",
     "pl": "Aplikacje",
     "uk": "Заявки",
+    "da": "Ansøgninger",
     "ar": "الطلبات"
   },
   "dash.pipeline": {
@@ -2937,6 +3146,7 @@
     "fr": "Pilote",
     "pl": "Pipeline",
     "uk": "Pipeline",
+    "da": "Pipeline",
     "ar": "خط الأنابيب"
   },
   "dash.avgScore": {
@@ -2951,6 +3161,7 @@
     "fr": "Note moyenne",
     "pl": "Średni wynik",
     "uk": "Сер. оцінка",
+    "da": "Gns. score",
     "ar": "متوسط النتيجة"
   },
   "dash.tracker": {
@@ -2965,6 +3176,7 @@
     "fr": "suivi",
     "pl": "tracker",
     "uk": "трекер",
+    "da": "tracker",
     "ar": "المتتبع"
   },
   "dash.pending": {
@@ -2979,6 +3191,7 @@
     "fr": "en attente",
     "pl": "oczekujące",
     "uk": "очікує",
+    "da": "afventer",
     "ar": "معلّق"
   },
   "dash.generated": {
@@ -2993,6 +3206,7 @@
     "fr": "généré",
     "pl": "wygenerowane",
     "uk": "згенеровано",
+    "da": "genereret",
     "ar": "مُنشأ"
   },
   "dash.openPipeline": {
@@ -3007,6 +3221,7 @@
     "fr": "Ouvrir le pilote",
     "pl": "Otwórz Pipeline",
     "uk": "Відкрити Pipeline",
+    "da": "Åbn Pipeline",
     "ar": "فتح خط الأنابيب"
   },
   "dash.evaluate": {
@@ -3021,6 +3236,7 @@
     "fr": "Évaluer la vacance",
     "pl": "Oceń ofertę",
     "uk": "Оцінити вакансію",
+    "da": "Vurdér jobopslag",
     "ar": "تقييم وظيفة"
   },
   "dash.statuses": {
@@ -3035,6 +3251,7 @@
     "fr": "Statuts de candidature",
     "pl": "Statusy aplikacji",
     "uk": "Статуси заявок",
+    "da": "Ansøgningsstatusser",
     "ar": "حالات الطلبات"
   },
   "dash.recent": {
@@ -3049,6 +3266,7 @@
     "fr": "Candidatures récentes",
     "pl": "Ostatnie aplikacje",
     "uk": "Останні заявки",
+    "da": "Seneste ansøgninger",
     "ar": "الطلبات الأخيرة"
   },
   "dash.lastReport": {
@@ -3063,6 +3281,7 @@
     "fr": "Dernier rapport",
     "pl": "Ostatni raport",
     "uk": "Останній звіт",
+    "da": "Seneste rapport",
     "ar": "أحدث تقرير"
   },
   "dash.lastEval": {
@@ -3077,6 +3296,7 @@
     "fr": "Dernière évaluation",
     "pl": "Ostatnia ocena",
     "uk": "Остання оцінка",
+    "da": "Seneste vurdering",
     "ar": "آخر تقييم"
   },
   "dash.heroNoEval": {
@@ -3091,6 +3311,7 @@
     "fr": "Aucune évaluation encore — collez l'URL d'un emploi pour obtenir votre premier rapport.",
     "pl": "Brak ocen — wklej URL oferty, aby uzyskać pierwszy raport.",
     "uk": "Оцінок ще немає — вставте URL вакансії, щоб отримати перший звіт.",
+    "da": "Ingen vurderinger endnu — indsæt en job-URL for at få din første rapport.",
     "ar": "لا تقييمات بعد — الصق رابط وظيفة للحصول على تقريرك الأول."
   },
   "dash.scanNow": {
@@ -3105,6 +3326,7 @@
     "fr": "Scanner maintenant",
     "pl": "Skanuj teraz",
     "uk": "Сканувати зараз",
+    "da": "Scan nu",
     "ar": "مسح الآن"
   },
   "dash.autoPipeline": {
@@ -3119,6 +3341,7 @@
     "fr": "Pilote automatique à partir d'une URL",
     "pl": "Auto-pipeline URL",
     "uk": "Auto-pipeline URL",
+    "da": "Auto-pipeline en URL",
     "ar": "خط أنابيب تلقائي لرابط"
   },
   "nav.auto": {
@@ -3133,6 +3356,7 @@
     "fr": "Pilote automatique",
     "pl": "Auto-pipeline",
     "uk": "Auto-pipeline",
+    "da": "Auto-pipeline",
     "ar": "الخط التلقائي"
   },
   "auto.subtitle": {
@@ -3147,6 +3371,7 @@
     "fr": "Collez une URL de poste. Un clic lance le flux complet — validez, récupérez, évaluez par rapport à votre CV, sauvegardez le rapport et ajoutez-le au suivi.",
     "pl": "Wklej jeden URL oferty. Jedno kliknięcie uruchamia cały przepływ — walidacja, pobieranie, ocena względem CV, zapis raportu, dodanie do trackera.",
     "uk": "Вставте один URL вакансії. Один клік запускає весь процес — валідація, отримання, оцінка відносно вашого CV, збереження звіту, додавання до трекера.",
+    "da": "Indsæt én job-URL. Ét klik kører hele flowet — validér, hent, vurdér mod dit CV, gem rapporten, tilføj den til trackeren.",
     "ar": "الصق رابط وظيفة واحدًا. نقرة واحدة تشغّل التدفق بأكمله — تحقق، جلب، تقييم مقابل CV، حفظ التقرير، إضافة للمتتبع."
   },
   "auto.stepperAria": {
@@ -3161,6 +3386,7 @@
     "fr": "Étapes du pipeline automatique",
     "pl": "Etapy auto-pipeline",
     "uk": "Етапи Auto-pipeline",
+    "da": "Auto-pipeline-etaper",
     "ar": "مراحل الخط التلقائي"
   },
   "auto.urlLabel": {
@@ -3175,6 +3401,7 @@
     "fr": "URL de l'offre d'emploi",
     "pl": "URL ogłoszenia o pracę",
     "uk": "URL оголошення про вакансію",
+    "da": "URL til jobopslag",
     "ar": "رابط إعلان الوظيفة"
   },
   "auto.urlRequired": {
@@ -3189,6 +3416,7 @@
     "fr": "Collez une URL d'offre d'emploi en premier",
     "pl": "Najpierw wklej URL oferty",
     "uk": "Спочатку вставте URL вакансії",
+    "da": "Indsæt først en job-URL",
     "ar": "الصق رابط وظيفة أولًا"
   },
   "auto.step.report": {
@@ -3203,6 +3431,7 @@
     "fr": "Enregistrement du rapport",
     "pl": "Zapisywanie raportu",
     "uk": "Збереження звіту",
+    "da": "Gemmer rapport",
     "ar": "حفظ التقرير"
   },
   "auto.stepWord": {
@@ -3217,6 +3446,7 @@
     "fr": "Étape",
     "pl": "Krok",
     "uk": "Крок",
+    "da": "Trin",
     "ar": "الخطوة"
   },
   "auto.doneTitle": {
@@ -3231,6 +3461,7 @@
     "fr": "Pipeline terminé",
     "pl": "Pipeline zakończony",
     "uk": "Pipeline завершено",
+    "da": "Pipeline gennemført",
     "ar": "اكتمل الخط التلقائي"
   },
   "auto.viewReport": {
@@ -3245,6 +3476,7 @@
     "fr": "Afficher le rapport",
     "pl": "Zobacz raport",
     "uk": "Переглянути звіт",
+    "da": "Vis rapport",
     "ar": "عرض التقرير"
   },
   "auto.viewTracker": {
@@ -3259,6 +3491,7 @@
     "fr": "Ouvrir le suiveur",
     "pl": "Otwórz tracker",
     "uk": "Відкрити трекер",
+    "da": "Åbn tracker",
     "ar": "فتح المتتبع"
   },
   "auto.legitimacy": {
@@ -3273,6 +3506,7 @@
     "fr": "Légitimité",
     "pl": "Wiarygodność",
     "uk": "Легітимність",
+    "da": "Troværdighed",
     "ar": "المصداقية"
   },
   "auto.manualTitle": {
@@ -3287,6 +3521,7 @@
     "fr": "Mode manuel — sans clé API",
     "pl": "Tryb ręczny — brak klucza API",
     "uk": "Ручний режим — без API-ключа",
+    "da": "Manuel tilstand — ingen API-nøgle",
     "ar": "الوضع اليدوي — لا مفتاح API"
   },
   "auto.manualHint": {
@@ -3301,6 +3536,7 @@
     "fr": "Aucune requête live vers un modèle linguistique n'a été effectuée. Copiez ce prompt dans Claude Code / Anthropic / Gemini.",
     "pl": "Nie wykonano żywego wywołania LLM. Skopiuj ten prompt do Claude Code / Anthropic / Gemini.",
     "uk": "Live-виклик LLM не виконувався. Скопіюйте цей промпт до Claude Code / Anthropic / Gemini.",
+    "da": "Der blev ikke foretaget et live LLM-kald. Kopiér denne prompt ind i Claude Code / Anthropic / Gemini.",
     "ar": "لم يُجرَ أي اتصال مباشر بـ LLM. انسخ هذا الأمر والصقه في Claude Code / Anthropic / Gemini."
   },
   "auto.copyPrompt": {
@@ -3315,6 +3551,7 @@
     "fr": "Copier le prompt",
     "pl": "Kopiuj prompt",
     "uk": "Копіювати промпт",
+    "da": "Kopiér prompt",
     "ar": "نسخ الأمر"
   },
   "auto.copied": {
@@ -3329,6 +3566,7 @@
     "fr": "Copié",
     "pl": "Skopiowano",
     "uk": "Скопійовано",
+    "da": "Kopieret",
     "ar": "تم النسخ"
   },
   "auto.running": {
@@ -3343,6 +3581,7 @@
     "fr": "En cours d'exécution…",
     "pl": "Uruchamianie…",
     "uk": "Виконується…",
+    "da": "Kører…",
     "ar": "جارٍ التشغيل…"
   },
   "auto.httpFail": {
@@ -3357,6 +3596,7 @@
     "fr": "Erreur du serveur (HTTP {n}). Vérifiez que le serveur est en fonctionnement, puis réessayez.",
     "pl": "Błąd serwera (HTTP {n}). Sprawdź czy serwer działa, a następnie ponów.",
     "uk": "Помилка сервера (HTTP {n}). Перевірте, чи запущений сервер, і спробуйте ще раз.",
+    "da": "Serverfejl (HTTP {n}). Kontrollér at serveren kører, og prøv igen.",
     "ar": "خطأ في الخادم (HTTP {n}). تحقق من تشغيل الخادم، ثم أعد المحاولة."
   },
   "auto.copyFail": {
@@ -3371,6 +3611,7 @@
     "fr": "Échec de la copie — sélectionnez le texte et copiez-le manuellement.",
     "pl": "Kopiowanie nie powiodło się — zaznacz tekst i skopiuj ręcznie.",
     "uk": "Не вдалося скопіювати — виділіть текст і скопіюйте вручну.",
+    "da": "Kopiering mislykkedes — markér teksten og kopiér manuelt.",
     "ar": "فشل النسخ — حدّد النص وانسخه يدويًا."
   },
   "auto.title": {
@@ -3385,6 +3626,7 @@
     "fr": "Pipeline automatique pour une URL",
     "pl": "Auto-pipeline URL",
     "uk": "Auto-pipeline для URL",
+    "da": "Auto-pipeline en URL",
     "ar": "خط أنابيب تلقائي لرابط"
   },
   "auto.intro": {
@@ -3399,6 +3641,7 @@
     "fr": "Collez une URL d'offre d'emploi — nous récupérerons le descriptif du poste, l'évaluerons par rapport à votre CV, générerons un PDF personnalisé et ajouteront une ligne à votre suiveur.",
     "pl": "Wklej URL oferty — pobierzemy JD, ocenimy go względem Twojego CV, wygenerujemy dopasowany PDF i dodamy wiersz do trackera.",
     "uk": "Вставте URL вакансії — ми отримаємо JD, оцінимо його відносно вашого CV, згенеруємо адаптований PDF і додамо рядок до трекера.",
+    "da": "Indsæt en job-URL — vi henter jobopslaget, vurderer det mod dit CV, genererer en tilpasset PDF og tilføjer en række til din tracker.",
     "ar": "الصق رابط وظيفة — سنجلب JD ونقيّمه مقابل CV ونُنشئ PDF مخصصًا ونضيف صفًا إلى متتبعك."
   },
   "auto.run": {
@@ -3413,6 +3656,7 @@
     "fr": "Lancer le pipeline automatique",
     "pl": "Uruchom auto-pipeline",
     "uk": "Запустити auto-pipeline",
+    "da": "Kør auto-pipeline",
     "ar": "تشغيل الخط التلقائي"
   },
   "auto.eta": {
@@ -3427,6 +3671,7 @@
     "fr": "~1–2 min",
     "pl": "~1–2 min",
     "uk": "~1–2 хв",
+    "da": "~1–2 min",
     "ar": "~1–2 دقيقة"
   },
   "advisor.eta": {
@@ -3441,6 +3686,7 @@
     "fr": "~30s",
     "pl": "~30s",
     "uk": "~30с",
+    "da": "~30s",
     "ar": "~30 ثانية"
   },
   "auto.etaTitle": {
@@ -3455,6 +3701,7 @@
     "fr": "Temps typique de bout en bout selon career-ops.org/docs",
     "pl": "Typowy czas od początku do końca wg career-ops.org/docs",
     "uk": "Типовий час виконання за career-ops.org/docs",
+    "da": "Typisk ende-til-ende-tid ifølge career-ops.org/docs",
     "ar": "الوقت المعتاد من البداية إلى النهاية وفق career-ops.org/docs"
   },
   "auto.step.validate": {
@@ -3469,6 +3716,7 @@
     "fr": "Validation de l'URL",
     "pl": "Walidacja URL",
     "uk": "Валідація URL",
+    "da": "Validerer URL",
     "ar": "التحقق من الرابط"
   },
   "auto.step.fetch": {
@@ -3483,6 +3731,7 @@
     "fr": "Récupération du descriptif du poste",
     "pl": "Pobieranie opisu stanowiska",
     "uk": "Отримання опису вакансії",
+    "da": "Henter jobbeskrivelse",
     "ar": "جلب وصف الوظيفة"
   },
   "auto.step.evaluate": {
@@ -3497,6 +3746,7 @@
     "fr": "Évaluation par rapport à votre CV",
     "pl": "Ocena względem CV",
     "uk": "Оцінка відносно вашого CV",
+    "da": "Vurderer mod dit CV",
     "ar": "التقييم مقابل CV"
   },
   "auto.step.pdf": {
@@ -3511,6 +3761,7 @@
     "fr": "Génération d'un PDF personnalisé",
     "pl": "Generowanie dopasowanego PDF",
     "uk": "Генерація адаптованого PDF",
+    "da": "Genererer tilpasset PDF",
     "ar": "إنشاء PDF مخصص"
   },
   "auto.step.tracker": {
@@ -3525,6 +3776,7 @@
     "fr": "Ajout au suiveur",
     "pl": "Dodawanie do trackera",
     "uk": "Додавання до трекера",
+    "da": "Tilføjer til tracker",
     "ar": "الإضافة إلى المتتبع"
   },
   "auto.evaluating": {
@@ -3539,6 +3791,7 @@
     "fr": "Appel Anthropic / Gemini (30–60 s)…",
     "pl": "Wywołanie Anthropic / Gemini (30–60 s)…",
     "uk": "Виклик Anthropic / Gemini (30–60 с)…",
+    "da": "Anthropic / Gemini-kald (30–60 s)…",
     "ar": "اتصال Anthropic / Gemini (30–60 ثانية)…"
   },
   "auto.pdfRunning": {
@@ -3553,6 +3806,7 @@
     "fr": "Rendu Playwright…",
     "pl": "Renderowanie Playwright…",
     "uk": "Рендеринг Playwright…",
+    "da": "Playwright-rendering…",
     "ar": "تصيير Playwright…"
   },
   "auto.invalidUrl": {
@@ -3567,6 +3821,7 @@
     "fr": "URL non valide",
     "pl": "nieprawidłowy URL",
     "uk": "недійсний URL",
+    "da": "ugyldig URL",
     "ar": "رابط غير صالح"
   },
   "auto.fetchFailed": {
@@ -3581,6 +3836,7 @@
     "fr": "Échec de la récupération : ",
     "pl": "pobieranie nie powiodło się: ",
     "uk": "помилка отримання: ",
+    "da": "hentning mislykkedes: ",
     "ar": "فشل الجلب: "
   },
   "auto.noCompany": {
@@ -3595,6 +3851,7 @@
     "fr": "entreprise inconnue — remplissez manuellement ci-dessous",
     "pl": "firma nieznana — uzupełnij ręcznie poniżej",
     "uk": "компанія невідома — заповніть вручну нижче",
+    "da": "virksomhed ukendt — udfyld manuelt nedenfor",
     "ar": "الشركة غير معروفة — أدخلها يدويًا أدناه"
   },
   "auto.deduped": {
@@ -3609,6 +3866,7 @@
     "fr": "déjà suivi",
     "pl": "już śledzony",
     "uk": "вже відстежується",
+    "da": "allerede sporet",
     "ar": "مُتتبَّع مسبقًا"
   },
   "auto.done": {
@@ -3623,6 +3881,7 @@
     "fr": "Pipeline automatique terminé",
     "pl": "Auto-pipeline zakończony",
     "uk": "Auto-pipeline завершено",
+    "da": "Auto-pipeline gennemført",
     "ar": "اكتمل الخط التلقائي"
   },
   "auto.score": {
@@ -3637,6 +3896,7 @@
     "fr": "Note",
     "pl": "Wynik",
     "uk": "Оцінка",
+    "da": "Score",
     "ar": "النتيجة"
   },
   "auto.legit": {
@@ -3651,6 +3911,7 @@
     "fr": "Légitime",
     "pl": "Legit",
     "uk": "Легіт",
+    "da": "Legit",
     "ar": "مصداقية"
   },
   "auto.openPdf": {
@@ -3665,6 +3926,7 @@
     "fr": "Ouvrir le PDF",
     "pl": "Otwórz PDF",
     "uk": "Відкрити PDF",
+    "da": "Åbn PDF",
     "ar": "فتح PDF"
   },
   "auto.viewMd": {
@@ -3679,6 +3941,7 @@
     "fr": "Afficher le markdown d'évaluation",
     "pl": "Zobacz markdown oceny",
     "uk": "Переглянути markdown оцінки",
+    "da": "Vis vurderings-markdown",
     "ar": "عرض Markdown التقييم"
   },
   "auto.failed": {
@@ -3693,6 +3956,7 @@
     "fr": "Pipelines automatiques échoués",
     "pl": "Auto-pipeline nie powiódł się",
     "uk": "Auto-pipeline завершився помилкою",
+    "da": "Auto-pipeline mislykkedes",
     "ar": "فشل الخط التلقائي"
   },
   "auto.openReport": {
@@ -3707,6 +3971,7 @@
     "fr": "Ouvrir le rapport",
     "pl": "Otwórz raport",
     "uk": "Відкрити звіт",
+    "da": "Åbn rapport",
     "ar": "فتح التقرير"
   },
   "auto.openTracker": {
@@ -3721,6 +3986,7 @@
     "fr": "Ouvrir le suivi",
     "pl": "Otwórz tracker",
     "uk": "Відкрити трекер",
+    "da": "Åbn tracker",
     "ar": "فتح المتتبع"
   },
   "dash.quick.title": {
@@ -3735,6 +4001,7 @@
     "fr": "Actions rapides",
     "pl": "Szybkie akcje",
     "uk": "Швидкі дії",
+    "da": "Hurtige handlinger",
     "ar": "إجراءات سريعة"
   },
   "dash.quick.searchApply": {
@@ -3749,6 +4016,7 @@
     "fr": "Rechercher & Appliquer",
     "pl": "Szukaj i aplikuj",
     "uk": "Пошук і подача",
+    "da": "Søg og ansøg",
     "ar": "بحث وتقديم"
   },
   "dash.quick.researchPrep": {
@@ -3763,6 +4031,7 @@
     "fr": "Recherche & Préparation",
     "pl": "Research i przygotowanie",
     "uk": "Дослідження і підготовка",
+    "da": "Research og forberedelse",
     "ar": "بحث وتحضير"
   },
   "dash.quick.promptBuilders": {
@@ -3777,6 +4046,7 @@
     "fr": "Construire des prompts",
     "pl": "Kreatory promptów",
     "uk": "Конструктори промптів",
+    "da": "Prompt-byggere",
     "ar": "منشئو الأوامر"
   },
   "dash.quick.workspace": {
@@ -3791,6 +4061,7 @@
     "fr": "Espace de travail",
     "pl": "Przestrzeń robocza",
     "uk": "Робочий простір",
+    "da": "Arbejdsområde",
     "ar": "مساحة العمل"
   },
   "dash.quick.system": {
@@ -3805,6 +4076,7 @@
     "fr": "Système",
     "pl": "System",
     "uk": "Система",
+    "da": "System",
     "ar": "النظام"
   },
   "dash.quick.scanCta": {
@@ -3819,6 +4091,7 @@
     "fr": "Scanner toutes les sources",
     "pl": "Skanuj wszystkie źródła",
     "uk": "Сканувати всі джерела",
+    "da": "Scan alle kilder",
     "ar": "مسح جميع المصادر"
   },
   "dash.quick.scanSub": {
@@ -3833,6 +4106,7 @@
     "fr": "Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr",
     "pl": "Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr",
     "uk": "Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr",
+    "da": "Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr",
     "ar": "Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday · RSS · hh.ru · Habr"
   },
   "dash.quick.pipelineSub": {
@@ -3847,6 +4121,7 @@
     "fr": "URLs en attente",
     "pl": "Oczekujące URL-e",
     "uk": "Очікуючі URL",
+    "da": "Afventende URL'er",
     "ar": "الروابط المعلّقة"
   },
   "dash.quick.evaluateCta": {
@@ -3861,6 +4136,7 @@
     "fr": "Évaluer une offre d'emploi",
     "pl": "Oceń JD",
     "uk": "Оцінити JD",
+    "da": "Vurdér et jobopslag",
     "ar": "تقييم JD"
   },
   "dash.quick.evaluateSub": {
@@ -3875,6 +4151,7 @@
     "fr": "Scoring Anthropic-first",
     "pl": "Scoring z priorytetem Anthropic",
     "uk": "Оцінка на основі Anthropic",
+    "da": "Scoring med Anthropic først",
     "ar": "تسجيل يُقدّم Anthropic أولًا"
   },
   "dash.quick.trackerSub": {
@@ -3889,6 +4166,7 @@
     "fr": "Candidatures",
     "pl": "Aplikacje",
     "uk": "Заявки",
+    "da": "Ansøgninger",
     "ar": "الطلبات"
   },
   "dash.quick.deepCta": {
@@ -3903,6 +4181,7 @@
     "fr": "Recherche approfondie",
     "pl": "Dogłębny research",
     "uk": "Глибокий рісьорч",
+    "da": "Dybdegående research",
     "ar": "بحث معمّق"
   },
   "dash.quick.deepSub": {
@@ -3917,6 +4196,7 @@
     "fr": "Intelligence d'entreprise via LLM",
     "pl": "Informacje o firmie przez LLM",
     "uk": "Інформація про компанію через LLM",
+    "da": "Virksomhedsindsigt via LLM",
     "ar": "معلومات الشركة عبر LLM"
   },
   "dash.quick.interviewCta": {
@@ -3931,6 +4211,7 @@
     "fr": "Préparation à l'entretien",
     "pl": "Przygotowanie do rozmowy",
     "uk": "Підготовка до інтерв'ю",
+    "da": "Interviewforberedelse",
     "ar": "التحضير للمقابلة"
   },
   "dash.quick.interviewSub": {
@@ -3945,6 +4226,7 @@
     "fr": "Recherches sauvegardées",
     "pl": "Zapisany research",
     "uk": "Збережені матеріали",
+    "da": "Gemt research",
     "ar": "البحوث المحفوظة"
   },
   "dash.quick.patternsCta": {
@@ -3959,6 +4241,7 @@
     "fr": "Modèles",
     "pl": "Wzorce",
     "uk": "Патерни",
+    "da": "Mønstre",
     "ar": "الأنماط"
   },
   "dash.quick.patternsSub": {
@@ -3973,6 +4256,7 @@
     "fr": "Analyser vos succès",
     "pl": "Analizuj swoje sukcesy",
     "uk": "Аналіз ваших перемог",
+    "da": "Analysér dine gevinster",
     "ar": "تحليل انتصاراتك"
   },
   "dash.quick.followupCta": {
@@ -3987,6 +4271,7 @@
     "fr": "Suivi",
     "pl": "Follow-up",
     "uk": "Follow-up",
+    "da": "Opfølgning",
     "ar": "المتابعة"
   },
   "dash.quick.followupSub": {
@@ -4001,6 +4286,7 @@
     "fr": "Email après l'entretien",
     "pl": "E-mail po rozmowie",
     "uk": "Email після інтерв'ю",
+    "da": "E-mail efter interview",
     "ar": "بريد ما بعد المقابلة"
   },
   "dash.quick.projectCta": {
@@ -4015,6 +4301,7 @@
     "fr": "Idées de projet",
     "pl": "Pomysły na projekty",
     "uk": "Ідеї проєктів",
+    "da": "Projektidéer",
     "ar": "أفكار المشاريع"
   },
   "dash.quick.projectSub": {
@@ -4029,6 +4316,7 @@
     "fr": "Personnaliser un portfolio",
     "pl": "Dopasuj portfolio",
     "uk": "Адаптувати портфоліо",
+    "da": "Tilpas en portefølje",
     "ar": "تخصيص الأعمال"
   },
   "dash.quick.trainingCta": {
@@ -4043,6 +4331,7 @@
     "fr": "Plan de formation",
     "pl": "Plan szkolenia",
     "uk": "Plan навчання",
+    "da": "Uddannelsesplan",
     "ar": "خطة التدريب"
   },
   "dash.quick.trainingSub": {
@@ -4057,6 +4346,7 @@
     "fr": "Gap en compétences → curriculum",
     "pl": "Luka kompetencyjna → program",
     "uk": "Прогалина у навичках → curriculum",
+    "da": "Kompetencekløft → læseplan",
     "ar": "فجوة المهارات ← المناهج"
   },
   "dash.quick.batchCta": {
@@ -4071,6 +4361,7 @@
     "fr": "Évaluation par lots",
     "pl": "Ocena partiami",
     "uk": "Пакетна оцінка",
+    "da": "Batch-vurdering",
     "ar": "تقييم دُفعي"
   },
   "dash.quick.batchSub": {
@@ -4085,6 +4376,7 @@
     "fr": "Plusieurs offres d'emploi à la fois",
     "pl": "Wiele JD naraz",
     "uk": "Кілька JD за раз",
+    "da": "Flere jobopslag på én gang",
     "ar": "عدة JDs في آنٍ واحد"
   },
   "dash.quick.contactoCta": {
@@ -4099,6 +4391,7 @@
     "fr": "Recherche active",
     "pl": "Outreach",
     "uk": "Outreach",
+    "da": "Outreach",
     "ar": "التواصل"
   },
   "dash.quick.contactoSub": {
@@ -4113,6 +4406,7 @@
     "fr": "Recruteur / recommandation",
     "pl": "Rekruter / polecenie",
     "uk": "Рекрутер / реферал",
+    "da": "Rekrutteringskonsulent / henvisning",
     "ar": "المسؤول / الإحالة"
   },
   "dash.quick.cvCta": {
@@ -4127,6 +4421,7 @@
     "fr": "Modifier le CV",
     "pl": "Edytuj CV",
     "uk": "Редагувати CV",
+    "da": "Redigér CV",
     "ar": "تعديل CV"
   },
   "dash.quick.cvSub": {
@@ -4141,6 +4436,7 @@
     "fr": "cv.md côté à côté",
     "pl": "cv.md obok siebie",
     "uk": "cv.md поруч",
+    "da": "cv.md side om side",
     "ar": "cv.md جنبًا إلى جنب"
   },
   "dash.quick.profileCta": {
@@ -4155,6 +4451,7 @@
     "fr": "Profil",
     "pl": "Profil",
     "uk": "Профіль",
+    "da": "Profil",
     "ar": "الملف الشخصي"
   },
   "dash.quick.profileSub": {
@@ -4169,6 +4466,7 @@
     "fr": "config/profile.yml",
     "pl": "config/profile.yml",
     "uk": "config/profile.yml",
+    "da": "config/profile.yml",
     "ar": "config/profile.yml"
   },
   "dash.quick.configCta": {
@@ -4183,6 +4481,7 @@
     "fr": "Paramètres de l'application",
     "pl": "Ustawienia aplikacji",
     "uk": "Налаштування застосунку",
+    "da": "App-indstillinger",
     "ar": "إعدادات التطبيق"
   },
   "dash.quick.configSub": {
@@ -4197,6 +4496,7 @@
     "fr": "Clés API, hôte, port",
     "pl": "Klucze API, host, port",
     "uk": "API-ключі, хост, порт",
+    "da": "API-nøgler, host, port",
     "ar": "مفاتيح API، المضيف، المنفذ"
   },
   "dash.quick.reportsSub": {
@@ -4211,6 +4511,7 @@
     "fr": "Évaluations passées",
     "pl": "Poprzednie oceny",
     "uk": "Минулі оцінки",
+    "da": "Tidligere vurderinger",
     "ar": "التقييمات السابقة"
   },
   "dash.quick.applyCta": {
@@ -4225,6 +4526,7 @@
     "fr": "Appliquer l'aideur",
     "pl": "Asystent aplikowania",
     "uk": "Помічник подачі",
+    "da": "Ansøgningshjælper",
     "ar": "مساعد التقديم"
   },
   "dash.quick.applySub": {
@@ -4239,6 +4541,7 @@
     "fr": "Liste de vérification de la soumission",
     "pl": "Lista kontrolna zgłoszenia",
     "uk": "Чекліст подання",
+    "da": "Tjekliste for indsendelse",
     "ar": "قائمة تدقيق الإرسال"
   },
   "dash.quick.activityCta": {
@@ -4253,6 +4556,7 @@
     "fr": "Journal d'activité",
     "pl": "Dziennik aktywności",
     "uk": "Журнал активності",
+    "da": "Aktivitetslog",
     "ar": "سجل النشاط"
   },
   "dash.quick.activitySub": {
@@ -4267,6 +4571,7 @@
     "fr": "Traçabilité",
     "pl": "Ślad audytu",
     "uk": "Аудиторський слід",
+    "da": "Revisionsspor",
     "ar": "مسار التدقيق"
   },
   "dash.quick.healthSub": {
@@ -4281,6 +4586,7 @@
     "fr": "Vérifications système",
     "pl": "Sprawdzenia systemu",
     "uk": "Системні перевірки",
+    "da": "Systemtjek",
     "ar": "فحوصات النظام"
   },
   "dash.quick.helpSub": {
@@ -4295,6 +4601,7 @@
     "fr": "Guide en application",
     "pl": "Przewodnik w aplikacji",
     "uk": "Вбудований довідник",
+    "da": "Vejledning i appen",
     "ar": "دليل داخل التطبيق"
   },
   "dash.system.title": {
@@ -4309,6 +4616,7 @@
     "fr": "État du système",
     "pl": "Stan systemu",
     "uk": "Стан системи",
+    "da": "Systemstatus",
     "ar": "حالة النظام"
   },
   "dash.system.required": {
@@ -4323,6 +4631,7 @@
     "fr": "Requis",
     "pl": "Wymagane",
     "uk": "Обов'язкове",
+    "da": "Påkrævet",
     "ar": "مطلوب"
   },
   "dash.system.warnings": {
@@ -4337,6 +4646,7 @@
     "fr": "Avertissements",
     "pl": "Ostrzeżenia",
     "uk": "Попередження",
+    "da": "Advarsler",
     "ar": "تحذيرات"
   },
   "dash.system.set": {
@@ -4351,6 +4661,7 @@
     "fr": "activé",
     "pl": "ustawiony",
     "uk": "встановлено",
+    "da": "sat",
     "ar": "مضبوط"
   },
   "dash.system.unset": {
@@ -4365,6 +4676,7 @@
     "fr": "désactivé",
     "pl": "nieustawiony",
     "uk": "не встановлено",
+    "da": "ikke sat",
     "ar": "غير مضبوط"
   },
   "dash.provider.live": {
@@ -4379,6 +4691,7 @@
     "fr": "Évaluations en direct",
     "pl": "Oceny na żywo",
     "uk": "Live-оцінки",
+    "da": "Live-vurderinger",
     "ar": "تقييمات مباشرة"
   },
   "dash.provider.manual": {
@@ -4393,6 +4706,7 @@
     "fr": "Mode de saisie manuelle (aucune clé API définie)",
     "pl": "Tryb ręcznego promptu (brak klucza API)",
     "uk": "Ручний режим промптів (API-ключ не встановлено)",
+    "da": "Manuel prompt-tilstand (ingen API-nøgle sat)",
     "ar": "وضع الأمر اليدوي (لا مفتاح API)"
   },
   "cv.unsavedConfirm": {
@@ -4407,6 +4721,7 @@
     "fr": "Vous avez des modifications non sauvegardées dans votre CV. Quitter quand même ?",
     "pl": "Masz niezapisane zmiany CV. Opuścić mimo to?",
     "uk": "У вас є незбережені зміни CV. Все одно покинути?",
+    "da": "Du har ikke-gemte CV-ændringer. Forlad alligevel?",
     "ar": "لديك تغييرات غير محفوظة في CV. الخروج على أي حال؟"
   },
   "health.fix": {
@@ -4421,6 +4736,7 @@
     "fr": "Corriger →",
     "pl": "Napraw →",
     "uk": "Виправити →",
+    "da": "Ret →",
     "ar": "إصلاح ←"
   },
   "health.fixAria": {
@@ -4435,6 +4751,7 @@
     "fr": "Corriger cela",
     "pl": "Napraw to",
     "uk": "Виправити це",
+    "da": "Ret dette",
     "ar": "إصلاح هذا"
   },
   "notif.clearAll": {
@@ -4449,6 +4766,7 @@
     "fr": "Tout supprimer",
     "pl": "Wyczyść wszystko",
     "uk": "Очистити все",
+    "da": "Ryd alle",
     "ar": "مسح الكل"
   },
   "notif.clearAllAria": {
@@ -4463,6 +4781,7 @@
     "fr": "Supprimer toutes les notifications",
     "pl": "Wyczyść wszystkie powiadomienia",
     "uk": "Очистити всі сповіщення",
+    "da": "Ryd alle notifikationer",
     "ar": "مسح جميع الإشعارات"
   },
   "notif.dismiss": {
@@ -4477,6 +4796,7 @@
     "fr": "Ignorer",
     "pl": "Odrzuć",
     "uk": "Закрити",
+    "da": "Afvis",
     "ar": "رفض"
   },
   "config.activeProvider": {
@@ -4491,6 +4811,7 @@
     "fr": "Actif",
     "pl": "Aktywny",
     "uk": "Активний",
+    "da": "Aktiv",
     "ar": "نشط"
   },
   "config.keysConfiguredPrefix": {
@@ -4505,6 +4826,7 @@
     "fr": "Clés",
     "pl": "Klucze",
     "uk": "Ключі",
+    "da": "Nøgler",
     "ar": "المفاتيح"
   },
   "scan.title": {
@@ -4519,6 +4841,7 @@
     "fr": "Recherche d'offres d'emploi",
     "pl": "Wyszukiwanie ofert",
     "uk": "Пошук вакансій",
+    "da": "Jobsøgning",
     "ar": "البحث عن وظائف"
   },
   "scan.atsBadge": {
@@ -4533,6 +4856,7 @@
     "fr": "Adaptateurs ATS",
     "pl": "Adaptery ATS",
     "uk": "ATS адаптери",
+    "da": "ATS-adaptere",
     "ar": "محوّلات ATS"
   },
   "scan.regionalBadge": {
@@ -4547,6 +4871,7 @@
     "fr": "Portails régionaux",
     "pl": "Portale regionalne",
     "uk": "Регіональні портали",
+    "da": "Regionale portaler",
     "ar": "البوابات الإقليمية"
   },
   "scan.hhWarning": {
@@ -4561,6 +4886,7 @@
     "fr": "hh.ru peut renvoyer un code 403 pour les adresses IP non russes — exécutez via une adresse IP russe / un réseau privé virtuel si vous le voyez. Habr Career fonctionne depuis n'importe quelle IP.",
     "pl": "hh.ru może zwracać 403 spoza IP z Rosji — uruchom przez rosyjskie IP / VPN jeśli to zobaczysz. Habr Career działa z dowolnego IP.",
     "uk": "hh.ru може повертати 403 з не-RU IP — запускайте через російський IP / VPN якщо виникає. Habr Career працює з будь-якого IP.",
+    "da": "hh.ru kan returnere 403 fra ikke-russiske IP'er — kør via en russisk IP / VPN, hvis du ser det. Habr Career virker fra enhver IP.",
     "ar": "قد يُعيد hh.ru خطأ 403 من عناوين IP غير روسية — استخدم IP روسي / VPN إذا رأيت ذلك. Habr Career يعمل من أي IP."
   },
   "scan.subtitle": {
@@ -4575,6 +4901,7 @@
     "fr": "Adaptateurs ATS + portails régionaux (hh.ru, Habr Career)",
     "pl": "Adaptery ATS + portale regionalne (hh.ru, Habr Career)",
     "uk": "ATS адаптери + регіональні портали (hh.ru, Habr Career)",
+    "da": "ATS-adaptere + regionale portaler (hh.ru, Habr Career)",
     "ar": "محوّلات ATS + بوابات إقليمية (hh.ru، Habr Career)"
   },
   "scan.btnAll": {
@@ -4589,6 +4916,7 @@
     "fr": "Scanner toutes les sources",
     "pl": "Skanuj wszystkie źródła",
     "uk": "Сканувати всі джерела",
+    "da": "Scan alle kilder",
     "ar": "مسح جميع المصادر"
   },
   "scan.btnRun": {
@@ -4603,6 +4931,7 @@
     "fr": "Scanner",
     "pl": "Skanuj",
     "uk": "Сканувати",
+    "da": "Scan",
     "ar": "مسح"
   },
   "scan.consoleLabel": {
@@ -4617,6 +4946,7 @@
     "fr": "Journal de sortie du scan",
     "pl": "Dziennik wyjścia skanowania",
     "uk": "Журнал виводу сканування",
+    "da": "Scanningens output-log",
     "ar": "سجل مخرجات المسح"
   },
   "scan.stop": {
@@ -4631,6 +4961,7 @@
     "fr": "Arrêter",
     "pl": "Zatrzymaj",
     "uk": "Зупинити",
+    "da": "Stop",
     "ar": "إيقاف"
   },
   "scan.stopped": {
@@ -4645,6 +4976,7 @@
     "fr": "arrêté",
     "pl": "zatrzymano",
     "uk": "зупинено",
+    "da": "stoppet",
     "ar": "متوقف"
   },
   "scan.progress": {
@@ -4659,6 +4991,7 @@
     "fr": "Analyse en cours…",
     "pl": "Skanowanie…",
     "uk": "Сканування…",
+    "da": "Scanner…",
     "ar": "جارٍ المسح…"
   },
   "scan.statusDone": {
@@ -4673,6 +5006,7 @@
     "fr": "Scan terminé",
     "pl": "Skanowanie zakończone",
     "uk": "Сканування завершено",
+    "da": "Scanning gennemført",
     "ar": "اكتمل المسح"
   },
   "scan.statusFailed": {
@@ -4687,6 +5021,7 @@
     "fr": "Scan échoué",
     "pl": "Skanowanie nie powiodło się",
     "uk": "Помилка сканування",
+    "da": "Scanning mislykkedes",
     "ar": "فشل المسح"
   },
   "scan.statusStopped": {
@@ -4701,6 +5036,7 @@
     "fr": "Scan arrêté",
     "pl": "Skanowanie zatrzymane",
     "uk": "Сканування зупинено",
+    "da": "Scanning stoppet",
     "ar": "توقف المسح"
   },
   "scan.errBannerTitle": {
@@ -4715,6 +5051,7 @@
     "fr": "Scan échoué",
     "pl": "Skanowanie nie powiodło się",
     "uk": "Помилка сканування",
+    "da": "Scanning mislykkedes",
     "ar": "فشل المسح"
   },
   "scan.errRetry": {
@@ -4729,6 +5066,7 @@
     "fr": "Réessayer le scan",
     "pl": "Ponów skanowanie",
     "uk": "Повторити сканування",
+    "da": "Prøv scanning igen",
     "ar": "إعادة المسح"
   },
   "scan.runAll": {
@@ -4743,6 +5081,7 @@
     "fr": "Analyse de toutes les sources…",
     "pl": "Skanowanie wszystkich źródeł…",
     "uk": "Сканування всіх джерел…",
+    "da": "Scanner alle kilder…",
     "ar": "جارٍ مسح جميع المصادر…"
   },
   "scan.btnAts": {
@@ -4757,6 +5096,7 @@
     "fr": "🌐 Scan ATS",
     "pl": "🌐 Skan ATS",
     "uk": "🌐 ATS сканування",
+    "da": "🌐 ATS-scanning",
     "ar": "🌐 مسح ATS"
   },
   "scan.btnRegional": {
@@ -4771,6 +5111,7 @@
     "fr": "🗺 Scan régional",
     "pl": "🗺 Skan regionalny",
     "uk": "🗺 Регіональне сканування",
+    "da": "🗺 Regional scanning",
     "ar": "🗺 مسح إقليمي"
   },
   "scan.btnPipe": {
@@ -4785,6 +5126,7 @@
     "fr": "Pipelines",
     "pl": "Pipeline",
     "uk": "Pipeline",
+    "da": "Pipeline",
     "ar": "خط الأنابيب"
   },
   "scan.chip.dynamic": {
@@ -4799,6 +5141,7 @@
     "fr": "Mots-clés",
     "pl": "Słowa kluczowe",
     "uk": "Ключові слова",
+    "da": "Nøgleord",
     "ar": "الكلمات المفتاحية"
   },
   "scan.dryRun": {
@@ -4813,6 +5156,7 @@
     "fr": "Essai sec (aucun écrit)",
     "pl": "Próba (bez zapisu)",
     "uk": "Пробний запуск (без запису)",
+    "da": "Tør kørsel (ingen skrivning)",
     "ar": "تشغيل جاف (بدون كتابة)"
   },
   "scan.companyLbl": {
@@ -4827,6 +5171,7 @@
     "fr": "Entreprise (facultatif)",
     "pl": "Firma (opcjonalnie)",
     "uk": "Компанія (необов.)",
+    "da": "Virksomhed (valgfrit)",
     "ar": "الشركة (اختياري)"
   },
   "scan.boosted": {
@@ -4841,6 +5186,7 @@
     "fr": "boosté",
     "pl": "promowany",
     "uk": "boosted",
+    "da": "fremhævet",
     "ar": "معزّز"
   },
   "batch-prompt.deprecated": {
@@ -4855,6 +5201,7 @@
     "fr": "Ce chemin est obsolète. La page canonique Batch d'évaluation se trouve maintenant à #/batch (éditeur TSV + exécuteur parallèle). Ce générateur de prompts hérité sera supprimé dans la version v1.17.0.",
     "pl": "Ta ścieżka jest przestarzała. Kanoniczna strona Oceny partiami jest teraz pod #/batch (edytor TSV + równoległy runner). Ten starszy kreator promptów zostanie usunięty w v1.17.0.",
     "uk": "Цей маршрут застарів. Канонічна сторінка пакетної оцінки тепер знаходиться на #/batch (TSV редактор + паралельний runner). Цей старий конструктор промптів буде видалено у v1.17.0.",
+    "da": "Denne rute er forældet. Den kanoniske Batch-vurderingsside findes nu på #/batch (TSV-editor + parallel runner). Denne ældre prompt-bygger fjernes i v1.17.0.",
     "ar": "هذا المسار مهمل. صفحة التقييم الدُفعي القانونية الآن في #/batch (محرر TSV + مشغّل متوازٍ). سيُزال منشئ الأوامر القديم هذا في v1.17.0."
   },
   "batch-prompt.goCanonical": {
@@ -4869,6 +5216,7 @@
     "fr": "Ouvrir #/batch",
     "pl": "Otwórz #/batch",
     "uk": "Відкрити #/batch",
+    "da": "Åbn #/batch",
     "ar": "فتح #/batch"
   },
   "batch.inputTitle": {
@@ -4883,6 +5231,7 @@
     "fr": "batch/batch-input.tsv",
     "pl": "batch/batch-input.tsv",
     "uk": "batch/batch-input.tsv",
+    "da": "batch/batch-input.tsv",
     "ar": "batch/batch-input.tsv"
   },
   "batch.inputHint": {
@@ -4897,6 +5246,7 @@
     "fr": "Séparateur par tabulation : id<TAB>url<TAB>source<TAB>notes (une ligne par JD)",
     "pl": "Oddzielone tabulatorem: id<TAB>url<TAB>source<TAB>notes (jeden wiersz na JD)",
     "uk": "Розділені табуляцією: id<TAB>url<TAB>source<TAB>notes (один рядок на JD)",
+    "da": "Tabulator-adskilt: id<TAB>url<TAB>source<TAB>notes (én række pr. jobopslag)",
     "ar": "مفصول بعلامات تبويب: id<TAB>url<TAB>source<TAB>notes (صف واحد لكل JD)"
   },
   "batch.runTitle": {
@@ -4911,6 +5261,7 @@
     "fr": "Exécuter",
     "pl": "Uruchom",
     "uk": "Запуск",
+    "da": "Kør",
     "ar": "تشغيل"
   },
   "batch.parallelLbl": {
@@ -4925,6 +5276,7 @@
     "fr": "Parallèle",
     "pl": "Równolegle",
     "uk": "Паралельно",
+    "da": "Parallelt",
     "ar": "متوازٍ"
   },
   "batch.tsvAria": {
@@ -4939,6 +5291,7 @@
     "fr": "Batch TSV — une offre par ligne : id, url, source, notes (séparateur par tabulation)",
     "pl": "Batch TSV — jedna oferta w wierszu: id, url, source, notes (oddzielone tabulatorem)",
     "uk": "Batch TSV — одна вакансія на рядок: id, url, source, notes (через табуляцію)",
+    "da": "Batch-TSV — ét tilbud pr. linje: id, url, source, notes (tabulator-adskilt)",
     "ar": "دُفعة TSV — عرض واحد في السطر: id، url، source، notes (مفصول بعلامات تبويب)"
   },
   "batch.parallelAria": {
@@ -4953,6 +5306,7 @@
     "fr": "Nombre de travailleurs concurrents",
     "pl": "Liczba równoległych workerów",
     "uk": "Кількість паралельних воркерів",
+    "da": "Antal samtidige workers",
     "ar": "عدد العمال المتزامنين"
   },
   "batch.minScoreAria": {
@@ -4967,6 +5321,7 @@
     "fr": "Seuil minimal de score (ex. 4.0)",
     "pl": "Minimalny próg wyniku (np. 4.0)",
     "uk": "Мінімальний поріг score (напр. 4.0)",
+    "da": "Minimum score-tærskel (f.eks. 4.0)",
     "ar": "الحد الأدنى لعتبة النتيجة (مثال: 4.0)"
   },
   "batch.parallel": {
@@ -4981,6 +5336,7 @@
     "fr": "parallèle",
     "pl": "równolegle",
     "uk": "паралельно",
+    "da": "parallelt",
     "ar": "متوازٍ"
   },
   "batch.atATime": {
@@ -4995,6 +5351,7 @@
     "fr": "à la fois",
     "pl": "na raz",
     "uk": "за раз",
+    "da": "ad gangen",
     "ar": "في وقت واحد"
   },
   "batch.minScoreLbl": {
@@ -5009,6 +5366,7 @@
     "fr": "Score min (facultatif)",
     "pl": "Minimalny wynik (opcjonalnie)",
     "uk": "Мін. score (необов.)",
+    "da": "Min. score (valgfrit)",
     "ar": "الحد الأدنى للنتيجة (اختياري)"
   },
   "batch.dryRun": {
@@ -5023,6 +5381,7 @@
     "fr": "Essai sec",
     "pl": "Próba",
     "uk": "Пробний запуск",
+    "da": "Tør kørsel",
     "ar": "تشغيل جاف"
   },
   "batch.retry": {
@@ -5037,6 +5396,7 @@
     "fr": "Réessayer les échecs",
     "pl": "Ponów nieudane",
     "uk": "Повторити невдалі",
+    "da": "Prøv fejlede igen",
     "ar": "إعادة الفاشلة"
   },
   "batch.maxRetriesLbl": {
@@ -5051,6 +5411,7 @@
     "fr": "Nombre maximal de tentatives",
     "pl": "Maks. ponowień",
     "uk": "Макс. повторень",
+    "da": "Maks. forsøg",
     "ar": "الحد الأقصى للإعادة"
   },
   "batch.maxRetriesAria": {
@@ -5065,6 +5426,7 @@
     "fr": "Nombre maximal d'essais pour chaque offre échouée (1-10)",
     "pl": "Maksymalna liczba ponowień dla nieudanej oferty (1-10)",
     "uk": "Максимальна кількість повторних спроб для кожної невдалої вакансії (1-10)",
+    "da": "Maksimalt antal genforsøg pr. fejlet tilbud (1-10)",
     "ar": "الحد الأقصى لمحاولات الإعادة لكل عرض فاشل (1-10)"
   },
   "batch.modelLbl": {
@@ -5079,6 +5441,7 @@
     "fr": "Modèle",
     "pl": "Model",
     "uk": "Модель",
+    "da": "Model",
     "ar": "النموذج"
   },
   "batch.modelAria": {
@@ -5093,6 +5456,7 @@
     "fr": "Modèle Claude passé à batch-runner --model (facultatif, par défaut Claude Max)",
     "pl": "Model Claude przekazywany do batch-runner --model (opcjonalnie, domyślnie Claude Max)",
     "uk": "Модель Claude, передана до batch-runner --model (необов., за замовч. Claude Max)",
+    "da": "Claude-model sendt til batch-runner --model (valgfrit, standard Claude Max)",
     "ar": "نموذج Claude المُمرَّر إلى batch-runner --model (اختياري، الافتراضي Claude Max)"
   },
   "batch.startFromLbl": {
@@ -5107,6 +5471,7 @@
     "fr": "Commencer à #",
     "pl": "Zacznij od #",
     "uk": "Починати з #",
+    "da": "Start fra #",
     "ar": "ابدأ من #"
   },
   "batch.startFromAria": {
@@ -5121,6 +5486,7 @@
     "fr": "Ignorer les ID d'offres inférieurs à ce nombre (facultatif)",
     "pl": "Pomiń ID ofert poniżej tej liczby (opcjonalnie)",
     "uk": "Пропустити ID вакансій нижче цього числа (необов.)",
+    "da": "Spring tilbud-id'er under dette tal over (valgfrit)",
     "ar": "تخطي معرّفات العروض أدنى من هذا الرقم (اختياري)"
   },
   "batch.runBtn": {
@@ -5135,6 +5501,7 @@
     "fr": "Exécuter le batch",
     "pl": "Uruchom partię",
     "uk": "Запустити пакет",
+    "da": "Kør batch",
     "ar": "تشغيل الدُفعة"
   },
   "batch.running": {
@@ -5149,6 +5516,7 @@
     "fr": "Évaluation de batch en cours…",
     "pl": "Uruchamianie oceny partiami…",
     "uk": "Запуск пакетного оцінювача…",
+    "da": "Kører batch-vurdering…",
     "ar": "جارٍ تشغيل مقيّم الدُفعة…"
   },
   "batch.done": {
@@ -5163,6 +5531,7 @@
     "fr": "Lot terminé",
     "pl": "Partia zakończona",
     "uk": "Пакет завершено",
+    "da": "Batch færdig",
     "ar": "اكتملت الدُفعة"
   },
   "batch.additions": {
@@ -5177,6 +5546,7 @@
     "fr": "ajouts",
     "pl": "uzupełnienia",
     "uk": "доповнень",
+    "da": "tilføjelser",
     "ar": "إضافات"
   },
   "batch.rows": {
@@ -5191,6 +5561,7 @@
     "fr": "lignes",
     "pl": "wierszy",
     "uk": "рядків",
+    "da": "rækker",
     "ar": "صفوف"
   },
   "batch.saved": {
@@ -5205,6 +5576,7 @@
     "fr": "Enregistré",
     "pl": "Zapisano",
     "uk": "Збережено",
+    "da": "Gemt",
     "ar": "محفوظ"
   },
   "batch.additionsTitle": {
@@ -5219,6 +5591,7 @@
     "fr": "Suivi des ajouts",
     "pl": "Uzupełnienia trackera",
     "uk": "Доповнення трекера",
+    "da": "Tracker-tilføjelser",
     "ar": "إضافات المتتبع"
   },
   "batch.noAdditions": {
@@ -5233,6 +5606,7 @@
     "fr": "Aucun ajout en attente dans le lot/suivi-ajouts/ — exécutez d'abord l'évaluateur de lots.",
     "pl": "Brak oczekujących uzupełnień w batch/tracker-additions/ — najpierw uruchom ocenę partiami.",
     "uk": "Немає очікуючих доповнень у batch/tracker-additions/ — спочатку запустіть пакетний оцінювач.",
+    "da": "Ingen afventende tilføjelser i batch/tracker-additions/ — kør batch-vurderingen først.",
     "ar": "لا إضافات معلّقة في batch/tracker-additions/ — شغّل مقيّم الدُفعة أولًا."
   },
   "batch.pendingAdditions": {
@@ -5247,6 +5621,7 @@
     "fr": "ajouts au suivi en attente :",
     "pl": "oczekujące uzupełnienia trackera:",
     "uk": "очікуючих доповнень до трекера:",
+    "da": "afventende tracker-tilføjelser:",
     "ar": "إضافات متتبع معلّقة:"
   },
   "batch.merge": {
@@ -5261,6 +5636,7 @@
     "fr": "Fusionner avec le suivi",
     "pl": "Scal z trackerem",
     "uk": "Об'єднати з трекером",
+    "da": "Flet ind i tracker",
     "ar": "دمج في المتتبع"
   },
   "batch.merged": {
@@ -5275,6 +5651,7 @@
     "fr": "Fusionné avec le suivi",
     "pl": "Scalono z trackerem",
     "uk": "Об'єднано з трекером",
+    "da": "Flettet ind i tracker",
     "ar": "تم الدمج في المتتبع"
   },
   "batch.noRunnerTitle": {
@@ -5289,6 +5666,7 @@
     "fr": "batch/batch-runner.sh introuvable",
     "pl": "Nie znaleziono batch/batch-runner.sh",
     "uk": "batch/batch-runner.sh не знайдено",
+    "da": "batch/batch-runner.sh blev ikke fundet",
     "ar": "batch/batch-runner.sh غير موجود"
   },
   "batch.noRunnerBody": {
@@ -5303,6 +5681,7 @@
     "fr": "Le runner se trouve dans le projet parent career-ops. Assurez-vous que batch/batch-runner.sh existe et est exécutable (chmod +x).",
     "pl": "Runner znajduje się w nadrzędnym projekcie career-ops. Upewnij się, że batch/batch-runner.sh istnieje i jest wykonywalny (chmod +x).",
     "uk": "Runner знаходиться у батьківському проєкті career-ops. Переконайтесь, що batch/batch-runner.sh існує і є виконуваним (chmod +x).",
+    "da": "Runneren ligger i det overordnede career-ops-projekt. Sørg for, at batch/batch-runner.sh findes og er eksekverbar (chmod +x).",
     "ar": "المشغّل يوجد في مشروع career-ops الأصلي. تأكد من وجود batch/batch-runner.sh وأنه قابل للتنفيذ (chmod +x)."
   },
   "scan.boostedBy": {
@@ -5317,6 +5696,7 @@
     "fr": "Augmenté par",
     "pl": "Promowany przez",
     "uk": "Boosted by",
+    "da": "Fremhævet af",
     "ar": "معزّز بواسطة"
   },
   "scan.allCompanies": {
@@ -5331,6 +5711,7 @@
     "fr": "toutes les entreprises",
     "pl": "wszystkie firmy",
     "uk": "всі компанії",
+    "da": "alle virksomheder",
     "ar": "جميع الشركات"
   },
   "scan.results": {
@@ -5345,6 +5726,7 @@
     "fr": "Postes trouvés",
     "pl": "Znalezione oferty",
     "uk": "Знайдено вакансій",
+    "da": "Fundne jobopslag",
     "ar": "الوظائف المُوجَدة"
   },
   "scan.advancedFilters": {
@@ -5359,6 +5741,7 @@
     "fr": "Filtres avancés",
     "pl": "Filtry zaawansowane",
     "uk": "Розширені фільтри",
+    "da": "Avancerede filtre",
     "ar": "مرشّحات متقدمة"
   },
   "scan.scopeAll": {
@@ -5373,6 +5756,7 @@
     "fr": "tous correspondants",
     "pl": "wszystkie pasujące",
     "uk": "усі відповідні",
+    "da": "alle matchende",
     "ar": "كل المطابق"
   },
   "scan.scopeFresh": {
@@ -5387,6 +5771,7 @@
     "fr": "nouveaux seulement",
     "pl": "tylko nowe",
     "uk": "тільки нові",
+    "da": "kun nye",
     "ar": "الجديد فقط"
   },
   "scan.filterText": {
@@ -5401,6 +5786,7 @@
     "fr": "filtre par entreprise / rôle / localisation…",
     "pl": "filtruj wg firmy / stanowiska / lokalizacji…",
     "uk": "фільтр за компанією / роллю / локацією…",
+    "da": "filtrér efter virksomhed / rolle / placering…",
     "ar": "تصفية حسب الشركة / الدور / الموقع…"
   },
   "scan.allTypes": {
@@ -5415,6 +5801,7 @@
     "fr": "tous les types",
     "pl": "wszystkie typy",
     "uk": "всі типи",
+    "da": "alle typer",
     "ar": "جميع الأنواع"
   },
   "scan.remoteOnly": {
@@ -5429,6 +5816,7 @@
     "fr": "à distance uniquement",
     "pl": "tylko zdalnie",
     "uk": "тільки remote",
+    "da": "kun fjernarbejde",
     "ar": "عن بعد فقط"
   },
   "scan.hybrid": {
@@ -5443,6 +5831,7 @@
     "fr": "hybride",
     "pl": "hybrydowo",
     "uk": "гібридний",
+    "da": "hybrid",
     "ar": "هجين"
   },
   "scan.reloc": {
@@ -5457,6 +5846,7 @@
     "fr": "rélocalisation",
     "pl": "relokacja",
     "uk": "релокація",
+    "da": "flytning",
     "ar": "انتقال"
   },
   "scan.onsite": {
@@ -5471,6 +5861,7 @@
     "fr": "sur site",
     "pl": "stacjonarnie",
     "uk": "офіс",
+    "da": "på kontoret",
     "ar": "في المقر"
   },
   "scan.salaryFrom": {
@@ -5485,6 +5876,7 @@
     "fr": "Salaire dès",
     "pl": "Wynagrodzenie od",
     "uk": "Зарплата від",
+    "da": "Løn fra",
     "ar": "الراتب من"
   },
   "scan.salaryTo": {
@@ -5499,6 +5891,7 @@
     "fr": "Salaire jusqu'à",
     "pl": "Wynagrodzenie do",
     "uk": "Зарплата до",
+    "da": "Løn til",
     "ar": "الراتب إلى"
   },
   "scan.lblSearch": {
@@ -5513,6 +5906,7 @@
     "fr": "Recherche",
     "pl": "Szukaj",
     "uk": "Пошук",
+    "da": "Søg",
     "ar": "بحث"
   },
   "scan.lblType": {
@@ -5527,6 +5921,7 @@
     "fr": "Type",
     "pl": "Typ pracy",
     "uk": "Тип роботи",
+    "da": "Arbejdstype",
     "ar": "نوع العمل"
   },
   "scan.lblSource": {
@@ -5541,6 +5936,7 @@
     "fr": "Source",
     "pl": "Źródło",
     "uk": "Джерело",
+    "da": "Kilde",
     "ar": "المصدر"
   },
   "scan.lblScope": {
@@ -5555,6 +5951,7 @@
     "fr": "Portée",
     "pl": "Zakres",
     "uk": "Область",
+    "da": "Omfang",
     "ar": "النطاق"
   },
   "scan.applyFilters": {
@@ -5569,6 +5966,7 @@
     "fr": "Appliquer",
     "pl": "Zastosuj",
     "uk": "Застосувати",
+    "da": "Anvend",
     "ar": "تطبيق"
   },
   "scan.resetFilters": {
@@ -5583,6 +5981,7 @@
     "fr": "Réinitialiser",
     "pl": "Resetuj",
     "uk": "Скинути",
+    "da": "Nulstil",
     "ar": "إعادة ضبط"
   },
   "scan.filtersGroup": {
@@ -5597,6 +5996,7 @@
     "fr": "Filtres de résultats",
     "pl": "Filtry wyników",
     "uk": "Фільтри результатів",
+    "da": "Resultatfiltre",
     "ar": "مرشّحات النتائج"
   },
   "scan.filtersHint": {
@@ -5611,6 +6011,7 @@
     "fr": "Remplissez des champs puis cliquez sur Appliquer. Salaire de/à ne garde que les offres dont la rémunération chevauche votre fourchette — les offres sans salaire indiqué sont masquées dès qu'un salaire est défini. Les montants sont comparés comme de simples nombres (la devise est ignorée).",
     "pl": "Wypełnij dowolne pola i naciśnij Zastosuj. Wynagrodzenie od/do zachowuje tylko oferty, których zakres pokrywa się z Twoim — oferty bez podanego wynagrodzenia są ukryte po ustawieniu widełek. Kwoty są porównywane jako zwykłe liczby (waluta jest ignorowana).",
     "uk": "Заповніть будь-які поля і натисніть Застосувати. Зарплата від/до залишає лише вакансії, зарплата яких перетинається з вашим діапазоном — вакансії без зазначеної зарплати приховуються, якщо ви задали діапазон. Суми порівнюються як прості числа (валюта ігнорується).",
+    "da": "Udfyld vilkårlige felter og tryk Anvend. Løn fra/til beholder kun job, hvis løn overlapper dit interval — job uden angivet løn skjules, når du sætter en løn. Beløb sammenlignes som rene tal (valuta ignoreres).",
     "ar": "أملأ أي حقول واضغط تطبيق. من/إلى الراتب يبقي فقط الوظائف التي يتداخل راتبها مع نطاقك — الوظائف التي لا تُعلن عن راتب تُخفى بمجرد ضبط راتب. تُقارن المبالغ كأرقام عادية (العملة تُتجاهل)."
   },
   "scan.allSources": {
@@ -5625,6 +6026,7 @@
     "fr": "toutes les sources",
     "pl": "wszystkie źródła",
     "uk": "всі джерела",
+    "da": "alle kilder",
     "ar": "جميع المصادر"
   },
   "scan.chip.stack": {
@@ -5639,6 +6041,7 @@
     "fr": "Technos",
     "pl": "Stack",
     "uk": "Стек",
+    "da": "Stack",
     "ar": "التقنيات"
   },
   "scan.chip.level": {
@@ -5653,6 +6056,7 @@
     "fr": "Niveau",
     "pl": "Poziom",
     "uk": "Рівень",
+    "da": "Niveau",
     "ar": "المستوى"
   },
   "scan.chip.clear": {
@@ -5667,6 +6071,7 @@
     "fr": "effacer",
     "pl": "wyczyść",
     "uk": "скинути",
+    "da": "ryd",
     "ar": "مسح"
   },
   "scan.col.company": {
@@ -5681,6 +6086,7 @@
     "fr": "Entreprise",
     "pl": "Firma",
     "uk": "Компанія",
+    "da": "Virksomhed",
     "ar": "الشركة"
   },
   "scan.col.role": {
@@ -5695,6 +6101,7 @@
     "fr": "Rôle",
     "pl": "Stanowisko",
     "uk": "Роль",
+    "da": "Rolle",
     "ar": "الدور"
   },
   "scan.col.loc": {
@@ -5709,6 +6116,7 @@
     "fr": "Localisation",
     "pl": "Lokalizacja",
     "uk": "Локація",
+    "da": "Placering",
     "ar": "الموقع"
   },
   "scan.col.type": {
@@ -5723,6 +6131,7 @@
     "fr": "Type de poste",
     "pl": "Typ",
     "uk": "Тип",
+    "da": "Type",
     "ar": "النوع"
   },
   "scan.col.salary": {
@@ -5737,6 +6146,7 @@
     "fr": "Salaire",
     "pl": "Wynagrodzenie",
     "uk": "Зарплата",
+    "da": "Løn",
     "ar": "الراتب"
   },
   "scan.col.source": {
@@ -5751,6 +6161,7 @@
     "fr": "Origine",
     "pl": "Źródło",
     "uk": "Джерело",
+    "da": "Kilde",
     "ar": "المصدر"
   },
   "scan.activeCo": {
@@ -5765,6 +6176,7 @@
     "fr": "Entreprises actives",
     "pl": "Aktywne firmy",
     "uk": "Активні компанії",
+    "da": "Aktive virksomheder",
     "ar": "الشركات النشطة"
   },
   "scan.activeCo.help": {
@@ -5779,6 +6191,7 @@
     "fr": "Actif : entreprises affichant actuellement des résultats. Total : configuré dans portals.yml.",
     "pl": "Aktywne: firmy aktualnie wyświetlające wyniki. Łącznie: skonfigurowane w portals.yml.",
     "uk": "Активні: компанії, що зараз повертають результати. Всього: налаштовано в portals.yml.",
+    "da": "Aktive: virksomheder, der i øjeblikket viser resultater. I alt: konfigureret i portals.yml.",
     "ar": "نشط: الشركات التي تظهر نتائجها حاليًا. الإجمالي: المُضبَّطة في portals.yml."
   },
   "scan.tagClickToFilter": {
@@ -5793,6 +6206,7 @@
     "fr": "Cliquez pour filtrer les résultats par cette entreprise",
     "pl": "Kliknij, aby filtrować wyniki według tej firmy",
     "uk": "Клікніть, щоб фільтрувати результати за цією компанією",
+    "da": "Klik for at filtrere resultater efter denne virksomhed",
     "ar": "انقر لتصفية النتائج حسب هذه الشركة"
   },
   "scan.tagOpenCareers": {
@@ -5807,6 +6221,7 @@
     "fr": "Ouvrir la page carrières dans un nouvel onglet",
     "pl": "Otwórz stronę kariery w nowej karcie",
     "uk": "Відкрити сторінку вакансій у новій вкладці",
+    "da": "Åbn karriereside i en ny fane",
     "ar": "فتح صفحة الوظائف في تبويب جديد"
   },
   "scan.companiesFilter": {
@@ -5821,6 +6236,7 @@
     "fr": "Filtrer les entreprises…",
     "pl": "Filtruj firmy…",
     "uk": "Фільтр компаній…",
+    "da": "Filtrér virksomheder…",
     "ar": "تصفية الشركات…"
   },
   "scan.apiBacked": {
@@ -5835,6 +6251,7 @@
     "fr": "API directe",
     "pl": "Bezpośrednie API",
     "uk": "Прямий API",
+    "da": "Direkte API",
     "ar": "API مباشر"
   },
   "scan.websearchBacked": {
@@ -5849,6 +6266,7 @@
     "fr": "Recherche web uniquement",
     "pl": "Tylko wyszukiwanie",
     "uk": "Тільки веб-пошук",
+    "da": "Kun websøgning",
     "ar": "بحث ويب فقط"
   },
   "scan.consoleReady": {
@@ -5863,6 +6281,7 @@
     "fr": "> prêt. appuyez sur le bouton de scan.",
     "pl": "> gotowy. naciśnij przycisk skanowania.",
     "uk": "> готово. натисніть кнопку сканування.",
+    "da": "> klar. tryk på scan-knappen.",
     "ar": "> جاهز. اضغط زر المسح."
   },
   "scan.noResults": {
@@ -5877,6 +6296,7 @@
     "fr": "Aucun résultat. Lancez un scan ci-dessus — les résultats s'afficheront ici une fois terminé.",
     "pl": "Brak wyników. Uruchom skanowanie powyżej — wyniki pojawią się tutaj po zakończeniu.",
     "uk": "Немає результатів. Запустіть сканування вище — результати з'являться тут після завершення.",
+    "da": "Ingen resultater. Kør en scanning ovenfor — resultaterne vises her, når den er færdig.",
     "ar": "لا نتائج. شغّل مسحًا أعلاه — ستظهر النتائج هنا عند انتهائه."
   },
   "app.setupIssue": {
@@ -5891,6 +6311,7 @@
     "fr": "Problème d'installation : ",
     "pl": "Problem z konfiguracją: ",
     "uk": "Проблема з налаштуванням: ",
+    "da": "Opsætningsproblem: ",
     "ar": "مشكلة في الإعداد: "
   },
   "onboarding.noKey.title": {
@@ -5905,6 +6326,7 @@
     "fr": "Pas de clé LLM définie — «⚡ Exécution en direct» est en mode manuel. Définissez l'une des Anthropic / Gemini / OpenAI / Qwen.",
     "pl": "Brak klucza LLM — \"⚡ Uruchom na żywo\" jest w trybie ręcznego promptu. Ustaw jeden z: Anthropic / Gemini / OpenAI / Qwen.",
     "uk": "LLM-ключ не встановлено — \"⚡ Запустити наживо\" в режимі ручного промпту. Встановіть один із: Anthropic / Gemini / OpenAI / Qwen.",
+    "da": "Ingen LLM-nøgle sat — \"⚡ Kør live\" er i manuel prompt-tilstand. Sæt en af Anthropic / Gemini / OpenAI / Qwen.",
     "ar": "لا مفتاح LLM مضبوط — \"⚡ تشغيل مباشر\" في وضع الأمر اليدوي. اضبط أيًا من Anthropic / Gemini / OpenAI / Qwen."
   },
   "onboarding.noKey.cta": {
@@ -5919,6 +6341,7 @@
     "fr": "Configurer une clé →",
     "pl": "Skonfiguruj klucz →",
     "uk": "Налаштувати ключ →",
+    "da": "Opsæt en nøgle →",
     "ar": "ضبط مفتاح ←"
   },
   "onboarding.activeProvider": {
@@ -5933,6 +6356,7 @@
     "fr": "Évaluation en direct",
     "pl": "Ocena na żywo",
     "uk": "Live-оцінка",
+    "da": "Live-vurdering",
     "ar": "تقييم مباشر"
   },
   "cost.estimate": {
@@ -5947,6 +6371,7 @@
     "fr": "Coût estimé",
     "pl": "Szacowany koszt",
     "uk": "Орієнтовна вартість",
+    "da": "Anslået omkostning",
     "ar": "التكلفة التقديرية"
   },
   "cost.varies": {
@@ -5961,6 +6386,7 @@
     "fr": "le coût varie (le routeur choisit)",
     "pl": "koszt zmienny (router wybiera)",
     "uk": "вартість змінюється (router обирає)",
+    "da": "omkostning varierer (routeren vælger)",
     "ar": "التكلفة متغيّرة (الموجّه يختار)"
   },
   "cost.manual": {
@@ -5975,6 +6401,7 @@
     "fr": "Pas de clé LLM définie — «⚡ Exécution en direct» copie un prompt manuel (pas de coût API).",
     "pl": "Brak klucza LLM — \"⚡ Uruchom na żywo\" kopiuje ręczny prompt (bez kosztu API).",
     "uk": "LLM-ключ не встановлено — \"⚡ Запустити наживо\" копіює ручний промпт (без API-витрат).",
+    "da": "Ingen LLM-nøgle sat — \"⚡ Kør live\" kopierer en manuel prompt (ingen API-omkostning).",
     "ar": "لا مفتاح LLM مضبوط — \"⚡ تشغيل مباشر\" ينسخ أمرًا يدويًا (لا تكلفة API)."
   },
   "router.loading": {
@@ -5989,6 +6416,7 @@
     "fr": "Chargement…",
     "pl": "Ładowanie…",
     "uk": "Завантаження…",
+    "da": "Indlæser…",
     "ar": "جارٍ التحميل…"
   },
   "router.netError": {
@@ -6003,6 +6431,7 @@
     "fr": "Aucune connexion au serveur",
     "pl": "Brak połączenia z serwerem",
     "uk": "Немає з'єднання з сервером",
+    "da": "Ingen forbindelse til serveren",
     "ar": "لا اتصال بالخادم"
   },
   "router.error": {
@@ -6017,6 +6446,7 @@
     "fr": "Erreur",
     "pl": "Błąd",
     "uk": "Помилка",
+    "da": "Fejl",
     "ar": "خطأ"
   },
   "router.runStart": {
@@ -6031,6 +6461,7 @@
     "fr": "Exécuter",
     "pl": "Uruchom",
     "uk": "Запустити",
+    "da": "Kør",
     "ar": "تشغيل"
   },
   "notFound.title": {
@@ -6045,6 +6476,7 @@
     "fr": "404 — page introuvable",
     "pl": "404 — nie znaleziono strony",
     "uk": "404 — сторінку не знайдено",
+    "da": "404 — siden blev ikke fundet",
     "ar": "404 — الصفحة غير موجودة"
   },
   "notFound.body": {
@@ -6059,6 +6491,7 @@
     "fr": "La route «{path}» n'existe pas.",
     "pl": "Ścieżka \"{path}\" nie istnieje.",
     "uk": "Маршрут \"{path}\" не існує.",
+    "da": "Ruten \"{path}\" findes ikke.",
     "ar": "المسار \"{path}\" غير موجود."
   },
   "notFound.back": {
@@ -6073,6 +6506,7 @@
     "fr": "Retour au tableau de bord",
     "pl": "Powrót do panelu",
     "uk": "На дашборд",
+    "da": "Tilbage til Oversigt",
     "ar": "العودة إلى لوحة التحكم"
   },
   "app.runDoctor": {
@@ -6087,6 +6521,7 @@
     "fr": "Exécution de doctor.mjs…",
     "pl": "Uruchamianie doctor.mjs…",
     "uk": "Запуск doctor.mjs…",
+    "da": "Kører doctor.mjs…",
     "ar": "جارٍ تشغيل doctor.mjs…"
   },
   "scan.failedPortals": {
@@ -6101,6 +6536,7 @@
     "fr": "Échec du chargement de portals.yml",
     "pl": "Nie udało się załadować portals.yml",
     "uk": "Не вдалося завантажити portals.yml",
+    "da": "Kunne ikke indlæse portals.yml",
     "ar": "فشل تحميل portals.yml"
   },
   "scan.workdayBlocked": {
@@ -6115,6 +6551,7 @@
     "fr": "Locataire Workday bloqué",
     "pl": "Tenant Workday zablokowany",
     "uk": "Workday tenant заблоковано",
+    "da": "Workday-tenant blokeret",
     "ar": "مستأجر Workday محظور"
   },
   "scan.workdayFallbackHint": {
@@ -6129,6 +6566,7 @@
     "fr": "plan B : utilisez /career-ops scan (Playwright) pour ce locataire",
     "pl": "fallback: użyj /career-ops scan (Playwright) dla tego tenanta",
     "uk": "резерв: використовуйте /career-ops scan (Playwright) для цього tenant",
+    "da": "fallback: brug /career-ops scan (Playwright) for denne tenant",
     "ar": "بديل: استخدم /career-ops scan (Playwright) لهذا المستأجر"
   },
   "scan.allDisabled": {
@@ -6143,6 +6581,7 @@
     "fr": "Toutes les entreprises désactivées (enabled: false).",
     "pl": "Wszystkie firmy wyłączone (enabled: false).",
     "uk": "Всі компанії вимкнено (enabled: false).",
+    "da": "Alle virksomheder deaktiveret (enabled: false).",
     "ar": "جميع الشركات معطّلة (enabled: false)."
   },
   "scan.scanResultsApi": {
@@ -6157,6 +6596,7 @@
     "fr": "API configurée",
     "pl": "API skonfigurowane",
     "uk": "API налаштовано",
+    "da": "API konfigureret",
     "ar": "API مُضبَّط"
   },
   "scan.websearchOnly": {
@@ -6171,6 +6611,7 @@
     "fr": "recherche web uniquement — le scanner passe à côté",
     "pl": "tylko wyszukiwanie — skaner pomija",
     "uk": "тільки websearch — сканер пропускає",
+    "da": "kun websøgning — scanneren springer over",
     "ar": "بحث ويب فقط — الماسح يتخطى"
   },
   "api.netError": {
@@ -6185,6 +6626,7 @@
     "fr": "Erreur réseau",
     "pl": "Błąd sieci",
     "uk": "Мережева помилка",
+    "da": "Netværksfejl",
     "ar": "خطأ في الشبكة"
   },
   "api.netHint": {
@@ -6199,6 +6641,7 @@
     "fr": "le serveur peut être hors service ; exécutez : bash web-ui/bin/start.sh",
     "pl": "serwer może być wyłączony; uruchom: bash web-ui/bin/start.sh",
     "uk": "сервер може бути недоступний; запустіть: bash web-ui/bin/start.sh",
+    "da": "serveren er muligvis nede; kør: bash web-ui/bin/start.sh",
     "ar": "قد يكون الخادم متوقفًا؛ شغّل: bash web-ui/bin/start.sh"
   },
   "conn.recovered": {
@@ -6213,6 +6656,7 @@
     "fr": "Connexion rétablie",
     "pl": "Połączenie przywrócone",
     "uk": "З'єднання відновлено",
+    "da": "Forbindelse gendannet",
     "ar": "استُعيد الاتصال"
   },
   "scan.startEnv": {
@@ -6227,6 +6671,7 @@
     "fr": "Exécuter",
     "pl": "Uruchom",
     "uk": "Запустити",
+    "da": "Kør",
     "ar": "تشغيل"
   },
   "pipe.title": {
@@ -6241,6 +6686,7 @@
     "fr": "Pipelines",
     "pl": "Pipeline",
     "uk": "Pipeline",
+    "da": "Pipeline",
     "ar": "خط الأنابيب"
   },
   "pipe.subtitle": {
@@ -6255,6 +6701,7 @@
     "fr": "File d'attente des URL de postes vacants en attente d'évaluation.",
     "pl": "Kolejka URL-i ofert oczekujących na ocenę.",
     "uk": "Черга URL вакансій, що очікують оцінки.",
+    "da": "Kø af job-URL'er, der afventer vurdering.",
     "ar": "قائمة انتظار روابط الوظائف بانتظار التقييم."
   },
   "pipe.add": {
@@ -6269,6 +6716,7 @@
     "fr": "Ajouter une URL",
     "pl": "Dodaj URL",
     "uk": "Додати URL",
+    "da": "Tilføj URL",
     "ar": "إضافة رابط"
   },
   "pipe.empty": {
@@ -6283,6 +6731,7 @@
     "fr": "Le pipeline est vide. Ajoutez une URL ci-dessous ou lancez un scan.",
     "pl": "Pipeline jest pusty. Dodaj URL poniżej lub uruchom skanowanie.",
     "uk": "Pipeline порожній. Додайте URL нижче або запустіть сканування.",
+    "da": "Pipelinen er tom. Tilføj en URL nedenfor eller kør en scanning.",
     "ar": "خط الأنابيب فارغ. أضف رابطًا أدناه أو شغّل مسحًا."
   },
   "pipe.evaluateBtn": {
@@ -6297,6 +6746,7 @@
     "fr": "Évaluer",
     "pl": "Oceń",
     "uk": "Оцінити",
+    "da": "Vurdér",
     "ar": "تقييم"
   },
   "pipe.confirmDel": {
@@ -6311,6 +6761,7 @@
     "fr": "Supprimer l'URL du pipeline ?",
     "pl": "Usunąć URL z pipeline?",
     "uk": "Видалити URL з pipeline?",
+    "da": "Slet URL fra pipelinen?",
     "ar": "حذف الرابط من خط الأنابيب؟"
   },
   "pipe.confirmDelTitle": {
@@ -6325,6 +6776,7 @@
     "fr": "Retirer du pipeline ?",
     "pl": "Usunąć z pipeline?",
     "uk": "Видалити з pipeline?",
+    "da": "Fjern fra pipelinen?",
     "ar": "إزالة من خط الأنابيب؟"
   },
   "pipe.previewError": {
@@ -6339,6 +6791,7 @@
     "fr": "Aperçu échoué",
     "pl": "Podgląd nie powiódł się",
     "uk": "Помилка попереднього перегляду",
+    "da": "Forhåndsvisning mislykkedes",
     "ar": "فشل المعاينة"
   },
   "pipe.evaluateAllTitle": {
@@ -6353,6 +6806,7 @@
     "fr": "Évaluer la première URL en attente ?",
     "pl": "Ocenić pierwszy URL w kolejce?",
     "uk": "Оцінити перший URL у черзі?",
+    "da": "Vurdér den første URL i køen?",
     "ar": "تقييم أول رابط في قائمة الانتظار؟"
   },
   "pipe.previewRegion": {
@@ -6367,6 +6821,7 @@
     "fr": "Aperçu du travail",
     "pl": "Podgląd oferty",
     "uk": "Попередній перегляд вакансії",
+    "da": "Job-forhåndsvisning",
     "ar": "معاينة الوظيفة"
   },
   "pipe.deleted": {
@@ -6381,6 +6836,7 @@
     "fr": "Supprimé",
     "pl": "Usunięto",
     "uk": "Видалено",
+    "da": "Slettet",
     "ar": "تم الحذف"
   },
   "pipe.added": {
@@ -6395,6 +6851,7 @@
     "fr": "Ajouté au pipeline",
     "pl": "Dodano do pipeline",
     "uk": "Додано до pipeline",
+    "da": "Tilføjet til pipelinen",
     "ar": "أُضيف إلى خط الأنابيب"
   },
   "pipe.dup": {
@@ -6409,6 +6866,7 @@
     "fr": "Déjà dans la file d'attente — ignoré",
     "pl": "Już w kolejce — pominięto",
     "uk": "Вже в черзі — пропущено",
+    "da": "Allerede i køen — springet over",
     "ar": "موجود بالفعل في قائمة الانتظار — تم التخطي"
   },
   "pipe.noResults": {
@@ -6423,6 +6881,7 @@
     "fr": "Le pipeline est vide.",
     "pl": "Pipeline jest pusty.",
     "uk": "Pipeline порожній.",
+    "da": "Pipelinen er tom.",
     "ar": "خط الأنابيب فارغ."
   },
   "pipe.placeholder": {
@@ -6437,6 +6896,7 @@
     "fr": "https://job-boards.greenhouse.io/...",
     "pl": "https://job-boards.greenhouse.io/...",
     "uk": "https://job-boards.greenhouse.io/...",
+    "da": "https://job-boards.greenhouse.io/...",
     "ar": "https://job-boards.greenhouse.io/..."
   },
   "pipe.enterUrl": {
@@ -6451,6 +6911,7 @@
     "fr": "Entrez l'URL",
     "pl": "Podaj URL",
     "uk": "Введіть URL",
+    "da": "Indtast URL",
     "ar": "أدخل الرابط"
   },
   "pipe.hint": {
@@ -6465,6 +6926,7 @@
     "fr": "L'URL est sauvegardée dans data/pipeline.md. À partir de Claude Code, vous pouvez exécuter /career-ops pipeline pour le traitement par lots.",
     "pl": "URL jest zapisywany do data/pipeline.md. Z Claude Code możesz uruchomić /career-ops pipeline do przetwarzania partiami.",
     "uk": "URL зберігається у data/pipeline.md. З Claude Code можна запустити /career-ops pipeline для пакетної обробки.",
+    "da": "URL'en gemmes til data/pipeline.md. Fra Claude Code kan du køre /career-ops pipeline til batch-behandling.",
     "ar": "الرابط محفوظ في data/pipeline.md. من Claude Code يمكنك تشغيل /career-ops pipeline للمعالجة الدُفعية."
   },
   "pipe.filter": {
@@ -6479,6 +6941,7 @@
     "fr": "Filtrer les URLs…",
     "pl": "Filtruj URL-e…",
     "uk": "Фільтр URL…",
+    "da": "Filtrér URL'er…",
     "ar": "تصفية الروابط…"
   },
   "pipe.count": {
@@ -6493,6 +6956,7 @@
     "fr": "En attente",
     "pl": "W kolejce",
     "uk": "У черзі",
+    "da": "I kø",
     "ar": "في قائمة الانتظار"
   },
   "pipe.previewIdle": {
@@ -6507,6 +6971,7 @@
     "fr": "Sélectionnez une URL pour l'aperçu, l'évaluation ou la suppression.",
     "pl": "Wybierz URL, aby go podejrzeć, ocenić lub usunąć.",
     "uk": "Виберіть URL для попереднього перегляду, оцінки або видалення.",
+    "da": "Vælg en URL for at forhåndsvise, vurdere eller slette.",
     "ar": "اختر رابطًا للمعاينة أو التقييم أو الحذف."
   },
   "pipe.previewLoading": {
@@ -6521,6 +6986,7 @@
     "fr": "Chargement de l'aperçu…",
     "pl": "Ładowanie podglądu…",
     "uk": "Завантаження попереднього перегляду…",
+    "da": "Indlæser forhåndsvisning…",
     "ar": "جارٍ تحميل المعاينة…"
   },
   "pipe.previewUnavailable": {
@@ -6535,6 +7001,7 @@
     "fr": "Aucun aperçu disponible — ouvrez dans un onglet pour voir la page.",
     "pl": "Brak podglądu — otwórz w karcie, aby zobaczyć stronę.",
     "uk": "Попередній перегляд недоступний — відкрийте у вкладці, щоб побачити сторінку.",
+    "da": "Ingen forhåndsvisning endnu — åbn i fane for at se siden.",
     "ar": "لا معاينة بعد — افتح في تبويب لرؤية الصفحة."
   },
   "pipe.openTab": {
@@ -6549,6 +7016,7 @@
     "fr": "Ouvrir",
     "pl": "Otwórz",
     "uk": "Відкрити",
+    "da": "Åbn",
     "ar": "فتح"
   },
   "pipe.evaluateAll": {
@@ -6563,6 +7031,7 @@
     "fr": "Évaluer la première",
     "pl": "Oceń pierwszy",
     "uk": "Оцінити перший",
+    "da": "Vurdér den første",
     "ar": "تقييم الأول"
   },
   "pipe.evaluateAllConfirm": {
@@ -6577,6 +7046,7 @@
     "fr": "Ouvrir la première URL en attente sur Évaluation ?",
     "pl": "Otworzyć pierwszy URL z kolejki na stronie Oceny?",
     "uk": "Відкрити перший URL у черзі на сторінці Оцінки?",
+    "da": "Åbn den første URL i køen på Vurdering?",
     "ar": "فتح أول رابط في قائمة الانتظار للتقييم؟"
   },
   "eval.saveJd": {
@@ -6591,6 +7061,7 @@
     "fr": "Enregistrer le JD dans jds/",
     "pl": "Zapisz JD do jds/",
     "uk": "Зберегти JD у jds/",
+    "da": "Gem jobopslag til jds/",
     "ar": "حفظ JD في jds/"
   },
   "eval.evaluating": {
@@ -6605,6 +7076,7 @@
     "fr": "Évaluation…",
     "pl": "Ocenianie…",
     "uk": "Оцінювання…",
+    "da": "Vurderer…",
     "ar": "جارٍ التقييم…"
   },
   "eval.shortJd": {
@@ -6619,6 +7091,7 @@
     "fr": "Le JD est trop court (min. 50 caractères)",
     "pl": "JD za krótki (min. 50 znaków)",
     "uk": "JD занадто короткий (мін. 50 символів)",
+    "da": "Jobopslaget er for kort (min. 50 tegn)",
     "ar": "JD قصير جدًا (الحد الأدنى 50 حرفًا)"
   },
   "eval.emptyJd": {
@@ -6633,6 +7106,7 @@
     "fr": "Le JD est requis — collez la description complète du poste.",
     "pl": "JD jest wymagany — wklej pełny opis stanowiska",
     "uk": "JD є обов'язковим — вставте повний опис вакансії",
+    "da": "Jobopslag er påkrævet — indsæt den fulde jobbeskrivelse",
     "ar": "JD مطلوب — الصق وصف الوظيفة الكامل"
   },
   "eval.placeholder": {
@@ -6647,6 +7121,7 @@
     "fr": "Collez le texte complet de la description du poste (responsabilités, exigences, qualifications, informations sur le rôle…)",
     "pl": "Wklej pełny tekst JD (obowiązki, wymagania, kwalifikacje, opis roli…)",
     "uk": "Вставте повний текст JD (обов'язки, вимоги, кваліфікація, про роль…)",
+    "da": "Indsæt den fulde tekst fra jobopslaget (ansvar, krav, kvalifikationer, om rollen…)",
     "ar": "الصق نص JD الكامل (المسؤوليات، المتطلبات، المؤهلات، نبذة عن الدور…)"
   },
   "eval.jdHint": {
@@ -6661,6 +7136,7 @@
     "fr": "Collez la description complète du poste. Minimum 50 caractères après nettoyage.",
     "pl": "Wklej pełny opis stanowiska. Minimum 50 znaków po sanityzacji.",
     "uk": "Вставте повний опис вакансії. Мінімум 50 символів після санітизації.",
+    "da": "Indsæt den fulde jobbeskrivelse. Minimum 50 tegn efter rensning.",
     "ar": "الصق وصف الوظيفة الكامل. الحد الأدنى 50 حرفًا بعد التعقيم."
   },
   "eval.manualMode": {
@@ -6675,6 +7151,7 @@
     "fr": "Mode manuel (pas de GEMINI_API_KEY)",
     "pl": "Tryb ręczny (brak GEMINI_API_KEY)",
     "uk": "Ручний режим (без GEMINI_API_KEY)",
+    "da": "Manuel tilstand (ingen GEMINI_API_KEY)",
     "ar": "الوضع اليدوي (لا GEMINI_API_KEY)"
   },
   "eval.copy": {
@@ -6689,6 +7166,7 @@
     "fr": "⧉ Copier l'invite",
     "pl": "⧉ Kopiuj prompt",
     "uk": "⧉ Копіювати промпт",
+    "da": "⧉ Kopiér prompt",
     "ar": "⧉ نسخ الأمر"
   },
   "eval.copied": {
@@ -6703,6 +7181,7 @@
     "fr": "Invite copiée",
     "pl": "Prompt skopiowany",
     "uk": "Промпт скопійовано",
+    "da": "Prompt kopieret",
     "ar": "تم نسخ الأمر"
   },
   "eval.exit": {
@@ -6717,6 +7196,7 @@
     "fr": "sortie",
     "pl": "wyjdź",
     "uk": "вийти",
+    "da": "afslut",
     "ar": "خروج"
   },
   "eval.savedAs": {
@@ -6731,6 +7211,7 @@
     "fr": "Enregistré",
     "pl": "Zapisano",
     "uk": "Збережено",
+    "da": "Gemt",
     "ar": "محفوظ"
   },
   "eval.copyHint": {
@@ -6745,6 +7226,7 @@
     "fr": "Copiez cette invite et collez-la dans Claude/ChatGPT/Gemini.",
     "pl": "Skopiuj ten prompt i wklej do Claude/ChatGPT/Gemini.",
     "uk": "Скопіюйте цей промпт і вставте у Claude/ChatGPT/Gemini.",
+    "da": "Kopiér denne prompt og indsæt i Claude/ChatGPT/Gemini.",
     "ar": "انسخ هذا الأمر والصقه في Claude/ChatGPT/Gemini."
   },
   "deep.title": {
@@ -6759,6 +7241,7 @@
     "fr": "Recherche approfondie",
     "pl": "Dogłębny research",
     "uk": "Глибокий рісьорч",
+    "da": "Dybdegående research",
     "ar": "بحث معمّق"
   },
   "deep.subtitle": {
@@ -6773,6 +7256,7 @@
     "fr": "Présentation de l'entreprise : équipe, culture, actualités, leviers de négociation, questions intelligentes.",
     "pl": "Brief o firmie: zespół, kultura, aktualności, dźwignia negocjacyjna, mądre pytania.",
     "uk": "Бриф про компанію: команда, культура, новини, важелі переговорів, розумні запитання.",
+    "da": "Virksomhedsbriefing: team, kultur, nyheder, forhandlingsmæssigt løftestang, kloge spørgsmål.",
     "ar": "ملخص شركة: الفريق، الثقافة، الأخبار، رافعة التفاوض، الأسئلة الذكية."
   },
   "deep.companyLbl": {
@@ -6787,6 +7271,7 @@
     "fr": "Entreprise",
     "pl": "Firma",
     "uk": "Компанія",
+    "da": "Virksomhed",
     "ar": "الشركة"
   },
   "deep.roleLbl": {
@@ -6801,6 +7286,7 @@
     "fr": "Poste",
     "pl": "Stanowisko",
     "uk": "Роль",
+    "da": "Rolle",
     "ar": "الدور"
   },
   "deep.run": {
@@ -6815,6 +7301,7 @@
     "fr": "▶ Générer la commande",
     "pl": "▶ Generuj prompt",
     "uk": "▶ Згенерувати промпт",
+    "da": "▶ Generér prompt",
     "ar": "▶ إنشاء الأمر"
   },
   "deep.companyExample": {
@@ -6829,6 +7316,7 @@
     "fr": "p. ex. Wheely",
     "pl": "np. Wheely",
     "uk": "напр. Wheely",
+    "da": "f.eks. Wheely",
     "ar": "مثال: Wheely"
   },
   "deep.roleExample": {
@@ -6843,6 +7331,7 @@
     "fr": "Ingénieur Backend Senior (facultatif)",
     "pl": "Starszy inżynier backendowy (opcjonalnie)",
     "uk": "Senior Backend Engineer (необов.)",
+    "da": "Senior Backend Engineer (valgfrit)",
     "ar": "مهندس خلفية أول (اختياري)"
   },
   "deep.enterCompany": {
@@ -6857,6 +7346,7 @@
     "fr": "Entrer l'entreprise",
     "pl": "Podaj firmę",
     "uk": "Введіть компанію",
+    "da": "Indtast virksomhed",
     "ar": "أدخل الشركة"
   },
   "deep.generating": {
@@ -6871,6 +7361,7 @@
     "fr": "Génération en cours…",
     "pl": "Generowanie…",
     "uk": "Генерація…",
+    "da": "Genererer…",
     "ar": "جارٍ الإنشاء…"
   },
   "deep.runLive": {
@@ -6885,6 +7376,7 @@
     "fr": "Exécuter en direct",
     "pl": "Uruchom na żywo",
     "uk": "Запустити наживо",
+    "da": "Kør live",
     "ar": "تشغيل مباشر"
   },
   "deep.copyPrompt": {
@@ -6899,6 +7391,7 @@
     "fr": "Copier la commande",
     "pl": "Kopiuj prompt",
     "uk": "Копіювати промпт",
+    "da": "Kopiér prompt",
     "ar": "نسخ الأمر"
   },
   "deep.archiveTitle": {
@@ -6913,6 +7406,7 @@
     "fr": "Recherches sauvegardées",
     "pl": "Zapisany research",
     "uk": "Збережені матеріали",
+    "da": "Gemt research",
     "ar": "البحوث المحفوظة"
   },
   "deep.archiveEmpty": {
@@ -6927,6 +7421,7 @@
     "fr": "Aucun fichier de recherche approfondie n'a encore été sauvegardé.",
     "pl": "Brak zapisanych plików dogłębnego researchu.",
     "uk": "Збережених файлів глибокого рісьорчу ще немає.",
+    "da": "Ingen gemte filer med dybdegående research endnu.",
     "ar": "لا ملفات بحث معمّق محفوظة بعد."
   },
   "deep.download": {
@@ -6941,6 +7436,7 @@
     "fr": "Télécharger .md",
     "pl": "Pobierz .md",
     "uk": "Завантажити .md",
+    "da": "Download .md",
     "ar": "تنزيل .md"
   },
   "deep.closeBrief": {
@@ -6955,6 +7451,7 @@
     "fr": "Fermer le bref",
     "pl": "Zamknij brief",
     "uk": "Закрити бриф",
+    "da": "Luk briefing",
     "ar": "إغلاق الملخص"
   },
   "deep.openTab": {
@@ -6969,6 +7466,7 @@
     "fr": "Ouvrir dans un onglet",
     "pl": "Otwórz w karcie",
     "uk": "Відкрити у вкладці",
+    "da": "Åbn i fane",
     "ar": "فتح في تبويب"
   },
   "deep.tipManual": {
@@ -6983,6 +7481,7 @@
     "fr": "Conseil : définir ANTHROPIC_API_KEY (ou GEMINI_API_KEY) dans .env pour exécuter la recherche en direct dans le navigateur. Sans cela, la commande est générée pour que vous puissiez la coller dans Claude Code.",
     "pl": "Wskazówka: ustaw ANTHROPIC_API_KEY (lub GEMINI_API_KEY) w .env, aby uruchamiać research na żywo w przeglądarce. Bez niego prompt jest generowany do wklejenia do Claude Code.",
     "uk": "Порада: встановіть ANTHROPIC_API_KEY (або GEMINI_API_KEY) у .env, щоб запускати рісьорч наживо у браузері. Без нього промпт генерується для вставки у Claude Code.",
+    "da": "Tip: sæt ANTHROPIC_API_KEY (eller GEMINI_API_KEY) i .env for at køre research live i browseren. Uden den genereres prompten, så du kan indsætte den i Claude Code.",
     "ar": "تلميح: اضبط ANTHROPIC_API_KEY (أو GEMINI_API_KEY) في .env لتشغيل البحث مباشرةً في المتصفح. بدونه، يُنشأ الأمر لتلصقه في Claude Code."
   },
   "deep.geminiNoOutput": {
@@ -6997,6 +7496,7 @@
     "fr": "Gemini n'a retourné aucun résultat. Affichage de la commande — collez-la dans Claude Code à la place.",
     "pl": "Gemini nie zwróciło wyników. Wyświetlanie promptu — wklej go do Claude Code.",
     "uk": "Gemini не повернув результату. Показуємо промпт — вставте його у Claude Code.",
+    "da": "Gemini returnerede intet output. Viser prompten — indsæt den i Claude Code i stedet.",
     "ar": "أعاد Gemini لا مخرجات. يُعرض الأمر — الصقه في Claude Code بدلًا من ذلك."
   },
   "deep.showResult": {
@@ -7011,6 +7511,7 @@
     "fr": "Afficher le résultat",
     "pl": "Pokaż wynik",
     "uk": "Показати результат",
+    "da": "Vis resultat",
     "ar": "عرض النتيجة"
   },
   "deep.needKey": {
@@ -7025,6 +7526,7 @@
     "fr": "Définir ANTHROPIC_API_KEY ou GEMINI_API_KEY dans .env en premier",
     "pl": "Najpierw ustaw ANTHROPIC_API_KEY lub GEMINI_API_KEY w .env",
     "uk": "Спочатку встановіть ANTHROPIC_API_KEY або GEMINI_API_KEY у .env",
+    "da": "Sæt ANTHROPIC_API_KEY eller GEMINI_API_KEY i .env først",
     "ar": "اضبط ANTHROPIC_API_KEY أو GEMINI_API_KEY في .env أولًا"
   },
   "deep.briefUnstructured.title": {
@@ -7039,6 +7541,7 @@
     "fr": "Ce bref ne correspond pas à la structure canonique de 6 sections",
     "pl": "Ten brief nie pasuje do kanonicznej struktury 6 sekcji",
     "uk": "Цей бриф не відповідає канонічній структурі з 6 розділів",
+    "da": "Denne briefing matcher ikke den kanoniske 6-sektioners struktur",
     "ar": "هذا الملخص لا يطابق هيكل الأقسام الستة القانوني"
   },
   "deep.briefUnstructured.body": {
@@ -7053,6 +7556,7 @@
     "fr": "Réexécuter avec Exécuter en direct, ou vérifiez `modes/deep.md` dans votre projet parent pour imposer le format final.",
     "pl": "Uruchom ponownie z Uruchom na żywo lub sprawdź `modes/deep.md` w projekcie nadrzędnym, aby wymusić wyjście w docelowej formie.",
     "uk": "Перезапустіть через «Запустити наживо» або перевірте `modes/deep.md` у батьківському проєкті, щоб забезпечити фінальний формат виводу.",
+    "da": "Kør igen med Kør live, eller tjek `modes/deep.md` i dit overordnede projekt for at håndhæve outputtet i endelig form.",
     "ar": "أعد التشغيل بـ \"تشغيل مباشر\"، أو تحقق من `modes/deep.md` في مشروعك الأصلي لإلزام مخرجات الشكل النهائي."
   },
   "deep.docsLink": {
@@ -7067,6 +7571,7 @@
     "fr": "Lire la référence de recherche approfondie",
     "pl": "Czytaj dokumentację dogłębnego researchu",
     "uk": "Читати довідку глибокого рісьорчу",
+    "da": "Læs referencen for dybdegående research",
     "ar": "قراءة مرجع البحث المعمّق"
   },
   "apply.title": {
@@ -7081,6 +7586,7 @@
     "fr": "Liste de contrôle de candidature",
     "pl": "Lista kontrolna aplikowania",
     "uk": "Чекліст подачі",
+    "da": "Ansøgningstjekliste",
     "ar": "قائمة تدقيق التقديم"
   },
   "apply.bannerTitle": {
@@ -7095,6 +7601,7 @@
     "fr": "Seulement la liste de contrôle",
     "pl": "Tylko lista kontrolna",
     "uk": "Тільки чекліст",
+    "da": "Kun tjekliste",
     "ar": "قائمة تدقيق فقط"
   },
   "apply.playwrightHint": {
@@ -7109,6 +7616,7 @@
     "fr": "Besoin de Playwright ? Voir ",
     "pl": "Potrzebujesz Playwright? Zobacz ",
     "uk": "Потрібен Playwright? Дивіться ",
+    "da": "Brug for Playwright? Se ",
     "ar": "تحتاج Playwright؟ انظر "
   },
   "apply.docsLink": {
@@ -7123,6 +7631,7 @@
     "fr": "Guide d'application",
     "pl": "Przewodnik aplikowania",
     "uk": "Довідник з подачі",
+    "da": "Ansøgningsvejledning",
     "ar": "دليل التقديم"
   },
   "apply.bannerBody": {
@@ -7137,6 +7646,7 @@
     "fr": "Cette page génère une liste de contrôle + texte prêt à coller. Le remplissage réel du formulaire (avec un dernier affichage) se trouve dans Claude Code : /career-ops apply <url>",
     "pl": "Ta strona generuje listę kontrolną i tekst do wklejenia. Prawdziwe wypełnianie formularzy przez Playwright (z ostatecznym potwierdzeniem) jest w Claude Code: /career-ops apply <url>",
     "uk": "Ця сторінка генерує чекліст + готовий до вставки текст. Справжнє заповнення форм через Playwright (з фінальним підтвердженням) знаходиться у Claude Code: /career-ops apply <url>",
+    "da": "Denne side genererer en tjekliste + klar-til-indsæt-tekst. Rigtig Playwright-formularudfyldning (med en endelig bekræftelse) findes i Claude Code: /career-ops apply <url>",
     "ar": "هذه الصفحة تُنشئ قائمة تدقيق + نص جاهز للصق. ملء النموذج الفعلي بـ Playwright (مع تأكيد نهائي) يوجد في Claude Code: /career-ops apply <url>"
   },
   "apply.subtitle": {
@@ -7151,6 +7661,7 @@
     "fr": "Liste de contrôle d'application. Remplissage réel du formulaire — via /career-ops apply dans Claude Code (Playwright).",
     "pl": "Lista kontrolna aplikowania. Prawdziwe wypełnianie formularzy — przez /career-ops apply w Claude Code (Playwright).",
     "uk": "Чекліст подачі. Справжнє заповнення форм — через /career-ops apply у Claude Code (Playwright).",
+    "da": "Ansøgningstjekliste. Rigtig formularudfyldning — via /career-ops apply i Claude Code (Playwright).",
     "ar": "قائمة تدقيق التقديم. ملء النموذج الفعلي — عبر /career-ops apply في Claude Code (Playwright)."
   },
   "apply.urlLbl": {
@@ -7165,6 +7676,7 @@
     "fr": "URL de la vacance",
     "pl": "URL oferty",
     "uk": "URL вакансії",
+    "da": "URL til jobopslag",
     "ar": "رابط الوظيفة"
   },
   "apply.jdLbl": {
@@ -7179,6 +7691,7 @@
     "fr": "JD (facultatif)",
     "pl": "JD (opcjonalnie)",
     "uk": "JD (необов.)",
+    "da": "Jobopslag (valgfrit)",
     "ar": "JD (اختياري)"
   },
   "apply.run": {
@@ -7193,6 +7706,7 @@
     "fr": "▶ Générer la liste de contrôle",
     "pl": "▶ Generuj listę kontrolną",
     "uk": "▶ Згенерувати чекліст",
+    "da": "▶ Generér tjekliste",
     "ar": "▶ إنشاء قائمة التدقيق"
   },
   "apply.enterUrl": {
@@ -7207,6 +7721,7 @@
     "fr": "Entrer l'URL",
     "pl": "Podaj URL",
     "uk": "Введіть URL",
+    "da": "Indtast URL",
     "ar": "أدخل الرابط"
   },
   "apply.checklist.copyUnchecked": {
@@ -7221,6 +7736,7 @@
     "fr": "Copier les éléments non cochés",
     "pl": "Kopiuj niezaznaczone",
     "uk": "Копіювати невідмічені",
+    "da": "Kopiér ikke-afkrydsede",
     "ar": "نسخ غير المُحدَّد"
   },
   "apply.checklist.resetBtn": {
@@ -7235,6 +7751,7 @@
     "fr": "Réinitialiser",
     "pl": "Resetuj",
     "uk": "Скинути",
+    "da": "Nulstil",
     "ar": "إعادة ضبط"
   },
   "apply.checklist.copied": {
@@ -7249,6 +7766,7 @@
     "fr": "Éléments non cochés copiés",
     "pl": "Skopiowano niezaznaczone elementy",
     "uk": "Невідмічені пункти скопійовано",
+    "da": "Ikke-afkrydsede elementer kopieret",
     "ar": "تم نسخ العناصر غير المُحدَّدة"
   },
   "apply.checklist.copyFailed": {
@@ -7263,6 +7781,7 @@
     "fr": "Copie échouée",
     "pl": "Kopiowanie nie powiodło się",
     "uk": "Не вдалося скопіювати",
+    "da": "Kopiering mislykkedes",
     "ar": "فشل النسخ"
   },
   "apply.checklist.reset": {
@@ -7277,6 +7796,7 @@
     "fr": "Liste de contrôle réinitialisée",
     "pl": "Lista kontrolna zresetowana",
     "uk": "Чекліст скинуто",
+    "da": "Tjekliste nulstillet",
     "ar": "تمت إعادة ضبط قائمة التدقيق"
   },
   "track.entriesIn": {
@@ -7291,6 +7811,7 @@
     "fr": "entrées dans",
     "pl": "wpisów w",
     "uk": "записів у",
+    "da": "poster i",
     "ar": "مدخلات في"
   },
   "track.normalize": {
@@ -7305,6 +7826,7 @@
     "fr": "Normaliser",
     "pl": "Normalizuj",
     "uk": "Нормалізувати",
+    "da": "Normalisér",
     "ar": "تطبيع"
   },
   "track.dedup": {
@@ -7319,6 +7841,7 @@
     "fr": "Supprimer les doublons",
     "pl": "Deduplikuj",
     "uk": "Дедуплікувати",
+    "da": "Dedupliker",
     "ar": "إزالة التكرار"
   },
   "track.merge": {
@@ -7333,6 +7856,7 @@
     "fr": "Fusionner TSV",
     "pl": "Scal TSV",
     "uk": "Об'єднати TSV",
+    "da": "Flet TSV",
     "ar": "دمج TSV"
   },
   "track.col.score": {
@@ -7347,6 +7871,7 @@
     "fr": "Note",
     "pl": "Wynik",
     "uk": "Оцінка",
+    "da": "Score",
     "ar": "النتيجة"
   },
   "track.col.pdf": {
@@ -7361,6 +7886,7 @@
     "fr": "PDF",
     "pl": "PDF",
     "uk": "PDF",
+    "da": "PDF",
     "ar": "PDF"
   },
   "track.col.actions": {
@@ -7375,6 +7901,7 @@
     "fr": "Actions disponibles",
     "pl": "Akcje",
     "uk": "Дії",
+    "da": "Handlinger",
     "ar": "الإجراءات"
   },
   "track.fixHint": {
@@ -7389,6 +7916,7 @@
     "fr": "Réécrit data/applications.md en place",
     "pl": "Przepisuje data/applications.md na miejscu",
     "uk": "Перезаписує data/applications.md на місці",
+    "da": "Omskriver data/applications.md på stedet",
     "ar": "يعيد كتابة data/applications.md في مكانه"
   },
   "track.emptyTitle": {
@@ -7403,6 +7931,7 @@
     "fr": "Aucune application pour le moment",
     "pl": "Brak aplikacji",
     "uk": "Заявок ще немає",
+    "da": "Ingen ansøgninger endnu",
     "ar": "لا طلبات بعد"
   },
   "track.emptyBody": {
@@ -7417,6 +7946,7 @@
     "fr": "Exécuter la pipeline ou évaluer un JD pour remplir ce suivi.",
     "pl": "Uruchom pipeline lub oceń JD, aby wypełnić tracker.",
     "uk": "Запустіть pipeline або оцініть JD, щоб заповнити цей трекер.",
+    "da": "Kør pipelinen eller vurdér et jobopslag for at fylde denne tracker.",
     "ar": "شغّل خط الأنابيب أو قيّم JD لملء هذا المتتبع."
   },
   "track.emptyCta": {
@@ -7431,6 +7961,7 @@
     "fr": "Ouvrir la pipeline",
     "pl": "Otwórz pipeline",
     "uk": "Відкрити pipeline",
+    "da": "Åbn pipeline",
     "ar": "فتح خط الأنابيب"
   },
   "track.report": {
@@ -7445,6 +7976,7 @@
     "fr": "Rapport",
     "pl": "Raport",
     "uk": "Звіт",
+    "da": "Rapport",
     "ar": "التقرير"
   },
   "track.runStart": {
@@ -7459,6 +7991,7 @@
     "fr": "En cours d'exécution…",
     "pl": "Uruchamianie…",
     "uk": "Виконується…",
+    "da": "Kører…",
     "ar": "جارٍ التشغيل…"
   },
   "track.fixConfirmTitle": {
@@ -7473,6 +8006,7 @@
     "fr": "Réécrire applications.md?",
     "pl": "Przepisać applications.md?",
     "uk": "Перезаписати applications.md?",
+    "da": "Omskriv applications.md?",
     "ar": "إعادة كتابة applications.md؟"
   },
   "track.fixConfirmBody": {
@@ -7487,6 +8021,7 @@
     "fr": "Cela exécute \"{op}\" et réécrit data/applications.md dans le projet parent en place. Cela ne peut pas être annulé ici. Continuer?",
     "pl": "To uruchamia \"{op}\" i przepisuje data/applications.md w projekcie nadrzędnym na miejscu. Tego nie można cofnąć stąd. Kontynuować?",
     "uk": "Це запускає \"{op}\" і перезаписує data/applications.md у батьківському проєкті на місці. Це незворотна дія звідси. Продовжити?",
+    "da": "Dette kører \"{op}\" og omskriver data/applications.md i det overordnede projekt på stedet. Dette kan ikke fortrydes herfra. Fortsæt?",
     "ar": "يشغّل هذا \"{op}\" ويعيد كتابة data/applications.md في المشروع الأصلي في مكانه. لا يمكن التراجع من هنا. المتابعة؟"
   },
   "track.fixConfirmOk": {
@@ -7501,6 +8036,7 @@
     "fr": "Exécuter",
     "pl": "Uruchom",
     "uk": "Запустити",
+    "da": "Kør det",
     "ar": "تشغيله"
   },
   "track.done": {
@@ -7515,6 +8051,7 @@
     "fr": "Terminé",
     "pl": "Gotowe",
     "uk": "Готово",
+    "da": "Færdig",
     "ar": "تم"
   },
   "track.scoreHigh": {
@@ -7529,6 +8066,7 @@
     "fr": "≥ 4,0",
     "pl": "≥ 4.0",
     "uk": "≥ 4.0",
+    "da": "≥ 4.0",
     "ar": "≥ 4.0"
   },
   "track.scoreMid": {
@@ -7543,6 +8081,7 @@
     "fr": "≥ 3,0",
     "pl": "≥ 3.0",
     "uk": "≥ 3.0",
+    "da": "≥ 3.0",
     "ar": "≥ 3.0"
   },
   "track.scoreLow": {
@@ -7557,6 +8096,7 @@
     "fr": "< 3,0",
     "pl": "< 3.0",
     "uk": "< 3.0",
+    "da": "< 3.0",
     "ar": "< 3.0"
   },
   "track.noMatch": {
@@ -7571,6 +8111,7 @@
     "fr": "Aucun résultat correspondant",
     "pl": "Brak dopasowań",
     "uk": "Немає збігів",
+    "da": "Ingen match",
     "ar": "لا تطابق"
   },
   "track.col.date": {
@@ -7585,6 +8126,7 @@
     "fr": "Date d'ajout",
     "pl": "Data",
     "uk": "Дата",
+    "da": "Dato",
     "ar": "التاريخ"
   },
   "track.col.status": {
@@ -7599,6 +8141,7 @@
     "fr": "Statut",
     "pl": "Status",
     "uk": "Статус",
+    "da": "Status",
     "ar": "الحالة"
   },
   "track.col.legitimacy": {
@@ -7613,6 +8156,7 @@
     "fr": "Légitimité",
     "pl": "Wiarygodność",
     "uk": "Легітимність",
+    "da": "Troværdighed",
     "ar": "المصداقية"
   },
   "track.col.legitimacy.help": {
@@ -7627,6 +8171,7 @@
     "fr": "Confiance que l'annonce est réelle (Élevée / Prudence / Suspecte).",
     "pl": "Pewność, że ogłoszenie jest prawdziwe (Wysoka / Ostrzeżenie / Podejrzane).",
     "uk": "Впевненість у тому, що оголошення реальне (Висока / Обережно / Підозріло).",
+    "da": "Sikkerhed for at opslaget er ægte (Høj / Forsigtig / Mistænkelig).",
     "ar": "الثقة في كون الإعلان حقيقيًا (عالي / تحذير / مشبوه)."
   },
   "cv.unsaved": {
@@ -7641,6 +8186,7 @@
     "fr": "Modifications non enregistrées — cliquer sur Enregistrer pour les sauvegarder.",
     "pl": "Niezapisane zmiany — kliknij Zapisz, aby utrwalić.",
     "uk": "Незбережені зміни — натисніть Зберегти, щоб зберегти.",
+    "da": "Ikke-gemte ændringer — klik Gem for at bevare.",
     "ar": "تغييرات غير محفوظة — انقر حفظ للإبقاء عليها."
   },
   "notif.title": {
@@ -7655,6 +8201,7 @@
     "fr": "Alertes",
     "pl": "Powiadomienia",
     "uk": "Сповіщення",
+    "da": "Notifikationer",
     "ar": "الإشعارات"
   },
   "notif.empty": {
@@ -7669,6 +8216,7 @@
     "fr": "Aucune notification pour le moment.",
     "pl": "Brak powiadomień.",
     "uk": "Сповіщень ще немає.",
+    "da": "Ingen notifikationer endnu.",
     "ar": "لا إشعارات بعد."
   },
   "notif.bellAria": {
@@ -7683,6 +8231,7 @@
     "fr": "Notifications — ouvrir le journal des toasts récents",
     "pl": "Powiadomienia — otwórz dziennik ostatnich powiadomień",
     "uk": "Сповіщення — відкрити журнал останніх toast-повідомлень",
+    "da": "Notifikationer — åbn journalen over seneste notifikationer",
     "ar": "الإشعارات — فتح سجل التنبيهات الأخيرة"
   },
   "notif.closeAria": {
@@ -7697,6 +8246,7 @@
     "fr": "Fermer les notifications",
     "pl": "Zamknij powiadomienia",
     "uk": "Закрити сповіщення",
+    "da": "Luk notifikationer",
     "ar": "إغلاق الإشعارات"
   },
   "notif.unread": {
@@ -7711,6 +8261,7 @@
     "fr": "{n} non lues",
     "pl": "{n} nieprzeczytanych",
     "uk": "{n} непрочитаних",
+    "da": "{n} ulæste",
     "ar": "{n} غير مقروء"
   },
   "rep.allReports": {
@@ -7725,6 +8276,7 @@
     "fr": "← Tous les rapports",
     "pl": "← Wszystkie raporty",
     "uk": "← Всі звіти",
+    "da": "← Alle rapporter",
     "ar": "← جميع التقارير"
   },
   "rep.openJd": {
@@ -7739,6 +8291,7 @@
     "fr": "Ouvrir JD ↗",
     "pl": "Otwórz JD ↗",
     "uk": "Відкрити JD ↗",
+    "da": "Åbn jobopslag ↗",
     "ar": "فتح JD ↗"
   },
   "rep.inDir": {
@@ -7753,6 +8306,7 @@
     "fr": "rapports dans",
     "pl": "raportów w",
     "uk": "звітів у",
+    "da": "rapporter i",
     "ar": "تقارير في"
   },
   "set.targetRoles": {
@@ -7767,6 +8321,7 @@
     "fr": "Rôles cibles",
     "pl": "Docelowe role",
     "uk": "Цільові ролі",
+    "da": "Mål-roller",
     "ar": "الأدوار المستهدفة"
   },
   "set.archetypes": {
@@ -7781,6 +8336,7 @@
     "fr": "Archétypes",
     "pl": "Archetypy",
     "uk": "Архетипи",
+    "da": "Arketyper",
     "ar": "الأنماط النموذجية"
   },
   "set.rawYaml": {
@@ -7795,6 +8351,7 @@
     "fr": "YAML (brut)",
     "pl": "YAML (raw)",
     "uk": "YAML (необроблений)",
+    "da": "YAML (rå)",
     "ar": "YAML (خام)"
   },
   "set.show": {
@@ -7809,6 +8366,7 @@
     "fr": "Afficher",
     "pl": "Pokaż",
     "uk": "Показати",
+    "da": "Vis",
     "ar": "عرض"
   },
   "set.notFound": {
@@ -7823,6 +8381,7 @@
     "fr": "config/profile.yml non trouvé.",
     "pl": "Nie znaleziono config/profile.yml.",
     "uk": "config/profile.yml не знайдено.",
+    "da": "config/profile.yml blev ikke fundet.",
     "ar": "config/profile.yml غير موجود."
   },
   "set.name": {
@@ -7837,6 +8396,7 @@
     "fr": "Nom",
     "pl": "Imię i nazwisko",
     "uk": "Ім'я",
+    "da": "Navn",
     "ar": "الاسم"
   },
   "set.email": {
@@ -7851,6 +8411,7 @@
     "fr": "E-mail",
     "pl": "E-mail",
     "uk": "Email",
+    "da": "E-mail",
     "ar": "البريد الإلكتروني"
   },
   "set.location": {
@@ -7865,6 +8426,7 @@
     "fr": "Localisation",
     "pl": "Lokalizacja",
     "uk": "Локація",
+    "da": "Placering",
     "ar": "الموقع"
   },
   "set.fit": {
@@ -7879,6 +8441,7 @@
     "fr": "Adéquation",
     "pl": "Dopasowanie",
     "uk": "Відповідність",
+    "da": "Match",
     "ar": "الملاءمة"
   },
   "set.level": {
@@ -7893,6 +8456,7 @@
     "fr": "Niveau",
     "pl": "Poziom",
     "uk": "Рівень",
+    "da": "Niveau",
     "ar": "المستوى"
   },
   "profile.headline": {
@@ -7907,6 +8471,7 @@
     "fr": "Slogan",
     "pl": "Nagłówek",
     "uk": "Заголовок",
+    "da": "Overskrift",
     "ar": "العنوان المهني"
   },
   "profile.missing": {
@@ -7921,6 +8486,7 @@
     "fr": "— non défini",
     "pl": "— nie ustawiono",
     "uk": "— не вказано",
+    "da": "— ikke sat",
     "ar": "— غير مضبوط"
   },
   "profile.framingTitle": {
@@ -7935,6 +8501,7 @@
     "fr": "Cadre professionnel",
     "pl": "Framing kariery",
     "uk": "Кар'єрне позиціювання",
+    "da": "Karriere-framing",
     "ar": "الإطار المهني"
   },
   "profile.framingHint": {
@@ -7949,6 +8516,7 @@
     "fr": "modes/_profile.md est le fichier canonique de cadre professionnel (rôles cibles, cadre, narration d'issue, objectifs salariaux, politique de localisation). Jamais commité. Lu par chaque évaluation, recherche approfondie et prompt de prospection.",
     "pl": "modes/_profile.md to kanoniczny plik framingu kariery (docelowe role, framing, narracja wyjścia, cele wynagrodzenia, polityka lokalizacji). Nigdy nie commitowany. Czytany przez każdą ocenę, dogłębny research i prompt outreachu.",
     "uk": "modes/_profile.md — канонічний файл кар'єрного позиціювання (цільові ролі, framing, exit-narrative, цільовий дохід, політика щодо локації). Ніколи не комітиться. Читається кожним оцінюванням, глибоким рісьорчем та outreach-промптом.",
+    "da": "modes/_profile.md er den kanoniske fil til karriere-framing (mål-roller, framing, exit-narrativ, lønmål, placeringspolitik). Aldrig committet. Læses af hver vurdering, dybdegående research og outreach-prompt.",
     "ar": "modes/_profile.md هو ملف الإطار المهني القانوني (الأدوار المستهدفة، الإطار، سرد المسيرة، أهداف التعويض، سياسة الموقع). لا يُرفَع للمستودع أبدًا. يقرأه كل تقييم وبحث معمّق وأمر تواصل."
   },
   "profile.editModes": {
@@ -7963,6 +8531,7 @@
     "fr": "Modifier dans les paramètres de l'application → Modes",
     "pl": "Edytuj w Ustawieniach aplikacji → Tryby",
     "uk": "Редагувати у Налаштуваннях застосунку → Modes",
+    "da": "Redigér i App-indstillinger → Modes",
     "ar": "تعديل في إعدادات التطبيق ← الأوضاع"
   },
   "config.tabModes": {
@@ -7977,6 +8546,7 @@
     "fr": "Profils de cadrage",
     "pl": "Tryby",
     "uk": "Modes",
+    "da": "Modes",
     "ar": "الأوضاع"
   },
   "config.modesSectionHint": {
@@ -7991,6 +8561,7 @@
     "fr": "Chaque section ## est modifiable individuellement ci-dessous. Le sauvetage fusionne par sections — votre préambule et toute section que vous ne touchez pas sont conservés.",
     "pl": "Każda sekcja ## jest edytowalna osobno poniżej. Zapisanie scala wg sekcji — Twój preambuł i sekcje, których nie dotknąłeś, są zachowane.",
     "uk": "Кожен розділ ## редагується окремо нижче. Збереження об'єднує за розділами — ваша преамбула та розділи, яких ви не торкаєтесь, зберігаються.",
+    "da": "Hver ## sektion kan redigeres for sig nedenfor. Ved gem flettes pr. sektion — din indledning og de sektioner, du ikke rører, bevares.",
     "ar": "كل قسم ## قابل للتعديل بمفرده أدناه. الحفظ يدمج حسب القسم — مقدمتك وأي أقسام لم تمسّها محفوظة."
   },
   "config.modesTargetRoles": {
@@ -8005,6 +8576,7 @@
     "fr": "Rôles cibles",
     "pl": "Docelowe role",
     "uk": "Target Roles",
+    "da": "Mål-roller",
     "ar": "الأدوار المستهدفة"
   },
   "config.modesAdaptiveFraming": {
@@ -8019,6 +8591,7 @@
     "fr": "Cadre adaptable",
     "pl": "Adaptacyjny framing",
     "uk": "Adaptive Framing",
+    "da": "Adaptiv framing",
     "ar": "الإطار التكيّفي"
   },
   "config.modesExitNarrative": {
@@ -8033,6 +8606,7 @@
     "fr": "Narration d'issue",
     "pl": "Narracja wyjścia",
     "uk": "Exit Narrative",
+    "da": "Exit-narrativ",
     "ar": "سرد المسيرة"
   },
   "config.modesCompTargets": {
@@ -8047,6 +8621,7 @@
     "fr": "Objectifs salariaux",
     "pl": "Cele wynagrodzenia",
     "uk": "Comp Targets",
+    "da": "Lønmål",
     "ar": "أهداف التعويض"
   },
   "config.modesLocationPolicy": {
@@ -8061,6 +8636,7 @@
     "fr": "Politique de localisation",
     "pl": "Polityka lokalizacji",
     "uk": "Location Policy",
+    "da": "Placeringspolitik",
     "ar": "سياسة الموقع"
   },
   "config.modesAddItem": {
@@ -8075,6 +8651,7 @@
     "fr": "Ajouter une ligne",
     "pl": "Dodaj wiersz",
     "uk": "Додати рядок",
+    "da": "Tilføj linje",
     "ar": "إضافة سطر"
   },
   "config.modesRemoveItem": {
@@ -8089,6 +8666,7 @@
     "fr": "Supprimer une ligne",
     "pl": "Usuń wiersz",
     "uk": "Видалити рядок",
+    "da": "Fjern linje",
     "ar": "إزالة سطر"
   },
   "config.modesItemAria": {
@@ -8103,6 +8681,7 @@
     "fr": "ligne",
     "pl": "wiersz",
     "uk": "рядок",
+    "da": "linje",
     "ar": "سطر"
   },
   "config.modesNonListNote": {
@@ -8117,6 +8696,7 @@
     "fr": "Cette section n'est pas une simple liste — éditer en texte brut pour éviter la perte de données.",
     "pl": "Ta sekcja nie jest prostą listą — edytowanie jako tekst surowy, aby uniknąć utraty danych.",
     "uk": "Цей розділ не є простим списком — редагується як необроблений текст, щоб уникнути втрати даних.",
+    "da": "Denne sektion er ikke en simpel liste — redigeres som rå tekst for at undgå datatab.",
     "ar": "هذا القسم ليس قائمة بسيطة — يُحرَّر كنص خام لتجنب فقدان البيانات."
   },
   "config.modesUnknownNote": {
@@ -8131,6 +8711,7 @@
     "fr": "Section personnalisée (non dans le schéma standard) — éditer en texte brut.",
     "pl": "Sekcja niestandardowa (poza standardowym schematem) — edytowanie jako tekst surowy.",
     "uk": "Власний розділ (не в стандартній схемі) — редагується як необроблений текст.",
+    "da": "Brugerdefineret sektion (ikke i standardskemaet) — redigeres som rå tekst.",
     "ar": "قسم مخصص (غير موجود في المخطط القياسي) — يُحرَّر كنص خام."
   },
   "config.modesDescTargetRoles": {
@@ -8145,6 +8726,7 @@
     "fr": "Types de rôles auxquels vous postulez (par exemple, Senior Backend Engineer). Un par ligne, avec une note courte sur ce que cet employeur recherche.",
     "pl": "Typy ról, na które aplikujesz (np. Starszy inżynier backendowy). Jeden w wierszu, z krótką notatką o tym, czego szuka taki pracodawca.",
     "uk": "Типи ролей, на які ви претендуєте (напр. Senior Backend Engineer). По одній на рядок з коротким описом того, чого шукає такий роботодавець.",
+    "da": "Rolletyper du ansøger til (f.eks. Senior Backend Engineer). Én pr. linje, med en kort note om, hvad den slags arbejdsgiver leder efter.",
     "ar": "أنواع الأدوار التي تتقدم إليها (مثال: مهندس خلفية أول). واحد في كل سطر مع ملاحظة قصيرة حول ما يبحث عنه هذا النوع من أصحاب العمل."
   },
   "config.modesDescAdaptiveFraming": {
@@ -8159,6 +8741,7 @@
     "fr": "Pour chaque type de rôle, quel projet ou expérience mettre en avant — afin que le système cadre votre travail comme l'employeur s'y intéresse.",
     "pl": "Dla każdego typu roli — które Twoje projekty lub doświadczenia podkreślić, żeby system przedstawił Twoją pracę tak, jak zależy temu pracodawcy.",
     "uk": "Для кожного типу ролей — які ваші проєкти чи досвід підкреслити, щоб система подала вашу роботу так, як це важливо для того роботодавця.",
+    "da": "For hver rolletype — hvilke af dine projekter eller erfaringer der skal fremhæves, så systemet rammesætter dit arbejde, som den arbejdsgiver bekymrer sig om.",
     "ar": "لكل نوع دور، أي مشاريعك أو تجاربك تبرز — حتى يُقدّم النظام عملك بالطريقة التي يهتم بها صاحب العمل."
   },
   "config.modesDescExitNarrative": {
@@ -8173,6 +8756,7 @@
     "fr": "Un résumé court de votre parcours professionnel — où vous êtes venu et où vous allez. Utilisé pour écrire la synthèse de votre CV et vos lettres de motivation.",
     "pl": "Krótkie podsumowanie historii Twojej kariery — skąd przyszedłeś i dokąd zmierzasz. Używane przy pisaniu podsumowania CV i listów motywacyjnych.",
     "uk": "Короткий підсумок вашої кар'єрної історії — звідки ви прийшли і куди прямуєте. Використовується при написанні резюме та супровідних листів.",
+    "da": "Et kort resumé af din karrierehistorie — hvor du har været, og hvor du er på vej hen. Bruges, når dit CV-resumé og dine ansøgninger skrives.",
     "ar": "ملخص قصير لقصة مسيرتك — أين كنت وإلى أين تتجه. يُستخدم عند كتابة ملخص CV وخطابات التقديم."
   },
   "config.modesDescCompTargets": {
@@ -8187,6 +8771,7 @@
     "fr": "Notes sur les plafonds salariaux pour vos rôles cibles. Utilisées pour signaler si une offre est au-dessus ou en dessous du marché.",
     "pl": "Notatki o widełkach wynagrodzenia dla Twoich docelowych ról. Używane do sygnalizowania, czy oferta jest powyżej czy poniżej rynku.",
     "uk": "Нотатки про зарплатну вилку для ваших цільових ролей. Використовується для позначення того, чи є оффер вище або нижче ринку.",
+    "da": "Noter om lønintervaller for dine mål-roller. Bruges til at markere, om et tilbud er over eller under markedet.",
     "ar": "ملاحظات نطاق الراتب للأدوار المستهدفة. يُستخدم للإشارة إلى ما إذا كان العرض فوق السوق أو دونه."
   },
   "config.modesDescLocationPolicy": {
@@ -8201,6 +8786,7 @@
     "fr": "Préférence pour le télétravail, hybride ou présentiel — et à quel point évaluer les rôles qui ne correspondent pas.",
     "pl": "Preferencje zdalne, hybrydowe lub stacjonarne — i jak rygorystycznie oceniać role, które nie pasują.",
     "uk": "Переваги щодо remote, гібридного або офісного формату — і наскільки суворо оцінювати ролі, що не відповідають їм.",
+    "da": "Præference for fjernarbejde, hybrid eller på kontoret — og hvor strengt roller, der ikke matcher, skal scores.",
     "ar": "تفضيل عن بعد أو هجين أو في المقر — ومدى صرامة تسجيل الأدوار التي لا تطابقه."
   },
   "config.modesFormRebuildBody": {
@@ -8215,6 +8801,7 @@
     "fr": "Cela recréera modes/_profile.md à partir des champs ci-dessus avec le schéma standard. Votre préambule et toute section personnalisée sont conservés. Continuer?",
     "pl": "To (ponownie) utworzy modes/_profile.md z powyższych pól według standardowego schematu. Twój preambuł i sekcje niestandardowe są zachowane. Kontynuować?",
     "uk": "Це (пере)створить modes/_profile.md з полів вище за стандартною схемою. Ваша преамбула та власні розділи зберігаються. Продовжити?",
+    "da": "Dette vil (gen)skabe modes/_profile.md ud fra felterne ovenfor med standardskemaet. Din indledning og eventuelle brugerdefinerede sektioner bevares. Fortsæt?",
     "ar": "سيُنشئ هذا (أو يُعيد إنشاء) modes/_profile.md من الحقول أعلاه بالمخطط القياسي. مقدمتك وأي أقسام مخصصة محفوظة. المتابعة؟"
   },
   "config.modesNoSections": {
@@ -8229,6 +8816,7 @@
     "fr": "Aucune section ## trouvée — utiliser l'éditeur brut ci-dessous.",
     "pl": "Nie znaleziono sekcji ## — użyj surowego edytora poniżej.",
     "uk": "Розділів ## не знайдено — використовуйте необроблений редактор нижче.",
+    "da": "Ingen ## sektioner fundet — brug den rå editor nedenfor.",
     "ar": "لم تُوجَد أقسام ## — استخدم المحرر الخام أدناه."
   },
   "config.modesRawToggle": {
@@ -8243,6 +8831,7 @@
     "fr": "Avancé : éditer le markdown brut (ajouter/supprimer des sections, préambule)",
     "pl": "Zaawansowane: edytuj surowy markdown (dodaj/usuń sekcje, preambuł)",
     "uk": "Розширено: редагувати необроблений markdown (додавати/видаляти розділи, преамбулу)",
+    "da": "Avanceret: redigér rå markdown (tilføj/fjern sektioner, indledning)",
     "ar": "متقدم: تعديل Markdown الخام (إضافة/إزالة أقسام، مقدمة)"
   },
   "config.modesRawHint": {
@@ -8257,6 +8846,7 @@
     "fr": "Éditeur de fichier complet. Utilisez pour ajouter ou supprimer des sections ## ou éditer le préambule. Remplace tout le fichier lors du sauvetage.",
     "pl": "Edytor całego pliku. Użyj do dodawania lub usuwania sekcji ## lub edycji preambuły. Zastępuje cały plik po zapisaniu.",
     "uk": "Повний редактор файлу. Використовуйте для додавання або видалення розділів ## або редагування преамбули. Замінює весь файл при збереженні.",
+    "da": "Editor for hele filen. Brug til at tilføje eller fjerne ## sektioner eller redigere indledningen. Erstatter hele filen ved gem.",
     "ar": "محرر الملف الكامل. استخدمه لإضافة أو إزالة أقسام ## أو تعديل المقدمة. يستبدل الملف بأكمله عند الحفظ."
   },
   "config.modesRawSave": {
@@ -8271,6 +8861,7 @@
     "fr": "Sauvegarder le markdown brut",
     "pl": "Zapisz surowy markdown",
     "uk": "Зберегти необроблений markdown",
+    "da": "Gem rå markdown",
     "ar": "حفظ Markdown الخام"
   },
   "config.modesHint": {
@@ -8285,6 +8876,7 @@
     "fr": "modes/_profile.md est votre cadre professionnel privé — jamais commité dans git. Il pilote chaque évaluation, recherche approfondie et prompt de prospection.",
     "pl": "modes/_profile.md to Twój prywatny framing kariery — nigdy nie commitowany do git. Steruje każdą oceną, dogłębnym researchem i promptem outreachu.",
     "uk": "modes/_profile.md — ваше приватне кар'єрне позиціювання, ніколи не комітиться до git. Керує кожним оцінюванням, глибоким рісьорчем та outreach-промптом.",
+    "da": "modes/_profile.md er din private karriere-framing — aldrig committet til git. Styrer hver vurdering, dybdegående research og outreach-prompt.",
     "ar": "modes/_profile.md هو إطارك المهني الخاص — لا يُرفَع لـ git أبدًا. يحرّك كل تقييم وبحث معمّق وأمر تواصل."
   },
   "config.modesScaffolded": {
@@ -8299,6 +8891,7 @@
     "fr": "Généré à partir de _profile.template.md — vérifier puis Enregistrer",
     "pl": "Wygenerowano z _profile.template.md — przejrzyj i Zapisz",
     "uk": "Створено зі scaffold з _profile.template.md — перегляньте, потім Зберегти",
+    "da": "Stilladseret fra _profile.template.md — gennemgå og Gem",
     "ar": "تم البناء من _profile.template.md — راجع ثم احفظ"
   },
   "config.modesEmpty": {
@@ -8313,6 +8906,7 @@
     "fr": "modes/_profile.md est vide",
     "pl": "modes/_profile.md jest pusty",
     "uk": "modes/_profile.md порожній",
+    "da": "modes/_profile.md er tom",
     "ar": "modes/_profile.md فارغ"
   },
   "config.modesSaved": {
@@ -8327,6 +8921,7 @@
     "fr": "modes/_profile.md enregistré",
     "pl": "modes/_profile.md zapisano",
     "uk": "modes/_profile.md збережено",
+    "da": "modes/_profile.md gemt",
     "ar": "تم حفظ modes/_profile.md"
   },
   "config.modesDocsLink": {
@@ -8341,6 +8936,7 @@
     "fr": "Documentation canonique ↗",
     "pl": "Kanoniczna dokumentacja ↗",
     "uk": "Канонічна документація ↗",
+    "da": "Kanonisk dokumentation ↗",
     "ar": "الوثائق القانونية ↗"
   },
   "config.sanitized": {
@@ -8355,6 +8951,7 @@
     "fr": "sanitizé",
     "pl": "oczyszczono",
     "uk": "санітизовано",
+    "da": "renset",
     "ar": "مُعقَّم"
   },
   "eval.title": {
@@ -8369,6 +8966,7 @@
     "fr": "Évaluer la candidature",
     "pl": "Oceń ofertę",
     "uk": "Оцінка вакансії",
+    "da": "Vurdér jobopslag",
     "ar": "تقييم وظيفة"
   },
   "eval.subtitle": {
@@ -8383,6 +8981,7 @@
     "fr": "Analyse A-F canonique : Poste, Adéquation CV, Stratégie, Concurrence, Personnalisation, Histoires STAR. Score et légitimité dans le résumé du rapport.",
     "pl": "Kanoniczna analiza A–F: Rola, dopasowanie CV, Strategia, Wynagrodzenie, Personalizacja, Historie STAR. Wynik i wiarygodność w nagłówku raportu.",
     "uk": "Канонічний аналіз A–F: Роль, відповідність CV, Стратегія, Компенсація, Персоналізація, STAR-історії. Оцінка + легітимність у заголовку звіту.",
+    "da": "Kanonisk A–F-analyse: Rolle, CV-match, Strategi, Løn, Personalisering, STAR-historier. Score + troværdighed i rapportens header.",
     "ar": "التحليل القانوني A–F: الدور، تطابق CV، الاستراتيجية، التعويض، التخصيص، قصص STAR. النتيجة + المصداقية في رأس التقرير."
   },
   "eval.jdLbl": {
@@ -8397,6 +8996,7 @@
     "fr": "Description du poste",
     "pl": "Opis stanowiska",
     "uk": "Опис вакансії",
+    "da": "Jobbeskrivelse",
     "ar": "وصف الوظيفة"
   },
   "eval.btnEval": {
@@ -8411,6 +9011,7 @@
     "fr": "▶ Évaluer",
     "pl": "▶ Oceń",
     "uk": "▶ Оцінити",
+    "da": "▶ Vurdér",
     "ar": "▶ تقييم"
   },
   "eval.btnClear": {
@@ -8425,6 +9026,7 @@
     "fr": "Effacer",
     "pl": "Wyczyść",
     "uk": "Очистити",
+    "da": "Ryd",
     "ar": "مسح"
   },
   "health.title": {
@@ -8439,6 +9041,7 @@
     "fr": "Santé",
     "pl": "Health",
     "uk": "Здоров'я системи",
+    "da": "Health",
     "ar": "الصحة"
   },
   "health.runDoctor": {
@@ -8453,6 +9056,7 @@
     "fr": "Exécuter le docteur",
     "pl": "Uruchom doctor",
     "uk": "Запустити doctor",
+    "da": "Kør doctor",
     "ar": "تشغيل الفحص"
   },
   "health.verify": {
@@ -8467,6 +9071,7 @@
     "fr": "Vérifier la chaîne de traitement",
     "pl": "Zweryfikuj pipeline",
     "uk": "Перевірити pipeline",
+    "da": "Verificér pipeline",
     "ar": "التحقق من خط الأنابيب"
   },
   "health.badgeOk": {
@@ -8481,6 +9086,7 @@
     "fr": "OK",
     "pl": "OK",
     "uk": "OK",
+    "da": "OK",
     "ar": "موافق"
   },
   "health.badgeOptional": {
@@ -8495,6 +9101,7 @@
     "fr": "OPTIONAL",
     "pl": "OPCJONALNE",
     "uk": "НЕОБОВ.",
+    "da": "VALGFRI",
     "ar": "اختياري"
   },
   "health.badgeFail": {
@@ -8509,6 +9116,7 @@
     "fr": "FAIL",
     "pl": "BŁĄD",
     "uk": "ПОМИЛКА",
+    "da": "FEJL",
     "ar": "فشل"
   },
   "health.runningDoctor": {
@@ -8523,6 +9131,7 @@
     "fr": "Exécution du fichier doctor.mjs…",
     "pl": "Uruchamianie doctor.mjs…",
     "uk": "Запуск doctor.mjs…",
+    "da": "Kører doctor.mjs…",
     "ar": "جارٍ تشغيل doctor.mjs…"
   },
   "health.runningVerify": {
@@ -8537,6 +9146,7 @@
     "fr": "Exécution du fichier verify-pipeline.mjs…",
     "pl": "Uruchamianie verify-pipeline.mjs…",
     "uk": "Запуск verify-pipeline.mjs…",
+    "da": "Kører verify-pipeline.mjs…",
     "ar": "جارٍ تشغيل verify-pipeline.mjs…"
   },
   "track.title": {
@@ -8551,6 +9161,7 @@
     "fr": "Suivi des candidatures",
     "pl": "Tracker aplikacji",
     "uk": "Трекер заявок",
+    "da": "Ansøgnings-tracker",
     "ar": "متتبع الطلبات"
   },
   "track.allStatus": {
@@ -8565,6 +9176,7 @@
     "fr": "tous les statuts",
     "pl": "wszystkie statusy",
     "uk": "всі статуси",
+    "da": "alle statusser",
     "ar": "جميع الحالات"
   },
   "track.funnelAria": {
@@ -8579,6 +9191,7 @@
     "fr": "Filtrer par statut",
     "pl": "Filtruj wg statusu",
     "uk": "Фільтр за статусом",
+    "da": "Filtrér efter status",
     "ar": "تصفية حسب الحالة"
   },
   "track.anyScore": {
@@ -8593,6 +9206,7 @@
     "fr": "tout score",
     "pl": "dowolny wynik",
     "uk": "будь-яка оцінка",
+    "da": "enhver score",
     "ar": "أي نتيجة"
   },
   "track.search": {
@@ -8607,6 +9221,7 @@
     "fr": "Rechercher par entreprise / poste…",
     "pl": "Szukaj wg firmy / stanowiska…",
     "uk": "Пошук за компанією / роллю…",
+    "da": "Søg efter virksomhed / rolle…",
     "ar": "بحث حسب الشركة / الدور…"
   },
   "track.searchAria": {
@@ -8621,6 +9236,7 @@
     "fr": "Recherche de candidatures par nom d'entreprise ou titre de poste",
     "pl": "Szukaj aplikacji wg nazwy firmy lub tytułu stanowiska",
     "uk": "Пошук заявок за назвою компанії або назвою ролі",
+    "da": "Søg i ansøgninger efter virksomhedsnavn eller rolletitel",
     "ar": "البحث في الطلبات حسب اسم الشركة أو عنوان الدور"
   },
   "rep.title": {
@@ -8635,6 +9251,7 @@
     "fr": "Rapports",
     "pl": "Raporty",
     "uk": "Звіти",
+    "da": "Rapporter",
     "ar": "التقارير"
   },
   "rep.subtitle": {
@@ -8649,6 +9266,7 @@
     "fr": "Rapports d'évaluation et de recherche approfondie enregistrés dans le dossier reports/",
     "pl": "Zapisane raporty ocen i dogłębnego researchu z reports/",
     "uk": "Збережені звіти оцінки та глибокого рісьорчу з reports/",
+    "da": "Gemte rapporter fra vurdering og dybdegående research fra reports/",
     "ar": "تقارير التقييم والبحث المعمّق المحفوظة من reports/"
   },
   "rep.thresholdsTitle": {
@@ -8663,6 +9281,7 @@
     "fr": "Score → prochaine étape",
     "pl": "Wynik → następny krok",
     "uk": "Оцінка → наступний крок",
+    "da": "Score → næste skridt",
     "ar": "النتيجة ← الخطوة التالية"
   },
   "rep.score": {
@@ -8677,6 +9296,7 @@
     "fr": "Note",
     "pl": "Wynik",
     "uk": "Оцінка",
+    "da": "Score",
     "ar": "النتيجة"
   },
   "rep.thrAction": {
@@ -8691,6 +9311,7 @@
     "fr": "Prochaine étape",
     "pl": "Następny krok",
     "uk": "Наступний крок",
+    "da": "Næste skridt",
     "ar": "الخطوة التالية"
   },
   "rep.thr45": {
@@ -8705,6 +9326,7 @@
     "fr": "Exécuter /career-ops apply — adéquation élevée, soumettre immédiatement",
     "pl": "Uruchom /career-ops apply — wysokie dopasowanie, aplikuj natychmiast",
     "uk": "Запустіть /career-ops apply — висока відповідність, подавайте негайно",
+    "da": "Kør /career-ops apply — højt match, gå i gang med det samme",
     "ar": "شغّل /career-ops apply — ملاءمة عالية، تقدّم فورًا"
   },
   "rep.thr40": {
@@ -8719,6 +9341,7 @@
     "fr": "Postuler, ou /career-ops contacto pour une introduction chaude en premier",
     "pl": "Aplikuj lub /career-ops contacto po ciepłe intro",
     "uk": "Подавайте або /career-ops contacto для теплого знайомства спочатку",
+    "da": "Ansøg, eller /career-ops contacto for en varm introduktion først",
     "ar": "قدّم، أو /career-ops contacto لمقدمة دافئة أولًا"
   },
   "rep.thr35": {
@@ -8733,6 +9356,7 @@
     "fr": "Exécuter /career-ops deep — recherchez l'entreprise / le poste d'abord",
     "pl": "Uruchom /career-ops deep — najpierw zbadaj firmę / rolę",
     "uk": "Запустіть /career-ops deep — спочатку дослідіть компанію / роль",
+    "da": "Kør /career-ops deep — undersøg virksomheden / rollen først",
     "ar": "شغّل /career-ops deep — ابحث في الشركة / الدور أولًا"
   },
   "rep.thrLow": {
@@ -8747,6 +9371,7 @@
     "fr": "Ignorer sauf si vous avez une raison personnelle spécifique",
     "pl": "Pomiń, chyba że masz konkretny osobisty powód",
     "uk": "Пропустіть, якщо немає конкретної особистої причини",
+    "da": "Spring over, medmindre du har en konkret personlig grund",
     "ar": "تخطَّ ما لم يكن لديك سبب شخصي محدد"
   },
   "rep.thresholdsSource": {
@@ -8761,6 +9386,7 @@
     "fr": "De ",
     "pl": "Z ",
     "uk": "З ",
+    "da": "Fra ",
     "ar": "من "
   },
   "rep.empty": {
@@ -8775,6 +9401,7 @@
     "fr": "Aucun rapport encore. Effectuez votre première évaluation.",
     "pl": "Brak raportów. Wykonaj pierwszą ocenę.",
     "uk": "Звітів ще немає. Зробіть першу оцінку.",
+    "da": "Ingen rapporter endnu. Lav din første vurdering.",
     "ar": "لا تقارير بعد. أجرِ تقييمك الأول."
   },
   "cv.title": {
@@ -8789,6 +9416,7 @@
     "fr": "CV",
     "pl": "CV",
     "uk": "CV",
+    "da": "CV",
     "ar": "السيرة الذاتية"
   },
   "cv.subtitle": {
@@ -8803,6 +9431,7 @@
     "fr": "Vérité absolue pour les évaluations. Tous les scripts lisent cv.md.",
     "pl": "Źródło prawdy dla ocen. Wszystkie skrypty czytają cv.md.",
     "uk": "Першоджерело для оцінок. Всі скрипти читають cv.md.",
+    "da": "Kilde til sandhed for vurderinger. Alle scripts læser cv.md.",
     "ar": "مصدر الحقيقة للتقييمات. جميع النصوص تقرأ cv.md."
   },
   "cv.markdown": {
@@ -8817,6 +9446,7 @@
     "fr": "Markdown source",
     "pl": "Markdown",
     "uk": "Markdown",
+    "da": "Markdown",
     "ar": "Markdown"
   },
   "cv.editorAria": {
@@ -8831,6 +9461,7 @@
     "fr": "Éditeur de CV markdown — votre curriculum vitae professionnel au format markdown",
     "pl": "Edytor markdown CV — Twoje profesjonalne CV w formacie markdown",
     "uk": "Markdown редактор CV — ваше професійне резюме у форматі markdown",
+    "da": "CV-markdown-editor — dit professionelle CV i markdown-format",
     "ar": "محرر Markdown للسيرة الذاتية — سيرتك المهنية بتنسيق Markdown"
   },
   "cv.preview": {
@@ -8845,6 +9476,7 @@
     "fr": "Aperçu",
     "pl": "Podgląd",
     "uk": "Попередній перегляд",
+    "da": "Forhåndsvisning",
     "ar": "معاينة"
   },
   "cv.upload": {
@@ -8859,6 +9491,7 @@
     "fr": "Télécharger le CV",
     "pl": "Wgraj CV",
     "uk": "Завантажити CV",
+    "da": "Upload CV",
     "ar": "رفع السيرة الذاتية"
   },
   "cv.saved": {
@@ -8873,6 +9506,7 @@
     "fr": "Enregistré",
     "pl": "Zapisano",
     "uk": "Збережено",
+    "da": "Gemt",
     "ar": "محفوظ"
   },
   "cv.syncCheck": {
@@ -8887,6 +9521,7 @@
     "fr": "vérification-synchronisation",
     "pl": "sync-check",
     "uk": "sync-check",
+    "da": "sync-check",
     "ar": "فحص المزامنة"
   },
   "cv.syncCheckRunning": {
@@ -8901,6 +9536,7 @@
     "fr": "Exécution de cv-sync-check.mjs…",
     "pl": "Uruchamianie cv-sync-check.mjs…",
     "uk": "Запуск cv-sync-check.mjs…",
+    "da": "Kører cv-sync-check.mjs…",
     "ar": "جارٍ تشغيل cv-sync-check.mjs…"
   },
   "cv.generatePdf": {
@@ -8915,6 +9551,7 @@
     "fr": "Générer PDF",
     "pl": "Generuj PDF",
     "uk": "Згенерувати PDF",
+    "da": "Generér PDF",
     "ar": "إنشاء PDF"
   },
   "cv.pdfHint": {
@@ -8929,6 +9566,7 @@
     "fr": "Exécuter generate-pdf.mjs et enregistrer dans output/",
     "pl": "Uruchom generate-pdf.mjs i zapisz do output/",
     "uk": "Запустіть generate-pdf.mjs і збережіть у output/",
+    "da": "Kør generate-pdf.mjs og gem i output/",
     "ar": "شغّل generate-pdf.mjs واحفظه في output/"
   },
   "cv.pdfTitle": {
@@ -8943,6 +9581,7 @@
     "fr": "PDFs générés",
     "pl": "Wygenerowane pliki PDF",
     "uk": "Згенеровані PDF",
+    "da": "Genererede PDF'er",
     "ar": "ملفات PDF المُنشأة"
   },
   "cv.pdfRunning": {
@@ -8957,6 +9596,7 @@
     "fr": "Génération du PDF…",
     "pl": "Generowanie PDF…",
     "uk": "Генерація PDF…",
+    "da": "Genererer PDF…",
     "ar": "جارٍ إنشاء PDF…"
   },
   "cv.pdfDone": {
@@ -8971,6 +9611,7 @@
     "fr": "PDF généré",
     "pl": "PDF wygenerowany",
     "uk": "PDF згенеровано",
+    "da": "PDF genereret",
     "ar": "تم إنشاء PDF"
   },
   "cv.openPdf": {
@@ -8985,6 +9626,7 @@
     "fr": "Ouvrir",
     "pl": "Otwórz",
     "uk": "Відкрити",
+    "da": "Åbn",
     "ar": "فتح"
   },
   "cv.downloadPdf": {
@@ -8999,6 +9641,7 @@
     "fr": "Télécharger",
     "pl": "Pobierz",
     "uk": "Завантажити",
+    "da": "Download",
     "ar": "تنزيل"
   },
   "cv.pdfNeedsPlaywright": {
@@ -9013,6 +9656,7 @@
     "fr": "Playwright manquant. Exécuter dans le projet parent :\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
     "pl": "Brakuje Playwright. Uruchom w projekcie nadrzędnym:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
     "uk": "Playwright відсутній. Запустіть у батьківському проєкті:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
+    "da": "Playwright mangler. Kør i det overordnede projekt:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
     "ar": "Playwright مفقود. شغّل في المشروع الأصلي:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium"
   },
   "set.title": {
@@ -9027,6 +9671,7 @@
     "fr": "Profil",
     "pl": "Profil",
     "uk": "Профіль",
+    "da": "Profil",
     "ar": "الملف الشخصي"
   },
   "set.subtitle": {
@@ -9041,6 +9686,7 @@
     "fr": "Résumé en lecture seule. Utilisez les paramètres de l'application → onglet Profil pour modifier.",
     "pl": "Podsumowanie tylko do odczytu. Użyj Ustawień aplikacji → zakładka Profil, aby edytować.",
     "uk": "Зведення лише для читання. Використовуйте Налаштування застосунку → вкладку Профіль для редагування.",
+    "da": "Skrivebeskyttet oversigt. Brug App-indstillinger → fanen Profil for at redigere.",
     "ar": "ملخص للقراءة فقط. استخدم إعدادات التطبيق ← تبويب الملف الشخصي للتعديل."
   },
   "set.editLink": {
@@ -9055,6 +9701,7 @@
     "fr": "Modifier le profil dans les paramètres de l'application →",
     "pl": "Edytuj profil w Ustawieniach aplikacji →",
     "uk": "Редагувати профіль у Налаштуваннях застосунку →",
+    "da": "Redigér profil i App-indstillinger →",
     "ar": "تعديل الملف الشخصي في إعدادات التطبيق ←"
   },
   "cv.uploadHint": {
@@ -9069,6 +9716,7 @@
     "fr": "Téléchargez .md, .txt, .html, .pdf, .docx, .odt, .rtf ou .doc — converti côté serveur, puis examinez et enregistrez.",
     "pl": "Wgraj .md, .txt, .html, .pdf, .docx, .odt, .rtf lub .doc — konwertowane po stronie serwera, następnie przejrzyj i Zapisz.",
     "uk": "Завантажте .md, .txt, .html, .pdf, .docx, .odt, .rtf або .doc — конвертується на сервері, потім перегляньте і Збережіть.",
+    "da": "Upload .md, .txt, .html, .pdf, .docx, .odt, .rtf eller .doc — konverteres på serversiden, gennemgå derefter og Gem.",
     "ar": "ارفع .md، .txt، .html، .pdf، .docx، .odt، .rtf أو .doc — يُحوَّل من جهة الخادم، ثم راجع واحفظ."
   },
   "cv.uploadConverting": {
@@ -9083,6 +9731,7 @@
     "fr": "Conversion…",
     "pl": "Konwertowanie…",
     "uk": "Конвертація…",
+    "da": "Konverterer…",
     "ar": "جارٍ التحويل…"
   },
   "cv.uploadDone": {
@@ -9097,6 +9746,7 @@
     "fr": "Chargé",
     "pl": "Załadowano",
     "uk": "Завантажено",
+    "da": "Indlæst",
     "ar": "تم التحميل"
   },
   "cv.reviewSave": {
@@ -9111,6 +9761,7 @@
     "fr": "examiner, puis Enregistrer",
     "pl": "przejrzyj, następnie Zapisz",
     "uk": "перегляньте, потім Зберегти",
+    "da": "gennemgå, og Gem derefter",
     "ar": "راجع، ثم احفظ"
   },
   "config.tabApi": {
@@ -9125,6 +9776,7 @@
     "fr": "Clés API & runtime",
     "pl": "Klucze API i środowisko",
     "uk": "API-ключі та середовище",
+    "da": "API-nøgler og runtime",
     "ar": "مفاتيح API ووقت التشغيل"
   },
   "config.tabProfile": {
@@ -9139,6 +9791,7 @@
     "fr": "Profil",
     "pl": "Profil",
     "uk": "Профіль",
+    "da": "Profil",
     "ar": "الملف الشخصي"
   },
   "config.tablistLabel": {
@@ -9153,6 +9806,7 @@
     "fr": "Sections de paramètres",
     "pl": "Sekcje ustawień",
     "uk": "Розділи налаштувань",
+    "da": "Indstillingssektioner",
     "ar": "أقسام الإعدادات"
   },
   "config.profileHint": {
@@ -9167,6 +9821,7 @@
     "fr": "Les modifications sont écrites dans config/profile.yml dans le projet parent. Le titre « # Career-Ops Profile Configuration » est ajouté automatiquement.",
     "pl": "Edycje zapisywane są do config/profile.yml w projekcie nadrzędnym. Nagłówek \"# Career-Ops Profile Configuration\" jest dodawany automatycznie.",
     "uk": "Зміни записуються до config/profile.yml у батьківському проєкті. Заголовок \"# Career-Ops Profile Configuration\" додається автоматично.",
+    "da": "Redigeringer skrives til config/profile.yml i det overordnede projekt. Headeren \"# Career-Ops Profile Configuration\" tilføjes automatisk.",
     "ar": "التعديلات تُكتب إلى config/profile.yml في المشروع الأصلي. يُضاف تلقائيًا العنوان \"# Career-Ops Profile Configuration\"."
   },
   "config.pfPrimaryRoles": {
@@ -9181,6 +9836,7 @@
     "fr": "Rôles cibles",
     "pl": "Docelowe role",
     "uk": "Цільові ролі",
+    "da": "Mål-roller",
     "ar": "الأدوار المستهدفة"
   },
   "config.pfSuperpowers": {
@@ -9195,6 +9851,7 @@
     "fr": "Pouvoirs spéciaux",
     "pl": "Supermocne strony",
     "uk": "Суперсили",
+    "da": "Superkræfter",
     "ar": "نقاط القوة"
   },
   "config.pfArchetypes": {
@@ -9209,6 +9866,7 @@
     "fr": "Archétypes",
     "pl": "Archetypy",
     "uk": "Архетипи",
+    "da": "Arketyper",
     "ar": "الأنماط النموذجية"
   },
   "config.pfProofPoints": {
@@ -9223,6 +9881,7 @@
     "fr": "Preuves",
     "pl": "Dowody osiągnięć",
     "uk": "Докази",
+    "da": "Beviser på resultater",
     "ar": "نقاط الإثبات"
   },
   "config.pfAddRow": {
@@ -9237,6 +9896,7 @@
     "fr": "Ajouter",
     "pl": "Dodaj",
     "uk": "Додати",
+    "da": "Tilføj",
     "ar": "إضافة"
   },
   "config.pfRemoveRow": {
@@ -9251,6 +9911,7 @@
     "fr": "Supprimer la ligne",
     "pl": "Usuń wiersz",
     "uk": "Видалити рядок",
+    "da": "Fjern række",
     "ar": "إزالة صف"
   },
   "config.pfCandidate": {
@@ -9265,6 +9926,7 @@
     "fr": "Candidat",
     "pl": "Kandydat",
     "uk": "Кандидат",
+    "da": "Kandidat",
     "ar": "المرشح"
   },
   "config.pfNarrative": {
@@ -9279,6 +9941,7 @@
     "fr": "Narratif",
     "pl": "Narracja",
     "uk": "Наратив",
+    "da": "Narrativ",
     "ar": "السرد"
   },
   "config.pfComp": {
@@ -9293,6 +9956,7 @@
     "fr": "Rémunération",
     "pl": "Wynagrodzenie",
     "uk": "Компенсація",
+    "da": "Løn",
     "ar": "التعويض"
   },
   "config.pfFullName": {
@@ -9307,6 +9971,7 @@
     "fr": "Nom complet",
     "pl": "Pełne imię i nazwisko",
     "uk": "Повне ім'я",
+    "da": "Fulde navn",
     "ar": "الاسم الكامل"
   },
   "config.pfEmail": {
@@ -9321,6 +9986,7 @@
     "fr": "E-mail",
     "pl": "E-mail",
     "uk": "Email",
+    "da": "E-mail",
     "ar": "البريد الإلكتروني"
   },
   "config.pfPhone": {
@@ -9335,6 +10001,7 @@
     "fr": "Téléphone",
     "pl": "Telefon",
     "uk": "Телефон",
+    "da": "Telefon",
     "ar": "الهاتف"
   },
   "config.pfLocation": {
@@ -9349,6 +10016,7 @@
     "fr": "Localisation",
     "pl": "Lokalizacja",
     "uk": "Локація",
+    "da": "Placering",
     "ar": "الموقع"
   },
   "config.pfLinkedin": {
@@ -9363,6 +10031,7 @@
     "fr": "LinkedIn",
     "pl": "LinkedIn",
     "uk": "LinkedIn",
+    "da": "LinkedIn",
     "ar": "LinkedIn"
   },
   "config.pfGithub": {
@@ -9377,6 +10046,7 @@
     "fr": "GitHub",
     "pl": "GitHub",
     "uk": "GitHub",
+    "da": "GitHub",
     "ar": "GitHub"
   },
   "config.pfPortfolio": {
@@ -9391,6 +10061,7 @@
     "fr": "URL du portfolio",
     "pl": "URL portfolio",
     "uk": "URL портфоліо",
+    "da": "Portefølje-URL",
     "ar": "رابط الأعمال"
   },
   "config.pfTwitter": {
@@ -9405,6 +10076,7 @@
     "fr": "X / Twitter",
     "pl": "X / Twitter",
     "uk": "X / Twitter",
+    "da": "X / Twitter",
     "ar": "X / Twitter"
   },
   "config.pfHeadline": {
@@ -9419,6 +10091,7 @@
     "fr": "Slogan",
     "pl": "Nagłówek",
     "uk": "Заголовок",
+    "da": "Overskrift",
     "ar": "العنوان المهني"
   },
   "config.pfExitStory": {
@@ -9433,6 +10106,7 @@
     "fr": "Historique de sortie",
     "pl": "Historia wyjścia",
     "uk": "Exit story",
+    "da": "Exit-historie",
     "ar": "قصة المسيرة"
   },
   "config.pfTargetRange": {
@@ -9447,6 +10121,7 @@
     "fr": "Plage cible",
     "pl": "Docelowe widełki",
     "uk": "Цільова вилка",
+    "da": "Mål-interval",
     "ar": "النطاق المستهدف"
   },
   "config.pfCurrency": {
@@ -9461,6 +10136,7 @@
     "fr": "Devise",
     "pl": "Waluta",
     "uk": "Валюта",
+    "da": "Valuta",
     "ar": "العملة"
   },
   "config.pfMinimum": {
@@ -9475,6 +10151,7 @@
     "fr": "Montant minimum d'acceptation",
     "pl": "Minimalne wynagrodzenie",
     "uk": "Мінімально прийнятна",
+    "da": "Smertegrænse-minimum",
     "ar": "الحد الأدنى المقبول"
   },
   "config.pfLocFlex": {
@@ -9489,6 +10166,7 @@
     "fr": "Souplesse géographique",
     "pl": "Elastyczność lokalizacji",
     "uk": "Гнучкість щодо локації",
+    "da": "Placeringsfleksibilitet",
     "ar": "مرونة الموقع"
   },
   "config.pfNameRequired": {
@@ -9503,6 +10181,7 @@
     "fr": "Le nom complet est requis",
     "pl": "Pełne imię i nazwisko jest wymagane",
     "uk": "Повне ім'я є обов'язковим",
+    "da": "Fulde navn er påkrævet",
     "ar": "الاسم الكامل مطلوب"
   },
   "config.profileLoadErr": {
@@ -9517,6 +10196,7 @@
     "fr": "Impossible de charger le profil : ",
     "pl": "Nie można załadować profilu: ",
     "uk": "Не вдалося завантажити профіль: ",
+    "da": "Kunne ikke indlæse profil: ",
     "ar": "تعذّر تحميل الملف الشخصي: "
   },
   "config.profileHintForm": {
@@ -9531,6 +10211,7 @@
     "fr": "Modifier votre profil champ par champ. Sauvegarde fusionnée dans config/profile.yml — vos archétypes, preuves et clés personnalisées sont préservées.",
     "pl": "Edytuj profil pole po polu. Zapisy scalane są do config/profile.yml — Twoje archetypy, dowody osiągnięć i niestandardowe klucze są zachowane bez zmian.",
     "uk": "Редагуйте профіль поле за полем. Збереження об'єднується з config/profile.yml — ваші архетипи, докази та будь-які власні ключі зберігаються недоторканими.",
+    "da": "Redigér din profil felt for felt. Gemninger flettes ind i config/profile.yml — dine arketyper, beviser på resultater og eventuelle brugerdefinerede nøgler bevares uændrede.",
     "ar": "عدّل ملفك الشخصي حقلًا بحقل. الحفظ يدمج في config/profile.yml — أنماطك النموذجية ونقاط الإثبات وأي مفاتيح مخصصة محفوظة دون مساس."
   },
   "config.profileRawToggle": {
@@ -9545,6 +10226,7 @@
     "fr": "Avancé : éditer YAML brut (archétypes, preuves, commentaires)",
     "pl": "Zaawansowane: edytuj surowy YAML (archetypy, dowody osiągnięć, komentarze)",
     "uk": "Розширено: редагувати необроблений YAML (архетипи, докази, коментарі)",
+    "da": "Avanceret: redigér rå YAML (arketyper, beviser på resultater, kommentarer)",
     "ar": "متقدم: تعديل YAML الخام (الأنماط النموذجية، نقاط الإثبات، التعليقات)"
   },
   "config.profileRawHint": {
@@ -9559,6 +10241,7 @@
     "fr": "Éditeur YAML complet. Utilisez pour les tableaux imbriqués que le formulaire de champ ne modèle pas, ou pour préserver des commentaires. Remplace tout le fichier lors de la sauvegarde.",
     "pl": "Pełny edytor YAML. Używaj do zagnieżdżonych tablic, których formularz pól nie obsługuje, lub do zachowania komentarzy. Zastępuje cały plik po zapisaniu.",
     "uk": "Повний YAML редактор. Використовуйте для вкладених масивів, які форма не моделює, або для збереження коментарів. Замінює весь файл при збереженні.",
+    "da": "Fuld YAML-editor. Brug til indlejrede arrays, som feltformularen ikke modellerer, eller til at bevare kommentarer. Erstatter hele filen ved gem.",
     "ar": "محرر YAML كامل. استخدمه للمصفوفات المتداخلة التي لا ينمذجها نموذج الحقول، أو للحفاظ على التعليقات. يستبدل الملف بأكمله عند الحفظ."
   },
   "config.profileRawSave": {
@@ -9573,6 +10256,7 @@
     "fr": "Sauvegarder YAML brut",
     "pl": "Zapisz surowy YAML",
     "uk": "Зберегти необроблений YAML",
+    "da": "Gem rå YAML",
     "ar": "حفظ YAML الخام"
   },
   "config.profileSaved": {
@@ -9587,6 +10271,7 @@
     "fr": "Profil sauvegardé",
     "pl": "Profil zapisany",
     "uk": "Профіль збережено",
+    "da": "Profil gemt",
     "ar": "تم حفظ الملف الشخصي"
   },
   "conn.down": {
@@ -9601,6 +10286,7 @@
     "fr": "Le serveur n'est pas disponible.",
     "pl": "Serwer nie odpowiada.",
     "uk": "Сервер не відповідає.",
+    "da": "Serveren svarer ikke.",
     "ar": "الخادم لا يستجيب."
   },
   "nav.cover": {
@@ -9615,6 +10301,7 @@
     "fr": "Lettre de motivation",
     "pl": "List motywacyjny",
     "uk": "Супровідний лист",
+    "da": "Ansøgning",
     "ar": "خطاب التقديم"
   },
   "cover.title": {
@@ -9629,6 +10316,7 @@
     "fr": "Lettre de motivation",
     "pl": "List motywacyjny",
     "uk": "Супровідний лист",
+    "da": "Ansøgning",
     "ar": "خطاب التقديم"
   },
   "cover.subtitle": {
@@ -9643,6 +10331,7 @@
     "fr": "Générez une lettre de motivation personnalisée à partir d'une offre d'emploi et de votre CV.",
     "pl": "Wygeneruj spersonalizowany list motywacyjny na podstawie opisu stanowiska i Twojego CV.",
     "uk": "Створіть персоналізований супровідний лист на основі опису вакансії та вашого CV.",
+    "da": "Generér en tilpasset ansøgning ud fra en jobbeskrivelse og dit CV.",
     "ar": "أنشئ خطاب تقديم مخصصًا استنادًا إلى وصف الوظيفة وسيرتك الذاتية CV."
   },
   "cover.jdLbl": {
@@ -9657,6 +10346,7 @@
     "fr": "Description du poste",
     "pl": "Opis stanowiska",
     "uk": "Опис вакансії",
+    "da": "Jobbeskrivelse",
     "ar": "وصف الوظيفة"
   },
   "cover.jdPh": {
@@ -9671,6 +10361,7 @@
     "fr": "Collez ici la description du poste…",
     "pl": "Wklej tutaj opis stanowiska…",
     "uk": "Вставте опис вакансії тут…",
+    "da": "Indsæt jobbeskrivelsen her…",
     "ar": "الصق وصف الوظيفة هنا…"
   },
   "cover.jdHint": {
@@ -9685,6 +10376,7 @@
     "fr": "Le poste pour lequel vous rédigez la lettre. Le texte collé est assaini avant d'être transmis au modèle.",
     "pl": "Stanowisko, do którego piszesz list. Wklejony tekst jest oczyszczany przed przekazaniem do modelu.",
     "uk": "Позиція, для якої ви пишете лист. Вставлений текст очищається перед відправленням моделі.",
+    "da": "Rollen du skriver ansøgningen til. Indsat tekst renses, før den når modellen.",
     "ar": "الوظيفة التي تكتب خطاب التقديم لها. يتم تعقيم النص الملصق قبل إرساله إلى النموذج."
   },
   "cover.companyLbl": {
@@ -9699,6 +10391,7 @@
     "fr": "Entreprise",
     "pl": "Firma",
     "uk": "Компанія",
+    "da": "Virksomhed",
     "ar": "الشركة"
   },
   "cover.companyPh": {
@@ -9713,6 +10406,7 @@
     "fr": "ex. Acme Corp",
     "pl": "np. Acme Corp",
     "uk": "напр. Acme Corp",
+    "da": "f.eks. Acme Corp",
     "ar": "مثال: Acme Corp"
   },
   "cover.companyHint": {
@@ -9727,6 +10421,7 @@
     "fr": "Le nom de l'employeur, utilisé pour adresser et personnaliser la lettre.",
     "pl": "Nazwa pracodawcy, używana do zaadresowania i dopasowania listu.",
     "uk": "Назва роботодавця, використовується для адресації та персоналізації листа.",
+    "da": "Arbejdsgiverens navn, brugt til at adressere og tilpasse ansøgningen.",
     "ar": "اسم صاحب العمل، يُستخدم لمخاطبة الخطاب وتخصيصه."
   },
   "cover.roleLbl": {
@@ -9741,6 +10436,7 @@
     "fr": "Poste",
     "pl": "Stanowisko",
     "uk": "Посада",
+    "da": "Rolle",
     "ar": "المسمى الوظيفي"
   },
   "cover.rolePh": {
@@ -9755,6 +10451,7 @@
     "fr": "ex. Ingénieur Backend Senior",
     "pl": "np. Starszy inżynier backend",
     "uk": "напр. Старший бекенд-розробник",
+    "da": "f.eks. Senior Backend Engineer",
     "ar": "مثال: مهندس خلفية أول"
   },
   "cover.roleHint": {
@@ -9769,6 +10466,7 @@
     "fr": "L'intitulé du poste auquel vous postulez.",
     "pl": "Tytuł stanowiska, na które aplikujesz.",
     "uk": "Назва посади, на яку ви претендуєте.",
+    "da": "Den jobtitel du ansøger til.",
     "ar": "المسمى الوظيفي للمنصب الذي تتقدم إليه."
   },
   "cover.greetingLbl": {
@@ -9783,6 +10481,7 @@
     "fr": "Formule d'appel (optionnel)",
     "pl": "Powitanie (opcjonalne)",
     "uk": "Привітання (необов'язково)",
+    "da": "Hilsen (valgfrit)",
     "ar": "التحية (اختياري)"
   },
   "cover.greetingPh": {
@@ -9797,6 +10496,7 @@
     "fr": "ex. Madame, Monsieur,",
     "pl": "np. Szanowny Zespole Rekrutacji",
     "uk": "напр. Шановна команда з підбору персоналу",
+    "da": "f.eks. Kære rekrutteringsteam",
     "ar": "مثال: تحية طيبة وبعد، فريق التوظيف"
   },
   "cover.greetingHint": {
@@ -9811,6 +10511,7 @@
     "fr": "Formule d'appel optionnelle pour ouvrir la lettre. Laissez vide pour laisser le modèle choisir.",
     "pl": "Opcjonalne powitanie otwierające list. Pozostaw puste, aby model wybrał samodzielnie.",
     "uk": "Необов'язкове звернення для початку листа. Залиште порожнім, щоб модель обрала сама.",
+    "da": "Valgfri indledende hilsen til ansøgningen. Lad feltet stå tomt, så modellen vælger.",
     "ar": "تحية اختيارية لافتتاح الخطاب. اتركه فارغًا لتتولى النموذج الاختيار."
   },
   "nav.apply": {

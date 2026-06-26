@@ -2,12 +2,16 @@
 
 Todas as mudanças relevantes do **career-ops-ui** estão documentadas aqui. O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
-Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [العربية](CHANGELOG.ar.md)
+Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
 
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 
 ---
 
+
+## [1.77.0] — 2026-06-27
+
+**Dinamarquês (Dansk) adicionado como o 13.º idioma da interface.** Tradução completa da UI, do guia de ajuda integrado (19 H2 / 75 H3), README e CHANGELOG. O dinamarquês entra no seletor de idiomas com bandeiras; a maquinaria i18n (montador, auditoria, verificações de paridade, snapshot) agora abrange 13 locales.
 
 ## [1.76.0] — 2026-06-26
 
