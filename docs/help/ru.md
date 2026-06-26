@@ -846,7 +846,7 @@ $EDITOR portals.yml
 Фильтры:
 
 - **Free text** — подстрочное совпадение по title / company.
-- **Source** dropdown — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (автозаполняется из `GET /api/scan/sources`).
+- **Source** dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (автозаполняется из `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite** dropdown.
 - **Stack chips** (PHP / Go / Backend / Senior / …) —
   авто-определяются по строке через `Skills.detectTech` и
@@ -1546,7 +1546,7 @@ Health, скопируйте вывод и поищите проблему в is
 
 ## 17. Как добавить новый источник для скана
 
-career-ops-ui рассматривает каждый job-сайт как **adapter** — единый файл в [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), который умеет fetch'ить и нормализовать результаты одного сайта. По состоянию на v1.75.0 registry `server/lib/sources/` поставляется с **19** адаптерами — 14 английских (ATSes Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday, RSS и агрегаторы v1.75.0 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) и 5 русских досок. Семь агрегаторов, добавленных в v1.75.0, — это источники уровня доски или config-driven, а не ATSes на каждую компанию: три ленты удалёнки выбираются через `provider: remoteok|remotive|workingnomads`, а четыре региональных (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) читают config-блок `<provider>:` на каждую запись — см. §5 для YAML и `docs/portals-examples.md` для готовых copy-paste-записей.
+career-ops-ui рассматривает каждый job-сайт как **adapter** — единый файл в [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), который умеет fetch'ить и нормализовать результаты одного сайта. По состоянию на v1.76.0 registry `server/lib/sources/` поставляется с **25** адаптерами — 20 английских (ATSes Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday, RSS и агрегаторы v1.75.0 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, и BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs) и 5 русских досок. Семь агрегаторов, добавленных в v1.75.0, — это источники уровня доски или config-driven, а не ATSes на каждую компанию: три ленты удалёнки выбираются через `provider: remoteok|remotive|workingnomads`, а четыре региональных (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) читают config-блок `<provider>:` на каждую запись — см. §5 для YAML и `docs/portals-examples.md` для готовых copy-paste-записей.
 
 > **v1.69.0 (P-14) — авторегистрация по принципу drop-in.** Добавление 12-го источника теперь — это **просто одни файл**. Реестр
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

@@ -72,8 +72,9 @@ test('GET /api/scan/sources includes the EN ATS + aggregator sources', async () 
   assert.deepEqual(
     enValues,
     [
-      'arbeitsagentur', 'ashby', 'glints', 'greenhouse', 'ibm', 'jobstreet',
-      'lever', 'remoteok', 'remotive', 'rss', 'smartrecruiters', 'workable',
+      'arbeitsagentur', 'ashby', 'bamboohr', 'breezy', 'comeet', 'glints',
+      'greenhouse', 'ibm', 'jobstreet', 'lever', 'personio', 'recruitee',
+      'remoteok', 'remotive', 'rss', 'smartrecruiters', 'solidjobs', 'workable',
       'workday', 'workingnomads',
     ],
   );

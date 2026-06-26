@@ -29,8 +29,9 @@ import { RU_CONFIG_KEYS } from './sources/registry.mjs';
 import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
-import { saveLastScan, MAX_STORED_RESULTS } from './en-scanner.mjs';
-import { buildLocationFilter, buildContentFilter } from './location-filter.mjs';
+import { saveLastScan } from './en-scanner.mjs';
+import { buildLocationFilter, buildContentFilter, compileKeywordList } from './location-filter.mjs';
+import { buildTrustValidator } from './trust-validator.mjs';
 
 /**
  * v1.29.0 — dispatch table from `russian_portals.sources[*]` key to its
@@ -106,6 +107,8 @@ export function loadConfig() {
     locationFilter: portals.location_filter || null,
     // v1.75.0 (#974) — optional content_filter (top-level key, like parent).
     contentFilter: portals.content_filter || null,
+    // v1.76.0 — optional trust_filter (top-level key, like parent v1.13.0).
+    trustFilter: portals.trust_filter || null,
     warnings,
   };
 }
@@ -166,9 +169,12 @@ export function loadSeenUrls() {
   return seen;
 }
 
-function passesNegative(title, negativeKeywords) {
+// v1.76.0 — compile the negative list once (word-boundary matching for short
+// ASCII acronyms, malformed-config guard). Cyrillic negatives have no 2-3 ASCII
+// form, so they fall through to substring matching unchanged.
+function passesNegative(title, negativeMatchers) {
   const t = (title || '').toLowerCase();
-  return !negativeKeywords.some((n) => t.includes(n));
+  return !negativeMatchers.some((m) => m(t));
 }
 
 /**
@@ -242,10 +248,21 @@ export async function runRuScan(opts = {}) {
   // SPA can render a "⬆ boosted" badge on them.
   const locOk = buildLocationFilter(cfg.locationFilter);
   const contentOk = buildContentFilter(cfg.contentFilter);
-  const filteredRaw = flat.filter((j) => passesNegative(j.title, cfg.negative)
+  // v1.76.0 — compile negatives once (word-boundary acronyms + guard).
+  const negativeMatchers = compileKeywordList(cfg.negative);
+  const filteredRaw = flat.filter((j) => passesNegative(j.title, negativeMatchers)
     && locOk(j.location)
     && contentOk(j.description ?? j.snippet));
-  const filtered = applyBoostStamps(filteredRaw, cfg.boosts);
+  let filtered = applyBoostStamps(filteredRaw, cfg.boosts);
+  // v1.76.0 — optional trust annotation (parent career-ops v1.13.0). Off unless
+  // `trust_filter:` is present and not disabled. Never drops a job.
+  if (cfg.trustFilter && cfg.trustFilter.enabled !== false) {
+    const trust = buildTrustValidator(cfg.trustFilter);
+    filtered = filtered.map((j) => {
+      const v = trust(j);
+      return { ...j, _trustScore: v.score, _trustLevel: v.level, _trustFlags: v.flags };
+    });
+  }
   const removedNeg = flat.length - filtered.length;
   const fresh = filtered.filter((j) => !seen.has(j.url));
   const dup = filtered.length - fresh.length;
@@ -268,7 +285,7 @@ export async function runRuScan(opts = {}) {
       kind: 'ru',
       when: new Date().toISOString(),
       fresh,
-      filtered: filtered.slice(0, MAX_STORED_RESULTS), // cap display (not pipeline/history)
+      filtered, // v1.76.0 — full matched set, no cap; #/scan paginates client-side
       errors,
     });
   }

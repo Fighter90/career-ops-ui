@@ -9,6 +9,22 @@
 ---
 
 
+## [1.76.0] — 2026-06-26
+
+**與上游 career-ops v1.13.0 對齊 —— 新增 6 個職缺來源、強化掃描器、結果表取消上限。**
+
+### 新增
+- **6 個按租戶的 ATS 來源** —— BambooHR、Breezy HR、Comeet、Personio、Recruitee、SolidJobs。從 `careers_url` 主機自動辨識（Comeet 需完整 `api:`）；每個主機以錨定正規表示式 + `redirect:'error'` 鎖定（防 SSRF）。可在 `#/scan` 的 **Source** 下拉選單中選擇 —— 註冊表現有 **25 個轉接器**（EN 20 + RU 5）。為 Personio 的 XML 來源新增 `fetchText` 輔助函式。
+- **`trust_filter`** —— 選用的信任評分（0–100，等級 high/medium/low，旗標），僅標註。低於 `high` 的列在 `#/scan` 顯示語言中立的 ⚠ 徽章；絕不丟棄職缺。
+- **Arbeitsagentur `remoteMatch` + `remoteMaxPages`** —— 由設定驅動的遠端辨識：`title`、`filter`（伺服器端 `homeoffice=nv_true` + 分頁）或 `off`。
+
+### 變更
+- **掃描結果不再設上限。** 移除顯示上限 `MAX_STORED_RESULTS`（2000）—— 儲存所有相符項，`#/scan` 表格分頁顯示（200/頁）。
+- **標題篩選更穩健** —— 短縮寫（COO、SDR…）依詞界比對；格式錯誤的 `title_filter` 不再使掃描崩潰。ATS 與區域掃描器皆適用。
+
+### 測試
+- +32 案例（1190 → **1222**）：`sources-ats-providers`、`title-filter`、`arbeitsagentur-remote`、`trust-validator`，以及重寫的 `scan-result-cap`「無上限」守衛。
+
 ## [1.75.2] — 2026-06-19
 
 **docs：在全部 12 個語言環境中為 v1.75.0 的掃描器彙整器提供完整的文件對等。** 無程式碼改動 — 將面向使用者的文件與 v1.75.0 中落地的七個來源對齊:

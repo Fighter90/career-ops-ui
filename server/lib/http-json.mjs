@@ -42,6 +42,29 @@ export async function fetchJson(fetchImpl, url, opts = {}) {
 }
 
 /**
+ * Text-over-fetch sibling of {@link fetchJson} for sources whose feed is not
+ * JSON (e.g. Personio's public XML jobs feed). Same contract: GET by default,
+ * `redirect: 'error'` to close the SSRF redirect vector, and an Error with
+ * `.status` on a non-2xx response.
+ *
+ * @param {typeof fetch} fetchImpl
+ * @param {string} url
+ * @param {{ method?: string, headers?: Record<string,string>, body?: string,
+ *           signal?: AbortSignal, redirect?: 'error'|'follow'|'manual' }} [opts]
+ * @returns {Promise<string>}
+ */
+export async function fetchText(fetchImpl, url, opts = {}) {
+  const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
+  const res = await fetchImpl(url, { method, headers, body, signal, redirect });
+  if (!res.ok) {
+    const err = new Error(`HTTP ${res.status} (${url})`);
+    err.status = res.status;
+    throw err;
+  }
+  return await res.text();
+}
+
+/**
  * Abort-aware delay. Resolves after `ms`, or immediately if `signal` is (or
  * becomes) aborted — so a courtesy rate-limit pause between pagination pages
  * can't hold a scan open after the client disconnects.

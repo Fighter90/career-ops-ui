@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-1190%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1222%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.75.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.2)
+[![release](https://img.shields.io/badge/release-v1.76.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.76.0)
 
-> **🆕 最新版本 — v1.75.2**
+> **🆕 最新版本 — v1.76.0**
 >
 > **与父级 career-ops v1.12.0 对齐 — 七个新的招聘来源进入扫描器。** 三个覆盖整个招聘板的远程聚合器（**RemoteOK**、**Remotive**、**Working Nomads**）和四个由配置驱动的区域聚合器（**IBM**、**Arbeitsagentur**、**Glints**、**Jobstreet / SEEK**）现在可在 `#/scan` 中选择。此外还有可选的 `content_filter`（描述/摘要关键词门控）、针对 TSV 行与电子表格公式注入的扫描写入加固（#1098）、更丰富的 Ashby `secondaryLocations` 以浮现可在欧盟工作的职位（#1073）、进程内提供方的评估报告形状校验（#819），以及助手文档中的 Antigravity CLI。在 v1.74.0（含 GitHub Models 的 6 个 AI 助手）和 v1.70–73（含阿拉伯语 RTL 的 12 locales、求职信 + PDF）的基础上构建。
 >

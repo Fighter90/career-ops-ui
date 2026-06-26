@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-1190%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-1222%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.75.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.75.2)
+[![release](https://img.shields.io/badge/release-v1.76.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.76.0)
 
-> **🆕 Najnowsze wydanie — v1.75.2**
+> **🆕 Najnowsze wydanie — v1.76.0**
 >
 > **Parytet z nadrzędnym career-ops v1.12.0 — siedem nowych źródeł ofert trafia do skanera.** Trzy ogólnoportalowe agregatory pracy zdalnej (**RemoteOK**, **Remotive**, **Working Nomads**) oraz cztery sterowane konfiguracją agregatory regionalne (**IBM**, **Arbeitsagentur**, **Glints**, **Jobstreet / SEEK**) można teraz wybrać w `#/scan`. Do tego opcjonalny `content_filter` (bramkowanie słowami kluczowymi opisu/fragmentu), wzmocnienie zapisu skanowania przeciwko wstrzyknięciu wiersza TSV i formuły arkusza kalkulacyjnego (#1098), bogatsze `secondaryLocations` Ashby, aby wypływały stanowiska z prawem do pracy w UE (#1073), walidacja kształtu raportu oceny u dostawców w procesie (#819) oraz Antigravity CLI w dokumentacji asystentów. Bazuje na v1.74.0 (6 asystentów AI, w tym GitHub Models) i v1.70–73 (12 locales, w tym arabski RTL, list motywacyjny + PDF).
 >

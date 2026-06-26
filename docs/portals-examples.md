@@ -1,8 +1,13 @@
 # portals.yml — ready-to-paste blocks
 
 Drop these into the `tracked_companies:` list of your `career-ops/portals.yml`
-to enable scanning against the 6 ATS adapters career-ops-ui supports:
-**Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday**.
+to enable scanning. The classic per-company ATSes are
+**Greenhouse · Ashby · Lever · Workable · SmartRecruiters · Workday**, joined in
+v1.76.0 by the per-tenant ATSes **BambooHR · Breezy HR · Comeet · Personio ·
+Recruitee · SolidJobs** (see below). Board-wide and regional aggregators
+(RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints /
+Jobstreet · SEEK) are selected with an explicit `provider:` block — see the help
+guide §5.
 
 If a slug ever 404s upstream, just remove that one entry — the scanner
 skips companies whose API call fails and continues with the rest.
@@ -178,6 +183,45 @@ skips companies whose API call fails and continues with the rest.
     api: https://api.lever.co/v0/postings/jetbrains
     scan_method: lever
     notes: "Czech / EU. Go-heavy backend."
+    enabled: true
+```
+
+## Per-tenant ATS boards (v1.76.0 — parent career-ops v1.13.0 parity)
+
+Six more ATSes auto-detect from the `careers_url` host (no `provider:` needed).
+Each pins its host with an anchored regex + `redirect:'error'`, so a server-side
+redirect can't bounce the fetch off-domain (SSRF-safe).
+
+```yaml
+  # BambooHR — https://<tenant>.bamboohr.com/careers/list
+  - name: Acme
+    careers_url: https://acme.bamboohr.com
+    enabled: true
+
+  # Breezy HR — https://<tenant>.breezy.hr/json
+  - name: Foo
+    careers_url: https://foo.breezy.hr
+    enabled: true
+
+  # Personio — https://<slug>.jobs.personio.de/xml (public XML feed; .com also works)
+  - name: Bar GmbH
+    careers_url: https://bar.jobs.personio.de
+    enabled: true
+
+  # Recruitee — https://<slug>.recruitee.com/api/offers/
+  - name: Baz
+    careers_url: https://baz.recruitee.com
+    enabled: true
+
+  # SolidJobs — https://solid.jobs/public-api/offers/<division>
+  # divisions: it, engineering, marketing, sales, hr, logistics, finances, other
+  - name: SolidJobs — IT
+    careers_url: https://solid.jobs/public-api/offers/it
+    enabled: true
+
+  # Comeet — needs the FULL careers-api URL (uid + token aren't in the branded page)
+  - name: ComeetCo
+    api: https://www.comeet.co/careers-api/2.0/company/<uid>/positions?token=<token>
     enabled: true
 ```
 

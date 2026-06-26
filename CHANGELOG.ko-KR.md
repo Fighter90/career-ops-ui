@@ -9,6 +9,22 @@
 ---
 
 
+## [1.76.0] — 2026-06-26
+
+**상위 career-ops v1.13.0 패리티 — 신규 소스 6종, 스캐너 강화, 결과 테이블 상한 제거.**
+
+### 추가
+- **테넌트별 ATS 소스 6종** — BambooHR, Breezy HR, Comeet, Personio, Recruitee, SolidJobs. `careers_url` 호스트로 자동 감지(Comeet은 전체 `api:` 필요). 각 호스트는 앵커 정규식 + `redirect:'error'`로 고정(SSRF 방지). `#/scan`의 **Source** 드롭다운에서 선택 가능 — 레지스트리는 이제 **25개 어댑터**(EN 20 + RU 5). Personio XML 피드용 `fetchText` 헬퍼 추가.
+- **`trust_filter`** — 선택적 신뢰 점수(0–100, 레벨 high/medium/low, 플래그). 주석만. `high` 미만 행은 `#/scan`에 언어 중립 ⚠ 배지 표시. 채용공고는 절대 제거하지 않음.
+- **Arbeitsagentur `remoteMatch` + `remoteMaxPages`** — 설정 기반 원격 감지: `title`, `filter`(서버측 `homeoffice=nv_true` + 페이지네이션), `off`.
+
+### 변경
+- **스캔 결과 상한 없음.** 표시 상한 `MAX_STORED_RESULTS`(2000) 제거 — 일치하는 모든 공고를 저장하고 `#/scan` 테이블이 페이지로 표시(200/페이지).
+- **제목 필터 견고성** — 짧은 약어(COO, SDR…)는 단어 경계로 매칭; 잘못된 `title_filter` 설정이 스캔을 중단시키지 않음. ATS·지역 스캐너 모두.
+
+### 테스트
+- +32 케이스(1190 → **1222**): `sources-ats-providers`, `title-filter`, `arbeitsagentur-remote`, `trust-validator`, 재작성된 `scan-result-cap` “상한 없음” 가드.
+
 ## [1.75.2] — 2026-06-19
 
 **docs: v1.75.0 스캐너 집계기에 대한 12개 로케일 전체의 완전한 문서 패리티.** 코드 변경 없음 — v1.75.0에 들어온 일곱 개 소스에 맞춰 사용자 대상 문서를 정렬합니다:

@@ -642,6 +642,25 @@ the ATS and the regional sweeps. Only sources that ship a description/snippet
 silently drops rows from sources that don't carry a body. Use it to drop a
 title-passing posting whose body reveals a deal-breaker.
 
+**`trust_filter` (optional — web-ui 1.76.0, parent career-ops v1.13.0).** A
+top-level block that **annotates** (never drops) each scanned posting with a
+trust score (0–100), a level (`high` / `medium` / `low`) and flags. Off unless
+present and not disabled:
+
+```yaml
+trust_filter:
+  enabled: true
+  suspicious_domains: ["bit.ly", "tinyurl.com"]   # optional — overrides the default shortener list
+  ats_allowlist: ["greenhouse.io", "ashbyhq.com"] # optional — overrides the default ATS host allowlist
+```
+
+Heuristics: missing apply URL (−40), invalid URL (−50), suspicious shortener
+domain (−25), company↔domain mismatch (−15, skipped for known ATS hosts).
+Postings below `high` get a language-neutral **⚠ score** badge in the `#/scan`
+table (the tooltip lists the flag codes), so you can eyeball low-trust rows
+without anything being filtered out. Leave the block out entirely to keep the
+pre-1.76 behaviour (no annotation, no badge).
+
 ### `search_queries`
 
 ```yaml
@@ -678,6 +697,24 @@ the entry. The ATS scanner detects the ATS from the URL pattern
 company's public boards-api directly. Companies without a recognizable
 ATS are skipped (the **Active Companies** card on `/#/scan` shows them
 in gray with `○`).
+
+**Per-tenant ATS providers (v1.76.0 — parent career-ops v1.13.0 parity).** Six
+more ATSes auto-detect straight from `careers_url` (or an explicit `api:`), no
+`provider:` needed:
+
+```yaml
+tracked_companies:
+  - { name: Acme,    enabled: true, careers_url: https://acme.bamboohr.com }          # BambooHR
+  - { name: Foo,     enabled: true, careers_url: https://foo.breezy.hr }              # Breezy HR
+  - { name: Bar,     enabled: true, careers_url: https://bar.jobs.personio.de }       # Personio (XML feed)
+  - { name: Baz,     enabled: true, careers_url: https://baz.recruitee.com }          # Recruitee
+  - { name: SolidCo, enabled: true, careers_url: https://solid.jobs/public-api/offers/it }  # SolidJobs
+  # Comeet needs the full careers-api URL (uid + token aren't in the branded page):
+  - { name: ComeetCo, enabled: true, api: https://www.comeet.co/careers-api/2.0/company/<uid>/positions?token=<token> }
+```
+
+Each pins its host with an anchored regex + `redirect:'error'` (SSRF-safe). See
+`docs/portals-examples.md` for fuller copy-paste entries.
 
 ### `rss` (RSS / Atom boards)
 
@@ -892,10 +929,16 @@ in-flight HTTPS requests via `AbortController`.
 
 Below the log, the results table renders rows from `data/last-scan.json`.
 
+> **v1.76.0 — no result cap.** Earlier builds stored at most 2000 matching rows
+> per region (`MAX_STORED_RESULTS`), silently hiding the tail of a large sweep.
+> That cap is **gone**: every matched posting is stored and the table simply
+> pages through them (200 per page — use the pager controls under the table).
+> Nothing is dropped; you just turn pages.
+
 Filters:
 
 - **Free text** — substring match against title / company.
-- **Source** dropdown — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (auto-populated from `GET /api/scan/sources`).
+- **Source** dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (auto-populated from `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite** dropdown.
 - **Stack chips** (PHP / Go / Backend / Senior / …) — auto-detected
   per row by `Skills.detectTech` and `Skills.detectLevel`. Multi-select
@@ -1574,17 +1617,19 @@ output, and search the issue tracker on
 
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
-how to fetch + normalize one board's results. As of v1.75.0 the
-`server/lib/sources/` registry ships **19** adapters — 14 English (the
+how to fetch + normalize one board's results. As of v1.76.0 the
+`server/lib/sources/` registry ships **25** adapters — 20 English (the
 Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday ATSes, RSS,
-and the v1.75.0 aggregators RemoteOK / Remotive / Working Nomads / IBM /
-Arbeitsagentur / Glints / Jobstreet · SEEK) and 5 Russian boards. The seven
-aggregators added in v1.75.0 are board-wide or config-driven sources rather
-than per-company ATSes: the three remote feeds are selected with
-`provider: remoteok|remotive|workingnomads`, and the four regional ones
-(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) read a per-entry
-`<provider>:` config block — see §5 for the YAML and `docs/portals-examples.md`
-for copy-paste entries.
+the v1.75.0 aggregators RemoteOK / Remotive / Working Nomads / IBM /
+Arbeitsagentur / Glints / Jobstreet · SEEK, and the v1.76.0 per-tenant ATSes
+BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs) and 5 Russian
+boards. The seven aggregators added in v1.75.0 are board-wide or config-driven
+sources selected by `provider:`; the six per-tenant ATSes added in v1.76.0
+(parent career-ops v1.13.0 parity) auto-detect from a `careers_url` host
+(`<tenant>.bamboohr.com`, `<tenant>.breezy.hr`, `<slug>.jobs.personio.de`,
+`<slug>.recruitee.com`, `solid.jobs/public-api/offers/<division>`) or an
+explicit `api:` URL (Comeet) — see §5 for the YAML and
+`docs/portals-examples.md` for copy-paste entries.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** Adding a 12th source is now
 > a **pure file drop**. The registry

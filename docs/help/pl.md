@@ -884,7 +884,7 @@ Poniżej logu tabela wyników renderuje wiersze z `data/last-scan.json`.
 Filtry:
 
 - **Tekst wolny** — dopasowanie podciągu względem tytułu / firmy.
-- Menu rozwijane **Source** — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (auto-wypełniane z `GET /api/scan/sources`).
+- Menu rozwijane **Source** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (auto-wypełniane z `GET /api/scan/sources`).
 - Menu rozwijane **Remote / Hybrid / Onsite**.
 - **Chipy stack** (PHP / Go / Backend / Senior / …) — auto-wykrywane
   na wiersz przez `Skills.detectTech` i `Skills.detectLevel`. Wielokrotny wybór
@@ -1556,11 +1556,11 @@ wynik i przeszukaj tracker problemów na
 
 career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie
-jak pobrać i znormalizować wyniki jednego portalu. Od v1.75.0 rejestr
-`server/lib/sources/` dostarcza **19** adapterów — 14 angielskich (ATS-y
+jak pobrać i znormalizować wyniki jednego portalu. Od v1.76.0 rejestr
+`server/lib/sources/` dostarcza **25** adapterów — 20 angielskich (ATS-y
 Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday, RSS oraz
 agregatory z v1.75.0 RemoteOK / Remotive / Working Nomads / IBM /
-Arbeitsagentur / Glints / Jobstreet · SEEK) i 5 rosyjskich portali. Siedem
+Arbeitsagentur / Glints / Jobstreet · SEEK, oraz BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs) i 5 rosyjskich portali. Siedem
 agregatorów dodanych w v1.75.0 to źródła ogólnoportalowe lub sterowane
 konfiguracją, a nie ATS-y per-firma: trzy kanały zdalne wybierane są przez
 `provider: remoteok|remotive|workingnomads`, a cztery regionalne

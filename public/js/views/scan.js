@@ -125,15 +125,21 @@ Router.register('scan', async () => {
   const FALLBACK_SOURCES = [
     { value: 'arbeitsagentur',  label: 'Arbeitsagentur' },
     { value: 'ashby',           label: 'Ashby' },
+    { value: 'bamboohr',        label: 'BambooHR' },
+    { value: 'breezy',          label: 'Breezy HR' },
+    { value: 'comeet',          label: 'Comeet' },
     { value: 'glints',          label: 'Glints' },
     { value: 'greenhouse',      label: 'Greenhouse' },
     { value: 'ibm',             label: 'IBM' },
     { value: 'jobstreet',       label: 'Jobstreet / SEEK' },
     { value: 'lever',           label: 'Lever' },
+    { value: 'personio',        label: 'Personio' },
+    { value: 'recruitee',       label: 'Recruitee' },
     { value: 'remoteok',        label: 'RemoteOK' },
     { value: 'remotive',        label: 'Remotive' },
     { value: 'rss',             label: 'RSS' },
     { value: 'smartrecruiters', label: 'SmartRecruiters' },
+    { value: 'solidjobs',       label: 'SolidJobs' },
     { value: 'workable',        label: 'Workable' },
     { value: 'workday',         label: 'Workday' },
     { value: 'workingnomads',   label: 'Working Nomads' },
@@ -499,12 +505,23 @@ Router.register('scan', async () => {
       // server-side scanner matched a `seniority_boost` keyword on the
       // title. Title attribute reveals WHICH keyword matched, so the
       // user can trace it back to portals.yml.
+      // v1.76.0 — trust badge (parent career-ops v1.13.0). Only shown when
+      // trust_filter is enabled AND the posting is below "high" trust. The badge
+      // is language-neutral (⚠ + score/100); the tooltip lists the flag codes,
+      // so it renders identically across all 12 locales with no i18n keys.
+      const trustBadge = (r._trustLevel && r._trustLevel !== 'high') ? c('span', {
+        className: 'badge ' + (r._trustLevel === 'low' ? 'badge-bad' : 'badge-warn'),
+        title: 'Trust ' + (r._trustScore != null ? r._trustScore + '/100' : '?')
+          + (r._trustFlags && r._trustFlags.length ? ' · ' + r._trustFlags.join(', ') : ''),
+        style: { marginRight: '6px', fontSize: '11px' },
+      }, '⚠ ' + (r._trustScore != null ? r._trustScore : '')) : null;
       const titleCell = c('td', null, [
         r._boosted ? c('span', {
           className: 'badge badge-info',
           title: t('scan.boostedBy', 'Boosted by') + ': ' + (r._boostedBy || '?'),
           style: { marginRight: '6px', fontSize: '11px' },
         }, '⬆ ' + t('scan.boosted', 'boosted')) : null,
+        trustBadge,
         c('a', { href: r.url, target: '_blank', rel: 'noopener', style: { color: 'var(--rausch)' } }, r.title),
       ]);
       return c('tr', null, [

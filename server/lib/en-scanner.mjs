@@ -15,7 +15,8 @@ import yaml from 'js-yaml';
 import { PATHS } from './paths.mjs';
 import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
-import { buildLocationFilter, buildContentFilter } from './location-filter.mjs';
+import { buildLocationFilter, buildContentFilter, buildTitleFilter } from './location-filter.mjs';
+import { buildTrustValidator } from './trust-validator.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { fetchGreenhouse } from './sources/greenhouse.mjs';
 import { fetchAshby } from './sources/ashby.mjs';
@@ -28,13 +29,13 @@ import { resolveAdapter, ALL_ADAPTERS } from './portals/registry.mjs';
 
 const CONCURRENCY = 8;
 
-// v1.69.1 — cap on how many *matching* (post-filter) results are stored in
-// data/last-scan.json and rendered in the #/scan table. Was a hard 500 per
-// region, which silently truncated large regional sweeps (e.g. RU 1352 → 500,
-// hiding 852 relevant jobs). Raised to 2000 and made env-overridable. NOTE:
-// this only caps DISPLAY — adding to pipeline/history uses the full `fresh`
-// set and is never truncated. Shared with ru-scanner.mjs.
-export const MAX_STORED_RESULTS = Math.max(1, Number(process.env.SCAN_MAX_RESULTS) || 2000);
+// v1.76.0 — the scan result display is NO LONGER CAPPED. Every matched
+// (post-filter) result is stored in data/last-scan.json and the #/scan table
+// pages through the full set (200/page, client-side). History: a hard 500/region
+// silently truncated large sweeps (e.g. RU 1352 → 500); v1.69.1 raised it to an
+// env-overridable 2000 — but users with large company lists still lost the tail.
+// The cap is now gone: nothing is dropped, you just turn pages. Adding to
+// pipeline/history always used the uncapped `fresh` set and is unaffected.
 
 /**
  * Detect which ATS adapter handles a company entry. v1.13.0 delegates
@@ -68,16 +69,6 @@ function loadSeenUrls() {
   return seen;
 }
 
-function passesPositive(title, positives) {
-  if (!positives.length) return true;
-  const t = (title || '').toLowerCase();
-  return positives.some((p) => t.includes(p.toLowerCase()));
-}
-function passesNegative(title, negatives) {
-  const t = (title || '').toLowerCase();
-  return !negatives.some((n) => t.includes(n.toLowerCase()));
-}
-
 async function pMap(items, mapper, concurrency) {
   const out = new Array(items.length);
   let i = 0;
@@ -109,8 +100,10 @@ export async function runEnScan(opts = {}) {
   const { writeFiles = true, companyName, onLog = () => {}, onProgress = () => {}, fetchImpl = makeTimeoutFetch(), signal } = opts;
   const portals = loadPortals();
   const tf = portals.title_filter || {};
-  const positives = tf.positive || [];
-  const negatives = tf.negative || [];
+  // v1.76.0 — word-boundary acronym matching + malformed-config guard (parent
+  // career-ops v1.13.0 #1102/#1187). A job passes when a positive matches (or
+  // there are none) AND no negative matches.
+  const titleOk = buildTitleFilter(tf);
   // v1.12.0 — surface seniority_boost from portals.yml. Canonical
   // career-ops.org schema documents this as keywords that "rank matching
   // positions higher without filtering" (third list alongside positive /
@@ -119,6 +112,12 @@ export async function runEnScan(opts = {}) {
   // "⬆ boosted" badge on those rows so the user can see WHY they're
   // ranked higher.
   const boosts = (tf.seniority_boost || []).map((s) => String(s).toLowerCase());
+  // v1.76.0 — optional trust validation (parent career-ops v1.13.0). Off unless
+  // `trust_filter:` is present and not disabled. Annotates each job with
+  // _trustScore/_trustLevel/_trustFlags so the #/scan table can badge low-trust
+  // postings — it NEVER drops a job.
+  const trust = buildTrustValidator(portals.trust_filter);
+  const trustOn = !!(portals.trust_filter && portals.trust_filter.enabled !== false);
   const seen = loadSeenUrls();
 
   let companies = portals.tracked_companies || portals.companies || [];
@@ -176,15 +175,21 @@ export async function runEnScan(opts = {}) {
   // doesn't filter; the SPA uses it to surface a badge so users see why
   // a row is ranked higher.
   const filtered = allRaw
-    .filter((j) => passesPositive(j.title, positives)
-      && passesNegative(j.title, negatives)
+    .filter((j) => titleOk(j.title)
       && locOk(j.location)
       && contentOk(j.description ?? j.snippet))
     .map((j) => {
-      if (!boosts.length || !j.title) return j;
-      const t = j.title.toLowerCase();
-      const hit = boosts.find((b) => t.includes(b));
-      return hit ? { ...j, _boosted: true, _boostedBy: hit } : j;
+      let out = j;
+      if (boosts.length && j.title) {
+        const t = j.title.toLowerCase();
+        const hit = boosts.find((b) => t.includes(b));
+        if (hit) out = { ...out, _boosted: true, _boostedBy: hit };
+      }
+      if (trustOn) {
+        const v = trust(out);
+        out = { ...out, _trustScore: v.score, _trustLevel: v.level, _trustFlags: v.flags };
+      }
+      return out;
     });
   const removedTitle = allRaw.length - filtered.length;
   const fresh = filtered.filter((j) => !seen.has(j.url));
@@ -210,7 +215,7 @@ export async function runEnScan(opts = {}) {
       kind: 'en',
       when: new Date().toISOString(),
       fresh,
-      filtered: filtered.slice(0, MAX_STORED_RESULTS), // cap display (not pipeline/history)
+      filtered, // v1.76.0 — full matched set, no cap; #/scan paginates client-side
       errors,
     });
   }

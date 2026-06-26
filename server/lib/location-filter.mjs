@@ -22,6 +22,60 @@
  *   - All matches: case-insensitive substring.
  */
 
+// ── Title filter ────────────────────────────────────────────────────
+// v1.76.0 — parity with parent career-ops v1.13.0 scan.mjs (#1102, #1187).
+// Two robustness fixes over the old `title.includes(keyword)` approach:
+//   1. Short all-letter acronyms (2-3 chars: cfo, coo, sdr, bdr, gsi…) match on
+//      WORD BOUNDARIES, so "COO" no longer matches "Coordinator" and "SDR" no
+//      longer matches mid-word. Multi-word phrases and keywords with non-letters
+//      (".NET", "SAP ", "L&D") keep fast, permissive substring matching.
+//   2. Malformed config is normalized away: a null / numeric / empty entry in
+//      title_filter.{positive,negative} can no longer crash the scan via
+//      k.toLowerCase().
+
+/**
+ * Compile a lowercased keyword into a matcher `(lower) => boolean`.
+ * @param {string} kw already-lowercased keyword
+ */
+export function compileKeyword(kw) {
+  if (/^[a-z]{2,3}$/.test(kw)) {
+    const re = new RegExp(`\\b${kw}\\b`);
+    return (lower) => re.test(lower);
+  }
+  return (lower) => lower.includes(kw);
+}
+
+/**
+ * Compile a raw keyword list (tolerating malformed entries) into an array of
+ * matcher functions. Exposed so the RU scanner can compile its negative list
+ * once while keeping the lowercased array for collision warnings.
+ * @param {unknown} arr
+ * @returns {Array<(lower: string) => boolean>}
+ */
+export function compileKeywordList(arr) {
+  return (Array.isArray(arr) ? arr : [])
+    .filter((k) => typeof k === 'string' && k.length > 0)
+    .map((k) => k.toLowerCase())
+    .map(compileKeyword);
+}
+
+/**
+ * Build a title predicate from `portals.yml::title_filter`. A job passes when it
+ * matches at least one positive keyword (or there are none) AND no negative one.
+ * @param {{positive?: unknown, negative?: unknown}|null|undefined} titleFilter
+ * @returns {(title: string) => boolean} predicate — true = keep the job
+ */
+export function buildTitleFilter(titleFilter) {
+  const positive = compileKeywordList(titleFilter?.positive);
+  const negative = compileKeywordList(titleFilter?.negative);
+  return (title) => {
+    const lower = (title || '').toLowerCase();
+    const hasPositive = positive.length === 0 || positive.some((m) => m(lower));
+    const hasNegative = negative.some((m) => m(lower));
+    return hasPositive && !hasNegative;
+  };
+}
+
 /**
  * @param {{allow?: string[], block?: string[]}|null|undefined} locationFilter
  * @returns {(location: string) => boolean} predicate — true = keep the job

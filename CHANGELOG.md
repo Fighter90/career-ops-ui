@@ -8,6 +8,22 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.76.0] — 2026-06-26
+
+**Parent career-ops v1.13.0 parity — six new job sources, scanner hardening, and an uncapped results table.**
+
+### Added
+- **Six per-tenant ATS sources** — BambooHR, Breezy HR, Comeet, Personio, Recruitee, SolidJobs. They auto-detect from the `careers_url` host (Comeet needs the full `api:` careers-api URL) and each pins its host with an anchored regex + `redirect:'error'` (SSRF-safe). All selectable in the `#/scan` **Source** dropdown — the registry now ships **25 adapters** (20 EN + 5 RU). Adds a `fetchText` helper for Personio's XML feed.
+- **`trust_filter`** — optional, annotate-only trust scoring (0–100, level high/medium/low, flags) for each scanned posting. Sub-`high` rows get a language-neutral ⚠ badge in `#/scan`; nothing is ever dropped.
+- **Arbeitsagentur `remoteMatch` + `remoteMaxPages`** — config-driven remote detection: `title` (regex), `filter` (server-side `homeoffice=nv_true` + pagination), or `off`.
+
+### Changed
+- **No scan result cap.** The `MAX_STORED_RESULTS` display cap (2000) was removed — every matched posting is stored and the `#/scan` table pages through them (200/page). Large sweeps no longer lose their tail.
+- **Title-filter robustness** — short all-letter acronyms (COO, SDR…) now match on word boundaries (no more “COO” in “Coordinator”); malformed `title_filter` config can no longer crash a scan. Both the ATS and regional scanners.
+
+### Tests
+- +32 cases (1190 → **1222**): `sources-ats-providers`, `title-filter`, `arbeitsagentur-remote`, `trust-validator`, and a rewritten `scan-result-cap` “no cap” guard.
+
 ## [1.75.2] — 2026-06-19
 
 **docs: full documentation parity for the v1.75.0 scanner aggregators across all 12 locales.** No code change — brings the user-facing docs in line with the seven sources that landed in v1.75.0:

@@ -831,7 +831,7 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 필터:
 
 - **자유 텍스트** — 제목/회사에 대한 부분 문자열 일치.
-- **Source** 드롭다운 — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads(`GET /api/scan/sources`에서 자동 생성).
+- **Source** 드롭다운 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads(`GET /api/scan/sources`에서 자동 생성).
 - **Remote / Hybrid / Onsite** 드롭다운.
 - **스택 칩** (PHP / Go / Backend / Senior / …) — 각 행에 대해
   `Skills.detectTech`와 `Skills.detectLevel`이 자동 감지합니다.
@@ -1504,7 +1504,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 
 ## 17. 새 채용 포털 소스를 추가하는 방법
 
-career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. v1.75.0 기준으로 `server/lib/sources/` 레지스트리는 **19**개의 어댑터를 포함합니다 — 영문 14개(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday ATS, RSS, 그리고 v1.75.0 애그리게이터 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)와 러시아 보드 5개. v1.75.0에 추가된 7개의 애그리게이터는 회사별 ATS가 아니라 보드 전체 또는 설정 기반 소스입니다: 세 개의 리모트 피드는 `provider: remoteok|remotive|workingnomads`로 선택하고, 네 개의 지역 소스(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)는 항목별 `<provider>:` 설정 블록을 읽습니다 — YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
+career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. v1.76.0 기준으로 `server/lib/sources/` 레지스트리는 **25**개의 어댑터를 포함합니다 — 영문 20개(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday ATS, RSS, 그리고 v1.75.0 애그리게이터 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, 그리고 BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs)와 러시아 보드 5개. v1.75.0에 추가된 7개의 애그리게이터는 회사별 ATS가 아니라 보드 전체 또는 설정 기반 소스입니다: 세 개의 리모트 피드는 `provider: remoteok|remotive|workingnomads`로 선택하고, 네 개의 지역 소스(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)는 항목별 `<provider>:` 설정 블록을 읽습니다 — YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
 
 > **v1.69.0 (P-14) — 드롭인 자동 검색.** 12번째 소스 추가는 이제
 > **순수 파일 드롭**입니다. 레지스트리

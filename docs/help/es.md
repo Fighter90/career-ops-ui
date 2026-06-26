@@ -853,7 +853,7 @@ Debajo del log, la tabla de resultados renderiza filas de
 Filtros:
 
 - **Texto libre** — match de substring contra título / empresa.
-- Dropdown **Source** — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (auto-rellenado desde `GET /api/scan/sources`).
+- Dropdown **Source** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (auto-rellenado desde `GET /api/scan/sources`).
 - Dropdown **Remote / Hybrid / Onsite**.
 - **Chips de stack** (PHP / Go / Backend / Senior / …) —
   auto-detectados por fila por `Skills.detectTech` y
@@ -1570,11 +1570,11 @@ Health, copia el output, y busca el issue en el tracker en
 
 career-ops-ui trata cada bolsa de empleo como un **adapter** — un único archivo bajo
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe
-cómo obtener y normalizar los resultados de una bolsa concreta. A partir de v1.75.0 el
-registro `server/lib/sources/` incluye **19** adapters — 14 en inglés (los ATS de
+cómo obtener y normalizar los resultados de una bolsa concreta. A partir de v1.76.0 el
+registro `server/lib/sources/` incluye **25** adapters — 20 en inglés (los ATS de
 Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday, RSS y los agregadores
 de v1.75.0 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints /
-Jobstreet · SEEK) y 5 portales rusos. Los siete agregadores añadidos en v1.75.0 son
+Jobstreet · SEEK, y BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs) y 5 portales rusos. Los siete agregadores añadidos en v1.75.0 son
 fuentes de todo el board o config-driven en lugar de ATS por empresa: los tres feeds
 remotos se seleccionan con `provider: remoteok|remotive|workingnomads`, y los cuatro
 regionales (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) leen un bloque de

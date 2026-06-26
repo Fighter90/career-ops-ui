@@ -9,6 +9,22 @@
 ---
 
 
+## [1.76.0] — 2026-06-26
+
+**親 career-ops v1.13.0 とのパリティ — 新規ソース6件、スキャナ堅牢化、結果テーブルの上限撤廃。**
+
+### 追加
+- **テナント別ATSソース6件** — BambooHR、Breezy HR、Comeet、Personio、Recruitee、SolidJobs。`careers_url` のホストから自動検出（Comeet は完全な `api:` が必要）。各ホストはアンカー付き正規表現 + `redirect:'error'` で固定（SSRF対策）。`#/scan` の **Source** ドロップダウンで選択可能 — レジストリは **25 アダプタ**（EN 20 + RU 5）に。Personio の XML フィード用に `fetchText` ヘルパーを追加。
+- **`trust_filter`** — 任意の信頼スコア（0–100、レベル high/medium/low、フラグ）。注釈のみ。`high` 未満の行は `#/scan` に言語非依存の ⚠ バッジを表示。求人は決して除外しない。
+- **Arbeitsagentur `remoteMatch` + `remoteMaxPages`** — 設定駆動のリモート判定：`title`、`filter`（サーバー側 `homeoffice=nv_true` + ページング）、`off`。
+
+### 変更
+- **スキャン結果の上限なし。** 表示上限 `MAX_STORED_RESULTS`（2000）を撤廃 — 一致した求人をすべて保存し、`#/scan` テーブルでページ送り（200件/ページ）。
+- **タイトルフィルタの堅牢化** — 短い略語（COO、SDR…）は単語境界で一致；不正な `title_filter` 設定でスキャンが落ちない。ATS と地域スキャナの両方。
+
+### テスト
+- +32 ケース（1190 → **1222**）：`sources-ats-providers`、`title-filter`、`arbeitsagentur-remote`、`trust-validator`、書き直した `scan-result-cap`「上限なし」ガード。
+
 ## [1.75.2] — 2026-06-19
 
 **docs: v1.75.0 のスキャナ集約サイトに対する全12ロケールでの完全なドキュメントパリティ。** コード変更なし — v1.75.0 で着地した7件のソースにユーザー向けドキュメントを揃えます:

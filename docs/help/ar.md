@@ -617,7 +617,7 @@ $EDITOR portals.yml
 المرشحات:
 
 - **نص حر** — مطابقة جزئية مقابل العنوان / الشركة.
-- قائمة **المصدر** المنسدلة — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (تُملأ تلقائياً من `GET /api/scan/sources`).
+- قائمة **المصدر** المنسدلة — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (تُملأ تلقائياً من `GET /api/scan/sources`).
 - قائمة **عن بُعد / هجين / حضوري** المنسدلة.
 - **شرائح التقنية** (PHP / Go / Backend / Senior / …) — مُكتشَفة تلقائياً لكل صف بواسطة `Skills.detectTech` و`Skills.detectLevel`. تقاطع متعدد الاختيارات — اختيار `PHP + Senior` يعرض الصفوف التي تحتوي على كليهما.
 - **شرائح ديناميكية** أسفل الشرائح الثابتة — أعلى 25 رمزاً مُكبَّراً متكرراً في العناوين، حتى تتكيف الواجهة مع الأدوار التي تمسحها فعلاً (تسويق، تصميم، مالية…) بدلاً من الانحصار في قاموس مهندس الخلفية.
@@ -1101,7 +1101,7 @@ npm run doctor
 ## 17. كيفية إضافة مصدر بوابة وظائف جديد
 
 يُعامِل career-ops-ui كل بوابة وظائف بوصفها **محوّلاً** — ملف واحد ضمن
-[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. اعتباراً من v1.75.0 يشحن سجل `server/lib/sources/` مع **19** محوّلاً — 14 إنجليزية (محولات ATS: Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday، وَ RSS، ومُجمّعات v1.75.0: RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) وَ 5 بوابات روسية. المُجمّعات السبعة المضافة في v1.75.0 هي مصادر على مستوى اللوحة أو مدفوعة بالإعداد بدلاً من ATSes لكل شركة: التغذيات عن بُعد الثلاث تُختار بـ `provider: remoteok|remotive|workingnomads`، والأربع الإقليمية (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) تقرأ كتلة إعداد `<provider>:` لكل إدخال — انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
+[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. اعتباراً من v1.76.0 يشحن سجل `server/lib/sources/` مع **25** محوّلاً — 20 إنجليزية (محولات ATS: Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday، وَ RSS، ومُجمّعات v1.75.0: RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, و BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs) وَ 5 بوابات روسية. المُجمّعات السبعة المضافة في v1.75.0 هي مصادر على مستوى اللوحة أو مدفوعة بالإعداد بدلاً من ATSes لكل شركة: التغذيات عن بُعد الثلاث تُختار بـ `provider: remoteok|remotive|workingnomads`، والأربع الإقليمية (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) تقرأ كتلة إعداد `<provider>:` لكل إدخال — انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
 
 > **v1.69.0 (P-14) — اكتشاف تلقائي عند الإضافة.** إضافة مصدر ثاني عشر الآن **مجرد إسقاط ملف**. لم يعد السجل
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

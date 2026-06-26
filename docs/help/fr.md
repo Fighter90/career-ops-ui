@@ -949,10 +949,11 @@ Sous le journal, le tableau de résultats affiche les lignes de
 Filtres :
 
 - **Texte libre** — correspondance de sous-chaîne sur le titre / l'entreprise.
-- Menu déroulant **Source** — Arbeitsagentur / Ashby / GeekJob / Glints /
-  Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK /
-  Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable /
-  Workday / Working Nomads (auto-rempli depuis `GET /api/scan/sources`).
+- Menu déroulant **Source** — Arbeitsagentur / Ashby / BambooHR / Breezy HR /
+  Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM /
+  Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS /
+  SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads
+  (auto-rempli depuis `GET /api/scan/sources`).
 - Menu déroulant **Remote / Hybrid / Onsite**.
 - **Puces de stack** (PHP / Go / Backend / Senior / …) — auto-détectées par
   ligne par `Skills.detectTech` et `Skills.detectLevel`. Intersection
@@ -1650,11 +1651,11 @@ copiez la sortie, et cherchez le problème sur le tracker d'incidents à
 career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un
 fichier unique sous
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait
-récupérer + normaliser les résultats d'un site. Depuis la v1.75.0, le
-registre [`server/lib/sources/`](../../server/lib/sources/) livre **19**
-adaptateurs — 14 anglais (les ATS Greenhouse / Ashby / Lever / Workable /
+récupérer + normaliser les résultats d'un site. Depuis la v1.76.0, le
+registre [`server/lib/sources/`](../../server/lib/sources/) livre **25**
+adaptateurs — 20 anglais (les ATS Greenhouse / Ashby / Lever / Workable /
 SmartRecruiters / Workday, RSS, et les agrégateurs de la v1.75.0 RemoteOK /
-Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)
+Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, et BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs)
 et 5 sites russes. Les sept agrégateurs ajoutés en v1.75.0 sont des sources
 couvrant tout un board ou pilotées par config plutôt que des ATS par
 entreprise : les trois flux remote se sélectionnent avec

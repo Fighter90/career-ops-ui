@@ -852,7 +852,7 @@ Abaixo do log, a tabela de resultados renderiza linhas de
 Filtros:
 
 - **Texto livre** — match de substring contra título / empresa.
-- Dropdown de **Fonte** — Arbeitsagentur / Ashby / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / RemoteOK / Remotive / RSS / SmartRecruiters / Trudvsem / Workable / Workday / Working Nomads (preenchido automaticamente a partir de `GET /api/scan/sources`).
+- Dropdown de **Fonte** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (preenchido automaticamente a partir de `GET /api/scan/sources`).
 - Dropdown **Remote / Hybrid / Onsite**.
 - **Chips de stack** (PHP / Go / Backend / Senior / …) —
   auto-detectados por linha por `Skills.detectTech` e
@@ -1573,11 +1573,11 @@ copie a saída, e busque a issue no rastreador em
 
 O career-ops-ui trata cada job board como um **adapter** — um único arquivo em
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe
-como buscar e normalizar os resultados de um portal. A partir da v1.75.0 o
-registry [`server/lib/sources/`](../../server/lib/sources/) inclui **19**
-adapters — 14 em inglês (os ATSes Greenhouse / Ashby / Lever / Workable /
+como buscar e normalizar os resultados de um portal. A partir da v1.76.0 o
+registry [`server/lib/sources/`](../../server/lib/sources/) inclui **25**
+adapters — 20 em inglês (os ATSes Greenhouse / Ashby / Lever / Workable /
 SmartRecruiters / Workday, RSS e os agregadores da v1.75.0 RemoteOK /
-Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)
+Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, e BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs)
 e 5 boards russos. Os sete agregadores adicionados na v1.75.0 são fontes de
 todo o board ou orientadas a configuração, e não ATSes por empresa: os três
 feeds remotos são selecionados com `provider: remoteok|remotive|workingnomads`,

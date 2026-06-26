@@ -40,6 +40,13 @@ import { ibmAdapter } from './adapters/ibm.mjs';
 import { arbeitsagenturAdapter } from './adapters/arbeitsagentur.mjs';
 import { glintsAdapter } from './adapters/glints.mjs';
 import { jobstreetAdapter } from './adapters/jobstreet.mjs';
+// v1.76.0 — parent career-ops v1.13.0 parity: per-tenant ATS providers.
+import { bamboohrAdapter } from './adapters/bamboohr.mjs';
+import { breezyAdapter } from './adapters/breezy.mjs';
+import { comeetAdapter } from './adapters/comeet.mjs';
+import { personioAdapter } from './adapters/personio.mjs';
+import { recruiteeAdapter } from './adapters/recruitee.mjs';
+import { solidjobsAdapter } from './adapters/solidjobs.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -56,6 +63,15 @@ export const ALL_ADAPTERS = [
   arbeitsagenturAdapter,
   glintsAdapter,
   jobstreetAdapter,
+  // v1.76.0 — parent v1.13.0 parity. Per-tenant ATS detected by careers_url host
+  // (or explicit `provider:`). Order after the URL-detected ATS above is safe:
+  // each matches a distinct host, so resolveAdapter never mis-routes.
+  bamboohrAdapter,
+  breezyAdapter,
+  comeetAdapter,
+  personioAdapter,
+  recruiteeAdapter,
+  solidjobsAdapter,
 ];
 
 /**

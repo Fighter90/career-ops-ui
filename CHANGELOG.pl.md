@@ -9,6 +9,22 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.76.0] — 2026-06-26
+
+**Zgodność z career-ops v1.13.0 — sześć nowych źródeł, wzmocnienie skanera i tabela wyników bez limitu.**
+
+### Dodano
+- **Sześć źródeł ATS per-tenant** — BambooHR, Breezy HR, Comeet, Personio, Recruitee, SolidJobs. Wykrywane z hosta `careers_url` (Comeet wymaga pełnego `api:`); każdy host przypięty kotwiczonym regexem + `redirect:'error'` (anty-SSRF). Wybieralne w liście **Source** na `#/scan` — rejestr ma teraz **25 adapterów** (20 EN + 5 RU). Dodaje helper `fetchText` dla feedu XML Personio.
+- **`trust_filter`** — opcjonalna ocena zaufania (0–100, poziom high/medium/low, flagi), tylko adnotacja. Wiersze poniżej `high` dostają neutralną odznakę ⚠ w `#/scan`; nic nie jest odrzucane.
+- **Arbeitsagentur `remoteMatch` + `remoteMaxPages`** — wykrywanie pracy zdalnej z konfiguracji: `title`, `filter` (`homeoffice=nv_true` po stronie serwera + paginacja) lub `off`.
+
+### Zmieniono
+- **Brak limitu wyników.** Usunięto `MAX_STORED_RESULTS` (2000) — wszystkie dopasowania są zapisywane, a tabela `#/scan` je stronicuje (200/str.).
+- **Odporność filtra tytułu** — krótkie akronimy (COO, SDR…) dopasowują się po granicach słów; błędny `title_filter` nie wywala już skanu. Oba skanery.
+
+### Testy
+- +32 przypadki (1190 → **1222**): `sources-ats-providers`, `title-filter`, `arbeitsagentur-remote`, `trust-validator` i przepisany strażnik `scan-result-cap` („bez limitu”).
+
 ## [1.75.2] — 2026-06-19
 
 **docs: pełna parytetowa dokumentacja dla agregatorów skanera z v1.75.0 we wszystkich 12 lokalizacjach.** Bez zmiany kodu — dostraja dokumentację dla użytkownika do siedmiu źródeł, które pojawiły się w v1.75.0:
