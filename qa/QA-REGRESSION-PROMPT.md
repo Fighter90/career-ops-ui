@@ -1,261 +1,148 @@
-# QA REGRESSION PROMPT — career-ops-ui v1.60.0 (DEFINITIVE FINAL)
+# QA REGRESSION PROMPT — career-ops-ui **v1.78.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
 
-Single hand-off for a QA tester (human or agent) to verify v1.60.0 end-to-end. Standalone — walking top-to-bottom signs off the build without needing the rest of the `qa/` tree.
+Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 13 languages**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree.
 
-**Baseline at v1.60.0:** **1000** unit · **70** Playwright (smoke + full-cycle + forms + locale-sweep) · 20 smoke E2E · **23 / 23** comprehensive E2E · CI matrix `success` on Node 18 / 20 / 22 + Playwright e2e.
-**Headline change:** **I18N-SPLIT** — the 8-language translation megafile was split into one file per locale under `public/js/lib/locales/`. `i18n-dict.js` is now an assembler; `t()`, every view, every call-site unchanged. Lossless (assembled dict ≡ pre-split snapshot, **678 keys**). No user-facing behaviour change. See §4.
-**Also in v1.60.0:** localization is now documented in 3 places — `docs/LOCALIZATION.md`, a `## Localization` section in all 8 READMEs, and in-app **Help §19** (§4.7); and the CI pipeline gained a **code-quality** job (syntax + coverage floor + audit), **CodeQL**, **dependency-review**, and a **PR AI-review** job (§6).
-**Server:** `http://127.0.0.1:4317` (start with `npm start`).
-**Browser smoke:** Chrome stable + 1 secondary (Firefox or Safari).
-
----
-
-## §−1 — Probe methodology footguns (READ BEFORE STARTING)
-
-Methodological errors that have caused **false-negative sign-offs**. Avoid them.
-
-### Footgun 1 — file-path vs inline implementation
-Assert the **behaviour**, not a specific filename. Some helpers live inlined inside an existing route module (e.g. the help TOC scroll-spy lives in `public/js/views/help.js`, not a separate `help-toc.js`). `git grep` for the behaviour marker, not for an imagined filename.
-
-### Footgun 2 — URL normalisation on the client side
-`fetch('/api/jds/../../../etc/passwd')` and `curl` (without `--path-as-is`) **normalise the URL before sending**, so they never exercise the server's `..` guard. To verify it, send a verbatim raw path:
-```bash
-curl -s --path-as-is "http://127.0.0.1:4317/api/jds/../../../etc/passwd"   # → {"error":"invalid path"}
-```
-
-### Footgun 3 — vm-realm deep-equality (I18N-SPLIT)
-Objects built inside a `node:vm` context have a **different `Object.prototype`** than `JSON.parse`'d ones, so `assert.deepStrictEqual` throws *"same structure but not reference-equal"* even when every value matches. When comparing an assembled-in-vm dict to a JSON snapshot, **round-trip through JSON first**: `JSON.parse(JSON.stringify(assembled))`. (This is exactly what `tests/i18n-locale-files.test.mjs` does — don't "fix" it back.)
-
-### Footgun 4 — the per-locale split is text-invisible to old greps
-`public/js/lib/i18n-dict.js` no longer contains translation strings — it's an assembler. A grep for `'auto.eta'` there returns nothing; that is **not** a missing key. The strings live in `public/js/lib/locales/i18n-dict.<lang>.js`. Tests that scan dictionary text use the derived `legacyDictText()` view (`tests/helpers/i18n-vm.mjs`), never the assembler file.
+- **Version under test:** `package.json` **1.78.0** · parent career-ops **1.13.0** parity.
+- **Baseline:** **1229** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×13** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL.
+- **Server:** `npm start` → `http://127.0.0.1:4317`.
+- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.76.0-FULL.md` (parent-parity gate driver) · `key/E2E-REGRESSION-EVERY-BUTTON-EVERY-LANGUAGE-v1.78.0.md` (exhaustive UI click-through) · `REGRESSION-FINAL.md` (invariant ledger).
 
 ---
 
-## §0 — Boot
+## §0 — Gates (all must be green before sign-off)
 
 ```bash
-git fetch --tags
-git checkout v1.60.0            # or: merge PR #4 to main first
-node --version                 # >= 18
-npm ci
-make clean-test-fixtures       # purge example.com/qa-fixture-* rows from data/pipeline.md
-npm test                       # MUST report 1000 / 1000 pass, 0 fail
-                               #   ⚠️ DO NOT pipe through `grep` — it masks the exit code
-npm start                      # server on 127.0.0.1:4317
-open http://127.0.0.1:4317
+npm test                                    # full suite (≥1229 cases)
+npm run test:ci                             # unit + check-no-also + check-changelog-parity + i18n-audit
+node tools/i18n-audit.mjs                   # "no hard failures — dictionary is clean"
+node scripts/check-changelog-parity.mjs     # "all 12 locales at v1.78.0" (EN + 12 = 13 files)
+npm run test:coverage                       # ≥80% line / ≥75% branch (baseline ~93/~83)
+npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(13) + theme-toggle
+npm run test:e2e && npm run test:e2e:full   # smoke (20) + comprehensive (23) E2E
+node scripts/portals-health-check.mjs       # portals.yml reachability (informational)
 ```
-Expected: `/api/health` → `{"version":"1.60.0","ok":true, checks: 20+ rows}`. Footer reads **v1.60.0**.
+**Never** `npm test 2>&1 | grep …` — grep masks the exit code. Run, capture `$?`, grep separately. Same for `git … 2>&1 | tail`.
 
 ---
 
-## §1 — Server-side envelope (curl probes, 60 seconds)
+## §1 — Methodology footguns (READ FIRST)
 
-| # | Command | Expect |
+1. **Assert behaviour, not filenames.** Helpers may be inlined in a view (`git grep` the behaviour marker, not an imagined filename).
+2. **Raw-path SSRF probe:** `curl --path-as-is "http://127.0.0.1:4317/api/jds/../../../etc/passwd"` → `{"error":"invalid path"}`. Plain `fetch`/`curl` normalise the URL and never hit the guard.
+3. **Pre-commit AI review is advisory; `ci.yml` is the hard gate.** Watch the CI run.
+4. **`PATHS` resolves once per process.** Don't reimport `paths.mjs`; CI-isolated tests bootstrap their own `CAREER_OPS_ROOT`. A test that sets `CAREER_OPS_ROOT` in `before()` must load paths.mjs carriers via dynamic `import()` inside `before()`. Guards: `tests/paths-once.test.mjs`, `tests/test-root-isolation.test.mjs`.
+5. **`cleanLlmMarkdown` is NOT an XSS sanitizer.** XSS boundary = `UI.md()` (client) + `stripDangerousMarkdown()` (CV ingress) + `sanitizeJobDescription()` (JD). `scan-sanitize.mjs` is a write/egress sanitizer, not XSS.
+6. **`[hidden]` is a no-op against an author `display:` rule** — components with `display:flex|grid` need an explicit `.sel[hidden]{display:none}`.
+7. **Parent career-ops is READ-ONLY** (hard rule #1). Tests must not assume it exists.
+8. **Server error bodies are English-by-policy.** Only client UI strings are localized.
+9. **Two scanner registries — don't conflate.** `server/lib/sources/registry.mjs` (auto-discovered `meta`) drives the `#/scan` *dropdown* + RU dispatch; `server/lib/portals/registry.mjs` (`ALL_ADAPTERS`, hand-maintained) is what the EN scanner walks to *fetch*. A new EN board needs BOTH.
+10. **Playwright headless shell:** missing → `npx playwright install chromium-headless-shell` (env gap, not a regression).
+11. **Cross-realm vm arrays:** spread (`[...]`) a vm-realm array before `deepEqual` against a main-realm literal.
+
+---
+
+## §2 — What changed recently (verify these deltas first)
+
+| # | Area (release) | Must-see behaviour |
 |---|---|---|
-| 1.1 | `curl -s -o /dev/null -w "%{http_code} %{content_type}\n" http://127.0.0.1:4317/api/no-such-endpoint` | `404 application/json` |
-| 1.2 | `curl -s -o /dev/null -w "%{http_code} %{content_type}\n" -X POST http://127.0.0.1:4317/api/no-such-endpoint` | `404 application/json` |
-| 1.3 | `curl -s --path-as-is "http://127.0.0.1:4317/api/jds/../../../etc/passwd"` | **`{"error":"invalid path"}`** — `--path-as-is` mandatory (§−1 Footgun 2) |
-| 1.4 | `curl -s -i http://127.0.0.1:4317/api/cv \| grep -i cache-control` | `Cache-Control: no-store` |
-| 1.5 | `curl -s http://127.0.0.1:4317/api/status/providers \| grep -o '"keysConfigured":\[[^]]*\]'` | array of provider names (NOT a number) |
-| 1.6 | `Content-Security-Policy` on `/` | `default-src 'self'`; **no** `'unsafe-inline'` in `script-src`; `object-src 'none'`; `frame-ancestors 'none'` |
-| 1.7 | `X-Content-Type-Options` / `X-Frame-Options` / `Referrer-Policy` | `nosniff` / `DENY` / `same-origin` |
-
-> **CSP note for I18N-SPLIT:** the 9 new `<script src="/js/lib/locales/…">` tags are same-origin classic scripts — covered by `script-src 'self'`, no inline JS added. The Playwright smoke's "zero CSP violations" walk confirms it.
-
----
-
-## §2 — SPA route walk (en + 1 non-en locale)
-
-For each route: open in browser, check H1 text, **no console errors**, **no untranslated `key.path` leaks**, no truncation.
-
-| # | Route | What to verify |
-|---|---|---|
-| 2.1 | `#/dashboard` | Hero + 2 CTAs · provider chip (`⚡ Live evals: Anthropic <model>` or `📋 Manual prompt mode`) · 4 metric cards · Pipeline tile primary weight |
-| 2.2 | `#/pipeline` | Counter accurate · filter chips · `+ Add` toast |
-| 2.3 | `#/config → API keys` | `Active: <Provider>` + `Keys: N / 5`; not sticky-overlapping; Save never flashes `0 / 5` |
-| 2.4 | `#/cv` | Edit → Save gains `.btn-dirty` · navigate away → unsaved-changes confirm |
-| 2.5 | `#/deep` | Saved cards render · brief lacking ≥3/6 H2 → `.brief-warning` |
-| 2.6 | `#/help` | TOC scroll-spy: after ~1500 ms `document.body.dataset.tocSpy === "active"`, exactly 1 `.help-toc a.toc-current` |
-| 2.7 | `#/health` | Failing rows show `Fix →`; lands on correct config tab |
-| 2.8 | `#/auto` | Stepper pre-renders 5 `aria-disabled` steps · ⚡ submit fires SSE |
-| 2.9 | `#/scan` | `Open Scan` on top-bar · Advanced filters in `<details>` |
-| 2.10 | `#/tracker` | Funnel chips · server-side pagination >50 rows · search `aria-label` |
-| 2.11 | `#/evaluate` | Empty JD → distinct localized toast |
-| 2.12 | `#/apply` | Interactive checklist · slug substituted |
-| extra | `#/this-route-does-not-exist` | `404 — page not found` + Back-to-Dashboard |
-
-**Locale switch:** sidebar footer → `ru`. Verify nav/H1 flip, `<html lang="ru">`, per-route `document.title` updates. (Automated across all 8 locales by §4.)
-**Mobile (375 px)** and **`prefers-reduced-motion: reduce`**: no layout break, no fade/slide.
+| 1 | **6 new ATS sources (v1.76.0 — parent v1.13.0)** | `#/scan` **Source** dropdown lists **25** adapters incl. **BambooHR, Breezy HR, Comeet, Personio, Recruitee, SolidJobs**. `GET /api/scan/sources` returns 25 (20 EN + 5 RU). Per-tenant ATS auto-detect from `careers_url` host (Comeet from full `api:`); each pins host with an anchored regex + `redirect:'error'` (SSRF). |
+| 2 | **trust_filter (v1.76.0)** | `trust_filter: {enabled:true}` in `portals.yml` → low-trust rows get a **⚠ score** badge (tooltip = flag codes). Annotate-only; NEVER drops a row. Absent → no badge. |
+| 3 | **No result cap (v1.76.0)** | `MAX_STORED_RESULTS` removed. A scan with >2000 matches stores them all; the table pages **200/row** through everything (pager under the table). Nothing truncated. |
+| 4 | **Title-filter robustness (v1.76.0)** | `title_filter.negative:['coo']` does NOT drop "Coordinator" (word-boundary acronyms); malformed `title_filter` entries don't crash a scan. EN + RU scanners. |
+| 5 | **Arbeitsagentur remoteMatch (v1.76.0)** | `remoteMatch: title\|filter\|off` + `remoteMaxPages` (server-side `homeoffice=nv_true` + pagination on `filter`). |
+| 6 | **Danish — 13th locale (v1.77.0)** | `#lang-select` has **🇩🇰 Dansk**; selecting it localizes the chrome and `GET /api/help/da` serves the Danish bundle. |
+| 7 | **Country filter (v1.78.0)** | `#/scan` results panel has a **Country** dropdown listing detected countries with **flag + count** (e.g. `🇩🇪 Germany (12)`). Keeps only rows in that country; composes with the Remote/Hybrid/Onsite filter; **Reset** clears it; pure-Remote / unresolved locations stay under **All countries**. `countries.js` detection is conservative (never guesses). |
+| 8 | **Rebrand (v1.78.0)** | Tab title + sidebar logo say **career-ops-ui**; the sidebar logo-mark is the new radar icon; `/favicon.ico`, `/favicon-16.png`, `/favicon-32.png`, `/apple-touch-icon.png` serve 200. |
 
 ---
 
-## §3 — Notifications drawer
-Bell hidden at boot; opens only on bell click / Enter / Space; closes via ×, Esc, re-click. Last 50 toasts, Clear-All + per-entry dismiss, `(METHOD /path · HTTP NNN)` tucked in `<details>`.
+## §3 — Security envelope (verify once)
+
+- CSP: `default-src 'self'`, `img-src 'self' data:`, NO `'unsafe-inline'`/`'unsafe-eval'` in `script-src`, `frame-ancestors 'none'`. `X-Content-Type-Options` / `X-Frame-Options` / `Referrer-Policy` set. Every handler is `addEventListener` (no inline `onclick=`).
+- SSRF: `isValidJobUrl()` gates `/api/pipeline` + `/api/pipeline/preview`; outbound via `safeGet()` (DNS-pinned redirect revalidation). All 25 source fetchers use `redirect:'error'`; the 6 v1.78 per-tenant ATSes pin host with an anchored regex first.
+- XSS: CV/markdown → `stripDangerousMarkdown()` + `UI.md()`; JD → `sanitizeJobDescription()`; slugs → `sanitizePathName()`; scan egress → `scan-sanitize.mjs`.
+- Rate-limit on LLM routes; file-lock on tracker writes; activity-log redaction. `.aiignore` excludes real user data; no secrets/PII committed (incl. screenshots).
 
 ---
 
-## §4 — I18N-SPLIT verification — THE HEADLINE REGRESSION (v1.60.0)
+## §4 — Functional spec — every page (run the §6 language loop over all of it)
 
-### 4.1 File layout exists
-```bash
-ls public/js/lib/locales/
-# → i18n-dict.{en,es,pt-BR,ko,ja,ru,zh-CN,zh-TW}.js  +  i18n-dict.aliases.js   (9 files)
-test -f tests/fixtures/i18n-dict.snapshot.json && echo "snapshot present"
-```
+### 4.1 Dashboard (`#/dashboard`)
+Stat cards, funnel chips, quick-action buttons, recent-activity links. Page title localizes; first-paint focuses the `<h1>` (WCAG 2.4.3) without stealing focus.
 
-### 4.2 index.html load order (synchronous, no build, no fetch)
-```bash
-grep -n 'js/lib/locales/i18n-dict\|js/lib/i18n' public/index.html
-# Order MUST be: 8 locale files → i18n-dict.aliases.js → i18n-dict.js (assembler) → i18n.js
-```
+### 4.2 Scan (`#/scan`) — the heaviest surface
+- **🌐 Scan** streams SSE (`start`/`log`/`progress`/`done`/`error`); determinate progress bar; **Stop** aborts immediately mid-paginate; persistent error banner + Retry; `role=log` console (aria-live).
+- **Company** select + **Dry-run** checkbox.
+- **Filters panel:** Search · Work type (Remote/Hybrid/Onsite/Reloc) · Salary from/to · **Source** (25) · **Country** (🆕 flags + counts) · Scope (all/fresh) · **Apply** + **Reset** (Reset clears Country too).
+- **Country filter:** options carry flags + counts; pick `🇩🇪 Germany` → only German-location rows; compose with Work-type=Remote; Reset restores; "All countries" shows all; a pure-Remote row is reachable only under "All countries".
+- **Advanced filters** disclosure: stack/level/dynamic chips (multi-select intersection, clear).
+- Row badges: **⚠ trust** (when `trust_filter` on) and **⬆ boosted** (when `seniority_boost` set). Pager prev/next through **all** matches (no cap).
+- **Active Companies** card: expand, filter, ✓/○ grouping, ↗ careers links, click-to-filter; Workday-blocked 🔒 chip when applicable.
 
-### 4.3 Lossless migration + parity (the core lock)
-```bash
-node --test tests/i18n-locale-files.test.mjs
-# All pass: assembled dict ≡ snapshot (678 keys) · every locale shares en's key set ·
-# alias targets exist & aren't chained · index.html order correct.
-node tools/i18n-audit.mjs        # 678 keys × 8 locales · 0 hard failures
-```
+### 4.3 Pipeline (`#/pipeline`)
+Add via global search (Enter → AutoPipeline modal; Shift+Enter → add-only); `POST /api/pipeline/preview` modal (discard reason visible); row delete via focus-trapped `UI.confirm()`; virtualizes past 1000 rows.
 
-### 4.4 Assembled dict is byte-identical to pre-split (manual spot-check)
-```bash
-node --input-type=module -e '
-import { loadAssembledDict } from "./tests/helpers/i18n-vm.mjs";
-const D = loadAssembledDict();
-console.log("keys", Object.keys(D).length);                       // 678
-console.log(D["nav.dashboard"].ko, "/", D["nav.dashboard"].ru);   // 대시보드 / Дашборд
-console.log(D["nav.apply"]["@alias"]);                            // apply.title
-'
-```
+### 4.4 Evaluate / Deep / Batch / Auto
+- `#/evaluate` (oferta): JD/URL input, ⚡ Run-live (honest cost ballpark or manual-mode note), report render (Blocks A–G incl. Block G Legitimacy, `## Machine Summary` YAML, header has URL + Legitimacy), locale directive honored.
+- `#/deep`: query, run, saved-research cards, Generate-PDF.
+- `#/batch`: batch evaluate; `/api/batch/merge` runs `merge-tracker.mjs` (file-locked) → no dupes (company+role).
+- `#/auto`: server-side SSE auto-pipeline (evaluate + report + PDF + tracker).
 
-### 4.5 Every page localizes in every locale (real browser)
-```bash
-node --test tests/playwright-locale-sweep.mjs
-# 8 subtests (one per locale) — each walks all 22 routes:
-#   • #content renders non-empty
-#   • sidebar nav.dashboard reads the expected per-locale string (never the raw key)
-#   • zero console errors
-```
-Manual confirm (browser): switch locale, the sidebar **Dashboard** label must read
-`Panel` (es) · `Painel` (pt-BR) · `대시보드` (ko) · `ダッシュボード` (ja) · `Дашборд` (ru) · `仪表盘` (zh-CN) · `儀表板` (zh-TW).
+### 4.5 Modes (`POST /api/mode/:slug`)
+Allowlist = batch, contacto, cover, followup, interview-prep, patterns, project, training. Unknown slug → 404; allowlisted-but-missing-template → 404 (not 500). Single-shot artifact contract; `run` flag never echoed into the prompt; 6-provider context inlines `cv.md` + `config/profile.yml` (Anthropic / Gemini / OpenAI / Qwen / OpenRouter / GitHub Models). **Cover** (`#/cover`, JD+Company required) → Generate-PDF.
 
-### 4.6 CI inline gate is real again
-The `ci.yml` "Verify i18n coverage" step now loads the per-locale files + alias map + assembler (it had been a silent no-op against an empty dict since the v1.23 split). Confirm it prints `keys 678 × 8 · missing/bad 0` and fails on a `< 600` floor.
+### 4.6 Apply / Tracker / Reports / CV
+- `#/apply`: apply checklist; form contracts.
+- `#/tracker`: reads `data/applications.md`; canonical states (`templates/states.yml`); funnel chips; paginator (25/page, `pager.reset()` on filter).
+- `#/reports`: list + `#/reports/:slug` render + Generate-PDF; report links root-relative (normalized by `merge-tracker.mjs`).
+- `#/cv`: `PUT /api/cv` round-trips through `stripDangerousMarkdown`; Generate-PDF via `/api/stream/pdf`.
 
-### 4.7 Localization is documented in 3 places (verify all present)
-```bash
-test -f docs/LOCALIZATION.md && echo "guide present"
-grep -l "docs/LOCALIZATION.md" README*.md | wc -l        # → 8 (every README links the guide)
-for l in en es pt-BR ko-KR ja ru zh-CN zh-TW; do
-  grep -q "LOCALIZATION.md" "docs/help/$l.md" && echo "$l help §19 ok" || echo "$l help §19 MISSING";
-done
-```
-Manual (browser): open `#/help`, the auto-built TOC must list **§19 "Localizing the app into your language"** (translated title per locale); the section explains the per-locale files, adding a key, `@alias`, and adding a new language. The README ships a `## Localization` section in all 8 languages, each linking `docs/LOCALIZATION.md`.
+### 4.7 Config / Health / Activity / Notifications / Help
+- `#/config`: Profile field-form (non-destructive merge), Modes tab, API-keys tab (race-safe summary chip, WAI-ARIA tabs, confirm-gates). `POST /api/config` → `validateConfig` → `updateEnvFile`. The `trust_filter` / per-tenant `careers_url` / `content_filter` keys are edited via the raw-YAML editor (round-trip untouched), not the field-form.
+- `#/health`: OK/OPTIONAL/FAIL cards (no overflow); run `doctor.mjs` / `verify-pipeline.mjs`.
+- `#/activity`: log; redaction.
+- Notifications drawer (🔔): unread badge; journal of last 50 toasts, each `(METHOD /path · HTTP NNN)` postfix in `<details>`; Clear-all + per-entry dismiss.
+- `#/help`: **13 markdown bundles** (en, es, pt-BR, ko-KR, ja, ru, zh-CN, zh-TW, fr, pl, uk, **da**, ar); `GET /api/help/<lang>` serves each. Invariant **19 H2 / 75 H3** per bundle (`canonical-docs-coverage` + `help-ui` + `help-ru-config-section`). §7 documents the Source dropdown (25) + the **Country** filter; §17 says **25 adapters**. TOC scroll-spy.
+
+### 4.8 Runners / PDF / OpenRouter / output
+Buffered `/api/run/*` (doctor, verify, normalize, dedup, merge, sync-check); streaming `/api/stream/*` (scan, liveness, pdf + /report /deep /inline); `/api/output/pdfs` list + download (Content-Disposition, name sanitized). `/api/openrouter/models` catalogue proxy. PDFs embed fonts.
 
 ---
 
-## §5 — i18n parity sweep
-Help bundle parity: **19 H2 / 73 H3 across all 8 locales** (`canonical-docs-coverage`, `help-ru-config-section`, `help-ui` tests).
-Per-route H1 spot-checks: `#/pipeline` (es) → `Pipeline de candidaturas`; `#/dashboard` (ru) → `Командный центр`; `#/help` (ja) → `ヘルプ`. Footer hotkey: macOS `⌘K`, else `Ctrl+K`.
-```bash
-node scripts/check-changelog-parity.mjs    # all 8 locales at v1.60.0
-node scripts/check-no-also-leftovers.mjs   # no `.also(` leftovers
-node tools/i18n-audit.mjs                  # personal-data / parity / empty / bare-date — 0 hard failures
-```
+## §5 — Cross-cutting controls (test once per language)
+
+- **Sidebar nav:** every `.nav-item` navigates + sets active state; focus moves to the new `<h1>`; groups expand/collapse. Logo = radar icon + **career-ops-ui** text.
+- **Language `<select>` (`#lang-select`):** **13** options switch live; chrome re-localizes, zero console errors; persists to `localStorage['career-ops-ui:lang']` across reload. **ar → `<html dir="rtl">`**; every LTR locale (incl. **da**) resets `dir="ltr"` (no RTL leak).
+- **Theme toggle:** light/dark persists; tokens (not hardcoded hex) recolor.
+- **Mobile drawer (<900 px):** hamburger opens/closes; hide is real (no `display:` override leak).
+- **Global search (`#global-search`, ⌘K/Ctrl-K):** URL → AutoPipeline / add-only; query → in-app filter.
+- **Tab title:** per-route `… — career-ops-ui`; default `career-ops-ui — command center`.
 
 ---
 
-## §6 — Full test pyramid (CI-equivalent)
-```bash
-npm test                  # 1000 / 1000 unit, 0 fail
-npm run test:coverage     # line >= 93%, branch >= 83%   (v1.60.0: 95.68% / 87.33%)
-npm run test:e2e          # 20 / 20 smoke
-npm run test:e2e:full     # 23 / 23 comprehensive
-npm run test:e2e:browser  # 70 Playwright (smoke + full-cycle + forms + locale-sweep)
-npm run test:ci           # the aggregate hard gate (unit + no-also + changelog-parity + i18n-audit)
-```
-**CI jobs to confirm green on a PR / push (v1.60.0 pipeline):**
+## §6 — i18n acceptance (all 13 locales)
 
-| Check | Type | Gate |
-|---|---|---|
-| Unit + integration (node 18 / 20 / 22) | hard | 1000/1000 |
-| Playwright e2e (smoke + comprehensive + browser) | hard | all pass |
-| Code quality (syntax · coverage · audit) | hard (syntax + coverage floor) / advisory (audit) | `node --check` all JS · line ≥ 90% / branch ≥ 80% |
-| CodeQL (analyze javascript) | advisory (annotates Security tab) | pass |
-| Review dependency changes | hard on PRs | no new HIGH-severity dep advisory |
-| Claude review (push → main / pull request) | advisory (fail-soft) | posts a comment |
-
-Local equivalents of the new code-quality gate:
-```bash
-git ls-files -z '*.js' '*.mjs' | xargs -0 -n1 node --check   # syntax gate (237 files)
-npm run test:coverage                                         # coverage floor (≥90% line / ≥80% branch)
-npm audit --omit=dev                                          # advisory
-```
-⚠️ Pre-commit AI review is advisory; **`ci.yml` is the hard gate.** Watch the GitHub Actions run after merge — all jobs above must finish `success` (CodeQL + Claude review are advisory, never block).
+Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar` (dict file uses `ko`; help/README/CHANGELOG use `ko-KR`). For EACH locale, re-run §4 + §5 and verify:
+1. Every nav label, page title, button, filter label (incl. `scan.lblCountry` / `scan.allCountries`), and help bundle render in that language — no raw `key.path` leaks, no English fallback on a shipped key.
+2. Country *names* stay English with flags (intentional — proper nouns); the dropdown **label** + "All countries" are localized.
+3. Zero console errors across the full sweep (`tests/playwright-locale-sweep.mjs` is the automated floor; this is the manual deepening).
+4. **da:** dashboard, scan (incl. country filter), help, language picker read natural Danish (æ/ø/å).
+5. **ar:** RTL mirrors the chrome; LTR locales unaffected after switching away.
+6. Parity gates green: `tests/i18n-locale-files.test.mjs` (snapshot + key parity), `tests/i18n-coverage.test.mjs`, `tools/i18n-audit.mjs`, `tests/lang-switcher-rtl.test.mjs` (13 locales).
 
 ---
 
-## §7 — Standing invariants (quick reference)
-1. **I18N-SPLIT lossless** — assembled dict ≡ `tests/fixtures/i18n-dict.snapshot.json` (678 keys). `t()` and call-sites unchanged.
-2. Per-locale key parity — every `locales/i18n-dict.<lang>.js` shares en's key set (`i18n-locale-files`).
-3. `@alias` integrity — targets exist, no chains; `nav.config` stays distinct from `config.title` (`i18n-alias`).
-4. `index.html` script order: 8 locales → aliases → assembler → `i18n.js`.
-5. Help bundle parity: 19 H2 / 73 H3.
-6. CSP excludes `'unsafe-inline'` from `script-src`; the locale `<script>`s are same-origin classic scripts.
-7. `app.all('/api/*')` JSON-404 for every verb; `req.originalUrl` `..` guard hoisted above route registration.
-8. `Cache-Control: no-store` on `GET /api/cv`.
-9. Parent career-ops project is read-only — code never writes outside `web-ui/` except on explicit user actions.
-10. CHANGELOG parity across all 8 locales (gate).
+## §7 — Docs / branding / release mechanics
+
+- **README ×13** + **CHANGELOG ×13** at **v1.78.0** (parity gate green); each language switcher lists all 13 incl. **Dansk**. README "Latest release" blurb describes the country filter. All 13 `images/dashboard-<locale>.png` regenerated with the new branding.
+- **Help ×13** carry the Country-filter bullet; H2/H3 counts unchanged (19/75).
+- **Branding:** new radar icon as favicon (`favicon.ico` + 16/32 + apple-touch-icon) and sidebar logo; app name **career-ops-ui** in title + logo. Parent `career-ops` references intentionally unchanged.
+- **Release:** `package.json` 1.78.0; footer reads `/api/health`; `parentVersion` = 1.13.0 (independent). Tag `v1.78.0` → `release.yml` → `publish-package.yml` (GitHub Packages). `images/` holds only README/help screenshots (icon masters live in `public/`).
 
 ---
 
-## §8 — Sign-off matrix
-
-| Gate | Pass? |
-|---|---|
-| §−1 — 4 methodology footguns understood (incl. vm-realm deepEqual + split text-invisibility) | ☐ |
-| §0 — `npm test` 1000 / 1000, 0 fail · health version `1.60.0` | ☐ |
-| §1 — server envelope probes (incl. #1.3 with `--path-as-is`, CSP no `'unsafe-inline'`) | ☐ |
-| §2 — all 13 routes + 1 non-en locale + mobile + reduced-motion | ☐ |
-| §3 — notifications drawer interactions | ☐ |
-| **§4 — I18N-SPLIT: 9 files · load order · `i18n-locale-files` · audit · locale-sweep (8×22) · CI inline gate** | ☐ |
-| §5 — i18n parity gates + H1 spot-checks | ☐ |
-| §6 — full pyramid (`npm test` + 3 e2e suites + 70 Playwright + coverage floor) | ☐ |
-| §6 — CI matrix (Node 18 / 20 / 22 + Playwright e2e) all `success` after merge | ☐ |
-| §7 — standing invariants verified by test names | ☐ |
-| Security envelope byte-stable; parent read-only contract preserved | ☐ |
-
----
-
-## §9 — On failure
-1. **Re-check §−1 first** — most "failures" are probe-methodology errors (especially Footgun 3/4 for i18n).
-2. Capture route + exact copy + browser/version + locale + screenshot.
-3. Identify the failing lock-test: `node --test tests/i18n-locale-files.test.mjs tests/i18n-coverage.test.mjs tests/i18n-alias.test.mjs tests/playwright-locale-sweep.mjs`.
-4. File `qa/FIX-PROMPT-v1.60.<N+1>.md` with evidence, the §7 invariant ID, and the fix shape (HOW + TEST + ACCEPTANCE + CHANGELOG ×8 sketch).
-5. **Doctrine: one fix per release** (bundled HIGH+LOW only with written audit authorisation).
-6. Pre-commit AI review advisory; `ci.yml` hard gate. Pass both before tagging.
-
-**Open out-of-scope items (not regressions):** RTL (Arabic/Hebrew), drag-and-drop reorder, bulk delete, PWA/offline — all post-v1.60. Parent-blocked: `modes/deep.md` (C-1), `modes/oferta.md` (G-005), `portals.yml` (UX-022), CLI locale.
-
----
-
-## §10 — Doctrine lessons (do not re-learn)
-1. ONE fix per release; doctrine exceptions only with audit authorisation.
-2. CHANGELOG parity non-negotiable — `check-changelog-parity.mjs` before every commit.
-3. `ci.yml` is the hard gate; pre-commit AI review is advisory.
-4. `[hidden]` is shadowed by author `display:` rules — add explicit override.
-5. `npm test 2>&1 | grep` masks the exit code. Run first, grep second.
-6. `cleanLlmMarkdown` is NOT an XSS sanitizer — boundaries are `stripDangerousMarkdown()` (server) + `UI.md()` (client).
-7. `PATHS` resolves once per process.
-8. `app.get('/api/*')` is GET-only — use `app.all`. Middleware **position** matters as much as content (path-traversal guard hoisted above route registration).
-9. `req.url` is normalised; `req.originalUrl` is verbatim — use `originalUrl` for raw-string guards.
-10. Playwright `page.goto(url)` is a no-op when only the hash changes — bounce via `about:blank`.
-11. **I18N-SPLIT — vm-realm deepEqual:** objects assembled inside `node:vm` have a foreign prototype; `JSON.parse(JSON.stringify(x))` before `deepStrictEqual` against a snapshot.
-12. **I18N-SPLIT — single source of truth:** translations live ONLY in `public/js/lib/locales/i18n-dict.<lang>.js`; `i18n-dict.js` assembles, it stores nothing. Tests that scan dict text use the derived `legacyDictText()` (never the assembler).
-13. **I18N-SPLIT — load order is load-bearing:** the assembler reads `window.__I18N_DICT_<LANG>` / `__I18N_ALIASES`, so all 9 locale `<script>`s must precede `i18n-dict.js`, which must precede `i18n.js`. Locked by `i18n-locale-files.test.mjs`.
-14. **Static lock-tests can pass while user-visible bugs stay open** — a regression-lock must drive the real scenario (the locale-sweep renders every page in every locale), not just `git grep` a symbol.
-15. **A "passing" CI step can be a no-op** — the inline i18n check validated an empty dict for ~37 releases after the v1.23 split. Add a sanity floor (`keys < 600 → fail`) so an empty/half-loaded dict can never read as green.
-
----
-
-*Definitive QA hand-off for v1.60.0. Hand to a human tester or an agent — copy-paste top-to-bottom, fill the §8 matrix, file a FIX-PROMPT on any failure. Generated 2026-05-22 after the I18N-SPLIT refactor: 1000 / 1000 unit · 70 Playwright (incl. 8-locale sweep) · 23 / 23 comprehensive e2e · coverage 95.68% line. No user-facing behaviour change vs v1.59.13.*
+## §8 — Exit criteria
+- Every (page × control × 13 languages) PASS or a logged FAIL→fix (one-fix-per-release; HIGH → MEDIUM → LOW).
+- `npm test` ≥ **1229** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×13) green; CI matrix green.
+- Zero console errors; no RTL leak; no untranslated shipped key; favicon/icon endpoints 200.
+- All §2 deltas verified live.
