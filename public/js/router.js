@@ -64,8 +64,8 @@ window.Router = (function () {
       ? heading.textContent.trim().replace(/\s+/g, ' ')
       : '';
     document.title = viewTitle
-      ? `${viewTitle} — career-ops`
-      : 'career-ops — command center';
+      ? `${viewTitle} — career-ops-ui`
+      : 'career-ops-ui — command center';
     // v1.56.0 — UX-12: on the FIRST paint we now make the landing
     // view's heading programmatically focusable (tabindex=-1 was set
     // above) so screen-reader / heading navigation lands on it, and

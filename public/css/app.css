@@ -293,6 +293,10 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   font-weight: 800;
   font-size: 14px;
   letter-spacing: -0.5px;
+  /* v1.78.0 — logo-mark is now an <img> (radar icon); cover-crop into the
+     existing 36px circle so the sidebar layout is unchanged. */
+  object-fit: cover;
+  overflow: hidden;
 }
 .logo-text {
   font-weight: 700;
