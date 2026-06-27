@@ -406,7 +406,13 @@ I18n.onChange(() => {
           }).catch((err) => UI.toast((err && err.message) || 'add failed', 'error'));
         }
       } else {
-        Router.go('/tracker');
+        // v1.78.1 — a non-URL query jumps to #/scan and pre-fills its search
+        // box, so the user lands on the live results filtered by their term
+        // (was: jump to #/tracker). The handoff global is consumed once by the
+        // scan view on render.
+        window.__scanSearchPrefill = q;
+        search.value = '';
+        Router.go('/scan');
       }
     }
   });

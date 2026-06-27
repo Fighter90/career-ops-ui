@@ -946,6 +946,10 @@ annule les requêtes HTTPS en cours via `AbortController`.
 Sous le journal, le tableau de résultats affiche les lignes de
 `data/last-scan.json`.
 
+> **v1.78.1 — rafraîchissement automatique en direct.** Le tableau de résultats
+> se met désormais à jour automatiquement pendant qu'un scan tourne et une fois
+> de plus juste après la fin — sans rechargement manuel ni changement de page.
+
 Filtres :
 
 - **Texte libre** — correspondance de sous-chaîne sur le titre / l'entreprise.
@@ -1051,9 +1055,12 @@ Boîte de réception des URL en attente d'évaluation. Vit dans
 Trois façons :
 
 - Tapez / collez une URL dans le champ + cliquez sur **+ Add**.
-- Appuyez sur **Ctrl+K** (ou **Cmd+K**) pour focaliser la recherche globale,
-  collez un lien `http(s)://…`, appuyez sur **Entrée** — l'URL va
-  immédiatement dans le pipeline.
+- Utilisez la **recherche globale de la barre supérieure** (son badge affiche
+  **Enter**) : collez n'importe quel lien `http(s)://…` et appuyez sur **Enter**
+  pour ouvrir l'auto-pipeline ; tapez tout autre texte et **Enter** saute vers
+  `#/scan` avec ce terme pré-rempli (v1.78.1). Ctrl/Cmd+K continue de focaliser
+  le champ là où le navigateur le permet. Le **logo** de marque renvoie au
+  tableau de bord.
 - Lancez un Scan (voir ci-dessus) — les nouvelles trouvailles vont au
   pipeline automatiquement.
 

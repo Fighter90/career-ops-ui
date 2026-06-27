@@ -12,11 +12,11 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.0)
+[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
 
-> **🆕 最新版本 — v1.78.0**
+> **🆕 最新版本 — v1.78.1**
 >
-> **扫描页面新增地理筛选 — 按国家筛选职位结果，并带国旗。** `#/scan` 中新增的 **Country** 下拉框列出在你扫描结果中检测到的每个国家（国旗 emoji + 计数），让你只保留与特定国家相关的职位 —— 与 Remote / Hybrid / Onsite 工作方式筛选并列，因此你既能搜索与国家绑定的工作**也能**搜索远程工作。新增的 `countries.js` 助手将每条职位的自由文本地点（国家名称、别名以及约 100 个主要就业市场城市）映射到 ISO 国家 + 国旗；检测保守，绝不臆测。在 v1.77.0（丹麦语，第 13 个语言）和 v1.76.0（与父级 career-ops v1.13.0 对齐 — 六个按租户的 ATS 来源、`trust_filter`、无上限的扫描结果）的基础上构建。
+> **扫描体验修复。** 现在 `#/scan` 结果表会在扫描期间实时**自动刷新**，并在扫描结束后再刷新一次 —— 无需手动重新加载。顶栏全局搜索会显示 **Enter** 提示；输入非 URL 的查询时，会跳转到 `#/scan` 并把搜索框**预先填好**（此前是跳转到 `#/tracker`）；品牌**徽标链接到仪表盘**（主页）。在 v1.78.0（扫描**国家筛选** — 按国家筛选结果并带国旗，与 Remote / Hybrid / Onsite 并列）、v1.77.0（丹麦语，第 13 个语言）和 v1.76.0（与父级 career-ops v1.13.0 对齐 — 六个按租户的 ATS 来源、`trust_filter`、无上限的扫描结果）的基础上构建。
 >
 > _13 locales · 6 个 LLM 提供方 · 25 个扫描器适配器 · 国家筛选 · 与父级 career-ops v1.13.0 对齐。_
 

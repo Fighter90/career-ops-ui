@@ -12,11 +12,11 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.0)
+[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
 
-> **🆕 Seneste udgivelse — v1.78.0**
+> **🆕 Seneste udgivelse — v1.78.1**
 >
-> **Geografifilter på scan-siden — filtrér jobresultater efter land, med flag.** En ny **Country**-dropdown i `#/scan` viser hvert land, der er registreret på tværs af dine scannede resultater (flag-emoji + antal), så du kun beholder roller knyttet til et bestemt land — ved siden af Remote / Hybrid / Onsite arbejdstype-filteret, så du kan søge både landebundet **og** fjernarbejde. En ny `countries.js`-hjælper mapper hvert opslags fritekst-lokation (landenavne, aliasser og ~100 store jobmarkedsbyer) til et ISO-land + flag; registreringen er konservativ og gætter aldrig. Bygger videre på v1.77.0 (dansk, 13. lokalitet) og v1.76.0 (paritet med forælderens career-ops v1.13.0 — seks ATS-kilder pr. tenant, `trust_filter`, scanresultater uden loft).
+> **UX-rettelser til scan.** Resultattabellen på `#/scan` **opdateres nu automatisk** live under en scanning og endnu en gang, når den er færdig — ingen manuel genindlæsning. Den globale søgning i topbjælken viser et **Enter**-hint, og ved en forespørgsel der ikke er en URL, springer den til `#/scan` med søgefeltet **forudfyldt** (var `#/tracker`); brand-**logoet linker til dashboardet** (hjem). Bygger videre på v1.78.0 (**landefilter i scan** — filtrér resultater efter land med flag, ved siden af Remote / Hybrid / Onsite), v1.77.0 (dansk, 13. lokalitet) og v1.76.0 (paritet med forælderens career-ops v1.13.0 — seks ATS-kilder pr. tenant, `trust_filter`, scanresultater uden loft).
 >
 > _13 lokaliteter · 6 LLM-providere · 25 scanneradaptere · landefilter · paritet med forælderens career-ops v1.13.0._
 

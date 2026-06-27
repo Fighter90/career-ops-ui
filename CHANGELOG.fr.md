@@ -11,6 +11,10 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.78.1] — 2026-06-27
+
+**Corrections UX du Scan.** Le tableau de résultats de `#/scan` se rafraîchit désormais automatiquement pendant le scan et une fois de plus à la fin, sans rechargement. La recherche globale affiche un indice **Entrée** et, pour une requête non-URL, saute vers `#/scan` avec le champ pré-rempli (auparavant `#/tracker`). Le logo renvoie maintenant au tableau de bord (accueil).
+
 ## [1.78.0] — 2026-06-27
 
 **Filtre géographique sur la page Scan — filtrez les résultats par pays, avec drapeaux.** Un nouveau menu **Pays** dans `#/scan` liste chaque pays détecté dans vos résultats (emoji drapeau + compteur), pour ne garder que les postes liés à un pays — aux côtés du filtre Remote/Hybrid/Onsite, afin de chercher du travail lié à un pays comme en télétravail. Reposant sur un nouvel utilitaire `countries.js` qui mappe la localisation en texte libre (noms de pays, alias et ~100 grandes villes) vers un pays ISO + drapeau ; la détection est prudente et ne devine jamais.

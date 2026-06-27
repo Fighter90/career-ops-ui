@@ -96,6 +96,14 @@ Router.register('scan', async () => {
 
   const dryRun = c('input', { type: 'checkbox', id: 'dry-run' });
   const filterText = c('input', { className: 'input', placeholder: t('scan.filterText') });
+  // v1.78.1 — consume a one-shot search term handed off from the top-bar global
+  // search (Enter on a non-URL query → #/scan with this box pre-filled). The
+  // initial renderResults() below reads filterText.value, so the first paint is
+  // already filtered by the term.
+  if (window.__scanSearchPrefill) {
+    filterText.value = window.__scanSearchPrefill;
+    window.__scanSearchPrefill = '';
+  }
   const filterRemote = c('select', { className: 'select' }, [
     c('option', { value: '' }, t('scan.allTypes')),
     c('option', { value: 'remote' }, t('scan.remoteOnly')),
@@ -338,6 +346,14 @@ Router.register('scan', async () => {
     lastRunFn = runScanAll;
     UI.toast(t('scan.runAll', 'Scanning all sources…'), 'success');
 
+    // v1.78.1 — live auto-refresh. Poll the results table every 2.5s while the
+    // (multi-minute) scan runs and re-read it once more after each phase, so
+    // vacancies appear in the table automatically without a manual reload.
+    // Mirrors the streamTo() path; cleaned up on done/error/stop/hashchange via
+    // __cancelActiveScanPoll().
+    __cancelActiveScanPoll();
+    __activeScanPollHandle = setInterval(() => { refreshResults().catch(() => {}); }, 2500);
+
     let phase = null;       // 'ats' | 'regional' as we move between phases
     let totalNew = 0;
     activeES = API.stream('/api/stream/scan?' + params.toString(), (ev, data) => {
@@ -360,18 +376,29 @@ Router.register('scan', async () => {
         totalNew += fresh;
         const label = phase === 'ats' ? 'ATS' : 'Regional';
         appendMeta(consoleEl, `✓ ${label} done · NEW=${fresh}\n`);
-        // F-011: re-read /api/scan-results so the Active-Companies counter
-        // + filters update incrementally between phases.
-        refreshResults();
-        // The consolidated `source=both` stream emits an intermediate
-        // `done` with `final:false` (ATS) then a terminal one (Regional,
-        // no `final` field). Only the terminal done ends the run.
-        if (!data || data.final !== false) {
+        // The consolidated `source=both` stream emits an intermediate `done`
+        // with `final:false` (ATS) then a terminal one (Regional). Only the
+        // terminal done ends the run.
+        const terminal = !data || data.final !== false;
+        if (terminal) {
+          // v1.78.1 — stop the live poll, end the run, then do one last refresh
+          // a beat later so the server has flushed last-scan.json. Guarantees
+          // the results table shows the final set without a manual reload.
+          __cancelActiveScanPoll();
           activeES = null;
           setScanRunning(false);
           announce(t('scan.statusDone', 'Scan complete') + ' · NEW=' + totalNew);
+          __activeScanDoneTimeout = setTimeout(() => {
+            __activeScanDoneTimeout = null;
+            refreshResults().catch(() => {});
+          }, 300);
+        } else {
+          // F-011: surface the ATS phase's results immediately while the
+          // regional phase keeps running.
+          refreshResults().catch(() => {});
         }
       } else if (ev === 'error') {
+        __cancelActiveScanPoll();
         const label = phase === 'ats' ? 'ATS' : (phase === 'regional' ? 'Regional' : 'scan');
         const msg = (data && data.message) || 'unknown error';
         appendMeta(consoleEl, `\n✗ ${label} error: ${msg}\n`);

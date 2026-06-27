@@ -1,9 +1,9 @@
-# QA REGRESSION PROMPT — career-ops-ui **v1.78.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
+# QA REGRESSION PROMPT — career-ops-ui **v1.78.1** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
 
 Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 13 languages**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree.
 
-- **Version under test:** `package.json` **1.78.0** · parent career-ops **1.13.0** parity.
-- **Baseline:** **1229** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×13** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL.
+- **Version under test:** `package.json` **1.78.1** · parent career-ops **1.13.0** parity.
+- **Baseline:** **1235** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×13** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL.
 - **Server:** `npm start` → `http://127.0.0.1:4317`.
 - **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.76.0-FULL.md` (parent-parity gate driver) · `key/E2E-REGRESSION-EVERY-BUTTON-EVERY-LANGUAGE-v1.78.0.md` (exhaustive UI click-through) · `REGRESSION-FINAL.md` (invariant ledger).
 
@@ -12,10 +12,10 @@ Single standalone hand-off for a QA tester (human or agent) to verify the **enti
 ## §0 — Gates (all must be green before sign-off)
 
 ```bash
-npm test                                    # full suite (≥1229 cases)
+npm test                                    # full suite (≥1235 cases)
 npm run test:ci                             # unit + check-no-also + check-changelog-parity + i18n-audit
 node tools/i18n-audit.mjs                   # "no hard failures — dictionary is clean"
-node scripts/check-changelog-parity.mjs     # "all 12 locales at v1.78.0" (EN + 12 = 13 files)
+node scripts/check-changelog-parity.mjs     # "all 12 locales at v1.78.1" (EN + 12 = 13 files)
 npm run test:coverage                       # ≥80% line / ≥75% branch (baseline ~93/~83)
 npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(13) + theme-toggle
 npm run test:e2e && npm run test:e2e:full   # smoke (20) + comprehensive (23) E2E
@@ -53,6 +53,9 @@ node scripts/portals-health-check.mjs       # portals.yml reachability (informat
 | 6 | **Danish — 13th locale (v1.77.0)** | `#lang-select` has **🇩🇰 Dansk**; selecting it localizes the chrome and `GET /api/help/da` serves the Danish bundle. |
 | 7 | **Country filter (v1.78.0)** | `#/scan` results panel has a **Country** dropdown listing detected countries with **flag + count** (e.g. `🇩🇪 Germany (12)`). Keeps only rows in that country; composes with the Remote/Hybrid/Onsite filter; **Reset** clears it; pure-Remote / unresolved locations stay under **All countries**. `countries.js` detection is conservative (never guesses). |
 | 8 | **Rebrand (v1.78.0)** | Tab title + sidebar logo say **career-ops-ui**; the sidebar logo-mark is the new radar icon; `/favicon.ico`, `/favicon-16.png`, `/favicon-32.png`, `/apple-touch-icon.png` serve 200. |
+| 9 | **Scan auto-refresh (v1.78.1)** | The `#/scan` results table updates automatically *during* a scan and once more after the terminal `done` — no manual reload. `runScanAll` polls every 2.5s + does a 300ms post-flush refresh. |
+| 10 | **Global search → Scan (v1.78.1)** | Top-bar search badge reads **Enter**. Enter on a URL → auto-pipeline; Enter on any other text → `#/scan` with the search box pre-filled (was `#/tracker`). |
+| 11 | **Logo → home (v1.78.1)** | Clicking the brand logo (now an `<a href="#/dashboard">`) navigates to the dashboard. |
 
 ---
 
@@ -143,6 +146,6 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar` (dict fil
 
 ## §8 — Exit criteria
 - Every (page × control × 13 languages) PASS or a logged FAIL→fix (one-fix-per-release; HIGH → MEDIUM → LOW).
-- `npm test` ≥ **1229** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×13) green; CI matrix green.
+- `npm test` ≥ **1235** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×13) green; CI matrix green.
 - Zero console errors; no RTL leak; no untranslated shipped key; favicon/icon endpoints 200.
 - All §2 deltas verified live.

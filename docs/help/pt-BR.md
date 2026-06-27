@@ -849,6 +849,10 @@ abortar — o servidor cancela as requisições HTTPS em voo via
 Abaixo do log, a tabela de resultados renderiza linhas de
 `data/last-scan.json`.
 
+> **v1.78.1 — atualização automática ao vivo.** A tabela de resultados agora se
+> atualiza automaticamente enquanto uma varredura roda e mais uma vez logo após
+> terminar — sem recarregar manualmente nem trocar de página.
+
 Filtros:
 
 - **Texto livre** — match de substring contra título / empresa.
@@ -950,9 +954,11 @@ Caixa de entrada de URLs aguardando avaliação. Vive em
 Três formas:
 
 - Digite / cole uma URL no input + clique em **+ Add**.
-- Aperte **Ctrl+K** (ou **Cmd+K**) para focar a busca global, cole
-  qualquer link `http(s)://…`, dê **Enter** — a URL vai para o
-  pipeline imediatamente.
+- Use a **busca global da barra superior** (o badge dela mostra **Enter**):
+  cole qualquer link `http(s)://…` e aperte **Enter** para abrir o
+  auto-pipeline; digite qualquer outro texto e **Enter** salta para `#/scan`
+  com aquele termo pré-preenchido (v1.78.1). Ctrl/Cmd+K continua focando a
+  caixa onde o navegador permite. O **logo** da marca volta ao painel.
 - Rode um Scan (veja acima) — hits frescos vão para o pipeline
   automaticamente.
 

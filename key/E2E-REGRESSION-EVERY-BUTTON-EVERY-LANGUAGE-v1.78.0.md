@@ -1,7 +1,7 @@
 # MASTER E2E REGRESSION — career-ops-ui · EVERY BUTTON · EVERY PAGE · EVERY LANGUAGE (v1.78.0)
 
-> **Version under test:** `package.json` **1.78.0** (parent career-ops **1.13.0** parity).
-> **Covers the untested release train:** v1.76.0 (6 new ATS sources + `trust_filter` + uncapped scan + title-filter robustness) → v1.77.0 (**Danish**, 13th locale) → v1.78.0 (**Scan country filter**).
+> **Version under test:** `package.json` **1.78.1** (parent career-ops **1.13.0** parity).
+> **Covers the untested release train:** v1.76.0 (6 new ATS sources + `trust_filter` + uncapped scan + title-filter robustness) → v1.77.0 (**Danish**, 13th locale) → v1.78.0 (**Scan country filter**) → v1.78.1 (**Scan auto-refresh + global-search Enter→Scan + clickable logo**).
 > **Goal:** drive the *running app* end-to-end and click **every interactive control on every page in every one of the 13 languages**, proving each does what it claims with zero console errors and no layout breakage (incl. Arabic RTL).
 > **Role:** strict release-gate QA engineer. This is the exhaustive click-through driver. The unit/CI gate lives in `qa/QA-REGRESSION-PROMPT-v1.76.0-FULL.md`; this file is the **human/agent UI sweep** the gate can't cover.
 > **Output:** save your run to `key/runs/<YYYY-MM-DD>-E2E-v1.78.0.md` — one row per (page × language × control) with PASS/FAIL + evidence (screenshot path, console-log excerpt, HTTP trace). Any FAIL = one fix-ship (one-fix-per-release; HIGH → MEDIUM → LOW).
@@ -29,6 +29,9 @@
 | 5 | **Title filter (v1.76.0)** | `title_filter.negative: ['coo']` does NOT drop "Coordinator"; malformed `title_filter` entries don't crash a scan. |
 | 6 | **Danish — 13th locale (v1.77.0)** | `#lang-select` has a **🇩🇰 Dansk** option; selecting it localizes the whole chrome + `/#/help` serves the Danish bundle (`GET /api/help/da`). `images/dashboard-da.png` exists. |
 | 7 | **Country filter (v1.78.0)** | `/#/scan` results panel has a **Country** dropdown (localized label) listing detected countries with **flag emoji + count** (e.g. `🇩🇪 Germany (12)`). Selecting one keeps only rows in that country; **Reset** clears it; it composes with the Remote/Hybrid/Onsite work-type filter. Pure "Remote" / unresolved locations stay under **All countries**. |
+| 8 | **Scan auto-refresh (v1.78.1)** | After clicking 🌐 Scan, the results table updates **automatically** while the scan runs and once more after it finishes — without a manual reload or page switch. (`runScanAll` polls every 2.5s + a 300ms post-flush refresh; stops cleanly on Stop/error.) |
+| 9 | **Global search → Scan (v1.78.1)** | The top-bar search badge reads **Enter**. Typing a non-URL term + **Enter** lands on `/#/scan` with the search box pre-filled and results filtered by it (was `/#/tracker`); a URL + Enter still opens the auto-pipeline. |
+| 10 | **Logo → home (v1.78.1)** | Clicking the brand **logo** navigates to `/#/dashboard` (keyboard-focusable native link). |
 
 ---
 

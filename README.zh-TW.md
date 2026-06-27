@@ -12,11 +12,11 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.0)
+[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
 
-> **🆕 最新版本 — v1.78.0**
+> **🆕 最新版本 — v1.78.1**
 >
-> **掃描頁面新增地理篩選 — 按國家篩選職缺結果，並帶國旗。** `#/scan` 中新增的 **Country** 下拉選單列出在你掃描結果中偵測到的每個國家（國旗 emoji + 計數），讓你只保留與特定國家相關的職缺 —— 與 Remote / Hybrid / Onsite 工作型態篩選並列，因此你既能搜尋與國家綁定的工作**也能**搜尋遠端工作。新增的 `countries.js` 輔助程式將每筆職缺的自由文字地點（國家名稱、別名以及約 100 個主要就業市場城市）對應到 ISO 國家 + 國旗；偵測保守，絕不臆測。在 v1.77.0（丹麥語，第 13 個語言）和 v1.76.0（與父層 career-ops v1.13.0 對齊 — 六個按租戶的 ATS 來源、`trust_filter`、無上限的掃描結果）的基礎上構建。
+> **掃描體驗修復。** 現在 `#/scan` 結果表會在掃描期間即時**自動重新整理**，並在掃描結束後再重新整理一次 —— 無須手動重新載入。頂列全域搜尋會顯示 **Enter** 提示；輸入非 URL 的查詢時，會跳到 `#/scan` 並把搜尋框**預先填好**（此前是跳到 `#/tracker`）；品牌**標誌連結到儀表板**（首頁）。在 v1.78.0（掃描**國家篩選** — 按國家篩選結果並帶國旗，與 Remote / Hybrid / Onsite 並列）、v1.77.0（丹麥語，第 13 個語言）和 v1.76.0（與父層 career-ops v1.13.0 對齊 — 六個按租戶的 ATS 來源、`trust_filter`、無上限的掃描結果）的基礎上構建。
 >
 > _13 locales · 6 個 LLM 提供者 · 25 個掃描器轉接器 · 國家篩選 · 與父層 career-ops v1.13.0 對齊。_
 

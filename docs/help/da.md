@@ -935,6 +935,8 @@ Under loggen gengiver resultattabellen rækker fra `data/last-scan.json`.
 > pager bare igennem dem (200 per side — brug pager-kontrollerne under tabellen).
 > Intet droppes; du vender bare sider.
 
+> **v1.78.1 — live auto-opdatering.** Resultattabellen opdateres nu automatisk, mens en scanning kører, og endnu en gang lige efter den er færdig — ingen manuel genindlæsning eller sideskift nødvendigt.
+
 Filtre:
 
 - **Fritekst** — delstreng-match mod titel / virksomhed.
@@ -1030,9 +1032,7 @@ Indbakke af URL'er, der venter på at blive evalueret. Lever i `data/pipeline.md
 Tre måder:
 
 - Skriv / indsæt en URL i inputtet + klik på **+ Tilføj**.
-- Tryk på **Ctrl+K** (eller **Cmd+K**) for at fokusere den globale søgning, indsæt
-  et hvilket som helst `http(s)://…`-link, tryk på **Enter** — URL'en går ind i
-  pipeline med det samme.
+- Brug den **globale søgning i topbjælken** (dens badge viser **Enter**): indsæt et hvilket som helst `http(s)://…`-link og tryk på **Enter** for at åbne auto-pipelinen; skriv en hvilken som helst anden tekst, og **Enter** springer til `#/scan` med det udtryk forudfyldt (v1.78.1). Ctrl/Cmd+K fokuserer stadig feltet, hvor browseren tillader det. Brand-**logoet** vender tilbage til dashboardet.
 - Kør en Scan (se ovenfor) — friske hits går til pipeline
   automatisk.
 

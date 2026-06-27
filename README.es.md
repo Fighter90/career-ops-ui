@@ -12,11 +12,11 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.0)
+[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
 
-> **🆕 Última versión — v1.78.0**
+> **🆕 Última versión — v1.78.1**
 >
-> **Filtro de geografía en la página de Escaneo — filtra los resultados de empleo por país, con banderas.** Un nuevo desplegable **Country** en `#/scan` lista cada país detectado en tus resultados escaneados (emoji de bandera + recuento), para que puedas quedarte solo con los puestos ligados a un país concreto — junto al filtro de tipo de trabajo Remote / Hybrid / Onsite, de modo que puedas buscar tanto trabajo ligado a un país **como** remoto. Un nuevo helper `countries.js` mapea la ubicación en texto libre de cada oferta (nombres de países, alias y ~100 grandes ciudades del mercado laboral) a un país ISO + bandera; la detección es conservadora y nunca adivina. Se basa en la v1.77.0 (danés, 13.º idioma) y la v1.76.0 (paridad con el career-ops padre v1.13.0 — seis fuentes ATS por tenant, `trust_filter`, resultados de escaneo sin límite).
+> **Mejoras de UX en Escaneo.** La tabla de resultados de `#/scan` ahora se **autoactualiza** en vivo durante un escaneo y una vez más al terminar — sin recargar a mano. La búsqueda global de la barra superior muestra una pista **Enter** y, ante una consulta que no es una URL, salta a `#/scan` con el cuadro de búsqueda **pre-rellenado** (antes era `#/tracker`); el **logo** de marca **enlaza al panel** (inicio). Se basa en la v1.78.0 (filtro por **país** en Escaneo — filtra los resultados por país, con banderas, junto a Remote/Hybrid/Onsite), la v1.77.0 (danés, 13.º idioma) y la v1.76.0 (paridad con el career-ops padre v1.13.0 — seis fuentes ATS por tenant, `trust_filter`, resultados de escaneo sin límite).
 >
 > _13 locales · 6 proveedores LLM · 25 adaptadores de escáner · filtro por país · paridad con el career-ops padre v1.13.0._
 

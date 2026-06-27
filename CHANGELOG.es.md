@@ -11,6 +11,10 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.78.1] — 2026-06-27
+
+**Correcciones de UX en Scan.** La tabla de resultados de `#/scan` ahora se actualiza automáticamente durante el escaneo y una vez más al terminar, sin recargar. La búsqueda global de la barra superior muestra una pista **Enter** y, con una consulta que no es URL, salta a `#/scan` con el campo pre-rellenado (antes `#/tracker`). El logo ahora enlaza al panel (inicio).
+
 ## [1.78.0] — 2026-06-27
 
 **Filtro geográfico en la página de Scan — filtra resultados por país, con banderas.** Un nuevo desplegable **País** en `#/scan` lista cada país detectado en tus resultados (emoji de bandera + recuento), para quedarte solo con roles ligados a un país — junto al filtro Remote/Hybrid/Onsite, de modo que puedes buscar trabajo ligado a un país y remoto. Respaldado por un nuevo helper `countries.js` que mapea la ubicación de texto libre (nombres de país, alias y ~100 ciudades clave) a un país ISO + bandera; la detección es conservadora y nunca adivina.

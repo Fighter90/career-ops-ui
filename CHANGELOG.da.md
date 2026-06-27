@@ -10,6 +10,10 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.78.1] — 2026-06-27
+
+**Scan-UX-rettelser.** Resultattabellen på `#/scan` opdateres nu automatisk under en scanning og igen, når den er færdig — ingen manuel genindlæsning. Den globale søgning i topbjælken viser et **Enter**-hint og hopper ved en ikke-URL-forespørgsel til `#/scan` med søgefeltet udfyldt (før `#/tracker`). Logoet linker nu til dashboardet (hjem).
+
 ## [1.78.0] — 2026-06-27
 
 **Geografifilter på Scan-siden — filtrér jobresultater efter land, med flag.** En ny **Land**-dropdown i `#/scan` viser hvert land, der er fundet i dine scanningsresultater (flag-emoji + antal), så du kan beholde kun roller knyttet til et bestemt land — sammen med Remote/Hybrid/Onsite-filteret, så du kan søge både landebundet og fjernarbejde. Drevet af en ny `countries.js`-hjælper, der mapper en annonces fritekst-lokation (landenavne, aliasser og ~100 store jobmarkedsbyer) til et ISO-land + flag; detektionen er konservativ og gætter aldrig.

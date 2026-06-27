@@ -12,11 +12,11 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.0)
+[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
 
-> **🆕 Dernière version — v1.78.0**
+> **🆕 Dernière version — v1.78.1**
 >
-> **Filtre géographique sur la page de scan — filtrez les résultats d'emploi par pays, avec drapeaux.** Un nouveau menu déroulant **Country** dans `#/scan` liste chaque pays détecté dans vos résultats scannés (emoji de drapeau + décompte), pour ne garder que les postes liés à un pays précis — aux côtés du filtre de type de travail Remote / Hybrid / Onsite, afin de chercher aussi bien le travail lié à un pays **que** le travail à distance. Un nouveau helper `countries.js` mappe la localisation en texte libre de chaque offre (noms de pays, alias et ~100 grandes villes du marché de l'emploi) vers un pays ISO + drapeau ; la détection est prudente et ne devine jamais. S'appuie sur la v1.77.0 (danois, 13ᵉ langue) et la v1.76.0 (parité avec le career-ops parent v1.13.0 — six sources ATS par tenant, `trust_filter`, résultats de scan sans plafond).
+> **Corrections d'UX du scan.** Le tableau de résultats de `#/scan` se **rafraîchit** désormais en direct pendant un scan et une fois de plus à la fin — sans rechargement manuel. La recherche globale de la barre supérieure affiche une indication **Enter** et, pour une requête qui n'est pas une URL, saute vers `#/scan` avec le champ de recherche **pré-rempli** (c'était `#/tracker`) ; le **logo** de marque **renvoie au tableau de bord** (accueil). S'appuie sur la v1.78.0 (filtre par **pays** dans le scan — filtrez les résultats par pays, avec drapeaux, aux côtés de Remote/Hybrid/Onsite), la v1.77.0 (danois, 13ᵉ langue) et la v1.76.0 (parité avec le career-ops parent v1.13.0 — six sources ATS par tenant, `trust_filter`, résultats de scan sans plafond).
 >
 > _13 locales · 6 fournisseurs LLM · 25 adaptateurs de scanner · filtre par pays · parité avec le career-ops parent v1.13.0._
 

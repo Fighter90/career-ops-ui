@@ -935,6 +935,10 @@ Below the log, the results table renders rows from `data/last-scan.json`.
 > pages through them (200 per page — use the pager controls under the table).
 > Nothing is dropped; you just turn pages.
 
+> **v1.78.1 — live auto-refresh.** The results table now updates automatically
+> while a scan runs and once more right after it finishes — no manual reload or
+> page switch needed.
+
 Filters:
 
 - **Free text** — substring match against title / company.
@@ -1030,9 +1034,11 @@ Inbox of URLs waiting to be evaluated. Lives in `data/pipeline.md`.
 Three ways:
 
 - Type / paste a URL into the input + click **+ Add**.
-- Press **Ctrl+K** (or **Cmd+K**) to focus the global search, paste
-  any `http(s)://…` link, hit **Enter** — the URL goes into the
-  pipeline immediately.
+- Use the **top-bar global search** (its badge reads **Enter**): paste
+  any `http(s)://…` link and press **Enter** to open the auto-pipeline;
+  type any other text and **Enter** jumps to `#/scan` with that term
+  pre-filled (v1.78.1). Ctrl/Cmd+K still focuses the box where the
+  browser allows it. The brand **logo** returns to the dashboard.
 - Run a Scan (see above) — fresh hits go to the pipeline
   automatically.
 

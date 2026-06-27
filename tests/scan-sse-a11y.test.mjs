@@ -62,7 +62,12 @@ test('#24: persistent role=alert error banner with a Retry action', () => {
 });
 
 test('multi-phase runScanAll only ends run on the terminal done (final !== false)', () => {
-  assert.match(SCAN, /if \(!data \|\| data\.final !== false\)\s*\{[\s\S]{0,120}setScanRunning\(false\)/);
+  // v1.78.1 — the terminal check is now a named `terminal` flag; the run only
+  // ends (setScanRunning(false)) inside its `if (terminal)` branch.
+  assert.match(SCAN, /const terminal\s*=\s*!data \|\| data\.final !== false/,
+    'terminal-done flag must be derived from final !== false');
+  assert.match(SCAN, /if \(terminal\)\s*\{[\s\S]{0,400}setScanRunning\(false\)/,
+    'the run must only end inside the terminal-done branch');
 });
 
 test('i18n: all 8 new scan a11y keys present with 8 locales', () => {

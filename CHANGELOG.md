@@ -8,6 +8,10 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.78.1] — 2026-06-27
+
+**Scan UX fixes.** The `#/scan` results table now auto-refreshes live during a scan and once more after it finishes — no manual reload. The top-bar global search shows an **Enter** hint and, on a non-URL query, jumps to `#/scan` with the search box pre-filled (was `#/tracker`). The brand logo now links to the dashboard (home).
+
 ## [1.78.0] — 2026-06-27
 
 **Geography filter on the Scan page — filter job results by country, with flags.** A new **Country** dropdown in `#/scan` lists every country detected across your scanned results (flag emoji + count), so you can keep only roles tied to a specific country — alongside the Remote/Hybrid/Onsite work-type filter, so you can search both country-bound and remote work. Backed by a new `countries.js` helper that maps a posting’s free-text location (country names, aliases, and ~100 major job-market cities) to an ISO country + flag; detection is conservative and never guesses (unmapped/remote locations stay under “All countries”).

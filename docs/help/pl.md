@@ -881,6 +881,8 @@ Log SSE na żywo streamuje do prawego panelu podczas skanowania. Kliknij
 
 Poniżej logu tabela wyników renderuje wiersze z `data/last-scan.json`.
 
+> **v1.78.1 — odświeżanie na żywo.** Tabela wyników aktualizuje się teraz automatycznie podczas trwania skanowania i jeszcze raz tuż po jego zakończeniu — bez ręcznego przeładowania ani przełączania strony.
+
 Filtry:
 
 - **Tekst wolny** — dopasowanie podciągu względem tytułu / firmy.
@@ -975,9 +977,7 @@ Skrzynka odbiorcza adresów URL oczekujących na ocenę. Przechowywana w `data/p
 Trzy sposoby:
 
 - Wpisz / wklej URL do inputu + kliknij **+ Add**.
-- Naciśnij **Ctrl+K** (lub **Cmd+K**), aby skupić globalne wyszukiwanie, wklej
-  dowolny link `http(s)://…`, naciśnij **Enter** — URL trafia do
-  pipeline natychmiast.
+- Użyj **globalnego wyszukiwania na górnym pasku** (jego plakietka pokazuje **Enter**): wklej dowolny link `http(s)://…` i naciśnij **Enter**, aby otworzyć auto-pipeline; wpisz dowolny inny tekst, a **Enter** przeniesie do `#/scan` ze wstępnie wypełnionym tym hasłem (v1.78.1). Ctrl/Cmd+K nadal ustawia fokus na polu tam, gdzie pozwala na to przeglądarka. Logo marki wraca do pulpitu.
 - Uruchom Scan (patrz wyżej) — nowe trafienia trafiają do pipeline
   automatycznie.
 

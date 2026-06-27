@@ -1,15 +1,13 @@
 /**
- * v1.56.4 — UX-N2: the Cmd/Ctrl+K "focus global search" shortcut was
- * discoverable only via the aria-label / source. Sighted users never
- * saw it, so the app felt slower than it is. A visible, platform-aware
- * <kbd> badge now sits inside the search pill: "⌘K" on macOS, "Ctrl K"
- * elsewhere. It is aria-hidden (the input's aria-label already conveys
- * the shortcut to screen readers — the badge must not double-announce).
- * The existing keybinding is unchanged.
+ * v1.56.4 — UX-N2 introduced a visible <kbd> badge in the search pill.
+ * v1.78.1 — the badge now reads **Enter** (the action that actually submits
+ * the search: a non-URL query → #/scan pre-filled; a URL → auto-pipeline),
+ * because browser-reserved Cmd/Ctrl+K is unreliable across platforms. The
+ * Cmd/Ctrl+K focus keybinding is kept as a bonus, but the user-facing hint is
+ * Enter. The badge stays aria-hidden (the input aria-label conveys it to AT).
  *
- * index.html / app.js / app.css are browser-only → asserted
- * statically (same approach as onboarding-key-banner.test.mjs's SPA
- * wiring checks). CI-isolated: no server, no parent project.
+ * index.html / app.js / app.css are browser-only → asserted statically.
+ * CI-isolated: no server, no parent project.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -29,17 +27,17 @@ test('index.html: a .kbd-shortcut badge lives in the search pill', () => {
   assert.match(bar[0], /id="global-search"/, 'sanity: it is the global-search pill');
   assert.match(
     bar[0],
-    /<kbd[^>]*class="kbd-shortcut"[^>]*><\/kbd>/,
-    'an (initially empty) <kbd class="kbd-shortcut"> must sit inside .searchbar',
+    /<kbd[^>]*class="kbd-shortcut"[^>]*>Enter<\/kbd>/,
+    'the <kbd class="kbd-shortcut"> badge must read "Enter" and sit inside .searchbar',
   );
 });
 
-test('index.html: badge is aria-hidden and carries both platform variants', () => {
+test('index.html: badge is aria-hidden and reads Enter on both platforms', () => {
   const kbd = HTML.match(/<kbd[^>]*class="kbd-shortcut"[^>]*>/)[0];
   assert.match(kbd, /aria-hidden="true"/,
-    'aria-label already announces the shortcut — the badge must not double-announce');
-  assert.match(kbd, /data-mac="[^"]*K[^"]*"/, 'data-mac variant required');
-  assert.match(kbd, /data-other="[^"]*K[^"]*"/, 'data-other (Ctrl) variant required');
+    'aria-label already announces the action — the badge must not double-announce');
+  assert.match(kbd, /data-mac="Enter"/, 'data-mac must read Enter (v1.78.1)');
+  assert.match(kbd, /data-other="Enter"/, 'data-other must read Enter (v1.78.1)');
 });
 
 test('app.js: platform-aware setter fills the badge from dataset', () => {

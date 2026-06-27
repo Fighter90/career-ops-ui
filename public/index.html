@@ -25,14 +25,13 @@
          content. Visually hidden via .skip-link until it receives focus. -->
     <a href="#content" class="skip-link" data-i18n="a11y.skipToContent">Skip to main content</a>
     <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
-      <!-- v1.27.0 PR-D: brand is a plain title, not a link.
-           The nav item below already links to the dashboard route;
-           wrapping the brand as a second link produced a duplicate
-           AT announcement and a useless tab stop. -->
-      <div class="logo">
+      <!-- v1.78.1 — the brand logo links to the dashboard (home). A native
+           hash <a> is CSP-safe and keyboard-accessible; aria-label gives it a
+           clear name so it doesn't just read "career-ops-ui". -->
+      <a class="logo" href="#/dashboard" aria-label="career-ops-ui — Dashboard">
         <img class="logo-mark" src="/apple-touch-icon.png" alt="" width="36" height="36" />
         <span class="logo-text">career-ops-ui</span>
-      </div>
+      </a>
 
       <nav class="nav">
         <a class="nav-item" href="#/dashboard" data-route="dashboard">
@@ -151,7 +150,7 @@
                aria-hidden: the input's aria-label already conveys it
                to AT, so the badge must not double-announce. Text is
                filled at boot by app.js from data-mac / data-other. -->
-          <kbd class="kbd-shortcut" aria-hidden="true" data-mac="⌘K" data-other="Ctrl K"></kbd>
+          <kbd class="kbd-shortcut" aria-hidden="true" data-mac="Enter" data-other="Enter">Enter</kbd>
         </div>
         <div class="topbar-actions">
           <!-- v1.58.34 — notifications bell. Opens the right-slide
