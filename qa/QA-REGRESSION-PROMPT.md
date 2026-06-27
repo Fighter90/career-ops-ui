@@ -54,7 +54,7 @@ node scripts/portals-health-check.mjs       # portals.yml reachability (informat
 | 7 | **Country filter (v1.78.0)** | `#/scan` results panel has a **Country** dropdown listing detected countries with **flag + count** (e.g. `🇩🇪 Germany (12)`). Keeps only rows in that country; composes with the Remote/Hybrid/Onsite filter; **Reset** clears it; pure-Remote / unresolved locations stay under **All countries**. `countries.js` detection is conservative (never guesses). |
 | 8 | **Rebrand (v1.78.0)** | Tab title + sidebar logo say **career-ops-ui**; the sidebar logo-mark is the new radar icon; `/favicon.ico`, `/favicon-16.png`, `/favicon-32.png`, `/apple-touch-icon.png` serve 200. |
 | 9 | **Scan auto-refresh (v1.78.1)** | The `#/scan` results table updates automatically *during* a scan and once more after the terminal `done` — no manual reload. `runScanAll` polls every 2.5s + does a 300ms post-flush refresh. |
-| 10 | **Global search → Scan (v1.78.1)** | Top-bar search badge reads **Enter**. Enter on a URL → auto-pipeline; Enter on any other text → `#/scan` with the search box pre-filled (was `#/tracker`). |
+| 10 | **Global search → Scan (v1.78.1)** | Top-bar search badge reads **Enter**. Enter on a URL → auto-pipeline; Enter on any other text → `#/scan` with the search box pre-filled (was `#/tracker`). **Same-route guard:** if already on `#/scan`, it force-re-renders so the prefill is consumed (never leaks to the next visit). |
 | 11 | **Logo → home (v1.78.1)** | Clicking the brand logo (now an `<a href="#/dashboard">` with a localized `data-i18n-aria-label="nav.logoHome"`) navigates to the dashboard. Global-search Enter on `#/scan` force-re-renders (same-route guard) so the prefill never leaks. |
 
 ---
@@ -132,6 +132,7 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar` (dict fil
 4. **da:** dashboard, scan (incl. country filter), help, language picker read natural Danish (æ/ø/å).
 5. **ar:** RTL mirrors the chrome; LTR locales unaffected after switching away.
 6. Parity gates green: `tests/i18n-locale-files.test.mjs` (snapshot + key parity), `tests/i18n-coverage.test.mjs`, `tools/i18n-audit.mjs`, `tests/lang-switcher-rtl.test.mjs` (13 locales).
+7. **No hard-coded UI English (v1.78.1 review fixes):** the brand logo announces a localized name via `data-i18n-aria-label="nav.logoHome"` (all 13); `health.title` is translated in EVERY locale incl. the two that previously leaked English — **pl** `Kondycja`, **da** `Systemtilstand`. (Latin locales are exempt from the no-latin-leaks gate, so this is a quality check, not a gate.)
 
 ---
 
