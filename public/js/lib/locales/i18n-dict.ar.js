@@ -9,6 +9,7 @@
  */
 window.__I18N_DICT_AR = {
   'nav.dashboard': "لوحة التحكم",
+  'nav.logoHome': "career-ops-ui — لوحة التحكم",
   'nav.scan': "البحث",
   'nav.pipeline': "خط الأنابيب",
   'nav.evaluate': "التقييم",

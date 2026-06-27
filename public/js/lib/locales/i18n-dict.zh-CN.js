@@ -10,6 +10,7 @@
  */
 window.__I18N_DICT_ZH_CN = {
   'nav.dashboard': "仪表盘",
+  'nav.logoHome': "career-ops-ui — 仪表盘",
   'nav.scan': "搜索",
   'nav.pipeline': "流水线",
   'nav.evaluate': "评估",

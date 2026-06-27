@@ -10,6 +10,7 @@
  */
 window.__I18N_DICT_JA = {
   'nav.dashboard': "ダッシュボード",
+  'nav.logoHome': "career-ops-ui — ダッシュボード",
   'nav.scan': "検索",
   'nav.pipeline': "パイプライン",
   'nav.evaluate': "評価",

@@ -14,6 +14,21 @@
     "da": "Oversigt",
     "ar": "لوحة التحكم"
   },
+  "nav.logoHome": {
+    "en": "career-ops-ui — Dashboard",
+    "es": "career-ops-ui — Panel",
+    "pt-BR": "career-ops-ui — Painel",
+    "ko": "career-ops-ui — 대시보드",
+    "ja": "career-ops-ui — ダッシュボード",
+    "ru": "career-ops-ui — Дашборд",
+    "zh-CN": "career-ops-ui — 仪表盘",
+    "zh-TW": "career-ops-ui — 儀表板",
+    "fr": "career-ops-ui — Tableau de bord",
+    "pl": "career-ops-ui — Panel",
+    "uk": "career-ops-ui — Дашборд",
+    "da": "career-ops-ui — Oversigt",
+    "ar": "career-ops-ui — لوحة التحكم"
+  },
   "nav.scan": {
     "en": "Scan",
     "es": "Búsqueda",
@@ -9069,9 +9084,9 @@
     "zh-CN": "健康",
     "zh-TW": "健康",
     "fr": "Santé",
-    "pl": "Health",
+    "pl": "Kondycja",
     "uk": "Здоров'я системи",
-    "da": "Health",
+    "da": "Systemtilstand",
     "ar": "الصحة"
   },
   "health.runDoctor": {

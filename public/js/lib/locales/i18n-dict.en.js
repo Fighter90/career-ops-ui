@@ -10,6 +10,7 @@
  */
 window.__I18N_DICT_EN = {
   'nav.dashboard': "Dashboard",
+  'nav.logoHome': "career-ops-ui — Dashboard",
   'nav.scan': "Scan",
   'nav.pipeline': "Pipeline",
   'nav.evaluate': "Evaluate",

@@ -9,6 +9,7 @@
  */
 window.__I18N_DICT_UK = {
   'nav.dashboard': "Дашборд",
+  'nav.logoHome': "career-ops-ui — Дашборд",
   'nav.scan': "Пошук",
   'nav.pipeline': "Воронка",
   'nav.evaluate': "Оцінити",

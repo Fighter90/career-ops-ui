@@ -10,6 +10,7 @@
  */
 window.__I18N_DICT_ES = {
   'nav.dashboard': "Panel",
+  'nav.logoHome': "career-ops-ui — Panel",
   'nav.scan': "Búsqueda",
   'nav.pipeline': "Vacantes",
   'nav.evaluate': "Evaluar",

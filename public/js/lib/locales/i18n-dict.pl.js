@@ -9,6 +9,7 @@
  */
 window.__I18N_DICT_PL = {
   'nav.dashboard': "Panel",
+  'nav.logoHome': "career-ops-ui — Panel",
   'nav.scan': "Skanowanie",
   'nav.pipeline': "Pipeline",
   'nav.evaluate': "Ocena",
@@ -612,7 +613,7 @@ window.__I18N_DICT_PL = {
   'eval.jdLbl': "Opis stanowiska",
   'eval.btnEval': "▶ Oceń",
   'eval.btnClear': "Wyczyść",
-  'health.title': "Health",
+  'health.title': "Kondycja",
   'health.runDoctor': "Uruchom doctor",
   'health.verify': "Zweryfikuj pipeline",
   'health.badgeOk': "OK",

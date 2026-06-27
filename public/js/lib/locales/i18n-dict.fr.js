@@ -10,6 +10,7 @@
  */
 window.__I18N_DICT_FR = {
   'nav.dashboard': "Tableau de bord", // Dashboard
+  'nav.logoHome': "career-ops-ui — Tableau de bord",
   'nav.scan': "Scanner", // Scan
   'nav.pipeline': "Pipeline", // Pipeline
   'nav.evaluate': "Évaluer", // Evaluate

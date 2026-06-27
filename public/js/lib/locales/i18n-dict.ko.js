@@ -10,6 +10,7 @@
  */
 window.__I18N_DICT_KO = {
   'nav.dashboard': "대시보드",
+  'nav.logoHome': "career-ops-ui — 대시보드",
   'nav.scan': "검색",
   'nav.pipeline': "파이프라인",
   'nav.evaluate': "평가",

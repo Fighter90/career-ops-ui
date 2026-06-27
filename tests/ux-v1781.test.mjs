@@ -19,6 +19,16 @@ const SCAN = read('public/js/views/scan.js');
 const APP = read('public/js/app.js');
 const HTML = read('public/index.html');
 
+test('scan: the poll handles + cancel helper are DECLARED at module scope (not just referenced)', () => {
+  // Guards against the AI-review "ReferenceError" concern: the symbols must be
+  // real declarations, and cleanup must be wired to hashchange (navigate-away)
+  // so the 2.5s interval can't fire against a detached view.
+  assert.match(SCAN, /let __activeScanPollHandle\s*=/, '__activeScanPollHandle must be declared');
+  assert.match(SCAN, /let __activeScanDoneTimeout\s*=/, '__activeScanDoneTimeout must be declared');
+  assert.match(SCAN, /function __cancelActiveScanPoll\(\)/, '__cancelActiveScanPoll must be declared');
+  assert.match(SCAN, /addEventListener\('hashchange', __cancelActiveScanPoll\)/, 'poll must be cancelled on route change');
+});
+
 test('scan: runScanAll sets up live polling + a delayed final refresh', () => {
   const fn = SCAN.match(/function runScanAll\(\)\s*\{[\s\S]*?\n {2}\}/);
   assert.ok(fn, 'runScanAll must exist');
@@ -36,6 +46,15 @@ test('global search: Enter on a non-URL query jumps to #/scan, pre-filled (not #
   assert.match(APP, /window\.__scanSearchPrefill\s*=\s*q/, 'app.js must hand the query to the scan view');
   assert.match(APP, /Router\.go\('\/scan'\)/, "app.js must navigate to '/scan' on a non-URL query");
   assert.doesNotMatch(APP, /Router\.go\('\/tracker'\)/, "the non-URL Enter path must no longer go to '/tracker'");
+});
+
+test('global search: same-route guard re-renders when already on #/scan (no stale prefill leak)', () => {
+  assert.match(APP, /Router\.current\(\)\.name === 'scan'\s*\)\s*Router\.render\(\)/,
+    'when already on #/scan, must force Router.render() so the prefill is consumed');
+});
+
+test('logo aria-label is localized (not hard-coded English)', () => {
+  assert.match(HTML, /<a class="logo"[^>]*data-i18n-aria-label="nav\.logoHome"/, 'logo must use data-i18n-aria-label');
 });
 
 test('scan view consumes the one-shot search prefill', () => {

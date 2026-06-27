@@ -409,10 +409,13 @@ I18n.onChange(() => {
         // v1.78.1 — a non-URL query jumps to #/scan and pre-fills its search
         // box, so the user lands on the live results filtered by their term
         // (was: jump to #/tracker). The handoff global is consumed once by the
-        // scan view on render.
+        // scan view on render. If already on #/scan, Router.go is a same-hash
+        // no-op, so force a re-render to consume the prefill (else it would
+        // leak to the next visit).
         window.__scanSearchPrefill = q;
         search.value = '';
-        Router.go('/scan');
+        if (Router.current && Router.current().name === 'scan') Router.render();
+        else Router.go('/scan');
       }
     }
   });

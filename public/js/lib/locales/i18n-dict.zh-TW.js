@@ -10,6 +10,7 @@
  */
 window.__I18N_DICT_ZH_TW = {
   'nav.dashboard': "儀表板",
+  'nav.logoHome': "career-ops-ui — 儀表板",
   'nav.scan': "搜尋",
   'nav.pipeline': "流水線",
   'nav.evaluate': "評估",

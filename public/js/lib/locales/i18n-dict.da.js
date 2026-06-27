@@ -9,6 +9,7 @@
  */
 window.__I18N_DICT_DA = {
   'nav.dashboard': "Oversigt",
+  'nav.logoHome': "career-ops-ui — Oversigt",
   'nav.scan': "Scanning",
   'nav.pipeline': "Pipeline",
   'nav.evaluate': "Vurdering",
@@ -612,7 +613,7 @@ window.__I18N_DICT_DA = {
   'eval.jdLbl': "Jobbeskrivelse",
   'eval.btnEval': "▶ Vurdér",
   'eval.btnClear': "Ryd",
-  'health.title': "Health",
+  'health.title': "Systemtilstand",
   'health.runDoctor': "Kør doctor",
   'health.verify': "Verificér pipeline",
   'health.badgeOk': "OK",
