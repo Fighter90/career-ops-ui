@@ -411,6 +411,8 @@ window.__I18N_DICT_ES = {
   'scan.filtersGroup': "Filtros de resultados",
   'scan.filtersHint': "Rellena las casillas y pulsa Aplicar. Salario desde/hasta deja solo empleos cuya remuneración se solapa con tu rango — los empleos sin salario indicado se ocultan al fijar un salario. Los importes se comparan como números simples (se ignora la divisa).",
   'scan.allSources': "todas las fuentes",
+  'scan.lblCountry': "País",
+  'scan.allCountries': "Todos los países",
   'scan.chip.stack': "Stack",
   'scan.chip.level': "Nivel",
   'scan.chip.clear': "limpiar",

@@ -411,6 +411,8 @@ window.__I18N_DICT_JA = {
   'scan.filtersGroup': "結果フィルタ",
   'scan.filtersHint': "任意の項目を入力して「適用」を押してください。給与 下限/上限 は、給与があなたのレンジと重なる求人だけを残します — 給与未掲載の求人は、給与を設定すると非表示になります。金額は単純な数値として比較されます（通貨は無視）。",
   'scan.allSources': "すべてのソース",
+  'scan.lblCountry': "国",
+  'scan.allCountries': "すべての国",
   'scan.chip.stack': "スタック",
   'scan.chip.level': "レベル",
   'scan.chip.clear': "クリア",

@@ -170,6 +170,21 @@ Router.register('scan', async () => {
       if (r && Array.isArray(r.sources) && r.sources.length) paintSourceOptions(r.sources);
     } catch {}
   })();
+  // v1.78.0 — geography filter. A country <select> (with flag emoji) populated
+  // from the countries detected in the current result set, so the user can keep
+  // only roles tied to a given country — alongside the Remote/Hybrid/Onsite
+  // work-type filter (search both country-bound AND remote work).
+  const filterCountry = c('select', { className: 'select' }, [
+    c('option', { value: '' }, t('scan.allCountries', 'All countries')),
+  ]);
+  function paintCountryOptions(rows) {
+    const prev = filterCountry.value;
+    while (filterCountry.children.length > 1) filterCountry.removeChild(filterCountry.lastChild);
+    for (const co of window.Countries.countriesIn(rows)) {
+      filterCountry.appendChild(c('option', { value: co.code }, `${co.flag} ${co.name} (${co.count})`));
+    }
+    if (prev && [...filterCountry.options].some((o) => o.value === prev)) filterCountry.value = prev;
+  }
   const filterScope = c('select', { className: 'select' }, [
     c('option', { value: 'all' }, t('scan.scopeAll')),
     c('option', { value: 'fresh' }, t('scan.scopeFresh')),
@@ -414,6 +429,9 @@ Router.register('scan', async () => {
   function renderResults() {
     resultsEl.innerHTML = '';
     const allRows = getRows();
+    // v1.78.0 — refresh the country dropdown from the (scope-filtered) corpus so
+    // it lists exactly the countries present, each with a count.
+    paintCountryOptions(allRows);
     const enWhen = lastResults.en?.when ? new Date(lastResults.en.when).toLocaleString('ru') : null;
     const ruWhen = lastResults.ru?.when ? new Date(lastResults.ru.when).toLocaleString('ru') : null;
 
@@ -463,6 +481,7 @@ Router.register('scan', async () => {
     const q = (filterText.value || '').toLowerCase().trim();
     const fr = filterRemote.value;
     const fs = filterSource.value;
+    const fc = filterCountry.value; // v1.78.0 — country code or '' (all)
     const salMin = parseInt(filterSalaryMin.value, 10);
     const salMax = parseInt(filterSalaryMax.value, 10);
     const rows = allRows.filter((r) => {
@@ -472,6 +491,7 @@ Router.register('scan', async () => {
       if (fr === 'onsite' && (r.isRemote || /remote|hybrid/i.test(r.workplaceType || ''))) return false;
       if (fr === 'reloc' && !r.relocates) return false;
       if (fs && r.source !== fs) return false;
+      if (fc && !window.Countries.rowInCountry(r, fc)) return false;
       if (!window.Skills.salaryInRange(r, salMin, salMax)) return false;
       if (!window.Skills.rowMatches(r, activeTech, activeLevel)) return false;
       if (activeDynamic.size) {
@@ -557,6 +577,7 @@ Router.register('scan', async () => {
     filterSalaryMin.value = '';
     filterSalaryMax.value = '';
     filterSource.value = '';
+    filterCountry.value = '';
     filterScope.value = 'all';
     applyFilters();
   }
@@ -564,7 +585,7 @@ Router.register('scan', async () => {
   ;[filterText, filterSalaryMin, filterSalaryMax].forEach((el) =>
     el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyFilters(); } }));
   // Selects feel broken if they need a second click, so they apply on change.
-  ;[filterRemote, filterSource, filterScope].forEach((el) =>
+  ;[filterRemote, filterSource, filterCountry, filterScope].forEach((el) =>
     el.addEventListener('change', applyFilters));
   const applyBtn = c('button', { className: 'btn btn-primary', type: 'button', onClick: applyFilters }, t('scan.applyFilters', 'Apply'));
   const resetBtn = c('button', { className: 'btn btn-ghost', type: 'button', onClick: resetFilters }, t('scan.resetFilters', 'Reset'));
@@ -655,6 +676,7 @@ Router.register('scan', async () => {
         field(t('scan.salaryFrom', 'Salary from'), filterSalaryMin),
         field(t('scan.salaryTo', 'Salary to'), filterSalaryMax),
         field(t('scan.lblSource', 'Source'), filterSource),
+        field(t('scan.lblCountry', 'Country'), filterCountry),
         field(t('scan.lblScope', 'Scope'), filterScope),
         c('div', { className: 'scan-filters__actions field' }, [
           c('label', { 'aria-hidden': 'true', style: { visibility: 'hidden' } }, '·'),

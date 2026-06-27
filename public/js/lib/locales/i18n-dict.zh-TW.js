@@ -411,6 +411,8 @@ window.__I18N_DICT_ZH_TW = {
   'scan.filtersGroup': "結果篩選",
   'scan.filtersHint': "填寫任意欄位後點擊「套用」。薪資下限/上限只保留薪酬與你的區間重疊的職缺——一旦設定薪資，未標註薪資的職缺將被隱藏。金額以普通數字比較（忽略幣別）。",
   'scan.allSources': "所有來源",
+  'scan.lblCountry': "國家",
+  'scan.allCountries': "所有國家",
   'scan.chip.stack': "技術棧",
   'scan.chip.level': "級別",
   'scan.chip.clear': "清除",

@@ -20,7 +20,7 @@ You are the SPA view reviewer for `career-ops-ui`. The SPA is vanilla JS, no fra
 
 ### 3. i18n
 - Every user-facing string belongs in the i18n bundle (`public/js/lib/i18n.js`). Use `data-i18n="key"` for static text or `I18n.t('key', 'fallback')` for dynamic strings. The English fallback is mandatory.
-- New keys: add them to every shipped locale (`en, es, pt-BR, ko-KR, ja, ru, zh-CN, zh-TW`). Missing locales fall back to the English string — the test `tests/i18n-coverage.test.mjs` enforces parity.
+- New keys: add them to every shipped locale (`en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar` — all 13). Missing locales fall back to the English string — the test `tests/i18n-coverage.test.mjs` enforces parity.
 
 ### 4. Router
 - New views call `Router.register('name', renderer)`. The renderer takes `params` and returns either a DOM Node or a string.

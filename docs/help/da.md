@@ -940,6 +940,7 @@ Filtre:
 - **Fritekst** — delstreng-match mod titel / virksomhed.
 - **Source**-dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (auto-udfyldt fra `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite**-dropdown.
+- **Country**-dropdown (v1.78.0) — et geografifilter, der udfyldes fra de lande, der er registreret på tværs af de aktuelle resultater, hvert vist med sit flag-emoji og et antal (f.eks. `🇩🇪 Germany (12)`). Vælg ét for kun at beholde roller knyttet til det land. Registreringen mapper et opslags fritekst-lokation (landenavne/aliasser + ~100 store jobmarkedsbyer) til et land; den er konservativ og gætter aldrig, så et opslag, hvis lokation ikke kan opløses — eller et rent "Remote"-opslag — forbliver under **All countries**. Kombinér det med arbejdstype-dropdownen for at finde både landebundne *og* fjernroller.
 - **Stack-chips** (PHP / Go / Backend / Senior / …) — auto-detekteret
   per række af `Skills.detectTech` og `Skills.detectLevel`. Multi-select
   intersektion — at vælge `PHP + Senior` viser rækker, der har BEGGE.

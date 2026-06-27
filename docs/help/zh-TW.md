@@ -787,6 +787,7 @@ HTTPS 請求。
 - **自由文字** — 對職稱 / 公司做子字串比對。
 - **Source** 下拉 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads(從 `GET /api/scan/sources` 自動填入)。
 - **Remote / Hybrid / Onsite** 下拉。
+- **Country** 下拉(v1.78.0)— 一個地理篩選，根據目前結果中偵測到的國家填入，每個國家都帶有其國旗 emoji 和計數(例如 `🇩🇪 Germany (12)`)。選擇一個即可只保留與該國家相關的職缺。偵測會將職缺的自由文字地點(國家名稱/別名 + 約 100 個主要就業市場城市)對應到某個國家；它很保守，絕不臆測，因此地點無法解析的職缺 —— 或純粹的 "Remote" 列表 —— 仍歸在 **All countries** 之下。將其與工作型態下拉框結合，即可同時找到與國家綁定的職缺*和*遠端職缺。
 - **Stack chips**(PHP / Go / Backend / Senior / …)— 由
   `Skills.detectTech` 與 `Skills.detectLevel` 自動偵測每一列。
   多選為交集 — 選 `PHP + Senior` 只會顯示同時具備兩者的列。

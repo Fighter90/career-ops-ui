@@ -410,6 +410,8 @@ window.__I18N_DICT_AR = {
   'scan.filtersGroup': "مرشّحات النتائج",
   'scan.filtersHint': "أملأ أي حقول واضغط تطبيق. من/إلى الراتب يبقي فقط الوظائف التي يتداخل راتبها مع نطاقك — الوظائف التي لا تُعلن عن راتب تُخفى بمجرد ضبط راتب. تُقارن المبالغ كأرقام عادية (العملة تُتجاهل).",
   'scan.allSources': "جميع المصادر",
+  'scan.lblCountry': "الدولة",
+  'scan.allCountries': "كل الدول",
   'scan.chip.stack': "التقنيات",
   'scan.chip.level': "المستوى",
   'scan.chip.clear': "مسح",

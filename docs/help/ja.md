@@ -857,6 +857,7 @@ $EDITOR portals.yml
   SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads
   （`GET /api/scan/sources` から自動構築）。
 - **Remote / Hybrid / Onsite** ドロップダウン。
+- **Country** ドロップダウン (v1.78.0) — 現在の結果から検出された国で構成される地理フィルターで、各項目は国旗絵文字と件数とともに表示されます(例:`🇩🇪 Germany (12)`)。1 つを選ぶと、その国に紐づく求人だけが残ります。検出は求人の自由記述の勤務地(国名/別名 + ~100 の主要求人市場都市)を国にマッピングします。保守的で決して推測しないため、勤務地を解決できない求人 — または純粋な「Remote」掲載 — は **All countries** の下に残ります。勤務形態ドロップダウンと組み合わせれば、国に紐づく求人*と*リモート求人の両方を見つけられます。
 - **スタックチップ** (PHP / Go / Backend / Senior / …) — 行ごとに
   `Skills.detectTech` と `Skills.detectLevel` で自動検出。複数選択は
   積集合 — `PHP + Senior` を選択すると両方を持つ行が表示されます。

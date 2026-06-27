@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.77.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.77.0)
+[![release](https://img.shields.io/badge/release-v1.78.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.0)
 
-> **🆕 Najnowsze wydanie — v1.77.0**
+> **🆕 Najnowsze wydanie — v1.78.0**
 >
-> **Duński (Dansk) dodany jako 13. język interfejsu.** Pełne duńskie tłumaczenie interfejsu, wbudowanego **przewodnika pomocy** (19 H2 / 75 H3), README oraz CHANGELOG. Duński dołącza do wyboru języka z flagami, a cała maszyneria i18n (asembler, audyt, bramki parytetu, snapshot) obejmuje teraz **13 locales**. Bazuje na v1.76.0 (parytet z nadrzędnym career-ops v1.13.0 — sześć źródeł ATS na tenant BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, `trust_filter`, nielimitowane wyniki skanowania, odporność filtra tytułów) i v1.70–74 (arabski RTL, 6 dostawców LLM).
+> **Filtr geograficzny na stronie skanowania — filtruj wyniki ofert według kraju, z flagami.** Nowe menu rozwijane **Country** w `#/scan` wymienia każdy kraj wykryty w Twoich zeskanowanych wynikach (emoji flagi + licznik), abyś mógł zachować tylko role powiązane z konkretnym krajem — obok filtra typu pracy Remote / Hybrid / Onsite, dzięki czemu możesz szukać zarówno pracy powiązanej z krajem, **jak i** zdalnej. Nowy helper `countries.js` mapuje swobodny tekst lokalizacji każdej oferty (nazwy krajów, aliasy i ~100 dużych miast rynku pracy) na kraj ISO + flagę; wykrywanie jest zachowawcze i nigdy nie zgaduje. Bazuje na v1.77.0 (duński, 13. lokalizacja) i v1.76.0 (parytet z nadrzędnym career-ops v1.13.0 — sześć źródeł ATS na tenant, `trust_filter`, nielimitowane wyniki skanowania).
 >
-> _13 locales · 6 dostawców LLM · 25 adapterów skanera · parytet z nadrzędnym career-ops v1.13.0._
+> _13 locales · 6 dostawców LLM · 25 adapterów skanera · filtr według kraju · parytet z nadrzędnym career-ops v1.13.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

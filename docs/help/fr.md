@@ -955,6 +955,7 @@ Filtres :
   SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads
   (auto-rempli depuis `GET /api/scan/sources`).
 - Menu déroulant **Remote / Hybrid / Onsite**.
+- Menu déroulant **Country** (v1.78.0) — un filtre géographique alimenté par les pays détectés dans les résultats actuels, chacun affiché avec son emoji de drapeau et un décompte (p. ex. `🇩🇪 Germany (12)`). Choisissez-en un pour ne garder que les postes liés à ce pays. La détection mappe la localisation en texte libre d'une offre (noms de pays/alias + ~100 grandes villes du marché de l'emploi) vers un pays ; elle est prudente et ne devine jamais, de sorte qu'une offre dont la localisation ne peut être résolue — ou une annonce purement « Remote » — reste sous **All countries**. Combinez-le avec le menu déroulant de type de travail pour trouver des postes liés à un pays *et* à distance.
 - **Puces de stack** (PHP / Go / Backend / Senior / …) — auto-détectées par
   ligne par `Skills.detectTech` et `Skills.detectLevel`. Intersection
   multi-sélection — choisir `PHP + Senior` montre les lignes qui ont les

@@ -411,6 +411,8 @@ window.__I18N_DICT_ZH_CN = {
   'scan.filtersGroup': "结果筛选",
   'scan.filtersHint': "填写任意输入框后点击「应用」。薪资下限/上限只保留薪酬与你的区间重叠的职位——一旦设置薪资，未标注薪资的职位将被隐藏。金额按普通数字比较（忽略币种）。",
   'scan.allSources': "所有来源",
+  'scan.lblCountry': "国家",
+  'scan.allCountries': "所有国家",
   'scan.chip.stack': "技术栈",
   'scan.chip.level': "级别",
   'scan.chip.clear': "清除",

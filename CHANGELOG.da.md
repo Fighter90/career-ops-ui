@@ -10,6 +10,10 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.78.0] — 2026-06-27
+
+**Geografifilter på Scan-siden — filtrér jobresultater efter land, med flag.** En ny **Land**-dropdown i `#/scan` viser hvert land, der er fundet i dine scanningsresultater (flag-emoji + antal), så du kan beholde kun roller knyttet til et bestemt land — sammen med Remote/Hybrid/Onsite-filteret, så du kan søge både landebundet og fjernarbejde. Drevet af en ny `countries.js`-hjælper, der mapper en annonces fritekst-lokation (landenavne, aliasser og ~100 store jobmarkedsbyer) til et ISO-land + flag; detektionen er konservativ og gætter aldrig.
+
 ## [1.77.0] — 2026-06-27
 
 **Dansk tilføjet som det 13. sprog i grænsefladen.** Fuld dansk oversættelse af brugerfladen, den indbyggede hjælpeguide (19 H2 / 75 H3), README og CHANGELOG. Dansk er nu med i sprogvælgeren med flag; i18n-maskineriet (assembler, audit, paritetsporte, snapshot) dækker nu 13 sprog.

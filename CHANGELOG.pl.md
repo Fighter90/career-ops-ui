@@ -9,6 +9,10 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.78.0] — 2026-06-27
+
+**Filtr geograficzny na stronie Scan — filtruj wyniki według kraju, z flagami.** Nowa lista **Kraj** w `#/scan` pokazuje każdy kraj wykryty w wynikach (emoji flagi + licznik), aby zostawić tylko role związane z danym krajem — obok filtra Remote/Hybrid/Onsite, więc można szukać pracy związanej z krajem i zdalnej. Oparte na nowym helperze `countries.js`, który mapuje lokalizację z wolnego tekstu (nazwy krajów, aliasy i ~100 głównych miast) na kraj ISO + flagę; detekcja jest konserwatywna i nigdy nie zgaduje.
+
 ## [1.77.0] — 2026-06-27
 
 **Dodano duński (Dansk) jako 13. język interfejsu.** Pełne tłumaczenie UI, wbudowanego przewodnika Help (19 H2 / 75 H3), README i CHANGELOG. Duński dołącza do przełącznika języków z flagami; mechanika i18n (asembler, audyt, bramki parytetu, snapshot) obejmuje teraz 13 lokalizacji.

@@ -6029,6 +6029,36 @@
     "da": "alle kilder",
     "ar": "جميع المصادر"
   },
+  "scan.lblCountry": {
+    "en": "Country",
+    "es": "País",
+    "pt-BR": "País",
+    "ko": "국가",
+    "ja": "国",
+    "ru": "Страна",
+    "zh-CN": "国家",
+    "zh-TW": "國家",
+    "fr": "Pays",
+    "pl": "Kraj",
+    "uk": "Країна",
+    "da": "Land",
+    "ar": "الدولة"
+  },
+  "scan.allCountries": {
+    "en": "All countries",
+    "es": "Todos los países",
+    "pt-BR": "Todos os países",
+    "ko": "모든 국가",
+    "ja": "すべての国",
+    "ru": "Все страны",
+    "zh-CN": "所有国家",
+    "zh-TW": "所有國家",
+    "fr": "Tous les pays",
+    "pl": "Wszystkie kraje",
+    "uk": "Усі країни",
+    "da": "Alle lande",
+    "ar": "كل الدول"
+  },
   "scan.chip.stack": {
     "en": "Stack",
     "es": "Stack",

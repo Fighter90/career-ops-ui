@@ -886,6 +886,7 @@ Filtry:
 - **Tekst wolny** — dopasowanie podciągu względem tytułu / firmy.
 - Menu rozwijane **Source** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (auto-wypełniane z `GET /api/scan/sources`).
 - Menu rozwijane **Remote / Hybrid / Onsite**.
+- Menu rozwijane **Country** (v1.78.0) — filtr geograficzny zasilany krajami wykrytymi w bieżących wynikach, każdy pokazany z emoji flagi i licznikiem (np. `🇩🇪 Germany (12)`). Wybierz jeden, aby zachować tylko role powiązane z tym krajem. Wykrywanie mapuje swobodny tekst lokalizacji oferty (nazwy krajów/aliasy + ~100 dużych miast rynku pracy) na kraj; jest zachowawcze i nigdy nie zgaduje, więc oferta, której lokalizacji nie da się rozwiązać — lub czysto „Remote” — pozostaje pod **All countries**. Połącz go z menu rozwijanym typu pracy, aby znaleźć role powiązane z krajem *oraz* zdalne.
 - **Chipy stack** (PHP / Go / Backend / Senior / …) — auto-wykrywane
   na wiersz przez `Skills.detectTech` i `Skills.detectLevel`. Wielokrotny wybór
   z przecięciem — wybranie `PHP + Senior` pokazuje wiersze mające OBA.

@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.77.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.77.0)
+[![release](https://img.shields.io/badge/release-v1.78.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.0)
 
-> **🆕 Dernière version — v1.77.0**
+> **🆕 Dernière version — v1.78.0**
 >
-> **Le danois (Dansk) ajouté comme 13ᵉ langue d'interface.** Traduction complète en danois de l'interface, du **guide d'aide** intégré (19 H2 / 75 H3), du README et du CHANGELOG. Le danois rejoint le sélecteur de langue à drapeaux, et toute la machinerie i18n (assembleur, audit, contrôles de parité, snapshot) couvre désormais **13 locales**. S'appuie sur la v1.76.0 (parité avec le career-ops parent v1.13.0 — six sources ATS par tenant BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, `trust_filter`, résultats de scan sans plafond, robustesse du filtre de titres) et la v1.70–74 (arabe RTL, 6 fournisseurs LLM).
+> **Filtre géographique sur la page de scan — filtrez les résultats d'emploi par pays, avec drapeaux.** Un nouveau menu déroulant **Country** dans `#/scan` liste chaque pays détecté dans vos résultats scannés (emoji de drapeau + décompte), pour ne garder que les postes liés à un pays précis — aux côtés du filtre de type de travail Remote / Hybrid / Onsite, afin de chercher aussi bien le travail lié à un pays **que** le travail à distance. Un nouveau helper `countries.js` mappe la localisation en texte libre de chaque offre (noms de pays, alias et ~100 grandes villes du marché de l'emploi) vers un pays ISO + drapeau ; la détection est prudente et ne devine jamais. S'appuie sur la v1.77.0 (danois, 13ᵉ langue) et la v1.76.0 (parité avec le career-ops parent v1.13.0 — six sources ATS par tenant, `trust_filter`, résultats de scan sans plafond).
 >
-> _13 locales · 6 fournisseurs LLM · 25 adaptateurs de scanner · parité avec le career-ops parent v1.13.0._
+> _13 locales · 6 fournisseurs LLM · 25 adaptateurs de scanner · filtre par pays · parité avec le career-ops parent v1.13.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

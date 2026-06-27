@@ -833,6 +833,7 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 - **자유 텍스트** — 제목/회사에 대한 부분 문자열 일치.
 - **Source** 드롭다운 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads(`GET /api/scan/sources`에서 자동 생성).
 - **Remote / Hybrid / Onsite** 드롭다운.
+- **Country** 드롭다운 (v1.78.0) — 현재 결과에서 감지된 국가들로 채워지는 지리 필터로, 각 항목은 국기 이모지와 개수와 함께 표시됩니다(예: `🇩🇪 Germany (12)`). 하나를 선택하면 그 국가에 묶인 역할만 남습니다. 감지는 공고의 자유 텍스트 위치(국가명/별칭 + ~100개 주요 채용 시장 도시)를 국가로 매핑합니다. 보수적이며 결코 추측하지 않으므로, 위치를 확인할 수 없는 공고 — 또는 순수 "Remote" 공고 — 는 **All countries** 아래에 남습니다. 근무 형태 드롭다운과 결합하면 국가에 묶인 역할*과* 원격 역할을 모두 찾을 수 있습니다.
 - **스택 칩** (PHP / Go / Backend / Senior / …) — 각 행에 대해
   `Skills.detectTech`와 `Skills.detectLevel`이 자동 감지합니다.
   다중 선택은 교집합 — `PHP + Senior` 선택 시 두 가지 모두 가진

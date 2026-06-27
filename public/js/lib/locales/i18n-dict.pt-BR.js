@@ -411,6 +411,8 @@ window.__I18N_DICT_PT_BR = {
   'scan.filtersGroup': "Filtros de resultados",
   'scan.filtersHint': "Preencha os campos e clique em Aplicar. Salário de/até mantém só vagas cuja remuneração se sobrepõe à sua faixa — vagas sem salário informado são ocultadas ao definir um salário. Os valores são comparados como números simples (a moeda é ignorada).",
   'scan.allSources': "todas fontes",
+  'scan.lblCountry': "País",
+  'scan.allCountries': "Todos os países",
   'scan.chip.stack': "Stack",
   'scan.chip.level': "Nível",
   'scan.chip.clear': "limpar",

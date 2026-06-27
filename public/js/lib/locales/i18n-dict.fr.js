@@ -411,6 +411,8 @@ window.__I18N_DICT_FR = {
   'scan.filtersGroup': "Filtres de résultats",
   'scan.filtersHint': "Remplissez des champs puis cliquez sur Appliquer. Salaire de/à ne garde que les offres dont la rémunération chevauche votre fourchette — les offres sans salaire indiqué sont masquées dès qu'un salaire est défini. Les montants sont comparés comme de simples nombres (la devise est ignorée).",
   'scan.allSources': "toutes les sources", // all sources
+  'scan.lblCountry': "Pays",
+  'scan.allCountries': "Tous les pays",
   'scan.chip.stack': "Technos", // Stack
   'scan.chip.level': "Niveau", // Level
   'scan.chip.clear': "effacer", // clear

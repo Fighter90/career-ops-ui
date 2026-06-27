@@ -848,6 +848,7 @@ $EDITOR portals.yml
 - **Free text** — подстрочное совпадение по title / company.
 - **Source** dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (автозаполняется из `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite** dropdown.
+- **Country** dropdown (v1.78.0) — гео-фильтр, заполняемый из стран, обнаруженных в текущих результатах, каждая показана со своим эмодзи флага и счётчиком (напр. `🇩🇪 Germany (12)`). Выберите одну, чтобы оставить только вакансии, привязанные к этой стране. Детектирование сопоставляет свободный текст локации вакансии (названия стран/алиасы + ~100 крупных городов рынка труда) со страной; оно консервативно и никогда не угадывает, поэтому вакансия, чью локацию не удалось определить — или чисто «Remote»-объявление — остаётся в **All countries**. Сочетайте его с выпадающим списком типа работы, чтобы находить вакансии, привязанные к стране, *и* удалённые.
 - **Stack chips** (PHP / Go / Backend / Senior / …) —
   авто-определяются по строке через `Skills.detectTech` и
   `Skills.detectLevel`. Multi-select работает как пересечение:

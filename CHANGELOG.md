@@ -8,6 +8,10 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.78.0] — 2026-06-27
+
+**Geography filter on the Scan page — filter job results by country, with flags.** A new **Country** dropdown in `#/scan` lists every country detected across your scanned results (flag emoji + count), so you can keep only roles tied to a specific country — alongside the Remote/Hybrid/Onsite work-type filter, so you can search both country-bound and remote work. Backed by a new `countries.js` helper that maps a posting’s free-text location (country names, aliases, and ~100 major job-market cities) to an ISO country + flag; detection is conservative and never guesses (unmapped/remote locations stay under “All countries”).
+
 ## [1.77.0] — 2026-06-27
 
 **Danish (Dansk) added as the 13th interface language.** Full Danish UI translation, in-app Help guide (19 H2 / 75 H3), README, and CHANGELOG. Danish joins the flag language picker; the i18n machinery (assembler, audit, parity gates, snapshot) now spans 13 locales.

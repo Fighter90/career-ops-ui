@@ -410,6 +410,8 @@ window.__I18N_DICT_DA = {
   'scan.filtersGroup': "Resultatfiltre",
   'scan.filtersHint': "Udfyld vilkårlige felter og tryk Anvend. Løn fra/til beholder kun job, hvis løn overlapper dit interval — job uden angivet løn skjules, når du sætter en løn. Beløb sammenlignes som rene tal (valuta ignoreres).",
   'scan.allSources': "alle kilder",
+  'scan.lblCountry': "Land",
+  'scan.allCountries': "Alle lande",
   'scan.chip.stack': "Stack",
   'scan.chip.level': "Niveau",
   'scan.chip.clear': "ryd",

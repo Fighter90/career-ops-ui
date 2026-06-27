@@ -410,6 +410,8 @@ window.__I18N_DICT_PL = {
   'scan.filtersGroup': "Filtry wyników",
   'scan.filtersHint': "Wypełnij dowolne pola i naciśnij Zastosuj. Wynagrodzenie od/do zachowuje tylko oferty, których zakres pokrywa się z Twoim — oferty bez podanego wynagrodzenia są ukryte po ustawieniu widełek. Kwoty są porównywane jako zwykłe liczby (waluta jest ignorowana).",
   'scan.allSources': "wszystkie źródła",
+  'scan.lblCountry': "Kraj",
+  'scan.allCountries': "Wszystkie kraje",
   'scan.chip.stack': "Stack",
   'scan.chip.level': "Poziom",
   'scan.chip.clear': "wyczyść",

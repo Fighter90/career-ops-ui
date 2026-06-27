@@ -12,13 +12,13 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.77.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.77.0)
+[![release](https://img.shields.io/badge/release-v1.78.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.0)
 
-> **🆕 أحدث إصدار — v1.77.0**
+> **🆕 أحدث إصدار — v1.78.0**
 >
-> **أُضيفت الدنماركية (Dansk) لغةً للواجهة رقم 13.** ترجمة دنماركية كاملة للواجهة و**دليل المساعدة** المدمج (19 H2 / 75 H3) وملف README وملف CHANGELOG. تنضم الدنماركية إلى منتقي اللغات بالأعلام، وأصبحت منظومة i18n بأكملها (المُجمِّع، التدقيق، بوابات التكافؤ، اللقطة) تغطي الآن **13 locales**. يُبنى على v1.76.0 (التكافؤ مع المشروع الأصلي career-ops v1.13.0 — ستة مصادر ATS لكل مستأجر BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs، و`trust_filter`، ونتائج مسح بلا حد أقصى، ومتانة مرشّح العناوين) وv1.70–74 (العربية RTL، 6 مزوّدات LLM).
+> **مرشّح جغرافي في صفحة المسح — رشّح نتائج الوظائف حسب الدولة، مع الأعلام.** قائمة منسدلة جديدة **Country** في `#/scan` تسرد كل دولة مكتشَفة عبر نتائجك الممسوحة (إيموجي العلَم + عدّاد)، لتُبقي فقط الأدوار المرتبطة بدولة محددة — إلى جانب مرشّح نمط العمل Remote / Hybrid / Onsite، بحيث يمكنك البحث عن العمل المرتبط بدولة **وكذلك** العمل عن بُعد. مساعد جديد `countries.js` يربط الموقع النصّي الحر لكل إعلان (أسماء الدول، الأسماء البديلة، و~100 من كبرى مدن سوق العمل) بدولة ISO + علَم؛ الاكتشاف متحفّظ ولا يخمّن أبداً. يُبنى على v1.77.0 (الدنماركية، اللغة 13) وv1.76.0 (التكافؤ مع المشروع الأصلي career-ops v1.13.0 — ستة مصادر ATS لكل مستأجر، و`trust_filter`، ونتائج مسح بلا حد أقصى).
 >
-> _13 locales · 6 مزوّدات LLM · 25 محوّل ماسح · التكافؤ مع المشروع الأصلي career-ops v1.13.0._
+> _13 locales · 6 مزوّدات LLM · 25 محوّل ماسح · مرشّح حسب الدولة · التكافؤ مع المشروع الأصلي career-ops v1.13.0._
 
 ![career-ops-ui](./images/dashboard-ar.png)
 

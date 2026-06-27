@@ -940,6 +940,7 @@ Filters:
 - **Free text** — substring match against title / company.
 - **Source** dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (auto-populated from `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite** dropdown.
+- **Country** dropdown (v1.78.0) — a geography filter populated from the countries detected across the current results, each shown with its flag emoji and a count (e.g. `🇩🇪 Germany (12)`). Pick one to keep only roles tied to that country. Detection maps a posting's free-text location (country names/aliases + ~100 major job-market cities) to a country; it's conservative and never guesses, so a posting whose location can't be resolved — or a pure "Remote" listing — stays under **All countries**. Combine it with the work-type dropdown to find country-bound *and* remote roles.
 - **Stack chips** (PHP / Go / Backend / Senior / …) — auto-detected
   per row by `Skills.detectTech` and `Skills.detectLevel`. Multi-select
   intersection — selecting `PHP + Senior` shows rows that have BOTH.

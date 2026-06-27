@@ -411,6 +411,8 @@ window.__I18N_DICT_KO = {
   'scan.filtersGroup': "결과 필터",
   'scan.filtersHint': "원하는 칸을 채우고 적용을 누르세요. 급여 최소/최대는 급여가 범위와 겹치는 공고만 남깁니다 — 급여가 없는 공고는 급여를 설정하면 숨겨집니다. 금액은 단순 숫자로 비교됩니다(통화 무시).",
   'scan.allSources': "모든 소스",
+  'scan.lblCountry': "국가",
+  'scan.allCountries': "모든 국가",
   'scan.chip.stack': "스택",
   'scan.chip.level': "레벨",
   'scan.chip.clear': "지우기",

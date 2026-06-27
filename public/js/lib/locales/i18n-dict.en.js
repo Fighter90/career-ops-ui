@@ -411,6 +411,8 @@ window.__I18N_DICT_EN = {
   'scan.filtersGroup': "Result filters",
   'scan.filtersHint': "Fill any boxes and press Apply. Salary from/to keeps only jobs whose pay overlaps your range — jobs with no listed salary are hidden once you set a salary. Amounts are compared as plain numbers (currency is ignored).",
   'scan.allSources': "all sources",
+  'scan.lblCountry': "Country",
+  'scan.allCountries': "All countries",
   'scan.chip.stack': "Stack",
   'scan.chip.level': "Level",
   'scan.chip.clear': "clear",

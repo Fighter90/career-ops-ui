@@ -781,6 +781,7 @@ $EDITOR portals.yml
 - **自由文本** — 对 title / company 做子串匹配。
 - **Source** 下拉 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads(从 `GET /api/scan/sources` 自动填充)。
 - **Remote / Hybrid / Onsite** 下拉。
+- **Country** 下拉(v1.78.0)— 一个地理筛选，根据当前结果中检测到的国家填充，每个国家都带有其国旗 emoji 和计数(例如 `🇩🇪 Germany (12)`)。选择一个即可只保留与该国家相关的职位。检测会将职位的自由文本地点(国家名称/别名 + 约 100 个主要就业市场城市)映射到某个国家；它很保守，绝不臆测，因此地点无法解析的职位 —— 或纯粹的 "Remote" 列表 —— 仍归在 **All countries** 下。将其与工作方式下拉框结合，即可同时找到与国家绑定的职位*和*远程职位。
 - **技术栈标签**(PHP / Go / Backend / Senior / …)— 每行由
   `Skills.detectTech` 与 `Skills.detectLevel` 自动检测。多选交集 —
   选中 `PHP + Senior` 显示同时具有这两个标签的行。

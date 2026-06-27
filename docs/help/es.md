@@ -855,6 +855,7 @@ Filtros:
 - **Texto libre** — match de substring contra título / empresa.
 - Dropdown **Source** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (auto-rellenado desde `GET /api/scan/sources`).
 - Dropdown **Remote / Hybrid / Onsite**.
+- Dropdown **Country** (v1.78.0) — un filtro de geografía poblado a partir de los países detectados en los resultados actuales, cada uno mostrado con su emoji de bandera y un recuento (p. ej. `🇩🇪 Germany (12)`). Elige uno para quedarte solo con los puestos ligados a ese país. La detección mapea la ubicación en texto libre de una oferta (nombres de países/alias + ~100 grandes ciudades del mercado laboral) a un país; es conservadora y nunca adivina, así que una oferta cuya ubicación no pueda resolverse — o un anuncio puramente "Remote" — se queda bajo **All countries**. Combínalo con el desplegable de tipo de trabajo para encontrar puestos ligados a un país *y* remotos.
 - **Chips de stack** (PHP / Go / Backend / Senior / …) —
   auto-detectados por fila por `Skills.detectTech` y
   `Skills.detectLevel`. Intersección multi-select — seleccionar `PHP

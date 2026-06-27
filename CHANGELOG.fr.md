@@ -11,6 +11,10 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.78.0] — 2026-06-27
+
+**Filtre géographique sur la page Scan — filtrez les résultats par pays, avec drapeaux.** Un nouveau menu **Pays** dans `#/scan` liste chaque pays détecté dans vos résultats (emoji drapeau + compteur), pour ne garder que les postes liés à un pays — aux côtés du filtre Remote/Hybrid/Onsite, afin de chercher du travail lié à un pays comme en télétravail. Reposant sur un nouvel utilitaire `countries.js` qui mappe la localisation en texte libre (noms de pays, alias et ~100 grandes villes) vers un pays ISO + drapeau ; la détection est prudente et ne devine jamais.
+
 ## [1.77.0] — 2026-06-27
 
 **Danois (Dansk) ajouté comme 13e langue de l’interface.** Traduction complète de l’UI, du guide d’aide intégré (19 H2 / 75 H3), du README et du CHANGELOG. Le danois rejoint le sélecteur de langues à drapeaux ; la mécanique i18n (assembleur, audit, contrôles de parité, snapshot) couvre désormais 13 locales.
