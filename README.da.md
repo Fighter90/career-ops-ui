@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1222%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1238%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
+[![release](https://img.shields.io/badge/release-v1.78.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.2)
 
-> **🆕 Seneste udgivelse — v1.78.1**
+> **🆕 Seneste udgivelse — v1.78.2**
 >
-> **UX-rettelser til scan.** Resultattabellen på `#/scan` **opdateres nu automatisk** live under en scanning og endnu en gang, når den er færdig — ingen manuel genindlæsning. Den globale søgning i topbjælken viser et **Enter**-hint, og ved en forespørgsel der ikke er en URL, springer den til `#/scan` med søgefeltet **forudfyldt** (var `#/tracker`); brand-**logoet linker til dashboardet** (hjem). Bygger videre på v1.78.0 (**landefilter i scan** — filtrér resultater efter land med flag, ved siden af Remote / Hybrid / Onsite), v1.77.0 (dansk, 13. lokalitet) og v1.76.0 (paritet med forælderens career-ops v1.13.0 — seks ATS-kilder pr. tenant, `trust_filter`, scanresultater uden loft).
+> **i18n + UX-hærdning.** Brand-logoets tilgængelige navn er nu lokaliseret på alle **13 sprog** (`nav.logoHome`); at trykke **Enter** i den globale søgning, mens du allerede er på `#/scan`, fremtvinger en gen-rendering, så det forudfyldte søgeord aldrig går tabt; og `health.title` er nu oversat til polsk (`Kondycja`) og dansk (`Systemtilstand`). Bygger videre på v1.78.1 (scanresultater med **auto-opdatering** + **Enter→Scan** i den globale søgning + klikbart logo→hjem), v1.78.0 (**landefilter** i scan, med flag), v1.77.0 (dansk, 13. lokalitet) og v1.76.0 (paritet med forælderens career-ops v1.13.0 — seks ATS-kilder pr. tenant, `trust_filter`, scanresultater uden loft).
 >
 > _13 lokaliteter · 6 LLM-providere · 25 scanneradaptere · landefilter · paritet med forælderens career-ops v1.13.0._
 

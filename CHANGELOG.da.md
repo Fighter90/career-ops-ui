@@ -10,6 +10,10 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.78.2] — 2026-06-27
+
+**i18n- og UX-hærdning (opfølgning på v1.78.1).** Logoets tilgængelige navn er nu lokaliseret på alle 13 sprog (`nav.logoHome`). **Enter** i den globale søgning, mens du allerede er på `#/scan`, fremtvinger en gen-rendering, så den udfyldte søgeterm aldrig mistes (same-route guard). `health.title` er nu oversat til polsk (`Kondycja`) og dansk (`Systemtilstand`) — tidligere på engelsk. Tests 1235 → 1238.
+
 ## [1.78.1] — 2026-06-27
 
 **Scan-UX-rettelser.** Resultattabellen på `#/scan` opdateres nu automatisk under en scanning og igen, når den er færdig — ingen manuel genindlæsning. Den globale søgning i topbjælken viser et **Enter**-hint og hopper ved en ikke-URL-forespørgsel til `#/scan` med søgefeltet udfyldt (før `#/tracker`). Logoet linker nu til dashboardet (hjem).

@@ -2,17 +2,19 @@
 
 Tracks regressions, fix-prompts, and live evidence across releases.
 
-## LATEST single-pass FULL driver — v1.69.2
+## LATEST — whole-project regression driver — v1.78.2
 
-> **[`QA-REGRESSION-PROMPT-v1.69.2-FULL.md`](./QA-REGRESSION-PROMPT-v1.69.2-FULL.md)**
-> is the current whole-project, single-pass regression driver (as of
-> `package.json` **1.69.2**, 2026-06-12). It folds the v1.59→v1.69 surface the
-> perennial ledger predates — including **P-14 plug-in scanner auto-discovery**
-> (`registry.mjs` now dynamically discovers `sources/*.mjs` via each adapter's
-> `export const meta` block; lock: `tests/sources-registry-discovery.test.mjs`).
-> Baselines: **≥1086** `node --test` · **≥70** Playwright · **≥20** smoke E2E ·
-> **≥23** comprehensive E2E · help parity **19 H2 / 75 H3** across 9 locales.
-> Prior FULL drivers (`…-v1.68.1-FULL.md`, `…-v1.61.0-FULL.md`) are diff-only.
+> **[`QA-REGRESSION-PROMPT.md`](./QA-REGRESSION-PROMPT.md)** is the canonical,
+> standalone whole-project / all-13-languages regression hand-off (as of
+> `package.json` **1.78.2**). Walk it top-to-bottom to sign off a build.
+> Companions: the exhaustive per-button × per-page × per-language UI driver
+> [`../key/E2E-REGRESSION-EVERY-BUTTON-EVERY-LANGUAGE-v1.78.0.md`](../key/E2E-REGRESSION-EVERY-BUTTON-EVERY-LANGUAGE-v1.78.0.md),
+> and the parent-parity CI gate driver
+> [`QA-REGRESSION-PROMPT-v1.76.0-FULL.md`](./QA-REGRESSION-PROMPT-v1.76.0-FULL.md).
+> Baselines: **≥1238** `node --test` · **≥70** Playwright · **≥20** smoke E2E ·
+> **≥23** comprehensive E2E · help parity **19 H2 / 75 H3** across **13** locales.
+> Superseded version-pinned FULL drivers (v1.61.0 → v1.75.2) + older fix-prompts
+> are archived in [`archive/superseded-prompts/`](./archive/superseded-prompts/).
 
 ## CURRENT — four perennial, version-agnostic prompts
 

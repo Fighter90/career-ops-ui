@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-1222%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1238%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
+[![release](https://img.shields.io/badge/release-v1.78.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.2)
 
-> **🆕 최신 릴리스 — v1.78.1**
+> **🆕 최신 릴리스 — v1.78.2**
 >
-> **스캔 UX 개선.** 이제 `#/scan` 결과 테이블이 스캔 중 실시간으로 **자동 새로고침**되며, 스캔이 끝난 직후 한 번 더 갱신됩니다 — 수동 새로고침이 필요 없습니다. 상단 바의 전역 검색에는 **Enter** 힌트가 표시되며, URL이 아닌 검색어를 입력하면 검색창이 **미리 채워진** 채로 `#/scan`으로 이동합니다(이전에는 `#/tracker`였습니다). 브랜드 **로고는 대시보드**(홈)로 연결됩니다. v1.78.0(스캔 **국가 필터** — 국기와 함께 국가별로 결과를 필터링, Remote / Hybrid / Onsite와 나란히), v1.77.0(덴마크어, 13번째 로케일), v1.76.0(상위 career-ops v1.13.0 패리티 — 테넌트별 ATS 소스 6종, `trust_filter`, 무제한 스캔 결과)을 기반으로 합니다.
+> **i18n + UX 강화.** 브랜드 로고의 접근성 이름이 이제 **13개 언어** 모두에서 현지화됩니다(`nav.logoHome`). 이미 `#/scan`에 있는 상태에서 전역 검색에 **Enter**를 누르면 강제로 다시 렌더링되어 미리 채워진 검색어를 절대 잃지 않습니다. 그리고 `health.title`이 이제 폴란드어(`Kondycja`)와 덴마크어(`Systemtilstand`)로 번역되었습니다. v1.78.1(스캔 결과 **자동 새로고침** + 전역 검색 **Enter→스캔** + 클릭 가능한 로고→홈), v1.78.0(스캔 **국가 필터**, 국기 포함), v1.77.0(덴마크어, 13번째 로케일), v1.76.0(상위 career-ops v1.13.0 패리티 — 테넌트별 ATS 소스 6종, `trust_filter`, 무제한 스캔 결과)을 기반으로 합니다.
 >
 > _13 locales · 6개 LLM 프로바이더 · 25개 스캐너 어댑터 · 국가 필터 · 상위 career-ops v1.13.0 패리티._
 

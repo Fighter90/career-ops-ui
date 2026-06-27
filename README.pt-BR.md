@@ -7,16 +7,16 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1222%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-1238%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
+[![release](https://img.shields.io/badge/release-v1.78.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.2)
 
-> **🆕 Última versão — v1.78.1**
+> **🆕 Última versão — v1.78.2**
 >
-> **Melhorias de UX na Varredura.** A tabela de resultados de `#/scan` agora se **atualiza** ao vivo durante uma varredura e mais uma vez ao terminar — sem recarregar manualmente. A busca global da barra superior mostra uma dica **Enter** e, diante de uma consulta que não é URL, salta para `#/scan` com a caixa de busca **pré-preenchida** (antes era `#/tracker`); o **logo** da marca **leva ao painel** (início). Baseia-se na v1.78.0 (filtro por **país** na Varredura — filtre os resultados por país, com bandeiras, ao lado de Remote/Hybrid/Onsite), na v1.77.0 (dinamarquês, 13.º idioma) e na v1.76.0 (paridade com o career-ops pai v1.13.0 — seis fontes ATS por tenant, `trust_filter`, resultados de varredura sem limite).
+> **Reforço de i18n + UX.** O nome acessível do logo da marca agora está localizado nos **13 idiomas** (`nav.logoHome`); pressionar **Enter** na busca global estando já em `#/scan` força um re-render para que o termo pré-preenchido nunca se perca; e `health.title` agora está traduzido em polonês (`Kondycja`) e dinamarquês (`Systemtilstand`). Baseia-se na v1.78.1 (resultados da Varredura com **atualização automática** + **Enter→Varredura** na busca global + logo clicável→início), na v1.78.0 (filtro por **país** na Varredura, com bandeiras), na v1.77.0 (dinamarquês, 13.º idioma) e na v1.76.0 (paridade com o career-ops pai v1.13.0 — seis fontes ATS por tenant, `trust_filter`, resultados de varredura sem limite).
 >
 > _13 locales · 6 provedores LLM · 25 adaptadores de scanner · filtro por país · paridade com o career-ops pai v1.13.0._
 

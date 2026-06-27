@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1222%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1238%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
+[![release](https://img.shields.io/badge/release-v1.78.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.2)
 
-> **🆕 Última versión — v1.78.1**
+> **🆕 Última versión — v1.78.2**
 >
-> **Mejoras de UX en Escaneo.** La tabla de resultados de `#/scan` ahora se **autoactualiza** en vivo durante un escaneo y una vez más al terminar — sin recargar a mano. La búsqueda global de la barra superior muestra una pista **Enter** y, ante una consulta que no es una URL, salta a `#/scan` con el cuadro de búsqueda **pre-rellenado** (antes era `#/tracker`); el **logo** de marca **enlaza al panel** (inicio). Se basa en la v1.78.0 (filtro por **país** en Escaneo — filtra los resultados por país, con banderas, junto a Remote/Hybrid/Onsite), la v1.77.0 (danés, 13.º idioma) y la v1.76.0 (paridad con el career-ops padre v1.13.0 — seis fuentes ATS por tenant, `trust_filter`, resultados de escaneo sin límite).
+> **Refuerzo de i18n + UX.** El nombre accesible del logo de marca ahora está localizado en los **13 idiomas** (`nav.logoHome`); pulsar **Enter** en la búsqueda global estando ya en `#/scan` fuerza un re-render para que el término pre-rellenado nunca se pierda; y `health.title` ya está traducido en polaco (`Kondycja`) y danés (`Systemtilstand`). Se basa en la v1.78.1 (resultados de Escaneo con **autoactualización** + **Enter→Escaneo** en la búsqueda global + logo clicable→inicio), la v1.78.0 (filtro por **país** en Escaneo, con banderas), la v1.77.0 (danés, 13.º idioma) y la v1.76.0 (paridad con el career-ops padre v1.13.0 — seis fuentes ATS por tenant, `trust_filter`, resultados de escaneo sin límite).
 >
 > _13 locales · 6 proveedores LLM · 25 adaptadores de escáner · filtro por país · paridad con el career-ops padre v1.13.0._
 

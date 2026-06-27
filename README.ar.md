@@ -7,16 +7,16 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-1222%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-1238%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
+[![release](https://img.shields.io/badge/release-v1.78.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.2)
 
-> **🆕 أحدث إصدار — v1.78.1**
+> **🆕 أحدث إصدار — v1.78.2**
 >
-> **تحسينات تجربة المستخدم في المسح.** جدول النتائج في `#/scan` الآن **يتحدّث تلقائياً** بشكل مباشر أثناء المسح ومرة أخرى بعد انتهائه — دون إعادة تحميل يدوية. يُظهر البحث العام في الشريط العلوي تلميح **Enter**، وعند إدخال استعلام ليس عنواناً URL ينتقل إلى `#/scan` مع تعبئة حقل البحث **مسبقاً** (كان `#/tracker`)؛ و**شعار العلامة التجارية يقود إلى لوحة المعلومات** (الصفحة الرئيسية). يُبنى على v1.78.0 (**مرشّح الدولة في المسح** — ترشيح النتائج حسب الدولة مع الأعلام، إلى جانب Remote / Hybrid / Onsite)، وv1.77.0 (الدنماركية، اللغة 13)، وv1.76.0 (التكافؤ مع المشروع الأصلي career-ops v1.13.0 — ستة مصادر ATS لكل مستأجر، و`trust_filter`، ونتائج مسح بلا حد أقصى).
+> **تعزيز i18n + تجربة المستخدم.** أصبح الاسم المتاح لشعار العلامة التجارية مُترجَماً الآن في كل اللغات الـ**13** (`nav.logoHome`)؛ والضغط على **Enter** في البحث العام أثناء وجودك بالفعل في `#/scan` يفرض إعادة عرض كي لا يُفقد المصطلح المُعبّأ مسبقاً أبداً؛ كما أصبح `health.title` مُترجَماً الآن بالبولندية (`Kondycja`) والدنماركية (`Systemtilstand`). يُبنى على v1.78.1 (**التحديث التلقائي** لنتائج المسح + **Enter→المسح** في البحث العام + شعار قابل للنقر→الصفحة الرئيسية)، وv1.78.0 (**مرشّح الدولة في المسح**، مع الأعلام)، وv1.77.0 (الدنماركية، اللغة 13)، وv1.76.0 (التكافؤ مع المشروع الأصلي career-ops v1.13.0 — ستة مصادر ATS لكل مستأجر، و`trust_filter`، ونتائج مسح بلا حد أقصى).
 >
 > _13 locales · 6 مزوّدات LLM · 25 محوّل ماسح · مرشّح حسب الدولة · التكافؤ مع المشروع الأصلي career-ops v1.13.0._
 

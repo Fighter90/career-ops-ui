@@ -7,16 +7,16 @@
 
 _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1222%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1238%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
+[![release](https://img.shields.io/badge/release-v1.78.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.2)
 
-> **🆕 Latest release — v1.78.1**
+> **🆕 Latest release — v1.78.2**
 >
-> **Scan UX fixes.** The `#/scan` results table now **auto-refreshes** live during a scan and once more after it finishes — no manual reload. The top-bar global search shows an **Enter** hint and, on a non-URL query, jumps to `#/scan` with the search box **pre-filled** (was `#/tracker`); the brand **logo links to the dashboard** (home). Builds on v1.78.0 (Scan **country filter** — filter results by country with flags, alongside Remote/Hybrid/Onsite), v1.77.0 (Danish, 13th locale), and v1.76.0 (parent career-ops v1.13.0 parity — six per-tenant ATS sources, `trust_filter`, uncapped scan results).
+> **i18n + UX hardening.** The brand logo's accessible name is now localized in all **13 languages** (`nav.logoHome`); global-search **Enter** while already on `#/scan` force-re-renders so the pre-filled term is never lost; and `health.title` is now translated in Polish (`Kondycja`) and Danish (`Systemtilstand`). Builds on v1.78.1 (Scan results **auto-refresh** + global-search **Enter→Scan** + clickable logo→home), v1.78.0 (Scan **country filter** with flags), v1.77.0 (Danish, 13th locale), and v1.76.0 (parent career-ops v1.13.0 parity — six per-tenant ATS sources, `trust_filter`, uncapped scan results).
 >
 > _13 locales · 6 LLM providers · 25 scanner adapters · country filter · parent career-ops v1.13.0 parity._
 

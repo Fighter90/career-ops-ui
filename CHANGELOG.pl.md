@@ -9,6 +9,10 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.78.2] — 2026-06-27
+
+**Wzmocnienie i18n i UX (poprawki po v1.78.1).** Dostępna nazwa logo jest teraz zlokalizowana we wszystkich 13 językach (`nav.logoHome`). **Enter** w wyszukiwarce globalnej, gdy jesteś już na `#/scan`, wymusza ponowne renderowanie, aby nie utracić wpisanego terminu (guard tej samej trasy). `health.title` jest teraz przetłumaczony na polski (`Kondycja`) i duński (`Systemtilstand`) — wcześniej po angielsku. Testy 1235 → 1238.
+
 ## [1.78.1] — 2026-06-27
 
 **Poprawki UX na Scan.** Tabela wyników `#/scan` odświeża się teraz automatycznie podczas skanowania i jeszcze raz po jego zakończeniu — bez przeładowania. Globalne wyszukiwanie w pasku górnym pokazuje podpowiedź **Enter** i przy zapytaniu nie-URL przechodzi do `#/scan` z wypełnionym polem (wcześniej `#/tracker`). Logo prowadzi teraz do pulpitu (strona główna).

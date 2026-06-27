@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-1222%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1238%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.1)
+[![release](https://img.shields.io/badge/release-v1.78.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.2)
 
-> **🆕 最新版本 — v1.78.1**
+> **🆕 最新版本 — v1.78.2**
 >
-> **掃描體驗修復。** 現在 `#/scan` 結果表會在掃描期間即時**自動重新整理**，並在掃描結束後再重新整理一次 —— 無須手動重新載入。頂列全域搜尋會顯示 **Enter** 提示；輸入非 URL 的查詢時，會跳到 `#/scan` 並把搜尋框**預先填好**（此前是跳到 `#/tracker`）；品牌**標誌連結到儀表板**（首頁）。在 v1.78.0（掃描**國家篩選** — 按國家篩選結果並帶國旗，與 Remote / Hybrid / Onsite 並列）、v1.77.0（丹麥語，第 13 個語言）和 v1.76.0（與父層 career-ops v1.13.0 對齊 — 六個按租戶的 ATS 來源、`trust_filter`、無上限的掃描結果）的基礎上構建。
+> **i18n + 體驗強化。** 品牌標誌的無障礙名稱現已在全部 **13 種語言**中在地化（`nav.logoHome`）；在已處於 `#/scan` 時於全域搜尋按 **Enter** 會強制重新算繪，從而絕不遺失預填的搜尋詞；並且 `health.title` 現已在波蘭語（`Kondycja`）和丹麥語（`Systemtilstand`）中翻譯。在 v1.78.1（掃描結果**自動重新整理** + 全域搜尋 **Enter→掃描** + 可點擊標誌→首頁）、v1.78.0（掃描**國家篩選**，帶國旗）、v1.77.0（丹麥語，第 13 個語言）和 v1.76.0（與父層 career-ops v1.13.0 對齊 — 六個按租戶的 ATS 來源、`trust_filter`、無上限的掃描結果）的基礎上構建。
 >
 > _13 locales · 6 個 LLM 提供者 · 25 個掃描器轉接器 · 國家篩選 · 與父層 career-ops v1.13.0 對齊。_
 
