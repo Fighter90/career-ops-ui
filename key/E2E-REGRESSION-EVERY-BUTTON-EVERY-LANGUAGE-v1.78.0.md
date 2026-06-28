@@ -1,7 +1,7 @@
 # MASTER E2E REGRESSION — career-ops-ui · EVERY BUTTON · EVERY PAGE · EVERY LANGUAGE (v1.78.0)
 
-> **Version under test:** `package.json` **1.78.1** (parent career-ops **1.13.0** parity).
-> **Covers the untested release train:** v1.76.0 (6 new ATS sources + `trust_filter` + uncapped scan + title-filter robustness) → v1.77.0 (**Danish**, 13th locale) → v1.78.0 (**Scan country filter**) → v1.78.1 (**Scan auto-refresh + global-search Enter→Scan + clickable logo**).
+> **Version under test:** `package.json` **1.79.0** (parent career-ops **1.14.0** parity).
+> **Covers the untested release train:** v1.76.0 (6 new ATS sources + `trust_filter` + uncapped scan + title-filter robustness) → v1.77.0 (**Danish**, 13th locale) → v1.78.0 (**Scan country filter**) → v1.78.1 (**Scan auto-refresh + global-search Enter→Scan + clickable logo**) → v1.79.0 (**We Work Remotely source + title-filter trim**).
 > **Goal:** drive the *running app* end-to-end and click **every interactive control on every page in every one of the 13 languages**, proving each does what it claims with zero console errors and no layout breakage (incl. Arabic RTL).
 > **Role:** strict release-gate QA engineer. This is the exhaustive click-through driver. The unit/CI gate lives in `qa/QA-REGRESSION-PROMPT-v1.76.0-FULL.md`; this file is the **human/agent UI sweep** the gate can't cover.
 > **Output:** save your run to `key/runs/<YYYY-MM-DD>-E2E-v1.78.0.md` — one row per (page × language × control) with PASS/FAIL + evidence (screenshot path, console-log excerpt, HTTP trace). Any FAIL = one fix-ship (one-fix-per-release; HIGH → MEDIUM → LOW).
@@ -32,6 +32,8 @@
 | 8 | **Scan auto-refresh (v1.78.1)** | After clicking 🌐 Scan, the results table updates **automatically** while the scan runs and once more after it finishes — without a manual reload or page switch. (`runScanAll` polls every 2.5s + a 300ms post-flush refresh; stops cleanly on Stop/error.) |
 | 9 | **Global search → Scan (v1.78.1)** | The top-bar search badge reads **Enter**. Typing a non-URL term + **Enter** lands on `/#/scan` with the search box pre-filled and results filtered by it (was `/#/tracker`); a URL + Enter still opens the auto-pipeline. |
 | 10 | **Logo → home (v1.78.1)** | Clicking the brand **logo** navigates to `/#/dashboard` (keyboard-focusable native link). |
+| 11 | **WeWorkRemotely source (v1.79.0)** | `/#/scan` **Source** dropdown lists **We Work Remotely** (26 adapters total). A `provider: weworkremotely` entry scans its board-wide RSS feed; titles split on `Company: Role`, all rows remote. |
+| 12 | **Title-filter trim (v1.79.0)** | A `title_filter` keyword that is only whitespace is dropped (trimmed before the length check) — it must NOT filter out every row. |
 
 ---
 
@@ -54,7 +56,7 @@ For every page: navigate, snapshot, assert the localized `<h1>`, click every but
 - **Scan (`#/scan`)** — the heaviest surface this cycle:
   - **🌐 Scan** button streams SSE (start/log/progress/done); **Stop** aborts immediately mid-paginate; progress bar determinate; error banner + Retry.
   - **Company** select + **Dry-run** checkbox.
-  - Results **filters panel**: **Search**, **Work type** (Remote/Hybrid/Onsite/Reloc), **Salary from/to**, **Source** (25), **Country** (🆕 flags + counts), **Scope** (all/fresh); **Apply** + **Reset** (Reset clears Country too).
+  - Results **filters panel**: **Search**, **Work type** (Remote/Hybrid/Onsite/Reloc), **Salary from/to**, **Source** (26), **Country** (🆕 flags + counts), **Scope** (all/fresh); **Apply** + **Reset** (Reset clears Country too).
   - **Country filter checks:** options carry flags; counts match; pick `🇩🇪 Germany` → only German-location rows remain; combine with Work-type=Remote; Reset restores; "All countries" shows everything; a pure-Remote row is reachable only under "All countries".
   - **Advanced filters** disclosure: stack/level/dynamic chips (multi-select intersection; clear).
   - **trust** ⚠ badge (when `trust_filter` on); **⬆ boosted** badge (when `seniority_boost` set); pager prev/next pages through ALL matches.

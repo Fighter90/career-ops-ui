@@ -7,18 +7,18 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1238%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1244%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.2)
+[![release](https://img.shields.io/badge/release-v1.79.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.79.0)
 
-> **🆕 Dernière version — v1.78.2**
+> **🆕 Dernière version — v1.79.0**
 >
-> **Renforcement i18n + UX.** Le nom accessible du logo de marque est désormais localisé dans les **13 langues** (`nav.logoHome`) ; appuyer sur **Enter** dans la recherche globale alors qu'on est déjà sur `#/scan` force un re-render afin que le terme pré-rempli ne soit jamais perdu ; et `health.title` est maintenant traduit en polonais (`Kondycja`) et en danois (`Systemtilstand`). S'appuie sur la v1.78.1 (résultats du scan en **auto-rafraîchissement** + **Enter→Scan** dans la recherche globale + logo cliquable→accueil), la v1.78.0 (filtre par **pays** dans le scan, avec drapeaux), la v1.77.0 (danois, 13ᵉ langue) et la v1.76.0 (parité avec le career-ops parent v1.13.0 — six sources ATS par tenant, `trust_filter`, résultats de scan sans plafond).
+> **Source de scan WeWorkRemotely (parité avec le career-ops parent v1.14.0).** Le flux RSS d'emplois à distance couvrant tout le tableau de [We Work Remotely](https://weworkremotely.com) est désormais une source de scan de première classe — ajoutez une entrée `provider: weworkremotely` et elle apparaît dans le menu déroulant **Source** de `#/scan` (**26 adaptateurs** au total). Épinglé à l'hôte + `redirect:'error'` (à l'abri de la SSRF) ; les titres sont découpés sur `Company: Role`. De plus : les mots-clés de `title_filter` sont rognés avant la vérification de longueur (parent #1261). S'appuie sur la v1.78.x (filtre par **pays** dans le scan, **auto-rafraîchissement** des résultats, **Enter→Scan** dans la recherche globale, logo cliquable), la v1.77.0 (danois, 13ᵉ langue) et la v1.76.0 (six sources ATS par tenant, `trust_filter`, scan sans plafond).
 >
-> _13 locales · 6 fournisseurs LLM · 25 adaptateurs de scanner · filtre par pays · parité avec le career-ops parent v1.13.0._
+> _13 locales · 6 fournisseurs LLM · 26 adaptateurs de scanner · filtre par pays · parité avec le career-ops parent v1.14.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

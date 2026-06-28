@@ -384,7 +384,7 @@ selected by an explicit `provider:` field on a `tracked_companies` entry. All
 seven run the same `title_filter` / `location_filter` / `content_filter` + dedup
 + pipeline-append flow as every other source.
 
-### Board-wide remote feeds — RemoteOK / Remotive / Working Nomads
+### Board-wide remote feeds — RemoteOK / Remotive / Working Nomads / We Work Remotely
 
 Whole-board remote-jobs feeds. No per-entry config — just the `provider:` slug.
 The board returns its full feed and your `title_filter` (and optional
@@ -392,9 +392,10 @@ The board returns its full feed and your `title_filter` (and optional
 plenty:
 
 ```yaml
-  - { name: RemoteOK,       provider: remoteok,      enabled: true }
-  - { name: Remotive,       provider: remotive,      enabled: true }
-  - { name: Working Nomads, provider: workingnomads, enabled: true }
+  - { name: RemoteOK,          provider: remoteok,       enabled: true }
+  - { name: Remotive,          provider: remotive,       enabled: true }
+  - { name: Working Nomads,    provider: workingnomads,  enabled: true }
+  - { name: We Work Remotely,  provider: weworkremotely, enabled: true }   # v1.79.0 — board-wide RSS feed
 ```
 
 ### IBM careers (config-driven — global, language-agnostic)

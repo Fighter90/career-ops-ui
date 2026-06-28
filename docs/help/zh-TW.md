@@ -788,7 +788,7 @@ HTTPS 請求。
 篩選器:
 
 - **自由文字** — 對職稱 / 公司做子字串比對。
-- **Source** 下拉 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads(從 `GET /api/scan/sources` 自動填入)。
+- **Source** 下拉 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads(從 `GET /api/scan/sources` 自動填入)。
 - **Remote / Hybrid / Onsite** 下拉。
 - **Country** 下拉(v1.78.0)— 一個地理篩選，根據目前結果中偵測到的國家填入，每個國家都帶有其國旗 emoji 和計數(例如 `🇩🇪 Germany (12)`)。選擇一個即可只保留與該國家相關的職缺。偵測會將職缺的自由文字地點(國家名稱/別名 + 約 100 個主要就業市場城市)對應到某個國家；它很保守，絕不臆測，因此地點無法解析的職缺 —— 或純粹的 "Remote" 列表 —— 仍歸在 **All countries** 之下。將其與工作型態下拉框結合，即可同時找到與國家綁定的職缺*和*遠端職缺。
 - **Stack chips**(PHP / Go / Backend / Senior / …)— 由
@@ -1434,7 +1434,7 @@ scan 執行、設定變更、mode 執行。
 
 ## 17. 如何新增職位入口網站來源
 
-career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。截至 v1.76.0,`server/lib/sources/` 註冊表內建 **25** 個 adapter —— 20 個英文(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday 等 ATS、RSS,以及 v1.75.0 聚合器 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK、以及 BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs)和 5 個俄文板塊。v1.75.0 新增的 7 個聚合器並非按公司的 ATS,而是全板塊或設定驅動的來源:三個遠端訂閱源以 `provider: remoteok|remotive|workingnomads` 選擇,四個區域來源(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)讀取每條目的 `<provider>:` 設定區塊 —— YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
+career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。截至 v1.79.0,`server/lib/sources/` 註冊表內建 **26** 個 adapter —— 21 個英文(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday 等 ATS、RSS,以及 v1.75.0 聚合器 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK、以及 BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs,以及 We Work Remotely)和 5 個俄文板塊。v1.75.0 新增的 7 個聚合器並非按公司的 ATS,而是全板塊或設定驅動的來源:三個遠端訂閱源以 `provider: remoteok|remotive|workingnomads` 選擇,四個區域來源(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)讀取每條目的 `<provider>:` 設定區塊 —— YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 直接放入即自動探索。** 新增第 12 個來源現在只需**純粹的檔案放入**。registry
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

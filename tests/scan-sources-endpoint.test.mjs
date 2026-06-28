@@ -74,8 +74,8 @@ test('GET /api/scan/sources includes the EN ATS + aggregator sources', async () 
     [
       'arbeitsagentur', 'ashby', 'bamboohr', 'breezy', 'comeet', 'glints',
       'greenhouse', 'ibm', 'jobstreet', 'lever', 'personio', 'recruitee',
-      'remoteok', 'remotive', 'rss', 'smartrecruiters', 'solidjobs', 'workable',
-      'workday', 'workingnomads',
+      'remoteok', 'remotive', 'rss', 'smartrecruiters', 'solidjobs', 'weworkremotely',
+      'workable', 'workday', 'workingnomads',
     ],
   );
 });

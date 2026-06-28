@@ -53,9 +53,13 @@ export function compileKeyword(kw) {
  * @returns {Array<(lower: string) => boolean>}
  */
 export function compileKeywordList(arr) {
+  // v1.79.0 — trim BEFORE the length check (parent career-ops v1.14.0 #1261):
+  // a whitespace-only keyword ("  ") otherwise survives length>0 and compiles
+  // into a substring matcher that matches almost everything.
   return (Array.isArray(arr) ? arr : [])
-    .filter((k) => typeof k === 'string' && k.length > 0)
-    .map((k) => k.toLowerCase())
+    .filter((k) => typeof k === 'string')
+    .map((k) => k.trim().toLowerCase())
+    .filter((k) => k.length > 0)
     .map(compileKeyword);
 }
 

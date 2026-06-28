@@ -10,6 +10,10 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.79.0] — 2026-06-28
+
+**WeWorkRemotely-scanningskilde (paritet med career-ops v1.14.0).** Det boards-dækkende RSS-feed fra [We Work Remotely](https://weworkremotely.com) er nu en førsteklasses scanningskilde — tilføj en `provider: weworkremotely`-post, og den vises i **Source**-dropdownen på `#/scan` (**26 adaptere** i alt). Host-låst til weworkremotely.com med `redirect:'error'` (SSRF-sikker); titler opdeles på `Company: Role`. Desuden: `title_filter`-nøgleord **trimmes nu før** længdetjekket (parent #1261).
+
 ## [1.78.2] — 2026-06-27
 
 **i18n- og UX-hærdning (opfølgning på v1.78.1).** Logoets tilgængelige navn er nu lokaliseret på alle 13 sprog (`nav.logoHome`). **Enter** i den globale søgning, mens du allerede er på `#/scan`, fremtvinger en gen-rendering, så den udfyldte søgeterm aldrig mistes (same-route guard). `health.title` er nu oversat til polsk (`Kondycja`) og dansk (`Systemtilstand`) — tidligere på engelsk. Tests 1235 → 1238.

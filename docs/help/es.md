@@ -857,7 +857,7 @@ Debajo del log, la tabla de resultados renderiza filas de
 Filtros:
 
 - **Texto libre** — match de substring contra título / empresa.
-- Dropdown **Source** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (auto-rellenado desde `GET /api/scan/sources`).
+- Dropdown **Source** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (auto-rellenado desde `GET /api/scan/sources`).
 - Dropdown **Remote / Hybrid / Onsite**.
 - Dropdown **Country** (v1.78.0) — un filtro de geografía poblado a partir de los países detectados en los resultados actuales, cada uno mostrado con su emoji de bandera y un recuento (p. ej. `🇩🇪 Germany (12)`). Elige uno para quedarte solo con los puestos ligados a ese país. La detección mapea la ubicación en texto libre de una oferta (nombres de países/alias + ~100 grandes ciudades del mercado laboral) a un país; es conservadora y nunca adivina, así que una oferta cuya ubicación no pueda resolverse — o un anuncio puramente "Remote" — se queda bajo **All countries**. Combínalo con el desplegable de tipo de trabajo para encontrar puestos ligados a un país *y* remotos.
 - **Chips de stack** (PHP / Go / Backend / Senior / …) —
@@ -1577,11 +1577,11 @@ Health, copia el output, y busca el issue en el tracker en
 
 career-ops-ui trata cada bolsa de empleo como un **adapter** — un único archivo bajo
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe
-cómo obtener y normalizar los resultados de una bolsa concreta. A partir de v1.76.0 el
-registro `server/lib/sources/` incluye **25** adapters — 20 en inglés (los ATS de
+cómo obtener y normalizar los resultados de una bolsa concreta. A partir de v1.79.0 el
+registro `server/lib/sources/` incluye **26** adapters — 21 en inglés (los ATS de
 Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday, RSS y los agregadores
 de v1.75.0 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints /
-Jobstreet · SEEK, y BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs) y 5 portales rusos. Los siete agregadores añadidos en v1.75.0 son
+Jobstreet · SEEK, y BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, y We Work Remotely) y 5 portales rusos. Los siete agregadores añadidos en v1.75.0 son
 fuentes de todo el board o config-driven en lugar de ATS por empresa: los tres feeds
 remotos se seleccionan con `provider: remoteok|remotive|workingnomads`, y los cuatro
 regionales (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) leen un bloque de

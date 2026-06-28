@@ -8,6 +8,10 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.79.0] — 2026-06-28
+
+**WeWorkRemotely scan source (parent career-ops v1.14.0 parity).** The board-wide [We Work Remotely](https://weworkremotely.com) remote-jobs RSS feed is now a first-class scan source — add a `provider: weworkremotely` entry and it appears in the `#/scan` **Source** dropdown (**26 adapters** total). Host-pinned to weworkremotely.com with `redirect:'error'` (SSRF-safe); titles split on `Company: Role`. Also: `title_filter` keywords are now **trimmed before** the length check, so a whitespace-only keyword can't compile into a match-everything filter (parent #1261).
+
 ## [1.78.2] — 2026-06-27
 
 **i18n + UX hardening (follow-ups to v1.78.1).** The brand logo's accessible name is now localized in all 13 languages (`nav.logoHome`). Global-search **Enter** while already on `#/scan` force-re-renders so the pre-filled term is never lost (same-route guard). `health.title` is now translated in Polish (`Kondycja`) and Danish (`Systemtilstand`) — previously left in English. Tests 1235 → 1238.

@@ -7,18 +7,18 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-1238%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-1244%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.2)
+[![release](https://img.shields.io/badge/release-v1.79.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.79.0)
 
-> **🆕 Останній реліз — v1.78.2**
+> **🆕 Останній реліз — v1.79.0**
 >
-> **Посилення i18n + UX.** Доступне ім'я логотипа бренда тепер локалізовано всіма **13 мовами** (`nav.logoHome`); натискання **Enter** у глобальному пошуку, коли ви вже на `#/scan`, примусово перемальовує сторінку, тож попередньо заповнений запит ніколи не втрачається; а `health.title` тепер перекладено польською (`Kondycja`) та данською (`Systemtilstand`). Базується на v1.78.1 (**автооновлення** результатів сканування + **Enter→Сканування** у глобальному пошуку + клікабельний логотип→головна), v1.78.0 (**гео-фільтр сканування**, з прапорцями), v1.77.0 (данська, 13-та локаль) і v1.76.0 (паритет із батьківським career-ops v1.13.0 — шість джерел ATS на тенант, `trust_filter`, необмежені результати сканування).
+> **Джерело сканування WeWorkRemotely (паритет із батьківським career-ops v1.14.0).** Загальнодошкова RSS-стрічка віддалених вакансій [We Work Remotely](https://weworkremotely.com) тепер є повноцінним джерелом сканування — додайте запис `provider: weworkremotely`, і воно з'явиться у випадаючому списку **Source** на `#/scan` (загалом **26 адаптерів**). Прив'язане до хоста + `redirect:'error'` (захищене від SSRF); заголовки розбиваються за `Company: Role`. Також: ключові слова `title_filter` тепер обрізаються перед перевіркою довжини (батьківський #1261). Базується на v1.78.x (**гео-фільтр сканування**, **автооновлення** результатів, **Enter→Сканування** у глобальному пошуку, клікабельний логотип), v1.77.0 (данська, 13-та локаль) і v1.76.0 (шість джерел ATS на тенант, `trust_filter`, необмежене сканування).
 >
-> _13 locales · 6 LLM-провайдерів · 25 адаптерів сканера · фільтр за країною · паритет із батьківським career-ops v1.13.0._
+> _13 locales · 6 LLM-провайдерів · 26 адаптерів сканера · фільтр за країною · паритет із батьківським career-ops v1.14.0._
 
 ![career-ops-ui](./images/dashboard-uk.png)
 

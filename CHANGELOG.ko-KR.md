@@ -9,6 +9,10 @@
 ---
 
 
+## [1.79.0] — 2026-06-28
+
+**WeWorkRemotely 스캔 소스 (상위 career-ops v1.14.0 패리티).** [We Work Remotely](https://weworkremotely.com)의 보드 전체 원격 채용 RSS 피드가 이제 1급 스캔 소스입니다 — `provider: weworkremotely` 항목을 추가하면 `#/scan`의 **Source** 드롭다운에 표시됩니다(총 **26개 어댑터**). 호스트는 weworkremotely.com으로 고정되고 `redirect:'error'`(SSRF 방지); 제목은 `Company: Role`로 분리됩니다. 또한 `title_filter` 키워드는 길이 검사 **전에 트림**됩니다(parent #1261).
+
 ## [1.78.2] — 2026-06-27
 
 **i18n·UX 보강 (v1.78.1 후속 수정).** 로고의 접근성 이름이 13개 언어 전체로 현지화되었습니다(`nav.logoHome`). 이미 `#/scan`에 있는 상태에서의 전역 검색 **Enter**는 강제 리렌더링하여 미리 채운 검색어를 잃지 않습니다(동일 경로 가드). `health.title`가 폴란드어(`Kondycja`)와 덴마크어(`Systemtilstand`)로 번역되었습니다(이전엔 영어). 테스트 1235 → 1238.

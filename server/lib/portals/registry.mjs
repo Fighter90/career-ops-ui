@@ -47,6 +47,8 @@ import { comeetAdapter } from './adapters/comeet.mjs';
 import { personioAdapter } from './adapters/personio.mjs';
 import { recruiteeAdapter } from './adapters/recruitee.mjs';
 import { solidjobsAdapter } from './adapters/solidjobs.mjs';
+// v1.79.0 — parent career-ops v1.14.0 parity: WeWorkRemotely board-wide RSS feed.
+import { weworkremotelyAdapter } from './adapters/weworkremotely.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -72,6 +74,9 @@ export const ALL_ADAPTERS = [
   personioAdapter,
   recruiteeAdapter,
   solidjobsAdapter,
+  // v1.79.0 — parent v1.14.0 parity. Board-wide remote RSS aggregator,
+  // provider-selected (like RemoteOK / Remotive / Working Nomads).
+  weworkremotelyAdapter,
 ];
 
 /**

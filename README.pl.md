@@ -7,18 +7,18 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-1238%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-1244%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.78.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.78.2)
+[![release](https://img.shields.io/badge/release-v1.79.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.79.0)
 
-> **🆕 Najnowsze wydanie — v1.78.2**
+> **🆕 Najnowsze wydanie — v1.79.0**
 >
-> **Wzmocnienie i18n + UX.** Dostępna nazwa logo marki jest teraz zlokalizowana we wszystkich **13 językach** (`nav.logoHome`); naciśnięcie **Enter** w globalnym wyszukiwaniu, gdy jesteś już na `#/scan`, wymusza ponowne renderowanie, dzięki czemu wstępnie wypełniony termin nigdy nie zostaje utracony; a `health.title` jest teraz przetłumaczony na polski (`Kondycja`) i duński (`Systemtilstand`). Bazuje na v1.78.1 (**automatyczne odświeżanie** wyników skanowania + **Enter→Skanowanie** w globalnym wyszukiwaniu + klikalne logo→strona główna), v1.78.0 (**filtr kraju w skanowaniu**, z flagami), v1.77.0 (duński, 13. lokalizacja) i v1.76.0 (parytet z nadrzędnym career-ops v1.13.0 — sześć źródeł ATS na tenant, `trust_filter`, nielimitowane wyniki skanowania).
+> **Źródło skanowania WeWorkRemotely (parytet z nadrzędnym career-ops v1.14.0).** Ogólnoportalowy kanał RSS zdalnych ofert [We Work Remotely](https://weworkremotely.com) jest teraz pełnoprawnym źródłem skanowania — dodaj wpis `provider: weworkremotely`, a pojawi się w menu rozwijanym **Source** na `#/scan` (łącznie **26 adapterów**). Przypięty do hosta + `redirect:'error'` (bezpieczny wobec SSRF); tytuły dzielone według `Company: Role`. Ponadto: słowa kluczowe `title_filter` są teraz przycinane przed sprawdzeniem długości (nadrzędny #1261). Bazuje na v1.78.x (**filtr kraju** w skanowaniu, **automatyczne odświeżanie** wyników, **Enter→Skanowanie** w globalnym wyszukiwaniu, klikalne logo), v1.77.0 (duński, 13. lokalizacja) i v1.76.0 (sześć źródeł ATS na tenant, `trust_filter`, nielimitowane skanowanie).
 >
-> _13 locales · 6 dostawców LLM · 25 adapterów skanera · filtr według kraju · parytet z nadrzędnym career-ops v1.13.0._
+> _13 locales · 6 dostawców LLM · 26 scanner adapters · filtr według kraju · parytet z nadrzędnym career-ops v1.14.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

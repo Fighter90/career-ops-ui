@@ -151,6 +151,7 @@ Router.register('scan', async () => {
     { value: 'workable',        label: 'Workable' },
     { value: 'workday',         label: 'Workday' },
     { value: 'workingnomads',   label: 'Working Nomads' },
+    { value: 'weworkremotely',  label: 'We Work Remotely' },
     { value: 'geekjob',         label: 'GeekJob' },
     { value: 'getmatch',        label: 'GetMatch' },
     { value: 'habr-career',     label: 'Habr Career' },

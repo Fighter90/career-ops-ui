@@ -942,7 +942,7 @@ Below the log, the results table renders rows from `data/last-scan.json`.
 Filters:
 
 - **Free text** — substring match against title / company.
-- **Source** dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (auto-populated from `GET /api/scan/sources`).
+- **Source** dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (auto-populated from `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite** dropdown.
 - **Country** dropdown (v1.78.0) — a geography filter populated from the countries detected across the current results, each shown with its flag emoji and a count (e.g. `🇩🇪 Germany (12)`). Pick one to keep only roles tied to that country. Detection maps a posting's free-text location (country names/aliases + ~100 major job-market cities) to a country; it's conservative and never guesses, so a posting whose location can't be resolved — or a pure "Remote" listing — stays under **All countries**. Combine it with the work-type dropdown to find country-bound *and* remote roles.
 - **Stack chips** (PHP / Go / Backend / Senior / …) — auto-detected
@@ -1624,15 +1624,16 @@ output, and search the issue tracker on
 
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
-how to fetch + normalize one board's results. As of v1.76.0 the
-`server/lib/sources/` registry ships **25** adapters — 20 English (the
+how to fetch + normalize one board's results. As of v1.79.0 the
+`server/lib/sources/` registry ships **26** adapters — 21 English (the
 Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday ATSes, RSS,
 the v1.75.0 aggregators RemoteOK / Remotive / Working Nomads / IBM /
-Arbeitsagentur / Glints / Jobstreet · SEEK, and the v1.76.0 per-tenant ATSes
-BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs) and 5 Russian
-boards. The seven aggregators added in v1.75.0 are board-wide or config-driven
-sources selected by `provider:`; the six per-tenant ATSes added in v1.76.0
-(parent career-ops v1.13.0 parity) auto-detect from a `careers_url` host
+Arbeitsagentur / Glints / Jobstreet · SEEK, the v1.76.0 per-tenant ATSes
+BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, and the
+v1.79.0 board-wide RSS feed We Work Remotely) and 5 Russian
+boards. The aggregators are board-wide or config-driven sources selected by
+`provider:` (incl. We Work Remotely, parent career-ops v1.14.0 parity); the six
+per-tenant ATSes (parent v1.13.0) auto-detect from a `careers_url` host
 (`<tenant>.bamboohr.com`, `<tenant>.breezy.hr`, `<slug>.jobs.personio.de`,
 `<slug>.recruitee.com`, `solid.jobs/public-api/offers/<division>`) or an
 explicit `api:` URL (Comeet) — see §5 for the YAML and

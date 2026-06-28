@@ -940,7 +940,7 @@ Under loggen gengiver resultattabellen rækker fra `data/last-scan.json`.
 Filtre:
 
 - **Fritekst** — delstreng-match mod titel / virksomhed.
-- **Source**-dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / Workable / Workday / Working Nomads (auto-udfyldt fra `GET /api/scan/sources`).
+- **Source**-dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (auto-udfyldt fra `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite**-dropdown.
 - **Country**-dropdown (v1.78.0) — et geografifilter, der udfyldes fra de lande, der er registreret på tværs af de aktuelle resultater, hvert vist med sit flag-emoji og et antal (f.eks. `🇩🇪 Germany (12)`). Vælg ét for kun at beholde roller knyttet til det land. Registreringen mapper et opslags fritekst-lokation (landenavne/aliasser + ~100 store jobmarkedsbyer) til et land; den er konservativ og gætter aldrig, så et opslag, hvis lokation ikke kan opløses — eller et rent "Remote"-opslag — forbliver under **All countries**. Kombinér det med arbejdstype-dropdownen for at finde både landebundne *og* fjernroller.
 - **Stack-chips** (PHP / Go / Backend / Senior / …) — auto-detekteret
@@ -1618,12 +1618,13 @@ outputtet, og søg i issue-trackeren på
 
 career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved,
-hvordan man henter + normaliserer ét boards resultater. Pr. v1.76.0 leverer
-`server/lib/sources/`-registreringen **25** adaptere — 20 engelske (
+hvordan man henter + normaliserer ét boards resultater. Pr. v1.79.0 leverer
+`server/lib/sources/`-registreringen **26** adaptere — **21** engelske (
 Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday-ATS'erne, RSS,
 v1.75.0-aggregatorerne RemoteOK / Remotive / Working Nomads / IBM /
 Arbeitsagentur / Glints / Jobstreet · SEEK, og v1.76.0-per-tenant-ATS'erne
-BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs) og 5 russiske
+BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, og det
+board-brede v1.79.0-RSS-feed We Work Remotely) og 5 russiske
 boards. De syv aggregatorer tilføjet i v1.75.0 er board-brede eller config-drevne
 kilder valgt af `provider:`; de seks per-tenant-ATS'er tilføjet i v1.76.0
 (parent career-ops v1.13.0-paritet) auto-detekterer fra en `careers_url`-host

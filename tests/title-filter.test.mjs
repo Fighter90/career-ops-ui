@@ -56,3 +56,12 @@ test('compileKeywordList: drops junk, keeps usable matchers', () => {
   assert.equal(matchers.some((m) => m('coordinator')), false);
   assert.equal(matchers.some((m) => m('php developer')), true);
 });
+
+test('compileKeywordList: trims BEFORE the length check (v1.79.0 / parent #1261)', () => {
+  // A whitespace-only keyword must be dropped, not compiled into a near-universal
+  // substring matcher; surrounding whitespace is trimmed off real keywords.
+  const matchers = compileKeywordList(['   ', '  php  ', '\t\n']);
+  assert.equal(matchers.length, 1, 'only "php" survives; the blank entries are dropped');
+  assert.equal(matchers[0]('senior php developer'), true);
+  assert.equal(matchers[0]('senior developer'), false);
+});

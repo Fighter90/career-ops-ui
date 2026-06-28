@@ -9,6 +9,10 @@
 ---
 
 
+## [1.79.0] — 2026-06-28
+
+**WeWorkRemotely 扫描源（与上游 career-ops v1.14.0 对齐）。** [We Work Remotely](https://weworkremotely.com) 全站远程职位 RSS 源现已成为一级扫描源——添加 `provider: weworkremotely` 条目后即出现在 `#/scan` 的 **Source** 下拉中（共 **26 个适配器**）。主机锁定为 weworkremotely.com 并使用 `redirect:'error'`（防 SSRF）；标题按 `Company: Role` 拆分。此外，`title_filter` 关键词现在会在长度检查**之前修剪**（parent #1261）。
+
 ## [1.78.2] — 2026-06-27
 
 **i18n 与 UX 加固（v1.78.1 的后续修复）。** 品牌 Logo 的无障碍名称现已在全部 13 种语言本地化（`nav.logoHome`）。在已处于 `#/scan` 时按全局搜索 **Enter** 会强制重渲染，避免丢失预填关键词（同路由守卫）。`health.title` 现已翻译为波兰语（`Kondycja`）和丹麦语（`Systemtilstand`）——此前为英文。测试 1235 → 1238。
