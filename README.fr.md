@@ -7,18 +7,18 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1244%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1258%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.79.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.79.0)
+[![release](https://img.shields.io/badge/release-v1.80.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.80.0)
 
-> **🆕 Dernière version — v1.79.0**
+> **🆕 Dernière version — v1.80.0**
 >
-> **Source de scan WeWorkRemotely (parité avec le career-ops parent v1.14.0).** Le flux RSS d'emplois à distance couvrant tout le tableau de [We Work Remotely](https://weworkremotely.com) est désormais une source de scan de première classe — ajoutez une entrée `provider: weworkremotely` et elle apparaît dans le menu déroulant **Source** de `#/scan` (**26 adaptateurs** au total). Épinglé à l'hôte + `redirect:'error'` (à l'abri de la SSRF) ; les titres sont découpés sur `Company: Role`. De plus : les mots-clés de `title_filter` sont rognés avant la vérification de longueur (parent #1261). S'appuie sur la v1.78.x (filtre par **pays** dans le scan, **auto-rafraîchissement** des résultats, **Enter→Scan** dans la recherche globale, logo cliquable), la v1.77.0 (danois, 13ᵉ langue) et la v1.76.0 (six sources ATS par tenant, `trust_filter`, scan sans plafond).
+> **Cinq améliorations du scan** (idées tirées de [job-crawler](https://github.com/bracketouverte/job-crawler), réimplémentées) : une source **Teamtailor** — les sites `<slug>.teamtailor.com` par tenant via leur flux public `/jobs.rss` (**27 adaptateurs** au total) ; la **mise en quarantaine des sources** — les sources mortes en 404/410 sont enregistrées et ignorées lors des scans suivants (auto-réparation après 14 jours), supprimant le bruit récurrent des slugs morts ; un champ de plafond **Max par source** (∞ par défaut) ; un filtre d'ancienneté **Publié depuis** (24 h / 7 j / 30 j) ; et **recherches enregistrées + ★ favoris** sur `#/scan`, persistés dans `localStorage` avec une validation défensive. S'appuie sur la v1.79.0 (We Work Remotely), la v1.78.x (filtre par pays, auto-rafraîchissement, Enter→Scan, logo cliquable), la v1.77.0 (danois) et la v1.76.0 (sources ATS par tenant, `trust_filter`).
 >
-> _13 locales · 6 fournisseurs LLM · 26 adaptateurs de scanner · filtre par pays · parité avec le career-ops parent v1.14.0._
+> _13 locales · 6 fournisseurs LLM · 27 adaptateurs de scanner · recherches enregistrées + favoris · parité avec le career-ops parent v1.14.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

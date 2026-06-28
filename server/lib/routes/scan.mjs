@@ -57,6 +57,8 @@ async function driveOne({ res, send, runner, label, query, final = true }) {
     const result = await runner({
       writeFiles: query.dryRun !== '1',
       companyName: query.company ? String(query.company) : undefined,
+      // v1.80.0 — optional per-source cap (EN scanner; ru-scanner ignores it).
+      maxPerSource: query.maxPerSource ? Number(query.maxPerSource) : 0,
       signal: ctrl.signal,
       onLog: (stream, line) => { if (!aborted) send('log', { stream, line }); },
       onProgress: (done, total) => { if (!aborted) send('progress', { done, total }); },

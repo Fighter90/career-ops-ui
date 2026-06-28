@@ -9,6 +9,10 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.80.0] — 2026-06-28
+
+**Pięć usprawnień skanera (pomysły z job-crawler, zaimplementowane od nowa).** (1) Źródło **Teamtailor** — witryny `<slug>.teamtailor.com` przez publiczny kanał `/jobs.rss`, autowykrywane z `careers_url` (host przypięty + `redirect:'error'`); rejestr ma teraz **27 adapterów**. (2) **Kwarantanna źródeł** — źródło ze stałym 404/410 jest zapisywane w `data/scan-quarantine.json` i pomijane w kolejnych skanach (samonaprawa: ponów po 14 dniach). (3) **Maks. na źródło** — opcjonalne pole na `#/scan` ograniczające liczbę ofert z boardu (∞ domyślnie). (4) **Opublikowano w** — filtr wieku po stronie klienta (24 h / 7 dni / 30 dni). (5) **Zapisane wyszukiwania + ★ ulubione** — nazywaj i używaj zestawów filtrów oraz oznaczaj oferty, w `localStorage` z defensywną walidacją (uszkodzony cache resetuje się czysto); cache wyników jest resetowany przed skanem i wypełniany na żywo.
+
 ## [1.79.0] — 2026-06-28
 
 **Źródło skanowania WeWorkRemotely (zgodność z career-ops v1.14.0).** Ogólnotablicowy kanał RSS pracy zdalnej [We Work Remotely](https://weworkremotely.com) jest teraz pełnoprawnym źródłem — dodaj wpis `provider: weworkremotely`, a pojawi się na liście **Source** w `#/scan` (**26 adapterów** łącznie). Host przypięty do weworkremotely.com z `redirect:'error'` (anty-SSRF); tytuły dzielone po `Company: Role`. Ponadto: słowa kluczowe `title_filter` są teraz **przycinane przed** sprawdzeniem długości (parent #1261).

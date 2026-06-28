@@ -785,12 +785,22 @@ HTTPS 請求。
 > **v1.78.1 — 即時自動重新整理。** 現在結果表格會在掃描執行期間自動
 > 更新,並在掃描結束後再更新一次 —— 無須手動重新載入或切換頁面。
 
+> **v1.80.0 — Max per source 與來源隔離。** 掃描按鈕旁的 **Max per source**
+> 欄位會限制每個看板貢獻的職缺數量(空白/0 = 無上限,即預設值)—— 當某個
+> 龐大看板原本會主導結果時很有用。另外,任何回傳永久性 **404 / 410** 的來源
+> 都會被寫入 `data/scan-quarantine.json` 並在後續掃描中略過(自我修復:14 天後
+> 重試),如此失效的 slug 便不再灌爆日誌。可在 `portals.yml` 中以
+> `scan_quarantine: false` 停用。
+
 篩選器:
 
 - **自由文字** — 對職稱 / 公司做子字串比對。
-- **Source** 下拉 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads(從 `GET /api/scan/sources` 自動填入)。
+- **Source** 下拉 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads(從 `GET /api/scan/sources` 自動填入)。
 - **Remote / Hybrid / Onsite** 下拉。
 - **Country** 下拉(v1.78.0)— 一個地理篩選，根據目前結果中偵測到的國家填入，每個國家都帶有其國旗 emoji 和計數(例如 `🇩🇪 Germany (12)`)。選擇一個即可只保留與該國家相關的職缺。偵測會將職缺的自由文字地點(國家名稱/別名 + 約 100 個主要就業市場城市)對應到某個國家；它很保守，絕不臆測，因此地點無法解析的職缺 —— 或純粹的 "Remote" 列表 —— 仍歸在 **All countries** 之下。將其與工作型態下拉框結合，即可同時找到與國家綁定的職缺*和*遠端職缺。
+- **Posted within** 下拉(v1.80.0)— 一個用戶端的時效篩選(Last 24 hours / 7 days / 30 days)。`pubDate` 較舊的列會被隱藏;**沒有列出日期的列會通過**(缺少資料不會被懲罰)。
+- **★ Favorites**(v1.80.0)— 點擊任一列中的 ☆ 即可將職缺加星(依 URL 儲存於 `localStorage`);在篩選面板中勾選 **★ Favorites** 即可只顯示已加星的列。星標可在掃描與重新載入後保留。
+- **Saved searches**(v1.80.0)— 篩選器上方的橫列:為目前的篩選組合命名並 **💾 Save**,然後從下拉框重新套用,或將其 **🗑 Delete**。儲存於 `localStorage`;損毀/被編輯過的值會乾淨地重設為空。
 - **Stack chips**(PHP / Go / Backend / Senior / …)— 由
   `Skills.detectTech` 與 `Skills.detectLevel` 自動偵測每一列。
   多選為交集 — 選 `PHP + Senior` 只會顯示同時具備兩者的列。
@@ -1434,7 +1444,7 @@ scan 執行、設定變更、mode 執行。
 
 ## 17. 如何新增職位入口網站來源
 
-career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。截至 v1.79.0,`server/lib/sources/` 註冊表內建 **26** 個 adapter —— 21 個英文(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday 等 ATS、RSS,以及 v1.75.0 聚合器 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK、以及 BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs,以及 We Work Remotely)和 5 個俄文板塊。v1.75.0 新增的 7 個聚合器並非按公司的 ATS,而是全板塊或設定驅動的來源:三個遠端訂閱源以 `provider: remoteok|remotive|workingnomads` 選擇,四個區域來源(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)讀取每條目的 `<provider>:` 設定區塊 —— YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
+career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。截至 v1.80.0,`server/lib/sources/` 註冊表內建 **27** 個 adapter —— 22 個英文(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday 等 ATS、RSS,以及 v1.75.0 聚合器 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK、以及 BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs,以及 We Work Remotely,以及 v1.80.0 按租戶的 ATS Teamtailor)和 5 個俄文板塊。v1.75.0 新增的 7 個聚合器並非按公司的 ATS,而是全板塊或設定驅動的來源:三個遠端訂閱源以 `provider: remoteok|remotive|workingnomads` 選擇,四個區域來源(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)讀取每條目的 `<provider>:` 設定區塊 —— YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 直接放入即自動探索。** 新增第 12 個來源現在只需**純粹的檔案放入**。registry
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

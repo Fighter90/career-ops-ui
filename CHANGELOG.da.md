@@ -10,6 +10,10 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.80.0] — 2026-06-28
+
+**Fem scan-forbedringer (idéer fra job-crawler, genimplementeret).** (1) **Teamtailor**-kilde — per-tenant `<slug>.teamtailor.com` via det offentlige `/jobs.rss`-feed, auto-detekteret fra `careers_url` (host-låst + `redirect:'error'`); registret har nu **27 adaptere**. (2) **Kilde-karantæne** — en kilde med permanent 404/410 gemmes i `data/scan-quarantine.json` og springes over ved senere scanninger (selvhelende: forsøges igen efter 14 dage). (3) **Maks. pr. kilde** — et valgfrit `#/scan`-felt der begrænser antallet af jobs pr. board (∞ som standard). (4) **Slået op inden for** — et klient-side aldersfilter (24t / 7d / 30d). (5) **Gemte søgninger + ★ favoritter** — navngiv og genbrug filtersæt og marker job, gemt i `localStorage` med defensiv validering (en korrupt cache nulstilles rent); resultat-cachen nulstilles før hver scan og fyldes live.
+
 ## [1.79.0] — 2026-06-28
 
 **WeWorkRemotely-scanningskilde (paritet med career-ops v1.14.0).** Det boards-dækkende RSS-feed fra [We Work Remotely](https://weworkremotely.com) er nu en førsteklasses scanningskilde — tilføj en `provider: weworkremotely`-post, og den vises i **Source**-dropdownen på `#/scan` (**26 adaptere** i alt). Host-låst til weworkremotely.com med `redirect:'error'` (SSRF-sikker); titler opdeles på `Company: Role`. Desuden: `title_filter`-nøgleord **trimmes nu før** længdetjekket (parent #1261).

@@ -937,14 +937,25 @@ Below the log, the results table renders rows from `data/last-scan.json`.
 
 > **v1.78.1 — live auto-refresh.** The results table now updates automatically
 > while a scan runs and once more right after it finishes — no manual reload or
-> page switch needed.
+> page switch needed. The cache is reset at the start of each scan and refilled.
+
+> **v1.80.0 — Max per source & source quarantine.** The **Max per source** field
+> next to the Scan button caps how many jobs each board contributes (empty/0 =
+> unlimited, the default) — handy when one huge board would otherwise dominate.
+> Separately, any source that returns a permanent **404 / 410** is written to
+> `data/scan-quarantine.json` and skipped on later scans (self-healing: retried
+> after 14 days), so dead slugs stop spamming the log. Disable with
+> `scan_quarantine: false` in `portals.yml`.
 
 Filters:
 
 - **Free text** — substring match against title / company.
-- **Source** dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (auto-populated from `GET /api/scan/sources`).
+- **Source** dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (auto-populated from `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite** dropdown.
 - **Country** dropdown (v1.78.0) — a geography filter populated from the countries detected across the current results, each shown with its flag emoji and a count (e.g. `🇩🇪 Germany (12)`). Pick one to keep only roles tied to that country. Detection maps a posting's free-text location (country names/aliases + ~100 major job-market cities) to a country; it's conservative and never guesses, so a posting whose location can't be resolved — or a pure "Remote" listing — stays under **All countries**. Combine it with the work-type dropdown to find country-bound *and* remote roles.
+- **Posted within** dropdown (v1.80.0) — a client-side age filter (Last 24 hours / 7 days / 30 days). Rows whose `pubDate` is older are hidden; rows with **no listed date pass** (missing data isn't penalized).
+- **★ Favorites** (v1.80.0) — click the ☆ in any row to star a job (stored in `localStorage` by URL); tick **★ Favorites** in the filter panel to show only starred rows. Stars survive scans and reloads.
+- **Saved searches** (v1.80.0) — the bar above the filters: name the current filter set and **💾 Save**, then re-apply it from the dropdown or **🗑 Delete** it. Stored in `localStorage`; a corrupt/edited value resets cleanly to empty.
 - **Stack chips** (PHP / Go / Backend / Senior / …) — auto-detected
   per row by `Skills.detectTech` and `Skills.detectLevel`. Multi-select
   intersection — selecting `PHP + Senior` shows rows that have BOTH.
@@ -1624,16 +1635,17 @@ output, and search the issue tracker on
 
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
-how to fetch + normalize one board's results. As of v1.79.0 the
-`server/lib/sources/` registry ships **26** adapters — 21 English (the
+how to fetch + normalize one board's results. As of v1.80.0 the
+`server/lib/sources/` registry ships **27** adapters — 22 English (the
 Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday ATSes, RSS,
 the v1.75.0 aggregators RemoteOK / Remotive / Working Nomads / IBM /
 Arbeitsagentur / Glints / Jobstreet · SEEK, the v1.76.0 per-tenant ATSes
-BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, and the
-v1.79.0 board-wide RSS feed We Work Remotely) and 5 Russian
+BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, the
+v1.79.0 board-wide RSS feed We Work Remotely, and the v1.80.0 per-tenant ATS
+Teamtailor) and 5 Russian
 boards. The aggregators are board-wide or config-driven sources selected by
-`provider:` (incl. We Work Remotely, parent career-ops v1.14.0 parity); the six
-per-tenant ATSes (parent v1.13.0) auto-detect from a `careers_url` host
+`provider:` (incl. We Work Remotely); the per-tenant ATSes (BambooHR / Breezy HR /
+Comeet / Personio / Recruitee / SolidJobs / Teamtailor) auto-detect from a `careers_url` host
 (`<tenant>.bamboohr.com`, `<tenant>.breezy.hr`, `<slug>.jobs.personio.de`,
 `<slug>.recruitee.com`, `solid.jobs/public-api/offers/<division>`) or an
 explicit `api:` URL (Comeet) — see §5 for the YAML and

@@ -852,16 +852,27 @@ $EDITOR portals.yml
 > 自動で更新され、終了直後にもう一度更新されます — 手動でのリロード
 > やページ切り替えは不要です。
 
+> **v1.80.0 — Max per source とソースの隔離(quarantine)。** Scan ボタンの
+> 隣にある **Max per source** フィールドは、各ボードが提供する求人件数の上限を
+> 設定します(空 / 0 = 無制限、既定値) — 1 つの巨大なボードが結果を独占して
+> しまう場合に便利です。これとは別に、恒久的な **404 / 410** を返すソースは
+> `data/scan-quarantine.json` に記録され、以降のスキャンではスキップされます
+> (自己回復:14 日後に再試行)。これにより、死んだ slug がログを汚し続けるのを
+> 防ぎます。`portals.yml` で `scan_quarantine: false` を指定すると無効化できます。
+
 フィルタ:
 
 - **フリーテキスト** — タイトル / 会社名に対する部分一致。
 - **Source** ドロップダウン — Arbeitsagentur / Ashby / BambooHR / Breezy HR /
   Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM /
   Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS /
-  SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads
+  SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads
   （`GET /api/scan/sources` から自動構築）。
 - **Remote / Hybrid / Onsite** ドロップダウン。
 - **Country** ドロップダウン (v1.78.0) — 現在の結果から検出された国で構成される地理フィルターで、各項目は国旗絵文字と件数とともに表示されます(例:`🇩🇪 Germany (12)`)。1 つを選ぶと、その国に紐づく求人だけが残ります。検出は求人の自由記述の勤務地(国名/別名 + ~100 の主要求人市場都市)を国にマッピングします。保守的で決して推測しないため、勤務地を解決できない求人 — または純粋な「Remote」掲載 — は **All countries** の下に残ります。勤務形態ドロップダウンと組み合わせれば、国に紐づく求人*と*リモート求人の両方を見つけられます。
+- **Posted within** ドロップダウン (v1.80.0) — クライアント側の経過時間フィルター(Last 24 hours / 7 days / 30 days)。`pubDate` がそれより古い行は非表示になります。**日付が記載されていない行は通過します**(データの欠落はペナルティになりません)。
+- **★ Favorites** (v1.80.0) — 任意の行の ☆ をクリックすると求人にスターを付けられます(URL ごとに `localStorage` に保存)。フィルターパネルの **★ Favorites** にチェックを入れると、スター付きの行だけが表示されます。スターはスキャンやリロードをまたいで保持されます。
+- **Saved searches** (v1.80.0) — フィルターの上のバー:現在のフィルターセットに名前を付けて **💾 Save** すると、ドロップダウンから再適用したり **🗑 Delete** で削除したりできます。`localStorage` に保存され、破損したり編集された値はクリーンに空へリセットされます。
 - **スタックチップ** (PHP / Go / Backend / Senior / …) — 行ごとに
   `Skills.detectTech` と `Skills.detectLevel` で自動検出。複数選択は
   積集合 — `PHP + Senior` を選択すると両方を持つ行が表示されます。
@@ -1558,7 +1569,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 
 ## 17. 新しい求人ポータルソースを追加する方法
 
-career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。v1.79.0 時点で `server/lib/sources/` レジストリは **26** 個のアダプタを同梱しています — 英語圏 **21** 個(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday の各 ATS、RSS、そして v1.75.0 のアグリゲーター RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK、および BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs、および We Work Remotely)とロシア系ボード 5 個。v1.75.0 で追加された 7 つのアグリゲーターは、企業ごとの ATS ではなくボード全体または設定駆動のソースです: 3 つのリモートフィードは `provider: remoteok|remotive|workingnomads` で選択し、4 つのリージョナルなもの(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)はエントリごとの `<provider>:` 設定ブロックを読みます — YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
+career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。v1.80.0 時点で `server/lib/sources/` レジストリは **27** 個のアダプタを同梱しています — 英語圏 **22** 個(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday の各 ATS、RSS、そして v1.75.0 のアグリゲーター RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK、および BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs、および We Work Remotely、そして v1.80.0 のテナント単位 ATS Teamtailor)とロシア系ボード 5 個。v1.75.0 で追加された 7 つのアグリゲーターは、企業ごとの ATS ではなくボード全体または設定駆動のソースです: 3 つのリモートフィードは `provider: remoteok|remotive|workingnomads` で選択し、4 つのリージョナルなもの(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)はエントリごとの `<provider>:` 設定ブロックを読みます — YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
 
 > **v1.69.0 (P-14) — ドロップイン自動検出。** 12 個目のソース追加はいまや **ファイルを置くだけ** で完結します。レジストリ
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

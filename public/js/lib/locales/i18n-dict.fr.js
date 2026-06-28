@@ -414,6 +414,24 @@ window.__I18N_DICT_FR = {
   'scan.allSources': "toutes les sources", // all sources
   'scan.lblCountry': "Pays",
   'scan.allCountries': "Tous les pays",
+  'scan.lblAge': "Publié depuis",
+  'scan.ageAny': "Toute période",
+  'scan.age1d': "Dernières 24 h",
+  'scan.age7d': "7 derniers jours",
+  'scan.age30d': "30 derniers jours",
+  'scan.maxPerSource': "Max par source",
+  'scan.favOnly': "★ Favoris",
+  'scan.favOnlyHint': "favoris seulement",
+  'scan.star': "Ajouter aux favoris",
+  'scan.unstar': "Retirer des favoris",
+  'scan.savedSearches': "Recherches enregistrées",
+  'scan.savedNone': "Recherches enregistrées…",
+  'scan.savedName': "Nommer cette recherche…",
+  'scan.saveSearch': "Enregistrer",
+  'scan.deleteSearch': "Supprimer",
+  'scan.savedNeedName': "Saisissez un nom pour enregistrer la recherche",
+  'scan.savedOk': "Recherche enregistrée",
+  'scan.savedDeleted': "Recherche supprimée",
   'scan.chip.stack': "Technos", // Stack
   'scan.chip.level': "Niveau", // Level
   'scan.chip.clear': "effacer", // clear

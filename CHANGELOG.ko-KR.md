@@ -9,6 +9,10 @@
 ---
 
 
+## [1.80.0] — 2026-06-28
+
+**스캔 5가지 개선(job-crawler 아이디어 재구현).** (1) **Teamtailor** 소스 — `<slug>.teamtailor.com` 테넌트 채용 사이트를 공개 `/jobs.rss` 피드로, `careers_url`에서 자동 감지(호스트 고정 + `redirect:'error'`); 레지스트리는 이제 **27개 어댑터**. (2) **소스 격리** — 영구 404/410을 반환한 소스를 `data/scan-quarantine.json`에 기록하고 이후 스캔에서 건너뜀(자가 치유: 14일 후 재시도). (3) **소스당 최대** — `#/scan`의 선택 필드로 보드당 채용 수 제한(기본 ∞). (4) **게시 기간** — 클라이언트 측 기간 필터(24시간 / 7일 / 30일). (5) **저장된 검색 + ★ 즐겨찾기** — 필터 세트를 이름 지어 재사용하고 채용을 별표; `localStorage`에 방어적 검증과 함께 저장(손상된 캐시는 깔끔히 초기화); 결과 캐시는 스캔 전에 초기화되고 실시간으로 다시 채워집니다.
+
 ## [1.79.0] — 2026-06-28
 
 **WeWorkRemotely 스캔 소스 (상위 career-ops v1.14.0 패리티).** [We Work Remotely](https://weworkremotely.com)의 보드 전체 원격 채용 RSS 피드가 이제 1급 스캔 소스입니다 — `provider: weworkremotely` 항목을 추가하면 `#/scan`의 **Source** 드롭다운에 표시됩니다(총 **26개 어댑터**). 호스트는 weworkremotely.com으로 고정되고 `redirect:'error'`(SSRF 방지); 제목은 `Company: Role`로 분리됩니다. 또한 `title_filter` 키워드는 길이 검사 **전에 트림**됩니다(parent #1261).

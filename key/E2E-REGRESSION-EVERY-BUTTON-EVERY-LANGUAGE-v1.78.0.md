@@ -1,7 +1,7 @@
 # MASTER E2E REGRESSION — career-ops-ui · EVERY BUTTON · EVERY PAGE · EVERY LANGUAGE (v1.78.0)
 
-> **Version under test:** `package.json` **1.79.0** (parent career-ops **1.14.0** parity).
-> **Covers the untested release train:** v1.76.0 (6 new ATS sources + `trust_filter` + uncapped scan + title-filter robustness) → v1.77.0 (**Danish**, 13th locale) → v1.78.0 (**Scan country filter**) → v1.78.1 (**Scan auto-refresh + global-search Enter→Scan + clickable logo**) → v1.79.0 (**We Work Remotely source + title-filter trim**).
+> **Version under test:** `package.json` **1.80.0** (parent career-ops **1.14.0** parity).
+> **Covers the untested release train:** v1.76.0 (6 new ATS sources + `trust_filter` + uncapped scan + title-filter robustness) → v1.77.0 (**Danish**, 13th locale) → v1.78.0 (**Scan country filter**) → v1.78.1 (**Scan auto-refresh + global-search Enter→Scan + clickable logo**) → v1.79.0 (**We Work Remotely source + title-filter trim**) → v1.80.0 (**Teamtailor source + source quarantine + max-per-source + Posted-within + saved searches/favorites**).
 > **Goal:** drive the *running app* end-to-end and click **every interactive control on every page in every one of the 13 languages**, proving each does what it claims with zero console errors and no layout breakage (incl. Arabic RTL).
 > **Role:** strict release-gate QA engineer. This is the exhaustive click-through driver. The unit/CI gate lives in `qa/QA-REGRESSION-PROMPT-v1.76.0-FULL.md`; this file is the **human/agent UI sweep** the gate can't cover.
 > **Output:** save your run to `key/runs/<YYYY-MM-DD>-E2E-v1.78.0.md` — one row per (page × language × control) with PASS/FAIL + evidence (screenshot path, console-log excerpt, HTTP trace). Any FAIL = one fix-ship (one-fix-per-release; HIGH → MEDIUM → LOW).
@@ -34,6 +34,10 @@
 | 10 | **Logo → home (v1.78.1)** | Clicking the brand **logo** navigates to `/#/dashboard` (keyboard-focusable native link). |
 | 11 | **WeWorkRemotely source (v1.79.0)** | `/#/scan` **Source** dropdown lists **We Work Remotely** (26 adapters total). A `provider: weworkremotely` entry scans its board-wide RSS feed; titles split on `Company: Role`, all rows remote. |
 | 12 | **Title-filter trim (v1.79.0)** | A `title_filter` keyword that is only whitespace is dropped (trimmed before the length check) — it must NOT filter out every row. |
+| 13 | **Teamtailor source (v1.80.0)** | `/#/scan` Source dropdown lists **Teamtailor** (27 adapters). A `careers_url: https://<slug>.teamtailor.com` entry scans its `/jobs.rss`. |
+| 14 | **Source quarantine (v1.80.0)** | After a source 404/410s, a later scan logs "Quarantined (skipped)" and does not re-request it (until 14-day retry). |
+| 15 | **Max per source / Posted within (v1.80.0)** | "Max per source" caps each board; "Posted within" hides older rows (dateless pass). |
+| 16 | **Saved searches + ★ favorites (v1.80.0)** | Star a row (☆→★, persists across reload); save a named search + re-apply; "★ Favorites" shows starred only; corrupt localStorage resets cleanly. |
 
 ---
 
@@ -56,7 +60,7 @@ For every page: navigate, snapshot, assert the localized `<h1>`, click every but
 - **Scan (`#/scan`)** — the heaviest surface this cycle:
   - **🌐 Scan** button streams SSE (start/log/progress/done); **Stop** aborts immediately mid-paginate; progress bar determinate; error banner + Retry.
   - **Company** select + **Dry-run** checkbox.
-  - Results **filters panel**: **Search**, **Work type** (Remote/Hybrid/Onsite/Reloc), **Salary from/to**, **Source** (26), **Country** (🆕 flags + counts), **Scope** (all/fresh); **Apply** + **Reset** (Reset clears Country too).
+  - Results **filters panel**: **Search**, **Work type** (Remote/Hybrid/Onsite/Reloc), **Salary from/to**, **Source** (27), **Country** (🆕 flags + counts), **Scope** (all/fresh); **Apply** + **Reset** (Reset clears Country too).
   - **Country filter checks:** options carry flags; counts match; pick `🇩🇪 Germany` → only German-location rows remain; combine with Work-type=Remote; Reset restores; "All countries" shows everything; a pure-Remote row is reachable only under "All countries".
   - **Advanced filters** disclosure: stack/level/dynamic chips (multi-select intersection; clear).
   - **trust** ⚠ badge (when `trust_filter` on); **⬆ boosted** badge (when `seniority_boost` set); pager prev/next pages through ALL matches.

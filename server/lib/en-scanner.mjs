@@ -17,6 +17,7 @@ import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { buildLocationFilter, buildContentFilter, buildTitleFilter } from './location-filter.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
+import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { fetchGreenhouse } from './sources/greenhouse.mjs';
 import { fetchAshby } from './sources/ashby.mjs';
@@ -98,6 +99,10 @@ export async function runEnScan(opts = {}) {
   // fetchImpl defaults to a timeout-wrapped fetch so one stalled board
   // can't hang the whole ATS sweep (v1.63.0).
   const { writeFiles = true, companyName, onLog = () => {}, onProgress = () => {}, fetchImpl = makeTimeoutFetch(), signal } = opts;
+  // v1.80.0 — optional per-source cap (idea from job-crawler's
+  // --max-jobs-per-source). 0 / absent = unlimited (the default). Caps how many
+  // jobs each company/board contributes, so one huge board can't dominate.
+  const maxPerSource = Math.max(0, Number(opts.maxPerSource) || 0);
   const portals = loadPortals();
   const tf = portals.title_filter || {};
   // v1.76.0 — word-boundary acronym matching + malformed-config guard (parent
@@ -126,8 +131,17 @@ export async function runEnScan(opts = {}) {
     companies = companies.filter((c) => c.name?.toLowerCase().includes(companyName.toLowerCase()));
   }
 
-  const withApi = companies.map((c) => ({ ...c, _api: detectApi(c) })).filter((c) => c._api);
-  const skipped = companies.length - withApi.length;
+  const withApiAll = companies.map((c) => ({ ...c, _api: detectApi(c) })).filter((c) => c._api);
+  const skipped = companies.length - withApiAll.length;
+
+  // v1.80.0 — source quarantine. Skip sources that returned a permanent 404/410
+  // on a prior run (self-healing: retried after RETRY_AFTER_DAYS). Can be turned
+  // off with `scan_quarantine: false` in portals.yml.
+  const quarantineOn = portals.scan_quarantine !== false;
+  const quarantine = quarantineOn ? loadQuarantine() : { entries: {} };
+  const withApi = quarantineOn ? withApiAll.filter((c) => !isQuarantined(quarantine, c.name)) : withApiAll;
+  const quarantinedCount = withApiAll.length - withApi.length;
+  let quarantineChanged = false;
 
   const log = (s, line) => onLog(s, line);
   log('stdout', '━'.repeat(60));
@@ -136,6 +150,7 @@ export async function runEnScan(opts = {}) {
   log('stdout', `Enabled companies:    ${companies.length}`);
   log('stdout', `With API:             ${withApi.length}`);
   log('stdout', `Without API (skipped):${skipped}`);
+  if (quarantinedCount) log('stdout', `Quarantined (skipped):${quarantinedCount} (dead 404/410 — auto-retried after ${RETRY_AFTER_DAYS} days)`);
   log('stdout', `Already seen:         ${seen.size} URLs`);
   log('stdout', '');
 
@@ -149,18 +164,32 @@ export async function runEnScan(opts = {}) {
       // sources (ibm / arbeitsagentur / glints / jobstreet) can read their
       // `<provider>:` block. URL-detected ATS fetchers ignore the extra opt.
       const items = await fetcher(c._api.url, { fetchImpl, signal, company: c });
+      // v1.80.0 — apply the per-source cap (0 = unlimited).
+      const capped = maxPerSource > 0 ? items.slice(0, maxPerSource) : items;
       // Stamp company name on each (Greenhouse fills its own; Ashby/Lever do not)
-      const withCo = items.map((i) => ({ ...i, company: i.company || c.name }));
-      log('stdout', `  ✓ ${c.name.padEnd(28)} ${c._api.type.padEnd(10)} ${items.length} jobs`);
+      const withCo = capped.map((i) => ({ ...i, company: i.company || c.name }));
+      const note = capped.length < items.length ? ` (capped from ${items.length})` : '';
+      log('stdout', `  ✓ ${c.name.padEnd(28)} ${c._api.type.padEnd(10)} ${capped.length} jobs${note}`);
       return withCo;
     } catch (e) {
       errors.push(`${c.name}: ${e.message}`);
       log('stderr', `  ✗ ${c.name.padEnd(28)} ${c._api.type.padEnd(10)} ${e.message}`);
+      // v1.80.0 — a permanent 404/410 quarantines the source so future scans
+      // skip it (until the retry window lapses).
+      if (quarantineOn && isPermanentFailure(e)) {
+        quarantineAdd(quarantine, c.name, { url: c._api.url, status: e.status || 'HTTP 404/410' });
+        quarantineChanged = true;
+      }
       return [];
     } finally {
       onProgress(++progressDone, withApi.length);
     }
   }, CONCURRENCY);
+
+  // Persist quarantine changes (skip in dry-run, like the other scan writes).
+  if (quarantineOn && writeFiles && quarantineChanged) {
+    saveQuarantine(pruneQuarantine(quarantine));
+  }
 
   const allRaw = fetchedPerCo.flat();
   // v1.33.0 (WS4 / parent #570) — optional portals.yml location_filter.

@@ -8,6 +8,10 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.80.0] — 2026-06-28
+
+**Five scan upgrades (ideas from [bracketouverte/job-crawler](https://github.com/bracketouverte/job-crawler), reimplemented).** (1) **Teamtailor** source — per-tenant `<slug>.teamtailor.com` career sites via their public `/jobs.rss` feed, auto-detected from `careers_url` (host-pinned + `redirect:'error'`); the registry now ships **27 adapters**. (2) **Source quarantine** — a source that returns a permanent 404/410 is recorded in `data/scan-quarantine.json` and skipped on later scans (self-healing: retried after 14 days), killing the recurring dead-slug noise. (3) **Max per source** — an optional `#/scan` field caps how many jobs each board contributes (∞ by default). (4) **Posted within** — a client-side age filter (24h / 7d / 30d) on the results table. (5) **Saved searches + ★ favorites** — name & reuse filter sets and star jobs, persisted in `localStorage` with defensive validation (a corrupt cache resets cleanly); the results cache is reset before each scan and refilled live.
+
 ## [1.79.0] — 2026-06-28
 
 **WeWorkRemotely scan source (parent career-ops v1.14.0 parity).** The board-wide [We Work Remotely](https://weworkremotely.com) remote-jobs RSS feed is now a first-class scan source — add a `provider: weworkremotely` entry and it appears in the `#/scan` **Source** dropdown (**26 adapters** total). Host-pinned to weworkremotely.com with `redirect:'error'` (SSRF-safe); titles split on `Company: Role`. Also: `title_filter` keywords are now **trimmed before** the length check, so a whitespace-only keyword can't compile into a match-everything filter (parent #1261).

@@ -616,12 +616,17 @@ $EDITOR portals.yml
 
 > **v1.78.1 — تحديث تلقائي مباشر.** جدول النتائج الآن يتحدّث تلقائياً أثناء تشغيل المسح ومرة أخرى فور انتهائه — دون إعادة تحميل يدوية أو تبديل للصفحة.
 
+> **v1.80.0 — Max per source وحجر المصدر.** يحدّ حقل **Max per source** بجانب زر المسح عدد الوظائف التي تساهم بها كل لوحة (فارغ/0 = بلا حد، وهو الافتراضي) — مفيد عندما تطغى لوحة ضخمة واحدة على غيرها. وبشكل منفصل، أي مصدر يُعيد **404 / 410** دائماً يُكتب إلى `data/scan-quarantine.json` ويُتجاوز في عمليات المسح اللاحقة (شفاء ذاتي: يُعاد المحاولة بعد 14 يوماً)، فتتوقف الـ slug الميتة عن إغراق السجل. عطّله بـ `scan_quarantine: false` في `portals.yml`.
+
 المرشحات:
 
 - **نص حر** — مطابقة جزئية مقابل العنوان / الشركة.
-- قائمة **المصدر** المنسدلة — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (تُملأ تلقائياً من `GET /api/scan/sources`).
+- قائمة **المصدر** المنسدلة — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (تُملأ تلقائياً من `GET /api/scan/sources`).
 - قائمة **عن بُعد / هجين / حضوري** المنسدلة.
 - قائمة **Country** المنسدلة (v1.78.0) — مرشّح جغرافي يُملأ من الدول المكتشَفة عبر النتائج الحالية، كلٌّ معروضة مع إيموجي علَمها وعدّاد (مثل `🇩🇪 Germany (12)`). اختر واحدة لتُبقي فقط الأدوار المرتبطة بتلك الدولة. يربط الاكتشاف الموقعَ النصّي الحر للإعلان (أسماء الدول/الأسماء البديلة + ~100 من كبرى مدن سوق العمل) بدولة؛ وهو متحفّظ ولا يخمّن أبداً، لذا فإن الإعلان الذي يتعذّر تحديد موقعه — أو إعلان "Remote" خالص — يبقى ضمن **All countries**. اجمعها مع قائمة نمط العمل المنسدلة للعثور على الأدوار المرتبطة بدولة *و* الأدوار عن بُعد.
+- قائمة **Posted within** المنسدلة (v1.80.0) — مرشّح عمر من جانب العميل (آخر 24 ساعة / 7 أيام / 30 يوماً). تُخفى الصفوف التي يكون `pubDate` فيها أقدم؛ أما الصفوف **بلا تاريخ مُدرَج فتمرّ** (البيانات المفقودة لا يُعاقَب عليها).
+- **★ المفضّلة** (v1.80.0) — انقر على ☆ في أي صف لتمييز وظيفة بنجمة (تُخزَّن في `localStorage` حسب الرابط)؛ فعّل **★ المفضّلة** في لوحة المرشحات لعرض الصفوف المميَّزة بنجمة فقط. تبقى النجوم بعد عمليات المسح وإعادة التحميل.
+- **عمليات البحث المحفوظة** (v1.80.0) — الشريط فوق المرشحات: سَمِّ مجموعة المرشحات الحالية ثم اضغط **💾 حفظ**، ثم أعِد تطبيقها من القائمة المنسدلة أو **🗑 احذفها**. تُخزَّن في `localStorage`؛ وأي قيمة تالفة/معدَّلة تُعاد بسلاسة إلى الفراغ.
 - **شرائح التقنية** (PHP / Go / Backend / Senior / …) — مُكتشَفة تلقائياً لكل صف بواسطة `Skills.detectTech` و`Skills.detectLevel`. تقاطع متعدد الاختيارات — اختيار `PHP + Senior` يعرض الصفوف التي تحتوي على كليهما.
 - **شرائح ديناميكية** أسفل الشرائح الثابتة — أعلى 25 رمزاً مُكبَّراً متكرراً في العناوين، حتى تتكيف الواجهة مع الأدوار التي تمسحها فعلاً (تسويق، تصميم، مالية…) بدلاً من الانحصار في قاموس مهندس الخلفية.
 
@@ -1104,7 +1109,7 @@ npm run doctor
 ## 17. كيفية إضافة مصدر بوابة وظائف جديد
 
 يُعامِل career-ops-ui كل بوابة وظائف بوصفها **محوّلاً** — ملف واحد ضمن
-[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. اعتباراً من v1.79.0 يشحن سجل `server/lib/sources/` مع **26** محوّلاً — **21** إنجليزية (محولات ATS: Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday، وَ RSS، ومُجمّعات v1.75.0: RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, و BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs، و We Work Remotely) وَ 5 بوابات روسية. المُجمّعات السبعة المضافة في v1.75.0 هي مصادر على مستوى اللوحة أو مدفوعة بالإعداد بدلاً من ATSes لكل شركة: التغذيات عن بُعد الثلاث تُختار بـ `provider: remoteok|remotive|workingnomads`، والأربع الإقليمية (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) تقرأ كتلة إعداد `<provider>:` لكل إدخال — انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
+[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. اعتباراً من v1.80.0 يشحن سجل `server/lib/sources/` مع **27** محوّلاً — **22** إنجليزية (محولات ATS: Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday، وَ RSS، ومُجمّعات v1.75.0: RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, و BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs، و We Work Remotely، وَ Teamtailor الخاص بـ ATS لكل مستأجر المُضاف في v1.80.0) وَ 5 بوابات روسية. المُجمّعات السبعة المضافة في v1.75.0 هي مصادر على مستوى اللوحة أو مدفوعة بالإعداد بدلاً من ATSes لكل شركة: التغذيات عن بُعد الثلاث تُختار بـ `provider: remoteok|remotive|workingnomads`، والأربع الإقليمية (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) تقرأ كتلة إعداد `<provider>:` لكل إدخال — انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
 
 > **v1.69.0 (P-14) — اكتشاف تلقائي عند الإضافة.** إضافة مصدر ثاني عشر الآن **مجرد إسقاط ملف**. لم يعد السجل
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

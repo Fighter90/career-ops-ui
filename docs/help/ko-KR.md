@@ -832,12 +832,23 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 > 진행되는 동안 자동으로 갱신되며, 스캔이 끝난 직후 한 번 더
 > 갱신됩니다 — 수동 새로고침이나 페이지 전환이 필요 없습니다.
 
+> **v1.80.0 — Max per source & 소스 격리(quarantine).** Scan 버튼 옆의
+> **Max per source** 필드는 각 보드가 기여하는 채용 수를 제한합니다(빈 값/0 =
+> 무제한, 기본값) — 거대한 보드 하나가 결과를 지배하지 않도록 할 때 유용합니다.
+> 별도로, 영구적인 **404 / 410**을 반환하는 소스는
+> `data/scan-quarantine.json`에 기록되어 이후 스캔에서 건너뜁니다(자가 복구:
+> 14일 후 재시도). 따라서 죽은 슬러그가 더 이상 로그를 어지럽히지 않습니다.
+> `portals.yml`에서 `scan_quarantine: false`로 비활성화할 수 있습니다.
+
 필터:
 
 - **자유 텍스트** — 제목/회사에 대한 부분 문자열 일치.
-- **Source** 드롭다운 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads(`GET /api/scan/sources`에서 자동 생성).
+- **Source** 드롭다운 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads(`GET /api/scan/sources`에서 자동 생성).
 - **Remote / Hybrid / Onsite** 드롭다운.
 - **Country** 드롭다운 (v1.78.0) — 현재 결과에서 감지된 국가들로 채워지는 지리 필터로, 각 항목은 국기 이모지와 개수와 함께 표시됩니다(예: `🇩🇪 Germany (12)`). 하나를 선택하면 그 국가에 묶인 역할만 남습니다. 감지는 공고의 자유 텍스트 위치(국가명/별칭 + ~100개 주요 채용 시장 도시)를 국가로 매핑합니다. 보수적이며 결코 추측하지 않으므로, 위치를 확인할 수 없는 공고 — 또는 순수 "Remote" 공고 — 는 **All countries** 아래에 남습니다. 근무 형태 드롭다운과 결합하면 국가에 묶인 역할*과* 원격 역할을 모두 찾을 수 있습니다.
+- **Posted within** 드롭다운 (v1.80.0) — 클라이언트 측 기간 필터(Last 24 hours / 7 days / 30 days). `pubDate`가 더 오래된 행은 숨겨집니다. **날짜가 없는 행은 통과**합니다(누락된 데이터에는 불이익이 없음).
+- **★ Favorites** (v1.80.0) — 행의 ☆를 클릭하면 채용을 즐겨찾기에 추가합니다(URL 기준으로 `localStorage`에 저장). 필터 패널에서 **★ Favorites**를 체크하면 즐겨찾기한 행만 표시됩니다. 즐겨찾기는 스캔과 새로고침을 거쳐도 유지됩니다.
+- **Saved searches** (v1.80.0) — 필터 위의 바: 현재 필터 세트에 이름을 붙여 **💾 Save**한 다음, 드롭다운에서 다시 적용하거나 **🗑 Delete**할 수 있습니다. `localStorage`에 저장되며, 손상되거나 편집된 값은 깔끔하게 빈 상태로 초기화됩니다.
 - **스택 칩** (PHP / Go / Backend / Senior / …) — 각 행에 대해
   `Skills.detectTech`와 `Skills.detectLevel`이 자동 감지합니다.
   다중 선택은 교집합 — `PHP + Senior` 선택 시 두 가지 모두 가진
@@ -1513,7 +1524,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 
 ## 17. 새 채용 포털 소스를 추가하는 방법
 
-career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. v1.79.0 기준으로 `server/lib/sources/` 레지스트리는 **26**개의 어댑터를 포함합니다 — 영문 **21**개(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday ATS, RSS, 그리고 v1.75.0 애그리게이터 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, 그리고 BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, 그리고 We Work Remotely)와 러시아 보드 5개. v1.75.0에 추가된 7개의 애그리게이터는 회사별 ATS가 아니라 보드 전체 또는 설정 기반 소스입니다: 세 개의 리모트 피드는 `provider: remoteok|remotive|workingnomads`로 선택하고, 네 개의 지역 소스(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)는 항목별 `<provider>:` 설정 블록을 읽습니다 — YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
+career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. v1.80.0 기준으로 `server/lib/sources/` 레지스트리는 **27**개의 어댑터를 포함합니다 — 영문 **22**개(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday ATS, RSS, 그리고 v1.75.0 애그리게이터 RemoteOK / Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, 그리고 BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, 그리고 We Work Remotely, 그리고 v1.80.0 테넌트별 ATS Teamtailor)와 러시아 보드 5개. v1.75.0에 추가된 7개의 애그리게이터는 회사별 ATS가 아니라 보드 전체 또는 설정 기반 소스입니다: 세 개의 리모트 피드는 `provider: remoteok|remotive|workingnomads`로 선택하고, 네 개의 지역 소스(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK)는 항목별 `<provider>:` 설정 블록을 읽습니다 — YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
 
 > **v1.69.0 (P-14) — 드롭인 자동 검색.** 12번째 소스 추가는 이제
 > **순수 파일 드롭**입니다. 레지스트리

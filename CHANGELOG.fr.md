@@ -11,6 +11,10 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.80.0] — 2026-06-28
+
+**Cinq améliorations du scan (idées de job-crawler, réimplémentées).** (1) Source **Teamtailor** — sites `<slug>.teamtailor.com` via leur flux public `/jobs.rss`, auto-détecté depuis `careers_url` (hôte verrouillé + `redirect:'error'`) ; le registre compte désormais **27 adaptateurs**. (2) **Mise en quarantaine des sources** — une source en 404/410 permanent est enregistrée dans `data/scan-quarantine.json` et ignorée aux scans suivants (auto-réparation : nouvel essai après 14 jours). (3) **Max par source** — champ optionnel sur `#/scan` limitant le nombre d'offres par board (∞ par défaut). (4) **Publié depuis** — filtre d'ancienneté côté client (24 h / 7 j / 30 j). (5) **Recherches enregistrées + ★ favoris** — nommez et réutilisez des jeux de filtres et marquez des offres, dans `localStorage` avec validation défensive (un cache corrompu se réinitialise proprement) ; le cache de résultats est réinitialisé avant chaque scan puis rempli en direct.
+
 ## [1.79.0] — 2026-06-28
 
 **Source de scan WeWorkRemotely (parité career-ops v1.14.0).** Le flux RSS d'emplois à distance de [We Work Remotely](https://weworkremotely.com) est désormais une source de premier plan — ajoutez une entrée `provider: weworkremotely` et elle apparaît dans le menu **Source** de `#/scan` (**26 adaptateurs** au total). Hôte verrouillé sur weworkremotely.com avec `redirect:'error'` (anti-SSRF) ; les titres sont scindés sur `Company: Role`. De plus : les mots-clés `title_filter` sont désormais **rognés avant** la vérification de longueur (parent #1261).

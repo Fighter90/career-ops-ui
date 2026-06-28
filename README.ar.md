@@ -7,18 +7,18 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-1244%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-1258%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.79.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.79.0)
+[![release](https://img.shields.io/badge/release-v1.80.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.80.0)
 
-> **🆕 أحدث إصدار — v1.79.0**
+> **🆕 أحدث إصدار — v1.80.0**
 >
-> **مصدر مسح WeWorkRemotely (التكافؤ مع المشروع الأصلي career-ops v1.14.0).** أصبحت تغذية RSS لوظائف العمل عن بُعد على مستوى اللوحة بأكملها من [We Work Remotely](https://weworkremotely.com) الآن مصدر مسح من الدرجة الأولى — أضِف إدخال `provider: weworkremotely` فيظهر في قائمة **Source** المنسدلة على `#/scan` (إجمالاً **26 محوّلاً**). مُثبَّت على المضيف + `redirect:'error'` (آمن ضد SSRF)؛ وتُقسَّم العناوين عند `Company: Role`. وأيضاً: تُقتطَع كلمات `title_filter` المفتاحية قبل فحص الطول (المشروع الأصلي #1261). يُبنى على v1.78.x (**مرشّح الدولة في المسح**، و**التحديث التلقائي** للنتائج، و**Enter→المسح** في البحث العام، وشعار قابل للنقر)، وv1.77.0 (الدنماركية، اللغة 13)، وv1.76.0 (ستة مصادر ATS لكل مستأجر، و`trust_filter`، ومسح بلا حد أقصى).
+> **خمسة تحسينات للمسح** (أفكار مستوحاة من [job-crawler](https://github.com/bracketouverte/job-crawler)، أُعيد تنفيذها): مصدر **Teamtailor** — مواقع `<slug>.teamtailor.com` لكل مستأجر عبر تغذية `/jobs.rss` العامة الخاصة بها (**27 محوّلاً** إجمالاً)؛ و**حجر المصدر الصحي** — المصادر الميتة التي تُعيد 404/410 تُسجَّل وتُتجاوز في عمليات المسح اللاحقة (شفاء ذاتي بعد 14 يوماً)، ما يُنهي ضجيج الـ slug الميت المتكرر؛ وحقل سقف **Max per source** (∞ افتراضياً)؛ ومرشّح عمر **Posted within** (24 ساعة / 7 أيام / 30 يوماً)؛ و**عمليات البحث المحفوظة + ★ المفضّلة** على `#/scan`، محفوظة في `localStorage` مع تحقّق دفاعي. يُبنى على v1.79.0 (We Work Remotely)، وv1.78.x (مرشّح الدولة، والتحديث التلقائي، وEnter→المسح، وشعار قابل للنقر)، وv1.77.0 (الدنماركية)، وv1.76.0 (مصادر ATS لكل مستأجر، و`trust_filter`).
 >
-> _13 locales · 6 مزوّدات LLM · 26 محوّل ماسح · مرشّح حسب الدولة · التكافؤ مع المشروع الأصلي career-ops v1.14.0._
+> _13 locales · 6 مزوّدات LLM · 27 محوّل ماسح · عمليات بحث محفوظة + مفضّلة · التكافؤ مع المشروع الأصلي career-ops v1.14.0._
 
 ![career-ops-ui](./images/dashboard-ar.png)
 

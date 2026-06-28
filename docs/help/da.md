@@ -937,12 +937,23 @@ Under loggen gengiver resultattabellen rækker fra `data/last-scan.json`.
 
 > **v1.78.1 — live auto-opdatering.** Resultattabellen opdateres nu automatisk, mens en scanning kører, og endnu en gang lige efter den er færdig — ingen manuel genindlæsning eller sideskift nødvendigt.
 
+> **v1.80.0 — Max per source & kildekarantæne.** Feltet **Max per source**
+> ved siden af Scan-knappen sætter loft over, hvor mange jobs hvert board bidrager med
+> (tomt/0 = ubegrænset, standarden) — praktisk, når ét kæmpe board ellers ville
+> dominere. Separat skrives enhver kilde, der returnerer en permanent **404 / 410**, til
+> `data/scan-quarantine.json` og springes over ved senere scanninger (selvhelende: prøves igen
+> efter 14 dage), så døde slugs holder op med at spamme loggen. Deaktivér med
+> `scan_quarantine: false` i `portals.yml`.
+
 Filtre:
 
 - **Fritekst** — delstreng-match mod titel / virksomhed.
-- **Source**-dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (auto-udfyldt fra `GET /api/scan/sources`).
+- **Source**-dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (auto-udfyldt fra `GET /api/scan/sources`).
 - **Remote / Hybrid / Onsite**-dropdown.
 - **Country**-dropdown (v1.78.0) — et geografifilter, der udfyldes fra de lande, der er registreret på tværs af de aktuelle resultater, hvert vist med sit flag-emoji og et antal (f.eks. `🇩🇪 Germany (12)`). Vælg ét for kun at beholde roller knyttet til det land. Registreringen mapper et opslags fritekst-lokation (landenavne/aliasser + ~100 store jobmarkedsbyer) til et land; den er konservativ og gætter aldrig, så et opslag, hvis lokation ikke kan opløses — eller et rent "Remote"-opslag — forbliver under **All countries**. Kombinér det med arbejdstype-dropdownen for at finde både landebundne *og* fjernroller.
+- **Posted within**-dropdown (v1.80.0) — et aldersfilter på klientsiden (Sidste 24 timer / 7 dage / 30 dage). Rækker, hvis `pubDate` er ældre, skjules; rækker med **ingen angivet dato består** (manglende data straffes ikke).
+- **★ Favoritter** (v1.80.0) — klik på ☆ i en vilkårlig række for at markere et job med stjerne (gemt i `localStorage` efter URL); sæt flueben i **★ Favoritter** i filterpanelet for kun at vise stjernemarkerede rækker. Stjerner overlever scanninger og genindlæsninger.
+- **Gemte søgninger** (v1.80.0) — linjen over filtrene: navngiv det aktuelle filtersæt og **💾 Gem**, anvend det derefter igen fra dropdownen eller **🗑 Slet** det. Gemt i `localStorage`; en korrupt/redigeret værdi nulstilles rent til tom.
 - **Stack-chips** (PHP / Go / Backend / Senior / …) — auto-detekteret
   per række af `Skills.detectTech` og `Skills.detectLevel`. Multi-select
   intersektion — at vælge `PHP + Senior` viser rækker, der har BEGGE.
@@ -1618,13 +1629,13 @@ outputtet, og søg i issue-trackeren på
 
 career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved,
-hvordan man henter + normaliserer ét boards resultater. Pr. v1.79.0 leverer
-`server/lib/sources/`-registreringen **26** adaptere — **21** engelske (
+hvordan man henter + normaliserer ét boards resultater. Pr. v1.80.0 leverer
+`server/lib/sources/`-registreringen **27** adaptere — **22** engelske (
 Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday-ATS'erne, RSS,
 v1.75.0-aggregatorerne RemoteOK / Remotive / Working Nomads / IBM /
 Arbeitsagentur / Glints / Jobstreet · SEEK, og v1.76.0-per-tenant-ATS'erne
 BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, og det
-board-brede v1.79.0-RSS-feed We Work Remotely) og 5 russiske
+board-brede v1.79.0-RSS-feed We Work Remotely, og den v1.80.0-per-tenant-ATS Teamtailor) og 5 russiske
 boards. De syv aggregatorer tilføjet i v1.75.0 er board-brede eller config-drevne
 kilder valgt af `provider:`; de seks per-tenant-ATS'er tilføjet i v1.76.0
 (parent career-ops v1.13.0-paritet) auto-detekterer fra en `careers_url`-host

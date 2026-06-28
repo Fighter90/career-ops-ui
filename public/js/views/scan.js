@@ -148,6 +148,7 @@ Router.register('scan', async () => {
     { value: 'rss',             label: 'RSS' },
     { value: 'smartrecruiters', label: 'SmartRecruiters' },
     { value: 'solidjobs',       label: 'SolidJobs' },
+    { value: 'teamtailor',      label: 'Teamtailor' },
     { value: 'workable',        label: 'Workable' },
     { value: 'workday',         label: 'Workday' },
     { value: 'workingnomads',   label: 'Working Nomads' },
@@ -198,11 +199,28 @@ Router.register('scan', async () => {
     c('option', { value: 'all' }, t('scan.scopeAll')),
     c('option', { value: 'fresh' }, t('scan.scopeFresh')),
   ]);
+  // v1.80.0 — "Posted within" age filter (client-side, by job.date). Jobs with
+  // no listed date pass (don't penalize missing data, like the other filters).
+  const filterAge = c('select', { className: 'select' }, [
+    c('option', { value: '' }, t('scan.ageAny', 'Any time')),
+    c('option', { value: '1' }, t('scan.age1d', 'Last 24 hours')),
+    c('option', { value: '7' }, t('scan.age7d', 'Last 7 days')),
+    c('option', { value: '30' }, t('scan.age30d', 'Last 30 days')),
+  ]);
+  // v1.80.0 — ⭐ favorites-only toggle (localStorage-backed, by job URL).
+  const favOnly = c('input', { type: 'checkbox', id: 'fav-only' });
 
   const companySelect = c('select', { className: 'select', id: 'company-select' }, [
     c('option', { value: '' }, t('scan.allCompanies')),
     ...apiCompanies.map((co) => c('option', { value: co.name }, co.name)),
   ]);
+  // v1.80.0 — optional per-source cap (0/empty = unlimited, the default).
+  const maxPerSource = c('input', {
+    type: 'number', inputmode: 'numeric', min: '0', step: '10',
+    className: 'input', placeholder: '∞',
+    'aria-label': t('scan.maxPerSource', 'Max jobs per source'),
+    style: { maxWidth: '110px' },
+  });
 
   // v1.46.0 (WS2 #6/#21/#24) — run-state, Stop, persistent error banner.
   let activeES = null;   // in-flight EventSource handle (for #6 Stop)
@@ -313,6 +331,17 @@ Router.register('scan', async () => {
   // endpoint `/api/stream/scan?source=ats|regional`. The legacy
   // `/api/stream/scan-{en,ru}` aliases stay live with Sunset headers
   // through v1.16 but are no longer the SPA's transport.
+  // v1.80.0 — add the optional per-source cap to a scan request (0/empty = ∞).
+  function addMaxPerSource(params) {
+    const n = parseInt(maxPerSource.value, 10);
+    if (Number.isFinite(n) && n > 0) params.set('maxPerSource', String(n));
+  }
+  // v1.80.0 — reset the results cache before a scan so the table visibly clears,
+  // then the live poll + terminal `done` refill it with the new run's results.
+  function resetResultsCache() {
+    lastResults = { en: null, ru: null };
+    renderResults();
+  }
   function runEnScan() {
     lastRunFn = runEnScan;
     const params = new URLSearchParams();
@@ -320,6 +349,8 @@ Router.register('scan', async () => {
     if (dryRun.checked) params.set('dryRun', '1');
     const company = companySelect.value;
     if (company) params.set('company', company);
+    addMaxPerSource(params);
+    resetResultsCache();
     streamTo(consoleEl, '/api/stream/scan?' + params.toString(), 'ATS', refreshResults);
   }
   function runRuScan() {
@@ -340,11 +371,13 @@ Router.register('scan', async () => {
     if (dryRun.checked) params.set('dryRun', '1');
     const company = companySelect.value;
     if (company) params.set('company', company);
+    addMaxPerSource(params);
 
     consoleEl.textContent = '';
     clearScanError();
     setScanRunning(true);
     lastRunFn = runScanAll;
+    resetResultsCache();   // v1.80.0 — clear before scan; poll + done refill
     UI.toast(t('scan.runAll', 'Scanning all sources…'), 'success');
 
     // v1.78.1 — live auto-refresh. Poll the results table every 2.5s while the
@@ -510,6 +543,10 @@ Router.register('scan', async () => {
     const fr = filterRemote.value;
     const fs = filterSource.value;
     const fc = filterCountry.value; // v1.78.0 — country code or '' (all)
+    const fa = parseInt(filterAge.value, 10); // v1.80.0 — max age in days (NaN = any)
+    const ageCutoff = Number.isFinite(fa) && fa > 0 ? Date.now() - fa * 86400000 : null;
+    // v1.80.0 — favorites-only: snapshot the starred set once per render.
+    const favSet = favOnly.checked ? new Set(window.ScanPrefs.listFavorites()) : null;
     const salMin = parseInt(filterSalaryMin.value, 10);
     const salMax = parseInt(filterSalaryMax.value, 10);
     const rows = allRows.filter((r) => {
@@ -520,6 +557,13 @@ Router.register('scan', async () => {
       if (fr === 'reloc' && !r.relocates) return false;
       if (fs && r.source !== fs) return false;
       if (fc && !window.Countries.rowInCountry(r, fc)) return false;
+      if (favSet && !favSet.has(r.url)) return false;
+      // age: rows with a parseable date older than the cutoff are dropped;
+      // dateless rows pass (don't penalize missing data).
+      if (ageCutoff !== null && r.date) {
+        const t0 = Date.parse(r.date);
+        if (Number.isFinite(t0) && t0 < ageCutoff) return false;
+      }
       if (!window.Skills.salaryInRange(r, salMin, salMax)) return false;
       if (!window.Skills.rowMatches(r, activeTech, activeLevel)) return false;
       if (activeDynamic.size) {
@@ -572,7 +616,21 @@ Router.register('scan', async () => {
         trustBadge,
         c('a', { href: r.url, target: '_blank', rel: 'noopener', style: { color: 'var(--rausch)' } }, r.title),
       ]);
+      // v1.80.0 — ⭐ favorite toggle (localStorage, by URL). Re-renders so the
+      // "favorites only" filter reflects the change immediately.
+      const starred = window.ScanPrefs.isFavorite(r.url);
+      const starCell = c('td', { style: { width: '28px', textAlign: 'center' } },
+        c('button', {
+          type: 'button',
+          className: 'btn-star' + (starred ? ' on' : ''),
+          title: starred ? t('scan.unstar', 'Remove from favorites') : t('scan.star', 'Add to favorites'),
+          'aria-label': starred ? t('scan.unstar', 'Remove from favorites') : t('scan.star', 'Add to favorites'),
+          'aria-pressed': starred ? 'true' : 'false',
+          onClick: () => { window.ScanPrefs.toggleFavorite(r.url); renderResults(); },
+          style: { background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '15px', lineHeight: '1', color: starred ? 'var(--rausch)' : 'var(--foggy)' },
+        }, starred ? '★' : '☆'));
       return c('tr', null, [
+        starCell,
         c('td', { style: { minWidth: '160px' } }, r.company || '—'),
         titleCell,
         c('td', { style: { fontSize: '13px', color: 'var(--foggy)' } }, r.location || '—'),
@@ -585,7 +643,7 @@ Router.register('scan', async () => {
     resultsEl.appendChild(c('div', { className: 'table-wrap' },
       c('table', { className: 'tbl' }, [
         c('thead', null, c('tr', null,
-          [t('scan.col.company'), t('scan.col.role'), t('scan.col.loc'), t('scan.col.type'), 'Reloc', t('scan.col.salary'), t('scan.col.source')].map((h) => c('th', null, h))
+          ['★', t('scan.col.company'), t('scan.col.role'), t('scan.col.loc'), t('scan.col.type'), 'Reloc', t('scan.col.salary'), t('scan.col.source')].map((h) => c('th', null, h))
         )),
         tbody,
       ])
@@ -607,14 +665,77 @@ Router.register('scan', async () => {
     filterSource.value = '';
     filterCountry.value = '';
     filterScope.value = 'all';
+    filterAge.value = '';
+    favOnly.checked = false;
+    activeTech.clear(); activeLevel.clear(); activeDynamic.clear();
+    applyFilters();
+  }
+  // v1.80.0 — capture/restore the whole filter set for saved searches.
+  function getFilterState() {
+    return {
+      text: filterText.value, remote: filterRemote.value,
+      salaryMin: filterSalaryMin.value, salaryMax: filterSalaryMax.value,
+      source: filterSource.value, country: filterCountry.value,
+      scope: filterScope.value, age: filterAge.value, favOnly: favOnly.checked,
+      tech: [...activeTech], level: [...activeLevel], dynamic: [...activeDynamic],
+    };
+  }
+  function setFilterState(s) {
+    s = s || {};
+    filterText.value = s.text || '';
+    filterRemote.value = s.remote || '';
+    filterSalaryMin.value = s.salaryMin || '';
+    filterSalaryMax.value = s.salaryMax || '';
+    filterSource.value = s.source || '';
+    filterCountry.value = s.country || '';
+    filterScope.value = s.scope || 'all';
+    filterAge.value = s.age || '';
+    favOnly.checked = !!s.favOnly;
+    activeTech.clear(); (Array.isArray(s.tech) ? s.tech : []).forEach((x) => activeTech.add(x));
+    activeLevel.clear(); (Array.isArray(s.level) ? s.level : []).forEach((x) => activeLevel.add(x));
+    activeDynamic.clear(); (Array.isArray(s.dynamic) ? s.dynamic : []).forEach((x) => activeDynamic.add(x));
     applyFilters();
   }
   // Enter in any text/number field applies (keyboard parity with the button).
   ;[filterText, filterSalaryMin, filterSalaryMax].forEach((el) =>
     el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyFilters(); } }));
-  // Selects feel broken if they need a second click, so they apply on change.
-  ;[filterRemote, filterSource, filterCountry, filterScope].forEach((el) =>
+  // Selects/checkboxes feel broken if they need a second click, so they apply on change.
+  ;[filterRemote, filterSource, filterCountry, filterScope, filterAge, favOnly].forEach((el) =>
     el.addEventListener('change', applyFilters));
+
+  // v1.80.0 — saved-searches bar (localStorage via window.ScanPrefs).
+  const ssSelect = c('select', { className: 'select', 'aria-label': t('scan.savedSearches', 'Saved searches') },
+    [c('option', { value: '' }, t('scan.savedNone', 'Saved searches…'))]);
+  const ssName = c('input', { className: 'input', placeholder: t('scan.savedName', 'Name this search…'), style: { maxWidth: '200px' } });
+  function refreshSavedSearches(selected) {
+    while (ssSelect.children.length > 1) ssSelect.removeChild(ssSelect.lastChild);
+    for (const s of window.ScanPrefs.listSearches()) ssSelect.appendChild(c('option', { value: s.name }, s.name));
+    if (selected != null) ssSelect.value = selected;
+  }
+  refreshSavedSearches();
+  ssSelect.addEventListener('change', () => {
+    const name = ssSelect.value;
+    if (!name) return;
+    const s = window.ScanPrefs.getSearch(name);
+    if (s) setFilterState(s.filters);
+  });
+  const ssSaveBtn = c('button', { className: 'btn btn-ghost', type: 'button', onClick: () => {
+    const name = (ssName.value || '').trim();
+    if (!name) { UI.toast(t('scan.savedNeedName', 'Enter a name to save the search'), 'error'); return; }
+    window.ScanPrefs.saveSearch(name, getFilterState());
+    ssName.value = '';
+    refreshSavedSearches(name);
+    UI.toast(t('scan.savedOk', 'Search saved'), 'success');
+  } }, '💾 ' + t('scan.saveSearch', 'Save search'));
+  const ssDelBtn = c('button', { className: 'btn btn-ghost', type: 'button', onClick: () => {
+    const name = ssSelect.value;
+    if (!name) return;
+    window.ScanPrefs.removeSearch(name);
+    refreshSavedSearches('');
+    UI.toast(t('scan.savedDeleted', 'Search deleted'), 'success');
+  } }, '🗑 ' + t('scan.deleteSearch', 'Delete'));
+  const savedSearchBar = c('div', { className: 'flex', style: { gap: '8px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '8px' } },
+    [ssSelect, ssName, ssSaveBtn, ssDelBtn]);
   const applyBtn = c('button', { className: 'btn btn-primary', type: 'button', onClick: applyFilters }, t('scan.applyFilters', 'Apply'));
   const resetBtn = c('button', { className: 'btn btn-ghost', type: 'button', onClick: resetFilters }, t('scan.resetFilters', 'Reset'));
   // Labelled field: the control is WRAPPED in a <label> (implicit association
@@ -680,6 +801,11 @@ Router.register('scan', async () => {
         c('label', { className: 'flex', htmlFor: 'dry-run', style: { gap: '8px', userSelect: 'none' } }, [
           dryRun, c('span', null, t('scan.dryRun')),
         ]),
+        // v1.80.0 — optional per-source cap (∞ by default).
+        c('div', { className: 'field', style: { marginBottom: 0 } }, [
+          c('label', null, t('scan.maxPerSource', 'Max per source')),
+          maxPerSource,
+        ]),
         // Single "Scan" button — runs every enabled source (EN APIs +
         // RU portals) in one go. The earlier separate EN-scan / RU-scan
         // buttons were noisy; users almost always want everything.
@@ -695,6 +821,8 @@ Router.register('scan', async () => {
 
     c('section', { className: 'section' }, [
       c('h2', { className: 'section-title', style: { marginTop: 0 } }, t('scan.results')),
+      // v1.80.0 — saved-searches bar (name + Save + apply/delete).
+      savedSearchBar,
       // v1.68.0 — every filter is a labelled .field (label ABOVE the control),
       // laid out in one panel so it's obvious what each box does. An explicit
       // Apply button re-runs the filter (esp. the salary range); Reset clears.
@@ -705,7 +833,13 @@ Router.register('scan', async () => {
         field(t('scan.salaryTo', 'Salary to'), filterSalaryMax),
         field(t('scan.lblSource', 'Source'), filterSource),
         field(t('scan.lblCountry', 'Country'), filterCountry),
+        field(t('scan.lblAge', 'Posted within'), filterAge),
         field(t('scan.lblScope', 'Scope'), filterScope),
+        // v1.80.0 — ⭐ favorites-only toggle (labelled checkbox field).
+        c('label', { className: 'field scan-field', htmlFor: 'fav-only' }, [
+          c('span', { className: 'scan-field__label' }, t('scan.favOnly', '★ Favorites')),
+          c('span', { className: 'flex', style: { gap: '6px', alignItems: 'center', height: '38px' } }, [favOnly, c('span', { style: { fontSize: '13px', color: 'var(--foggy)' } }, t('scan.favOnlyHint', 'starred only'))]),
+        ]),
         c('div', { className: 'scan-filters__actions field' }, [
           c('label', { 'aria-hidden': 'true', style: { visibility: 'hidden' } }, '·'),
           c('div', { className: 'flex', style: { gap: '8px' } }, [applyBtn, resetBtn]),

@@ -7,18 +7,18 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-1244%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-1258%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.79.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.79.0)
+[![release](https://img.shields.io/badge/release-v1.80.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.80.0)
 
-> **🆕 Останній реліз — v1.79.0**
+> **🆕 Останній реліз — v1.80.0**
 >
-> **Джерело сканування WeWorkRemotely (паритет із батьківським career-ops v1.14.0).** Загальнодошкова RSS-стрічка віддалених вакансій [We Work Remotely](https://weworkremotely.com) тепер є повноцінним джерелом сканування — додайте запис `provider: weworkremotely`, і воно з'явиться у випадаючому списку **Source** на `#/scan` (загалом **26 адаптерів**). Прив'язане до хоста + `redirect:'error'` (захищене від SSRF); заголовки розбиваються за `Company: Role`. Також: ключові слова `title_filter` тепер обрізаються перед перевіркою довжини (батьківський #1261). Базується на v1.78.x (**гео-фільтр сканування**, **автооновлення** результатів, **Enter→Сканування** у глобальному пошуку, клікабельний логотип), v1.77.0 (данська, 13-та локаль) і v1.76.0 (шість джерел ATS на тенант, `trust_filter`, необмежене сканування).
+> **П'ять покращень сканування** (ідеї з [job-crawler](https://github.com/bracketouverte/job-crawler), перереалізовані): джерело **Teamtailor** — сайти `<slug>.teamtailor.com` на тенант через їхню публічну стрічку `/jobs.rss` (загалом **27 адаптерів**); **карантин джерел** — мертві джерела з кодом 404/410 записуються та пропускаються під час подальших сканувань (самовідновлення через 14 днів), що усуває постійний шум від мертвих slug-ів; поле обмеження **Max per source** (∞ за замовчуванням); фільтр за віком **Posted within** (24 год / 7 днів / 30 днів); а також **збережені пошуки + ★ обране** на `#/scan`, що зберігаються в `localStorage` із захисною валідацією. Базується на v1.79.0 (We Work Remotely), v1.78.x (фільтр за країною, автооновлення, Enter→Сканування, клікабельний логотип), v1.77.0 (данська) і v1.76.0 (джерела ATS на тенант, `trust_filter`).
 >
-> _13 locales · 6 LLM-провайдерів · 26 адаптерів сканера · фільтр за країною · паритет із батьківським career-ops v1.14.0._
+> _13 locales · 6 LLM-провайдерів · 27 адаптерів сканера · збережені пошуки + обране · паритет із батьківським career-ops v1.14.0._
 
 ![career-ops-ui](./images/dashboard-uk.png)
 

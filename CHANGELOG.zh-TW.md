@@ -9,6 +9,10 @@
 ---
 
 
+## [1.80.0] — 2026-06-28
+
+**五項掃描升級（源自 job-crawler 的想法，已重新實作）。** (1) **Teamtailor** 來源——透過其公開 `/jobs.rss` 來源抓取 `<slug>.teamtailor.com` 的按租戶站點，從 `careers_url` 自動辨識（主機鎖定 + `redirect:'error'`）；註冊表現有 **27 個轉接器**。(2) **來源隔離**——回傳永久 404/410 的來源會寫入 `data/scan-quarantine.json` 並在後續掃描中略過（自我修復：14 天後重試）。(3) **每來源上限**——`#/scan` 上的選用欄位，限制每個 board 的職缺數（預設 ∞）。(4) **發佈時間**——用戶端的時效篩選（24 小時 / 7 天 / 30 天）。(5) **已儲存搜尋 + ★ 收藏**——為篩選組合命名並重用、為職缺加星；儲存在 `localStorage` 並具防禦性驗證（損壞的快取會乾淨重設）；結果快取在每次掃描前重設並即時回填。
+
 ## [1.79.0] — 2026-06-28
 
 **WeWorkRemotely 掃描來源（與上游 career-ops v1.14.0 對齊）。** [We Work Remotely](https://weworkremotely.com) 全站遠端職缺 RSS 來源現已成為一級掃描來源——加入 `provider: weworkremotely` 條目後即出現在 `#/scan` 的 **Source** 下拉中（共 **26 個轉接器**）。主機鎖定為 weworkremotely.com 並使用 `redirect:'error'`（防 SSRF）；標題以 `Company: Role` 拆分。此外，`title_filter` 關鍵字現在會在長度檢查**之前修剪**（parent #1261）。

@@ -853,12 +853,23 @@ Abaixo do log, a tabela de resultados renderiza linhas de
 > atualiza automaticamente enquanto uma varredura roda e mais uma vez logo após
 > terminar — sem recarregar manualmente nem trocar de página.
 
+> **v1.80.0 — Máx. por fonte & quarentena de fontes.** O campo **Máx. por fonte**
+> ao lado do botão Varrer limita quantas vagas cada board contribui (vazio/0 =
+> sem limite, o padrão) — útil quando um board enorme dominaria os resultados.
+> Separadamente, qualquer fonte que retorne um **404 / 410** permanente é gravada
+> em `data/scan-quarantine.json` e ignorada nas varreduras seguintes
+> (autorrecuperação: nova tentativa após 14 dias), para que slugs mortos parem de
+> poluir o log. Desative com `scan_quarantine: false` no `portals.yml`.
+
 Filtros:
 
 - **Texto livre** — match de substring contra título / empresa.
-- Dropdown de **Fonte** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (preenchido automaticamente a partir de `GET /api/scan/sources`).
+- Dropdown de **Fonte** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (preenchido automaticamente a partir de `GET /api/scan/sources`).
 - Dropdown **Remote / Hybrid / Onsite**.
 - Dropdown **Country** (v1.78.0) — um filtro de geografia preenchido a partir dos países detectados nos resultados atuais, cada um exibido com seu emoji de bandeira e uma contagem (ex.: `🇩🇪 Germany (12)`). Escolha um para manter apenas as vagas ligadas àquele país. A detecção mapeia a localização em texto livre de uma vaga (nomes de países/aliases + ~100 grandes cidades do mercado de trabalho) para um país; é conservadora e nunca chuta, então uma vaga cuja localização não possa ser resolvida — ou um anúncio puramente "Remote" — permanece em **All countries**. Combine com o dropdown de tipo de trabalho para encontrar vagas ligadas a um país *e* remotas.
+- Dropdown **Publicado nos últimos** (v1.80.0) — um filtro de idade no lado do cliente (Últimas 24 horas / 7 dias / 30 dias). Linhas cujo `pubDate` é mais antigo ficam ocultas; linhas **sem data listada passam** (a ausência de dados não é penalizada).
+- **★ Favoritos** (v1.80.0) — clique no ☆ em qualquer linha para marcar uma vaga com estrela (armazenada no `localStorage` por URL); marque **★ Favoritos** no painel de filtros para mostrar apenas as linhas com estrela. As estrelas sobrevivem a varreduras e recarregamentos.
+- **Buscas salvas** (v1.80.0) — a barra acima dos filtros: nomeie o conjunto de filtros atual e **💾 Salvar**, depois reaplique-o pelo dropdown ou **🗑 Exclua**-o. Armazenado no `localStorage`; um valor corrompido/editado é redefinido limpo para vazio.
 - **Chips de stack** (PHP / Go / Backend / Senior / …) —
   auto-detectados por linha por `Skills.detectTech` e
   `Skills.detectLevel`. Interseção multi-select — selecionar
@@ -1580,11 +1591,11 @@ copie a saída, e busque a issue no rastreador em
 
 O career-ops-ui trata cada job board como um **adapter** — um único arquivo em
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe
-como buscar e normalizar os resultados de um portal. A partir da v1.79.0 o
-registry [`server/lib/sources/`](../../server/lib/sources/) inclui **26**
-adapters — 21 em inglês (os ATSes Greenhouse / Ashby / Lever / Workable /
+como buscar e normalizar os resultados de um portal. A partir da v1.80.0 o
+registry [`server/lib/sources/`](../../server/lib/sources/) inclui **27**
+adapters — 22 em inglês (os ATSes Greenhouse / Ashby / Lever / Workable /
 SmartRecruiters / Workday, RSS e os agregadores da v1.75.0 RemoteOK /
-Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, e BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, e We Work Remotely)
+Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, e BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, e We Work Remotely, e o ATS por tenant da v1.80.0 Teamtailor)
 e 5 boards russos. Os sete agregadores adicionados na v1.75.0 são fontes de
 todo o board ou orientadas a configuração, e não ATSes por empresa: os três
 feeds remotos são selecionados com `provider: remoteok|remotive|workingnomads`,

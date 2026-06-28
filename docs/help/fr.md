@@ -950,16 +950,29 @@ Sous le journal, le tableau de résultats affiche les lignes de
 > se met désormais à jour automatiquement pendant qu'un scan tourne et une fois
 > de plus juste après la fin — sans rechargement manuel ni changement de page.
 
+> **v1.80.0 — Max par source & mise en quarantaine des sources.** Le champ
+> **Max par source** à côté du bouton Scan plafonne le nombre d'offres que
+> chaque board contribue (vide/0 = illimité, la valeur par défaut) — pratique
+> quand un board énorme dominerait autrement. Par ailleurs, toute source qui
+> renvoie un **404 / 410** permanent est écrite dans
+> `data/scan-quarantine.json` et ignorée lors des scans suivants
+> (auto-réparation : réessayée après 14 jours), pour que les slugs morts cessent
+> de polluer le journal. Désactivez avec `scan_quarantine: false` dans
+> `portals.yml`.
+
 Filtres :
 
 - **Texte libre** — correspondance de sous-chaîne sur le titre / l'entreprise.
 - Menu déroulant **Source** — Arbeitsagentur / Ashby / BambooHR / Breezy HR /
   Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM /
   Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS /
-  SmartRecruiters / SolidJobs / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads
+  SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads
   (auto-rempli depuis `GET /api/scan/sources`).
 - Menu déroulant **Remote / Hybrid / Onsite**.
 - Menu déroulant **Country** (v1.78.0) — un filtre géographique alimenté par les pays détectés dans les résultats actuels, chacun affiché avec son emoji de drapeau et un décompte (p. ex. `🇩🇪 Germany (12)`). Choisissez-en un pour ne garder que les postes liés à ce pays. La détection mappe la localisation en texte libre d'une offre (noms de pays/alias + ~100 grandes villes du marché de l'emploi) vers un pays ; elle est prudente et ne devine jamais, de sorte qu'une offre dont la localisation ne peut être résolue — ou une annonce purement « Remote » — reste sous **All countries**. Combinez-le avec le menu déroulant de type de travail pour trouver des postes liés à un pays *et* à distance.
+- Menu déroulant **Publié depuis** (v1.80.0) — un filtre d'ancienneté côté client (Dernières 24 heures / 7 jours / 30 jours). Les lignes dont la `pubDate` est plus ancienne sont masquées ; les lignes **sans date indiquée passent** (l'absence de donnée n'est pas pénalisée).
+- **★ Favoris** (v1.80.0) — cliquez sur le ☆ d'une ligne pour mettre une offre en favori (stocké dans `localStorage` par URL) ; cochez **★ Favoris** dans le panneau de filtres pour n'afficher que les lignes favorites. Les favoris survivent aux scans et aux rechargements.
+- **Recherches enregistrées** (v1.80.0) — la barre au-dessus des filtres : nommez le jeu de filtres actuel et **💾 Enregistrer**, puis ré-appliquez-le depuis le menu déroulant ou **🗑 Supprimer**-le. Stocké dans `localStorage` ; une valeur corrompue/modifiée se réinitialise proprement à vide.
 - **Puces de stack** (PHP / Go / Backend / Senior / …) — auto-détectées par
   ligne par `Skills.detectTech` et `Skills.detectLevel`. Intersection
   multi-sélection — choisir `PHP + Senior` montre les lignes qui ont les
@@ -1659,11 +1672,11 @@ copiez la sortie, et cherchez le problème sur le tracker d'incidents à
 career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un
 fichier unique sous
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait
-récupérer + normaliser les résultats d'un site. Depuis la v1.79.0, le
-registre [`server/lib/sources/`](../../server/lib/sources/) livre **26**
-adaptateurs — 21 anglais (les ATS Greenhouse / Ashby / Lever / Workable /
+récupérer + normaliser les résultats d'un site. Depuis la v1.80.0, le
+registre [`server/lib/sources/`](../../server/lib/sources/) livre **27**
+adaptateurs — 22 anglais (les ATS Greenhouse / Ashby / Lever / Workable /
 SmartRecruiters / Workday, RSS, et les agrégateurs de la v1.75.0 RemoteOK /
-Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, et BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, et We Work Remotely)
+Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, et BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, et We Work Remotely, et l'ATS par tenant v1.80.0 Teamtailor)
 et 5 sites russes. Les sept agrégateurs ajoutés en v1.75.0 sont des sources
 couvrant tout un board ou pilotées par config plutôt que des ATS par
 entreprise : les trois flux remote se sélectionnent avec

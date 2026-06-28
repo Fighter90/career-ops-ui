@@ -223,7 +223,27 @@ redirect can't bounce the fetch off-domain (SSRF-safe).
   - name: ComeetCo
     api: https://www.comeet.co/careers-api/2.0/company/<uid>/positions?token=<token>
     enabled: true
+
+  # Teamtailor (v1.80.0) — https://<slug>.teamtailor.com (public /jobs.rss feed)
+  - name: Acme
+    careers_url: https://acme.teamtailor.com
+    enabled: true
 ```
+
+## Scan options (v1.80.0)
+
+Two optional top-level keys tune the EN scan:
+
+```yaml
+# Source quarantine: skip sources that returned a permanent 404/410 on a prior
+# run (recorded in data/scan-quarantine.json, auto-retried after 14 days).
+# On by default; set to false to always retry every source.
+scan_quarantine: true
+```
+
+The **Max per source** cap (∞ by default) and the **Posted within** age filter
+are per-run UI controls on `#/scan` (no YAML needed); **saved searches** and
+**★ favorites** are stored in your browser's `localStorage`.
 
 ## RU portals (extension recognized by career-ops-ui)
 

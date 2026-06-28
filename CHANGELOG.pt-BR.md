@@ -9,6 +9,10 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.80.0] — 2026-06-28
+
+**Cinco melhorias de varredura (ideias do job-crawler, reimplementadas).** (1) Fonte **Teamtailor** — sites `<slug>.teamtailor.com` via o feed público `/jobs.rss`, autodetectado de `careers_url` (host fixado + `redirect:'error'`); o registro agora traz **27 adaptadores**. (2) **Quarentena de fontes** — uma fonte com 404/410 permanente é gravada em `data/scan-quarantine.json` e ignorada em varreduras posteriores (autocorrigível: nova tentativa após 14 dias). (3) **Máx. por fonte** — campo opcional em `#/scan` que limita vagas por board (∞ por padrão). (4) **Publicado em** — filtro de idade no cliente (24h / 7d / 30d). (5) **Buscas salvas + ★ favoritos** — nomeie e reutilize conjuntos de filtros e marque vagas, em `localStorage` com validação defensiva (cache corrompido reinicia limpo); o cache de resultados é reiniciado antes de cada varredura e preenchido ao vivo.
+
 ## [1.79.0] — 2026-06-28
 
 **Fonte de varredura WeWorkRemotely (paridade com career-ops v1.14.0).** O feed RSS de vagas remotas do [We Work Remotely](https://weworkremotely.com) agora é uma fonte de primeira classe — adicione uma entrada `provider: weworkremotely` e ela aparece no seletor **Source** de `#/scan` (**26 adaptadores** no total). Host fixado em weworkremotely.com com `redirect:'error'` (anti-SSRF); títulos divididos por `Company: Role`. Além disso: as palavras-chave de `title_filter` agora são **aparadas antes** da verificação de comprimento (parent #1261).
