@@ -18,7 +18,7 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 >
 > **Źródło skanowania WeWorkRemotely (parytet z nadrzędnym career-ops v1.14.0).** Ogólnoportalowy kanał RSS zdalnych ofert [We Work Remotely](https://weworkremotely.com) jest teraz pełnoprawnym źródłem skanowania — dodaj wpis `provider: weworkremotely`, a pojawi się w menu rozwijanym **Source** na `#/scan` (łącznie **26 adapterów**). Przypięty do hosta + `redirect:'error'` (bezpieczny wobec SSRF); tytuły dzielone według `Company: Role`. Ponadto: słowa kluczowe `title_filter` są teraz przycinane przed sprawdzeniem długości (nadrzędny #1261). Bazuje na v1.78.x (**filtr kraju** w skanowaniu, **automatyczne odświeżanie** wyników, **Enter→Skanowanie** w globalnym wyszukiwaniu, klikalne logo), v1.77.0 (duński, 13. lokalizacja) i v1.76.0 (sześć źródeł ATS na tenant, `trust_filter`, nielimitowane skanowanie).
 >
-> _13 locales · 6 dostawców LLM · 26 scanner adapters · filtr według kraju · parytet z nadrzędnym career-ops v1.14.0._
+> _13 locales · 6 dostawców LLM · 26 adapterów skanera · filtr według kraju · parytet z nadrzędnym career-ops v1.14.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 
