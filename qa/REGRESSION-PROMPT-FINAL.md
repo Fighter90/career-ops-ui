@@ -2,16 +2,25 @@
 
 Canonical post-cycle regression handoff written **after** the v1.58.52 → v1.59.10 closure (17 single-fix releases + 2 verification patches + 1 v1.59.2 chip hotfix + 1 v1.59.8 doctrine-exception bundle + v1.59.9 UX-A5-r4 (6th-cycle close with behavioural test) + v1.59.10 NEW-F1-sub-r1 (path-traversal guard hoist), all CI-green, all AI-review LGTM). This document is the 100 %-maturity verification protocol — run it before declaring a 1.x line frozen.
 
-**Baseline at v1.61.1:** **1003** unit · 81 Playwright (smoke + full-cycle + forms + locale-sweep + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E.
+**Baseline at v1.80.0:** **1258** unit · **85** Playwright (smoke + full-cycle + forms + locale-sweep ×13 + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL.
 
-> **Shipped since this cycle (v1.60.0 → v1.61.1):** I18N-SPLIT (per-locale
-> dictionary, v1.60.0); **French (`fr`) added as the 9th UI locale**
-> (v1.61.0) — all "8 locales / ×8" counts above are now **9 / ×9**; and
-> **MINOR-001** (v1.61.1) — theme-toggle `title`/`aria-label` localized via a
-> new `data-i18n-title` hook. For the locale work use the dedicated prompts:
-> `qa/QA-REGRESSION-PROMPT-v1.61.0-FULL.md` (exhaustive) and
-> `qa/QA-REGRESSION-PROMPT-fr-v1.61.0.md` (focused). This document remains the
-> perennial maturity-verification protocol.
+> **⚠️ This file is the perennial maturity/doctrine ledger.** The §0 lessons and
+> §3 invariant history below are archival and still apply. For the **current
+> whole-project, all-13-languages** sign-off use the canonical driver
+> **[`qa/QA-REGRESSION-PROMPT.md`](./QA-REGRESSION-PROMPT.md)** (v1.80.0); the
+> parent-parity gate driver is `qa/QA-REGRESSION-PROMPT-v1.76.0-FULL.md` and the
+> exhaustive per-button × per-page × per-language UI sweep is
+> `key/E2E-REGRESSION-EVERY-BUTTON-EVERY-LANGUAGE-v1.78.0.md`.
+>
+> **Shipped since this ledger was frozen (v1.60.0 → v1.80.0):** I18N-SPLIT
+> (v1.60.0); **13 UI locales** — fr (v1.61.0), then pl/uk/ar (v1.70.0, **Arabic
+> is RTL**), then **Danish da (v1.77.0)** — so every "8 / 9 locales · ×8/×9" count
+> below is now **13 · ×13**; **27 scan adapters** (parent-parity ATSes + the
+> v1.75.0 aggregators + v1.79.0 We Work Remotely + v1.80.0 Teamtailor); **country
+> filter** (v1.78.0); **trust_filter** + uncapped paginated results (v1.76.0);
+> **source quarantine**, **per-source cap**, **Posted-within age filter**, and
+> **saved searches + ★ favorites** (v1.80.0); the **career-ops-ui radar rebrand**
+> (v1.78.0); help-bundle parity is now **19 H2 / 75 H3**.
 
 ---
 
@@ -19,7 +28,7 @@ Canonical post-cycle regression handoff written **after** the v1.58.52 → v1.59
 
 Non-negotiable for any future ship.
 
-1. **One fix per release.** HIGH → MEDIUM → LOW. Each release ships: bump + CHANGELOG ×9 (parity-gated) + dedicated test + Playwright-verify + pre-commit AI-review LGTM + `ci.yml` green + redeploy.
+1. **One fix per release.** HIGH → MEDIUM → LOW. Each release ships: bump + CHANGELOG ×13 (parity-gated) + dedicated test + Playwright-verify + pre-commit AI-review LGTM + `ci.yml` green + redeploy.
 2. **CHANGELOG parity is non-negotiable.** Run `node scripts/check-changelog-parity.mjs` before every commit.
 3. **`ci.yml` is the hard gate.** Pre-commit AI review is advisory.
 4. **`[hidden]` is shadowed by author `display:` rules.** Add explicit `.x[hidden] { display: none }` override.
@@ -28,7 +37,7 @@ Non-negotiable for any future ship.
 7. **`PATHS` resolves once per process.** Static guard in `tests/paths-once.test.mjs`.
 8. **Lifecycle listeners must scope to the route via `hashchange` cleanup.** v1.58.36 / 52 / 55 / 58 — same pattern.
 9. **Author cascade beats UA-level `[hidden]`.** v1.58.34 / 35 / 60 — same trap.
-10. **Help bundle parity (H2 + H3) is locked.** v1.59.7 baseline: 18 H2 / 73 H3.
+10. **Help bundle parity (H2 + H3) is locked.** v1.59.7 baseline was 18 H2 / 73 H3; **as of v1.69.0+ it is 19 H2 / 75 H3** across all 13 locale bundles.
 11. **`saveBtn.onclick =` is a footgun on `c()`-built elements.** They register via `addEventListener`, not the property. Use bubble-phase listeners.
 12. **GitHub Packages publish runs against the tagged ref, not main.** Re-tag if you need a fix in the published artifact.
 13. **i18n copy polish can break older static guards** (v1.59.1 — UX-A11 caught NEW-D1).
@@ -52,11 +61,11 @@ node --version                                 # >= 18
 npm ci
 
 # Rung 2 — static parity gates
-node scripts/check-changelog-parity.mjs        # all 9 locales at same version
+node scripts/check-changelog-parity.mjs        # all 13 locales at same version
 node scripts/check-no-also-leftovers.mjs       # no .also( leftovers
 
 # Rung 3 — unit suite
-npm test                                       # 971+ pass, 0 fail
+npm test                                       # 1258+ pass, 0 fail
                                                # DO NOT pipe through grep — masks exit
 
 # Rung 4 — coverage
@@ -65,7 +74,7 @@ npm run test:coverage                          # line >= 93%, branch >= 83%
 # Rung 5 — Playwright suites
 npm run test:e2e                               # 20 smoke green
 npm run test:e2e:full                          # 23 comprehensive green
-npm run test:e2e:browser                       # 81 Playwright green
+npm run test:e2e:browser                       # 85 Playwright green (locale-sweep ×13)
 
 # Rung 6 — first-run cleanup invariant
 make clean-test-fixtures                       # idempotent on clean tree
@@ -76,9 +85,9 @@ npm start                                      # server on 127.0.0.1:4317
 
 ---
 
-## §2 — Live-smoke checklist (9 locales × 7 routes)
+## §2 — Live-smoke checklist (13 locales × 7 routes)
 
-For each locale (`en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`):
+For each locale (`en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar` — **`ar` is RTL: confirm `<html dir="rtl">` and mirrored chrome**):
 
 | Route | What to verify |
 |---|---|
