@@ -9,6 +9,17 @@
 ---
 
 
+## [1.87.0] — 2026-07-04
+
+**인증 불필요 스캔 공급자 4종 추가 (상위 career-ops v1.16.0 동등성).** 스캐너 레지스트리가 **41 → 45개 어댑터**(40 EN + 5 RU)로 늘어납니다 — 모두 공개, 무인증, 호스트 고정, `redirect:'error'`(SSRF 안전)이며 각각 CI 격리 테스트를 포함합니다:
+
+- **Get on Board** (`getonbrd`) — 포털 전체 공개 JSON:API(LATAM/원격 기술), 공급자 선택, 페이지네이션. `server/lib/sources/getonbrd.mjs`.
+- **Amazon** (`amazon`) — `amazon.jobs` 공개 검색 JSON, 호스트 감지 또는 `provider: amazon`, 오프셋 페이지네이션. `server/lib/sources/amazon.mjs`.
+- **Avature** (`avature`) — 테넌트별 `*.avature.net` ATS, HTML 파싱, 호스트 감지 또는 `provider: avature`. `server/lib/sources/avature.mjs`.
+- **SAP SuccessFactors** (`successfactors`) — 테넌트별 RMK 타일 목록(`*.successfactors.eu/.com`, `jobs2web.com`), HTML 파싱. `server/lib/sources/successfactors.mjs`.
+
+각 항목은 `sources/<slug>.mjs`(자동 발견 `meta` → `#/scan` 드롭다운) **및** `ALL_ADAPTERS` 내의 `portals/adapters/<slug>.mjs`(두 레지스트리 규칙) + `tests/sources-<slug>.test.mjs` 를 제공합니다. `ALL_ADAPTERS` 개수와 정렬된 id 및 `/api/scan/sources` EN 세트 어서션이 36→40 으로 올랐고, `GET /api/scan/sources` 는 이제 45개를 나열합니다.
+
 ## [1.86.0] — 2026-07-03
 
 **목표 직무별 통계 (`#/stats`) — 당신의 목표 직무에 대한 시장 채용공고 및 급여 통계.** 새 분석 페이지가 **프로필의 목표 직무**(`config/profile.yml` → 하드코딩 아님)와 최신 스캔의 공고를 읽어, 직무 및 국가별로 다음을 표시합니다:

@@ -9,6 +9,17 @@
 ---
 
 
+## [1.87.0] — 2026-07-04
+
+**認証不要のスキャンプロバイダーを4つ追加（親 career-ops v1.16.0 との同等性）。** スキャナーレジストリが **41 → 45 アダプター**（40 EN + 5 RU）に増えました — すべて公開、認証なし、ホスト固定、`redirect:'error'`（SSRF セーフ）で、それぞれ CI 分離テスト付きです:
+
+- **Get on Board** (`getonbrd`) — ポータル全体の公開 JSON:API（LATAM/リモート技術）、プロバイダー選択、ページネーション対応。`server/lib/sources/getonbrd.mjs`。
+- **Amazon** (`amazon`) — `amazon.jobs` の公開検索 JSON、ホスト検出または `provider: amazon`、オフセットページネーション。`server/lib/sources/amazon.mjs`。
+- **Avature** (`avature`) — テナントごとの `*.avature.net` ATS、HTML 解析、ホスト検出または `provider: avature`。`server/lib/sources/avature.mjs`。
+- **SAP SuccessFactors** (`successfactors`) — テナントごとの RMK タイルリスト（`*.successfactors.eu/.com`、`jobs2web.com`）、HTML 解析。`server/lib/sources/successfactors.mjs`。
+
+それぞれが `sources/<slug>.mjs`（自動検出される `meta` → `#/scan` ドロップダウン）**および** `ALL_ADAPTERS` 内の `portals/adapters/<slug>.mjs`（2つのレジストリのルール）+ `tests/sources-<slug>.test.mjs` を同梱します。`ALL_ADAPTERS` の数とソート済み id・`/api/scan/sources` の EN セットのアサーションは 36→40 に増え、`GET /api/scan/sources` は現在 45 件を列挙します。
+
 ## [1.86.0] — 2026-07-03
 
 **ターゲット職種別の統計（`#/stats`）— あなたのターゲット職種に対する市場の求人・給与統計。** 新しい分析ページが**プロフィールのターゲット職種**（`config/profile.yml` → ハードコードではない）と最新スキャンの求人を読み取り、職種と国ごとに次を表示します:

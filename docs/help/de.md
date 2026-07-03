@@ -1762,7 +1762,7 @@ kopieren Sie die Ausgabe und durchsuchen Sie den Issue-Tracker unter
 career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß,
 wie man die Ergebnisse eines Boards abruft + normalisiert. Seit v1.82.0 liefert die
-`server/lib/sources/`-Registry **41** Adapter — 36 englische (die
+`server/lib/sources/`-Registry **45** Adapter — 40 englische (die
 Greenhouse- / Ashby- / Lever- / Workable- / SmartRecruiters- / Workday-ATSes, RSS,
 die v1.75.0-Aggregatoren RemoteOK / Remotive / Working Nomads / IBM /
 Arbeitsagentur / Glints / Jobstreet · SEEK, die v1.76.0-Per-Mandant-ATSes

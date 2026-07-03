@@ -9,6 +9,17 @@
 ---
 
 
+## [1.87.0] — 2026-07-04
+
+**4 مزوّدي مسح جدد بلا مصادقة (تكافؤ مع career-ops الأصل v1.16.0).** يكبر سجل الماسح من **41 → 45 محوّلاً** (40 EN + 5 RU) — جميعها عامة، بلا مصادقة، مثبّتة على المضيف، `redirect:'error'` (آمنة من SSRF)، ولكل منها اختبار معزول لـ CI:
+
+- **Get on Board** (`getonbrd`) — JSON:API عام على مستوى البوابة (تقنية LATAM/عن بُعد)، يُختار بحسب المزوّد، مع ترقيم صفحات. `server/lib/sources/getonbrd.mjs`.
+- **Amazon** (`amazon`) — JSON بحث عام من `amazon.jobs`، يُكتشف بحسب المضيف أو `provider: amazon`، مع ترقيم بالإزاحة. `server/lib/sources/amazon.mjs`.
+- **Avature** (`avature`) — نظام ATS من `*.avature.net` لكل مستأجر، يُحلَّل من HTML، يُكتشف بحسب المضيف أو `provider: avature`. `server/lib/sources/avature.mjs`.
+- **SAP SuccessFactors** (`successfactors`) — قائمة بلاطات RMK لكل مستأجر (`*.successfactors.eu/.com`، `jobs2web.com`)، تُحلَّل من HTML. `server/lib/sources/successfactors.mjs`.
+
+يوفّر كلٌّ منها `sources/<slug>.mjs` (مع `meta` مُكتشف تلقائياً → قائمة `#/scan` المنسدلة) **و** `portals/adapters/<slug>.mjs` ضمن `ALL_ADAPTERS` (قاعدة السجلّين) + `tests/sources-<slug>.test.mjs`. ارتفع عدّ `ALL_ADAPTERS` وكذلك تأكيدات المعرّفات المرتّبة ومجموعة EN في `/api/scan/sources` من 36→40؛ ويسرد `GET /api/scan/sources` الآن 45.
+
 ## [1.86.0] — 2026-07-03
 
 **إحصاءات حسب الأدوار المستهدفة (`#/stats`) — إحصاءات سوق الوظائف والرواتب لأدوارك المستهدفة.** تقرأ صفحة تحليلات جديدة **أدوارك المستهدفة من الملف الشخصي** (`config/profile.yml` → غير مضمّنة بشكل ثابت) والوظائف من آخر عملية مسح، ثم تعرض لكل دور وبلد:

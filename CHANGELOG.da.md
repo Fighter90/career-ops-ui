@@ -10,6 +10,17 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.87.0] — 2026-07-04
+
+**4 nye scan-udbydere uden godkendelse (paritet med forælder-career-ops v1.16.0).** Scannerregistret vokser fra **41 → 45 adaptere** (40 EN + 5 RU) — alle offentlige, uden godkendelse, host-fastlåst, `redirect:'error'` (SSRF-sikre), hver med en CI-isoleret test:
+
+- **Get on Board** (`getonbrd`) — portaldækkende offentligt JSON:API (LATAM/fjern-tech), udbyder-valgt, pagineret. `server/lib/sources/getonbrd.mjs`.
+- **Amazon** (`amazon`) — `amazon.jobs` offentlige søge-JSON, host-registreret eller `provider: amazon`, offset-pagineret. `server/lib/sources/amazon.mjs`.
+- **Avature** (`avature`) — pr.-lejer `*.avature.net` ATS, HTML-parset, host-registreret eller `provider: avature`. `server/lib/sources/avature.mjs`.
+- **SAP SuccessFactors** (`successfactors`) — pr.-lejer RMK-fliseliste (`*.successfactors.eu/.com`, `jobs2web.com`), HTML-parset. `server/lib/sources/successfactors.mjs`.
+
+Hver leverer et `sources/<slug>.mjs` (auto-opdaget `meta` → `#/scan`-rullemenu) **og** et `portals/adapters/<slug>.mjs` i `ALL_ADAPTERS` (reglen om de to registre) + `tests/sources-<slug>.test.mjs`. `ALL_ADAPTERS`-antallet samt assertions for sorteret id og EN-sættet i `/api/scan/sources` steg fra 36→40; `GET /api/scan/sources` viser nu 45.
+
 ## [1.86.0] — 2026-07-03
 
 **Statistik efter målroller (`#/stats`) — markedsstatistik for stillinger og løn for DINE målroller.** En ny Analyse-side læser dine **målroller fra profilen** (`config/profile.yml` → ikke hardkodet) og opslagene fra den seneste scanning og viser derefter, pr. rolle og land:

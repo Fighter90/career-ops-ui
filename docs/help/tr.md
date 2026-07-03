@@ -1708,8 +1708,8 @@ takipçisinde sorunu arayın.
 career-ops-ui, her iş kartını bir **adaptör** olarak ele alır —
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) altında,
 bir kartın sonuçlarını nasıl getirip normalleştireceğini bilen tek bir
-dosya. v1.82.0 itibarıyla `server/lib/sources/` kaydı **41** adaptör
-gönderir — 36 İngilizce (Greenhouse / Ashby / Lever / Workable /
+dosya. v1.82.0 itibarıyla `server/lib/sources/` kaydı **45** adaptör
+gönderir — 40 İngilizce (Greenhouse / Ashby / Lever / Workable /
 SmartRecruiters / Workday ATS'leri, RSS, v1.75.0 toplayıcıları RemoteOK /
 Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet ·
 SEEK, v1.76.0 kiracı-başına ATS'leri BambooHR / Breezy HR / Comeet /

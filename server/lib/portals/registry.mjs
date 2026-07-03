@@ -70,6 +70,11 @@ import { pinpointAdapter } from './adapters/pinpoint.mjs';
 import { ripplingAdapter } from './adapters/rippling.mjs';
 // v1.82.0 — parent career-ops v1.15.0 parity: NoDesk board-wide remote RSS feed.
 import { nodeskAdapter } from './adapters/nodesk.mjs';
+// v1.87.0 — parent career-ops v1.16.0 parity: 4 new zero-auth providers.
+import { getonbrdAdapter } from './adapters/getonbrd.mjs';
+import { amazonAdapter } from './adapters/amazon.mjs';
+import { avatureAdapter } from './adapters/avature.mjs';
+import { successfactorsAdapter } from './adapters/successfactors.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -119,6 +124,13 @@ export const ALL_ADAPTERS = [
   ripplingAdapter,
   // v1.82.0 — board-wide remote RSS feed, provider-selected (like We Work Remotely).
   nodeskAdapter,
+  // v1.87.0 — parent career-ops v1.16.0 parity. getonbrd is a board-wide public
+  // JSON:API (provider-selected); amazon / avature / successfactors are per-tenant
+  // ATS endpoints (host-detected or explicit `provider:`), all zero-auth.
+  getonbrdAdapter,
+  amazonAdapter,
+  avatureAdapter,
+  successfactorsAdapter,
 ];
 
 /**

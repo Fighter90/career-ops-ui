@@ -9,6 +9,17 @@
 ---
 
 
+## [1.87.0] — 2026-07-04
+
+**4 个新增的免鉴权扫描来源（与父项目 career-ops v1.16.0 对齐）。** 扫描器注册表从 **41 → 45 个适配器**（40 EN + 5 RU）—— 全部为公开、免鉴权、主机锁定、`redirect:'error'`（SSRF 安全），且各自带一套 CI 隔离测试:
+
+- **Get on Board**（`getonbrd`）—— 全站公开 JSON:API（LATAM/远程技术岗位），按来源选择，支持分页。`server/lib/sources/getonbrd.mjs`。
+- **Amazon**（`amazon`）—— `amazon.jobs` 公开搜索 JSON，按主机检测或 `provider: amazon`，按偏移量分页。`server/lib/sources/amazon.mjs`。
+- **Avature**（`avature`）—— 按租户的 `*.avature.net` ATS，解析 HTML，按主机检测或 `provider: avature`。`server/lib/sources/avature.mjs`。
+- **SAP SuccessFactors**（`successfactors`）—— 按租户的 RMK 磁贴列表（`*.successfactors.eu/.com`、`jobs2web.com`），解析 HTML。`server/lib/sources/successfactors.mjs`。
+
+每个来源都提供一个 `sources/<slug>.mjs`（自动发现的 `meta` → `#/scan` 下拉菜单）**以及** `ALL_ADAPTERS` 中的一个 `portals/adapters/<slug>.mjs`（双注册表规则）+ `tests/sources-<slug>.test.mjs`。`ALL_ADAPTERS` 计数以及排序 id 与 `/api/scan/sources` EN 集断言从 36→40；`GET /api/scan/sources` 现在列出 45 个。
+
 ## [1.86.0] — 2026-07-03
 
 **按目标职位统计（`#/stats`）—— 针对你的目标职位的市场职位与薪资统计。** 新增的分析页面读取你的**个人资料中的目标职位**（`config/profile.yml` → 非硬编码）以及最近一次扫描的职位，然后按职位和国家显示：

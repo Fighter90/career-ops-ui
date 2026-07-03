@@ -8,6 +8,17 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.87.0] — 2026-07-04
+
+**4 new zero-auth scan providers (parent career-ops v1.16.0 parity).** The scanner registry grows **41 → 45 adapters** (40 EN + 5 RU) — all public, no-auth, host-pinned, `redirect:'error'` (SSRF-safe), each with a CI-isolated test:
+
+- **Get on Board** (`getonbrd`) — board-wide public JSON:API (LATAM/remote tech), provider-selected, paginated. `server/lib/sources/getonbrd.mjs`.
+- **Amazon** (`amazon`) — `amazon.jobs` public search JSON, host-detected or `provider: amazon`, offset-paginated. `server/lib/sources/amazon.mjs`.
+- **Avature** (`avature`) — per-tenant `*.avature.net` ATS, HTML-parsed, host-detected or `provider: avature`. `server/lib/sources/avature.mjs`.
+- **SAP SuccessFactors** (`successfactors`) — per-tenant RMK tile list (`*.successfactors.eu/.com`, `jobs2web.com`), HTML-parsed. `server/lib/sources/successfactors.mjs`.
+
+Each ships a `sources/<slug>.mjs` (auto-discovered `meta` → `#/scan` dropdown) **and** a `portals/adapters/<slug>.mjs` in `ALL_ADAPTERS` (the two-registry rule) + `tests/sources-<slug>.test.mjs`. The `ALL_ADAPTERS` count + sorted-id and `/api/scan/sources` EN-set assertions bumped 36→40; `GET /api/scan/sources` now lists 45.
+
 ## [1.86.0] — 2026-07-03
 
 **Statistics by target roles (`#/stats`) — market vacancy & salary stats for YOUR target roles.** A new Analytics page reads your **target roles from the profile** (`config/profile.yml` → not hard-coded) and the latest scan's postings, then shows, per role and country:

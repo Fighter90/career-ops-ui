@@ -12,13 +12,13 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.86.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.86.0)
+[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
 
-> **🆕 أحدث إصدار — v1.86.0**
+> **🆕 أحدث إصدار — v1.87.0**
 >
-> **إحصاءات حسب الأدوار المستهدفة** (`#/stats`): صفحة Analytics جديدة تقرأ **الأدوار المستهدفة من ملفّك الشخصي** (وليست مضمّنة في الشيفرة) وآخر عملية مسح لديك لرسم **الوظائف الشاغرة ومتوسط الراتب حسب البلد**، مع مرشّحات للدور/البلد و**اتجاه من اللقطات المحفوظة** — مُجمَّعة على جانب العميل من البيانات المتفرّقة التي تجمعها الماسحات بالفعل (بلا أرقام مُلفّقة)، بجميع اللغات الـ 16. يُبنى على v1.85.0 (لغات ألمانية/إيطالية/تركية)، وv1.84.0 (cooldown إعادة التقديم)، وv1.83.0 (كاشف إعادة النشر).
+> **4 مزوّدات مسح جديدة بلا مصادقة** (تكافؤ مع المشروع الأصلي career-ops v1.16.0): ينضمّ **Get on Board** و**Amazon** (`amazon.jobs`) و**Avature** و**SAP SuccessFactors** إلى الماسح — جميعها عامة وبلا مصادقة ومثبّتة المضيف وآمنة ضد SSRF — لترفع السجلّ إلى **45 محوّلًا** (40 EN + 5 RU)، ولكلٍّ منها اختبار معزول في CI. يُبنى على v1.86.0 (إحصاءات الأدوار المستهدفة)، وv1.85.0 (لغات ألمانية/إيطالية/تركية)، وv1.84.0 (cooldown إعادة التقديم).
 >
-> _16 locales · 6 مزوّدات LLM · 41 محوّل ماسح · إحصاءات السوق حسب الدور المستهدف · كاشف إعادة النشر · تكافؤ مع المشروع الأصلي career-ops v1.16.0._
+> _16 locales · 6 مزوّدات LLM · 45 محوّل ماسح · إحصاءات السوق حسب الدور المستهدف · كاشف إعادة النشر · تكافؤ مع المشروع الأصلي career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-ar.png)
 
