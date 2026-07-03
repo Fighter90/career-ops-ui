@@ -2,11 +2,22 @@
 
 All notable changes to **career-ops-ui** are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
-Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
+Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md)
 
 ---
 
 
+
+## [1.85.0] — 2026-07-03
+
+**German, Italian & Turkish locales (parent career-ops v1.16.0 locale parity).** The UI now ships in **16 languages** — `de` 🇩🇪, `it` 🇮🇹 and `tr` 🇹🇷 join the existing 13.
+
+- **Full UI translation** — all 730 i18n keys translated in `public/js/lib/locales/i18n-dict.{de,it,tr}.js`; the language switcher lists Deutsch / Italiano / Türkçe and browser-language auto-detection recognises `de`/`it`/`tr` (`public/js/lib/i18n.js`).
+- **In-app Help guide** — `docs/help/{de,it,tr}.md` translated (full 19 H2 / 75 H3 structure), served by `GET /api/help/:lang`.
+- **Docs** — `README.{de,it,tr}.md` and `CHANGELOG.{de,it,tr}.md` added; the CHANGELOG locale-parity gate now covers 15 non-EN locales.
+- **Prompt scaffolding** — `server/lib/prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) localised for the three new locales, so LLM output follows the UI language.
+
+All parity gates (`i18n-locale-files`, `i18n-coverage`, `check-changelog-parity`, `lang-switcher-rtl`) extended to the 16-locale set.
 
 ## [1.84.0] — 2026-06-30
 

@@ -10,6 +10,17 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.85.0] — 2026-07-03
+
+**Tysk, italiensk og tyrkisk locale (locale-paritet med forælderens career-ops v1.16.0).** UI'et leveres nu på **16 sprog** — `de` 🇩🇪, `it` 🇮🇹 og `tr` 🇹🇷 slutter sig til de eksisterende 13.
+
+- **Fuld UI-oversættelse** — alle 730 i18n-nøgler oversat i `public/js/lib/locales/i18n-dict.{de,it,tr}.js`; sprogvælgeren viser Deutsch / Italiano / Türkçe, og automatisk registrering af browsersprog genkender `de`/`it`/`tr` (`public/js/lib/i18n.js`).
+- **Indbygget hjælpeguide** — `docs/help/{de,it,tr}.md` oversat (fuld 19 H2 / 75 H3-struktur), serveret af `GET /api/help/:lang`.
+- **Dokumentation** — `README.{de,it,tr}.md` og `CHANGELOG.{de,it,tr}.md` tilføjet; CHANGELOG-locale-paritetsporten dækker nu 15 ikke-EN-locales.
+- **Prompt-stillads** — `server/lib/prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) lokaliseret til de tre nye locales, så LLM-outputtet følger UI-sproget.
+
+Alle paritetsporte (`i18n-locale-files`, `i18n-coverage`, `check-changelog-parity`, `lang-switcher-rtl`) udvidet til sættet på 16 locales.
+
 ## [1.84.0] — 2026-06-30
 
 **Genansøgnings-cooldown + kompensation i pipeline.md (paritet med forælderens career-ops v1.15.0).** To scan-opgraderinger:
