@@ -2,7 +2,7 @@
 
 How translation works in **career-ops-ui**, and how to add or edit a language. The SPA ships **16 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr` — and every user-facing string flows through the i18n layer. **Arabic (`ar`) is right-to-left** (I18N-EXPAND, v1.70.0): `i18n.js` sets `<html dir="rtl">` for RTL locales and `app.css` carries a scoped `[dir="rtl"]` block. The in-app language picker is a flag-prefixed `<select>` (`renderLangSwitcher` in `public/js/app.js`).
 
-> **Help guide (v1.71.1; de/it/tr in v1.85.0).** The long-form help bundle (`docs/help/<locale>.md`) is fully translated in all **16 locales** — `pl`/`uk`/`ar` bundles were added in v1.71.1 and `de`/`it`/`tr` in v1.85.0, each holding the gated 19 H2 / 75 H3 structure.
+> **Help guide (v1.71.1; de/it/tr in v1.85.0).** The long-form help bundle (`docs/help/<locale>.md`) is fully translated in all **16 locales** — `pl`/`uk`/`ar` bundles were added in v1.71.1 and `de`/`it`/`tr` in v1.85.0, each holding the gated 20 H2 / 78 H3 structure (§20 "Statistics by target roles" added in v1.86.0).
 
 > Server diagnostics stay **English by policy** (consistency across logs). Only client-owned UI strings are localized. Don't add per-locale text to server error bodies.
 
@@ -108,7 +108,7 @@ Adding, say, French (`fr`) touches a fixed set of files. Work through them in or
      JSON.stringify(loadAssembledDict(), null, 2) + "\n");
    '
    ```
-7. **Companion content** (for a fully-supported locale): `docs/help/fr.md` (help bundle, must keep the 19 H2 / 73 H3 parity), `CHANGELOG.fr.md`, `README.fr.md`.
+7. **Companion content** (for a fully-supported locale): `docs/help/fr.md` (help bundle, must keep the 20 H2 / 78 H3 parity), `CHANGELOG.fr.md`, `README.fr.md`.
 8. **Run all gates** and fix any parity failures.
 
 ---

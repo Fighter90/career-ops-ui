@@ -1872,3 +1872,24 @@ Przed v1.54.3 zakładka Modes była pojedynczą surową textarea Markdown dla `m
 Zapis **scala według sekcji**: preambuła, niezmienione sekcje i wszelkie niestandardowe sekcje są zachowywane bajt po bajcie. Tylko pola, które edytowałeś, są zmieniane.
 
 Ujawnienie *Advanced: raw markdown* pozostaje na dole zakładki do pełnych edycji pliku — dodawania/usuwania sekcji lub edycji preambuły — bez zmiany zachowania scalania.
+
+## 20. Statystyki według ról docelowych (`#/stats`)
+
+Strona **Analytics → Statystyki ról docelowych** zamienia skąpe dane, które twoje skany już zbierają, w obraz rynku dla ról, na które faktycznie celujesz: liczbę ofert i poziomy wynagrodzeń według krajów oraz trend, który możesz śledzić w czasie. Nic nie jest zmyślane: strona jedynie agreguje to, co znalazły skanery, i uczciwie pokazuje, jak niewielka jest próbka.
+
+### Skąd biorą się liczby
+
+- **Role docelowe** są odczytywane z twojego Profilu (`config/profile.yml` → target roles) — nigdy nie są zakodowane na sztywno. Ustaw je najpierw na `#/profile`; bez ról strona pokazuje monit „ustaw swoje role docelowe” zamiast pustych wykresów.
+- **Oferty** pochodzą z twojego ostatniego skanu (najpierw uruchom go na `#/scan`). Lokalizacja każdej oferty jest mapowana na kraj (ten sam detektor co filtr kraju w skanie), a jej ciąg z wynagrodzeniem jest parsowany i normalizowany do **USD** za pomocą przybliżonej tabeli kursów.
+- Wszystko jest agregowane **w twojej przeglądarce** — żadne dane nie opuszczają twojej maszyny, a jedyne, co ta strona kiedykolwiek zapisuje, to migawka, którą zapisujesz jawnie.
+
+### Jak czytać wykresy
+
+- **Oferty według krajów** — ile dopasowanych ofert przypada na każdy kraj. Użyj filtrów **Rola** i **Kraj** u góry, aby zawęzić do jednej roli docelowej lub jednego kraju.
+- **Mediana wynagrodzenia według krajów (USD)** — środkowe sparsowane wynagrodzenie dla każdego kraju. Liczone są tylko oferty z możliwym do sparsowania wynagrodzeniem; wielkość próbki jest pokazana obok wykresu, a kwoty są przeliczane po przybliżonych kursach, więc czytaj to jako *orientacyjne*, nie dokładne. Samotny `¥` (niejednoznaczny między jenem japońskim a juanem chińskim) jest odrzucany zamiast zgadywany, aby uniknąć dużego zniekształcenia FX.
+- Gdy bieżący skan nie ma możliwych do sparsowania wynagrodzeń, wykres wynagrodzeń informuje o tym zamiast wymyślać liczby.
+
+### Zapisywanie migawek i śledzenie trendu
+
+- Kliknij **Zapisz migawkę**, aby dołączyć bieżący agregat do `data/role-stats.jsonl`. Każda migawka otrzymuje znacznik czasu na serwerze; migawki są jedyną rzeczą, którą ta strona zapisuje, i nigdy nie dotykają twojego CV ani profilu.
+- Wykres **trendu** przedstawia liczbę ofert w kolejnych zapisanych migawkach — zapisuj jedną okresowo (na przykład po każdym cotygodniowym skanie), aby obserwować, jak rynek dla twoich ról docelowych zmienia się w czasie.

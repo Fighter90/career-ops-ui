@@ -2076,3 +2076,24 @@ Die Oberfläche wird in 9 Sprachen ausgeliefert (English, Español, Français, P
 **Gut zu wissen.** Der Sprachumschalter befindet sich in der Fußzeile der Seitenleiste; Ihre Wahl wird pro Browser gemerkt. Server-Diagnosemeldungen bleiben absichtlich auf Englisch (damit Logs konsistent lesbar sind) — nur die Bildschirmoberfläche wird übersetzt.
 
 Siehe **`docs/LOCALIZATION.md`** im Repository für die vollständige, Schritt-für-Schritt-Lokalisierungsanleitung.
+
+## 20. Statistik nach Zielrollen (`#/stats`)
+
+Die Seite **Analytics → Zielrollen-Statistik** verwandelt die spärlichen Daten, die deine Scans ohnehin sammeln, in ein Marktbild für die Rollen, auf die du tatsächlich abzielst: Anzahl der Stellen und Gehaltsniveaus nach Land sowie einen Trend, den du über die Zeit verfolgen kannst. Nichts wird erfunden: Sie aggregiert nur, was die Scanner gefunden haben, und ist ehrlich dazu, wie dünn die Stichprobe ist.
+
+### Woher die Zahlen kommen
+
+- **Zielrollen** werden aus deinem Profil (`config/profile.yml` → target roles) gelesen — nie fest einprogrammiert. Lege sie zuerst unter `#/profile` fest; ohne Rollen zeigt die Seite statt leerer Diagramme einen Hinweis „Lege deine Zielrollen fest“.
+- **Die Anzeigen** stammen aus deinem letzten Scan (führe zuerst einen unter `#/scan` aus). Der Standort jeder Stelle wird einem Land zugeordnet (derselbe Detektor wie der Länderfilter im Scan), und ihr Gehaltsstring wird geparst und über eine ungefähre Wechselkurstabelle in **USD** normalisiert.
+- Alles wird **in deinem Browser** aggregiert — keine Daten verlassen deinen Rechner, und das Einzige, was die Seite jemals schreibt, ist ein Snapshot, den du ausdrücklich speicherst.
+
+### Die Diagramme lesen
+
+- **Stellen nach Land** — wie viele passende Anzeigen in jedem Land liegen. Nutze die Filter **Rolle** und **Land** oben, um auf eine einzelne Zielrolle oder ein einzelnes Land einzugrenzen.
+- **Median-Gehalt nach Land (USD)** — das mittlere geparste Gehalt je Land. Es zählen nur Anzeigen mit parsbarem Gehalt; die Stichprobengröße steht neben dem Diagramm, und die Beträge werden zu groben Kursen umgerechnet, lies es also als *Richtwert*, nicht als exakt. Ein bloßes `¥` (mehrdeutig zwischen japanischem Yen und chinesischem Yuan) wird verworfen statt geraten, um eine große FX-Verzerrung zu vermeiden.
+- Wenn der aktuelle Scan keine parsbaren Gehälter hat, sagt das Gehaltsdiagramm das, statt Zahlen zu erfinden.
+
+### Snapshots speichern & den Trend verfolgen
+
+- Klicke auf **Snapshot speichern**, um das aktuelle Aggregat an `data/role-stats.jsonl` anzuhängen. Jeder Snapshot erhält serverseitig einen Zeitstempel; Snapshots sind das Einzige, was diese Seite schreibt, und sie rühren weder deinen Lebenslauf noch dein Profil an.
+- Das **Trend**-Diagramm trägt die Stellenanzahl über deine gespeicherten Snapshots auf — speichere regelmäßig einen (zum Beispiel nach jedem wöchentlichen Scan), um zu beobachten, wie sich der Markt für deine Zielrollen über die Zeit bewegt.

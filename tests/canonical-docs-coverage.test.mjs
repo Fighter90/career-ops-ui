@@ -64,7 +64,7 @@ test('every help bundle keeps the 19-H2 parity contract', () => {
     if (baseline === null) baseline = h2;
     assert.equal(h2, baseline, `${lang}.md has ${h2} H2 sections, expected ${baseline}`);
   }
-  assert.equal(baseline, 19, `expected 19 H2 sections in every bundle, got ${baseline}`);
+  assert.equal(baseline, 20, `expected 20 H2 sections in every bundle, got ${baseline}`);
 });
 
 test('every README references the canonical front page + ≥3 sub-guides', () => {

@@ -20,7 +20,7 @@ npm run test:e2e:browser                    # locale-sweep + theme-toggle
 1. **UI dictionaries** — `public/js/lib/locales/i18n-dict.{de,it,tr}.js`, **730 keys each**, byte-identical key set to `en`. Gate: `tests/i18n-locale-files.test.mjs` (parity + lossless snapshot), `tests/i18n-coverage.test.mjs`.
 2. **Language switcher** — `#lang-select` lists **Deutsch 🇩🇪 · Italiano 🇮🇹 · Türkçe 🇹🇷** (16 options total). Gate: `tests/lang-switcher-rtl.test.mjs` (`getLangs().length === 16`), `tests/e2e.mjs` switcher check.
 3. **Browser auto-detect** — `navigator.language` `de`/`it`/`tr` → that locale (`i18n.js` `detect()`).
-4. **In-app Help** — `GET /api/help/{de,it,tr}` serves `docs/help/{de,it,tr}.md`, each **19 H2 / 75 H3**. Manually: `#/help` in each language renders translated, not English.
+4. **In-app Help** — `GET /api/help/{de,it,tr}` serves `docs/help/{de,it,tr}.md`, each **20 H2 / 78 H3** (§20 added v1.86.0). Manually: `#/help` in each language renders translated, not English.
 5. **Prompt scaffolding** — `server/lib/prompts.mjs` `LOCALE_NAMES` + `SCAFFOLD_STRINGS` localized for de/it/tr (LLM output follows UI locale). Gate: `tests/locale-scaffold.test.mjs`.
 6. **Docs** — `README.{de,it,tr}.md`, `CHANGELOG.{de,it,tr}.md` (seeded at v1.85.0), localized `dashboard-{de,it,tr}.png` screenshots (added in the v1.86.0 screenshot refresh).
 

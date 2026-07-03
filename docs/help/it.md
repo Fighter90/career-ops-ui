@@ -1959,3 +1959,24 @@ L'interfaccia è disponibile in 9 lingue (English, Español, Français, Portugu�
 **Aggiungi un'intera nuova lingua.** Copia `i18n-dict.en.js` in `i18n-dict.<code>.js`, traduci ogni valore, poi registra il codice in `i18n.js` (l'elenco delle lingue + l'auto-rilevamento del browser), nell'assembler `i18n-dict.js`, e aggiungi una riga `<script>` in `index.html`. La checklist completa — inclusi lo snapshot di test e i file compagni della guida / README — è in `docs/LOCALIZATION.md`.
 
 **Buono a sapersi.** Il selettore di lingua è nel footer della barra laterale; la tua scelta è ricordata per browser. I messaggi diagnostici del server restano in inglese di proposito (così i log si leggono in modo coerente) — solo l'interfaccia a schermo è tradotta.
+
+## 20. Statistiche per ruoli target (`#/stats`)
+
+La pagina **Analytics → Statistiche ruoli target** trasforma i dati sparsi che le tue scansioni già raccolgono in un quadro di mercato per i ruoli che stai davvero puntando: numero di posizioni e livelli salariali per Paese, oltre a un trend che puoi seguire nel tempo. Nulla è inventato: aggrega solo ciò che gli scanner hanno trovato ed è onesta su quanto sia esigua la campionatura.
+
+### Da dove vengono i numeri
+
+- I **ruoli target** vengono letti dal tuo Profilo (`config/profile.yml` → target roles), mai scritti nel codice. Impostali prima su `#/profile`; senza ruoli la pagina mostra un avviso "imposta i tuoi ruoli target" invece di grafici vuoti.
+- **Gli annunci** provengono dalla tua ultima scansione (eseguine prima una su `#/scan`). La località di ogni offerta viene mappata su un Paese (lo stesso rilevatore del filtro Paese della scansione) e la sua stringa salariale viene analizzata e normalizzata in **USD** tramite una tabella di cambio approssimativa.
+- Tutto viene aggregato **nel tuo browser**: nessun dato lascia la tua macchina, e l'unica cosa che questa pagina scrive mai è uno snapshot che salvi esplicitamente.
+
+### Leggere i grafici
+
+- **Posizioni per Paese**: quanti annunci corrispondenti ci sono in ciascun Paese. Usa i filtri **Ruolo** e **Paese** in alto per restringere a un singolo ruolo target o a un singolo Paese.
+- **Salario mediano per Paese (USD)**: il salario intermedio analizzato per ciascun Paese. Vengono conteggiati solo gli annunci con un salario interpretabile; la dimensione del campione è mostrata accanto al grafico e gli importi sono convertiti a tassi approssimativi, quindi leggilo come *indicativo*, non esatto. Un `¥` isolato (ambiguo tra yen giapponese e yuan cinese) viene scartato anziché indovinato, per evitare una forte distorsione FX.
+- Quando la scansione corrente non ha salari interpretabili, il grafico dei salari lo dichiara invece di inventare numeri.
+
+### Salvare snapshot e seguire il trend
+
+- Fai clic su **Salva snapshot** per aggiungere l'aggregato corrente a `data/role-stats.jsonl`. Ogni snapshot riceve un timestamp sul server; gli snapshot sono l'unica cosa che questa pagina scrive e non toccano mai il tuo CV né il tuo profilo.
+- Il grafico del **trend** traccia il numero di posizioni attraverso i tuoi snapshot salvati: salvane uno periodicamente (per esempio dopo ogni scansione settimanale) per osservare come si muove nel tempo il mercato dei tuoi ruoli target.

@@ -1974,3 +1974,24 @@ L'interface est livrée en 9 langues (English, Español, Français, Português, 
 **Bon à savoir.** Le sélecteur de langue est dans le pied de la barre latérale ; votre choix est mémorisé par navigateur. Les messages de diagnostic du serveur restent en anglais à dessein (pour que les logs se lisent de façon cohérente) — seule l'interface à l'écran est traduite.
 
 Voir **`docs/LOCALIZATION.md`** dans le dépôt pour le guide de localisation complet, étape par étape.
+
+## 20. Statistiques par rôles cibles (`#/stats`)
+
+La page **Analytics → Statistiques par rôle cible** transforme les données éparses que vos scans collectent déjà en une image du marché pour les rôles que vous visez réellement : nombre d'offres et niveaux de salaire par pays, plus une tendance que vous pouvez suivre dans le temps. Rien n'est inventé : elle agrège seulement ce que les scanners ont trouvé, et elle est honnête sur la finesse de l'échantillon.
+
+### D'où viennent les chiffres
+
+- Les **rôles cibles** sont lus depuis votre Profil (`config/profile.yml` → target roles), jamais codés en dur. Définissez-les d'abord sur `#/profile` ; sans rôles, la page affiche une invite « définissez vos rôles cibles » au lieu de graphiques vides.
+- **Les offres** proviennent de votre dernier scan (lancez-en un d'abord sur `#/scan`). Le lieu de chaque offre est associé à un pays (le même détecteur que le filtre pays du scan) et sa chaîne de salaire est analysée puis normalisée en **USD** via une table de change approximative.
+- Tout est agrégé **dans votre navigateur** : aucune donnée ne quitte votre machine, et la seule chose que la page écrit jamais est un instantané que vous enregistrez explicitement.
+
+### Lire les graphiques
+
+- **Offres par pays** : combien d'offres correspondantes se trouvent dans chaque pays. Utilisez les filtres **Rôle** et **Pays** en haut pour restreindre à un seul rôle cible ou à un seul pays.
+- **Salaire médian par pays (USD)** : le salaire médian analysé par pays. Seules les offres avec un salaire exploitable sont comptées ; la taille de l'échantillon est indiquée à côté du graphique, et les montants sont convertis à des taux approximatifs, alors lisez-le comme *indicatif*, non exact. Un `¥` seul (ambigu entre le yen japonais et le yuan chinois) est écarté plutôt que deviné, pour éviter une forte distorsion de FX.
+- Lorsque le scan actuel n'a aucun salaire exploitable, le graphique des salaires le signale au lieu d'inventer des chiffres.
+
+### Enregistrer des instantanés et suivre la tendance
+
+- Cliquez sur **Enregistrer l'instantané** pour ajouter l'agrégat actuel à `data/role-stats.jsonl`. Chaque instantané est horodaté sur le serveur ; les instantanés sont la seule chose que cette page écrit et ils ne touchent jamais votre CV ni votre profil.
+- Le graphique de **tendance** trace le nombre d'offres au fil de vos instantanés enregistrés — enregistrez-en un régulièrement (par exemple après chaque scan hebdomadaire) pour observer comment le marché de vos rôles cibles évolue dans le temps.

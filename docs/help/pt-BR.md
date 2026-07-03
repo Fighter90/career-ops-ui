@@ -1879,3 +1879,24 @@ A interface é distribuída em 9 idiomas (English, Español, Français, Portugu�
 **Bom saber.** O seletor de idioma fica no rodapé da barra lateral; sua escolha é lembrada por navegador. As mensagens de diagnóstico do servidor permanecem em inglês de propósito (para os logs ficarem consistentes) — apenas a interface na tela é traduzida.
 
 Veja **`docs/LOCALIZATION.md`** no repositório para o guia de localização completo, passo a passo.
+
+## 20. Estatísticas por cargos-alvo (`#/stats`)
+
+A página **Analytics → Estatísticas por cargo-alvo** transforma os dados esparsos que suas varreduras já coletam em um retrato do mercado para os cargos que você realmente está buscando: contagem de vagas e níveis salariais por país, além de uma tendência que você pode acompanhar ao longo do tempo. Nada é inventado: ela só agrega o que os scanners encontraram e é honesta sobre o quão pequena é a amostra.
+
+### De onde vêm os números
+
+- Os **cargos-alvo** são lidos do seu Perfil (`config/profile.yml` → target roles), nunca fixados no código. Defina-os primeiro em `#/profile`; sem cargos, a página mostra um aviso "defina seus cargos-alvo" em vez de gráficos vazios.
+- **As vagas** vêm da sua varredura mais recente (rode uma primeiro em `#/scan`). A localização de cada vaga é mapeada para um país (o mesmo detector do filtro de país da varredura) e sua string salarial é analisada e normalizada para **USD** por meio de uma tabela de câmbio aproximada.
+- Tudo é agregado **no seu navegador**: nenhum dado sai da sua máquina, e a única coisa que a página chega a gravar é um snapshot que você salva explicitamente.
+
+### Como ler os gráficos
+
+- **Vagas por país**: quantas vagas correspondentes há em cada país. Use os filtros de **Cargo** e **País** no topo para restringir a um único cargo-alvo ou a um único país.
+- **Salário mediano por país (USD)**: o salário intermediário analisado por país. Só são contadas as vagas com salário interpretável; o tamanho da amostra aparece ao lado do gráfico, e os valores são convertidos a taxas aproximadas, então leia como *indicativo*, não exato. Um `¥` isolado (ambíguo entre o iene japonês e o yuan chinês) é descartado em vez de adivinhado, para evitar uma grande distorção de FX.
+- Quando a varredura atual não tem salários interpretáveis, o gráfico salarial informa isso em vez de inventar números.
+
+### Salvar snapshots e acompanhar a tendência
+
+- Clique em **Salvar snapshot** para acrescentar o agregado atual a `data/role-stats.jsonl`. Cada snapshot recebe um carimbo de data/hora no servidor; os snapshots são a única coisa que esta página grava e nunca tocam seu CV nem seu perfil.
+- O gráfico de **tendência** plota a contagem de vagas ao longo dos seus snapshots salvos: salve um periodicamente (por exemplo, após cada varredura semanal) para observar como o mercado para seus cargos-alvo se move ao longo do tempo.

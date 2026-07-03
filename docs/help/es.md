@@ -1869,3 +1869,24 @@ La interfaz se distribuye en 9 idiomas (English, Español, Français, Português
 **Bueno saberlo.** El selector de idioma está en el pie de la barra lateral; tu elección se recuerda por navegador. Los mensajes de diagnóstico del servidor permanecen en inglés a propósito (para que los logs sean consistentes) — solo se traduce la interfaz en pantalla.
 
 Consulta **`docs/LOCALIZATION.md`** en el repositorio para la guía de localización completa, paso a paso.
+
+## 20. Estadísticas por roles objetivo (`#/stats`)
+
+La página **Analytics → Estadísticas por rol objetivo** convierte los escasos datos que tus escaneos ya recopilan en una radiografía del mercado para los roles que realmente estás buscando: número de vacantes y niveles salariales por país, además de una tendencia que puedes seguir en el tiempo. No se inventa nada: solo agrega lo que encontraron los escáneres, y es honesta sobre lo pequeña que es la muestra.
+
+### De dónde salen los números
+
+- Los **roles objetivo** se leen de tu Perfil (`config/profile.yml` → target roles), nunca están codificados a mano. Configúralos primero en `#/profile`; sin roles, la página muestra un aviso de "define tus roles objetivo" en lugar de gráficos vacíos.
+- **Las ofertas** provienen de tu último escaneo (ejecuta uno primero en `#/scan`). La ubicación de cada empleo se asigna a un país (el mismo detector que el filtro de país del escáner) y su cadena salarial se analiza y normaliza a **USD** mediante una tabla de tipos de cambio aproximada.
+- Todo se agrega **en tu navegador**: ningún dato sale de tu máquina, y lo único que la página llega a escribir es una instantánea que guardas explícitamente.
+
+### Cómo leer los gráficos
+
+- **Vacantes por país**: cuántas ofertas coincidentes hay en cada país. Usa los filtros de **Rol** y **País** en la parte superior para acotar a un solo rol objetivo o a un solo país.
+- **Salario mediano por país (USD)**: el salario intermedio analizado por país. Solo se cuentan las ofertas con un salario interpretable; el tamaño de la muestra se muestra junto al gráfico, y los importes se convierten a tipos aproximados, así que léelo como *indicativo*, no exacto. Un `¥` a secas (ambiguo entre el yen japonés y el yuan chino) se descarta en lugar de adivinarse, para evitar una gran distorsión de FX.
+- Cuando el escaneo actual no tiene salarios interpretables, el gráfico salarial lo indica en lugar de inventar cifras.
+
+### Guardar instantáneas y seguir la tendencia
+
+- Haz clic en **Guardar instantánea** para añadir el agregado actual a `data/role-stats.jsonl`. Cada instantánea recibe una marca de tiempo en el servidor; las instantáneas son lo único que escribe esta página y nunca tocan tu CV ni tu perfil.
+- El gráfico de **tendencia** traza el número de vacantes a lo largo de tus instantáneas guardadas: guarda una periódicamente (por ejemplo, tras cada escaneo semanal) para observar cómo evoluciona con el tiempo el mercado para tus roles objetivo.
