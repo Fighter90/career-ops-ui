@@ -8,6 +8,17 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.86.0] — 2026-07-03
+
+**Statistics by target roles (`#/stats`) — market vacancy & salary stats for YOUR target roles.** A new Analytics page reads your **target roles from the profile** (`config/profile.yml` → not hard-coded) and the latest scan's postings, then shows, per role and country:
+
+- **Vacancies by country** and **median salary by country (USD)** — aggregated client-side (`public/js/lib/role-stats.js`, reusing `window.Countries`) from the sparse data the scanners already collect. Salaries in any currency are normalized to USD via an explicitly-approximate FX table, with a sample-size caveat — never fabricated.
+- **Role & country filters** and hand-rolled inline-SVG bar + trend charts (no new deps, CSP-safe — `addEventListener` only).
+- **Save snapshot** (`POST /api/stats/snapshot`) persists the current aggregate to `data/role-stats.jsonl`; the **trend chart** (`GET /api/stats/trend`) tracks vacancy counts over time — the "dynamics" view. Honest hybrid: snapshots come from local scan data, refreshed on demand.
+- Fully localized in all **16 locales** (26 new i18n keys).
+
+New: `server/lib/routes/stats.mjs` (16th route module), `public/js/lib/role-stats.js`, `public/js/views/stats.js`, `PATHS.roleStats`; tests `role-stats.test.mjs` (7) + `stats-routes.test.mjs` (5).
+
 ## [1.85.0] — 2026-07-03
 
 **German, Italian & Turkish locales (parent career-ops v1.16.0 locale parity).** The UI now ships in **16 languages** — `de` 🇩🇪, `it` 🇮🇹 and `tr` 🇹🇷 join the existing 13.

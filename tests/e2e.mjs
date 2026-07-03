@@ -68,6 +68,7 @@ const ROUTES = [
   { name: 'apply',     selector: 'h1.page-title', expectAny: ['Apply checklist', 'Checklist de aplicación', 'Чек-лист отклика', '応募チェックリスト', '지원 체크리스트', '申请清单', '申請清單'] },
   { name: 'tracker',   selector: 'h1.page-title', expectAny: ['Application tracker', 'Трекер заявок', 'Tracker de aplicaciones'] },
   { name: 'reports',   selector: 'h1.page-title', expectAny: ['Reports', 'Отчёты', 'Reportes'] },
+  { name: 'stats',     selector: 'h1.page-title', expectAny: ['Statistics by target roles', 'Статистика по целевым ролям', 'Estadísticas por roles objetivo'] },
   { name: 'cv',        selector: 'h1.page-title', expectAny: ['CV'] },
   { name: 'settings',  selector: 'h1.page-title', expectAny: ['Profile', 'Профиль', 'Perfil', 'Profil'] },
   { name: 'health',    selector: 'h1.page-title', expectAny: ['Health', 'Estado', 'Saúde'] },

@@ -9,6 +9,17 @@
 ---
 
 
+## [1.86.0] — 2026-07-03
+
+**목표 직무별 통계 (`#/stats`) — 당신의 목표 직무에 대한 시장 채용공고 및 급여 통계.** 새 분석 페이지가 **프로필의 목표 직무**(`config/profile.yml` → 하드코딩 아님)와 최신 스캔의 공고를 읽어, 직무 및 국가별로 다음을 표시합니다:
+
+- **국가별 채용공고 수**와 **국가별 급여 중앙값(USD)** — 스캐너가 이미 수집하는 희소한 데이터로부터 클라이언트 측에서 집계됩니다(`public/js/lib/role-stats.js`, `window.Countries` 재사용). 임의 통화의 급여는 명시적으로 근사치인 FX 표를 통해 USD로 정규화되며, 표본 크기 주의 사항이 함께 표시됩니다 — 결코 조작되지 않습니다.
+- **직무 및 국가 필터**와 직접 작성한 인라인 SVG 막대·추세 차트(새 의존성 없음, CSP 안전 — `addEventListener` 전용).
+- **스냅샷 저장**(`POST /api/stats/snapshot`)은 현재 집계를 `data/role-stats.jsonl` 에 저장하며, **추세 차트**(`GET /api/stats/trend`)는 시간 경과에 따른 채용공고 수를 추적합니다 — "다이내믹스" 뷰. 정직한 하이브리드: 스냅샷은 로컬 스캔 데이터에서 나오며 요청 시 새로 고쳐집니다.
+- **16개 로케일** 전체에 완전 현지화(신규 i18n 키 26개).
+
+신규: `server/lib/routes/stats.mjs`(16번째 라우트 모듈), `public/js/lib/role-stats.js`, `public/js/views/stats.js`, `PATHS.roleStats`; 테스트 `role-stats.test.mjs`(7) + `stats-routes.test.mjs`(5).
+
 ## [1.85.0] — 2026-07-03
 
 **독일어, 이탈리아어, 터키어 로케일 (상위 career-ops v1.16.0 로케일 패리티).** 이제 UI가 **16개 언어**로 제공됩니다 — 기존 13개에 `de` 🇩🇪, `it` 🇮🇹, `tr` 🇹🇷 가 추가되었습니다.

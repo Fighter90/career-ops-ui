@@ -10,6 +10,17 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.86.0] — 2026-07-03
+
+**Statistik efter målroller (`#/stats`) — markedsstatistik for stillinger og løn for DINE målroller.** En ny Analyse-side læser dine **målroller fra profilen** (`config/profile.yml` → ikke hardkodet) og opslagene fra den seneste scanning og viser derefter, pr. rolle og land:
+
+- **Stillinger pr. land** og **medianløn pr. land (USD)** — aggregeret på klientsiden (`public/js/lib/role-stats.js`, som genbruger `window.Countries`) ud fra de sparsomme data, scannerne allerede indsamler. Lønninger i enhver valuta normaliseres til USD via en eksplicit tilnærmet FX-tabel, med et forbehold om stikprøvestørrelse — aldrig opdigtet.
+- **Rolle- og landefiltre** samt håndlavede inline-SVG-søjle- og trenddiagrammer (ingen nye afhængigheder, CSP-sikre — kun `addEventListener`).
+- **Gem øjebliksbillede** (`POST /api/stats/snapshot`) bevarer det aktuelle aggregat i `data/role-stats.jsonl`; **trenddiagrammet** (`GET /api/stats/trend`) følger antallet af stillinger over tid — "dynamik"-visningen. Ærlig hybrid: øjebliksbilleder kommer fra lokale scanningsdata og opdateres efter behov.
+- Fuldt lokaliseret i alle **16 locales** (26 nye i18n-nøgler).
+
+Nyt: `server/lib/routes/stats.mjs` (16. rutemodul), `public/js/lib/role-stats.js`, `public/js/views/stats.js`, `PATHS.roleStats`; tests `role-stats.test.mjs` (7) + `stats-routes.test.mjs` (5).
+
 ## [1.85.0] — 2026-07-03
 
 **Tysk, italiensk og tyrkisk locale (locale-paritet med forælderens career-ops v1.16.0).** UI'et leveres nu på **16 sprog** — `de` 🇩🇪, `it` 🇮🇹 og `tr` 🇹🇷 slutter sig til de eksisterende 13.

@@ -57,6 +57,7 @@ Every row below corresponds to a documented HTTP action initiated by a UI contro
 | `data/scan-history.tsv` | Scan run | `GET /api/stream/scan?source=ats\|regional\|both` (v1.18.0+) | Append-only. Skipped on `dryRun=1`. |
 | `data/last-scan.json` | Scan run | (same) | Replaced atomically. Skipped on `dryRun=1`. |
 | `data/activity.jsonl` | Every state-changing request | `activityMiddleware` | Append. Redacts `SECRET_KEYS`. |
+| `data/role-stats.jsonl` | "Save snapshot" on `#/stats` | `POST /api/stats/snapshot` (v1.86.0) | Append-only. Server-stamped `ts`; payload sanitized + size-bounded by `toCompactSnapshot`. Read back by `GET /api/stats/trend`. |
 | `jds/<slug>.txt` | "Save JD" in Evaluate, `save: true` in `/api/evaluate` | `POST /api/jds`, `POST /api/evaluate` | Slug sanitized; falls back to `jd-<date>-<ts>.txt`. |
 | `interview-prep/<company>-<role>.md` | "Run live" in Deep | `POST /api/deep { run: true }` | Only on successful Anthropic / Gemini response. |
 | `output/web-jd-*.txt`, `web-deep-*.txt`, `gemini-smoke-*.txt` | Live runs (Gemini path) | `POST /api/evaluate`, `POST /api/deep`, `POST /api/evaluate/test-gemini` | Tmp files for `gemini-eval.mjs --file`. Not user-facing; never cleaned up automatically (acceptable — small text files). |

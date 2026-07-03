@@ -11,6 +11,17 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.86.0] — 2026-07-03
+
+**Estadísticas por roles objetivo (`#/stats`) — estadísticas de vacantes y salarios del mercado para TUS roles objetivo.** Una nueva página de Analítica lee tus **roles objetivo del perfil** (`config/profile.yml` → no codificados) y las ofertas del último escaneo, y luego muestra, por rol y país:
+
+- **Vacantes por país** y **salario mediano por país (USD)** — agregados en el cliente (`public/js/lib/role-stats.js`, reutilizando `window.Countries`) a partir de los datos dispersos que los escáneres ya recopilan. Los salarios en cualquier moneda se normalizan a USD mediante una tabla FX explícitamente aproximada, con una advertencia sobre el tamaño de la muestra — nunca se inventan.
+- **Filtros de rol y país** y gráficos de barras y tendencia con SVG en línea hechos a mano (sin nuevas dependencias, seguros para CSP — solo `addEventListener`).
+- **Guardar instantánea** (`POST /api/stats/snapshot`) persiste el agregado actual en `data/role-stats.jsonl`; el **gráfico de tendencia** (`GET /api/stats/trend`) sigue el recuento de vacantes a lo largo del tiempo — la vista de «dinámica». Híbrido honesto: las instantáneas provienen de datos de escaneo locales, actualizados bajo demanda.
+- Totalmente localizado en los **16 locales** (26 nuevas claves i18n).
+
+Nuevo: `server/lib/routes/stats.mjs` (16.º módulo de rutas), `public/js/lib/role-stats.js`, `public/js/views/stats.js`, `PATHS.roleStats`; pruebas `role-stats.test.mjs` (7) + `stats-routes.test.mjs` (5).
+
 ## [1.85.0] — 2026-07-03
 
 **Locales alemán, italiano y turco (paridad de locales con career-ops padre v1.16.0).** La interfaz ahora se distribuye en **16 idiomas** — `de` 🇩🇪, `it` 🇮🇹 y `tr` 🇹🇷 se suman a los 13 existentes.
