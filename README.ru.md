@@ -12,7 +12,7 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.85.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.85.0)
+[![release](https://img.shields.io/badge/release-v1.86.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.86.0)
 
 > **🆕 Последний релиз — v1.85.0**
 >

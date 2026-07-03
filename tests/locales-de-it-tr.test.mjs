@@ -52,12 +52,20 @@ test('de/it/tr are registered in the language switcher (getLangs) with label + f
   assert.equal(I18n.getLangs().length, 16, 'exactly 16 locales registered');
 });
 
-test('t() resolves a real translated string for de/it/tr (not the bare key)', () => {
+test('setLang() sticks and t() returns the locale-specific value (not the en fallback)', () => {
   const I18n = loadI18n();
+  const dict = loadAssembledDict();
+  // A key whose translation genuinely differs from English in de/it/tr, so a
+  // silent locale-switch failure (which would fall back to entry.en) is caught.
+  const KEY = 'nav.deep';
   for (const l of NEW) {
     I18n.setLang(l);
-    const v = I18n.t('nav.dashboard', 'Dashboard');
-    assert.ok(v && v !== 'nav.dashboard', `${l}: t('nav.dashboard') must resolve`);
+    assert.equal(I18n.getLang(), l, `${l}: setLang(${l}) must stick`);
+    const expected = dict[KEY][l];
+    assert.ok(expected && expected !== dict[KEY].en,
+      `fixture precondition: ${l} value for ${KEY} must differ from en`);
+    assert.equal(I18n.t(KEY, 'x'), expected,
+      `${l}: t('${KEY}') must return the ${l} value, not the en fallback`);
   }
 });
 

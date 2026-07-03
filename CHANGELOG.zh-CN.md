@@ -9,6 +9,17 @@
 ---
 
 
+## [1.86.0] — 2026-07-03
+
+**按目标职位统计（`#/stats`）—— 针对你的目标职位的市场职位与薪资统计。** 新增的分析页面读取你的**个人资料中的目标职位**（`config/profile.yml` → 非硬编码）以及最近一次扫描的职位，然后按职位和国家显示：
+
+- **各国职位数**与**各国薪资中位数（USD）** —— 在客户端从扫描器已经收集的稀疏数据聚合而成（`public/js/lib/role-stats.js`，复用 `window.Countries`）。任意币种的薪资通过一个明确标注为近似值的 FX 汇率表归一化为 USD，并附带样本量提示 —— 绝不捏造。
+- **职位与国家筛选器**以及手写的内联 SVG 柱状图与趋势图（无新增依赖，CSP 安全 —— 仅使用 `addEventListener`）。
+- **保存快照**（`POST /api/stats/snapshot`）将当前聚合结果持久化到 `data/role-stats.jsonl`；**趋势图**（`GET /api/stats/trend`）跟踪职位数随时间的变化 —— 即“动态”视图。诚实的混合方案：快照来自本地扫描数据，按需刷新。
+- 已在全部 **16 个区域设置**中完整本地化（26 个新增 i18n 键）。
+
+新增：`server/lib/routes/stats.mjs`（第 16 个路由模块）、`public/js/lib/role-stats.js`、`public/js/views/stats.js`、`PATHS.roleStats`；测试 `role-stats.test.mjs`（7）+ `stats-routes.test.mjs`（5）。
+
 ## [1.85.0] — 2026-07-03
 
 **德语、意大利语和土耳其语区域设置（与上游 career-ops v1.16.0 区域设置对齐）。** 界面现在提供 **16 种语言** —— `de` 🇩🇪、`it` 🇮🇹 和 `tr` 🇹🇷 加入现有的 13 种。

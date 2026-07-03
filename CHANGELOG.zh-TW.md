@@ -9,6 +9,17 @@
 ---
 
 
+## [1.86.0] — 2026-07-03
+
+**依目標職位統計（`#/stats`）—— 針對你的目標職位的市場職缺與薪資統計。** 新增的分析頁面讀取你的**個人檔案中的目標職位**（`config/profile.yml` → 非硬編碼）以及最近一次掃描的職缺，然後依職位與國家顯示：
+
+- **各國職缺數**與**各國薪資中位數（USD）** —— 於用戶端從掃描器已收集的稀疏資料彙整而成（`public/js/lib/role-stats.js`，重用 `window.Countries`）。任意幣別的薪資透過一個明確標註為近似值的 FX 匯率表正規化為 USD，並附上樣本數提醒 —— 絕不捏造。
+- **職位與國家篩選器**以及手寫的內嵌 SVG 長條圖與趨勢圖（無新增相依套件，CSP 安全 —— 僅使用 `addEventListener`）。
+- **儲存快照**（`POST /api/stats/snapshot`）將目前的彙整結果持久化至 `data/role-stats.jsonl`；**趨勢圖**（`GET /api/stats/trend`）追蹤職缺數隨時間的變化 —— 即「動態」檢視。誠實的混合方案：快照來自本機掃描資料，依需求重新整理。
+- 已在全部 **16 個語言環境**中完整在地化（26 個新增 i18n 鍵）。
+
+新增：`server/lib/routes/stats.mjs`（第 16 個路由模組）、`public/js/lib/role-stats.js`、`public/js/views/stats.js`、`PATHS.roleStats`；測試 `role-stats.test.mjs`（7）+ `stats-routes.test.mjs`（5）。
+
 ## [1.85.0] — 2026-07-03
 
 **德語、義大利語和土耳其語語言環境（與父層 career-ops v1.16.0 語言環境對齊）。** 介面現在提供 **16 種語言** —— `de` 🇩🇪、`it` 🇮🇹 和 `tr` 🇹🇷 加入既有的 13 種。

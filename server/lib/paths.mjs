@@ -45,6 +45,7 @@ export const PATHS = {
   scanHistory: path('data', 'scan-history.tsv'),
   followUps: path('data', 'follow-ups.md'),
   activityLog: path('data', 'activity.jsonl'),
+  roleStats: path('data', 'role-stats.jsonl'),
   reportsDir: path('reports'),
   jdsDir: path('jds'),
   outputDir: path('output'),
