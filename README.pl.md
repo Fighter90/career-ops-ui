@@ -14,11 +14,11 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.86.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.86.0)
 
-> **🆕 Najnowsze wydanie — v1.85.0**
+> **🆕 Najnowsze wydanie — v1.86.0**
 >
-> **Lokalizacje niemiecka, włoska i turecka** (parytet lokalizacji z nadrzędnym career-ops v1.16.0): interfejs jest teraz dostępny w **16 językach** — Deutsch 🇩🇪, Italiano 🇮🇹 i Türkçe 🇹🇷 dołączają do istniejących 13, z pełnym tłumaczeniem pomocy w aplikacji, README i CHANGELOG oraz zlokalizowanym scaffoldingiem promptów LLM. Bazuje na v1.84.0 (cooldown ponownego aplikowania + wynagrodzenie), v1.83.0 (detektor ponownych publikacji) i v1.82.0 (NoDesk).
+> **Statystyki według docelowych stanowisk** (`#/stats`): nowa strona Analytics odczytuje Twoje **docelowe stanowiska z profilu** (nie zakodowane na sztywno) oraz najnowszy skan, aby wykreślić **oferty i medianę wynagrodzenia według krajów**, z filtrami stanowiska/kraju oraz **trendem z zapisanych migawek** — agregowane po stronie klienta z rzadkich danych, które skanery już zbierają (bez zmyślonych liczb), we wszystkich 16 językach. Bazuje na v1.85.0 (lokalizacje niemiecka/włoska/turecka), v1.84.0 (cooldown ponownego aplikowania) i v1.83.0 (detektor ponownych publikacji).
 >
-> _16 lokalizacji · 6 dostawców LLM · 41 adapterów skanera · detektor ponownych publikacji · cooldown ponownego aplikowania · parytet z nadrzędnym career-ops v1.16.0._
+> _16 lokalizacji · 6 dostawców LLM · 41 adapterów skanera · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 
