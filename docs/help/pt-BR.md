@@ -1589,19 +1589,7 @@ copie a saída, e busque a issue no rastreador em
 
 ## 17. Como adicionar uma nova fonte de portal de vagas
 
-O career-ops-ui trata cada job board como um **adapter** — um único arquivo em
-[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe
-como buscar e normalizar os resultados de um portal. A partir da v1.80.0 o
-registry [`server/lib/sources/`](../../server/lib/sources/) inclui **27**
-adapters — 22 em inglês (os ATSes Greenhouse / Ashby / Lever / Workable /
-SmartRecruiters / Workday, RSS e os agregadores da v1.75.0 RemoteOK /
-Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, e BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, e We Work Remotely, e o ATS por tenant da v1.80.0 Teamtailor)
-e 5 boards russos. Os sete agregadores adicionados na v1.75.0 são fontes de
-todo o board ou orientadas a configuração, e não ATSes por empresa: os três
-feeds remotos são selecionados com `provider: remoteok|remotive|workingnomads`,
-e os quatro regionais (IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) leem
-um bloco de configuração `<provider>:` por entrada — veja a §5 para o YAML e
-`docs/portals-examples.md` para entradas prontas para copiar e colar.
+O career-ops-ui trata cada job board como um **adapter** — um único arquivo em [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe como buscar e normalizar os resultados de um portal. A partir da v1.87.0 o registry `server/lib/sources/` inclui **45** adapters — **40 em inglês + 5 russos**. O conjunto em inglês abrange os principais ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo o board selecionados por um `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), e ATSes por tenant autodetectados a partir de um host `careers_url` ou de uma URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **A lista completa nunca precisa ser contada à mão aqui — ela é autodescoberta a partir de `server/lib/sources/` e exibida ao vivo no dropdown Source de `#/scan`.** Veja a §5 para o YAML e `docs/portals-examples.md` para entradas prontas para copiar e colar.
 
 > **v1.69.0 (P-14) — auto-descoberta drop-in.** Adicionar uma 12.ª fonte é agora
 > um **drop puro de arquivo**. O registry

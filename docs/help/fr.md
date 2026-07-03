@@ -1669,21 +1669,7 @@ copiez la sortie, et cherchez le problème sur le tracker d'incidents à
 
 ## 17. How to add a new job-portal source
 
-career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un
-fichier unique sous
-[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait
-récupérer + normaliser les résultats d'un site. Depuis la v1.80.0, le
-registre [`server/lib/sources/`](../../server/lib/sources/) livre **27**
-adaptateurs — 22 anglais (les ATS Greenhouse / Ashby / Lever / Workable /
-SmartRecruiters / Workday, RSS, et les agrégateurs de la v1.75.0 RemoteOK /
-Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet · SEEK, et BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, et We Work Remotely, et l'ATS par tenant v1.80.0 Teamtailor)
-et 5 sites russes. Les sept agrégateurs ajoutés en v1.75.0 sont des sources
-couvrant tout un board ou pilotées par config plutôt que des ATS par
-entreprise : les trois flux remote se sélectionnent avec
-`provider: remoteok|remotive|workingnomads`, et les quatre régionaux (IBM /
-Arbeitsagentur / Glints / Jobstreet · SEEK) lisent un bloc de config
-`<provider>:` par entrée — voir le §5 pour le YAML et `docs/portals-examples.md`
-pour des entrées à copier-coller.
+career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un fichier unique sous [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait récupérer + normaliser les résultats d'un site. Depuis la v1.87.0, le registre `server/lib/sources/` livre **45** adaptateurs — **40 anglais + 5 russes**. L'ensemble anglais couvre les principaux ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), les agrégateurs couvrant tout un board sélectionnés par un `provider:` explicite (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), et les ATS par tenant auto-détectés depuis un hôte `careers_url` ou une URL `api:` explicite (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **La liste complète n'a jamais besoin d'être comptée à la main ici — elle est auto-découverte depuis `server/lib/sources/` et affichée en direct dans le menu déroulant Source de `#/scan`.** Voir le §5 pour le YAML et `docs/portals-examples.md` pour des entrées à copier-coller.
 
 > **v1.69.0 (P-14) — auto-découverte par dépôt de fichier.** Ajouter une 12e source est désormais
 > un **simple dépôt de fichier**. Le registre

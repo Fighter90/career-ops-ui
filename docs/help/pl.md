@@ -1560,19 +1560,7 @@ wynik i przeszukaj tracker problemów na
 
 ## 17. Jak dodać nowe źródło ofert pracy
 
-career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w
-[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie
-jak pobrać i znormalizować wyniki jednego portalu. Od v1.80.0 rejestr
-`server/lib/sources/` dostarcza **27** adapterów — 22 angielskie (ATS-y
-Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday, RSS oraz
-agregatory z v1.75.0 RemoteOK / Remotive / Working Nomads / IBM /
-Arbeitsagentur / Glints / Jobstreet · SEEK, oraz BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, We Work Remotely oraz ATS na tenant Teamtailor z v1.80.0) i 5 rosyjskich portali. Siedem
-agregatorów dodanych w v1.75.0 to źródła ogólnoportalowe lub sterowane
-konfiguracją, a nie ATS-y per-firma: trzy kanały zdalne wybierane są przez
-`provider: remoteok|remotive|workingnomads`, a cztery regionalne
-(IBM / Arbeitsagentur / Glints / Jobstreet · SEEK) czytają blok konfiguracyjny
-`<provider>:` na wpis — patrz §5 po YAML oraz `docs/portals-examples.md`
-po gotowe wpisy do skopiowania.
+career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie jak pobrać i znormalizować wyniki jednego portalu. Od v1.87.0 rejestr `server/lib/sources/` dostarcza **45** adapterów — **40 angielskich + 5 rosyjskich** portali. Zestaw angielski obejmuje główne ATS-y (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregatory ogólnoportalowe wybierane przez jawny `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) oraz ATS-y na tenant automatycznie wykrywane z hosta `careers_url` lub jawnego adresu `api:` (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Pełnej listy nigdy nie trzeba liczyć tu ręcznie — jest automatycznie wykrywana z `server/lib/sources/` i pokazywana na żywo w rozwijanym menu Source na `#/scan`.** Patrz §5 po YAML oraz `docs/portals-examples.md` po gotowe wpisy do skopiowania.
 
 > **v1.69.0 (P-14) — plug-in z auto-odkrywaniem.** Dodanie 12. źródła to teraz
 > **czyste wrzucenie pliku**. Rejestr

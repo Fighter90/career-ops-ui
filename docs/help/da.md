@@ -1627,22 +1627,7 @@ outputtet, og søg i issue-trackeren på
 
 ## 17. Sådan tilføjer du en ny jobportal-kilde
 
-career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under
-[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved,
-hvordan man henter + normaliserer ét boards resultater. Pr. v1.80.0 leverer
-`server/lib/sources/`-registreringen **27** adaptere — **22** engelske (
-Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday-ATS'erne, RSS,
-v1.75.0-aggregatorerne RemoteOK / Remotive / Working Nomads / IBM /
-Arbeitsagentur / Glints / Jobstreet · SEEK, og v1.76.0-per-tenant-ATS'erne
-BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, og det
-board-brede v1.79.0-RSS-feed We Work Remotely, og den v1.80.0-per-tenant-ATS Teamtailor) og 5 russiske
-boards. De syv aggregatorer tilføjet i v1.75.0 er board-brede eller config-drevne
-kilder valgt af `provider:`; de seks per-tenant-ATS'er tilføjet i v1.76.0
-(parent career-ops v1.13.0-paritet) auto-detekterer fra en `careers_url`-host
-(`<tenant>.bamboohr.com`, `<tenant>.breezy.hr`, `<slug>.jobs.personio.de`,
-`<slug>.recruitee.com`, `solid.jobs/public-api/offers/<division>`) eller en
-eksplicit `api:`-URL (Comeet) — se §5 for YAML'en og
-`docs/portals-examples.md` for copy-paste-poster.
+career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. Pr. v1.87.0 leverer `server/lib/sources/`-registreringen **45** adaptere — **40 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** At tilføje en 12. kilde er nu
 > et **rent fil-drop**. Registreringen

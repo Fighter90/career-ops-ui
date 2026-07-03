@@ -1759,26 +1759,7 @@ kopieren Sie die Ausgabe und durchsuchen Sie den Issue-Tracker unter
 
 ## 17. So fügen Sie eine neue Jobportal-Quelle hinzu
 
-career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter
-[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß,
-wie man die Ergebnisse eines Boards abruft + normalisiert. Seit v1.82.0 liefert die
-`server/lib/sources/`-Registry **45** Adapter — 40 englische (die
-Greenhouse- / Ashby- / Lever- / Workable- / SmartRecruiters- / Workday-ATSes, RSS,
-die v1.75.0-Aggregatoren RemoteOK / Remotive / Working Nomads / IBM /
-Arbeitsagentur / Glints / Jobstreet · SEEK, die v1.76.0-Per-Mandant-ATSes
-BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, den
-v1.79.0-board-weiten RSS-Feed We Work Remotely, das v1.80.0-Per-Mandant-ATS
-Teamtailor und den v1.81.0-Parent-Parity-Batch Arbeitnow / Himalayas /
-Jobicy / Landing.jobs / 4 Day Week / The Muse / The Hub / Jobspresso /
-Hacker News / JustJoin.it / NoFluffJobs / Pinpoint / Rippling und den
-v1.82.0-board-weiten RSS-Feed NoDesk) und 5 russische
-Boards. Die Aggregatoren sind board-weite oder konfigurationsgesteuerte Quellen, ausgewählt durch
-`provider:` (inkl. We Work Remotely); die Per-Mandant-ATSes (BambooHR / Breezy HR /
-Comeet / Personio / Recruitee / SolidJobs / Teamtailor) erkennen automatisch aus einem `careers_url`-Host
-(`<tenant>.bamboohr.com`, `<tenant>.breezy.hr`, `<slug>.jobs.personio.de`,
-`<slug>.recruitee.com`, `solid.jobs/public-api/offers/<division>`) oder einer
-expliziten `api:`-URL (Comeet) — siehe §5 für das YAML und
-`docs/portals-examples.md` für Kopier-Einfüge-Einträge.
+career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß, wie man die Ergebnisse eines Boards abruft + normalisiert. Seit v1.87.0 liefert die `server/lib/sources/`-Registry **45** Adapter — **40 englische + 5 russische** Boards. Das englische Set umfasst die großen ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-weite Aggregatoren, die per explizitem `provider:` ausgewählt werden (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), sowie Per-Mandant-ATSes, die automatisch aus einem `careers_url`-Host oder einer expliziten `api:`-URL erkannt werden (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Die vollständige Liste muss hier niemals von Hand gezählt werden — sie wird automatisch aus `server/lib/sources/` ermittelt und live im Source-Dropdown von `#/scan` angezeigt.** Siehe §5 für das YAML und `docs/portals-examples.md` für Kopier-Einfüge-Einträge.
 
 > **v1.69.0 (P-14) — Drop-in-Auto-Discovery.** Das Hinzufügen einer 12. Quelle ist
 > jetzt ein **reines Datei-Ablegen**. Die Registry
