@@ -9,6 +9,15 @@
 ---
 
 
+## [1.88.0] — 2026-07-04
+
+**Issue #29 收尾 —— 掃描 i18n 缺口 + API 衛生。**
+
+- **在地化最後殘留的硬編碼掃描字串**（路線圖 v1.69.4）：來源彙整標籤（`N 個新增 / M 個相符`）、`N 個新職缺` 提示以及 `reloc` 徽章現在皆透過 `t()` 流轉 —— 全部 **16 個語言環境**新增 4 個鍵（`scan.pillNew`、`scan.pillMatching`、`scan.newOffers`、`scan.relocBadge`）。非英語使用者不再於核心掃描流程中看到零散的英文。
+- **停用 `X-Powered-By` 回應標頭**（路線圖 v1.69.5）：`createApp()` 中的 `app.disable('x-powered-by')` —— 伺服器不再對外宣告使用 Express。（該主線的其餘部分先前已交付：`parentVersion` 去除其 release-please 註解、亮色模式主題切換、切換路由時關閉互動視窗，以及報告頁「Score」（`rep.score`）的在地化。）
+
+測試：`tests/scan-i18n-gaps.test.mjs` + `tests/security-headers.test.mjs` 中的 `X-Powered-By` 缺失斷言。
+
 ## [1.87.0] — 2026-07-04
 
 **4 個新增的免驗證掃描來源（與父專案 career-ops v1.16.0 對齊）。** 掃描器註冊表從 **41 → 45 個轉接器**（40 EN + 5 RU）—— 全部為公開、免驗證、主機鎖定、`redirect:'error'`（SSRF 安全），且各自附一套 CI 隔離測試:

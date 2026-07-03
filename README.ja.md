@@ -12,11 +12,11 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
+[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
 
-> **🆕 最新リリース — v1.87.0**
+> **🆕 最新リリース — v1.88.0**
 >
-> **4 つの新しい認証不要スキャンプロバイダ**（親 career-ops v1.16.0 パリティ）: **Get on Board**、**Amazon**（`amazon.jobs`）、**Avature**、**SAP SuccessFactors** がスキャナに加わりました — いずれも公開・認証不要・ホスト固定・SSRF 安全 — レジストリを **45 アダプタ**（EN 40 + RU 5）に拡張し、それぞれに CI 分離テストを備えています。v1.86.0（ターゲット職種の統計）、v1.85.0（ドイツ語／イタリア語／トルコ語ロケール）、v1.84.0（再応募クールダウン）をベースにしています。
+> **Issue #29 の仕上げ — Scan の i18n + API の衛生:** 最後に残っていたハードコードの Scan 文字列（`N new / M matching` ピル、`N new offers` トースト、`reloc` バッジ）が **16 ロケール**すべてで翻訳され、サーバーは `X-Powered-By` ヘッダーで自身を公表しなくなりました。v1.87.0（新しいスキャンプロバイダ 4 つ）、v1.86.0（ターゲット職種の統計）、v1.85.0（ドイツ語／イタリア語／トルコ語ロケール）をベースにしています。
 >
 > _16 ロケール · 6 LLM プロバイダ · 45 スキャナアダプタ · ターゲット職種の市場統計 · 再掲載検出器 · 親 career-ops v1.16.0 パリティ。_
 

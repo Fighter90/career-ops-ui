@@ -767,4 +767,9 @@ window.__I18N_DICT_JA = {
   'stats.snapshotsEmpty': "スナップショットがまだありません — 1つ保存して、求人数が時間とともにどう変化するかの追跡を始めましょう。",
   'stats.snapshotsCount': "スナップショット",
   'stats.trendMetric': "時間経過に伴う求人総数",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "新規",
+  'scan.pillMatching': "一致",
+  'scan.newOffers': "新着求人",
+  'scan.relocBadge': "転居支援",
 };

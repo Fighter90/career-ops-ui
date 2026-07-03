@@ -9,6 +9,15 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.88.0] — 2026-07-04
+
+**Polimento do issue #29 — lacunas de i18n no Escaneamento + higiene da API.**
+
+- **Localizadas as últimas strings de Escaneamento codificadas** (roadmap v1.69.4): as pílulas de resumo por fonte (`N novas / M correspondentes`), os avisos `N novas vagas` e o selo `reloc` agora fluem por `t()` — 4 novas chaves (`scan.pillNew`, `scan.pillMatching`, `scan.newOffers`, `scan.relocBadge`) em todos os **16 locales**. Usuários que não falam inglês não veem mais texto solto em inglês no fluxo principal de escaneamento.
+- **Desabilitado o cabeçalho `X-Powered-By`** (roadmap v1.69.5): `app.disable('x-powered-by')` em `createApp()` — o servidor não anuncia mais o Express. (O restante desse épico já havia sido entregue: `parentVersion` remove seu comentário de release-please, o alternador de tema em modo claro, o fechamento de modais ao mudar de rota e a localização de "Score" (`rep.score`) nos Relatórios.)
+
+Testes: `tests/scan-i18n-gaps.test.mjs` + uma asserção de ausência de `X-Powered-By` em `tests/security-headers.test.mjs`.
+
 ## [1.87.0] — 2026-07-04
 
 **4 novos provedores de escaneamento sem autenticação (paridade com o career-ops pai v1.16.0).** O registro do scanner cresce de **41 → 45 adaptadores** (40 EN + 5 RU) — todos públicos, sem autenticação, com host fixado, `redirect:'error'` (seguro contra SSRF), cada um com um teste isolado para CI:

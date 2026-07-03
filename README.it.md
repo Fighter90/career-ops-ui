@@ -12,11 +12,11 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
+[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
 
-> **🆕 Ultima release — v1.87.0**
+> **🆕 Ultima release — v1.88.0**
 >
-> **4 nuovi provider di scansione senza autenticazione** (parità con career-ops principale v1.16.0): **Get on Board**, **Amazon** (`amazon.jobs`), **Avature** e **SAP SuccessFactors** si aggiungono allo scanner — tutti pubblici, senza autenticazione, con host fissato e a prova di SSRF — portando il registro a **45 adattatori** (40 EN + 5 RU), ciascuno con un test isolato in CI. Si basa su v1.86.0 (statistiche per ruoli target), v1.85.0 (locale tedesco/italiano/turco) e v1.84.0 (cooldown di ricandidatura).
+> **Rifinitura dell'Issue #29 — i18n di Scan + igiene dell'API:** le ultime stringhe di Scan codificate a mano (le pill `N new / M matching`, i toast `N new offers` e il badge `reloc`) sono ora tradotte in tutti i **16 locale**, e il server non si annuncia più tramite l'header `X-Powered-By`. Si basa su v1.87.0 (4 nuovi provider di scansione), v1.86.0 (statistiche per ruoli target) e v1.85.0 (locale tedesco/italiano/turco).
 >
 > _16 lingue · 6 provider LLM · 45 adattatori di scansione · statistiche di mercato per ruolo target · rilevatore di ripubblicazioni · parità con career-ops principale v1.16.0._
 

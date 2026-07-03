@@ -767,4 +767,9 @@ window.__I18N_DICT_FR = {
   'stats.snapshotsEmpty': "Aucun instantané pour le moment — enregistrez-en un pour commencer à suivre l'évolution du nombre d'offres au fil du temps.",
   'stats.snapshotsCount': "instantanés",
   'stats.trendMetric': "total des offres dans le temps",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "nouvelles",
+  'scan.pillMatching': "correspondantes",
+  'scan.newOffers': "nouvelles offres",
+  'scan.relocBadge': "reloc.",
 };

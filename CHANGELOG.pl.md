@@ -9,6 +9,15 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.88.0] — 2026-07-04
+
+**Dopracowanie issue #29 — luki i18n w Skanowaniu + higiena API.**
+
+- **Zlokalizowano ostatnie zakodowane na sztywno ciągi Skanowania** (mapa drogowa v1.69.4): pigułki podsumowania źródła (`N nowych / M pasujących`), toasty `N nowych ofert` oraz odznaka `reloc` przechodzą teraz przez `t()` — 4 nowe klucze (`scan.pillNew`, `scan.pillMatching`, `scan.newOffers`, `scan.relocBadge`) we wszystkich **16 locale**. Użytkownicy nieanglojęzyczni nie widzą już błąkającego się angielskiego w głównym przepływie skanowania.
+- **Wyłączono nagłówek `X-Powered-By`** (mapa drogowa v1.69.5): `app.disable('x-powered-by')` w `createApp()` — serwer nie ogłasza już Express. (Reszta tego epiku została już dostarczona: `parentVersion` usuwa swój komentarz release-please, przełącznik motywu w trybie jasnym, zamykanie okien modalnych przy zmianie trasy oraz lokalizacja „Score” (`rep.score`) w Raportach.)
+
+Testy: `tests/scan-i18n-gaps.test.mjs` + asercja braku `X-Powered-By` w `tests/security-headers.test.mjs`.
+
 ## [1.87.0] — 2026-07-04
 
 **4 nowi dostawcy skanowania bez uwierzytelniania (parytet z nadrzędnym career-ops v1.16.0).** Rejestr skanera rośnie z **41 → 45 adapterów** (40 EN + 5 RU) — wszystkie publiczne, bez uwierzytelniania, z przypiętym hostem, `redirect:'error'` (bezpieczne wobec SSRF), każdy z izolowanym testem dla CI:

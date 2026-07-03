@@ -766,4 +766,9 @@ window.__I18N_DICT_PL = {
   'stats.snapshotsEmpty': "Brak jeszcze migawek — zapisz jedną, aby zacząć śledzić, jak liczba ofert zmienia się w czasie.",
   'stats.snapshotsCount': "migawki",
   'stats.trendMetric': "łączna liczba ofert w czasie",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "nowe",
+  'scan.pillMatching': "pasujące",
+  'scan.newOffers': "nowych ofert",
+  'scan.relocBadge': "relokacja",
 };

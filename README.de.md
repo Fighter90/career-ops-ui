@@ -12,11 +12,11 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
+[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
 
-> **🆕 Neueste Version — v1.87.0**
+> **🆕 Neueste Version — v1.88.0**
 >
-> **4 neue Scan-Anbieter ohne Authentifizierung** (Parität mit dem übergeordneten career-ops v1.16.0): **Get on Board**, **Amazon** (`amazon.jobs`), **Avature** und **SAP SuccessFactors** ergänzen den Scanner — allesamt öffentlich, ohne Authentifizierung, host-gepinnt und SSRF-sicher — womit das Register auf **45 Adapter** (40 EN + 5 RU) wächst, jeder mit einem CI-isolierten Test. Baut auf v1.86.0 (Zielrollen-Statistik), v1.85.0 (deutsche/italienische/türkische Sprachpakete) und v1.84.0 (Abklingzeit für Neubewerbungen) auf.
+> **Issue #29-Feinschliff — Scan-i18n + API-Hygiene:** die letzten hartcodierten Scan-Strings (die `N new / M matching`-Pills, die `N new offers`-Toasts und das `reloc`-Badge) sind nun in allen **16 Sprachen** übersetzt, und der Server gibt sich nicht mehr über den `X-Powered-By`-Header zu erkennen. Baut auf v1.87.0 (4 neue Scan-Anbieter), v1.86.0 (Zielrollen-Statistik) und v1.85.0 (deutsche/italienische/türkische Sprachpakete) auf.
 >
 > _16 Sprachen · 6 LLM-Anbieter · 45 Scanner-Adapter · Marktstatistik nach Zielrolle · Repost-Detektor · Parität mit dem übergeordneten career-ops v1.16.0._
 

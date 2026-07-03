@@ -9,6 +9,15 @@
 ---
 
 
+## [1.88.0] — 2026-07-04
+
+**이슈 #29 마무리 — 스캔 i18n 공백 + API 위생.**
+
+- **마지막까지 하드코딩되어 있던 스캔 문자열 현지화** (로드맵 v1.69.4): 소스 요약 알약(`N개 신규 / M개 일치`), `N개 신규 채용공고` 토스트, `reloc` 배지가 이제 `t()` 를 통과합니다 — **16개 로케일** 전체에 4개의 새 키(`scan.pillNew`, `scan.pillMatching`, `scan.newOffers`, `scan.relocBadge`). 비영어 사용자는 핵심 스캔 흐름에서 더 이상 떠도는 영어를 보지 않습니다.
+- **`X-Powered-By` 헤더 비활성화** (로드맵 v1.69.5): `createApp()` 내 `app.disable('x-powered-by')` — 서버가 더 이상 Express 를 광고하지 않습니다. (해당 에픽의 나머지는 이미 출시됨: `parentVersion` 이 release-please 주석을 제거하고, 라이트 모드 테마 토글, 라우트 변경 시 모달 닫힘, 보고서의 "Score"(`rep.score`) 현지화.)
+
+테스트: `tests/scan-i18n-gaps.test.mjs` + `tests/security-headers.test.mjs` 의 `X-Powered-By` 부재 어서션.
+
 ## [1.87.0] — 2026-07-04
 
 **인증 불필요 스캔 공급자 4종 추가 (상위 career-ops v1.16.0 동등성).** 스캐너 레지스트리가 **41 → 45개 어댑터**(40 EN + 5 RU)로 늘어납니다 — 모두 공개, 무인증, 호스트 고정, `redirect:'error'`(SSRF 안전)이며 각각 CI 격리 테스트를 포함합니다:

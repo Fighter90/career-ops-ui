@@ -766,4 +766,9 @@ window.__I18N_DICT_DA = {
   'stats.snapshotsEmpty': "Ingen øjebliksbilleder endnu — gem et for at begynde at spore, hvordan antallet af stillinger ændrer sig over tid.",
   'stats.snapshotsCount': "øjebliksbilleder",
   'stats.trendMetric': "samlede stillinger over tid",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "nye",
+  'scan.pillMatching': "matchende",
+  'scan.newOffers': "nye stillinger",
+  'scan.relocBadge': "flytning",
 };

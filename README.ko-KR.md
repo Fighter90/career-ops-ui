@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
+[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
 
-> **🆕 최신 릴리스 — v1.87.0**
+> **🆕 최신 릴리스 — v1.88.0**
 >
-> **4개의 새로운 무인증 스캔 프로바이더**(상위 career-ops v1.16.0 패리티): **Get on Board**, **Amazon**(`amazon.jobs`), **Avature**, **SAP SuccessFactors**가 스캐너에 합류합니다 — 모두 공개, 무인증, 호스트 고정, SSRF 안전 — 레지스트리를 **45개 어댑터**(EN 40개 + RU 5개)로 확장하며, 각각 CI 격리 테스트를 갖췄습니다. v1.86.0(타깃 직무 통계), v1.85.0(독일어/이탈리아어/터키어 로케일), v1.84.0(재적용 쿨다운)을 기반으로 합니다.
+> **Issue #29 다듬기 — Scan i18n + API 위생:** 마지막으로 남아 있던 하드코딩된 Scan 문자열(`N new / M matching` 필, `N new offers` 토스트, `reloc` 배지)이 이제 **16개 로케일** 전부에서 번역되며, 서버는 더 이상 `X-Powered-By` 헤더로 자신을 노출하지 않습니다. v1.87.0(새로운 스캔 프로바이더 4개), v1.86.0(타깃 직무 통계), v1.85.0(독일어/이탈리아어/터키어 로케일)을 기반으로 합니다.
 >
 > _16 locales · 6개 LLM 프로바이더 · 45개 스캐너 어댑터 · 타깃 직무 시장 통계 · 재게시 감지기 · 상위 career-ops v1.16.0 패리티._
 

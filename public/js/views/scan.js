@@ -319,7 +319,7 @@ Router.register('scan', async () => {
           : `\n✓ exit ${data.code}`;
         appendMeta(consoleEl, okMsg + '\n');
         const fresh = data.counts?.fresh;
-        const doneMsg = fresh != null ? `${kind}: ${fresh} new offers` : `${kind} done`;
+        const doneMsg = fresh != null ? `${kind}: ${fresh} ${t('scan.newOffers', 'new offers')}` : `${kind} done`;
         UI.toast(doneMsg, 'success');
         announce(t('scan.statusDone', 'Scan complete') + ' · ' + doneMsg);
         // Final refresh + onDone, with a small delay so the JSON file
@@ -463,7 +463,7 @@ Router.register('scan', async () => {
     Promise.resolve().then(() => {
       // Defensive: schedule a final summary once the stream is idle.
       setTimeout(() => {
-        if (totalNew > 0) UI.toast(`Scan: ${totalNew} new offers`, 'success');
+        if (totalNew > 0) UI.toast(`${t('nav.scan', 'Scan')}: ${totalNew} ${t('scan.newOffers', 'new offers')}`, 'success');
       }, 800);
     });
   }
@@ -515,8 +515,8 @@ Router.register('scan', async () => {
     const atsLabel = t('scan.atsBadge', 'ATS adapters');
     const regionalLabel = t('scan.regionalBadge', 'Regional portals');
     const summary = c('div', { className: 'flex gap-3 mb-3', style: { flexWrap: 'wrap' } }, [
-      enWhen && c('span', { className: 'badge badge-info' }, `${atsLabel} · ${enWhen} · ${lastResults.en.fresh?.length || 0} new / ${lastResults.en.filtered?.length || 0} matching`),
-      ruWhen && c('span', { className: 'badge badge-info' }, `${regionalLabel} · ${ruWhen} · ${lastResults.ru.fresh?.length || 0} new / ${lastResults.ru.filtered?.length || 0} matching`),
+      enWhen && c('span', { className: 'badge badge-info' }, `${atsLabel} · ${enWhen} · ${lastResults.en.fresh?.length || 0} ${t('scan.pillNew', 'new')} / ${lastResults.en.filtered?.length || 0} ${t('scan.pillMatching', 'matching')}`),
+      ruWhen && c('span', { className: 'badge badge-info' }, `${regionalLabel} · ${ruWhen} · ${lastResults.ru.fresh?.length || 0} ${t('scan.pillNew', 'new')} / ${lastResults.ru.filtered?.length || 0} ${t('scan.pillMatching', 'matching')}`),
     ]);
     resultsEl.appendChild(summary);
 
@@ -649,7 +649,7 @@ Router.register('scan', async () => {
         titleCell,
         c('td', { style: { fontSize: '13px', color: 'var(--foggy)' } }, r.location || '—'),
         c('td', null, c('span', { className: 'badge ' + wtClass }, wt)),
-        c('td', null, r.relocates ? c('span', { className: 'badge badge-info' }, 'reloc') : ''),
+        c('td', null, r.relocates ? c('span', { className: 'badge badge-info' }, t('scan.relocBadge', 'reloc')) : ''),
         c('td', { style: { fontSize: '13px', color: 'var(--foggy)' } }, r.salary || ''),
         c('td', null, c('span', { className: 'tag' }, r.source)),
       ]);

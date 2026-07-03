@@ -767,4 +767,9 @@ window.__I18N_DICT_TR = {
   'stats.snapshotsEmpty': "Henüz anlık görüntü yok — ilan sayılarının zaman içinde nasıl değiştiğini izlemeye başlamak için bir tane kaydedin.",
   'stats.snapshotsCount': "anlık görüntü",
   'stats.trendMetric': "zaman içinde toplam ilan",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "yeni",
+  'scan.pillMatching': "eşleşen",
+  'scan.newOffers': "yeni ilan",
+  'scan.relocBadge': "taşınma",
 };

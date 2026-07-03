@@ -767,4 +767,10 @@ window.__I18N_DICT_EN = {
   'stats.snapshotsEmpty': "No snapshots yet — save one to start tracking how vacancy counts change over time.",
   'stats.snapshotsCount': "snapshots",
   'stats.trendMetric': "total postings over time",
+
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "new",
+  'scan.pillMatching': "matching",
+  'scan.newOffers': "new offers",
+  'scan.relocBadge': "reloc",
 };

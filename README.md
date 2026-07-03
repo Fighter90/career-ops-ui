@@ -12,11 +12,11 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
+[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
 
-> **🆕 Latest release — v1.87.0**
+> **🆕 Latest release — v1.88.0**
 >
-> **4 new zero-auth scan providers** (parent career-ops v1.16.0 parity): **Get on Board**, **Amazon** (`amazon.jobs`), **Avature**, and **SAP SuccessFactors** join the scanner — all public, no-auth, host-pinned and SSRF-safe — taking the registry to **45 adapters** (40 EN + 5 RU), each with a CI-isolated test. Builds on v1.86.0 (target-role stats), v1.85.0 (German/Italian/Turkish locales), and v1.84.0 (re-apply cooldown).
+> **Issue #29 polish — Scan i18n + API hygiene:** the last hardcoded Scan strings (the `N new / M matching` pills, `N new offers` toasts, and the `reloc` badge) are now translated in all **16 locales**, and the server no longer advertises itself via the `X-Powered-By` header. Builds on v1.87.0 (4 new scan providers), v1.86.0 (target-role stats), and v1.85.0 (German/Italian/Turkish locales).
 >
 > _16 locales · 6 LLM providers · 45 scanner adapters · target-role market stats · repost detector · parent career-ops v1.16.0 parity._
 
