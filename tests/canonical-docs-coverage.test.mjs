@@ -50,7 +50,7 @@ test('every help bundle references all 5 canonical career-ops.org guides', () =>
   }
 });
 
-test('every help bundle keeps the 19-H2 parity contract', () => {
+test('every help bundle keeps the 20-H2 parity contract', () => {
   // Belt-and-suspenders next to tests/help-ui.test.mjs::section-parity.
   // If a future edit splits a section we want the regression here too.
   // v1.29.0 — bar lifted 16 → 17 by adding §17 "How to add a new
