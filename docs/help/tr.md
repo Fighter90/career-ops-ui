@@ -2019,3 +2019,24 @@ Arayüz 9 dilde gönderilir (English, Español, Français, Português, 한국어
 **Bilmekte fayda var.** Dil değiştirici kenar çubuğu altbilgisindedir; seçiminiz tarayıcı-başına hatırlanır. Sunucu tanılama mesajları kasıtlı olarak İngilizce kalır (böylece günlükler tutarlı okunur) — yalnızca ekrandaki arayüz çevrilir.
 
 Eksiksiz, adım adım yerelleştirme kılavuzu için depodaki **`docs/LOCALIZATION.md`**'ye bakın.
+
+## 20. Hedef rollere göre istatistikler (`#/stats`)
+
+**Analytics → Hedef rol istatistikleri** sayfası, taramalarınızın hâlihazırda topladığı seyrek verileri gerçekten hedeflediğiniz roller için bir pazar resmine dönüştürür: ülkeye göre ilan sayıları ve maaş düzeyleri, ayrıca zaman içinde izleyebileceğiniz bir eğilim. Hiçbir şey uydurulmaz: yalnızca tarayıcıların bulduğunu toplar ve örneklemin ne kadar ince olduğu konusunda dürüsttür.
+
+### Sayılar nereden geliyor
+
+- **Hedef roller** Profilinizden (`config/profile.yml` → target roles) okunur, asla koda gömülü değildir. Önce `#/profile` üzerinde bunları ayarlayın; rol yoksa sayfa, boş grafikler yerine "hedef rollerinizi ayarlayın" uyarısı gösterir.
+- **İlanlar** en son taramanızdan gelir (önce `#/scan` üzerinde bir tane çalıştırın). Her ilanın konumu bir ülkeye eşlenir (taramanın ülke filtresiyle aynı algılayıcı) ve maaş dizesi ayrıştırılıp yaklaşık bir döviz kuru tablosu aracılığıyla **USD**'ye normalleştirilir.
+- Her şey **tarayıcınızda** toplanır — hiçbir veri makinenizden ayrılmaz ve bu sayfanın yazdığı tek şey, açıkça kaydettiğiniz bir anlık görüntüdür.
+
+### Grafikleri okuma
+
+- **Ülkeye göre ilanlar** — her ülkede kaç eşleşen ilan olduğu. Tek bir hedef role veya tek bir ülkeye daraltmak için üstteki **Rol** ve **Ülke** filtrelerini kullanın.
+- **Ülkeye göre medyan maaş (USD)** — her ülke için ayrıştırılmış maaşların ortancası. Yalnızca ayrıştırılabilir maaşı olan ilanlar sayılır; örneklem büyüklüğü grafiğin yanında gösterilir ve tutarlar kaba kurlarla dönüştürülür, bu yüzden bunu kesin değil *gösterge niteliğinde* okuyun. Tek başına bir `¥` (Japon yeni ile Çin yuanı arasında belirsiz) büyük bir FX bozulmasından kaçınmak için tahmin edilmek yerine atılır.
+- Mevcut taramada ayrıştırılabilir maaş yoksa, maaş grafiği sayı uydurmak yerine bunu belirtir.
+
+### Anlık görüntüleri kaydetme ve eğilimi izleme
+
+- Geçerli toplamı `data/role-stats.jsonl` dosyasına eklemek için **Anlık görüntüyü kaydet**'e tıklayın. Her anlık görüntü sunucuda zaman damgalanır; anlık görüntüler bu sayfanın yazdığı tek şeydir ve CV'nize veya profilinize asla dokunmaz.
+- **Eğilim** grafiği, kaydettiğiniz anlık görüntüler boyunca ilan sayılarını çizer — hedef rollerinizin pazarının zaman içinde nasıl hareket ettiğini görmek için düzenli olarak (örneğin her haftalık taramadan sonra) bir tane kaydedin.

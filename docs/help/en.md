@@ -1960,3 +1960,24 @@ The interface ships in 9 languages (English, Español, Français, Português, �
 **Good to know.** The language switcher is in the sidebar footer; your choice is remembered per browser. Server diagnostic messages stay in English on purpose (so logs read consistently) — only the on-screen interface is translated.
 
 See **`docs/LOCALIZATION.md`** in the repository for the complete, step-by-step localization guide.
+
+## 20. Statistics by target roles (`#/stats`)
+
+The **Analytics → Target-role stats** page turns the sparse data your scans already collect into a market picture for the roles you are actually targeting — vacancy counts and salary levels by country, plus a trend you can track over time. Nothing is fabricated: it only aggregates what the scanners found, and it is honest about how thin the sample is.
+
+### Where the numbers come from
+
+- **Target roles** are read from your Profile (`config/profile.yml` → target roles) — never hard-coded. Set them on `#/profile` first; with no roles the page shows a "set your target roles" prompt instead of empty charts.
+- **The postings** come from your latest scan (run one on `#/scan` first). Each job's location is mapped to a country (the same detector as the Scan country filter) and its salary string is parsed and normalized to **USD** through an approximate FX table.
+- Everything is aggregated **in your browser** — no data leaves your machine, and the only thing the page ever writes is a snapshot you explicitly save.
+
+### Reading the charts
+
+- **Vacancies by country** — how many matched postings sit in each country. Use the **Role** and **Country** filters at the top to narrow to one target role or one country.
+- **Median salary by country (USD)** — the middle parsed salary per country. Only postings with a parseable salary are counted; the sample size is shown next to the chart, and amounts are converted at rough rates, so read it as *indicative*, not exact. A bare `¥` (ambiguous between Japanese yen and Chinese yuan) is dropped rather than guessed, to avoid a large FX distortion.
+- When the current scan has no parseable salaries, the salary chart says so instead of inventing numbers.
+
+### Saving snapshots & tracking the trend
+
+- Click **Save snapshot** to append the current aggregate to `data/role-stats.jsonl`. Each snapshot is timestamped on the server; snapshots are the only thing this page writes and they never touch your CV or profile.
+- The **trend** chart plots vacancy counts across your saved snapshots — save one periodically (for example after each weekly scan) to watch how the market for your target roles moves over time.

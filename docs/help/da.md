@@ -1931,3 +1931,24 @@ Grænsefladen leveres på 9 sprog (English, Español, Français, Português, 한
 **Godt at vide.** Sprog-vælgeren er i sidebjælke-footeren; dit valg huskes per browser. Server-diagnostiske beskeder forbliver bevidst på engelsk (så logs læses konsistent) — kun den skærm-baserede grænseflade er oversat.
 
 Se **`docs/LOCALIZATION.md`** i repositoriet for den komplette, trin-for-trin lokaliseringsguide.
+
+## 20. Statistik efter målroller (`#/stats`)
+
+Siden **Analytics → Statistik for målroller** forvandler de sparsomme data, som dine scanninger allerede indsamler, til et markedsbillede for de roller, du reelt sigter efter: antal stillinger og lønniveauer pr. land plus en tendens, du kan følge over tid. Intet er opdigtet: den aggregerer kun det, scannerne fandt, og er ærlig om, hvor tynd stikprøven er.
+
+### Hvor tallene kommer fra
+
+- **Målroller** læses fra din Profil (`config/profile.yml` → target roles) — aldrig hårdkodet. Angiv dem først på `#/profile`; uden roller viser siden en "angiv dine målroller"-besked i stedet for tomme diagrammer.
+- **Opslagene** kommer fra din seneste scanning (kør en først på `#/scan`). Hvert jobs placering knyttes til et land (samme detektor som landefilteret i scanningen), og dets lønstreng parses og normaliseres til **USD** via en omtrentlig valutakurstabel.
+- Alt aggregeres **i din browser** — ingen data forlader din maskine, og det eneste, siden nogensinde skriver, er et øjebliksbillede, du udtrykkeligt gemmer.
+
+### At læse diagrammerne
+
+- **Stillinger pr. land** — hvor mange matchende opslag der ligger i hvert land. Brug **Rolle**- og **Land**-filtrene øverst til at indsnævre til én målrolle eller ét land.
+- **Medianløn pr. land (USD)** — den midterste parsede løn pr. land. Kun opslag med en løn, der kan parses, tælles med; stikprøvestørrelsen vises ved siden af diagrammet, og beløbene omregnes til grove kurser, så læs det som *vejledende*, ikke præcist. Et blot `¥` (tvetydigt mellem japanske yen og kinesiske yuan) droppes i stedet for at blive gættet, for at undgå en stor FX-forvrængning.
+- Når den aktuelle scanning ikke har lønninger, der kan parses, siger løndiagrammet det i stedet for at opfinde tal.
+
+### Gem øjebliksbilleder, og følg tendensen
+
+- Klik på **Gem øjebliksbillede** for at føje det aktuelle aggregat til `data/role-stats.jsonl`. Hvert øjebliksbillede tidsstemples på serveren; øjebliksbilleder er det eneste, denne side skriver, og de rører aldrig dit CV eller din profil.
+- **Tendens**-diagrammet plotter antal stillinger på tværs af dine gemte øjebliksbilleder — gem ét jævnligt (for eksempel efter hver ugentlig scanning) for at se, hvordan markedet for dine målroller bevæger sig over tid.

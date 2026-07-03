@@ -82,7 +82,7 @@ test('docs/help/{lang}.md exists for every supported locale', () => {
   }
 });
 
-test('every help doc covers the same 17 sections (all 8 locales — P-8 expanded)', () => {
+test('every help doc covers the same 20 sections (all gated locales — P-8 expanded, §20 v1.86.0)', () => {
   // Full user-journey coverage: from initial setup + API keys to
   // applying for jobs and preparing for interviews. v1.9.2 expanded
   // from 14 → 16 sections (added App settings & API keys, Interview
@@ -91,7 +91,7 @@ test('every help doc covers the same 17 sections (all 8 locales — P-8 expanded
   // alongside the 3 new RU adapters: Trudvsem / GetMatch / GeekJob).
   // v1.60.0 — 18 → 19 (added §19 "Localizing the app into your language").
   const helpDir = resolve(ROOT, 'docs', 'help');
-  const SECTION_COUNT = 19;
+  const SECTION_COUNT = 20;
   const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
   for (const lang of ALL_LOCALES) {
     const fname = `${lang}.md`;
