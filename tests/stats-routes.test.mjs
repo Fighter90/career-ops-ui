@@ -107,10 +107,10 @@ test('POST /api/stats/snapshot is rate-limited on a public bind (locks the guard
   const { _resetBuckets } = await import('../server/lib/rate-limit.mjs');
   const origHost = process.env.HOST;
   const origLimit = process.env.LLM_RATE_LIMIT;
-  process.env.HOST = '0.0.0.0';        // isPubliclyExposed() → true
-  process.env.LLM_RATE_LIMIT = '2/60s'; // tiny bucket so the 3rd POST trips it
-  _resetBuckets();
   try {
+    process.env.HOST = '0.0.0.0';        // isPubliclyExposed() → true
+    process.env.LLM_RATE_LIMIT = '2/60s'; // tiny bucket so the 3rd POST trips it
+    _resetBuckets();
     const r1 = await postJson('/api/stats/snapshot', SAMPLE);
     const r2 = await postJson('/api/stats/snapshot', SAMPLE);
     const r3 = await postJson('/api/stats/snapshot', SAMPLE);
