@@ -3,7 +3,7 @@
 > Лаконічний веб-інтерфейс у стилі технічної документації для AI-конвеєра пошуку роботи [career-ops](https://github.com/Fighter90/career-ops).
 > Шукайте вакансії, оцінюйте їх, досліджуйте компанії, подавайте заявки та відстежуйте кожну пропозицію з однієї вкладки браузера — замість перемикання між Claude Code, терміналом і markdown-файлами.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | **Українська** | [Dansk](README.da.md) | [العربية](README.ar.md)
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | **Українська** | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md)
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
@@ -12,13 +12,13 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.84.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.84.0)
+[![release](https://img.shields.io/badge/release-v1.85.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.85.0)
 
-> **🆕 Останній реліз — v1.84.0**
+> **🆕 Останній реліз — v1.85.0**
 >
-> **Кулдаун повторних заявок + компенсація в pipeline.md** (паритет із батьківським career-ops v1.15.0): EN-скан тепер **пропускає ролі в компаніях, до яких ви нещодавно вже подавали заявку** (`config/profile.yml → re_apply_windows:`, типово вимкнено), щоб результати лишалися зосередженими на нових вакансіях; знайдені вакансії зберігають **зарплату** у вигляді необов'язкового стовпця `url | <comp>` у `data/pipeline.md`. Базується на v1.83.0 (детектор повторних публікацій), v1.82.0 (NoDesk) і v1.81.0 (13 нових джерел).
+> **Німецька, італійська та турецька локалі** (паритет локалей із батьківським career-ops v1.16.0): інтерфейс тепер доступний **16 мовами** — Deutsch 🇩🇪, Italiano 🇮🇹 і Türkçe 🇹🇷 приєднуються до 13 наявних, із повним перекладом вбудованої довідки, README та CHANGELOG, а також локалізованими заготовками LLM-промптів. Базується на v1.84.0 (кулдаун повторних заявок + компенсація), v1.83.0 (детектор повторних публікацій) і v1.82.0 (NoDesk).
 >
-> _13 locales · 6 LLM-провайдерів · 41 адаптер сканера · детектор повторних публікацій · кулдаун повторних заявок · паритет із батьківським career-ops v1.15.0._
+> _16 locales · 6 LLM-провайдерів · 41 адаптер сканера · детектор повторних публікацій · кулдаун повторних заявок · паритет із батьківським career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-uk.png)
 
