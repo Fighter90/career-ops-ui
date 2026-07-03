@@ -39,9 +39,11 @@ export function toCompactSnapshot(body) {
   return { totalJobs: num(b.totalJobs), matchedJobs: num(b.matchedJobs), perRole, byCountry };
 }
 
-// Bound how many snapshots a single trend read materializes, so an append-only
-// role-stats.jsonl that grows over months can't turn GET /api/stats/trend into
-// an unbounded memory read. The tail is what the trend chart wants anyway.
+// Bound how many snapshots a single trend read PARSES/materializes, so an
+// append-only role-stats.jsonl that grows over months can't turn GET
+// /api/stats/trend into an unbounded parse+JSON.parse pass. The tail is what
+// the trend chart wants anyway. (The raw file read is still whole-file; for
+// this manual-snapshot feature that stays small — rotation is a future step.)
 const MAX_TREND_SNAPSHOTS = 5000;
 
 /** Parse role-stats.jsonl into an array of snapshot objects (bad lines skipped). */

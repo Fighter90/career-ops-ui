@@ -125,8 +125,15 @@ Router.register('stats', async () => {
     ]);
   }
 
-  const uiLocale = (I18n.getLang && I18n.getLang()) || 'en';
-  const usd = (n) => (n == null ? '—' : '$' + Math.round(n).toLocaleString(uiLocale));
+  // Locale-aware thousands grouping, but Latin digits (numberingSystem:'latn')
+  // so the money never shows Arabic-Indic numerals beside the Latin "$", and a
+  // try/catch fallback so an unexpected BCP-47 tag can't RangeError the render.
+  const usdFmt = (() => {
+    const loc = (I18n.getLang && I18n.getLang()) || 'en';
+    try { return new Intl.NumberFormat(loc, { maximumFractionDigits: 0, numberingSystem: 'latn' }); }
+    catch { return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }); }
+  })();
+  const usd = (n) => (n == null ? '—' : '$' + usdFmt.format(Math.round(n)));
 
   function draw() {
     charts.textContent = '';
