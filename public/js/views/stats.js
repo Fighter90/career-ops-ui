@@ -125,7 +125,8 @@ Router.register('stats', async () => {
     ]);
   }
 
-  const usd = (n) => (n == null ? '—' : '$' + Math.round(n).toLocaleString('en-US'));
+  const uiLocale = (I18n.getLang && I18n.getLang()) || 'en';
+  const usd = (n) => (n == null ? '—' : '$' + Math.round(n).toLocaleString(uiLocale));
 
   function draw() {
     charts.textContent = '';

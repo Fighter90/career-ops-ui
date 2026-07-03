@@ -28,9 +28,20 @@ test('RoleStats API surface', () => {
 test('parseSalaryUSD: USD k-ranges and plain amounts', () => {
   assert.deepEqual(RS.parseSalaryUSD('$120k–$150k'), { minUsd: 120000, maxUsd: 150000, currency: 'USD' });
   assert.deepEqual(RS.parseSalaryUSD('$120,000 - $150,000'), { minUsd: 120000, maxUsd: 150000, currency: 'USD' });
+  // Comma-grouped range with NO spaces and NO k (the reviewer's gap).
+  assert.deepEqual(RS.parseSalaryUSD('$80,000-$100,000'), { minUsd: 80000, maxUsd: 100000, currency: 'USD' });
   assert.deepEqual(RS.parseSalaryUSD('up to $200,000 per year'), { minUsd: 200000, maxUsd: 200000, currency: 'USD' });
   // No currency but k-suffix → assume USD.
   assert.deepEqual(RS.parseSalaryUSD('80k-100k'), { minUsd: 80000, maxUsd: 100000, currency: 'USD' });
+});
+
+test('parseSalaryUSD: ¥ is ambiguous (JPY vs CNY) — resolved only by explicit words', () => {
+  // A bare yen sign is NOT guessed (a wrong pick is a ~20x FX distortion).
+  assert.equal(RS.parseSalaryUSD('¥5000000'), null);
+  // Explicit words resolve it.
+  assert.equal(RS.parseSalaryUSD('5,000,000 CNY').currency, 'CNY');
+  assert.equal(RS.parseSalaryUSD('¥5,000,000 RMB').currency, 'CNY');
+  assert.equal(RS.parseSalaryUSD('8,000,000 JPY').currency, 'JPY');
 });
 
 test('parseSalaryUSD: non-USD currencies normalize to USD via FX', () => {

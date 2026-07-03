@@ -33,7 +33,10 @@
     [/€|\beur\b|\beuros?\b/i, 'EUR'], [/£|\bgbp\b|\bquid\b/i, 'GBP'],
     [/₽|\brub\b|\bруб/i, 'RUB'], [/₴|\buah\b|\bгрн/i, 'UAH'],
     [/\bpln\b|\bzł\b|\bzl\b/i, 'PLN'], [/\bczk\b|\bkč\b/i, 'CZK'],
-    [/\btry\b|\btl\b|₺/i, 'TRY'], [/¥|\bjpy\b/i, 'JPY'], [/\bcny\b|\brmb\b|\byuan\b/i, 'CNY'],
+    // ¥/￥ is shared by JPY and CNY (a ~20× FX gap), so a BARE yen sign is
+    // deliberately NOT mapped — only explicit words/scripts resolve these two,
+    // and an unresolvable ¥ salary is dropped from the sample rather than guessed.
+    [/\btry\b|\btl\b|₺/i, 'TRY'], [/\bjpy\b|円|yen/i, 'JPY'], [/\bcny\b|\brmb\b|\byuan\b|元/i, 'CNY'],
     [/₹|\binr\b/i, 'INR'], [/\bbrl\b|\br\$/i, 'BRL'], [/\bchf\b/i, 'CHF'],
     [/\bcad\b|\bc\$/i, 'CAD'], [/\baud\b|\ba\$/i, 'AUD'], [/\bnzd\b/i, 'NZD'],
     [/\bsgd\b|\bs\$/i, 'SGD'], [/\baed\b|\bdhs?\b/i, 'AED'], [/₪|\bils\b/i, 'ILS'],

@@ -73,14 +73,6 @@ export function llmRateLimit(req, res, next) {
 }
 
 /**
- * Generic alias — the limiter is a plain per-IP token bucket, not LLM-specific.
- * Reuse it to bound any state-changing / filesystem-writing route on a public
- * bind (e.g. POST /api/stats/snapshot appending to data/role-stats.jsonl).
- * No-op on loopback, exactly like llmRateLimit.
- */
-export const rateLimit = llmRateLimit;
-
-/**
  * Test-only — reset buckets between cases. Production callers never
  * invoke this; the eviction happens organically when each bucket's
  * `resetAt` passes Date.now().

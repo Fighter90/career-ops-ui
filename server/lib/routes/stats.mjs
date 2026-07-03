@@ -19,7 +19,7 @@
 import { existsSync, readFileSync, appendFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { PATHS } from '../paths.mjs';
-import { rateLimit } from '../rate-limit.mjs';
+import { llmRateLimit } from '../rate-limit.mjs';
 
 const num = (v, d = 0) => (Number.isFinite(v) ? v : d);
 
@@ -39,20 +39,29 @@ export function toCompactSnapshot(body) {
   return { totalJobs: num(b.totalJobs), matchedJobs: num(b.matchedJobs), perRole, byCountry };
 }
 
+// Bound how many snapshots a single trend read materializes, so an append-only
+// role-stats.jsonl that grows over months can't turn GET /api/stats/trend into
+// an unbounded memory read. The tail is what the trend chart wants anyway.
+const MAX_TREND_SNAPSHOTS = 5000;
+
 /** Parse role-stats.jsonl into an array of snapshot objects (bad lines skipped). */
 export function readSnapshots() {
   if (!existsSync(PATHS.roleStats)) return [];
   try {
-    return readFileSync(PATHS.roleStats, 'utf8').split('\n').filter(Boolean)
+    const lines = readFileSync(PATHS.roleStats, 'utf8').split('\n').filter(Boolean);
+    const tail = lines.length > MAX_TREND_SNAPSHOTS ? lines.slice(-MAX_TREND_SNAPSHOTS) : lines;
+    return tail
       .map((l) => { try { return JSON.parse(l); } catch { return null; } })
       .filter(Boolean);
   } catch { return []; }
 }
 
 export function registerStatsRoutes(app) {
-  // rateLimit is a no-op on loopback; on a public bind it bounds the
-  // filesystem-writing snapshot append per IP (CodeQL js/missing-rate-limiting).
-  app.post('/api/stats/snapshot', rateLimit, (req, res) => {
+  // llmRateLimit is a per-IP token bucket (no-op on loopback); it bounds the
+  // filesystem-writing snapshot append on a public bind. Reused verbatim from
+  // the LLM routes so CodeQL's rate-limiting model recognizes the guard
+  // (js/missing-rate-limiting).
+  app.post('/api/stats/snapshot', llmRateLimit, (req, res) => {
     const snap = { ts: new Date().toISOString(), ...toCompactSnapshot(req.body) };
     try {
       mkdirSync(dirname(PATHS.roleStats), { recursive: true });

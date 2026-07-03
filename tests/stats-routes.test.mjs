@@ -68,6 +68,16 @@ test('toCompactSnapshot: sanitizes + bounds the payload', () => {
   assert.equal(c.extra, undefined);        // unknown keys dropped
 });
 
+test('toCompactSnapshot: non-object bodies are handled defensively', () => {
+  for (const bad of [null, undefined, [], 'x', 42, { perRole: 'nope', byCountry: 7 }]) {
+    const c = toCompactSnapshot(bad);
+    assert.equal(c.totalJobs, 0);
+    assert.equal(c.matchedJobs, 0);
+    assert.deepEqual(c.perRole, []);
+    assert.deepEqual(c.byCountry, []);
+  }
+});
+
 test('POST /api/stats/snapshot persists a server-stamped row', async () => {
   const res = await postJson('/api/stats/snapshot', SAMPLE);
   assert.equal(res.status, 200);

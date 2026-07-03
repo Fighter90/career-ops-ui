@@ -22,21 +22,28 @@ The system's own local scan output is the source of truth — no invented market
 
 ## Architecture
 
+**Aggregation is CLIENT-side** (reusing `window.Countries`), so the server stays a thin snapshot store — no duplicated country/salary logic on the server.
+
 ```
-public/js/views/stats.js  ──GET /api/stats/roles──►  server/lib/routes/stats.mjs
-   (country filter, SVG      ──GET /api/stats/trend──►     └─ server/lib/role-stats.mjs (pure)
-    charts, snapshot btn)    ──POST /api/stats/snapshot─►        parseSalaryUSD · detectCountry · aggregate
+public/js/views/stats.js ──GET /api/profile─────────►  (target roles)
+  (role/country filters, ──GET /api/scan-results────►  (latest scan jobs)
+   SVG bars + trend,          │ aggregate in-browser via window.RoleStats
+   snapshot btn)              ▼
+                         public/js/lib/role-stats.js (pure: parseSalaryUSD · matchRole · aggregate)
+                              │
+   ──POST /api/stats/snapshot─┴─►  server/lib/routes/stats.mjs ──► data/role-stats.jsonl
+   ──GET  /api/stats/trend──────►  (thin store: append + read)
 ```
 
-### `server/lib/role-stats.mjs` (pure, unit-tested)
-- `parseSalaryUSD(str) → {min,max,currency}|null` — parse common salary strings (`$120k–150k`, `€90,000`, `100000 USD`, `₽300000`), best-effort; returns null when unparseable. Currency detected; USD-normalized `*_usd` via a small fixed FX table (documented as approximate).
-- `detectCountry(location) → {code,name}` — free-text → country using a server-side alias table (ports the `countries.js` data into a shared `countries-data.mjs`); `remote` and `other` buckets.
-- `aggregate(jobs, roles) → { generatedAt, totalJobs, perRole: [{ role, total, byCountry:{code:count}, salary:{count,minUsd,medianUsd,maxUsd} }], byCountry, salaryByCountry }` — matches each job to a target role by fuzzy title contains (reuse `role-matcher.mjs` if suitable), groups by `detectCountry`, and computes salary quartiles per country from parsed salaries.
+### `public/js/lib/role-stats.js` (pure, browser-classic, unit-tested)
+- `parseSalaryUSD(str) → {minUsd,maxUsd,currency}|null` — parse common salary strings (`$120k–150k`, `€90,000`, `80k-100k`, `₽300000`), best-effort; returns null when unparseable. Currency detected (a bare `¥` is left unresolved — JPY/CNY ambiguity); amounts normalized to USD via a small fixed FX table (documented as approximate).
+- `matchRole(title, roles) → role|null` — majority-token fuzzy match of a job title against the profile's target roles (inline; the parent's `role-matcher.mjs` was not a fit for the browser-classic form).
+- `aggregate(jobs, roles, Countries) → { totalJobs, matchedJobs, roles, perRole:[{role,total,byCountry:{code:count},salary:{count,minUsd,medianUsd,maxUsd}}], byCountry, salaryByCountry }` — matches each job to a target role, groups by `Countries.detectCountry` (`remote`/`other` buckets), computes salary stats per country. Empty-safe.
 
-### `server/lib/routes/stats.mjs` — `registerStatsRoutes(app)`
-- `GET /api/stats/roles` — read last-scan + profile, return `aggregate(...)`. Empty-safe (no scan yet → `{totalJobs:0, perRole:[]}`).
-- `GET /api/stats/trend?role=&country=` — return parsed `role-stats.jsonl` (filtered), for the trend chart.
-- `POST /api/stats/snapshot` — compute current aggregate, append a compact snapshot (`{ts, totalJobs, perRole:[{role,total,medianUsd}], byCountry}`) to `data/role-stats.jsonl`. Server stamps `ts`. This is the only write; guarded like other writes.
+### `server/lib/routes/stats.mjs` — `registerStatsRoutes(app)` (thin store)
+- `POST /api/stats/snapshot` — append a client-computed, server-stamped, sanitized+bounded (`toCompactSnapshot`) aggregate to `data/role-stats.jsonl`. Rate-limited (`llmRateLimit`, no-op on loopback) — the only write; explicit "Save snapshot" user action.
+- `GET /api/stats/trend[?role=]` — return the accumulated snapshots (read tail-capped at `MAX_TREND_SNAPSHOTS`); `?role=` maps each snapshot to that role's series for a per-role trend.
+- There is **no** `GET /api/stats/roles` — the roles aggregate is computed in the browser, not the server.
 
 ### `public/js/views/stats.js` — `#/stats`
 - Nav item "Statistics by target roles" (`nav.stats`).
@@ -50,10 +57,10 @@ public/js/views/stats.js  ──GET /api/stats/roles──►  server/lib/routes
 - No new runtime deps. SVG charts hand-rolled. CSP unaffected (no inline handlers; `addEventListener`).
 
 ## Testing
-- `tests/role-stats.test.mjs` — unit: salary parsing (currencies, ranges, junk), country detection (aliases, remote, other), aggregate (grouping, quartiles, empty input).
-- `tests/stats-routes.test.mjs` — integration: the 3 routes against `createApp()` with a fixture `last-scan.json` + `profile.yml` under `CAREER_OPS_ROOT=mktemp`; snapshot append + trend read round-trip.
-- E2E: `#/stats` nav renders, country filter changes charts, snapshot button posts.
-- Coverage ≥ 80% on `role-stats.mjs`.
+- `tests/role-stats.test.mjs` — unit (browser-classic loaded in a synthetic window): salary parsing (currencies incl. the ¥ ambiguity, comma ranges, junk → null), role matching, aggregate (grouping, salary stats, empty input).
+- `tests/stats-routes.test.mjs` — integration against `createApp()` under `CAREER_OPS_ROOT=mktemp`: `toCompactSnapshot` sanitization (incl. non-object bodies), snapshot append + trend read round-trip, `?role=` filter, and the public-bind rate-limit guard (429).
+- E2E: `#/stats` route smoke entry in `tests/e2e.mjs` (renders `h1.page-title`).
+- Coverage ≥ 80% on `public/js/lib/role-stats.js`.
 
 ## Out of scope (later)
 - Live external market APIs (we aggregate local scan data; a full scan is still triggered from the Scan page).
