@@ -19,6 +19,7 @@
 import { existsSync, readFileSync, appendFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { PATHS } from '../paths.mjs';
+import { rateLimit } from '../rate-limit.mjs';
 
 const num = (v, d = 0) => (Number.isFinite(v) ? v : d);
 
@@ -49,7 +50,9 @@ export function readSnapshots() {
 }
 
 export function registerStatsRoutes(app) {
-  app.post('/api/stats/snapshot', (req, res) => {
+  // rateLimit is a no-op on loopback; on a public bind it bounds the
+  // filesystem-writing snapshot append per IP (CodeQL js/missing-rate-limiting).
+  app.post('/api/stats/snapshot', rateLimit, (req, res) => {
     const snap = { ts: new Date().toISOString(), ...toCompactSnapshot(req.body) };
     try {
       mkdirSync(dirname(PATHS.roleStats), { recursive: true });
