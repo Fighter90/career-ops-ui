@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.86.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.86.0)
+[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
 
-> **🆕 Dernière version — v1.86.0**
+> **🆕 Dernière version — v1.87.0**
 >
-> **Statistiques par postes ciblés** (`#/stats`) : une nouvelle page Analytics lit vos **postes ciblés depuis le profil** (non codés en dur) et votre dernier scan pour tracer les **offres et le salaire médian par pays**, avec des filtres poste/pays et une **tendance à partir des instantanés enregistrés** — agrégée côté client depuis les données éparses que les scanners collectent déjà (aucun chiffre inventé), dans les 16 langues. S'appuie sur la v1.85.0 (locales allemand/italien/turc), la v1.84.0 (cooldown de recandidature) et la v1.83.0 (détecteur de reposts).
+> **4 nouveaux fournisseurs de scan sans authentification** (parité avec le career-ops v1.16.0) : **Get on Board**, **Amazon** (`amazon.jobs`), **Avature** et **SAP SuccessFactors** rejoignent le scanner — tous publics, sans authentification, à hôte épinglé et à l'épreuve du SSRF — portant le registre à **45 adaptateurs** (40 EN + 5 RU), chacun avec un test isolé en CI. S'appuie sur la v1.86.0 (statistiques par poste ciblé), la v1.85.0 (locales allemand/italien/turc) et la v1.84.0 (cooldown de recandidature).
 >
-> _16 locales · 6 fournisseurs LLM · 41 adaptateurs de scanner · statistiques de marché par poste ciblé · détecteur de reposts · parité avec le career-ops v1.16.0._
+> _16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · statistiques de marché par poste ciblé · détecteur de reposts · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

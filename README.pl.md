@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.86.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.86.0)
+[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
 
-> **🆕 Najnowsze wydanie — v1.86.0**
+> **🆕 Najnowsze wydanie — v1.87.0**
 >
-> **Statystyki według docelowych stanowisk** (`#/stats`): nowa strona Analytics odczytuje Twoje **docelowe stanowiska z profilu** (nie zakodowane na sztywno) oraz najnowszy skan, aby wykreślić **oferty i medianę wynagrodzenia według krajów**, z filtrami stanowiska/kraju oraz **trendem z zapisanych migawek** — agregowane po stronie klienta z rzadkich danych, które skanery już zbierają (bez zmyślonych liczb), we wszystkich 16 językach. Bazuje na v1.85.0 (lokalizacje niemiecka/włoska/turecka), v1.84.0 (cooldown ponownego aplikowania) i v1.83.0 (detektor ponownych publikacji).
+> **4 nowi dostawcy skanowania bez uwierzytelniania** (parytet z nadrzędnym career-ops v1.16.0): **Get on Board**, **Amazon** (`amazon.jobs`), **Avature** i **SAP SuccessFactors** dołączają do skanera — wszystkie publiczne, bez uwierzytelniania, z przypiętym hostem i odporne na SSRF — powiększając rejestr do **45 adapterów** (40 EN + 5 RU), każdy z izolowanym testem w CI. Bazuje na v1.86.0 (statystyki docelowych stanowisk), v1.85.0 (lokalizacje niemiecka/włoska/turecka) i v1.84.0 (cooldown ponownego aplikowania).
 >
-> _16 lokalizacji · 6 dostawców LLM · 41 adapterów skanera · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
+> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

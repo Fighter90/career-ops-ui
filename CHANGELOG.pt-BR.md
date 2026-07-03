@@ -9,6 +9,17 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.87.0] — 2026-07-04
+
+**4 novos provedores de escaneamento sem autenticação (paridade com o career-ops pai v1.16.0).** O registro do scanner cresce de **41 → 45 adaptadores** (40 EN + 5 RU) — todos públicos, sem autenticação, com host fixado, `redirect:'error'` (seguro contra SSRF), cada um com um teste isolado para CI:
+
+- **Get on Board** (`getonbrd`) — JSON:API público de todo o portal (tecnologia LATAM/remoto), selecionado por provedor, paginado. `server/lib/sources/getonbrd.mjs`.
+- **Amazon** (`amazon`) — JSON de busca público do `amazon.jobs`, detectado por host ou `provider: amazon`, paginado por offset. `server/lib/sources/amazon.mjs`.
+- **Avature** (`avature`) — ATS `*.avature.net` por inquilino, analisado a partir de HTML, detectado por host ou `provider: avature`. `server/lib/sources/avature.mjs`.
+- **SAP SuccessFactors** (`successfactors`) — lista de blocos RMK por inquilino (`*.successfactors.eu/.com`, `jobs2web.com`), analisada a partir de HTML. `server/lib/sources/successfactors.mjs`.
+
+Cada um inclui um `sources/<slug>.mjs` (com `meta` autodescoberto → menu suspenso `#/scan`) **e** um `portals/adapters/<slug>.mjs` em `ALL_ADAPTERS` (a regra dos dois registros) + `tests/sources-<slug>.test.mjs`. A contagem de `ALL_ADAPTERS` e as asserções de id ordenado e do conjunto EN de `/api/scan/sources` subiram de 36→40; `GET /api/scan/sources` agora lista 45.
+
 ## [1.86.0] — 2026-07-03
 
 **Estatísticas por cargos-alvo (`#/stats`) — estatísticas de vagas e salários de mercado para OS SEUS cargos-alvo.** Uma nova página de Análise lê os seus **cargos-alvo do perfil** (`config/profile.yml` → não codificados) e as vagas do último escaneamento, e então mostra, por cargo e país:

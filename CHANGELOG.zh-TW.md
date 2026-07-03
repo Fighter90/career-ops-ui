@@ -9,6 +9,17 @@
 ---
 
 
+## [1.87.0] — 2026-07-04
+
+**4 個新增的免驗證掃描來源（與父專案 career-ops v1.16.0 對齊）。** 掃描器註冊表從 **41 → 45 個轉接器**（40 EN + 5 RU）—— 全部為公開、免驗證、主機鎖定、`redirect:'error'`（SSRF 安全），且各自附一套 CI 隔離測試:
+
+- **Get on Board**（`getonbrd`）—— 全站公開 JSON:API（LATAM/遠端技術職缺），依來源選擇，支援分頁。`server/lib/sources/getonbrd.mjs`。
+- **Amazon**（`amazon`）—— `amazon.jobs` 公開搜尋 JSON，依主機偵測或 `provider: amazon`，依位移分頁。`server/lib/sources/amazon.mjs`。
+- **Avature**（`avature`）—— 依租戶的 `*.avature.net` ATS，解析 HTML，依主機偵測或 `provider: avature`。`server/lib/sources/avature.mjs`。
+- **SAP SuccessFactors**（`successfactors`）—— 依租戶的 RMK 磚塊列表（`*.successfactors.eu/.com`、`jobs2web.com`），解析 HTML。`server/lib/sources/successfactors.mjs`。
+
+每個來源都提供一個 `sources/<slug>.mjs`（自動探索的 `meta` → `#/scan` 下拉選單）**以及** `ALL_ADAPTERS` 中的一個 `portals/adapters/<slug>.mjs`（雙註冊表規則）+ `tests/sources-<slug>.test.mjs`。`ALL_ADAPTERS` 計數以及排序 id 與 `/api/scan/sources` EN 集斷言從 36→40；`GET /api/scan/sources` 現在列出 45 個。
+
 ## [1.86.0] — 2026-07-03
 
 **依目標職位統計（`#/stats`）—— 針對你的目標職位的市場職缺與薪資統計。** 新增的分析頁面讀取你的**個人檔案中的目標職位**（`config/profile.yml` → 非硬編碼）以及最近一次掃描的職缺，然後依職位與國家顯示：

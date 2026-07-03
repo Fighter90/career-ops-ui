@@ -9,6 +9,17 @@
 ---
 
 
+## [1.87.0] — 2026-07-04
+
+**4 новых провайдера сканирования без авторизации (паритет с родительским career-ops v1.16.0).** Реестр сканера вырастает с **41 → 45 адаптеров** (40 EN + 5 RU) — все публичные, без авторизации, с закреплённым хостом, `redirect:'error'` (защита от SSRF), каждый с изолированным для CI тестом:
+
+- **Get on Board** (`getonbrd`) — публичный JSON:API по всему порталу (LATAM/удалённые технические роли), выбирается по провайдеру, с пагинацией. `server/lib/sources/getonbrd.mjs`.
+- **Amazon** (`amazon`) — публичный JSON поиска `amazon.jobs`, определяется по хосту или `provider: amazon`, пагинация по смещению. `server/lib/sources/amazon.mjs`.
+- **Avature** (`avature`) — ATS `*.avature.net` для каждого арендатора, парсинг HTML, определяется по хосту или `provider: avature`. `server/lib/sources/avature.mjs`.
+- **SAP SuccessFactors** (`successfactors`) — список плиток RMK для каждого арендатора (`*.successfactors.eu/.com`, `jobs2web.com`), парсинг HTML. `server/lib/sources/successfactors.mjs`.
+
+Каждый поставляет `sources/<slug>.mjs` (автообнаруживаемый `meta` → выпадающий список `#/scan`) **и** `portals/adapters/<slug>.mjs` в `ALL_ADAPTERS` (правило двух реестров) + `tests/sources-<slug>.test.mjs`. Счётчик `ALL_ADAPTERS`, а также проверки сортированных id и EN-набора `/api/scan/sources` выросли с 36→40; `GET /api/scan/sources` теперь перечисляет 45.
+
 ## [1.86.0] — 2026-07-03
 
 **Статистика по целевым ролям (`#/stats`) — рыночная статистика вакансий и зарплат по ВАШИМ целевым ролям.** Новая страница аналитики читает ваши **целевые роли из профиля** (`config/profile.yml` → не захардкожены) и вакансии из последнего сканирования, а затем показывает по каждой роли и стране:
