@@ -767,4 +767,9 @@ window.__I18N_DICT_PT_BR = {
   'stats.snapshotsEmpty': "Ainda não há instantâneos — salve um para começar a acompanhar como as contagens de vagas mudam ao longo do tempo.",
   'stats.snapshotsCount': "instantâneos",
   'stats.trendMetric': "total de publicações ao longo do tempo",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "novas",
+  'scan.pillMatching': "correspondentes",
+  'scan.newOffers': "vagas novas",
+  'scan.relocBadge': "realoc.",
 };

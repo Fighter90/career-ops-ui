@@ -70,6 +70,15 @@ test('baseline headers present on /api/health', async () => {
   assert.equal(h['referrer-policy'], 'same-origin');
 });
 
+// ───────────── X-Powered-By is disabled (#29 / v1.69.5 hygiene) ──────────
+
+test('X-Powered-By is not advertised on / or /api/health', async () => {
+  const root = await bootAndGet('127.0.0.1', '/');
+  assert.equal(root['x-powered-by'], undefined, 'Express must not advertise itself via X-Powered-By');
+  const health = await bootAndGet('127.0.0.1', '/api/health');
+  assert.equal(health['x-powered-by'], undefined);
+});
+
 // ───────────────── CSP is unconditional (NEW-1, v1.58.4) ─────────────────
 
 function assertCspHardened(csp) {

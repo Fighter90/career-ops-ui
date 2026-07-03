@@ -9,6 +9,15 @@
 ---
 
 
+## [1.88.0] — 2026-07-04
+
+**Issue #29 收尾 —— 扫描 i18n 缺口 + API 卫生。**
+
+- **本地化最后残留的硬编码扫描字符串**（路线图 v1.69.4）：来源汇总徽标（`N 个新增 / M 个匹配`）、`N 个新职位` 提示以及 `reloc` 徽章现在均通过 `t()` 流转 —— 全部 **16 个区域设置**新增 4 个键（`scan.pillNew`、`scan.pillMatching`、`scan.newOffers`、`scan.relocBadge`）。非英语用户不再在核心扫描流程中看到零散的英文。
+- **禁用 `X-Powered-By` 响应头**（路线图 v1.69.5）：`createApp()` 中的 `app.disable('x-powered-by')` —— 服务器不再对外声明使用 Express。（该主线的其余部分此前已交付：`parentVersion` 去除其 release-please 注释、亮色模式主题切换、切换路由时关闭模态框，以及报告页“Score”（`rep.score`）的本地化。）
+
+测试：`tests/scan-i18n-gaps.test.mjs` + `tests/security-headers.test.mjs` 中的 `X-Powered-By` 缺失断言。
+
 ## [1.87.0] — 2026-07-04
 
 **4 个新增的免鉴权扫描来源（与父项目 career-ops v1.16.0 对齐）。** 扫描器注册表从 **41 → 45 个适配器**（40 EN + 5 RU）—— 全部为公开、免鉴权、主机锁定、`redirect:'error'`（SSRF 安全），且各自带一套 CI 隔离测试:

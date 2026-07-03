@@ -10,6 +10,15 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.88.0] — 2026-07-04
+
+**Finpudsning af issue #29 — i18n-huller i Scan + API-hygiejne.**
+
+- **Lokaliserede de sidste hardkodede Scan-strenge** (køreplan v1.69.4): kilde-opsummeringspillerne (`N nye / M matchende`), `N nye stillinger`-toasterne og `reloc`-badget flyder nu gennem `t()` — 4 nye nøgler (`scan.pillNew`, `scan.pillMatching`, `scan.newOffers`, `scan.relocBadge`) på tværs af alle **16 locales**. Ikke-engelske brugere ser ikke længere strøet engelsk i kerne-scan-flowet.
+- **Deaktiverede `X-Powered-By`-headeren** (køreplan v1.69.5): `app.disable('x-powered-by')` i `createApp()` — serveren annoncerer ikke længere Express. (Resten af den epic var allerede leveret: `parentVersion` fjerner sin release-please-kommentar, lystilstands-temaskifteren, luk-modal-ved-ruteskift og lokaliseringen af "Score" (`rep.score`) i Rapporter.)
+
+Tests: `tests/scan-i18n-gaps.test.mjs` + en assertion om fravær af `X-Powered-By` i `tests/security-headers.test.mjs`.
+
 ## [1.87.0] — 2026-07-04
 
 **4 nye scan-udbydere uden godkendelse (paritet med forælder-career-ops v1.16.0).** Scannerregistret vokser fra **41 → 45 adaptere** (40 EN + 5 RU) — alle offentlige, uden godkendelse, host-fastlåst, `redirect:'error'` (SSRF-sikre), hver med en CI-isoleret test:

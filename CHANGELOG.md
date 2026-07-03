@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.88.0] — 2026-07-04
+
+**Issue #29 polish — Scan i18n gaps + API hygiene.**
+
+- **Localized the last hardcoded Scan strings** (roadmap v1.69.4): the source-summary pills (`N new / M matching`), the `N new offers` toasts, and the `reloc` badge now flow through `t()` — 4 new keys (`scan.pillNew`, `scan.pillMatching`, `scan.newOffers`, `scan.relocBadge`) across all **16 locales**. Non-English users no longer see stray English in the core scan flow.
+- **Disabled the `X-Powered-By` header** (roadmap v1.69.5): `app.disable('x-powered-by')` in `createApp()` — the server no longer advertises Express. (The rest of that epic was already shipped: `parentVersion` strips its release-please comment, the light-mode theme toggle, modal-dismiss-on-route-change, and the Reports "Score" localization.)
+
+Tests: `tests/scan-i18n-gaps.test.mjs` + an `X-Powered-By`-absence assertion in `tests/security-headers.test.mjs`.
+
 ## [1.87.0] — 2026-07-04
 
 **4 new zero-auth scan providers (parent career-ops v1.16.0 parity).** The scanner registry grows **41 → 45 adapters** (40 EN + 5 RU) — all public, no-auth, host-pinned, `redirect:'error'` (SSRF-safe), each with a CI-isolated test:

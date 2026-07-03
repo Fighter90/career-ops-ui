@@ -12,11 +12,11 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
+[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
 
-> **🆕 最新版本 — v1.87.0**
+> **🆕 最新版本 — v1.88.0**
 >
-> **4 個新的免驗證掃描來源**（與父層 career-ops v1.16.0 對齊）：**Get on Board**、**Amazon**（`amazon.jobs`）、**Avature** 與 **SAP SuccessFactors** 加入掃描器 —— 全部為公開、免驗證、主機鎖定且防 SSRF —— 將登錄檔擴充至 **45 個轉接器**（40 個 EN + 5 個 RU），每個都附有 CI 隔離測試。在 v1.86.0（目標職務統計）、v1.85.0（德語/義大利語/土耳其語語系）和 v1.84.0（重新申請冷卻）的基礎上構建。
+> **Issue #29 打磨 —— Scan i18n + API 衛生：** 最後殘留的硬編碼 Scan 字串（`N new / M matching` 藥丸標籤、`N new offers` toast 以及 `reloc` 徽章）現已在全部 **16 個語系**中翻譯，且伺服器不再透過 `X-Powered-By` 標頭暴露自身。在 v1.87.0（4 個新掃描來源）、v1.86.0（目標職務統計）和 v1.85.0（德語/義大利語/土耳其語語系）的基礎上構建。
 >
 > _16 locales · 6 個 LLM 提供者 · 45 個掃描器轉接器 · 依目標職務的市場統計 · 重複刊登偵測器 · 與父層 career-ops v1.16.0 對齊。_
 

@@ -767,4 +767,9 @@ window.__I18N_DICT_RU = {
   'stats.snapshotsEmpty': "Снимков пока нет — сохраните один, чтобы начать отслеживать, как со временем меняется число вакансий.",
   'stats.snapshotsCount': "снимки",
   'stats.trendMetric': "всего вакансий с течением времени",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "новые",
+  'scan.pillMatching': "подходящие",
+  'scan.newOffers': "новых вакансий",
+  'scan.relocBadge': "релокация",
 };

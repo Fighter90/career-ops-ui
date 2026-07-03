@@ -767,4 +767,9 @@ window.__I18N_DICT_KO = {
   'stats.snapshotsEmpty': "아직 스냅샷이 없습니다 — 하나를 저장하여 시간이 지남에 따라 공고 수가 어떻게 변하는지 추적하기 시작하세요.",
   'stats.snapshotsCount': "스냅샷",
   'stats.trendMetric': "시간 경과에 따른 전체 공고 수",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "신규",
+  'scan.pillMatching': "일치",
+  'scan.newOffers': "신규 공고",
+  'scan.relocBadge': "이전지원",
 };

@@ -9,6 +9,15 @@
 ---
 
 
+## [1.88.0] — 2026-07-04
+
+**Issue #29 の仕上げ — スキャンの i18n の抜け + API の衛生。**
+
+- **最後まで残っていたハードコードのスキャン文字列をローカライズ**（ロードマップ v1.69.4）: ソース要約のピル（`N 件の新規 / M 件の一致`）、`N 件の新規求人` トースト、`reloc` バッジが `t()` を経由するようになりました — **16 ロケール**すべてに 4 つの新規キー（`scan.pillNew`、`scan.pillMatching`、`scan.newOffers`、`scan.relocBadge`）。英語以外のユーザーは、コアのスキャンフローで英語が紛れ込むのを見なくなりました。
+- **`X-Powered-By` ヘッダーを無効化**（ロードマップ v1.69.5）: `createApp()` 内の `app.disable('x-powered-by')` — サーバーはもう Express を広告しません。（このエピックの残りはすでに出荷済み: `parentVersion` は release-please のコメントを除去、ライトモードのテーマ切り替え、ルート変更時のモーダル閉じ、レポートの「Score」（`rep.score`）のローカライズ。）
+
+テスト: `tests/scan-i18n-gaps.test.mjs` + `tests/security-headers.test.mjs` の `X-Powered-By` 不在アサーション。
+
 ## [1.87.0] — 2026-07-04
 
 **認証不要のスキャンプロバイダーを4つ追加（親 career-ops v1.16.0 との同等性）。** スキャナーレジストリが **41 → 45 アダプター**（40 EN + 5 RU）に増えました — すべて公開、認証なし、ホスト固定、`redirect:'error'`（SSRF セーフ）で、それぞれ CI 分離テスト付きです:

@@ -767,4 +767,9 @@ window.__I18N_DICT_IT = {
   'stats.snapshotsEmpty': "Nessuna istantanea ancora — salvane una per iniziare a monitorare come cambia il numero di offerte nel tempo.",
   'stats.snapshotsCount': "istantanee",
   'stats.trendMetric': "offerte totali nel tempo",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "nuove",
+  'scan.pillMatching': "corrispondenti",
+  'scan.newOffers': "nuove offerte",
+  'scan.relocBadge': "riloc.",
 };

@@ -766,4 +766,9 @@ window.__I18N_DICT_AR = {
   'stats.snapshotsEmpty': "لا توجد لقطات بعد — احفظ واحدة لبدء تتبع كيفية تغيّر أعداد الوظائف الشاغرة مع مرور الوقت.",
   'stats.snapshotsCount': "لقطات",
   'stats.trendMetric': "إجمالي الإعلانات عبر الزمن",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "جديدة",
+  'scan.pillMatching': "مطابِقة",
+  'scan.newOffers': "وظائف جديدة",
+  'scan.relocBadge': "انتقال",
 };

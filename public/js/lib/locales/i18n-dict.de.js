@@ -767,4 +767,9 @@ window.__I18N_DICT_DE = {
   'stats.snapshotsEmpty': "Noch keine Momentaufnahmen — speichern Sie eine, um zu verfolgen, wie sich die Stellenzahlen im Laufe der Zeit ändern.",
   'stats.snapshotsCount': "Momentaufnahmen",
   'stats.trendMetric': "Stellenanzeigen gesamt im Zeitverlauf",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "neu",
+  'scan.pillMatching': "passend",
+  'scan.newOffers': "neue Stellen",
+  'scan.relocBadge': "Umzug",
 };

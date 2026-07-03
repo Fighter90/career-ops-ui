@@ -12,11 +12,11 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
+[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
 
-> **🆕 Seneste udgivelse — v1.87.0**
+> **🆕 Seneste udgivelse — v1.88.0**
 >
-> **4 nye scan-udbydere uden godkendelse** (paritet med forælderens career-ops v1.16.0): **Get on Board**, **Amazon** (`amazon.jobs`), **Avature** og **SAP SuccessFactors** slutter sig til scanneren — alle offentlige, uden godkendelse, host-fastlåste og SSRF-sikre — hvilket bringer registret op på **45 adaptere** (40 EN + 5 RU), hver med en CI-isoleret test. Bygger videre på v1.86.0 (målrolle-statistik), v1.85.0 (tysk/italiensk/tyrkisk lokalitet) og v1.84.0 (genansøgnings-cooldown).
+> **Issue #29-finpudsning — Scan-i18n + API-hygiejne:** de sidste hardkodede Scan-strenge (`N new / M matching`-pillerne, `N new offers`-toasts og `reloc`-badget) er nu oversat i alle **16 lokaliteter**, og serveren annoncerer ikke længere sig selv via `X-Powered-By`-headeren. Bygger videre på v1.87.0 (4 nye scan-udbydere), v1.86.0 (målrolle-statistik) og v1.85.0 (tysk/italiensk/tyrkisk lokalitet).
 >
 > _16 lokaliteter · 6 LLM-providere · 45 scanneradaptere · markedsstatistik efter målroller · genoplagsdetektor · paritet med forælderens career-ops v1.16.0._
 

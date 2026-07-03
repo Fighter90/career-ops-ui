@@ -11,6 +11,15 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.88.0] — 2026-07-04
+
+**Peaufinage de l'issue #29 — lacunes i18n du Scan + hygiène de l'API.**
+
+- **Localisation des dernières chaînes de Scan codées en dur** (feuille de route v1.69.4) : les pastilles de résumé par source (`N nouvelles / M correspondantes`), les toasts `N nouvelles offres` et le badge `reloc` passent désormais par `t()` — 4 nouvelles clés (`scan.pillNew`, `scan.pillMatching`, `scan.newOffers`, `scan.relocBadge`) dans les **16 locales**. Les utilisateurs non anglophones ne voient plus d'anglais résiduel dans le flux de scan principal.
+- **Désactivation de l'en-tête `X-Powered-By`** (feuille de route v1.69.5) : `app.disable('x-powered-by')` dans `createApp()` — le serveur n'annonce plus Express. (Le reste de cet épopée avait déjà été livré : `parentVersion` retire son commentaire release-please, le bascule de thème en mode clair, la fermeture des modales au changement de route et la localisation de « Score » (`rep.score`) dans les Rapports.)
+
+Tests : `tests/scan-i18n-gaps.test.mjs` + une assertion d'absence de `X-Powered-By` dans `tests/security-headers.test.mjs`.
+
 ## [1.87.0] — 2026-07-04
 
 **4 nouveaux fournisseurs de scan sans authentification (parité avec le career-ops parent v1.16.0).** Le registre du scanner passe de **41 → 45 adaptateurs** (40 EN + 5 RU) — tous publics, sans authentification, hôte épinglé, `redirect:'error'` (sûr contre le SSRF), chacun avec un test isolé pour la CI :

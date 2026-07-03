@@ -767,4 +767,9 @@ window.__I18N_DICT_ZH_TW = {
   'stats.snapshotsEmpty': "尚無快照 — 儲存一個即可開始追蹤職缺數量隨時間的變化。",
   'stats.snapshotsCount': "快照",
   'stats.trendMetric': "隨時間變化的職缺總數",
+  // ── Scan i18n gaps closed (#29 / v1.69.4) ──
+  'scan.pillNew': "新增",
+  'scan.pillMatching': "符合",
+  'scan.newOffers': "個新職缺",
+  'scan.relocBadge': "可搬遷",
 };

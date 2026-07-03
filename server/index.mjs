@@ -50,6 +50,7 @@ loadEnvFile(PATHS.envFile);
 export function createApp() {
   ensureRussianPortalsDefaults();
   const app = express();
+  app.disable('x-powered-by'); // don't advertise the framework (issue #29 / v1.69.5 API hygiene)
   app.use(express.json({ limit: '5mb' }));
   app.use(express.text({ limit: '5mb', type: ['text/plain', 'text/markdown'] }));
 

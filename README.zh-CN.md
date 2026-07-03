@@ -12,11 +12,11 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
+[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
 
-> **🆕 最新版本 — v1.87.0**
+> **🆕 最新版本 — v1.88.0**
 >
-> **4 个新的免鉴权扫描源**（与父级 career-ops v1.16.0 对齐）：**Get on Board**、**Amazon**（`amazon.jobs`）、**Avature** 与 **SAP SuccessFactors** 加入扫描器 —— 全部为公开、免鉴权、主机锁定且防 SSRF —— 将注册表扩展至 **45 个适配器**（40 个 EN + 5 个 RU），每个都配有 CI 隔离测试。在 v1.86.0（目标职位统计）、v1.85.0（德语/意大利语/土耳其语语言包）以及 v1.84.0（重复投递冷却期）的基础上构建。
+> **Issue #29 打磨 —— Scan i18n + API 卫生：** 最后残留的硬编码 Scan 字符串（`N new / M matching` 药丸标签、`N new offers` toast 以及 `reloc` 徽章）现已在全部 **16 个语言包**中翻译，且服务器不再通过 `X-Powered-By` 头部暴露自身。在 v1.87.0（4 个新扫描源）、v1.86.0（目标职位统计）以及 v1.85.0（德语/意大利语/土耳其语语言包）的基础上构建。
 >
 > _16 locales · 6 个 LLM 提供方 · 45 个扫描器适配器 · 按目标职位的市场统计 · 重复发布检测器 · 与父级 career-ops v1.16.0 对齐。_
 

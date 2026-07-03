@@ -12,11 +12,11 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
+[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
 
-> **🆕 Останній реліз — v1.87.0**
+> **🆕 Останній реліз — v1.88.0**
 >
-> **4 нові провайдери сканування без автентифікації** (паритет із батьківським career-ops v1.16.0): **Get on Board**, **Amazon** (`amazon.jobs`), **Avature** і **SAP SuccessFactors** приєднуються до сканера — усі публічні, без автентифікації, із закріпленим хостом і захистом від SSRF — доводячи реєстр до **45 адаптерів** (40 EN + 5 RU), кожен з ізольованим CI-тестом. Базується на v1.86.0 (статистика за цільовими ролями), v1.85.0 (німецька/італійська/турецька локалі) і v1.84.0 (кулдаун повторних заявок).
+> **Доопрацювання Issue #29 — i18n для Scan + гігієна API:** останні захардкоджені рядки Scan (пігулки `N new / M matching`, тости `N new offers` і бейдж `reloc`) тепер перекладені в усіх **16 локалях**, а сервер більше не повідомляє про себе через заголовок `X-Powered-By`. Базується на v1.87.0 (4 нові провайдери сканування), v1.86.0 (статистика за цільовими ролями) і v1.85.0 (німецька/італійська/турецька локалі).
 >
 > _16 locales · 6 LLM-провайдерів · 45 адаптерів сканера · ринкова статистика за цільовими ролями · детектор повторних публікацій · паритет із батьківським career-ops v1.16.0._
 

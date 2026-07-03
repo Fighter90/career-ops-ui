@@ -12,11 +12,11 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.87.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.87.0)
+[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
 
-> **🆕 En son sürüm — v1.87.0**
+> **🆕 En son sürüm — v1.88.0**
 >
-> **4 yeni kimlik doğrulamasız tarama sağlayıcısı** (üst career-ops v1.16.0 eşdeğerliği): **Get on Board**, **Amazon** (`amazon.jobs`), **Avature** ve **SAP SuccessFactors** tarayıcıya katılıyor — hepsi herkese açık, kimlik doğrulamasız, host'a sabitlenmiş ve SSRF'ye karşı güvenli — kayıt defterini **45 adaptöre** (40 EN + 5 RU) çıkararak, her biri CI'da izole bir teste sahip. v1.86.0 (hedef rol istatistikleri), v1.85.0 (Almanca/İtalyanca/Türkçe yerel diller) ve v1.84.0 (yeniden başvuru bekleme süresi) üzerine inşa edilmiştir.
+> **Issue #29 rötuşu — Scan i18n + API hijyeni:** son kalan sabit kodlanmış Scan dizeleri (`N new / M matching` hapları, `N new offers` toast'ları ve `reloc` rozeti) artık **16 yerel dilin** tamamında çevrildi ve sunucu kendisini artık `X-Powered-By` başlığıyla duyurmuyor. v1.87.0 (4 yeni tarama sağlayıcısı), v1.86.0 (hedef rol istatistikleri) ve v1.85.0 (Almanca/İtalyanca/Türkçe yerel diller) üzerine inşa edilmiştir.
 >
 > _16 yerel dil · 6 LLM sağlayıcısı · 45 tarayıcı adaptörü · hedef role göre pazar istatistikleri · yeniden yayın algılayıcı · üst career-ops v1.16.0 eşdeğerliği._
 
