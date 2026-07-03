@@ -1705,28 +1705,7 @@ takipçisinde sorunu arayın.
 
 ## 17. Yeni bir iş-portalı kaynağı nasıl eklenir
 
-career-ops-ui, her iş kartını bir **adaptör** olarak ele alır —
-[`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) altında,
-bir kartın sonuçlarını nasıl getirip normalleştireceğini bilen tek bir
-dosya. v1.82.0 itibarıyla `server/lib/sources/` kaydı **45** adaptör
-gönderir — 40 İngilizce (Greenhouse / Ashby / Lever / Workable /
-SmartRecruiters / Workday ATS'leri, RSS, v1.75.0 toplayıcıları RemoteOK /
-Remotive / Working Nomads / IBM / Arbeitsagentur / Glints / Jobstreet ·
-SEEK, v1.76.0 kiracı-başına ATS'leri BambooHR / Breezy HR / Comeet /
-Personio / Recruitee / SolidJobs, v1.79.0 kart-geneli RSS beslemesi We
-Work Remotely, v1.80.0 kiracı-başına ATS'si Teamtailor ve v1.81.0
-üst-parite partisi Arbeitnow / Himalayas / Jobicy / Landing.jobs / 4 Day
-Week / The Muse / The Hub / Jobspresso / Hacker News / JustJoin.it /
-NoFluffJobs / Pinpoint / Rippling ve v1.82.0 kart-geneli RSS beslemesi
-NoDesk) ve 5 Rusça kart. Toplayıcılar, `provider:` ile seçilen
-kart-geneli veya yapılandırma-odaklı kaynaklardır (We Work Remotely
-dahil); kiracı-başına ATS'ler (BambooHR / Breezy HR / Comeet / Personio /
-Recruitee / SolidJobs / Teamtailor) bir `careers_url` sunucusundan
-(`<tenant>.bamboohr.com`, `<tenant>.breezy.hr`, `<slug>.jobs.personio.de`,
-`<slug>.recruitee.com`, `solid.jobs/public-api/offers/<division>`) veya
-açık bir `api:` URL'sinden (Comeet) otomatik tespit edilir — YAML için
-§5'e ve kopyala-yapıştır girdileri için `docs/portals-examples.md`'ye
-bakın.
+career-ops-ui, her iş kartını bir **adaptör** olarak ele alır — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) altında, bir kartın sonuçlarını nasıl getirip normalleştireceğini bilen tek bir dosya. v1.87.0 itibarıyla `server/lib/sources/` kaydı **45** adaptör gönderir — **40 İngilizce + 5 Rusça** kart. İngilizce set, başlıca ATS'leri (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), açık bir `provider:` ile seçilen kart-geneli toplayıcıları (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) ve bir `careers_url` sunucusundan veya açık bir `api:` URL'sinden otomatik tespit edilen kiracı-başına ATS'leri (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …) kapsar. **Tam listenin burada asla elle sayılması gerekmez — `server/lib/sources/`'tan otomatik keşfedilir ve `#/scan`'in Source açılır menüsünde canlı olarak gösterilir.** YAML için §5'e ve kopyala-yapıştır girdileri için `docs/portals-examples.md`'ye bakın.
 
 > **v1.69.0 (P-14) — sürükle-bırak otomatik keşif.** 12. bir kaynak
 > eklemek artık **saf bir dosya bırakma**. Kayıt

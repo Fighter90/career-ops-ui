@@ -1654,23 +1654,16 @@ output, and search the issue tracker on
 
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
-how to fetch + normalize one board's results. As of v1.82.0 the
-`server/lib/sources/` registry ships **45** adapters — 40 English (the
-Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday ATSes, RSS,
-the v1.75.0 aggregators RemoteOK / Remotive / Working Nomads / IBM /
-Arbeitsagentur / Glints / Jobstreet · SEEK, the v1.76.0 per-tenant ATSes
-BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs, the
-v1.79.0 board-wide RSS feed We Work Remotely, the v1.80.0 per-tenant ATS
-Teamtailor, and the v1.81.0 parent-parity batch Arbeitnow / Himalayas /
-Jobicy / Landing.jobs / 4 Day Week / The Muse / The Hub / Jobspresso /
-Hacker News / JustJoin.it / NoFluffJobs / Pinpoint / Rippling, and the
-v1.82.0 board-wide RSS feed NoDesk) and 5 Russian
-boards. The aggregators are board-wide or config-driven sources selected by
-`provider:` (incl. We Work Remotely); the per-tenant ATSes (BambooHR / Breezy HR /
-Comeet / Personio / Recruitee / SolidJobs / Teamtailor) auto-detect from a `careers_url` host
-(`<tenant>.bamboohr.com`, `<tenant>.breezy.hr`, `<slug>.jobs.personio.de`,
-`<slug>.recruitee.com`, `solid.jobs/public-api/offers/<division>`) or an
-explicit `api:` URL (Comeet) — see §5 for the YAML and
+how to fetch + normalize one board's results. As of v1.87.0 the
+`server/lib/sources/` registry ships **45** adapters — **40 English + 5 Russian**
+boards. The English set spans the major ATSes (Greenhouse / Ashby / Lever /
+Workable / SmartRecruiters / Workday), board-wide aggregators selected by an
+explicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
+Amazon, …), and per-tenant ATSes auto-detected from a `careers_url` host or an
+explicit `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature,
+SAP SuccessFactors, …). **The complete list never needs to be hand-counted here —
+it is auto-discovered from `server/lib/sources/` and shown live in the `#/scan`
+Source dropdown.** See §5 for the YAML and
 `docs/portals-examples.md` for copy-paste entries.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** Adding a 12th source is now
