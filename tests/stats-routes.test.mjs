@@ -102,3 +102,25 @@ test('GET /api/stats/trend is empty-safe when no snapshots exist', async () => {
   const { snapshots } = await getJson('/api/stats/trend');
   assert.deepEqual(snapshots, []);
 });
+
+test('POST /api/stats/snapshot is rate-limited on a public bind (locks the guard)', async () => {
+  const { _resetBuckets } = await import('../server/lib/rate-limit.mjs');
+  const origHost = process.env.HOST;
+  const origLimit = process.env.LLM_RATE_LIMIT;
+  process.env.HOST = '0.0.0.0';        // isPubliclyExposed() → true
+  process.env.LLM_RATE_LIMIT = '2/60s'; // tiny bucket so the 3rd POST trips it
+  _resetBuckets();
+  try {
+    const r1 = await postJson('/api/stats/snapshot', SAMPLE);
+    const r2 = await postJson('/api/stats/snapshot', SAMPLE);
+    const r3 = await postJson('/api/stats/snapshot', SAMPLE);
+    assert.equal(r1.status, 200);
+    assert.equal(r2.status, 200);
+    assert.equal(r3.status, 429, '3rd snapshot over the 2/60s limit must be 429');
+    assert.equal((await r3.json()).ok, false);
+  } finally {
+    if (origHost === undefined) delete process.env.HOST; else process.env.HOST = origHost;
+    if (origLimit === undefined) delete process.env.LLM_RATE_LIMIT; else process.env.LLM_RATE_LIMIT = origLimit;
+    _resetBuckets();
+  }
+});
