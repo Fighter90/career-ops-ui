@@ -9,6 +9,17 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.85.0] — 2026-07-03
+
+**Locale niemiecki, włoski i turecki (parytet locale z nadrzędnym career-ops v1.16.0).** Interfejs jest teraz dostarczany w **16 językach** — `de` 🇩🇪, `it` 🇮🇹 i `tr` 🇹🇷 dołączają do istniejących 13.
+
+- **Pełne tłumaczenie interfejsu** — wszystkie 730 kluczy i18n przetłumaczone w `public/js/lib/locales/i18n-dict.{de,it,tr}.js`; przełącznik języka wymienia Deutsch / Italiano / Türkçe, a automatyczne wykrywanie języka przeglądarki rozpoznaje `de`/`it`/`tr` (`public/js/lib/i18n.js`).
+- **Wbudowany przewodnik pomocy** — `docs/help/{de,it,tr}.md` przetłumaczone (pełna struktura 19 H2 / 75 H3), serwowane przez `GET /api/help/:lang`.
+- **Dokumentacja** — dodano `README.{de,it,tr}.md` i `CHANGELOG.{de,it,tr}.md`; brama parytetu locale CHANGELOG obejmuje teraz 15 locale innych niż EN.
+- **Rusztowanie promptów** — `server/lib/prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) zlokalizowane dla trzech nowych locale, dzięki czemu wyjście LLM podąża za językiem interfejsu.
+
+Wszystkie bramy parytetu (`i18n-locale-files`, `i18n-coverage`, `check-changelog-parity`, `lang-switcher-rtl`) rozszerzone do zestawu 16 locale.
+
 ## [1.84.0] — 2026-06-30
 
 **Cooldown ponownego aplikowania + wynagrodzenie w pipeline.md (parytet z nadrzędnym career-ops v1.15.0).** Dwa usprawnienia skanera:

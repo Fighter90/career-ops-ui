@@ -9,6 +9,17 @@
 ---
 
 
+## [1.85.0] — 2026-07-03
+
+**德語、義大利語和土耳其語語言環境（與父層 career-ops v1.16.0 語言環境對齊）。** 介面現在提供 **16 種語言** —— `de` 🇩🇪、`it` 🇮🇹 和 `tr` 🇹🇷 加入既有的 13 種。
+
+- **完整介面翻譯** —— 全部 730 個 i18n 鍵皆在 `public/js/lib/locales/i18n-dict.{de,it,tr}.js` 中翻譯；語言切換器列出 Deutsch / Italiano / Türkçe，瀏覽器語言自動偵測可辨識 `de`/`it`/`tr`（`public/js/lib/i18n.js`）。
+- **應用程式內說明指南** —— `docs/help/{de,it,tr}.md` 已翻譯（完整的 19 個 H2 / 75 個 H3 結構），由 `GET /api/help/:lang` 提供。
+- **文件** —— 新增 `README.{de,it,tr}.md` 和 `CHANGELOG.{de,it,tr}.md`；CHANGELOG 語言環境對齊檢查現在涵蓋 15 個非 EN 語言環境。
+- **提示鷹架** —— `server/lib/prompts.mjs`（`LOCALE_NAMES` + `SCAFFOLD_STRINGS`）已針對三個新語言環境在地化，使 LLM 輸出遵循介面語言。
+
+所有對齊檢查（`i18n-locale-files`、`i18n-coverage`、`check-changelog-parity`、`lang-switcher-rtl`）皆擴展至 16 個語言環境集合。
+
 ## [1.84.0] — 2026-06-30
 
 **重新申請冷卻 + pipeline.md 中的薪酬欄位（與父層 career-ops v1.15.0 對齊）。** 兩項掃描器升級：

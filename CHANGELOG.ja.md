@@ -9,6 +9,17 @@
 ---
 
 
+## [1.85.0] — 2026-07-03
+
+**ドイツ語・イタリア語・トルコ語ロケール（親 career-ops v1.16.0 ロケールパリティ）。** UI が **16 言語**で提供されるようになりました — 既存の 13 言語に `de` 🇩🇪、`it` 🇮🇹、`tr` 🇹🇷 が加わります。
+
+- **UI 全体の翻訳** — `public/js/lib/locales/i18n-dict.{de,it,tr}.js` で 730 個の i18n キーをすべて翻訳。言語スイッチャーに Deutsch / Italiano / Türkçe が表示され、ブラウザ言語の自動検出が `de`/`it`/`tr` を認識します（`public/js/lib/i18n.js`）。
+- **アプリ内ヘルプガイド** — `docs/help/{de,it,tr}.md` を翻訳（完全な 19 H2 / 75 H3 構造）、`GET /api/help/:lang` で配信されます。
+- **ドキュメント** — `README.{de,it,tr}.md` と `CHANGELOG.{de,it,tr}.md` を追加。CHANGELOG のロケールパリティゲートが 15 の非 EN ロケールをカバーするようになりました。
+- **プロンプトのスキャフォールディング** — `server/lib/prompts.mjs`（`LOCALE_NAMES` + `SCAFFOLD_STRINGS`）を 3 つの新規ロケール向けにローカライズし、LLM の出力が UI 言語に従うようにしました。
+
+すべてのパリティゲート（`i18n-locale-files`、`i18n-coverage`、`check-changelog-parity`、`lang-switcher-rtl`）を 16 ロケールセットに拡張しました。
+
 ## [1.84.0] — 2026-06-30
 
 **再応募クールダウン + pipeline.md への報酬情報（親 career-ops v1.15.0 パリティ）。** スキャナーの 2 件のアップグレード:

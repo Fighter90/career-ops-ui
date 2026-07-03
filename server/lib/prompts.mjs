@@ -27,6 +27,9 @@ const LOCALE_NAMES = {
   pl: 'Polish',
   uk: 'Ukrainian',
   ar: 'Arabic',
+  de: 'German',
+  it: 'Italian',
+  tr: 'Turkish',
 };
 
 /**
@@ -88,6 +91,9 @@ const SCAFFOLD_STRINGS = {
     pl: 'Najpierw przeczytaj te pliki (znajdują się w katalogu głównym projektu):',
     uk: 'Спочатку прочитай ці файли (вони в корені проєкту):',
     ar: 'اقرأ هذه الملفات أولاً (توجد في جذر المشروع):',
+    de: 'Lesen Sie zuerst diese Dateien (sie liegen im Projektstammverzeichnis):',
+    it: 'Leggi prima questi file (si trovano nella radice del progetto):',
+    tr: 'Önce şu dosyaları okuyun (proje kök dizininde bulunurlar):',
   },
   userContext: {
     en: 'User-supplied context:',
@@ -102,6 +108,9 @@ const SCAFFOLD_STRINGS = {
     pl: 'Kontekst od użytkownika:',
     uk: 'Контекст від користувача:',
     ar: 'السياق المقدَّم من المستخدم:',
+    de: 'Vom Benutzer bereitgestellter Kontext:',
+    it: 'Contesto fornito dall\'utente:',
+    tr: 'Kullanıcı tarafından sağlanan bağlam:',
   },
   modeTemplate: {
     en: 'mode template',
@@ -116,6 +125,9 @@ const SCAFFOLD_STRINGS = {
     pl: 'szablon trybu',
     uk: 'шаблон режиму',
     ar: 'قالب الوضع',
+    de: 'Modusvorlage',
+    it: 'modello di modalità',
+    tr: 'mod şablonu',
   },
   modeRoleLine: {
     en: (slug) => `You are career-ops in ${slug} mode.`,
@@ -130,6 +142,9 @@ const SCAFFOLD_STRINGS = {
     pl: (slug) => `Jesteś career-ops w trybie ${slug}.`,
     uk: (slug) => `Ти — career-ops у режимі ${slug}.`,
     ar: (slug) => `أنت career-ops في وضع ${slug}.`,
+    de: (slug) => `Sie sind career-ops im Modus ${slug}.`,
+    it: (slug) => `Sei career-ops in modalità ${slug}.`,
+    tr: (slug) => `Sen ${slug} modunda career-ops'sun.`,
   },
   evalRoleLine: {
     en: 'You are career-ops. Evaluate this Job Description against the user\'s CV.',
@@ -144,6 +159,9 @@ const SCAFFOLD_STRINGS = {
     pl: 'Jesteś career-ops. Oceń ten Job Description względem CV użytkownika.',
     uk: 'Ти — career-ops. Оціни цей Job Description відносно CV користувача.',
     ar: 'أنت career-ops. قيّم هذا الـ Job Description مقابل سيرة المستخدم الذاتية (CV).',
+    de: 'Sie sind career-ops. Bewerten Sie diese Job Description anhand des Lebenslaufs (CV) des Benutzers.',
+    it: 'Sei career-ops. Valuta questo Job Description rispetto al CV dell\'utente.',
+    tr: 'Sen career-ops\'sun. Bu Job Description\'ı kullanıcının CV\'sine göre değerlendir.',
   },
 };
 

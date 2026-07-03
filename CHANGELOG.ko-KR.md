@@ -9,6 +9,17 @@
 ---
 
 
+## [1.85.0] — 2026-07-03
+
+**독일어, 이탈리아어, 터키어 로케일 (상위 career-ops v1.16.0 로케일 패리티).** 이제 UI가 **16개 언어**로 제공됩니다 — 기존 13개에 `de` 🇩🇪, `it` 🇮🇹, `tr` 🇹🇷 가 추가되었습니다.
+
+- **전체 UI 번역** — `public/js/lib/locales/i18n-dict.{de,it,tr}.js` 에서 730개 i18n 키 모두 번역; 언어 전환기에 Deutsch / Italiano / Türkçe 가 표시되고 브라우저 언어 자동 감지가 `de`/`it`/`tr` 를 인식합니다(`public/js/lib/i18n.js`).
+- **인앱 도움말 가이드** — `docs/help/{de,it,tr}.md` 번역(전체 19 H2 / 75 H3 구조), `GET /api/help/:lang` 로 제공됩니다.
+- **문서** — `README.{de,it,tr}.md` 및 `CHANGELOG.{de,it,tr}.md` 추가; CHANGELOG 로케일 패리티 게이트가 이제 15개 비 EN 로케일을 커버합니다.
+- **프롬프트 스캐폴딩** — `server/lib/prompts.mjs`(`LOCALE_NAMES` + `SCAFFOLD_STRINGS`)가 세 개의 새 로케일에 맞게 현지화되어, LLM 출력이 UI 언어를 따릅니다.
+
+모든 패리티 게이트(`i18n-locale-files`, `i18n-coverage`, `check-changelog-parity`, `lang-switcher-rtl`)가 16개 로케일 세트로 확장되었습니다.
+
 ## [1.84.0] — 2026-06-30
 
 **재적용 쿨다운 + pipeline.md 내 보상 정보 (상위 career-ops v1.15.0 패리티).** 두 가지 스캐너 업그레이드:

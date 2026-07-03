@@ -9,6 +9,17 @@
 ---
 
 
+## [1.85.0] — 2026-07-03
+
+**德语、意大利语和土耳其语区域设置（与上游 career-ops v1.16.0 区域设置对齐）。** 界面现在提供 **16 种语言** —— `de` 🇩🇪、`it` 🇮🇹 和 `tr` 🇹🇷 加入现有的 13 种。
+
+- **完整界面翻译** —— 全部 730 个 i18n 键均在 `public/js/lib/locales/i18n-dict.{de,it,tr}.js` 中翻译；语言切换器列出 Deutsch / Italiano / Türkçe，浏览器语言自动检测可识别 `de`/`it`/`tr`（`public/js/lib/i18n.js`）。
+- **应用内帮助指南** —— `docs/help/{de,it,tr}.md` 已翻译（完整的 19 个 H2 / 75 个 H3 结构），由 `GET /api/help/:lang` 提供。
+- **文档** —— 新增 `README.{de,it,tr}.md` 和 `CHANGELOG.{de,it,tr}.md`；CHANGELOG 区域设置对齐校验现在覆盖 15 个非 EN 区域设置。
+- **提示脚手架** —— `server/lib/prompts.mjs`（`LOCALE_NAMES` + `SCAFFOLD_STRINGS`）已针对三个新区域设置本地化，使 LLM 输出遵循界面语言。
+
+所有对齐校验（`i18n-locale-files`、`i18n-coverage`、`check-changelog-parity`、`lang-switcher-rtl`）均扩展至 16 个区域设置集合。
+
 ## [1.84.0] — 2026-06-30
 
 **重复投递冷却期 + pipeline.md 薪资信息（与上游 career-ops v1.15.0 对齐）。** 两项扫描器升级：
