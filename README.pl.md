@@ -3,7 +3,7 @@
 > Przejrzysty interfejs webowy w stylu dokumentacji technicznej dla potoku wyszukiwania pracy opartego na AI — [career-ops](https://github.com/Fighter90/career-ops).
 > Przeglądaj oferty, oceniaj je, analizuj szczegółowo, aplikuj i śledź każdą ofertę z jednej karty przeglądarki — zamiast przeskakiwać między Claude Code, terminalem a plikami markdown.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | **Polski** | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md)
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | **Polski** | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md)
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.84.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.84.0)
+[![release](https://img.shields.io/badge/release-v1.85.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.85.0)
 
-> **🆕 Najnowsze wydanie — v1.84.0**
+> **🆕 Najnowsze wydanie — v1.85.0**
 >
-> **Cooldown ponownego aplikowania + wynagrodzenie w pipeline.md** (parytet z nadrzędnym career-ops v1.15.0): skan EN teraz **pomija role w firmach, do których niedawno aplikowałeś/aś** (`config/profile.yml → re_apply_windows:`, domyślnie wyłączone), dzięki czemu wyniki koncentrują się na nowych ofertach, a skanowane oferty zapisują swoje **wynagrodzenie** jako opcjonalną kolumnę `url | <comp>` w `data/pipeline.md`. Bazuje na v1.83.0 (detektor ponownych publikacji), v1.82.0 (NoDesk) i v1.81.0 (13 nowych źródeł).
+> **Lokalizacje niemiecka, włoska i turecka** (parytet lokalizacji z nadrzędnym career-ops v1.16.0): interfejs jest teraz dostępny w **16 językach** — Deutsch 🇩🇪, Italiano 🇮🇹 i Türkçe 🇹🇷 dołączają do istniejących 13, z pełnym tłumaczeniem pomocy w aplikacji, README i CHANGELOG oraz zlokalizowanym scaffoldingiem promptów LLM. Bazuje na v1.84.0 (cooldown ponownego aplikowania + wynagrodzenie), v1.83.0 (detektor ponownych publikacji) i v1.82.0 (NoDesk).
 >
-> _13 lokalizacji · 6 dostawców LLM · 41 adapterów skanera · detektor ponownych publikacji · cooldown ponownego aplikowania · parytet z nadrzędnym career-ops v1.15.0._
+> _16 lokalizacji · 6 dostawców LLM · 41 adapterów skanera · detektor ponownych publikacji · cooldown ponownego aplikowania · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

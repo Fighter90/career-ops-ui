@@ -3,7 +3,7 @@
 > واجهة ويب أنيقة بأسلوب التوثيق التقني لخط أنابيب البحث عن عمل بالذكاء الاصطناعي — [career-ops](https://github.com/Fighter90/career-ops).
 > ابحث عن الوظائف وقيّمها واستكشفها وقدّم طلباتك وتتبّع كل عرض من تبويب واحد في المتصفح — بدلاً من التنقل بين Claude Code والطرفية وملفات markdown.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | **العربية**
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | **العربية** | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md)
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
@@ -12,13 +12,13 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.84.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.84.0)
+[![release](https://img.shields.io/badge/release-v1.85.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.85.0)
 
-> **🆕 أحدث إصدار — v1.84.0**
+> **🆕 أحدث إصدار — v1.85.0**
 >
-> **cooldown إعادة التقديم + التعويض في pipeline.md** (تكافؤ مع المشروع الأصلي career-ops v1.15.0): **يتخطّى مسح EN الآن الأدوار لدى الشركات التي تقدّمت إليها مؤخراً** (`config/profile.yml → re_apply_windows:`، معطّل افتراضياً) لتبقى النتائج مُركّزة على الفرص الجديدة، وتحفظ العروض الممسوحة **الراتب** في عمود اختياري `url | <comp>` في `data/pipeline.md`. يُبنى على v1.83.0 (كاشف إعادة النشر)، وv1.82.0 (NoDesk)، وv1.81.0 (13 مصدراً جديداً).
+> **لغات ألمانية وإيطالية وتركية** (تكافؤ اللغات مع المشروع الأصلي career-ops v1.16.0): تتوفّر الواجهة الآن بـ **16 لغة** — تنضمّ Deutsch 🇩🇪 وItaliano 🇮🇹 وTürkçe 🇹🇷 إلى الـ 13 لغة الحالية، مع ترجمة كاملة للمساعدة داخل التطبيق وREADME وCHANGELOG بالإضافة إلى هياكل مُعرَّبة لموجّهات LLM. يُبنى على v1.84.0 (cooldown إعادة التقديم + التعويض)، وv1.83.0 (كاشف إعادة النشر)، وv1.82.0 (NoDesk).
 >
-> _13 locales · 6 مزوّدات LLM · 41 محوّل ماسح · كاشف إعادة النشر · cooldown إعادة التقديم · تكافؤ مع المشروع الأصلي career-ops v1.15.0._
+> _16 locales · 6 مزوّدات LLM · 41 محوّل ماسح · كاشف إعادة النشر · cooldown إعادة التقديم · تكافؤ مع المشروع الأصلي career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-ar.png)
 
