@@ -2072,3 +2072,25 @@ Before you share your CV as a writing sample or a screenshot, the **Privacy mask
 ### Make it human (voice match)
 
 Paste a stiff line or paragraph — the kind of generic AI phrasing that reads as boilerplate — and **Make it human** rewrites it in *your* voice. The rewrite is grounded server-side in your `voice-dna.md` (how your writing reads) and your `writing-samples/` (your real prose). The hard rule: it may reorder, tighten, and re-voice, but it will **never** introduce a fact, metric, or achievement that isn't already in the text you pasted. With an LLM key it rewrites live; with no key it hands you a ready-to-run prompt to paste into any assistant. Then edit your CV on the `#/cv` page as usual — CV Studio suggests, you decide.
+
+## 25. Memory (`#/memory`)
+
+Every other page starts fresh each time. **Memory** (open it from **Setup → Memory 🧠** in the sidebar) is the one place you tell the assistant something *once* and have it stick. It holds a short, editable "remember this about me" note that is fed into **every** AI request.
+
+### What it's for
+
+Use it for durable preferences and working style, for example:
+
+- The kinds of roles and companies you're targeting (and the ones you never want to see).
+- How you like answers written — terse or detailed, senior tone, no filler.
+- Hard constraints worth repeating — remote only, a comp floor, no on-call.
+
+Keep it to preferences and steering. It is **not** the place for facts about your experience — your skills, employers, and achievements live in your CV, profile, and two-pager, which remain the only sources for anything that appears in your CVs and cover letters. The memory note shapes *how* the assistant works with you, never *what* it claims about you.
+
+### How it reaches everything
+
+When you click **Save memory**, the note is written to your parent project's user layer at `config/memory.md` and inlined into the shared project context. That means it automatically travels with **every** AI request — evaluations, mock interviews, networking plans, CV Studio rewrites — and across **every** provider you've configured. Write it once; you don't have to repeat yourself on each page. Like your other user-layer files, it is never overwritten when you update the system, and it only ever leaves your machine inside the LLM prompts you choose to run.
+
+### Suggest from your data
+
+Not sure what to write? **✨ Suggest from my data** reads your application tracker and drafts a set of behavioural bullets — the patterns in what you pursue, accept, and reject. Run the prompt it gives you in any LLM, review the suggestions, and paste an edited version into the note. It mines only your own tracker and never invents facts; you always review before anything is saved.

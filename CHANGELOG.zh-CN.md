@@ -9,6 +9,16 @@
 ---
 
 
+## [1.93.0] — 2026-07-04
+
+**记忆层(Epic 24)。** 全新的 `#/memory` 页面保存一条简短、可编辑的「关于我请记住这些」的备注,助手会在 **每一项** 任务中将其牢记于心:
+
+- **一条备注,处处生效** — 由于它被内联进 `bundleProjectContext`,该备注会自动抵达每一次 AI 请求(评估、模拟面试、人脉拓展、CV Studio),并横跨 **所有** 提供商。写一次,它就会引导一切。
+- **引导,而非事实** — 它捕捉你的偏好以及你喜欢的工作方式(语气、格式、deal-breaker、节奏),绝不引入关于你经历的新事实主张 —— 那些仍只存在于你的 CV、档案和 two-pager 中。保存到用户层的 `config/memory.md`,绝不会被更新覆盖。
+- **从你的数据中提议** — `POST /api/memory/suggest` 会从你自己的申请追踪器中挖掘行为模式,并为你草拟条目供你审阅和编辑。它读取你的追踪器;绝不臆造事实,也不发起实时调用。
+
+新增: `server/lib/routes/memory.mjs`(第 21 个路由模块 —— `GET`/`PUT /api/memory` + `POST /api/memory/suggest`)、`public/js/views/memory.js`、`PATHS.memory`,以及添加进 `bundleProjectContext` 的 `config/memory.md` 块。在全部 **16 locales** 中新增 11 个 i18n 键。测试: `tests/memory-routes.test.mjs`。
+
 ## [1.92.0] — 2026-07-04
 
 **CV Studio(Epic 21)。** 全新的 `#/cv-studio` 页面为你的简历提供三个诚实、基本本地运行的工具:

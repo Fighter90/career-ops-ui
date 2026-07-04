@@ -2,6 +2,14 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.93.0] — 2026-07-04
+### Hinzugefügt
+- **Speicherschicht (Epic 24).** Eine neue Seite `#/memory` hält eine kurze, editierbare „das über mich merken"-Notiz, die der Assistent bei **jeder** Aufgabe im Blick behält:
+  - **Eine Notiz, überall** — weil sie in `bundleProjectContext` eingebettet ist, erreicht die Notiz automatisch jede KI-Anfrage (Bewertung, Mock Interview, Networking, CV Studio) über **alle** Anbieter hinweg. Einmal schreiben; sie steuert alles.
+  - **Steuerung, keine Fakten** — sie erfasst deine Präferenzen und wie du gern arbeitest (Ton, Format, Ausschlusskriterien, Kadenz), niemals neue Tatsachenbehauptungen über deine Erfahrung — die leben weiterhin nur in deinem Lebenslauf, deinem Profil und deinem two-pager. In der Benutzerschicht unter `config/memory.md` gespeichert, nie durch Updates überschrieben.
+  - **Aus deinen Daten vorschlagen** — `POST /api/memory/suggest` durchsucht deinen eigenen Bewerbungstracker nach Verhaltensmustern und entwirft Stichpunkte, die du prüfen und bearbeiten kannst. Es liest deinen Tracker; es erfindet nie Fakten und macht keinen Live-Aufruf.
+- Neu: `server/lib/routes/memory.mjs` (21. Routenmodul — `GET`/`PUT /api/memory` + `POST /api/memory/suggest`), `public/js/views/memory.js`, `PATHS.memory` und ein `config/memory.md`-Block, der zu `bundleProjectContext` hinzugefügt wurde. 11 neue i18n-Schlüssel in allen **16 Sprachen**. Tests: `tests/memory-routes.test.mjs`.
+
 ## [1.92.0] — 2026-07-04
 ### Hinzugefügt
 - **CV Studio (Epic 21).** Eine neue Seite `#/cv-studio` gibt deinem Lebenslauf drei ehrliche, größtenteils lokale Werkzeuge:

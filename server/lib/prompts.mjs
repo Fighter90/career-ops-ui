@@ -191,6 +191,10 @@ export function bundleProjectContext(opts = {}) {
   const files = [
     { label: 'cv.md', path: PATHS.cv },
     { label: 'config/profile.yml', path: PATHS.profile },
+    // v1.93.0 (Epic 24) — the user's editable memory note: how they want the
+    // assistant to work with them + preferences. Steering only — never a
+    // source of new factual claims about their experience.
+    { label: 'config/memory.md (what to remember about this user — preferences & steering, NOT new factual claims)', path: PATHS.memory },
     // v1.89.0 (Epic 14) — the candidate's two-pager: what they ACTUALLY want.
     // loves/must_haves are positive signals; hates/deal_breakers negative —
     // blend them with the CV-vs-JD match when scoring.

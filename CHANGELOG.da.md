@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.93.0] — 2026-07-04
+
+**Hukommelseslag (Epic 24).** En ny `#/memory`-side rummer en kort, redigerbar "husk dette om mig"-note, som assistenten holder sig for øje ved **hver** opgave:
+
+- **Én note, overalt** — fordi den indlejres i `bundleProjectContext`, når noten automatisk frem til hver eneste AI-forespørgsel (evaluering, jobsamtale-øvelse, networking, CV Studio) på tværs af **alle** udbydere. Skriv den én gang; den styrer alt.
+- **Styring, ikke fakta** — den indfanger dine præferencer og hvordan du kan lide at arbejde (tone, format, deal-breakers, kadence), aldrig nye faktuelle påstande om din erfaring — dem lever der stadig kun i dit CV, din profil og din two-pager. Gemmes i brugerlaget i `config/memory.md` og overskrives aldrig af opdateringer.
+- **Foreslå ud fra dine data** — `POST /api/memory/suggest` udvinder adfærdsmønstre fra din egen ansøgnings-tracker og udkaster punkter, du kan gennemse og redigere. Den læser din tracker; den opdigter aldrig fakta og foretager intet live-kald.
+
+Nyt: `server/lib/routes/memory.mjs` (21. rutemodul — `GET`/`PUT /api/memory` + `POST /api/memory/suggest`), `public/js/views/memory.js`, `PATHS.memory` og en `config/memory.md`-blok tilføjet til `bundleProjectContext`. 11 nye i18n-nøgler på tværs af alle **16 locales**. Tests: `tests/memory-routes.test.mjs`.
+
 ## [1.92.0] — 2026-07-04
 
 **CV Studio (Epic 21).** En ny `#/cv-studio`-side giver dit CV tre ærlige, overvejende lokale værktøjer:

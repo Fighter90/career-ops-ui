@@ -890,4 +890,17 @@ window.__I18N_DICT_EN = {
   'cvs.rewriting': "Rewriting in your voice…",
   'cvs.humanManualHelp': "No LLM key is set. Copy this prompt into any LLM, then paste the rewrite back into your CV.",
   'cvs.humanFailed': "Could not rewrite the text",
+
+  // ── Memory layer (Epic 24 / v1.93.0) ──
+  'nav.memory': "Memory",
+  'mem.title': "Memory",
+  'mem.subtitle': "A short note the assistant keeps in mind on every task — your preferences and how you like to work. It never becomes a source of new facts about you.",
+  'mem.ph': "e.g.\n- Prefer remote, Series A–B product companies.\n- Answer tersely, senior tone, no filler.\n- No on-call roles; comp floor $140k.",
+  'mem.save': "Save memory",
+  'mem.saved': "Memory saved — it now steers every AI request",
+  'mem.saveFailed': "Could not save the memory note",
+  'mem.suggest': "✨ Suggest from my data",
+  'mem.suggestHelp': "Run this in any LLM, review the behavioural bullets it proposes, then paste an edited version into your memory note above. It reads your tracker — it never invents facts.",
+  'mem.suggestFailed': "Could not build a suggestion",
+  'mem.privacyNote': "Stored in your parent project’s user layer (config/memory.md) — never overwritten by updates, and only ever sent inside the LLM prompts you run.",
 };

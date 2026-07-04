@@ -886,4 +886,16 @@ window.__I18N_DICT_DE = {
   'cvs.rewriting': "Umschreiben in Ihrer Stimme…",
   'cvs.humanManualHelp': "Es ist kein LLM-Schlüssel gesetzt. Kopieren Sie diesen Prompt in ein beliebiges LLM und fügen Sie die Umschreibung dann zurück in Ihren CV ein.",
   'cvs.humanFailed': "Der Text konnte nicht umgeschrieben werden",
+  // ── Gedächtnis-Ebene (Epic 24 / v1.93.0) ──
+  'nav.memory': "Gedächtnis",
+  'mem.title': "Gedächtnis",
+  'mem.subtitle': "Eine kurze Notiz, die der Assistent bei jeder Aufgabe im Hinterkopf behält — Ihre Präferenzen und wie Sie gerne arbeiten. Sie wird niemals zu einer Quelle neuer Fakten über Sie.",
+  'mem.ph': "z. B.\n- Bevorzuge Remote-Produktunternehmen der Series A–B.\n- Antworte knapp, seniorer Ton, ohne Füllwörter.\n- Keine Rufbereitschafts-Rollen; Gehaltsuntergrenze $140k.",
+  'mem.save': "Gedächtnis speichern",
+  'mem.saved': "Gedächtnis gespeichert — es steuert jetzt jede KI-Anfrage",
+  'mem.saveFailed': "Die Gedächtnisnotiz konnte nicht gespeichert werden",
+  'mem.suggest': "✨ Aus meinen Daten vorschlagen",
+  'mem.suggestHelp': "Führen Sie dies in einem beliebigen LLM aus, prüfen Sie die vorgeschlagenen Verhaltenspunkte und fügen Sie dann eine bearbeitete Version in Ihre Gedächtnisnotiz oben ein. Es liest Ihren Tracker — es erfindet niemals Fakten.",
+  'mem.suggestFailed': "Es konnte kein Vorschlag erstellt werden",
+  'mem.privacyNote': "Gespeichert in der Benutzer-Ebene Ihres übergeordneten Projekts (config/memory.md) — wird niemals durch Updates überschrieben und nur innerhalb der LLM-Prompts gesendet, die Sie ausführen.",
 };

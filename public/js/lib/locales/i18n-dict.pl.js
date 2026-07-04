@@ -885,4 +885,16 @@ window.__I18N_DICT_PL = {
   'cvs.rewriting': "Przepisujemy Twoim głosem…",
   'cvs.humanManualHelp': "Nie ustawiono klucza LLM. Skopiuj ten prompt do dowolnej LLM, a następnie wklej przepisany tekst z powrotem do swojego CV.",
   'cvs.humanFailed': "Nie udało się przepisać tekstu",
+  // ── Memory layer (Epic 24 / v1.93.0) ──
+  'nav.memory': "Pamięć",
+  'mem.title': "Pamięć",
+  'mem.subtitle': "Krótka notatka, którą asystent ma na uwadze przy każdym zadaniu — Twoje preferencje i sposób, w jaki lubisz pracować. Nigdy nie staje się źródłem nowych faktów o Tobie.",
+  'mem.ph': "np.\n- Preferuję pracę zdalną, firmy produktowe na etapie Series A–B.\n- Odpowiadaj zwięźle, w tonie senior, bez zbędnych słów.\n- Bez ról z dyżurami on-call; dolny próg wynagrodzenia $140k.",
+  'mem.save': "Zapisz pamięć",
+  'mem.saved': "Pamięć zapisana — teraz kieruje każdym żądaniem do AI",
+  'mem.saveFailed': "Nie udało się zapisać notatki pamięci",
+  'mem.suggest': "✨ Zaproponuj na podstawie moich danych",
+  'mem.suggestHelp': "Uruchom to w dowolnej LLM, przejrzyj proponowane przez nią punkty behawioralne, a następnie wklej edytowaną wersję do notatki pamięci powyżej. Czyta Twój tracker — nigdy nie zmyśla faktów.",
+  'mem.suggestFailed': "Nie udało się zbudować propozycji",
+  'mem.privacyNote': "Przechowywana w warstwie użytkownika Twojego projektu nadrzędnego (config/memory.md) — nigdy nie nadpisywana przez aktualizacje i wysyłana wyłącznie wewnątrz promptów LLM, które uruchamiasz.",
 };

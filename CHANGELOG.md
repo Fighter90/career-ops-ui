@@ -8,6 +8,16 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.93.0] — 2026-07-04
+
+**Memory layer (Epic 24).** A new `#/memory` page holds a short, editable "remember this about me" note that the assistant keeps in mind on **every** task:
+
+- **One note, everywhere** — because it's inlined into `bundleProjectContext`, the note automatically reaches every AI request (evaluate, mock interview, networking, CV Studio) across **all** providers. Write it once; it steers everything.
+- **Steering, not facts** — it captures your preferences and how you like to work (tone, format, deal-breakers, cadence), never new factual claims about your experience — those still live only in your CV, profile, and two-pager. Saved to the user layer at `config/memory.md`, never overwritten by updates.
+- **Suggest from your data** — `POST /api/memory/suggest` mines your own application tracker for behavioural patterns and drafts bullets for you to review and edit. It reads your tracker; it never invents facts, and makes no live call.
+
+New: `server/lib/routes/memory.mjs` (21st route module — `GET`/`PUT /api/memory` + `POST /api/memory/suggest`), `public/js/views/memory.js`, `PATHS.memory`, and a `config/memory.md` block added to `bundleProjectContext`. 11 new i18n keys across all **16 locales**. Tests: `tests/memory-routes.test.mjs`.
+
 ## [1.92.0] — 2026-07-04
 
 **CV Studio (Epic 21).** A new `#/cv-studio` page gives your CV three honest, mostly-local tools:

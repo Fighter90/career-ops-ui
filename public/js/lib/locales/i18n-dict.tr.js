@@ -886,4 +886,16 @@ window.__I18N_DICT_TR = {
   'cvs.rewriting': "Kendi sesinizle yeniden yazılıyor…",
   'cvs.humanManualHelp': "LLM anahtarı ayarlanmadı. Bu istemi herhangi bir LLM’ye kopyalayın, ardından yeniden yazılan metni CV’nize geri yapıştırın.",
   'cvs.humanFailed': "Metin yeniden yazılamadı",
+  // ── Memory layer (Epic 24 / v1.93.0) ──
+  'nav.memory': "Bellek",
+  'mem.title': "Bellek",
+  'mem.subtitle': "Asistanın her görevde aklında tuttuğu kısa bir not — tercihleriniz ve nasıl çalışmayı sevdiğiniz. Asla hakkınızda yeni gerçeklerin kaynağı olmaz.",
+  'mem.ph': "örn.\n- Uzaktan çalışmayı, Series A–B ürün şirketlerini tercih ederim.\n- Kısa, senior tonunda, dolgu sözcük olmadan yanıt ver.\n- Nöbet (on-call) rolleri olmasın; ücret tabanı $140k.",
+  'mem.save': "Belleği kaydet",
+  'mem.saved': "Bellek kaydedildi — artık her yapay zeka isteğini yönlendiriyor",
+  'mem.saveFailed': "Bellek notu kaydedilemedi",
+  'mem.suggest': "✨ Verilerimden öner",
+  'mem.suggestHelp': "Bunu herhangi bir LLM’de çalıştırın, önerdiği davranışsal maddeleri gözden geçirin, ardından düzenlenmiş bir sürümü yukarıdaki bellek notunuza yapıştırın. Takip sisteminizi okur — asla gerçek uydurmaz.",
+  'mem.suggestFailed': "Öneri oluşturulamadı",
+  'mem.privacyNote': "Üst projenizin kullanıcı katmanında saklanır (config/memory.md) — güncellemelerle asla üzerine yazılmaz ve yalnızca çalıştırdığınız LLM istemlerinin içinde gönderilir.",
 };

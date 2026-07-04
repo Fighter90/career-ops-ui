@@ -886,4 +886,16 @@ window.__I18N_DICT_ZH_TW = {
   'cvs.rewriting': "正在用你的口吻重寫…",
   'cvs.humanManualHelp': "未設定 LLM 金鑰。將此提示複製到任意 LLM，然後把重寫結果貼回你的 CV。",
   'cvs.humanFailed': "無法重寫該文字",
+  // ── Memory layer (Epic 24 / v1.93.0) ──
+  'nav.memory': "記憶",
+  'mem.title': "記憶",
+  'mem.subtitle': "助手在每項任務中都會記住的一段簡短備註 — 你的偏好以及你喜歡的工作方式。它絕不會成為關於你的新事實的來源。",
+  'mem.ph': "例如:\n- 偏好遠端、Series A–B 的產品公司。\n- 回答簡潔，資深口吻，不說廢話。\n- 不接受隨叫隨到的職位；薪酬下限 $140k。",
+  'mem.save': "儲存記憶",
+  'mem.saved': "記憶已儲存 — 現在它會引導每一次 AI 請求",
+  'mem.saveFailed': "無法儲存該記憶備註",
+  'mem.suggest': "✨ 從我的資料中提出建議",
+  'mem.suggestHelp': "在任意 LLM 中執行它，檢視它提出的行為要點，然後把編輯後的版本貼到上面的記憶備註中。它會讀取你的追蹤器 — 絕不會編造事實。",
+  'mem.suggestFailed': "無法產生建議",
+  'mem.privacyNote': "儲存在父專案的使用者層（config/memory.md）中 — 更新絕不會覆寫它，且只會在你執行的 LLM 提示中傳送。",
 };

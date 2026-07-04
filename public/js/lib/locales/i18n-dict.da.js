@@ -885,4 +885,16 @@ window.__I18N_DICT_DA = {
   'cvs.rewriting': "Omskriver med din stemme…",
   'cvs.humanManualHelp': "Ingen LLM-nøgle er angivet. Kopiér denne prompt ind i en hvilken som helst LLM, og indsæt derefter omskrivningen tilbage i dit CV.",
   'cvs.humanFailed': "Kunne ikke omskrive teksten",
+  // ── Memory layer (Epic 24 / v1.93.0) ──
+  'nav.memory': "Hukommelse",
+  'mem.title': "Hukommelse",
+  'mem.subtitle': "En kort note, som assistenten har i tankerne ved hver opgave — dine præferencer og måden, du kan lide at arbejde på. Den bliver aldrig en kilde til nye fakta om dig.",
+  'mem.ph': "f.eks.\n- Foretrækker remote, produktvirksomheder i Series A–B.\n- Svar kortfattet, i senior-tone, uden fyld.\n- Ingen on-call-roller; løngulv $140k.",
+  'mem.save': "Gem hukommelse",
+  'mem.saved': "Hukommelse gemt — den styrer nu hver AI-anmodning",
+  'mem.saveFailed': "Kunne ikke gemme hukommelsesnoten",
+  'mem.suggest': "✨ Foreslå ud fra mine data",
+  'mem.suggestHelp': "Kør dette i en hvilken som helst LLM, gennemgå de adfærdsmæssige punkter, den foreslår, og indsæt derefter en redigeret version i din hukommelsesnote ovenfor. Den læser din tracker — den finder aldrig på fakta.",
+  'mem.suggestFailed': "Kunne ikke bygge et forslag",
+  'mem.privacyNote': "Gemmes i brugerlaget i dit overordnede projekt (config/memory.md) — overskrives aldrig af opdateringer og sendes kun inde i de LLM-prompts, du kører.",
 };
