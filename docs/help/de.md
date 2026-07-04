@@ -2176,3 +2176,25 @@ Bevor du deinen Lebenslauf als Schreibprobe oder Screenshot teilst, schwärzt di
 ### Menschlich machen (Stimmabgleich)
 
 Füge einen steifen Satz oder Absatz ein — die Art generischer KI-Formulierung, die wie Standardtext klingt — und **Menschlich machen** schreibt ihn in *deiner* Stimme um. Das Umschreiben ist serverseitig in deiner `voice-dna.md` (wie sich dein Schreiben liest) und deinen `writing-samples/` (deine echte Prosa) verankert. Die harte Regel: Es darf umsortieren, straffen und die Stimme anpassen, aber es wird **niemals** einen Fakt, eine Kennzahl oder eine Leistung einführen, die nicht bereits im eingefügten Text steht. Mit einem LLM-Schlüssel schreibt es live um; ohne Schlüssel gibt es dir einen fertigen Prompt zum Einfügen in einen beliebigen Assistenten. Bearbeite deinen Lebenslauf danach wie gewohnt auf der Seite `#/cv` — das CV Studio schlägt vor, du entscheidest.
+
+## 25. Gedächtnis (`#/memory`)
+
+Jede andere Seite beginnt jedes Mal von vorn. Das **Gedächtnis** (öffne es über **Einrichtung → Gedächtnis 🧠** in der Seitenleiste) ist der einzige Ort, an dem du dem Assistenten etwas *einmal* sagst und es haften bleibt. Es enthält eine kurze, bearbeitbare Notiz nach dem Motto „merke dir das über mich", die in **jede** KI-Anfrage eingespeist wird.
+
+### Wofür es da ist
+
+Nutze es für dauerhafte Vorlieben und deinen Arbeitsstil, zum Beispiel:
+
+- Die Arten von Rollen und Unternehmen, die du anvisierst (und die, die du nie sehen willst).
+- Wie du Antworten geschrieben haben möchtest — knapp oder ausführlich, seniorer Ton, ohne Füllwörter.
+- Harte Rahmenbedingungen, die es wert sind, wiederholt zu werden — nur remote, ein Gehaltsminimum, keine Rufbereitschaft.
+
+Beschränke es auf Vorlieben und Steuerung. Es ist **nicht** der Ort für Fakten über deine Erfahrung — deine Fähigkeiten, Arbeitgeber und Erfolge stehen in deinem CV, deinem Profil und deinem Zweiseiter, die die einzigen Quellen für alles bleiben, was in deinen CVs und Anschreiben auftaucht. Die Gedächtnisnotiz prägt, *wie* der Assistent mit dir arbeitet, niemals *was* er über dich behauptet.
+
+### Wie es überall ankommt
+
+Wenn du auf **Gedächtnis speichern** klickst, wird die Notiz in die Nutzerschicht deines übergeordneten Projekts unter `config/memory.md` geschrieben und in den gemeinsamen Projektkontext eingebettet. Das heißt, sie reist automatisch mit **jeder** KI-Anfrage mit — Bewertungen, Übungsinterviews, Networking-Pläne, Umschreibungen im CV Studio — und über **jeden** von dir konfigurierten Anbieter. Schreib sie einmal; du musst dich nicht auf jeder Seite wiederholen. Wie deine anderen Nutzerschicht-Dateien wird sie beim Aktualisieren des Systems nie überschrieben, und sie verlässt deinen Rechner nur innerhalb der LLM-Prompts, die du auszuführen wählst.
+
+### Aus deinen Daten vorschlagen
+
+Nicht sicher, was du schreiben sollst? **✨ Aus meinen Daten vorschlagen** liest deinen Bewerbungs-Tracker und entwirft eine Reihe von Verhaltenspunkten — die Muster darin, was du verfolgst, annimmst und ablehnst. Führe den Prompt, den es dir gibt, in einem beliebigen LLM aus, prüfe die Vorschläge und füge eine bearbeitete Version in die Notiz ein. Es schöpft nur aus deinem eigenen Tracker und erfindet nie Fakten; du prüfst immer, bevor etwas gespeichert wird.

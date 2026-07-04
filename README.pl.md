@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.92.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.92.0)
+[![release](https://img.shields.io/badge/release-v1.93.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.93.0)
 
-> **🆕 Najnowsze wydanie — v1.92.0**
+> **🆕 Najnowsze wydanie — v1.93.0**
 >
-> **CV Studio (Epic 21):** nowa strona **`#/cv-studio`** daje Twojemu CV trzy uczciwe narzędzia — **diagnostykę CV** (deterministyczny wynik 0–100 z wyjaśnieniami dla każdej kontroli), **maskę prywatności** (maskowanie e-maila/telefonu/linków/adresu/nazwiska w całości w przeglądarce) oraz **uczłowiecz to** (przepisanie sztywnych linijek w _twoim_ głosie, oparte na twoim voice-dna i próbkach pisania, nigdy nie zmyślając faktów). Bazuje na v1.91.0 (planer networkingu), v1.90.0 (próbna rozmowa) i v1.89.0 (dopasowanie do rynku przez two-pager).
+> **Warstwa pamięci (Epic 24):** nowa strona **`#/memory`** przechowuje krótką, edytowalną notatkę „zapamiętaj to o mnie". Ponieważ jest wstawiana do współdzielonego kontekstu projektu, kieruje **każdym** żądaniem AI — ocena, próbna rozmowa, networking, CV Studio — u **wszystkich** dostawców. Zapisuje Twoje preferencje i styl pracy (nigdy nowych faktów o Tobie), a pomocnik **sugeruj na podstawie Twoich danych** szkicuje punkty behawioralne z Twojego trackera do przejrzenia. Bazuje na v1.92.0 (CV Studio), v1.91.0 (planer networkingu) i v1.90.0 (próbna rozmowa).
 >
-> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
+> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

@@ -2035,3 +2035,25 @@ Før du deler dit CV som en skriveprøve eller et skærmbillede, skjuler **Priva
 ### Gør det menneskeligt (stemmematch)
 
 Indsæt en stiv linje eller et afsnit — den slags generiske AI-formulering, der læses som standardtekst — og **Gør det menneskeligt** omskriver det i *din* stemme. Omskrivningen er forankret på serversiden i din `voice-dna.md` (hvordan din skrift læses) og dine `writing-samples/` (din faktiske prosa). Den hårde regel: den må omordne, stramme op og justere stemmen, men den vil **aldrig** indføre et faktum, en metrik eller en præstation, der ikke allerede står i den tekst, du indsatte. Med en LLM-nøgle omskriver den live; uden nøgle giver den dig en klar prompt til at indsætte i en hvilken som helst assistent. Rediger derefter dit CV på siden `#/cv` som sædvanligt — CV Studio foreslår, du bestemmer.
+
+## 25. Hukommelse (`#/memory`)
+
+Alle andre sider starter forfra hver gang. **Hukommelse** (åbn den fra **Opsætning → Hukommelse 🧠** i sidebjælken) er det ene sted, hvor du fortæller assistenten noget *én gang* og får det til at blive hængende. Den rummer en kort, redigerbar "husk dette om mig"-note, som fødes ind i **hver** AI-forespørgsel.
+
+### Hvad den er til for
+
+Brug den til varige præferencer og arbejdsstil, for eksempel:
+
+- De typer roller og virksomheder, du sigter efter (og dem, du aldrig vil se).
+- Hvordan du kan lide, at svar skrives — kortfattet eller detaljeret, senior tone, uden fyld.
+- Hårde krav, der er værd at gentage — kun remote, en lønbund, ingen vagt.
+
+Hold den til præferencer og styring. Det er **ikke** stedet til fakta om din erfaring — dine kompetencer, arbejdsgivere og resultater bor i dit CV, din profil og dit to-siders resumé, som forbliver de eneste kilder til alt, hvad der optræder i dine CV'er og ansøgninger. Hukommelsesnoten former, *hvordan* assistenten arbejder med dig, aldrig *hvad* den påstår om dig.
+
+### Hvordan den når ud til alt
+
+Når du klikker på **Gem hukommelse**, skrives noten til dit overordnede projekts brugerlag i `config/memory.md` og indlejres i den delte projektkontekst. Det betyder, at den automatisk rejser med **hver** AI-forespørgsel — evalueringer, øvelsessamtaler, netværksplaner, omskrivninger i CV Studio — og på tværs af **hver** udbyder, du har konfigureret. Skriv den én gang; du behøver ikke gentage dig selv på hver side. Ligesom dine andre brugerlagsfiler bliver den aldrig overskrevet, når du opdaterer systemet, og den forlader kun din maskine inde i de LLM-prompts, du vælger at køre.
+
+### Foreslå ud fra dine data
+
+Ikke sikker på, hvad du skal skrive? **✨ Foreslå ud fra mine data** læser din ansøgningstracker og udkaster et sæt adfærdsmæssige punkter — mønstrene i, hvad du forfølger, accepterer og afviser. Kør den prompt, den giver dig, i en hvilken som helst LLM, gennemgå forslagene, og indsæt en redigeret version i noten. Den henter kun fra din egen tracker og opfinder aldrig fakta; du gennemgår altid, før noget gemmes.

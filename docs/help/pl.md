@@ -1979,3 +1979,25 @@ Zanim udostępnisz swoje CV jako próbkę pisma lub zrzut ekranu, **Maska prywat
 ### Uczłowiecz to (dopasowanie głosu)
 
 Wklej sztywne zdanie lub akapit — ten rodzaj generycznego sformułowania AI, które brzmi jak gotowiec — a **Uczłowiecz to** przepisze je twoim *własnym* głosem. Przepisanie jest osadzone po stronie serwera w twoim `voice-dna.md` (jak czyta się twoje pisanie) i twoich `writing-samples/` (twoja prawdziwa proza). Twarda zasada: może zmieniać kolejność, zwięźlej ujmować i przestrajać głos, ale **nigdy** nie wprowadzi faktu, metryki ani osiągnięcia, którego nie ma już we wklejonym tekście. Z kluczem LLM przepisuje na żywo; bez klucza wręcza ci gotowy prompt do wklejenia w dowolny asystent. Następnie edytuj swoje CV na stronie `#/cv` jak zwykle — CV Studio sugeruje, ty decydujesz.
+
+## 25. Pamięć (`#/memory`)
+
+Każda inna strona za każdym razem zaczyna od zera. **Pamięć** (otwórz ją z **Konfiguracja → Pamięć 🧠** na pasku bocznym) to jedyne miejsce, w którym mówisz asystentowi coś *raz* i to zostaje. Przechowuje krótką, edytowalną notatkę w stylu „zapamiętaj to o mnie", która jest wstawiana do **każdego** zapytania do AI.
+
+### Do czego służy
+
+Używaj jej do trwałych preferencji i stylu pracy, na przykład:
+
+- Rodzaje ról i firm, które są twoim celem (i te, których nigdy nie chcesz widzieć).
+- Jak lubisz, żeby były pisane odpowiedzi — zwięźle czy szczegółowo, senioralny ton, bez lania wody.
+- Twarde ograniczenia warte powtarzania — tylko zdalnie, minimalna widełka płacowa, bez dyżurów.
+
+Ogranicz ją do preferencji i ukierunkowania. To **nie** jest miejsce na fakty o twoim doświadczeniu — twoje umiejętności, pracodawcy i osiągnięcia żyją w twoim CV, profilu i dwustronicowym podsumowaniu, które pozostają jedynymi źródłami wszystkiego, co pojawia się w twoich CV i listach motywacyjnych. Notatka pamięci kształtuje *to, jak* asystent z tobą pracuje, nigdy *to, co* o tobie twierdzi.
+
+### Jak dociera do wszystkiego
+
+Gdy klikniesz **Zapisz pamięć**, notatka jest zapisywana w warstwie użytkownika twojego projektu nadrzędnego w `config/memory.md` i wbudowywana we wspólny kontekst projektu. Oznacza to, że automatycznie podróżuje z **każdym** zapytaniem do AI — ocenami, próbnymi rozmowami, planami networkingu, przeróbkami w CV Studio — i przez **każdego** skonfigurowanego przez ciebie dostawcę. Napisz ją raz; nie musisz się powtarzać na każdej stronie. Podobnie jak inne twoje pliki warstwy użytkownika, nigdy nie jest nadpisywana przy aktualizacji systemu i opuszcza twój komputer tylko wewnątrz tych promptów do LLM, które zdecydujesz się uruchomić.
+
+### Zaproponuj z twoich danych
+
+Nie wiesz, co napisać? **✨ Zaproponuj z moich danych** czyta twój tracker aplikacji i szkicuje zestaw punktów behawioralnych — wzorce w tym, co ścigasz, akceptujesz i odrzucasz. Uruchom prompt, który ci daje, w dowolnym LLM, przejrzyj sugestie i wklej edytowaną wersję do notatki. Czerpie wyłącznie z twojego własnego trackera i nigdy nie wymyśla faktów; zawsze sprawdzasz, zanim cokolwiek zostanie zapisane.

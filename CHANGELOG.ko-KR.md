@@ -9,6 +9,16 @@
 ---
 
 
+## [1.93.0] — 2026-07-04
+
+**메모리 레이어 (Epic 24).** 새로운 `#/memory` 페이지는 어시스턴트가 **every** 작업에서 염두에 두는 짧고 편집 가능한 "나에 대해 이걸 기억해 줘" 메모를 담습니다:
+
+- **하나의 메모, 어디에서나** — `bundleProjectContext`에 인라인으로 삽입되므로, 이 메모는 **all** 제공자에 걸친 모든 AI 요청(평가, mock interview, 네트워킹, CV Studio)에 자동으로 도달합니다. 한 번만 작성하면 모든 것을 이끕니다.
+- **사실이 아니라 조향** — 당신의 선호와 일하는 방식(어조, 형식, deal-breakers, 주기)을 담을 뿐, 당신의 경력에 대한 새로운 사실 주장은 절대 담지 않습니다 — 그런 것들은 여전히 당신의 CV, 프로필, two-pager에만 존재합니다. 사용자 계층의 `config/memory.md`에 저장되며, 업데이트로 덮어써지지 않습니다.
+- **당신의 데이터에서 제안** — `POST /api/memory/suggest`는 당신 자신의 지원 트래커에서 행동 패턴을 캐내어 검토하고 편집할 불릿을 초안으로 작성합니다. 트래커를 읽을 뿐, 사실을 지어내지 않으며 라이브 호출도 하지 않습니다.
+
+신규: `server/lib/routes/memory.mjs`(21번째 라우트 모듈 — `GET`/`PUT /api/memory` + `POST /api/memory/suggest`), `public/js/views/memory.js`, `PATHS.memory`, 그리고 `bundleProjectContext`에 추가된 `config/memory.md` 블록. **16개 로케일** 전체에 11개의 새 i18n 키. 테스트: `tests/memory-routes.test.mjs`.
+
 ## [1.92.0] — 2026-07-04
 
 **CV Studio (Epic 21).** 새로운 `#/cv-studio` 페이지는 당신의 CV에 정직하고 대부분 로컬에서 동작하는 세 가지 도구를 제공합니다:

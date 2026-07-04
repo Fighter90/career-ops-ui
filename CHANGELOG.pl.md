@@ -9,6 +9,16 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.93.0] — 2026-07-04
+
+**Warstwa pamięci (Epic 24).** Nowa strona `#/memory` przechowuje krótką, edytowalną notatkę „zapamiętaj to o mnie", którą asystent uwzględnia przy **każdym** zadaniu:
+
+- **Jedna notatka, wszędzie** — ponieważ jest wstawiana do `bundleProjectContext`, notatka automatycznie trafia do każdego żądania AI (ocena, próbna rozmowa, networking, CV Studio) u **wszystkich** dostawców. Napisz ją raz; kieruje wszystkim.
+- **Sterowanie, nie fakty** — zapisuje Twoje preferencje i sposób, w jaki lubisz pracować (ton, format, granice nie do przekroczenia, kadencję), nigdy nowych faktycznych stwierdzeń o Twoim doświadczeniu — te nadal żyją tylko w Twoim CV, profilu i two-pager. Zapisana w warstwie użytkownika w `config/memory.md`, nigdy nie nadpisywana przez aktualizacje.
+- **Sugeruj na podstawie Twoich danych** — `POST /api/memory/suggest` przekopuje Twój własny tracker aplikacji w poszukiwaniu wzorców behawioralnych i szkicuje punkty do przejrzenia i edycji. Czyta Twój tracker; nigdy nie wymyśla faktów i nie wykonuje żadnego wywołania na żywo.
+
+Nowe: `server/lib/routes/memory.mjs` (21. moduł tras — `GET`/`PUT /api/memory` + `POST /api/memory/suggest`), `public/js/views/memory.js`, `PATHS.memory` oraz blok `config/memory.md` dodany do `bundleProjectContext`. 11 nowych kluczy i18n we wszystkich **16 locales**. Testy: `tests/memory-routes.test.mjs`.
+
 ## [1.92.0] — 2026-07-04
 
 **CV Studio (Epic 21).** Nowa strona `#/cv-studio` daje Twojemu CV trzy uczciwe, w większości lokalne narzędzia:

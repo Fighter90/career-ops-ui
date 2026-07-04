@@ -886,4 +886,16 @@ window.__I18N_DICT_PT_BR = {
   'cvs.rewriting': "Reescrevendo na sua voz…",
   'cvs.humanManualHelp': "Nenhuma chave de LLM está configurada. Copie este prompt para qualquer LLM e depois cole a reescrita de volta no seu CV.",
   'cvs.humanFailed': "Não foi possível reescrever o texto",
+  // ── Camada de memória (Epic 24 / v1.93.0) ──
+  'nav.memory': "Memória",
+  'mem.title': "Memória",
+  'mem.subtitle': "Uma nota curta que o assistente mantém em mente em cada tarefa — suas preferências e como você gosta de trabalhar. Nunca se torna uma fonte de novos fatos sobre você.",
+  'mem.ph': "ex.:\n- Prefiro empresas de produto remotas, de Série A–B.\n- Responda de forma concisa, tom sênior, sem enrolação.\n- Nada de cargos com plantão; piso salarial $140k.",
+  'mem.save': "Salvar memória",
+  'mem.saved': "Memória salva — agora orienta cada solicitação de IA",
+  'mem.saveFailed': "Não foi possível salvar a nota de memória",
+  'mem.suggest': "✨ Sugerir a partir dos meus dados",
+  'mem.suggestHelp': "Execute isto em qualquer LLM, revise os pontos comportamentais que ele propõe e depois cole uma versão editada na sua nota de memória acima. Ele lê o seu tracker — nunca inventa fatos.",
+  'mem.suggestFailed': "Não foi possível gerar uma sugestão",
+  'mem.privacyNote': "Armazenado na camada de usuário do seu projeto pai (config/memory.md) — nunca sobrescrito pelas atualizações, e enviado apenas dentro dos prompts de LLM que você executa.",
 };

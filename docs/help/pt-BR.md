@@ -1986,3 +1986,25 @@ Antes de compartilhar seu CV como amostra de escrita ou captura de tela, a **Má
 ### Torne humano (correspondência de voz)
 
 Cole uma frase ou um parágrafo engessado — aquele tipo de redação genérica de IA que soa como texto padrão — e **Torne humano** o reescreve na *sua* voz. A reescrita é fundamentada no servidor no seu `voice-dna.md` (como sua escrita soa) e nos seus `writing-samples/` (sua prosa real). A regra rígida: ele pode reordenar, enxugar e reajustar a voz, mas **nunca** vai introduzir um fato, métrica ou conquista que já não esteja no texto que você colou. Com uma chave de LLM, ele reescreve ao vivo; sem chave, ele entrega um prompt pronto para colar em qualquer assistente. Depois edite seu CV na página `#/cv` como de costume — o CV Studio sugere, você decide.
+
+## 25. Memória (`#/memory`)
+
+Todas as outras páginas começam do zero a cada vez. A **Memória** (abra em **Configuração → Memória 🧠** na barra lateral) é o único lugar em que você diz algo ao assistente *uma vez* e isso fica gravado. Ela guarda uma nota curta e editável do tipo "lembre-se disto sobre mim" que é injetada em **cada** requisição de IA.
+
+### Para que serve
+
+Use-a para preferências duradouras e estilo de trabalho, por exemplo:
+
+- Os tipos de vagas e empresas que você está buscando (e as que nunca quer ver).
+- Como você gosta que as respostas sejam escritas — sucintas ou detalhadas, tom sênior, sem enrolação.
+- Restrições firmes que vale a pena repetir — apenas remoto, um piso salarial, sem plantão.
+
+Mantenha-a em preferências e direcionamento. **Não** é o lugar para fatos sobre sua experiência — suas competências, empregadores e conquistas ficam no seu CV, perfil e resumo de duas páginas, que continuam sendo as únicas fontes de qualquer coisa que apareça nos seus CVs e cartas de apresentação. A nota de memória molda *como* o assistente trabalha com você, nunca *o que* ele afirma sobre você.
+
+### Como ela alcança tudo
+
+Quando você clica em **Salvar memória**, a nota é gravada na camada de usuário do seu projeto pai em `config/memory.md` e incorporada ao contexto compartilhado do projeto. Isso significa que ela viaja automaticamente com **cada** requisição de IA — avaliações, entrevistas simuladas, planos de networking, reescritas no CV Studio — e por **cada** provedor que você configurou. Escreva-a uma vez; você não precisa se repetir em cada página. Como seus outros arquivos da camada de usuário, ela nunca é sobrescrita quando você atualiza o sistema, e só sai da sua máquina dentro dos prompts de LLM que você escolher executar.
+
+### Sugerir a partir dos seus dados
+
+Não sabe o que escrever? O **✨ Sugerir a partir dos meus dados** lê o seu rastreador de candidaturas e redige um conjunto de tópicos comportamentais — os padrões no que você persegue, aceita e rejeita. Rode o prompt que ele fornece em qualquer LLM, revise as sugestões e cole uma versão editada na nota. Ele extrai apenas do seu próprio rastreador e nunca inventa fatos; você sempre revisa antes de qualquer coisa ser salva.

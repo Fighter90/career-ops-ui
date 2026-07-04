@@ -886,4 +886,16 @@ window.__I18N_DICT_FR = {
   'cvs.rewriting': "Réécriture avec votre voix…", // Rewriting in your voice…
   'cvs.humanManualHelp': "Aucune clé LLM n’est configurée. Copiez ce prompt dans n’importe quel LLM, puis collez la réécriture dans votre CV.", // No LLM key is set…
   'cvs.humanFailed': "Impossible de réécrire le texte", // Could not rewrite the text
+  // ── Couche de mémoire (Epic 24 / v1.93.0) ──
+  'nav.memory': "Mémoire",
+  'mem.title': "Mémoire",
+  'mem.subtitle': "Une courte note que l’assistant garde à l’esprit pour chaque tâche — vos préférences et votre façon de travailler. Elle ne devient jamais une source de nouveaux faits à votre sujet.",
+  'mem.ph': "p. ex.\n- Je préfère les entreprises produit en télétravail, de Série A–B.\n- Réponds de façon concise, ton senior, sans remplissage.\n- Pas de postes d’astreinte ; plancher de rémunération $140k.",
+  'mem.save': "Enregistrer la mémoire",
+  'mem.saved': "Mémoire enregistrée — elle oriente désormais chaque requête d’IA",
+  'mem.saveFailed': "Impossible d’enregistrer la note de mémoire",
+  'mem.suggest': "✨ Suggérer à partir de mes données",
+  'mem.suggestHelp': "Exécutez ceci dans n’importe quel LLM, examinez les points comportementaux qu’il propose, puis collez une version modifiée dans votre note de mémoire ci-dessus. Il lit votre tracker — il n’invente jamais de faits.",
+  'mem.suggestFailed': "Impossible de générer une suggestion",
+  'mem.privacyNote': "Stocké dans la couche utilisateur de votre projet parent (config/memory.md) — jamais écrasé par les mises à jour, et envoyé uniquement à l’intérieur des prompts LLM que vous exécutez.",
 };

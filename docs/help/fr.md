@@ -2079,3 +2079,25 @@ Avant de partager votre CV comme échantillon d'écriture ou capture d'écran, l
 ### Rendez-le humain (correspondance de voix)
 
 Collez une phrase ou un paragraphe rigide — ce genre de formulation générique d'IA qui sonne comme du texte tout fait — et **Rendez-le humain** le réécrit dans *votre* voix. La réécriture est ancrée côté serveur dans votre `voice-dna.md` (la façon dont votre écriture se lit) et vos `writing-samples/` (votre prose réelle). La règle stricte : il peut réorganiser, resserrer et réajuster la voix, mais il n'introduira **jamais** un fait, une métrique ou une réalisation qui ne figure pas déjà dans le texte que vous avez collé. Avec une clé LLM, il réécrit en direct ; sans clé, il vous remet un prompt prêt à coller dans n'importe quel assistant. Modifiez ensuite votre CV sur la page `#/cv` comme d'habitude — le CV Studio suggère, vous décidez.
+
+## 25. Mémoire (`#/memory`)
+
+Toutes les autres pages repartent de zéro à chaque fois. La **Mémoire** (ouvrez-la depuis **Configuration → Mémoire 🧠** dans la barre latérale) est le seul endroit où vous dites quelque chose à l'assistant *une seule fois* pour que cela reste. Elle contient une note courte et modifiable du type « retiens ceci à mon sujet » qui est injectée dans **chaque** requête IA.
+
+### À quoi elle sert
+
+Utilisez-la pour des préférences durables et un style de travail, par exemple :
+
+- Les types de postes et d'entreprises que vous visez (et ceux que vous ne voulez jamais voir).
+- La façon dont vous aimez que les réponses soient rédigées — concises ou détaillées, ton senior, sans remplissage.
+- Les contraintes fermes qui méritent d'être répétées — télétravail uniquement, un salaire plancher, pas d'astreinte.
+
+Limitez-la aux préférences et à l'orientation. Ce **n'est pas** l'endroit pour des faits sur votre expérience — vos compétences, employeurs et réalisations vivent dans votre CV, votre profil et votre synthèse de deux pages, qui restent les seules sources de tout ce qui apparaît dans vos CV et lettres de motivation. La note de mémoire façonne *comment* l'assistant travaille avec vous, jamais *ce qu'*il affirme à votre sujet.
+
+### Comment elle atteint tout
+
+Quand vous cliquez sur **Enregistrer la mémoire**, la note est écrite dans la couche utilisateur de votre projet parent à `config/memory.md` et intégrée au contexte partagé du projet. Cela signifie qu'elle voyage automatiquement avec **chaque** requête IA — évaluations, entretiens simulés, plans de réseautage, réécritures dans CV Studio — et à travers **chaque** fournisseur que vous avez configuré. Écrivez-la une fois ; vous n'avez pas à vous répéter sur chaque page. Comme vos autres fichiers de la couche utilisateur, elle n'est jamais écrasée quand vous mettez le système à jour, et elle ne quitte votre machine qu'à l'intérieur des prompts LLM que vous choisissez d'exécuter.
+
+### Suggérer à partir de vos données
+
+Vous ne savez pas quoi écrire ? **✨ Suggérer à partir de mes données** lit votre suivi de candidatures et rédige un ensemble de points comportementaux — les tendances dans ce que vous poursuivez, acceptez et refusez. Exécutez le prompt qu'il vous donne dans n'importe quel LLM, examinez les suggestions et collez une version modifiée dans la note. Il n'exploite que votre propre suivi et n'invente jamais de faits ; vous relisez toujours avant que quoi que ce soit ne soit enregistré.

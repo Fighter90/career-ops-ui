@@ -886,4 +886,16 @@ window.__I18N_DICT_ZH_CN = {
   'cvs.rewriting': "正在用你的口吻重写…",
   'cvs.humanManualHelp': "未设置 LLM 密钥。将此提示复制到任意 LLM，然后把重写结果粘贴回你的 CV。",
   'cvs.humanFailed': "无法重写该文本",
+  // ── Memory layer (Epic 24 / v1.93.0) ──
+  'nav.memory': "记忆",
+  'mem.title': "记忆",
+  'mem.subtitle': "助手在每项任务中都会记住的一段简短备注 — 你的偏好以及你喜欢的工作方式。它绝不会成为关于你的新事实的来源。",
+  'mem.ph': "例如:\n- 偏好远程、Series A–B 的产品公司。\n- 回答简洁，资深口吻，不说废话。\n- 不接受随叫随到的岗位；薪酬下限 $140k。",
+  'mem.save': "保存记忆",
+  'mem.saved': "记忆已保存 — 现在它会引导每一次 AI 请求",
+  'mem.saveFailed': "无法保存该记忆备注",
+  'mem.suggest': "✨ 从我的数据中提出建议",
+  'mem.suggestHelp': "在任意 LLM 中运行它，查看它提出的行为要点，然后把编辑后的版本粘贴到上面的记忆备注中。它会读取你的追踪器 — 绝不会编造事实。",
+  'mem.suggestFailed': "无法生成建议",
+  'mem.privacyNote': "存储在父项目的用户层（config/memory.md）中 — 更新绝不会覆盖它，且只会在你运行的 LLM 提示中发送。",
 };

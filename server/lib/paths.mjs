@@ -78,6 +78,11 @@ export const PATHS = {
   writingSamplesDir: path('writing-samples'),
   profile: path('config', 'profile.yml'),
   twoPager: path('config', 'two-pager.yml'),
+  // v1.93.0 (Epic 24 — memory layer) — a short, USER-EDITABLE "remember this
+  // about me" note (behavioural steering + preferences, never fabricated
+  // content). Inlined into bundleProjectContext so it reaches every AI request
+  // across all providers. User layer; never overwritten by system updates.
+  memory: path('config', 'memory.md'),
   portals: path('portals.yml'),
   packageJson: path('package.json'),
   version: path('VERSION'),

@@ -2117,3 +2117,25 @@ CV'nizi bir yazı örneği ya da ekran görüntüsü olarak paylaşmadan önce, 
 ### İnsanlaştır (ses eşleştirme)
 
 Katı bir cümleyi ya da paragrafı yapıştırın — kalıp metin gibi okunan o tür genel yapay zekâ ifadelerini — ve **İnsanlaştır** onu *sizin* sesinizle yeniden yazsın. Yeniden yazma, sunucu tarafında `voice-dna.md` dosyanıza (yazınızın nasıl okunduğu) ve `writing-samples/` (gerçek düzyazınız) dayandırılır. Katı kural: sıralamayı değiştirebilir, sıkılaştırabilir ve sesi yeniden ayarlayabilir, ancak yapıştırdığınız metinde zaten bulunmayan bir olguyu, metriği ya da başarıyı **asla** eklemez. Bir LLM anahtarıyla canlı olarak yeniden yazar; anahtar yoksa, herhangi bir asistana yapıştırmanız için hazır bir istem verir. Ardından CV'nizi her zamanki gibi `#/cv` sayfasında düzenleyin — CV Studio önerir, siz karar verirsiniz.
+
+## 25. Bellek (`#/memory`)
+
+Diğer her sayfa her seferinde sıfırdan başlar. **Bellek** (kenar çubuğunda **Kurulum → Bellek 🧠** üzerinden açın), asistana bir şeyi *bir kez* söyleyip kalıcı hale getirdiğiniz tek yerdir. **Her** yapay zekâ isteğine beslenen, kısa ve düzenlenebilir bir "benimle ilgili bunu hatırla" notu tutar.
+
+### Ne işe yarar
+
+Kalıcı tercihler ve çalışma tarzı için kullanın, örneğin:
+
+- Hedeflediğiniz rol ve şirket türleri (ve asla görmek istemedikleriniz).
+- Yanıtların nasıl yazılmasını istediğiniz — kısa mı ayrıntılı mı, kıdemli bir ton, dolgu yok.
+- Tekrarlamaya değer katı kısıtlamalar — yalnızca uzaktan, bir maaş tabanı, nöbet yok.
+
+Onu tercihler ve yönlendirme ile sınırlı tutun. Deneyiminizle ilgili gerçekler için doğru yer **değildir** — becerileriniz, işverenleriniz ve başarılarınız CV'nizde, profilinizde ve iki sayfalık özetinizde yaşar; bunlar CV'lerinizde ve ön yazılarınızda görünen her şeyin tek kaynağı olmayı sürdürür. Bellek notu, asistanın sizinle *nasıl* çalıştığını biçimlendirir, sizin hakkınızda *ne* iddia ettiğini asla.
+
+### Her yere nasıl ulaşır
+
+**Belleği kaydet**'e tıkladığınızda, not üst projenizin kullanıcı katmanına `config/memory.md` içine yazılır ve paylaşılan proje bağlamına gömülür. Bu, notun **her** yapay zekâ isteğiyle — değerlendirmeler, deneme mülakatları, ağ kurma planları, CV Studio yeniden yazımları — ve yapılandırdığınız **her** sağlayıcı üzerinden otomatik olarak taşındığı anlamına gelir. Bir kez yazın; her sayfada kendinizi tekrarlamak zorunda değilsiniz. Diğer kullanıcı katmanı dosyalarınız gibi, sistemi güncellediğinizde asla üzerine yazılmaz ve makinenizi yalnızca çalıştırmayı seçtiğiniz LLM istemlerinin içinde terk eder.
+
+### Verilerinizden öner
+
+Ne yazacağınızdan emin değil misiniz? **✨ Verilerimden öner**, başvuru izleyicinizi okur ve bir dizi davranışsal madde taslağı çıkarır — peşinden gittiğiniz, kabul ettiğiniz ve reddettiğiniz şeylerdeki kalıplar. Size verdiği istemi herhangi bir LLM'de çalıştırın, önerileri gözden geçirin ve düzenlenmiş bir sürümü nota yapıştırın. Yalnızca kendi izleyicinizden yararlanır ve asla gerçek uydurmaz; herhangi bir şey kaydedilmeden önce her zaman gözden geçirirsiniz.
