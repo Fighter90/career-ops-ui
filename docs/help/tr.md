@@ -2092,3 +2092,28 @@ Plan dört bölüm halinde döner:
 ### Planları kaydetme ve yeniden görüntüleme
 
 Bir planı saklamak için **Planı kaydet**'e tıklayın. Üst projenizin kullanıcı katmanında `networking/net-{company}-{role}-{date}.md` konumuna yazılır — kendi dosyanız, sistem güncellemeleriyle asla üzerine yazılmaz. Sayfanın altındaki **Kayıtlı planlar** listesi, herhangi bir planı yeniden açmanıza veya silmenize olanak tanır. Taslaklar ve personalar yalnızca gerçek materyallerinize dayandığı için, bunları körü körüne göndereceğiniz bir senaryo olarak değil, kişiselleştirilecek güçlü bir ilk taslak olarak değerlendirin.
+
+## 24. CV Studio (`#/cv-studio`)
+
+`#/cv` sayfası, CV'nizi *yazdığınız* yerdir; **CV Studio** (kenar çubuğundaki **Setup → CV Studio 🎨** üzerinden açın) ise onu *keskinleştirdiğiniz* yerdir. `cv.md` dosyanıza, ikisi tarayıcınızdan hiç çıkmayan üç dürüst araç sunar.
+
+### Özgeçmiş tanılaması
+
+Sayfayı açtığınız anda CV'nizi 100 üzerinden puanlar ve her denetim için bulguları, ne değiştireceğinize *sizin* karar vermeniz için kısa bir açıklamayla birlikte listeler (asla sessizce yeniden yazmaz):
+
+- **Uzunluk** — CV bir ila iki sayfalık sağlıklı bir aralıkta mı?
+- **Sayısallaştırılmış etki** — madde işaretlerinizin ne kadarı gerçek bir sayı veya metrik içeriyor? İşe alım uzmanları göz gezdirirken bunları arar.
+- **Güçlü eylem fiilleri** — "sorumluydu" ya da "yardımcı oldu" gibi zayıf ifadeleri işaretler.
+- **Moda sözcükler** — boş klişeleri işaretler ("sonuç odaklı", "takım oyuncusu").
+- **Temel bölümler** — Özet, Deneyim, Eğitim ve Beceriler bölümlerinin varlığını denetler.
+- **İletişim bilgileri** — bir e-posta bulunduğundan emin olur.
+
+Bunların tümü, hiçbir LLM olmadan tamamen tarayıcınızda çalışır — sayılar belirlenimcidir ve hiçbir şey uydurulmaz.
+
+### Gizlilik maskesi
+
+CV'nizi bir yazı örneği ya da ekran görüntüsü olarak paylaşmadan önce, **Gizlilik maskesi** kişisel tanımlayıcı verileri gizler: e-posta, telefon, bağlantılar/kullanıcı adları ve açık adres; ayrıca etkinleştirip girerseniz **adınız → baş harfleri**. Her kategoriyi aç/kapat, maskelenmiş sürümü kopyala ve güvenle paylaş. Her şey tamamen tarayıcıda gerçekleşir, tam olarak kaç öğenin gizlendiğini bildirir ve orijinali asla saklamaz veya iletmez.
+
+### İnsanlaştır (ses eşleştirme)
+
+Katı bir cümleyi ya da paragrafı yapıştırın — kalıp metin gibi okunan o tür genel yapay zekâ ifadelerini — ve **İnsanlaştır** onu *sizin* sesinizle yeniden yazsın. Yeniden yazma, sunucu tarafında `voice-dna.md` dosyanıza (yazınızın nasıl okunduğu) ve `writing-samples/` (gerçek düzyazınız) dayandırılır. Katı kural: sıralamayı değiştirebilir, sıkılaştırabilir ve sesi yeniden ayarlayabilir, ancak yapıştırdığınız metinde zaten bulunmayan bir olguyu, metriği ya da başarıyı **asla** eklemez. Bir LLM anahtarıyla canlı olarak yeniden yazar; anahtar yoksa, herhangi bir asistana yapıştırmanız için hazır bir istem verir. Ardından CV'nizi her zamanki gibi `#/cv` sayfasında düzenleyin — CV Studio önerir, siz karar verirsiniz.

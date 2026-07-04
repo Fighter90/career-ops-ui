@@ -856,4 +856,34 @@ window.__I18N_DICT_FR = {
   'net.view': "Afficher", // View
   'net.delete': "Supprimer", // Delete
   'net.confirmDelete': "Supprimer ce plan enregistré ?", // Delete this saved plan?
+  // ── CV Studio (Epic 21 / v1.92.0) ──
+  'nav.cvStudio': "CV Studio", // CV Studio
+  'cvs.title': "CV Studio", // CV Studio
+  'cvs.subtitle': "Diagnostiquez votre CV, masquez-le pour le partager en toute sécurité et réécrivez les phrases rigides avec votre propre voix — en vous appuyant uniquement sur ce que vous avez réellement écrit.", // Diagnose your CV…
+  'cvs.noCv': "Pas encore de CV. Ajoutez-en un sur la page CV, puis revenez pour le diagnostiquer et le peaufiner.", // No CV yet…
+  'cvs.goCv': "Ouvrir le CV", // Open CV
+  'cvs.diagTitle': "Diagnostic du CV", // Résumé diagnostics
+  'cvs.words': "mots", // words
+  'cvs.bullets': "puces", // bullets
+  'cvs.maskTitle': "Masque de confidentialité", // Privacy mask
+  'cvs.maskHelp': "Masquez les PII avant de partager votre CV comme échantillon. Tout se passe dans votre navigateur.", // Redact PII…
+  'cvs.mEmail': "E-mail", // Email
+  'cvs.mPhone': "Téléphone", // Phone
+  'cvs.mLinks': "Liens/identifiants", // Links/handles
+  'cvs.mAddress': "Adresse", // Address
+  'cvs.mName': "Nom → initiales", // Name → initials
+  'cvs.namePh': "Votre nom complet (à réduire en initiales)", // Your full name…
+  'cvs.redacted': "élément(s) masqué(s)", // item(s) redacted
+  'cvs.nothingRedacted': "Rien ne correspond aux réglages actuels du masque.", // Nothing matched…
+  'cvs.copy': "Copier le CV masqué", // Copy masked CV
+  'cvs.copied': "Copié", // Copied
+  'cvs.copyManual': "Appuyez sur Cmd/Ctrl+C pour copier", // Press Cmd/Ctrl+C…
+  'cvs.humanTitle': "Rendez-le humain", // Make it human
+  'cvs.humanHelp': "Réécrivez les tournures d’IA génériques avec votre propre voix — en vous appuyant sur votre voice-dna et vos writing samples. Il n’invente jamais de faits.", // Rewrite generic AI phrasing…
+  'cvs.humanPh': "Collez une phrase ou un paragraphe rigide de votre CV pour le réécrire avec votre voix…", // Paste a stiff line…
+  'cvs.humanize': "✨ Rendez-le humain", // ✨ Make it human
+  'cvs.needText': "Collez au moins ~20 caractères", // Paste at least ~20 characters
+  'cvs.rewriting': "Réécriture avec votre voix…", // Rewriting in your voice…
+  'cvs.humanManualHelp': "Aucune clé LLM n’est configurée. Copiez ce prompt dans n’importe quel LLM, puis collez la réécriture dans votre CV.", // No LLM key is set…
+  'cvs.humanFailed': "Impossible de réécrire le texte", // Could not rewrite the text
 };

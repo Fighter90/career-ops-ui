@@ -11,6 +11,16 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.92.0] — 2026-07-04
+
+**CV Studio (Epic 21).** Une nouvelle page `#/cv-studio` dote votre CV de trois outils honnêtes, essentiellement locaux :
+
+- **Diagnostic de CV** — un score déterministe de 0 à 100 avec des explications par vérification (impact quantifié, verbes faibles, mots à la mode, longueur, sections essentielles, coordonnées). Entièrement côté client (`window.CvDiagnostics`) — pas de LLM, rien d'inventé, chaque constat expliqué pour que *vous* décidiez quoi changer.
+- **Masque de confidentialité** — caviardez les données personnelles (e-mail, téléphone, liens/identifiants, adresse postale et, en option, votre nom → initiales) avant de partager votre CV comme échantillon ou capture d'écran. S'exécute entièrement dans le navigateur (`window.CvPrivacy`) ; il rapporte exactement ce qu'il a caviardé et ne conserve jamais l'original.
+- **Rendez-le humain / correspondance de voix** — collez une ligne ou un paragraphe rigide et réécrivez-le dans *votre* voix, ancré côté serveur dans `voice-dna.md` et `writing-samples/`. Garde-fou strict : il peut réordonner, resserrer et re-styliser, mais n'introduit jamais un fait, une métrique ou une réalisation qui ne figure pas déjà dans le texte. S'exécute en direct via la cascade de fournisseurs partagée, ou renvoie un prompt à copier-coller sans clé.
+
+Nouveau : `server/lib/routes/cv-studio.mjs` (20e module de routes — `POST /api/cv-studio/humanize`), `public/js/views/cv-studio.js`, `public/js/lib/cv-diagnostics.js`, `public/js/lib/cv-privacy.js`, `PATHS.voiceDna` + `PATHS.writingSamplesDir`. 29 nouvelles clés i18n dans les **16 locales**. Tests : `tests/cv-diagnostics.test.mjs`, `tests/cv-studio-routes.test.mjs`. (La galerie de modèles, l'export Word et l'archivage PDF des offres sont suivis comme travaux de suivi de CV Studio.)
+
 ## [1.91.0] — 2026-07-04
 
 **Networking et recherche approfondie sur les entreprises (Epic 16).** Une nouvelle page `#/networking` transforme une entreprise en un plan actionnable pour décrocher un entretien, ancré dans votre CV, votre profil et votre two-pager :

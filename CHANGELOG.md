@@ -8,6 +8,16 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.92.0] — 2026-07-04
+
+**CV Studio (Epic 21).** A new `#/cv-studio` page gives your CV three honest, mostly-local tools:
+
+- **Résumé diagnostics** — a deterministic 0–100 score with per-check explanations (quantified impact, weak verbs, buzzwords, length, core sections, contact info). Pure client-side (`window.CvDiagnostics`) — no LLM, nothing fabricated, every finding explained so *you* decide what to change.
+- **Privacy mask** — redact PII (email, phone, links/handles, street address, and optionally your name → initials) before sharing your CV as a sample or screenshot. Runs entirely in the browser (`window.CvPrivacy`); it reports exactly what it redacted and never stores the original.
+- **Make it human / voice match** — paste a stiff line or paragraph and rewrite it in *your* voice, grounded server-side in `voice-dna.md` and `writing-samples/`. Hard guardrail: it may reorder, tighten, and re-voice, but never introduces a fact, metric, or achievement not already in the text. Runs live through the shared provider cascade, or hands back a copy-paste prompt with no key.
+
+New: `server/lib/routes/cv-studio.mjs` (20th route module — `POST /api/cv-studio/humanize`), `public/js/views/cv-studio.js`, `public/js/lib/cv-diagnostics.js`, `public/js/lib/cv-privacy.js`, `PATHS.voiceDna` + `PATHS.writingSamplesDir`. 29 new i18n keys across all **16 locales**. Tests: `tests/cv-diagnostics.test.mjs`, `tests/cv-studio-routes.test.mjs`. (Template gallery, Word export, and posting-PDF archive are tracked as follow-up CV Studio work.)
+
 ## [1.91.0] — 2026-07-04
 
 **Networking & deep company research (Epic 16).** A new `#/networking` page turns a company into an actionable plan to get an interview, grounded in your CV, profile, and two-pager:

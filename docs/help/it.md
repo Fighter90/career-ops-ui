@@ -2035,3 +2035,28 @@ Il piano torna in quattro sezioni:
 ### Salvare e rivedere i piani
 
 Fai clic su **Salva piano** per conservarne uno. Viene scritto nel livello utente del tuo progetto padre in `networking/net-{company}-{role}-{date}.md` — un tuo file, mai sovrascritto dagli aggiornamenti di sistema. L'elenco **Piani salvati** in fondo alla pagina ti consente di riaprire o eliminare qualsiasi piano. Poiché le bozze e le personas si basano solo sui tuoi materiali reali, trattali come una solida prima bozza da personalizzare — non come uno script da inviare alla cieca.
+
+## 24. CV Studio (`#/cv-studio`)
+
+La pagina `#/cv` è dove *scrivi* il tuo CV; il **CV Studio** (aprilo da **Setup → CV Studio 🎨** nella barra laterale) è dove lo *affini*. Offre al tuo `cv.md` tre strumenti onesti, due dei quali non lasciano mai il tuo browser.
+
+### Diagnostica del CV
+
+Nel momento in cui apri la pagina, assegna al tuo CV un punteggio su 100 ed elenca i riscontri per ogni controllo, ciascuno con una breve spiegazione così che sia *tu* a decidere cosa cambiare (non riscrive mai in silenzio):
+
+- **Lunghezza** — il CV rientra in un intervallo sano di una o due pagine?
+- **Impatto quantificato** — quale quota dei tuoi punti elenco include un numero o una metrica reale? I recruiter li cercano scorrendo velocemente.
+- **Verbi d'azione forti** — segnala formulazioni deboli come «responsabile di» o «ho aiutato».
+- **Parole d'effetto** — segnala i cliché vuoti («orientato ai risultati», «gioca di squadra»).
+- **Sezioni fondamentali** — verifica la presenza di Sommario, Esperienza, Istruzione e Competenze.
+- **Recapiti** — si assicura che sia presente un'email.
+
+Tutto questo gira interamente nel tuo browser senza alcun LLM: i numeri sono deterministici e nulla viene inventato.
+
+### Maschera privacy
+
+Prima di condividere il tuo CV come campione di scrittura o screenshot, la **Maschera privacy** oscura i dati personali identificativi: email, telefono, link/handle e indirizzo, oltre al tuo **nome → iniziali** se lo attivi e lo inserisci. Attiva o disattiva ciascuna categoria, copia la versione mascherata e condividila in sicurezza. Avviene tutto interamente nel browser, riporta esattamente quanti elementi ha oscurato e non memorizza né trasmette mai l'originale.
+
+### Rendilo umano (corrispondenza della voce)
+
+Incolla una frase o un paragrafo rigido — quel tipo di formulazione generica da IA che suona come testo preconfezionato — e **Rendilo umano** lo riscrive nella *tua* voce. La riscrittura è ancorata lato server al tuo `voice-dna.md` (come si legge la tua scrittura) e ai tuoi `writing-samples/` (la tua prosa reale). La regola ferrea: può riordinare, snellire e riadattare la voce, ma **non** introdurrà mai un fatto, una metrica o un risultato che non sia già nel testo che hai incollato. Con una chiave LLM riscrive in tempo reale; senza chiave ti consegna un prompt pronto da incollare in qualsiasi assistente. Poi modifica il tuo CV nella pagina `#/cv` come al solito — il CV Studio suggerisce, tu decidi.

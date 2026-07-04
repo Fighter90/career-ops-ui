@@ -2151,3 +2151,28 @@ Der Plan kommt in vier Abschnitten zurück:
 ### Pläne speichern und erneut aufrufen
 
 Klicke auf **Plan speichern**, um einen zu behalten. Er wird in der Nutzer-Ebene deines übergeordneten Projekts unter `networking/net-{company}-{role}-{date}.md` abgelegt — deine eigene Datei, die von System-Updates nie überschrieben wird. Über die Liste **Gespeicherte Pläne** unten auf der Seite kannst du jeden Plan wieder öffnen oder löschen. Da die Entwürfe und Personas nur auf deinen echten Materialien beruhen, behandle sie als starken ersten Entwurf zum Personalisieren — nicht als Skript, das du blind versendest.
+
+## 24. CV Studio (`#/cv-studio`)
+
+Auf der Seite `#/cv` *schreibst* du deinen Lebenslauf; im **CV Studio** (öffne es über **Setup → CV Studio 🎨** in der Seitenleiste) *schärfst* du ihn. Es gibt deiner `cv.md` drei ehrliche Werkzeuge an die Hand, von denen zwei deinen Browser nie verlassen.
+
+### Lebenslauf-Diagnose
+
+Sobald du die Seite öffnest, bewertet sie deinen Lebenslauf auf einer Skala bis 100 und listet die Befunde pro Prüfung auf – jeder mit einer kurzen Erklärung, damit *du* entscheidest, was du änderst (sie schreibt nie stillschweigend um):
+
+- **Länge** — liegt der Lebenslauf in einem gesunden Bereich von ein bis zwei Seiten?
+- **Quantifizierte Wirkung** — welcher Anteil deiner Stichpunkte enthält eine echte Zahl oder Kennzahl? Recruiter überfliegen genau danach.
+- **Starke Aktionsverben** — markiert schwache Formulierungen wie „verantwortlich für" oder „geholfen".
+- **Buzzwords** — markiert leere Floskeln („ergebnisorientiert", „Teamplayer").
+- **Kernabschnitte** — prüft auf Zusammenfassung, Erfahrung, Ausbildung und Fähigkeiten.
+- **Kontaktdaten** — stellt sicher, dass eine E-Mail vorhanden ist.
+
+Das läuft vollständig in deinem Browser ohne LLM — die Zahlen sind deterministisch, und nichts wird erfunden.
+
+### Datenschutzmaske
+
+Bevor du deinen Lebenslauf als Schreibprobe oder Screenshot teilst, schwärzt die **Datenschutzmaske** personenbezogene Daten: E-Mail, Telefon, Links/Handles und Anschrift, dazu deinen **Namen → Initialen**, wenn du das aktivierst und ihn eingibst. Schalte jede Kategorie um, kopiere die maskierte Version und teile sie sicher. Alles geschieht vollständig im Browser, meldet genau, wie viele Einträge geschwärzt wurden, und speichert oder überträgt das Original nie.
+
+### Menschlich machen (Stimmabgleich)
+
+Füge einen steifen Satz oder Absatz ein — die Art generischer KI-Formulierung, die wie Standardtext klingt — und **Menschlich machen** schreibt ihn in *deiner* Stimme um. Das Umschreiben ist serverseitig in deiner `voice-dna.md` (wie sich dein Schreiben liest) und deinen `writing-samples/` (deine echte Prosa) verankert. Die harte Regel: Es darf umsortieren, straffen und die Stimme anpassen, aber es wird **niemals** einen Fakt, eine Kennzahl oder eine Leistung einführen, die nicht bereits im eingefügten Text steht. Mit einem LLM-Schlüssel schreibt es live um; ohne Schlüssel gibt es dir einen fertigen Prompt zum Einfügen in einen beliebigen Assistenten. Bearbeite deinen Lebenslauf danach wie gewohnt auf der Seite `#/cv` — das CV Studio schlägt vor, du entscheidest.

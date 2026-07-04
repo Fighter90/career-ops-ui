@@ -9,6 +9,16 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.92.0] — 2026-07-04
+
+**CV Studio (Epic 21).** Nowa strona `#/cv-studio` daje Twojemu CV trzy uczciwe, w większości lokalne narzędzia:
+
+- **Diagnostyka CV** — deterministyczny wynik 0–100 z wyjaśnieniami dla każdej kontroli (skwantyfikowany wpływ, słabe czasowniki, modne słowa-wytrychy, długość, kluczowe sekcje, dane kontaktowe). W pełni po stronie klienta (`window.CvDiagnostics`) — bez LLM, nic zmyślonego, każde ustalenie wyjaśnione, byś to *ty* decydował, co zmienić.
+- **Maska prywatności** — zamaskuj dane osobowe (e-mail, telefon, linki/nicki, adres oraz opcjonalnie Twoje imię i nazwisko → inicjały) przed udostępnieniem CV jako próbki lub zrzutu ekranu. Działa w całości w przeglądarce (`window.CvPrivacy`); zgłasza dokładnie, co zamaskowała, i nigdy nie przechowuje oryginału.
+- **Uczłowiecz to / dopasowanie głosu** — wklej sztywną linijkę lub akapit i przepisz ją w *swoim* głosie, osadzoną po stronie serwera w `voice-dna.md` i `writing-samples/`. Twarda bariera: może przestawiać, zagęszczać i zmieniać ton, ale nigdy nie wprowadza faktu, metryki ani osiągnięcia, którego nie ma już w tekście. Działa na żywo przez współdzieloną kaskadę dostawców albo zwraca gotowy do skopiowania prompt bez klucza.
+
+Nowe: `server/lib/routes/cv-studio.mjs` (20. moduł tras — `POST /api/cv-studio/humanize`), `public/js/views/cv-studio.js`, `public/js/lib/cv-diagnostics.js`, `public/js/lib/cv-privacy.js`, `PATHS.voiceDna` + `PATHS.writingSamplesDir`. 29 nowych kluczy i18n we wszystkich **16 locales**. Testy: `tests/cv-diagnostics.test.mjs`, `tests/cv-studio-routes.test.mjs`. (Galeria szablonów, eksport do Worda oraz archiwum PDF ogłoszeń są śledzone jako dalsze prace nad CV Studio.)
+
 ## [1.91.0] — 2026-07-04
 
 **Networking i pogłębiony research firm (Epic 16).** Nowa strona `#/networking` zamienia firmę w wykonalny plan zdobycia rozmowy kwalifikacyjnej, oparty na Twoim CV, profilu i two-pager:

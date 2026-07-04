@@ -70,6 +70,12 @@ export const PATHS = {
   batchRunner: path('batch', 'batch-runner.sh'),
   batchAdditionsDir: path('batch', 'tracker-additions'),
   cv: path('cv.md'),
+  // v1.92.0 (Epic 21 — CV Studio) — voice/style source of truth for the
+  // "make it human / match my voice" rewrite. Both are in-scope per the
+  // DATA_CONTRACT (voice-dna governs HOW text reads; writing-samples are the
+  // user's own prose). Never introduce new factual claims from them.
+  voiceDna: path('voice-dna.md'),
+  writingSamplesDir: path('writing-samples'),
   profile: path('config', 'profile.yml'),
   twoPager: path('config', 'two-pager.yml'),
   portals: path('portals.yml'),

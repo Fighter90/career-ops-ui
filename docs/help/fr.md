@@ -2054,3 +2054,28 @@ Le plan revient en quatre sections :
 ### Enregistrer et revoir des plans
 
 Cliquez sur **Enregistrer le plan** pour en conserver un. Il est écrit dans la couche utilisateur de votre projet parent, à `networking/net-{company}-{role}-{date}.md` — votre propre fichier, jamais écrasé par les mises à jour du système. La liste **Plans enregistrés** en bas de la page vous permet de rouvrir ou de supprimer n'importe quel plan. Comme les brouillons et les personas ne s'appuient que sur vos supports réels, considérez-les comme un solide premier jet à personnaliser — pas comme un script à envoyer à l'aveugle.
+
+## 24. CV Studio (`#/cv-studio`)
+
+La page `#/cv` est l'endroit où vous *rédigez* votre CV ; le **CV Studio** (ouvrez-le depuis **Setup → CV Studio 🎨** dans la barre latérale) est l'endroit où vous l'*affinez*. Il offre à votre `cv.md` trois outils honnêtes, dont deux ne quittent jamais votre navigateur.
+
+### Diagnostic du CV
+
+Dès que vous ouvrez la page, il note votre CV sur 100 et liste les constats par vérification, chacun accompagné d'une brève explication pour que *vous* décidiez de ce qu'il faut changer (il ne réécrit jamais en silence) :
+
+- **Longueur** — le CV est-il dans une fourchette saine d'une à deux pages ?
+- **Impact chiffré** — quelle part de vos puces comporte un chiffre ou une métrique réels ? Les recruteurs les repèrent en survolant.
+- **Verbes d'action forts** — signale les formulations faibles comme « responsable de » ou « aidé à ».
+- **Mots à la mode** — signale les clichés creux (« orienté résultats », « esprit d'équipe »).
+- **Sections essentielles** — vérifie la présence de Résumé, Expérience, Formation et Compétences.
+- **Coordonnées** — s'assure qu'un e-mail est présent.
+
+Tout cela s'exécute entièrement dans votre navigateur, sans aucun LLM — les chiffres sont déterministes et rien n'est inventé.
+
+### Masque de confidentialité
+
+Avant de partager votre CV comme échantillon d'écriture ou capture d'écran, le **Masque de confidentialité** occulte les données personnelles identifiantes : e-mail, téléphone, liens/identifiants et adresse postale, ainsi que votre **nom → initiales** si vous l'activez et le saisissez. Activez ou désactivez chaque catégorie, copiez la version masquée et partagez-la en toute sécurité. Tout se passe intégralement dans le navigateur, il indique exactement combien d'éléments ont été occultés et ne stocke ni ne transmet jamais l'original.
+
+### Rendez-le humain (correspondance de voix)
+
+Collez une phrase ou un paragraphe rigide — ce genre de formulation générique d'IA qui sonne comme du texte tout fait — et **Rendez-le humain** le réécrit dans *votre* voix. La réécriture est ancrée côté serveur dans votre `voice-dna.md` (la façon dont votre écriture se lit) et vos `writing-samples/` (votre prose réelle). La règle stricte : il peut réorganiser, resserrer et réajuster la voix, mais il n'introduira **jamais** un fait, une métrique ou une réalisation qui ne figure pas déjà dans le texte que vous avez collé. Avec une clé LLM, il réécrit en direct ; sans clé, il vous remet un prompt prêt à coller dans n'importe quel assistant. Modifiez ensuite votre CV sur la page `#/cv` comme d'habitude — le CV Studio suggère, vous décidez.
