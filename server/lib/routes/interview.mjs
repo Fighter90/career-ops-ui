@@ -20,6 +20,7 @@
  * The only writes are the user's own `interview-prep/mock-*.md` on Save.
  */
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, unlinkSync } from 'node:fs';
+import { resolve, sep } from 'node:path';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { slugify, today } from '../parsers.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
@@ -34,6 +35,17 @@ const MAX_TEXT = 6000;         // per-turn answer/question length cap
 const MAX_FIELD = 200;         // role / company length cap
 
 const clip = (v, n) => (typeof v === 'string' ? v.slice(0, n) : '');
+
+// Resolve a session filename to an absolute path and PROVE it stays inside
+// interview-prep/ (path-injection containment barrier). Returns null if the
+// name escapes the directory. This is the guard CodeQL's js/path-injection
+// query recognizes; slugify + sanitizePathName already strip traversal chars,
+// but the containment check is the belt to their suspenders.
+function resolveSessionFile(name) {
+  const dir = resolve(PATHS.interviewPrepDir);
+  const file = resolve(dir, name);
+  return (file === dir || file.startsWith(dir + sep)) ? file : null;
+}
 
 /** Coerce arbitrary request history to a bounded [{ speaker, text }] list. */
 export function normalizeHistory(raw) {
@@ -156,10 +168,10 @@ export function registerInterviewRoutes(app) {
     // filename through sanitizePathName too and re-assert the mock-*.md shape
     // so the write target can never escape interview-prep/ (path-injection).
     const name = sanitizePathName(`mock-${slug}-${today()}.md`);
-    if (!name || !name.startsWith('mock-') || !name.endsWith('.md')) {
+    const file = name && name.startsWith('mock-') && name.endsWith('.md') ? resolveSessionFile(name) : null;
+    if (!file) {
       return res.status(400).json({ error: 'could not derive a safe session name' });
     }
-    const file = projPath('interview-prep', name);
     const doc = [
       `# Mock interview — ${role || 'role'}${company ? ` @ ${company}` : ''}`,
       '', `_Saved ${today()}_`, '', transcript.trim(), '',
@@ -189,16 +201,16 @@ export function registerInterviewRoutes(app) {
 
   app.get('/api/mock-interview/sessions/:name', (req, res) => {
     const safe = sanitizePathName(req.params.name);
-    if (!safe || !safe.startsWith('mock-') || !safe.endsWith('.md')) return res.status(400).json({ error: 'invalid name' });
-    const file = projPath('interview-prep', safe);
+    const file = safe && safe.startsWith('mock-') && safe.endsWith('.md') ? resolveSessionFile(safe) : null;
+    if (!file) return res.status(400).json({ error: 'invalid name' });
     if (!existsSync(file)) return res.status(404).json({ error: 'not found' });
     res.json({ name: safe, markdown: cleanLlmMarkdown(readFileSync(file, 'utf8')) });
   });
 
   app.delete('/api/mock-interview/sessions/:name', (req, res) => {
     const safe = sanitizePathName(req.params.name);
-    if (!safe || !safe.startsWith('mock-') || !safe.endsWith('.md')) return res.status(400).json({ error: 'invalid name' });
-    const file = projPath('interview-prep', safe);
+    const file = safe && safe.startsWith('mock-') && safe.endsWith('.md') ? resolveSessionFile(safe) : null;
+    if (!file) return res.status(400).json({ error: 'invalid name' });
     if (!existsSync(file)) return res.status(404).json({ error: 'not found' });
     unlinkSync(file);
     res.json({ ok: true, deleted: safe });
