@@ -637,7 +637,7 @@ window.__I18N_DICT_RU = {
   'config.sanitized': "санитизирован",
   'eval.title': "Оценить вакансию",
   'eval.subtitle': "Канонический A–F анализ: Role, CV match, Strategy, Comp, Personalization, STAR-истории. Score + legitimacy в header'е отчёта.",
-  'eval.jdLbl': "Job Description",
+  'eval.jdLbl': "Описание вакансии",
   'eval.btnEval': "▶ Оценить",
   'eval.btnClear': "Очистить",
   'health.title': "Состояние",

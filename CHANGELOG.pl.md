@@ -9,6 +9,19 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.97.0] — 2026-07-05
+
+**Źródło skanera Dassault Systèmes + trójfrontowy przegląd jakości.**
+
+- **Nowe źródło skanowania — Dassault Systèmes (parytet z nadrzędnym career-ops, #1498).** `server/lib/sources/dassault.mjs` + `server/lib/portals/adapters/dassault.mjs` odwzorowują zero-tokenowego dostawcę „card search" Exalead z projektu nadrzędnego (publiczny kanał za `3ds.com/careers/jobs`). To pojedynczy globalny punkt końcowy, więc jest wybierany przez dostawcę (`provider: dassault`) lub automatycznie wykrywany z hosta `3ds.com`, z ochroną przed SSRF, przypięciem hosta do `www.3ds.com` oraz `redirect:'error'`. XML jest parsowany bez DOM (mapy `<Meta>` dla każdego `<Hit>`), miasto/kraj pobierane są ze zlokalizowanego ciągu kategorii, a oferty zachowywane są tylko wtedy, gdy ich publiczny URL znajduje się na `*.3ds.com`. Rejestr dostarcza teraz **46 adapterów** (41 EN + 5 RU); licznik `ALL_ADAPTERS`, asercje posortowanych id oraz EN-zestawu `/api/scan/sources` podniesione z 40 → 41. Zestaw `tests/sources-dassault.test.mjs` (10 przypadków).
+- **Przeniesione poprawki odporności z projektu nadrzędnego.** Parser Avature toleruje teraz dwa żywe warianty znaczników najemców (`article--result` z sufiksem indeksu pozycji + bezklasowa kotwica tytułu JobDetail, #1541); Get on Board zabezpiecza `0`/ujemne `published_at` (koniec z błędnymi datami z 1970 roku); SuccessFactors ogranicza ostatnią stronę, by nie mogła przekroczyć `MAX_JOBS` (#1528).
+- **Poprawki audytu serwera.** `safe-fetch` nie zawiesza się już przy odpowiedzi przekraczającej limit rozmiaru — ścieżka limitu rozmiaru bezpośrednio rozstrzyga teraz obietnicę zamiast czekać na zdarzenie `'end'`, którego zniszczony strumień nigdy nie wyemituje (naprawia pobrania `/api/pipeline/preview` i auto-pipeline dla dużych stron). Logowanie aktywności SSE `stream.*` jest znów osiągalne (sprawdzenie `/api/stream/` przeniesione ponad zbiorczą ochronę „pomiń GET").
+- **Poprawki audytu SPA.** Przełącznik zakładek `#/stats` chroni przed wyścigiem podczas asynchronicznego renderowania — wynik wolnej zakładki nie może już nadpisać nowszej zakładki, na którą użytkownik już się przełączył. Potwierdzenia usunięcia w mock interview i networkingu przekazują teraz właściwy tytuł + treść (koniec z dialogami o pustej treści).
+- **Poprawki tłumaczeń.** Poprawiono nieprzetłumaczone wartości słownika — ukraińskie `config.modes*` (Adaptive Framing / Exit Narrative / Location Policy), rosyjskie `eval.jdLbl` („Job Description"), włoskie `dash.quick.contactoSub` („referral" → „segnalazione") — plus angielski szablon **16 lokalizacji** zlokalizowany w CHANGELOG-ach ru/uk/ja/ko/zh-CN/zh-TW.
+
+Nowe: `server/lib/sources/dassault.mjs`; `server/lib/portals/adapters/dassault.mjs`.
+
+
 ## [1.96.0] — 2026-07-04
 
 **Orientacja zawodowa (Epic 27).** Nowa strona **`#/orientation`** odpowiada na pytanie „które kierunki naprawdę do mnie pasują?" — taki odczyt, jaki dałby test predyspozycji zawodowych, ale wywnioskowany z Twojego własnego CV i profilu, a nie z kwestionariusza. Kliknij **Generuj profil**, a model zwróci Twoje **najlepiej dopasowane wektory kariery** (który z ośmiu archetypów — Funkcjonalista, Administrator, Komunikator, Specjalista, Analityk, Innowator, Menedżer, Przedsiębiorca — pasuje, wraz z dowodami), skłonność do typu kariery, rekomendowane role, mocne strony zawodowe powiązane z Twoim CV, tendencje w stylu pracy oraz rekomendacje rozwojowe. To **refleksja AI nad tym, jak czyta się Twoje CV — nie test psychometryczny**: nigdy nie zmyśla osiągnięć i nigdy nie podaje liczbowych wyników tak, jakby były zmierzone. Wyeksportuj profil do Markdown lub PDF; nic nie jest zapisywane na dysku.

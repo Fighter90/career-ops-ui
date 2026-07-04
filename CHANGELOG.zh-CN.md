@@ -9,6 +9,18 @@
 ---
 
 
+## [1.97.0] — 2026-07-05
+
+**Dassault Systèmes 扫描器来源 + 三线并进的质量整顿。**
+
+- **新增扫描来源 — Dassault Systèmes（与父级 career-ops 对齐,#1498）。** `server/lib/sources/dassault.mjs` + `server/lib/portals/adapters/dassault.mjs` 复刻了父项目零 token 的 Exalead“卡片搜索”提供方（`3ds.com/careers/jobs` 背后的公开数据源）。它是单一全局端点,因此通过提供方选择（`provider: dassault`）或从 `3ds.com` 主机自动检测,并以 `redirect:'error'` 将 SSRF 主机固定为 `www.3ds.com`。XML 在不使用 DOM 的情况下解析（按 `<Hit>` 构建 `<Meta>` 映射）,城市/国家从本地化的类别字符串中提取,只有当职位的公开 URL 位于 `*.3ds.com` 上时才保留。注册表现在提供 **46 个适配器**（41 个 EN + 5 个 RU）;`ALL_ADAPTERS` 计数、已排序 id 以及 `/api/scan/sources` 的 EN 集合断言从 40 → 41。测试套件 `tests/sources-dassault.test.mjs`(10 个用例)。
+- **移植父项目的健壮性修复。** Avature 解析器现在容忍两种线上租户标记变体（带位置索引后缀的 `article--result` + 无类名的 JobDetail 标题锚点,#1541);Get on Board 会防御 `0`/负值的 `published_at`(不再出现错误的 1970 日期);SuccessFactors 会对最后一页设上限,使其不会超出 `MAX_JOBS`(#1528)。
+- **服务器审计修复。** `safe-fetch` 在超出上限的响应上不再挂起——大小上限路径现在直接兑现 promise,而不是等待一个已销毁的流永远不会发出的 `'end'` 事件（修复大页面的 `/api/pipeline/preview` + 自动流水线抓取）。SSE `stream.*` 活动日志再次可达（`/api/stream/` 检查移到了笼统的“跳过 GET”守卫之上）。
+- **SPA 审计修复。** `#/stats` 标签切换器可防御异步渲染竞态——慢速标签的结果不再会覆盖用户已切换到的更新标签。mock interview 与人脉拓展的删除确认现在会传入正确的标题 + 正文(不再有正文为空的对话框)。
+- **翻译修复。** 修正未翻译的词典值——乌克兰语 `config.modes*`(Adaptive Framing / Exit Narrative / Location Policy)、俄语 `eval.jdLbl`（“Job Description”）、意大利语 `dash.quick.contactoSub`（“referral” → “segnalazione”）——以及在 ru/uk/ja/ko/zh-CN/zh-TW 的 CHANGELOG 中将英文 **16 种语言** 的样板文案本地化。
+
+新增: `server/lib/sources/dassault.mjs`; `server/lib/portals/adapters/dassault.mjs`.
+
 ## [1.96.0] — 2026-07-04
 
 **职业方向（Epic 27）。** 全新的 **`#/orientation`** 页面回答“哪些方向真正适合我？”——就像职业测评能给你的那种解读,但不是靠问卷,而是从你自己的 CV 和档案中推断。点击 **生成画像**,模型会返回你的 **最契合的职业向量**（八种原型——功能主义者、管理者、沟通者、专家、分析者、创新者、经理、创业者——中哪一种契合,并附上证据）、一种职业类型倾向、推荐职位、与 CV 相关联的职业优势、工作风格倾向,以及发展建议。这是 **对你的 CV 读起来如何的一种 AI 反思——而非心理测验**:它不会虚构成就,也绝不会把数值分数当作实测结果来报告。可导出为 Markdown 或 PDF;不会向磁盘写入任何内容。
@@ -25,7 +37,7 @@
 
 - 新增路由 `server/lib/routes/career-plan.mjs`(第 23 个路由模块)—— `GET`/`PUT /api/career-plan`(写入 `config/career-plan.md`)+ `POST /api/career-plan/generate`(共享的提供商级联、手动回退、不作虚构)。`PATHS.careerPlan`。
 - 复用共享的 `report-export.js`(v1.94.0)用于 Markdown/PDF/复制,并新增一个 **成长** 导航分组。
-- 测试: `tests/career-plan-routes.test.mjs`(边界处理、GET/PUT 往返、感知周期并以 CV/档案预填的提示词)。在全部 **16 locales** 中新增 20 个 i18n 键,帮助文档 **§27** ×16。
+- 测试: `tests/career-plan-routes.test.mjs`(边界处理、GET/PUT 往返、感知周期并以 CV/档案预填的提示词)。在全部 **16 种语言** 中新增 20 个 i18n 键,帮助文档 **§27** ×16。
 
 新增: `#/career-plan`;`server/lib/routes/career-plan.mjs`;`PATHS.careerPlan`。
 
@@ -35,7 +47,7 @@
 
 - **导出任意报告** 为 Markdown 或 PDF,或直接复制它 —— 通过共享的 `report-export.js` 助手实现(Markdown 以 blob 下载;PDF 通过现有的内联 PDF 运行器)。
 - 新增路由 `server/lib/routes/market.mjs`(第 22 个路由模块)—— `POST /api/stats/market` 会依据你的 CV/档案(因此它知道你的目标职位)、地区和货币构建一段市场分析提示词,通过共享的提供商级联运行,并在没有密钥时回退为一段可复制粘贴的提示词。不写入任何文件。
-- 测试: `tests/market-routes.test.mjs`(地区/货币边界、诚实标注的提示词、以 CV/档案预填的手动模式)。在全部 **16 locales** 中新增 36 个 i18n 键,帮助文档 **§26** ×16。
+- 测试: `tests/market-routes.test.mjs`(地区/货币边界、诚实标注的提示词、以 CV/档案预填的手动模式)。在全部 **16 种语言** 中新增 36 个 i18n 键,帮助文档 **§26** ×16。
 
 新增: `#/stats` 重构为标签页;`server/lib/routes/market.mjs`;`public/js/lib/report-export.js`。
 
@@ -47,7 +59,7 @@
 - **引导,而非事实** — 它捕捉你的偏好以及你喜欢的工作方式(语气、格式、deal-breaker、节奏),绝不引入关于你经历的新事实主张 —— 那些仍只存在于你的 CV、档案和 two-pager 中。保存到用户层的 `config/memory.md`,绝不会被更新覆盖。
 - **从你的数据中提议** — `POST /api/memory/suggest` 会从你自己的申请追踪器中挖掘行为模式,并为你草拟条目供你审阅和编辑。它读取你的追踪器;绝不臆造事实,也不发起实时调用。
 
-新增: `server/lib/routes/memory.mjs`(第 21 个路由模块 —— `GET`/`PUT /api/memory` + `POST /api/memory/suggest`)、`public/js/views/memory.js`、`PATHS.memory`,以及添加进 `bundleProjectContext` 的 `config/memory.md` 块。在全部 **16 locales** 中新增 11 个 i18n 键。测试: `tests/memory-routes.test.mjs`。
+新增: `server/lib/routes/memory.mjs`(第 21 个路由模块 —— `GET`/`PUT /api/memory` + `POST /api/memory/suggest`)、`public/js/views/memory.js`、`PATHS.memory`,以及添加进 `bundleProjectContext` 的 `config/memory.md` 块。在全部 **16 种语言** 中新增 11 个 i18n 键。测试: `tests/memory-routes.test.mjs`。
 
 ## [1.92.0] — 2026-07-04
 
@@ -57,7 +69,7 @@
 - **隐私脱敏** — 在将简历作为样本或截图分享之前,遮蔽 PII(邮箱、电话、链接/账号、街道地址,以及可选的姓名 → 首字母缩写)。完全在浏览器中运行(`window.CvPrivacy`);它会准确报告遮蔽了什么,且绝不存储原文。
 - **Make it human / 语气匹配** — 粘贴一句生硬的话或一段文字,它会以*你的*语气重写,在服务端以 `voice-dna.md` 和 `writing-samples/` 为依据。硬性护栏:它可以重排、精简和重塑语气,但绝不引入文本中尚不存在的事实、指标或成就。通过共享提供商级联实时运行,或在无密钥时回传一段可复制粘贴的提示词。
 
-新增: `server/lib/routes/cv-studio.mjs`(第 20 个路由模块 —— `POST /api/cv-studio/humanize`)、`public/js/views/cv-studio.js`、`public/js/lib/cv-diagnostics.js`、`public/js/lib/cv-privacy.js`、`PATHS.voiceDna` + `PATHS.writingSamplesDir`。在全部 **16 locales** 中新增 29 个 i18n 键。测试: `tests/cv-diagnostics.test.mjs`、`tests/cv-studio-routes.test.mjs`。(模板库、Word 导出和职位 PDF 归档作为 CV Studio 的后续工作进行跟踪。)
+新增: `server/lib/routes/cv-studio.mjs`(第 20 个路由模块 —— `POST /api/cv-studio/humanize`)、`public/js/views/cv-studio.js`、`public/js/lib/cv-diagnostics.js`、`public/js/lib/cv-privacy.js`、`PATHS.voiceDna` + `PATHS.writingSamplesDir`。在全部 **16 种语言** 中新增 29 个 i18n 键。测试: `tests/cv-diagnostics.test.mjs`、`tests/cv-studio-routes.test.mjs`。(模板库、Word 导出和职位 PDF 归档作为 CV Studio 的后续工作进行跟踪。)
 
 ## [1.91.0] — 2026-07-04
 
@@ -80,7 +92,7 @@
 - **实时或手动** — 有提供商密钥时,该轮次会通过共享提供商级联(Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models)实时运行;没有密钥时,你会得到一个可直接复制粘贴运行的提示词(诚实回退,不编造答案)。
 - **已保存会话** — 点击 **Save transcript** 可将一场完成的面试持久化到用户层(`interview-prep/mock-{company}-{role}-{date}.md`);该页面可列出、打开并删除已保存的会话。
 
-新增: `server/lib/routes/interview.mjs`(第 18 个路由模块)、`public/js/views/mock-interview.js`、`server/lib/llm-dispatch.mjs`(共享提供商级联)、`PATHS.storyBank`、`bundleProjectContext({ extraFiles })`。在全部 **16 locales** 中新增 30 个 i18n 键。测试: `tests/interview-routes.test.mjs`。
+新增: `server/lib/routes/interview.mjs`(第 18 个路由模块)、`public/js/views/mock-interview.js`、`server/lib/llm-dispatch.mjs`(共享提供商级联)、`PATHS.storyBank`、`bundleProjectContext({ extraFiles })`。在全部 **16 种语言** 中新增 30 个 i18n 键。测试: `tests/interview-routes.test.mjs`。
 
 ## [1.89.0] — 2026-07-04
 

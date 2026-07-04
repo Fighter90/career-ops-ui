@@ -125,13 +125,15 @@ export function activityMiddleware(req, res, next) {
 function mapAction(req) {
   const m = req.method;
   const p = req.path;
-  // Skip the activity endpoint itself + reads.
+  // Skip the activity endpoint itself.
   if (p.startsWith('/api/activity')) return null;
-  if (m === 'GET') return null;
-  // Streams (SSE) — log start of long-running operation.
+  // Streams (SSE) — log the start of a long-running operation. This GET must be
+  // checked BEFORE the blanket "skip reads" guard below, or it never logs.
   if (m === 'GET' && p.startsWith('/api/stream/')) {
     return 'stream.' + p.slice('/api/stream/'.length).split('/')[0];
   }
+  if (m === 'GET') return null; // skip all other reads
+
   if (p === '/api/pipeline')  return m === 'POST' ? 'pipeline.add' : 'pipeline.remove';
   if (p === '/api/cv')        return 'cv.save';
   if (p === '/api/cv/import') return 'cv.import';

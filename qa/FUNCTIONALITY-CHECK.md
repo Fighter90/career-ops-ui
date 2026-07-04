@@ -15,7 +15,7 @@
 > body, screenshot, server log line). A check is PASS only if the
 > behaviour is correct *and* legible to the user — a silent success
 > the user can't perceive is PARTIAL. Any FAIL → file a one-fix ship
-> per the project doctrine (bump + CHANGELOG ×8 + test +
+> per the project doctrine (bump + CHANGELOG ×16 + test +
 > Playwright-verify + pre-commit AI-review LGTM + CI-watch). Never
 > batch. Never `--no-verify`.
 
@@ -25,12 +25,12 @@
 
 ```bash
 vX=$(node -p "require('./package.json').version")
-npm ci && npm run test:ci          # MUST: N/N pass · ✓ no .also( · ✓ CHANGELOG parity all 8 @ vX
+npm ci && npm run test:ci          # MUST: N/N pass · ✓ no .also( · ✓ CHANGELOG parity all 16 @ vX
 node tests/e2e.mjs                 # MUST: passed: N · failed: 0
 node tests/e2e-comprehensive.mjs   # MUST: 0 failed
 npm run test:e2e:browser           # MUST: green, no "asynchronous activity after the test"
 node --test tests/sh-files.test.mjs        # MUST: green
-node scripts/check-changelog-parity.mjs    # MUST: all 8 @ vX
+node scripts/check-changelog-parity.mjs    # MUST: all 16 @ vX
 node scripts/check-no-also-leftovers.mjs   # MUST: ✓
 career-ops-ui doctor               # MUST: exit 0
 bash bin/start.sh                  # MUST: installs deps if missing, serves 127.0.0.1:4317, opens browser
@@ -47,7 +47,9 @@ for first-paint assets:
 
 `#/dashboard #/scan #/pipeline #/auto #/evaluate #/batch #/deep #/apply
 #/tracker #/reports #/cv #/profile #/settings #/config #/health
-#/activity #/help` + the 7 `#/<mode>` pages (contacto, followup,
+#/activity #/help #/two-pager #/mock-interview #/networking #/cv-studio
+#/memory #/stats #/career-plan #/orientation` (the last two sit in the
+**Growth** nav group) + the 7 `#/<mode>` pages (contacto, followup,
 interview-prep, patterns, project, training, batch-prompt) + `#/portals`
 (MUST alias → `#/config`, never 404) + an unknown hash (MUST render the
 dedicated 404 view, not silently fall back to dashboard).
@@ -109,8 +111,20 @@ Hit each with valid + invalid input; assert status + body shape:
   `?page=&pageSize=&status=` → `{ rows, total, page, pageSize,
   funnel }` with the documented clamps; funnel = whole history.
 - `GET /api/dashboard`, `/api/activity`, `/api/reports`, `/api/cv`,
-  `/api/config` (secrets masked), `/api/scan/sources` (== 11),
-  `/api/help/:lang` (8 locales; bad lang → `en` fallback).
+  `/api/config` (secrets masked), `/api/scan/sources` (46 adapters:
+  41 EN + 5 RU, incl. Dassault Systèmes),
+  `/api/help/:lang` (16 locales; bad lang → `en` fallback).
+- The AI/user-layer feature routes must also honour their contract:
+  `GET/PUT /api/two-pager` (+ `POST /api/two-pager/draft`),
+  `POST /api/interview/{turn,save}` + `GET /api/interview/sessions`,
+  `POST /api/networking/{plan,save}` + `GET /api/networking/plans`,
+  `POST /api/cv-studio/humanize` (no writes),
+  `GET/PUT /api/memory` (+ `POST /api/memory/suggest`),
+  `POST /api/stats/market` (currency + region; no writes) + the
+  target-role snapshot store, `GET/PUT /api/career-plan` +
+  `POST /api/career-plan/generate`, and the career-orientation route.
+  Writes land only in the user layer (`config/two-pager.yml`,
+  `config/memory.md`, `config/career-plan.md`, `networking/net-*.md`).
 - Writes only on explicit user action: `POST /api/pipeline`,
   `POST /api/tracker`, `PUT /api/cv`, `POST /api/jds`,
   `DELETE /api/{jds,interview-prep}/:name`, `POST /api/config`, the
@@ -144,13 +158,14 @@ Hit each with valid + invalid input; assert status + body shape:
 
 ## §7 — i18n, docs & deploy parity
 
-- Switch all 8 locales (en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW) on
-  the core flow: no untranslated leakage, no truncation, terminology
-  matches career-ops.org/docs. `tests/i18n-coverage` green.
+- Switch all 16 locales (en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr,
+  pl, uk, da, ar, de, it, tr; Arabic is RTL) on the core flow: no
+  untranslated leakage, no truncation, correct RTL mirroring,
+  terminology matches career-ops.org/docs. `tests/i18n-coverage` green.
 - `package.json::version` == `/api/health.version` == every
-  `CHANGELOG*.md` top entry == README ×8 badge ==
-  `docs/architecture/TESTING.md` totals. Help bundles ×8 at the
-  parity gate (17 H2 / 70 H3). API.md documents every live endpoint.
+  `CHANGELOG*.md` top entry == README ×16 badge ==
+  `docs/architecture/TESTING.md` totals. Help bundles ×16 at the
+  parity gate (28 H2 / 102 H3). API.md documents every live endpoint.
 - Pipeline AI-review: a push to `main` triggers
   `.github/workflows/ai-review.yml`; with the `ANTHROPIC_API_KEY`
   repo secret it posts a commit-comment review, without it it logs a
@@ -172,20 +187,21 @@ follow-up.
 §0 green · §1–§7 every item PASS (PARTIALs triaged, no FAIL) ·
 §F-A exhaustive matrix every item PASS · §8 the only KNOWN caveat ·
 `git status` clean · tag `vX` on `origin/main` with CI green on all
-jobs. Any FAIL or new PARTIAL → a one-fix ship (bump + CHANGELOG ×8 +
+jobs. Any FAIL or new PARTIAL → a one-fix ship (bump + CHANGELOG ×16 +
 test + Playwright-verify + AI-review LGTM + CI-watch) before the
 release is called done.
 
 ---
 
-## §F-A — EXHAUSTIVE FUNCTIONAL MATRIX (every endpoint × every action × 8 locales)
+## §F-A — EXHAUSTIVE FUNCTIONAL MATRIX (every endpoint × every action × 16 locales)
 
 > One row = one verifiable behaviour. Mark **PASS / FAIL / PARTIAL /
 > SKIP** with evidence (request, response body, route, exact copy,
 > server log). PASS only if correct **and** legible to the user. Do
-> every UI action in **all 8 locales** (en · es · pt-BR · ko · ja ·
-> ru · zh-CN · zh-TW) — a behaviour that's correct in `en` but emits
-> an untranslated/clipped message elsewhere is **PARTIAL**.
+> every UI action in **all 16 locales** (en · es · pt-BR · ko · ja ·
+> ru · zh-CN · zh-TW · fr · pl · uk · da · ar · de · it · tr; Arabic
+> is RTL) — a behaviour that's correct in `en` but emits an
+> untranslated/clipped message elsewhere is **PARTIAL**.
 
 ### §F-A.1 — Read endpoints (GET) — must be correct, complete, side-effect-free
 
@@ -208,7 +224,7 @@ pre-v1.58 saved files) · `/api/modes[/:name|_profile]` · `/api/activity`
 · `/api/openrouter/models` (≥300 ids OR curated fallback — never empty;
 no key required) · `/api/scan-results` · `/api/scan/sources` ·
 `/api/scan/regional/config` · `/api/output/pdfs[/:name]` ·
-`/api/help/:lang` (every one of the 8; unknown lang → en fallback).
+`/api/help/:lang` (every one of the 16; unknown lang → en fallback).
 SSE streams open, emit `start`→`log…`→`done`/`error`, close cleanly,
 `Stop` aborts: `/api/stream/{scan,scan-parent,batch,liveness,pdf,
 pdf/deep,pdf/report}`.
@@ -248,7 +264,7 @@ and the effect is exactly as claimed:
 
 ### §F-A.3 — Every UI action produces its correct, legible effect
 
-Per page (all 8 locales) confirm the *functional* result, not just
+Per page (all 16 locales) confirm the *functional* result, not just
 that a control exists: every sidebar link routes; theme toggle
 persists; `⌘K`/`Ctrl K` focuses search and it filters; Doctor/Verify
 show real output then the progress toast is **gone**; Scan streams

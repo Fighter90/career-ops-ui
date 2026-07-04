@@ -99,11 +99,11 @@ test('registry: Workday defaults site=External when careers_url omits site', () 
 
 test('registry: ALL_ADAPTERS has the expected entries', async () => {
   const { ALL_ADAPTERS } = await import('../server/lib/portals/registry.mjs');
-  assert.equal(ALL_ADAPTERS.length, 40);
+  assert.equal(ALL_ADAPTERS.length, 41);
   const ids = ALL_ADAPTERS.map((a) => a.id).sort();
   assert.deepEqual(ids, [
     '4dayweek', 'amazon', 'arbeitnow', 'arbeitsagentur', 'ashby', 'avature',
-    'bamboohr', 'breezy', 'comeet', 'getonbrd', 'glints', 'greenhouse',
+    'bamboohr', 'breezy', 'comeet', 'dassault', 'getonbrd', 'glints', 'greenhouse',
     'hackernews', 'himalayas', 'ibm', 'jobicy', 'jobspresso', 'jobstreet',
     'justjoin', 'landingjobs', 'lever', 'nodesk', 'nofluffjobs', 'personio',
     'pinpoint', 'recruitee', 'remoteok', 'remotive', 'rippling', 'rss',

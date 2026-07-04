@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.96.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.96.0)
+[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
 
-> **🆕 Dernière version — v1.96.0**
+> **🆕 Dernière version — v1.97.0**
 >
-> **Orientation de carrière (Epic 27) :** une nouvelle page **`#/orientation`** répond à la question « quelles directions me correspondent vraiment ? » — la lecture qu'un test d'orientation vous donnerait, mais déduite de votre propre CV et profil plutôt que d'un questionnaire. Cliquez sur **Générer le profil** et le modèle renvoie vos **vecteurs de carrière les plus adaptés** (lesquels des huit archétypes vous correspondent, avec des preuves), une inclinaison de type professionnel, des rôles recommandés, des forces professionnelles liées à votre CV, des tendances de style de travail et des recommandations de développement. C'est une **réflexion d'IA sur la façon dont se lit votre CV — pas un test psychométrique** : elle n'invente jamais de réalisations et ne rapporte jamais de scores numériques comme s'ils étaient mesurés. Exportez-le en **Markdown ou PDF** ; rien n'est écrit sur le disque. S'appuie sur la v1.95.0 (plan de carrière) et la v1.94.0 (refonte des statistiques).
+> **Source de scanner Dassault Systèmes + un balayage qualité.** Parité avec le career-ops principal (#1498) : une nouvelle source de scan à coût nul en tokens, **Dassault Systèmes** (le flux public de recherche par cartes Exalead derrière 3ds.com/careers), rejoint le registre en tant que **46e adaptateur** — sélectionnable par fournisseur (`provider: dassault`) ou détectée automatiquement à partir d'un hôte 3ds.com, avec l'hôte épinglé contre le SSRF. À ses côtés, un audit sur trois fronts (serveur + SPA + traduction en 16 langues) a corrigé de vrais défauts : une **course asynchrone dans les onglets de statistiques** (le rendu d'un onglet lent pouvait en écraser un plus récent), un **plafond de taille de `safe-fetch` susceptible de se bloquer** sur une récupération de preview/pipeline dépassant la limite, une journalisation d'activité SSE morte, deux confirmations de suppression au corps vide, et des valeurs de dictionnaire non traduites (uk/ru/it). Des corrections de robustesse du projet principal ont été portées pour les sources Avature / Get on Board / SuccessFactors.
 >
-> _16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

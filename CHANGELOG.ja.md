@@ -9,6 +9,18 @@
 ---
 
 
+## [1.97.0] — 2026-07-05
+
+**Dassault Systèmes スキャナソース + 3方面の品質スイープ。**
+
+- **新しいスキャンソース — Dassault Systèmes（親 career-ops パリティ、#1498）。** `server/lib/sources/dassault.mjs` + `server/lib/portals/adapters/dassault.mjs` は、親プロジェクトのゼロトークン Exalead「カード検索」プロバイダ（`3ds.com/careers/jobs` の背後にある公開フィード）をそのまま反映します。単一のグローバルエンドポイントなので、プロバイダ選択（`provider: dassault`）または `3ds.com` ホストからの自動検出で、`redirect:'error'` とともに `www.3ds.com` に SSRF ホスト固定されます。XML は DOM なし（`<Hit>` ごとの `<Meta>` マップ）で解析され、都市/国はローカライズされたカテゴリ文字列から取得され、求人はその公開 URL が `*.3ds.com` 上にある場合のみ保持されます。レジストリは **46 アダプタ**（EN 41 + RU 5）を提供するようになりました。`ALL_ADAPTERS` の件数、ソート済み id、`/api/scan/sources` の EN セットアサーションが 40 → 41 に引き上げられました。スイート `tests/sources-dassault.test.mjs`（10 ケース）。
+- **親プロジェクトの堅牢性修正を移植。** Avature パーサは 2 つのライブテナントのマークアップ変種（位置インデックスの接尾辞付き `article--result` + クラスなしの JobDetail タイトルアンカー、#1541）を許容するようになりました。Get on Board は `0`/負の `published_at` を防御します（もう誤った 1970 年の日付はありません）。SuccessFactors は最終ページに上限を設け、`MAX_JOBS` を超えないようにします（#1528）。
+- **サーバ監査の修正。** `safe-fetch` は上限超過のレスポンスでもうハングしません — サイズ上限のパスが、破棄されたストリームが決して発火しない `'end'` イベントを待つ代わりに、Promise を直接解決するようになりました（大きなページの `/api/pipeline/preview` + 自動パイプラインのフェッチを修正）。SSE `stream.*` のアクティビティログが再び到達可能になりました（`/api/stream/` チェックが包括的な「GET をスキップ」ガードより上に移動）。
+- **SPA 監査の修正。** `#/stats` タブスイッチャーが非同期レンダーの競合を防御します — 遅いタブの結果が、ユーザーがすでに切り替えた新しいタブを上書きできなくなりました。mock interview とネットワーキングの削除確認は、適切なタイトル + 本文を渡すようになりました（もう本文が空のダイアログはありません）。
+- **翻訳の修正。** 未翻訳の辞書値を修正 — ウクライナ語 `config.modes*`（Adaptive Framing / Exit Narrative / Location Policy）、ロシア語 `eval.jdLbl`（「Job Description」）、イタリア語 `dash.quick.contactoSub`（「referral」→「segnalazione」）— さらに ru/uk/ja/ko/zh-CN/zh-TW の CHANGELOG で英語の **16 ロケール** の定型文をローカライズしました。
+
+新規: `server/lib/sources/dassault.mjs`; `server/lib/portals/adapters/dassault.mjs`.
+
 ## [1.96.0] — 2026-07-04
 
 **キャリアの方向性（Epic 27）。** 新しい **`#/orientation`** ページは「どの方向が実際に自分に合うのか？」に答えます — 職業適性検査で得られるような読み解きですが、アンケートではなく、あなた自身の CV とプロフィールから推測します。**プロフィールを生成** をクリックすると、モデルはあなたの **最も適したキャリアベクトル**（8 つのアーキタイプ — 機能主義者、管理者、コミュニケーター、スペシャリスト、アナリスト、イノベーター、マネージャー、アントレプレナー — のうちどれが合うか、根拠とともに）、キャリアタイプの傾向、おすすめの職種、CV に結び付いた職業上の強み、働き方の傾向、そして開発の推奨事項を返します。これは **あなたの CV がどう読めるかについての AI による振り返りであり — 心理検査ではありません**：実績を捏造することはなく、数値スコアを測定されたものであるかのように報告することもありません。Markdown または PDF にエクスポートでき、ディスクには何も書き込まれません。
@@ -25,7 +37,7 @@
 
 - 新しいルート `server/lib/routes/career-plan.mjs`(23 番目のルートモジュール)— `GET`/`PUT /api/career-plan`(`config/career-plan.md` に書き込み)+ `POST /api/career-plan/generate`(共有プロバイダーカスケード、手動フォールバック、捏造なし)。`PATHS.careerPlan`。
 - 共有ヘルパー `report-export.js`(v1.94.0)を Markdown/PDF/コピーに再利用し、新しい **成長** ナビゲーショングループを追加。
-- テスト: `tests/career-plan-routes.test.mjs`(範囲、GET/PUT のラウンドトリップ、期間を踏まえた CV/プロフィールをシードしたプロンプト)。**16 locales** すべてに 20 個の新規 i18n キー、ヘルプ **§27** 16 言語すべて。
+- テスト: `tests/career-plan-routes.test.mjs`(範囲、GET/PUT のラウンドトリップ、期間を踏まえた CV/プロフィールをシードしたプロンプト)。**16 ロケール** すべてに 20 個の新規 i18n キー、ヘルプ **§27** 16 言語すべて。
 
 新規: `#/career-plan`、`server/lib/routes/career-plan.mjs`、`PATHS.careerPlan`。
 
@@ -35,7 +47,7 @@
 
 - **どのレポートもエクスポート** — 共有ヘルパー `report-export.js` を介して、Markdown または PDF にエクスポートするか、コピーします(Markdown blob のダウンロード。PDF は既存のインライン PDF ランナー経由)。
 - 新しいルート `server/lib/routes/market.mjs`(22 番目のルートモジュール)— `POST /api/stats/market` は、あなたの CV/プロフィール(そのためあなたのターゲット職種を把握しています)、地域、通貨から市場分析プロンプトを構築し、共有プロバイダーカスケードを通じて実行し、キーがなければコピー&ペースト用のプロンプトにフォールバックします。ディスクへの書き込みなし。
-- テスト: `tests/market-routes.test.mjs`(地域/通貨の範囲、正直さを明示したプロンプト、CV/プロフィールをシードした手動モード)。**16 locales** すべてに 36 個の新規 i18n キー、ヘルプ **§26** 16 言語すべて。
+- テスト: `tests/market-routes.test.mjs`(地域/通貨の範囲、正直さを明示したプロンプト、CV/プロフィールをシードした手動モード)。**16 ロケール** すべてに 36 個の新規 i18n キー、ヘルプ **§26** 16 言語すべて。
 
 新規: タブに刷新された `#/stats`、`server/lib/routes/market.mjs`、`public/js/lib/report-export.js`。
 
@@ -47,7 +59,7 @@
 - **事実ではなく方向づけ** — あなたの好みや働き方(トーン、フォーマット、deal-breaker、ペース)を捉えるものであり、あなたの経歴に関する新しい事実の主張は決して含みません — それらは今も CV、プロフィール、two-pager にのみ存在します。ユーザーレイヤーの `config/memory.md` に保存され、更新で上書きされることはありません。
 - **あなたのデータから提案** — `POST /api/memory/suggest` はあなた自身の応募トラッカーから行動パターンを抽出し、あなたがレビューして編集するための箇条書きを下書きします。トラッカーを読むだけで、事実を捏造することは決してなく、ライブ呼び出しも行いません。
 
-新規: `server/lib/routes/memory.mjs`(21 番目のルートモジュール — `GET`/`PUT /api/memory` + `POST /api/memory/suggest`)、`public/js/views/memory.js`、`PATHS.memory`、そして `bundleProjectContext` に追加された `config/memory.md` ブロック。**16 locales** すべてに 11 個の新規 i18n キー。テスト: `tests/memory-routes.test.mjs`。
+新規: `server/lib/routes/memory.mjs`(21 番目のルートモジュール — `GET`/`PUT /api/memory` + `POST /api/memory/suggest`)、`public/js/views/memory.js`、`PATHS.memory`、そして `bundleProjectContext` に追加された `config/memory.md` ブロック。**16 ロケール** すべてに 11 個の新規 i18n キー。テスト: `tests/memory-routes.test.mjs`。
 
 ## [1.92.0] — 2026-07-04
 
@@ -80,7 +92,7 @@
 - **ライブまたは手動** — プロバイダーキーがあれば、そのターンは共有プロバイダーカスケード(Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models)経由でライブ実行されます。キーがなければ、そのままコピー&ペーストできるプロンプトが得られます(誠実なフォールバック、捏造された回答なし)。
 - **保存されたセッション** — **Save transcript** をクリックすると、完了した面接がユーザーレイヤー(`interview-prep/mock-{company}-{role}-{date}.md`)に保存されます。ページ上で保存済みセッションを一覧表示・開く・削除できます。
 
-新規: `server/lib/routes/interview.mjs`(18 番目のルートモジュール)、`public/js/views/mock-interview.js`、`server/lib/llm-dispatch.mjs`(共有プロバイダーカスケード)、`PATHS.storyBank`、`bundleProjectContext({ extraFiles })`。**16 locales** 全体で 30 個の新しい i18n キー。テスト: `tests/interview-routes.test.mjs`。
+新規: `server/lib/routes/interview.mjs`(18 番目のルートモジュール)、`public/js/views/mock-interview.js`、`server/lib/llm-dispatch.mjs`(共有プロバイダーカスケード)、`PATHS.storyBank`、`bundleProjectContext({ extraFiles })`。**16 ロケール** 全体で 30 個の新しい i18n キー。テスト: `tests/interview-routes.test.mjs`。
 
 ## [1.89.0] — 2026-07-04
 

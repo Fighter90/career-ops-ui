@@ -10,6 +10,19 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.97.0] — 2026-07-05
+
+**Dassault Systèmes-scannerkilde + en trefronts kvalitetsgennemgang.**
+
+- **Ny scannerkilde — Dassault Systèmes (paritet med forælderens career-ops, #1498).** `server/lib/sources/dassault.mjs` + `server/lib/portals/adapters/dassault.mjs` spejler forælderens zero-token Exalead-"card search"-udbyder (det offentlige feed bag `3ds.com/careers/jobs`). Det er ét enkelt globalt endpoint, så det vælges via udbyder (`provider: dassault`) eller autodetekteres fra en `3ds.com`-vært, SSRF-værtsfastgjort til `www.3ds.com` med `redirect:'error'`. XML'en parses uden en DOM (`<Meta>`-maps pr. `<Hit>`), by/land trækkes fra den lokaliserede kategoristreng, og opslag beholdes kun, når deres offentlige URL er på `*.3ds.com`. Registret leverer nu **46 adaptere** (41 EN + 5 RU); `ALL_ADAPTERS`-tælling, sorteret-id- og `/api/scan/sources` EN-sæt-assertions hævet 40 → 41. Suite `tests/sources-dassault.test.mjs` (10 tilfælde).
+- **Overførte robusthedsrettelser fra forælderen.** Avature-parseren tolererer nu to live tenant-markup-varianter (`article--result` med et positionsindeks-suffiks + et klasseløst JobDetail-titelanker, #1541); Get on Board værner mod en `0`/negativ `published_at` (ikke flere fejlagtige 1970-datoer); SuccessFactors begrænser den sidste side, så den ikke kan overskride `MAX_JOBS` (#1528).
+- **Serveraudit-rettelser.** `safe-fetch` hænger ikke længere på et svar over grænsen — størrelsesgrænse-stien afgør nu løftet direkte i stedet for at vente på en `'end'`-hændelse, som en ødelagt stream aldrig udsender (retter store-side `/api/pipeline/preview` + auto-pipeline-fetches). SSE `stream.*`-aktivitetslogning er nåbar igen (`/api/stream/`-tjekket blev flyttet over den generelle "spring GET over"-værn).
+- **SPA-audit-rettelser.** `#/stats`-fanevælgeren værner mod et asynkront render-kapløb — en langsom fanes resultat kan ikke længere overskrive en nyere fane, som brugeren allerede har skiftet til. Sletbekræftelserne i mock interview og networking sender nu en korrekt titel + brødtekst (ikke flere dialoger med tom brødtekst).
+- **Oversættelsesrettelser.** Uoversatte ordbogsværdier rettet — ukrainsk `config.modes*` (Adaptive Framing / Exit Narrative / Location Policy), russisk `eval.jdLbl` ("Job Description"), italiensk `dash.quick.contactoSub` ("referral" → "segnalazione") — plus den engelske **16 lokaliteter**-standardtekst lokaliseret i ru/uk/ja/ko/zh-CN/zh-TW-CHANGELOG'erne.
+
+Nyt: `server/lib/sources/dassault.mjs`; `server/lib/portals/adapters/dassault.mjs`.
+
+
 ## [1.96.0] — 2026-07-04
 
 **Karriereorientering (Epic 27).** En ny side **`#/orientation`** besvarer "hvilke retninger passer faktisk til mig?" — den læsning, du ville få af en erhvervstest, men udledt af dit eget CV og din profil frem for et spørgeskema. Klik på **Generér profil**, og modellen returnerer dine **bedst passende karrierevektorer** (hvilke af de otte arketyper — Funktionalist, Administrator, Kommunikator, Specialist, Analytiker, Innovator, Leder, Iværksætter — der passer, med belæg), en karrieretype-tendens, anbefalede roller, professionelle styrker knyttet til dit CV, arbejdsstilstendenser og udviklingsanbefalinger. Den er en **AI-refleksion af, hvordan dit CV læses — ikke en psykometrisk test**: den opfinder aldrig resultater og rapporterer aldrig numeriske scorer, som om de var målt. Eksportér den til Markdown eller PDF; intet skrives til disk.

@@ -1,23 +1,23 @@
-# QA REGRESSION PROMPT — career-ops-ui **v1.84.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
+# QA REGRESSION PROMPT — career-ops-ui **v1.97.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
 
-Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 13 languages**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree.
+Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 16 languages**, covering every feature shipped from **v1.76.0 through v1.97.0**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree.
 
-- **Version under test:** `package.json` **1.84.0** · parent career-ops v1.15.0 parity.
-- **Baseline:** **1543** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×13** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL.
+- **Version under test:** `package.json` **1.97.0** · parent career-ops v1.16.0 parity.
+- **Baseline:** **1661** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×16** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL.
 - **Server:** `npm start` → `http://127.0.0.1:4317`.
-- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.76.0-FULL.md` (parent-parity gate driver) · `key/E2E-REGRESSION-EVERY-BUTTON-EVERY-LANGUAGE-v1.78.0.md` (exhaustive UI click-through) · `REGRESSION-FINAL.md` (invariant ledger).
+- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.9X.0.md` (per-release delta drivers, v1.90–v1.96) · `qa/UX-AUDIT-PROMPT.md` (UX audit) · `qa/FUNCTIONALITY-CHECK.md` (functional correctness) · `qa/DESIGNER-EXPORT-PROMPT.md` (design export) · `REGRESSION-FINAL.md` (invariant ledger).
 
 ---
 
 ## §0 — Gates (all must be green before sign-off)
 
 ```bash
-npm test                                    # full suite (≥1543 cases)
+npm test                                    # full suite (≥1661 cases)
 npm run test:ci                             # unit + check-no-also + check-changelog-parity + i18n-audit
 node tools/i18n-audit.mjs                   # "no hard failures — dictionary is clean"
-node scripts/check-changelog-parity.mjs     # "all 12 locales at v1.84.0" (EN + 12 = 13 files)
-npm run test:coverage                       # ≥80% line / ≥75% branch (baseline ~93/~83)
-npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(13) + theme-toggle
+node scripts/check-changelog-parity.mjs     # "all 15 locales at v1.97.0" (EN + 15 = 16 files)
+npm run test:coverage                       # ≥80% line / ≥75% branch (baseline ~96/~86)
+npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(16) + theme-toggle
 npm run test:e2e && npm run test:e2e:full   # smoke (20) + comprehensive (23) E2E
 node scripts/portals-health-check.mjs       # portals.yml reachability (informational)
 ```
@@ -38,127 +38,144 @@ node scripts/portals-health-check.mjs       # portals.yml reachability (informat
 9. **Two scanner registries — don't conflate.** `server/lib/sources/registry.mjs` (auto-discovered `meta`) drives the `#/scan` *dropdown* + RU dispatch; `server/lib/portals/registry.mjs` (`ALL_ADAPTERS`, hand-maintained) is what the EN scanner walks to *fetch*. A new EN board needs BOTH.
 10. **Playwright headless shell:** missing → `npx playwright install chromium-headless-shell` (env gap, not a regression).
 11. **Cross-realm vm arrays:** spread (`[...]`) a vm-realm array before `deepEqual` against a main-realm literal.
+12. **Live-LLM routes cascade or fall back.** The AI routes (evaluate/deep/market/career-plan/orientation/cv-studio/memory-suggest/two-pager-draft/mock-interview/networking) run the shared `runActiveProvider` cascade; with no key they return an honest copy-paste **manual prompt** (mode `manual`), never a fabricated answer. Test both paths.
+13. **i18n key duplication is invisible to parity.** Duplicate `'key':` lines in a locale dict pass the snapshot (last-wins) but are a CodeQL `js/duplicate-property` defect — grep each dict for dup keys after any fan-out.
 
 ---
 
-## §2 — What changed recently (verify these deltas first)
+## §2 — What changed since v1.76.0 (verify these deltas)
+
+### Scanner / parity (v1.76.0 → v1.97.0)
 
 | # | Area (release) | Must-see behaviour |
 |---|---|---|
-| 1 | **6 new ATS sources (v1.76.0 — parent v1.13.0)** | `#/scan` **Source** dropdown lists **40** adapters incl. the per-tenant ATSes BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs / **Teamtailor** + the board-wide **We Work Remotely**. `GET /api/scan/sources` returns 40 (35 EN + 5 RU). Per-tenant ATS auto-detect from `careers_url` host (Comeet from full `api:`); each pins host with an anchored regex + `redirect:'error'` (SSRF). |
-| 2 | **trust_filter (v1.76.0)** | `trust_filter: {enabled:true}` in `portals.yml` → low-trust rows get a **⚠ score** badge (tooltip = flag codes). Annotate-only; NEVER drops a row. Absent → no badge. |
-| 3 | **No result cap (v1.76.0)** | `MAX_STORED_RESULTS` removed. A scan with >2000 matches stores them all; the table pages **200/row** through everything (pager under the table). Nothing truncated. |
-| 4 | **Title-filter robustness (v1.76.0)** | `title_filter.negative:['coo']` does NOT drop "Coordinator" (word-boundary acronyms); malformed `title_filter` entries don't crash a scan. EN + RU scanners. |
-| 5 | **Arbeitsagentur remoteMatch (v1.76.0)** | `remoteMatch: title\|filter\|off` + `remoteMaxPages` (server-side `homeoffice=nv_true` + pagination on `filter`). |
-| 6 | **Danish — 13th locale (v1.77.0)** | `#lang-select` has **🇩🇰 Dansk**; selecting it localizes the chrome and `GET /api/help/da` serves the Danish bundle. |
-| 7 | **Country filter (v1.78.0)** | `#/scan` results panel has a **Country** dropdown listing detected countries with **flag + count** (e.g. `🇩🇪 Germany (12)`). Keeps only rows in that country; composes with the Remote/Hybrid/Onsite filter; **Reset** clears it; pure-Remote / unresolved locations stay under **All countries**. `countries.js` detection is conservative (never guesses). |
-| 8 | **Rebrand (v1.78.0)** | Tab title + sidebar logo say **career-ops-ui**; the sidebar logo-mark is the new radar icon; `/favicon.ico`, `/favicon-16.png`, `/favicon-32.png`, `/apple-touch-icon.png` serve 200. |
-| 9 | **Scan auto-refresh (v1.78.1)** | The `#/scan` results table updates automatically *during* a scan and once more after the terminal `done` — no manual reload. `runScanAll` polls every 2.5s + does a 300ms post-flush refresh. |
-| 10 | **Global search → Scan (v1.78.1)** | Top-bar search badge reads **Enter**. Enter on a URL → auto-pipeline; Enter on any other text → `#/scan` with the search box pre-filled (was `#/tracker`). **Same-route guard:** if already on `#/scan`, it force-re-renders so the prefill is consumed (never leaks to the next visit). |
-| 11 | **Logo → home (v1.78.1)** | Clicking the brand logo (now an `<a href="#/dashboard">` with a localized `data-i18n-aria-label="nav.logoHome"`) navigates to the dashboard. Global-search Enter on `#/scan` force-re-renders (same-route guard) so the prefill never leaks. |
-| 12 | **WeWorkRemotely source (v1.79.0 — parent v1.14.0)** | `#/scan` **Source** dropdown includes **We Work Remotely**; a `provider: weworkremotely` entry scans the board-wide RSS feed (host-pinned to weworkremotely.com + `redirect:'error'`). Titles split on `Company: Role`; all rows remote. Registry now ships **40** adapters. |
-| 14 | **Teamtailor source (v1.80.0)** | A `careers_url: https://<slug>.teamtailor.com` (or `provider: teamtailor`) is scanned via its public `/jobs.rss`; feed host-pinned + `redirect:'error'`; titles read `<title>`, location `<teamtailor:location>`, dept `<teamtailor:department>`. Off-domain host → "untrusted hostname". |
-| 15 | **Source quarantine (v1.80.0)** | A source returning a permanent **404/410** is written to `data/scan-quarantine.json` and skipped on later scans (self-healing: retried after 14 days). Log shows "Quarantined (skipped): N". `scan_quarantine: false` disables it. Only persists when not dry-run. |
-| 16 | **Max per source (v1.80.0)** | The **Max per source** field by the Scan button caps each board's jobs (empty/0 = ∞). Set 5 → each `✓ company` line reads ≤5 (with "(capped from N)"). Passed as `maxPerSource` query param; EN scanner only. |
-| 17 | **Posted within (v1.80.0)** | Results filter dropdown (Any / 24h / 7d / 30d) drops rows whose `date` is older; dateless rows pass. Client-side, by `job.date`. |
-| 18 | **Saved searches + ★ favorites (v1.80.0)** | `localStorage` via `public/js/lib/scan-prefs.js`. Save/apply/delete named filter sets; ☆/★ per row toggles a favorite (by URL); "★ Favorites" filter shows starred only. Corrupt/edited cache resets to empty (validated). Results cache is reset at scan start + refilled. |
-| 13 | **Title-filter trim (v1.79.0 — parent #1261)** | `title_filter` keywords are trimmed BEFORE the length check — a whitespace-only keyword (`"  "`) is dropped, not compiled into a match-everything substring. Both EN + RU scanners (`compileKeywordList`). |
-| 19 | **13 new scan sources (v1.81.0 — parent parity)** | `#/scan` **Source** dropdown lists **40** adapters; `GET /api/scan/sources` returns **40** (35 EN + 5 RU). New board-wide (provider-selected): **Arbeitnow / Himalayas / Jobicy / Landing.jobs / 4 Day Week / The Muse / The Hub / Jobspresso** (RSS) **/ Hacker News “Who is hiring?”** (Algolia 2-step). Poland (host- or `provider:`): **JustJoin.it / NoFluffJobs** (POST search). Per-tenant ATS (careers_url host): **Pinpoint** (`<slug>.pinpointhq.com/postings.json`) **/ Rippling** (`ats.rippling.com/<slug>` → `api.rippling.com`). All host-pinned + `redirect:'error'` (SSRF). Each ships a `tests/sources-<slug>.test.mjs` suite; `ALL_ADAPTERS` length 35, sorted-id + EN-set assertions updated. |
-| 20 | **NoDesk source (v1.82.0 — parent v1.15.0)** | `#/scan` **Source** dropdown includes **NoDesk**; a `provider: nodesk` entry scans the board-wide RSS feed `https://nodesk.co/remote-jobs/index.xml` (host-pinned to nodesk.co + `redirect:'error'`). Titles split on `Role at Company`; NoDesk has no location tag (location stays empty); all rows remote. `GET /api/scan/sources` now returns **41** (36 EN + 5 RU); `ALL_ADAPTERS` length 36. |
-| 21 | **Repost / ghost detector (v1.83.0 — parent v1.15.0)** | `#/scan` has a collapsed **🔁 Reposted / ghost roles** panel that lazy-loads on open. `GET /api/scan/reposts` reads `data/scan-history.tsv` and returns company+role clusters re-listed under DIFFERENT URLs within a rolling 90-day window (window clamped 7–365; fail-soft on malformed history; fuzzy role-title match via `role-matcher.mjs`). Read-only — never writes. Empty history → "No reposted roles detected". Also: `/api/health` `parentVersion` strips the `# x-release-please-version` comment (semver only). Source count unchanged at **41** (reposts is analysis, not a board). |
-| 22 | **Re-apply cooldown (v1.84.0 — parent #1201)** | Add `re_apply_windows:` to `config/profile.yml` (per-company: `last_apply_date`, `same_role_days`, `applied_to: [roles]`, optional `cross_role_bucket`). EN scan then SKIPS matching roles at that company until `last_apply_date + same_role_days` elapses — log shows `Cooldown skipped: N (re-applied roles, re_apply_windows)` and those rows are absent from results + pipeline. Company match is punctuation-insensitive + word-boundary ("Acme Inc" ↔ "Acme, Inc."). No key → no cooldown (default). `server/lib/cooldown.mjs` + `tests/cooldown.test.mjs`. |
-| 23 | **Compensation → pipeline.md (v1.84.0 — parent #1017)** | A scanned offer with a salary writes `url \| salary` (an optional trailing column) into the `data/pipeline.md` code-fence. The URL stays the dedup key (the `\| comp` column is stripped on read by `parsePipeline`), the cell is sanitized (no row/column injection; a leading `=+-@` is quote-neutralized); bare-URL pipelines are unchanged (backward-compatible). Source count unchanged at **41**. |
+| 1 | **6 new ATS sources (v1.76.0)** | Per-tenant ATSes BambooHR / Breezy HR / Comeet / Personio / Recruitee / SolidJobs / **Teamtailor** + board-wide **We Work Remotely**. Host-detected from `careers_url`; anchored host regex + `redirect:'error'` (SSRF). |
+| 2 | **trust_filter (v1.76.0)** | `trust_filter:{enabled:true}` → low-trust rows get a **⚠ score** badge (tooltip = flag codes). Annotate-only; never drops a row. |
+| 3 | **No result cap (v1.76.0)** | `MAX_STORED_RESULTS` removed; a >2000-match scan stores all, table pages 200/row. |
+| 4 | **Title-filter robustness (v1.76.0 + #1261/v1.79.0)** | `negative:['coo']` doesn't drop "Coordinator" (word-boundary); keywords trimmed BEFORE length check (a whitespace-only keyword is dropped, not a match-everything). EN + RU. |
+| 5 | **Country filter (v1.78.0)** | `#/scan` results panel **Country** dropdown (🇩🇪 Germany (12)); composes with Work-type; Reset clears it; pure-Remote/unresolved stay under **All countries**. |
+| 6 | **Rebrand + scan UX (v1.78.0/.1)** | Tab/logo say **career-ops-ui** (radar icon favicon set 200); scan auto-refresh during+after; global-search Enter→#/scan prefill (same-route re-render guard); logo→#/dashboard (`nav.logoHome` aria-label). |
+| 7 | **13 new scan sources (v1.81.0)** | Arbeitnow / Himalayas / Jobicy / Landing.jobs / 4 Day Week / The Muse / The Hub / Jobspresso (RSS) / Hacker News "Who is hiring?" (Algolia) / JustJoin.it / NoFluffJobs / Pinpoint / Rippling. Registry → **40** adapters. |
+| 8 | **NoDesk (v1.82.0)** + **repost/ghost detector (v1.83.0)** | NoDesk board-wide RSS (→ **41** adapters). `#/scan` **🔁 Reposted / ghost roles** panel: `GET /api/scan/reposts` clusters company+role re-listed under different URLs in a 90-day window (read-only, fail-soft). |
+| 9 | **Re-apply cooldown + comp→pipeline (v1.84.0)** | `re_apply_windows:` in `config/profile.yml` skips recently-applied roles at a company (log `Cooldown skipped: N`). A salaried offer writes `url \| salary` into `data/pipeline.md` (URL stays dedup key; cell sanitized). |
+| 10 | **4 zero-auth providers (v1.87.0)** | **getonbrd** (JSON:API), **amazon** (amazon.jobs), **avature** + **successfactors** (per-tenant HTML ATS). Registry → **45** adapters. |
+| 11 | **Scan i18n gaps + X-Powered-By off (v1.88.0)** | 4 new `scan.*` keys ×16; `X-Powered-By` header disabled (`tests/security-headers.test.mjs`). |
+| 12 | **Dassault Systèmes + audit sweep (v1.97.0 — parent #1498)** | `#/scan` **Source** dropdown lists **46** adapters; `GET /api/scan/sources` returns **46** (41 EN + 5 RU) including **Dassault Systèmes** (`provider: dassault` or a 3ds.com host; zero-token Exalead XML; host-pinned to `www.3ds.com`). Ported robustness: avature two-variant markup (#1541), getonbrd `published_at>0` guard, successfactors last-page cap (#1528). Server fixes: `safe-fetch` over-cap no longer hangs; SSE `stream.*` activity-logging reachable. SPA: `#/stats` tab async-race guard; mock-interview/networking delete confirms show a body. |
+
+### New pages & features (v1.85.0 → v1.96.0)
+
+| # | Feature (release) | Must-see behaviour |
+|---|---|---|
+| 13 | **de / it / tr — locales 14–16 (v1.85.0)** | `#lang-select` has 🇩🇪 Deutsch, 🇮🇹 Italiano, 🇹🇷 Türkçe; chrome + `#/help` localize; all three ship README/CHANGELOG. Total **16 locales**. |
+| 14 | **`#/stats` Statistics (v1.86.0 base → v1.94.0 rework)** | Three tabs: **Market report** (AI salary/market analysis for target roles + region + **currency selector**; directional-estimate labelled; manual fallback with no key), **My pipeline** (score distribution, status funnel, top companies/roles, applications-over-time, conversion rates — all from your tracker; graceful empty state), **Target-role trend** (vacancy/salary by country + saved-snapshot trend + currency). MD/PDF/copy export via `report-export.js`. |
+| 15 | **Two-pager (v1.89.0)** | `#/two-pager` guided builder + **AI-fill** (`POST /api/two-pager/draft`); **Save** → `config/two-pager.yml` (user layer); a `◎` fit badge appears on `#/scan` rows; the two-pager is inlined into eval prompts. |
+| 16 | **Mock interview (v1.90.0)** | `#/mock-interview` turn-by-turn chat (`POST /api/mock-interview/turn`) with STAR+R feedback + score + follow-up; **Save transcript** → `interview-prep/mock-*.md`; **Saved sessions** list with view/**delete** (delete confirm shows a body). Manual prompt with no key. |
+| 17 | **Networking (v1.91.0)** | `#/networking` builds a who-to-contact + intro-path + outreach-drafts + dossier plan (`POST /api/networking/plan`); save/list/**delete** → `networking/net-*.md`. |
+| 18 | **CV Studio (v1.92.0)** | `#/cv-studio`: deterministic **résumé diagnostics** score (client `cv-diagnostics.js`), in-browser **PII privacy mask** (`cv-privacy.js` — email/phone/URL/address; skips year-ranges/ISO dates), and **make-it-human** voice-match rewrite (`POST /api/cv-studio/humanize`, grounded in `voice-dna.md` + `writing-samples/`, no fabrication, no writes). |
+| 19 | **Memory (v1.93.0)** | `#/memory` editable about-me note (`GET`/`PUT /api/memory` → `config/memory.md`) + **Suggest from my data** (`POST /api/memory/suggest`). The note is inlined into `bundleProjectContext` so it reaches **every** AI request. |
+| 20 | **Career plan (v1.95.0)** | `#/career-plan` (nav **Growth → Career plan** 🧭): horizon (6/12/24) + focus → AI development plan (SWOT, SMART/OKR/WOOP goals, month-by-month roadmap); edit + **Save** → `config/career-plan.md`; MD/PDF export. |
+| 21 | **Career orientation (v1.96.0)** | `#/orientation` (nav **Growth → Career orientation** 🧩): **Generate profile** → best-fit archetype vectors + roles + strengths + working-style + development recs; **reflection, not a psychometric test** (no invented achievements, no measured scores); generate-only, MD/PDF export, nothing saved. |
 
 ---
 
 ## §3 — Security envelope (verify once)
 
-- CSP: `default-src 'self'`, `img-src 'self' data:`, NO `'unsafe-inline'`/`'unsafe-eval'` in `script-src`, `frame-ancestors 'none'`. `X-Content-Type-Options` / `X-Frame-Options` / `Referrer-Policy` set. Every handler is `addEventListener` (no inline `onclick=`).
-- SSRF: `isValidJobUrl()` gates `/api/pipeline` + `/api/pipeline/preview`; outbound via `safeGet()` (DNS-pinned redirect revalidation). All 41 source fetchers use `redirect:'error'`; the 6 v1.78 per-tenant ATSes pin host with an anchored regex first.
-- XSS: CV/markdown → `stripDangerousMarkdown()` + `UI.md()`; JD → `sanitizeJobDescription()`; slugs → `sanitizePathName()`; scan egress → `scan-sanitize.mjs`.
-- Rate-limit on LLM routes; file-lock on tracker writes; activity-log redaction. `.aiignore` excludes real user data; no secrets/PII committed (incl. screenshots).
+- CSP: `default-src 'self'`, `img-src 'self' data:`, NO `'unsafe-inline'`/`'unsafe-eval'` in `script-src`, `frame-ancestors 'none'`. `X-Content-Type-Options` / `X-Frame-Options` / `Referrer-Policy` set; `X-Powered-By` disabled. Every handler is `addEventListener` (no inline `onclick=`).
+- SSRF: `isValidJobUrl()` gates `/api/pipeline` + `/api/pipeline/preview`; outbound via `safeGet()` (DNS-pinned redirect revalidation). All 46 source fetchers use `redirect:'error'`; per-tenant ATSes (incl. **dassault** → `www.3ds.com`) pin host with an anchored check first. `safe-fetch` size-cap settles cleanly (no hang) on over-cap bodies.
+- XSS: CV/markdown → `stripDangerousMarkdown()` + `UI.md()`; JD → `sanitizeJobDescription()`; slugs → `sanitizePathName()`; scan egress → `scan-sanitize.mjs`. All model output in the AI views (`stats`, `career-plan`, `orientation`, `market`, `cv-studio`, `mock-interview`, `networking`, `memory`) renders via `UI.md()`.
+- User-layer writes only: `PUT /api/{cv,profile,two-pager,memory,career-plan}`, `POST /api/{pipeline,tracker,reports,jds}`, mock-interview/networking saves (path-contained `sanitizePathName`/`resolveSessionFile`/`resolvePlanFile`). LLM routes carry `llmRateLimit`; tracker writes file-locked; activity-log redacts. `.aiignore` excludes real user data; no secrets/PII committed.
 
 ---
 
 ## §4 — Functional spec — every page (run the §6 language loop over all of it)
 
 ### 4.1 Dashboard (`#/dashboard`)
-Stat cards, funnel chips, quick-action buttons, recent-activity links. Page title localizes; first-paint focuses the `<h1>` (WCAG 2.4.3) without stealing focus.
+Stat cards, funnel chips, quick-action buttons, recent-activity links, active-provider chip. Page title localizes; first-paint focuses `<h1>` (WCAG 2.4.3) without stealing focus.
 
 ### 4.2 Scan (`#/scan`) — the heaviest surface
-- **🌐 Scan** streams SSE (`start`/`log`/`progress`/`done`/`error`); determinate progress bar; **Stop** aborts immediately mid-paginate; persistent error banner + Retry; `role=log` console (aria-live).
-- **Company** select + **Dry-run** checkbox.
-- **Filters panel:** Search · Work type (Remote/Hybrid/Onsite/Reloc) · Salary from/to · **Source** (41) · **Country** (🆕 flags + counts) · Scope (all/fresh) · **Apply** + **Reset** (Reset clears Country too).
-- **Country filter:** options carry flags + counts; pick `🇩🇪 Germany` → only German-location rows; compose with Work-type=Remote; Reset restores; "All countries" shows all; a pure-Remote row is reachable only under "All countries".
-- **Advanced filters** disclosure: stack/level/dynamic chips (multi-select intersection, clear).
-- Row badges: **⚠ trust** (when `trust_filter` on) and **⬆ boosted** (when `seniority_boost` set). Pager prev/next through **all** matches (no cap).
-- **Active Companies** card: expand, filter, ✓/○ grouping, ↗ careers links, click-to-filter; Workday-blocked 🔒 chip when applicable.
+- **🌐 Scan** streams SSE (`start`/`log`/`progress`/`done`/`error`); determinate progress bar; **Stop** aborts mid-paginate; persistent error banner + Retry; `role=log` console.
+- **Company** select + **Dry-run** + **Max per source** cap.
+- **Filters:** Search · Work type (Remote/Hybrid/Onsite/Reloc) · Salary from/to · **Source (46)** · **Country** (flags + counts) · **Posted within** (Any/24h/7d/30d) · Scope (all/fresh) · **Apply** + **Reset**.
+- Row badges: **⚠ trust**, **⬆ boosted**, **◎ fit** (two-pager). Pager 200/row through **all** matches.
+- **Saved searches** + **★ favorites** (localStorage); **🔁 Reposted / ghost roles** panel; **Active Companies** card (expand/filter/✓○/↗/click-to-filter/🔒 Workday-blocked).
 
 ### 4.3 Pipeline (`#/pipeline`)
-Add via global search (Enter → AutoPipeline modal; Shift+Enter → add-only); `POST /api/pipeline/preview` modal (discard reason visible); row delete via focus-trapped `UI.confirm()`; virtualizes past 1000 rows.
+Add via global search (Enter → AutoPipeline modal; Shift+Enter → add-only); `POST /api/pipeline/preview` modal; row delete via focus-trapped `UI.confirm()`; virtualizes past 1000 rows.
 
 ### 4.4 Evaluate / Deep / Batch / Auto
-- `#/evaluate` (oferta): JD/URL input, ⚡ Run-live (honest cost ballpark or manual-mode note), report render (Blocks A–G incl. Block G Legitimacy, `## Machine Summary` YAML, header has URL + Legitimacy), locale directive honored.
+- `#/evaluate` (oferta): JD/URL, ⚡ Run-live (honest cost or manual note), report (Blocks A–G incl. Legitimacy, `## Machine Summary` YAML), locale directive honored; two-pager + memory inlined.
 - `#/deep`: query, run, saved-research cards, Generate-PDF.
-- `#/batch`: batch evaluate; `/api/batch/merge` runs `merge-tracker.mjs` (file-locked) → no dupes (company+role).
+- `#/batch`: batch evaluate; `/api/batch/merge` runs `merge-tracker.mjs` (file-locked) → no dupes.
 - `#/auto`: server-side SSE auto-pipeline (evaluate + report + PDF + tracker).
 
 ### 4.5 Modes (`POST /api/mode/:slug`)
-Allowlist = batch, contacto, cover, followup, interview-prep, patterns, project, training. Unknown slug → 404; allowlisted-but-missing-template → 404 (not 500). Single-shot artifact contract; `run` flag never echoed into the prompt; 6-provider context inlines `cv.md` + `config/profile.yml` (Anthropic / Gemini / OpenAI / Qwen / OpenRouter / GitHub Models). **Cover** (`#/cover`, JD+Company required) → Generate-PDF.
+Allowlist = batch, contacto, cover, followup, interview-prep, patterns, project, training. Unknown/missing-template → 404 (not 500). Single-shot; `run` flag never echoed; 6-provider context inlines `cv.md` + `config/profile.yml` (+ memory + two-pager). **Cover** (`#/cover`) → Generate-PDF.
 
-### 4.6 Apply / Tracker / Reports / CV
+### 4.6 Growth — Career plan & Career orientation
+- `#/career-plan` (**Growth** group 🧭): horizon (6/12/24) + focus → Generate; editable textarea; **Save** → `config/career-plan.md`; **Preview**; Download .md / Save PDF / Copy. Manual prompt with no key.
+- `#/orientation` (**Growth** group 🧩): **Generate profile** → archetype vectors/roles/strengths/working-style/dev-recs; reflection-not-test note; Download .md / Save PDF / Copy; nothing saved.
+
+### 4.7 Statistics (`#/stats`)
+Three tabs (**Market report** / **My pipeline** / **Target-role trend**) with a currency selector on Market + Trend, real SVG charts on My pipeline (empty-state when the tracker is empty), and MD/PDF/copy export. Switching tabs rapidly must never leave a stale render (async-race guard).
+
+### 4.8 Candidate tooling — Two-pager / Mock interview / Networking / CV Studio / Memory
+- `#/two-pager`: guided builder + AI-fill; Save → `config/two-pager.yml`; feeds the `◎` scan badge.
+- `#/mock-interview`: turn-by-turn chat + score/feedback; Save transcript; saved-sessions list with view/delete (delete confirm has a body).
+- `#/networking`: plan generate + save/list/delete.
+- `#/cv-studio`: diagnostics score + privacy mask + humanize rewrite.
+- `#/memory`: about-me note edit/save + Suggest.
+
+### 4.9 Apply / Tracker / Reports / CV
 - `#/apply`: apply checklist; form contracts.
-- `#/tracker`: reads `data/applications.md`; canonical states (`templates/states.yml`); funnel chips; paginator (25/page, `pager.reset()` on filter).
-- `#/reports`: list + `#/reports/:slug` render + Generate-PDF; report links root-relative (normalized by `merge-tracker.mjs`).
-- `#/cv`: `PUT /api/cv` round-trips through `stripDangerousMarkdown`; Generate-PDF via `/api/stream/pdf`.
+- `#/tracker`: reads `data/applications.md`; canonical states (`templates/states.yml`); funnel chips; paginator (25/page).
+- `#/reports`: list + `#/reports/:slug` render + Generate-PDF; report links root-relative.
+- `#/cv`: `PUT /api/cv` round-trips through `stripDangerousMarkdown`; Generate-PDF; unsaved-buffer guard on nav-away.
 
-### 4.7 Config / Health / Activity / Notifications / Help
-- `#/config`: Profile field-form (non-destructive merge), Modes tab, API-keys tab (race-safe summary chip, WAI-ARIA tabs, confirm-gates). `POST /api/config` → `validateConfig` → `updateEnvFile`. The `trust_filter` / per-tenant `careers_url` / `content_filter` keys are edited via the raw-YAML editor (round-trip untouched), not the field-form.
-- `#/health`: OK/OPTIONAL/FAIL cards (no overflow); run `doctor.mjs` / `verify-pipeline.mjs`.
-- `#/activity`: log; redaction.
-- Notifications drawer (🔔): unread badge; journal of last 50 toasts, each `(METHOD /path · HTTP NNN)` postfix in `<details>`; Clear-all + per-entry dismiss.
-- `#/help`: **13 markdown bundles** (en, es, pt-BR, ko-KR, ja, ru, zh-CN, zh-TW, fr, pl, uk, **da**, ar); `GET /api/help/<lang>` serves each. Invariant **19 H2 / 75 H3** per bundle (`canonical-docs-coverage` + `help-ui` + `help-ru-config-section`). §7 documents the Source dropdown (41) + the **Country** filter; §17 says **41 adapters**. TOC scroll-spy.
+### 4.10 Config / Health / Activity / Notifications / Help
+- `#/config`: Profile field-form (non-destructive merge), Modes tab, API-keys tab (race-safe summary chip, WAI-ARIA tabs). `trust_filter` / per-tenant `careers_url` / `re_apply_windows` / `content_filter` edited via the raw-YAML editor.
+- `#/health`: OK/OPTIONAL/FAIL cards + `Fix →` CTAs; run `doctor.mjs` / `verify-pipeline.mjs`.
+- `#/activity`: log; redaction; SSE `stream.*` starts now logged.
+- Notifications drawer (🔔): unread badge; journal of last 50 toasts; Clear-all + per-entry dismiss.
+- `#/help`: **16 markdown bundles** (`GET /api/help/<lang>`). Invariant **28 H2 / 102 H3** per bundle (`canonical-docs-coverage` + `help-ui` + `help-ru-config-section`). §17 documents adding a job-portal source (**46 adapters**). TOC scroll-spy.
 
-### 4.8 Runners / PDF / OpenRouter / output
-Buffered `/api/run/*` (doctor, verify, normalize, dedup, merge, sync-check); streaming `/api/stream/*` (scan, liveness, pdf + /report /deep /inline); `/api/output/pdfs` list + download (Content-Disposition, name sanitized). `/api/openrouter/models` catalogue proxy. PDFs embed fonts.
+### 4.11 Runners / PDF / OpenRouter / output
+Buffered `/api/run/*`; streaming `/api/stream/*` (scan, liveness, pdf + /report /deep /inline); `/api/output/pdfs` list + download; `/api/openrouter/models` catalogue proxy. PDFs embed fonts.
 
 ---
 
 ## §5 — Cross-cutting controls (test once per language)
 
-- **Sidebar nav:** every `.nav-item` navigates + sets active state; focus moves to the new `<h1>`; groups expand/collapse. Logo = radar icon + **career-ops-ui** text.
-- **Language `<select>` (`#lang-select`):** **13** options switch live; chrome re-localizes, zero console errors; persists to `localStorage['career-ops-ui:lang']` across reload. **ar → `<html dir="rtl">`**; every LTR locale (incl. **da**) resets `dir="ltr"` (no RTL leak).
-- **Theme toggle:** light/dark persists; tokens (not hardcoded hex) recolor.
-- **Mobile drawer (<900 px):** hamburger opens/closes; hide is real (no `display:` override leak).
-- **Global search (`#global-search`, ⌘K/Ctrl-K):** URL → AutoPipeline / add-only; query → in-app filter.
-- **Tab title:** per-route `… — career-ops-ui`; default `career-ops-ui — command center`.
+- **Sidebar nav:** every `.nav-item` navigates + sets active; focus to new `<h1>`; groups (incl. **Growth**) expand/collapse. Logo = radar icon + **career-ops-ui**.
+- **Language `<select>` (`#lang-select`): 16 options** switch live; chrome re-localizes, zero console errors; persists across reload. **ar → `<html dir="rtl">`**; every LTR locale resets `dir="ltr"`.
+- **Theme toggle:** light/dark persists; tokens recolor.
+- **Mobile drawer (<900 px):** hamburger opens/closes; hide is real (no `display:` override leak); tap-targets adequate.
+- **Global search (⌘K/Ctrl-K):** URL → AutoPipeline / add-only; query → `#/scan` prefill.
+- **Tab title:** per-route `… — career-ops-ui`.
 
 ---
 
-## §6 — i18n acceptance (all 13 locales)
+## §6 — i18n acceptance (all 16 locales)
 
-Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar` (dict file uses `ko`; help/README/CHANGELOG use `ko-KR`). For EACH locale, re-run §4 + §5 and verify:
-1. Every nav label, page title, button, filter label (incl. `scan.lblCountry` / `scan.allCountries`), and help bundle render in that language — no raw `key.path` leaks, no English fallback on a shipped key.
-2. Country *names* stay English with flags (intentional — proper nouns); the dropdown **label** + "All countries" are localized.
-3. Zero console errors across the full sweep (`tests/playwright-locale-sweep.mjs` is the automated floor; this is the manual deepening).
-4. **da:** dashboard, scan (incl. country filter), help, language picker read natural Danish (æ/ø/å).
-5. **ar:** RTL mirrors the chrome; LTR locales unaffected after switching away.
-6. Parity gates green: `tests/i18n-locale-files.test.mjs` (snapshot + key parity), `tests/i18n-coverage.test.mjs`, `tools/i18n-audit.mjs`, `tests/lang-switcher-rtl.test.mjs` (13 locales).
-7. **No hard-coded UI English (v1.78.1 review fixes):** the brand logo announces a localized name via `data-i18n-aria-label="nav.logoHome"` (all 13); `health.title` is translated in EVERY locale incl. the two that previously leaked English — **pl** `Kondycja`, **da** `Systemtilstand`. (Latin locales are exempt from the no-latin-leaks gate, so this is a quality check, not a gate.)
+Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, tr` (dict files use `ko`/`zh-CN`; help/README/CHANGELOG use `ko-KR`). For EACH locale, re-run §4 + §5 and verify:
+1. Every nav label, page title, button, filter label, and help bundle render in that language — no raw `key.path` leaks, no English fallback on a shipped key. (Recently corrected: uk `config.modes*`, ru `eval.jdLbl`, it `dash.quick.contactoSub`.)
+2. Country *names* stay English with flags (intentional); the dropdown label + "All countries" are localized.
+3. Zero console errors across the sweep (`tests/playwright-locale-sweep.mjs` is the automated floor).
+4. **de/it/tr:** natural German/Italian/Turkish across all pages. **ar:** RTL mirrors the chrome; LTR locales unaffected after switching away.
+5. Parity gates green: `tests/i18n-locale-files.test.mjs`, `tests/i18n-coverage.test.mjs`, `tools/i18n-audit.mjs`, `tests/lang-switcher-rtl.test.mjs` (16 locales). Grep each dict for duplicate keys (CodeQL `js/duplicate-property`).
 
 ---
 
 ## §7 — Docs / branding / release mechanics
 
-- **README ×13** + **CHANGELOG ×13** at **v1.84.0** (parity gate green); each language switcher lists all 13 incl. **Dansk**. README "Latest release" blurb describes the re-apply cooldown + compensation-in-pipeline.md upgrades. All 13 `images/dashboard-<locale>.png` regenerated with the new branding.
-- **Help ×13** carry the Country-filter bullet; H2/H3 counts unchanged (19/75).
-- **Branding:** new radar icon as favicon (`favicon.ico` + 16/32 + apple-touch-icon) and sidebar logo; app name **career-ops-ui** in title + logo. Parent `career-ops` references intentionally unchanged.
-- **Release:** `package.json` 1.84.0; footer reads `/api/health`; `parentVersion` = 1.15.0 (independent; semver only — the `# x-release-please-version` comment is stripped). Tag `v1.84.0` → `release.yml` → `publish-package.yml` (GitHub Packages). `images/` holds only README/help screenshots (icon masters live in `public/`).
+- **README ×16** + **CHANGELOG ×16** at **v1.97.0** (parity gate green); each language switcher lists all 16. README "Latest release" blurb describes the Dassault source + audit sweep.
+- **Help ×16** hold the gated **28 H2 / 102 H3**; §17 says **46 adapters**.
+- **Branding:** radar-icon favicon set + sidebar logo; app name **career-ops-ui**. Parent `career-ops` references intentionally unchanged.
+- **Release:** `package.json` 1.97.0; footer reads `/api/health`; `parentVersion` = 1.16.0 (independent; semver only). Tag `v1.97.0` → `release.yml`; **Publish** dispatched manually (`gh workflow run publish-package.yml --ref v1.97.0`) → GitHub Packages.
 
 ---
 
 ## §8 — Exit criteria
-- Every (page × control × 13 languages) PASS or a logged FAIL→fix (one-fix-per-release; HIGH → MEDIUM → LOW).
-- `npm test` ≥ **1543** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×13) green; CI matrix green.
-- Zero console errors; no RTL leak; no untranslated shipped key; favicon/icon endpoints 200.
-- All §2 deltas verified live.
+- Every (page × control × 16 languages) PASS or a logged FAIL→fix (one-fix-per-release; HIGH → MEDIUM → LOW).
+- `npm test` ≥ **1661** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×16) green; CI matrix green; **0 open CodeQL alerts**.
+- Zero console errors; no RTL leak; no untranslated shipped key; no duplicate dict keys; favicon/icon endpoints 200.
+- All §2 deltas verified live (scanner 46 adapters incl. Dassault; the eight v1.85–v1.96 pages; the v1.97 audit fixes).

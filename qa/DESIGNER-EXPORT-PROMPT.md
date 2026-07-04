@@ -3,7 +3,7 @@
 > Paste verbatim to an agent (or run it as a senior product/UX
 > designer, 10+ yrs). Produces a **design-quality audit + a
 > structured design export** of the whole product — every page, every
-> component, every key user flow, all 8 locales — judged against the
+> component, every key user flow, all 16 locales — judged against the
 > canonical product intent at **<https://career-ops.org/docs>**.
 >
 > Output **one** file: `qa/v158-regression/<YYYY-MM-DD>-DESIGN-EXPORT.md`.
@@ -60,9 +60,11 @@ exact value + where it's defined (`public/css/app.css`,
    a11y contract (role, name, keyboard), the file + line.
 4. **Iconography & emoji** — every glyph used as UI affordance, where,
    and whether it has a text/`aria-label` equivalent.
-5. **Content & i18n surface** — the 8 locales (`en es pt-BR ko ja ru
-   zh-CN zh-TW`); how `t()` + `i18n-dict.js` + `<html lang>` work;
-   the per-route `document.title` pattern.
+5. **Content & i18n surface** — the 16 locales (`en es pt-BR ko ja ru
+   zh-CN zh-TW fr pl uk da ar de it tr`; Arabic is RTL — `<html
+   dir="rtl">` + the `[dir="rtl"]` mirror block in `app.css`); how
+   `t()` + the per-locale `i18n-dict.<lang>.js` files + the assembler
+   + `<html lang>` work; the per-route `document.title` pattern.
 
 Deliver Part 1 as copy-pasteable tables — this is the "export" a
 designer/rebuild consumes.
@@ -100,6 +102,20 @@ Flows (cite the score→action thresholds from the docs where relevant):
 7. **Maintenance** — Doctor / Verify / Normalize / Dedup / Merge:
    progress feedback → result modal (progress toast dismissed;
    localized chrome; English CLI body by design) → effect.
+8. **AI career surface** (the newer pages — same craft bar) —
+   `#/two-pager` (build → AI-fill → save → the `◎` fit badge on
+   scan), `#/mock-interview` (turn-by-turn rehearsal → save → resume
+   a saved session), `#/networking` (plan → who-to-contact + intro
+   path + outreach draft + dossier → save), `#/cv-studio` (résumé
+   diagnostics score → in-browser PII privacy mask → make-it-human
+   voice match), `#/memory` (edit the about-me note → confirm it's
+   inlined into later AI requests), `#/stats` (3 tabs: AI market
+   report + My pipeline analytics + Target-role trend; currency
+   selector; Markdown/PDF export), `#/career-plan` (horizon + focus
+   → generate → save → MD/PDF export), `#/orientation` (archetype
+   vectors / roles / strengths, framed reflection-not-test → MD/PDF
+   export). Grade each for the manual-vs-live honesty and export
+   craft.
 
 For each flow output: a step table (step · craft 1–5 · evidence ·
 fix), the single biggest friction, and whether it **delivers the
@@ -111,10 +127,12 @@ docs' promise**.
 
 For every interactive element on every route (`#/dashboard #/scan
 #/pipeline #/evaluate #/deep #/cv #/tracker #/reports #/activity
-#/config #/profile #/health #/help #/auto #/apply #/batch` + mode
-slugs `#/project #/training #/followup #/contacto #/interview-prep
-#/patterns #/batch-prompt` + aliases `#/settings #/portals
-#/outreach` + 404): rest / hover / focus-visible (**must be a
+#/config #/profile #/health #/help #/auto #/apply #/batch
+#/two-pager #/mock-interview #/networking #/cv-studio #/memory
+#/stats #/career-plan #/orientation` (the last two = **Growth** nav
+group) + mode slugs `#/project #/training #/followup #/contacto
+#/interview-prep #/patterns #/batch-prompt` + aliases `#/settings
+#/portals #/outreach` + 404): rest / hover / focus-visible (**must be a
 visible ring** — WCAG 2.4.7) / active / disabled / loading / empty /
 error / success / long-content / RTL-safe / 320–1920 px / dark theme.
 Flag any state that is missing, invisible, inconsistent, or clipped
@@ -140,7 +158,7 @@ to WCAG 1.4.3, target size ≥ 24×24 (2.5.8).
 
 Group findings: **Blocker / High / Medium / Low**, each with route,
 evidence, the design fix, and the token/component it touches. Map
-each to the project's one-fix-ship doctrine (bump + CHANGELOG ×8 +
+each to the project's one-fix-ship doctrine (bump + CHANGELOG ×16 +
 test + Playwright-verify + AI-review LGTM + CI-watch — never batch,
 HIGH→LOW). Cross-reference open items already tracked in
 `qa/v158-regression/FIX-PROMPT-v158.md §5` so nothing is re-filed.

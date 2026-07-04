@@ -51,7 +51,9 @@ function resolveMaxPages(entry) {
 }
 
 function toIsoDate(epochSeconds) {
-  if (!Number.isFinite(epochSeconds)) return '';
+  // Guard 0/negative epochs — a `published_at` of 0 would otherwise render a
+  // bogus 1970-01-01 date. (parent career-ops parity, #1528)
+  if (!Number.isFinite(epochSeconds) || epochSeconds <= 0) return '';
   const d = new Date(epochSeconds * 1000);
   return Number.isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);
 }

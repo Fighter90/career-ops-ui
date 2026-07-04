@@ -73,7 +73,7 @@ test('GET /api/scan/sources includes the EN ATS + aggregator sources', async () 
     enValues,
     [
       '4dayweek', 'amazon', 'arbeitnow', 'arbeitsagentur', 'ashby', 'avature',
-      'bamboohr', 'breezy', 'comeet', 'getonbrd', 'glints', 'greenhouse',
+      'bamboohr', 'breezy', 'comeet', 'dassault', 'getonbrd', 'glints', 'greenhouse',
       'hackernews', 'himalayas', 'ibm', 'jobicy', 'jobspresso', 'jobstreet',
       'justjoin', 'landingjobs', 'lever', 'nodesk', 'nofluffjobs', 'personio',
       'pinpoint', 'recruitee', 'remoteok', 'remotive', 'rippling', 'rss',
