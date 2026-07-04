@@ -2117,3 +2117,19 @@ L'onglet **Mon pipeline** trace votre propre suivi de candidatures — rien d'ex
 ### **Tendance des rôles cibles**
 
 L'onglet **Tendance des rôles cibles** est la vue d'origine : le nombre d'offres et le salaire médian par pays pour vos rôles cibles, agrégés depuis votre dernier scan, avec un sélecteur de devise et un aperçu **Offres par rôle cible**. **Enregistrer un instantané** consigne l'agrégat actuel pour que vous puissiez observer l'évolution du nombre d'offres dans le temps, et la courbe de tendance relit ces instantanés. Des données éparses sont attendues et étiquetées comme indicatives — elles ne sont jamais complétées par des nombres inventés.
+
+## 27. Plan de carrière (`#/career-plan`)
+
+La page **Plan de carrière** transforme votre CV et votre profil en un plan de développement concret et personnalisé — du genre que vous construiriez avec un coach de carrière, mais généré à partir de vos propres documents et modifiable par vous.
+
+### Générer un plan
+
+Choisissez un **Horizon** (6, 12 ou 24 mois), saisissez éventuellement un **Focus** (par exemple « passer au management », « passer en télétravail » ou « basculer vers Go »), puis cliquez sur **Générer le plan**. Le modèle lit votre CV, votre profil, votre two-pager et votre note de mémoire (via le contexte de projet partagé) et rédige un plan structuré : un instantané honnête de votre point de départ, un SWOT des forces et axes de progression, des objectifs exprimés en SMART / OKR / WOOP, des trajectoires de carrière alternatives avec leurs arbitrages, un plan de compétences techniques et comportementales, une feuille de route mois par mois pour l'horizon choisi, comment suivre les progrès, les écueils probables et les actions de soutien. Chaque recommandation s'appuie sur ce que vos documents montrent réellement — le plan se projette vers l'avant, il n'invente jamais de faits sur votre parcours. Sans clé API configurée, vous obtenez à la place une invite à copier-coller.
+
+### Modifier et enregistrer
+
+Le plan apparaît dans une zone de texte modifiable — ajustez ce que vous voulez, puis cliquez sur **Enregistrer le plan**. Il est écrit dans la couche utilisateur de votre projet parent, dans `config/career-plan.md`, de sorte qu'il survit aux mises à jour du système et n'est envoyé qu'à l'intérieur des invites LLM que vous choisissez d'exécuter. **Aperçu** rend votre Markdown pour que vous puissiez le lire mis en forme avant de l'enregistrer.
+
+### Exporter
+
+Utilisez **Télécharger .md**, **Enregistrer en PDF** ou **Copier** pour sortir le plan de l'application — les mêmes commandes d'export que celles utilisées dans tous les rapports IA de l'application. Le PDF passe par le générateur PDF inline existant ; le Markdown est un téléchargement direct.

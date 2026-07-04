@@ -2073,3 +2073,19 @@ Fanen **Min pipeline** tegner din egen ansøgningstracker — intet eksternt. De
 ### Tendens for målroller
 
 Fanen **Tendens for målroller** er den oprindelige visning: antal ledige stillinger og medianløn pr. land for dine målroller, samlet fra din seneste scanning, med en valutavælger og et overblik over **Opslag efter målrolle**. **Gem snapshot** registrerer den aktuelle aggregering, så du kan følge, hvordan antallet af ledige stillinger bevæger sig over tid, og tendenslinjen læser disse snapshots tilbage. Sparsomme data er forventet og mærkes som vejledende — de bliver aldrig fyldt ud med opdigtede tal.
+
+## 27. Karriereplan (`#/career-plan`)
+
+Siden **Karriereplan** forvandler dit CV og din profil til en konkret, personlig udviklingsplan — den slags, du ville bygge sammen med en karrierecoach, men genereret ud fra dine egne materialer og din at redigere.
+
+### Generér en plan
+
+Vælg en **Horisont** (6, 12 eller 24 måneder), skriv eventuelt et **Fokus** (for eksempel "gå over i ledelse", "arbejde remote" eller "skifte til Go"), og klik på **Generér plan**. Modellen læser dit CV, din profil, din two-pager og din hukommelsesnote (via den delte projektkontekst) og skriver en struktureret plan: et ærligt øjebliksbillede af dit udgangspunkt, en SWOT over styrker og vækstområder, mål udtrykt som SMART / OKR / WOOP, alternative karrierespor med deres afvejninger, en plan for hårde og bløde kompetencer, en måned-for-måned-køreplan for din valgte horisont, hvordan du følger fremskridt, sandsynlige faldgruber og støttende træk. Hver anbefaling er forankret i det, dine materialer faktisk viser — den planlægger fremad, den opfinder aldrig fakta om din historik. Uden en API-nøgle sat får du i stedet en prompt til at kopiere og indsætte.
+
+### Redigering og gemning
+
+Planen lander i et redigerbart tekstfelt — juster hvad som helst, og klik derefter på **Gem plan**. Den skrives til dit overordnede projekts brugerlag i `config/career-plan.md`, så den overlever systemopdateringer og kun sendes inde i de LLM-prompts, du vælger at køre. **Forhåndsvisning** gengiver din Markdown, så du kan læse den formateret, før du gemmer.
+
+### Eksport
+
+Brug **Download .md**, **Gem som PDF** eller **Kopiér** for at tage planen ud af appen — de samme eksportknapper, der bruges på tværs af appens AI-rapporter. PDF'en går gennem den eksisterende inline-PDF-generator; Markdown er en direkte download.

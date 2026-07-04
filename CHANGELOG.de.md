@@ -2,6 +2,14 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.95.0] — 2026-07-04
+### Hinzugefügt
+- **Karriereplan (Epic 26).** Eine neue Seite **`#/career-plan`** verwandelt deinen Lebenslauf und dein Profil in einen konkreten, personalisierten Entwicklungsplan. Wähle einen **Horizont** (6/12/24 Monate) und einen optionalen **Fokus**, und das Modell — das deinen Lebenslauf, dein Profil, deinen two-pager und deine Speichernotiz liest — schreibt eine Ausgangspunkt-Momentaufnahme, eine SWOT zu Stärken/Wachstum, Ziele als SMART / OKR / WOOP, alternative Trajektorien, einen Plan für Hard-/Soft-Skills, eine **Monat-für-Monat-Roadmap**, Methoden zur Fortschrittsverfolgung, Fallstricke und unterstützende Schritte. Es plant von dem aus vorwärts, was deine Materialien tatsächlich zeigen, und erfindet nie Fakten über deine Geschichte. Bearbeite ihn inline, **Speichere** ihn in die Nutzerschicht (`config/career-plan.md`) und **exportiere** ihn nach Markdown oder PDF.
+  - Neue Route `server/lib/routes/career-plan.mjs` (23. Routenmodul) — `GET`/`PUT /api/career-plan` (schreibt `config/career-plan.md`) + `POST /api/career-plan/generate` (geteilte Anbieter-Kaskade, manueller Fallback, keine Erfindung). `PATHS.careerPlan`.
+  - Verwendet den geteilten `report-export.js` (v1.94.0) für Markdown/PDF/Kopieren wieder, sowie eine neue Navigationsgruppe **Wachstum**.
+  - Tests: `tests/career-plan-routes.test.mjs` (Begrenzung, GET/PUT-Roundtrip, horizontbewusster, mit Lebenslauf/Profil geseedeter Prompt). 20 neue i18n-Schlüssel ×16 Sprachen, Hilfe **§27** ×16.
+- Neu: `#/career-plan`; `server/lib/routes/career-plan.mjs`; `PATHS.careerPlan`.
+
 ## [1.94.0] — 2026-07-04
 ### Hinzugefügt
 - **Statistik, überarbeitet (Epic 25).** Die Seite `#/stats` ist jetzt ein **Statistik**-Bereich mit drei Tabs, mit echten Diagrammen und deutlich mehr Daten. Ein neuer Tab **Marktbericht** bittet das Modell um eine Gehalts- und Arbeitsmarktanalyse deiner Zielrollen in einer Region und Währung deiner Wahl — Management-Zusammenfassung, Gehalt nach Stufe mit P10/P25/P75/P90-Perzentilen, Top-Arbeitgeber, eine Tabelle gefragter Fähigkeiten, Häufigkeit von Zusatzleistungen, die Aufteilung Büro/Hybrid/Remote, Trends über 12–24 Monate und Verhandlungshinweise. Jede Zahl ist als **richtungsweisende Schätzung aus dem Wissen des Modells** gekennzeichnet, nie als abgegriffene Daten dargestellt. Ein neuer Tab **Meine Pipeline** stellt deinen eigenen Tracker grafisch dar: Score-Verteilung, Status-Trichter, Top-Unternehmen und -Rollen, Bewerbungen im Zeitverlauf und Konversionsraten. Die ursprüngliche Zielrollen-Ansicht (Stellen/Gehalt nach Land + gespeicherter Snapshot-Trend) wandert unter einen dritten Tab, jetzt mit einer **Währungsauswahl** und einer Übersicht **Stellen-nach-Rolle**.

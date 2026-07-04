@@ -2155,3 +2155,19 @@ Ne yazacağınızdan emin değil misiniz? **✨ Verilerimden öner**, başvuru i
 ### Hedef rol eğilimi
 
 **Hedef rol eğilimi** sekmesi özgün görünümdür: hedef rolleriniz için ülkeye göre ilan sayıları ve medyan maaş, en son taramanızdan toplanır; bir para birimi seçici ve bir **Hedef role göre ilanlar** genel görünümü ile birlikte. **Anlık görüntüyü kaydet**, mevcut toplamı kaydeder; böylece ilan sayılarının zaman içinde nasıl değiştiğini izleyebilirsiniz ve eğilim çizgisi bu anlık görüntüleri geri okur. Seyrek veri beklenir ve gösterge niteliğinde olarak etiketlenir — asla uydurma sayılarla doldurulmaz.
+
+## 27. Kariyer planı (`#/career-plan`)
+
+**Kariyer planı** sayfası, özgeçmişini ve profilini somut, kişiselleştirilmiş bir gelişim planına dönüştürür — bir kariyer koçuyla kuracağın türden bir plan, ama kendi materyallerinden üretilir ve düzenlemesi sana aittir.
+
+### Bir plan oluşturma
+
+Bir **Ufuk** seç (6, 12 veya 24 ay), isteğe bağlı olarak bir **Odak** yaz (örneğin "yöneticiliğe geçmek", "uzaktan çalışmaya geçmek" veya "Go'ya geçmek") ve **Plan oluştur**a tıkla. Model, (paylaşılan proje bağlamı aracılığıyla) özgeçmişini, profilini, iki sayfalık özetini ve bellek notunu okur ve yapılandırılmış bir plan yazar: dürüst bir başlangıç noktası anlık görüntüsü, güçlü yönler ve gelişim alanları için bir SWOT, SMART / OKR / WOOP olarak ifade edilmiş hedefler, ödünleşimleriyle birlikte alternatif kariyer yörüngeleri, bir sert/yumuşak beceri planı, seçtiğin ufuk için ay ay bir yol haritası, ilerlemeyi nasıl izleyeceğin, olası tuzaklar ve destekleyici hamleler. Her öneri, materyallerinin gerçekte gösterdiğine dayanır — ileriye yönelik plan yapar, geçmişin hakkında asla olgu uydurmaz. Bir API anahtarı ayarlanmamışsa, bunun yerine kopyalayıp yapıştırabileceğin bir istem alırsın.
+
+### Düzenleme ve kaydetme
+
+Plan, düzenlenebilir bir metin alanında belirir — istediğin her şeyi değiştir, sonra **Planı kaydet**e tıkla. Üst projenin kullanıcı katmanına, `config/career-plan.md` içine yazılır; böylece sistem güncellemelerinden sonra korunur ve yalnızca çalıştırmayı seçtiğin LLM istemlerinin içinde gönderilir. **Önizleme**, kaydetmeden önce biçimlendirilmiş olarak okuyabilmen için Markdown'ını işler.
+
+### Dışa aktarma
+
+Planı uygulamanın dışına almak için **.md indir**, **PDF olarak kaydet** veya **Kopyala**yı kullan — uygulamanın yapay zeka raporlarının genelinde kullanılan aynı dışa aktarma denetimleridir. PDF, mevcut satır içi PDF oluşturucudan geçer; Markdown ise doğrudan bir indirmedir.

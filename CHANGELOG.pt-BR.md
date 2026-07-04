@@ -9,6 +9,16 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.95.0] — 2026-07-04
+
+**Plano de carreira (Epic 26).** Uma nova página **`#/career-plan`** transforma o seu CV e o seu perfil em um plano de desenvolvimento concreto e personalizado. Escolha um **horizonte** (6/12/24 meses) e um **foco** opcional, e o modelo — lendo o seu CV, o seu perfil, o seu two-pager e a sua nota de memória — redige um retrato do ponto de partida, uma SWOT de forças/crescimento, metas como SMART / OKR / WOOP, trajetórias alternativas, um plano de competências técnicas e comportamentais, um **roteiro mês a mês**, métodos de acompanhamento do progresso, armadilhas e alavancas de apoio. Planeja adiante a partir do que os seus materiais realmente mostram e nunca inventa fatos sobre o seu histórico. Edite-o em linha, **Salve-o** na camada de usuário (`config/career-plan.md`) e **exporte-o** para Markdown ou PDF.
+
+- Nova rota `server/lib/routes/career-plan.mjs` (23.º módulo de rotas) — `GET`/`PUT /api/career-plan` (escreve `config/career-plan.md`) + `POST /api/career-plan/generate` (cascata compartilhada de provedores, modo manual como fallback, sem fabricação). `PATHS.careerPlan`.
+- Reutiliza o helper compartilhado `report-export.js` (v1.94.0) para Markdown/PDF/cópia, e um novo grupo de navegação **Crescimento**.
+- Testes: `tests/career-plan-routes.test.mjs` (limitação, ida e volta GET/PUT, prompt semeado com CV/perfil de acordo com o horizonte). 20 novas chaves i18n nos **16 locales**, Ajuda **§27** nos 16.
+
+Novo: `#/career-plan`; `server/lib/routes/career-plan.mjs`; `PATHS.careerPlan`.
+
 ## [1.94.0] — 2026-07-04
 
 **Estatísticas, reformuladas (Epic 25).** A página `#/stats` agora é uma seção de **Estatísticas** com três abas, com gráficos reais e muito mais dados. Uma nova aba de **Relatório de mercado** pede ao modelo uma análise salarial e do mercado de trabalho dos seus cargos-alvo na região e na moeda que você escolher — sumário executivo, salário por nível com percentis P10/P25/P75/P90, principais empregadores, uma tabela de competências em demanda, frequência de benefícios, a divisão presencial/híbrido/remoto, tendências de 12–24 meses e orientação de negociação. Cada número é rotulado como uma **estimativa direcional a partir do conhecimento do modelo**, nunca apresentado como dados extraídos. Uma nova aba de **Meu pipeline** plota o seu próprio tracker: distribuição de pontuações, funil de status, principais empresas e cargos, candidaturas ao longo do tempo e taxas de conversão. A visão original de cargo-alvo (vagas/salário por país + tendência de snapshots salvos) passa para uma terceira aba, agora com um **seletor de moeda** e uma visão geral de **publicações por cargo**.

@@ -83,6 +83,10 @@ export const PATHS = {
   // content). Inlined into bundleProjectContext so it reaches every AI request
   // across all providers. User layer; never overwritten by system updates.
   memory: path('config', 'memory.md'),
+  // v1.95.0 (Epic 26 — career plan) — a personalized AI-generated career
+  // development plan (roadmap, SMART/OKR goals, skill plan). Saved to the user
+  // layer on explicit Save; never overwritten by system updates.
+  careerPlan: path('config', 'career-plan.md'),
   portals: path('portals.yml'),
   packageJson: path('package.json'),
   version: path('VERSION'),
