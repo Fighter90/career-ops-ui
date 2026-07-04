@@ -56,9 +56,9 @@
       return { score: 0, words, bullets: bullets.length, checks };
     }
 
-    // 1. Length (word count).
-    if (words === 0) add('length', 'Length', 'fail', 'The CV is empty.');
-    else if (words < 200) add('length', 'Length', 'warn', `Only ${words} words — most one-page CVs run 300–600. Consider adding detail.`);
+    // 1. Length (word count). The `words < 20` guard above already returned,
+    // so here words >= 20 — no empty-document branch is reachable.
+    if (words < 200) add('length', 'Length', 'warn', `Only ${words} words — most one-page CVs run 300–600. Consider adding detail.`);
     else if (words > 1100) add('length', 'Length', 'warn', `${words} words is long (≈2+ pages). Tighten to the most relevant.`);
     else add('length', 'Length', 'pass', `${words} words — a healthy one-to-two-page range.`);
 

@@ -43,7 +43,7 @@ data files (`cv.md`, `data/applications.md`, `reports/`,
 |---|---|---|
 | Server | Node ≥ 18, Express 4, js-yaml, multer | `server/index.mjs` (~130-LOC orchestrator) + `server/lib/routes/*.mjs` (15 modules) |
 | Helpers (v1.21+) | ESM, no transpiler | `server/lib/{paths,parsers,runner,security,prompts,store,anthropic,env-config,activity-log,dotenv,safe-fetch,file-lock,rate-limit,en-scanner,ru-scanner,gemini,detect-reposts,role-matcher}.mjs` + `server/lib/sources/{greenhouse,ashby,lever,rss,smartrecruiters,workable,workday,geekjob,getmatch,habr,hh,trudvsem}.mjs` (12 adapters, auto-discovered via `registry.mjs` since v1.69.0/P-14) |
-| SPA | Vanilla JS, hash-router | `public/index.html`, `public/js/{app,router,api}.js`, `public/js/views/*.js`, `public/js/lib/{i18n,i18n-dict,skills,auto-pipeline,pdf-generate}.js`, `public/js/lib/locales/i18n-dict.<lang>.js` (12 + aliases) |
+| SPA | Vanilla JS, hash-router | `public/index.html`, `public/js/{app,router,api}.js`, `public/js/views/*.js`, `public/js/lib/{i18n,i18n-dict,skills,auto-pipeline,pdf-generate,report-export}.js`, `public/js/lib/locales/i18n-dict.<lang>.js` (16 + aliases) |
 | Styling | Hand-written CSS + design tokens | `public/css/app.css` |
 | Tests | `node --test` (TAP) + Playwright | `tests/*.test.mjs`, `tests/playwright-smoke.mjs`, `tests/e2e*.mjs` |
 | Build | None | Files served as-is from `public/` |
@@ -119,7 +119,7 @@ career-ops-ui/
 │     ├─ en-scanner.mjs, ru-scanner.mjs
 │     ├─ sources/                              # 12 adapter clients + registry.mjs (auto-discovery, P-14 v1.69.0)
 │     ├─ portals/                              # adapter registry + resolveAdapter()
-│     └─ routes/                               # 15 route modules — one per topic (incl. openrouter)
+│     └─ routes/                               # 24 route modules — one per topic (incl. openrouter, market, career-plan, orientation)
 ├─ public/
 │  ├─ index.html                               # CSP-locked shell
 │  ├─ css/app.css                              # design tokens, WCAG 2.2 AA + 1.4.1 redundant cues
@@ -189,12 +189,12 @@ For trivial work (single file, single concern, < 30 min): just edit, run tests, 
 - **`innerHTML` without `UI.md`** — bypass of XSS strip. Route all markdown through `UI.md(text)`.
 - **`globalThis.fetch` for outbound HTTP** — bypasses DNS-rebind defense. Use `safeGet` from `server/lib/safe-fetch.mjs`.
 - **Read-modify-write on `applications.md` / `pipeline.md`** without `withFileLock(path, fn)` — race condition will silently drop rows.
-- **New i18n key without DICT entry** — `tests/i18n-coverage.test.mjs` (+ `tests/i18n-locale-files.test.mjs` parity) fails. Add the key to **all 13 per-locale files** `public/js/lib/locales/i18n-dict.<lang>.js` (I18N-SPLIT v1.60.0) — NOT to `i18n.js` (logic-only) or `i18n-dict.js` (assembler).
+- **New i18n key without DICT entry** — `tests/i18n-coverage.test.mjs` (+ `tests/i18n-locale-files.test.mjs` parity) fails. Add the key to **all 16 per-locale files** `public/js/lib/locales/i18n-dict.<lang>.js` (I18N-SPLIT v1.60.0; I18N-EXPAND v1.70.0/v1.85.0) — NOT to `i18n.js` (logic-only) or `i18n-dict.js` (assembler).
 - **`aria-describedby` without matching `id`** — `tests/a11y-form-wires.test.mjs` fails.
 - **New runtime dep** — current production deps are `express`, `js-yaml`, `multer`. Adding more needs a spec.
 - **Real LLM calls in tests** — mock the SDK adapter; never hit Anthropic / Gemini from a unit test.
 
-## Realizations / hard-won notes (v1.57–v1.60)
+## Realizations / hard-won notes (v1.57–v1.96)
 
 - **I18N-SPLIT (v1.60.0) — per-locale dictionary.** Translations live ONLY in `public/js/lib/locales/i18n-dict.<lang>.js` (12 files) + `i18n-dict.aliases.js`; `i18n-dict.js` is an assembler that rebuilds `window.__I18N_DICT` — it stores nothing. Three traps: (1) **vm-realm deepEqual** — objects assembled inside `node:vm` have a foreign `Object.prototype`, so `deepStrictEqual` vs a JSON snapshot throws "same structure but not reference-equal"; round-trip `JSON.parse(JSON.stringify(x))` first. (2) **Load order is load-bearing** — all 13 locale `<script>`s must precede `i18n-dict.js`, which must precede `i18n.js` (locked by `tests/i18n-locale-files.test.mjs`). (3) **A "passing" CI step can be a no-op** — the `ci.yml` inline i18n check validated an *empty* dict for ~37 releases after the v1.23 split (it loaded only `i18n.js`); now it loads the full chain + a `keys < 600` floor. Node tests load the dict via `tests/helpers/i18n-vm.mjs` (`loadAssembledDict` / `loadI18n` / `legacyDictText` / `allLocaleSource`).
 - **`PATHS` resolves ONCE per process** (`server/lib/paths.mjs`, at module load). Set `CAREER_OPS_ROOT` *before* the first `server/*` import; you cannot switch parent roots mid-process. `node --test` isolates per *file* (child process) — multi-root within one file is infeasible. Path/IO-coupled helpers (`checkProfileCustomized`) → guard **statically** (assert the source contract), not via cache-bust dynamic imports. (v1.58.0 cache-bust test passed locally, failed CI on all Node versions → v1.58.1 static-guard fix.)

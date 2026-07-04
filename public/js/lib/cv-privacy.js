@@ -20,7 +20,14 @@
   const URL_RE = /\b((?:https?:\/\/|www\.)[^\s)]+)\b/gi;
   const HANDLE_RE = /(?:^|\s)(@[A-Za-z0-9_]{2,})/g;
   // Street address: "123 Main St", optionally with apt — a light heuristic.
-  const ADDRESS_RE = /\b\d{1,5}\s+([A-Z][a-z]+\.?\s){1,4}(street|st|avenue|ave|road|rd|boulevard|blvd|lane|ln|drive|dr|court|ct|way|square|sq)\b\.?/gi;
+  // The suffix must sit at a real address boundary (comma, ZIP, or end of
+  // line) so a mid-sentence "…Full Stack Dev St building scalable…" isn't
+  // mistaken for an address.
+  const ADDRESS_RE = /\b\d{1,5}\s+([A-Z][a-z]+\.?\s){1,4}(street|st|avenue|ave|road|rd|boulevard|blvd|lane|ln|drive|dr|court|ct|way|square|sq)\b\.?(?=\s*(?:,|\d{4,5}\b|$))/gim;
+  // Date-like runs that PHONE_RE's ≥7-digit guard would otherwise redact:
+  // a "2018-2022" / "2018 2022" year range, or an ISO "2026-07-04" date.
+  const YEAR_RANGE_RE = /^(?:19|20)\d{2}\s*[-.\s]\s*(?:19|20)\d{2}$/;
+  const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
   const REDACT = '████';
 
@@ -50,6 +57,9 @@
     if (o.phone) out = out.replace(PHONE_RE, (m) => {
       // Skip short numeric runs (years, versions) — require ≥7 digits total.
       if ((m.replace(/\D/g, '').length) < 7) return m;
+      // Skip date-like runs (year ranges, ISO dates) common in CV timelines.
+      const t = m.trim();
+      if (YEAR_RANGE_RE.test(t) || ISO_DATE_RE.test(t)) return m;
       counts.phone++; return REDACT;
     });
     if (o.name && typeof o.name === 'string' && o.name.trim()) {

@@ -18,6 +18,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 New: `#/orientation`; `server/lib/routes/orientation.mjs`.
 
+**Also in this release — review-driven fixes & hardening.** A sweep of the AI-review logs across recent PRs surfaced several real defects, all fixed here:
+
+- **Duplicate i18n keys removed (30 CodeQL `js/duplicate-property` alerts).** The v1.94.0 statistics fan-out had inserted the `stats.*`/`export.*` block **twice** in five locale dicts (`ar`, `ja`, `ko`, `zh-CN`, `zh-TW`) — last-wins silently shadowed the first copy. Each doubled block is removed; snapshot regenerated; parity green.
+- **`cv-diagnostics.js` dead code (CodeQL `js/useless-comparison`).** The `words === 0` length branch was unreachable after the `words < 20` early-return guard — removed.
+- **`cv-privacy.js` false redactions.** `PHONE_RE` now skips date-like runs (a `2018-2022` year range, a `2026-07-04` ISO date) that its ≥7-digit guard would otherwise mask; `ADDRESS_RE` now requires a real address boundary (comma / ZIP / end-of-line) so a mid-sentence "…Full Stack Dev St building…" isn't redacted. New tests cover both.
+- **`i18n-dict.fr.js` shipped-bundle noise.** Stripped the trailing English `// gloss` comment from every French entry — consistent with the other 15 locales.
+- **AI-review workflow.** `ai-review.yml`'s rubric now names all **16** locales (was a stale 8), and the reviewer diff is ordered **code-first** (`server/`, `public/`, `tests/`) so the 200 KB cap truncates bulky localized CHANGELOG/README churn rather than the security-relevant code it kept reporting as "not in the diff."
+- **Doc drift.** Refreshed stale counts in `docs/sdd/CONVENTIONS.md` (test total, H3 parity number), `CLAUDE.md`, and `.claude/PROJECT-CONTEXT.md`.
+
 
 ## [1.95.0] — 2026-07-04
 
