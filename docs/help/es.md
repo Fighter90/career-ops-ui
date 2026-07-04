@@ -1999,3 +1999,19 @@ Cuando haces clic en **Guardar memoria**, la nota se escribe en la capa de usuar
 ### Sugerir a partir de tus datos
 
 ¿No sabes qué escribir? **✨ Sugerir a partir de mis datos** lee tu seguimiento de candidaturas y redacta un conjunto de puntos de comportamiento — los patrones de lo que persigues, aceptas y rechazas. Ejecuta el prompt que te da en cualquier LLM, revisa las sugerencias y pega una versión editada en la nota. Solo extrae de tu propio seguimiento y nunca inventa hechos; siempre revisas antes de que se guarde nada.
+
+## 26. Estadísticas (`#/stats`)
+
+La página **Estadísticas** reúne tres vistas en una sola sección: un informe de mercado generado por IA, analíticas de tu propio pipeline y la tendencia de vacantes para tus roles objetivo a partir de tus escaneos. Cambia entre ellas con las pestañas de la parte superior.
+
+### Informe de mercado
+
+La pestaña **Informe de mercado** le pide al modelo un análisis salarial y de mercado laboral de *tus* roles objetivo — lee tu CV y tu perfil para saber qué roles y seniority cubrir. Escribe una **Región / mercado** (por ejemplo `Russia`, `EU-remote`, `US` o `Germany`), elige una **Moneda** y haz clic en **Generar informe de mercado**. Obtienes un informe estructurado con un resumen ejecutivo, salario por nivel (mediana más P10/P25/P75/P90), principales empleadores, una tabla de habilidades demandadas, frecuencia de beneficios, el reparto oficina/híbrido/remoto, tendencias de 12–24 meses incluido el impacto de la IA, y orientación de negociación. Cada cifra es una **estimación orientativa del conocimiento de entrenamiento del modelo** — no son datos scrapeados ni en vivo — y el informe lo indica; trata los números como rangos, no como cotizaciones. Sin una clave de API configurada obtienes un prompt para copiar y pegar en lugar de un informe fabricado. Usa **Descargar .md**, **Guardar como PDF** o **Copiar** para sacar el informe de la app.
+
+### Mi pipeline
+
+La pestaña **Mi pipeline** grafica tu propio tracker de candidaturas — nada externo. Muestra cuántos roles has seguido, tu distribución de puntuaciones, el embudo de estados, tus principales empresas y roles, las candidaturas a lo largo del tiempo y las tasas de conversión (qué proporción de candidaturas alcanza Applied, Responded, Interview y Offer). Es el espejo honesto de tu búsqueda: solo refleja lo que ya está en `data/applications.md`.
+
+### Tendencia de roles objetivo
+
+La pestaña **Tendencia de roles objetivo** es la vista original: recuento de vacantes y salario mediano por país para tus roles objetivo, agregados a partir de tu último escaneo, con un selector de moneda y un resumen de **Vacantes por rol objetivo**. **Guardar snapshot** registra el agregado actual para que puedas observar cómo se mueven los recuentos de vacantes con el tiempo, y la línea de tendencia relee esos snapshots. Los datos escasos son esperables y se etiquetan como indicativos — nunca se rellenan con números inventados.

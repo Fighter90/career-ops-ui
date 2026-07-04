@@ -41,6 +41,7 @@ import { registerReportsRoutes } from './lib/routes/reports.mjs';
 import { registerRunnerRoutes } from './lib/routes/runners.mjs';
 import { registerScanRoutes } from './lib/routes/scan.mjs';
 import { registerStatsRoutes } from './lib/routes/stats.mjs';
+import { registerMarketRoutes } from './lib/routes/market.mjs';
 import { registerTrackerRoutes } from './lib/routes/tracker.mjs';
 
 // Re-exports preserved for backward compatibility — earlier tests
@@ -158,6 +159,7 @@ export function createApp() {
   registerRunnerRoutes(app);          // buffered /api/run/* + streaming /api/stream/{scan,liveness,pdf} + /api/output/pdfs
   registerScanRoutes(app);            // in-process /api/stream/scan-{ru,en} + /api/scan-results
   registerStatsRoutes(app);           // v1.86.0 — target-roles stats snapshot store + trend
+  registerMarketRoutes(app);          // v1.94.0 — AI salary/market report for target roles
   registerBatchRoutes(app);           // v1.13.0 — /api/batch + /api/stream/batch + /api/batch/merge
   registerLlmRoutes(app);             // /api/evaluate, /api/deep, /api/mode/:slug, /api/apply-helper, /api/interview-prep
   registerOpenrouterRoutes(app);      // v1.57.0 — GET /api/openrouter/models (model catalogue proxy)

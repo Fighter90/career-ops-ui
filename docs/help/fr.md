@@ -2101,3 +2101,19 @@ Quand vous cliquez sur **Enregistrer la mémoire**, la note est écrite dans la 
 ### Suggérer à partir de vos données
 
 Vous ne savez pas quoi écrire ? **✨ Suggérer à partir de mes données** lit votre suivi de candidatures et rédige un ensemble de points comportementaux — les tendances dans ce que vous poursuivez, acceptez et refusez. Exécutez le prompt qu'il vous donne dans n'importe quel LLM, examinez les suggestions et collez une version modifiée dans la note. Il n'exploite que votre propre suivi et n'invente jamais de faits ; vous relisez toujours avant que quoi que ce soit ne soit enregistré.
+
+## 26. Statistiques (`#/stats`)
+
+La page **Statistiques** réunit trois vues sous une même section : un rapport de marché généré par l'IA, des analyses sur votre propre pipeline, et la tendance des offres pour vos rôles cibles issue de vos scans. Passez de l'une à l'autre avec les onglets en haut.
+
+### **Rapport de marché**
+
+L'onglet **Rapport de marché** demande au modèle une analyse des salaires et du marché du travail pour *vos* rôles cibles — il lit votre CV et votre profil pour savoir quels rôles et quel niveau de séniorité couvrir. Saisissez une **Région / marché** (par exemple `Russia`, `EU-remote`, `US` ou `Germany`), choisissez une **Devise**, puis cliquez sur **Générer le rapport de marché**. Vous obtenez un rapport structuré avec un résumé exécutif, les salaires par grade (médiane plus P10/P25/P75/P90), les principaux employeurs, un tableau des compétences recherchées, la fréquence des avantages, la répartition présentiel/hybride/télétravail, les tendances sur 12–24 mois y compris l'impact de l'IA, et des conseils de négociation. Chaque chiffre est une **estimation indicative issue des connaissances d'entraînement du modèle** — ni extraites ni en temps réel — et le rapport le précise ; traitez les nombres comme des fourchettes, pas comme des devis. Sans clé API configurée, vous obtenez à la place un prompt à copier-coller plutôt qu'un rapport fabriqué. Utilisez **Télécharger .md**, **Enregistrer en PDF** ou **Copier** pour sortir le rapport de l'application.
+
+### **Mon pipeline**
+
+L'onglet **Mon pipeline** trace votre propre suivi de candidatures — rien d'externe. Il montre combien de rôles vous avez suivis, votre distribution de scores, l'entonnoir des statuts, vos principales entreprises et rôles, les candidatures dans le temps, et les taux de conversion (quelle part des candidatures atteint Applied, Responded, Interview et Offer). C'est le miroir honnête de votre recherche : il ne reflète jamais que ce qui figure déjà dans `data/applications.md`.
+
+### **Tendance des rôles cibles**
+
+L'onglet **Tendance des rôles cibles** est la vue d'origine : le nombre d'offres et le salaire médian par pays pour vos rôles cibles, agrégés depuis votre dernier scan, avec un sélecteur de devise et un aperçu **Offres par rôle cible**. **Enregistrer un instantané** consigne l'agrégat actuel pour que vous puissiez observer l'évolution du nombre d'offres dans le temps, et la courbe de tendance relit ces instantanés. Des données éparses sont attendues et étiquetées comme indicatives — elles ne sont jamais complétées par des nombres inventés.

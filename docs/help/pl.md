@@ -2001,3 +2001,19 @@ Gdy klikniesz **Zapisz pamięć**, notatka jest zapisywana w warstwie użytkowni
 ### Zaproponuj z twoich danych
 
 Nie wiesz, co napisać? **✨ Zaproponuj z moich danych** czyta twój tracker aplikacji i szkicuje zestaw punktów behawioralnych — wzorce w tym, co ścigasz, akceptujesz i odrzucasz. Uruchom prompt, który ci daje, w dowolnym LLM, przejrzyj sugestie i wklej edytowaną wersję do notatki. Czerpie wyłącznie z twojego własnego trackera i nigdy nie wymyśla faktów; zawsze sprawdzasz, zanim cokolwiek zostanie zapisane.
+
+## 26. Statystyki (`#/stats`)
+
+Strona **Statystyki** łączy trzy widoki w jednej sekcji: wygenerowany przez AI raport rynkowy, analitykę twojego własnego pipeline'u oraz trend liczby ofert dla twoich docelowych ról z twoich skanów. Przełączaj się między nimi za pomocą kart u góry.
+
+### **Raport rynkowy**
+
+Karta **Raport rynkowy** prosi model o analizę wynagrodzeń i rynku pracy dla *twoich* docelowych ról — czyta twoje CV i profil, aby wiedzieć, które role i poziom seniority uwzględnić. Wpisz **Region / rynek** (na przykład `Russia`, `EU-remote`, `US` lub `Germany`), wybierz **Walutę** i kliknij **Wygeneruj raport rynkowy**. Otrzymasz uporządkowany raport z podsumowaniem wykonawczym, wynagrodzeniami według stopnia (mediana plus P10/P25/P75/P90), czołowymi pracodawcami, tabelą poszukiwanych umiejętności, częstotliwością benefitów, podziałem na biuro/hybryda/zdalnie, trendami na 12–24 miesiące łącznie z wpływem AI oraz wskazówkami negocjacyjnymi. Każda liczba to **orientacyjne oszacowanie z wiedzy treningowej modelu** — nie dane pobierane ani na żywo — i raport o tym informuje; traktuj liczby jako zakresy, nie jako oferty. Bez ustawionego klucza API otrzymasz zamiast tego prompt do skopiowania i wklejenia, a nie zmyślony raport. Użyj **Pobierz .md**, **Zapisz jako PDF** lub **Kopiuj**, aby wyciągnąć raport z aplikacji.
+
+### **Mój pipeline**
+
+Karta **Mój pipeline** wykreśla twój własny tracker aplikacji — nic zewnętrznego. Pokazuje, ile ról śledziłeś, twój rozkład ocen, lejek statusów, twoje czołowe firmy i role, aplikacje w czasie oraz współczynniki konwersji (jaki odsetek aplikacji dociera do Applied, Responded, Interview i Offer). To uczciwe lustro twoich poszukiwań: odzwierciedla wyłącznie to, co już jest w `data/applications.md`.
+
+### **Trend ról docelowych**
+
+Karta **Trend ról docelowych** to pierwotny widok: liczba ofert i mediana wynagrodzenia według kraju dla twoich docelowych ról, zagregowane z twojego ostatniego skanu, z selektorem waluty i przeglądem **Ogłoszenia według docelowej roli**. **Zapisz migawkę** zapisuje bieżący agregat, abyś mógł obserwować, jak liczba ofert zmienia się w czasie, a linia trendu odczytuje te migawki z powrotem. Skąpe dane są oczekiwane i oznaczane jako orientacyjne — nigdy nie są uzupełniane wymyślonymi liczbami.

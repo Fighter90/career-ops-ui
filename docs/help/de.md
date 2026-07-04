@@ -2198,3 +2198,19 @@ Wenn du auf **Gedächtnis speichern** klickst, wird die Notiz in die Nutzerschic
 ### Aus deinen Daten vorschlagen
 
 Nicht sicher, was du schreiben sollst? **✨ Aus meinen Daten vorschlagen** liest deinen Bewerbungs-Tracker und entwirft eine Reihe von Verhaltenspunkten — die Muster darin, was du verfolgst, annimmst und ablehnst. Führe den Prompt, den es dir gibt, in einem beliebigen LLM aus, prüfe die Vorschläge und füge eine bearbeitete Version in die Notiz ein. Es schöpft nur aus deinem eigenen Tracker und erfindet nie Fakten; du prüfst immer, bevor etwas gespeichert wird.
+
+## 26. Statistiken (`#/stats`)
+
+Die Seite **Statistiken** bringt drei Ansichten unter einer Sektion zusammen: einen KI-generierten Marktbericht, Auswertungen deiner eigenen Pipeline und den Trend der Stellenzahlen für deine Zielrollen aus deinen Scans. Wechsle zwischen ihnen über die Reiter oben.
+
+### Marktbericht
+
+Der Reiter **Marktbericht** bittet das Modell um eine Gehalts- und Arbeitsmarktanalyse *deiner* Zielrollen — es liest deinen CV und dein Profil, um zu wissen, welche Rollen und welche Seniorität abzudecken sind. Gib eine **Region / Markt** ein (zum Beispiel `Russia`, `EU-remote`, `US` oder `Germany`), wähle eine **Währung** und klicke auf **Marktbericht generieren**. Du erhältst einen strukturierten Bericht mit einer Zusammenfassung, Gehalt nach Stufe (Median plus P10/P25/P75/P90), Top-Arbeitgebern, einer Tabelle gefragter Fähigkeiten, der Häufigkeit von Zusatzleistungen, der Aufteilung Büro/Hybrid/Remote, Trends über 12-24 Monate inklusive KI-Einfluss und einer Verhandlungsanleitung. Jede Zahl ist eine **richtungsweisende Schätzung aus dem Trainingswissen des Modells** — keine gescrapten oder Live-Daten — und der Bericht sagt das auch; behandle die Zahlen als Bereiche, nicht als Zitate. Ohne gesetzten API-Schlüssel bekommst du statt eines erfundenen Berichts einen Prompt zum Kopieren und Einfügen. Nutze **Download .md**, **Als PDF speichern** oder **Kopieren**, um den Bericht aus der App herauszuholen.
+
+### Meine Pipeline
+
+Der Reiter **Meine Pipeline** stellt deinen eigenen Bewerbungs-Tracker grafisch dar — nichts Externes. Er zeigt, wie viele Rollen du verfolgt hast, deine Score-Verteilung, den Status-Trichter, deine Top-Unternehmen und -Rollen, Bewerbungen im Zeitverlauf und Konversionsraten (welcher Anteil der Bewerbungen Beworben, Beantwortet, Interview und Angebot erreicht). Es ist der ehrliche Spiegel deiner Suche: er gibt immer nur wieder, was bereits in `data/applications.md` steht.
+
+### Zielrollen-Trend
+
+Der Reiter **Zielrollen-Trend** ist die ursprüngliche Ansicht: Stellenzahlen und Mediangehalt nach Land für deine Zielrollen, aggregiert aus deinem letzten Scan, mit einer Währungsauswahl und einer Übersicht **Stellen nach Zielrolle**. **Snapshot speichern** hält die aktuelle Aggregation fest, sodass du beobachten kannst, wie sich die Stellenzahlen im Zeitverlauf bewegen, und die Trendlinie liest diese Snapshots zurück. Spärliche Daten sind zu erwarten und werden als richtungsweisend gekennzeichnet — sie werden nie mit erfundenen Zahlen aufgefüllt.

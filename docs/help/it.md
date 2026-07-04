@@ -2082,3 +2082,19 @@ Quando clicchi **Salva memoria**, la nota viene scritta nel livello utente del t
 ### Suggerisci dai tuoi dati
 
 Non sai cosa scrivere? **✨ Suggerisci dai miei dati** legge il tuo tracker delle candidature e redige una serie di punti comportamentali — gli schemi in ciò che insegui, accetti e rifiuti. Esegui il prompt che ti fornisce in un qualsiasi LLM, rivedi i suggerimenti e incolla una versione modificata nella nota. Attinge solo dal tuo tracker e non inventa mai fatti; rivedi sempre prima che qualcosa venga salvato.
+
+## 26. Statistiche (`#/stats`)
+
+La pagina **Statistiche** riunisce tre viste in un'unica sezione: un report di mercato generato dall'IA, analisi della tua pipeline e la tendenza del numero di annunci per i tuoi ruoli target ricavata dalle tue scansioni. Passa dall'una all'altra con le schede in alto.
+
+### Report di mercato
+
+La scheda **Report di mercato** chiede al modello un'analisi salariale e del mercato del lavoro dei *tuoi* ruoli target — legge il tuo CV e il tuo profilo per sapere quali ruoli e quale livello di seniority coprire. Digita una **Regione / mercato** (per esempio `Russia`, `EU-remote`, `US` o `Germany`), scegli una **Valuta** e clicca su **Genera report di mercato**. Ottieni un report strutturato con una sintesi esecutiva, retribuzione per livello (mediana più P10/P25/P75/P90), i principali datori di lavoro, una tabella delle competenze più richieste, la frequenza dei benefit, la ripartizione ufficio/ibrido/remoto, tendenze a 12-24 mesi incluso l'impatto dell'IA e indicazioni per la negoziazione. Ogni cifra è una **stima indicativa ricavata dalle conoscenze di addestramento del modello** — non dati raccolti o in tempo reale — e il report lo dichiara; tratta i numeri come intervalli, non come citazioni. Senza una chiave API impostata ottieni un prompt da copiare e incollare invece di un report inventato. Usa **Scarica .md**, **Salva come PDF** o **Copia** per portare il report fuori dall'app.
+
+### La mia pipeline
+
+La scheda **La mia pipeline** rappresenta graficamente il tuo tracker delle candidature — nulla di esterno. Mostra quanti ruoli hai seguito, la distribuzione dei tuoi punteggi, l'imbuto degli stati, le tue aziende e i tuoi ruoli principali, le candidature nel tempo e i tassi di conversione (quale quota di candidature raggiunge Candidato, Risposto, Colloquio e Offerta). È lo specchio onesto della tua ricerca: riflette sempre e solo ciò che è già in `data/applications.md`.
+
+### Tendenza dei ruoli target
+
+La scheda **Tendenza dei ruoli target** è la vista originale: numero di annunci e retribuzione mediana per paese per i tuoi ruoli target, aggregati dalla tua ultima scansione, con un selettore di valuta e una panoramica **Annunci per ruolo target**. **Salva snapshot** registra l'aggregato attuale così puoi osservare come si muove il numero di annunci nel tempo, e la linea di tendenza rilegge quegli snapshot. Dati scarsi sono attesi e vengono etichettati come indicativi — non vengono mai riempiti con numeri inventati.

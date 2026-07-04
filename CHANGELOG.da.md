@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.94.0] — 2026-07-04
+
+**Statistik, omarbejdet (Epic 25).** Siden `#/stats` er nu en **Statistik**-sektion med tre faner, med rigtige grafer og langt flere data. En ny fane **Markedsrapport** beder modellen om en løn- og arbejdsmarkedsanalyse af dine målroller i en region og valuta, du vælger — ledelsesresumé, løn efter niveau med P10/P25/P75/P90-percentiler, de største arbejdsgivere, en tabel over efterspurgte kompetencer, frekvens af personalegoder, fordelingen kontor/hybrid/fjernarbejde, tendenser over 12–24 måneder og vejledning til forhandling. Hvert tal er mærket som et **retningsgivende estimat fra modellens viden**, aldrig præsenteret som skrabede data. En ny fane **Min pipeline** grafer din egen tracker: scorefordeling, statustragt, de største virksomheder og roller, ansøgninger over tid og konverteringsrater. Den oprindelige målrollevisning (vakance/løn efter land + gemt snapshot-tendens) flytter ind under en tredje fane, nu med en **valgvælger til valuta** og et overblik over **opslag-efter-rolle**.
+
+- **Eksportér enhver rapport** til Markdown eller PDF, eller kopiér den — via den delte hjælper `report-export.js` (Markdown-blob-download; PDF gennem den eksisterende inline-PDF-runner).
+- Ny rute `server/lib/routes/market.mjs` (22. rutemodul) — `POST /api/stats/market` bygger en markedsanalyse-prompt ud fra dit CV/din profil (så den kender dine målroller), region og valuta, kører den gennem den delte udbyderkaskade og falder tilbage til en kopiér-og-indsæt-prompt uden nøgle. Ingen filskrivninger.
+- Tests: `tests/market-routes.test.mjs` (region/valuta-afgrænsning, ærligheds-mærket prompt, CV/profil-seedet manuel tilstand). 36 nye i18n-nøgler ×16 locales, Hjælp **§26** ×16.
+
+Nyt: `#/stats` omarbejdet til faner; `server/lib/routes/market.mjs`; `public/js/lib/report-export.js`.
+
 ## [1.93.0] — 2026-07-04
 
 **Hukommelseslag (Epic 24).** En ny `#/memory`-side rummer en kort, redigerbar "husk dette om mig"-note, som assistenten holder sig for øje ved **hver** opgave:
