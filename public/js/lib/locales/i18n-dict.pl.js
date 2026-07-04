@@ -955,4 +955,12 @@ window.__I18N_DICT_PL = {
   'plan.saveFailed': "Nie udało się zapisać planu",
   'plan.preview': "Podgląd",
   'plan.privacyNote': "Zapisano w warstwie użytkownika Twojego projektu nadrzędnego (config/career-plan.md) — nigdy nie nadpisywane przez aktualizacje i wysyłane wyłącznie wewnątrz promptów LLM, które uruchamiasz.",
+  // ── v1.96.0 (Epic 27) — AI career-orientation profile ──
+  'nav.orientation': "Orientacja zawodowa",
+  'orient.title': "Orientacja zawodowa",
+  'orient.subtitle': "Które kierunki do Ciebie pasują — wywnioskowane z Twojego własnego CV i profilu: najlepiej dopasowane wektory kariery, rekomendowane role, mocne strony oraz jak czyta się Twoje CV. Refleksja, nie test psychometryczny.",
+  'orient.generate': "Wygeneruj profil",
+  'orient.running': "Generowanie Twojego profilu…",
+  'orient.failed': "Nie udało się wygenerować profilu",
+  'orient.note': "To czyta Twoje CV, profil, two-pager i notatkę pamięci — nigdy nie zmyśla faktów i nigdy nie podaje zmierzonych wyników testów. Nic nie jest zapisywane; wyeksportuj profil, jeśli chcesz go zachować.",
 };

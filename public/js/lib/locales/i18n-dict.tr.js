@@ -956,4 +956,12 @@ window.__I18N_DICT_TR = {
   'plan.saveFailed': "Plan kaydedilemedi",
   'plan.preview': "Önizleme",
   'plan.privacyNote': "Üst projenizin kullanıcı katmanına kaydedildi (config/career-plan.md) — güncellemelerle asla üzerine yazılmaz ve yalnızca çalıştırdığınız LLM istemlerinin içinde gönderilir.",
+  // ── v1.96.0 (Epic 27) — AI kariyer-yönelimi profili ──
+  'nav.orientation': "Kariyer yönelimi",
+  'orient.title': "Kariyer yönelimi",
+  'orient.subtitle': "Hangi yönler size uygun — kendi özgeçmişiniz ve profilinizden çıkarılır: en uygun kariyer vektörleri, önerilen roller, güçlü yönler ve özgeçmişinizin nasıl okunduğu. Bir yansıma, psikometrik bir test değil.",
+  'orient.generate': "Profil oluştur",
+  'orient.running': "Profiliniz oluşturuluyor…",
+  'orient.failed': "Profil oluşturulamadı",
+  'orient.note': "Bu, özgeçmişinizi, profilinizi, two-pager'ınızı ve bellek notunuzu okur — asla gerçek uydurmaz ve asla ölçülmüş test puanları bildirmez. Hiçbir şey kaydedilmez; saklamak istiyorsanız dışa aktarın.",
 };

@@ -11,6 +11,17 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.96.0] — 2026-07-04
+
+**Orientation de carrière (Epic 27).** Une nouvelle page **`#/orientation`** répond à la question « quelles directions me correspondent vraiment ? » — la lecture qu'un test d'orientation vous donnerait, mais déduite de votre propre CV et profil plutôt que d'un questionnaire. Cliquez sur **Générer le profil** et le modèle renvoie vos **vecteurs de carrière les plus adaptés** (lesquels des huit archétypes — Fonctionnaliste, Administrateur, Communicateur, Spécialiste, Analyste, Innovateur, Manager, Entrepreneur — vous correspondent, avec des preuves), une inclinaison de type professionnel, des rôles recommandés, des forces professionnelles liées à votre CV, des tendances de style de travail et des recommandations de développement. C'est une **réflexion d'IA sur la façon dont se lit votre CV — pas un test psychométrique** : elle n'invente jamais de réalisations et ne rapporte jamais de scores numériques comme s'ils étaient mesurés. Exportez-le en Markdown ou PDF ; rien n'est écrit sur le disque.
+
+- Nouvelle route `server/lib/routes/orientation.mjs` (24e module de routes) — `POST /api/orientation/generate` construit l'invite du profil à partir de CV+profil+two-pager+mémoire via la cascade de fournisseurs partagée, avec un repli manuel à copier-coller et **aucune écriture de fichier**.
+- Réutilise `report-export.js` pour Markdown/PDF/copie, dans le groupe de navigation **Développement**.
+- Tests : `tests/orientation-routes.test.mjs` (cadrage de réflexion / aucun score fabriqué, mode manuel amorcé avec CV/profil). 7 nouvelles clés i18n ×16 langues, Aide **§28** ×16.
+
+Nouveau : `#/orientation` ; `server/lib/routes/orientation.mjs`.
+
+
 ## [1.95.0] — 2026-07-04
 
 **Plan de carrière (Epic 26).** Une nouvelle page **`#/career-plan`** transforme votre CV et votre profil en un plan de développement concret et personnalisé. Choisissez un **horizon** (6/12/24 mois) et un **axe** optionnel, et le modèle — en lisant votre CV, votre profil, votre two-pager et votre note de mémoire — rédige un instantané du point de départ, une matrice AFOM forces/croissance, des objectifs en SMART / OKR / WOOP, des trajectoires alternatives, un plan de compétences techniques et comportementales, une **feuille de route mois par mois**, des méthodes de suivi de la progression, des écueils et des leviers de soutien. Il planifie à partir de ce que vos documents montrent réellement et n'invente jamais de faits sur votre parcours. Modifiez-le en ligne, **Enregistrez-le** dans la couche utilisateur (`config/career-plan.md`) et **exportez-le** en Markdown ou PDF.

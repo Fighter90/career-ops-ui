@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.96.0] — 2026-07-04
+
+**Karriereorientering (Epic 27).** En ny side **`#/orientation`** besvarer "hvilke retninger passer faktisk til mig?" — den læsning, du ville få af en erhvervstest, men udledt af dit eget CV og din profil frem for et spørgeskema. Klik på **Generér profil**, og modellen returnerer dine **bedst passende karrierevektorer** (hvilke af de otte arketyper — Funktionalist, Administrator, Kommunikator, Specialist, Analytiker, Innovator, Leder, Iværksætter — der passer, med belæg), en karrieretype-tendens, anbefalede roller, professionelle styrker knyttet til dit CV, arbejdsstilstendenser og udviklingsanbefalinger. Den er en **AI-refleksion af, hvordan dit CV læses — ikke en psykometrisk test**: den opfinder aldrig resultater og rapporterer aldrig numeriske scorer, som om de var målt. Eksportér den til Markdown eller PDF; intet skrives til disk.
+
+- Ny rute `server/lib/routes/orientation.mjs` (24. rutemodul) — `POST /api/orientation/generate` bygger profil-prompten ud fra CV+profil+two-pager+hukommelse via den delte udbyderkaskade, med en kopiér-indsæt-manuel-fallback og **ingen filskrivninger**.
+- Genbruger `report-export.js` til Markdown/PDF/kopiér, under **Vækst**-navigationsgruppen.
+- Tests: `tests/orientation-routes.test.mjs` (refleksionsramme / ingen fabrikerede scorer, CV/profil-seedet manuel tilstand). 7 nye i18n-nøgler ×16 locales, Hjælp **§28** ×16.
+
+Nyt: `#/orientation`; `server/lib/routes/orientation.mjs`.
+
 ## [1.95.0] — 2026-07-04
 
 **Karriereplan (Epic 26).** En ny side **`#/career-plan`** forvandler dit CV og din profil til en konkret, personlig udviklingsplan. Vælg en **horisont** (6/12/24 måneder) og et valgfrit **fokus**, og modellen — der læser dit CV, din profil, din to-pager og din hukommelsesnote — skriver et udgangspunkts-snapshot, en styrke/vækst-SWOT, mål som SMART / OKR / WOOP, alternative udviklingsspor, en plan for hårde/bløde kompetencer, et **måned-for-måned-vejkort**, metoder til at følge fremskridt, faldgruber og støttende tiltag. Den planlægger fremad ud fra det, dine materialer faktisk viser, og opfinder aldrig fakta om din historik. Redigér den inline, **Gem** den til brugerlaget (`config/career-plan.md`), og **eksportér** den til Markdown eller PDF.

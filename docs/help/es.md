@@ -2031,3 +2031,19 @@ El plan aparece en un área de texto editable — ajusta lo que quieras y luego 
 ### Exportar
 
 Usa **Descargar .md**, **Guardar como PDF** o **Copiar** para sacar el plan de la aplicación — los mismos controles de exportación que se usan en todos los informes de IA de la app. El PDF pasa por el generador de PDF en línea existente; el Markdown es una descarga directa.
+
+## 28. Orientación profesional (`#/orientation`)
+
+La página de **Orientación profesional** responde a la pregunta «¿qué direcciones encajan realmente conmigo?» — el tipo de lectura que obtendrías de un test vocacional, pero inferida a partir de tu propio CV y perfil en lugar de un cuestionario.
+
+### Qué produce
+
+Haz clic en **Generar perfil** y el modelo lee tu CV, tu perfil, tu two-pager y tu nota de memoria y redacta un perfil de orientación profesional: tus **vectores de carrera con mejor ajuste** (cuáles de los ocho arquetipos — Funcionalista, Administrador, Comunicador, Especialista, Analista, Innovador, Gestor, Emprendedor — encajan mejor, con evidencia de tu CV), una **inclinación de tipo profesional**, un conjunto de **roles recomendados**, tus **fortalezas profesionales** ligadas a lo que muestra el CV, **tendencias de estilo de trabajo** («cómo se lee tu CV» en unos pocos ejes) y **recomendaciones de desarrollo** para ampliar tu ajuste.
+
+### Cómo se genera
+
+Es una **reflexión de IA sobre cómo se lee tu CV — no un test psicométrico.** El prompt se fundamenta por completo en tus propios materiales: no inventa logros y nunca informa puntuaciones numéricas de test como si fueran medidas. Sin ninguna clave de API configurada obtienes un prompt para copiar y pegar y ejecutar en cualquier LLM en lugar de un perfil en vivo. No se escribe nada en el disco — el perfil se genera de nuevo cada vez.
+
+### Exportar
+
+Usa **Descargar .md**, **Guardar como PDF** o **Copiar** para conservar el perfil — los mismos controles de exportación que se usan en los informes de IA de la app. El PDF pasa por el generador de PDF en línea existente; el Markdown es una descarga directa.

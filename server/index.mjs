@@ -30,6 +30,7 @@ import { registerNetworkingRoutes } from './lib/routes/networking.mjs';
 import { registerCvStudioRoutes } from './lib/routes/cv-studio.mjs';
 import { registerMemoryRoutes } from './lib/routes/memory.mjs';
 import { registerCareerPlanRoutes } from './lib/routes/career-plan.mjs';
+import { registerOrientationRoutes } from './lib/routes/orientation.mjs';
 import { registerHealthRoutes } from './lib/routes/health.mjs';
 import { registerHelpRoutes } from './lib/routes/help.mjs';
 import { registerJdsRoutes } from './lib/routes/jds.mjs';
@@ -158,6 +159,7 @@ export function createApp() {
   registerCvStudioRoutes(app);        // v1.92.0 — CV Studio (humanize / voice match)
   registerMemoryRoutes(app);          // v1.93.0 — memory layer (about-me note → every AI request)
   registerCareerPlanRoutes(app);      // v1.95.0 — AI career development plan (save to config/career-plan.md)
+  registerOrientationRoutes(app);     // v1.96.0 — AI career-orientation profile (generate + export, no writes)
   registerRunnerRoutes(app);          // buffered /api/run/* + streaming /api/stream/{scan,liveness,pdf} + /api/output/pdfs
   registerScanRoutes(app);            // in-process /api/stream/scan-{ru,en} + /api/scan-results
   registerStatsRoutes(app);           // v1.86.0 — target-roles stats snapshot store + trend

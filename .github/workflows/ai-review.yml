@@ -82,15 +82,23 @@ env:
       2. PARENT BOUNDARY (hard rule 1): nothing outside web-ui/
          may be edited by code. Flag any such change.
       3. i18n: every new user-facing string goes through I18n.t()
-         AND has entries in ALL 8 locales (en, es, pt-BR, ko, ja,
-         ru, zh-CN, zh-TW). A missing locale is a BLOCKER call-out.
+         AND has entries in ALL 16 locales (en, es, pt-BR, ko, ja,
+         ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, tr). A
+         missing locale is a BLOCKER call-out.
       4. TESTS: every fix/feature needs >=1 CI-isolated test that
          can't assume the parent project is present. No mocks of
          internal collaborators.
       5. CONVENTIONS: conventional-commit subject
          (feat|fix|refactor|docs|test|chore|perf|ci[!]); files
-         < 400 lines target; CHANGELOG parity across all 8 locale
+         < 400 lines target; CHANGELOG parity across all 16 locale
          files if a release; ESM + node: builtin prefixes.
+
+    NOTE: the diff below is ordered code-first (server/, public/,
+    tests/, scripts/, .github/) THEN docs/locales, so the 200 KB cap
+    drops bulky localized CHANGELOG/README churn — which is already
+    parity-gated by CI tests — rather than the security-relevant code.
+    If a code file you'd expect is genuinely absent, say so; do not
+    assume it was hidden by truncation.
       6. CORRECTNESS: real bugs, race conditions, unhandled
          rejections, broken error paths, dead/unreachable code.
 
@@ -125,7 +133,11 @@ jobs:
             BASE="$BEFORE"
           fi
           echo "Reviewing $BASE..$SHA"
-          git diff --no-color "$BASE" "$SHA" > /tmp/pr.diff || true
+          # Order the diff code-first so the 200 KB cap (below) never
+          # truncates security-relevant files behind bulky localized
+          # CHANGELOG/README churn (parity-gated by CI tests anyway).
+          git diff --no-color "$BASE" "$SHA" -- server public tests scripts .github > /tmp/pr.diff || true
+          git diff --no-color "$BASE" "$SHA" -- . ':!server' ':!public' ':!tests' ':!scripts' ':!.github' >> /tmp/pr.diff || true
           BYTES=$(wc -c < /tmp/pr.diff | tr -d ' ')
           # Cap at 200 KB so a big release commit can't overflow the
           # model context / API request body.
@@ -234,7 +246,11 @@ jobs:
         run: |
           set -euo pipefail
           echo "Reviewing $BASE_SHA..$HEAD_SHA"
-          git diff --no-color "$BASE_SHA" "$HEAD_SHA" > /tmp/pr.diff || true
+          # Order the diff code-first so the 200 KB cap (below) never
+          # truncates security-relevant files behind bulky localized
+          # CHANGELOG/README churn (parity-gated by CI tests anyway).
+          git diff --no-color "$BASE_SHA" "$HEAD_SHA" -- server public tests scripts .github > /tmp/pr.diff || true
+          git diff --no-color "$BASE_SHA" "$HEAD_SHA" -- . ':!server' ':!public' ':!tests' ':!scripts' ':!.github' >> /tmp/pr.diff || true
           BYTES=$(wc -c < /tmp/pr.diff | tr -d ' ')
           if [ "$BYTES" -gt 204800 ]; then
             head -c 204800 /tmp/pr.diff > /tmp/pr.diff.cap

@@ -2171,3 +2171,19 @@ Plan, düzenlenebilir bir metin alanında belirir — istediğin her şeyi deği
 ### Dışa aktarma
 
 Planı uygulamanın dışına almak için **.md indir**, **PDF olarak kaydet** veya **Kopyala**yı kullan — uygulamanın yapay zeka raporlarının genelinde kullanılan aynı dışa aktarma denetimleridir. PDF, mevcut satır içi PDF oluşturucudan geçer; Markdown ise doğrudan bir indirmedir.
+
+## 28. Kariyer yönelimi (`#/orientation`)
+
+**Kariyer yönelimi** sayfası "hangi yönler bana gerçekten uygun?" sorusunu yanıtlar — bir meslek testinden alacağın türden bir okuma, ama bir anketten değil, kendi özgeçmişin ve profilinden çıkarılır.
+
+### Neler üretir
+
+**Profil oluştur**a tıkla; model özgeçmişini, profilini, two-pager'ını ve bellek notunu okur ve bir kariyer-yönelimi profili yazar: **en uygun kariyer vektörlerin** (sekiz arketipten — İşlevselci, İdareci, İletişimci, Uzman, Analist, Yenilikçi, Yönetici, Girişimci — hangileri en iyi oturuyor, özgeçmişinden kanıtlarla), bir **kariyer-tipi eğilimi**, bir dizi **önerilen rol**, özgeçmişinin gösterdiğine bağlı **mesleki güçlü yönlerin**, **çalışma-stili eğilimlerin** (birkaç eksende "özgeçmişinin nasıl okunduğu") ve uyumunu genişletmek için **gelişim önerileri**.
+
+### Nasıl oluşturulur
+
+Bu, **özgeçmişinin nasıl okunduğuna dair bir yapay zeka yansımasıdır — psikometrik bir test değil.** İstem tamamen kendi materyallerine dayanır: başarı uydurmaz ve sayısal test puanlarını asla ölçülmüş gibi bildirmez. Ayarlanmış bir API anahtarı yoksa, canlı bir profil yerine herhangi bir LLM'de çalıştırabileceğin kopyala-yapıştır bir istem alırsın. Diske hiçbir şey yazılmaz — profil her seferinde yeniden oluşturulur.
+
+### Dışa aktarma
+
+Profili saklamak için **.md indir**, **PDF olarak kaydet** veya **Kopyala**yı kullan — uygulamanın yapay zeka raporlarının genelinde kullanılan aynı dışa aktarma denetimleridir. PDF, mevcut satır içi PDF oluşturucudan geçer; Markdown ise doğrudan bir indirmedir.

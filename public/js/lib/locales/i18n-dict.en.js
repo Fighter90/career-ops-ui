@@ -961,4 +961,12 @@ window.__I18N_DICT_EN = {
   'plan.saveFailed': "Could not save the plan",
   'plan.preview': "Preview",
   'plan.privacyNote': "Saved to your parent project’s user layer (config/career-plan.md) — never overwritten by updates, and only ever sent inside the LLM prompts you run.",
+  // ── v1.96.0 (Epic 27) — AI career-orientation profile ──
+  'nav.orientation': "Career orientation",
+  'orient.title': "Career orientation",
+  'orient.subtitle': "Which directions fit you — inferred from your own CV and profile: best-fit career vectors, recommended roles, strengths, and how your CV reads. A reflection, not a psychometric test.",
+  'orient.generate': "Generate profile",
+  'orient.running': "Generating your profile…",
+  'orient.failed': "Could not generate the profile",
+  'orient.note': "This reads your CV, profile, two-pager, and memory note — it never invents facts and never reports measured test scores. Nothing is saved; export it if you want to keep it.",
 };

@@ -9,6 +9,17 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.96.0] — 2026-07-04
+
+**Orientacja zawodowa (Epic 27).** Nowa strona **`#/orientation`** odpowiada na pytanie „które kierunki naprawdę do mnie pasują?" — taki odczyt, jaki dałby test predyspozycji zawodowych, ale wywnioskowany z Twojego własnego CV i profilu, a nie z kwestionariusza. Kliknij **Generuj profil**, a model zwróci Twoje **najlepiej dopasowane wektory kariery** (który z ośmiu archetypów — Funkcjonalista, Administrator, Komunikator, Specjalista, Analityk, Innowator, Menedżer, Przedsiębiorca — pasuje, wraz z dowodami), skłonność do typu kariery, rekomendowane role, mocne strony zawodowe powiązane z Twoim CV, tendencje w stylu pracy oraz rekomendacje rozwojowe. To **refleksja AI nad tym, jak czyta się Twoje CV — nie test psychometryczny**: nigdy nie zmyśla osiągnięć i nigdy nie podaje liczbowych wyników tak, jakby były zmierzone. Wyeksportuj profil do Markdown lub PDF; nic nie jest zapisywane na dysku.
+
+- Nowa trasa `server/lib/routes/orientation.mjs` (24. moduł tras) — `POST /api/orientation/generate` buduje prompt profilu z CV+profilu+two-pagera+pamięci poprzez współdzieloną kaskadę dostawców, z ręcznym fallbackiem do skopiowania i wklejenia oraz **bez zapisów na dysku**.
+- Ponownie wykorzystuje `report-export.js` do Markdown/PDF/kopiowania, w grupie nawigacyjnej **Wzrost**.
+- Testy: `tests/orientation-routes.test.mjs` (ramka refleksji / brak fabrykowanych wyników, tryb ręczny wypełniony z CV/profilu). 7 nowych kluczy i18n ×16 locales, pomoc **§28** ×16.
+
+Nowe: `#/orientation`; `server/lib/routes/orientation.mjs`.
+
+
 ## [1.95.0] — 2026-07-04
 
 **Plan kariery (Epic 26).** Nowa strona **`#/career-plan`** zamienia Twoje CV i profil w konkretny, spersonalizowany plan rozwoju. Wybierz **horyzont** (6/12/24 miesiące) oraz opcjonalny **fokus**, a model — czytając Twoje CV, profil, two-pager i notatkę pamięci — pisze migawkę punktu wyjścia, SWOT mocnych stron i wzrostu, cele w formacie SMART / OKR / WOOP, alternatywne trajektorie, plan umiejętności hard/soft, **mapę drogową miesiąc po miesiącu**, metody śledzenia postępów, pułapki oraz kroki wspierające. Planuje do przodu na podstawie tego, co faktycznie pokazują Twoje materiały, i nigdy nie zmyśla faktów o Twojej historii. Edytuj go w miejscu, **Zapisz** go do warstwy użytkownika (`config/career-plan.md`) i **wyeksportuj** go do Markdown lub PDF.

@@ -2089,3 +2089,19 @@ Planen lander i et redigerbart tekstfelt — juster hvad som helst, og klik dere
 ### Eksport
 
 Brug **Download .md**, **Gem som PDF** eller **Kopiér** for at tage planen ud af appen — de samme eksportknapper, der bruges på tværs af appens AI-rapporter. PDF'en går gennem den eksisterende inline-PDF-generator; Markdown er en direkte download.
+
+## 28. Karriereorientering (`#/orientation`)
+
+Siden **Karriereorientering** besvarer "hvilke retninger passer faktisk til mig?" — den slags læsning, du ville få af en erhvervstest, men udledt af dit eget CV og din profil frem for et spørgeskema.
+
+### Hvad den producerer
+
+Klik på **Generér profil**, og modellen læser dit CV, din profil, din two-pager og din hukommelsesnote og skriver en karriereorienteringsprofil: dine **bedst passende karrierevektorer** (hvilke af de otte arketyper — Funktionalist, Administrator, Kommunikator, Specialist, Analytiker, Innovator, Leder, Iværksætter — der passer bedst, med belæg fra dit CV), en **karrieretype-tendens**, et sæt **anbefalede roller**, dine **professionelle styrker** knyttet til det, CV'et viser, **arbejdsstilstendenser** ("hvordan dit CV læses" på nogle få akser) og **udviklingsanbefalinger** til at udvide din pasform.
+
+### Hvordan den genereres
+
+Den er en **AI-refleksion af, hvordan dit CV læses — ikke en psykometrisk test.** Prompten er fuldt ud forankret i dine egne materialer: den opfinder ikke resultater, og den rapporterer aldrig numeriske testresultater, som om de var målt. Uden en API-nøgle sat får du en kopiér-indsæt-prompt at køre i en vilkårlig LLM i stedet for en live profil. Intet skrives til disk — profilen genereres på ny hver gang.
+
+### Eksport
+
+Brug **Download .md**, **Gem som PDF** eller **Kopiér** for at beholde profilen — de samme eksportknapper, der bruges på tværs af appens AI-rapporter. PDF'en går gennem den eksisterende inline-PDF-generator; Markdown er en direkte download.

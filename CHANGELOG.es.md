@@ -11,6 +11,17 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.96.0] — 2026-07-04
+
+**Orientación profesional (Epic 27).** Una nueva página **`#/orientation`** responde a la pregunta «¿qué direcciones encajan realmente conmigo?» — la lectura que obtendrías de un test vocacional, pero inferida a partir de tu propio CV y perfil en lugar de un cuestionario. Haz clic en **Generar perfil** y el modelo devuelve tus **vectores de carrera con mejor ajuste** (cuáles de los ocho arquetipos — Funcionalista, Administrador, Comunicador, Especialista, Analista, Innovador, Gestor, Emprendedor — encajan, con evidencia), una inclinación de tipo profesional, roles recomendados, fortalezas profesionales ligadas a tu CV, tendencias de estilo de trabajo y recomendaciones de desarrollo. Es una **reflexión de IA sobre cómo se lee tu CV — no un test psicométrico**: nunca inventa logros ni informa puntuaciones numéricas como si fueran medidas. Expórtalo a Markdown o PDF; no se escribe nada en el disco.
+
+- Nueva ruta `server/lib/routes/orientation.mjs` (24.º módulo de rutas) — `POST /api/orientation/generate` construye el prompt del perfil a partir de CV+perfil+two-pager+memoria mediante la cascada de proveedores compartida, con un fallback manual de copiar y pegar y **sin escritura de archivos**.
+- Reutiliza `report-export.js` para Markdown/PDF/copia, dentro del grupo de navegación **Desarrollo**.
+- Tests: `tests/orientation-routes.test.mjs` (enfoque de reflexión / sin puntuaciones inventadas, modo manual sembrado con CV/perfil). 7 nuevas claves i18n ×16 idiomas, Ayuda **§28** ×16.
+
+Nuevo: `#/orientation`; `server/lib/routes/orientation.mjs`.
+
+
 ## [1.95.0] — 2026-07-04
 
 **Plan de carrera (Epic 26).** Una nueva página **`#/career-plan`** convierte tu CV y tu perfil en un plan de desarrollo concreto y personalizado. Elige un **horizonte** (6/12/24 meses) y un **enfoque** opcional, y el modelo — leyendo tu CV, tu perfil, tu two-pager y tu nota de memoria — redacta una instantánea del punto de partida, un DAFO de fortalezas/crecimiento, objetivos como SMART / OKR / WOOP, trayectorias alternativas, un plan de competencias técnicas y blandas, una **hoja de ruta mes a mes**, métodos de seguimiento del progreso, escollos y palancas de apoyo. Planifica hacia adelante a partir de lo que tus materiales realmente muestran y nunca inventa datos sobre tu historial. Edítalo en línea, **Guárdalo** en la capa de usuario (`config/career-plan.md`) y **expórtalo** a Markdown o PDF.

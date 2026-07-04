@@ -2126,3 +2126,19 @@ The plan lands in an editable text area — tweak anything, then click **Save pl
 ### Exporting
 
 Use **Download .md**, **Save as PDF**, or **Copy** to take the plan out of the app — the same export controls used across the app's AI reports. The PDF goes through the existing inline-PDF generator; the Markdown is a direct download.
+
+## 28. Career orientation (`#/orientation`)
+
+The **Career orientation** page answers "which directions actually fit me?" — the kind of read you'd get from a vocational test, but inferred from your own CV and profile rather than a questionnaire.
+
+### What it produces
+
+Click **Generate profile** and the model reads your CV, profile, two-pager, and memory note and writes a career-orientation profile: your **best-fit career vectors** (which of the eight archetypes — Functionalist, Administrator, Communicator, Specialist, Analyst, Innovator, Manager, Entrepreneur — fit best, with evidence from your CV), a **career-type leaning**, a set of **recommended roles**, your **professional strengths** tied to what the CV shows, **working-style tendencies** ("how your CV reads" on a few axes), and **development recommendations** to broaden your fit.
+
+### How it's generated
+
+It is an **AI reflection of how your CV reads — not a psychometric test.** The prompt is grounded entirely in your own materials: it does not invent achievements and it never reports numeric test scores as if they were measured. With no API key set you get a copy-paste prompt to run in any LLM instead of a live profile. Nothing is written to disk — the profile is generated fresh each time.
+
+### Exporting
+
+Use **Download .md**, **Save as PDF**, or **Copy** to keep the profile — the same export controls used across the app's AI reports. The PDF goes through the existing inline-PDF generator; the Markdown is a direct download.
