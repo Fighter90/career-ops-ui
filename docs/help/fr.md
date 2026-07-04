@@ -2133,3 +2133,19 @@ Le plan apparaît dans une zone de texte modifiable — ajustez ce que vous voul
 ### Exporter
 
 Utilisez **Télécharger .md**, **Enregistrer en PDF** ou **Copier** pour sortir le plan de l'application — les mêmes commandes d'export que celles utilisées dans tous les rapports IA de l'application. Le PDF passe par le générateur PDF inline existant ; le Markdown est un téléchargement direct.
+
+## 28. Orientation de carrière (`#/orientation`)
+
+La page **Orientation de carrière** répond à la question « quelles directions me correspondent vraiment ? » — le genre de lecture qu'un test d'orientation vous donnerait, mais déduite de votre propre CV et profil plutôt que d'un questionnaire.
+
+### Ce qu'elle produit
+
+Cliquez sur **Générer le profil** et le modèle lit votre CV, votre profil, votre two-pager et votre note de mémoire et rédige un profil d'orientation de carrière : vos **vecteurs de carrière les plus adaptés** (lesquels des huit archétypes — Fonctionnaliste, Administrateur, Communicateur, Spécialiste, Analyste, Innovateur, Manager, Entrepreneur — vous correspondent le mieux, avec des preuves tirées de votre CV), une **inclinaison de type professionnel**, un ensemble de **rôles recommandés**, vos **forces professionnelles** liées à ce que montre le CV, des **tendances de style de travail** (« comment se lit votre CV » sur quelques axes) et des **recommandations de développement** pour élargir votre adéquation.
+
+### Comment elle est générée
+
+C'est une **réflexion d'IA sur la façon dont se lit votre CV — pas un test psychométrique.** L'invite s'appuie entièrement sur vos propres documents : elle n'invente pas de réalisations et ne rapporte jamais de scores numériques de test comme s'ils étaient mesurés. Sans clé API configurée, vous obtenez une invite à copier-coller à exécuter dans n'importe quel LLM au lieu d'un profil en direct. Rien n'est écrit sur le disque — le profil est généré à neuf à chaque fois.
+
+### Exporter
+
+Utilisez **Télécharger .md**, **Enregistrer en PDF** ou **Copier** pour conserver le profil — les mêmes commandes d'export que celles utilisées dans les rapports IA de l'application. Le PDF passe par le générateur PDF inline existant ; le Markdown est un téléchargement direct.

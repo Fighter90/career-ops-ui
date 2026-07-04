@@ -2230,3 +2230,19 @@ Der Plan landet in einem bearbeitbaren Textfeld — passe alles an und klicke da
 ### Exportieren
 
 Verwende **.md herunterladen**, **Als PDF speichern** oder **Kopieren**, um den Plan aus der App herauszuholen — dieselben Export-Steuerelemente, die überall in den KI-Berichten der App verwendet werden. Das PDF durchläuft den bestehenden Inline-PDF-Generator; das Markdown ist ein direkter Download.
+
+## 28. Berufsorientierung (`#/orientation`)
+
+Die Seite **Berufsorientierung** beantwortet die Frage „welche Richtungen passen wirklich zu mir?" — die Art von Einschätzung, die dir ein Berufstest liefern würde, aber abgeleitet aus deinem eigenen Lebenslauf und Profil statt aus einem Fragebogen.
+
+### Was sie erzeugt
+
+Klicke auf **Profil generieren** und das Modell liest deinen Lebenslauf, dein Profil, deinen Two-Pager und deine Memory-Notiz und schreibt ein Berufsorientierungsprofil: deine **am besten passenden Karrierevektoren** (welche der acht Archetypen — Funktionalist, Administrator, Kommunikator, Spezialist, Analyst, Innovator, Manager, Unternehmer — am besten passen, mit Belegen aus deinem Lebenslauf), eine **Neigung zum Berufstyp**, eine Reihe von **empfohlenen Rollen**, deine **beruflichen Stärken**, verknüpft mit dem, was der Lebenslauf zeigt, **Tendenzen im Arbeitsstil** („wie sich dein Lebenslauf liest" auf einigen Achsen) und **Entwicklungsempfehlungen**, um deine Passung zu erweitern.
+
+### Wie sie generiert wird
+
+Es ist eine **KI-Reflexion darüber, wie sich dein Lebenslauf liest — kein psychometrischer Test.** Der Prompt stützt sich vollständig auf deine eigenen Unterlagen: er erfindet keine Erfolge und meldet nie numerische Testwerte, als wären sie gemessen. Ohne gesetzten API-Schlüssel erhältst du statt eines Live-Profils einen Prompt zum Kopieren und Einfügen, den du in einem beliebigen LLM ausführen kannst. Nichts wird auf die Festplatte geschrieben — das Profil wird jedes Mal neu generiert.
+
+### Exportieren
+
+Verwende **.md herunterladen**, **Als PDF speichern** oder **Kopieren**, um das Profil zu behalten — dieselben Export-Steuerelemente, die überall in den KI-Berichten der App verwendet werden. Das PDF durchläuft den bestehenden Inline-PDF-Generator; das Markdown ist ein direkter Download.

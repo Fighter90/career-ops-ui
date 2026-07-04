@@ -2033,3 +2033,19 @@ Plan pojawia się w edytowalnym polu tekstowym — dopracuj cokolwiek, a następ
 ### Eksportowanie
 
 Użyj **Pobierz .md**, **Zapisz jako PDF** lub **Kopiuj**, aby wynieść plan poza aplikację — te same kontrolki eksportu, których używa się w raportach AI w całej aplikacji. PDF przechodzi przez istniejący wbudowany generator PDF; Markdown to bezpośrednie pobranie.
+
+## 28. Orientacja zawodowa (`#/orientation`)
+
+Strona **Orientacja zawodowa** odpowiada na pytanie „które kierunki naprawdę do mnie pasują?" — taki odczyt, jaki dałby test predyspozycji zawodowych, ale wywnioskowany z Twojego własnego CV i profilu, a nie z kwestionariusza.
+
+### Co generuje
+
+Kliknij **Generuj profil**, a model przeczyta Twoje CV, profil, two-pager i notatkę pamięci i napisze profil orientacji zawodowej: Twoje **najlepiej dopasowane wektory kariery** (który z ośmiu archetypów — Funkcjonalista, Administrator, Komunikator, Specjalista, Analityk, Innowator, Menedżer, Przedsiębiorca — pasuje najlepiej, wraz z dowodami z Twojego CV), **skłonność do typu kariery**, zestaw **rekomendowanych ról**, Twoje **mocne strony zawodowe** powiązane z tym, co pokazuje CV, **tendencje w stylu pracy** („jak czyta się Twoje CV" na kilku osiach) oraz **rekomendacje rozwojowe**, które poszerzą Twoje dopasowanie.
+
+### Jak jest generowany
+
+To **refleksja AI nad tym, jak czyta się Twoje CV — nie test psychometryczny.** Prompt jest w całości oparty na Twoich własnych materiałach: nie zmyśla osiągnięć i nigdy nie podaje liczbowych wyników testów tak, jakby były zmierzone. Bez ustawionego klucza API otrzymasz zamiast profilu na żywo prompt do skopiowania i wklejenia, który uruchomisz w dowolnym LLM. Nic nie jest zapisywane na dysku — profil jest generowany od nowa za każdym razem.
+
+### Eksportowanie
+
+Użyj **Pobierz .md**, **Zapisz jako PDF** lub **Kopiuj**, aby zachować profil — te same kontrolki eksportu, których używa się w raportach AI w całej aplikacji. PDF przechodzi przez istniejący wbudowany generator PDF; Markdown to bezpośrednie pobranie.

@@ -8,6 +8,17 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.96.0] — 2026-07-04
+
+**Career orientation (Epic 27).** A new **`#/orientation`** page answers "which directions actually fit me?" — the read you'd get from a vocational test, but inferred from your own CV and profile instead of a questionnaire. Click **Generate profile** and the model returns your **best-fit career vectors** (which of the eight archetypes — Functionalist, Administrator, Communicator, Specialist, Analyst, Innovator, Manager, Entrepreneur — fit, with evidence), a career-type leaning, recommended roles, professional strengths tied to your CV, working-style tendencies, and development recommendations. It is an **AI reflection of how your CV reads — not a psychometric test**: it never invents achievements and never reports numeric scores as if measured. Export it to Markdown or PDF; nothing is written to disk.
+
+- New route `server/lib/routes/orientation.mjs` (24th route module) — `POST /api/orientation/generate` builds the profile prompt from CV+profile+two-pager+memory via the shared provider cascade, with a copy-paste manual fallback and **no file writes**.
+- Reuses `report-export.js` for Markdown/PDF/copy, under the **Growth** nav group.
+- Tests: `tests/orientation-routes.test.mjs` (reflection framing / no fabricated scores, CV/profile-seeded manual mode). 7 new i18n keys ×16 locales, Help **§28** ×16.
+
+New: `#/orientation`; `server/lib/routes/orientation.mjs`.
+
+
 ## [1.95.0] — 2026-07-04
 
 **Career plan (Epic 26).** A new **`#/career-plan`** page turns your CV and profile into a concrete, personalized development plan. Pick a **horizon** (6/12/24 months) and an optional **focus**, and the model — reading your CV, profile, two-pager, and memory note — writes a starting-point snapshot, a strengths/growth SWOT, goals as SMART / OKR / WOOP, alternative trajectories, a hard/soft skill plan, a **month-by-month roadmap**, progress-tracking methods, pitfalls, and support moves. It plans forward from what your materials actually show and never invents facts about your history. Edit it inline, **Save** it to the user layer (`config/career-plan.md`), and **export** it to Markdown or PDF.

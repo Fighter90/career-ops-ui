@@ -955,4 +955,12 @@ window.__I18N_DICT_FR = {
   'plan.saveFailed': "Impossible d’enregistrer le plan",
   'plan.preview': "Aperçu",
   'plan.privacyNote': "Enregistré dans la couche utilisateur de votre projet parent (config/career-plan.md) — jamais écrasé par les mises à jour, et envoyé uniquement à l’intérieur des prompts LLM que vous exécutez.",
+  // ── Orientation de carrière (v1.96.0) ──
+  'nav.orientation': "Orientation de carrière",
+  'orient.title': "Orientation de carrière",
+  'orient.subtitle': "Quelles directions vous correspondent — déduites de votre propre CV et profil : les vecteurs de carrière les plus adaptés, des rôles recommandés, vos forces et la façon dont votre CV se lit. Une réflexion, pas un test psychométrique.",
+  'orient.generate': "Générer le profil",
+  'orient.running': "Génération de votre profil…",
+  'orient.failed': "Impossible de générer le profil",
+  'orient.note': "Ceci lit votre CV, votre profil, votre two-pager et votre note de mémoire — il n’invente jamais de faits et ne rapporte jamais de scores de test mesurés. Rien n’est enregistré ; exportez-le si vous souhaitez le conserver.",
 };

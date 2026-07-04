@@ -2040,3 +2040,19 @@ O plano aparece em uma área de texto editável — ajuste o que quiser e clique
 ### Exportar
 
 Use **Baixar .md**, **Salvar como PDF** ou **Copiar** para levar o plano para fora do aplicativo — os mesmos controles de exportação usados em todos os relatórios de IA do app. O PDF passa pelo gerador de PDF inline existente; o Markdown é um download direto.
+
+## 28. Orientação de carreira (`#/orientation`)
+
+A página de **Orientação de carreira** responde à pergunta "quais direções realmente combinam comigo?" — o tipo de leitura que você teria de um teste vocacional, mas inferida a partir do seu próprio currículo e perfil em vez de um questionário.
+
+### O que ela produz
+
+Clique em **Gerar perfil** e o modelo lê seu currículo, seu perfil, seu two-pager e sua nota de memória e escreve um perfil de orientação de carreira: seus **vetores de carreira com melhor ajuste** (quais dos oito arquétipos — Funcionalista, Administrador, Comunicador, Especialista, Analista, Inovador, Gestor, Empreendedor — combinam melhor, com evidências do seu currículo), uma **inclinação de tipo profissional**, um conjunto de **funções recomendadas**, seus **pontos fortes profissionais** ligados ao que o currículo mostra, **tendências de estilo de trabalho** ("como o seu currículo é lido" em alguns eixos) e **recomendações de desenvolvimento** para ampliar seu ajuste.
+
+### Como ela é gerada
+
+É uma **reflexão de IA sobre como o seu currículo é lido — não um teste psicométrico.** O prompt se apoia inteiramente nos seus próprios materiais: não inventa conquistas e nunca informa pontuações numéricas de teste como se fossem medidas. Sem nenhuma chave de API configurada, você recebe um prompt para copiar e colar e executar em qualquer LLM em vez de um perfil ao vivo. Nada é gravado no disco — o perfil é gerado do zero a cada vez.
+
+### Exportar
+
+Use **Baixar .md**, **Salvar como PDF** ou **Copiar** para conservar o perfil — os mesmos controles de exportação usados nos relatórios de IA do app. O PDF passa pelo gerador de PDF inline existente; o Markdown é um download direto.

@@ -955,4 +955,12 @@ window.__I18N_DICT_PT_BR = {
   'plan.saveFailed': "Não foi possível salvar o plano",
   'plan.preview': "Pré-visualização",
   'plan.privacyNote': "Salvo na camada de usuário do seu projeto principal (config/career-plan.md) — nunca é sobrescrito pelas atualizações e só é enviado dentro dos prompts do LLM que você executa.",
+  // ── Orientação de carreira (v1.96.0) ──
+  'nav.orientation': "Orientação de carreira",
+  'orient.title': "Orientação de carreira",
+  'orient.subtitle': "Quais direções combinam com você — inferidas a partir do seu próprio CV e perfil: os vetores de carreira com melhor ajuste, funções recomendadas, pontos fortes e como o seu CV é lido. Uma reflexão, não um teste psicométrico.",
+  'orient.generate': "Gerar perfil",
+  'orient.running': "Gerando seu perfil…",
+  'orient.failed': "Não foi possível gerar o perfil",
+  'orient.note': "Isto lê seu CV, perfil, two-pager e nota de memória — nunca inventa fatos nem informa pontuações de teste medidas. Nada é salvo; exporte-o se quiser mantê-lo.",
 };

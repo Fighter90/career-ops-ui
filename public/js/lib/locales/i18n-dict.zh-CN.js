@@ -993,4 +993,12 @@ window.__I18N_DICT_ZH_CN = {
   'plan.saveFailed': "无法保存计划",
   'plan.preview': "预览",
   'plan.privacyNote': "保存到你父项目的用户层（config/career-plan.md）——永远不会被更新覆盖，且仅在你运行的 LLM 提示内部发送。",
+  // ── 职业方向 (v1.96.0) ──
+  'nav.orientation': "职业方向",
+  'orient.title': "职业方向",
+  'orient.subtitle': "哪些方向适合你——从你自己的 CV 和档案中推断：最契合的职业向量、推荐职位、优势,以及你的 CV 读起来如何。这是一种反思,而非心理测验。",
+  'orient.generate': "生成画像",
+  'orient.running': "正在生成你的画像…",
+  'orient.failed': "无法生成画像",
+  'orient.note': "它会读取你的 CV、档案、两页纸和记忆笔记——绝不虚构事实,也绝不报告测量得出的测验分数。不会保存任何内容;若想留存,请导出。",
 };

@@ -2,6 +2,14 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.96.0] — 2026-07-04
+### Hinzugefügt
+- **Berufsorientierung (Epic 27).** Eine neue Seite **`#/orientation`** beantwortet die Frage „welche Richtungen passen wirklich zu mir?" — die Einschätzung, die dir ein Berufstest liefern würde, aber abgeleitet aus deinem eigenen Lebenslauf und Profil statt aus einem Fragebogen. Klicke auf **Profil generieren** und das Modell liefert deine **am besten passenden Karrierevektoren** (welche der acht Archetypen — Funktionalist, Administrator, Kommunikator, Spezialist, Analyst, Innovator, Manager, Unternehmer — passen, mit Belegen), eine Neigung zum Berufstyp, empfohlene Rollen, mit deinem Lebenslauf verknüpfte berufliche Stärken, Tendenzen im Arbeitsstil und Entwicklungsempfehlungen. Es ist eine **KI-Reflexion darüber, wie sich dein Lebenslauf liest — kein psychometrischer Test**: es erfindet nie Erfolge und meldet nie numerische Werte, als wären sie gemessen. Exportiere es nach Markdown oder PDF; nichts wird auf die Festplatte geschrieben.
+  - Neue Route `server/lib/routes/orientation.mjs` (24. Routenmodul) — `POST /api/orientation/generate` baut den Profil-Prompt aus Lebenslauf+Profil+two-pager+Speichernotiz über die geteilte Anbieter-Kaskade, mit einem manuellen Copy-Paste-Fallback und **ohne Dateischreibvorgänge**.
+  - Verwendet `report-export.js` für Markdown/PDF/Kopieren wieder, innerhalb der Navigationsgruppe **Entwicklung**.
+  - Tests: `tests/orientation-routes.test.mjs` (Reflexions-Rahmung / keine erfundenen Werte, mit Lebenslauf/Profil geseedeter manueller Modus). 7 neue i18n-Schlüssel ×16 Sprachen, Hilfe **§28** ×16.
+- Neu: `#/orientation`; `server/lib/routes/orientation.mjs`.
+
 ## [1.95.0] — 2026-07-04
 ### Hinzugefügt
 - **Karriereplan (Epic 26).** Eine neue Seite **`#/career-plan`** verwandelt deinen Lebenslauf und dein Profil in einen konkreten, personalisierten Entwicklungsplan. Wähle einen **Horizont** (6/12/24 Monate) und einen optionalen **Fokus**, und das Modell — das deinen Lebenslauf, dein Profil, deinen two-pager und deine Speichernotiz liest — schreibt eine Ausgangspunkt-Momentaufnahme, eine SWOT zu Stärken/Wachstum, Ziele als SMART / OKR / WOOP, alternative Trajektorien, einen Plan für Hard-/Soft-Skills, eine **Monat-für-Monat-Roadmap**, Methoden zur Fortschrittsverfolgung, Fallstricke und unterstützende Schritte. Es plant von dem aus vorwärts, was deine Materialien tatsächlich zeigen, und erfindet nie Fakten über deine Geschichte. Bearbeite ihn inline, **Speichere** ihn in die Nutzerschicht (`config/career-plan.md`) und **exportiere** ihn nach Markdown oder PDF.

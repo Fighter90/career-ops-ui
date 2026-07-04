@@ -955,4 +955,12 @@ window.__I18N_DICT_DE = {
   'plan.saveFailed': "Der Plan konnte nicht gespeichert werden",
   'plan.preview': "Vorschau",
   'plan.privacyNote': "Gespeichert in der Benutzerebene Ihres übergeordneten Projekts (config/career-plan.md) — wird bei Updates nie überschrieben und nur innerhalb der LLM-Prompts gesendet, die Sie ausführen.",
+  // ── Berufsorientierung (v1.96.0) ──
+  'nav.orientation': "Berufsorientierung",
+  'orient.title': "Berufsorientierung",
+  'orient.subtitle': "Welche Richtungen zu Ihnen passen — abgeleitet aus Ihrem eigenen Lebenslauf und Profil: die am besten passenden Karrierevektoren, empfohlene Rollen, Stärken und wie sich Ihr Lebenslauf liest. Eine Reflexion, kein psychometrischer Test.",
+  'orient.generate': "Profil generieren",
+  'orient.running': "Ihr Profil wird generiert…",
+  'orient.failed': "Profil konnte nicht generiert werden",
+  'orient.note': "Dies liest Ihren Lebenslauf, Ihr Profil, Ihren Two-Pager und Ihre Gedächtnisnotiz — es erfindet nie Fakten und meldet nie gemessene Testwerte. Es wird nichts gespeichert; exportieren Sie es, wenn Sie es behalten möchten.",
 };

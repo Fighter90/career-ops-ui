@@ -955,4 +955,12 @@ window.__I18N_DICT_DA = {
   'plan.saveFailed': "Kunne ikke gemme planen",
   'plan.preview': "Forhåndsvisning",
   'plan.privacyNote': "Gemt i brugerlaget i dit overordnede projekt (config/career-plan.md) — bliver aldrig overskrevet af opdateringer og sendes kun inde i de LLM-prompts, du kører.",
+  // ── v1.96.0 (Epic 27) — AI-karriereorientering ──
+  'nav.orientation': "Karriereorientering",
+  'orient.title': "Karriereorientering",
+  'orient.subtitle': "Hvilke retninger passer til dig — udledt af dit eget CV og din profil: bedst passende karrierevektorer, anbefalede roller, styrker og hvordan dit CV læses. En refleksion, ikke en psykometrisk test.",
+  'orient.generate': "Generér profil",
+  'orient.running': "Genererer din profil…",
+  'orient.failed': "Kunne ikke generere profilen",
+  'orient.note': "Dette læser dit CV, din profil, din two-pager og din hukommelsesnote — det opfinder aldrig fakta og rapporterer aldrig målte testresultater. Intet gemmes; eksportér den, hvis du vil beholde den.",
 };

@@ -993,4 +993,12 @@ window.__I18N_DICT_ZH_TW = {
   'plan.saveFailed': "無法儲存計畫",
   'plan.preview': "預覽",
   'plan.privacyNote': "儲存到你父專案的使用者層（config/career-plan.md）——永遠不會被更新覆寫，且僅在你執行的 LLM 提示內部傳送。",
+  // ── 職業方向 (v1.96.0) ──
+  'nav.orientation': "職業方向",
+  'orient.title': "職業方向",
+  'orient.subtitle': "哪些方向適合你——從你自己的 CV 和檔案中推斷：最契合的職業向量、推薦職位、優勢,以及你的 CV 讀起來如何。這是一種反思,而非心理測驗。",
+  'orient.generate': "生成畫像",
+  'orient.running': "正在生成你的畫像…",
+  'orient.failed': "無法生成畫像",
+  'orient.note': "它會讀取你的 CV、檔案、兩頁紙和記憶筆記——絕不虛構事實,也絕不回報測量得出的測驗分數。不會儲存任何內容;若想留存,請匯出。",
 };

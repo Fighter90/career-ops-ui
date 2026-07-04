@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.95.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.95.0)
+[![release](https://img.shields.io/badge/release-v1.96.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.96.0)
 
-> **🆕 Najnowsze wydanie — v1.95.0**
+> **🆕 Najnowsze wydanie — v1.96.0**
 >
-> **Plan kariery (Epic 26):** nowa strona **`#/career-plan`** zamienia Twoje CV i profil w konkretny, spersonalizowany plan rozwoju. Wybierz **horyzont** (6/12/24 miesiące) oraz opcjonalny fokus, a model pisze migawkę punktu wyjścia, SWOT mocnych stron i wzrostu, cele w formacie **SMART / OKR / WOOP**, alternatywne trajektorie, plan umiejętności hard/soft, **mapę drogową miesiąc po miesiącu**, śledzenie postępów, pułapki oraz kroki wspierające — na podstawie Twoich własnych materiałów, nigdy nie zmyślając Twojej historii. Edytuj go w miejscu, **Zapisz** go do warstwy użytkownika i wyeksportuj go do **Markdown lub PDF**. Bazuje na v1.94.0 (przebudowa statystyk) i v1.93.0 (warstwa pamięci).
+> **Orientacja zawodowa (Epic 27):** nowa strona **`#/orientation`** odpowiada na pytanie „które kierunki naprawdę do mnie pasują?" — taki odczyt, jaki dałby test predyspozycji zawodowych, ale wywnioskowany z Twojego własnego CV i profilu, a nie z kwestionariusza. Kliknij **Generuj profil**, a model zwróci Twoje **najlepiej dopasowane wektory kariery** (który z ośmiu archetypów pasuje, wraz z dowodami), skłonność do typu kariery, rekomendowane role, mocne strony zawodowe powiązane z Twoim CV, tendencje w stylu pracy oraz rekomendacje rozwojowe. To **refleksja AI nad tym, jak czyta się Twoje CV — nie test psychometryczny**: nigdy nie zmyśla osiągnięć i nigdy nie podaje liczbowych wyników tak, jakby były zmierzone. Wyeksportuj profil do **Markdown lub PDF**; nic nie jest zapisywane na dysku. Bazuje na v1.95.0 (plan kariery) i v1.94.0 (przebudowa statystyk).
 >
-> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

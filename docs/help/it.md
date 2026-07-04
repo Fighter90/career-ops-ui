@@ -2114,3 +2114,19 @@ Il piano compare in un'area di testo modificabile — ritocca qualsiasi cosa, po
 ### Esportare
 
 Usa **Scarica .md**, **Salva come PDF** o **Copia** per portare il piano fuori dall'app — gli stessi controlli di esportazione usati in tutti i report IA dell'app. Il PDF passa attraverso il generatore di PDF inline esistente; il Markdown è un download diretto.
+
+## 28. Orientamento professionale (`#/orientation`)
+
+La pagina **Orientamento professionale** risponde alla domanda «quali direzioni fanno davvero per me?» — il tipo di lettura che otterresti da un test di orientamento, ma dedotta dal tuo stesso CV e profilo anziché da un questionario.
+
+### Cosa produce
+
+Fai clic su **Genera profilo** e il modello legge il tuo CV, il tuo profilo, il tuo two-pager e la tua nota di memoria e scrive un profilo di orientamento professionale: i tuoi **vettori di carriera più adatti** (quali degli otto archetipi — Funzionalista, Amministratore, Comunicatore, Specialista, Analista, Innovatore, Manager, Imprenditore — si adattano meglio, con evidenze dal tuo CV), una **inclinazione di tipo professionale**, un insieme di **ruoli consigliati**, i tuoi **punti di forza professionali** legati a ciò che mostra il CV, **tendenze di stile di lavoro** («come si legge il tuo CV» su alcuni assi) e **raccomandazioni di sviluppo** per ampliare la tua compatibilità.
+
+### Come viene generato
+
+È una **riflessione dell'IA su come si legge il tuo CV — non un test psicometrico.** Il prompt è radicato interamente nei tuoi materiali: non inventa risultati e non riporta mai punteggi numerici di test come se fossero misurati. Senza una chiave API impostata ottieni un prompt da copiare e incollare da eseguire in qualsiasi LLM invece di un profilo dal vivo. Nulla viene scritto sul disco — il profilo viene generato da capo ogni volta.
+
+### Esportare
+
+Usa **Scarica .md**, **Salva come PDF** o **Copia** per conservare il profilo — gli stessi controlli di esportazione usati nei report IA dell'app. Il PDF passa attraverso il generatore di PDF inline esistente; il Markdown è un download diretto.

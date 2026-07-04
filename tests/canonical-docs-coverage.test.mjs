@@ -50,7 +50,7 @@ test('every help bundle references all 5 canonical career-ops.org guides', () =>
   }
 });
 
-test('every help bundle keeps the 27-H2 parity contract', () => {
+test('every help bundle keeps the 28-H2 parity contract', () => {
   // Belt-and-suspenders next to tests/help-ui.test.mjs::section-parity.
   // If a future edit splits a section we want the regression here too.
   // v1.29.0 — bar lifted 16 → 17 by adding §17 "How to add a new
@@ -64,7 +64,7 @@ test('every help bundle keeps the 27-H2 parity contract', () => {
     if (baseline === null) baseline = h2;
     assert.equal(h2, baseline, `${lang}.md has ${h2} H2 sections, expected ${baseline}`);
   }
-  assert.equal(baseline, 27, `expected 27 H2 sections in every bundle, got ${baseline}`);
+  assert.equal(baseline, 28, `expected 28 H2 sections in every bundle, got ${baseline}`);
 });
 
 test('every README references the canonical front page + ≥3 sub-guides', () => {
