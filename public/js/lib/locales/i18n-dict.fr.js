@@ -800,4 +800,36 @@ window.__I18N_DICT_FR = {
   'twoPager.saveFailed': "Impossible d'enregistrer le two-pager",
   'twoPager.privacyNote': "Stocké dans la couche utilisateur de votre projet parent (config/two-pager.yml) — jamais envoyé ailleurs qu'aux prompts LLM que vous exécutez.",
   'scan.fitTip': "Adéquation avec ce que vous voulez",
+
+  // ── Entretien simulé 2.0 (Epic 15 / v1.90.0) ── // Mock interview 2.0 (Epic 15 / v1.90.0)
+  'nav.mockInterview': "Entretien simulé", // Mock interview
+  'mock.title': "Entretien simulé", // Mock interview
+  'mock.subtitle': "Entraînez-vous tour par tour face à un poste réel. Chaque réponse reçoit un feedback STAR+R, une note et une question de relance — ancrée dans votre CV, votre two-pager et votre banque d'histoires.", // Rehearse turn by turn against a real role. Every answer gets STAR+R feedback, a score, and a follow-up — grounded in your CV, two-pager, and story bank.
+  'mock.roleLabel': "Poste", // Role
+  'mock.rolePh': "Poste cible (p. ex. Senior Backend Engineer)", // Target role (e.g. Senior Backend Engineer)
+  'mock.companyLabel': "Entreprise", // Company
+  'mock.companyPh': "Entreprise (facultatif)", // Company (optional)
+  'mock.jdLabel': "Description du poste", // Job description
+  'mock.jdPh': "Collez la description du poste (facultatif) — affine les questions.", // Paste the job description (optional) — sharpens the questions.
+  'mock.start': "Démarrer l'entretien", // Start interview
+  'mock.yourAnswer': "Votre réponse", // Your answer
+  'mock.answerPh': "Saisissez votre réponse, puis Envoyer…", // Type your answer, then Send…
+  'mock.send': "Envoyer la réponse", // Send answer
+  'mock.save': "Enregistrer la transcription", // Save transcript
+  'mock.restart': "Nouvel entretien", // New interview
+  'mock.you': "Vous", // You
+  'mock.interviewer': "Intervieweur", // Interviewer
+  'mock.thinking': "L'intervieweur réfléchit…", // Interviewer is thinking…
+  'mock.turnFailed': "Impossible d'obtenir le tour suivant", // Could not get the next turn
+  'mock.manualTitle': "Exécutez ce tour manuellement", // Run this turn manually
+  'mock.manualHelp': "Aucune clé LLM n'est définie. Copiez ce prompt dans n'importe quel LLM, puis recollez la réponse de l'intervieweur comme votre prochain prompt de réponse.", // No LLM key is set. Copy this prompt into any LLM, then paste the interviewer’s reply back in as your next answer prompt.
+  'mock.needRole': "Saisissez d'abord un poste ou collez une description de poste", // Enter a role or paste a job description first
+  'mock.nothingToSave': "Rien à enregistrer pour le moment", // Nothing to save yet
+  'mock.saved': "Transcription enregistrée", // Transcript saved
+  'mock.saveFailed': "Impossible d'enregistrer la transcription", // Could not save the transcript
+  'mock.savedTitle': "Sessions enregistrées", // Saved sessions
+  'mock.savedEmpty': "Aucune session enregistrée pour le moment — terminez un entretien et cliquez sur « Enregistrer la transcription ».", // No saved sessions yet — finish an interview and click “Save transcript”.
+  'mock.view': "Afficher", // View
+  'mock.delete': "Supprimer", // Delete
+  'mock.confirmDelete': "Supprimer cette session enregistrée ?", // Delete this saved session?
 };

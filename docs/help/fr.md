@@ -2008,3 +2008,27 @@ Vous ne savez pas comment le formuler ? Cliquez sur **✨ Assistant de remplissa
 Une fois que vous avez enregistré un document de deux pages, chaque offre sur **`#/scan`** obtient un petit badge **`◎ N`** (0–100). Il compare le **type de travail** (télétravail/hybride/présentiel), le **pays**, le **salaire plancher** et la **relocalisation** de chaque offre à votre document de deux pages — un badge vert signifie une bonne adéquation, un rouge signifie qu'un critère rédhibitoire s'est déclenché. Survolez pour voir les détails (✓ ce qui a correspondu, ✗ quel critère rédhibitoire a été violé).
 
 Il est délibérément honnête : lorsqu'une offre ne donne **aucun signal comparable** (par exemple si vos préférences sont toutes du texte libre qu'une ligne de scan ne peut confirmer), **aucun badge n'est affiché du tout** — le système n'invente jamais de chiffre. La violation d'un **critère rédhibitoire** ferme pèse plus lourd qu'une **détestation** légère de la même chose. Au-delà du badge, votre document de deux pages enregistré est intégré à chaque **évaluation** par LLM, de sorte que vos préférences déclarées façonnent aussi le verdict écrit, pas seulement l'adéquation CV-vs-offre.
+
+## 22. Entretien simulé (`#/mock-interview`)
+
+Lire la préparation d'entretien est une chose ; *dire les réponses à voix haute* en est une autre. La page **Entretien simulé** (ouvrez-la depuis **Préparation d'entretien → Entretien simulé 🎤** dans la barre latérale) déroule une répétition tour par tour face à un poste précis, ancrée dans votre propre CV, profil, document de deux pages et banque d'histoires. Ce n'est pas une liste de questions toutes faites — l'intervieweur réagit à ce que vous dites réellement.
+
+### Démarrer une session
+
+- Saisissez un **poste cible** (et éventuellement une **entreprise**). Collez aussi la **description du poste** si vous l'avez — les questions deviennent nettement plus précises.
+- Cliquez sur **Démarrer l'entretien**. L'intervieweur ouvre avec une question ciblée, adaptée au poste et à votre parcours.
+- Tapez votre réponse et cliquez sur **Envoyer la réponse**. Répétez autant que vous voulez — c'est une conversation, pas un questionnaire figé.
+
+### Ce que chaque tour vous apporte
+
+Après chaque réponse, l'intervieweur répond en trois parties :
+
+- **Retour** — ce qui a marqué (points forts) et ce qui manquait, formulé en termes **STAR+R** (Situation, Tâche, Action, Résultat, Réflexion). Il nomme la dimension précise que vous avez sautée.
+- **Score** — un rapide `N/5` avec une justification d'une ligne, pour que vous ressentiez la progression au fil d'une session.
+- **Question suivante** — une relance qui sonde délibérément la partie la plus faible de votre dernière réponse.
+
+Tout est ancré dans vos vrais documents : `cv.md`, `config/profile.yml`, `config/two-pager.yml` et votre banque d'histoires STAR+R (`interview-prep/story-bank.md`) sont tous intégrés au prompt. L'intervieweur insistera sur les vraies lacunes mais n'invente jamais une expérience que vous n'avez pas. Si aucune clé LLM n'est configurée, la page vous remet un prompt prêt à l'emploi à coller dans n'importe quel assistant — le même repli honnête utilisé ailleurs dans l'app.
+
+### Enregistrer et revisiter les sessions
+
+Cliquez sur **Enregistrer la transcription** pour conserver une répétition terminée. Elle est écrite dans la couche utilisateur de votre projet parent, à `interview-prep/mock-{company}-{role}-{date}.md`, de sorte qu'elle vit aux côtés de vos autres notes de préparation d'entretien et n'est jamais écrasée par les mises à jour du système. La liste **Sessions enregistrées** en bas de la page vous permet de rouvrir n'importe quelle transcription ou de la supprimer. Utilisez **Nouvel entretien** pour recommencer avec un poste différent.

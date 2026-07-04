@@ -1964,3 +1964,27 @@ Usikker på formuleringen? Klik **✨ AI fill assistant**. Den bygger en klar-ti
 Når du har gemt en two-pager, får hvert opslag på **`#/scan`** et lille **`◎ N`**-badge (0–100). Det sammenligner hvert jobs **arbejdstype** (remote/hybrid/on-site), **land**, **lønbund** og **flytning** med din two-pager — et grønt badge betyder stærk match, rødt betyder, at en deal-breaker blev udløst. Hold musen over for detaljerne (✓ hvad der matchede, ✗ hvad en deal-breaker overtrådte).
 
 Den er bevidst ærlig: når et opslag ikke giver **noget sammenligneligt signal** (for eksempel er dine præferencer ren fritekst, som en scanningsrække ikke kan bekræfte), **vises der slet intet badge** — systemet opfinder aldrig et tal. En hård **deal-breaker**-overtrædelse vejer tungere end en blød **hate** af det samme. Ud over badget indlejres din gemte two-pager i hver LLM-**evaluering**, så dine angivne præferencer også former den skrevne vurdering, ikke kun CV-vs-JD-matchet.
+
+## 22. Prøvesamtale (`#/mock-interview`)
+
+At læse interviewforberedelse er én ting; at *sige svarene højt* er noget helt andet. Siden **Prøvesamtale** (åbn den fra **Interview prep → Mock interview 🎤** i sidebjælken) kører en tur-for-tur-øvelse mod en bestemt rolle, forankret i dit eget CV, din profil, din two-pager og dit historiebank. Det er ikke en færdig spørgeliste — intervieweren reagerer på det, du faktisk siger.
+
+### At starte en session
+
+- Indtast en **målrolle** (og eventuelt en **virksomhed**). Indsæt også **jobbeskrivelsen**, hvis du har den — spørgsmålene bliver mærkbart skarpere.
+- Klik **Start interview**. Intervieweren åbner med ét fokuseret spørgsmål tilpasset rollen og din baggrund.
+- Skriv dit svar og klik **Send answer**. Gentag så længe du vil — det er en samtale, ikke en fast quiz.
+
+### Hvad hver tur giver dig
+
+Efter hvert svar svarer intervieweren med tre dele:
+
+- **Feedback** — hvad der ramte plet (styrker), og hvad der manglede, formuleret i **STAR+R**-termer (Situation, Task, Action, Result, Reflection). Den navngiver præcis den dimension, du sprang over.
+- **Score** — en hurtig `N/5` med en enkelt linjes begrundelse, så du kan mærke fremgang gennem en session.
+- **Næste spørgsmål** — et opfølgende spørgsmål, der bevidst borer i den svageste del af dit sidste svar.
+
+Alt er forankret i dine rigtige materialer: `cv.md`, `config/profile.yml`, `config/two-pager.yml` og dit STAR+R-historiebank (`interview-prep/story-bank.md`) indlejres alle i prompten. Intervieweren vil presse på reelle huller, men opfinder aldrig erfaring, du ikke har. Hvis der ikke er sat en LLM-nøgle, giver siden dig en klar-til-brug-prompt til at indsætte i en hvilken som helst assistent — den samme ærlige nødløsning, der bruges andre steder i appen.
+
+### At gemme og vende tilbage til sessioner
+
+Klik **Save transcript** for at beholde en færdig øvelse. Den skrives til dit overordnede projekts brugerlag i `interview-prep/mock-{company}-{role}-{date}.md`, så den ligger sammen med dine øvrige interviewforberedelsesnoter og bliver aldrig overskrevet af systemopdateringer. Listen **Saved sessions** nederst på siden lader dig genåbne enhver udskrift eller slette den. Brug **New interview** for at starte forfra med en anden rolle.

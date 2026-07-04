@@ -9,6 +9,17 @@
 ---
 
 
+## [1.90.0] — 2026-07-04
+
+**Mock Interview 2.0(Epic 15）。** 新しい `#/mock-interview` ページは、あなたの CV・プロフィール・two-pager・ストーリーバンクをターン制の面接リハーサルに変えます:
+
+- **対話型の練習** — 目標とする職種(+任意で企業 / JD)を設定すると、面接官が的を絞った質問で始めます。送信した各回答には構造化された返答が返ります:**Feedback**(強み + STAR+R のギャップ)、**Score**(`N/5`)、そして直前の回答の最も弱い部分を突く **Next question**。サーバー側であなたの実際の資料に基づいており — 持っていない経験を捏造しません。
+- **ストーリーバンク対応** — `interview-prep/story-bank.md` がプロンプトにインライン展開され(`cv.md` と同じ信頼レベル)、フィードバックがあなた自身の最良のストーリーを指し示せます。
+- **ライブまたは手動** — プロバイダーキーがあれば、そのターンは共有プロバイダーカスケード(Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models)経由でライブ実行されます。キーがなければ、そのままコピー&ペーストできるプロンプトが得られます(誠実なフォールバック、捏造された回答なし)。
+- **保存されたセッション** — **Save transcript** をクリックすると、完了した面接がユーザーレイヤー(`interview-prep/mock-{company}-{role}-{date}.md`)に保存されます。ページ上で保存済みセッションを一覧表示・開く・削除できます。
+
+新規: `server/lib/routes/interview.mjs`(18 番目のルートモジュール)、`public/js/views/mock-interview.js`、`server/lib/llm-dispatch.mjs`(共有プロバイダーカスケード)、`PATHS.storyBank`、`bundleProjectContext({ extraFiles })`。**16 locales** 全体で 30 個の新しい i18n キー。テスト: `tests/interview-routes.test.mjs`。
+
 ## [1.89.0] — 2026-07-04
 
 **候補者と市場のフィット — two-pager（Epic 14）。** 新しい `#/two-pager` ページで、次の職務に対して *あなた自身* が本当に求めるものを書き留められます。*Never Search Alone* の「Mnookin two-pager」をモデルにしています:

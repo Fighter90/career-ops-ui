@@ -25,6 +25,7 @@ import { registerActivityRoutes } from './lib/routes/activity.mjs';
 import { registerConfigRoutes } from './lib/routes/config.mjs';
 import { registerContentRoutes } from './lib/routes/content.mjs';
 import { registerTwoPagerRoutes } from './lib/routes/two-pager.mjs';
+import { registerInterviewRoutes } from './lib/routes/interview.mjs';
 import { registerHealthRoutes } from './lib/routes/health.mjs';
 import { registerHelpRoutes } from './lib/routes/help.mjs';
 import { registerJdsRoutes } from './lib/routes/jds.mjs';
@@ -147,6 +148,7 @@ export function createApp() {
   registerJdsRoutes(app);
   registerContentRoutes(app);         // CV / Profile / Portals / Modes
   registerTwoPagerRoutes(app);        // v1.89.0 — two-pager (candidate market fit)
+  registerInterviewRoutes(app);       // v1.90.0 — mock interview 2.0
   registerRunnerRoutes(app);          // buffered /api/run/* + streaming /api/stream/{scan,liveness,pdf} + /api/output/pdfs
   registerScanRoutes(app);            // in-process /api/stream/scan-{ru,en} + /api/scan-results
   registerStatsRoutes(app);           // v1.86.0 — target-roles stats snapshot store + trend

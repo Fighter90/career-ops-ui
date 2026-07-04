@@ -9,6 +9,17 @@
 ---
 
 
+## [1.90.0] — 2026-07-04
+
+**Mock Interview 2.0(Epic 15)。** 新的 `#/mock-interview` 页面把你的简历、档案、two-pager 和故事库变成逐轮进行的面试演练:
+
+- **对话式练习** — 设定一个目标岗位(可选填公司 / JD),面试官会以一个聚焦的问题开场。你发送的每个回答都会得到结构化的回复:**Feedback**(优势 + STAR+R 缺口)、**Score**(`N/5`),以及一个探究你上一个回答最薄弱部分的 **Next question**。在服务端以你的真实材料为依据 —— 绝不编造你没有的经历。
+- **感知故事库** — `interview-prep/story-bank.md` 会内联进提示词(与 `cv.md` 同等信任级别),因此反馈可以指引你使用自己最好的故事。
+- **实时或手动** — 有提供商密钥时,该轮次会通过共享提供商级联(Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models)实时运行;没有密钥时,你会得到一个可直接复制粘贴运行的提示词(诚实回退,不编造答案)。
+- **已保存会话** — 点击 **Save transcript** 可将一场完成的面试持久化到用户层(`interview-prep/mock-{company}-{role}-{date}.md`);该页面可列出、打开并删除已保存的会话。
+
+新增: `server/lib/routes/interview.mjs`(第 18 个路由模块)、`public/js/views/mock-interview.js`、`server/lib/llm-dispatch.mjs`(共享提供商级联)、`PATHS.storyBank`、`bundleProjectContext({ extraFiles })`。在全部 **16 locales** 中新增 30 个 i18n 键。测试: `tests/interview-routes.test.mjs`。
+
 ## [1.89.0] — 2026-07-04
 
 **候选人与市场契合 —— two-pager（Epic 14）。** 新增的 `#/two-pager` 页面让你记录 *你自己* 对下一份工作真正想要的东西,借鉴自 *Never Search Alone* 中的「Mnookin two-pager」:

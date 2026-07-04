@@ -1906,3 +1906,27 @@ Haz clic en **Guardar documento de dos páginas** para conservarlo. Se escribe e
 Una vez que hayas guardado un documento de dos páginas, cada oferta en **`#/scan`** gana una pequeña insignia **`◎ N`** (0–100). Compara el **tipo de trabajo** (remoto/híbrido/presencial), el **país**, el **salario mínimo** y la **reubicación** de cada oferta con tu documento de dos páginas — una insignia verde significa buen encaje, roja significa que se activó un factor excluyente. Pasa el cursor por encima para ver los detalles (✓ lo que coincidió, ✗ qué factor excluyente se violó).
 
 Es deliberadamente honesta: cuando una oferta no da **ninguna señal comparable** (por ejemplo, si tus preferencias son todas texto libre que una fila de escaneo no puede confirmar), **no se muestra ninguna insignia en absoluto** — el sistema nunca inventa un número. La violación de un **factor excluyente** duro pesa más que un **odio** blando hacia lo mismo. Más allá de la insignia, tu documento de dos páginas guardado se incrusta en cada **evaluación** con LLM, así que tus preferencias declaradas moldean también el veredicto escrito, no solo el encaje CV-vs-oferta.
+
+## 22. Entrevista simulada (`#/mock-interview`)
+
+Leer la preparación de entrevistas es una cosa; *decir las respuestas en voz alta* es otra. La página **Entrevista simulada** (ábrela desde **Preparación de entrevistas → Entrevista simulada 🎤** en la barra lateral) ejecuta un ensayo turno a turno contra un puesto concreto, apoyado en tu propio CV, perfil, documento de dos páginas y banco de historias. No es una lista de preguntas enlatadas — el entrevistador reacciona a lo que realmente dices.
+
+### Iniciar una sesión
+
+- Introduce un **puesto objetivo** (y opcionalmente una **empresa**). Pega también la **descripción del puesto** si la tienes — las preguntas se vuelven notablemente más afiladas.
+- Haz clic en **Iniciar entrevista**. El entrevistador abre con una pregunta enfocada, adaptada al puesto y a tu trayectoria.
+- Escribe tu respuesta y haz clic en **Enviar respuesta**. Repite todo lo que quieras — es una conversación, no un cuestionario fijo.
+
+### Qué te da cada turno
+
+Después de cada respuesta, el entrevistador responde con tres partes:
+
+- **Comentarios** — qué funcionó (fortalezas) y qué faltó, planteado en términos **STAR+R** (Situación, Tarea, Acción, Resultado, Reflexión). Nombra la dimensión concreta que te saltaste.
+- **Puntuación** — un rápido `N/5` con una justificación de una línea, para que puedas sentir el progreso a lo largo de una sesión.
+- **Siguiente pregunta** — un seguimiento que sondea deliberadamente la parte más débil de tu última respuesta.
+
+Todo se apoya en tus materiales reales: `cv.md`, `config/profile.yml`, `config/two-pager.yml` y tu banco de historias STAR+R (`interview-prep/story-bank.md`) se incrustan todos en el prompt. El entrevistador presionará sobre lagunas genuinas pero nunca inventa experiencia que no tienes. Si no hay ninguna clave de LLM configurada, la página te entrega un prompt listo para ejecutar y pegar en cualquier asistente — el mismo recurso honesto que se usa en otras partes de la app.
+
+### Guardar y revisitar sesiones
+
+Haz clic en **Guardar transcripción** para conservar un ensayo terminado. Se escribe en la capa de usuario de tu proyecto padre en `interview-prep/mock-{company}-{role}-{date}.md`, de modo que vive junto a tus demás notas de preparación de entrevistas y nunca se sobrescribe con las actualizaciones del sistema. La lista de **Sesiones guardadas** al final de la página te permite reabrir cualquier transcripción o eliminarla. Usa **Nueva entrevista** para empezar de cero con un puesto diferente.

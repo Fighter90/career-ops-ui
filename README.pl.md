@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.89.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.89.0)
+[![release](https://img.shields.io/badge/release-v1.90.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.90.0)
 
-> **🆕 Najnowsze wydanie — v1.89.0**
+> **🆕 Najnowsze wydanie — v1.90.0**
 >
-> **Dopasowanie kandydat-rynek — two-pager (Epic 14):** nowa strona **`#/two-pager`** ujmuje to, czego _ty_ naprawdę chcesz od kolejnej roli (co uwielbiasz, wymagania obowiązkowe, czego nie znosisz, deal-breakery, kwestie nienegocjowalne) w formacie „two-pager Mnookina”. **Asystent wypełniania AI** redaguje go na podstawie twojego CV + profilu, każda oferta na `#/scan` otrzymuje ocenę **`◎` dopasowania-do-tego-czego-chcesz**, a two-pager zasila każdą ocenę. Bazuje na v1.88.0 (i18n Scan + higiena API), v1.87.0 (4 nowi dostawcy skanowania) i v1.86.0 (statystyki docelowych stanowisk).
+> **Mock Interview 2.0 (Epic 15):** nowa strona **`#/mock-interview`** prowadzi próbną rozmowę kwalifikacyjną tura po turze dla konkretnej roli. Każda odpowiedź otrzymuje **feedback STAR+R**, **ocenę** i **pytanie uzupełniające** — oparte na twoim CV, two-pagerze i banku historii. Działa na żywo z dowolnym kluczem LLM albo zwraca prompt do skopiowania, a **transkrypcje** możesz zapisywać dla każdej firmy/roli. Bazuje na v1.89.0 (dopasowanie do rynku przez two-pager), v1.88.0 (i18n Scan + higiena API) i v1.87.0 (4 nowi dostawcy skanowania).
 >
-> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · dopasowanie do rynku przez two-pager · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
+> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · próbna rozmowa · dopasowanie do rynku przez two-pager · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

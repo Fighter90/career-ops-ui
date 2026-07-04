@@ -180,7 +180,8 @@ export function scaffold(key, lang) {
  *
  * Used by /api/deep and /api/mode/:slug Anthropic branches (REVIEW-A1).
  *
- * @param {{ modeSlugs?: string[], maxBytesPerFile?: number }} opts
+ * @param {{ modeSlugs?: string[], maxBytesPerFile?: number,
+ *           extraFiles?: Array<{ label: string, path: string }> }} opts
  * @returns {string} A delimited block ending with two newlines, ready to
  *   prepend to the user-facing prompt.
  */
@@ -198,6 +199,9 @@ export function bundleProjectContext(opts = {}) {
       label: `modes/${slug}.md`,
       path: projPath('modes', `${slug}.md`),
     })),
+    // v1.90.0 (Epic 15) — caller-supplied extras (e.g. interview-prep/story-bank.md
+    // for the mock interview). Kept last so the core CV/profile/two-pager lead.
+    ...(Array.isArray(opts.extraFiles) ? opts.extraFiles.filter((f) => f && f.path && f.label) : []),
   ];
   const blocks = [];
   for (const f of files) {
