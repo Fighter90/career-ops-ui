@@ -65,6 +65,7 @@ export const PATHS = {
   batchAdditionsDir: path('batch', 'tracker-additions'),
   cv: path('cv.md'),
   profile: path('config', 'profile.yml'),
+  twoPager: path('config', 'two-pager.yml'),
   portals: path('portals.yml'),
   packageJson: path('package.json'),
   version: path('VERSION'),

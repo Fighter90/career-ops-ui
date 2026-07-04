@@ -9,6 +9,17 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.89.0] — 2026-07-04
+
+**Dopasowanie kandydat-rynek — two-pager (Epic 14).** Nowa strona `#/two-pager` pozwala uchwycić to, czego *ty* naprawdę chcesz od kolejnej roli, wzorowana na „Mnookin two-pager" z *Never Search Alone*:
+
+- **Kreator z prowadzeniem** — narracja w pierwszej osobie „Kim jestem", notatka „Docelowe środowisko" oraz pięć edytorów list chipów: **loves**, **must-haves**, **hates**, **deal-breakers** i **non-negotiables**. Zapisywane w **warstwie użytkownika** projektu nadrzędnego (`config/two-pager.yml`) przez `PUT /api/two-pager` — nigdy nienadpisywane przez aktualizacje systemu.
+- **Asystent uzupełniania AI** (`POST /api/two-pager/draft`) — buduje gotowy do uruchomienia prompt Mnookina z wbudowanym twoim CV + profilem, do uruchomienia w dowolnym LLM i wklejenia wyniku z powrotem. Korzysta wyłącznie z twoich własnych materiałów; nic nie jest zmyślane.
+- **Odznaka dopasowania-do-tego-czego-chcesz** — każda oferta na `#/scan` pokazuje teraz wynik dopasowania `◎ N` (po stronie klienta, przez `window.FitScore`), zestawiający typ pracy, kraj, dolny próg wynagrodzenia i relokację oferty z twoim two-pagerem. Uczciwa z założenia: gdy oferta nie daje porównywalnego sygnału, **odznaka nie jest wyświetlana** (nigdy zmyślona liczba). Naruszenia deal-breakerów ważą więcej niż lekkie niechęci.
+- **Zasila każdą ocenę** — zapisany two-pager jest wbudowywany w `bundleProjectContext`, więc wszystkie dalsze oceny LLM łączą twoje zadeklarowane preferencje z dopasowaniem CV-vs-JD.
+
+Nowe: `server/lib/routes/two-pager.mjs`, `public/js/views/two-pager.js`, `public/js/lib/fit-score.js`, `PATHS.twoPager`. 27 nowych kluczy i18n we wszystkich **16 locale**. Testy: `tests/two-pager-routes.test.mjs`, `tests/fit-score.test.mjs`.
+
 ## [1.88.0] — 2026-07-04
 
 **Dopracowanie issue #29 — luki i18n w Skanowaniu + higiena API.**

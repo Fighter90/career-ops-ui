@@ -1962,3 +1962,30 @@ La pagina **Analytics → Statistiche ruoli target** trasforma i dati sparsi che
 
 - Fai clic su **Salva snapshot** per aggiungere l'aggregato corrente a `data/role-stats.jsonl`. Ogni snapshot riceve un timestamp sul server; gli snapshot sono l'unica cosa che questa pagina scrive e non toccano mai il tuo CV né il tuo profilo.
 - Il grafico del **trend** traccia il numero di posizioni attraverso i tuoi snapshot salvati: salvane uno periodicamente (per esempio dopo ogni scansione settimanale) per osservare come si muove nel tempo il mercato dei tuoi ruoli target.
+
+## 21. Il tuo documento di due pagine — corrispondenza candidato-mercato (`#/two-pager`)
+
+Quasi tutto in career-ops-ui chiede "questa offerta corrisponde al mio CV?". Il **documento di due pagine** risponde all'altra metà: "questa offerta corrisponde a ciò che *voglio davvero*?". È modellato sul **"documento di due pagine di Mnookin"** di *Never Search Alone* — una breve dichiarazione in prima persona di ciò che ti dà energia, di ciò che esigi e di ciò che non accetterai. Aprilo da **Configurazione → Documento di due pagine 🎯**.
+
+### Cosa compili
+
+- **Chi sono** — qualche frase in prima persona sul tuo percorso e sul tipo di ruolo in cui rendi al meglio.
+- **Ambiente target** — la dimensione, la fase e la cultura aziendale che desideri.
+- Cinque liste di chip — digita e premi **Enter** (o virgola) per aggiungere ogni voce, fai clic su **×** per rimuoverla:
+  - **Ciò che amo** — energizzanti (remoto, autonomia, greenfield, mentoring…).
+  - **Requisiti irrinunciabili** — requisiti rigidi (uno stipendio minimo, un paese, uno stack…).
+  - **Ciò che odio** — logoranti (reperibilità, riunioni infinite, solo legacy…).
+  - **Elementi escludenti** — no assoluti (solo in sede, nessuno sponsorship per il visto, sotto una cifra…).
+  - **Non negoziabili** — limiti (località, remoto, stipendio minimo…).
+
+Fai clic su **Salva documento di due pagine** per conservarlo. Viene scritto nel **livello utente del tuo progetto padre career-ops** in `config/two-pager.yml`, quindi — come il tuo CV e il tuo profilo — **non** viene mai sovrascritto quando aggiorni il sistema.
+
+### L'assistente di compilazione con IA
+
+Non sai come formularlo? Fai clic su **✨ Assistente di compilazione con IA**. Costruisce un prompt pronto all'uso (il formato Mnookin, con il tuo CV e il tuo profilo incorporati) e lo mostra in una finestra di dialogo. Esegui quel prompt in un qualsiasi LLM, poi incolla i campi YAML risultanti di nuovo nel modulo. L'assistente usa esclusivamente **il tuo** CV e profilo — non inventa mai fatti su di te, e da questo pulsante non viene effettuata alcuna chiamata API in tempo reale.
+
+### Il punteggio di corrispondenza con ciò che vuoi
+
+Una volta salvato un documento di due pagine, ogni annuncio su **`#/scan`** ottiene un piccolo badge **`◎ N`** (0–100). Confronta il **tipo di lavoro** (remoto/ibrido/in sede), il **paese**, lo **stipendio minimo** e il **trasferimento** di ogni offerta con il tuo documento di due pagine — un badge verde significa buona corrispondenza, rosso significa che è scattato un elemento escludente. Passa il cursore sopra per vedere i dettagli (✓ ciò che ha corrisposto, ✗ quale elemento escludente è stato violato).
+
+È deliberatamente onesto: quando un annuncio non dà **nessun segnale confrontabile** (per esempio se le tue preferenze sono tutte testo libero che una riga di scansione non può confermare), **non viene mostrato alcun badge** — il sistema non inventa mai un numero. La violazione di un **elemento escludente** rigido pesa di più di un **odio** leggero per la stessa cosa. Oltre al badge, il tuo documento di due pagine salvato viene incorporato in ogni **valutazione** con LLM, così le tue preferenze dichiarate plasmano anche il verdetto scritto, non solo la corrispondenza CV-vs-annuncio.

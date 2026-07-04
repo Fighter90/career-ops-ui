@@ -1937,3 +1937,30 @@ Siden **Analytics → Statistik for målroller** forvandler de sparsomme data, s
 
 - Klik på **Gem øjebliksbillede** for at føje det aktuelle aggregat til `data/role-stats.jsonl`. Hvert øjebliksbillede tidsstemples på serveren; øjebliksbilleder er det eneste, denne side skriver, og de rører aldrig dit CV eller din profil.
 - **Tendens**-diagrammet plotter antal stillinger på tværs af dine gemte øjebliksbilleder — gem ét jævnligt (for eksempel efter hver ugentlig scanning) for at se, hvordan markedet for dine målroller bevæger sig over tid.
+
+## 21. Din two-pager — kandidatens markedstilpasning (`#/two-pager`)
+
+Det meste af career-ops-ui spørger "matcher dette job mit CV?". **Two-pager'en** besvarer den anden halvdel: "matcher dette job det, *jeg faktisk vil have*?". Den er modelleret efter **"Mnookin two-pager"** fra *Never Search Alone* — en kort førstepersonserklæring om, hvad der giver dig energi, hvad du kræver, og hvad du ikke vil acceptere. Åbn den fra **Opsætning → Two-pager 🎯**.
+
+### Hvad du udfylder
+
+- **Hvem jeg er** — et par førstepersonssætninger om din erfaring og den slags rolle, du trives i.
+- **Målmiljø** — den virksomhedsstørrelse, det stadie og den kultur, du ønsker.
+- Fem chip-lister — skriv og tryk **Enter** (eller komma) for at tilføje hvert punkt, klik **×** for at fjerne det:
+  - **Hvad jeg elsker** — energigivere (remote, ejerskab, greenfield, mentoring…).
+  - **Skal-haves** — hårde krav (et lønloft, et land, en stak…).
+  - **Hvad jeg hader** — energidræn (on-call, endeløse møder, kun legacy…).
+  - **Deal-breakers** — absolutte nej'er (kun on-site, ingen sponsorering, under et beløb…).
+  - **Ikke til forhandling** — grænser (lokation, remote, lønloft…).
+
+Klik **Gem two-pager** for at gemme den. Den skrives til dit **overordnede career-ops-projekts brugerlag** i `config/two-pager.yml`, så — ligesom dit CV og din profil — bliver den **aldrig** overskrevet, når du opdaterer systemet.
+
+### AI-udfyldningsassistenten
+
+Usikker på formuleringen? Klik **✨ AI fill assistant**. Den bygger en klar-til-brug-prompt (Mnookin-formatet, med dit CV og din profil indlejret) og viser den i en dialog. Kør den prompt i en hvilken som helst LLM, og indsæt derefter de resulterende YAML-felter tilbage i formularen. Assistenten bruger kun **dit eget** CV og din egen profil — den opfinder aldrig fakta om dig, og der foretages ingen live API-kald fra denne knap.
+
+### Fit-to-what-you-want-scoren
+
+Når du har gemt en two-pager, får hvert opslag på **`#/scan`** et lille **`◎ N`**-badge (0–100). Det sammenligner hvert jobs **arbejdstype** (remote/hybrid/on-site), **land**, **lønbund** og **flytning** med din two-pager — et grønt badge betyder stærk match, rødt betyder, at en deal-breaker blev udløst. Hold musen over for detaljerne (✓ hvad der matchede, ✗ hvad en deal-breaker overtrådte).
+
+Den er bevidst ærlig: når et opslag ikke giver **noget sammenligneligt signal** (for eksempel er dine præferencer ren fritekst, som en scanningsrække ikke kan bekræfte), **vises der slet intet badge** — systemet opfinder aldrig et tal. En hård **deal-breaker**-overtrædelse vejer tungere end en blød **hate** af det samme. Ud over badget indlejres din gemte two-pager i hver LLM-**evaluering**, så dine angivne præferencer også former den skrevne vurdering, ikke kun CV-vs-JD-matchet.

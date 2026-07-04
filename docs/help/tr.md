@@ -2019,3 +2019,30 @@ Eksiksiz, adım adım yerelleştirme kılavuzu için depodaki **`docs/LOCALIZATI
 
 - Geçerli toplamı `data/role-stats.jsonl` dosyasına eklemek için **Anlık görüntüyü kaydet**'e tıklayın. Her anlık görüntü sunucuda zaman damgalanır; anlık görüntüler bu sayfanın yazdığı tek şeydir ve CV'nize veya profilinize asla dokunmaz.
 - **Eğilim** grafiği, kaydettiğiniz anlık görüntüler boyunca ilan sayılarını çizer — hedef rollerinizin pazarının zaman içinde nasıl hareket ettiğini görmek için düzenli olarak (örneğin her haftalık taramadan sonra) bir tane kaydedin.
+
+## 21. İki sayfalık özetiniz — adayın pazara uygunluğu (`#/two-pager`)
+
+career-ops-ui'nin çoğu „bu iş ilanı CV'me uyuyor mu?" sorusunu yanıtlar. **İki sayfalık özet** diğer yarısını yanıtlar: „bu iş ilanı *benim gerçekten istediğim* şeye uyuyor mu?". Bu, *Never Search Alone* kitabındaki **„Mnookin iki sayfalık özeti"** örnek alınarak tasarlanmıştır — sizi neyin canlandırdığına, neye ihtiyaç duyduğunuza ve neyi kabul etmeyeceğinize dair birinci tekil şahıs ağzından kısa bir beyandır. Bunu **Setup → Two-pager 🎯** üzerinden açın.
+
+### Ne doldurursunuz
+
+- **Ben kimim** — geçmiş performansınız ve hangi rolde en iyi performansı gösterdiğinize dair birkaç birinci tekil şahıs cümlesi.
+- **Hedef ortam** — istediğiniz şirket büyüklüğü, aşama ve kültür.
+- Beş çip listesi — her öğeyi eklemek için metni yazıp **Enter** (veya virgül) tuşuna basın, kaldırmak için **×** öğesine tıklayın:
+  - **Sevdiklerim** — enerji verenler (uzaktan çalışma, sorumluluk, greenfield, mentorluk…).
+  - **Olmazsa olmazlar** — katı gereksinimler (ücret alt sınırı, ülke, teknoloji yığını…).
+  - **Nefret ettiklerim** — tüketenler (nöbet, bitmeyen toplantılar, yalnızca legacy…).
+  - **Deal-breakers** — kesin „hayır"lar (yalnızca ofis, sponsorluk yok, belirli bir tutarın altında…).
+  - **Pazarlığa kapalı sınırlar** — sınırlar (konum, uzaktan çalışma, ücret alt sınırı…).
+
+Kaydetmek için **Save two-pager** düğmesine tıklayın. Dosya, **üst career-ops projenizin kullanıcı katmanına** `config/two-pager.yml` yolunda yazılır, bu nedenle — CV'niz ve profiliniz gibi — sistemi güncellediğinizde **asla** üzerine yazılmaz.
+
+### AI doldurma yardımcısı
+
+Nasıl ifade edeceğinizden emin değil misiniz? **✨ AI fill assistant** düğmesine tıklayın. Çalıştırmaya hazır bir istem (CV'niz ve profiliniz gömülü olarak, Mnookin formatında) oluşturur ve bunu bir iletişim kutusunda gösterir. Bu istemi herhangi bir LLM'de çalıştırın, ardından ortaya çıkan YAML alanlarını forma geri yapıştırın. Yardımcı yalnızca **kendi** CV'nizi ve profilinizi kullanır — hakkınızda asla gerçekler uydurmaz ve bu düğmeden hiçbir canlı API çağrısı yapılmaz.
+
+### İstediğinize uygunluk puanı
+
+Bir iki sayfalık özet kaydettikten sonra, **`#/scan`** üzerindeki her ilan küçük bir **`◎ N`** rozeti (0–100) kazanır. Her işin **çalışma türünü** (uzaktan/hibrit/ofis), **ülkesini**, **ücret alt sınırını** ve **taşınma** durumunu iki sayfalık özetinizle karşılaştırır — yeşil rozet güçlü uyum, kırmızı ise bir deal-breaker'ın devreye girdiği anlamına gelir. Ayrıntılar için üzerine gelin (✓ neyin eşleştiği, ✗ bir deal-breaker'ın neyi ihlal ettiği).
+
+Bilinçli olarak dürüsttür: bir ilan **eşleştirilebilir hiçbir sinyal** vermediğinde (örneğin tüm tercihleriniz, bir tarama satırının doğrulayamayacağı serbest metin ise), **hiçbir rozet gösterilmez** — sistem asla bir sayı uydurmaz. Katı bir **deal-breaker** ihlali, aynı şeyden duyulan yumuşak bir **nefretten** daha ağır basar. Rozetin ötesinde, kaydedilmiş iki sayfalık özetiniz her LLM **değerlendirmesine** gömülür, bu nedenle belirttiğiniz tercihler yalnızca „CV'ye karşı iş tanımı" eşleşmesini değil, yazılı kararı da şekillendirir.

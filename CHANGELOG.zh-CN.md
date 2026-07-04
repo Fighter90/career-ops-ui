@@ -9,6 +9,17 @@
 ---
 
 
+## [1.89.0] — 2026-07-04
+
+**候选人与市场契合 —— two-pager（Epic 14）。** 新增的 `#/two-pager` 页面让你记录 *你自己* 对下一份工作真正想要的东西,借鉴自 *Never Search Alone* 中的「Mnookin two-pager」:
+
+- **引导式构建器** —— 第一人称「我是谁」叙述、「目标环境」备注,以及五个 chip 列表编辑器:**loves**、**must-haves**、**hates**、**deal-breakers** 和 **non-negotiables**。通过 `PUT /api/two-pager` 保存到父项目的 **用户层**(`config/two-pager.yml`)—— 绝不会被系统更新覆盖。
+- **AI 填充助手**(`POST /api/two-pager/draft`)—— 生成一个内联了你的 CV + 档案、可直接运行的 Mnookin 提示词,供你在任意 LLM 中运行并把结果粘贴回来。它只使用你自己的材料;绝不编造。
+- **与你所想的契合徽章** —— `#/scan` 上的每个职位现在都显示一个 `◎ N` 契合分(客户端,经由 `window.FitScore`),将职位的工作类型、国家、最低薪资和搬迁与你的 two-pager 进行比对。设计上诚实:当职位没有可比对的信号时,**不显示徽章**(绝不编造数字)。deal-breaker 的违背比轻度的不喜欢权重更高。
+- **馈入每一次评估** —— 保存的 two-pager 会被内联进 `bundleProjectContext`,因此所有下游 LLM 评估都会将你陈述的偏好与 CV-对-JD 的匹配结合起来。
+
+新增:`server/lib/routes/two-pager.mjs`、`public/js/views/two-pager.js`、`public/js/lib/fit-score.js`、`PATHS.twoPager`。全部 **16 个区域设置**新增 27 个 i18n 键。测试:`tests/two-pager-routes.test.mjs`、`tests/fit-score.test.mjs`。
+
 ## [1.88.0] — 2026-07-04
 
 **Issue #29 收尾 —— 扫描 i18n 缺口 + API 卫生。**

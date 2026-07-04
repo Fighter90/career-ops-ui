@@ -9,6 +9,17 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.89.0] — 2026-07-04
+
+**Ajuste candidato-mercado — o two-pager (Epic 14).** Uma nova página `#/two-pager` permite capturar o que *você* realmente quer da sua próxima vaga, inspirada no "Mnookin two-pager" de *Never Search Alone*:
+
+- **Construtor guiado** — uma narrativa em primeira pessoa "Quem eu sou", uma nota "Ambiente-alvo" e cinco editores de listas de chips: **loves**, **must-haves**, **hates**, **deal-breakers** e **non-negotiables**. Salvo na **camada de usuário** do projeto pai (`config/two-pager.yml`) via `PUT /api/two-pager` — nunca sobrescrito por atualizações do sistema.
+- **Assistente de preenchimento com IA** (`POST /api/two-pager/draft`) — monta um prompt Mnookin pronto para rodar com seu CV + perfil embutidos, para você executar em qualquer LLM e colar de volta. Ele só usa seus próprios materiais; nada é inventado.
+- **Selo de encaixe-com-o-que-você-quer** — cada vaga em `#/scan` agora exibe uma pontuação de encaixe `◎ N` (no lado do cliente, via `window.FitScore`) que confronta o tipo de trabalho, país, piso salarial e realocação da vaga com o seu two-pager. Honesto por design: quando uma vaga não fornece sinal comparável, **nenhum selo é exibido** (nunca um número inventado). Violações de deal-breakers pesam mais do que desagrados leves.
+- **Alimenta cada avaliação** — o two-pager salvo é embutido em `bundleProjectContext`, de modo que todas as avaliações LLM subsequentes combinam suas preferências declaradas com o encaixe CV-vs-vaga.
+
+Novo: `server/lib/routes/two-pager.mjs`, `public/js/views/two-pager.js`, `public/js/lib/fit-score.js`, `PATHS.twoPager`. 27 novas chaves i18n em todos os **16 locales**. Testes: `tests/two-pager-routes.test.mjs`, `tests/fit-score.test.mjs`.
+
 ## [1.88.0] — 2026-07-04
 
 **Polimento do issue #29 — lacunas de i18n no Escaneamento + higiene da API.**

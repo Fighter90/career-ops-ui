@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
+[![release](https://img.shields.io/badge/release-v1.89.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.89.0)
 
-> **🆕 Najnowsze wydanie — v1.88.0**
+> **🆕 Najnowsze wydanie — v1.89.0**
 >
-> **Dopracowanie Issue #29 — i18n Scan + higiena API:** ostatnie zakodowane na stałe ciągi Scan (pigułki `N new / M matching`, toasty `N new offers` oraz badge `reloc`) są teraz przetłumaczone we wszystkich **16 lokalizacjach**, a serwer nie ogłasza się już poprzez nagłówek `X-Powered-By`. Bazuje na v1.87.0 (4 nowi dostawcy skanowania), v1.86.0 (statystyki docelowych stanowisk) i v1.85.0 (lokalizacje niemiecka/włoska/turecka).
+> **Dopasowanie kandydat-rynek — two-pager (Epic 14):** nowa strona **`#/two-pager`** ujmuje to, czego _ty_ naprawdę chcesz od kolejnej roli (co uwielbiasz, wymagania obowiązkowe, czego nie znosisz, deal-breakery, kwestie nienegocjowalne) w formacie „two-pager Mnookina”. **Asystent wypełniania AI** redaguje go na podstawie twojego CV + profilu, każda oferta na `#/scan` otrzymuje ocenę **`◎` dopasowania-do-tego-czego-chcesz**, a two-pager zasila każdą ocenę. Bazuje na v1.88.0 (i18n Scan + higiena API), v1.87.0 (4 nowi dostawcy skanowania) i v1.86.0 (statystyki docelowych stanowisk).
 >
-> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
+> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · dopasowanie do rynku przez two-pager · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

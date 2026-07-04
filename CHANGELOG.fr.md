@@ -11,6 +11,17 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.89.0] — 2026-07-04
+
+**Adéquation candidat-marché — le two-pager (Epic 14).** Une nouvelle page `#/two-pager` vous permet de consigner ce que *vous* voulez vraiment de votre prochain poste, sur le modèle du « Mnookin two-pager » de *Never Search Alone* :
+
+- **Constructeur guidé** — un récit à la première personne « Qui je suis », une note « Environnement cible » et cinq éditeurs de listes de puces : **loves**, **must-haves**, **hates**, **deal-breakers** et **non-negotiables**. Enregistré dans la **couche utilisateur** du projet parent (`config/two-pager.yml`) via `PUT /api/two-pager` — jamais écrasé par les mises à jour système.
+- **Assistant de remplissage IA** (`POST /api/two-pager/draft`) — construit un prompt Mnookin prêt à l'emploi avec votre CV + profil intégrés, à exécuter dans n'importe quel LLM puis à recoller. Il n'utilise que vos propres documents ; rien n'est inventé.
+- **Badge d'adéquation-avec-ce-que-vous-voulez** — chaque offre sur `#/scan` affiche désormais un score d'adéquation `◎ N` (côté client, via `window.FitScore`) qui confronte le type de travail, le pays, le salaire plancher et la relocalisation de l'offre à votre two-pager. Honnête par conception : lorsqu'une offre ne fournit aucun signal comparable, **aucun badge n'est affiché** (jamais de nombre inventé). Les violations de deal-breakers pèsent plus lourd que les simples aversions.
+- **Nourrit chaque évaluation** — le two-pager enregistré est intégré dans `bundleProjectContext`, de sorte que toutes les évaluations LLM en aval combinent vos préférences déclarées avec l'adéquation CV-vs-offre.
+
+Nouveau : `server/lib/routes/two-pager.mjs`, `public/js/views/two-pager.js`, `public/js/lib/fit-score.js`, `PATHS.twoPager`. 27 nouvelles clés i18n dans les **16 locales**. Tests : `tests/two-pager-routes.test.mjs`, `tests/fit-score.test.mjs`.
+
 ## [1.88.0] — 2026-07-04
 
 **Peaufinage de l'issue #29 — lacunes i18n du Scan + hygiène de l'API.**

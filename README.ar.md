@@ -12,13 +12,13 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.88.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.88.0)
+[![release](https://img.shields.io/badge/release-v1.89.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.89.0)
 
-> **🆕 أحدث إصدار — v1.88.0**
+> **🆕 أحدث إصدار — v1.89.0**
 >
-> **صقل Issue #29 — i18n لـ Scan + نظافة الـ API:** آخر سلاسل Scan المضمّنة في الشيفرة (حبوب `N new / M matching`، وتنبيهات `N new offers`، وشارة `reloc`) صارت الآن مترجمة في جميع الـ **16 locales**، ولم يعد الخادم يعلن عن نفسه عبر ترويسة `X-Powered-By`. يُبنى على v1.87.0 (4 مزوّدات مسح جديدة)، وv1.86.0 (إحصاءات الأدوار المستهدفة)، وv1.85.0 (لغات ألمانية/إيطالية/تركية).
+> **ملاءمة المرشّح للسوق — the two-pager (Epic 14):** صفحة **`#/two-pager`** جديدة تلتقط ما تريده _أنت_ فعلاً من دورك التالي (ما تحبّه، والأساسيات، وما تكرهه، وdeal-breakers، وغير القابل للتفاوض) بتنسيق "two-pager الخاص بـ Mnookin". يقوم **مساعد تعبئة بالذكاء الاصطناعي** بصياغتها انطلاقًا من سيرتك الذاتية + ملفك، ويحصل كل إعلان على `#/scan` على درجة **`◎` لملاءمته-لما-تريد**، ويغذّي الـ two-pager كل تقييم. يُبنى على v1.88.0 (i18n لـ Scan + نظافة الـ API)، وv1.87.0 (4 مزوّدات مسح جديدة)، وv1.86.0 (إحصاءات الأدوار المستهدفة).
 >
-> _16 locales · 6 مزوّدات LLM · 45 محوّل ماسح · إحصاءات السوق حسب الدور المستهدف · كاشف إعادة النشر · تكافؤ مع المشروع الأصلي career-ops v1.16.0._
+> _16 locales · 6 مزوّدات LLM · 45 محوّل ماسح · ملاءمة السوق عبر two-pager · إحصاءات السوق حسب الدور المستهدف · كاشف إعادة النشر · تكافؤ مع المشروع الأصلي career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-ar.png)
 

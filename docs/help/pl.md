@@ -1881,3 +1881,30 @@ Strona **Analytics → Statystyki ról docelowych** zamienia skąpe dane, które
 
 - Kliknij **Zapisz migawkę**, aby dołączyć bieżący agregat do `data/role-stats.jsonl`. Każda migawka otrzymuje znacznik czasu na serwerze; migawki są jedyną rzeczą, którą ta strona zapisuje, i nigdy nie dotykają twojego CV ani profilu.
 - Wykres **trendu** przedstawia liczbę ofert w kolejnych zapisanych migawkach — zapisuj jedną okresowo (na przykład po każdym cotygodniowym skanie), aby obserwować, jak rynek dla twoich ról docelowych zmienia się w czasie.
+
+## 21. Twój two-pager — dopasowanie kandydata do rynku (`#/two-pager`)
+
+Większość career-ops-ui odpowiada na pytanie „czy ta oferta pasuje do mojego CV?". **Two-pager** odpowiada na drugą połowę: „czy ta oferta pasuje do tego, czego *naprawdę chcę*?". Jest wzorowany na **„two-pagerze Mnookina"** z książki *Never Search Alone* — krótkiej, pisanej w pierwszej osobie deklaracji tego, co cię napędza, czego wymagasz i czego nie zaakceptujesz. Otwórz go przez **Setup → Two-pager 🎯**.
+
+### Co wypełniasz
+
+- **Kim jestem** — kilka zdań w pierwszej osobie o twoim dorobku i o tym, w jakiej roli rozkwitasz.
+- **Docelowe środowisko** — rozmiar firmy, etap i kultura, których chcesz.
+- Pięć list-chipów — wpisz tekst i naciśnij **Enter** (lub przecinek), aby dodać każdą pozycję, kliknij **×**, aby usunąć:
+  - **Co kocham** — to, co dodaje energii (praca zdalna, samodzielność, greenfield, mentoring…).
+  - **Wymagania obowiązkowe** — twarde warunki (dolny próg wynagrodzenia, kraj, stos technologiczny…).
+  - **Czego nienawidzę** — to, co wyczerpuje (dyżury, niekończące się spotkania, wyłącznie legacy…).
+  - **Deal-breakers** — bezwzględne „nie" (tylko biuro, brak sponsoringu, poniżej pewnej kwoty…).
+  - **Kwestie nienegocjowalne** — granice (lokalizacja, praca zdalna, dolny próg wynagrodzenia…).
+
+Kliknij **Save two-pager**, aby zapisać. Plik jest zapisywany do **warstwy użytkownika twojego nadrzędnego projektu career-ops** pod ścieżką `config/two-pager.yml`, więc — tak jak twoje CV i profil — **nigdy** nie jest nadpisywany podczas aktualizacji systemu.
+
+### Asystent wypełniania AI
+
+Nie masz pewności, jak to ująć? Kliknij **✨ AI fill assistant**. Buduje on gotowy do uruchomienia prompt (w formacie Mnookina, z wplecionym twoim CV i profilem) i pokazuje go w oknie dialogowym. Uruchom ten prompt w dowolnym LLM, a następnie wklej powstałe pola YAML z powrotem do formularza. Asystent korzysta wyłącznie z **twojego własnego** CV i profilu — nigdy nie wymyśla o tobie faktów, a ten przycisk nie wykonuje żadnego wywołania API na żywo.
+
+### Ocena dopasowania do tego, czego chcesz
+
+Gdy zapiszesz two-pager, każda oferta na **`#/scan`** zyskuje małą plakietkę **`◎ N`** (0–100). Porównuje ona **tryb pracy** każdej oferty (zdalny/hybrydowy/stacjonarny), **kraj**, **dolny próg wynagrodzenia** i **relokację** z twoim two-pagerem — zielona plakietka oznacza silne dopasowanie, czerwona — że zadziałał deal-breaker. Najedź kursorem, aby zobaczyć szczegóły (✓ co pasuje, ✗ co naruszył deal-breaker).
+
+Jest celowo szczera: gdy oferta nie daje **żadnego dopasowalnego sygnału** (na przykład wszystkie twoje preferencje to dowolny tekst, którego wiersz skanowania nie może potwierdzić), **plakietka nie jest w ogóle pokazywana** — system nigdy nie wymyśla liczby. Naruszenie twardego **deal-breakera** waży więcej niż miękka **nienawiść** do tej samej rzeczy. Poza plakietką twój zapisany two-pager jest wplatany do każdej **oceny** LLM, więc deklarowane preferencje kształtują też pisemny werdykt, a nie tylko dopasowanie „CV kontra opis stanowiska".
