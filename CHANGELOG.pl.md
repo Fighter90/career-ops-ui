@@ -9,6 +9,16 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.94.0] — 2026-07-04
+
+**Statystyki na nowo (Epic 25).** Strona `#/stats` to teraz trzyzakładkowa sekcja **Statystyki** z prawdziwymi wykresami i znacznie większą ilością danych. Nowa zakładka **Raport rynkowy** prosi model o analizę wynagrodzeń i rynku pracy dla Twoich docelowych stanowisk w wybranym regionie i walucie — streszczenie zarządcze, wynagrodzenia wg poziomu z percentylami P10/P25/P75/P90, czołowi pracodawcy, tabela poszukiwanych umiejętności, częstość benefitów, podział na biuro/hybryda/zdalnie, trendy na 12–24 miesiące oraz wskazówki negocjacyjne. Każda liczba jest oznaczona jako **orientacyjne oszacowanie z wiedzy modelu**, nigdy nie prezentowana jako dane zescrapowane. Nowa zakładka **Mój pipeline** wykreśla Twój własny tracker: rozkład ocen, lejek statusów, czołowe firmy i stanowiska, aplikacje w czasie oraz współczynniki konwersji. Pierwotny widok docelowych stanowisk (oferty/wynagrodzenia wg kraju + trend zapisanych migawek) trafia pod trzecią zakładkę, teraz z **selektorem waluty** i przeglądem **ofert wg stanowiska**.
+
+- **Wyeksportuj dowolny raport** do Markdown lub PDF albo skopiuj go — przez współdzielony helper `report-export.js` (pobranie bloba Markdown; PDF przez istniejący inline'owy generator PDF).
+- Nowa trasa `server/lib/routes/market.mjs` (22. moduł tras) — `POST /api/stats/market` buduje prompt analizy rynku na podstawie Twojego CV/profilu (dzięki czemu zna Twoje docelowe stanowiska), regionu i waluty, uruchamia go przez współdzieloną kaskadę dostawców i wraca do promptu do skopiowania, gdy brak klucza. Bez zapisu plików.
+- Testy: `tests/market-routes.test.mjs` (ograniczanie regionu/waluty, prompt z uczciwym oznaczeniem, tryb ręczny wypełniony z CV/profilu). 36 nowych kluczy i18n we wszystkich **16 locales**, pomoc **§26** ×16.
+
+Nowe: `#/stats` przebudowane w zakładki; `server/lib/routes/market.mjs`; `public/js/lib/report-export.js`.
+
 ## [1.93.0] — 2026-07-04
 
 **Warstwa pamięci (Epic 24).** Nowa strona `#/memory` przechowuje krótką, edytowalną notatkę „zapamiętaj to o mnie", którą asystent uwzględnia przy **każdym** zadaniu:

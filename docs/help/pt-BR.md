@@ -2008,3 +2008,19 @@ Quando você clica em **Salvar memória**, a nota é gravada na camada de usuár
 ### Sugerir a partir dos seus dados
 
 Não sabe o que escrever? O **✨ Sugerir a partir dos meus dados** lê o seu rastreador de candidaturas e redige um conjunto de tópicos comportamentais — os padrões no que você persegue, aceita e rejeita. Rode o prompt que ele fornece em qualquer LLM, revise as sugestões e cole uma versão editada na nota. Ele extrai apenas do seu próprio rastreador e nunca inventa fatos; você sempre revisa antes de qualquer coisa ser salva.
+
+## 26. Estatísticas (`#/stats`)
+
+A página **Estatísticas** reúne três visões em uma única seção: um relatório de mercado gerado por IA, análises do seu próprio pipeline e a tendência de vagas para seus cargos-alvo a partir dos seus scans. Alterne entre elas com as abas no topo.
+
+### Relatório de mercado
+
+A aba **Relatório de mercado** pede ao modelo uma análise salarial e do mercado de trabalho dos *seus* cargos-alvo — ela lê seu CV e seu perfil para saber quais cargos e senioridade cobrir. Digite uma **Região / mercado** (por exemplo `Russia`, `EU-remote`, `US` ou `Germany`), escolha uma **Moeda** e clique em **Gerar relatório de mercado**. Você recebe um relatório estruturado com um resumo executivo, salário por nível (mediana mais P10/P25/P75/P90), principais empregadores, uma tabela de habilidades em demanda, frequência de benefícios, a divisão presencial/híbrido/remoto, tendências de 12–24 meses incluindo o impacto da IA e orientação de negociação. Cada número é uma **estimativa direcional do conhecimento de treinamento do modelo** — não são dados coletados nem ao vivo — e o relatório diz isso; trate os números como faixas, não como cotações. Sem uma chave de API configurada você recebe um prompt para copiar e colar em vez de um relatório fabricado. Use **Baixar .md**, **Salvar como PDF** ou **Copiar** para tirar o relatório do app.
+
+### Meu pipeline
+
+A aba **Meu pipeline** representa graficamente o seu próprio tracker de candidaturas — nada externo. Ela mostra quantos cargos você acompanhou, sua distribuição de pontuações, o funil de status, suas principais empresas e cargos, as candidaturas ao longo do tempo e as taxas de conversão (que proporção das candidaturas chega a Applied, Responded, Interview e Offer). É o espelho honesto da sua busca: só reflete o que já está em `data/applications.md`.
+
+### Tendência de cargos-alvo
+
+A aba **Tendência de cargos-alvo** é a visão original: contagem de vagas e salário mediano por país para seus cargos-alvo, agregados a partir do seu scan mais recente, com um seletor de moeda e uma visão geral de **Vagas por cargo-alvo**. **Salvar snapshot** registra o agregado atual para que você possa observar como as contagens de vagas se movem ao longo do tempo, e a linha de tendência relê esses snapshots. Dados esparsos são esperados e rotulados como indicativos — nunca são preenchidos com números inventados.

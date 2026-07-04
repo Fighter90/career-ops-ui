@@ -11,6 +11,16 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.94.0] — 2026-07-04
+
+**Estadísticas, rediseñadas (Epic 25).** La página `#/stats` es ahora una sección de **Estadísticas** con tres pestañas, con gráficas reales y muchos más datos. Una nueva pestaña de **Informe de mercado** le pide al modelo un análisis salarial y del mercado laboral de tus roles objetivo en la región y la moneda que elijas — resumen ejecutivo, salario por nivel con percentiles P10/P25/P75/P90, principales empleadores, una tabla de competencias demandadas, frecuencia de beneficios, el reparto presencial/híbrido/remoto, tendencias a 12–24 meses y orientación de negociación. Cada cifra se etiqueta como una **estimación orientativa a partir del conocimiento del modelo**, nunca presentada como datos extraídos. Una nueva pestaña de **Mi pipeline** grafica tu propio tracker: distribución de puntuaciones, embudo de estados, principales empresas y roles, postulaciones a lo largo del tiempo y tasas de conversión. La vista original de rol objetivo (vacantes/salario por país + tendencia de instantáneas guardadas) pasa a una tercera pestaña, ahora con un **selector de moneda** y un resumen de **publicaciones por rol**.
+
+- **Exporta cualquier informe** a Markdown o PDF, o cópialo — mediante el helper compartido `report-export.js` (descarga de blob Markdown; PDF a través del runner de PDF en línea existente).
+- Nueva ruta `server/lib/routes/market.mjs` (22.º módulo de rutas) — `POST /api/stats/market` construye un prompt de análisis de mercado a partir de tu CV/perfil (de modo que conoce tus roles objetivo), la región y la moneda, lo pasa por la cascada compartida de proveedores y recurre a un prompt para copiar y pegar cuando no hay clave. Sin escrituras en disco.
+- Pruebas: `tests/market-routes.test.mjs` (acotación de región/moneda, prompt con etiquetado de honestidad, modo manual sembrado con CV/perfil). 36 nuevas claves i18n en los **16 locales**, Ayuda **§26** en los 16.
+
+Nuevo: `#/stats` rediseñada en pestañas; `server/lib/routes/market.mjs`; `public/js/lib/report-export.js`.
+
 ## [1.93.0] — 2026-07-04
 
 **Capa de memoria (Epic 24).** Una nueva página `#/memory` guarda una nota breve y editable de «recuerda esto sobre mí» que el asistente tiene en cuenta en **cada** tarea:

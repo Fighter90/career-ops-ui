@@ -11,6 +11,16 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.94.0] — 2026-07-04
+
+**Les statistiques, repensées (Epic 25).** La page `#/stats` est désormais une section **Statistiques** à trois onglets, avec de vrais graphiques et bien plus de données. Un nouvel onglet **Rapport de marché** demande au modèle une analyse des salaires et du marché du travail pour vos postes ciblés, dans une région et une devise de votre choix — synthèse exécutive, salaires par niveau avec percentiles P10/P25/P75/P90, principaux employeurs, tableau des compétences recherchées, fréquence des avantages, répartition présentiel/hybride/télétravail, tendances sur 12–24 mois et conseils de négociation. Chaque chiffre est étiqueté comme **estimation indicative issue des connaissances du modèle**, jamais présenté comme des données extraites. Un nouvel onglet **Mon pipeline** trace votre propre suivi : distribution des scores, entonnoir de statuts, principales entreprises et postes, candidatures dans le temps et taux de conversion. La vue « postes ciblés » d'origine (offres/salaires par pays + tendance des instantanés enregistrés) passe sous un troisième onglet, désormais doté d'un **sélecteur de devise** et d'un aperçu **offres par poste**.
+
+- **Exportez n'importe quel rapport** en Markdown ou PDF, ou copiez-le — via l'utilitaire partagé `report-export.js` (téléchargement du blob Markdown ; PDF via le générateur PDF inline existant).
+- Nouvelle route `server/lib/routes/market.mjs` (22e module de routes) — `POST /api/stats/market` construit une invite d'analyse de marché à partir de votre CV/profil (afin de connaître vos postes ciblés), de la région et de la devise, l'exécute via la cascade de fournisseurs partagée et retombe sur une invite à copier-coller en l'absence de clé. Aucune écriture de fichier.
+- Tests : `tests/market-routes.test.mjs` (bornage région/devise, invite à l'étiquetage honnête, mode manuel pré-rempli depuis le CV/profil). 36 nouvelles clés i18n dans les **16 locales**, aide **§26** ×16.
+
+Nouveau : `#/stats` repensée en onglets ; `server/lib/routes/market.mjs` ; `public/js/lib/report-export.js`.
+
 ## [1.93.0] — 2026-07-04
 
 **Couche mémoire (Epic 24).** Une nouvelle page `#/memory` conserve une note courte et modifiable « à retenir à mon sujet » que l'assistant garde à l'esprit pour **chaque** tâche :

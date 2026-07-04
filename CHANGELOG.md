@@ -8,6 +8,17 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.94.0] — 2026-07-04
+
+**Statistics, reworked (Epic 25).** The `#/stats` page is now a three-tab **Statistics** section, with real graphs and a lot more data. A new **Market report** tab asks the model for a salary & labour-market analysis of your target roles in a region and currency you choose — executive summary, salary by grade with P10/P25/P75/P90 percentiles, top employers, an in-demand skills table, benefits frequency, the office/hybrid/remote split, 12–24 month trends, and negotiation guidance. Every figure is labelled a **directional estimate from the model's knowledge**, never presented as scraped data. A new **My pipeline** tab charts your own tracker: score distribution, status funnel, top companies and roles, applications over time, and conversion rates. The original target-role view (vacancy/salary by country + saved-snapshot trend) moves under a third tab, now with a **currency selector** and a **postings-by-role** overview.
+
+- **Export any report** to Markdown or PDF, or copy it — via the shared `report-export.js` helper (Markdown blob download; PDF through the existing inline-PDF runner).
+- New route `server/lib/routes/market.mjs` (22nd route module) — `POST /api/stats/market` builds a market-analysis prompt from your CV/profile (so it knows your target roles), region, and currency, runs it through the shared provider cascade, and falls back to a copy-paste prompt with no key. No file writes.
+- Tests: `tests/market-routes.test.mjs` (region/currency bounding, honesty-labelled prompt, CV/profile-seeded manual mode). 36 new i18n keys ×16 locales, Help **§26** ×16.
+
+New: `#/stats` reworked into tabs; `server/lib/routes/market.mjs`; `public/js/lib/report-export.js`.
+
+
 ## [1.93.0] — 2026-07-04
 
 **Memory layer (Epic 24).** A new `#/memory` page holds a short, editable "remember this about me" note that the assistant keeps in mind on **every** task:

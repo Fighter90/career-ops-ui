@@ -2057,3 +2057,19 @@ Når du klikker på **Gem hukommelse**, skrives noten til dit overordnede projek
 ### Foreslå ud fra dine data
 
 Ikke sikker på, hvad du skal skrive? **✨ Foreslå ud fra mine data** læser din ansøgningstracker og udkaster et sæt adfærdsmæssige punkter — mønstrene i, hvad du forfølger, accepterer og afviser. Kør den prompt, den giver dig, i en hvilken som helst LLM, gennemgå forslagene, og indsæt en redigeret version i noten. Den henter kun fra din egen tracker og opfinder aldrig fakta; du gennemgår altid, før noget gemmes.
+
+## 26. Statistik (`#/stats`)
+
+Siden **Statistik** samler tre visninger under én sektion: en AI-genereret markedsrapport, analyser af din egen pipeline og tendensen i antallet af ledige stillinger for dine målroller ud fra dine scanninger. Skift mellem dem med fanerne øverst.
+
+### Markedsrapport
+
+Fanen **Markedsrapport** beder modellen om en løn- og arbejdsmarkedsanalyse af *dine* målroller — den læser dit CV og din profil for at vide, hvilke roller og hvilket senioritetsniveau der skal dækkes. Skriv en **Region / marked** (for eksempel `Russia`, `EU-remote`, `US` eller `Germany`), vælg en **Valuta**, og klik på **Generér markedsrapport**. Du får en struktureret rapport med et ledelsesresumé, løn efter niveau (median plus P10/P25/P75/P90), de største arbejdsgivere, en tabel over efterspurgte kompetencer, hyppigheden af goder, fordelingen mellem kontor/hybrid/remote, tendenser over 12-24 måneder inklusive AI's indvirkning og vejledning til forhandling. Hvert tal er et **retningsangivende skøn ud fra modellens træningsviden** — ikke skrabet eller live data — og det siger rapporten selv; behandl tallene som intervaller, ikke som citater. Uden en API-nøgle sat får du i stedet en kopier-og-indsæt-prompt frem for en opdigtet rapport. Brug **Download .md**, **Gem som PDF** eller **Kopiér** for at få rapporten ud af appen.
+
+### Min pipeline
+
+Fanen **Min pipeline** tegner din egen ansøgningstracker — intet eksternt. Den viser, hvor mange roller du har fulgt, din scorefordeling, statustragten, dine største virksomheder og roller, ansøgninger over tid og konverteringsrater (hvor stor en andel af ansøgningerne når frem til Ansøgt, Besvaret, Interview og Tilbud). Det er det ærlige spejl af din søgning: den afspejler kun det, der allerede står i `data/applications.md`.
+
+### Tendens for målroller
+
+Fanen **Tendens for målroller** er den oprindelige visning: antal ledige stillinger og medianløn pr. land for dine målroller, samlet fra din seneste scanning, med en valutavælger og et overblik over **Opslag efter målrolle**. **Gem snapshot** registrerer den aktuelle aggregering, så du kan følge, hvordan antallet af ledige stillinger bevæger sig over tid, og tendenslinjen læser disse snapshots tilbage. Sparsomme data er forventet og mærkes som vejledende — de bliver aldrig fyldt ud med opdigtede tal.

@@ -113,7 +113,7 @@ test('every help-bundle keeps the 25-H2 parity contract after v1.29.1 edit', () 
     if (baseline === null) baseline = h2;
     assert.equal(h2, baseline, `${lang}.md has ${h2} H2 sections, expected ${baseline}`);
   }
-  assert.equal(baseline, 25, `expected 25 H2 sections, got ${baseline}`);
+  assert.equal(baseline, 26, `expected 26 H2 sections, got ${baseline}`);
 });
 
 test('WS10: every help-bundle has identical H3 parity (en + 7 locales)', () => {
@@ -128,5 +128,5 @@ test('WS10: every help-bundle has identical H3 parity (en + 7 locales)', () => {
     if (baseline === null) baseline = h3;
     assert.equal(h3, baseline, `${lang}.md has ${h3} H3 subsections, expected ${baseline}`);
   }
-  assert.equal(baseline, 93, `expected 93 H3 subsections per bundle, got ${baseline}`); // v1.58.35 §18 added 3 H3s; v1.62.x §5 added "rss (RSS / Atom boards)"; v1.64.0 §7 added "Scanning hh.ru from outside Russia"; v1.86.0 §20 Statistics added 3 H3s; v1.89.0 §21 Your two-pager added 3 H3s; v1.90.0 §22 Mock interview added 3 H3s; v1.91.0 §23 Networking added 3 H3s; v1.92.0 §24 CV Studio added 3 H3s; v1.93.0 §25 Memory added 3 H3s
+  assert.equal(baseline, 96, `expected 96 H3 subsections per bundle, got ${baseline}`); // v1.58.35 §18 added 3 H3s; v1.62.x §5 added "rss (RSS / Atom boards)"; v1.64.0 §7 added "Scanning hh.ru from outside Russia"; v1.86.0 §20 Statistics added 3 H3s; v1.89.0 §21 Your two-pager added 3 H3s; v1.90.0 §22 Mock interview added 3 H3s; v1.91.0 §23 Networking added 3 H3s; v1.92.0 §24 CV Studio added 3 H3s; v1.93.0 §25 Memory added 3 H3s; v1.94.0 §26 Statistics rework added 3 H3s
 });

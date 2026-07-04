@@ -2139,3 +2139,19 @@ Onu tercihler ve yönlendirme ile sınırlı tutun. Deneyiminizle ilgili gerçek
 ### Verilerinizden öner
 
 Ne yazacağınızdan emin değil misiniz? **✨ Verilerimden öner**, başvuru izleyicinizi okur ve bir dizi davranışsal madde taslağı çıkarır — peşinden gittiğiniz, kabul ettiğiniz ve reddettiğiniz şeylerdeki kalıplar. Size verdiği istemi herhangi bir LLM'de çalıştırın, önerileri gözden geçirin ve düzenlenmiş bir sürümü nota yapıştırın. Yalnızca kendi izleyicinizden yararlanır ve asla gerçek uydurmaz; herhangi bir şey kaydedilmeden önce her zaman gözden geçirirsiniz.
+
+## 26. İstatistikler (`#/stats`)
+
+**İstatistikler** sayfası üç görünümü tek bir bölümde bir araya getirir: yapay zekâ tarafından üretilen bir pazar raporu, kendi pipeline'ınıza dair analizler ve taramalarınızdan elde edilen hedef roller için ilan sayısı eğilimi. Üstteki sekmelerle bunlar arasında geçiş yapın.
+
+### Pazar raporu
+
+**Pazar raporu** sekmesi, modelden *sizin* hedef rolleriniz için bir maaş ve işgücü piyasası analizi ister — hangi rolleri ve hangi kıdem düzeyini kapsayacağını bilmek için CV'nizi ve profilinizi okur. Bir **Bölge / pazar** yazın (örneğin `Russia`, `EU-remote`, `US` veya `Germany`), bir **Para birimi** seçin ve **Pazar raporu oluştur**'a tıklayın. Yönetici özeti, kademeye göre maaş (medyan artı P10/P25/P75/P90), önde gelen işverenler, talep gören beceriler tablosu, yan hakların sıklığı, ofis/hibrit/uzaktan dağılımı, yapay zekâ etkisi dahil 12-24 aylık eğilimler ve müzakere rehberliği içeren yapılandırılmış bir rapor alırsınız. Her rakam, **modelin eğitim bilgisinden çıkan yön gösterici bir tahmindir** — kazınmış veya canlı veri değil — ve rapor bunu belirtir; sayıları alıntı değil, aralık olarak değerlendirin. Ayarlanmış bir API anahtarı yoksa, uydurma bir rapor yerine kopyala-yapıştır bir istem alırsınız. Raporu uygulamadan çıkarmak için **.md indir**, **PDF olarak kaydet** veya **Kopyala**'yı kullanın.
+
+### Pipeline'ım
+
+**Pipeline'ım** sekmesi kendi başvuru izleyicinizi grafiğe döker — dışarıdan hiçbir şey yok. Kaç rolü takip ettiğinizi, puan dağılımınızı, durum hunisini, en çok başvurduğunuz şirket ve rolleri, zaman içindeki başvuruları ve dönüşüm oranlarını (başvuruların ne kadarının Başvuruldu, Yanıtlandı, Mülakat ve Teklif aşamasına ulaştığını) gösterir. Aramanızın dürüst aynasıdır: yalnızca `data/applications.md` içinde zaten olanı yansıtır.
+
+### Hedef rol eğilimi
+
+**Hedef rol eğilimi** sekmesi özgün görünümdür: hedef rolleriniz için ülkeye göre ilan sayıları ve medyan maaş, en son taramanızdan toplanır; bir para birimi seçici ve bir **Hedef role göre ilanlar** genel görünümü ile birlikte. **Anlık görüntüyü kaydet**, mevcut toplamı kaydeder; böylece ilan sayılarının zaman içinde nasıl değiştiğini izleyebilirsiniz ve eğilim çizgisi bu anlık görüntüleri geri okur. Seyrek veri beklenir ve gösterge niteliğinde olarak etiketlenir — asla uydurma sayılarla doldurulmaz.

@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.93.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.93.0)
+[![release](https://img.shields.io/badge/release-v1.94.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.94.0)
 
-> **🆕 Dernière version — v1.93.0**
+> **🆕 Dernière version — v1.94.0**
 >
-> **Couche mémoire (Epic 24) :** une nouvelle page **`#/memory`** conserve une note courte et modifiable « à retenir à mon sujet ». Comme elle est intégrée au contexte de projet partagé, elle oriente **chaque** requête IA — évaluation, mock interview, networking, CV Studio — sur **tous** les fournisseurs. Elle capture vos préférences et votre façon de travailler (jamais de nouveaux faits vous concernant), et un assistant **suggérer à partir de vos données** rédige des puces comportementales à partir de votre suivi, à relire. S'appuie sur la v1.92.0 (CV Studio), la v1.91.0 (planificateur de networking) et la v1.90.0 (mock interview).
+> **Les statistiques, repensées (Epic 25) :** la page **`#/stats`** est désormais une section **Statistiques** à trois onglets, avec de vrais graphiques et bien plus de données. Un nouvel onglet **Rapport de marché** génère une analyse IA des salaires et du marché du travail pour vos postes ciblés — par niveau avec percentiles P10–P90, principaux employeurs, compétences recherchées, avantages, part de télétravail, tendances et conseils de négociation, dans la région et la **devise** de votre choix (chiffres étiquetés comme estimations indicatives du modèle, jamais extraits). Un nouvel onglet **Mon pipeline** trace votre propre suivi (scores, entonnoir, principales entreprises/postes, chronologie, taux de conversion). Chaque rapport s'exporte en **Markdown ou PDF**. S'appuie sur la v1.93.0 (couche mémoire) et la v1.92.0 (CV Studio).
 >
-> _16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · statistiques de marché par poste ciblé · détecteur de reposts · parité avec le career-ops v1.16.0._
+> _refonte des statistiques · 16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · détecteur de reposts · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

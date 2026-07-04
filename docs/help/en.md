@@ -2094,3 +2094,19 @@ When you click **Save memory**, the note is written to your parent project's use
 ### Suggest from your data
 
 Not sure what to write? **✨ Suggest from my data** reads your application tracker and drafts a set of behavioural bullets — the patterns in what you pursue, accept, and reject. Run the prompt it gives you in any LLM, review the suggestions, and paste an edited version into the note. It mines only your own tracker and never invents facts; you always review before anything is saved.
+
+## 26. Statistics (`#/stats`)
+
+The **Statistics** page brings three views together under one section: an AI-generated market report, analytics on your own pipeline, and the target-role vacancy trend from your scans. Switch between them with the tabs at the top.
+
+### Market report
+
+The **Market report** tab asks the model for a salary and labour-market analysis of *your* target roles — it reads your CV and profile to know which roles and seniority to cover. Type a **Region / market** (for example `Russia`, `EU-remote`, `US`, or `Germany`), pick a **Currency**, and click **Generate market report**. You get a structured report with an executive summary, salary by grade (median plus P10/P25/P75/P90), top employers, an in-demand skills table, benefits frequency, the office/hybrid/remote split, 12–24 month trends including AI impact, and negotiation guidance. Every figure is a **directional estimate from the model's training knowledge** — not scraped or live data — and the report says so; treat the numbers as ranges, not quotes. With no API key set you get a copy-paste prompt instead of a fabricated report. Use **Download .md**, **Save as PDF**, or **Copy** to take the report out of the app.
+
+### My pipeline
+
+The **My pipeline** tab charts your own application tracker — nothing external. It shows how many roles you've tracked, your score distribution, the status funnel, your top companies and roles, applications over time, and conversion rates (what share of applications reach Applied, Responded, Interview, and Offer). It's the honest mirror of your search: it only ever reflects what's already in `data/applications.md`.
+
+### Target-role trend
+
+The **Target-role trend** tab is the original view: vacancy counts and median salary by country for your target roles, aggregated from your latest scan, with a currency selector and a **Postings by target role** overview. **Save snapshot** records the current aggregate so you can watch how vacancy counts move over time, and the trend line reads those snapshots back. Sparse data is expected and labelled as indicative — it is never padded with invented numbers.
