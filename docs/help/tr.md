@@ -2046,3 +2046,27 @@ Nasıl ifade edeceğinizden emin değil misiniz? **✨ AI fill assistant** düğ
 Bir iki sayfalık özet kaydettikten sonra, **`#/scan`** üzerindeki her ilan küçük bir **`◎ N`** rozeti (0–100) kazanır. Her işin **çalışma türünü** (uzaktan/hibrit/ofis), **ülkesini**, **ücret alt sınırını** ve **taşınma** durumunu iki sayfalık özetinizle karşılaştırır — yeşil rozet güçlü uyum, kırmızı ise bir deal-breaker'ın devreye girdiği anlamına gelir. Ayrıntılar için üzerine gelin (✓ neyin eşleştiği, ✗ bir deal-breaker'ın neyi ihlal ettiği).
 
 Bilinçli olarak dürüsttür: bir ilan **eşleştirilebilir hiçbir sinyal** vermediğinde (örneğin tüm tercihleriniz, bir tarama satırının doğrulayamayacağı serbest metin ise), **hiçbir rozet gösterilmez** — sistem asla bir sayı uydurmaz. Katı bir **deal-breaker** ihlali, aynı şeyden duyulan yumuşak bir **nefretten** daha ağır basar. Rozetin ötesinde, kaydedilmiş iki sayfalık özetiniz her LLM **değerlendirmesine** gömülür, bu nedenle belirttiğiniz tercihler yalnızca „CV'ye karşı iş tanımı" eşleşmesini değil, yazılı kararı da şekillendirir.
+
+## 22. Deneme mülakatı (`#/mock-interview`)
+
+Mülakat hazırlığını okumak bir şeydir; *cevapları yüksek sesle söylemek* ise bambaşka bir şey. **Deneme mülakatı** sayfası (kenar çubuğundan **Interview prep → Mock interview 🎤** ile açın) belirli bir role yönelik, kendi CV'nize, profilinize, iki sayfalık özetinize ve hikâye bankanıza dayanan sıra sıra bir prova yürütür. Bu, hazır bir soru listesi değildir — mülakatçı gerçekten söylediğiniz şeye tepki verir.
+
+### Bir oturuma başlama
+
+- Bir **hedef rol** girin (ve isteğe bağlı olarak bir **şirket**). Elinizde varsa **iş tanımını** da yapıştırın — sorular gözle görülür şekilde keskinleşir.
+- **Start interview** düğmesine tıklayın. Mülakatçı, role ve geçmişinize göre uyarlanmış tek bir odaklı soruyla söze başlar.
+- Cevabınızı yazın ve **Send answer** düğmesine tıklayın. İstediğiniz kadar tekrarlayın — bu bir konuşmadır, sabit bir sınav değil.
+
+### Her tur size ne verir
+
+Her cevaptan sonra mülakatçı üç bölümle yanıt verir:
+
+- **Geri bildirim** — neyin isabetli olduğu (güçlü yönler) ve neyin eksik kaldığı, **STAR+R** (Situation, Task, Action, Result, Reflection) terimleriyle çerçevelenmiş olarak. Atladığınız belirli boyutu adıyla belirtir.
+- **Puan** — bir oturum boyunca ilerlemeyi hissedebilmeniz için tek satırlık bir gerekçeyle hızlı bir `N/5`.
+- **Sonraki soru** — son cevabınızın en zayıf kısmını bilinçli olarak yoklayan bir takip sorusu.
+
+Her şey gerçek malzemenize dayanır: `cv.md`, `config/profile.yml`, `config/two-pager.yml` ve STAR+R hikâye bankanız (`interview-prep/story-bank.md`) tümüyle isteme gömülür. Mülakatçı gerçek boşluklara yüklenir ama sahip olmadığınız bir deneyimi asla uydurmaz. Herhangi bir LLM anahtarı ayarlanmamışsa, sayfa size herhangi bir asistana yapıştırabileceğiniz çalıştırmaya hazır bir istem verir — uygulamanın başka yerlerinde kullanılan aynı dürüst yedek çözüm.
+
+### Oturumları kaydetme ve yeniden görüntüleme
+
+Bitmiş bir provayı saklamak için **Save transcript** düğmesine tıklayın. Üst projenizin kullanıcı katmanına `interview-prep/mock-{company}-{role}-{date}.md` yolunda yazılır, böylece diğer mülakat hazırlık notlarınızla birlikte durur ve sistem güncellemeleriyle asla üzerine yazılmaz. Sayfanın altındaki **Saved sessions** listesi, herhangi bir dökümü yeniden açmanıza veya silmenize olanak tanır. Farklı bir rolle sıfırdan başlamak için **New interview** düğmesini kullanın.

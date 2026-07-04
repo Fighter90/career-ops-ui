@@ -11,6 +11,17 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.90.0] — 2026-07-04
+
+**Mock Interview 2.0 (Epic 15).** Una nueva página `#/mock-interview` convierte tu CV, perfil, two-pager y banco de historias en un ensayo de entrevista turno por turno:
+
+- **Práctica conversacional** — fija un puesto objetivo (+ empresa / JD opcionales) y el entrevistador abre con una pregunta enfocada. Cada respuesta que envías recibe una réplica estructurada: **Feedback** (fortalezas + la brecha STAR+R), una **Puntuación** (`N/5`) y una **Siguiente pregunta** que indaga en la parte más débil de tu última respuesta. Anclada en el servidor a tus materiales reales — nunca inventa experiencia que no tienes.
+- **Consciente del banco de historias** — `interview-prep/story-bank.md` se incrusta en el prompt (mismo nivel de confianza que `cv.md`), de modo que el feedback puede señalarte tus propias mejores historias.
+- **En vivo o manual** — con una clave de proveedor, el turno se ejecuta en vivo a través de la cascada compartida de proveedores (Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models); sin clave obtienes un prompt listo para copiar y pegar (fallback honesto, sin respuestas inventadas).
+- **Sesiones guardadas** — pulsa **Save transcript** para persistir una entrevista terminada en la capa de usuario (`interview-prep/mock-{company}-{role}-{date}.md`); la página lista, abre y elimina las sesiones guardadas.
+
+Nuevo: `server/lib/routes/interview.mjs` (18.º módulo de rutas), `public/js/views/mock-interview.js`, `server/lib/llm-dispatch.mjs` (cascada compartida de proveedores), `PATHS.storyBank`, `bundleProjectContext({ extraFiles })`. 30 nuevas claves i18n en los **16 locales**. Pruebas: `tests/interview-routes.test.mjs`.
+
 ## [1.89.0] — 2026-07-04
 
 **Ajuste candidato-mercado — el two-pager (Epic 14).** Una nueva página `#/two-pager` te permite capturar lo que *tú* realmente quieres de tu próximo puesto, inspirada en el «Mnookin two-pager» de *Never Search Alone*:

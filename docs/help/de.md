@@ -2105,3 +2105,27 @@ Nicht sicher, wie du es formulieren sollst? Klicke auf **✨ KI-Ausfüllassisten
 Sobald du ein Zwei-Seiten-Papier gespeichert hast, erhält jede Anzeige auf **`#/scan`** ein kleines **`◎ N`**-Abzeichen (0–100). Es vergleicht **Arbeitsform** (Remote/Hybrid/vor Ort), **Land**, **Gehaltsuntergrenze** und **Umzug** jedes Jobs mit deinem Zwei-Seiten-Papier — ein grünes Abzeichen bedeutet gute Passung, ein rotes bedeutet, dass ein Ausschlusskriterium ausgelöst wurde. Fahre mit der Maus darüber, um die Details zu sehen (✓ was passte, ✗ welches Ausschlusskriterium verletzt wurde).
 
 Es ist bewusst ehrlich: wenn eine Anzeige **kein abgleichbares Signal** liefert (zum Beispiel, wenn deine Präferenzen alle Freitext sind, den eine Scan-Zeile nicht bestätigen kann), wird **überhaupt kein Abzeichen angezeigt** — das System erfindet nie eine Zahl. Die Verletzung eines harten **Ausschlusskriteriums** wiegt schwerer als ein weiches **Hassen** derselben Sache. Über das Abzeichen hinaus wird dein gespeichertes Zwei-Seiten-Papier in jede LLM-**Bewertung** eingebettet, sodass deine angegebenen Präferenzen auch das geschriebene Urteil prägen, nicht nur die Passung Lebenslauf-vs-Stellenanzeige.
+
+## 22. Simuliertes Interview (`#/mock-interview`)
+
+Die Interview-Vorbereitung zu lesen ist eine Sache; *die Antworten laut auszusprechen* eine andere. Die Seite **Simuliertes Interview** (öffne sie über **Interview-Vorbereitung → Simuliertes Interview 🎤** in der Seitenleiste) führt eine Runde-für-Runde-Probe gegen eine konkrete Stelle durch, verankert in deinem eigenen Lebenslauf, Profil, Zwei-Seiten-Papier und deiner Geschichtensammlung. Es ist keine Liste vorgefertigter Fragen — der Interviewer reagiert auf das, was du tatsächlich sagst.
+
+### Eine Sitzung starten
+
+- Gib eine **Zielrolle** ein (und optional ein **Unternehmen**). Füge auch die **Stellenbeschreibung** ein, falls du sie hast — die Fragen werden merklich schärfer.
+- Klicke auf **Interview starten**. Der Interviewer eröffnet mit einer fokussierten Frage, zugeschnitten auf die Rolle und deinen Hintergrund.
+- Tippe deine Antwort und klicke auf **Antwort senden**. Wiederhole es, so lange du möchtest — es ist ein Gespräch, kein festes Quiz.
+
+### Was dir jede Runde gibt
+
+Nach jeder Antwort antwortet der Interviewer mit drei Teilen:
+
+- **Feedback** — was ankam (Stärken) und was fehlte, formuliert in **STAR+R**-Begriffen (Situation, Aufgabe, Aktion, Ergebnis, Reflexion). Es benennt die konkrete Dimension, die du ausgelassen hast.
+- **Punktzahl** — ein schnelles `N/5` mit einer einzeiligen Begründung, damit du den Fortschritt über eine Sitzung hinweg spürst.
+- **Nächste Frage** — eine Nachfrage, die gezielt den schwächsten Teil deiner letzten Antwort auslotet.
+
+Alles ist in deinen echten Materialien verankert: `cv.md`, `config/profile.yml`, `config/two-pager.yml` und deine STAR+R-Geschichtensammlung (`interview-prep/story-bank.md`) werden alle in den Prompt eingebettet. Der Interviewer hakt bei echten Lücken nach, erfindet aber nie Erfahrung, die du nicht hast. Wenn kein LLM-Schlüssel gesetzt ist, gibt dir die Seite einen fertig ausführbaren Prompt zum Einfügen in einen beliebigen Assistenten — dasselbe ehrliche Ausweichmittel, das anderswo in der App verwendet wird.
+
+### Sitzungen speichern und erneut aufrufen
+
+Klicke auf **Transkript speichern**, um eine abgeschlossene Probe zu behalten. Es wird in die Nutzerschicht deines übergeordneten Projekts geschrieben, unter `interview-prep/mock-{company}-{role}-{date}.md`, sodass es neben deinen anderen Interview-Vorbereitungsnotizen liegt und nie durch Systemaktualisierungen überschrieben wird. Die Liste **Gespeicherte Sitzungen** am Ende der Seite lässt dich jedes Transkript erneut öffnen oder löschen. Nutze **Neues Interview**, um mit einer anderen Rolle von vorn zu beginnen.

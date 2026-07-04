@@ -9,6 +9,17 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.90.0] — 2026-07-04
+
+**Mock Interview 2.0 (Epic 15).** Nowa strona `#/mock-interview` zamienia Twoje CV, profil, two-pager i bank historii w turową próbę rozmowy kwalifikacyjnej:
+
+- **Ćwiczenie konwersacyjne** — ustaw docelowe stanowisko (+ opcjonalnie firma / JD), a osoba prowadząca rozmowę otwiera skupionym pytaniem. Każda wysłana przez Ciebie odpowiedź otrzymuje ustrukturyzowaną replikę: **Feedback** (mocne strony + luka STAR+R), **Score** (`N/5`) oraz **Next question**, które bada najsłabszą część Twojej ostatniej odpowiedzi. Osadzone po stronie serwera w Twoich rzeczywistych materiałach — nigdy nie zmyśla doświadczenia, którego nie masz.
+- **Świadome banku historii** — `interview-prep/story-bank.md` jest wstawiany do promptu (ten sam poziom zaufania co `cv.md`), dzięki czemu informacja zwrotna może wskazać Ci Twoje własne najlepsze historie.
+- **Na żywo lub ręcznie** — z kluczem dostawcy tura przebiega na żywo przez współdzieloną kaskadę dostawców (Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models); bez klucza otrzymujesz gotowy do uruchomienia prompt do skopiowania i wklejenia (uczciwy fallback, bez zmyślonych odpowiedzi).
+- **Zapisane sesje** — kliknij **Save transcript**, aby utrwalić zakończoną rozmowę w warstwie użytkownika (`interview-prep/mock-{company}-{role}-{date}.md`); strona wyświetla, otwiera i usuwa zapisane sesje.
+
+Nowe: `server/lib/routes/interview.mjs` (18. moduł tras), `public/js/views/mock-interview.js`, `server/lib/llm-dispatch.mjs` (współdzielona kaskada dostawców), `PATHS.storyBank`, `bundleProjectContext({ extraFiles })`. 30 nowych kluczy i18n we wszystkich **16 locales**. Testy: `tests/interview-routes.test.mjs`.
+
 ## [1.89.0] — 2026-07-04
 
 **Dopasowanie kandydat-rynek — two-pager (Epic 14).** Nowa strona `#/two-pager` pozwala uchwycić to, czego *ty* naprawdę chcesz od kolejnej roli, wzorowana na „Mnookin two-pager" z *Never Search Alone*:

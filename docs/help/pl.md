@@ -1908,3 +1908,27 @@ Nie masz pewności, jak to ująć? Kliknij **✨ AI fill assistant**. Buduje on 
 Gdy zapiszesz two-pager, każda oferta na **`#/scan`** zyskuje małą plakietkę **`◎ N`** (0–100). Porównuje ona **tryb pracy** każdej oferty (zdalny/hybrydowy/stacjonarny), **kraj**, **dolny próg wynagrodzenia** i **relokację** z twoim two-pagerem — zielona plakietka oznacza silne dopasowanie, czerwona — że zadziałał deal-breaker. Najedź kursorem, aby zobaczyć szczegóły (✓ co pasuje, ✗ co naruszył deal-breaker).
 
 Jest celowo szczera: gdy oferta nie daje **żadnego dopasowalnego sygnału** (na przykład wszystkie twoje preferencje to dowolny tekst, którego wiersz skanowania nie może potwierdzić), **plakietka nie jest w ogóle pokazywana** — system nigdy nie wymyśla liczby. Naruszenie twardego **deal-breakera** waży więcej niż miękka **nienawiść** do tej samej rzeczy. Poza plakietką twój zapisany two-pager jest wplatany do każdej **oceny** LLM, więc deklarowane preferencje kształtują też pisemny werdykt, a nie tylko dopasowanie „CV kontra opis stanowiska".
+
+## 22. Próbna rozmowa kwalifikacyjna (`#/mock-interview`)
+
+Czytanie materiałów do rozmowy to jedno; *wypowiadanie odpowiedzi na głos* to coś zupełnie innego. Strona **Próbna rozmowa kwalifikacyjna** (otwórz ją przez **Interview prep → Mock interview 🎤** na pasku bocznym) prowadzi trwającą tura po turze próbę pod konkretną rolę, opartą na twoim własnym CV, profilu, two-pagerze i banku historii. To nie gotowa lista pytań — rozmówca reaguje na to, co faktycznie mówisz.
+
+### Rozpoczynanie sesji
+
+- Podaj **docelową rolę** (i opcjonalnie **firmę**). Wklej też **opis stanowiska**, jeśli go masz — pytania staną się zauważalnie trafniejsze.
+- Kliknij **Start interview**. Rozmówca otwiera rozmowę jednym skupionym pytaniem dopasowanym do roli i twojego doświadczenia.
+- Wpisz odpowiedź i kliknij **Send answer**. Powtarzaj tak długo, jak chcesz — to rozmowa, a nie sztywny quiz.
+
+### Co daje każda tura
+
+Po każdej odpowiedzi rozmówca odpowiada trzema częściami:
+
+- **Informacja zwrotna** — co się udało (mocne strony) i czego zabrakło, ujęte w kategoriach **STAR+R** (Situation, Task, Action, Result, Reflection). Wskazuje konkretny wymiar, który pominąłeś.
+- **Ocena** — szybkie `N/5` z jednowierszowym uzasadnieniem, byś czuł postęp w trakcie sesji.
+- **Następne pytanie** — dopytanie, które celowo bada najsłabszą część twojej ostatniej odpowiedzi.
+
+Wszystko jest oparte na twoich prawdziwych materiałach: `cv.md`, `config/profile.yml`, `config/two-pager.yml` oraz twój bank historii STAR+R (`interview-prep/story-bank.md`) są w całości wplatane do promptu. Rozmówca będzie naciskał na rzeczywiste luki, ale nigdy nie wymyśla doświadczenia, którego nie masz. Jeśli klucz LLM nie jest ustawiony, strona podaje ci gotowy do uruchomienia prompt do wklejenia w dowolnego asystenta — to samo uczciwe rozwiązanie awaryjne używane w innych miejscach aplikacji.
+
+### Zapisywanie i wracanie do sesji
+
+Kliknij **Save transcript**, aby zachować ukończoną próbę. Jest ona zapisywana do warstwy użytkownika twojego nadrzędnego projektu pod ścieżką `interview-prep/mock-{company}-{role}-{date}.md`, więc leży obok twoich pozostałych notatek do rozmów i nigdy nie jest nadpisywana przez aktualizacje systemu. Lista **Saved sessions** na dole strony pozwala ponownie otworzyć dowolny zapis lub go usunąć. Użyj **New interview**, aby zacząć od nowa z inną rolą.

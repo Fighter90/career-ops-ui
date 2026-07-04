@@ -2001,3 +2001,27 @@ Not sure how to phrase it? Click **✨ AI fill assistant**. It builds a ready-to
 Once you have saved a two-pager, every posting on **`#/scan`** gains a small **`◎ N`** badge (0–100). It compares each job's **work-type** (remote/hybrid/onsite), **country**, **salary floor**, and **relocation** against your two-pager — a green badge means strong fit, red means a deal-breaker fired. Hover for the specifics (✓ what matched, ✗ what a deal-breaker violated).
 
 It is deliberately honest: when a posting gives **no matchable signal** (for example your preferences are all free-text that a scan row cannot confirm), **no badge is shown at all** — the system never invents a number. A hard **deal-breaker** violation weighs more heavily than a soft **hate** of the same thing. Beyond the badge, your saved two-pager is inlined into every LLM **evaluation**, so your stated preferences shape the written verdict too, not just the CV-vs-JD match.
+
+## 22. Mock interview (`#/mock-interview`)
+
+Reading interview prep is one thing; *saying the answers out loud* is another. The **Mock interview** page (open it from **Interview prep → Mock interview 🎤** in the sidebar) runs a turn-by-turn rehearsal against a specific role, grounded in your own CV, profile, two-pager, and story bank. It is not a canned question list — the interviewer reacts to what you actually say.
+
+### Starting a session
+
+- Enter a **target role** (and optionally a **company**). Paste the **job description** too if you have it — the questions get noticeably sharper.
+- Click **Start interview**. The interviewer opens with one focused question tailored to the role and your background.
+- Type your answer and click **Send answer**. Repeat for as long as you like — it is a conversation, not a fixed quiz.
+
+### What each turn gives you
+
+After every answer, the interviewer replies with three parts:
+
+- **Feedback** — what landed (strengths) and what was missing, framed in **STAR+R** terms (Situation, Task, Action, Result, Reflection). It names the specific dimension you skipped.
+- **Score** — a quick `N/5` with a one-line justification, so you can feel progress across a session.
+- **Next question** — a follow-up that deliberately probes the weakest part of your last answer.
+
+Everything is grounded in your real materials: `cv.md`, `config/profile.yml`, `config/two-pager.yml`, and your STAR+R story bank (`interview-prep/story-bank.md`) are all inlined into the prompt. The interviewer will push on genuine gaps but never invents experience you don't have. If no LLM key is set, the page hands you a ready-to-run prompt to paste into any assistant — the same honest fallback used elsewhere in the app.
+
+### Saving and revisiting sessions
+
+Click **Save transcript** to keep a finished rehearsal. It is written to your parent project's user layer at `interview-prep/mock-{company}-{role}-{date}.md`, so it lives alongside your other interview-prep notes and is never overwritten by system updates. The **Saved sessions** list at the bottom of the page lets you re-open any transcript or delete it. Use **New interview** to start over with a different role.

@@ -11,6 +11,17 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.90.0] — 2026-07-04
+
+**Mock Interview 2.0 (Epic 15).** Une nouvelle page `#/mock-interview` transforme votre CV, votre profil, votre two-pager et votre banque d'histoires en une répétition d'entretien tour par tour :
+
+- **Pratique conversationnelle** — indiquez un poste cible (+ entreprise / description de poste facultatives) et l'intervieweur ouvre avec une question ciblée. Chaque réponse envoyée reçoit une réponse structurée : **Feedback** (points forts + la lacune STAR+R), un **Score** (`N/5`) et une **Question suivante** qui sonde le point le plus faible de votre dernière réponse. Ancré côté serveur dans vos vrais documents — il n'invente jamais une expérience que vous n'avez pas.
+- **Conscient de la banque d'histoires** — `interview-prep/story-bank.md` est intégré au prompt (même niveau de confiance que `cv.md`) pour que le feedback pointe vers vos meilleures histoires.
+- **En direct ou manuel** — avec une clé de fournisseur, le tour s'exécute en direct via la cascade partagée (Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models) ; sans clé, vous obtenez un prompt prêt à copier-coller (repli honnête, aucune réponse inventée).
+- **Sessions enregistrées** — cliquez sur **Enregistrer la transcription** pour conserver un entretien terminé dans la couche utilisateur (`interview-prep/mock-{company}-{role}-{date}.md`) ; la page liste, ouvre et supprime les sessions enregistrées.
+
+Nouveau : `server/lib/routes/interview.mjs` (18e module de route), `public/js/views/mock-interview.js`, `server/lib/llm-dispatch.mjs` (cascade de fournisseurs partagée), `PATHS.storyBank`, `bundleProjectContext({ extraFiles })`. 30 nouvelles clés i18n dans les **16 langues**. Tests : `tests/interview-routes.test.mjs`.
+
 ## [1.89.0] — 2026-07-04
 
 **Adéquation candidat-marché — le two-pager (Epic 14).** Une nouvelle page `#/two-pager` vous permet de consigner ce que *vous* voulez vraiment de votre prochain poste, sur le modèle du « Mnookin two-pager » de *Never Search Alone* :

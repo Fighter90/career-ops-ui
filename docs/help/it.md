@@ -1989,3 +1989,27 @@ Non sai come formularlo? Fai clic su **✨ Assistente di compilazione con IA**. 
 Una volta salvato un documento di due pagine, ogni annuncio su **`#/scan`** ottiene un piccolo badge **`◎ N`** (0–100). Confronta il **tipo di lavoro** (remoto/ibrido/in sede), il **paese**, lo **stipendio minimo** e il **trasferimento** di ogni offerta con il tuo documento di due pagine — un badge verde significa buona corrispondenza, rosso significa che è scattato un elemento escludente. Passa il cursore sopra per vedere i dettagli (✓ ciò che ha corrisposto, ✗ quale elemento escludente è stato violato).
 
 È deliberatamente onesto: quando un annuncio non dà **nessun segnale confrontabile** (per esempio se le tue preferenze sono tutte testo libero che una riga di scansione non può confermare), **non viene mostrato alcun badge** — il sistema non inventa mai un numero. La violazione di un **elemento escludente** rigido pesa di più di un **odio** leggero per la stessa cosa. Oltre al badge, il tuo documento di due pagine salvato viene incorporato in ogni **valutazione** con LLM, così le tue preferenze dichiarate plasmano anche il verdetto scritto, non solo la corrispondenza CV-vs-annuncio.
+
+## 22. Colloquio simulato (`#/mock-interview`)
+
+Leggere la preparazione al colloquio è una cosa; *dire le risposte ad alta voce* è un'altra. La pagina **Colloquio simulato** (aprila da **Preparazione al colloquio → Colloquio simulato 🎤** nella barra laterale) esegue una prova turno per turno contro una posizione specifica, ancorata al tuo CV, profilo, documento di due pagine e banca di storie. Non è un elenco di domande preconfezionate — l'intervistatore reagisce a ciò che dici davvero.
+
+### Avviare una sessione
+
+- Inserisci un **ruolo target** (e facoltativamente un'**azienda**). Incolla anche la **descrizione della posizione** se ce l'hai — le domande diventano nettamente più mirate.
+- Fai clic su **Avvia colloquio**. L'intervistatore apre con una domanda focalizzata, calibrata sul ruolo e sul tuo percorso.
+- Scrivi la tua risposta e fai clic su **Invia risposta**. Ripeti quanto vuoi — è una conversazione, non un quiz fisso.
+
+### Cosa ti dà ogni turno
+
+Dopo ogni risposta, l'intervistatore risponde con tre parti:
+
+- **Riscontro** — cosa ha funzionato (punti di forza) e cosa mancava, formulato in termini **STAR+R** (Situazione, Compito, Azione, Risultato, Riflessione). Nomina la dimensione specifica che hai saltato.
+- **Punteggio** — un rapido `N/5` con una giustificazione di una riga, così puoi percepire i progressi nel corso di una sessione.
+- **Domanda successiva** — un approfondimento che sonda deliberatamente la parte più debole della tua ultima risposta.
+
+Tutto è ancorato ai tuoi materiali reali: `cv.md`, `config/profile.yml`, `config/two-pager.yml` e la tua banca di storie STAR+R (`interview-prep/story-bank.md`) vengono tutti incorporati nel prompt. L'intervistatore insisterà sulle lacune reali ma non inventa mai esperienza che non hai. Se non è impostata alcuna chiave LLM, la pagina ti consegna un prompt pronto all'uso da incollare in qualsiasi assistente — lo stesso ripiego onesto usato altrove nell'app.
+
+### Salvare e rivedere le sessioni
+
+Fai clic su **Salva trascrizione** per conservare una prova terminata. Viene scritta nel livello utente del tuo progetto padre, in `interview-prep/mock-{company}-{role}-{date}.md`, così vive accanto alle tue altre note di preparazione al colloquio e non viene mai sovrascritta dagli aggiornamenti di sistema. L'elenco **Sessioni salvate** in fondo alla pagina ti permette di riaprire qualsiasi trascrizione o eliminarla. Usa **Nuovo colloquio** per ricominciare con un ruolo diverso.

@@ -58,6 +58,9 @@ export const PATHS = {
   modesProfile: path('modes', '_profile.md'),
   modesProfileTemplate: path('modes', '_profile.template.md'),
   interviewPrepDir: path('interview-prep'),
+  // v1.90.0 (Epic 15) — the candidate's own STAR+R story bank, inlined into
+  // the mock-interview prompt (same trust level as cv.md per DATA_CONTRACT).
+  storyBank: path('interview-prep', 'story-bank.md'),
   // v1.13.0 — batch evaluate flow (canonical career-ops.org guide §4).
   batchDir: path('batch'),
   batchInput: path('batch', 'batch-input.tsv'),
