@@ -145,14 +145,20 @@ export function registerInterviewRoutes(app) {
   });
 
   // Persist a finished transcript to the user layer. Explicit user action.
-  app.post('/api/mock-interview/save', async (req, res) => {
+  app.post('/api/mock-interview/save', llmRateLimit, async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const role = clip(body.role, MAX_FIELD).trim();
     const company = clip(body.company, MAX_FIELD).trim();
     const transcript = clip(body.transcript, MAX_TEXT * MAX_TURNS);
     if (!transcript.trim()) return res.status(400).json({ error: 'transcript is required' });
     const slug = slugify([company, role].filter(Boolean).join('-') || 'session') || 'session';
-    const name = `mock-${slug}-${today()}.md`;
+    // Defense-in-depth: slugify already strips path chars, but route the final
+    // filename through sanitizePathName too and re-assert the mock-*.md shape
+    // so the write target can never escape interview-prep/ (path-injection).
+    const name = sanitizePathName(`mock-${slug}-${today()}.md`);
+    if (!name || !name.startsWith('mock-') || !name.endsWith('.md')) {
+      return res.status(400).json({ error: 'could not derive a safe session name' });
+    }
     const file = projPath('interview-prep', name);
     const doc = [
       `# Mock interview — ${role || 'role'}${company ? ` @ ${company}` : ''}`,
