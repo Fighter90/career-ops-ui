@@ -16,7 +16,7 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
 > **🆕 Última versão — v1.93.0**
 >
-> **Camada de memória (Epic 24):** uma nova página **`#/memory`** guarda uma nota curta e editável de "lembre-se disto sobre mim". Como ela é embutida no contexto compartilhado do projeto, orienta **every** requisição de IA — avaliar, mock interview, networking, CV Studio — em **all** os provedores. Captura suas preferências e seu estilo de trabalho (nunca novos fatos sobre você), e um ajudante de **sugerir a partir dos seus dados** rascunha tópicos de comportamento a partir do seu tracker para você revisar. Baseia-se na v1.92.0 (CV Studio), v1.91.0 (planejador de networking) e v1.90.0 (mock interview).
+> **Camada de memória (Epic 24):** uma nova página **`#/memory`** guarda uma nota curta e editável de "lembre-se disto sobre mim". Como ela é embutida no contexto compartilhado do projeto, orienta **cada** requisição de IA — avaliar, mock interview, networking, CV Studio — em **todos** os provedores. Captura suas preferências e seu estilo de trabalho (nunca novos fatos sobre você), e um ajudante de **sugerir a partir dos seus dados** rascunha tópicos de comportamento a partir do seu tracker para você revisar. Baseia-se na v1.92.0 (CV Studio), v1.91.0 (planejador de networking) e v1.90.0 (mock interview).
 >
 > _16 locales · 6 provedores LLM · 45 adaptadores de scanner · camada de memória · CV Studio · planejador de networking · mock interview · encaixe de mercado com o two-pager · estatísticas de mercado por cargo-alvo · detector de repostagens · paridade com career-ops v1.16.0._
 

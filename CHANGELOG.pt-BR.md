@@ -11,9 +11,9 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 
 ## [1.93.0] — 2026-07-04
 
-**Camada de memória (Epic 24).** Uma nova página `#/memory` guarda uma nota curta e editável de "lembre-se disto sobre mim" que o assistente mantém em mente em **every** tarefa:
+**Camada de memória (Epic 24).** Uma nova página `#/memory` guarda uma nota curta e editável de "lembre-se disto sobre mim" que o assistente mantém em mente em **cada** tarefa:
 
-- **Uma nota, em todo lugar** — como ela é embutida em `bundleProjectContext`, a nota alcança automaticamente cada requisição de IA (avaliar, mock interview, networking, CV Studio) em **all** os provedores. Escreva-a uma vez; ela orienta tudo.
+- **Uma nota, em todo lugar** — como ela é embutida em `bundleProjectContext`, a nota alcança automaticamente cada requisição de IA (avaliar, mock interview, networking, CV Studio) em **todos** os provedores. Escreva-a uma vez; ela orienta tudo.
 - **Orientação, não fatos** — captura suas preferências e como você gosta de trabalhar (tom, formato, deal-breakers, cadência), nunca novas afirmações factuais sobre a sua experiência — essas continuam vivendo apenas no seu CV, perfil e two-pager. Salva na camada do usuário em `config/memory.md`, nunca sobrescrita por atualizações.
 - **Sugerir a partir dos seus dados** — `POST /api/memory/suggest` garimpa o seu próprio tracker de candidaturas em busca de padrões de comportamento e rascunha tópicos para você revisar e editar. Ele lê o seu tracker; nunca inventa fatos, e não faz nenhuma chamada ao vivo.
 

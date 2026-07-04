@@ -16,7 +16,7 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 > **🆕 Seneste udgivelse — v1.93.0**
 >
-> **Hukommelseslag (Epic 24):** en ny **`#/memory`**-side rummer en kort, redigerbar "husk dette om mig"-note. Fordi den indlejres i den delte projektkontekst, styrer den **every** AI-forespørgsel — evaluering, jobsamtale-øvelse, networking, CV Studio — på tværs af **all** udbydere. Den indfanger dine præferencer og din arbejdsstil (aldrig nye fakta om dig), og en **foreslå-ud-fra-dine-data**-hjælper udkaster adfærdspunkter fra din tracker til gennemsyn. Bygger videre på v1.92.0 (CV Studio), v1.91.0 (networking-planlægger) og v1.90.0 (jobsamtale-øvelse).
+> **Hukommelseslag (Epic 24):** en ny **`#/memory`**-side rummer en kort, redigerbar "husk dette om mig"-note. Fordi den indlejres i den delte projektkontekst, styrer den **hver** AI-forespørgsel — evaluering, jobsamtale-øvelse, networking, CV Studio — på tværs af **alle** udbydere. Den indfanger dine præferencer og din arbejdsstil (aldrig nye fakta om dig), og en **foreslå-ud-fra-dine-data**-hjælper udkaster adfærdspunkter fra din tracker til gennemsyn. Bygger videre på v1.92.0 (CV Studio), v1.91.0 (networking-planlægger) og v1.90.0 (jobsamtale-øvelse).
 >
 > _16 lokaliteter · 6 LLM-providere · 45 scanneradaptere · hukommelseslag · CV Studio · networking-planlægger · jobsamtale-øvelse · markedsfit via two-pager · markedsstatistik efter målroller · genoplagsdetektor · paritet med forælderens career-ops v1.16.0._
 
