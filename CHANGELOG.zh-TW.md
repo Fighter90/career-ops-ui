@@ -9,6 +9,18 @@
 ---
 
 
+## [1.97.0] — 2026-07-05
+
+**Dassault Systèmes 掃描器來源 + 三線並進的品質整頓。**
+
+- **新增掃描來源 — Dassault Systèmes（與父層 career-ops 對齊,#1498）。** `server/lib/sources/dassault.mjs` + `server/lib/portals/adapters/dassault.mjs` 複刻了父專案零 token 的 Exalead「卡片搜尋」提供者（`3ds.com/careers/jobs` 背後的公開資料來源）。它是單一全域端點,因此透過提供者選擇（`provider: dassault`）或從 `3ds.com` 主機自動偵測,並以 `redirect:'error'` 將 SSRF 主機固定為 `www.3ds.com`。XML 在不使用 DOM 的情況下解析（依 `<Hit>` 建立 `<Meta>` 對應）,城市/國家從在地化的類別字串中擷取,只有當職缺的公開 URL 位於 `*.3ds.com` 上時才保留。註冊表現在提供 **46 個轉接器**（41 個 EN + 5 個 RU）;`ALL_ADAPTERS` 計數、已排序 id 以及 `/api/scan/sources` 的 EN 集合斷言從 40 → 41。測試套件 `tests/sources-dassault.test.mjs`(10 個案例)。
+- **移植父專案的健壯性修正。** Avature 解析器現在容忍兩種線上租戶標記變體（帶位置索引後綴的 `article--result` + 無類別名稱的 JobDetail 標題錨點,#1541);Get on Board 會防禦 `0`/負值的 `published_at`(不再出現錯誤的 1970 日期);SuccessFactors 會對最後一頁設上限,使其不會超出 `MAX_JOBS`(#1528)。
+- **伺服器稽核修正。** `safe-fetch` 在超出上限的回應上不再卡住——大小上限路徑現在直接兌現 promise,而非等待一個已銷毀的串流永遠不會發出的 `'end'` 事件（修正大頁面的 `/api/pipeline/preview` + 自動流水線抓取）。SSE `stream.*` 活動記錄再次可達（`/api/stream/` 檢查移到了籠統的「跳過 GET」防護之上）。
+- **SPA 稽核修正。** `#/stats` 分頁切換器可防禦非同步繪製競態——慢速分頁的結果不再會覆蓋使用者已切換到的較新分頁。mock interview 與人脈拓展的刪除確認現在會傳入正確的標題 + 內文(不再有內文為空的對話框)。
+- **翻譯修正。** 修正未翻譯的字典值——烏克蘭語 `config.modes*`(Adaptive Framing / Exit Narrative / Location Policy)、俄語 `eval.jdLbl`（「Job Description」）、義大利語 `dash.quick.contactoSub`（「referral」→「segnalazione」）——以及在 ru/uk/ja/ko/zh-CN/zh-TW 的 CHANGELOG 中將英文 **16 個 locales** 的樣板文案在地化。
+
+新增: `server/lib/sources/dassault.mjs`; `server/lib/portals/adapters/dassault.mjs`.
+
 ## [1.96.0] — 2026-07-04
 
 **職業方向（Epic 27）。** 全新的 **`#/orientation`** 頁面回答「哪些方向真正適合我？」——就像職業測評能給你的那種解讀,但不是靠問卷,而是從你自己的 CV 和檔案中推斷。點擊 **生成畫像**,模型會回傳你的 **最契合的職業向量**（八種原型——功能主義者、管理者、溝通者、專家、分析者、創新者、經理、創業者——中哪一種契合,並附上證據）、一種職業類型傾向、推薦職位、與 CV 相關聯的職業優勢、工作風格傾向,以及發展建議。這是 **對你的 CV 讀起來如何的一種 AI 反思——而非心理測驗**:它不會虛構成就,也絕不會把數值分數當作實測結果來回報。可匯出為 Markdown 或 PDF;不會向磁碟寫入任何內容。
@@ -80,7 +92,7 @@
 - **即時或手動** — 有供應商金鑰時,該輪次會透過共享供應商級聯(Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models)即時執行;沒有金鑰時,你會得到一個可直接複製貼上執行的提示詞(誠實回退,不捏造答案)。
 - **已儲存的工作階段** — 點擊 **Save transcript** 可將一場完成的面試持久化到使用者層(`interview-prep/mock-{company}-{role}-{date}.md`);該頁面可列出、開啟並刪除已儲存的工作階段。
 
-新增: `server/lib/routes/interview.mjs`(第 18 個路由模組)、`public/js/views/mock-interview.js`、`server/lib/llm-dispatch.mjs`(共享供應商級聯)、`PATHS.storyBank`、`bundleProjectContext({ extraFiles })`。在全部 **16 locales** 中新增 30 個 i18n 鍵。測試: `tests/interview-routes.test.mjs`。
+新增: `server/lib/routes/interview.mjs`(第 18 個路由模組)、`public/js/views/mock-interview.js`、`server/lib/llm-dispatch.mjs`(共享供應商級聯)、`PATHS.storyBank`、`bundleProjectContext({ extraFiles })`。在全部 **16 種語言** 中新增 30 個 i18n 鍵。測試: `tests/interview-routes.test.mjs`。
 
 ## [1.89.0] — 2026-07-04
 

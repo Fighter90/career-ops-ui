@@ -9,6 +9,18 @@
 ---
 
 
+## [1.97.0] — 2026-07-05
+
+**Dassault Systèmes 스캐너 소스 + 3방면 품질 정비.**
+
+- **새 스캔 소스 — Dassault Systèmes (상위 career-ops 패리티, #1498).** `server/lib/sources/dassault.mjs` + `server/lib/portals/adapters/dassault.mjs` 는 상위 프로젝트의 제로 토큰 Exalead "카드 검색" 프로바이더(`3ds.com/careers/jobs` 뒤의 공개 피드)를 그대로 옮깁니다. 단일 글로벌 엔드포인트이므로 프로바이더로 선택(`provider: dassault`)하거나 `3ds.com` 호스트에서 자동 감지되며, `redirect:'error'` 와 함께 `www.3ds.com` 으로 SSRF 호스트 고정됩니다. XML 은 DOM 없이(`<Hit>` 별 `<Meta>` 맵) 파싱되고, 도시/국가는 현지화된 카테고리 문자열에서 추출되며, 공고는 그 공개 URL 이 `*.3ds.com` 에 있을 때만 유지됩니다. 이제 레지스트리는 **어댑터 46개**(EN 41 + RU 5)를 제공합니다; `ALL_ADAPTERS` 개수, 정렬된 id 및 `/api/scan/sources` EN 집합 어서션이 40 → 41 로 상향되었습니다. 스위트 `tests/sources-dassault.test.mjs`(10개 케이스).
+- **상위 프로젝트 견고성 수정 이식.** Avature 파서는 이제 두 가지 라이브 테넌트 마크업 변형(위치 인덱스 접미사가 붙은 `article--result` + 클래스 없는 JobDetail 제목 앵커, #1541)을 허용합니다; Get on Board 는 `0`/음수 `published_at` 을 방어합니다(더 이상 잘못된 1970 날짜 없음); SuccessFactors 는 마지막 페이지를 상한 처리하여 `MAX_JOBS` 를 초과할 수 없게 합니다(#1528).
+- **서버 감사 수정.** `safe-fetch` 는 더 이상 상한 초과 응답에서 멈추지 않습니다 — 크기 상한 경로가 이제 파괴된 스트림이 결코 발생시키지 않는 `'end'` 이벤트를 기다리는 대신 프로미스를 직접 해결합니다(대용량 페이지 `/api/pipeline/preview` + 자동 파이프라인 페치 수정). SSE `stream.*` 활동 로깅이 다시 도달 가능합니다(`/api/stream/` 검사가 포괄적인 "GET 건너뛰기" 가드 위로 이동됨).
+- **SPA 감사 수정.** `#/stats` 탭 스위처가 비동기 렌더 경쟁을 방어합니다 — 느린 탭의 결과가 사용자가 이미 전환한 더 새로운 탭을 더 이상 덮어쓸 수 없습니다. mock interview 와 네트워킹 삭제 확인 대화상자는 이제 적절한 제목 + 본문을 전달합니다(더 이상 본문이 빈 대화상자 없음).
+- **번역 수정.** 번역되지 않은 사전 값 수정 — 우크라이나어 `config.modes*`(Adaptive Framing / Exit Narrative / Location Policy), 러시아어 `eval.jdLbl`("Job Description"), 이탈리아어 `dash.quick.contactoSub`("referral" → "segnalazione") — 그리고 ru/uk/ja/ko/zh-CN/zh-TW CHANGELOG 에서 영어 **16개 로케일** 상용구를 현지화했습니다.
+
+신규: `server/lib/sources/dassault.mjs`; `server/lib/portals/adapters/dassault.mjs`.
+
 ## [1.96.0] — 2026-07-04
 
 **커리어 방향성 (Epic 27).** 새로운 **`#/orientation`** 페이지는 "어떤 방향이 실제로 나에게 맞을까?"라는 질문에 답합니다 — 직업 적성 검사에서 얻을 법한 통찰이지만, 설문지가 아니라 당신 자신의 CV와 프로필에서 추론합니다. **프로필 생성**을 클릭하면 모델은 당신의 **가장 잘 맞는 커리어 벡터**(여덟 가지 원형 — 기능주의자, 관리자, 소통가, 전문가, 분석가, 혁신가, 매니저, 기업가 — 중 어느 것이 맞는지, 근거와 함께), 커리어 유형 성향, 추천 직무, CV에 연결된 직업적 강점, 업무 스타일 경향, 그리고 개발 권장 사항을 반환합니다. 이는 **당신의 CV가 어떻게 읽히는지에 대한 AI의 성찰이며 — 심리 검사가 아닙니다**: 성취를 지어내지 않으며 수치 점수를 마치 측정된 것처럼 보고하지 않습니다. Markdown이나 PDF로 내보내세요; 디스크에는 아무것도 기록되지 않습니다.
@@ -80,7 +92,7 @@
 - **라이브 또는 수동** — 제공자 키가 있으면 해당 턴이 공유 제공자 캐스케이드(Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models)를 통해 라이브로 실행됩니다. 키가 없으면 바로 복사·붙여넣기할 수 있는 프롬프트를 받습니다(정직한 fallback, 지어낸 답변 없음).
 - **저장된 세션** — **Save transcript** 를 클릭하면 완료된 면접이 사용자 레이어(`interview-prep/mock-{company}-{role}-{date}.md`)에 보존됩니다. 페이지에서 저장된 세션을 나열, 열기, 삭제할 수 있습니다.
 
-신규: `server/lib/routes/interview.mjs`(18번째 라우트 모듈), `public/js/views/mock-interview.js`, `server/lib/llm-dispatch.mjs`(공유 제공자 캐스케이드), `PATHS.storyBank`, `bundleProjectContext({ extraFiles })`. **16 locales** 전체에 30개의 새 i18n 키. 테스트: `tests/interview-routes.test.mjs`.
+신규: `server/lib/routes/interview.mjs`(18번째 라우트 모듈), `public/js/views/mock-interview.js`, `server/lib/llm-dispatch.mjs`(공유 제공자 캐스케이드), `PATHS.storyBank`, `bundleProjectContext({ extraFiles })`. **16개 로케일** 전체에 30개의 새 i18n 키. 테스트: `tests/interview-routes.test.mjs`.
 
 ## [1.89.0] — 2026-07-04
 

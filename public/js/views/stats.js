@@ -127,9 +127,11 @@ Router.register('stats', async () => {
     const def = tabDefs.find((d) => d.id === id);
     try {
       const node = await def.render();
+      if (active !== id) return; // a newer tab click superseded this render — don't clobber it
       panel.textContent = '';
       panel.appendChild(node);
     } catch (err) {
+      if (active !== id) return;
       panel.textContent = '';
       panel.appendChild(c('p', { style: { color: 'var(--danger, #d9534f)' } }, (err && err.message) || t('common.error', 'Something went wrong')));
     }

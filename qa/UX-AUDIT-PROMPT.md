@@ -61,6 +61,13 @@ concept it serves:
 | `#/deep`, `#/apply`, `#/<mode>` | deep / contacto / oferta(s) refs | Is the manual-vs-live distinction clear? |
 | `#/tracker` | tracker reference | Is the funnel state understandable at a glance? |
 | `#/reports`, `#/cv` | reports / pdf | Review-before-send trust. |
+| `#/two-pager` | candidate two-pager (v1.89.0) | Is the builder + AI-fill legible? Does the `◎` fit badge on scan read clearly? |
+| `#/mock-interview` | mock interview (v1.90.0) | Is turn-by-turn rehearsal + saved sessions momentum clear? |
+| `#/networking` | networking planner (v1.91.0) | Who-to-contact + intro path + outreach + dossier — is the plan actionable? |
+| `#/cv-studio` | CV Studio (v1.92.0) | Résumé diagnostics + in-browser PII mask + make-it-human voice match — trustworthy? |
+| `#/memory` | about-me note (v1.93.0) | Is it clear this note is inlined into every AI request? |
+| `#/stats` | Statistics (v1.94.0) | 3 tabs (AI market report · My pipeline analytics · Target-role trend); currency selector; MD/PDF export — legible? |
+| `#/career-plan`, `#/orientation` | Growth nav group (v1.95.0 / v1.96.0) | Career development plan (horizon + focus) + career-orientation profile (archetype vectors/roles/strengths; reflection-not-test); MD/PDF export. |
 | `#/help` | the docs, in-app | Does it answer the questions the journey raises, in the user's language? |
 
 ## Heuristic lenses (apply all; cite evidence per finding)
@@ -92,9 +99,11 @@ concept it serves:
 9. **Accessibility as UX** — keyboard-only completion of the core
    journey; screen-reader sensibility of names/roles/status (not just
    WCAG box-ticking — does it make sense *aurally*?).
-10. **i18n integrity** — switch through all 8 locales on the core
-    flow: truncation, untranslated leakage, RTL/character issues,
-    terminology drift from the docs.
+10. **i18n integrity** — switch through all 16 locales on the core
+    flow (en · es · pt-BR · ko · ja · ru · zh-CN · zh-TW · fr · pl ·
+    uk · da · ar · de · it · tr; Arabic is RTL): truncation,
+    untranslated leakage, RTL/character issues, terminology drift
+    from the docs.
 11. **Cognitive load & progressive disclosure** — is power kept
     available but not in the beginner's way (Advanced disclosures,
     defaults, sane modes)?
@@ -132,7 +141,7 @@ concept it serves:
 - **What's genuinely good** (call out strengths honestly — a credible
   audit is balanced).
 - **Recommended ship order:** HIGH → MEDIUM → LOW, each as a single
-  one-fix ship per the project doctrine (bump + CHANGELOG ×8 + test +
+  one-fix ship per the project doctrine (bump + CHANGELOG ×16 + test +
   Playwright-verify + AI-review LGTM + CI-watch). Do **not**
   implement here — this prompt only produces the audit; fixes are
   separate ships.
@@ -229,23 +238,25 @@ separately from findings. Cite evidence for every claim.
 
 ---
 
-## §UX-A — EXHAUSTIVE UX MATRIX (every page × every control × 8 locales)
+## §UX-A — EXHAUSTIVE UX MATRIX (every page × every control × 16 locales)
 
 > Sweep this in full. For every cell, rate **GOOD / FRICTION /
 > BROKEN** with evidence (screenshot, route, exact copy, locale).
 > "It works" is not enough — judge whether it works *well for the
 > user career-ops.org describes*. One root cause = one finding.
 
-### §UX-A.0 — The 8-locale lens (apply to EVERY page below)
+### §UX-A.0 — The 16-locale lens (apply to EVERY page below)
 
-Locales: **en · es · pt-BR · ko · ja · ru · zh-CN · zh-TW**. Per page,
+Locales: **en · es · pt-BR · ko · ja · ru · zh-CN · zh-TW · fr · pl ·
+uk · da · ar · de · it · tr** (Arabic is RTL — `<html dir="rtl">`; the
+chrome mirrors via the `[dir="rtl"]` block in `app.css`). Per page,
 per locale, judge:
 
 1. **Completeness** — zero untranslated strings / raw `key.path` /
    leftover English inside a localized sentence (regression class:
    I18N-012/013 "smart questions"/`Deep research` RU; I18N-011
    help-TOC CLOSED v1.58.2 — TOC now matches the sidebar `nav.*`
-   term in all 7 locales, verify it stays so). Mixed-language UI is
+   term in all 16 locales, verify it stays so). Mixed-language UI is
    a trust defect, file it.
 2. **Fit & truncation** — CJK (`ko`/`ja`/`zh`) and longer Romance
    (`es`/`pt-BR`) strings must not clip, wrap mid-word, overflow
@@ -262,14 +273,15 @@ per locale, judge:
    the `⌘K`/`Ctrl K` hint platform-correct; placeholders that are
    examples (ISO date) stay neutral but labels around them localize.
 
-### §UX-A.1 — Per-page heuristic pass (all pages, all 8 locales)
+### §UX-A.1 — Per-page heuristic pass (all pages, all 16 locales)
 
 For **every** route — `#/dashboard #/scan #/pipeline #/evaluate
 #/deep #/cv #/tracker #/reports #/activity #/config #/profile
-#/health #/help #/auto #/apply #/batch` + mode pages `#/project
-#/training #/followup #/contacto #/interview-prep #/patterns
-#/batch-prompt` + aliases `#/settings #/portals #/outreach` + the
-404 — assess: visual hierarchy (one clear H1 + descriptive subtitle;
+#/health #/help #/auto #/apply #/batch #/two-pager #/mock-interview
+#/networking #/cv-studio #/memory #/stats #/career-plan
+#/orientation` + mode pages `#/project #/training #/followup
+#/contacto #/interview-prep #/patterns #/batch-prompt` + aliases
+`#/settings #/portals #/outreach` + the 404 — assess: visual hierarchy (one clear H1 + descriptive subtitle;
 note the `#/cv` breadcrumb-chip is a *deliberate* single-H1 WCAG
 choice — critique only the UX, not as a bug), scan-ability, primary
 action obvious & above the fold, empty states teach the next step
@@ -305,7 +317,7 @@ say what went wrong, where, and how to fix it — never an opaque
 
 ### §UX-A.4 — End-to-end task journeys (the docs' core flows)
 
-Walk each as the target user, 8 locales spot-checked: (a) paste a JD
+Walk each as the target user, 16 locales spot-checked: (a) paste a JD
 → score → decide (the score→action thresholds from the docs);
 (b) `#/auto` one-URL pipeline end-to-end; (c) scan portals → triage
 → pipeline → evaluate → track; (d) deep-research a company → saved

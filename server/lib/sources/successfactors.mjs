@@ -233,5 +233,7 @@ export async function fetchSuccessfactors(endpoint, opts = {}) {
     if (out.length >= MAX_JOBS) break;
     startrow += tiles.length;
   }
-  return out;
+  // The cap is checked between pages, so the last page can overshoot it.
+  // (parent career-ops parity, #1528)
+  return out.slice(0, MAX_JOBS);
 }

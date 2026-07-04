@@ -8,6 +8,19 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.97.0] — 2026-07-05
+
+**Dassault Systèmes scanner source + a three-front quality sweep.**
+
+- **New scan source — Dassault Systèmes (parent career-ops parity, #1498).** `server/lib/sources/dassault.mjs` + `server/lib/portals/adapters/dassault.mjs` mirror the parent's zero-token Exalead "card search" provider (the public feed behind `3ds.com/careers/jobs`). It's a single global endpoint, so it's provider-selected (`provider: dassault`) or auto-detected from a `3ds.com` host, SSRF host-pinned to `www.3ds.com` with `redirect:'error'`. The XML is parsed without a DOM (per-`<Hit>` `<Meta>` maps), city/country pulled from the localized category string, and postings are kept only when their public URL is on `*.3ds.com`. The registry now ships **46 adapters** (41 EN + 5 RU); `ALL_ADAPTERS` count, sorted-id and `/api/scan/sources` EN-set assertions bumped 40 → 41. Suite `tests/sources-dassault.test.mjs` (10 cases).
+- **Ported parent robustness fixes.** Avature parser now tolerates two live tenant markup variants (`article--result` with a position-index suffix + a classless JobDetail title anchor, #1541); Get on Board guards a `0`/negative `published_at` (no more bogus 1970 dates); SuccessFactors caps the last page so it can't overshoot `MAX_JOBS` (#1528).
+- **Server audit fixes.** `safe-fetch` no longer hangs on an over-cap response — the size-cap path now settles the promise directly instead of waiting for an `'end'` event a destroyed stream never emits (fixes large-page `/api/pipeline/preview` + auto-pipeline fetches). SSE `stream.*` activity-logging is reachable again (the `/api/stream/` check moved above the blanket "skip GET" guard).
+- **SPA audit fixes.** The `#/stats` tab switcher guards against an async render race — a slow tab's result can no longer clobber a newer tab the user already switched to. The mock-interview and networking delete confirms now pass a proper title + body (no more empty-bodied dialog).
+- **Translation fixes.** Untranslated dictionary values corrected — Ukrainian `config.modes*` (Adaptive Framing / Exit Narrative / Location Policy), Russian `eval.jdLbl` ("Job Description"), Italian `dash.quick.contactoSub` ("referral" → "segnalazione") — plus the English `**16 locales**` boilerplate localized in the ru/uk/ja/ko/zh-CN/zh-TW CHANGELOGs.
+
+New: `server/lib/sources/dassault.mjs`; `server/lib/portals/adapters/dassault.mjs`.
+
+
 ## [1.96.0] — 2026-07-04
 
 **Career orientation (Epic 27).** A new **`#/orientation`** page answers "which directions actually fit me?" — the read you'd get from a vocational test, but inferred from your own CV and profile instead of a questionnaire. Click **Generate profile** and the model returns your **best-fit career vectors** (which of the eight archetypes — Functionalist, Administrator, Communicator, Specialist, Analyst, Innovator, Manager, Entrepreneur — fit, with evidence), a career-type leaning, recommended roles, professional strengths tied to your CV, working-style tendencies, and development recommendations. It is an **AI reflection of how your CV reads — not a psychometric test**: it never invents achievements and never reports numeric scores as if measured. Export it to Markdown or PDF; nothing is written to disk.

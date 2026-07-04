@@ -116,7 +116,7 @@ Router.register('networking', async () => {
         });
         const del = c('button', { className: 'btn btn-ghost btn-sm', type: 'button', 'aria-label': t('net.delete', 'Delete') }, '🗑');
         del.addEventListener('click', async () => {
-          if (!(await UI.confirm(t('net.confirmDelete', 'Delete this saved plan?')))) return;
+          if (!(await UI.confirm(t('net.delete', 'Delete'), t('net.confirmDelete', 'Delete this saved plan?'), { danger: true }))) return;
           try { await API.del(`/api/networking/plans/${encodeURIComponent(s.name)}`); loadPlans(); }
           catch (err) { UI.toast((err && err.message) || 'Error', 'error'); }
         });

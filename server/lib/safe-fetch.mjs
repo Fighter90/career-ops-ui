@@ -109,26 +109,34 @@ function defaultTransport(url, pinned, opts = {}) {
     }, (res) => {
       const chunks = [];
       let received = 0;
+      let settled = false;
       const cap = opts.maxBytes || 1024 * 1024;
-      res.on('data', (chunk) => {
-        received += chunk.length;
-        if (received > cap) {
-          // Cut the body off cleanly and drop the rest of the stream.
-          res.destroy();
-          chunks.push(chunk.slice(0, chunk.length - (received - cap)));
-        } else {
-          chunks.push(chunk);
-        }
-      });
-      res.on('end', () => {
+      // Resolve exactly once. On a cap-hit we `res.destroy()` and settle here
+      // directly, because a destroyed IncomingMessage never emits 'end' — relying
+      // on 'end' alone would hang the request until the AbortSignal timeout.
+      const settle = () => {
+        if (settled) return;
+        settled = true;
         resolve({
           status: res.statusCode || 0,
           headers: res.headers,
           body: Buffer.concat(chunks),
           location: res.headers.location,
         });
+      };
+      res.on('data', (chunk) => {
+        received += chunk.length;
+        if (received > cap) {
+          // Cut the body off cleanly, drop the rest of the stream, and settle now.
+          chunks.push(chunk.slice(0, chunk.length - (received - cap)));
+          res.destroy();
+          settle();
+        } else {
+          chunks.push(chunk);
+        }
       });
-      res.on('error', reject);
+      res.on('end', settle);
+      res.on('error', (err) => { if (!settled) reject(err); });
     });
     if (opts.signal) {
       if (opts.signal.aborted) {

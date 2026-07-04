@@ -303,7 +303,7 @@ window.__I18N_DICT_IT = {
   'dash.quick.batchCta': "Valutazione batch",
   'dash.quick.batchSub': "Più JD in una volta",
   'dash.quick.contactoCta': "Contatto",
-  'dash.quick.contactoSub': "Recruiter / referral",
+  'dash.quick.contactoSub': "Recruiter / segnalazione",
   'dash.quick.cvCta': "Modifica CV",
   'dash.quick.cvSub': "cv.md fianco a fianco",
   'dash.quick.profileCta': "Profilo",

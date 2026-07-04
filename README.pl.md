@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.96.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.96.0)
+[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
 
-> **🆕 Najnowsze wydanie — v1.96.0**
+> **🆕 Najnowsze wydanie — v1.97.0**
 >
-> **Orientacja zawodowa (Epic 27):** nowa strona **`#/orientation`** odpowiada na pytanie „które kierunki naprawdę do mnie pasują?" — taki odczyt, jaki dałby test predyspozycji zawodowych, ale wywnioskowany z Twojego własnego CV i profilu, a nie z kwestionariusza. Kliknij **Generuj profil**, a model zwróci Twoje **najlepiej dopasowane wektory kariery** (który z ośmiu archetypów pasuje, wraz z dowodami), skłonność do typu kariery, rekomendowane role, mocne strony zawodowe powiązane z Twoim CV, tendencje w stylu pracy oraz rekomendacje rozwojowe. To **refleksja AI nad tym, jak czyta się Twoje CV — nie test psychometryczny**: nigdy nie zmyśla osiągnięć i nigdy nie podaje liczbowych wyników tak, jakby były zmierzone. Wyeksportuj profil do **Markdown lub PDF**; nic nie jest zapisywane na dysku. Bazuje na v1.95.0 (plan kariery) i v1.94.0 (przebudowa statystyk).
+> **Źródło skanera Dassault Systèmes + przegląd jakości.** Parytet z nadrzędnym career-ops (#1498): nowe zero-tokenowe źródło skanowania **Dassault Systèmes** (publiczny kanał card-search Exalead za 3ds.com/careers) dołącza do rejestru jako **46. adapter** — wybierane przez dostawcę (`provider: dassault`) lub automatycznie wykrywane z hosta 3ds.com, z przypięciem hosta chroniącym przed SSRF. Obok niego trójfrontowy audyt (serwer + SPA + tłumaczenie na 16 języków) naprawił realne usterki: **asynchroniczny wyścig zakładek statystyk** (render wolnej zakładki mógł nadpisać nowszą), **limit rozmiaru w `safe-fetch`, który mógł się zawiesić** przy przekraczającym limit pobraniu podglądu/pipeline, martwe logowanie aktywności SSE, dwa potwierdzenia usunięcia o pustej treści oraz nieprzetłumaczone wartości słownika (uk/ru/it). Przeniesiono poprawki odporności z projektu nadrzędnego dla źródeł Avature / Get on Board / SuccessFactors.
 >
-> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

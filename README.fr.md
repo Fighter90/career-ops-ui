@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.96.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.96.0)
+[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
 
-> **🆕 Dernière version — v1.96.0**
+> **🆕 Dernière version — v1.97.0**
 >
-> **Orientation de carrière (Epic 27) :** une nouvelle page **`#/orientation`** répond à la question « quelles directions me correspondent vraiment ? » — la lecture qu'un test d'orientation vous donnerait, mais déduite de votre propre CV et profil plutôt que d'un questionnaire. Cliquez sur **Générer le profil** et le modèle renvoie vos **vecteurs de carrière les plus adaptés** (lesquels des huit archétypes vous correspondent, avec des preuves), une inclinaison de type professionnel, des rôles recommandés, des forces professionnelles liées à votre CV, des tendances de style de travail et des recommandations de développement. C'est une **réflexion d'IA sur la façon dont se lit votre CV — pas un test psychométrique** : elle n'invente jamais de réalisations et ne rapporte jamais de scores numériques comme s'ils étaient mesurés. Exportez-le en **Markdown ou PDF** ; rien n'est écrit sur le disque. S'appuie sur la v1.95.0 (plan de carrière) et la v1.94.0 (refonte des statistiques).
+> **Source de scanner Dassault Systèmes + un balayage qualité.** Parité avec le career-ops principal (#1498) : une nouvelle source de scan à coût nul en tokens, **Dassault Systèmes** (le flux public de recherche par cartes Exalead derrière 3ds.com/careers), rejoint le registre en tant que **46e adaptateur** — sélectionnable par fournisseur (`provider: dassault`) ou détectée automatiquement à partir d'un hôte 3ds.com, avec l'hôte épinglé contre le SSRF. À ses côtés, un audit sur trois fronts (serveur + SPA + traduction en 16 langues) a corrigé de vrais défauts : une **course asynchrone dans les onglets de statistiques** (le rendu d'un onglet lent pouvait en écraser un plus récent), un **plafond de taille de `safe-fetch` susceptible de se bloquer** sur une récupération de preview/pipeline dépassant la limite, une journalisation d'activité SSE morte, deux confirmations de suppression au corps vide, et des valeurs de dictionnaire non traduites (uk/ru/it). Des corrections de robustesse du projet principal ont été portées pour les sources Avature / Get on Board / SuccessFactors.
 >
-> _16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 
@@ -239,7 +239,7 @@ Ouvrez http://127.0.0.1:4317. Le compteur du Pipeline doit maintenant indiquer `
 | **Profile**      | Vue en lecture seule de `config/profile.yml` + archétypes — résumé adapté à l'UI. |
 | **App settings** | Éditeur dans l'UI pour les clés `.env` parent : `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, surcharges de modèle, port / hôte. Secrets masqués à la lecture. |
 | **Health**       | Toutes les vérifications de config en badges OK / OPTIONAL / FAIL + boutons pour lancer `doctor.mjs` et `verify-pipeline.mjs`. |
-| **Help**         | Guide utilisateur Markdown dans l'app (`/#/help`), localisé pour les 9 langues prises en charge (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). |
+| **Help**         | Guide utilisateur Markdown dans l'app (`/#/help`), localisé pour les 16 langues prises en charge (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr). |
 | **Activity log** | Journal d'audit de chaque requête modifiant l'état (écritures, exécutions, scans). Secrets caviardés. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Cloche dans la barre du haut avec badge rouge de non-lus. Cliquez pour faire glisser un tiroir listant les 50 derniers toasts (par onglet, par session) — Success / Error / Info-progress, chacun avec un horodatage localisé, le message humain, et tout postfixe `(METHOD /path · HTTP NNN)` rangé dans un `<details>`. L'aide **§18** documente chaque catégorie. Le tiroir s'ouvre **uniquement** au clic sur la cloche (ou clavier Entrée / Espace) ; se ferme via ×, Échap, ou re-clic sur la cloche. |
 
@@ -337,7 +337,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co client
 │     │  ├─ hh.mjs           # api.hh.ru client (UA-aware)
 │     │  └─ habr.mjs         # career.habr.com HTML parser (no cheerio, regex only)
-│     └─ routes/             # 12 route modules — one per topic (P-2)
+│     └─ routes/             # 24 route modules — one per topic (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (parent .env round-trip)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -375,7 +375,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 9 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 16 locales
    ├─ playwright-smoke.mjs   # 12 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # full Playwright walkthrough
 ```
@@ -588,14 +588,14 @@ Pour l'évaluation de production-readiness (barrières de déploiement, registre
 
 ## Localisation
 
-L'UI est livrée en **9 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. Depuis la **v1.60.0 (I18N-SPLIT)**, les traductions vivent **un fichier par locale** sous [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, chacune une table plate `key → string` — plus un `i18n-dict.aliases.js` partagé. [`i18n-dict.js`](public/js/lib/i18n-dict.js) les assemble dans `window.__I18N_DICT` ; [`i18n.js`](public/js/lib/i18n.js) résout `t('key', 'fallback')`. Pas d'étape de build, pas de fetch runtime — un traducteur édite un seul fichier de langue de façon isolée.
+L'UI est livrée en **16 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`. Depuis la **v1.60.0 (I18N-SPLIT)**, les traductions vivent **un fichier par locale** sous [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, chacune une table plate `key → string` — plus un `i18n-dict.aliases.js` partagé. [`i18n-dict.js`](public/js/lib/i18n-dict.js) les assemble dans `window.__I18N_DICT` ; [`i18n.js`](public/js/lib/i18n.js) résout `t('key', 'fallback')`. Pas d'étape de build, pas de fetch runtime — un traducteur édite un seul fichier de langue de façon isolée.
 
 **Ajouter ou changer une chaîne :**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.fr.js   →   'scan.newButton': 'Lancer le scan',
-// …add the same key to all 9 locale files (parity is gated)
+// …add the same key to all 16 locale files (parity is gated)
 ```
 
 Utilisez-la ensuite via `data-i18n="scan.newButton"` dans le markup ou `t('scan.newButton')` en JS, puis lancez `npm test`. Pour ajouter une langue toute neuve, enregistrez-la dans `i18n.js` (`LANGS` + `detect()`), l'assembleur, `index.html`, et l'outillage qui énumère les locales.

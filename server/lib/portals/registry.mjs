@@ -75,6 +75,9 @@ import { getonbrdAdapter } from './adapters/getonbrd.mjs';
 import { amazonAdapter } from './adapters/amazon.mjs';
 import { avatureAdapter } from './adapters/avature.mjs';
 import { successfactorsAdapter } from './adapters/successfactors.mjs';
+// v1.97.0 — parent career-ops parity (#1498): Dassault Systèmes zero-token
+// provider (Exalead card-search XML), single-company, provider-selected.
+import { dassaultAdapter } from './adapters/dassault.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -131,6 +134,9 @@ export const ALL_ADAPTERS = [
   amazonAdapter,
   avatureAdapter,
   successfactorsAdapter,
+  // v1.97.0 — parent parity (#1498): Dassault Systèmes, single global Exalead
+  // endpoint, provider-selected (`provider: dassault`) or 3ds.com host-detected.
+  dassaultAdapter,
 ];
 
 /**
