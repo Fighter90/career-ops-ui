@@ -385,7 +385,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject sweep(FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown ラウンドトリップ(エンティティ対応)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # 全 8 ロケールの i18n parity
+   ├─ help.test.mjs / help-ui.test.mjs    # 全 16 ロケールの i18n parity
    ├─ playwright-smoke.mjs   # 12 ブラウザフロー(CV 保存、tracker、pipeline、evaluate、config など)
    └─ e2e{,-comprehensive}.mjs   # Playwright による完全な walkthrough
 ```

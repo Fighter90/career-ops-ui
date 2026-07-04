@@ -409,7 +409,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reddetme taraması (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown gidiş-dönüşü
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # 8 yerel dilin tamamında i18n eşitliği
+   ├─ help.test.mjs / help-ui.test.mjs    # 16 yerel dilin tamamında i18n eşitliği
    ├─ playwright-smoke.mjs   # 12 tarayıcı akışı (CV kaydetme, tracker, pipeline, evaluate, config, vb.)
    └─ e2e{,-comprehensive}.mjs   # tam Playwright gezintisi
 ```

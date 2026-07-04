@@ -273,7 +273,7 @@ Apri http://127.0.0.1:4317. Il contatore della Pipeline dovrebbe ora indicare `0
 | **Profile**      | Vista in sola lettura di `config/profile.yml` + archetipi — riepilogo adatto alla UI.                                         |
 | **App settings** | Editor nella UI per le chiavi del `.env` principale: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, override dei modelli, porta / host. Segreti mascherati in lettura. |
 | **Health**       | Tutti i controlli di configurazione in badge OK / OPTIONAL / FAIL + pulsanti per eseguire `doctor.mjs` e `verify-pipeline.mjs`.           |
-| **Help**         | Guida utente Markdown in-app (`/#/help`), localizzata per tutte le 9 lingue supportate (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). |
+| **Help**         | Guida utente Markdown in-app (`/#/help`), localizzata per tutte le 16 lingue supportate (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr). |
 | **Activity log** | Traccia di audit di ogni richiesta che modifica lo stato (scritture, esecuzioni, scansioni). Segreti oscurati. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Campanella nella barra superiore con badge rosso per i non letti. Cliccala per far scorrere un pannello che elenca gli ultimi 50 toast (per scheda, per sessione) — Successo / Errore / Info-progresso, ciascuno con un timestamp localizzato, il messaggio leggibile e qualsiasi postfisso `(METHOD /path · HTTP NNN)` racchiuso in un `<details>`. La sezione Help **§18** documenta ogni categoria. Il pannello si apre **solo** al clic sulla campanella (o da tastiera Invio / Spazio); si chiude tramite ×, Esc, o ricliccando la campanella. |
 
@@ -371,7 +371,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co client
 │     │  ├─ hh.mjs           # hh.ru/search/vacancy HTML scraper (paginated, UA-aware)
 │     │  └─ habr.mjs         # career.habr.com HTML parser (no cheerio, regex only)
-│     └─ routes/             # 12 route modules — one per topic (P-2)
+│     └─ routes/             # 24 route modules — one per topic (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (parent .env round-trip)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -409,7 +409,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 8 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 16 locales
    ├─ playwright-smoke.mjs   # 12 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # full Playwright walkthrough
 ```
@@ -621,14 +621,14 @@ Per la valutazione della prontezza per la produzione (gate di deployment, regist
 
 ## Localizzazione
 
-La UI viene fornita con **9 lingue** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. Dalla **v1.60.0 (I18N-SPLIT)** le traduzioni vivono **un file per lingua** sotto [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, ciascuno una tabella piatta `key → string` — più un `i18n-dict.aliases.js` condiviso. [`i18n-dict.js`](public/js/lib/i18n-dict.js) le assembla in `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) risolve `t('key', 'fallback')`. Nessuno step di build, nessun fetch a runtime — un traduttore modifica un singolo file di lingua in isolamento.
+La UI viene fornita con **16 lingue** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`. Dalla **v1.60.0 (I18N-SPLIT)** le traduzioni vivono **un file per lingua** sotto [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, ciascuno una tabella piatta `key → string` — più un `i18n-dict.aliases.js` condiviso. [`i18n-dict.js`](public/js/lib/i18n-dict.js) le assembla in `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) risolve `t('key', 'fallback')`. Nessuno step di build, nessun fetch a runtime — un traduttore modifica un singolo file di lingua in isolamento.
 
 **Aggiungere o cambiare una stringa:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …add the same key to all 9 locale files (parity is gated)
+// …add the same key to all 16 locale files (parity is gated)
 ```
 
 Poi usala tramite `data-i18n="scan.newButton"` nel markup o `t('scan.newButton')` in JS, ed esegui `npm test`. Per aggiungere una lingua nuova di zecca, registrala in `i18n.js` (`LANGS` + `detect()`), nell'assembler, in `index.html` e nella toolchain che enumera le lingue.

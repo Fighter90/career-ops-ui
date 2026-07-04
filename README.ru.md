@@ -383,7 +383,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF-reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # round-trip stripDangerousMarkdown (включая entity-aware кейсы)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # паритет i18n по всем 8 локалям
+   ├─ help.test.mjs / help-ui.test.mjs    # паритет i18n по всем 16 локалям
    ├─ playwright-smoke.mjs   # 32 browser-сценария (CV save, tracker, pipeline, evaluate, config и т. д.)
    └─ e2e{,-comprehensive}.mjs   # полный Playwright-walkthrough
 ```

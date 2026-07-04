@@ -383,7 +383,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject 掃描(FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip(實體感知)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # 所有 8 個 locale 的 i18n parity
+   ├─ help.test.mjs / help-ui.test.mjs    # 所有 16 個 locale 的 i18n parity
    ├─ playwright-smoke.mjs   # 32 個瀏覽器流程(CV 儲存、tracker、pipeline、evaluate、config 等)
    └─ e2e{,-comprehensive}.mjs   # 完整 Playwright walkthrough
 ```

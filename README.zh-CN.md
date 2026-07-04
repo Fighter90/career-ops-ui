@@ -383,7 +383,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF 拒绝扫描(FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown 往返(entity-aware)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # 8 种语言下的 i18n 对等性
+   ├─ help.test.mjs / help-ui.test.mjs    # 16 种语言下的 i18n 对等性
    ├─ playwright-smoke.mjs   # 12 个浏览器流程(CV 保存、tracker、pipeline、evaluate、config 等)
    └─ e2e{,-comprehensive}.mjs   # 完整 Playwright walkthrough
 ```

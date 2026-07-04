@@ -383,7 +383,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # barrido de rechazo SSRF (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # round-trip de stripDangerousMarkdown con decodificación de entidades (v1.22.0 M-4)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # paridad i18n en los 8 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # paridad i18n en los 16 locales
    ├─ playwright-smoke.mjs   # 32 flujos de navegador (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # walkthrough Playwright completo
 ```

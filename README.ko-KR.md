@@ -383,7 +383,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF 거부 스윕 (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown 라운드트립 (entity-aware, v1.22.0)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # 8개 로케일 i18n 패리티
+   ├─ help.test.mjs / help-ui.test.mjs    # 16개 로케일 i18n 패리티
    ├─ playwright-smoke.mjs   # 12개 브라우저 플로우
    └─ e2e{,-comprehensive}.mjs   # 전체 Playwright 워크스루
 ```

@@ -371,7 +371,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co client
 │     │  ├─ hh.mjs           # hh.ru/search/vacancy HTML scraper (paginated, UA-aware)
 │     │  └─ habr.mjs         # career.habr.com HTML parser (no cheerio, regex only)
-│     └─ routes/             # 12 route modules — one per topic (P-2)
+│     └─ routes/             # 24 route modules — one per topic (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (parent .env round-trip)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -409,7 +409,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 8 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 16 locales
    ├─ playwright-smoke.mjs   # 12 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # full Playwright walkthrough
 ```
@@ -621,14 +621,14 @@ Für die Bewertung der Produktionsreife (Deployment-Gates, Risikoregister, aufge
 
 ## Lokalisierung
 
-Die UI wird mit **9 Sprachen** ausgeliefert — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. Seit **v1.60.0 (I18N-SPLIT)** liegen die Übersetzungen **eine Datei pro Sprache** unter [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, jede eine flache `key → string`-Tabelle — plus eine gemeinsame `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) fügt sie zu `window.__I18N_DICT` zusammen; [`i18n.js`](public/js/lib/i18n.js) löst `t('key', 'fallback')` auf. Kein Build-Schritt, kein Laufzeit-Fetch — ein Übersetzer bearbeitet eine einzelne Sprachdatei isoliert.
+Die UI wird mit **16 Sprachen** ausgeliefert — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`. Seit **v1.60.0 (I18N-SPLIT)** liegen die Übersetzungen **eine Datei pro Sprache** unter [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, jede eine flache `key → string`-Tabelle — plus eine gemeinsame `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) fügt sie zu `window.__I18N_DICT` zusammen; [`i18n.js`](public/js/lib/i18n.js) löst `t('key', 'fallback')` auf. Kein Build-Schritt, kein Laufzeit-Fetch — ein Übersetzer bearbeitet eine einzelne Sprachdatei isoliert.
 
 **Eine Zeichenkette hinzufügen oder ändern:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …add the same key to all 9 locale files (parity is gated)
+// …add the same key to all 16 locale files (parity is gated)
 ```
 
 Verwenden Sie sie dann über `data-i18n="scan.newButton"` im Markup oder `t('scan.newButton')` im JS und führen Sie `npm test` aus. Um eine brandneue Sprache hinzuzufügen, registrieren Sie sie in `i18n.js` (`LANGS` + `detect()`), im Assembler, in `index.html` und im Locale-aufzählenden Tooling.
