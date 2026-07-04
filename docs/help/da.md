@@ -2010,3 +2010,28 @@ Planen kommer tilbage i fire sektioner:
 ### At gemme og vende tilbage til planer
 
 Klik på **Gem plan** for at beholde en. Den skrives til dit overordnede projekts brugerlag på `networking/net-{company}-{role}-{date}.md` — din egen fil, aldrig overskrevet af systemopdateringer. Listen **Gemte planer** nederst på siden lader dig genåbne eller slette enhver plan. Da udkastene og personaerne kun er forankret i dine reelle materialer, skal du behandle dem som et stærkt første udkast til at personliggøre — ikke som et manuskript, du sender i blinde.
+
+## 24. CV Studio (`#/cv-studio`)
+
+Siden `#/cv` er der, hvor du *skriver* dit CV; **CV Studio** (åbn det via **Setup → CV Studio 🎨** i sidepanelet) er der, hvor du *skærper* det. Det giver din `cv.md` tre ærlige værktøjer, hvoraf de to aldrig forlader din browser.
+
+### CV-diagnostik
+
+I det øjeblik du åbner siden, giver den dit CV en score op til 100 og lister fund pr. kontrol, hver med en kort forklaring, så *du* selv bestemmer, hvad der skal ændres (den omskriver aldrig i stilhed):
+
+- **Længde** — ligger CV'et i et sundt spænd på en til to sider?
+- **Kvantificeret effekt** — hvor stor en andel af dine punkter indeholder et rigtigt tal eller en metrik? Rekrutterere skimmer efter dem.
+- **Stærke handlingsverber** — markerer svage formuleringer som "ansvarlig for" eller "hjalp med".
+- **Buzzwords** — markerer tomme klichéer ("resultatorienteret", "holdspiller").
+- **Kerneafsnit** — tjekker for Resumé, Erfaring, Uddannelse og Kompetencer.
+- **Kontaktoplysninger** — sikrer, at der er en e-mail.
+
+Det hele kører udelukkende i din browser uden nogen LLM — tallene er deterministiske, og intet bliver opdigtet.
+
+### Privatlivsmaske
+
+Før du deler dit CV som en skriveprøve eller et skærmbillede, skjuler **Privatlivsmasken** personhenførbare data: e-mail, telefon, links/handles og gadeadresse samt dit **navn → initialer**, hvis du slår det til og indtaster det. Slå hver kategori til/fra, kopiér den maskerede version, og del den sikkert. Det hele foregår udelukkende i browseren, rapporterer præcist, hvor mange elementer den skjulte, og gemmer eller sender aldrig originalen.
+
+### Gør det menneskeligt (stemmematch)
+
+Indsæt en stiv linje eller et afsnit — den slags generiske AI-formulering, der læses som standardtekst — og **Gør det menneskeligt** omskriver det i *din* stemme. Omskrivningen er forankret på serversiden i din `voice-dna.md` (hvordan din skrift læses) og dine `writing-samples/` (din faktiske prosa). Den hårde regel: den må omordne, stramme op og justere stemmen, men den vil **aldrig** indføre et faktum, en metrik eller en præstation, der ikke allerede står i den tekst, du indsatte. Med en LLM-nøgle omskriver den live; uden nøgle giver den dig en klar prompt til at indsætte i en hvilken som helst assistent. Rediger derefter dit CV på siden `#/cv` som sædvanligt — CV Studio foreslår, du bestemmer.

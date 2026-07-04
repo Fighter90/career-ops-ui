@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.91.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.91.0)
+[![release](https://img.shields.io/badge/release-v1.92.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.92.0)
 
-> **🆕 Dernière version — v1.91.0**
+> **🆕 Dernière version — v1.92.0**
 >
-> **Networking et recherche approfondie sur les entreprises (Epic 16) :** une nouvelle page **`#/networking`** transforme une entreprise en un plan actionnable — un **dossier d'entreprise**, **qui contacter** (personas + chaînes de recherche LinkedIn), la **voie d'introduction la plus chaleureuse** et des **brouillons de prise de contact** sur mesure — le tout ancré dans votre CV et votre two-pager. S'exécute en direct avec n'importe quelle clé LLM ou vous renvoie un prompt à copier-coller, et vous pouvez **enregistrer des plans** par entreprise. S'appuie sur la v1.90.0 (mock interview), la v1.89.0 (adéquation candidat-marché via le two-pager) et la v1.88.0 (i18n du Scan + hygiène de l'API).
+> **CV Studio (Epic 21) :** une nouvelle page **`#/cv-studio`** dote votre CV de trois outils honnêtes — un **diagnostic de CV** (un score déterministe de 0 à 100 avec des explications par vérification), un **masque de confidentialité** (caviarder e-mail/téléphone/liens/adresse/nom entièrement dans le navigateur) et **rendez-le humain** (réécrire des lignes rigides dans _votre_ voix, ancré dans votre voice-dna et vos échantillons d'écriture, sans jamais inventer de faits). S'appuie sur la v1.91.0 (planificateur de networking), la v1.90.0 (mock interview) et la v1.89.0 (adéquation au marché via le two-pager).
 >
-> _16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · planificateur de networking · mock interview · adéquation au marché via le two-pager · statistiques de marché par poste ciblé · détecteur de reposts · parité avec le career-ops v1.16.0._
+> _16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · statistiques de marché par poste ciblé · détecteur de reposts · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

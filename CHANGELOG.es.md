@@ -11,6 +11,16 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.92.0] — 2026-07-04
+
+**CV Studio (Epic 21).** Una nueva página `#/cv-studio` dota a tu CV de tres herramientas honestas y mayormente locales:
+
+- **Diagnóstico de currículum** — una puntuación determinista de 0–100 con explicaciones por comprobación (impacto cuantificado, verbos débiles, palabras de moda, longitud, secciones esenciales, información de contacto). Puramente del lado del cliente (`window.CvDiagnostics`) — sin LLM, nada inventado, cada hallazgo explicado para que *tú* decidas qué cambiar.
+- **Máscara de privacidad** — redacta datos personales (email, teléfono, enlaces/handles, dirección postal y, opcionalmente, tu nombre → iniciales) antes de compartir tu CV como muestra o captura. Se ejecuta enteramente en el navegador (`window.CvPrivacy`); informa exactamente qué redactó y nunca almacena el original.
+- **Hazlo humano / coincidir con tu voz** — pega una línea o un párrafo rígido y reescríbelo con *tu* voz, anclado en el servidor en `voice-dna.md` y `writing-samples/`. Barandilla estricta: puede reordenar, condensar y re-vocalizar, pero nunca introduce un hecho, una métrica ni un logro que no esté ya en el texto. Se ejecuta en vivo a través de la cascada compartida de proveedores, o te devuelve un prompt para copiar y pegar sin clave.
+
+Nuevo: `server/lib/routes/cv-studio.mjs` (20.º módulo de rutas — `POST /api/cv-studio/humanize`), `public/js/views/cv-studio.js`, `public/js/lib/cv-diagnostics.js`, `public/js/lib/cv-privacy.js`, `PATHS.voiceDna` + `PATHS.writingSamplesDir`. 29 nuevas claves i18n en los **16 locales**. Pruebas: `tests/cv-diagnostics.test.mjs`, `tests/cv-studio-routes.test.mjs`. (La galería de plantillas, la exportación a Word y el archivo de PDF de la oferta quedan como trabajo de seguimiento de CV Studio.)
+
 ## [1.91.0] — 2026-07-04
 
 **Networking e investigación profunda de empresas (Epic 16).** Una nueva página `#/networking` convierte una empresa en un plan accionable para conseguir una entrevista, anclado en tu CV, perfil y two-pager:

@@ -9,6 +9,16 @@
 ---
 
 
+## [1.92.0] — 2026-07-04
+
+**CV Studio(Epic 21)。** 全新的 `#/cv-studio` 页面为你的简历提供三个诚实、基本本地运行的工具:
+
+- **简历诊断** — 一个确定性的 0–100 分,并附带逐项检查的说明(量化影响、无力动词、套话、长度、核心章节、联系方式)。纯客户端(`window.CvDiagnostics`)—— 无 LLM、绝不臆造,每一处发现都有解释,由*你*决定要改什么。
+- **隐私脱敏** — 在将简历作为样本或截图分享之前,遮蔽 PII(邮箱、电话、链接/账号、街道地址,以及可选的姓名 → 首字母缩写)。完全在浏览器中运行(`window.CvPrivacy`);它会准确报告遮蔽了什么,且绝不存储原文。
+- **Make it human / 语气匹配** — 粘贴一句生硬的话或一段文字,它会以*你的*语气重写,在服务端以 `voice-dna.md` 和 `writing-samples/` 为依据。硬性护栏:它可以重排、精简和重塑语气,但绝不引入文本中尚不存在的事实、指标或成就。通过共享提供商级联实时运行,或在无密钥时回传一段可复制粘贴的提示词。
+
+新增: `server/lib/routes/cv-studio.mjs`(第 20 个路由模块 —— `POST /api/cv-studio/humanize`)、`public/js/views/cv-studio.js`、`public/js/lib/cv-diagnostics.js`、`public/js/lib/cv-privacy.js`、`PATHS.voiceDna` + `PATHS.writingSamplesDir`。在全部 **16 locales** 中新增 29 个 i18n 键。测试: `tests/cv-diagnostics.test.mjs`、`tests/cv-studio-routes.test.mjs`。(模板库、Word 导出和职位 PDF 归档作为 CV Studio 的后续工作进行跟踪。)
+
 ## [1.91.0] — 2026-07-04
 
 **人脉拓展与深度公司调研(Epic 16)。** 全新的 `#/networking` 页面将一家公司转化为一份争取面试的可执行计划,并以你的简历、档案和 two-pager 为依据:

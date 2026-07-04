@@ -9,6 +9,16 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.92.0] — 2026-07-04
+
+**CV Studio (Epic 21).** Uma nova página `#/cv-studio` dá ao seu CV três ferramentas honestas e majoritariamente locais:
+
+- **Diagnóstico de currículo** — uma pontuação determinística de 0–100 com explicações por verificação (impacto quantificado, verbos fracos, jargões, tamanho, seções essenciais, informações de contato). Puramente no lado do cliente (`window.CvDiagnostics`) — sem LLM, nada inventado, cada achado explicado para que *você* decida o que mudar.
+- **Máscara de privacidade** — oculta dados pessoais (e-mail, telefone, links/handles, endereço e, opcionalmente, seu nome → iniciais) antes de compartilhar seu CV como amostra ou captura de tela. Roda inteiramente no navegador (`window.CvPrivacy`); relata exatamente o que ocultou e nunca armazena o original.
+- **Torne-o humano / correspondência de voz** — cole uma linha ou parágrafo rígido e reescreva-o na *sua* voz, ancorado no servidor em `voice-dna.md` e `writing-samples/`. Barreira rígida: pode reordenar, enxugar e revocalizar, mas nunca introduz um fato, uma métrica ou uma conquista que não esteja já no texto. Roda ao vivo através da cascata compartilhada de provedores, ou devolve um prompt para copiar e colar sem chave.
+
+Novo: `server/lib/routes/cv-studio.mjs` (20.º módulo de rotas — `POST /api/cv-studio/humanize`), `public/js/views/cv-studio.js`, `public/js/lib/cv-diagnostics.js`, `public/js/lib/cv-privacy.js`, `PATHS.voiceDna` + `PATHS.writingSamplesDir`. 29 novas chaves i18n nos **16 locales**. Testes: `tests/cv-diagnostics.test.mjs`, `tests/cv-studio-routes.test.mjs`. (A galeria de modelos, a exportação para Word e o arquivo de PDF da vaga ficam como trabalho de acompanhamento do CV Studio.)
+
 ## [1.91.0] — 2026-07-04
 
 **Networking e pesquisa profunda de empresas (Epic 16).** Uma nova página `#/networking` transforma uma empresa em um plano acionável para conseguir uma entrevista, ancorado no seu CV, perfil e two-pager:

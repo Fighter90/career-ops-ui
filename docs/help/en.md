@@ -2047,3 +2047,28 @@ The plan comes back in four sections:
 ### Saving and revisiting plans
 
 Click **Save plan** to keep one. It is written to your parent project's user layer at `networking/net-{company}-{role}-{date}.md` — your own file, never overwritten by system updates. The **Saved plans** list at the bottom of the page lets you re-open or delete any plan. Because the drafts and personas are grounded only in your real materials, treat them as a strong first draft to personalize — not a script to send blind.
+
+## 24. CV Studio (`#/cv-studio`)
+
+The `#/cv` page is where you *write* your CV; **CV Studio** (open it from **Setup → CV Studio 🎨** in the sidebar) is where you *sharpen* it. It gives your `cv.md` three honest tools, two of which never leave your browser.
+
+### Résumé diagnostics
+
+The moment you open the page it scores your CV out of 100 and lists per-check findings, each with a short explanation so *you* decide what to change (it never rewrites silently):
+
+- **Length** — is the CV in a healthy one-to-two-page range?
+- **Quantified impact** — what share of your bullets include a real number or metric? Recruiters skim for these.
+- **Strong action verbs** — flags weak phrasing like "responsible for" or "helped".
+- **Buzzwords** — flags empty clichés ("results-driven", "team player").
+- **Core sections** — checks for Summary, Experience, Education, and Skills.
+- **Contact info** — makes sure an email is present.
+
+This runs entirely in your browser with no LLM — the numbers are deterministic and nothing is fabricated.
+
+### Privacy mask
+
+Before you share your CV as a writing sample or a screenshot, the **Privacy mask** redacts personally-identifying data: email, phone, links/handles, and street address, plus your **name → initials** if you opt in and enter it. Toggle each category, copy the masked version, and share it safely. It happens entirely in-browser, reports exactly how many items it redacted, and never stores or transmits the original.
+
+### Make it human (voice match)
+
+Paste a stiff line or paragraph — the kind of generic AI phrasing that reads as boilerplate — and **Make it human** rewrites it in *your* voice. The rewrite is grounded server-side in your `voice-dna.md` (how your writing reads) and your `writing-samples/` (your real prose). The hard rule: it may reorder, tighten, and re-voice, but it will **never** introduce a fact, metric, or achievement that isn't already in the text you pasted. With an LLM key it rewrites live; with no key it hands you a ready-to-run prompt to paste into any assistant. Then edit your CV on the `#/cv` page as usual — CV Studio suggests, you decide.

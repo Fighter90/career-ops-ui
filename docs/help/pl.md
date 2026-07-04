@@ -1954,3 +1954,28 @@ Plan wraca w czterech sekcjach:
 ### Zapisywanie i wracanie do planów
 
 Kliknij **Zapisz plan**, aby zachować jeden. Jest zapisywany w warstwie użytkownika twojego projektu nadrzędnego w `networking/net-{company}-{role}-{date}.md` — twój własny plik, nigdy nadpisywany przez aktualizacje systemu. Lista **Zapisane plany** na dole strony pozwala ponownie otworzyć lub usunąć dowolny plan. Ponieważ szkice i persony opierają się wyłącznie na twoich prawdziwych materiałach, traktuj je jako mocny pierwszy szkic do spersonalizowania — a nie jako scenariusz do wysyłania na ślepo.
+
+## 24. CV Studio (`#/cv-studio`)
+
+Strona `#/cv` to miejsce, w którym *piszesz* swoje CV; **CV Studio** (otwórz je z **Setup → CV Studio 🎨** na pasku bocznym) to miejsce, w którym je *dopracowujesz*. Daje twojemu `cv.md` trzy uczciwe narzędzia, z których dwa nigdy nie opuszczają twojej przeglądarki.
+
+### Diagnostyka CV
+
+W chwili otwarcia strony ocenia twoje CV w skali do 100 i wypisuje uwagi dla każdego sprawdzenia, każdą z krótkim wyjaśnieniem, aby to *ty* decydował, co zmienić (nigdy nie przepisuje po cichu):
+
+- **Długość** — czy CV mieści się w zdrowym zakresie jednej do dwóch stron?
+- **Wymierny wpływ** — jaka część twoich punktów zawiera prawdziwą liczbę lub metrykę? Rekruterzy wyłapują je podczas przeglądania.
+- **Mocne czasowniki działania** — oznacza słabe sformułowania w rodzaju „odpowiedzialny za" lub „pomagałem".
+- **Modne słowa** — oznacza puste frazesy („nastawiony na wyniki", „gracz zespołowy").
+- **Kluczowe sekcje** — sprawdza obecność Podsumowania, Doświadczenia, Wykształcenia i Umiejętności.
+- **Dane kontaktowe** — upewnia się, że jest podany e-mail.
+
+Wszystko to działa w całości w twojej przeglądarce bez żadnego LLM — liczby są deterministyczne i nic nie jest zmyślane.
+
+### Maska prywatności
+
+Zanim udostępnisz swoje CV jako próbkę pisma lub zrzut ekranu, **Maska prywatności** ukrywa dane identyfikujące osobę: e-mail, telefon, linki/nicki i adres pocztowy, a także twoje **imię → inicjały**, jeśli to włączysz i je wpiszesz. Przełączaj każdą kategorię, skopiuj zamaskowaną wersję i udostępniaj ją bezpiecznie. Wszystko dzieje się w całości w przeglądarce, zgłasza dokładnie, ile elementów ukryto, i nigdy nie przechowuje ani nie przesyła oryginału.
+
+### Uczłowiecz to (dopasowanie głosu)
+
+Wklej sztywne zdanie lub akapit — ten rodzaj generycznego sformułowania AI, które brzmi jak gotowiec — a **Uczłowiecz to** przepisze je twoim *własnym* głosem. Przepisanie jest osadzone po stronie serwera w twoim `voice-dna.md` (jak czyta się twoje pisanie) i twoich `writing-samples/` (twoja prawdziwa proza). Twarda zasada: może zmieniać kolejność, zwięźlej ujmować i przestrajać głos, ale **nigdy** nie wprowadzi faktu, metryki ani osiągnięcia, którego nie ma już we wklejonym tekście. Z kluczem LLM przepisuje na żywo; bez klucza wręcza ci gotowy prompt do wklejenia w dowolny asystent. Następnie edytuj swoje CV na stronie `#/cv` jak zwykle — CV Studio sugeruje, ty decydujesz.

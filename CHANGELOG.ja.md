@@ -9,6 +9,16 @@
 ---
 
 
+## [1.92.0] — 2026-07-04
+
+**CV Studio(Epic 21)。** 新しい `#/cv-studio` ページは、あなたの CV に正直で、ほとんどローカルで動く 3 つのツールを提供します:
+
+- **履歴書診断** — 決定論的な 0–100 のスコアと、各チェックの説明(定量化されたインパクト、弱い動詞、バズワード、長さ、コアセクション、連絡先情報)。純粋なクライアントサイド(`window.CvDiagnostics`)— LLM なし、捏造なし、すべての指摘が説明されるので、何を変えるかは*あなた*が決めます。
+- **プライバシーマスク** — CV をサンプルやスクリーンショットとして共有する前に、PII(メール、電話番号、リンク/ハンドル、住所、任意で名前 → イニシャル)を伏せ字にします。すべてブラウザ内で実行され(`window.CvPrivacy`)、何を伏せ字にしたかを正確に報告し、原文を保存することは決してありません。
+- **Make it human / voice match** — 硬い一文や段落を貼り付けると、`voice-dna.md` と `writing-samples/` にサーバー側で基づいて、*あなたの*声で書き直します。厳格なガードレール: 並べ替え・引き締め・声の再構成はできますが、テキストにまだ存在しない事実・指標・実績を持ち込むことは決してありません。共有プロバイダーカスケードを通じてライブ実行するか、キーがなければコピー&ペースト用のプロンプトを返します。
+
+新規: `server/lib/routes/cv-studio.mjs`(20 番目のルートモジュール — `POST /api/cv-studio/humanize`)、`public/js/views/cv-studio.js`、`public/js/lib/cv-diagnostics.js`、`public/js/lib/cv-privacy.js`、`PATHS.voiceDna` + `PATHS.writingSamplesDir`。**16 ロケール**すべてに 29 個の新規 i18n キー。テスト: `tests/cv-diagnostics.test.mjs`、`tests/cv-studio-routes.test.mjs`。(テンプレートギャラリー、Word エクスポート、求人票 PDF アーカイブは CV Studio の後続作業として追跡されています。)
+
 ## [1.91.0] — 2026-07-04
 
 **ネットワーキングと企業の詳細リサーチ(Epic 16)。** 新しい `#/networking` ページは、企業を面接獲得のための実行可能なプランに変換します。あなたの CV・プロフィール・two-pager に基づいています:

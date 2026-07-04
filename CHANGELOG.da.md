@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.92.0] — 2026-07-04
+
+**CV Studio (Epic 21).** En ny `#/cv-studio`-side giver dit CV tre ærlige, overvejende lokale værktøjer:
+
+- **CV-diagnostik** — en deterministisk 0–100-score med forklaringer pr. tjek (kvantificeret effekt, svage verber, buzzwords, længde, kerneafsnit, kontaktoplysninger). Rent på klientsiden (`window.CvDiagnostics`) — ingen LLM, intet opdigtet, hvert fund forklaret, så *du* afgør, hvad der skal ændres.
+- **Privatlivsmaske** — sløring af PII (e-mail, telefon, links/handles, gadeadresse og valgfrit dit navn → initialer), før du deler dit CV som en prøve eller et skærmbillede. Kører fuldstændigt i browseren (`window.CvPrivacy`); den rapporterer nøjagtigt, hvad den slørede, og gemmer aldrig originalen.
+- **Make it human / stemmematch** — indsæt en stiv linje eller et afsnit, og skriv den om i *din* stemme, forankret på serversiden i `voice-dna.md` og `writing-samples/`. Hårdt værn: den må omrokere, stramme og genstemme, men aldrig introducere et faktum, en metrik eller en præstation, der ikke allerede står i teksten. Kører live gennem den delte udbyder-kaskade eller giver et copy-paste-prompt tilbage uden nøgle.
+
+Nyt: `server/lib/routes/cv-studio.mjs` (20. rutemodul — `POST /api/cv-studio/humanize`), `public/js/views/cv-studio.js`, `public/js/lib/cv-diagnostics.js`, `public/js/lib/cv-privacy.js`, `PATHS.voiceDna` + `PATHS.writingSamplesDir`. 29 nye i18n-nøgler på tværs af alle **16 locales**. Tests: `tests/cv-diagnostics.test.mjs`, `tests/cv-studio-routes.test.mjs`. (Skabelongalleri, Word-eksport og opslags-PDF-arkiv spores som opfølgende CV Studio-arbejde.)
+
 ## [1.91.0] — 2026-07-04
 
 **Networking og dybdegående virksomhedsresearch (Epic 16).** En ny `#/networking`-side forvandler en virksomhed til en handlingsorienteret plan for at få en samtale, forankret i dit CV, din profil og din two-pager:

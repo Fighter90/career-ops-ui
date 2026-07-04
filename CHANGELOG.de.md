@@ -2,6 +2,14 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.92.0] — 2026-07-04
+### Hinzugefügt
+- **CV Studio (Epic 21).** Eine neue Seite `#/cv-studio` gibt deinem Lebenslauf drei ehrliche, größtenteils lokale Werkzeuge:
+  - **Lebenslauf-Diagnostik** — ein deterministischer 0–100-Score mit Erklärungen je Prüfung (quantifizierte Wirkung, schwache Verben, Buzzwords, Länge, Kernabschnitte, Kontaktdaten). Rein clientseitig (`window.CvDiagnostics`) — kein LLM, nichts erfunden, jeder Befund erklärt, damit *du* entscheidest, was du änderst.
+  - **Datenschutz-Maske** — schwärzt PII (E-Mail, Telefon, Links/Handles, Straßenanschrift und optional deinen Namen → Initialen), bevor du deinen Lebenslauf als Muster oder Screenshot teilst. Läuft vollständig im Browser (`window.CvPrivacy`); sie meldet genau, was sie geschwärzt hat, und speichert das Original nie.
+  - **Menschlich machen / Stimmabgleich** — füge eine steife Zeile oder einen Absatz ein und schreibe sie in *deiner* Stimme um, serverseitig verankert in `voice-dna.md` und `writing-samples/`. Harte Leitplanke: Sie darf umordnen, straffen und neu vertonen, aber nie eine Tatsache, Kennzahl oder Leistung einführen, die nicht bereits im Text steht. Läuft live über die geteilte Anbieter-Kaskade oder gibt einen kopierfertigen Prompt ohne Schlüssel zurück.
+- Neu: `server/lib/routes/cv-studio.mjs` (20. Routenmodul — `POST /api/cv-studio/humanize`), `public/js/views/cv-studio.js`, `public/js/lib/cv-diagnostics.js`, `public/js/lib/cv-privacy.js`, `PATHS.voiceDna` + `PATHS.writingSamplesDir`. 29 neue i18n-Schlüssel in allen **16 Sprachen**. Tests: `tests/cv-diagnostics.test.mjs`, `tests/cv-studio-routes.test.mjs`. (Vorlagengalerie, Word-Export und Ausschreibungs-PDF-Archiv werden als anschließende CV-Studio-Arbeit verfolgt.)
+
 ## [1.91.0] — 2026-07-04
 ### Hinzugefügt
 - **Networking & tiefe Unternehmensrecherche (Epic 16).** Eine neue Seite `#/networking` verwandelt ein Unternehmen in einen umsetzbaren Plan, um ein Interview zu bekommen — verankert in deinem Lebenslauf, deinem Profil und deinem two-pager:
