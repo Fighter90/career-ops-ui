@@ -2032,3 +2032,25 @@ Tout est ancré dans vos vrais documents : `cv.md`, `config/profile.yml`, `confi
 ### Enregistrer et revisiter les sessions
 
 Cliquez sur **Enregistrer la transcription** pour conserver une répétition terminée. Elle est écrite dans la couche utilisateur de votre projet parent, à `interview-prep/mock-{company}-{role}-{date}.md`, de sorte qu'elle vit aux côtés de vos autres notes de préparation d'entretien et n'est jamais écrasée par les mises à jour du système. La liste **Sessions enregistrées** en bas de la page vous permet de rouvrir n'importe quelle transcription ou de la supprimer. Utilisez **Nouvel entretien** pour recommencer avec un poste différent.
+
+## 23. Réseautage et recherche approfondie sur les entreprises (`#/networking`)
+
+Postuler par la grande porte ne représente que la moitié du jeu — l'autre moitié consiste à *connaître quelqu'un*, ou au moins à savoir qui contacter et quoi dire. La page **Réseautage** (ouvrez-la depuis **Recherche approfondie → Réseautage 🤝** dans la barre latérale) transforme une entreprise en un plan concret pour décrocher un entretien, ancré dans votre propre CV, votre profil et votre two-pager.
+
+### Construire un plan
+
+- Saisissez une **entreprise** (obligatoire) et, en option, un **poste** et la **description du poste**. La description affine les accroches « pourquoi je conviens ».
+- Cliquez sur **Construire le plan**. Avec une clé LLM, il s'exécute en direct et affiche le plan dans la page ; sans clé, il vous fournit un prompt prêt à coller dans n'importe quel assistant (le même repli honnête utilisé dans toute l'application — rien n'est inventé).
+
+### Ce que contient le plan
+
+Le plan revient en quatre sections :
+
+- **Dossier de l'entreprise** — un briefing serré sur ce que fait l'entreprise, des signaux récents qui méritent d'être cités, et deux ou trois accroches « pourquoi je conviens » tirées de votre parcours réel.
+- **Qui contacter** — trois à cinq personas cibles (le responsable du recrutement de l'équipe, un recruteur interne, un ingénieur senior de l'équipe, une relation chaleureuse ou issue des anciens élèves) avec une **chaîne de recherche LinkedIn** concrète pour trouver chacun d'eux. Il n'invente jamais de vrais noms — il vous dit comment trouver les bonnes personnes.
+- **Meilleure voie d'introduction** — la route chaleureuse la plus réaliste pour *votre* parcours : un employeur, une école ou une communauté commune ; une relation de second degré ; ou un message à froid à fort signal lorsque c'est réellement la meilleure option.
+- **Brouillons de prise de contact** — des messages courts et précis (trois à cinq phrases, sans remplissage) pour vos principales personas, ancrés dans vos preuves réelles pour qu'ils ne paraissent pas génériques.
+
+### Enregistrer et revoir des plans
+
+Cliquez sur **Enregistrer le plan** pour en conserver un. Il est écrit dans la couche utilisateur de votre projet parent, à `networking/net-{company}-{role}-{date}.md` — votre propre fichier, jamais écrasé par les mises à jour du système. La liste **Plans enregistrés** en bas de la page vous permet de rouvrir ou de supprimer n'importe quel plan. Comme les brouillons et les personas ne s'appuient que sur vos supports réels, considérez-les comme un solide premier jet à personnaliser — pas comme un script à envoyer à l'aveugle.

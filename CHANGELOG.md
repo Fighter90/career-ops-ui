@@ -8,6 +8,18 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.91.0] — 2026-07-04
+
+**Networking & deep company research (Epic 16).** A new `#/networking` page turns a company into an actionable plan to get an interview, grounded in your CV, profile, and two-pager:
+
+- **Company dossier** — a tight brief on what the company does, recent signals worth citing, and "why I fit" hooks drawn from your real background.
+- **Who to contact** — 3–5 target personas (hiring manager, in-house recruiter, a senior IC on the team, a warm/alumni connection) with a concrete LinkedIn search string to find each. It never fabricates real names.
+- **Warmest intro path** — the single most realistic warm route in for *your* background (shared employer/school/community, a second-degree path, or a high-signal cold DM) and why.
+- **Outreach drafts** — short, specific messages for the top personas, grounded in your real proof points.
+- **Live or manual** — runs live through the shared provider cascade with any key, or hands back a copy-paste prompt (honest fallback, nothing invented). **Save plan** persists a finished plan to the user layer (`networking/net-{company}-{role}-{date}.md`); the page lists, opens, and deletes saved plans.
+
+New: `server/lib/routes/networking.mjs` (19th route module), `public/js/views/networking.js`, `PATHS.networkingDir`. Reuses the v1.90.0 `server/lib/llm-dispatch.mjs` cascade. 24 new i18n keys across all **16 locales**. Tests: `tests/networking-routes.test.mjs`.
+
 ## [1.90.0] — 2026-07-04
 
 **Mock Interview 2.0 (Epic 15).** A new `#/mock-interview` page turns your CV, profile, two-pager, and story bank into a turn-by-turn interview rehearsal:

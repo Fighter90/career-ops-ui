@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.90.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.90.0)
+[![release](https://img.shields.io/badge/release-v1.91.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.91.0)
 
-> **🆕 Dernière version — v1.90.0**
+> **🆕 Dernière version — v1.91.0**
 >
-> **Mock Interview 2.0 (Epic 15) :** une nouvelle page **`#/mock-interview`** déroule une répétition d'entretien tour par tour face à un poste réel. Chaque réponse reçoit un **retour STAR+R**, un **score** et une **question de suivi** — ancrés dans votre CV, le two-pager et votre banque d'histoires. S'exécute en direct avec n'importe quelle clé LLM ou vous renvoie un prompt à copier-coller, et vous pouvez **enregistrer les transcriptions** par entreprise/poste. S'appuie sur la v1.89.0 (adéquation candidat-marché via le two-pager), la v1.88.0 (i18n du Scan + hygiène de l'API) et la v1.87.0 (4 nouveaux fournisseurs de scan).
+> **Networking et recherche approfondie sur les entreprises (Epic 16) :** une nouvelle page **`#/networking`** transforme une entreprise en un plan actionnable — un **dossier d'entreprise**, **qui contacter** (personas + chaînes de recherche LinkedIn), la **voie d'introduction la plus chaleureuse** et des **brouillons de prise de contact** sur mesure — le tout ancré dans votre CV et votre two-pager. S'exécute en direct avec n'importe quelle clé LLM ou vous renvoie un prompt à copier-coller, et vous pouvez **enregistrer des plans** par entreprise. S'appuie sur la v1.90.0 (mock interview), la v1.89.0 (adéquation candidat-marché via le two-pager) et la v1.88.0 (i18n du Scan + hygiène de l'API).
 >
-> _16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · mock interview · adéquation au marché via le two-pager · statistiques de marché par poste ciblé · détecteur de reposts · parité avec le career-ops v1.16.0._
+> _16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · planificateur de networking · mock interview · adéquation au marché via le two-pager · statistiques de marché par poste ciblé · détecteur de reposts · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

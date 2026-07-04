@@ -2070,3 +2070,25 @@ Her şey gerçek malzemenize dayanır: `cv.md`, `config/profile.yml`, `config/tw
 ### Oturumları kaydetme ve yeniden görüntüleme
 
 Bitmiş bir provayı saklamak için **Save transcript** düğmesine tıklayın. Üst projenizin kullanıcı katmanına `interview-prep/mock-{company}-{role}-{date}.md` yolunda yazılır, böylece diğer mülakat hazırlık notlarınızla birlikte durur ve sistem güncellemeleriyle asla üzerine yazılmaz. Sayfanın altındaki **Saved sessions** listesi, herhangi bir dökümü yeniden açmanıza veya silmenize olanak tanır. Farklı bir rolle sıfırdan başlamak için **New interview** düğmesini kullanın.
+
+## 23. Networking ve derinlemesine şirket araştırması (`#/networking`)
+
+Ön kapıdan başvurmak oyunun yalnızca yarısıdır — diğer yarısı *birini tanımak* ya da en azından kime ulaşacağını ve ne diyeceğini bilmektir. **Networking** sayfası (kenar çubuğundan **Derinlemesine araştırma → Networking 🤝** ile açın) bir şirketi, kendi CV'niz, profiliniz ve two-pager'ınıza dayanan, mülakat almaya yönelik somut bir plana dönüştürür.
+
+### Plan oluşturma
+
+- Bir **şirket** (zorunlu) ve isteğe bağlı olarak bir **pozisyon** ile **iş tanımı** girin. İş tanımı, "neden uygunum" kancalarını keskinleştirir.
+- **Plan oluştur**'a tıklayın. Bir LLM anahtarıyla canlı çalışır ve planı sayfada gösterir; anahtar olmadan, herhangi bir asistana yapıştırmak için hazır bir istem verir (uygulama genelinde kullanılan aynı dürüst yedek yöntem — hiçbir şey uydurulmaz).
+
+### Planın içeriği
+
+Plan dört bölüm halinde döner:
+
+- **Şirket dosyası** — şirketin ne yaptığına dair sıkı bir özet, alıntılamaya değer güncel sinyaller ve gerçek geçmişinizden çıkarılmış iki üç "neden uygunum" kancası.
+- **Kime ulaşmalı** — üç ila beş hedef persona (ekibin işe alım yöneticisi, kurum içi bir işe alım uzmanı, ekipteki kıdemli bir mühendis, sıcak bir bağlantı ya da mezun bağlantısı) ve her birini bulmak için somut bir **LinkedIn arama dizesi**. Asla gerçek isimler uydurmaz — doğru kişileri nasıl bulacağınızı söyler.
+- **En sıcak tanışma yolu** — *sizin* geçmişiniz için en gerçekçi tek sıcak giriş rotası: ortak bir işveren, okul veya topluluk; ikinci derece bir bağlantı; ya da gerçekten en iyi seçenek olduğunda güçlü sinyalli bir soğuk mesaj.
+- **İletişim taslakları** — en önemli personalarınız için kısa, özgün mesajlar (üç ila beş cümle, dolgu yok); genel görünmesinler diye gerçek kanıt noktalarınıza dayandırılmış.
+
+### Planları kaydetme ve yeniden görüntüleme
+
+Bir planı saklamak için **Planı kaydet**'e tıklayın. Üst projenizin kullanıcı katmanında `networking/net-{company}-{role}-{date}.md` konumuna yazılır — kendi dosyanız, sistem güncellemeleriyle asla üzerine yazılmaz. Sayfanın altındaki **Kayıtlı planlar** listesi, herhangi bir planı yeniden açmanıza veya silmenize olanak tanır. Taslaklar ve personalar yalnızca gerçek materyallerinize dayandığı için, bunları körü körüne göndereceğiniz bir senaryo olarak değil, kişiselleştirilecek güçlü bir ilk taslak olarak değerlendirin.

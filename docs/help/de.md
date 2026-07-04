@@ -2129,3 +2129,25 @@ Alles ist in deinen echten Materialien verankert: `cv.md`, `config/profile.yml`,
 ### Sitzungen speichern und erneut aufrufen
 
 Klicke auf **Transkript speichern**, um eine abgeschlossene Probe zu behalten. Es wird in die Nutzerschicht deines übergeordneten Projekts geschrieben, unter `interview-prep/mock-{company}-{role}-{date}.md`, sodass es neben deinen anderen Interview-Vorbereitungsnotizen liegt und nie durch Systemaktualisierungen überschrieben wird. Die Liste **Gespeicherte Sitzungen** am Ende der Seite lässt dich jedes Transkript erneut öffnen oder löschen. Nutze **Neues Interview**, um mit einer anderen Rolle von vorn zu beginnen.
+
+## 23. Networking & tiefgehende Unternehmensrecherche (`#/networking`)
+
+Sich durch die Vordertür zu bewerben ist nur die halbe Miete — die andere Hälfte ist, *jemanden zu kennen*, oder zumindest zu wissen, wen man ansprechen und was man sagen soll. Die Seite **Networking** (öffne sie über **Tiefenrecherche → Networking 🤝** in der Seitenleiste) verwandelt ein Unternehmen in einen konkreten Plan, um ein Vorstellungsgespräch zu bekommen — verankert in deinem eigenen Lebenslauf, deinem Profil und deinem Two-Pager.
+
+### Einen Plan erstellen
+
+- Gib ein **Unternehmen** (erforderlich) und optional eine **Rolle** sowie die **Stellenbeschreibung** ein. Die Stellenbeschreibung schärft die „Warum ich passe"-Aufhänger.
+- Klicke auf **Plan erstellen**. Mit einem LLM-Schlüssel läuft es live und rendert den Plan direkt inline; ohne Schlüssel gibt es dir einen fertigen Prompt, den du in einen beliebigen Assistenten einfügen kannst (dasselbe ehrliche Fallback, das in der ganzen App verwendet wird — nichts wird erfunden).
+
+### Was der Plan enthält
+
+Der Plan kommt in vier Abschnitten zurück:
+
+- **Unternehmensdossier** — ein knappes Briefing darüber, was das Unternehmen macht, aktuelle Signale, die es wert sind zitiert zu werden, und zwei oder drei „Warum ich passe"-Aufhänger aus deinem tatsächlichen Werdegang.
+- **Wen kontaktieren** — drei bis fünf Ziel-Personas (der Hiring Manager des Teams, ein interner Recruiter, ein Senior Engineer im Team, ein warmer Kontakt oder eine Alumni-Verbindung) mit einer konkreten **LinkedIn-Suchzeichenfolge**, um jeden zu finden. Es erfindet niemals echte Namen — es sagt dir, wie du die richtigen Leute findest.
+- **Wärmster Vorstellungsweg** — die einzelne realistischste warme Route hinein für *deinen* Werdegang: ein gemeinsamer Arbeitgeber, eine gemeinsame Schule oder Community; eine Verbindung zweiten Grades; oder eine Kaltnachricht mit hohem Signal, wenn das wirklich die beste Option ist.
+- **Kontaktaufnahme-Entwürfe** — kurze, konkrete Nachrichten (drei bis fünf Sätze, ohne Füllwörter) für deine Top-Personas, verankert in deinen echten Belegen, damit sie nicht generisch wirken.
+
+### Pläne speichern und erneut aufrufen
+
+Klicke auf **Plan speichern**, um einen zu behalten. Er wird in der Nutzer-Ebene deines übergeordneten Projekts unter `networking/net-{company}-{role}-{date}.md` abgelegt — deine eigene Datei, die von System-Updates nie überschrieben wird. Über die Liste **Gespeicherte Pläne** unten auf der Seite kannst du jeden Plan wieder öffnen oder löschen. Da die Entwürfe und Personas nur auf deinen echten Materialien beruhen, behandle sie als starken ersten Entwurf zum Personalisieren — nicht als Skript, das du blind versendest.

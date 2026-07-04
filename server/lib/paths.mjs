@@ -61,6 +61,9 @@ export const PATHS = {
   // v1.90.0 (Epic 15) — the candidate's own STAR+R story bank, inlined into
   // the mock-interview prompt (same trust level as cv.md per DATA_CONTRACT).
   storyBank: path('interview-prep', 'story-bank.md'),
+  // v1.91.0 (Epic 16) — saved networking plans (who-to-contact + outreach
+  // drafts + company dossier), written only on explicit user Save.
+  networkingDir: path('networking'),
   // v1.13.0 — batch evaluate flow (canonical career-ops.org guide §4).
   batchDir: path('batch'),
   batchInput: path('batch', 'batch-input.tsv'),

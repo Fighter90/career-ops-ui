@@ -1930,3 +1930,25 @@ Todo se apoya en tus materiales reales: `cv.md`, `config/profile.yml`, `config/t
 ### Guardar y revisitar sesiones
 
 Haz clic en **Guardar transcripción** para conservar un ensayo terminado. Se escribe en la capa de usuario de tu proyecto padre en `interview-prep/mock-{company}-{role}-{date}.md`, de modo que vive junto a tus demás notas de preparación de entrevistas y nunca se sobrescribe con las actualizaciones del sistema. La lista de **Sesiones guardadas** al final de la página te permite reabrir cualquier transcripción o eliminarla. Usa **Nueva entrevista** para empezar de cero con un puesto diferente.
+
+## 23. Networking e investigación profunda de empresas (`#/networking`)
+
+Postular por la puerta principal es solo la mitad del juego — la otra mitad es *conocer a alguien*, o al menos saber a quién contactar y qué decir. La página **Networking** (ábrela desde **Investigación profunda → Networking 🤝** en la barra lateral) convierte una empresa en un plan concreto para conseguir una entrevista, apoyado en tu propio CV, tu perfil y tu two-pager.
+
+### Construir un plan
+
+- Introduce una **empresa** (obligatorio) y, opcionalmente, un **puesto** y la **descripción del puesto**. La descripción afina los ganchos de "por qué encajo".
+- Haz clic en **Construir plan**. Con una clave de LLM se ejecuta en vivo y renderiza el plan en línea; sin clave te entrega un prompt listo para pegar en cualquier asistente (el mismo fallback honesto que se usa en toda la app — no se inventa nada).
+
+### Qué contiene el plan
+
+El plan vuelve en cuatro secciones:
+
+- **Dossier de la empresa** — un resumen compacto de lo que hace la empresa, señales recientes que vale la pena citar, y dos o tres ganchos de "por qué encajo" extraídos de tu trayectoria real.
+- **A quién contactar** — de tres a cinco perfiles objetivo (el responsable de contratación del equipo, un reclutador interno, un ingeniero senior del equipo, un contacto cercano o de exalumnos) con una **cadena de búsqueda de LinkedIn** concreta para encontrar a cada uno. Nunca inventa nombres reales — te dice cómo encontrar a las personas adecuadas.
+- **Vía de presentación más cercana** — la ruta cálida de entrada más realista para *tu* trayectoria: un empleador, universidad o comunidad en común; un contacto de segundo grado; o un mensaje en frío de alta señal cuando esa sea genuinamente la mejor opción.
+- **Borradores de contacto** — mensajes cortos y específicos (de tres a cinco frases, sin relleno) para tus perfiles principales, apoyados en tus puntos de prueba reales para que no suenen genéricos.
+
+### Guardar y revisar planes
+
+Haz clic en **Guardar plan** para conservar uno. Se escribe en la capa de usuario de tu proyecto padre en `networking/net-{company}-{role}-{date}.md` — tu propio archivo, nunca sobrescrito por las actualizaciones del sistema. La lista de **Planes guardados** al final de la página te permite reabrir o eliminar cualquier plan. Como los borradores y los perfiles se apoyan únicamente en tus materiales reales, trátalos como un primer borrador sólido para personalizar — no como un guion para enviar a ciegas.

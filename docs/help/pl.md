@@ -1932,3 +1932,25 @@ Wszystko jest oparte na twoich prawdziwych materiałach: `cv.md`, `config/profil
 ### Zapisywanie i wracanie do sesji
 
 Kliknij **Save transcript**, aby zachować ukończoną próbę. Jest ona zapisywana do warstwy użytkownika twojego nadrzędnego projektu pod ścieżką `interview-prep/mock-{company}-{role}-{date}.md`, więc leży obok twoich pozostałych notatek do rozmów i nigdy nie jest nadpisywana przez aktualizacje systemu. Lista **Saved sessions** na dole strony pozwala ponownie otworzyć dowolny zapis lub go usunąć. Użyj **New interview**, aby zacząć od nowa z inną rolą.
+
+## 23. Networking i pogłębione badanie firm (`#/networking`)
+
+Aplikowanie frontowymi drzwiami to tylko połowa gry — druga połowa to *znać kogoś*, albo przynajmniej wiedzieć, do kogo się zwrócić i co powiedzieć. Strona **Networking** (otwórz ją z **Pogłębione badanie → Networking 🤝** na pasku bocznym) zamienia firmę w konkretny plan zdobycia rozmowy kwalifikacyjnej, oparty na twoim własnym CV, profilu i two-pagerze.
+
+### Budowanie planu
+
+- Wpisz **firmę** (wymagane) oraz opcjonalnie **stanowisko** i **opis oferty**. Opis oferty wyostrza zaczepki „dlaczego pasuję".
+- Kliknij **Zbuduj plan**. Z kluczem LLM działa na żywo i renderuje plan bezpośrednio na stronie; bez klucza podaje gotowy prompt do wklejenia w dowolny asystent (to samo uczciwe rozwiązanie awaryjne używane w całej aplikacji — nic nie jest zmyślane).
+
+### Co zawiera plan
+
+Plan wraca w czterech sekcjach:
+
+- **Dossier firmy** — zwięzły brief o tym, czym zajmuje się firma, świeże sygnały warte przytoczenia oraz dwie lub trzy zaczepki „dlaczego pasuję" wyciągnięte z twojego prawdziwego doświadczenia.
+- **Do kogo się zwrócić** — od trzech do pięciu docelowych person (hiring manager zespołu, wewnętrzny rekruter, senior inżynier w zespole, ciepły kontakt lub znajomość z absolwentów) wraz z konkretnym **łańcuchem wyszukiwania na LinkedIn**, aby znaleźć każdą z nich. Nigdy nie wymyśla prawdziwych nazwisk — mówi ci, jak znaleźć właściwe osoby.
+- **Najcieplejsza ścieżka wejścia** — jedna najbardziej realistyczna ciepła trasa wejścia dla *twojego* doświadczenia: wspólny pracodawca, uczelnia lub społeczność; kontakt drugiego stopnia; albo zimna wiadomość o silnym sygnale, gdy to naprawdę najlepsza opcja.
+- **Szkice wiadomości** — krótkie, konkretne wiadomości (od trzech do pięciu zdań, bez wypełniaczy) do twoich najważniejszych person, oparte na twoich prawdziwych dowodach, aby nie brzmiały ogólnikowo.
+
+### Zapisywanie i wracanie do planów
+
+Kliknij **Zapisz plan**, aby zachować jeden. Jest zapisywany w warstwie użytkownika twojego projektu nadrzędnego w `networking/net-{company}-{role}-{date}.md` — twój własny plik, nigdy nadpisywany przez aktualizacje systemu. Lista **Zapisane plany** na dole strony pozwala ponownie otworzyć lub usunąć dowolny plan. Ponieważ szkice i persony opierają się wyłącznie na twoich prawdziwych materiałach, traktuj je jako mocny pierwszy szkic do spersonalizowania — a nie jako scenariusz do wysyłania na ślepo.

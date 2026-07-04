@@ -2025,3 +2025,25 @@ Everything is grounded in your real materials: `cv.md`, `config/profile.yml`, `c
 ### Saving and revisiting sessions
 
 Click **Save transcript** to keep a finished rehearsal. It is written to your parent project's user layer at `interview-prep/mock-{company}-{role}-{date}.md`, so it lives alongside your other interview-prep notes and is never overwritten by system updates. The **Saved sessions** list at the bottom of the page lets you re-open any transcript or delete it. Use **New interview** to start over with a different role.
+
+## 23. Networking & deep company research (`#/networking`)
+
+Applying through the front door is only half the game — the other half is *knowing someone*, or at least knowing who to reach and what to say. The **Networking** page (open it from **Deep research → Networking 🤝** in the sidebar) turns a company into a concrete plan to get an interview, grounded in your own CV, profile, and two-pager.
+
+### Building a plan
+
+- Enter a **company** (required) and optionally a **role** and the **job description**. The JD sharpens the "why I fit" hooks.
+- Click **Build plan**. With an LLM key it runs live and renders the plan inline; with no key it hands you a ready-to-run prompt to paste into any assistant (the same honest fallback used across the app — nothing is invented).
+
+### What the plan contains
+
+The plan comes back in four sections:
+
+- **Company dossier** — a tight brief on what the company does, recent signals worth citing, and two or three "why I fit" hooks pulled from your real background.
+- **Who to contact** — three to five target personas (the hiring manager for the team, an in-house recruiter, a senior engineer on the team, a warm or alumni connection) with a concrete **LinkedIn search string** to find each one. It never fabricates real names — it tells you how to find the right people.
+- **Warmest intro path** — the single most realistic warm route in for *your* background: a shared employer, school, or community; a second-degree connection; or a high-signal cold message when that is genuinely the best option.
+- **Outreach drafts** — short, specific messages (three to five sentences, no fluff) for your top personas, grounded in your real proof points so they don't read as generic.
+
+### Saving and revisiting plans
+
+Click **Save plan** to keep one. It is written to your parent project's user layer at `networking/net-{company}-{role}-{date}.md` — your own file, never overwritten by system updates. The **Saved plans** list at the bottom of the page lets you re-open or delete any plan. Because the drafts and personas are grounded only in your real materials, treat them as a strong first draft to personalize — not a script to send blind.

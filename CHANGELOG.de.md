@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.91.0] — 2026-07-04
+### Hinzugefügt
+- **Networking & tiefe Unternehmensrecherche (Epic 16).** Eine neue Seite `#/networking` verwandelt ein Unternehmen in einen umsetzbaren Plan, um ein Interview zu bekommen — verankert in deinem Lebenslauf, deinem Profil und deinem two-pager:
+  - **Unternehmensdossier** — ein knappes Briefing dazu, was das Unternehmen macht, zitierwürdige jüngste Signale und „warum ich passe"-Aufhänger aus deinem echten Hintergrund.
+  - **Wen kontaktieren** — 3–5 Zielpersonas (Hiring Manager, interner Recruiter, ein Senior-IC im Team, eine warme/Alumni-Verbindung) mit einer konkreten LinkedIn-Suchzeichenkette, um jede zu finden. Es erfindet nie echte Namen.
+  - **Der wärmste Vorstellungspfad** — die realistischste warme Einstiegsroute für *deinen* Hintergrund (gemeinsamer Arbeitgeber/Schule/Community, ein Zweitgrad-Pfad oder eine signalstarke kalte DM) und warum.
+  - **Outreach-Entwürfe** — kurze, konkrete Nachrichten für die wichtigsten Personas, verankert in deinen echten Belegpunkten.
+  - **Live oder manuell** — läuft live über die geteilte Anbieter-Kaskade mit einem beliebigen Schlüssel oder gibt einen kopierfertigen Prompt zurück (ehrlicher Rückfall, nichts erfunden). **Plan speichern** legt einen fertigen Plan in der Benutzerschicht ab (`networking/net-{company}-{role}-{date}.md`); die Seite listet, öffnet und löscht gespeicherte Pläne.
+- Neu: `server/lib/routes/networking.mjs` (19. Routenmodul), `public/js/views/networking.js`, `PATHS.networkingDir`. Verwendet die `server/lib/llm-dispatch.mjs`-Kaskade aus v1.90.0 wieder. 24 neue i18n-Schlüssel in allen **16 Sprachen**. Tests: `tests/networking-routes.test.mjs`.
+
 ## [1.90.0] — 2026-07-04
 ### Hinzugefügt
 - **Mock Interview 2.0 (Epic 15).** Eine neue Seite `#/mock-interview` verwandelt deinen Lebenslauf, dein Profil, dein two-pager und deine Story-Bank in eine Interview-Probe Zug um Zug:
