@@ -2078,3 +2078,30 @@ Die Seite **Analytics → Zielrollen-Statistik** verwandelt die spärlichen Date
 
 - Klicke auf **Snapshot speichern**, um das aktuelle Aggregat an `data/role-stats.jsonl` anzuhängen. Jeder Snapshot erhält serverseitig einen Zeitstempel; Snapshots sind das Einzige, was diese Seite schreibt, und sie rühren weder deinen Lebenslauf noch dein Profil an.
 - Das **Trend**-Diagramm trägt die Stellenanzahl über deine gespeicherten Snapshots auf — speichere regelmäßig einen (zum Beispiel nach jedem wöchentlichen Scan), um zu beobachten, wie sich der Markt für deine Zielrollen über die Zeit bewegt.
+
+## 21. Dein Zwei-Seiten-Papier — Passung Kandidat-Markt (`#/two-pager`)
+
+Fast alles in career-ops-ui fragt „passt dieser Job zu meinem Lebenslauf?". Das **Zwei-Seiten-Papier** beantwortet die andere Hälfte: „passt dieser Job zu dem, was *ich wirklich will*?". Es ist dem **„Mnookin-Zwei-Seiten-Papier"** aus *Never Search Alone* nachempfunden — eine kurze Ich-Aussage darüber, was dir Energie gibt, was du forderst und was du nicht akzeptierst. Öffne es über **Einrichtung → Zwei-Seiten-Papier 🎯**.
+
+### Was du ausfüllst
+
+- **Wer ich bin** — ein paar Ich-Sätze über deinen Werdegang und die Art von Rolle, in der du aufblühst.
+- **Zielumfeld** — die Unternehmensgröße, -phase und -kultur, die du willst.
+- Fünf Chip-Listen — tippe und drücke **Enter** (oder Komma), um jeden Eintrag hinzuzufügen, klicke auf **×**, um ihn zu entfernen:
+  - **Was ich liebe** — Energiequellen (Remote, Eigenverantwortung, Greenfield, Mentoring…).
+  - **Muss-Kriterien** — harte Anforderungen (eine Gehaltsuntergrenze, ein Land, ein Stack…).
+  - **Was ich hasse** — Energieräuber (Rufbereitschaft, endlose Meetings, nur Legacy…).
+  - **Ausschlusskriterien** — absolute Neins (nur vor Ort, kein Visa-Sponsoring, unter einer Zahl…).
+  - **Nicht verhandelbar** — Grenzen (Standort, Remote, Gehaltsuntergrenze…).
+
+Klicke auf **Zwei-Seiten-Papier speichern**, um es zu sichern. Es wird in die **Benutzerebene deines übergeordneten career-ops-Projekts** unter `config/two-pager.yml` geschrieben, also wird es — wie dein Lebenslauf und dein Profil — beim Aktualisieren des Systems **nie** überschrieben.
+
+### Der KI-Ausfüllassistent
+
+Nicht sicher, wie du es formulieren sollst? Klicke auf **✨ KI-Ausfüllassistent**. Er baut einen ausführbereiten Prompt (das Mnookin-Format, mit deinem Lebenslauf und Profil eingebettet) und zeigt ihn in einem Dialog. Führe diesen Prompt in einem beliebigen LLM aus und füge dann die resultierenden YAML-Felder zurück in das Formular ein. Der Assistent verwendet ausschließlich **deinen eigenen** Lebenslauf und dein Profil — er erfindet nie Fakten über dich, und von diesem Button aus wird kein Live-API-Aufruf ausgelöst.
+
+### Der Passt-zu-deinen-Wünschen-Score
+
+Sobald du ein Zwei-Seiten-Papier gespeichert hast, erhält jede Anzeige auf **`#/scan`** ein kleines **`◎ N`**-Abzeichen (0–100). Es vergleicht **Arbeitsform** (Remote/Hybrid/vor Ort), **Land**, **Gehaltsuntergrenze** und **Umzug** jedes Jobs mit deinem Zwei-Seiten-Papier — ein grünes Abzeichen bedeutet gute Passung, ein rotes bedeutet, dass ein Ausschlusskriterium ausgelöst wurde. Fahre mit der Maus darüber, um die Details zu sehen (✓ was passte, ✗ welches Ausschlusskriterium verletzt wurde).
+
+Es ist bewusst ehrlich: wenn eine Anzeige **kein abgleichbares Signal** liefert (zum Beispiel, wenn deine Präferenzen alle Freitext sind, den eine Scan-Zeile nicht bestätigen kann), wird **überhaupt kein Abzeichen angezeigt** — das System erfindet nie eine Zahl. Die Verletzung eines harten **Ausschlusskriteriums** wiegt schwerer als ein weiches **Hassen** derselben Sache. Über das Abzeichen hinaus wird dein gespeichertes Zwei-Seiten-Papier in jede LLM-**Bewertung** eingebettet, sodass deine angegebenen Präferenzen auch das geschriebene Urteil prägen, nicht nur die Passung Lebenslauf-vs-Stellenanzeige.

@@ -190,6 +190,10 @@ export function bundleProjectContext(opts = {}) {
   const files = [
     { label: 'cv.md', path: PATHS.cv },
     { label: 'config/profile.yml', path: PATHS.profile },
+    // v1.89.0 (Epic 14) — the candidate's two-pager: what they ACTUALLY want.
+    // loves/must_haves are positive signals; hates/deal_breakers negative —
+    // blend them with the CV-vs-JD match when scoring.
+    { label: 'config/two-pager.yml (candidate two-pager — loves/must_haves = positive signals, hates/deal_breakers = negative)', path: PATHS.twoPager },
     ...modeSlugs.map((slug) => ({
       label: `modes/${slug}.md`,
       path: projPath('modes', `${slug}.md`),

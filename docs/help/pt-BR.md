@@ -1888,3 +1888,30 @@ A página **Analytics → Estatísticas por cargo-alvo** transforma os dados esp
 
 - Clique em **Salvar snapshot** para acrescentar o agregado atual a `data/role-stats.jsonl`. Cada snapshot recebe um carimbo de data/hora no servidor; os snapshots são a única coisa que esta página grava e nunca tocam seu CV nem seu perfil.
 - O gráfico de **tendência** plota a contagem de vagas ao longo dos seus snapshots salvos: salve um periodicamente (por exemplo, após cada varredura semanal) para observar como o mercado para seus cargos-alvo se move ao longo do tempo.
+
+## 21. Seu documento de duas páginas — encaixe candidato-mercado (`#/two-pager`)
+
+Quase tudo no career-ops-ui pergunta "esta vaga combina com meu CV?". O **documento de duas páginas** responde à outra metade: "esta vaga combina com o que *eu realmente quero*?". Ele é inspirado no **"documento de duas páginas de Mnookin"** de *Never Search Alone* — uma declaração curta, em primeira pessoa, do que te dá energia, do que você exige e do que você não aceitará. Abra-o em **Configuração → Documento de duas páginas 🎯**.
+
+### O que você preenche
+
+- **Quem eu sou** — algumas frases em primeira pessoa sobre sua trajetória e o tipo de cargo em que você se destaca.
+- **Ambiente-alvo** — o tamanho, o estágio e a cultura de empresa que você busca.
+- Cinco listas de chips — digite e pressione **Enter** (ou vírgula) para adicionar cada item, clique em **×** para removê-lo:
+  - **O que eu amo** — energizantes (remoto, autonomia, greenfield, mentoria…).
+  - **Requisitos obrigatórios** — exigências duras (um salário mínimo, um país, uma stack…).
+  - **O que eu odeio** — desgastantes (plantão, reuniões intermináveis, só legado…).
+  - **Impeditivos** — nãos absolutos (só presencial, sem patrocínio de visto, abaixo de um número…).
+  - **Inegociáveis** — limites (localização, remoto, salário mínimo…).
+
+Clique em **Salvar documento de duas páginas** para persisti-lo. Ele é gravado na **camada de usuário do seu projeto pai career-ops** em `config/two-pager.yml`, então — como seu CV e seu perfil — ele **nunca** é sobrescrito quando você atualiza o sistema.
+
+### O assistente de preenchimento com IA
+
+Não sabe como formular? Clique em **✨ Assistente de preenchimento com IA**. Ele monta um prompt pronto para executar (o formato Mnookin, com seu CV e seu perfil embutidos) e o exibe em um diálogo. Execute esse prompt em qualquer LLM e depois cole os campos YAML resultantes de volta no formulário. O assistente só usa **o seu próprio** CV e perfil — ele nunca inventa fatos sobre você, e nenhuma chamada de API ao vivo é feita a partir deste botão.
+
+### A pontuação de encaixe com o que você quer
+
+Depois de salvar um documento de duas páginas, cada vaga em **`#/scan`** ganha um pequeno selo **`◎ N`** (0–100). Ele compara o **tipo de trabalho** (remoto/híbrido/presencial), o **país**, o **salário mínimo** e a **realocação** de cada vaga com seu documento de duas páginas — um selo verde significa bom encaixe, vermelho significa que um impeditivo disparou. Passe o cursor por cima para ver os detalhes (✓ o que combinou, ✗ qual impeditivo foi violado).
+
+Ele é deliberadamente honesto: quando uma vaga não dá **nenhum sinal comparável** (por exemplo, se suas preferências são todas texto livre que uma linha de varredura não consegue confirmar), **nenhum selo é exibido** — o sistema nunca inventa um número. A violação de um **impeditivo** duro pesa mais do que um **ódio** brando pela mesma coisa. Além do selo, seu documento de duas páginas salvo é embutido em cada **avaliação** com LLM, então suas preferências declaradas moldam também o veredicto escrito, não apenas o encaixe CV-vs-vaga.

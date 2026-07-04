@@ -10,6 +10,17 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.89.0] — 2026-07-04
+
+**Kandidat-marked-fit — the two-pager (Epic 14).** En ny `#/two-pager`-side lader dig indfange, hvad *du* faktisk vil have af din næste rolle, modelleret efter "Mnookin two-pager" fra *Never Search Alone*:
+
+- **Guidet builder** — en førstepersons "Hvem jeg er"-fortælling, en "Målmiljø"-note og fem chip-liste-editorer: **loves**, **must-haves**, **hates**, **deal-breakers** og **non-negotiables**. Gemmes i forældreprojektets **brugerlag** (`config/two-pager.yml`) via `PUT /api/two-pager` — overskrives aldrig af systemopdateringer.
+- **AI-udfyldningsassistent** (`POST /api/two-pager/draft`) — bygger en klar-til-kørsel Mnookin-prompt med dit CV + profil indlejret, som du kan køre i en hvilken som helst LLM og indsætte resultatet tilbage. Den bruger kun dit eget materiale; intet opdigtes.
+- **Fit-til-det-du-vil-have-badge** — hvert opslag på `#/scan` viser nu en `◎ N` fit-score (klientside, via `window.FitScore`), der holder opslagets arbejdstype, land, lønbund og relokation op mod din two-pager. Ærlig af design: når et opslag ikke giver noget matchbart signal, **vises intet badge** (aldrig et opdigtet tal). Deal-breaker-overtrædelser vejer tungere end bløde uenigheder.
+- **Nærer hver evaluering** — den gemte two-pager indlejres i `bundleProjectContext`, så alle efterfølgende LLM-evalueringer blander dine erklærede præferencer med CV-vs-JD-matchet.
+
+Nyt: `server/lib/routes/two-pager.mjs`, `public/js/views/two-pager.js`, `public/js/lib/fit-score.js`, `PATHS.twoPager`. 27 nye i18n-nøgler på tværs af alle **16 locales**. Tests: `tests/two-pager-routes.test.mjs`, `tests/fit-score.test.mjs`.
+
 ## [1.88.0] — 2026-07-04
 
 **Finpudsning af issue #29 — i18n-huller i Scan + API-hygiejne.**

@@ -9,6 +9,17 @@
 ---
 
 
+## [1.89.0] — 2026-07-04
+
+**候補者と市場のフィット — two-pager（Epic 14）。** 新しい `#/two-pager` ページで、次の職務に対して *あなた自身* が本当に求めるものを書き留められます。*Never Search Alone* の「Mnookin two-pager」をモデルにしています:
+
+- **ガイド付きビルダー** — 一人称の「私は誰か」ナラティブ、「ターゲット環境」ノート、そして 5 つのチップリストエディタ: **loves**、**must-haves**、**hates**、**deal-breakers**、**non-negotiables**。親プロジェクトの**ユーザーレイヤー**（`config/two-pager.yml`）に `PUT /api/two-pager` 経由で保存されます — システム更新で上書きされることはありません。
+- **AI 入力アシスタント**（`POST /api/two-pager/draft`）— あなたの CV + プロフィールをインライン化した、そのまま実行可能な Mnookin プロンプトを組み立てます。任意の LLM で実行し、結果を貼り戻してください。使うのはあなた自身の素材だけで、何も捏造しません。
+- **求めるものとの適合バッジ** — `#/scan` の各求人に `◎ N` の適合スコア（クライアント側、`window.FitScore` 経由）が表示され、求人の勤務形態・国・最低給与・移転をあなたの two-pager と照合します。設計上、正直です: 求人が照合可能なシグナルを与えない場合、**バッジは表示されません**（捏造した数値は決して出しません）。deal-breaker 違反は軽い嫌悪より重く扱われます。
+- **すべての評価に反映** — 保存された two-pager は `bundleProjectContext` にインライン化されるため、以降のすべての LLM 評価が、あなたが表明した好みと CV 対 JD のマッチングを合わせて考慮します。
+
+新規: `server/lib/routes/two-pager.mjs`、`public/js/views/two-pager.js`、`public/js/lib/fit-score.js`、`PATHS.twoPager`。**16 ロケール**すべてに 27 個の新規 i18n キー。テスト: `tests/two-pager-routes.test.mjs`、`tests/fit-score.test.mjs`。
+
 ## [1.88.0] — 2026-07-04
 
 **Issue #29 の仕上げ — スキャンの i18n の抜け + API の衛生。**

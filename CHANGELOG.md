@@ -8,6 +8,17 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.89.0] — 2026-07-04
+
+**Candidate market fit — the two-pager (Epic 14).** A new `#/two-pager` page lets you capture what *you* actually want from your next role, modelled on the "Mnookin two-pager" from *Never Search Alone*:
+
+- **Guided builder** — a first-person "Who I am" narrative, a "Target environment" note, and five chip-list editors: **loves**, **must-haves**, **hates**, **deal-breakers**, and **non-negotiables**. Saved to the parent project's **user layer** (`config/two-pager.yml`) via `PUT /api/two-pager` — never overwritten by system updates.
+- **AI fill assistant** (`POST /api/two-pager/draft`) — builds a ready-to-run Mnookin prompt with your CV + profile inlined, for you to run in any LLM and paste back. It only ever uses your own materials; nothing is fabricated.
+- **Fit-to-what-you-want badge** — each posting on `#/scan` now shows a `◎ N` fit score (client-side, via `window.FitScore`) that matches the job's work-type, country, salary floor, and relocation against your two-pager. Honest by design: when a posting gives no matchable signal, **no badge is shown** (never a made-up number). Deal-breaker violations weigh more than soft dislikes.
+- **Feeds every evaluation** — the saved two-pager is inlined into `bundleProjectContext`, so all downstream LLM evaluations blend your stated preferences with the CV-vs-JD match.
+
+New: `server/lib/routes/two-pager.mjs`, `public/js/views/two-pager.js`, `public/js/lib/fit-score.js`, `PATHS.twoPager`. 27 new i18n keys across all **16 locales**. Tests: `tests/two-pager-routes.test.mjs`, `tests/fit-score.test.mjs`.
+
 ## [1.88.0] — 2026-07-04
 
 **Issue #29 polish — Scan i18n gaps + API hygiene.**

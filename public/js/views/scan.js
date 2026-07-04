@@ -33,6 +33,12 @@ Router.register('scan', async () => {
   } catch (e) {
     portalsErr = e;
   }
+  // v1.89.0 (Epic 14) — the saved two-pager powers a "fit-to-what-you-want"
+  // badge on each result row. Best-effort load; absent/empty → no badge.
+  let twoPagerData = null;
+  try { ({ twoPager: twoPagerData } = await API.get('/api/two-pager')); }
+  catch { twoPagerData = null; }
+
   const p = portalsData?.portals || {};
   const companies = (p.tracked_companies || p.companies || []).filter((c) => c.enabled !== false);
   const apiCompanies = companies.filter((co) =>
@@ -621,12 +627,33 @@ Router.register('scan', async () => {
           + (r._trustFlags && r._trustFlags.length ? ' · ' + r._trustFlags.join(', ') : ''),
         style: { marginRight: '6px', fontSize: '11px' },
       }, '⚠ ' + (r._trustScore != null ? r._trustScore : '')) : null;
+      // v1.89.0 — fit-to-what-you-want badge. Only shown when the two-pager
+      // yields a matchable signal (FitScore returns null otherwise — never a
+      // fabricated number). Colour tiers: ≥66 ok, ≥40 info, else bad. Tooltip
+      // lists what matched / what a deal-breaker violated.
+      let fitBadge = null;
+      if (twoPagerData && window.FitScore) {
+        const fit = window.FitScore.scoreJob(r, twoPagerData, window.Countries);
+        if (fit && fit.score != null) {
+          const cls = fit.score >= 66 ? 'badge-ok' : fit.score >= 40 ? 'badge-info' : 'badge-bad';
+          const tip = [
+            fit.matched.length ? '✓ ' + fit.matched.map((x) => x.label).join(', ') : '',
+            fit.violated.length ? '✗ ' + fit.violated.map((x) => x.label).join(', ') : '',
+          ].filter(Boolean).join(' · ');
+          fitBadge = c('span', {
+            className: 'badge ' + cls,
+            title: t('scan.fitTip', 'Fit to what you want') + (tip ? ' · ' + tip : ''),
+            style: { marginRight: '6px', fontSize: '11px' },
+          }, '◎ ' + fit.score);
+        }
+      }
       const titleCell = c('td', null, [
         r._boosted ? c('span', {
           className: 'badge badge-info',
           title: t('scan.boostedBy', 'Boosted by') + ': ' + (r._boostedBy || '?'),
           style: { marginRight: '6px', fontSize: '11px' },
         }, '⬆ ' + t('scan.boosted', 'boosted')) : null,
+        fitBadge,
         trustBadge,
         c('a', { href: r.url, target: '_blank', rel: 'noopener', style: { color: 'var(--rausch)' } }, r.title),
       ]);

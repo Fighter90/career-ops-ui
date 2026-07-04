@@ -1981,3 +1981,30 @@ La page **Analytics → Statistiques par rôle cible** transforme les données �
 
 - Cliquez sur **Enregistrer l'instantané** pour ajouter l'agrégat actuel à `data/role-stats.jsonl`. Chaque instantané est horodaté sur le serveur ; les instantanés sont la seule chose que cette page écrit et ils ne touchent jamais votre CV ni votre profil.
 - Le graphique de **tendance** trace le nombre d'offres au fil de vos instantanés enregistrés — enregistrez-en un régulièrement (par exemple après chaque scan hebdomadaire) pour observer comment le marché de vos rôles cibles évolue dans le temps.
+
+## 21. Votre document de deux pages — adéquation candidat-marché (`#/two-pager`)
+
+La plupart de career-ops-ui demande « cette offre correspond-elle à mon CV ? ». Le **document de deux pages** répond à l'autre moitié : « cette offre correspond-elle à ce que *je veux vraiment* ? ». Il s'inspire du **« document de deux pages de Mnookin »** de *Never Search Alone* — une déclaration brève, à la première personne, de ce qui vous donne de l'énergie, de ce que vous exigez et de ce que vous n'accepterez pas. Ouvrez-le depuis **Configuration → Document de deux pages 🎯**.
+
+### Ce que vous remplissez
+
+- **Qui je suis** — quelques phrases à la première personne sur votre parcours et le type de rôle où vous excellez.
+- **Environnement cible** — la taille, le stade et la culture d'entreprise que vous recherchez.
+- Cinq listes de chips — tapez et appuyez sur **Enter** (ou virgule) pour ajouter chaque élément, cliquez sur **×** pour le retirer :
+  - **Ce que j'adore** — sources d'énergie (télétravail, autonomie, greenfield, mentorat…).
+  - **Indispensables** — exigences fermes (un salaire plancher, un pays, une stack…).
+  - **Ce que je déteste** — sources d'épuisement (astreintes, réunions interminables, legacy uniquement…).
+  - **Rédhibitoires** — non absolus (présentiel uniquement, pas de parrainage de visa, en dessous d'un chiffre…).
+  - **Non négociables** — limites (localisation, télétravail, salaire plancher…).
+
+Cliquez sur **Enregistrer le document de deux pages** pour le conserver. Il est écrit dans la **couche utilisateur de votre projet parent career-ops** dans `config/two-pager.yml`, donc — comme votre CV et votre profil — il n'est **jamais** écrasé lorsque vous mettez le système à jour.
+
+### L'assistant de remplissage IA
+
+Vous ne savez pas comment le formuler ? Cliquez sur **✨ Assistant de remplissage IA**. Il construit un prompt prêt à exécuter (le format Mnookin, avec votre CV et votre profil intégrés) et l'affiche dans une boîte de dialogue. Exécutez ce prompt dans n'importe quel LLM, puis collez les champs YAML obtenus dans le formulaire. L'assistant n'utilise que **votre propre** CV et profil — il n'invente jamais de faits à votre sujet, et aucun appel d'API en direct n'est effectué depuis ce bouton.
+
+### Le score d'adéquation avec ce que vous voulez
+
+Une fois que vous avez enregistré un document de deux pages, chaque offre sur **`#/scan`** obtient un petit badge **`◎ N`** (0–100). Il compare le **type de travail** (télétravail/hybride/présentiel), le **pays**, le **salaire plancher** et la **relocalisation** de chaque offre à votre document de deux pages — un badge vert signifie une bonne adéquation, un rouge signifie qu'un critère rédhibitoire s'est déclenché. Survolez pour voir les détails (✓ ce qui a correspondu, ✗ quel critère rédhibitoire a été violé).
+
+Il est délibérément honnête : lorsqu'une offre ne donne **aucun signal comparable** (par exemple si vos préférences sont toutes du texte libre qu'une ligne de scan ne peut confirmer), **aucun badge n'est affiché du tout** — le système n'invente jamais de chiffre. La violation d'un **critère rédhibitoire** ferme pèse plus lourd qu'une **détestation** légère de la même chose. Au-delà du badge, votre document de deux pages enregistré est intégré à chaque **évaluation** par LLM, de sorte que vos préférences déclarées façonnent aussi le verdict écrit, pas seulement l'adéquation CV-vs-offre.

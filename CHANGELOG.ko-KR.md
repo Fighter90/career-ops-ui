@@ -9,6 +9,17 @@
 ---
 
 
+## [1.89.0] — 2026-07-04
+
+**후보자-시장 적합성 — two-pager (Epic 14).** 새로운 `#/two-pager` 페이지에서 다음 직무에 대해 *당신이* 실제로 원하는 것을 담을 수 있습니다. *Never Search Alone* 의 "Mnookin two-pager" 를 본떴습니다:
+
+- **가이드 빌더** — 1인칭 "나는 누구인가" 서사, "목표 환경" 노트, 그리고 다섯 개의 칩 목록 편집기: **loves**, **must-haves**, **hates**, **deal-breakers**, **non-negotiables**. 상위 프로젝트의 **사용자 레이어**(`config/two-pager.yml`)에 `PUT /api/two-pager` 로 저장됩니다 — 시스템 업데이트로 덮어써지지 않습니다.
+- **AI 채우기 도우미**(`POST /api/two-pager/draft`) — 당신의 CV + 프로필이 인라인된, 바로 실행 가능한 Mnookin 프롬프트를 만들어 줍니다. 아무 LLM 에서 실행하고 결과를 다시 붙여넣으면 됩니다. 오직 당신 자신의 자료만 사용하며, 지어내는 것은 없습니다.
+- **원하는-것과의-적합도 배지** — `#/scan` 의 각 채용공고에 이제 `◎ N` 적합도 점수(클라이언트 측, `window.FitScore` 경유)가 표시되어, 공고의 근무 형태, 국가, 최저 급여, 재배치를 당신의 two-pager 와 대조합니다. 설계상 정직합니다: 공고가 대조 가능한 신호를 주지 않으면 **배지가 표시되지 않습니다**(지어낸 숫자는 절대 없음). deal-breaker 위반은 가벼운 불호보다 더 무겁게 반영됩니다.
+- **모든 평가에 반영** — 저장된 two-pager 는 `bundleProjectContext` 에 인라인되므로, 이후의 모든 LLM 평가가 당신이 밝힌 선호와 CV-대-JD 매칭을 함께 반영합니다.
+
+신규: `server/lib/routes/two-pager.mjs`, `public/js/views/two-pager.js`, `public/js/lib/fit-score.js`, `PATHS.twoPager`. **16개 로케일** 전체에 27개의 새 i18n 키. 테스트: `tests/two-pager-routes.test.mjs`, `tests/fit-score.test.mjs`.
+
 ## [1.88.0] — 2026-07-04
 
 **이슈 #29 마무리 — 스캔 i18n 공백 + API 위생.**

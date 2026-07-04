@@ -1974,3 +1974,30 @@ The **Analytics → Target-role stats** page turns the sparse data your scans al
 
 - Click **Save snapshot** to append the current aggregate to `data/role-stats.jsonl`. Each snapshot is timestamped on the server; snapshots are the only thing this page writes and they never touch your CV or profile.
 - The **trend** chart plots vacancy counts across your saved snapshots — save one periodically (for example after each weekly scan) to watch how the market for your target roles moves over time.
+
+## 21. Your two-pager — candidate market fit (`#/two-pager`)
+
+Most of career-ops-ui asks "does this job match my CV?". The **two-pager** answers the other half: "does this job match what *I actually want*?". It is modelled on the **"Mnookin two-pager"** from *Never Search Alone* — a short, first-person statement of what energizes you, what you require, and what you will not accept. Open it from **Setup → Two-pager 🎯**.
+
+### What you fill in
+
+- **Who I am** — a few first-person sentences on your track record and the shape of role you thrive in.
+- **Target environment** — the company size, stage, and culture you want.
+- Five chip-lists — type and press **Enter** (or comma) to add each item, click **×** to remove it:
+  - **What I love** — energizers (remote, ownership, greenfield, mentoring…).
+  - **Must-haves** — hard requirements (a comp floor, a country, a stack…).
+  - **What I hate** — drainers (on-call, endless meetings, legacy-only…).
+  - **Deal-breakers** — absolute nos (onsite only, no sponsorship, below a number…).
+  - **Non-negotiables** — boundaries (location, remote, comp floor…).
+
+Click **Save two-pager** to persist it. It is written to your **parent career-ops project's user layer** at `config/two-pager.yml`, so — like your CV and profile — it is **never** overwritten when you update the system.
+
+### The AI fill assistant
+
+Not sure how to phrase it? Click **✨ AI fill assistant**. It builds a ready-to-run prompt (the Mnookin format, with your CV and profile inlined) and shows it in a dialog. Run that prompt in any LLM, then paste the resulting YAML fields back into the form. The assistant only ever uses **your own** CV and profile — it never invents facts about you, and no live API call is made from this button.
+
+### The fit-to-what-you-want score
+
+Once you have saved a two-pager, every posting on **`#/scan`** gains a small **`◎ N`** badge (0–100). It compares each job's **work-type** (remote/hybrid/onsite), **country**, **salary floor**, and **relocation** against your two-pager — a green badge means strong fit, red means a deal-breaker fired. Hover for the specifics (✓ what matched, ✗ what a deal-breaker violated).
+
+It is deliberately honest: when a posting gives **no matchable signal** (for example your preferences are all free-text that a scan row cannot confirm), **no badge is shown at all** — the system never invents a number. A hard **deal-breaker** violation weighs more heavily than a soft **hate** of the same thing. Beyond the badge, your saved two-pager is inlined into every LLM **evaluation**, so your stated preferences shape the written verdict too, not just the CV-vs-JD match.

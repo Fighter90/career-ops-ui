@@ -1879,3 +1879,30 @@ La página **Analytics → Estadísticas por rol objetivo** convierte los escaso
 
 - Haz clic en **Guardar instantánea** para añadir el agregado actual a `data/role-stats.jsonl`. Cada instantánea recibe una marca de tiempo en el servidor; las instantáneas son lo único que escribe esta página y nunca tocan tu CV ni tu perfil.
 - El gráfico de **tendencia** traza el número de vacantes a lo largo de tus instantáneas guardadas: guarda una periódicamente (por ejemplo, tras cada escaneo semanal) para observar cómo evoluciona con el tiempo el mercado para tus roles objetivo.
+
+## 21. Tu documento de dos páginas — encaje candidato-mercado (`#/two-pager`)
+
+Casi todo career-ops-ui pregunta "¿esta oferta encaja con mi CV?". El **documento de dos páginas** responde la otra mitad: "¿esta oferta encaja con lo que *yo realmente quiero*?". Está inspirado en el **"documento de dos páginas de Mnookin"** de *Never Search Alone* — una declaración breve, en primera persona, de lo que te da energía, lo que exiges y lo que no aceptarás. Ábrelo desde **Configuración → Documento de dos páginas 🎯**.
+
+### Lo que rellenas
+
+- **Quién soy** — unas pocas frases en primera persona sobre tu trayectoria y el tipo de rol en el que rindes mejor.
+- **Entorno objetivo** — el tamaño, la etapa y la cultura de empresa que buscas.
+- Cinco listas de chips — escribe y pulsa **Enter** (o coma) para añadir cada elemento, haz clic en **×** para quitarlo:
+  - **Lo que me encanta** — energizantes (remoto, autonomía, greenfield, mentoría…).
+  - **Imprescindibles** — requisitos duros (un salario mínimo, un país, un stack…).
+  - **Lo que odio** — desgastantes (guardias, reuniones interminables, solo legacy…).
+  - **Factores excluyentes** — noes absolutos (solo presencial, sin patrocinio de visado, por debajo de una cifra…).
+  - **Innegociables** — límites (ubicación, remoto, salario mínimo…).
+
+Haz clic en **Guardar documento de dos páginas** para conservarlo. Se escribe en la **capa de usuario de tu proyecto padre career-ops** en `config/two-pager.yml`, así que — como tu CV y tu perfil — **nunca** se sobrescribe cuando actualizas el sistema.
+
+### El asistente de relleno con IA
+
+¿No sabes cómo formularlo? Haz clic en **✨ Asistente de relleno con IA**. Construye un prompt listo para ejecutar (el formato Mnookin, con tu CV y tu perfil incrustados) y lo muestra en un diálogo. Ejecuta ese prompt en cualquier LLM y luego pega los campos YAML resultantes de vuelta en el formulario. El asistente solo usa **tu propio** CV y perfil — nunca inventa datos sobre ti, y no se hace ninguna llamada a API en vivo desde este botón.
+
+### La puntuación de encaje con lo que quieres
+
+Una vez que hayas guardado un documento de dos páginas, cada oferta en **`#/scan`** gana una pequeña insignia **`◎ N`** (0–100). Compara el **tipo de trabajo** (remoto/híbrido/presencial), el **país**, el **salario mínimo** y la **reubicación** de cada oferta con tu documento de dos páginas — una insignia verde significa buen encaje, roja significa que se activó un factor excluyente. Pasa el cursor por encima para ver los detalles (✓ lo que coincidió, ✗ qué factor excluyente se violó).
+
+Es deliberadamente honesta: cuando una oferta no da **ninguna señal comparable** (por ejemplo, si tus preferencias son todas texto libre que una fila de escaneo no puede confirmar), **no se muestra ninguna insignia en absoluto** — el sistema nunca inventa un número. La violación de un **factor excluyente** duro pesa más que un **odio** blando hacia lo mismo. Más allá de la insignia, tu documento de dos páginas guardado se incrusta en cada **evaluación** con LLM, así que tus preferencias declaradas moldean también el veredicto escrito, no solo el encaje CV-vs-oferta.
