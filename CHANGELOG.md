@@ -8,6 +8,17 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.95.0] — 2026-07-04
+
+**Career plan (Epic 26).** A new **`#/career-plan`** page turns your CV and profile into a concrete, personalized development plan. Pick a **horizon** (6/12/24 months) and an optional **focus**, and the model — reading your CV, profile, two-pager, and memory note — writes a starting-point snapshot, a strengths/growth SWOT, goals as SMART / OKR / WOOP, alternative trajectories, a hard/soft skill plan, a **month-by-month roadmap**, progress-tracking methods, pitfalls, and support moves. It plans forward from what your materials actually show and never invents facts about your history. Edit it inline, **Save** it to the user layer (`config/career-plan.md`), and **export** it to Markdown or PDF.
+
+- New route `server/lib/routes/career-plan.mjs` (23rd route module) — `GET`/`PUT /api/career-plan` (writes `config/career-plan.md`) + `POST /api/career-plan/generate` (shared provider cascade, manual fallback, no fabrication). `PATHS.careerPlan`.
+- Reuses the shared `report-export.js` (v1.94.0) for Markdown/PDF/copy, and a new **Growth** nav group.
+- Tests: `tests/career-plan-routes.test.mjs` (bounding, GET/PUT round-trip, horizon-aware CV/profile-seeded prompt). 20 new i18n keys ×16 locales, Help **§27** ×16.
+
+New: `#/career-plan`; `server/lib/routes/career-plan.mjs`; `PATHS.careerPlan`.
+
+
 ## [1.94.0] — 2026-07-04
 
 **Statistics, reworked (Epic 25).** The `#/stats` page is now a three-tab **Statistics** section, with real graphs and a lot more data. A new **Market report** tab asks the model for a salary & labour-market analysis of your target roles in a region and currency you choose — executive summary, salary by grade with P10/P25/P75/P90 percentiles, top employers, an in-demand skills table, benefits frequency, the office/hybrid/remote split, 12–24 month trends, and negotiation guidance. Every figure is labelled a **directional estimate from the model's knowledge**, never presented as scraped data. A new **My pipeline** tab charts your own tracker: score distribution, status funnel, top companies and roles, applications over time, and conversion rates. The original target-role view (vacancy/salary by country + saved-snapshot trend) moves under a third tab, now with a **currency selector** and a **postings-by-role** overview.

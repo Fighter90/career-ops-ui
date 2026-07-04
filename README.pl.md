@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.94.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.94.0)
+[![release](https://img.shields.io/badge/release-v1.95.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.95.0)
 
-> **🆕 Najnowsze wydanie — v1.94.0**
+> **🆕 Najnowsze wydanie — v1.95.0**
 >
-> **Statystyki na nowo (Epic 25):** strona **`#/stats`** to teraz trzyzakładkowa sekcja **Statystyki** z prawdziwymi wykresami i znacznie większą ilością danych. Nowa zakładka **Raport rynkowy** generuje analizę AI wynagrodzeń i rynku pracy dla Twoich docelowych stanowisk — wg poziomu z percentylami P10–P90, czołowi pracodawcy, poszukiwane umiejętności, benefity, udział pracy zdalnej, trendy i wskazówki negocjacyjne, w wybranym przez Ciebie regionie i **walucie** (liczby oznaczone jako orientacyjne oszacowania modelu, nigdy zescrapowane). Nowa zakładka **Mój pipeline** wykreśla Twój własny tracker (oceny, lejek, czołowe firmy/stanowiska, oś czasu, współczynniki konwersji). Każdy raport eksportuje się do **Markdown lub PDF**. Bazuje na v1.93.0 (warstwa pamięci) i v1.92.0 (CV Studio).
+> **Plan kariery (Epic 26):** nowa strona **`#/career-plan`** zamienia Twoje CV i profil w konkretny, spersonalizowany plan rozwoju. Wybierz **horyzont** (6/12/24 miesiące) oraz opcjonalny fokus, a model pisze migawkę punktu wyjścia, SWOT mocnych stron i wzrostu, cele w formacie **SMART / OKR / WOOP**, alternatywne trajektorie, plan umiejętności hard/soft, **mapę drogową miesiąc po miesiącu**, śledzenie postępów, pułapki oraz kroki wspierające — na podstawie Twoich własnych materiałów, nigdy nie zmyślając Twojej historii. Edytuj go w miejscu, **Zapisz** go do warstwy użytkownika i wyeksportuj go do **Markdown lub PDF**. Bazuje na v1.94.0 (przebudowa statystyk) i v1.93.0 (warstwa pamięci).
 >
-> _przebudowa statystyk · 16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
+> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

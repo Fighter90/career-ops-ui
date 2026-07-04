@@ -2017,3 +2017,19 @@ Karta **Mój pipeline** wykreśla twój własny tracker aplikacji — nic zewnę
 ### **Trend ról docelowych**
 
 Karta **Trend ról docelowych** to pierwotny widok: liczba ofert i mediana wynagrodzenia według kraju dla twoich docelowych ról, zagregowane z twojego ostatniego skanu, z selektorem waluty i przeglądem **Ogłoszenia według docelowej roli**. **Zapisz migawkę** zapisuje bieżący agregat, abyś mógł obserwować, jak liczba ofert zmienia się w czasie, a linia trendu odczytuje te migawki z powrotem. Skąpe dane są oczekiwane i oznaczane jako orientacyjne — nigdy nie są uzupełniane wymyślonymi liczbami.
+
+## 27. Plan kariery (`#/career-plan`)
+
+Strona **Plan kariery** zamienia Twoje CV i profil w konkretny, spersonalizowany plan rozwoju — taki, jaki zbudowałbyś z coachem kariery, ale wygenerowany z Twoich własnych materiałów i możliwy do edycji przez Ciebie.
+
+### Generowanie planu
+
+Wybierz **Horyzont** (6, 12 lub 24 miesiące), opcjonalnie wpisz **Cel** (na przykład „przejść do zarządzania", „przejść na pracę zdalną" lub „przesiąść się na Go") i kliknij **Generuj plan**. Model czyta Twoje CV, profil, two-pager i notatkę pamięci (poprzez współdzielony kontekst projektu) i pisze uporządkowany plan: uczciwy zrzut punktu wyjścia, SWOT mocnych stron i obszarów rozwoju, cele wyrażone jako SMART / OKR / WOOP, alternatywne ścieżki kariery wraz z ich kompromisami, plan umiejętności twardych i miękkich, mapę drogową miesiąc po miesiącu dla wybranego horyzontu, jak śledzić postępy, prawdopodobne pułapki oraz działania wspierające. Każda rekomendacja jest oparta na tym, co Twoje materiały faktycznie pokazują — plan patrzy w przód, nigdy nie zmyśla faktów o Twojej historii. Bez ustawionego klucza API zamiast tego otrzymasz prompt do skopiowania i wklejenia.
+
+### Edycja i zapisywanie
+
+Plan pojawia się w edytowalnym polu tekstowym — dopracuj cokolwiek, a następnie kliknij **Zapisz plan**. Jest zapisywany w warstwie użytkownika Twojego projektu nadrzędnego, w `config/career-plan.md`, dzięki czemu przetrwa aktualizacje systemu i jest wysyłany wyłącznie wewnątrz promptów LLM, które zdecydujesz się uruchomić. **Podgląd** renderuje Twój Markdown, abyś mógł przeczytać go sformatowany przed zapisaniem.
+
+### Eksportowanie
+
+Użyj **Pobierz .md**, **Zapisz jako PDF** lub **Kopiuj**, aby wynieść plan poza aplikację — te same kontrolki eksportu, których używa się w raportach AI w całej aplikacji. PDF przechodzi przez istniejący wbudowany generator PDF; Markdown to bezpośrednie pobranie.

@@ -9,6 +9,16 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.95.0] — 2026-07-04
+
+**Plan kariery (Epic 26).** Nowa strona **`#/career-plan`** zamienia Twoje CV i profil w konkretny, spersonalizowany plan rozwoju. Wybierz **horyzont** (6/12/24 miesiące) oraz opcjonalny **fokus**, a model — czytając Twoje CV, profil, two-pager i notatkę pamięci — pisze migawkę punktu wyjścia, SWOT mocnych stron i wzrostu, cele w formacie SMART / OKR / WOOP, alternatywne trajektorie, plan umiejętności hard/soft, **mapę drogową miesiąc po miesiącu**, metody śledzenia postępów, pułapki oraz kroki wspierające. Planuje do przodu na podstawie tego, co faktycznie pokazują Twoje materiały, i nigdy nie zmyśla faktów o Twojej historii. Edytuj go w miejscu, **Zapisz** go do warstwy użytkownika (`config/career-plan.md`) i **wyeksportuj** go do Markdown lub PDF.
+
+- Nowa trasa `server/lib/routes/career-plan.mjs` (23. moduł tras) — `GET`/`PUT /api/career-plan` (pisze `config/career-plan.md`) + `POST /api/career-plan/generate` (współdzielona kaskada dostawców, ręczny fallback, bez fabrykowania). `PATHS.careerPlan`.
+- Ponownie wykorzystuje współdzielony `report-export.js` (v1.94.0) do Markdown/PDF/kopiowania oraz nową grupę nawigacyjną **Wzrost**.
+- Testy: `tests/career-plan-routes.test.mjs` (ograniczanie, round-trip GET/PUT, prompt uwzględniający horyzont, wypełniony z CV/profilu). 20 nowych kluczy i18n we wszystkich **16 locales**, pomoc **§27** ×16.
+
+Nowe: `#/career-plan`; `server/lib/routes/career-plan.mjs`; `PATHS.careerPlan`.
+
 ## [1.94.0] — 2026-07-04
 
 **Statystyki na nowo (Epic 25).** Strona `#/stats` to teraz trzyzakładkowa sekcja **Statystyki** z prawdziwymi wykresami i znacznie większą ilością danych. Nowa zakładka **Raport rynkowy** prosi model o analizę wynagrodzeń i rynku pracy dla Twoich docelowych stanowisk w wybranym regionie i walucie — streszczenie zarządcze, wynagrodzenia wg poziomu z percentylami P10/P25/P75/P90, czołowi pracodawcy, tabela poszukiwanych umiejętności, częstość benefitów, podział na biuro/hybryda/zdalnie, trendy na 12–24 miesiące oraz wskazówki negocjacyjne. Każda liczba jest oznaczona jako **orientacyjne oszacowanie z wiedzy modelu**, nigdy nie prezentowana jako dane zescrapowane. Nowa zakładka **Mój pipeline** wykreśla Twój własny tracker: rozkład ocen, lejek statusów, czołowe firmy i stanowiska, aplikacje w czasie oraz współczynniki konwersji. Pierwotny widok docelowych stanowisk (oferty/wynagrodzenia wg kraju + trend zapisanych migawek) trafia pod trzecią zakładkę, teraz z **selektorem waluty** i przeglądem **ofert wg stanowiska**.

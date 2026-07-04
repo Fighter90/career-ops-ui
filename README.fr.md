@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.94.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.94.0)
+[![release](https://img.shields.io/badge/release-v1.95.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.95.0)
 
-> **🆕 Dernière version — v1.94.0**
+> **🆕 Dernière version — v1.95.0**
 >
-> **Les statistiques, repensées (Epic 25) :** la page **`#/stats`** est désormais une section **Statistiques** à trois onglets, avec de vrais graphiques et bien plus de données. Un nouvel onglet **Rapport de marché** génère une analyse IA des salaires et du marché du travail pour vos postes ciblés — par niveau avec percentiles P10–P90, principaux employeurs, compétences recherchées, avantages, part de télétravail, tendances et conseils de négociation, dans la région et la **devise** de votre choix (chiffres étiquetés comme estimations indicatives du modèle, jamais extraits). Un nouvel onglet **Mon pipeline** trace votre propre suivi (scores, entonnoir, principales entreprises/postes, chronologie, taux de conversion). Chaque rapport s'exporte en **Markdown ou PDF**. S'appuie sur la v1.93.0 (couche mémoire) et la v1.92.0 (CV Studio).
+> **Plan de carrière (Epic 26) :** une nouvelle page **`#/career-plan`** transforme votre CV et votre profil en un plan de développement concret et personnalisé. Choisissez un **horizon** (6/12/24 mois) et un axe optionnel, et le modèle rédige un instantané du point de départ, une matrice AFOM forces/croissance, des objectifs en **SMART / OKR / WOOP**, des trajectoires alternatives, un plan de compétences techniques et comportementales, une **feuille de route mois par mois**, un suivi de la progression, des écueils et des leviers de soutien — ancré dans vos propres documents, sans jamais inventer votre parcours. Modifiez-le en ligne, **Enregistrez-le** dans la couche utilisateur et exportez-le en **Markdown ou PDF**. S'appuie sur la v1.94.0 (refonte des statistiques) et la v1.93.0 (couche mémoire).
 >
-> _refonte des statistiques · 16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · détecteur de reposts · parité avec le career-ops v1.16.0._
+> _16 locales · 6 fournisseurs LLM · 45 adaptateurs de scanner · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

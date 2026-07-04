@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.95.0] — 2026-07-04
+
+**Karriereplan (Epic 26).** En ny side **`#/career-plan`** forvandler dit CV og din profil til en konkret, personlig udviklingsplan. Vælg en **horisont** (6/12/24 måneder) og et valgfrit **fokus**, og modellen — der læser dit CV, din profil, din to-pager og din hukommelsesnote — skriver et udgangspunkts-snapshot, en styrke/vækst-SWOT, mål som SMART / OKR / WOOP, alternative udviklingsspor, en plan for hårde/bløde kompetencer, et **måned-for-måned-vejkort**, metoder til at følge fremskridt, faldgruber og støttende tiltag. Den planlægger fremad ud fra det, dine materialer faktisk viser, og opfinder aldrig fakta om din historik. Redigér den inline, **Gem** den til brugerlaget (`config/career-plan.md`), og **eksportér** den til Markdown eller PDF.
+
+- Ny rute `server/lib/routes/career-plan.mjs` (23. rutemodul) — `GET`/`PUT /api/career-plan` (skriver `config/career-plan.md`) + `POST /api/career-plan/generate` (den delte udbyderkaskade, manuel fallback, ingen fabrikation). `PATHS.careerPlan`.
+- Genbruger den delte `report-export.js` (v1.94.0) til Markdown/PDF/kopiér, og en ny **Vækst**-navigationsgruppe.
+- Tests: `tests/career-plan-routes.test.mjs` (afgrænsning, GET/PUT-rundtur, horisont-bevidst CV/profil-seedet prompt). 20 nye i18n-nøgler ×16 locales, Hjælp **§27** ×16.
+
+Nyt: `#/career-plan`; `server/lib/routes/career-plan.mjs`; `PATHS.careerPlan`.
+
 ## [1.94.0] — 2026-07-04
 
 **Statistik, omarbejdet (Epic 25).** Siden `#/stats` er nu en **Statistik**-sektion med tre faner, med rigtige grafer og langt flere data. En ny fane **Markedsrapport** beder modellen om en løn- og arbejdsmarkedsanalyse af dine målroller i en region og valuta, du vælger — ledelsesresumé, løn efter niveau med P10/P25/P75/P90-percentiler, de største arbejdsgivere, en tabel over efterspurgte kompetencer, frekvens af personalegoder, fordelingen kontor/hybrid/fjernarbejde, tendenser over 12–24 måneder og vejledning til forhandling. Hvert tal er mærket som et **retningsgivende estimat fra modellens viden**, aldrig præsenteret som skrabede data. En ny fane **Min pipeline** grafer din egen tracker: scorefordeling, statustragt, de største virksomheder og roller, ansøgninger over tid og konverteringsrater. Den oprindelige målrollevisning (vakance/løn efter land + gemt snapshot-tendens) flytter ind under en tredje fane, nu med en **valgvælger til valuta** og et overblik over **opslag-efter-rolle**.

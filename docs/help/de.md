@@ -2214,3 +2214,19 @@ Der Reiter **Meine Pipeline** stellt deinen eigenen Bewerbungs-Tracker grafisch 
 ### Zielrollen-Trend
 
 Der Reiter **Zielrollen-Trend** ist die ursprüngliche Ansicht: Stellenzahlen und Mediangehalt nach Land für deine Zielrollen, aggregiert aus deinem letzten Scan, mit einer Währungsauswahl und einer Übersicht **Stellen nach Zielrolle**. **Snapshot speichern** hält die aktuelle Aggregation fest, sodass du beobachten kannst, wie sich die Stellenzahlen im Zeitverlauf bewegen, und die Trendlinie liest diese Snapshots zurück. Spärliche Daten sind zu erwarten und werden als richtungsweisend gekennzeichnet — sie werden nie mit erfundenen Zahlen aufgefüllt.
+
+## 27. Karriereplan (`#/career-plan`)
+
+Die Seite **Karriereplan** verwandelt deinen Lebenslauf und dein Profil in einen konkreten, personalisierten Entwicklungsplan — von der Art, die du mit einem Karrierecoach erarbeiten würdest, aber generiert aus deinen eigenen Unterlagen und von dir zu bearbeiten.
+
+### Einen Plan generieren
+
+Wähle einen **Horizont** (6, 12 oder 24 Monate), gib optional einen **Fokus** ein (zum Beispiel „in die Führung wechseln", „remote arbeiten" oder „auf Go umsteigen") und klicke auf **Plan generieren**. Das Modell liest deinen Lebenslauf, dein Profil, deinen Two-Pager und deine Memory-Notiz (über den geteilten Projektkontext) und schreibt einen strukturierten Plan: eine ehrliche Momentaufnahme deines Ausgangspunkts, eine SWOT aus Stärken und Wachstumsfeldern, Ziele ausgedrückt als SMART / OKR / WOOP, alternative Karrierewege mit ihren Abwägungen, einen Plan für harte und weiche Fähigkeiten, eine Monat-für-Monat-Roadmap für deinen gewählten Horizont, wie du Fortschritte verfolgst, wahrscheinliche Fallstricke und unterstützende Schritte. Jede Empfehlung ist in dem verankert, was deine Unterlagen tatsächlich zeigen — sie plant nach vorn und erfindet niemals Fakten über deinen Werdegang. Ohne gesetzten API-Schlüssel erhältst du stattdessen einen Prompt zum Kopieren und Einfügen.
+
+### Bearbeiten und speichern
+
+Der Plan landet in einem bearbeitbaren Textfeld — passe alles an und klicke dann auf **Plan speichern**. Er wird in die Nutzerschicht deines übergeordneten Projekts unter `config/career-plan.md` geschrieben, sodass er Systemaktualisierungen übersteht und nur innerhalb der LLM-Prompts gesendet wird, die du auszuführen wählst. **Vorschau** rendert dein Markdown, damit du es vor dem Speichern formatiert lesen kannst.
+
+### Exportieren
+
+Verwende **.md herunterladen**, **Als PDF speichern** oder **Kopieren**, um den Plan aus der App herauszuholen — dieselben Export-Steuerelemente, die überall in den KI-Berichten der App verwendet werden. Das PDF durchläuft den bestehenden Inline-PDF-Generator; das Markdown ist ein direkter Download.

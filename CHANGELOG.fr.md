@@ -11,6 +11,16 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.95.0] — 2026-07-04
+
+**Plan de carrière (Epic 26).** Une nouvelle page **`#/career-plan`** transforme votre CV et votre profil en un plan de développement concret et personnalisé. Choisissez un **horizon** (6/12/24 mois) et un **axe** optionnel, et le modèle — en lisant votre CV, votre profil, votre two-pager et votre note de mémoire — rédige un instantané du point de départ, une matrice AFOM forces/croissance, des objectifs en SMART / OKR / WOOP, des trajectoires alternatives, un plan de compétences techniques et comportementales, une **feuille de route mois par mois**, des méthodes de suivi de la progression, des écueils et des leviers de soutien. Il planifie à partir de ce que vos documents montrent réellement et n'invente jamais de faits sur votre parcours. Modifiez-le en ligne, **Enregistrez-le** dans la couche utilisateur (`config/career-plan.md`) et **exportez-le** en Markdown ou PDF.
+
+- Nouvelle route `server/lib/routes/career-plan.mjs` (23e module de routes) — `GET`/`PUT /api/career-plan` (écrit `config/career-plan.md`) + `POST /api/career-plan/generate` (cascade de fournisseurs partagée, mode manuel de repli, sans fabrication). `PATHS.careerPlan`.
+- Réutilise l'utilitaire partagé `report-export.js` (v1.94.0) pour Markdown/PDF/copie, et un nouveau groupe de navigation **Croissance**.
+- Tests : `tests/career-plan-routes.test.mjs` (bornage, aller-retour GET/PUT, invite pré-remplie depuis le CV/profil selon l'horizon). 20 nouvelles clés i18n dans les **16 locales**, aide **§27** ×16.
+
+Nouveau : `#/career-plan` ; `server/lib/routes/career-plan.mjs` ; `PATHS.careerPlan`.
+
 ## [1.94.0] — 2026-07-04
 
 **Les statistiques, repensées (Epic 25).** La page `#/stats` est désormais une section **Statistiques** à trois onglets, avec de vrais graphiques et bien plus de données. Un nouvel onglet **Rapport de marché** demande au modèle une analyse des salaires et du marché du travail pour vos postes ciblés, dans une région et une devise de votre choix — synthèse exécutive, salaires par niveau avec percentiles P10/P25/P75/P90, principaux employeurs, tableau des compétences recherchées, fréquence des avantages, répartition présentiel/hybride/télétravail, tendances sur 12–24 mois et conseils de négociation. Chaque chiffre est étiqueté comme **estimation indicative issue des connaissances du modèle**, jamais présenté comme des données extraites. Un nouvel onglet **Mon pipeline** trace votre propre suivi : distribution des scores, entonnoir de statuts, principales entreprises et postes, candidatures dans le temps et taux de conversion. La vue « postes ciblés » d'origine (offres/salaires par pays + tendance des instantanés enregistrés) passe sous un troisième onglet, désormais doté d'un **sélecteur de devise** et d'un aperçu **offres par poste**.

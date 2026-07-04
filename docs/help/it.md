@@ -2098,3 +2098,19 @@ La scheda **La mia pipeline** rappresenta graficamente il tuo tracker delle cand
 ### Tendenza dei ruoli target
 
 La scheda **Tendenza dei ruoli target** è la vista originale: numero di annunci e retribuzione mediana per paese per i tuoi ruoli target, aggregati dalla tua ultima scansione, con un selettore di valuta e una panoramica **Annunci per ruolo target**. **Salva snapshot** registra l'aggregato attuale così puoi osservare come si muove il numero di annunci nel tempo, e la linea di tendenza rilegge quegli snapshot. Dati scarsi sono attesi e vengono etichettati come indicativi — non vengono mai riempiti con numeri inventati.
+
+## 27. Piano di carriera (`#/career-plan`)
+
+La pagina **Piano di carriera** trasforma il tuo CV e il tuo profilo in un piano di sviluppo concreto e personalizzato — del tipo che costruiresti con un career coach, ma generato dai tuoi stessi materiali e modificabile da te.
+
+### Generare un piano
+
+Scegli un **Orizzonte** (6, 12 o 24 mesi), digita facoltativamente un **Focus** (per esempio «passare al management», «lavorare da remoto» o «passare a Go») e fai clic su **Genera piano**. Il modello legge il tuo CV, il tuo profilo, il tuo two-pager e la tua nota di memoria (tramite il contesto di progetto condiviso) e scrive un piano strutturato: un'istantanea onesta del punto di partenza, una SWOT di punti di forza e aree di crescita, obiettivi espressi come SMART / OKR / WOOP, traiettorie di carriera alternative con i loro compromessi, un piano di competenze hard e soft, una roadmap mese per mese per l'orizzonte scelto, come monitorare i progressi, le insidie probabili e le mosse di supporto. Ogni raccomandazione è radicata in ciò che i tuoi materiali mostrano davvero — pianifica in avanti, non inventa mai fatti sulla tua storia. Senza una chiave API impostata ottieni invece un prompt da copiare e incollare.
+
+### Modificare e salvare
+
+Il piano compare in un'area di testo modificabile — ritocca qualsiasi cosa, poi fai clic su **Salva piano**. Viene scritto nel livello utente del tuo progetto padre, in `config/career-plan.md`, così sopravvive agli aggiornamenti di sistema e viene inviato solo all'interno dei prompt LLM che scegli di eseguire. **Anteprima** renderizza il tuo Markdown così puoi leggerlo formattato prima di salvare.
+
+### Esportare
+
+Usa **Scarica .md**, **Salva come PDF** o **Copia** per portare il piano fuori dall'app — gli stessi controlli di esportazione usati in tutti i report IA dell'app. Il PDF passa attraverso il generatore di PDF inline esistente; il Markdown è un download diretto.

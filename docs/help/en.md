@@ -2110,3 +2110,19 @@ The **My pipeline** tab charts your own application tracker — nothing external
 ### Target-role trend
 
 The **Target-role trend** tab is the original view: vacancy counts and median salary by country for your target roles, aggregated from your latest scan, with a currency selector and a **Postings by target role** overview. **Save snapshot** records the current aggregate so you can watch how vacancy counts move over time, and the trend line reads those snapshots back. Sparse data is expected and labelled as indicative — it is never padded with invented numbers.
+
+## 27. Career plan (`#/career-plan`)
+
+The **Career plan** page turns your CV and profile into a concrete, personalized development plan — the kind you'd build with a career coach, but generated from your own materials and yours to edit.
+
+### Generating a plan
+
+Pick a **Horizon** (6, 12, or 24 months), optionally type a **Focus** (for example "move into management", "go remote", or "switch to Go"), and click **Generate plan**. The model reads your CV, profile, two-pager, and memory note (via the shared project context) and writes a structured plan: an honest starting-point snapshot, a strengths-and-growth SWOT, goals expressed as SMART / OKR / WOOP, alternative career trajectories with trade-offs, a hard/soft skill plan, a month-by-month roadmap for your chosen horizon, how to track progress, likely pitfalls, and support moves. Every recommendation is grounded in what your materials actually show — it plans forward, it never invents facts about your history. With no API key set you get a copy-paste prompt instead.
+
+### Editing and saving
+
+The plan lands in an editable text area — tweak anything, then click **Save plan**. It's written to your parent project's user layer at `config/career-plan.md`, so it survives system updates and is only ever sent inside the LLM prompts you choose to run. **Preview** renders your Markdown so you can read it formatted before saving.
+
+### Exporting
+
+Use **Download .md**, **Save as PDF**, or **Copy** to take the plan out of the app — the same export controls used across the app's AI reports. The PDF goes through the existing inline-PDF generator; the Markdown is a direct download.

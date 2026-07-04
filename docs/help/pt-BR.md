@@ -2024,3 +2024,19 @@ A aba **Meu pipeline** representa graficamente o seu próprio tracker de candida
 ### Tendência de cargos-alvo
 
 A aba **Tendência de cargos-alvo** é a visão original: contagem de vagas e salário mediano por país para seus cargos-alvo, agregados a partir do seu scan mais recente, com um seletor de moeda e uma visão geral de **Vagas por cargo-alvo**. **Salvar snapshot** registra o agregado atual para que você possa observar como as contagens de vagas se movem ao longo do tempo, e a linha de tendência relê esses snapshots. Dados esparsos são esperados e rotulados como indicativos — nunca são preenchidos com números inventados.
+
+## 27. Plano de carreira (`#/career-plan`)
+
+A página **Plano de carreira** transforma seu currículo e seu perfil em um plano de desenvolvimento concreto e personalizado — do tipo que você montaria com um coach de carreira, mas gerado a partir dos seus próprios materiais e seu para editar.
+
+### Gerar um plano
+
+Escolha um **Horizonte** (6, 12 ou 24 meses), digite opcionalmente um **Foco** (por exemplo, "migrar para gestão", "trabalhar remotamente" ou "mudar para Go") e clique em **Gerar plano**. O modelo lê seu currículo, seu perfil, seu two-pager e sua nota de memória (via o contexto de projeto compartilhado) e escreve um plano estruturado: um retrato honesto do seu ponto de partida, uma SWOT de forças e áreas de crescimento, metas expressas como SMART / OKR / WOOP, trajetórias de carreira alternativas com seus trade-offs, um plano de habilidades técnicas e comportamentais, um roteiro mês a mês para o horizonte escolhido, como acompanhar o progresso, as armadilhas prováveis e as ações de apoio. Cada recomendação se apoia no que seus materiais de fato mostram — ele planeja para frente, nunca inventa fatos sobre seu histórico. Sem uma chave de API configurada, você recebe um prompt para copiar e colar em vez disso.
+
+### Editar e salvar
+
+O plano aparece em uma área de texto editável — ajuste o que quiser e clique em **Salvar plano**. Ele é gravado na camada de usuário do seu projeto pai, em `config/career-plan.md`, de modo que sobrevive às atualizações do sistema e só é enviado dentro dos prompts de LLM que você escolher executar. **Pré-visualizar** renderiza seu Markdown para que você possa lê-lo formatado antes de salvar.
+
+### Exportar
+
+Use **Baixar .md**, **Salvar como PDF** ou **Copiar** para levar o plano para fora do aplicativo — os mesmos controles de exportação usados em todos os relatórios de IA do app. O PDF passa pelo gerador de PDF inline existente; o Markdown é um download direto.
