@@ -27,10 +27,10 @@
   }
 
   function jobWorkType(job) {
-    const wt = workTypeOf(job && (job.workplaceType || job.location));
+    if (!job) return null;
+    const wt = workTypeOf(job.workplaceType || job.location);
     if (wt) return wt;
-    if (job && job.isRemote === true) return 'remote';
-    return null;
+    return job.isRemote === true ? 'remote' : null;
   }
 
   // A salary floor mentioned in a preference line ("at least $120k", "min 100000").
@@ -111,8 +111,7 @@
 
     if (fired === 0) return { score: null, matched: [], violated: [] };
 
-    let score = 50;
-    for (const m of matched) score += 15;
+    let score = 50 + matched.length * 15;
     for (const v of violated) score += (hard.has(norm(v.label)) ? -30 : -20);
     score = Math.max(0, Math.min(100, score));
     return { score, matched, violated };
