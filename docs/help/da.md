@@ -1988,3 +1988,25 @@ Alt er forankret i dine rigtige materialer: `cv.md`, `config/profile.yml`, `conf
 ### At gemme og vende tilbage til sessioner
 
 Klik **Save transcript** for at beholde en færdig øvelse. Den skrives til dit overordnede projekts brugerlag i `interview-prep/mock-{company}-{role}-{date}.md`, så den ligger sammen med dine øvrige interviewforberedelsesnoter og bliver aldrig overskrevet af systemopdateringer. Listen **Saved sessions** nederst på siden lader dig genåbne enhver udskrift eller slette den. Brug **New interview** for at starte forfra med en anden rolle.
+
+## 23. Networking & dybdegående virksomhedsresearch (`#/networking`)
+
+At ansøge ad fordøren er kun halvdelen af spillet — den anden halvdel handler om at *kende nogen*, eller i det mindste at vide, hvem man skal kontakte, og hvad man skal sige. Siden **Networking** (åbn den fra **Dybdegående research → Networking 🤝** i sidepanelet) forvandler en virksomhed til en konkret plan for at få en samtale, forankret i dit eget CV, din profil og din two-pager.
+
+### At bygge en plan
+
+- Indtast en **virksomhed** (påkrævet) og eventuelt en **rolle** og **jobbeskrivelsen**. Jobbeskrivelsen skærper "hvorfor jeg passer"-krogene.
+- Klik på **Byg plan**. Med en LLM-nøgle kører den live og gengiver planen direkte på siden; uden nøgle giver den dig en klar prompt til at indsætte i en vilkårlig assistent (den samme ærlige reserveløsning, der bruges i hele appen — intet opdigtes).
+
+### Hvad planen indeholder
+
+Planen kommer tilbage i fire sektioner:
+
+- **Virksomhedsdossier** — en stram briefing om, hvad virksomheden laver, nylige signaler værd at citere, og to eller tre "hvorfor jeg passer"-kroge hentet fra din reelle baggrund.
+- **Hvem man skal kontakte** — tre til fem målpersonaer (teamets hiring manager, en intern rekrutterer, en senioringeniør i teamet, en varm kontakt eller alumni-forbindelse) med en konkret **LinkedIn-søgestreng** til at finde hver enkelt. Den opdigter aldrig rigtige navne — den fortæller dig, hvordan du finder de rette personer.
+- **Varmeste introvej** — den ene mest realistiske varme rute ind for *din* baggrund: en fælles arbejdsgiver, skole eller fællesskab; en forbindelse i anden grad; eller en kold besked med højt signal, når det oprigtigt er den bedste mulighed.
+- **Kontaktudkast** — korte, konkrete beskeder (tre til fem sætninger, ingen fyld) til dine vigtigste personaer, forankret i dine reelle beviser, så de ikke virker generiske.
+
+### At gemme og vende tilbage til planer
+
+Klik på **Gem plan** for at beholde en. Den skrives til dit overordnede projekts brugerlag på `networking/net-{company}-{role}-{date}.md` — din egen fil, aldrig overskrevet af systemopdateringer. Listen **Gemte planer** nederst på siden lader dig genåbne eller slette enhver plan. Da udkastene og personaerne kun er forankret i dine reelle materialer, skal du behandle dem som et stærkt første udkast til at personliggøre — ikke som et manuskript, du sender i blinde.

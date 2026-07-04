@@ -10,6 +10,18 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.91.0] — 2026-07-04
+
+**Networking og dybdegående virksomhedsresearch (Epic 16).** En ny `#/networking`-side forvandler en virksomhed til en handlingsorienteret plan for at få en samtale, forankret i dit CV, din profil og din two-pager:
+
+- **Virksomhedsdossier** — et stramt brief om, hvad virksomheden laver, nylige signaler værd at citere, og "hvorfor jeg passer"-kroge trukket fra din reelle baggrund.
+- **Hvem du skal kontakte** — 3–5 målpersonaer (hiring manager, intern rekrutterer, en senior IC på teamet, en varm/alumne-forbindelse) med en konkret LinkedIn-søgestreng til at finde hver enkelt. Den opdigter aldrig rigtige navne.
+- **Den varmeste introvej** — den mest realistiske varme indgang for *din* baggrund (fælles arbejdsgiver/skole/fællesskab, en andengrads-vej eller en kold DM med højt signal) og hvorfor.
+- **Kontaktudkast** — korte, specifikke beskeder til de vigtigste personaer, forankret i dine reelle bevispunkter.
+- **Live eller manuel** — kører live gennem den delte udbyder-kaskade med en hvilken som helst nøgle, eller returnerer et copy-paste-prompt (ærlig fallback, intet opdigtet). **Gem plan** bevarer en færdig plan i brugerlaget (`networking/net-{company}-{role}-{date}.md`); siden viser, åbner og sletter gemte planer.
+
+Nyt: `server/lib/routes/networking.mjs` (19. rutemodul), `public/js/views/networking.js`, `PATHS.networkingDir`. Genbruger `server/lib/llm-dispatch.mjs`-kaskaden fra v1.90.0. 24 nye i18n-nøgler på tværs af alle **16 locales**. Tests: `tests/networking-routes.test.mjs`.
+
 ## [1.90.0] — 2026-07-04
 
 **Mock Interview 2.0 (Epic 15).** En ny `#/mock-interview`-side forvandler dit CV, din profil, din two-pager og din historiebank til en tur-for-tur jobsamtaleøvelse:

@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.90.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.90.0)
+[![release](https://img.shields.io/badge/release-v1.91.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.91.0)
 
-> **🆕 Najnowsze wydanie — v1.90.0**
+> **🆕 Najnowsze wydanie — v1.91.0**
 >
-> **Mock Interview 2.0 (Epic 15):** nowa strona **`#/mock-interview`** prowadzi próbną rozmowę kwalifikacyjną tura po turze dla konkretnej roli. Każda odpowiedź otrzymuje **feedback STAR+R**, **ocenę** i **pytanie uzupełniające** — oparte na twoim CV, two-pagerze i banku historii. Działa na żywo z dowolnym kluczem LLM albo zwraca prompt do skopiowania, a **transkrypcje** możesz zapisywać dla każdej firmy/roli. Bazuje na v1.89.0 (dopasowanie do rynku przez two-pager), v1.88.0 (i18n Scan + higiena API) i v1.87.0 (4 nowi dostawcy skanowania).
+> **Networking i pogłębiony research firm (Epic 16):** nowa strona **`#/networking`** zamienia firmę w wykonalny plan — **dossier firmy**, **do kogo się odezwać** (persony + ciągi wyszukiwania LinkedIn), **najcieplejsza ścieżka wprowadzenia** oraz dopasowane **szkice wiadomości** — wszystko oparte na twoim CV i two-pagerze. Działa na żywo z dowolnym kluczem LLM albo zwraca prompt do skopiowania, a **plany** możesz zapisywać dla każdej firmy. Bazuje na v1.90.0 (próbna rozmowa), v1.89.0 (dopasowanie do rynku przez two-pager) i v1.88.0 (i18n Scan + higiena API).
 >
-> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · próbna rozmowa · dopasowanie do rynku przez two-pager · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
+> _16 lokalizacji · 6 dostawców LLM · 45 adapterów skanera · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · statystyki rynku według docelowych stanowisk · detektor ponownych publikacji · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

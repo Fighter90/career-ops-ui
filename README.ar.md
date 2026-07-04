@@ -12,13 +12,13 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.90.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.90.0)
+[![release](https://img.shields.io/badge/release-v1.91.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.91.0)
 
-> **🆕 أحدث إصدار — v1.90.0**
+> **🆕 أحدث إصدار — v1.91.0**
 >
-> **Mock Interview 2.0 (Epic 15):** صفحة **`#/mock-interview`** جديدة تُجري بروفة مقابلة دوراً بدور لدور محدّد. تحصل كل إجابة على **ملاحظات STAR+R**، و**درجة**، و**سؤال متابعة** — مبنية على سيرتك الذاتية والـ two-pager وبنك قصصك. تعمل مباشرةً بأي مفتاح LLM أو تعيد لك مطالبة للنسخ واللصق، ويمكنك **حفظ النصوص** لكل شركة/دور. يُبنى على v1.89.0 (ملاءمة السوق عبر two-pager)، وv1.88.0 (i18n لـ Scan + نظافة الـ API)، وv1.87.0 (4 مزوّدات مسح جديدة).
+> **التواصل المهني والبحث المعمّق عن الشركات (Epic 16):** صفحة **`#/networking`** جديدة تحوّل شركةً إلى خطة قابلة للتنفيذ — **ملف الشركة**، و**بمن تتصل** (شخصيات + سلاسل بحث LinkedIn)، و**أدفأ مسار للتعريف**، و**مسودّات تواصل** مصمّمة خصيصاً — كل ذلك مبني على سيرتك الذاتية والـ two-pager. تعمل مباشرةً بأي مفتاح LLM أو تعيد لك مطالبة للنسخ واللصق، ويمكنك **حفظ الخطط** لكل شركة. يُبنى على v1.90.0 (المقابلة التجريبية)، وv1.89.0 (ملاءمة السوق عبر two-pager)، وv1.88.0 (i18n لـ Scan + نظافة الـ API).
 >
-> _16 locales · 6 مزوّدات LLM · 45 محوّل ماسح · مقابلة تجريبية · ملاءمة السوق عبر two-pager · إحصاءات السوق حسب الدور المستهدف · كاشف إعادة النشر · تكافؤ مع المشروع الأصلي career-ops v1.16.0._
+> _16 locales · 6 مزوّدات LLM · 45 محوّل ماسح · مخطّط تواصل مهني · مقابلة تجريبية · ملاءمة السوق عبر two-pager · إحصاءات السوق حسب الدور المستهدف · كاشف إعادة النشر · تكافؤ مع المشروع الأصلي career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-ar.png)
 

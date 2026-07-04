@@ -11,6 +11,18 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.91.0] — 2026-07-04
+
+**Networking e investigación profunda de empresas (Epic 16).** Una nueva página `#/networking` convierte una empresa en un plan accionable para conseguir una entrevista, anclado en tu CV, perfil y two-pager:
+
+- **Dossier de empresa** — un resumen conciso de qué hace la empresa, señales recientes dignas de citar y ganchos de "por qué encajo" extraídos de tu trayectoria real.
+- **A quién contactar** — 3–5 personas objetivo (hiring manager, reclutador interno, un IC sénior del equipo, un contacto cálido/de la misma alma máter) con una cadena de búsqueda de LinkedIn concreta para encontrar a cada uno. Nunca inventa nombres reales.
+- **La vía de presentación más cálida** — la ruta cálida más realista para *tu* trayectoria (empleador/escuela/comunidad en común, un camino de segundo grado o un mensaje directo en frío de alta señal) y por qué.
+- **Borradores de contacto** — mensajes cortos y específicos para las personas principales, anclados en tus puntos de prueba reales.
+- **En vivo o manual** — se ejecuta en vivo a través de la cascada compartida de proveedores con cualquier clave, o te devuelve un prompt listo para copiar y pegar (fallback honesto, nada inventado). **Guardar plan** persiste un plan terminado en la capa de usuario (`networking/net-{company}-{role}-{date}.md`); la página lista, abre y elimina los planes guardados.
+
+Nuevo: `server/lib/routes/networking.mjs` (19.º módulo de rutas), `public/js/views/networking.js`, `PATHS.networkingDir`. Reutiliza la cascada `server/lib/llm-dispatch.mjs` de v1.90.0. 24 nuevas claves i18n en los **16 locales**. Pruebas: `tests/networking-routes.test.mjs`.
+
 ## [1.90.0] — 2026-07-04
 
 **Mock Interview 2.0 (Epic 15).** Una nueva página `#/mock-interview` convierte tu CV, perfil, two-pager y banco de historias en un ensayo de entrevista turno por turno:

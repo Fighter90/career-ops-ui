@@ -832,4 +832,28 @@ window.__I18N_DICT_FR = {
   'mock.view': "Afficher", // View
   'mock.delete': "Supprimer", // Delete
   'mock.confirmDelete': "Supprimer cette session enregistrée ?", // Delete this saved session?
+  // ── Networking et recherche approfondie sur l’entreprise (Epic 16 / v1.91.0) ──
+  'nav.networking': "Networking", // Networking
+  'net.title': "Networking et recherche", // Networking & research
+  'net.subtitle': "Transformez une entreprise en plan : qui contacter, la voie d’entrée la plus chaleureuse et des brouillons de prise de contact — fondés sur votre CV et votre two-pager.", // Turn a company into a plan…
+  'net.companyLabel': "Entreprise", // Company
+  'net.companyPh': "Entreprise (obligatoire)", // Company (required)
+  'net.roleLabel': "Poste", // Role
+  'net.rolePh': "Poste (facultatif)", // Role (optional)
+  'net.jdLabel': "Description du poste", // Job description
+  'net.jdPh': "Collez la description du poste (facultatif) — affine les points d’accroche.", // Paste the job description (optional)…
+  'net.build': "Créer le plan", // Build plan
+  'net.building': "Recherche et rédaction…", // Researching and drafting…
+  'net.buildFailed': "Impossible de créer le plan", // Could not build the plan
+  'net.needCompany': "Saisissez d’abord une entreprise", // Enter a company first
+  'net.save': "Enregistrer le plan", // Save plan
+  'net.saved': "Plan enregistré", // Plan saved
+  'net.saveFailed': "Impossible d’enregistrer le plan", // Could not save the plan
+  'net.manualTitle': "Exécuter ce plan manuellement", // Run this plan manually
+  'net.manualHelp': "Aucune clé LLM n’est configurée. Copiez ce prompt dans n’importe quel LLM, puis collez le plan ici ou enregistrez-le depuis là.", // No LLM key is set…
+  'net.savedTitle': "Plans enregistrés", // Saved plans
+  'net.savedEmpty': "Aucun plan enregistré pour le moment — créez-en un et cliquez sur « Enregistrer le plan ».", // No saved plans yet…
+  'net.view': "Afficher", // View
+  'net.delete': "Supprimer", // Delete
+  'net.confirmDelete': "Supprimer ce plan enregistré ?", // Delete this saved plan?
 };

@@ -1939,3 +1939,25 @@ Tudo se apoia nos seus materiais reais: `cv.md`, `config/profile.yml`, `config/t
 ### Salvar e revisitar sessões
 
 Clique em **Salvar transcrição** para guardar um ensaio finalizado. Ele é gravado na camada de usuário do seu projeto pai em `interview-prep/mock-{company}-{role}-{date}.md`, de modo que fica junto às suas outras notas de preparação de entrevistas e nunca é sobrescrito pelas atualizações do sistema. A lista de **Sessões salvas** no rodapé da página permite reabrir qualquer transcrição ou excluí-la. Use **Nova entrevista** para começar do zero com uma vaga diferente.
+
+## 23. Networking e pesquisa aprofundada de empresas (`#/networking`)
+
+Candidatar-se pela porta da frente é só metade do jogo — a outra metade é *conhecer alguém*, ou pelo menos saber quem procurar e o que dizer. A página **Networking** (abra em **Pesquisa aprofundada → Networking 🤝** na barra lateral) transforma uma empresa em um plano concreto para conseguir uma entrevista, baseado no seu próprio CV, perfil e two-pager.
+
+### Montando um plano
+
+- Informe uma **empresa** (obrigatório) e, opcionalmente, um **cargo** e a **descrição da vaga**. A descrição afina os ganchos de "por que eu encaixo".
+- Clique em **Montar plano**. Com uma chave de LLM ele roda ao vivo e renderiza o plano na hora; sem chave ele te entrega um prompt pronto para colar em qualquer assistente (o mesmo fallback honesto usado em todo o app — nada é inventado).
+
+### O que o plano contém
+
+O plano volta em quatro seções:
+
+- **Dossiê da empresa** — um resumo enxuto do que a empresa faz, sinais recentes que valem a pena citar e dois ou três ganchos de "por que eu encaixo" extraídos da sua trajetória real.
+- **Quem contatar** — de três a cinco personas-alvo (o gestor de contratação do time, um recrutador interno, um engenheiro sênior do time, um contato próximo ou de ex-alunos) com uma **string de busca do LinkedIn** concreta para encontrar cada um. Ele nunca inventa nomes reais — diz como encontrar as pessoas certas.
+- **Caminho de apresentação mais próximo** — a rota quente de entrada mais realista para *a sua* trajetória: um empregador, escola ou comunidade em comum; um contato de segundo grau; ou uma mensagem fria de alto sinal quando essa for genuinamente a melhor opção.
+- **Rascunhos de abordagem** — mensagens curtas e específicas (de três a cinco frases, sem enrolação) para as suas principais personas, baseadas nos seus pontos de prova reais para que não soem genéricas.
+
+### Salvando e revisitando planos
+
+Clique em **Salvar plano** para guardar um. Ele é gravado na camada de usuário do seu projeto pai em `networking/net-{company}-{role}-{date}.md` — seu próprio arquivo, nunca sobrescrito por atualizações do sistema. A lista de **Planos salvos** no final da página permite reabrir ou excluir qualquer plano. Como os rascunhos e as personas se baseiam apenas nos seus materiais reais, trate-os como um primeiro rascunho sólido para personalizar — não como um roteiro para enviar às cegas.

@@ -11,6 +11,18 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.91.0] — 2026-07-04
+
+**Networking et recherche approfondie sur les entreprises (Epic 16).** Une nouvelle page `#/networking` transforme une entreprise en un plan actionnable pour décrocher un entretien, ancré dans votre CV, votre profil et votre two-pager :
+
+- **Dossier d'entreprise** — un brief resserré sur ce que fait l'entreprise, les signaux récents dignes d'être cités et les accroches « pourquoi je conviens » tirées de votre parcours réel.
+- **Qui contacter** — 3 à 5 personas cibles (responsable du recrutement, recruteur interne, un IC senior de l'équipe, une connexion chaleureuse/ancien élève) avec une chaîne de recherche LinkedIn concrète pour trouver chacun. Il n'invente jamais de vrais noms.
+- **La voie d'introduction la plus chaleureuse** — la route chaleureuse la plus réaliste pour *votre* parcours (employeur/école/communauté en commun, un chemin de second degré ou un DM à froid à fort signal) et pourquoi.
+- **Brouillons de prise de contact** — des messages courts et spécifiques pour les principaux personas, ancrés dans vos points de preuve réels.
+- **En direct ou manuel** — s'exécute en direct via la cascade de fournisseurs partagée avec n'importe quelle clé, ou renvoie un prompt prêt à copier-coller (repli honnête, rien d'inventé). **Enregistrer le plan** persiste un plan terminé dans la couche utilisateur (`networking/net-{company}-{role}-{date}.md`) ; la page liste, ouvre et supprime les plans enregistrés.
+
+Nouveau : `server/lib/routes/networking.mjs` (19e module de routes), `public/js/views/networking.js`, `PATHS.networkingDir`. Réutilise la cascade `server/lib/llm-dispatch.mjs` de la v1.90.0. 24 nouvelles clés i18n dans les **16 locales**. Tests : `tests/networking-routes.test.mjs`.
+
 ## [1.90.0] — 2026-07-04
 
 **Mock Interview 2.0 (Epic 15).** Une nouvelle page `#/mock-interview` transforme votre CV, votre profil, votre two-pager et votre banque d'histoires en une répétition d'entretien tour par tour :

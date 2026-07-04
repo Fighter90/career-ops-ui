@@ -2013,3 +2013,25 @@ Tutto è ancorato ai tuoi materiali reali: `cv.md`, `config/profile.yml`, `confi
 ### Salvare e rivedere le sessioni
 
 Fai clic su **Salva trascrizione** per conservare una prova terminata. Viene scritta nel livello utente del tuo progetto padre, in `interview-prep/mock-{company}-{role}-{date}.md`, così vive accanto alle tue altre note di preparazione al colloquio e non viene mai sovrascritta dagli aggiornamenti di sistema. L'elenco **Sessioni salvate** in fondo alla pagina ti permette di riaprire qualsiasi trascrizione o eliminarla. Usa **Nuovo colloquio** per ricominciare con un ruolo diverso.
+
+## 23. Networking e ricerca approfondita sulle aziende (`#/networking`)
+
+Candidarsi dalla porta principale è solo metà del gioco — l'altra metà è *conoscere qualcuno*, o almeno sapere chi contattare e cosa dire. La pagina **Networking** (aprila da **Ricerca approfondita → Networking 🤝** nella barra laterale) trasforma un'azienda in un piano concreto per ottenere un colloquio, radicato nel tuo CV, nel tuo profilo e nel tuo two-pager.
+
+### Costruire un piano
+
+- Inserisci un'**azienda** (obbligatorio) e, facoltativamente, un **ruolo** e la **descrizione dell'offerta**. La descrizione affina gli agganci del "perché sono adatto".
+- Fai clic su **Costruisci piano**. Con una chiave LLM viene eseguito dal vivo e renderizza il piano nella pagina; senza chiave ti consegna un prompt pronto da incollare in qualsiasi assistente (lo stesso fallback onesto usato in tutta l'app — non si inventa nulla).
+
+### Cosa contiene il piano
+
+Il piano torna in quattro sezioni:
+
+- **Dossier aziendale** — un briefing sintetico su cosa fa l'azienda, segnali recenti degni di essere citati e due o tre agganci del "perché sono adatto" tratti dal tuo percorso reale.
+- **Chi contattare** — da tre a cinque personas target (l'hiring manager del team, un recruiter interno, un ingegnere senior del team, un contatto caldo o ex-alunni) con una **stringa di ricerca LinkedIn** concreta per trovare ciascuno. Non inventa mai nomi reali — ti dice come trovare le persone giuste.
+- **Percorso di presentazione più caldo** — la singola via calda d'ingresso più realistica per il *tuo* percorso: un datore di lavoro, una scuola o una community in comune; un contatto di secondo grado; oppure un messaggio a freddo ad alto segnale quando è davvero l'opzione migliore.
+- **Bozze di contatto** — messaggi brevi e specifici (da tre a cinque frasi, senza riempitivi) per le tue personas principali, radicati nei tuoi punti di prova reali così da non risultare generici.
+
+### Salvare e rivedere i piani
+
+Fai clic su **Salva piano** per conservarne uno. Viene scritto nel livello utente del tuo progetto padre in `networking/net-{company}-{role}-{date}.md` — un tuo file, mai sovrascritto dagli aggiornamenti di sistema. L'elenco **Piani salvati** in fondo alla pagina ti consente di riaprire o eliminare qualsiasi piano. Poiché le bozze e le personas si basano solo sui tuoi materiali reali, trattali come una solida prima bozza da personalizzare — non come uno script da inviare alla cieca.
