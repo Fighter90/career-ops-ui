@@ -670,9 +670,16 @@ Router.register('scan', async () => {
           onClick: () => { window.ScanPrefs.toggleFavorite(r.url); renderResults(); },
           style: { background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '15px', lineHeight: '1', color: starred ? 'var(--rausch)' : 'var(--foggy)' },
         }, starred ? '★' : '☆'));
+      // Optional company logo (favicon of the company's own domain) — off by
+      // default; window.CompanyLogo.badge returns null when disabled.
+      const logo = window.CompanyLogo ? window.CompanyLogo.badge(r.url, r.company) : null;
+      const companyCell = logo
+        ? c('td', { style: { minWidth: '160px' } },
+            c('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } }, [logo, c('span', null, r.company || '—')]))
+        : c('td', { style: { minWidth: '160px' } }, r.company || '—');
       return c('tr', null, [
         starCell,
-        c('td', { style: { minWidth: '160px' } }, r.company || '—'),
+        companyCell,
         titleCell,
         c('td', { style: { fontSize: '13px', color: 'var(--foggy)' } }, r.location || '—'),
         c('td', null, c('span', { className: 'badge ' + wtClass }, wt)),

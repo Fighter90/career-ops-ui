@@ -9,6 +9,16 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.104.0] — 2026-07-06
+
+**Logo firm w tabeli skanowania (z poszanowaniem prywatności).** Nowy przełącznik **Wygląd** w **Ustawieniach** — **Pokazuj logo firm w tabeli skanowania** (domyślnie wyłączony) — rysuje logo każdej firmy obok jej nazwy w `#/scan`. Logo to **favicon firmy pobrany z jej własnej domeny** i przekazany przez proxy po stronie serwera (`GET /api/logo`), więc **żadna zewnętrzna usługa logo nie dowiaduje się, których pracodawców przeglądasz**. Oferty na współdzielonym portalu (Greenhouse, Lever, Ashby, …) pokazują kolorową **odznakę z literą** zamiast ikony portalu, a każde logo, które się nie załaduje, wraca do tej samej odznaki.
+
+- Nowy moduł trasy (29.) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`. Waliduje domenę (bez schematu/ścieżki/loopback), pobiera `/favicon.ico` przez **bezpieczny wobec SSRF `safeGet`** (nowy tryb `binary` zwraca surowe bajty + content-type; przypinanie DNS, walidacja przekierowań i limit rozmiaru bez zmian), wykonuje **sniffing sygnatury obrazu**, by nigdy nie podać strony błędu HTML jako obrazu, buforuje trafienia **i** pudła w LRU w pamięci i **niczego nie zapisuje na dysku**.
+- Nowa biblioteka kliencka `public/js/lib/company-logo.js` (`window.CompanyLogo`): domyślnie wyłączona przez flagę localStorage; pomija współdzielone hosty ATS na rzecz deterministycznego awatara-litery; bezpieczny dla CSP fallback `img.onerror`. Testy: `tests/logo-routes.test.mjs`. 5 nowych kluczy i18n ×16 (`appear.*`). Pomoc §2 rozszerzona w miejscu.
+
+Nowe: `server/lib/routes/logos.mjs`; `public/js/lib/company-logo.js`.
+
+
 ## [1.103.0] — 2026-07-06
 
 **Ustawienia: „Narzędzia CLI AI" — które są zainstalowane.** career-ops działa w oparciu o Claude Code, ale współpracuje z dowolnym agentowym CLI zgodnym z otwartym standardem skills. Nowa karta **Narzędzia CLI AI** w **Ustawieniach** (`#/config`) pokazuje, które z nich — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — są zainstalowane na maszynie z serwerem, i ich ścieżki. To **skan PATH tylko do odczytu**: sprawdza jedynie, czy dany plik binarny istnieje, i **nigdy go nie uruchamia** (bez `--version`, bez wykonania), niczego nie zapisuje i nie dotyka danych użytkownika.

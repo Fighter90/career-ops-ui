@@ -11,6 +11,16 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.104.0] — 2026-07-06
+
+**Logos de empresa en la tabla de escaneo (respetando la privacidad).** Un nuevo interruptor de **Apariencia** en **Ajustes** — **Mostrar logos de empresa en la tabla de escaneo** (desactivado por defecto) — dibuja el logo de cada empresa junto a su nombre en `#/scan`. El logo es el **favicon de la empresa obtenido desde su propio dominio** y con proxy en el servidor (`GET /api/logo`), de modo que **ningún servicio de logos de terceros sabe qué empleadores estás viendo**. Las ofertas en un portal de empleo compartido (Greenhouse, Lever, Ashby, …) muestran una **insignia con una letra** en lugar del icono del portal, y cualquier logo que no cargue recae en la misma insignia.
+
+- Nuevo módulo de ruta (29.º) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`. Valida el dominio (sin esquema/ruta/loopback), obtiene `/favicon.ico` a través del **`safeGet` seguro contra SSRF** (un nuevo modo `binary` devuelve los bytes crudos + content-type; el fijado de DNS, la validación de redirecciones y el límite de tamaño no cambian), hace **sniffing de firmas de imagen** para no servir nunca una página HTML de error como imagen, cachea aciertos **y** fallos en un LRU en memoria y **no escribe nada en disco**.
+- Nueva librería cliente `public/js/lib/company-logo.js` (`window.CompanyLogo`): desactivada por defecto vía flag en localStorage; omite hosts ATS compartidos en favor de un avatar-letra determinista; respaldo `img.onerror` seguro para CSP. Pruebas: `tests/logo-routes.test.mjs`. 5 nuevas claves i18n ×16 (`appear.*`). Ayuda §2 ampliada en su sitio.
+
+Nuevo: `server/lib/routes/logos.mjs`; `public/js/lib/company-logo.js`.
+
+
 ## [1.103.0] — 2026-07-06
 
 **Ajustes: "Herramientas CLI de IA" — cuáles están instaladas.** career-ops se basa en Claude Code pero funciona con cualquier CLI de agente del estándar abierto de skills. Una nueva pestaña **Herramientas CLI de IA** en **Ajustes** (`#/config`) muestra cuáles — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — están instaladas en la máquina que ejecuta el servidor, y sus rutas. Es un **escaneo de solo lectura del PATH**: solo comprueba si cada binario existe y **nunca lo ejecuta** (sin `--version`, sin ejecución), no escribe nada y no toca datos del usuario.

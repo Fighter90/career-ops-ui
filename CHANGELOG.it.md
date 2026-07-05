@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.104.0] — 2026-07-06
+
+**Logo aziendali nella tabella di scansione (rispettosi della privacy).** Un nuovo interruttore **Aspetto** nelle **Impostazioni app** — **Mostra i logo delle aziende nella tabella di scansione** (disattivato per impostazione predefinita) — disegna il logo di ogni azienda accanto al nome su `#/scan`. Il logo è la **favicon dell'azienda recuperata dal suo dominio** e messa in proxy lato server (`GET /api/logo`), così **nessun servizio di logo di terze parti scopre quali datori di lavoro stai guardando**. Gli annunci su un portale di lavoro condiviso (Greenhouse, Lever, Ashby, …) mostrano un **badge con una lettera** colorato invece dell'icona del portale, e qualsiasi logo che non si carica ricade sullo stesso badge.
+
+- Nuovo modulo di rotta (il 29°) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`. Valida il dominio (senza schema/percorso/loopback), recupera `/favicon.ico` tramite il **`safeGet` sicuro contro l'SSRF** (una nuova modalità `binary` restituisce i byte grezzi + content-type; DNS-pinning, validazione dei redirect e limite di dimensione invariati), esegue uno **sniffing della firma dell'immagine** per non servire mai una pagina HTML di errore come immagine, mette in cache successi **e** fallimenti in un LRU in memoria e **non scrive nulla su disco**.
+- Nuova lib client `public/js/lib/company-logo.js` (`window.CompanyLogo`): disattivata per impostazione predefinita tramite flag in localStorage; salta gli host ATS condivisi a favore di un avatar-lettera deterministico; ripiego `img.onerror` sicuro per la CSP. Test: `tests/logo-routes.test.mjs`. 5 nuove chiavi i18n ×16 (`appear.*`). Aiuto §2 esteso sul posto.
+
+Nuovo: `server/lib/routes/logos.mjs`; `public/js/lib/company-logo.js`.
+
+
 ## [1.103.0] — 2026-07-06
 
 **Impostazioni: "Strumenti CLI IA" — quali sono installati.** career-ops è basato su Claude Code ma funziona con qualsiasi CLI di agente conforme allo standard aperto di skills. Una nuova scheda **Strumenti CLI IA** nelle **Impostazioni app** (`#/config`) mostra quali — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — sono installati sulla macchina che esegue il server, e i loro percorsi. È una **scansione del PATH in sola lettura**: verifica solo se ogni binario esiste e **non lo esegue mai** (nessun `--version`, nessuna esecuzione), non scrive nulla e non tocca dati utente.

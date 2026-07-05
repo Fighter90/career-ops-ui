@@ -11,6 +11,16 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.104.0] — 2026-07-06
+
+**Logos d'entreprise dans le tableau de scan (respectueux de la vie privée).** Un nouveau commutateur **Apparence** dans **Paramètres** — **Afficher les logos d'entreprise dans le tableau de scan** (désactivé par défaut) — dessine le logo de chaque entreprise à côté de son nom sur `#/scan`. Le logo est le **favicon de l'entreprise récupéré depuis son propre domaine** et relayé côté serveur (`GET /api/logo`), de sorte qu'**aucun service de logos tiers n'apprend quels employeurs vous consultez**. Les offres sur un portail d'emploi partagé (Greenhouse, Lever, Ashby, …) affichent un **badge à lettre** coloré plutôt que l'icône du portail, et tout logo qui échoue au chargement retombe sur ce même badge.
+
+- Nouveau module de route (29ᵉ) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`. Il valide le domaine (sans schéma/chemin/loopback), récupère `/favicon.ico` via le **`safeGet` sûr contre le SSRF** (un nouveau mode `binary` renvoie les octets bruts + content-type ; l'épinglage DNS, la validation des redirections et la limite de taille sont inchangés), effectue un **sniffing de signature d'image** pour ne jamais servir une page HTML d'erreur comme image, met en cache les succès **et** les échecs dans un LRU en mémoire et **n'écrit rien sur le disque**.
+- Nouvelle lib cliente `public/js/lib/company-logo.js` (`window.CompanyLogo`) : désactivée par défaut via un flag localStorage ; ignore les hôtes ATS partagés au profit d'un avatar-lettre déterministe ; repli `img.onerror` sûr pour la CSP. Tests : `tests/logo-routes.test.mjs`. 5 nouvelles clés i18n ×16 (`appear.*`). Aide §2 étendue sur place.
+
+Nouveau : `server/lib/routes/logos.mjs` ; `public/js/lib/company-logo.js`.
+
+
 ## [1.103.0] — 2026-07-06
 
 **Paramètres : « Outils CLI d'IA » — lesquels sont installés.** career-ops est piloté par Claude Code mais fonctionne avec n'importe quel CLI d'agent respectant le standard ouvert de skills. Un nouvel onglet **Outils CLI d'IA** dans **Paramètres** (`#/config`) montre lesquels — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — sont installés sur la machine qui exécute le serveur, et leurs chemins. C'est une **analyse en lecture seule du PATH** : elle vérifie seulement si chaque binaire existe et **ne l'exécute jamais** (pas de `--version`, aucune exécution), n'écrit rien et ne touche aucune donnée utilisateur.

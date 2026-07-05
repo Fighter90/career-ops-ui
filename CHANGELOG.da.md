@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.104.0] — 2026-07-06
+
+**Firmalogoer i scanningstabellen (privatlivsbevarende).** En ny **Udseende**-kontakt i **App-indstillinger** — **Vis firmalogoer i scanningstabellen** (fra som standard) — tegner hvert firmas logo ved siden af navnet på `#/scan`. Logoet er firmaets **favicon hentet fra dets eget domæne** og proxyet på serveren (`GET /api/logo`), så **ingen tredjeparts logotjeneste får at vide, hvilke arbejdsgivere du kigger på**. Opslag på en delt jobportal (Greenhouse, Lever, Ashby, …) viser et farvet **bogstavmærke** i stedet for portalens ikon, og ethvert logo, der ikke kan indlæses, falder tilbage til samme mærke.
+
+- Nyt rutemodul (det 29.) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`. Det validerer domænet (ingen skema/sti/loopback), henter `/favicon.ico` via den **SSRF-sikre `safeGet`** (en ny `binary`-tilstand returnerer de rå bytes + content-type; DNS-pinning, redirect-validering og størrelsesloftet er uændrede), udfører **billed-magic-sniffing**, så en HTML-fejlside aldrig serveres som et billede, cacher hits **og** misses i en in-memory LRU og **skriver intet til disk**.
+- Nyt klientbibliotek `public/js/lib/company-logo.js` (`window.CompanyLogo`): fra som standard via et localStorage-flag; springer delte ATS-værter over til fordel for en deterministisk bogstav-avatar; CSP-sikker `img.onerror`-fallback. Tests: `tests/logo-routes.test.mjs`. 5 nye i18n-nøgler ×16 (`appear.*`). Hjælp §2 udvidet på stedet.
+
+Nyt: `server/lib/routes/logos.mjs`; `public/js/lib/company-logo.js`.
+
+
 ## [1.103.0] — 2026-07-06
 
 **Indstillinger: "AI CLI-værktøjer" — hvilke er installeret.** career-ops er Claude Code-drevet, men virker med enhver agent-CLI på den åbne skill-standard. En ny **AI CLI-værktøjer**-fane i **App-indstillinger** (`#/config`) viser hvilke — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — der er installeret på maskinen, der kører serveren, og deres stier. Det er en **skrivebeskyttet PATH-scanning**: den tjekker kun, om hver binær findes, og **kører den aldrig** (ingen `--version`, ingen kørsel), skriver intet og rører ingen brugerdata.

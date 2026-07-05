@@ -9,6 +9,16 @@
 ---
 
 
+## [1.104.0] — 2026-07-06
+
+**掃描表中的公司標誌(保護隱私)。** **應用設定**中新增的**外觀**開關——**在掃描表中顯示公司標誌**(預設關閉)——會在 `#/scan` 的公司名稱旁繪製其標誌。標誌是**從公司自己網域取得的 favicon**,並在伺服器端代理(`GET /api/logo`),因此**沒有任何第三方標誌服務能得知你在查看哪些雇主**。位於共享徵才入口(Greenhouse、Lever、Ashby 等)的職缺會顯示彩色**字母徽章**而非入口圖示,任何載入失敗的標誌也回退到同一徽章。
+
+- 新路由模組(第 29 個) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`。它驗證網域(無協定/路徑/回環),透過 **SSRF 安全的 `safeGet`**(新的 `binary` 模式回傳原始位元組 + content-type;DNS 固定、重新導向驗證和大小上限不變)取得 `/favicon.ico`,進行**影像魔數嗅探**以絕不把 HTML 錯誤頁當作影像回傳,將命中**與**未命中都快取在記憶體 LRU 中,並**不向磁碟寫入任何內容**。
+- 新客戶端庫 `public/js/lib/company-logo.js`(`window.CompanyLogo`):透過 localStorage 旗標預設關閉;跳過共享 ATS 主機改用確定性字母頭像;CSP 安全的 `img.onerror` 回退。測試:`tests/logo-routes.test.mjs`。新增 5 個 i18n 鍵 ×16(`appear.*`)。說明 §2 就地擴充。
+
+新增:`server/lib/routes/logos.mjs`;`public/js/lib/company-logo.js`。
+
+
 ## [1.103.0] — 2026-07-06
 
 **設定:「AI CLI 工具」——已安裝哪些。** career-ops 以 Claude Code 驅動，但可與任何遵循開放技能標準的代理 CLI 搭配。**應用設定**(`#/config`)中的新**AI CLI 工具**分頁顯示 Claude Code、Codex、Gemini CLI、OpenCode、GitHub Copilot CLI、Qwen、Antigravity 中哪些安裝在執行伺服器的機器上及其路徑。這是**唯讀的 PATH 掃描**:只檢查每個二進位是否存在,**絕不執行它**(無 `--version`,不執行),不寫入任何內容,也不觸碰使用者資料。

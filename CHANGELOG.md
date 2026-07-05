@@ -8,6 +8,16 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.104.0] — 2026-07-06
+
+**Company logos in the scan table (privacy-preserving).** A new **Appearance** toggle in **App settings** — **Show company logos in the scan table** (off by default) — draws each company's logo next to its name on `#/scan`. The logo is the company's **favicon fetched from its own domain** and proxied server-side (`GET /api/logo`), so **no third-party logo service ever learns which employers you're viewing**. Postings on a shared job board (Greenhouse, Lever, Ashby, …) show a coloured **letter badge** instead of the board's icon, and any logo that fails to load falls back to the same badge.
+
+- New route module (29th) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`. It validates the domain (no scheme/path/loopback), fetches `/favicon.ico` through the **SSRF-safe `safeGet`** (a new `binary` mode returns the raw bytes + content-type; DNS-pinning, redirect validation and the size cap are unchanged), **image-magic sniffs** the result so an HTML error page is never served as an image, caches hits **and** misses in an in-memory LRU, and **writes nothing to disk**.
+- New client lib `public/js/lib/company-logo.js` (`window.CompanyLogo`): off by default via a localStorage flag; skips shared ATS hosts in favour of a deterministic letter-avatar; CSP-safe `img.onerror` fallback. Tests: `tests/logo-routes.test.mjs` (domain guard, image sniff/reject, negative cache, binary `safeGet`). 5 new i18n keys ×16 (`appear.*`). Help §2 extended in place.
+
+New: `server/lib/routes/logos.mjs`; `public/js/lib/company-logo.js`.
+
+
 ## [1.103.0] — 2026-07-06
 
 **Settings: "AI CLI tools" — which agent CLIs are installed.** career-ops is Claude-Code-driven but works with any agent CLI on the open skill standard. A new **AI CLI tools** tab in **App settings** (`#/config`) shows which of them — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — are installed on the machine running the server, and their paths. It is a **read-only PATH scan**: it only checks whether each binary exists and **never runs it** (no `--version`, no execution), writes nothing, and touches no user data.
