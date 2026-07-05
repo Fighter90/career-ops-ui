@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.103.0] — 2026-07-06
+
+**Ayarlar: "Yapay zeka CLI araçları" — hangileri kurulu.** career-ops Claude Code ile çalışır ama açık skill standardındaki herhangi bir ajan CLI'ıyla uyumludur. **Uygulama ayarları**'ndaki (`#/config`) yeni **Yapay zeka CLI araçları** sekmesi, bunlardan — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — hangilerinin sunucuyu çalıştıran makinede kurulu olduğunu ve yollarını gösterir. Bu **salt okunur bir PATH taramasıdır**: yalnızca her ikili dosyanın var olup olmadığını kontrol eder ve **asla çalıştırmaz** (`--version` yok, yürütme yok), hiçbir şey yazmaz ve kullanıcı verisine dokunmaz.
+
+- Yeni rota modülü (28.) `server/lib/routes/cli-detect.mjs` — `GET /api/cli-detect`. Algılama, sabit 7 girişli bir izin listesinden `process.env.PATH` üzerinden bir ikilinin yolunu çözer (Windows `.cmd/.exe/.bat` shim'leri; POSIX yürütme biti); PATH'teki kötü niyetli bir dosya bu rota tarafından asla çalıştırılamaz.
+- `public/js/views/config.js` içinde yeni "Yapay zeka CLI araçları" sekmesi (tembel yükleme, `#/config?tab=cli` ile derin bağlantı). Testler: `tests/cli-detect-routes.test.mjs`. 8 yeni i18n anahtarı ×16 (`cli.*` + `config.tabCli`). Yardım §2 yerinde genişletildi.
+
+Yeni: `server/lib/routes/cli-detect.mjs`.
+
+
 ## [1.102.0] — 2026-07-05
 
 **"Belgelere sor" — uygulama içi yardım kılavuzuna dayalı bir sohbet.** Yeni bir **Belgelere sor 💬** sayfası (kenar çubuğu, Yardım altında): "İş portallarını nasıl tararım?" gibi bir soru yazın ve **yalnızca** uygulamanın kendi yardım kılavuzundan dilinizde bir yanıt alın — hangi bölümleri kullandığını gösterir ve **özgeçmişinizi, profilinizi veya iş aramanızı asla okumaz**. Bu, sizinle değil, uygulamanın nasıl kullanılacağıyla ilgilidir. LLM anahtarıyla canlı yanıtlar; anahtar yoksa ilgili yardım bölümleriyle önceden doldurulmuş, hazır bir istem verir.

@@ -9,6 +9,16 @@
 ---
 
 
+## [1.103.0] — 2026-07-06
+
+**设置："AI CLI 工具"——已安装哪些。** career-ops 以 Claude Code 驱动，但可与任何遵循开放技能标准的智能体 CLI 配合。**应用设置**(`#/config`)中的新**AI CLI 工具**标签页显示 Claude Code、Codex、Gemini CLI、OpenCode、GitHub Copilot CLI、Qwen、Antigravity 中哪些安装在运行服务器的机器上及其路径。这是**只读的 PATH 扫描**：只检查每个二进制是否存在，**绝不运行它**(无 `--version`，不执行)，不写入任何内容，也不触碰用户数据。
+
+- 新路由模块(第 28 个) `server/lib/routes/cli-detect.mjs` — `GET /api/cli-detect`。检测从固定的 7 项白名单出发，沿 `process.env.PATH` 解析二进制路径(Windows 的 `.cmd/.exe/.bat` 垫片；POSIX 的可执行位);PATH 上的恶意文件绝不会被此路由执行。
+- `public/js/views/config.js` 中的新"AI CLI 工具"标签页(懒加载,可通过 `#/config?tab=cli` 深链)。测试:`tests/cli-detect-routes.test.mjs`。新增 8 个 i18n 键 ×16(`cli.*` + `config.tabCli`)。帮助 §2 就地扩充。
+
+新增:`server/lib/routes/cli-detect.mjs`。
+
+
 ## [1.102.0] — 2026-07-05
 
 **"向文档提问"——基于应用内帮助指南的对话。** 新增**向文档提问 💬**页面(侧边栏，帮助下方)：输入"如何扫描招聘门户？"这类问题，即可获得**仅**来自你所用语言的应用帮助指南的答案——它会显示所用章节，且**绝不读取你的简历、档案或求职信息**。这是关于如何使用应用，而非关于你。有 LLM 密钥时实时作答；无密钥时提供一个已填入相关帮助章节的现成提示词。

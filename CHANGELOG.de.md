@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.103.0] — 2026-07-06
+
+**Einstellungen: „KI-CLI-Tools" — welche installiert sind.** career-ops wird von Claude Code angetrieben, funktioniert aber mit jeder Agent-CLI nach dem offenen Skill-Standard. Ein neuer Tab **KI-CLI-Tools** in den **App-Einstellungen** (`#/config`) zeigt, welche davon — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — auf dem Rechner installiert sind, der den Server ausführt, samt ihren Pfaden. Es ist ein **schreibgeschützter PATH-Scan**: er prüft nur, ob das jeweilige Binary existiert, und **führt es nie aus** (kein `--version`, keine Ausführung), schreibt nichts und rührt keine Nutzerdaten an.
+
+- Neues Routenmodul (das 28.) `server/lib/routes/cli-detect.mjs` — `GET /api/cli-detect`. Die Erkennung löst den Pfad eines Binaries aus einer festen 7-Einträge-Allowlist über `process.env.PATH` auf (Windows `.cmd/.exe/.bat`-Shims; POSIX-Execute-Bit); eine feindliche Datei auf dem PATH kann von dieser Route niemals ausgeführt werden.
+- Neuer Tab „KI-CLI-Tools" in `public/js/views/config.js` (lazy geladen, deep-linkbar über `#/config?tab=cli`). Tests: `tests/cli-detect-routes.test.mjs`. 8 neue i18n-Schlüssel ×16 (`cli.*` + `config.tabCli`). Hilfe §2 an Ort und Stelle erweitert.
+
+Neu: `server/lib/routes/cli-detect.mjs`.
+
+
 ## [1.102.0] — 2026-07-05
 
 **„Doku fragen" — ein fundierter Chat über den integrierten Hilfe-Leitfaden.** Eine neue Seite **Doku fragen 💬** (Seitenleiste, unter Hilfe): Stell eine Frage wie „Wie scanne ich Job-Portale?" und erhalte eine Antwort, die **nur** aus dem eigenen Hilfe-Leitfaden der App in deiner Sprache stammt — sie zeigt die verwendeten Abschnitte und **liest nie deinen Lebenslauf, dein Profil oder deine Jobsuche**. Es geht um die Nutzung der App, nicht um dich. Mit einem LLM-Schlüssel antwortet sie live; ohne Schlüssel gibt sie dir einen fertigen Prompt, bereits mit den relevanten Hilfeabschnitten gefüllt.

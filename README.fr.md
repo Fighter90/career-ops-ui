@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.102.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.102.0)
+[![release](https://img.shields.io/badge/release-v1.103.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.103.0)
 
-> **🆕 Dernière version — v1.102.0**
+> **🆕 Dernière version — v1.103.0**
 >
-> **Demander au guide — un chat d'aide fondé.** Une nouvelle page **Demander au guide 💬** répond aux questions d'usage en utilisant **uniquement** le guide d'aide de l'appli dans votre langue (elle indique les sections utilisées et ne lit jamais votre CV ni votre recherche d'emploi). Récupération par mots-clés sans dépendance sur les sections `##` du guide ; le modèle répond à partir d'elles ou admet que le guide ne le couvre pas. En direct avec une clé LLM, ou une invite à copier sans clé.
+> **Paramètres : outils CLI d'IA.** Un nouvel onglet **Outils CLI d'IA** dans les Paramètres montre quels CLI d'agent — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — sont installés sur la machine qui exécute le serveur, et leurs chemins. Une analyse en lecture seule du PATH : elle vérifie seulement si chaque binaire existe et **ne l'exécute jamais** (pas de `--version`, aucune exécution), n'écrit rien, ne lit aucune donnée utilisateur.
 >
-> _demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

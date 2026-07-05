@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.103.0] — 2026-07-06
+
+**Indstillinger: "AI CLI-værktøjer" — hvilke er installeret.** career-ops er Claude Code-drevet, men virker med enhver agent-CLI på den åbne skill-standard. En ny **AI CLI-værktøjer**-fane i **App-indstillinger** (`#/config`) viser hvilke — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — der er installeret på maskinen, der kører serveren, og deres stier. Det er en **skrivebeskyttet PATH-scanning**: den tjekker kun, om hver binær findes, og **kører den aldrig** (ingen `--version`, ingen kørsel), skriver intet og rører ingen brugerdata.
+
+- Nyt rutemodul (det 28.) `server/lib/routes/cli-detect.mjs` — `GET /api/cli-detect`. Registreringen slår en binærs sti op fra en fast 7-punkts allowlist via `process.env.PATH` (`.cmd/.exe/.bat`-shims på Windows; execute-bit på POSIX); en fjendtlig fil på PATH kan aldrig køres af denne rute.
+- Ny "AI CLI-værktøjer"-fane i `public/js/views/config.js` (lazy-loaded, dyb-linkbar via `#/config?tab=cli`). Tests: `tests/cli-detect-routes.test.mjs`. 8 nye i18n-nøgler ×16 (`cli.*` + `config.tabCli`). Hjælp §2 udvidet på stedet.
+
+Nyt: `server/lib/routes/cli-detect.mjs`.
+
+
 ## [1.102.0] — 2026-07-05
 
 **"Spørg guiden" — en forankret chat over den indbyggede hjælpeguide.** En ny **Spørg guiden 💬**-side (sidebjælke, under Hjælp): skriv et spørgsmål som "Hvordan scanner jeg jobportaler?" og få et svar hentet **kun** fra appens egen hjælpeguide på dit sprog — den viser hvilke afsnit den brugte og **læser aldrig dit CV, din profil eller din jobsøgning**. Det handler om at bruge appen, ikke om dig. Med en LLM-nøgle svarer den live; uden nøgle giver den dig en klar-til-brug prompt, allerede udfyldt med de relevante hjælpeafsnit.

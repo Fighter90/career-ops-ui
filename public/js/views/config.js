@@ -823,6 +823,49 @@ Router.register('config', async () => {
   // v1.45.0 (WS2 #3) — full WAI-ARIA Tabs pattern: role=tablist/tab/
   // tabpanel, aria-selected, roving tabindex, ←/→/↑/↓/Home/End nav.
   // `is-active` class kept for the existing .tab-btn.is-active CSS.
+  // ── AI CLI tools panel (v1.103.0) — which agent CLIs are installed ──
+  const cliList = c('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } });
+  const cliPanel = c('div', { className: 'card' }, [
+    c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('cli.title', 'AI CLI tools')),
+    c('p', { style: { fontSize: '13px', color: 'var(--foggy)', margin: '0 0 12px' } },
+      t('cli.subtitle', 'career-ops is Claude-Code-driven but works with any agent CLI on the open skill standard. This shows which are installed on this machine and where — a read-only PATH scan; no binary is ever run.')),
+    cliList,
+  ]);
+
+  let cliLoaded = false;
+  async function loadCliTab() {
+    if (cliLoaded) return;
+    cliLoaded = true;
+    cliList.textContent = '';
+    cliList.appendChild(c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cli.detecting', 'Detecting…')));
+    try {
+      const { tools } = await API.get('/api/cli-detect');
+      cliList.textContent = '';
+      for (const tool of (tools || [])) {
+        const badge = tool.installed
+          ? c('span', { style: { color: 'var(--ok, #2e7d32)', fontWeight: '700' } }, `✓ ${t('cli.installed', 'installed')}`)
+          : c('span', { style: { color: 'var(--foggy)' } }, `— ${t('cli.notFound', 'not found')}`);
+        cliList.appendChild(c('div', {
+          className: 'card', style: { padding: '10px 14px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', justifyContent: 'space-between' },
+        }, [
+          c('span', { style: { fontWeight: '600' } }, tool.name),
+          c('span', { style: { display: 'flex', alignItems: 'center', gap: '12px' } }, [
+            tool.path ? c('code', { style: { fontSize: '12px', color: 'var(--foggy)', wordBreak: 'break-all' } }, tool.path) : null,
+            badge,
+          ]),
+        ]));
+      }
+      if (!(tools || []).some((x) => x.installed)) {
+        cliList.appendChild(c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '8px 0 0' } },
+          t('cli.noneHint', 'None detected on this server’s PATH. Install one (e.g. Claude Code) to drive the pipeline from your terminal.')));
+      }
+    } catch (err) {
+      cliLoaded = false;
+      cliList.textContent = '';
+      cliList.appendChild(c('p', { style: { color: 'var(--danger, #d9534f)' } }, (err && err.message) || t('cli.failed', 'Could not detect CLIs')));
+    }
+  }
+
   const TABS = []; // { btn, panel, label, key, loader }
   function tabBtn(label, panel, key, loader) {
     const btn = c('button', {
@@ -874,6 +917,7 @@ Router.register('config', async () => {
   const apiLabel = t('config.tabApi', 'API keys & runtime');
   const profileLabel = t('config.tabProfile', 'Profile');
   const modesLabel = t('config.tabModes', 'Modes');
+  const cliLabel = t('config.tabCli', 'AI CLI tools');
   tabsHost.appendChild(c('div', {
     className: 'flex gap-3',
     role: 'tablist',
@@ -882,6 +926,7 @@ Router.register('config', async () => {
     tabBtn(apiLabel, apiPanel, 'api', null),
     tabBtn(profileLabel, profilePanel, 'profile', loadProfileTab),
     tabBtn(modesLabel, modesPanel, 'modes', loadModesTab),
+    tabBtn(cliLabel, cliPanel, 'cli', loadCliTab),
   ]));
 
   // G-008: support deep-linking via /#/config?tab=modes — when the SPA
@@ -891,6 +936,7 @@ Router.register('config', async () => {
     const hash = (window.location.hash || '').toLowerCase();
     if (hash.includes('tab=modes')) return modesLabel;
     if (hash.includes('tab=profile')) return profileLabel;
+    if (hash.includes('tab=cli')) return cliLabel;
     return apiLabel;
   }
 

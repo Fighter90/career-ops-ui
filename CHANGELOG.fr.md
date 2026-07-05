@@ -11,6 +11,16 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.103.0] — 2026-07-06
+
+**Paramètres : « Outils CLI d'IA » — lesquels sont installés.** career-ops est piloté par Claude Code mais fonctionne avec n'importe quel CLI d'agent respectant le standard ouvert de skills. Un nouvel onglet **Outils CLI d'IA** dans **Paramètres** (`#/config`) montre lesquels — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — sont installés sur la machine qui exécute le serveur, et leurs chemins. C'est une **analyse en lecture seule du PATH** : elle vérifie seulement si chaque binaire existe et **ne l'exécute jamais** (pas de `--version`, aucune exécution), n'écrit rien et ne touche aucune donnée utilisateur.
+
+- Nouveau module de route (28ᵉ) `server/lib/routes/cli-detect.mjs` — `GET /api/cli-detect`. La détection résout le chemin d'un binaire depuis une liste blanche fixe de 7 entrées via `process.env.PATH` (shims `.cmd/.exe/.bat` sous Windows ; bit d'exécution sous POSIX) ; un fichier hostile sur le PATH ne peut jamais être exécuté par cette route.
+- Nouvel onglet « Outils CLI d'IA » dans `public/js/views/config.js` (chargement différé, lien profond via `#/config?tab=cli`). Tests : `tests/cli-detect-routes.test.mjs`. 8 nouvelles clés i18n ×16 (`cli.*` + `config.tabCli`). Aide §2 étendue sur place.
+
+Nouveau : `server/lib/routes/cli-detect.mjs`.
+
+
 ## [1.102.0] — 2026-07-05
 
 **« Demander au guide » — un chat fondé sur le guide d'aide intégré.** Nouvelle page **Demander au guide 💬** (barre latérale, sous Aide) : posez une question comme « Comment scanner les portails d'emploi ? » et obtenez une réponse tirée **uniquement** du guide d'aide de l'appli dans votre langue — elle indique les sections utilisées et **ne lit jamais votre CV, profil ni votre recherche d'emploi**. Il s'agit de l'usage de l'appli, pas de vous. Avec une clé LLM, réponse en direct ; sans clé, une invite prête à l'emploi déjà remplie des sections d'aide pertinentes.
