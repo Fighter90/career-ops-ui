@@ -9,6 +9,16 @@
 ---
 
 
+## [1.104.0] — 2026-07-06
+
+**스캔 표의 회사 로고(개인정보 보호형).** **앱 설정**의 새 **모양** 토글 — **스캔 표에 회사 로고 표시**(기본 꺼짐) — 이 `#/scan`에서 회사 이름 옆에 로고를 그립니다. 로고는 **회사 자체 도메인에서 가져온 파비콘**이며 서버에서 프록시됩니다(`GET /api/logo`). 따라서 **어떤 제3자 로고 서비스도 당신이 어떤 고용주를 보는지 알지 못합니다**. 공용 채용 보드(Greenhouse, Lever, Ashby 등)의 공고는 보드 아이콘 대신 색상 **글자 배지**를 표시하고, 로드에 실패한 로고도 같은 배지로 대체됩니다.
+
+- 새 라우트 모듈(29번째) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`. 도메인을 검증하고(스킴/경로/루프백 없음) **SSRF 안전 `safeGet`**(새 `binary` 모드가 원시 바이트 + content-type 반환; DNS 고정·리다이렉트 검증·크기 제한 불변)로 `/favicon.ico`를 가져오며, HTML 오류 페이지를 이미지로 제공하지 않도록 **이미지 매직 스니핑**을 하고, 적중 **및** 실패를 메모리 LRU에 캐시하며, **디스크에 아무것도 쓰지 않습니다**.
+- 새 클라이언트 라이브러리 `public/js/lib/company-logo.js`(`window.CompanyLogo`): localStorage 플래그로 기본 꺼짐; 공용 ATS 호스트는 건너뛰고 결정적 글자 아바타 사용; CSP 안전 `img.onerror` 대체. 테스트: `tests/logo-routes.test.mjs`. 새 i18n 키 5개 ×16(`appear.*`). 도움말 §2 현 위치 확장.
+
+신규: `server/lib/routes/logos.mjs`; `public/js/lib/company-logo.js`.
+
+
 ## [1.103.0] — 2026-07-06
 
 **설정: "AI CLI 도구" — 무엇이 설치되어 있는지.** career-ops는 Claude Code 기반이지만 개방형 스킬 표준의 모든 에이전트 CLI와 작동합니다. **앱 설정**(`#/config`)의 새 **AI CLI 도구** 탭은 Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity 중 서버를 실행하는 머신에 무엇이 설치되어 있고 경로가 어디인지 보여줍니다. 이는 **읽기 전용 PATH 스캔**입니다: 각 바이너리 존재 여부만 확인하고 **절대 실행하지 않으며**(`--version` 없음, 실행 없음), 아무것도 쓰지 않고 사용자 데이터를 건드리지 않습니다.

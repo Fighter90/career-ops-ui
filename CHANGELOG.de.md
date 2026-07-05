@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.104.0] — 2026-07-06
+
+**Firmenlogos in der Scan-Tabelle (datenschutzfreundlich).** Ein neuer **Darstellung**-Schalter in den **App-Einstellungen** — **Firmenlogos in der Scan-Tabelle anzeigen** (standardmäßig aus) — zeichnet das Logo jeder Firma neben ihren Namen auf `#/scan`. Das Logo ist das **von der eigenen Domain der Firma geholte Favicon**, serverseitig weitergeleitet (`GET /api/logo`), sodass **kein Drittanbieter-Logodienst erfährt, welche Arbeitgeber du dir ansiehst**. Anzeigen auf einer gemeinsamen Jobbörse (Greenhouse, Lever, Ashby, …) zeigen ein farbiges **Buchstaben-Badge** statt des Börsen-Icons, und jedes Logo, das nicht lädt, fällt auf dasselbe Badge zurück.
+
+- Neues Routenmodul (das 29.) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`. Es validiert die Domain (kein Schema/Pfad/Loopback), holt `/favicon.ico` über das **SSRF-sichere `safeGet`** (ein neuer `binary`-Modus liefert die rohen Bytes + content-type; DNS-Pinning, Redirect-Validierung und das Größenlimit bleiben unverändert), führt ein **Bild-Magic-Sniffing** durch, damit eine HTML-Fehlerseite nie als Bild ausgeliefert wird, cached Treffer **und** Misses in einem In-Memory-LRU und **schreibt nichts auf die Festplatte**.
+- Neue Client-Lib `public/js/lib/company-logo.js` (`window.CompanyLogo`): standardmäßig aus per localStorage-Flag; überspringt gemeinsame ATS-Hosts zugunsten eines deterministischen Buchstaben-Avatars; CSP-sicherer `img.onerror`-Fallback. Tests: `tests/logo-routes.test.mjs`. 5 neue i18n-Schlüssel ×16 (`appear.*`). Hilfe §2 an Ort und Stelle erweitert.
+
+Neu: `server/lib/routes/logos.mjs`; `public/js/lib/company-logo.js`.
+
+
 ## [1.103.0] — 2026-07-06
 
 **Einstellungen: „KI-CLI-Tools" — welche installiert sind.** career-ops wird von Claude Code angetrieben, funktioniert aber mit jeder Agent-CLI nach dem offenen Skill-Standard. Ein neuer Tab **KI-CLI-Tools** in den **App-Einstellungen** (`#/config`) zeigt, welche davon — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — auf dem Rechner installiert sind, der den Server ausführt, samt ihren Pfaden. Es ist ein **schreibgeschützter PATH-Scan**: er prüft nur, ob das jeweilige Binary existiert, und **führt es nie aus** (kein `--version`, keine Ausführung), schreibt nichts und rührt keine Nutzerdaten an.

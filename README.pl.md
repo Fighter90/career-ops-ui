@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.103.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.103.0)
+[![release](https://img.shields.io/badge/release-v1.104.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.104.0)
 
-> **🆕 Najnowsze wydanie — v1.103.0**
+> **🆕 Najnowsze wydanie — v1.104.0**
 >
-> **Ustawienia: narzędzia CLI AI.** Nowa karta **Narzędzia CLI AI** w Ustawieniach pokazuje, które agentowe CLI — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — są zainstalowane na maszynie z serwerem, i ich ścieżki. Skan PATH tylko do odczytu: sprawdza jedynie, czy dany plik binarny istnieje, i **nigdy go nie uruchamia** (bez `--version`, bez wykonania), niczego nie zapisuje, nie czyta danych użytkownika.
+> **Logo firm w tabeli skanowania (prywatność).** Nowy przełącznik Wygląd rysuje logo każdej firmy obok jej nazwy w `#/scan`. Logo to **favicon firmy z jej własnej domeny**, przekazywany przez proxy po stronie serwera (`GET /api/logo`) przez bezpieczny wobec SSRF fetcher, więc żadna zewnętrzna usługa logo nie dowiaduje się, których pracodawców przeglądasz. Współdzielone portale pokazują odznakę z literą; domyślnie wyłączone.
 >
-> _narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

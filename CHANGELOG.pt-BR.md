@@ -9,6 +9,16 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.104.0] — 2026-07-06
+
+**Logos de empresa na tabela de varredura (preservando privacidade).** Um novo botão em **Aparência** nas **Configurações** — **Mostrar logos de empresa na tabela de varredura** (desativado por padrão) — desenha o logo de cada empresa ao lado do nome em `#/scan`. O logo é o **favicon da empresa obtido do próprio domínio** e com proxy no servidor (`GET /api/logo`), de modo que **nenhum serviço de logos de terceiros descobre quais empregadores você vê**. Vagas em um portal compartilhado (Greenhouse, Lever, Ashby, …) mostram um **selo com uma letra** em vez do ícone do portal, e qualquer logo que falhe ao carregar recai no mesmo selo.
+
+- Novo módulo de rota (29º) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`. Valida o domínio (sem esquema/caminho/loopback), busca `/favicon.ico` pelo **`safeGet` seguro contra SSRF** (um novo modo `binary` retorna os bytes crus + content-type; fixação de DNS, validação de redirecionamentos e limite de tamanho inalterados), faz **sniff de assinatura de imagem** para nunca servir uma página HTML de erro como imagem, faz cache de acertos **e** erros em um LRU em memória e **não grava nada em disco**.
+- Nova lib cliente `public/js/lib/company-logo.js` (`window.CompanyLogo`): desativada por padrão via flag em localStorage; ignora hosts ATS compartilhados em favor de um avatar-letra determinístico; recuo `img.onerror` seguro para CSP. Testes: `tests/logo-routes.test.mjs`. 5 novas chaves i18n ×16 (`appear.*`). Ajuda §2 ampliada no lugar.
+
+Novo: `server/lib/routes/logos.mjs`; `public/js/lib/company-logo.js`.
+
+
 ## [1.103.0] — 2026-07-06
 
 **Configurações: "Ferramentas CLI de IA" — quais estão instaladas.** o career-ops é baseado no Claude Code mas funciona com qualquer CLI de agente no padrão aberto de skills. Uma nova aba **Ferramentas CLI de IA** em **Configurações** (`#/config`) mostra quais — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — estão instaladas na máquina que executa o servidor, e seus caminhos. É uma **varredura somente leitura do PATH**: só verifica se cada binário existe e **nunca o executa** (sem `--version`, sem execução), não grava nada e não toca dados do usuário.

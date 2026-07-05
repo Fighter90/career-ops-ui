@@ -42,6 +42,7 @@ import { registerPortalsRoutes } from './lib/routes/portals.mjs';
 import { registerExportRoutes } from './lib/routes/export.mjs';
 import { registerDocsAssistantRoutes } from './lib/routes/docs-assistant.mjs';
 import { registerCliDetectRoutes } from './lib/routes/cli-detect.mjs';
+import { registerLogoRoutes } from './lib/routes/logos.mjs';
 import { registerPipelineRoutes } from './lib/routes/pipeline.mjs';
 import { registerReportsRoutes } from './lib/routes/reports.mjs';
 import { registerRunnerRoutes } from './lib/routes/runners.mjs';
@@ -176,6 +177,7 @@ export function createApp() {
   registerExportRoutes(app);          // v1.100.0 — POST /api/export/docx (dependency-free .docx from markdown)
   registerDocsAssistantRoutes(app);   // v1.102.0 — POST /api/docs-assistant/ask (grounded help-guide chat)
   registerCliDetectRoutes(app);       // v1.103.0 — GET /api/cli-detect (which AI CLIs are installed; PATH scan, no exec)
+  registerLogoRoutes(app);            // v1.104.0 — GET /api/logo?domain= (company favicon proxy; SSRF-safe, in-mem cache)
   // ───────────────────────────── Catch-all → SPA ─────────────────────────────
 
   // NEW-F1 (v1.59.5) — the previous `app.get('/api/*', …)` was GET-only,

@@ -181,6 +181,18 @@ export async function safeGet(urlString, opts = {}) {
     });
     const isRedirect = res.status >= 300 && res.status < 400 && res.location;
     if (!isRedirect) {
+      // `binary: true` returns the raw Buffer + content-type (for images like
+      // favicons) instead of a utf8-decoded string. All the SSRF protections
+      // above — DNS-pinned transport, redirect-target validation, the maxBytes
+      // cap — apply identically; only the body decoding differs.
+      if (opts.binary) {
+        return {
+          status: res.status,
+          buffer: res.body,
+          contentType: (res.headers && res.headers['content-type']) || '',
+          finalUrl: current,
+        };
+      }
       return {
         status: res.status,
         text: res.body.toString('utf8'),

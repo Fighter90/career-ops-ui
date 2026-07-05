@@ -465,6 +465,8 @@ nothing while confirming the key is wired up correctly. Returns a
 
 **AI CLI tools tab.** career-ops is Claude-Code-driven but works with any agent CLI on the open skill standard. The **AI CLI tools** tab lists the ones it knows about — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — and shows which are **installed on the machine running the server** and where. It's a read-only scan of the server's `PATH`: it only checks whether the binary exists, it **never runs it** (no `--version`, no execution), and writes nothing. If none show up, install one (e.g. Claude Code) to drive the pipeline from your terminal.
 
+**Appearance — company logos.** The **Appearance** card has one toggle: **Show company logos in the scan table**. Off by default. When on, each scan row shows the company's logo — its **favicon fetched from its own domain** and proxied through the server (`/api/logo`), so no third-party logo service ever learns which employers you're viewing. Postings hosted on a shared job board (Greenhouse, Lever, Ashby, …) show a coloured **letter badge** instead of the board's icon, and any logo that fails to load falls back to the same badge. It's purely cosmetic — nothing is written and no CV/profile data is involved.
+
 ---
 
 ## 3. Profile (`#/profile` — also reachable as `#/settings`)

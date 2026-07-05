@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.104.0] — 2026-07-06
+
+**Tarama tablosunda şirket logoları (gizliliği koruyan).** **Uygulama ayarları**'ndaki yeni **Görünüm** anahtarı — **Tarama tablosunda şirket logolarını göster** (varsayılan kapalı) — `#/scan` üzerinde her şirketin logosunu adının yanına çizer. Logo, şirketin **kendi alan adından alınan favicon**'udur ve sunucu tarafında proxy'lenir (`GET /api/logo`); böylece **hiçbir üçüncü taraf logo servisi hangi işverenlere baktığınızı öğrenemez**. Paylaşılan bir iş ilanı portalındaki (Greenhouse, Lever, Ashby, …) ilanlar portal simgesi yerine renkli bir **harf rozeti** gösterir ve yüklenemeyen her logo aynı rozete geri döner.
+
+- Yeni rota modülü (29.) `server/lib/routes/logos.mjs` — `GET /api/logo?domain=`. Alan adını doğrular (şema/yol/loopback yok), `/favicon.ico`'yu **SSRF güvenli `safeGet`** üzerinden alır (yeni bir `binary` modu ham baytları + content-type döndürür; DNS sabitleme, yönlendirme doğrulama ve boyut sınırı değişmedi), bir HTML hata sayfasını asla görüntü olarak sunmamak için **görüntü sihirli bayt koklaması** yapar, isabetleri **ve** ıskaları bellek içi LRU'da önbelleğe alır ve **diske hiçbir şey yazmaz**.
+- Yeni istemci kütüphanesi `public/js/lib/company-logo.js` (`window.CompanyLogo`): localStorage bayrağıyla varsayılan kapalı; paylaşılan ATS ana bilgisayarlarını atlayıp deterministik bir harf avatarı kullanır; CSP güvenli `img.onerror` geri dönüşü. Testler: `tests/logo-routes.test.mjs`. 5 yeni i18n anahtarı ×16 (`appear.*`). Yardım §2 yerinde genişletildi.
+
+Yeni: `server/lib/routes/logos.mjs`; `public/js/lib/company-logo.js`.
+
+
 ## [1.103.0] — 2026-07-06
 
 **Ayarlar: "Yapay zeka CLI araçları" — hangileri kurulu.** career-ops Claude Code ile çalışır ama açık skill standardındaki herhangi bir ajan CLI'ıyla uyumludur. **Uygulama ayarları**'ndaki (`#/config`) yeni **Yapay zeka CLI araçları** sekmesi, bunlardan — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — hangilerinin sunucuyu çalıştıran makinede kurulu olduğunu ve yollarını gösterir. Bu **salt okunur bir PATH taramasıdır**: yalnızca her ikili dosyanın var olup olmadığını kontrol eder ve **asla çalıştırmaz** (`--version` yok, yürütme yok), hiçbir şey yazmaz ve kullanıcı verisine dokunmaz.

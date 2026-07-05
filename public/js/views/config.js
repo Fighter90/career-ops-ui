@@ -940,6 +940,23 @@ Router.register('config', async () => {
     return apiLabel;
   }
 
+  // ── Appearance (v1.104.0) — client-side prefs stored in localStorage ──
+  const logoToggle = c('input', { type: 'checkbox', id: 'appearance-logos' });
+  if (window.CompanyLogo) logoToggle.checked = window.CompanyLogo.enabled();
+  logoToggle.addEventListener('change', () => {
+    if (window.CompanyLogo) window.CompanyLogo.setEnabled(logoToggle.checked);
+    UI.toast(logoToggle.checked
+      ? t('appear.logosOn', 'Company logos on — they’ll show on your next scan')
+      : t('appear.logosOff', 'Company logos off'), 'success');
+  });
+  const appearanceCard = c('div', { className: 'card', style: { marginBottom: '16px' } }, [
+    c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('appear.title', 'Appearance')),
+    c('label', { htmlFor: 'appearance-logos', style: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', cursor: 'pointer' } },
+      [logoToggle, c('span', null, t('appear.logos', 'Show company logos in the scan table'))]),
+    c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '6px 0 0' } },
+      t('appear.logosHint', 'Fetches each company’s favicon from its own domain (proxied server-side, never a third-party logo service). Companies on a shared job-board host show a letter badge instead.')),
+  ]);
+
   const root = c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
@@ -948,6 +965,8 @@ Router.register('config', async () => {
           t('config.subtitle', 'API keys + scanner knobs. Saved to ') + ' ' + (cfg.envFile || '.env')),
       ]),
     ]),
+
+    appearanceCard,
 
     c('div', { className: 'card', style: { background: '#fff8e6', borderColor: '#f0c674', color: '#8a6300', marginBottom: '20px' } }, [
       c('strong', null, 'ℹ ' + t('config.bannerTitle', 'Both projects pick this up')),
