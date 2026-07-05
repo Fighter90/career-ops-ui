@@ -39,6 +39,30 @@ window.ReportExport = (function () {
     return PdfGenerate.run({ kind: 'inline', markdown: String(md || ''), title: title || 'Report', slug: slugify(title || 'report'), button });
   }
 
+  async function saveDocx(md, title, button) {
+    const UI = window.UI;
+    const wasDisabled = button && button.disabled;
+    if (button) button.disabled = true;
+    try {
+      const res = await fetch('/api/export/docx', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ title: title || 'Document', markdown: String(md || '') }),
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `${slugify(title || 'document')}.docx`; a.style.display = 'none';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (e) {
+      if (UI && UI.toast) UI.toast('DOCX export failed', 'error');
+    } finally {
+      if (button) button.disabled = wasDisabled || false;
+    }
+  }
+
   function copy(text) {
     const s = String(text == null ? '' : text);
     if (window.navigator && navigator.clipboard && navigator.clipboard.writeText) {
@@ -65,14 +89,16 @@ window.ReportExport = (function () {
     const tr = (k, f) => (t ? t(k, f) : f);
     const dl = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, tr('export.downloadMd', 'Download .md'));
     const pdf = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, tr('export.savePdf', 'Save as PDF'));
+    const docx = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, tr('export.saveDocx', 'Save as DOCX'));
     const cp = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, tr('export.copy', 'Copy'));
     dl.addEventListener('click', () => downloadMarkdown(titleFn(), getMarkdown()));
     pdf.addEventListener('click', () => savePdf(getMarkdown(), titleFn(), pdf));
+    docx.addEventListener('click', () => saveDocx(getMarkdown(), titleFn(), docx));
     cp.addEventListener('click', () => copy(getMarkdown())
       .then(() => UI.toast(tr('export.copied', 'Copied to clipboard'), 'success'))
       .catch(() => UI.toast(tr('export.copyFailed', 'Could not copy'), 'error')));
-    return c('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '10px 0 0' } }, [dl, pdf, cp]);
+    return c('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '10px 0 0' } }, [dl, pdf, docx, cp]);
   }
 
-  return { downloadMarkdown, savePdf, copy, actionsBar, slugify };
+  return { downloadMarkdown, savePdf, saveDocx, copy, actionsBar, slugify };
 })();

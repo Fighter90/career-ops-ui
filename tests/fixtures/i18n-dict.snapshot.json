@@ -14183,6 +14183,24 @@
     "it": "Salva come PDF",
     "tr": "PDF olarak kaydet"
   },
+  "export.saveDocx": {
+    "en": "Save as DOCX",
+    "es": "Guardar como DOCX",
+    "pt-BR": "Salvar como DOCX",
+    "ko": "DOCX로 저장",
+    "ja": "DOCXで保存",
+    "ru": "Сохранить как DOCX",
+    "zh-CN": "另存为 DOCX",
+    "zh-TW": "另存為 DOCX",
+    "fr": "Enregistrer en DOCX",
+    "pl": "Zapisz jako DOCX",
+    "uk": "Зберегти як DOCX",
+    "da": "Gem som DOCX",
+    "ar": "حفظ بصيغة DOCX",
+    "de": "Als DOCX speichern",
+    "it": "Salva come DOCX",
+    "tr": "DOCX olarak kaydet"
+  },
   "export.copy": {
     "en": "Copy",
     "es": "Copiar",
@@ -14687,6 +14705,42 @@
     "it": "✨ Assistente di compilazione IA",
     "tr": "✨ Yapay zeka doldurma asistanı"
   },
+  "twoPager.aiFilling": {
+    "en": "✨ Filling…",
+    "es": "✨ Rellenando…",
+    "pt-BR": "✨ Preenchendo…",
+    "ko": "✨ 채우는 중…",
+    "ja": "✨ 入力中…",
+    "ru": "✨ Заполняю…",
+    "zh-CN": "✨ 填充中…",
+    "zh-TW": "✨ 填入中…",
+    "fr": "✨ Remplissage…",
+    "pl": "✨ Wypełnianie…",
+    "uk": "✨ Заповнюю…",
+    "da": "✨ Udfylder…",
+    "ar": "✨ جارٍ التعبئة…",
+    "de": "✨ Wird ausgefüllt…",
+    "it": "✨ Compilazione…",
+    "tr": "✨ Dolduruluyor…"
+  },
+  "twoPager.aiFilled": {
+    "en": "Fields drafted from your CV — review, then Save",
+    "es": "Campos redactados desde tu CV — revisa y guarda",
+    "pt-BR": "Campos preenchidos a partir do seu CV — revise e salve",
+    "ko": "이력서에서 필드 초안 작성 완료 — 검토 후 저장하세요",
+    "ja": "履歴書からフィールドを下書きしました — 確認して保存してください",
+    "ru": "Поля составлены по вашему резюме — проверьте и сохраните",
+    "zh-CN": "已根据你的简历起草字段——请检查后保存",
+    "zh-TW": "已根據你的履歷起草欄位——請檢查後儲存",
+    "fr": "Champs rédigés à partir de votre CV — vérifiez puis enregistrez",
+    "pl": "Pola utworzone na podstawie CV — sprawdź i zapisz",
+    "uk": "Поля складено з вашого резюме — перевірте та збережіть",
+    "da": "Felter udarbejdet fra dit CV — gennemgå, og gem",
+    "ar": "تمت صياغة الحقول من سيرتك الذاتية — راجعها ثم احفظ",
+    "de": "Felder aus deinem Lebenslauf entworfen — prüfen und speichern",
+    "it": "Campi redatti dal tuo CV — controlla e salva",
+    "tr": "Alanlar özgeçmişinizden taslaklandı — gözden geçirip kaydedin"
+  },
   "twoPager.aiFillHelp": {
     "en": "Run this in any LLM, then paste the YAML fields back into the form above. It uses only your CV and profile — nothing is invented.",
     "es": "Ejecuta esto en cualquier LLM y luego pega los campos YAML de vuelta en el formulario de arriba. Usa solo tu CV y tu perfil — no se inventa nada.",
@@ -14706,7 +14760,7 @@
     "tr": "Bunu herhangi bir LLM'de çalıştırın, ardından YAML alanlarını yukarıdaki forma yapıştırın. Yalnızca CV'nizi ve profilinizi kullanır — hiçbir şey uydurulmaz."
   },
   "twoPager.aiFillFailed": {
-    "en": "Could not build the draft prompt",
+    "en": "Could not draft the two-pager",
     "es": "No se pudo crear el prompt del borrador",
     "pt-BR": "Não foi possível criar o prompt do rascunho",
     "ko": "초안 프롬프트를 생성할 수 없습니다",
@@ -14722,6 +14776,24 @@
     "de": "Der Entwurfs-Prompt konnte nicht erstellt werden",
     "it": "Impossibile creare il prompt della bozza",
     "tr": "Taslak istemi oluşturulamadı"
+  },
+  "twoPager.preview": {
+    "en": "👁 Preview & export",
+    "es": "👁 Vista previa y exportar",
+    "pt-BR": "👁 Visualizar e exportar",
+    "ko": "👁 미리보기 및 내보내기",
+    "ja": "👁 プレビューとエクスポート",
+    "ru": "👁 Просмотр и экспорт",
+    "zh-CN": "👁 预览并导出",
+    "zh-TW": "👁 預覽並匯出",
+    "fr": "👁 Aperçu et export",
+    "pl": "👁 Podgląd i eksport",
+    "uk": "👁 Перегляд і експорт",
+    "da": "👁 Forhåndsvis og eksportér",
+    "ar": "👁 معاينة وتصدير",
+    "de": "👁 Vorschau und Export",
+    "it": "👁 Anteprima ed esporta",
+    "tr": "👁 Önizle ve dışa aktar"
   },
   "twoPager.save": {
     "en": "Save two-pager",

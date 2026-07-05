@@ -9,6 +9,17 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.100.0] — 2026-07-05
+
+**Two-pager: automatyczne wypełnianie przez AI z Twojego CV + Podgląd + eksport do PDF/DOCX/Markdown.** Two-pager (`#/two-pager`) zapisuje to, czego naprawdę chcesz od kolejnej roli, ale dotąd każde pole trzeba było pisać ręcznie albo kopiować prompt do innego narzędzia. Teraz **✨ asystent wypełniania AI** działa na żywo z Twoim skonfigurowanym dostawcą — czyta *tylko* Twoje CV + profil (przez `bundleProjectContext`, niczego nie zmyślając), tworzy wszystkie pola (kim jestem / co lubię / niezbędne / czego nie znoszę / warunki wykluczające / nienegocjowalne / docelowe środowisko) i wypełnia formularz, byś sprawdził, edytował i zapisał. Bez klucza API wraca do okna „skopiuj prompt”, jak wcześniej. Nowy przycisk **👁 Podgląd i eksport** renderuje two-pager jako sformatowany dokument z paskiem **Pobierz .md / Zapisz jako PDF / Zapisz jako DOCX / Kopiuj**.
+
+- **Eksport `.docx` bez zależności.** Nowy `server/lib/docx.mjs` generuje minimalny, ale poprawny `.docx` Office Open XML (ZIP DEFLATE czterech części OOXML, CRC-32 na wpis) — bez nowej zależności runtime (zależności to nadal `express` + `js-yaml`). Nowa trasa `POST /api/export/docx` (`server/lib/routes/export.mjs`, 26. moduł tras; bezstanowa, limit 200 KB, bez zapisów / bez LLM / bez fetch URL). Wpięta w współdzielony `public/js/lib/report-export.js`, więc **raport rynkowy, plan kariery i orientacja zawodowa też zyskują eksport DOCX**.
+- Wypełnianie na żywo używa współdzielonej kaskady dostawców (`runActiveProvider` / `providerAvailable`); zwrócony YAML jest parsowany i sprowadzany z powrotem do ograniczonego kształtu two-pager (`parseYamlFields` + `normalizeTwoPager`) — nieznane klucze odrzucane, tablice/łańcuchy ograniczane. Tryb ręczny zachowany.
+- Testy: `tests/export-routes.test.mjs`. 4 nowe klucze i18n ×16 (`export.saveDocx`, `twoPager.preview`, `twoPager.aiFilling`, `twoPager.aiFilled`).
+
+Nowe: `server/lib/docx.mjs`; `server/lib/routes/export.mjs`.
+
+
 ## [1.99.0] — 2026-07-05
 
 **Strona kondycji portali** (`#/portals`). Skaner obserwuje zestaw firm w `portals.yml`; slug ATS może po cichu się zepsuć, a ten pracodawca znika ze wszystkich przyszłych skanów. Nowa strona **Portals** wymienia każdą obserwowaną firmę i po kliknięciu **Check portal health** sonduje każdy `careers_url` przez `safeGet` z przypiętym DNS (odporność na SSRF), oznaczając martwe (404 = po cichu odrzucona) — tylko do odczytu. Wzmacnia też zgłaszacz błędów z v1.98.0 po recenzji: bufor błędów wychwytuje teraz sieciowe błędy fetch, a czyszczarka ukrywa nieoznaczone klucze dostawców.

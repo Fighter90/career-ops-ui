@@ -1994,7 +1994,9 @@ Click **Save two-pager** to persist it. It is written to your **parent career-op
 
 ### The AI fill assistant
 
-Not sure how to phrase it? Click **✨ AI fill assistant**. It builds a ready-to-run prompt (the Mnookin format, with your CV and profile inlined) and shows it in a dialog. Run that prompt in any LLM, then paste the resulting YAML fields back into the form. The assistant only ever uses **your own** CV and profile — it never invents facts about you, and no live API call is made from this button.
+Not sure how to phrase it? Click **✨ AI fill assistant** and it drafts the whole two-pager for you. When you have an **LLM provider configured** (see §3), it runs live: it reads **only** your own CV and profile, drafts every field — who you are, your loves, must-haves, hates, deal-breakers, non-negotiables, and target environment — and fills the form in place. Nothing is filed automatically: you **review, edit, and click Save** like any hand-typed two-pager. It never invents facts about you; it only reshapes what your CV and profile already say. With **no API key set**, it falls back to the old behavior — it shows the ready-to-run Mnookin prompt in a dialog so you can run it in any LLM and paste the YAML back.
+
+**Preview & export (PDF / DOCX / Markdown).** Click **👁 Preview & export** to see your two-pager rendered as a clean, formatted document. From the preview you can **Download .md**, **Save as PDF**, **Save as DOCX** (a real Word file — handy for sharing with a coach or recruiter), or **Copy** it to the clipboard. The same export bar now also appears on the **market report**, **career plan**, and **career orientation** pages. The `.docx` is built entirely in-app — no external service ever sees your two-pager.
 
 ### The fit-to-what-you-want score
 

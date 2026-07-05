@@ -47,7 +47,7 @@ Router.register('two-pager', async () => {
       c('span', { className: 'field-label', style: { display: 'block', fontWeight: '600', margin: '0 0 6px' } }, t(labelKey, labelFb)),
       ta,
     ]);
-    return { wrap, get: () => ta.value };
+    return { wrap, get: () => ta.value, set: (v) => { ta.value = v || ''; } };
   }
 
   // ── tag-list editors (loves / must_haves / hates / deal_breakers / non_negotiables) ──
@@ -59,10 +59,12 @@ Router.register('two-pager', async () => {
     { key: 'non_negotiables', labelKey: 'twoPager.nonNegotiables', labelFb: 'Non-negotiables', hintKey: 'twoPager.nonNegotiablesHint', hintFb: 'Boundaries — location, remote, comp floor…', tone: 'pos' },
   ];
 
+  const editors = {};
   const getters = {};
   const grid = c('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', margin: '0 0 18px' } });
   for (const spec of lists) {
     const editor = tagEditor(Array.isArray(data[spec.key]) ? data[spec.key] : [], spec, t, c);
+    editors[spec.key] = editor;
     getters[spec.key] = editor.get;
     grid.appendChild(editor.node);
   }
@@ -73,8 +75,9 @@ Router.register('two-pager', async () => {
 
   // ── actions ──
   const draftBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('twoPager.aiFill', '✨ AI fill assistant'));
+  const previewBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('twoPager.preview', '👁 Preview & export'));
   const saveBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('twoPager.save', 'Save two-pager'));
-  const actions = c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', margin: '4px 0 8px' } }, [saveBtn, draftBtn]);
+  const actions = c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', margin: '4px 0 8px' } }, [saveBtn, draftBtn, previewBtn]);
   root.appendChild(actions);
   root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '0 0 24px' } },
     t('twoPager.privacyNote', 'Stored in your parent project’s user layer (config/two-pager.yml) — never sent anywhere except the LLM prompts you run.')));
@@ -91,6 +94,32 @@ Router.register('two-pager', async () => {
     };
   }
 
+  // Render the current fields as a formatted two-pager document (for preview + export).
+  function buildMarkdown() {
+    const d = collect();
+    const lines = ['# ' + t('twoPager.title', 'Your two-pager'), ''];
+    if (d.who_i_am && d.who_i_am.trim()) lines.push('## ' + t('twoPager.whoLabel', 'Who I am'), d.who_i_am.trim(), '');
+    const sec = (label, arr) => {
+      if (Array.isArray(arr) && arr.length) { lines.push('## ' + label); arr.forEach((x) => lines.push('- ' + x)); lines.push(''); }
+    };
+    sec(t('twoPager.loves', 'What I love'), d.loves);
+    sec(t('twoPager.mustHaves', 'Must-haves'), d.must_haves);
+    sec(t('twoPager.hates', 'What I hate'), d.hates);
+    sec(t('twoPager.dealBreakers', 'Deal-breakers'), d.deal_breakers);
+    sec(t('twoPager.nonNegotiables', 'Non-negotiables'), d.non_negotiables);
+    if (d.target_environment && d.target_environment.trim()) lines.push('## ' + t('twoPager.envLabel', 'Target environment'), d.target_environment.trim(), '');
+    return lines.join('\n');
+  }
+
+  previewBtn.addEventListener('click', () => {
+    const md = buildMarkdown();
+    const body = c('div', null, [
+      c('div', { className: 'card md', html: UI.md(md), style: { padding: '16px', maxHeight: '50vh', overflow: 'auto' } }),
+      window.ReportExport ? ReportExport.actionsBar(() => buildMarkdown(), () => t('twoPager.title', 'Your two-pager'), t) : null,
+    ]);
+    UI.modal(t('twoPager.preview', 'Preview & export'), body);
+  });
+
   saveBtn.addEventListener('click', async () => {
     saveBtn.disabled = true;
     try {
@@ -101,19 +130,46 @@ Router.register('two-pager', async () => {
     } finally { saveBtn.disabled = false; }
   });
 
+  // Apply a live-generated (or pasted) two-pager onto the form editors.
+  function applyFields(f) {
+    if (!f || typeof f !== 'object') return;
+    if ('who_i_am' in f) whoField.set(f.who_i_am);
+    if ('target_environment' in f) envField.set(f.target_environment);
+    for (const spec of lists) {
+      const ed = editors[spec.key];
+      if (ed && Array.isArray(f[spec.key])) ed.set(f[spec.key]);
+    }
+  }
+
+  function showManualPrompt(prompt) {
+    const body = c('div', null, [
+      c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } },
+        t('twoPager.aiFillHelp', 'Run this in any LLM, then paste the YAML fields back into the form above. It uses only your CV and profile — nothing is invented.')),
+      c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt),
+    ]);
+    UI.modal(t('twoPager.aiFill', '✨ AI fill assistant'), body);
+  }
+
   draftBtn.addEventListener('click', async () => {
     draftBtn.disabled = true;
+    draftBtn.textContent = t('twoPager.aiFilling', '✨ Filling…');
     try {
-      const { prompt } = await API.post('/api/two-pager/draft', {});
-      const body = c('div', null, [
-        c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } },
-          t('twoPager.aiFillHelp', 'Run this in any LLM, then paste the YAML fields back into the form above. It uses only your CV and profile — nothing is invented.')),
-        c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt),
-      ]);
-      UI.modal(t('twoPager.aiFill', '✨ AI fill assistant'), body);
+      // Ask the server to run it live; it falls back to a manual prompt when no
+      // provider is configured. Auto-fill only ever populates editable fields —
+      // the user still reviews and clicks Save.
+      const res = await API.post('/api/two-pager/draft', { run: true });
+      if (res && res.fields) {
+        applyFields(res.fields);
+        UI.toast(t('twoPager.aiFilled', 'Fields drafted from your CV — review, then Save'), 'success');
+      } else if (res && res.prompt) {
+        showManualPrompt(res.prompt);
+      }
     } catch (err) {
-      UI.toast((err && err.message) || t('twoPager.aiFillFailed', 'Could not build the draft prompt'), 'error');
-    } finally { draftBtn.disabled = false; }
+      UI.toast((err && err.message) || t('twoPager.aiFillFailed', 'Could not draft the two-pager'), 'error');
+    } finally {
+      draftBtn.disabled = false;
+      draftBtn.textContent = t('twoPager.aiFill', '✨ AI fill assistant');
+    }
   });
 
   return root;
@@ -171,5 +227,11 @@ function tagEditor(initial, spec, t, c) {
     input,
   ]);
 
-  return { node, get: () => items.slice() };
+  function set(newItems) {
+    items.length = 0;
+    while (chips.firstChild) chips.removeChild(chips.firstChild);
+    (Array.isArray(newItems) ? newItems : []).forEach(addChip);
+  }
+
+  return { node, get: () => items.slice(), set };
 }

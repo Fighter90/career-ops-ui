@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.100.0] — 2026-07-05
+
+**Two-pager: özgeçmişinizden yapay zeka ile otomatik doldurma + Önizleme + PDF/DOCX/Markdown dışa aktarımı.** Two-pager (`#/two-pager`) bir sonraki rolünüzden gerçekte ne istediğinizi kaydeder, ancak şimdiye dek her alanı elle yazmanız ya da bir istemi başka bir araca kopyalamanız gerekiyordu. Artık **✨ yapay zeka doldurma yardımcısı** yapılandırdığınız sağlayıcıyla canlı çalışıyor — *yalnızca* özgeçmişinizi + profilinizi okur (`bundleProjectContext` üzerinden, hiçbir şey uydurmadan), tüm alanları (ben kimim / sevdiklerim / olmazsa olmazlar / nefret ettiklerim / kesin engeller / pazarlıksızlar / hedef ortam) taslaklar ve gözden geçirip düzenleyip kaydetmeniz için formu doldurur. API anahtarı yoksa eskisi gibi istemi-kopyala kipine döner. Yeni bir **👁 Önizle ve dışa aktar** düğmesi two-pager'ı biçimlendirilmiş bir belge olarak işler ve **.md indir / PDF olarak kaydet / DOCX olarak kaydet / Kopyala** çubuğunu sunar.
+
+- **Bağımlılıksız `.docx` dışa aktarımı.** Yeni `server/lib/docx.mjs`, minimal ama geçerli bir Office Open XML `.docx` üretir (dört OOXML parçasının DEFLATE ZIP'i, girdi başına CRC-32) — yeni çalışma zamanı bağımlılığı yok (bağımlılıklar `express` + `js-yaml` olarak kalır). Yeni rota `POST /api/export/docx` (`server/lib/routes/export.mjs`, 26. rota modülü; durumsuz, 200 KB sınırlı, yazma yok / LLM yok / URL fetch yok). Paylaşılan `public/js/lib/report-export.js`'e bağlandı, böylece **pazar raporu, kariyer planı ve kariyer yönlendirmesi de DOCX dışa aktarımı kazanır**.
+- Canlı otomatik doldurma, paylaşılan sağlayıcı basamaklamasını (`runActiveProvider` / `providerAvailable`) kullanır; dönen YAML ayrıştırılır ve sınırlı two-pager biçimine (`parseYamlFields` + `normalizeTwoPager`) geri zorlanır — bilinmeyen anahtarlar atılır, diziler/dizeler sınırlanır. Manuel kip korunur.
+- Testler: `tests/export-routes.test.mjs`. 4 yeni i18n anahtarı ×16 (`export.saveDocx`, `twoPager.preview`, `twoPager.aiFilling`, `twoPager.aiFilled`).
+
+Yeni: `server/lib/docx.mjs`; `server/lib/routes/export.mjs`.
+
+
 ## [1.99.0] — 2026-07-05
 
 **Portal sağlığı sayfası** (`#/portals`). Tarayıcı `portals.yml` içindeki bir dizi şirketi izler; bir ATS slug’ı sessizce bozulabilir ve o işveren tüm gelecekteki taramalardan kaybolur. Yeni **Portals** sayfası izlenen her şirketi listeler ve **Check portal health** ile her `careers_url` adresini DNS’i sabitlenmiş `safeGet` üzerinden (SSRF’ye karşı güvenli) yoklar ve ölüleri işaretler (404 = sessizce elenmiş) — salt okunur. Ayrıca v1.98.0 hata bildiricisini inceleme sonrası sağlamlaştırır: hata halka tamponu artık ağ katmanı fetch hatalarını yakalar ve temizleyici etiketsiz sağlayıcı anahtarlarını gizler.

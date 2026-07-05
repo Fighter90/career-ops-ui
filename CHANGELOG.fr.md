@@ -11,6 +11,17 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.100.0] — 2026-07-05
+
+**Two-pager : remplissage automatique par IA depuis votre CV + Aperçu + export en PDF/DOCX/Markdown.** Le two-pager (`#/two-pager`) recense ce que vous voulez vraiment de votre prochain poste, mais il fallait jusqu'ici rédiger chaque champ à la main ou copier une invite dans un autre outil. Désormais, l'**✨ assistant de remplissage IA** s'exécute en direct avec votre fournisseur configuré — il lit *uniquement* votre CV + profil (via `bundleProjectContext`, sans rien inventer), rédige tous les champs (qui je suis / ce que j'aime / indispensables / ce que je déteste / rédhibitoires / non négociables / environnement cible) et remplit le formulaire pour que vous le relisiez, l'éditiez et l'enregistriez. Sans clé API, il revient à la modale « copier l'invite », comme avant. Un nouveau bouton **👁 Aperçu et export** rend le two-pager sous forme de document avec une barre **Télécharger .md / Enregistrer en PDF / Enregistrer en DOCX / Copier**.
+
+- **Export `.docx` sans dépendance.** Nouveau `server/lib/docx.mjs` qui produit un `.docx` Office Open XML minimal mais valide (un ZIP DEFLATE des quatre parties OOXML, CRC-32 par entrée) — sans nouvelle dépendance (les deps restent `express` + `js-yaml`). Nouvelle route `POST /api/export/docx` (`server/lib/routes/export.mjs`, le 26ᵉ module de routes ; sans état, borné à 200 Ko, sans écriture / sans LLM / sans fetch d'URL). Intégré au `public/js/lib/report-export.js` partagé, donc **le rapport de marché, le plan de carrière et l'orientation professionnelle gagnent aussi l'export DOCX**.
+- Le remplissage automatique en direct utilise la cascade de fournisseurs partagée (`runActiveProvider` / `providerAvailable`) ; le YAML renvoyé est analysé et ramené à la forme bornée du two-pager (`parseYamlFields` + `normalizeTwoPager`) — clés inconnues supprimées, tableaux/chaînes plafonnés. Mode manuel préservé.
+- Tests : `tests/export-routes.test.mjs`. 4 nouvelles clés i18n ×16 (`export.saveDocx`, `twoPager.preview`, `twoPager.aiFilling`, `twoPager.aiFilled`).
+
+Nouveau : `server/lib/docx.mjs` ; `server/lib/routes/export.mjs`.
+
+
 ## [1.99.0] — 2026-07-05
 
 **Page de santé des portails** (`#/portals`). Le scanner surveille un ensemble d’entreprises dans `portals.yml` ; un slug d’ATS peut se casser silencieusement et cet employeur disparaît de tous les scans futurs. La nouvelle page **Portals** liste chaque entreprise surveillée et, via **Check portal health**, sonde chaque `careers_url` à travers le `safeGet` à DNS épinglé (anti-SSRF) et signale les mortes (un 404 = écartée en silence) — en lecture seule. Renforce aussi le rapporteur de bugs de la v1.98.0 après revue : le tampon d’erreurs capture désormais les échecs réseau du fetch, et le nettoyeur masque les clés de fournisseur non étiquetées.

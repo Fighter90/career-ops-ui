@@ -11,6 +11,17 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.100.0] — 2026-07-05
+
+**Two-pager: autorrelleno con IA desde tu CV + Vista previa + exportar a PDF/DOCX/Markdown.** El two-pager (`#/two-pager`) recoge lo que de verdad quieres de tu próximo puesto, pero antes había que redactar cada campo a mano o copiar un prompt en otra herramienta. Ahora el **✨ asistente de relleno con IA** se ejecuta en vivo con tu proveedor configurado: lee *solo* tu CV + perfil (vía `bundleProjectContext`, sin inventar nada), redacta todos los campos (quién soy / me gusta / imprescindibles / detesto / líneas rojas / innegociables / entorno objetivo) y rellena el formulario para que lo revises, edites y guardes. Sin clave de API vuelve al modal de copiar-el-prompt, igual que antes. Un nuevo botón **👁 Vista previa y exportar** renderiza el two-pager como documento con una barra **Descargar .md / Guardar como PDF / Guardar como DOCX / Copiar**.
+
+- **Exportación `.docx` sin dependencias.** Nuevo `server/lib/docx.mjs` que genera un `.docx` Office Open XML mínimo pero válido (un ZIP DEFLATE de las cuatro partes OOXML, con CRC-32 por entrada) — sin nueva dependencia (las deps siguen siendo `express` + `js-yaml`). Nueva ruta `POST /api/export/docx` (`server/lib/routes/export.mjs`, el 26.º módulo de rutas; sin estado, limitado a 200 KB, sin escrituras / sin LLM / sin fetch de URL). Integrado en el `public/js/lib/report-export.js` compartido, así que **el informe de mercado, el plan de carrera y la orientación profesional también ganan exportación a DOCX**.
+- El autorrelleno en vivo usa la cascada de proveedores compartida (`runActiveProvider` / `providerAvailable`); el YAML devuelto se parsea y se ajusta de vuelta a la forma acotada del two-pager (`parseYamlFields` + `normalizeTwoPager`) — claves desconocidas descartadas, arrays/cadenas limitados. Se conserva el modo manual.
+- Pruebas: `tests/export-routes.test.mjs`. 4 claves i18n nuevas ×16 (`export.saveDocx`, `twoPager.preview`, `twoPager.aiFilling`, `twoPager.aiFilled`).
+
+Nuevo: `server/lib/docx.mjs`; `server/lib/routes/export.mjs`.
+
+
 ## [1.99.0] — 2026-07-05
 
 **Página de estado de portales** (`#/portals`). El escáner vigila un conjunto de empresas en `portals.yml`; un slug de ATS puede romperse silenciosamente y ese empleador desaparece de todos los escaneos futuros. La nueva página **Portals** lista cada empresa vigilada y, al pulsar **Check portal health**, sondea cada `careers_url` a través del `safeGet` con DNS fijado (a prueba de SSRF) y marca las caídas (un 404 = descartada en silencio) — solo lectura. También refuerza el reportador de errores de la v1.98.0 tras la revisión: el búfer de errores ahora captura fallos de red del fetch, y el limpiador redacta claves de proveedor sin etiqueta.

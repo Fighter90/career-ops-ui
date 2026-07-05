@@ -23,6 +23,7 @@ import { PATHS } from '../paths.mjs';
 import { withFileLock } from '../file-lock.mjs';
 import { bundleProjectContext } from '../prompts.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
+import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
 
 const EMPTY = () => ({
   who_i_am: '', loves: [], must_haves: [], hates: [],
@@ -98,13 +99,47 @@ export function registerTwoPagerRoutes(app) {
   });
 
   // The "AI fill assistant" — build a ready-to-run Mnookin draft prompt with the
-  // candidate's cv.md + profile inlined. Returned for the user to run (copy, or
-  // paste into a live provider); no external call is made here.
-  app.post('/api/two-pager/draft', llmRateLimit, (_req, res) => {
+  // candidate's cv.md + profile inlined. With `{ run: true }` and a provider
+  // configured, we run it live and parse the YAML back into the two-pager shape
+  // so the form auto-fills; otherwise we return the prompt for the user to run
+  // manually (shared manual-fallback contract, same as career-plan/market).
+  app.post('/api/two-pager/draft', llmRateLimit, async (req, res) => {
+    const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const ctx = bundleProjectContext({});
     if (!ctx) {
       return res.status(400).json({ error: 'no candidate materials yet — add your CV / profile first' });
     }
-    res.json({ prompt: `${DRAFT_INSTRUCTIONS}${ctx}` });
+    const prompt = `${DRAFT_INSTRUCTIONS}${ctx}`;
+
+    if (!body.run) {
+      return res.json({
+        mode: 'manual',
+        prompt,
+        message: providerAvailable()
+          ? 'Set { run: true } to auto-fill live, or copy this prompt into any LLM.'
+          : 'No API key set — copy this prompt into any LLM, then paste the YAML back.',
+      });
+    }
+
+    const r = await runActiveProvider(prompt);
+    if (r.mode === 'too-large') {
+      return res.status(413).json({ error: 'prompt too large', details: [`assembled prompt is ${r.size} bytes; soft cap is ${r.cap}.`] });
+    }
+    if (r.mode === 'manual') return res.json({ mode: 'manual', prompt, message: 'No provider available — copy this prompt into any LLM.' });
+    if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
+    const fields = parseYamlFields(r.markdown);
+    if (!fields) return res.status(502).json({ mode: r.mode, prompt, error: 'could not parse the two-pager YAML the model returned' });
+    return res.json({ mode: r.mode, prompt, fields, usage: r.usage });
   });
+}
+
+/** Strip ```yaml fences, parse, and coerce to the bounded two-pager shape. */
+export function parseYamlFields(raw) {
+  const text = String(raw || '').replace(/^\s*```(?:ya?ml)?\s*/i, '').replace(/```\s*$/i, '').trim();
+  if (!text) return null;
+  try {
+    const parsed = yaml.load(text);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+    return normalizeTwoPager(parsed);
+  } catch { return null; }
 }

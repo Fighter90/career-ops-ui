@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.99.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.99.0)
+[![release](https://img.shields.io/badge/release-v1.100.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.100.0)
 
-> **🆕 Najnowsze wydanie — v1.99.0**
+> **🆕 Najnowsze wydanie — v1.100.0**
 >
-> **Strona kondycji portali** (`#/portals`). Skaner obserwuje zestaw firm w `portals.yml`; slug ATS może po cichu się zepsuć, a ten pracodawca znika ze wszystkich przyszłych skanów. Nowa strona **Portals** wymienia każdą obserwowaną firmę i po kliknięciu **Check portal health** sonduje każdy `careers_url` przez `safeGet` z przypiętym DNS (odporność na SSRF), oznaczając martwe (404 = po cichu odrzucona) — tylko do odczytu. Wzmacnia też zgłaszacz błędów z v1.98.0 po recenzji: bufor błędów wychwytuje teraz sieciowe błędy fetch, a czyszczarka ukrywa nieoznaczone klucze dostawców.
+> **Automatyczne wypełnianie two-pager przez AI + eksport.** Two-pager (`#/two-pager`) teraz sam wypełnia się z Twojego CV + profilu przez skonfigurowanego dostawcę (niczego nie zmyślając; awaryjnie kopiowanie promptu bez klucza), dodaje widok **Podgląd i eksport** i zyskuje eksport do **PDF / DOCX / Markdown** — DOCX przez nowy generator `.docx` bez zależności, wpięty także w raporty rynkowy, plan kariery i orientację.
 >
-> _kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 
