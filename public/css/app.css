@@ -1395,6 +1395,15 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 }
 .notif-drawer__clear-all:hover { background: var(--beach, #fafafa); color: var(--hof, #000); }
 .notif-drawer__clear-all[hidden] { display: none; }
+/* v1.98.0 — in-app bug reporter trigger, mirrors the clear-all chip. */
+.notif-drawer__report-bug {
+  background: transparent; border: 1px solid var(--slate, #ddd);
+  font-size: 12px; padding: 4px 10px; border-radius: 6px;
+  cursor: pointer; color: var(--foggy, #666);
+  margin-left: auto; margin-right: 8px; white-space: nowrap;
+}
+.notif-drawer__report-bug:hover { background: var(--beach, #fafafa); color: var(--hof, #000); }
+.notif-drawer__report-bug[hidden] { display: none; }
 .notif-item { position: relative; }
 .notif-item__dismiss {
   position: absolute; top: 6px; right: 8px;

@@ -963,4 +963,16 @@ window.__I18N_DICT_DA = {
   'orient.running': "Genererer din profil…",
   'orient.failed': "Kunne ikke generere profilen",
   'orient.note': "Dette læser dit CV, din profil, din two-pager og din hukommelsesnote — det opfinder aldrig fakta og rapporterer aldrig målte testresultater. Intet gemmes; eksportér den, hvis du vil beholde den.",
+  // ── v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter ──
+  'bug.report': "🐞 Rapportér en fejl",
+  'bug.title': "Rapportér en fejl",
+  'bug.what': "Hvad skete der",
+  'bug.ph': "Hvad var du i gang med, og hvad gik galt?",
+  'bug.preview': "Præcis hvad der bliver indsendt (kan redigeres via feltet ovenfor)",
+  'bug.openIssue': "Åbn en GitHub-issue →",
+  'bug.searchSimilar': "Søg efter lignende issues",
+  'bug.copy': "Kopiér rapport",
+  'bug.copied': "Rapport kopieret",
+  'bug.copyFailed': "Kunne ikke kopiere",
+  'bug.privacy': "Intet indsendes automatisk. Rapporten nedenfor indeholder kun versioner, din skærm, browser og seneste fejltekst — aldrig dit CV, din profil, dine svar eller job-URL'er. Gennemgå den, og åbn derefter selv issuen.",
 };

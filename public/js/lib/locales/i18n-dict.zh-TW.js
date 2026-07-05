@@ -964,4 +964,16 @@ window.__I18N_DICT_ZH_TW = {
   'orient.running': "正在生成你的畫像…",
   'orient.failed': "無法生成畫像",
   'orient.note': "它會讀取你的 CV、檔案、兩頁紙和記憶筆記——絕不虛構事實,也絕不回報測量得出的測驗分數。不會儲存任何內容;若想留存,請匯出。",
+  // ── v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter ──
+  'bug.report': "🐞 回報問題",
+  'bug.title': "回報問題",
+  'bug.what': "發生了什麼",
+  'bug.ph': "你當時在做什麼，出了什麼問題？",
+  'bug.preview': "實際將提交的確切內容（可透過上方文字方塊編輯）",
+  'bug.openIssue': "開啟 GitHub issue →",
+  'bug.searchSimilar': "搜尋類似問題",
+  'bug.copy': "複製報告",
+  'bug.copied': "報告已複製",
+  'bug.copyFailed': "無法複製",
+  'bug.privacy': "不會自動提交任何內容。下方報告僅包含版本、你的螢幕、瀏覽器和最近的錯誤文字——絕不包含你的 CV、檔案、答案或職缺 URL。請先檢視，然後自行提交 issue。",
 };

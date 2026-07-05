@@ -963,4 +963,16 @@ window.__I18N_DICT_ES = {
   'orient.running': "Generando tu perfil…",
   'orient.failed': "No se pudo generar el perfil",
   'orient.note': "Esto lee tu CV, perfil, two-pager y nota de memoria — nunca inventa datos ni informa puntuaciones de test medidas. No se guarda nada; expórtalo si quieres conservarlo.",
+  // ── v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter ──
+  'bug.report': "🐞 Informar de un error",
+  'bug.title': "Informar de un error",
+  'bug.what': "Qué ha pasado",
+  'bug.ph': "¿Qué estabas haciendo y qué ha fallado?",
+  'bug.preview': "Exactamente lo que se enviará (editable desde el cuadro de arriba)",
+  'bug.openIssue': "Abrir una incidencia en GitHub →",
+  'bug.searchSimilar': "Buscar incidencias similares",
+  'bug.copy': "Copiar informe",
+  'bug.copied': "Informe copiado",
+  'bug.copyFailed': "No se pudo copiar",
+  'bug.privacy': "No se envía nada automáticamente. El informe de abajo solo incluye versiones, tu pantalla, navegador y el texto de errores recientes — nunca tu CV, perfil, respuestas ni URLs de empleo. Revísalo y abre tú mismo la incidencia.",
 };

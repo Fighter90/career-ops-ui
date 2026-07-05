@@ -969,4 +969,16 @@ window.__I18N_DICT_EN = {
   'orient.running': "Generating your profile…",
   'orient.failed': "Could not generate the profile",
   'orient.note': "This reads your CV, profile, two-pager, and memory note — it never invents facts and never reports measured test scores. Nothing is saved; export it if you want to keep it.",
+  // ── v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter ──
+  'bug.report': "🐞 Report a bug",
+  'bug.title': "Report a bug",
+  'bug.what': "What happened",
+  'bug.ph': "What were you doing, and what went wrong?",
+  'bug.preview': "Exactly what will be filed (editable via the box above)",
+  'bug.openIssue': "Open a GitHub issue →",
+  'bug.searchSimilar': "Search similar issues",
+  'bug.copy': "Copy report",
+  'bug.copied': "Report copied",
+  'bug.copyFailed': "Could not copy",
+  'bug.privacy': "Nothing is filed automatically. The report below carries only versions, your screen, browser, and recent error text — never your CV, profile, answers, or job URLs. Review it, then open the issue yourself.",
 };

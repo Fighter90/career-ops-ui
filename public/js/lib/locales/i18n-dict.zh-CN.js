@@ -964,4 +964,16 @@ window.__I18N_DICT_ZH_CN = {
   'orient.running': "正在生成你的画像…",
   'orient.failed': "无法生成画像",
   'orient.note': "它会读取你的 CV、档案、两页纸和记忆笔记——绝不虚构事实,也绝不报告测量得出的测验分数。不会保存任何内容;若想留存,请导出。",
+  // ── v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter ──
+  'bug.report': "🐞 报告问题",
+  'bug.title': "报告问题",
+  'bug.what': "发生了什么",
+  'bug.ph': "你当时在做什么，出了什么问题？",
+  'bug.preview': "实际将提交的确切内容（可通过上方文本框编辑）",
+  'bug.openIssue': "打开 GitHub issue →",
+  'bug.searchSimilar': "搜索类似问题",
+  'bug.copy': "复制报告",
+  'bug.copied': "报告已复制",
+  'bug.copyFailed': "无法复制",
+  'bug.privacy': "不会自动提交任何内容。下方报告仅包含版本、你的屏幕、浏览器和最近的错误文本——绝不包含你的 CV、档案、答案或职位 URL。请先查看，然后自行提交 issue。",
 };

@@ -964,4 +964,16 @@ window.__I18N_DICT_TR = {
   'orient.running': "Profiliniz oluşturuluyor…",
   'orient.failed': "Profil oluşturulamadı",
   'orient.note': "Bu, özgeçmişinizi, profilinizi, two-pager'ınızı ve bellek notunuzu okur — asla gerçek uydurmaz ve asla ölçülmüş test puanları bildirmez. Hiçbir şey kaydedilmez; saklamak istiyorsanız dışa aktarın.",
+  // ── v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter ──
+  'bug.report': "🐞 Hata bildir",
+  'bug.title': "Hata bildir",
+  'bug.what': "Ne oldu",
+  'bug.ph': "Ne yapıyordunuz ve ne ters gitti?",
+  'bug.preview': "Tam olarak neyin gönderileceği (yukarıdaki kutudan düzenlenebilir)",
+  'bug.openIssue': "GitHub'da bir issue aç →",
+  'bug.searchSimilar': "Benzer issue'ları ara",
+  'bug.copy': "Raporu kopyala",
+  'bug.copied': "Rapor kopyalandı",
+  'bug.copyFailed': "Kopyalanamadı",
+  'bug.privacy': "Hiçbir şey otomatik olarak gönderilmez. Aşağıdaki rapor yalnızca sürümleri, ekranınızı, tarayıcınızı ve son hata metnini içerir — asla özgeçmişinizi, profilinizi, yanıtlarınızı veya iş ilanı bağlantılarınızı içermez. İnceleyin, ardından issue'yu kendiniz açın.",
 };

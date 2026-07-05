@@ -963,4 +963,16 @@ window.__I18N_DICT_PL = {
   'orient.running': "Generowanie Twojego profilu…",
   'orient.failed': "Nie udało się wygenerować profilu",
   'orient.note': "To czyta Twoje CV, profil, two-pager i notatkę pamięci — nigdy nie zmyśla faktów i nigdy nie podaje zmierzonych wyników testów. Nic nie jest zapisywane; wyeksportuj profil, jeśli chcesz go zachować.",
+  // ── v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter ──
+  'bug.report': "🐞 Zgłoś błąd",
+  'bug.title': "Zgłoś błąd",
+  'bug.what': "Co się stało",
+  'bug.ph': "Co robiłeś i co poszło nie tak?",
+  'bug.preview': "Dokładnie to, co zostanie zgłoszone (edytowalne przez pole powyżej)",
+  'bug.openIssue': "Otwórz zgłoszenie na GitHub →",
+  'bug.searchSimilar': "Szukaj podobnych zgłoszeń",
+  'bug.copy': "Kopiuj raport",
+  'bug.copied': "Raport skopiowany",
+  'bug.copyFailed': "Nie udało się skopiować",
+  'bug.privacy': "Nic nie jest zgłaszane automatycznie. Poniższy raport zawiera tylko wersje, Twój ekran, przeglądarkę i ostatni tekst błędów — nigdy Twojego CV, profilu, odpowiedzi ani linków do ofert pracy. Przejrzyj go, a następnie sam otwórz zgłoszenie.",
 };
