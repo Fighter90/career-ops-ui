@@ -931,6 +931,16 @@ window.__I18N_DICT_EN = {
   'cvs.rewriting': "Rewriting in your voice…",
   'cvs.humanManualHelp': "No LLM key is set. Copy this prompt into any LLM, then paste the rewrite back into your CV.",
   'cvs.humanFailed': "Could not rewrite the text",
+  'cvs.tailorTitle': "Tailor to a job",
+  'cvs.tailorHelp': "Paste a job description and get a résumé tailored to it plus a matching cover letter — run through a recruiter-grade checklist gate (errors block, warnings advise). Grounded only in your own CV, profile, and two-pager; it never fabricates.",
+  'cvs.tailorJdPh': "Paste the target job description here…",
+  'cvs.tailorHeadPh': "Optional: target role / headline (e.g. \"Senior Backend Engineer\")",
+  'cvs.tailorBtn': "🎯 Tailor résumé + cover letter",
+  'cvs.tailorNeedJd': "Paste the job description (~40+ characters) first",
+  'cvs.tailoring': "Tailoring and running the checklist gate…",
+  'cvs.tailorFileTitle': "Tailored application",
+  'cvs.tailorManualHelp': "No LLM key is set. Copy this prompt into any LLM, then paste the tailored résumé + cover letter back.",
+  'cvs.tailorFailed': "Could not tailor the application",
 
   // ── Memory layer (Epic 24 / v1.93.0) ──
   'nav.memory': "Memory",

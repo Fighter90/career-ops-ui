@@ -11,6 +11,16 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.101.0] — 2026-07-05
+
+**CV Studio : adaptez votre CV + rédigez une lettre de motivation pour une offre précise, avec un contrôle de type recruteur.** Nouvelle carte **Adapter à une offre** sur `#/cv-studio` : collez une offre d'emploi (et, en option, un rôle/intitulé cible) et CV Studio produit un **CV adapté à cette offre plus une lettre de motivation assortie**, puis les passe par un **contrôle** avant de les livrer — les `error` bloquent (corrigés avant que vous ne voyiez le résultat), les `warn` conseillent. La mécanique est distillée de la pratique du coaching de carrière en règles **génériques** — le recruteur lit en secondes, donc l'expérience pertinente va en haut, l'intitulé correspond au rôle de l'offre, les résultats portent des chiffres précis, et la lettre reste un teaser court avec un unique pont « exigence ↔ votre fait correspondant ». Fondé **uniquement** sur votre CV, profil et two-pager, il **n'invente jamais** — aucune entreprise, aucun rôle ni historique codés en dur.
+
+- Nouveau point de terminaison `POST /api/cv-studio/tailor` (étend le module cv-studio existant — pas de 27ᵉ module) : `buildTailorPrompt` + un contrôle générique `TAILOR_INSTRUCTIONS`, fondé sur `bundleProjectContext`, cascade de fournisseurs partagée, repli manuel sans clé, limité en débit, **sans écriture**. Le résultat s'exporte en Markdown / PDF / **DOCX** via la barre partagée `report-export.js`.
+- Tests : +3 dans `tests/cv-studio-routes.test.mjs`. 10 nouvelles clés i18n ×16 (`cvs.tailor*`). Référence générique `docs/prompts/resume-cover.md`. Aide §24 étendue sur place.
+
+Nouveau : `docs/prompts/resume-cover.md`.
+
+
 ## [1.100.0] — 2026-07-05
 
 **Two-pager : remplissage automatique par IA depuis votre CV + Aperçu + export en PDF/DOCX/Markdown.** Le two-pager (`#/two-pager`) recense ce que vous voulez vraiment de votre prochain poste, mais il fallait jusqu'ici rédiger chaque champ à la main ou copier une invite dans un autre outil. Désormais, l'**✨ assistant de remplissage IA** s'exécute en direct avec votre fournisseur configuré — il lit *uniquement* votre CV + profil (via `bundleProjectContext`, sans rien inventer), rédige tous les champs (qui je suis / ce que j'aime / indispensables / ce que je déteste / rédhibitoires / non négociables / environnement cible) et remplit le formulaire pour que vous le relisiez, l'éditiez et l'enregistriez. Sans clé API, il revient à la modale « copier l'invite », comme avant. Un nouveau bouton **👁 Aperçu et export** rend le two-pager sous forme de document avec une barre **Télécharger .md / Enregistrer en PDF / Enregistrer en DOCX / Copier**.

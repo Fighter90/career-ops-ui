@@ -8,6 +8,16 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.101.0] — 2026-07-05
+
+**CV Studio: tailor your résumé + write a cover letter for a specific job, gated by a recruiter checklist.** A new **Tailor to a job** card on `#/cv-studio`: paste a job description (and, optionally, a target role/headline) and CV Studio produces a **résumé tailored to that posting plus a matching cover letter**, then runs both through a **checklist gate** before handing them over — `error`s block (they're fixed before you see the result), `warn`s advise. The mechanic is distilled from career-coaching practice into **generic** rules — recruiter reads in seconds, so relevant experience goes to the top, the headline matches the vacancy's role, results carry specific numbers, and the cover letter stays a short teaser with a single "requirement ↔ your matching fact" bridge. It is grounded **only** in your own CV, profile, and two-pager and **never fabricates** — no hardcoded companies, roles, or history.
+
+- New endpoint `POST /api/cv-studio/tailor` (extends the existing cv-studio route module — no 27th module): `buildTailorPrompt` + a generic `TAILOR_INSTRUCTIONS` gate, grounded in `bundleProjectContext` (CV + profile + two-pager), shared provider cascade, manual-prompt fallback with no key, rate-limited, **no file writes**. Result exports as Markdown / PDF / **DOCX** via the shared `report-export.js` bar.
+- Tests: +3 in `tests/cv-studio-routes.test.mjs` (prompt is generic — gate + bridge + no-fabrication present, no hardcoded employer; manual mode seeded from the candidate materials; too-short JD → 400). 10 new i18n keys ×16 (`cvs.tailor*`). Generic reference `docs/prompts/resume-cover.md`. Help §24 extended in place.
+
+New: `docs/prompts/resume-cover.md`.
+
+
 ## [1.100.0] — 2026-07-05
 
 **Two-pager: AI auto-fill from your CV + Preview + export to PDF/DOCX/Markdown.** The two-pager (`#/two-pager`) captures what you actually want from your next role, but you had to draft each field by hand or copy a prompt into another tool. Now the **✨ AI fill assistant** runs live against your configured provider — it reads *only* your CV + profile (via `bundleProjectContext`, nothing invented), drafts every field (who I am / loves / must-haves / hates / deal-breakers / non-negotiables / target environment) and populates the form for you to review, edit, and Save. With no API key it falls back to the copy-a-prompt modal exactly as before. A new **👁 Preview & export** button renders the two-pager as a formatted document with a **Download .md / Save as PDF / Save as DOCX / Copy** bar.
