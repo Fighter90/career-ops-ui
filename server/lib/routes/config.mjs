@@ -113,6 +113,9 @@ export function registerConfigRoutes(app) {
     // even though updateEnvFile reports them as "deleted" rather than
     // "written".
     for (const [k, val] of Object.entries(safe)) {
+      // `safe` keys are allowlisted env names, but guard against prototype keys
+      // defensively so a property write can never target the prototype chain.
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') continue;
       if (val === '' || val == null) delete process.env[k];
       else process.env[k] = val;
     }

@@ -11,6 +11,15 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.106.0] — 2026-07-06
+
+**Durcissement de sécurité (tri CodeQL).** Trois vulnérabilités réelles (quoique de faible sévérité) corrigées après une passe sur l'arriéré d'analyse statique : le chemin d'erreur de rendu **échappe désormais le message d'erreur** avant qu'il n'atteigne le DOM (une erreur serveur peut refléter une entrée utilisateur, donc traitée comme non fiable — frontière XSS), et les écritures de propriétés profil/config **rejettent les clés `__proto__` / `constructor` / `prototype`** (protections anti-pollution de prototype par précaution — les clés viennent de specs de champs fixes, pas d'une entrée brute). La plupart des alertes restantes sont des faux positifs sur les lectures/écritures légitimes du scanner dans `data/*` et sur des routes portant déjà le limiteur maison ; rejetées avec justification.
+
+- `public/js/router.js` échappe `err.message` via `UI.escapeHtml` avant `innerHTML` ; `server/lib/routes/content.mjs` et `server/lib/routes/config.mjs` protègent les clés de prototype. Aucun changement de comportement pour une entrée valide. Tests : `tests/security-hardening-v1106.test.mjs` (3). Aucune nouvelle clé i18n.
+
+Nouveau : aucun.
+
+
 ## [1.105.0] — 2026-07-06
 
 **Page d'utilisation et de coût de l'IA.** Une nouvelle page **Utilisation IA** (barre latérale, à côté de Santé) montre combien de tokens vous avez dépensés en générations IA **en direct** — évaluations, rapports, chats — ventilés **par fournisseur** sur les dernières 24 heures, 7 jours, 30 jours et tout le temps, avec un **coût estimé en USD**. Chaque appel en direct ajoute un petit enregistrement `{provider, in, out}` à `data/llm-usage.jsonl` (rien n'est envoyé nulle part) ; les exécutions sans clé (mode manuel) ne coûtent rien et ne sont pas enregistrées.

@@ -10,6 +10,15 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.106.0] — 2026-07-06
+
+**Sikkerhedshærdning (CodeQL-triage).** Tre reelle (om end lavseverititets) fund rettet efter en gennemgang af den statiske analyses efterslæb: rute-renderingens fejlsti **escaper nu fejlmeddelelsen**, før den når DOM'en (en serverfejl kan gengive brugerinput, så den behandles som utroværdig — XSS-grænse), og profil/config-egenskabsskrivninger **afviser `__proto__` / `constructor` / `prototype`-nøgler** (prototype-forureningsværn for en sikkerheds skyld — nøglerne kommer fra faste feltspecifikationer, ikke rå request-input). Størstedelen af de resterende advarsler er falske positiver på scannerens legitime `data/*`-læsninger/-skrivninger og på ruter, der allerede har den egne rate-limiter; afvist med begrundelse.
+
+- `public/js/router.js` escaper `err.message` via `UI.escapeHtml` før `innerHTML`; `server/lib/routes/content.mjs` og `server/lib/routes/config.mjs` værner prototype-nøgler. Ingen adfærdsændring for gyldigt input. Tests: `tests/security-hardening-v1106.test.mjs` (3). Ingen nye i18n-nøgler.
+
+Nyt: intet.
+
+
 ## [1.105.0] — 2026-07-06
 
 **AI-forbrug og -omkostningsside.** En ny **AI-forbrug**-side (sidebjælke, ved siden af Helbred) viser, hvor mange tokens du har brugt på **live** AI-genereringer — evalueringer, rapporter, chats — opdelt **pr. udbyder** over de sidste 24 timer, 7 dage, 30 dage og al tid, med en **estimeret USD**-omkostning. Hvert live-kald tilføjer en lille `{provider, in, out}`-post til `data/llm-usage.jsonl` (intet sendes nogen steder hen); kørsler uden nøgle (manuel tilstand) koster intet og registreres ikke.

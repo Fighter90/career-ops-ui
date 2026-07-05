@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.106.0] — 2026-07-06
+
+**Security hardening (CodeQL triage).** Fixed three real (if low-severity) findings from a pass over the static-analysis backlog: the route-render **error path now escapes the error message** before it reaches the DOM (a server error can echo user-supplied input, so it's treated as untrusted — XSS boundary), and the profile/config **property writes reject `__proto__` / `constructor` / `prototype`** keys (belt-and-braces prototype-pollution guards — the keys come from fixed field specs, not raw request input). The bulk of the remaining alerts are false positives on the scanner's legitimate `data/*` reads/writes and on routes that already carry the app's custom rate-limiter, and were dismissed with rationale.
+
+- `public/js/router.js` escapes `err.message` via `UI.escapeHtml` before `innerHTML`; `server/lib/routes/content.mjs` (`setArray`/`setDotted`) and `server/lib/routes/config.mjs` (the env-apply loop) guard prototype keys. No behavior change for valid input. Tests: `tests/security-hardening-v1106.test.mjs` (3). No new i18n keys.
+
+New: none.
+
+
 ## [1.105.0] — 2026-07-06
 
 **AI usage & cost page.** A new **AI usage** page (sidebar, next to Health) shows how many tokens you've spent on **live** AI generations — evaluations, reports, chats — broken down **per provider** over the last 24 hours, 7 days, 30 days, and all-time, with an **estimated USD** cost. Every live provider call appends a small `{provider, in, out}` record to `data/llm-usage.jsonl` (nothing is sent anywhere); runs with no API key (manual mode) cost nothing and aren't recorded.

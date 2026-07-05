@@ -109,9 +109,12 @@ window.Router = (function () {
       const titleStr = isNet ? t('router.netError', 'No connection to server') : t('router.error', 'Error');
       const retryStr = t('common.retry', 'Retry');
       const runStr = t('router.runStart', 'Run');
+      // Escape the error text before it reaches innerHTML — a server error can
+      // echo user-supplied input, so treat err.message as untrusted (XSS boundary).
+      const esc = (s) => (window.UI && UI.escapeHtml) ? UI.escapeHtml(s) : String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
       content.innerHTML = `<div class="empty">
-        <strong>${titleStr}</strong>
-        <p style="margin: 12px 0 0; color: var(--foggy)">${(err && err.message) || err}</p>
+        <strong>${esc(titleStr)}</strong>
+        <p style="margin: 12px 0 0; color: var(--foggy)">${esc((err && err.message) || err)}</p>
         ${isNet ? `<p style="margin-top:8px;color:var(--foggy);font-size:13px;">${runStr}: <code>bash web-ui/bin/start.sh</code></p>` : ''}
         <button class="btn btn-ghost mt-3" data-action="router-retry">${retryStr}</button>
       </div>`;
