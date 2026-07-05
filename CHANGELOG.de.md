@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.102.0] — 2026-07-05
+
+**„Doku fragen" — ein fundierter Chat über den integrierten Hilfe-Leitfaden.** Eine neue Seite **Doku fragen 💬** (Seitenleiste, unter Hilfe): Stell eine Frage wie „Wie scanne ich Job-Portale?" und erhalte eine Antwort, die **nur** aus dem eigenen Hilfe-Leitfaden der App in deiner Sprache stammt — sie zeigt die verwendeten Abschnitte und **liest nie deinen Lebenslauf, dein Profil oder deine Jobsuche**. Es geht um die Nutzung der App, nicht um dich. Mit einem LLM-Schlüssel antwortet sie live; ohne Schlüssel gibt sie dir einen fertigen Prompt, bereits mit den relevanten Hilfeabschnitten gefüllt.
+
+- Neues Routenmodul (das 27.) `server/lib/routes/docs-assistant.mjs` — `POST /api/docs-assistant/ask`. **Abhängigkeitsfreie Suche:** der Hilfe-Leitfaden deiner Sprache wird in seine `##`-Abschnitte geteilt und nach Schlüsselwort-Überlappung mit deiner Frage bewertet; die besten werden eingebettet, und das Modell muss aus ihnen antworten oder sagen, dass der Leitfaden es nicht abdeckt (keine erfundenen Funktionen/Routen). Gemeinsame Anbieter-Kaskade, manueller Fallback, ratenbegrenzt, **keine Schreibvorgänge**, liest keine Nutzerdaten.
+- Neue Ansicht `public/js/views/docs-assistant.js`. Tests: `tests/docs-assistant-routes.test.mjs`. 14 neue i18n-Schlüssel ×16 (`docs.*` + `nav.docsAssistant`). Hilfe §1 an Ort und Stelle erweitert.
+
+Neu: `server/lib/routes/docs-assistant.mjs`; `public/js/views/docs-assistant.js`.
+
+
 ## [1.101.0] — 2026-07-05
 
 **CV Studio: passe deinen Lebenslauf an + schreibe ein Anschreiben für einen bestimmten Job, geprüft durch eine Recruiter-Checkliste.** Neue Karte **An einen Job anpassen** auf `#/cv-studio`: Füge eine Stellenbeschreibung ein (und optional eine Zielrolle/Überschrift), und CV Studio erstellt einen **auf diese Anzeige zugeschnittenen Lebenslauf plus ein passendes Anschreiben** und führt beide vor der Übergabe durch ein **Checklisten-Gate** — `error`s blockieren (werden behoben, bevor du das Ergebnis siehst), `warn`s raten. Die Mechanik ist aus der Karriere-Coaching-Praxis in **generische** Regeln destilliert — ein Recruiter liest in Sekunden, also kommt relevante Erfahrung nach oben, die Überschrift passt zur Rolle der Stelle, Ergebnisse tragen konkrete Zahlen, und das Anschreiben bleibt ein kurzer Teaser mit einer einzigen „Anforderung ↔ dein passender Fakt"-Brücke. Es basiert **nur** auf deinem eigenen Lebenslauf, Profil und Two-Pager und **erfindet nie** — keine hartcodierten Firmen, Rollen oder Historie.

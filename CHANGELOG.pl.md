@@ -9,6 +9,16 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.102.0] — 2026-07-05
+
+**"Zapytaj przewodnik" — czat oparty na wbudowanym przewodniku pomocy.** Nowa strona **Zapytaj przewodnik 💬** (pasek boczny, pod Pomocą): wpisz pytanie jak "Jak skanować portale z ofertami?" i otrzymaj odpowiedź **wyłącznie** z przewodnika pomocy aplikacji w Twoim języku — pokazuje użyte sekcje i **nigdy nie czyta Twojego CV, profilu ani szukania pracy**. To o tym, jak używać aplikacji, nie o Tobie. Z kluczem LLM odpowiada na żywo; bez klucza daje gotowy prompt, już wypełniony odpowiednimi sekcjami pomocy.
+
+- Nowy moduł trasy (27.) `server/lib/routes/docs-assistant.mjs` — `POST /api/docs-assistant/ask`. **Wyszukiwanie bez zależności:** przewodnik w Twoim języku jest dzielony na sekcje `##` i oceniany według pokrycia słów kluczowych z pytaniem; najlepsze są wstawiane, a model musi odpowiadać z nich lub powiedzieć, że przewodnik tego nie obejmuje (bez zmyślonych funkcji/tras). Współdzielona kaskada dostawców, awaryjny tryb ręczny, limit, **bez zapisów**, nie czyta danych użytkownika.
+- Nowy widok `public/js/views/docs-assistant.js`. Testy: `tests/docs-assistant-routes.test.mjs`. 14 nowych kluczy i18n ×16 (`docs.*` + `nav.docsAssistant`). Pomoc §1 rozszerzona w miejscu.
+
+Nowe: `server/lib/routes/docs-assistant.mjs`; `public/js/views/docs-assistant.js`.
+
+
 ## [1.101.0] — 2026-07-05
 
 **CV Studio: dopasuj CV + napisz list motywacyjny pod konkretną ofertę, z rekruterską bramką kontrolną.** Nowa karta **Dopasuj do oferty** na `#/cv-studio`: wklej opis oferty (i opcjonalnie docelową rolę/nagłówek), a CV Studio utworzy **CV dopasowane do tej oferty oraz pasujący list motywacyjny**, a następnie przepuści oba przez **bramkę kontrolną** przed wydaniem — `error` blokuje (naprawiane, zanim zobaczysz wynik), `warn` doradza. Mechanika to destylat praktyki coachingu kariery w **ogólne** reguły — rekruter czyta w sekundy, więc istotne doświadczenie idzie na górę, nagłówek pasuje do roli z oferty, wyniki mają konkretne liczby, a list pozostaje krótkim teaserem z jednym mostem „wymóg ↔ Twój pasujący fakt". Opiera się **wyłącznie** na Twoim CV, profilu i two-pager i **nigdy nie zmyśla** — bez zaszytych firm, ról ani historii.

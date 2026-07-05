@@ -11,6 +11,16 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.102.0] — 2026-07-05
+
+**"Preguntar a la guía" — un chat fundamentado sobre la guía de ayuda integrada.** Nueva página **Preguntar a la guía 💬** (barra lateral, bajo Ayuda): escribe una pregunta como "¿Cómo escaneo portales de empleo?" y obtén una respuesta extraída **solo** de la guía de ayuda de la app en tu idioma — muestra qué secciones usó y **nunca lee tu CV, perfil ni tu búsqueda de empleo**. Es sobre cómo usar la app, no sobre ti. Con clave LLM responde en vivo; sin clave te entrega un prompt listo, ya relleno con las secciones de ayuda relevantes.
+
+- Nuevo módulo de ruta (27.º) `server/lib/routes/docs-assistant.mjs` — `POST /api/docs-assistant/ask`. **Recuperación sin dependencias:** la guía de tu idioma se divide en sus secciones `##` y se puntúan por coincidencia de palabras clave con tu pregunta; las mejores se incluyen y el modelo debe responder desde ellas o decir que la guía no lo cubre (sin funciones/rutas inventadas). Cascada de proveedores compartida, respaldo manual, con límite de tasa, **sin escrituras**, no lee datos del usuario.
+- Nueva vista `public/js/views/docs-assistant.js`. Pruebas: `tests/docs-assistant-routes.test.mjs`. 14 nuevas claves i18n ×16 (`docs.*` + `nav.docsAssistant`). Ayuda §1 ampliada en su sitio.
+
+Nuevo: `server/lib/routes/docs-assistant.mjs`; `public/js/views/docs-assistant.js`.
+
+
 ## [1.101.0] — 2026-07-05
 
 **CV Studio: adapta tu CV + escribe una carta de presentación para un empleo concreto, con verificación tipo reclutador.** Nueva tarjeta **Adaptar a un empleo** en `#/cv-studio`: pega una descripción de empleo (y, opcionalmente, un rol/titular objetivo) y CV Studio produce un **CV adaptado a esa oferta más una carta de presentación a juego**, y luego los pasa por una **verificación** antes de entregarlos — los `error` bloquean (se corrigen antes de que veas el resultado), los `warn` aconsejan. La mecánica está destilada de la práctica de coaching de carrera en reglas **genéricas** — el reclutador lee en segundos, así que lo relevante va arriba, el titular coincide con el rol de la vacante, los resultados llevan cifras concretas y la carta es un teaser breve con un único puente "requisito ↔ tu hecho que encaja". Se basa **solo** en tu CV, perfil y two-pager y **nunca inventa** — sin empresas, roles ni historia codificados.

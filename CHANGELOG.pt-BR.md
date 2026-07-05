@@ -9,6 +9,16 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.102.0] — 2026-07-05
+
+**"Perguntar ao guia" — um chat fundamentado sobre o guia de ajuda integrado.** Nova página **Perguntar ao guia 💬** (barra lateral, sob Ajuda): digite uma pergunta como "Como escaneio portais de vagas?" e receba uma resposta extraída **apenas** do guia de ajuda do app no seu idioma — mostra quais seções usou e **nunca lê seu currículo, perfil ou busca de emprego**. É sobre como usar o app, não sobre você. Com chave LLM responde ao vivo; sem chave entrega um prompt pronto, já preenchido com as seções de ajuda relevantes.
+
+- Novo módulo de rota (27º) `server/lib/routes/docs-assistant.mjs` — `POST /api/docs-assistant/ask`. **Recuperação sem dependências:** o guia do seu idioma é dividido em suas seções `##` e pontuado por sobreposição de palavras-chave com sua pergunta; as melhores são incluídas e o modelo deve responder a partir delas ou dizer que o guia não cobre (sem recursos/rotas inventados). Cascata de provedores compartilhada, recuo manual, com limite de taxa, **sem gravações**, não lê dados do usuário.
+- Nova visão `public/js/views/docs-assistant.js`. Testes: `tests/docs-assistant-routes.test.mjs`. 14 novas chaves i18n ×16 (`docs.*` + `nav.docsAssistant`). Ajuda §1 ampliada no lugar.
+
+Novo: `server/lib/routes/docs-assistant.mjs`; `public/js/views/docs-assistant.js`.
+
+
 ## [1.101.0] — 2026-07-05
 
 **CV Studio: adapte seu currículo + escreva uma carta de apresentação para uma vaga específica, com verificação estilo recrutador.** Novo cartão **Adaptar a uma vaga** em `#/cv-studio`: cole uma descrição de vaga (e, opcionalmente, um cargo/título-alvo) e o CV Studio produz um **currículo adaptado a essa vaga mais uma carta de apresentação correspondente**, depois passa ambos por uma **verificação** antes de entregar — `error` bloqueia (corrigido antes de você ver), `warn` aconselha. A mecânica é destilada da prática de coaching de carreira em regras **genéricas** — o recrutador lê em segundos, então o relevante vai ao topo, o título combina com o cargo da vaga, os resultados trazem números específicos e a carta é um teaser curto com uma única ponte "requisito ↔ seu fato correspondente". Baseia-se **apenas** no seu currículo, perfil e two-pager e **nunca inventa** — sem empresas, cargos ou histórico embutidos.

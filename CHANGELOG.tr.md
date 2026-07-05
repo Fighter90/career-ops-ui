@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.102.0] — 2026-07-05
+
+**"Belgelere sor" — uygulama içi yardım kılavuzuna dayalı bir sohbet.** Yeni bir **Belgelere sor 💬** sayfası (kenar çubuğu, Yardım altında): "İş portallarını nasıl tararım?" gibi bir soru yazın ve **yalnızca** uygulamanın kendi yardım kılavuzundan dilinizde bir yanıt alın — hangi bölümleri kullandığını gösterir ve **özgeçmişinizi, profilinizi veya iş aramanızı asla okumaz**. Bu, sizinle değil, uygulamanın nasıl kullanılacağıyla ilgilidir. LLM anahtarıyla canlı yanıtlar; anahtar yoksa ilgili yardım bölümleriyle önceden doldurulmuş, hazır bir istem verir.
+
+- Yeni rota modülü (27.) `server/lib/routes/docs-assistant.mjs` — `POST /api/docs-assistant/ask`. **Bağımlılıksız getirme:** dilinizdeki yardım belgesi `##` bölümlerine ayrılır ve sorunuzla anahtar kelime örtüşmesine göre puanlanır; en iyileri satır içine alınır ve model bunlardan yanıt vermeli ya da kılavuzun bunu kapsamadığını söylemelidir (uydurma özellik/rota yok). Paylaşılan sağlayıcı basamaklaması, manuel geri dönüş, hız sınırlı, **yazma yok**, kullanıcı verisi okumaz.
+- Yeni görünüm `public/js/views/docs-assistant.js`. Testler: `tests/docs-assistant-routes.test.mjs`. 14 yeni i18n anahtarı ×16 (`docs.*` + `nav.docsAssistant`). Yardım §1 yerinde genişletildi.
+
+Yeni: `server/lib/routes/docs-assistant.mjs`; `public/js/views/docs-assistant.js`.
+
+
 ## [1.101.0] — 2026-07-05
 
 **CV Studio: özgeçmişinizi belirli bir işe göre uyarlayın + ön yazı yazın, işe alım uzmanı kontrol listesiyle denetlenir.** `#/cv-studio` üzerinde yeni **Bir işe göre uyarla** kartı: bir iş ilanı yapıştırın (ve isteğe bağlı olarak hedef rol/başlık), CV Studio o ilana **uyarlanmış bir özgeçmiş ve uyumlu bir ön yazı** üretir, ardından teslim etmeden önce ikisini de bir **kontrol listesi kapısından** geçirir — `error` engeller (siz sonucu görmeden düzeltilir), `warn` önerir. Mekanik, kariyer koçluğu pratiğinden **genel** kurallara damıtılmıştır — işe alım uzmanı saniyeler içinde okur, bu yüzden ilgili deneyim en üste gelir, başlık ilanın rolüyle eşleşir, sonuçlar belirli sayılar taşır ve ön yazı tek bir "gereksinim ↔ sizin uyan gerçeğiniz" köprüsüyle kısa bir teaser olarak kalır. **Yalnızca** kendi özgeçmişiniz, profiliniz ve two-pager'ınıza dayanır ve **asla uydurmaz** — gömülü şirket, rol veya geçmiş yok.
