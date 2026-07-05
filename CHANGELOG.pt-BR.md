@@ -9,6 +9,16 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.105.0] — 2026-07-06
+
+**Página de uso e custo de IA.** Uma nova página **Uso de IA** (barra lateral, ao lado de Saúde) mostra quantos tokens você gastou em gerações de IA **ao vivo** — avaliações, relatórios, chats — detalhado **por provedor** nas últimas 24 horas, 7 dias, 30 dias e todo o período, com um **custo estimado em USD**. Cada chamada ao vivo anexa um pequeno registro `{provider, in, out}` a `data/llm-usage.jsonl` (nada é enviado a lugar nenhum); execuções sem chave (modo manual) não custam nada e não são registradas.
+
+- Novo módulo de rota (30º) `server/lib/routes/usage.mjs` — `GET /api/usage` (agregações somente leitura) + `server/lib/llm-usage.mjs` (`recordUsage` normaliza as formas de uso de Anthropic/OpenAI/Gemini e anexa em best-effort; `readUsage`/`aggregate` agregam por janela 24h/7d/30d/tudo × provedor) + `server/lib/llm-pricing.mjs` (uma tabela **editável** de preços por provedor `$/1M` tokens — tokens são exatos, dólares são preços de lista aproximados que você pode corrigir; nunca cobrados). O registro é conectado nos pontos de despacho (`runActiveProvider` + `routes/llm.mjs`).
+- Nova visão `public/js/views/usage.js` (`#/usage`, abas de janela). Testes: `tests/usage-routes.test.mjs`. 17 novas chaves i18n ×16 (`usage.*` + `nav.usage`). Ajuda §6 ampliada no lugar.
+
+Novo: `server/lib/routes/usage.mjs`; `server/lib/llm-usage.mjs`; `server/lib/llm-pricing.mjs`; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **Logos de empresa na tabela de varredura (preservando privacidade).** Um novo botão em **Aparência** nas **Configurações** — **Mostrar logos de empresa na tabela de varredura** (desativado por padrão) — desenha o logo de cada empresa ao lado do nome em `#/scan`. O logo é o **favicon da empresa obtido do próprio domínio** e com proxy no servidor (`GET /api/logo`), de modo que **nenhum serviço de logos de terceiros descobre quais empregadores você vê**. Vagas em um portal compartilhado (Greenhouse, Lever, Ashby, …) mostram um **selo com uma letra** em vez do ícone do portal, e qualquer logo que falhe ao carregar recai no mesmo selo.

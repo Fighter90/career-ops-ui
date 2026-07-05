@@ -11,6 +11,16 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.105.0] — 2026-07-06
+
+**Page d'utilisation et de coût de l'IA.** Une nouvelle page **Utilisation IA** (barre latérale, à côté de Santé) montre combien de tokens vous avez dépensés en générations IA **en direct** — évaluations, rapports, chats — ventilés **par fournisseur** sur les dernières 24 heures, 7 jours, 30 jours et tout le temps, avec un **coût estimé en USD**. Chaque appel en direct ajoute un petit enregistrement `{provider, in, out}` à `data/llm-usage.jsonl` (rien n'est envoyé nulle part) ; les exécutions sans clé (mode manuel) ne coûtent rien et ne sont pas enregistrées.
+
+- Nouveau module de route (30ᵉ) `server/lib/routes/usage.mjs` — `GET /api/usage` (agrégats en lecture seule) + `server/lib/llm-usage.mjs` (`recordUsage` normalise les formes d'usage Anthropic/OpenAI/Gemini et ajoute en best-effort ; `readUsage`/`aggregate` agrègent par fenêtre 24h/7j/30j/tout × fournisseur) + `server/lib/llm-pricing.mjs` (une table **modifiable** de prix par fournisseur `$/1M` tokens — les tokens sont exacts, les dollars sont des prix catalogue approximatifs que vous pouvez corriger ; jamais facturés). L'enregistrement est branché aux points de dispatch (`runActiveProvider` + `routes/llm.mjs`).
+- Nouvelle vue `public/js/views/usage.js` (`#/usage`, onglets de fenêtre). Tests : `tests/usage-routes.test.mjs`. 17 nouvelles clés i18n ×16 (`usage.*` + `nav.usage`). Aide §6 étendue sur place.
+
+Nouveau : `server/lib/routes/usage.mjs` ; `server/lib/llm-usage.mjs` ; `server/lib/llm-pricing.mjs` ; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **Logos d'entreprise dans le tableau de scan (respectueux de la vie privée).** Un nouveau commutateur **Apparence** dans **Paramètres** — **Afficher les logos d'entreprise dans le tableau de scan** (désactivé par défaut) — dessine le logo de chaque entreprise à côté de son nom sur `#/scan`. Le logo est le **favicon de l'entreprise récupéré depuis son propre domaine** et relayé côté serveur (`GET /api/logo`), de sorte qu'**aucun service de logos tiers n'apprend quels employeurs vous consultez**. Les offres sur un portail d'emploi partagé (Greenhouse, Lever, Ashby, …) affichent un **badge à lettre** coloré plutôt que l'icône du portail, et tout logo qui échoue au chargement retombe sur ce même badge.

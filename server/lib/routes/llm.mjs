@@ -25,6 +25,7 @@ import { runGemini } from '../gemini.mjs';
 import { validateEvaluationReport } from '../eval-validate.mjs';
 import { runOpenAI, runQwen, runOpenRouter, runGitHubModels, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey } from '../openai.mjs';
 import { providerOrder } from '../env-config.mjs';
+import { recordUsage } from '../llm-usage.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
@@ -141,6 +142,7 @@ export function registerLlmRoutes(app) {
       // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
       // warning so the user knows the report may be truncated/off-format.
       const warnings = validateEvaluationReport(r.markdown);
+      recordUsage('anthropic', r.usage);
       return res.json({ mode: 'anthropic', prompt: promptText, markdown: r.markdown, usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
 
@@ -170,6 +172,7 @@ export function registerLlmRoutes(app) {
       if (r.error) return res.status(502).json({ mode: tp.mode, prompt: promptText, error: r.error, saved });
       // v1.75.0 (#819) — same shape guard for the OpenAI/Qwen/OpenRouter/GitHub tail.
       const warnings = validateEvaluationReport(r.markdown);
+      recordUsage(tp.mode, r.usage);
       return res.json({ mode: tp.mode, prompt: promptText, markdown: r.markdown, usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
 
@@ -369,6 +372,7 @@ export function registerLlmRoutes(app) {
         }
         const r = await runAnthropic(fullPrompt);
         if (r.error) return res.status(502).json({ mode: 'anthropic', slug, prompt, error: r.error });
+        recordUsage('anthropic', r.usage);
         return res.json({ mode: 'anthropic', slug, prompt, markdown: r.markdown, usage: r.usage });
       }
       if (_provGate().wantGemini && hasGeminiKey()) {
@@ -386,6 +390,7 @@ export function registerLlmRoutes(app) {
         }
         const r = await runGemini(fullPrompt);
         if (r.error) return res.status(502).json({ mode: 'gemini', slug, prompt, error: r.error });
+        recordUsage('gemini', r.usage);
         return res.json({ mode: 'gemini', slug, prompt, markdown: r.markdown, usage: r.usage });
       }
       // v1.55.0 — OpenAI / Qwen tail (in-process, inline _shared ctx).
@@ -401,6 +406,7 @@ export function registerLlmRoutes(app) {
         }
         const r = await tp.run(fullPrompt);
         if (r.error) return res.status(502).json({ mode: tp.mode, slug, prompt, error: r.error });
+        recordUsage(tp.mode, r.usage);
         return res.json({ mode: tp.mode, slug, prompt, markdown: r.markdown, usage: r.usage });
       }
     }

@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.105.0] — 2026-07-06
+
+**AI-forbrug og -omkostningsside.** En ny **AI-forbrug**-side (sidebjælke, ved siden af Helbred) viser, hvor mange tokens du har brugt på **live** AI-genereringer — evalueringer, rapporter, chats — opdelt **pr. udbyder** over de sidste 24 timer, 7 dage, 30 dage og al tid, med en **estimeret USD**-omkostning. Hvert live-kald tilføjer en lille `{provider, in, out}`-post til `data/llm-usage.jsonl` (intet sendes nogen steder hen); kørsler uden nøgle (manuel tilstand) koster intet og registreres ikke.
+
+- Nyt rutemodul (det 30.) `server/lib/routes/usage.mjs` — `GET /api/usage` (skrivebeskyttede opsummeringer) + `server/lib/llm-usage.mjs` (`recordUsage` normaliserer Anthropic/OpenAI/Gemini-forbrugsformerne og tilføjer best-effort; `readUsage`/`aggregate` opsummerer pr. vindue 24t/7d/30d/alt × udbyder) + `server/lib/llm-pricing.mjs` (en **redigerbar** pris-tabel pr. udbyder `$/1M` tokens — tokens er præcise, dollars er omtrentlige listepriser, du kan rette; faktureres aldrig). Registreringen er koblet på dispatch-punkterne (`runActiveProvider` + `routes/llm.mjs`).
+- Ny visning `public/js/views/usage.js` (`#/usage`, vinduesfaner). Tests: `tests/usage-routes.test.mjs`. 17 nye i18n-nøgler ×16 (`usage.*` + `nav.usage`). Hjælp §6 udvidet på stedet.
+
+Nyt: `server/lib/routes/usage.mjs`; `server/lib/llm-usage.mjs`; `server/lib/llm-pricing.mjs`; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **Firmalogoer i scanningstabellen (privatlivsbevarende).** En ny **Udseende**-kontakt i **App-indstillinger** — **Vis firmalogoer i scanningstabellen** (fra som standard) — tegner hvert firmas logo ved siden af navnet på `#/scan`. Logoet er firmaets **favicon hentet fra dets eget domæne** og proxyet på serveren (`GET /api/logo`), så **ingen tredjeparts logotjeneste får at vide, hvilke arbejdsgivere du kigger på**. Opslag på en delt jobportal (Greenhouse, Lever, Ashby, …) viser et farvet **bogstavmærke** i stedet for portalens ikon, og ethvert logo, der ikke kan indlæses, falder tilbage til samme mærke.

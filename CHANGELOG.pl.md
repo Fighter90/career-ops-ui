@@ -9,6 +9,16 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.105.0] — 2026-07-06
+
+**Strona zużycia i kosztu AI.** Nowa strona **Zużycie AI** (pasek boczny, obok Kondycji) pokazuje, ile tokenów wydałeś na **na żywo** generacje AI — oceny, raporty, czaty — w podziale **wg dostawcy** za ostatnie 24 godziny, 7 dni, 30 dni i cały czas, z **szacowanym kosztem w USD**. Każde wywołanie na żywo dopisuje mały rekord `{provider, in, out}` do `data/llm-usage.jsonl` (nic nigdzie nie jest wysyłane); uruchomienia bez klucza (tryb ręczny) nic nie kosztują i nie są rejestrowane.
+
+- Nowy moduł trasy (30.) `server/lib/routes/usage.mjs` — `GET /api/usage` (agregaty tylko do odczytu) + `server/lib/llm-usage.mjs` (`recordUsage` normalizuje formy usage Anthropic/OpenAI/Gemini i dopisuje best-effort; `readUsage`/`aggregate` agregują wg okna 24h/7d/30d/całość × dostawca) + `server/lib/llm-pricing.mjs` (**edytowalna** tabela cen wg dostawcy `$/1M` tokenów — tokeny są dokładne, dolary to przybliżone ceny katalogowe do skorygowania; nigdy nierozliczane). Rejestracja jest podpięta w punktach dyspozytorskich (`runActiveProvider` + `routes/llm.mjs`).
+- Nowy widok `public/js/views/usage.js` (`#/usage`, karty okna). Testy: `tests/usage-routes.test.mjs`. 17 nowych kluczy i18n ×16 (`usage.*` + `nav.usage`). Pomoc §6 rozszerzona w miejscu.
+
+Nowe: `server/lib/routes/usage.mjs`; `server/lib/llm-usage.mjs`; `server/lib/llm-pricing.mjs`; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **Logo firm w tabeli skanowania (z poszanowaniem prywatności).** Nowy przełącznik **Wygląd** w **Ustawieniach** — **Pokazuj logo firm w tabeli skanowania** (domyślnie wyłączony) — rysuje logo każdej firmy obok jej nazwy w `#/scan`. Logo to **favicon firmy pobrany z jej własnej domeny** i przekazany przez proxy po stronie serwera (`GET /api/logo`), więc **żadna zewnętrzna usługa logo nie dowiaduje się, których pracodawców przeglądasz**. Oferty na współdzielonym portalu (Greenhouse, Lever, Ashby, …) pokazują kolorową **odznakę z literą** zamiast ikony portalu, a każde logo, które się nie załaduje, wraca do tej samej odznaki.

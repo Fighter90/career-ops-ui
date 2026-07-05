@@ -46,6 +46,7 @@ export const PATHS = {
   followUps: path('data', 'follow-ups.md'),
   activityLog: path('data', 'activity.jsonl'),
   roleStats: path('data', 'role-stats.jsonl'),
+  llmUsage: path('data', 'llm-usage.jsonl'),
   reportsDir: path('reports'),
   jdsDir: path('jds'),
   outputDir: path('output'),

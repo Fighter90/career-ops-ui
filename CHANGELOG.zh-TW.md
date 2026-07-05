@@ -9,6 +9,16 @@
 ---
 
 
+## [1.105.0] — 2026-07-06
+
+**AI 用量與成本頁面。** 新的**AI 用量**頁面(側邊欄,健康旁邊)顯示你在**即時** AI 生成(評估、報告、對話)上花費的權杖,按**供應商**分列,涵蓋最近 24 小時、7 天、30 天和全部時間,並附**預計 USD** 成本。每次即時呼叫都會向 `data/llm-usage.jsonl` 追加一條小記錄 `{provider, in, out}`(不向任何地方傳送);無金鑰執行(手動模式)不產生費用,也不記錄。
+
+- 新路由模組(第 30 個) `server/lib/routes/usage.mjs` — `GET /api/usage`(唯讀彙總) + `server/lib/llm-usage.mjs`(`recordUsage` 正規化 Anthropic/OpenAI/Gemini 的用量結構並盡力追加;`readUsage`/`aggregate` 按 24h/7d/30d/全部視窗 × 供應商彙總) + `server/lib/llm-pricing.mjs`(**可編輯**的各供應商 `$/1M` 權杖價格表——權杖數精確,美元為可修改的近似標價,不計費)。記錄掛接在分發點(`runActiveProvider` + `routes/llm.mjs`)。
+- 新檢視 `public/js/views/usage.js`(`#/usage`,時間窗分頁)。測試:`tests/usage-routes.test.mjs`。新增 17 個 i18n 鍵 ×16(`usage.*` + `nav.usage`)。說明 §6 就地擴充。
+
+新增:`server/lib/routes/usage.mjs`;`server/lib/llm-usage.mjs`;`server/lib/llm-pricing.mjs`;`public/js/views/usage.js`。
+
+
 ## [1.104.0] — 2026-07-06
 
 **掃描表中的公司標誌(保護隱私)。** **應用設定**中新增的**外觀**開關——**在掃描表中顯示公司標誌**(預設關閉)——會在 `#/scan` 的公司名稱旁繪製其標誌。標誌是**從公司自己網域取得的 favicon**,並在伺服器端代理(`GET /api/logo`),因此**沒有任何第三方標誌服務能得知你在查看哪些雇主**。位於共享徵才入口(Greenhouse、Lever、Ashby 等)的職缺會顯示彩色**字母徽章**而非入口圖示,任何載入失敗的標誌也回退到同一徽章。

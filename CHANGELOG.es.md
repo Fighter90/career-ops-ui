@@ -11,6 +11,16 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.105.0] — 2026-07-06
+
+**Página de uso y coste de IA.** Una nueva página **Uso de IA** (barra lateral, junto a Salud) muestra cuántos tokens has gastado en generaciones de IA **en vivo** — evaluaciones, informes, chats — desglosado **por proveedor** en las últimas 24 horas, 7 días, 30 días y todo el tiempo, con un **coste estimado en USD**. Cada llamada en vivo añade un pequeño registro `{provider, in, out}` a `data/llm-usage.jsonl` (no se envía nada a ningún sitio); las ejecuciones sin clave (modo manual) no cuestan nada y no se registran.
+
+- Nuevo módulo de ruta (30.º) `server/lib/routes/usage.mjs` — `GET /api/usage` (agregados de solo lectura) + `server/lib/llm-usage.mjs` (`recordUsage` normaliza las formas de uso de Anthropic/OpenAI/Gemini y añade en modo best-effort; `readUsage`/`aggregate` agregan por ventana 24h/7d/30d/todo × proveedor) + `server/lib/llm-pricing.mjs` (una tabla **editable** de precios por proveedor `$/1M` tokens — los tokens son exactos, los dólares son precios de lista aproximados que puedes corregir; nunca se facturan). El registro se engancha en los puntos de despacho (`runActiveProvider` + `routes/llm.mjs`).
+- Nueva vista `public/js/views/usage.js` (`#/usage`, pestañas de ventana). Pruebas: `tests/usage-routes.test.mjs`. 17 nuevas claves i18n ×16 (`usage.*` + `nav.usage`). Ayuda §6 ampliada en su sitio.
+
+Nuevo: `server/lib/routes/usage.mjs`; `server/lib/llm-usage.mjs`; `server/lib/llm-pricing.mjs`; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **Logos de empresa en la tabla de escaneo (respetando la privacidad).** Un nuevo interruptor de **Apariencia** en **Ajustes** — **Mostrar logos de empresa en la tabla de escaneo** (desactivado por defecto) — dibuja el logo de cada empresa junto a su nombre en `#/scan`. El logo es el **favicon de la empresa obtenido desde su propio dominio** y con proxy en el servidor (`GET /api/logo`), de modo que **ningún servicio de logos de terceros sabe qué empleadores estás viendo**. Las ofertas en un portal de empleo compartido (Greenhouse, Lever, Ashby, …) muestran una **insignia con una letra** en lugar del icono del portal, y cualquier logo que no cargue recae en la misma insignia.

@@ -9,6 +9,16 @@
 ---
 
 
+## [1.105.0] — 2026-07-06
+
+**AI使用量とコストのページ。** 新しい**AI使用量**ページ(サイドバー、ヘルスの隣)は、**ライブ**のAI生成 — 評価・レポート・チャット — に費やしたトークンを、過去24時間・7日・30日・全期間にわたって**プロバイダーごと**に表示し、**推定USD**コストを併記します。すべてのライブ呼び出しは小さな `{provider, in, out}` レコードを `data/llm-usage.jsonl` に追加します(どこにも送信されません)。キーなしの実行(手動モード)はコストがかからず、記録されません。
+
+- 新ルートモジュール(30番目) `server/lib/routes/usage.mjs` — `GET /api/usage`(読み取り専用の集計) + `server/lib/llm-usage.mjs`(`recordUsage` がAnthropic/OpenAI/Geminiの使用量形式を正規化してbest-effortで追加、`readUsage`/`aggregate` が24h/7d/30d/全期間の窓 × プロバイダーで集計) + `server/lib/llm-pricing.mjs`(**編集可能な**プロバイダーごとの `$/1M` トークン価格表 — トークンは正確、ドルは概算定価でプランに合わせて修正可能、請求されない)。記録はディスパッチ地点(`runActiveProvider` + `routes/llm.mjs`)にフックされます。
+- 新ビュー `public/js/views/usage.js`(`#/usage`、期間タブ)。テスト: `tests/usage-routes.test.mjs`。新しいi18nキー17件×16(`usage.*` + `nav.usage`)。ヘルプ§6をその場で拡張。
+
+新規: `server/lib/routes/usage.mjs`; `server/lib/llm-usage.mjs`; `server/lib/llm-pricing.mjs`; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **スキャン表の会社ロゴ(プライバシー保護)。** **アプリ設定**の新しい**外観**トグル — **スキャン表に会社ロゴを表示**(既定オフ) — が `#/scan` で会社名の隣にロゴを描画します。ロゴは**会社自身のドメインから取得したファビコン**で、サーバー側でプロキシされます(`GET /api/logo`)。そのため**サードパーティのロゴサービスがあなたの見ている雇用主を知ることはありません**。共有求人ボード(Greenhouse、Lever、Ashby など)の掲載はボードのアイコンではなく色付きの**文字バッジ**を表示し、読み込みに失敗したロゴも同じバッジにフォールバックします。

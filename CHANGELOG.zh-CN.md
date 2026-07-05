@@ -9,6 +9,16 @@
 ---
 
 
+## [1.105.0] — 2026-07-06
+
+**AI 用量与成本页面。** 新的**AI 用量**页面(侧边栏,健康旁边)显示你在**实时** AI 生成(评估、报告、对话)上花费的代币,按**提供方**分列,涵盖最近 24 小时、7 天、30 天和全部时间,并附**预计 USD** 成本。每次实时调用都会向 `data/llm-usage.jsonl` 追加一条小记录 `{provider, in, out}`(不向任何地方发送);无密钥运行(手动模式)不产生费用,也不记录。
+
+- 新路由模块(第 30 个) `server/lib/routes/usage.mjs` — `GET /api/usage`(只读聚合) + `server/lib/llm-usage.mjs`(`recordUsage` 归一化 Anthropic/OpenAI/Gemini 的用量结构并尽力追加;`readUsage`/`aggregate` 按 24h/7d/30d/全部窗口 × 提供方聚合) + `server/lib/llm-pricing.mjs`(**可编辑**的各提供方 `$/1M` 代币价格表——代币数精确,美元为可修改的近似标价,不计费)。记录挂接在分发点(`runActiveProvider` + `routes/llm.mjs`)。
+- 新视图 `public/js/views/usage.js`(`#/usage`,时间窗标签)。测试:`tests/usage-routes.test.mjs`。新增 17 个 i18n 键 ×16(`usage.*` + `nav.usage`)。帮助 §6 就地扩充。
+
+新增:`server/lib/routes/usage.mjs`;`server/lib/llm-usage.mjs`;`server/lib/llm-pricing.mjs`;`public/js/views/usage.js`。
+
+
 ## [1.104.0] — 2026-07-06
 
 **扫描表中的公司徽标(保护隐私)。** **应用设置**中新增的**外观**开关——**在扫描表中显示公司徽标**(默认关闭)——会在 `#/scan` 的公司名称旁绘制其徽标。徽标是**从公司自己域名获取的 favicon**,并在服务端代理(`GET /api/logo`),因此**没有任何第三方徽标服务能得知你在查看哪些雇主**。位于共享招聘门户(Greenhouse、Lever、Ashby 等)的职位会显示彩色**字母徽章**而非门户图标,任何加载失败的徽标也回退到同一徽章。

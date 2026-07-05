@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.105.0] — 2026-07-06
+
+**KI-Nutzungs- und Kostenseite.** Eine neue **KI-Nutzung**-Seite (Seitenleiste, neben Zustand) zeigt, wie viele Tokens du für **Live**-KI-Generierungen — Bewertungen, Berichte, Chats — ausgegeben hast, aufgeschlüsselt **pro Anbieter** über die letzten 24 Stunden, 7 Tage, 30 Tage und die gesamte Zeit, mit **geschätzten USD**-Kosten. Jeder Live-Aufruf hängt einen kleinen `{provider, in, out}`-Datensatz an `data/llm-usage.jsonl` an (nichts wird irgendwohin gesendet); Läufe ohne Schlüssel (manueller Modus) kosten nichts und werden nicht erfasst.
+
+- Neues Routenmodul (das 30.) `server/lib/routes/usage.mjs` — `GET /api/usage` (schreibgeschützte Rollups) + `server/lib/llm-usage.mjs` (`recordUsage` normalisiert die Anthropic/OpenAI/Gemini-Nutzungsformen und hängt best-effort an; `readUsage`/`aggregate` rollen pro Fenster 24h/7T/30T/gesamt × Anbieter auf) + `server/lib/llm-pricing.mjs` (eine **bearbeitbare** Anbieter-Preistabelle `$/1M` Tokens — Tokens sind exakt, Dollar sind ungefähre Listenpreise, die du korrigieren kannst; nie abgerechnet). Die Erfassung ist an den Dispatch-Punkten (`runActiveProvider` + `routes/llm.mjs`) eingehängt.
+- Neue Ansicht `public/js/views/usage.js` (`#/usage`, Fenster-Tabs). Tests: `tests/usage-routes.test.mjs`. 17 neue i18n-Schlüssel ×16 (`usage.*` + `nav.usage`). Hilfe §6 an Ort und Stelle erweitert.
+
+Neu: `server/lib/routes/usage.mjs`; `server/lib/llm-usage.mjs`; `server/lib/llm-pricing.mjs`; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **Firmenlogos in der Scan-Tabelle (datenschutzfreundlich).** Ein neuer **Darstellung**-Schalter in den **App-Einstellungen** — **Firmenlogos in der Scan-Tabelle anzeigen** (standardmäßig aus) — zeichnet das Logo jeder Firma neben ihren Namen auf `#/scan`. Das Logo ist das **von der eigenen Domain der Firma geholte Favicon**, serverseitig weitergeleitet (`GET /api/logo`), sodass **kein Drittanbieter-Logodienst erfährt, welche Arbeitgeber du dir ansiehst**. Anzeigen auf einer gemeinsamen Jobbörse (Greenhouse, Lever, Ashby, …) zeigen ein farbiges **Buchstaben-Badge** statt des Börsen-Icons, und jedes Logo, das nicht lädt, fällt auf dasselbe Badge zurück.
