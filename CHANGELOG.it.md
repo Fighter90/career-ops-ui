@@ -2,6 +2,15 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.107.0] — 2026-07-06
+
+**Rafforzamento del sanitizzatore (difesa in profondità XSS a riposo).** `stripDangerousMarkdown` — che neutralizza l'HTML pericoloso nel markdown di CV/annuncio memorizzato affinché qualsiasi consumatore che aggiri il client con escape-al-rendering resti sicuro — ora esegue la pulizia dei tag **fino a un punto fisso** (ripeti fino a stabilizzarsi) così che una rimozione che *riforma* un payload (es. `<scr<script></script>ipt>`) venga intercettata, corrisponde ai tag di chiusura script/style ecc. **con residui finali** (`</script foo>`) e rimuove un apertore eseguibile **non chiuso** (`<script …>`). Il comportamento per markdown valido è invariato — rimuove solo di più.
+
+- `server/lib/security.mjs`: ciclo a punto fisso (limitato a 8 passaggi) + pattern di chiusura `[^>]*>` + rimozione dell'apertore non chiuso. +3 casi di regressione in `tests/cv-xss-bypasses.test.mjs`. Il confine XSS autorevole resta l'escape in output (`UI.md`); questo rafforza la garanzia a riposo e chiude i risultati CodeQL corrispondenti.
+
+Nuovo: nessuno.
+
+
 ## [1.106.0] — 2026-07-06
 
 **Rafforzamento della sicurezza (triage CodeQL).** Corrette tre vulnerabilità reali (seppur di bassa gravità) dopo una passata sull'arretrato dell'analisi statica: il percorso di errore del rendering **ora effettua l'escape del messaggio di errore** prima che raggiunga il DOM (un errore del server può riflettere input dell'utente, quindi trattato come non attendibile — confine XSS), e le scritture di proprietà di profilo/config **rifiutano le chiavi `__proto__` / `constructor` / `prototype`** (protezioni anti prototype-pollution per sicurezza — le chiavi provengono da specifiche di campo fisse, non da input grezzo). La maggior parte degli avvisi rimanenti sono falsi positivi sulle letture/scritture legittime dello scanner in `data/*` e su rotte che già portano il limiter interno; respinti con motivazione.

@@ -10,6 +10,15 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.107.0] — 2026-07-06
+
+**Sanitizer-hærdning (XSS-forsvar i dybden i hviletilstand).** `stripDangerousMarkdown` — som neutraliserer farlig HTML i gemt CV/job-markdown, så enhver forbruger, der omgår escape-ved-rendering-klienten, stadig er sikker — kører nu sin tag-strip **til et fikspunkt** (gentag til stabil), så en fjernelse, der *gendanner* en payload (f.eks. `<scr<script></script>ipt>`), fanges, matcher script/style-slutmærker **med efterfølgende skrald** (`</script foo>`) og fjerner en **uafsluttet** eksekverbar åbner (`<script …>`). Adfærd for gyldig markdown er uændret — den fjerner kun mere.
+
+- `server/lib/security.mjs`: fikspunkt-løkke (begrænset til 8 gennemløb) + `[^>]*>`-slutmærke-mønstre + fjernelse af uafsluttet åbner. +3 regressionstilfælde i `tests/cv-xss-bypasses.test.mjs`. Den autoritative XSS-grænse er fortsat output-escaping (`UI.md`); dette styrker hvile-garantien og lukker de tilsvarende CodeQL-fund.
+
+Nyt: intet.
+
+
 ## [1.106.0] — 2026-07-06
 
 **Sikkerhedshærdning (CodeQL-triage).** Tre reelle (om end lavseverititets) fund rettet efter en gennemgang af den statiske analyses efterslæb: rute-renderingens fejlsti **escaper nu fejlmeddelelsen**, før den når DOM'en (en serverfejl kan gengive brugerinput, så den behandles som utroværdig — XSS-grænse), og profil/config-egenskabsskrivninger **afviser `__proto__` / `constructor` / `prototype`-nøgler** (prototype-forureningsværn for en sikkerheds skyld — nøglerne kommer fra faste feltspecifikationer, ikke rå request-input). Størstedelen af de resterende advarsler er falske positiver på scannerens legitime `data/*`-læsninger/-skrivninger og på ruter, der allerede har den egne rate-limiter; afvist med begrundelse.

@@ -81,6 +81,26 @@ test('still strips literal on* event handlers', () => {
   assert.ok(!/onclick/i.test(out));
 });
 
+// ─── v1.107.0 CodeQL hardening: end-tag variants, reforming, unclosed ───
+
+test('strips a script end-tag with trailing junk/attributes (bad-tag-filter)', () => {
+  assert.ok(!/<script/i.test(stripDangerousMarkdown('<script>alert(1)</script foo>')));
+  assert.ok(!/<script/i.test(stripDangerousMarkdown('<script>alert(1)</script\n bar>')));
+  assert.ok(!/<style/i.test(stripDangerousMarkdown('<style>x{}</style bar>')));
+});
+
+test('strips a payload that a single pass would REVEAL (incomplete-multi-char)', () => {
+  // Removing the inner `<script></script>` reforms `<script>…</script>`, which
+  // the repeat-until-stable loop then removes too.
+  const nested = '<scr<script></script>ipt>alert(1)</scr<script></script>ipt>';
+  assert.ok(!/<script/i.test(stripDangerousMarkdown(nested)));
+});
+
+test('strips an UNCLOSED executable opener (no closing tag present)', () => {
+  assert.ok(!/<script/i.test(stripDangerousMarkdown('<script src="//evil">alert(1)')));
+  assert.ok(!/<iframe/i.test(stripDangerousMarkdown('text <iframe src="//evil"> more')));
+});
+
 // ─── Decoder edge cases (no XSS, just contract) ────────────────────
 
 test('decodes &amp; without resurrecting double-encoded payload', () => {
