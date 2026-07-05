@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 최신 릴리스 — v1.97.0**
+> **🆕 최신 릴리스 — v1.97.1**
 >
-> **Dassault Systèmes 스캐너 소스 + 품질 정비.** 상위 career-ops 패리티(#1498): 새로운 제로 토큰 **Dassault Systèmes** 스캔 소스(3ds.com/careers 뒤의 공개 Exalead 카드 검색 피드)가 **46번째 어댑터**로 레지스트리에 합류합니다 — 프로바이더로 선택(`provider: dassault`)하거나 3ds.com 호스트에서 자동 감지되며, SSRF 호스트 고정됩니다. 이와 함께 3방면 감사(서버 + SPA + 16개 언어 번역)가 실제 결함을 수정했습니다: **stats 탭 비동기 경쟁**(느린 탭 렌더가 더 새로운 탭을 덮어쓸 수 있었음), **멈출 수 있었던 `safe-fetch` 크기 상한**(상한 초과 미리보기/파이프라인 페치), 죽어 있던 SSE 활동 로깅, 본문이 빈 삭제 확인 대화상자 두 개, 그리고 번역되지 않은 사전 값(uk/ru/it). Avature / Get on Board / SuccessFactors 소스에 대한 상위 프로젝트 견고성 수정을 이식했습니다.
+> **리뷰 기반 강화 및 문서 패리티.** v1.97.0 후속: 스캔 `◎` 적합도 배지(`fit-score.js`)가 더 이상 연 단위 미만의 급여("500 EUR/day")를 엉뚱한 연봉 하한으로 승격하지 않으며, 국가 매칭이 이제 완전 단어 단위여서 "Germany" 가 형용사 "German" 에 매칭될 수 없습니다. 이제 모든 현지화 README 와 인앱 도움말이 **16개 로케일** 과 **스캐너 어댑터 46개** 를 일관되게 표기합니다(일부 본문이 여전히 v1.85 이전 개수에 머물러 있었음). v1.97.0 은 **Dassault Systèmes** 스캔 소스(46번째 어댑터, 제로 토큰 Exalead XML, SSRF 호스트 고정)와 3방면(서버/SPA/16개 언어) 감사 정비를 추가했습니다.
 >
 > _통계 재구성 · 16 locales · 6개 LLM 프로바이더 · 46개 스캐너 어댑터 · 커리어 방향성 · 커리어 플랜 · 메모리 레이어 · CV Studio · 네트워킹 플래너 · mock interview · 투페이저 시장 적합성 · 상위 career-ops v1.16.0 패리티._
 
@@ -240,7 +240,7 @@ http://127.0.0.1:4317 를 엽니다. Pipeline 카운터가 `0 대기 중` 으로
 | **Profile**      | `config/profile.yml` + archetypes의 읽기 전용 뷰 — UI 친화적인 요약 화면입니다.                                         |
 | **App settings** | 부모 `.env` 키를 UI 내부에서 편집합니다: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, 모델 오버라이드, port / host. 시크릿은 읽을 때 마스킹됩니다. |
 | **Health**       | 모든 setup 체크를 OK / OPTIONAL / FAIL 배지로 보여 주며, `doctor.mjs`와 `verify-pipeline.mjs` 실행 버튼을 제공합니다.           |
-| **Help**         | 인앱 마크다운 사용자 가이드(`/#/help`). 지원되는 8개 언어(en / es / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW)로 현지화되어 있습니다. |
+| **Help**         | 인앱 마크다운 사용자 가이드(`/#/help`). 지원되는 16개 언어(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr)로 현지화되어 있습니다. |
 | **Activity log** | 상태를 변경하는 모든 요청(writes, runs, scans)에 대한 감사 추적. 시크릿은 redact 처리됩니다. |
 | **알림** 🔔 *(v1.58.34 / v1.58.35)* | 상단바 벨 + 빨간 안 읽음 배지. 클릭 → 우측 드로어가 최근 50 개의 토스트(탭별/세션별) 표시 — 성공 / 오류 / 정보-진행, 각 항목에 현지화된 시각·메시지·필요 시 `(METHOD /path · HTTP NNN)` 후미가 `<details>` 안에 포함. 도움말 **§18** 가 모든 카테고리 설명. 드로어는 **벨 클릭에서만** 열림(키보드 Enter / Space 포함); ×, Esc, 또는 벨 재클릭으로 닫힘. |
 
@@ -597,9 +597,9 @@ production-readiness 평가(배포 게이트, 리스크 등록부, 보류된 작
 
 ## 현지화 (Localization)
 
-UI는 **8개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. **v1.60.0 (I18N-SPLIT)**부터 번역은 [`public/js/lib/locales/`](public/js/lib/locales/) 아래 **언어당 한 파일**(`i18n-dict.<lang>.js`, 평면 `키 → 문자열` 테이블) + 공용 `i18n-dict.aliases.js`에 있습니다. [`i18n-dict.js`](public/js/lib/i18n-dict.js)가 이를 `window.__I18N_DICT`로 조립하고, [`i18n.js`](public/js/lib/i18n.js)가 `t('키', 'fallback')`을 해석합니다. 빌드·fetch 없음 — 번역가는 단일 언어 파일만 편집합니다.
+UI는 **16개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`. **v1.60.0 (I18N-SPLIT)**부터 번역은 [`public/js/lib/locales/`](public/js/lib/locales/) 아래 **언어당 한 파일**(`i18n-dict.<lang>.js`, 평면 `키 → 문자열` 테이블) + 공용 `i18n-dict.aliases.js`에 있습니다. [`i18n-dict.js`](public/js/lib/i18n-dict.js)가 이를 `window.__I18N_DICT`로 조립하고, [`i18n.js`](public/js/lib/i18n.js)가 `t('키', 'fallback')`을 해석합니다. 빌드·fetch 없음 — 번역가는 단일 언어 파일만 편집합니다.
 
-**문자열 추가/수정:** 동일한 키를 8개 언어 파일 모두에 추가하고(파리티는 테스트로 강제), `data-i18n="scan.newButton"` 또는 `t('scan.newButton')`로 사용한 뒤 `npm test`를 실행하세요.
+**문자열 추가/수정:** 동일한 키를 16개 언어 파일 모두에 추가하고(파리티는 테스트로 강제), `data-i18n="scan.newButton"` 또는 `t('scan.newButton')`로 사용한 뒤 `npm test`를 실행하세요.
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',

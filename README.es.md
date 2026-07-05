@@ -12,11 +12,11 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 Última versión — v1.97.0**
+> **🆕 Última versión — v1.97.1**
 >
-> **Fuente de escáner Dassault Systèmes + un barrido de calidad.** Paridad con el career-ops principal (#1498): una nueva fuente de escaneo de coste cero en tokens, **Dassault Systèmes** (el feed público de búsqueda de tarjetas Exalead tras 3ds.com/careers), se suma al registro como el **46.º adaptador** — seleccionable por proveedor (`provider: dassault`) o autodetectada a partir de un host 3ds.com, con el host anclado contra SSRF. Junto a ella, una auditoría en tres frentes (servidor + SPA + traducción a 16 idiomas) corrigió defectos reales: una **carrera asíncrona en las pestañas de estadísticas** (el renderizado de una pestaña lenta podía pisar una más nueva), un **límite de tamaño de `safe-fetch` que podía colgarse** en una obtención de vista previa/pipeline que superaba el límite, un registro de actividad SSE muerto, dos confirmaciones de eliminación con cuerpo vacío, y valores del diccionario sin traducir (uk/ru/it). Se portaron correcciones de robustez del proyecto principal para las fuentes Avature / Get on Board / SuccessFactors.
+> **Endurecimiento guiado por revisión y paridad de documentación.** Seguimiento de v1.97.0: la insignia de encaje `◎` del escáner (`fit-score.js`) ya no asciende una tarifa inferior a la anual («500 EUR/day») a un suelo salarial anual falso, y la coincidencia de países es ahora por palabra completa, de modo que «Germany» no puede coincidir con el adjetivo «German». Cada README localizado y la ayuda integrada anuncian ahora **16 idiomas** y **46 adaptadores de escáner** de forma coherente (parte de la prosa seguía con los recuentos previos a v1.85). La v1.97.0 añadió la fuente de escaneo **Dassault Systèmes** (46.º adaptador, XML Exalead de coste cero en tokens, host anclado contra SSRF) + un barrido de auditoría en tres frentes (servidor/SPA/16 idiomas).
 >
 > _16 locales · 6 proveedores LLM · 46 adaptadores de escáner · orientación profesional · plan de carrera · rediseño de estadísticas · capa de memoria · CV Studio · planificador de networking · mock interview · encaje de mercado con el two-pager · paridad con el career-ops v1.16.0._
 
@@ -240,7 +240,7 @@ Abre http://127.0.0.1:4317. El contador de Pipeline debe mostrar `0 pendientes`.
 | **Profile**      | Vista de solo lectura de `config/profile.yml` + arquetipos — resumen adaptado a la UI.                             |
 | **App settings** | Editor in-UI para las claves del `.env` padre: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, overrides de modelo, puerto / host. Los secretos van enmascarados al leer. |
 | **Health**       | Todas las comprobaciones de instalación como badges OK / OPTIONAL / FAIL + botones para ejecutar `doctor.mjs` y `verify-pipeline.mjs`. |
-| **Help**         | Guía de usuario en Markdown dentro de la app (`/#/help`), localizada para los 8 idiomas soportados (en / es / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). |
+| **Help**         | Guía de usuario en Markdown dentro de la app (`/#/help`), localizada para los 16 idiomas soportados (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr). |
 | **Activity log** | Rastro de auditoría de cada request que cambia estado (escrituras, ejecuciones, escaneos). Secretos redactados. |
 | **Notificaciones** 🔔 *(v1.58.34 / v1.58.35)* | Campana superior con badge rojo de no leídos. Click → drawer derecho con las últimas 50 toasts (por pestaña, por sesión) — Éxito / Error / Info-progreso, cada una con hora local, mensaje y, si aplica, postfix `(MÉTODO /ruta · HTTP NNN)` en `<details>`. La ayuda **§18** documenta cada categoría. El drawer se abre **solo** al hacer clic en la campana (o Enter / Space); se cierra con ×, Esc, o haciendo clic de nuevo. |
 
@@ -596,9 +596,9 @@ Para la evaluación de production-readiness (gates de despliegue, registro de ri
 
 ## Localización
 
-La interfaz incluye **8 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. Desde **v1.60.0 (I18N-SPLIT)** las traducciones viven **un archivo por idioma** en [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, una tabla plana `clave → texto` — más `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) los ensambla en `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resuelve `t('clave', 'fallback')`. Sin paso de compilación ni fetch — el traductor edita un solo archivo de idioma.
+La interfaz incluye **16 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`. Desde **v1.60.0 (I18N-SPLIT)** las traducciones viven **un archivo por idioma** en [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, una tabla plana `clave → texto` — más `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) los ensambla en `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resuelve `t('clave', 'fallback')`. Sin paso de compilación ni fetch — el traductor edita un solo archivo de idioma.
 
-**Añadir o cambiar un texto:** añade la misma clave a los 8 archivos de idioma (la paridad está protegida por tests), úsala con `data-i18n="scan.newButton"` o `t('scan.newButton')`, y ejecuta `npm test`.
+**Añadir o cambiar un texto:** añade la misma clave a los 16 archivos de idioma (la paridad está protegida por tests), úsala con `data-i18n="scan.newButton"` o `t('scan.newButton')`, y ejecuta `npm test`.
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',

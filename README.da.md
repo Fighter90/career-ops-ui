@@ -12,11 +12,11 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 Seneste udgivelse — v1.97.0**
+> **🆕 Seneste udgivelse — v1.97.1**
 >
-> **Dassault Systèmes-scannerkilde + en kvalitetsgennemgang.** Paritet med forælderens career-ops (#1498): en ny zero-token **Dassault Systèmes**-scannerkilde (det offentlige Exalead-card-search-feed bag 3ds.com/careers) slutter sig til registret som den **46. adapter** — valgt via udbyder (`provider: dassault`) eller autodetekteret fra en 3ds.com-vært, SSRF-værtsfastgjort. Sammen med den rettede en trefronts-audit (server + SPA + 16-sprogs-oversættelse) reelle defekter: et **asynkront stats-fane-kapløb** (en langsom fane-render kunne overskrive en nyere), en **`safe-fetch`-størrelsesgrænse, der kunne hænge** en over-grænse preview/pipeline-fetch, død SSE-aktivitetslogning, to sletbekræftelser med tom brødtekst og uoversatte ordbogsværdier (uk/ru/it). Overførte robusthedsrettelser fra forælderen for Avature- / Get on Board- / SuccessFactors-kilderne.
+> **Gennemgangsdrevet hærdning & dokumentationsparitet.** Opfølgning på v1.97.0: scan-`◎`-fit-badgen (`fit-score.js`) ophøjer ikke længere en sats under årsniveau ("500 EUR/day") til et falsk årligt lønnings-gulv, og landematchning sker nu på hele ord, så "Germany" ikke kan matche tillægsordet "German". Hver lokaliseret README og den in-app hjælp averterer nu konsekvent **16 lokaliteter** og **46 scanneradaptere** (noget tekst sad stadig på tallene fra før v1.85). v1.97.0 tilføjede **Dassault Systèmes**-scannerkilden (46. adapter, zero-token Exalead-XML, SSRF-værtsfastgjort) + en trefronts-audit-gennemgang (server / SPA / 16 sprog).
 >
 > _16 lokaliteter · 6 LLM-providere · 46 scanneradaptere · karriereorientering · karriereplan · statistik omarbejdet · hukommelseslag · CV Studio · networking-planlægger · jobsamtale-øvelse · markedsfit via two-pager · paritet med forælderens career-ops v1.16.0._
 
@@ -273,7 +273,7 @@ npm start
 | **Profile**      | Skrivebeskyttet visning af `config/profile.yml` + arketyper — UI-venligt resumé.                                         |
 | **App settings** | In-UI-editor til den overordnede `.env`'s nøgler: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, model-overrides, port / vært. Hemmeligheder maskeres ved læsning. |
 | **Health**       | Alle opsætningstjek i OK / OPTIONAL / FAIL-badges + knapper til at køre `doctor.mjs` og `verify-pipeline.mjs`.           |
-| **Help**         | In-app Markdown-brugervejledning (`/#/help`), lokaliseret til alle 9 understøttede sprog (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). |
+| **Help**         | In-app Markdown-brugervejledning (`/#/help`), lokaliseret til alle 16 understøttede sprog (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr). |
 | **Activity log** | Revisionsspor af hver tilstandsændrende forespørgsel (writes, runs, scans). Hemmeligheder redigeret. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Klokke i topbjælken med rødt ulæst-badge. Klik for at glide en skuffe ind, der oplister de seneste 50 toasts (pr. fane, pr. session) — Success / Error / Info-progress, hver med et lokaliseret tidsstempel, den menneskelige besked og ethvert `(METHOD /path · HTTP NNN)`-postfiks gemt i en `<details>`. Hjælp **§18** dokumenterer hver kategori. Skuffen åbner **kun** ved klik på klokken (eller tastatur Enter / Space); lukkes via ×, Esc eller ved at klikke på klokken igen. |
 

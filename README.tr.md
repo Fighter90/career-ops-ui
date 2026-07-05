@@ -12,11 +12,11 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 En son sürüm — v1.97.0**
+> **🆕 En son sürüm — v1.97.1**
 >
-> **Dassault Systèmes tarayıcı kaynağı + bir kalite taraması.** Üst career-ops eşdeğerliği (#1498): yeni bir sıfır-token **Dassault Systèmes** tarama kaynağı (3ds.com/careers arkasındaki genel Exalead kart-arama akışı) kayıt defterine **46. adaptör** olarak katılıyor — sağlayıcıyla seçilir (`provider: dassault`) veya bir 3ds.com ana bilgisayarından otomatik algılanır, SSRF'ye karşı ana bilgisayar sabitlemeli. Onun yanında, üç cepheli bir denetim (sunucu + SPA + 16 dilli çeviri) gerçek kusurları düzeltti: bir **istatistik-sekmesi asenkron yarışı** (yavaş bir sekme render'ı daha yenisinin üzerine yazabiliyordu), askıda kalabilen bir **`safe-fetch` boyut-limiti** (limiti aşan bir önizleme/pipeline getirmesinde), ölü SSE etkinlik günlüğü, gövdesi boş iki silme onayı ve çevrilmemiş sözlük değerleri (uk/ru/it). Avature / Get on Board / SuccessFactors kaynakları için üst projeden sağlamlık düzeltmeleri taşındı.
+> **İnceleme odaklı sağlamlaştırma & dokümantasyon paritesi.** v1.97.0 devamı: tarama `◎` uygunluk rozeti (`fit-score.js`) artık yıllık-altı bir oranı («500 EUR/day») sahte bir yıllık maaş tabanına yükseltmiyor ve ülke eşleştirmesi artık tam-sözcük olduğundan "Germany" artık "German" sıfatıyla eşleşemiyor. Her yerelleştirilmiş README ve uygulama-içi yardım artık tutarlı biçimde **16 yerel dil** ve **46 tarayıcı adaptörü** duyuruyor (metnin bir kısmı hâlâ v1.85 öncesi sayımlardaydı). v1.97.0, **Dassault Systèmes** tarama kaynağını (46. adaptör, sıfır-token Exalead XML, SSRF'ye karşı ana bilgisayar sabitlemeli) ve üç cepheli bir denetim taramasını (sunucu / SPA / 16 dil) ekledi.
 >
 > _16 yerel dil · 6 LLM sağlayıcısı · 46 tarayıcı adaptörü · kariyer yönelimi · kariyer planı · istatistiklerin yeniden tasarımı · bellek katmanı · CV Studio · networking planlayıcı · deneme mülakatı · two-pager ile pazar uyumu · üst career-ops v1.16.0 eşdeğerliği._
 
@@ -273,7 +273,7 @@ http://127.0.0.1:4317 adresini açın. Pipeline sayacı artık `0 pending` okuma
 | **Profile**      | `config/profile.yml` + arketiplerin salt okunur görünümü — arayüz dostu özet.                                         |
 | **App settings** | Üst `.env` anahtarları için arayüz içi düzenleyici: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, model geçersiz kılmaları, port / host. Okuma sırasında gizli bilgiler maskelenir. |
 | **Health**       | Tüm kurulum kontrolleri OK / OPTIONAL / FAIL rozetleri halinde + `doctor.mjs` ve `verify-pipeline.mjs` çalıştırma düğmeleri.           |
-| **Help**         | Desteklenen 9 dilin tamamı için yerelleştirilmiş, uygulama içi Markdown kullanıcı kılavuzu (`/#/help`) (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). |
+| **Help**         | Desteklenen 16 dilin tamamı için yerelleştirilmiş, uygulama içi Markdown kullanıcı kılavuzu (`/#/help`) (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr). |
 | **Activity log** | Durum değiştiren her isteğin (yazma, çalıştırma, tarama) denetim izi. Gizli bilgiler kaldırılır. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Kırmızı okunmamış rozetli üst çubuk zili. Son 50 bildirimi (sekme başına, oturum başına) listeleyen bir çekmeceyi açmak için tıklayın — Başarı / Hata / Bilgi-ilerleme, her biri yerelleştirilmiş bir zaman damgası, insan okunur mesaj ve bir `<details>` içine tucked edilmiş herhangi bir `(METHOD /path · HTTP NNN)` son ekiyle. Yardım **§18** her kategoriyi belgeler. Çekmece **yalnızca** zile tıklandığında (veya klavye Enter / Space ile) açılır; ×, Esc ile ya da zile yeniden tıklayarak kapanır. |
 
@@ -621,14 +621,14 @@ Claude Code içindeki mevcut `/career-ops apply` Playwright form doldurma akış
 
 ## Yerelleştirme
 
-Arayüz **9 yerel dilde** gelir — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`. **v1.60.0 (I18N-SPLIT)**'ten bu yana çeviriler [`public/js/lib/locales/`](public/js/lib/locales/) altında **yerel dil başına bir dosyada** bulunur — `i18n-dict.<lang>.js`, her biri düz bir `key → string` tablosu — artı paylaşılan bir `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) bunları `window.__I18N_DICT`'e birleştirir; [`i18n.js`](public/js/lib/i18n.js), `t('key', 'fallback')`'ı çözer. Derleme adımı yok, çalışma zamanı getirmesi yok — bir çevirmen tek bir dil dosyasını izole olarak düzenler.
+Arayüz **16 yerel dilde** gelir — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`. **v1.60.0 (I18N-SPLIT)**'ten bu yana çeviriler [`public/js/lib/locales/`](public/js/lib/locales/) altında **yerel dil başına bir dosyada** bulunur — `i18n-dict.<lang>.js`, her biri düz bir `key → string` tablosu — artı paylaşılan bir `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) bunları `window.__I18N_DICT`'e birleştirir; [`i18n.js`](public/js/lib/i18n.js), `t('key', 'fallback')`'ı çözer. Derleme adımı yok, çalışma zamanı getirmesi yok — bir çevirmen tek bir dil dosyasını izole olarak düzenler.
 
 **Bir dize ekleyin veya değiştirin:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …aynı anahtarı 9 yerel dil dosyasının tamamına ekleyin (eşitlik kapılıdır)
+// …aynı anahtarı 16 yerel dil dosyasının tamamına ekleyin (eşitlik kapılıdır)
 ```
 
 Ardından bunu işaretlemede `data-i18n="scan.newButton"` ya da JS'de `t('scan.newButton')` aracılığıyla kullanın ve `npm test` çalıştırın. Yepyeni bir dil eklemek için, onu `i18n.js` (`LANGS` + `detect()`), birleştirici, `index.html` ve yerel dilleri sıralayan araçlara kaydedin.

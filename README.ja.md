@@ -12,11 +12,11 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 最新リリース — v1.97.0**
+> **🆕 最新リリース — v1.97.1**
 >
-> **Dassault Systèmes スキャナソース + 品質スイープ。** 親 career-ops パリティ（#1498）: 新しいゼロトークンの **Dassault Systèmes** スキャンソース（3ds.com/careers の背後にある公開 Exalead カード検索フィード）が **46 番目のアダプタ** としてレジストリに加わります — プロバイダ選択（`provider: dassault`）または 3ds.com ホストからの自動検出で、SSRF ホスト固定されます。あわせて、3 方面の監査（サーバ + SPA + 16 言語の翻訳）が実際の欠陥を修正しました: **stats タブの非同期競合**（遅いタブのレンダーが新しいタブを上書きしうる）、**ハングしうる `safe-fetch` のサイズ上限**（上限超過のプレビュー/パイプラインのフェッチ）、死んでいた SSE アクティビティログ、本文が空の削除確認ダイアログ 2 つ、そして未翻訳の辞書値（uk/ru/it）。Avature / Get on Board / SuccessFactors ソースの親プロジェクト堅牢性修正を移植しました。
+> **レビュー起点の堅牢化とドキュメントのパリティ。** v1.97.0 のフォローアップ: スキャン `◎` 適合バッジ（`fit-score.js`）は年額未満のレート（「500 EUR/day」）をもう偽の年額下限に格上げせず、国のマッチングが単語単位になったため「Germany」が形容詞「German」にマッチできなくなりました。すべてのローカライズ済み README とアプリ内ヘルプが **16 ロケール** と **46 スキャナアダプタ** を一貫して表示するようになりました（一部の本文はまだ v1.85 以前の件数のままでした）。v1.97.0 では **Dassault Systèmes** スキャンソース（46 番目のアダプタ、ゼロトークンの Exalead XML、SSRF ホスト固定）と、3 方面（サーバ/SPA/16 言語）の監査スイープを追加しました。
 >
 > _統計の刷新 · 16 ロケール · 6 LLM プロバイダ · 46 スキャナアダプタ · キャリアの方向性 · キャリアプラン · メモリレイヤー · CV Studio · ネットワーキングプランナー · mock interview · two-pager による市場フィット · 親 career-ops v1.16.0 パリティ。_
 
@@ -240,7 +240,7 @@ http://127.0.0.1:4317 を開きます。Pipeline カウンタが `0 件待機中
 | **Profile**      | `config/profile.yml` とアーキタイプの読み取り専用ビュー。UI フレンドリーなサマリーを表示します。 |
 | **App settings** | 親 `.env` キー用の UI 内エディタ。`ANTHROPIC_API_KEY`、`GEMINI_API_KEY`、モデルのオーバーライド、ポートとホストを編集できます。シークレットは読み取り時にマスクされます。 |
 | **Health**       | すべてのセットアップチェックを OK / OPTIONAL / FAIL バッジで表示し、`doctor.mjs` と `verify-pipeline.mjs` を実行するボタンを備えます。 |
-| **Help**         | アプリ内 Markdown ユーザーガイド(`/#/help`)。サポート対象の 8 言語すべてにローカライズ済みです(en / es / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW)。 |
+| **Help**         | アプリ内 Markdown ユーザーガイド(`/#/help`)。サポート対象の 16 言語すべてにローカライズ済みです(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr)。 |
 | **Activity log** | すべての状態変更リクエスト(書き込み・実行・スキャン)の監査証跡。シークレットはマスク済みです。 |
 | **通知** 🔔 *(v1.58.34 / v1.58.35)* | トップバーのベル + 赤い未読バッジ。クリック → 右ドロワーが最新 50 件のトースト(タブ単位/セッション単位)を表示 — 成功 / エラー / 情報-進行、それぞれにローカル時刻・メッセージ・必要に応じて `(METHOD /path · HTTP NNN)` 末尾を `<details>` で表示。ヘルプ **§18** が各カテゴリを説明。ドロワーは **ベルのクリック時にのみ** 開く(キーボード Enter / Space 含む)。× / Esc / ベル再クリックで閉じる。|
 
@@ -599,9 +599,9 @@ production-readiness アセスメント(デプロイメントゲート、リス�
 
 ## ローカライズ (Localization)
 
-UI は **8 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`。**v1.60.0 (I18N-SPLIT)** 以降、翻訳は [`public/js/lib/locales/`](public/js/lib/locales/) 配下の **言語ごとに 1 ファイル**（`i18n-dict.<lang>.js`、フラットな `キー → 文字列` テーブル）と共通の `i18n-dict.aliases.js` にあります。[`i18n-dict.js`](public/js/lib/i18n-dict.js) がそれらを `window.__I18N_DICT` に組み立て、[`i18n.js`](public/js/lib/i18n.js) が `t('キー', 'fallback')` を解決します。ビルドも fetch もなし — 翻訳者は 1 つの言語ファイルだけを編集します。
+UI は **16 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`。**v1.60.0 (I18N-SPLIT)** 以降、翻訳は [`public/js/lib/locales/`](public/js/lib/locales/) 配下の **言語ごとに 1 ファイル**（`i18n-dict.<lang>.js`、フラットな `キー → 文字列` テーブル）と共通の `i18n-dict.aliases.js` にあります。[`i18n-dict.js`](public/js/lib/i18n-dict.js) がそれらを `window.__I18N_DICT` に組み立て、[`i18n.js`](public/js/lib/i18n.js) が `t('キー', 'fallback')` を解決します。ビルドも fetch もなし — 翻訳者は 1 つの言語ファイルだけを編集します。
 
-**文字列の追加・変更:** 同じキーを 8 つの言語ファイルすべてに追加し（パリティはテストで強制）、`data-i18n="scan.newButton"` または `t('scan.newButton')` で使い、`npm test` を実行します。
+**文字列の追加・変更:** 同じキーを 16 個の言語ファイルすべてに追加し（パリティはテストで強制）、`data-i18n="scan.newButton"` または `t('scan.newButton')` で使い、`npm test` を実行します。
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',

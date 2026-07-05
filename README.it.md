@@ -12,11 +12,11 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 Ultima release — v1.97.0**
+> **🆕 Ultima release — v1.97.1**
 >
-> **Sorgente di scansione Dassault Systèmes + una revisione della qualità.** Parità con il career-ops principale (#1498): una nuova sorgente di scansione a costo zero in token, **Dassault Systèmes** (il feed pubblico di ricerca a schede Exalead dietro 3ds.com/careers), si aggiunge al registro come **46° adattatore** — selezionabile per provider (`provider: dassault`) o rilevata automaticamente da un host 3ds.com, con l'host ancorato contro l'SSRF. Accanto a essa, un audit su tre fronti (server + SPA + traduzione in 16 lingue) ha corretto difetti reali: una **corsa asincrona nelle schede delle statistiche** (il rendering di una scheda lenta poteva sovrascriverne una più recente), un **limite di dimensione di `safe-fetch` che poteva bloccarsi** su un recupero di anteprima/pipeline oltre il limite, un logging di attività SSE morto, due conferme di eliminazione con corpo vuoto, e valori del dizionario non tradotti (uk/ru/it). Correzioni di robustezza dal progetto principale sono state portate per le sorgenti Avature / Get on Board / SuccessFactors.
+> **Consolidamento guidato dalla revisione e parità della documentazione.** Seguito della v1.97.0: il badge di fit `◎` della scansione (`fit-score.js`) non promuove più una tariffa infra-annuale («500 EUR/day») a un falso minimo salariale annuale, e la corrispondenza dei paesi è ora a parola intera, così «Germany» non può corrispondere all'aggettivo «German». Ogni README localizzato e l'aiuto integrato ora pubblicizzano **16 lingue** e **46 adattatori di scansione** in modo coerente (parte della prosa era ancora sui conteggi precedenti alla v1.85). La v1.97.0 ha aggiunto la sorgente di scansione **Dassault Systèmes** (46° adattatore, XML Exalead a costo zero in token, host ancorato contro l'SSRF) + una revisione di audit su tre fronti (server/SPA/16 lingue).
 >
 > _16 lingue · 6 provider LLM · 46 adattatori di scansione · orientamento professionale · piano di carriera · rielaborazione delle statistiche · livello di memoria · CV Studio · pianificatore di networking · colloquio simulato · fit di mercato con il two-pager · parità con career-ops principale v1.16.0._
 

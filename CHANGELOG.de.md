@@ -2,6 +2,13 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.97.1] — 2026-07-05
+### Behoben
+- **Review-getriebene Härtung und Dokumentationsparität (Nachtrag zu v1.97.0).** Ein Durchlauf durch die KI-Review-Logs förderte echte Korrekturen zutage:
+- **`fit-score.js` (Scan-`◎`-Fit-Badge).** `salaryFloor()` befördert einen unterjährigen Satz nicht mehr zu einem falschen Jahresmindestwert — „at least 500 EUR/day", „$80/hr", „6000 monthly" liefern jetzt `null` statt eines 500k/80k-Ausschlusskriteriums. Der Länderabgleich erfolgt nun auf ganzes Wort (`\b…\b`), sodass „Germany" nicht mehr auf das Adjektiv „German" passt (noch „Nigeria" innerhalb von „Nigerian") und keine falsche Muss-anderswo-Verletzung auslöst. +3 Tests in `tests/fit-score.test.mjs`.
+- **Dokumentationsparität.** Jedes lokalisierte README bewirbt nun einheitlich **16 Sprachen** — die Anzahl/Liste der Hilfe-Zeile (×13) sowie die Prosa des Lokalisierungsabschnitts plus die Notiz „füge den Schlüssel zu allen N Dateien hinzu" (×8) standen noch auf den Zählungen vor v1.85 (8/9). Die Adapter-Anzahl der integrierten Hilfe §17 ist auf **46 Adapter — 41 auf Englisch + 5 auf Russisch** über alle 16 Bündel korrigiert.
+- Keine Verhaltensänderung über die Fit-Badge-Heuristik hinaus; keine neuen Routen, Schlüssel oder i18n-Ergänzungen.
+
 ## [1.97.0] — 2026-07-05
 ### Hinzugefügt
 - **Dassault-Systèmes-Scanner-Quelle + ein Qualitätsdurchlauf an drei Fronten.**

@@ -12,11 +12,11 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 Latest release — v1.97.0**
+> **🆕 Latest release — v1.97.1**
 >
-> **Dassault Systèmes scanner source + a quality sweep.** Parent career-ops parity (#1498): a new zero-token **Dassault Systèmes** scan source (the public Exalead card-search feed behind 3ds.com/careers) joins the registry as the **46th adapter** — provider-selected (`provider: dassault`) or auto-detected from a 3ds.com host, SSRF host-pinned. Alongside it, a three-front audit (server + SPA + 16-language translation) fixed real defects: a **stats-tab async race** (a slow tab render could clobber a newer one), a **`safe-fetch` size-cap that could hang** an over-cap preview/pipeline fetch, dead SSE activity-logging, two empty-bodied delete confirms, and untranslated dictionary values (uk/ru/it) + CHANGELOG boilerplate. Ported parent robustness fixes for the Avature / Get on Board / SuccessFactors sources.
+> **Review-driven hardening & docs parity.** Follow-up to v1.97.0: the scan `◎` fit-badge (`fit-score.js`) no longer promotes a sub-annual rate ("500 EUR/day") into a bogus annual salary floor, and country matching is now whole-word so "Germany" can't match the adjective "German". Every localized README and the in-app help now advertise **16 locales** and **46 scanner adapters** consistently (some prose was still on the pre-v1.85 counts). v1.97.0 added the **Dassault Systèmes** scan source (46th adapter, zero-token Exalead XML, SSRF host-pinned) + a three-front (server/SPA/16-language) audit sweep.
 >
 > _16 locales · 6 LLM providers · 46 scanner adapters · career orientation · career plan · statistics rework · memory layer · CV Studio · networking planner · mock interview · two-pager market-fit · parent career-ops v1.16.0 parity._
 
@@ -273,7 +273,7 @@ Open http://127.0.0.1:4317. Pipeline counter should now read `0 pending`. The Ma
 | **Profile**      | Read-only view of `config/profile.yml` + archetypes — UI-friendly summary.                                         |
 | **App settings** | In-UI editor for parent `.env` keys: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, model overrides, port / host. Secrets masked on read. |
 | **Health**       | All setup checks in OK / OPTIONAL / FAIL badges + buttons to run `doctor.mjs` and `verify-pipeline.mjs`.           |
-| **Help**         | In-app Markdown user guide (`/#/help`), localized for all 9 supported languages (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). |
+| **Help**         | In-app Markdown user guide (`/#/help`), localized for all 16 supported languages (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr). |
 | **Activity log** | Audit trail of every state-changing request (writes, runs, scans). Secrets redacted. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Top-bar bell with red unread badge. Click to slide-in a drawer listing the last 50 toasts (per tab, per session) — Success / Error / Info-progress, each with a localized timestamp, the human message, and any `(METHOD /path · HTTP NNN)` postfix tucked into a `<details>`. Help **§18** documents every category. Drawer opens **only** on bell click (or keyboard Enter / Space); closes via ×, Esc, or re-clicking the bell. |
 

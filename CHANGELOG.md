@@ -8,6 +8,16 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.97.1] — 2026-07-05
+
+**Review-driven hardening & documentation parity (follow-up to v1.97.0).** A sweep of the AI-review logs surfaced real fixes:
+
+- **`fit-score.js` (scan `◎` fit badge).** `salaryFloor()` no longer promotes a sub-annual rate into a bogus annual floor — "at least 500 EUR/day", "$80/hr", "6000 monthly" now return `null` instead of a 500k/80k deal-breaker. Country matching is now whole-word (`\b…\b`) so "Germany" no longer matches the adjective "German" (nor "Nigeria" inside "Nigerian") and fires a false must-have-elsewhere violation. +3 tests in `tests/fit-score.test.mjs`.
+- **Documentation parity.** Every localized README now advertises **16 locales** consistently — the Help-row count/list (×13) and the Localization-section prose + "add the key to all N files" note (×8) were still on the pre-v1.85 counts (8/9). The in-app help §17 adapter count is corrected to **46 adapters — 41 English + 5 Russian** across all 16 bundles.
+
+No behaviour change beyond the fit-badge heuristic; no new routes, keys, or i18n additions.
+
+
 ## [1.97.0] — 2026-07-05
 
 **Dassault Systèmes scanner source + a three-front quality sweep.**

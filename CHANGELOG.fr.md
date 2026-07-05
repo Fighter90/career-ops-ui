@@ -11,6 +11,16 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.97.1] — 2026-07-05
+
+**Durcissement guidé par la revue et parité de la documentation (suite de la v1.97.0).** Un balayage des journaux de revue par IA a fait remonter de vraies corrections :
+
+- **`fit-score.js` (badge d'adéquation `◎` du scan).** `salaryFloor()` ne promeut plus un taux inférieur à l'annuel en un plancher annuel erroné — « at least 500 EUR/day », « $80/hr », « 6000 monthly » renvoient désormais `null` au lieu d'un facteur rédhibitoire de 500k/80k. La correspondance des pays se fait désormais par mot entier (`\b…\b`), de sorte que « Germany » ne correspond plus à l'adjectif « German » (ni « Nigeria » à l'intérieur de « Nigerian ») et ne déclenche plus une fausse violation d'incontournable-ailleurs. +3 tests dans `tests/fit-score.test.mjs`.
+- **Parité de la documentation.** Chaque README localisé annonce désormais **16 langues** de manière cohérente — le décompte/la liste de la ligne Aide (×13) et la prose de la section Localisation ainsi que la note « ajouter la clé à tous les N fichiers » (×8) étaient encore sur les décomptes antérieurs à v1.85 (8/9). Le décompte d'adaptateurs de l'aide intégrée §17 est corrigé à **46 adaptateurs — 41 en anglais + 5 en russe** dans les 16 lots.
+
+Aucun changement de comportement au-delà de l'heuristique du badge d'adéquation ; aucune nouvelle route, clé ou ajout d'i18n.
+
+
 ## [1.97.0] — 2026-07-05
 
 **Source de scanner Dassault Systèmes + un balayage qualité sur trois fronts.**

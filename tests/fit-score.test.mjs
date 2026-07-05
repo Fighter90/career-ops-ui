@@ -25,6 +25,10 @@ test('FitScore surface + internals', () => {
   assert.equal(FS._internals.salaryFloor('at least $120k'), 120000);
   assert.equal(FS._internals.salaryFloor('min 100000'), 100000);
   assert.equal(FS._internals.salaryFloor('nice team'), null);
+  // Sub-annual rates are NOT an annual floor — must not be promoted to a bogus 500k.
+  assert.equal(FS._internals.salaryFloor('at least 500 EUR/day'), null);
+  assert.equal(FS._internals.salaryFloor('min $80/hr'), null);
+  assert.equal(FS._internals.salaryFloor('minimum 6000 monthly'), null);
 });
 
 test('empty / unmatchable two-pager → score null (no badge)', () => {
@@ -57,6 +61,12 @@ test('country: must-have match vs must-have-elsewhere violation', () => {
 
   const deBreaker = FS.scoreJob(deJob, { deal_breakers: ['Germany'] }, C);
   assert.ok(deBreaker.violated.some((x) => x.label === 'Germany'));
+
+  // Whole-word match only: a "Germany" country must NOT match the adjective
+  // "German" inside a pref, nor fire a false must-have-elsewhere violation.
+  const germanPref = FS.scoreJob(deJob, { loves: ['German-speaking team culture'] }, C);
+  assert.ok(!germanPref.matched.some((x) => /German-speaking/.test(x.label)),
+    'substring "German" must not match country Germany');
 });
 
 test('salary floor: meets vs below', () => {
