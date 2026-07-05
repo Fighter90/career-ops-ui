@@ -10,6 +10,13 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.98.0] — 2026-07-05
+
+**Indbygget fejlrapportør** (paritet med moderprojektets `web-v0.2.0`-web). En **🐞 Report a bug**-knap i notifikationsskuffen samler et privatlivsbegrænset diagnostisk øjebliksbillede — versioner, din skærm, browser, et `/api/health`-tjekresumé og de sidste 20 fejl fra en ny klientside-ringbuffer — plus et deterministisk dedupe-fingeraftryk (`co-web-<base36>`), lader dig gennemse den præcise Markdown og åbner derefter en forududfyldt GitHub-issue. Intet indsendes automatisk; det bærer aldrig dit CV, din profil, svar, job-URLer eller nøgler. Nye libs `logbuf.js` + `bug-report.js`; 11 i18n-nøgler ×16; `tests/bug-report.test.mjs`.
+
+Nyt: `public/js/lib/logbuf.js`; `public/js/lib/bug-report.js`.
+
+
 ## [1.97.1] — 2026-07-05
 
 **Gennemgangsdrevet hærdning & dokumentationsparitet (opfølgning på v1.97.0).** En gennemgang af AI-review-loggene afdækkede reelle rettelser:

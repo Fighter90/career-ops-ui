@@ -9,6 +9,13 @@
 ---
 
 
+## [1.98.0] — 2026-07-05
+
+**应用内错误报告器**（与父项目 `web-v0.2.0` Web 端对齐）。通知抽屉中的 **🐞 Report a bug** 按钮会收集一份遵循隐私底线的诊断快照——版本、你的屏幕、浏览器、`/api/health` 检查摘要，以及来自新的客户端环形缓冲区的最近 20 条错误——外加一个确定性的去重指纹（`co-web-<base36>`），让你审阅确切的 Markdown，然后打开一个预填的 GitHub issue。不会自动提交；绝不携带你的简历、档案、回答、职位 URL 或密钥。新库 `logbuf.js` + `bug-report.js`；11 个 i18n 键 ×16；`tests/bug-report.test.mjs`。
+
+新增： `public/js/lib/logbuf.js`; `public/js/lib/bug-report.js`.
+
+
 ## [1.97.1] — 2026-07-05
 
 **评审驱动的加固与文档一致性（v1.97.0 的后续）。** 梳理 AI 评审日志后浮现出若干真实修复:

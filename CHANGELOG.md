@@ -8,6 +8,18 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.98.0] — 2026-07-05
+
+**In-app bug reporter (parent career-ops `web-v0.2.0` parity).** The one substantial feature the parent's experimental web frontend had that we lacked. A **🐞 Report a bug** button in the notifications drawer opens a preview-then-confirm modal that gathers a **privacy-floored diagnostic snapshot** — app + parent version, your current screen, browser, viewport, a `checks OK / FAIL` summary from `/api/health`, and the last 20 **errors** captured by a new client-side ring buffer (`console.error`, `window.onerror`, unhandled rejections, and failed `/api/*` responses — pathname + status only) — plus a deterministic **dedupe fingerprint** (`co-web-<base36>`). You review the exact Markdown, then it opens a **pre-filled GitHub issue** (or copies the report); nothing is auto-filed. The privacy floor is an invariant: **never** CV, profile, application answers, job URLs, report content, or API keys — home paths and secret-looking tokens are scrubbed on top.
+
+- New client libs `public/js/lib/logbuf.js` (error ring buffer, loads first so it captures from first paint) + `public/js/lib/bug-report.js` (`window.BugReport` — scrub / fingerprint / issueBody / issueUrl / openModal). No new server route — reuses `/api/health`. Wired into the notifications-drawer head.
+- Tests: `tests/bug-report.test.mjs` (ring-buffer cap, path/token scrub, deterministic + volatile-stable fingerprint, privacy-floor body, repo-targeted issue URL). 11 new i18n keys ×16 locales.
+
+_Assessment: our web-ui is otherwise ahead of the parent's alpha web — we already ship WCAG 2.5.5 44×44 tap-targets, provider cost hints, 24 routes, and 16 locales — so the bug reporter closes the last meaningful gap._
+
+New: `public/js/lib/logbuf.js`; `public/js/lib/bug-report.js`.
+
+
 ## [1.97.1] — 2026-07-05
 
 **Review-driven hardening & documentation parity (follow-up to v1.97.0).** A sweep of the AI-review logs surfaced real fixes:

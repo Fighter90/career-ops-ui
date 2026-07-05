@@ -11,6 +11,13 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.98.0] — 2026-07-05
+
+**Rapporteur de bugs intégré** (parité avec le web `web-v0.2.0` du projet parent). Un bouton **🐞 Report a bug** dans le tiroir de notifications rassemble un instantané de diagnostic à socle de confidentialité — versions, votre écran, navigateur, un résumé des vérifications de `/api/health` et les 20 dernières erreurs d’un nouveau tampon circulaire côté client — plus une empreinte de déduplication déterministe (`co-web-<base36>`), vous laisse relire le Markdown exact, puis ouvre une issue GitHub pré-remplie. Rien n’est envoyé automatiquement ; il ne transporte jamais votre CV, profil, réponses, URLs d’offres ou clés. Nouvelles libs `logbuf.js` + `bug-report.js` ; 11 clés i18n ×16 ; `tests/bug-report.test.mjs`.
+
+Nouveau : `public/js/lib/logbuf.js`; `public/js/lib/bug-report.js`.
+
+
 ## [1.97.1] — 2026-07-05
 
 **Durcissement guidé par la revue et parité de la documentation (suite de la v1.97.0).** Un balayage des journaux de revue par IA a fait remonter de vraies corrections :

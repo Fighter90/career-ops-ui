@@ -963,4 +963,16 @@ window.__I18N_DICT_FR = {
   'orient.running': "Génération de votre profil…",
   'orient.failed': "Impossible de générer le profil",
   'orient.note': "Ceci lit votre CV, votre profil, votre two-pager et votre note de mémoire — il n’invente jamais de faits et ne rapporte jamais de scores de test mesurés. Rien n’est enregistré ; exportez-le si vous souhaitez le conserver.",
+  // ── v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter ──
+  'bug.report': "🐞 Signaler un bug",
+  'bug.title': "Signaler un bug",
+  'bug.what': "Ce qui s’est passé",
+  'bug.ph': "Que faisiez-vous et qu’est-ce qui a échoué ?",
+  'bug.preview': "Exactement ce qui sera envoyé (modifiable dans le champ ci-dessus)",
+  'bug.openIssue': "Ouvrir un ticket GitHub →",
+  'bug.searchSimilar': "Rechercher des tickets similaires",
+  'bug.copy': "Copier le rapport",
+  'bug.copied': "Rapport copié",
+  'bug.copyFailed': "Impossible de copier",
+  'bug.privacy': "Rien n’est envoyé automatiquement. Le rapport ci-dessous ne contient que les versions, votre écran, votre navigateur et le texte des erreurs récentes — jamais votre CV, votre profil, vos réponses ni les URLs d’offres. Vérifiez-le, puis ouvrez le ticket vous-même.",
 };

@@ -2,6 +2,13 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.98.0] — 2026-07-05
+
+**Uygulama içi hata bildirici** (üst projenin `web-v0.2.0` web parçasıyla parite). Bildirim çekmecesindeki **🐞 Report a bug** düğmesi gizlilik tabanlı bir tanılama anlık görüntüsü toplar — sürümler, ekranınız, tarayıcı, bir `/api/health` kontrol özeti ve yeni bir istemci tarafı halka tamponundan son 20 hata — artı deterministik bir yinelenenleri ayıklama parmak izi (`co-web-<base36>`), tam Markdown’ı incelemenize izin verir ve ardından önceden doldurulmuş bir GitHub sorunu açar. Hiçbir şey otomatik olarak gönderilmez; asla CV’nizi, profilinizi, yanıtlarınızı, iş URL’lerinizi veya anahtarlarınızı taşımaz. Yeni kitaplıklar `logbuf.js` + `bug-report.js`; 11 i18n anahtarı ×16; `tests/bug-report.test.mjs`.
+
+Yeni: `public/js/lib/logbuf.js`; `public/js/lib/bug-report.js`.
+
+
 ## [1.97.1] — 2026-07-05
 ### Düzeltilenler
 - **İnceleme odaklı sağlamlaştırma & dokümantasyon paritesi (v1.97.0 devamı).** AI-inceleme günlüklerinin taranması gerçek düzeltmeleri ortaya çıkardı:

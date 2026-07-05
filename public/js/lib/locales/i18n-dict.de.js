@@ -963,4 +963,16 @@ window.__I18N_DICT_DE = {
   'orient.running': "Ihr Profil wird generiert…",
   'orient.failed': "Profil konnte nicht generiert werden",
   'orient.note': "Dies liest Ihren Lebenslauf, Ihr Profil, Ihren Two-Pager und Ihre Gedächtnisnotiz — es erfindet nie Fakten und meldet nie gemessene Testwerte. Es wird nichts gespeichert; exportieren Sie es, wenn Sie es behalten möchten.",
+  // ── v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter ──
+  'bug.report': "🐞 Fehler melden",
+  'bug.title': "Fehler melden",
+  'bug.what': "Was ist passiert",
+  'bug.ph': "Was haben Sie gerade getan und was ist schiefgelaufen?",
+  'bug.preview': "Genau das, was übermittelt wird (bearbeitbar über das Feld oben)",
+  'bug.openIssue': "Ein GitHub-Issue öffnen →",
+  'bug.searchSimilar': "Nach ähnlichen Issues suchen",
+  'bug.copy': "Bericht kopieren",
+  'bug.copied': "Bericht kopiert",
+  'bug.copyFailed': "Kopieren nicht möglich",
+  'bug.privacy': "Es wird nichts automatisch übermittelt. Der Bericht unten enthält nur Versionen, Ihren Bildschirm, Browser und den Text aktueller Fehler — niemals Ihren Lebenslauf, Ihr Profil, Ihre Antworten oder Job-URLs. Prüfen Sie ihn und öffnen Sie das Issue selbst.",
 };

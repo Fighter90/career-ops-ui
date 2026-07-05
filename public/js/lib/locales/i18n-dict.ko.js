@@ -964,4 +964,16 @@ window.__I18N_DICT_KO = {
   'orient.running': "프로필을 생성하는 중…",
   'orient.failed': "프로필을 생성할 수 없습니다",
   'orient.note': "이 기능은 당신의 CV, 프로필, 투페이저, 메모리 노트를 읽습니다 — 사실을 결코 지어내지 않으며 측정된 검사 점수를 보고하지 않습니다. 아무것도 저장되지 않으니, 보관하려면 내보내세요.",
+  // ── v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter ──
+  'bug.report': "🐞 버그 신고",
+  'bug.title': "버그 신고",
+  'bug.what': "무슨 일이 있었나요",
+  'bug.ph': "무엇을 하고 있었고, 무엇이 잘못되었나요?",
+  'bug.preview': "실제로 제출될 정확한 내용 (위 상자에서 편집 가능)",
+  'bug.openIssue': "GitHub 이슈 열기 →",
+  'bug.searchSimilar': "유사한 이슈 검색",
+  'bug.copy': "리포트 복사",
+  'bug.copied': "리포트가 복사되었습니다",
+  'bug.copyFailed': "복사할 수 없습니다",
+  'bug.privacy': "아무것도 자동으로 제출되지 않습니다. 아래 리포트에는 버전, 화면, 브라우저, 최근 오류 텍스트만 포함됩니다 — 당신의 CV, 프로필, 답변 또는 채용 URL은 절대 포함되지 않습니다. 확인한 후 직접 이슈를 열세요.",
 };

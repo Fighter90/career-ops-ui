@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
+[![release](https://img.shields.io/badge/release-v1.98.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.98.0)
 
-> **🆕 Najnowsze wydanie — v1.97.1**
+> **🆕 Najnowsze wydanie — v1.98.0**
 >
-> **Wzmocnienia po przeglądzie i parytet dokumentacji.** Kontynuacja v1.97.0: odznaka dopasowania `◎` przy skanowaniu (`fit-score.js`) nie przekształca już stawki poniżej rocznej („500 EUR/day") w fałszywy roczny próg wynagrodzenia, a dopasowanie krajów odbywa się teraz na całe słowo, więc „Germany" nie może pasować do przymiotnika „German". Każdy zlokalizowany README oraz wbudowana pomoc zgodnie ogłaszają teraz **16 lokalizacji** i **46 adapterów skanera** (część tekstu wciąż tkwiła na licznikach sprzed v1.85). W v1.97.0 dodano źródło skanowania **Dassault Systèmes** (46. adapter, zero-tokenowy Exalead XML, z przypięciem hosta chroniącym przed SSRF) oraz trójfrontowy audyt (serwer / SPA / 16 języków).
+> **Wbudowany zgłaszacz błędów** (parytet z web `web-v0.2.0` projektu nadrzędnego). Przycisk **🐞 Report a bug** w szufladzie powiadomień zbiera migawkę diagnostyczną z progiem prywatności — wersje, twój ekran, przeglądarkę, podsumowanie kontroli `/api/health` oraz ostatnie 20 błędów z nowego bufora cyklicznego po stronie klienta — plus deterministyczny odcisk deduplikacji (`co-web-<base36>`), pozwala przejrzeć dokładny Markdown, a następnie otwiera wstępnie wypełnione zgłoszenie GitHub. Nic nie jest wysyłane automatycznie; nigdy nie przenosi twojego CV, profilu, odpowiedzi, adresów URL ofert ani kluczy. Nowe biblioteki `logbuf.js` + `bug-report.js`; 11 kluczy i18n ×16; `tests/bug-report.test.mjs`.
 >
-> _16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

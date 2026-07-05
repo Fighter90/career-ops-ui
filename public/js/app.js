@@ -348,6 +348,15 @@ I18n.onChange(() => {
         unread = 0; updateBadge();
       });
     }
+    // v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter. The drawer is
+    // where recent errors already surface, so it's the natural home. Opens a
+    // preview-then-confirm modal (BugReport.openModal); nothing auto-filed.
+    const reportBugBtn = document.getElementById('notif-report-bug');
+    if (reportBugBtn) {
+      reportBugBtn.addEventListener('click', () => {
+        if (window.BugReport && BugReport.openModal) BugReport.openModal();
+      });
+    }
     // v1.58.36 (M-1) — global Esc listener moved into open()/close()
     // above so the handler is only live while the drawer is open
     // (no longer fires on every keystroke worldwide).

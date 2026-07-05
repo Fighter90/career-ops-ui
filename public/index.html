@@ -13,6 +13,9 @@
     <!-- Sets data-theme on <html> BEFORE the stylesheet loads to avoid
          a flash of the wrong colour scheme. -->
     <script src="/js/lib/theme-bootstrap.js"></script>
+    <!-- v1.98.0 — error ring buffer for the in-app bug reporter. Loads first so
+         it captures failures from the very first paint (parent web-v0.2.0 parity). -->
+    <script src="/js/lib/logbuf.js"></script>
     <link rel="stylesheet" href="/css/app.css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -213,6 +216,13 @@
         <button class="notif-drawer__clear-all" id="notif-clear-all" type="button"
                 data-i18n="notif.clearAll" data-i18n-aria-label="notif.clearAllAria"
                 aria-label="Clear all notifications" hidden>Clear all</button>
+        <!-- v1.98.0 (parent web-v0.2.0 parity) — in-app bug reporter: gathers a
+             privacy-floored diagnostic snapshot (versions, route, browser,
+             recent errors) + a dedupe fingerprint, previews it, then opens a
+             pre-filled GitHub issue. Nothing is auto-filed. -->
+        <button class="notif-drawer__report-bug" id="notif-report-bug" type="button"
+                data-i18n="bug.report" data-i18n-aria-label="bug.report"
+                aria-label="Report a bug">🐞 Report a bug</button>
         <button class="notif-drawer__close" id="notif-close" type="button" data-i18n-aria-label="notif.closeAria" aria-label="Close notifications">×</button>
       </div>
       <ol class="notif-drawer__list" id="notif-list" role="list"></ol>
@@ -262,6 +272,7 @@
     <script src="/js/lib/scan-prefs.js"></script>
     <script src="/js/lib/pdf-generate.js"></script>
     <script src="/js/lib/report-export.js"></script>
+    <script src="/js/lib/bug-report.js"></script>
     <script src="/js/lib/auto-pipeline.js"></script>
     <script src="/js/lib/modes-form.js"></script>
     <script src="/js/router.js"></script>
