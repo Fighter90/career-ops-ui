@@ -45,18 +45,25 @@
   // lands in the ring too. Pathname only; never the query string.
   if (typeof window.fetch === 'function') {
     var origFetch = window.fetch.bind(window);
+    var apiPath = function (input) {
+      try {
+        var href = typeof input === 'string' ? input : (input && input.url) || '';
+        var u = new URL(href, location.origin);
+        return u.pathname.indexOf('/api/') === 0 ? u.pathname : '';
+      } catch (_e) { return ''; }
+    };
     window.fetch = function () {
       var args = arguments;
       return origFetch.apply(null, args).then(function (res) {
-        try {
-          var input = args[0];
-          var href = typeof input === 'string' ? input : (input && input.url) || '';
-          var u = new URL(href, location.origin);
-          if (u.pathname.indexOf('/api/') === 0 && res && !res.ok) {
-            push('[api] ' + u.pathname + ' → ' + res.status);
-          }
-        } catch (_e) { /* never break fetch */ }
+        var p = apiPath(args[0]);
+        if (p && res && !res.ok) push('[api] ' + p + ' → ' + res.status);
         return res;
+      }, function (err) {
+        // Network-layer failures (offline, DNS, abort) never reach console.error —
+        // capture them here (the failures a bug reporter most wants), then rethrow.
+        var p = apiPath(args[0]);
+        if (p) push('[api] ' + p + ' → ' + String((err && err.message) || err));
+        throw err;
       });
     };
   }

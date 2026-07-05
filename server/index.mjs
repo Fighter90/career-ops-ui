@@ -38,6 +38,7 @@ import { registerBatchRoutes } from './lib/routes/batch.mjs';
 import { registerLlmRoutes } from './lib/routes/llm.mjs';
 import { registerOpenrouterRoutes } from './lib/routes/openrouter.mjs';
 import { registerAutoPipelineRoutes } from './lib/routes/auto-pipeline.mjs';
+import { registerPortalsRoutes } from './lib/routes/portals.mjs';
 import { registerPipelineRoutes } from './lib/routes/pipeline.mjs';
 import { registerReportsRoutes } from './lib/routes/reports.mjs';
 import { registerRunnerRoutes } from './lib/routes/runners.mjs';
@@ -168,6 +169,7 @@ export function createApp() {
   registerLlmRoutes(app);             // /api/evaluate, /api/deep, /api/mode/:slug, /api/apply-helper, /api/interview-prep
   registerOpenrouterRoutes(app);      // v1.57.0 — GET /api/openrouter/models (model catalogue proxy)
   registerAutoPipelineRoutes(app);    // v1.16.0 — server-side SSE auto-pipeline (G-007 follow-up)
+  registerPortalsRoutes(app);         // v1.99.0 — GET /api/portals + POST /api/portals/health (watched companies + liveness)
   // ───────────────────────────── Catch-all → SPA ─────────────────────────────
 
   // NEW-F1 (v1.59.5) — the previous `app.get('/api/*', …)` was GET-only,

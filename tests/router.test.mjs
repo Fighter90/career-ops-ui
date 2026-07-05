@@ -21,14 +21,14 @@ test('router: ALIASES table maps settings → profile (v1.10.0 rename)', () => {
   assert.match(SRC, /ALIASES\s*=\s*\{[^}]*settings\s*:\s*['"]profile['"]/s);
 });
 
-test('router: ALIASES maps portals → config (WS2 #2 dead-route fix)', () => {
-  // `#/portals` was an unregistered route → 404. It now aliases to the
-  // config view, which detects the hash and deep-links to the Regional
-  // sources group. Guards against a future refactor regressing it.
-  // Anchored on the entry alone (not `[^}]*`, which a future nested
-  // object / brace in ALIASES would silently break).
-  assert.match(SRC, /\bportals\s*:\s*['"]config['"]/);
+test('router: #/portals is a real registered view (v1.99.0), no longer aliased to config', () => {
+  // v1.99.0 promoted #/portals from a config alias to a dedicated Portals
+  // health view (Router.register('portals', …) in public/js/views/portals.js).
+  // The old `portals: 'config'` alias MUST be gone or it would shadow the view.
+  assert.doesNotMatch(SRC, /\bportals\s*:\s*['"]config['"]/);
   assert.match(SRC, /const\s+ALIASES\s*=\s*\{/);
+  const viewSrc = readFileSync(resolve(__dirname, '..', 'public', 'js', 'views', 'portals.js'), 'utf8');
+  assert.match(viewSrc, /Router\.register\(\s*['"]portals['"]/);
 });
 
 test('router: nav highlight handles both alias name and resolved route', () => {

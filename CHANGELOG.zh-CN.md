@@ -9,6 +9,13 @@
 ---
 
 
+## [1.99.0] — 2026-07-05
+
+**门户健康页面**（`#/portals`）。扫描器监视 `portals.yml` 中的一组公司；ATS slug 可能悄然失效，该雇主便从此后所有扫描中无声消失。新的 **Portals** 页面列出每个受监视的公司，点击 **Check portal health** 时通过 DNS 固定的 `safeGet`（防 SSRF）探测每个 `careers_url` 并标记失效者（404 = 被无声丢弃）——只读。同时按评审加固 v1.98.0 的错误报告器：错误环形缓冲区现在会捕获网络层 fetch 失败，清理器会遮蔽无标签的提供商密钥。
+
+新增： `server/lib/routes/portals.mjs`; `public/js/views/portals.js`.
+
+
 ## [1.98.0] — 2026-07-05
 
 **应用内错误报告器**（与父项目 `web-v0.2.0` Web 端对齐）。通知抽屉中的 **🐞 Report a bug** 按钮会收集一份遵循隐私底线的诊断快照——版本、你的屏幕、浏览器、`/api/health` 检查摘要，以及来自新的客户端环形缓冲区的最近 20 条错误——外加一个确定性的去重指纹（`co-web-<base36>`），让你审阅确切的 Markdown，然后打开一个预填的 GitHub issue。不会自动提交；绝不携带你的简历、档案、回答、职位 URL 或密钥。新库 `logbuf.js` + `bug-report.js`；11 个 i18n 键 ×16；`tests/bug-report.test.mjs`。

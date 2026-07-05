@@ -8,6 +8,16 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.99.0] — 2026-07-05
+
+**Portals health page (`#/portals`).** The scanner watches a set of companies in `portals.yml` (`tracked_companies:`), and an ATS slug can quietly break — a company renames its board or moves off Greenhouse — after which that employer silently vanishes from every future scan with no error. The new **Portals** page lists every watched company (provider + enabled state) and, on **Check portal health**, HEAD/GET-probes each `careers_url` through the DNS-pinned `safeGet` (SSRF-safe, chunked concurrency) and flags the dead ones (a 404 = silently dropped). Read-only — it never writes `portals.yml`.
+
+- New route `server/lib/routes/portals.mjs` (`POST /api/portals/health`; the company list reuses the existing `GET /api/portals`) + view `public/js/views/portals.js`, under the **Sourcing** nav group. `#/portals` was promoted from a config alias to a real registered view (router alias removed). Suite `tests/portals-routes.test.mjs` + updated `tests/router.test.mjs`. 14 new i18n keys ×16.
+- **Bug-reporter hardening** (v1.98.0 follow-up, per review): `logbuf.js`'s fetch wrapper now has a `.catch` so network-layer failures (offline/DNS/abort — the failures a bug reporter most wants) reach the ring buffer; `bug-report.js`'s scrubber now redacts **bare/unlabelled** provider keys (`sk-ant-`, `sk-`, `ghp_`, `xoxb-`, `AIza…`), not only labelled ones. +3 scrub assertions.
+
+New: `server/lib/routes/portals.mjs`; `public/js/views/portals.js`.
+
+
 ## [1.98.0] — 2026-07-05
 
 **In-app bug reporter (parent career-ops `web-v0.2.0` parity).** The one substantial feature the parent's experimental web frontend had that we lacked. A **🐞 Report a bug** button in the notifications drawer opens a preview-then-confirm modal that gathers a **privacy-floored diagnostic snapshot** — app + parent version, your current screen, browser, viewport, a `checks OK / FAIL` summary from `/api/health`, and the last 20 **errors** captured by a new client-side ring buffer (`console.error`, `window.onerror`, unhandled rejections, and failed `/api/*` responses — pathname + status only) — plus a deterministic **dedupe fingerprint** (`co-web-<base36>`). You review the exact Markdown, then it opens a **pre-filled GitHub issue** (or copies the report); nothing is auto-filed. The privacy floor is an invariant: **never** CV, profile, application answers, job URLs, report content, or API keys — home paths and secret-looking tokens are scrubbed on top.
