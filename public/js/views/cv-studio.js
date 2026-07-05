@@ -129,5 +129,49 @@ Router.register('cv-studio', async () => {
     humanIn, c('div', { style: { marginTop: '8px' } }, humanBtn), humanOut,
   ]));
 
+  // ── 4. Tailor to a job — résumé + cover letter with a checklist gate ──
+  const jdIn = c('textarea', { className: 'input', rows: '6', 'data-i18n-placeholder': 'cvs.tailorJdPh' });
+  jdIn.placeholder = t('cvs.tailorJdPh', 'Paste the target job description here…');
+  const headIn = c('input', { type: 'text', className: 'input', style: { marginTop: '8px' }, 'data-i18n-placeholder': 'cvs.tailorHeadPh' });
+  headIn.placeholder = t('cvs.tailorHeadPh', 'Optional: target role / headline (e.g. "Senior Backend Engineer")');
+  const tailorBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.tailorBtn', '🎯 Tailor résumé + cover letter'));
+  const tailorOut = c('div', { style: { marginTop: '10px' } });
+
+  tailorBtn.addEventListener('click', async () => {
+    const jd = jdIn.value.trim();
+    if (jd.length < 40) { UI.toast(t('cvs.tailorNeedJd', 'Paste the job description (~40+ characters) first'), 'error'); return; }
+    tailorBtn.disabled = true;
+    tailorOut.textContent = '';
+    const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.tailoring', 'Tailoring and running the checklist gate…'));
+    tailorOut.appendChild(pending);
+    try {
+      const res = await API.post('/api/cv-studio/tailor', { jd, headline: headIn.value.trim(), run: true });
+      pending.remove();
+      if (res.markdown) {
+        const md = res.markdown;
+        const card = c('div', { className: 'card', style: { padding: '12px' } }, [
+          c('div', { className: 'md', html: UI.md(md) }),
+          window.ReportExport ? ReportExport.actionsBar(() => md, () => t('cvs.tailorFileTitle', 'Tailored application'), t) : null,
+        ]);
+        tailorOut.appendChild(card);
+      } else {
+        const body = c('div', null, [
+          c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.tailorManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then paste the tailored résumé + cover letter back.')),
+          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt),
+        ]);
+        UI.modal(t('cvs.tailorBtn', '🎯 Tailor résumé + cover letter'), body);
+      }
+    } catch (err) {
+      pending.remove();
+      UI.toast((err && err.message) || t('cvs.tailorFailed', 'Could not tailor the application'), 'error');
+    } finally { tailorBtn.disabled = false; }
+  });
+
+  root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '18px 0 8px' } }, [
+    c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('cvs.tailorTitle', 'Tailor to a job')),
+    c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0 0 10px' } }, t('cvs.tailorHelp', 'Paste a job description and get a résumé tailored to it plus a matching cover letter — run through a recruiter-grade checklist gate (errors block, warnings advise). Grounded only in your own CV, profile, and two-pager; it never fabricates.')),
+    jdIn, headIn, c('div', { style: { marginTop: '8px' } }, tailorBtn), tailorOut,
+  ]));
+
   return root;
 });

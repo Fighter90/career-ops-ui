@@ -9,6 +9,16 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.101.0] — 2026-07-05
+
+**CV Studio: dopasuj CV + napisz list motywacyjny pod konkretną ofertę, z rekruterską bramką kontrolną.** Nowa karta **Dopasuj do oferty** na `#/cv-studio`: wklej opis oferty (i opcjonalnie docelową rolę/nagłówek), a CV Studio utworzy **CV dopasowane do tej oferty oraz pasujący list motywacyjny**, a następnie przepuści oba przez **bramkę kontrolną** przed wydaniem — `error` blokuje (naprawiane, zanim zobaczysz wynik), `warn` doradza. Mechanika to destylat praktyki coachingu kariery w **ogólne** reguły — rekruter czyta w sekundy, więc istotne doświadczenie idzie na górę, nagłówek pasuje do roli z oferty, wyniki mają konkretne liczby, a list pozostaje krótkim teaserem z jednym mostem „wymóg ↔ Twój pasujący fakt". Opiera się **wyłącznie** na Twoim CV, profilu i two-pager i **nigdy nie zmyśla** — bez zaszytych firm, ról ani historii.
+
+- Nowy endpoint `POST /api/cv-studio/tailor` (rozszerza istniejący moduł cv-studio — bez 27. modułu): `buildTailorPrompt` + ogólna bramka `TAILOR_INSTRUCTIONS`, oparta na `bundleProjectContext`, współdzielona kaskada dostawców, awaryjny prompt bez klucza, z limitem, **bez zapisów**. Wynik eksportuje się do Markdown / PDF / **DOCX** przez współdzielony pasek `report-export.js`.
+- Testy: +3 w `tests/cv-studio-routes.test.mjs`. 10 nowych kluczy i18n ×16 (`cvs.tailor*`). Ogólna referencja `docs/prompts/resume-cover.md`. Pomoc §24 rozszerzona w miejscu.
+
+Nowe: `docs/prompts/resume-cover.md`.
+
+
 ## [1.100.0] — 2026-07-05
 
 **Two-pager: automatyczne wypełnianie przez AI z Twojego CV + Podgląd + eksport do PDF/DOCX/Markdown.** Two-pager (`#/two-pager`) zapisuje to, czego naprawdę chcesz od kolejnej roli, ale dotąd każde pole trzeba było pisać ręcznie albo kopiować prompt do innego narzędzia. Teraz **✨ asystent wypełniania AI** działa na żywo z Twoim skonfigurowanym dostawcą — czyta *tylko* Twoje CV + profil (przez `bundleProjectContext`, niczego nie zmyślając), tworzy wszystkie pola (kim jestem / co lubię / niezbędne / czego nie znoszę / warunki wykluczające / nienegocjowalne / docelowe środowisko) i wypełnia formularz, byś sprawdził, edytował i zapisał. Bez klucza API wraca do okna „skopiuj prompt”, jak wcześniej. Nowy przycisk **👁 Podgląd i eksport** renderuje two-pager jako sformatowany dokument z paskiem **Pobierz .md / Zapisz jako PDF / Zapisz jako DOCX / Kopiuj**.

@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.101.0] — 2026-07-05
+
+**CV Studio: tilpas dit CV + skriv en ansøgning til et bestemt job, gennem en rekrutterings-checkliste.** Nyt **Tilpas til et job**-kort på `#/cv-studio`: indsæt en jobbeskrivelse (og evt. en mål-rolle/overskrift), og CV Studio laver et **CV tilpasset det opslag plus en matchende ansøgning**, og kører dem derefter gennem en **checkliste-gate**, før de afleveres — `error` blokerer (rettes, før du ser resultatet), `warn` rådgiver. Mekanikken er destilleret fra karrierecoaching-praksis til **generiske** regler — en rekrutter læser på sekunder, så relevant erfaring kommer øverst, overskriften matcher stillingens rolle, resultater bærer konkrete tal, og ansøgningen forbliver en kort teaser med én "krav ↔ din matchende kendsgerning"-bro. Den bygger **kun** på dit eget CV, din profil og din two-pager og **opdigter aldrig** — ingen hardkodede virksomheder, roller eller historik.
+
+- Nyt endpoint `POST /api/cv-studio/tailor` (udvider det eksisterende cv-studio-modul — intet 27. modul): `buildTailorPrompt` + en generisk `TAILOR_INSTRUCTIONS`-gate, bygget på `bundleProjectContext`, delt udbyderkaskade, manuel fallback uden nøgle, rate-begrænset, **ingen skrivninger**. Resultatet eksporteres til Markdown / PDF / **DOCX** via den delte `report-export.js`-bjælke.
+- Tests: +3 i `tests/cv-studio-routes.test.mjs`. 10 nye i18n-nøgler ×16 (`cvs.tailor*`). Generisk reference `docs/prompts/resume-cover.md`. Hjælp §24 udvidet på stedet.
+
+Nyt: `docs/prompts/resume-cover.md`.
+
+
 ## [1.100.0] — 2026-07-05
 
 **Two-pager: AI-autoudfyldning fra dit CV + Forhåndsvisning + eksport til PDF/DOCX/Markdown.** Two-pageren (`#/two-pager`) fanger, hvad du faktisk vil have af din næste rolle, men før skulle hvert felt skrives i hånden eller en prompt kopieres til et andet værktøj. Nu kører **✨ AI-udfyldningsassistenten** live mod din konfigurerede udbyder — den læser *kun* dit CV + profil (via `bundleProjectContext`, intet opdigtet), udarbejder alle felter (hvem jeg er / kan lide / skal-haves / hader / dealbreakers / ufravigelige / målmiljø) og udfylder formularen, så du kan gennemgå, redigere og gemme. Uden API-nøgle falder den tilbage til kopiér-prompt-modalen som før. En ny **👁 Forhåndsvis og eksportér**-knap gengiver two-pageren som et formateret dokument med en **Download .md / Gem som PDF / Gem som DOCX / Kopiér**-bjælke.

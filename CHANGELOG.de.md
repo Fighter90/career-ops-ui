@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.101.0] — 2026-07-05
+
+**CV Studio: passe deinen Lebenslauf an + schreibe ein Anschreiben für einen bestimmten Job, geprüft durch eine Recruiter-Checkliste.** Neue Karte **An einen Job anpassen** auf `#/cv-studio`: Füge eine Stellenbeschreibung ein (und optional eine Zielrolle/Überschrift), und CV Studio erstellt einen **auf diese Anzeige zugeschnittenen Lebenslauf plus ein passendes Anschreiben** und führt beide vor der Übergabe durch ein **Checklisten-Gate** — `error`s blockieren (werden behoben, bevor du das Ergebnis siehst), `warn`s raten. Die Mechanik ist aus der Karriere-Coaching-Praxis in **generische** Regeln destilliert — ein Recruiter liest in Sekunden, also kommt relevante Erfahrung nach oben, die Überschrift passt zur Rolle der Stelle, Ergebnisse tragen konkrete Zahlen, und das Anschreiben bleibt ein kurzer Teaser mit einer einzigen „Anforderung ↔ dein passender Fakt"-Brücke. Es basiert **nur** auf deinem eigenen Lebenslauf, Profil und Two-Pager und **erfindet nie** — keine hartcodierten Firmen, Rollen oder Historie.
+
+- Neuer Endpunkt `POST /api/cv-studio/tailor` (erweitert das bestehende cv-studio-Modul — kein 27. Modul): `buildTailorPrompt` + ein generisches `TAILOR_INSTRUCTIONS`-Gate, basierend auf `bundleProjectContext`, gemeinsame Anbieter-Kaskade, manueller Fallback ohne Schlüssel, ratenbegrenzt, **keine Schreibvorgänge**. Das Ergebnis wird über die gemeinsame `report-export.js`-Leiste als Markdown / PDF / **DOCX** exportiert.
+- Tests: +3 in `tests/cv-studio-routes.test.mjs`. 10 neue i18n-Schlüssel ×16 (`cvs.tailor*`). Generische Referenz `docs/prompts/resume-cover.md`. Hilfe §24 an Ort und Stelle erweitert.
+
+Neu: `docs/prompts/resume-cover.md`.
+
+
 ## [1.100.0] — 2026-07-05
 
 **Two-Pager: KI-Autofüllung aus deinem Lebenslauf + Vorschau + Export als PDF/DOCX/Markdown.** Der Two-Pager (`#/two-pager`) hält fest, was du wirklich von deiner nächsten Rolle willst, doch bisher musste jedes Feld von Hand geschrieben oder ein Prompt in ein anderes Tool kopiert werden. Jetzt läuft der **✨ KI-Ausfüllassistent** live mit deinem konfigurierten Anbieter — er liest *nur* deinen Lebenslauf + dein Profil (über `bundleProjectContext`, nichts erfunden), entwirft alle Felder (wer ich bin / was ich liebe / Must-haves / was ich hasse / Deal-Breaker / Nicht-Verhandelbares / Zielumgebung) und füllt das Formular, damit du prüfen, bearbeiten und speichern kannst. Ohne API-Schlüssel fällt er wie bisher auf das Prompt-kopieren-Modal zurück. Eine neue Schaltfläche **👁 Vorschau und Export** rendert den Two-Pager als formatiertes Dokument mit einer Leiste **.md herunterladen / Als PDF speichern / Als DOCX speichern / Kopieren**.

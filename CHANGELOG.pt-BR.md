@@ -9,6 +9,16 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.101.0] — 2026-07-05
+
+**CV Studio: adapte seu currículo + escreva uma carta de apresentação para uma vaga específica, com verificação estilo recrutador.** Novo cartão **Adaptar a uma vaga** em `#/cv-studio`: cole uma descrição de vaga (e, opcionalmente, um cargo/título-alvo) e o CV Studio produz um **currículo adaptado a essa vaga mais uma carta de apresentação correspondente**, depois passa ambos por uma **verificação** antes de entregar — `error` bloqueia (corrigido antes de você ver), `warn` aconselha. A mecânica é destilada da prática de coaching de carreira em regras **genéricas** — o recrutador lê em segundos, então o relevante vai ao topo, o título combina com o cargo da vaga, os resultados trazem números específicos e a carta é um teaser curto com uma única ponte "requisito ↔ seu fato correspondente". Baseia-se **apenas** no seu currículo, perfil e two-pager e **nunca inventa** — sem empresas, cargos ou histórico embutidos.
+
+- Novo endpoint `POST /api/cv-studio/tailor` (amplia o módulo cv-studio existente — sem 27º módulo): `buildTailorPrompt` + verificação genérica `TAILOR_INSTRUCTIONS`, baseada em `bundleProjectContext`, cascata de provedores compartilhada, recuo manual sem chave, com limite de taxa, **sem gravações**. O resultado exporta para Markdown / PDF / **DOCX** pela barra compartilhada `report-export.js`.
+- Testes: +3 em `tests/cv-studio-routes.test.mjs`. 10 novas chaves i18n ×16 (`cvs.tailor*`). Referência genérica `docs/prompts/resume-cover.md`. Ajuda §24 ampliada no lugar.
+
+Novo: `docs/prompts/resume-cover.md`.
+
+
 ## [1.100.0] — 2026-07-05
 
 **Two-pager: autopreenchimento por IA a partir do seu CV + Pré-visualização + exportar para PDF/DOCX/Markdown.** O two-pager (`#/two-pager`) registra o que você realmente quer da sua próxima vaga, mas antes era preciso redigir cada campo à mão ou copiar um prompt para outra ferramenta. Agora o **✨ assistente de preenchimento por IA** roda ao vivo com o provedor configurado: lê *apenas* seu CV + perfil (via `bundleProjectContext`, sem inventar nada), redige todos os campos (quem sou / gosto / indispensáveis / detesto / limites / inegociáveis / ambiente-alvo) e preenche o formulário para você revisar, editar e salvar. Sem chave de API, volta ao modal de copiar-o-prompt, como antes. Um novo botão **👁 Pré-visualizar e exportar** renderiza o two-pager como documento com uma barra **Baixar .md / Salvar como PDF / Salvar como DOCX / Copiar**.
