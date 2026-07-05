@@ -9,6 +9,16 @@
 ---
 
 
+## [1.105.0] — 2026-07-06
+
+**AI 사용량 및 비용 페이지.** 새 **AI 사용량** 페이지(사이드바, 상태 옆)가 **실시간** AI 생성 — 평가·리포트·채팅 — 에 쓴 토큰을 최근 24시간·7일·30일·전체 기간에 걸쳐 **제공자별**로 보여주며 **예상 USD** 비용을 함께 표시합니다. 모든 실시간 호출은 작은 `{provider, in, out}` 레코드를 `data/llm-usage.jsonl`에 추가합니다(어디로도 전송되지 않음). 키 없는 실행(수동 모드)은 비용이 없고 기록되지 않습니다.
+
+- 새 라우트 모듈(30번째) `server/lib/routes/usage.mjs` — `GET /api/usage`(읽기 전용 집계) + `server/lib/llm-usage.mjs`(`recordUsage`가 Anthropic/OpenAI/Gemini 사용량 형태를 정규화해 best-effort로 추가; `readUsage`/`aggregate`가 24h/7d/30d/전체 창 × 제공자로 집계) + `server/lib/llm-pricing.mjs`(**편집 가능한** 제공자별 `$/1M` 토큰 가격표 — 토큰은 정확하고 달러는 대략적 정가로 요금제에 맞게 수정 가능; 청구 안 됨). 기록은 디스패치 지점(`runActiveProvider` + `routes/llm.mjs`)에 연결됩니다.
+- 새 뷰 `public/js/views/usage.js`(`#/usage`, 기간 탭). 테스트: `tests/usage-routes.test.mjs`. 새 i18n 키 17개 ×16(`usage.*` + `nav.usage`). 도움말 §6 현 위치 확장.
+
+신규: `server/lib/routes/usage.mjs`; `server/lib/llm-usage.mjs`; `server/lib/llm-pricing.mjs`; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **스캔 표의 회사 로고(개인정보 보호형).** **앱 설정**의 새 **모양** 토글 — **스캔 표에 회사 로고 표시**(기본 꺼짐) — 이 `#/scan`에서 회사 이름 옆에 로고를 그립니다. 로고는 **회사 자체 도메인에서 가져온 파비콘**이며 서버에서 프록시됩니다(`GET /api/logo`). 따라서 **어떤 제3자 로고 서비스도 당신이 어떤 고용주를 보는지 알지 못합니다**. 공용 채용 보드(Greenhouse, Lever, Ashby 등)의 공고는 보드 아이콘 대신 색상 **글자 배지**를 표시하고, 로드에 실패한 로고도 같은 배지로 대체됩니다.

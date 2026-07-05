@@ -890,6 +890,8 @@ keep working unchanged.
 Every setup gate, in OK / OPTIONAL / FAIL badges. Read this before
 filing any "doesn't work" issue.
 
+**AI usage & cost (`#/usage`).** Next to Health in the sidebar, the **AI usage** page shows how many tokens you've spent on **live** AI generations — evaluations, reports, chats — broken down per provider over the last 24 hours, 7 days, 30 days, and all-time, with an **estimated USD** cost. Every live provider call appends a small `{provider, in, out}` record to `data/llm-usage.jsonl`; nothing is sent anywhere. The dollar figure is only an estimate from an editable price table (`server/lib/llm-pricing.mjs`) — token counts are exact, but the prices are approximate list prices you can correct to match your plan. Runs with no API key (manual mode) cost nothing and aren't recorded.
+
 ### Required checks (system can't function without these)
 
 - `Node version` ≥ 18 — the server uses native `fetch` and

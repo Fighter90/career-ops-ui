@@ -19,6 +19,7 @@ import {
   hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey,
 } from './openai.mjs';
 import { providerOrder } from './env-config.mjs';
+import { recordUsage } from './llm-usage.mjs';
 
 // Mirror llm.mjs BF-3 soft cap: 200 KB ≈ ~50K tokens.
 export const PROMPT_SIZE_SOFT_CAP = 200 * 1024;
@@ -64,15 +65,18 @@ export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT
   const g = gate();
   if (g.wantAnthropic && hasAnthropicKey()) {
     const r = await runAnthropic(fullPrompt);
+    if (!r.error) recordUsage('anthropic', r.usage);
     return r.error ? { mode: 'anthropic', error: r.error } : { mode: 'anthropic', markdown: r.markdown, usage: r.usage };
   }
   if (g.wantGemini && hasGeminiKey()) {
     const r = await runGemini(fullPrompt);
+    if (!r.error) recordUsage('gemini', r.usage);
     return r.error ? { mode: 'gemini', error: r.error } : { mode: 'gemini', markdown: r.markdown, usage: r.usage };
   }
   const tp = tailProvider(g);
   if (tp) {
     const r = await tp.run(fullPrompt);
+    if (!r.error) recordUsage(tp.mode, r.usage);
     return r.error ? { mode: tp.mode, error: r.error } : { mode: tp.mode, markdown: r.markdown, usage: r.usage };
   }
   return { mode: 'manual' };

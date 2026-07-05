@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.105.0] — 2026-07-06
+
+**Pagina uso e costo IA.** Una nuova pagina **Uso IA** (barra laterale, accanto a Salute) mostra quanti token hai speso in generazioni IA **live** — valutazioni, report, chat — suddivisi **per provider** nelle ultime 24 ore, 7 giorni, 30 giorni e sempre, con un **costo stimato in USD**. Ogni chiamata live aggiunge un piccolo record `{provider, in, out}` a `data/llm-usage.jsonl` (nulla viene inviato da nessuna parte); le esecuzioni senza chiave (modalità manuale) non costano nulla e non vengono registrate.
+
+- Nuovo modulo di rotta (il 30°) `server/lib/routes/usage.mjs` — `GET /api/usage` (aggregati in sola lettura) + `server/lib/llm-usage.mjs` (`recordUsage` normalizza le forme d'uso di Anthropic/OpenAI/Gemini e aggiunge in best-effort; `readUsage`/`aggregate` aggregano per finestra 24h/7g/30g/tutto × provider) + `server/lib/llm-pricing.mjs` (una tabella prezzi **modificabile** per provider `$/1M` token — i token sono esatti, i dollari sono prezzi di listino approssimativi che puoi correggere; mai fatturati). La registrazione è agganciata ai punti di dispatch (`runActiveProvider` + `routes/llm.mjs`).
+- Nuova vista `public/js/views/usage.js` (`#/usage`, schede finestra). Test: `tests/usage-routes.test.mjs`. 17 nuove chiavi i18n ×16 (`usage.*` + `nav.usage`). Aiuto §6 esteso sul posto.
+
+Nuovo: `server/lib/routes/usage.mjs`; `server/lib/llm-usage.mjs`; `server/lib/llm-pricing.mjs`; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **Logo aziendali nella tabella di scansione (rispettosi della privacy).** Un nuovo interruttore **Aspetto** nelle **Impostazioni app** — **Mostra i logo delle aziende nella tabella di scansione** (disattivato per impostazione predefinita) — disegna il logo di ogni azienda accanto al nome su `#/scan`. Il logo è la **favicon dell'azienda recuperata dal suo dominio** e messa in proxy lato server (`GET /api/logo`), così **nessun servizio di logo di terze parti scopre quali datori di lavoro stai guardando**. Gli annunci su un portale di lavoro condiviso (Greenhouse, Lever, Ashby, …) mostrano un **badge con una lettera** colorato invece dell'icona del portale, e qualsiasi logo che non si carica ricade sullo stesso badge.

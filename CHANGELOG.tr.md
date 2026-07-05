@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.105.0] — 2026-07-06
+
+**AI kullanımı ve maliyeti sayfası.** Yeni bir **AI kullanımı** sayfası (kenar çubuğu, Sağlık'ın yanında), **canlı** AI üretimlerinde — değerlendirmeler, raporlar, sohbetler — harcadığınız jetonları son 24 saat, 7 gün, 30 gün ve tüm zamanlar boyunca **sağlayıcı başına** ayrıştırarak **tahmini USD** maliyetiyle gösterir. Her canlı çağrı, `data/llm-usage.jsonl`'ye küçük bir `{provider, in, out}` kaydı ekler (hiçbir yere gönderilmez); anahtarsız çalıştırmalar (manuel kip) hiçbir şeye mal olmaz ve kaydedilmez.
+
+- Yeni rota modülü (30.) `server/lib/routes/usage.mjs` — `GET /api/usage` (salt okunur toplamalar) + `server/lib/llm-usage.mjs` (`recordUsage` Anthropic/OpenAI/Gemini kullanım biçimlerini normalleştirir ve best-effort ekler; `readUsage`/`aggregate` 24s/7g/30g/tümü penceresi × sağlayıcıya göre toplar) + `server/lib/llm-pricing.mjs` (sağlayıcı başına **düzenlenebilir** bir `$/1M` jeton fiyat tablosu — jetonlar kesin, dolarlar planınıza göre düzeltebileceğiniz yaklaşık liste fiyatlarıdır; asla faturalanmaz). Kayıt, gönderim noktalarına (`runActiveProvider` + `routes/llm.mjs`) bağlanır.
+- Yeni görünüm `public/js/views/usage.js` (`#/usage`, pencere sekmeleri). Testler: `tests/usage-routes.test.mjs`. 17 yeni i18n anahtarı ×16 (`usage.*` + `nav.usage`). Yardım §6 yerinde genişletildi.
+
+Yeni: `server/lib/routes/usage.mjs`; `server/lib/llm-usage.mjs`; `server/lib/llm-pricing.mjs`; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **Tarama tablosunda şirket logoları (gizliliği koruyan).** **Uygulama ayarları**'ndaki yeni **Görünüm** anahtarı — **Tarama tablosunda şirket logolarını göster** (varsayılan kapalı) — `#/scan` üzerinde her şirketin logosunu adının yanına çizer. Logo, şirketin **kendi alan adından alınan favicon**'udur ve sunucu tarafında proxy'lenir (`GET /api/logo`); böylece **hiçbir üçüncü taraf logo servisi hangi işverenlere baktığınızı öğrenemez**. Paylaşılan bir iş ilanı portalındaki (Greenhouse, Lever, Ashby, …) ilanlar portal simgesi yerine renkli bir **harf rozeti** gösterir ve yüklenemeyen her logo aynı rozete geri döner.

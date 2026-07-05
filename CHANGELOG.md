@@ -8,6 +8,16 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.105.0] — 2026-07-06
+
+**AI usage & cost page.** A new **AI usage** page (sidebar, next to Health) shows how many tokens you've spent on **live** AI generations — evaluations, reports, chats — broken down **per provider** over the last 24 hours, 7 days, 30 days, and all-time, with an **estimated USD** cost. Every live provider call appends a small `{provider, in, out}` record to `data/llm-usage.jsonl` (nothing is sent anywhere); runs with no API key (manual mode) cost nothing and aren't recorded.
+
+- New route module (30th) `server/lib/routes/usage.mjs` — `GET /api/usage` (read-only rollups) + `server/lib/llm-usage.mjs` (`recordUsage` normalizes the Anthropic/OpenAI/Gemini usage shapes and appends best-effort; `readUsage`/`aggregate` roll up per 24h/7d/30d/all window × provider) + `server/lib/llm-pricing.mjs` (an **editable** per-provider `$/1M`-token table — token counts are exact, dollars are approximate list prices you can correct to your plan; never billed). Recording is hooked at the dispatch chokepoints (`runActiveProvider` + `routes/llm.mjs`) so all live calls are captured.
+- New view `public/js/views/usage.js` (`#/usage`, window tabs). Tests: `tests/usage-routes.test.mjs` (normalize / price / record round-trip / aggregate / endpoint). 17 new i18n keys ×16 (`usage.*` + `nav.usage`). Help §6 extended in place.
+
+New: `server/lib/routes/usage.mjs`; `server/lib/llm-usage.mjs`; `server/lib/llm-pricing.mjs`; `public/js/views/usage.js`.
+
+
 ## [1.104.0] — 2026-07-06
 
 **Company logos in the scan table (privacy-preserving).** A new **Appearance** toggle in **App settings** — **Show company logos in the scan table** (off by default) — draws each company's logo next to its name on `#/scan`. The logo is the company's **favicon fetched from its own domain** and proxied server-side (`GET /api/logo`), so **no third-party logo service ever learns which employers you're viewing**. Postings on a shared job board (Greenhouse, Lever, Ashby, …) show a coloured **letter badge** instead of the board's icon, and any logo that fails to load falls back to the same badge.

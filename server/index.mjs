@@ -43,6 +43,7 @@ import { registerExportRoutes } from './lib/routes/export.mjs';
 import { registerDocsAssistantRoutes } from './lib/routes/docs-assistant.mjs';
 import { registerCliDetectRoutes } from './lib/routes/cli-detect.mjs';
 import { registerLogoRoutes } from './lib/routes/logos.mjs';
+import { registerUsageRoutes } from './lib/routes/usage.mjs';
 import { registerPipelineRoutes } from './lib/routes/pipeline.mjs';
 import { registerReportsRoutes } from './lib/routes/reports.mjs';
 import { registerRunnerRoutes } from './lib/routes/runners.mjs';
@@ -178,6 +179,7 @@ export function createApp() {
   registerDocsAssistantRoutes(app);   // v1.102.0 — POST /api/docs-assistant/ask (grounded help-guide chat)
   registerCliDetectRoutes(app);       // v1.103.0 — GET /api/cli-detect (which AI CLIs are installed; PATH scan, no exec)
   registerLogoRoutes(app);            // v1.104.0 — GET /api/logo?domain= (company favicon proxy; SSRF-safe, in-mem cache)
+  registerUsageRoutes(app);           // v1.105.0 — GET /api/usage (LLM token/cost rollups from data/llm-usage.jsonl)
   // ───────────────────────────── Catch-all → SPA ─────────────────────────────
 
   // NEW-F1 (v1.59.5) — the previous `app.get('/api/*', …)` was GET-only,
