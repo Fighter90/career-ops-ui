@@ -11,6 +11,16 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.102.0] — 2026-07-05
+
+**« Demander au guide » — un chat fondé sur le guide d'aide intégré.** Nouvelle page **Demander au guide 💬** (barre latérale, sous Aide) : posez une question comme « Comment scanner les portails d'emploi ? » et obtenez une réponse tirée **uniquement** du guide d'aide de l'appli dans votre langue — elle indique les sections utilisées et **ne lit jamais votre CV, profil ni votre recherche d'emploi**. Il s'agit de l'usage de l'appli, pas de vous. Avec une clé LLM, réponse en direct ; sans clé, une invite prête à l'emploi déjà remplie des sections d'aide pertinentes.
+
+- Nouveau module de route (27ᵉ) `server/lib/routes/docs-assistant.mjs` — `POST /api/docs-assistant/ask`. **Récupération sans dépendance :** le guide de votre langue est découpé en sections `##` et noté par recouvrement de mots-clés avec votre question ; les meilleures sont incluses et le modèle doit répondre à partir d'elles ou dire que le guide ne le couvre pas (aucune fonctionnalité/route inventée). Cascade de fournisseurs partagée, repli manuel, limité en débit, **sans écriture**, ne lit aucune donnée utilisateur.
+- Nouvelle vue `public/js/views/docs-assistant.js`. Tests : `tests/docs-assistant-routes.test.mjs`. 14 nouvelles clés i18n ×16 (`docs.*` + `nav.docsAssistant`). Aide §1 étendue sur place.
+
+Nouveau : `server/lib/routes/docs-assistant.mjs` ; `public/js/views/docs-assistant.js`.
+
+
 ## [1.101.0] — 2026-07-05
 
 **CV Studio : adaptez votre CV + rédigez une lettre de motivation pour une offre précise, avec un contrôle de type recruteur.** Nouvelle carte **Adapter à une offre** sur `#/cv-studio` : collez une offre d'emploi (et, en option, un rôle/intitulé cible) et CV Studio produit un **CV adapté à cette offre plus une lettre de motivation assortie**, puis les passe par un **contrôle** avant de les livrer — les `error` bloquent (corrigés avant que vous ne voyiez le résultat), les `warn` conseillent. La mécanique est distillée de la pratique du coaching de carrière en règles **génériques** — le recruteur lit en secondes, donc l'expérience pertinente va en haut, l'intitulé correspond au rôle de l'offre, les résultats portent des chiffres précis, et la lettre reste un teaser court avec un unique pont « exigence ↔ votre fait correspondant ». Fondé **uniquement** sur votre CV, profil et two-pager, il **n'invente jamais** — aucune entreprise, aucun rôle ni historique codés en dur.

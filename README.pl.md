@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.101.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.101.0)
+[![release](https://img.shields.io/badge/release-v1.102.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.102.0)
 
-> **🆕 Najnowsze wydanie — v1.101.0**
+> **🆕 Najnowsze wydanie — v1.102.0**
 >
-> **CV Studio: dopasuj do oferty + list.** Nowa karta **Dopasuj do oferty** na `#/cv-studio` zamienia opis oferty w dopasowane CV oraz pasujący list motywacyjny, a potem przepuszcza oba przez rekruterską **bramkę kontrolną** (błędy blokują, ostrzeżenia doradzają). Destylat praktyki coachingu kariery w ogólne reguły — oparte wyłącznie na Twoim CV, profilu i two-pager; nigdy nie zmyśla. Eksport wyniku do Markdown / PDF / DOCX.
+> **Zapytaj przewodnik — oparty na źródłach czat pomocy.** Nowa strona **Zapytaj przewodnik 💬** odpowiada na pytania, używając **wyłącznie** przewodnika pomocy aplikacji w Twoim języku (pokazuje użyte sekcje i nigdy nie czyta Twojego CV ani szukania pracy). Wyszukiwanie słów kluczowych bez zależności po sekcjach `##` przewodnika; model odpowiada z nich lub przyznaje, że przewodnik tego nie obejmuje. Na żywo z kluczem LLM lub prompt do skopiowania bez niego.
 >
-> _dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

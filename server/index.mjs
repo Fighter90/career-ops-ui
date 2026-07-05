@@ -40,6 +40,7 @@ import { registerOpenrouterRoutes } from './lib/routes/openrouter.mjs';
 import { registerAutoPipelineRoutes } from './lib/routes/auto-pipeline.mjs';
 import { registerPortalsRoutes } from './lib/routes/portals.mjs';
 import { registerExportRoutes } from './lib/routes/export.mjs';
+import { registerDocsAssistantRoutes } from './lib/routes/docs-assistant.mjs';
 import { registerPipelineRoutes } from './lib/routes/pipeline.mjs';
 import { registerReportsRoutes } from './lib/routes/reports.mjs';
 import { registerRunnerRoutes } from './lib/routes/runners.mjs';
@@ -172,6 +173,7 @@ export function createApp() {
   registerAutoPipelineRoutes(app);    // v1.16.0 — server-side SSE auto-pipeline (G-007 follow-up)
   registerPortalsRoutes(app);         // v1.99.0 — GET /api/portals + POST /api/portals/health (watched companies + liveness)
   registerExportRoutes(app);          // v1.100.0 — POST /api/export/docx (dependency-free .docx from markdown)
+  registerDocsAssistantRoutes(app);   // v1.102.0 — POST /api/docs-assistant/ask (grounded help-guide chat)
   // ───────────────────────────── Catch-all → SPA ─────────────────────────────
 
   // NEW-F1 (v1.59.5) — the previous `app.get('/api/*', …)` was GET-only,

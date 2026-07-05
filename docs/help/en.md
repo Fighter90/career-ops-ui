@@ -131,6 +131,8 @@ the first time. Every step names the exact route, the exact button,
 and what you'll see on success. Sections 2–16 below dive deeper into
 each phase.
 
+> **Prefer to just ask?** Open **Ask the docs 💬** (in the sidebar, under Help) and type a question like "How do I scan job portals?" or "How does the two-pager fit score work?". It answers **only** from this guide, in your language, and shows which sections it drew from — it never reads your CV or job search. With an LLM key it answers live; without one it hands you a ready-to-run prompt (already filled with the relevant help sections) to paste into any assistant.
+
 > **One-command launch & init.** From a terminal you can do the whole
 > bootstrap without touching the UI:
 >

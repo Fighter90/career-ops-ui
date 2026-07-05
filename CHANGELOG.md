@@ -8,6 +8,16 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.102.0] — 2026-07-05
+
+**"Ask the docs" — a grounded chat over the in-app help guide.** A new **Ask the docs 💬** page (sidebar, under Help): type a how-to question like "How do I scan job portals?" and get an answer drawn **only** from the app's own help guide in your language — it shows which sections it used and **never reads your CV, profile, or job search**. It is about how to use the app, not about you. With an LLM key it answers live; with no key it hands you a ready-to-run prompt already filled with the relevant help sections.
+
+- New route module (27th) `server/lib/routes/docs-assistant.mjs` — `POST /api/docs-assistant/ask`. **Dependency-free retrieval:** the help doc for your locale (`docs/help/<lang>.md`) is split into its `##` sections and scored by keyword overlap with your question; the top few are inlined and the model must answer from them or say the guide doesn't cover it (no invented features/routes). Shared provider cascade, manual fallback, rate-limited, **no writes**, reads no user data.
+- New view `public/js/views/docs-assistant.js` (a chat under the Help nav). Tests: `tests/docs-assistant-routes.test.mjs` (section split/rank, grounded prompt, manual seed, empty→400). 14 new i18n keys ×16 (`docs.*` + `nav.docsAssistant`). Help §1 extended in place.
+
+New: `server/lib/routes/docs-assistant.mjs`; `public/js/views/docs-assistant.js`.
+
+
 ## [1.101.0] — 2026-07-05
 
 **CV Studio: tailor your résumé + write a cover letter for a specific job, gated by a recruiter checklist.** A new **Tailor to a job** card on `#/cv-studio`: paste a job description (and, optionally, a target role/headline) and CV Studio produces a **résumé tailored to that posting plus a matching cover letter**, then runs both through a **checklist gate** before handing them over — `error`s block (they're fixed before you see the result), `warn`s advise. The mechanic is distilled from career-coaching practice into **generic** rules — recruiter reads in seconds, so relevant experience goes to the top, the headline matches the vacancy's role, results carry specific numbers, and the cover letter stays a short teaser with a single "requirement ↔ your matching fact" bridge. It is grounded **only** in your own CV, profile, and two-pager and **never fabricates** — no hardcoded companies, roles, or history.

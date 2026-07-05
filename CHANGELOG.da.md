@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.102.0] — 2026-07-05
+
+**"Spørg guiden" — en forankret chat over den indbyggede hjælpeguide.** En ny **Spørg guiden 💬**-side (sidebjælke, under Hjælp): skriv et spørgsmål som "Hvordan scanner jeg jobportaler?" og få et svar hentet **kun** fra appens egen hjælpeguide på dit sprog — den viser hvilke afsnit den brugte og **læser aldrig dit CV, din profil eller din jobsøgning**. Det handler om at bruge appen, ikke om dig. Med en LLM-nøgle svarer den live; uden nøgle giver den dig en klar-til-brug prompt, allerede udfyldt med de relevante hjælpeafsnit.
+
+- Nyt rutemodul (det 27.) `server/lib/routes/docs-assistant.mjs` — `POST /api/docs-assistant/ask`. **Afhængighedsfri hentning:** hjælpedokumentet på dit sprog opdeles i sine `##`-afsnit og scores efter nøgleordsoverlap med dit spørgsmål; de bedste indlejres, og modellen skal svare ud fra dem eller sige, at guiden ikke dækker det (ingen opdigtede funktioner/ruter). Delt udbyderkaskade, manuel fallback, rate-begrænset, **ingen skrivninger**, læser ingen brugerdata.
+- Ny visning `public/js/views/docs-assistant.js`. Tests: `tests/docs-assistant-routes.test.mjs`. 14 nye i18n-nøgler ×16 (`docs.*` + `nav.docsAssistant`). Hjælp §1 udvidet på stedet.
+
+Nyt: `server/lib/routes/docs-assistant.mjs`; `public/js/views/docs-assistant.js`.
+
+
 ## [1.101.0] — 2026-07-05
 
 **CV Studio: tilpas dit CV + skriv en ansøgning til et bestemt job, gennem en rekrutterings-checkliste.** Nyt **Tilpas til et job**-kort på `#/cv-studio`: indsæt en jobbeskrivelse (og evt. en mål-rolle/overskrift), og CV Studio laver et **CV tilpasset det opslag plus en matchende ansøgning**, og kører dem derefter gennem en **checkliste-gate**, før de afleveres — `error` blokerer (rettes, før du ser resultatet), `warn` rådgiver. Mekanikken er destilleret fra karrierecoaching-praksis til **generiske** regler — en rekrutter læser på sekunder, så relevant erfaring kommer øverst, overskriften matcher stillingens rolle, resultater bærer konkrete tal, og ansøgningen forbliver en kort teaser med én "krav ↔ din matchende kendsgerning"-bro. Den bygger **kun** på dit eget CV, din profil og din two-pager og **opdigter aldrig** — ingen hardkodede virksomheder, roller eller historik.
