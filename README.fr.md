@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.98.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.98.0)
+[![release](https://img.shields.io/badge/release-v1.99.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.99.0)
 
-> **🆕 Dernière version — v1.98.0**
+> **🆕 Dernière version — v1.99.0**
 >
-> **Rapporteur de bugs intégré** (parité avec le web `web-v0.2.0` du projet parent). Un bouton **🐞 Report a bug** dans le tiroir de notifications rassemble un instantané de diagnostic à socle de confidentialité — versions, votre écran, navigateur, un résumé des vérifications de `/api/health` et les 20 dernières erreurs d’un nouveau tampon circulaire côté client — plus une empreinte de déduplication déterministe (`co-web-<base36>`), vous laisse relire le Markdown exact, puis ouvre une issue GitHub pré-remplie. Rien n’est envoyé automatiquement ; il ne transporte jamais votre CV, profil, réponses, URLs d’offres ou clés. Nouvelles libs `logbuf.js` + `bug-report.js` ; 11 clés i18n ×16 ; `tests/bug-report.test.mjs`.
+> **Page de santé des portails** (`#/portals`). Le scanner surveille un ensemble d’entreprises dans `portals.yml` ; un slug d’ATS peut se casser silencieusement et cet employeur disparaît de tous les scans futurs. La nouvelle page **Portals** liste chaque entreprise surveillée et, via **Check portal health**, sonde chaque `careers_url` à travers le `safeGet` à DNS épinglé (anti-SSRF) et signale les mortes (un 404 = écartée en silence) — en lecture seule. Renforce aussi le rapporteur de bugs de la v1.98.0 après revue : le tampon d’erreurs capture désormais les échecs réseau du fetch, et le nettoyeur masque les clés de fournisseur non étiquetées.
 >
-> _rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

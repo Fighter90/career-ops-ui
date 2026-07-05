@@ -10,6 +10,13 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.99.0] — 2026-07-05
+
+**Portalsundhedsside** (`#/portals`). Scanneren holder øje med en række virksomheder i `portals.yml`; et ATS-slug kan gå i stykker i stilhed, og den arbejdsgiver forsvinder fra alle fremtidige scanninger. Den nye **Portals**-side viser hver overvåget virksomhed og prober ved **Check portal health** hver `careers_url` gennem det DNS-fastgjorte `safeGet` (SSRF-sikkert) og markerer de døde (et 404 = droppet i stilhed) — skrivebeskyttet. Hærder også v1.98.0-fejlrapportøren efter review: fejl-ringbufferen fanger nu netværks-fetch-fejl, og scrubberen skjuler umærkede udbydernøgler.
+
+Nyt: `server/lib/routes/portals.mjs`; `public/js/views/portals.js`.
+
+
 ## [1.98.0] — 2026-07-05
 
 **Indbygget fejlrapportør** (paritet med moderprojektets `web-v0.2.0`-web). En **🐞 Report a bug**-knap i notifikationsskuffen samler et privatlivsbegrænset diagnostisk øjebliksbillede — versioner, din skærm, browser, et `/api/health`-tjekresumé og de sidste 20 fejl fra en ny klientside-ringbuffer — plus et deterministisk dedupe-fingeraftryk (`co-web-<base36>`), lader dig gennemse den præcise Markdown og åbner derefter en forududfyldt GitHub-issue. Intet indsendes automatisk; det bærer aldrig dit CV, din profil, svar, job-URLer eller nøgler. Nye libs `logbuf.js` + `bug-report.js`; 11 i18n-nøgler ×16; `tests/bug-report.test.mjs`.

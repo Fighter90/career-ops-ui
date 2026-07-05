@@ -2,6 +2,13 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.99.0] — 2026-07-05
+
+**Portal-Gesundheitsseite** (`#/portals`). Der Scanner beobachtet eine Reihe von Firmen in `portals.yml`; ein ATS-Slug kann stillschweigend brechen und dieser Arbeitgeber verschwindet aus jedem künftigen Scan. Die neue **Portals**-Seite listet jede beobachtete Firma und sondiert bei **Check portal health** jede `careers_url` über das DNS-gepinnte `safeGet` (SSRF-sicher) und markiert die toten (ein 404 = still verworfen) — schreibgeschützt. Härtet außerdem den v1.98.0-Fehlermelder nach dem Review: der Fehler-Ringpuffer fängt jetzt Netzwerk-Fetch-Fehler ab, und der Scrubber schwärzt unbeschriftete Anbieterschlüssel.
+
+Neu: `server/lib/routes/portals.mjs`; `public/js/views/portals.js`.
+
+
 ## [1.98.0] — 2026-07-05
 
 **Integrierter Fehlermelder** (Parität mit dem `web-v0.2.0`-Web des Eltern-Projekts). Eine **🐞 Report a bug**-Schaltfläche im Benachrichtigungs-Drawer sammelt einen datenschutzbegrenzten Diagnose-Schnappschuss — Versionen, dein Bildschirm, Browser, eine `/api/health`-Prüfzusammenfassung und die letzten 20 Fehler aus einem neuen clientseitigen Ringpuffer — plus einen deterministischen Dedupe-Fingerabdruck (`co-web-<base36>`), lässt dich das exakte Markdown prüfen und öffnet dann ein vorausgefülltes GitHub-Issue. Nichts wird automatisch eingereicht; es trägt niemals deinen Lebenslauf, dein Profil, Antworten, Job-URLs oder Schlüssel. Neue Libs `logbuf.js` + `bug-report.js`; 11 i18n-Schlüssel ×16; `tests/bug-report.test.mjs`.

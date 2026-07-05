@@ -8,10 +8,9 @@ window.Router = (function () {
   // resolves so existing bookmarks keep working.
   const ALIASES = {
     settings: 'profile',
-    // WS2 #2: #/portals was an unregistered route → 404. Alias it to
-    // config (which deep-links to the Regional-sources group on that
-    // hash); same bookmark-stability pattern as settings→profile.
-    portals: 'config',
+    // v1.99.0 — `#/portals` is now a real registered view (Portals health),
+    // so the old config alias (WS2 #2, added when the route was unregistered)
+    // was removed; otherwise it would shadow the dedicated view.
     // QA BUG-004: the Outreach view's canonical hash is the Spanish
     // `#/contacto` (mode slug = modes/contacto.md) while every other
     // route is English. Expose an English `#/outreach` that resolves to

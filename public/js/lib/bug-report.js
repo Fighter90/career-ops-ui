@@ -21,6 +21,10 @@
     return String(s || '')
       .replace(/\/Users\/[^/\s"']+/g, '~')
       .replace(/\/home\/[^/\s"']+/g, '~')
+      // Bare provider keys (unlabelled — common in SDK stack traces): Anthropic
+      // sk-ant-, OpenAI sk-, GitHub ghp_/gho_, Slack xox?-, Google AIza.
+      .replace(/\b(sk-ant-[A-Za-z0-9._-]{6,}|sk-[A-Za-z0-9._-]{8,}|gh[pousr]_[A-Za-z0-9]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}|AIza[A-Za-z0-9._-]{10,})/g, '[redacted]')
+      // Labelled secrets (key: …, token=…, bearer …).
       .replace(/(sk|key|token|secret|bearer|api[-_]?key)([-_=:\s"']+)[A-Za-z0-9._-]{8,}/gi, '$1$2[redacted]');
   }
 

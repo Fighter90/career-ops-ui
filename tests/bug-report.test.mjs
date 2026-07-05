@@ -44,8 +44,11 @@ test('scrub redacts home paths + secret-looking tokens', () => {
   const { BugReport } = loadLibs();
   assert.equal(BugReport.scrub('/Users/sergey/cv.md failed'), '~/cv.md failed');
   assert.equal(BugReport.scrub('/home/alex/data'), '~/data');
-  assert.match(BugReport.scrub('ANTHROPIC key: sk-ant-api03-ABCDEFGH12345678'), /key: sk\b|\[redacted\]/);
   assert.ok(!/ABCDEFGH12345678/.test(BugReport.scrub('api-key=ABCDEFGH12345678')));
+  // Bare (unlabelled) provider keys must be redacted too — common in SDK traces.
+  assert.ok(!/sk-ant-api03-ABCDEFGH12345678/.test(BugReport.scrub('Error from sk-ant-api03-ABCDEFGH12345678 boom')));
+  assert.ok(!/ghp_ABCDEFGH12345678/.test(BugReport.scrub('token ghp_ABCDEFGH12345678')));
+  assert.ok(!/AIzaABCDEFGH12345678/.test(BugReport.scrub('AIzaABCDEFGH12345678')));
 });
 
 test('fingerprint is deterministic + stable across volatile status codes', () => {

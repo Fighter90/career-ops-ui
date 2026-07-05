@@ -11,6 +11,13 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.99.0] — 2026-07-05
+
+**Página de estado de portales** (`#/portals`). El escáner vigila un conjunto de empresas en `portals.yml`; un slug de ATS puede romperse silenciosamente y ese empleador desaparece de todos los escaneos futuros. La nueva página **Portals** lista cada empresa vigilada y, al pulsar **Check portal health**, sondea cada `careers_url` a través del `safeGet` con DNS fijado (a prueba de SSRF) y marca las caídas (un 404 = descartada en silencio) — solo lectura. También refuerza el reportador de errores de la v1.98.0 tras la revisión: el búfer de errores ahora captura fallos de red del fetch, y el limpiador redacta claves de proveedor sin etiqueta.
+
+Nuevo: `server/lib/routes/portals.mjs`; `public/js/views/portals.js`.
+
+
 ## [1.98.0] — 2026-07-05
 
 **Reportador de errores integrado** (paridad con el web `web-v0.2.0` del proyecto padre). Un botón **🐞 Report a bug** en el cajón de notificaciones reúne una instantánea de diagnóstico con piso de privacidad — versiones, tu pantalla, navegador, un resumen de comprobaciones de `/api/health` y los últimos 20 errores de un nuevo búfer circular del cliente — más una huella de deduplicación determinista (`co-web-<base36>`), te deja revisar el Markdown exacto y luego abre una incidencia de GitHub pre-rellenada. Nada se envía automáticamente; nunca lleva tu CV, perfil, respuestas, URLs de empleo ni claves. Nuevas libs `logbuf.js` + `bug-report.js`; 11 claves i18n ×16; `tests/bug-report.test.mjs`.
