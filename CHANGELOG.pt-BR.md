@@ -9,6 +9,15 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.106.0] — 2026-07-06
+
+**Reforço de segurança (triagem do CodeQL).** Corrigidos três achados reais (embora de baixa severidade): o caminho de erro de renderização **agora escapa a mensagem de erro** antes de chegar ao DOM (um erro do servidor pode refletir entrada do usuário, então é tratado como não confiável — limite XSS), e as gravações de propriedades de perfil/config **rejeitam as chaves `__proto__` / `constructor` / `prototype`** (proteções contra poluição de protótipo por precaução — as chaves vêm de specs de campos fixos, não de entrada bruta). A maioria dos alertas restantes são falsos positivos sobre leituras/gravações legítimas do scanner em `data/*` e sobre rotas que já têm o limitador próprio; foram descartados com justificativa.
+
+- `public/js/router.js` escapa `err.message` com `UI.escapeHtml` antes de `innerHTML`; `server/lib/routes/content.mjs` e `server/lib/routes/config.mjs` protegem as chaves de protótipo. Sem mudança de comportamento para entrada válida. Testes: `tests/security-hardening-v1106.test.mjs` (3). Sem novas chaves i18n.
+
+Novo: nenhum.
+
+
 ## [1.105.0] — 2026-07-06
 
 **Página de uso e custo de IA.** Uma nova página **Uso de IA** (barra lateral, ao lado de Saúde) mostra quantos tokens você gastou em gerações de IA **ao vivo** — avaliações, relatórios, chats — detalhado **por provedor** nas últimas 24 horas, 7 dias, 30 dias e todo o período, com um **custo estimado em USD**. Cada chamada ao vivo anexa um pequeno registro `{provider, in, out}` a `data/llm-usage.jsonl` (nada é enviado a lugar nenhum); execuções sem chave (modo manual) não custam nada e não são registradas.

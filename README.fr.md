@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.105.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.105.0)
+[![release](https://img.shields.io/badge/release-v1.106.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.106.0)
 
-> **🆕 Dernière version — v1.105.0**
+> **🆕 Dernière version — v1.106.0**
 >
-> **Page d'utilisation et de coût de l'IA.** Une nouvelle page **Utilisation IA** montre combien de tokens vous avez dépensés en générations IA en direct, par fournisseur, sur 24 h / 7 j / 30 j / tout le temps, avec un coût estimé en USD. Chaque appel ajoute un enregistrement `{provider, in, out}` à `data/llm-usage.jsonl` (rien ne quitte votre machine) ; les dollars viennent d'une table de prix modifiable par fournisseur — les tokens sont exacts, l'USD est une estimation, jamais facturée.
+> **Durcissement de sécurité (tri CodeQL).** Le chemin d'erreur de rendu échappe désormais le message d'erreur avant qu'il n'atteigne le DOM (une erreur serveur peut refléter une entrée utilisateur — frontière XSS), et les écritures de propriétés profil/config rejettent les clés `__proto__` / `constructor` / `prototype` (protections anti-pollution de prototype). La plupart des alertes restantes sont des faux positifs sur les E/S légitimes du scanner dans `data/*` et ont été rejetées avec justification.
 >
-> _utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

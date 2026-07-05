@@ -220,9 +220,15 @@ export function registerContentRoutes(app) {
     'narrative.proof_points':   ['name', 'url', 'hero_metric'],
   };
 
+  // Reject prototype-pollution keys defensively. The dotted paths here come from
+  // a fixed field spec (not raw request keys), so this is belt-and-braces — but
+  // it makes the write provably safe against `__proto__`/`constructor`/`prototype`.
+  const UNSAFE_KEY = (k) => k === '__proto__' || k === 'constructor' || k === 'prototype';
+
   function setArray(obj, path, rawValue, spec) {
     const parts = path.split('.');
     const leaf = parts.pop();
+    if (parts.some(UNSAFE_KEY) || UNSAFE_KEY(leaf)) return;
     let node = obj;
     for (const p of parts) {
       if (node[p] == null || typeof node[p] !== 'object' || Array.isArray(node[p])) node[p] = {};
@@ -254,6 +260,7 @@ export function registerContentRoutes(app) {
   function setDotted(obj, path, value) {
     const parts = path.split('.');
     const leaf = parts.pop();
+    if (parts.some(UNSAFE_KEY) || UNSAFE_KEY(leaf)) return;
     let node = obj;
     for (const p of parts) {
       if (node[p] == null || typeof node[p] !== 'object' || Array.isArray(node[p])) node[p] = {};

@@ -9,6 +9,15 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.106.0] — 2026-07-06
+
+**Wzmocnienie bezpieczeństwa (triage CodeQL).** Naprawiono trzy realne (choć niskiej wagi) znaleziska po przeglądzie zaległości analizy statycznej: ścieżka błędu renderowania **teraz eskejpuje komunikat błędu** zanim trafi do DOM (błąd serwera może odbić dane użytkownika, więc traktowany jest jako niezaufany — granica XSS), a zapisy właściwości profilu/konfiguracji **odrzucają klucze `__proto__` / `constructor` / `prototype`** (zabezpieczenia przed zanieczyszczeniem prototypu na wszelki wypadek — klucze pochodzą ze stałych specyfikacji pól, nie z surowego wejścia). Większość pozostałych alertów to fałszywe alarmy dotyczące legalnych odczytów/zapisów skanera w `data/*` oraz tras już mających własny limiter; odrzucono z uzasadnieniem.
+
+- `public/js/router.js` eskejpuje `err.message` przez `UI.escapeHtml` przed `innerHTML`; `server/lib/routes/content.mjs` i `server/lib/routes/config.mjs` chronią klucze prototypu. Bez zmiany zachowania dla poprawnego wejścia. Testy: `tests/security-hardening-v1106.test.mjs` (3). Brak nowych kluczy i18n.
+
+Nowe: brak.
+
+
 ## [1.105.0] — 2026-07-06
 
 **Strona zużycia i kosztu AI.** Nowa strona **Zużycie AI** (pasek boczny, obok Kondycji) pokazuje, ile tokenów wydałeś na **na żywo** generacje AI — oceny, raporty, czaty — w podziale **wg dostawcy** za ostatnie 24 godziny, 7 dni, 30 dni i cały czas, z **szacowanym kosztem w USD**. Każde wywołanie na żywo dopisuje mały rekord `{provider, in, out}` do `data/llm-usage.jsonl` (nic nigdzie nie jest wysyłane); uruchomienia bez klucza (tryb ręczny) nic nie kosztują i nie są rejestrowane.
