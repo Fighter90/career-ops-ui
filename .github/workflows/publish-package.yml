@@ -75,7 +75,18 @@ jobs:
             exit 0
           fi
           echo "Publishing ${name}@${ver} …"
-          npm publish
+          # Tolerate a lost publish RACE: the release-triggered run and a manual
+          # workflow_dispatch for the same tag start together, both see "not yet
+          # published" above, and both call `npm publish` — the loser gets
+          # E409/EPUBLISHCONFLICT. That's success (the version IS on the
+          # registry), not a failure, so don't red-alarm the run.
+          out=$(npm publish 2>&1) && { echo "$out"; exit 0; }
+          echo "$out"
+          if echo "$out" | grep -qiE 'EPUBLISHCONFLICT|cannot publish over|409|already exists|previously published'; then
+            echo "::notice::${name}@${ver} was published by a concurrent run (E409) — treating as success."
+            exit 0
+          fi
+          exit 1
 
       - name: Reconcile `latest` dist-tag (semver-guarded)
         # A backfill or parallel publish — or an E409 idempotent skip on

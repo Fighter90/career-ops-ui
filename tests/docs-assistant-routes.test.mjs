@@ -27,7 +27,12 @@ const post = (p, b) => fetch(`${baseUrl}${p}`, { method: 'POST', headers: { 'con
 test('resolveHelpFile falls back to en.md and is path-traversal safe', () => {
   assert.ok(resolveHelpFile('en'));
   assert.ok(resolveHelpFile('zz-unknown'));                 // → en.md fallback
-  assert.match(resolveHelpFile('../../etc/passwd') || 'en.md', /help/); // sanitized, never escapes
+  // A traversal attempt must resolve to a real file INSIDE docs/help (never
+  // /etc/passwd). Assert the actual return (no `|| fallback` masking a null).
+  const traversed = resolveHelpFile('../../etc/passwd');
+  assert.ok(traversed, 'traversal input must still resolve (to the en.md fallback), not null');
+  assert.match(traversed, /docs[/\\]help[/\\][a-zA-Z0-9_-]+\.md$/); // stayed inside docs/help
+  assert.doesNotMatch(traversed, /etc[/\\]passwd/);                 // never escaped
 });
 
 test('splitSections splits on ## and keeps ### inside their parent', () => {
