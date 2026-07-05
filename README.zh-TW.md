@@ -12,11 +12,11 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 最新版本 — v1.97.0**
+> **🆕 最新版本 — v1.97.1**
 >
-> **Dassault Systèmes 掃描器來源 + 一次品質整頓。** 與父層 career-ops 對齊（#1498）: 一個新的零 token **Dassault Systèmes** 掃描來源（3ds.com/careers 背後的公開 Exalead 卡片搜尋資料來源）作為 **第 46 個轉接器** 加入註冊表——透過提供者選擇（`provider: dassault`）或從 3ds.com 主機自動偵測,並固定 SSRF 主機。與此同時,一次三線並進的稽核（伺服器 + SPA + 16 種語言的翻譯）修正了真實缺陷: **stats 分頁非同步競態**（慢速分頁繪製可能覆蓋較新的分頁）、**可能卡住的 `safe-fetch` 大小上限**（超出上限的預覽/流水線抓取）、失效的 SSE 活動記錄、兩個內文為空的刪除確認,以及未翻譯的字典值(uk/ru/it)。移植了 Avature / Get on Board / SuccessFactors 來源的父專案健壯性修正。
+> **評審驅動的強化與文件一致性。** v1.97.0 的後續: 掃描 `◎` 適合度徽章(`fit-score.js`)不再將低於年薪口徑的費率(「500 EUR/day」)抬升為虛假的年薪下限,且國家比對現在以整詞進行,因此「Germany」無法比對到形容詞「German」。現在每個在地化 README 與應用程式內說明都一致地標註 **16 個 locales** 與 **46 個掃描器轉接器**（先前部分內文仍停留在 v1.85 之前的計數）。v1.97.0 新增了 **Dassault Systèmes** 掃描來源(第 46 個轉接器,零 token 的 Exalead XML,SSRF 主機固定)以及一次三線並進(伺服器/SPA/16 種語言)的稽核整頓。
 >
 > _16 個 locales · 6 個 LLM 提供者 · 46 個掃描器轉接器 · 職業方向 · 職涯規劃 · 統計重構 · 記憶層 · CV Studio · 人脈拓展規劃器 · mock interview · two-pager 市場契合度 · 與父層 career-ops v1.16.0 對齊。_
 
@@ -240,7 +240,7 @@ npm start
 | **Profile**      | `config/profile.yml` + archetypes 的唯讀檢視 — UI 友善摘要。                                                          |
 | **App settings** | UI 內建編輯器,可編輯父專案 `.env` 中的金鑰:`ANTHROPIC_API_KEY`、`GEMINI_API_KEY`、模型 override、port / host。讀取時 secrets 會被遮罩。 |
 | **Health**       | 所有 setup 檢查以 OK / OPTIONAL / FAIL 徽章呈現 + 用於執行 `doctor.mjs` 與 `verify-pipeline.mjs` 的按鈕。              |
-| **Help**         | 應用程式內的 Markdown 使用指南(`/#/help`),已本地化為所有 8 種支援語言(en / es / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW)。 |
+| **Help**         | 應用程式內的 Markdown 使用指南(`/#/help`),已本地化為所有 16 種支援語言(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr)。 |
 | **Activity log** | 每一筆會改變狀態的請求(寫入、執行、掃描)的稽核軌跡。secrets 會被遮蔽。 |
 | **通知** 🔔 *(v1.58.34 / v1.58.35)* | 頂列鈴鐺 + 紅色未讀徽章。點擊 → 右側抽屜展示最近 50 條 toast(按分頁/作業階段)— 成功 / 錯誤 / 資訊-進度,每條帶本地時間、訊息,及在需要時把 `(METHOD /path · HTTP NNN)` 後綴放入 `<details>`。說明 **§18** 描述每個類別。抽屜**僅在點擊鈴鐺時開啟**(或鍵盤 Enter / Space);透過 ×、Esc 或再次點擊鈴鐺關閉。|
 
@@ -599,9 +599,9 @@ Claude Code 中既有的 `/career-ops apply` Playwright 表單填寫流程,仍�
 
 ## 在地化(Localization)
 
-介面提供 **8 種語言** — `en`、`es`、`pt-BR`、`ko`、`ja`、`ru`、`zh-CN`、`zh-TW`。自 **v1.60.0 (I18N-SPLIT)** 起,翻譯以**每種語言一個檔案**存放於 [`public/js/lib/locales/`](public/js/lib/locales/) —— `i18n-dict.<lang>.js`(扁平的 `鍵 → 字串` 表)外加共用的 `i18n-dict.aliases.js`。[`i18n-dict.js`](public/js/lib/i18n-dict.js) 將它們組裝為 `window.__I18N_DICT`;[`i18n.js`](public/js/lib/i18n.js) 負責解析 `t('鍵', 'fallback')`。無建置、無 fetch —— 譯者只需編輯單一語言檔案。
+介面提供 **16 種語言** — `en`、`es`、`pt-BR`、`ko`、`ja`、`ru`、`zh-CN`、`zh-TW`、`fr`、`pl`、`uk`、`da`、`ar`、`de`、`it`、`tr`。自 **v1.60.0 (I18N-SPLIT)** 起,翻譯以**每種語言一個檔案**存放於 [`public/js/lib/locales/`](public/js/lib/locales/) —— `i18n-dict.<lang>.js`(扁平的 `鍵 → 字串` 表)外加共用的 `i18n-dict.aliases.js`。[`i18n-dict.js`](public/js/lib/i18n-dict.js) 將它們組裝為 `window.__I18N_DICT`;[`i18n.js`](public/js/lib/i18n.js) 負責解析 `t('鍵', 'fallback')`。無建置、無 fetch —— 譯者只需編輯單一語言檔案。
 
-**新增或修改文案:** 將同一個鍵加入全部 8 個語言檔案(由測試強制保證一致性),透過 `data-i18n="scan.newButton"` 或 `t('scan.newButton')` 使用,然後執行 `npm test`。
+**新增或修改文案:** 將同一個鍵加入全部 16 個語言檔案(由測試強制保證一致性),透過 `data-i18n="scan.newButton"` 或 `t('scan.newButton')` 使用,然後執行 `npm test`。
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',

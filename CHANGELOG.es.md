@@ -11,6 +11,16 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.97.1] — 2026-07-05
+
+**Endurecimiento guiado por revisión y paridad de documentación (seguimiento de v1.97.0).** Un barrido de los registros de revisión de IA sacó a la luz correcciones reales:
+
+- **`fit-score.js` (insignia de encaje `◎` del escáner).** `salaryFloor()` ya no asciende una tarifa inferior a la anual a un suelo anual falso — «at least 500 EUR/day», «$80/hr», «6000 monthly» ahora devuelven `null` en lugar de un factor descalificador de 500k/80k. La coincidencia de países ahora es por palabra completa (`\b…\b`), de modo que «Germany» ya no coincide con el adjetivo «German» (ni «Nigeria» dentro de «Nigerian») ni dispara una falsa violación de imprescindible-en-otro-sitio. +3 pruebas en `tests/fit-score.test.mjs`.
+- **Paridad de documentación.** Cada README localizado anuncia ahora **16 idiomas** de forma coherente — el recuento/la lista de la fila de Ayuda (×13) y la prosa de la sección de Localización más la nota «añade la clave a los N archivos» (×8) seguían con los recuentos previos a v1.85 (8/9). El recuento de adaptadores de la ayuda integrada §17 se corrige a **46 adaptadores — 41 en inglés + 5 en ruso** en los 16 paquetes.
+
+Sin cambios de comportamiento más allá de la heurística de la insignia de encaje; sin nuevas rutas, claves ni adiciones de i18n.
+
+
 ## [1.97.0] — 2026-07-05
 
 **Fuente de escáner Dassault Systèmes + un barrido de calidad en tres frentes.**

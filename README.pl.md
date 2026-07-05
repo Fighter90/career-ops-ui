@@ -12,11 +12,11 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 Najnowsze wydanie — v1.97.0**
+> **🆕 Najnowsze wydanie — v1.97.1**
 >
-> **Źródło skanera Dassault Systèmes + przegląd jakości.** Parytet z nadrzędnym career-ops (#1498): nowe zero-tokenowe źródło skanowania **Dassault Systèmes** (publiczny kanał card-search Exalead za 3ds.com/careers) dołącza do rejestru jako **46. adapter** — wybierane przez dostawcę (`provider: dassault`) lub automatycznie wykrywane z hosta 3ds.com, z przypięciem hosta chroniącym przed SSRF. Obok niego trójfrontowy audyt (serwer + SPA + tłumaczenie na 16 języków) naprawił realne usterki: **asynchroniczny wyścig zakładek statystyk** (render wolnej zakładki mógł nadpisać nowszą), **limit rozmiaru w `safe-fetch`, który mógł się zawiesić** przy przekraczającym limit pobraniu podglądu/pipeline, martwe logowanie aktywności SSE, dwa potwierdzenia usunięcia o pustej treści oraz nieprzetłumaczone wartości słownika (uk/ru/it). Przeniesiono poprawki odporności z projektu nadrzędnego dla źródeł Avature / Get on Board / SuccessFactors.
+> **Wzmocnienia po przeglądzie i parytet dokumentacji.** Kontynuacja v1.97.0: odznaka dopasowania `◎` przy skanowaniu (`fit-score.js`) nie przekształca już stawki poniżej rocznej („500 EUR/day") w fałszywy roczny próg wynagrodzenia, a dopasowanie krajów odbywa się teraz na całe słowo, więc „Germany" nie może pasować do przymiotnika „German". Każdy zlokalizowany README oraz wbudowana pomoc zgodnie ogłaszają teraz **16 lokalizacji** i **46 adapterów skanera** (część tekstu wciąż tkwiła na licznikach sprzed v1.85). W v1.97.0 dodano źródło skanowania **Dassault Systèmes** (46. adapter, zero-tokenowy Exalead XML, z przypięciem hosta chroniącym przed SSRF) oraz trójfrontowy audyt (serwer / SPA / 16 języków).
 >
 > _16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 

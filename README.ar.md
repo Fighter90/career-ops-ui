@@ -12,11 +12,11 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 أحدث إصدار — v1.97.0**
+> **🆕 أحدث إصدار — v1.97.1**
 >
-> **مصدر ماسح Dassault Systèmes + كنسة جودة.** تكافؤ مع المشروع الأصلي career-ops (‏#1498): مصدر مسح **Dassault Systèmes** جديد عديم التوكنات (تغذية بحث بطاقات Exalead العامة خلف 3ds.com/careers) ينضمّ إلى السجل بوصفه **المحوّل السادس والأربعين** — يُختار عبر المزوّد (`provider: dassault`) أو يُكتشف تلقائياً من مضيف 3ds.com، ومثبّت مضيف SSRF. وإلى جانبه، أصلح تدقيق على ثلاث جبهات (الخادم + SPA + ترجمة 16 لغة) عيوباً حقيقية: **تسابق غير متزامن في تبويب الإحصاءات** (قد يطمس عرضُ تبويب بطيء تبويباً أحدث)، و**حدّ حجم `safe-fetch` قد يتعلّق** على جلب معاينة/أنبوب يتجاوز الحدّ، وتسجيل نشاط SSE ميت، وتأكيدَي حذف بمتن فارغ، وقيم قاموس غير مترجمة (uk/ru/it). ونُقلت إصلاحات المتانة من المشروع الأصلي لمصادر Avature / Get on Board / SuccessFactors.
+> **تصليب مدفوع بالمراجعة وتكافؤ في التوثيق.** متابعة لـ v1.97.0: لم تعُد شارة الملاءمة `◎` في المسح (`fit-score.js`) ترفع معدّلاً دون سنوي («500 EUR/day») إلى حدٍّ أدنى سنوي زائف، وصار تطابق البلد بالكلمة الكاملة فلا تستطيع «Germany» أن تطابق الصفة «German». صار كل README مُترجَم والمساعدة داخل التطبيق يُعلنان **16 locales** و**46 محوّل ماسح** باتساق (كان بعض النصّ لا يزال على أعداد ما قبل v1.85). أضاف v1.97.0 مصدر مسح **Dassault Systèmes** (المحوّل السادس والأربعين، XML من Exalead عديم التوكنات، مثبّت مضيف SSRF) + كنسة تدقيق على ثلاث جبهات (الخادم/SPA/‏16 لغة).
 >
 > _الإحصاءات، مُعاد تصميمها · 16 locales · 6 مزوّدات LLM · 46 محوّل ماسح · التوجيه المهني · خطة المسار المهني · طبقة الذاكرة · CV Studio · مخطّط تواصل مهني · مقابلة تجريبية · ملاءمة السوق عبر two-pager · تكافؤ مع المشروع الأصلي career-ops v1.16.0._
 

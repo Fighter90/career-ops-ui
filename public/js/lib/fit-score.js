@@ -16,6 +16,11 @@
 (function () {
   const norm = (s) => String(s || '').toLowerCase();
   const list = (a) => (Array.isArray(a) ? a.filter((x) => typeof x === 'string' && x.trim()) : []);
+  const reEsc = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Whole-word containment — "Georgia" must not match inside "Georgian",
+  // nor "Nigeria" inside "Nigerian" (country names are matched against
+  // free-text two-pager prefs, so a bare substring is unsafe).
+  const hasWord = (hay, needle) => !!needle && new RegExp('\\b' + reEsc(needle) + '\\b').test(hay);
 
   // Which work-type does a phrase express? null if none.
   function workTypeOf(text) {
@@ -37,6 +42,9 @@
   function salaryFloor(text) {
     const s = norm(text);
     if (!/\b(min|at least|minimum|floor|>=|≥|no less than|not below)\b|\bk\b|\$|€|£/.test(s)) return null;
+    // A sub-annual rate ("500 EUR/day", "80/hr") is not an annual salary floor —
+    // don't let the k-shorthand multiply promote it into a bogus 500k deal-breaker.
+    if (/\/\s*(day|hr|hour|wk|week|mo|month)\b|\bper\s+(day|hour|week|month)\b|\b(daily|hourly|weekly|monthly)\b/.test(s)) return null;
     const m = s.match(/(\d[\d.,]*)\s*(k|к)?/);
     if (!m) return null;
     let n = parseFloat(m[1].replace(/[.,](?=\d{3}\b)/g, '').replace(',', '.'));
@@ -86,11 +94,11 @@
     const country = C && C.detectCountry ? C.detectCountry(job.location) : null;
     if (country) {
       const cname = norm(country.name);
-      for (const p of positives) { if (workTypeOf(p) == null && norm(p).includes(cname)) { fired++; matched.push({ label: p }); break; } }
-      for (const n of negatives) { if (norm(n).includes(cname)) { fired++; violated.push({ label: n }); break; } }
+      for (const p of positives) { if (workTypeOf(p) == null && hasWord(norm(p), cname)) { fired++; matched.push({ label: p }); break; } }
+      for (const n of negatives) { if (hasWord(norm(n), cname)) { fired++; violated.push({ label: n }); break; } }
       // a must-have country the job is NOT in → soft violation
       for (const p of list(tp.must_haves)) {
-        const pc = C.COUNTRIES && C.COUNTRIES.find((x) => norm(p).includes(norm(x.name)) && x.code !== country.code);
+        const pc = C.COUNTRIES && C.COUNTRIES.find((x) => hasWord(norm(p), norm(x.name)) && x.code !== country.code);
         if (pc) { fired++; violated.push({ label: p }); break; }
       }
     }

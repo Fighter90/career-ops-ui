@@ -9,6 +9,16 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.97.1] — 2026-07-05
+
+**Wzmocnienia po przeglądzie i parytet dokumentacji (kontynuacja v1.97.0).** Przegląd logów AI-review ujawnił realne poprawki:
+
+- **`fit-score.js` (odznaka dopasowania `◎` przy skanowaniu).** `salaryFloor()` nie przekształca już stawki poniżej rocznej w fałszywy roczny próg — „at least 500 EUR/day", „$80/hr", „6000 monthly" zwracają teraz `null` zamiast dealbreakera 500k/80k. Dopasowanie krajów odbywa się teraz na całe słowo (`\b…\b`), więc „Germany" nie pasuje już do przymiotnika „German" (ani „Nigeria" wewnątrz „Nigerian") i nie wyzwala fałszywego naruszenia „wymagane-gdzie-indziej". +3 testy w `tests/fit-score.test.mjs`.
+- **Parytet dokumentacji.** Każdy zlokalizowany README zgodnie ogłasza teraz **16 lokalizacji** — licznik/lista w wierszu Help (×13) oraz tekst sekcji lokalizacji plus notka „dodaj klucz do wszystkich N plików" (×8) wciąż tkwiły na licznikach sprzed v1.85 (8/9). Licznik adapterów §17 we wbudowanej pomocy poprawiono na **46 adapterów — 41 angielskich + 5 rosyjskich** we wszystkich 16 pakietach.
+
+Brak zmian zachowania poza heurystyką odznaki dopasowania; żadnych nowych tras, kluczy ani dodatków i18n.
+
+
 ## [1.97.0] — 2026-07-05
 
 **Źródło skanera Dassault Systèmes + trójfrontowy przegląd jakości.**

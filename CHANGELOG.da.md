@@ -10,6 +10,16 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.97.1] — 2026-07-05
+
+**Gennemgangsdrevet hærdning & dokumentationsparitet (opfølgning på v1.97.0).** En gennemgang af AI-review-loggene afdækkede reelle rettelser:
+
+- **`fit-score.js` (scan-`◎`-fit-badge).** `salaryFloor()` ophøjer ikke længere en sats under årsniveau til et falsk årligt gulv — "at least 500 EUR/day", "$80/hr", "6000 monthly" returnerer nu `null` i stedet for en 500k/80k-dealbreaker. Landematchning sker nu på hele ord (`\b…\b`), så "Germany" ikke længere matcher tillægsordet "German" (ej heller "Nigeria" inde i "Nigerian") og udløser en falsk skal-haves-andetsteds-overtrædelse. +3 tests i `tests/fit-score.test.mjs`.
+- **Dokumentationsparitet.** Hver lokaliseret README averterer nu konsekvent **16 lokaliteter** — Help-rækkens tælling/liste (×13) og Lokaliserings-sektionens tekst plus "tilføj nøglen til alle N filer"-noten (×8) sad stadig på tallene fra før v1.85 (8/9). Den in-app hjælps §17-adaptertælling er rettet til **46 adaptere — 41 engelske + 5 russiske** på tværs af alle 16 bundter.
+
+Ingen adfærdsændring ud over fit-badge-heuristikken; ingen nye ruter, nøgler eller i18n-tilføjelser.
+
+
 ## [1.97.0] — 2026-07-05
 
 **Dassault Systèmes-scannerkilde + en trefronts kvalitetsgennemgang.**

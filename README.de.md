@@ -12,11 +12,11 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.97.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.0)
+[![release](https://img.shields.io/badge/release-v1.97.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.97.1)
 
-> **🆕 Neueste Version — v1.97.0**
+> **🆕 Neueste Version — v1.97.1**
 >
-> **Dassault-Systèmes-Scanner-Quelle + ein Qualitätsdurchlauf.** Parität mit dem übergeordneten career-ops (#1498): eine neue token-kostenfreie Scan-Quelle, **Dassault Systèmes** (der öffentliche Exalead-Kartensuche-Feed hinter 3ds.com/careers), tritt dem Registry als **46. Adapter** bei — per Provider auswählbar (`provider: dassault`) oder aus einem 3ds.com-Host automatisch erkannt, mit dem Host gegen SSRF verankert. Daneben behob ein Audit an drei Fronten (Server + SPA + Übersetzung in 16 Sprachen) echte Mängel: ein **asynchrones Race in den Statistik-Tabs** (das Rendern eines langsamen Tabs konnte einen neueren überschreiben), ein **Größenlimit von `safe-fetch`, das hängen bleiben konnte** bei einem Preview-/Pipeline-Abruf über dem Limit, ein totes SSE-Aktivitätslogging, zwei Lösch-Bestätigungen mit leerem Text und unübersetzte Wörterbuchwerte (uk/ru/it). Robustheitskorrekturen aus dem übergeordneten Projekt wurden für die Quellen Avature / Get on Board / SuccessFactors portiert.
+> **Review-getriebene Härtung und Dokumentationsparität.** Nachtrag zu v1.97.0: das Scan-`◎`-Fit-Badge (`fit-score.js`) befördert einen unterjährigen Satz („500 EUR/day") nicht mehr zu einem falschen jährlichen Gehaltsmindestwert, und der Länderabgleich erfolgt nun auf ganzes Wort, sodass „Germany" nicht auf das Adjektiv „German" passen kann. Jedes lokalisierte README und die integrierte Hilfe bewerben nun einheitlich **16 Sprachen** und **46 Scanner-Adapter** (ein Teil der Prosa stand noch auf den Zählungen vor v1.85). Die v1.97.0 fügte die Scan-Quelle **Dassault Systèmes** hinzu (46. Adapter, token-kostenfreies Exalead-XML, Host gegen SSRF verankert) + einen Audit-Durchlauf an drei Fronten (Server/SPA/16 Sprachen).
 >
 > _16 Sprachen · 6 LLM-Anbieter · 46 Scanner-Adapter · Berufsorientierung · Karriereplan · Statistik-Überarbeitung · Speicherschicht · CV Studio · Networking-Planer · Mock-Interview · Markt-Fit über two-pager · Parität mit dem übergeordneten career-ops v1.16.0._
 
@@ -273,7 +273,7 @@ npm start
 | **Profile**      | Schreibgeschützte Ansicht von `config/profile.yml` + Archetypen — UI-freundliche Zusammenfassung.                                         |
 | **App settings** | UI-interner Editor für Schlüssel der übergeordneten `.env`: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, Modell-Overrides, Port / Host. Geheimnisse beim Lesen maskiert. |
 | **Health**       | Alle Setup-Prüfungen in OK / OPTIONAL / FAIL-Badges + Schaltflächen zum Ausführen von `doctor.mjs` und `verify-pipeline.mjs`.           |
-| **Help**         | In-App-Markdown-Benutzerhandbuch (`/#/help`), lokalisiert für alle 9 unterstützten Sprachen (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). |
+| **Help**         | In-App-Markdown-Benutzerhandbuch (`/#/help`), lokalisiert für alle 16 unterstützten Sprachen (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr). |
 | **Activity log** | Prüfpfad jeder zustandsverändernden Anfrage (Schreibvorgänge, Ausführungen, Scans). Geheimnisse geschwärzt. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Glocke in der oberen Leiste mit rotem Ungelesen-Badge. Klicken Sie, um eine einschiebbare Schublade mit den letzten 50 Toasts (pro Tab, pro Sitzung) einzublenden — Success / Error / Info-progress, jeweils mit einem lokalisierten Zeitstempel, der menschlichen Nachricht und jedem in ein `<details>` eingebetteten `(METHOD /path · HTTP NNN)`-Postfix. Help **§18** dokumentiert jede Kategorie. Die Schublade öffnet sich **nur** beim Klick auf die Glocke (oder per Tastatur Enter / Space); schließt über ×, Esc oder erneutes Klicken auf die Glocke. |
 
