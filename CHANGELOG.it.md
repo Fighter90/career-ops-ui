@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.103.0] — 2026-07-06
+
+**Impostazioni: "Strumenti CLI IA" — quali sono installati.** career-ops è basato su Claude Code ma funziona con qualsiasi CLI di agente conforme allo standard aperto di skills. Una nuova scheda **Strumenti CLI IA** nelle **Impostazioni app** (`#/config`) mostra quali — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — sono installati sulla macchina che esegue il server, e i loro percorsi. È una **scansione del PATH in sola lettura**: verifica solo se ogni binario esiste e **non lo esegue mai** (nessun `--version`, nessuna esecuzione), non scrive nulla e non tocca dati utente.
+
+- Nuovo modulo di rotta (il 28°) `server/lib/routes/cli-detect.mjs` — `GET /api/cli-detect`. Il rilevamento risolve il percorso di un binario da una allowlist fissa di 7 voci tramite `process.env.PATH` (shim `.cmd/.exe/.bat` su Windows; bit di esecuzione su POSIX); un file ostile sul PATH non può mai essere eseguito da questa rotta.
+- Nuova scheda "Strumenti CLI IA" in `public/js/views/config.js` (caricamento lazy, deep-link via `#/config?tab=cli`). Test: `tests/cli-detect-routes.test.mjs`. 8 nuove chiavi i18n ×16 (`cli.*` + `config.tabCli`). Aiuto §2 esteso sul posto.
+
+Nuovo: `server/lib/routes/cli-detect.mjs`.
+
+
 ## [1.102.0] — 2026-07-05
 
 **"Chiedi alla guida" — una chat fondata sulla guida di aiuto integrata.** Una nuova pagina **Chiedi alla guida 💬** (barra laterale, sotto Aiuto): scrivi una domanda come "Come faccio a scansionare i portali di lavoro?" e ottieni una risposta tratta **solo** dalla guida di aiuto dell'app nella tua lingua — mostra quali sezioni ha usato e **non legge mai il tuo CV, profilo o la tua ricerca di lavoro**. Riguarda come usare l'app, non te. Con una chiave LLM risponde in tempo reale; senza chiave ti consegna un prompt pronto, già riempito con le sezioni di aiuto pertinenti.

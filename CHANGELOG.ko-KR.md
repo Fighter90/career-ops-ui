@@ -9,6 +9,16 @@
 ---
 
 
+## [1.103.0] — 2026-07-06
+
+**설정: "AI CLI 도구" — 무엇이 설치되어 있는지.** career-ops는 Claude Code 기반이지만 개방형 스킬 표준의 모든 에이전트 CLI와 작동합니다. **앱 설정**(`#/config`)의 새 **AI CLI 도구** 탭은 Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity 중 서버를 실행하는 머신에 무엇이 설치되어 있고 경로가 어디인지 보여줍니다. 이는 **읽기 전용 PATH 스캔**입니다: 각 바이너리 존재 여부만 확인하고 **절대 실행하지 않으며**(`--version` 없음, 실행 없음), 아무것도 쓰지 않고 사용자 데이터를 건드리지 않습니다.
+
+- 새 라우트 모듈(28번째) `server/lib/routes/cli-detect.mjs` — `GET /api/cli-detect`. 감지는 고정된 7개 허용목록에서 `process.env.PATH`를 통해 바이너리 경로를 확인합니다(Windows `.cmd/.exe/.bat` 심; POSIX 실행 비트). PATH의 악성 파일은 이 라우트로 절대 실행될 수 없습니다.
+- `public/js/views/config.js`의 새 "AI CLI 도구" 탭(지연 로드, `#/config?tab=cli`로 딥링크). 테스트: `tests/cli-detect-routes.test.mjs`. 새 i18n 키 8개 ×16(`cli.*` + `config.tabCli`). 도움말 §2 현 위치 확장.
+
+신규: `server/lib/routes/cli-detect.mjs`.
+
+
 ## [1.102.0] — 2026-07-05
 
 **"문서에 질문" — 앱 내 도움말 가이드에 근거한 채팅.** 새 **문서에 질문 💬** 페이지(사이드바, 도움말 아래): "채용 포털은 어떻게 스캔하나요?" 같은 질문을 입력하면 당신의 언어로 된 앱 도움말 가이드**에서만** 답을 얻습니다 — 사용한 섹션을 보여주고 **당신의 이력서·프로필·구직 활동은 절대 읽지 않습니다**. 당신이 아니라 앱 사용법에 관한 것입니다. LLM 키가 있으면 실시간 답변, 없으면 관련 도움말 섹션이 이미 채워진 실행 가능한 프롬프트를 제공합니다.

@@ -8,6 +8,16 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.103.0] — 2026-07-06
+
+**Settings: "AI CLI tools" — which agent CLIs are installed.** career-ops is Claude-Code-driven but works with any agent CLI on the open skill standard. A new **AI CLI tools** tab in **App settings** (`#/config`) shows which of them — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — are installed on the machine running the server, and their paths. It is a **read-only PATH scan**: it only checks whether each binary exists and **never runs it** (no `--version`, no execution), writes nothing, and touches no user data.
+
+- New route module (28th) `server/lib/routes/cli-detect.mjs` — `GET /api/cli-detect`. Detection resolves the path of a binary from a fixed 7-entry allowlist across `process.env.PATH` (Windows `.cmd/.exe/.bat` shims; POSIX execute-bit); a hostile file on PATH can never be executed by this route.
+- New "AI CLI tools" tab in `public/js/views/config.js` (lazy-loaded, deep-linkable via `#/config?tab=cli`). Tests: `tests/cli-detect-routes.test.mjs` (PATH resolve with a stub exec that must never run, detect shape, endpoint). 8 new i18n keys ×16 (`cli.*` + `config.tabCli`). Help §2 extended in place.
+
+New: `server/lib/routes/cli-detect.mjs`.
+
+
 ## [1.102.0] — 2026-07-05
 
 **"Ask the docs" — a grounded chat over the in-app help guide.** A new **Ask the docs 💬** page (sidebar, under Help): type a how-to question like "How do I scan job portals?" and get an answer drawn **only** from the app's own help guide in your language — it shows which sections it used and **never reads your CV, profile, or job search**. It is about how to use the app, not about you. With an LLM key it answers live; with no key it hands you a ready-to-run prompt already filled with the relevant help sections.

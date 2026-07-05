@@ -463,6 +463,8 @@ fire a tiny prompt (≤256 tokens output) so you spend essentially
 nothing while confirming the key is wired up correctly. Returns a
 ~200-character sample on success.
 
+**AI CLI tools tab.** career-ops is Claude-Code-driven but works with any agent CLI on the open skill standard. The **AI CLI tools** tab lists the ones it knows about — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — and shows which are **installed on the machine running the server** and where. It's a read-only scan of the server's `PATH`: it only checks whether the binary exists, it **never runs it** (no `--version`, no execution), and writes nothing. If none show up, install one (e.g. Claude Code) to drive the pipeline from your terminal.
+
 ---
 
 ## 3. Profile (`#/profile` — also reachable as `#/settings`)
