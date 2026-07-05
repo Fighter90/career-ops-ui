@@ -10,6 +10,17 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.100.0] — 2026-07-05
+
+**Two-pager: AI-autoudfyldning fra dit CV + Forhåndsvisning + eksport til PDF/DOCX/Markdown.** Two-pageren (`#/two-pager`) fanger, hvad du faktisk vil have af din næste rolle, men før skulle hvert felt skrives i hånden eller en prompt kopieres til et andet værktøj. Nu kører **✨ AI-udfyldningsassistenten** live mod din konfigurerede udbyder — den læser *kun* dit CV + profil (via `bundleProjectContext`, intet opdigtet), udarbejder alle felter (hvem jeg er / kan lide / skal-haves / hader / dealbreakers / ufravigelige / målmiljø) og udfylder formularen, så du kan gennemgå, redigere og gemme. Uden API-nøgle falder den tilbage til kopiér-prompt-modalen som før. En ny **👁 Forhåndsvis og eksportér**-knap gengiver two-pageren som et formateret dokument med en **Download .md / Gem som PDF / Gem som DOCX / Kopiér**-bjælke.
+
+- **Afhængighedsfri `.docx`-eksport.** Ny `server/lib/docx.mjs` udsender en minimal, men gyldig Office Open XML-`.docx` (en DEFLATE-ZIP af de fire OOXML-dele, CRC-32 pr. post) — ingen ny runtime-afhængighed (deps forbliver `express` + `js-yaml`). Ny rute `POST /api/export/docx` (`server/lib/routes/export.mjs`, det 26. rutemodul; tilstandsløs, begrænset til 200 KB, ingen skrivninger / ingen LLM / ingen URL-fetch). Koblet ind i den delte `public/js/lib/report-export.js`, så **markedsrapporten, karriereplanen og karriereorienteringen også får DOCX-eksport**.
+- Live-autoudfyldning bruger den delte udbyderkaskade (`runActiveProvider` / `providerAvailable`); den returnerede YAML parses og tvinges tilbage til den afgrænsede two-pager-form (`parseYamlFields` + `normalizeTwoPager`) — ukendte nøgler droppes, arrays/strenge begrænses. Manuel tilstand bevaret.
+- Tests: `tests/export-routes.test.mjs`. 4 nye i18n-nøgler ×16 (`export.saveDocx`, `twoPager.preview`, `twoPager.aiFilling`, `twoPager.aiFilled`).
+
+Nyt: `server/lib/docx.mjs`; `server/lib/routes/export.mjs`.
+
+
 ## [1.99.0] — 2026-07-05
 
 **Portalsundhedsside** (`#/portals`). Scanneren holder øje med en række virksomheder i `portals.yml`; et ATS-slug kan gå i stykker i stilhed, og den arbejdsgiver forsvinder fra alle fremtidige scanninger. Den nye **Portals**-side viser hver overvåget virksomhed og prober ved **Check portal health** hver `careers_url` gennem det DNS-fastgjorte `safeGet` (SSRF-sikkert) og markerer de døde (et 404 = droppet i stilhed) — skrivebeskyttet. Hærder også v1.98.0-fejlrapportøren efter review: fejl-ringbufferen fanger nu netværks-fetch-fejl, og scrubberen skjuler umærkede udbydernøgler.

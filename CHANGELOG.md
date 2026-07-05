@@ -8,6 +8,17 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.100.0] — 2026-07-05
+
+**Two-pager: AI auto-fill from your CV + Preview + export to PDF/DOCX/Markdown.** The two-pager (`#/two-pager`) captures what you actually want from your next role, but you had to draft each field by hand or copy a prompt into another tool. Now the **✨ AI fill assistant** runs live against your configured provider — it reads *only* your CV + profile (via `bundleProjectContext`, nothing invented), drafts every field (who I am / loves / must-haves / hates / deal-breakers / non-negotiables / target environment) and populates the form for you to review, edit, and Save. With no API key it falls back to the copy-a-prompt modal exactly as before. A new **👁 Preview & export** button renders the two-pager as a formatted document with a **Download .md / Save as PDF / Save as DOCX / Copy** bar.
+
+- **Dependency-free `.docx` export.** New `server/lib/docx.mjs` emits a minimal-but-valid Office Open XML `.docx` (a DEFLATE ZIP of the four OOXML parts, CRC-32 per entry) — no new runtime dependency (deps stay `express` + `js-yaml`). New route `POST /api/export/docx` (`server/lib/routes/export.mjs`, the 26th route module; stateless, bounded 200 KB, no writes / no LLM / no URL fetch). Wired into the shared `public/js/lib/report-export.js`, so **the market report, career plan, and career orientation reports gain DOCX export too**.
+- Two-pager live auto-fill uses the shared provider cascade (`runActiveProvider` / `providerAvailable`); the returned YAML is parsed and coerced back into the bounded two-pager shape (`parseYamlFields` + `normalizeTwoPager`) — unknown keys dropped, arrays/strings capped. Manual fallback preserved.
+- Tests: `tests/export-routes.test.mjs` (valid ZIP/OOXML output, empty-input 400, 4-part package, XML-escaping, YAML-fence parsing + null-on-garbage). 4 new i18n keys ×16 (`export.saveDocx`, `twoPager.preview`, `twoPager.aiFilling`, `twoPager.aiFilled`).
+
+New: `server/lib/docx.mjs`; `server/lib/routes/export.mjs`.
+
+
 ## [1.99.0] — 2026-07-05
 
 **Portals health page (`#/portals`).** The scanner watches a set of companies in `portals.yml` (`tracked_companies:`), and an ATS slug can quietly break — a company renames its board or moves off Greenhouse — after which that employer silently vanishes from every future scan with no error. The new **Portals** page lists every watched company (provider + enabled state) and, on **Check portal health**, HEAD/GET-probes each `careers_url` through the DNS-pinned `safeGet` (SSRF-safe, chunked concurrency) and flags the dead ones (a 404 = silently dropped). Read-only — it never writes `portals.yml`.

@@ -9,6 +9,17 @@
 ---
 
 
+## [1.100.0] — 2026-07-05
+
+**两页纸：基于简历的 AI 自动填充 + 预览 + 导出为 PDF/DOCX/Markdown。** 两页纸(`#/two-pager`)记录你对下一份工作真正想要的东西，但此前每个字段都得手动撰写，或把提示词复制到别的工具里。现在**✨ AI 填充助手**会用你配置的提供方实时运行——*只*读取你的简历 + 档案(经由 `bundleProjectContext`，绝不杜撰)，起草所有字段(我是谁 / 喜欢 / 必备 / 讨厌 / 硬性排除 / 不可妥协 / 目标环境)并填入表单，供你检查、编辑并保存。没有 API 密钥时，会像以前一样回退到复制提示词的弹窗。新的**👁 预览并导出**按钮把两页纸渲染为带格式的文档，并提供**下载 .md / 另存为 PDF / 另存为 DOCX / 复制**工具栏。
+
+- **零依赖 `.docx` 导出。** 新增 `server/lib/docx.mjs`，生成一个最小但有效的 Office Open XML `.docx`(四个 OOXML 部件的 DEFLATE ZIP，逐条 CRC-32)——不引入新的运行时依赖(依赖仍为 `express` + `js-yaml`)。新路由 `POST /api/export/docx`(`server/lib/routes/export.mjs`，第 26 个路由模块；无状态，限制 200 KB，不写入 / 不调用 LLM / 不抓取 URL)。已接入共享的 `public/js/lib/report-export.js`，因此**市场报告、职业规划和职业定位报告也获得 DOCX 导出**。
+- 实时自动填充使用共享的提供方级联(`runActiveProvider` / `providerAvailable`)；返回的 YAML 会被解析并强制转换回受限的两页纸结构(`parseYamlFields` + `normalizeTwoPager`)——丢弃未知键，数组/字符串设上限。保留手动模式。
+- 测试：`tests/export-routes.test.mjs`。新增 4 个 i18n 键 ×16(`export.saveDocx`、`twoPager.preview`、`twoPager.aiFilling`、`twoPager.aiFilled`)。
+
+新增：`server/lib/docx.mjs`；`server/lib/routes/export.mjs`。
+
+
 ## [1.99.0] — 2026-07-05
 
 **门户健康页面**（`#/portals`）。扫描器监视 `portals.yml` 中的一组公司；ATS slug 可能悄然失效，该雇主便从此后所有扫描中无声消失。新的 **Portals** 页面列出每个受监视的公司，点击 **Check portal health** 时通过 DNS 固定的 `safeGet`（防 SSRF）探测每个 `careers_url` 并标记失效者（404 = 被无声丢弃）——只读。同时按评审加固 v1.98.0 的错误报告器：错误环形缓冲区现在会捕获网络层 fetch 失败，清理器会遮蔽无标签的提供商密钥。

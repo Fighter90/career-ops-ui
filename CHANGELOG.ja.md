@@ -9,6 +9,17 @@
 ---
 
 
+## [1.100.0] — 2026-07-05
+
+**ツーページャー: 履歴書からのAI自動入力＋プレビュー＋PDF/DOCX/Markdownエクスポート。** ツーページャー(`#/two-pager`)は次の役割に本当に望むものを記録しますが、これまでは各項目を手入力するかプロンプトを別ツールにコピーする必要がありました。今回、**✨ AI入力アシスタント**が設定済みプロバイダーでライブ実行されます — *履歴書＋プロフィールのみ*を読み込み(`bundleProjectContext`、捏造なし)、すべての項目(私は誰か／好きなこと／必須条件／嫌いなこと／絶対NG／譲れない点／目標環境)を下書きしてフォームに入力し、確認・編集・保存できます。APIキーがなければ従来どおりプロンプトコピーのモーダルにフォールバックします。新しい**👁 プレビューとエクスポート**ボタンはツーページャーを整形済み文書として描画し、**.mdをダウンロード／PDFで保存／DOCXで保存／コピー**のバーを表示します。
+
+- **依存関係なしの`.docx`エクスポート。** 新規`server/lib/docx.mjs`が最小限だが有効なOffice Open XML `.docx`(4つのOOXMLパートのDEFLATE ZIP、エントリごとにCRC-32)を生成します — 新しいランタイム依存なし(依存は`express`＋`js-yaml`のまま)。新ルート`POST /api/export/docx`(`server/lib/routes/export.mjs`、26番目のルートモジュール。ステートレス、200 KB制限、書き込み・LLM・URL fetchなし)。共有の`public/js/lib/report-export.js`に統合したため、**市場レポート、キャリアプラン、キャリアオリエンテーションのレポートもDOCXエクスポートに対応**します。
+- ライブ自動入力は共有プロバイダーカスケード(`runActiveProvider` / `providerAvailable`)を使用し、返されたYAMLはパースされて制限付きツーページャー形状(`parseYamlFields` + `normalizeTwoPager`)に強制変換されます — 不明なキーは破棄、配列/文字列は上限あり。手動モードは維持。
+- テスト: `tests/export-routes.test.mjs`。新しいi18nキー4件×16(`export.saveDocx`、`twoPager.preview`、`twoPager.aiFilling`、`twoPager.aiFilled`)。
+
+新規: `server/lib/docx.mjs`; `server/lib/routes/export.mjs`.
+
+
 ## [1.99.0] — 2026-07-05
 
 **ポータル状態ページ**（`#/portals`）。スキャナは `portals.yml` の会社群を監視します。ATS スラッグが静かに壊れると、その雇用主は以降のすべてのスキャンから静かに消えます。新しい **Portals** ページは監視中の各社を一覧し、**Check portal health** で各 `careers_url` を DNS ピン留めの `safeGet`（SSRF 安全）で探査し、死んだもの（404 = 静かに除外）を印付けします — 読み取り専用。またレビューに従い v1.98.0 のバグレポーターを強化：エラーリングバッファがネットワークの fetch 失敗を捕捉し、スクラバがラベルなしのプロバイダキーを伏字にします。

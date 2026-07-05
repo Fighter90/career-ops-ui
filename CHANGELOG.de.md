@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.100.0] — 2026-07-05
+
+**Two-Pager: KI-Autofüllung aus deinem Lebenslauf + Vorschau + Export als PDF/DOCX/Markdown.** Der Two-Pager (`#/two-pager`) hält fest, was du wirklich von deiner nächsten Rolle willst, doch bisher musste jedes Feld von Hand geschrieben oder ein Prompt in ein anderes Tool kopiert werden. Jetzt läuft der **✨ KI-Ausfüllassistent** live mit deinem konfigurierten Anbieter — er liest *nur* deinen Lebenslauf + dein Profil (über `bundleProjectContext`, nichts erfunden), entwirft alle Felder (wer ich bin / was ich liebe / Must-haves / was ich hasse / Deal-Breaker / Nicht-Verhandelbares / Zielumgebung) und füllt das Formular, damit du prüfen, bearbeiten und speichern kannst. Ohne API-Schlüssel fällt er wie bisher auf das Prompt-kopieren-Modal zurück. Eine neue Schaltfläche **👁 Vorschau und Export** rendert den Two-Pager als formatiertes Dokument mit einer Leiste **.md herunterladen / Als PDF speichern / Als DOCX speichern / Kopieren**.
+
+- **Abhängigkeitsfreier `.docx`-Export.** Neues `server/lib/docx.mjs` erzeugt ein minimales, aber gültiges Office-Open-XML-`.docx` (ein DEFLATE-ZIP der vier OOXML-Teile, CRC-32 pro Eintrag) — ohne neue Laufzeitabhängigkeit (Deps bleiben `express` + `js-yaml`). Neue Route `POST /api/export/docx` (`server/lib/routes/export.mjs`, das 26. Routenmodul; zustandslos, auf 200 KB begrenzt, keine Schreibvorgänge / kein LLM / kein URL-Fetch). In das gemeinsame `public/js/lib/report-export.js` eingebunden, sodass **der Marktbericht, der Karriereplan und die Berufsorientierung ebenfalls DOCX-Export erhalten**.
+- Die Live-Autofüllung nutzt die gemeinsame Anbieter-Kaskade (`runActiveProvider` / `providerAvailable`); das zurückgegebene YAML wird geparst und in die begrenzte Two-Pager-Form zurückgezwungen (`parseYamlFields` + `normalizeTwoPager`) — unbekannte Schlüssel verworfen, Arrays/Strings gedeckelt. Manueller Modus bleibt erhalten.
+- Tests: `tests/export-routes.test.mjs`. 4 neue i18n-Schlüssel ×16 (`export.saveDocx`, `twoPager.preview`, `twoPager.aiFilling`, `twoPager.aiFilled`).
+
+Neu: `server/lib/docx.mjs`; `server/lib/routes/export.mjs`.
+
+
 ## [1.99.0] — 2026-07-05
 
 **Portal-Gesundheitsseite** (`#/portals`). Der Scanner beobachtet eine Reihe von Firmen in `portals.yml`; ein ATS-Slug kann stillschweigend brechen und dieser Arbeitgeber verschwindet aus jedem künftigen Scan. Die neue **Portals**-Seite listet jede beobachtete Firma und sondiert bei **Check portal health** jede `careers_url` über das DNS-gepinnte `safeGet` (SSRF-sicher) und markiert die toten (ein 404 = still verworfen) — schreibgeschützt. Härtet außerdem den v1.98.0-Fehlermelder nach dem Review: der Fehler-Ringpuffer fängt jetzt Netzwerk-Fetch-Fehler ab, und der Scrubber schwärzt unbeschriftete Anbieterschlüssel.

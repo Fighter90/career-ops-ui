@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.99.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.99.0)
+[![release](https://img.shields.io/badge/release-v1.100.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.100.0)
 
-> **🆕 Dernière version — v1.99.0**
+> **🆕 Dernière version — v1.100.0**
 >
-> **Page de santé des portails** (`#/portals`). Le scanner surveille un ensemble d’entreprises dans `portals.yml` ; un slug d’ATS peut se casser silencieusement et cet employeur disparaît de tous les scans futurs. La nouvelle page **Portals** liste chaque entreprise surveillée et, via **Check portal health**, sonde chaque `careers_url` à travers le `safeGet` à DNS épinglé (anti-SSRF) et signale les mortes (un 404 = écartée en silence) — en lecture seule. Renforce aussi le rapporteur de bugs de la v1.98.0 après revue : le tampon d’erreurs capture désormais les échecs réseau du fetch, et le nettoyeur masque les clés de fournisseur non étiquetées.
+> **Remplissage automatique IA du two-pager + export.** Le two-pager (`#/two-pager`) se remplit désormais depuis votre CV + profil via votre fournisseur configuré (sans rien inventer ; repli copier-l'invite sans clé), ajoute une vue **Aperçu et export** et gagne l'export en **PDF / DOCX / Markdown** — DOCX via un nouveau générateur `.docx` sans dépendance, aussi branché sur les rapports de marché, de plan de carrière et d'orientation.
 >
-> _santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

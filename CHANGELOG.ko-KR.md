@@ -9,6 +9,17 @@
 ---
 
 
+## [1.100.0] — 2026-07-05
+
+**투페이저: 이력서 기반 AI 자동 채우기 + 미리보기 + PDF/DOCX/Markdown 내보내기.** 투페이저(`#/two-pager`)는 다음 역할에서 진짜로 원하는 것을 담지만, 지금까지는 각 필드를 손으로 작성하거나 프롬프트를 다른 도구에 복사해야 했습니다. 이제 **✨ AI 채우기 도우미**가 설정된 제공자로 실시간 실행됩니다 — *오직* 이력서 + 프로필만 읽어(`bundleProjectContext`, 무엇도 지어내지 않음) 모든 필드(나는 누구 / 좋아하는 것 / 필수 조건 / 싫어하는 것 / 절대 불가 / 타협 불가 / 목표 환경)를 작성하고 폼을 채워 검토·수정·저장하도록 합니다. API 키가 없으면 예전처럼 프롬프트 복사 모달로 대체됩니다. 새 **👁 미리보기 및 내보내기** 버튼은 투페이저를 서식 있는 문서로 렌더링하고 **.md 다운로드 / PDF로 저장 / DOCX로 저장 / 복사** 바를 제공합니다.
+
+- **의존성 없는 `.docx` 내보내기.** 새 `server/lib/docx.mjs`가 최소하지만 유효한 Office Open XML `.docx`(네 개의 OOXML 파트를 DEFLATE ZIP으로, 항목별 CRC-32)를 생성합니다 — 새 런타임 의존성 없음(deps는 `express` + `js-yaml` 유지). 새 라우트 `POST /api/export/docx`(`server/lib/routes/export.mjs`, 26번째 라우트 모듈; 무상태, 200 KB 제한, 쓰기·LLM·URL fetch 없음). 공유 `public/js/lib/report-export.js`에 연결되어 **시장 리포트, 커리어 플랜, 커리어 오리엔테이션 리포트에도 DOCX 내보내기가 추가**됩니다.
+- 실시간 자동 채우기는 공유 제공자 캐스케이드(`runActiveProvider` / `providerAvailable`)를 사용하며, 반환된 YAML은 파싱되어 제한된 투페이저 형태(`parseYamlFields` + `normalizeTwoPager`)로 강제 변환됩니다 — 알 수 없는 키 제거, 배열/문자열 제한. 수동 모드 유지.
+- 테스트: `tests/export-routes.test.mjs`. 새 i18n 키 4개 ×16 (`export.saveDocx`, `twoPager.preview`, `twoPager.aiFilling`, `twoPager.aiFilled`).
+
+신규: `server/lib/docx.mjs`; `server/lib/routes/export.mjs`.
+
+
 ## [1.99.0] — 2026-07-05
 
 **포털 상태 페이지** (`#/portals`). 스캐너는 `portals.yml`의 회사 집합을 지켜봅니다. ATS 슬러그가 조용히 깨지면 그 고용주는 이후 모든 스캔에서 소리 없이 사라집니다. 새 **Portals** 페이지는 감시 중인 모든 회사를 나열하고, **Check portal health**를 누르면 DNS 고정 `safeGet`(SSRF 안전)로 각 `careers_url`을 탐침해 죽은 것(404 = 조용히 제외)을 표시합니다 — 읽기 전용. 또한 리뷰에 따라 v1.98.0 버그 리포터를 강화했습니다: 오류 링 버퍼가 이제 네트워크 fetch 실패를 포착하고, 스크러버가 라벨 없는 공급자 키를 가립니다.
