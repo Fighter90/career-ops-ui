@@ -186,21 +186,37 @@ export function stripDangerousMarkdown(text) {
   // catch the decoded payload. The result is rewritten with HTML entities
   // re-escaped for `<`, `>`, `&` so the output is still safe to embed.
   s = decodeHtmlEntities(s);
-  s = s
-    .replace(/<script\b[\s\S]*?<\/script\s*>/gi, '')
-    .replace(/<iframe\b[\s\S]*?<\/iframe\s*>/gi, '')
-    .replace(/<object\b[\s\S]*?<\/object\s*>/gi, '')
+  // Apply the strip pass repeatedly until the string stops changing (bounded).
+  // A single pass can REVEAL a new match — e.g. `<scr<script></script>ipt>` or a
+  // nested `<sty<style></style>le>` — so run to a fixed point (CodeQL
+  // incomplete-multi-character-sanitization). The end-tag patterns use `[^>]*>`
+  // (not `\s*>`) so `</script foo>` / `</script\n bar>` are also removed
+  // (CodeQL bad-tag-filter).
+  let prev;
+  let passes = 0;
+  do { prev = s; s = stripDangerousOnce(s); } while (s !== prev && ++passes < 8);
+  return s;
+}
+
+/** One strip pass over the known dangerous tags/attributes/schemes. */
+function stripDangerousOnce(s) {
+  return s
+    .replace(/<script\b[\s\S]*?<\/script[^>]*>/gi, '')
+    .replace(/<iframe\b[\s\S]*?<\/iframe[^>]*>/gi, '')
+    .replace(/<object\b[\s\S]*?<\/object[^>]*>/gi, '')
     .replace(/<embed\b[^>]*\/?>/gi, '')
-    .replace(/<style\b[\s\S]*?<\/style\s*>/gi, '')
-    .replace(/<form\b[\s\S]*?<\/form\s*>/gi, '')
-    .replace(/<svg\b[\s\S]*?<\/svg\s*>/gi, '')
+    .replace(/<style\b[\s\S]*?<\/style[^>]*>/gi, '')
+    .replace(/<form\b[\s\S]*?<\/form[^>]*>/gi, '')
+    .replace(/<svg\b[\s\S]*?<\/svg[^>]*>/gi, '')
+    // Unclosed / dangling opener of an executable/embedding tag (no closing tag
+    // in the input) — strip the opener so a later consumer can't complete it.
+    .replace(/<(?:script|iframe|object|style|form|svg)\b[^>]*>/gi, '')
     .replace(/\son[a-z]+\s*=\s*"[^"]*"/gi, '')
     .replace(/\son[a-z]+\s*=\s*'[^']*'/gi, '')
     .replace(/\son[a-z]+\s*=\s*[^\s>]+/gi, '')
     .replace(/javascript\s*:/gi, '')
     .replace(/vbscript\s*:/gi, '')
     .replace(/data\s*:\s*text\/html/gi, '');
-  return s;
 }
 
 /**

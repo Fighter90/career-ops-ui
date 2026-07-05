@@ -2,6 +2,15 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.107.0] — 2026-07-06
+
+**Sanitizer-Härtung (XSS-Verteidigung in der Tiefe im Ruhezustand).** `stripDangerousMarkdown` — das gefährliches HTML im gespeicherten Lebenslauf-/Stellen-Markdown neutralisiert, damit jeder Konsument, der den Escape-beim-Rendern-Client umgeht, sicher bleibt — führt sein Tag-Stripping jetzt **bis zu einem Fixpunkt** aus (bis stabil wiederholen), sodass ein Entfernen, das eine Payload *neu bildet* (z. B. `<scr<script></script>ipt>`), erfasst wird, script/style-Endtags **mit nachfolgendem Müll** (`</script foo>`) trifft und einen **ungeschlossenen** ausführbaren Opener (`<script …>`) entfernt. Verhalten für gültiges Markdown unverändert — es entfernt nur mehr.
+
+- `server/lib/security.mjs`: Fixpunkt-Schleife (auf 8 Durchläufe begrenzt) + `[^>]*>`-Endtag-Muster + Entfernung ungeschlossener Opener. +3 Regressionsfälle in `tests/cv-xss-bypasses.test.mjs`. Die maßgebliche XSS-Grenze bleibt Ausgabe-Escaping (`UI.md`); dies stärkt die Ruhe-Garantie und schließt die entsprechenden CodeQL-Funde.
+
+Neu: keine.
+
+
 ## [1.106.0] — 2026-07-06
 
 **Sicherheitshärtung (CodeQL-Triage).** Drei echte (wenn auch geringfügige) Funde nach einem Durchgang durch den Rückstand der statischen Analyse behoben: der Fehlerpfad des Routen-Renderings **escaped jetzt die Fehlermeldung**, bevor sie das DOM erreicht (ein Serverfehler kann Nutzereingaben widerspiegeln, wird also als nicht vertrauenswürdig behandelt — XSS-Grenze), und die Profil-/Config-Eigenschaftsschreibvorgänge **weisen `__proto__` / `constructor` / `prototype`-Schlüssel ab** (Prototype-Pollution-Schutz zur Sicherheit — die Schlüssel stammen aus festen Feld-Specs, nicht aus rohem Request-Input). Der Großteil der übrigen Warnungen sind Fehlalarme auf die legitimen `data/*`-Lese-/Schreibvorgänge des Scanners und auf Routen, die bereits den eigenen Limiter tragen; mit Begründung verworfen.

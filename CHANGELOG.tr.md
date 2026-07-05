@@ -2,6 +2,15 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.107.0] — 2026-07-06
+
+**Temizleyici sıkılaştırması (durağan XSS derinlemesine savunma).** `stripDangerousMarkdown` — depolanan özgeçmiş/ilan markdown'ındaki tehlikeli HTML'i etkisiz kılarak, render'da-kaçışlı istemciyi atlayan herhangi bir tüketiciyi bile güvende tutar — artık etiket temizliğini **bir sabit noktaya kadar** çalıştırıyor (kararlı olana dek tekrarla), böylece bir yükü *yeniden oluşturan* bir kaldırma (örn. `<scr<script></script>ipt>`) yakalanır, script/style vb. **sonunda çöp bulunan** kapanış etiketleriyle (`</script foo>`) eşleşir ve **kapatılmamış** bir yürütülebilir açıcıyı (`<script …>`) kaldırır. Geçerli markdown için davranış değişmez — yalnızca daha fazlasını kaldırır.
+
+- `server/lib/security.mjs`: sabit nokta döngüsü (8 geçişle sınırlı) + `[^>]*>` kapanış etiketi kalıpları + kapatılmamış açıcı kaldırma. `tests/cv-xss-bypasses.test.mjs` içinde +3 regresyon vakası. Yetkili XSS sınırı hâlâ çıktı kaçışıdır (`UI.md`); bu, durağan garantiyi güçlendirir ve ilgili CodeQL bulgularını kapatır.
+
+Yeni: yok.
+
+
 ## [1.106.0] — 2026-07-06
 
 **Güvenlik sıkılaştırması (CodeQL triyajı).** Statik analiz birikimini gözden geçirdikten sonra üç gerçek (düşük önem dereceli de olsa) bulgu düzeltildi: rota render hata yolu artık **hata mesajını DOM'a ulaşmadan önce kaçışlıyor** (bir sunucu hatası kullanıcı girdisini yansıtabildiğinden güvenilmez sayılır — XSS sınırı) ve profil/yapılandırma özellik yazımları **`__proto__` / `constructor` / `prototype` anahtarlarını reddediyor** (her ihtimale karşı prototip kirliliği koruması — anahtarlar sabit alan özelliklerinden gelir, ham istek girdisinden değil). Kalan uyarıların çoğu, tarayıcının meşru `data/*` okuma/yazmaları ve zaten kendi hız sınırlayıcısını taşıyan rotalar üzerindeki yanlış pozitiflerdir; gerekçeyle reddedildi.

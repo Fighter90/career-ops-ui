@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.106.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.106.0)
+[![release](https://img.shields.io/badge/release-v1.107.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.107.0)
 
-> **🆕 Dernière version — v1.106.0**
+> **🆕 Dernière version — v1.107.0**
 >
-> **Durcissement de sécurité (tri CodeQL).** Le chemin d'erreur de rendu échappe désormais le message d'erreur avant qu'il n'atteigne le DOM (une erreur serveur peut refléter une entrée utilisateur — frontière XSS), et les écritures de propriétés profil/config rejettent les clés `__proto__` / `constructor` / `prototype` (protections anti-pollution de prototype). La plupart des alertes restantes sont des faux positifs sur les E/S légitimes du scanner dans `data/*` et ont été rejetées avec justification.
+> **Durcissement du désinfectant (XSS au repos).** Le désinfectant de markdown de CV/offre supprime désormais le HTML dangereux **jusqu'à un point fixe** (pour intercepter une suppression qui reforme une charge), correspond aux balises de fermeture script/style avec des résidus (`</script foo>`) et supprime un ouvreur exécutable non fermé. Défense en profondeur derrière le client à échappement-au-rendu ; clôt les résultats CodeQL correspondants.
 >
-> _durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

@@ -11,6 +11,15 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.107.0] — 2026-07-06
+
+**Refuerzo del saneador (defensa en profundidad XSS en reposo).** `stripDangerousMarkdown` — que neutraliza HTML peligroso en el markdown de CV/oferta almacenado para que cualquier consumidor que evite el cliente con escape-al-renderizar siga seguro — ahora ejecuta su limpieza de etiquetas **hasta un punto fijo** (repetir hasta estabilizar) para que una eliminación que *reforme* una carga (p. ej. `<scr<script></script>ipt>`) se detecte, coincide con etiquetas de cierre de script/style/etc. **con basura final** (`</script foo>`) y elimina un abridor ejecutable **sin cerrar**. El comportamiento para markdown válido no cambia — solo elimina más.
+
+- `server/lib/security.mjs`: bucle de punto fijo (limitado a 8 pasadas) + patrones de cierre `[^>]*>` + eliminación de abridor sin cerrar. +3 casos de regresión en `tests/cv-xss-bypasses.test.mjs`. El límite XSS autoritativo sigue siendo el escape en salida (`UI.md`); esto refuerza la garantía en reposo y cierra los hallazgos de CodeQL correspondientes.
+
+Nuevo: ninguno.
+
+
 ## [1.106.0] — 2026-07-06
 
 **Refuerzo de seguridad (triaje de CodeQL).** Se corrigieron tres hallazgos reales (aunque de baja severidad): la ruta de error de renderizado **ahora escapa el mensaje de error** antes de que llegue al DOM (un error del servidor puede reflejar entrada del usuario, así que se trata como no confiable — límite XSS), y las escrituras de propiedades de perfil/config **rechazan las claves `__proto__` / `constructor` / `prototype`** (protecciones contra contaminación de prototipos por si acaso — las claves vienen de specs de campos fijos, no de entrada bruta). La mayoría de las alertas restantes son falsos positivos sobre lecturas/escrituras legítimas del escáner en `data/*` y sobre rutas que ya llevan el limitador propio; se descartaron con justificación.

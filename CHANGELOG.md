@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.107.0] — 2026-07-06
+
+**Sanitizer hardening (at-rest XSS defense-in-depth).** `stripDangerousMarkdown` — which neutralizes dangerous HTML in stored CV/JD markdown so any consumer that bypasses the escape-on-render client is still safe — now runs its tag strip **to a fixed point** (repeat-until-stable) so a removal that *reforms* a payload (e.g. `<scr<script></script>ipt>`) is caught, matches script/style/etc. **end tags with trailing junk** (`</script foo>`), and strips an **unclosed** executable opener (`<script …>` with no closing tag). Behavior for valid markdown is unchanged — it only ever removes more.
+
+- `server/lib/security.mjs`: fixed-point loop (bounded 8 passes) + `[^>]*>` end-tag patterns + unclosed-opener strip. +3 regression cases in `tests/cv-xss-bypasses.test.mjs` (end-tag variants, single-pass-reveal, unclosed). The authoritative XSS boundary remains output-escaping (`UI.md`); this strengthens the at-rest guarantee and closes the matching CodeQL findings.
+
+New: none.
+
+
 ## [1.106.0] — 2026-07-06
 
 **Security hardening (CodeQL triage).** Fixed three real (if low-severity) findings from a pass over the static-analysis backlog: the route-render **error path now escapes the error message** before it reaches the DOM (a server error can echo user-supplied input, so it's treated as untrusted — XSS boundary), and the profile/config **property writes reject `__proto__` / `constructor` / `prototype`** keys (belt-and-braces prototype-pollution guards — the keys come from fixed field specs, not raw request input). The bulk of the remaining alerts are false positives on the scanner's legitimate `data/*` reads/writes and on routes that already carry the app's custom rate-limiter, and were dismissed with rationale.

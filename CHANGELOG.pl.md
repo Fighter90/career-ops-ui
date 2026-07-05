@@ -9,6 +9,15 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.107.0] — 2026-07-06
+
+**Wzmocnienie sanitizera (obrona w głąb przed XSS w spoczynku).** `stripDangerousMarkdown` — neutralizuje niebezpieczny HTML w zapisanym markdownie CV/oferty, aby każdy konsument omijający klienta z eskejpowaniem-przy-renderowaniu pozostał bezpieczny — teraz uruchamia czyszczenie tagów **do punktu stałego** (powtarzaj do ustabilizowania), aby usunięcie *przekształcające* ładunek (np. `<scr<script></script>ipt>`) zostało wychwycone, dopasowuje tagi zamykające script/style itp. **ze śmieciami na końcu** (`</script foo>`) i usuwa **niezamknięty** wykonywalny otwieracz (`<script …>`). Zachowanie dla poprawnego markdownu bez zmian — usuwa tylko więcej.
+
+- `server/lib/security.mjs`: pętla punktu stałego (limit 8 przebiegów) + wzorce zamykające `[^>]*>` + usuwanie niezamkniętego otwieracza. +3 przypadki regresji w `tests/cv-xss-bypasses.test.mjs`. Autorytatywna granica XSS pozostaje eskejpowaniem na wyjściu (`UI.md`); to wzmacnia gwarancję w spoczynku i zamyka odpowiadające znaleziska CodeQL.
+
+Nowe: brak.
+
+
 ## [1.106.0] — 2026-07-06
 
 **Wzmocnienie bezpieczeństwa (triage CodeQL).** Naprawiono trzy realne (choć niskiej wagi) znaleziska po przeglądzie zaległości analizy statycznej: ścieżka błędu renderowania **teraz eskejpuje komunikat błędu** zanim trafi do DOM (błąd serwera może odbić dane użytkownika, więc traktowany jest jako niezaufany — granica XSS), a zapisy właściwości profilu/konfiguracji **odrzucają klucze `__proto__` / `constructor` / `prototype`** (zabezpieczenia przed zanieczyszczeniem prototypu na wszelki wypadek — klucze pochodzą ze stałych specyfikacji pól, nie z surowego wejścia). Większość pozostałych alertów to fałszywe alarmy dotyczące legalnych odczytów/zapisów skanera w `data/*` oraz tras już mających własny limiter; odrzucono z uzasadnieniem.

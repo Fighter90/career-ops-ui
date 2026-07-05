@@ -11,6 +11,15 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.107.0] — 2026-07-06
+
+**Durcissement du désinfectant (défense en profondeur XSS au repos).** `stripDangerousMarkdown` — qui neutralise le HTML dangereux dans le markdown de CV/offre stocké pour que tout consommateur contournant le client à échappement-au-rendu reste sûr — exécute désormais son nettoyage de balises **jusqu'à un point fixe** (répéter jusqu'à stabilisation) afin qu'une suppression qui *reforme* une charge (p. ex. `<scr<script></script>ipt>`) soit interceptée, correspond aux balises de fermeture script/style/etc. **avec des résidus** (`</script foo>`) et supprime un ouvreur exécutable **non fermé** (`<script …>`). Le comportement pour un markdown valide est inchangé — il ne supprime que davantage.
+
+- `server/lib/security.mjs` : boucle de point fixe (limitée à 8 passes) + motifs de fermeture `[^>]*>` + suppression d'ouvreur non fermé. +3 cas de régression dans `tests/cv-xss-bypasses.test.mjs`. La frontière XSS de référence reste l'échappement en sortie (`UI.md`) ; ceci renforce la garantie au repos et clôt les résultats CodeQL correspondants.
+
+Nouveau : aucun.
+
+
 ## [1.106.0] — 2026-07-06
 
 **Durcissement de sécurité (tri CodeQL).** Trois vulnérabilités réelles (quoique de faible sévérité) corrigées après une passe sur l'arriéré d'analyse statique : le chemin d'erreur de rendu **échappe désormais le message d'erreur** avant qu'il n'atteigne le DOM (une erreur serveur peut refléter une entrée utilisateur, donc traitée comme non fiable — frontière XSS), et les écritures de propriétés profil/config **rejettent les clés `__proto__` / `constructor` / `prototype`** (protections anti-pollution de prototype par précaution — les clés viennent de specs de champs fixes, pas d'une entrée brute). La plupart des alertes restantes sont des faux positifs sur les lectures/écritures légitimes du scanner dans `data/*` et sur des routes portant déjà le limiteur maison ; rejetées avec justification.
