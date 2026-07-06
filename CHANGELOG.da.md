@@ -10,6 +10,15 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.109.0] — 2026-07-06
+
+**Scan Udeluk-filter + pipeline-overblik (web-layout-paritet).** På `#/scan` behandler **Søg**-feltet nu kommaer som **ELLER** ("roller at finde"), og et nyt **Udeluk**-felt skjuler enhver række, hvis firma/rolle/lokation indeholder et af de kommaseparerede ord (f.eks. `senior, staff`); begge huskes af dine gemte søgninger. På `#/pipeline` viser en kompakt **overbliksstribe** din pipeline med ét blik — **N i indbakke**, **N sporet** og antallene **Applied / Responded / Interview / Offer** fra trackeren, hver chip linker til `#/tracker`.
+
+- Kun klient (ingen ny rute/skrivninger). `public/js/views/scan.js` + `public/js/views/pipeline.js`. Tests: `tests/scan-pipeline-ui-v1109.test.mjs` (2). 4 nye i18n-nøgler ×16. Hjælp §7 + §8 udvidet på stedet.
+
+Nyt: intet.
+
+
 ## [1.108.0] — 2026-07-06
 
 **Sikkerhedshærdning (CodeQL-triage, runde 2).** Tre yderligere lavseverititets-fund rettet: prompt-byggeren opslår locale-rollelinjen via **egen nøgle + `typeof === function`**, så en manipuleret locale ikke kan dispatche til en prototype-metode (unvalidated-dynamic-method-call); PDF-filnavns-sluggen **begrænses til 200 tegn før regex'en**, så et input med kun bindestreger ikke backtracker (polynomiel ReDoS); og dokumentimport **tvinger et array-`filename`** (gentaget header) til en streng (type-confusion). Ingen adfærdsændring for gyldigt input.

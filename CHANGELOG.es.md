@@ -11,6 +11,15 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.109.0] — 2026-07-06
+
+**Filtro Excluir en Scan + resumen del pipeline (paridad de diseño con la web principal).** En `#/scan`, el cuadro **Buscar** trata las comas como **O** ("roles a encontrar") y un nuevo campo **Excluir** oculta cualquier fila cuya empresa/rol/ubicación contenga alguna palabra separada por comas (p. ej. `senior, staff`); ambos se recuerdan en tus búsquedas guardadas. En `#/pipeline`, una **tira de resumen** compacta muestra tu pipeline de un vistazo — **N en la bandeja**, **N en seguimiento** y los recuentos de **Applied / Responded / Interview / Offer** del tracker, cada chip enlaza a `#/tracker`.
+
+- Solo cliente (sin nueva ruta/escrituras). `public/js/views/scan.js` + `public/js/views/pipeline.js`. Pruebas: `tests/scan-pipeline-ui-v1109.test.mjs` (2). 4 nuevas claves i18n ×16. Ayuda §7 + §8 ampliadas en su sitio.
+
+Nuevo: ninguno.
+
+
 ## [1.108.0] — 2026-07-06
 
 **Refuerzo de seguridad (triaje de CodeQL, ronda 2).** Tres hallazgos más de baja severidad corregidos: el constructor de prompts resuelve la línea de rol del idioma por **clave propia + `typeof === function`** para que un idioma manipulado no despache a un método de prototipo (unvalidated-dynamic-method-call); el slug del nombre de archivo PDF se **limita a 200 caracteres antes del regex** para que una entrada de solo guiones no retroceda (ReDoS polinómico); y la importación de documentos **coacciona un `filename` de tipo array** (encabezado repetido) a cadena (type-confusion). Sin cambios de comportamiento para entrada válida.

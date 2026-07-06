@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.109.0] — 2026-07-06
+
+**Scan Exclude filter + pipeline overview (parent-web layout parity).** On `#/scan`, the **Search** box now treats commas as **OR** ("roles to find" — a row shows if it matches any term) and a new **Exclude** field hides any row whose company/role/location contains any comma-separated word (e.g. `senior, staff`); both are remembered by your saved searches. On `#/pipeline`, a compact **overview strip** shows your pipeline at a glance — **N in inbox**, **N tracked**, and the **Applied / Responded / Interview / Offer** counts from the tracker, each chip linking to `#/tracker`.
+
+- Client-only (no new route/writes). `public/js/views/scan.js` (include-OR + Exclude, round-tripped through saved-search state) + `public/js/views/pipeline.js` (overview strip, degrades to the inbox count if the tracker can't be read). Tests: `tests/scan-pipeline-ui-v1109.test.mjs` (2). 4 new i18n keys ×16 (`scan.filterExclude`/`scan.lblExclude` + `pipe.ovInbox`/`pipe.ovTracked`). Help §7 + §8 extended in place.
+
+New: none.
+
+
 ## [1.108.0] — 2026-07-06
 
 **Security hardening (CodeQL triage, round 2).** Three more low-severity findings fixed: the mode-prompt builder resolves the locale role-line by **own key + `typeof === function`** so a tampered locale can't dispatch to a prototype method (unvalidated-dynamic-method-call); the PDF-filename slug is **capped to 200 chars before the dash-trim regex** so an all-dash input can't backtrack (polynomial ReDoS); and document import **coerces an array `filename`** (a repeated header) to a string (type-confusion). No behavior change for valid input.

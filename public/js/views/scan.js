@@ -102,6 +102,10 @@ Router.register('scan', async () => {
 
   const dryRun = c('input', { type: 'checkbox', id: 'dry-run' });
   const filterText = c('input', { className: 'input', placeholder: t('scan.filterText') });
+  // v1.109.0 — "Exclude" keywords: comma-separated terms; a row is hidden if its
+  // company/title/location contains ANY of them. Pairs with the include search
+  // (which now treats commas as OR — "roles to find").
+  const filterExclude = c('input', { className: 'input', placeholder: t('scan.filterExclude', 'Exclude words (comma-separated)…') });
   // v1.78.1 — consume a one-shot search term handed off from the top-bar global
   // search (Enter on a non-URL query → #/scan with this box pre-filled). The
   // initial renderResults() below reads filterText.value, so the first paint is
@@ -560,6 +564,9 @@ Router.register('scan', async () => {
 
     // ── Now apply ALL filters (text/remote/source + chips) ──
     const q = (filterText.value || '').toLowerCase().trim();
+    // Comma-separated OR for include ("roles to find"), and exclude terms.
+    const qTerms = q ? q.split(',').map((s) => s.trim()).filter(Boolean) : [];
+    const exTerms = (filterExclude.value || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
     const fr = filterRemote.value;
     const fs = filterSource.value;
     const fc = filterCountry.value; // v1.78.0 — country code or '' (all)
@@ -570,7 +577,9 @@ Router.register('scan', async () => {
     const salMin = parseInt(filterSalaryMin.value, 10);
     const salMax = parseInt(filterSalaryMax.value, 10);
     const rows = allRows.filter((r) => {
-      if (q && !((r.company + ' ' + r.title + ' ' + (r.location || '')).toLowerCase().includes(q))) return false;
+      const hay = (r.company + ' ' + r.title + ' ' + (r.location || '')).toLowerCase();
+      if (qTerms.length && !qTerms.some((term) => hay.includes(term))) return false;      // include (OR)
+      if (exTerms.length && exTerms.some((term) => hay.includes(term))) return false;      // exclude (ANY)
       if (fr === 'remote' && !r.isRemote) return false;
       if (fr === 'hybrid' && !/hybrid/i.test(r.workplaceType || '')) return false;
       if (fr === 'onsite' && (r.isRemote || /remote|hybrid/i.test(r.workplaceType || ''))) return false;
@@ -707,6 +716,7 @@ Router.register('scan', async () => {
   function applyFilters() { pager.reset(); renderResults(); }
   function resetFilters() {
     filterText.value = '';
+    filterExclude.value = '';
     filterRemote.value = '';
     filterSalaryMin.value = '';
     filterSalaryMax.value = '';
@@ -721,7 +731,7 @@ Router.register('scan', async () => {
   // v1.80.0 — capture/restore the whole filter set for saved searches.
   function getFilterState() {
     return {
-      text: filterText.value, remote: filterRemote.value,
+      text: filterText.value, exclude: filterExclude.value, remote: filterRemote.value,
       salaryMin: filterSalaryMin.value, salaryMax: filterSalaryMax.value,
       source: filterSource.value, country: filterCountry.value,
       scope: filterScope.value, age: filterAge.value, favOnly: favOnly.checked,
@@ -731,6 +741,7 @@ Router.register('scan', async () => {
   function setFilterState(s) {
     s = s || {};
     filterText.value = s.text || '';
+    filterExclude.value = s.exclude || '';
     filterRemote.value = s.remote || '';
     filterSalaryMin.value = s.salaryMin || '';
     filterSalaryMax.value = s.salaryMax || '';
@@ -745,7 +756,7 @@ Router.register('scan', async () => {
     applyFilters();
   }
   // Enter in any text/number field applies (keyboard parity with the button).
-  ;[filterText, filterSalaryMin, filterSalaryMax].forEach((el) =>
+  ;[filterText, filterExclude, filterSalaryMin, filterSalaryMax].forEach((el) =>
     el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyFilters(); } }));
   // Selects/checkboxes feel broken if they need a second click, so they apply on change.
   ;[filterRemote, filterSource, filterCountry, filterScope, filterAge, favOnly].forEach((el) =>
@@ -924,6 +935,7 @@ Router.register('scan', async () => {
       // Apply button re-runs the filter (esp. the salary range); Reset clears.
       c('div', { className: 'scan-filters', role: 'group', 'aria-label': t('scan.filtersGroup', 'Result filters') }, [
         field(t('scan.lblSearch', 'Search'), filterText),
+        field(t('scan.lblExclude', 'Exclude'), filterExclude),
         field(t('scan.lblType', 'Work type'), filterRemote),
         field(t('scan.salaryFrom', 'Salary from'), filterSalaryMin),
         field(t('scan.salaryTo', 'Salary to'), filterSalaryMax),

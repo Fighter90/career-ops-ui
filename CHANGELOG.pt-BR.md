@@ -9,6 +9,15 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.109.0] — 2026-07-06
+
+**Filtro Excluir no Scan + visão geral do pipeline (paridade de layout com a web principal).** Em `#/scan`, a caixa **Pesquisar** trata vírgulas como **OU** ("cargos a encontrar") e um novo campo **Excluir** oculta qualquer linha cuja empresa/cargo/local contenha alguma palavra separada por vírgula (ex. `senior, staff`); ambos são lembrados nas suas buscas salvas. Em `#/pipeline`, uma **faixa de visão geral** compacta mostra seu pipeline num relance — **N na caixa**, **N rastreadas** e as contagens de **Applied / Responded / Interview / Offer** do tracker, cada chip liga a `#/tracker`.
+
+- Somente cliente (sem nova rota/gravações). `public/js/views/scan.js` + `public/js/views/pipeline.js`. Testes: `tests/scan-pipeline-ui-v1109.test.mjs` (2). 4 novas chaves i18n ×16. Ajuda §7 + §8 ampliadas no lugar.
+
+Novo: nenhum.
+
+
 ## [1.108.0] — 2026-07-06
 
 **Reforço de segurança (triagem do CodeQL, rodada 2).** Mais três achados de baixa severidade corrigidos: o construtor de prompts resolve a linha de papel do idioma por **chave própria + `typeof === function`** para que um idioma adulterado não despache a um método de protótipo (unvalidated-dynamic-method-call); o slug do nome do arquivo PDF é **limitado a 200 caracteres antes do regex** para que uma entrada só de hifens não retroceda (ReDoS polinomial); e a importação de documentos **coage um `filename` array** (cabeçalho repetido) para string (type-confusion). Sem mudança de comportamento para entrada válida.

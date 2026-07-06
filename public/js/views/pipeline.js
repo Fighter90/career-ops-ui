@@ -322,6 +322,25 @@ Router.register('pipeline', async () => {
   renderList();
   renderPreview();
 
+  // Pipeline overview strip — inbox count + a breakdown of the tracker by the
+  // stages that matter, each linking to #/tracker. Read-only; degrades to just
+  // the inbox count if the tracker can't be read.
+  let trackerRows = [];
+  try { trackerRows = (await API.get('/api/tracker')).rows || []; } catch { trackerRows = []; }
+  const statusCount = {};
+  for (const r of trackerRows) { const s = (r && r.status) || ''; if (s) statusCount[s] = (statusCount[s] || 0) + 1; }
+  function ovChip(n, label, route) {
+    const base = { style: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', borderRadius: '12px', background: 'var(--panel-2, #eef1f6)', fontSize: '13px', textDecoration: 'none', color: 'inherit' } };
+    const kids = [c('strong', { style: { fontVariantNumeric: 'tabular-nums' } }, String(n)), c('span', { style: { color: 'var(--foggy)' } }, label)];
+    return route ? c('a', { href: '#' + route, ...base }, kids) : c('span', base, kids);
+  }
+  const overview = c('div', { className: 'card mb-3', style: { display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' } }, [
+    c('strong', { style: { marginRight: '2px' } }, t('pipe.title', 'Pipeline') + ':'),
+    ovChip(allUrls.length, t('pipe.ovInbox', 'in inbox'), '/pipeline'),
+    ovChip(trackerRows.length, t('pipe.ovTracked', 'tracked'), '/tracker'),
+    ...['Applied', 'Responded', 'Interview', 'Offer'].filter((s) => statusCount[s]).map((s) => ovChip(statusCount[s], s, '/tracker')),
+  ]);
+
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
@@ -346,6 +365,8 @@ Router.register('pipeline', async () => {
         }, t('scan.title')),
       ]),
     ]),
+
+    overview,
 
     c('div', { className: 'card mb-3' }, [
       c('h3', { style: { marginTop: 0 } }, t('pipe.add')),
