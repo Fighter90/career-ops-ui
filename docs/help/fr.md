@@ -140,7 +140,7 @@ première fois. Chaque étape nomme la route exacte, le bouton exact, et ce
 que vous verrez en cas de succès. Les sections 2 à 16 ci-dessous
 détaillent chaque phase.
 
-**Demander au guide.** Ouvrez **Demander au guide 💬** (barre latérale, sous Aide) et posez une question — il répond uniquement depuis ce guide dans votre langue et ne lit jamais votre CV.
+**Demander au guide.** Ouvrez **Demander au guide 💬** (barre latérale, sous Aide) et posez une question — il répond uniquement depuis ce guide dans votre langue et ne lit jamais votre CV. Le même assistant est à un clic depuis chaque page : un bouton de chat robot flotte dans le coin inférieur droit (inférieur gauche dans les langues de droite à gauche) ; cliquez pour poser une question sans quitter ce que vous faites.
 
 > **Lancement & init en une commande.** Depuis un terminal, vous pouvez
 > faire tout le bootstrap sans toucher à l'UI :

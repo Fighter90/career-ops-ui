@@ -1052,4 +1052,10 @@ window.__I18N_DICT_AR = {
   'portals.result': "{alive}/{probed} حيّة · {dead} ميتة",
   'portals.loadFailed': "تعذّر قراءة portals.yml",
   'portals.checkFailed': "فشل فحص الحالة",
+  'fab.open': "مساعد المساعدة",
+  'fab.title': "اسأل المساعدة",
+  'fab.status': "مساعد المساعدة",
+  'fab.close': "إغلاق",
+  'fab.greeting': "مرحبًا! اسألني عن كيفية استخدام أي شيء في التطبيق — أجيب من دليل المساعدة بلغتك.",
+  'docs.err': "حدث خطأ ما. حاول مرة أخرى.",
 };

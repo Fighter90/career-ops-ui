@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.113.0] — 2026-07-06
+
+**Floating "Ask the docs" assistant on every page.** A gradient robot chat button now floats in the bottom-right corner (bottom-left in RTL) of every page. Click it to open a compact chat that answers how-to questions grounded ONLY in the in-app help guide in your language — the same endpoint as the `#/docs-assistant` page (`POST /api/docs-assistant/ask`), so it never reads your CV, profile, or tracker. Live with an LLM key; no key → a ready-to-run prompt. The header shows a robot avatar + an online status; starter chips seed common questions; Escape or click-outside closes it; it hides itself on the dedicated `#/docs-assistant` page.
+
+- New client widget `public/js/lib/docs-fab.js` (`window.DocsFab`) mounted globally from `index.html`; CSP-safe (no inline handlers, `UI.md()` render boundary, self-contained SVG icons); theme-aware + RTL-mirrored styles in `app.css`. No new server route — reuses the grounded docs-assistant endpoint. Tests: `tests/docs-fab.test.mjs` (8). 6 new i18n keys ×16 (`fab.*` + `docs.err`). Help §1 extended in place.
+
+New: none.
+
+
 ## [1.112.0] — 2026-07-06
 
 **Docs & QA consolidation.** No user-facing code change. The SDD conventions doc (`docs/sdd/CONVENTIONS.md`) is refreshed to the current **30 route modules** (was 24) and the current test baseline; the definitive whole-project QA prompt (`qa/QA-REGRESSION-PROMPT.md`) is consolidated — release mechanics destaled (v1.111, parentVersion 1.17.0, release-triggered publish), the §14 additions table corrected (scan Exclude re-labelled v1.109.0) and extended with the v1.111 CodeQL closeout — so it stands alone as the single regression prompt for all functionality. Adds one coverage test for the oversize-upload branch.

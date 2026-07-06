@@ -2,6 +2,15 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.113.0] — 2026-07-06
+
+**Schwebender „Hilfe fragen"-Assistent auf jeder Seite.** Eine Gradient-Roboter-Chat-Schaltfläche schwebt jetzt unten rechts (unten links bei RTL) auf jeder Seite. Klicke sie an, um einen kompakten Chat zu öffnen, der Nutzungsfragen AUSSCHLIESSLICH anhand des integrierten Hilfe-Leitfadens in deiner Sprache beantwortet — derselbe Endpunkt wie die Seite `#/docs-assistant` (`POST /api/docs-assistant/ask`), er liest also nie deinen Lebenslauf, dein Profil oder deinen Tracker. Live mit einem LLM-Schlüssel; ohne Schlüssel → ein sofort ausführbarer Prompt. Der Kopf zeigt einen Roboter-Avatar + Online-Status; Chips füllen häufige Fragen; Esc oder Klick außerhalb schließt; auf der Seite `#/docs-assistant` blendet er sich aus.
+
+- Neues Client-Widget `public/js/lib/docs-fab.js`, global aus `index.html` eingebunden; CSP-sicher; themenbewusste + RTL-gespiegelte Stile in `app.css`. Keine neue Serverroute. Tests: `tests/docs-fab.test.mjs` (8). 6 neue i18n-Schlüssel ×16. Hilfe §1 an Ort und Stelle erweitert.
+
+Neu: keine.
+
+
 ## [1.112.0] — 2026-07-06
 
 **Docs- & QA-Konsolidierung.** Keine nutzersichtbare Codeänderung. Das SDD-Konventionsdokument (`docs/sdd/CONVENTIONS.md`) wird auf die aktuellen **30 Route-Module** (vorher 24) und die aktuelle Testbasis aktualisiert; der maßgebliche projektweite QA-Prompt (`qa/QA-REGRESSION-PROMPT.md`) wird konsolidiert — Release-Mechanik entstaubt (v1.111, parentVersion 1.17.0, durch das Release-Ereignis ausgelöste Veröffentlichung), die §14-Ergänzungstabelle korrigiert (Scan-Ausschluss auf v1.109.0 umetikettiert) und um den v1.111-CodeQL-Abschluss erweitert — sodass er als einziger Regressions-Prompt für die gesamte Funktionalität allein steht. Fügt einen Abdeckungstest für den Zweig übergroßer Uploads hinzu.

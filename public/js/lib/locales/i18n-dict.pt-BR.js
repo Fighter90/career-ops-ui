@@ -1052,4 +1052,10 @@ window.__I18N_DICT_PT_BR = {
   'portals.result': "{alive}/{probed} ativas · {dead} fora do ar",
   'portals.loadFailed': "Não foi possível ler o portals.yml",
   'portals.checkFailed': "A verificação de integridade falhou",
+  'fab.open': "Assistente da ajuda",
+  'fab.title': "Pergunte à ajuda",
+  'fab.status': "Assistente de ajuda",
+  'fab.close': "Fechar",
+  'fab.greeting': "Oi! Pergunte como usar qualquer coisa no app — respondo a partir do guia de ajuda no seu idioma.",
+  'docs.err': "Algo deu errado. Tente novamente.",
 };

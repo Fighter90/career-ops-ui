@@ -1,21 +1,21 @@
-# QA REGRESSION PROMPT — career-ops-ui **v1.111.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
+# QA REGRESSION PROMPT — career-ops-ui **v1.113.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
 
-Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 16 languages**, covering every feature shipped from **v1.76.0 through v1.111.0**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree. §§ below cover the v1.76→v1.97 surface; **§14 (at the end) covers everything added v1.98→v1.111 (incl. the v1.111 CodeQL backlog closeout)**.
+Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 16 languages**, covering every feature shipped from **v1.76.0 through v1.113.0**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree. §§ below cover the v1.76→v1.97 surface; **§14 (at the end) covers everything added v1.98→v1.113 (incl. the v1.111 CodeQL backlog closeout)**.
 
-- **Version under test:** `package.json` **1.111.0** · **30 route modules**.
-- **Baseline:** **1713** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×16** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL (backlog closed 167→0, all real findings fixed at source (v1.111)).
+- **Version under test:** `package.json` **1.113.0** · **30 route modules**.
+- **Baseline:** **1722** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×16** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL (backlog closed 167→0, all real findings fixed at source (v1.111)).
 - **Server:** `npm start` → `http://127.0.0.1:4317`.
-- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.1XX.0.md` (per-release delta drivers, v1.90–v1.110 incl. the v1.110 milestone snapshot) · `qa/UX-AUDIT-PROMPT.md` (UX audit) · `qa/FUNCTIONALITY-CHECK.md` (functional correctness) · `qa/DESIGNER-EXPORT-PROMPT.md` (design export) · `REGRESSION-FINAL.md` (invariant ledger).
+- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.1XX.0.md` (per-release delta drivers, v1.90–v1.113 incl. the v1.110 milestone snapshot + per-version v1.111/v1.112/v1.113) · `qa/UX-AUDIT-PROMPT.md` (UX audit) · `qa/FUNCTIONALITY-CHECK.md` (functional correctness) · `qa/DESIGNER-EXPORT-PROMPT.md` (design export) · `REGRESSION-FINAL.md` (invariant ledger).
 
 ---
 
 ## §0 — Gates (all must be green before sign-off)
 
 ```bash
-npm test                                    # full suite (≥1713 cases)
+npm test                                    # full suite (≥1722 cases)
 npm run test:ci                             # unit + check-no-also + check-changelog-parity + i18n-audit
 node tools/i18n-audit.mjs                   # "no hard failures — dictionary is clean"
-node scripts/check-changelog-parity.mjs     # "all 15 locales at v1.111.0" (EN + 15 = 16 files)
+node scripts/check-changelog-parity.mjs     # "all 15 locales at v1.113.0" (EN + 15 = 16 files)
 npm run test:coverage                       # ≥80% line / ≥75% branch (baseline ~96/~86)
 npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(16) + theme-toggle
 npm run test:e2e && npm run test:e2e:full   # smoke (20) + comprehensive (23) E2E
@@ -150,6 +150,7 @@ Buffered `/api/run/*`; streaming `/api/stream/*` (scan, liveness, pdf + /report 
 - **Theme toggle:** light/dark persists; tokens recolor.
 - **Mobile drawer (<900 px):** hamburger opens/closes; hide is real (no `display:` override leak); tap-targets adequate.
 - **Global search (⌘K/Ctrl-K):** URL → AutoPipeline / add-only; query → `#/scan` prefill.
+- **Ask-the-docs launcher (🤖 bottom-right / bottom-left RTL):** present on every page except `#/docs-assistant`; opens/closes; localized; answers from the help guide only; zero console errors.
 - **Tab title:** per-route `… — career-ops-ui`.
 
 ---
@@ -167,22 +168,22 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 
 ## §7 — Docs / branding / release mechanics
 
-- **README ×16** + **CHANGELOG ×16** at **v1.111.0** (parity gate green — `node scripts/check-changelog-parity.mjs`); each language switcher lists all 16. README "Latest release" blurb describes the current release; localized "New:" trailers are native per locale (no English leak).
+- **README ×16** + **CHANGELOG ×16** at **v1.113.0** (parity gate green — `node scripts/check-changelog-parity.mjs`); each language switcher lists all 16. README "Latest release" blurb describes the current release; localized "New:" trailers are native per locale (no English leak).
 - **Help ×16** hold the gated **28 H2 / 102 H3**; §17 says **46 adapters**.
 - **Branding:** radar-icon favicon set + sidebar logo; app name **career-ops-ui**. Parent `career-ops` references intentionally unchanged.
-- **Release:** `package.json` 1.111.0; footer reads `/api/health`; `parentVersion` = 1.17.0 (independent; semver only). Tag `v1.111.0` → `release.yml`; **Publish is triggered by the GitHub Release event** (do NOT also `gh workflow run` — a parallel manual dispatch races the release-triggered run to an E409; the workflow is E409-tolerant) → GitHub Packages. **30 route modules.**
+- **Release:** `package.json` 1.113.0; footer reads `/api/health`; `parentVersion` = 1.17.0 (independent; semver only). Tag `v1.113.0` → `release.yml`; **Publish is triggered by the GitHub Release event** (do NOT also `gh workflow run` — a parallel manual dispatch races the release-triggered run to an E409; the workflow is E409-tolerant) → GitHub Packages. **30 route modules.**
 
 ---
 
 ## §8 — Exit criteria
 - Every (page × control × 16 languages) PASS or a logged FAIL→fix (one-fix-per-release; HIGH → MEDIUM → LOW).
-- `npm test` ≥ **1713** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×16) green; CI matrix green; **CodeQL backlog closed (167→0; final 6 fixed at source in v1.111 — sanitizer escape belt, type-confusion coercion, dynamic-dispatch removal)**.
+- `npm test` ≥ **1722** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×16) green; CI matrix green; **CodeQL backlog closed (167→0; final 6 fixed at source in v1.111 — sanitizer escape belt, type-confusion coercion, dynamic-dispatch removal)**.
 - Zero console errors; no RTL leak; no untranslated shipped key; no duplicate dict keys; favicon/icon endpoints 200.
-- All §2 deltas verified live (scanner 46 adapters incl. Dassault; the eight v1.85–v1.96 pages; the v1.97 audit fixes) **and all §14 additions (v1.98–v1.111)**.
+- All §2 deltas verified live (scanner 46 adapters incl. Dassault; the eight v1.85–v1.96 pages; the v1.97 audit fixes) **and all §14 additions (v1.98–v1.113)**.
 
 ---
 
-## §14 — Additions v1.98 → v1.111 (verify these too)
+## §14 — Additions v1.98 → v1.113 (verify these too)
 
 | # | Feature (release) | Must-see behaviour |
 |---|---|---|
@@ -197,5 +198,7 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 | 9 | **Security hardening (v1.106–v1.108)** | Route-render error text is escaped before `innerHTML`; profile/config property writes reject `__proto__`/`constructor`/`prototype`; `stripDangerousMarkdown` runs to a fixed point + removes `</script foo>`/unclosed openers; prompt dispatch is own-key+typeof; PDF slug capped before its regex; array `filename` coerced. Valid input unchanged. |
 | 10 | **Scan Exclude + pipeline overview (v1.109.0)** | `#/scan` Search treats commas as OR; new **Exclude** field hides rows matching any comma-word (both saved in searches). `#/pipeline` overview strip: **N in inbox · N tracked · Applied/Responded/Interview/Offer**, each chip → `#/tracker`. |
 | 11 | **CodeQL backlog closeout (v1.111.0)** | Server-internal security hardening, **no user-facing change**: `stripDangerousMarkdown` escapes any *truncated* dangerous-tag opener (`<script`/`<iframe`/… with no `>`) that survives the strip loop → output provably tag-free; CV import reads the verified-Buffer size via `Number()`; mode role-lines are template **strings** interpolated with `String.replace` (no dynamic dispatch). Verify: CV save/preview still safe, uploads still size-gated, mode prompts render per-locale. |
+| 12 | **Docs & QA consolidation (v1.112.0)** | Docs-only: `docs/sdd/CONVENTIONS.md` route count corrected 24→30; this prompt consolidated; +1 oversize-upload coverage test. No behavior change. |
+| 13 | **Floating "Ask the docs" launcher (v1.113.0)** | A gradient **robot chat button** floats bottom-right (bottom-left in RTL) on **every** page (`public/js/lib/docs-fab.js`), opening a compact chat over the same grounded `POST /api/docs-assistant/ask` endpoint (help-guide only, never CV/profile). Robot avatar + online status + starter chips; Escape / click-outside / X close it; hidden on `#/docs-assistant`. 6 new i18n keys ×16 (`fab.*` + `docs.err`). Verify per-locale + RTL-mirrored + dark/light + zero console errors. See `qa/QA-REGRESSION-PROMPT-v1.113.0.md`. |
 
 **New routes since v1.97:** `POST /api/portals/health`, `POST /api/export/docx`, `POST /api/cv-studio/tailor`, `POST /api/docs-assistant/ask`, `GET /api/cli-detect`, `GET /api/logo`, `GET /api/usage` (30 route modules total). **New i18n:** every one is present + translated in all **16** locales (`i18n-coverage` + `i18n-locale-files` green). **New Help:** each surfaced in `docs/help/*` (in-place for two-pager/CV-Studio/settings/health/scan/pipeline; §-level for portals/docs-assistant where applicable).

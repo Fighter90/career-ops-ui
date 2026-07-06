@@ -131,7 +131,7 @@ første gang. Hvert trin nævner den nøjagtige rute, den nøjagtige knap
 og hvad du vil se ved succes. Sektion 2–16 nedenfor dykker dybere ned i
 hver fase.
 
-**Spørg guiden.** Åbn **Spørg guiden 💬** (sidebjælke, under Hjælp) og skriv et spørgsmål — den svarer kun ud fra denne guide på dit sprog og læser aldrig dit CV.
+**Spørg guiden.** Åbn **Spørg guiden 💬** (sidebjælke, under Hjælp) og skriv et spørgsmål — den svarer kun ud fra denne guide på dit sprog og læser aldrig dit CV. Den samme assistent er ét tryk væk fra hver side — en robot-chatknap svæver i nederste højre hjørne (nederste venstre i højre-mod-venstre-sprog); tryk for at spørge uden at forlade det, du er i gang med.
 
 > **Start og init med én kommando.** Fra en terminal kan du gøre hele
 > bootstrappen uden at røre UI'en:
