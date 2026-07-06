@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.117.0] — 2026-07-06
+
+**Parent parity pack — six capabilities from the parent career-ops surfaced in the UI.** (1) **Follow-up cadence board**: the `#/followup` page opens with per-application urgency (🔴 urgent / 🟠 overdue / 🟡 waiting / 🔵 cold) from the parent's `followup-cadence.mjs`, plus a **Seed follow-up dates** button (`followup-seed.mjs --backfill`). (2) **Rejection patterns**: a fourth Statistics tab runs `analyze-patterns.mjs` (read-only) — outcome mix, recommendations, and the per-ATS-vendor advance rate. (3) **Add to CV**: a CV Studio card turns a project/publication URL or pasted text into ATS bullets grounded ONLY in that source (suggestions only, no writes; URL fetch is SSRF-guarded). (4) **4 new scan providers** — beesite (jobs.mercedes-benz.com backend), HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — the registry now ships **50 adapters (45 EN + 5 RU)**, all in the Scan source dropdown. (5) **Knock-out pre-scan** step in the Apply checklist (visa/degree/salary disqualifiers flagged before form-filling). (6) **Reconcile runner** (`/api/run/reconcile` → `reconcile-pipeline.mjs`). Shell-out routes are fail-soft: without the parent scripts the UI shows an honest "not available" note.
+
+- New route module `server/lib/routes/followup.mjs` (31st) + `GET /api/stats/patterns` + `POST /api/cv-studio/add-entry` + 8 source/adapter files + registry counts 41→45 EN. Tests: `tests/sources-parity-v1117.test.mjs` (6) + `tests/parity-routes-v1117.test.mjs` (7); suite 1737 → 1750. 41 new i18n keys ×16. Help §13/§17/§24/§26 extended ×16.
+
+New: `GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`, `POST /api/cv-studio/add-entry`, `POST /api/run/reconcile`.
+
+
 ## [1.116.0] — 2026-07-06
 
 **Usage meter reworked + first end-to-end widget test.** The AI usage meter (v1.114.0) is fixed and pinned properly: it now sits **pinned to the bottom of the left sidebar** (full sidebar width, matching the sidebar surface) and pads the sidebar's bottom by its own height so the **menu is never covered** — the nav + version footer always scroll clear above it. It **refreshes live** (a 15-second interval plus on tab-focus and route change), and each window row now shows the real **`<tokens> · <estimated cost>`** (bars scale against the 30-day window) instead of an always-100% "share". Also: a durable `typeof` barrier in the CV importer closes the recurring CodeQL type-confusion false positive at the source, and a new Playwright **end-to-end acceptance test** drives both persistent widgets (Ask-the-docs launcher open/close/hide + usage meter render/collapse) in a real browser.

@@ -381,6 +381,75 @@
         ])
       : null;
 
+    // v1.117.0 (parent parity) — the followup mode page gains a deterministic
+    // CADENCE BOARD above the LLM form: GET /api/followup shells out to the
+    // parent's followup-cadence.mjs and reports per-application urgency
+    // (urgent / overdue / waiting / cold). Fail-soft: without the parent
+    // script the board shows an honest "not available" note; the Seed button
+    // is the explicit user action that writes data/follow-ups.md pins.
+    const cadenceBoard = cfg.slug === 'followup' ? (() => {
+      const box = c('div', { className: 'card', style: { marginBottom: 'var(--space-4)' } });
+      const seedBtn = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, t('fu.seedBackfill', 'Seed follow-up dates'));
+      const refreshBtn = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, '↻ ' + t('fu.refresh', 'Refresh'));
+      const head = c('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', margin: '0 0 10px' } }, [
+        c('strong', null, t('fu.boardTitle', 'Cadence board')), refreshBtn, seedBtn,
+      ]);
+      const body = c('div', null, c('p', { style: { color: 'var(--foggy)' } }, t('fu.loading', 'Loading cadence…')));
+      box.appendChild(head);
+      box.appendChild(body);
+      const URG_ICON = { urgent: '🔴', overdue: '🟠', waiting: '🟡', cold: '🔵' };
+      async function load() {
+        let d = null;
+        try { d = await API.get('/api/followup'); } catch { d = null; }
+        body.innerHTML = '';
+        if (!d || d.available !== true) {
+          body.appendChild(c('p', { style: { color: 'var(--foggy)', margin: '0' } },
+            t('fu.unavailable', 'Cadence data is not available — the parent career-ops scripts were not found next to this app.')));
+          seedBtn.disabled = true;
+          return;
+        }
+        seedBtn.disabled = false;
+        const m = d.metadata || {};
+        body.appendChild(c('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '0 0 10px' } }, [
+          c('span', { className: 'chip' }, `🔴 ${t('fu.urgent', 'urgent')}: ${m.urgent || 0}`),
+          c('span', { className: 'chip' }, `🟠 ${t('fu.overdue', 'overdue')}: ${m.overdue || 0}`),
+          c('span', { className: 'chip' }, `🟡 ${t('fu.waiting', 'waiting')}: ${m.waiting || 0}`),
+          c('span', { className: 'chip' }, `🔵 ${t('fu.cold', 'cold')}: ${m.cold || 0}`),
+        ]));
+        const entries = Array.isArray(d.entries) ? d.entries.slice(0, 100) : [];
+        if (!entries.length) {
+          body.appendChild(c('p', { style: { color: 'var(--foggy)', margin: '0' } },
+            t('fu.empty', 'Nothing actionable — no applications need a follow-up right now.')));
+          return;
+        }
+        const headRow = c('tr', null,
+          ['#', t('fu.colCompany', 'Company'), t('fu.colRole', 'Role'), t('fu.colStatus', 'Status'), t('fu.colUrgency', 'Urgency'), t('fu.colNext', 'Days to next')]
+            .map((h) => c('th', { style: { textAlign: 'left' } }, h)));
+        const rows = entries.map((e) => c('tr', null, [
+          c('td', null, String(e.appNum ?? '')),
+          c('td', null, String(e.company || '')),
+          c('td', null, String(e.role || '')),
+          c('td', null, String(e.status || '')),
+          c('td', null, `${URG_ICON[e.urgency] || ''} ${String(e.urgency || '')}`),
+          c('td', { style: { fontVariantNumeric: 'tabular-nums' } }, e.daysUntilNext == null ? '—' : String(e.daysUntilNext)),
+        ]));
+        body.appendChild(c('div', { className: 'table-wrap' }, c('table', { className: 'tbl' }, [c('thead', null, headRow), c('tbody', null, rows)])));
+      }
+      refreshBtn.addEventListener('click', load);
+      seedBtn.addEventListener('click', async () => {
+        seedBtn.disabled = true;
+        try {
+          await API.post('/api/followup/seed', { backfill: true });
+          UI.toast(t('fu.seeded', 'Follow-up dates seeded'), 'success');
+          await load();
+        } catch (e) {
+          UI.toast((e && e.message) || String(e), 'error');
+        } finally { seedBtn.disabled = false; }
+      });
+      load();
+      return box;
+    })() : null;
+
     return c('div', null, [
       liveAnnounce,
       deprecationBanner,
@@ -390,6 +459,7 @@
           c('p', { className: 'page-subtitle' }, t(cfg.subtitleKey)),
         ]),
       ]),
+      cadenceBoard,
       c('div', { className: 'card' }, [
         ...cfg.fields.map(field),
         c('div', { className: 'flex gap-3' }, [manualBtn, runLiveBtn]),

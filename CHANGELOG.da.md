@@ -10,6 +10,15 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.117.0] — 2026-07-06
+
+**Forælder-paritetspakke — seks evner fra det overordnede career-ops bragt ind i UI'et.** (1) **Kadencetavle** på `#/followup`: hastighed pr. ansøgning (🔴/🟠/🟡/🔵) fra `followup-cadence.mjs`, plus knappen **Så opfølgningsdatoer** (`followup-seed.mjs --backfill`). (2) **Afvisningsmønstre**: en fjerde statistik-fane kører `analyze-patterns.mjs` (skrivebeskyttet) — udfaldsmiks, anbefalinger, avanceringsrate pr. ATS-leverandør. (3) **Føj til CV**: et CV Studio-kort forvandler en URL eller indsat tekst til ATS-punkter, der KUN bygger på den kilde (kun forslag, ingen skrivninger; URL-hentning er SSRF-beskyttet). (4) **4 nye scan-udbydere** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — registret har nu **50 adaptere (45 EN + 5 RU)**, alle i Scan-rullelisten. (5) **Præ-scan af diskvalifikatorer** i Apply-tjeklisten. (6) **Reconcile-runner** (`/api/run/reconcile`). Shell-out-ruter degraderer ærligt uden forælderens scripts.
+
+- Nyt rutemodul `server/lib/routes/followup.mjs` (31.) + nye ruter + 8 source/adapter-filer. Tests: 6 + 7 nye; suite 1737 → 1750. 41 nye i18n-nøgler ×16. Hjælp §13/§17/§24/§26 udvidet ×16.
+
+Nyt: `GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`, `POST /api/cv-studio/add-entry`, `POST /api/run/reconcile`.
+
+
 ## [1.116.0] — 2026-07-06
 
 **Forbrugsmåler omarbejdet + første ende-til-ende widget-test.** AI-forbrugsmåleren (v1.114.0) er rettet og fastgjort korrekt: den sidder nu **fastgjort nederst i venstre sidebjælke** (fuld sidebjælkebredde, samme overflade) og reserverer nederst plads svarende til sin egen højde, så **menuen aldrig dækkes** — nav + versionsfod ruller altid frit ovenover. Den **opdateres live** (hvert 15. sekund, ved fanefokus og ruteskift), og hver vinduesrække viser nu de rigtige **`<tokens> · <estimeret omkostning>`** (bjælker skaleres mod 30-dages-vinduet) i stedet for en altid-100% "andel". Desuden: en holdbar `typeof`-barriere i CV-importøren lukker den tilbagevendende CodeQL type-confusion-falske positiv ved kilden, og en ny Playwright **ende-til-ende-test** kører begge vedvarende widgets i en rigtig browser.

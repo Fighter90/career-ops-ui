@@ -173,5 +173,51 @@ Router.register('cv-studio', async () => {
     jdIn, headIn, c('div', { style: { marginTop: '8px' } }, tailorBtn), tailorOut,
   ]));
 
+  // ── 5. Add to CV (v1.117.0, parent parity — modes/add.md generalized) ──
+  // A project/publication URL or pasted text → grounded ATS bullets to review
+  // and paste into the CV editor yourself. Suggestions only — nothing is
+  // written to any file (the URL fetch is SSRF-guarded server-side).
+  const addUrlIn = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'cvs.addUrlPh' });
+  addUrlIn.placeholder = t('cvs.addUrlPh', 'https:// … a repo, article, or portfolio page (optional)');
+  const addTextIn = c('textarea', { className: 'input', rows: '5', style: { marginTop: '8px' }, 'data-i18n-placeholder': 'cvs.addTextPh' });
+  addTextIn.placeholder = t('cvs.addTextPh', '…or paste the project/publication description here');
+  const addBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.addBtn', '➕ Suggest CV bullets'));
+  const addOut = c('div', { style: { marginTop: '10px' } });
+
+  addBtn.addEventListener('click', async () => {
+    const url = addUrlIn.value.trim();
+    const text = addTextIn.value.trim();
+    if (!url && text.length < 80) { UI.toast(t('cvs.addNeedSrc', 'Give a URL or paste ~80+ characters of source text first'), 'error'); return; }
+    addBtn.disabled = true;
+    addOut.textContent = '';
+    const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.adding', 'Reading the source and drafting grounded bullets…'));
+    addOut.appendChild(pending);
+    try {
+      const res = await API.post('/api/cv-studio/add-entry', { url, text, run: true });
+      pending.remove();
+      if (res.markdown) {
+        addOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [
+          c('div', { className: 'md', html: UI.md(res.markdown) }),
+          c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '10px 0 0' } },
+            t('cvs.addReview', 'Review these suggestions and paste what you accept into the CV editor — nothing was saved automatically.')),
+        ]));
+      } else {
+        UI.modal(t('cvs.addTitle', 'Add to CV'), c('div', null, [
+          c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.addManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then review the bullets it returns.')),
+          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt),
+        ]));
+      }
+    } catch (err) {
+      pending.remove();
+      UI.toast((err && err.message) || t('cvs.addFailed', 'Could not draft bullets from that source'), 'error');
+    } finally { addBtn.disabled = false; }
+  });
+
+  root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '18px 0 8px' } }, [
+    c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('cvs.addTitle', 'Add to CV')),
+    c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0 0 10px' } }, t('cvs.addHelp', 'Point at a project, publication, or portfolio page (URL or pasted text) and get ATS-ready bullet points grounded ONLY in that source — never invented. You review and paste them into your CV yourself; nothing is written automatically.')),
+    addUrlIn, addTextIn, c('div', { style: { marginTop: '8px' } }, addBtn), addOut,
+  ]));
+
   return root;
 });

@@ -1298,6 +1298,8 @@ Même chaîne de repli qu'Evaluate :
 
 ## 13. Mode prompts (the seven `/#/<mode>` pages)
 
+**Tableau de cadence (v1.117.0).** La page de relance s'ouvre désormais sur un **tableau de cadence** déterministe alimenté par le `followup-cadence.mjs` du parent : urgence par candidature (🔴 urgent / 🟠 en retard / 🟡 en attente / 🔵 froid) avec les jours avant la prochaine étape, plus un bouton **Semer les dates de relance** qui fixe une première date pour chaque ligne Applied (`followup-seed.mjs --backfill`). Sans les scripts du parent, le tableau affiche honnêtement « indisponible ».
+
 Sept générateurs de prompts : idées **Project**, plans **Training**, e-mails
 **Follow-up**, évaluations **Batch**, **Outreach** aux recruteurs,
 fiches **Interview prep**, et rétrospectives **Patterns**. Chacun enveloppe
@@ -1679,7 +1681,7 @@ copiez la sortie, et cherchez le problème sur le tracker d'incidents à
 
 ## 17. How to add a new job-portal source
 
-career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un fichier unique sous [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait récupérer + normaliser les résultats d'un site. Depuis la v1.87.0, le registre `server/lib/sources/` livre **46** adaptateurs — **41 anglais + 5 russes**. L'ensemble anglais couvre les principaux ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), les agrégateurs couvrant tout un board sélectionnés par un `provider:` explicite (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), et les ATS par tenant auto-détectés depuis un hôte `careers_url` ou une URL `api:` explicite (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **La liste complète n'a jamais besoin d'être comptée à la main ici — elle est auto-découverte depuis `server/lib/sources/` et affichée en direct dans le menu déroulant Source de `#/scan`.** Voir le §5 pour le YAML et `docs/portals-examples.md` pour des entrées à copier-coller.
+career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un fichier unique sous [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait récupérer + normaliser les résultats d'un site. Depuis la v1.87.0, le registre `server/lib/sources/` livre **50** adaptateurs — **45 anglais + 5 russes**. L'ensemble anglais couvre les principaux ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), les agrégateurs couvrant tout un board sélectionnés par un `provider:` explicite (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), et les ATS par tenant auto-détectés depuis un hôte `careers_url` ou une URL `api:` explicite (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **La liste complète n'a jamais besoin d'être comptée à la main ici — elle est auto-découverte depuis `server/lib/sources/` et affichée en direct dans le menu déroulant Source de `#/scan`.** Voir le §5 pour le YAML et `docs/portals-examples.md` pour des entrées à copier-coller.
 
 > **v1.69.0 (P-14) — auto-découverte par dépôt de fichier.** Ajouter une 12e source est désormais
 > un **simple dépôt de fichier**. Le registre
@@ -2069,6 +2071,8 @@ Cliquez sur **Enregistrer le plan** pour en conserver un. Il est écrit dans la 
 
 ## 24. CV Studio (`#/cv-studio`)
 
+**Ajouter au CV (v1.117.0).** Une nouvelle carte transforme un projet, une publication ou une page de portfolio (URL ou texte collé) en puces prêtes pour les ATS fondées UNIQUEMENT sur cette source — les métriques, employeurs ou dates absents sont omis, jamais inventés. Vous relisez les suggestions et collez vous-même celles que vous acceptez dans l'éditeur de CV ; rien n'est écrit automatiquement et les URL passent par le même validateur anti-SSRF que le pipeline.
+
 La page `#/cv` est l'endroit où vous *rédigez* votre CV ; le **CV Studio** (ouvrez-le depuis **Setup → CV Studio 🎨** dans la barre latérale) est l'endroit où vous l'*affinez*. Il offre à votre `cv.md` trois outils honnêtes, dont deux ne quittent jamais votre navigateur.
 
 **Adapter à une offre (v1.101).** Collez une offre d'emploi et CV Studio produit un CV adapté plus une lettre de motivation, passés par un contrôle de type recruteur (les erreurs bloquent, les avertissements conseillent), fondé uniquement sur vos matériaux.
@@ -2117,6 +2121,8 @@ Quand vous cliquez sur **Enregistrer la mémoire**, la note est écrite dans la 
 Vous ne savez pas quoi écrire ? **✨ Suggérer à partir de mes données** lit votre suivi de candidatures et rédige un ensemble de points comportementaux — les tendances dans ce que vous poursuivez, acceptez et refusez. Exécutez le prompt qu'il vous donne dans n'importe quel LLM, examinez les suggestions et collez une version modifiée dans la note. Il n'exploite que votre propre suivi et n'invente jamais de faits ; vous relisez toujours avant que quoi que ce soit ne soit enregistré.
 
 ## 26. Statistiques (`#/stats`)
+
+**Onglet motifs de rejet (v1.117.0).** Un quatrième onglet exécute le `analyze-patterns.mjs` du parent (lecture seule) et montre la répartition des issues, des recommandations actionnables et le taux d'avancement par fournisseur ATS (le signal de « monoculture algorithmique » — Bommasani et al., FAccT 2026). Les fournisseurs sous l'échantillon minimal portent un astérisque ; sans le projet parent, l'onglet l'indique honnêtement.
 
 La page **Statistiques** réunit trois vues sous une même section : un rapport de marché généré par l'IA, des analyses sur votre propre pipeline, et la tendance des offres pour vos rôles cibles issue de vos scans. Passez de l'une à l'autre avec les onglets en haut.
 

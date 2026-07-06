@@ -2,6 +2,15 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.117.0] — 2026-07-06
+
+**Üst proje parite paketi — üst career-ops'un altı yeteneği UI'ya taşındı.** (1) `#/followup`'ta **kadans panosu**: `followup-cadence.mjs`'ten başvuru başına aciliyet (🔴/🟠/🟡/🔵) + **Takip tarihlerini ekle** düğmesi (`followup-seed.mjs --backfill`). (2) **Ret kalıpları**: dördüncü İstatistik sekmesi `analyze-patterns.mjs`'i (salt okunur) çalıştırır — sonuç dağılımı, öneriler, ATS sağlayıcısı başına ilerleme oranı. (3) **CV'ye ekle**: bir CV Studio kartı URL'yi veya yapıştırılan metni YALNIZCA o kaynağa dayanan ATS maddelerine çevirir (yalnız öneri, yazma yok; URL getirme SSRF korumalı). (4) **4 yeni tarama sağlayıcısı** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — kayıt defteri artık **50 adaptör (45 EN + 5 RU)**, hepsi Scan açılır listesinde. (5) Apply kontrol listesine **eleme ön taraması** adımı. (6) **Reconcile çalıştırıcısı** (`/api/run/reconcile`). Shell-out rotaları üst betikler olmadan dürüstçe düşer.
+
+- Yeni rota modülü `server/lib/routes/followup.mjs` (31.) + yeni rotalar + 8 source/adapter dosyası. Testler: 6 + 7 yeni; süit 1737 → 1750. 41 yeni i18n anahtarı ×16. Yardım §13/§17/§24/§26 ×16 genişletildi.
+
+Yeni: `GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`, `POST /api/cv-studio/add-entry`, `POST /api/run/reconcile`.
+
+
 ## [1.116.0] — 2026-07-06
 
 **Kullanım göstergesi yeniden yapıldı + ilk uçtan uca widget testi.** AI kullanım göstergesi (v1.114.0) düzeltildi ve doğru sabitlendi: artık **sol kenar çubuğunun altına sabitli** (tam kenar çubuğu genişliği, aynı yüzey) ve altta kendi yüksekliği kadar boşluk ayırarak **menü asla kapanmaz** — gezinme ve sürüm altbilgisi her zaman onun üstünde serbestçe kayar. **Canlı yenilenir** (her 15 sn, sekme odağında ve rota değişiminde) ve her pencere satırı artık her zaman %100 olan "pay" yerine gerçek **`<jeton> · <tahmini maliyet>`** gösterir (çubuklar 30 günlük pencereye göre ölçeklenir). Ayrıca: CV içe aktarıcısındaki kalıcı bir `typeof` bariyeri, tekrarlayan CodeQL tür karışıklığı yanlış pozitifini kaynağında kapatır ve yeni bir Playwright **uçtan uca testi** her iki kalıcı widget'ı gerçek bir tarayıcıda çalıştırır.

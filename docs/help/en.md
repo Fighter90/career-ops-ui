@@ -1296,6 +1296,8 @@ Same fallback chain as Evaluate:
 
 ## 13. Mode prompts (the seven `/#/<mode>` pages)
 
+**Cadence board (v1.117.0).** The Follow-up page now opens with a deterministic **cadence board** fed by the parent's `followup-cadence.mjs`: per-application urgency (🔴 urgent / 🟠 overdue / 🟡 waiting / 🔵 cold) with days-to-next, plus a **Seed follow-up dates** button that pins a first follow-up date for every Applied row (`followup-seed.mjs --backfill`). Without the parent scripts the board shows an honest "not available" note.
+
 Seven prompt builders: **Project** ideas, **Training** plans,
 **Follow-up** emails, **Batch** evaluations, **Outreach** to
 recruiters, **Interview prep** one-pagers, and **Patterns**
@@ -1667,7 +1669,7 @@ output, and search the issue tracker on
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
 how to fetch + normalize one board's results. As of v1.87.0 the
-`server/lib/sources/` registry ships **46** adapters — **41 English + 5 Russian**
+`server/lib/sources/` registry ships **50** adapters — **45 English + 5 Russian**
 boards. The English set spans the major ATSes (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), board-wide aggregators selected by an
 explicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
@@ -2064,6 +2066,8 @@ Click **Save plan** to keep one. It is written to your parent project's user lay
 
 ## 24. CV Studio (`#/cv-studio`)
 
+**Add to CV (v1.117.0).** A new card turns a project, publication, or portfolio page (URL or pasted text) into ATS-ready bullet points grounded ONLY in that source — metrics, employers, or dates not present in the source are omitted, never invented. You review the suggestions and paste what you accept into the CV editor yourself; nothing is written automatically, and URL sources are fetched through the same SSRF-safe validator as the pipeline.
+
 The `#/cv` page is where you *write* your CV; **CV Studio** (open it from **Setup → CV Studio 🎨** in the sidebar) is where you *sharpen* it. It gives your `cv.md` three honest tools, two of which never leave your browser.
 
 ### Résumé diagnostics
@@ -2112,6 +2116,8 @@ When you click **Save memory**, the note is written to your parent project's use
 Not sure what to write? **✨ Suggest from my data** reads your application tracker and drafts a set of behavioural bullets — the patterns in what you pursue, accept, and reject. Run the prompt it gives you in any LLM, review the suggestions, and paste an edited version into the note. It mines only your own tracker and never invents facts; you always review before anything is saved.
 
 ## 26. Statistics (`#/stats`)
+
+**Rejection patterns tab (v1.117.0).** A fourth tab runs the parent's `analyze-patterns.mjs` (read-only) and shows your outcome mix, actionable recommendations, and the per-ATS-vendor advance rate (the "algorithmic monoculture" signal — Bommasani et al., FAccT 2026). Vendors below the minimum sample are marked with an asterisk; without the parent project the tab shows an honest note.
 
 The **Statistics** page brings three views together under one section: an AI-generated market report, analytics on your own pipeline, and the target-role vacancy trend from your scans. Switch between them with the tabs at the top.
 

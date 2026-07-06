@@ -2,6 +2,15 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.117.0] — 2026-07-06
+
+**Eltern-Paritätspaket — sechs Fähigkeiten des übergeordneten career-ops in die UI geholt.** (1) **Kadenz-Board** auf `#/followup`: Dringlichkeit je Bewerbung (🔴/🟠/🟡/🔵) aus `followup-cadence.mjs`, plus **Follow-up-Termine setzen** (`followup-seed.mjs --backfill`). (2) **Absagemuster**: ein vierter Statistik-Tab führt `analyze-patterns.mjs` aus (nur lesend) — Ergebnisverteilung, Empfehlungen, Weiterkommensquote je ATS-Anbieter. (3) **Zum CV hinzufügen**: eine CV-Studio-Karte verwandelt eine URL oder eingefügten Text in ATS-Stichpunkte, die NUR auf dieser Quelle beruhen (nur Vorschläge, keine Schreibvorgänge; der URL-Abruf ist SSRF-geschützt). (4) **4 neue Scan-Anbieter** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — das Register umfasst jetzt **50 Adapter (45 EN + 5 RU)**, alle im Scan-Dropdown. (5) **Disqualifikator-Vorab-Scan** in der Apply-Checkliste. (6) **Reconcile-Runner** (`/api/run/reconcile`). Shell-out-Routen degradieren ehrlich ohne die Eltern-Skripte.
+
+- Neues Routenmodul `server/lib/routes/followup.mjs` (31.) + neue Routen + 8 Source/Adapter-Dateien. Tests: 6 + 7 neu; Suite 1737 → 1750. 41 neue i18n-Schlüssel ×16. Hilfe §13/§17/§24/§26 erweitert ×16.
+
+Neu: `GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`, `POST /api/cv-studio/add-entry`, `POST /api/run/reconcile`.
+
+
 ## [1.116.0] — 2026-07-06
 
 **Nutzungsanzeige überarbeitet + erster End-to-End-Widget-Test.** Die KI-Nutzungsanzeige (v1.114.0) ist korrekt fixiert: Sie ist jetzt **unten in der linken Seitenleiste angeheftet** (volle Seitenleistenbreite, gleiche Oberfläche) und reserviert unten Platz in ihrer eigenen Höhe, sodass das **Menü nie verdeckt wird** — Navigation und Versionsfußzeile scrollen stets frei darüber. Sie **aktualisiert live** (alle 15 s, bei Tab-Fokus und Routenwechsel), und jede Fensterzeile zeigt jetzt die echten **`<Tokens> · <geschätzte Kosten>`** (Balken skalieren gegen das 30-Tage-Fenster) statt eines immer-100%-„Anteils". Außerdem: eine dauerhafte `typeof`-Barriere im CV-Importer schließt den wiederkehrenden CodeQL-Type-Confusion-Fehlalarm an der Quelle, und ein neuer Playwright-**End-to-End-Test** fährt beide dauerhaften Widgets in einem echten Browser.

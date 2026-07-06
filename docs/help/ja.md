@@ -1206,6 +1206,8 @@ Evaluate と同じフォールバックチェーン:
 
 ## 13. モードプロンプト (7 つの `/#/<mode>` ページ)
 
+**ケイデンスボード (v1.117.0)。** フォローアップページは、親の `followup-cadence.mjs` を用いた決定的な**ケイデンスボード**で開くようになりました:応募ごとの緊急度(🔴 緊急 / 🟠 期限超過 / 🟡 待機 / 🔵 停滞)と次のステップまでの日数、さらに全ての Applied 行に最初のフォローアップ日を固定する**フォローアップ日をシード**ボタン(`followup-seed.mjs --backfill`)。親スクリプトがなければ、ボードは正直に「利用不可」と表示します。
+
 7 つのプロンプトビルダー: **Project** アイデア、**Training**
 プラン、**Follow-up** メール、**Batch** 評価、リクルータへの
 **Outreach**、**Interview prep** 1 ページ資料、**Patterns**
@@ -1579,7 +1581,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 
 ## 17. 新しい求人ポータルソースを追加する方法
 
-career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。v1.87.0 時点で `server/lib/sources/` レジストリは **46** 個のアダプタを同梱しています — **英語圏 41 個 + ロシア系 5 個** のボードです。英語圏のセットは主要な ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、明示的な `provider:` で選択されるボード全体のアグリゲーター(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …)、および `careers_url` ホストまたは明示的な `api:` URL から自動検出されるテナント単位の ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)にわたります。**完全なリストをここで手作業で数える必要はまったくありません — `server/lib/sources/` から自動検出され、`#/scan` の Source ドロップダウンにライブで表示されます。** YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
+career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。v1.87.0 時点で `server/lib/sources/` レジストリは **50** 個のアダプタを同梱しています — **英語圏 45 個 + ロシア系 5 個** のボードです。英語圏のセットは主要な ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、明示的な `provider:` で選択されるボード全体のアグリゲーター(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …)、および `careers_url` ホストまたは明示的な `api:` URL から自動検出されるテナント単位の ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)にわたります。**完全なリストをここで手作業で数える必要はまったくありません — `server/lib/sources/` から自動検出され、`#/scan` の Source ドロップダウンにライブで表示されます。** YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
 
 > **v1.69.0 (P-14) — ドロップイン自動検出。** 12 個目のソース追加はいまや **ファイルを置くだけ** で完結します。レジストリ
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))
@@ -1933,6 +1935,8 @@ career-ops-ui の大半は「この求人は自分の CV に合っているか�
 
 ## 24. CV Studio (`#/cv-studio`)
 
+**CVに追加 (v1.117.0)。** 新しいカードは、プロジェクト・論文・ポートフォリオページ(URLまたは貼り付けテキスト)を、その出典のみに基づくATS対応の箇条書きに変えます — 出典にない指標・雇用主・日付は創作せず省略します。提案を確認して自分でCVエディタに貼り付けます; 自動保存はなく、URLはパイプラインと同じSSRF安全バリデータを通ります。
+
 `#/cv` ページは職務経歴書を*書く*場所であり、**CV Studio**（サイドバーの **Setup → CV Studio 🎨** から開く）はそれを*磨き上げる*場所です。あなたの `cv.md` に、うち2つは決してブラウザの外に出ない、3つの正直なツールを提供します。
 
 **求人に合わせて最適化(v1.101)。** 求人内容を貼り付けるとCV Studioが最適化した履歴書と対応するカバーレターを作成し、リクルーターのチェックリストゲートを通します(エラーはブロック、警告は助言)。あなたの資料のみに基づきます。
@@ -1981,6 +1985,8 @@ CVを文章サンプルやスクリーンショットとして共有する前に
 何を書けばいいか分かりませんか？**✨ 私のデータから提案**は、あなたの応募トラッカーを読み取り、一連の行動指針の項目を下書きします — あなたが追い求め、受け入れ、拒否するものの中にあるパターンです。提示されたプロンプトを任意の LLM で実行し、提案を確認し、編集したバージョンをメモに貼り付けてください。あなた自身のトラッカーからのみ抽出し、事実を捏造することは決してありません。何かが保存される前に、常にあなたが確認します。
 
 ## 26. 統計 (`#/stats`)
+
+**不採用パターンタブ (v1.117.0)。** 4つ目のタブは親の `analyze-patterns.mjs`(読み取り専用)を実行し、結果の内訳、実行可能な推奨、ATSベンダー別の前進率(「アルゴリズム的モノカルチャー」のシグナル — Bommasani et al., FAccT 2026)を表示します。最小サンプル未満のベンダーにはアスタリスクが付き、親プロジェクトがなければタブは正直に知らせます。
 
 **統計** ページは、3 つのビューを 1 つのセクションにまとめます。AI が生成した市場レポート、あなた自身のパイプラインの分析、そしてスキャンから得たターゲットロールの求人トレンドです。上部のタブで切り替えてください。
 

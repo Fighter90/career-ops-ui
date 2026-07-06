@@ -98,6 +98,9 @@ Router.register('stats', async () => {
     { id: 'market', label: t('stats.tabMarket', 'Market report'), render: renderMarket },
     { id: 'pipeline', label: t('stats.tabPipeline', 'My pipeline'), render: renderPipeline },
     { id: 'trend', label: t('stats.tabTrend', 'Target-role trend'), render: renderTrend },
+    // v1.117.0 (parent parity) — rejection patterns + per-ATS-vendor advance
+    // rate from the parent's analyze-patterns.mjs (read-only shell-out).
+    { id: 'patterns', label: t('stats.tabPatterns', 'Rejection patterns'), render: renderPatterns },
   ];
   const tabBar = c('div', { className: 'tabs', role: 'tablist',
     style: { display: 'flex', gap: '6px', flexWrap: 'wrap', borderBottom: '1px solid var(--line, #e5e7eb)', margin: '4px 0 18px' } });
@@ -421,6 +424,64 @@ Router.register('stats', async () => {
         `${pts.length} ${t('stats.snapshotsCount', 'snapshots')} · ${t('stats.trendMetric', 'total postings over time')}`));
     }
     await loadTrend();
+    return wrap;
+  }
+
+  // ── tab 4: rejection patterns / ATS channels (v1.117.0, parent parity) ─────
+  // GET /api/stats/patterns shells out to the parent's analyze-patterns.mjs
+  // (read-only). Renders outcome mix, actionable recommendations, and the
+  // per-ATS-vendor advance rate; honest empty state when the script is absent.
+  async function renderPatterns() {
+    const wrap = c('div');
+    let d = null;
+    try { d = await API.get('/api/stats/patterns'); } catch { d = null; }
+    if (!d || d.available !== true) {
+      wrap.appendChild(emptyState(t('stats.patUnavailable',
+        'Pattern analytics needs the parent career-ops project (analyze-patterns.mjs) next to this app.'), null, ''));
+      return wrap;
+    }
+    const m = d.metadata || {};
+    const oc = m.byOutcome || {};
+    wrap.appendChild(c('div', { className: 'stat-cards', style: { display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '0 0 16px' } }, [
+      c('span', { className: 'chip' }, `${t('stats.patTotal', 'Analyzed')}: ${m.total || 0}`),
+      c('span', { className: 'chip' }, `✅ ${t('stats.patPositive', 'positive')}: ${oc.positive || 0}`),
+      c('span', { className: 'chip' }, `❌ ${t('stats.patNegative', 'negative')}: ${oc.negative || 0}`),
+      c('span', { className: 'chip' }, `⏳ ${t('stats.patPending', 'pending')}: ${oc.pending || 0}`),
+    ]));
+    const recs = Array.isArray(d.recommendations) ? d.recommendations.slice(0, 10) : [];
+    if (recs.length) {
+      wrap.appendChild(section(t('stats.patRecs', 'Recommendations'), c('ul', { style: { margin: '0', paddingLeft: '20px' } },
+        recs.map((r) => c('li', { style: { margin: '0 0 8px' } }, [
+          c('strong', null, String(r.action || '')),
+          c('div', { style: { color: 'var(--foggy)', fontSize: '13px' } }, String(r.reasoning || '')),
+        ])))));
+    }
+    const va = d.vendorAnalysis || {};
+    const vendors = Array.isArray(va.breakdown) ? va.breakdown : [];
+    if (vendors.length) {
+      const head = c('tr', null, [t('stats.patVendor', 'ATS vendor'), t('stats.patApps', 'Applications'), t('stats.patAdvanced', 'Advanced'), t('stats.patRate', 'Advance rate')]
+        .map((h) => c('th', { style: { textAlign: 'left' } }, h)));
+      const rows = vendors.map((v) => c('tr', null, [
+        c('td', null, String(v.vendor || '')),
+        c('td', { style: { fontVariantNumeric: 'tabular-nums' } }, String(v.total ?? 0)),
+        c('td', { style: { fontVariantNumeric: 'tabular-nums' } }, String(v.advanced ?? 0)),
+        c('td', { style: { fontVariantNumeric: 'tabular-nums' } }, `${v.advanceRate ?? 0}%${v.sufficientSample === false ? ' *' : ''}`),
+      ]));
+      const tblNode = c('div', null, [
+        c('div', { className: 'table-wrap' }, c('table', { className: 'tbl' }, [c('thead', null, head), c('tbody', null, rows)])),
+        c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '8px 0 0' } },
+          `* ${t('stats.patSmallN', 'below the minimum sample for a claim')} (n<${va.minSampleForClaim || 8}) · ${String(va.citation || '')}`),
+      ]);
+      wrap.appendChild(section(t('stats.patChannels', 'ATS channel advance rate'), tblNode));
+    }
+    const archetypes = Array.isArray(d.archetypeBreakdown) ? d.archetypeBreakdown.slice(0, 15) : [];
+    if (archetypes.length) {
+      const items = archetypes.map((a) => ({ label: String(a.archetype || ''), value: a.total || 0 }));
+      wrap.appendChild(section(t('stats.patArchetypes', 'Applications per archetype'), barChart(items)));
+    }
+    if (!recs.length && !vendors.length && !archetypes.length) {
+      wrap.appendChild(emptyState(t('stats.patEmpty', 'Not enough tracked applications yet for pattern analysis.'), null, ''));
+    }
     return wrap;
   }
 

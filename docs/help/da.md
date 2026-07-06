@@ -1269,6 +1269,8 @@ Samme fallback-kæde som Evaluate:
 
 ## 13. Mode-prompts (de syv `/#/<mode>`-sider)
 
+**Kadencetavle (v1.117.0).** Opfølgningssiden åbner nu med en deterministisk **kadencetavle** drevet af forælderens `followup-cadence.mjs`: hastighed pr. ansøgning (🔴 akut / 🟠 forsinket / 🟡 venter / 🔵 kold) med dage til næste skridt, plus en **Så opfølgningsdatoer**-knap, der fastgør en første dato for hver Applied-række (`followup-seed.mjs --backfill`). Uden forælderens scripts viser tavlen ærligt "ikke tilgængelig".
+
 Syv prompt-byggere: **Project**-idéer, **Training**-planer,
 **Follow-up**-e-mails, **Batch**-evalueringer, **Outreach** til
 rekrutterere, **Interview prep**-onepagers og **Patterns**-
@@ -1637,7 +1639,7 @@ outputtet, og søg i issue-trackeren på
 
 ## 17. Sådan tilføjer du en ny jobportal-kilde
 
-career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. Pr. v1.87.0 leverer `server/lib/sources/`-registreringen **46** adaptere — **41 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
+career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. Pr. v1.87.0 leverer `server/lib/sources/`-registreringen **50** adaptere — **45 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** At tilføje en 12. kilde er nu
 > et **rent fil-drop**. Registreringen
@@ -2025,6 +2027,8 @@ Klik på **Gem plan** for at beholde en. Den skrives til dit overordnede projekt
 
 ## 24. CV Studio (`#/cv-studio`)
 
+**Føj til CV (v1.117.0).** Et nyt kort forvandler et projekt, en publikation eller en portefølje-side (URL eller indsat tekst) til ATS-klare punkter, der KUN bygger på den kilde — målinger, arbejdsgivere eller datoer, der ikke findes i kilden, udelades og opdigtes aldrig. Du gennemgår forslagene og indsætter selv de accepterede i CV-editoren; intet skrives automatisk, og URL'er går gennem den samme anti-SSRF-validator som pipelinen.
+
 Siden `#/cv` er der, hvor du *skriver* dit CV; **CV Studio** (åbn det via **Setup → CV Studio 🎨** i sidepanelet) er der, hvor du *skærper* det. Det giver din `cv.md` tre ærlige værktøjer, hvoraf de to aldrig forlader din browser.
 
 **Tilpas til et job (v1.101).** Indsæt en jobbeskrivelse, og CV Studio laver et tilpasset CV plus en matchende ansøgning, kørt gennem en rekrutterings-checkliste-gate (fejl blokerer, advarsler rådgiver), kun baseret på dine materialer.
@@ -2073,6 +2077,8 @@ Når du klikker på **Gem hukommelse**, skrives noten til dit overordnede projek
 Ikke sikker på, hvad du skal skrive? **✨ Foreslå ud fra mine data** læser din ansøgningstracker og udkaster et sæt adfærdsmæssige punkter — mønstrene i, hvad du forfølger, accepterer og afviser. Kør den prompt, den giver dig, i en hvilken som helst LLM, gennemgå forslagene, og indsæt en redigeret version i noten. Den henter kun fra din egen tracker og opfinder aldrig fakta; du gennemgår altid, før noget gemmes.
 
 ## 26. Statistik (`#/stats`)
+
+**Fanen afvisningsmønstre (v1.117.0).** En fjerde fane kører forælderens `analyze-patterns.mjs` (skrivebeskyttet) og viser udfaldsmiks, handlingsrettede anbefalinger og avanceringsraten pr. ATS-leverandør (signalet om "algoritmisk monokultur" — Bommasani et al., FAccT 2026). Leverandører under minimumsstikprøven markeres med stjerne; uden forælderprojektet siger fanen det ærligt.
 
 Siden **Statistik** samler tre visninger under én sektion: en AI-genereret markedsrapport, analyser af din egen pipeline og tendensen i antallet af ledige stillinger for dine målroller ud fra dine scanninger. Skift mellem dem med fanerne øverst.
 

@@ -1095,6 +1095,8 @@ reportSlug?, notes?, date? }`。按 `(company, role)` 大小写不敏感地
 
 ## 13. 模式提示(七个 `/#/<mode>` 页面)
 
+**跟进节奏板 (v1.117.0)。** 跟进页面现在以由父项目 `followup-cadence.mjs` 驱动的确定性**节奏板**开场:每个申请的紧急度(🔴 紧急 / 🟠 逾期 / 🟡 等待 / 🔵 冷却)及距下一步的天数,外加一个**播种跟进日期**按钮,为每个 Applied 行固定首次跟进日期(`followup-seed.mjs --backfill`)。没有父脚本时,节奏板会诚实提示"不可用"。
+
 七个提示构建器: **Project** 想法、**Training** 计划、**Follow-up**
 邮件、**Batch** 评估、**Outreach** 给招聘者、**Interview prep** 单
 页、以及 **Patterns** 回顾。每个都包裹了一个具体的
@@ -1439,7 +1441,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 
 ## 17. 如何添加新的招聘门户来源
 
-career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。截至 v1.87.0,`server/lib/sources/` 注册表自带 **46** 个 adapter —— **41 个英文 + 5 个俄文**板块。英文集合涵盖主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由显式 `provider:` 选择的全板块聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及从 `careers_url` 主机或显式 `api:` URL 自动检测的按租户 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整列表永远无需在此手工统计 —— 它会从 `server/lib/sources/` 自动发现,并在 `#/scan` 的 Source 下拉框中实时显示。** YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
+career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。截至 v1.87.0,`server/lib/sources/` 注册表自带 **50** 个 adapter —— **45 个英文 + 5 个俄文**板块。英文集合涵盖主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由显式 `provider:` 选择的全板块聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及从 `careers_url` 主机或显式 `api:` URL 自动检测的按租户 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整列表永远无需在此手工统计 —— 它会从 `server/lib/sources/` 自动发现,并在 `#/scan` 的 Source 下拉框中实时显示。** YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 即插即用自动发现。** 添加第 12 个来源现在是**纯粹的文件投放**。注册表
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))
@@ -1799,6 +1801,8 @@ career-ops-ui 的大部分功能都在问“这份工作和我的 CV 匹配吗�
 
 ## 24. CV Studio (`#/cv-studio`)
 
+**添加到 CV (v1.117.0)。** 新卡片把项目、论文或作品集页面(URL 或粘贴文本)变成仅基于该来源的 ATS 要点——来源中没有的指标、雇主或日期一律省略,绝不虚构。你审阅建议并自己粘贴进 CV 编辑器;不会自动写入,URL 走与流水线相同的 SSRF 安全校验器。
+
 `#/cv` 页面是你*撰写*简历的地方；**CV Studio**（从侧边栏的 **Setup → CV Studio 🎨** 打开）则是你*打磨*简历的地方。它为你的 `cv.md` 提供三件诚实的工具，其中两件永远不会离开你的浏览器。
 
 **针对职位定制(v1.101)。** 粘贴职位描述,CV Studio 即生成定制简历与匹配的求职信,并通过招聘官检查清单门禁(错误拦截,警告提示),仅基于你自己的材料。
@@ -1847,6 +1851,8 @@ career-ops-ui 的大部分功能都在问“这份工作和我的 CV 匹配吗�
 不确定该写什么？**✨ 从我的数据中建议**会读取你的申请追踪器，起草一组行为要点——即你所追求、接受和拒绝的事物中的规律。在任意 LLM 中运行它给出的提示词，审阅这些建议，然后把编辑后的版本粘贴到备注中。它只挖掘你自己的追踪器，绝不编造事实；在任何内容被保存之前，你始终会先审阅。
 
 ## 26. 统计 (`#/stats`)
+
+**拒绝模式标签页 (v1.117.0)。** 第四个标签页运行父项目的 `analyze-patterns.mjs`(只读),展示结果构成、可执行建议以及各 ATS 供应商的推进率("算法单一文化"信号——Bommasani et al., FAccT 2026)。低于最小样本的供应商标有星号;没有父项目时标签页会诚实提示。
 
 **统计**页面在一个板块下汇集三个视图:AI 生成的市场报告、你自身流程的分析,以及来自扫描结果的目标职位空缺趋势。用顶部的选项卡在它们之间切换。
 

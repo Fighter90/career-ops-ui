@@ -1206,6 +1206,8 @@ Ten sam łańcuch awaryjny co Evaluate:
 
 ## 13. Tryby promptów (siedem stron `/#/<mode>`)
 
+**Tablica kadencji (v1.117.0).** Strona follow-upów otwiera się teraz deterministyczną **tablicą kadencji** zasilaną przez `followup-cadence.mjs` rodzica: pilność każdej aplikacji (🔴 pilne / 🟠 zaległe / 🟡 oczekuje / 🔵 zimne) z dniami do następnego kroku, plus przycisk **Zasiej daty follow-upów**, który przypina pierwszą datę każdemu wierszowi Applied (`followup-seed.mjs --backfill`). Bez skryptów rodzica tablica uczciwie pokazuje „niedostępne".
+
 Siedem kreatorów promptów: idee **Project**, plany **Training**,
 e-maile **Follow-up**, oceny **Batch**, **Outreach** do
 rekruterów, jednostronicowe materiały **Interview prep** i
@@ -1570,7 +1572,7 @@ wynik i przeszukaj tracker problemów na
 
 ## 17. Jak dodać nowe źródło ofert pracy
 
-career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie jak pobrać i znormalizować wyniki jednego portalu. Od v1.87.0 rejestr `server/lib/sources/` dostarcza **46** adapterów — **41 angielskich + 5 rosyjskich** portali. Zestaw angielski obejmuje główne ATS-y (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregatory ogólnoportalowe wybierane przez jawny `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) oraz ATS-y na tenant automatycznie wykrywane z hosta `careers_url` lub jawnego adresu `api:` (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Pełnej listy nigdy nie trzeba liczyć tu ręcznie — jest automatycznie wykrywana z `server/lib/sources/` i pokazywana na żywo w rozwijanym menu Source na `#/scan`.** Patrz §5 po YAML oraz `docs/portals-examples.md` po gotowe wpisy do skopiowania.
+career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie jak pobrać i znormalizować wyniki jednego portalu. Od v1.87.0 rejestr `server/lib/sources/` dostarcza **50** adapterów — **45 angielskich + 5 rosyjskich** portali. Zestaw angielski obejmuje główne ATS-y (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregatory ogólnoportalowe wybierane przez jawny `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) oraz ATS-y na tenant automatycznie wykrywane z hosta `careers_url` lub jawnego adresu `api:` (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Pełnej listy nigdy nie trzeba liczyć tu ręcznie — jest automatycznie wykrywana z `server/lib/sources/` i pokazywana na żywo w rozwijanym menu Source na `#/scan`.** Patrz §5 po YAML oraz `docs/portals-examples.md` po gotowe wpisy do skopiowania.
 
 > **v1.69.0 (P-14) — plug-in z auto-odkrywaniem.** Dodanie 12. źródła to teraz
 > **czyste wrzucenie pliku**. Rejestr
@@ -1969,6 +1971,8 @@ Kliknij **Zapisz plan**, aby zachować jeden. Jest zapisywany w warstwie użytko
 
 ## 24. CV Studio (`#/cv-studio`)
 
+**Dodaj do CV (v1.117.0).** Nowa karta zamienia projekt, publikację lub stronę portfolio (URL albo wklejony tekst) w punkty gotowe pod ATS oparte WYŁĄCZNIE na tym źródle — metryki, pracodawcy czy daty nieobecne w źródle są pomijane, nigdy wymyślane. Przeglądasz propozycje i sam wklejasz zaakceptowane do edytora CV; nic nie zapisuje się automatycznie, a URL-e przechodzą przez ten sam walidator anty-SSRF co pipeline.
+
 Strona `#/cv` to miejsce, w którym *piszesz* swoje CV; **CV Studio** (otwórz je z **Setup → CV Studio 🎨** na pasku bocznym) to miejsce, w którym je *dopracowujesz*. Daje twojemu `cv.md` trzy uczciwe narzędzia, z których dwa nigdy nie opuszczają twojej przeglądarki.
 
 **Dopasuj do oferty (v1.101).** Wklej opis oferty, a CV Studio tworzy dopasowane CV oraz pasujący list motywacyjny, przepuszczone przez rekruterską bramkę kontrolną (błędy blokują, ostrzeżenia doradzają), oparte wyłącznie na Twoich materiałach.
@@ -2017,6 +2021,8 @@ Gdy klikniesz **Zapisz pamięć**, notatka jest zapisywana w warstwie użytkowni
 Nie wiesz, co napisać? **✨ Zaproponuj z moich danych** czyta twój tracker aplikacji i szkicuje zestaw punktów behawioralnych — wzorce w tym, co ścigasz, akceptujesz i odrzucasz. Uruchom prompt, który ci daje, w dowolnym LLM, przejrzyj sugestie i wklej edytowaną wersję do notatki. Czerpie wyłącznie z twojego własnego trackera i nigdy nie wymyśla faktów; zawsze sprawdzasz, zanim cokolwiek zostanie zapisane.
 
 ## 26. Statystyki (`#/stats`)
+
+**Zakładka wzorców odrzuceń (v1.117.0).** Czwarta zakładka uruchamia `analyze-patterns.mjs` rodzica (tylko odczyt) i pokazuje rozkład wyników, praktyczne rekomendacje oraz wskaźnik awansu wg dostawcy ATS (sygnał „algorytmicznej monokultury" — Bommasani et al., FAccT 2026). Dostawcy poniżej minimalnej próby mają gwiazdkę; bez projektu rodzica zakładka uczciwie o tym informuje.
 
 Strona **Statystyki** łączy trzy widoki w jednej sekcji: wygenerowany przez AI raport rynkowy, analitykę twojego własnego pipeline'u oraz trend liczby ofert dla twoich docelowych ról z twoich skanów. Przełączaj się między nimi za pomocą kart u góry.
 

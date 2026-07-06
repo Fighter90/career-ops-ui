@@ -78,6 +78,10 @@ import { successfactorsAdapter } from './adapters/successfactors.mjs';
 // v1.97.0 — parent career-ops parity (#1498): Dassault Systèmes zero-token
 // provider (Exalead card-search XML), single-company, provider-selected.
 import { dassaultAdapter } from './adapters/dassault.mjs';
+import { beesiteAdapter } from './adapters/beesite.mjs';
+import { higheredjobsAdapter } from './adapters/higheredjobs.mjs';
+import { jibeapplyAdapter } from './adapters/jibeapply.mjs';
+import { softgardenAdapter } from './adapters/softgarden.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -137,6 +141,13 @@ export const ALL_ADAPTERS = [
   // v1.97.0 — parent parity (#1498): Dassault Systèmes, single global Exalead
   // endpoint, provider-selected (`provider: dassault`) or 3ds.com host-detected.
   dassaultAdapter,
+  // v1.117.0 — parent parity pack: beesite / jibeapply / softgarden are
+  // per-tenant ATS endpoints (host-detected or explicit `provider:`);
+  // higheredjobs is a board-wide RSS feed (provider-selected). All zero-auth.
+  beesiteAdapter,
+  higheredjobsAdapter,
+  jibeapplyAdapter,
+  softgardenAdapter,
 ];
 
 /**

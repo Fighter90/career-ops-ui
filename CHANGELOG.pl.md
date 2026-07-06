@@ -9,6 +9,15 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.117.0] — 2026-07-06
+
+**Pakiet parytetu z rodzicem — sześć możliwości nadrzędnego career-ops w UI.** (1) **Tablica kadencji** na `#/followup`: pilność każdej aplikacji (🔴/🟠/🟡/🔵) z `followup-cadence.mjs`, plus przycisk **Zasiej daty** (`followup-seed.mjs --backfill`). (2) **Wzorce odrzuceń**: czwarta zakładka Statystyk uruchamia `analyze-patterns.mjs` (tylko odczyt) — rozkład wyników, rekomendacje, wskaźnik awansu wg dostawcy ATS. (3) **Dodaj do CV**: karta CV Studio zamienia URL lub wklejony tekst w punkty ATS oparte WYŁĄCZNIE na tym źródle (tylko propozycje, bez zapisów; pobranie URL chronione anty-SSRF). (4) **4 nowe źródła skanowania** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — rejestr liczy teraz **50 adapterów (45 EN + 5 RU)**, wszystkie w liście Scan. (5) Krok **pre-skanu dyskwalifikatorów** w checkliście Apply. (6) **Runner reconcile** (`/api/run/reconcile`). Trasy shell-out uczciwie degradują bez skryptów rodzica.
+
+- Nowy moduł `server/lib/routes/followup.mjs` (31.) + nowe trasy + 8 plików source/adapter. Testy: 6 + 7 nowych; zestaw 1737 → 1750. 41 kluczy i18n ×16. Pomoc §13/§17/§24/§26 rozszerzona ×16.
+
+Nowe: `GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`, `POST /api/cv-studio/add-entry`, `POST /api/run/reconcile`.
+
+
 ## [1.116.0] — 2026-07-06
 
 **Przeróbka miernika zużycia + pierwszy test end-to-end widżetów.** Miernik zużycia AI (v1.114.0) jest naprawiony i poprawnie przypięty: teraz jest **przypięty na dole lewego paska bocznego** (na całą szerokość, ta sama powierzchnia) i rezerwuje na dole miejsce równe swojej wysokości, aby **menu nigdy nie było zasłonięte** — nawigacja i stopka wersji zawsze przewijają się swobodnie nad nim. **Odświeża się na żywo** (co 15 s, przy fokusie karty i zmianie trasy), a każdy wiersz okna pokazuje teraz prawdziwe **`<tokeny> · <szacowany koszt>`** (paski skalują się względem okna 30-dniowego) zamiast zawsze-100% "udziału". Ponadto: trwała bariera `typeof` w importerze CV zamyka u źródła powracający fałszywy alarm type-confusion CodeQL, a nowy **test end-to-end** Playwright uruchamia oba trwałe widżety w prawdziwej przeglądarce.

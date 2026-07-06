@@ -9,6 +9,15 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.117.0] — 2026-07-06
+
+**Pacote de paridade com o pai — seis capacidades do career-ops pai trazidas à UI.** (1) **Quadro de cadência de follow-up** em `#/followup` com urgência por candidatura (🔴/🟠/🟡/🔵) do `followup-cadence.mjs`, mais o botão **Semear datas** (`followup-seed.mjs --backfill`). (2) **Padrões de rejeição**: quarta aba de Estatísticas que executa `analyze-patterns.mjs` (somente leitura) — mistura de resultados, recomendações e taxa de avanço por fornecedor ATS. (3) **Adicionar ao CV**: um cartão do CV Studio transforma uma URL ou texto colado em tópicos ATS baseados SOMENTE nessa fonte (apenas sugestões, sem gravações; o fetch de URL é protegido contra SSRF). (4) **4 novos provedores de scan** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — o registro agora tem **50 adaptadores (45 EN + 5 RU)**, todos no dropdown do Scan. (5) Etapa de **pré-varredura de desqualificadores** no checklist do Apply. (6) **Runner reconcile** (`/api/run/reconcile`). Rotas shell-out degradam com honestidade sem os scripts do pai.
+
+- Novo módulo `server/lib/routes/followup.mjs` (31.º) + novas rotas + 8 arquivos source/adapter. Testes: 6 + 7 novos; suíte 1737 → 1750. 41 chaves i18n ×16. Ajuda §13/§17/§24/§26 ampliada ×16.
+
+Novo: `GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`, `POST /api/cv-studio/add-entry`, `POST /api/run/reconcile`.
+
+
 ## [1.116.0] — 2026-07-06
 
 **Medidor de uso refeito + primeiro teste ponta a ponta de widgets.** O medidor de uso de IA (v1.114.0) foi corrigido e fixado corretamente: agora fica **fixado no fim da barra lateral esquerda** (toda a largura, com a mesma superfície) e reserva embaixo um espaço igual à sua altura para que o **menu nunca seja coberto** — a navegação e o rodapé de versão sempre rolam livres acima. Ele **atualiza ao vivo** (a cada 15 s, ao focar a aba e ao mudar de rota), e cada linha de janela mostra agora **`<tokens> · <custo estimado>`** real (as barras escalam contra a janela de 30 dias) em vez de uma "parcela" sempre em 100%. Além disso: uma barreira `typeof` durável no importador de CV fecha na origem o falso positivo recorrente de type-confusion do CodeQL, e um novo **teste ponta a ponta** do Playwright exercita ambos os widgets persistentes num navegador real.

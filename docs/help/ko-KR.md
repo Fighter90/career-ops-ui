@@ -1173,6 +1173,8 @@ Evaluate와 동일한 폴백 체인:
 
 ## 13. 모드 프롬프트 (일곱 개 `/#/<mode>` 페이지)
 
+**케이던스 보드 (v1.117.0).** 팔로업 페이지가 이제 부모의 `followup-cadence.mjs` 데이터로 구동되는 결정적 **케이던스 보드**로 열립니다: 지원별 긴급도(🔴 긴급 / 🟠 기한 초과 / 🟡 대기 / 🔵 냉각)와 다음 단계까지의 일수, 그리고 모든 Applied 행에 첫 팔로업 날짜를 고정하는 **팔로업 날짜 시드** 버튼(`followup-seed.mjs --backfill`). 부모 스크립트가 없으면 보드는 정직하게 "사용 불가"를 표시합니다.
+
 일곱 개 프롬프트 빌더: **Project** 아이디어, **Training** 계획,
 **Follow-up** 이메일, **Batch** 평가, **Outreach**(리크루터에게),
 **Interview prep** 한 장 요약, **Patterns** 회고. 각각 특정
@@ -1534,7 +1536,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 
 ## 17. 새 채용 포털 소스를 추가하는 방법
 
-career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. v1.87.0 기준으로 `server/lib/sources/` 레지스트리는 **46**개의 어댑터를 포함합니다 — **영문 41개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
+career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. v1.87.0 기준으로 `server/lib/sources/` 레지스트리는 **50**개의 어댑터를 포함합니다 — **영문 45개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
 
 > **v1.69.0 (P-14) — 드롭인 자동 검색.** 12번째 소스 추가는 이제
 > **순수 파일 드롭**입니다. 레지스트리
@@ -1907,6 +1909,8 @@ career-ops-ui의 대부분은 "이 채용 공고가 내 CV와 맞는가?"를 묻
 
 ## 24. CV Studio (`#/cv-studio`)
 
+**CV에 추가 (v1.117.0).** 새 카드는 프로젝트·논문·포트폴리오 페이지(URL 또는 붙여넣은 텍스트)를 그 출처에만 근거한 ATS 불릿으로 바꿉니다 — 출처에 없는 지표·고용주·날짜는 지어내지 않고 생략합니다. 제안을 검토해 직접 CV 편집기에 붙여넣으며, 자동 저장은 없고 URL은 파이프라인과 동일한 SSRF 안전 검증기를 거칩니다.
+
 `#/cv` 페이지는 이력서를 *작성하는* 곳이고, **CV Studio**(사이드바의 **Setup → CV Studio 🎨**에서 열기)는 이력서를 *다듬는* 곳입니다. `cv.md`에 세 가지 정직한 도구를 제공하며, 그중 둘은 절대 브라우저를 벗어나지 않습니다.
 
 **채용공고에 맞춤(v1.101).** 채용공고를 붙여넣으면 CV Studio가 맞춤 이력서와 어울리는 커버레터를 만들고, 리크루터 체크리스트 게이트를 통과시킵니다(오류는 차단, 경고는 권고). 오직 당신의 자료에만 근거합니다.
@@ -1955,6 +1959,8 @@ career-ops-ui의 대부분은 "이 채용 공고가 내 CV와 맞는가?"를 묻
 무엇을 써야 할지 모르겠나요? **✨ 내 데이터에서 제안**은 당신의 지원 트래커를 읽고 일련의 행동 항목 초안을 작성합니다 — 당신이 추구하고, 수락하고, 거절하는 것들의 패턴입니다. 제공된 프롬프트를 아무 LLM에서 실행하고, 제안을 검토한 뒤, 편집한 버전을 메모에 붙여넣으세요. 오직 당신 자신의 트래커만 활용하며 사실을 지어내지 않습니다. 무엇이든 저장되기 전에 당신이 항상 검토합니다.
 
 ## 26. 통계 (`#/stats`)
+
+**거절 패턴 탭 (v1.117.0).** 네 번째 탭은 부모의 `analyze-patterns.mjs`(읽기 전용)를 실행해 결과 분포, 실행 가능한 추천, ATS 벤더별 진전율("알고리즘 단일 문화" 신호 — Bommasani et al., FAccT 2026)을 보여줍니다. 최소 표본 미만 벤더에는 별표가 붙고, 부모 프로젝트가 없으면 탭이 정직하게 알립니다.
 
 **통계** 페이지는 세 가지 뷰를 하나의 섹션에 모읍니다: AI가 생성한 시장 리포트, 여러분 자신의 파이프라인 분석, 그리고 스캔에서 얻은 목표 역할의 채용 공고 추세입니다. 상단의 탭으로 이들 사이를 전환하십시오.
 
