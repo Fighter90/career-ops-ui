@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.108.0] — 2026-07-06
+
+**Security hardening (CodeQL triage, round 2).** Three more low-severity findings fixed: the mode-prompt builder resolves the locale role-line by **own key + `typeof === function`** so a tampered locale can't dispatch to a prototype method (unvalidated-dynamic-method-call); the PDF-filename slug is **capped to 200 chars before the dash-trim regex** so an all-dash input can't backtrack (polynomial ReDoS); and document import **coerces an array `filename`** (a repeated header) to a string (type-confusion). No behavior change for valid input.
+
+- `server/lib/prompts.mjs`, `server/lib/routes/runners.mjs`, `server/lib/cv-import.mjs` + `tests/security-hardening-v1108.test.mjs` (3). Over v1.106–v1.108 the static-analysis backlog went from 167 to ~14, with every genuinely security-relevant finding fixed and the remainder (guarded/sanitized false positives + note-level lint) dismissed with rationale.
+
+New: none.
+
+
 ## [1.107.0] — 2026-07-06
 
 **Sanitizer hardening (at-rest XSS defense-in-depth).** `stripDangerousMarkdown` — which neutralizes dangerous HTML in stored CV/JD markdown so any consumer that bypasses the escape-on-render client is still safe — now runs its tag strip **to a fixed point** (repeat-until-stable) so a removal that *reforms* a payload (e.g. `<scr<script></script>ipt>`) is caught, matches script/style/etc. **end tags with trailing junk** (`</script foo>`), and strips an **unclosed** executable opener (`<script …>` with no closing tag). Behavior for valid markdown is unchanged — it only ever removes more.

@@ -2,6 +2,15 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.108.0] — 2026-07-06
+
+**Güvenlik sıkılaştırması (CodeQL triyajı, 2. tur).** Üç düşük önem dereceli bulgu daha düzeltildi: prompt oluşturucu, yerel ayar rol satırını **kendi anahtarı + `typeof === function`** ile çözerek kurcalanmış bir yerel ayarın bir prototip yöntemine yönlenmesini engeller (unvalidated-dynamic-method-call); PDF dosya adı slug'ı **regex'ten önce 200 karaktere sınırlandırılır** ki tamamı tire olan bir girdi geri izleme yapmasın (polinom ReDoS); ve belge içe aktarma **dizi türünde bir `filename`'i** (tekrarlanan başlık) dizeye zorlar (type-confusion). Geçerli girdi için davranış değişikliği yok.
+
+- `server/lib/prompts.mjs`, `server/lib/routes/runners.mjs`, `server/lib/cv-import.mjs` + `tests/security-hardening-v1108.test.mjs` (3). v1.106–v1.108 boyunca statik analiz birikimi 167'den ~14'e düştü; gerçekten güvenlikle ilgili her bulgu düzeltildi, kalanı (korumalı/temizlenmiş yanlış pozitifler + not düzeyi lint) gerekçeyle reddedildi.
+
+Yeni: yok.
+
+
 ## [1.107.0] — 2026-07-06
 
 **Temizleyici sıkılaştırması (durağan XSS derinlemesine savunma).** `stripDangerousMarkdown` — depolanan özgeçmiş/ilan markdown'ındaki tehlikeli HTML'i etkisiz kılarak, render'da-kaçışlı istemciyi atlayan herhangi bir tüketiciyi bile güvende tutar — artık etiket temizliğini **bir sabit noktaya kadar** çalıştırıyor (kararlı olana dek tekrarla), böylece bir yükü *yeniden oluşturan* bir kaldırma (örn. `<scr<script></script>ipt>`) yakalanır, script/style vb. **sonunda çöp bulunan** kapanış etiketleriyle (`</script foo>`) eşleşir ve **kapatılmamış** bir yürütülebilir açıcıyı (`<script …>`) kaldırır. Geçerli markdown için davranış değişmez — yalnızca daha fazlasını kaldırır.

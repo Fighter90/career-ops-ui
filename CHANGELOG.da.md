@@ -10,6 +10,15 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.108.0] — 2026-07-06
+
+**Sikkerhedshærdning (CodeQL-triage, runde 2).** Tre yderligere lavseverititets-fund rettet: prompt-byggeren opslår locale-rollelinjen via **egen nøgle + `typeof === function`**, så en manipuleret locale ikke kan dispatche til en prototype-metode (unvalidated-dynamic-method-call); PDF-filnavns-sluggen **begrænses til 200 tegn før regex'en**, så et input med kun bindestreger ikke backtracker (polynomiel ReDoS); og dokumentimport **tvinger et array-`filename`** (gentaget header) til en streng (type-confusion). Ingen adfærdsændring for gyldigt input.
+
+- `server/lib/prompts.mjs`, `server/lib/routes/runners.mjs`, `server/lib/cv-import.mjs` + `tests/security-hardening-v1108.test.mjs` (3). Over v1.106–v1.108 gik den statiske analyses efterslæb fra 167 til ~14, hvor hvert reelt sikkerhedsrelevant fund blev rettet og resten (værnede/rensede falske positiver + note-niveau-lint) afvist med begrundelse.
+
+Nyt: intet.
+
+
 ## [1.107.0] — 2026-07-06
 
 **Sanitizer-hærdning (XSS-forsvar i dybden i hviletilstand).** `stripDangerousMarkdown` — som neutraliserer farlig HTML i gemt CV/job-markdown, så enhver forbruger, der omgår escape-ved-rendering-klienten, stadig er sikker — kører nu sin tag-strip **til et fikspunkt** (gentag til stabil), så en fjernelse, der *gendanner* en payload (f.eks. `<scr<script></script>ipt>`), fanges, matcher script/style-slutmærker **med efterfølgende skrald** (`</script foo>`) og fjerner en **uafsluttet** eksekverbar åbner (`<script …>`). Adfærd for gyldig markdown er uændret — den fjerner kun mere.

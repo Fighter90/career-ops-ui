@@ -11,6 +11,15 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.108.0] — 2026-07-06
+
+**Durcissement de sécurité (tri CodeQL, 2e passe).** Trois autres vulnérabilités de faible sévérité corrigées : le constructeur de prompts résout la ligne de rôle de la locale par **clé propre + `typeof === function`** afin qu'une locale falsifiée ne puisse pas invoquer une méthode de prototype (unvalidated-dynamic-method-call) ; le slug de nom de fichier PDF est **plafonné à 200 caractères avant le regex** pour qu'une entrée tout en tirets ne rétrograde pas (ReDoS polynomial) ; et l'import de document **convertit un `filename` tableau** (en-tête répété) en chaîne (type-confusion). Aucun changement de comportement pour une entrée valide.
+
+- `server/lib/prompts.mjs`, `server/lib/routes/runners.mjs`, `server/lib/cv-import.mjs` + `tests/security-hardening-v1108.test.mjs` (3). Sur v1.106–v1.108, l'arriéré d'analyse statique est passé de 167 à ~14, chaque résultat réellement pertinent pour la sécurité étant corrigé et le reste (faux positifs protégés/désinfectés + lint de niveau note) rejeté avec justification.
+
+Nouveau : aucun.
+
+
 ## [1.107.0] — 2026-07-06
 
 **Durcissement du désinfectant (défense en profondeur XSS au repos).** `stripDangerousMarkdown` — qui neutralise le HTML dangereux dans le markdown de CV/offre stocké pour que tout consommateur contournant le client à échappement-au-rendu reste sûr — exécute désormais son nettoyage de balises **jusqu'à un point fixe** (répéter jusqu'à stabilisation) afin qu'une suppression qui *reforme* une charge (p. ex. `<scr<script></script>ipt>`) soit interceptée, correspond aux balises de fermeture script/style/etc. **avec des résidus** (`</script foo>`) et supprime un ouvreur exécutable **non fermé** (`<script …>`). Le comportement pour un markdown valide est inchangé — il ne supprime que davantage.

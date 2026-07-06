@@ -2,6 +2,15 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.108.0] — 2026-07-06
+
+**Rafforzamento della sicurezza (triage CodeQL, round 2).** Corrette altre tre vulnerabilità di bassa gravità: il costruttore di prompt risolve la riga di ruolo della locale per **chiave propria + `typeof === function`** così che una locale manomessa non possa invocare un metodo del prototipo (unvalidated-dynamic-method-call); lo slug del nome file PDF è **limitato a 200 caratteri prima del regex** così che un input di soli trattini non torni indietro (ReDoS polinomiale); e l'importazione documenti **forza un `filename` array** (header ripetuto) a stringa (type-confusion). Nessun cambiamento di comportamento per input valido.
+
+- `server/lib/prompts.mjs`, `server/lib/routes/runners.mjs`, `server/lib/cv-import.mjs` + `tests/security-hardening-v1108.test.mjs` (3). Su v1.106–v1.108 l'arretrato dell'analisi statica è passato da 167 a ~14, con ogni risultato realmente rilevante per la sicurezza corretto e il resto (falsi positivi protetti/sanificati + lint di livello nota) respinto con motivazione.
+
+Nuovo: nessuno.
+
+
 ## [1.107.0] — 2026-07-06
 
 **Rafforzamento del sanitizzatore (difesa in profondità XSS a riposo).** `stripDangerousMarkdown` — che neutralizza l'HTML pericoloso nel markdown di CV/annuncio memorizzato affinché qualsiasi consumatore che aggiri il client con escape-al-rendering resti sicuro — ora esegue la pulizia dei tag **fino a un punto fisso** (ripeti fino a stabilizzarsi) così che una rimozione che *riforma* un payload (es. `<scr<script></script>ipt>`) venga intercettata, corrisponde ai tag di chiusura script/style ecc. **con residui finali** (`</script foo>`) e rimuove un apertore eseguibile **non chiuso** (`<script …>`). Il comportamento per markdown valido è invariato — rimuove solo di più.

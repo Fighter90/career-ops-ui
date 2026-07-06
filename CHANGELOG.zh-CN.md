@@ -9,6 +9,15 @@
 ---
 
 
+## [1.108.0] — 2026-07-06
+
+**安全加固(CodeQL 分诊第 2 轮)。** 又修复三处低危问题:模式提示构建器按**自有键 + `typeof === function`**解析语言角色行,使被篡改的语言无法分派到原型方法(unvalidated-dynamic-method-call);PDF 文件名 slug 在**正则之前限制为 200 字符**,使全连字符输入无法回溯(多项式 ReDoS);文档导入将**数组 `filename`**(重复标头)强制转换为字符串(type-confusion)。对有效输入无行为变化。
+
+- `server/lib/prompts.mjs`、`server/lib/routes/runners.mjs`、`server/lib/cv-import.mjs` + `tests/security-hardening-v1108.test.mjs`(3)。v1.106–v1.108 期间静态分析积压从 167 降至约 14,所有真正与安全相关的发现均已修复,其余(有防护/已净化的误报 + 注释级 lint)已附理由驳回。
+
+新增:无。
+
+
 ## [1.107.0] — 2026-07-06
 
 **净化器加固(静态 XSS 纵深防御)。** `stripDangerousMarkdown`——中和已存储的简历/职位 markdown 中的危险 HTML,使任何绕过渲染时转义客户端的消费者仍然安全——现在会将标签清除运行**至不动点**(重复直到稳定),以便捕获会*重构*载荷的清除(如 `<scr<script></script>ipt>`),匹配**末尾带杂物**的 script/style 等结束标签(`</script foo>`),并清除**未闭合**的可执行开标签(`<script …>`)。对有效 markdown 的行为不变——只会清除更多。

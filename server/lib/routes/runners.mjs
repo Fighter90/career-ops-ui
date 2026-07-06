@@ -188,8 +188,10 @@ export function registerRunnerRoutes(app) {
     }
     mkdirSync(PATHS.outputDir, { recursive: true });
     const ts = new Date().toISOString().replace(/[^\dT]/g, '').slice(0, 15);
-    // Sanitize slug for filename use: only word chars + hyphen.
-    const safeSlug = (slug || 'doc').replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'doc';
+    // Sanitize slug for filename use: only word chars + hyphen. Cap the length
+    // FIRST so the trailing-dash trim regex can't backtrack on a huge all-dash
+    // input (polynomial ReDoS on an uncapped slug).
+    const safeSlug = String(slug || 'doc').slice(0, 200).replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'doc';
     const inputPath = projPath('output', `${safeSlug}-input-${ts}.html`);
     const outputPath = projPath('output', `${safeSlug}-${ts}.pdf`);
     writeFileSync(inputPath, cvMarkdownToHtml(markdown, title || safeSlug));

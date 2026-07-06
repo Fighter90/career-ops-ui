@@ -2,6 +2,15 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.108.0] — 2026-07-06
+
+**Sicherheitshärtung (CodeQL-Triage, Runde 2).** Drei weitere Funde geringer Schwere behoben: der Prompt-Builder löst die Locale-Rollenzeile über **eigenen Schlüssel + `typeof === function`** auf, sodass eine manipulierte Locale nicht an eine Prototyp-Methode dispatchen kann (unvalidated-dynamic-method-call); der PDF-Dateinamen-Slug wird **vor dem Regex auf 200 Zeichen begrenzt**, sodass eine reine Bindestrich-Eingabe nicht backtrackt (polynomialer ReDoS); und der Dokumentimport **zwingt einen Array-`filename`** (wiederholter Header) zu einem String (type-confusion). Kein Verhaltenswechsel bei gültigem Input.
+
+- `server/lib/prompts.mjs`, `server/lib/routes/runners.mjs`, `server/lib/cv-import.mjs` + `tests/security-hardening-v1108.test.mjs` (3). Über v1.106–v1.108 sank der Rückstand der statischen Analyse von 167 auf ~14; jeder wirklich sicherheitsrelevante Fund wurde behoben und der Rest (geschützte/bereinigte Fehlalarme + Note-Level-Lint) mit Begründung verworfen.
+
+Neu: keine.
+
+
 ## [1.107.0] — 2026-07-06
 
 **Sanitizer-Härtung (XSS-Verteidigung in der Tiefe im Ruhezustand).** `stripDangerousMarkdown` — das gefährliches HTML im gespeicherten Lebenslauf-/Stellen-Markdown neutralisiert, damit jeder Konsument, der den Escape-beim-Rendern-Client umgeht, sicher bleibt — führt sein Tag-Stripping jetzt **bis zu einem Fixpunkt** aus (bis stabil wiederholen), sodass ein Entfernen, das eine Payload *neu bildet* (z. B. `<scr<script></script>ipt>`), erfasst wird, script/style-Endtags **mit nachfolgendem Müll** (`</script foo>`) trifft und einen **ungeschlossenen** ausführbaren Opener (`<script …>`) entfernt. Verhalten für gültiges Markdown unverändert — es entfernt nur mehr.

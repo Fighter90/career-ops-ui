@@ -280,8 +280,14 @@ export function buildModePrompt(template, slug, context, lang) {
   delete ctx.run;
   delete ctx.lang;
   delete ctx.locale;
-  const roleLineFn = SCAFFOLD_STRINGS.modeRoleLine[lang] || SCAFFOLD_STRINGS.modeRoleLine.en;
-  const artifact = MODE_ARTIFACT[slug] || 'the final result';
+  // Resolve by OWN key only + require a function, so a tampered `lang`
+  // (e.g. "constructor") can never dispatch to a prototype method.
+  const roleLineFn = (Object.prototype.hasOwnProperty.call(SCAFFOLD_STRINGS.modeRoleLine, lang)
+    && typeof SCAFFOLD_STRINGS.modeRoleLine[lang] === 'function')
+    ? SCAFFOLD_STRINGS.modeRoleLine[lang]
+    : SCAFFOLD_STRINGS.modeRoleLine.en;
+  const artifact = (Object.prototype.hasOwnProperty.call(MODE_ARTIFACT, slug) && typeof MODE_ARTIFACT[slug] === 'string')
+    ? MODE_ARTIFACT[slug] : 'the final result';
   const parts = [
     buildLocaleDirective(lang),
     roleLineFn(slug),
