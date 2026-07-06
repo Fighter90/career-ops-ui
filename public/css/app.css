@@ -1232,7 +1232,11 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .toast {
   position: fixed;
   right: var(--space-5);
-  bottom: var(--space-5);
+  /* DES-1: clear the bottom-right docs FAB (60px + 24px offset) so a toast
+     never lands under the launcher and truncates. The FAB mirrors to the
+     left in RTL while the toast stays right, so this only ever adds a small
+     bottom gap there — harmless. */
+  bottom: calc(var(--space-5) + 60px + var(--space-3));
   background: var(--hof);
   color: white;
   padding: 14px 20px;
