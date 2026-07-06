@@ -80,3 +80,22 @@ test('router: focusNewView is invoked on BOTH the success and error render paths
   const calls = SRC.match(/focusNewView\(content\)/g) || [];
   assert.ok(calls.length >= 2, `expected ≥2 focusNewView(content) call sites, found ${calls.length}`);
 });
+
+// ───────── SPA-H2: render epoch guard (stale async render race) ─────────
+
+test('router: render() claims an epoch before awaiting the view renderer', () => {
+  // A slow renderer resolving after a newer navigation must not clobber
+  // the current view. The guard is a monotonic token captured before the
+  // await and re-checked after it — on both the success and error paths.
+  assert.match(SRC, /let\s+renderEpoch\s*=\s*0/);
+  assert.match(SRC, /const\s+myEpoch\s*=\s*\+\+renderEpoch/);
+});
+
+test('router: stale renders bail on BOTH success and error paths', () => {
+  const bails = SRC.match(/if\s*\(myEpoch\s*!==\s*renderEpoch\)\s*return/g) || [];
+  assert.ok(bails.length >= 2, `expected ≥2 epoch bail-outs (success + catch), found ${bails.length}`);
+  // The success-path bail must come BEFORE the DOM write.
+  const bailIdx = SRC.indexOf('if (myEpoch !== renderEpoch) return');
+  const domWriteIdx = SRC.indexOf("content.innerHTML = ''");
+  assert.ok(bailIdx !== -1 && bailIdx < domWriteIdx, 'epoch check must precede the DOM write');
+});

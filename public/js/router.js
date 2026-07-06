@@ -76,7 +76,15 @@ window.Router = (function () {
     try { target.focus({ preventScroll: false }); } catch { /* jsdom */ }
   }
 
+  // Render epoch: view renderers are async, so a slow render can resolve
+  // AFTER the user has already navigated on — without this token the stale
+  // result would clobber the current view and re-steal focus. Each render()
+  // claims a new epoch; anything that awaits checks it still owns the epoch
+  // before touching the DOM.
+  let renderEpoch = 0;
+
   async function render() {
+    const myEpoch = ++renderEpoch;
     const { name, rawName, params } = current();
 
     document.querySelectorAll('.nav-item').forEach((a) => {
@@ -95,6 +103,7 @@ window.Router = (function () {
     content.innerHTML = `<div class="loading">${(window.I18n && I18n.t('router.loading', 'Loading…')) || 'Loading…'}</div>`;
     try {
       const result = await renderer(params);
+      if (myEpoch !== renderEpoch) return; // superseded by a newer navigation
       if (result instanceof Node) {
         content.innerHTML = '';
         content.appendChild(result);
@@ -103,6 +112,7 @@ window.Router = (function () {
       }
       focusNewView(content);
     } catch (err) {
+      if (myEpoch !== renderEpoch) return; // stale failure — newer view owns the DOM
       console.error(err);
       const isNet = err && err.network;
       const t = (k, f) => (window.I18n && I18n.t) ? I18n.t(k, f) : f;
