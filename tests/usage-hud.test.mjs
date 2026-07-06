@@ -44,7 +44,9 @@ test('usage-hud is pinned to the sidebar bottom (fixed, full sidebar width) and 
 });
 
 test('usage-hud refreshes in real time (interval + tab-focus + hashchange)', () => {
-  assert.match(SRC, /setInterval\(refresh,\s*\d+\)/);
+  // v1.117.x SPA-M3: the interval drives tick() (backoff-aware) instead of
+  // calling refresh() directly; focus/hashchange still retry immediately.
+  assert.match(SRC, /setInterval\(tick,\s*\d+\)/);
   assert.match(SRC, /visibilitychange/);
   assert.match(SRC, /addEventListener\(['"]hashchange['"],\s*refresh\)/);
 });
@@ -87,4 +89,13 @@ test('usage-hud collapse state persists (localStorage) and body respects [hidden
 test('usage-hud mirrors to the sidebar bottom-right edge in RTL', () => {
   const css = read('public', 'css', 'app.css');
   assert.match(css, /\[dir="rtl"\]\s*\.usage-hud\s*\{[^}]*right:\s*0/);
+});
+
+test('HUD backs off exponentially while /api/usage is failing (SPA-M3)', () => {
+  // Source contract: the interval drives tick() (not refresh directly), a
+  // failure grows skipTicks (capped), and a success resets both counters.
+  assert.match(SRC, /setInterval\(tick, 15000\)/);
+  assert.match(SRC, /skipTicks = Math\.min\(Math\.pow\(2, failCount - 1\), 16\)/);
+  assert.match(SRC, /failCount = 0;\s*\n\s*skipTicks = 0;/);
+  assert.match(SRC, /if \(skipTicks > 0\) \{ skipTicks -= 1; return; \}/);
 });
