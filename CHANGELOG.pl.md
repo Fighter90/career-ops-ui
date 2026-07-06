@@ -9,6 +9,15 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.109.0] — 2026-07-06
+
+**Filtr Wyklucz w Scan + przegląd pipeline (parytet układu web).** Na `#/scan` pole **Szukaj** traktuje teraz przecinki jako **LUB** ("role do znalezienia"), a nowe pole **Wyklucz** ukrywa wiersze, których firma/rola/lokalizacja zawiera któreś ze słów oddzielonych przecinkami (np. `senior, staff`); oba są zapamiętywane w zapisanych wyszukiwaniach. Na `#/pipeline` zwarty **pasek przeglądu** pokazuje pipeline na pierwszy rzut oka — **N w skrzynce**, **N śledzonych** oraz liczby **Applied / Responded / Interview / Offer** z trackera, każdy chip linkuje do `#/tracker`.
+
+- Tylko klient (bez nowej trasy/zapisów). `public/js/views/scan.js` + `public/js/views/pipeline.js`. Testy: `tests/scan-pipeline-ui-v1109.test.mjs` (2). 4 nowe klucze i18n ×16. Pomoc §7 + §8 rozszerzone w miejscu.
+
+Nowe: brak.
+
+
 ## [1.108.0] — 2026-07-06
 
 **Wzmocnienie bezpieczeństwa (triage CodeQL, runda 2).** Naprawiono trzy kolejne znaleziska niskiej wagi: konstruktor promptów rozwiązuje linię roli locale przez **własny klucz + `typeof === function`**, aby sfałszowane locale nie mogło wywołać metody prototypu (unvalidated-dynamic-method-call); slug nazwy pliku PDF jest **ograniczony do 200 znaków przed regexem**, aby wejście z samych myślników nie cofało się (wielomianowy ReDoS); a import dokumentu **konwertuje tablicowy `filename`** (powtórzony nagłówek) na string (type-confusion). Bez zmiany zachowania dla poprawnego wejścia.

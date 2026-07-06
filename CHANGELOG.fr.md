@@ -11,6 +11,15 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.109.0] — 2026-07-06
+
+**Filtre Exclure du Scan + aperçu du pipeline (parité de mise en page web).** Sur `#/scan`, la boîte **Rechercher** traite désormais les virgules comme un **OU** (« rôles à trouver ») et un nouveau champ **Exclure** masque toute ligne dont l'entreprise/le rôle/le lieu contient un mot séparé par des virgules (p. ex. `senior, staff`) ; les deux sont mémorisés par vos recherches enregistrées. Sur `#/pipeline`, une **bande d'aperçu** compacte montre votre pipeline d'un coup d'œil — **N en boîte**, **N suivis**, et les décomptes **Applied / Responded / Interview / Offer** du tracker, chaque puce renvoyant à `#/tracker`.
+
+- Côté client uniquement (aucune nouvelle route/écriture). `public/js/views/scan.js` + `public/js/views/pipeline.js`. Tests : `tests/scan-pipeline-ui-v1109.test.mjs` (2). 4 nouvelles clés i18n ×16. Aide §7 + §8 étendues sur place.
+
+Nouveau : aucun.
+
+
 ## [1.108.0] — 2026-07-06
 
 **Durcissement de sécurité (tri CodeQL, 2e passe).** Trois autres vulnérabilités de faible sévérité corrigées : le constructeur de prompts résout la ligne de rôle de la locale par **clé propre + `typeof === function`** afin qu'une locale falsifiée ne puisse pas invoquer une méthode de prototype (unvalidated-dynamic-method-call) ; le slug de nom de fichier PDF est **plafonné à 200 caractères avant le regex** pour qu'une entrée tout en tirets ne rétrograde pas (ReDoS polynomial) ; et l'import de document **convertit un `filename` tableau** (en-tête répété) en chaîne (type-confusion). Aucun changement de comportement pour une entrée valide.

@@ -956,6 +956,8 @@ in-flight HTTPS requests via `AbortController`.
 
 Below the log, the results table renders rows from `data/last-scan.json`.
 
+**Search + Exclude (v1.109.0).** The **Search** box is your "roles to find" filter — type one or more terms **separated by commas** and a row shows if it matches **any** of them (OR). The new **Exclude** box does the opposite: comma-separated words that **hide** any row whose company / role / location contains them (e.g. exclude `senior, staff, java`). Both are remembered by your saved searches alongside the remote / source / country / posted-within / salary filters.
+
 > **v1.76.0 — no result cap.** Earlier builds stored at most 2000 matching rows
 > per region (`MAX_STORED_RESULTS`), silently hiding the tail of a large sweep.
 > That cap is **gone**: every matched posting is stored and the table simply
@@ -1066,6 +1068,8 @@ hh.ru is scanned by reading its public search website (`hh.ru/search/vacancy`), 
 ## 8. Pipeline (`#/pipeline`)
 
 Inbox of URLs waiting to be evaluated. Lives in `data/pipeline.md`.
+
+**Overview strip (v1.109.0).** At the top of the page a compact strip shows your pipeline at a glance — how many URLs are **in inbox**, how many rows are **tracked**, and the counts for **Applied / Responded / Interview / Offer** pulled from your tracker. Each chip links straight to `#/tracker` (the status chips open it filtered). It degrades to just the inbox count if the tracker can't be read.
 
 ### Adding URLs
 

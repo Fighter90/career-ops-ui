@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.108.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.108.0)
+[![release](https://img.shields.io/badge/release-v1.109.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.109.0)
 
-> **🆕 Dernière version — v1.108.0**
+> **🆕 Dernière version — v1.109.0**
 >
-> **Durcissement de sécurité (tri CodeQL, 2e passe).** Le constructeur de prompts résout la ligne de rôle par clé propre + `typeof === function`, le slug de nom de fichier PDF est plafonné avant son regex (ReDoS polynomial), et l'import de document convertit un `filename` tableau en chaîne (type-confusion). Sur v1.106–v1.108, l'arriéré d'analyse statique est passé de 167 à ~14, chaque résultat réel corrigé et le reste rejeté avec justification.
+> **Filtre Exclure du Scan + aperçu du pipeline.** La boîte Rechercher traite les virgules comme un OU (« rôles à trouver ») et un nouveau champ Exclure masque les lignes correspondant à un mot séparé par des virgules ; les deux persistent dans les recherches enregistrées. La page pipeline gagne une bande d'aperçu compacte — N en boîte, N suivis, et les décomptes Applied / Responded / Interview / Offer du tracker, chacun renvoyant à `#/tracker`.
 >
-> _durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

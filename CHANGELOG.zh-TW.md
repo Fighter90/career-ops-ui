@@ -9,6 +9,15 @@
 ---
 
 
+## [1.109.0] — 2026-07-06
+
+**Scan 排除篩選 + 流水線概覽(Web 版面對齊)。** 在 `#/scan` 上,**搜尋**框現在把逗號視為**或**(「要找的職位」),新增的**排除**欄位會隱藏公司/職位/地點包含任一逗號分隔詞(如 `senior, staff`)的列;兩者都會記入你的已儲存搜尋。在 `#/pipeline` 上,一個精簡的**概覽列**一眼展示流水線——**收件匣 N**、**已追蹤 N**,以及來自追蹤器的 **Applied / Responded / Interview / Offer** 計數,每個徽章連結到 `#/tracker`。
+
+- 僅用戶端(無新路由/寫入)。`public/js/views/scan.js` + `public/js/views/pipeline.js`。測試:`tests/scan-pipeline-ui-v1109.test.mjs`(2)。新增 4 個 i18n 鍵 ×16。說明 §7 + §8 就地擴充。
+
+新增:無。
+
+
 ## [1.108.0] — 2026-07-06
 
 **安全強化(CodeQL 分診第 2 輪)。** 又修復三處低危問題:模式提示建構器按**自有鍵 + `typeof === function`**解析語言角色行,使被竄改的語言無法分派到原型方法(unvalidated-dynamic-method-call);PDF 檔名 slug 在**正規式之前限制為 200 字元**,使全連字號輸入無法回溯(多項式 ReDoS);文件匯入將**陣列 `filename`**(重複標頭)強制轉換為字串(type-confusion)。對有效輸入無行為變化。

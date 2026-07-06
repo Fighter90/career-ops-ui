@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.108.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.108.0)
+[![release](https://img.shields.io/badge/release-v1.109.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.109.0)
 
-> **🆕 Najnowsze wydanie — v1.108.0**
+> **🆕 Najnowsze wydanie — v1.109.0**
 >
-> **Wzmocnienie bezpieczeństwa (triage CodeQL, runda 2).** Konstruktor promptów rozwiązuje linię roli przez własny klucz + `typeof === function`, slug nazwy pliku PDF jest ograniczany przed regexem (wielomianowy ReDoS), a import dokumentu konwertuje tablicowy `filename` na string (type-confusion). W v1.106–v1.108 zaległości analizy statycznej spadły ze 167 do ~14, każde realne znalezisko naprawiono, a resztę odrzucono z uzasadnieniem.
+> **Filtr Wyklucz w Scan + przegląd pipeline.** Pole Szukaj traktuje przecinki jako LUB („role do znalezienia”), a nowe pole Wyklucz ukrywa wiersze pasujące do któregokolwiek słowa po przecinku; oba utrzymują się w zapisanych wyszukiwaniach. Strona pipeline zyskuje zwarty pasek przeglądu — N w skrzynce, N śledzonych oraz liczby Applied / Responded / Interview / Offer z trackera, każda linkuje do `#/tracker`.
 >
-> _wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

@@ -2,6 +2,15 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.109.0] — 2026-07-06
+
+**Scan Hariç Tut filtresi + pipeline genel bakışı (web düzeni paritesi).** `#/scan`'de **Ara** kutusu artık virgülleri **VEYA** olarak ele alır ("bulunacak roller") ve yeni bir **Hariç tut** alanı, şirketi/rolü/konumu virgülle ayrılmış kelimelerden birini (örn. `senior, staff`) içeren satırları gizler; ikisi de kayıtlı aramalarınızda hatırlanır. `#/pipeline`'de kompakt bir **genel bakış şeridi** pipeline'ınızı bir bakışta gösterir — **N gelen kutusunda**, **N izlenen** ve izleyiciden **Applied / Responded / Interview / Offer** sayıları, her rozet `#/tracker`'a bağlanır.
+
+- Yalnızca istemci (yeni rota/yazma yok). `public/js/views/scan.js` + `public/js/views/pipeline.js`. Testler: `tests/scan-pipeline-ui-v1109.test.mjs` (2). 4 yeni i18n anahtarı ×16. Yardım §7 + §8 yerinde genişletildi.
+
+Yeni: yok.
+
+
 ## [1.108.0] — 2026-07-06
 
 **Güvenlik sıkılaştırması (CodeQL triyajı, 2. tur).** Üç düşük önem dereceli bulgu daha düzeltildi: prompt oluşturucu, yerel ayar rol satırını **kendi anahtarı + `typeof === function`** ile çözerek kurcalanmış bir yerel ayarın bir prototip yöntemine yönlenmesini engeller (unvalidated-dynamic-method-call); PDF dosya adı slug'ı **regex'ten önce 200 karaktere sınırlandırılır** ki tamamı tire olan bir girdi geri izleme yapmasın (polinom ReDoS); ve belge içe aktarma **dizi türünde bir `filename`'i** (tekrarlanan başlık) dizeye zorlar (type-confusion). Geçerli girdi için davranış değişikliği yok.
