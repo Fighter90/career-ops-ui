@@ -207,8 +207,9 @@ function tagEditor(initial, spec, t, c) {
     chips.appendChild(chip);
   }
 
-  const input = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'twoPager.addTagPh' });
+  const input = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'twoPager.addTagPh', 'data-i18n-aria-label': 'twoPager.addTagPh' });
   input.placeholder = t('twoPager.addTagPh', 'Type and press Enter…');
+  input.setAttribute('aria-label', input.placeholder);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();

@@ -10889,6 +10889,24 @@
     "it": "Fiducia che l'annuncio sia reale (Alta / Cautela / Sospetta).",
     "tr": "İlanın gerçek olduğuna dair güven (Yüksek / Dikkat / Şüpheli)."
   },
+  "track.outputTitle": {
+    "en": "Output",
+    "es": "Salida",
+    "pt-BR": "Saída",
+    "ko": "출력",
+    "ja": "出力",
+    "ru": "Вывод",
+    "zh-CN": "输出",
+    "zh-TW": "輸出",
+    "fr": "Sortie",
+    "pl": "Wynik",
+    "uk": "Вивід",
+    "da": "Output",
+    "ar": "الإخراج",
+    "de": "Ausgabe",
+    "it": "Output",
+    "tr": "Çıktı"
+  },
   "cv.unsaved": {
     "en": "Unsaved changes — click Save to persist.",
     "es": "Cambios sin guardar — haz clic en Guardar para persistir.",
@@ -11194,6 +11212,24 @@
     "de": "Standort",
     "it": "Località",
     "tr": "Konum"
+  },
+  "set.linkedin": {
+    "en": "LinkedIn",
+    "es": "LinkedIn",
+    "pt-BR": "LinkedIn",
+    "ko": "LinkedIn",
+    "ja": "LinkedIn",
+    "ru": "LinkedIn",
+    "zh-CN": "LinkedIn",
+    "zh-TW": "LinkedIn",
+    "fr": "LinkedIn",
+    "pl": "LinkedIn",
+    "uk": "LinkedIn",
+    "da": "LinkedIn",
+    "ar": "LinkedIn",
+    "de": "LinkedIn",
+    "it": "LinkedIn",
+    "tr": "LinkedIn"
   },
   "set.fit": {
     "en": "Fit",

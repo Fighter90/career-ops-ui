@@ -73,13 +73,34 @@
     footer.appendChild(el('span', { className: 'usage-hud__footcost' }, money(cost)));
   }
 
+  // Failure backoff (SPA-M3): after consecutive fetch failures the fixed
+  // 15s interval kept hammering a dead server for the life of the tab (the
+  // post-shutdown ERR_CONNECTION_REFUSED spam seen in E2E teardown). Skip
+  // an exponentially growing number of ticks while failing — capped at
+  // ~4 min between attempts — and reset instantly on the first success or
+  // any visible-tab/hashchange refresh.
+  var failCount = 0;
+  var skipTicks = 0;
+
   async function refresh() {
     if (loading) return;
     loading = true;
-    try { lastData = await API.get('/api/usage'); } catch (e) { /* keep last */ }
+    try {
+      lastData = await API.get('/api/usage');
+      failCount = 0;
+      skipTicks = 0;
+    } catch (e) {
+      failCount += 1; /* keep last data */
+      skipTicks = Math.min(Math.pow(2, failCount - 1), 16); // 15s → 30s → … → ~4 min
+    }
     loading = false;
     render();
     syncSidebarPad();
+  }
+
+  function tick() {
+    if (skipTicks > 0) { skipTicks -= 1; return; }
+    refresh();
   }
 
   // Reserve space at the bottom of the sidebar equal to the HUD's height so the
@@ -134,7 +155,8 @@
     window.addEventListener('resize', syncSidebarPad);
     // Real-time: re-poll the cheap read-only GET on a short interval, and again
     // whenever the tab regains focus (so a run in another tab shows up promptly).
-    setInterval(refresh, 15000);
+    // tick() honors the failure backoff; the focus path retries immediately.
+    setInterval(tick, 15000);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
     syncSidebarPad();
     refresh();

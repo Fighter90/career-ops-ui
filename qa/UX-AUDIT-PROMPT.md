@@ -1,10 +1,16 @@
 # SENIOR UX-DESIGNER AUDIT — career-ops-ui
 
+> **Baseline: v1.117.2** (31 route modules · 28 views · 16 locales ·
+> help bundles 28 H2 / 102 H3 · 50 scanner adapters = 45 EN + 5 RU).
+> Re-verify the live `package.json` version before you start — features
+> land continuously.
+>
 > Paste this verbatim to an agent (or run it as a senior UX
 > designer). It produces a **prioritised, evidence-based UX audit of
 > the whole product**, judged against the canonical product intent
 > documented at **https://career-ops.org/docs**. Output a single
-> `qa/v54-regression/<YYYY-MM-DD>-UX-AUDIT.md` findings file.
+> `qa/reports/<YYYY-MM-DD>-UX-AUDIT.md` findings file (the current
+> reports home; the older `qa/v54-regression/` path is retired).
 >
 > This is a *design-critique* prompt, not a regression prompt. It
 > assumes the app already works (run `REGRESSION-FINAL.md` first if in
@@ -75,6 +81,12 @@ concept it serves:
 | `#/config` (AI CLI tools + Appearance) | v1.103.0 / v1.104.0 | Is "never executes a binary" reassuring? Is the company-logos toggle's privacy note clear? |
 | `#/usage` | AI usage & cost (v1.105.0) | Are the token/USD windows legible? Is "estimate, not billed; editable prices" honest and clear? |
 | `#/scan` (Exclude), `#/pipeline` (overview) | v1.109.0 | Is the Search-OR / Exclude pair obvious? Does the pipeline overview strip aid triage at a glance? |
+| docs FAB (every page) | Ask-the-docs FAB (v1.113.0) | Is the gradient launcher discoverable but not intrusive? Do the starter chips help? Is "help-guide only, never your data" clear? Does it stay clear of the toast stack (DES-1)? |
+| sidebar USAGE meter | usage HUD (v1.114.0/v1.116.0) | Is the 24h/7d/30d token + cost meter legible at the sidebar bottom? Does it read as "estimate, local-only"? Never covers the nav? |
+| `#/followup` | follow-up cadence board (v1.117.0) | Are the 🔴 urgent / 🟠 overdue / 🟡 waiting / 🔵 cold chips understandable at a glance? Is "Seed follow-up dates" clearly a write action? Is the empty-tracker state honest ("nothing yet", not "error")? |
+| `#/stats` (Rejection patterns) | patterns tab (v1.117.0) | Does the outcome mix + per-ATS-vendor advance rate read clearly? Small-sample caveat visible? Honest empty state? |
+| `#/cv-studio` (Add to CV) | add-entry (v1.117.0) | Is "suggestions only, never writes" clear? Does the URL/paste → ATS-bullets flow read as grounded (no fabrication)? |
+| `#/apply` (knock-out pre-scan) | v1.117.0 | Are visa/degree/salary disqualifiers surfaced *before* form-filling, legibly? |
 | `#/help` | the docs, in-app | Does it answer the questions the journey raises, in the user's language? |
 
 ## Heuristic lenses (apply all; cite evidence per finding)
@@ -226,6 +238,21 @@ re-open one with concrete live evidence that it regressed:
 | UX-D-B — Dashboard fixture-profile warning banner | v1.58.48 | `qa-report-fixes.test.mjs` |
 | TOOL-1 — `make clean-test-fixtures` + script + 4 CI-isolated tests | v1.58.49 | `tests/clean-test-fixtures.test.mjs` |
 | DOC-1 — Server English-by-policy doctrine § (REGRESSION-FINAL §5a) | v1.58.50 | `qa-report-fixes.test.mjs` |
+| DES-1 — toast stack lifted above the docs FAB (no truncation under launcher) | v1.117.x audit | `tests/toast-fab-clearance.test.mjs` |
+| SPA-H1 — `.btn[hidden]{display:none}` (scan Stop no longer visible when idle) | v1.117.x audit | `tests/btn-hidden-override.test.mjs` |
+| SPA-M4 — placeholder-only inputs got aria-labels (memory/networking/career-plan/two-pager) | v1.117.x audit | `tests/a11y-form-wires.test.mjs` |
+| SPA-L1/L2 — tracker "Output" modal title + settings "LinkedIn" label localized | v1.117.x audit | `tests/i18n-*` |
+
+**v1.117.x audit cycle (this doc's baseline):** the audit's server/SPA
+findings are all shipped and locked — SSRF `timeoutMs` honored, batch +
+key-smoke routes rate-limited, router render-epoch guard, empty-tracker
+relay keyed to exact messages + stderr path-stripping, memory/career-plan
+markdown sanitized, raw `fetch()` routed through `API.*`, usage-HUD
+backoff, CI i18n step at 16 locales. Do **not** re-file these; re-open
+only with concrete live regression evidence. The **open design backlog**
+(P4 report) — token-enforcement gate, skeletons, spacing/shadow/radius/
+type/color consolidation, motion system, IA regroup + `#/about` — is
+*design work*, not UX defects; treat those as roadmap, not findings.
 
 Senior-obs ledger: S-7→v1.54.6, W-001→v1.54.7, S-1→UX-3, S-2→UX-7,
 S-3→UX-4, S-4→UX-1, S-5→UX-9, S-6→UX-8. The **only open backlog
@@ -285,10 +312,12 @@ per locale, judge:
 For **every** route — `#/dashboard #/scan #/pipeline #/evaluate
 #/deep #/cv #/tracker #/reports #/activity #/config #/profile
 #/health #/help #/auto #/apply #/batch #/two-pager #/mock-interview
-#/networking #/cv-studio #/memory #/stats #/career-plan
-#/orientation` + mode pages `#/project #/training #/followup
+#/networking #/cv-studio #/memory #/stats #/career-plan #/orientation
+#/usage #/docs-assistant` + mode pages `#/project #/training #/followup
 #/contacto #/interview-prep #/patterns #/batch-prompt` + aliases
-`#/settings #/portals #/outreach` + the 404 — assess: visual hierarchy (one clear H1 + descriptive subtitle;
+`#/settings #/portals #/outreach` + the 404 — plus the two page-agnostic
+widgets on every route (the **docs FAB**, bottom-right, and the
+**USAGE meter**, sidebar bottom) — assess: visual hierarchy (one clear H1 + descriptive subtitle;
 note the `#/cv` breadcrumb-chip is a *deliberate* single-H1 WCAG
 choice — critique only the UX, not as a bug), scan-ability, primary
 action obvious & above the fold, empty states teach the next step

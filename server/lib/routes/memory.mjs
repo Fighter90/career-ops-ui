@@ -23,6 +23,7 @@ import { dirname } from 'node:path';
 import { PATHS } from '../paths.mjs';
 import { withFileLock } from '../file-lock.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
+import { stripDangerousMarkdown } from '../security.mjs';
 
 const MAX_MEMORY = 8 * 1024;   // a note, not a document
 const MAX_MINE = 24 * 1024;    // cap on tracker text mined for suggestions
@@ -30,7 +31,10 @@ const MAX_MINE = 24 * 1024;    // cap on tracker text mined for suggestions
 /** Coerce arbitrary input to a bounded plain-text note. Exported for tests. */
 export function normalizeMemory(body) {
   const raw = body && typeof body === 'object' ? body.markdown : body;
-  return (typeof raw === 'string' ? raw : '').slice(0, MAX_MEMORY);
+  // stripDangerousMarkdown: hard rule 5 — every markdown ingress that lands
+  // on disk goes through the ONE sanitizer, so future consumers of this file
+  // (exports, other renderers) are safe at rest, not just via UI.md().
+  return stripDangerousMarkdown((typeof raw === 'string' ? raw : '').slice(0, MAX_MEMORY));
 }
 
 export function readMemory() {

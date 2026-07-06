@@ -61,7 +61,7 @@
     var okChecks = 0;
     var failChecks = [];
     try {
-      var h = await (await fetch('/api/health')).json();
+      var h = await window.API.get('/api/health');
       version = h.version || '';
       parentVersion = h.parentVersion || '';
       var checks = Array.isArray(h.checks) ? h.checks : [];

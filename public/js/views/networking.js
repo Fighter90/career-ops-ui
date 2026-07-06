@@ -17,12 +17,17 @@ Router.register('networking', async () => {
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('net.subtitle', 'Turn a company into a plan: who to contact, the warmest way in, and outreach drafts — grounded in your CV and two-pager.')));
 
-  const companyInput = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'net.companyPh' });
+  // aria-labels mirror the localized placeholders (a placeholder is not a
+  // reliable accessible name once the field has content) — no new keys.
+  const companyInput = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'net.companyPh', 'data-i18n-aria-label': 'net.companyPh' });
   companyInput.placeholder = t('net.companyPh', 'Company (required)');
-  const roleInput = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'net.rolePh' });
+  companyInput.setAttribute('aria-label', companyInput.placeholder);
+  const roleInput = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'net.rolePh', 'data-i18n-aria-label': 'net.rolePh' });
   roleInput.placeholder = t('net.rolePh', 'Role (optional)');
-  const jdInput = c('textarea', { className: 'input', rows: '3', 'data-i18n-placeholder': 'net.jdPh' });
+  roleInput.setAttribute('aria-label', roleInput.placeholder);
+  const jdInput = c('textarea', { className: 'input', rows: '3', 'data-i18n-placeholder': 'net.jdPh', 'data-i18n-aria-label': 'net.jdPh' });
   jdInput.placeholder = t('net.jdPh', 'Paste the job description (optional) — sharpens the fit hooks.');
+  jdInput.setAttribute('aria-label', jdInput.placeholder);
 
   const buildBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('net.build', 'Build plan'));
   const setup = c('div', { className: 'card', style: { padding: '16px', margin: '12px 0 18px', display: 'grid', gap: '10px' } }, [

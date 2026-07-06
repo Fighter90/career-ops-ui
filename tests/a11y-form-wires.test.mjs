@@ -93,3 +93,22 @@ test('a11y: at least 5 a11y-wired views found (sanity)', () => {
   }
   assert.ok(wired >= 5, `expected ≥5 views with a11y wires, found ${wired}`);
 });
+
+// ─── SPA-M4 — placeholder-only inputs gained accessible names ───
+// A placeholder is not a reliable accessible name once the field has
+// content. These four sites were placeholder-only; each now mirrors its
+// localized placeholder into aria-label (no new i18n keys).
+test('memory / networking / career-plan / two-pager inputs carry aria-labels (SPA-M4)', () => {
+  const cases = [
+    ['memory.js', /'data-i18n-aria-label': 'mem\.title'/],
+    ['networking.js', /companyInput\.setAttribute\('aria-label'/],
+    ['networking.js', /roleInput\.setAttribute\('aria-label'/],
+    ['networking.js', /jdInput\.setAttribute\('aria-label'/],
+    ['career-plan.js', /focus\.setAttribute\('aria-label'/],
+    ['two-pager.js', /'data-i18n-aria-label': 'twoPager\.addTagPh'/],
+  ];
+  for (const [file, re] of cases) {
+    const src = readFileSync(resolve(__dirname, '..', 'public', 'js', 'views', file), 'utf8');
+    assert.match(src, re, `${file} missing ${re}`);
+  }
+});

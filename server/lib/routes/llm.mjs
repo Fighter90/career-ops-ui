@@ -187,7 +187,7 @@ export function registerLlmRoutes(app) {
   // Smoke-test endpoints — verify each provider key is wired without
   // burning a real evaluation. Kept as separate routes so the SPA can
   // probe each independently from /#/config.
-  app.post('/api/evaluate/test-gemini', async (_req, res) => {
+  app.post('/api/evaluate/test-gemini', llmRateLimit, async (_req, res) => {
     if (!hasGeminiKey()) {
       return res.status(400).json({ ok: false, error: 'GEMINI_API_KEY not set' });
     }
@@ -207,7 +207,7 @@ export function registerLlmRoutes(app) {
   // P-7 — Anthropic equivalent of test-gemini. Sends a tiny prompt
   // (≤256 tokens output) so it costs essentially nothing. Returns a
   // 200-char sample so the SPA can show "✓ Anthropic working".
-  app.post('/api/evaluate/test-anthropic', async (_req, res) => {
+  app.post('/api/evaluate/test-anthropic', llmRateLimit, async (_req, res) => {
     if (!hasAnthropicKey()) {
       return res.status(400).json({ ok: false, error: 'ANTHROPIC_API_KEY not set' });
     }

@@ -131,3 +131,69 @@ test('apply checklist carries the knock-out pre-scan step', async () => {
   assert.match(text, /KNOCK-OUT PRE-SCAN/);
   assert.match(text, /KNOCK-OUT WARNING/);
 });
+
+// ─── SRV-M2/M3 + TST-M2/M3/M4 — behavioral coverage for the relay contract ──
+// These tests OVERWRITE the fake parent scripts, so they run after every
+// happy-path test above (node:test executes tests in declaration order).
+
+test('GET /api/followup: parent "no data yet" ({error} + exit 1) relays as a HEALTHY empty state', async () => {
+  writeFileSync(join(root, 'followup-cadence.mjs'),
+    `console.error('no rows'); console.log(JSON.stringify({ error: 'No applications found in tracker.' })); process.exit(1);`);
+  const d = await (await fetch(baseUrl + '/api/followup')).json();
+  assert.equal(d.available, true);
+  assert.equal(d.empty, true);
+  assert.equal(d.note, 'No applications found in tracker.');
+  assert.deepEqual(d.entries, []);
+});
+
+test('GET /api/followup: an UNRECOGNIZED {error} falls through to script-error (not masked as empty)', async () => {
+  writeFileSync(join(root, 'followup-cadence.mjs'),
+    `console.log(JSON.stringify({ error: 'TypeError: cannot read x of undefined' })); process.exit(1);`);
+  const d = await (await fetch(baseUrl + '/api/followup')).json();
+  assert.equal(d.available, false);
+  assert.equal(d.reason, 'script-error');
+});
+
+test('GET /api/followup: script-error detail strips absolute filesystem paths', async () => {
+  writeFileSync(join(root, 'followup-cadence.mjs'),
+    `console.error('Error: boom\\n    at fail (' + process.cwd() + '/followup-cadence.mjs:2:9)'); process.exit(3);`);
+  const d = await (await fetch(baseUrl + '/api/followup')).json();
+  assert.equal(d.available, false);
+  assert.equal(d.reason, 'script-error');
+  assert.ok(!d.detail.includes(root), `detail leaked the project root: ${d.detail}`);
+});
+
+test('GET /api/stats/patterns: both benign "no data" messages relay as healthy empty; unknown {error} does not', async () => {
+  writeFileSync(join(root, 'analyze-patterns.mjs'),
+    `console.log(JSON.stringify({ error: 'Not enough data: 2/8 applications beyond "Evaluated". Keep applying and come back later.' })); process.exit(1);`);
+  let d = await (await fetch(baseUrl + '/api/stats/patterns')).json();
+  assert.equal(d.available, true);
+  assert.equal(d.empty, true);
+  assert.equal(d.metadata.total, 0);
+
+  writeFileSync(join(root, 'analyze-patterns.mjs'),
+    `console.log(JSON.stringify({ error: 'ENOENT: config vanished' })); process.exit(1);`);
+  d = await (await fetch(baseUrl + '/api/stats/patterns')).json();
+  assert.equal(d.available, false);
+  assert.equal(d.reason, 'script-error');
+});
+
+test('POST /api/followup/seed: failing seed script → 422 with sanitized detail', async () => {
+  writeFileSync(join(root, 'followup-seed.mjs'),
+    `console.error('seed exploded at ' + process.cwd() + '/followup-seed.mjs:1:1'); process.exit(1);`);
+  const r = await fetch(baseUrl + '/api/followup/seed', {
+    method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ appNum: 7 }),
+  });
+  assert.equal(r.status, 422);
+  const d = await r.json();
+  assert.equal(d.error, 'seed failed');
+  assert.ok(!String(d.detail).includes(root), `detail leaked the project root: ${d.detail}`);
+});
+
+test('GET /api/followup: script REMOVED from parent → available:false, script-not-found', async () => {
+  const { rmSync } = await import('node:fs');
+  rmSync(join(root, 'followup-cadence.mjs'));
+  const d = await (await fetch(baseUrl + '/api/followup')).json();
+  assert.equal(d.available, false);
+  assert.equal(d.reason, 'script-not-found');
+});

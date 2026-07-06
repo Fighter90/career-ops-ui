@@ -182,3 +182,55 @@ test('safeGet caps redirect chain at 3 hops', async () => {
     />3 redirects/
   );
 });
+
+// ─── v1.117.x (SRV-H1) — timeoutMs must actually bound the request ──
+//
+// `safeGet(url, { timeoutMs })` was accepted (and passed by
+// routes/cv-studio.mjs add-entry and routes/portals.mjs health probes)
+// but never honored: only opts.signal was wired into the transport, so
+// a hanging origin held the socket open forever. These tests pin the
+// contract: no caller signal + timeoutMs → the whole call aborts once
+// the budget is spent; a caller-provided signal owns cancellation.
+
+test('safeGet aborts a hanging origin when timeoutMs is set and no signal given', async () => {
+  dnsAnswers = [{ address: '93.184.216.34', family: 4 }];
+  restoreTransport = _setTransport((url, pinned, opts) => new Promise((resolve, reject) => {
+    // Simulate a socket that never produces a response: settle only on abort.
+    if (opts.signal) {
+      opts.signal.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
+    }
+  }));
+  const started = Date.now();
+  await assert.rejects(
+    () => safeGet('https://slow.example.com/', { timeoutMs: 120 }),
+    /aborted/
+  );
+  assert.ok(Date.now() - started < 5000, 'must reject via the timer, not a suite timeout');
+});
+
+test('safeGet without timeoutMs and without signal passes no signal to the transport', async () => {
+  dnsAnswers = [{ address: '93.184.216.34', family: 4 }];
+  let signalSeen = 'unset';
+  restoreTransport = _setTransport(async (url, pinned, opts) => {
+    signalSeen = opts.signal;
+    return { status: 200, headers: {}, body: Buffer.from('ok', 'utf8') };
+  });
+  const r = await safeGet('https://example.com/');
+  assert.equal(r.status, 200);
+  assert.equal(signalSeen, undefined);
+});
+
+test('safeGet lets a caller-provided signal own cancellation (timeoutMs ignored)', async () => {
+  dnsAnswers = [{ address: '93.184.216.34', family: 4 }];
+  const ac = new AbortController();
+  restoreTransport = _setTransport((url, pinned, opts) => new Promise((resolve, reject) => {
+    opts.signal.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
+    setTimeout(() => ac.abort(), 50);
+  }));
+  await assert.rejects(
+    // Huge timeoutMs — if it were honored INSTEAD of the caller signal,
+    // this test would hang far past the caller's 50ms abort.
+    () => safeGet('https://example.com/', { signal: ac.signal, timeoutMs: 60000 }),
+    /aborted/
+  );
+});

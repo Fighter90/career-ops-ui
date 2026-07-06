@@ -79,4 +79,22 @@ test('empty-tracker relay: a structured {error} stdout becomes a healthy empty s
     'the empty-state relay must run before the script-error branch');
   const st = read('server', 'lib', 'routes', 'stats.mjs');
   assert.match(st, /available: true, empty: true, note: data\.error/);
+  // TST-M1 — mirror the followup ordering assertion for stats: the empty
+  // relay must precede the failure branch here too.
+  assert.ok(st.indexOf('empty: true') < st.indexOf("reason: r.killed ? 'timeout' : 'script-error'"),
+    'the stats empty-state relay must run before the script-error branch');
+});
+
+test('empty-tracker relay is keyed to the parent\'s EXACT messages, not to {error} shape (SRV-M2)', async () => {
+  const { isEmptyTrackerError, sanitizeDetail } = await import('../server/lib/parent-relay.mjs');
+  assert.equal(isEmptyTrackerError('No applications found in tracker.'), true);
+  assert.equal(isEmptyTrackerError('Not enough data: 2/8 applications beyond "Evaluated". Keep applying and come back later.'), true);
+  // Anything else — incl. a caught exception surfaced as {error} — must NOT
+  // be masked as a healthy empty state.
+  assert.equal(isEmptyTrackerError('TypeError: x is undefined'), false);
+  assert.equal(isEmptyTrackerError(''), false);
+  assert.equal(isEmptyTrackerError(undefined), false);
+  // SRV-M3 — client-facing detail must not leak absolute paths.
+  const out = sanitizeDetail('Error: boom\n    at /Users/someone/secret/place/followup-cadence.mjs:12:3');
+  assert.ok(!out.includes('/Users/someone'), out);
 });

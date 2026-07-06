@@ -21,7 +21,10 @@ Router.register('memory', async () => {
   let markdown = '';
   try { ({ markdown } = await API.get('/api/memory')); } catch { markdown = ''; }
 
-  const ta = c('textarea', { className: 'input', rows: '14', 'data-i18n-placeholder': 'mem.ph', style: { width: '100%', fontFamily: 'inherit' } });
+  // aria-label mirrors the localized placeholder (placeholder alone is not
+  // a reliable accessible name once the field has content) — no new keys.
+  const ta = c('textarea', { className: 'input', rows: '14', 'data-i18n-placeholder': 'mem.ph', 'data-i18n-aria-label': 'mem.title', style: { width: '100%', fontFamily: 'inherit' } });
+  ta.setAttribute('aria-label', t('mem.title', 'Memory'));
   ta.placeholder = t('mem.ph', 'e.g.\n- Prefer remote, Series A–B product companies.\n- Answer tersely, senior tone, no filler.\n- No on-call roles; comp floor $140k.');
   ta.value = markdown || '';
 
