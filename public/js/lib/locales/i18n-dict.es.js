@@ -1052,4 +1052,10 @@ window.__I18N_DICT_ES = {
   'portals.result': "{alive}/{probed} activas · {dead} caídas",
   'portals.loadFailed': "No se pudo leer portals.yml",
   'portals.checkFailed': "La comprobación de estado falló",
+  'fab.open': "Asistente de la ayuda",
+  'fab.title': "Pregunta a la ayuda",
+  'fab.status': "Asistente de ayuda",
+  'fab.close': "Cerrar",
+  'fab.greeting': "¡Hola! Pregúntame cómo usar cualquier cosa de la app: respondo desde la guía de ayuda en tu idioma.",
+  'docs.err': "Algo salió mal. Inténtalo de nuevo.",
 };

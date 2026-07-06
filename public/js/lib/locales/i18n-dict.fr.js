@@ -1052,4 +1052,10 @@ window.__I18N_DICT_FR = {
   'portals.result': "{alive}/{probed} actives · {dead} hors service",
   'portals.loadFailed': "Impossible de lire portals.yml",
   'portals.checkFailed': "Le contrôle de santé a échoué",
+  'fab.open': "Assistant d'aide",
+  'fab.title': "Interroger l'aide",
+  'fab.status': "Assistant d'aide",
+  'fab.close': "Fermer",
+  'fab.greeting': "Bonjour ! Demandez-moi comment utiliser n'importe quoi dans l'app — je réponds à partir du guide d'aide dans votre langue.",
+  'docs.err': "Une erreur s'est produite. Réessayez.",
 };

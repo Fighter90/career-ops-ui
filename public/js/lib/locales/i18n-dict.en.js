@@ -1058,4 +1058,10 @@ window.__I18N_DICT_EN = {
   'portals.result': "{alive}/{probed} alive · {dead} dead",
   'portals.loadFailed': "Could not read portals.yml",
   'portals.checkFailed': "Health check failed",
+  'fab.open': "Ask the docs assistant",
+  'fab.title': "Ask the docs",
+  'fab.status': "Help assistant",
+  'fab.close': "Close",
+  'fab.greeting': "Hi! Ask me how to use anything in the app — I answer from the help guide in your language.",
+  'docs.err': "Something went wrong. Try again.",
 };

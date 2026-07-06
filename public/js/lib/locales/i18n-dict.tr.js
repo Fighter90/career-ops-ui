@@ -1053,4 +1053,10 @@ window.__I18N_DICT_TR = {
   'portals.result': "{alive}/{probed} canlı · {dead} ölü",
   'portals.loadFailed': "portals.yml okunamadı",
   'portals.checkFailed': "Sağlık kontrolü başarısız oldu",
+  'fab.open': "Yardım asistanı",
+  'fab.title': "Yardıma sor",
+  'fab.status': "Yardım asistanı",
+  'fab.close': "Kapat",
+  'fab.greeting': "Merhaba! Uygulamada herhangi bir şeyi nasıl kullanacağını sor — kendi dilindeki yardım kılavuzundan yanıtlıyorum.",
+  'docs.err': "Bir şeyler ters gitti. Tekrar deneyin.",
 };

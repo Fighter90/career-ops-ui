@@ -1052,4 +1052,10 @@ window.__I18N_DICT_DA = {
   'portals.result': "{alive}/{probed} i live · {dead} døde",
   'portals.loadFailed': "Kunne ikke læse portals.yml",
   'portals.checkFailed': "Sundhedstjek mislykkedes",
+  'fab.open': "Hjælpeassistent",
+  'fab.title': "Spørg hjælpen",
+  'fab.status': "Hjælpeassistent",
+  'fab.close': "Luk",
+  'fab.greeting': "Hej! Spørg mig, hvordan du bruger hvad som helst i appen — jeg svarer ud fra hjælpeguiden på dit sprog.",
+  'docs.err': "Noget gik galt. Prøv igen.",
 };

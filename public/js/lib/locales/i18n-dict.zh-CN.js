@@ -1053,4 +1053,10 @@ window.__I18N_DICT_ZH_CN = {
   'portals.result': "{probed} 家中 {alive} 家正常 · {dead} 家失效",
   'portals.loadFailed': "无法读取 portals.yml",
   'portals.checkFailed': "健康检查失败",
+  'fab.open': "帮助助手",
+  'fab.title': "询问帮助",
+  'fab.status': "帮助助手",
+  'fab.close': "关闭",
+  'fab.greeting': "你好!问我如何使用应用中的任何功能——我会根据你语言的帮助指南来回答。",
+  'docs.err': "出了点问题。请重试。",
 };

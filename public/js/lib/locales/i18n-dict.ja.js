@@ -1053,4 +1053,10 @@ window.__I18N_DICT_JA = {
   'portals.result': "{probed} 件中 {alive} 件が有効 · {dead} 件が停止",
   'portals.loadFailed': "portals.yml を読み込めませんでした",
   'portals.checkFailed': "ヘルスチェックに失敗しました",
+  'fab.open': "ヘルプアシスタント",
+  'fab.title': "ヘルプに質問",
+  'fab.status': "ヘルプアシスタント",
+  'fab.close': "閉じる",
+  'fab.greeting': "こんにちは!アプリの使い方を何でも聞いてください — あなたの言語のヘルプガイドから回答します。",
+  'docs.err': "問題が発生しました。もう一度お試しください。",
 };

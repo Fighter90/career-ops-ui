@@ -133,7 +133,7 @@ Este es el playbook canónico botón-por-botón. Síguelo en orden la
 primera vez. Cada paso nombra la ruta exacta, el botón exacto, y qué
 verás al éxito. Las secciones 2–16 entran en profundidad en cada fase.
 
-**Preguntar a la guía.** Abre **Preguntar a la guía 💬** (barra lateral, bajo Ayuda) y escribe una pregunta — responde solo desde esta guía en tu idioma y nunca lee tu CV.
+**Preguntar a la guía.** Abre **Preguntar a la guía 💬** (barra lateral, bajo Ayuda) y escribe una pregunta — responde solo desde esta guía en tu idioma y nunca lee tu CV. El mismo asistente está a un toque desde cualquier página: un botón de chat con un robot flota en la esquina inferior derecha (inferior izquierda en idiomas de derecha a izquierda); púlsalo para preguntar sin salir de lo que estás haciendo.
 
 > **Lanzamiento e inicialización con un solo comando.** Desde una
 > terminal puedes hacer todo el arranque sin tocar la interfaz:

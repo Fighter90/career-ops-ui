@@ -134,7 +134,7 @@ Sie ihm beim ersten Mal der Reihe nach. Jeder Schritt nennt die genaue
 Route, die genaue Schaltfläche und was Sie bei Erfolg sehen werden. Die
 Abschnitte 2–16 unten gehen tiefer auf jede Phase ein.
 
-**Doku fragen.** Öffne **Doku fragen 💬** (Seitenleiste, unter Hilfe) und stell eine Frage — sie antwortet nur aus diesem Leitfaden in deiner Sprache und liest nie deinen Lebenslauf.
+**Doku fragen.** Öffne **Doku fragen 💬** (Seitenleiste, unter Hilfe) und stell eine Frage — sie antwortet nur aus diesem Leitfaden in deiner Sprache und liest nie deinen Lebenslauf. Derselbe Assistent ist von jeder Seite aus nur einen Tipp entfernt — eine Roboter-Chat-Schaltfläche schwebt unten rechts (unten links in Rechts-nach-links-Sprachen); klicke sie an, um zu fragen, ohne deine Arbeit zu verlassen.
 
 > **Start & Init mit einem Befehl.** Von einem Terminal aus können Sie
 > den gesamten Bootstrap ohne Berühren der UI durchführen:

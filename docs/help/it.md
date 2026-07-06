@@ -133,7 +133,7 @@ la prima volta. Ogni passo indica il percorso esatto, il pulsante
 esatto e ciò che vedrai in caso di successo. Le sezioni 2–16 qui sotto
 approfondiscono ogni fase.
 
-**Chiedi alla guida.** Apri **Chiedi alla guida 💬** (barra laterale, sotto Aiuto) e scrivi una domanda — risponde solo da questa guida nella tua lingua e non legge mai il tuo CV.
+**Chiedi alla guida.** Apri **Chiedi alla guida 💬** (barra laterale, sotto Aiuto) e scrivi una domanda — risponde solo da questa guida nella tua lingua e non legge mai il tuo CV. Lo stesso assistente è a un tocco da ogni pagina: un pulsante di chat con un robot fluttua nell'angolo in basso a destra (in basso a sinistra nelle lingue da destra a sinistra); toccalo per chiedere senza lasciare ciò che stai facendo.
 
 > **Avvio e inizializzazione con un solo comando.** Da un terminale puoi
 > fare l'intero bootstrap senza toccare la UI:

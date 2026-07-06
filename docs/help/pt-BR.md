@@ -134,7 +134,7 @@ Este é o playbook canônico, botão a botão. Siga em ordem na primeira
 vez. Cada passo nomeia a rota exata, o botão exato e o que você verá
 em caso de sucesso. As seções 2–16 abaixo aprofundam cada fase.
 
-**Perguntar ao guia.** Abra **Perguntar ao guia 💬** (barra lateral, sob Ajuda) e digite uma pergunta — responde apenas deste guia no seu idioma e nunca lê seu currículo.
+**Perguntar ao guia.** Abra **Perguntar ao guia 💬** (barra lateral, sob Ajuda) e digite uma pergunta — responde apenas deste guia no seu idioma e nunca lê seu currículo. O mesmo assistente fica a um toque de qualquer página: um botão de chat com um robô flutua no canto inferior direito (inferior esquerdo em idiomas da direita para a esquerda); toque para perguntar sem sair do que está fazendo.
 
 > **Lançamento e inicialização com um único comando.** A partir de um
 > terminal você pode fazer todo o bootstrap sem tocar na interface:

@@ -2,6 +2,15 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.113.0] — 2026-07-06
+
+**Her sayfada yüzen "Yardıma sor" asistanı.** Gradyanlı bir robot sohbet düğmesi artık her sayfanın sağ alt köşesinde (RTL'de sol altta) yüzer. Kullanım sorularını YALNIZCA kendi dilindeki uygulama içi yardım kılavuzuna dayanarak yanıtlayan kompakt bir sohbeti açmak için tıkla — `#/docs-assistant` sayfasıyla aynı uç nokta (`POST /api/docs-assistant/ask`), dolayısıyla asla CV'ni, profilini veya izleyicini okumaz. LLM anahtarıyla canlı; anahtar yoksa → çalıştırmaya hazır bir istem. Başlıkta robot avatarı + çevrimiçi durum; çipler sık soruları doldurur; Esc veya dışına tıklama kapatır; `#/docs-assistant` sayfasında gizlenir.
+
+- `index.html`'den global olarak takılan yeni istemci bileşeni `public/js/lib/docs-fab.js`; CSP güvenli; `app.css` içinde temaya duyarlı + RTL aynalı stiller. Yeni sunucu rotası yok. Testler: `tests/docs-fab.test.mjs` (8). 6 yeni i18n anahtarı ×16. Yardım §1 yerinde genişletildi.
+
+Yeni: yok.
+
+
 ## [1.112.0] — 2026-07-06
 
 **Doküman & QA konsolidasyonu.** Kullanıcıya görünür kod değişikliği yok. SDD kurallar belgesi (`docs/sdd/CONVENTIONS.md`) mevcut **30 rota modülüne** (önceden 24) ve mevcut test temeline güncellendi; projenin tamamı için belirleyici QA istemi (`qa/QA-REGRESSION-PROMPT.md`) konsolide edildi — yayım mekaniği güncellendi (v1.111, parentVersion 1.17.0, yayım olayıyla tetiklenen yayınlama), §14 eklemeler tablosu düzeltildi (Scan Hariç Tut v1.109.0 olarak yeniden etiketlendi) ve v1.111 CodeQL kapanışıyla genişletildi — böylece tüm işlevsellik için tek başına regresyon istemi olur. Aşırı büyük yükleme dalı için bir kapsam testi ekler.

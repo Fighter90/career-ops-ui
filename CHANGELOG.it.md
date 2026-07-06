@@ -2,6 +2,15 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.113.0] — 2026-07-06
+
+**Assistente fluttuante "Chiedi alla guida" su ogni pagina.** Un pulsante di chat con un robot in gradiente ora fluttua nell'angolo in basso a destra (in basso a sinistra in RTL) di ogni pagina. Toccalo per aprire una chat compatta che risponde a domande d'uso basandosi SOLO sulla guida di aiuto integrata nella tua lingua — lo stesso endpoint della pagina `#/docs-assistant` (`POST /api/docs-assistant/ask`), quindi non legge mai il tuo CV, profilo o tracker. Dal vivo con una chiave LLM; senza chiave → un prompt pronto all'uso. L'intestazione mostra un avatar robot + stato online; i chip avviano domande comuni; Esc o clic esterno chiude; si nasconde sulla pagina `#/docs-assistant`.
+
+- Nuovo widget client `public/js/lib/docs-fab.js` montato globalmente da `index.html`; sicuro per la CSP; stili adattivi al tema e speculari RTL in `app.css`. Nessuna nuova rotta server. Test: `tests/docs-fab.test.mjs` (8). 6 nuove chiavi i18n ×16. Aiuto §1 esteso sul posto.
+
+Nuovo: nessuno.
+
+
 ## [1.112.0] — 2026-07-06
 
 **Consolidamento docs & QA.** Nessuna modifica di codice visibile. Il documento di convenzioni SDD (`docs/sdd/CONVENTIONS.md`) è aggiornato agli attuali **30 moduli di rotta** (erano 24) e alla baseline di test attuale; il prompt QA definitivo dell'intero progetto (`qa/QA-REGRESSION-PROMPT.md`) è consolidato — meccanica di release ripulita (v1.111, parentVersion 1.17.0, pubblicazione attivata dall'evento di release), la tabella delle aggiunte §14 corretta (Escludi di Scan rietichettato v1.109.0) ed estesa con la chiusura CodeQL di v1.111 — così da bastare da solo come unico prompt di regressione per tutte le funzionalità. Aggiunge un test di copertura per il ramo di caricamento sovradimensionato.

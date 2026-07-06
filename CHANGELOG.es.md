@@ -11,6 +11,15 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.113.0] — 2026-07-06
+
+**Asistente flotante "Preguntar a la guía" en cada página.** Un botón de chat con un robot y degradado ahora flota en la esquina inferior derecha (inferior izquierda en RTL) de cada página. Púlsalo para abrir un chat compacto que responde preguntas de uso basándose SOLO en la guía de ayuda en tu idioma — el mismo endpoint que la página `#/docs-assistant` (`POST /api/docs-assistant/ask`), así que nunca lee tu CV, perfil ni seguimiento. En vivo con una clave LLM; sin clave → un prompt listo para usar. La cabecera muestra un avatar de robot + estado en línea; los chips inician preguntas comunes; Escape o clic fuera lo cierra; se oculta en la página `#/docs-assistant`.
+
+- Nuevo widget cliente `public/js/lib/docs-fab.js` montado globalmente desde `index.html`; seguro para CSP; estilos con tema y espejo RTL en `app.css`. Sin nueva ruta de servidor. Pruebas: `tests/docs-fab.test.mjs` (8). 6 nuevas claves i18n ×16. Ayuda §1 ampliada en su sitio.
+
+Nuevo: ninguno.
+
+
 ## [1.112.0] — 2026-07-06
 
 **Consolidación de docs y QA.** Sin cambios de código visibles. El documento de convenciones SDD (`docs/sdd/CONVENTIONS.md`) se actualiza a los **30 módulos de ruta** actuales (antes 24) y a la base de pruebas actual; el prompt QA definitivo de todo el proyecto (`qa/QA-REGRESSION-PROMPT.md`) se consolida — mecánica de release actualizada (v1.111, parentVersion 1.17.0, publicación disparada por el release), la tabla de adiciones §14 corregida (Excluir de Scan reetiquetado v1.109.0) y ampliada con el cierre de CodeQL de v1.111 — para valer por sí solo como único prompt de regresión de toda la funcionalidad. Añade una prueba de cobertura para la rama de carga sobredimensionada.

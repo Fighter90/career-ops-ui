@@ -127,7 +127,7 @@ przy pierwszym uruchomieniu. Każdy krok podaje dokładną trasę, dokładny prz
 i to, co zobaczysz po sukcesie. Sekcje 2–16 poniżej szczegółowo opisują
 każdą fazę.
 
-**Zapytaj przewodnik.** Otwórz **Zapytaj przewodnik 💬** (pasek boczny, pod Pomocą) i wpisz pytanie — odpowiada tylko z tego przewodnika w Twoim języku i nigdy nie czyta Twojego CV.
+**Zapytaj przewodnik.** Otwórz **Zapytaj przewodnik 💬** (pasek boczny, pod Pomocą) i wpisz pytanie — odpowiada tylko z tego przewodnika w Twoim języku i nigdy nie czyta Twojego CV. Ten sam asystent jest o jedno dotknięcie z każdej strony — przycisk czatu z robotem unosi się w prawym dolnym rogu (w lewym dolnym w językach pisanych od prawej do lewej); kliknij, aby zapytać bez przerywania pracy.
 
 > **Uruchomienie i inicjalizacja jednym poleceniem.** Z terminala możesz przeprowadzić cały
 > bootstrap bez dotykania interfejsu:

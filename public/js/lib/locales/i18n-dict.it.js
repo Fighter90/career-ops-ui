@@ -1052,4 +1052,10 @@ window.__I18N_DICT_IT = {
   'portals.result': "{alive}/{probed} attive · {dead} non raggiungibili",
   'portals.loadFailed': "Impossibile leggere portals.yml",
   'portals.checkFailed': "Controllo di integrità fallito",
+  'fab.open': "Assistente della guida",
+  'fab.title': "Chiedi alla guida",
+  'fab.status': "Assistente della guida",
+  'fab.close': "Chiudi",
+  'fab.greeting': "Ciao! Chiedimi come usare qualsiasi cosa nell'app — rispondo dalla guida di aiuto nella tua lingua.",
+  'docs.err': "Qualcosa è andato storto. Riprova.",
 };

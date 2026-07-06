@@ -10,6 +10,15 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.113.0] — 2026-07-06
+
+**Flydende "Spørg hjælpen"-assistent på hver side.** En gradient-robot-chatknap svæver nu i nederste højre hjørne (nederste venstre i RTL) på hver side. Tryk for at åbne en kompakt chat, der svarer på brugsspørgsmål udelukkende ud fra den indbyggede hjælpeguide på dit sprog — samme endpoint som `#/docs-assistant`-siden (`POST /api/docs-assistant/ask`), så den læser aldrig dit CV, din profil eller din tracker. Live med en LLM-nøgle; uden nøgle → en klar-til-brug prompt. Overskriften viser en robot-avatar + onlinestatus; chips foreslår almindelige spørgsmål; Esc eller klik udenfor lukker; den skjuler sig på `#/docs-assistant`-siden.
+
+- Ny klient-widget `public/js/lib/docs-fab.js` monteret globalt fra `index.html`; CSP-sikker; tema-bevidste + RTL-spejlede stilarter i `app.css`. Ingen ny serverrute. Tests: `tests/docs-fab.test.mjs` (8). 6 nye i18n-nøgler ×16. Hjælp §1 udvidet på stedet.
+
+Nyt: intet.
+
+
 ## [1.112.0] — 2026-07-06
 
 **Docs- og QA-konsolidering.** Ingen brugersynlig kodeændring. SDD-konventionsdokumentet (`docs/sdd/CONVENTIONS.md`) er opdateret til de nuværende **30 rute-moduler** (var 24) og den nuværende testbaseline; den definitive projektomfattende QA-prompt (`qa/QA-REGRESSION-PROMPT.md`) er konsolideret — release-mekanik afstøvet (v1.111, parentVersion 1.17.0, release-udløst udgivelse), §14-tilføjelsestabellen rettet (Scan Udeluk om-mærket v1.109.0) og udvidet med v1.111-CodeQL-lukningen — så den står alene som den ene regressionsprompt for al funktionalitet. Tilføjer én dækningstest for den overstore upload-gren.

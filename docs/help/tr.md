@@ -133,7 +133,7 @@ takip edin. Her adım tam rotayı, tam düğmeyi ve başarıda ne
 göreceğinizi belirtir. Aşağıdaki 2–16. bölümler her aşamaya daha
 derinlemesine iner.
 
-**Belgelere sor.** Kenar çubuğundaki (Yardım altında) **Belgelere sor 💬**'u açın ve bir soru yazın — yalnızca dilinizde bu kılavuzdan yanıtlar ve özgeçmişinizi asla okumaz.
+**Belgelere sor.** Kenar çubuğundaki (Yardım altında) **Belgelere sor 💬**'u açın ve bir soru yazın — yalnızca dilinizde bu kılavuzdan yanıtlar ve özgeçmişinizi asla okumaz. Aynı asistan her sayfadan bir dokunuş uzağında — bir robot sohbet düğmesi sağ alt köşede (sağdan sola dillerde sol altta) yüzer; yaptığın işi bırakmadan sormak için tıkla.
 
 > **Tek komutla başlatma ve init.** Bir terminalden, arayüze hiç
 > dokunmadan tüm önyüklemeyi yapabilirsiniz:

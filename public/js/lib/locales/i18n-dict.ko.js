@@ -1053,4 +1053,10 @@ window.__I18N_DICT_KO = {
   'portals.result': "{probed}개 중 {alive}개 정상 · {dead}개 죽음",
   'portals.loadFailed': "portals.yml을 읽을 수 없습니다",
   'portals.checkFailed': "상태 점검 실패",
+  'fab.open': "도움말 어시스턴트",
+  'fab.title': "도움말에 질문하기",
+  'fab.status': "도움말 어시스턴트",
+  'fab.close': "닫기",
+  'fab.greeting': "안녕하세요! 앱 사용법을 무엇이든 물어보세요 — 당신의 언어로 된 도움말 가이드에서 답합니다.",
+  'docs.err': "문제가 발생했습니다. 다시 시도하세요.",
 };
