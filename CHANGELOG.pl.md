@@ -9,6 +9,15 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.114.0] — 2026-07-06
+
+**Miernik użycia i kosztu AI w pasku bocznym (lewy dolny róg).** Zwarta sekcja **ZUŻYCIE** znajduje się teraz na dole paska bocznego (stała karta w lewym dolnym rogu, gdy nie ma paska; w prawym dolnym w RTL) na każdej stronie. Pokazuje zużycie tokenów LLM w oknach **24h / 7d / 30d** — każde jako `<tokeny> · <udział%>` z zielonym paskiem (udział w całości) — plus stopkę z szacowanym kosztem 24h. Dane to tylko do odczytu podsumowanie `GET /api/usage` z `data/llm-usage.jsonl` (tylko lokalnie), to samo źródło co strona `#/usage`; koszt jest szacunkowy, a uruchomienia w trybie ręcznym są darmowe i nieliczone. Zwijane — nagłówek przełącza, a stan jest zapamiętywany.
+
+- Nowy widget kliencki `public/js/lib/usage-hud.js` ładowany z `index.html`, montowany w pasku bocznym nad stopką wersji (rezerwowo stały róg). Bezpieczny dla CSP; zależny od motywu i lustro RTL. Bez nowej trasy serwera. Testy: `tests/usage-hud.test.mjs` (8). 3 nowe klucze i18n ×16.
+
+Nowe: brak.
+
+
 ## [1.113.0] — 2026-07-06
 
 **Pływający asystent „Zapytaj pomoc" na każdej stronie.** Gradientowy przycisk czatu z robotem unosi się teraz w prawym dolnym rogu (w lewym dolnym w RTL) każdej strony. Kliknij, aby otworzyć zwarty czat odpowiadający na pytania o użytkowanie WYŁĄCZNIE na podstawie wbudowanego przewodnika pomocy w Twoim języku — ten sam endpoint co strona `#/docs-assistant` (`POST /api/docs-assistant/ask`), więc nigdy nie czyta Twojego CV, profilu ani trackera. Na żywo z kluczem LLM; bez klucza → gotowy prompt. Nagłówek pokazuje awatar robota + status online; chipy podpowiadają częste pytania; Esc lub kliknięcie poza zamyka; ukrywa się na stronie `#/docs-assistant`.

@@ -2,6 +2,15 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.114.0] — 2026-07-06
+
+**KI-Nutzungs- und Kostenanzeige in der Seitenleiste (unten links).** Ein kompakter **NUTZUNG**-Abschnitt sitzt jetzt unten in der Seitenleiste (eine feste Karte unten links, wenn keine Seitenleiste vorhanden ist; unten rechts bei RTL) auf jeder Seite. Er zeigt deine LLM-Token-Nutzung über **24h / 7T / 30T**-Fenster — jeweils als `<Tokens> · <Anteil%>` mit einem grünen Balken (Anteil an der Gesamtzeit) — plus eine Fußzeile mit den geschätzten 24h-Kosten. Die Daten sind die schreibgeschützte `GET /api/usage`-Zusammenfassung von `data/llm-usage.jsonl` (nur lokal), dieselbe Quelle wie die Seite `#/usage`; die Kosten sind eine Schätzung, und Manuell-Modus-Läufe sind kostenlos und werden nicht gezählt. Einklappbar — die Kopfzeile schaltet um und der Zustand bleibt erhalten.
+
+- Neues Client-Widget `public/js/lib/usage-hud.js`, aus `index.html` geladen, in der Seitenleiste über der Versionsfußzeile eingehängt (Fallback: fester Eckplatz). CSP-sicher; themenbewusst + RTL-gespiegelt. Keine neue Serverroute. Tests: `tests/usage-hud.test.mjs` (8). 3 neue i18n-Schlüssel ×16.
+
+Neu: keine.
+
+
 ## [1.113.0] — 2026-07-06
 
 **Schwebender „Hilfe fragen"-Assistent auf jeder Seite.** Eine Gradient-Roboter-Chat-Schaltfläche schwebt jetzt unten rechts (unten links bei RTL) auf jeder Seite. Klicke sie an, um einen kompakten Chat zu öffnen, der Nutzungsfragen AUSSCHLIESSLICH anhand des integrierten Hilfe-Leitfadens in deiner Sprache beantwortet — derselbe Endpunkt wie die Seite `#/docs-assistant` (`POST /api/docs-assistant/ask`), er liest also nie deinen Lebenslauf, dein Profil oder deinen Tracker. Live mit einem LLM-Schlüssel; ohne Schlüssel → ein sofort ausführbarer Prompt. Der Kopf zeigt einen Roboter-Avatar + Online-Status; Chips füllen häufige Fragen; Esc oder Klick außerhalb schließt; auf der Seite `#/docs-assistant` blendet er sich aus.

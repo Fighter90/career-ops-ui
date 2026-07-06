@@ -1058,4 +1058,7 @@ window.__I18N_DICT_IT = {
   'fab.close': "Chiudi",
   'fab.greeting': "Ciao! Chiedimi come usare qualsiasi cosa nell'app — rispondo dalla guida di aiuto nella tua lingua.",
   'docs.err': "Qualcosa è andato storto. Riprova.",
+  'hud.title': "Utilizzo",
+  'hud.empty': "Ancora nessun utilizzo dell'IA. Le esecuzioni dal vivo con una chiave API sono conteggiate qui.",
+  'hud.estimate': "Costo stim. 24h",
 };

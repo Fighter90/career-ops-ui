@@ -1058,4 +1058,7 @@ window.__I18N_DICT_PT_BR = {
   'fab.close': "Fechar",
   'fab.greeting': "Oi! Pergunte como usar qualquer coisa no app — respondo a partir do guia de ajuda no seu idioma.",
   'docs.err': "Algo deu errado. Tente novamente.",
+  'hud.title': "Uso",
+  'hud.empty': "Ainda não há uso de IA. Execuções ao vivo com uma chave de API são contadas aqui.",
+  'hud.estimate': "Custo est. 24h",
 };

@@ -1058,4 +1058,7 @@ window.__I18N_DICT_DA = {
   'fab.close': "Luk",
   'fab.greeting': "Hej! Spørg mig, hvordan du bruger hvad som helst i appen — jeg svarer ud fra hjælpeguiden på dit sprog.",
   'docs.err': "Noget gik galt. Prøv igen.",
+  'hud.title': "Forbrug",
+  'hud.empty': "Ingen AI-forbrug endnu. Live-kørsler med en API-nøgle tælles her.",
+  'hud.estimate': "Est. 24t-omkostning",
 };
