@@ -30,7 +30,8 @@ Router.register('career-plan', async () => {
     c('option', { value: '12', selected: 'selected' }, t('plan.horizon12', '12 months')),
     c('option', { value: '24' }, t('plan.horizon24', '24 months')),
   ]);
-  const focus = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'plan.focusPh', style: { minWidth: '260px' } });
+  const focus = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'plan.focusPh', 'data-i18n-aria-label': 'plan.focusPh', style: { minWidth: '260px' } });
+  focus.setAttribute('aria-label', t('plan.focusPh', 'Optional emphasis'));
   focus.placeholder = t('plan.focusPh', 'Optional emphasis — e.g. move into management, go remote, switch to Go…');
   const genBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('plan.generate', 'Generate plan'));
 
