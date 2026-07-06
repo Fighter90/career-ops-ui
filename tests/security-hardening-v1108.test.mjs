@@ -25,10 +25,13 @@ test('importDocumentToMarkdown coerces an ARRAY filename (repeated header) to a 
   assert.equal(typeof r2.ok, 'boolean');
 });
 
-test('prompts.mjs resolves the locale role-line by OWN key + typeof (dynamic-method-call guard)', () => {
+test('prompts.mjs resolves the locale role-line by OWN key + string typeof (no dynamic call)', () => {
   const src = read('server', 'lib', 'prompts.mjs');
   assert.match(src, /Object\.prototype\.hasOwnProperty\.call\(SCAFFOLD_STRINGS\.modeRoleLine, lang\)/);
-  assert.match(src, /typeof SCAFFOLD_STRINGS\.modeRoleLine\[lang\] === 'function'/);
+  // v1.111.0: role lines are now template STRINGS interpolated with String.replace,
+  // so the resolved value is a string and the call site invokes no dynamic function.
+  assert.match(src, /typeof SCAFFOLD_STRINGS\.modeRoleLine\[lang\] === 'string'/);
+  assert.doesNotMatch(src, /roleLineFn/);
 });
 
 test('runners.mjs caps the slug length BEFORE the dash-trim regex (ReDoS guard)', () => {

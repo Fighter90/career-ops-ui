@@ -1,21 +1,21 @@
-# QA REGRESSION PROMPT — career-ops-ui **v1.109.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
+# QA REGRESSION PROMPT — career-ops-ui **v1.111.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
 
-Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 16 languages**, covering every feature shipped from **v1.76.0 through v1.109.0**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree. §§ below cover the v1.76→v1.97 surface; **§14 (at the end) covers everything added v1.98→v1.109**.
+Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 16 languages**, covering every feature shipped from **v1.76.0 through v1.111.0**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree. §§ below cover the v1.76→v1.97 surface; **§14 (at the end) covers everything added v1.98→v1.111 (incl. the v1.111 CodeQL backlog closeout)**.
 
-- **Version under test:** `package.json` **1.109.0** · **30 route modules**.
-- **Baseline:** **1706** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×16** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL (backlog triaged 167→~6, all real findings fixed).
+- **Version under test:** `package.json` **1.111.0** · **30 route modules**.
+- **Baseline:** **1713** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×16** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL (backlog closed 167→0, all real findings fixed at source (v1.111)).
 - **Server:** `npm start` → `http://127.0.0.1:4317`.
-- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.1XX.0.md` (per-release delta drivers, v1.90–v1.109) · `qa/UX-AUDIT-PROMPT.md` (UX audit) · `qa/FUNCTIONALITY-CHECK.md` (functional correctness) · `qa/DESIGNER-EXPORT-PROMPT.md` (design export) · `REGRESSION-FINAL.md` (invariant ledger).
+- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.1XX.0.md` (per-release delta drivers, v1.90–v1.110 incl. the v1.110 milestone snapshot) · `qa/UX-AUDIT-PROMPT.md` (UX audit) · `qa/FUNCTIONALITY-CHECK.md` (functional correctness) · `qa/DESIGNER-EXPORT-PROMPT.md` (design export) · `REGRESSION-FINAL.md` (invariant ledger).
 
 ---
 
 ## §0 — Gates (all must be green before sign-off)
 
 ```bash
-npm test                                    # full suite (≥1706 cases)
+npm test                                    # full suite (≥1713 cases)
 npm run test:ci                             # unit + check-no-also + check-changelog-parity + i18n-audit
 node tools/i18n-audit.mjs                   # "no hard failures — dictionary is clean"
-node scripts/check-changelog-parity.mjs     # "all 15 locales at v1.109.0" (EN + 15 = 16 files)
+node scripts/check-changelog-parity.mjs     # "all 15 locales at v1.111.0" (EN + 15 = 16 files)
 npm run test:coverage                       # ≥80% line / ≥75% branch (baseline ~96/~86)
 npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(16) + theme-toggle
 npm run test:e2e && npm run test:e2e:full   # smoke (20) + comprehensive (23) E2E
@@ -176,7 +176,7 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 
 ## §8 — Exit criteria
 - Every (page × control × 16 languages) PASS or a logged FAIL→fix (one-fix-per-release; HIGH → MEDIUM → LOW).
-- `npm test` ≥ **1706** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×16) green; CI matrix green; **CodeQL backlog triaged (167→~6, all real findings fixed; the rest dismissed FPs / note-lint)**.
+- `npm test` ≥ **1713** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×16) green; CI matrix green; **CodeQL backlog closed (167→0; final 6 fixed at source in v1.111 — sanitizer escape belt, type-confusion coercion, dynamic-dispatch removal)**.
 - Zero console errors; no RTL leak; no untranslated shipped key; no duplicate dict keys; favicon/icon endpoints 200.
 - All §2 deltas verified live (scanner 46 adapters incl. Dassault; the eight v1.85–v1.96 pages; the v1.97 audit fixes) **and all §14 additions (v1.98–v1.109)**.
 
@@ -195,6 +195,6 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 | 7 | **Company logos (v1.104.0)** | `#/config` **Appearance → Show company logos** (off by default) → `#/scan` rows show the company's favicon (from its OWN domain via `GET /api/logo`, SSRF-safe, cached); shared ATS hosts show a letter badge; broken logo → letter badge. No third-party logo API. |
 | 8 | **AI usage & cost (v1.105.0)** | `#/usage` (💳, next to Health) → per-provider tokens + **estimated USD** over 24h/7d/30d/all; each live call appends to `data/llm-usage.jsonl` (local only); manual-mode runs cost nothing and aren't recorded. Prices editable in `server/lib/llm-pricing.mjs`. |
 | 9 | **Security hardening (v1.106–v1.108)** | Route-render error text is escaped before `innerHTML`; profile/config property writes reject `__proto__`/`constructor`/`prototype`; `stripDangerousMarkdown` runs to a fixed point + removes `</script foo>`/unclosed openers; prompt dispatch is own-key+typeof; PDF slug capped before its regex; array `filename` coerced. Valid input unchanged. |
-| 10 | **Scan Exclude + pipeline overview (v1.109.0)** | `#/scan` Search treats commas as OR; new **Exclude** field hides rows matching any comma-word (both saved in searches). `#/pipeline` overview strip: **N in inbox · N tracked · Applied/Responded/Interview/Offer**, each chip → `#/tracker`. |
+| 10 | **Scan Exclude + pipeline overview (v1.111.0)** | `#/scan` Search treats commas as OR; new **Exclude** field hides rows matching any comma-word (both saved in searches). `#/pipeline` overview strip: **N in inbox · N tracked · Applied/Responded/Interview/Offer**, each chip → `#/tracker`. |
 
 **New routes since v1.97:** `POST /api/portals/health`, `POST /api/export/docx`, `POST /api/cv-studio/tailor`, `POST /api/docs-assistant/ask`, `GET /api/cli-detect`, `GET /api/logo`, `GET /api/usage` (30 route modules total). **New i18n:** every one is present + translated in all **16** locales (`i18n-coverage` + `i18n-locale-files` green). **New Help:** each surfaced in `docs/help/*` (in-place for two-pager/CV-Studio/settings/health/scan/pipeline; §-level for portals/docs-assistant where applicable).

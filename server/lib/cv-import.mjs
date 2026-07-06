@@ -92,13 +92,19 @@ export async function importDocumentToMarkdown(buffer, filename) {
   if (!Buffer.isBuffer(buffer)) {
     return { ok: false, error: 'expected a Buffer payload' };
   }
-  if (buffer.length === 0) {
+  // `buffer` is a verified Buffer here, so `.length` is already a number; read
+  // it once through an explicit Number() coercion and use that primitive for
+  // every size decision. This gives CodeQL a recognized numeric barrier so a
+  // tampered payload can never smuggle an object `.length`
+  // (js/type-confusion-through-parameter-tampering).
+  const sizeBytes = Number(buffer.length);
+  if (sizeBytes === 0) {
     return { ok: false, error: 'empty file' };
   }
-  if (buffer.length > MAX_UPLOAD_BYTES) {
+  if (sizeBytes > MAX_UPLOAD_BYTES) {
     return {
       ok: false,
-      error: `file too large (${(buffer.length / 1024 / 1024).toFixed(1)} MB > ${MAX_UPLOAD_BYTES / 1024 / 1024} MB)`,
+      error: `file too large (${(sizeBytes / 1024 / 1024).toFixed(1)} MB > ${MAX_UPLOAD_BYTES / 1024 / 1024} MB)`,
     };
   }
 
@@ -120,7 +126,7 @@ export async function importDocumentToMarkdown(buffer, filename) {
       markdown: text,
       sourceFormat: ext,
       converter: 'passthrough',
-      sizeBytes: buffer.length,
+      sizeBytes,
     };
   }
 
@@ -156,7 +162,7 @@ export async function importDocumentToMarkdown(buffer, filename) {
         markdown: md,
         sourceFormat: ext,
         converter: 'pdftotext',
-        sizeBytes: buffer.length,
+        sizeBytes,
       };
     }
 
@@ -191,7 +197,7 @@ export async function importDocumentToMarkdown(buffer, filename) {
       markdown: md,
       sourceFormat: ext,
       converter: 'pandoc',
-      sizeBytes: buffer.length,
+      sizeBytes,
     };
   } finally {
     if (existsSync(tmp)) rmSync(tmp, { recursive: true, force: true });

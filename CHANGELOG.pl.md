@@ -9,6 +9,15 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.111.0] — 2026-07-06
+
+**Bezpieczeństwo — domknięcie backlogu CodeQL.** Trzy wzmocnienia obrony w głąb, które zamykają pozostałe znaleziska analizy statycznej u źródła, zamiast je odrzucać (dismiss). `stripDangerousMarkdown` eskejpuje teraz `<` w każdym *uciętym* otwarciu niebezpiecznego znacznika (ładunek kończący się na `<script`/`<iframe`/…), więc jego wyjście w sposób dowodliwy nie zawiera żadnego żywego niebezpiecznego znacznika. Import CV odczytuje rozmiar wgranego bufora przez jawną koercję `Number()` — bariera przeciw pomyleniu typów. Wiersze roli trybów są teraz szablonowymi **łańcuchami** interpolowanymi przez `String.replace`, a nie przechowywanymi funkcjami, co całkowicie usuwa wywołanie dynamicznego rozsyłania. Bez zmian widocznych dla użytkownika.
+
+- `server/lib/security.mjs`, `server/lib/cv-import.mjs`, `server/lib/prompts.mjs`. Testy: `tests/security-hardening-v1111.test.mjs` (7) + zaktualizowany test-strażnik v1108. Bez zmian i18n/pomocy/tras.
+
+Nowe: brak.
+
+
 ## [1.110.0] — 2026-07-06
 
 **Odświeżenie dokumentacji i QA (wszystkie języki).** Bez zmian w kodzie. Prompt QA całego projektu odświeżony do v1.109.0 z nowym §14 (v1.98→v1.109), a wieczne prompty UX-audit i design-export zyskują aktualny zestaw stron. Każdy akapit pomocy dodany w v1.100–v1.109 jest teraz przetłumaczony na **wszystkie 16 języków**.

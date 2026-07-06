@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.111.0] — 2026-07-06
+
+**Security — CodeQL backlog closeout.** Three defense-in-depth hardenings that close the remaining static-analysis findings at the source instead of dismissing them. `stripDangerousMarkdown` now escapes the `<` of any *truncated* dangerous-tag opener (a payload ending in `<script`/`<iframe`/…) so its output provably contains no live dangerous tag. CV import reads an uploaded buffer's size through an explicit `Number()` coercion — a type-confusion barrier. Mode role-lines are now template **strings** interpolated with `String.replace` instead of stored functions, removing the dynamic-dispatch call entirely. No user-facing behavior change.
+
+- `server/lib/security.mjs` (final escape belt), `server/lib/cv-import.mjs` (coerced size), `server/lib/prompts.mjs` (string role-lines). Tests: `tests/security-hardening-v1111.test.mjs` (7) + updated v1108 guard test. No i18n/help/route changes.
+
+New: none.
+
+
 ## [1.110.0] — 2026-07-06
 
 **Docs & QA refresh (all languages).** No code change. The definitive whole-project QA prompt (`qa/QA-REGRESSION-PROMPT.md`) is refreshed to v1.109.0 with a new §14 covering everything shipped v1.98→v1.109, and the perennial UX-audit + design-export prompts gained the current page surface. Every in-app help paragraph added over v1.100–v1.109 (Ask the docs, AI CLI tools + company logos, AI usage & cost, scan Exclude, pipeline overview, two-pager export, CV Doctor) is now translated into **all 16 languages**.
