@@ -590,8 +590,7 @@ Router.register('config', async () => {
     const myToken = ++inFlight;
     let st = null;
     try {
-      const r = await fetch('/api/status/providers');
-      if (r.ok) st = await r.json();
+      st = await API.get('/api/status/providers');
     } catch { /* offline → keep last */ }
     // Drop stale resolves (another refresh started after us).
     if (myToken !== inFlight) return;

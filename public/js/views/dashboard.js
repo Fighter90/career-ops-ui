@@ -61,8 +61,7 @@ Router.register('dashboard', async () => {
     async function refresh() {
       let st = null;
       try {
-        const r = await fetch('/api/status/providers');
-        if (r.ok) st = await r.json();
+        st = await API.get('/api/status/providers');
       } catch { /* offline → say nothing */ }
       // Clear children safely (CSP-compatible — no innerHTML).
       while (chip.firstChild) chip.removeChild(chip.firstChild);

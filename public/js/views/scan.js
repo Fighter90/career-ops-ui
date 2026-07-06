@@ -1128,7 +1128,7 @@ Router.register('scan', async () => {
       // Hook into the same refresh dispatch as Active Companies counter.
       // Reads workdayFallback from /api/scan-results when it lands.
       function refreshWorkdayChip() {
-        fetch('/api/scan-results').then((r) => r.json()).then((d) => {
+        API.get('/api/scan-results').then((d) => {
           const wf = d && d.workdayFallback;
           if (!wf || !wf.apiUrl) {
             wdFallback.style.display = 'none';
