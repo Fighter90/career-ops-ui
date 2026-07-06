@@ -104,8 +104,12 @@ export function registerStatsRoutes(app) {
     const r = await runNodeScript(script, [], { timeoutMs: 60_000 });
     let data = null;
     const out = String(r.stdout || '').trim();
-    const start = out.indexOf('{');
-    if (start !== -1) { try { data = JSON.parse(out.slice(start)); } catch { data = null; } }
+    // Whole-stdout parse first; only fall back to slicing from the first '{'
+    // so a stray {...}-shaped log line can't shadow the real document.
+    try { data = JSON.parse(out); } catch {
+      const start = out.indexOf('{');
+      if (start !== -1) { try { data = JSON.parse(out.slice(start)); } catch { data = null; } }
+    }
     if (r.code !== 0 || !data) {
       res.json({
         available: false,

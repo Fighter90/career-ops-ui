@@ -38,10 +38,19 @@ function scriptAvailable(name) {
   return existsSync(resolve(PROJECT_ROOT, name));
 }
 
-/** Parse a script's stdout as JSON, tolerating stray log lines before it. */
+/**
+ * Parse a script's stdout as JSON. The whole trimmed stdout is tried FIRST
+ * (the parent scripts print a single JSON document), and only on failure do we
+ * fall back to slicing from the first `{` — so a stray {…}-shaped log line
+ * before the payload can't silently win over the real document (v1.117.1
+ * review).
+ */
 function parseJsonStdout(stdout) {
   const s = String(stdout || '').trim();
   if (!s) return null;
+  try {
+    return JSON.parse(s);
+  } catch { /* fall through to the sliced attempt */ }
   const start = s.indexOf('{');
   if (start === -1) return null;
   try {

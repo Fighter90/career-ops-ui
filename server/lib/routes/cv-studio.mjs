@@ -263,8 +263,9 @@ export function registerCvStudioRoutes(app) {
         // the client renders answers through UI.md, the escape-first
         // boundary). Drop script/style CONTENT, strip tags to a fixed point
         // (a strip can reveal a new tag), then remove every remaining < / >
-        // outright — a complete single-character sanitization, so no partial
-        // tag can survive (CodeQL incomplete-multi-character-sanitization).
+        // outright. The [<>] sweep below is what makes the bounded 8-pass loop
+        // safe: even if the cap trips, no angle bracket — hence no partial
+        // tag — can survive it (CodeQL incomplete-multi-character-sanitization).
         let text = String(r.body || '')
           .replace(/<script\b[\s\S]*?<\/script[^>]*>/gi, ' ')
           .replace(/<style\b[\s\S]*?<\/style[^>]*>/gi, ' ');
