@@ -1059,4 +1059,7 @@ window.__I18N_DICT_TR = {
   'fab.close': "Kapat",
   'fab.greeting': "Merhaba! Uygulamada herhangi bir şeyi nasıl kullanacağını sor — kendi dilindeki yardım kılavuzundan yanıtlıyorum.",
   'docs.err': "Bir şeyler ters gitti. Tekrar deneyin.",
+  'hud.title': "Kullanım",
+  'hud.empty': "Henüz AI kullanımı yok. API anahtarıyla canlı çalıştırmalar burada sayılır.",
+  'hud.estimate': "Tahmini 24s maliyet",
 };

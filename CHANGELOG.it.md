@@ -2,6 +2,15 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.114.0] — 2026-07-06
+
+**Contatore di utilizzo e costo dell'IA nella barra laterale (in basso a sinistra).** Una sezione **UTILIZZO** compatta ora si trova in fondo alla barra laterale (una scheda fissa in basso a sinistra se non c'è barra laterale; in basso a destra in RTL) su ogni pagina. Mostra l'uso di token LLM su finestre **24h / 7g / 30g** — ciascuna come `<token> · <quota%>` con una barra verde (quota sul totale) — più un piè di pagina con il costo stimato delle 24h. I dati sono il riepilogo di sola lettura `GET /api/usage` di `data/llm-usage.jsonl` (solo locale), la stessa fonte della pagina `#/usage`; il costo è una stima e le esecuzioni in modalità manuale sono gratuite e non conteggiate. Comprimibile — l'intestazione commuta e lo stato persiste.
+
+- Nuovo widget client `public/js/lib/usage-hud.js` caricato da `index.html`, montato nella barra laterale sopra il piè di versione (fallback ad angolo fisso). Sicuro per la CSP; adattivo al tema e speculare RTL. Nessuna nuova rotta server. Test: `tests/usage-hud.test.mjs` (8). 3 nuove chiavi i18n ×16.
+
+Nuovo: nessuno.
+
+
 ## [1.113.0] — 2026-07-06
 
 **Assistente fluttuante "Chiedi alla guida" su ogni pagina.** Un pulsante di chat con un robot in gradiente ora fluttua nell'angolo in basso a destra (in basso a sinistra in RTL) di ogni pagina. Toccalo per aprire una chat compatta che risponde a domande d'uso basandosi SOLO sulla guida di aiuto integrata nella tua lingua — lo stesso endpoint della pagina `#/docs-assistant` (`POST /api/docs-assistant/ask`), quindi non legge mai il tuo CV, profilo o tracker. Dal vivo con una chiave LLM; senza chiave → un prompt pronto all'uso. L'intestazione mostra un avatar robot + stato online; i chip avviano domande comuni; Esc o clic esterno chiude; si nasconde sulla pagina `#/docs-assistant`.

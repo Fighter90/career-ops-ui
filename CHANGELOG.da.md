@@ -10,6 +10,15 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.114.0] — 2026-07-06
+
+**AI-forbrugs- og omkostningsmåler i sidebjælken (nederst til venstre).** En kompakt **FORBRUG**-sektion sidder nu nederst i sidebjælken (et fast kort nederst til venstre hvis der ingen sidebjælke er; nederst til højre i RTL) på hver side. Den viser dit LLM-tokenforbrug over **24t / 7d / 30d** vinduer — hvert som `<tokens> · <andel%>` med en grøn måler (andel af hele perioden) — plus en fod med den estimerede 24t-omkostning. Data er den skrivebeskyttede `GET /api/usage`-opsummering af `data/llm-usage.jsonl` (kun lokalt), samme kilde som `#/usage`-siden; omkostningen er et estimat, og manuelle kørsler er gratis og tælles ikke. Sammenfoldelig — overskriften skifter, og tilstanden bevares.
+
+- Ny klient-widget `public/js/lib/usage-hud.js` indlæst fra `index.html`, monteret i sidebjælken over versionsfoden (fast-hjørne-fallback). CSP-sikker; tema-bevidst + RTL-spejlet. Ingen ny serverrute. Tests: `tests/usage-hud.test.mjs` (8). 3 nye i18n-nøgler ×16.
+
+Nyt: intet.
+
+
 ## [1.113.0] — 2026-07-06
 
 **Flydende "Spørg hjælpen"-assistent på hver side.** En gradient-robot-chatknap svæver nu i nederste højre hjørne (nederste venstre i RTL) på hver side. Tryk for at åbne en kompakt chat, der svarer på brugsspørgsmål udelukkende ud fra den indbyggede hjælpeguide på dit sprog — samme endpoint som `#/docs-assistant`-siden (`POST /api/docs-assistant/ask`), så den læser aldrig dit CV, din profil eller din tracker. Live med en LLM-nøgle; uden nøgle → en klar-til-brug prompt. Overskriften viser en robot-avatar + onlinestatus; chips foreslår almindelige spørgsmål; Esc eller klik udenfor lukker; den skjuler sig på `#/docs-assistant`-siden.

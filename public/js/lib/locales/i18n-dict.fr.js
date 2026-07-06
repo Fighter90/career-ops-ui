@@ -1058,4 +1058,7 @@ window.__I18N_DICT_FR = {
   'fab.close': "Fermer",
   'fab.greeting': "Bonjour ! Demandez-moi comment utiliser n'importe quoi dans l'app — je réponds à partir du guide d'aide dans votre langue.",
   'docs.err': "Une erreur s'est produite. Réessayez.",
+  'hud.title': "Utilisation",
+  'hud.empty': "Pas encore d'utilisation d'IA. Les exécutions en direct avec une clé API sont comptées ici.",
+  'hud.estimate': "Coût est. 24h",
 };

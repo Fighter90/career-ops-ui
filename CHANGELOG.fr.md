@@ -11,6 +11,15 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.114.0] — 2026-07-06
+
+**Compteur d'utilisation et de coût de l'IA dans la barre latérale (en bas à gauche).** Une section **UTILISATION** compacte se trouve désormais en bas de la barre latérale (une carte fixe en bas à gauche s'il n'y a pas de barre latérale ; en bas à droite en RTL) sur chaque page. Elle montre votre utilisation de jetons LLM sur des fenêtres **24h / 7j / 30j** — chacune sous la forme `<jetons> · <part%>` avec une barre verte (part du total) — plus un pied avec le coût estimé sur 24h. Les données sont le récapitulatif en lecture seule `GET /api/usage` de `data/llm-usage.jsonl` (local uniquement), la même source que la page `#/usage` ; le coût est une estimation et les exécutions en mode manuel sont gratuites et non comptées. Repliable — l'en-tête bascule et l'état persiste.
+
+- Nouveau widget client `public/js/lib/usage-hud.js` chargé depuis `index.html`, monté dans la barre latérale au-dessus du pied de version (repli en coin fixe). Sûr pour la CSP ; adapté au thème et miroir RTL. Aucune nouvelle route serveur. Tests : `tests/usage-hud.test.mjs` (8). 3 nouvelles clés i18n ×16.
+
+Nouveau : aucun.
+
+
 ## [1.113.0] — 2026-07-06
 
 **Assistant flottant « Interroger l'aide » sur chaque page.** Un bouton de chat robot en dégradé flotte désormais dans le coin inférieur droit (inférieur gauche en RTL) de chaque page. Cliquez pour ouvrir un chat compact qui répond aux questions d'utilisation en se basant UNIQUEMENT sur le guide d'aide intégré dans votre langue — le même endpoint que la page `#/docs-assistant` (`POST /api/docs-assistant/ask`), donc il ne lit jamais votre CV, profil ou suivi. En direct avec une clé LLM ; sans clé → un prompt prêt à l'emploi. L'en-tête montre un avatar robot + un statut en ligne ; les puces amorcent des questions courantes ; Échap ou clic extérieur ferme ; il se masque sur la page `#/docs-assistant`.

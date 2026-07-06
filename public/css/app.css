@@ -1857,3 +1857,66 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   .docs-fab, .docs-fab__send, .docs-fab__chip { transition: none; }
   .docs-fab__panel { animation: none; }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   AI usage & cost HUD (usage-hud.js, v1.114.0)
+   A compact "USAGE" meter pinned bottom-left (bottom-right in RTL) on every
+   page: gauge header + per-window token bars (24h/7d/30d) + an est-cost footer.
+   Collapsible; theme-aware; CSP-safe. Opposite corner from the docs launcher.
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --hud-bg: #ffffff;
+  --hud-border: rgba(0, 0, 0, .10);
+  --hud-track: #eceff4;
+  --hud-bar: #34c759;
+}
+:root[data-theme="dark"] { --hud-bg: #1b1f27; --hud-border: rgba(255,255,255,.10); --hud-track: #2b313b; --hud-bar: #37d15f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --hud-bg: #1b1f27; --hud-border: rgba(255,255,255,.10); --hud-track: #2b313b; --hud-bar: #37d15f; }
+}
+
+.usage-hud {
+  position: fixed; left: 20px; bottom: 20px; z-index: 1140;
+  width: 244px; max-width: calc(100vw - 40px);
+  background: var(--hud-bg); border: 1px solid var(--hud-border);
+  border-radius: 14px; box-shadow: var(--shadow-md, 0 6px 16px rgba(0,0,0,.12));
+  padding: 10px 12px; font-size: 13px; color: var(--hof, #222);
+}
+/* Sidebar-integrated variant — a flush section above the version footer. */
+.usage-hud--sidebar {
+  position: static; width: auto; z-index: auto;
+  margin: 8px 16px 4px; background: transparent; box-shadow: none;
+  border: none; border-top: 1px solid var(--line, var(--hud-border));
+  border-radius: 0; padding: 12px 4px 4px; color: inherit;
+}
+.usage-hud__head {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  background: none; border: none; padding: 2px 0 8px; cursor: pointer;
+  color: var(--foggy, #888); font: inherit;
+}
+.usage-hud__head:focus-visible { outline: 2px solid var(--hud-bar); outline-offset: 2px; border-radius: 6px; }
+.usage-hud__ic { display: inline-flex; color: var(--foggy, #888); }
+.usage-hud__title { text-transform: uppercase; letter-spacing: .08em; font-size: 11px; font-weight: 700; flex: 1; text-align: left; }
+.usage-hud__chev { transition: transform var(--transition, .18s ease); font-size: 12px; }
+.usage-hud--collapsed .usage-hud__chev { transform: rotate(-90deg); }
+.usage-hud--collapsed { padding-bottom: 10px; }
+.usage-hud__bodywrap[hidden] { display: none; }
+
+.usage-hud__meter { margin: 0 0 10px; }
+.usage-hud__meter:last-child { margin-bottom: 0; }
+.usage-hud__meterhead { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 5px; }
+.usage-hud__win { font-weight: 600; font-size: 12px; color: var(--hof, #333); }
+.usage-hud__val { font-size: 12px; color: var(--foggy, #888); font-variant-numeric: tabular-nums; }
+.usage-hud__bar { display: block; height: 6px; border-radius: 999px; background: var(--hud-track); overflow: hidden; }
+.usage-hud__barfill { display: block; height: 100%; border-radius: 999px; background: var(--hud-bar); transition: width var(--transition, .3s ease); }
+.usage-hud__empty { font-size: 12px; color: var(--foggy, #888); line-height: 1.5; }
+.usage-hud__footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--hud-border); font-size: 11px; color: var(--foggy, #888); }
+.usage-hud__footcost { font-weight: 700; color: var(--hof, #333); font-variant-numeric: tabular-nums; }
+
+[dir="rtl"] .usage-hud { left: auto; right: 20px; }
+[dir="rtl"] .usage-hud__title { text-align: right; }
+
+/* On mobile the sidebar-integrated HUD rides inside the drawer; only the
+   fixed-corner fallback (no sidebar) is hidden to avoid covering content. */
+@media (max-width: 900px) { .usage-hud:not(.usage-hud--sidebar) { display: none; } }
+@media (prefers-reduced-motion: reduce) { .usage-hud__barfill, .usage-hud__chev { transition: none; } }

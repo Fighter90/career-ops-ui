@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.114.0] — 2026-07-06
+
+**AI usage & cost meter in the sidebar (bottom-left).** A compact **USAGE** section now sits at the bottom of the sidebar (a fixed bottom-left card if there's no sidebar; bottom-right in RTL) on every page. It shows your LLM token usage across **24h / 7d / 30d** windows — each as `<tokens> · <share%>` with a green meter bar (share of all-time) — plus an estimated 24h-cost footer. Data is the read-only `GET /api/usage` rollup of `data/llm-usage.jsonl` (local only), the same source as the `#/usage` page; cost is an estimate and manual-mode runs are free and uncounted. Collapsible — the header toggles and the state persists.
+
+- New client widget `public/js/lib/usage-hud.js` (`window.UsageHud`) loaded from `index.html`, mounted into the sidebar above the version footer (fixed-corner fallback). CSP-safe (no inline handlers, static-constant gauge SVG); theme-aware + RTL-mirrored; hidden as a fixed overlay on mobile. No new server route — reuses the read-only usage rollup. Tests: `tests/usage-hud.test.mjs` (8). 3 new i18n keys ×16 (`hud.title`/`hud.empty`/`hud.estimate`).
+
+New: none.
+
+
 ## [1.113.0] — 2026-07-06
 
 **Floating "Ask the docs" assistant on every page.** A gradient robot chat button now floats in the bottom-right corner (bottom-left in RTL) of every page. Click it to open a compact chat that answers how-to questions grounded ONLY in the in-app help guide in your language — the same endpoint as the `#/docs-assistant` page (`POST /api/docs-assistant/ask`), so it never reads your CV, profile, or tracker. Live with an LLM key; no key → a ready-to-run prompt. The header shows a robot avatar + an online status; starter chips seed common questions; Escape or click-outside closes it; it hides itself on the dedicated `#/docs-assistant` page.

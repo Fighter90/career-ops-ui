@@ -1058,4 +1058,7 @@ window.__I18N_DICT_ES = {
   'fab.close': "Cerrar",
   'fab.greeting': "¡Hola! Pregúntame cómo usar cualquier cosa de la app: respondo desde la guía de ayuda en tu idioma.",
   'docs.err': "Algo salió mal. Inténtalo de nuevo.",
+  'hud.title': "Uso",
+  'hud.empty': "Aún no hay uso de IA. Las ejecuciones en vivo con una clave API se cuentan aquí.",
+  'hud.estimate': "Coste est. 24h",
 };

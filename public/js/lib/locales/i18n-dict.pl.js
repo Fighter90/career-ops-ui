@@ -1058,4 +1058,7 @@ window.__I18N_DICT_PL = {
   'fab.close': "Zamknij",
   'fab.greeting': "Cześć! Zapytaj mnie, jak korzystać z czegokolwiek w aplikacji — odpowiadam z przewodnika pomocy w Twoim języku.",
   'docs.err': "Coś poszło nie tak. Spróbuj ponownie.",
+  'hud.title': "Zużycie",
+  'hud.empty': "Brak użycia AI. Uruchomienia na żywo z kluczem API są tu liczone.",
+  'hud.estimate': "Szac. koszt 24h",
 };

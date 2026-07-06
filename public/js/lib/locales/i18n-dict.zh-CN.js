@@ -1059,4 +1059,7 @@ window.__I18N_DICT_ZH_CN = {
   'fab.close': "关闭",
   'fab.greeting': "你好!问我如何使用应用中的任何功能——我会根据你语言的帮助指南来回答。",
   'docs.err': "出了点问题。请重试。",
+  'hud.title': "用量",
+  'hud.empty': "暂无 AI 用量。使用 API 密钥的实时运行会在此计入。",
+  'hud.estimate': "24小时预估费用",
 };

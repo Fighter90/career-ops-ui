@@ -11,6 +11,15 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.114.0] — 2026-07-06
+
+**Medidor de uso y coste de IA en la barra lateral (abajo a la izquierda).** Una sección **USO** compacta ahora aparece al final de la barra lateral (una tarjeta fija abajo a la izquierda si no hay barra lateral; abajo a la derecha en RTL) en cada página. Muestra tu uso de tokens LLM en ventanas de **24h / 7d / 30d** — cada una como `<tokens> · <cuota%>` con una barra verde (cuota del total histórico) — más un pie con el coste estimado de 24h. Los datos son el resumen de solo lectura `GET /api/usage` de `data/llm-usage.jsonl` (solo local), la misma fuente que la página `#/usage`; el coste es una estimación y las ejecuciones en modo manual son gratis y no se cuentan. Plegable — la cabecera alterna y el estado se conserva.
+
+- Nuevo widget cliente `public/js/lib/usage-hud.js` cargado desde `index.html`, montado en la barra lateral sobre el pie de versión (alternativa de esquina fija). Seguro para CSP; con tema y espejo RTL. Sin nueva ruta de servidor. Pruebas: `tests/usage-hud.test.mjs` (8). 3 nuevas claves i18n ×16.
+
+Nuevo: ninguno.
+
+
 ## [1.113.0] — 2026-07-06
 
 **Asistente flotante "Preguntar a la guía" en cada página.** Un botón de chat con un robot y degradado ahora flota en la esquina inferior derecha (inferior izquierda en RTL) de cada página. Púlsalo para abrir un chat compacto que responde preguntas de uso basándose SOLO en la guía de ayuda en tu idioma — el mismo endpoint que la página `#/docs-assistant` (`POST /api/docs-assistant/ask`), así que nunca lee tu CV, perfil ni seguimiento. En vivo con una clave LLM; sin clave → un prompt listo para usar. La cabecera muestra un avatar de robot + estado en línea; los chips inician preguntas comunes; Escape o clic fuera lo cierra; se oculta en la página `#/docs-assistant`.

@@ -2,6 +2,15 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.114.0] — 2026-07-06
+
+**Kenar çubuğunda AI kullanım ve maliyet göstergesi (sol alt).** Kompakt bir **KULLANIM** bölümü artık her sayfada kenar çubuğunun altında yer alır (kenar çubuğu yoksa sol altta sabit bir kart; RTL'de sağ altta). LLM jeton kullanımını **24s / 7g / 30g** pencerelerinde gösterir — her biri `<jeton> · <pay%>` olarak (tüm zamana göre pay) yeşil bir çubukla — ve tahmini 24s maliyet altbilgisi ekler. Veri, `data/llm-usage.jsonl` dosyasının salt okunur `GET /api/usage` özetidir (yalnızca yerel), `#/usage` sayfasıyla aynı kaynak; maliyet bir tahmindir ve manuel mod çalıştırmaları ücretsizdir ve sayılmaz. Katlanabilir — başlık değiştirir ve durum korunur.
+
+- `index.html`'den yüklenen yeni istemci bileşeni `public/js/lib/usage-hud.js`, sürüm altbilgisinin üstünde kenar çubuğuna takılır (sabit köşe yedeği). CSP güvenli; temaya duyarlı + RTL aynalı. Yeni sunucu rotası yok. Testler: `tests/usage-hud.test.mjs` (8). 3 yeni i18n anahtarı ×16.
+
+Yeni: yok.
+
+
 ## [1.113.0] — 2026-07-06
 
 **Her sayfada yüzen "Yardıma sor" asistanı.** Gradyanlı bir robot sohbet düğmesi artık her sayfanın sağ alt köşesinde (RTL'de sol altta) yüzer. Kullanım sorularını YALNIZCA kendi dilindeki uygulama içi yardım kılavuzuna dayanarak yanıtlayan kompakt bir sohbeti açmak için tıkla — `#/docs-assistant` sayfasıyla aynı uç nokta (`POST /api/docs-assistant/ask`), dolayısıyla asla CV'ni, profilini veya izleyicini okumaz. LLM anahtarıyla canlı; anahtar yoksa → çalıştırmaya hazır bir istem. Başlıkta robot avatarı + çevrimiçi durum; çipler sık soruları doldurur; Esc veya dışına tıklama kapatır; `#/docs-assistant` sayfasında gizlenir.

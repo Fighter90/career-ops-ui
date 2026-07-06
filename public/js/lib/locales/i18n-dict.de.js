@@ -1058,4 +1058,7 @@ window.__I18N_DICT_DE = {
   'fab.close': "Schließen",
   'fab.greeting': "Hallo! Frag mich, wie du etwas in der App nutzt — ich antworte aus dem Hilfe-Leitfaden in deiner Sprache.",
   'docs.err': "Etwas ist schiefgelaufen. Versuch es erneut.",
+  'hud.title': "Nutzung",
+  'hud.empty': "Noch keine KI-Nutzung. Live-Läufe mit einem API-Schlüssel werden hier gezählt.",
+  'hud.estimate': "Gesch. 24h-Kosten",
 };

@@ -1064,4 +1064,7 @@ window.__I18N_DICT_EN = {
   'fab.close': "Close",
   'fab.greeting': "Hi! Ask me how to use anything in the app — I answer from the help guide in your language.",
   'docs.err': "Something went wrong. Try again.",
+  'hud.title': "Usage",
+  'hud.empty': "No AI usage yet. Live runs with an API key are counted here.",
+  'hud.estimate': "Est. 24h cost",
 };
