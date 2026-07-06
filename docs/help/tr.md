@@ -1337,7 +1337,7 @@ Evaluate ile aynı yedek zinciri:
 
 ## 13. Mod promptları (yedi `/#/<mode>` sayfası)
 
-**Kadans panosu (v1.117.0).** Takip sayfası artık üst projenin `followup-cadence.mjs`'inden beslenen deterministik bir **kadans panosuyla** açılır: başvuru başına aciliyet (🔴 acil / 🟠 gecikmiş / 🟡 beklemede / 🔵 soğuk) ve sonraki adıma kalan günler, ayrıca her Applied satırına ilk takip tarihini sabitleyen **Takip tarihlerini ek** düğmesi (`followup-seed.mjs --backfill`). Üst betikler yoksa pano dürüstçe "kullanılamıyor" der.
+**Kadans panosu (v1.117.0).** Takip sayfası artık üst projenin `followup-cadence.mjs`'inden beslenen deterministik bir **kadans panosuyla** açılır: başvuru başına aciliyet (🔴 acil / 🟠 gecikmiş / 🟡 beklemede / 🔵 soğuk) ve sonraki adıma kalan günler, ayrıca her Applied satırına ilk takip tarihini sabitleyen **Takip tarihlerini ekle** düğmesi (`followup-seed.mjs --backfill`). Üst betikler yoksa pano dürüstçe "kullanılamıyor" der.
 
 Yedi prompt oluşturucu: **Project** fikirleri, **Training** planları,
 **Follow-up** e-postaları, **Batch** değerlendirmeleri, işe alım

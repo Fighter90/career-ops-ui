@@ -1063,7 +1063,7 @@ window.__I18N_DICT_TR = {
   'hud.empty': "Henüz AI kullanımı yok. API anahtarıyla canlı çalıştırmalar burada sayılır.",
   'hud.estimate': "Tahmini 24s maliyet",
   'fu.boardTitle': "Kadans panosu",
-  'fu.seedBackfill': "Takip tarihlerini ek",
+  'fu.seedBackfill': "Takip tarihlerini ekle",
   'fu.refresh': "Yenile",
   'fu.loading': "Kadans yükleniyor…",
   'fu.unavailable': "Kadans verisi yok — üst career-ops betikleri bu uygulamanın yanında bulunamadı.",
