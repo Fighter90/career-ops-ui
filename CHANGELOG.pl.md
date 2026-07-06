@@ -9,6 +9,13 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.117.1] — 2026-07-06
+
+**Utwardzenie v1.117.0 (triage CodeQL).** Trzy endpointy shell-out (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) mają teraz wspólny limiter per-IP (każde żądanie tworzy proces potomny; no-op na loopbacku). Ekstrakcja tekstu z URL w Dodaj do CV usuwa znaczniki do punktu stałego, a potem kasuje wszystkie pozostałe `<`/`>` — dowodliwie pełna sanityzacja tekstu promptu LLM. Bez zmian dla poprawnych danych.
+
+Nowe: brak.
+
+
 ## [1.117.0] — 2026-07-06
 
 **Pakiet parytetu z rodzicem — sześć możliwości nadrzędnego career-ops w UI.** (1) **Tablica kadencji** na `#/followup`: pilność każdej aplikacji (🔴/🟠/🟡/🔵) z `followup-cadence.mjs`, plus przycisk **Zasiej daty** (`followup-seed.mjs --backfill`). (2) **Wzorce odrzuceń**: czwarta zakładka Statystyk uruchamia `analyze-patterns.mjs` (tylko odczyt) — rozkład wyników, rekomendacje, wskaźnik awansu wg dostawcy ATS. (3) **Dodaj do CV**: karta CV Studio zamienia URL lub wklejony tekst w punkty ATS oparte WYŁĄCZNIE na tym źródle (tylko propozycje, bez zapisów; pobranie URL chronione anty-SSRF). (4) **4 nowe źródła skanowania** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — rejestr liczy teraz **50 adapterów (45 EN + 5 RU)**, wszystkie w liście Scan. (5) Krok **pre-skanu dyskwalifikatorów** w checkliście Apply. (6) **Runner reconcile** (`/api/run/reconcile`). Trasy shell-out uczciwie degradują bez skryptów rodzica.

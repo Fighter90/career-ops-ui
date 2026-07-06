@@ -2,6 +2,13 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.117.1] — 2026-07-06
+
+**Indurimento di v1.117.0 (triage CodeQL).** I tre endpoint shell-out (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) portano ora il limitatore per-IP condiviso (creano un processo figlio per richiesta; no-op su loopback). L'estrazione del testo da URL di Aggiungi al CV rimuove i tag fino al punto fisso e poi cancella ogni `<`/`>` residuo — una sanificazione dimostrabilmente completa per testo di prompt LLM. Nessun cambiamento per input validi.
+
+Nuovo: nessuno.
+
+
 ## [1.117.0] — 2026-07-06
 
 **Pacchetto di parità col padre — sei capacità del career-ops padre portate nella UI.** (1) **Bacheca di cadenza** su `#/followup`: urgenza per candidatura (🔴/🟠/🟡/🔵) da `followup-cadence.mjs`, più il pulsante **Semina date** (`followup-seed.mjs --backfill`). (2) **Pattern di rifiuto**: una quarta scheda Statistiche esegue `analyze-patterns.mjs` (sola lettura) — distribuzione degli esiti, raccomandazioni, tasso di avanzamento per fornitore ATS. (3) **Aggiungi al CV**: una scheda di CV Studio trasforma un URL o testo incollato in punti ATS basati SOLO su quella fonte (solo suggerimenti, nessuna scrittura; il fetch dell'URL è protetto anti-SSRF). (4) **4 nuovi provider di scansione** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — il registro conta ora **50 adattatori (45 EN + 5 RU)**, tutti nel menu del Scan. (5) Passo di **pre-scansione dei disqualificatori** nella checklist Apply. (6) **Runner reconcile** (`/api/run/reconcile`). Le rotte shell-out degradano onestamente senza gli script del padre.

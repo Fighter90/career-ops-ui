@@ -12,9 +12,9 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.0)
+[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
 
-> **🆕 Najnowsze wydanie — v1.117.0**
+> **🆕 Najnowsze wydanie — v1.117.1**
 >
 > **Pakiet parytetu z rodzicem.** Sześć możliwości nadrzędnego career-ops trafia do UI: tablica kadencji follow-upów, zakładka wzorców odrzuceń (wyniki, rekomendacje, wskaźnik awansu wg ATS), karta Dodaj do CV (uzasadnione punkty, tylko propozycje), 4 nowe źródła skanowania (50 adapterów), pre-skan dyskwalifikatorów w Apply i runner reconcile.
 >

@@ -12,9 +12,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.0)
+[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
 
-> **🆕 最新リリース — v1.117.0**
+> **🆕 最新リリース — v1.117.1**
 >
 > **親パリティパック。** 親 career-ops の6機能がUIに到着: フォローアップ・ケイデンスボード、不採用パターン統計タブ(結果・推奨・ATSベンダー別前進率)、CVに追加カード(根拠ある箇条書き、提案のみ)、新スキャンプロバイダ4つ(アダプタ50)、Applyの失格要件事前スキャン、reconcileランナー。
 >

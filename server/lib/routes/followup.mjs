@@ -28,6 +28,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PROJECT_ROOT } from '../paths.mjs';
 import { runNodeScript } from '../runner.mjs';
+import { llmRateLimit } from '../rate-limit.mjs';
 
 const CADENCE_SCRIPT = 'followup-cadence.mjs';
 const SEED_SCRIPT = 'followup-seed.mjs';
@@ -51,7 +52,7 @@ function parseJsonStdout(stdout) {
 }
 
 export function registerFollowupRoutes(app) {
-  app.get('/api/followup', async (_req, res) => {
+  app.get('/api/followup', llmRateLimit, async (_req, res) => {
     if (!scriptAvailable(CADENCE_SCRIPT)) {
       res.json({ available: false, reason: 'script-not-found' });
       return;
@@ -69,7 +70,7 @@ export function registerFollowupRoutes(app) {
     res.json({ available: true, ...data });
   });
 
-  app.post('/api/followup/seed', async (req, res) => {
+  app.post('/api/followup/seed', llmRateLimit, async (req, res) => {
     if (!scriptAvailable(SEED_SCRIPT)) {
       res.status(400).json({ error: 'followup-seed.mjs not found in the parent project' });
       return;

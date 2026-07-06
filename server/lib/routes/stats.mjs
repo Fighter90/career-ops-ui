@@ -95,7 +95,7 @@ export function registerStatsRoutes(app) {
   // instead of reimplementing it — the parent stays the source of truth and
   // web-ui cannot drift. Read-only; fail-soft { available:false } when the
   // script is absent (CI, standalone installs) so the tab shows an honest note.
-  app.get('/api/stats/patterns', async (_req, res) => {
+  app.get('/api/stats/patterns', llmRateLimit, async (_req, res) => {
     const script = 'analyze-patterns.mjs';
     if (!existsSync(resolve(PROJECT_ROOT, script))) {
       res.json({ available: false, reason: 'script-not-found' });

@@ -12,9 +12,9 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.0)
+[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
 
-> **🆕 Ultima release — v1.117.0**
+> **🆕 Ultima release — v1.117.1**
 >
 > **Pacchetto di parità col padre.** Sei capacità del career-ops padre arrivano nella UI: bacheca di cadenza dei follow-up, scheda pattern di rifiuto nelle Statistiche (esiti, raccomandazioni, tasso di avanzamento per ATS), scheda Aggiungi al CV (punti fondati, solo suggerimenti), 4 nuovi provider di scansione (50 adattatori), pre-scansione dei disqualificatori in Apply e runner reconcile.
 >

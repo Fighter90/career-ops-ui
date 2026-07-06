@@ -2,6 +2,13 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.117.1] — 2026-07-06
+
+**v1.117.0 sertleştirmesi (CodeQL triyajı).** Üç shell-out uç noktası (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) artık paylaşılan IP başına sınırlayıcıyı taşıyor (her istek bir alt süreç başlatır; loopback'te no-op). CV'ye ekle'nin URL metin çıkarımı etiketleri sabit noktaya kadar soyar, sonra kalan tüm `<`/`>` karakterlerini siler — LLM istem metni için kanıtlanabilir şekilde eksiksiz bir arındırma. Geçerli girdi için davranış değişikliği yok.
+
+Yeni: yok.
+
+
 ## [1.117.0] — 2026-07-06
 
 **Üst proje parite paketi — üst career-ops'un altı yeteneği UI'ya taşındı.** (1) `#/followup`'ta **kadans panosu**: `followup-cadence.mjs`'ten başvuru başına aciliyet (🔴/🟠/🟡/🔵) + **Takip tarihlerini ekle** düğmesi (`followup-seed.mjs --backfill`). (2) **Ret kalıpları**: dördüncü İstatistik sekmesi `analyze-patterns.mjs`'i (salt okunur) çalıştırır — sonuç dağılımı, öneriler, ATS sağlayıcısı başına ilerleme oranı. (3) **CV'ye ekle**: bir CV Studio kartı URL'yi veya yapıştırılan metni YALNIZCA o kaynağa dayanan ATS maddelerine çevirir (yalnız öneri, yazma yok; URL getirme SSRF korumalı). (4) **4 yeni tarama sağlayıcısı** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — kayıt defteri artık **50 adaptör (45 EN + 5 RU)**, hepsi Scan açılır listesinde. (5) Apply kontrol listesine **eleme ön taraması** adımı. (6) **Reconcile çalıştırıcısı** (`/api/run/reconcile`). Shell-out rotaları üst betikler olmadan dürüstçe düşer.

@@ -12,9 +12,9 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.0)
+[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
 
-> **🆕 Última versión — v1.117.0**
+> **🆕 Última versión — v1.117.1**
 >
 > **Paquete de paridad con el padre.** Seis capacidades del career-ops padre llegan a la UI: tablero de cadencia de seguimiento, pestaña de patrones de rechazo (resultados, recomendaciones, tasa de avance por ATS), tarjeta Añadir al CV (viñetas fundamentadas, solo sugerencias), 4 nuevos proveedores de escaneo (50 adaptadores), pre-escaneo de descalificadores en Apply y runner reconcile.
 >

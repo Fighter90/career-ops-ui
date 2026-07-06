@@ -10,6 +10,13 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.117.1] — 2026-07-06
+
+**Hærdning af v1.117.0 (CodeQL-triage).** De tre shell-out-endpoints (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) bærer nu den delte per-IP-begrænser (de starter en børneproces pr. forespørgsel; no-op på loopback). Føj-til-CV's URL-tekstudtræk fjerner tags til et fikspunkt og sletter derefter alle resterende `<`/`>` — en bevisligt komplet sanering for LLM-prompttekst. Ingen adfærdsændring for gyldigt input.
+
+Nyt: intet.
+
+
 ## [1.117.0] — 2026-07-06
 
 **Forælder-paritetspakke — seks evner fra det overordnede career-ops bragt ind i UI'et.** (1) **Kadencetavle** på `#/followup`: hastighed pr. ansøgning (🔴/🟠/🟡/🔵) fra `followup-cadence.mjs`, plus knappen **Så opfølgningsdatoer** (`followup-seed.mjs --backfill`). (2) **Afvisningsmønstre**: en fjerde statistik-fane kører `analyze-patterns.mjs` (skrivebeskyttet) — udfaldsmiks, anbefalinger, avanceringsrate pr. ATS-leverandør. (3) **Føj til CV**: et CV Studio-kort forvandler en URL eller indsat tekst til ATS-punkter, der KUN bygger på den kilde (kun forslag, ingen skrivninger; URL-hentning er SSRF-beskyttet). (4) **4 nye scan-udbydere** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — registret har nu **50 adaptere (45 EN + 5 RU)**, alle i Scan-rullelisten. (5) **Præ-scan af diskvalifikatorer** i Apply-tjeklisten. (6) **Reconcile-runner** (`/api/run/reconcile`). Shell-out-ruter degraderer ærligt uden forælderens scripts.

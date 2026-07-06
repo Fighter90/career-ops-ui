@@ -9,6 +9,13 @@
 ---
 
 
+## [1.117.1] — 2026-07-06
+
+**v1.117.0 하드닝 (CodeQL 분류).** 세 개의 셸-아웃 엔드포인트(`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`)에 공유 per-IP 리미터를 적용했습니다(요청마다 자식 프로세스 생성; 루프백에서는 no-op). CV에 추가의 URL 텍스트 추출은 태그를 고정점까지 제거한 뒤 남은 `<`/`>`를 모두 삭제합니다 — LLM 프롬프트 텍스트에 대한 증명 가능한 완전 정화. 유효 입력의 동작 변화 없음.
+
+신규: 없음.
+
+
 ## [1.117.0] — 2026-07-06
 
 **부모 패리티 팩 — 부모 career-ops의 여섯 가지 기능을 UI로.** (1) `#/followup`의 **팔로업 케이던스 보드**: `followup-cadence.mjs`의 지원별 긴급도(🔴/🟠/🟡/🔵) + **팔로업 날짜 시드** 버튼(`followup-seed.mjs --backfill`). (2) **거절 패턴**: 통계의 네 번째 탭이 `analyze-patterns.mjs`(읽기 전용)를 실행 — 결과 분포, 추천, ATS 벤더별 진전율. (3) **CV에 추가**: CV Studio 카드가 URL 또는 붙여넣은 텍스트를 그 출처에만 근거한 ATS 불릿으로 변환(제안만, 쓰기 없음; URL 페치는 SSRF 보호). (4) **새 스캔 프로바이더 4개** — beesite, HigherEdJobs(RSS), JibeApply(iCIMS), softgarden — 레지스트리는 이제 **50개 어댑터(45 EN + 5 RU)**, 모두 Scan 드롭다운에 표시. (5) Apply 체크리스트에 **탈락 요건 사전 스캔** 단계. (6) **reconcile 러너**(`/api/run/reconcile`). 셸-아웃 라우트는 부모 스크립트가 없으면 정직하게 "사용 불가"를 표시.
