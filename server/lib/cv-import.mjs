@@ -86,6 +86,9 @@ export function classifyExtension(filename) {
  *                   { ok: false, error, hint?, sourceFormat? }>}
  */
 export async function importDocumentToMarkdown(buffer, filename) {
+  // Coerce to a string — a repeated request header arrives as an array, and the
+  // downstream extension/format logic assumes a string (type-confusion guard).
+  filename = typeof filename === 'string' ? filename : String(Array.isArray(filename) ? filename[0] : (filename ?? ''));
   if (!Buffer.isBuffer(buffer)) {
     return { ok: false, error: 'expected a Buffer payload' };
   }
