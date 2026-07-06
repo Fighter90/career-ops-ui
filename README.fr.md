@@ -12,9 +12,9 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
+[![release](https://img.shields.io/badge/release-v1.117.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.2)
 
-> **🆕 Dernière version — v1.117.1**
+> **🆕 Dernière version — v1.117.2**
 >
 > **Pack de parité parent.** Six capacités du career-ops parent arrivent dans l'UI : tableau de cadence de relance, onglet motifs de rejet (issues, recommandations, taux d'avancement par ATS), carte Ajouter au CV (puces fondées, suggestions seulement), 4 nouveaux fournisseurs de scan (50 adaptateurs), pré-scan des disqualifiants dans Apply et runner reconcile.
 >

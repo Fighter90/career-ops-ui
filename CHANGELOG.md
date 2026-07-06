@@ -8,6 +8,13 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.117.2] — 2026-07-06
+
+**Empty-tracker fix for the parity shell-outs.** The parent's cadence/patterns scripts exit 1 with a structured `{error}` JSON when the tracker has no applications yet; the followup board and the Rejection-patterns tab showed that as "script-error". Both routes now relay it as a healthy empty state (`available:true, empty:true`), so the UI shows its honest "nothing yet" message. Verified live against a real parent.
+
+New: none.
+
+
 ## [1.117.1] — 2026-07-06
 
 **Hardening follow-up to v1.117.0 (CodeQL triage).** The three shell-out endpoints (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) now carry the shared per-IP rate limiter (they spawn a child process per request; no-op on loopback). The Add-to-CV URL text extraction strips tags to a fixed point and then removes every remaining `<`/`>` outright — a provably complete sanitization for LLM-prompt text. No behavior change for valid input.

@@ -12,9 +12,9 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
+[![release](https://img.shields.io/badge/release-v1.117.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.2)
 
-> **🆕 최신 릴리스 — v1.117.1**
+> **🆕 최신 릴리스 — v1.117.2**
 >
 > **부모 패리티 팩.** 부모 career-ops의 여섯 기능이 UI에 도착: 팔로업 케이던스 보드, 거절 패턴 통계 탭(결과·추천·ATS 벤더별 진전율), CV에 추가 카드(근거 있는 불릿, 제안만), 새 스캔 프로바이더 4개(어댑터 50개), Apply의 탈락 요건 사전 스캔, reconcile 러너.
 >

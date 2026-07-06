@@ -10,6 +10,13 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.117.2] — 2026-07-06
+
+**Tom-tracker-rettelse for paritets-shell-outs.** Forælderens scripts afslutter med kode 1 og et struktureret `{error}`-JSON, når trackeren endnu ingen ansøgninger har; kadencetavlen og fanen med afvisningsmønstre viste det som "script-error". Begge ruter videregiver det nu som en sund tom tilstand (`available:true, empty:true`), så UI'et viser sin ærlige "intet endnu"-besked. Verificeret live mod en rigtig forælder.
+
+Nyt: intet.
+
+
 ## [1.117.1] — 2026-07-06
 
 **Hærdning af v1.117.0 (CodeQL-triage).** De tre shell-out-endpoints (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) bærer nu den delte per-IP-begrænser (de starter en børneproces pr. forespørgsel; no-op på loopback). Føj-til-CV's URL-tekstudtræk fjerner tags til et fikspunkt og sletter derefter alle resterende `<`/`>` — en bevisligt komplet sanering for LLM-prompttekst. Ingen adfærdsændring for gyldigt input.

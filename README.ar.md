@@ -12,9 +12,9 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
+[![release](https://img.shields.io/badge/release-v1.117.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.2)
 
-> **🆕 أحدث إصدار — v1.117.1**
+> **🆕 أحدث إصدار — v1.117.2**
 >
 > **حزمة التكافؤ مع الأصل.** ست قدرات من career-ops الأصل تصل إلى الواجهة: لوحة إيقاع المتابعة، تبويب أنماط الرفض في الإحصاءات (النتائج والتوصيات ومعدل التقدّم حسب مزوّد ATS)، بطاقة أضِف إلى السيرة (نقاط مستندة، اقتراحات فقط)، 4 مزوّدي فحص جدد (50 محوّلاً)، فحص مسبق للمُقصيات في Apply، ومشغّل reconcile.
 >

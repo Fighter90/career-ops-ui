@@ -12,9 +12,9 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
+[![release](https://img.shields.io/badge/release-v1.117.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.2)
 
-> **🆕 最新版本 — v1.117.1**
+> **🆕 最新版本 — v1.117.2**
 >
 > **父專案對齊包。** 父 career-ops 的六項能力進入 UI:跟進節奏板、拒絕模式統計分頁(結果、建議、各 ATS 供應商推進率)、新增到 CV 卡片(有依據的要點、僅建議)、4 個新掃描提供方(現 50 個轉接器)、Apply 淘汰項預掃描、reconcile 執行器。
 >

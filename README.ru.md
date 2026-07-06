@@ -12,9 +12,9 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
+[![release](https://img.shields.io/badge/release-v1.117.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.2)
 
-> **🆕 Последний релиз — v1.117.1**
+> **🆕 Последний релиз — v1.117.2**
 >
 > **Пакет паритета с родителем.** Шесть возможностей родительского career-ops пришли в UI: доска каденции фоллоу-апов (срочно/просрочено/ожидание/остыло + проставление дат), вкладка «Паттерны отказов» в Статистике (исходы, рекомендации, доля продвижения по ATS-вендорам), карточка «Добавить в CV» (обоснованные ATS-пункты из URL/текста, только предложения), 4 новых сканер-провайдера (beesite, HigherEdJobs, JibeApply, softgarden — теперь 50 адаптеров), предпроверка нокаут-вопросов в Apply и раннер reconcile.
 >

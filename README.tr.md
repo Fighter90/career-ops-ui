@@ -12,9 +12,9 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
+[![release](https://img.shields.io/badge/release-v1.117.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.2)
 
-> **🆕 En son sürüm — v1.117.1**
+> **🆕 En son sürüm — v1.117.2**
 >
 > **Üst proje parite paketi.** Üst career-ops'un altı yeteneği UI'ya geldi: takip kadans panosu, İstatistiklerde ret kalıpları sekmesi (sonuçlar, öneriler, ATS başına ilerleme oranı), CV'ye ekle kartı (dayanaklı maddeler, yalnız öneri), 4 yeni tarama sağlayıcısı (50 adaptör), Apply'da eleme ön taraması ve reconcile çalıştırıcısı.
 >

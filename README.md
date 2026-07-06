@@ -12,9 +12,9 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
+[![release](https://img.shields.io/badge/release-v1.117.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.2)
 
-> **🆕 Latest release — v1.117.1**
+> **🆕 Latest release — v1.117.2**
 >
 > **Parent parity pack.** Six parent career-ops capabilities land in the UI: a follow-up cadence board (urgent/overdue/waiting/cold + seed dates), a Rejection-patterns Statistics tab (outcome mix, recommendations, per-ATS-vendor advance rate), an Add-to-CV card (grounded ATS bullets from a URL/text, suggestions only), 4 new scan providers (beesite, HigherEdJobs, JibeApply, softgarden — 50 adapters now), a knock-out pre-scan in Apply, and a reconcile runner.
 >

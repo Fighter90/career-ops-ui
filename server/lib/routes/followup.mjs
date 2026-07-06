@@ -68,6 +68,14 @@ export function registerFollowupRoutes(app) {
     }
     const r = await runNodeScript(CADENCE_SCRIPT, [], { timeoutMs: RUN_TIMEOUT_MS });
     const data = parseJsonStdout(r.stdout);
+    // The parent exits 1 with a STRUCTURED {error} on stdout for "no data yet"
+    // (e.g. an empty tracker). That is a healthy empty state, not a failure —
+    // relay it as available with zero entries so the board shows its honest
+    // empty message instead of "script-error".
+    if (data && typeof data.error === 'string' && !Array.isArray(data.entries)) {
+      res.json({ available: true, empty: true, note: data.error, metadata: {}, entries: [] });
+      return;
+    }
     if (r.code !== 0 || !data) {
       res.json({
         available: false,

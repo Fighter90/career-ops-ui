@@ -12,9 +12,9 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
+[![release](https://img.shields.io/badge/release-v1.117.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.2)
 
-> **🆕 Seneste udgivelse — v1.117.1**
+> **🆕 Seneste udgivelse — v1.117.2**
 >
 > **Forælder-paritetspakke.** Seks evner fra det overordnede career-ops lander i UI'et: kadencetavle for opfølgninger, fane med afvisningsmønstre (udfald, anbefalinger, avanceringsrate pr. ATS), Føj-til-CV-kort (underbyggede punkter, kun forslag), 4 nye scan-udbydere (50 adaptere), præ-scan af diskvalifikatorer i Apply og reconcile-runner.
 >
