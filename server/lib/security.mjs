@@ -195,6 +195,15 @@ export function stripDangerousMarkdown(text) {
   let prev;
   let passes = 0;
   do { prev = s; s = stripDangerousOnce(s); } while (s !== prev && ++passes < 8);
+  // Final belt (v1.111.0): the loop removes well-formed dangerous tags AND
+  // `<tag …>` openers that carry a closing `>`. What can still survive is a
+  // *truncated* opener with no `>` at all — e.g. a payload ending in `<script`
+  // or `<iframe`. Escape the `<` of any surviving dangerous opener/closer so
+  // the OUTPUT provably contains no live `<script`/`<iframe`/… substring.
+  // Escaping a single `<` → `&lt;` is a COMPLETE sanitization (no partial
+  // multi-character delimiter can be reconstructed downstream), which closes
+  // the incomplete-multi-character-sanitization class at the trust boundary.
+  s = s.replace(/<(?=\s*\/?\s*(?:script|iframe|object|embed|style|form|svg)\b)/gi, '&lt;');
   return s;
 }
 

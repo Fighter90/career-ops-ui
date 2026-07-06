@@ -129,22 +129,27 @@ const SCAFFOLD_STRINGS = {
     it: 'modello di modalità',
     tr: 'mod şablonu',
   },
+  // Template STRINGS (not functions) with a `{slug}` placeholder. Storing
+  // strings — resolved via a guarded own-key lookup and interpolated with
+  // String.replace — means the call site never invokes a value obtained from a
+  // computed member access, which removes the dynamic-method-call class
+  // (CodeQL js/unvalidated-dynamic-method-call) at the source.
   modeRoleLine: {
-    en: (slug) => `You are career-ops in ${slug} mode.`,
-    es: (slug) => `Eres career-ops en modo ${slug}.`,
-    'pt-BR': (slug) => `Você é career-ops em modo ${slug}.`,
-    ko: (slug) => `당신은 ${slug} 모드의 career-ops 입니다.`,
-    ja: (slug) => `あなたは ${slug} モードの career-ops です。`,
-    ru: (slug) => `Ты — career-ops в режиме ${slug}.`,
-    'zh-CN': (slug) => `你是 ${slug} 模式下的 career-ops。`,
-    'zh-TW': (slug) => `你是 ${slug} 模式下的 career-ops。`,
-    fr: (slug) => `Vous êtes career-ops en mode ${slug}.`,
-    pl: (slug) => `Jesteś career-ops w trybie ${slug}.`,
-    uk: (slug) => `Ти — career-ops у режимі ${slug}.`,
-    ar: (slug) => `أنت career-ops في وضع ${slug}.`,
-    de: (slug) => `Sie sind career-ops im Modus ${slug}.`,
-    it: (slug) => `Sei career-ops in modalità ${slug}.`,
-    tr: (slug) => `Sen ${slug} modunda career-ops'sun.`,
+    en: 'You are career-ops in {slug} mode.',
+    es: 'Eres career-ops en modo {slug}.',
+    'pt-BR': 'Você é career-ops em modo {slug}.',
+    ko: '당신은 {slug} 모드의 career-ops 입니다.',
+    ja: 'あなたは {slug} モードの career-ops です。',
+    ru: 'Ты — career-ops в режиме {slug}.',
+    'zh-CN': '你是 {slug} 模式下的 career-ops。',
+    'zh-TW': '你是 {slug} 模式下的 career-ops。',
+    fr: 'Vous êtes career-ops en mode {slug}.',
+    pl: 'Jesteś career-ops w trybie {slug}.',
+    uk: 'Ти — career-ops у режимі {slug}.',
+    ar: 'أنت career-ops في وضع {slug}.',
+    de: 'Sie sind career-ops im Modus {slug}.',
+    it: 'Sei career-ops in modalità {slug}.',
+    tr: 'Sen {slug} modunda career-ops\'sun.',
   },
   evalRoleLine: {
     en: 'You are career-ops. Evaluate this Job Description against the user\'s CV.',
@@ -280,17 +285,19 @@ export function buildModePrompt(template, slug, context, lang) {
   delete ctx.run;
   delete ctx.lang;
   delete ctx.locale;
-  // Resolve by OWN key only + require a function, so a tampered `lang`
-  // (e.g. "constructor") can never dispatch to a prototype method.
-  const roleLineFn = (Object.prototype.hasOwnProperty.call(SCAFFOLD_STRINGS.modeRoleLine, lang)
-    && typeof SCAFFOLD_STRINGS.modeRoleLine[lang] === 'function')
+  // Resolve by OWN key only + require a string, so a tampered `lang`
+  // (e.g. "constructor") can never read a prototype member. The result is a
+  // plain template string interpolated with String.replace below — no dynamic
+  // function is ever called (CodeQL js/unvalidated-dynamic-method-call).
+  const roleLineTpl = (Object.prototype.hasOwnProperty.call(SCAFFOLD_STRINGS.modeRoleLine, lang)
+    && typeof SCAFFOLD_STRINGS.modeRoleLine[lang] === 'string')
     ? SCAFFOLD_STRINGS.modeRoleLine[lang]
     : SCAFFOLD_STRINGS.modeRoleLine.en;
   const artifact = (Object.prototype.hasOwnProperty.call(MODE_ARTIFACT, slug) && typeof MODE_ARTIFACT[slug] === 'string')
     ? MODE_ARTIFACT[slug] : 'the final result';
   const parts = [
     buildLocaleDirective(lang),
-    roleLineFn(slug),
+    roleLineTpl.replace(/\{slug\}/g, String(slug)),
     '',
     singleShotContract(),
     scaffold('readFiles', lang),
