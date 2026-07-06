@@ -9,6 +9,13 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.110.0] — 2026-07-06
+
+**Atualização de docs e QA (todos os idiomas).** Sem mudança de código. O prompt de QA do projeto todo é atualizado para v1.109.0 com um novo §14 (v1.98→v1.109), e os prompts perenes de UX-audit e design-export ganham a superfície atual. Cada parágrafo de ajuda adicionado em v1.100–v1.109 agora está traduzido para **os 16 idiomas**.
+
+Novo: nenhum.
+
+
 ## [1.109.0] — 2026-07-06
 
 **Filtro Excluir no Scan + visão geral do pipeline (paridade de layout com a web principal).** Em `#/scan`, a caixa **Pesquisar** trata vírgulas como **OU** ("cargos a encontrar") e um novo campo **Excluir** oculta qualquer linha cuja empresa/cargo/local contenha alguma palavra separada por vírgula (ex. `senior, staff`); ambos são lembrados nas suas buscas salvas. Em `#/pipeline`, uma **faixa de visão geral** compacta mostra seu pipeline num relance — **N na caixa**, **N rastreadas** e as contagens de **Applied / Responded / Interview / Offer** do tracker, cada chip liga a `#/tracker`.

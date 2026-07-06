@@ -133,6 +133,8 @@ takip edin. Her adım tam rotayı, tam düğmeyi ve başarıda ne
 göreceğinizi belirtir. Aşağıdaki 2–16. bölümler her aşamaya daha
 derinlemesine iner.
 
+**Belgelere sor.** Kenar çubuğundaki (Yardım altında) **Belgelere sor 💬**'u açın ve bir soru yazın — yalnızca dilinizde bu kılavuzdan yanıtlar ve özgeçmişinizi asla okumaz.
+
 > **Tek komutla başlatma ve init.** Bir terminalden, arayüze hiç
 > dokunmadan tüm önyüklemeyi yapabilirsiniz:
 >
@@ -365,6 +367,8 @@ terfi ettirildi).
 ## 2. Uygulama ayarları ve API anahtarları (`#/config`)
 
 > **v1.55 → v1.56'da yeni.** Hiçbir LLM anahtarı ayarlı **değilken**, her ekranda kırmızı bir afiş ⚡ Run-live'ın elle-prompt modunda olduğunu açıklar ve buraya bağlanır; bir anahtar ayarlandığında, aktif sağlayıcıyı adlandıran sessiz bir çipe dönüşür. Herhangi bir ⚡ Run-live düğmesinden önce (`#/auto`, `#/evaluate`, `#/deep`, modlar) dürüst bir maliyet tahmini gösterilir (ör. "Estimated cost: OpenAI gpt-5-codex · ~$0.04/eval" veya elle modda API-maliyeti-yok notu). `#/scan` ikincil filtreleri bir **Advanced filters** açılırının arkasına gizler; `#/tracker` tıklanabilir huni çipleri + opsiyonel sunucu tarafı sayfalama ekler; `#/pipeline` 1000 satırın ötesinde sanallaştırır.
+
+**Yapay zeka CLI araçları.** **Yapay zeka CLI araçları** sekmesi, sunucuda hangi ajan CLI'larının (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity) kurulu olduğunu gösterir — çalıştırmadan salt okunur bir PATH taraması. **Görünüm → Şirket logolarını göster** (varsayılan kapalı), her şirketin favicon'unu kendi alan adından alıp tarama tablosunda gösterir (asla üçüncü taraf servis değil).
 
 Üç sekme:
 
@@ -913,6 +917,8 @@ devam eder.
 Her kurulum kapısı, OK / OPTIONAL / FAIL rozetleriyle. Herhangi bir
 "çalışmıyor" sorunu bildirmeden önce bunu okuyun.
 
+**Yapay zeka kullanımı ve maliyeti.** **AI kullanımı** sayfası (💳, Sağlık'ın yanında) canlı AI üretimlerinin jetonlarını sağlayıcı başına 24s/7g/30g/tümü boyunca gösterir; düzenlenebilir bir fiyat tablosundan tahmini USD maliyetiyle (asla faturalanmaz).
+
 ### Gerekli kontroller (sistem bunlar olmadan çalışamaz)
 
 - `Node version` ≥ 18 — sunucu yerel `fetch` ve `node:test` kullanır.
@@ -953,6 +959,8 @@ Node sürümü yanıtta `"hidden"` ile değiştirilir.
 Tarayıcı, etkin her kartı gezer, geçmişinize karşı çiftleme-önlemesi
 yapar ve isabetleri `data/last-scan.json` ile `data/pipeline.md`'ye
 yazar.
+
+**Ara + Hariç tut.** Ara kutusu virgülleri VEYA olarak ele alır ("bulunacak roller"); yeni Hariç tut alanı virgülle ayrılmış bir kelimeyle eşleşen satırları gizler. İkisi de aramalarınızla kaydedilir.
 
 ### Tek tıkla tarama (SPA)
 
@@ -1094,6 +1102,8 @@ hh.ru, genel arama web sitesini (`hh.ru/search/vacancy`) okuyarak taranır, tıp
 
 Değerlendirilmeyi bekleyen URL'lerin gelen kutusu. `data/pipeline.md`'de
 bulunur.
+
+**Genel bakış şeridi.** Üstteki kompakt bir şerit pipeline'ınızı bir bakışta gösterir — gelen kutusunda kaç URL, kaçı izleniyor ve Applied/Responded/Interview/Offer sayıları, her biri izleyiciye bağlanır.
 
 ### URL ekleme
 
@@ -2024,6 +2034,8 @@ Eksiksiz, adım adım yerelleştirme kılavuzu için depodaki **`docs/LOCALIZATI
 
 career-ops-ui'nin çoğu „bu iş ilanı CV'me uyuyor mu?" sorusunu yanıtlar. **İki sayfalık özet** diğer yarısını yanıtlar: „bu iş ilanı *benim gerçekten istediğim* şeye uyuyor mu?". Bu, *Never Search Alone* kitabındaki **„Mnookin iki sayfalık özeti"** örnek alınarak tasarlanmıştır — sizi neyin canlandırdığına, neye ihtiyaç duyduğunuza ve neyi kabul etmeyeceğinize dair birinci tekil şahıs ağzından kısa bir beyandır. Bunu **Setup → Two-pager 🎯** üzerinden açın.
 
+**Yapay zeka otomatik doldurma + dışa aktarma (v1.100).** "✨ AI doldurma yardımcısı" artık tüm alanları özgeçmişinizden canlı doldurur (gözden geçirip kaydedin); **👁 Önizle ve dışa aktar** two-pager'ı işler ve Markdown, PDF veya DOCX olarak dışa aktarır.
+
 ### Ne doldurursunuz
 
 - **Ben kimim** — geçmiş performansınız ve hangi rolde en iyi performansı gösterdiğinize dair birkaç birinci tekil şahıs cümlesi.
@@ -2096,6 +2108,8 @@ Bir planı saklamak için **Planı kaydet**'e tıklayın. Üst projenizin kullan
 ## 24. CV Studio (`#/cv-studio`)
 
 `#/cv` sayfası, CV'nizi *yazdığınız* yerdir; **CV Studio** (kenar çubuğundaki **Setup → CV Studio 🎨** üzerinden açın) ise onu *keskinleştirdiğiniz* yerdir. `cv.md` dosyanıza, ikisi tarayıcınızdan hiç çıkmayan üç dürüst araç sunar.
+
+**Bir işe göre uyarla (v1.101).** Bir iş ilanı yapıştırın; CV Studio uyarlanmış bir özgeçmiş ve uyumlu bir ön yazı üretir, işe alım uzmanı kontrol listesi kapısından geçirir (hatalar engeller, uyarılar öneri verir), yalnızca kendi materyallerinize dayanır.
 
 ### Özgeçmiş tanılaması
 

@@ -133,6 +133,8 @@ Este es el playbook canónico botón-por-botón. Síguelo en orden la
 primera vez. Cada paso nombra la ruta exacta, el botón exacto, y qué
 verás al éxito. Las secciones 2–16 entran en profundidad en cada fase.
 
+**Preguntar a la guía.** Abre **Preguntar a la guía 💬** (barra lateral, bajo Ayuda) y escribe una pregunta — responde solo desde esta guía en tu idioma y nunca lee tu CV.
+
 > **Lanzamiento e inicialización con un solo comando.** Desde una
 > terminal puedes hacer todo el arranque sin tocar la interfaz:
 >
@@ -345,6 +347,8 @@ El feedback es un **stepper** vertical (lista ordenada, `aria-current` en el pas
 ## 2. Ajustes de la app y claves API (`#/config`)
 
 > **Novedades v1.55 → v1.56.** Sin clave LLM, un banner rojo en cada pantalla explica que ⚡ Ejecutar en vivo está en modo prompt manual y enlaza aquí; con una clave se vuelve un chip discreto con el proveedor activo. Antes de cada botón ⚡ Ejecutar en vivo (`#/auto`, `#/evaluate`, `#/deep`, modos) se muestra un coste estimado honesto (p. ej. "Coste estimado: OpenAI gpt-5-codex · ~$0.04/eval", o sin coste de API en modo manual). `#/scan` oculta filtros secundarios tras un desplegable **Filtros avanzados**; `#/tracker` añade chips de embudo clicables + paginación de servidor opcional; `#/pipeline` virtualiza más de 1000 filas.
+
+**Herramientas CLI de IA.** La pestaña **Herramientas CLI de IA** muestra qué CLI de agente (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity) están instaladas en el servidor — un escaneo del PATH de solo lectura, sin ejecutarlas. **Apariencia → Mostrar logos de empresa** (desactivado por defecto) muestra el favicon de cada empresa en la tabla de escaneo, obtenido de su propio dominio (nunca un servicio de terceros).
 
 Dos pestañas:
 
@@ -776,6 +780,8 @@ canónico de arriba.
 Cada gate de setup, en badges OK / OPTIONAL / FAIL. Lee esto antes de
 abrir cualquier issue de "no funciona".
 
+**Uso y coste de IA.** La página **Uso de IA** (💳, junto a Salud) muestra los tokens de generaciones de IA en vivo por proveedor en 24 h / 7 d / 30 d / todo, con un coste estimado en USD de una tabla de precios editable (nunca se factura).
+
 ### Checks requeridos (el sistema no puede funcionar sin estos)
 
 - `Node version` ≥ 18 — el servidor usa `fetch` y `node:test`
@@ -818,6 +824,8 @@ fingerprinting de tu instalación.
 El scanner crawlea cada board habilitado, deduplica contra tu
 historia, y escribe los hits a `data/last-scan.json` y
 `data/pipeline.md`.
+
+**Buscar + Excluir.** El cuadro Buscar trata las comas como O ("roles a encontrar"); el nuevo campo Excluir oculta filas que coincidan con cualquier palabra separada por comas. Ambos se guardan con tus búsquedas.
 
 ### Scan de un clic (SPA)
 
@@ -954,6 +962,8 @@ hh.ru se escanea leyendo su web pública de búsqueda (`hh.ru/search/vacancy`), 
 ## 8. Vacantes (`#/pipeline`)
 
 Inbox de URLs esperando ser evaluadas. Vive en `data/pipeline.md`.
+
+**Tira de resumen.** Una tira compacta arriba muestra tu pipeline de un vistazo — cuántas URL hay en la bandeja, cuántas en seguimiento y los recuentos Applied/Responded/Interview/Offer, cada uno enlaza al tracker.
 
 ### Añadir URLs
 
@@ -1884,6 +1894,8 @@ La página **Analytics → Estadísticas por rol objetivo** convierte los escaso
 
 Casi todo career-ops-ui pregunta "¿esta oferta encaja con mi CV?". El **documento de dos páginas** responde la otra mitad: "¿esta oferta encaja con lo que *yo realmente quiero*?". Está inspirado en el **"documento de dos páginas de Mnookin"** de *Never Search Alone* — una declaración breve, en primera persona, de lo que te da energía, lo que exiges y lo que no aceptarás. Ábrelo desde **Configuración → Documento de dos páginas 🎯**.
 
+**Autorrelleno con IA + exportación (v1.100).** El "✨ asistente de relleno IA" ahora rellena todos los campos en vivo desde tu CV (revisa y guarda); **👁 Vista previa y exportar** renderiza el two-pager y lo exporta a Markdown, PDF o DOCX.
+
 ### Lo que rellenas
 
 - **Quién soy** — unas pocas frases en primera persona sobre tu trayectoria y el tipo de rol en el que rindes mejor.
@@ -1956,6 +1968,8 @@ Haz clic en **Guardar plan** para conservar uno. Se escribe en la capa de usuari
 ## 24. CV Studio (`#/cv-studio`)
 
 La página `#/cv` es donde *escribes* tu CV; **CV Studio** (ábrelo desde **Setup → CV Studio 🎨** en la barra lateral) es donde lo *afinas*. Le ofrece a tu `cv.md` tres herramientas honestas, dos de las cuales nunca salen de tu navegador.
+
+**Adaptar a un empleo (v1.101).** Pega una descripción de empleo y CV Studio produce un CV adaptado más una carta de presentación, pasados por una verificación tipo reclutador (los errores bloquean, las advertencias aconsejan), basado solo en tus materiales.
 
 ### Diagnóstico del CV
 

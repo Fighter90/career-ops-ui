@@ -11,6 +11,13 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.110.0] — 2026-07-06
+
+**Actualización de docs y QA (todos los idiomas).** Sin cambios de código. El prompt de QA de todo el proyecto se actualiza a v1.109.0 con un nuevo §14 (v1.98→v1.109), y los prompts perennes de UX-audit y design-export ganan la superficie actual. Cada párrafo de ayuda añadido en v1.100–v1.109 está ahora traducido a **los 16 idiomas**.
+
+Nuevo: ninguno.
+
+
 ## [1.109.0] — 2026-07-06
 
 **Filtro Excluir en Scan + resumen del pipeline (paridad de diseño con la web principal).** En `#/scan`, el cuadro **Buscar** trata las comas como **O** ("roles a encontrar") y un nuevo campo **Excluir** oculta cualquier fila cuya empresa/rol/ubicación contenga alguna palabra separada por comas (p. ej. `senior, staff`); ambos se recuerdan en tus búsquedas guardadas. En `#/pipeline`, una **tira de resumen** compacta muestra tu pipeline de un vistazo — **N en la bandeja**, **N en seguimiento** y los recuentos de **Applied / Responded / Interview / Offer** del tracker, cada chip enlaza a `#/tracker`.

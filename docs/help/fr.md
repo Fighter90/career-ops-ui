@@ -140,6 +140,8 @@ première fois. Chaque étape nomme la route exacte, le bouton exact, et ce
 que vous verrez en cas de succès. Les sections 2 à 16 ci-dessous
 détaillent chaque phase.
 
+**Demander au guide.** Ouvrez **Demander au guide 💬** (barre latérale, sous Aide) et posez une question — il répond uniquement depuis ce guide dans votre langue et ne lit jamais votre CV.
+
 > **Lancement & init en une commande.** Depuis un terminal, vous pouvez
 > faire tout le bootstrap sans toucher à l'UI :
 >
@@ -375,6 +377,8 @@ transitoire d'avant 1.34 a été promue en cette page).
 ## 2. App settings & API keys (`#/config`)
 
 > **Nouveau en v1.55 → v1.56.** Sans **aucune** clé LLM, une bannière rouge sur chaque écran explique que ⚡ Run-live est en mode prompt-manuel et renvoie ici ; une fois une clé définie, elle devient une puce discrète nommant le fournisseur actif. Avant tout bouton ⚡ Run-live (`#/auto`, `#/evaluate`, `#/deep`, modes), une estimation honnête du coût s'affiche (p. ex. « Estimated cost: OpenAI gpt-5-codex · ~$0.04/eval », ou une note « pas de coût API » en mode manuel). `#/scan` range les filtres secondaires derrière un volet **Advanced filters** ; `#/tracker` ajoute des puces d'entonnoir cliquables + une pagination côté serveur optionnelle ; `#/pipeline` virtualise au-delà de 1000 lignes.
+
+**Outils CLI d'IA.** L'onglet **Outils CLI d'IA** indique quels CLI d'agent (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity) sont installés sur le serveur — une analyse du PATH en lecture seule, sans les exécuter. **Apparence → Afficher les logos d'entreprise** (désactivé par défaut) affiche le favicon de chaque entreprise dans le tableau de scan, récupéré depuis son propre domaine (jamais un service tiers).
 
 Trois onglets :
 
@@ -869,6 +873,8 @@ canonique ci-dessus.
 Chaque barrière de configuration, en badges OK / OPTIONAL / FAIL. Lisez ceci
 avant d'ouvrir tout ticket « ça ne marche pas ».
 
+**Utilisation et coût de l'IA.** La page **Utilisation IA** (💳, à côté de Santé) montre les tokens des générations IA en direct par fournisseur sur 24 h / 7 j / 30 j / tout, avec un coût estimé en USD issu d'une table de prix modifiable (jamais facturé).
+
 ### Required checks (system can't function without these)
 
 - `Node version` ≥ 18 — le serveur utilise les `fetch` et `node:test`
@@ -909,6 +915,8 @@ installation.
 Le scanner parcourt chaque site activé, déduplique par rapport à votre
 historique, et écrit les trouvailles dans `data/last-scan.json` et
 `data/pipeline.md`.
+
+**Rechercher + Exclure.** La boîte Rechercher traite les virgules comme un OU (« rôles à trouver ») ; le nouveau champ Exclure masque les lignes correspondant à un mot séparé par des virgules. Les deux sont enregistrés avec vos recherches.
 
 ### One-click scan (SPA)
 
@@ -1062,6 +1070,8 @@ hh.ru est scanné en lisant son site public de recherche (`hh.ru/search/vacancy`
 
 Boîte de réception des URL en attente d'évaluation. Vit dans
 `data/pipeline.md`.
+
+**Bande d'aperçu.** Une bande compacte en haut montre votre pipeline d'un coup d'œil — combien d'URL en boîte, combien suivies, et les décomptes Applied/Responded/Interview/Offer, chacun renvoyant au tracker.
 
 ### Adding URLs
 
@@ -1986,6 +1996,8 @@ La page **Analytics → Statistiques par rôle cible** transforme les données �
 
 La plupart de career-ops-ui demande « cette offre correspond-elle à mon CV ? ». Le **document de deux pages** répond à l'autre moitié : « cette offre correspond-elle à ce que *je veux vraiment* ? ». Il s'inspire du **« document de deux pages de Mnookin »** de *Never Search Alone* — une déclaration brève, à la première personne, de ce qui vous donne de l'énergie, de ce que vous exigez et de ce que vous n'accepterez pas. Ouvrez-le depuis **Configuration → Document de deux pages 🎯**.
 
+**Remplissage IA + export (v1.100).** L'« ✨ assistant de remplissage IA » remplit désormais tous les champs en direct depuis votre CV (relisez, puis Enregistrez) ; **👁 Aperçu et export** rend le two-pager et l'exporte en Markdown, PDF ou DOCX.
+
 ### Ce que vous remplissez
 
 - **Qui je suis** — quelques phrases à la première personne sur votre parcours et le type de rôle où vous excellez.
@@ -2058,6 +2070,8 @@ Cliquez sur **Enregistrer le plan** pour en conserver un. Il est écrit dans la 
 ## 24. CV Studio (`#/cv-studio`)
 
 La page `#/cv` est l'endroit où vous *rédigez* votre CV ; le **CV Studio** (ouvrez-le depuis **Setup → CV Studio 🎨** dans la barre latérale) est l'endroit où vous l'*affinez*. Il offre à votre `cv.md` trois outils honnêtes, dont deux ne quittent jamais votre navigateur.
+
+**Adapter à une offre (v1.101).** Collez une offre d'emploi et CV Studio produit un CV adapté plus une lettre de motivation, passés par un contrôle de type recruteur (les erreurs bloquent, les avertissements conseillent), fondé uniquement sur vos matériaux.
 
 ### Diagnostic du CV
 

@@ -8,6 +8,13 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.110.0] — 2026-07-06
+
+**Docs & QA refresh (all languages).** No code change. The definitive whole-project QA prompt (`qa/QA-REGRESSION-PROMPT.md`) is refreshed to v1.109.0 with a new §14 covering everything shipped v1.98→v1.109, and the perennial UX-audit + design-export prompts gained the current page surface. Every in-app help paragraph added over v1.100–v1.109 (Ask the docs, AI CLI tools + company logos, AI usage & cost, scan Exclude, pipeline overview, two-pager export, CV Doctor) is now translated into **all 16 languages**.
+
+New: none.
+
+
 ## [1.109.0] — 2026-07-06
 
 **Scan Exclude filter + pipeline overview (parent-web layout parity).** On `#/scan`, the **Search** box now treats commas as **OR** ("roles to find" — a row shows if it matches any term) and a new **Exclude** field hides any row whose company/role/location contains any comma-separated word (e.g. `senior, staff`); both are remembered by your saved searches. On `#/pipeline`, a compact **overview strip** shows your pipeline at a glance — **N in inbox**, **N tracked**, and the **Applied / Responded / Interview / Offer** counts from the tracker, each chip linking to `#/tracker`.

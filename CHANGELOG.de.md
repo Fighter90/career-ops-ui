@@ -2,6 +2,13 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.110.0] — 2026-07-06
+
+**Docs- & QA-Auffrischung (alle Sprachen).** Keine Codeänderung. Der Gesamtprojekt-QA-Prompt ist auf v1.109.0 aktualisiert mit einem neuen §14 (v1.98→v1.109), und die immerwährenden UX-Audit- und Design-Export-Prompts haben die aktuelle Seitenfläche erhalten. Jeder in v1.100–v1.109 hinzugefügte Hilfe-Absatz ist jetzt in **alle 16 Sprachen** übersetzt.
+
+Neu: keine.
+
+
 ## [1.109.0] — 2026-07-06
 
 **Scan-Ausschlussfilter + Pipeline-Überblick (Web-Layout-Parität).** Auf `#/scan` behandelt das **Suchen**-Feld Kommas jetzt als **ODER** ("zu findende Rollen"), und ein neues **Ausschließen**-Feld blendet jede Zeile aus, deren Firma/Rolle/Ort eines der kommagetrennten Wörter enthält (z. B. `senior, staff`); beide werden von deinen gespeicherten Suchen behalten. Auf `#/pipeline` zeigt ein kompakter **Überblicksstreifen** deine Pipeline auf einen Blick — **N im Eingang**, **N verfolgt** und die **Applied / Responded / Interview / Offer**-Zahlen aus dem Tracker, jeder Chip verlinkt auf `#/tracker`.

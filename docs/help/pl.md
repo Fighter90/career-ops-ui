@@ -127,6 +127,8 @@ przy pierwszym uruchomieniu. Każdy krok podaje dokładną trasę, dokładny prz
 i to, co zobaczysz po sukcesie. Sekcje 2–16 poniżej szczegółowo opisują
 każdą fazę.
 
+**Zapytaj przewodnik.** Otwórz **Zapytaj przewodnik 💬** (pasek boczny, pod Pomocą) i wpisz pytanie — odpowiada tylko z tego przewodnika w Twoim języku i nigdy nie czyta Twojego CV.
+
 > **Uruchomienie i inicjalizacja jednym poleceniem.** Z terminala możesz przeprowadzić cały
 > bootstrap bez dotykania interfejsu:
 >
@@ -347,6 +349,8 @@ do tej strony).
 ## 2. Ustawienia aplikacji i klucze API (`#/config`)
 
 > **Nowość w v1.55 → v1.56.** Przy **braku** ustawionego klucza LLM, czerwony baner na każdym ekranie wyjaśnia, że ⚡ Run-live jest w trybie ręcznego promptu i zawiera link tutaj; gdy klucz jest ustawiony, staje się spokojnym chipem z nazwą aktywnego dostawcy. Przed każdym przyciskiem ⚡ Run-live (`#/auto`, `#/evaluate`, `#/deep`, tryby) wyświetlane jest uczciwe przybliżenie kosztów (np. „Szacowany koszt: OpenAI gpt-5-codex · ~$0.04/eval", lub notatka bez kosztów API w trybie ręcznym). `#/scan` chowa filtry drugorzędne za ujawnieniem **Advanced filters**; `#/tracker` dodaje klikalne chipy lejka + opcjonalne stronicowanie po stronie serwera; `#/pipeline` wirtualizuje powyżej 1000 wierszy.
+
+**Narzędzia CLI AI.** Karta **Narzędzia CLI AI** pokazuje, które agentowe CLI (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity) są zainstalowane na serwerze — skan PATH tylko do odczytu, bez uruchamiania. **Wygląd → Pokazuj logo firm** (domyślnie wyłączone) pokazuje favicon każdej firmy w tabeli skanowania, pobrany z jej własnej domeny (nigdy z usługi zewnętrznej).
 
 Trzy zakładki:
 
@@ -817,6 +821,8 @@ powyżej.
 Każda brama konfiguracyjna, w odznakach OK / OPTIONAL / FAIL. Przeczytaj to przed
 zgłaszaniem jakiegokolwiek problemu „nie działa".
 
+**Zużycie i koszt AI.** Strona **Zużycie AI** (💳, obok Kondycji) pokazuje tokeny generacji AI na żywo wg dostawcy w 24h/7d/30d/cały czas, z szacowanym kosztem w USD z edytowalnej tabeli cen (nigdy nierozliczane).
+
 ### Wymagane sprawdzenia (system nie może działać bez tych elementów)
 
 - `Node version` ≥ 18 — serwer używa natywnego `fetch` i
@@ -856,6 +862,8 @@ odpowiedzi, żeby ciekawski sąsiad nie mógł sfingerprintować Twojej instalac
 Skaner przeszukuje każdy włączony portal, deduplikuje względem Twojej
 historii i zapisuje trafienia do `data/last-scan.json` i
 `data/pipeline.md`.
+
+**Szukaj + Wyklucz.** Pole Szukaj traktuje przecinki jako LUB („role do znalezienia"); nowe pole Wyklucz ukrywa wiersze pasujące do któregokolwiek słowa po przecinku. Oba zapisują się z Twoimi wyszukiwaniami.
 
 ### Skan jednym kliknięciem (SPA)
 
@@ -976,6 +984,8 @@ hh.ru jest skanowany przez odczyt jego publicznej witryny wyszukiwania (`hh.ru/s
 ## 8. Pipeline (`#/pipeline`)
 
 Skrzynka odbiorcza adresów URL oczekujących na ocenę. Przechowywana w `data/pipeline.md`.
+
+**Pasek przeglądu.** Zwarty pasek u góry pokazuje pipeline na pierwszy rzut oka — ile URL w skrzynce, ile śledzonych i liczby Applied/Responded/Interview/Offer, każda linkuje do trackera.
 
 ### Dodawanie adresów URL
 
@@ -1886,6 +1896,8 @@ Strona **Analytics → Statystyki ról docelowych** zamienia skąpe dane, które
 
 Większość career-ops-ui odpowiada na pytanie „czy ta oferta pasuje do mojego CV?". **Two-pager** odpowiada na drugą połowę: „czy ta oferta pasuje do tego, czego *naprawdę chcę*?". Jest wzorowany na **„two-pagerze Mnookina"** z książki *Never Search Alone* — krótkiej, pisanej w pierwszej osobie deklaracji tego, co cię napędza, czego wymagasz i czego nie zaakceptujesz. Otwórz go przez **Setup → Two-pager 🎯**.
 
+**Wypełnianie AI + eksport (v1.100).** „✨ asystent wypełniania AI" teraz wypełnia wszystkie pola na żywo z Twojego CV (sprawdź i zapisz); **👁 Podgląd i eksport** renderuje two-pager i eksportuje go do Markdown, PDF lub DOCX.
+
 ### Co wypełniasz
 
 - **Kim jestem** — kilka zdań w pierwszej osobie o twoim dorobku i o tym, w jakiej roli rozkwitasz.
@@ -1958,6 +1970,8 @@ Kliknij **Zapisz plan**, aby zachować jeden. Jest zapisywany w warstwie użytko
 ## 24. CV Studio (`#/cv-studio`)
 
 Strona `#/cv` to miejsce, w którym *piszesz* swoje CV; **CV Studio** (otwórz je z **Setup → CV Studio 🎨** na pasku bocznym) to miejsce, w którym je *dopracowujesz*. Daje twojemu `cv.md` trzy uczciwe narzędzia, z których dwa nigdy nie opuszczają twojej przeglądarki.
+
+**Dopasuj do oferty (v1.101).** Wklej opis oferty, a CV Studio tworzy dopasowane CV oraz pasujący list motywacyjny, przepuszczone przez rekruterską bramkę kontrolną (błędy blokują, ostrzeżenia doradzają), oparte wyłącznie na Twoich materiałach.
 
 ### Diagnostyka CV
 
