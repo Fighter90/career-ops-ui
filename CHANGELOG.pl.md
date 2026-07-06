@@ -9,6 +9,15 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.115.0] — 2026-07-06
+
+**Dopracowanie designu (zachowawcze, marka koralowa zachowana).** Lekki przebieg dopracowania wspólnego systemu projektowego — bez przebudowy, bez zmiany palety. Karty metryk na pulpicie unoszą się teraz i dostają koralową ramkę po najechaniu (jak kafelki szybkich akcji); karty treści unoszą się odrobinę; przyciski primary / dark / danger zyskują cień w spoczynku i delikatne uniesienie po najechaniu dla głębi; duże liczby wyrównują się przez tabular-nums; a interaktywne kontrolki dostają miękką koralową poświatę fokusa za wyraźnym pierścieniem klawiatury 2px. Cały ruch respektuje `prefers-reduced-motion`, a poświata jest ograniczona do kontrolek — nigdy globalne `*:focus-visible`.
+
+- Tylko CSS (`public/css/app.css`); bez zmian znaczników, i18n, tras ani CSP. Testy: `tests/design-polish-v1115.test.mjs` (5). Zweryfikowane na żywo Playwrightem.
+
+Nowe: brak.
+
+
 ## [1.114.0] — 2026-07-06
 
 **Miernik użycia i kosztu AI w pasku bocznym (lewy dolny róg).** Zwarta sekcja **ZUŻYCIE** znajduje się teraz na dole paska bocznego (stała karta w lewym dolnym rogu, gdy nie ma paska; w prawym dolnym w RTL) na każdej stronie. Pokazuje zużycie tokenów LLM w oknach **24h / 7d / 30d** — każde jako `<tokeny> · <udział%>` z zielonym paskiem (udział w całości) — plus stopkę z szacowanym kosztem 24h. Dane to tylko do odczytu podsumowanie `GET /api/usage` z `data/llm-usage.jsonl` (tylko lokalnie), to samo źródło co strona `#/usage`; koszt jest szacunkowy, a uruchomienia w trybie ręcznym są darmowe i nieliczone. Zwijane — nagłówek przełącza, a stan jest zapamiętywany.

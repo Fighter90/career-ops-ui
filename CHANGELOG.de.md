@@ -2,6 +2,15 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.115.0] — 2026-07-06
+
+**Design-Feinschliff (konservativ, Korallen-Marke beibehalten).** Ein leichter Verfeinerungsdurchgang über das gemeinsame Designsystem — keine Umstrukturierung, keine Palettenänderung. Die Metrikkarten des Dashboards heben sich jetzt beim Hover an und erhalten einen korallenen Rand (wie die Schnellaktions-Kacheln); Inhaltskarten heben sich minimal; primary / dark / danger-Buttons erhalten einen Ruheschatten und ein sanftes Hover-Anheben für Tiefe; große Zahlen richten sich per tabular-nums aus; und interaktive Steuerelemente bekommen einen weichen Korallen-Fokus-Halo hinter dem klaren 2px-Tastaturring. Alle Bewegung respektiert `prefers-reduced-motion`, und der Halo ist auf Steuerelemente beschränkt — nie ein globales `*:focus-visible`.
+
+- Nur CSS (`public/css/app.css`); keine Änderungen an Markup, i18n, Routen oder CSP. Tests: `tests/design-polish-v1115.test.mjs` (5). Live mit Playwright verifiziert.
+
+Neu: keine.
+
+
 ## [1.114.0] — 2026-07-06
 
 **KI-Nutzungs- und Kostenanzeige in der Seitenleiste (unten links).** Ein kompakter **NUTZUNG**-Abschnitt sitzt jetzt unten in der Seitenleiste (eine feste Karte unten links, wenn keine Seitenleiste vorhanden ist; unten rechts bei RTL) auf jeder Seite. Er zeigt deine LLM-Token-Nutzung über **24h / 7T / 30T**-Fenster — jeweils als `<Tokens> · <Anteil%>` mit einem grünen Balken (Anteil an der Gesamtzeit) — plus eine Fußzeile mit den geschätzten 24h-Kosten. Die Daten sind die schreibgeschützte `GET /api/usage`-Zusammenfassung von `data/llm-usage.jsonl` (nur lokal), dieselbe Quelle wie die Seite `#/usage`; die Kosten sind eine Schätzung, und Manuell-Modus-Läufe sind kostenlos und werden nicht gezählt. Einklappbar — die Kopfzeile schaltet um und der Zustand bleibt erhalten.

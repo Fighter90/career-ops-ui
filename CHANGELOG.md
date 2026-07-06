@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.115.0] — 2026-07-06
+
+**Design polish (conservative, coral brand kept).** A light refinement pass over the shared design system — no restructuring, no palette change. Dashboard metric cards now lift and pick up a coral border on hover (matching the quick-action tiles); content cards lift a hair; primary / dark / danger buttons gain a resting shadow and a gentle hover lift for depth; big numbers align via tabular-nums; and interactive controls get a soft coral focus halo behind the crisp 2px keyboard ring. All motion respects `prefers-reduced-motion`, and the halo is deliberately scoped to controls — never a global `*:focus-visible` (which would re-paint the managed-focus route headings; the v1.58.x lesson).
+
+- CSS-only (`public/css/app.css`); no markup, i18n, route, or CSP change. Tests: `tests/design-polish-v1115.test.mjs` (5) guard the polish + the no-global-halo anti-regression. Verified live via Playwright (dashboard intact, zero console errors).
+
+New: none.
+
+
 ## [1.114.0] — 2026-07-06
 
 **AI usage & cost meter in the sidebar (bottom-left).** A compact **USAGE** section now sits at the bottom of the sidebar (a fixed bottom-left card if there's no sidebar; bottom-right in RTL) on every page. It shows your LLM token usage across **24h / 7d / 30d** windows — each as `<tokens> · <share%>` with a green meter bar (share of all-time) — plus an estimated 24h-cost footer. Data is the read-only `GET /api/usage` rollup of `data/llm-usage.jsonl` (local only), the same source as the `#/usage` page; cost is an estimate and manual-mode runs are free and uncounted. Collapsible — the header toggles and the state persists.

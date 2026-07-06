@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.114.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.114.0)
+[![release](https://img.shields.io/badge/release-v1.115.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.115.0)
 
-> **🆕 Najnowsze wydanie — v1.114.0**
+> **🆕 Najnowsze wydanie — v1.115.0**
 >
-> **Miernik użycia i kosztu AI w pasku bocznym.** Zwarta sekcja ZUŻYCIE na dole paska bocznego (lewy dolny róg; prawy dolny w RTL) pokazuje zużycie tokenów LLM w 24h / 7d / 30d zielonymi paskami i szacowany koszt 24h — z lokalnego dziennika tylko do odczytu, tego samego źródła co strona Zużycie. Zwijana; koszty są szacunkowe, a uruchomienia ręczne są darmowe.
+> **Dopracowanie designu (zachowawcze, marka koralowa).** Lekkie dopracowanie wspólnego systemu — bez przebudowy ani zmiany palety: karty metryk unoszą się z koralową ramką po najechaniu, przyciski zyskują cień w spoczynku i delikatne uniesienie, duże liczby wyrównują się przez tabular-nums, a kontrolki dostają miękką koralową poświatę fokusa. Ruch respektuje prefers-reduced-motion.
 >
-> _miernik użycia · pływający asystent pomocy · konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _dopracowanie designu · miernik użycia · pływający asystent pomocy · konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

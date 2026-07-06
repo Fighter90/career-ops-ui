@@ -2,6 +2,15 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.115.0] — 2026-07-06
+
+**Tasarım rötuşu (muhafazakâr, mercan marka korundu).** Ortak tasarım sistemi üzerinde hafif bir ince ayar geçişi — yeniden yapılandırma yok, palet değişikliği yok. Pano metrik kartları artık üzerine gelince hafifçe yükselir ve mercan bir kenarlık kazanır (hızlı eylem karoları gibi); içerik kartları azıcık yükselir; primary / dark / danger düğmeleri derinlik için durağan bir gölge ve nazik bir hover yükselişi kazanır; büyük sayılar tabular-nums ile hizalanır; ve etkileşimli denetimler net 2px klavye halkasının arkasında yumuşak bir mercan odak halesi alır. Tüm hareket `prefers-reduced-motion`'a saygı gösterir ve hale denetimlerle sınırlıdır — asla küresel bir `*:focus-visible` değil.
+
+- Yalnızca CSS (`public/css/app.css`); işaretleme, i18n, rota veya CSP değişikliği yok. Testler: `tests/design-polish-v1115.test.mjs` (5). Playwright ile canlı doğrulandı.
+
+Yeni: yok.
+
+
 ## [1.114.0] — 2026-07-06
 
 **Kenar çubuğunda AI kullanım ve maliyet göstergesi (sol alt).** Kompakt bir **KULLANIM** bölümü artık her sayfada kenar çubuğunun altında yer alır (kenar çubuğu yoksa sol altta sabit bir kart; RTL'de sağ altta). LLM jeton kullanımını **24s / 7g / 30g** pencerelerinde gösterir — her biri `<jeton> · <pay%>` olarak (tüm zamana göre pay) yeşil bir çubukla — ve tahmini 24s maliyet altbilgisi ekler. Veri, `data/llm-usage.jsonl` dosyasının salt okunur `GET /api/usage` özetidir (yalnızca yerel), `#/usage` sayfasıyla aynı kaynak; maliyet bir tahmindir ve manuel mod çalıştırmaları ücretsizdir ve sayılmaz. Katlanabilir — başlık değiştirir ve durum korunur.

@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.114.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.114.0)
+[![release](https://img.shields.io/badge/release-v1.115.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.115.0)
 
-> **🆕 Dernière version — v1.114.0**
+> **🆕 Dernière version — v1.115.0**
 >
-> **Compteur d'utilisation et de coût de l'IA dans la barre latérale.** Une section UTILISATION compacte en bas de la barre latérale (en bas à gauche ; en bas à droite en RTL) montre votre usage de jetons LLM sur 24h / 7j / 30j avec des barres vertes et un coût estimé sur 24h — depuis le journal local en lecture seule, la même source que la page Utilisation. Repliable ; les coûts sont estimés et les exécutions manuelles sont gratuites.
+> **Peaufinage du design (conservateur, marque corail).** Un raffinement léger du système de design — sans restructuration ni changement de palette : les cartes de métriques se soulèvent avec une bordure corail au survol, les boutons gagnent une ombre au repos et un léger soulèvement, les grands nombres s'alignent via tabular-nums, et les contrôles reçoivent un halo corail de focus. L'animation respecte prefers-reduced-motion.
 >
-> _compteur d'utilisation · assistant d'aide flottant · consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _peaufinage du design · compteur d'utilisation · assistant d'aide flottant · consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 
