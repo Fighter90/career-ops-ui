@@ -423,6 +423,10 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .topbar-actions { display: flex; gap: var(--space-3); align-items: center; }
 
 /* ───────────────────────── buttons ───────────────────────── */
+/* .btn sets an author display:, which beats the UA's [hidden]{display:none}
+ * at any specificity — so any button toggled via the hidden attribute
+ * (e.g. the #/scan Stop button) stays visible without this override. */
+.btn[hidden] { display: none; }
 .btn {
   display: inline-flex;
   align-items: center;
