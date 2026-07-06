@@ -275,7 +275,7 @@ async function runFix(btn, path, t) {
   try {
     const r = await UI.withSpinner(btn, () => API.post(path));
     UI.toast(t('track.done') + ' · exit ' + r.code, r.code === 0 ? 'success' : 'error');
-    UI.modal('Output', UI.el('pre', { className: 'console' }, (r.stdout || '') + (r.stderr ? '\n\n' + r.stderr : '')));
+    UI.modal(t('track.outputTitle', 'Output'), UI.el('pre', { className: 'console' }, (r.stdout || '') + (r.stderr ? '\n\n' + r.stderr : '')));
   } catch (e) {
     UI.toast((e && e.message) || 'tracker error', 'error');
   }

@@ -55,7 +55,7 @@ Router.register('profile', async () => {
       info(t('set.name'), summary.full_name),
       info(t('set.email'), summary.email),
       info(t('set.location'), summary.location),
-      info('LinkedIn', summary.linkedin),
+      info(t('set.linkedin', 'LinkedIn'), summary.linkedin),
     ]),
 
     // G-009: surface the narrative.headline — used by cover-letter and
