@@ -2,6 +2,13 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.112.0] — 2026-07-06
+
+**Docs- & QA-Konsolidierung.** Keine nutzersichtbare Codeänderung. Das SDD-Konventionsdokument (`docs/sdd/CONVENTIONS.md`) wird auf die aktuellen **30 Route-Module** (vorher 24) und die aktuelle Testbasis aktualisiert; der maßgebliche projektweite QA-Prompt (`qa/QA-REGRESSION-PROMPT.md`) wird konsolidiert — Release-Mechanik entstaubt (v1.111, parentVersion 1.17.0, durch das Release-Ereignis ausgelöste Veröffentlichung), die §14-Ergänzungstabelle korrigiert (Scan-Ausschluss auf v1.109.0 umetikettiert) und um den v1.111-CodeQL-Abschluss erweitert — sodass er als einziger Regressions-Prompt für die gesamte Funktionalität allein steht. Fügt einen Abdeckungstest für den Zweig übergroßer Uploads hinzu.
+
+Neu: keine.
+
+
 ## [1.111.0] — 2026-07-06
 
 **Sicherheit — Abschluss des CodeQL-Backlogs.** Drei Defense-in-Depth-Härtungen, die die verbleibenden Befunde der statischen Analyse an der Quelle schließen, statt sie zu verwerfen. `stripDangerousMarkdown` escapt jetzt das `<` jeder *abgeschnittenen* gefährlichen Tag-Öffnung (eine Payload, die auf `<script`/`<iframe`/… endet), sodass ihre Ausgabe beweisbar kein lebendes gefährliches Tag enthält. Der CV-Import liest die Größe des hochgeladenen Puffers über eine explizite `Number()`-Konvertierung — eine Barriere gegen Typverwechslung. Modus-Rollenzeilen sind jetzt Vorlagen-**Strings**, die mit `String.replace` interpoliert werden, statt gespeicherter Funktionen, was den dynamischen Dispatch-Aufruf vollständig entfernt. Keine für Nutzer sichtbare Verhaltensänderung.

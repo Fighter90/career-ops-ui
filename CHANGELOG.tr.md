@@ -2,6 +2,13 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.112.0] — 2026-07-06
+
+**Doküman & QA konsolidasyonu.** Kullanıcıya görünür kod değişikliği yok. SDD kurallar belgesi (`docs/sdd/CONVENTIONS.md`) mevcut **30 rota modülüne** (önceden 24) ve mevcut test temeline güncellendi; projenin tamamı için belirleyici QA istemi (`qa/QA-REGRESSION-PROMPT.md`) konsolide edildi — yayım mekaniği güncellendi (v1.111, parentVersion 1.17.0, yayım olayıyla tetiklenen yayınlama), §14 eklemeler tablosu düzeltildi (Scan Hariç Tut v1.109.0 olarak yeniden etiketlendi) ve v1.111 CodeQL kapanışıyla genişletildi — böylece tüm işlevsellik için tek başına regresyon istemi olur. Aşırı büyük yükleme dalı için bir kapsam testi ekler.
+
+Yeni: yok.
+
+
 ## [1.111.0] — 2026-07-06
 
 **Güvenlik — CodeQL biriktirme listesi kapanışı.** Kalan statik analiz bulgularını göz ardı etmek yerine kaynağında kapatan üç derinlemesine savunma sertleştirmesi. `stripDangerousMarkdown` artık herhangi bir *kesilmiş* tehlikeli etiket açılışının (`<script`/`<iframe`/… ile biten yük) `<` karakterini kaçışlar; böylece çıktısı kanıtlanabilir şekilde canlı tehlikeli etiket içermez. CV içe aktarımı, yüklenen arabelleğin boyutunu açık bir `Number()` dönüşümüyle okur — tür karışıklığına karşı bir bariyer. Mod rol satırları artık saklanan işlevler yerine `String.replace` ile enterpole edilen şablon **dizeleri**dir; bu da dinamik gönderim çağrısını tamamen kaldırır. Kullanıcıya görünür davranış değişikliği yok.

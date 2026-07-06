@@ -9,6 +9,13 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.112.0] — 2026-07-06
+
+**Konsolidacja dokumentacji i QA.** Bez widocznych zmian w kodzie. Dokument konwencji SDD (`docs/sdd/CONVENTIONS.md`) zaktualizowany do obecnych **30 modułów tras** (było 24) i obecnej bazy testów; wiążący ogólnoprojektowy prompt QA (`qa/QA-REGRESSION-PROMPT.md`) skonsolidowany — mechanika wydania odświeżona (v1.111, parentVersion 1.17.0, publikacja wyzwalana zdarzeniem wydania), tabela dodatków §14 poprawiona (Wyklucz w Scan przeetykietowane na v1.109.0) i rozszerzona o domknięcie CodeQL z v1.111 — więc stanowi samodzielny, jedyny prompt regresyjny dla całej funkcjonalności. Dodaje jeden test pokrycia dla gałęzi zbyt dużego przesłania.
+
+Nowe: brak.
+
+
 ## [1.111.0] — 2026-07-06
 
 **Bezpieczeństwo — domknięcie backlogu CodeQL.** Trzy wzmocnienia obrony w głąb, które zamykają pozostałe znaleziska analizy statycznej u źródła, zamiast je odrzucać (dismiss). `stripDangerousMarkdown` eskejpuje teraz `<` w każdym *uciętym* otwarciu niebezpiecznego znacznika (ładunek kończący się na `<script`/`<iframe`/…), więc jego wyjście w sposób dowodliwy nie zawiera żadnego żywego niebezpiecznego znacznika. Import CV odczytuje rozmiar wgranego bufora przez jawną koercję `Number()` — bariera przeciw pomyleniu typów. Wiersze roli trybów są teraz szablonowymi **łańcuchami** interpolowanymi przez `String.replace`, a nie przechowywanymi funkcjami, co całkowicie usuwa wywołanie dynamicznego rozsyłania. Bez zmian widocznych dla użytkownika.

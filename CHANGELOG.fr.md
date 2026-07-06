@@ -11,6 +11,13 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.112.0] — 2026-07-06
+
+**Consolidation docs & QA.** Aucun changement de code visible. Le document de conventions SDD (`docs/sdd/CONVENTIONS.md`) est mis à jour vers les **30 modules de route** actuels (24 auparavant) et la base de tests actuelle ; le prompt QA définitif de tout le projet (`qa/QA-REGRESSION-PROMPT.md`) est consolidé — mécanique de release dépoussiérée (v1.111, parentVersion 1.17.0, publication déclenchée par la release), le tableau des ajouts §14 corrigé (Exclure du Scan ré-étiqueté v1.109.0) et étendu avec la clôture CodeQL de v1.111 — de sorte qu'il se suffit comme unique prompt de régression pour toutes les fonctionnalités. Ajoute un test de couverture pour la branche de téléversement surdimensionné.
+
+Nouveau : aucun.
+
+
 ## [1.111.0] — 2026-07-06
 
 **Sécurité — clôture du backlog CodeQL.** Trois renforcements de défense en profondeur qui closent les constats d'analyse statique restants à la source plutôt que de les écarter. `stripDangerousMarkdown` échappe désormais le `<` de toute ouverture de balise dangereuse *tronquée* (une charge se terminant par `<script`/`<iframe`/…), de sorte que sa sortie ne contient de façon prouvable aucune balise dangereuse vivante. L'import de CV lit la taille du tampon téléversé via une coercition explicite `Number()` — une barrière contre la confusion de types. Les lignes de rôle des modes sont désormais des **chaînes** de modèle interpolées avec `String.replace` au lieu de fonctions stockées, supprimant totalement l'appel à répartition dynamique. Aucun changement de comportement visible.

@@ -10,6 +10,13 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.112.0] — 2026-07-06
+
+**Docs- og QA-konsolidering.** Ingen brugersynlig kodeændring. SDD-konventionsdokumentet (`docs/sdd/CONVENTIONS.md`) er opdateret til de nuværende **30 rute-moduler** (var 24) og den nuværende testbaseline; den definitive projektomfattende QA-prompt (`qa/QA-REGRESSION-PROMPT.md`) er konsolideret — release-mekanik afstøvet (v1.111, parentVersion 1.17.0, release-udløst udgivelse), §14-tilføjelsestabellen rettet (Scan Udeluk om-mærket v1.109.0) og udvidet med v1.111-CodeQL-lukningen — så den står alene som den ene regressionsprompt for al funktionalitet. Tilføjer én dækningstest for den overstore upload-gren.
+
+Nyt: intet.
+
+
 ## [1.111.0] — 2026-07-06
 
 **Sikkerhed — lukning af CodeQL-backlog.** Tre defense-in-depth-hærdninger, der lukker de resterende fund fra statisk analyse ved kilden i stedet for at afvise dem. `stripDangerousMarkdown` escaper nu `<` i enhver *afkortet* farlig tag-åbning (en payload, der ender på `<script`/`<iframe`/…), så dens output beviseligt ikke indeholder nogen levende farlig tag. CV-import læser den uploadede buffers størrelse via en eksplicit `Number()`-tvang — en barriere mod typeforvirring. Modus-rollelinjer er nu skabelon-**strenge** interpoleret med `String.replace` i stedet for gemte funktioner, hvilket helt fjerner det dynamiske dispatch-kald. Ingen brugersynlig adfærdsændring.

@@ -11,6 +11,13 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.112.0] — 2026-07-06
+
+**Consolidación de docs y QA.** Sin cambios de código visibles. El documento de convenciones SDD (`docs/sdd/CONVENTIONS.md`) se actualiza a los **30 módulos de ruta** actuales (antes 24) y a la base de pruebas actual; el prompt QA definitivo de todo el proyecto (`qa/QA-REGRESSION-PROMPT.md`) se consolida — mecánica de release actualizada (v1.111, parentVersion 1.17.0, publicación disparada por el release), la tabla de adiciones §14 corregida (Excluir de Scan reetiquetado v1.109.0) y ampliada con el cierre de CodeQL de v1.111 — para valer por sí solo como único prompt de regresión de toda la funcionalidad. Añade una prueba de cobertura para la rama de carga sobredimensionada.
+
+Nuevo: ninguno.
+
+
 ## [1.111.0] — 2026-07-06
 
 **Seguridad — cierre del backlog de CodeQL.** Tres refuerzos de defensa en profundidad que cierran los hallazgos de análisis estático restantes en el origen en lugar de descartarlos. `stripDangerousMarkdown` ahora escapa el `<` de cualquier apertura de etiqueta peligrosa *truncada* (una carga que termina en `<script`/`<iframe`/…), de modo que su salida no contiene ninguna etiqueta peligrosa viva. La importación de CV lee el tamaño del búfer subido mediante una coerción explícita con `Number()` — una barrera contra la confusión de tipos. Las líneas de rol de los modos ahora son **cadenas** de plantilla interpoladas con `String.replace` en vez de funciones almacenadas, eliminando por completo la llamada de despacho dinámico. Sin cambios visibles para el usuario.
