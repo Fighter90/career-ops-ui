@@ -16,6 +16,7 @@ import { spawn } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { PATHS } from '../paths.mjs';
 import { runNodeScript } from '../runner.mjs';
+import { llmRateLimit } from '../rate-limit.mjs';
 
 const TSV_MAX_BYTES = 1024 * 1024; // 1 MB — generous for ~10k JD URLs.
 
@@ -80,7 +81,10 @@ export function registerBatchRoutes(app) {
   });
 
   // ── GET /api/stream/batch ── spawn batch-runner.sh and stream SSE ──
-  app.get('/api/stream/batch', (req, res) => {
+  // llmRateLimit: batch-runner fans out N parallel real LLM evaluations —
+  // the most expensive operation the app exposes. Loopback is exempt
+  // (the limiter no-ops there), so this only gates HOST=0.0.0.0 setups.
+  app.get('/api/stream/batch', llmRateLimit, (req, res) => {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
