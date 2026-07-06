@@ -1920,3 +1920,33 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
    fixed-corner fallback (no sidebar) is hidden to avoid covering content. */
 @media (max-width: 900px) { .usage-hud:not(.usage-hud--sidebar) { display: none; } }
 @media (prefers-reduced-motion: reduce) { .usage-hud__barfill, .usage-hud__chev { transition: none; } }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   v1.115.0 — conservative design polish (coral brand kept)
+   Adds cohesion + tactility to the shared components WITHOUT restructuring:
+   dashboard metric cards now feel interactive like the QA tiles; content cards
+   lift a hair on hover; primary/dark/danger buttons gain a resting shadow +
+   gentle hover lift for depth; big numbers align via tabular-nums; and the
+   focus ring gets a soft coral halo so keyboard focus reads as intentional.
+   All motion respects prefers-reduced-motion.
+   ────────────────────────────────────────────────────────────────────────── */
+.metric-card { transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition); }
+.metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--rausch); }
+.metric-value { font-variant-numeric: tabular-nums; }
+
+.card:hover { transform: translateY(-1px); }
+
+.btn-primary, .btn-dark, .btn-danger { box-shadow: 0 1px 2px rgba(0, 0, 0, .10); }
+.btn-primary:hover, .btn-dark:hover, .btn-danger:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, .16); }
+
+/* Soft coral halo behind the crisp 2px keyboard ring on interactive controls
+   ONLY — deliberately NOT a global `*:focus-visible` (that re-paints the
+   spurious ring on managed-focus route <h1>s; the v1.58.x lesson). Inputs
+   already carry their own halo at higher specificity. */
+.btn:focus-visible, .qa-tile:focus-visible, .nav-item:focus-visible,
+a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .12); }
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-card, .card, .btn-primary, .btn-dark, .btn-danger { transition: none; }
+  .metric-card:hover, .card:hover, .btn-primary:hover, .btn-dark:hover, .btn-danger:hover { transform: none; }
+}

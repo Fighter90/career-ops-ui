@@ -11,6 +11,15 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.115.0] — 2026-07-06
+
+**Peaufinage du design (conservateur, marque corail conservée).** Une passe légère de raffinement sur le système de design partagé — sans restructuration, sans changement de palette. Les cartes de métriques du tableau de bord se soulèvent et prennent une bordure corail au survol (comme les tuiles d'action rapide) ; les cartes de contenu se soulèvent un poil ; les boutons primary / dark / danger gagnent une ombre au repos et un léger soulèvement au survol pour la profondeur ; les grands nombres s'alignent via tabular-nums ; et les contrôles interactifs reçoivent un halo corail doux derrière l'anneau clavier de 2px. Toute animation respecte `prefers-reduced-motion`, et le halo est limité aux contrôles — jamais un `*:focus-visible` global.
+
+- CSS uniquement (`public/css/app.css`) ; aucun changement de balisage, i18n, routes ou CSP. Tests : `tests/design-polish-v1115.test.mjs` (5). Vérifié en direct avec Playwright.
+
+Nouveau : aucun.
+
+
 ## [1.114.0] — 2026-07-06
 
 **Compteur d'utilisation et de coût de l'IA dans la barre latérale (en bas à gauche).** Une section **UTILISATION** compacte se trouve désormais en bas de la barre latérale (une carte fixe en bas à gauche s'il n'y a pas de barre latérale ; en bas à droite en RTL) sur chaque page. Elle montre votre utilisation de jetons LLM sur des fenêtres **24h / 7j / 30j** — chacune sous la forme `<jetons> · <part%>` avec une barre verte (part du total) — plus un pied avec le coût estimé sur 24h. Les données sont le récapitulatif en lecture seule `GET /api/usage` de `data/llm-usage.jsonl` (local uniquement), la même source que la page `#/usage` ; le coût est une estimation et les exécutions en mode manuel sont gratuites et non comptées. Repliable — l'en-tête bascule et l'état persiste.

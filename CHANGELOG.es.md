@@ -11,6 +11,15 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.115.0] — 2026-07-06
+
+**Retoque de diseño (conservador, se mantiene la marca coral).** Una pasada ligera de refinamiento sobre el sistema de diseño compartido — sin reestructurar, sin cambiar la paleta. Las tarjetas de métricas del panel ahora se elevan y toman un borde coral al pasar el ratón (como los mosaicos de acción rápida); las tarjetas de contenido se elevan un poco; los botones primary / dark / danger ganan una sombra en reposo y una ligera elevación al pasar el ratón; los números grandes se alinean con tabular-nums; y los controles interactivos reciben un halo coral suave tras el anillo de teclado de 2px. Todo el movimiento respeta `prefers-reduced-motion`, y el halo se limita a los controles — nunca un `*:focus-visible` global.
+
+- Solo CSS (`public/css/app.css`); sin cambios de marcado, i18n, rutas ni CSP. Pruebas: `tests/design-polish-v1115.test.mjs` (5). Verificado en vivo con Playwright.
+
+Nuevo: ninguno.
+
+
 ## [1.114.0] — 2026-07-06
 
 **Medidor de uso y coste de IA en la barra lateral (abajo a la izquierda).** Una sección **USO** compacta ahora aparece al final de la barra lateral (una tarjeta fija abajo a la izquierda si no hay barra lateral; abajo a la derecha en RTL) en cada página. Muestra tu uso de tokens LLM en ventanas de **24h / 7d / 30d** — cada una como `<tokens> · <cuota%>` con una barra verde (cuota del total histórico) — más un pie con el coste estimado de 24h. Los datos son el resumen de solo lectura `GET /api/usage` de `data/llm-usage.jsonl` (solo local), la misma fuente que la página `#/usage`; el coste es una estimación y las ejecuciones en modo manual son gratis y no se cuentan. Plegable — la cabecera alterna y el estado se conserva.

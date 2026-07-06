@@ -2,6 +2,15 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.115.0] — 2026-07-06
+
+**Rifinitura del design (conservativa, brand corallo mantenuto).** Un passaggio leggero di rifinitura sul sistema di design condiviso — nessuna ristrutturazione, nessun cambio di palette. Le schede metriche della dashboard ora si sollevano e prendono un bordo corallo al passaggio del mouse (come i riquadri di azione rapida); le schede di contenuto si sollevano di poco; i pulsanti primary / dark / danger guadagnano un'ombra a riposo e un lieve sollevamento all'hover per profondità; i numeri grandi si allineano con tabular-nums; e i controlli interattivi ricevono un alone corallo morbido dietro il nitido anello da tastiera di 2px. Tutto il movimento rispetta `prefers-reduced-motion`, e l'alone è limitato ai controlli — mai un `*:focus-visible` globale.
+
+- Solo CSS (`public/css/app.css`); nessuna modifica a markup, i18n, rotte o CSP. Test: `tests/design-polish-v1115.test.mjs` (5). Verificato dal vivo con Playwright.
+
+Nuovo: nessuno.
+
+
 ## [1.114.0] — 2026-07-06
 
 **Contatore di utilizzo e costo dell'IA nella barra laterale (in basso a sinistra).** Una sezione **UTILIZZO** compatta ora si trova in fondo alla barra laterale (una scheda fissa in basso a sinistra se non c'è barra laterale; in basso a destra in RTL) su ogni pagina. Mostra l'uso di token LLM su finestre **24h / 7g / 30g** — ciascuna come `<token> · <quota%>` con una barra verde (quota sul totale) — più un piè di pagina con il costo stimato delle 24h. I dati sono il riepilogo di sola lettura `GET /api/usage` di `data/llm-usage.jsonl` (solo locale), la stessa fonte della pagina `#/usage`; il costo è una stima e le esecuzioni in modalità manuale sono gratuite e non conteggiate. Comprimibile — l'intestazione commuta e lo stato persiste.

@@ -10,6 +10,15 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.115.0] — 2026-07-06
+
+**Designfinpudsning (konservativ, koralbrand bevaret).** En let forfinelsesrunde over det delte designsystem — ingen omstrukturering, ingen paletændring. Dashboardets metrikkort løfter sig nu og får en koralkant ved hover (som hurtighandlingsfliserne); indholdskort løfter sig en anelse; primary / dark / danger-knapper får en hvileskygge og et blidt hover-løft for dybde; store tal justeres via tabular-nums; og interaktive kontroller får en blød koral-fokusglorie bag den skarpe 2px-tastaturring. Al bevægelse respekterer `prefers-reduced-motion`, og glorien er afgrænset til kontroller — aldrig en global `*:focus-visible`.
+
+- Kun CSS (`public/css/app.css`); ingen ændringer i markup, i18n, ruter eller CSP. Tests: `tests/design-polish-v1115.test.mjs` (5). Verificeret live med Playwright.
+
+Nyt: intet.
+
+
 ## [1.114.0] — 2026-07-06
 
 **AI-forbrugs- og omkostningsmåler i sidebjælken (nederst til venstre).** En kompakt **FORBRUG**-sektion sidder nu nederst i sidebjælken (et fast kort nederst til venstre hvis der ingen sidebjælke er; nederst til højre i RTL) på hver side. Den viser dit LLM-tokenforbrug over **24t / 7d / 30d** vinduer — hvert som `<tokens> · <andel%>` med en grøn måler (andel af hele perioden) — plus en fod med den estimerede 24t-omkostning. Data er den skrivebeskyttede `GET /api/usage`-opsummering af `data/llm-usage.jsonl` (kun lokalt), samme kilde som `#/usage`-siden; omkostningen er et estimat, og manuelle kørsler er gratis og tælles ikke. Sammenfoldelig — overskriften skifter, og tilstanden bevares.
