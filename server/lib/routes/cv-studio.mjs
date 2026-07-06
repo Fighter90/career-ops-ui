@@ -19,6 +19,8 @@ import { resolveLocale, bundleProjectContext } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
+import { isValidJobUrl } from '../security.mjs';
+import { safeGet } from '../safe-fetch.mjs';
 
 const MAX_TEXT = 20 * 1024;      // the CV chunk to rewrite
 const MAX_SAMPLE = 8 * 1024;     // per writing sample
@@ -231,5 +233,86 @@ export function registerCvStudioRoutes(app) {
     if (r.mode === 'manual') return res.json({ mode: 'manual', prompt, message: 'No provider available — copy this prompt into any LLM.' });
     if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
     return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage });
+  });
+
+  // v1.117.0 (parent parity — modes/add.md, generalized) — "Add to CV".
+  // Turn a source (a GitHub repo / article / portfolio URL, or pasted text)
+  // into ATS-ready CV bullet points GROUNDED ONLY in that source. The model is
+  // forbidden from inventing metrics, employers, or dates — anything not in
+  // the source is omitted (the "keywords get reformulated, never fabricated"
+  // rule). Returns SUGGESTIONS ONLY: no file is ever written — the user reviews
+  // the bullets and pastes what they accept into the CV editor themselves,
+  // which goes through the normal PUT /api/cv (stripDangerousMarkdown) path.
+  // A URL source must pass isValidJobUrl and is fetched via the DNS-pinned
+  // safeGet (the SSRF envelope), size-capped and HTML-stripped.
+  app.post('/api/cv-studio/add-entry', llmRateLimit, async (req, res) => {
+    const body = (req.body && typeof req.body === 'object') ? req.body : {};
+    let source = (typeof body.text === 'string' ? body.text : '').slice(0, MAX_JD).trim();
+    let origin = 'pasted text';
+    const url = (typeof body.url === 'string' ? body.url : '').trim();
+    if (!source && url) {
+      if (!isValidJobUrl(url)) {
+        return res.status(400).json({ error: 'invalid or unsafe URL' });
+      }
+      try {
+        const r = await safeGet(url, { timeoutMs: 15_000, maxBytes: 512 * 1024 });
+        if (r.status < 200 || r.status >= 300) {
+          return res.status(422).json({ error: `source fetch failed (HTTP ${r.status})` });
+        }
+        source = String(r.body || '')
+          .replace(/<script[\s\S]*?<\/script>/gi, '')
+          .replace(/<style[\s\S]*?<\/style>/gi, '')
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/\s+/g, ' ')
+          .slice(0, MAX_JD)
+          .trim();
+        origin = url;
+      } catch (e) {
+        return res.status(422).json({ error: `source fetch failed: ${String(e && e.message || e).slice(0, 200)}` });
+      }
+    }
+    if (!source || source.length < 80) {
+      return res.status(400).json({ error: 'provide a source: a URL or pasted text (~80+ characters) describing the project/publication/role' });
+    }
+    const lang = resolveLocale(req);
+    const ctx = bundleProjectContext({});
+    const prompt = [
+      'You are career-ops CV Studio in "add to CV" mode.',
+      `Respond in language: ${lang}.`,
+      '',
+      'TASK: turn the SOURCE below into CV-ready content the candidate can paste into their CV:',
+      '1. A one-line entry title (project/publication/role name + a dash + a one-clause summary).',
+      '2. 2-4 ATS-friendly bullet points (impact verbs; concrete tech nouns from the source).',
+      '3. A "Skills to add" line listing only technologies/methods that literally appear in the source.',
+      '',
+      'HARD RULES:',
+      '- Ground EVERY claim in the SOURCE text. If a metric, employer, date, or outcome is not in the source, OMIT it — never invent or estimate.',
+      '- Do not claim authorship or a role the source does not state.',
+      '- If the source is too thin to support even one honest bullet, say so instead of padding.',
+      ctx ? '- The CANDIDATE CONTEXT is for tone/dedup only (skip bullets the CV already has) — never copy claims from it into the new entry.' : '',
+      '',
+      `SOURCE (${origin}):`,
+      '"""',
+      source,
+      '"""',
+      ctx ? '\nCANDIDATE CONTEXT (tone/dedup only):\n"""\n' + ctx.slice(0, 12_000) + '\n"""' : '',
+    ].filter(Boolean).join('\n');
+
+    if (!body.run) {
+      return res.json({
+        mode: 'manual',
+        prompt,
+        message: providerAvailable()
+          ? 'Set { run: true } to generate live, or copy this prompt into any LLM.'
+          : 'No API key set — copy this prompt into any LLM, then paste the result back.',
+      });
+    }
+    const r = await runActiveProvider(prompt);
+    if (r.mode === 'too-large') {
+      return res.status(413).json({ error: 'prompt too large', details: [`assembled prompt is ${r.size} bytes; soft cap is ${r.cap}.`] });
+    }
+    if (r.mode === 'manual') return res.json({ mode: 'manual', prompt, message: 'No provider available — copy this prompt into any LLM.' });
+    if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
+    return res.json({ mode: r.mode, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage });
   });
 }

@@ -1297,6 +1297,8 @@ Stessa catena di ripiego di Evaluate:
 
 ## 13. Prompt di modalità (le sette pagine `/#/<mode>`)
 
+**Bacheca di cadenza (v1.117.0).** La pagina di follow-up ora si apre con una **bacheca di cadenza** deterministica alimentata dal `followup-cadence.mjs` del padre: urgenza per candidatura (🔴 urgente / 🟠 in ritardo / 🟡 in attesa / 🔵 freddo) con i giorni al passo successivo, più un pulsante **Semina date di follow-up** che fissa una prima data per ogni riga Applied (`followup-seed.mjs --backfill`). Senza gli script del padre la bacheca mostra onestamente "non disponibile".
+
 Sette costruttori di prompt: idee di **Project**, piani di **Training**,
 email di **Follow-up**, valutazioni **Batch**, **Outreach** verso
 recruiter, one-pager di **Interview prep**, e retrospettive **Patterns**.
@@ -1664,7 +1666,7 @@ output, e cerca la issue nel tracker su
 
 ## 17. Come aggiungere una nuova sorgente di portale di lavoro
 
-career-ops-ui tratta ogni job board come un **adattatore** — un singolo file sotto [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) che sa come recuperare + normalizzare i risultati di un board. A partire da v1.87.0 il registro `server/lib/sources/` include **46** adattatori — **41 inglesi + 5 russi**. L'insieme inglese copre i principali ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), gli aggregatori a livello di board selezionati da un `provider:` esplicito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) e gli ATS per-tenant auto-rilevati da un host `careers_url` o da un URL `api:` esplicito (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **L'elenco completo non va mai contato a mano qui — viene auto-rilevato da `server/lib/sources/` e mostrato in tempo reale nel menu a tendina Source di `#/scan`.** Vedi §5 per lo YAML e `docs/portals-examples.md` per le voci da copia-incolla.
+career-ops-ui tratta ogni job board come un **adattatore** — un singolo file sotto [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) che sa come recuperare + normalizzare i risultati di un board. A partire da v1.87.0 il registro `server/lib/sources/` include **50** adattatori — **45 inglesi + 5 russi**. L'insieme inglese copre i principali ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), gli aggregatori a livello di board selezionati da un `provider:` esplicito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) e gli ATS per-tenant auto-rilevati da un host `careers_url` o da un URL `api:` esplicito (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **L'elenco completo non va mai contato a mano qui — viene auto-rilevato da `server/lib/sources/` e mostrato in tempo reale nel menu a tendina Source di `#/scan`.** Vedi §5 per lo YAML e `docs/portals-examples.md` per le voci da copia-incolla.
 
 > **v1.69.0 (P-14) — auto-discovery drop-in.** Aggiungere una 12ª sorgente è ora
 > un **puro drop di file**. Il registro
@@ -2050,6 +2052,8 @@ Fai clic su **Salva piano** per conservarne uno. Viene scritto nel livello utent
 
 ## 24. CV Studio (`#/cv-studio`)
 
+**Aggiungi al CV (v1.117.0).** Una nuova scheda trasforma un progetto, una pubblicazione o una pagina portfolio (URL o testo incollato) in punti pronti per gli ATS basati SOLO su quella fonte — metriche, datori di lavoro o date assenti vengono omessi, mai inventati. Rivedi i suggerimenti e incolli tu stesso quelli accettati nell'editor del CV; nulla viene scritto automaticamente e gli URL passano per lo stesso validatore anti-SSRF della pipeline.
+
 La pagina `#/cv` è dove *scrivi* il tuo CV; il **CV Studio** (aprilo da **Setup → CV Studio 🎨** nella barra laterale) è dove lo *affini*. Offre al tuo `cv.md` tre strumenti onesti, due dei quali non lasciano mai il tuo browser.
 
 **Adatta a un lavoro (v1.101).** Incolla una descrizione di lavoro e CV Studio produce un CV adattato più una lettera di presentazione, passati attraverso un controllo in stile recruiter (gli errori bloccano, gli avvisi consigliano), basato solo sui tuoi materiali.
@@ -2098,6 +2102,8 @@ Quando clicchi **Salva memoria**, la nota viene scritta nel livello utente del t
 Non sai cosa scrivere? **✨ Suggerisci dai miei dati** legge il tuo tracker delle candidature e redige una serie di punti comportamentali — gli schemi in ciò che insegui, accetti e rifiuti. Esegui il prompt che ti fornisce in un qualsiasi LLM, rivedi i suggerimenti e incolla una versione modificata nella nota. Attinge solo dal tuo tracker e non inventa mai fatti; rivedi sempre prima che qualcosa venga salvato.
 
 ## 26. Statistiche (`#/stats`)
+
+**Scheda pattern di rifiuto (v1.117.0).** Una quarta scheda esegue l'`analyze-patterns.mjs` del padre (sola lettura) e mostra la distribuzione degli esiti, raccomandazioni azionabili e il tasso di avanzamento per fornitore ATS (il segnale di "monocultura algoritmica" — Bommasani et al., FAccT 2026). I fornitori sotto il campione minimo portano un asterisco; senza il progetto padre la scheda lo dice onestamente.
 
 La pagina **Statistiche** riunisce tre viste in un'unica sezione: un report di mercato generato dall'IA, analisi della tua pipeline e la tendenza del numero di annunci per i tuoi ruoli target ricavata dalle tue scansioni. Passa dall'una all'altra con le schede in alto.
 

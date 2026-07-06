@@ -9,6 +9,15 @@
 ---
 
 
+## [1.117.0] — 2026-07-06
+
+**父项目对齐包——把父 career-ops 的六项能力带进 UI。** (1) `#/followup` 的**跟进节奏板**:来自 `followup-cadence.mjs` 的每申请紧急度(🔴/🟠/🟡/🔵)+ **播种跟进日期**按钮(`followup-seed.mjs --backfill`)。(2) **拒绝模式**:统计的第四个标签页运行 `analyze-patterns.mjs`(只读)——结果构成、建议、各 ATS 供应商推进率。(3) **添加到 CV**:CV Studio 卡片把 URL 或粘贴文本变成仅基于该来源的 ATS 要点(仅建议、不写入;URL 抓取有 SSRF 防护)。(4) **4 个新扫描提供方** — beesite、HigherEdJobs(RSS)、JibeApply(iCIMS)、softgarden——注册表现有 **50 个适配器(45 EN + 5 RU)**,全部出现在 Scan 下拉框。(5) Apply 清单新增**淘汰项预扫描**步骤。(6) **reconcile 运行器**(`/api/run/reconcile`)。外壳调用路由在无父脚本时诚实降级。
+
+- 新路由模块 `server/lib/routes/followup.mjs`(第 31 个)+ 新路由 + 8 个 source/adapter 文件。测试:新增 6 + 7;套件 1737 → 1750。新增 41 个 i18n 键 ×16。帮助 §13/§17/§24/§26 扩充 ×16。
+
+新增:`GET /api/followup`、`POST /api/followup/seed`、`GET /api/stats/patterns`、`POST /api/cv-studio/add-entry`、`POST /api/run/reconcile`。
+
+
 ## [1.116.0] — 2026-07-06
 
 **用量计量重做 + 首个端到端组件测试。** AI 用量计量(v1.114.0)已正确固定:现在**固定在左侧边栏底部**(占满侧边栏宽度,与侧边栏同一表面),并在侧边栏底部预留与自身等高的空间,使**菜单永不被遮挡**——导航与版本页脚始终在其上方自由滚动。它**实时刷新**(每 15 秒,以及标签聚焦和路由切换时),每个窗口行现在显示真实的 **`<令牌> · <预估费用>`**(进度条按 30 天窗口缩放),而非始终 100% 的"占比"。此外:CV 导入器中一个持久的 `typeof` 屏障从根源关闭了反复出现的 CodeQL 类型混淆误报,新的 Playwright **端到端测试**在真实浏览器中驱动两个常驻组件。

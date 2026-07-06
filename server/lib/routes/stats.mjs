@@ -17,9 +17,10 @@
  * write-through contract in docs/architecture/DATA-FLOWS.md.
  */
 import { existsSync, readFileSync, appendFileSync, mkdirSync } from 'node:fs';
-import { dirname } from 'node:path';
-import { PATHS } from '../paths.mjs';
+import { dirname, resolve } from 'node:path';
+import { PATHS, PROJECT_ROOT } from '../paths.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
+import { runNodeScript } from '../runner.mjs';
 
 const num = (v, d = 0) => (Number.isFinite(v) ? v : d);
 
@@ -85,5 +86,34 @@ export function registerStatsRoutes(app) {
       }));
     }
     res.json({ snapshots });
+  });
+
+  // v1.117.0 (parent parity) — rejection-pattern / ATS-channel analytics.
+  // Shells out to the parent's `analyze-patterns.mjs` (JSON stdout: outcome
+  // classification per archetype / seniority / remote / score band, plus the
+  // per-ATS-vendor advance rate motivated by Bommasani et al., FAccT 2026)
+  // instead of reimplementing it — the parent stays the source of truth and
+  // web-ui cannot drift. Read-only; fail-soft { available:false } when the
+  // script is absent (CI, standalone installs) so the tab shows an honest note.
+  app.get('/api/stats/patterns', async (_req, res) => {
+    const script = 'analyze-patterns.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      res.json({ available: false, reason: 'script-not-found' });
+      return;
+    }
+    const r = await runNodeScript(script, [], { timeoutMs: 60_000 });
+    let data = null;
+    const out = String(r.stdout || '').trim();
+    const start = out.indexOf('{');
+    if (start !== -1) { try { data = JSON.parse(out.slice(start)); } catch { data = null; } }
+    if (r.code !== 0 || !data) {
+      res.json({
+        available: false,
+        reason: r.killed ? 'timeout' : 'script-error',
+        detail: String(r.stderr || '').split('\n').slice(0, 3).join(' ').slice(0, 300),
+      });
+      return;
+    }
+    res.json({ available: true, ...data });
   });
 }

@@ -11,6 +11,15 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.117.0] — 2026-07-06
+
+**Pack de parité parent — six capacités du career-ops parent portées dans l'UI.** (1) **Tableau de cadence** sur `#/followup` : urgence par candidature (🔴/🟠/🟡/🔵) via `followup-cadence.mjs`, plus le bouton **Semer les dates** (`followup-seed.mjs --backfill`). (2) **Motifs de rejet** : un quatrième onglet Statistiques exécute `analyze-patterns.mjs` (lecture seule) — répartition des issues, recommandations, taux d'avancement par fournisseur ATS. (3) **Ajouter au CV** : une carte CV Studio transforme une URL ou un texte collé en puces ATS fondées UNIQUEMENT sur cette source (suggestions seulement, aucune écriture ; le fetch d'URL est protégé anti-SSRF). (4) **4 nouveaux fournisseurs de scan** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — le registre compte désormais **50 adaptateurs (45 EN + 5 RU)**, tous dans la liste déroulante du Scan. (5) Étape de **pré-scan des disqualifiants** dans la checklist Apply. (6) **Runner reconcile** (`/api/run/reconcile`). Les routes shell-out dégradent honnêtement sans les scripts du parent.
+
+- Nouveau module `server/lib/routes/followup.mjs` (31ᵉ) + nouvelles routes + 8 fichiers source/adaptateur. Tests : 6 + 7 nouveaux ; suite 1737 → 1750. 41 clés i18n ×16. Aide §13/§17/§24/§26 étendue ×16.
+
+Nouveau : `GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`, `POST /api/cv-studio/add-entry`, `POST /api/run/reconcile`.
+
+
 ## [1.116.0] — 2026-07-06
 
 **Compteur d'utilisation refait + premier test bout-en-bout des widgets.** Le compteur d'utilisation de l'IA (v1.114.0) est corrigé et épinglé correctement : il est désormais **épinglé en bas de la barre latérale gauche** (toute la largeur, même surface) et réserve en bas un espace égal à sa hauteur pour que le **menu ne soit jamais couvert** — la navigation et le pied de version défilent toujours librement au-dessus. Il **s'actualise en direct** (toutes les 15 s, au focus de l'onglet et au changement de route), et chaque ligne de fenêtre affiche désormais les **`<jetons> · <coût estimé>`** réels (les barres se mettent à l'échelle contre la fenêtre 30 jours) au lieu d'une « part » toujours à 100 %. De plus : une barrière `typeof` durable dans l'importateur de CV clôt à la source le faux positif récurrent de type-confusion de CodeQL, et un nouveau **test bout-en-bout** Playwright pilote les deux widgets persistants dans un vrai navigateur.

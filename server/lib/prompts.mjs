@@ -364,12 +364,16 @@ export function buildApplyChecklist(url, jd) {
     '',
     '0. Run /career-ops apply in Claude Code with this URL — it will read the form via Playwright.',
     '1. Verify the posting is still live (check footer/navbar vs JD presence).',
-    '2. Confirm CV is the latest (run sync-check, then PDF if score ≥ 4.0).',
-    '3. Tailor the cover letter / "Why us?" answer using STAR+R proof points from cv.md.',
-    '4. Answer EEO / sponsorship / start-date questions truthfully.',
-    '5. Save filled answers to interview-prep/{company}-{role}.md before submitting.',
-    '6. NEVER auto-submit — you (the human) click the final button.',
-    '7. After submit: add row to data/applications.md (or write TSV to batch/tracker-additions/).',
+    // v1.117.0 (parent parity — modes/apply.md step 5b): scan for disqualifying
+    // ("knock-out") questions BEFORE investing in answers, so a visa/degree/
+    // salary-floor mismatch surfaces first, not after 40 minutes of form-filling.
+    '2. KNOCK-OUT PRE-SCAN: before drafting anything, scan the form/JD for disqualifying questions — visa/work-authorization or sponsorship requirements, hard degree/certification requirements, salary floors/ceilings, on-site/relocation mandates, security clearances. If any conflicts with your profile, flag it as "⚠️ KNOCK-OUT WARNING: <question> — <why it conflicts>" and decide whether to proceed BEFORE filling the rest.',
+    '3. Confirm CV is the latest (run sync-check, then PDF if score ≥ 4.0).',
+    '4. Tailor the cover letter / "Why us?" answer using STAR+R proof points from cv.md.',
+    '5. Answer EEO / sponsorship / start-date questions truthfully.',
+    '6. Save filled answers to interview-prep/{company}-{role}.md before submitting.',
+    '7. NEVER auto-submit — you (the human) click the final button.',
+    '8. After submit: add row to data/applications.md (or write TSV to batch/tracker-additions/).',
     jd ? '\n--- JD excerpt ---\n' + jd.slice(0, 600) + (jd.length > 600 ? '\n…' : '') : '',
   ].join('\n');
 }

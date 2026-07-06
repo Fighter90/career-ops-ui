@@ -99,15 +99,15 @@ test('registry: Workday defaults site=External when careers_url omits site', () 
 
 test('registry: ALL_ADAPTERS has the expected entries', async () => {
   const { ALL_ADAPTERS } = await import('../server/lib/portals/registry.mjs');
-  assert.equal(ALL_ADAPTERS.length, 41);
+  assert.equal(ALL_ADAPTERS.length, 45);
   const ids = ALL_ADAPTERS.map((a) => a.id).sort();
   assert.deepEqual(ids, [
     '4dayweek', 'amazon', 'arbeitnow', 'arbeitsagentur', 'ashby', 'avature',
-    'bamboohr', 'breezy', 'comeet', 'dassault', 'getonbrd', 'glints', 'greenhouse',
-    'hackernews', 'himalayas', 'ibm', 'jobicy', 'jobspresso', 'jobstreet',
+    'bamboohr', 'beesite', 'breezy', 'comeet', 'dassault', 'getonbrd', 'glints', 'greenhouse',
+    'hackernews', 'higheredjobs', 'himalayas', 'ibm', 'jibeapply', 'jobicy', 'jobspresso', 'jobstreet',
     'justjoin', 'landingjobs', 'lever', 'nodesk', 'nofluffjobs', 'personio',
     'pinpoint', 'recruitee', 'remoteok', 'remotive', 'rippling', 'rss',
-    'smartrecruiters', 'solidjobs', 'successfactors', 'teamtailor', 'thehub',
+    'smartrecruiters', 'softgarden', 'solidjobs', 'successfactors', 'teamtailor', 'thehub',
     'themuse', 'weworkremotely', 'workable', 'workday', 'workingnomads',
   ]);
 });

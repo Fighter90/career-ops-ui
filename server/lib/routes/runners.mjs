@@ -88,6 +88,8 @@ const BUFFERED = [
   { route: '/api/run/dedup',      script: 'dedup-tracker.mjs' },
   { route: '/api/run/merge',      script: 'merge-tracker.mjs' },
   { route: '/api/run/sync-check', script: 'cv-sync-check.mjs' },
+  // v1.117.0 (parent parity) — sync pipeline.md "Pendientes" with batch-state.tsv
+  { route: '/api/run/reconcile',  script: 'reconcile-pipeline.mjs' },
 ];
 
 export function registerRunnerRoutes(app) {

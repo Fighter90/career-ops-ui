@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.116.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.116.0)
+[![release](https://img.shields.io/badge/release-v1.117.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.0)
 
-> **🆕 Najnowsze wydanie — v1.116.0**
+> **🆕 Najnowsze wydanie — v1.117.0**
 >
-> **Przeróbka miernika zużycia + pierwszy test end-to-end widżetów.** Miernik zużycia AI jest teraz przypięty na dole lewego paska bocznego (bez zasłaniania menu — rezerwuje miejsce, by nawigacja przewijała się swobodnie), odświeża się na żywo i pokazuje prawdziwe tokeny · szacowany koszt na okno. Trwała bariera typeof zamyka powracający fałszywy alarm CodeQL, a nowy test end-to-end Playwright uruchamia oba trwałe widżety w prawdziwej przeglądarce.
+> **Pakiet parytetu z rodzicem.** Sześć możliwości nadrzędnego career-ops trafia do UI: tablica kadencji follow-upów, zakładka wzorców odrzuceń (wyniki, rekomendacje, wskaźnik awansu wg ATS), karta Dodaj do CV (uzasadnione punkty, tylko propozycje), 4 nowe źródła skanowania (50 adapterów), pre-skan dyskwalifikatorów w Apply i runner reconcile.
 >
-> _przeróbka miernika zużycia · dopracowanie designu · miernik użycia · pływający asystent pomocy · konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _pakiet parytetu · 50 adapterów · przeróbka miernika zużycia · dopracowanie designu · miernik użycia · pływający asystent pomocy · konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

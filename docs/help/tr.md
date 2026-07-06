@@ -1337,6 +1337,8 @@ Evaluate ile aynı yedek zinciri:
 
 ## 13. Mod promptları (yedi `/#/<mode>` sayfası)
 
+**Kadans panosu (v1.117.0).** Takip sayfası artık üst projenin `followup-cadence.mjs`'inden beslenen deterministik bir **kadans panosuyla** açılır: başvuru başına aciliyet (🔴 acil / 🟠 gecikmiş / 🟡 beklemede / 🔵 soğuk) ve sonraki adıma kalan günler, ayrıca her Applied satırına ilk takip tarihini sabitleyen **Takip tarihlerini ek** düğmesi (`followup-seed.mjs --backfill`). Üst betikler yoksa pano dürüstçe "kullanılamıyor" der.
+
 Yedi prompt oluşturucu: **Project** fikirleri, **Training** planları,
 **Follow-up** e-postaları, **Batch** değerlendirmeleri, işe alım
 görevlilerine **Outreach**, **Interview prep** tek-sayfalıkları ve
@@ -1715,7 +1717,7 @@ takipçisinde sorunu arayın.
 
 ## 17. Yeni bir iş-portalı kaynağı nasıl eklenir
 
-career-ops-ui, her iş kartını bir **adaptör** olarak ele alır — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) altında, bir kartın sonuçlarını nasıl getirip normalleştireceğini bilen tek bir dosya. v1.87.0 itibarıyla `server/lib/sources/` kaydı **46** adaptör gönderir — **41 İngilizce + 5 Rusça** kart. İngilizce set, başlıca ATS'leri (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), açık bir `provider:` ile seçilen kart-geneli toplayıcıları (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) ve bir `careers_url` sunucusundan veya açık bir `api:` URL'sinden otomatik tespit edilen kiracı-başına ATS'leri (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …) kapsar. **Tam listenin burada asla elle sayılması gerekmez — `server/lib/sources/`'tan otomatik keşfedilir ve `#/scan`'in Source açılır menüsünde canlı olarak gösterilir.** YAML için §5'e ve kopyala-yapıştır girdileri için `docs/portals-examples.md`'ye bakın.
+career-ops-ui, her iş kartını bir **adaptör** olarak ele alır — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) altında, bir kartın sonuçlarını nasıl getirip normalleştireceğini bilen tek bir dosya. v1.87.0 itibarıyla `server/lib/sources/` kaydı **50** adaptör gönderir — **45 İngilizce + 5 Rusça** kart. İngilizce set, başlıca ATS'leri (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), açık bir `provider:` ile seçilen kart-geneli toplayıcıları (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) ve bir `careers_url` sunucusundan veya açık bir `api:` URL'sinden otomatik tespit edilen kiracı-başına ATS'leri (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …) kapsar. **Tam listenin burada asla elle sayılması gerekmez — `server/lib/sources/`'tan otomatik keşfedilir ve `#/scan`'in Source açılır menüsünde canlı olarak gösterilir.** YAML için §5'e ve kopyala-yapıştır girdileri için `docs/portals-examples.md`'ye bakın.
 
 > **v1.69.0 (P-14) — sürükle-bırak otomatik keşif.** 12. bir kaynak
 > eklemek artık **saf bir dosya bırakma**. Kayıt
@@ -2107,6 +2109,8 @@ Bir planı saklamak için **Planı kaydet**'e tıklayın. Üst projenizin kullan
 
 ## 24. CV Studio (`#/cv-studio`)
 
+**CV'ye ekle (v1.117.0).** Yeni bir kart; bir projeyi, yayını veya portföy sayfasını (URL veya yapıştırılan metin) YALNIZCA o kaynağa dayanan ATS'ye hazır maddelere çevirir — kaynakta olmayan metrikler, işverenler veya tarihler uydurulmaz, atlanır. Önerileri gözden geçirir ve kabul ettiklerini kendin CV düzenleyicisine yapıştırırsın; hiçbir şey otomatik yazılmaz ve URL'ler pipeline ile aynı SSRF-güvenli doğrulayıcıdan geçer.
+
 `#/cv` sayfası, CV'nizi *yazdığınız* yerdir; **CV Studio** (kenar çubuğundaki **Setup → CV Studio 🎨** üzerinden açın) ise onu *keskinleştirdiğiniz* yerdir. `cv.md` dosyanıza, ikisi tarayıcınızdan hiç çıkmayan üç dürüst araç sunar.
 
 **Bir işe göre uyarla (v1.101).** Bir iş ilanı yapıştırın; CV Studio uyarlanmış bir özgeçmiş ve uyumlu bir ön yazı üretir, işe alım uzmanı kontrol listesi kapısından geçirir (hatalar engeller, uyarılar öneri verir), yalnızca kendi materyallerinize dayanır.
@@ -2155,6 +2159,8 @@ Onu tercihler ve yönlendirme ile sınırlı tutun. Deneyiminizle ilgili gerçek
 Ne yazacağınızdan emin değil misiniz? **✨ Verilerimden öner**, başvuru izleyicinizi okur ve bir dizi davranışsal madde taslağı çıkarır — peşinden gittiğiniz, kabul ettiğiniz ve reddettiğiniz şeylerdeki kalıplar. Size verdiği istemi herhangi bir LLM'de çalıştırın, önerileri gözden geçirin ve düzenlenmiş bir sürümü nota yapıştırın. Yalnızca kendi izleyicinizden yararlanır ve asla gerçek uydurmaz; herhangi bir şey kaydedilmeden önce her zaman gözden geçirirsiniz.
 
 ## 26. İstatistikler (`#/stats`)
+
+**Ret kalıpları sekmesi (v1.117.0).** Dördüncü bir sekme, üst projenin `analyze-patterns.mjs`'ini (salt okunur) çalıştırır ve sonuç dağılımını, eyleme dönük önerileri ve ATS sağlayıcısı başına ilerleme oranını ("algoritmik tekkültür" sinyali — Bommasani et al., FAccT 2026) gösterir. Asgari örneklemin altındaki sağlayıcılar yıldızla işaretlenir; üst proje yoksa sekme bunu dürüstçe söyler.
 
 **İstatistikler** sayfası üç görünümü tek bir bölümde bir araya getirir: yapay zekâ tarafından üretilen bir pazar raporu, kendi pipeline'ınıza dair analizler ve taramalarınızdan elde edilen hedef roller için ilan sayısı eğilimi. Üstteki sekmelerle bunlar arasında geçiş yapın.
 

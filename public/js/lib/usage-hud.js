@@ -84,12 +84,15 @@
 
   // Reserve space at the bottom of the sidebar equal to the HUD's height so the
   // nav + version footer always scroll clear ABOVE the pinned HUD — it sits
-  // under the menu and never covers it (the user's requirement).
+  // under the menu and never covers it (the user's requirement). Communicated
+  // via a CSS custom property (consumed by an app.css rule) rather than writing
+  // sidebar.style.paddingBottom directly, so any pre-existing inline padding is
+  // never clobbered (v1.116 review finding).
   function syncSidebarPad() {
     var sidebar = document.querySelector('.sidebar');
     if (!sidebar || !host) return;
     var h = host.offsetHeight || 0;
-    sidebar.style.paddingBottom = h ? (h + 8) + 'px' : '';
+    sidebar.style.setProperty('--usage-hud-pad', h ? (h + 8) + 'px' : '0px');
   }
 
   function setCollapsed(v) {
@@ -118,10 +121,12 @@
     footer = el('div', { className: 'usage-hud__footer' });
     bodyWrap = el('div', { id: 'usage-hud-body', className: 'usage-hud__bodywrap' }, [rowsBox, footer]);
 
+    // The HUD is a sidebar extension: pinned over the sidebar's bottom edge
+    // (CSS `position: fixed` at the sidebar's width). Without a sidebar in the
+    // DOM there is nothing to pin to and the strip would paint over page
+    // content — don't mount at all (v1.116 review finding).
+    if (!document.querySelector('.sidebar')) return;
     host = el('div', { id: 'usage-hud', className: 'usage-hud' }, [headBtn, bodyWrap]);
-    // Pinned to the viewport's bottom-left corner (bottom-right in RTL) via
-    // `position: fixed` in CSS, so it's always visible independent of sidebar
-    // scroll — the user asked for it fixed to the bottom.
     document.body.appendChild(host);
 
     setCollapsed(collapsed);

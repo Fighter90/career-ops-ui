@@ -1877,9 +1877,11 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 
 /* Pinned to the BOTTOM of the sidebar column (bottom-right in RTL) — full
    sidebar width, matching the sidebar surface, sitting just on top of it
-   (z above the sidebar's 10). It never covers the menu: usage-hud.js pads the
-   sidebar's bottom by this element's height so the nav + version footer always
-   scroll clear above it. Reads as a pinned sidebar footer. */
+   (z above the sidebar's 10). It never covers the menu: usage-hud.js publishes
+   its height as the `--usage-hud-pad` custom property and the rule below adds
+   it to the sidebar's own padding (no inline-style clobbering — v1.116 review
+   finding), so the nav + version footer always scroll clear above it. */
+.sidebar { padding-bottom: calc(var(--space-5) + var(--usage-hud-pad, 0px)); }
 .usage-hud {
   position: fixed; left: 0; bottom: 0; z-index: 11;
   width: var(--sidebar-w); max-width: 100vw;

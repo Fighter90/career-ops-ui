@@ -1211,6 +1211,8 @@ Mesma cadeia de fallback do Evaluate:
 
 ## 13. Prompts de modos (as sete páginas `/#/<mode>`)
 
+**Quadro de cadência (v1.117.0).** A página de follow-up agora abre com um **quadro de cadência** determinista alimentado pelo `followup-cadence.mjs` do pai: urgência por candidatura (🔴 urgente / 🟠 atrasado / 🟡 aguardando / 🔵 frio) com dias até o próximo passo, mais um botão **Semear datas de follow-up** que fixa uma primeira data para cada linha Applied (`followup-seed.mjs --backfill`). Sem os scripts do pai, o quadro mostra um aviso honesto de "indisponível".
+
 Sete construtores de prompts: ideias de **Project**, planos de
 **Training**, emails de **Follow-up**, avaliações em **Batch**,
 **Outreach** para recrutadores, one-pagers de **Interview prep** e
@@ -1599,7 +1601,7 @@ copie a saída, e busque a issue no rastreador em
 
 ## 17. Como adicionar uma nova fonte de portal de vagas
 
-O career-ops-ui trata cada job board como um **adapter** — um único arquivo em [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe como buscar e normalizar os resultados de um portal. A partir da v1.87.0 o registry `server/lib/sources/` inclui **46** adapters — **41 em inglês + 5 russos**. O conjunto em inglês abrange os principais ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo o board selecionados por um `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), e ATSes por tenant autodetectados a partir de um host `careers_url` ou de uma URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **A lista completa nunca precisa ser contada à mão aqui — ela é autodescoberta a partir de `server/lib/sources/` e exibida ao vivo no dropdown Source de `#/scan`.** Veja a §5 para o YAML e `docs/portals-examples.md` para entradas prontas para copiar e colar.
+O career-ops-ui trata cada job board como um **adapter** — um único arquivo em [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe como buscar e normalizar os resultados de um portal. A partir da v1.87.0 o registry `server/lib/sources/` inclui **50** adapters — **45 em inglês + 5 russos**. O conjunto em inglês abrange os principais ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo o board selecionados por um `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), e ATSes por tenant autodetectados a partir de um host `careers_url` ou de uma URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **A lista completa nunca precisa ser contada à mão aqui — ela é autodescoberta a partir de `server/lib/sources/` e exibida ao vivo no dropdown Source de `#/scan`.** Veja a §5 para o YAML e `docs/portals-examples.md` para entradas prontas para copiar e colar.
 
 > **v1.69.0 (P-14) — auto-descoberta drop-in.** Adicionar uma 12.ª fonte é agora
 > um **drop puro de arquivo**. O registry
@@ -1976,6 +1978,8 @@ Clique em **Salvar plano** para guardar um. Ele é gravado na camada de usuário
 
 ## 24. CV Studio (`#/cv-studio`)
 
+**Adicionar ao CV (v1.117.0).** Um novo cartão transforma um projeto, publicação ou página de portfólio (URL ou texto colado) em tópicos prontos para ATS baseados SOMENTE nessa fonte — métricas, empregadores ou datas ausentes são omitidos, nunca inventados. Você revisa as sugestões e cola as aceitas no editor de CV; nada é gravado automaticamente e URLs passam pelo mesmo validador anti-SSRF do pipeline.
+
 A página `#/cv` é onde você *escreve* seu CV; o **CV Studio** (abra-o em **Setup → CV Studio 🎨** na barra lateral) é onde você o *aprimora*. Ele dá ao seu `cv.md` três ferramentas honestas, duas das quais nunca saem do seu navegador.
 
 **Adaptar a uma vaga (v1.101).** Cole uma descrição de vaga e o CV Studio produz um currículo adaptado mais uma carta de apresentação, passados por uma verificação estilo recrutador (erros bloqueiam, avisos aconselham), baseado apenas nos seus materiais.
@@ -2024,6 +2028,8 @@ Quando você clica em **Salvar memória**, a nota é gravada na camada de usuár
 Não sabe o que escrever? O **✨ Sugerir a partir dos meus dados** lê o seu rastreador de candidaturas e redige um conjunto de tópicos comportamentais — os padrões no que você persegue, aceita e rejeita. Rode o prompt que ele fornece em qualquer LLM, revise as sugestões e cole uma versão editada na nota. Ele extrai apenas do seu próprio rastreador e nunca inventa fatos; você sempre revisa antes de qualquer coisa ser salva.
 
 ## 26. Estatísticas (`#/stats`)
+
+**Aba de padrões de rejeição (v1.117.0).** Uma quarta aba executa o `analyze-patterns.mjs` do pai (somente leitura) e mostra a mistura de resultados, recomendações acionáveis e a taxa de avanço por fornecedor ATS (o sinal de "monocultura algorítmica" — Bommasani et al., FAccT 2026). Fornecedores abaixo da amostra mínima levam asterisco; sem o projeto pai a aba avisa honestamente.
 
 A página **Estatísticas** reúne três visões em uma única seção: um relatório de mercado gerado por IA, análises do seu próprio pipeline e a tendência de vagas para seus cargos-alvo a partir dos seus scans. Alterne entre elas com as abas no topo.
 

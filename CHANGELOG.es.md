@@ -11,6 +11,15 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.117.0] — 2026-07-06
+
+**Paquete de paridad con el padre — seis capacidades del career-ops padre llevadas a la UI.** (1) **Tablero de cadencia de seguimiento** en `#/followup` con urgencia por candidatura (🔴/🟠/🟡/🔵) desde `followup-cadence.mjs`, más el botón **Sembrar fechas** (`followup-seed.mjs --backfill`). (2) **Patrones de rechazo**: cuarta pestaña de Estadísticas que ejecuta `analyze-patterns.mjs` (solo lectura) — mezcla de resultados, recomendaciones y tasa de avance por proveedor ATS. (3) **Añadir al CV**: una tarjeta de CV Studio convierte una URL o texto pegado en viñetas ATS basadas SOLO en esa fuente (solo sugerencias, sin escrituras; el fetch de URL está protegido contra SSRF). (4) **4 nuevos proveedores de escaneo** — beesite, HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — el registro ahora incluye **50 adaptadores (45 EN + 5 RU)**, todos en el desplegable de Scan. (5) Paso de **pre-escaneo de descalificadores** en el checklist de Apply. (6) **Runner reconcile** (`/api/run/reconcile`). Las rutas shell-out degradan con honestidad sin los scripts del padre.
+
+- Nuevo módulo `server/lib/routes/followup.mjs` (31.º) + nuevas rutas + 8 archivos source/adapter. Pruebas: 6 + 7 nuevas; suite 1737 → 1750. 41 claves i18n ×16. Ayuda §13/§17/§24/§26 ampliada ×16.
+
+Nuevo: `GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`, `POST /api/cv-studio/add-entry`, `POST /api/run/reconcile`.
+
+
 ## [1.116.0] — 2026-07-06
 
 **Medidor de uso rehecho + primer test end-to-end de widgets.** El medidor de uso de IA (v1.114.0) queda fijado correctamente: ahora está **fijado al fondo de la barra lateral izquierda** (todo el ancho de la barra, con su misma superficie) y reserva abajo un espacio igual a su altura para que el **menú nunca quede tapado** — la navegación y el pie de versión siempre se desplazan libres por encima. Se **actualiza en vivo** (cada 15 s, y al enfocar la pestaña y al cambiar de ruta), y cada fila de ventana muestra ahora **`<tokens> · <coste estimado>`** real (las barras se escalan contra la ventana de 30 días) en vez de un "porcentaje" siempre al 100%. Además: una barrera `typeof` duradera en el importador de CV cierra en origen el falso positivo recurrente de type-confusion de CodeQL, y un nuevo **test end-to-end** de Playwright ejercita ambos widgets persistentes en un navegador real.
