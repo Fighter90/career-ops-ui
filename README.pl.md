@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.109.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.109.0)
+[![release](https://img.shields.io/badge/release-v1.110.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.110.0)
 
-> **🆕 Najnowsze wydanie — v1.109.0**
+> **🆕 Najnowsze wydanie — v1.110.0**
 >
-> **Filtr Wyklucz w Scan + przegląd pipeline.** Pole Szukaj traktuje przecinki jako LUB („role do znalezienia”), a nowe pole Wyklucz ukrywa wiersze pasujące do któregokolwiek słowa po przecinku; oba utrzymują się w zapisanych wyszukiwaniach. Strona pipeline zyskuje zwarty pasek przeglądu — N w skrzynce, N śledzonych oraz liczby Applied / Responded / Interview / Offer z trackera, każda linkuje do `#/tracker`.
+> **Odświeżenie dokumentacji i QA (16 języków).** Prompt regresji całego projektu odświeżony do v1.109.0, a niedawne akapity pomocy są teraz przetłumaczone na wszystkie 16 języków. Bez zmian w kodzie.
 >
-> _Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

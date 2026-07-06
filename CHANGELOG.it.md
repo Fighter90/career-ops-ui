@@ -2,6 +2,13 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.110.0] — 2026-07-06
+
+**Aggiornamento docs & QA (tutte le lingue).** Nessuna modifica al codice. Il prompt QA dell'intero progetto è aggiornato a v1.109.0 con un nuovo §14 (v1.98→v1.109), e i prompt perenni UX-audit e design-export hanno la superficie di pagine attuale. Ogni paragrafo di aiuto aggiunto in v1.100–v1.109 è ora tradotto in **tutte le 16 lingue**.
+
+New: none.
+
+
 ## [1.109.0] — 2026-07-06
 
 **Filtro Escludi in Scan + panoramica pipeline (parità layout web).** Su `#/scan`, la casella **Cerca** ora tratta le virgole come **OR** ("ruoli da trovare") e un nuovo campo **Escludi** nasconde ogni riga la cui azienda/ruolo/luogo contiene una delle parole separate da virgole (es. `senior, staff`); entrambi sono ricordati dalle ricerche salvate. Su `#/pipeline`, una **striscia di panoramica** compatta mostra la pipeline a colpo d'occhio — **N in arrivo**, **N tracciati** e i conteggi **Applied / Responded / Interview / Offer** dal tracker, ogni chip collega a `#/tracker`.

@@ -116,6 +116,17 @@ Flows (cite the score→action thresholds from the docs where relevant):
    vectors / roles / strengths, framed reflection-not-test → MD/PDF
    export). Grade each for the manual-vs-live honesty and export
    craft.
+9. **v1.98–v1.109 surface** (same craft bar) — the in-app **bug
+   reporter** (notifications drawer → 🐞 → preview → GitHub issue),
+   `#/portals` (health probe → dead-slug flags), `#/two-pager` **export**
+   (✨ live auto-fill → review → Preview & export MD/PDF/**DOCX**),
+   `#/cv-studio` **Tailor to a job** (JD → résumé + cover letter +
+   checklist-gate report), `#/docs-assistant` (Ask the docs — grounded,
+   cites sections), `#/config` **AI CLI tools** tab + **Appearance →
+   company logos** toggle, `#/usage` (per-provider tokens + estimated
+   USD over 24h/7d/30d/all), and the `#/scan` **Exclude** field +
+   `#/pipeline` **overview strip**. Grade each for honesty (estimate /
+   read-only / never-executes / privacy) and export/craft.
 
 For each flow output: a step table (step · craft 1–5 · evidence ·
 fix), the single biggest friction, and whether it **delivers the

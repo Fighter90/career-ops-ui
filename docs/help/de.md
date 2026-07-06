@@ -134,6 +134,8 @@ Sie ihm beim ersten Mal der Reihe nach. Jeder Schritt nennt die genaue
 Route, die genaue Schaltfläche und was Sie bei Erfolg sehen werden. Die
 Abschnitte 2–16 unten gehen tiefer auf jede Phase ein.
 
+**Doku fragen.** Öffne **Doku fragen 💬** (Seitenleiste, unter Hilfe) und stell eine Frage — sie antwortet nur aus diesem Leitfaden in deiner Sprache und liest nie deinen Lebenslauf.
+
 > **Start & Init mit einem Befehl.** Von einem Terminal aus können Sie
 > den gesamten Bootstrap ohne Berühren der UI durchführen:
 >
@@ -378,6 +380,8 @@ transiente Modal vor 1.34 wurde zu dieser Seite befördert).
 ## 2. App-Einstellungen & API-Schlüssel (`#/config`)
 
 > **Neu in v1.55 → v1.56.** Ohne gesetzten LLM-Schlüssel erklärt ein rotes Banner auf jedem Bildschirm, dass ⚡ Run-live im manuellen Prompt-Modus ist, und verlinkt hierher; sobald ein Schlüssel gesetzt ist, wird es zu einem stillen Chip, der den aktiven Anbieter nennt. Vor jeder ⚡ Run-live-Schaltfläche (`#/auto`, `#/evaluate`, `#/deep`, modes) wird eine ehrliche Kostenschätzung angezeigt (z. B. „Estimated cost: OpenAI gpt-5-codex · ~$0.04/eval" oder ein Hinweis zu fehlenden API-Kosten im manuellen Modus). `#/scan` verbirgt sekundäre Filter hinter einer **Advanced filters**-Ausklappung; `#/tracker` fügt anklickbare Trichter-Chips + optionale serverseitige Paginierung hinzu; `#/pipeline` virtualisiert ab 1000 Zeilen.
+
+**KI-CLI-Tools.** Der Tab **KI-CLI-Tools** zeigt, welche Agent-CLIs (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity) auf dem Server installiert sind — ein schreibgeschützter PATH-Scan, ohne sie auszuführen. **Darstellung → Firmenlogos anzeigen** (standardmäßig aus) zeigt das Favicon jeder Firma in der Scan-Tabelle, geholt von ihrer eigenen Domain (nie ein Drittanbieterdienst).
 
 Drei Tabs:
 
@@ -939,6 +943,8 @@ weiter.
 Jedes Einrichtungs-Gate, in OK- / OPTIONAL- / FAIL-Abzeichen. Lesen Sie
 dies, bevor Sie ein „funktioniert nicht"-Issue einreichen.
 
+**KI-Nutzung & Kosten.** Die Seite **KI-Nutzung** (💳, neben Health) zeigt Tokens für Live-KI-Generierungen pro Anbieter über 24 Std./7 T./30 T./gesamt, mit geschätzten USD-Kosten aus einer bearbeitbaren Preistabelle (nie abgerechnet).
+
 ### Erforderliche Prüfungen (das System kann ohne diese nicht funktionieren)
 
 - `Node version` ≥ 18 — der Server verwendet natives `fetch` und
@@ -980,6 +986,8 @@ nicht fingerprinten kann.
 Der Scanner durchsucht jedes aktivierte Board, dedupliziert gegen Ihre
 Historie und schreibt Treffer in `data/last-scan.json` und
 `data/pipeline.md`.
+
+**Suchen + Ausschließen.** Das Suchen-Feld behandelt Kommas als ODER ("zu findende Rollen"); das neue Ausschließen-Feld blendet Zeilen aus, die einem kommagetrennten Wort entsprechen. Beide werden mit deinen Suchen gespeichert.
 
 ### Ein-Klick-Scan (SPA)
 
@@ -1126,6 +1134,8 @@ hh.ru wird gescannt, indem seine öffentliche Such-Website (`hh.ru/search/vacanc
 
 Posteingang von URLs, die auf ihre Bewertung warten. Liegt in
 `data/pipeline.md`.
+
+**Überblicksstreifen.** Ein kompakter Streifen oben zeigt deine Pipeline auf einen Blick — wie viele URLs im Eingang, wie viele verfolgt und die Applied/Responded/Interview/Offer-Zahlen, jede verlinkt auf den Tracker.
 
 ### URLs hinzufügen
 
@@ -2083,6 +2093,8 @@ Die Seite **Analytics → Zielrollen-Statistik** verwandelt die spärlichen Date
 
 Fast alles in career-ops-ui fragt „passt dieser Job zu meinem Lebenslauf?". Das **Zwei-Seiten-Papier** beantwortet die andere Hälfte: „passt dieser Job zu dem, was *ich wirklich will*?". Es ist dem **„Mnookin-Zwei-Seiten-Papier"** aus *Never Search Alone* nachempfunden — eine kurze Ich-Aussage darüber, was dir Energie gibt, was du forderst und was du nicht akzeptierst. Öffne es über **Einrichtung → Zwei-Seiten-Papier 🎯**.
 
+**KI-Autofüllung + Export (v1.100).** Der "✨ KI-Ausfüllassistent" füllt jetzt alle Felder live aus deinem Lebenslauf (prüfen, dann Speichern); **👁 Vorschau und Export** rendert den Two-Pager und exportiert ihn als Markdown, PDF oder DOCX.
+
 ### Was du ausfüllst
 
 - **Wer ich bin** — ein paar Ich-Sätze über deinen Werdegang und die Art von Rolle, in der du aufblühst.
@@ -2155,6 +2167,8 @@ Klicke auf **Plan speichern**, um einen zu behalten. Er wird in der Nutzer-Ebene
 ## 24. CV Studio (`#/cv-studio`)
 
 Auf der Seite `#/cv` *schreibst* du deinen Lebenslauf; im **CV Studio** (öffne es über **Setup → CV Studio 🎨** in der Seitenleiste) *schärfst* du ihn. Es gibt deiner `cv.md` drei ehrliche Werkzeuge an die Hand, von denen zwei deinen Browser nie verlassen.
+
+**An einen Job anpassen (v1.101).** Füge eine Stellenbeschreibung ein, und CV Studio erstellt einen zugeschnittenen Lebenslauf plus ein passendes Anschreiben, geprüft durch ein recruitertaugliches Checklisten-Gate (Fehler blockieren, Warnungen raten), nur auf deinen Materialien basierend.
 
 ### Lebenslauf-Diagnose
 

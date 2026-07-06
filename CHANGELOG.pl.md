@@ -9,6 +9,13 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.110.0] — 2026-07-06
+
+**Odświeżenie dokumentacji i QA (wszystkie języki).** Bez zmian w kodzie. Prompt QA całego projektu odświeżony do v1.109.0 z nowym §14 (v1.98→v1.109), a wieczne prompty UX-audit i design-export zyskują aktualny zestaw stron. Każdy akapit pomocy dodany w v1.100–v1.109 jest teraz przetłumaczony na **wszystkie 16 języków**.
+
+New: none.
+
+
 ## [1.109.0] — 2026-07-06
 
 **Filtr Wyklucz w Scan + przegląd pipeline (parytet układu web).** Na `#/scan` pole **Szukaj** traktuje teraz przecinki jako **LUB** ("role do znalezienia"), a nowe pole **Wyklucz** ukrywa wiersze, których firma/rola/lokalizacja zawiera któreś ze słów oddzielonych przecinkami (np. `senior, staff`); oba są zapamiętywane w zapisanych wyszukiwaniach. Na `#/pipeline` zwarty **pasek przeglądu** pokazuje pipeline na pierwszy rzut oka — **N w skrzynce**, **N śledzonych** oraz liczby **Applied / Responded / Interview / Offer** z trackera, każdy chip linkuje do `#/tracker`.

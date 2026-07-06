@@ -10,6 +10,13 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.110.0] — 2026-07-06
+
+**Docs- & QA-opdatering (alle sprog).** Ingen kodeændring. Hele-projekt-QA-prompten er opdateret til v1.109.0 med et nyt §14 (v1.98→v1.109), og de vedvarende UX-audit- og design-export-prompts fik den aktuelle sideflade. Hvert hjælpeafsnit tilføjet i v1.100–v1.109 er nu oversat til **alle 16 sprog**.
+
+New: none.
+
+
 ## [1.109.0] — 2026-07-06
 
 **Scan Udeluk-filter + pipeline-overblik (web-layout-paritet).** På `#/scan` behandler **Søg**-feltet nu kommaer som **ELLER** ("roller at finde"), og et nyt **Udeluk**-felt skjuler enhver række, hvis firma/rolle/lokation indeholder et af de kommaseparerede ord (f.eks. `senior, staff`); begge huskes af dine gemte søgninger. På `#/pipeline` viser en kompakt **overbliksstribe** din pipeline med ét blik — **N i indbakke**, **N sporet** og antallene **Applied / Responded / Interview / Offer** fra trackeren, hver chip linker til `#/tracker`.

@@ -67,7 +67,14 @@ concept it serves:
 | `#/cv-studio` | CV Studio (v1.92.0) | Résumé diagnostics + in-browser PII mask + make-it-human voice match — trustworthy? |
 | `#/memory` | about-me note (v1.93.0) | Is it clear this note is inlined into every AI request? |
 | `#/stats` | Statistics (v1.94.0) | 3 tabs (AI market report · My pipeline analytics · Target-role trend); currency selector; MD/PDF export — legible? |
-| `#/career-plan`, `#/orientation` | Growth nav group (v1.95.0 / v1.96.0) | Career development plan (horizon + focus) + career-orientation profile (archetype vectors/roles/strengths; reflection-not-test); MD/PDF export. |
+| `#/career-plan`, `#/orientation` | Growth nav group (v1.95.0 / v1.96.0) | Career development plan (horizon + focus) + career-orientation profile (archetype vectors/roles/strengths; reflection-not-test); MD/PDF/**DOCX** export. |
+| `#/portals` | portals health (v1.99.0) | Is the dead-slug flag actionable? Does "Check portal health" read as safe/read-only? |
+| `#/two-pager` (export) | two-pager export + AI auto-fill (v1.100.0) | Is the live ✨ auto-fill's "review before Save" clear? Is Preview & export (MD/PDF/DOCX) discoverable? |
+| `#/cv-studio` (Tailor) | CV Doctor (v1.101.0) | Does the JD → tailored résumé + cover letter + **checklist-gate report** read as trustworthy (errors-block / warnings-advise)? Never-fabricate obvious? |
+| `#/docs-assistant` | Ask the docs (v1.102.0) | Is it clear answers come only from the help guide (not the user's data)? Are the cited sections useful? |
+| `#/config` (AI CLI tools + Appearance) | v1.103.0 / v1.104.0 | Is "never executes a binary" reassuring? Is the company-logos toggle's privacy note clear? |
+| `#/usage` | AI usage & cost (v1.105.0) | Are the token/USD windows legible? Is "estimate, not billed; editable prices" honest and clear? |
+| `#/scan` (Exclude), `#/pipeline` (overview) | v1.109.0 | Is the Search-OR / Exclude pair obvious? Does the pipeline overview strip aid triage at a glance? |
 | `#/help` | the docs, in-app | Does it answer the questions the journey raises, in the user's language? |
 
 ## Heuristic lenses (apply all; cite evidence per finding)

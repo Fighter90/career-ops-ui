@@ -131,6 +131,8 @@ første gang. Hvert trin nævner den nøjagtige rute, den nøjagtige knap
 og hvad du vil se ved succes. Sektion 2–16 nedenfor dykker dybere ned i
 hver fase.
 
+**Spørg guiden.** Åbn **Spørg guiden 💬** (sidebjælke, under Hjælp) og skriv et spørgsmål — den svarer kun ud fra denne guide på dit sprog og læser aldrig dit CV.
+
 > **Start og init med én kommando.** Fra en terminal kan du gøre hele
 > bootstrappen uden at røre UI'en:
 >
@@ -355,6 +357,8 @@ forfremmet til denne side).
 ## 2. App settings og API-nøgler (`#/config`)
 
 > **Nyt i v1.55 → v1.56.** Med **ingen** LLM-nøgle sat forklarer et rødt banner på hver skærm, at ⚡ Run-live er i manuel-prompt-tilstand og linker hertil; når en nøgle er sat, bliver det en stille chip, der navngiver den aktive udbyder. Før enhver ⚡ Run-live-knap (`#/auto`, `#/evaluate`, `#/deep`, modes) vises et ærligt omkostningsskøn (f.eks. "Estimeret omkostning: OpenAI gpt-5-codex · ~$0,04/eval", eller en ingen-API-omkostning-note i manuel tilstand). `#/scan` gemmer sekundære filtre bag en **Avancerede filtre**-foldning; `#/tracker` tilføjer klikbare tragt-chips + valgfri server-side-paginering; `#/pipeline` virtualiserer ud over 1000 rækker.
+
+**AI CLI-værktøjer.** Fanen **AI CLI-værktøjer** viser, hvilke agent-CLI'er (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity) der er installeret på serveren — en skrivebeskyttet PATH-scanning uden at køre dem. **Udseende → Vis firmalogoer** (fra som standard) viser hvert firmas favicon i scanningstabellen, hentet fra dets eget domæne (aldrig en tredjepartstjeneste).
 
 Tre faner:
 
@@ -865,6 +869,8 @@ ovenfor.
 Hver opsætnings-gate, i OK / OPTIONAL / FAIL-badges. Læs dette, før
 du opretter en "virker ikke"-sag.
 
+**AI-forbrug og -omkostning.** Siden **AI-forbrug** (💳, ved siden af Helbred) viser tokens for live AI-genereringer pr. udbyder over 24t/7d/30d/al tid, med en estimeret USD-omkostning fra en redigerbar pristabel (faktureres aldrig).
+
 ### Påkrævede tjek (systemet kan ikke fungere uden disse)
 
 - `Node version` ≥ 18 — serveren bruger native `fetch` og
@@ -904,6 +910,8 @@ svaret, så en nysgerrig nabo ikke kan fingerprint'e din installation.
 Scanneren gennemgår hvert aktiveret board, deduplikerer mod din
 historik og skriver hits ind i `data/last-scan.json` og
 `data/pipeline.md`.
+
+**Søg + Udeluk.** Søg-feltet behandler kommaer som ELLER ("roller at finde"); det nye Udeluk-felt skjuler rækker, der matcher et kommasepareret ord. Begge gemmes med dine søgninger.
 
 ### Scan med ét klik (SPA)
 
@@ -1037,6 +1045,8 @@ hh.ru scannes ved at læse dets offentlige søge-website (`hh.ru/search/vacancy`
 ## 8. Pipeline (`#/pipeline`)
 
 Indbakke af URL'er, der venter på at blive evalueret. Lever i `data/pipeline.md`.
+
+**Overbliksstribe.** En kompakt stribe øverst viser din pipeline med ét blik — hvor mange URL'er i indbakken, hvor mange sporet og Applied/Responded/Interview/Offer-antal, hver linker til trackeren.
 
 ### Tilføjelse af URL'er
 
@@ -1942,6 +1952,8 @@ Siden **Analytics → Statistik for målroller** forvandler de sparsomme data, s
 
 Det meste af career-ops-ui spørger "matcher dette job mit CV?". **Two-pager'en** besvarer den anden halvdel: "matcher dette job det, *jeg faktisk vil have*?". Den er modelleret efter **"Mnookin two-pager"** fra *Never Search Alone* — en kort førstepersonserklæring om, hvad der giver dig energi, hvad du kræver, og hvad du ikke vil acceptere. Åbn den fra **Opsætning → Two-pager 🎯**.
 
+**AI-autoudfyldning + eksport (v1.100).** "✨ AI-udfyldningsassistenten" udfylder nu alle felter live fra dit CV (gennemgå, og gem); **👁 Forhåndsvis og eksportér** gengiver two-pageren og eksporterer den til Markdown, PDF eller DOCX.
+
 ### Hvad du udfylder
 
 - **Hvem jeg er** — et par førstepersonssætninger om din erfaring og den slags rolle, du trives i.
@@ -2014,6 +2026,8 @@ Klik på **Gem plan** for at beholde en. Den skrives til dit overordnede projekt
 ## 24. CV Studio (`#/cv-studio`)
 
 Siden `#/cv` er der, hvor du *skriver* dit CV; **CV Studio** (åbn det via **Setup → CV Studio 🎨** i sidepanelet) er der, hvor du *skærper* det. Det giver din `cv.md` tre ærlige værktøjer, hvoraf de to aldrig forlader din browser.
+
+**Tilpas til et job (v1.101).** Indsæt en jobbeskrivelse, og CV Studio laver et tilpasset CV plus en matchende ansøgning, kørt gennem en rekrutterings-checkliste-gate (fejl blokerer, advarsler rådgiver), kun baseret på dine materialer.
 
 ### CV-diagnostik
 
