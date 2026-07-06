@@ -158,10 +158,30 @@ function defaultTransport(url, pinned, opts = {}) {
  * re-validating EACH redirect target through isValidJobUrl + DNS pinning.
  *
  * @param {string} urlString
- * @param {{ signal?: AbortSignal, headers?: Record<string,string>, maxBytes?: number, userAgent?: string }} opts
+ * @param {{ signal?: AbortSignal, timeoutMs?: number, headers?: Record<string,string>, maxBytes?: number, userAgent?: string }} opts
  * @returns {Promise<{ status: number, text: string, finalUrl: string }>}
  */
 export async function safeGet(urlString, opts = {}) {
+  // `timeoutMs` bounds the WHOLE call (every hop of the redirect chain) when
+  // the caller doesn't manage its own AbortSignal. Node's http.request has no
+  // default socket timeout, so without this a hanging origin holds the
+  // request open forever. When a caller passes its own `signal`, that signal
+  // owns cancellation and `timeoutMs` is ignored.
+  let timer = null;
+  let signal = opts.signal;
+  if (!signal && Number.isFinite(opts.timeoutMs) && opts.timeoutMs > 0) {
+    const ac = new AbortController();
+    timer = setTimeout(() => ac.abort(), opts.timeoutMs);
+    signal = ac.signal;
+  }
+  try {
+    return await _safeGetInner(urlString, opts, signal);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+async function _safeGetInner(urlString, opts, signal) {
   let current = urlString;
   let hops = 0;
   while (true) {
@@ -171,7 +191,7 @@ export async function safeGet(urlString, opts = {}) {
     }
     const pinned = await resolvePinned(u.hostname);
     const res = await _transport(u, pinned, {
-      signal: opts.signal,
+      signal,
       maxBytes: opts.maxBytes,
       headers: {
         'User-Agent': opts.userAgent || 'career-ops-ui/1.20.1',
