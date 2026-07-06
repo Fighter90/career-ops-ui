@@ -2,6 +2,13 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.112.0] — 2026-07-06
+
+**Consolidamento docs & QA.** Nessuna modifica di codice visibile. Il documento di convenzioni SDD (`docs/sdd/CONVENTIONS.md`) è aggiornato agli attuali **30 moduli di rotta** (erano 24) e alla baseline di test attuale; il prompt QA definitivo dell'intero progetto (`qa/QA-REGRESSION-PROMPT.md`) è consolidato — meccanica di release ripulita (v1.111, parentVersion 1.17.0, pubblicazione attivata dall'evento di release), la tabella delle aggiunte §14 corretta (Escludi di Scan rietichettato v1.109.0) ed estesa con la chiusura CodeQL di v1.111 — così da bastare da solo come unico prompt di regressione per tutte le funzionalità. Aggiunge un test di copertura per il ramo di caricamento sovradimensionato.
+
+Nuovo: nessuno.
+
+
 ## [1.111.0] — 2026-07-06
 
 **Sicurezza — chiusura del backlog CodeQL.** Tre rafforzamenti difesa-in-profondità che chiudono i restanti rilievi dell'analisi statica alla fonte invece di scartarli. `stripDangerousMarkdown` ora fa l'escape del `<` di qualsiasi apertura di tag pericoloso *troncata* (un payload che termina con `<script`/`<iframe`/…), così che il suo output non contenga in modo dimostrabile alcun tag pericoloso vivo. L'import del CV legge la dimensione del buffer caricato tramite una coercizione esplicita `Number()` — una barriera contro la confusione di tipi. Le righe di ruolo delle modalità ora sono **stringhe** template interpolate con `String.replace` invece di funzioni memorizzate, rimuovendo del tutto la chiamata a dispatch dinamico. Nessun cambiamento di comportamento visibile all'utente.

@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.111.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.111.0)
+[![release](https://img.shields.io/badge/release-v1.112.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.112.0)
 
-> **🆕 Najnowsze wydanie — v1.111.0**
+> **🆕 Najnowsze wydanie — v1.112.0**
 >
-> **Bezpieczeństwo — domknięcie backlogu CodeQL.** Trzy wzmocnienia obrony w głąb zamykają pozostałe znaleziska analizy statycznej u źródła: sanityzator markdown CV eskejpuje teraz każde ucięte otwarcie niebezpiecznego znacznika, więc jego wyjście nigdy nie zawiera żywego `<script`/`<iframe`; import CV odczytuje rozmiar bufora przez jawną koercję liczbową; a wiersze roli trybów to szablonowe łańcuchy interpolowane przez `String.replace` zamiast przechowywanych funkcji, co usuwa ostatnie wywołanie dynamicznego rozsyłania. Bez widocznych zmian.
+> **Konsolidacja dokumentacji i QA.** Dokument konwencji SDD zaktualizowano do obecnych 30 modułów tras, a wiążący ogólnoprojektowy prompt QA skonsolidowano w jeden samodzielny prompt regresyjny dla całej funkcjonalności. Bez widocznych zmian w kodzie.
 >
-> _domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

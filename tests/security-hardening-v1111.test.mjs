@@ -69,3 +69,11 @@ test('cv-import: buffer size decisions use a coerced Number (type-confusion barr
   assert.equal(ok.sizeBytes, 5);
   assert.equal(typeof ok.sizeBytes, 'number');
 });
+
+test('cv-import: the coerced size still gates the >10MB branch', async () => {
+  // Covers the sizeBytes > MAX_UPLOAD_BYTES path after the Number() coercion.
+  const tooBig = Buffer.alloc(10 * 1024 * 1024 + 1, 0x61);
+  const r = await importDocumentToMarkdown(tooBig, 'cv.md');
+  assert.equal(r.ok, false);
+  assert.match(r.error, /too large/i);
+});

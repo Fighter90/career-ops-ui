@@ -12,13 +12,13 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.111.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.111.0)
+[![release](https://img.shields.io/badge/release-v1.112.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.112.0)
 
-> **🆕 Dernière version — v1.111.0**
+> **🆕 Dernière version — v1.112.0**
 >
-> **Sécurité — clôture du backlog CodeQL.** Trois renforcements de défense en profondeur closent les constats d'analyse statique restants à la source : l'assainisseur du markdown du CV échappe désormais toute ouverture de balise dangereuse tronquée, de sorte que sa sortie ne peut jamais contenir de `<script`/`<iframe` vivant ; l'import de CV lit la taille du tampon via une coercition numérique explicite ; et les lignes de rôle des modes sont des chaînes de modèle interpolées avec `String.replace` plutôt que des fonctions stockées, supprimant le dernier appel à répartition dynamique. Aucun changement visible.
+> **Consolidation docs & QA.** Le document de conventions SDD est mis à jour vers les 30 modules de route actuels, et le prompt QA définitif de tout le projet est consolidé en un unique prompt de régression autonome pour toutes les fonctionnalités. Aucun changement de code visible.
 >
-> _clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

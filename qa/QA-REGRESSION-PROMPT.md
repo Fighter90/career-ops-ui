@@ -167,10 +167,10 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 
 ## §7 — Docs / branding / release mechanics
 
-- **README ×16** + **CHANGELOG ×16** at **v1.97.0** (parity gate green); each language switcher lists all 16. README "Latest release" blurb describes the Dassault source + audit sweep.
+- **README ×16** + **CHANGELOG ×16** at **v1.111.0** (parity gate green — `node scripts/check-changelog-parity.mjs`); each language switcher lists all 16. README "Latest release" blurb describes the current release; localized "New:" trailers are native per locale (no English leak).
 - **Help ×16** hold the gated **28 H2 / 102 H3**; §17 says **46 adapters**.
 - **Branding:** radar-icon favicon set + sidebar logo; app name **career-ops-ui**. Parent `career-ops` references intentionally unchanged.
-- **Release:** `package.json` 1.97.0; footer reads `/api/health`; `parentVersion` = 1.16.0 (independent; semver only). Tag `v1.97.0` → `release.yml`; **Publish** dispatched manually (`gh workflow run publish-package.yml --ref v1.97.0`) → GitHub Packages.
+- **Release:** `package.json` 1.111.0; footer reads `/api/health`; `parentVersion` = 1.17.0 (independent; semver only). Tag `v1.111.0` → `release.yml`; **Publish is triggered by the GitHub Release event** (do NOT also `gh workflow run` — a parallel manual dispatch races the release-triggered run to an E409; the workflow is E409-tolerant) → GitHub Packages. **30 route modules.**
 
 ---
 
@@ -178,11 +178,11 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 - Every (page × control × 16 languages) PASS or a logged FAIL→fix (one-fix-per-release; HIGH → MEDIUM → LOW).
 - `npm test` ≥ **1713** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×16) green; CI matrix green; **CodeQL backlog closed (167→0; final 6 fixed at source in v1.111 — sanitizer escape belt, type-confusion coercion, dynamic-dispatch removal)**.
 - Zero console errors; no RTL leak; no untranslated shipped key; no duplicate dict keys; favicon/icon endpoints 200.
-- All §2 deltas verified live (scanner 46 adapters incl. Dassault; the eight v1.85–v1.96 pages; the v1.97 audit fixes) **and all §14 additions (v1.98–v1.109)**.
+- All §2 deltas verified live (scanner 46 adapters incl. Dassault; the eight v1.85–v1.96 pages; the v1.97 audit fixes) **and all §14 additions (v1.98–v1.111)**.
 
 ---
 
-## §14 — Additions v1.98 → v1.109 (verify these too)
+## §14 — Additions v1.98 → v1.111 (verify these too)
 
 | # | Feature (release) | Must-see behaviour |
 |---|---|---|
@@ -195,6 +195,7 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 | 7 | **Company logos (v1.104.0)** | `#/config` **Appearance → Show company logos** (off by default) → `#/scan` rows show the company's favicon (from its OWN domain via `GET /api/logo`, SSRF-safe, cached); shared ATS hosts show a letter badge; broken logo → letter badge. No third-party logo API. |
 | 8 | **AI usage & cost (v1.105.0)** | `#/usage` (💳, next to Health) → per-provider tokens + **estimated USD** over 24h/7d/30d/all; each live call appends to `data/llm-usage.jsonl` (local only); manual-mode runs cost nothing and aren't recorded. Prices editable in `server/lib/llm-pricing.mjs`. |
 | 9 | **Security hardening (v1.106–v1.108)** | Route-render error text is escaped before `innerHTML`; profile/config property writes reject `__proto__`/`constructor`/`prototype`; `stripDangerousMarkdown` runs to a fixed point + removes `</script foo>`/unclosed openers; prompt dispatch is own-key+typeof; PDF slug capped before its regex; array `filename` coerced. Valid input unchanged. |
-| 10 | **Scan Exclude + pipeline overview (v1.111.0)** | `#/scan` Search treats commas as OR; new **Exclude** field hides rows matching any comma-word (both saved in searches). `#/pipeline` overview strip: **N in inbox · N tracked · Applied/Responded/Interview/Offer**, each chip → `#/tracker`. |
+| 10 | **Scan Exclude + pipeline overview (v1.109.0)** | `#/scan` Search treats commas as OR; new **Exclude** field hides rows matching any comma-word (both saved in searches). `#/pipeline` overview strip: **N in inbox · N tracked · Applied/Responded/Interview/Offer**, each chip → `#/tracker`. |
+| 11 | **CodeQL backlog closeout (v1.111.0)** | Server-internal security hardening, **no user-facing change**: `stripDangerousMarkdown` escapes any *truncated* dangerous-tag opener (`<script`/`<iframe`/… with no `>`) that survives the strip loop → output provably tag-free; CV import reads the verified-Buffer size via `Number()`; mode role-lines are template **strings** interpolated with `String.replace` (no dynamic dispatch). Verify: CV save/preview still safe, uploads still size-gated, mode prompts render per-locale. |
 
 **New routes since v1.97:** `POST /api/portals/health`, `POST /api/export/docx`, `POST /api/cv-studio/tailor`, `POST /api/docs-assistant/ask`, `GET /api/cli-detect`, `GET /api/logo`, `GET /api/usage` (30 route modules total). **New i18n:** every one is present + translated in all **16** locales (`i18n-coverage` + `i18n-locale-files` green). **New Help:** each surfaced in `docs/help/*` (in-place for two-pager/CV-Studio/settings/health/scan/pipeline; §-level for portals/docs-assistant where applicable).
