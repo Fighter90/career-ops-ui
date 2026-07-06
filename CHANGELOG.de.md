@@ -2,6 +2,15 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.116.0] — 2026-07-06
+
+**Nutzungsanzeige überarbeitet + erster End-to-End-Widget-Test.** Die KI-Nutzungsanzeige (v1.114.0) ist korrekt fixiert: Sie ist jetzt **unten in der linken Seitenleiste angeheftet** (volle Seitenleistenbreite, gleiche Oberfläche) und reserviert unten Platz in ihrer eigenen Höhe, sodass das **Menü nie verdeckt wird** — Navigation und Versionsfußzeile scrollen stets frei darüber. Sie **aktualisiert live** (alle 15 s, bei Tab-Fokus und Routenwechsel), und jede Fensterzeile zeigt jetzt die echten **`<Tokens> · <geschätzte Kosten>`** (Balken skalieren gegen das 30-Tage-Fenster) statt eines immer-100%-„Anteils". Außerdem: eine dauerhafte `typeof`-Barriere im CV-Importer schließt den wiederkehrenden CodeQL-Type-Confusion-Fehlalarm an der Quelle, und ein neuer Playwright-**End-to-End-Test** fährt beide dauerhaften Widgets in einem echten Browser.
+
+- `public/js/lib/usage-hud.js` + `app.css`, `server/lib/cv-import.mjs`. Tests: `tests/playwright-widgets.mjs` (2 E2E) + `tests/usage-hud.test.mjs` (10). Hilfe §6 erweitert ×16.
+
+Neu: keine.
+
+
 ## [1.115.0] — 2026-07-06
 
 **Design-Feinschliff (konservativ, Korallen-Marke beibehalten).** Ein leichter Verfeinerungsdurchgang über das gemeinsame Designsystem — keine Umstrukturierung, keine Palettenänderung. Die Metrikkarten des Dashboards heben sich jetzt beim Hover an und erhalten einen korallenen Rand (wie die Schnellaktions-Kacheln); Inhaltskarten heben sich minimal; primary / dark / danger-Buttons erhalten einen Ruheschatten und ein sanftes Hover-Anheben für Tiefe; große Zahlen richten sich per tabular-nums aus; und interaktive Steuerelemente bekommen einen weichen Korallen-Fokus-Halo hinter dem klaren 2px-Tastaturring. Alle Bewegung respektiert `prefers-reduced-motion`, und der Halo ist auf Steuerelemente beschränkt — nie ein globales `*:focus-visible`.

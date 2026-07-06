@@ -9,6 +9,15 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.116.0] — 2026-07-06
+
+**Medidor de uso refeito + primeiro teste ponta a ponta de widgets.** O medidor de uso de IA (v1.114.0) foi corrigido e fixado corretamente: agora fica **fixado no fim da barra lateral esquerda** (toda a largura, com a mesma superfície) e reserva embaixo um espaço igual à sua altura para que o **menu nunca seja coberto** — a navegação e o rodapé de versão sempre rolam livres acima. Ele **atualiza ao vivo** (a cada 15 s, ao focar a aba e ao mudar de rota), e cada linha de janela mostra agora **`<tokens> · <custo estimado>`** real (as barras escalam contra a janela de 30 dias) em vez de uma "parcela" sempre em 100%. Além disso: uma barreira `typeof` durável no importador de CV fecha na origem o falso positivo recorrente de type-confusion do CodeQL, e um novo **teste ponta a ponta** do Playwright exercita ambos os widgets persistentes num navegador real.
+
+- `public/js/lib/usage-hud.js` + `app.css`, `server/lib/cv-import.mjs`. Testes: `tests/playwright-widgets.mjs` (2 E2E) + `tests/usage-hud.test.mjs` (10). Ajuda §6 ampliada ×16.
+
+Novo: nenhum.
+
+
 ## [1.115.0] — 2026-07-06
 
 **Acabamento de design (conservador, marca coral mantida).** Uma passada leve de refinamento sobre o sistema de design compartilhado — sem reestruturar, sem mudar a paleta. Os cartões de métricas do painel agora se elevam e ganham uma borda coral ao passar o mouse (como os blocos de ação rápida); os cartões de conteúdo se elevam um pouco; os botões primary / dark / danger ganham uma sombra em repouso e uma leve elevação ao passar o mouse; números grandes se alinham com tabular-nums; e os controles interativos recebem um halo coral suave atrás do anel de teclado de 2px. Todo movimento respeita `prefers-reduced-motion`, e o halo é restrito aos controles — nunca um `*:focus-visible` global.

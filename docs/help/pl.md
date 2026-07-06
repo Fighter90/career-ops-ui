@@ -821,7 +821,7 @@ powyżej.
 Każda brama konfiguracyjna, w odznakach OK / OPTIONAL / FAIL. Przeczytaj to przed
 zgłaszaniem jakiegokolwiek problemu „nie działa".
 
-**Zużycie i koszt AI.** Strona **Zużycie AI** (💳, obok Kondycji) pokazuje tokeny generacji AI na żywo wg dostawcy w 24h/7d/30d/cały czas, z szacowanym kosztem w USD z edytowalnej tabeli cen (nigdy nierozliczane).
+**Zużycie i koszt AI.** Strona **Zużycie AI** (💳, obok Kondycji) pokazuje tokeny generacji AI na żywo wg dostawcy w 24h/7d/30d/cały czas, z szacowanym kosztem w USD z edytowalnej tabeli cen (nigdy nierozliczane). Zwarty miernik **ZUŻYCIE** jest też przypięty na dole lewego paska bocznego na każdej stronie — te same sumy tokenów 24h/7d/30d i szacowany koszt 24-godzinny, odświeżany na żywo; menu zawsze pozostaje widoczne nad nim, a kliknięcie nagłówka je zwija.
 
 ### Wymagane sprawdzenia (system nie może działać bez tych elementów)
 

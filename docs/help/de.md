@@ -943,7 +943,7 @@ weiter.
 Jedes Einrichtungs-Gate, in OK- / OPTIONAL- / FAIL-Abzeichen. Lesen Sie
 dies, bevor Sie ein „funktioniert nicht"-Issue einreichen.
 
-**KI-Nutzung & Kosten.** Die Seite **KI-Nutzung** (💳, neben Health) zeigt Tokens für Live-KI-Generierungen pro Anbieter über 24 Std./7 T./30 T./gesamt, mit geschätzten USD-Kosten aus einer bearbeitbaren Preistabelle (nie abgerechnet).
+**KI-Nutzung & Kosten.** Die Seite **KI-Nutzung** (💳, neben Health) zeigt Tokens für Live-KI-Generierungen pro Anbieter über 24 Std./7 T./30 T./gesamt, mit geschätzten USD-Kosten aus einer bearbeitbaren Preistabelle (nie abgerechnet). Eine kompakte **NUTZUNG**-Anzeige ist außerdem unten in der linken Seitenleiste auf jeder Seite angeheftet — dieselben 24h/7T/30T-Token-Summen und geschätzte 24-Stunden-Kosten, live aktualisiert; das Menü bleibt stets frei darüber, und ein Klick auf die Kopfzeile klappt sie ein.
 
 ### Erforderliche Prüfungen (das System kann ohne diese nicht funktionieren)
 

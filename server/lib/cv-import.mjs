@@ -92,12 +92,13 @@ export async function importDocumentToMarkdown(buffer, filename) {
   if (!Buffer.isBuffer(buffer)) {
     return { ok: false, error: 'expected a Buffer payload' };
   }
-  // `buffer` is a verified Buffer here, so `.length` is already a number; read
-  // it once through an explicit Number() coercion and use that primitive for
-  // every size decision. This gives CodeQL a recognized numeric barrier so a
-  // tampered payload can never smuggle an object `.length`
-  // (js/type-confusion-through-parameter-tampering).
-  const sizeBytes = Number(buffer.length);
+  // `buffer` is a verified Buffer here, so `.length` is already a number. Read
+  // it once behind an explicit `typeof … === 'number'` guard (a barrier CodeQL
+  // recognizes for js/type-confusion-through-parameter-tampering) so a tampered
+  // payload can never smuggle an object/array `.length` into a size decision.
+  // Behaviour is unchanged: a real Buffer's length is always a finite number.
+  const rawLen = buffer.length;
+  const sizeBytes = (typeof rawLen === 'number' && Number.isFinite(rawLen)) ? rawLen : 0;
   if (sizeBytes === 0) {
     return { ok: false, error: 'empty file' };
   }

@@ -1875,19 +1875,17 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   :root:not([data-theme="light"]) { --hud-bg: #1b1f27; --hud-border: rgba(255,255,255,.10); --hud-track: #2b313b; --hud-bar: #37d15f; }
 }
 
+/* Pinned to the BOTTOM of the sidebar column (bottom-right in RTL) — full
+   sidebar width, matching the sidebar surface, sitting just on top of it
+   (z above the sidebar's 10). It never covers the menu: usage-hud.js pads the
+   sidebar's bottom by this element's height so the nav + version footer always
+   scroll clear above it. Reads as a pinned sidebar footer. */
 .usage-hud {
-  position: fixed; left: 20px; bottom: 20px; z-index: 1140;
-  width: 244px; max-width: calc(100vw - 40px);
-  background: var(--hud-bg); border: 1px solid var(--hud-border);
-  border-radius: 14px; box-shadow: var(--shadow-md, 0 6px 16px rgba(0,0,0,.12));
-  padding: 10px 12px; font-size: 13px; color: var(--hof, #222);
-}
-/* Sidebar-integrated variant — a flush section above the version footer. */
-.usage-hud--sidebar {
-  position: static; width: auto; z-index: auto;
-  margin: 8px 16px 4px; background: transparent; box-shadow: none;
-  border: none; border-top: 1px solid var(--line, var(--hud-border));
-  border-radius: 0; padding: 12px 4px 4px; color: inherit;
+  position: fixed; left: 0; bottom: 0; z-index: 11;
+  width: var(--sidebar-w); max-width: 100vw;
+  background: var(--paper); color: var(--hof, #222);
+  border-top: 1px solid var(--slate); border-right: 1px solid var(--slate);
+  padding: 10px var(--space-3, 12px); font-size: 13px;
 }
 .usage-hud__head {
   display: flex; align-items: center; gap: 8px; width: 100%;
@@ -1913,12 +1911,12 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .usage-hud__footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--hud-border); font-size: 11px; color: var(--foggy, #888); }
 .usage-hud__footcost { font-weight: 700; color: var(--hof, #333); font-variant-numeric: tabular-nums; }
 
-[dir="rtl"] .usage-hud { left: auto; right: 20px; }
+[dir="rtl"] .usage-hud { left: auto; right: 0; border-right: none; border-left: 1px solid var(--slate); }
 [dir="rtl"] .usage-hud__title { text-align: right; }
 
-/* On mobile the sidebar-integrated HUD rides inside the drawer; only the
-   fixed-corner fallback (no sidebar) is hidden to avoid covering content. */
-@media (max-width: 900px) { .usage-hud:not(.usage-hud--sidebar) { display: none; } }
+/* Hidden on mobile — a pinned corner card would cover scarce screen space;
+   the full usage view lives at #/usage. */
+@media (max-width: 900px) { .usage-hud { display: none; } }
 @media (prefers-reduced-motion: reduce) { .usage-hud__barfill, .usage-hud__chev { transition: none; } }
 
 /* ──────────────────────────────────────────────────────────────────────────

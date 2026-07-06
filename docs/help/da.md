@@ -869,7 +869,7 @@ ovenfor.
 Hver opsætnings-gate, i OK / OPTIONAL / FAIL-badges. Læs dette, før
 du opretter en "virker ikke"-sag.
 
-**AI-forbrug og -omkostning.** Siden **AI-forbrug** (💳, ved siden af Helbred) viser tokens for live AI-genereringer pr. udbyder over 24t/7d/30d/al tid, med en estimeret USD-omkostning fra en redigerbar pristabel (faktureres aldrig).
+**AI-forbrug og -omkostning.** Siden **AI-forbrug** (💳, ved siden af Helbred) viser tokens for live AI-genereringer pr. udbyder over 24t/7d/30d/al tid, med en estimeret USD-omkostning fra en redigerbar pristabel (faktureres aldrig). En kompakt **FORBRUG**-måler er også fastgjort nederst i venstre sidebjælke på hver side — de samme 24t/7d/30d token-totaler og en estimeret 24-timers omkostning, opdateret live; menuen forbliver altid fri ovenover, og et klik på overskriften folder den sammen.
 
 ### Påkrævede tjek (systemet kan ikke fungere uden disse)
 

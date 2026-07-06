@@ -45,21 +45,25 @@
     rowsBox.textContent = '';
     footer.textContent = '';
     var data = lastData;
-    var allTok = tok(winOf(data, 'all'));
     if (!data || !data.totalCalls) {
       rowsBox.appendChild(el('div', { className: 'usage-hud__empty', 'data-i18n': 'hud.empty' },
         t('hud.empty', 'No AI usage yet. Live runs with an API key are counted here.')));
       return;
     }
+    // The windows are cumulative (24h ⊆ 7d ⊆ 30d), so 30d is the widest shown —
+    // scale each bar against it. Show the real token count + estimated cost per
+    // window (NOT a "share %", which reads as 100% for everyone whose usage is
+    // all recent). Equal rows simply mean all your usage falls inside 24h.
+    var maxTok = tok(winOf(data, '30d')) || tok(winOf(data, 'all')) || 1;
     WINDOWS.forEach(function (key) {
       var w = winOf(data, key);
       var wt = tok(w);
-      var pct = allTok > 0 ? Math.min(100, Math.round((wt / allTok) * 100)) : 0;
+      var pct = Math.max(wt > 0 ? 4 : 0, Math.min(100, Math.round((wt / maxTok) * 100)));
       var barFill = el('span', { className: 'usage-hud__barfill', style: { width: pct + '%' } });
       rowsBox.appendChild(el('div', { className: 'usage-hud__meter' }, [
         el('div', { className: 'usage-hud__meterhead' }, [
           el('span', { className: 'usage-hud__win' }, key),
-          el('span', { className: 'usage-hud__val' }, nf(wt) + ' · ' + pct + '%'),
+          el('span', { className: 'usage-hud__val' }, nf(wt) + ' · ' + money(w.totalUsd)),
         ]),
         el('span', { className: 'usage-hud__bar' }, barFill),
       ]));
@@ -75,6 +79,17 @@
     try { lastData = await API.get('/api/usage'); } catch (e) { /* keep last */ }
     loading = false;
     render();
+    syncSidebarPad();
+  }
+
+  // Reserve space at the bottom of the sidebar equal to the HUD's height so the
+  // nav + version footer always scroll clear ABOVE the pinned HUD — it sits
+  // under the menu and never covers it (the user's requirement).
+  function syncSidebarPad() {
+    var sidebar = document.querySelector('.sidebar');
+    if (!sidebar || !host) return;
+    var h = host.offsetHeight || 0;
+    sidebar.style.paddingBottom = h ? (h + 8) + 'px' : '';
   }
 
   function setCollapsed(v) {
@@ -83,6 +98,7 @@
     bodyWrap.hidden = v;
     headBtn.setAttribute('aria-expanded', v ? 'false' : 'true');
     try { localStorage.setItem(STORE, v ? '1' : '0'); } catch (e) { /* ignore */ }
+    syncSidebarPad();
   }
 
   function build() {
@@ -103,20 +119,19 @@
     bodyWrap = el('div', { id: 'usage-hud-body', className: 'usage-hud__bodywrap' }, [rowsBox, footer]);
 
     host = el('div', { id: 'usage-hud', className: 'usage-hud' }, [headBtn, bodyWrap]);
-    // Prefer to live inside the sidebar (above its version footer) so it reads as
-    // a sidebar section — matching the requested design and never overlapping the
-    // nav. Fall back to a fixed bottom-left corner if there's no sidebar.
-    var sidebar = document.querySelector('.sidebar');
-    var sbFooter = sidebar && sidebar.querySelector('.sidebar-footer');
-    if (sidebar) {
-      host.classList.add('usage-hud--sidebar');
-      if (sbFooter) sidebar.insertBefore(host, sbFooter); else sidebar.appendChild(host);
-    } else {
-      document.body.appendChild(host);
-    }
+    // Pinned to the viewport's bottom-left corner (bottom-right in RTL) via
+    // `position: fixed` in CSS, so it's always visible independent of sidebar
+    // scroll — the user asked for it fixed to the bottom.
+    document.body.appendChild(host);
 
     setCollapsed(collapsed);
     window.addEventListener('hashchange', refresh);
+    window.addEventListener('resize', syncSidebarPad);
+    // Real-time: re-poll the cheap read-only GET on a short interval, and again
+    // whenever the tab regains focus (so a run in another tab shows up promptly).
+    setInterval(refresh, 15000);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
+    syncSidebarPad();
     refresh();
   }
 

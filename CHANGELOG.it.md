@@ -2,6 +2,15 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.116.0] — 2026-07-06
+
+**Contatore di utilizzo rifatto + primo test end-to-end dei widget.** Il contatore di utilizzo IA (v1.114.0) è corretto e ancorato correttamente: ora è **fissato in fondo alla barra laterale sinistra** (larghezza piena, stessa superficie) e riserva in basso uno spazio pari alla propria altezza così che il **menu non venga mai coperto** — la navigazione e il piè di versione scorrono sempre liberi sopra di esso. Si **aggiorna dal vivo** (ogni 15 s, al focus della scheda e al cambio di rotta), e ogni riga di finestra mostra ora i **`<token> · <costo stimato>`** reali (le barre si scalano rispetto alla finestra di 30 giorni) invece di una "quota" sempre al 100%. Inoltre: una barriera `typeof` durevole nell'importatore del CV chiude alla fonte il falso positivo ricorrente di type-confusion di CodeQL, e un nuovo **test end-to-end** Playwright guida entrambi i widget persistenti in un browser reale.
+
+- `public/js/lib/usage-hud.js` + `app.css`, `server/lib/cv-import.mjs`. Test: `tests/playwright-widgets.mjs` (2 E2E) + `tests/usage-hud.test.mjs` (10). Aiuto §6 esteso ×16.
+
+Nuovo: nessuno.
+
+
 ## [1.115.0] — 2026-07-06
 
 **Rifinitura del design (conservativa, brand corallo mantenuto).** Un passaggio leggero di rifinitura sul sistema di design condiviso — nessuna ristrutturazione, nessun cambio di palette. Le schede metriche della dashboard ora si sollevano e prendono un bordo corallo al passaggio del mouse (come i riquadri di azione rapida); le schede di contenuto si sollevano di poco; i pulsanti primary / dark / danger guadagnano un'ombra a riposo e un lieve sollevamento all'hover per profondità; i numeri grandi si allineano con tabular-nums; e i controlli interattivi ricevono un alone corallo morbido dietro il nitido anello da tastiera di 2px. Tutto il movimento rispetta `prefers-reduced-motion`, e l'alone è limitato ai controlli — mai un `*:focus-visible` globale.

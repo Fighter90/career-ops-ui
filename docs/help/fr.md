@@ -873,7 +873,7 @@ canonique ci-dessus.
 Chaque barrière de configuration, en badges OK / OPTIONAL / FAIL. Lisez ceci
 avant d'ouvrir tout ticket « ça ne marche pas ».
 
-**Utilisation et coût de l'IA.** La page **Utilisation IA** (💳, à côté de Santé) montre les tokens des générations IA en direct par fournisseur sur 24 h / 7 j / 30 j / tout, avec un coût estimé en USD issu d'une table de prix modifiable (jamais facturé).
+**Utilisation et coût de l'IA.** La page **Utilisation IA** (💳, à côté de Santé) montre les tokens des générations IA en direct par fournisseur sur 24 h / 7 j / 30 j / tout, avec un coût estimé en USD issu d'une table de prix modifiable (jamais facturé). Un compteur **UTILISATION** compact est aussi épinglé en bas de la barre latérale gauche sur chaque page — les mêmes totaux de jetons 24h/7j/30j et un coût estimé sur 24 heures, actualisé en direct ; le menu reste toujours dégagé au-dessus, et cliquer sur son en-tête le replie.
 
 ### Required checks (system can't function without these)
 

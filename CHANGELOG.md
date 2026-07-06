@@ -8,6 +8,15 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.116.0] — 2026-07-06
+
+**Usage meter reworked + first end-to-end widget test.** The AI usage meter (v1.114.0) is fixed and pinned properly: it now sits **pinned to the bottom of the left sidebar** (full sidebar width, matching the sidebar surface) and pads the sidebar's bottom by its own height so the **menu is never covered** — the nav + version footer always scroll clear above it. It **refreshes live** (a 15-second interval plus on tab-focus and route change), and each window row now shows the real **`<tokens> · <estimated cost>`** (bars scale against the 30-day window) instead of an always-100% "share". Also: a durable `typeof` barrier in the CV importer closes the recurring CodeQL type-confusion false positive at the source, and a new Playwright **end-to-end acceptance test** drives both persistent widgets (Ask-the-docs launcher open/close/hide + usage meter render/collapse) in a real browser.
+
+- `public/js/lib/usage-hud.js` + `app.css` (sidebar-pinned, `syncSidebarPad`, real-time), `server/lib/cv-import.mjs` (`typeof … === 'number'` barrier). Tests: `tests/playwright-widgets.mjs` (2 E2E) + updated `tests/usage-hud.test.mjs` (10). Suite 1735 → 1737 (+2 browser E2E). Help §6 extended ×16.
+
+New: none.
+
+
 ## [1.115.0] — 2026-07-06
 
 **Design polish (conservative, coral brand kept).** A light refinement pass over the shared design system — no restructuring, no palette change. Dashboard metric cards now lift and pick up a coral border on hover (matching the quick-action tiles); content cards lift a hair; primary / dark / danger buttons gain a resting shadow and a gentle hover lift for depth; big numbers align via tabular-nums; and interactive controls get a soft coral focus halo behind the crisp 2px keyboard ring. All motion respects `prefers-reduced-motion`, and the halo is deliberately scoped to controls — never a global `*:focus-visible` (which would re-paint the managed-focus route headings; the v1.58.x lesson).

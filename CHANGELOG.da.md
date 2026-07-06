@@ -10,6 +10,15 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.116.0] — 2026-07-06
+
+**Forbrugsmåler omarbejdet + første ende-til-ende widget-test.** AI-forbrugsmåleren (v1.114.0) er rettet og fastgjort korrekt: den sidder nu **fastgjort nederst i venstre sidebjælke** (fuld sidebjælkebredde, samme overflade) og reserverer nederst plads svarende til sin egen højde, så **menuen aldrig dækkes** — nav + versionsfod ruller altid frit ovenover. Den **opdateres live** (hvert 15. sekund, ved fanefokus og ruteskift), og hver vinduesrække viser nu de rigtige **`<tokens> · <estimeret omkostning>`** (bjælker skaleres mod 30-dages-vinduet) i stedet for en altid-100% "andel". Desuden: en holdbar `typeof`-barriere i CV-importøren lukker den tilbagevendende CodeQL type-confusion-falske positiv ved kilden, og en ny Playwright **ende-til-ende-test** kører begge vedvarende widgets i en rigtig browser.
+
+- `public/js/lib/usage-hud.js` + `app.css`, `server/lib/cv-import.mjs`. Tests: `tests/playwright-widgets.mjs` (2 E2E) + `tests/usage-hud.test.mjs` (10). Hjælp §6 udvidet ×16.
+
+Nyt: intet.
+
+
 ## [1.115.0] — 2026-07-06
 
 **Designfinpudsning (konservativ, koralbrand bevaret).** En let forfinelsesrunde over det delte designsystem — ingen omstrukturering, ingen paletændring. Dashboardets metrikkort løfter sig nu og får en koralkant ved hover (som hurtighandlingsfliserne); indholdskort løfter sig en anelse; primary / dark / danger-knapper får en hvileskygge og et blidt hover-løft for dybde; store tal justeres via tabular-nums; og interaktive kontroller får en blød koral-fokusglorie bag den skarpe 2px-tastaturring. Al bevægelse respekterer `prefers-reduced-motion`, og glorien er afgrænset til kontroller — aldrig en global `*:focus-visible`.
