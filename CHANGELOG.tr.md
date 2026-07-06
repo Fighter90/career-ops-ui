@@ -2,6 +2,15 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.116.0] — 2026-07-06
+
+**Kullanım göstergesi yeniden yapıldı + ilk uçtan uca widget testi.** AI kullanım göstergesi (v1.114.0) düzeltildi ve doğru sabitlendi: artık **sol kenar çubuğunun altına sabitli** (tam kenar çubuğu genişliği, aynı yüzey) ve altta kendi yüksekliği kadar boşluk ayırarak **menü asla kapanmaz** — gezinme ve sürüm altbilgisi her zaman onun üstünde serbestçe kayar. **Canlı yenilenir** (her 15 sn, sekme odağında ve rota değişiminde) ve her pencere satırı artık her zaman %100 olan "pay" yerine gerçek **`<jeton> · <tahmini maliyet>`** gösterir (çubuklar 30 günlük pencereye göre ölçeklenir). Ayrıca: CV içe aktarıcısındaki kalıcı bir `typeof` bariyeri, tekrarlayan CodeQL tür karışıklığı yanlış pozitifini kaynağında kapatır ve yeni bir Playwright **uçtan uca testi** her iki kalıcı widget'ı gerçek bir tarayıcıda çalıştırır.
+
+- `public/js/lib/usage-hud.js` + `app.css`, `server/lib/cv-import.mjs`. Testler: `tests/playwright-widgets.mjs` (2 E2E) + `tests/usage-hud.test.mjs` (10). Yardım §6 ×16 genişletildi.
+
+Yeni: yok.
+
+
 ## [1.115.0] — 2026-07-06
 
 **Tasarım rötuşu (muhafazakâr, mercan marka korundu).** Ortak tasarım sistemi üzerinde hafif bir ince ayar geçişi — yeniden yapılandırma yok, palet değişikliği yok. Pano metrik kartları artık üzerine gelince hafifçe yükselir ve mercan bir kenarlık kazanır (hızlı eylem karoları gibi); içerik kartları azıcık yükselir; primary / dark / danger düğmeleri derinlik için durağan bir gölge ve nazik bir hover yükselişi kazanır; büyük sayılar tabular-nums ile hizalanır; ve etkileşimli denetimler net 2px klavye halkasının arkasında yumuşak bir mercan odak halesi alır. Tüm hareket `prefers-reduced-motion`'a saygı gösterir ve hale denetimlerle sınırlıdır — asla küresel bir `*:focus-visible` değil.

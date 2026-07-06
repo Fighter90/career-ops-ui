@@ -27,10 +27,29 @@ test('usage-hud is CSP-safe: no inline on* handlers, uses addEventListener', () 
   assert.match(SRC, /addEventListener\(/);
 });
 
-test('usage-hud mounts into the sidebar (flush) with a fixed-corner fallback', () => {
-  assert.match(SRC, /querySelector\(['"]\.sidebar['"]\)/);
-  assert.match(SRC, /usage-hud--sidebar/);
-  assert.match(SRC, /document\.body\.appendChild/);   // fallback path
+test('usage-hud is pinned to the sidebar bottom (fixed, full sidebar width) and pads the sidebar so nav is never covered', () => {
+  assert.match(SRC, /document\.body\.appendChild/);
+  const css = read('public', 'css', 'app.css');
+  // Fixed to the bottom-left, sidebar-width, on top of the sidebar.
+  assert.match(css, /\.usage-hud\s*\{[^}]*position:\s*fixed[^}]*left:\s*0[^}]*bottom:\s*0/);
+  assert.match(css, /\.usage-hud\s*\{[^}]*width:\s*var\(--sidebar-w\)/);
+  // JS reserves matching space at the sidebar bottom so the menu clears above it.
+  assert.match(SRC, /function syncSidebarPad/);
+  assert.match(SRC, /\.sidebar['"]\)/);
+  assert.match(SRC, /style\.paddingBottom/);
+});
+
+test('usage-hud refreshes in real time (interval + tab-focus + hashchange)', () => {
+  assert.match(SRC, /setInterval\(refresh,\s*\d+\)/);
+  assert.match(SRC, /visibilitychange/);
+  assert.match(SRC, /addEventListener\(['"]hashchange['"],\s*refresh\)/);
+});
+
+test('usage-hud shows real tokens + cost per window, not a misleading share %', () => {
+  // The row value is `<tokens> · <cost>`, and bars scale against the 30d window.
+  assert.match(SRC, /money\(w\.totalUsd\)/);
+  assert.match(SRC, /winOf\(data,\s*['"]30d['"]\)/);
+  assert.doesNotMatch(SRC, /pct\s*\+\s*'%'\s*\)\s*,?\s*el\('span'/); // no "· N%" text in the value
 });
 
 test('index.html loads usage-hud.js on every page (after api.js)', () => {
@@ -61,7 +80,7 @@ test('usage-hud collapse state persists (localStorage) and body respects [hidden
   assert.match(css, /\.usage-hud__bodywrap\[hidden\]\s*\{\s*display:\s*none/);
 });
 
-test('usage-hud mirrors to the bottom-right in RTL (fixed fallback)', () => {
+test('usage-hud mirrors to the sidebar bottom-right edge in RTL', () => {
   const css = read('public', 'css', 'app.css');
-  assert.match(css, /\[dir="rtl"\]\s*\.usage-hud\s*\{[^}]*right:\s*20px/);
+  assert.match(css, /\[dir="rtl"\]\s*\.usage-hud\s*\{[^}]*right:\s*0/);
 });

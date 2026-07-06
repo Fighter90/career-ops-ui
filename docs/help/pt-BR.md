@@ -781,7 +781,7 @@ bootstrap canônico acima.
 Cada gate de setup, em badges OK / OPTIONAL / FAIL. Leia isto antes
 de abrir qualquer issue "não funciona".
 
-**Uso e custo de IA.** A página **Uso de IA** (💳, ao lado de Saúde) mostra os tokens de gerações de IA ao vivo por provedor em 24h / 7d / 30d / tudo, com um custo estimado em USD de uma tabela de preços editável (nunca cobrado).
+**Uso e custo de IA.** A página **Uso de IA** (💳, ao lado de Saúde) mostra os tokens de gerações de IA ao vivo por provedor em 24h / 7d / 30d / tudo, com um custo estimado em USD de uma tabela de preços editável (nunca cobrado). Um medidor **USO** compacto também fica fixado no fim da barra lateral esquerda em cada página — os mesmos totais de tokens de 24h/7d/30d e um custo estimado de 24 horas, atualizado ao vivo; o menu sempre fica livre acima dele, e clicar no cabeçalho o recolhe.
 
 ### Verificações obrigatórias (sistema não funciona sem elas)
 

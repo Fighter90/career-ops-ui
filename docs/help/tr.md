@@ -917,7 +917,7 @@ devam eder.
 Her kurulum kapısı, OK / OPTIONAL / FAIL rozetleriyle. Herhangi bir
 "çalışmıyor" sorunu bildirmeden önce bunu okuyun.
 
-**Yapay zeka kullanımı ve maliyeti.** **AI kullanımı** sayfası (💳, Sağlık'ın yanında) canlı AI üretimlerinin jetonlarını sağlayıcı başına 24s/7g/30g/tümü boyunca gösterir; düzenlenebilir bir fiyat tablosundan tahmini USD maliyetiyle (asla faturalanmaz).
+**Yapay zeka kullanımı ve maliyeti.** **AI kullanımı** sayfası (💳, Sağlık'ın yanında) canlı AI üretimlerinin jetonlarını sağlayıcı başına 24s/7g/30g/tümü boyunca gösterir; düzenlenebilir bir fiyat tablosundan tahmini USD maliyetiyle (asla faturalanmaz). Kompakt bir **KULLANIM** göstergesi de her sayfada sol kenar çubuğunun altına sabitlenir — aynı 24s/7g/30g jeton toplamları ve tahmini 24 saatlik maliyet, canlı yenilenir; menü her zaman onun üstünde açık kalır ve başlığına tıklamak onu katlar.
 
 ### Gerekli kontroller (sistem bunlar olmadan çalışamaz)
 

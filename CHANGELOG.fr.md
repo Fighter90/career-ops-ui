@@ -11,6 +11,15 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.116.0] — 2026-07-06
+
+**Compteur d'utilisation refait + premier test bout-en-bout des widgets.** Le compteur d'utilisation de l'IA (v1.114.0) est corrigé et épinglé correctement : il est désormais **épinglé en bas de la barre latérale gauche** (toute la largeur, même surface) et réserve en bas un espace égal à sa hauteur pour que le **menu ne soit jamais couvert** — la navigation et le pied de version défilent toujours librement au-dessus. Il **s'actualise en direct** (toutes les 15 s, au focus de l'onglet et au changement de route), et chaque ligne de fenêtre affiche désormais les **`<jetons> · <coût estimé>`** réels (les barres se mettent à l'échelle contre la fenêtre 30 jours) au lieu d'une « part » toujours à 100 %. De plus : une barrière `typeof` durable dans l'importateur de CV clôt à la source le faux positif récurrent de type-confusion de CodeQL, et un nouveau **test bout-en-bout** Playwright pilote les deux widgets persistants dans un vrai navigateur.
+
+- `public/js/lib/usage-hud.js` + `app.css`, `server/lib/cv-import.mjs`. Tests : `tests/playwright-widgets.mjs` (2 E2E) + `tests/usage-hud.test.mjs` (10). Aide §6 étendue ×16.
+
+Nouveau : aucun.
+
+
 ## [1.115.0] — 2026-07-06
 
 **Peaufinage du design (conservateur, marque corail conservée).** Une passe légère de raffinement sur le système de design partagé — sans restructuration, sans changement de palette. Les cartes de métriques du tableau de bord se soulèvent et prennent une bordure corail au survol (comme les tuiles d'action rapide) ; les cartes de contenu se soulèvent un poil ; les boutons primary / dark / danger gagnent une ombre au repos et un léger soulèvement au survol pour la profondeur ; les grands nombres s'alignent via tabular-nums ; et les contrôles interactifs reçoivent un halo corail doux derrière l'anneau clavier de 2px. Toute animation respecte `prefers-reduced-motion`, et le halo est limité aux contrôles — jamais un `*:focus-visible` global.

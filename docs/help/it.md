@@ -892,7 +892,7 @@ continuano a funzionare invariate.
 Ogni gate di configurazione, in badge OK / OPTIONAL / FAIL. Leggi questo prima di
 aprire qualsiasi issue "non funziona".
 
-**Uso e costo IA.** La pagina **Uso IA** (💳, accanto a Salute) mostra i token delle generazioni IA live per provider su 24h/7g/30g/sempre, con un costo stimato in USD da una tabella prezzi modificabile (mai fatturato).
+**Uso e costo IA.** La pagina **Uso IA** (💳, accanto a Salute) mostra i token delle generazioni IA live per provider su 24h/7g/30g/sempre, con un costo stimato in USD da una tabella prezzi modificabile (mai fatturato). Un contatore **UTILIZZO** compatto è anche fissato in fondo alla barra laterale sinistra su ogni pagina — gli stessi totali di token 24h/7g/30g e un costo stimato di 24 ore, aggiornato dal vivo; il menu resta sempre libero sopra di esso, e cliccando la sua intestazione si comprime.
 
 ### Controlli richiesti (il sistema non può funzionare senza questi)
 

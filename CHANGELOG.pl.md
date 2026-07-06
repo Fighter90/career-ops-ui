@@ -9,6 +9,15 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.116.0] — 2026-07-06
+
+**Przeróbka miernika zużycia + pierwszy test end-to-end widżetów.** Miernik zużycia AI (v1.114.0) jest naprawiony i poprawnie przypięty: teraz jest **przypięty na dole lewego paska bocznego** (na całą szerokość, ta sama powierzchnia) i rezerwuje na dole miejsce równe swojej wysokości, aby **menu nigdy nie było zasłonięte** — nawigacja i stopka wersji zawsze przewijają się swobodnie nad nim. **Odświeża się na żywo** (co 15 s, przy fokusie karty i zmianie trasy), a każdy wiersz okna pokazuje teraz prawdziwe **`<tokeny> · <szacowany koszt>`** (paski skalują się względem okna 30-dniowego) zamiast zawsze-100% "udziału". Ponadto: trwała bariera `typeof` w importerze CV zamyka u źródła powracający fałszywy alarm type-confusion CodeQL, a nowy **test end-to-end** Playwright uruchamia oba trwałe widżety w prawdziwej przeglądarce.
+
+- `public/js/lib/usage-hud.js` + `app.css`, `server/lib/cv-import.mjs`. Testy: `tests/playwright-widgets.mjs` (2 E2E) + `tests/usage-hud.test.mjs` (10). Pomoc §6 rozszerzona ×16.
+
+Nowe: brak.
+
+
 ## [1.115.0] — 2026-07-06
 
 **Dopracowanie designu (zachowawcze, marka koralowa zachowana).** Lekki przebieg dopracowania wspólnego systemu projektowego — bez przebudowy, bez zmiany palety. Karty metryk na pulpicie unoszą się teraz i dostają koralową ramkę po najechaniu (jak kafelki szybkich akcji); karty treści unoszą się odrobinę; przyciski primary / dark / danger zyskują cień w spoczynku i delikatne uniesienie po najechaniu dla głębi; duże liczby wyrównują się przez tabular-nums; a interaktywne kontrolki dostają miękką koralową poświatę fokusa za wyraźnym pierścieniem klawiatury 2px. Cały ruch respektuje `prefers-reduced-motion`, a poświata jest ograniczona do kontrolek — nigdy globalne `*:focus-visible`.
