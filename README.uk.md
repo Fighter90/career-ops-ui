@@ -12,9 +12,9 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
+[![release](https://img.shields.io/badge/release-v1.117.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.2)
 
-> **🆕 Останній реліз — v1.117.1**
+> **🆕 Останній реліз — v1.117.2**
 >
 > **Пакет паритету з батьком.** Шість можливостей батьківського career-ops прийшли в UI: дошка каденції фоллоу-апів, вкладка «Патерни відмов» у Статистиці (результати, рекомендації, частка просування за ATS), картка «Додати в CV» (обґрунтовані пункти, лише пропозиції), 4 нові сканер-провайдери (50 адаптерів), передперевірка нокаут-питань в Apply і раннер reconcile.
 >

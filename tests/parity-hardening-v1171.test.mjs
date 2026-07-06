@@ -69,3 +69,14 @@ test('reconcile runner maps to the exact parent script name', () => {
   const src = read('server', 'lib', 'routes', 'runners.mjs');
   assert.match(src, /\{ route: '\/api\/run\/reconcile',\s+script: 'reconcile-pipeline\.mjs' \}/);
 });
+
+test('empty-tracker relay: a structured {error} stdout becomes a healthy empty state, not script-error', () => {
+  // Source-contract: both shell-out routes special-case the parent's
+  // "no data yet" answer (exit 1 + {error} JSON) BEFORE the failure branch.
+  const fu = read('server', 'lib', 'routes', 'followup.mjs');
+  assert.match(fu, /available: true, empty: true, note: data\.error/);
+  assert.ok(fu.indexOf('empty: true') < fu.indexOf("reason: r.killed ? 'timeout' : 'script-error'"),
+    'the empty-state relay must run before the script-error branch');
+  const st = read('server', 'lib', 'routes', 'stats.mjs');
+  assert.match(st, /available: true, empty: true, note: data\.error/);
+});

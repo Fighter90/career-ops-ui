@@ -2,6 +2,13 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.117.2] — 2026-07-06
+
+**Parite shell-out'ları için boş izleyici düzeltmesi.** İzleyicide henüz başvuru yokken üst betikler kod 1 ve yapılandırılmış `{error}` JSON ile çıkar; takip panosu ve ret kalıpları sekmesi bunu "script-error" olarak gösteriyordu. Her iki rota artık bunu sağlıklı bir boş durum (`available:true, empty:true`) olarak iletir ve UI dürüst "henüz bir şey yok" mesajını gösterir. Gerçek bir üst projeyle canlı doğrulandı.
+
+Yeni: yok.
+
+
 ## [1.117.1] — 2026-07-06
 
 **v1.117.0 sertleştirmesi (CodeQL triyajı).** Üç shell-out uç noktası (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) artık paylaşılan IP başına sınırlayıcıyı taşıyor (her istek bir alt süreç başlatır; loopback'te no-op). CV'ye ekle'nin URL metin çıkarımı etiketleri sabit noktaya kadar soyar, sonra kalan tüm `<`/`>` karakterlerini siler — LLM istem metni için kanıtlanabilir şekilde eksiksiz bir arındırma. Geçerli girdi için davranış değişikliği yok.

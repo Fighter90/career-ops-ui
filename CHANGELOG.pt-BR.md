@@ -9,6 +9,13 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.117.2] — 2026-07-06
+
+**Correção de tracker vazio para os shell-outs de paridade.** Os scripts do pai saem com código 1 e um JSON `{error}` estruturado quando o tracker ainda não tem candidaturas; o quadro de follow-up e a aba de padrões mostravam isso como «script-error». Ambas as rotas agora o transmitem como um estado vazio saudável (`available:true, empty:true`) e a UI mostra sua mensagem honesta de «nada ainda». Verificado ao vivo contra um pai real.
+
+Novo: nenhum.
+
+
 ## [1.117.1] — 2026-07-06
 
 **Endurecimento do v1.117.0 (triagem CodeQL).** Os três endpoints shell-out (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) agora carregam o limitador por IP compartilhado (geram um processo filho por requisição; no-op em loopback). A extração de texto por URL do Adicionar ao CV remove tags até ponto fixo e depois apaga todo `<`/`>` restante — saneamento comprovadamente completo para texto de prompt LLM. Sem mudanças para entradas válidas.

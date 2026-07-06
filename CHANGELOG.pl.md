@@ -9,6 +9,13 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.117.2] — 2026-07-06
+
+**Poprawka pustego trackera dla shell-outów parytetu.** Skrypty rodzica kończą się kodem 1 i strukturalnym JSON-em `{error}`, gdy tracker nie ma jeszcze aplikacji; tablica follow-upów i zakładka wzorców pokazywały to jako „script-error". Obie trasy przekazują to teraz jako zdrowy stan pusty (`available:true, empty:true`), a UI pokazuje uczciwy komunikat „jeszcze nic". Zweryfikowane na żywo na prawdziwym rodzicu.
+
+Nowe: brak.
+
+
 ## [1.117.1] — 2026-07-06
 
 **Utwardzenie v1.117.0 (triage CodeQL).** Trzy endpointy shell-out (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) mają teraz wspólny limiter per-IP (każde żądanie tworzy proces potomny; no-op na loopbacku). Ekstrakcja tekstu z URL w Dodaj do CV usuwa znaczniki do punktu stałego, a potem kasuje wszystkie pozostałe `<`/`>` — dowodliwie pełna sanityzacja tekstu promptu LLM. Bez zmian dla poprawnych danych.

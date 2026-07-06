@@ -110,6 +110,13 @@ export function registerStatsRoutes(app) {
       const start = out.indexOf('{');
       if (start !== -1) { try { data = JSON.parse(out.slice(start)); } catch { data = null; } }
     }
+    // Structured {error} on stdout = a healthy "no data yet" answer (empty
+    // tracker), not a failure — relay as available with empty sections so the
+    // tab renders its honest empty state.
+    if (data && typeof data.error === 'string' && !data.metadata) {
+      res.json({ available: true, empty: true, note: data.error, metadata: { total: 0, byOutcome: {} }, recommendations: [], vendorAnalysis: {}, archetypeBreakdown: [] });
+      return;
+    }
     if (r.code !== 0 || !data) {
       res.json({
         available: false,

@@ -2,6 +2,13 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.117.2] — 2026-07-06
+
+**Leerer-Tracker-Fix für die Paritäts-Shell-outs.** Die Eltern-Skripte beenden sich mit Code 1 und einem strukturierten `{error}`-JSON, wenn der Tracker noch keine Bewerbungen hat; das Kadenz-Board und der Absagemuster-Tab zeigten das als „script-error". Beide Routen reichen es jetzt als gesunden Leerzustand weiter (`available:true, empty:true`), und die UI zeigt ihre ehrliche „noch nichts"-Meldung. Live gegen ein echtes Elternprojekt verifiziert.
+
+Neu: keine.
+
+
 ## [1.117.1] — 2026-07-06
 
 **Härtung von v1.117.0 (CodeQL-Triage).** Die drei Shell-out-Endpunkte (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) tragen jetzt den gemeinsamen Per-IP-Limiter (sie starten pro Anfrage einen Kindprozess; no-op auf Loopback). Die URL-Textextraktion von „Zum CV hinzufügen" entfernt Tags bis zum Fixpunkt und löscht dann jedes verbleibende `<`/`>` — eine beweisbar vollständige Bereinigung für LLM-Prompt-Text. Kein Verhaltensunterschied bei gültiger Eingabe.
