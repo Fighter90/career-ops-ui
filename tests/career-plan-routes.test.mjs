@@ -64,3 +64,11 @@ test('POST /generate returns a manual prompt seeded from CV/profile (no key)', a
   assert.match(prompt, /senior career coach/);
   assert.match(prompt, /do NOT invent/i);
 });
+
+test('normalizePlan routes the markdown through stripDangerousMarkdown (SRV-M4)', async () => {
+  const { normalizePlan } = await import('../server/lib/routes/career-plan.mjs');
+  const out = normalizePlan({ markdown: 'plan<iframe src=x></iframe> body' });
+  assert.ok(!/<iframe/i.test(out), out);
+  assert.match(out, /plan/);
+  assert.match(out, /body/);
+});

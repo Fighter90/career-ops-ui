@@ -21,6 +21,7 @@ import { withFileLock } from '../file-lock.mjs';
 import { bundleProjectContext, resolveLocale, buildLocaleDirective } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
+import { stripDangerousMarkdown } from '../security.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
 
 const MAX_PLAN = 128 * 1024;    // a document, but bounded
@@ -30,7 +31,10 @@ const HORIZONS = ['6', '12', '24'];
 /** Coerce arbitrary input to a bounded plain-text plan. Exported for tests. */
 export function normalizePlan(body) {
   const raw = body && typeof body === 'object' ? body.markdown : body;
-  return (typeof raw === 'string' ? raw : '').slice(0, MAX_PLAN);
+  // stripDangerousMarkdown: hard rule 5 — every markdown ingress that lands
+  // on disk goes through the ONE sanitizer, so future consumers of this file
+  // (exports, other renderers) are safe at rest, not just via UI.md().
+  return stripDangerousMarkdown((typeof raw === 'string' ? raw : '').slice(0, MAX_PLAN));
 }
 
 /** Whitelist the horizon in months (default 12). Exported for tests. */

@@ -73,3 +73,11 @@ test('POST /suggest seeds a behavioural prompt from the tracker (no live call)',
   assert.match(prompt, /Acme/);               // tracker mined in
   assert.match(prompt, /APPLICATION TRACKER/);
 });
+
+test('normalizeMemory routes the markdown through stripDangerousMarkdown (SRV-M4)', async () => {
+  const { normalizeMemory } = await import('../server/lib/routes/memory.mjs');
+  const out = normalizeMemory({ markdown: 'note<script>alert(1)</script> ok' });
+  assert.ok(!/<script/i.test(out), out);
+  assert.match(out, /note/);
+  assert.match(out, /ok/);
+});
