@@ -29,6 +29,7 @@ import { resolve } from 'node:path';
 import { PROJECT_ROOT } from '../paths.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
+import { parseJsonStdout, isEmptyTrackerError, sanitizeDetail } from '../parent-relay.mjs';
 
 const CADENCE_SCRIPT = 'followup-cadence.mjs';
 const SEED_SCRIPT = 'followup-seed.mjs';
@@ -36,28 +37,6 @@ const RUN_TIMEOUT_MS = 30_000;
 
 function scriptAvailable(name) {
   return existsSync(resolve(PROJECT_ROOT, name));
-}
-
-/**
- * Parse a script's stdout as JSON. The whole trimmed stdout is tried FIRST
- * (the parent scripts print a single JSON document), and only on failure do we
- * fall back to slicing from the first `{` — so a stray {…}-shaped log line
- * before the payload can't silently win over the real document (v1.117.1
- * review).
- */
-function parseJsonStdout(stdout) {
-  const s = String(stdout || '').trim();
-  if (!s) return null;
-  try {
-    return JSON.parse(s);
-  } catch { /* fall through to the sliced attempt */ }
-  const start = s.indexOf('{');
-  if (start === -1) return null;
-  try {
-    return JSON.parse(s.slice(start));
-  } catch {
-    return null;
-  }
 }
 
 export function registerFollowupRoutes(app) {
@@ -71,8 +50,11 @@ export function registerFollowupRoutes(app) {
     // The parent exits 1 with a STRUCTURED {error} on stdout for "no data yet"
     // (e.g. an empty tracker). That is a healthy empty state, not a failure —
     // relay it as available with zero entries so the board shows its honest
-    // empty message instead of "script-error".
-    if (data && typeof data.error === 'string' && !Array.isArray(data.entries)) {
+    // empty message instead of "script-error". Keyed to the parent's exact
+    // message (followup-cadence.mjs), NOT to shape — an unrecognized {error}
+    // must fall through to the honest script-error path, or a future parent
+    // regression would be silently masked as "nothing yet".
+    if (data && isEmptyTrackerError(data.error)) {
       res.json({ available: true, empty: true, note: data.error, metadata: {}, entries: [] });
       return;
     }
@@ -80,7 +62,7 @@ export function registerFollowupRoutes(app) {
       res.json({
         available: false,
         reason: r.killed ? 'timeout' : 'script-error',
-        detail: String(r.stderr || '').split('\n').slice(0, 3).join(' ').slice(0, 300),
+        detail: sanitizeDetail(r.stderr),
       });
       return;
     }
@@ -111,7 +93,7 @@ export function registerFollowupRoutes(app) {
     if (r.code !== 0) {
       res.status(422).json({
         error: 'seed failed',
-        detail: (data && data.error) || String(r.stderr || r.stdout || '').split('\n').slice(0, 3).join(' ').slice(0, 300),
+        detail: (data && data.error) || sanitizeDetail(r.stderr || r.stdout),
       });
       return;
     }

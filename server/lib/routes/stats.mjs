@@ -21,6 +21,7 @@ import { dirname, resolve } from 'node:path';
 import { PATHS, PROJECT_ROOT } from '../paths.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runNodeScript } from '../runner.mjs';
+import { parseJsonStdout, isEmptyTrackerError, sanitizeDetail } from '../parent-relay.mjs';
 
 const num = (v, d = 0) => (Number.isFinite(v) ? v : d);
 
@@ -102,18 +103,13 @@ export function registerStatsRoutes(app) {
       return;
     }
     const r = await runNodeScript(script, [], { timeoutMs: 60_000 });
-    let data = null;
-    const out = String(r.stdout || '').trim();
-    // Whole-stdout parse first; only fall back to slicing from the first '{'
-    // so a stray {...}-shaped log line can't shadow the real document.
-    try { data = JSON.parse(out); } catch {
-      const start = out.indexOf('{');
-      if (start !== -1) { try { data = JSON.parse(out.slice(start)); } catch { data = null; } }
-    }
+    const data = parseJsonStdout(r.stdout);
     // Structured {error} on stdout = a healthy "no data yet" answer (empty
     // tracker), not a failure — relay as available with empty sections so the
-    // tab renders its honest empty state.
-    if (data && typeof data.error === 'string' && !data.metadata) {
+    // tab renders its honest empty state. Keyed to the parent's exact
+    // messages (analyze-patterns.mjs) via isEmptyTrackerError; any OTHER
+    // {error} falls through to the honest script-error path below.
+    if (data && isEmptyTrackerError(data.error)) {
       res.json({ available: true, empty: true, note: data.error, metadata: { total: 0, byOutcome: {} }, recommendations: [], vendorAnalysis: {}, archetypeBreakdown: [] });
       return;
     }
@@ -121,7 +117,7 @@ export function registerStatsRoutes(app) {
       res.json({
         available: false,
         reason: r.killed ? 'timeout' : 'script-error',
-        detail: String(r.stderr || '').split('\n').slice(0, 3).join(' ').slice(0, 300),
+        detail: sanitizeDetail(r.stderr),
       });
       return;
     }
