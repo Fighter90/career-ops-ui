@@ -5,13 +5,27 @@
 > every release. It always validates *the current `HEAD`* — read
 > `package.json::version` first and treat that as "the version under
 > test" (vX) everywhere below. Record the run in
-> `qa/v54-regression/<YYYY-MM-DD>-REGRESSION.md`.
+> `qa/reports/<YYYY-MM-DD>-REGRESSION.md` (current reports home; the old
+> `qa/v54-regression/` path is retired).
+>
+> **Current baseline — v1.117.2 (update on each release):**
+>
+> - **16 locales** (`en es pt-BR ko ja ru zh-CN zh-TW fr pl uk da ar de
+>   it tr`; ar = RTL). Everywhere the *body* below says "9 locales" read
+>   **16**; CHANGELOG/README parity and help bundles are **16 files**.
+>   The "×9" inside historical closed-finding rows records what shipped
+>   at that time — don't rewrite those; apply **16** to every
+>   forward-looking check.
+> - **Help bundles: 28 H2 / 102 H3** per locale (was 19 / 73).
+> - **31 route modules** · **28 views** · **50 scanner adapters** (45 EN + 5 RU).
+> - **Test floors:** unit **≥ 1779** · Playwright browser **≥ 90** ·
+>   smoke E2E 20 · comprehensive 23 · coverage **≥ 96 % line / 85 % branch** · **CodeQL 0**.
 >
 > Lineage: supersedes `REGRESSION-v1.54.9.md` (cycle-specific) and
 > `REGRESSION-v1.54.md` (P-31 final). Those stay for historical diff.
 >
 > **Doctrine.** A check that needs a code change → open it as ONE
-> one-fix ship: bump + CHANGELOG ×9 (parity-gated) + a test +
+> one-fix ship: bump + CHANGELOG ×16 (parity-gated) + a test +
 > Playwright-verify + pre-commit AI-review to LGTM + CI-watch to
 > green. Never batch. Never `--no-verify`. HIGH → MEDIUM → LOW.
 
@@ -21,20 +35,20 @@
 
 ```bash
 vX=$(node -p "require('./package.json').version")
-npm ci && npm run test:ci          # MUST: N/N pass · ✓ no .also( · ✓ CHANGELOG parity all 9 @ vX
+npm ci && npm run test:ci          # MUST: N/N pass (≥1779) · ✓ no .also( · ✓ CHANGELOG parity all 16 @ vX
 node tests/e2e.mjs                 # MUST: failed: 0
 node tests/e2e-comprehensive.mjs   # MUST: 0 failed
-npm run test:e2e:browser           # MUST: 81/81 (v1.61.1 baseline) · NO "generated asynchronous activity" / "not ok 2"
+npm run test:e2e:browser           # MUST: 90/90 (v1.117.x baseline) · NO "generated asynchronous activity" / "not ok 2"
 node --test tests/sh-files.test.mjs        # MUST: green
-node scripts/check-changelog-parity.mjs    # MUST: all 9 locales @ vX
+node scripts/check-changelog-parity.mjs    # MUST: all 16 locales @ vX
 node scripts/check-no-also-leftovers.mjs   # MUST: ✓
 career-ops-ui doctor               # MUST: exit 0
 ```
 
 - `package.json::version` == footer `/api/health.version` == every
-  `CHANGELOG*.md` top entry == README ×9 `release-vX` badge ==
+  `CHANGELOG*.md` top entry == README ×16 `release-vX` badge ==
   `docs/architecture/TESTING.md` totals version.
-- README ×9 `tests-N%20passed` badge == the `npm run test:ci` count ==
+- README ×16 `tests-N%20passed` badge == the `npm run test:ci` count ==
   `TESTING.md` totals count.
 - `git status` clean · HEAD has tag `vX` on `origin/main` · the
   latest CI run on `origin/main` is green on **all 4 jobs**
@@ -205,10 +219,10 @@ non-allowed binary envelopes (415).
 
 ## §9 — i18n & docs parity (top-down vs career-ops.org)
 
-- Every i18n key present in all 9 locales (`tests/i18n-coverage`).
-- CHANGELOG ×9 at vX (`check-changelog-parity`); README ×9 badges
+- Every i18n key present in all 16 locales (`tests/i18n-coverage`).
+- CHANGELOG ×16 at vX (`check-changelog-parity`); README ×16 badges
   at vX/N; `TESTING.md` totals at vX/N/files.
-- Help bundles ×9: 19 H2 / 73 H3 parity gate green; the
+- Help bundles ×16: **28 H2 / 102 H3** parity gate green; the
   "App settings & API keys" section describes the Modes **field-form**
   + the OpenAI/Codex model selector (not raw markdown).
 - `CLAUDE.md` (route-module count, version) and
@@ -720,7 +734,7 @@ The 7-release cycle that closed the FIX-PROMPT-FINAL-CONSOLIDATED queue. Each ro
 
 ---
 
-## §A — EXHAUSTIVE MATRIX (every page × every control × 9 locales)
+## §A — EXHAUSTIVE MATRIX (every page × every control × 16 locales)
 
 > Run **after** §0–§11 pass. This is the brute-force sweep: every
 > route, every button, every input, every API, every locale, every
