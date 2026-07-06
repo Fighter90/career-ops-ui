@@ -13,7 +13,7 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 
 **Odświeżenie dokumentacji i QA (wszystkie języki).** Bez zmian w kodzie. Prompt QA całego projektu odświeżony do v1.109.0 z nowym §14 (v1.98→v1.109), a wieczne prompty UX-audit i design-export zyskują aktualny zestaw stron. Każdy akapit pomocy dodany w v1.100–v1.109 jest teraz przetłumaczony na **wszystkie 16 języków**.
 
-New: none.
+Nowe: brak.
 
 
 ## [1.109.0] — 2026-07-06

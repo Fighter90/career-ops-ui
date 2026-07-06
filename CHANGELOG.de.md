@@ -6,7 +6,7 @@
 
 **Docs- & QA-Auffrischung (alle Sprachen).** Keine Codeänderung. Der Gesamtprojekt-QA-Prompt ist auf v1.109.0 aktualisiert mit einem neuen §14 (v1.98→v1.109), und die immerwährenden UX-Audit- und Design-Export-Prompts haben die aktuelle Seitenfläche erhalten. Jeder in v1.100–v1.109 hinzugefügte Hilfe-Absatz ist jetzt in **alle 16 Sprachen** übersetzt.
 
-New: none.
+Neu: keine.
 
 
 ## [1.109.0] — 2026-07-06

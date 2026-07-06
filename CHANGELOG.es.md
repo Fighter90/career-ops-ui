@@ -15,7 +15,7 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 **Actualización de docs y QA (todos los idiomas).** Sin cambios de código. El prompt de QA de todo el proyecto se actualiza a v1.109.0 con un nuevo §14 (v1.98→v1.109), y los prompts perennes de UX-audit y design-export ganan la superficie actual. Cada párrafo de ayuda añadido en v1.100–v1.109 está ahora traducido a **los 16 idiomas**.
 
-New: none.
+Nuevo: ninguno.
 
 
 ## [1.109.0] — 2026-07-06

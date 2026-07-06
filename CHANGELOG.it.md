@@ -6,7 +6,7 @@
 
 **Aggiornamento docs & QA (tutte le lingue).** Nessuna modifica al codice. Il prompt QA dell'intero progetto è aggiornato a v1.109.0 con un nuovo §14 (v1.98→v1.109), e i prompt perenni UX-audit e design-export hanno la superficie di pagine attuale. Ogni paragrafo di aiuto aggiunto in v1.100–v1.109 è ora tradotto in **tutte le 16 lingue**.
 
-New: none.
+Nuovo: nessuno.
 
 
 ## [1.109.0] — 2026-07-06

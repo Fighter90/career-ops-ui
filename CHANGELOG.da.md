@@ -14,7 +14,7 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 **Docs- & QA-opdatering (alle sprog).** Ingen kodeændring. Hele-projekt-QA-prompten er opdateret til v1.109.0 med et nyt §14 (v1.98→v1.109), og de vedvarende UX-audit- og design-export-prompts fik den aktuelle sideflade. Hvert hjælpeafsnit tilføjet i v1.100–v1.109 er nu oversat til **alle 16 sprog**.
 
-New: none.
+Nyt: intet.
 
 
 ## [1.109.0] — 2026-07-06

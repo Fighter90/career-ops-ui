@@ -6,7 +6,7 @@
 
 **Docs & QA tazeleme (tüm diller).** Kod değişikliği yok. Tüm proje QA istemi v1.109.0'a tazelendi ve v1.98→v1.109'u kapsayan yeni bir §14 eklendi; kalıcı UX-denetim ve tasarım-dışa-aktarım istemleri güncel sayfa kümesini kazandı. v1.100–v1.109'da eklenen her yardım paragrafı artık **16 dilin tümüne** çevrildi.
 
-New: none.
+Yeni: yok.
 
 
 ## [1.109.0] — 2026-07-06
