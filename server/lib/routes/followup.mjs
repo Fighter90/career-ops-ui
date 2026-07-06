@@ -28,6 +28,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PROJECT_ROOT } from '../paths.mjs';
 import { runNodeScript } from '../runner.mjs';
+import { llmRateLimit } from '../rate-limit.mjs';
 
 const CADENCE_SCRIPT = 'followup-cadence.mjs';
 const SEED_SCRIPT = 'followup-seed.mjs';
@@ -37,10 +38,19 @@ function scriptAvailable(name) {
   return existsSync(resolve(PROJECT_ROOT, name));
 }
 
-/** Parse a script's stdout as JSON, tolerating stray log lines before it. */
+/**
+ * Parse a script's stdout as JSON. The whole trimmed stdout is tried FIRST
+ * (the parent scripts print a single JSON document), and only on failure do we
+ * fall back to slicing from the first `{` — so a stray {…}-shaped log line
+ * before the payload can't silently win over the real document (v1.117.1
+ * review).
+ */
 function parseJsonStdout(stdout) {
   const s = String(stdout || '').trim();
   if (!s) return null;
+  try {
+    return JSON.parse(s);
+  } catch { /* fall through to the sliced attempt */ }
   const start = s.indexOf('{');
   if (start === -1) return null;
   try {
@@ -51,7 +61,7 @@ function parseJsonStdout(stdout) {
 }
 
 export function registerFollowupRoutes(app) {
-  app.get('/api/followup', async (_req, res) => {
+  app.get('/api/followup', llmRateLimit, async (_req, res) => {
     if (!scriptAvailable(CADENCE_SCRIPT)) {
       res.json({ available: false, reason: 'script-not-found' });
       return;
@@ -69,7 +79,7 @@ export function registerFollowupRoutes(app) {
     res.json({ available: true, ...data });
   });
 
-  app.post('/api/followup/seed', async (req, res) => {
+  app.post('/api/followup/seed', llmRateLimit, async (req, res) => {
     if (!scriptAvailable(SEED_SCRIPT)) {
       res.status(400).json({ error: 'followup-seed.mjs not found in the parent project' });
       return;

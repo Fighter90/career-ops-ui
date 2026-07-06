@@ -9,6 +9,13 @@
 ---
 
 
+## [1.117.1] — 2026-07-06
+
+**v1.117.0 加固(CodeQL 分诊)。** 三个外壳调用端点(`GET /api/followup`、`POST /api/followup/seed`、`GET /api/stats/patterns`)现在带有共享的按 IP 限流器(每个请求生成子进程;环回时为 no-op)。添加到 CV 的 URL 文本提取将标签剥离到不动点,然后删除所有剩余的 `<`/`>`——对 LLM 提示词文本而言可证明完整的净化。有效输入行为不变。
+
+新增:无。
+
+
 ## [1.117.0] — 2026-07-06
 
 **父项目对齐包——把父 career-ops 的六项能力带进 UI。** (1) `#/followup` 的**跟进节奏板**:来自 `followup-cadence.mjs` 的每申请紧急度(🔴/🟠/🟡/🔵)+ **播种跟进日期**按钮(`followup-seed.mjs --backfill`)。(2) **拒绝模式**:统计的第四个标签页运行 `analyze-patterns.mjs`(只读)——结果构成、建议、各 ATS 供应商推进率。(3) **添加到 CV**:CV Studio 卡片把 URL 或粘贴文本变成仅基于该来源的 ATS 要点(仅建议、不写入;URL 抓取有 SSRF 防护)。(4) **4 个新扫描提供方** — beesite、HigherEdJobs(RSS)、JibeApply(iCIMS)、softgarden——注册表现有 **50 个适配器(45 EN + 5 RU)**,全部出现在 Scan 下拉框。(5) Apply 清单新增**淘汰项预扫描**步骤。(6) **reconcile 运行器**(`/api/run/reconcile`)。外壳调用路由在无父脚本时诚实降级。

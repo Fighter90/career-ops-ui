@@ -9,6 +9,13 @@
 ---
 
 
+## [1.117.1] — 2026-07-06
+
+**v1.117.0 加固(CodeQL 分診)。** 三個外殼呼叫端點(`GET /api/followup`、`POST /api/followup/seed`、`GET /api/stats/patterns`)現在帶有共享的按 IP 限流器(每個請求產生子行程;環回時為 no-op)。新增到 CV 的 URL 文字擷取將標籤剝離到不動點,然後刪除所有剩餘的 `<`/`>`——對 LLM 提示詞文字而言可證明完整的淨化。有效輸入行為不變。
+
+新增:無。
+
+
 ## [1.117.0] — 2026-07-06
 
 **父專案對齊包——把父 career-ops 的六項能力帶進 UI。** (1) `#/followup` 的**跟進節奏板**:來自 `followup-cadence.mjs` 的每申請緊急度(🔴/🟠/🟡/🔵)+ **播種跟進日期**按鈕(`followup-seed.mjs --backfill`)。(2) **拒絕模式**:統計的第四個分頁執行 `analyze-patterns.mjs`(唯讀)——結果構成、建議、各 ATS 供應商推進率。(3) **新增到 CV**:CV Studio 卡片把 URL 或貼上文字變成僅基於該來源的 ATS 要點(僅建議、不寫入;URL 擷取有 SSRF 防護)。(4) **4 個新掃描提供方** — beesite、HigherEdJobs(RSS)、JibeApply(iCIMS)、softgarden——註冊表現有 **50 個轉接器(45 EN + 5 RU)**,全部出現在 Scan 下拉選單。(5) Apply 清單新增**淘汰項預掃描**步驟。(6) **reconcile 執行器**(`/api/run/reconcile`)。外殼呼叫路由在無父腳本時誠實降級。

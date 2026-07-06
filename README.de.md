@@ -12,9 +12,9 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.117.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.0)
+[![release](https://img.shields.io/badge/release-v1.117.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.117.1)
 
-> **🆕 Neueste Version — v1.117.0**
+> **🆕 Neueste Version — v1.117.1**
 >
 > **Eltern-Paritätspaket.** Sechs Fähigkeiten des übergeordneten career-ops landen in der UI: Kadenz-Board für Follow-ups, Absagemuster-Tab in der Statistik (Ergebnisse, Empfehlungen, Weiterkommensquote je ATS), Zum-CV-hinzufügen-Karte (belegte Punkte, nur Vorschläge), 4 neue Scan-Anbieter (50 Adapter), Disqualifikator-Vorab-Scan in Apply und Reconcile-Runner.
 >

@@ -8,6 +8,13 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.117.1] — 2026-07-06
+
+**Hardening follow-up to v1.117.0 (CodeQL triage).** The three shell-out endpoints (`GET /api/followup`, `POST /api/followup/seed`, `GET /api/stats/patterns`) now carry the shared per-IP rate limiter (they spawn a child process per request; no-op on loopback). The Add-to-CV URL text extraction strips tags to a fixed point and then removes every remaining `<`/`>` outright — a provably complete sanitization for LLM-prompt text. No behavior change for valid input.
+
+New: none.
+
+
 ## [1.117.0] — 2026-07-06
 
 **Parent parity pack — six capabilities from the parent career-ops surfaced in the UI.** (1) **Follow-up cadence board**: the `#/followup` page opens with per-application urgency (🔴 urgent / 🟠 overdue / 🟡 waiting / 🔵 cold) from the parent's `followup-cadence.mjs`, plus a **Seed follow-up dates** button (`followup-seed.mjs --backfill`). (2) **Rejection patterns**: a fourth Statistics tab runs `analyze-patterns.mjs` (read-only) — outcome mix, recommendations, and the per-ATS-vendor advance rate. (3) **Add to CV**: a CV Studio card turns a project/publication URL or pasted text into ATS bullets grounded ONLY in that source (suggestions only, no writes; URL fetch is SSRF-guarded). (4) **4 new scan providers** — beesite (jobs.mercedes-benz.com backend), HigherEdJobs (RSS), JibeApply (iCIMS), softgarden — the registry now ships **50 adapters (45 EN + 5 RU)**, all in the Scan source dropdown. (5) **Knock-out pre-scan** step in the Apply checklist (visa/degree/salary disqualifiers flagged before form-filling). (6) **Reconcile runner** (`/api/run/reconcile` → `reconcile-pipeline.mjs`). Shell-out routes are fail-soft: without the parent scripts the UI shows an honest "not available" note.

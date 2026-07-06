@@ -259,10 +259,21 @@ export function registerCvStudioRoutes(app) {
         if (r.status < 200 || r.status >= 300) {
           return res.status(422).json({ error: `source fetch failed (HTTP ${r.status})` });
         }
-        source = String(r.body || '')
-          .replace(/<script[\s\S]*?<\/script>/gi, '')
-          .replace(/<style[\s\S]*?<\/style>/gi, '')
-          .replace(/<[^>]+>/g, ' ')
+        // Plain-TEXT extraction for an LLM prompt (never rendered as HTML —
+        // the client renders answers through UI.md, the escape-first
+        // boundary). Drop script/style CONTENT, strip tags to a fixed point
+        // (a strip can reveal a new tag), then remove every remaining < / >
+        // outright. The [<>] sweep below is what makes the bounded 8-pass loop
+        // safe: even if the cap trips, no angle bracket — hence no partial
+        // tag — can survive it (CodeQL incomplete-multi-character-sanitization).
+        let text = String(r.body || '')
+          .replace(/<script\b[\s\S]*?<\/script[^>]*>/gi, ' ')
+          .replace(/<style\b[\s\S]*?<\/style[^>]*>/gi, ' ');
+        let prev;
+        let passes = 0;
+        do { prev = text; text = text.replace(/<[^>]*>/g, ' '); } while (text !== prev && ++passes < 8);
+        source = text
+          .replace(/[<>]/g, ' ')
           .replace(/\s+/g, ' ')
           .slice(0, MAX_JD)
           .trim();
