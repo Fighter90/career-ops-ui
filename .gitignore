@@ -131,3 +131,8 @@ Icon?
 
 # Claude Code skill lock (session artifact)
 skills-lock.json
+
+# landing site (site/ builds in CI only)
+site/node_modules/
+site/dist/
+site/.astro/

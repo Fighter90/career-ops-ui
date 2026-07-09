@@ -1,0 +1,48 @@
+---
+import { Picture } from 'astro:assets';
+import { t, type Locale } from '../i18n/locales';
+import { screenshotFor } from '../lib/screenshots';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const shot = screenshotFor(locale.file);
+const captions = [1, 2, 3].map((i) => ({
+  title: t(locale, `showcase.c${i}.title`),
+  desc: t(locale, `showcase.c${i}.desc`),
+}));
+---
+
+<section id="screenshots" class="section">
+  <div class="container-site">
+    <div class="reveal mb-10 max-w-2xl">
+      <h2 class="mb-3 text-3xl font-bold tracking-tight md:text-4xl">{t(locale, 'showcase.h2')}</h2>
+      <p class="text-lg text-ink-soft">{t(locale, 'showcase.sub')}</p>
+    </div>
+
+    <div class="reveal overflow-hidden rounded-[24px] border border-line shadow-[var(--shadow-hover)]">
+      <Picture
+        src={shot}
+        alt={t(locale, 'showcase.alt')}
+        formats={['avif', 'webp']}
+        widths={[640, 960, 1440]}
+        sizes="(max-width: 1200px) 94vw, 1160px"
+        loading="lazy"
+        class="block h-auto w-full"
+      />
+    </div>
+
+    <ul class="mt-8 grid gap-6 sm:grid-cols-3">
+      {captions.map((c, i) => (
+        <li class="reveal flex gap-3">
+          <span class="font-mono text-sm font-bold text-[color:var(--color-rausch-deep)]">0{i + 1}</span>
+          <div>
+            <h3 class="mb-1 font-bold">{c.title}</h3>
+            <p class="text-[0.92rem] leading-6 text-ink-soft">{c.desc}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

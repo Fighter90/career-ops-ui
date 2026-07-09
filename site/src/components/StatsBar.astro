@@ -1,0 +1,32 @@
+---
+import { t, type Locale } from '../i18n/locales';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+// Every number is read from the repo at build time (src/generated/facts.json).
+const testsRounded = facts.tests ? Math.floor(facts.tests / 100) * 100 : null;
+const adaptersRounded = Math.floor(facts.adapters / 5) * 5;
+const items = [
+  t(locale, 'stats.mit'),
+  t(locale, 'stats.langs').replace('{n}', String(facts.locales)),
+  t(locale, 'stats.adapters').replace('{n}', String(adaptersRounded)),
+  t(locale, 'stats.providers').replace('{n}', String(facts.providers)),
+  ...(testsRounded ? [t(locale, 'stats.tests').replace('{n}', testsRounded.toLocaleString('en-US'))] : []),
+  t(locale, 'stats.local'),
+];
+---
+
+<section class="border-y border-line bg-paper-alt py-6">
+  <ul class="container-site flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+    {items.map((item) => (
+      <li class="flex items-center gap-2 text-sm font-semibold text-ink-soft">
+        <span class="h-1.5 w-1.5 rounded-full bg-[color:var(--color-rausch)]" aria-hidden="true"></span>
+        {item}
+      </li>
+    ))}
+  </ul>
+</section>

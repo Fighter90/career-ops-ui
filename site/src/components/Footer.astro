@@ -1,0 +1,90 @@
+---
+import { LOCALES, localeHome, localePath, t, type Locale } from '../i18n/locales';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+  page: '' | 'help';
+}
+const { locale, page } = Astro.props;
+const home = localeHome(locale);
+const year = new Date().getFullYear();
+
+const product = [
+  { label: t(locale, 'nav.how'), href: `${home}#how-it-works` },
+  { label: t(locale, 'nav.features'), href: `${home}#features` },
+  { label: t(locale, 'nav.screens'), href: `${home}#screenshots` },
+  { label: t(locale, 'nav.compare'), href: `${home}#compare` },
+  { label: t(locale, 'nav.faq'), href: `${home}#faq` },
+];
+const resources = [
+  { label: t(locale, 'footer.help'), href: `${home}help/` },
+  { label: t(locale, 'footer.readme'), href: `${facts.repoUrl}#readme` },
+  { label: t(locale, 'footer.changelog'), href: `${facts.repoUrl}/blob/main/CHANGELOG.md` },
+  { label: t(locale, 'footer.releases'), href: `${facts.repoUrl}/releases` },
+  { label: t(locale, 'footer.parentDocs'), href: `${facts.parentUrl}/docs` },
+];
+const community = [
+  { label: 'GitHub', href: facts.repoUrl },
+  { label: t(locale, 'footer.issues'), href: `${facts.repoUrl}/issues` },
+  { label: t(locale, 'footer.discussions'), href: `${facts.repoUrl}/discussions` },
+  { label: t(locale, 'footer.contributing'), href: `${facts.repoUrl}/blob/main/CONTRIBUTING.md` },
+];
+---
+
+<footer class="border-t border-line bg-paper py-14">
+  <div class="container-site">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <nav aria-label={t(locale, 'footer.product')}>
+        <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-ink-faint">{t(locale, 'footer.product')}</h2>
+        <ul class="space-y-2">
+          {product.map((l) => (
+            <li><a href={l.href} class="text-sm text-ink-soft hover:text-ink hover:underline">{l.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <nav aria-label={t(locale, 'footer.resources')}>
+        <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-ink-faint">{t(locale, 'footer.resources')}</h2>
+        <ul class="space-y-2">
+          {resources.map((l) => (
+            <li><a href={l.href} rel={l.href.startsWith('http') ? 'noopener' : undefined} class="text-sm text-ink-soft hover:text-ink hover:underline">{l.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <nav aria-label={t(locale, 'footer.community')}>
+        <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-ink-faint">{t(locale, 'footer.community')}</h2>
+        <ul class="space-y-2">
+          {community.map((l) => (
+            <li><a href={l.href} rel="noopener" class="text-sm text-ink-soft hover:text-ink hover:underline">{l.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <nav aria-label={t(locale, 'footer.languages')}>
+        <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-ink-faint">{t(locale, 'footer.languages')}</h2>
+        <ul class="grid grid-cols-2 gap-x-4 gap-y-2">
+          {LOCALES.map((l) => (
+            <li>
+              <a
+                href={localePath(l, page)}
+                hreflang={l.code}
+                lang={l.code}
+                aria-current={l.code === locale.code ? 'true' : undefined}
+                class:list={['text-sm text-ink-soft hover:text-ink hover:underline', l.code === locale.code && 'font-bold text-ink']}
+              >
+                {l.endonym}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="mt-12 flex flex-col gap-2 border-t border-line pt-6 text-[0.8rem] text-ink-faint md:flex-row md:items-center md:justify-between">
+      <p>
+        © {year} career-ops-ui ·
+        <a href={`${facts.repoUrl}/blob/main/LICENSE`} rel="noopener" class="underline underline-offset-2">{t(locale, 'footer.license')}</a>
+      </p>
+      <p>{t(locale, 'open.disclaimer')}</p>
+    </div>
+  </div>
+</footer>

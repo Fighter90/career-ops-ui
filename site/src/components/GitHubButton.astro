@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+import facts from '../generated/facts.json';
+
+interface Props {
+  label: string;
+  class?: string;
+}
+const { label, class: className = '' } = Astro.props;
+// Star count fetched at BUILD time by scripts/sync-assets.mjs — never client-side.
+const stars = typeof facts.stars === 'number' ? facts.stars : null;
+---
+
+<a href={facts.repoUrl} class={`btn-ghost !px-4 !py-2 text-sm ${className}`} rel="noopener">
+  <Icon name="github" class="h-[18px] w-[18px]" />
+  <span>{label}</span>
+  {stars !== null && (
+    <span class="flex items-center gap-1 border-s border-line ps-2 text-ink-soft">
+      <Icon name="star" class="h-3.5 w-3.5" />
+      <span class="font-mono text-xs">{stars.toLocaleString('en-US')}</span>
+    </span>
+  )}
+</a>

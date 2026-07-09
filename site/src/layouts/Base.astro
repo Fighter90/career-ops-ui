@@ -1,0 +1,67 @@
+---
+import '@fontsource-variable/figtree';
+import '@fontsource/jetbrains-mono/400.css';
+import '../styles/global.css';
+import { LOCALES, localePath, t, type Locale } from '../i18n/locales';
+import Seo from '../components/Seo.astro';
+
+interface Props {
+  locale: Locale;
+  page: '' | 'help';
+  title: string;
+  description: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { locale, page, title, description, jsonLd } = Astro.props;
+
+// Compact locale registry for the client (language banner).
+const clientLocales = LOCALES.map((l) => ({
+  code: l.code,
+  slug: l.slug,
+  endonym: l.endonym,
+  path: localePath(l, page),
+}));
+---
+
+<!doctype html>
+<html lang={locale.code} dir={locale.dir} data-locale={locale.code}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <Seo locale={locale} page={page} title={title} description={description} jsonLd={jsonLd} />
+    <script is:inline>
+      // Progressive enhancement flag — CSS only hides reveal/tab content when
+      // JS is actually available. Everything is readable without JS.
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body class="min-h-screen">
+    <a href="#main" class="skip-link btn-secondary bg-paper">{t(locale, 'a11y.skip')}</a>
+
+    <!-- One-time language suggestion banner (client decides visibility). -->
+    <div
+      id="lang-banner"
+      hidden
+      class="fixed bottom-4 inset-inline-start-4 z-50 max-w-sm rounded-[16px] border border-line bg-paper p-4 text-sm shadow-[var(--shadow-hover)]"
+      data-locales={JSON.stringify(clientLocales)}
+      data-text={t(locale, 'banner.text')}
+      role="region"
+      aria-label={t(locale, 'a11y.lang')}
+    >
+      <p id="lang-banner-text" class="mb-3 font-medium"></p>
+      <div class="flex gap-2">
+        <a id="lang-banner-link" href="/" class="btn-primary !px-4 !py-1.5 text-sm">{t(locale, 'banner.open')}</a>
+        <button id="lang-banner-dismiss" type="button" class="btn-ghost !px-4 !py-1.5 text-sm">
+          {t(locale, 'banner.dismiss')}
+        </button>
+      </div>
+    </div>
+
+    <slot />
+
+    <div id="copy-live" class="sr-only" aria-live="polite"></div>
+    <script src="../scripts/site.js"></script>
+  </body>
+</html>

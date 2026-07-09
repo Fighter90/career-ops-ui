@@ -1,0 +1,80 @@
+---
+import { t, type Locale } from '../i18n/locales';
+import { buildRows, COMPETITORS, CHECKED_ON, SOURCES, type Cell } from '../lib/compare';
+import Icon from './Icon.astro';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const rows = buildRows(facts.adapters, facts.locales);
+
+function cellText(cell: Cell): string | null {
+  if (cell.kind === 'key' && cell.key) {
+    return t(locale, cell.key)
+      .replace('{n}', String(cell.key === 'compare.val.langs' ? facts.locales : facts.adapters));
+  }
+  if (cell.kind === 'text') return cell.text ?? '';
+  return null;
+}
+---
+
+<section id="compare" class="section bg-paper-alt">
+  <div class="container-site">
+    <div class="reveal mb-10 max-w-2xl">
+      <h2 class="mb-3 text-3xl font-bold tracking-tight md:text-4xl">{t(locale, 'compare.h2')}</h2>
+      <p class="text-lg text-ink-soft">{t(locale, 'compare.sub')}</p>
+    </div>
+
+    <div class="compare-scroll reveal rounded-[24px] border border-line bg-paper shadow-[var(--shadow-rest)]">
+      <table class="w-full min-w-[860px] border-collapse text-[0.92rem]">
+        <thead>
+          <tr class="border-b border-line">
+            <th scope="col" class="px-5 py-4 text-start font-semibold text-ink-soft"></th>
+            <th scope="col" class="bg-[#fff1f3] px-5 py-4 text-start">
+              <span class="block font-extrabold">career-ops-ui</span>
+              <span class="mt-1 inline-block rounded-full bg-[color:var(--color-rausch-deep)] px-2.5 py-0.5 text-[0.7rem] font-bold text-white">
+                {t(locale, 'compare.badge')}
+              </span>
+            </th>
+            {COMPETITORS.map((c) => (
+              <th scope="col" class="px-5 py-4 text-start font-bold">{c}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr class="border-b border-line last:border-0">
+              <th scope="row" class="px-5 py-3.5 text-start font-semibold">{t(locale, row.labelKey)}</th>
+              {row.cells.map((cell, i) => (
+                <td class:list={['px-5 py-3.5 align-top', i === 0 && 'bg-[#fff1f3] font-semibold']}>
+                  {cell.kind === 'yes' && (
+                    <Icon name="check" class="h-5 w-5 text-[color:var(--color-ok)]" />
+                  )}
+                  {cell.kind === 'no' && <Icon name="x" class="h-5 w-5 text-[color:var(--color-warn)]" />}
+                  {cell.kind === 'dash' && <span class="text-ink-faint">—</span>}
+                  {(cell.kind === 'key' || cell.kind === 'text') && <span>{cellText(cell)}</span>}
+                  {cell.subKey && (
+                    <span class="mt-0.5 block text-[0.75rem] font-normal text-ink-faint">{t(locale, cell.subKey)}</span>
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="reveal mt-4 max-w-3xl text-[0.8rem] leading-5 text-ink-faint">
+      {t(locale, 'compare.note').replace('{date}', CHECKED_ON)}
+      {SOURCES.map((s, i) => (
+        <>
+          <a href={s.url} rel="noopener nofollow" class="underline underline-offset-2">{s.name}</a>{i < SOURCES.length - 1 ? ' · ' : '. '}
+        </>
+      ))}
+      {t(locale, 'compare.error')}
+      <a href={`${facts.repoUrl}/issues`} rel="noopener" class="underline underline-offset-2">{t(locale, 'compare.issue')}</a>.
+    </p>
+  </div>
+</section>

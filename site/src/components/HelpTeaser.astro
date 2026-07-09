@@ -1,0 +1,42 @@
+---
+import { localeHome, t, type Locale } from '../i18n/locales';
+import Icon from './Icon.astro';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const helpUrl = `${localeHome(locale)}help/`;
+const cards = [
+  { icon: 'book-open', title: t(locale, 'helpTeaser.c1.title'), desc: t(locale, 'helpTeaser.c1.desc') },
+  { icon: 'download', title: t(locale, 'helpTeaser.c2.title'), desc: t(locale, 'helpTeaser.c2.desc') },
+  { icon: 'wrench', title: t(locale, 'helpTeaser.c3.title'), desc: t(locale, 'helpTeaser.c3.desc') },
+] as const;
+---
+
+<section id="help" class="section">
+  <div class="container-site">
+    <div class="reveal mb-10 max-w-2xl">
+      <h2 class="mb-3 text-3xl font-bold tracking-tight md:text-4xl">{t(locale, 'helpTeaser.h2')}</h2>
+      <p class="text-lg text-ink-soft">
+        {t(locale, 'helpTeaser.sub').replace('{n}', String(facts.locales))}
+      </p>
+    </div>
+    <ul class="grid gap-5 md:grid-cols-3">
+      {cards.map((c) => (
+        <li class="card reveal">
+          <span class="icon-chip mb-4"><Icon name={c.icon} class="h-5 w-5" /></span>
+          <h3 class="mb-2 text-[1.05rem] font-bold">{c.title}</h3>
+          <p class="text-[0.92rem] leading-6 text-ink-soft">{c.desc}</p>
+        </li>
+      ))}
+    </ul>
+    <div class="reveal mt-8">
+      <a href={helpUrl} class="btn-primary">
+        {t(locale, 'helpTeaser.cta')}
+        <Icon name="arrow-right" class="mirror-rtl h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { DEFAULT_LOCALE, t } from '../i18n/locales';
+
+const locale = DEFAULT_LOCALE;
+---
+
+<Base locale={locale} page="" title={`${t(locale, 'notfound.title')} — career-ops-ui`} description={t(locale, 'notfound.desc')}>
+  <Header locale={locale} page="" />
+  <main id="main" class="container-site flex min-h-[60vh] flex-col items-center justify-center pt-24 text-center">
+    <p class="mb-2 font-mono text-6xl font-bold text-ink-faint">404</p>
+    <h1 class="mb-3 text-3xl font-extrabold tracking-tight">{t(locale, 'notfound.title')}</h1>
+    <p class="mb-8 text-ink-soft">{t(locale, 'notfound.desc')}</p>
+    <a href="/" class="btn-primary">{t(locale, 'notfound.home')}</a>
+  </main>
+  <Footer locale={locale} page="" />
+</Base>

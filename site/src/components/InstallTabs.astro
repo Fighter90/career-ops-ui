@@ -1,0 +1,85 @@
+---
+import { t, type Locale } from '../i18n/locales';
+import Icon from './Icon.astro';
+
+interface Props {
+  locale: Locale;
+  id?: string;
+}
+const { locale, id } = Astro.props;
+
+// Real, working install commands only — verified against README.md.
+const CURL = 'curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash';
+const NPX = 'cd career-ops/web-ui\nnpx career-ops-ui setup';
+const GIT = 'cd career-ops   # your existing career-ops project\ngit clone https://github.com/Fighter90/career-ops-ui.git web-ui\ncd web-ui && bash bin/start.sh';
+
+const TABS = [
+  { name: 'curl', cmd: CURL, noteKey: 'install.curlNote' },
+  { name: 'npx', cmd: NPX, noteKey: 'install.npxNote' },
+  { name: 'git clone', cmd: GIT, noteKey: 'install.gitNote' },
+];
+const slug = (s: string) => s.replace(/\s+/g, '-');
+---
+
+<div class="terminal overflow-hidden text-start" data-install id={id} dir="ltr">
+  {/* mac window chrome */}
+  <div class="flex items-center gap-2 border-b border-white/10 px-4 py-3">
+    <span class="h-3 w-3 rounded-full bg-[#ff5f57]"></span>
+    <span class="h-3 w-3 rounded-full bg-[#febc2e]"></span>
+    <span class="h-3 w-3 rounded-full bg-[#28c840]"></span>
+    <span class="ms-3 hidden rounded-md bg-white/10 px-3 py-0.5 font-mono text-[0.7rem] text-white/60 sm:inline">
+      {t(locale, 'install.title')}
+    </span>
+  </div>
+
+  <div class="flex gap-1 border-b border-white/10 px-3 needs-js" role="tablist" aria-label={t(locale, 'install.title')}>
+    {TABS.map((tab, i) => (
+      <button
+        type="button"
+        role="tab"
+        id={`tab-${id}-${slug(tab.name)}`}
+        aria-controls={`panel-${id}-${slug(tab.name)}`}
+        aria-selected={i === 0 ? 'true' : 'false'}
+        data-tab={tab.name}
+        class="install-tab border-b-2 border-transparent px-3 py-2 font-mono text-[0.8rem] text-white/55 transition hover:text-white"
+      >
+        {tab.name}
+      </button>
+    ))}
+  </div>
+
+  {TABS.map((tab, i) => (
+    <div
+      class="install-panel px-4 py-4"
+      role="tabpanel"
+      id={`panel-${id}-${slug(tab.name)}`}
+      aria-labelledby={`tab-${id}-${slug(tab.name)}`}
+      data-panel={tab.name}
+      hidden={i !== 0}
+    >
+      <div class="flex items-start justify-between gap-3">
+        <pre class="overflow-x-auto font-mono text-[0.82rem] leading-6 text-[#e8e8e8]"><code>{tab.cmd}</code></pre>
+        <button
+          type="button"
+          class="copy-btn btn-ghost shrink-0 !border-white/20 !p-2 text-white/70 hover:!bg-white/10 needs-js"
+          data-copy={tab.cmd}
+          data-copied-label={t(locale, 'a11y.copied')}
+          aria-label={t(locale, 'a11y.copy')}
+        >
+          <Icon name="copy" class="i-copy h-4 w-4" />
+          <Icon name="check" class="i-check h-4 w-4 text-[#28c840]" />
+        </button>
+      </div>
+      {tab.name === 'curl' && (
+        <div class="mt-3 space-y-1 font-mono text-[0.78rem] text-white/45">
+          <p class="term-log"><span class="text-[#28c840]">✓</span> {t(locale, 'install.log1')}</p>
+          <p class="term-log"><span class="text-[#28c840]">✓</span> {t(locale, 'install.log2')}</p>
+          <p class="term-log"><span class="text-white/70">→</span> http://127.0.0.1:4317</p>
+        </div>
+      )}
+      {tab.name !== 'curl' && (
+        <p class="mt-3 max-w-prose text-[0.78rem] leading-5 text-white/45">{t(locale, tab.noteKey)}</p>
+      )}
+    </div>
+  ))}
+</div>

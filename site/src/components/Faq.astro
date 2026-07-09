@@ -1,0 +1,37 @@
+---
+import { t, type Locale } from '../i18n/locales';
+import Icon from './Icon.astro';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const adaptersRounded = Math.floor(facts.adapters / 5) * 5;
+const sub = (s: string) =>
+  s
+    .replace('{adapters}', String(adaptersRounded))
+    .replace('{providers}', String(facts.providers))
+    .replace('{n}', String(facts.locales));
+const items = Array.from({ length: 10 }, (_, i) => ({
+  q: sub(t(locale, `faq.q${i + 1}`)),
+  a: sub(t(locale, `faq.a${i + 1}`)),
+}));
+---
+
+<section id="faq" class="section">
+  <div class="container-site max-w-3xl">
+    <h2 class="reveal mb-10 text-3xl font-bold tracking-tight md:text-4xl">{t(locale, 'faq.h2')}</h2>
+    <div class="reveal divide-y divide-[color:var(--color-line)] rounded-[24px] border border-line bg-paper">
+      {items.map((item) => (
+        <details class="group px-6 py-1">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold [&::-webkit-details-marker]:hidden">
+            {item.q}
+            <Icon name="chevron-down" class="h-4 w-4 shrink-0 text-ink-soft transition group-open:rotate-180" />
+          </summary>
+          <p class="max-w-[65ch] pb-5 text-[0.95rem] leading-7 text-ink-soft">{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
