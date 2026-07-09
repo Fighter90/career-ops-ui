@@ -7,6 +7,8 @@
 
 _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
+🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
+
 [![tests](https://img.shields.io/badge/tests-1817%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)

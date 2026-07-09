@@ -349,7 +349,7 @@ html.js .hero-seq-3 { animation-delay: 160ms; }
 .skip-link {
   position: absolute;
   inset-inline-start: 0.5rem;
-  top: -3rem;
+  top: -6rem;
   z-index: 100;
   transition: top 0.15s ease;
 }

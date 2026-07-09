@@ -41,7 +41,7 @@ const slug = (s: string) => s.replace(/\s+/g, '-');
         aria-controls={`panel-${id}-${slug(tab.name)}`}
         aria-selected={i === 0 ? 'true' : 'false'}
         data-tab={tab.name}
-        class="install-tab border-b-2 border-transparent px-3 py-2 font-mono text-[0.8rem] text-white/55 transition hover:text-white"
+        class="install-tab border-b-2 border-transparent px-3 py-2 font-mono text-[0.8rem] text-white/70 transition hover:text-white"
       >
         {tab.name}
       </button>
@@ -71,14 +71,14 @@ const slug = (s: string) => s.replace(/\s+/g, '-');
         </button>
       </div>
       {tab.name === 'curl' && (
-        <div class="mt-3 space-y-1 font-mono text-[0.78rem] text-white/45">
+        <div class="mt-3 space-y-1 font-mono text-[0.78rem] text-white/70">
           <p class="term-log"><span class="text-[#28c840]">✓</span> {t(locale, 'install.log1')}</p>
           <p class="term-log"><span class="text-[#28c840]">✓</span> {t(locale, 'install.log2')}</p>
           <p class="term-log"><span class="text-white/70">→</span> http://127.0.0.1:4317</p>
         </div>
       )}
       {tab.name !== 'curl' && (
-        <p class="mt-3 max-w-prose text-[0.78rem] leading-5 text-white/45">{t(locale, tab.noteKey)}</p>
+        <p class="mt-3 max-w-prose text-[0.78rem] leading-5 text-white/70">{t(locale, tab.noteKey)}</p>
       )}
     </div>
   ))}
