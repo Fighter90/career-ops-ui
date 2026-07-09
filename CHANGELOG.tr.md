@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.0] — 2026-07-09
+
+Üst career-ops **v1.18.0** parite paketi.
+
+### Eklendi
+- **9 yeni tarama sağlayıcısı** — Cornerstone OnDemand (`csod`), Phenom (`phenom`), Radancy (`radancy`), Deutsche Bahn (`deutschebahn`), EchoJobs (`echojobs`), TKMS (`tkms`), Heckler & Koch (`hecklerkoch`), Rheinmetall (`rheinmetall`), LaraJobs (`larajobs`) — artık **54 adaptör**. Lever adaptörü ayrıca EU tenant panolarını (`jobs.eu.lever.co`) algılar.
+- **Takipçide `Hired` durumu** (üst projenin `states.yml` paritesi): kabul edilen teklifler kendi kanonik durumunu, kutlama rozetini ve `#/tracker` üzerinde «iş bulundu» banner'ını alır; huni ve dönüşüm grafikleri onu tüm aşamalardan geçmiş sayar.
+- **`#/stats` içinde Toplam sekmesi** — üst projenin `stats.mjs` dosyasının salt okunur aktarımı (toplam takipçi özeti, kümülatif huni oranları, tarayıcı toplamları, portal kapsamı) artı `salary-gap.mjs` ücret gözlemleri (istenen vs ilan edilen vs gerçek, başvuru başına). Yeni rotalar `GET /api/stats/lifetime` ve `GET /api/stats/salary-gap` — sıfır token maliyetli shell-out, üst proje yokken güvenli `{available:false}` düşüşü.
+- 16 dilin tamamında 28 yeni i18n anahtarı; yardım kılavuzu §14/§26 tüm dillerde güncellendi.
+
+### Testler
+- +38 birim testi (üç sağlayıcı parite paketi + aktarım/durum rotaları) — toplam **1817**.
+
 ## [1.117.2] — 2026-07-06
 
 **Parite shell-out'ları için boş izleyici düzeltmesi.** İzleyicide henüz başvuru yokken üst betikler kod 1 ve yapılandırılmış `{error}` JSON ile çıkar; takip panosu ve ret kalıpları sekmesi bunu "script-error" olarak gösteriyordu. Her iki rota artık bunu sağlıklı bir boş durum (`available:true, empty:true`) olarak iletir ve UI dürüst "henüz bir şey yok" mesajını gösterir. Gerçek bir üst projeyle canlı doğrulandı.

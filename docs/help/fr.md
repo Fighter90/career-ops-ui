@@ -1209,8 +1209,10 @@ forme de tableau GitHub-Flavored Markdown.
 
 ### Status flow
 
-`Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` / `Rejected`
+`Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` / `Hired` / `Rejected`
 / `Discarded` / `SKIP`.
+
+`Hired` (v1.118.0) est l'état final heureux — l'offre a été acceptée. Le tracker le marque d'un badge de célébration et l'accueille avec une bannière « poste décroché ».
 
 La liste blanche de statuts est imposée côté serveur ; envoyer autre chose
 dans un `POST /api/tracker` retombe sur `Evaluated`. La transition canonique
@@ -2137,6 +2139,10 @@ L'onglet **Mon pipeline** trace votre propre suivi de candidatures — rien d'ex
 ### **Tendance des rôles cibles**
 
 L'onglet **Tendance des rôles cibles** est la vue d'origine : le nombre d'offres et le salaire médian par pays pour vos rôles cibles, agrégés depuis votre dernier scan, avec un sélecteur de devise et un aperçu **Offres par rôle cible**. **Enregistrer un instantané** consigne l'agrégat actuel pour que vous puissiez observer l'évolution du nombre d'offres dans le temps, et la courbe de tendance relit ces instantanés. Des données éparses sont attendues et étiquetées comme indicatives — elles ne sont jamais complétées par des nombres inventés.
+
+### Cumul et rémunération
+
+L'onglet **Cumul** (v1.118.0) relaie en lecture seule deux scripts parents à zéro token : `stats.mjs` — le récapitulatif cumulé de votre tracker, les taux d'entonnoir cumulés (réponse / entretien / offre), les totaux du scanner et la couverture des portails — et `salary-gap.mjs` — la rémunération souhaitée vs annoncée vs réelle par candidature, consolidée depuis les Machine Summary des rapports et `data/salary-observations.tsv`. Les petits échantillons sont marqués comme indicatifs ; sans le projet parent, l'onglet affiche une note honnête.
 
 ## 27. Plan de carrière (`#/career-plan`)
 

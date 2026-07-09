@@ -9,6 +9,19 @@
 ---
 
 
+## [1.118.0] — 2026-07-09
+
+부모 career-ops **v1.18.0** 패리티 팩.
+
+### 추가
+- **9개의 새 스캔 프로바이더** — Cornerstone OnDemand (`csod`), Phenom (`phenom`), Radancy (`radancy`), Deutsche Bahn (`deutschebahn`), EchoJobs (`echojobs`), TKMS (`tkms`), Heckler & Koch (`hecklerkoch`), Rheinmetall (`rheinmetall`), LaraJobs (`larajobs`) — 이제 **어댑터 54개**. Lever 어댑터는 EU 테넌시 보드(`jobs.eu.lever.co`)도 감지합니다.
+- **트래커 `Hired` 상태** (부모 `states.yml` 패리티): 수락한 오퍼는 고유한 정식 상태, 축하 배지, `#/tracker`의 취업 성공 배너를 갖습니다. 퍼널과 전환 차트는 모든 단계를 통과한 것으로 계산합니다.
+- **`#/stats`의 누적 통계 탭** — 부모의 `stats.mjs`(누적 트래커 집계, 누적 퍼널 비율, 스캐너 합계, 포털 커버리지)와 `salary-gap.mjs`의 보상 관찰(희망 vs 공고 제시 vs 실제, 지원 건별)을 읽기 전용으로 중계합니다. 새 라우트 `GET /api/stats/lifetime` 및 `GET /api/stats/salary-gap` — 제로 토큰 셸아웃, 부모 프로젝트가 없으면 `{available:false}`로 안전하게 동작합니다.
+- 16개 로케일 전체에 28개의 새 i18n 키; 도움말 가이드 §14/§26을 모든 언어로 갱신.
+
+### 테스트
+- 유닛 테스트 +38개(프로바이더 패리티 스위트 3개 + 릴레이/상태 라우트) — 총 **1817**개.
+
 ## [1.117.2] — 2026-07-06
 
 **패리티 셸-아웃의 빈 트래커 수정.** 트래커에 아직 지원이 없으면 부모 스크립트가 코드 1과 구조화된 `{error}` JSON으로 종료합니다. 팔로업 보드와 거절 패턴 탭이 이를 "script-error"로 표시했습니다. 이제 두 라우트 모두 이를 건강한 빈 상태(`available:true, empty:true`)로 전달해 UI가 정직한 "아직 없음" 메시지를 보여줍니다. 실제 부모로 라이브 검증됨.

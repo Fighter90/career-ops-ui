@@ -82,6 +82,16 @@ import { beesiteAdapter } from './adapters/beesite.mjs';
 import { higheredjobsAdapter } from './adapters/higheredjobs.mjs';
 import { jibeapplyAdapter } from './adapters/jibeapply.mjs';
 import { softgardenAdapter } from './adapters/softgarden.mjs';
+// v1.118.0 — parent career-ops v1.18.0 parity: 9 new providers.
+import { csodAdapter } from './adapters/csod.mjs';
+import { phenomAdapter } from './adapters/phenom.mjs';
+import { radancyAdapter } from './adapters/radancy.mjs';
+import { deutschebahnAdapter } from './adapters/deutschebahn.mjs';
+import { echojobsAdapter } from './adapters/echojobs.mjs';
+import { tkmsAdapter } from './adapters/tkms.mjs';
+import { hecklerkochAdapter } from './adapters/hecklerkoch.mjs';
+import { rheinmetallAdapter } from './adapters/rheinmetall.mjs';
+import { larajobsAdapter } from './adapters/larajobs.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -148,6 +158,21 @@ export const ALL_ADAPTERS = [
   higheredjobsAdapter,
   jibeapplyAdapter,
   softgardenAdapter,
+  // v1.118.0 — parent career-ops v1.18.0 parity. csod (Cornerstone) / phenom /
+  // are per-tenant ATS (host-detected or explicit `provider:`); radancy is
+  // provider-selected only (branded hosts carry no vendor token); deutschebahn /
+  // tkms / hecklerkoch / rheinmetall are single-company careers sites
+  // (host-detected or provider-selected); larajobs (+ echojobs) are board-wide
+  // feeds, provider-selected. All zero-auth.
+  csodAdapter,
+  phenomAdapter,
+  radancyAdapter,
+  deutschebahnAdapter,
+  echojobsAdapter,
+  tkmsAdapter,
+  hecklerkochAdapter,
+  rheinmetallAdapter,
+  larajobsAdapter,
 ];
 
 /**

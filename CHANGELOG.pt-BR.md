@@ -9,6 +9,19 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.118.0] — 2026-07-09
+
+Pacote de paridade com o career-ops pai **v1.18.0**.
+
+### Adicionado
+- **9 novos provedores de escaneamento** — Cornerstone OnDemand (`csod`), Phenom (`phenom`), Radancy (`radancy`), Deutsche Bahn (`deutschebahn`), EchoJobs (`echojobs`), TKMS (`tkms`), Heckler & Koch (`hecklerkoch`), Rheinmetall (`rheinmetall`), LaraJobs (`larajobs`) — agora **54 adaptadores**. O adaptador do Lever também detecta boards do tenant EU (`jobs.eu.lever.co`).
+- **Status `Hired` no tracker** (paridade com o `states.yml` do pai): ofertas aceitas ganham estado canônico próprio, um badge comemorativo e um banner de «vaga conquistada» no `#/tracker`; o funil e as conversões o contam como tendo avançado por todas as etapas.
+- **Aba Histórico em `#/stats`** — relay somente leitura do `stats.mjs` do pai (resumo histórico do tracker, taxas do funil acumulado, totais do scanner, cobertura de portais) mais observações de remuneração do `salary-gap.mjs` (desejado vs anunciado vs real, por candidatura). Novas rotas `GET /api/stats/lifetime` e `GET /api/stats/salary-gap` — shell-outs de zero tokens, degradação segura `{available:false}` sem o projeto pai.
+- 28 novas chaves i18n nos 16 idiomas; guia de ajuda §14/§26 atualizado em todos.
+
+### Testes
+- +38 testes unitários (três suítes de paridade de provedores + rotas de relay/status) — **1817** no total.
+
 ## [1.117.2] — 2026-07-06
 
 **Correção de tracker vazio para os shell-outs de paridade.** Os scripts do pai saem com código 1 e um JSON `{error}` estruturado quando o tracker ainda não tem candidaturas; o quadro de follow-up e a aba de padrões mostravam isso como «script-error». Ambas as rotas agora o transmitem como um estado vazio saudável (`available:true, empty:true`) e a UI mostra sua mensagem honesta de «nada ainda». Verificado ao vivo contra um pai real.

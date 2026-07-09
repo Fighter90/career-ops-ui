@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.0] — 2026-07-09
+
+Paritätspaket mit dem übergeordneten career-ops **v1.18.0**.
+
+### Hinzugefügt
+- **9 neue Scan-Provider** — Cornerstone OnDemand (`csod`), Phenom (`phenom`), Radancy (`radancy`), Deutsche Bahn (`deutschebahn`), EchoJobs (`echojobs`), TKMS (`tkms`), Heckler & Koch (`hecklerkoch`), Rheinmetall (`rheinmetall`), LaraJobs (`larajobs`) — jetzt **54 Adapter**. Der Lever-Adapter erkennt zusätzlich EU-Tenancy-Boards (`jobs.eu.lever.co`).
+- **`Hired`-Status im Tracker** (Parität mit der `states.yml` des Parents): angenommene Angebote bekommen einen eigenen kanonischen Status, ein feierliches Badge und ein „Job gelandet”-Banner auf `#/tracker`; Funnel und Conversions zählen ihn als durch alle Stufen fortgeschritten.
+- **Gesamt-Tab in `#/stats`** — Read-only-Relay des übergeordneten `stats.mjs` (Gesamtübersicht des Trackers, kumulierte Funnel-Quoten, Scanner-Gesamtzahlen, Portalabdeckung) plus Vergütungsbeobachtungen aus `salary-gap.mjs` (gewünscht vs. ausgeschrieben vs. tatsächlich, pro Bewerbung). Neue Routen `GET /api/stats/lifetime` und `GET /api/stats/salary-gap` — Zero-Token-Shell-outs, sichere Degradierung `{available:false}` ohne das übergeordnete Projekt.
+- 28 neue i18n-Schlüssel in allen 16 Sprachen; Hilfe-Guide §14/§26 in allen Sprachen aktualisiert.
+
+### Tests
+- +38 Unit-Tests (drei Provider-Paritäts-Suiten + Relay-/Status-Routen) — insgesamt **1817**.
+
 ## [1.117.2] — 2026-07-06
 
 **Leerer-Tracker-Fix für die Paritäts-Shell-outs.** Die Eltern-Skripte beenden sich mit Code 1 und einem strukturierten `{error}`-JSON, wenn der Tracker noch keine Bewerbungen hat; das Kadenz-Board und der Absagemuster-Tab zeigten das als „script-error". Beide Routen reichen es jetzt als gesunden Leerzustand weiter (`available:true, empty:true`), und die UI zeigt ihre ehrliche „noch nichts"-Meldung. Live gegen ein echtes Elternprojekt verifiziert.

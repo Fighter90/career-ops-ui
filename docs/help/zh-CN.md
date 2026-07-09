@@ -1012,7 +1012,9 @@ CRM。每次申请一行;以 GitHub-Flavored Markdown 表的形式存于
 ### 状态流转
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
-`Rejected` / `Discarded` / `SKIP`。
+`Hired` / `Rejected` / `Discarded` / `SKIP`。
+
+`Hired`(v1.118.0)是圆满的最终状态 — offer 已被接受。跟踪器用庆祝徽章标记它,并以「拿到工作」横幅相迎。
 
 状态白名单由服务器端强制;在 `POST /api/tracker` 中发送其他值都会回
 退到 `Evaluated`。在 `/career-ops apply` 末尾确认 `Submitted.` 时,
@@ -1867,6 +1869,10 @@ career-ops-ui 的大部分功能都在问“这份工作和我的 CV 匹配吗�
 ### **目标职位趋势**
 
 **目标职位趋势**选项卡是最初的视图:按国家/地区列出你目标职位的空缺数量和薪资中位数,汇总自你最近一次扫描,附带货币选择器和**按目标职位划分的空缺**概览。**保存快照**会记录当前的汇总数据,让你能观察空缺数量随时间的变化,趋势线会读回这些快照。稀疏数据在预期之内并会被标注为仅供参考——它绝不会用编造的数字来填充。
+
+### 累计与薪酬
+
+**累计**标签页(v1.118.0)以只读方式中继两个零 token 的父项目脚本: `stats.mjs` — 你的累计跟踪器汇总、累计漏斗比率(回复 / 面试 / offer)、扫描器总数和门户覆盖 — 以及 `salary-gap.mjs` — 每份申请的期望 vs 职位标注 vs 实际薪酬,由报告的 Machine Summary 与 `data/salary-observations.tsv` 汇总。小样本会标注为仅供参考;没有父项目时标签页会显示诚实的提示。
 
 ## 27. 职业规划 (`#/career-plan`)
 

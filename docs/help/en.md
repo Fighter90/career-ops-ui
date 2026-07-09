@@ -1208,7 +1208,9 @@ GitHub-Flavored Markdown table.
 ### Status flow
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
-`Rejected` / `Discarded` / `SKIP`.
+`Hired` / `Rejected` / `Discarded` / `SKIP`.
+
+`Hired` (v1.118.0) is the terminal happy state — the offer was accepted. The tracker marks it with a celebratory badge and greets it with a job-landed banner.
 
 The status whitelist is enforced server-side; sending anything else in
 a `POST /api/tracker` defaults to `Evaluated`. The canonical
@@ -2132,6 +2134,10 @@ The **My pipeline** tab charts your own application tracker — nothing external
 ### Target-role trend
 
 The **Target-role trend** tab is the original view: vacancy counts and median salary by country for your target roles, aggregated from your latest scan, with a currency selector and a **Postings by target role** overview. **Save snapshot** records the current aggregate so you can watch how vacancy counts move over time, and the trend line reads those snapshots back. Sparse data is expected and labelled as indicative — it is never padded with invented numbers.
+
+### Lifetime & compensation
+
+The **Lifetime** tab (v1.118.0) relays two zero-token parent scripts, read-only: `stats.mjs` — your lifetime tracker roll-up, cumulative funnel rates (response / interview / offer), scanner totals, and portal coverage — and `salary-gap.mjs` — desired vs advertised vs actual compensation per application, folded from report Machine Summaries and `data/salary-observations.tsv`. Small samples are labelled as indicative; without the parent project the tab shows an honest note.
 
 ## 27. Career plan (`#/career-plan`)
 

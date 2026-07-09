@@ -128,3 +128,6 @@ Icon?
 # playwright-cli scratch (UI verification)
 .playwright-cli
 .playwright-mcp/
+
+# Claude Code skill lock (session artifact)
+skills-lock.json

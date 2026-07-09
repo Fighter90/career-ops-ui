@@ -1181,7 +1181,9 @@ GitHub-Flavored Markdown-tabel.
 ### Statusflow
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
-`Rejected` / `Discarded` / `SKIP`.
+`Hired` / `Rejected` / `Discarded` / `SKIP`.
+
+`Hired` (v1.118.0) er den lykkelige slutstatus — tilbuddet blev accepteret. Trackeren markerer den med et festligt badge og byder den velkommen med et «jobbet er i hus»-banner.
 
 Status-whitelisten håndhæves server-side; at sende noget andet i
 en `POST /api/tracker` defaulter til `Evaluated`. Den kanoniske
@@ -2093,6 +2095,10 @@ Fanen **Min pipeline** tegner din egen ansøgningstracker — intet eksternt. De
 ### Tendens for målroller
 
 Fanen **Tendens for målroller** er den oprindelige visning: antal ledige stillinger og medianløn pr. land for dine målroller, samlet fra din seneste scanning, med en valutavælger og et overblik over **Opslag efter målrolle**. **Gem snapshot** registrerer den aktuelle aggregering, så du kan følge, hvordan antallet af ledige stillinger bevæger sig over tid, og tendenslinjen læser disse snapshots tilbage. Sparsomme data er forventet og mærkes som vejledende — de bliver aldrig fyldt ud med opdigtede tal.
+
+### Samlet og løn
+
+Fanen **Samlet** (v1.118.0) relæer skrivebeskyttet to forældre-scripts uden token-omkostning: `stats.mjs` — din samlede tracker-oversigt, akkumulerede tragtrater (svar / samtale / tilbud), scannertal og portaldækning — og `salary-gap.mjs` — ønsket vs annonceret vs faktisk løn pr. ansøgning, samlet fra rapporternes Machine Summary og `data/salary-observations.tsv`. Små stikprøver markeres som vejledende; uden forældre-projektet viser fanen en ærlig note.
 
 ## 27. Karriereplan (`#/career-plan`)
 

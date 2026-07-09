@@ -9,6 +9,19 @@
 ---
 
 
+## [1.118.0] — 2026-07-09
+
+父项目 career-ops **v1.18.0** 对齐包。
+
+### 新增
+- **9 个新扫描提供方** — Cornerstone OnDemand (`csod`), Phenom (`phenom`), Radancy (`radancy`), Deutsche Bahn (`deutschebahn`), EchoJobs (`echojobs`), TKMS (`tkms`), Heckler & Koch (`hecklerkoch`), Rheinmetall (`rheinmetall`), LaraJobs (`larajobs`) — 现共 **54 个适配器**。Lever 适配器还可识别 EU 租户面板(`jobs.eu.lever.co`)。
+- **跟踪器 `Hired` 状态**(与父项目 `states.yml` 对齐): 已接受的 offer 拥有独立的规范状态、庆祝徽章及 `#/tracker` 上的「拿到工作」横幅;漏斗与转化图表将其计为已通过所有阶段。
+- **`#/stats` 的累计标签页** — 只读中继父项目的 `stats.mjs`(累计跟踪器汇总、累计漏斗比率、扫描器总数、门户覆盖)及 `salary-gap.mjs` 的薪酬观察(期望 vs 职位标注 vs 实际,按申请)。新路由 `GET /api/stats/lifetime` 与 `GET /api/stats/salary-gap` — 零 token 外壳调用,无父项目时安全降级为 `{available:false}`。
+- 16 个语言全部新增 28 个 i18n 键;帮助指南 §14/§26 已在所有语言更新。
+
+### 测试
+- 新增 38 个单元测试(三个提供方对齐套件 + 中继/状态路由) — 共 **1817** 个。
+
 ## [1.117.2] — 2026-07-06
 
 **对齐外壳调用的空跟踪器修复。** 当跟踪器还没有申请时,父脚本以代码 1 和结构化 `{error}` JSON 退出;跟进节奏板和拒绝模式标签页把它显示为"script-error"。两条路由现在将其转达为健康的空状态(`available:true, empty:true`),UI 显示诚实的"暂无内容"消息。已对真实父项目实时验证。

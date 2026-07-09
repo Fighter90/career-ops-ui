@@ -101,6 +101,10 @@ Router.register('stats', async () => {
     // v1.117.0 (parent parity) — rejection patterns + per-ATS-vendor advance
     // rate from the parent's analyze-patterns.mjs (read-only shell-out).
     { id: 'patterns', label: t('stats.tabPatterns', 'Rejection patterns'), render: renderPatterns },
+    // v1.118.0 (parent v1.18.0 parity) — lifetime pipeline stats (stats.mjs
+    // #1605) + compensation observations (salary-gap.mjs), both read-only
+    // shell-outs relayed by /api/stats/lifetime and /api/stats/salary-gap.
+    { id: 'lifetime', label: t('stats.tabLifetime', 'Lifetime'), render: renderLifetime },
   ];
   const tabBar = c('div', { className: 'tabs', role: 'tablist',
     style: { display: 'flex', gap: '6px', flexWrap: 'wrap', borderBottom: '1px solid var(--line, #e5e7eb)', margin: '4px 0 18px' } });
@@ -219,7 +223,7 @@ Router.register('stats', async () => {
     wrap.appendChild(section(t('stats.pipeScores', 'Score distribution'), barChart(buckets)));
 
     // Status funnel (canonical order).
-    const order = ['Evaluated', 'Applied', 'Responded', 'Interview', 'Offer', 'Rejected', 'Discarded', 'SKIP'];
+    const order = ['Evaluated', 'Applied', 'Responded', 'Interview', 'Offer', 'Hired', 'Rejected', 'Discarded', 'SKIP'];
     const counts = {};
     rows.forEach((r) => { const s = (r.status || 'Evaluated').trim(); counts[s] = (counts[s] || 0) + 1; });
     const funnel = order.filter((s) => counts[s]).map((s) => ({ label: s, value: counts[s] }));
@@ -245,11 +249,13 @@ Router.register('stats', async () => {
     if (months.length) wrap.appendChild(section(t('stats.pipeTimeline', 'Applications over time'), barChart(months)));
 
     // Conversion rates — how far applications progress down the funnel.
+    // v1.118.0 — 'Hired' (offer accepted) counts as having advanced through
+    // every earlier funnel stage, mirroring the parent's canonical order.
     const advanced = (...statuses) => rows.filter((r) => statuses.includes((r.status || '').trim())).length;
-    const applied = advanced('Applied', 'Responded', 'Interview', 'Offer');
-    const responded = advanced('Responded', 'Interview', 'Offer');
-    const interviewed = advanced('Interview', 'Offer');
-    const offered = advanced('Offer');
+    const applied = advanced('Applied', 'Responded', 'Interview', 'Offer', 'Hired');
+    const responded = advanced('Responded', 'Interview', 'Offer', 'Hired');
+    const interviewed = advanced('Interview', 'Offer', 'Hired');
+    const offered = advanced('Offer', 'Hired');
     const pct = (n, d) => (d > 0 ? Math.round((n / d) * 100) : 0);
     const convRows = [
       { label: t('stats.convApplied', 'Applied'), value: pct(applied, rows.length) },
@@ -481,6 +487,105 @@ Router.register('stats', async () => {
     }
     if (!recs.length && !vendors.length && !archetypes.length) {
       wrap.appendChild(emptyState(t('stats.patEmpty', 'Not enough tracked applications yet for pattern analysis.'), null, ''));
+    }
+    return wrap;
+  }
+
+  // ── tab 5: lifetime pipeline stats + salary gap (v1.118.0, parent parity) ──
+  // GET /api/stats/lifetime relays the parent's stats.mjs (tracker roll-up,
+  // cumulative funnel, lifetime scanner totals, portal coverage); GET
+  // /api/stats/salary-gap relays salary-gap.mjs (desired vs advertised vs
+  // actual comp). Both zero-token and read-only; honest empty states when the
+  // parent scripts are absent or the sections are null (fresh install).
+  async function renderLifetime() {
+    const wrap = c('div');
+    let d = null;
+    try { d = await API.get('/api/stats/lifetime'); } catch { d = null; }
+    if (!d || d.available !== true) {
+      wrap.appendChild(emptyState(t('stats.lifeUnavailable',
+        'Lifetime stats need the parent career-ops project (stats.mjs) next to this app.'), null, ''));
+      return wrap;
+    }
+    const chip = (label, value) => c('span', { className: 'chip' }, `${label}: ${value}`);
+    const pctStr = (v) => (v == null ? '—' : `${v}%`);
+    const tr = d.tracker || null;
+    if (tr) {
+      wrap.appendChild(c('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '0 0 16px' } }, [
+        chip(t('stats.lifeTracked', 'Tracked'), tr.total ?? 0),
+        chip(t('stats.lifeActive', 'Active'), tr.activeApps ?? 0),
+        chip(t('stats.lifeAvgScore', 'Avg score'), tr.avgScore == null ? '—' : tr.avgScore),
+        chip(t('stats.lifeTopScore', 'Top score'), tr.topScore == null ? '—' : tr.topScore),
+      ]));
+      const byStatus = tr.byStatus || {};
+      const items = Object.keys(byStatus).map((s) => ({ label: s, value: byStatus[s] || 0 }));
+      wrap.appendChild(section(t('stats.lifeByStatus', 'Lifetime status roll-up'), barChart(items)));
+    }
+    const fu = d.funnel || null;
+    if (fu) {
+      const small = fu.smallSample
+        ? c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '8px 0 0' } },
+          t('stats.lifeSmallSample', 'Small sample — rates are indicative, not statistics.'))
+        : null;
+      wrap.appendChild(section(t('stats.lifeFunnel', 'Cumulative funnel'), c('div', null, [
+        c('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } }, [
+          chip(t('stats.lifeResponseRate', 'Response rate'), pctStr(fu.responseRate)),
+          chip(t('stats.lifeInterviewRate', 'Interview rate'), pctStr(fu.interviewRate)),
+          chip(t('stats.lifeOfferRate', 'Offer rate'), pctStr(fu.offerRate)),
+        ]),
+        small,
+      ].filter(Boolean))));
+    }
+    const sc = d.scan || null;
+    if (sc) {
+      const byPortal = sc.byPortal || {};
+      const top = Object.entries(byPortal).sort((a, b) => b[1] - a[1]).slice(0, 12)
+        .map(([label, value]) => ({ label, value: Number(value) || 0 }));
+      wrap.appendChild(section(t('stats.lifeScan', 'Lifetime scanner totals'), c('div', null, [
+        c('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '0 0 12px' } }, [
+          chip(t('stats.lifeScanSeen', 'Postings seen'), sc.totalRecorded ?? 0),
+          chip(t('stats.lifeScanAdded', 'Added to pipeline'), sc.added ?? 0),
+          chip(t('stats.lifeScanCompanies', 'Distinct companies'), sc.distinctCompanies ?? 0),
+        ]),
+        top.length ? barChart(top) : null,
+      ].filter(Boolean))));
+    }
+    const po = d.portals || null;
+    if (po) {
+      wrap.appendChild(section(t('stats.lifePortals', 'Portal coverage'), c('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } }, [
+        chip(t('stats.lifePortalsConfigured', 'Companies configured'), po.configuredCompanies ?? 0),
+        chip(t('stats.lifePortalsProducing', 'Producing results'), `${po.producingCompanies ?? 0} (${pctStr(po.producingPct)})`),
+      ])));
+    }
+
+    // Salary gap — separate relay; render whatever observations exist.
+    let sg = null;
+    try { sg = await API.get('/api/stats/salary-gap'); } catch { sg = null; }
+    if (sg && sg.available === true) {
+      // One row per folded application (salary-gap.mjs `applications[]`):
+      // desired / advertised / actual are { value, currency } or absent.
+      const apps = (Array.isArray(sg.applications) ? sg.applications : []).slice(0, 20);
+      if (apps.length) {
+        const obsFmt = (o) => (o && o.value != null
+          ? `${usdFmt.format(Math.round(o.value))}${o.currency ? ' ' + o.currency : ''}`
+          : '—');
+        const head = c('tr', null, [
+          t('stats.sgCompanyRole', 'Company · role'), t('stats.sgDesired', 'Desired'),
+          t('stats.sgAdvertised', 'Advertised'), t('stats.sgActual', 'Actual'),
+          t('stats.sgGap', 'Advertised → actual'),
+        ].map((h) => c('th', { style: { textAlign: 'left' } }, h)));
+        const cell = (v) => c('td', { style: { fontVariantNumeric: 'tabular-nums' } }, v);
+        const rows = apps.map((a) => c('tr', null, [
+          c('td', null, [a.company, a.role].filter(Boolean).join(' · ') || `#${a.num || ''}`),
+          cell(obsFmt(a.desired)), cell(obsFmt(a.advertised)), cell(obsFmt(a.actual)),
+          cell(a.advToActPct == null ? '—' : `${a.advToActPct > 0 ? '+' : ''}${Math.round(a.advToActPct)}%`),
+        ]));
+        wrap.appendChild(section(t('stats.sgTitle', 'Compensation observations'), c('div', { className: 'table-wrap' },
+          c('table', { className: 'tbl' }, [c('thead', null, head), c('tbody', null, rows)]))));
+      } else {
+        wrap.appendChild(section(t('stats.sgTitle', 'Compensation observations'),
+          c('p', { style: { color: 'var(--foggy)' } }, t('stats.sgEmpty',
+            'No compensation observations yet — they accumulate from report Machine Summaries and data/salary-observations.tsv in the parent project.'))));
+      }
     }
     return wrap;
   }

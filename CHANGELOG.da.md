@@ -10,6 +10,19 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.118.0] — 2026-07-09
+
+Paritetspakke med forældre-career-ops **v1.18.0**.
+
+### Tilføjet
+- **9 nye scanningsudbydere** — Cornerstone OnDemand (`csod`), Phenom (`phenom`), Radancy (`radancy`), Deutsche Bahn (`deutschebahn`), EchoJobs (`echojobs`), TKMS (`tkms`), Heckler & Koch (`hecklerkoch`), Rheinmetall (`rheinmetall`), LaraJobs (`larajobs`) — nu **54 adaptere**. Lever-adapteren genkender desuden EU-tenant-boards (`jobs.eu.lever.co`).
+- **`Hired`-status i trackeren** (paritet med forælderens `states.yml`): accepterede tilbud får deres egen kanoniske status, et festligt badge og et «jobbet er i hus»-banner på `#/tracker`; tragten og konverteringerne tæller den som gennemført alle trin.
+- **Samlet-fane i `#/stats`** — skrivebeskyttet relæ af forælderens `stats.mjs` (samlet tracker-oversigt, akkumulerede tragtrater, scannertal, portaldækning) plus lønobservationer fra `salary-gap.mjs` (ønsket vs annonceret vs faktisk, pr. ansøgning). Nye ruter `GET /api/stats/lifetime` og `GET /api/stats/salary-gap` — shell-outs uden tokens, sikker degradering `{available:false}` uden forældre-projektet.
+- 28 nye i18n-nøgler i alle 16 sprog; hjælpeguiden §14/§26 opdateret på alle sprog.
+
+### Tests
+- +38 enhedstests (tre udbyder-paritetssuiter + relæ-/statusruter) — **1817** i alt.
+
 ## [1.117.2] — 2026-07-06
 
 **Tom-tracker-rettelse for paritets-shell-outs.** Forælderens scripts afslutter med kode 1 og et struktureret `{error}`-JSON, når trackeren endnu ingen ansøgninger har; kadencetavlen og fanen med afvisningsmønstre viste det som "script-error". Begge ruter videregiver det nu som en sund tom tilstand (`available:true, empty:true`), så UI'et viser sin ærlige "intet endnu"-besked. Verificeret live mod en rigtig forælder.

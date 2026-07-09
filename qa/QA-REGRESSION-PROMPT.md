@@ -1,21 +1,21 @@
-# QA REGRESSION PROMPT — career-ops-ui **v1.117.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
+# QA REGRESSION PROMPT — career-ops-ui **v1.118.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
 
-Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 16 languages**, covering every feature shipped from **v1.76.0 through v1.117.0**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree. §§ below cover the v1.76→v1.97 surface; **§14 (at the end) covers everything added v1.98→v1.117 (incl. the v1.111 CodeQL backlog closeout)**.
+Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 16 languages**, covering every feature shipped from **v1.76.0 through v1.118.0**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree. §§ below cover the v1.76→v1.97 surface; **§14 (at the end) covers everything added v1.98→v1.118 (incl. the v1.111 CodeQL backlog closeout)**.
 
-- **Version under test:** `package.json` **1.113.0** · **31 route modules**.
-- **Baseline:** **1750** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×16** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL (backlog closed 167→0, all real findings fixed at source (v1.111)).
+- **Version under test:** `package.json` **1.118.0** · **31 route modules** · **59 adapters (54 EN + 5 RU)**.
+- **Baseline:** **1817** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×16** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL (backlog closed 167→0, all real findings fixed at source (v1.111)).
 - **Server:** `npm start` → `http://127.0.0.1:4317`.
-- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.1XX.0.md` (per-release delta drivers, v1.90–v1.113 incl. the v1.110 milestone snapshot + per-version v1.111/v1.112/v1.113) · `qa/UX-AUDIT-PROMPT.md` (UX audit) · `qa/FUNCTIONALITY-CHECK.md` (functional correctness) · `qa/DESIGNER-EXPORT-PROMPT.md` (design export) · `REGRESSION-FINAL.md` (invariant ledger).
+- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.1XX.0.md` (per-release delta drivers, v1.90–v1.118 incl. the v1.110 milestone snapshot + per-version v1.111/v1.112/v1.113/v1.117/v1.118) · `qa/UX-AUDIT-PROMPT.md` (UX audit) · `qa/FUNCTIONALITY-CHECK.md` (functional correctness) · `qa/DESIGNER-EXPORT-PROMPT.md` (design export) · `REGRESSION-FINAL.md` (invariant ledger).
 
 ---
 
 ## §0 — Gates (all must be green before sign-off)
 
 ```bash
-npm test                                    # full suite (≥1750 cases)
+npm test                                    # full suite (≥1817 cases)
 npm run test:ci                             # unit + check-no-also + check-changelog-parity + i18n-audit
 node tools/i18n-audit.mjs                   # "no hard failures — dictionary is clean"
-node scripts/check-changelog-parity.mjs     # "all 15 locales at v1.117.0" (EN + 15 = 16 files)
+node scripts/check-changelog-parity.mjs     # "all 15 locales at v1.118.0" (EN + 15 = 16 files)
 npm run test:coverage                       # ≥80% line / ≥75% branch (baseline ~96/~86)
 npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(16) + theme-toggle
 npm run test:e2e && npm run test:e2e:full   # smoke (20) + comprehensive (23) E2E
@@ -168,10 +168,10 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 
 ## §7 — Docs / branding / release mechanics
 
-- **README ×16** + **CHANGELOG ×16** at **v1.117.0** (parity gate green — `node scripts/check-changelog-parity.mjs`); each language switcher lists all 16. README "Latest release" blurb describes the current release; localized "New:" trailers are native per locale (no English leak).
+- **README ×16** + **CHANGELOG ×16** at **v1.118.0** (parity gate green — `node scripts/check-changelog-parity.mjs`); each language switcher lists all 16. README "Latest release" blurb describes the current release; localized "New:" trailers are native per locale (no English leak).
 - **Help ×16** hold the gated **28 H2 / 102 H3**; §17 says **50 adapters**.
 - **Branding:** radar-icon favicon set + sidebar logo; app name **career-ops-ui**. Parent `career-ops` references intentionally unchanged.
-- **Release:** `package.json` 1.117.0; footer reads `/api/health`; `parentVersion` = 1.17.0 (independent; semver only). Tag `v1.117.0` → `release.yml`; **Publish is triggered by the GitHub Release event** (do NOT also `gh workflow run` — a parallel manual dispatch races the release-triggered run to an E409; the workflow is E409-tolerant) → GitHub Packages. **30 route modules.**
+- **Release:** `package.json` 1.118.0; footer reads `/api/health`; `parentVersion` = 1.18.0 (independent; semver only). Tag `v1.118.0` → `release.yml`; **Publish is triggered by the GitHub Release event** (do NOT also `gh workflow run` — a parallel manual dispatch races the release-triggered run to an E409; the workflow is E409-tolerant) → GitHub Packages. **30 route modules.**
 
 ---
 
@@ -204,5 +204,6 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 | 15 | **Design polish (v1.115.0)** | CSS-only, coral brand kept: metric cards lift + coral border on hover, buttons gain resting shadow + hover lift, `.metric-value` tabular-nums, interactive controls get a soft coral focus halo (NOT a global `*:focus-visible` — the managed-focus route `<h1>`s must stay ring-free; v1.58.x lesson). Motion behind `prefers-reduced-motion`. See `qa/QA-REGRESSION-PROMPT-v1.115.0.md`. |
 | 16 | **Usage meter rework + widget E2E (v1.116.0)** | The usage meter is **pinned to the bottom of the sidebar** (fixed, full width) and pads the sidebar so the **menu is never covered**; **refreshes live** (15 s + tab-focus + route); rows show real `<tokens> · <est. cost>` (bars vs 30d), not a 100% share. `cv-import.mjs` reads the buffer size behind a `typeof` barrier (closes CodeQL #384). First real-browser **E2E** (`tests/playwright-widgets.mjs`) drives both persistent widgets. See `qa/QA-REGRESSION-PROMPT-v1.116.0.md`. |
 | 17 | **Parent parity pack (v1.117.0)** | Six parent capabilities in the UI: `#/followup` **cadence board** (urgency chips + table + Seed button; fail-soft without the parent), `#/stats` **Rejection patterns** tab (outcome mix + recommendations + per-ATS-vendor advance rate), CV Studio **Add to CV** card (grounded bullets from URL/text — SSRF-gated fetch, suggestions only, NO writes), **4 new scan providers** (beesite/HigherEdJobs/JibeApply/softgarden → **50 adapters, 45 EN + 5 RU**), Apply **knock-out pre-scan** step, `/api/run/reconcile`. 41 new i18n keys ×16. See `qa/QA-REGRESSION-PROMPT-v1.117.0.md`. |
+| 18 | **Parent v1.18.0 parity (v1.118.0)** | **9 new scan providers** (csod/Phenom/Radancy/Deutsche Bahn/EchoJobs/TKMS/Heckler & Koch/Rheinmetall/LaraJobs → **59 adapters, 54 EN + 5 RU**) + **Lever EU** (`jobs.eu.lever.co`); canonical **`Hired`** status (whitelist + celebratory badge + job-landed banner + funnel/conversions); `#/stats` **Lifetime** tab relaying parent `stats.mjs` + `salary-gap.mjs` (`GET /api/stats/lifetime`, `GET /api/stats/salary-gap` — zero-token, fail-soft); 28 i18n keys ×16; help §14/§26 ×16 (**103 H3**). See `qa/QA-REGRESSION-PROMPT-v1.118.0.md`. |
 
 **New routes since v1.97:** `POST /api/portals/health`, `POST /api/export/docx`, `POST /api/cv-studio/tailor`, `POST /api/docs-assistant/ask`, `GET /api/cli-detect`, `GET /api/logo`, `GET /api/usage` (30 route modules total). **New i18n:** every one is present + translated in all **16** locales (`i18n-coverage` + `i18n-locale-files` green). **New Help:** each surfaced in `docs/help/*` (in-place for two-pager/CV-Studio/settings/health/scan/pipeline; §-level for portals/docs-assistant where applicable).

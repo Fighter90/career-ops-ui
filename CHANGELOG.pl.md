@@ -9,6 +9,19 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.118.0] — 2026-07-09
+
+Pakiet parytetu z nadrzędnym career-ops **v1.18.0**.
+
+### Dodano
+- **9 nowych dostawców skanowania** — Cornerstone OnDemand (`csod`), Phenom (`phenom`), Radancy (`radancy`), Deutsche Bahn (`deutschebahn`), EchoJobs (`echojobs`), TKMS (`tkms`), Heckler & Koch (`hecklerkoch`), Rheinmetall (`rheinmetall`), LaraJobs (`larajobs`) — teraz **54 adaptery**. Adapter Levera dodatkowo wykrywa tablice tenanta EU (`jobs.eu.lever.co`).
+- **Status `Hired` w trackerze** (parytet ze `states.yml` rodzica): zaakceptowane oferty mają własny kanoniczny status, świąteczną odznakę i baner „praca zdobyta” na `#/tracker`; lejek i konwersje liczą go jako przejście wszystkich etapów.
+- **Zakładka Łącznie w `#/stats`** — przekaźnik tylko do odczytu `stats.mjs` rodzica (łączne zestawienie trackera, skumulowane wskaźniki lejka, wyniki skanera, pokrycie portali) plus obserwacje wynagrodzeń z `salary-gap.mjs` (oczekiwane vs ogłoszone vs rzeczywiste, per aplikacja). Nowe trasy `GET /api/stats/lifetime` i `GET /api/stats/salary-gap` — shell-outy o zerowym koszcie tokenów, bezpieczna degradacja `{available:false}` bez projektu nadrzędnego.
+- 28 nowych kluczy i18n we wszystkich 16 językach; przewodnik pomocy §14/§26 zaktualizowany we wszystkich językach.
+
+### Testy
+- +38 testów jednostkowych (trzy zestawy parytetu dostawców + trasy przekaźnika/statusu) — łącznie **1817**.
+
 ## [1.117.2] — 2026-07-06
 
 **Poprawka pustego trackera dla shell-outów parytetu.** Skrypty rodzica kończą się kodem 1 i strukturalnym JSON-em `{error}`, gdy tracker nie ma jeszcze aplikacji; tablica follow-upów i zakładka wzorców pokazywały to jako „script-error". Obie trasy przekazują to teraz jako zdrowy stan pusty (`available:true, empty:true`), a UI pokazuje uczciwy komunikat „jeszcze nic". Zweryfikowane na żywo na prawdziwym rodzicu.

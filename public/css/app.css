@@ -933,6 +933,10 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .badge-warn { background: rgba(255,180,0,.18); color: var(--darjeeling-text); }
 .badge-bad { background: rgba(255,56,92,.13); color: var(--rausch-text); }
 .badge-info { background: rgba(0,166,153,.13); color: var(--babu-text); }
+/* v1.118.0 — parent v1.18.0 parity: canonical 'Hired' state (job landed). */
+.badge-hired { background: rgba(0,138,5,.2); color: var(--kazan-text); box-shadow: inset 0 0 0 1px rgba(0,138,5,.35); }
+.hired-banner { display: flex; align-items: center; gap: 10px; border: 1px solid rgba(0,138,5,.35); background: rgba(0,138,5,.08); }
+.hired-banner-emoji { font-size: 22px; line-height: 1; }
 
 .score-pill {
   display: inline-flex;

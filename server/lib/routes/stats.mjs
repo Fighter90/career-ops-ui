@@ -123,4 +123,53 @@ export function registerStatsRoutes(app) {
     }
     res.json({ available: true, ...data });
   });
+
+  // v1.118.0 (parent v1.18.0 parity) — lifetime pipeline stats (#1605).
+  // Shells out to the parent's `stats.mjs` (zero-token aggregator: tracker
+  // roll-up, cumulative funnel, lifetime scanner totals, portal coverage,
+  // follow-up compliance). The script degrades sections to null itself when a
+  // source file is missing and reports what it found in `metadata.sources`,
+  // so a fresh install still relays a full contract shape. Read-only;
+  // fail-soft { available:false } without the parent script.
+  app.get('/api/stats/lifetime', llmRateLimit, async (_req, res) => {
+    const script = 'stats.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      res.json({ available: false, reason: 'script-not-found' });
+      return;
+    }
+    const r = await runNodeScript(script, [], { timeoutMs: 60_000 });
+    const data = parseJsonStdout(r.stdout);
+    if (r.code !== 0 || !data) {
+      res.json({
+        available: false,
+        reason: r.killed ? 'timeout' : 'script-error',
+        detail: sanitizeDetail(r.stderr),
+      });
+      return;
+    }
+    res.json({ available: true, ...data });
+  });
+
+  // v1.118.0 (parent v1.18.0 parity) — compensation observations (salary-gap.mjs).
+  // Desired vs advertised vs actual comp, folded from reports' Machine Summary,
+  // data/salary-observations.tsv and profile target range. Same relay contract
+  // as /api/stats/lifetime: read-only, fail-soft without the parent script.
+  app.get('/api/stats/salary-gap', llmRateLimit, async (_req, res) => {
+    const script = 'salary-gap.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      res.json({ available: false, reason: 'script-not-found' });
+      return;
+    }
+    const r = await runNodeScript(script, [], { timeoutMs: 60_000 });
+    const data = parseJsonStdout(r.stdout);
+    if (r.code !== 0 || !data) {
+      res.json({
+        available: false,
+        reason: r.killed ? 'timeout' : 'script-error',
+        detail: sanitizeDetail(r.stderr),
+      });
+      return;
+    }
+    res.json({ available: true, ...data });
+  });
 }
