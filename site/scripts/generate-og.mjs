@@ -4,7 +4,7 @@
  * White background, repo logo + wordmark, tagline, and the angled EN
  * dashboard screenshot. All assets come from this repo (synced copies).
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
