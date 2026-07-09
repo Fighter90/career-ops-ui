@@ -1,0 +1,87 @@
+---
+import { t, type Locale } from '../i18n/locales';
+import Icon from './Icon.astro';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const CLONE = 'git clone https://github.com/Fighter90/career-ops-ui.git web-ui';
+---
+
+{/* The single dark section on the page. */}
+<section class="section bg-[color:var(--color-night)] text-white">
+  <div class="container-site">
+    <div class="reveal mb-10 max-w-2xl">
+      <h2 class="mb-3 text-3xl font-bold tracking-tight md:text-4xl">{t(locale, 'open.h2')}</h2>
+      <p class="text-lg text-white/60">{t(locale, 'open.sub')}</p>
+    </div>
+
+    <div class="grid gap-5 md:grid-cols-3">
+      <div class="reveal rounded-[16px] border border-white/10 bg-white/5 p-6">
+        <span class="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
+          <Icon name="scale" class="h-5 w-5" />
+        </span>
+        <h3 class="mb-1 font-bold">{t(locale, 'open.mit')}</h3>
+        <p class="mb-3 text-[0.92rem] text-white/60">{t(locale, 'open.mitDesc')}</p>
+        <a href={`${facts.repoUrl}/blob/main/LICENSE`} rel="noopener" class="text-sm font-semibold underline underline-offset-2">
+          LICENSE →
+        </a>
+      </div>
+
+      <div class="reveal rounded-[16px] border border-white/10 bg-white/5 p-6">
+        <span class="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
+          <Icon name="tag" class="h-5 w-5" />
+        </span>
+        <h3 class="mb-1 font-bold">{t(locale, 'open.version')}</h3>
+        <p class="mb-3 font-mono text-[0.92rem] text-white/60">
+          v{facts.version}{facts.tests ? ` · ${facts.tests.toLocaleString('en-US')} ${t(locale, 'open.tests')}` : ''}
+        </p>
+        <a href={`${facts.repoUrl}/releases`} rel="noopener" class="text-sm font-semibold underline underline-offset-2">
+          Releases →
+        </a>
+      </div>
+
+      <div class="reveal rounded-[16px] border border-white/10 bg-white/5 p-6">
+        <span class="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
+          <Icon name="globe" class="h-5 w-5" />
+        </span>
+        <h3 class="mb-1 font-bold">{t(locale, 'open.parentTitle')}</h3>
+        <p class="mb-3 text-[0.92rem] text-white/60">
+          {t(locale, 'open.parentDesc')}
+          {' '}<a href={facts.parentUrl} rel="noopener" class="underline underline-offset-2">career-ops.org</a>
+        </p>
+        <p class="text-[0.8rem] text-white/60">{t(locale, 'open.disclaimer')}</p>
+      </div>
+    </div>
+
+    <div class="reveal mt-8 flex flex-col items-start gap-5 md:flex-row md:items-center md:justify-between">
+      <div class="flex flex-wrap gap-3">
+        <a href={facts.repoUrl} rel="noopener" class="btn !bg-white !text-ink hover:!bg-white/90">
+          <Icon name="star" class="h-4 w-4" />
+          {t(locale, 'open.star')}
+        </a>
+        <a href={`${facts.repoUrl}/issues`} rel="noopener" class="btn border border-white/25 text-white hover:bg-white/10">
+          {t(locale, 'open.issue')}
+        </a>
+        <a href={`${facts.repoUrl}/blob/main/CONTRIBUTING.md`} rel="noopener" class="btn border border-white/25 text-white hover:bg-white/10">
+          {t(locale, 'open.contrib')}
+        </a>
+      </div>
+      <div class="flex w-full max-w-xl items-center gap-2 rounded-full border border-white/15 bg-black/40 px-4 py-2 md:w-auto" dir="ltr">
+        <code class="overflow-x-auto whitespace-nowrap font-mono text-[0.78rem] text-white/80">{CLONE}</code>
+        <button
+          type="button"
+          class="copy-btn shrink-0 rounded-full p-1.5 text-white/60 transition hover:bg-white/10 hover:text-white needs-js"
+          data-copy={CLONE}
+          data-copied-label={t(locale, 'a11y.copied')}
+          aria-label={t(locale, 'a11y.copy')}
+        >
+          <Icon name="copy" class="i-copy h-4 w-4" />
+          <Icon name="check" class="i-check h-4 w-4 text-[#28c840]" />
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

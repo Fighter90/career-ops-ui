@@ -1,0 +1,64 @@
+---
+import { localeHome, t, type Locale } from '../i18n/locales';
+import Icon from './Icon.astro';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const adaptersRounded = Math.floor(facts.adapters / 5) * 5;
+const steps = [
+  { icon: 'download', title: t(locale, 'how.1.title'), desc: t(locale, 'how.1.desc') },
+  { icon: 'search', title: t(locale, 'how.2.title'), desc: t(locale, 'how.2.desc').replace('{adapters}', String(adaptersRounded)) },
+  { icon: 'gauge', title: t(locale, 'how.3.title'), desc: t(locale, 'how.3.desc') },
+  { icon: 'kanban', title: t(locale, 'how.4.title'), desc: t(locale, 'how.4.desc') },
+] as const;
+// Score thresholds mirror the parent's documented action table (README.md).
+const thresholds = [
+  { range: '≥ 4.5', label: t(locale, 'how.score.1'), color: 'text-[color:var(--color-ok)]' },
+  { range: '4.0 – 4.4', label: t(locale, 'how.score.2'), color: 'text-ink' },
+  { range: '3.5 – 3.9', label: t(locale, 'how.score.3'), color: 'text-ink-soft' },
+  { range: '< 3.5', label: t(locale, 'how.score.4'), color: 'text-[color:var(--color-warn)]' },
+];
+---
+
+<section id="how-it-works" class="section">
+  <div class="container-site">
+    <div class="reveal mb-12 max-w-2xl">
+      <h2 class="mb-3 text-3xl font-bold tracking-tight md:text-4xl">{t(locale, 'how.h2')}</h2>
+      <p class="text-lg text-ink-soft">{t(locale, 'how.sub')}</p>
+    </div>
+
+    <ol class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {steps.map((s, i) => (
+        <li class="card reveal flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <span class="icon-chip"><Icon name={s.icon} class="h-5 w-5" /></span>
+            <span class="font-mono text-sm font-bold text-ink-faint">0{i + 1}</span>
+          </div>
+          <h3 class="text-lg font-bold">{s.title}</h3>
+          <p class="text-[0.95rem] leading-6 text-ink-soft">{s.desc}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="reveal mt-8 flex flex-col gap-6 rounded-[24px] border border-line bg-paper-alt p-6 md:flex-row md:items-center md:justify-between md:p-8">
+      <div>
+        <h3 class="mb-3 text-lg font-bold">{t(locale, 'how.score.title')}</h3>
+        <ul class="grid gap-x-8 gap-y-1.5 sm:grid-cols-2">
+          {thresholds.map((th) => (
+            <li class="flex items-baseline gap-3 text-[0.95rem]">
+              <span class={`w-20 shrink-0 font-mono font-bold ${th.color}`} dir="ltr">{th.range}</span>
+              <span class="text-ink-soft">{th.label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <a href={`${localeHome(locale)}help/`} class="btn-secondary shrink-0">
+        {t(locale, 'how.guide')}
+        <Icon name="arrow-right" class="mirror-rtl h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,87 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Icon from './Icon.astro';
+import { localeHome, t, type Locale } from '../i18n/locales';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+// Entries are synced from docs/help/<file>.md; the glob loader slugifies ids
+// (ko-KR.md -> "ko-kr"), so match case-insensitively.
+const entries = await getCollection('help');
+const entry = entries.find((e) => e.id.toLowerCase() === locale.file.toLowerCase());
+if (!entry) throw new Error(`[help] no synced guide for locale "${locale.code}" (${locale.file}.md)`);
+const { Content, headings } = await render(entry);
+const toc = headings.filter((h) => h.depth === 2);
+
+const editUrl = `${facts.repoUrl}/edit/main/docs/help/${locale.file}.md`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: t(locale, 'meta.helpTitle'),
+  description: t(locale, 'meta.helpDesc'),
+  inLanguage: locale.code,
+  isAccessibleForFree: true,
+  license: 'https://github.com/Fighter90/career-ops-ui/blob/main/LICENSE',
+  about: { '@type': 'SoftwareApplication', name: 'career-ops-ui', sameAs: facts.repoUrl },
+};
+---
+
+<Base
+  locale={locale}
+  page="help"
+  title={t(locale, 'meta.helpTitle')}
+  description={t(locale, 'meta.helpDesc')}
+  jsonLd={jsonLd}
+>
+  <Header locale={locale} page="help" />
+  <main id="main" class="container-site pt-24 pb-20 md:pt-28">
+    <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
+      <a href={localeHome(locale)} class="hover:underline">{t(locale, 'help.home')}</a>
+      <span class="mx-1.5 text-ink-faint">/</span>
+      <span aria-current="page">{t(locale, 'help.title')}</span>
+    </nav>
+
+    <div class="grid gap-10 lg:grid-cols-[260px_minmax(0,1fr)]">
+      {/* Sticky TOC by H2 — <details> on mobile */}
+      <aside>
+        <details class="rounded-[16px] border border-line bg-paper-alt p-4 lg:hidden" open={false}>
+          <summary class="cursor-pointer font-bold">{t(locale, 'help.toc')}</summary>
+          <ul class="mt-3 space-y-1.5">
+            {toc.map((h) => (
+              <li><a href={`#${h.slug}`} class="text-sm text-ink-soft hover:text-ink hover:underline">{h.text}</a></li>
+            ))}
+          </ul>
+        </details>
+        <div class="sticky top-24 hidden max-h-[calc(100vh-8rem)] overflow-y-auto pe-2 lg:block">
+          <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-ink-faint">{t(locale, 'help.toc')}</h2>
+          <ul class="space-y-1.5 border-s border-line ps-3">
+            {toc.map((h) => (
+              <li><a href={`#${h.slug}`} class="block text-[0.85rem] leading-5 text-ink-soft hover:text-ink hover:underline">{h.text}</a></li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+
+      <article>
+        <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <h1 class="text-3xl font-extrabold tracking-tight md:text-4xl">{t(locale, 'help.title')}</h1>
+          <a href={editUrl} rel="noopener" class="btn-ghost !px-4 !py-2 text-sm">
+            <Icon name="github" class="h-4 w-4" />
+            {t(locale, 'help.edit')}
+          </a>
+        </div>
+        <div class="prose-help">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </main>
+  <Footer locale={locale} page="help" />
+</Base>

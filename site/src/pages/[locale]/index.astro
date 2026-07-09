@@ -1,0 +1,15 @@
+---
+import Landing from '../../components/Landing.astro';
+import { LOCALES } from '../../i18n/locales';
+
+export function getStaticPaths() {
+  return LOCALES.filter((l) => l.slug !== '').map((l) => ({
+    params: { locale: l.slug },
+    props: { locale: l },
+  }));
+}
+
+const { locale } = Astro.props;
+---
+
+<Landing locale={locale} />

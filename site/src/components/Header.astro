@@ -1,0 +1,81 @@
+---
+import { localeHome, t, type Locale } from '../i18n/locales';
+import LangSwitcher from './LangSwitcher.astro';
+import GitHubButton from './GitHubButton.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  locale: Locale;
+  page: '' | 'help';
+}
+const { locale, page } = Astro.props;
+const home = localeHome(locale);
+// Section anchors live on the landing page; from /help they link back home.
+const anchor = (id: string) => (page === '' ? `#${id}` : `${home}#${id}`);
+const NAV = [
+  { id: 'how-it-works', key: 'nav.how' },
+  { id: 'features', key: 'nav.features' },
+  { id: 'screenshots', key: 'nav.screens' },
+  { id: 'compare', key: 'nav.compare' },
+  { id: 'help', key: 'nav.help' },
+  { id: 'faq', key: 'nav.faq' },
+];
+---
+
+<header class="site-header fixed inset-x-0 top-0 z-40">
+  <div class="container-site flex h-16 items-center justify-between gap-4">
+    <a href={home} class="flex shrink-0 items-center gap-2.5">
+      <img src="/favicon-32.png" alt="" width="28" height="28" class="rounded-md" />
+      <span class="text-[1.05rem] font-extrabold tracking-tight">career-ops-ui</span>
+    </a>
+
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Main">
+      {NAV.map((n) => (
+        <a
+          href={n.id === 'help' ? `${home}help/` : anchor(n.id)}
+          class="rounded-full px-3 py-1.5 text-sm font-medium text-ink-soft transition hover:bg-paper-alt hover:text-ink"
+          aria-current={n.id === 'help' && page === 'help' ? 'page' : undefined}
+        >
+          {t(locale, n.key)}
+        </a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <div class="hidden md:block">
+        <LangSwitcher locale={locale} page={page} />
+      </div>
+      <div class="hidden sm:block">
+        <GitHubButton label={t(locale, 'header.github')} />
+      </div>
+      <a href={anchor('get-started')} class="btn-primary !px-5 !py-2 text-sm">{t(locale, 'header.cta')}</a>
+      <button
+        id="menu-btn"
+        type="button"
+        class="btn-ghost !p-2 lg:hidden needs-js"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label={t(locale, 'a11y.menu')}
+      >
+        <Icon name="menu" class="h-5 w-5" />
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" hidden class="mobile-menu fixed inset-0 top-16 z-30 overflow-y-auto bg-paper lg:hidden">
+    <nav class="container-site flex flex-col gap-1 py-6" aria-label="Mobile">
+      {NAV.map((n) => (
+        <a
+          href={n.id === 'help' ? `${home}help/` : anchor(n.id)}
+          class="rounded-[12px] px-4 py-3 text-lg font-semibold hover:bg-paper-alt"
+        >
+          {t(locale, n.key)}
+        </a>
+      ))}
+      <div class="mt-4 flex flex-wrap items-center gap-3 px-4">
+        <LangSwitcher locale={locale} page={page} />
+        <GitHubButton label={t(locale, 'header.github')} />
+      </div>
+    </nav>
+  </div>
+</header>

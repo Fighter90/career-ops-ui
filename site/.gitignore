@@ -1,0 +1,17 @@
+# deps / build
+node_modules/
+dist/
+.astro/
+
+# synced from the repo root by scripts/sync-assets.mjs — never edit or commit
+src/assets/screenshots/
+src/assets/logo/
+src/content/help/
+src/generated/
+
+# generated at build time
+public/og-default.png
+public/favicon-16.png
+public/favicon-32.png
+public/favicon.ico
+public/apple-touch-icon.png

@@ -1,0 +1,49 @@
+---
+import { LOCALES, localePath, t, type Locale } from '../i18n/locales';
+import Icon from './Icon.astro';
+
+interface Props {
+  locale: Locale;
+  page: '' | 'help';
+}
+const { locale, page } = Astro.props;
+---
+
+<details class="lang-switcher relative">
+  <summary
+    class="btn-ghost !px-3 !py-2"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-label={t(locale, 'a11y.lang')}
+  >
+    <Icon name="globe" class="h-[18px] w-[18px]" />
+    <span class="text-sm font-semibold">{locale.endonym}</span>
+    <Icon name="chevron-down" class="h-3.5 w-3.5 text-ink-soft" />
+  </summary>
+  <ul
+    role="listbox"
+    aria-label={t(locale, 'a11y.lang')}
+    class="lang-menu absolute inset-inline-end-0 top-[calc(100%+8px)] z-50 min-w-48 rounded-[16px] border border-line bg-paper p-2 shadow-[var(--shadow-hover)]"
+  >
+    {LOCALES.map((l) => (
+      <li>
+        <a
+          role="option"
+          href={localePath(l, page)}
+          hreflang={l.code}
+          lang={l.code}
+          data-code={l.code}
+          aria-selected={l.code === locale.code ? 'true' : 'false'}
+          aria-current={l.code === locale.code ? 'true' : undefined}
+          class:list={[
+            'flex items-center justify-between gap-3 rounded-lg px-3 py-1.5 text-sm hover:bg-paper-alt',
+            l.code === locale.code && 'font-bold',
+          ]}
+        >
+          <span>{l.endonym}</span>
+          {l.code === locale.code && <Icon name="check" class="h-4 w-4 text-[color:var(--color-rausch-deep)]" />}
+        </a>
+      </li>
+    ))}
+  </ul>
+</details>

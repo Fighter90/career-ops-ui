@@ -1,0 +1,28 @@
+---
+import { t, type Locale } from '../i18n/locales';
+import InstallTabs from './InstallTabs.astro';
+import Icon from './Icon.astro';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+---
+
+<section id="get-started" class="section bg-paper-alt">
+  <div class="container-site max-w-3xl text-center">
+    <h2 class="reveal mb-3 text-3xl font-bold tracking-tight md:text-[2.5rem]">{t(locale, 'final.h2')}</h2>
+    <p class="reveal mb-10 text-lg text-ink-soft">{t(locale, 'final.sub')}</p>
+    <div class="reveal text-start">
+      <InstallTabs locale={locale} id="cta-install" />
+    </div>
+    <div class="reveal mt-8 flex flex-wrap items-center justify-center gap-4">
+      <a href="#cta-install" class="btn-primary">{t(locale, 'final.cta')}</a>
+      <a href={facts.repoUrl} rel="noopener" class="btn-secondary">
+        {t(locale, 'final.gh')}
+        <Icon name="external-link" class="h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</section>

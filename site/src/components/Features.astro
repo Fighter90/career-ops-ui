@@ -1,0 +1,54 @@
+---
+import { t, type Locale } from '../i18n/locales';
+import Icon from './Icon.astro';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const adaptersRounded = Math.floor(facts.adapters / 5) * 5;
+const sub = (s: string) =>
+  s
+    .replace('{adapters}', String(adaptersRounded))
+    .replace(/\{n\}/g, String(facts.locales));
+
+const CARDS = [
+  { icon: 'search', n: 1, subst: true },
+  { icon: 'gauge', n: 2 },
+  { icon: 'zap', n: 3 },
+  { icon: 'kanban', n: 4 },
+  { icon: 'file-text', n: 5 },
+  { icon: 'mail', n: 6 },
+  { icon: 'mic', n: 7 },
+  { icon: 'bell', n: 8 },
+  { icon: 'chart', n: 9 },
+  { icon: 'cpu', n: 10, providers: true },
+  { icon: 'lock', n: 11 },
+  { icon: 'globe', n: 12, subst: true },
+] as const;
+---
+
+<section id="features" class="section bg-paper-alt">
+  <div class="container-site">
+    <div class="reveal mb-12 max-w-2xl">
+      <h2 class="mb-3 text-3xl font-bold tracking-tight md:text-4xl">{t(locale, 'features.h2')}</h2>
+      <p class="text-lg text-ink-soft">{t(locale, 'features.sub')}</p>
+    </div>
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {CARDS.map((c) => {
+        let title = t(locale, `features.${c.n}.title`);
+        let desc = t(locale, `features.${c.n}.desc`);
+        title = sub(title).replace('{n}', String('providers' in c && c.providers ? facts.providers : facts.locales));
+        desc = sub(desc);
+        return (
+          <li class="card reveal">
+            <span class="icon-chip mb-4"><Icon name={c.icon} class="h-5 w-5" /></span>
+            <h3 class="mb-2 text-[1.05rem] font-bold">{title}</h3>
+            <p class="text-[0.92rem] leading-6 text-ink-soft">{desc}</p>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>

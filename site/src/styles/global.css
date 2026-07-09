@@ -1,0 +1,358 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+ * Design tokens — Airbnb-inspired light theme (see site/README.md).
+ * ------------------------------------------------------------------------- */
+@theme {
+  --color-ink: #222222;
+  --color-ink-soft: #6a6a6a;
+  --color-ink-faint: #b0b0b0;
+  --color-paper: #ffffff;
+  --color-paper-alt: #f7f7f7;
+  --color-line: #ebebeb;
+  --color-line-strong: #dddddd;
+  --color-rausch: #ff385c;
+  --color-rausch-deep: #c41e3d; /* AA-contrast variant for small text */
+  --color-ok: #008a05;
+  --color-warn: #c13515;
+  --color-night: #1a1a1a; /* the single dark section */
+
+  --font-sans: 'Figtree Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    'Noto Sans', 'Hiragino Sans', 'Noto Sans CJK SC', 'Noto Sans CJK TC',
+    'Noto Sans CJK JP', 'Noto Sans CJK KR', 'Noto Naskh Arabic', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-card: 16px;
+  --radius-big: 24px;
+
+  --shadow-rest: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------------------------------------------------------------------------
+ * Base
+ * ------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+body {
+  @apply bg-paper text-ink font-sans antialiased;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-rausch) 18%, white);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* CJK / Arabic pages fall back to system stacks — never load CJK webfonts. */
+:lang(ja) body, :lang(ko) body, :lang(zh-CN) body, :lang(zh-TW) body {
+  letter-spacing: 0;
+}
+
+/* ---------------------------------------------------------------------------
+ * Components
+ * ------------------------------------------------------------------------- */
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-[1160px] px-6;
+  }
+
+  .section {
+    @apply py-16 md:py-24 lg:py-28;
+  }
+
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[0.95rem] font-semibold transition duration-200 ease-out;
+  }
+  .btn-primary {
+    @apply text-white;
+    background: linear-gradient(90deg, #e61e4d, #d70466 50%, #bd1e59);
+  }
+  .btn-primary:hover {
+    filter: brightness(0.94);
+    transform: scale(1.02);
+  }
+  .btn-secondary {
+    @apply border border-ink bg-paper text-ink;
+  }
+  .btn-secondary:hover {
+    @apply bg-paper-alt;
+  }
+  .btn-ghost {
+    @apply border border-line text-ink;
+  }
+  .btn-ghost:hover {
+    @apply border-line-strong bg-paper-alt;
+  }
+
+  .card {
+    @apply rounded-[16px] border border-line bg-paper p-6 transition duration-200 ease-out;
+    box-shadow: var(--shadow-rest);
+  }
+  .card:hover {
+    @apply border-line-strong;
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  .icon-chip {
+    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-full;
+    background: #fff1f3;
+    color: var(--color-rausch-deep);
+  }
+
+  .eyebrow-pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-paper-alt px-3 py-1 text-[0.8rem] font-semibold text-ink;
+  }
+
+  .prose-help {
+    @apply text-ink;
+    max-width: 70ch;
+  }
+  .prose-help h2 {
+    @apply mt-12 mb-4 text-2xl font-bold tracking-tight scroll-mt-24;
+  }
+  .prose-help h3 {
+    @apply mt-8 mb-3 text-xl font-semibold scroll-mt-24;
+  }
+  .prose-help h4 {
+    @apply mt-6 mb-2 text-lg font-semibold;
+  }
+  .prose-help p,
+  .prose-help ul,
+  .prose-help ol {
+    @apply mb-4 text-[1rem] leading-7 text-ink;
+  }
+  .prose-help ul {
+    @apply list-disc ps-6;
+  }
+  .prose-help ol {
+    @apply list-decimal ps-6;
+  }
+  .prose-help li {
+    @apply mb-1.5;
+  }
+  .prose-help a {
+    color: var(--color-rausch-deep);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose-help code {
+    @apply rounded bg-paper-alt px-1.5 py-0.5 font-mono text-[0.85em] border border-line;
+  }
+  .prose-help pre {
+    @apply mb-4 overflow-x-auto rounded-[12px] bg-[#1a1a1a] p-4 text-[0.85rem] leading-6;
+  }
+  .prose-help pre code {
+    @apply border-0 bg-transparent p-0 text-[#f2f2f2];
+  }
+  .prose-help table {
+    @apply mb-4 w-full border-collapse text-[0.92rem];
+    display: block;
+    overflow-x: auto;
+  }
+  .prose-help th,
+  .prose-help td {
+    @apply border border-line px-3 py-2 text-start align-top;
+  }
+  .prose-help th {
+    @apply bg-paper-alt font-semibold;
+  }
+  .prose-help blockquote {
+    @apply mb-4 border-s-4 border-line ps-4 text-ink-soft;
+  }
+  .prose-help img {
+    @apply max-w-full rounded-[12px] border border-line;
+  }
+  .prose-help hr {
+    @apply my-8 border-line;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Header state
+ * ------------------------------------------------------------------------- */
+.site-header {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+.site-header.scrolled {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom-color: var(--color-line);
+}
+
+/* Mobile fullscreen menu */
+.mobile-menu[hidden] {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Language switcher (native <details> fallback; JS only enhances)
+ * ------------------------------------------------------------------------- */
+.lang-switcher summary {
+  list-style: none;
+  cursor: pointer;
+}
+.lang-switcher summary::-webkit-details-marker {
+  display: none;
+}
+.lang-menu {
+  max-height: min(60vh, 26rem);
+  overflow-y: auto;
+}
+
+/* ---------------------------------------------------------------------------
+ * Install terminal
+ * ------------------------------------------------------------------------- */
+.terminal {
+  border-radius: var(--radius-card);
+  background: #1a1a1a;
+  color: #e8e8e8;
+  box-shadow: var(--shadow-hover);
+}
+.install-tab[aria-selected='true'] {
+  color: #ffffff;
+  border-bottom-color: var(--color-rausch);
+}
+/* Without JS every panel is visible (stacked); with JS, tabs control them. */
+html.js .install-panel[hidden] {
+  display: none;
+}
+html:not(.js) .install-panel {
+  display: block !important;
+}
+html:not(.js) .needs-js {
+  display: none !important;
+}
+
+/* Copy button icon swap (explicit display overrides — [hidden] alone loses
+   to author display rules; hard-won lesson from the SPA, v1.58.35). */
+.copy-btn .i-check {
+  display: none;
+}
+.copy-btn.copied .i-check {
+  display: block;
+}
+.copy-btn.copied .i-copy {
+  display: none;
+}
+
+/* Cascading "log" lines in the curl tab */
+.term-log {
+  opacity: 1;
+}
+html.js .terminal:not(.played) .term-log {
+  opacity: 0;
+}
+.terminal.played .term-log {
+  animation: log-in 0.35s ease-out forwards;
+}
+.terminal.played .term-log:nth-child(2) {
+  animation-delay: 0.35s;
+}
+.terminal.played .term-log:nth-child(3) {
+  animation-delay: 0.7s;
+}
+@keyframes log-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .terminal:not(.played) .term-log {
+    opacity: 1;
+  }
+  .terminal.played .term-log {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Reveal-on-scroll — content is ALWAYS visible without JS; the .js class is
+ * added by an inline head script, and IntersectionObserver adds .in.
+ * ------------------------------------------------------------------------- */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+html.js .reveal.in {
+  opacity: 1;
+  transform: none;
+}
+/* Hero orchestrated stagger */
+html.js .hero-seq {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: hero-in 0.55s ease-out forwards;
+}
+html.js .hero-seq-1 { animation-delay: 0ms; }
+html.js .hero-seq-2 { animation-delay: 80ms; }
+html.js .hero-seq-3 { animation-delay: 160ms; }
+@keyframes hero-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal,
+  html.js .hero-seq {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+}
+
+/* Compare table: sticky first column on horizontal scroll (mobile) */
+.compare-scroll {
+  overflow-x: auto;
+}
+.compare-scroll th:first-child,
+.compare-scroll td:first-child {
+  position: sticky;
+  inset-inline-start: 0;
+  background: var(--color-paper);
+  z-index: 1;
+}
+
+/* RTL chevron mirroring */
+[dir='rtl'] .mirror-rtl {
+  transform: scaleX(-1);
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  inset-inline-start: 0.5rem;
+  top: -6rem;
+  z-index: 100;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0.5rem;
+}
