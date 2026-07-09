@@ -169,7 +169,7 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 ## §7 — Docs / branding / release mechanics
 
 - **README ×16** + **CHANGELOG ×16** at **v1.118.0** (parity gate green — `node scripts/check-changelog-parity.mjs`); each language switcher lists all 16. README "Latest release" blurb describes the current release; localized "New:" trailers are native per locale (no English leak).
-- **Help ×16** hold the gated **28 H2 / 102 H3**; §17 says **50 adapters**.
+- **Help ×16** hold the gated **28 H2 / 103 H3**; §17 says **59 adapters**.
 - **Branding:** radar-icon favicon set + sidebar logo; app name **career-ops-ui**. Parent `career-ops` references intentionally unchanged.
 - **Release:** `package.json` 1.118.0; footer reads `/api/health`; `parentVersion` = 1.18.0 (independent; semver only). Tag `v1.118.0` → `release.yml`; **Publish is triggered by the GitHub Release event** (do NOT also `gh workflow run` — a parallel manual dispatch races the release-triggered run to an E409; the workflow is E409-tolerant) → GitHub Packages. **30 route modules.**
 
@@ -177,9 +177,9 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 
 ## §8 — Exit criteria
 - Every (page × control × 16 languages) PASS or a logged FAIL→fix (one-fix-per-release; HIGH → MEDIUM → LOW).
-- `npm test` ≥ **1750** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×16) green; CI matrix green; **CodeQL backlog closed (167→0; final 6 fixed at source in v1.111 — sanitizer escape belt, type-confusion coercion, dynamic-dispatch removal)**.
+- `npm test` ≥ **1817** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×16) green; CI matrix green; **CodeQL backlog closed (167→0; final 6 fixed at source in v1.111 — sanitizer escape belt, type-confusion coercion, dynamic-dispatch removal)**.
 - Zero console errors; no RTL leak; no untranslated shipped key; no duplicate dict keys; favicon/icon endpoints 200.
-- All §2 deltas verified live (scanner 50 adapters incl. Dassault; the eight v1.85–v1.96 pages; the v1.97 audit fixes) **and all §14 additions (v1.98–v1.113)**.
+- All §2 deltas verified live (scanner 59 adapters incl. Dassault + the v1.118 parity batch; the eight v1.85–v1.96 pages; the v1.97 audit fixes) **and all §14 additions (v1.98–v1.118)**.
 
 ---
 
