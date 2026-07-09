@@ -111,7 +111,7 @@ Hit each with valid + invalid input; assert status + body shape:
   `?page=&pageSize=&status=` → `{ rows, total, page, pageSize,
   funnel }` with the documented clamps; funnel = whole history.
 - `GET /api/dashboard`, `/api/activity`, `/api/reports`, `/api/cv`,
-  `/api/config` (secrets masked), `/api/scan/sources` (46 adapters:
+  `/api/config` (secrets masked), `/api/scan/sources` (59 adapters:
   41 EN + 5 RU, incl. Dassault Systèmes),
   `/api/help/:lang` (16 locales; bad lang → `en` fallback).
 - The AI/user-layer feature routes must also honour their contract:
@@ -165,7 +165,7 @@ Hit each with valid + invalid input; assert status + body shape:
 - `package.json::version` == `/api/health.version` == every
   `CHANGELOG*.md` top entry == README ×16 badge ==
   `docs/architecture/TESTING.md` totals. Help bundles ×16 at the
-  parity gate (28 H2 / 102 H3). API.md documents every live endpoint.
+  parity gate (28 H2 / 103 H3). API.md documents every live endpoint.
 - Pipeline AI-review: a push to `main` triggers
   `.github/workflows/ai-review.yml`; with the `ANTHROPIC_API_KEY`
   repo secret it posts a commit-comment review, without it it logs a
