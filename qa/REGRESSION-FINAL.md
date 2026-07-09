@@ -8,7 +8,7 @@
 > `qa/reports/<YYYY-MM-DD>-REGRESSION.md` (current reports home; the old
 > `qa/v54-regression/` path is retired).
 >
-> **Current baseline — v1.117.2 (update on each release):**
+> **Current baseline — v1.118.0 (update on each release):**
 >
 > - **16 locales** (`en es pt-BR ko ja ru zh-CN zh-TW fr pl uk da ar de
 >   it tr`; ar = RTL). Everywhere the *body* below says "9 locales" read
@@ -16,9 +16,9 @@
 >   The "×9" inside historical closed-finding rows records what shipped
 >   at that time — don't rewrite those; apply **16** to every
 >   forward-looking check.
-> - **Help bundles: 28 H2 / 102 H3** per locale (was 19 / 73).
-> - **31 route modules** · **28 views** · **50 scanner adapters** (45 EN + 5 RU).
-> - **Test floors:** unit **≥ 1779** · Playwright browser **≥ 90** ·
+> - **Help bundles: 28 H2 / 103 H3** per locale (was 19 / 73).
+> - **31 route modules** · **28 views** · **59 scanner adapters** (54 EN + 5 RU).
+> - **Test floors:** unit **≥ 1817** · Playwright browser **≥ 90** ·
 >   smoke E2E 20 · comprehensive 23 · coverage **≥ 96 % line / 85 % branch** · **CodeQL 0**.
 >
 > Lineage: supersedes `REGRESSION-v1.54.9.md` (cycle-specific) and
@@ -35,7 +35,7 @@
 
 ```bash
 vX=$(node -p "require('./package.json').version")
-npm ci && npm run test:ci          # MUST: N/N pass (≥1779) · ✓ no .also( · ✓ CHANGELOG parity all 16 @ vX
+npm ci && npm run test:ci          # MUST: N/N pass (≥1817) · ✓ no .also( · ✓ CHANGELOG parity all 16 @ vX
 node tests/e2e.mjs                 # MUST: failed: 0
 node tests/e2e-comprehensive.mjs   # MUST: 0 failed
 npm run test:e2e:browser           # MUST: 90/90 (v1.117.x baseline) · NO "generated asynchronous activity" / "not ok 2"
@@ -222,7 +222,7 @@ non-allowed binary envelopes (415).
 - Every i18n key present in all 16 locales (`tests/i18n-coverage`).
 - CHANGELOG ×16 at vX (`check-changelog-parity`); README ×16 badges
   at vX/N; `TESTING.md` totals at vX/N/files.
-- Help bundles ×16: **28 H2 / 102 H3** parity gate green; the
+- Help bundles ×16: **28 H2 / 103 H3** parity gate green; the
   "App settings & API keys" section describes the Modes **field-form**
   + the OpenAI/Codex model selector (not raw markdown).
 - `CLAUDE.md` (route-module count, version) and
