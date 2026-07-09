@@ -1094,9 +1094,9 @@ Puanladıktan sonra kanonik takipler şunlardır:
 - `/career-ops tracker` — Pipeline durumunu görüntüleyin
 
 ---
-### hh.ru — web sitesinden taranır (kurulum yok, proxy yok)
+### hh.ru — web sitesinden taranır (Temmuz 2026'dan beri Rus IP'si gerekir)
 
-hh.ru, genel arama web sitesini (`hh.ru/search/vacancy`) okuyarak taranır, tıpkı Habr Career'ın tarandığı gibi — **herhangi bir IP'den, anahtar, proxy veya yapılandırma olmadan çalışır.** JSON API'si (`api.hh.ru`) kasıtlı olarak *kullanılmaz*: artık IP veya User-Agent'tan bağımsız olarak her programatik istemciye `403 forbidden` döndürür (bir uç anti-bot bloğu, belgelenmiş bir API hatası değil), oysa web sitesi tarayıcı benzeri her istemciye tam sonuçlar sunar. Yani hh.ru tam olarak Habr ve Trudvsem gibi çalışır — sadece onu `russian_portals.sources`'ta tutun ve tarayın.
+hh.ru, Habr Career gibi halka açık arama sitesi (`hh.ru/search/vacancy`) okunarak taranır — anahtar ve yapılandırma gerekmez. **Ancak Temmuz 2026'dan beri hh.ru, Rusya dışındaki IP'lere HTTP 451 (bölgesel yasal engel) döndürüyor**; tarama yalnızca Rus IP'sinden çalışır — sunucuyu Rusya'dan ya da Rus çıkış düğümlü bir VPN üzerinden çalıştırın. İlk 451'de (veya anti-bot 403'te) tarayıcı hh.ru'yu çalıştırmanın geri kalanı için devre dışı bırakır ve bunu günlüğe yazar; diğer Rus kaynakları normal şekilde tamamlanır. JSON API (`api.hh.ru`) bilerek *kullanılmaz*: IP veya User-Agent fark etmeksizin her programatik istemciye `403 forbidden` döndürür.
 
 ## 8. Pipeline (`#/pipeline`)
 

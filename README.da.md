@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1817%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1818%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.0)
+[![release](https://img.shields.io/badge/release-v1.118.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.1)
 
-> **🆕 Seneste udgivelse — v1.118.0**
+> **🆕 Seneste udgivelse — v1.118.1**
 >
 > **Forældre-paritet v1.18.0.** Ni nye scanningsudbydere (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — nu 54 adaptere) plus Lever EU-boards, den kanoniske `Hired`-status med «jobbet er i hus»-banner i trackeren, og en Samlet-fane i Statistik, der relæer forælderens stats.mjs og salary-gap.mjs (akkumuleret tragt, scannertal, lønobservationer).
 >

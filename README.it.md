@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1817%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1818%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.0)
+[![release](https://img.shields.io/badge/release-v1.118.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.1)
 
-> **🆕 Ultima release — v1.118.0**
+> **🆕 Ultima release — v1.118.1**
 >
 > **Parità col padre v1.18.0.** Nove nuovi provider di scansione (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — ora 54 adapter) più le board Lever EU, lo stato canonico `Hired` con banner «lavoro ottenuto» nel tracker, e una scheda Totale nelle Statistiche che fa da relay a stats.mjs e salary-gap.mjs del padre (funnel cumulato, totali dello scanner, osservazioni sulla retribuzione).
 >

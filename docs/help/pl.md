@@ -977,9 +977,9 @@ Po ocenianiu, kanoniczne follow-upy to:
 - `/career-ops tracker` — Zobacz status pipeline
 
 ---
-### hh.ru — skanowanie ze strony internetowej (bez konfiguracji, bez proxy)
+### hh.ru — skanowanie ze strony internetowej (od lipca 2026 wymagane rosyjskie IP)
 
-hh.ru jest skanowany przez odczyt jego publicznej witryny wyszukiwania (`hh.ru/search/vacancy`), tak samo jak Habr Career — **działa z każdego IP, bez klucza, proxy ani konfiguracji.** JSON API (`api.hh.ru`) jest celowo *nieużywane*: teraz zwraca `403 forbidden` dla każdego klienta programistycznego niezależnie od IP lub User-Agent (blokada anty-bot na krawędzi, nie udokumentowany błąd API), podczas gdy strona internetowa serwuje pełne wyniki każdemu klientowi podobnemu do przeglądarki. Dlatego hh.ru działa dokładnie jak Habr i Trudvsem — po prostu utrzymuj go w `russian_portals.sources` i skanuj.
+hh.ru jest skanowany przez odczyt publicznej strony wyszukiwania (`hh.ru/search/vacancy`), tak samo jak Habr Career — bez klucza i konfiguracji. **Jednak od lipca 2026 hh.ru zwraca HTTP 451 (regionalną blokadę prawną) dla IP spoza Rosji**, więc skan działa tylko z rosyjskiego IP — uruchom serwer w Rosji albo przez VPN z rosyjskim węzłem wyjściowym. Przy pierwszym 451 (lub anty-botowym 403) skaner wyłącza hh.ru do końca przebiegu i informuje o tym w logu, dzięki czemu pozostałe rosyjskie źródła kończą się normalnie. JSON API (`api.hh.ru`) celowo *nie* jest używane: zwraca `403 forbidden` każdemu programowemu klientowi niezależnie od IP i User-Agenta.
 
 ## 8. Pipeline (`#/pipeline`)
 

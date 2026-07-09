@@ -876,9 +876,9 @@ SPA 的 `#/dashboard` 与 `#/tracker` 会高亮所有 ≥ 4.0 的行,无需重�
 - `/career-ops tracker` — 查看 pipeline 状态
 
 ---
-### hh.ru — 从网站抓取（无需配置和代理）
+### hh.ru — 从网站抓取（2026 年 7 月起需要俄罗斯 IP）
 
-hh.ru 通过读取其公开搜索网站（`hh.ru/search/vacancy`）来扫描，与 Habr Career 相同：**任何 IP 都可用，无需密钥、代理或配置。** 刻意*不*使用 JSON API（`api.hh.ru`）：它现在无论 IP 或 User-Agent 都会对所有程序化客户端返回 `403 forbidden`（这是边缘反爬封锁，而非文档化的 API 错误），而网站会向任何类浏览器客户端返回完整结果。因此 hh.ru 与 Habr、Trudvsem 完全一样——只需在 `russian_portals.sources` 中保留并扫描即可。
+hh.ru 通过读取其公开搜索页面（`hh.ru/search/vacancy`）来扫描,与 Habr Career 相同 — 无需密钥和配置。**但自 2026 年 7 月起,hh.ru 对俄罗斯境外 IP 返回 HTTP 451(区域性法律封锁)**,因此扫描仅在俄罗斯 IP 下可用 — 请在俄罗斯运行服务器,或使用带俄罗斯出口节点的 VPN。首次遇到 451(或反爬 403)时,扫描器会在本次运行剩余时间内停用 hh.ru 并写入日志,其他俄语来源仍会正常完成。JSON API(`api.hh.ru`)有意*不*使用: 无论 IP 或 User-Agent,它对所有程序客户端都返回 `403 forbidden`。
 
 ## 8. 流水线(`#/pipeline`)
 

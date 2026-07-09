@@ -9,6 +9,11 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.118.1] — 2026-07-10
+
+### Naprawiono
+- **Skanowanie hh.ru spoza Rosji** — hh.ru zwraca teraz **HTTP 451** (regionalną blokadę prawną) dla nierosyjskich IP na publicznych stronach wyszukiwania. Skaner traktuje 451 jak 403: po pierwszej blokadzie hh.ru jest wyłączany do końca przebiegu z uczciwym wpisem w logu wskazującym rosyjskie IP / wyjście VPN, dzięki czemu pozostałe zapytania i inne źródła RU nie są marnowane. Pomoc §7 zaktualizowana we wszystkich 16 językach. +1 test (**1818**).
+
 ## [1.118.0] — 2026-07-09
 
 Pakiet parytetu z nadrzędnym career-ops **v1.18.0**.

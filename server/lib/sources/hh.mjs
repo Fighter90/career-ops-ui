@@ -91,7 +91,10 @@ export async function searchHH(query, opts = {}) {
       if (page === 0) {
         const err = new Error(`hh.ru: HTTP ${res.status}`);
         err.status = res.status;
-        err.geoBlocked = res.status === 403;
+        // 403 = anti-bot challenge; 451 = regional legal block (hh.ru started
+        // serving 451 stubs to non-Russian IPs in July 2026). Both mean "this
+        // network can't scan hh right now" — flag so the run disables the source.
+        err.geoBlocked = res.status === 403 || res.status === 451;
         throw err;
       }
       break;

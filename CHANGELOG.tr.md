@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.1] — 2026-07-10
+
+### Düzeltildi
+- **Rusya dışından hh.ru taraması** — hh.ru artık halka açık arama sayfalarında Rus olmayan IP'lere **HTTP 451** (bölgesel yasal engel) döndürüyor. Tarayıcı 451'i 403 gibi ele alır: ilk engelden sonra hh.ru çalıştırmanın geri kalanı için devre dışı bırakılır ve günlüğe Rus IP'si / VPN çıkışına işaret eden dürüst bir satır yazılır; kalan sorgular ve diğer RU kaynakları boşa gitmez. Yardım §7 tüm 16 dilde güncellendi. +1 test (**1818**).
+
 ## [1.118.0] — 2026-07-09
 
 Üst career-ops **v1.18.0** parite paketi.

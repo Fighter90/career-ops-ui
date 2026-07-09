@@ -2,6 +2,11 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.1] — 2026-07-10
+
+### Corretto
+- **Scansione di hh.ru fuori dalla Russia** — hh.ru ora restituisce **HTTP 451** (blocco legale regionale) agli IP non russi sulle pagine pubbliche di ricerca. Lo scanner tratta il 451 come il 403: dopo il primo blocco hh.ru viene disattivato per il resto dell'esecuzione con una riga onesta nel log che indica un IP russo / uscita VPN, senza sprecare le query rimanenti né le altre fonti RU. Guida §7 aggiornata in tutte le 16 lingue. +1 test (**1818**).
+
 ## [1.118.0] — 2026-07-09
 
 Pacchetto di parità con il career-ops padre **v1.18.0**.
