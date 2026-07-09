@@ -13,7 +13,7 @@ GitHub Pages at **https://cvstart.org** by
 
 ## Stack
 
-- [Astro 5](https://astro.build) — `output: 'static'`, 33 pages
+- [Astro 7](https://astro.build) — `output: 'static'`, 33 pages
   (16 × landing + 16 × help + 404)
 - Tailwind CSS v4 via `@tailwindcss/vite` with `@theme` tokens
   (Airbnb-inspired light design; single dark "Built in the open" section)
