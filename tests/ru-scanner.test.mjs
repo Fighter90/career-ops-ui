@@ -129,6 +129,18 @@ test('searchHH: throws with geoBlocked flag if the website returns 403', async (
   );
 });
 
+// v1.118.1 — hh.ru started serving HTTP 451 (regional legal block) to
+// non-Russian IPs in July 2026. A 451 must set the same geoBlocked flag so
+// the RU scan disables hh for the rest of the run instead of burning every
+// remaining query against a doomed source.
+test('searchHH: throws with geoBlocked flag if the website returns 451 (geo/legal block)', async () => {
+  const fakeFetch = async () => new Response('unavailable for legal reasons', { status: 451 });
+  await assert.rejects(
+    () => searchHH('PHP', { fetchImpl: fakeFetch }),
+    (err) => err.geoBlocked === true && err.status === 451 && /451/.test(err.message)
+  );
+});
+
 const hhPage = (...ids) =>
   ids.map((id) => `<div data-qa="vacancy-serp__vacancy"><a data-qa="serp-item__title" href="https://hh.ru/vacancy/${id}">Job ${id}</a></div>`).join('');
 

@@ -227,13 +227,18 @@ export async function runRuScan(opts = {}) {
     log('stdout', `  → ${results.length} hits`);
     onProgress(++qDone, cfg.queries.length);
     allFound.push(...results);
-    // First hh.ru 403 → disable for rest of run + log once. hh.ru is scraped
-    // from its public website now; a 403 means the site served an anti-bot
-    // challenge (rare), not a geo/API block.
+    // First hh.ru 403/451 → disable for rest of run + log once. hh.ru is
+    // scraped from its public website now; a 403 means an anti-bot challenge
+    // (rare), a 451 means the regional legal block hh.ru serves to
+    // non-Russian IPs (since July 2026) — either way, retrying the remaining
+    // queries against hh this run would only burn doomed requests.
     if (sourceFailures.hh?.geoBlocked && !hhDisabled) {
       hhDisabled = true;
-      log('stderr', '  ⚠ hh.ru disabled for this run (website returned HTTP 403)');
-      log('stderr', '    hh.ru/search/vacancy served an anti-bot challenge — retry later.');
+      const is451 = /451/.test(sourceFailures.hh.firstMessage || '');
+      log('stderr', `  ⚠ hh.ru disabled for this run (${sourceFailures.hh.firstMessage})`);
+      log('stderr', is451
+        ? '    hh.ru geo-blocks requests from outside Russia (HTTP 451) — scan via a Russian IP / VPN exit node. See help §7.'
+        : '    hh.ru/search/vacancy served an anti-bot challenge — retry later.');
     }
   }
 

@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-1817%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1818%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.0)
+[![release](https://img.shields.io/badge/release-v1.118.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.1)
 
-> **🆕 최신 릴리스 — v1.118.0**
+> **🆕 최신 릴리스 — v1.118.1**
 >
 > **부모 v1.18.0 패리티.** 9개의 새 스캔 프로바이더(Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — 이제 어댑터 54개)와 Lever EU 보드, 트래커의 취업 성공 배너가 있는 정식 `Hired` 상태, 그리고 부모의 stats.mjs·salary-gap.mjs를 중계하는 통계의 누적 탭(누적 퍼널, 스캐너 합계, 보상 관찰).
 >

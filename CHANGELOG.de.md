@@ -2,6 +2,11 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.1] — 2026-07-10
+
+### Behoben
+- **hh.ru-Scans außerhalb Russlands** — hh.ru liefert auf den öffentlichen Suchseiten jetzt **HTTP 451** (regionale rechtliche Sperre) an nicht-russische IPs. Der Scanner behandelt 451 wie 403: Nach der ersten Sperre wird hh.ru für den Rest des Laufs deaktiviert, mit einer ehrlichen Logzeile, die auf eine russische IP / einen VPN-Exit verweist — die verbleibenden Abfragen und die übrigen RU-Quellen werden nicht verschwendet. Hilfe §7 in allen 16 Sprachen aktualisiert. +1 Test (**1818**).
+
 ## [1.118.0] — 2026-07-09
 
 Paritätspaket mit dem übergeordneten career-ops **v1.18.0**.
