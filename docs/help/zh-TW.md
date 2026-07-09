@@ -1022,7 +1022,9 @@ GitHub-Flavored Markdown 表格。
 ### 狀態流轉
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
-`Rejected` / `Discarded` / `SKIP`。
+`Hired` / `Rejected` / `Discarded` / `SKIP`。
+
+`Hired`(v1.118.0)是圓滿的最終狀態 — offer 已被接受。追蹤器用慶祝徽章標記它,並以「拿到工作」橫幅相迎。
 
 狀態白名單由伺服器端強制執行;`POST /api/tracker` 傳入其他值
 會預設為 `Evaluated`。當你在 `/career-ops apply` 結尾確認
@@ -1883,6 +1885,10 @@ career-ops-ui 的大部分功能都在問「這份工作和我的 CV 匹配嗎�
 ### **目標職位趨勢**
 
 **目標職位趨勢**頁籤是最初的視圖:按國家/地區列出你目標職位的空缺數量和薪資中位數,匯總自你最近一次掃描,附帶貨幣選擇器和**按目標職位劃分的空缺**概覽。**儲存快照**會記錄當前的匯總資料,讓你能觀察空缺數量隨時間的變化,趨勢線會讀回這些快照。稀疏資料在預期之內並會被標註為僅供參考——它絕不會用捏造的數字來填充。
+
+### 累計與薪酬
+
+**累計**分頁(v1.118.0)以唯讀方式中繼兩個零 token 的父專案指令碼: `stats.mjs` — 你的累計追蹤器彙總、累計漏斗比率(回覆 / 面試 / offer)、掃描器總數和入口覆蓋 — 以及 `salary-gap.mjs` — 每份申請的期望 vs 職缺標註 vs 實際薪酬,由報告的 Machine Summary 與 `data/salary-observations.tsv` 彙總。小樣本會標註為僅供參考;沒有父專案時分頁會顯示誠實的提示。
 
 ## 27. 職涯規劃 (`#/career-plan`)
 

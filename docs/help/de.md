@@ -1286,7 +1286,9 @@ GitHub-Flavored-Markdown-Tabelle.
 ### Status-Ablauf
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
-`Rejected` / `Discarded` / `SKIP`.
+`Hired` / `Rejected` / `Discarded` / `SKIP`.
+
+`Hired` (v1.118.0) ist der glückliche Endzustand — das Angebot wurde angenommen. Der Tracker markiert ihn mit einem feierlichen Badge und begrüßt ihn mit einem „Job gelandet”-Banner.
 
 Die Status-Whitelist wird serverseitig durchgesetzt; das Senden von etwas
 anderem in einem `POST /api/tracker` fällt auf `Evaluated` zurück. Der
@@ -2234,6 +2236,10 @@ Der Reiter **Meine Pipeline** stellt deinen eigenen Bewerbungs-Tracker grafisch 
 ### Zielrollen-Trend
 
 Der Reiter **Zielrollen-Trend** ist die ursprüngliche Ansicht: Stellenzahlen und Mediangehalt nach Land für deine Zielrollen, aggregiert aus deinem letzten Scan, mit einer Währungsauswahl und einer Übersicht **Stellen nach Zielrolle**. **Snapshot speichern** hält die aktuelle Aggregation fest, sodass du beobachten kannst, wie sich die Stellenzahlen im Zeitverlauf bewegen, und die Trendlinie liest diese Snapshots zurück. Spärliche Daten sind zu erwarten und werden als richtungsweisend gekennzeichnet — sie werden nie mit erfundenen Zahlen aufgefüllt.
+
+### Gesamt & Vergütung
+
+Der **Gesamt**-Tab (v1.118.0) reicht zwei Zero-Token-Skripte des Parents read-only weiter: `stats.mjs` — die Gesamtübersicht deines Trackers, kumulierte Funnel-Quoten (Antwort / Interview / Angebot), Scanner-Gesamtzahlen und Portalabdeckung — und `salary-gap.mjs` — gewünschte vs. ausgeschriebene vs. tatsächliche Vergütung pro Bewerbung, zusammengeführt aus den Machine Summaries der Berichte und `data/salary-observations.tsv`. Kleine Stichproben werden als Richtwerte gekennzeichnet; ohne das übergeordnete Projekt zeigt der Tab einen ehrlichen Hinweis.
 
 ## 27. Karriereplan (`#/career-plan`)
 

@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.0] — 2026-07-09
+
+Pacchetto di parità con il career-ops padre **v1.18.0**.
+
+### Aggiunto
+- **9 nuovi provider di scansione** — Cornerstone OnDemand (`csod`), Phenom (`phenom`), Radancy (`radancy`), Deutsche Bahn (`deutschebahn`), EchoJobs (`echojobs`), TKMS (`tkms`), Heckler & Koch (`hecklerkoch`), Rheinmetall (`rheinmetall`), LaraJobs (`larajobs`) — ora **54 adapter**. L'adapter di Lever rileva inoltre le board del tenant EU (`jobs.eu.lever.co`).
+- **Stato `Hired` nel tracker** (parità con lo `states.yml` del padre): le offerte accettate hanno uno stato canonico proprio, un badge celebrativo e un banner «lavoro ottenuto» su `#/tracker`; funnel e conversioni lo contano come avanzato attraverso tutte le fasi.
+- **Scheda Totale in `#/stats`** — relay in sola lettura dello `stats.mjs` del padre (riepilogo complessivo del tracker, tassi cumulati del funnel, totali dello scanner, copertura dei portali) più le osservazioni sulla retribuzione da `salary-gap.mjs` (desiderata vs pubblicizzata vs effettiva, per candidatura). Nuove rotte `GET /api/stats/lifetime` e `GET /api/stats/salary-gap` — shell-out a zero token, degradazione sicura `{available:false}` senza il progetto padre.
+- 28 nuove chiavi i18n in tutte le 16 lingue; guida in-app §14/§26 aggiornata in ogni lingua.
+
+### Test
+- +38 test unitari (tre suite di parità provider + rotte relay/stato) — **1817** in totale.
+
 ## [1.117.2] — 2026-07-06
 
 **Correzione tracker vuoto per gli shell-out di parità.** Gli script del padre escono con codice 1 e un JSON `{error}` strutturato quando il tracker non ha ancora candidature; la bacheca di follow-up e la scheda pattern lo mostravano come «script-error». Entrambe le rotte ora lo inoltrano come uno stato vuoto sano (`available:true, empty:true`) e la UI mostra il suo onesto messaggio «ancora niente». Verificato dal vivo contro un padre reale.

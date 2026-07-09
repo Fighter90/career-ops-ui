@@ -9,6 +9,19 @@
 ---
 
 
+## [1.118.0] — 2026-07-09
+
+親 career-ops **v1.18.0** パリティパック。
+
+### 追加
+- **9 つの新しいスキャンプロバイダー** — Cornerstone OnDemand (`csod`), Phenom (`phenom`), Radancy (`radancy`), Deutsche Bahn (`deutschebahn`), EchoJobs (`echojobs`), TKMS (`tkms`), Heckler & Koch (`hecklerkoch`), Rheinmetall (`rheinmetall`), LaraJobs (`larajobs`) — これで**アダプターは 54 個**。Lever アダプターは EU テナンシーのボード(`jobs.eu.lever.co`)も検出します。
+- **トラッカーの `Hired` ステータス**(親の `states.yml` パリティ): 受諾したオファーは独自の正規ステータス、お祝いバッジ、`#/tracker` の内定獲得バナーを持ちます。ファネルとコンバージョンのチャートは全ステージを通過したものとして数えます。
+- **`#/stats` の累計タブ** — 親の `stats.mjs`(累計トラッカー集計、累積ファネル率、スキャナー合計、ポータルカバレッジ)と `salary-gap.mjs` の報酬観測(希望 vs 求人提示 vs 実際、応募ごと)を読み取り専用で中継します。新ルート `GET /api/stats/lifetime` と `GET /api/stats/salary-gap` — ゼロトークンのシェルアウトで、親プロジェクトがなければ `{available:false}` に安全にフォールバックします。
+- 全 16 ロケールに 28 個の新しい i18n キー。ヘルプガイド §14/§26 を全言語で更新。
+
+### テスト
+- ユニットテスト +38(プロバイダーパリティ 3 スイート + リレー/ステータスルート) — 合計 **1817**。
+
 ## [1.117.2] — 2026-07-06
 
 **パリティ・シェルアウトの空トラッカー修正。** トラッカーに応募がまだ無い場合、親スクリプトはコード1と構造化された `{error}` JSONで終了します。フォローアップボードと不採用パターンタブはこれを「script-error」と表示していました。両ルートはこれを健全な空状態(`available:true, empty:true`)として中継し、UIは正直な「まだ何もない」メッセージを表示します。実際の親でライブ検証済み。

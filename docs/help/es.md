@@ -1110,7 +1110,9 @@ tabla GitHub-Flavored Markdown.
 ### Flujo de estados
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
-`Rejected` / `Discarded` / `SKIP`.
+`Hired` / `Rejected` / `Discarded` / `SKIP`.
+
+`Hired` (v1.118.0) es el estado final feliz: la oferta fue aceptada. El tracker lo marca con una insignia celebratoria y lo recibe con un banner de «trabajo conseguido».
 
 La whitelist de estados se aplica del lado del servidor; enviar
 cualquier otra cosa en un `POST /api/tracker` cae por defecto a
@@ -2035,6 +2037,10 @@ La pestaña **Mi pipeline** grafica tu propio tracker de candidaturas — nada e
 ### Tendencia de roles objetivo
 
 La pestaña **Tendencia de roles objetivo** es la vista original: recuento de vacantes y salario mediano por país para tus roles objetivo, agregados a partir de tu último escaneo, con un selector de moneda y un resumen de **Vacantes por rol objetivo**. **Guardar snapshot** registra el agregado actual para que puedas observar cómo se mueven los recuentos de vacantes con el tiempo, y la línea de tendencia relee esos snapshots. Los datos escasos son esperables y se etiquetan como indicativos — nunca se rellenan con números inventados.
+
+### Histórico y compensación
+
+La pestaña **Histórico** (v1.118.0) retransmite, en solo lectura, dos scripts del padre de cero tokens: `stats.mjs` — el resumen histórico de tu tracker, las tasas del embudo acumulado (respuesta / entrevista / oferta), los totales del escáner y la cobertura de portales — y `salary-gap.mjs` — compensación deseada vs anunciada vs real por candidatura, consolidada desde los Machine Summary de los informes y `data/salary-observations.tsv`. Las muestras pequeñas se marcan como orientativas; sin el proyecto padre la pestaña muestra una nota honesta.
 
 ## 27. Plan de carrera (`#/career-plan`)
 

@@ -15,7 +15,9 @@ import { parseApplications, today } from '../parsers.mjs';
 import { safeReadApps } from '../store.mjs';
 import { withFileLock } from '../file-lock.mjs';
 
-const ALLOWED_STATUSES = ['Evaluated', 'Applied', 'Responded', 'Interview', 'Offer', 'Rejected', 'Discarded', 'SKIP'];
+// v1.118.0 — parent v1.18.0 parity: 'Hired' joins the canonical set
+// (templates/states.yml id:hired — offer accepted, job landed).
+const ALLOWED_STATUSES = ['Evaluated', 'Applied', 'Responded', 'Interview', 'Offer', 'Hired', 'Rejected', 'Discarded', 'SKIP'];
 
 export function registerTrackerRoutes(app) {
   // v1.55.8 — UX-8: OPTIONAL server-side pagination + a whole-history

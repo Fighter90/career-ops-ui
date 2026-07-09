@@ -8,6 +8,19 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.118.0] — 2026-07-09
+
+Parent career-ops **v1.18.0** parity pack.
+
+### Added
+- **9 new scan providers** — Cornerstone OnDemand (`csod`), Phenom (`phenom`), Radancy (`radancy`), Deutsche Bahn (`deutschebahn`), EchoJobs (`echojobs`), TKMS (`tkms`), Heckler & Koch (`hecklerkoch`), Rheinmetall (`rheinmetall`), LaraJobs (`larajobs`) — **54 adapters** now. The Lever adapter additionally detects EU-tenancy boards (`jobs.eu.lever.co`).
+- **`Hired` tracker status** (parent `states.yml` parity): accepted offers get their own canonical state, a celebratory badge, and a job-landed banner on `#/tracker`; the funnel and conversion charts count it as having advanced through every stage.
+- **Lifetime tab in `#/stats`** — read-only relay of the parent's `stats.mjs` (lifetime tracker roll-up, cumulative funnel rates, scanner totals, portal coverage) plus compensation observations from `salary-gap.mjs` (desired vs advertised vs actual, per application). New routes `GET /api/stats/lifetime` and `GET /api/stats/salary-gap` — zero-token shell-outs, fail-soft `{available:false}` without the parent project.
+- 28 new i18n keys in all 16 locales; help guide §14/§26 updated in every language.
+
+### Tests
+- +38 unit tests (three provider parity suites + relay/status routes) — **1817** total.
+
 ## [1.117.2] — 2026-07-06
 
 **Empty-tracker fix for the parity shell-outs.** The parent's cadence/patterns scripts exit 1 with a structured `{error}` JSON when the tracker has no applications yet; the followup board and the Rejection-patterns tab showed that as "script-error". Both routes now relay it as a healthy empty state (`available:true, empty:true`), so the UI shows its honest "nothing yet" message. Verified live against a real parent.

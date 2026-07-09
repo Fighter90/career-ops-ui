@@ -37,7 +37,7 @@ Router.register('tracker', async () => {
     role: 'group',
     'aria-label': t('track.funnelAria', 'Filter by status'),
   });
-  const FUNNEL_ORDER = ['Applied', 'Responded', 'Interview', 'Offer', 'Rejected', 'Discarded', 'Evaluated', 'SKIP'];
+  const FUNNEL_ORDER = ['Applied', 'Responded', 'Interview', 'Offer', 'Hired', 'Rejected', 'Discarded', 'Evaluated', 'SKIP'];
   function renderFunnel() {
     funnelBar.textContent = '';
     const counts = {};
@@ -188,7 +188,20 @@ Router.register('tracker', async () => {
 
   applyFilters();
 
+  // v1.118.0 — parent v1.18.0 parity: job-landed celebration. When any row
+  // reaches the canonical 'Hired' state, greet it above the funnel — static
+  // markup, no timers/confetti (CSP-safe, calm-by-default).
+  const hiredCount = rows.filter((r) => (r && r.status) === 'Hired').length;
+  const hiredBanner = hiredCount
+    ? c('div', { className: 'card mb-3 hired-banner', role: 'status' }, [
+      c('span', { className: 'hired-banner-emoji', 'aria-hidden': 'true' }, '🎉'),
+      c('strong', null, t('track.hiredTitle', 'Congratulations — job landed!')),
+      c('span', null, ` ${hiredCount} × Hired · ${t('track.hiredNote', 'The search that ends well.')}`),
+    ])
+    : null;
+
   return c('div', null, [
+    hiredBanner,
     c('header', { className: 'page-header' }, [
       c('div', null, [
         c('h1', { className: 'page-title' }, t('track.title')),
@@ -283,6 +296,8 @@ async function runFix(btn, path, t) {
 
 function statusClass(s) {
   s = (s || '').toLowerCase();
+  // v1.118.0 — parent v1.18.0 parity: Hired (job landed) gets the celebratory tint.
+  if (s.includes('hired')) return 'badge-hired';
   if (s.includes('offer')) return 'badge-ok';
   if (s.includes('reject') || s.includes('discard')) return 'badge-bad';
   if (s.includes('interview') || s.includes('respond')) return 'badge-info';

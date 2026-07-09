@@ -1116,7 +1116,9 @@ como uma tabela GitHub-Flavored Markdown.
 ### Fluxo de status
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
-`Rejected` / `Discarded` / `SKIP`.
+`Hired` / `Rejected` / `Discarded` / `SKIP`.
+
+`Hired` (v1.118.0) é o estado final feliz — a oferta foi aceita. O tracker o marca com um badge comemorativo e o recebe com um banner de «vaga conquistada».
 
 O whitelist de status é aplicado no servidor; enviar qualquer outra
 coisa em um `POST /api/tracker` faz default para `Evaluated`. A
@@ -2044,6 +2046,10 @@ A aba **Meu pipeline** representa graficamente o seu próprio tracker de candida
 ### Tendência de cargos-alvo
 
 A aba **Tendência de cargos-alvo** é a visão original: contagem de vagas e salário mediano por país para seus cargos-alvo, agregados a partir do seu scan mais recente, com um seletor de moeda e uma visão geral de **Vagas por cargo-alvo**. **Salvar snapshot** registra o agregado atual para que você possa observar como as contagens de vagas se movem ao longo do tempo, e a linha de tendência relê esses snapshots. Dados esparsos são esperados e rotulados como indicativos — nunca são preenchidos com números inventados.
+
+### Histórico e remuneração
+
+A aba **Histórico** (v1.118.0) retransmite, em modo somente leitura, dois scripts do pai com custo zero de tokens: `stats.mjs` — o resumo histórico do seu tracker, as taxas do funil acumulado (resposta / entrevista / oferta), os totais do scanner e a cobertura de portais — e `salary-gap.mjs` — remuneração desejada vs anunciada vs real por candidatura, consolidada dos Machine Summaries dos relatórios e de `data/salary-observations.tsv`. Amostras pequenas são marcadas como indicativas; sem o projeto pai a aba mostra uma nota honesta.
 
 ## 27. Plano de carreira (`#/career-plan`)
 

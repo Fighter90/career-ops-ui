@@ -1119,7 +1119,9 @@ tabela GitHub-Flavored Markdown.
 ### Przepływ statusu
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
-`Rejected` / `Discarded` / `SKIP`.
+`Hired` / `Rejected` / `Discarded` / `SKIP`.
+
+`Hired` (v1.118.0) to szczęśliwy stan końcowy — oferta została przyjęta. Tracker oznacza go świąteczną odznaką i wita banerem „praca zdobyta”.
 
 Biała lista statusów jest egzekwowana po stronie serwera; wysłanie czegokolwiek innego w
 `POST /api/tracker` domyślnie ustawia `Evaluated`. Kanoniczne
@@ -2037,6 +2039,10 @@ Karta **Mój pipeline** wykreśla twój własny tracker aplikacji — nic zewnę
 ### **Trend ról docelowych**
 
 Karta **Trend ról docelowych** to pierwotny widok: liczba ofert i mediana wynagrodzenia według kraju dla twoich docelowych ról, zagregowane z twojego ostatniego skanu, z selektorem waluty i przeglądem **Ogłoszenia według docelowej roli**. **Zapisz migawkę** zapisuje bieżący agregat, abyś mógł obserwować, jak liczba ofert zmienia się w czasie, a linia trendu odczytuje te migawki z powrotem. Skąpe dane są oczekiwane i oznaczane jako orientacyjne — nigdy nie są uzupełniane wymyślonymi liczbami.
+
+### Łącznie i wynagrodzenia
+
+Zakładka **Łącznie** (v1.118.0) przekazuje w trybie tylko do odczytu dwa skrypty rodzica o zerowym koszcie tokenów: `stats.mjs` — łączne zestawienie trackera, skumulowane wskaźniki lejka (odpowiedzi / rozmowy / oferty), wyniki skanera i pokrycie portali — oraz `salary-gap.mjs` — wynagrodzenie oczekiwane vs ogłoszone vs rzeczywiste per aplikacja, scalone z Machine Summary raportów i `data/salary-observations.tsv`. Małe próby są oznaczane jako orientacyjne; bez projektu nadrzędnego zakładka pokazuje uczciwą notkę.
 
 ## 27. Plan kariery (`#/career-plan`)
 

@@ -1247,7 +1247,9 @@ GitHub-Flavored Markdown tablosu olarak bulunur.
 ### Durum akışı
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
-`Rejected` / `Discarded` / `SKIP`.
+`Hired` / `Rejected` / `Discarded` / `SKIP`.
+
+`Hired` (v1.118.0) mutlu son durumudur — teklif kabul edildi. Takipçi bunu kutlama rozetiyle işaretler ve «iş bulundu» banner'ıyla karşılar.
 
 Durum beyaz listesi sunucu tarafında zorlanır; bir `POST /api/tracker`'da
 başka herhangi bir şey göndermek `Evaluated`'a varsayılır. Kanonik
@@ -2175,6 +2177,10 @@ Ne yazacağınızdan emin değil misiniz? **✨ Verilerimden öner**, başvuru i
 ### Hedef rol eğilimi
 
 **Hedef rol eğilimi** sekmesi özgün görünümdür: hedef rolleriniz için ülkeye göre ilan sayıları ve medyan maaş, en son taramanızdan toplanır; bir para birimi seçici ve bir **Hedef role göre ilanlar** genel görünümü ile birlikte. **Anlık görüntüyü kaydet**, mevcut toplamı kaydeder; böylece ilan sayılarının zaman içinde nasıl değiştiğini izleyebilirsiniz ve eğilim çizgisi bu anlık görüntüleri geri okur. Seyrek veri beklenir ve gösterge niteliğinde olarak etiketlenir — asla uydurma sayılarla doldurulmaz.
+
+### Toplam ve ücret
+
+**Toplam** sekmesi (v1.118.0) üst projenin sıfır token maliyetli iki betiğini salt okunur aktarır: `stats.mjs` — toplam takipçi özetiniz, kümülatif huni oranları (yanıt / mülakat / teklif), tarayıcı toplamları ve portal kapsamı — ve `salary-gap.mjs` — başvuru başına istenen vs ilan edilen vs gerçek ücret, raporların Machine Summary bölümlerinden ve `data/salary-observations.tsv` dosyasından birleştirilir. Küçük örneklemler yol gösterici olarak işaretlenir; üst proje yoksa sekme dürüst bir not gösterir.
 
 ## 27. Kariyer planı (`#/career-plan`)
 
