@@ -9,6 +9,11 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.118.4] — 2026-07-10
+
+### Corrigido
+- **As varreduras do hh.ru retornavam 0 resultados a partir de um IP russo (links de subdomínio regional)** — a partir de um IP residencial russo, o hh.ru redireciona a busca (302) para um subdomínio regional (`sochi.hh.ru`, `spb.hh.ru`, …) e devolve os links de vagas nesse subdomínio. O parser procurava o link do título pelo host fixo `https://hh.ru/vacancy/` e não casava com **nenhum** dos regionais, então uma varredura totalmente funcional registrava 0 em silêncio. Agora aceita qualquer host `*.hh.ru` (anúncios em `adsrv.hh.ru/click?…` continuam excluídos — não têm caminho `/vacancy/<id>`) e canonicaliza cada URL de resultado para `https://hh.ru/vacancy/<id>`. Verificado ao vivo: 17 vagas reais são parseadas de uma página `sochi.hh.ru` que antes dava 0. +1 teste (**1824**).
+
 ## [1.118.3] — 2026-07-10
 
 ### Corrigido

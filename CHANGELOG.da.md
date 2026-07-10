@@ -10,6 +10,11 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.118.4] — 2026-07-10
+
+### Rettet
+- **hh.ru-scanninger returnerede 0 resultater fra en russisk IP (links på regionalt subdomæne)** — fra en russisk residential-IP omdirigerer hh.ru søgningen (302) til et regionalt subdomæne (`sochi.hh.ru`, `spb.hh.ru`, …) og returnerer joblinks på det subdomæne. Parseren søgte titel-linket på den fast indkodede vært `https://hh.ru/vacancy/` og ramte **ingen** af de regionale, så en fuldt fungerende scanning registrerede lydløst 0. Den accepterer nu enhver `*.hh.ru`-vært (annoncer på `adsrv.hh.ru/click?…` udelukkes fortsat — de har ingen `/vacancy/<id>`-sti) og kanoniserer hver resultat-URL tilbage til `https://hh.ru/vacancy/<id>`. Verificeret live: 17 rigtige jobs parses nu fra en `sochi.hh.ru`-side, der før gav 0. +1 test (**1824**).
+
 ## [1.118.3] — 2026-07-10
 
 ### Rettet

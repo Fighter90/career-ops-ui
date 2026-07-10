@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.4] — 2026-07-10
+
+### Düzeltildi
+- **hh.ru taramaları Rus IP'sinden 0 sonuç döndürüyordu (bölgesel alt alan bağlantıları)** — Rus konut IP'sinden hh.ru aramayı 302 ile bölgesel bir alt alana (`sochi.hh.ru`, `spb.hh.ru`, …) yönlendiriyor ve ilan bağlantılarını o alt alanda döndürüyor. Ayrıştırıcı başlık bağlantısını sabit `https://hh.ru/vacancy/` ana makinesinde arıyordu ve bölgesel olanların **hiçbiriyle** eşleşmiyordu; tamamen çalışan bir tarama sessizce 0 kaydediyordu. Artık herhangi bir `*.hh.ru` ana makinesini kabul ediyor (`adsrv.hh.ru/click?…` reklamları hâlâ hariç tutuluyor — `/vacancy/<id>` yolu yok) ve her sonuç URL'sini `https://hh.ru/vacancy/<id>` biçimine normalleştiriyor. Canlı doğrulandı: önceden 0 veren bir `sochi.hh.ru` sayfasından artık 17 gerçek ilan ayrıştırılıyor. +1 test (**1824**).
+
 ## [1.118.3] — 2026-07-10
 
 ### Düzeltildi

@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1823%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1824%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.3)
+[![release](https://img.shields.io/badge/release-v1.118.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.4)
 
-> **🆕 Ultima release — v1.118.3**
+> **🆕 Ultima release — v1.118.4**
 >
 > **Parità col padre v1.18.0.** Nove nuovi provider di scansione (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — ora 54 adapter) più le board Lever EU, lo stato canonico `Hired` con banner «lavoro ottenuto» nel tracker, e una scheda Totale nelle Statistiche che fa da relay a stats.mjs e salary-gap.mjs del padre (funnel cumulato, totali dello scanner, osservazioni sulla retribuzione).
 >
@@ -400,7 +400,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1823 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.118.3)
+└─ tests/                    # 1824 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.118.4)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -531,7 +531,7 @@ Quando `run: true` è impostato su `/api/deep` o `/api/mode/:slug`, il server pr
 ## Test
 
 ```bash
-npm test                       # 1823 unit/integration tests
+npm test                       # 1824 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)
@@ -540,7 +540,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Test | Cosa                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1823** | Ogni endpoint, server effimero, nessuna rete. 215 file: parser, scanner (mockati), runner, anthropic/openai, header di sicurezza, XSS, sanitizzazione JD, validazione URL, parità i18n, + le suite di correzioni UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) | **1824** | Ogni endpoint, server effimero, nessuna rete. 215 file: parser, scanner (mockati), runner, anthropic/openai, header di sicurezza, XSS, sanitizzazione JD, validazione URL, parità i18n, + le suite di correzioni UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: ogni rotta viene renderizzata, flussi di base.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23    | Walkthrough Playwright completo: 11 rotte + 12 flussi funzionali.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Guidati da browser: render della dashboard, navigazione, cambio lingua, 404, health, round-trip del tracker, aggiunta alla pipeline + sweep di URL non validi, report, fallback manuale di evaluate, chiavi di config mascherate, rimozione XSS su CV PUT, anteprima pipeline 400, SSE auto-pipeline. |
