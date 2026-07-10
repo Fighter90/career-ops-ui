@@ -7,14 +7,14 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1818%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1822%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.1)
+[![release](https://img.shields.io/badge/release-v1.118.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.2)
 
-> **🆕 Dernière version — v1.118.1**
+> **🆕 Dernière version — v1.118.2**
 >
 > **Parité parent v1.18.0.** Neuf nouveaux fournisseurs de scan (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — 54 adaptateurs désormais) plus les tableaux Lever EU, le statut canonique `Hired` avec bannière « poste décroché » sur le tracker, et un onglet Cumul dans Statistiques qui relaie stats.mjs et salary-gap.mjs du parent (entonnoir cumulé, totaux du scanner, observations de rémunération).
 >

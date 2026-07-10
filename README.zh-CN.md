@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-1818%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1822%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.1)
+[![release](https://img.shields.io/badge/release-v1.118.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.2)
 
-> **🆕 最新版本 — v1.118.1**
+> **🆕 最新版本 — v1.118.2**
 >
 > **父项目 v1.18.0 对齐。** 9 个新扫描提供方(Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — 现共 54 个适配器)、Lever EU 面板、带「拿到工作」横幅的规范 `Hired` 状态,以及统计中中继父项目 stats.mjs 与 salary-gap.mjs 的累计标签页(累计漏斗、扫描器总数、薪酬观察)。
 >
