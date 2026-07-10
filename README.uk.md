@@ -7,14 +7,14 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-1818%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-1822%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.1)
+[![release](https://img.shields.io/badge/release-v1.118.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.2)
 
-> **🆕 Останній реліз — v1.118.1**
+> **🆕 Останній реліз — v1.118.2**
 >
 > **Паритет із батьком v1.18.0.** Дев'ять нових сканер-провайдерів (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — тепер 54 адаптери) плюс дошки Lever EU, канонічний статус `Hired` з банером «роботу знайдено» у трекері та вкладка «За весь час» у Статистиці, що ретранслює батьківські stats.mjs і salary-gap.mjs (накопичена воронка, підсумки сканера, спостереження щодо компенсації).
 >

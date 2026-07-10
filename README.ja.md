@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-1818%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1822%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.1)
+[![release](https://img.shields.io/badge/release-v1.118.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.2)
 
-> **🆕 最新リリース — v1.118.1**
+> **🆕 最新リリース — v1.118.2**
 >
 > **親 v1.18.0 パリティ。** 9 つの新スキャンプロバイダー(Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — アダプターは 54 個に)、Lever EU ボード対応、内定獲得バナー付きの正規 `Hired` ステータス、親の stats.mjs と salary-gap.mjs を中継する統計の累計タブ(累計ファネル、スキャナー合計、報酬観測)。
 >

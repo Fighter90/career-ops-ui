@@ -2,6 +2,11 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.2] — 2026-07-10
+
+### Wartung
+- **Landing-Nacharbeit (#118)** — `site/README.md` mit Astro 7 abgeglichen (das Sicherheits-Upgrade aus #116), ungenutzten Import entfernt und **+4 ausführbare Wächter** für die Build-Skripte des Landings: das i18n-Paritäts-Gate scheitert nachweislich an einem kaputten Wörterbuch, und `sync-assets` schreibt nie außerhalb von `site/` — Suite **1822**. Zwei CodeQL-Meldungen erledigt (eine an der Quelle behoben, eine als beabsichtigtes Build-Verhalten verworfen).
+
 ## [1.118.1] — 2026-07-10
 
 ### Behoben

@@ -10,6 +10,11 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.118.2] — 2026-07-10
+
+### Vedligeholdelse
+- **Landing-opfølgning (#118)** — `site/README.md` bragt i overensstemmelse med Astro 7 (sikkerhedsopgraderingen fra #116), ubrugt import fjernet og **+4 eksekverbare vagter** for landingens build-scripts: i18n-paritetsporten fejler bevisligt på en ødelagt ordbog, og `sync-assets` skriver aldrig uden for `site/` — suite **1822**. To CodeQL-advarsler løst (én rettet i kilden, én afvist som tilsigtet build-adfærd).
+
 ## [1.118.1] — 2026-07-10
 
 ### Rettet

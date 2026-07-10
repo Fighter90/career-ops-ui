@@ -9,6 +9,11 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.118.2] — 2026-07-10
+
+### Utrzymanie
+- **Doszlifowanie landingu (#118)** — `site/README.md` uzgodniony z Astro 7 (aktualizacja bezpieczeństwa z #116), usunięty nieużywany import i **+4 wykonywalne strażniki** dla skryptów budowania landingu: bramka parytetu i18n dowodnie pada na zepsutym słowniku, a `sync-assets` nigdy nie pisze poza `site/` — zestaw **1822**. Rozwiązano dwa alerty CodeQL (jeden naprawiony w źródle, jeden odrzucony jako zamierzone zachowanie builda).
+
 ## [1.118.1] — 2026-07-10
 
 ### Naprawiono

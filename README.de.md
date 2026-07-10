@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-1818%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1822%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.1)
+[![release](https://img.shields.io/badge/release-v1.118.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.2)
 
-> **🆕 Neueste Version — v1.118.1**
+> **🆕 Neueste Version — v1.118.2**
 >
 > **Parent-Parität v1.18.0.** Neun neue Scan-Provider (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — jetzt 54 Adapter) plus Lever-EU-Boards, der kanonische `Hired`-Status mit „Job gelandet”-Banner im Tracker und ein Gesamt-Tab in der Statistik, der stats.mjs und salary-gap.mjs des Parents weiterreicht (kumulierter Funnel, Scanner-Gesamtzahlen, Vergütungsbeobachtungen).
 >

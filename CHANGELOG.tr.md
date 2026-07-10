@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.2] — 2026-07-10
+
+### Bakım
+- **Landing takibi (#118)** — `site/README.md` Astro 7 ile uyumlandı (#116'daki güvenlik yükseltmesi), kullanılmayan import kaldırıldı ve landing derleme betikleri için **+4 çalıştırılabilir koruma** eklendi: i18n parite kapısı bozuk bir sözlükte kanıtlanabilir şekilde başarısız olur ve `sync-assets` asla `site/` dışına yazmaz — takım **1822**. İki CodeQL uyarısı çözüldü (biri kaynakta düzeltildi, biri amaçlanan derleme davranışı olarak reddedildi).
+
 ## [1.118.1] — 2026-07-10
 
 ### Düzeltildi

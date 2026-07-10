@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1818%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1822%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.1)
+[![release](https://img.shields.io/badge/release-v1.118.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.2)
 
-> **🆕 Última versión — v1.118.1**
+> **🆕 Última versión — v1.118.2**
 >
 > **Paridad con el padre v1.18.0.** Nueve nuevos proveedores de escaneo (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — ahora 54 adaptadores) más los tableros Lever EU, el estado canónico `Hired` con banner de «trabajo conseguido» en el tracker, y una pestaña Histórico en Estadísticas que retransmite stats.mjs y salary-gap.mjs del padre (embudo histórico, totales del escáner, observaciones de compensación).
 >

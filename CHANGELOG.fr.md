@@ -11,6 +11,11 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.118.2] — 2026-07-10
+
+### Maintenance
+- **Suivi du landing (#118)** — `site/README.md` réconcilié avec Astro 7 (la mise à niveau de sécurité de #116), import inutilisé supprimé et **+4 gardes exécutables** pour les scripts de build du landing : la porte de parité i18n échoue de façon démontrable sur un dictionnaire cassé et `sync-assets` n'écrit jamais hors de `site/` — suite **1822**. Deux alertes CodeQL résolues (une corrigée à la source, une rejetée comme comportement de build voulu).
+
 ## [1.118.1] — 2026-07-10
 
 ### Corrigé
