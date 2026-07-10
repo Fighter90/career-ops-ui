@@ -123,7 +123,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 1086 unit + 70 Playwright + 43 e2e
+   └─ tests/        # 1822 unit + 90 Playwright + 43 e2e
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.
@@ -144,7 +144,7 @@ career-ops/
 ## Тести
 
 ```bash
-npm test                    # 1086 unit/integration-тестів
+npm test                    # 1822 unit/integration-тестів
 npm run test:e2e            # 20 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 70 тестів Playwright

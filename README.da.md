@@ -400,7 +400,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1000 unit + 70 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.60.0)
+└─ tests/                    # 1822 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.118.2)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -531,22 +531,22 @@ Når `run: true` er sat på `/api/deep` eller `/api/mode/:slug`, foretrækker se
 ## Tests
 
 ```bash
-npm test                       # 1000 unit/integration tests
+npm test                       # 1822 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 70 Playwright browser (smoke + full-cycle + forms + locale-sweep)
+npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
 | Suite                       | Tests | What                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1000** | Every endpoint, ephemeral server, no network. 110 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
+| `node --test tests/*.test.mjs` (unit + integration) | **1822** | Every endpoint, ephemeral server, no network. 215 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: every route renders, basic flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23    | Full Playwright walkthrough: 11 routes + 12 functional flows.                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **70** | Browser-driven: dashboard render, navigation, language switch, 404, health, tracker round-trip, pipeline add + invalid-URL sweep, reports, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400, auto-pipeline SSE. |
-| **Total**                   | **1113** | **0 fails, 0 flakes**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Browser-driven: dashboard render, navigation, language switch, 404, health, tracker round-trip, pipeline add + invalid-URL sweep, reports, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400, auto-pipeline SSE. |
+| **Total**                   | **1955** | **0 fails, 0 flakes**                                                                                    |
 
-Dækning: ~95.7 % linjer / ~87 % grene via `--experimental-test-coverage`.
+Dækning: ~93 % linjer / ~83 % grene via `--experimental-test-coverage`.
 
 Parsere er rene funktioner (ingen I/O) — testet mod rigtige datafragmenter fra `applications.md`, `pipeline.md` og `reports/*.md`. API-tests booter Express-appen på en flygtig port og udøver hvert endpoint ende-til-ende. Scanner-tests mocker `fetch`, så de består, selv hvis hh.ru blokerer din IP. Playwright-browser-smoke kører mod in-process-serveren og løser Playwright via det overordnede projekts `node_modules` — ingen ny afhængighed i `web-ui/`.
 

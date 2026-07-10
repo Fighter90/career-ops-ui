@@ -400,7 +400,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1000 unit + 70 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.60.0)
+└─ tests/                    # 1822 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.118.2)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -531,22 +531,22 @@ Wenn `run: true` bei `/api/deep` oder `/api/mode/:slug` gesetzt ist, bevorzugt d
 ## Tests
 
 ```bash
-npm test                       # 1000 unit/integration tests
+npm test                       # 1822 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 70 Playwright browser (smoke + full-cycle + forms + locale-sweep)
+npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
 | Suite                       | Tests | Was                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1000** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 110 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) | **1822** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 215 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: jede Route rendert, grundlegende Flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23    | Vollständiger Playwright-Durchlauf: 11 Routen + 12 funktionale Flows.                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **70** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |
-| **Gesamt**                   | **1113** | **0 Fehler, 0 Flakes**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |
+| **Gesamt**                   | **1955** | **0 Fehler, 0 Flakes**                                                                                    |
 
-Abdeckung: ~95,7 % Zeilen / ~87 % Zweige über `--experimental-test-coverage`.
+Abdeckung: ~93 % Zeilen / ~83 % Zweige über `--experimental-test-coverage`.
 
 Parser sind reine Funktionen (kein I/O) — getestet gegen echte Datenfragmente aus `applications.md`, `pipeline.md` und `reports/*.md`. Die API-Tests booten die Express-App auf einem ephemeren Port und üben jeden Endpunkt end-to-end. Scanner-Tests mocken `fetch`, sodass sie auch dann bestehen, wenn hh.ru Ihre IP blockiert. Der Playwright-Browser-Smoke läuft gegen den In-Process-Server und löst Playwright über die `node_modules` des übergeordneten Projekts auf — keine neue Abhängigkeit in `web-ui/`.
 

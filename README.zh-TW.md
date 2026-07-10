@@ -370,7 +370,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1000 unit + 70 Playwright + 23 e2e:full + 20 e2e:smoke
+└─ tests/                    # 1822 unit + 90 Playwright + 23 e2e:full + 20 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch
@@ -507,7 +507,7 @@ event: error    data: { message }
 ## 測試
 
 ```bash
-npm test                       # 1000 個 unit/integration 測試
+npm test                       # 1822 個 unit/integration 測試
 npm run test:e2e               # 20 個 smoke e2e(自行啟動伺服器)
 npm run test:e2e:full          # 23 個 comprehensive e2e
 npm run test:e2e:browser       # 70 個 Playwright 瀏覽器 smoke
@@ -516,7 +516,7 @@ npm run test:coverage          # 同 `npm test`,加上 V8 coverage
 
 | Suite                       | 測試數 | 內容                                                                                                         |
 | --------------------------- | ----- | ------------------------------------------------------------------------------------------------------------ |
-| `node --test tests/*.test.mjs`(unit + integration) | **1000** | 每個端點、暫時性伺服器、無網路。涵蓋解析器、scanner(已 mock)、runner、anthropic、CSP / 安全 header、實體感知 XSS、JD sanitize、URL 驗證、SSRF redirect rebind、檔案互斥下的並行 tracker 寫入、`llmRateLimit`、路徑統一 sanitization、i18n parity。 |
+| `node --test tests/*.test.mjs`(unit + integration) | **1822** | 每個端點、暫時性伺服器、無網路。涵蓋解析器、scanner(已 mock)、runner、anthropic、CSP / 安全 header、實體感知 XSS、JD sanitize、URL 驗證、SSRF redirect rebind、檔案互斥下的並行 tracker 寫入、`llmRateLimit`、路徑統一 sanitization、i18n parity。 |
 | `tests/e2e.mjs`(smoke)      | 20    | Playwright headless:每條路由可渲染、基本流程。                                                              |
 | `tests/e2e-comprehensive.mjs` | 23    | 完整 Playwright walkthrough:11 條路由 + 12 條功能流程。                                                      |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **32** | 瀏覽器驅動 smoke:dashboard render、navigation、語言切換、404、health、tracker round-trip(BF-1)、pipeline add + 無效 URL 掃描、reports empty、evaluate 手動 fallback、config 金鑰遮罩、CV PUT XSS strip、pipeline preview 400、WCAG 1.4.1 視覺冗餘線索回歸。 |
@@ -616,7 +616,7 @@ Claude Code 中既有的 `/career-ops apply` Playwright 表單填寫流程,仍�
 
 歡迎 Issues 與 PRs。House rules:
 
-- 推送前執行 `npm test` — **1000 項檢查綠燈**為門檻(若觸碰 UI 則加上 70 個 Playwright)。
+- 推送前執行 `npm test` — **1822 項檢查綠燈**為門檻(若觸碰 UI 則加上 90 個 Playwright)。
 - 非微不足道的變更請走 GSD pipeline。詳見 [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)。
 - 不要從本儲存庫內修改父專案 `career-ops/` 內的任何東西。重點在於這是一個非侵入式 overlay。Hard rules 位於 [`CLAUDE.md`](CLAUDE.md)。
 - Conventional commits:`feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`。選填 scope:`feat(scan):`。Breaking change:`feat!:`。

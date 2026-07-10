@@ -143,7 +143,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 1086 unit + 70 Playwright + 43 e2e
+   └─ tests/        # 1822 unit + 90 Playwright + 43 e2e
 ```
 
 <div dir="rtl">
@@ -168,7 +168,7 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 1086 اختبار وحدة وتكامل
+npm test                    # 1822 اختبار وحدة وتكامل
 npm run test:e2e            # 20 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
 npm run test:e2e:browser    # 70 اختبار Playwright
