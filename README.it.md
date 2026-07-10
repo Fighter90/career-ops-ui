@@ -400,7 +400,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1000 unit + 70 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.60.0)
+└─ tests/                    # 1822 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.118.2)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -531,22 +531,22 @@ Quando `run: true` è impostato su `/api/deep` o `/api/mode/:slug`, il server pr
 ## Test
 
 ```bash
-npm test                       # 1000 unit/integration tests
+npm test                       # 1822 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 70 Playwright browser (smoke + full-cycle + forms + locale-sweep)
+npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
 | Suite                       | Test | Cosa                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1000** | Ogni endpoint, server effimero, nessuna rete. 110 file: parser, scanner (mockati), runner, anthropic/openai, header di sicurezza, XSS, sanitizzazione JD, validazione URL, parità i18n, + le suite di correzioni UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) | **1822** | Ogni endpoint, server effimero, nessuna rete. 215 file: parser, scanner (mockati), runner, anthropic/openai, header di sicurezza, XSS, sanitizzazione JD, validazione URL, parità i18n, + le suite di correzioni UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: ogni rotta viene renderizzata, flussi di base.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23    | Walkthrough Playwright completo: 11 rotte + 12 flussi funzionali.                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **70** | Guidati da browser: render della dashboard, navigazione, cambio lingua, 404, health, round-trip del tracker, aggiunta alla pipeline + sweep di URL non validi, report, fallback manuale di evaluate, chiavi di config mascherate, rimozione XSS su CV PUT, anteprima pipeline 400, SSE auto-pipeline. |
-| **Totale**                   | **1113** | **0 fallimenti, 0 flake**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Guidati da browser: render della dashboard, navigazione, cambio lingua, 404, health, round-trip del tracker, aggiunta alla pipeline + sweep di URL non validi, report, fallback manuale di evaluate, chiavi di config mascherate, rimozione XSS su CV PUT, anteprima pipeline 400, SSE auto-pipeline. |
+| **Totale**                   | **1955** | **0 fallimenti, 0 flake**                                                                                    |
 
-Copertura: ~95,7% righe / ~87% branch tramite `--experimental-test-coverage`.
+Copertura: ~93% righe / ~83% branch tramite `--experimental-test-coverage`.
 
 I parser sono funzioni pure (nessun I/O) — testati contro frammenti di dati reali da `applications.md`, `pipeline.md` e `reports/*.md`. I test API avviano l'app Express su una porta effimera ed esercitano ogni endpoint end-to-end. I test dello scanner mockano `fetch` così passano anche se hh.ru blocca il tuo IP. Lo smoke browser Playwright gira contro il server in-process e risolve Playwright tramite i `node_modules` del progetto principale — nessuna nuova dipendenza in `web-ui/`.
 

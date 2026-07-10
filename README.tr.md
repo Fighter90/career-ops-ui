@@ -400,7 +400,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1000 birim + 70 Playwright + 23/23 e2e:full + 20 e2e:smoke (temel @ v1.60.0)
+└─ tests/                    # 1822 birim + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.118.2)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch
@@ -531,7 +531,7 @@ event: error    data: { message }
 ## Testler
 
 ```bash
-npm test                       # 1000 birim/entegrasyon testi
+npm test                       # 1822 birim/entegrasyon testi
 npm run test:e2e               # 20 smoke e2e (kendi sunucusunu başlatır)
 npm run test:e2e:full          # 23 kapsamlı e2e
 npm run test:e2e:browser       # 70 Playwright tarayıcı (smoke + full-cycle + forms + locale-sweep)
@@ -540,13 +540,13 @@ npm run test:coverage          # `npm test` ile aynı, artı V8 kapsamı
 
 | Paket                       | Test | Ne                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (birim + entegrasyon) | **1000** | Her uç nokta, geçici sunucu, ağ yok. 110 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
+| `node --test tests/*.test.mjs` (birim + entegrasyon) | **1822** | Her uç nokta, geçici sunucu, ağ yok. 215 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright başsız: her rota render edilir, temel akışlar.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23    | Tam Playwright gezintisi: 11 rota + 12 işlevsel akış.                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **70** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |
-| **Toplam**                   | **1113** | **0 başarısızlık, 0 kararsızlık**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |
+| **Toplam**                   | **1955** | **0 başarısızlık, 0 kararsızlık**                                                                                    |
 
-Kapsam: `--experimental-test-coverage` aracılığıyla ~%95.7 satır / ~%87 dal.
+Kapsam: `--experimental-test-coverage` aracılığıyla ~%93 satır / ~%83 dal.
 
 Ayrıştırıcılar saf fonksiyonlardır (G/Ç yok) — `applications.md`, `pipeline.md` ve `reports/*.md` dosyalarından gerçek veri parçalarına karşı test edilir. API testleri, Express uygulamasını geçici bir portta başlatır ve her uç noktayı uçtan uca çalıştırır. Tarayıcı testleri `fetch`'i taklit eder, böylece hh.ru IP'nizi engellese bile geçerler. Playwright tarayıcı smoke'u, süreç içi sunucuya karşı çalışır ve Playwright'ı üst projenin `node_modules`'ı aracılığıyla çözer — `web-ui/` içinde yeni bağımlılık yok.
 

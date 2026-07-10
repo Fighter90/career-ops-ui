@@ -123,7 +123,7 @@ career-ops/
 └─ web-ui/          ← to repozytorium
    ├─ server/       # Express + 15 modułów tras
    ├─ public/       # vanilla JS SPA, bez bundlera
-   └─ tests/        # 1086 testów jednostkowych + 70 Playwright + 43 e2e
+   └─ tests/        # 1822 testów jednostkowych + 90 Playwright + 43 e2e
 ```
 
 Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacji, brak bundlera — cały interfejs to mniej niż 30 KB zminifikowanego kodu.
@@ -144,7 +144,7 @@ Oficjalna strona: [career-ops.org](https://career-ops.org) · Dokumentacja: [car
 ## Testy
 
 ```bash
-npm test                    # 1086 testów jednostkowych/integracyjnych
+npm test                    # 1822 testów jednostkowych/integracyjnych
 npm run test:e2e            # 20 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 70 testów Playwright

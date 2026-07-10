@@ -1,21 +1,21 @@
-# QA REGRESSION PROMPT — career-ops-ui **v1.118.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
+# QA REGRESSION PROMPT — career-ops-ui **v1.118.2** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
 
-Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 16 languages**, covering every feature shipped from **v1.76.0 through v1.118.0**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree. §§ below cover the v1.76→v1.97 surface; **§14 (at the end) covers everything added v1.98→v1.118 (incl. the v1.111 CodeQL backlog closeout)**.
+Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 16 languages**, covering every feature shipped from **v1.76.0 through v1.118.2**. Walking this top-to-bottom signs off the build without needing the rest of the `qa/` tree. §§ below cover the v1.76→v1.97 surface; **§14 (at the end) covers everything added v1.98→v1.118.2 (incl. the v1.111 CodeQL backlog closeout, the hh.ru-451 fix and the cvstart.org landing)**.
 
-- **Version under test:** `package.json` **1.118.0** · **31 route modules** · **59 adapters (54 EN + 5 RU)**.
-- **Baseline:** **1817** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×16** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL (backlog closed 167→0, all real findings fixed at source (v1.111)).
+- **Version under test:** `package.json` **1.118.2** · **31 route modules** · **59 adapters (54 EN + 5 RU)**.
+- **Baseline:** **1822** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×16** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL (backlog closed 167→0, all real findings fixed at source (v1.111)).
 - **Server:** `npm start` → `http://127.0.0.1:4317`.
-- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.1XX.0.md` (per-release delta drivers, v1.90–v1.118 incl. the v1.110 milestone snapshot + per-version v1.111/v1.112/v1.113/v1.117/v1.118) · `qa/UX-AUDIT-PROMPT.md` (UX audit) · `qa/FUNCTIONALITY-CHECK.md` (functional correctness) · `qa/DESIGNER-EXPORT-PROMPT.md` (design export) · `REGRESSION-FINAL.md` (invariant ledger).
+- **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.1XX.0.md` (per-release delta drivers, v1.90–v1.118.2 incl. the v1.110 milestone snapshot + per-version v1.111/v1.112/v1.113/v1.117/v1.118.0/v1.118.2) · `qa/UX-AUDIT-PROMPT.md` (UX audit) · `qa/FUNCTIONALITY-CHECK.md` (functional correctness) · `qa/DESIGNER-EXPORT-PROMPT.md` (design export) · `REGRESSION-FINAL.md` (invariant ledger).
 
 ---
 
 ## §0 — Gates (all must be green before sign-off)
 
 ```bash
-npm test                                    # full suite (≥1817 cases)
+npm test                                    # full suite (≥1822 cases)
 npm run test:ci                             # unit + check-no-also + check-changelog-parity + i18n-audit
 node tools/i18n-audit.mjs                   # "no hard failures — dictionary is clean"
-node scripts/check-changelog-parity.mjs     # "all 15 locales at v1.118.0" (EN + 15 = 16 files)
+node scripts/check-changelog-parity.mjs     # "all 15 locales at v1.118.2" (EN + 15 = 16 files)
 npm run test:coverage                       # ≥80% line / ≥75% branch (baseline ~96/~86)
 npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(16) + theme-toggle
 npm run test:e2e && npm run test:e2e:full   # smoke (20) + comprehensive (23) E2E
@@ -38,6 +38,8 @@ node scripts/portals-health-check.mjs       # portals.yml reachability (informat
 9. **Two scanner registries — don't conflate.** `server/lib/sources/registry.mjs` (auto-discovered `meta`) drives the `#/scan` *dropdown* + RU dispatch; `server/lib/portals/registry.mjs` (`ALL_ADAPTERS`, hand-maintained) is what the EN scanner walks to *fetch*. A new EN board needs BOTH.
 10. **Playwright headless shell:** missing → `npx playwright install chromium-headless-shell` (env gap, not a regression).
 11. **Cross-realm vm arrays:** spread (`[...]`) a vm-realm array before `deepEqual` against a main-realm literal.
+12. **hh.ru from a non-Russian IP returns HTTP 451** (geo/legal block, July 2026) — the scan disabling hh with the VPN hint is CORRECT behavior, not a bug. Don't file it; don't "fix" it.
+13. **`site/` has a build step — that's the recorded carve-out, not a violation.** The no-bundler rule still applies to `public/`; nothing in `server/`/`public/` may import from `site/`.
 12. **Live-LLM routes cascade or fall back.** The AI routes (evaluate/deep/market/career-plan/orientation/cv-studio/memory-suggest/two-pager-draft/mock-interview/networking) run the shared `runActiveProvider` cascade; with no key they return an honest copy-paste **manual prompt** (mode `manual`), never a fabricated answer. Test both paths.
 13. **i18n key duplication is invisible to parity.** Duplicate `'key':` lines in a locale dict pass the snapshot (last-wins) but are a CodeQL `js/duplicate-property` defect — grep each dict for dup keys after any fan-out.
 
@@ -168,18 +170,18 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 
 ## §7 — Docs / branding / release mechanics
 
-- **README ×16** + **CHANGELOG ×16** at **v1.118.0** (parity gate green — `node scripts/check-changelog-parity.mjs`); each language switcher lists all 16. README "Latest release" blurb describes the current release; localized "New:" trailers are native per locale (no English leak).
+- **README ×16** + **CHANGELOG ×16** at **v1.118.2** (parity gate green — `node scripts/check-changelog-parity.mjs`); each language switcher lists all 16. README "Latest release" blurb describes the current release; localized "New:" trailers are native per locale (no English leak).
 - **Help ×16** hold the gated **28 H2 / 103 H3**; §17 says **59 adapters**.
 - **Branding:** radar-icon favicon set + sidebar logo; app name **career-ops-ui**. Parent `career-ops` references intentionally unchanged.
-- **Release:** `package.json` 1.118.0; footer reads `/api/health`; `parentVersion` = 1.18.0 (independent; semver only). Tag `v1.118.0` → `release.yml`; **Publish is triggered by the GitHub Release event** (do NOT also `gh workflow run` — a parallel manual dispatch races the release-triggered run to an E409; the workflow is E409-tolerant) → GitHub Packages. **30 route modules.**
+- **Release:** `package.json` 1.118.2; footer reads `/api/health`; `parentVersion` = 1.18.0 (independent; semver only). Tag `v1.118.2` → `release.yml`; **Publish is triggered by the GitHub Release event** (do NOT also `gh workflow run` — a parallel manual dispatch races the release-triggered run to an E409; the workflow is E409-tolerant) → GitHub Packages. **31 route modules.**
 
 ---
 
 ## §8 — Exit criteria
 - Every (page × control × 16 languages) PASS or a logged FAIL→fix (one-fix-per-release; HIGH → MEDIUM → LOW).
-- `npm test` ≥ **1817** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×16) green; CI matrix green; **CodeQL backlog closed (167→0; final 6 fixed at source in v1.111 — sanitizer escape belt, type-confusion coercion, dynamic-dispatch removal)**.
+- `npm test` ≥ **1822** green; `npm run test:ci` green; coverage ≥ floor; Playwright (locale-sweep ×16) green; CI matrix green; **CodeQL backlog closed (167→0; final 6 fixed at source in v1.111 — sanitizer escape belt, type-confusion coercion, dynamic-dispatch removal)**.
 - Zero console errors; no RTL leak; no untranslated shipped key; no duplicate dict keys; favicon/icon endpoints 200.
-- All §2 deltas verified live (scanner 59 adapters incl. Dassault + the v1.118 parity batch; the eight v1.85–v1.96 pages; the v1.97 audit fixes) **and all §14 additions (v1.98–v1.118)**.
+- All §2 deltas verified live (scanner 59 adapters incl. Dassault + the v1.118 parity batch; the eight v1.85–v1.96 pages; the v1.97 audit fixes) **and all §14 additions (v1.98–v1.118.2)**.
 
 ---
 
@@ -205,5 +207,7 @@ Locales: `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, t
 | 16 | **Usage meter rework + widget E2E (v1.116.0)** | The usage meter is **pinned to the bottom of the sidebar** (fixed, full width) and pads the sidebar so the **menu is never covered**; **refreshes live** (15 s + tab-focus + route); rows show real `<tokens> · <est. cost>` (bars vs 30d), not a 100% share. `cv-import.mjs` reads the buffer size behind a `typeof` barrier (closes CodeQL #384). First real-browser **E2E** (`tests/playwright-widgets.mjs`) drives both persistent widgets. See `qa/QA-REGRESSION-PROMPT-v1.116.0.md`. |
 | 17 | **Parent parity pack (v1.117.0)** | Six parent capabilities in the UI: `#/followup` **cadence board** (urgency chips + table + Seed button; fail-soft without the parent), `#/stats` **Rejection patterns** tab (outcome mix + recommendations + per-ATS-vendor advance rate), CV Studio **Add to CV** card (grounded bullets from URL/text — SSRF-gated fetch, suggestions only, NO writes), **4 new scan providers** (beesite/HigherEdJobs/JibeApply/softgarden → **50 adapters, 45 EN + 5 RU**), Apply **knock-out pre-scan** step, `/api/run/reconcile`. 41 new i18n keys ×16. See `qa/QA-REGRESSION-PROMPT-v1.117.0.md`. |
 | 18 | **Parent v1.18.0 parity (v1.118.0)** | **9 new scan providers** (csod/Phenom/Radancy/Deutsche Bahn/EchoJobs/TKMS/Heckler & Koch/Rheinmetall/LaraJobs → **59 adapters, 54 EN + 5 RU**) + **Lever EU** (`jobs.eu.lever.co`); canonical **`Hired`** status (whitelist + celebratory badge + job-landed banner + funnel/conversions); `#/stats` **Lifetime** tab relaying parent `stats.mjs` + `salary-gap.mjs` (`GET /api/stats/lifetime`, `GET /api/stats/salary-gap` — zero-token, fail-soft); 28 i18n keys ×16; help §14/§26 ×16 (**103 H3**). See `qa/QA-REGRESSION-PROMPT-v1.118.0.md`. |
+| 19 | **hh.ru 451 geo-block (v1.118.1)** | hh.ru serves **HTTP 451** to non-RU IPs on the public search pages (July 2026). `searchHH` flags 451 as `geoBlocked` (like 403) → RU scan **disables hh after the first block** with a per-cause log hint (451 → Russian IP / VPN, see help §7; 403 → anti-bot). Help `### hh.ru` subsection rewritten ×16 ("works from any IP" is gone). A 451 from a non-RU network is ENVIRONMENT, not a regression. See `qa/QA-REGRESSION-PROMPT-v1.118.2.md` §1. |
+| 20 | **cvstart.org marketing landing (v1.118.0–.2, PRs #116/#118/#119)** | `site/` — a SEPARATE Astro 7 static artifact (33 pages: 16 locales × home+help + 404), built ONLY in CI (`deploy-pages.yml`, Node 22, paths-filtered; the no-build rule still owns `public/` — carve-out recorded in CLAUDE.md). Build gates in-workflow: `npx astro check` + `scripts/check-i18n.mjs` (16×190 keys). Guards in the main suite: `tests/site-scripts.test.mjs` (+4 — parity gate fails on broken dict; sync-assets never writes outside `site/`). Live: `https://cvstart.org` (EN `/` + 15 prefixes, `/ar/` RTL), facts (version/tests/adapters) are a BUILD-TIME snapshot — stale facts mean redeploy Pages, not a code bug. `cvstart.ru` → `cvstart.org/ru/<path>` via the separate `cvstart-ru-redirect` repo. |
 
-**New routes since v1.97:** `POST /api/portals/health`, `POST /api/export/docx`, `POST /api/cv-studio/tailor`, `POST /api/docs-assistant/ask`, `GET /api/cli-detect`, `GET /api/logo`, `GET /api/usage` (30 route modules total). **New i18n:** every one is present + translated in all **16** locales (`i18n-coverage` + `i18n-locale-files` green). **New Help:** each surfaced in `docs/help/*` (in-place for two-pager/CV-Studio/settings/health/scan/pipeline; §-level for portals/docs-assistant where applicable).
+**New routes since v1.97:** `POST /api/portals/health`, `POST /api/export/docx`, `POST /api/cv-studio/tailor`, `POST /api/docs-assistant/ask`, `GET /api/cli-detect`, `GET /api/logo`, `GET /api/usage`; v1.117 added followup (31 route modules total). **New i18n:** every one is present + translated in all **16** locales (`i18n-coverage` + `i18n-locale-files` green). **New Help:** each surfaced in `docs/help/*` (in-place for two-pager/CV-Studio/settings/health/scan/pipeline; §-level for portals/docs-assistant where applicable).
