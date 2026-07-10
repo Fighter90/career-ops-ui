@@ -2,6 +2,11 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.3] — 2026-07-10
+
+### Corretto
+- **hh.ru restituiva silenziosamente 0 risultati (interstitial di verifica VPN)** — hh.ru ora reindirizza con 302 le reti che considera VPN/proxy (IP di datacenter) verso un interstitial `/vpncheeck` (“VPN мешает работе сайта”) che risponde **HTTP 200** senza alcuna scheda di vacancy, quindi la scansione riportava 0 senza alcun errore. Lo scanner ora rileva il redirect tramite l'URL finale della risposta, disabilita hh.ru per il resto dell'esecuzione e stampa un suggerimento onesto: il traffico deve davvero uscire da un IP residenziale — un VPN/proxy di sistema può restare attivo anche con l'interruttore del browser spento. +1 test (**1823**).
+
 ## [1.118.2] — 2026-07-10
 
 ### Manutenzione

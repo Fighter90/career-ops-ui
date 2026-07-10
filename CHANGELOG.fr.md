@@ -11,6 +11,11 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.118.3] — 2026-07-10
+
+### Corrigé
+- **hh.ru renvoyait silencieusement 0 résultat (interstitiel de vérification VPN)** — hh.ru redirige désormais en 302 les réseaux qu'il considère comme VPN/proxy (IP de datacenter) vers un interstitiel `/vpncheeck` (“VPN мешает работе сайта”) qui répond **HTTP 200** sans aucune carte d'offre, si bien que le scan rapportait 0 sans la moindre erreur. Le scanner détecte maintenant la redirection via l'URL finale de la réponse, désactive hh.ru pour le reste de l'exécution et affiche un indice honnête : le trafic doit réellement sortir par une IP résidentielle — un VPN/proxy système peut rester actif même quand l'interrupteur du navigateur est coupé. +1 test (**1823**).
+
 ## [1.118.2] — 2026-07-10
 
 ### Maintenance

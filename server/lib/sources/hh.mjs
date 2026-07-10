@@ -85,6 +85,25 @@ export async function searchHH(query, opts = {}) {
       },
     });
 
+    // hh.ru 302-redirects networks it flags as VPN/proxy (datacenter egress
+    // IPs) to an interstitial at /vpncheeck ("VPN мешает работе сайта").
+    // fetch follows the redirect and the stub can answer HTTP 200 with zero
+    // vacancy cards — without this check the scan silently reports 0 hits.
+    // Detect it via the response's final URL and treat it like the geo-block:
+    // fail page 0 loudly so the run disables hh with an honest hint.
+    // (`/vpncheck` included in case hh fixes the typo in the route.)
+    if (/\/vpnche{1,2}ck/.test(res.url || '')) {
+      if (page === 0) {
+        const err = new Error(
+          `hh.ru: VPN-check interstitial (HTTP ${res.status}) — network flagged as VPN/proxy`,
+        );
+        err.status = res.status;
+        err.geoBlocked = true;
+        throw err;
+      }
+      break;
+    }
+
     if (!res.ok) {
       // Page 0 failing = the source is down/blocked → surface it. A later
       // page failing is non-fatal: keep what we already collected.

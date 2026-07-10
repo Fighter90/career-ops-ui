@@ -7,14 +7,14 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1822%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1823%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.2)
+[![release](https://img.shields.io/badge/release-v1.118.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.3)
 
-> **🆕 Dernière version — v1.118.2**
+> **🆕 Dernière version — v1.118.3**
 >
 > **Parité parent v1.18.0.** Neuf nouveaux fournisseurs de scan (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — 54 adaptateurs désormais) plus les tableaux Lever EU, le statut canonique `Hired` avec bannière « poste décroché » sur le tracker, et un onglet Cumul dans Statistiques qui relaie stats.mjs et salary-gap.mjs du parent (entonnoir cumulé, totaux du scanner, observations de rémunération).
 >
@@ -366,7 +366,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1822 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.118.2)
+└─ tests/                    # 1823 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.118.3)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -497,7 +497,7 @@ Quand `run: true` est défini sur `/api/deep` ou `/api/mode/:slug`, le serveur p
 ## Tests
 
 ```bash
-npm test                       # 1822 unit/integration tests
+npm test                       # 1823 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)
@@ -506,7 +506,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | Quoi                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + intégration) | **1822** | Chaque endpoint, serveur éphémère, sans réseau. 215 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + intégration) | **1823** | Chaque endpoint, serveur éphémère, sans réseau. 215 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless : chaque route s'affiche, flux de base.                                                |
 | `tests/e2e-comprehensive.mjs` | 23    | Parcours Playwright complet : 11 routes + 12 flux fonctionnels.                                            |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Piloté par navigateur : rendu du dashboard, navigation, changement de langue, 404, health, aller-retour tracker, ajout pipeline + balayage URL-invalide, rapports, repli manuel d'évaluation, clés de config masquées, retrait XSS au PUT du CV, aperçu pipeline 400, SSE auto-pipeline. |

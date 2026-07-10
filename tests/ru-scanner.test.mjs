@@ -141,6 +141,25 @@ test('searchHH: throws with geoBlocked flag if the website returns 451 (geo/lega
   );
 });
 
+// v1.118.3 — hh.ru 302-redirects networks it flags as VPN/proxy (datacenter
+// egress IPs) to an interstitial at /vpncheeck ("VPN мешает работе сайта").
+// fetch follows the redirect and the stub answers HTTP 200 with zero vacancy
+// cards — before this fix the scan silently reported 0 hits. The redirect
+// must be detected via the response's final URL and fail page 0 loudly with
+// the same geoBlocked flag, so the run disables hh with an honest hint.
+test('searchHH: throws with geoBlocked flag when redirected to the /vpncheeck interstitial (HTTP 200)', async () => {
+  const fakeFetch = async () => ({
+    ok: true,
+    status: 200,
+    url: 'https://hh.ru/vpncheeck?backUrl=%2Fsearch%2Fvacancy%3Ftext%3DPHP',
+    text: async () => '<html><h1>VPN мешает работе сайта</h1></html>',
+  });
+  await assert.rejects(
+    () => searchHH('PHP', { fetchImpl: fakeFetch }),
+    (err) => err.geoBlocked === true && /vpn/i.test(err.message)
+  );
+});
+
 const hhPage = (...ids) =>
   ids.map((id) => `<div data-qa="vacancy-serp__vacancy"><a data-qa="serp-item__title" href="https://hh.ru/vacancy/${id}">Job ${id}</a></div>`).join('');
 
