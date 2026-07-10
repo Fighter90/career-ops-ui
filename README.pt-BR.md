@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1822%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-1823%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.2)
+[![release](https://img.shields.io/badge/release-v1.118.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.3)
 
-> **🆕 Última versão — v1.118.2**
+> **🆕 Última versão — v1.118.3**
 >
 > **Paridade com o pai v1.18.0.** Nove novos provedores de escaneamento (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — agora 54 adaptadores) mais boards Lever EU, o status canônico `Hired` com banner de «vaga conquistada» no tracker, e uma aba Histórico em Estatísticas que retransmite stats.mjs e salary-gap.mjs do pai (funil histórico, totais do scanner, observações de remuneração).
 >
@@ -370,7 +370,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1822 unit/integration + 90 Playwright e2e
+└─ tests/                    # 1823 unit/integration + 90 Playwright e2e
    ├─ parsers.test.mjs       # parsers de markdown / pipeline / report (funções puras)
    ├─ api.test.mjs           # cada endpoint, servidor efêmero, sem rede
    ├─ {ru,en}-scanner.test.mjs   # fetch mockado
@@ -505,7 +505,7 @@ Quando `run: true` é definido em `/api/deep` ou `/api/mode/:slug`, o servidor p
 ## Testes
 
 ```bash
-npm test                       # 1822 testes unit/integration
+npm test                       # 1823 testes unit/integration
 npm run test:e2e               # 20 smoke e2e (sobe o próprio server)
 npm run test:e2e:full          # 23 e2e comprehensive
 npm run test:e2e:browser       # 70 Playwright browser-smoke
@@ -514,7 +514,7 @@ npm run test:coverage          # idêntico a `npm test` mais V8 coverage
 
 | Suíte                       | Testes  | O que cobre                                                                                                |
 | --------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1822** | Cada endpoint, servidor efêmero, sem rede. Inclui parser, scanner (mockado), runner, anthropic, security headers, XSS entity-aware, JD sanitize, validação de URL, paridade i18n, mutex de tracker, rate-limit, path-traversal e DNS rebind. |
+| `node --test tests/*.test.mjs` (unit + integration) | **1823** | Cada endpoint, servidor efêmero, sem rede. Inclui parser, scanner (mockado), runner, anthropic, security headers, XSS entity-aware, JD sanitize, validação de URL, paridade i18n, mutex de tracker, rate-limit, path-traversal e DNS rebind. |
 | `tests/e2e.mjs` (smoke)      | 20     | Playwright headless: cada rota renderiza, fluxos básicos.                                                  |
 | `tests/e2e-comprehensive.mjs` | 23    | Walkthrough Playwright completo: 11 rotas + 12 fluxos funcionais.                                          |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Browser-driven smoke: render do dashboard, navegação, troca de idioma, 404, health, round-trip do tracker (BF-1), pipeline add + varredura de URL inválida, reports vazio, evaluate fallback manual, config com chaves mascaradas, CV PUT XSS strip, pipeline preview 400 + cobertura WCAG 1.4.1. |
@@ -614,7 +614,7 @@ A interface inclui **16 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh
 
 Issues e PRs são bem-vindos. Regras da casa:
 
-- Rode `npm test` antes do push — **1822 checks verdes** é a barra (mais 90 Playwright se você mexer na UI).
+- Rode `npm test` antes do push — **1823 checks verdes** é a barra (mais 90 Playwright se você mexer na UI).
 - Mudanças não-triviais passam pelo pipeline GSD. Veja [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Não modifique nada no projeto pai `career-ops/` a partir deste repositório. O ponto principal é exatamente que este é um overlay não-invasivo. As hard rules estão em [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Escopo opcional: `feat(scan):`. Breaking change: `feat!:`.

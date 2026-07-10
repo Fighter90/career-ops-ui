@@ -10,6 +10,11 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.118.3] — 2026-07-10
+
+### Rettet
+- **hh.ru returnerede lydløst 0 resultater (VPN-tjek-interstitial)** — hh.ru omdirigerer nu (302) netværk, det anser for VPN/proxy (datacenter-IP'er), til en interstitial `/vpncheeck` (“VPN мешает работе сайта”), der svarer **HTTP 200** uden et eneste vakance-kort, så scanningen rapporterede 0 helt uden fejl. Scanneren opdager nu omdirigeringen via svarets endelige URL, deaktiverer hh.ru for resten af kørslen og skriver et ærligt hint: trafikken skal reelt gå ud via en residential IP — en systemdækkende VPN/proxy kan stadig være aktiv, selv når browser-kontakten er slået fra. +1 test (**1823**).
+
 ## [1.118.2] — 2026-07-10
 
 ### Vedligeholdelse

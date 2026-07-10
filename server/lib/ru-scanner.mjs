@@ -234,11 +234,15 @@ export async function runRuScan(opts = {}) {
     // queries against hh this run would only burn doomed requests.
     if (sourceFailures.hh?.geoBlocked && !hhDisabled) {
       hhDisabled = true;
-      const is451 = /451/.test(sourceFailures.hh.firstMessage || '');
-      log('stderr', `  ⚠ hh.ru disabled for this run (${sourceFailures.hh.firstMessage})`);
-      log('stderr', is451
-        ? '    hh.ru geo-blocks requests from outside Russia (HTTP 451) — scan via a Russian IP / VPN exit node. See help §7.'
-        : '    hh.ru/search/vacancy served an anti-bot challenge — retry later.');
+      const failMsg = sourceFailures.hh.firstMessage || '';
+      const isVpnCheck = /VPN-check/i.test(failMsg);
+      const is451 = !isVpnCheck && /451/.test(failMsg);
+      log('stderr', `  ⚠ hh.ru disabled for this run (${failMsg})`);
+      log('stderr', isVpnCheck
+        ? '    hh.ru flagged this network as a VPN/proxy and served its /vpncheeck interstitial — make sure traffic really exits via a residential IP (system-wide VPN/proxy off, not just the browser toggle), then rescan. See help §7.'
+        : is451
+          ? '    hh.ru geo-blocks requests from outside Russia (HTTP 451) — scan via a Russian IP / VPN exit node. See help §7.'
+          : '    hh.ru/search/vacancy served an anti-bot challenge — retry later.');
     }
   }
 

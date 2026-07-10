@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.3] — 2026-07-10
+
+### Düzeltildi
+- **hh.ru sessizce 0 sonuç döndürüyordu (VPN doğrulama ara sayfası)** — hh.ru artık VPN/proxy olarak işaretlediği ağları (datacenter IP'leri) **HTTP 200** ile tek bir ilan kartı bile içermeyen `/vpncheeck` ara sayfasına (“VPN мешает работе сайта”) 302 ile yönlendiriyor; bu yüzden tarama hiçbir hata vermeden 0 raporluyordu. Tarayıcı artık yönlendirmeyi yanıtın nihai URL'sinden algılıyor, hh.ru'yu çalıştırmanın geri kalanı için devre dışı bırakıyor ve dürüst bir ipucu yazıyor: trafik gerçekten konut tipi bir IP üzerinden çıkmalı — sistem genelindeki bir VPN/proxy, tarayıcıdaki anahtar kapalıyken bile etkin kalabilir. +1 test (**1823**).
+
 ## [1.118.2] — 2026-07-10
 
 ### Bakım

@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-1822%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1823%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.2)
+[![release](https://img.shields.io/badge/release-v1.118.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.3)
 
-> **🆕 最新リリース — v1.118.2**
+> **🆕 最新リリース — v1.118.3**
 >
 > **親 v1.18.0 パリティ。** 9 つの新スキャンプロバイダー(Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — アダプターは 54 個に)、Lever EU ボード対応、内定獲得バナー付きの正規 `Hired` ステータス、親の stats.mjs と salary-gap.mjs を中継する統計の累計タブ(累計ファネル、スキャナー合計、報酬観測)。
 >
@@ -372,7 +372,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1822 unit + 90 Playwright + e2e:full + e2e:smoke
+└─ tests/                    # 1823 unit + 90 Playwright + e2e:full + e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report パーサー(純粋関数)
    ├─ api.test.mjs           # 全エンドポイント、ephemeral server、ネットワークなし
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -508,7 +508,7 @@ LLM エンドポイントはレート制限の対象です(`server/lib/rate-limi
 ## テスト
 
 ```bash
-npm test                       # 1822 unit/integration テスト
+npm test                       # 1823 unit/integration テスト
 npm run test:e2e               # 20 smoke e2e(独自サーバーを起動)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 70 Playwright browser-smoke
@@ -517,7 +517,7 @@ npm run test:coverage          # `npm test` 相当 + V8 coverage
 
 | スイート                       | テスト数 | 内容                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs`(unit + integration) | **1822** | 全エンドポイント、ephemeral server、ネットワーク非依存。parser、scanner(モック)、runner、anthropic、security headers、XSS、JD サニタイズ、URL バリデーション、i18n parity、レート制限、ファイルロック、safe-fetch、path-traversal、DNS リバインドリダイレクトを含みます。 |
+| `node --test tests/*.test.mjs`(unit + integration) | **1823** | 全エンドポイント、ephemeral server、ネットワーク非依存。parser、scanner(モック)、runner、anthropic、security headers、XSS、JD サニタイズ、URL バリデーション、i18n parity、レート制限、ファイルロック、safe-fetch、path-traversal、DNS リバインドリダイレクトを含みます。 |
 | `tests/e2e.mjs`(smoke)     | 20    | Playwright ヘッドレス: 各 route のレンダリングと基本フロー。                                                |
 | `tests/e2e-comprehensive.mjs` | 23    | Playwright による完全な walkthrough: 11 routes + 12 機能フロー。                                          |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **32** | ブラウザ駆動 smoke: dashboard レンダリング、ナビゲーション、言語切替、404、health、tracker ラウンドトリップ (BF-1)、pipeline 追加と無効 URL sweep、reports 空、evaluate 手動フォールバック、config キーマスク、CV PUT XSS ストリップ、pipeline preview 400、レート制限、競合書き込み、エンティティ対応 XSS。 |
@@ -616,7 +616,7 @@ UI は **16 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru
 
 Issue と PR を歓迎します。ハウスルール:
 
-- プッシュ前に `npm test` を実行してください。**1822 checks green** がバーラインです(UI に手を入れる場合は加えて 90 Playwright)。
+- プッシュ前に `npm test` を実行してください。**1823 checks green** がバーラインです(UI に手を入れる場合は加えて 90 Playwright)。
 - 非自明な変更は GSD パイプラインを経由します。[`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md) を参照してください。
 - 本リポジトリから親 `career-ops/` プロジェクト内のファイルを変更してはなりません。本プロジェクトの本質は、非侵襲的なオーバーレイであることです。ハードルールは [`CLAUDE.md`](CLAUDE.md) にあります。
 - Conventional commits: `feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`。オプショナルスコープ: `feat(scan):`。Breaking change は `feat!:`。

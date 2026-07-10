@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-1822%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-1823%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.2)
+[![release](https://img.shields.io/badge/release-v1.118.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.3)
 
-> **🆕 أحدث إصدار — v1.118.2**
+> **🆕 أحدث إصدار — v1.118.3**
 >
 > **تكافؤ مع الأب v1.18.0.** تسعة مزوّدي فحص جدد (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — الآن 54 محوّلًا) بالإضافة إلى لوحات Lever EU، وحالة `Hired` القياسية مع لافتة «حصلت على الوظيفة» في المتتبِّع، وتبويب الإجمالي في الإحصاءات الذي يمرّر stats.mjs وsalary-gap.mjs من الأب (القمع التراكمي، إجماليات الماسح، ملاحظات التعويضات).
 >
@@ -143,7 +143,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 1822 unit + 90 Playwright + 43 e2e
+   └─ tests/        # 1823 unit + 90 Playwright + 43 e2e
 ```
 
 <div dir="rtl">
@@ -168,7 +168,7 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 1822 اختبار وحدة وتكامل
+npm test                    # 1823 اختبار وحدة وتكامل
 npm run test:e2e            # 20 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
 npm run test:e2e:browser    # 70 اختبار Playwright

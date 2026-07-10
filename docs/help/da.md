@@ -1042,6 +1042,8 @@ Efter scoring er de kanoniske opfølgninger:
 
 hh.ru scannes ved at læse det offentlige søgewebsite (`hh.ru/search/vacancy`), på samme måde som Habr Career — uden nøgle og opsætning. **Siden juli 2026 svarer hh.ru dog med HTTP 451 (regional juridisk blokering) til IP'er uden for Rusland**, så scanningen virker kun fra en russisk IP — kør serveren fra Rusland eller via en VPN med russisk exit-node. Ved den første 451 (eller anti-bot 403) deaktiverer scanneren hh.ru for resten af kørslen og skriver det i loggen, så de øvrige russiske kilder stadig gennemføres. JSON-API'et (`api.hh.ru`) bruges bevidst *ikke*: det returnerer `403 forbidden` til enhver programmatisk klient uanset IP og User-Agent.
 
+Selv fra et netværk, der *ser* rigtigt ud, kan hh.ru markere egress-IP'en som VPN/proxy (enhver datacenter-/hosting-IP tæller) og omdirigere scanningen (302) til en interstitial `/vpncheeck` (“VPN мешает работе сайта”), der svarer HTTP 200 med **nul** vakancer. Scanneren opdager denne omdirigering, deaktiverer hh.ru for resten af kørslen og skriver det i loggen. Løsningen ligger på netværkssiden: sørg for, at trafikken reelt går ud via en residential IP — en systemdækkende VPN eller proxy er ofte stadig aktiv, selv når browser-kontakten er slået fra (tjek din reelle egress-IP, f.eks. på api.ipify.org).
+
 ## 8. Pipeline (`#/pipeline`)
 
 Indbakke af URL'er, der venter på at blive evalueret. Lever i `data/pipeline.md`.

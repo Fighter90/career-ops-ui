@@ -1098,6 +1098,8 @@ Puanladıktan sonra kanonik takipler şunlardır:
 
 hh.ru, Habr Career gibi halka açık arama sitesi (`hh.ru/search/vacancy`) okunarak taranır — anahtar ve yapılandırma gerekmez. **Ancak Temmuz 2026'dan beri hh.ru, Rusya dışındaki IP'lere HTTP 451 (bölgesel yasal engel) döndürüyor**; tarama yalnızca Rus IP'sinden çalışır — sunucuyu Rusya'dan ya da Rus çıkış düğümlü bir VPN üzerinden çalıştırın. İlk 451'de (veya anti-bot 403'te) tarayıcı hh.ru'yu çalıştırmanın geri kalanı için devre dışı bırakır ve bunu günlüğe yazar; diğer Rus kaynakları normal şekilde tamamlanır. JSON API (`api.hh.ru`) bilerek *kullanılmaz*: IP veya User-Agent fark etmeksizin her programatik istemciye `403 forbidden` döndürür.
 
+Doğru *görünen* bir ağdan bile hh.ru, çıkış IP'sini VPN/proxy olarak işaretleyebilir (her datacenter/hosting IP'si sayılır) ve taramayı, **sıfır** ilanla HTTP 200 dönen `/vpncheeck` ara sayfasına (“VPN мешает работе сайта”) 302 ile yönlendirebilir. Tarayıcı bu yönlendirmeyi algılar, hh.ru'yu çalıştırmanın geri kalanı için devre dışı bırakır ve bunu log'a yazar. Çözüm ağ tarafındadır: trafiğin gerçekten konut tipi bir IP üzerinden çıktığından emin olun — sistem genelindeki bir VPN veya proxy, tarayıcıdaki anahtar kapalıyken bile çoğu zaman etkin kalır (gerçek çıkış IP'nizi ör. api.ipify.org üzerinden kontrol edin).
+
 ## 8. Pipeline (`#/pipeline`)
 
 Değerlendirilmeyi bekleyen URL'lerin gelen kutusu. `data/pipeline.md`'de

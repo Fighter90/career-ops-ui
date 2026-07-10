@@ -1065,6 +1065,8 @@ After scoring, the canonical follow-ups are:
 
 hh.ru is scanned by reading its public search website (`hh.ru/search/vacancy`), the same way Habr Career is scanned — no key and no configuration. **Since July 2026, however, hh.ru serves HTTP 451 (a regional legal block) to IPs outside Russia**, so the scan only works from a Russian IP — run the server from Russia or through a VPN with a Russian exit node. On the first 451 (or an anti-bot 403) the scanner disables hh.ru for the rest of the run and says so in the log, so the other Russian sources still complete. The JSON API (`api.hh.ru`) is intentionally *not* used: it returns `403 forbidden` to every programmatic client regardless of IP or User-Agent.
 
+Even from a network that *looks* right, hh.ru may flag the egress IP as a VPN/proxy (any datacenter/hosting IP counts) and 302-redirect the scan to a `/vpncheeck` interstitial (“VPN мешает работе сайта”) that returns HTTP 200 with **zero** vacancies. The scanner detects this redirect, disables hh.ru for the rest of the run and says so in the log. The fix is on the network side: make sure traffic really leaves through a residential IP — a system-wide VPN or proxy often stays active even when the browser toggle is off (check your real egress IP, e.g. at api.ipify.org).
+
 ## 8. Pipeline (`#/pipeline`)
 
 Inbox of URLs waiting to be evaluated. Lives in `data/pipeline.md`.
