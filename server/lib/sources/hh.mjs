@@ -175,8 +175,16 @@ function extractSalary(block) {
  * Pure function — exported for testing.
  *
  * Each card container carries data-qa="vacancy-serp__vacancy" (ad blocks use
- * a different marker and link to adsrv.hh.ru, so they're skipped naturally —
- * we only accept hh.ru/vacancy/<id> title links).
+ * a different marker and link to adsrv.hh.ru/click?…, so they're skipped
+ * naturally — we only accept `*.hh.ru/vacancy/<id>` title links).
+ *
+ * The host is matched as `(?:<sub>.)?hh.ru` on purpose: from a Russian
+ * residential IP hh.ru 302-redirects the search to a REGIONAL subdomain
+ * (sochi.hh.ru, spb.hh.ru, …) and the vacancy links come back on that
+ * subdomain — a hard `https://hh.ru/vacancy/` anchor silently matched zero
+ * and the scan reported 0 hits (v1.118.4). The numeric id is canonicalized to
+ * https://hh.ru/vacancy/<id> in the output, which resolves from any region.
+ * The ad path is `/click?…`, never `/vacancy/<digits>`, so ads stay excluded.
  */
 export function parseHhCards(html) {
   if (!html) return [];
@@ -186,7 +194,7 @@ export function parseHhCards(html) {
 
   for (const b of blocks) {
     const tm = b.match(
-      /data-qa="serp-item__title[^"]*"[^>]*href="(https:\/\/hh\.ru\/vacancy\/(\d+)[^"]*)"[\s\S]*?>([\s\S]*?)<\/a>/,
+      /data-qa="serp-item__title[^"]*"[^>]*href="((?:https?:)?\/\/(?:[a-z0-9-]+\.)?hh\.ru\/vacancy\/(\d+)[^"]*)"[\s\S]*?>([\s\S]*?)<\/a>/,
     );
     if (!tm) continue;
 

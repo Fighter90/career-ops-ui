@@ -2,6 +2,11 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.118.4] — 2026-07-10
+
+### Behoben
+- **hh.ru-Scans lieferten von einer russischen IP 0 Treffer (Links auf Regional-Subdomain)** — von einer russischen Residential-IP leitet hh.ru die Suche per 302 auf eine regionale Subdomain (`sochi.hh.ru`, `spb.hh.ru`, …) um und liefert die Vakanz-Links auf dieser Subdomain. Der Parser suchte den Titel-Link am fest verdrahteten Host `https://hh.ru/vacancy/` und traf **keinen** der regionalen — ein voll funktionierender Scan verbuchte stillschweigend 0. Er akzeptiert jetzt jeden `*.hh.ru`-Host (Anzeigen auf `adsrv.hh.ru/click?…` bleiben ausgeschlossen — sie haben keinen `/vacancy/<id>`-Pfad) und kanonisiert jede Ergebnis-URL zurück auf `https://hh.ru/vacancy/<id>`. Live verifiziert: 17 echte Vakanzen werden von einer `sochi.hh.ru`-Seite geparst, die zuvor 0 ergab. +1 Test (**1824**).
+
 ## [1.118.3] — 2026-07-10
 
 ### Behoben

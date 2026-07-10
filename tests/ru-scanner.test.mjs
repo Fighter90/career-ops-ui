@@ -94,6 +94,30 @@ test('parseHhCards: flags remote and skips adsrv ad blocks', () => {
   assert.equal(go.workplaceType, 'Remote');
 });
 
+// v1.118.4 — from a Russian residential IP hh.ru 302-redirects the search to a
+// regional subdomain (sochi.hh.ru, spb.hh.ru, …) and the vacancy links come
+// back on that subdomain. The old hard `https://hh.ru/vacancy/` anchor matched
+// zero of them, so a working scan silently reported 0 hits. Links on any
+// `*.hh.ru` host must parse; adsrv ad `/click?…` links must still be dropped;
+// the output url is canonicalized back to hh.ru.
+test('parseHhCards: parses regional-subdomain vacancy links (sochi.hh.ru), drops ads', () => {
+  const html = `
+<div data-qa="vacancy-serp__vacancy">
+  <a data-qa="serp-item__title" href="https://sochi.hh.ru/vacancy/55501?from=serp">Python Developer</a>
+  <a data-qa="vacancy-serp__vacancy-employer-text">Regio Corp</a>
+</div>
+<a data-qa="serp-item__title" href="https://adsrv.hh.ru/click?b=1&meta=link_to_vacancy">РЕКЛАМА</a>
+<div data-qa="vacancy-serp__vacancy">
+  <a data-qa="serp-item__title" href="https://spb.hh.ru/vacancy/55502">Data Engineer</a>
+</div>`;
+  const items = parseHhCards(html);
+  assert.equal(items.length, 2);
+  assert.deepEqual(items.map((j) => j.id).sort(), ['hh-55501', 'hh-55502']);
+  // URL canonicalized to the region-agnostic hh.ru host.
+  assert.equal(items[0].url, 'https://hh.ru/vacancy/55501');
+  assert.ok(!items.some((j) => /adsrv/.test(j.url)));
+});
+
 test('parseHhCards: empty / null safe', () => {
   assert.deepEqual(parseHhCards(''), []);
   assert.deepEqual(parseHhCards(null), []);

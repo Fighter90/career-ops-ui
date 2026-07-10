@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-1823%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-1824%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.3)
+[![release](https://img.shields.io/badge/release-v1.118.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.4)
 
-> **🆕 Последний релиз — v1.118.3**
+> **🆕 Последний релиз — v1.118.4**
 >
 > **Паритет с родителем v1.18.0.** Девять новых сканер-провайдеров (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — теперь 54 адаптера) плюс доски Lever EU, канонический статус `Hired` с баннером «работа найдена» в трекере и вкладка «За всё время» в Статистике, ретранслирующая родительские stats.mjs и salary-gap.mjs (накопленная воронка, итоги сканера, наблюдения по компенсации).
 >
@@ -370,7 +370,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1823 unit + 90 Playwright + 23 e2e:full + 20 e2e:smoke
+└─ tests/                    # 1824 unit + 90 Playwright + 23 e2e:full + 20 e2e:smoke
    ├─ parsers.test.mjs       # парсеры markdown / pipeline / отчётов (чистые функции)
    ├─ api.test.mjs           # каждая точка входа, эфемерный сервер, без сети
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -506,7 +506,7 @@ event: error    data: { message }
 ## Тесты
 
 ```bash
-npm test                       # 1823 unit/integration-теста
+npm test                       # 1824 unit/integration-теста
 npm run test:e2e               # 20 smoke e2e (поднимает собственный сервер)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 70 Playwright browser-smoke
@@ -515,7 +515,7 @@ npm run test:coverage          # то же, что `npm test`, плюс V8-по�
 
 | Сьют                       | Тестов | Что покрывает                                                                                              |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1823** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
+| `node --test tests/*.test.mjs` (unit + integration) | **1824** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: каждый маршрут рендерится, базовые сценарии работают.                                 |
 | `tests/e2e-comprehensive.mjs` | 23    | Полный Playwright-walkthrough: 11 маршрутов + 12 функциональных сценариев.                                 |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Browser-driven smoke: рендер дашборда, навигация, переключение языка, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL sweep, пустые reports, evaluate manual fallback, маскирование ключей в config, XSS-strip на PUT CV, pipeline preview 400. |
@@ -614,7 +614,7 @@ russian_portals:
 
 Issues и PR приветствуются. Правила:
 
-- Перед push выполняйте `npm test` — **1823 проверок green** — это минимальная планка (плюс 90 Playwright, если изменения касаются UI).
+- Перед push выполняйте `npm test` — **1824 проверок green** — это минимальная планка (плюс 90 Playwright, если изменения касаются UI).
 - Нетривиальные изменения проходят через GSD-конвейер. См. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Не модифицируйте ничего в родительском `career-ops/` из этого репозитория. Смысл проекта именно в том, что это неинвазивный overlay. Жёсткие правила — в [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Опциональный scope: `feat(scan):`. Breaking change: `feat!:`.

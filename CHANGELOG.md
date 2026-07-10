@@ -8,6 +8,11 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.118.4] — 2026-07-10
+
+### Fixed
+- **hh.ru scans returned 0 hits from a Russian IP (regional-subdomain links)** — from a Russian residential IP hh.ru 302-redirects the search to a regional subdomain (`sochi.hh.ru`, `spb.hh.ru`, …) and returns vacancy links on that subdomain. The parser's title-link matcher was anchored to a hard `https://hh.ru/vacancy/` host, so it matched **zero** of the regional links and a fully working scan silently recorded 0 hits. It now accepts any `*.hh.ru` host (ads on `adsrv.hh.ru/click?…` are still excluded — they have no `/vacancy/<id>` path) and canonicalizes each result URL back to `https://hh.ru/vacancy/<id>`. Verified live: 17 real vacancies now parse from a `sochi.hh.ru` page that previously yielded 0. +1 test (**1824**).
+
 ## [1.118.3] — 2026-07-10
 
 ### Fixed
