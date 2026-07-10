@@ -963,6 +963,8 @@ Depois de pontuar, os follow-ups canônicos são:
 
 O hh.ru é coletado lendo o site público de busca (`hh.ru/search/vacancy`), do mesmo jeito que o Habr Career — sem chave nem configuração. **Porém, desde julho de 2026 o hh.ru devolve HTTP 451 (bloqueio legal regional) para IPs fora da Rússia**, então a varredura só funciona a partir de um IP russo — rode o servidor na Rússia ou por uma VPN com saída russa. No primeiro 451 (ou 403 anti-bot) o scanner desativa o hh.ru pelo resto da execução e avisa no log, de modo que as demais fontes russas ainda completam. A API JSON (`api.hh.ru`) *não* é usada de propósito: ela devolve `403 forbidden` a todo cliente programático, seja qual for o IP ou User-Agent.
 
+Mesmo a partir de uma rede que *parece* correta, o hh.ru pode marcar o IP de saída como VPN/proxy (qualquer IP de datacenter/hosting conta) e redirecionar o scan com 302 para um interstitial `/vpncheeck` (“VPN мешает работе сайта”) que devolve HTTP 200 com **zero** vagas. O scanner detecta esse redirecionamento, desativa o hh.ru pelo resto da execução e avisa no log. A correção está na rede: garanta que o tráfego realmente saia por um IP residencial — um VPN ou proxy em nível de sistema costuma continuar ativo mesmo com o botão do navegador desligado (confira seu IP de saída real, p. ex. em api.ipify.org).
+
 ## 8. Vagas (`#/pipeline`)
 
 Caixa de entrada de URLs aguardando avaliação. Vive em

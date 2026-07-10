@@ -1067,6 +1067,8 @@ Dopo il punteggio, i follow-up canonici sono:
 
 hh.ru viene scansionato leggendo il sito pubblico di ricerca (`hh.ru/search/vacancy`), come Habr Career — senza chiave né configurazione. **Da luglio 2026, però, hh.ru restituisce HTTP 451 (blocco legale regionale) agli IP fuori dalla Russia**: la scansione funziona quindi solo da un IP russo — esegui il server dalla Russia o tramite una VPN con uscita russa. Al primo 451 (o 403 anti-bot) lo scanner disattiva hh.ru per il resto dell'esecuzione e lo segnala nel log, così le altre fonti russe completano comunque. L'API JSON (`api.hh.ru`) *non* viene usata di proposito: restituisce `403 forbidden` a qualsiasi client programmatico, a prescindere da IP o User-Agent.
 
+Anche da una rete che *sembra* corretta, hh.ru può considerare l'IP di uscita un VPN/proxy (qualsiasi IP di datacenter/hosting conta) e reindirizzare la scansione con 302 verso un interstitial `/vpncheeck` (“VPN мешает работе сайта”) che risponde HTTP 200 con **zero** vacancy. Lo scanner rileva questo redirect, disabilita hh.ru per il resto dell'esecuzione e lo segnala nel log. La soluzione è lato rete: assicurati che il traffico esca davvero da un IP residenziale — un VPN o proxy di sistema spesso resta attivo anche con l'interruttore del browser spento (verifica il tuo IP di uscita reale, ad es. su api.ipify.org).
+
 ## 8. Pipeline (`#/pipeline`)
 
 Casella di posta di URL in attesa di essere valutati. Vive in `data/pipeline.md`.
