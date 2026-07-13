@@ -2,6 +2,13 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.119.2] — 2026-07-13
+
+### Hinzugefügt
+- **CONTRIBUTING.md** — der Contributor-Guide, auf den Landing und README schon immer verlinkt haben, existiert jetzt: Setup, Projektkarte, die harten Security-/No-Build-Regeln, Test-Ebenen, der Zwei-Registries-Walkthrough zum Hinzufügen einer Scan-Quelle, der ×16-i18n-Vertrag, Commit-/PR-Konventionen und der Release-Prozess.
+- **Sprachflaggen auf der Landing** — der Sprachumschalter von cvstart.org, das Sprachraster im Footer und das „In deiner Sprache lesen"-Banner zeigen jetzt die Flagge jeder Locale neben ihrem Endonym (dasselbe Regionalindikator-Set wie das Sprach-`<select>` der App; degradiert zu Regionsbuchstaben, wo Flaggen-Glyphen fehlen).
+- **Landing-Footer-Fixes** — der tote Discussions-Link (Feature im Repo nicht aktiviert) zeigt jetzt auf das Projekt-**Wiki**, und der Footer nennt den Autor: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+
 ## [1.119.1] — 2026-07-13
 
 ### Behoben

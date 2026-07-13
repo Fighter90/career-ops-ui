@@ -12,9 +12,9 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.1)
+[![release](https://img.shields.io/badge/release-v1.119.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.2)
 
-> **🆕 Останній реліз — v1.119.1**
+> **🆕 Останній реліз — v1.119.2**
 >
 > **Паритет із батьком v1.19.0.** Два нових сканер-провайдери — Meituan (zhaopin.meituan.com) і Tencent (careers.tencent.com), публічні JSON-API китайських тех-дощок без авторизації (тепер **61 адаптер**) — браузерні заголовки в запитах Workday CXS та Glints (розблоковують тенанти за Cloudflare) і оновлення cvstart.org: живий автооновлюваний лічильник зірок GitHub та блок контриб'юторів.
 >

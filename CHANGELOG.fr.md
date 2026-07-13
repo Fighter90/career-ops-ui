@@ -11,6 +11,13 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.119.2] — 2026-07-13
+
+### Ajouté
+- **CONTRIBUTING.md** — le guide du contributeur vers lequel la landing et le README pointaient depuis toujours existe désormais : installation, carte du projet, les règles dures sécurité/no-build, les niveaux de test, le walkthrough des « deux registres » pour ajouter une source de scan, le contrat i18n ×16, les conventions de commits/PR et le processus de release.
+- **Drapeaux des langues sur la landing** — le sélecteur de langues de cvstart.org, la grille des langues du pied de page et la bannière « lisez dans votre langue » affichent désormais le drapeau de chaque locale à côté de son endonyme (le même jeu d'indicateurs régionaux que le `<select>` de langue de l'app ; dégrade en lettres de région là où les glyphes de drapeau manquent).
+- **Corrections du pied de page de la landing** — le lien mort vers Discussions (fonction non activée sur le dépôt) pointe désormais vers le **wiki** du projet, et le pied de page crédite l'auteur : **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+
 ## [1.119.1] — 2026-07-13
 
 ### Corrigé

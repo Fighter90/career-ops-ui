@@ -2,6 +2,13 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.119.2] — 2026-07-13
+
+### Eklendi
+- **CONTRIBUTING.md** — landing'in ve README'nin başından beri bağlantı verdiği katkıda bulunan rehberi artık mevcut: kurulum, proje haritası, katı güvenlik/no-build kuralları, test katmanları, tarama kaynağı eklemek için «iki kayıt» walkthrough'u, ×16 i18n sözleşmesi, commit/PR kuralları ve sürüm süreci.
+- **Landing'de dil bayrakları** — cvstart.org dil değiştirici, alt bilgideki dil ızgarası ve «kendi dilinde oku» banner'ı artık her yerel ayarın bayrağını endoniminin yanında gösteriyor (uygulamanın dil `<select>`'iyle aynı bölgesel gösterge seti; bayrak glifleri olmayan yerlerde bölge harflerine düşer).
+- **Landing altbilgi düzeltmeleri** — ölü Discussions bağlantısı (özellik depoda etkin değil) artık projenin **wiki**'sine gidiyor ve altbilgi yazarı belirtiyor: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+
 ## [1.119.1] — 2026-07-13
 
 ### Düzeltildi

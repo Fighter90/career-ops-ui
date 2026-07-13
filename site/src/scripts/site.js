@@ -164,7 +164,8 @@ if ('IntersectionObserver' in window && !reduced) {
     }
   }
   if (!target || target.code === current) return;
-  const text = (banner.dataset.text || '').replace('{lang}', target.endonym);
+  const text = (banner.dataset.text || '')
+    .replace('{lang}', `${target.flag ? target.flag + ' ' : ''}${target.endonym}`);
   banner.querySelector('#lang-banner-text').textContent = text;
   const link = banner.querySelector('#lang-banner-link');
   link.href = target.path;

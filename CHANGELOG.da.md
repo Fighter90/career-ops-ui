@@ -10,6 +10,13 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.119.2] — 2026-07-13
+
+### Tilføjet
+- **CONTRIBUTING.md** — bidragyderguiden, som landingen og README altid har linket til, findes nu: opsætning, projektkort, de hårde sikkerheds-/no-build-regler, testniveauer, to-registre-gennemgangen til at tilføje en scanningskilde, ×16-i18n-kontrakten, commit-/PR-konventioner og release-processen.
+- **Sprogflag på landingen** — cvstart.orgs sprogvælger, footerens sproggitter og "læs på dit sprog"-banneret viser nu hver lokalitets flag ved siden af dens endonym (samme sæt regionale indikatorer som appens sprog-`<select>`; degraderer til regionsbogstaver, hvor flagglyffer mangler).
+- **Landing-footer-rettelser** — det døde Discussions-link (funktionen er ikke aktiveret på repoet) peger nu på projektets **wiki**, og footeren krediterer forfatteren: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+
 ## [1.119.1] — 2026-07-13
 
 ### Rettet

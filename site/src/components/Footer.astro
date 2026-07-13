@@ -27,7 +27,8 @@ const resources = [
 const community = [
   { label: 'GitHub', href: facts.repoUrl },
   { label: t(locale, 'footer.issues'), href: `${facts.repoUrl}/issues` },
-  { label: t(locale, 'footer.discussions'), href: `${facts.repoUrl}/discussions` },
+  // Discussions are not enabled on the repo — link the wiki instead.
+  { label: 'Wiki', href: `${facts.repoUrl}/wiki` },
   { label: t(locale, 'footer.contributing'), href: `${facts.repoUrl}/blob/main/CONTRIBUTING.md` },
 ];
 ---
@@ -71,7 +72,7 @@ const community = [
                 aria-current={l.code === locale.code ? 'true' : undefined}
                 class:list={['text-sm text-ink-soft hover:text-ink hover:underline', l.code === locale.code && 'font-bold text-ink']}
               >
-                {l.endonym}
+                {l.flag} {l.endonym}
               </a>
             </li>
           ))}
@@ -83,6 +84,11 @@ const community = [
       <p>
         © {year} career-ops-ui ·
         <a href={`${facts.repoUrl}/blob/main/LICENSE`} rel="noopener" class="underline underline-offset-2">{t(locale, 'footer.license')}</a>
+      </p>
+      <p>
+        {t(locale, 'footer.createdBy')}
+        {' '}<a href="https://sergey-cv.com/" rel="noopener author" class="underline underline-offset-2">Sergey Emelyanov</a>
+        {' · '}<a href="https://www.linkedin.com/in/sergey-emelyanov-in-job/" rel="noopener" class="underline underline-offset-2">LinkedIn</a>
       </p>
       <p>{t(locale, 'open.disclaimer')}</p>
     </div>

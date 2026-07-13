@@ -8,6 +8,13 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.119.2] — 2026-07-13
+
+### Added
+- **CONTRIBUTING.md** — the contributor guide the landing and README have linked to all along now exists: setup, project map, the hard security/no-build rules, testing tiers, the two-registry walkthrough for adding a scan source, the ×16 i18n contract, commit/PR conventions and the release process.
+- **Language flags on the landing** — the cvstart.org language switcher, the footer language grid and the "read in your language" banner now show each locale's flag next to its endonym (same regional-indicator set as the app's language `<select>`; degrades to region letters where flag glyphs are missing).
+- **Landing footer fixes** — the dead Discussions link (the feature is not enabled on the repo) now points to the project **wiki**, and the footer credits the author: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+
 ## [1.119.1] — 2026-07-13
 
 ### Fixed
