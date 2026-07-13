@@ -8,6 +8,11 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.119.4] — 2026-07-13
+
+### Changed
+- **LICENSE names the author** — the copyright line now reads *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (canonical MIT text untouched). A new **NOTICE.md** spells the licensing out in detail: who holds copyright, exactly what the MIT grant covers (code, docs, translations, the landing, the wiki), what it does NOT cover (your runtime data, the parent project, job-board content, trademarks), the third-party component table (express/js-yaml MIT; Astro/Tailwind MIT; Figtree & JetBrains Mono under SIL OFL 1.1; sharp Apache-2.0) and an optional attribution line.
+
 ## [1.119.3] — 2026-07-13
 
 ### Added

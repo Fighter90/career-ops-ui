@@ -9,6 +9,11 @@
 ---
 
 
+## [1.119.4] — 2026-07-13
+
+### 변경
+- **LICENSE에 작성자 명시** — 저작권 줄이 이제 *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors*입니다(MIT 정식 본문은 그대로). 새 **NOTICE.md**가 라이선스를 상세히 설명합니다: 저작권 보유자, MIT 허가가 정확히 무엇을 포함하는지(코드, 문서, 번역, 랜딩, 위키), 무엇을 포함하지 않는지(런타임의 사용자 데이터, 부모 프로젝트, 채용 보드 콘텐츠, 상표), 서드파티 구성 요소 표(express/js-yaml — MIT; Astro/Tailwind — MIT; Figtree·JetBrains Mono 글꼴 — SIL OFL 1.1; sharp — Apache-2.0), 선택적 저작자 표시 문구.
+
 ## [1.119.3] — 2026-07-13
 
 ### 추가
