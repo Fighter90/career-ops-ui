@@ -11,6 +11,11 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.119.5] — 2026-07-13
+
+### Corregido
+- **El botón de idioma de la landing ya no se parte** — con las banderas de v1.119.2 la etiqueta del selector en la cabecera (p. ej. «🇷🇺 Русский») podía romperse hasta en tres líneas en anchos de escritorio estrechos; la etiqueta del selector y todas las opciones del desplegable llevan ahora `whitespace-nowrap` — bandera + endónimo siempre en una línea. La lista de idiomas del pie pasó de una cuadrícula rígida de dos columnas a una fila envolvente de elementos de una línea — «🇧🇷 Português (Brasil)» tampoco se parte ya a mitad de nombre.
+
 ## [1.119.4] — 2026-07-13
 
 ### Cambiado

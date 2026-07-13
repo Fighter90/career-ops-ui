@@ -9,6 +9,11 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 ---
 
 
+## [1.119.5] — 2026-07-13
+
+### Corrigido
+- **O botão de idioma da landing não quebra mais** — com as bandeiras da v1.119.2 o rótulo do seletor no cabeçalho (ex.: «🇷🇺 Русский») podia quebrar em até três linhas em larguras estreitas de desktop; o rótulo do seletor e todas as opções do dropdown agora usam `whitespace-nowrap` — bandeira + endônimo sempre em uma linha. A lista de idiomas do rodapé passou de uma grade rígida de duas colunas para uma linha com quebra de itens de linha única — «🇧🇷 Português (Brasil)» também não quebra mais no meio do nome.
+
 ## [1.119.4] — 2026-07-13
 
 ### Alterado

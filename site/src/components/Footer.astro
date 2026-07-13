@@ -62,7 +62,9 @@ const community = [
       </nav>
       <nav aria-label={t(locale, 'footer.languages')}>
         <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-ink-faint">{t(locale, 'footer.languages')}</h2>
-        <ul class="grid grid-cols-2 gap-x-4 gap-y-2">
+        {/* flex-wrap + nowrap items: long endonyms («Português (Brasil)»)
+            must never split mid-name — each language stays on one line. */}
+        <ul class="flex flex-wrap gap-x-4 gap-y-2">
           {LOCALES.map((l) => (
             <li>
               <a
@@ -70,7 +72,7 @@ const community = [
                 hreflang={l.code}
                 lang={l.code}
                 aria-current={l.code === locale.code ? 'true' : undefined}
-                class:list={['text-sm text-ink-soft hover:text-ink hover:underline', l.code === locale.code && 'font-bold text-ink']}
+                class:list={['whitespace-nowrap text-sm text-ink-soft hover:text-ink hover:underline', l.code === locale.code && 'font-bold text-ink']}
               >
                 {l.flag} {l.endonym}
               </a>

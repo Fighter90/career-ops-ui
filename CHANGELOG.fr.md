@@ -11,6 +11,11 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.119.5] — 2026-07-13
+
+### Corrigé
+- **Le bouton de langue de la landing ne se replie plus** — avec les drapeaux de la v1.119.2, le libellé du sélecteur dans l'en-tête (p. ex. «🇷🇺 Русский») pouvait se casser sur jusqu'à trois lignes aux largeurs desktop étroites ; le libellé du sélecteur et toutes les options du menu sont désormais en `whitespace-nowrap` — drapeau + endonyme toujours sur une ligne. La liste des langues du pied de page passe d'une grille rigide à deux colonnes à une rangée enveloppante d'éléments d'une ligne — «🇧🇷 Português (Brasil)» ne se coupe plus non plus au milieu du nom.
+
 ## [1.119.4] — 2026-07-13
 
 ### Modifié

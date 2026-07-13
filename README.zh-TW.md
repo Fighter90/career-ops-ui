@@ -12,9 +12,9 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.4)
+[![release](https://img.shields.io/badge/release-v1.119.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.5)
 
-> **🆕 最新版本 — v1.119.4**
+> **🆕 最新版本 — v1.119.5**
 >
 > **父專案 v1.19.0 對齊。** 2 個新掃描提供方 — 美團 Meituan(zhaopin.meituan.com)與騰訊 Tencent(careers.tencent.com),中國科技公司職缺板塊的免認證公開 JSON API(現共 **61 個轉接器**)— Workday CXS 與 Glints 請求攜帶瀏覽器式標頭(解鎖 Cloudflare 保護的租戶),以及 cvstart.org 煥新:即時自動更新的 GitHub 星標計數與貢獻者區塊。
 >

@@ -10,6 +10,11 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.119.5] — 2026-07-13
+
+### Rettet
+- **Sprogknappen på landingen ombrydes ikke længere** — med flagene fra v1.119.2 kunne switcher-etiketten i headeren (f.eks. «🇷🇺 Русский») knække på op til tre linjer ved smalle desktop-bredder; switcher-etiketten og alle dropdown-valg er nu `whitespace-nowrap` — flag + endonym altid på én linje. Sproglisten i footeren gik fra et stift to-kolonne-gitter til en ombrydende række af enkeltlinjede punkter — «🇧🇷 Português (Brasil)» knækker heller ikke længere midt i navnet.
+
 ## [1.119.4] — 2026-07-13
 
 ### Ændret

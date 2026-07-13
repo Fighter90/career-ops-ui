@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.119.5] — 2026-07-13
+
+### Düzeltildi
+- **Landing'deki dil düğmesi artık satır atlamıyor** — v1.119.2'deki bayraklarla başlıktaki değiştirici etiketi (ör. «🇷🇺 Русский») dar masaüstü genişliklerinde üç satıra kadar bölünebiliyordu; değiştirici etiketi ve açılır menüdeki tüm seçenekler artık `whitespace-nowrap` — bayrak + endonim her zaman tek satırda. Altbilgideki dil listesi katı iki sütunlu ızgaradan tek satırlık öğelerden oluşan sarmalanan bir sıraya geçti — «🇧🇷 Português (Brasil)» da artık adın ortasından bölünmüyor.
+
 ## [1.119.4] — 2026-07-13
 
 ### Değiştirildi

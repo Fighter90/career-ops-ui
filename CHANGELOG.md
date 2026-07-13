@@ -8,6 +8,11 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.119.5] — 2026-07-13
+
+### Fixed
+- **Landing language button no longer wraps** — with the v1.119.2 flags the header switcher label (e.g. «🇷🇺 Русский») could break onto up to three lines at narrow desktop widths; the switcher label and every option in the dropdown are now `whitespace-nowrap`, keeping flag + endonym on one line. The footer language list switched from a rigid two-column grid to a wrapping row of one-line items, so «🇧🇷 Português (Brasil)» never splits mid-name either.
+
 ## [1.119.4] — 2026-07-13
 
 ### Changed
