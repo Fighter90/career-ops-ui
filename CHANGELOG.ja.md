@@ -9,6 +9,11 @@
 ---
 
 
+## [1.119.3] — 2026-07-13
+
+### 追加
+- **SECURITY.md** — CONTRIBUTING が指していたセキュリティポリシーがついに実在します:サポート対象バージョン、非公開報告フロー(リポジトリで GitHub の **private vulnerability reporting を有効化** — Security タブ →「Report a vulnerability」)、localhost バインドの単一ユーザーアプリの脅威モデル(スコープ内:敵対的な求人経由の XSS / SSRF / パストラバーサル / シークレット漏えい / CSP の弱体化。スコープ外:自分の localhost への DoS と親プロジェクトの問題)、レビュアー向けのハードニング基準。
+
 ## [1.119.2] — 2026-07-13
 
 ### 追加

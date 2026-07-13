@@ -12,9 +12,9 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.2)
+[![release](https://img.shields.io/badge/release-v1.119.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.3)
 
-> **🆕 En son sürüm — v1.119.2**
+> **🆕 En son sürüm — v1.119.3**
 >
 > **Üst proje v1.19.0 paritesi.** İki yeni tarama sağlayıcısı — Meituan (zhaopin.meituan.com) ve Tencent (careers.tencent.com), Çin tech kartlarının kimlik doğrulamasız açık JSON API'leri (artık **61 adaptör**) — Workday CXS ve Glints isteklerinde tarayıcı benzeri başlıklar (Cloudflare arkasındaki kiracıların kilidini açar) ve cvstart.org yenilemesi: canlı otomatik güncellenen GitHub yıldız sayacı ve katkıda bulunanlar bloğu.
 >
@@ -400,7 +400,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1845 birim + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.2)
+└─ tests/                    # 1845 birim + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.3)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch

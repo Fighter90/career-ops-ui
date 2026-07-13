@@ -90,7 +90,7 @@ Version bumps follow semver with `package.json` as the source of truth. Each rel
 
 ## Security
 
-Found a vulnerability? Please **do not** open a public issue — see [SECURITY.md](SECURITY.md) if present, or report privately via GitHub's security advisories ("Report a vulnerability" on the repo's Security tab).
+Found a vulnerability? Please **do not** open a public issue — follow [SECURITY.md](SECURITY.md) (private vulnerability reporting is enabled on the repo).
 
 ## License
 

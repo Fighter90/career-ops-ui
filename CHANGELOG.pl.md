@@ -9,6 +9,11 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.119.3] — 2026-07-13
+
+### Dodano
+- **SECURITY.md** — polityka bezpieczeństwa, do której odsyłał CONTRIBUTING, teraz istnieje: wspierane wersje, prywatny proces zgłoszeń (w repozytorium **włączono private vulnerability reporting** GitHuba — zakładka Security → „Report a vulnerability"), model zagrożeń dla aplikacji jednego użytkownika na localhost (w zakresie: XSS przez wrogie oferty / SSRF / path traversal / wycieki sekretów / osłabianie CSP; poza zakresem: DoS własnego localhosta i problemy projektu nadrzędnego) oraz bazę hardeningową dla recenzentów.
+
 ## [1.119.2] — 2026-07-13
 
 ### Dodano

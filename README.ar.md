@@ -12,9 +12,9 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.2)
+[![release](https://img.shields.io/badge/release-v1.119.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.3)
 
-> **🆕 أحدث إصدار — v1.119.2**
+> **🆕 أحدث إصدار — v1.119.3**
 >
 > **تكافؤ مع الأب v1.19.0.** مزوّدا فحص جديدان — Meituan (zhaopin.meituan.com) وTencent (careers.tencent.com)، واجهتا JSON عامتان بلا مصادقة للوحات التقنية الصينية (الآن **61 محوّلاً**) — ترويسات شبيهة بالمتصفح على طلبات Workday CXS وGlints (تفتح المستأجرين خلف Cloudflare)، وتحديث لموقع cvstart.org: عدّاد نجوم GitHub يتحدّث تلقائياً مباشرةً وكتلة المساهمين.
 >

@@ -12,9 +12,9 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.2)
+[![release](https://img.shields.io/badge/release-v1.119.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.3)
 
-> **🆕 Najnowsze wydanie — v1.119.2**
+> **🆕 Najnowsze wydanie — v1.119.3**
 >
 > **Parytet z rodzicem v1.19.0.** Dwóch nowych dostawców skanowania — Meituan (zhaopin.meituan.com) i Tencent (careers.tencent.com), publiczne JSON-API chińskich tablic tech bez uwierzytelniania (teraz **61 adapterów**) — przeglądarkowe nagłówki w żądaniach Workday CXS i Glints (odblokowują tenantów za Cloudflare) oraz odświeżenie cvstart.org: automatycznie aktualizowany licznik gwiazdek GitHub i blok współtwórców.
 >

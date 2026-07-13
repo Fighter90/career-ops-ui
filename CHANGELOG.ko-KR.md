@@ -9,6 +9,11 @@
 ---
 
 
+## [1.119.3] — 2026-07-13
+
+### 추가
+- **SECURITY.md** — CONTRIBUTING이 가리키던 보안 정책이 이제 실제로 존재합니다: 지원 버전, 비공개 신고 절차(저장소에 GitHub **private vulnerability reporting 활성화** — Security 탭 → «Report a vulnerability»), localhost 바인딩 단일 사용자 앱의 위협 모델(범위 내: 적대적 공고를 통한 XSS / SSRF / 경로 순회 / 시크릿 유출 / CSP 약화; 범위 외: 자신의 localhost에 대한 DoS 및 부모 프로젝트 문제), 리뷰어를 위한 하드닝 기준선.
+
 ## [1.119.2] — 2026-07-13
 
 ### 추가
