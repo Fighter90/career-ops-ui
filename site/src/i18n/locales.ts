@@ -16,6 +16,10 @@ export interface Locale {
   readonly endonym: string;
   /** Writing direction. */
   readonly dir: 'ltr' | 'rtl';
+  /** Regional-indicator emoji shown next to the endonym (mirrors the SPA's
+   *  language <select>); degrades to region letters where flag glyphs are
+   *  missing, so the endonym stays the primary label. */
+  readonly flag: string;
   /** File key for images/dashboard-<file>.png and docs/help/<file>.md. */
   readonly file: string;
   /** og:locale value. */
@@ -23,22 +27,22 @@ export interface Locale {
 }
 
 export const LOCALES: readonly Locale[] = [
-  { code: 'en', slug: '', endonym: 'English', dir: 'ltr', file: 'en', ogLocale: 'en_US' },
-  { code: 'es', slug: 'es', endonym: 'Español', dir: 'ltr', file: 'es', ogLocale: 'es_ES' },
-  { code: 'fr', slug: 'fr', endonym: 'Français', dir: 'ltr', file: 'fr', ogLocale: 'fr_FR' },
-  { code: 'pt-BR', slug: 'pt-br', endonym: 'Português (Brasil)', dir: 'ltr', file: 'pt-BR', ogLocale: 'pt_BR' },
-  { code: 'ko', slug: 'ko', endonym: '한국어', dir: 'ltr', file: 'ko-KR', ogLocale: 'ko_KR' },
-  { code: 'ja', slug: 'ja', endonym: '日本語', dir: 'ltr', file: 'ja', ogLocale: 'ja_JP' },
-  { code: 'ru', slug: 'ru', endonym: 'Русский', dir: 'ltr', file: 'ru', ogLocale: 'ru_RU' },
-  { code: 'zh-CN', slug: 'zh-cn', endonym: '简体中文', dir: 'ltr', file: 'zh-CN', ogLocale: 'zh_CN' },
-  { code: 'zh-TW', slug: 'zh-tw', endonym: '繁體中文', dir: 'ltr', file: 'zh-TW', ogLocale: 'zh_TW' },
-  { code: 'pl', slug: 'pl', endonym: 'Polski', dir: 'ltr', file: 'pl', ogLocale: 'pl_PL' },
-  { code: 'uk', slug: 'uk', endonym: 'Українська', dir: 'ltr', file: 'uk', ogLocale: 'uk_UA' },
-  { code: 'da', slug: 'da', endonym: 'Dansk', dir: 'ltr', file: 'da', ogLocale: 'da_DK' },
-  { code: 'ar', slug: 'ar', endonym: 'العربية', dir: 'rtl', file: 'ar', ogLocale: 'ar_AR' },
-  { code: 'de', slug: 'de', endonym: 'Deutsch', dir: 'ltr', file: 'de', ogLocale: 'de_DE' },
-  { code: 'it', slug: 'it', endonym: 'Italiano', dir: 'ltr', file: 'it', ogLocale: 'it_IT' },
-  { code: 'tr', slug: 'tr', endonym: 'Türkçe', dir: 'ltr', file: 'tr', ogLocale: 'tr_TR' },
+  { code: 'en', slug: '', endonym: 'English', flag: '🇬🇧', dir: 'ltr', file: 'en', ogLocale: 'en_US' },
+  { code: 'es', slug: 'es', endonym: 'Español', flag: '🇪🇸', dir: 'ltr', file: 'es', ogLocale: 'es_ES' },
+  { code: 'fr', slug: 'fr', endonym: 'Français', flag: '🇫🇷', dir: 'ltr', file: 'fr', ogLocale: 'fr_FR' },
+  { code: 'pt-BR', slug: 'pt-br', endonym: 'Português (Brasil)', flag: '🇧🇷', dir: 'ltr', file: 'pt-BR', ogLocale: 'pt_BR' },
+  { code: 'ko', slug: 'ko', endonym: '한국어', flag: '🇰🇷', dir: 'ltr', file: 'ko-KR', ogLocale: 'ko_KR' },
+  { code: 'ja', slug: 'ja', endonym: '日本語', flag: '🇯🇵', dir: 'ltr', file: 'ja', ogLocale: 'ja_JP' },
+  { code: 'ru', slug: 'ru', endonym: 'Русский', flag: '🇷🇺', dir: 'ltr', file: 'ru', ogLocale: 'ru_RU' },
+  { code: 'zh-CN', slug: 'zh-cn', endonym: '简体中文', flag: '🇨🇳', dir: 'ltr', file: 'zh-CN', ogLocale: 'zh_CN' },
+  { code: 'zh-TW', slug: 'zh-tw', endonym: '繁體中文', flag: '🇹🇼', dir: 'ltr', file: 'zh-TW', ogLocale: 'zh_TW' },
+  { code: 'pl', slug: 'pl', endonym: 'Polski', flag: '🇵🇱', dir: 'ltr', file: 'pl', ogLocale: 'pl_PL' },
+  { code: 'uk', slug: 'uk', endonym: 'Українська', flag: '🇺🇦', dir: 'ltr', file: 'uk', ogLocale: 'uk_UA' },
+  { code: 'da', slug: 'da', endonym: 'Dansk', flag: '🇩🇰', dir: 'ltr', file: 'da', ogLocale: 'da_DK' },
+  { code: 'ar', slug: 'ar', endonym: 'العربية', flag: '🇸🇦', dir: 'rtl', file: 'ar', ogLocale: 'ar_AR' },
+  { code: 'de', slug: 'de', endonym: 'Deutsch', flag: '🇩🇪', dir: 'ltr', file: 'de', ogLocale: 'de_DE' },
+  { code: 'it', slug: 'it', endonym: 'Italiano', flag: '🇮🇹', dir: 'ltr', file: 'it', ogLocale: 'it_IT' },
+  { code: 'tr', slug: 'tr', endonym: 'Türkçe', flag: '🇹🇷', dir: 'ltr', file: 'tr', ogLocale: 'tr_TR' },
 ] as const;
 
 export const DEFAULT_LOCALE: Locale = LOCALES[0];

@@ -17,7 +17,7 @@ const { locale, page } = Astro.props;
     aria-label={t(locale, 'a11y.lang')}
   >
     <Icon name="globe" class="h-[18px] w-[18px]" />
-    <span class="text-sm font-semibold">{locale.endonym}</span>
+    <span class="text-sm font-semibold">{locale.flag} {locale.endonym}</span>
     <Icon name="chevron-down" class="h-3.5 w-3.5 text-ink-soft" />
   </summary>
   <ul
@@ -40,7 +40,7 @@ const { locale, page } = Astro.props;
             l.code === locale.code && 'font-bold',
           ]}
         >
-          <span>{l.endonym}</span>
+          <span>{l.flag} {l.endonym}</span>
           {l.code === locale.code && <Icon name="check" class="h-4 w-4 text-[color:var(--color-rausch-deep)]" />}
         </a>
       </li>

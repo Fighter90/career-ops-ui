@@ -12,9 +12,9 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.1)
+[![release](https://img.shields.io/badge/release-v1.119.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.2)
 
-> **🆕 최신 릴리스 — v1.119.1**
+> **🆕 최신 릴리스 — v1.119.2**
 >
 > **부모 v1.19.0 패리티.** 2개의 새 스캔 프로바이더 — Meituan(zhaopin.meituan.com)과 Tencent(careers.tencent.com), 중국 테크 보드의 인증 불필요 공개 JSON API(이제 **61개 어댑터**) — Workday CXS·Glints 요청에 브라우저형 헤더 적용(Cloudflare 뒤 테넌트 차단 해제), 그리고 cvstart.org 새 단장: 실시간 자동 갱신 GitHub 스타 카운터와 기여자 블록.
 >
