@@ -2,6 +2,11 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.119.5] — 2026-07-13
+
+### Corretto
+- **Il pulsante lingua della landing non va più a capo** — con le bandiere della v1.119.2 l'etichetta dello switcher nell'header (es. «🇷🇺 Русский») poteva spezzarsi fino a tre righe alle larghezze desktop strette; l'etichetta dello switcher e tutte le opzioni del menu ora usano `whitespace-nowrap` — bandiera + endonimo sempre su una riga. L'elenco delle lingue nel footer è passato da una griglia rigida a due colonne a una riga avvolgente di voci su una riga — anche «🇧🇷 Português (Brasil)» non si spezza più a metà nome.
+
 ## [1.119.4] — 2026-07-13
 
 ### Modificato

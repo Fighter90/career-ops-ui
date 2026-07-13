@@ -9,6 +9,11 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.119.5] — 2026-07-13
+
+### Naprawiono
+- **Przycisk języka na landingu już się nie zawija** — po dodaniu flag w v1.119.2 etykieta przełącznika w nagłówku (np. «🇷🇺 Русский») mogła łamać się nawet na trzy linie przy wąskich szerokościach desktopu; etykieta przełącznika i wszystkie opcje listy mają teraz `whitespace-nowrap` — flaga + endonim zawsze w jednej linii. Lista języków w stopce przeszła ze sztywnej dwukolumnowej siatki na zawijany rząd jednoliniowych pozycji — «🇧🇷 Português (Brasil)» też nie łamie się już w środku nazwy.
+
 ## [1.119.4] — 2026-07-13
 
 ### Zmieniono

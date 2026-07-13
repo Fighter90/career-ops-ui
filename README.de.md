@@ -12,9 +12,9 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.4)
+[![release](https://img.shields.io/badge/release-v1.119.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.5)
 
-> **🆕 Neueste Version — v1.119.4**
+> **🆕 Neueste Version — v1.119.5**
 >
 > **Parent-Parität v1.19.0.** Zwei neue Scan-Provider — Meituan (zhaopin.meituan.com) und Tencent (careers.tencent.com), die öffentlichen JSON-APIs der chinesischen Tech-Boards ohne Auth (jetzt **61 Adapter**) — Browser-Header auf Workday-CXS- und Glints-Anfragen (entsperrt Cloudflare-geschützte Tenants) und ein cvstart.org-Refresh: live auto-aktualisierender GitHub-Sterne-Zähler und ein Mitwirkenden-Block.
 >
@@ -400,7 +400,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1845 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.4)
+└─ tests/                    # 1845 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.5)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

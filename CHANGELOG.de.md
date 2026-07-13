@@ -2,6 +2,11 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.119.5] — 2026-07-13
+
+### Behoben
+- **Der Sprachbutton der Landing bricht nicht mehr um** — mit den Flaggen aus v1.119.2 konnte das Switcher-Label im Header (z. B. «🇷🇺 Русский») bei schmalen Desktop-Breiten auf bis zu drei Zeilen umbrechen; das Switcher-Label und alle Dropdown-Optionen sind jetzt `whitespace-nowrap` — Flagge + Endonym bleiben auf einer Zeile. Die Sprachliste im Footer wechselte vom starren Zwei-Spalten-Raster zu einer umbruchfähigen Reihe einzeiliger Einträge — auch «🇧🇷 Português (Brasil)» bricht nicht mehr mitten im Namen um.
+
 ## [1.119.4] — 2026-07-13
 
 ### Geändert
