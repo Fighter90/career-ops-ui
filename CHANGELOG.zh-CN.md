@@ -9,6 +9,11 @@
 ---
 
 
+## [1.119.4] — 2026-07-13
+
+### 变更
+- **LICENSE 写明作者** — 版权行现为 *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors*(MIT 规范正文未动)。新增 **NOTICE.md** 详细阐述许可:版权归属、MIT 授权确切涵盖什么(代码、文档、翻译、落地页、wiki)、不涵盖什么(你的运行时数据、父项目、招聘板块内容、商标)、第三方组件表(express/js-yaml — MIT;Astro/Tailwind — MIT;Figtree 与 JetBrains Mono 字体 — SIL OFL 1.1;sharp — Apache-2.0)以及可选的署名行。
+
 ## [1.119.3] — 2026-07-13
 
 ### 新增

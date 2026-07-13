@@ -10,6 +10,11 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.119.4] — 2026-07-13
+
+### Ændret
+- **LICENSE nævner forfatteren** — copyright-linjen lyder nu: *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (kanonisk MIT-tekst urørt). En ny **NOTICE.md** udfolder licenseringen i detaljer: hvem der holder copyright, præcis hvad MIT-tilladelsen dækker (kode, docs, oversættelser, landingen, wikien), hvad den IKKE dækker (dine runtime-data, forældreprojektet, jobboard-indhold, varemærker), tabellen over tredjepartskomponenter (express/js-yaml — MIT; Astro/Tailwind — MIT; skrifttyperne Figtree og JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) og en valgfri krediteringslinje.
+
 ## [1.119.3] — 2026-07-13
 
 ### Tilføjet

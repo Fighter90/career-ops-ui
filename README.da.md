@@ -12,9 +12,9 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.3)
+[![release](https://img.shields.io/badge/release-v1.119.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.4)
 
-> **🆕 Seneste udgivelse — v1.119.3**
+> **🆕 Seneste udgivelse — v1.119.4**
 >
 > **Forældre-paritet v1.19.0.** To nye scanningsudbydere — Meituan (zhaopin.meituan.com) og Tencent (careers.tencent.com), de kinesiske tech-boards' offentlige JSON-API'er uden auth (nu **61 adaptere**) — browser-lignende headers på Workday CXS- og Glints-forespørgsler (låser Cloudflare-beskyttede tenants op) og et cvstart.org-refresh: live auto-opdaterende GitHub-stjernetæller og en bidragyder-blok.
 >
@@ -400,7 +400,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1845 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.3)
+└─ tests/                    # 1845 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.4)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

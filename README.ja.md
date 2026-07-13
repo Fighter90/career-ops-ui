@@ -12,9 +12,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.3)
+[![release](https://img.shields.io/badge/release-v1.119.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.4)
 
-> **🆕 最新リリース — v1.119.3**
+> **🆕 最新リリース — v1.119.4**
 >
 > **親 v1.19.0 パリティ。** 2 つの新スキャンプロバイダー — Meituan(zhaopin.meituan.com)と Tencent(careers.tencent.com)、中国テック系ボードの認証不要な公開 JSON API(これで **61 アダプタ**)— Workday CXS と Glints リクエストへのブラウザ風ヘッダー(Cloudflare 保護テナントのブロック解除)、そして cvstart.org の刷新:ライブ自動更新の GitHub スター数とコントリビューターのブロック。
 >
