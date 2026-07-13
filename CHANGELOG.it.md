@@ -2,6 +2,11 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.119.3] — 2026-07-13
+
+### Aggiunto
+- **SECURITY.md** — la security policy a cui puntava CONTRIBUTING ora esiste: versioni supportate, flusso di segnalazione privata (il **private vulnerability reporting** di GitHub è ora **abilitato** sul repo — scheda Security → «Report a vulnerability»), il modello di minaccia per un'app mono-utente su localhost (in scope: XSS via annunci ostili / SSRF / path traversal / fuga di segreti / indebolimento della CSP; fuori scope: DoS del proprio localhost e problemi del progetto padre) e la baseline di hardening per i reviewer.
+
 ## [1.119.2] — 2026-07-13
 
 ### Aggiunto

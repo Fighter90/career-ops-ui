@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.119.3] — 2026-07-13
+
+### Eklendi
+- **SECURITY.md** — CONTRIBUTING'in işaret ettiği güvenlik politikası artık mevcut: desteklenen sürümler, özel bildirim akışı (depoda GitHub **private vulnerability reporting artık etkin** — Security sekmesi → «Report a vulnerability»), localhost'a bağlı tek kullanıcılı bir uygulamanın tehdit modeli (kapsamda: düşmanca ilanlar üzerinden XSS / SSRF / path traversal / gizli anahtar sızıntısı / CSP zayıflatma; kapsam dışı: kendi localhost'una DoS ve üst projenin sorunları) ve gözden geçirenler için sertleştirme taban çizgisi.
+
 ## [1.119.2] — 2026-07-13
 
 ### Eklendi

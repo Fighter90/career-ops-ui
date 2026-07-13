@@ -10,6 +10,11 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.119.3] — 2026-07-13
+
+### Tilføjet
+- **SECURITY.md** — sikkerhedspolitikken, som CONTRIBUTING pegede på, findes nu: understøttede versioner, privat rapporteringsflow (GitHubs **private vulnerability reporting** er nu **aktiveret** på repoet — Security-fanen → „Report a vulnerability"), trusselsmodellen for en localhost-bundet enkeltbruger-app (i scope: XSS via fjendtlige jobopslag / SSRF / path traversal / lækage af hemmeligheder / CSP-svækkelse; uden for scope: DoS mod egen localhost og problemer i forældreprojektet) og hardening-baseline for reviewere.
+
 ## [1.119.2] — 2026-07-13
 
 ### Tilføjet

@@ -8,6 +8,11 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.119.3] — 2026-07-13
+
+### Added
+- **SECURITY.md** — the security policy the CONTRIBUTING guide pointed to now exists: supported versions, private reporting flow (GitHub **private vulnerability reporting is now enabled** on the repo — Security tab → "Report a vulnerability"), the threat model for a localhost-bound single-user app (XSS via hostile job postings / SSRF / path traversal / secret leakage / CSP weakening in scope; localhost DoS and parent-project issues out of scope) and the hardening baseline for reviewers.
+
 ## [1.119.2] — 2026-07-13
 
 ### Added
