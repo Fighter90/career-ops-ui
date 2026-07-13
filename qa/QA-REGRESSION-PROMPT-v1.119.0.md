@@ -44,3 +44,9 @@ node --test tests/help-ru-config-section.test.mjs tests/canonical-docs-coverage.
 ## §5 — Sign-off
 
 `npm test` green (≥1844) · `npm run test:ci` green · Playwright suite green · smoke/comprehensive E2E green · CI matrix (Node 18/20/22) + CodeQL green · Pages deploy green and cvstart.org shows the contributors block with a live star count.
+
+---
+
+## §6 — v1.119.1 follow-up (same sign-off run)
+
+- `#/scan` Source dropdown's offline fallback (`FALLBACK_SOURCES` in `public/js/views/scan.js`) synced to all **61** providers (it had silently lagged since v1.87.0 — 20 missing). New drift guard `tests/scan-fallback-sources.test.mjs` asserts exact value+label parity with `server/lib/sources/registry.mjs` — CI fails on any future divergence. Baseline **1845**.

@@ -8,6 +8,11 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.119.1] — 2026-07-13
+
+### Fixed
+- **`#/scan` source filter caught up with the registry** — the static `FALLBACK_SOURCES` list behind the Source dropdown (used only when `GET /api/scan/sources` is unreachable) had silently lagged since v1.87.0: 20 providers (Amazon, Avature, SAP SuccessFactors, Get on Board, Dassault Systèmes, beesite, HigherEdJobs, JibeApply (iCIMS), softgarden, Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs and the new Meituan / Tencent) were missing from the offline fallback. Synced to all **61** and now gated by a drift test that fails CI whenever the client list diverges from the server registry (values AND labels). +1 test (**1845**).
+
 ## [1.119.0] — 2026-07-13
 
 Parent career-ops **v1.19.0** parity + cvstart.org landing refresh.

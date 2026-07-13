@@ -9,6 +9,11 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.119.1] — 2026-07-13
+
+### Naprawiono
+- **Filtr źródeł na `#/scan` dogonił rejestr** — statyczna lista `FALLBACK_SOURCES` za rozwijanym menu Source (używana tylko gdy `GET /api/scan/sources` jest nieosiągalny) po cichu odstawała od v1.87.0: w offline'owym fallbacku brakowało 20 dostawców (Amazon, Avature, SAP SuccessFactors, Get on Board, Dassault Systèmes, beesite, HigherEdJobs, JibeApply (iCIMS), softgarden, Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs oraz nowi Meituan / Tencent). Zsynchronizowana ze wszystkimi **61** i objęta testem dryfu, który wywala CI przy rozjeździe listy klienta z rejestrem serwera (wartości I etykiety). +1 test (**1845**).
+
 ## [1.119.0] — 2026-07-13
 
 Parytet z nadrzędnym career-ops **v1.19.0** + odświeżenie landingu cvstart.org.

@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-1844%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1845%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.0)
+[![release](https://img.shields.io/badge/release-v1.119.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.1)
 
-> **🆕 最新版本 — v1.119.0**
+> **🆕 最新版本 — v1.119.1**
 >
 > **父项目 v1.19.0 对齐。** 2 个新扫描提供方 — 美团 Meituan(zhaopin.meituan.com)与腾讯 Tencent(careers.tencent.com),中国科技公司招聘板块的免认证公开 JSON API(现共 **61 个适配器**)— Workday CXS 与 Glints 请求携带浏览器式请求头(解锁 Cloudflare 保护的租户),以及 cvstart.org 焕新:实时自动更新的 GitHub 星标计数和贡献者板块。
 >
@@ -517,7 +517,7 @@ npm run test:coverage          # 同 `npm test`,附加 V8 覆盖率
 | `tests/e2e.mjs`(smoke)      | 20    | Playwright headless:每个路由可渲染,基础流程。                                                            |
 | `tests/e2e-comprehensive.mjs` | 23    | 完整 Playwright walkthrough:11 个路由 + 12 个功能流程。                                                   |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **12** | 浏览器驱动的烟雾:dashboard 渲染、导航、语言切换、404、health、tracker 往返(BF-1)、pipeline 添加 + 无效 URL 扫描、reports 空、evaluate 手动回退、config keys 遮蔽、CV PUT XSS 清理、pipeline preview 400。 |
-| **总计**                   | **1844** | **0 失败,0 flake**                                                                                       |
+| **总计**                   | **1845** | **0 失败,0 flake**                                                                                       |
 
 覆盖率:通过 `--experimental-test-coverage` 得 ~93% 行 / ~83% 分支。
 
@@ -613,7 +613,7 @@ Claude Code 中现有的 `/career-ops apply` Playwright 表单填写流程,仍�
 
 欢迎 issues 与 PR。家规如下:
 
-- 推送前先跑 `npm test` —— **1844 项全绿** 是底线(触碰 UI 时再加上 90 个 Playwright)。
+- 推送前先跑 `npm test` —— **1845 项全绿** 是底线(触碰 UI 时再加上 90 个 Playwright)。
 - 非平凡变更走 GSD 流水线。见 [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)。
 - 不要从本仓库内修改父 `career-ops/` 项目的任何文件。这是一个非侵入式叠加层 —— 这是整件事的意义所在。硬性规则见 [`CLAUDE.md`](CLAUDE.md)。
 - 约定式提交:`feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`。可选 scope:`feat(scan):`。破坏性变更:`feat!:`。

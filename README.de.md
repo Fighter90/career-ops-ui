@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-1844%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1845%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.0)
+[![release](https://img.shields.io/badge/release-v1.119.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.1)
 
-> **🆕 Neueste Version — v1.119.0**
+> **🆕 Neueste Version — v1.119.1**
 >
 > **Parent-Parität v1.19.0.** Zwei neue Scan-Provider — Meituan (zhaopin.meituan.com) und Tencent (careers.tencent.com), die öffentlichen JSON-APIs der chinesischen Tech-Boards ohne Auth (jetzt **61 Adapter**) — Browser-Header auf Workday-CXS- und Glints-Anfragen (entsperrt Cloudflare-geschützte Tenants) und ein cvstart.org-Refresh: live auto-aktualisierender GitHub-Sterne-Zähler und ein Mitwirkenden-Block.
 >
@@ -400,7 +400,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1844 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.0)
+└─ tests/                    # 1845 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -531,7 +531,7 @@ Wenn `run: true` bei `/api/deep` oder `/api/mode/:slug` gesetzt ist, bevorzugt d
 ## Tests
 
 ```bash
-npm test                       # 1844 unit/integration tests
+npm test                       # 1845 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)
@@ -540,7 +540,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | Was                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1844** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 217 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) | **1845** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 218 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: jede Route rendert, grundlegende Flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23    | Vollständiger Playwright-Durchlauf: 11 Routen + 12 funktionale Flows.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |

@@ -9,6 +9,11 @@
 ---
 
 
+## [1.119.1] — 2026-07-13
+
+### 修正
+- **`#/scan` のソースフィルターがレジストリに追いつきました** — Source ドロップダウンの背後にある静的な `FALLBACK_SOURCES` リスト(`GET /api/scan/sources` に到達できない場合のみ使用)は v1.87.0 以降、静かに遅れていました:オフラインフォールバックに 20 のプロバイダー(Amazon、Avature、SAP SuccessFactors、Get on Board、Dassault Systèmes、beesite、HigherEdJobs、JibeApply (iCIMS)、softgarden、Cornerstone、Phenom、Radancy、Deutsche Bahn、EchoJobs、TKMS、Heckler & Koch、Rheinmetall、LaraJobs、そして新しい Meituan / Tencent)が欠けていました。全 **61** と同期し、クライアントのリストがサーバーレジストリから乖離すると CI を失敗させるドリフトテスト(値もラベルも)で保護されるようになりました。+1 テスト(**1845**)。
+
 ## [1.119.0] — 2026-07-13
 
 親 career-ops **v1.19.0** パリティ + cvstart.org ランディングの刷新。

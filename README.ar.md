@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-1844%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-1845%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.0)
+[![release](https://img.shields.io/badge/release-v1.119.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.1)
 
-> **🆕 أحدث إصدار — v1.119.0**
+> **🆕 أحدث إصدار — v1.119.1**
 >
 > **تكافؤ مع الأب v1.19.0.** مزوّدا فحص جديدان — Meituan (zhaopin.meituan.com) وTencent (careers.tencent.com)، واجهتا JSON عامتان بلا مصادقة للوحات التقنية الصينية (الآن **61 محوّلاً**) — ترويسات شبيهة بالمتصفح على طلبات Workday CXS وGlints (تفتح المستأجرين خلف Cloudflare)، وتحديث لموقع cvstart.org: عدّاد نجوم GitHub يتحدّث تلقائياً مباشرةً وكتلة المساهمين.
 >
@@ -143,7 +143,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 1844 unit + 90 Playwright + 43 e2e
+   └─ tests/        # 1845 unit + 90 Playwright + 43 e2e
 ```
 
 <div dir="rtl">
@@ -168,7 +168,7 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 1844 اختبار وحدة وتكامل
+npm test                    # 1845 اختبار وحدة وتكامل
 npm run test:e2e            # 20 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
 npm run test:e2e:browser    # 70 اختبار Playwright

@@ -9,6 +9,11 @@
 ---
 
 
+## [1.119.1] — 2026-07-13
+
+### 수정
+- **`#/scan` 소스 필터가 레지스트리를 따라잡았습니다** — Source 드롭다운 뒤의 정적 `FALLBACK_SOURCES` 목록(`GET /api/scan/sources`에 접근할 수 없을 때만 사용)이 v1.87.0 이후 조용히 뒤처져 있었습니다: 오프라인 폴백에 20개 프로바이더(Amazon, Avature, SAP SuccessFactors, Get on Board, Dassault Systèmes, beesite, HigherEdJobs, JibeApply (iCIMS), softgarden, Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs, 그리고 새 Meituan / Tencent)가 빠져 있었습니다. 전체 **61개**와 동기화했고, 클라이언트 목록이 서버 레지스트리와 어긋나면 CI를 실패시키는 드리프트 테스트(값과 레이블 모두)로 보호됩니다. +1 테스트(**1845**).
+
 ## [1.119.0] — 2026-07-13
 
 부모 career-ops **v1.19.0** 패리티 + cvstart.org 랜딩 새 단장.

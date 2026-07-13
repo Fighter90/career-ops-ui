@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.119.1] — 2026-07-13
+
+### Düzeltildi
+- **`#/scan` kaynak filtresi kayda yetişti** — Source açılır menüsünün arkasındaki statik `FALLBACK_SOURCES` listesi (yalnızca `GET /api/scan/sources` ulaşılamazken kullanılır) v1.87.0'dan beri sessizce geride kalmıştı: çevrimdışı fallback'te 20 sağlayıcı eksikti (Amazon, Avature, SAP SuccessFactors, Get on Board, Dassault Systèmes, beesite, HigherEdJobs, JibeApply (iCIMS), softgarden, Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs ve yeni Meituan / Tencent). Tüm **61** ile eşitlendi ve artık istemci listesi sunucu kaydından saptığında CI'ı düşüren bir kayma testiyle korunuyor (değerler VE etiketler). +1 test (**1845**).
+
 ## [1.119.0] — 2026-07-13
 
 Üst career-ops **v1.19.0** paritesi + cvstart.org landing yenilemesi.

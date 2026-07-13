@@ -9,6 +9,11 @@
 ---
 
 
+## [1.119.1] — 2026-07-13
+
+### 修復
+- **`#/scan` 的來源篩選器追上了註冊表** — Source 下拉選單背後的靜態 `FALLBACK_SOURCES` 清單(僅在 `GET /api/scan/sources` 無法連線時使用)自 v1.87.0 起悄悄落後:離線後備中缺少 20 個提供方(Amazon、Avature、SAP SuccessFactors、Get on Board、Dassault Systèmes、beesite、HigherEdJobs、JibeApply (iCIMS)、softgarden、Cornerstone、Phenom、Radancy、Deutsche Bahn、EchoJobs、TKMS、Heckler & Koch、Rheinmetall、LaraJobs 以及新增的 Meituan / 騰訊)。現已與全部 **61** 個同步,並由漂移測試守護——只要用戶端清單與伺服器註冊表出現分歧(值與標籤),CI 即失敗。+1 個測試(**1845**)。
+
 ## [1.119.0] — 2026-07-13
 
 父專案 career-ops **v1.19.0** 對齊 + cvstart.org 落地頁煥新。
