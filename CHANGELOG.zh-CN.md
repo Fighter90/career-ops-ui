@@ -9,6 +9,18 @@
 ---
 
 
+## [1.119.0] — 2026-07-13
+
+父项目 career-ops **v1.19.0** 对齐 + cvstart.org 落地页焕新。
+
+### 新增
+- **2 个新扫描提供方** — 美团(`zhaopin.meituan.com`)与腾讯(`careers.tencent.com`):中国科技公司招聘板块的免认证公开 JSON API,按主机自动检测或通过显式 `provider:` 选择,支持按关键词的服务端搜索、分页与按 URL 去重 — 现共 **61 个适配器**(56 个英文 + 5 个俄文)。+20 个测试(**1844**)。
+- **落地页贡献者板块** — cvstart.org 展示所有贡献过代码者的头像(构建时调用 GitHub `/contributors` API,过滤机器人),已本地化到全部 16 种语言,并链接到完整贡献者图谱。
+- **落地页实时 GitHub 星标计数** — 页头徽章现在每次访问都从 GitHub API 在客户端刷新(构建时快照作为回退),每周定时的 Pages 重建保持快照与贡献者列表新鲜;CI 中的 API 调用已使用令牌认证。
+
+### 修复
+- **Workday CXS 请求携带浏览器式请求头**(父项目 #1813)— Cloudflare 保护的租户(实测:geico)对缺少常规 UA/`accept-language`/`origin`/`referer` 的请求返回 500;抓取器现从 CXS URL 本身推导 origin 与站点 slug。Glints 请求也获得了同样的浏览器 UA + origin/referer,二者均来自 `http-json.mjs` 中共享的 `BROWSER_LIKE_USER_AGENT` 常量。
+
 ## [1.118.4] — 2026-07-10
 
 ### 修复

@@ -8,6 +8,10 @@ on:
       - 'docs/help/**'
       - 'images/dashboard-*.png'
       - '.github/workflows/deploy-pages.yml'
+  # Weekly rebuild so build-time repo facts (star-count fallback, contributors
+  # grid) refresh even when nothing lands on main.
+  schedule:
+    - cron: '17 6 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -37,6 +41,10 @@ jobs:
 
       - name: Sync repo assets + build
         working-directory: site
+        env:
+          # Authenticated GitHub API calls in sync-assets.mjs (stars +
+          # contributors) — shared-runner IPs exhaust the anonymous limit.
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           node scripts/sync-assets.mjs
           npx astro check

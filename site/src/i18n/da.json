@@ -3,7 +3,6 @@
   "meta.desc": "Gratis open source-alternativ til Jobscan, der kører på din maskine. Scan ~55 jobportaler, få AI-matchscore mod dit CV — 100% lokalt.",
   "meta.helpTitle": "Brugervejledning — career-ops-ui",
   "meta.helpDesc": "Den komplette career-ops-ui-vejledning: installation, scanning af jobportaler, AI-matchscores, CV Studio, ansøgningstracker og fejlfinding.",
-
   "a11y.skip": "Spring til indhold",
   "a11y.lang": "Skift sprog",
   "a11y.menu": "Åbn menu",
@@ -11,11 +10,9 @@
   "a11y.copy": "Kopiér kommando",
   "a11y.copied": "Kopieret til udklipsholderen",
   "a11y.browserFrame": "Browservindue med career-ops-ui-dashboardet",
-
   "banner.text": "Denne side findes også på {lang}",
   "banner.open": "Skift",
   "banner.dismiss": "Afvis",
-
   "nav.how": "Sådan virker det",
   "nav.features": "Funktioner",
   "nav.screens": "Skærmbilleder",
@@ -24,7 +21,6 @@
   "nav.faq": "FAQ",
   "header.github": "GitHub",
   "header.cta": "Kom i gang",
-
   "hero.pill1": "Gratis",
   "hero.pill2": "Open source",
   "hero.pill3": "Kører på din maskine",
@@ -34,21 +30,18 @@
   "hero.ctaGithub": "Se på GitHub",
   "hero.fineprint": "MIT-licens · Node ≥ 18 · macOS / Linux / WSL",
   "hero.alt": "career-ops-ui-kommandocentralen: sidenavigation, pipeline-overblik og ansøgningstracker",
-
   "install.title": "Klar med én kommando",
   "install.log1": "career-ops klonet",
   "install.log2": "afhængigheder installeret",
   "install.npxNote": "Kører den lokalt installerede pakke i din career-ops/web-ui-kopi — se README om GitHub Packages.",
   "install.gitNote": "UI'et bor i et career-ops-projekt som web-ui/ — startscriptet installerer afhængigheder og åbner dashboardet.",
   "install.curlNote": "Kloner career-ops og UI'et, installerer afhængigheder og åbner dashboardet.",
-
   "stats.mit": "MIT-licenseret",
   "stats.langs": "{n} sprog",
   "stats.adapters": "~{n} jobportal-adaptere",
   "stats.providers": "{n} AI-udbydere — med din egen nøgle",
   "stats.tests": "{n}+ automatiserede tests",
   "stats.local": "100% lokale data",
-
   "how.h2": "Sådan virker det",
   "how.sub": "Fire trin fra en tom mappe til en bedømt og sporet pipeline af jobopslag.",
   "how.1.title": "Installér",
@@ -65,7 +58,6 @@
   "how.score.3": "undersøg virksomheden først",
   "how.score.4": "spring over",
   "how.guide": "Læs den fulde vejledning",
-
   "features.h2": "Alt, hvad en seriøs jobsøgning kræver",
   "features.sub": "Én lokal app i stedet for fem abonnementer og ti browserfaner.",
   "features.1.title": "Scan ~{adapters} jobportaler",
@@ -92,7 +84,6 @@
   "features.11.desc": "Lokale markdown- og YAML-filer, en server bundet til 127.0.0.1, ingen cloud-konti, ingen telemetri, ingen auto-afsendelse.",
   "features.12.title": "{n} sprog, inkl. RTL",
   "features.12.desc": "Appen, den fulde vejledning og dette websted findes på {n} sprog — inklusive arabisk, skrevet fra højre mod venstre.",
-
   "showcase.h2": "Én fane i stedet for ti",
   "showcase.sub": "Et dashboard i docs-stil oven på dine egne filer: scan, vurdér, ansøg og følg op uden at forlade siden.",
   "showcase.alt": "Fuldt career-ops-ui-dashboard med scanningsresultater, matchscores og ansøgningstrackeren",
@@ -102,7 +93,6 @@
   "showcase.c2.desc": "0.0–5.0 mod dit CV med skriftlig begrundelse — så du ansøger dér, hvor det tæller.",
   "showcase.c3.title": "Tracker",
   "showcase.c3.desc": "Statusser, noter, opfølgninger og rapporter for hver ansøgning, i ren markdown.",
-
   "compare.h2": "Sammenlignet med andre",
   "compare.sub": "Et ærligt blik på populære betalingsværktøjer, efterprøvet mod hver leverandørs offentlige pris- og funktionssider.",
   "compare.badge": "Gratis og open source",
@@ -133,7 +123,6 @@
   "compare.note": "Sammenlignet {date}. Baseret på hver leverandørs offentlige pris- og funktionssider:",
   "compare.error": "Fundet en fejl?",
   "compare.issue": "Opret en issue",
-
   "helpTeaser.h2": "Projekthjælp",
   "helpTeaser.sub": "Den komplette brugervejledning er oversat til alle {n} sprog og følger med appen.",
   "helpTeaser.c1.title": "Hvad er career-ops-ui",
@@ -143,7 +132,6 @@
   "helpTeaser.c3.title": "Fejlfinding og FAQ",
   "helpTeaser.c3.desc": "API-nøgler, scannere, PDF-eksport, aktivitetslog — svarene på de spørgsmål, alle stiller.",
   "helpTeaser.cta": "Åbn den fulde vejledning",
-
   "open.h2": "Bygget i det åbne",
   "open.sub": "MIT-licenseret, testet i CI, udgivet offentligt — læs hver linje, før du betror den din jobsøgning.",
   "open.mit": "MIT-licens",
@@ -153,10 +141,12 @@
   "open.star": "Giv en stjerne på GitHub",
   "open.issue": "Rapportér et problem",
   "open.contrib": "Bidragsguide",
+  "open.contributors": "Bidragydere",
+  "open.contributorsSub": "Alle, der har bidraget med kode til career-ops-ui.",
+  "open.contributorsAll": "Alle bidragydere",
   "open.parentTitle": "Bygget på career-ops",
   "open.parentDesc": "career-ops-ui er et web-dashboard til open source-jobsøgningspipelinen career-ops.",
   "open.disclaimer": "Uofficielt UI — hverken tilknyttet eller godkendt af career-ops / santifer.",
-
   "faq.h2": "Ofte stillede spørgsmål",
   "faq.q1": "Er det virkelig gratis?",
   "faq.a1": "Ja. Softwaren er MIT-licenseret open source — intet abonnement, ingen prøveperiode, ingen låste niveauer. Aktiverer du live-AI-funktioner, medbringer du din egen API-nøgle og betaler direkte til din udbyder — eller du bruger den nøglefri prompt-tilstand og betaler slet ikke.",
@@ -178,12 +168,10 @@
   "faq.a9": "Ja — issues, pull requests og oversættelser er velkomne. Start med bidragsguiden på GitHub.",
   "faq.q10": "Er det tilknyttet career-ops?",
   "faq.a10": "Nej. Det er et uofficielt UI bygget oven på open source-pipelinen career-ops — hverken tilknyttet eller godkendt af career-ops / santifer.",
-
   "final.h2": "Din jobsøgning, på dine betingelser",
   "final.sub": "Installér med én kommando. Læs koden. Behold dine data.",
   "final.cta": "Kom i gang",
   "final.gh": "Se på GitHub",
-
   "footer.product": "Produkt",
   "footer.resources": "Ressourcer",
   "footer.community": "Fællesskab",
@@ -197,12 +185,10 @@
   "footer.discussions": "Diskussioner",
   "footer.contributing": "Bidrag",
   "footer.license": "MIT-licens",
-
   "help.title": "Brugervejledning",
   "help.toc": "På denne side",
   "help.edit": "Redigér denne side på GitHub",
   "help.home": "Forside",
-
   "notfound.title": "Siden blev ikke fundet",
   "notfound.desc": "Siden, du leder efter, findes ikke eller er blevet flyttet.",
   "notfound.home": "Gå til forsiden"

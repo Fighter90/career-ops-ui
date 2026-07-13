@@ -9,6 +9,18 @@
 ---
 
 
+## [1.119.0] — 2026-07-13
+
+부모 career-ops **v1.19.0** 패리티 + cvstart.org 랜딩 새 단장.
+
+### 추가
+- **2개의 새 스캔 프로바이더** — Meituan(`zhaopin.meituan.com`)과 Tencent(`careers.tencent.com`): 중국 테크 보드의 인증 불필요 공개 JSON API. 호스트로 자동 감지되거나 명시적 `provider:`로 선택되며, 키워드별 서버 사이드 검색·페이지네이션·URL 중복 제거를 지원 — 이제 **61개 어댑터**(영문 56 + 러시아어 5). +20개 테스트(**1844**).
+- **랜딩의 기여자 블록** — cvstart.org가 코드를 기여한 모든 사람의 아바타를 표시합니다(빌드 시 GitHub `/contributors` API, 봇 필터링). 16개 언어 모두 현지화되었고 전체 기여자 그래프 링크가 포함됩니다.
+- **랜딩의 실시간 GitHub 스타 카운터** — 헤더 배지가 이제 방문할 때마다 클라이언트에서 GitHub API로 갱신됩니다(빌드 시 스냅샷은 폴백). 주간 예약 Pages 재빌드가 스냅샷과 기여자 목록을 신선하게 유지하며, CI의 API 호출은 토큰 인증을 사용합니다.
+
+### 수정
+- **Workday CXS 요청에 브라우저형 헤더 적용**(부모 #1813) — Cloudflare 뒤의 테넌트(실사례: geico)는 일반적인 UA/`accept-language`/`origin`/`referer`가 없는 요청에 500을 반환합니다. 페처가 이제 CXS URL 자체에서 origin과 사이트 슬러그를 도출합니다. Glints 요청에도 같은 브라우저 UA + origin/referer가 추가되었으며, 둘 다 `http-json.mjs`의 공유 상수 `BROWSER_LIKE_USER_AGENT`에서 가져옵니다.
+
 ## [1.118.4] — 2026-07-10
 
 ### 수정

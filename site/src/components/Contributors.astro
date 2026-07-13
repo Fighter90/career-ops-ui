@@ -1,0 +1,66 @@
+---
+/**
+ * Contributors strip — avatars of everyone who landed commits, snapshotted at
+ * build time by scripts/sync-assets.mjs (GitHub /contributors API, bots
+ * filtered). Lives inside the dark OpenSource section. Renders nothing when
+ * the build-time fetch failed; the weekly scheduled Pages rebuild refreshes
+ * the list automatically.
+ */
+import { t, type Locale } from '../i18n/locales';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+type Contributor = {
+  login: string;
+  avatar_url: string;
+  html_url: string;
+  contributions: number;
+};
+const contributors: Contributor[] =
+  (facts as { contributors?: Contributor[] }).contributors ?? [];
+---
+
+{contributors.length > 0 && (
+  <div class="reveal mt-12 border-t border-white/10 pt-10">
+    <h3 class="mb-1 text-xl font-bold">{t(locale, 'open.contributors')}</h3>
+    <p class="mb-6 text-[0.92rem] text-white/60">{t(locale, 'open.contributorsSub')}</p>
+    <ul class="flex flex-wrap items-start gap-x-4 gap-y-5">
+      {contributors.map((c) => (
+        <li>
+          <a
+            href={c.html_url}
+            rel="noopener"
+            class="group flex w-[72px] flex-col items-center gap-1.5"
+            title={`@${c.login} · ${c.contributions}`}
+          >
+            <img
+              src={`${c.avatar_url}${c.avatar_url.includes('?') ? '&' : '?'}s=112`}
+              alt={`@${c.login}`}
+              width="56"
+              height="56"
+              loading="lazy"
+              decoding="async"
+              class="h-14 w-14 rounded-full border border-white/15 bg-white/5 transition group-hover:border-white/60"
+            />
+            <span class="max-w-full truncate font-mono text-[0.7rem] text-white/60 transition group-hover:text-white">
+              {c.login}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-6">
+      <a
+        href={`${facts.repoUrl}/graphs/contributors`}
+        rel="noopener"
+        class="text-sm font-semibold underline underline-offset-2"
+      >
+        {t(locale, 'open.contributorsAll')} →
+      </a>
+    </p>
+  </div>
+)}

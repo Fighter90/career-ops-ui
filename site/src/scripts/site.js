@@ -185,3 +185,30 @@ if ('IntersectionObserver' in window && !reduced) {
   });
   banner.hidden = false;
 })();
+
+/* ------------------------------------------------------- live GitHub stars */
+/* The build snapshots the star count into the page (sync-assets.mjs). This
+ * refreshes it from the GitHub API on every visit so the number never goes
+ * stale between deploys. Progressive enhancement: on any failure the
+ * build-time value (or a hidden badge) stays as-is. */
+(() => {
+  const counters = document.querySelectorAll('[data-gh-stars]');
+  if (!counters.length) return;
+  fetch('https://api.github.com/repos/Fighter90/career-ops-ui', {
+    headers: { accept: 'application/vnd.github+json' },
+  })
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      const stars = data && typeof data.stargazers_count === 'number' ? data.stargazers_count : null;
+      if (stars === null) return;
+      const text = stars.toLocaleString('en-US');
+      for (const el of counters) {
+        el.textContent = text;
+        const badge = el.closest('[data-gh-stars-badge]');
+        if (badge) badge.hidden = false;
+      }
+    })
+    .catch(() => {
+      /* offline / rate-limited — keep the build-time snapshot */
+    });
+})();

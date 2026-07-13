@@ -7,18 +7,18 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1824%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1844%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.4)
+[![release](https://img.shields.io/badge/release-v1.119.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.0)
 
-> **🆕 Dernière version — v1.118.4**
+> **🆕 Dernière version — v1.119.0**
 >
-> **Parité parent v1.18.0.** Neuf nouveaux fournisseurs de scan (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — 54 adaptateurs désormais) plus les tableaux Lever EU, le statut canonique `Hired` avec bannière « poste décroché » sur le tracker, et un onglet Cumul dans Statistiques qui relaie stats.mjs et salary-gap.mjs du parent (entonnoir cumulé, totaux du scanner, observations de rémunération).
+> **Parité parent v1.19.0.** Deux nouveaux fournisseurs de scan — Meituan (zhaopin.meituan.com) et Tencent (careers.tencent.com), les API JSON publiques sans authentification des boards tech chinois (**61 adaptateurs** désormais) — des en-têtes de navigateur sur les requêtes Workday CXS et Glints (débloque les tenants derrière Cloudflare), et un rafraîchissement de cvstart.org : compteur d'étoiles GitHub auto-actualisé en direct et bloc des contributeurs.
 >
-> _parité parent v1.18 · 54 adaptateurs · statut Hired · stats cumulées · pack de parité · 50 adaptateurs · refonte compteur d'utilisation · peaufinage du design · compteur d'utilisation · assistant d'aide flottant · consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _parité parent v1.19 · 61 adaptateurs · étoiles en direct + contributeurs sur la landing · parité parent v1.18 · 54 adaptateurs · statut Hired · stats cumulées · pack de parité · 50 adaptateurs · refonte compteur d'utilisation · peaufinage du design · compteur d'utilisation · assistant d'aide flottant · consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 
@@ -366,7 +366,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1824 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.118.4)
+└─ tests/                    # 1844 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -497,7 +497,7 @@ Quand `run: true` est défini sur `/api/deep` ou `/api/mode/:slug`, le serveur p
 ## Tests
 
 ```bash
-npm test                       # 1824 unit/integration tests
+npm test                       # 1844 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)
@@ -506,7 +506,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | Quoi                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + intégration) | **1824** | Chaque endpoint, serveur éphémère, sans réseau. 215 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + intégration) | **1844** | Chaque endpoint, serveur éphémère, sans réseau. 217 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless : chaque route s'affiche, flux de base.                                                |
 | `tests/e2e-comprehensive.mjs` | 23    | Parcours Playwright complet : 11 routes + 12 flux fonctionnels.                                            |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Piloté par navigateur : rendu du dashboard, navigation, changement de langue, 404, health, aller-retour tracker, ajout pipeline + balayage URL-invalide, rapports, repli manuel d'évaluation, clés de config masquées, retrait XSS au PUT du CV, aperçu pipeline 400, SSE auto-pipeline. |

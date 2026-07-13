@@ -1,6 +1,7 @@
 ---
 import { t, type Locale } from '../i18n/locales';
 import Icon from './Icon.astro';
+import Contributors from './Contributors.astro';
 import facts from '../generated/facts.json';
 
 interface Props {
@@ -83,5 +84,7 @@ const CLONE = 'git clone https://github.com/Fighter90/career-ops-ui.git web-ui';
         </button>
       </div>
     </div>
+
+    <Contributors locale={locale} />
   </div>
 </section>

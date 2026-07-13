@@ -19,7 +19,7 @@
  *
  * Used by the glints adapter (server/lib/portals/adapters/glints.mjs).
  */
-import { fetchJson, delay } from '../http-json.mjs';
+import { fetchJson, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 
 export const DEFAULT_API = 'https://glints.com/api/graphql';
 const DEFAULT_COUNTRY = 'ID';
@@ -173,7 +173,14 @@ export async function fetchGlints(apiUrl = DEFAULT_API, opts = {}) {
     try {
       json = await fetchJson(fetchImpl, apiUrl, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: {
+          'content-type': 'application/json',
+          // Glints' firewall blocks generic UAs outright — a browser-like UA
+          // + origin/referer clears it (parent career-ops providers/glints.mjs).
+          'user-agent': BROWSER_LIKE_USER_AGENT,
+          origin: 'https://glints.com',
+          referer: 'https://glints.com/id/opportunities/jobs/explore',
+        },
         body: JSON.stringify({ query, variables }),
         signal,
       });

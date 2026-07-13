@@ -9,6 +9,18 @@
 ---
 
 
+## [1.119.0] — 2026-07-13
+
+父專案 career-ops **v1.19.0** 對齊 + cvstart.org 落地頁煥新。
+
+### 新增
+- **2 個新掃描提供方** — 美團(`zhaopin.meituan.com`)與騰訊(`careers.tencent.com`):中國科技公司職缺板塊的免認證公開 JSON API,依主機自動偵測或以明確 `provider:` 選擇,支援按關鍵字的伺服器端搜尋、分頁與按 URL 去重 — 現共 **61 個轉接器**(56 個英文 + 5 個俄文)。+20 個測試(**1844**)。
+- **落地頁貢獻者區塊** — cvstart.org 展示所有貢獻過程式碼者的頭像(建置時呼叫 GitHub `/contributors` API,過濾機器人),已在地化至全部 16 種語言,並連結到完整貢獻者圖譜。
+- **落地頁即時 GitHub 星標計數** — 頁首徽章現在每次造訪都從 GitHub API 在用戶端重新整理(建置時快照作為後備),每週排程的 Pages 重建保持快照與貢獻者清單新鮮;CI 中的 API 呼叫已使用權杖認證。
+
+### 修復
+- **Workday CXS 請求攜帶瀏覽器式標頭**(父專案 #1813)— Cloudflare 保護的租戶(實測:geico)對缺少常規 UA/`accept-language`/`origin`/`referer` 的請求回應 500;擷取器現從 CXS URL 本身推導 origin 與站點 slug。Glints 請求也獲得同樣的瀏覽器 UA + origin/referer,兩者皆來自 `http-json.mjs` 中共享的 `BROWSER_LIKE_USER_AGENT` 常數。
+
 ## [1.118.4] — 2026-07-10
 
 ### 修復

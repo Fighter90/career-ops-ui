@@ -8,7 +8,7 @@
 > **Audience.** Claude Code subagents, Cursor / Codex / Aider sessions,
 > any IDE assistant that doesn't auto-load CLAUDE.md.
 >
-> **Repo state.** v1.74.2 (2026-06-17). **1134** `node --test` cases,
+> **Repo state.** v1.119.0 (2026-07-13). **1844** `node --test` cases, **61 scan adapters** (56 EN + 5 RU, incl. the v1.119.0 Meituan/Tencent parity pair), 31 route modules, 16 UI locales, cvstart.org landing (`site/`, CI-built). History below is retained from earlier snapshots:
 > Playwright (smoke + full-cycle + forms + locale-sweep ×12 + theme-toggle). **v1.70.0 (I18N-EXPAND)** added 3 locales — Polish (pl), Ukrainian (uk), Arabic (ar, full RTL via `<html dir>` + `[dir="rtl"]` in app.css) — for **12 UI locales**, plus a flag `<select>` language switcher; **v1.71.0** ported the parent's cover-letter mode to `#/cover` with a Generate-PDF button; **v1.71.1** translated the in-app help guide into all 13 locales (`docs/help/{pl,uk,ar}.md`). Parent tracked at **career-ops v1.11.0**. **v1.69.0 (P-14)** made `server/lib/sources/registry.mjs`
 > auto-discover scanner adapters at boot (drop a `*.mjs` with an `export const meta` block — no registry edit).
 > **v1.60.0 (I18N-SPLIT)** split the 8-language

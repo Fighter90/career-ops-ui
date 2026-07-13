@@ -3,7 +3,6 @@
   "meta.desc": "내 컴퓨터에서 실행되는 무료 오픈소스 Jobscan 대안. 약 55개 채용 보드를 검색하고 CV 대비 AI 적합도 점수를 받아보세요 — 데이터는 100% 로컬.",
   "meta.helpTitle": "사용자 가이드 — career-ops-ui",
   "meta.helpDesc": "career-ops-ui 전체 가이드: 설치, 채용 보드 검색, AI 적합도 점수, CV Studio, 지원 트래커, 문제 해결.",
-
   "a11y.skip": "본문으로 건너뛰기",
   "a11y.lang": "언어 변경",
   "a11y.menu": "메뉴 열기",
@@ -11,11 +10,9 @@
   "a11y.copy": "명령어 복사",
   "a11y.copied": "클립보드에 복사됨",
   "a11y.browserFrame": "career-ops-ui 대시보드를 보여주는 브라우저 창",
-
   "banner.text": "이 페이지는 {lang}로도 볼 수 있습니다",
   "banner.open": "전환",
   "banner.dismiss": "닫기",
-
   "nav.how": "작동 방식",
   "nav.features": "기능",
   "nav.screens": "스크린샷",
@@ -24,7 +21,6 @@
   "nav.faq": "FAQ",
   "header.github": "GitHub",
   "header.cta": "시작하기",
-
   "hero.pill1": "무료",
   "hero.pill2": "오픈소스",
   "hero.pill3": "내 컴퓨터에서 실행",
@@ -34,21 +30,18 @@
   "hero.ctaGithub": "GitHub에서 보기",
   "hero.fineprint": "MIT 라이선스 · Node ≥ 18 · macOS / Linux / WSL",
   "hero.alt": "career-ops-ui 커맨드 센터: 사이드 내비게이션, 파이프라인 개요, 지원 트래커",
-
   "install.title": "명령어 하나로 준비 완료",
   "install.log1": "career-ops 클론 완료",
   "install.log2": "의존성 설치 완료",
   "install.npxNote": "career-ops/web-ui 체크아웃 안에서 로컬에 설치된 패키지를 실행합니다 — GitHub Packages 관련 내용은 README를 참고하세요.",
   "install.gitNote": "UI는 career-ops 프로젝트 안에 web-ui/로 존재합니다 — 시작 스크립트가 의존성을 설치하고 대시보드를 엽니다.",
   "install.curlNote": "career-ops와 UI를 클론하고, 의존성을 설치하고, 대시보드를 엽니다.",
-
   "stats.mit": "MIT 라이선스",
   "stats.langs": "{n}개 언어",
   "stats.adapters": "약 {n}개 채용 보드 어댑터",
   "stats.providers": "{n}개 AI 제공자 — 내 키 사용",
   "stats.tests": "{n}+ 자동화 테스트",
   "stats.local": "100% 로컬 데이터",
-
   "how.h2": "작동 방식",
   "how.sub": "빈 폴더에서 점수가 매겨지고 추적되는 채용 파이프라인까지 4단계.",
   "how.1.title": "설치",
@@ -65,7 +58,6 @@
   "how.score.3": "먼저 회사를 조사",
   "how.score.4": "건너뛰기",
   "how.guide": "전체 가이드 읽기",
-
   "features.h2": "진지한 구직에 필요한 모든 것",
   "features.sub": "구독 5개와 브라우저 탭 10개 대신 로컬 앱 하나.",
   "features.1.title": "약 {adapters}개 채용 보드 검색",
@@ -92,7 +84,6 @@
   "features.11.desc": "로컬 markdown·YAML 파일, 127.0.0.1에 바인딩된 서버, 클라우드 계정 없음, 텔레메트리 없음, 자동 제출 없음.",
   "features.12.title": "{n}개 언어, RTL 포함",
   "features.12.desc": "앱, 전체 가이드, 이 사이트가 {n}개 언어로 제공됩니다 — 오른쪽에서 왼쪽으로 쓰는 아랍어 포함.",
-
   "showcase.h2": "탭 10개 대신 1개",
   "showcase.sub": "내 파일 위에 놓인 docs 스타일 대시보드: 페이지를 떠나지 않고 검색하고, 평가하고, 지원하고, 추적하세요.",
   "showcase.alt": "검색 결과, 적합도 점수, 지원 트래커가 보이는 career-ops-ui 전체 대시보드",
@@ -102,7 +93,6 @@
   "showcase.c2.desc": "CV 기준 0.0–5.0과 서면 근거 — 의미 있는 곳에 지원하도록.",
   "showcase.c3.title": "트래커",
   "showcase.c3.desc": "모든 지원 건의 상태, 메모, 팔로업, 리포트 — 일반 markdown으로.",
-
   "compare.h2": "다른 도구와의 비교",
   "compare.sub": "인기 유료 도구들에 대한 정직한 시선 — 각 업체의 공개 가격·기능 페이지로 검증했습니다.",
   "compare.badge": "무료 & 오픈소스",
@@ -133,7 +123,6 @@
   "compare.note": "{date} 기준 비교. 각 업체의 공개 가격·기능 페이지에 근거:",
   "compare.error": "오류를 발견하셨나요?",
   "compare.issue": "이슈 열기",
-
   "helpTeaser.h2": "프로젝트 도움말",
   "helpTeaser.sub": "전체 사용자 가이드가 {n}개 언어로 모두 번역되어 앱과 함께 제공됩니다.",
   "helpTeaser.c1.title": "career-ops-ui란",
@@ -143,7 +132,6 @@
   "helpTeaser.c3.title": "문제 해결 & FAQ",
   "helpTeaser.c3.desc": "API 키, 스캐너, PDF 내보내기, 활동 로그 — 모두가 묻는 질문의 답.",
   "helpTeaser.cta": "전체 가이드 열기",
-
   "open.h2": "공개적으로 만들어진 프로젝트",
   "open.sub": "MIT 라이선스, CI 테스트, 공개 릴리스 — 구직을 맡기기 전에 모든 코드를 읽어보세요.",
   "open.mit": "MIT 라이선스",
@@ -153,10 +141,12 @@
   "open.star": "GitHub에서 스타 누르기",
   "open.issue": "문제 신고",
   "open.contrib": "기여 가이드",
+  "open.contributors": "기여자",
+  "open.contributorsSub": "career-ops-ui에 코드를 기여한 모든 분들입니다.",
+  "open.contributorsAll": "모든 기여자",
   "open.parentTitle": "career-ops 기반",
   "open.parentDesc": "career-ops-ui는 오픈소스 구직 파이프라인 career-ops의 웹 대시보드입니다.",
   "open.disclaimer": "비공식 UI — career-ops / santifer와 무관하며 그들의 승인을 받지 않았습니다.",
-
   "faq.h2": "자주 묻는 질문",
   "faq.q1": "정말 무료인가요?",
   "faq.a1": "네. 소프트웨어는 MIT 라이선스 오픈소스입니다 — 구독도, 체험판도, 잠긴 등급도 없습니다. 라이브 AI 기능을 켜면 내 API 키를 가져와 제공자에게 직접 지불하거나, 키 없는 프롬프트 복사 모드를 쓰면 아무것도 내지 않습니다.",
@@ -178,12 +168,10 @@
   "faq.a9": "네 — 이슈, 풀 리퀘스트, 번역 모두 환영합니다. GitHub의 기여 가이드부터 시작하세요.",
   "faq.q10": "career-ops와 제휴 관계인가요?",
   "faq.a10": "아니요. 오픈소스 career-ops 파이프라인 위에 만들어진 비공식 UI입니다 — career-ops / santifer와 무관하며 그들의 승인을 받지 않았습니다.",
-
   "final.h2": "당신의 구직, 당신의 방식대로",
   "final.sub": "명령어 하나로 설치하세요. 코드를 읽으세요. 데이터는 당신 것으로.",
   "final.cta": "시작하기",
   "final.gh": "GitHub에서 보기",
-
   "footer.product": "제품",
   "footer.resources": "리소스",
   "footer.community": "커뮤니티",
@@ -197,12 +185,10 @@
   "footer.discussions": "토론",
   "footer.contributing": "기여",
   "footer.license": "MIT 라이선스",
-
   "help.title": "사용자 가이드",
   "help.toc": "이 페이지에서",
   "help.edit": "GitHub에서 이 페이지 편집",
   "help.home": "홈",
-
   "notfound.title": "페이지를 찾을 수 없습니다",
   "notfound.desc": "찾으시는 페이지가 존재하지 않거나 이동되었습니다.",
   "notfound.home": "홈으로 가기"

@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.119.0] — 2026-07-13
+
+Üst career-ops **v1.19.0** paritesi + cvstart.org landing yenilemesi.
+
+### Eklendi
+- **2 yeni tarama sağlayıcısı** — Meituan (`zhaopin.meituan.com`) ve Tencent (`careers.tencent.com`): Çin tech kartlarının kimlik doğrulamasız açık JSON API'leri, host'tan tespit edilir veya açık `provider:` ile seçilir; anahtar kelime başına sunucu tarafı arama, sayfalama ve URL'ye göre tekilleştirme — artık **61 adaptör** (56 EN + 5 RU). +20 test (**1844**).
+- **Landingde katkıda bulunanlar bloğu** — cvstart.org, kod katkısı yapan herkesin avatarını gösterir (build sırasında GitHub `/contributors` API'si, botlar filtrelenir), 16 dilin tümünde yerelleştirilmiştir ve tam katkı grafiğine bağlantı verir.
+- **Landingde canlı GitHub yıldız sayacı** — başlıktaki rozet artık her ziyarette GitHub API'sinden istemci tarafında yenilenir (build anlık görüntüsü fallback olarak kalır) ve haftalık zamanlanmış Pages yeniden derlemesi anlık görüntü + katkıda bulunanlar listesini taze tutar; CI'daki API çağrıları token ile doğrulanır.
+
+### Düzeltildi
+- **Workday CXS istekleri tarayıcı benzeri başlıklar taşır** (üst #1813) — Cloudflare arkasındaki kiracılar (canlıda görüldü: geico) olağan UA/`accept-language`/`origin`/`referer` içermeyen isteklere 500 döner; fetch'leyici artık origin + site slug'ını CXS URL'sinin kendisinden türetir. Glints istekleri aynı tarayıcı UA + origin/referer'ı kazandı; ikisi de `http-json.mjs` içindeki ortak `BROWSER_LIKE_USER_AGENT` sabitinden gelir.
+
 ## [1.118.4] — 2026-07-10
 
 ### Düzeltildi

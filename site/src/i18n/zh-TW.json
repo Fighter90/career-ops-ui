@@ -3,7 +3,6 @@
   "meta.desc": "在你自己電腦上執行的免費開源 Jobscan 替代方案。搜尋約 55 個求職平台,用 AI 依你的履歷為每則職缺評分 — 資料 100% 本地。",
   "meta.helpTitle": "使用者指南 — career-ops-ui",
   "meta.helpDesc": "career-ops-ui 完整指南:安裝、搜尋求職平台、AI 匹配評分、CV Studio、求職追蹤器與疑難排解。",
-
   "a11y.skip": "跳至內容",
   "a11y.lang": "切換語言",
   "a11y.menu": "開啟選單",
@@ -11,11 +10,9 @@
   "a11y.copy": "複製指令",
   "a11y.copied": "已複製到剪貼簿",
   "a11y.browserFrame": "顯示 career-ops-ui 儀表板的瀏覽器視窗",
-
   "banner.text": "本頁面也提供{lang}版本",
   "banner.open": "切換",
   "banner.dismiss": "關閉",
-
   "nav.how": "運作方式",
   "nav.features": "功能",
   "nav.screens": "截圖",
@@ -24,7 +21,6 @@
   "nav.faq": "常見問題",
   "header.github": "GitHub",
   "header.cta": "開始使用",
-
   "hero.pill1": "免費",
   "hero.pill2": "開源",
   "hero.pill3": "在你的電腦上執行",
@@ -34,21 +30,18 @@
   "hero.ctaGithub": "在 GitHub 上檢視",
   "hero.fineprint": "MIT 授權 · Node ≥ 18 · macOS / Linux / WSL",
   "hero.alt": "career-ops-ui 指揮中心:側邊導覽、流程總覽與求職追蹤器",
-
   "install.title": "一道指令即可就緒",
   "install.log1": "career-ops 已複製",
   "install.log2": "相依套件已安裝",
   "install.npxNote": "在你的 career-ops/web-ui 副本內執行本地安裝的套件 — GitHub Packages 相關說明請見 README。",
   "install.gitNote": "UI 以 web-ui/ 形式存在於 career-ops 專案內 — 啟動腳本會安裝相依套件並開啟儀表板。",
   "install.curlNote": "複製 career-ops 與 UI,安裝相依套件並開啟儀表板。",
-
   "stats.mit": "MIT 授權",
   "stats.langs": "{n} 種語言",
   "stats.adapters": "約 {n} 個求職平台轉接器",
   "stats.providers": "{n} 家 AI 供應商 — 自備金鑰",
   "stats.tests": "{n}+ 項自動化測試",
   "stats.local": "資料 100% 本地",
-
   "how.h2": "運作方式",
   "how.sub": "四個步驟,從空資料夾到已評分、可追蹤的職缺流程。",
   "how.1.title": "安裝",
@@ -65,7 +58,6 @@
   "how.score.3": "先研究公司",
   "how.score.4": "跳過",
   "how.guide": "閱讀完整指南",
-
   "features.h2": "認真求職所需的一切",
   "features.sub": "一個本地應用程式,取代五份訂閱與十個瀏覽器分頁。",
   "features.1.title": "搜尋約 {adapters} 個求職平台",
@@ -92,7 +84,6 @@
   "features.11.desc": "本地 markdown 與 YAML 檔案、綁定 127.0.0.1 的伺服器、沒有雲端帳號、沒有遙測、不會自動投遞。",
   "features.12.title": "{n} 種語言,含 RTL",
   "features.12.desc": "應用程式、完整指南與本網站提供 {n} 種語言 — 包括由右至左書寫的阿拉伯文。",
-
   "showcase.h2": "一個分頁,抵十個",
   "showcase.sub": "架在你自己檔案之上的 docs 風格儀表板:搜尋、評估、投遞、追蹤,全程不必離開頁面。",
   "showcase.alt": "career-ops-ui 完整儀表板,顯示搜尋結果、匹配評分與求職追蹤器",
@@ -102,7 +93,6 @@
   "showcase.c2.desc": "依你的履歷打 0.0–5.0 分並附書面理由 — 把心力投在值得的地方。",
   "showcase.c3.title": "追蹤器",
   "showcase.c3.desc": "每份投遞的狀態、附註、跟進與報告 — 全是純 markdown。",
-
   "compare.h2": "與同類工具比較",
   "compare.sub": "對熱門付費工具的誠實檢視,已對照各廠商公開的價格與功能頁面查證。",
   "compare.badge": "免費且開源",
@@ -133,7 +123,6 @@
   "compare.note": "比較時間:{date}。依據各廠商公開的價格與功能頁面:",
   "compare.error": "發現錯誤?",
   "compare.issue": "建立 issue",
-
   "helpTeaser.h2": "專案說明",
   "helpTeaser.sub": "完整使用者指南已翻譯成全部 {n} 種語言,隨應用程式一起提供。",
   "helpTeaser.c1.title": "什麼是 career-ops-ui",
@@ -143,7 +132,6 @@
   "helpTeaser.c3.title": "疑難排解與常見問題",
   "helpTeaser.c3.desc": "API 金鑰、掃描器、PDF 匯出、活動紀錄 — 大家都會問的問題的答案。",
   "helpTeaser.cta": "開啟完整指南",
-
   "open.h2": "公開打造",
   "open.sub": "MIT 授權、CI 測試、公開發佈 — 在把求職託付給它之前,可以讀完每一行程式碼。",
   "open.mit": "MIT 授權",
@@ -153,10 +141,12 @@
   "open.star": "在 GitHub 上加星",
   "open.issue": "回報問題",
   "open.contrib": "貢獻指南",
+  "open.contributors": "貢獻者",
+  "open.contributorsSub": "所有為 career-ops-ui 貢獻過程式碼的人。",
+  "open.contributorsAll": "全部貢獻者",
   "open.parentTitle": "基於 career-ops 打造",
   "open.parentDesc": "career-ops-ui 是開源求職流程 career-ops 的網頁儀表板。",
   "open.disclaimer": "非官方 UI — 與 career-ops / santifer 無關聯,亦未獲其背書。",
-
   "faq.h2": "常見問題",
   "faq.q1": "真的免費嗎?",
   "faq.a1": "是的。軟體是 MIT 授權的開源專案 — 沒有訂閱、沒有試用期、沒有鎖定的方案。若啟用即時 AI 功能,你自備 API 金鑰並直接付費給供應商;或使用免金鑰的提示詞複製模式,一毛錢都不用花。",
@@ -178,12 +168,10 @@
   "faq.a9": "可以 — 歡迎 issue、pull request 與翻譯。從 GitHub 上的貢獻指南開始。",
   "faq.q10": "它與 career-ops 有官方關聯嗎?",
   "faq.a10": "沒有。它是建立在開源 career-ops 流程之上的非官方 UI — 與 career-ops / santifer 無關聯,亦未獲其背書。",
-
   "final.h2": "你的求職,由你作主",
   "final.sub": "一道指令安裝。讀得到程式碼。資料留在自己手上。",
   "final.cta": "開始使用",
   "final.gh": "在 GitHub 上檢視",
-
   "footer.product": "產品",
   "footer.resources": "資源",
   "footer.community": "社群",
@@ -197,12 +185,10 @@
   "footer.discussions": "討論",
   "footer.contributing": "貢獻",
   "footer.license": "MIT 授權",
-
   "help.title": "使用者指南",
   "help.toc": "本頁目錄",
   "help.edit": "在 GitHub 上編輯此頁",
   "help.home": "首頁",
-
   "notfound.title": "找不到頁面",
   "notfound.desc": "你要找的頁面不存在或已被移動。",
   "notfound.home": "回到首頁"

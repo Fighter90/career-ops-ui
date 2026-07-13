@@ -82,3 +82,20 @@ test('strict:true opt-in → network error throws', async () => {
     /fetch failed/
   );
 });
+
+// v1.119.0 — parent parity (#1813): Cloudflare-gated tenants (seen live:
+// geico) 500 requests missing ordinary browser headers. fetchWorkday must
+// send a browser-like UA + accept-language + origin/referer derived from
+// the CXS URL's own tenant origin and site slug.
+test('sends browser-like headers derived from the CXS URL', async () => {
+  let seen = null;
+  const stubFetch = async (_url, opts) => {
+    seen = opts.headers;
+    return { ok: true, status: 200, json: async () => ({ jobPostings: [] }) };
+  };
+  await fetchWorkday(ENDPOINT, { fetchImpl: stubFetch });
+  assert.match(seen['User-Agent'], /Mozilla\/5\.0 .*Chrome\//);
+  assert.equal(seen['Accept-Language'], 'en-US,en;q=0.9');
+  assert.equal(seen.Origin, 'https://example.wd5.myworkdayjobs.com');
+  assert.equal(seen.Referer, 'https://example.wd5.myworkdayjobs.com/External/');
+});
