@@ -27,7 +27,8 @@
  * for a CAPTCHA-gated Workday board, fall back to the AI scan
  * (`/career-ops scan`) which drives a real browser via Playwright.
  */
-const UA = 'career-ops-web-ui/1.0';
+import { BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+
 const PAGE_LIMIT = 100;
 
 // v1.69.0 (P-14) — self-describing adapter metadata; see ashby.mjs for the rationale.
@@ -53,16 +54,32 @@ function setFallback(apiUrl, reason) {
 
 export async function fetchWorkday(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal, strict = false } = opts;
+  // Some tenants front their CXS API with Cloudflare bot management (seen
+  // live upstream: geico) that 500s requests missing ordinary browser
+  // headers. A real Chrome UA + accept-language + matching origin/referer
+  // clears it without per-tenant config (parent career-ops fix #1813).
+  // Derive origin + site from the CXS URL itself:
+  //   https://<tenant>.wdN.myworkdayjobs.com/wday/cxs/<tenant>/<site>/jobs
+  const headers = {
+    'User-Agent': BROWSER_LIKE_USER_AGENT,
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    'Accept-Language': 'en-US,en;q=0.9',
+  };
+  try {
+    const u = new URL(apiUrl);
+    const site = (u.pathname.match(/^\/wday\/cxs\/[^/]+\/([^/]+)\//) || [])[1];
+    headers.Origin = u.origin;
+    headers.Referer = site ? `${u.origin}/${site}/` : `${u.origin}/`;
+  } catch {
+    /* malformed apiUrl → fetch below will surface the real error */
+  }
   let res;
   try {
     res = await fetchImpl(apiUrl, {
       method: 'POST',
       signal,
-      headers: {
-        'User-Agent': UA,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         appliedFacets: {},
         limit: PAGE_LIMIT,

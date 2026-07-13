@@ -3,7 +3,6 @@
   "meta.desc": "Darmowa, otwartoźródłowa alternatywa dla Jobscan działająca na Twoim komputerze. Skanuj ~55 portali, oceniaj oferty AI względem CV — 100% lokalnie.",
   "meta.helpTitle": "Podręcznik użytkownika — career-ops-ui",
   "meta.helpDesc": "Pełny podręcznik career-ops-ui: instalacja, skanowanie portali z ofertami, oceny dopasowania AI, CV Studio, tracker aplikacji i rozwiązywanie problemów.",
-
   "a11y.skip": "Przejdź do treści",
   "a11y.lang": "Zmień język",
   "a11y.menu": "Otwórz menu",
@@ -11,11 +10,9 @@
   "a11y.copy": "Skopiuj polecenie",
   "a11y.copied": "Skopiowano do schowka",
   "a11y.browserFrame": "Okno przeglądarki z panelem career-ops-ui",
-
   "banner.text": "Ta strona jest dostępna także w języku: {lang}",
   "banner.open": "Przełącz",
   "banner.dismiss": "Odrzuć",
-
   "nav.how": "Jak to działa",
   "nav.features": "Funkcje",
   "nav.screens": "Zrzuty ekranu",
@@ -24,7 +21,6 @@
   "nav.faq": "FAQ",
   "header.github": "GitHub",
   "header.cta": "Zacznij",
-
   "hero.pill1": "Za darmo",
   "hero.pill2": "Open source",
   "hero.pill3": "Działa na Twoim komputerze",
@@ -34,21 +30,18 @@
   "hero.ctaGithub": "Zobacz na GitHubie",
   "hero.fineprint": "Licencja MIT · Node ≥ 18 · macOS / Linux / WSL",
   "hero.alt": "Centrum dowodzenia career-ops-ui: nawigacja boczna, przegląd pipeline'u i tracker aplikacji",
-
   "install.title": "Gotowe jednym poleceniem",
   "install.log1": "sklonowano career-ops",
   "install.log2": "zainstalowano zależności",
   "install.npxNote": "Uruchamia lokalnie zainstalowany pakiet w Twojej kopii career-ops/web-ui — o rejestrze GitHub Packages przeczytasz w README.",
   "install.gitNote": "UI mieszka w projekcie career-ops jako web-ui/ — skrypt startowy instaluje zależności i otwiera panel.",
   "install.curlNote": "Klonuje career-ops i UI, instaluje zależności i otwiera panel.",
-
   "stats.mit": "Licencja MIT",
   "stats.langs": "{n} języków",
   "stats.adapters": "~{n} adapterów portali",
   "stats.providers": "{n} dostawców AI — z własnym kluczem",
   "stats.tests": "{n}+ testów automatycznych",
   "stats.local": "100% lokalne dane",
-
   "how.h2": "Jak to działa",
   "how.sub": "Cztery kroki od pustego folderu do ocenionego, śledzonego pipeline'u ofert.",
   "how.1.title": "Instalacja",
@@ -65,7 +58,6 @@
   "how.score.3": "najpierw sprawdź firmę",
   "how.score.4": "odpuść",
   "how.guide": "Przeczytaj pełny podręcznik",
-
   "features.h2": "Wszystko, czego potrzebuje poważne szukanie pracy",
   "features.sub": "Jedna lokalna aplikacja zamiast pięciu subskrypcji i dziesięciu kart przeglądarki.",
   "features.1.title": "Skanowanie ~{adapters} portali",
@@ -92,7 +84,6 @@
   "features.11.desc": "Lokalne pliki markdown i YAML, serwer na 127.0.0.1, bez kont w chmurze, telemetrii i automatycznego wysyłania.",
   "features.12.title": "{n} języków, w tym RTL",
   "features.12.desc": "Aplikacja, pełny podręcznik i ta strona są dostępne w {n} językach — w tym po arabsku, pisanym od prawej do lewej.",
-
   "showcase.h2": "Jedna karta zamiast dziesięciu",
   "showcase.sub": "Panel w stylu dokumentacji nad Twoimi własnymi plikami: skanuj, oceniaj, aplikuj i śledź bez opuszczania strony.",
   "showcase.alt": "Pełny panel career-ops-ui z wynikami skanowania, ocenami dopasowania i trackerem aplikacji",
@@ -102,7 +93,6 @@
   "showcase.c2.desc": "0.0–5.0 względem Twojego CV z pisemnym uzasadnieniem — żeby aplikować tam, gdzie to ma sens.",
   "showcase.c3.title": "Tracker",
   "showcase.c3.desc": "Statusy, notatki, follow-upy i raporty każdej aplikacji, w zwykłym markdownie.",
-
   "compare.h2": "Jak wypada na tle innych",
   "compare.sub": "Uczciwe spojrzenie na popularne płatne narzędzia, zweryfikowane na publicznych stronach cen i funkcji każdego dostawcy.",
   "compare.badge": "Darmowe i open source",
@@ -133,7 +123,6 @@
   "compare.note": "Porównano {date}. Na podstawie publicznych stron cen i funkcji poszczególnych dostawców:",
   "compare.error": "Znalazłeś błąd?",
   "compare.issue": "Zgłoś issue",
-
   "helpTeaser.h2": "Pomoc projektu",
   "helpTeaser.sub": "Pełny podręcznik użytkownika jest przetłumaczony na wszystkie {n} języków i dostarczany razem z aplikacją.",
   "helpTeaser.c1.title": "Czym jest career-ops-ui",
@@ -143,7 +132,6 @@
   "helpTeaser.c3.title": "Rozwiązywanie problemów i FAQ",
   "helpTeaser.c3.desc": "Klucze API, skanery, eksport PDF, dziennik aktywności — odpowiedzi na pytania, które zadają wszyscy.",
   "helpTeaser.cta": "Otwórz pełny podręcznik",
-
   "open.h2": "Budowane jawnie",
   "open.sub": "Licencja MIT, testy w CI, publiczne wydania — przeczytaj każdą linijkę, zanim powierzysz mu swoje szukanie pracy.",
   "open.mit": "Licencja MIT",
@@ -153,10 +141,12 @@
   "open.star": "Daj gwiazdkę na GitHubie",
   "open.issue": "Zgłoś problem",
   "open.contrib": "Przewodnik współtwórcy",
+  "open.contributors": "Współtwórcy",
+  "open.contributorsSub": "Wszyscy, którzy wnieśli kod do career-ops-ui.",
+  "open.contributorsAll": "Wszyscy współtwórcy",
   "open.parentTitle": "Zbudowane na career-ops",
   "open.parentDesc": "career-ops-ui to panel webowy dla otwartoźródłowego pipeline'u szukania pracy career-ops.",
   "open.disclaimer": "Nieoficjalne UI — niepowiązane z career-ops / santifer i przez nich nieautoryzowane.",
-
   "faq.h2": "Najczęstsze pytania",
   "faq.q1": "Czy to naprawdę darmowe?",
   "faq.a1": "Tak. Oprogramowanie to open source na licencji MIT — bez subskrypcji, okresu próbnego i zablokowanych poziomów. Jeśli włączysz funkcje AI na żywo, przynosisz własny klucz API i płacisz bezpośrednio dostawcy, albo używasz trybu bez klucza i nie płacisz nic.",
@@ -178,12 +168,10 @@
   "faq.a9": "Tak — issues, pull requesty i tłumaczenia są mile widziane. Zacznij od przewodnika współtwórcy na GitHubie.",
   "faq.q10": "Czy projekt jest powiązany z career-ops?",
   "faq.a10": "Nie. To nieoficjalne UI zbudowane na otwartoźródłowym pipelinie career-ops — niepowiązane z career-ops / santifer i przez nich nieautoryzowane.",
-
   "final.h2": "Twoje szukanie pracy, na Twoich zasadach",
   "final.sub": "Zainstaluj jednym poleceniem. Przeczytaj kod. Zatrzymaj swoje dane.",
   "final.cta": "Zacznij",
   "final.gh": "Zobacz na GitHubie",
-
   "footer.product": "Produkt",
   "footer.resources": "Zasoby",
   "footer.community": "Społeczność",
@@ -197,12 +185,10 @@
   "footer.discussions": "Dyskusje",
   "footer.contributing": "Współtworzenie",
   "footer.license": "Licencja MIT",
-
   "help.title": "Podręcznik użytkownika",
   "help.toc": "Na tej stronie",
   "help.edit": "Edytuj tę stronę na GitHubie",
   "help.home": "Strona główna",
-
   "notfound.title": "Nie znaleziono strony",
   "notfound.desc": "Strona, której szukasz, nie istnieje albo została przeniesiona.",
   "notfound.home": "Wróć na stronę główną"

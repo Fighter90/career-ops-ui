@@ -99,19 +99,47 @@ const dispatch = readFileSync(join(ROOT, 'server', 'lib', 'llm-dispatch.mjs'), '
 const providerSet = new Set([...dispatch.matchAll(/want([A-Z][A-Za-z]+)/g)].map((m) => m[1]));
 const providers = providerSet.size;
 
-// GitHub stars — best effort at build time only (never client-side).
-let stars = null;
-try {
-  const res = await fetch('https://api.github.com/repos/Fighter90/career-ops-ui', {
-    headers: { accept: 'application/vnd.github+json' },
+// GitHub facts — best effort at build time; the star count is additionally
+// refreshed client-side (site.js) so it never goes stale between deploys.
+// CI passes GITHUB_TOKEN so shared-runner IPs don't hit the anonymous
+// rate limit; locally the unauthenticated call is fine.
+async function ghJson(path) {
+  const headers = { accept: 'application/vnd.github+json' };
+  if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  const res = await fetch(`https://api.github.com${path}`, {
+    headers,
     signal: AbortSignal.timeout(8000),
   });
-  if (res.ok) {
-    const data = await res.json();
-    if (typeof data.stargazers_count === 'number') stars = data.stargazers_count;
-  }
+  if (!res.ok) throw new Error(`GitHub API ${res.status} for ${path}`);
+  return res.json();
+}
+
+let stars = null;
+try {
+  const data = await ghJson('/repos/Fighter90/career-ops-ui');
+  if (typeof data.stargazers_count === 'number') stars = data.stargazers_count;
 } catch {
   /* offline / rate-limited -> header falls back to a plain "GitHub" button */
+}
+
+// Contributors — humans only (bots add noise), top 24 by contribution count.
+// Empty array on failure: the landing then hides the block; the weekly
+// scheduled Pages rebuild (deploy-pages.yml) restores it on the next pass.
+let contributors = [];
+try {
+  const data = await ghJson('/repos/Fighter90/career-ops-ui/contributors?per_page=24');
+  if (Array.isArray(data)) {
+    contributors = data
+      .filter((c) => c && c.type !== 'Bot' && !/\[bot\]$/i.test(c.login || ''))
+      .map((c) => ({
+        login: c.login,
+        avatar_url: c.avatar_url,
+        html_url: c.html_url,
+        contributions: c.contributions,
+      }));
+  }
+} catch {
+  /* best effort — see above */
 }
 
 const facts = {
@@ -123,6 +151,7 @@ const facts = {
   providers,
   locales: 16,
   stars,
+  contributors,
   repoUrl: REPO_URL,
   parentUrl: 'https://career-ops.org',
   buildDate: new Date().toISOString().slice(0, 10),

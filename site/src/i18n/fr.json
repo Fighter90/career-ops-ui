@@ -3,7 +3,6 @@
   "meta.desc": "Alternative gratuite et open source à Jobscan, sur votre machine. Scannez ~55 job boards, notez chaque offre face à votre CV avec l'IA — 100% local.",
   "meta.helpTitle": "Guide utilisateur — career-ops-ui",
   "meta.helpDesc": "Le guide complet de career-ops-ui : installation, scan des job boards, scores d'adéquation IA, CV Studio, suivi des candidatures et dépannage.",
-
   "a11y.skip": "Aller au contenu",
   "a11y.lang": "Changer de langue",
   "a11y.menu": "Ouvrir le menu",
@@ -11,11 +10,9 @@
   "a11y.copy": "Copier la commande",
   "a11y.copied": "Copié dans le presse-papiers",
   "a11y.browserFrame": "Fenêtre de navigateur montrant le tableau de bord career-ops-ui",
-
   "banner.text": "Cette page est aussi disponible en {lang}",
   "banner.open": "Basculer",
   "banner.dismiss": "Ignorer",
-
   "nav.how": "Fonctionnement",
   "nav.features": "Fonctionnalités",
   "nav.screens": "Captures",
@@ -24,7 +21,6 @@
   "nav.faq": "FAQ",
   "header.github": "GitHub",
   "header.cta": "Commencer",
-
   "hero.pill1": "Gratuit",
   "hero.pill2": "Open source",
   "hero.pill3": "Tourne sur votre machine",
@@ -34,21 +30,18 @@
   "hero.ctaGithub": "Voir sur GitHub",
   "hero.fineprint": "Licence MIT · Node ≥ 18 · macOS / Linux / WSL",
   "hero.alt": "Le centre de commande career-ops-ui : navigation latérale, vue pipeline et suivi des candidatures",
-
   "install.title": "Opérationnel en une commande",
   "install.log1": "career-ops cloné",
   "install.log2": "dépendances installées",
   "install.npxNote": "Exécute le paquet installé localement dans votre copie de career-ops/web-ui — voir le README pour la note GitHub Packages.",
   "install.gitNote": "L'UI vit dans un projet career-ops sous web-ui/ — le script de démarrage installe les dépendances et ouvre le tableau de bord.",
   "install.curlNote": "Clone career-ops et l'UI, installe les dépendances et ouvre le tableau de bord.",
-
   "stats.mit": "Licence MIT",
   "stats.langs": "{n} langues",
   "stats.adapters": "~{n} adaptateurs de job boards",
   "stats.providers": "{n} fournisseurs d'IA — avec votre propre clé",
   "stats.tests": "{n}+ tests automatisés",
   "stats.local": "Données 100% locales",
-
   "how.h2": "Comment ça marche",
   "how.sub": "Quatre étapes entre un dossier vide et un pipeline d'offres noté et suivi.",
   "how.1.title": "Installer",
@@ -65,7 +58,6 @@
   "how.score.3": "renseignez-vous d'abord sur l'entreprise",
   "how.score.4": "passez",
   "how.guide": "Lire le guide complet",
-
   "features.h2": "Tout ce qu'exige une recherche d'emploi sérieuse",
   "features.sub": "Une app locale au lieu de cinq abonnements et dix onglets de navigateur.",
   "features.1.title": "Scanner ~{adapters} job boards",
@@ -92,7 +84,6 @@
   "features.11.desc": "Fichiers markdown et YAML locaux, un serveur lié à 127.0.0.1, pas de compte cloud, pas de télémétrie, pas d'envoi automatique.",
   "features.12.title": "{n} langues, RTL compris",
   "features.12.desc": "L'app, le guide complet et ce site existent en {n} langues — y compris l'arabe, écrit de droite à gauche.",
-
   "showcase.h2": "Un onglet au lieu de dix",
   "showcase.sub": "Un tableau de bord façon docs par-dessus vos propres fichiers : scannez, évaluez, postulez et suivez sans quitter la page.",
   "showcase.alt": "Tableau de bord complet de career-ops-ui avec résultats de scan, scores d'adéquation et suivi des candidatures",
@@ -102,7 +93,6 @@
   "showcase.c2.desc": "0.0–5.0 face à votre CV, avec une justification écrite — pour postuler là où ça compte.",
   "showcase.c3.title": "Suivi",
   "showcase.c3.desc": "Statuts, notes, relances et rapports pour chaque candidature, en markdown brut.",
-
   "compare.h2": "Comparé aux autres",
   "compare.sub": "Un regard honnête sur les outils payants populaires, vérifié sur les pages publiques de tarifs et de fonctionnalités de chaque éditeur.",
   "compare.badge": "Gratuit et open source",
@@ -133,7 +123,6 @@
   "compare.note": "Comparé le {date}. D'après les pages publiques de tarifs et de fonctionnalités de chaque éditeur :",
   "compare.error": "Une erreur ?",
   "compare.issue": "Ouvrez une issue",
-
   "helpTeaser.h2": "Aide du projet",
   "helpTeaser.sub": "Le guide utilisateur complet est traduit dans les {n} langues et livré avec l'app.",
   "helpTeaser.c1.title": "Qu'est-ce que career-ops-ui",
@@ -143,7 +132,6 @@
   "helpTeaser.c3.title": "Dépannage et FAQ",
   "helpTeaser.c3.desc": "Clés d'API, scanners, export PDF, journal d'activité — les réponses aux questions que tout le monde pose.",
   "helpTeaser.cta": "Ouvrir le guide complet",
-
   "open.h2": "Construit au grand jour",
   "open.sub": "Licence MIT, tests en CI, releases publiques — lisez chaque ligne avant de lui confier votre recherche d'emploi.",
   "open.mit": "Licence MIT",
@@ -153,10 +141,12 @@
   "open.star": "Étoiler sur GitHub",
   "open.issue": "Signaler un problème",
   "open.contrib": "Guide de contribution",
+  "open.contributors": "Contributeurs",
+  "open.contributorsSub": "Toutes les personnes ayant contribué du code à career-ops-ui.",
+  "open.contributorsAll": "Tous les contributeurs",
   "open.parentTitle": "Construit sur career-ops",
   "open.parentDesc": "career-ops-ui est un tableau de bord web pour le pipeline open source de recherche d'emploi career-ops.",
   "open.disclaimer": "UI non officielle — sans affiliation ni approbation de career-ops / santifer.",
-
   "faq.h2": "Questions fréquentes",
   "faq.q1": "C'est vraiment gratuit ?",
   "faq.a1": "Oui. Le logiciel est open source sous licence MIT — pas d'abonnement, pas d'essai, pas de paliers verrouillés. Si vous activez les fonctions IA en direct, vous apportez votre propre clé d'API et payez directement votre fournisseur, ou vous utilisez le mode sans clé et ne payez rien du tout.",
@@ -178,12 +168,10 @@
   "faq.a9": "Oui — issues, pull requests et traductions sont les bienvenus. Commencez par le guide de contribution sur GitHub.",
   "faq.q10": "Est-ce affilié à career-ops ?",
   "faq.a10": "Non. C'est une UI non officielle construite sur le pipeline open source career-ops — sans affiliation ni approbation de career-ops / santifer.",
-
   "final.h2": "Votre recherche d'emploi, selon vos règles",
   "final.sub": "Installez-le en une commande. Lisez le code. Gardez vos données.",
   "final.cta": "Commencer",
   "final.gh": "Voir sur GitHub",
-
   "footer.product": "Produit",
   "footer.resources": "Ressources",
   "footer.community": "Communauté",
@@ -197,12 +185,10 @@
   "footer.discussions": "Discussions",
   "footer.contributing": "Contribuer",
   "footer.license": "Licence MIT",
-
   "help.title": "Guide utilisateur",
   "help.toc": "Sur cette page",
   "help.edit": "Modifier cette page sur GitHub",
   "help.home": "Accueil",
-
   "notfound.title": "Page introuvable",
   "notfound.desc": "La page que vous cherchez n'existe pas ou a été déplacée.",
   "notfound.home": "Retour à l'accueil"

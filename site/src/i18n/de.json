@@ -3,7 +3,6 @@
   "meta.desc": "Kostenlose Open-Source-Alternative zu Jobscan, läuft auf deinem Rechner. Scanne ~55 Jobbörsen, erhalte KI-Match-Scores gegen deinen CV — 100% lokal.",
   "meta.helpTitle": "Benutzerhandbuch — career-ops-ui",
   "meta.helpDesc": "Das vollständige career-ops-ui-Handbuch: Installation, Scannen von Jobbörsen, KI-Match-Scores, CV Studio, Bewerbungs-Tracker und Fehlerbehebung.",
-
   "a11y.skip": "Zum Inhalt springen",
   "a11y.lang": "Sprache wechseln",
   "a11y.menu": "Menü öffnen",
@@ -11,11 +10,9 @@
   "a11y.copy": "Befehl kopieren",
   "a11y.copied": "In die Zwischenablage kopiert",
   "a11y.browserFrame": "Browserfenster mit dem career-ops-ui-Dashboard",
-
   "banner.text": "Diese Seite gibt es auch auf {lang}",
   "banner.open": "Wechseln",
   "banner.dismiss": "Ausblenden",
-
   "nav.how": "So funktioniert's",
   "nav.features": "Funktionen",
   "nav.screens": "Screenshots",
@@ -24,7 +21,6 @@
   "nav.faq": "FAQ",
   "header.github": "GitHub",
   "header.cta": "Loslegen",
-
   "hero.pill1": "Kostenlos",
   "hero.pill2": "Open Source",
   "hero.pill3": "Läuft auf deinem Rechner",
@@ -34,21 +30,18 @@
   "hero.ctaGithub": "Auf GitHub ansehen",
   "hero.fineprint": "MIT-Lizenz · Node ≥ 18 · macOS / Linux / WSL",
   "hero.alt": "Die career-ops-ui-Kommandozentrale: Seitennavigation, Pipeline-Übersicht und Bewerbungs-Tracker",
-
   "install.title": "Mit einem Befehl startklar",
   "install.log1": "career-ops geklont",
   "install.log2": "Abhängigkeiten installiert",
   "install.npxNote": "Führt das lokal installierte Paket in deinem career-ops/web-ui-Checkout aus — Hinweis zu GitHub Packages im README.",
   "install.gitNote": "Die UI lebt in einem career-ops-Projekt als web-ui/ — das Startskript installiert Abhängigkeiten und öffnet das Dashboard.",
   "install.curlNote": "Klont career-ops und die UI, installiert Abhängigkeiten und öffnet das Dashboard.",
-
   "stats.mit": "MIT-lizenziert",
   "stats.langs": "{n} Sprachen",
   "stats.adapters": "~{n} Jobbörsen-Adapter",
   "stats.providers": "{n} KI-Anbieter — mit eigenem Schlüssel",
   "stats.tests": "{n}+ automatisierte Tests",
   "stats.local": "100% lokale Daten",
-
   "how.h2": "So funktioniert's",
   "how.sub": "Vier Schritte vom leeren Ordner zur bewerteten, nachverfolgten Stellen-Pipeline.",
   "how.1.title": "Installieren",
@@ -65,7 +58,6 @@
   "how.score.3": "erst das Unternehmen recherchieren",
   "how.score.4": "überspringen",
   "how.guide": "Das vollständige Handbuch lesen",
-
   "features.h2": "Alles, was eine ernsthafte Jobsuche braucht",
   "features.sub": "Eine lokale App statt fünf Abos und zehn Browser-Tabs.",
   "features.1.title": "~{adapters} Jobbörsen scannen",
@@ -92,7 +84,6 @@
   "features.11.desc": "Lokale Markdown- und YAML-Dateien, ein Server auf 127.0.0.1, keine Cloud-Konten, keine Telemetrie, kein Auto-Versand.",
   "features.12.title": "{n} Sprachen, inkl. RTL",
   "features.12.desc": "App, Handbuch und diese Website gibt es in {n} Sprachen — inklusive Arabisch von rechts nach links.",
-
   "showcase.h2": "Ein Tab statt zehn",
   "showcase.sub": "Ein Dashboard im Docs-Stil über deinen eigenen Dateien: scannen, bewerten, bewerben und verfolgen, ohne die Seite zu verlassen.",
   "showcase.alt": "Vollständiges career-ops-ui-Dashboard mit Scan-Ergebnissen, Match-Scores und dem Bewerbungs-Tracker",
@@ -102,7 +93,6 @@
   "showcase.c2.desc": "0.0–5.0 gegen deinen CV mit schriftlicher Begründung — damit du dich dort bewirbst, wo es zählt.",
   "showcase.c3.title": "Tracker",
   "showcase.c3.desc": "Status, Notizen, Follow-ups und Berichte zu jeder Bewerbung, in reinem Markdown.",
-
   "compare.h2": "Der Vergleich",
   "compare.sub": "Ein fairer Blick auf beliebte Bezahl-Tools, geprüft anhand der öffentlichen Preis- und Funktionsseiten der Anbieter.",
   "compare.badge": "Kostenlos & Open Source",
@@ -133,7 +123,6 @@
   "compare.note": "Verglichen am {date}. Basierend auf den öffentlichen Preis- und Funktionsseiten der Anbieter:",
   "compare.error": "Fehler gefunden?",
   "compare.issue": "Issue öffnen",
-
   "helpTeaser.h2": "Projekthilfe",
   "helpTeaser.sub": "Das vollständige Benutzerhandbuch ist in alle {n} Sprachen übersetzt und wird mit der App ausgeliefert.",
   "helpTeaser.c1.title": "Was ist career-ops-ui",
@@ -143,7 +132,6 @@
   "helpTeaser.c3.title": "Fehlerbehebung & FAQ",
   "helpTeaser.c3.desc": "API-Schlüssel, Scanner, PDF-Export, Aktivitätslog — die Antworten auf die Fragen, die alle stellen.",
   "helpTeaser.cta": "Das vollständige Handbuch öffnen",
-
   "open.h2": "Offen entwickelt",
   "open.sub": "MIT-lizenziert, in CI getestet, öffentlich released — lies jede Zeile, bevor du ihm deine Jobsuche anvertraust.",
   "open.mit": "MIT-Lizenz",
@@ -153,10 +141,12 @@
   "open.star": "Auf GitHub sternen",
   "open.issue": "Problem melden",
   "open.contrib": "Contributing-Guide",
+  "open.contributors": "Mitwirkende",
+  "open.contributorsSub": "Alle, die Code zu career-ops-ui beigetragen haben.",
+  "open.contributorsAll": "Alle Mitwirkenden",
   "open.parentTitle": "Aufgebaut auf career-ops",
   "open.parentDesc": "career-ops-ui ist ein Web-Dashboard für die Open-Source-Jobsuch-Pipeline career-ops.",
   "open.disclaimer": "Inoffizielle UI — nicht mit career-ops / santifer verbunden oder von ihnen unterstützt.",
-
   "faq.h2": "Häufige Fragen",
   "faq.q1": "Ist es wirklich kostenlos?",
   "faq.a1": "Ja. Die Software ist MIT-lizenzierte Open Source — kein Abo, keine Testphase, keine gesperrten Stufen. Wenn du Live-KI-Funktionen aktivierst, bringst du deinen eigenen API-Schlüssel mit und zahlst direkt an deinen Anbieter — oder du nutzt den schlüssellosen Prompt-Kopier-Modus und zahlst gar nichts.",
@@ -178,12 +168,10 @@
   "faq.a9": "Ja — Issues, Pull Requests und Übersetzungen sind willkommen. Starte mit dem Contributing-Guide auf GitHub.",
   "faq.q10": "Ist das Projekt mit career-ops verbunden?",
   "faq.a10": "Nein. Es ist eine inoffizielle UI auf Basis der Open-Source-Pipeline career-ops — nicht mit career-ops / santifer verbunden oder von ihnen unterstützt.",
-
   "final.h2": "Deine Jobsuche, zu deinen Bedingungen",
   "final.sub": "Installiere es mit einem Befehl. Lies den Code. Behalte deine Daten.",
   "final.cta": "Loslegen",
   "final.gh": "Auf GitHub ansehen",
-
   "footer.product": "Produkt",
   "footer.resources": "Ressourcen",
   "footer.community": "Community",
@@ -197,12 +185,10 @@
   "footer.discussions": "Diskussionen",
   "footer.contributing": "Mitwirken",
   "footer.license": "MIT-Lizenz",
-
   "help.title": "Benutzerhandbuch",
   "help.toc": "Auf dieser Seite",
   "help.edit": "Diese Seite auf GitHub bearbeiten",
   "help.home": "Startseite",
-
   "notfound.title": "Seite nicht gefunden",
   "notfound.desc": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
   "notfound.home": "Zur Startseite"

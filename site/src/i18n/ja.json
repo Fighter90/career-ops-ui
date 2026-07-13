@@ -3,7 +3,6 @@
   "meta.desc": "自分のマシンで動く、無料のオープンソースJobscan代替。約55の求人ボードを検索し、CVに対するAI適合スコアを取得 — データは100%ローカル。",
   "meta.helpTitle": "ユーザーガイド — career-ops-ui",
   "meta.helpDesc": "career-ops-uiの完全ガイド:セットアップ、求人ボードの検索、AI適合スコア、CV Studio、応募トラッカー、トラブルシューティング。",
-
   "a11y.skip": "コンテンツへスキップ",
   "a11y.lang": "言語を変更",
   "a11y.menu": "メニューを開く",
@@ -11,11 +10,9 @@
   "a11y.copy": "コマンドをコピー",
   "a11y.copied": "クリップボードにコピーしました",
   "a11y.browserFrame": "career-ops-uiダッシュボードを表示するブラウザウィンドウ",
-
   "banner.text": "このページは{lang}でもご覧いただけます",
   "banner.open": "切り替える",
   "banner.dismiss": "閉じる",
-
   "nav.how": "仕組み",
   "nav.features": "機能",
   "nav.screens": "スクリーンショット",
@@ -24,7 +21,6 @@
   "nav.faq": "FAQ",
   "header.github": "GitHub",
   "header.cta": "始める",
-
   "hero.pill1": "無料",
   "hero.pill2": "オープンソース",
   "hero.pill3": "自分のマシンで動作",
@@ -34,21 +30,18 @@
   "hero.ctaGithub": "GitHubで見る",
   "hero.fineprint": "MITライセンス · Node ≥ 18 · macOS / Linux / WSL",
   "hero.alt": "career-ops-uiのコマンドセンター:サイドナビゲーション、パイプライン概要、応募トラッカー",
-
   "install.title": "コマンド1つで準備完了",
   "install.log1": "career-opsをクローンしました",
   "install.log2": "依存関係をインストールしました",
   "install.npxNote": "career-ops/web-uiのチェックアウト内でローカルにインストールされたパッケージを実行します — GitHub Packagesの注意事項はREADMEを参照。",
   "install.gitNote": "UIはcareer-opsプロジェクト内のweb-ui/として動作します — 起動スクリプトが依存関係をインストールし、ダッシュボードを開きます。",
   "install.curlNote": "career-opsとUIをクローンし、依存関係をインストールしてダッシュボードを開きます。",
-
   "stats.mit": "MITライセンス",
   "stats.langs": "{n}言語",
   "stats.adapters": "約{n}の求人ボードアダプター",
   "stats.providers": "{n}のAIプロバイダー — 自分のキーで",
   "stats.tests": "{n}+の自動テスト",
   "stats.local": "データは100%ローカル",
-
   "how.h2": "仕組み",
   "how.sub": "空のフォルダから、スコア付きで追跡される求人パイプラインまで4ステップ。",
   "how.1.title": "インストール",
@@ -65,7 +58,6 @@
   "how.score.3": "まず企業をリサーチ",
   "how.score.4": "見送る",
   "how.guide": "完全ガイドを読む",
-
   "features.h2": "本気の就職活動に必要なすべて",
   "features.sub": "5つのサブスクと10個のブラウザタブの代わりに、ローカルアプリ1つ。",
   "features.1.title": "約{adapters}の求人ボードを検索",
@@ -92,7 +84,6 @@
   "features.11.desc": "ローカルのmarkdownとYAMLファイル、127.0.0.1にバインドされたサーバー、クラウドアカウントなし、テレメトリなし、自動送信なし。",
   "features.12.title": "{n}言語、RTL対応",
   "features.12.desc": "アプリ、完全ガイド、このサイトが{n}言語で利用可能 — 右から左に書くアラビア語も含みます。",
-
   "showcase.h2": "10個のタブの代わりに1つ",
   "showcase.sub": "自分のファイルの上に載るdocsスタイルのダッシュボード:ページを離れずに検索、評価、応募、追跡。",
   "showcase.alt": "検索結果、適合スコア、応募トラッカーを表示するcareer-ops-uiの完全なダッシュボード",
@@ -102,7 +93,6 @@
   "showcase.c2.desc": "CVに対する0.0〜5.0のスコアと文章による根拠 — 価値のあるところに応募するために。",
   "showcase.c3.title": "トラッカー",
   "showcase.c3.desc": "各応募のステータス、メモ、フォローアップ、レポート — プレーンなmarkdownで。",
-
   "compare.h2": "他ツールとの比較",
   "compare.sub": "人気の有料ツールへの正直な視点。各ベンダーの公開価格・機能ページで検証済み。",
   "compare.badge": "無料&オープンソース",
@@ -133,7 +123,6 @@
   "compare.note": "{date}時点の比較。各ベンダーの公開価格・機能ページに基づきます:",
   "compare.error": "誤りを見つけましたか?",
   "compare.issue": "Issueを作成",
-
   "helpTeaser.h2": "プロジェクトヘルプ",
   "helpTeaser.sub": "完全なユーザーガイドは{n}言語すべてに翻訳され、アプリに同梱されています。",
   "helpTeaser.c1.title": "career-ops-uiとは",
@@ -143,7 +132,6 @@
   "helpTeaser.c3.title": "トラブルシューティングとFAQ",
   "helpTeaser.c3.desc": "APIキー、スキャナー、PDFエクスポート、アクティビティログ — 誰もが尋ねる質問への答え。",
   "helpTeaser.cta": "完全ガイドを開く",
-
   "open.h2": "オープンに開発",
   "open.sub": "MITライセンス、CIでテスト済み、公開リリース — 就職活動を任せる前に、すべてのコードを読めます。",
   "open.mit": "MITライセンス",
@@ -153,10 +141,12 @@
   "open.star": "GitHubでスターを付ける",
   "open.issue": "問題を報告",
   "open.contrib": "コントリビューションガイド",
+  "open.contributors": "コントリビューター",
+  "open.contributorsSub": "career-ops-ui にコードを提供したすべての人。",
+  "open.contributorsAll": "すべてのコントリビューター",
   "open.parentTitle": "career-opsの上に構築",
   "open.parentDesc": "career-ops-uiは、オープンソースの就職活動パイプラインcareer-opsのWebダッシュボードです。",
   "open.disclaimer": "非公式UI — career-ops / santiferとは無関係であり、承認も受けていません。",
-
   "faq.h2": "よくある質問",
   "faq.q1": "本当に無料ですか?",
   "faq.a1": "はい。ソフトウェアはMITライセンスのオープンソースです — サブスクなし、トライアルなし、ロックされた機能なし。ライブAI機能を使う場合は自分のAPIキーを持ち込んでプロバイダーに直接支払うか、キー不要のプロンプトコピー方式を使えば一切支払いは不要です。",
@@ -178,12 +168,10 @@
   "faq.a9": "はい — Issue、プルリクエスト、翻訳を歓迎します。GitHubのコントリビューションガイドから始めてください。",
   "faq.q10": "career-opsと提携していますか?",
   "faq.a10": "いいえ。オープンソースのcareer-opsパイプラインの上に構築された非公式UIです — career-ops / santiferとは無関係であり、承認も受けていません。",
-
   "final.h2": "あなたの就職活動を、あなたの流儀で",
   "final.sub": "コマンド1つでインストール。コードを読む。データは手元に。",
   "final.cta": "始める",
   "final.gh": "GitHubで見る",
-
   "footer.product": "プロダクト",
   "footer.resources": "リソース",
   "footer.community": "コミュニティ",
@@ -197,12 +185,10 @@
   "footer.discussions": "ディスカッション",
   "footer.contributing": "コントリビューション",
   "footer.license": "MITライセンス",
-
   "help.title": "ユーザーガイド",
   "help.toc": "このページの内容",
   "help.edit": "GitHubでこのページを編集",
   "help.home": "ホーム",
-
   "notfound.title": "ページが見つかりません",
   "notfound.desc": "お探しのページは存在しないか、移動しました。",
   "notfound.home": "ホームページへ"

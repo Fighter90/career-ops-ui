@@ -9,6 +9,18 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.119.0] — 2026-07-13
+
+Parytet z nadrzędnym career-ops **v1.19.0** + odświeżenie landingu cvstart.org.
+
+### Dodano
+- **2 nowych dostawców skanowania** — Meituan (`zhaopin.meituan.com`) i Tencent (`careers.tencent.com`): publiczne JSON-API chińskich tablic tech bez uwierzytelniania, wykrywane po hoście lub wybierane jawnym `provider:`, z serwerowym wyszukiwaniem per słowo kluczowe, paginacją i deduplikacją po URL — teraz **61 adapterów** (56 EN + 5 RU). +20 testów (**1844**).
+- **Blok współtwórców na landingu** — cvstart.org pokazuje awatary wszystkich, którzy wnieśli kod (GitHub API `/contributors` w czasie builda, boty odfiltrowane), zlokalizowany we wszystkich 16 językach, z linkiem do pełnego grafu współtwórców.
+- **Żywy licznik gwiazdek GitHub na landingu** — znaczek w nagłówku odświeża się teraz po stronie klienta z GitHub API przy każdej wizycie (migawka z builda jako fallback), a cotygodniowa zaplanowana przebudowa Pages utrzymuje świeżość migawki i listy współtwórców; wywołania API w CI są uwierzytelnione tokenem.
+
+### Naprawiono
+- **Żądania Workday CXS niosą przeglądarkowe nagłówki** (rodzic #1813) — tenanty za Cloudflare (widziane na żywo: geico) odpowiadają 500 na żądania bez zwykłych UA/`accept-language`/`origin`/`referer`; fetcher wyprowadza teraz origin i slug site'u z samego URL-a CXS. Żądania Glints dostały ten sam przeglądarkowy UA + origin/referer — oba ze wspólnej stałej `BROWSER_LIKE_USER_AGENT` w `http-json.mjs`.
+
 ## [1.118.4] — 2026-07-10
 
 ### Naprawiono

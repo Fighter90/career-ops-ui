@@ -3,7 +3,6 @@
   "meta.desc": "Alternativa gratuita e open source a Jobscan che gira sul tuo computer. Scansiona ~55 job board, valuta ogni annuncio con l'IA contro il tuo CV — 100% locale.",
   "meta.helpTitle": "Guida utente — career-ops-ui",
   "meta.helpDesc": "La guida completa di career-ops-ui: installazione, scansione delle job board, punteggi di compatibilità IA, CV Studio, tracker delle candidature e risoluzione dei problemi.",
-
   "a11y.skip": "Salta al contenuto",
   "a11y.lang": "Cambia lingua",
   "a11y.menu": "Apri il menu",
@@ -11,11 +10,9 @@
   "a11y.copy": "Copia comando",
   "a11y.copied": "Copiato negli appunti",
   "a11y.browserFrame": "Finestra del browser con la dashboard di career-ops-ui",
-
   "banner.text": "Questa pagina è disponibile anche in {lang}",
   "banner.open": "Passa",
   "banner.dismiss": "Chiudi",
-
   "nav.how": "Come funziona",
   "nav.features": "Funzionalità",
   "nav.screens": "Screenshot",
@@ -24,7 +21,6 @@
   "nav.faq": "FAQ",
   "header.github": "GitHub",
   "header.cta": "Inizia",
-
   "hero.pill1": "Gratis",
   "hero.pill2": "Open source",
   "hero.pill3": "Gira sul tuo computer",
@@ -34,21 +30,18 @@
   "hero.ctaGithub": "Vedi su GitHub",
   "hero.fineprint": "Licenza MIT · Node ≥ 18 · macOS / Linux / WSL",
   "hero.alt": "Il centro di comando di career-ops-ui: navigazione laterale, panoramica pipeline e tracker delle candidature",
-
   "install.title": "Pronto con un solo comando",
   "install.log1": "career-ops clonato",
   "install.log2": "dipendenze installate",
   "install.npxNote": "Esegue il pacchetto installato localmente nella tua copia di career-ops/web-ui — vedi il README per la nota su GitHub Packages.",
   "install.gitNote": "La UI vive dentro un progetto career-ops come web-ui/ — lo script di avvio installa le dipendenze e apre la dashboard.",
   "install.curlNote": "Clona career-ops e la UI, installa le dipendenze e apre la dashboard.",
-
   "stats.mit": "Licenza MIT",
   "stats.langs": "{n} lingue",
   "stats.adapters": "~{n} adattatori di job board",
   "stats.providers": "{n} provider IA — con la tua chiave",
   "stats.tests": "{n}+ test automatizzati",
   "stats.local": "Dati 100% locali",
-
   "how.h2": "Come funziona",
   "how.sub": "Quattro passaggi da una cartella vuota a una pipeline di annunci valutata e tracciata.",
   "how.1.title": "Installa",
@@ -65,7 +58,6 @@
   "how.score.3": "prima studia l'azienda",
   "how.score.4": "lascia perdere",
   "how.guide": "Leggi la guida completa",
-
   "features.h2": "Tutto ciò che serve a una ricerca di lavoro seria",
   "features.sub": "Un'app locale al posto di cinque abbonamenti e dieci schede del browser.",
   "features.1.title": "Scansione di ~{adapters} job board",
@@ -92,7 +84,6 @@
   "features.11.desc": "File markdown e YAML locali, un server su 127.0.0.1, niente account cloud, niente telemetria, niente invio automatico.",
   "features.12.title": "{n} lingue, RTL incluso",
   "features.12.desc": "L'app, la guida completa e questo sito esistono in {n} lingue — incluso l'arabo, scritto da destra a sinistra.",
-
   "showcase.h2": "Una scheda al posto di dieci",
   "showcase.sub": "Una dashboard in stile docs sopra i tuoi file: scansiona, valuta, candidati e traccia senza lasciare la pagina.",
   "showcase.alt": "Dashboard completa di career-ops-ui con risultati di scansione, punteggi di compatibilità e tracker delle candidature",
@@ -102,7 +93,6 @@
   "showcase.c2.desc": "0.0–5.0 rispetto al tuo CV con motivazione scritta — per candidarti dove conta davvero.",
   "showcase.c3.title": "Tracker",
   "showcase.c3.desc": "Stati, note, follow-up e report per ogni candidatura, in semplice markdown.",
-
   "compare.h2": "Il confronto",
   "compare.sub": "Uno sguardo onesto ai popolari strumenti a pagamento, verificato sulle pagine pubbliche di prezzi e funzionalità di ciascun fornitore.",
   "compare.badge": "Gratis e open source",
@@ -133,7 +123,6 @@
   "compare.note": "Confrontato il {date}. In base alle pagine pubbliche di prezzi e funzionalità di ciascun fornitore:",
   "compare.error": "Hai trovato un errore?",
   "compare.issue": "Apri una issue",
-
   "helpTeaser.h2": "Aiuto sul progetto",
   "helpTeaser.sub": "La guida utente completa è tradotta in tutte le {n} lingue e viene distribuita con l'app.",
   "helpTeaser.c1.title": "Cos'è career-ops-ui",
@@ -143,7 +132,6 @@
   "helpTeaser.c3.title": "Risoluzione problemi e FAQ",
   "helpTeaser.c3.desc": "Chiavi API, scanner, export PDF, log delle attività — le risposte alle domande che fanno tutti.",
   "helpTeaser.cta": "Apri la guida completa",
-
   "open.h2": "Costruito alla luce del sole",
   "open.sub": "Licenza MIT, test in CI, release pubbliche — leggi ogni riga prima di affidargli la tua ricerca di lavoro.",
   "open.mit": "Licenza MIT",
@@ -153,10 +141,12 @@
   "open.star": "Metti una stella su GitHub",
   "open.issue": "Segnala un problema",
   "open.contrib": "Guida per contribuire",
+  "open.contributors": "Contributori",
+  "open.contributorsSub": "Tutti coloro che hanno contribuito con codice a career-ops-ui.",
+  "open.contributorsAll": "Tutti i contributori",
   "open.parentTitle": "Costruito su career-ops",
   "open.parentDesc": "career-ops-ui è una dashboard web per la pipeline open source di ricerca di lavoro career-ops.",
   "open.disclaimer": "UI non ufficiale — non affiliata né approvata da career-ops / santifer.",
-
   "faq.h2": "Domande frequenti",
   "faq.q1": "È davvero gratis?",
   "faq.a1": "Sì. Il software è open source con licenza MIT — niente abbonamento, niente trial, niente livelli bloccati. Se attivi le funzioni IA live porti la tua chiave API e paghi direttamente il tuo provider, oppure usi la modalità senza chiave e non paghi nulla.",
@@ -178,12 +168,10 @@
   "faq.a9": "Sì — issue, pull request e traduzioni sono benvenute. Parti dalla guida per contribuire su GitHub.",
   "faq.q10": "È affiliato a career-ops?",
   "faq.a10": "No. È una UI non ufficiale costruita sopra la pipeline open source career-ops — non affiliata né approvata da career-ops / santifer.",
-
   "final.h2": "La tua ricerca di lavoro, alle tue condizioni",
   "final.sub": "Installalo con un comando. Leggi il codice. Tieniti i tuoi dati.",
   "final.cta": "Inizia",
   "final.gh": "Vedi su GitHub",
-
   "footer.product": "Prodotto",
   "footer.resources": "Risorse",
   "footer.community": "Community",
@@ -197,12 +185,10 @@
   "footer.discussions": "Discussioni",
   "footer.contributing": "Contribuire",
   "footer.license": "Licenza MIT",
-
   "help.title": "Guida utente",
   "help.toc": "In questa pagina",
   "help.edit": "Modifica questa pagina su GitHub",
   "help.home": "Home",
-
   "notfound.title": "Pagina non trovata",
   "notfound.desc": "La pagina che cerchi non esiste o è stata spostata.",
   "notfound.home": "Vai alla home"

@@ -3,7 +3,6 @@
   "meta.desc": "Kendi makinenizde çalışan ücretsiz, açık kaynak Jobscan alternatifi. ~55 iş panosunu tarayın, ilanları CV'nize göre yapay zekayla puanlayın — %100 yerel.",
   "meta.helpTitle": "Kullanıcı kılavuzu — career-ops-ui",
   "meta.helpDesc": "Eksiksiz career-ops-ui kılavuzu: kurulum, iş panolarını tarama, yapay zeka uyum puanları, CV Studio, başvuru takibi ve sorun giderme.",
-
   "a11y.skip": "İçeriğe atla",
   "a11y.lang": "Dili değiştir",
   "a11y.menu": "Menüyü aç",
@@ -11,11 +10,9 @@
   "a11y.copy": "Komutu kopyala",
   "a11y.copied": "Panoya kopyalandı",
   "a11y.browserFrame": "career-ops-ui panosunu gösteren tarayıcı penceresi",
-
   "banner.text": "Bu sayfa {lang} dilinde de mevcut",
   "banner.open": "Geç",
   "banner.dismiss": "Kapat",
-
   "nav.how": "Nasıl çalışır",
   "nav.features": "Özellikler",
   "nav.screens": "Ekran görüntüleri",
@@ -24,7 +21,6 @@
   "nav.faq": "SSS",
   "header.github": "GitHub",
   "header.cta": "Başla",
-
   "hero.pill1": "Ücretsiz",
   "hero.pill2": "Açık kaynak",
   "hero.pill3": "Kendi makinenizde çalışır",
@@ -34,21 +30,18 @@
   "hero.ctaGithub": "GitHub'da görüntüle",
   "hero.fineprint": "MIT lisansı · Node ≥ 18 · macOS / Linux / WSL",
   "hero.alt": "career-ops-ui komuta merkezi: yan gezinme, pipeline özeti ve başvuru takibi",
-
   "install.title": "Tek komutla hazır",
   "install.log1": "career-ops klonlandı",
   "install.log2": "bağımlılıklar kuruldu",
   "install.npxNote": "career-ops/web-ui kopyanız içinde yerel olarak kurulmuş paketi çalıştırır — GitHub Packages notu için README'ye bakın.",
   "install.gitNote": "UI, bir career-ops projesinin içinde web-ui/ olarak yaşar — başlangıç betiği bağımlılıkları kurar ve panoyu açar.",
   "install.curlNote": "career-ops'u ve UI'yi klonlar, bağımlılıkları kurar ve panoyu açar.",
-
   "stats.mit": "MIT lisanslı",
   "stats.langs": "{n} dil",
   "stats.adapters": "~{n} iş panosu adaptörü",
   "stats.providers": "{n} yapay zeka sağlayıcısı — kendi anahtarınızla",
   "stats.tests": "{n}+ otomatik test",
   "stats.local": "%100 yerel veri",
-
   "how.h2": "Nasıl çalışır",
   "how.sub": "Boş bir klasörden puanlanmış, takip edilen bir ilan pipeline'ına dört adım.",
   "how.1.title": "Kur",
@@ -65,7 +58,6 @@
   "how.score.3": "önce şirketi araştırın",
   "how.score.4": "atlayın",
   "how.guide": "Kılavuzun tamamını okuyun",
-
   "features.h2": "Ciddi bir iş arayışının ihtiyaç duyduğu her şey",
   "features.sub": "Beş abonelik ve on tarayıcı sekmesi yerine tek bir yerel uygulama.",
   "features.1.title": "~{adapters} iş panosunu tara",
@@ -92,7 +84,6 @@
   "features.11.desc": "Yerel markdown ve YAML dosyaları, 127.0.0.1'e bağlı sunucu, bulut hesabı yok, telemetri yok, otomatik gönderim yok.",
   "features.12.title": "{n} dil, RTL dahil",
   "features.12.desc": "Uygulama, eksiksiz kılavuz ve bu site {n} dilde sunulur — sağdan sola yazılan Arapça dahil.",
-
   "showcase.h2": "On sekme yerine bir sekme",
   "showcase.sub": "Kendi dosyalarınızın üzerinde docs tarzı bir pano: sayfadan ayrılmadan tarayın, değerlendirin, başvurun ve takip edin.",
   "showcase.alt": "Tarama sonuçları, uyum puanları ve başvuru takibiyle eksiksiz career-ops-ui panosu",
@@ -102,7 +93,6 @@
   "showcase.c2.desc": "CV'nize göre 0.0–5.0, yazılı gerekçeyle — değdiği yere başvurmanız için.",
   "showcase.c3.title": "Takip",
   "showcase.c3.desc": "Her başvurunun durumları, notları, hatırlatmaları ve raporları — düz markdown içinde.",
-
   "compare.h2": "Nasıl karşılaştırılır",
   "compare.sub": "Popüler ücretli araçlara dürüst bir bakış; her satıcının herkese açık fiyat ve özellik sayfalarıyla doğrulanmıştır.",
   "compare.badge": "Ücretsiz ve açık kaynak",
@@ -133,7 +123,6 @@
   "compare.note": "{date} tarihinde karşılaştırıldı. Her satıcının herkese açık fiyat ve özellik sayfalarına dayanır:",
   "compare.error": "Hata mı buldunuz?",
   "compare.issue": "Issue açın",
-
   "helpTeaser.h2": "Proje yardımı",
   "helpTeaser.sub": "Eksiksiz kullanıcı kılavuzu {n} dilin tamamına çevrildi ve uygulamayla birlikte gelir.",
   "helpTeaser.c1.title": "career-ops-ui nedir",
@@ -143,7 +132,6 @@
   "helpTeaser.c3.title": "Sorun giderme ve SSS",
   "helpTeaser.c3.desc": "API anahtarları, tarayıcılar, PDF dışa aktarma, etkinlik günlüğü — herkesin sorduğu soruların yanıtları.",
   "helpTeaser.cta": "Kılavuzun tamamını aç",
-
   "open.h2": "Açıkta inşa edildi",
   "open.sub": "MIT lisanslı, CI'da test edilmiş, herkese açık yayınlanmış — iş arayışınızı emanet etmeden önce her satırı okuyun.",
   "open.mit": "MIT lisansı",
@@ -153,10 +141,12 @@
   "open.star": "GitHub'da yıldızlayın",
   "open.issue": "Sorun bildirin",
   "open.contrib": "Katkı kılavuzu",
+  "open.contributors": "Katkıda bulunanlar",
+  "open.contributorsSub": "career-ops-ui'ye kod katkısında bulunan herkes.",
+  "open.contributorsAll": "Tüm katkıda bulunanlar",
   "open.parentTitle": "career-ops üzerine kurulu",
   "open.parentDesc": "career-ops-ui, açık kaynak iş arama pipeline'ı career-ops için bir web panosudur.",
   "open.disclaimer": "Resmî olmayan UI — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır.",
-
   "faq.h2": "Sık sorulan sorular",
   "faq.q1": "Gerçekten ücretsiz mi?",
   "faq.a1": "Evet. Yazılım MIT lisanslı açık kaynaktır — abonelik yok, deneme süresi yok, kilitli katman yok. Canlı yapay zeka özelliklerini açarsanız kendi API anahtarınızı getirir ve doğrudan sağlayıcınıza ödersiniz; ya da anahtarsız prompt kopyalama modunu kullanır, hiç ödemezsiniz.",
@@ -178,12 +168,10 @@
   "faq.a9": "Evet — issue'lar, pull request'ler ve çeviriler memnuniyetle karşılanır. GitHub'daki katkı kılavuzuyla başlayın.",
   "faq.q10": "career-ops ile bağlantılı mı?",
   "faq.a10": "Hayır. Açık kaynak career-ops pipeline'ının üzerine inşa edilmiş resmî olmayan bir UI'dir — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır.",
-
   "final.h2": "İş arayışınız, sizin şartlarınızla",
   "final.sub": "Tek komutla kurun. Kodu okuyun. Verileriniz sizde kalsın.",
   "final.cta": "Başla",
   "final.gh": "GitHub'da görüntüle",
-
   "footer.product": "Ürün",
   "footer.resources": "Kaynaklar",
   "footer.community": "Topluluk",
@@ -197,12 +185,10 @@
   "footer.discussions": "Tartışmalar",
   "footer.contributing": "Katkı",
   "footer.license": "MIT lisansı",
-
   "help.title": "Kullanıcı kılavuzu",
   "help.toc": "Bu sayfada",
   "help.edit": "Bu sayfayı GitHub'da düzenle",
   "help.home": "Ana sayfa",
-
   "notfound.title": "Sayfa bulunamadı",
   "notfound.desc": "Aradığınız sayfa yok ya da taşındı.",
   "notfound.home": "Ana sayfaya git"

@@ -7,18 +7,18 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-1824%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-1844%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.118.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.118.4)
+[![release](https://img.shields.io/badge/release-v1.119.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.0)
 
-> **🆕 أحدث إصدار — v1.118.4**
+> **🆕 أحدث إصدار — v1.119.0**
 >
-> **تكافؤ مع الأب v1.18.0.** تسعة مزوّدي فحص جدد (Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs — الآن 54 محوّلًا) بالإضافة إلى لوحات Lever EU، وحالة `Hired` القياسية مع لافتة «حصلت على الوظيفة» في المتتبِّع، وتبويب الإجمالي في الإحصاءات الذي يمرّر stats.mjs وsalary-gap.mjs من الأب (القمع التراكمي، إجماليات الماسح، ملاحظات التعويضات).
+> **تكافؤ مع الأب v1.19.0.** مزوّدا فحص جديدان — Meituan (zhaopin.meituan.com) وTencent (careers.tencent.com)، واجهتا JSON عامتان بلا مصادقة للوحات التقنية الصينية (الآن **61 محوّلاً**) — ترويسات شبيهة بالمتصفح على طلبات Workday CXS وGlints (تفتح المستأجرين خلف Cloudflare)، وتحديث لموقع cvstart.org: عدّاد نجوم GitHub يتحدّث تلقائياً مباشرةً وكتلة المساهمين.
 >
-> _تكافؤ الأب v1.18 · 54 محوّلًا · حالة Hired · إحصاءات إجمالية · حزمة التكافؤ · 50 محوّلاً · إعادة تصميم مقياس الاستخدام · صقل التصميم · مقياس الاستخدام · مساعد مساعدة عائم · دمج التوثيق وضمان الجودة · إغلاق متأخّرات الأمان · الوثائق وضمان الجودة ×16 · استبعاد Scan · نظرة عامة على المسار · تعزيز الأمان 2 · تعزيز أداة التعقيم · تعزيز الأمان · استخدام الذكاء الاصطناعي وتكلفته · شعارات الشركات · أدوات CLI للذكاء الاصطناعي · اسأل الدليل · تكييف السيرة + خطاب · تعبئة تلقائية للوثيقة · تصدير DOCX · صحة البوابات · مُبلّغ الأخطاء المدمج · الإحصاءات، مُعاد تصميمها · 16 locales · 6 مزوّدات LLM · 46 محوّل ماسح · التوجيه المهني · خطة المسار المهني · طبقة الذاكرة · CV Studio · مخطّط تواصل مهني · مقابلة تجريبية · ملاءمة السوق عبر two-pager · تكافؤ مع المشروع الأصلي career-ops v1.16.0._
+> _تكافؤ مع الأب v1.19 · 61 محوّلاً · نجوم مباشرة + مساهمون على الصفحة · تكافؤ الأب v1.18 · 54 محوّلًا · حالة Hired · إحصاءات إجمالية · حزمة التكافؤ · 50 محوّلاً · إعادة تصميم مقياس الاستخدام · صقل التصميم · مقياس الاستخدام · مساعد مساعدة عائم · دمج التوثيق وضمان الجودة · إغلاق متأخّرات الأمان · الوثائق وضمان الجودة ×16 · استبعاد Scan · نظرة عامة على المسار · تعزيز الأمان 2 · تعزيز أداة التعقيم · تعزيز الأمان · استخدام الذكاء الاصطناعي وتكلفته · شعارات الشركات · أدوات CLI للذكاء الاصطناعي · اسأل الدليل · تكييف السيرة + خطاب · تعبئة تلقائية للوثيقة · تصدير DOCX · صحة البوابات · مُبلّغ الأخطاء المدمج · الإحصاءات، مُعاد تصميمها · 16 locales · 6 مزوّدات LLM · 46 محوّل ماسح · التوجيه المهني · خطة المسار المهني · طبقة الذاكرة · CV Studio · مخطّط تواصل مهني · مقابلة تجريبية · ملاءمة السوق عبر two-pager · تكافؤ مع المشروع الأصلي career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-ar.png)
 
@@ -143,7 +143,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 1824 unit + 90 Playwright + 43 e2e
+   └─ tests/        # 1844 unit + 90 Playwright + 43 e2e
 ```
 
 <div dir="rtl">
@@ -168,7 +168,7 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 1824 اختبار وحدة وتكامل
+npm test                    # 1844 اختبار وحدة وتكامل
 npm run test:e2e            # 20 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
 npm run test:e2e:browser    # 70 اختبار Playwright

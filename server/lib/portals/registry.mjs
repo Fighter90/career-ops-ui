@@ -92,6 +92,10 @@ import { tkmsAdapter } from './adapters/tkms.mjs';
 import { hecklerkochAdapter } from './adapters/hecklerkoch.mjs';
 import { rheinmetallAdapter } from './adapters/rheinmetall.mjs';
 import { larajobsAdapter } from './adapters/larajobs.mjs';
+// v1.119.0 — parent career-ops v1.19.0 parity: Chinese tech boards, zero-auth
+// public JSON APIs, host-detected or explicit `provider:`.
+import { meituanAdapter } from './adapters/meituan.mjs';
+import { tencentAdapter } from './adapters/tencent.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -173,6 +177,12 @@ export const ALL_ADAPTERS = [
   hecklerkochAdapter,
   rheinmetallAdapter,
   larajobsAdapter,
+  // v1.119.0 — parent career-ops v1.19.0 parity. meituan (zhaopin.meituan.com)
+  // and tencent (careers.tencent.com) are single-company Chinese tech boards
+  // with public JSON APIs — host-detected or explicit `provider:`, zero-auth,
+  // keyword-driven pagination config via the company entry.
+  meituanAdapter,
+  tencentAdapter,
 ];
 
 /**
