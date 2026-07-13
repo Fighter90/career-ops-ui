@@ -9,6 +9,11 @@
 ---
 
 
+## [1.119.1] — 2026-07-13
+
+### أُصلح
+- **مرشِّح المصادر في `#/scan` لحق بالسجل** — القائمة الثابتة `FALLBACK_SOURCES` خلف قائمة Source المنسدلة (تُستخدم فقط عندما يتعذّر الوصول إلى `GET /api/scan/sources`) كانت متخلفة بصمت منذ v1.87.0: كان ينقص الاحتياطي دون اتصال 20 مزوّداً (Amazon وAvature وSAP SuccessFactors وGet on Board وDassault Systèmes وbeesite وHigherEdJobs وJibeApply (iCIMS) وsoftgarden وCornerstone وPhenom وRadancy وDeutsche Bahn وEchoJobs وTKMS وHeckler & Koch وRheinmetall وLaraJobs والجديدان Meituan / Tencent). زُومنت مع كل الـ**61** وتحميها الآن فحص انحراف يُفشل CI كلما اختلفت قائمة العميل عن سجل الخادم (القيم والتسميات معاً). +1 اختبار (**1845**).
+
 ## [1.119.0] — 2026-07-13
 
 تكافؤ مع مشروع career-ops الأب **v1.19.0** + تحديث صفحة الهبوط cvstart.org.

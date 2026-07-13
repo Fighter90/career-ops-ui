@@ -2,6 +2,11 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.119.1] — 2026-07-13
+
+### Behoben
+- **Der Quellen-Filter auf `#/scan` hat die Registry eingeholt** — die statische `FALLBACK_SOURCES`-Liste hinter dem Source-Dropdown (nur genutzt, wenn `GET /api/scan/sources` unerreichbar ist) hinkte seit v1.87.0 still hinterher: 20 Provider fehlten im Offline-Fallback (Amazon, Avature, SAP SuccessFactors, Get on Board, Dassault Systèmes, beesite, HigherEdJobs, JibeApply (iCIMS), softgarden, Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs und die neuen Meituan / Tencent). Auf alle **61** synchronisiert und jetzt durch einen Drift-Test abgesichert, der die CI fehlschlagen lässt, sobald die Client-Liste von der Server-Registry abweicht (Werte UND Labels). +1 Test (**1845**).
+
 ## [1.119.0] — 2026-07-13
 
 Parität mit dem übergeordneten career-ops **v1.19.0** + Refresh der cvstart.org-Landing.

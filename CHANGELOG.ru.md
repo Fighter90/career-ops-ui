@@ -9,6 +9,11 @@
 ---
 
 
+## [1.119.1] — 2026-07-13
+
+### Исправлено
+- **Фильтр источников на `#/scan` догнал реестр** — статический список `FALLBACK_SOURCES` за выпадающим списком Source (используется только когда `GET /api/scan/sources` недоступен) молча отставал с v1.87.0: в офлайн-фолбэке не хватало 20 провайдеров (Amazon, Avature, SAP SuccessFactors, Get on Board, Dassault Systèmes, beesite, HigherEdJobs, JibeApply (iCIMS), softgarden, Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs и новые Meituan / Tencent). Синхронизирован со всеми **61** и теперь закрыт дрифт-тестом, который валит CI при расхождении клиентского списка с серверным реестром (значения И лейблы). +1 тест (**1845**).
+
 ## [1.119.0] — 2026-07-13
 
 Паритет с родительским career-ops **v1.19.0** + обновление лендинга cvstart.org.

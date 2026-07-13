@@ -10,6 +10,11 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.119.1] — 2026-07-13
+
+### Rettet
+- **Kildefilteret på `#/scan` har indhentet registreringen** — den statiske `FALLBACK_SOURCES`-liste bag Source-dropdownen (bruges kun når `GET /api/scan/sources` er utilgængelig) haltede stille bagefter siden v1.87.0: 20 udbydere manglede i offline-fallbacken (Amazon, Avature, SAP SuccessFactors, Get on Board, Dassault Systèmes, beesite, HigherEdJobs, JibeApply (iCIMS), softgarden, Cornerstone, Phenom, Radancy, Deutsche Bahn, EchoJobs, TKMS, Heckler & Koch, Rheinmetall, LaraJobs og de nye Meituan / Tencent). Synkroniseret med alle **61** og nu sikret af en drift-test, der fejler CI, når klientlisten afviger fra server-registreringen (værdier OG labels). +1 test (**1845**).
+
 ## [1.119.0] — 2026-07-13
 
 Paritet med forældre-career-ops **v1.19.0** + refresh af cvstart.org-landingen.

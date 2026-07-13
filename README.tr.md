@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-1844%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1845%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.0)
+[![release](https://img.shields.io/badge/release-v1.119.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.1)
 
-> **🆕 En son sürüm — v1.119.0**
+> **🆕 En son sürüm — v1.119.1**
 >
 > **Üst proje v1.19.0 paritesi.** İki yeni tarama sağlayıcısı — Meituan (zhaopin.meituan.com) ve Tencent (careers.tencent.com), Çin tech kartlarının kimlik doğrulamasız açık JSON API'leri (artık **61 adaptör**) — Workday CXS ve Glints isteklerinde tarayıcı benzeri başlıklar (Cloudflare arkasındaki kiracıların kilidini açar) ve cvstart.org yenilemesi: canlı otomatik güncellenen GitHub yıldız sayacı ve katkıda bulunanlar bloğu.
 >
@@ -400,7 +400,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1844 birim + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.0)
+└─ tests/                    # 1845 birim + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.1)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch
@@ -531,7 +531,7 @@ event: error    data: { message }
 ## Testler
 
 ```bash
-npm test                       # 1844 birim/entegrasyon testi
+npm test                       # 1845 birim/entegrasyon testi
 npm run test:e2e               # 20 smoke e2e (kendi sunucusunu başlatır)
 npm run test:e2e:full          # 23 kapsamlı e2e
 npm run test:e2e:browser       # 70 Playwright tarayıcı (smoke + full-cycle + forms + locale-sweep)
@@ -540,7 +540,7 @@ npm run test:coverage          # `npm test` ile aynı, artı V8 kapsamı
 
 | Paket                       | Test | Ne                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (birim + entegrasyon) | **1844** | Her uç nokta, geçici sunucu, ağ yok. 217 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
+| `node --test tests/*.test.mjs` (birim + entegrasyon) | **1845** | Her uç nokta, geçici sunucu, ağ yok. 218 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright başsız: her rota render edilir, temel akışlar.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23    | Tam Playwright gezintisi: 11 rota + 12 işlevsel akış.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |

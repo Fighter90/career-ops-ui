@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-1844%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-1845%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.0)
+[![release](https://img.shields.io/badge/release-v1.119.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.1)
 
-> **🆕 Najnowsze wydanie — v1.119.0**
+> **🆕 Najnowsze wydanie — v1.119.1**
 >
 > **Parytet z rodzicem v1.19.0.** Dwóch nowych dostawców skanowania — Meituan (zhaopin.meituan.com) i Tencent (careers.tencent.com), publiczne JSON-API chińskich tablic tech bez uwierzytelniania (teraz **61 adapterów**) — przeglądarkowe nagłówki w żądaniach Workday CXS i Glints (odblokowują tenantów za Cloudflare) oraz odświeżenie cvstart.org: automatycznie aktualizowany licznik gwiazdek GitHub i blok współtwórców.
 >
@@ -123,7 +123,7 @@ career-ops/
 └─ web-ui/          ← to repozytorium
    ├─ server/       # Express + 15 modułów tras
    ├─ public/       # vanilla JS SPA, bez bundlera
-   └─ tests/        # 1844 testów jednostkowych + 90 Playwright + 43 e2e
+   └─ tests/        # 1845 testów jednostkowych + 90 Playwright + 43 e2e
 ```
 
 Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacji, brak bundlera — cały interfejs to mniej niż 30 KB zminifikowanego kodu.
@@ -144,7 +144,7 @@ Oficjalna strona: [career-ops.org](https://career-ops.org) · Dokumentacja: [car
 ## Testy
 
 ```bash
-npm test                    # 1844 testów jednostkowych/integracyjnych
+npm test                    # 1845 testów jednostkowych/integracyjnych
 npm run test:e2e            # 20 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 70 testów Playwright
