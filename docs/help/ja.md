@@ -30,6 +30,10 @@
   — `batch-runner.sh` で 10 件以上の JD をまとめて採点します。
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — Chromium のインストールと、PDF・フォーム入力用 MCP の登録。
+- [career-ops による求人スコアリングの仕組み](https://career-ops.org/methodology)
+  — スコアリングメソドロジー: 6 つの評価次元、4.0 の応募しきい値、そして
+  このシステムが絶対に行わないこと。[cvstart.org/methodology](https://cvstart.org/methodology/)
+  でもあなたの言語で要約を確認できます。
 
 **基本原則** (出典:
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

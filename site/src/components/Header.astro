@@ -1,22 +1,25 @@
 ---
-import { localeHome, t, type Locale } from '../i18n/locales';
+import { localeHome, t, type Locale, type Page } from '../i18n/locales';
 import LangSwitcher from './LangSwitcher.astro';
 import GitHubButton from './GitHubButton.astro';
 import Icon from './Icon.astro';
 
 interface Props {
   locale: Locale;
-  page: '' | 'help';
+  page: Page;
 }
 const { locale, page } = Astro.props;
 const home = localeHome(locale);
 // Section anchors live on the landing page; from /help they link back home.
 const anchor = (id: string) => (page === '' ? `#${id}` : `${home}#${id}`);
+// Page-type entries link to their own page; the rest are landing anchors.
+const PAGE_IDS = new Set(['help', 'methodology']);
 const NAV = [
   { id: 'how-it-works', key: 'nav.how' },
   { id: 'features', key: 'nav.features' },
   { id: 'screenshots', key: 'nav.screens' },
   { id: 'compare', key: 'nav.compare' },
+  { id: 'methodology', key: 'nav.methodology' },
   { id: 'help', key: 'nav.help' },
   { id: 'faq', key: 'nav.faq' },
 ];
@@ -32,9 +35,9 @@ const NAV = [
     <nav class="hidden items-center gap-1 lg:flex" aria-label="Main">
       {NAV.map((n) => (
         <a
-          href={n.id === 'help' ? `${home}help/` : anchor(n.id)}
+          href={PAGE_IDS.has(n.id) ? `${home}${n.id}/` : anchor(n.id)}
           class="rounded-full px-3 py-1.5 text-sm font-medium text-ink-soft transition hover:bg-paper-alt hover:text-ink"
-          aria-current={n.id === 'help' && page === 'help' ? 'page' : undefined}
+          aria-current={PAGE_IDS.has(n.id) && page === n.id ? 'page' : undefined}
         >
           {t(locale, n.key)}
         </a>
@@ -66,7 +69,7 @@ const NAV = [
     <nav class="container-site flex flex-col gap-1 py-6" aria-label="Mobile">
       {NAV.map((n) => (
         <a
-          href={n.id === 'help' ? `${home}help/` : anchor(n.id)}
+          href={PAGE_IDS.has(n.id) ? `${home}${n.id}/` : anchor(n.id)}
           class="rounded-[12px] px-4 py-3 text-lg font-semibold hover:bg-paper-alt"
         >
           {t(locale, n.key)}

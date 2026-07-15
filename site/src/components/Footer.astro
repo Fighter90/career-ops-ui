@@ -1,10 +1,10 @@
 ---
-import { LOCALES, localeHome, localePath, t, type Locale } from '../i18n/locales';
+import { LOCALES, localeHome, localePath, t, type Locale, type Page } from '../i18n/locales';
 import facts from '../generated/facts.json';
 
 interface Props {
   locale: Locale;
-  page: '' | 'help';
+  page: Page;
 }
 const { locale, page } = Astro.props;
 const home = localeHome(locale);
@@ -19,10 +19,14 @@ const product = [
 ];
 const resources = [
   { label: t(locale, 'footer.help'), href: `${home}help/` },
+  // v1.121.0 — on-site Methodology / Changelog / License pages.
+  { label: t(locale, 'nav.methodology'), href: `${home}methodology/` },
+  { label: t(locale, 'footer.changelog'), href: `${home}changelog/` },
+  { label: t(locale, 'footer.license'), href: `${home}license/` },
   { label: t(locale, 'footer.readme'), href: `${facts.repoUrl}#readme` },
-  { label: t(locale, 'footer.changelog'), href: `${facts.repoUrl}/blob/main/CHANGELOG.md` },
   { label: t(locale, 'footer.releases'), href: `${facts.repoUrl}/releases` },
   { label: t(locale, 'footer.parentDocs'), href: `${facts.parentUrl}/docs` },
+  { label: t(locale, 'footer.parentMethodology'), href: `${facts.parentUrl}/methodology` },
 ];
 const community = [
   { label: 'GitHub', href: facts.repoUrl },
@@ -87,7 +91,7 @@ const community = [
     <div class="mt-12 flex flex-col gap-2 border-t border-line pt-6 text-[0.8rem] text-ink-soft md:flex-row md:items-center md:justify-between">
       <p>
         © {year} career-ops-ui ·
-        <a href={`${facts.repoUrl}/blob/main/LICENSE`} rel="noopener" class="underline underline-offset-2">{t(locale, 'footer.license')}</a>
+        <a href={`${home}license/`} class="underline underline-offset-2">{t(locale, 'footer.license')}</a>
       </p>
       <p>
         {t(locale, 'footer.createdBy')}

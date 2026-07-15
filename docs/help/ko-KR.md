@@ -29,6 +29,10 @@
   — `batch-runner.sh`로 10개 이상 JD를 한 번에 채점.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — Chromium 설치 및 PDF·폼 채우기를 위한 MCP 등록.
+- [career-ops가 채용 공고를 평가하는 방식](https://career-ops.org/methodology)
+  — 채점 방법론: 6가지 차원, 4.0 지원 임계값, 그리고 이 시스템이
+  명시적으로 하지 않는 것들. [cvstart.org/methodology](https://cvstart.org/methodology/)에서도
+  여러분의 언어로 요약본을 확인할 수 있습니다.
 
 **핵심 원칙**
 ([career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)

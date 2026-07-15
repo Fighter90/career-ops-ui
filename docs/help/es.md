@@ -30,6 +30,10 @@ PDF adaptados, y registra cada candidatura localmente en tu máquina.
   — puntúa 10+ JDs a la vez vía `batch-runner.sh`.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — instala Chromium + registra el MCP para PDF y form-fill.
+- [Cómo puntúa career-ops las ofertas de empleo](https://career-ops.org/methodology)
+  — la metodología de puntuación: las seis dimensiones, el umbral de 4.0
+  para postular, y lo que el sistema se niega explícitamente a hacer.
+  Resumida también en [cvstart.org/methodology](https://cvstart.org/methodology/) en tu idioma.
 
 **Principios fundamentales** (de
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

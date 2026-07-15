@@ -2,6 +2,15 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.121.0] — 2026-07-16
+
+### Eklendi
+- **cvstart.org: Metodoloji, Lisans ve Değişiklik günlüğü sayfaları** — landing sayfası, mevcut Karşılaştırma bloğunun yanına 16 dilin tümünde üç yeni bölüm kazandı: **/methodology/** (altı boyutlu 0.0–5.0 puanlama ölçeği, 4.0 başvuru eşiği ve asla yapılmayacak kurallar — [career-ops.org/methodology](https://career-ops.org/methodology) adresinin yerelleştirilmiş bir özeti), **/license/** (NOTICE.md işaretçisiyle birlikte resmi MIT metni) ve **/changelog/** (bu dosya, depodaki 16 çevrilmiş CHANGELOG'dan yerel ayara göre işlenir). Yeni başlık **Metodoloji** girdisi ve altbilgi Kaynaklar bağlantıları; `sync-assets.mjs` artık derleme sırasında CHANGELOG ×16 ve LICENSE'ı siteye eşitliyor, böylece sayfalar depodan asla sapamaz.
+- **Dokümanlar genelinde metodoloji bağlantıları** — README (16 dilin tümü), uygulama içi yardım kılavuzu §1 kanonik listesi (16 dilin tümü) ve wiki artık mevcut [career-ops.org/docs](https://career-ops.org/docs) kılavuzlarının yanı sıra [career-ops.org/methodology](https://career-ops.org/methodology) adresine (ayrıca SSS ve sözlüğe) bağlantı veriyor.
+
+### Değiştirildi
+- README sürüm banner'ı ve rozetleri güncellendi (testler 1850, sürüm v1.121.0) — banner hâlâ v1.119.5'i duyuruyordu.
+
 ## [1.120.0] — 2026-07-16
 
 ### Eklendi

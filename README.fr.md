@@ -7,18 +7,18 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1845%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1856%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.5)
+[![release](https://img.shields.io/badge/release-v1.121.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.121.0)
 
-> **🆕 Dernière version — v1.119.5**
+> **🆕 Dernière version — v1.121.0**
 >
-> **Parité parent v1.19.0.** Deux nouveaux fournisseurs de scan — Meituan (zhaopin.meituan.com) et Tencent (careers.tencent.com), les API JSON publiques sans authentification des boards tech chinois (**61 adaptateurs** désormais) — des en-têtes de navigateur sur les requêtes Workday CXS et Glints (débloque les tenants derrière Cloudflare), et un rafraîchissement de cvstart.org : compteur d'étoiles GitHub auto-actualisé en direct et bloc des contributeurs.
+> **Le Manifeste CareerOps + les pages de cvstart.org.** La v1.120.0 (parité avec la version parente v1.20.0) a fait apparaître [le Manifeste CareerOps](https://career-ops.org/manifesto) dans toute l'application — lien dans le pied de la barre latérale, §29 de l'aide dans 16 langues, section README. La v1.121.0 ajoute quatre sections à [cvstart.org](https://cvstart.org) : **Méthodologie** (la grille de notation à six dimensions, tirée de [career-ops.org/methodology](https://career-ops.org/methodology)), **Comparatif**, **Licence**, et **Changelog** (dans les 16 langues), ainsi que des liens vers la méthodologie dans la documentation et le guide d'aide.
 >
-> _parité parent v1.19 · 61 adaptateurs · étoiles en direct + contributeurs sur la landing · parité parent v1.18 · 54 adaptateurs · statut Hired · stats cumulées · pack de parité · 50 adaptateurs · refonte compteur d'utilisation · peaufinage du design · compteur d'utilisation · assistant d'aide flottant · consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _manifeste · pages méthodologie/licence/changelog de cvstart.org · parité parent v1.19 · 61 adaptateurs · étoiles en direct + contributeurs sur la landing · parité parent v1.18 · 54 adaptateurs · statut Hired · stats cumulées · pack de parité · 50 adaptateurs · refonte compteur d'utilisation · peaufinage du design · compteur d'utilisation · assistant d'aide flottant · consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 
@@ -44,6 +44,7 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 - [Apply for a job](https://career-ops.org/docs/introduction/guides/apply-for-a-job)
 - [Batch-evaluate offers](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
+- [Comment career-ops note les offres d'emploi — la méthodologie](https://career-ops.org/methodology)
 
 ## Le Manifeste CareerOps
 
@@ -370,7 +371,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1845 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.119.5)
+└─ tests/                    # 1856 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -501,7 +502,7 @@ Quand `run: true` est défini sur `/api/deep` ou `/api/mode/:slug`, le serveur p
 ## Tests
 
 ```bash
-npm test                       # 1845 unit/integration tests
+npm test                       # 1856 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)
@@ -510,7 +511,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | Quoi                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + intégration) | **1845** | Chaque endpoint, serveur éphémère, sans réseau. 218 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + intégration) | **1856** | Chaque endpoint, serveur éphémère, sans réseau. 218 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless : chaque route s'affiche, flux de base.                                                |
 | `tests/e2e-comprehensive.mjs` | 23    | Parcours Playwright complet : 11 routes + 12 flux fonctionnels.                                            |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Piloté par navigateur : rendu du dashboard, navigation, changement de langue, 404, health, aller-retour tracker, ajout pipeline + balayage URL-invalide, rapports, repli manuel d'évaluation, clés de config masquées, retrait XSS au PUT du CV, aperçu pipeline 400, SSE auto-pipeline. |

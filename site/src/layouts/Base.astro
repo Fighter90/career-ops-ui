@@ -2,12 +2,12 @@
 import '@fontsource-variable/figtree';
 import '@fontsource/jetbrains-mono/400.css';
 import '../styles/global.css';
-import { LOCALES, localePath, t, type Locale } from '../i18n/locales';
+import { LOCALES, localePath, t, type Locale, type Page } from '../i18n/locales';
 import Seo from '../components/Seo.astro';
 
 interface Props {
   locale: Locale;
-  page: '' | 'help';
+  page: Page;
   title: string;
   description: string;
   jsonLd?: Record<string, unknown>;

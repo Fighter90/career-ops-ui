@@ -9,6 +9,15 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.121.0] — 2026-07-16
+
+### Dodano
+- **cvstart.org: strony Metodologia, Licencja i Dziennik zmian** — landing zyskał trzy nowe sekcje we wszystkich 16 językach, obok istniejącego bloku Porównanie: **/methodology/** (sześciowymiarowa skala oceniania 0.0–5.0, próg aplikowania 4.0 oraz zasady, których system nigdy nie łamie — zlokalizowane streszczenie [career-ops.org/methodology](https://career-ops.org/methodology)), **/license/** (kanoniczny tekst licencji MIT z odniesieniem do NOTICE.md) oraz **/changelog/** (ten plik, renderowany dla każdego języka z 16 przetłumaczonych plików CHANGELOG w repozytorium). Nowa pozycja **Metodologia** w nagłówku i linki Zasoby w stopce; `sync-assets.mjs` synchronizuje teraz CHANGELOG ×16 oraz LICENSE do landingu podczas builda, dzięki czemu strony te nigdy nie mogą rozjechać się z repozytorium.
+- **Linki do metodologii w całej dokumentacji** — README (wszystkie 16 języków), lista kanonicznych odniesień §1 wbudowanego przewodnika pomocy (wszystkie 16 języków) oraz wiki teraz linkują do [career-ops.org/methodology](https://career-ops.org/methodology) (a także FAQ i słownik pojęć) obok istniejących przewodników [career-ops.org/docs](https://career-ops.org/docs).
+
+### Zmieniono
+- Odświeżono baner wydania i odznaki w README (testy 1850, wydanie v1.121.0) — baner wciąż ogłaszał v1.119.5.
+
 ## [1.120.0] — 2026-07-16
 
 ### Dodano

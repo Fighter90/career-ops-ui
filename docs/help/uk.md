@@ -20,6 +20,10 @@
   — оцінюйте 10+ вакансій одночасно через `batch-runner.sh`.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — встановіть Chromium + зареєструйте MCP для PDF та заповнення форм.
+- [How career-ops scores job listings](https://career-ops.org/methodology)
+  — методологія оцінювання: шість вимірів, поріг подання заявки 4.0
+  та те, що система свідомо ніколи не робить. Стисло викладено також на
+  [cvstart.org/methodology](https://cvstart.org/methodology/) вашою мовою.
 
 **Визначальні принципи** (з
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

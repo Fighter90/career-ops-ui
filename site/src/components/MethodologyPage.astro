@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import { localeHome, t, type Locale } from '../i18n/locales';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+// Score thresholds mirror the repo README ("Action thresholds by score") —
+// the same table the web UI and the parent CLI act on. Commands are
+// language-neutral; the verdicts are localized.
+const rows = [
+  { score: '≥ 4.5', action: t(locale, 'method.row45'), cmd: '/career-ops apply' },
+  { score: '4.0 – 4.4', action: t(locale, 'method.row40'), cmd: '/career-ops contacto' },
+  { score: '3.5 – 3.9', action: t(locale, 'method.row35'), cmd: '/career-ops deep' },
+  { score: '< 3.5', action: t(locale, 'method.row00'), cmd: '—' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: t(locale, 'meta.methodologyTitle'),
+  description: t(locale, 'meta.methodologyDesc'),
+  inLanguage: locale.code,
+  isAccessibleForFree: true,
+  license: `${facts.repoUrl}/blob/main/LICENSE`,
+  about: { '@type': 'SoftwareApplication', name: 'career-ops-ui', sameAs: facts.repoUrl },
+};
+---
+
+<Base
+  locale={locale}
+  page="methodology"
+  title={t(locale, 'meta.methodologyTitle')}
+  description={t(locale, 'meta.methodologyDesc')}
+  jsonLd={jsonLd}
+>
+  <Header locale={locale} page="methodology" />
+  <main id="main" class="container-site pt-24 pb-20 md:pt-28">
+    <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
+      <a href={localeHome(locale)} class="hover:underline">{t(locale, 'help.home')}</a>
+      <span class="mx-1.5 text-ink-faint">/</span>
+      <span aria-current="page">{t(locale, 'method.title')}</span>
+    </nav>
+    <article class="mx-auto max-w-3xl">
+      <h1 class="mb-6 text-3xl font-extrabold tracking-tight md:text-4xl">{t(locale, 'method.title')}</h1>
+      <p class="mb-10 text-lg text-ink-soft">{t(locale, 'method.lead')}</p>
+
+      <section class="mb-10">
+        <h2 class="mb-3 text-xl font-bold">{t(locale, 'method.thresholdTitle')}</h2>
+        <p class="mb-4 text-ink-soft">{t(locale, 'method.thresholdBody')}</p>
+        <div class="overflow-x-auto rounded-[16px] border border-line">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-paper-alt text-start">
+                <th class="px-4 py-3 text-start font-bold">{t(locale, 'method.tblScore')}</th>
+                <th class="px-4 py-3 text-start font-bold">{t(locale, 'method.tblNext')}</th>
+                <th class="px-4 py-3 text-start font-bold">CLI</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr class="border-t border-line">
+                  <td class="whitespace-nowrap px-4 py-3 font-bold">{r.score}</td>
+                  <td class="px-4 py-3 text-ink-soft">{r.action}</td>
+                  <td class="whitespace-nowrap px-4 py-3"><code class="text-xs">{r.cmd}</code></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="mb-10">
+        <h2 class="mb-3 text-xl font-bold">{t(locale, 'method.dimsTitle')}</h2>
+        <p class="text-ink-soft">{t(locale, 'method.dimsBody')}</p>
+      </section>
+
+      <section class="mb-10">
+        <h2 class="mb-3 text-xl font-bold">{t(locale, 'method.neverTitle')}</h2>
+        <p class="text-ink-soft">{t(locale, 'method.neverBody')}</p>
+        <p class="mt-3 text-ink-soft">
+          {t(locale, 'method.manifestoBody')}
+          {' '}<a href="https://career-ops.org/manifesto" rel="noopener" class="underline underline-offset-2 hover:text-ink">career-ops.org/manifesto</a>
+        </p>
+      </section>
+
+      <section class="rounded-[16px] border border-line bg-paper-alt p-6">
+        <p class="mb-2">
+          <a href="https://career-ops.org/methodology" rel="noopener" class="font-bold underline underline-offset-2 hover:text-ink">
+            {t(locale, 'method.canonical')}
+          </a>
+        </p>
+        <p>
+          <a href="https://career-ops.org/docs" rel="noopener" class="text-ink-soft underline underline-offset-2 hover:text-ink">
+            {t(locale, 'method.docsLink')}
+          </a>
+        </p>
+      </section>
+    </article>
+  </main>
+  <Footer locale={locale} page="methodology" />
+</Base>

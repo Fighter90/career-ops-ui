@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Icon from './Icon.astro';
+import { localeHome, t, type Locale } from '../i18n/locales';
+import facts from '../generated/facts.json';
+import licenseText from '../generated/license.txt?raw';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: t(locale, 'meta.licenseTitle'),
+  description: t(locale, 'meta.licenseDesc'),
+  inLanguage: 'en',
+  isAccessibleForFree: true,
+  license: `${facts.repoUrl}/blob/main/LICENSE`,
+  about: { '@type': 'SoftwareApplication', name: 'career-ops-ui', sameAs: facts.repoUrl },
+};
+---
+
+<Base
+  locale={locale}
+  page="license"
+  title={t(locale, 'meta.licenseTitle')}
+  description={t(locale, 'meta.licenseDesc')}
+  jsonLd={jsonLd}
+>
+  <Header locale={locale} page="license" />
+  <main id="main" class="container-site pt-24 pb-20 md:pt-28">
+    <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
+      <a href={localeHome(locale)} class="hover:underline">{t(locale, 'help.home')}</a>
+      <span class="mx-1.5 text-ink-faint">/</span>
+      <span aria-current="page">{t(locale, 'license.title')}</span>
+    </nav>
+    <article class="mx-auto max-w-3xl">
+      <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <h1 class="text-3xl font-extrabold tracking-tight md:text-4xl">{t(locale, 'license.title')}</h1>
+        <a href={`${facts.repoUrl}/blob/main/LICENSE`} rel="noopener" class="btn-ghost !px-4 !py-2 text-sm">
+          <Icon name="github" class="h-4 w-4" />
+          GitHub
+        </a>
+      </div>
+      <p class="mb-4 text-ink-soft">{t(locale, 'license.lead')}</p>
+      <p class="mb-8 text-ink-soft">
+        <a href={`${facts.repoUrl}/blob/main/NOTICE.md`} rel="noopener" class="underline underline-offset-2 hover:text-ink">
+          {t(locale, 'license.notice')}
+        </a>
+      </p>
+      {/* Canonical English legal text, rendered verbatim in every locale. */}
+      <pre lang="en" dir="ltr" class="overflow-x-auto whitespace-pre-wrap rounded-[16px] border border-line bg-paper-alt p-6 text-sm leading-6">{licenseText}</pre>
+    </article>
+  </main>
+  <Footer locale={locale} page="license" />
+</Base>

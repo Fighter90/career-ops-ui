@@ -9,6 +9,15 @@
 ---
 
 
+## [1.121.0] — 2026-07-16
+
+### 追加
+- **cvstart.org: メソドロジー、ライセンス、変更履歴ページ** — ランディングに、既存の Compare ブロックの隣に全 16 言語で 3 つの新セクションが追加されました: **/methodology/**(6 次元の 0.0–5.0 スコアリングルーブリック、4.0 の応募しきい値、絶対にしないことのルール — [career-ops.org/methodology](https://career-ops.org/methodology) のローカライズされた要約)、**/license/**(NOTICE.md へのリンク付きの正規 MIT 全文)、**/changelog/**(このファイルを、リポジトリの 16 の翻訳済み CHANGELOG からロケールごとにレンダリングしたもの)。ヘッダーに新しい **Methodology** エントリ、フッターの Resources にもリンクを追加。`sync-assets.mjs` はビルド時に CHANGELOG ×16 と LICENSE をサイトへ同期するようになり、ページがリポジトリから乖離することはなくなりました。
+- **ドキュメント全体へのメソドロジーリンク** — README(全 16)、アプリ内ヘルプガイド §1 の正規ガイドリスト(全 16)、そして wiki が、既存の [career-ops.org/docs](https://career-ops.org/docs) ガイドと並んで [career-ops.org/methodology](https://career-ops.org/methodology)(FAQ・用語集にも)にリンクするようになりました。
+
+### 変更
+- README のリリースバナーとバッジを更新(テスト 1850、リリース v1.121.0)— バナーはまだ v1.119.5 を告知したままでした。
+
 ## [1.120.0] — 2026-07-16
 
 ### 追加

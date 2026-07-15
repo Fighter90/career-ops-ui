@@ -7,18 +7,18 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-1845%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-1856%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.5)
+[![release](https://img.shields.io/badge/release-v1.121.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.121.0)
 
-> **🆕 Najnowsze wydanie — v1.119.5**
+> **🆕 Najnowsze wydanie — v1.121.0**
 >
-> **Parytet z rodzicem v1.19.0.** Dwóch nowych dostawców skanowania — Meituan (zhaopin.meituan.com) i Tencent (careers.tencent.com), publiczne JSON-API chińskich tablic tech bez uwierzytelniania (teraz **61 adapterów**) — przeglądarkowe nagłówki w żądaniach Workday CXS i Glints (odblokowują tenantów za Cloudflare) oraz odświeżenie cvstart.org: automatycznie aktualizowany licznik gwiazdek GitHub i blok współtwórców.
+> **Manifest CareerOps + sekcje cvstart.org.** v1.120.0 (parytet z rodzicem v1.20.0) wyeksponowało [Manifest CareerOps](https://career-ops.org/manifesto) w całej aplikacji — link w stopce paska bocznego, §29 przewodnika pomocy w 16 językach, sekcja w README. v1.121.0 dodaje cztery sekcje do [cvstart.org](https://cvstart.org): **Metodologia** (sześciowymiarowa skala oceniania, na podstawie [career-ops.org/methodology](https://career-ops.org/methodology)), **Porównanie**, **Licencja** i **Dziennik zmian** (wszystkie 16 języków), a także linki do metodologii w dokumentacji i przewodniku pomocy.
 >
-> _parytet z rodzicem v1.19 · 61 adapterów · żywe gwiazdki + współtwórcy na landingu · parytet z rodzicem v1.18 · 54 adaptery · status Hired · statystyki łączne · pakiet parytetu · 50 adapterów · przeróbka miernika zużycia · dopracowanie designu · miernik użycia · pływający asystent pomocy · konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _manifest · strony methodology/license/changelog na cvstart.org · parytet z rodzicem v1.19 · 61 adapterów · żywe gwiazdki + współtwórcy na landingu · parytet z rodzicem v1.18 · 54 adaptery · status Hired · statystyki łączne · pakiet parytetu · 50 adapterów · przeróbka miernika zużycia · dopracowanie designu · miernik użycia · pływający asystent pomocy · konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 
@@ -44,6 +44,7 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 - [Składanie aplikacji](https://career-ops.org/docs/introduction/guides/apply-for-a-job)
 - [Masowa ocena ofert](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
 - [Konfiguracja Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
+- [Jak career-ops ocenia oferty pracy — metodologia](https://career-ops.org/methodology)
 
 ## Manifest CareerOps
 
@@ -127,7 +128,7 @@ career-ops/
 └─ web-ui/          ← to repozytorium
    ├─ server/       # Express + 15 modułów tras
    ├─ public/       # vanilla JS SPA, bez bundlera
-   └─ tests/        # 1845 testów jednostkowych + 90 Playwright + 43 e2e
+   └─ tests/        # 1856 testów jednostkowych + 90 Playwright + 43 e2e
 ```
 
 Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacji, brak bundlera — cały interfejs to mniej niż 30 KB zminifikowanego kodu.
@@ -148,7 +149,7 @@ Oficjalna strona: [career-ops.org](https://career-ops.org) · Dokumentacja: [car
 ## Testy
 
 ```bash
-npm test                    # 1845 testów jednostkowych/integracyjnych
+npm test                    # 1856 testów jednostkowych/integracyjnych
 npm run test:e2e            # 20 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 70 testów Playwright

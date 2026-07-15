@@ -9,6 +9,15 @@
 ---
 
 
+## [1.121.0] — 2026-07-16
+
+### 추가
+- **cvstart.org: 방법론, 라이선스, 체인지로그 페이지** — 랜딩이 기존 Compare 블록 옆에 16개 언어 전체로 세 개의 새 섹션을 추가했습니다: **/methodology/**(6차원 0.0–5.0 채점 루브릭, 4.0 지원 임계값, 그리고 절대 하지 않는 규칙들 — [career-ops.org/methodology](https://career-ops.org/methodology)를 현지화하여 요약), **/license/**(NOTICE.md 포인터가 포함된 정식 MIT 전문), **/changelog/**(이 파일을 저장소의 번역된 16개 CHANGELOG로부터 로케일별로 렌더링). 새 헤더 **Methodology** 항목과 푸터 리소스 링크가 추가되었고, `sync-assets.mjs`가 이제 빌드 시점에 CHANGELOG ×16과 LICENSE를 사이트로 동기화하므로 페이지가 저장소와 어긋날 일이 없습니다.
+- **문서 전반의 방법론 링크** — README(16개 전체), 인앱 도움말 가이드 §1 정식 레퍼런스 목록(16개 전체), 위키가 이제 기존 [career-ops.org/docs](https://career-ops.org/docs) 가이드와 나란히 [career-ops.org/methodology](https://career-ops.org/methodology)를 링크합니다(FAQ와 용어집도 포함).
+
+### 변경
+- README 릴리스 배너와 배지를 새로 고쳤습니다(테스트 1850개, 릴리스 v1.121.0) — 배너가 여전히 v1.119.5를 알리고 있었습니다.
+
 ## [1.120.0] — 2026-07-16
 
 ### 추가
