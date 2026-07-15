@@ -2133,3 +2133,15 @@ Den er en **AI-refleksion af, hvordan dit CV læses — ikke en psykometrisk tes
 ### Eksport
 
 Brug **Download .md**, **Gem som PDF** eller **Kopiér** for at beholde profilen — de samme eksportknapper, der bruges på tværs af appens AI-rapporter. PDF'en går gennem den eksisterende inline-PDF-generator; Markdown er en direkte download.
+
+## 29. CareerOps-manifestet
+
+career-ops — moderprojektet, som denne app sætter en brugerflade på — er den første referenceimplementering af [CareerOps-manifestet](https://career-ops.org/manifesto?utm_source=career-ops-ui) (forælder v1.20.0). Manifestet navngiver den praksis, som hele dette værktøjssæt findes for: at drive en jobsøgning på samme måde, som ingeniører driver produktion — med evidens, med disciplin og med værktøjer på kandidatens side af bordet.
+
+### Hvad det siger
+
+Seks principper — "ansøg bedre, til færre", "signal frem for volumen", "evidens frem for nøgleord", "et menneske beslutter", "lokal-først", "værdighed på begge sider af bordet" — plus en rettighedserklæring for kandidater i en tidsalder med AI-medieret rekruttering: du er usynlig som standard, ingen foreslår dig uden dit ja, dit ja er menneskeligt og kan ikke uddelegeres til en agent, du betaler aldrig, dine data er dine egne. Appen følger disse regler ved design: intet bliver nogensinde indsendt automatisk, alt kører lokalt, og enhver påstand i et genereret CV kan spores tilbage til dine egne materialer.
+
+### Læsning og underskrivelse
+
+Linket i sidebjælke-footeren åbner manifest-siden. Du kan også læse `MANIFESTO.md` i moderprojektet eller køre `npm run manifesto` der for at åbne underskriftssiden. At underskrive er valgfrit og tager ti sekunder — din underskrift bliver et offentligt commit i moderprojektets `SIGNATURES.md`-register. Intet i appen afhænger af, om du underskriver.

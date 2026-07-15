@@ -2,6 +2,14 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.120.0] — 2026-07-16
+
+### Eklendi
+- **CareerOps Manifestosu** (üst proje v1.20.0 paritesi) — üst proje CareerOps Manifestosu'nu (`MANIFESTO.md` · [career-ops.org/manifesto](https://career-ops.org/manifesto)) yayınladı ve şimdi bunu README'sinden, güncelleyicisinden ve Go dashboard'ından öne çıkarıyor. Web-ui de aynısını yapıyor: yeni bir kenar çubuğu altbilgi bağlantısı manifesto sayfasını açıyor (16 yerel ayarın tümünde yeni `footer.manifesto` i18n anahtarı), uygulama içi yardım kılavuzu 16 dilin tümünde §29 "CareerOps Manifestosu"nu kazandı, README manifestonun ne olduğunu ve nasıl imzalanacağını açıklıyor ve cvstart.org landing altbilgisi de ona bağlantı veriyor.
+
+### Notlar
+- Üst proje v1.20.0 ayrıca `upskill` hedefli modun bilinen-beceri bastırmasını düzeltti, `scan --json` stdout'unun ayrıştırılabilir kalması için dotenv'i sessizleştirdi ve bir rol başlığının madde işaretleriyle birlikte kalması için HTML CV şablonunu düzeltti — bunlar web-ui'nin shell ile çağırmadığı CLI tarafı yüzeyler; web-ui kodunda değişiklik gerekmedi.
+
 ## [1.119.5] — 2026-07-13
 
 ### Düzeltildi

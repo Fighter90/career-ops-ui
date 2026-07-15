@@ -211,6 +211,7 @@ window.__I18N_DICT_UK = {
   'top.themeToggle': "Переключити тему",
   'top.langhint': "Enter — пошук",
   'top.langLabel': "Мова",
+  'footer.manifesto': "Маніфест CareerOps",
   'common.loading': "Завантаження…",
   'common.error': "Помилка",
   'common.retry': "Повторити",

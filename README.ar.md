@@ -47,6 +47,10 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 - [التقييم الجماعي للعروض](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
 - [إعداد Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
 
+## بيان CareerOps
+
+career-ops هو أول تطبيق مرجعي [لبيان CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) — ممارسة إدارة البحث عن عمل بالأدلة والانضباط وبأدوات في صف المرشّح على طاولة المفاوضات. اقرأه. وإن كان يعبّر عمّا تؤمن به، وقّعه — يصبح توقيعك التزاماً (commit). يربط التطبيق إليه من تذييل الشريط الجانبي.
+
 ## الميزات الرئيسية
 
 | الصفحة | الوصف |

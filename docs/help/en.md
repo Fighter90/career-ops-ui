@@ -2172,3 +2172,15 @@ It is an **AI reflection of how your CV reads — not a psychometric test.** The
 ### Exporting
 
 Use **Download .md**, **Save as PDF**, or **Copy** to keep the profile — the same export controls used across the app's AI reports. The PDF goes through the existing inline-PDF generator; the Markdown is a direct download.
+
+## 29. The CareerOps Manifesto
+
+career-ops — the parent project this app fronts — is the first reference implementation of [the CareerOps Manifesto](https://career-ops.org/manifesto?utm_source=career-ops-ui) (parent v1.20.0). The manifesto names the practice this whole toolchain exists for: running a job search the way engineers run production — with evidence, with discipline, and with tools on the candidate's side of the table.
+
+### What it says
+
+Six principles — "apply better to fewer", "signal over volume", "evidence over keywords", "a human decides", "local-first", "dignity on both sides of the table" — plus a bill of candidate rights for the age of AI-mediated hiring: you are invisible by default, no one proposes you without your yes, your yes is human and cannot be delegated to an agent, you never pay, your data is yours. The app follows these rules by design: nothing is ever auto-submitted, everything runs locally, and every claim in a generated CV traces back to your own materials.
+
+### Reading and signing it
+
+The link in the sidebar footer opens the manifesto page. You can also read `MANIFESTO.md` in the parent project, or run `npm run manifesto` there to open the signing page. Signing is optional and takes ten seconds — your signature becomes a public commit in the parent repository's `SIGNATURES.md` ledger. Nothing in the app depends on whether you sign.

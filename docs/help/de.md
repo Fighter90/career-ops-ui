@@ -2274,3 +2274,15 @@ Es ist eine **KI-Reflexion darüber, wie sich dein Lebenslauf liest — kein psy
 ### Exportieren
 
 Verwende **.md herunterladen**, **Als PDF speichern** oder **Kopieren**, um das Profil zu behalten — dieselben Export-Steuerelemente, die überall in den KI-Berichten der App verwendet werden. Das PDF durchläuft den bestehenden Inline-PDF-Generator; das Markdown ist ein direkter Download.
+
+## 29. Das CareerOps-Manifest
+
+career-ops — das übergeordnete Projekt, dem diese App eine Oberfläche gibt — ist die erste Referenzimplementierung von [dem CareerOps-Manifest](https://career-ops.org/manifesto?utm_source=career-ops-ui) (Eltern-Version v1.20.0). Das Manifest benennt die Praxis, für die diese gesamte Toolchain existiert: eine Jobsuche so zu betreiben, wie Ingenieure Produktivsysteme betreiben — mit Evidenz, mit Disziplin und mit Werkzeugen auf der Seite des Kandidaten am Tisch.
+
+### Was es sagt
+
+Sechs Prinzipien — „besser auf weniger bewerben", „Signal statt Volumen", „Evidenz statt Schlagwörter", „ein Mensch entscheidet", „local-first", „Würde auf beiden Seiten des Tisches" — dazu eine Grundrechte-Erklärung für Kandidaten im Zeitalter der KI-vermittelten Personalgewinnung: Du bist standardmäßig unsichtbar, niemand schlägt dich vor ohne dein Ja, dein Ja ist menschlich und kann nicht an einen Agenten delegiert werden, du zahlst nie, deine Daten gehören dir. Die App folgt diesen Regeln von Anfang an: Nichts wird je automatisch eingereicht, alles läuft lokal, und jede Behauptung in einem generierten Lebenslauf lässt sich auf deine eigenen Unterlagen zurückführen.
+
+### Lesen und unterzeichnen
+
+Der Link im Footer der Seitenleiste öffnet die Manifest-Seite. Du kannst auch `MANIFESTO.md` im übergeordneten Projekt lesen oder dort `npm run manifesto` ausführen, um die Unterzeichnungsseite zu öffnen. Das Unterzeichnen ist optional und dauert zehn Sekunden — deine Signatur wird zu einem öffentlichen Commit im `SIGNATURES.md`-Register des übergeordneten Repositorys. Nichts in der App hängt davon ab, ob du unterzeichnest.

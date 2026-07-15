@@ -63,6 +63,10 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 
 **Assistenti IA** dentro cui gira career-ops (la web-ui è l'alternativa autonoma): Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI, Antigravity CLI. Le funzioni ⚡ in tempo reale della web-ui mappano questi ai provider API in **`#/config`**: Claude Code→Anthropic, Gemini CLI→Gemini, Codex→OpenAI, Qwen Code→Qwen, OpenCode→qualsiasi/OpenRouter, GitHub Copilot CLI→GitHub Models, Antigravity CLI→Gemini.
 
+## Il Manifesto CareerOps
+
+career-ops è la prima implementazione di riferimento del [Manifesto CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) — la pratica di condurre una ricerca di lavoro con evidenze, disciplina e strumenti dalla parte del candidato. Leggilo. Se dice ciò in cui credi, firmalo — la tua firma diventa un commit. L'app vi rimanda tramite il link nel footer della barra laterale.
+
 ## Installa un assistente di coding IA (per la CLI career-ops principale)
 
 career-ops gira come slash command **dentro** un assistente di coding IA — installane **uno** e accedi prima di continuare (la [Guida rapida](https://career-ops.org/docs) del progetto principale):

@@ -46,6 +46,10 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 - [Batch-evaluate offers](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
 
+## El manifiesto de CareerOps
+
+career-ops es la primera implementación de referencia de [el Manifiesto de CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) — la práctica de llevar una búsqueda de empleo con evidencia, disciplina y herramientas del lado del candidato en la mesa. Léelo. Si dice lo que tú crees, fírmalo — tu firma se convierte en un commit. La app lo enlaza desde el pie de la barra lateral.
+
 ## Lanza e inicializa con un solo comando
 
 > **Importante — career-ops-ui es un panel *encima de* [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** Se ejecuta **dentro** de un proyecto career-ops como `career-ops/web-ui/` y lee tu `cv.md`, `config/`, `data/` desde la carpeta padre mediante `../`. **No funciona de forma independiente** — también necesitas el repositorio padre `career-ops`. No lo clones por separado y ejecutes `init`; usa una de las dos opciones siguientes.

@@ -63,6 +63,10 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 **AI-assistenter** som career-ops kører inde i (web-ui'en er det selvstændige alternativ): Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI, Antigravity CLI. Web-ui'ens ⚡ live-funktioner afbilder disse til API-providere i **`#/config`**: Claude Code→Anthropic, Gemini CLI→Gemini, Codex→OpenAI, Qwen Code→Qwen, OpenCode→any/OpenRouter, GitHub Copilot CLI→GitHub Models, Antigravity CLI→Gemini.
 
+## CareerOps-manifestet
+
+career-ops er den første referenceimplementering af [CareerOps-manifestet](https://career-ops.org/manifesto?utm_source=career-ops-ui) — praksissen med at drive en jobsøgning med evidens, disciplin og værktøjer på kandidatens side af bordet. Læs det. Hvis det siger, hvad du tror på, så underskriv det — din underskrift bliver et commit. Appen linker til det fra sidebjælke-footeren.
+
 ## Installér en AI-kodningsassistent (til forælderens career-ops-CLI)
 
 career-ops kører som slash-kommandoer **inde i** en AI-kodningsassistent — installér **én** og log ind, før du fortsætter (forælderens [Quick Start](https://career-ops.org/docs)):

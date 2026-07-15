@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.120.0] — 2026-07-16
+
+### Added
+- **The CareerOps Manifesto** (parent v1.20.0 parity) — the parent project shipped the CareerOps Manifesto (`MANIFESTO.md` · [career-ops.org/manifesto](https://career-ops.org/manifesto)) and now surfaces it from its README, updater, and Go dashboard. The web UI follows suit: a new sidebar-footer link opens the manifesto page (new `footer.manifesto` i18n key in all 16 locales), the in-app help guide gained §29 "The CareerOps Manifesto" in all 16 languages, the README explains what the manifesto is and how to sign it, and the cvstart.org landing footer links to it too.
+
+### Notes
+- Parent v1.20.0 also fixed the `upskill` targeted-mode known-skill suppression, quieted dotenv so `scan --json` stdout stays parseable, and fixed the HTML CV template so a role header stays with its bullets — CLI-side surfaces the web UI does not shell into; no web-ui code change was needed.
+
 ## [1.119.5] — 2026-07-13
 
 ### Fixed

@@ -46,6 +46,10 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 - [Batch-evaluate offers](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
 
+## CareerOps 선언문
+
+career-ops는 [the CareerOps Manifesto](https://career-ops.org/manifesto?utm_source=career-ops-ui) — 증거와 규율, 그리고 지원자 쪽에 놓인 도구로 구직 활동을 운영한다는 실천 방식 — 의 첫 번째 레퍼런스 구현입니다. 한번 읽어 보세요. 당신이 믿는 바와 일치한다면 서명하세요 — 서명은 하나의 커밋이 됩니다. 이 앱은 사이드바 푸터에서 그 페이지로 연결됩니다.
+
 ## 한 줄 명령으로 실행 및 초기화
 
 > **중요 — career-ops-ui는 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) *위에* 올라가는 대시보드입니다.** `career-ops/web-ui/`로서 career-ops 프로젝트 **내부**에서 실행되며, `../`를 통해 부모 폴더의 `cv.md`, `config/`, `data/`를 읽습니다. **단독으로 작동하지 않습니다** — 부모 `career-ops` 저장소도 필요합니다. 단독으로 클론하여 `init`을 실행하지 마세요; 아래의 두 옵션 중 하나를 사용하세요.

@@ -2084,3 +2084,15 @@ Clique em **Gerar perfil** e o modelo lê seu currículo, seu perfil, seu two-pa
 ### Exportar
 
 Use **Baixar .md**, **Salvar como PDF** ou **Copiar** para conservar o perfil — os mesmos controles de exportação usados nos relatórios de IA do app. O PDF passa pelo gerador de PDF inline existente; o Markdown é um download direto.
+
+## 29. O Manifesto CareerOps
+
+O career-ops — o projeto pai que este app apresenta — é a primeira implementação de referência [do Manifesto CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) (pai v1.20.0). O manifesto nomeia a prática para a qual toda essa cadeia de ferramentas existe: conduzir uma busca de emprego do jeito que engenheiros conduzem produção — com evidências, com disciplina e com as ferramentas do lado do candidato na mesa.
+
+### O que ele diz
+
+Seis princípios — "candidate-se melhor a menos vagas", "sinal em vez de volume", "evidência em vez de palavras-chave", "um humano decide", "local-first", "dignidade dos dois lados da mesa" — mais uma carta de direitos do candidato para a era da contratação mediada por IA: você é invisível por padrão, ninguém te propõe sem o seu sim, o seu sim é humano e não pode ser delegado a um agente, você nunca paga, seus dados são seus. O app segue essas regras por design: nada nunca é enviado automaticamente, tudo roda localmente, e cada afirmação em um CV gerado remonta aos seus próprios materiais.
+
+### Lendo e assinando
+
+O link no rodapé da barra lateral abre a página do manifesto. Você também pode ler o `MANIFESTO.md` no projeto pai, ou rodar `npm run manifesto` lá para abrir a página de assinatura. Assinar é opcional e leva dez segundos — sua assinatura se torna um commit público no registro `SIGNATURES.md` do repositório pai. Nada no app depende de você assinar.

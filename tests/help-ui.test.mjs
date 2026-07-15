@@ -91,7 +91,7 @@ test('every help doc covers the same 28 sections (all 16 gated locales — §28 
   // alongside the 3 new RU adapters: Trudvsem / GetMatch / GeekJob).
   // v1.60.0 — 18 → 19 (added §19 "Localizing the app into your language").
   const helpDir = resolve(ROOT, 'docs', 'help');
-  const SECTION_COUNT = 28;
+  const SECTION_COUNT = 29;
   const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr'];
   for (const lang of ALL_LOCALES) {
     const fname = `${lang}.md`;

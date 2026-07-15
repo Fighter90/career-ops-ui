@@ -211,6 +211,7 @@ window.__I18N_DICT_DA = {
   'top.themeToggle': "Skift tema",
   'top.langhint': "Enter — søg",
   'top.langLabel': "Sprog",
+  'footer.manifesto': "CareerOps-manifestet",
   'common.loading': "Indlæser…",
   'common.error': "Fejl",
   'common.retry': "Prøv igen",

@@ -2,6 +2,14 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.120.0] — 2026-07-16
+
+### Hinzugefügt
+- **Das CareerOps-Manifest** (Parität mit Eltern-Version v1.20.0) — das übergeordnete Projekt hat das CareerOps-Manifest (`MANIFESTO.md` · [career-ops.org/manifesto](https://career-ops.org/manifesto)) veröffentlicht und zeigt es jetzt in seinem README, seinem Updater und seinem Go-Dashboard. Die web-ui zieht nach: Ein neuer Link im Footer der Seitenleiste öffnet die Manifest-Seite (neuer i18n-Schlüssel `footer.manifesto` in allen 16 Locales), die eingebettete Hilfe hat in allen 16 Sprachen §29 „Das CareerOps-Manifest" erhalten, das README erklärt, was das Manifest ist und wie man es unterzeichnet, und auch der Footer der cvstart.org-Landing verlinkt darauf.
+
+### Hinweise
+- Eltern-Version v1.20.0 hat außerdem die Unterdrückung bekannter Fähigkeiten im `upskill`-Zielmodus behoben, dotenv stummgeschaltet, damit die Standardausgabe von `scan --json` parsebar bleibt, und die HTML-CV-Vorlage so korrigiert, dass eine Rollenüberschrift bei ihren Aufzählungspunkten bleibt — CLI-seitige Oberflächen, in die die web-ui nicht hineinshellt; an der web-ui war keine Codeänderung nötig.
+
 ## [1.119.5] — 2026-07-13
 
 ### Behoben

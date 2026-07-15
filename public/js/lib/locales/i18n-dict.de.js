@@ -212,6 +212,7 @@ window.__I18N_DICT_DE = {
   'top.themeToggle': "Theme umschalten",
   'top.langhint': "Enter — suchen",
   'top.langLabel': "Sprache",
+  'footer.manifesto': "Das CareerOps-Manifest",
   'common.loading': "Wird geladen…",
   'common.error': "Fehler",
   'common.retry': "Erneut versuchen",

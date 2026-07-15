@@ -2075,3 +2075,15 @@ Es una **reflexión de IA sobre cómo se lee tu CV — no un test psicométrico.
 ### Exportar
 
 Usa **Descargar .md**, **Guardar como PDF** o **Copiar** para conservar el perfil — los mismos controles de exportación que se usan en los informes de IA de la app. El PDF pasa por el generador de PDF en línea existente; el Markdown es una descarga directa.
+
+## 29. El manifiesto de CareerOps
+
+career-ops — el proyecto padre al que esta app pone una interfaz — es la primera implementación de referencia de [el Manifiesto de CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) (padre v1.20.0). El manifiesto nombra la práctica para la que existe todo este conjunto de herramientas: llevar una búsqueda de empleo como los ingenieros llevan la producción — con evidencia, con disciplina y con herramientas del lado del candidato en la mesa.
+
+### Qué dice
+
+Seis principios — «postula mejor a menos ofertas», «señal sobre volumen», «evidencia sobre palabras clave», «decide un humano», «local-first», «dignidad en ambos lados de la mesa» — más una declaración de derechos del candidato para la era de la contratación mediada por IA: eres invisible por defecto, nadie te propone sin tu sí, tu sí es humano y no puede delegarse a un agente, nunca pagas, tus datos son tuyos. La app sigue estas reglas por diseño: nunca se envía nada automáticamente, todo se ejecuta en local, y cada afirmación en un CV generado remite a tus propios materiales.
+
+### Leerlo y firmarlo
+
+El enlace en el pie de la barra lateral abre la página del manifiesto. También puedes leer `MANIFESTO.md` en el proyecto padre, o ejecutar allí `npm run manifesto` para abrir la página de firma. Firmar es opcional y lleva diez segundos — tu firma se convierte en un commit público en el registro `SIGNATURES.md` del repositorio padre. Nada en la app depende de si firmas o no.

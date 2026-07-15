@@ -9,6 +9,14 @@
 ---
 
 
+## [1.120.0] — 2026-07-16
+
+### 新增
+- **CareerOps 宣言**(父專案 v1.20.0 對齊)— 父專案發布了 CareerOps 宣言(`MANIFESTO.md` · [career-ops.org/manifesto](https://career-ops.org/manifesto)),現已在其 README、更新程式與 Go 儀表板中呈現。網頁介面同步跟進:新的側邊欄頁尾連結會開啟宣言頁面(全部 16 個語言區域新增 `footer.manifesto` i18n 鍵),應用程式內說明指南在全部 16 種語言中新增了 §29「CareerOps 宣言」,README 解說了宣言是什麼、如何簽署,cvstart.org 落地頁頁尾也連結至該頁面。
+
+### 備註
+- 父專案 v1.20.0 同時修復了 `upskill` 目標模式下已知技能的抑制邏輯、讓 dotenv 靜默以使 `scan --json` 的 stdout 保持可解析,並修正 HTML 履歷範本讓職稱標頭與其條列項目保持在一起——這些皆為 CLI 端表面,網頁介面並不透過命令列呼叫它們,因此無需變更網頁介面程式碼。
+
 ## [1.119.5] — 2026-07-13
 
 ### 修復

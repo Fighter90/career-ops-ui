@@ -45,6 +45,10 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 - [Batch-evaluate offers](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
 
+## Le Manifeste CareerOps
+
+career-ops est la première implémentation de référence du [Manifeste CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) — la pratique consistant à mener une recherche d'emploi avec des preuves, de la discipline, et des outils du côté du candidat de la table. Lisez-le. S'il exprime ce en quoi vous croyez, signez-le — votre signature devient un commit. L'application y renvoie depuis le pied de page de la barre latérale.
+
 ## Lancer et initialiser en une commande
 
 > **Important — career-ops-ui est un tableau de bord *au-dessus de* [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** Il s'exécute **à l'intérieur** d'un projet career-ops sous `career-ops/web-ui/` et lit vos `cv.md`, `config/`, `data/` depuis le dossier parent via `../`. Il **ne fonctionne pas de manière autonome** — vous avez également besoin du dépôt parent `career-ops`. Ne le clonez pas seul et ne lancez pas `init` ; utilisez l'une des deux options ci-dessous.

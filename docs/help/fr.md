@@ -2177,3 +2177,15 @@ C'est une **réflexion d'IA sur la façon dont se lit votre CV — pas un test p
 ### Exporter
 
 Utilisez **Télécharger .md**, **Enregistrer en PDF** ou **Copier** pour conserver le profil — les mêmes commandes d'export que celles utilisées dans les rapports IA de l'application. Le PDF passe par le générateur PDF inline existant ; le Markdown est un téléchargement direct.
+
+## 29. Le Manifeste CareerOps
+
+career-ops — le projet parent que cette application habille — est la première implémentation de référence du [Manifeste CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) (parent v1.20.0). Le manifeste nomme la pratique pour laquelle toute cette chaîne d'outils existe : mener une recherche d'emploi comme les ingénieurs font tourner la production — avec des preuves, avec de la discipline, et avec des outils du côté du candidat de la table.
+
+### Ce qu'il dit
+
+Six principes — « postuler mieux à moins d'offres », « le signal plutôt que le volume », « la preuve plutôt que les mots-clés », « un humain décide », « local d'abord », « la dignité des deux côtés de la table » — plus une charte des droits du candidat pour l'ère du recrutement médié par l'IA : vous êtes invisible par défaut, personne ne vous propose sans votre accord, votre accord est humain et ne peut être délégué à un agent, vous ne payez jamais, vos données vous appartiennent. L'application suit ces règles par conception : rien n'est jamais soumis automatiquement, tout s'exécute localement, et chaque affirmation d'un CV généré remonte à vos propres documents.
+
+### Le lire et le signer
+
+Le lien dans le pied de page de la barre latérale ouvre la page du manifeste. Vous pouvez aussi lire `MANIFESTO.md` dans le projet parent, ou y exécuter `npm run manifesto` pour ouvrir la page de signature. Signer est optionnel et prend dix secondes — votre signature devient un commit public dans le registre `SIGNATURES.md` du dépôt parent. Rien dans l'application ne dépend du fait que vous signiez ou non.

@@ -212,6 +212,7 @@ window.__I18N_DICT_TR = {
   'top.themeToggle': "Temayı değiştir",
   'top.langhint': "Enter — ara",
   'top.langLabel': "Dil",
+  'footer.manifesto': "CareerOps Manifestosu",
   'common.loading': "Yükleniyor…",
   'common.error': "Hata",
   'common.retry': "Yeniden dene",
