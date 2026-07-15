@@ -30,6 +30,10 @@ her başvuruyu makinenizde yerel olarak takip eder.
   — `batch-runner.sh` aracılığıyla tek seferde 10+ iş tanımını puanlayın.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — Chromium'u kurun + PDF ve form doldurma için MCP'yi kaydedin.
+- [career-ops iş ilanlarını nasıl puanlar](https://career-ops.org/methodology)
+  — puanlama metodolojisi: altı boyut, 4.0 başvuru eşiği ve sistemin
+  kesinlikle yapmayı reddettiği şeyler. Kendi dilinizde
+  [cvstart.org/methodology](https://cvstart.org/methodology/) adresinde de özetlenmiştir.
 
 **Tanımlayıcı ilkeler** (kaynak:
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

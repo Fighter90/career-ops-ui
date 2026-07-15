@@ -1,0 +1,66 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Icon from './Icon.astro';
+import { localeHome, t, type Locale } from '../i18n/locales';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+// Entries are synced from the repo's CHANGELOG.md (en) / CHANGELOG.<locale>.md
+// by scripts/sync-assets.mjs; ids follow the help collection's convention.
+const entries = await getCollection('changelog');
+const entry = entries.find((e) => e.id.toLowerCase() === locale.file.toLowerCase());
+if (!entry) throw new Error(`[changelog] no synced changelog for locale "${locale.code}" (${locale.file}.md)`);
+const { Content } = await render(entry);
+
+const sourceUrl = locale.file === 'en'
+  ? `${facts.repoUrl}/blob/main/CHANGELOG.md`
+  : `${facts.repoUrl}/blob/main/CHANGELOG.${locale.file}.md`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: t(locale, 'meta.changelogTitle'),
+  description: t(locale, 'meta.changelogDesc'),
+  inLanguage: locale.code,
+  isAccessibleForFree: true,
+  license: `${facts.repoUrl}/blob/main/LICENSE`,
+  about: { '@type': 'SoftwareApplication', name: 'career-ops-ui', sameAs: facts.repoUrl },
+};
+---
+
+<Base
+  locale={locale}
+  page="changelog"
+  title={t(locale, 'meta.changelogTitle')}
+  description={t(locale, 'meta.changelogDesc')}
+  jsonLd={jsonLd}
+>
+  <Header locale={locale} page="changelog" />
+  <main id="main" class="container-site pt-24 pb-20 md:pt-28">
+    <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
+      <a href={localeHome(locale)} class="hover:underline">{t(locale, 'help.home')}</a>
+      <span class="mx-1.5 text-ink-faint">/</span>
+      <span aria-current="page">{t(locale, 'changelog.title')}</span>
+    </nav>
+    <article class="mx-auto max-w-3xl">
+      <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <h1 class="text-3xl font-extrabold tracking-tight md:text-4xl">{t(locale, 'changelog.title')}</h1>
+        <a href={sourceUrl} rel="noopener" class="btn-ghost !px-4 !py-2 text-sm">
+          <Icon name="github" class="h-4 w-4" />
+          GitHub
+        </a>
+      </div>
+      <p class="mb-8 text-ink-soft">{t(locale, 'changelog.lead')}</p>
+      <div class="prose-help">
+        <Content />
+      </div>
+    </article>
+  </main>
+  <Footer locale={locale} page="changelog" />
+</Base>

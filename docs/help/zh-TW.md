@@ -26,6 +26,10 @@
   — 透過 `batch-runner.sh` 一次為 10 個以上 JD 評分。
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — 安裝 Chromium 並註冊 MCP,以支援 PDF 與表單填寫。
+- [career-ops 如何為職缺評分](https://career-ops.org/methodology)
+  — 評分方法論:六個評分維度、4.0 分投遞門檻,以及本系統絕對
+  拒絕做的事。也可在 [cvstart.org/methodology](https://cvstart.org/methodology/) 以你
+  慣用的語言查看摘要。
 
 **核心原則**(出自
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

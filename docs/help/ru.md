@@ -30,6 +30,10 @@ PDF-резюме и отслеживает каждую заявку локал�
   — оценка 10+ JD за раз через `batch-runner.sh`.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — установка Chromium и регистрация MCP для PDF и заполнения форм.
+- [How career-ops scores job listings](https://career-ops.org/methodology)
+  — методология оценки: шесть параметров, порог отклика 4.0 и то,
+  что система принципиально не делает. Также кратко изложено на
+  [cvstart.org/methodology](https://cvstart.org/methodology/) на вашем языке.
 
 **Определяющие принципы** (из
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

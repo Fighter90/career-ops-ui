@@ -20,6 +20,10 @@
   — تقييم أكثر من 10 إعلانات دفعةً عبر `batch-runner.sh`.
 - [إعداد Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — تثبيت Chromium وتسجيل MCP لإنشاء PDF وملء النماذج.
+- [كيف يقيّم career-ops الوظائف المُدرجة](https://career-ops.org/methodology)
+  — منهجية التقييم: الأبعاد الستة، وعتبة التقديم عند 4.0،
+  وما يرفض النظام صراحةً فعله. مُلخّصة أيضاً على
+  [cvstart.org/methodology](https://cvstart.org/methodology/) بلغتك.
 
 **المبادئ الأساسية** (من [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):
 

@@ -9,6 +9,15 @@
 ---
 
 
+## [1.121.0] — 2026-07-16
+
+### 新增
+- **cvstart.org:方法论、许可证与更新日志页面** —— 落地页在全部 16 种语言中新增三个板块,与现有的对比板块并列:**/methodology/**(六维度 0.0–5.0 评分标准、4.0 分投递门槛与绝不去做的规则——是 [career-ops.org/methodology](https://career-ops.org/methodology) 的本地化摘要版本)、**/license/**(权威 MIT 文本,并指向 NOTICE.md)以及 **/changelog/**(即本文件,按语言环境从仓库的 16 份翻译版更新日志渲染而成)。页头导航新增「方法论」条目,页脚「资源」区块新增相应链接;`sync-assets.mjs` 现在会在构建时把 ×16 更新日志与 LICENSE 同步进落地页,确保这些页面绝不会与仓库内容脱节。
+- **文档中新增方法论链接** —— README(全部 16 种语言)、应用内帮助指南 §1 的权威指南列表(全部 16 种语言)以及 wiki,现在都在既有的 [career-ops.org/docs](https://career-ops.org/docs) 指南旁,链接到 [career-ops.org/methodology](https://career-ops.org/methodology)(以及 FAQ 与术语表)。
+
+### 变更
+- README 发布横幅与徽章已刷新(测试数 1850,发布版本 v1.121.0)—— 此前横幅仍停留在宣布 v1.119.5。
+
 ## [1.120.0] — 2026-07-16
 
 ### 新增

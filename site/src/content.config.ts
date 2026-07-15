@@ -11,4 +11,13 @@ const help = defineCollection({
   schema: z.object({}).passthrough(),
 });
 
-export const collections = { help };
+/**
+ * The changelog collection is populated the same way from the repo's
+ * CHANGELOG.md (en) + CHANGELOG.<locale>.md files. Never edit by hand.
+ */
+const changelog = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/changelog' }),
+  schema: z.object({}).passthrough(),
+});
+
+export const collections = { help, changelog };

@@ -30,6 +30,10 @@ locally on your machine.
   — score 10+ JDs at once via `batch-runner.sh`.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — install Chromium + register the MCP for PDF and form-fill.
+- [How career-ops scores job listings](https://career-ops.org/methodology)
+  — the scoring methodology: the six dimensions, the 4.0 apply threshold,
+  and what the system explicitly refuses to do. Also summarized at
+  [cvstart.org/methodology](https://cvstart.org/methodology/) in your language.
 
 **Defining principles** (from
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

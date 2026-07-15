@@ -56,10 +56,13 @@ export function localeHome(l: Locale): string {
   return l.slug === '' ? '/' : `/${l.slug}/`;
 }
 
-/** Same-page URL in another locale (page: '' for home, 'help' for the guide). */
-export function localePath(l: Locale, page: '' | 'help'): string {
+/** Site pages: '' is the landing, everything else is a subpage slug. */
+export type Page = '' | 'help' | 'methodology' | 'license' | 'changelog';
+
+/** Same-page URL in another locale (page: '' for home, otherwise the slug). */
+export function localePath(l: Locale, page: Page): string {
   const base = localeHome(l);
-  return page === '' ? base : `${base}help/`;
+  return page === '' ? base : `${base}${page}/`;
 }
 
 // ---------------------------------------------------------------------------

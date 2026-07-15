@@ -9,6 +9,15 @@
 ---
 
 
+## [1.121.0] — 2026-07-16
+
+### 新增
+- **cvstart.org:方法論、授權與更新日誌頁面** — 落地頁在全部 16 種語言中新增三個章節,與既有的比較區塊並列:**/methodology/**(六維度 0.0–5.0 評分準則、4.0 分投遞門檻,以及絕不做的規則 — 這是 [career-ops.org/methodology](https://career-ops.org/methodology) 的在地化摘要)、**/license/**(標準 MIT 授權文字並附 NOTICE.md 指引),以及 **/changelog/**(即本檔案,依語系從儲存庫 16 份翻譯後的 CHANGELOG 渲染)。新增頁首「Methodology」項目與頁尾 Resources 連結;`sync-assets.mjs` 現在會在建置時同步 CHANGELOG ×16 與 LICENSE 至落地頁,讓這些頁面永遠不會與儲存庫失去同步。
+- **跨文件的方法論連結** — README(全部 16 個)、應用程式內說明指南 §1 的正式指南清單(全部 16 種語言),以及 wiki,現在都連結到 [career-ops.org/methodology](https://career-ops.org/methodology)(FAQ 與詞彙表亦同),與既有的 [career-ops.org/docs](https://career-ops.org/docs) 指南並列。
+
+### 變更
+- 更新 README 發布橫幅與徽章(測試數 1850,發布版本 v1.121.0)— 橫幅先前仍停留在宣布 v1.119.5。
+
 ## [1.120.0] — 2026-07-16
 
 ### 新增

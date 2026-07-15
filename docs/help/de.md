@@ -31,6 +31,10 @@ verfolgt jede Bewerbung lokal auf Ihrem Rechner.
   — 10+ JDs auf einmal bewerten über `batch-runner.sh`.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — Chromium installieren + den MCP für PDF und Formularausfüllen registrieren.
+- [Wie career-ops Stellenanzeigen bewertet](https://career-ops.org/methodology)
+  — die Bewertungsmethodik: die sechs Dimensionen, der 4.0-Bewerbungsschwellenwert
+  und was das System ausdrücklich nicht tut. Ebenfalls zusammengefasst unter
+  [cvstart.org/methodology](https://cvstart.org/methodology/) in Ihrer Sprache.
 
 **Grundprinzipien** (aus
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

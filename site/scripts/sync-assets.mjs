@@ -73,6 +73,37 @@ for (const f of helpFiles) {
 }
 console.log(`[sync-assets] ${helpFiles.length} help guides -> src/content/help/`);
 
+// --- 3b. changelogs (v1.121.0 — /changelog/ pages, one per locale) -----------
+// CHANGELOG.md -> en.md, CHANGELOG.<lang>.md -> <lang>.md, matching the help
+// collection's locale.file naming so the page component resolves entries the
+// same way. Same relative-link rewrite, but against the repo root.
+const clDst = join(SITE, 'src', 'content', 'changelog');
+mkdirSync(clDst, { recursive: true });
+const GH_ROOT_BASE = `${REPO_URL}/blob/main/`;
+function rewriteRootLinks(md) {
+  return md.replace(/\]\((?!https?:\/\/|#|mailto:)([^)\s]+)\)/g, (_m, target) => {
+    const abs = new URL(target, GH_ROOT_BASE).href;
+    return `](${abs})`;
+  });
+}
+const clFiles = readdirSync(ROOT).filter((f) => /^CHANGELOG(\.[A-Za-z-]+)?\.md$/.test(f));
+if (clFiles.length < 16) fail(`expected >=16 CHANGELOG files, found ${clFiles.length}`);
+for (const f of clFiles) {
+  const lang = f === 'CHANGELOG.md' ? 'en' : f.replace(/^CHANGELOG\./, '').replace(/\.md$/, '');
+  const md = readFileSync(join(ROOT, f), 'utf8');
+  writeFileSync(join(clDst, `${lang}.md`), rewriteRootLinks(md));
+}
+console.log(`[sync-assets] ${clFiles.length} changelogs -> src/content/changelog/`);
+
+// --- 3c. license (v1.121.0 — /license/ page) ---------------------------------
+// LICENSE is canonical English legal text; every locale renders it verbatim.
+const licenseSrc = join(ROOT, 'LICENSE');
+if (!existsSync(licenseSrc)) fail(`missing ${licenseSrc}`);
+const licDir = join(SITE, 'src', 'generated');
+mkdirSync(licDir, { recursive: true });
+writeFileSync(join(licDir, 'license.txt'), readFileSync(licenseSrc, 'utf8'));
+console.log('[sync-assets] LICENSE -> src/generated/license.txt');
+
 // --- 4. repo facts ----------------------------------------------------------
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
 

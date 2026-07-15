@@ -27,6 +27,10 @@ działający jako polecenia slash w dowolnym CLI do kodowania AI (Claude Code, G
   — oceniaj 10+ JD naraz za pomocą `batch-runner.sh`.
 - [Konfiguracja Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — zainstaluj Chromium i zarejestruj MCP do generowania PDF i wypełniania formularzy.
+- [Jak career-ops ocenia oferty pracy](https://career-ops.org/methodology)
+  — metodologia oceniania: sześć wymiarów, próg aplikowania 4.0
+  oraz to, czego system wyraźnie nigdy nie robi. Skrót dostępny też pod adresem
+  [cvstart.org/methodology](https://cvstart.org/methodology/) w Twoim języku.
 
 **Definiujące zasady** (z
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

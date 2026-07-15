@@ -30,6 +30,10 @@ lokalt på din maskine.
   — vurder 10+ JD'er på én gang via `batch-runner.sh`.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — installér Chromium + registrér MCP'en til PDF og formularudfyldning.
+- [Sådan scorer career-ops jobopslag](https://career-ops.org/methodology)
+  — scoringsmetodologien: de seks dimensioner, 4,0-ansøgningstærsklen,
+  og hvad systemet eksplicit nægter at gøre. Opsummeres også på
+  [cvstart.org/methodology](https://cvstart.org/methodology/) på dit sprog.
 
 **Definerende principper** (fra
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

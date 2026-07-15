@@ -31,6 +31,12 @@ personalizados e registra cada candidatura localmente na sua máquina.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — instale o Chromium + registre o MCP para PDF e preenchimento de
   formulários.
+- [How career-ops scores job listings](https://career-ops.org/methodology)
+  — a metodologia de pontuação: as seis dimensões, o limiar de 4.0
+  para candidatura, e o que o sistema se recusa explicitamente a
+  fazer. Também resumido em
+  [cvstart.org/methodology](https://cvstart.org/methodology/) no seu
+  idioma.
 
 **Princípios fundamentais** (de
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):

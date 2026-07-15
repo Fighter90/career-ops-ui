@@ -7,18 +7,18 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-1845%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-1856%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.119.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.119.5)
+[![release](https://img.shields.io/badge/release-v1.121.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.121.0)
 
-> **🆕 Останній реліз — v1.119.5**
+> **🆕 Останній реліз — v1.121.0**
 >
-> **Паритет із батьком v1.19.0.** Два нових сканер-провайдери — Meituan (zhaopin.meituan.com) і Tencent (careers.tencent.com), публічні JSON-API китайських тех-дощок без авторизації (тепер **61 адаптер**) — браузерні заголовки в запитах Workday CXS та Glints (розблоковують тенанти за Cloudflare) і оновлення cvstart.org: живий автооновлюваний лічильник зірок GitHub та блок контриб'юторів.
+> **Маніфест CareerOps + розділи cvstart.org.** v1.120.0 (паритет із батьком v1.20.0) додав по всьому застосунку посилання на [Маніфест CareerOps](https://career-ops.org/manifesto) — посилання у футері бічної панелі, довідка §29 усіма 16 мовами, розділ у README. v1.121.0 додає чотири нові розділи на [cvstart.org](https://cvstart.org): **Методологія** (шкала оцінювання за шістьма вимірами, з [career-ops.org/methodology](https://career-ops.org/methodology)), **Порівняння**, **Ліцензія** та **Журнал змін** (усіма 16 мовами), а також посилання на методологію в документації та довідці.
 >
-> _паритет із батьком v1.19 · 61 адаптер · живі зірки + контриб'ютори на лендінгу · паритет із батьком v1.18 · 54 адаптери · статус Hired · статистика за весь час · пакет паритету · 50 адаптерів · переробка лічильника витрат · шліфування дизайну · лічильник використання · плаваючий помічник довідки · консолідація доків та QA · закриття беклогу безпеки · докум. та QA ×16 · Виключити Scan · огляд пайплайна · посилення безпеки 2 · посилення санітайзера · посилення безпеки · витрати ШІ · логотипи компаній · інструменти CLI для ШІ · запитати довідку · адаптація CV + лист · автозаповнення two-pager · експорт у DOCX · здоров’я порталів · вбудований репортер багів · 16 locales · 6 LLM-провайдерів · 46 адаптерів сканера · кар'єрна орієнтація · план кар'єри · перероблення статистики · шар пам'яті · CV Studio · планувальник нетворкінгу · пробна співбесіда · ринкова відповідність через two-pager · паритет із батьківським career-ops v1.16.0._
+> _маніфест · сторінки methodology/license/changelog на cvstart.org · паритет із батьком v1.19 · 61 адаптер · живі зірки + контриб'ютори на лендінгу · паритет із батьком v1.18 · 54 адаптери · статус Hired · статистика за весь час · пакет паритету · 50 адаптерів · переробка лічильника витрат · шліфування дизайну · лічильник використання · плаваючий помічник довідки · консолідація доків та QA · закриття беклогу безпеки · докум. та QA ×16 · Виключити Scan · огляд пайплайна · посилення безпеки 2 · посилення санітайзера · посилення безпеки · витрати ШІ · логотипи компаній · інструменти CLI для ШІ · запитати довідку · адаптація CV + лист · автозаповнення two-pager · експорт у DOCX · здоров’я порталів · вбудований репортер багів · 16 locales · 6 LLM-провайдерів · 46 адаптерів сканера · кар'єрна орієнтація · план кар'єри · перероблення статистики · шар пам'яті · CV Studio · планувальник нетворкінгу · пробна співбесіда · ринкова відповідність через two-pager · паритет із батьківським career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-uk.png)
 
@@ -44,6 +44,7 @@ _Неофіційний інтерфейс — не пов'язаний із car
 - [Подання заявки](https://career-ops.org/docs/introduction/guides/apply-for-a-job)
 - [Пакетна оцінка пропозицій](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
 - [Налаштування Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
+- [Як career-ops оцінює вакансії — методологія](https://career-ops.org/methodology)
 
 ## Маніфест CareerOps
 
@@ -127,7 +128,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 1845 unit + 90 Playwright + 43 e2e
+   └─ tests/        # 1856 unit + 90 Playwright + 43 e2e
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.
@@ -148,7 +149,7 @@ career-ops/
 ## Тести
 
 ```bash
-npm test                    # 1845 unit/integration-тестів
+npm test                    # 1856 unit/integration-тестів
 npm run test:e2e            # 20 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 70 тестів Playwright

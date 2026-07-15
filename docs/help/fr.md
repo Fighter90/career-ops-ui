@@ -34,6 +34,11 @@ votre machine.
   — noter 10+ offres d'un coup via `batch-runner.sh`.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — installer Chromium + enregistrer le MCP pour le PDF et le remplissage de formulaires.
+- [Comment career-ops note les offres d'emploi](https://career-ops.org/methodology)
+  — la méthodologie de notation : les six dimensions, le seuil de
+  candidature à 4.0, et ce que le système refuse explicitement de faire.
+  Également résumée sur
+  [cvstart.org/methodology](https://cvstart.org/methodology/) dans votre langue.
 
 **Principes fondateurs** (d'après
 [career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)) :
