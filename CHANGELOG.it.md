@@ -2,6 +2,11 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.122.0] — 2026-07-16
+
+### Aggiunto
+- **Hindi (हिन्दी) — la 17ª lingua** — dizionario completo dell'interfaccia (~1.110 chiavi), la guida in-app completa (parità 29 H2 / 105 H3), `README.hi.md`, un nuovo `CHANGELOG.hi.md` (a partire dalla v1.122.0, seguendo il precedente di de/it/tr), le pagine landing di cvstart.org + Metodologia/Licenza/Changelog/Guida, lo switcher lingua (🇮🇳), il rilevamento automatico della lingua del browser e uno screenshot della dashboard localizzato. Ogni gate di parità ×16 ora gira ×17: parità del dizionario i18n + snapshot, i gate H2/H3 della guida, la parità del changelog, `check-i18n` della site e lo spazzolamento delle lingue con Playwright.
+
 ## [1.121.0] — 2026-07-16
 
 ### Aggiunto

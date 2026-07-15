@@ -3,7 +3,7 @@
 > A clean, docs-style web interface for the [career-ops](https://github.com/Fighter90/career-ops) AI job-search pipeline.
 > Search, evaluate, deep-dive, apply, and track every offer from a single browser tab — instead of bouncing between Claude Code, terminals, and markdown files.
 
-**English** | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md)
+**English** | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
 
 _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
@@ -14,13 +14,13 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.121.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.121.0)
+[![release](https://img.shields.io/badge/release-v1.122.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.122.0)
 
-> **🆕 Latest release — v1.121.0**
+> **🆕 Latest release — v1.122.0**
 >
-> **The CareerOps Manifesto + cvstart.org sections.** v1.120.0 (parent v1.20.0 parity) surfaced [the CareerOps Manifesto](https://career-ops.org/manifesto) across the app — sidebar-footer link, help §29 in 16 languages, README section. v1.121.0 adds four sections to [cvstart.org](https://cvstart.org): **Methodology** (the six-dimension scoring rubric, from [career-ops.org/methodology](https://career-ops.org/methodology)), **Compare**, **License**, and **Changelog** (all 16 languages), plus methodology links across the docs and help guide.
+> **Hindi joins — 17 languages.** v1.122.0 adds **हिन्दी (Hindi)** as the 17th interface language everywhere: the app UI, the in-app help guide, README, changelog, and every cvstart.org page (landing + Methodology/License/Changelog/Help). Also in this train: v1.120.0 (parent v1.20.0 parity) surfaced [the CareerOps Manifesto](https://career-ops.org/manifesto) across the app — sidebar-footer link, help §29 in 16 languages, README section. v1.121.0 adds four sections to [cvstart.org](https://cvstart.org): **Methodology** (the six-dimension scoring rubric, from [career-ops.org/methodology](https://career-ops.org/methodology)), **Compare**, **License**, and **Changelog** (all 16 languages), plus methodology links across the docs and help guide.
 >
-> _manifesto · cvstart.org methodology/license/changelog pages · parent v1.19 parity · 61 adapters · landing live stars + contributors · parent v1.18 parity · 54 adapters · Hired status · lifetime stats · parent parity pack · 50 adapters · usage meter rework · design polish · usage meter · floating docs assistant · docs & QA consolidation · security backlog closeout · docs & QA refresh ×16 · scan Exclude · pipeline overview · security hardening 2 · sanitizer hardening · security hardening · AI usage & cost · company logos · AI CLI tools · ask-the-docs · CV tailor + cover letter · two-pager auto-fill · DOCX export · 16 locales · 6 LLM providers · 46 scanner adapters · portals health · in-app bug reporter · career orientation · career plan · statistics rework · memory layer · CV Studio · networking planner · mock interview · two-pager market-fit · parent career-ops v1.16.0 parity._
+> _Hindi · 17 locales · manifesto · cvstart.org methodology/license/changelog pages · parent v1.19 parity · 61 adapters · landing live stars + contributors · parent v1.18 parity · 54 adapters · Hired status · lifetime stats · parent parity pack · 50 adapters · usage meter rework · design polish · usage meter · floating docs assistant · docs & QA consolidation · security backlog closeout · docs & QA refresh ×16 · scan Exclude · pipeline overview · security hardening 2 · sanitizer hardening · security hardening · AI usage & cost · company logos · AI CLI tools · ask-the-docs · CV tailor + cover letter · two-pager auto-fill · DOCX export · 16 locales · 6 LLM providers · 46 scanner adapters · portals health · in-app bug reporter · career orientation · career plan · statistics rework · memory layer · CV Studio · networking planner · mock interview · two-pager market-fit · parent career-ops v1.16.0 parity._
 
 <!-- DO NOT REVERT: this is the EN README; localized clones MUST switch to their own ./images/dashboard-<locale>.png (es / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). Generated by scripts/capture-dashboard-screenshots.mjs. -->
 ![career-ops-ui — Command Center](./images/dashboard-en.png)
@@ -281,7 +281,7 @@ Open http://127.0.0.1:4317. Pipeline counter should now read `0 pending`. The Ma
 | **Profile**      | Read-only view of `config/profile.yml` + archetypes — UI-friendly summary.                                         |
 | **App settings** | In-UI editor for parent `.env` keys: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, model overrides, port / host. Secrets masked on read. |
 | **Health**       | All setup checks in OK / OPTIONAL / FAIL badges + buttons to run `doctor.mjs` and `verify-pipeline.mjs`.           |
-| **Help**         | In-app Markdown user guide (`/#/help`), localized for all 16 supported languages (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr). |
+| **Help**         | In-app Markdown user guide (`/#/help`), localized for all 17 supported languages (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
 | **Activity log** | Audit trail of every state-changing request (writes, runs, scans). Secrets redacted. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Top-bar bell with red unread badge. Click to slide-in a drawer listing the last 50 toasts (per tab, per session) — Success / Error / Info-progress, each with a localized timestamp, the human message, and any `(METHOD /path · HTTP NNN)` postfix tucked into a `<details>`. Help **§18** documents every category. Drawer opens **only** on bell click (or keyboard Enter / Space); closes via ×, Esc, or re-clicking the bell. |
 
@@ -417,7 +417,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 16 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 17 locales
    ├─ playwright-smoke.mjs   # 12 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # full Playwright walkthrough
 ```
@@ -629,14 +629,14 @@ For the production-readiness assessment (deployment gates, risk register, deferr
 
 ## Localization
 
-The UI ships **16 locales** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`. Since **v1.60.0 (I18N-SPLIT)** translations live **one file per locale** under [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, each a flat `key → string` table — plus a shared `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) assembles them into `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resolves `t('key', 'fallback')`. No build step, no runtime fetch — a translator edits a single language file in isolation.
+The UI ships **17 locales** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`. Since **v1.60.0 (I18N-SPLIT)** translations live **one file per locale** under [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, each a flat `key → string` table — plus a shared `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) assembles them into `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resolves `t('key', 'fallback')`. No build step, no runtime fetch — a translator edits a single language file in isolation.
 
 **Add or change a string:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …add the same key to all 16 locale files (parity is gated)
+// …add the same key to all 17 locale files (parity is gated)
 ```
 
 Then use it via `data-i18n="scan.newButton"` in markup or `t('scan.newButton')` in JS, and run `npm test`. To add a brand-new language, register it in `i18n.js` (`LANGS` + `detect()`), the assembler, `index.html`, and the locale-enumerating tooling.
@@ -745,7 +745,7 @@ Refresh the Health page — every required check should be green. Then:
    live deep-research in `interview-prep/`. All visible in the UI.
 
 > Translations of this guide live in each language-specific README:
-> [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Dansk](README.da.md) · [العربية](README.ar.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [Türkçe](README.tr.md)
+> [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Dansk](README.da.md) · [العربية](README.ar.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
 
 ---
 

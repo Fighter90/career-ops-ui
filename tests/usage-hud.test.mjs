@@ -72,7 +72,7 @@ test('usage-hud carries data-i18n hooks so applyI18n() re-localizes it', () => {
 
 test('the 3 hud.* keys exist in all 16 locales', () => {
   const dict = loadAssembledDict();
-  const langs = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr'];
+  const langs = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
   for (const k of ['hud.title', 'hud.empty', 'hud.estimate']) {
     const per = dict[k];
     assert.ok(per && typeof per === 'object', `missing i18n key ${k}`);

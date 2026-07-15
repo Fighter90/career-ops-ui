@@ -2,12 +2,17 @@
 
 **career-ops-ui** 의 모든 주요 변경 사항을 기록합니다. 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 를 따르며, 버전은 [Semantic Versioning](https://semver.org/) 을 준수합니다.
 
-번역: [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md)
+번역: [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
 
 > **i18n 노트** — 이 파일은 완전히 한국어로 번역되었습니다. 모든 버전 항목의 본문이 출판 등급의 한국어로 제공되며, 영어 본문 임시 대체 표기는 더 이상 사용되지 않습니다.
 
 ---
 
+
+## [1.122.0] — 2026-07-16
+
+### 추가
+- **힌디어(हिन्दी) — 17번째 언어** — 전체 UI 사전(약 1,110개 키), 인앱 도움말 가이드 전체(29개 H2 / 105개 H3 패리티), `README.hi.md`, 새 `CHANGELOG.hi.md`(de/it/tr 선례를 따라 v1.122.0부터 시작), cvstart.org 랜딩 + 방법론/라이선스/체인지로그/도움말 페이지, 언어 전환기(🇮🇳), 브라우저 언어 자동 감지, 그리고 현지화된 대시보드 스크린샷까지 모두 추가되었습니다. 이제 모든 ×16 패리티 게이트가 ×17로 실행됩니다: i18n 사전 패리티 + 스냅샷, 도움말 H2/H3 게이트, CHANGELOG 패리티, 사이트 `check-i18n`, 그리고 Playwright 로케일 스윕까지.
 
 ## [1.121.0] — 2026-07-16
 

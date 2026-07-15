@@ -2,12 +2,17 @@
 
 **career-ops-ui** の主要な変更履歴。形式は [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)、バージョンは [SemVer](https://semver.org/) に準拠します。
 
-翻訳: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
+翻訳: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
 
 > **翻訳ノート** — このファイルは全エントリが日本語本文で完全に翻訳済みです。コードブロック、コミットメッセージ、ファイルパス、URL、環境変数、コマンド、リンクラベルは原文のまま保持しています。
 
 ---
 
+
+## [1.122.0] — 2026-07-16
+
+### 追加
+- **ヒンディー語(हिन्दी)— 17番目の言語** — 完全な UI 辞書(約 1,110 キー)、完全なアプリ内ヘルプガイド(29 の H2 / 105 の H3 パリティ)、`README.hi.md`、新しい `CHANGELOG.hi.md`(de/it/tr の前例に倣い v1.122.0 から開始)、cvstart.org のランディング + メソドロジー/ライセンス/変更履歴/ヘルプページ、言語スイッチャー(🇮🇳)、ブラウザ言語の自動検出、ローカライズされたダッシュボードのスクリーンショットを追加しました。×16 のパリティゲートはすべて ×17 で実行されるようになりました:i18n 辞書パリティ + スナップショット、ヘルプ H2/H3 ゲート、変更履歴パリティ、サイトの `check-i18n`、そして Playwright のロケール一巡テストです。
 
 ## [1.121.0] — 2026-07-16
 

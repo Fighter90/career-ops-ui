@@ -3,7 +3,7 @@
 > Лаконичный веб-интерфейс в стиле технической документации для AI-конвейера поиска работы [career-ops](https://github.com/Fighter90/career-ops).
 > Ищите вакансии, оценивайте их, проводите углублённое исследование, подавайте заявки и ведите учёт офферов из одной вкладки браузера — без постоянных переключений между Claude Code, терминалом и markdown-файлами.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | **Русский** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md)
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | **Русский** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
@@ -12,13 +12,13 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.121.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.121.0)
+[![release](https://img.shields.io/badge/release-v1.122.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.122.0)
 
-> **🆕 Последний релиз — v1.121.0**
+> **🆕 Последний релиз — v1.122.0**
 >
-> **Манифест CareerOps + разделы cvstart.org.** v1.120.0 (паритет с родителем v1.20.0) вывел [Манифест CareerOps](https://career-ops.org/manifesto) на видное место во всём приложении — ссылка в футере боковой панели, §29 справки на 16 языках, раздел в README. v1.121.0 добавляет четыре раздела на [cvstart.org](https://cvstart.org): **Методология** (шкала оценки из шести параметров, по материалам [career-ops.org/methodology](https://career-ops.org/methodology)), **Сравнение**, **Лицензия** и **Журнал изменений** (на всех 16 языках), а также ссылки на методологию в документации и в справке.
+> **Хинди в списке — 17 языков.** v1.122.0 добавляет **हिन्दी (хинди)** как 17-й язык интерфейса везде: в UI приложения, во встроенном руководстве, в README, в журнале изменений и на каждой странице cvstart.org (лендинг + Methodology/License/Changelog/Help).
 >
-> _манифест · страницы methodology/license/changelog на cvstart.org · паритет с родителем v1.19 · 61 адаптер · живые звёзды + контрибьюторы на лендинге · паритет с родителем v1.18 · 54 адаптера · статус Hired · статистика за всё время · пакет паритета · 50 адаптеров · переработка счётчика расхода · шлифовка дизайна · счётчик использования · плавающий помощник справки · консолидация доков и QA · закрытие бэклога безопасности · докум. и QA ×16 · Исключить в Scan · обзор пайплайна · усиление безопасности 2 · усиление санитайзера · усиление безопасности · расход ИИ · логотипы компаний · инструменты CLI для ИИ · спросить справку · адаптация CV + письмо · автозаполнение two-pager · экспорт в DOCX · здоровье порталов · встроенный репортёр багов · 16 locales · 6 LLM-провайдеров · 46 адаптеров сканера · карьерная ориентация · план карьеры · переработка статистики · слой памяти · CV Studio · планировщик нетворкинга · mock interview · рыночное соответствие через two-pager · паритет с родительским career-ops v1.16.0._
+> _хинди · 17 языков · манифест · страницы methodology/license/changelog на cvstart.org · паритет с родителем v1.19 · 61 адаптер · живые звёзды + контрибьюторы на лендинге · паритет с родителем v1.18 · 54 адаптера · статус Hired · статистика за всё время · пакет паритета · 50 адаптеров · переработка счётчика расхода · шлифовка дизайна · счётчик использования · плавающий помощник справки · консолидация доков и QA · закрытие бэклога безопасности · докум. и QA ×16 · Исключить в Scan · обзор пайплайна · усиление безопасности 2 · усиление санитайзера · усиление безопасности · расход ИИ · логотипы компаний · инструменты CLI для ИИ · спросить справку · адаптация CV + письмо · автозаполнение two-pager · экспорт в DOCX · здоровье порталов · встроенный репортёр багов · 16 locales · 6 LLM-провайдеров · 46 адаптеров сканера · карьерная ориентация · план карьеры · переработка статистики · слой памяти · CV Studio · планировщик нетворкинга · mock interview · рыночное соответствие через two-pager · паритет с родительским career-ops v1.16.0._
 
 <!-- DO NOT REVERT: locale-specific dashboard screenshot (dashboard-ru.png). Each README uses its own ./images/dashboard-<locale>.png — never replace with dashboard-en.png. Generated by scripts/capture-dashboard-screenshots.mjs. -->
 ![career-ops-ui — Командный центр](./images/dashboard-ru.png)
@@ -245,7 +245,7 @@ npm start
 | **Профиль**      | Доступная только для чтения витрина `config/profile.yml` и архетипов — компактная сводка для UI. |
 | **App settings** | Встроенный редактор ключей из родительского `.env`: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, переопределение моделей, порт и хост. Секреты маскируются при чтении. |
 | **Health**       | Все проверки конфигурации в виде badge OK / OPTIONAL / FAIL и кнопки для запуска `doctor.mjs` и `verify-pipeline.mjs`. |
-| **Help**         | Встроенное руководство пользователя в Markdown (`/#/help`), переведённое на все 16 поддерживаемых языков (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr). |
+| **Help**         | Встроенное руководство пользователя в Markdown (`/#/help`), переведённое на все 17 поддерживаемых языков (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
 | **Журнал активности** | Аудит-журнал всех изменяющих состояние запросов (writes, runs, scans). Секреты редактируются. |
 | **Уведомления** 🔔 *(v1.58.34 / v1.58.35)* | Колокольчик в верхней панели с красным badge непрочитанных. Клик → правый drawer показывает последние 50 toast (per-tab, per-session) — Success / Error / Info-progress, у каждой локальное время, текст и, если есть, технический хвост `(METHOD /path · HTTP NNN)` в `<details>`. Справка **§18** документирует каждую категорию. Drawer открывается **только** по клику на колокольчик (или клавиатура Enter / Space); закрывается ×, Esc или повторным кликом по колокольчику. |
 
@@ -388,7 +388,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF-reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # round-trip stripDangerousMarkdown (включая entity-aware кейсы)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # паритет i18n по всем 16 локалям
+   ├─ help.test.mjs / help-ui.test.mjs    # паритет i18n по всем 17 локалям
    ├─ playwright-smoke.mjs   # 32 browser-сценария (CV save, tracker, pipeline, evaluate, config и т. д.)
    └─ e2e{,-comprehensive}.mjs   # полный Playwright-walkthrough
 ```
@@ -602,9 +602,9 @@ russian_portals:
 
 ## Локализация
 
-Интерфейс поддерживает **16 локалей** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`. С **v1.60.0 (I18N-SPLIT)** переводы хранятся **по одному файлу на язык** в [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, плоская таблица `ключ → строка` — плюс общий `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) собирает их в `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) разрешает `t('ключ', 'fallback')`. Без сборки и без fetch — переводчик правит один файл языка.
+Интерфейс поддерживает **17 локалей** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`. С **v1.60.0 (I18N-SPLIT)** переводы хранятся **по одному файлу на язык** в [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, плоская таблица `ключ → строка` — плюс общий `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) собирает их в `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) разрешает `t('ключ', 'fallback')`. Без сборки и без fetch — переводчик правит один файл языка.
 
-**Добавить или изменить строку:** добавьте один и тот же ключ во все 16 файлов локалей (паритет проверяется тестами), используйте через `data-i18n="scan.newButton"` или `t('scan.newButton')` и запустите `npm test`.
+**Добавить или изменить строку:** добавьте один и тот же ключ во все 17 файлов локалей (паритет проверяется тестами), используйте через `data-i18n="scan.newButton"` или `t('scan.newButton')` и запустите `npm test`.
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',

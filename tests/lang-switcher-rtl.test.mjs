@@ -45,7 +45,7 @@ test('i18n: getLangs() exposes all 16 locales, each with code/label/flag', () =>
   const codes = langs.map((l) => l.code);
   assert.deepEqual(
     codes.sort(),
-    ['ar', 'da', 'de', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'pt-BR', 'ru', 'tr', 'uk', 'zh-CN', 'zh-TW'].sort(),
+    ['ar', 'da', 'de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'ko', 'pl', 'pt-BR', 'ru', 'tr', 'uk', 'zh-CN', 'zh-TW'].sort(),
     '16 locales must be registered',
   );
   for (const l of langs) {

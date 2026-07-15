@@ -56,7 +56,7 @@ const helpSrc = join(ROOT, 'docs', 'help');
 const helpDst = join(SITE, 'src', 'content', 'help');
 mkdirSync(helpDst, { recursive: true });
 const helpFiles = readdirSync(helpSrc).filter((f) => f.endsWith('.md'));
-if (helpFiles.length < 16) fail(`expected >=16 help guides, found ${helpFiles.length}`);
+if (helpFiles.length < 17) fail(`expected >=17 help guides, found ${helpFiles.length}`);
 const GH_HELP_BASE = `${REPO_URL}/blob/main/docs/help/`;
 
 function rewriteLinks(md) {
@@ -87,7 +87,7 @@ function rewriteRootLinks(md) {
   });
 }
 const clFiles = readdirSync(ROOT).filter((f) => /^CHANGELOG(\.[A-Za-z-]+)?\.md$/.test(f));
-if (clFiles.length < 16) fail(`expected >=16 CHANGELOG files, found ${clFiles.length}`);
+if (clFiles.length < 17) fail(`expected >=17 CHANGELOG files, found ${clFiles.length}`);
 for (const f of clFiles) {
   const lang = f === 'CHANGELOG.md' ? 'en' : f.replace(/^CHANGELOG\./, '').replace(/\.md$/, '');
   const md = readFileSync(join(ROOT, f), 'utf8');
@@ -180,7 +180,7 @@ const facts = {
   adaptersRu,
   tests,
   providers,
-  locales: 16,
+  locales: 17,
   stars,
   contributors,
   repoUrl: REPO_URL,

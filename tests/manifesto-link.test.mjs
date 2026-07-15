@@ -28,7 +28,7 @@ const ROOT = resolve(__dirname, '..');
 const MANIFESTO_URL = 'https://career-ops.org/manifesto';
 const HELP_BUNDLES = [
   'en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW',
-  'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr',
+  'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi',
 ];
 
 /** All link targets in a document: markdown `](url)`, html `href="url"`, astro `href: 'url'`. */
@@ -56,7 +56,7 @@ test('footer.manifesto key exists in the assembled dict for every locale', () =>
   // loadAssembledDict() returns per-key objects: { key: { en, es, … } }.
   const entry = loadAssembledDict()['footer.manifesto'];
   assert.ok(entry && typeof entry === 'object', 'footer.manifesto entry missing');
-  assert.equal(I18N_LANGS.length, 16);
+  assert.equal(I18N_LANGS.length, 17);
   for (const lang of I18N_LANGS) {
     assert.equal(typeof entry[lang], 'string', `footer.manifesto missing for ${lang}`);
     assert.ok(entry[lang].length > 0, `footer.manifesto empty for ${lang}`);

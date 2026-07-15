@@ -3,7 +3,7 @@
 > Przejrzysty interfejs webowy w stylu dokumentacji technicznej dla potoku wyszukiwania pracy opartego na AI — [career-ops](https://github.com/Fighter90/career-ops).
 > Przeglądaj oferty, oceniaj je, analizuj szczegółowo, aplikuj i śledź każdą ofertę z jednej karty przeglądarki — zamiast przeskakiwać między Claude Code, terminalem a plikami markdown.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | **Polski** | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md)
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | **Polski** | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
@@ -12,13 +12,13 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.121.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.121.0)
+[![release](https://img.shields.io/badge/release-v1.122.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.122.0)
 
-> **🆕 Najnowsze wydanie — v1.121.0**
+> **🆕 Najnowsze wydanie — v1.122.0**
 >
-> **Manifest CareerOps + sekcje cvstart.org.** v1.120.0 (parytet z rodzicem v1.20.0) wyeksponowało [Manifest CareerOps](https://career-ops.org/manifesto) w całej aplikacji — link w stopce paska bocznego, §29 przewodnika pomocy w 16 językach, sekcja w README. v1.121.0 dodaje cztery sekcje do [cvstart.org](https://cvstart.org): **Metodologia** (sześciowymiarowa skala oceniania, na podstawie [career-ops.org/methodology](https://career-ops.org/methodology)), **Porównanie**, **Licencja** i **Dziennik zmian** (wszystkie 16 języków), a także linki do metodologii w dokumentacji i przewodniku pomocy.
+> **Dołącza hindi — 17 języków.** v1.122.0 dodaje **हिन्दी (hindi)** jako 17. język interfejsu wszędzie: w interfejsie aplikacji, we wbudowanym przewodniku pomocy, w README, w dzienniku zmian oraz na każdej stronie cvstart.org (strona główna + Metodologia/Licencja/Dziennik zmian/Pomoc).
 >
-> _manifest · strony methodology/license/changelog na cvstart.org · parytet z rodzicem v1.19 · 61 adapterów · żywe gwiazdki + współtwórcy na landingu · parytet z rodzicem v1.18 · 54 adaptery · status Hired · statystyki łączne · pakiet parytetu · 50 adapterów · przeróbka miernika zużycia · dopracowanie designu · miernik użycia · pływający asystent pomocy · konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _Hindi · 17 języków · manifest · strony methodology/license/changelog na cvstart.org · parytet z rodzicem v1.19 · 61 adapterów · żywe gwiazdki + współtwórcy na landingu · parytet z rodzicem v1.18 · 54 adaptery · status Hired · statystyki łączne · pakiet parytetu · 50 adapterów · przeróbka miernika zużycia · dopracowanie designu · miernik użycia · pływający asystent pomocy · konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

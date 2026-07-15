@@ -2,11 +2,16 @@
 
 All notable changes to **career-ops-ui** are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
-Translations: [Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md)
+Translations: [Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
 
 ---
 
 
+
+## [1.122.0] — 2026-07-16
+
+### Added
+- **Hindi (हिन्दी) — the 17th language** — full UI dictionary (~1,110 keys), the complete in-app help guide (29 H2 / 105 H3 parity), `README.hi.md`, a new `CHANGELOG.hi.md` (starts at v1.122.0, following the de/it/tr precedent), the cvstart.org landing + Methodology/License/Changelog/Help pages, the language switcher (🇮🇳), browser-language auto-detect, and a localized dashboard screenshot. Every ×16 parity gate now runs ×17: i18n dict parity + snapshot, help H2/H3 gates, CHANGELOG parity, site `check-i18n`, and the Playwright locale sweep.
 
 ## [1.121.0] — 2026-07-16
 

@@ -2,12 +2,17 @@
 
 Todas as mudanças relevantes do **career-ops-ui** estão documentadas aqui. O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
-Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
+Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
 
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 
 ---
 
+
+## [1.122.0] — 2026-07-16
+
+### Adicionado
+- **Hindi (हिन्दी) — o 17º idioma** — dicionário completo da interface (~1.110 chaves), o guia de ajuda embutido no app na íntegra (paridade de 29 H2 / 105 H3), `README.hi.md`, um novo `CHANGELOG.hi.md` (começando na v1.122.0, seguindo o precedente de de/it/tr), a landing do cvstart.org + as páginas de Metodologia/Licença/Changelog/Ajuda, o seletor de idioma (🇮🇳), a detecção automática do idioma do navegador e uma captura de tela do dashboard localizada. Todos os gates de paridade ×16 agora rodam ×17: paridade do dicionário i18n + snapshot, gates de H2/H3 da ajuda, paridade do CHANGELOG, `check-i18n` do site e a varredura de locales do Playwright.
 
 ## [1.121.0] — 2026-07-16
 

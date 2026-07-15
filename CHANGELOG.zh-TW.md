@@ -2,12 +2,17 @@
 
 **career-ops-ui** 的所有重要變更記錄於此。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),版本號遵循 [Semantic Versioning](https://semver.org/)。
 
-翻譯版本: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
+翻譯版本: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
 
 > **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [CHANGELOG.md](CHANGELOG.md) 為準。
 
 ---
 
+
+## [1.122.0] — 2026-07-16
+
+### 新增
+- **印地語(हिन्दी)— 第 17 種語言** — 完整的 UI 詞典(約 1,110 個鍵)、完整的應用程式內說明指南(29 個 H2／105 個 H3 對齊)、`README.hi.md`、全新的 `CHANGELOG.hi.md`(依循 de／it／tr 先例，自 v1.122.0 起開始)、cvstart.org 落地頁與方法論／授權／更新日誌／說明頁面、語言切換器(🇮🇳)、瀏覽器語言自動偵測，以及在地化的儀表板截圖。每一道 ×16 對齊關卡現在都改為 ×17 執行：i18n 詞典對齊與快照、說明指南 H2／H3 關卡、更新日誌對齊、網站的 `check-i18n`，以及 Playwright 語系巡檢。
 
 ## [1.121.0] — 2026-07-16
 

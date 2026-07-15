@@ -3,7 +3,7 @@
 > Un'interfaccia web pulita, in stile documentazione, per la pipeline di ricerca di lavoro con IA [career-ops](https://github.com/Fighter90/career-ops).
 > Cerca, valuta, approfondisci, candidati e tieni traccia di ogni offerta da un'unica scheda del browser — invece di rimbalzare tra Claude Code, terminali e file markdown.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | **Italiano** | [Türkçe](README.tr.md)
+[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | **Italiano** | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
@@ -12,13 +12,13 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.121.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.121.0)
+[![release](https://img.shields.io/badge/release-v1.122.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.122.0)
 
-> **🆕 Ultima release — v1.121.0**
+> **🆕 Ultima release — v1.122.0**
 >
-> **Il Manifesto CareerOps + le sezioni di cvstart.org.** La v1.120.0 (parità col padre v1.20.0) ha portato [il Manifesto CareerOps](https://career-ops.org/manifesto) in tutta l'app — link nel footer della sidebar, guida §29 in 16 lingue, sezione nel README. La v1.121.0 aggiunge quattro nuove sezioni a [cvstart.org](https://cvstart.org): **Metodologia** (la griglia di punteggio a sei dimensioni, da [career-ops.org/methodology](https://career-ops.org/methodology)), **Confronto**, **Licenza** e **Changelog** (tutte in 16 lingue), oltre a link alla metodologia sparsi tra la documentazione e la guida in-app.
+> **L'hindi si aggiunge — 17 lingue.** La v1.122.0 aggiunge **हिन्दी (hindi)** come 17ª lingua dell'interfaccia ovunque: la UI dell'app, la guida in-app, il README, il changelog e ogni pagina di cvstart.org (landing + Metodologia/Licenza/Changelog/Guida).
 >
-> _manifesto · pagine methodology/license/changelog su cvstart.org · parità padre v1.19 · 61 adapter · stelle live + contributori sulla landing · parità padre v1.18 · 54 adapter · stato Hired · statistiche totali · pacchetto di parità · 50 adattatori · rifacimento contatore di utilizzo · rifinitura del design · contatore di utilizzo · assistente guida fluttuante · consolidamento docs & QA · chiusura backlog sicurezza · docs & QA ×16 · Escludi Scan · panoramica pipeline · rafforzamento della sicurezza 2 · rafforzamento del sanitizzatore · rafforzamento della sicurezza · uso e costo IA · logo aziendali · strumenti CLI IA · chiedi alla guida · adatta CV + lettera · compilazione auto del two-pager · esportazione DOCX · salute dei portali · segnalatore di bug integrato · 16 lingue · 6 provider LLM · 46 adattatori di scansione · orientamento professionale · piano di carriera · rielaborazione delle statistiche · livello di memoria · CV Studio · pianificatore di networking · colloquio simulato · fit di mercato con il two-pager · parità con career-ops principale v1.16.0._
+> _hindi · 17 lingue · manifesto · pagine methodology/license/changelog su cvstart.org · parità padre v1.19 · 61 adapter · stelle live + contributori sulla landing · parità padre v1.18 · 54 adapter · stato Hired · statistiche totali · pacchetto di parità · 50 adattatori · rifacimento contatore di utilizzo · rifinitura del design · contatore di utilizzo · assistente guida fluttuante · consolidamento docs & QA · chiusura backlog sicurezza · docs & QA ×16 · Escludi Scan · panoramica pipeline · rafforzamento della sicurezza 2 · rafforzamento del sanitizzatore · rafforzamento della sicurezza · uso e costo IA · logo aziendali · strumenti CLI IA · chiedi alla guida · adatta CV + lettera · compilazione auto del two-pager · esportazione DOCX · salute dei portali · segnalatore di bug integrato · 16 lingue · 6 provider LLM · 46 adattatori di scansione · orientamento professionale · piano di carriera · rielaborazione delle statistiche · livello di memoria · CV Studio · pianificatore di networking · colloquio simulato · fit di mercato con il two-pager · parità con career-ops principale v1.16.0._
 
 <!-- DO NOT REVERT: locale-specific dashboard screenshot (dashboard-it.png). Each README uses its own ./images/dashboard-<locale>.png — never replace with dashboard-en.png. Generated by scripts/capture-dashboard-screenshots.mjs. -->
 ![career-ops-ui — Centro di comando](./images/dashboard-it.png)
@@ -278,7 +278,7 @@ Apri http://127.0.0.1:4317. Il contatore della Pipeline dovrebbe ora indicare `0
 | **Profile**      | Vista in sola lettura di `config/profile.yml` + archetipi — riepilogo adatto alla UI.                                         |
 | **App settings** | Editor nella UI per le chiavi del `.env` principale: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, override dei modelli, porta / host. Segreti mascherati in lettura. |
 | **Health**       | Tutti i controlli di configurazione in badge OK / OPTIONAL / FAIL + pulsanti per eseguire `doctor.mjs` e `verify-pipeline.mjs`.           |
-| **Help**         | Guida utente Markdown in-app (`/#/help`), localizzata per tutte le 16 lingue supportate (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr). |
+| **Help**         | Guida utente Markdown in-app (`/#/help`), localizzata per tutte le 17 lingue supportate (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
 | **Activity log** | Traccia di audit di ogni richiesta che modifica lo stato (scritture, esecuzioni, scansioni). Segreti oscurati. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Campanella nella barra superiore con badge rosso per i non letti. Cliccala per far scorrere un pannello che elenca gli ultimi 50 toast (per scheda, per sessione) — Successo / Errore / Info-progresso, ciascuno con un timestamp localizzato, il messaggio leggibile e qualsiasi postfisso `(METHOD /path · HTTP NNN)` racchiuso in un `<details>`. La sezione Help **§18** documenta ogni categoria. Il pannello si apre **solo** al clic sulla campanella (o da tastiera Invio / Spazio); si chiude tramite ×, Esc, o ricliccando la campanella. |
 
@@ -626,7 +626,7 @@ Per la valutazione della prontezza per la produzione (gate di deployment, regist
 
 ## Localizzazione
 
-La UI viene fornita con **16 lingue** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`. Dalla **v1.60.0 (I18N-SPLIT)** le traduzioni vivono **un file per lingua** sotto [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, ciascuno una tabella piatta `key → string` — più un `i18n-dict.aliases.js` condiviso. [`i18n-dict.js`](public/js/lib/i18n-dict.js) le assembla in `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) risolve `t('key', 'fallback')`. Nessuno step di build, nessun fetch a runtime — un traduttore modifica un singolo file di lingua in isolamento.
+La UI viene fornita con **17 lingue** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`. Dalla **v1.60.0 (I18N-SPLIT)** le traduzioni vivono **un file per lingua** sotto [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, ciascuno una tabella piatta `key → string` — più un `i18n-dict.aliases.js` condiviso. [`i18n-dict.js`](public/js/lib/i18n-dict.js) le assembla in `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) risolve `t('key', 'fallback')`. Nessuno step di build, nessun fetch a runtime — un traduttore modifica un singolo file di lingua in isolamento.
 
 **Aggiungere o cambiare una stringa:**
 
