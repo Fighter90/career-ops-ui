@@ -65,7 +65,7 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 ## CareerOps Manifestosu
 
-career-ops, [CareerOps Manifestosu](https://career-ops.org/manifesto?utm_source=career-ops-ui)'nun ilk referans uygulamasıdır — bir iş aramasını kanıtla, disiplinle ve masanın aday tarafında yer alan araçlarla yürütme pratiği. Okuyun. Söyledikleri inandığınız şeyse imzalayın — imzanız bir commit'e dönüşür. Uygulama kenar çubuğu altbilgisinden ona bağlantı verir.
+career-ops, [CareerOps Manifestosu](https://career-ops.org/manifesto)'nun ilk referans uygulamasıdır — bir iş aramasını kanıtla, disiplinle ve masanın aday tarafında yer alan araçlarla yürütme pratiği. Okuyun. Söyledikleri inandığınız şeyse imzalayın — imzanız bir commit'e dönüşür. Uygulama kenar çubuğu altbilgisinden ona bağlantı verir.
 
 ## Bir yapay zeka kodlama asistanı kurun (üst career-ops CLI için)
 

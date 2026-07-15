@@ -65,7 +65,7 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 
 ## Il Manifesto CareerOps
 
-career-ops è la prima implementazione di riferimento del [Manifesto CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) — la pratica di condurre una ricerca di lavoro con evidenze, disciplina e strumenti dalla parte del candidato. Leggilo. Se dice ciò in cui credi, firmalo — la tua firma diventa un commit. L'app vi rimanda tramite il link nel footer della barra laterale.
+career-ops è la prima implementazione di riferimento del [Manifesto CareerOps](https://career-ops.org/manifesto) — la pratica di condurre una ricerca di lavoro con evidenze, disciplina e strumenti dalla parte del candidato. Leggilo. Se dice ciò in cui credi, firmalo — la tua firma diventa un commit. L'app vi rimanda tramite il link nel footer della barra laterale.
 
 ## Installa un assistente di coding IA (per la CLI career-ops principale)
 

@@ -24,8 +24,8 @@ const ROOT = resolve(__dirname, '..');
 // CodeQL's js/incomplete-url-substring-sanitization doesn't misread the
 // doc assertions as URL validation.
 const MANIFESTO_RE = /https:\/\/career-ops\.org\/manifesto/;
-const MANIFESTO_APP_RE = /https:\/\/career-ops\.org\/manifesto\?utm_source=career-ops-ui/;
-const MANIFESTO_SITE_RE = /https:\/\/career-ops\.org\/manifesto\?utm_source=cvstart\.org/;
+// The links carry no tracking params (v1.120.0 review: utm_source removed).
+const NO_UTM_RE = /career-ops\.org\/manifesto\?/;
 const HELP_BUNDLES = [
   'en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW',
   'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr',
@@ -34,7 +34,8 @@ const HELP_BUNDLES = [
 test('index.html sidebar footer carries the manifesto link', () => {
   const html = readFileSync(resolve(ROOT, 'public', 'index.html'), 'utf8');
   assert.ok(html.includes('class="manifesto-link"'), 'manifesto-link anchor missing');
-  assert.match(html, MANIFESTO_APP_RE, 'manifesto URL missing');
+  assert.match(html, MANIFESTO_RE, 'manifesto URL missing');
+  assert.ok(!NO_UTM_RE.test(html), 'manifesto link must carry no query params');
   assert.ok(html.includes('data-i18n="footer.manifesto"'), 'footer.manifesto i18n binding missing');
   const anchor = html.split('manifesto-link')[1].split('</a>')[0];
   assert.ok(anchor.includes('rel="noopener noreferrer"'), 'outbound link must be noopener noreferrer');
@@ -68,7 +69,8 @@ test('README (en) explains the manifesto', () => {
 
 test('cvstart.org footer links to the manifesto in every site locale file', () => {
   const footer = readFileSync(resolve(ROOT, 'site', 'src', 'components', 'Footer.astro'), 'utf8');
-  assert.match(footer, MANIFESTO_SITE_RE, 'Footer.astro manifesto link missing');
+  assert.match(footer, MANIFESTO_RE, 'Footer.astro manifesto link missing');
+  assert.ok(!NO_UTM_RE.test(footer), 'site manifesto link must carry no query params');
   assert.ok(footer.includes("t(locale, 'footer.manifesto')"), 'Footer.astro must label via i18n');
   for (const lang of HELP_BUNDLES) {
     const jsonName = lang === 'ko-KR' ? 'ko' : lang;

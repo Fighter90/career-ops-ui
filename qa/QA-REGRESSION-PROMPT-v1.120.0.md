@@ -9,7 +9,7 @@
 ## What changed
 
 1. **SPA sidebar footer** (`public/index.html` + `public/css/app.css`): a new outbound
-   anchor `.manifesto-link` → `https://career-ops.org/manifesto?utm_source=career-ops-ui`
+   anchor `.manifesto-link` → `https://career-ops.org/manifesto`
    (`target="_blank" rel="noopener noreferrer"`, label via `data-i18n="footer.manifesto"`).
 2. **i18n**: new `footer.manifesto` key in all 16 locale dicts + regenerated
    `tests/fixtures/i18n-dict.snapshot.json`.
@@ -21,7 +21,7 @@
 5. **CHANGELOG ×16**: the `[1.120.0] — 2026-07-16` entry.
 6. **cvstart.org landing** (`site/`): Community footer column gained a manifesto link
    (`footer.manifesto` in all 16 `site/src/i18n/*.json`, link in `Footer.astro` →
-   `https://career-ops.org/manifesto?utm_source=cvstart.org`).
+   `https://career-ops.org/manifesto`).
 7. **New suite** `tests/manifesto-link.test.mjs` (5 cases) pinning all of the above.
 
 Parent v1.20.0 also fixed `upskill` targeted mode, `scan --json` stdout purity, and the
@@ -41,6 +41,6 @@ web UI, so **no code parity was required** (documented in the CHANGELOG "Notes")
       the console (it is a navigation, not a resource load).
 - [ ] `#/help` renders §29 at the end of the guide in the selected language.
 - [ ] Site: `cd site && npm run build` (Node ≥ 22) — 33 pages; `dist/<locale>/index.html`
-      footer contains `career-ops.org/manifesto?utm_source=cvstart.org`.
+      footer contains `career-ops.org/manifesto` (no query params).
 - [ ] No regressions in the untouched surfaces: `#/scan` sources dropdown still lists
       61 adapters; `/api/health` reports `version: 1.120.0` and the live `parentVersion`.

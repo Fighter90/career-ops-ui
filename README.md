@@ -67,7 +67,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 ## The CareerOps Manifesto
 
-career-ops is the first reference implementation of [the CareerOps Manifesto](https://career-ops.org/manifesto?utm_source=career-ops-ui) — the practice of running a job search with evidence, discipline, and tools on the candidate's side of the table. Read it. If it says what you believe, sign it — your signature becomes a commit. The app links to it from the sidebar footer.
+career-ops is the first reference implementation of [the CareerOps Manifesto](https://career-ops.org/manifesto) — the practice of running a job search with evidence, discipline, and tools on the candidate's side of the table. Read it. If it says what you believe, sign it — your signature becomes a commit. The app links to it from the sidebar footer.
 
 ## Install an AI coding assistant (for the parent career-ops CLI)
 

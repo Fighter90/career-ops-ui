@@ -2080,7 +2080,7 @@ Użyj **Pobierz .md**, **Zapisz jako PDF** lub **Kopiuj**, aby zachować profil 
 
 ## 29. Manifest CareerOps
 
-career-ops — projekt nadrzędny, na którym opiera się ta aplikacja — jest pierwszą referencyjną implementacją [Manifestu CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) (rodzic w wersji v1.20.0). Manifest nazywa praktykę, dla której istnieje cały ten zestaw narzędzi: prowadzenie poszukiwań pracy tak, jak inżynierowie prowadzą produkcję — z dowodami, dyscypliną i narzędziami po stronie kandydata przy stole.
+career-ops — projekt nadrzędny, na którym opiera się ta aplikacja — jest pierwszą referencyjną implementacją [Manifestu CareerOps](https://career-ops.org/manifesto) (rodzic w wersji v1.20.0). Manifest nazywa praktykę, dla której istnieje cały ten zestaw narzędzi: prowadzenie poszukiwań pracy tak, jak inżynierowie prowadzą produkcję — z dowodami, dyscypliną i narzędziami po stronie kandydata przy stole.
 
 ### Co mówi
 

@@ -65,7 +65,7 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 ## CareerOps-manifestet
 
-career-ops er den første referenceimplementering af [CareerOps-manifestet](https://career-ops.org/manifesto?utm_source=career-ops-ui) — praksissen med at drive en jobsøgning med evidens, disciplin og værktøjer på kandidatens side af bordet. Læs det. Hvis det siger, hvad du tror på, så underskriv det — din underskrift bliver et commit. Appen linker til det fra sidebjælke-footeren.
+career-ops er den første referenceimplementering af [CareerOps-manifestet](https://career-ops.org/manifesto) — praksissen med at drive en jobsøgning med evidens, disciplin og værktøjer på kandidatens side af bordet. Læs det. Hvis det siger, hvad du tror på, så underskriv det — din underskrift bliver et commit. Appen linker til det fra sidebjælke-footeren.
 
 ## Installér en AI-kodningsassistent (til forælderens career-ops-CLI)
 

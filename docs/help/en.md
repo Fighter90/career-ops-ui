@@ -2175,7 +2175,7 @@ Use **Download .md**, **Save as PDF**, or **Copy** to keep the profile — the s
 
 ## 29. The CareerOps Manifesto
 
-career-ops — the parent project this app fronts — is the first reference implementation of [the CareerOps Manifesto](https://career-ops.org/manifesto?utm_source=career-ops-ui) (parent v1.20.0). The manifesto names the practice this whole toolchain exists for: running a job search the way engineers run production — with evidence, with discipline, and with tools on the candidate's side of the table.
+career-ops — the parent project this app fronts — is the first reference implementation of [the CareerOps Manifesto](https://career-ops.org/manifesto) (parent v1.20.0). The manifesto names the practice this whole toolchain exists for: running a job search the way engineers run production — with evidence, with discipline, and with tools on the candidate's side of the table.
 
 ### What it says
 

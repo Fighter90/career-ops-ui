@@ -2018,7 +2018,7 @@ career-ops-ui의 대부분은 "이 채용 공고가 내 CV와 맞는가?"를 묻
 
 ## 29. CareerOps 선언문
 
-career-ops — 이 앱이 화면을 제공하는 상위 프로젝트 — 는 [the CareerOps Manifesto](https://career-ops.org/manifesto?utm_source=career-ops-ui)(부모 v1.20.0)의 첫 번째 레퍼런스 구현입니다. 이 선언문은 이 툴체인 전체가 존재하는 이유인 실천 방식에 이름을 붙입니다: 엔지니어가 프로덕션을 운영하듯 구직을 운영하는 것 — 증거에 근거하고, 규율을 지키며, 도구를 지원자 쪽에 두고서.
+career-ops — 이 앱이 화면을 제공하는 상위 프로젝트 — 는 [the CareerOps Manifesto](https://career-ops.org/manifesto)(부모 v1.20.0)의 첫 번째 레퍼런스 구현입니다. 이 선언문은 이 툴체인 전체가 존재하는 이유인 실천 방식에 이름을 붙입니다: 엔지니어가 프로덕션을 운영하듯 구직을 운영하는 것 — 증거에 근거하고, 규율을 지키며, 도구를 지원자 쪽에 두고서.
 
 ### 무엇을 담고 있나
 

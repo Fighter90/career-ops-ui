@@ -2277,7 +2277,7 @@ Verwende **.md herunterladen**, **Als PDF speichern** oder **Kopieren**, um das 
 
 ## 29. Das CareerOps-Manifest
 
-career-ops — das übergeordnete Projekt, dem diese App eine Oberfläche gibt — ist die erste Referenzimplementierung von [dem CareerOps-Manifest](https://career-ops.org/manifesto?utm_source=career-ops-ui) (Eltern-Version v1.20.0). Das Manifest benennt die Praxis, für die diese gesamte Toolchain existiert: eine Jobsuche so zu betreiben, wie Ingenieure Produktivsysteme betreiben — mit Evidenz, mit Disziplin und mit Werkzeugen auf der Seite des Kandidaten am Tisch.
+career-ops — das übergeordnete Projekt, dem diese App eine Oberfläche gibt — ist die erste Referenzimplementierung von [dem CareerOps-Manifest](https://career-ops.org/manifesto) (Eltern-Version v1.20.0). Das Manifest benennt die Praxis, für die diese gesamte Toolchain existiert: eine Jobsuche so zu betreiben, wie Ingenieure Produktivsysteme betreiben — mit Evidenz, mit Disziplin und mit Werkzeugen auf der Seite des Kandidaten am Tisch.
 
 ### Was es sagt
 

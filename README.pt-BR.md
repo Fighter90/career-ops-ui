@@ -48,7 +48,7 @@ O [career-ops](https://career-ops.org) é um sistema open-source de busca de emp
 
 ## O Manifesto CareerOps
 
-O career-ops é a primeira implementação de referência [do Manifesto CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) — a prática de conduzir uma busca de emprego com evidências, disciplina e as ferramentas do lado do candidato na mesa. Leia. Se ele disser o que você acredita, assine — sua assinatura se torna um commit. O app tem um link para ele no rodapé da barra lateral.
+O career-ops é a primeira implementação de referência [do Manifesto CareerOps](https://career-ops.org/manifesto) — a prática de conduzir uma busca de emprego com evidências, disciplina e as ferramentas do lado do candidato na mesa. Leia. Se ele disser o que você acredita, assine — sua assinatura se torna um commit. O app tem um link para ele no rodapé da barra lateral.
 
 ## Inicie e configure com um único comando
 

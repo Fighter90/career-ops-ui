@@ -2136,7 +2136,7 @@ Brug **Download .md**, **Gem som PDF** eller **Kopiér** for at beholde profilen
 
 ## 29. CareerOps-manifestet
 
-career-ops — moderprojektet, som denne app sætter en brugerflade på — er den første referenceimplementering af [CareerOps-manifestet](https://career-ops.org/manifesto?utm_source=career-ops-ui) (forælder v1.20.0). Manifestet navngiver den praksis, som hele dette værktøjssæt findes for: at drive en jobsøgning på samme måde, som ingeniører driver produktion — med evidens, med disciplin og med værktøjer på kandidatens side af bordet.
+career-ops — moderprojektet, som denne app sætter en brugerflade på — er den første referenceimplementering af [CareerOps-manifestet](https://career-ops.org/manifesto) (forælder v1.20.0). Manifestet navngiver den praksis, som hele dette værktøjssæt findes for: at drive en jobsøgning på samme måde, som ingeniører driver produktion — med evidens, med disciplin og med værktøjer på kandidatens side af bordet.
 
 ### Hvad det siger
 

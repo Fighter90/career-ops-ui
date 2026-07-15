@@ -2078,7 +2078,7 @@ Usa **Descargar .md**, **Guardar como PDF** o **Copiar** para conservar el perfi
 
 ## 29. El manifiesto de CareerOps
 
-career-ops — el proyecto padre al que esta app pone una interfaz — es la primera implementación de referencia de [el Manifiesto de CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) (padre v1.20.0). El manifiesto nombra la práctica para la que existe todo este conjunto de herramientas: llevar una búsqueda de empleo como los ingenieros llevan la producción — con evidencia, con disciplina y con herramientas del lado del candidato en la mesa.
+career-ops — el proyecto padre al que esta app pone una interfaz — es la primera implementación de referencia de [el Manifiesto de CareerOps](https://career-ops.org/manifesto) (padre v1.20.0). El manifiesto nombra la práctica para la que existe todo este conjunto de herramientas: llevar una búsqueda de empleo como los ingenieros llevan la producción — con evidencia, con disciplina y con herramientas del lado del candidato en la mesa.
 
 ### Qué dice
 

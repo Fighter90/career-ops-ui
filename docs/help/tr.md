@@ -2218,7 +2218,7 @@ Profili saklamak için **.md indir**, **PDF olarak kaydet** veya **Kopyala**yı 
 
 ## 29. CareerOps Manifestosu
 
-career-ops — bu uygulamanın önyüzünü oluşturduğu üst proje — [CareerOps Manifestosu](https://career-ops.org/manifesto?utm_source=career-ops-ui)'nun (üst proje v1.20.0) ilk referans uygulamasıdır. Manifesto, bu araç zincirinin varlık nedeni olan pratiği adlandırır: bir iş aramasını mühendislerin üretimi yönettiği gibi yönetmek — kanıtla, disiplinle ve masanın aday tarafında yer alan araçlarla.
+career-ops — bu uygulamanın önyüzünü oluşturduğu üst proje — [CareerOps Manifestosu](https://career-ops.org/manifesto)'nun (üst proje v1.20.0) ilk referans uygulamasıdır. Manifesto, bu araç zincirinin varlık nedeni olan pratiği adlandırır: bir iş aramasını mühendislerin üretimi yönettiği gibi yönetmek — kanıtla, disiplinle ve masanın aday tarafında yer alan araçlarla.
 
 ### Ne diyor
 

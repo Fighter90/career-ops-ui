@@ -47,7 +47,7 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 
 ## Le Manifeste CareerOps
 
-career-ops est la première implémentation de référence du [Manifeste CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) — la pratique consistant à mener une recherche d'emploi avec des preuves, de la discipline, et des outils du côté du candidat de la table. Lisez-le. S'il exprime ce en quoi vous croyez, signez-le — votre signature devient un commit. L'application y renvoie depuis le pied de page de la barre latérale.
+career-ops est la première implémentation de référence du [Manifeste CareerOps](https://career-ops.org/manifesto) — la pratique consistant à mener une recherche d'emploi avec des preuves, de la discipline, et des outils du côté du candidat de la table. Lisez-le. S'il exprime ce en quoi vous croyez, signez-le — votre signature devient un commit. L'application y renvoie depuis le pied de page de la barre latérale.
 
 ## Lancer et initialiser en une commande
 

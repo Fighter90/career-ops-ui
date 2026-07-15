@@ -48,7 +48,7 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
 ## El manifiesto de CareerOps
 
-career-ops es la primera implementación de referencia de [el Manifiesto de CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) — la práctica de llevar una búsqueda de empleo con evidencia, disciplina y herramientas del lado del candidato en la mesa. Léelo. Si dice lo que tú crees, fírmalo — tu firma se convierte en un commit. La app lo enlaza desde el pie de la barra lateral.
+career-ops es la primera implementación de referencia de [el Manifiesto de CareerOps](https://career-ops.org/manifesto) — la práctica de llevar una búsqueda de empleo con evidencia, disciplina y herramientas del lado del candidato en la mesa. Léelo. Si dice lo que tú crees, fírmalo — tu firma se convierte en un commit. La app lo enlaza desde el pie de la barra lateral.
 
 ## Lanza e inicializa con un solo comando
 

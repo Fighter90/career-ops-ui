@@ -65,7 +65,7 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 
 ## Das CareerOps-Manifest
 
-career-ops ist die erste Referenzimplementierung von [dem CareerOps-Manifest](https://career-ops.org/manifesto?utm_source=career-ops-ui) — der Praxis, eine Jobsuche mit Evidenz, Disziplin und Werkzeugen auf der Seite des Kandidaten am Tisch zu betreiben. Lies es. Wenn es das sagt, woran du glaubst, unterzeichne es — deine Signatur wird zu einem Commit. Die App verlinkt darauf im Footer der Seitenleiste.
+career-ops ist die erste Referenzimplementierung von [dem CareerOps-Manifest](https://career-ops.org/manifesto) — der Praxis, eine Jobsuche mit Evidenz, Disziplin und Werkzeugen auf der Seite des Kandidaten am Tisch zu betreiben. Lies es. Wenn es das sagt, woran du glaubst, unterzeichne es — deine Signatur wird zu einem Commit. Die App verlinkt darauf im Footer der Seitenleiste.
 
 ## Einen KI-Coding-Assistenten installieren (für die übergeordnete career-ops-CLI)
 

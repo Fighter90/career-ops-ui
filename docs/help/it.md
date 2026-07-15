@@ -2161,7 +2161,7 @@ Usa **Scarica .md**, **Salva come PDF** o **Copia** per conservare il profilo �
 
 ## 29. Il Manifesto CareerOps
 
-career-ops — il progetto padre di cui questa app è l'interfaccia — è la prima implementazione di riferimento del [Manifesto CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) (padre v1.20.0). Il manifesto dà un nome alla pratica per cui esiste l'intera toolchain: condurre una ricerca di lavoro come gli ingegneri gestiscono la produzione — con evidenze, con disciplina e con strumenti dalla parte del candidato.
+career-ops — il progetto padre di cui questa app è l'interfaccia — è la prima implementazione di riferimento del [Manifesto CareerOps](https://career-ops.org/manifesto) (padre v1.20.0). Il manifesto dà un nome alla pratica per cui esiste l'intera toolchain: condurre una ricerca di lavoro come gli ingegneri gestiscono la produzione — con evidenze, con disciplina e con strumenti dalla parte del candidato.
 
 ### Cosa afferma
 

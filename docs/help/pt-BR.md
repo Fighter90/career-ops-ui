@@ -2087,7 +2087,7 @@ Use **Baixar .md**, **Salvar como PDF** ou **Copiar** para conservar o perfil �
 
 ## 29. O Manifesto CareerOps
 
-O career-ops — o projeto pai que este app apresenta — é a primeira implementação de referência [do Manifesto CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) (pai v1.20.0). O manifesto nomeia a prática para a qual toda essa cadeia de ferramentas existe: conduzir uma busca de emprego do jeito que engenheiros conduzem produção — com evidências, com disciplina e com as ferramentas do lado do candidato na mesa.
+O career-ops — o projeto pai que este app apresenta — é a primeira implementação de referência [do Manifesto CareerOps](https://career-ops.org/manifesto) (pai v1.20.0). O manifesto nomeia a prática para a qual toda essa cadeia de ferramentas existe: conduzir uma busca de emprego do jeito que engenheiros conduzem produção — com evidências, com disciplina e com as ferramentas do lado do candidato na mesa.
 
 ### O que ele diz
 

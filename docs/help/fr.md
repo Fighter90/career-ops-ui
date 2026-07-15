@@ -2180,7 +2180,7 @@ Utilisez **Télécharger .md**, **Enregistrer en PDF** ou **Copier** pour conser
 
 ## 29. Le Manifeste CareerOps
 
-career-ops — le projet parent que cette application habille — est la première implémentation de référence du [Manifeste CareerOps](https://career-ops.org/manifesto?utm_source=career-ops-ui) (parent v1.20.0). Le manifeste nomme la pratique pour laquelle toute cette chaîne d'outils existe : mener une recherche d'emploi comme les ingénieurs font tourner la production — avec des preuves, avec de la discipline, et avec des outils du côté du candidat de la table.
+career-ops — le projet parent que cette application habille — est la première implémentation de référence du [Manifeste CareerOps](https://career-ops.org/manifesto) (parent v1.20.0). Le manifeste nomme la pratique pour laquelle toute cette chaîne d'outils existe : mener une recherche d'emploi comme les ingénieurs font tourner la production — avec des preuves, avec de la discipline, et avec des outils du côté du candidat de la table.
 
 ### Ce qu'il dit
 

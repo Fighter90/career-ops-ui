@@ -1910,7 +1910,7 @@ career-ops-ui 的大部分功能都在问“这份工作和我的 CV 匹配吗�
 
 ## 29. CareerOps 宣言
 
-career-ops——这款应用所依托的父项目——是 [CareerOps 宣言](https://career-ops.org/manifesto?utm_source=career-ops-ui)(父项目 v1.20.0)的首个参考实现。这份宣言为这整套工具链的存在理由命名:像工程师运营生产系统那样运营求职——讲证据、讲纪律，并把工具放在候选人这一边。
+career-ops——这款应用所依托的父项目——是 [CareerOps 宣言](https://career-ops.org/manifesto)(父项目 v1.20.0)的首个参考实现。这份宣言为这整套工具链的存在理由命名:像工程师运营生产系统那样运营求职——讲证据、讲纪律，并把工具放在候选人这一边。
 
 ### 它讲了什么
 
