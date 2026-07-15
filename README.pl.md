@@ -45,6 +45,10 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 - [Masowa ocena ofert](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
 - [Konfiguracja Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
 
+## Manifest CareerOps
+
+career-ops to pierwsza referencyjna implementacja [Manifestu CareerOps](https://career-ops.org/manifesto) — praktyki prowadzenia poszukiwań pracy z dowodami, dyscypliną i narzędziami po stronie kandydata. Przeczytaj go. Jeśli mówi to, w co wierzysz, podpisz go — Twój podpis staje się commitem. Aplikacja linkuje do niego ze stopki paska bocznego.
+
 ## Kluczowe funkcje
 
 | Strona | Opis |

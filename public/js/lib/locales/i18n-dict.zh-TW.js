@@ -212,6 +212,7 @@ window.__I18N_DICT_ZH_TW = {
   'top.themeToggle': "切換主題",
   'top.langhint': "Enter — 搜尋",
   'top.langLabel': "語言",
+  'footer.manifesto': "CareerOps 宣言",
   'common.loading': "載入中…",
   'common.error': "錯誤",
   'common.retry': "重試",

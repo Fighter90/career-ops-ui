@@ -356,6 +356,12 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 }
 .sidebar-footer .version { font-weight: 600; font-size: 13px; color: var(--foggy); }
 .sidebar-footer .hint { font-size: 12px; color: var(--foggy); }
+.sidebar-footer .manifesto-link {
+  font-size: 12px;
+  color: var(--foggy);
+  text-decoration: none;
+}
+.sidebar-footer .manifesto-link:hover { color: var(--ink); text-decoration: underline; }
 
 /* ───────────────────────── main ───────────────────────── */
 .main {

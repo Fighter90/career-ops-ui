@@ -11,6 +11,14 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.120.0] — 2026-07-16
+
+### Ajouté
+- **Le Manifeste CareerOps** (parité parent v1.20.0) — le projet parent a publié le Manifeste CareerOps (`MANIFESTO.md` · [career-ops.org/manifesto](https://career-ops.org/manifesto)) et le met désormais en avant depuis son README, son updater et son tableau de bord Go. L'interface web fait de même : un nouveau lien dans le pied de page de la barre latérale ouvre la page du manifeste (nouvelle clé i18n `footer.manifesto` dans les 16 locales), le guide d'aide intégré a gagné le §29 « Le Manifeste CareerOps » dans les 16 langues, le README explique ce qu'est le manifeste et comment le signer, et le pied de page de la landing cvstart.org y renvoie également.
+
+### Notes
+- Le parent v1.20.0 a aussi corrigé la suppression des compétences déjà connues du mode ciblé `upskill`, rendu dotenv silencieux pour que la sortie stdout de `scan --json` reste analysable, et corrigé le template CV HTML pour qu'un en-tête de poste reste collé à ses puces — des surfaces côté CLI dans lesquelles l'interface web ne shell pas ; aucun changement de code côté web-ui n'était nécessaire.
+
 ## [1.119.5] — 2026-07-13
 
 ### Corrigé

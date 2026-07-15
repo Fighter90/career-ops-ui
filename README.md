@@ -65,6 +65,10 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 **AI assistants** career-ops runs inside (the web-ui is the standalone alternative): Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI, Antigravity CLI. The web-ui's ⚡ live features map these to API providers in **`#/config`**: Claude Code→Anthropic, Gemini CLI→Gemini, Codex→OpenAI, Qwen Code→Qwen, OpenCode→any/OpenRouter, GitHub Copilot CLI→GitHub Models, Antigravity CLI→Gemini.
 
+## The CareerOps Manifesto
+
+career-ops is the first reference implementation of [the CareerOps Manifesto](https://career-ops.org/manifesto) — the practice of running a job search with evidence, discipline, and tools on the candidate's side of the table. Read it. If it says what you believe, sign it — your signature becomes a commit. The app links to it from the sidebar footer.
+
 ## Install an AI coding assistant (for the parent career-ops CLI)
 
 career-ops runs as slash-commands **inside** an AI coding assistant — install **one** and log in before continuing (the parent's [Quick Start](https://career-ops.org/docs)):

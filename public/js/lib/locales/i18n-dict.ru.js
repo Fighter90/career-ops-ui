@@ -212,6 +212,7 @@ window.__I18N_DICT_RU = {
   'top.themeToggle': "Сменить тему",
   'top.langhint': "Enter — поиск",
   'top.langLabel': "Язык",
+  'footer.manifesto': "Манифест CareerOps",
   'common.loading': "Загрузка…",
   'common.error': "Ошибка",
   'common.retry': "Повторить",

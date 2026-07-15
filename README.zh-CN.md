@@ -46,6 +46,10 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 - [Batch-evaluate offers](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
 
+## CareerOps 宣言
+
+career-ops 是 [CareerOps 宣言](https://career-ops.org/manifesto)的首个参考实现——这是一种以证据、以纪律、把工具放在候选人这一边来经营求职的实践方式。读一读它。如果它说出了你所相信的，就签署它——你的签名会成为一次提交。应用会在侧边栏页脚链接到它。
+
 ## 一条命令启动并初始化
 
 > **重要 —— career-ops-ui 是建构于 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) *之上*的仪表盘。** 它作为 `career-ops/web-ui/` **运行在** career-ops 项目内部,并通过 `../` 读取父目录中的 `cv.md`、`config/`、`data/`。它**无法单独运行** —— 你还需要父仓库 `career-ops`。请勿单独克隆后直接运行 `init`;请使用以下两个选项之一。

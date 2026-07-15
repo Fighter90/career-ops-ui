@@ -211,6 +211,7 @@ window.__I18N_DICT_AR = {
   'top.themeToggle': "تبديل المظهر",
   'top.langhint': "Enter — بحث",
   'top.langLabel': "اللغة",
+  'footer.manifesto': "بيان CareerOps",
   'common.loading': "جارٍ التحميل…",
   'common.error': "خطأ",
   'common.retry': "إعادة المحاولة",

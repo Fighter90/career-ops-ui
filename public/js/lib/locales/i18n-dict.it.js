@@ -212,6 +212,7 @@ window.__I18N_DICT_IT = {
   'top.themeToggle': "Cambia tema",
   'top.langhint': "Invio — cerca",
   'top.langLabel': "Lingua",
+  'footer.manifesto': "Il Manifesto CareerOps",
   'common.loading': "Caricamento…",
   'common.error': "Errore",
   'common.retry': "Riprova",

@@ -3653,6 +3653,24 @@
     "it": "Lingua",
     "tr": "Dil"
   },
+  "footer.manifesto": {
+    "en": "The CareerOps Manifesto",
+    "es": "El Manifiesto CareerOps",
+    "pt-BR": "O Manifesto CareerOps",
+    "ko": "CareerOps 매니페스토",
+    "ja": "CareerOps マニフェスト",
+    "ru": "Манифест CareerOps",
+    "zh-CN": "CareerOps 宣言",
+    "zh-TW": "CareerOps 宣言",
+    "fr": "Le Manifeste CareerOps",
+    "pl": "Manifest CareerOps",
+    "uk": "Маніфест CareerOps",
+    "da": "CareerOps-manifestet",
+    "ar": "بيان CareerOps",
+    "de": "Das CareerOps-Manifest",
+    "it": "Il Manifesto CareerOps",
+    "tr": "CareerOps Manifestosu"
+  },
   "common.loading": {
     "en": "Loading…",
     "es": "Cargando…",

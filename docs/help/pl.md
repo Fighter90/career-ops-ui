@@ -2077,3 +2077,15 @@ To **refleksja AI nad tym, jak czyta się Twoje CV — nie test psychometryczny.
 ### Eksportowanie
 
 Użyj **Pobierz .md**, **Zapisz jako PDF** lub **Kopiuj**, aby zachować profil — te same kontrolki eksportu, których używa się w raportach AI w całej aplikacji. PDF przechodzi przez istniejący wbudowany generator PDF; Markdown to bezpośrednie pobranie.
+
+## 29. Manifest CareerOps
+
+career-ops — projekt nadrzędny, na którym opiera się ta aplikacja — jest pierwszą referencyjną implementacją [Manifestu CareerOps](https://career-ops.org/manifesto) (rodzic w wersji v1.20.0). Manifest nazywa praktykę, dla której istnieje cały ten zestaw narzędzi: prowadzenie poszukiwań pracy tak, jak inżynierowie prowadzą produkcję — z dowodami, dyscypliną i narzędziami po stronie kandydata przy stole.
+
+### Co mówi
+
+Sześć zasad — „aplikuj lepiej do mniejszej liczby ofert", „sygnał ponad wolumen", „dowody ponad słowa kluczowe", „człowiek decyduje", „lokalnie przede wszystkim", „godność po obu stronach stołu" — plus karta praw kandydata na czas rekrutacji zapośredniczonej przez AI: jesteś domyślnie niewidoczny, nikt nie proponuje cię bez twojej zgody, twoja zgoda jest ludzka i nie może być delegowana agentowi, nigdy nie płacisz, twoje dane są twoje. Aplikacja przestrzega tych zasad z założenia: nic nigdy nie jest wysyłane automatycznie, wszystko działa lokalnie, a każde twierdzenie w wygenerowanym CV da się prześledzić z powrotem do Twoich własnych materiałów.
+
+### Czytanie i podpisywanie
+
+Link w stopce paska bocznego otwiera stronę manifestu. Możesz też przeczytać `MANIFESTO.md` w projekcie nadrzędnym albo uruchomić tam `npm run manifesto`, aby otworzyć stronę podpisu. Podpisanie jest opcjonalne i zajmuje dziesięć sekund — Twój podpis staje się publicznym commitem w rejestrze `SIGNATURES.md` repozytorium nadrzędnego. Nic w aplikacji nie zależy od tego, czy podpiszesz.

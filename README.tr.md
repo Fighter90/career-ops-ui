@@ -63,6 +63,10 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 **Yapay zeka asistanları** career-ops bunların içinde çalışır (web-ui bağımsız alternatiftir): Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI, Antigravity CLI. Web-ui'nin ⚡ canlı özellikleri bunları **`#/config`** içinde API sağlayıcılarıyla eşler: Claude Code→Anthropic, Gemini CLI→Gemini, Codex→OpenAI, Qwen Code→Qwen, OpenCode→herhangi biri/OpenRouter, GitHub Copilot CLI→GitHub Models, Antigravity CLI→Gemini.
 
+## CareerOps Manifestosu
+
+career-ops, [CareerOps Manifestosu](https://career-ops.org/manifesto)'nun ilk referans uygulamasıdır — bir iş aramasını kanıtla, disiplinle ve masanın aday tarafında yer alan araçlarla yürütme pratiği. Okuyun. Söyledikleri inandığınız şeyse imzalayın — imzanız bir commit'e dönüşür. Uygulama kenar çubuğu altbilgisinden ona bağlantı verir.
+
 ## Bir yapay zeka kodlama asistanı kurun (üst career-ops CLI için)
 
 career-ops, bir yapay zeka kodlama asistanının **içinde** eğik çizgi komutları olarak çalışır — devam etmeden önce **birini** kurun ve giriş yapın (üst projenin [Hızlı Başlangıç](https://career-ops.org/docs) sayfası):

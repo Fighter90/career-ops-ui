@@ -10,6 +10,14 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.120.0] — 2026-07-16
+
+### Tilføjet
+- **CareerOps-manifestet** (paritet med forælder v1.20.0) — moderprojektet udgav CareerOps-manifestet (`MANIFESTO.md` · [career-ops.org/manifesto](https://career-ops.org/manifesto)) og fremhæver det nu i sin README, sin updater og sit Go-dashboard. Web-ui'en følger trop: et nyt link i sidebjælke-footeren åbner manifest-siden (ny i18n-nøgle `footer.manifesto` i alle 16 lokaliseringer), den indbyggede hjælpeguide fik §29 "CareerOps-manifestet" på alle 16 sprog, README'en forklarer, hvad manifestet er, og hvordan man underskriver det, og cvstart.org-landingens footer linker også til det.
+
+### Noter
+- Forælder v1.20.0 rettede også undertrykkelsen af allerede kendte kompetencer i `upskill`-tilstandens målrettede tilstand, gjorde dotenv tavs, så stdout fra `scan --json` forbliver parsebar, og rettede HTML-CV-skabelonen, så en rolleoverskrift bliver hos sine punkter — CLI-side-flader, som web-ui'en ikke shell'er ind i; ingen ændring af web-ui-kode var nødvendig.
+
 ## [1.119.5] — 2026-07-13
 
 ### Rettet

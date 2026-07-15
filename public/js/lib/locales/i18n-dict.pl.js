@@ -211,6 +211,7 @@ window.__I18N_DICT_PL = {
   'top.themeToggle': "Przełącz motyw",
   'top.langhint': "Enter — wyszukaj",
   'top.langLabel': "Język",
+  'footer.manifesto': "Manifest CareerOps",
   'common.loading': "Ładowanie…",
   'common.error': "Błąd",
   'common.retry': "Ponów",

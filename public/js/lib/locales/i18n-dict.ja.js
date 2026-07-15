@@ -212,6 +212,7 @@ window.__I18N_DICT_JA = {
   'top.themeToggle': "テーマを切り替え",
   'top.langhint': "Enter — 検索",
   'top.langLabel': "言語",
+  'footer.manifesto': "CareerOps マニフェスト",
   'common.loading': "読み込み中…",
   'common.error': "エラー",
   'common.retry': "再試行",

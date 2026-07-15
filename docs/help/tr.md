@@ -2215,3 +2215,15 @@ Bu, **özgeçmişinin nasıl okunduğuna dair bir yapay zeka yansımasıdır —
 ### Dışa aktarma
 
 Profili saklamak için **.md indir**, **PDF olarak kaydet** veya **Kopyala**yı kullan — uygulamanın yapay zeka raporlarının genelinde kullanılan aynı dışa aktarma denetimleridir. PDF, mevcut satır içi PDF oluşturucudan geçer; Markdown ise doğrudan bir indirmedir.
+
+## 29. CareerOps Manifestosu
+
+career-ops — bu uygulamanın önyüzünü oluşturduğu üst proje — [CareerOps Manifestosu](https://career-ops.org/manifesto)'nun (üst proje v1.20.0) ilk referans uygulamasıdır. Manifesto, bu araç zincirinin varlık nedeni olan pratiği adlandırır: bir iş aramasını mühendislerin üretimi yönettiği gibi yönetmek — kanıtla, disiplinle ve masanın aday tarafında yer alan araçlarla.
+
+### Ne diyor
+
+Altı ilke — "daha az yere daha iyi başvur", "hacim yerine sinyal", "anahtar kelime yerine kanıt", "kararı insan verir", "önce yerel", "masanın her iki tarafında da onur" — artı yapay zekâ aracılı işe alım çağı için bir aday hakları bildirgesi: varsayılan olarak görünmezsin, hiç kimse senin evetin olmadan seni önermez, evetin insani bir eylemdir ve bir ajana devredilemez, asla ödeme yapmazsın, verilerin sana aittir. Uygulama bu kuralları tasarım gereği izler: hiçbir şey otomatik gönderilmez, her şey yerel olarak çalışır ve üretilen bir CV'deki her iddia kendi materyallerine dayanır.
+
+### Okuma ve imzalama
+
+Kenar çubuğu altbilgisindeki bağlantı manifesto sayfasını açar. `MANIFESTO.md` dosyasını üst projede de okuyabilir veya imza sayfasını açmak için orada `npm run manifesto` çalıştırabilirsin. İmzalamak isteğe bağlıdır ve on saniye sürer — imzan üst depodaki `SIGNATURES.md` defterinde herkese açık bir commit'e dönüşür. Uygulamadaki hiçbir şey imzalayıp imzalamadığına bağlı değildir.

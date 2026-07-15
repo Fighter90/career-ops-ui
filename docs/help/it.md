@@ -2158,3 +2158,15 @@ Fai clic su **Genera profilo** e il modello legge il tuo CV, il tuo profilo, il 
 ### Esportare
 
 Usa **Scarica .md**, **Salva come PDF** o **Copia** per conservare il profilo — gli stessi controlli di esportazione usati nei report IA dell'app. Il PDF passa attraverso il generatore di PDF inline esistente; il Markdown è un download diretto.
+
+## 29. Il Manifesto CareerOps
+
+career-ops — il progetto padre di cui questa app è l'interfaccia — è la prima implementazione di riferimento del [Manifesto CareerOps](https://career-ops.org/manifesto) (padre v1.20.0). Il manifesto dà un nome alla pratica per cui esiste l'intera toolchain: condurre una ricerca di lavoro come gli ingegneri gestiscono la produzione — con evidenze, con disciplina e con strumenti dalla parte del candidato.
+
+### Cosa afferma
+
+Sei principi — «candidati meglio a meno posizioni», «segnale anziché volume», «evidenze anziché parole chiave», «decide un essere umano», «prima il locale», «dignità da entrambi i lati del tavolo» — più una carta dei diritti del candidato per l'era delle assunzioni mediate dall'IA: sei invisibile per impostazione predefinita, nessuno ti propone senza il tuo sì, il tuo sì è umano e non può essere delegato a un agente, non paghi mai, i tuoi dati sono tuoi. L'app segue queste regole per progettazione: nulla viene mai inviato automaticamente, tutto viene eseguito in locale e ogni affermazione in un CV generato risale ai tuoi stessi materiali.
+
+### Leggerlo e firmarlo
+
+Il link nel footer della barra laterale apre la pagina del manifesto. Puoi anche leggere `MANIFESTO.md` nel progetto padre, oppure eseguire lì `npm run manifesto` per aprire la pagina di firma. Firmare è facoltativo e richiede dieci secondi — la tua firma diventa un commit pubblico nel registro `SIGNATURES.md` del repository padre. Nulla nell'app dipende dal fatto che tu firmi.

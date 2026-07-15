@@ -46,6 +46,10 @@ O [career-ops](https://career-ops.org) é um sistema open-source de busca de emp
 - [Batch-evaluate offers](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
 
+## O Manifesto CareerOps
+
+O career-ops é a primeira implementação de referência [do Manifesto CareerOps](https://career-ops.org/manifesto) — a prática de conduzir uma busca de emprego com evidências, disciplina e as ferramentas do lado do candidato na mesa. Leia. Se ele disser o que você acredita, assine — sua assinatura se torna um commit. O app tem um link para ele no rodapé da barra lateral.
+
 ## Inicie e configure com um único comando
 
 > **Importante — career-ops-ui é um painel *em cima de* [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** Ele roda **dentro** de um projeto career-ops como `career-ops/web-ui/` e lê seu `cv.md`, `config/`, `data/` da pasta pai via `../`. **Não funciona de forma independente** — você também precisa do repositório pai `career-ops`. Não o clone sozinho e execute `init`; use uma das duas opções abaixo.
