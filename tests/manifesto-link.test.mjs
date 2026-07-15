@@ -8,7 +8,12 @@
  *
  * These guards keep a future refactor from silently dropping any of the
  * three surfaces, and pin the link contract (outbound anchor, no inline
- * handlers, i18n-keyed label).
+ * handlers, i18n-keyed label, no tracking params).
+ *
+ * Link checks extract the actual link targets and compare them with
+ * strict equality — the canonical pattern CodeQL recommends over URL
+ * substring / unanchored-regex matching (js/incomplete-url-substring-
+ * sanitization, js/regex/missing-regexp-anchor).
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -20,22 +25,27 @@ import { I18N_LANGS, loadAssembledDict } from './helpers/i18n-vm.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 
-// Presence checks use regexes (not String.includes on a URL literal) so
-// CodeQL's js/incomplete-url-substring-sanitization doesn't misread the
-// doc assertions as URL validation.
-const MANIFESTO_RE = /https:\/\/career-ops\.org\/manifesto/;
-// The links carry no tracking params (v1.120.0 review: utm_source removed).
-const NO_UTM_RE = /career-ops\.org\/manifesto\?/;
+const MANIFESTO_URL = 'https://career-ops.org/manifesto';
 const HELP_BUNDLES = [
   'en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW',
   'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr',
 ];
 
+/** All link targets in a document: markdown `](url)`, html `href="url"`, astro `href: 'url'`. */
+function linkTargets(text) {
+  const out = [];
+  for (const m of text.matchAll(/\]\(([^)\s]+)\)/g)) out.push(m[1]);
+  for (const m of text.matchAll(/href="([^"]+)"/g)) out.push(m[1]);
+  for (const m of text.matchAll(/href: '([^']+)'/g)) out.push(m[1]);
+  return out;
+}
+
 test('index.html sidebar footer carries the manifesto link', () => {
   const html = readFileSync(resolve(ROOT, 'public', 'index.html'), 'utf8');
   assert.ok(html.includes('class="manifesto-link"'), 'manifesto-link anchor missing');
-  assert.match(html, MANIFESTO_RE, 'manifesto URL missing');
-  assert.ok(!NO_UTM_RE.test(html), 'manifesto link must carry no query params');
+  // Exact-equality on the extracted href: correct URL AND no query params.
+  assert.ok(linkTargets(html).some((u) => u === MANIFESTO_URL),
+    'manifesto href must be exactly the clean manifesto URL');
   assert.ok(html.includes('data-i18n="footer.manifesto"'), 'footer.manifesto i18n binding missing');
   const anchor = html.split('manifesto-link')[1].split('</a>')[0];
   assert.ok(anchor.includes('rel="noopener noreferrer"'), 'outbound link must be noopener noreferrer');
@@ -57,20 +67,22 @@ test('every help bundle has the §29 manifesto section with the manifesto URL', 
   for (const lang of HELP_BUNDLES) {
     const text = readFileSync(resolve(ROOT, 'docs', 'help', `${lang}.md`), 'utf8');
     assert.ok(/^## 29\. /m.test(text), `${lang}.md missing "## 29." heading`);
-    assert.match(text, MANIFESTO_RE, `${lang}.md missing manifesto URL`);
+    assert.ok(linkTargets(text).some((u) => u === MANIFESTO_URL),
+      `${lang}.md must link the clean manifesto URL`);
   }
 });
 
 test('README (en) explains the manifesto', () => {
   const text = readFileSync(resolve(ROOT, 'README.md'), 'utf8');
   assert.ok(text.includes('## The CareerOps Manifesto'), 'README manifesto section missing');
-  assert.match(text, MANIFESTO_RE, 'README manifesto URL missing');
+  assert.ok(linkTargets(text).some((u) => u === MANIFESTO_URL),
+    'README must link the clean manifesto URL');
 });
 
 test('cvstart.org footer links to the manifesto in every site locale file', () => {
   const footer = readFileSync(resolve(ROOT, 'site', 'src', 'components', 'Footer.astro'), 'utf8');
-  assert.match(footer, MANIFESTO_RE, 'Footer.astro manifesto link missing');
-  assert.ok(!NO_UTM_RE.test(footer), 'site manifesto link must carry no query params');
+  assert.ok(linkTargets(footer).some((u) => u === MANIFESTO_URL),
+    'Footer.astro must link the clean manifesto URL');
   assert.ok(footer.includes("t(locale, 'footer.manifesto')"), 'Footer.astro must label via i18n');
   for (const lang of HELP_BUNDLES) {
     const jsonName = lang === 'ko-KR' ? 'ko' : lang;
