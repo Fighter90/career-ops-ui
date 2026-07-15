@@ -2,12 +2,17 @@
 
 Усі важливі зміни **career-ops-ui**. Формат — [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), версії за [SemVer](https://semver.org/).
 
-Переклади: [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md)
+Переклади: [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
 
 > **Примітка щодо перекладу (v1.70.0)** — українську додано як одну з трьох нових мов інтерфейсу. Цей файл перекладає найновіші записи; повна історія — в [англійському CHANGELOG](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md), який є нормативним джерелом.
 
 ---
 
+
+## [1.122.0] — 2026-07-16
+
+### Додано
+- **Гінді (हिन्दी) — 17-та мова** — повний словник інтерфейсу (~1 110 ключів), повний вбудований посібник довідки (паритет 29 H2 / 105 H3), `README.hi.md`, новий `CHANGELOG.hi.md` (починається з v1.122.0, за прецедентом de/it/tr), лендинг cvstart.org + сторінки Методологія/Ліцензія/Журнал змін/Довідка, перемикач мов (🇮🇳), автовизначення мови браузера та локалізований знімок дашборда. Кожен гейт паритету ×16 тепер працює ×17: паритет словника i18n + знімок, гейти H2/H3 довідки, паритет CHANGELOG, `check-i18n` сайту та перевірка локалей Playwright.
 
 ## [1.121.0] — 2026-07-16
 

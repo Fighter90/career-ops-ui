@@ -2,12 +2,17 @@
 
 Усі важливі зміни **career-ops-ui**. Формат — [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), версії за [SemVer](https://semver.org/).
 
-Переклади: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
+Переклади: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
 
 > **Примітка щодо перекладу (v1.70.0)** — українську додано як одну з трьох нових мов інтерфейсу. Цей файл перекладає найновіші записи; повна історія — в [англійському CHANGELOG](CHANGELOG.md), який є нормативним джерелом.
 
 ---
 
+
+## [1.122.0] — 2026-07-16
+
+### Додано
+- **Гінді (हिन्दी) — 17-та мова** — повний словник інтерфейсу (~1 110 ключів), повний вбудований посібник довідки (паритет 29 H2 / 105 H3), `README.hi.md`, новий `CHANGELOG.hi.md` (починається з v1.122.0, за прецедентом de/it/tr), лендинг cvstart.org + сторінки Методологія/Ліцензія/Журнал змін/Довідка, перемикач мов (🇮🇳), автовизначення мови браузера та локалізований знімок дашборда. Кожен гейт паритету ×16 тепер працює ×17: паритет словника i18n + знімок, гейти H2/H3 довідки, паритет CHANGELOG, `check-i18n` сайту та перевірка локалей Playwright.
 
 ## [1.121.0] — 2026-07-16
 

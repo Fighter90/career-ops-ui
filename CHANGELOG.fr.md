@@ -2,7 +2,7 @@
 
 Tous les changements notables de **career-ops-ui**. Format selon [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versionnage [SemVer](https://semver.org/lang/fr/).
 
-Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
+Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
 
 > **Note i18n** — depuis la v1.12.0, les entrées sont localisées dans chaque langue. Les entrées plus anciennes (v1.11.x, v1.10.x) résident dans le [CHANGELOG anglais](CHANGELOG.md), qui fait foi.
 
@@ -10,6 +10,11 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 
 ---
 
+
+## [1.122.0] — 2026-07-16
+
+### Ajouté
+- **Hindi (हिन्दी) — la 17e langue** — dictionnaire d'UI complet (~1 110 clés), guide d'aide intégré complet (parité 29 H2 / 105 H3), `README.hi.md`, un nouveau `CHANGELOG.hi.md` (débutant à la v1.122.0, selon le précédent de/it/tr), les pages landing + Méthodologie/Licence/Changelog/Aide de cvstart.org, le sélecteur de langue (🇮🇳), la détection automatique de la langue du navigateur, et une capture d'écran de tableau de bord localisée. Chaque garde-fou de parité ×16 tourne désormais ×17 : parité du dictionnaire i18n + instantané, garde-fous H2/H3 de l'aide, parité du CHANGELOG, `check-i18n` du site, et le balayage des locales Playwright.
 
 ## [1.121.0] — 2026-07-16
 

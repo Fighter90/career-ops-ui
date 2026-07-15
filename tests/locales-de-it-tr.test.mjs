@@ -49,7 +49,7 @@ test('de/it/tr are registered in the language switcher (getLangs) with label + f
     assert.ok(entry.label && entry.label.length, `${l} needs a label`);
     assert.match(entry.flag, /\p{Regional_Indicator}/u, `${l} needs a flag emoji`);
   }
-  assert.equal(I18n.getLangs().length, 16, 'exactly 16 locales registered');
+  assert.equal(I18n.getLangs().length, 17, 'exactly 17 locales registered');
 });
 
 test('setLang() sticks and t() returns the locale-specific value (not the en fallback)', () => {

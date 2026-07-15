@@ -39,7 +39,7 @@ const DICT_PATH = resolve(LIB_DIR, 'i18n-dict.js'); // the assembler
 // Kept in the SAME order as the browser <script> load order (see
 // public/index.html + i18n-dict.js LANGS) so loadDict() can reuse it
 // directly — one list, no drift when locales change.
-const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr'];
+const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
 
 const PERSONAL = [
   /AWS\s+Solutions\s+Architect/i,

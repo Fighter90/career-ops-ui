@@ -2,7 +2,7 @@
 
 Todos los cambios destacables de **career-ops-ui**. Formato según [Keep a Changelog](https://keepachangelog.com/es/1.1.0/), versionado [SemVer](https://semver.org/lang/es/).
 
-Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
+Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
 
 > **Nota i18n** — desde v1.12.0 en adelante las entradas están localizadas en cada idioma. Las entradas anteriores (v1.11.x, v1.10.x) permanecen en ruso por convención del proyecto; el contenido normativo inglés está en [CHANGELOG.md](CHANGELOG.md).
 
@@ -10,6 +10,11 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 
 ---
 
+
+## [1.122.0] — 2026-07-16
+
+### Añadido
+- **Hindi (हिन्दी) — el 17.º idioma** — diccionario completo de la interfaz (~1110 claves), la guía de ayuda integrada completa (paridad de 29 H2 / 105 H3), `README.hi.md`, un nuevo `CHANGELOG.hi.md` (que empieza en la v1.122.0, siguiendo el precedente de de/it/tr), las páginas de landing + Metodología/Licencia/Historial de cambios/Ayuda de cvstart.org, el selector de idioma (🇮🇳), la autodetección del idioma del navegador, y una captura de pantalla del dashboard localizada. Todas las comprobaciones de paridad ×16 ahora se ejecutan ×17: paridad del diccionario i18n + snapshot, comprobaciones de paridad H2/H3 de la ayuda, paridad del CHANGELOG, `check-i18n` del sitio, y el barrido de locales de Playwright.
 
 ## [1.121.0] — 2026-07-16
 

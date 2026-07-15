@@ -27,7 +27,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CHECK = join(ROOT, 'site', 'scripts', 'check-i18n.mjs');
 const SYNC = join(ROOT, 'site', 'scripts', 'sync-assets.mjs');
 
-const CODES = ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr'];
+const CODES = ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
 
 /** Build a minimal site-shaped skeleton with two-key dictionaries. */
 function fixtureSite() {

@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.122.0] — 2026-07-16
+
+### Eklendi
+- **Hintçe (हिन्दी) — 17. dil** — tam arayüz sözlüğü (~1.110 anahtar), eksiksiz uygulama içi yardım kılavuzu (29 H2 / 105 H3 paritesi), `README.hi.md`, yeni bir `CHANGELOG.hi.md` (de/it/tr emsalini izleyerek v1.122.0'dan başlıyor), cvstart.org landing + Metodoloji/Lisans/Değişiklik Günlüğü/Yardım sayfaları, dil değiştirici (🇮🇳), tarayıcı diline göre otomatik algılama ve yerelleştirilmiş bir dashboard ekran görüntüsü. Her ×16 parite kapısı artık ×17 çalışıyor: i18n sözlük paritesi + anlık görüntü, yardım H2/H3 kapıları, CHANGELOG paritesi, site `check-i18n` ve Playwright yerel ayar taraması.
+
 ## [1.121.0] — 2026-07-16
 
 ### Eklendi

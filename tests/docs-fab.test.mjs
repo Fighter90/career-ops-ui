@@ -50,7 +50,7 @@ test('docs-fab carries data-i18n hooks so applyI18n() re-localizes it on languag
 
 test('the 5 fab.* keys + docs.err exist in all 16 locales (assembled per-key map)', () => {
   const dict = loadAssembledDict();
-  const langs = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr'];
+  const langs = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
   for (const k of ['fab.open', 'fab.title', 'fab.status', 'fab.close', 'fab.greeting', 'docs.err']) {
     const perLocale = dict[k];
     assert.ok(perLocale && typeof perLocale === 'object', `missing i18n key ${k}`);

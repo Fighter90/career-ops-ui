@@ -2,13 +2,18 @@
 
 Alle væsentlige ændringer i **career-ops-ui** er dokumenteret her. Formatet følger [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), og projektet følger [Semantic Versioning](https://semver.org/).
 
-Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [العربية](CHANGELOG.ar.md)
+Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
 
 > **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 
 ---
 
 
+
+## [1.122.0] — 2026-07-16
+
+### Tilføjet
+- **Hindi (हिन्दी) — det 17. sprog** — komplet UI-ordbog (ca. 1.110 nøgler), den fuldstændige indbyggede hjælpevejledning (29 H2 / 105 H3 paritet), `README.hi.md`, en ny `CHANGELOG.hi.md` (starter ved v1.122.0, efter samme model som de/it/tr), cvstart.org-landingen + Metodologi-/Licens-/Changelog-/Hjælp-siderne, sprogvælgeren (🇮🇳), automatisk browsersprog-detektion og et lokaliseret dashboard-screenshot. Hver ×16-paritetsgate kører nu ×17: i18n-ordbogsparitet + snapshot, hjælp-gates for H2/H3, changelog-paritet, sitets `check-i18n` og Playwright-lokalitetsgennemgangen.
 
 ## [1.121.0] — 2026-07-16
 

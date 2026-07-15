@@ -2,6 +2,11 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.122.0] — 2026-07-16
+
+### Hinzugefügt
+- **Hindi (हिन्दी) — die 17. Sprache** — vollständiges UI-Wörterbuch (~1.110 Schlüssel), das komplette eingebettete Hilfehandbuch (29 H2 / 105 H3 in Parität), `README.hi.md`, ein neues `CHANGELOG.hi.md` (beginnt bei v1.122.0, nach dem Vorbild von de/it/tr), die cvstart.org-Landing sowie die Seiten Methodik/Lizenz/Changelog/Hilfe, der Sprachumschalter (🇮🇳), die automatische Erkennung der Browsersprache und ein lokalisierter Dashboard-Screenshot. Jedes ×16-Paritätsgate läuft jetzt ×17: i18n-Wörterbuch-Parität + Snapshot, die Hilfe-H2/H3-Gates, CHANGELOG-Parität, das `check-i18n` der Site und der Playwright-Locale-Sweep.
+
 ## [1.121.0] — 2026-07-16
 
 ### Hinzugefügt

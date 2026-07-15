@@ -12,7 +12,7 @@ const SITE = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const I18N = join(SITE, 'src', 'i18n');
 
 // Keep in sync with src/i18n/locales.ts (codes).
-const CODES = ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr'];
+const CODES = ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
 
 const files = readdirSync(I18N).filter((f) => f.endsWith('.json'));
 let failed = false;

@@ -2,12 +2,17 @@
 
 جميع التغييرات المهمة في **career-ops-ui**. التنسيق وفق [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)، والإصدارات وفق [SemVer](https://semver.org/).
 
-الترجمات: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md)
+الترجمات: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
 
 > **ملاحظة بشأن الترجمة (v1.70.0)** — أُضيفت العربية كإحدى ثلاث لغات واجهة جديدة. يترجم هذا الملف أحدث الإدخالات؛ السجل الكامل في [CHANGELOG الإنجليزي](CHANGELOG.md) وهو المرجع المعتمد.
 
 ---
 
+
+## [1.122.0] — 2026-07-16
+
+### أُضيف
+- **الهندية (हिन्दी) — اللغة السابعة عشرة** — قاموس واجهة كامل (نحو 1,110 مفتاحاً)، ودليل المساعدة الكامل داخل التطبيق (تكافؤ 29 قسماً رئيسياً / 105 قسماً فرعياً)، وREADME.hi.md، وCHANGELOG.hi.md جديد (يبدأ من v1.122.0، على غرار سابقة الألمانية والإيطالية والتركية)، وصفحة الهبوط cvstart.org مع صفحات المنهجية/الرخصة/سجل التغييرات/المساعدة، ومبدّل اللغة (🇮🇳)، والكشف التلقائي عن لغة المتصفح، ولقطة شاشة موطّنة للوحة التحكم. أصبح كل بوابة تكافؤ ×16 تعمل الآن ×17: تكافؤ قاموس i18n واللقطة المرجعية، وبوابتا الأقسام الرئيسية/الفرعية لدليل المساعدة، وتكافؤ سجل التغييرات، وفحص `check-i18n` في الموقع، ومسح Playwright للغات.
 
 ## [1.121.0] — 2026-07-16
 

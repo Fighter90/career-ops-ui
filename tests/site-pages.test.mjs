@@ -22,7 +22,7 @@ const ROOT = resolve(__dirname, '..');
 const SITE = resolve(ROOT, 'site');
 
 const PAGES = ['methodology', 'license', 'changelog'];
-const SITE_LOCALES = ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr'];
+const SITE_LOCALES = ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
 const NEW_KEYS = [
   'nav.methodology', 'footer.parentMethodology',
   'meta.methodologyTitle', 'meta.methodologyDesc',
@@ -80,7 +80,7 @@ test('sync-assets syncs the changelog collection and the license text', () => {
 test('help bundles and README link the methodology page', () => {
   const METHODOLOGY_URL = 'https://career-ops.org/methodology';
   const targets = (text) => [...text.matchAll(/\]\(([^)\s]+)\)/g)].map((m) => m[1]);
-  const HELP = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr'];
+  const HELP = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
   for (const lang of HELP) {
     const text = readFileSync(resolve(ROOT, 'docs', 'help', `${lang}.md`), 'utf8');
     assert.ok(targets(text).some((u) => u === METHODOLOGY_URL), `docs/help/${lang}.md missing methodology link`);

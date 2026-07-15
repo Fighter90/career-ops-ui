@@ -2,12 +2,17 @@
 
 Все значимые изменения **career-ops-ui** задокументированы здесь. Формат — [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/), версии по [Semantic Versioning](https://semver.org/lang/ru/).
 
-Переводы: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md)
+Переводы: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
 
 > **Примечание о переводе.** Файл полностью переведён на русский: тела всех записей переписаны на технический русский без англоязычных заглушек.
 
 ---
 
+
+## [1.122.0] — 2026-07-16
+
+### Добавлено
+- **Хинди (हिन्दी) — 17-й язык** — полный словарь интерфейса (~1110 ключей), полное встроенное руководство справки (паритет 29 H2 / 105 H3), `README.hi.md`, новый `CHANGELOG.hi.md` (начинается с v1.122.0, по образцу de/it/tr), лендинг cvstart.org и страницы Methodology/License/Changelog/Help, переключатель языка (🇮🇳), автоопределение языка браузера и локализованный скриншот дашборда. Теперь каждый паритетный гейт «×16» проверяется как «×17»: паритет словаря i18n и снапшот, гейты H2/H3 справки, паритет CHANGELOG, `check-i18n` сайта и локальный прогон Playwright.
 
 ## [1.121.0] — 2026-07-16
 

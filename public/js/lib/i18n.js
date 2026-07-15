@@ -35,6 +35,7 @@ window.I18n = (function () {
     { code: 'de',    label: 'Deutsch',    flag: '🇩🇪' },
     { code: 'it',    label: 'Italiano',   flag: '🇮🇹' },
     { code: 'tr',    label: 'Türkçe',     flag: '🇹🇷' },
+    { code: 'hi',    label: 'हिन्दी',      flag: '🇮🇳' },
   ];
 
   // I18N-EXPAND (v1.70.0) — locales whose script is written right-to-left.
@@ -77,6 +78,7 @@ window.I18n = (function () {
     if (browser.startsWith('de')) return 'de';
     if (browser.startsWith('it')) return 'it';
     if (browser.startsWith('tr')) return 'tr';
+    if (browser.startsWith('hi')) return 'hi';
     return 'en';
   }
 
