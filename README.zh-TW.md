@@ -48,7 +48,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 ## CareerOps 宣言
 
-career-ops 是 [CareerOps 宣言](https://career-ops.org/manifesto?utm_source=career-ops-ui)的第一個參考實作——這是一種以證據、紀律,並讓工具站在應徵者這一邊桌面上的方式來經營求職的實踐。讀一讀它。如果它說出了你所相信的事,就簽署它——你的簽名會成為一筆提交。本應用程式在側邊欄底部頁尾提供其連結。
+career-ops 是 [CareerOps 宣言](https://career-ops.org/manifesto?utm_source=career-ops-ui)的第一個參考實作——這是一種以證據、紀律，並讓工具站在應徵者這一邊桌面上的方式來經營求職的實踐。讀一讀它。如果它說出了你所相信的事，就簽署它——你的簽名會成為一筆提交。本應用程式在側邊欄底部頁尾提供其連結。
 
 ## 一鍵啟動並初始化
 
