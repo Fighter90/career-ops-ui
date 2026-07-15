@@ -32,11 +32,13 @@ const NAV = [
       <span class="text-[1.05rem] font-extrabold tracking-tight">career-ops-ui</span>
     </a>
 
-    <nav class="hidden items-center gap-1 lg:flex" aria-label="Main">
+    {/* v1.122.0 — 7 items × long locales (ru/de/hi) wrapped to 3 lines at lg;
+        nowrap + xl breakpoint keeps every label on one line. */}
+    <nav class="hidden items-center gap-1 xl:flex" aria-label="Main">
       {NAV.map((n) => (
         <a
           href={PAGE_IDS.has(n.id) ? `${home}${n.id}/` : anchor(n.id)}
-          class="rounded-full px-3 py-1.5 text-sm font-medium text-ink-soft transition hover:bg-paper-alt hover:text-ink"
+          class="whitespace-nowrap rounded-full px-2.5 py-1.5 text-sm font-medium text-ink-soft transition hover:bg-paper-alt hover:text-ink"
           aria-current={PAGE_IDS.has(n.id) && page === n.id ? 'page' : undefined}
         >
           {t(locale, n.key)}
@@ -55,7 +57,7 @@ const NAV = [
       <button
         id="menu-btn"
         type="button"
-        class="btn-ghost !p-2 lg:hidden needs-js"
+        class="btn-ghost !p-2 xl:hidden needs-js"
         aria-expanded="false"
         aria-controls="mobile-menu"
         aria-label={t(locale, 'a11y.menu')}
@@ -65,12 +67,12 @@ const NAV = [
     </div>
   </div>
 
-  <div id="mobile-menu" hidden class="mobile-menu fixed inset-0 top-16 z-30 overflow-y-auto bg-paper lg:hidden">
+  <div id="mobile-menu" hidden class="mobile-menu fixed inset-0 top-16 z-30 overflow-y-auto bg-paper xl:hidden">
     <nav class="container-site flex flex-col gap-1 py-6" aria-label="Mobile">
       {NAV.map((n) => (
         <a
           href={PAGE_IDS.has(n.id) ? `${home}${n.id}/` : anchor(n.id)}
-          class="rounded-[12px] px-4 py-3 text-lg font-semibold hover:bg-paper-alt"
+          class="whitespace-nowrap rounded-[12px] px-4 py-3 text-lg font-semibold hover:bg-paper-alt"
         >
           {t(locale, n.key)}
         </a>
