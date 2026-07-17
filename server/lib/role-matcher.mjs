@@ -17,6 +17,8 @@ export const ROLE_STOPWORDS = new Set([
   'fulltime', 'parttime', 'permanent', 'temporary', 'intern', 'internship',
   // generic job words
   'role', 'position', 'opportunity', 'team', 'based',
+  // reposting/tracking annotations — meta noise, never part of the job itself
+  'repost', 'reposted', 'relisted',
   // very common locations
   'bangalore', 'bengaluru', 'mumbai', 'delhi', 'hyderabad', 'pune', 'chennai',
   'london', 'berlin', 'paris', 'madrid', 'barcelona', 'amsterdam', 'dublin',
@@ -77,6 +79,23 @@ export function roleFuzzyMatch(a, b) {
 
   const discriminating = overlap.filter((w) => !BASELINE_TOKENS.has(w));
   if (discriminating.length === 0) return false;
+
+  // Parent #1922 (v1.21.0): a generic base title carries no suffix of its own
+  // to counterbalance a specialized sibling's extra word, so shared tokens
+  // alone can cross the Jaccard threshold even though that extra word is
+  // exactly the signal that these are two separately-postable openings
+  // ("Senior Analytics Engineer" vs "Senior Analytics Engineer, People
+  // Analytics"). When one token set is a strict subset of the other and the
+  // superset's extra tokens contain a non-baseline word, treat that word as a
+  // specialization marker and keep the titles distinct.
+  const smaller = wordsA.length <= wordsB.length ? wordsA : wordsB;
+  const larger = wordsA.length <= wordsB.length ? wordsB : wordsA;
+  const isProperSubset = larger.length > smaller.length && overlap.length === smaller.length;
+  if (isProperSubset) {
+    const smallerSet = new Set(smaller);
+    const extraTokens = larger.filter((w) => !smallerSet.has(w));
+    if (extraTokens.some((w) => !BASELINE_TOKENS.has(w))) return false;
+  }
 
   const union = new Set([...wordsA, ...wordsB]).size;
   return overlap.length / union >= 0.6;

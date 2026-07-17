@@ -11,6 +11,17 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.123.0] — 2026-07-17
+
+### Añadido
+- **Fuente de escaneo Oracle Recruiting Cloud** (paridad con el padre v1.21.0, #1929) — la API REST `recruitingCEJobRequisitions` sin autenticación de los portales de empleo de Oracle Fusion/ORC (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell…): anclada al host `*.fa[.<región>][.ocs].oraclecloud.com`, el número de sitio se resuelve a partir del `careers_url` de cada empresa seguida, paginación por offset con un tope duro de páginas, y cabeceras tipo navegador conscientes del WAF. El registro ahora ofrece **62 adaptadores (57 EN + 5 RU)**; el desplegable de origen de `#/scan` y su comprobación de desincronización quedan actualizados; nueva suite aislada para CI `tests/sources-oraclecloud.test.mjs`.
+
+### Corregido
+- **Detector de reposts: los títulos base se mantienen distintos de sus variantes con sufijo especializado** (padre #1922) — «Senior Analytics Engineer» ya no se agrupa con «Senior Analytics Engineer, People Analytics»: cuando los tokens de un título son un subconjunto estricto de los del otro y el token adicional es una especialización real (no una palabra genérica), ambos se tratan como vacantes publicables por separado. Las anotaciones de repost («(Repost)», «relisted») ahora se filtran como ruido léxico. +2 aserciones en `tests/detect-reposts.test.mjs`.
+
+### Notas
+- El padre v1.21.0 también incorporó cambios del lado del CLI que la interfaz web no invoca o ya cubre: el aviso de reaplicación a empresas repetidas (la interfaz web tiene su propio período de enfriamiento de reaplicación desde la v1.84.0), las opciones `--format`/`--report` de la carta de presentación, los modos de prompt de entrevista de señal de alerta / inteligencia del panel / no-show, la persistencia de señales de confianza y de salud de portales del escaneo (la interfaz web ejecuta su propio escáner en proceso con `trust-validator` y la página de salud de Portales), y las extensiones de stats/salary-gap (retransmitidas de solo lectura y con fallback silencioso).
+
 ## [1.122.0] — 2026-07-16
 
 ### Añadido

@@ -9,6 +9,17 @@
 ---
 
 
+## [1.123.0] — 2026-07-17
+
+### 追加
+- **Oracle Recruiting Cloud スキャンソース**(親 v1.21.0 パリティ、#1929)— Oracle Fusion/ORC 系のキャリアサイト(JPMorgan Chase、Oracle、BNY Mellon、American Express、Honeywell など)が使うゼロ認証の `recruitingCEJobRequisitions` REST API:`*.fa[.<region>][.ocs].oraclecloud.com` にホスト固定し、サイト番号は各トラッキング対象企業の `careers_url` から解決、オフセットページネーションはハード上限付き、WAF を意識したブラウザ風ヘッダーを使用します。レジストリは **62 個のアダプタ(英語圏 57 個 + ロシア系 5 個)** を同梱するようになりました。`#/scan` の Source ドロップダウンのフォールバックとそのドリフトゲートも更新済みです。CI 分離された新しいテストスイート `tests/sources-oraclecloud.test.mjs` を追加。
+
+### 修正
+- **repost 検出器:ベースタイトルを特化サフィックス違いの兄弟求人と区別**(親 #1922)— 「Senior Analytics Engineer」が「Senior Analytics Engineer, People Analytics」とクラスタリングされなくなりました:一方のタイトルのトークンが他方の厳密な部分集合であり、余分なトークンが(基本語ではなく)実際の専門分化を示す場合、両者は別々に応募可能な求人として扱われます。再掲載の注記(「(Repost)」、「relisted」)はメタ的なノイズとしてストップワード化されました。`tests/detect-reposts.test.mjs` に +2 アサーション。
+
+### 補足
+- 親 v1.21.0 では、Web UI がシェルアウトしていない、またはすでにカバーしている CLI 側の変更も出荷されています:同一企業への再応募警告(Web UI は v1.84.0 以降、再応募クールダウンを保有)、カバーレターの `--format` / `--report` フラグ、面接のレッドフラグ / パネルインテル / 無断欠席メールのプロンプトモード、スキャンの信頼シグナル & ポータルヘルスの永続化(Web UI は独自のインプロセススキャナーで `trust-validator` と Portals health ページを運用)、そして stats/salary-gap の拡張(読み取り専用かつフェイルソフトで中継)。
+
 ## [1.122.0] — 2026-07-16
 
 ### 追加

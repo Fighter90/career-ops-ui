@@ -10,6 +10,17 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.123.0] — 2026-07-17
+
+### Tilføjet
+- **Oracle Recruiting Cloud-scan-kilde** (paritet med forælder v1.21.0, #1929) — den zero-auth `recruitingCEJobRequisitions`-REST-API'en på Oracle Fusion/ORC-karrieresider (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …): vært-fastgjort til `*.fa[.<region>][.ocs].oraclecloud.com`, sitenummeret udledes af hver sporet virksomheds `careers_url`, offset-paginering med et hårdt sidetag, og WAF-bevidste browser-lignende headers. Registreringen leverer nu **62 adaptere (57 EN + 5 RU)**; `#/scan`-Source-rullelistens fallback og dens drift-gate er opdateret; ny CI-isoleret suite `tests/sources-oraclecloud.test.mjs`.
+
+### Rettet
+- **Repost-detektor: grundtitler forbliver adskilt fra søskende med specialiserings-suffiks** (forælder #1922) — "Senior Analytics Engineer" klynger ikke længere sammen med "Senior Analytics Engineer, People Analytics": når den ene titels tokens er en streng delmængde af den andens, og det ekstra token er en reel specialisering (ikke et basisord), behandles de to som separat-opslåelige stillinger. Repost-annoteringer ("(Repost)", "relisted") stopordsfiltreres nu som meta-støj. +2 assertions i `tests/detect-reposts.test.mjs`.
+
+### Noter
+- Forælder v1.21.0 leverede også CLI-side ændringer, som web-ui'en ikke shell'er ind i eller allerede dækker: gentag-virksomheds-genansøgningsadvarslen (web-ui'en har haft genansøgnings-cooldown siden v1.84.0), cover letter-flagene `--format`/`--report`, samtale-tilstandene for røde flag / panel-indsigt / no-show-e-mail-prompts, scan-tillidssignaler & portal-sundheds-persistens (web-ui'en kører sin egen in-process-scanner med `trust-validator` og Portalsundhed-siden) samt stats-/løngab-udvidelserne (relæet er skrivebeskyttet og fejler blødt).
+
 ## [1.122.0] — 2026-07-16
 
 ### Tilføjet

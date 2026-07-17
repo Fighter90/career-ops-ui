@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.123.0] — 2026-07-17
+
+### Eklendi
+- **Oracle Recruiting Cloud tarama kaynağı** (üst proje v1.21.0 paritesi, #1929) — Oracle Fusion/ORC kariyer sitelerinin (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …) sıfır-kimlik-doğrulamalı `recruitingCEJobRequisitions` REST API'si: `*.fa[.<bölge>][.ocs].oraclecloud.com` ana bilgisayarına sabitlenmiş, site numarası her takip edilen şirketin `careers_url` alanından çözümlenmiş, sabit bir sayfa üst sınırıyla offset sayfalandırma ve WAF'a duyarlı tarayıcı-benzeri başlıklar. Kayıt artık **62 adaptör (57 İngilizce + 5 Rusça)** gönderiyor; `#/scan` Kaynak açılır menüsü yedeği ve onun sapma kapısı güncellendi; yeni CI-izole test paketi `tests/sources-oraclecloud.test.mjs`.
+
+### Düzeltildi
+- **Repost dedektörü: temel başlıklar özelleştirilmiş-ek adı olan kardeşlerinden ayrı kalıyor** (üst proje #1922) — "Senior Analytics Engineer" artık "Senior Analytics Engineer, People Analytics" ile kümelenmiyor: bir başlığın belirteçleri diğerinin belirteçlerinin kesin bir alt kümesi olduğunda ve fazladan belirteç gerçek bir uzmanlaşma ise (temel bir sözcük değil), iki ilan ayrı ayrı yayınlanabilir açık pozisyonlar olarak ele alınıyor. Yeniden yayınlama açıklamaları ("(Repost)", "relisted") artık anlamsız gürültü olarak durak-sözcük listesine alındı. `tests/detect-reposts.test.mjs`'de +2 doğrulama.
+
+### Notlar
+- Üst proje v1.21.0 ayrıca web-ui'nin shell ile çağırmadığı veya zaten kapsadığı CLI tarafı değişiklikler gönderdi: tekrar-şirket yeniden başvuru uyarısı (web-ui'de v1.84.0'dan beri yeniden-başvuru soğuma süresi var), ön yazı `--format`/`--report` bayrakları, mülakat kırmızı-bayrak / panel-istihbaratı / gelmeme e-postası prompt modları, tarama güven-sinyali & portal sağlığı kalıcılığı (web-ui kendi süreç-içi tarayıcısını `trust-validator` ile ve Portallar sağlık sayfasıyla çalıştırıyor) ve istatistik/maaş-farkı uzantıları (salt okunur ve arızaya-toleranslı olarak aktarılıyor).
+
 ## [1.122.0] — 2026-07-16
 
 ### Eklendi

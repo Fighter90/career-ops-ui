@@ -29,6 +29,14 @@ test('role-matcher: roleFuzzyMatch matches variants, rejects distinct roles & ba
   // overlap only on baseline tokens (software/engineer) → not the same opening
   assert.equal(roleFuzzyMatch('Software Engineer', 'Software Engineer Frontend'), false);
   assert.deepEqual(roleTokens('Senior Backend Engineer (Remote)').includes('senior'), false);
+  // parent #1922 (v1.21.0): a base title stays distinct from a
+  // specialized-suffix sibling — the extra non-baseline token is the signal.
+  assert.equal(
+    roleFuzzyMatch('Senior Analytics Engineer', 'Senior Analytics Engineer, People Analytics'),
+    false,
+  );
+  // …but reposting annotations are meta noise, not a specialization.
+  assert.equal(roleFuzzyMatch('Data Engineer (Repost)', 'Data Engineer'), true);
 });
 
 test('parseScanHistory: web-ui TSV → rows, drops bad date / bad url', () => {

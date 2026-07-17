@@ -11,6 +11,17 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.123.0] — 2026-07-17
+
+### Ajouté
+- **Source de scan Oracle Recruiting Cloud** (parité avec le parent v1.21.0, #1929) — l'API REST `recruitingCEJobRequisitions` sans authentification des sites carrières Oracle Fusion/ORC (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …) : hôte épinglé à `*.fa[.<région>][.ocs].oraclecloud.com`, le numéro de site résolu depuis le `careers_url` de chaque entreprise suivie, une pagination par décalage avec un plafond de pages strict, et des en-têtes façon navigateur conscients du WAF. Le registre livre désormais **62 adaptateurs (57 anglais + 5 russes)** ; le repli du menu déroulant Source de `#/scan` et son garde-fou de dérive sont mis à jour ; nouvelle suite isolée pour la CI `tests/sources-oraclecloud.test.mjs`.
+
+### Corrigé
+- **Détecteur de reposts : les intitulés de base restent distincts des variantes à suffixe spécialisé** (parent #1922) — « Senior Analytics Engineer » ne se regroupe plus avec « Senior Analytics Engineer, People Analytics » : lorsque les tokens d'un intitulé forment un sous-ensemble strict de ceux de l'autre et que le token supplémentaire est une véritable spécialisation (pas un mot de base), les deux sont traités comme des offres publiables séparément. Les annotations de repost (« (Repost) », « relisted ») sont désormais considérées comme du bruit et filtrées comme mots vides. +2 assertions dans `tests/detect-reposts.test.mjs`.
+
+### Notes
+- Le parent v1.21.0 a aussi livré des changements côté CLI que l'interface web ne shell pas ou couvre déjà : l'avertissement de re-candidature pour une même entreprise (l'interface web a son délai de refroidissement de réapplication depuis la v1.84.0), les indicateurs `--format`/`--report` de la lettre de motivation, les modes de prompt e-mail red-flag / panel-intel / no-show pour les entretiens, la persistance des signaux de confiance de scan et de la santé des portails (l'interface web exécute son propre scanner en-process avec `trust-validator` et la page Santé des portails), et les extensions stats/salary-gap (relayées en lecture seule et en mode dégradé).
+
 ## [1.122.0] — 2026-07-16
 
 ### Ajouté

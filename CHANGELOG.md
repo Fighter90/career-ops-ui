@@ -8,6 +8,17 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.123.0] — 2026-07-17
+
+### Added
+- **Oracle Recruiting Cloud scan source** (parent v1.21.0 parity, #1929) — the zero-auth `recruitingCEJobRequisitions` REST API of Oracle Fusion/ORC career sites (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …): host-pinned to `*.fa[.<region>][.ocs].oraclecloud.com`, the site number resolved from each tracked company's `careers_url`, offset pagination with a hard page cap, and WAF-aware browser-like headers. The registry now ships **62 adapters (57 EN + 5 RU)**; the `#/scan` Source-dropdown fallback and its drift gate are updated; new CI-isolated suite `tests/sources-oraclecloud.test.mjs`.
+
+### Fixed
+- **Repost detector: base titles stay distinct from specialized-suffix siblings** (parent #1922) — "Senior Analytics Engineer" no longer clusters with "Senior Analytics Engineer, People Analytics": when one title's tokens are a strict subset of the other's and the extra token is a real specialization (not a baseline word), the two are treated as separately-postable openings. Reposting annotations ("(Repost)", "relisted") are now stopworded as meta noise. +2 assertions in `tests/detect-reposts.test.mjs`.
+
+### Notes
+- Parent v1.21.0 also shipped CLI-side changes the web UI does not shell into or already covers: the repeat-company reapply warning (the web UI has the re-apply cooldown since v1.84.0), cover-letter `--format`/`--report` flags, the interview red-flag / panel-intel / no-show e-mail prompt modes, scan trust-signal & portal-health persistence (the web UI runs its own in-process scanner with `trust-validator` and the Portals health page), and the stats/salary-gap extensions (relayed read-only and fail-soft).
+
 ## [1.122.0] — 2026-07-16
 
 ### Added

@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.123.0] — 2026-07-17
+
+### Aggiunto
+- **Sorgente di scansione Oracle Recruiting Cloud** (parità con il parent v1.21.0, #1929) — l'API REST a zero autenticazione `recruitingCEJobRequisitions` dei siti carriere Oracle Fusion/ORC (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …): host ancorato a `*.fa[.<region>][.ocs].oraclecloud.com`, il numero di sito risolto dal `careers_url` di ciascuna azienda tracciata, paginazione a offset con un limite massimo di pagine, e header simil-browser consapevoli del WAF. Il registro ora conta **62 adattatori (57 inglesi + 5 russi)**; il fallback del menu a tendina Source di `#/scan` e il relativo gate di deriva sono aggiornati; nuova suite isolata per CI `tests/sources-oraclecloud.test.mjs`.
+
+### Corretto
+- **Rilevatore di repost: i titoli base restano distinti dai fratelli con suffisso specializzato** (parent #1922) — "Senior Analytics Engineer" non si raggruppa più con "Senior Analytics Engineer, People Analytics": quando i token di un titolo sono un sottoinsieme stretto di quelli dell'altro e il token in più è una specializzazione reale (non una parola di base), le due offerte sono trattate come annunci pubblicabili separatamente. Le annotazioni di repost ("(Repost)", "relisted") sono ora trattate come stopword di rumore meta. +2 asserzioni in `tests/detect-reposts.test.mjs`.
+
+### Note
+- La v1.21.0 del parent ha anche introdotto modifiche lato CLI che la web UI non richiama via shell o che già copre: l'avviso di ricandidatura per azienda ripetuta (la web UI ha il cooldown di ricandidatura dalla v1.84.0), i flag `--format`/`--report` della lettera di presentazione, le modalità del prompt e-mail per red-flag del colloquio / intelligence sul panel / mancata presentazione, la persistenza dei segnali di fiducia della scansione e della salute dei portali (la web UI esegue il proprio scanner in-process con `trust-validator` e la pagina di salute dei Portali), e le estensioni di statistiche/salary-gap (inoltrate in sola lettura e fail-soft).
+
 ## [1.122.0] — 2026-07-16
 
 ### Aggiunto
