@@ -8,6 +8,16 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 
 ---
 
+## [1.123.0] — 2026-07-17
+
+### Adicionado
+- **Source de scan Oracle Recruiting Cloud** (paridade com o pai v1.21.0, #1929) — a API REST `recruitingCEJobRequisitions` sem autenticação dos sites de carreira Oracle Fusion/ORC (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …): host fixado em `*.fa[.<região>][.ocs].oraclecloud.com`, o número do site resolvido a partir do `careers_url` de cada empresa rastreada, paginação por offset com um teto rígido de páginas, e cabeçalhos com aparência de navegador cientes de WAF. O registry agora traz **62 adaptadores (57 EN + 5 RU)**; o fallback do dropdown Source de `#/scan` e seu gate de deriva foram atualizados; nova suíte CI-isolada `tests/sources-oraclecloud.test.mjs`.
+
+### Corrigido
+- **Detector de repostagens: títulos base permanecem distintos de vagas irmãs com sufixo de especialização** (pai #1922) — "Senior Analytics Engineer" não agrupa mais com "Senior Analytics Engineer, People Analytics": quando os tokens de um título são um subconjunto estrito dos tokens do outro e o token extra é uma especialização real (não uma palavra de base), os dois passam a ser tratados como vagas postadas separadamente. Anotações de repostagem ("(Repost)", "relisted") agora são tratadas como ruído semântico via stopwords. +2 asserções em `tests/detect-reposts.test.mjs`.
+
+### Notas
+- O pai v1.21.0 também trouxe mudanças do lado da CLI que a web UI não invoca via shell ou já cobre de outra forma: o aviso de reaplicação para empresas repetidas (a web UI já tem o cooldown de reaplicação desde a v1.84.0), as flags `--format`/`--report` da carta de apresentação, os modos de prompt de e-mail de red-flag / panel-intel / no-show da entrevista, os sinais de confiança do scan e a persistência de saúde dos portais (a web UI roda seu próprio scanner em processo com `trust-validator` e a página de saúde dos Portais), e as extensões de estatísticas/salary-gap (relayadas somente leitura e com fail-soft).
 
 ## [1.122.0] — 2026-07-16
 

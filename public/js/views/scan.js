@@ -174,6 +174,7 @@ Router.register('scan', async () => {
     { value: 'meituan',         label: 'Meituan' },
     { value: 'nodesk',          label: 'NoDesk' },
     { value: 'nofluffjobs',     label: 'NoFluffJobs' },
+    { value: 'oraclecloud',     label: 'Oracle Cloud (ORC)' },
     { value: 'personio',        label: 'Personio' },
     { value: 'phenom',          label: 'Phenom' },
     { value: 'pinpoint',        label: 'Pinpoint' },

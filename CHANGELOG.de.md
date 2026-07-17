@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.123.0] — 2026-07-17
+
+### Hinzugefügt
+- **Oracle-Recruiting-Cloud-Scan-Quelle** (Parität mit dem übergeordneten career-ops v1.21.0, #1929) — die authentifizierungsfreie `recruitingCEJobRequisitions`-REST-API von Oracle-Fusion-/ORC-Karriereseiten (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …): host-fixiert auf `*.fa[.<region>][.ocs].oraclecloud.com`, die Site-Nummer wird aus der `careers_url` jedes verfolgten Unternehmens ermittelt, Offset-Paginierung mit einer harten Seitenobergrenze sowie WAF-bewusste, browserähnliche Header. Das Register umfasst nun **62 Adapter (57 EN + 5 RU)**; der Source-Dropdown-Fallback von `#/scan` und dessen Drift-Gate sind aktualisiert; neue CI-isolierte Suite `tests/sources-oraclecloud.test.mjs`.
+
+### Behoben
+- **Repost-Detektor: Basistitel bleiben klar von Geschwistern mit spezialisierendem Suffix unterschieden** (übergeordnetes Projekt #1922) — „Senior Analytics Engineer" wird nicht mehr mit „Senior Analytics Engineer, People Analytics" gruppiert: Wenn die Tokens eines Titels eine strikte Teilmenge der Tokens des anderen sind und das zusätzliche Token eine echte Spezialisierung (kein Grundwort) ist, gelten beide als eigenständig postbare Stellenausschreibungen. Repost-Vermerke („(Repost)", „relisted") werden nun als Bedeutungsrauschen stopwortiert. +2 Assertions in `tests/detect-reposts.test.mjs`.
+
+### Hinweise
+- Parität mit dem übergeordneten career-ops v1.21.0 brachte auch CLI-seitige Änderungen, in die die Web-UI nicht hineinshellt oder die sie bereits abdeckt: die Warnung bei erneuter Bewerbung beim selben Unternehmen (die Web-UI hat die Re-Apply-Abkühlphase bereits seit v1.84.0), die Cover-Letter-Flags `--format`/`--report`, die Interview-Prompt-Modi für Red-Flags/Panel-Intel/No-Show-E-Mails, Scan-Vertrauenssignale & Portal-Gesundheits-Persistenz (die Web-UI betreibt ihren eigenen In-Process-Scanner mit `trust-validator` und die Portale-Gesundheitsseite) sowie die Statistik-/Gehaltslücken-Erweiterungen (schreibgeschützt und fail-soft weitergereicht).
+
 ## [1.122.0] — 2026-07-16
 
 ### Hinzugefügt

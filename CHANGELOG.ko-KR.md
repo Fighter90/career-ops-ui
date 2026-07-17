@@ -9,6 +9,17 @@
 ---
 
 
+## [1.123.0] — 2026-07-17
+
+### 추가
+- **Oracle Recruiting Cloud 스캔 소스** (상위 v1.21.0 패리티, #1929) — Oracle Fusion/ORC 채용 사이트(JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell 등)의 무인증 `recruitingCEJobRequisitions` REST API입니다: `*.fa[.<region>][.ocs].oraclecloud.com`에 호스트 고정되며, 사이트 번호는 추적 중인 각 회사의 `careers_url`에서 추출되고, 오프셋 페이지네이션에는 하드 페이지 상한이 적용되며, WAF를 우회하는 브라우저형 헤더를 사용합니다. 레지스트리는 이제 **어댑터 62개(영어 57개 + 러시아어 5개)**를 제공합니다. `#/scan` Source 드롭다운 폴백과 드리프트 게이트가 갱신되었고, 새로운 CI 격리 테스트 스위트 `tests/sources-oraclecloud.test.mjs`가 추가되었습니다.
+
+### 수정
+- **리포스트 감지기: 기본 제목이 전문화 접미사가 붙은 유사 공고와 구분되도록 수정** (상위 #1922) — "Senior Analytics Engineer"가 더 이상 "Senior Analytics Engineer, People Analytics"와 하나로 묶이지 않습니다: 한 제목의 토큰이 다른 제목 토큰의 진부분집합이고 추가된 토큰이 (기본 단어가 아닌) 실제 전문화 표현일 경우, 두 공고는 별개로 게시 가능한 채용 건으로 취급됩니다. 리포스트 표기("(Repost)", "relisted")는 이제 의미 없는 메타 노이즈로 불용어 처리됩니다. `tests/detect-reposts.test.mjs`에 검증 2건이 추가되었습니다.
+
+### 비고
+- 상위 v1.21.0은 웹 UI가 셸아웃하지 않거나 이미 커버하고 있는 CLI 측 변경 사항도 함께 배포했습니다: 반복 지원 회사 재지원 경고(웹 UI는 v1.84.0부터 재지원 쿨다운을 보유), 커버레터 `--format`/`--report` 플래그, 인터뷰 red-flag/패널 인텔/노쇼 이메일 프롬프트 모드, 스캔 신뢰 신호 및 포털 상태 영속화(웹 UI는 `trust-validator`와 함께 자체 인프로세스 스캐너와 Portals health 페이지를 운영), 그리고 통계/급여 격차 확장(읽기 전용·페일소프트 방식으로 중계).
+
 ## [1.122.0] — 2026-07-16
 
 ### 추가

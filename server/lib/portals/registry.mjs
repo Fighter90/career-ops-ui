@@ -96,6 +96,10 @@ import { larajobsAdapter } from './adapters/larajobs.mjs';
 // public JSON APIs, host-detected or explicit `provider:`.
 import { meituanAdapter } from './adapters/meituan.mjs';
 import { tencentAdapter } from './adapters/tencent.mjs';
+// v1.123.0 — parent career-ops parity: Oracle Recruiting Cloud (ORC) per-tenant
+// ATS, zero-auth JSON API, host-detected (*.fa[.<region>][.ocs].oraclecloud.com)
+// or explicit `provider: oraclecloud`.
+import { oraclecloudAdapter } from './adapters/oraclecloud.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -183,6 +187,10 @@ export const ALL_ADAPTERS = [
   // keyword-driven pagination config via the company entry.
   meituanAdapter,
   tencentAdapter,
+  // v1.123.0 — parent career-ops parity: Oracle Recruiting Cloud (ORC).
+  // Per-tenant Fusion Candidate Experience host, distinct host pattern, so
+  // ordering after the other host-detected ATS is safe.
+  oraclecloudAdapter,
 ];
 
 /**
