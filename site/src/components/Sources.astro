@@ -61,8 +61,8 @@ const SOURCE_URLS: Record<string, string> = {
   rheinmetall: 'https://www.rheinmetall.com',
   rippling: 'https://www.rippling.com',
   rss: '',
-  successfactors: 'https://www.sap.com',
   smartrecruiters: 'https://www.smartrecruiters.com',
+  successfactors: 'https://www.sap.com',
   softgarden: 'https://softgarden.com',
   solidjobs: 'https://solid.jobs',
   teamtailor: 'https://www.teamtailor.com',
@@ -99,7 +99,7 @@ const chip =
     <ul class="mt-8 flex flex-wrap gap-2.5">
       {en.map((s) => (
         <li>
-          <a href={hrefFor(s.value)} rel="noopener nofollow" class={chip}>{s.label}</a>
+          <a href={hrefFor(s.value)} rel="noopener noreferrer nofollow" class={chip}>{s.label}</a>
         </li>
       ))}
     </ul>
@@ -107,7 +107,7 @@ const chip =
     <ul class="flex flex-wrap gap-2.5">
       {ru.map((s) => (
         <li>
-          <a href={hrefFor(s.value)} rel="noopener nofollow" class={chip}>{s.label}</a>
+          <a href={hrefFor(s.value)} rel="noopener noreferrer nofollow" class={chip}>{s.label}</a>
         </li>
       ))}
     </ul>

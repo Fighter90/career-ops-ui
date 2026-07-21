@@ -33,8 +33,14 @@ test('SOURCE_URLS covers every registry source value', () => {
   const keys = new Set(
     [...astro.matchAll(/^\s{2}(?:'([^']+)'|([A-Za-z0-9_]+)):\s*'/gm)].map((m) => m[1] || m[2]),
   );
+  const urls = new Map(
+    [...astro.matchAll(/^\s{2}(?:'([^']+)'|([A-Za-z0-9_]+)):\s*'([^']*)'/gm)].map((m) => [m[1] || m[2], m[3]]),
+  );
   for (const s of SOURCES) {
     assert.ok(keys.has(s.value), `SOURCE_URLS missing '${s.value}' (${s.label}) — add its link`);
+    if (s.value === 'rss') continue; // the app's own connector links to the guide
+    const u = urls.get(s.value) || '';
+    assert.ok(u.startsWith('https://'), `SOURCE_URLS['${s.value}'] must be a non-empty https URL, got '${u}'`);
   }
 });
 
