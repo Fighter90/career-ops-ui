@@ -2,6 +2,11 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.125.0] — 2026-07-21
+
+### Aggiunto
+- **cvstart.org: sezione "Fonti di lavoro" nella landing** — una nuova sezione tra gli screenshot e il confronto elenca **tutte le 67 sorgenti di scansione come chip cliccabili** (62 board/ATS in inglese + le 5 board russe sotto un proprio sottotitolo), ciascuna con link al sito pubblico della sorgente. L'elenco è sincronizzato con il registro degli adattatori dal vivo in fase di build (`sync-assets.mjs` → `facts.sources`), così non può mai disallinearsi dall'app; una mappa di link curata in `Sources.astro` è protetta dalla nuova `tests/site-sources.test.mjs`. La navigazione dell'header ha guadagnato un'ancora **Fonti**; 4 nuove chiavi i18n del sito ×17. È stato corretto anche l'elenco `inLanguage` del JSON-LD della landing, a cui mancava ancora `hi`.
+
 ## [1.124.0] — 2026-07-21
 
 ### Aggiunto

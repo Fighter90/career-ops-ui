@@ -6,6 +6,7 @@ import StatsBar from './StatsBar.astro';
 import HowItWorks from './HowItWorks.astro';
 import Features from './Features.astro';
 import ScreenshotShowcase from './ScreenshotShowcase.astro';
+import Sources from './Sources.astro';
 import Compare from './Compare.astro';
 import HelpTeaser from './HelpTeaser.astro';
 import OpenSource from './OpenSource.astro';
@@ -31,7 +32,7 @@ const jsonLd = {
   description: t(locale, 'meta.desc'),
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   license: 'https://github.com/Fighter90/career-ops-ui/blob/main/LICENSE',
-  inLanguage: ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr'],
+  inLanguage: ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'],
   sameAs: [facts.repoUrl],
   url: 'https://cvstart.org/',
 };
@@ -51,6 +52,7 @@ const jsonLd = {
     <HowItWorks locale={locale} />
     <Features locale={locale} />
     <ScreenshotShowcase locale={locale} />
+    <Sources locale={locale} />
     <Compare locale={locale} />
     <HelpTeaser locale={locale} />
     <OpenSource locale={locale} />
