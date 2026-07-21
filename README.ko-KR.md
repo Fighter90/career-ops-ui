@@ -3,7 +3,7 @@
 > [career-ops](https://github.com/Fighter90/career-ops) AI 구직 파이프라인을 위한 깔끔한 docs-style 웹 인터페이스입니다.
 > Claude Code, 터미널, 마크다운 파일 사이를 오갈 필요 없이 — 단일 브라우저 탭에서 모든 채용 공고를 검색하고, 평가하고, 심층 조사하고, 지원하고, 추적할 수 있습니다.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | **한국어** | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
+[🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | **🇰🇷 한국어** | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 

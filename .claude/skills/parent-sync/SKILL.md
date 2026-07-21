@@ -51,9 +51,18 @@ Two files + four gates (memory: a web-ui source is never just one file):
    network) porting the parent's meaningful test cases — including its quirks
    (e.g. ORC ignores `hasMore`; port the authoritative behavior, not the brief).
 
-Delegate this whole phase to ONE subagent with the parent file + parent test +
-two web-ui reference sources named explicitly; verify its summary against the
-actual registry counts yourself.
+Delegate ports to subagents — **one agent per provider**, each restricted to
+EXACTLY three files (its source, its adapter, its suite) and explicitly
+FORBIDDEN from touching `registry.mjs`, the two gate tests, and `scan.js`;
+the orchestrator does that shared-file wiring in ONE pass afterwards.
+**Wait for EVERY port agent's completion notification before wiring** — a
+file existing on disk does not mean the agent is done rewriting it (v1.124.0:
+the wttj adapter vanished mid-wire because its agent was still iterating).
+When bumping the two gate tests, don't hand-insert ids into the sorted
+literals — regenerate both lists from the live registry
+(`node -e "import('./server/lib/portals/registry.mjs')…"`), because manual
+insertion breaks alphabetical order. Verify the agents' claimed counts
+against the actual registry yourself.
 
 ## Phase 3 — EN docs
 
@@ -76,8 +85,16 @@ version, exact heading `## [X.Y.Z] — date`, the file's own section labels),
 
 **Mechanical parts stay OUT of agent prompts and are done by script over all
 17 files**: badges (`tests-N%20passed`, `release-vX.Y.Z-blue` + tag link),
-literal count strings. Lesson (v1.123.0): a badge sweep that skips locales or
+literal count strings, and the README language-switcher line (17 flag+link
+entries — 🇬🇧🇪🇸🇧🇷🇰🇷🇯🇵🇷🇺🇨🇳🇹🇼🇫🇷🇵🇱🇺🇦🇩🇰🇸🇦🇩🇪🇮🇹🇹🇷🇮🇳; each file links the
+other 16 and bolds its own, so a detector must NOT require the file's own
+name on the line). Lesson (v1.123.0): a badge sweep that skips locales or
 tells agents "don't touch badges" leaves stale badges — sweep ALL 17 yourself.
+Standing user expectations every parity release must satisfy: new sources
+appear in the `#/scan` Source filter (FALLBACK + live registry — the drift
+gate proves it), language-picker blocks are only touched when a locale was
+actually added, and the README language lines stay complete ×17 (audit:
+every line carries exactly 17 flags).
 
 **Integrity sweep after the fan-out** (the parity gates are blind to these):
 - every help bundle exactly **29 H2 / 105 H3** (current gate);

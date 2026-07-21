@@ -3,7 +3,7 @@
 > 為 [career-ops](https://github.com/Fighter90/career-ops) AI 求職流水線打造的簡潔 docs-style 網頁介面。
 > 在單一瀏覽器分頁中完成搜尋、評估、深度研究、投遞與追蹤每一個職缺 — 無須再於 Claude Code、終端機與 markdown 檔案之間來回切換。
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | **繁體中文** | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
+[🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | **🇹🇼 繁體中文** | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 

@@ -3,7 +3,7 @@
 > [career-ops](https://github.com/Fighter90/career-ops) AI जॉब-सर्च पाइपलाइन के लिए एक साफ़-सुथरा, docs-स्टाइल वेब इंटरफ़ेस।
 > Claude Code, टर्मिनल और मार्कडाउन फ़ाइलों के बीच उछलने के बजाय — एक ही ब्राउज़र टैब से हर ऑफ़र को खोजें, आँकें, गहराई से जाँचें, आवेदन करें और ट्रैक करें।
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | **हिन्दी**
+[🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | **🇮🇳 हिन्दी**
 
 _ग़ैर-आधिकारिक UI — career-ops / santifer से न तो संबद्ध है और न ही उसका समर्थन प्राप्त है।_
 

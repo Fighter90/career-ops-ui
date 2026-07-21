@@ -3,7 +3,7 @@
 > [career-ops](https://github.com/Fighter90/career-ops) yapay zeka destekli iş arama hattı için temiz, dokümantasyon tarzı bir web arayüzü.
 > Claude Code, terminaller ve markdown dosyaları arasında gidip gelmek yerine her teklifi tek bir tarayıcı sekmesinden arayın, değerlendirin, derinlemesine inceleyin, başvurun ve takip edin.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | **Türkçe**
+[🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | **🇹🇷 Türkçe** | [🇮🇳 हिन्दी](README.hi.md)
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
