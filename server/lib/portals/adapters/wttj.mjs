@@ -23,6 +23,7 @@ export const wttjAdapter = {
   id: 'wttj',
   label: 'Welcome to the Jungle',
   matches(company) {
+    if (!company) return false;
     return company.provider === 'wttj';
   },
   buildEndpoint(company) {
