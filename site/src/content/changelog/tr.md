@@ -2,6 +2,29 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.124.0] — 2026-07-21
+
+### Eklendi
+- **Beş tarama kaynağı** (üst proje v1.22.0 paritesi, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (pano geneli JSON API), **Agentic Engineering Jobs** (agentic/yapay zeka mühendisliği panosu), **Jobvite** (sıfır-kimlik-doğrulamalı kiracı-başına ATS), **Gem** (kiracı-başına ATS) ve **Alibaba Group** (kariyer JSON API'si, Meituan/Tencent kalıbı). Her biri ana bilgisayara sabitlenmiş, CI-izole bir kaynak + adaptör çifti; kayıt artık **67 adaptör (62 İngilizce + 5 Rusça)** gönderiyor; `#/scan` Kaynak açılır menüsü yedeği ve onun sapma kapısı güncellendi; beş yeni test paketi `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Düzeltildi
+- **Arbeitsagentur: `homeofficetyp` yalnızca `VOLLSTAENDIG` olduğunda tüm ülke çapında uzaktan sayılıyor** (üst proje #1981) — `homeoffice=nv_true` sorgusu hibrit rolleri de döndürüyordu, bu yüzden uzaktan geçişi artık her sonucu küçük gruplar hâlinde ilan detayları uç noktasına karşı doğruluyor ve hataya karşı temkinli davranıyor (bir sorgu hatası ilanın gerçek şehrini korur, böylece konum filtreleri yine de uygulanmaya devam eder).
+- **SmartRecruiters: herkese açık iş URL'leri `/postings/` olmadan oluşturuluyordu** (üst proje #2047) — bağlantılar artık, herkese açık sitesi bu segmenti atlayan kiracılar için 404 yerine herkese açık ilan sayfasına iniyor.
+
+### Notlar
+- Üst proje v1.22.0 ayrıca web-ui'nin shell ile çağırmadığı veya zaten kapsadığı CLI tarafı değişiklikler gönderdi: zh-CN CV şablonu + PDF tipografisi, `/expand` modu, sağlayıcı prompt-önbelleği ince ayarları (Gemini/OpenAI/Ollama), adım başına token dökümü (web-ui'nin kendi kullanım göstergesi var), tracker'ın yazıcı-kilidi serileştirmesi (web-ui yazmaları v1.21'den beri zaten `withFileLock` üzerinden yönlendiriyor), tarama `visa_filter`'ı + mutlak yayın-tarihi CLI bayrakları (web-ui'nin kendi "Posted within" yaş filtresi var) ve görülen-kaynak tekilleştirme tohumlaması (web-ui tarayıcısı kendi tarama-geçmişi tekilleştirmesini tutuyor).
+
+## [1.123.0] — 2026-07-17
+
+### Eklendi
+- **Oracle Recruiting Cloud tarama kaynağı** (üst proje v1.21.0 paritesi, #1929) — Oracle Fusion/ORC kariyer sitelerinin (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …) sıfır-kimlik-doğrulamalı `recruitingCEJobRequisitions` REST API'si: `*.fa[.<bölge>][.ocs].oraclecloud.com` ana bilgisayarına sabitlenmiş, site numarası her takip edilen şirketin `careers_url` alanından çözümlenmiş, sabit bir sayfa üst sınırıyla offset sayfalandırma ve WAF'a duyarlı tarayıcı-benzeri başlıklar. Kayıt artık **62 adaptör (57 İngilizce + 5 Rusça)** gönderiyor; `#/scan` Kaynak açılır menüsü yedeği ve onun sapma kapısı güncellendi; yeni CI-izole test paketi `tests/sources-oraclecloud.test.mjs`.
+
+### Düzeltildi
+- **Repost dedektörü: temel başlıklar özelleştirilmiş-ek adı olan kardeşlerinden ayrı kalıyor** (üst proje #1922) — "Senior Analytics Engineer" artık "Senior Analytics Engineer, People Analytics" ile kümelenmiyor: bir başlığın belirteçleri diğerinin belirteçlerinin kesin bir alt kümesi olduğunda ve fazladan belirteç gerçek bir uzmanlaşma ise (temel bir sözcük değil), iki ilan ayrı ayrı yayınlanabilir açık pozisyonlar olarak ele alınıyor. Yeniden yayınlama açıklamaları ("(Repost)", "relisted") artık anlamsız gürültü olarak durak-sözcük listesine alındı. `tests/detect-reposts.test.mjs`'de +2 doğrulama.
+
+### Notlar
+- Üst proje v1.21.0 ayrıca web-ui'nin shell ile çağırmadığı veya zaten kapsadığı CLI tarafı değişiklikler gönderdi: tekrar-şirket yeniden başvuru uyarısı (web-ui'de v1.84.0'dan beri yeniden-başvuru soğuma süresi var), ön yazı `--format`/`--report` bayrakları, mülakat kırmızı-bayrak / panel-istihbaratı / gelmeme e-postası prompt modları, tarama güven-sinyali & portal sağlığı kalıcılığı (web-ui kendi süreç-içi tarayıcısını `trust-validator` ile ve Portallar sağlık sayfasıyla çalıştırıyor) ve istatistik/maaş-farkı uzantıları (salt okunur ve arızaya-toleranslı olarak aktarılıyor).
+
 ## [1.122.0] — 2026-07-16
 
 ### Eklendi

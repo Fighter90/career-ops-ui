@@ -11,6 +11,29 @@ Traducciones: [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHA
 ---
 
 
+## [1.124.0] — 2026-07-21
+
+### Añadido
+- **Cinco fuentes de escaneo** (paridad con el padre v1.22.0, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (API JSON de todo el board), **Agentic Engineering Jobs** (portal de ingeniería agéntica/IA), **Jobvite** (ATS por tenant sin autenticación), **Gem** (ATS por tenant) y **Alibaba Group** (API JSON de carreras, patrón Meituan/Tencent). Cada una es un par fuente + adaptador anclado a su host, aislado para CI; el registro ahora ofrece **67 adaptadores (62 EN + 5 RU)**; el desplegable de origen de `#/scan` y su comprobación de desincronización quedan actualizados; cinco nuevas suites `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Corregido
+- **Arbeitsagentur: remoto a nivel nacional solo cuando `homeofficetyp` es `VOLLSTAENDIG`** (padre #1981) — la consulta `homeoffice=nv_true` también devuelve puestos híbridos, así que ahora el filtro de remoto confirma cada resultado contra el endpoint de detalle de la oferta en lotes pequeños y falla de forma segura (un error de consulta conserva la ciudad real de la oferta, de modo que los filtros de ubicación siguen aplicándose).
+- **SmartRecruiters: las URL públicas de las ofertas se construían sin `/postings/`** (padre #2047) — los enlaces ahora llevan a la página pública de la oferta en vez de un 404, para los tenants cuyo sitio público omite el segmento.
+
+### Notas
+- El padre v1.22.0 también incorporó cambios del lado del CLI que la interfaz web no invoca o ya cubre: la plantilla de CV en chino simplificado (zh-CN) + la tipografía del PDF, el modo `/expand`, los ajustes de caché de prompts de los proveedores (Gemini/OpenAI/Ollama), el desglose de tokens por paso (la interfaz web tiene su propio medidor de uso), la serialización con bloqueo de escritura del tracker (la interfaz web enruta las escrituras a través de `withFileLock` desde la v1.21), los indicadores `visa_filter` + fecha de publicación absoluta del CLI de escaneo (la interfaz web tiene su propio filtro "Publicado hace" por antigüedad), y la siembra de deduplicación de fuentes vistas (el escáner de la interfaz web mantiene su propia deduplicación de historial de escaneo).
+
+## [1.123.0] — 2026-07-17
+
+### Añadido
+- **Fuente de escaneo Oracle Recruiting Cloud** (paridad con el padre v1.21.0, #1929) — la API REST `recruitingCEJobRequisitions` sin autenticación de los portales de empleo de Oracle Fusion/ORC (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell…): anclada al host `*.fa[.<región>][.ocs].oraclecloud.com`, el número de sitio se resuelve a partir del `careers_url` de cada empresa seguida, paginación por offset con un tope duro de páginas, y cabeceras tipo navegador conscientes del WAF. El registro ahora ofrece **62 adaptadores (57 EN + 5 RU)**; el desplegable de origen de `#/scan` y su comprobación de desincronización quedan actualizados; nueva suite aislada para CI `tests/sources-oraclecloud.test.mjs`.
+
+### Corregido
+- **Detector de reposts: los títulos base se mantienen distintos de sus variantes con sufijo especializado** (padre #1922) — «Senior Analytics Engineer» ya no se agrupa con «Senior Analytics Engineer, People Analytics»: cuando los tokens de un título son un subconjunto estricto de los del otro y el token adicional es una especialización real (no una palabra genérica), ambos se tratan como vacantes publicables por separado. Las anotaciones de repost («(Repost)», «relisted») ahora se filtran como ruido léxico. +2 aserciones en `tests/detect-reposts.test.mjs`.
+
+### Notas
+- El padre v1.21.0 también incorporó cambios del lado del CLI que la interfaz web no invoca o ya cubre: el aviso de reaplicación a empresas repetidas (la interfaz web tiene su propio período de enfriamiento de reaplicación desde la v1.84.0), las opciones `--format`/`--report` de la carta de presentación, los modos de prompt de entrevista de señal de alerta / inteligencia del panel / no-show, la persistencia de señales de confianza y de salud de portales del escaneo (la interfaz web ejecuta su propio escáner en proceso con `trust-validator` y la página de salud de Portales), y las extensiones de stats/salary-gap (retransmitidas de solo lectura y con fallback silencioso).
+
 ## [1.122.0] — 2026-07-16
 
 ### Añadido

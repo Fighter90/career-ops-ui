@@ -9,6 +9,29 @@
 ---
 
 
+## [1.124.0] — 2026-07-21
+
+### 新增
+- **五個掃描來源**(與父專案 v1.22.0 對齊,#1808/#1572/#2024/#2055)— **Welcome to the Jungle**(全站 JSON API)、**Agentic Engineering Jobs**(agentic／AI 工程看板)、**Jobvite**(零認證按租戶 ATS)、**Gem**(按租戶 ATS),以及 **Alibaba Group**(求職 JSON API,美團／騰訊模式)。每一個都是主機固定、CI 隔離的來源 + 轉接器組合;註冊表現在提供 **67 個轉接器(62 個英文 + 5 個俄文)**;`#/scan` 的 Source 下拉選單後備清單及其漂移關卡已同步更新;新增五個測試套件 `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`。
+
+### 修復
+- **Arbeitsagentur:僅當 `homeofficetyp` 為 `VOLLSTAENDIG` 時才判定為全國遠端**(與父專案 #1981 對齊)— `homeoffice=nv_true` 查詢也會回傳混合辦公的職缺,因此遠端判定現在會以小批次方式對照職缺詳情端點逐一確認每筆結果,並採取失敗封閉策略(查詢失敗時保留該職缺原本的城市,讓地點篩選器仍能正常運作)。
+- **SmartRecruiters:公開職缺網址建置時未帶 `/postings/`**(與父專案 #2047 對齊)— 對於公開網站省略該區段的租戶,連結現在會導向公開職缺頁面,而非導致 404。
+
+### 備註
+- 父專案 v1.22.0 同時出貨了一些 CLI 端變更,網頁介面並不透過命令列呼叫它們,或已自行涵蓋對應功能:簡體中文 CV 模板 + PDF 排版、`/expand` 模式、供應方 prompt 快取微調(Gemini／OpenAI／Ollama)、逐步 token 明細(網頁介面有自己的用量計量器)、追蹤器寫入鎖序列化(網頁介面自 v1.21 起已透過 `withFileLock` 進行寫入路由)、掃描的 `visa_filter` + 絕對刊登日期 CLI 旗標(網頁介面有自己的「刊登於…之內」時效篩選器),以及已見來源去重種子(網頁介面掃描器維持自有的掃描歷史去重機制)。
+
+## [1.123.0] — 2026-07-17
+
+### 新增
+- **Oracle Recruiting Cloud 掃描來源**(與父專案 v1.21.0 對齊,#1929)— Oracle Fusion／ORC 求職網站的零認證 `recruitingCEJobRequisitions` REST API(JPMorgan Chase、Oracle、BNY Mellon、American Express、Honeywell 等公司採用):主機固定為 `*.fa[.<region>][.ocs].oraclecloud.com`,站點編號從每間受追蹤公司的 `careers_url` 解析而得,採用附硬性頁數上限的位移分頁,並附上具備 WAF 意識的類瀏覽器標頭。註冊表現在提供 **62 個轉接器(57 個英文 + 5 個俄文)**;`#/scan` 的 Source 下拉選單後備清單及其漂移關卡已同步更新;新增 CI 隔離測試套件 `tests/sources-oraclecloud.test.mjs`。
+
+### 修復
+- **重複刊登偵測器:基礎職稱與專門後綴變體保持區分**(與父專案 #1922 對齊)— 「Senior Analytics Engineer」不再與「Senior Analytics Engineer, People Analytics」歸入同一群組:當某職稱的詞元是另一職稱詞元的嚴格子集,且多出的詞元屬於真正的專門化用語(而非基礎詞彙)時,兩者會被視為各自獨立、可分別刊登的職缺。重複刊登註記(如「(Repost)」、「relisted」)現已被列為中繼雜訊並納入停用詞。`tests/detect-reposts.test.mjs` 新增 2 項斷言。
+
+### 備註
+- 父專案 v1.21.0 同時出貨了一些 CLI 端變更,網頁介面並不透過命令列呼叫它們,或已自行涵蓋對應功能:重複投遞同一公司的警示(網頁介面自 v1.84.0 起已內建再投遞冷卻機制)、求職信的 `--format`／`--report` 旗標、面試紅旗訊號／面板情報／未出席通知信的提示模式、掃描信任訊號與入口網站健康狀態持久化(網頁介面以自有的 in-process 掃描器搭配 `trust-validator` 與 Portals 健康頁面運作),以及統計／薪資落差擴充功能(以唯讀、失敗自動降級的方式轉發)。
+
 ## [1.122.0] — 2026-07-16
 
 ### 新增

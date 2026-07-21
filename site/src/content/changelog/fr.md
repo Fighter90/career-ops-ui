@@ -11,6 +11,29 @@ Traductions : [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHA
 ---
 
 
+## [1.124.0] — 2026-07-21
+
+### Ajouté
+- **Cinq sources de scan** (parité avec le parent v1.22.0, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (API JSON à l'échelle du board), **Agentic Engineering Jobs** (board dédié à l'ingénierie IA/agentique), **Jobvite** (ATS par tenant sans authentification), **Gem** (ATS par tenant), et **Alibaba Group** (API JSON carrières, sur le modèle Meituan/Tencent). Chacune est une paire source + adaptateur épinglée à son hôte et isolée pour la CI ; le registre livre désormais **67 adaptateurs (62 anglais + 5 russes)** ; le repli du menu déroulant Source de `#/scan` et son garde-fou de dérive sont mis à jour ; cinq nouvelles suites `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Corrigé
+- **Arbeitsagentur : full remote national uniquement quand `homeofficetyp` vaut `VOLLSTAENDIG`** (parent #1981) — la requête `homeoffice=nv_true` renvoie aussi des postes hybrides, donc la passe remote confirme désormais chaque résultat via le point de terminaison de détails de l'offre par petits lots et échoue de façon fermée (une erreur de résolution conserve la ville réelle de l'offre pour que les filtres de localisation continuent de s'appliquer).
+- **SmartRecruiters : URL publiques des offres construites sans `/postings/`** (parent #2047) — les liens pointent désormais vers la page publique de l'offre au lieu d'une erreur 404 pour les tenants dont le site public omet ce segment.
+
+### Notes
+- Le parent v1.22.0 a aussi livré des changements côté CLI que l'interface web ne shell pas ou couvre déjà : le modèle de CV zh-CN + la typographie PDF, le mode `/expand`, les ajustements de cache de prompt des fournisseurs (Gemini/OpenAI/Ollama), la répartition des tokens par étape (l'interface web a son propre compteur d'utilisation), la sérialisation par verrou d'écriture du tracker (l'interface web route ses écritures via `withFileLock` depuis la v1.21), les indicateurs CLI `visa_filter` et de date de publication absolue pour le scan (l'interface web a son propre filtre d'ancienneté « Publié depuis »), et l'amorçage de déduplication des sources vues (le scanner de l'interface web garde sa propre déduplication de l'historique de scan).
+
+## [1.123.0] — 2026-07-17
+
+### Ajouté
+- **Source de scan Oracle Recruiting Cloud** (parité avec le parent v1.21.0, #1929) — l'API REST `recruitingCEJobRequisitions` sans authentification des sites carrières Oracle Fusion/ORC (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …) : hôte épinglé à `*.fa[.<région>][.ocs].oraclecloud.com`, le numéro de site résolu depuis le `careers_url` de chaque entreprise suivie, une pagination par décalage avec un plafond de pages strict, et des en-têtes façon navigateur conscients du WAF. Le registre livre désormais **62 adaptateurs (57 anglais + 5 russes)** ; le repli du menu déroulant Source de `#/scan` et son garde-fou de dérive sont mis à jour ; nouvelle suite isolée pour la CI `tests/sources-oraclecloud.test.mjs`.
+
+### Corrigé
+- **Détecteur de reposts : les intitulés de base restent distincts des variantes à suffixe spécialisé** (parent #1922) — « Senior Analytics Engineer » ne se regroupe plus avec « Senior Analytics Engineer, People Analytics » : lorsque les tokens d'un intitulé forment un sous-ensemble strict de ceux de l'autre et que le token supplémentaire est une véritable spécialisation (pas un mot de base), les deux sont traités comme des offres publiables séparément. Les annotations de repost (« (Repost) », « relisted ») sont désormais considérées comme du bruit et filtrées comme mots vides. +2 assertions dans `tests/detect-reposts.test.mjs`.
+
+### Notes
+- Le parent v1.21.0 a aussi livré des changements côté CLI que l'interface web ne shell pas ou couvre déjà : l'avertissement de re-candidature pour une même entreprise (l'interface web a son délai de refroidissement de réapplication depuis la v1.84.0), les indicateurs `--format`/`--report` de la lettre de motivation, les modes de prompt e-mail red-flag / panel-intel / no-show pour les entretiens, la persistance des signaux de confiance de scan et de la santé des portails (l'interface web exécute son propre scanner en-process avec `trust-validator` et la page Santé des portails), et les extensions stats/salary-gap (relayées en lecture seule et en mode dégradé).
+
 ## [1.122.0] — 2026-07-16
 
 ### Ajouté

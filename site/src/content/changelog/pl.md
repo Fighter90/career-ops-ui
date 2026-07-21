@@ -9,6 +9,29 @@ Tłumaczenia: [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHA
 ---
 
 
+## [1.124.0] — 2026-07-21
+
+### Dodano
+- **Pięć źródeł skanowania** (parytet z rodzicem v1.22.0, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (ogólnoplatformowe API JSON obejmujące całą tablicę ofert), **Agentic Engineering Jobs** (tablica ofert dla ról agentic/AI-engineering), **Jobvite** (bezautoryzacyjny ATS per-tenant), **Gem** (ATS per-tenant) oraz **Alibaba Group** (API JSON strony kariery, wzorzec Meituan/Tencent). Każde z nich to para źródło + adapter przypięta do hosta i izolowana dla CI; rejestr obsługuje teraz **67 adapterów (62 EN + 5 RU)**; zaktualizowano rezerwowy rozwijany wybór Źródła na `#/scan` oraz jego bramkę kontrolną; pięć nowych zestawów testów `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Naprawiono
+- **Arbeitsagentur: ogólnokrajowa praca zdalna tylko gdy `homeofficetyp` to `VOLLSTAENDIG`** (rodzic #1981) — zapytanie `homeoffice=nv_true` zwraca również role hybrydowe, więc przebieg weryfikacji pracy zdalnej potwierdza teraz każde trafienie względem endpointu szczegółów oferty w małych partiach (a przy błędzie wyszukiwania zachowuje bezpieczne, ostrożne działanie — zachowuje rzeczywiste miasto oferty, więc filtry lokalizacji nadal działają).
+- **SmartRecruiters: publiczne adresy URL ofert budowane bez `/postings/`** (rodzic #2047) — linki trafiają teraz na publiczną stronę oferty zamiast na błąd 404 dla najemców, których publiczna witryna pomija ten segment.
+
+### Uwagi
+- Rodzic v1.22.0 wydał też zmiany po stronie CLI, w które interfejs webowy się nie włącza lub które już pokrywa: szablon CV zh-CN + typografia PDF, tryb `/expand`, poprawki cache promptów dostawców (Gemini/OpenAI/Ollama), podział zużycia tokenów na poszczególne kroki (interfejs webowy ma własny miernik użycia), serializacja blokady zapisu trackera (interfejs webowy kieruje zapisy przez `withFileLock` od v1.21), flagi CLI skanowania `visa_filter` oraz bezwzględna data publikacji (interfejs webowy ma własny filtr wieku „Opublikowano w ciągu”) oraz seedowanie deduplikacji widzianych źródeł (skaner interfejsu webowego utrzymuje własną deduplikację historii skanowania).
+
+## [1.123.0] — 2026-07-17
+
+### Dodano
+- **Źródło skanowania Oracle Recruiting Cloud** (parytet z rodzicem v1.21.0, #1929) — bezautoryzacyjne REST API `recruitingCEJobRequisitions` witryn kariery Oracle Fusion/ORC (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …): host przypięty do wzorca `*.fa[.<region>][.ocs].oraclecloud.com`, numer witryny wyznaczany z `careers_url` każdej śledzonej firmy, paginacja offsetowa z twardym limitem liczby stron oraz nagłówki naśladujące przeglądarkę, odporne na WAF. Rejestr obsługuje teraz **62 adaptery (57 EN + 5 RU)**; zaktualizowano rezerwowy rozwijany wybór Źródła na `#/scan` oraz jego bramkę kontrolną; nowy, izolowany dla CI zestaw testów `tests/sources-oraclecloud.test.mjs`.
+
+### Naprawiono
+- **Detektor powtórzeń ofert: tytuły bazowe pozostają odrębne od wariantów ze specjalizującym sufiksem** (rodzic #1922) — „Senior Analytics Engineer” nie jest już grupowany z „Senior Analytics Engineer, People Analytics”: gdy tokeny jednego tytułu są ścisłym podzbiorem tokenów drugiego, a dodatkowy token jest rzeczywistą specjalizacją (a nie słowem bazowym), oba ogłoszenia są traktowane jako osobno możliwe do zgłoszenia oferty. Adnotacje o ponownej publikacji („(Repost)”, „relisted”) są teraz traktowane jako szum semantyczny (stop-words). +2 asercje w `tests/detect-reposts.test.mjs`.
+
+### Uwagi
+- Rodzic v1.21.0 wydał też zmiany po stronie CLI, w które interfejs webowy się nie włącza lub które już pokrywa: ostrzeżenie o ponownym aplikowaniu do tej samej firmy (interfejs webowy ma własny cooldown ponownego aplikowania od v1.84.0), flagi `--format`/`--report` listu motywacyjnego, tryby promptu e-mail dla rozmowy kwalifikacyjnej (czerwone flagi / analiza panelu / brak stawienia się), trwałość sygnałów zaufania skanowania i kondycji portali (interfejs webowy uruchamia własny skaner in-process z `trust-validator` oraz stronę kondycji portali) oraz rozszerzenia statystyk/luki wynagrodzeniowej (przekazywane wyłącznie do odczytu i z bezpieczną degradacją).
+
 ## [1.122.0] — 2026-07-16
 
 ### Dodano

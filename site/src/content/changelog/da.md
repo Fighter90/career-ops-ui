@@ -10,6 +10,29 @@ Oversættelser: [English](https://github.com/Fighter90/career-ops-ui/blob/main/C
 
 
 
+## [1.124.0] — 2026-07-21
+
+### Tilføjet
+- **Fem scan-kilder** (paritet med forælder v1.22.0, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (board-bred JSON-API), **Agentic Engineering Jobs** (agentic-/AI-engineering-board), **Jobvite** (zero-auth per-tenant-ATS), **Gem** (per-tenant-ATS) og **Alibaba Group** (careers-JSON-API, Meituan/Tencent-mønster). Hver er et vært-fastgjort, CI-isoleret kilde- og adapter-par; registreringen leverer nu **67 adaptere (62 EN + 5 RU)**; `#/scan`-Source-rullelistens fallback og dens drift-gate er opdateret; fem nye suiter `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Rettet
+- **Arbeitsagentur: landsdækkende remote kun når `homeofficetyp` er `VOLLSTAENDIG`** (forælder #1981) — `homeoffice=nv_true`-forespørgslen returnerer også hybrid-stillinger, så remote-passet bekræfter nu hvert hit mod job-detalje-endpointet i små batches og fejler lukket (en opslagsfejl beholder jobbets rigtige by, så lokationsfiltre stadig gælder).
+- **SmartRecruiters: offentlige job-URL'er bygget uden `/postings/`** (forælder #2047) — links lander nu på den offentlige opslagsside i stedet for en 404 for tenants, hvis offentlige site dropper segmentet.
+
+### Noter
+- Forælder v1.22.0 leverede også CLI-side ændringer, som web-ui'en ikke shell'er ind i eller allerede dækker: zh-CN-CV-skabelonen + PDF-typografi, `/expand`-tilstanden, provider-prompt-cache-finjusteringer (Gemini/OpenAI/Ollama), den trin-for-trin-token-opdeling (web-ui'en har sin egen forbrugsmåler), tracker-writer-lock-serialisering (web-ui'en har rutet skrivninger gennem `withFileLock` siden v1.21), scan-`visa_filter`- og absolut-opslagsdato-CLI-flagene (web-ui'en har sit eget "Opslået inden for"-alders-filter), samt seen-sources-dedup-seedingen (web-ui-scanneren beholder sin egen scan-historik-dedup).
+
+## [1.123.0] — 2026-07-17
+
+### Tilføjet
+- **Oracle Recruiting Cloud-scan-kilde** (paritet med forælder v1.21.0, #1929) — den zero-auth `recruitingCEJobRequisitions`-REST-API'en på Oracle Fusion/ORC-karrieresider (JPMorgan Chase, Oracle, BNY Mellon, American Express, Honeywell, …): vært-fastgjort til `*.fa[.<region>][.ocs].oraclecloud.com`, sitenummeret udledes af hver sporet virksomheds `careers_url`, offset-paginering med et hårdt sidetag, og WAF-bevidste browser-lignende headers. Registreringen leverer nu **62 adaptere (57 EN + 5 RU)**; `#/scan`-Source-rullelistens fallback og dens drift-gate er opdateret; ny CI-isoleret suite `tests/sources-oraclecloud.test.mjs`.
+
+### Rettet
+- **Repost-detektor: grundtitler forbliver adskilt fra søskende med specialiserings-suffiks** (forælder #1922) — "Senior Analytics Engineer" klynger ikke længere sammen med "Senior Analytics Engineer, People Analytics": når den ene titels tokens er en streng delmængde af den andens, og det ekstra token er en reel specialisering (ikke et basisord), behandles de to som separat-opslåelige stillinger. Repost-annoteringer ("(Repost)", "relisted") stopordsfiltreres nu som meta-støj. +2 assertions i `tests/detect-reposts.test.mjs`.
+
+### Noter
+- Forælder v1.21.0 leverede også CLI-side ændringer, som web-ui'en ikke shell'er ind i eller allerede dækker: gentag-virksomheds-genansøgningsadvarslen (web-ui'en har haft genansøgnings-cooldown siden v1.84.0), cover letter-flagene `--format`/`--report`, samtale-tilstandene for røde flag / panel-indsigt / no-show-e-mail-prompts, scan-tillidssignaler & portal-sundheds-persistens (web-ui'en kører sin egen in-process-scanner med `trust-validator` og Portalsundhed-siden) samt stats-/løngab-udvidelserne (relæet er skrivebeskyttet og fejler blødt).
+
 ## [1.122.0] — 2026-07-16
 
 ### Tilføjet
