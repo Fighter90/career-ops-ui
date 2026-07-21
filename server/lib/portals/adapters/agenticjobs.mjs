@@ -23,6 +23,7 @@ export const agenticjobsAdapter = {
   id: 'agenticjobs',
   label: 'Agentic Jobs',
   matches(company) {
+    if (!company) return false;
     return company.provider === 'agenticjobs';
   },
   buildEndpoint(company) {
