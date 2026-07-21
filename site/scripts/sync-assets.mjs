@@ -104,6 +104,17 @@ mkdirSync(licDir, { recursive: true });
 writeFileSync(join(licDir, 'license.txt'), readFileSync(licenseSrc, 'utf8'));
 console.log('[sync-assets] LICENSE -> src/generated/license.txt');
 
+// --- 3d. scan sources (v1.125.0 — the landing "Job sources" section) ---------
+// Imported straight from the live registry so the section can never drift
+// from the app: value + label + region for every adapter.
+const { pathToFileURL } = await import('node:url');
+const registry = await import(
+  pathToFileURL(join(ROOT, 'server', 'lib', 'sources', 'registry.mjs')).href
+);
+const scanSources = registry.SOURCES.map(({ value, label, region }) => ({ value, label, region }));
+if (scanSources.length < 67) fail(`expected >=67 scan sources, found ${scanSources.length}`);
+console.log(`[sync-assets] ${scanSources.length} scan sources -> facts.sources`);
+
 // --- 4. repo facts ----------------------------------------------------------
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
 
@@ -185,6 +196,7 @@ const facts = {
   contributors,
   repoUrl: REPO_URL,
   parentUrl: 'https://career-ops.org',
+  sources: scanSources,
   buildDate: new Date().toISOString().slice(0, 10),
 };
 

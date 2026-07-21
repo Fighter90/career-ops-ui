@@ -1,0 +1,115 @@
+---
+import { t, type Locale } from '../i18n/locales';
+import facts from '../generated/facts.json';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+// Public site per source value. The list itself comes from facts.sources
+// (synced from the live registry at build), so a new adapter without a row
+// here fails tests/site-sources.test.mjs rather than silently dropping off
+// the landing. 'rss' is the app's own generic feed connector — it links to
+// the user guide instead of an external site.
+const SOURCE_URLS: Record<string, string> = {
+  '4dayweek': 'https://4dayweek.io',
+  agenticjobs: 'https://www.agentic-engineering-jobs.com',
+  alibaba: 'https://talent.alibaba.com',
+  amazon: 'https://www.amazon.jobs',
+  arbeitnow: 'https://www.arbeitnow.com',
+  arbeitsagentur: 'https://www.arbeitsagentur.de/jobsuche/',
+  ashby: 'https://www.ashbyhq.com',
+  avature: 'https://www.avature.net',
+  bamboohr: 'https://www.bamboohr.com',
+  beesite: 'https://www.milchundzucker.de',
+  breezy: 'https://breezy.hr',
+  comeet: 'https://www.comeet.com',
+  csod: 'https://www.cornerstoneondemand.com',
+  dassault: 'https://www.3ds.com',
+  deutschebahn: 'https://karriere.deutschebahn.com',
+  echojobs: 'https://echojobs.io',
+  gem: 'https://www.gem.com',
+  getonbrd: 'https://www.getonbrd.com',
+  glints: 'https://glints.com',
+  greenhouse: 'https://www.greenhouse.com',
+  hackernews: 'https://news.ycombinator.com',
+  hecklerkoch: 'https://www.heckler-koch.com',
+  higheredjobs: 'https://www.higheredjobs.com',
+  himalayas: 'https://himalayas.app',
+  ibm: 'https://www.ibm.com/careers',
+  jibeapply: 'https://www.icims.com',
+  jobicy: 'https://jobicy.com',
+  jobspresso: 'https://jobspresso.co',
+  jobstreet: 'https://www.jobstreet.com',
+  jobvite: 'https://www.jobvite.com',
+  justjoin: 'https://justjoin.it',
+  landingjobs: 'https://landing.jobs',
+  larajobs: 'https://larajobs.com',
+  lever: 'https://www.lever.co',
+  meituan: 'https://zhaopin.meituan.com',
+  nodesk: 'https://nodesk.co',
+  nofluffjobs: 'https://nofluffjobs.com',
+  oraclecloud: 'https://www.oracle.com/human-capital-management/recruiting/',
+  personio: 'https://www.personio.com',
+  phenom: 'https://www.phenom.com',
+  pinpoint: 'https://www.pinpointhq.com',
+  radancy: 'https://www.radancy.com',
+  recruitee: 'https://recruitee.com',
+  remoteok: 'https://remoteok.com',
+  remotive: 'https://remotive.com',
+  rheinmetall: 'https://www.rheinmetall.com',
+  rippling: 'https://www.rippling.com',
+  rss: '',
+  successfactors: 'https://www.sap.com',
+  smartrecruiters: 'https://www.smartrecruiters.com',
+  softgarden: 'https://softgarden.com',
+  solidjobs: 'https://solid.jobs',
+  teamtailor: 'https://www.teamtailor.com',
+  tencent: 'https://careers.tencent.com',
+  thehub: 'https://thehub.io',
+  themuse: 'https://www.themuse.com',
+  tkms: 'https://www.thyssenkrupp-marinesystems.com',
+  weworkremotely: 'https://weworkremotely.com',
+  wttj: 'https://www.welcometothejungle.com',
+  workable: 'https://www.workable.com',
+  workday: 'https://www.workday.com',
+  workingnomads: 'https://www.workingnomads.com',
+  geekjob: 'https://geekjob.ru',
+  getmatch: 'https://getmatch.ru',
+  'habr-career': 'https://career.habr.com',
+  'hh.ru': 'https://hh.ru',
+  trudvsem: 'https://trudvsem.ru',
+};
+
+const home = locale.slug === '' ? '/' : `/${locale.slug}/`;
+const hrefFor = (value: string) => SOURCE_URLS[value] || `${home}help/`;
+const en = facts.sources.filter((s) => s.region === 'en');
+const ru = facts.sources.filter((s) => s.region === 'ru');
+const chip =
+  'inline-flex items-center rounded-full border border-line bg-paper px-3.5 py-1.5 text-sm text-ink-soft transition hover:border-ink-faint hover:text-ink';
+---
+
+<section id="sources" class="section">
+  <div class="container-site">
+    <div class="reveal mb-10 max-w-2xl">
+      <h2 class="mb-3 text-3xl font-bold tracking-tight md:text-4xl">{t(locale, 'src.title')}</h2>
+      <p class="text-lg text-ink-soft">{t(locale, 'src.lead').replace('{n}', String(facts.sources.length))}</p>
+    </div>
+    <ul class="mt-8 flex flex-wrap gap-2.5">
+      {en.map((s) => (
+        <li>
+          <a href={hrefFor(s.value)} rel="noopener nofollow" class={chip}>{s.label}</a>
+        </li>
+      ))}
+    </ul>
+    <h3 class="mt-8 mb-3 text-sm font-bold uppercase tracking-wide text-ink-faint">{t(locale, 'src.ru')}</h3>
+    <ul class="flex flex-wrap gap-2.5">
+      {ru.map((s) => (
+        <li>
+          <a href={hrefFor(s.value)} rel="noopener nofollow" class={chip}>{s.label}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

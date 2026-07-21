@@ -10,6 +10,11 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.125.0] — 2026-07-21
+
+### Tilføjet
+- **cvstart.org: landingssektionen "Jobkilder"** — en ny sektion mellem screenshots og sammenligningen, der lister **alle 67 scanner-kilder som klikbare chips** (62 engelsksprogede boards/ATS'er + de 5 russiske boards under egen underoverskrift), hver med link til kildens offentlige side. Listen synkroniseres med det aktive adapter-register ved build (`sync-assets.mjs` → `facts.sources`), så den aldrig kan afvige fra appen; et kurateret linkkort i `Sources.astro` er sikret af den nye test `tests/site-sources.test.mjs`. Header-navigationen fik et **Sources**-anker; 4 nye site-i18n-nøgler ×17. Rettede desuden landingens JSON-LD `inLanguage`-liste, der stadig manglede `hi`.
+
 ## [1.124.0] — 2026-07-21
 
 ### Tilføjet

@@ -8,6 +8,11 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.125.0] — 2026-07-21
+
+### Added
+- **cvstart.org: "Job sources" landing section** — a new section between the screenshots and the comparison lists **all 67 scanner sources as clickable chips** (62 EN boards/ATS + the 5 Russian boards under their own subheading), each linking to the source's public site. The list is synced from the live adapter registry at build (`sync-assets.mjs` → `facts.sources`), so it can never drift from the app; a curated link map in `Sources.astro` is gated by the new `tests/site-sources.test.mjs` — a newly ported adapter without a link fails CI instead of silently shipping a linkless chip. Header nav gained a **Sources** anchor; 4 new site i18n keys ×17. Also fixed the landing JSON-LD `inLanguage` list, which was still missing `hi`.
+
 ## [1.124.0] — 2026-07-21
 
 ### Added

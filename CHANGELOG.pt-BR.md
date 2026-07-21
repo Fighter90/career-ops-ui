@@ -8,6 +8,11 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 
 ---
 
+## [1.125.0] — 2026-07-21
+
+### Adicionado
+- **cvstart.org: seção "Fontes de vagas" na landing** — uma nova seção entre as capturas de tela e o comparativo lista **todas as 67 fontes de scan como chips clicáveis** (62 boards/ATS em inglês + os 5 boards russos sob seu próprio subtítulo), cada um linkando para o site público da fonte. A lista é sincronizada com o registry de adaptadores ao vivo no momento do build (`sync-assets.mjs` → `facts.sources`), de forma que nunca pode ficar dessincronizada do app; um mapa de links curado em `Sources.astro` é protegido pela nova `tests/site-sources.test.mjs`. A navegação do cabeçalho ganhou uma âncora **Fontes**; 4 novas chaves i18n do site ×17. Também foi corrigida a lista `inLanguage` do JSON-LD da landing, à qual ainda faltava `hi`.
+
 ## [1.124.0] — 2026-07-21
 
 ### Adicionado

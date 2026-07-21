@@ -7,18 +7,18 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1945%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1949%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.124.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.124.0)
+[![release](https://img.shields.io/badge/release-v1.125.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.0)
 
-> **🆕 Dernière version — v1.124.0**
+> **🆕 Dernière version — v1.125.0**
 >
-> **Parité avec le parent v1.22.0.** La v1.124.0 porte **cinq sources de scan** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem et Alibaba Group (**67 adaptateurs** désormais) — ainsi que la vérification du full remote pour Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) et le correctif des URL publiques de SmartRecruiters.
+> **Sources d'offres sur la landing.** La v1.125.0 ajoute une section sur cvstart.org qui liste les **67 sources de scan** sous forme de puces cliquables, synchronisée avec le registre à chaque build et protégée contre toute dérive. Avant cela, v1.124.0 porte **cinq sources de scan** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem et Alibaba Group (**67 adaptateurs** désormais) — ainsi que la vérification du full remote pour Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) et le correctif des URL publiques de SmartRecruiters.
 >
-> _5 sources · 67 adaptateurs · parité parent v1.22 · Oracle Cloud · 62 adaptateurs · parité parent v1.21 · Hindi · 17 locales · manifeste · pages méthodologie/licence/changelog de cvstart.org · parité parent v1.19 · 61 adaptateurs · étoiles en direct + contributeurs sur la landing · parité parent v1.18 · 54 adaptateurs · statut Hired · stats cumulées · pack de parité · 50 adaptateurs · refonte compteur d'utilisation · peaufinage du design · compteur d'utilisation · assistant d'aide flottant · consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _section des sources sur la landing · 5 sources · 67 adaptateurs · parité parent v1.22 · Oracle Cloud · 62 adaptateurs · parité parent v1.21 · Hindi · 17 locales · manifeste · pages méthodologie/licence/changelog de cvstart.org · parité parent v1.19 · 61 adaptateurs · étoiles en direct + contributeurs sur la landing · parité parent v1.18 · 54 adaptateurs · statut Hired · stats cumulées · pack de parité · 50 adaptateurs · refonte compteur d'utilisation · peaufinage du design · compteur d'utilisation · assistant d'aide flottant · consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 

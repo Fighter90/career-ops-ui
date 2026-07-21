@@ -9,6 +9,11 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.125.0] — 2026-07-21
+
+### Dodano
+- **cvstart.org: sekcja landingu „Źródła ofert”** — nowa sekcja między zrzutami ekranu a porównaniem, która wymienia **wszystkie 67 źródeł skanowania jako klikalne chipy** (62 anglojęzyczne tablice/ATS + 5 rosyjskich tablic pod osobnym nagłówkiem), każde z linkiem do publicznej strony źródła. Lista jest synchronizowana z aktywnym rejestrem adapterów podczas budowania (`sync-assets.mjs` → `facts.sources`), więc nigdy nie może rozjechać się z aplikacją; kuratorowana mapa linków w `Sources.astro` jest zabezpieczona nowym testem `tests/site-sources.test.mjs`. Nawigacja w nagłówku zyskała kotwicę **Sources**; dodano 4 nowe klucze i18n serwisu ×17. Naprawiono też listę `inLanguage` w JSON-LD landingu, w której wciąż brakowało `hi`.
+
 ## [1.124.0] — 2026-07-21
 
 ### Dodano
