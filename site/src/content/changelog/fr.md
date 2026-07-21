@@ -11,6 +11,12 @@ Traductions : [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHA
 ---
 
 
+## [1.125.0] — 2026-07-21
+
+### Ajouté
+- **cvstart.org : section « Sources d'offres » sur la landing** — une nouvelle section entre les captures d'écran et le comparatif liste **les 67 sources de scan sous forme de puces cliquables** (62 boards/ATS anglophones + les 5 boards russes sous leur propre sous-titre), chacune renvoyant vers le site public de la source. La liste est synchronisée avec le registre d'adaptateurs en direct au moment du build (`sync-assets.mjs` → `facts.sources`), si bien qu'elle ne peut jamais diverger de l'app ; une carte de liens organisée dans `Sources.astro` est protégée par la nouvelle `tests/site-sources.test.mjs`. La navigation d'en-tête a gagné une ancre **Sources** ; 4 nouvelles clés i18n du site ×17. La liste `inLanguage` du JSON-LD de la landing, à laquelle il manquait encore `hi`, a également été corrigée.
+
+
 ## [1.124.0] — 2026-07-21
 
 ### Ajouté

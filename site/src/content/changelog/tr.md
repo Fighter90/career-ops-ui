@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.125.0] — 2026-07-21
+
+### Eklendi
+- **cvstart.org: Landingde "İş kaynakları" bölümü** — ekran görüntüleri ile karşılaştırma listesi arasına eklenen yeni bir bölüm, **67 tarama kaynağının tümünü tıklanabilir çipler olarak** listeler (62 İngilizce pano/ATS + kendi alt başlığı altında 5 Rus panosu), her biri kaynağın herkese açık sitesine bağlanır. Liste, build sırasında canlı adaptör kayıt defterinden senkronize edilir (`sync-assets.mjs` → `facts.sources`), böylece uygulamadan asla sapamaz; `Sources.astro` içindeki düzenlenmiş bağlantı haritası yeni `tests/site-sources.test.mjs` ile korunur. Üst gezinme çubuğu yeni bir **Kaynaklar** çapası kazandı; 4 yeni site i18n anahtarı ×17. Ayrıca, hâlâ `hi` eksik olan landing JSON-LD `inLanguage` listesi düzeltildi.
+
 ## [1.124.0] — 2026-07-21
 
 ### Eklendi

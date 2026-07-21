@@ -2,6 +2,11 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.125.0] — 2026-07-21
+
+### Hinzugefügt
+- **cvstart.org: Abschnitt „Job-Quellen" auf der Landing** — ein neuer Abschnitt zwischen den Screenshots und dem Vergleich listet **alle 67 Scanner-Quellen als anklickbare Chips** auf (62 EN-Boards/ATS + die 5 russischen Boards unter einer eigenen Unterüberschrift), jede verlinkt auf die öffentliche Seite der jeweiligen Quelle. Die Liste wird beim Build aus der Live-Adapter-Registry synchronisiert (`sync-assets.mjs` → `facts.sources`), sodass sie nie von der App abweichen kann; eine kuratierte Link-Zuordnung in `Sources.astro` wird durch die neue `tests/site-sources.test.mjs` abgesichert. Die Kopfzeilen-Navigation erhielt einen neuen **Quellen**-Anker; 4 neue Site-i18n-Schlüssel ×17. Außerdem wurde die `inLanguage`-Liste im Landing-JSON-LD behoben, der noch `hi` fehlte.
+
 ## [1.124.0] — 2026-07-21
 
 ### Hinzugefügt
