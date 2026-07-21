@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](CHANGELOG.md).
 
+## [1.124.0] — 2026-07-21
+
+### Aggiunto
+- **Cinque sorgenti di scansione** (parità con il parent v1.22.0, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (API JSON per l'intero board), **Agentic Engineering Jobs** (board di ingegneria agentica/IA), **Jobvite** (ATS per-tenant a zero autenticazione), **Gem** (ATS per-tenant) e **Alibaba Group** (API JSON delle pagine carriere, pattern Meituan/Tencent). Ognuna è una coppia sorgente + adattatore ancorata all'host e isolata per la CI; il registro ora conta **67 adattatori (62 inglesi + 5 russi)**; il fallback del menu a tendina Source di `#/scan` e il relativo gate di deriva sono aggiornati; cinque nuove suite `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Corretto
+- **Arbeitsagentur: full-remote a livello nazionale solo quando `homeofficetyp` è `VOLLSTAENDIG`** (parent #1981) — la query `homeoffice=nv_true` restituisce anche ruoli ibridi, quindi il passaggio remoto ora conferma ogni risultato rispetto all'endpoint di dettaglio dell'offerta in piccoli batch e fallisce in modo sicuro (un errore di lookup mantiene la città reale dell'offerta, così i filtri di località continuano ad applicarsi).
+- **SmartRecruiters: gli URL pubblici delle offerte venivano costruiti senza `/postings/`** (parent #2047) — i link ora atterrano sulla pagina pubblica dell'offerta invece di un 404 per i tenant il cui sito pubblico omette il segmento.
+
+### Note
+- La v1.22.0 del parent ha anche introdotto modifiche lato CLI che la web UI non richiama via shell o che già copre: il template CV zh-CN + la tipografia del PDF, la modalità `/expand`, le ottimizzazioni della cache dei prompt dei provider (Gemini/OpenAI/Ollama), la ripartizione dei token per singolo passo (la web UI ha il proprio contatore di utilizzo), la serializzazione con writer-lock del tracker (la web UI instrada le scritture tramite `withFileLock` dalla v1.21), i flag CLI `visa_filter` e data di pubblicazione assoluta per lo scan (la web UI ha il proprio filtro "Pubblicato entro"), e il seeding di deduplica delle sorgenti già viste (lo scanner della web UI mantiene la propria deduplica dello storico delle scansioni).
+
 ## [1.123.0] — 2026-07-17
 
 ### Aggiunto

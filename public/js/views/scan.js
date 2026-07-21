@@ -142,6 +142,8 @@ Router.register('scan', async () => {
   // a temporarily-unreachable backend). Kept alphabetical by label.
   const FALLBACK_SOURCES = [
     { value: '4dayweek',        label: '4 Day Week' },
+    { value: 'agenticjobs',     label: 'Agentic Jobs' },
+    { value: 'alibaba',         label: 'Alibaba' },
     { value: 'amazon',          label: 'Amazon' },
     { value: 'arbeitnow',       label: 'Arbeitnow' },
     { value: 'arbeitsagentur',  label: 'Arbeitsagentur' },
@@ -155,6 +157,7 @@ Router.register('scan', async () => {
     { value: 'dassault',        label: 'Dassault Systèmes' },
     { value: 'deutschebahn',    label: 'Deutsche Bahn' },
     { value: 'echojobs',        label: 'EchoJobs' },
+    { value: 'gem',             label: 'Gem' },
     { value: 'getonbrd',        label: 'Get on Board' },
     { value: 'glints',          label: 'Glints' },
     { value: 'greenhouse',      label: 'Greenhouse' },
@@ -167,6 +170,7 @@ Router.register('scan', async () => {
     { value: 'jobicy',          label: 'Jobicy' },
     { value: 'jobspresso',      label: 'Jobspresso' },
     { value: 'jobstreet',       label: 'Jobstreet / SEEK' },
+    { value: 'jobvite',         label: 'Jobvite' },
     { value: 'justjoin',        label: 'JustJoin.it' },
     { value: 'landingjobs',     label: 'Landing.jobs' },
     { value: 'larajobs',        label: 'LaraJobs' },
@@ -198,6 +202,7 @@ Router.register('scan', async () => {
     { value: 'workable',        label: 'Workable' },
     { value: 'workday',         label: 'Workday' },
     { value: 'workingnomads',   label: 'Working Nomads' },
+    { value: 'wttj',            label: 'Welcome to the Jungle' },
     { value: 'geekjob',         label: 'GeekJob' },
     { value: 'getmatch',        label: 'GetMatch' },
     { value: 'habr-career',     label: 'Habr Career' },

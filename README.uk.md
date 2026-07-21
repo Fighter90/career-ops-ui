@@ -7,18 +7,18 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-1874%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-1945%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.123.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.123.0)
+[![release](https://img.shields.io/badge/release-v1.124.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.124.0)
 
-> **🆕 Останній реліз — v1.123.0**
+> **🆕 Останній реліз — v1.124.0**
 >
-> **Паритет із батьківським v1.21.0.** v1.123.0 портує джерело сканування **Oracle Recruiting Cloud** (REST API ORC без автентифікації, яке використовують JPMorgan Chase, Oracle, BNY Mellon, American Express, … — тепер **62 адаптери**) і виправлення детектора репостів, яке зберігає базові назви окремо від сиблінгів зі спеціалізованим суфіксом.
+> **Паритет із батьківським v1.22.0.** v1.124.0 портує **п'ять джерел сканування** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem і Alibaba Group (тепер **67 адаптерів**) — а також перевірку повністю віддаленої роботи Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) і виправлення публічних URL SmartRecruiters.
 >
-> _Oracle Cloud · 62 адаптери · паритет із батьківським v1.21 · гінді · 17 мов · маніфест · сторінки methodology/license/changelog на cvstart.org · паритет із батьком v1.19 · 61 адаптер · живі зірки + контриб'ютори на лендінгу · паритет із батьком v1.18 · 54 адаптери · статус Hired · статистика за весь час · пакет паритету · 50 адаптерів · переробка лічильника витрат · шліфування дизайну · лічильник використання · плаваючий помічник довідки · консолідація доків та QA · закриття беклогу безпеки · докум. та QA ×16 · Виключити Scan · огляд пайплайна · посилення безпеки 2 · посилення санітайзера · посилення безпеки · витрати ШІ · логотипи компаній · інструменти CLI для ШІ · запитати довідку · адаптація CV + лист · автозаповнення two-pager · експорт у DOCX · здоров’я порталів · вбудований репортер багів · 16 locales · 6 LLM-провайдерів · 46 адаптерів сканера · кар'єрна орієнтація · план кар'єри · перероблення статистики · шар пам'яті · CV Studio · планувальник нетворкінгу · пробна співбесіда · ринкова відповідність через two-pager · паритет із батьківським career-ops v1.16.0._
+> _5 джерел · 67 адаптерів · паритет із батьківським v1.22 · Oracle Cloud · 62 адаптери · паритет із батьківським v1.21 · гінді · 17 мов · маніфест · сторінки methodology/license/changelog на cvstart.org · паритет із батьком v1.19 · 61 адаптер · живі зірки + контриб'ютори на лендінгу · паритет із батьком v1.18 · 54 адаптери · статус Hired · статистика за весь час · пакет паритету · 50 адаптерів · переробка лічильника витрат · шліфування дизайну · лічильник використання · плаваючий помічник довідки · консолідація доків та QA · закриття беклогу безпеки · докум. та QA ×16 · Виключити Scan · огляд пайплайна · посилення безпеки 2 · посилення санітайзера · посилення безпеки · витрати ШІ · логотипи компаній · інструменти CLI для ШІ · запитати довідку · адаптація CV + лист · автозаповнення two-pager · експорт у DOCX · здоров’я порталів · вбудований репортер багів · 16 locales · 6 LLM-провайдерів · 46 адаптерів сканера · кар'єрна орієнтація · план кар'єри · перероблення статистики · шар пам'яті · CV Studio · планувальник нетворкінгу · пробна співбесіда · ринкова відповідність через two-pager · паритет із батьківським career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-uk.png)
 
@@ -128,7 +128,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 1874 unit + 90 Playwright + 43 e2e
+   └─ tests/        # 1945 unit + 90 Playwright + 43 e2e
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.
@@ -149,7 +149,7 @@ career-ops/
 ## Тести
 
 ```bash
-npm test                    # 1874 unit/integration-тестів
+npm test                    # 1945 unit/integration-тестів
 npm run test:e2e            # 20 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 70 тестів Playwright

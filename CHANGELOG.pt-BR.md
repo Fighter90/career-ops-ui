@@ -8,6 +8,18 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 
 ---
 
+## [1.124.0] — 2026-07-21
+
+### Adicionado
+- **Cinco fontes de scan** (paridade com o pai v1.22.0, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (API JSON de todo o board), **Agentic Engineering Jobs** (board de engenharia agentic/IA), **Jobvite** (ATS por tenant sem autenticação), **Gem** (ATS por tenant) e **Alibaba Group** (API JSON de carreiras, padrão Meituan/Tencent). Cada uma é um par source + adaptador fixado por host e isolado para CI; o registry agora traz **67 adaptadores (62 EN + 5 RU)**; o fallback do dropdown Source de `#/scan` e seu gate de deriva foram atualizados; cinco novas suítes `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Corrigido
+- **Arbeitsagentur: remoto em todo o território somente quando `homeofficetyp` é `VOLLSTAENDIG`** (pai #1981) — a consulta `homeoffice=nv_true` também retorna vagas híbridas, então a passagem de verificação de remoto agora confirma cada resultado no endpoint de detalhes da vaga em pequenos lotes e falha de forma segura (um erro de consulta mantém a cidade real da vaga, para que os filtros de localização continuem valendo).
+- **SmartRecruiters: URLs públicas de vagas construídas sem `/postings/`** (pai #2047) — os links agora levam à página pública da vaga em vez de um 404, para tenants cujo site público omite esse segmento.
+
+### Notas
+- O pai v1.22.0 também trouxe mudanças do lado da CLI que a web UI não invoca via shell ou já cobre de outra forma: o template de CV zh-CN + tipografia do PDF, o modo `/expand`, ajustes de cache de prompt do provedor (Gemini/OpenAI/Ollama), o detalhamento de tokens por etapa (a web UI tem seu próprio medidor de uso), a serialização por trava de escrita do tracker (a web UI roteia gravações por `withFileLock` desde a v1.21), as flags de CLI `visa_filter` e data-de-publicação absoluta do scan (a web UI tem seu próprio filtro de idade "Publicada em até") e a semeadura de deduplicação de fontes já vistas (o scanner da web UI mantém sua própria dedup de histórico de scan).
+
 ## [1.123.0] — 2026-07-17
 
 ### Adicionado

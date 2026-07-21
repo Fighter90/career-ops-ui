@@ -8,6 +8,18 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.124.0] — 2026-07-21
+
+### Added
+- **Five scan sources** (parent v1.22.0 parity, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (board-wide JSON API), **Agentic Engineering Jobs** (agentic/AI-engineering board), **Jobvite** (zero-auth per-tenant ATS), **Gem** (per-tenant ATS), and **Alibaba Group** (careers JSON API, Meituan/Tencent pattern). Each is a host-pinned, CI-isolated source + adapter pair; the registry now ships **67 adapters (62 EN + 5 RU)**; the `#/scan` Source-dropdown fallback and its drift gate are updated; five new suites `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Fixed
+- **Arbeitsagentur: nationwide-remote only when `homeofficetyp` is `VOLLSTAENDIG`** (parent #1981) — the `homeoffice=nv_true` query also returns hybrid roles, so the remote pass now confirms each hit against the job-details endpoint in small batches and fails closed (a lookup error keeps the job's real city so location filters still apply).
+- **SmartRecruiters: public job URLs built without `/postings/`** (parent #2047) — links now land on the public posting page instead of a 404 for tenants whose public site drops the segment.
+
+### Notes
+- Parent v1.22.0 also shipped CLI-side changes the web UI does not shell into or already covers: the zh-CN CV template + PDF typography, `/expand` mode, provider prompt-cache tweaks (Gemini/OpenAI/Ollama), the per-step token breakdown (`utils/token-tracker.mjs` — the web UI has its own `data/llm-usage.jsonl` usage meter), tracker writer-lock serialization (the web UI routes writes through `withFileLock` since v1.21), the scan `visa_filter` + absolute posted-date CLI flags (the web UI has its own "Posted within" age filter), and the seen-sources dedupe seeding (#2079/#2080 — the web UI scanner keeps its own scan-history dedup).
+
 ## [1.123.0] — 2026-07-17
 
 ### Added

@@ -7,18 +7,18 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1874%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1945%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.123.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.123.0)
+[![release](https://img.shields.io/badge/release-v1.124.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.124.0)
 
-> **🆕 Dernière version — v1.123.0**
+> **🆕 Dernière version — v1.124.0**
 >
-> **Parité avec le parent v1.21.0.** La v1.123.0 porte la source de scan **Oracle Recruiting Cloud** (API REST ORC sans authentification utilisée par JPMorgan Chase, Oracle, BNY Mellon, American Express, … — **62 adaptateurs** désormais) ainsi que le correctif du détecteur de reposts qui garde les intitulés de base distincts des variantes à suffixe spécialisé.
+> **Parité avec le parent v1.22.0.** La v1.124.0 porte **cinq sources de scan** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem et Alibaba Group (**67 adaptateurs** désormais) — ainsi que la vérification du full remote pour Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) et le correctif des URL publiques de SmartRecruiters.
 >
-> _Oracle Cloud · 62 adaptateurs · parité parent v1.21 · Hindi · 17 locales · manifeste · pages méthodologie/licence/changelog de cvstart.org · parité parent v1.19 · 61 adaptateurs · étoiles en direct + contributeurs sur la landing · parité parent v1.18 · 54 adaptateurs · statut Hired · stats cumulées · pack de parité · 50 adaptateurs · refonte compteur d'utilisation · peaufinage du design · compteur d'utilisation · assistant d'aide flottant · consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
+> _5 sources · 67 adaptateurs · parité parent v1.22 · Oracle Cloud · 62 adaptateurs · parité parent v1.21 · Hindi · 17 locales · manifeste · pages méthodologie/licence/changelog de cvstart.org · parité parent v1.19 · 61 adaptateurs · étoiles en direct + contributeurs sur la landing · parité parent v1.18 · 54 adaptateurs · statut Hired · stats cumulées · pack de parité · 50 adaptateurs · refonte compteur d'utilisation · peaufinage du design · compteur d'utilisation · assistant d'aide flottant · consolidation docs & QA · clôture backlog sécurité · docs & QA ×16 · Exclure Scan · aperçu pipeline · durcissement de sécurité 2 · durcissement du désinfectant · durcissement de sécurité · utilisation & coût IA · logos d'entreprise · outils CLI d'IA · demander au guide · adapter CV + lettre · remplissage auto du two-pager · export DOCX · santé des portails · rapporteur de bugs intégré · 16 locales · 6 fournisseurs LLM · 46 adaptateurs de scanner · orientation de carrière · plan de carrière · refonte des statistiques · couche mémoire · CV Studio · planificateur de networking · mock interview · adéquation au marché via le two-pager · parité avec le career-ops v1.16.0._
 
 ![career-ops-ui — Centre de commande](./images/dashboard-fr.png)
 
@@ -371,7 +371,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1874 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 1945 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -502,7 +502,7 @@ Quand `run: true` est défini sur `/api/deep` ou `/api/mode/:slug`, le serveur p
 ## Tests
 
 ```bash
-npm test                       # 1874 unit/integration tests
+npm test                       # 1945 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)

@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](CHANGELOG.md).
 
+## [1.124.0] — 2026-07-21
+
+### Eklendi
+- **Beş tarama kaynağı** (üst proje v1.22.0 paritesi, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (pano geneli JSON API), **Agentic Engineering Jobs** (agentic/yapay zeka mühendisliği panosu), **Jobvite** (sıfır-kimlik-doğrulamalı kiracı-başına ATS), **Gem** (kiracı-başına ATS) ve **Alibaba Group** (kariyer JSON API'si, Meituan/Tencent kalıbı). Her biri ana bilgisayara sabitlenmiş, CI-izole bir kaynak + adaptör çifti; kayıt artık **67 adaptör (62 İngilizce + 5 Rusça)** gönderiyor; `#/scan` Kaynak açılır menüsü yedeği ve onun sapma kapısı güncellendi; beş yeni test paketi `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Düzeltildi
+- **Arbeitsagentur: `homeofficetyp` yalnızca `VOLLSTAENDIG` olduğunda tüm ülke çapında uzaktan sayılıyor** (üst proje #1981) — `homeoffice=nv_true` sorgusu hibrit rolleri de döndürüyordu, bu yüzden uzaktan geçişi artık her sonucu küçük gruplar hâlinde ilan detayları uç noktasına karşı doğruluyor ve hataya karşı temkinli davranıyor (bir sorgu hatası ilanın gerçek şehrini korur, böylece konum filtreleri yine de uygulanmaya devam eder).
+- **SmartRecruiters: herkese açık iş URL'leri `/postings/` olmadan oluşturuluyordu** (üst proje #2047) — bağlantılar artık, herkese açık sitesi bu segmenti atlayan kiracılar için 404 yerine herkese açık ilan sayfasına iniyor.
+
+### Notlar
+- Üst proje v1.22.0 ayrıca web-ui'nin shell ile çağırmadığı veya zaten kapsadığı CLI tarafı değişiklikler gönderdi: zh-CN CV şablonu + PDF tipografisi, `/expand` modu, sağlayıcı prompt-önbelleği ince ayarları (Gemini/OpenAI/Ollama), adım başına token dökümü (web-ui'nin kendi kullanım göstergesi var), tracker'ın yazıcı-kilidi serileştirmesi (web-ui yazmaları v1.21'den beri zaten `withFileLock` üzerinden yönlendiriyor), tarama `visa_filter`'ı + mutlak yayın-tarihi CLI bayrakları (web-ui'nin kendi "Posted within" yaş filtresi var) ve görülen-kaynak tekilleştirme tohumlaması (web-ui tarayıcısı kendi tarama-geçmişi tekilleştirmesini tutuyor).
+
 ## [1.123.0] — 2026-07-17
 
 ### Eklendi

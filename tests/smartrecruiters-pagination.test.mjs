@@ -6,7 +6,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchSmartRecruiters } from '../server/lib/sources/smartrecruiters.mjs';
+import { fetchSmartRecruiters, buildPublicUrl } from '../server/lib/sources/smartrecruiters.mjs';
 
 function makeFetchStub(pages) {
   return async (url) => {
@@ -114,5 +114,49 @@ test('throws when upstream returns non-200', async () => {
       fetchImpl: stubFetch,
     }),
     /HTTP 503/
+  );
+});
+
+// ─────────────── Public URL construction (#2047) ───────────────
+// The public jobs.smartrecruiters.com site has no `/postings/` segment; carrying
+// it over from the api.smartrecruiters.com ref yields a 404 that the liveness
+// checker flags as an expired posting. buildPublicUrl drops it.
+
+test('rewrites the api ref to a public URL without /postings/ (#2047)', async () => {
+  const pages = [{
+    offset: 0,
+    totalFound: 1,
+    content: [{
+      id: 'abc123',
+      name: 'Senior ML Engineer',
+      company: { name: 'FooCorp' },
+      ref: 'https://api.smartrecruiters.com/v1/companies/FooCorp/postings/abc123',
+    }],
+  }];
+  const jobs = await fetchSmartRecruiters('https://api.smartrecruiters.com/v1/companies/FooCorp/postings', {
+    fetchImpl: makeFetchStub(pages),
+  });
+  assert.equal(jobs[0].url, 'https://jobs.smartrecruiters.com/FooCorp/abc123-senior-ml-engineer');
+  assert.ok(!/\/postings\//.test(jobs[0].url), 'public URL must not carry the /postings/ segment');
+});
+
+test('buildPublicUrl: ref rewrite, id synthesis, and applyUrl fallback', () => {
+  // 1. Valid api ref → public URL, /postings/ dropped, title slug appended.
+  assert.equal(
+    buildPublicUrl({
+      id: 'p1', name: 'Data Scientist', company: { name: 'Bar' },
+      ref: 'https://api.smartrecruiters.com/v1/companies/BarCorp/postings/p1',
+    }),
+    'https://jobs.smartrecruiters.com/BarCorp/p1-data-scientist',
+  );
+  // 2. Untrusted / non-api ref → synthesise from company slug + posting id.
+  assert.equal(
+    buildPublicUrl({ id: 'xyz', name: 'Backend Dev', company: { name: 'Baz Inc' }, ref: 'https://evil.example/x' }),
+    'https://jobs.smartrecruiters.com/baz-inc/xyz-backend-dev',
+  );
+  // 3. No usable ref and no id/company → last-resort applyUrl.
+  assert.equal(
+    buildPublicUrl({ name: 'Ghost', applyUrl: 'https://apply.example/ghost' }),
+    'https://apply.example/ghost',
   );
 });

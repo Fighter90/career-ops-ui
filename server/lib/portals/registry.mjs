@@ -100,6 +100,15 @@ import { tencentAdapter } from './adapters/tencent.mjs';
 // ATS, zero-auth JSON API, host-detected (*.fa[.<region>][.ocs].oraclecloud.com)
 // or explicit `provider: oraclecloud`.
 import { oraclecloudAdapter } from './adapters/oraclecloud.mjs';
+// v1.124.0 — parent career-ops v1.22.0 parity. wttj + agenticjobs are
+// board-wide feeds (provider-selected); jobvite + gem are per-tenant ATS
+// (host-detected or explicit `provider:`); alibaba is a single-company
+// careers JSON API (meituan/tencent pattern). All zero-auth.
+import { wttjAdapter } from './adapters/wttj.mjs';
+import { agenticjobsAdapter } from './adapters/agenticjobs.mjs';
+import { jobviteAdapter } from './adapters/jobvite.mjs';
+import { gemAdapter } from './adapters/gem.mjs';
+import { alibabaAdapter } from './adapters/alibaba.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -191,6 +200,12 @@ export const ALL_ADAPTERS = [
   // Per-tenant Fusion Candidate Experience host, distinct host pattern, so
   // ordering after the other host-detected ATS is safe.
   oraclecloudAdapter,
+  // v1.124.0 — parent career-ops v1.22.0 parity (see imports above).
+  wttjAdapter,
+  agenticjobsAdapter,
+  jobviteAdapter,
+  gemAdapter,
+  alibabaAdapter,
 ];
 
 /**

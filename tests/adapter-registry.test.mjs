@@ -99,17 +99,16 @@ test('registry: Workday defaults site=External when careers_url omits site', () 
 
 test('registry: ALL_ADAPTERS has the expected entries', async () => {
   const { ALL_ADAPTERS } = await import('../server/lib/portals/registry.mjs');
-  assert.equal(ALL_ADAPTERS.length, 57);
+  assert.equal(ALL_ADAPTERS.length, 62);
   const ids = ALL_ADAPTERS.map((a) => a.id).sort();
   assert.deepEqual(ids, [
-    '4dayweek', 'amazon', 'arbeitnow', 'arbeitsagentur', 'ashby', 'avature',
-    'bamboohr', 'beesite', 'breezy', 'comeet', 'csod', 'dassault', 'deutschebahn',
-    'echojobs', 'getonbrd', 'glints', 'greenhouse',
-    'hackernews', 'hecklerkoch', 'higheredjobs', 'himalayas', 'ibm', 'jibeapply', 'jobicy', 'jobspresso', 'jobstreet',
-    'justjoin', 'landingjobs', 'larajobs', 'lever', 'meituan', 'nodesk', 'nofluffjobs', 'oraclecloud', 'personio',
-    'phenom', 'pinpoint', 'radancy', 'recruitee', 'remoteok', 'remotive', 'rheinmetall', 'rippling', 'rss',
-    'smartrecruiters', 'softgarden', 'solidjobs', 'successfactors', 'teamtailor', 'tencent', 'thehub',
-    'themuse', 'tkms', 'weworkremotely', 'workable', 'workday', 'workingnomads',
+    '4dayweek', 'agenticjobs', 'alibaba', 'amazon', 'arbeitnow', 'arbeitsagentur', 'ashby', 'avature', 'bamboohr',
+    'beesite', 'breezy', 'comeet', 'csod', 'dassault', 'deutschebahn', 'echojobs', 'gem', 'getonbrd',
+    'glints', 'greenhouse', 'hackernews', 'hecklerkoch', 'higheredjobs', 'himalayas', 'ibm', 'jibeapply', 'jobicy',
+    'jobspresso', 'jobstreet', 'jobvite', 'justjoin', 'landingjobs', 'larajobs', 'lever', 'meituan', 'nodesk',
+    'nofluffjobs', 'oraclecloud', 'personio', 'phenom', 'pinpoint', 'radancy', 'recruitee', 'remoteok', 'remotive',
+    'rheinmetall', 'rippling', 'rss', 'smartrecruiters', 'softgarden', 'solidjobs', 'successfactors', 'teamtailor', 'tencent',
+    'thehub', 'themuse', 'tkms', 'weworkremotely', 'workable', 'workday', 'workingnomads', 'wttj',
   ]);
 });
 
