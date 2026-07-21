@@ -9,6 +9,18 @@
 ---
 
 
+## [1.124.0] — 2026-07-21
+
+### 추가
+- **스캔 소스 5개** (상위 v1.22.0 패리티, #1808/#1572/#2024/#2055) — **Welcome to the Jungle**(보드 전체 JSON API), **Agentic Engineering Jobs**(에이전틱/AI 엔지니어링 보드), **Jobvite**(무인증 테넌트별 ATS), **Gem**(테넌트별 ATS), **Alibaba Group**(채용 JSON API, Meituan/Tencent 패턴)입니다. 각각 호스트 고정되고 CI 격리된 소스 + 어댑터 쌍이며, 레지스트리는 이제 **어댑터 67개(EN 62개 + RU 5개)**를 제공합니다. `#/scan` Source 드롭다운 폴백과 드리프트 게이트가 갱신되었고, 다섯 개의 새로운 테스트 스위트 `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`가 추가되었습니다.
+
+### 수정
+- **Arbeitsagentur: `homeofficetyp`이 `VOLLSTAENDIG`일 때만 전국 원격으로 판정** (상위 #1981) — `homeoffice=nv_true` 쿼리는 하이브리드 직무도 함께 반환하므로, 이제 원격 판정 단계가 작은 배치 단위로 각 결과를 채용 상세 엔드포인트에 대조 확인하며 실패 시 안전하게 닫힙니다(조회 오류가 나면 채용의 실제 도시를 유지하여 위치 필터가 계속 적용되도록 합니다).
+- **SmartRecruiters: 공개 채용 URL이 `/postings/` 없이 생성되던 문제 수정** (상위 #2047) — 공개 사이트에서 해당 경로 세그먼트가 빠지는 테넌트의 경우, 링크가 404 대신 공개 채용 공고 페이지로 정상 연결됩니다.
+
+### 비고
+- 상위 v1.22.0은 웹 UI가 셸아웃하지 않거나 이미 커버하고 있는 CLI 측 변경 사항도 함께 배포했습니다: zh-CN CV 템플릿 + PDF 타이포그래피, `/expand` 모드, 프로바이더 프롬프트 캐시 조정(Gemini/OpenAI/Ollama), 스텝별 토큰 분석(웹 UI는 자체 사용량 미터를 보유), 트래커 writer-lock 직렬화(웹 UI는 v1.21부터 `withFileLock`을 통해 쓰기를 라우팅), 스캔 `visa_filter` + 절대 게시일 CLI 플래그(웹 UI는 자체 "게시 기간" 나이 필터를 보유), seen-sources 중복 제거 시딩(웹 UI 스캐너는 자체 scan-history 중복 제거를 유지)입니다.
+
 ## [1.123.0] — 2026-07-17
 
 ### 추가

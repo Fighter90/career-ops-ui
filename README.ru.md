@@ -3,22 +3,22 @@
 > Лаконичный веб-интерфейс в стиле технической документации для AI-конвейера поиска работы [career-ops](https://github.com/Fighter90/career-ops).
 > Ищите вакансии, оценивайте их, проводите углублённое исследование, подавайте заявки и ведите учёт офферов из одной вкладки браузера — без постоянных переключений между Claude Code, терминалом и markdown-файлами.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | **Русский** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
+[🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | **🇷🇺 Русский** | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-1874%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-1945%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.123.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.123.0)
+[![release](https://img.shields.io/badge/release-v1.124.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.124.0)
 
-> **🆕 Последний релиз — v1.123.0**
+> **🆕 Последний релиз — v1.124.0**
 >
-> **Паритет с родителем v1.21.0.** v1.123.0 добавляет источник сканирования **Oracle Recruiting Cloud** (REST API ORC без авторизации, который используют JPMorgan Chase, Oracle, BNY Mellon, American Express и другие — теперь **62 адаптера**), а также исправление детектора повторных публикаций, которое не даёт базовым заголовкам вакансий смешиваться со «специализированными» вариантами-соседями.
+> **Паритет с родителем v1.22.0.** v1.124.0 добавляет **пять источников сканирования** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem и Alibaba Group (теперь **67 адаптеров**) — а также проверку полностью удалённой работы для Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) и исправление публичных URL вакансий в SmartRecruiters.
 >
-> _Oracle Cloud · 62 адаптера · паритет с родителем v1.21 · хинди · 17 языков · манифест · страницы methodology/license/changelog на cvstart.org · паритет с родителем v1.19 · 61 адаптер · живые звёзды + контрибьюторы на лендинге · паритет с родителем v1.18 · 54 адаптера · статус Hired · статистика за всё время · пакет паритета · 50 адаптеров · переработка счётчика расхода · шлифовка дизайна · счётчик использования · плавающий помощник справки · консолидация доков и QA · закрытие бэклога безопасности · докум. и QA ×16 · Исключить в Scan · обзор пайплайна · усиление безопасности 2 · усиление санитайзера · усиление безопасности · расход ИИ · логотипы компаний · инструменты CLI для ИИ · спросить справку · адаптация CV + письмо · автозаполнение two-pager · экспорт в DOCX · здоровье порталов · встроенный репортёр багов · 16 locales · 6 LLM-провайдеров · 46 адаптеров сканера · карьерная ориентация · план карьеры · переработка статистики · слой памяти · CV Studio · планировщик нетворкинга · mock interview · рыночное соответствие через two-pager · паритет с родительским career-ops v1.16.0._
+> _5 источников · 67 адаптеров · паритет с родителем v1.22 · Oracle Cloud · 62 адаптера · паритет с родителем v1.21 · хинди · 17 языков · манифест · страницы methodology/license/changelog на cvstart.org · паритет с родителем v1.19 · 61 адаптер · живые звёзды + контрибьюторы на лендинге · паритет с родителем v1.18 · 54 адаптера · статус Hired · статистика за всё время · пакет паритета · 50 адаптеров · переработка счётчика расхода · шлифовка дизайна · счётчик использования · плавающий помощник справки · консолидация доков и QA · закрытие бэклога безопасности · докум. и QA ×16 · Исключить в Scan · обзор пайплайна · усиление безопасности 2 · усиление санитайзера · усиление безопасности · расход ИИ · логотипы компаний · инструменты CLI для ИИ · спросить справку · адаптация CV + письмо · автозаполнение two-pager · экспорт в DOCX · здоровье порталов · встроенный репортёр багов · 16 locales · 6 LLM-провайдеров · 46 адаптеров сканера · карьерная ориентация · план карьеры · переработка статистики · слой памяти · CV Studio · планировщик нетворкинга · mock interview · рыночное соответствие через two-pager · паритет с родительским career-ops v1.16.0._
 
 <!-- DO NOT REVERT: locale-specific dashboard screenshot (dashboard-ru.png). Each README uses its own ./images/dashboard-<locale>.png — never replace with dashboard-en.png. Generated by scripts/capture-dashboard-screenshots.mjs. -->
 ![career-ops-ui — Командный центр](./images/dashboard-ru.png)
@@ -375,7 +375,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1874 unit + 90 Playwright + 23 e2e:full + 20 e2e:smoke
+└─ tests/                    # 1945 unit + 90 Playwright + 23 e2e:full + 20 e2e:smoke
    ├─ parsers.test.mjs       # парсеры markdown / pipeline / отчётов (чистые функции)
    ├─ api.test.mjs           # каждая точка входа, эфемерный сервер, без сети
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -511,7 +511,7 @@ event: error    data: { message }
 ## Тесты
 
 ```bash
-npm test                       # 1874 unit/integration-теста
+npm test                       # 1945 unit/integration-теста
 npm run test:e2e               # 20 smoke e2e (поднимает собственный сервер)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 70 Playwright browser-smoke

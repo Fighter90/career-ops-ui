@@ -11,6 +11,18 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.124.0] — 2026-07-21
+
+### Añadido
+- **Cinco fuentes de escaneo** (paridad con el padre v1.22.0, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (API JSON de todo el board), **Agentic Engineering Jobs** (portal de ingeniería agéntica/IA), **Jobvite** (ATS por tenant sin autenticación), **Gem** (ATS por tenant) y **Alibaba Group** (API JSON de carreras, patrón Meituan/Tencent). Cada una es un par fuente + adaptador anclado a su host, aislado para CI; el registro ahora ofrece **67 adaptadores (62 EN + 5 RU)**; el desplegable de origen de `#/scan` y su comprobación de desincronización quedan actualizados; cinco nuevas suites `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Corregido
+- **Arbeitsagentur: remoto a nivel nacional solo cuando `homeofficetyp` es `VOLLSTAENDIG`** (padre #1981) — la consulta `homeoffice=nv_true` también devuelve puestos híbridos, así que ahora el filtro de remoto confirma cada resultado contra el endpoint de detalle de la oferta en lotes pequeños y falla de forma segura (un error de consulta conserva la ciudad real de la oferta, de modo que los filtros de ubicación siguen aplicándose).
+- **SmartRecruiters: las URL públicas de las ofertas se construían sin `/postings/`** (padre #2047) — los enlaces ahora llevan a la página pública de la oferta en vez de un 404, para los tenants cuyo sitio público omite el segmento.
+
+### Notas
+- El padre v1.22.0 también incorporó cambios del lado del CLI que la interfaz web no invoca o ya cubre: la plantilla de CV en chino simplificado (zh-CN) + la tipografía del PDF, el modo `/expand`, los ajustes de caché de prompts de los proveedores (Gemini/OpenAI/Ollama), el desglose de tokens por paso (la interfaz web tiene su propio medidor de uso), la serialización con bloqueo de escritura del tracker (la interfaz web enruta las escrituras a través de `withFileLock` desde la v1.21), los indicadores `visa_filter` + fecha de publicación absoluta del CLI de escaneo (la interfaz web tiene su propio filtro "Publicado hace" por antigüedad), y la siembra de deduplicación de fuentes vistas (el escáner de la interfaz web mantiene su propia deduplicación de historial de escaneo).
+
 ## [1.123.0] — 2026-07-17
 
 ### Añadido

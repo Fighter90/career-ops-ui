@@ -3,22 +3,22 @@
 > Un'interfaccia web pulita, in stile documentazione, per la pipeline di ricerca di lavoro con IA [career-ops](https://github.com/Fighter90/career-ops).
 > Cerca, valuta, approfondisci, candidati e tieni traccia di ogni offerta da un'unica scheda del browser — invece di rimbalzare tra Claude Code, terminali e file markdown.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | **Italiano** | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
+[🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | **🇮🇹 Italiano** | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1874%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1945%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.123.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.123.0)
+[![release](https://img.shields.io/badge/release-v1.124.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.124.0)
 
-> **🆕 Ultima release — v1.123.0**
+> **🆕 Ultima release — v1.124.0**
 >
-> **Parità con il parent v1.21.0.** La v1.123.0 porta la sorgente di scansione **Oracle Recruiting Cloud** (API REST ORC a zero autenticazione usata da JPMorgan Chase, Oracle, BNY Mellon, American Express, … — ora **62 adattatori**) e la correzione del rilevatore di repost che mantiene i titoli base distinti dai fratelli con suffisso specializzato.
+> **Parità con il parent v1.22.0.** La v1.124.0 porta **cinque sorgenti di scansione** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem e Alibaba Group (ora **67 adattatori**) — oltre alla verifica del full-remote di Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) e alla correzione dell'URL pubblico di SmartRecruiters.
 >
-> _Oracle Cloud · 62 adattatori · parità con il parent v1.21 · hindi · 17 lingue · manifesto · pagine methodology/license/changelog su cvstart.org · parità padre v1.19 · 61 adapter · stelle live + contributori sulla landing · parità padre v1.18 · 54 adapter · stato Hired · statistiche totali · pacchetto di parità · 50 adattatori · rifacimento contatore di utilizzo · rifinitura del design · contatore di utilizzo · assistente guida fluttuante · consolidamento docs & QA · chiusura backlog sicurezza · docs & QA ×16 · Escludi Scan · panoramica pipeline · rafforzamento della sicurezza 2 · rafforzamento del sanitizzatore · rafforzamento della sicurezza · uso e costo IA · logo aziendali · strumenti CLI IA · chiedi alla guida · adatta CV + lettera · compilazione auto del two-pager · esportazione DOCX · salute dei portali · segnalatore di bug integrato · 16 lingue · 6 provider LLM · 46 adattatori di scansione · orientamento professionale · piano di carriera · rielaborazione delle statistiche · livello di memoria · CV Studio · pianificatore di networking · colloquio simulato · fit di mercato con il two-pager · parità con career-ops principale v1.16.0._
+> _5 fonti · 67 adattatori · parità con il parent v1.22 · Oracle Cloud · 62 adattatori · parità con il parent v1.21 · hindi · 17 lingue · manifesto · pagine methodology/license/changelog su cvstart.org · parità padre v1.19 · 61 adapter · stelle live + contributori sulla landing · parità padre v1.18 · 54 adapter · stato Hired · statistiche totali · pacchetto di parità · 50 adattatori · rifacimento contatore di utilizzo · rifinitura del design · contatore di utilizzo · assistente guida fluttuante · consolidamento docs & QA · chiusura backlog sicurezza · docs & QA ×16 · Escludi Scan · panoramica pipeline · rafforzamento della sicurezza 2 · rafforzamento del sanitizzatore · rafforzamento della sicurezza · uso e costo IA · logo aziendali · strumenti CLI IA · chiedi alla guida · adatta CV + lettera · compilazione auto del two-pager · esportazione DOCX · salute dei portali · segnalatore di bug integrato · 16 lingue · 6 provider LLM · 46 adattatori di scansione · orientamento professionale · piano di carriera · rielaborazione delle statistiche · livello di memoria · CV Studio · pianificatore di networking · colloquio simulato · fit di mercato con il two-pager · parità con career-ops principale v1.16.0._
 
 <!-- DO NOT REVERT: locale-specific dashboard screenshot (dashboard-it.png). Each README uses its own ./images/dashboard-<locale>.png — never replace with dashboard-en.png. Generated by scripts/capture-dashboard-screenshots.mjs. -->
 ![career-ops-ui — Centro di comando](./images/dashboard-it.png)
@@ -405,7 +405,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1874 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 1945 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -536,7 +536,7 @@ Quando `run: true` è impostato su `/api/deep` o `/api/mode/:slug`, il server pr
 ## Test
 
 ```bash
-npm test                       # 1874 unit/integration tests
+npm test                       # 1945 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)

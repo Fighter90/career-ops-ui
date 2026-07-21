@@ -60,6 +60,49 @@ export async function fetchSmartRecruiters(apiUrl, opts = {}) {
   return all;
 }
 
+/**
+ * Build the public posting URL.
+ *
+ * `j.ref` is an `api.smartrecruiters.com/v1/companies/<slug>/postings/<id>` URL —
+ * rewrite it to the public `jobs.smartrecruiters.com/<slug>/<id>-<title-slug>`.
+ * The public site has no `/postings/` segment; carrying it over yields a 404,
+ * which the liveness checker then reports as an expired posting (#2047).
+ * SmartRecruiters resolves the page by id alone, so the trailing title slug is
+ * cosmetic. If `ref` is missing or untrusted, synthesise the same shape from the
+ * company slug + posting id; only then fall back to the raw applyUrl.
+ */
+function slugify(s) {
+  return (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+export function buildPublicUrl(j) {
+  const slugified = slugify(j.name);
+  if (typeof j.ref === 'string') {
+    let parsedRef;
+    try { parsedRef = new URL(j.ref); } catch { parsedRef = null; }
+    if (parsedRef
+        && parsedRef.protocol === 'https:'
+        && parsedRef.hostname === 'api.smartrecruiters.com'
+        && parsedRef.pathname.startsWith('/v1/companies/')) {
+      // /v1/companies/<slug>/postings/<id> → <slug>, <id>
+      const [refSlug, postings, refId] = parsedRef.pathname
+        .slice('/v1/companies/'.length)
+        .split('/')
+        .filter(Boolean);
+      if (refSlug && postings === 'postings' && refId) {
+        return `https://jobs.smartrecruiters.com/${refSlug}/${refId}${slugified ? `-${slugified}` : ''}`;
+      }
+    }
+  }
+  if (j.id) {
+    const companySlug = slugify(j.company?.name);
+    if (companySlug) {
+      return `https://jobs.smartrecruiters.com/${companySlug}/${j.id}${slugified ? `-${slugified}` : ''}`;
+    }
+  }
+  return j.applyUrl || '';
+}
+
 function normalize(j) {
   const locParts = [j.location?.city, j.location?.region, j.location?.country].filter(Boolean);
   const loc = locParts.join(', ');
@@ -69,7 +112,7 @@ function normalize(j) {
     id: `sr-${j.id}`,
     title: j.name || '',
     company: j.company?.name || '',
-    url: j.ref || (j.applyUrl ? j.applyUrl : ''),
+    url: buildPublicUrl(j),
     salary: '',
     location: loc,
     isRemote,

@@ -9,6 +9,18 @@ Tłumaczenia: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.124.0] — 2026-07-21
+
+### Dodano
+- **Pięć źródeł skanowania** (parytet z rodzicem v1.22.0, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (ogólnoplatformowe API JSON obejmujące całą tablicę ofert), **Agentic Engineering Jobs** (tablica ofert dla ról agentic/AI-engineering), **Jobvite** (bezautoryzacyjny ATS per-tenant), **Gem** (ATS per-tenant) oraz **Alibaba Group** (API JSON strony kariery, wzorzec Meituan/Tencent). Każde z nich to para źródło + adapter przypięta do hosta i izolowana dla CI; rejestr obsługuje teraz **67 adapterów (62 EN + 5 RU)**; zaktualizowano rezerwowy rozwijany wybór Źródła na `#/scan` oraz jego bramkę kontrolną; pięć nowych zestawów testów `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Naprawiono
+- **Arbeitsagentur: ogólnokrajowa praca zdalna tylko gdy `homeofficetyp` to `VOLLSTAENDIG`** (rodzic #1981) — zapytanie `homeoffice=nv_true` zwraca również role hybrydowe, więc przebieg weryfikacji pracy zdalnej potwierdza teraz każde trafienie względem endpointu szczegółów oferty w małych partiach (a przy błędzie wyszukiwania zachowuje bezpieczne, ostrożne działanie — zachowuje rzeczywiste miasto oferty, więc filtry lokalizacji nadal działają).
+- **SmartRecruiters: publiczne adresy URL ofert budowane bez `/postings/`** (rodzic #2047) — linki trafiają teraz na publiczną stronę oferty zamiast na błąd 404 dla najemców, których publiczna witryna pomija ten segment.
+
+### Uwagi
+- Rodzic v1.22.0 wydał też zmiany po stronie CLI, w które interfejs webowy się nie włącza lub które już pokrywa: szablon CV zh-CN + typografia PDF, tryb `/expand`, poprawki cache promptów dostawców (Gemini/OpenAI/Ollama), podział zużycia tokenów na poszczególne kroki (interfejs webowy ma własny miernik użycia), serializacja blokady zapisu trackera (interfejs webowy kieruje zapisy przez `withFileLock` od v1.21), flagi CLI skanowania `visa_filter` oraz bezwzględna data publikacji (interfejs webowy ma własny filtr wieku „Opublikowano w ciągu”) oraz seedowanie deduplikacji widzianych źródeł (skaner interfejsu webowego utrzymuje własną deduplikację historii skanowania).
+
 ## [1.123.0] — 2026-07-17
 
 ### Dodano

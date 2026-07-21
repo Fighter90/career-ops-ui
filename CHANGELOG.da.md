@@ -10,6 +10,18 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.124.0] — 2026-07-21
+
+### Tilføjet
+- **Fem scan-kilder** (paritet med forælder v1.22.0, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (board-bred JSON-API), **Agentic Engineering Jobs** (agentic-/AI-engineering-board), **Jobvite** (zero-auth per-tenant-ATS), **Gem** (per-tenant-ATS) og **Alibaba Group** (careers-JSON-API, Meituan/Tencent-mønster). Hver er et vært-fastgjort, CI-isoleret kilde- og adapter-par; registreringen leverer nu **67 adaptere (62 EN + 5 RU)**; `#/scan`-Source-rullelistens fallback og dens drift-gate er opdateret; fem nye suiter `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Rettet
+- **Arbeitsagentur: landsdækkende remote kun når `homeofficetyp` er `VOLLSTAENDIG`** (forælder #1981) — `homeoffice=nv_true`-forespørgslen returnerer også hybrid-stillinger, så remote-passet bekræfter nu hvert hit mod job-detalje-endpointet i små batches og fejler lukket (en opslagsfejl beholder jobbets rigtige by, så lokationsfiltre stadig gælder).
+- **SmartRecruiters: offentlige job-URL'er bygget uden `/postings/`** (forælder #2047) — links lander nu på den offentlige opslagsside i stedet for en 404 for tenants, hvis offentlige site dropper segmentet.
+
+### Noter
+- Forælder v1.22.0 leverede også CLI-side ændringer, som web-ui'en ikke shell'er ind i eller allerede dækker: zh-CN-CV-skabelonen + PDF-typografi, `/expand`-tilstanden, provider-prompt-cache-finjusteringer (Gemini/OpenAI/Ollama), den trin-for-trin-token-opdeling (web-ui'en har sin egen forbrugsmåler), tracker-writer-lock-serialisering (web-ui'en har rutet skrivninger gennem `withFileLock` siden v1.21), scan-`visa_filter`- og absolut-opslagsdato-CLI-flagene (web-ui'en har sit eget "Opslået inden for"-alders-filter), samt seen-sources-dedup-seedingen (web-ui-scanneren beholder sin egen scan-historik-dedup).
+
 ## [1.123.0] — 2026-07-17
 
 ### Tilføjet

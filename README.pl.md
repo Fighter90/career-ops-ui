@@ -3,22 +3,22 @@
 > Przejrzysty interfejs webowy w stylu dokumentacji technicznej dla potoku wyszukiwania pracy opartego na AI — [career-ops](https://github.com/Fighter90/career-ops).
 > Przeglądaj oferty, oceniaj je, analizuj szczegółowo, aplikuj i śledź każdą ofertę z jednej karty przeglądarki — zamiast przeskakiwać między Claude Code, terminalem a plikami markdown.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | **Polski** | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
+[🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | **🇵🇱 Polski** | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-1874%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-1945%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.123.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.123.0)
+[![release](https://img.shields.io/badge/release-v1.124.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.124.0)
 
-> **🆕 Najnowsze wydanie — v1.123.0**
+> **🆕 Najnowsze wydanie — v1.124.0**
 >
-> **Parytet z rodzicem v1.21.0.** v1.123.0 przenosi źródło skanowania **Oracle Recruiting Cloud** (bezautoryzacyjne REST API ORC używane przez JPMorgan Chase, Oracle, BNY Mellon, American Express, … — teraz **62 adaptery**) oraz poprawkę detektora powtórzeń ofert, która utrzymuje odrębność tytułów bazowych od wariantów ze specjalizującym sufiksem.
+> **Parytet z rodzicem v1.22.0.** v1.124.0 przenosi **pięć źródeł skanowania** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem oraz Alibaba Group (**67 adapterów** teraz) — a także weryfikację pełnej pracy zdalnej Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) oraz poprawkę publicznych adresów URL SmartRecruiters.
 >
-> _Oracle Cloud · 62 adaptery · parzystość z rodzicem v1.21 · Hindi · 17 języków · manifest · strony methodology/license/changelog na cvstart.org · parytet z rodzicem v1.19 · 61 adapterów · żywe gwiazdki + współtwórcy na landingu · parytet z rodzicem v1.18 · 54 adaptery · status Hired · statystyki łączne · pakiet parytetu · 50 adapterów · przeróbka miernika zużycia · dopracowanie designu · miernik użycia · pływający asystent pomocy · konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
+> _5 źródeł · 67 adapterów · parzystość z rodzicem v1.22 · Oracle Cloud · 62 adaptery · parzystość z rodzicem v1.21 · Hindi · 17 języków · manifest · strony methodology/license/changelog na cvstart.org · parytet z rodzicem v1.19 · 61 adapterów · żywe gwiazdki + współtwórcy na landingu · parytet z rodzicem v1.18 · 54 adaptery · status Hired · statystyki łączne · pakiet parytetu · 50 adapterów · przeróbka miernika zużycia · dopracowanie designu · miernik użycia · pływający asystent pomocy · konsolidacja dokumentacji i QA · domknięcie backlogu bezpieczeństwa · dokum. i QA ×16 · Wyklucz Scan · przegląd pipeline · wzmocnienie bezpieczeństwa 2 · wzmocnienie sanitizera · wzmocnienie bezpieczeństwa · zużycie i koszt AI · logo firm · narzędzia CLI AI · zapytaj przewodnik · dopasowanie CV + list · auto-wypełnianie two-pager · eksport DOCX · kondycja portali · wbudowany zgłaszacz błędów · 16 lokalizacji · 6 dostawców LLM · 46 adapterów skanera · orientacja zawodowa · plan kariery · przebudowa statystyk · warstwa pamięci · CV Studio · planer networkingu · próbna rozmowa · dopasowanie do rynku przez two-pager · parytet z nadrzędnym career-ops v1.16.0._
 
 ![career-ops-ui](./images/dashboard-pl.png)
 

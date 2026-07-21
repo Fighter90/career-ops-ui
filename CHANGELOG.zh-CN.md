@@ -9,6 +9,18 @@
 ---
 
 
+## [1.124.0] — 2026-07-21
+
+### 新增
+- **五个扫描来源**(与父项目 v1.22.0 对齐,#1808/#1572/#2024/#2055)—— **Welcome to the Jungle**(全站点 JSON API)、**Agentic Engineering Jobs**(智能体/AI 工程板块)、**Jobvite**(零认证按租户 ATS)、**Gem**(按租户 ATS)以及 **Alibaba Group**(招聘 JSON API,与美团/腾讯模式相同)。每个来源都是主机锁定、CI 隔离的“来源 + 适配器”文件对;注册表现已提供 **67 个适配器(62 个英文 + 5 个俄文)**;`#/scan` 来源下拉框的回退列表及其漂移检测已同步更新;新增五个测试套件 `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`。
+
+### 修复
+- **Arbeitsagentur:仅当 `homeofficetyp` 为 `VOLLSTAENDIG` 时才判定为全国范围远程**(父项目 #1981)—— `homeoffice=nv_true` 查询同时会返回混合办公职位,因此远程判定环节现会以小批量方式对照职位详情接口逐一核实每条命中结果,并在核实失败时安全降级(保留该职位的真实所在城市,使地区筛选功能继续生效)。
+- **SmartRecruiters:公开职位链接构建时缺少 `/postings/`**(父项目 #2047)—— 对于公开站点省略该路径段的租户,链接现在会指向公开职位页面,而不再是 404。
+
+### 说明
+- 父项目 v1.22.0 还发布了一些 web UI 不会调用或已自行覆盖的 CLI 侧改动:zh-CN 简历模板与 PDF 排版、`/expand` 模式、提供方提示缓存微调(Gemini/OpenAI/Ollama)、按步骤的 token 明细(web UI 有自己的用量计量表)、tracker 写入锁串行化(web UI 自 v1.21 起已通过 `withFileLock` 路由写入操作)、扫描 `visa_filter` 与绝对发布日期 CLI 参数(web UI 有自己的“发布时间”年龄筛选)、以及已见来源去重种子(web UI 扫描器保留自有的扫描历史去重)。
+
 ## [1.123.0] — 2026-07-17
 
 ### 新增

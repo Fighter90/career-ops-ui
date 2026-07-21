@@ -3,24 +3,24 @@
 > A clean, docs-style web interface for the [career-ops](https://github.com/Fighter90/career-ops) AI job-search pipeline.
 > Search, evaluate, deep-dive, apply, and track every offer from a single browser tab — instead of bouncing between Claude Code, terminals, and markdown files.
 
-**English** | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | [Deutsch](README.de.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
+**🇬🇧 English** | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-1874%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1945%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.123.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.123.0)
+[![release](https://img.shields.io/badge/release-v1.124.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.124.0)
 
-> **🆕 Latest release — v1.123.0**
+> **🆕 Latest release — v1.124.0**
 >
-> **Parent v1.21.0 parity.** v1.123.0 ports the **Oracle Recruiting Cloud** scan source (zero-auth ORC REST API used by JPMorgan Chase, Oracle, BNY Mellon, American Express, … — **62 adapters** now) and the repost-detector fix that keeps base titles distinct from specialized-suffix siblings. Before it, v1.122.0 added **हिन्दी (Hindi)** as the 17th interface language everywhere: the app UI, the in-app help guide, README, changelog, and every cvstart.org page (landing + Methodology/License/Changelog/Help). Also in this train: v1.120.0 (parent v1.20.0 parity) surfaced [the CareerOps Manifesto](https://career-ops.org/manifesto) across the app — sidebar-footer link, help §29 in 16 languages, README section. v1.121.0 adds four sections to [cvstart.org](https://cvstart.org): **Methodology** (the six-dimension scoring rubric, from [career-ops.org/methodology](https://career-ops.org/methodology)), **Compare**, **License**, and **Changelog** (all 16 languages), plus methodology links across the docs and help guide.
+> **Parent v1.22.0 parity.** v1.124.0 ports **five scan sources** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem, and Alibaba Group (**67 adapters** now) — plus the Arbeitsagentur fully-remote verification (`homeofficetyp=VOLLSTAENDIG`) and the SmartRecruiters public-URL fix. Before it, v1.123.0 ported the **Oracle Recruiting Cloud** source and the repost-detector specialized-suffix fix. Before it, v1.122.0 added **हिन्दी (Hindi)** as the 17th interface language everywhere: the app UI, the in-app help guide, README, changelog, and every cvstart.org page (landing + Methodology/License/Changelog/Help). Also in this train: v1.120.0 (parent v1.20.0 parity) surfaced [the CareerOps Manifesto](https://career-ops.org/manifesto) across the app — sidebar-footer link, help §29 in 16 languages, README section. v1.121.0 adds four sections to [cvstart.org](https://cvstart.org): **Methodology** (the six-dimension scoring rubric, from [career-ops.org/methodology](https://career-ops.org/methodology)), **Compare**, **License**, and **Changelog** (all 16 languages), plus methodology links across the docs and help guide.
 >
-> _Oracle Cloud · 62 adapters · parent v1.21 parity · Hindi · 17 locales · manifesto · cvstart.org methodology/license/changelog pages · parent v1.19 parity · 61 adapters · landing live stars + contributors · parent v1.18 parity · 54 adapters · Hired status · lifetime stats · parent parity pack · 50 adapters · usage meter rework · design polish · usage meter · floating docs assistant · docs & QA consolidation · security backlog closeout · docs & QA refresh ×16 · scan Exclude · pipeline overview · security hardening 2 · sanitizer hardening · security hardening · AI usage & cost · company logos · AI CLI tools · ask-the-docs · CV tailor + cover letter · two-pager auto-fill · DOCX export · 16 locales · 6 LLM providers · 46 scanner adapters · portals health · in-app bug reporter · career orientation · career plan · statistics rework · memory layer · CV Studio · networking planner · mock interview · two-pager market-fit · parent career-ops v1.16.0 parity._
+> _5 sources (WTTJ/Jobvite/Gem/Alibaba/Agentic) · 67 adapters · parent v1.22 parity · Oracle Cloud · 62 adapters · parent v1.21 parity · Hindi · 17 locales · manifesto · cvstart.org methodology/license/changelog pages · parent v1.19 parity · 61 adapters · landing live stars + contributors · parent v1.18 parity · 54 adapters · Hired status · lifetime stats · parent parity pack · 50 adapters · usage meter rework · design polish · usage meter · floating docs assistant · docs & QA consolidation · security backlog closeout · docs & QA refresh ×16 · scan Exclude · pipeline overview · security hardening 2 · sanitizer hardening · security hardening · AI usage & cost · company logos · AI CLI tools · ask-the-docs · CV tailor + cover letter · two-pager auto-fill · DOCX export · 16 locales · 6 LLM providers · 46 scanner adapters · portals health · in-app bug reporter · career orientation · career plan · statistics rework · memory layer · CV Studio · networking planner · mock interview · two-pager market-fit · parent career-ops v1.16.0 parity._
 
 <!-- DO NOT REVERT: this is the EN README; localized clones MUST switch to their own ./images/dashboard-<locale>.png (es / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW). Generated by scripts/capture-dashboard-screenshots.mjs. -->
 ![career-ops-ui — Command Center](./images/dashboard-en.png)
@@ -408,7 +408,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1874 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 1945 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -539,7 +539,7 @@ When `run: true` is set on `/api/deep` or `/api/mode/:slug`, the server prefers 
 ## Tests
 
 ```bash
-npm test                       # 1874 unit/integration tests
+npm test                       # 1945 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)

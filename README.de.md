@@ -3,22 +3,22 @@
 > Eine schlanke, dokumentationsartige Weboberfläche für die KI-Jobsuche-Pipeline [career-ops](https://github.com/Fighter90/career-ops).
 > Durchsuchen, bewerten, tiefgehend recherchieren, bewerben und jedes Angebot verfolgen — alles aus einem einzigen Browser-Tab, statt zwischen Claude Code, Terminals und Markdown-Dateien hin- und herzuspringen.
 
-[English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko-KR.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [Français](README.fr.md) | [Polski](README.pl.md) | [Українська](README.uk.md) | [Dansk](README.da.md) | [العربية](README.ar.md) | **Deutsch** | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
+[🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | **🇩🇪 Deutsch** | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-1874%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1945%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.123.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.123.0)
+[![release](https://img.shields.io/badge/release-v1.124.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.124.0)
 
-> **🆕 Neueste Version — v1.123.0**
+> **🆕 Neueste Version — v1.124.0**
 >
-> **Parent-Parität v1.21.0.** v1.123.0 portiert die **Oracle Recruiting Cloud**-Scan-Quelle (die authentifizierungsfreie ORC-REST-API, genutzt von JPMorgan Chase, Oracle, BNY Mellon, American Express, … — jetzt **62 Adapter**) sowie die Behebung des Repost-Detektors, die Basistitel klar von Geschwistern mit spezialisierendem Suffix unterscheidet.
+> **Parent-Parität v1.22.0.** v1.124.0 portiert **fünf Scan-Quellen** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem und Alibaba Group (jetzt **67 Adapter**) — sowie die Arbeitsagentur-Verifizierung für vollständig ortsunabhängige Stellen (`homeofficetyp=VOLLSTAENDIG`) und die Behebung der öffentlichen SmartRecruiters-URL.
 >
-> _Oracle Cloud · 62 Adapter · Parität mit Parent v1.21 · Hindi · 17 Sprachen · Manifest · Methodology-/License-/Changelog-Seiten auf cvstart.org · Parent-Parität v1.19 · 61 Adapter · Live-Sterne + Mitwirkende auf der Landing · Parent-Parität v1.18 · 54 Adapter · Hired-Status · Gesamtstatistik · Paritätspaket · 50 Adapter · Nutzungsanzeige-Überarbeitung · Design-Feinschliff · Nutzungsanzeige · schwebender Hilfe-Assistent · Docs- & QA-Konsolidierung · Abschluss Sicherheits-Backlog · Docs & QA ×16 · Scan-Ausschluss · Pipeline-Überblick · Sicherheitshärtung 2 · Sanitizer-Härtung · Sicherheitshärtung · KI-Nutzung & Kosten · Firmenlogos · KI-CLI-Tools · Doku fragen · Lebenslauf-Anpassung + Anschreiben · Two-Pager-Autofüllung · DOCX-Export · Portal-Gesundheit · integrierter Fehlermelder · 16 Sprachen · 6 LLM-Anbieter · 46 Scanner-Adapter · Berufsorientierung · Karriereplan · Statistik-Überarbeitung · Speicherschicht · CV Studio · Networking-Planer · Mock-Interview · Markt-Fit über two-pager · Parität mit dem übergeordneten career-ops v1.16.0._
+> _5 Quellen · 67 Adapter · Parität mit Parent v1.22 · Oracle Cloud · 62 Adapter · Parität mit Parent v1.21 · Hindi · 17 Sprachen · Manifest · Methodology-/License-/Changelog-Seiten auf cvstart.org · Parent-Parität v1.19 · 61 Adapter · Live-Sterne + Mitwirkende auf der Landing · Parent-Parität v1.18 · 54 Adapter · Hired-Status · Gesamtstatistik · Paritätspaket · 50 Adapter · Nutzungsanzeige-Überarbeitung · Design-Feinschliff · Nutzungsanzeige · schwebender Hilfe-Assistent · Docs- & QA-Konsolidierung · Abschluss Sicherheits-Backlog · Docs & QA ×16 · Scan-Ausschluss · Pipeline-Überblick · Sicherheitshärtung 2 · Sanitizer-Härtung · Sicherheitshärtung · KI-Nutzung & Kosten · Firmenlogos · KI-CLI-Tools · Doku fragen · Lebenslauf-Anpassung + Anschreiben · Two-Pager-Autofüllung · DOCX-Export · Portal-Gesundheit · integrierter Fehlermelder · 16 Sprachen · 6 LLM-Anbieter · 46 Scanner-Adapter · Berufsorientierung · Karriereplan · Statistik-Überarbeitung · Speicherschicht · CV Studio · Networking-Planer · Mock-Interview · Markt-Fit über two-pager · Parität mit dem übergeordneten career-ops v1.16.0._
 
 <!-- DO NOT REVERT: locale-specific dashboard screenshot (dashboard-de.png). Each README uses its own ./images/dashboard-<locale>.png — never replace with dashboard-en.png. Generated by scripts/capture-dashboard-screenshots.mjs. -->
 ![career-ops-ui — Kommandozentrale](./images/dashboard-de.png)
@@ -405,7 +405,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1874 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 1945 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -536,7 +536,7 @@ Wenn `run: true` bei `/api/deep` oder `/api/mode/:slug` gesetzt ist, bevorzugt d
 ## Tests
 
 ```bash
-npm test                       # 1874 unit/integration tests
+npm test                       # 1945 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)

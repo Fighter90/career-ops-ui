@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.124.0] — 2026-07-21
+
+### Hinzugefügt
+- **Fünf Scan-Quellen** (Parität mit dem übergeordneten career-ops v1.22.0, #1808/#1572/#2024/#2055) — **Welcome to the Jungle** (board-weite JSON-API), **Agentic Engineering Jobs** (Board für Agentic-/KI-Engineering), **Jobvite** (authentifizierungsfreies Per-Mandant-ATS), **Gem** (Per-Mandant-ATS) und **Alibaba Group** (JSON-API der Karriereseite, Meituan-/Tencent-Muster). Jede ist ein host-fixiertes, CI-isoliertes Quelle-plus-Adapter-Paar; das Register liefert nun **67 Adapter (62 EN + 5 RU)**; der Source-Dropdown-Fallback von `#/scan` und dessen Drift-Gate sind aktualisiert; fünf neue Suiten `tests/sources-{wttj,agenticjobs,jobvite,gem,alibaba}.test.mjs`.
+
+### Behoben
+- **Arbeitsagentur: bundesweit ortsunabhängig nur, wenn `homeofficetyp` gleich `VOLLSTAENDIG` ist** (übergeordnetes Projekt #1981) — die Abfrage `homeoffice=nv_true` liefert auch Hybrid-Stellen zurück, daher bestätigt der Remote-Durchlauf nun jeden Treffer in kleinen Batches gegen den Stellendetails-Endpunkt und behandelt Fehler konservativ: Ein Lookup-Fehler behält die echte Stadt der Stelle bei, sodass Standortfilter weiterhin greifen.
+- **SmartRecruiters: öffentliche Job-URLs wurden ohne `/postings/` gebildet** (übergeordnetes Projekt #2047) — Links landen jetzt auf der öffentlichen Stellenseite statt auf einem 404 bei Mandanten, deren öffentliche Seite das Segment weglässt.
+
+### Hinweise
+- Parität mit dem übergeordneten career-ops v1.22.0 brachte auch CLI-seitige Änderungen, in die die Web-UI nicht hineinshellt oder die sie bereits abdeckt: die zh-CN-CV-Vorlage + PDF-Typografie, den Modus `/expand`, Anbieter-Prompt-Cache-Anpassungen (Gemini/OpenAI/Ollama), die Token-Aufschlüsselung pro Schritt (die Web-UI hat ihre eigene Nutzungsanzeige), die Writer-Lock-Serialisierung des Trackers (die Web-UI leitet Schreibvorgänge seit v1.21 bereits über `withFileLock`), die Scan-CLI-Flags `visa_filter` sowie das absolute Veröffentlichungsdatum (die Web-UI hat ihren eigenen „Veröffentlicht innerhalb"-Altersfilter) sowie das Dedup-Seeding bereits gesehener Quellen (der Web-UI-Scanner führt sein eigenes Scan-Verlauf-Dedup).
+
 ## [1.123.0] — 2026-07-17
 
 ### Hinzugefügt
