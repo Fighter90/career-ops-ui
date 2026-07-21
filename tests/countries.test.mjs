@@ -28,6 +28,10 @@ test('Countries API surface + every country has code/name/flag', () => {
 
 test('detectCountry: explicit country names + aliases', () => {
   assert.equal(C.detectCountry('Berlin, Germany').code, 'de');
+  // v1.125.x — Chinese tech-board sources emit mainland cities, often in CJK.
+  assert.equal(C.detectCountry('Hangzhou').code, 'cn');
+  assert.equal(C.detectCountry('杭州').code, 'cn');
+  assert.equal(C.detectCountry('Guangzhou, Guangdong').code, 'cn');
   assert.equal(C.detectCountry('Remote (Deutschland)').code, 'de');
   assert.equal(C.detectCountry('New York, NY, USA').code, 'us');
   assert.equal(C.detectCountry('London, United Kingdom').code, 'gb');
