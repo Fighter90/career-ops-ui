@@ -109,6 +109,12 @@
     sydney: 'au', melbourne: 'au', auckland: 'nz', bangalore: 'in', bengaluru: 'in', mumbai: 'in',
     delhi: 'in', hyderabad: 'in', pune: 'in', tokyo: 'jp', osaka: 'jp', seoul: 'kr',
     beijing: 'cn', shanghai: 'cn', shenzhen: 'cn', taipei: 'tw', jakarta: 'id', 'kuala lumpur': 'my',
+    // v1.125.x — Chinese tech-board sources (Alibaba/Meituan/Tencent) emit
+    // more mainland cities, often in CJK. Alibaba HQ is Hangzhou.
+    hangzhou: 'cn', guangzhou: 'cn', chengdu: 'cn', nanjing: 'cn', wuhan: 'cn',
+    suzhou: 'cn', xiamen: 'cn', hefei: 'cn',
+    '北京': 'cn', '上海': 'cn', '深圳': 'cn', '杭州': 'cn', '广州': 'cn',
+    '成都': 'cn', '南京': 'cn', '武汉': 'cn', '苏州': 'cn',
     manila: 'ph', bangkok: 'th', hanoi: 'vn', 'ho chi minh': 'vn', dubai: 'ae', 'abu dhabi': 'ae',
     riyadh: 'sa', 'tel aviv': 'il', cairo: 'eg', lagos: 'ng', nairobi: 'ke',
     'cape town': 'za', johannesburg: 'za',
