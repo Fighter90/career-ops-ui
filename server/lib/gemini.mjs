@@ -33,7 +33,7 @@ const envKey = (k) => effectiveEnv(k, PATHS.envFile);
 export async function runGemini(prompt, opts = {}) {
   const apiKey = opts.apiKey || envKey('GEMINI_API_KEY');
   if (!apiKey) return { markdown: '', usage: null, error: 'Gemini key not set' };
-  const model = opts.model || envKey('GEMINI_MODEL') || 'gemini-2.5-pro';
+  const model = opts.model || envKey('GEMINI_MODEL') || 'gemini-3.6-flash';
   const maxTokens = Math.min(Math.max(opts.maxTokens || 8192, 256), 16384);
   const timeoutMs = opts.timeoutMs || 180_000;
   const fetchImpl = opts.fetchImpl || fetch;

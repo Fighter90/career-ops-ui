@@ -173,7 +173,7 @@ window.__I18N_DICT_JA = {
   'config.geminiKey': "Gemini API キー (フォールバック)",
   'config.geminiHint': "aistudio.google.com/apikey の無料枠。Anthropic 未設定時のフォールバック。",
   'config.geminiModel': "Gemini モデル",
-  'config.geminiModelHint': "既定: gemini-2.0-flash。",
+  'config.geminiModelHint': "既定: gemini-3.6-flash。",
   'config.openaiModel': "OpenAI / Codex モデル",
   'config.openaiModelHint': "既定: gpt-5-codex。一般用途は gpt-5 / gpt-5-mini、推論は o4-mini / o3。web-ui の OpenAI ライブ評価と親の Codex/OpenAI CLI フローで使用。",
   'config.qwenKey': "QWEN_API_KEY",

@@ -36,10 +36,11 @@ Router.register('config', async () => {
     'claude-3-5-haiku-latest',
   ];
   const GEMINI_MODELS = [
-    'gemini-2.0-flash',
-    'gemini-1.5-flash',
-    'gemini-1.5-pro',
-    'gemini-2.0-flash-thinking-exp',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash',
+    'gemini-3.1-flash-lite',
+    'gemini-3-flash-preview',
+    'gemini-2.5-pro',
   ];
   // OpenAI (v1.55.0 — now a headless live-eval provider too, not just
   // the stored parent-Codex key). First entry = default when
@@ -73,8 +74,8 @@ Router.register('config', async () => {
     'anthropic/claude-opus-4',
     'openai/gpt-5',
     'openai/gpt-5-mini',
+    'google/gemini-3.6-flash',
     'google/gemini-2.5-pro',
-    'google/gemini-2.0-flash-001',
     'meta-llama/llama-3.3-70b-instruct',
     'qwen/qwen-2.5-72b-instruct',
     'deepseek/deepseek-chat',
@@ -120,10 +121,10 @@ Router.register('config', async () => {
     },
     {
       key: 'GEMINI_MODEL', secret: false, kind: 'select',
-      options: GEMINI_MODELS, defaultValue: 'gemini-2.0-flash',
+      options: GEMINI_MODELS, defaultValue: 'gemini-3.6-flash',
       labelKey: 'config.geminiModel', label: 'GEMINI_MODEL',
       hintKey: 'config.geminiModelHint',
-      hintFallback: 'Default: gemini-2.0-flash (free-tier, fast). Pro tier: gemini-1.5-pro.',
+      hintFallback: 'Default: gemini-3.6-flash. Lite: gemini-3.1-flash-lite. Reasoning: gemini-2.5-pro.',
     },
     {
       // v1.55.0 — OpenAI is now a headless live-eval provider too

@@ -173,7 +173,7 @@ window.__I18N_DICT_TR = {
   'config.geminiKey': "Gemini API anahtarı (yedek)",
   'config.geminiHint': "aistudio.google.com/apikey adresinde ücretsiz katman. Anthropic ayarlı olmadığında yedek olarak kullanılır.",
   'config.geminiModel': "Gemini modeli",
-  'config.geminiModelHint': "Varsayılan: gemini-2.0-flash.",
+  'config.geminiModelHint': "Varsayılan: gemini-3.6-flash.",
   'config.openaiModel': "OpenAI / Codex modeli",
   'config.openaiModelHint': "Varsayılan: gpt-5-codex. Genel kullanım için gpt-5 / gpt-5-mini; akıl yürütme için o4-mini / o3. web-ui OpenAI canlı değerlendirmesi ve üst Codex/OpenAI CLI akışı tarafından kullanılır.",
   'config.qwenKey': "QWEN_API_KEY",
