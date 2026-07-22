@@ -759,4 +759,6 @@ MIT। [LICENSE](LICENSE) देखें।
 
 career-ops-ui बनाने में मदद करने वाले सभी का धन्यवाद। यह प्रोजेक्ट [Fighter90](https://github.com/Fighter90) द्वारा मेंटेन किया जाता है और सामुदायिक योगदान से बेहतर होता है — पूरी सूची [contributors graph](https://github.com/Fighter90/career-ops-ui/graphs/contributors) पर देखें।
 
-[![Contributors](https://contrib.rocks/image?repo=Fighter90/career-ops-ui)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+
+हाल के कम्युनिटी योगदान: [@Alien10140](https://github.com/Alien10140) — Gemini डिफ़ॉल्ट मॉडल अपडेट और डीप रिसर्च HTTP 502 फ़िक्स (v1.125.2)।

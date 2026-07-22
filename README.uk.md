@@ -162,4 +162,6 @@ MIT. Деталі: [LICENSE](LICENSE).
 
 Побудовано на основі [career-ops](https://github.com/Fighter90/career-ops) від [santifer](https://santifer.io).
 
-[![Учасники](https://contrib.rocks/image?repo=Fighter90/career-ops-ui)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+[![Учасники](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+
+Нещодавній внесок спільноти: [@Alien10140](https://github.com/Alien10140) — оновлення типових моделей Gemini та фікс HTTP 502 у deep research (v1.125.2).

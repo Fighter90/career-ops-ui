@@ -695,4 +695,6 @@ Construit par-dessus [career-ops](https://github.com/Fighter90/career-ops) de [s
 
 Merci à toutes les personnes qui aident à construire career-ops-ui. Le projet est maintenu par [Fighter90](https://github.com/Fighter90) et amélioré par les contributions de la communauté — voir la liste complète sur le [graphe des contributeurs](https://github.com/Fighter90/career-ops-ui/graphs/contributors).
 
-[![Contributeurs](https://contrib.rocks/image?repo=Fighter90/career-ops-ui)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+[![Contributeurs](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+
+Contributions récentes de la communauté : [@Alien10140](https://github.com/Alien10140) — la mise à jour des modèles Gemini par défaut et le correctif du HTTP 502 du deep research (v1.125.2).

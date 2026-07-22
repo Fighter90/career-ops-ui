@@ -188,6 +188,8 @@ MIT. التفاصيل: [LICENSE](LICENSE).
 
 مبني على [career-ops](https://github.com/Fighter90/career-ops) بقلم [santifer](https://santifer.io).
 
-[![المساهمون](https://contrib.rocks/image?repo=Fighter90/career-ops-ui)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+[![المساهمون](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+
+مساهمات المجتمع الأخيرة: [@Alien10140](https://github.com/Alien10140) — تحديث نماذج Gemini الافتراضية وإصلاح HTTP 502 في البحث المعمّق (v1.125.2).
 
 </div>

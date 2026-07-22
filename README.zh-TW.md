@@ -711,4 +711,6 @@ MIT。詳見 [LICENSE](LICENSE)。
 
 感謝每一位協助打造 career-ops-ui 的人。本專案由 [Fighter90](https://github.com/Fighter90) 維護，並在社群貢獻下持續改善——完整名單請見[貢獻者圖譜](https://github.com/Fighter90/career-ops-ui/graphs/contributors)。
 
-[![貢獻者](https://contrib.rocks/image?repo=Fighter90/career-ops-ui)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+[![貢獻者](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+
+近期社群貢獻:[@Alien10140](https://github.com/Alien10140) — Gemini 預設模型更新與深度研究 HTTP 502 修復(v1.125.2)。

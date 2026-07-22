@@ -733,4 +733,6 @@ MIT. См. [LICENSE](LICENSE).
 
 Спасибо всем, кто помогает развивать career-ops-ui. Проект поддерживает [Fighter90](https://github.com/Fighter90), а улучшают его вклады сообщества — полный список доступен на [графе участников](https://github.com/Fighter90/career-ops-ui/graphs/contributors).
 
-[![Участники](https://contrib.rocks/image?repo=Fighter90/career-ops-ui)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+[![Участники](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+
+Недавний вклад сообщества: [@Alien10140](https://github.com/Alien10140) — обновление дефолтных моделей Gemini и фикс HTTP 502 в deep research (v1.125.2).

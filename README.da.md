@@ -756,4 +756,6 @@ Bygget oven på [career-ops](https://github.com/Fighter90/career-ops) af [santif
 
 Tak til alle, der hjælper med at bygge career-ops-ui. Projektet vedligeholdes af [Fighter90](https://github.com/Fighter90) og forbedres af bidrag fra fællesskabet — se den fulde liste på [bidragyder-grafen](https://github.com/Fighter90/career-ops-ui/graphs/contributors).
 
-[![Contributors](https://contrib.rocks/image?repo=Fighter90/career-ops-ui)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+
+Seneste community-bidrag: [@Alien10140](https://github.com/Alien10140) — opdateringen af Gemini-standardmodellerne og rettelsen af HTTP 502 i deep research (v1.125.2).

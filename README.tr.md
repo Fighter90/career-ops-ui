@@ -757,4 +757,6 @@ MIT. Bkz. [LICENSE](LICENSE).
 
 career-ops-ui'yi inşa etmeye yardım eden herkese teşekkürler. Proje [Fighter90](https://github.com/Fighter90) tarafından sürdürülür ve topluluk katkılarıyla geliştirilir — tam liste için [katkıda bulunanlar grafiğine](https://github.com/Fighter90/career-ops-ui/graphs/contributors) bakın.
 
-[![Contributors](https://contrib.rocks/image?repo=Fighter90/career-ops-ui)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
+
+Son topluluk katkıları: [@Alien10140](https://github.com/Alien10140) — Gemini varsayılan model güncellemesi ve deep research HTTP 502 düzeltmesi (v1.125.2).
