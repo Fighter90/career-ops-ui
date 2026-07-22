@@ -2,6 +2,11 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.125.1] — 2026-07-21
+
+### Behoben
+- **SuccessFactors: Mehrmarken-RMK-Mandanten behalten ihren Markenpfad** (übergeordnetes Projekt #2099, nach v1.22.0) — Holdinggesellschaften, die mehrere erworbene Marken über eine gemeinsam genutzte RMK-Instanz betreiben, unterscheiden diese über ein Pfadsegment (`careers.nemetschek.com/Bluebeam/` vs. `…/Vectorworks/`); der Adapter reduzierte die konfigurierte URL bisher auf ihren Ursprung und scannte dabei stillschweigend nur die Stellenanzeigen der Hauptmarke. Der Endpunkt behält jetzt das Marken-Präfix bei und entfernt nur ein abschließendes `/search/`- oder `/tile-search-results/`-Segment, sodass sich nichts mehr verdoppelt; Mandanten mit nur einer Domain bleiben byte-für-byte unverändert. Neuer exportierter Helfer `resolveTenantBase` + ein portierter Testblock in `tests/sources-successfactors.test.mjs`.
+
 ## [1.125.0] — 2026-07-21
 
 ### Hinzugefügt

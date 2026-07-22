@@ -8,6 +8,11 @@ Traduções: [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHAN
 
 ---
 
+## [1.125.1] — 2026-07-21
+
+### Corrigido
+- **SuccessFactors: tenants RMK multimarca mantêm seu caminho de marca** (pai #2099, pós-v1.22.0) — holdings que operam várias marcas adquiridas a partir de uma única instância RMK compartilhada as diferenciam por um segmento de caminho (`careers.nemetschek.com/Bluebeam/` vs `…/Vectorworks/`); o adaptador costumava colapsar a URL configurada para sua origem, escaneando silenciosamente as vagas da marca pai. O endpoint agora preserva o prefixo da marca, removendo apenas um segmento final `/search/` ou `/tile-search-results/` para que nada nunca se duplique sobre si mesmo; tenants de domínio único permanecem byte a byte inalterados. Novo helper exportado `resolveTenantBase` + 1 bloco de teste portado em `tests/sources-successfactors.test.mjs`.
+
 ## [1.125.0] — 2026-07-21
 
 ### Adicionado

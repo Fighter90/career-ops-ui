@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.125.1] — 2026-07-21
+
+### Düzeltildi
+- **SuccessFactors: çok markalı RMK kiracıları marka yollarını koruyor** (üst proje #2099, v1.22.0 sonrası) — birkaç satın alınmış markayı tek bir paylaşılan RMK örneği üzerinden yürüten holding şirketleri, bunları bir yol segmentiyle birbirinden ayırt eder (`careers.nemetschek.com/Bluebeam/` vs `…/Vectorworks/`); adaptör yapılandırılmış URL'yi daha önce kök alanına indirgiyor ve sessizce yalnızca ana markanın ilanlarını tarıyordu. Uç nokta artık marka önekini koruyor ve yalnızca sondaki bir `/search/` veya `/tile-search-results/` segmentini kırpıyor, böylece hiçbir şey kendi üzerine katlanmıyor; tek domainli kiracılarda tek bir bayt bile değişmiyor. Yeni dışa aktarılan `resolveTenantBase` yardımcı fonksiyonu + `tests/sources-successfactors.test.mjs` içinde 1 taşınmış test bloğu.
+
 ## [1.125.0] — 2026-07-21
 
 ### Eklendi

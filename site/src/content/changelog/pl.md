@@ -9,6 +9,11 @@ Tłumaczenia: [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHA
 ---
 
 
+## [1.125.1] — 2026-07-21
+
+### Naprawiono
+- **SuccessFactors: wielomarkowi najemcy RMK zachowują swoją ścieżkę marki** (rodzic #2099, po v1.22.0) — spółki holdingowe prowadzące kilka przejętych marek na jednej wspólnej instancji RMK odróżniają je segmentem ścieżki (`careers.nemetschek.com/Bluebeam/` kontra `…/Vectorworks/`); adapter wcześniej zwijał skonfigurowany adres URL do jego origin, po cichu skanując oferty marki nadrzędnej. Endpoint zachowuje teraz prefiks marki, usuwając wyłącznie końcowy segment `/search/` lub `/tile-search-results/`, dzięki czemu nic nigdy się nie duplikuje; najemcy z pojedynczą domeną pozostają identyczni co do bajtu. Nowy eksportowany helper `resolveTenantBase` + 1 przeniesiony blok testowy w `tests/sources-successfactors.test.mjs`.
+
 ## [1.125.0] — 2026-07-21
 
 ### Dodano

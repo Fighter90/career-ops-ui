@@ -10,6 +10,11 @@ Oversættelser: [English](https://github.com/Fighter90/career-ops-ui/blob/main/C
 
 
 
+## [1.125.1] — 2026-07-21
+
+### Rettet
+- **SuccessFactors: multi-brand RMK-tenants beholder deres brand-sti** (forælder #2099, post-v1.22.0) — holdingselskaber, der driver flere opkøbte brands fra én fælles RMK-instans, adskiller dem via et sti-segment (`careers.nemetschek.com/Bluebeam/` versus `…/Vectorworks/`); adapteren kollapsede tidligere den konfigurerede URL til dens origin og scannede derved stille og roligt moderbrandets opslag. Endpointet bevarer nu brand-præfikset og fjerner kun et afsluttende `/search/`- eller `/tile-search-results/`-segment, så intet nogensinde dubleres oven i sig selv; enkelt-domæne-tenants er byte-for-byte uændrede. Ny eksporteret hjælpefunktion `resolveTenantBase` + 1 overført testblok i `tests/sources-successfactors.test.mjs`.
+
 ## [1.125.0] — 2026-07-21
 
 ### Tilføjet

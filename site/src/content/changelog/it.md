@@ -2,6 +2,11 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.125.1] — 2026-07-21
+
+### Corretto
+- **SuccessFactors: i tenant RMK multi-brand mantengono il proprio percorso di brand** (parent #2099, post-v1.22.0) — le holding che gestiscono più brand acquisiti da un'unica istanza RMK condivisa li distinguono tramite un segmento di percorso (`careers.nemetschek.com/Bluebeam/` contro `…/Vectorworks/`); l'adattatore in precedenza collassava l'URL configurato alla sua origine, scansionando silenziosamente gli annunci del brand principale. L'endpoint ora preserva il prefisso di brand, rimuovendo solo un segmento finale `/search/` o `/tile-search-results/` così che nulla si duplichi mai su se stesso; i tenant a dominio singolo restano invariati byte per byte. Nuovo helper esportato `resolveTenantBase` + 1 blocco di test portato in `tests/sources-successfactors.test.mjs`.
+
 ## [1.125.0] — 2026-07-21
 
 ### Aggiunto

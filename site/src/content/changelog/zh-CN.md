@@ -9,6 +9,11 @@
 ---
 
 
+## [1.125.1] — 2026-07-21
+
+### 修复
+- **SuccessFactors:多品牌 RMK 租户保留其品牌路径**(父项目 #2099,v1.22.0 之后)—— 运营多个收购品牌、共用同一套 RMK 实例的控股公司通过路径片段来区分品牌(`careers.nemetschek.com/Bluebeam/` vs `…/Vectorworks/`);该适配器此前会将配置的 URL 折叠为其 origin,从而悄悄地只扫描母品牌的职位。现在该端点会保留品牌前缀,仅剥离末尾的 `/search/` 或 `/tile-search-results/` 片段,确保扫描绝不会自我重复;单一域名的租户逐字节不变。新增导出的 `resolveTenantBase` 辅助函数,并在 `tests/sources-successfactors.test.mjs` 中移植 1 个测试代码块。
+
 ## [1.125.0] — 2026-07-21
 
 ### 新增
