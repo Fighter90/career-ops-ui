@@ -10,6 +10,11 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 
 
+## [1.125.3] — 2026-07-23
+
+### Rettet
+- **LLM-prompter på dansk og hindi svarede på engelsk** (brugerrapporteret) — `LOCALE_NAMES` og alle fem `SCAFFOLD_STRINGS`-blokke i `server/lib/prompts.mjs` blev aldrig udvidet med `da` og `hi`, så `resolveLocale()` faldt tilbage til `en`, og hver AI-prompt — deep research (live og manuel), tilstande, evaluering, interview, netværk, CV Studio — mistede sit `# Output language`-direktiv på disse to sprog. Begge er nu fuldgyldige: sprogdirektiv + lokaliseret stillads. Regressionsporten i `tests/locale-scaffold.test.mjs` gennemgår nu den kanoniske liste med 17 sprog i stedet for 12 hårdkodede, og en ny strukturel paritetsport fejler enhver stilladsnøgle, der falder tilbage til engelsk — et fremtidigt sprog, der springer `prompts.mjs` over, kan ikke længere udgives (+12 tests, suiten er nu på **1969**).
+
 ## [1.125.2] — 2026-07-22
 
 ### Rettet

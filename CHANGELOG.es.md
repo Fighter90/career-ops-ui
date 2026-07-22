@@ -11,6 +11,11 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.125.3] — 2026-07-23
+
+### Corregido
+- **Los prompts LLM en danés e hindi respondían en inglés** (reportado por un usuario) — `LOCALE_NAMES` y los cinco bloques de `SCAFFOLD_STRINGS` en `server/lib/prompts.mjs` nunca se ampliaron para `da` ni `hi`, por lo que `resolveLocale()` caía a `en` y cada prompt de IA — deep research (en vivo y manual), modos, evaluación, entrevista, networking, CV Studio — perdía su directiva `# Output language` en esos dos idiomas. Ahora ambos son de primera clase: directiva de idioma + andamiaje localizado. La barrera de regresión en `tests/locale-scaffold.test.mjs` ahora recorre la lista canónica de 17 locales en lugar de una lista fija de 12, y una nueva verificación estructural falla si cualquier clave de andamiaje cae al inglés — un futuro locale que omita `prompts.mjs` ya no puede publicarse (+12 pruebas, la suite ahora **1969**).
+
 ## [1.125.2] — 2026-07-22
 
 ### Corregido
