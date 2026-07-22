@@ -9,6 +9,14 @@
 ---
 
 
+## [1.125.2] — 2026-07-22
+
+### 수정
+- **Gemini 딥 리서치: HTTP 502(`MALFORMED_FUNCTION_CALL`)** (#145, [@Alien10140](https://github.com/Alien10140) 기여) — 라이브 `/api/deep` 프롬프트가 모델에게 "Use WebFetch / WebSearch"와 파일 저장을 지시했지만, 헤드리스 API 제공자에는 도구 채널이 없어 Gemini가 텍스트 대신 함수 호출로 응답했고, 이것이 빈 HTTP 502로 나타났습니다. `buildDeepPrompt`와 `bundleProjectContext`에 `headless` 플래그가 추가되어, 라이브 실행(Anthropic/Gemini/폴백 캐스케이드)은 인라인된 컨텍스트만으로 브리프를 작성하는 도구 없는 프롬프트를 받고, Claude Code용 복사-붙여넣기 프롬프트는 도구 지시를 유지합니다. `tests/critical-fixes.test.mjs`에 테스트 +1.
+
+### 변경
+- **지원 종료된 `gemini-2.0-flash`를 넘어 Gemini 기본 모델 상향** (#144, [@Alien10140](https://github.com/Alien10140) 기여) — 설정 드롭다운, `gemini.mjs`의 서버 폴백(힌트와 조용히 어긋나 있던 값), OpenRouter 폴백 체인, `config.geminiModelHint` ×17, 도움말 가이드 ×17이 모두 **`gemini-3.6-flash`** 를 가리킵니다. 새 드리프트 게이트 `tests/gemini-default-model.test.mjs`(+5 테스트)가 모든 표면을 같은 리터럴로 고정합니다 — 스위트는 이제 **1957 테스트**입니다.
+
 ## [1.125.1] — 2026-07-21
 
 ### 수정

@@ -2,6 +2,14 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.125.2] — 2026-07-22
+
+### Corretto
+- **Deep research via Gemini: HTTP 502 (`MALFORMED_FUNCTION_CALL`)** (#145, contributo di [@Alien10140](https://github.com/Alien10140)) — il prompt live di `/api/deep` chiedeva al modello di «Use WebFetch / WebSearch» e di salvare il brief su file, ma i provider API headless non hanno un canale strumenti; Gemini rispondeva con una chiamata di funzione invece che con testo, manifestandosi come un 502 vuoto. `buildDeepPrompt` e `bundleProjectContext` accettano ora un flag `headless`: le esecuzioni live (Anthropic/Gemini/cascata di fallback) ricevono un prompt senza strumenti che scrive il brief dal contesto inlineato, mentre il prompt copia-incolla per Claude Code mantiene le istruzioni sugli strumenti. +1 test in `tests/critical-fixes.test.mjs`.
+
+### Modificato
+- **Modelli Gemini predefiniti aggiornati oltre il deprecato `gemini-2.0-flash`** (#144, contributo di [@Alien10140](https://github.com/Alien10140)) — il menu a tendina della Configurazione, il fallback server in `gemini.mjs` (che divergeva in silenzio dal suggerimento), la catena di fallback OpenRouter, `config.geminiModelHint` ×17 e la guida ×17 ora indicano tutti **`gemini-3.6-flash`**. Il nuovo gate anti-deriva `tests/gemini-default-model.test.mjs` (+5 test) fissa tutte le superfici sullo stesso letterale — la suite arriva a **1957 test**.
+
 ## [1.125.1] — 2026-07-21
 
 ### Corretto

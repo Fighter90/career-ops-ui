@@ -9,6 +9,14 @@
 ---
 
 
+## [1.125.2] — 2026-07-22
+
+### 修復
+- **Gemini 深度研究:HTTP 502(`MALFORMED_FUNCTION_CALL`)**(#145,由 [@Alien10140](https://github.com/Alien10140) 貢獻)— 即時 `/api/deep` 提示詞要求模型「Use WebFetch / WebSearch」並將簡報存檔,但無工具的 API 供應方沒有工具通道;Gemini 以函式呼叫而非文字回應,呈現為空白的 HTTP 502。`buildDeepPrompt` 與 `bundleProjectContext` 新增 `headless` 旗標:即時執行(Anthropic/Gemini/備援串接)取得無工具提示詞,僅憑內嵌上下文撰寫簡報;供 Claude Code 複製貼上的提示詞則保留工具指示。`tests/critical-fixes.test.mjs` 新增 1 個測試。
+
+### 變更
+- **Gemini 預設模型越過已棄用的 `gemini-2.0-flash`**(#144,由 [@Alien10140](https://github.com/Alien10140) 貢獻)— 設定下拉選單、`gemini.mjs` 的伺服器備援(先前與提示悄悄不一致)、OpenRouter 備援鏈、`config.geminiModelHint` ×17 及說明指南 ×17 現統一指向 **`gemini-3.6-flash`**。新的防漂移閘門 `tests/gemini-default-model.test.mjs`(+5 個測試)將所有表面釘在同一字面值上 — 套件現為 **1957 個測試**。
+
 ## [1.125.1] — 2026-07-21
 
 ### 修復

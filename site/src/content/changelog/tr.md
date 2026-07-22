@@ -2,6 +2,14 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.125.2] — 2026-07-22
+
+### Düzeltildi
+- **Gemini ile derin araştırma: HTTP 502 (`MALFORMED_FUNCTION_CALL`)** (#145, [@Alien10140](https://github.com/Alien10140) katkısı) — canlı `/api/deep` istemi modele "Use WebFetch / WebSearch" komutunu ve brifi dosyaya kaydetmesini söylüyordu; ancak araçsız API sağlayıcılarında araç kanalı yoktur ve Gemini metin yerine bir işlev çağrısıyla yanıt veriyor, bu da boş bir HTTP 502 olarak görünüyordu. `buildDeepPrompt` ve `bundleProjectContext` artık bir `headless` bayrağı alıyor: canlı çalıştırmalar (Anthropic/Gemini/yedek kaskadı) brifi gömülü bağlamdan yazan araçsız bir istem alırken, Claude Code için kopyala-yapıştır istemi araç talimatlarını koruyor. `tests/critical-fixes.test.mjs` içinde +1 test.
+
+### Değiştirildi
+- **Gemini varsayılanları, kullanımdan kaldırılan `gemini-2.0-flash` modelinin ötesine taşındı** (#144, [@Alien10140](https://github.com/Alien10140) katkısı) — Yapılandırma açılır listesi, `gemini.mjs` içindeki sunucu yedeği (ipucuyla sessizce çelişiyordu), OpenRouter yedek zinciri, `config.geminiModelHint` ×17 ve yardım kılavuzu ×17 artık tutarlı biçimde **`gemini-3.6-flash`** gösteriyor. Yeni kayma kapısı `tests/gemini-default-model.test.mjs` (+5 test) tüm yüzeyleri aynı değişmeze sabitliyor — paket artık **1957 test**.
+
 ## [1.125.1] — 2026-07-21
 
 ### Düzeltildi

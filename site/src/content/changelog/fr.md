@@ -11,6 +11,14 @@ Traductions : [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHA
 ---
 
 
+## [1.125.2] — 2026-07-22
+
+### Corrigé
+- **Deep research via Gemini : HTTP 502 (`MALFORMED_FUNCTION_CALL`)** (#145, contribution de [@Alien10140](https://github.com/Alien10140)) — le prompt live de `/api/deep` demandait au modèle « Use WebFetch / WebSearch » et d'enregistrer le brief dans un fichier, mais les fournisseurs d'API sans outils n'ont pas de canal d'outils ; Gemini répondait par un appel de fonction au lieu de texte, ce qui apparaissait comme un 502 vide. `buildDeepPrompt` et `bundleProjectContext` acceptent désormais un drapeau `headless` : les exécutions live (Anthropic/Gemini/cascade de repli) reçoivent un prompt sans outils qui rédige le brief à partir du contexte injecté, tandis que le prompt à copier-coller pour Claude Code conserve ses instructions d'outils. +1 test dans `tests/critical-fixes.test.mjs`.
+
+### Modifié
+- **Modèles Gemini par défaut mis à jour au-delà du déprécié `gemini-2.0-flash`** (#144, contribution de [@Alien10140](https://github.com/Alien10140)) — la liste déroulante de Configuration, le repli serveur de `gemini.mjs` (qui divergeait en silence de l'indice), la chaîne de repli OpenRouter, `config.geminiModelHint` ×17 et le guide d'aide ×17 nomment désormais **`gemini-3.6-flash`**. La nouvelle porte anti-dérive `tests/gemini-default-model.test.mjs` (+5 tests) épingle toutes les surfaces au même littéral — la suite atteint **1957 tests**.
+
 ## [1.125.1] — 2026-07-21
 
 ### Corrigé
