@@ -9,6 +9,11 @@
 ---
 
 
+## [1.125.1] — 2026-07-21
+
+### 수정
+- **SuccessFactors: 멀티 브랜드 RMK 테넌트가 브랜드 경로 유지** (상위 #2099, v1.22.0 이후) — 하나의 공유 RMK 인스턴스에서 여러 인수 브랜드를 운영하는 지주회사는 경로 세그먼트로 브랜드를 구분합니다(`careers.nemetschek.com/Bluebeam/` vs `…/Vectorworks/`). 어댑터는 이전에 설정된 URL을 origin으로 축소해버려, 상위 브랜드의 채용 공고만 조용히 스캔하고 있었습니다. 이제 엔드포인트는 브랜드 접두사를 보존하고 끝에 붙은 `/search/` 또는 `/tile-search-results/` 세그먼트만 제거하므로, 어떤 경우에도 스캔이 중복되지 않습니다. 단일 도메인 테넌트는 바이트 단위로 변경되지 않습니다. 새로 export된 `resolveTenantBase` 헬퍼 + `tests/sources-successfactors.test.mjs`에 이식된 테스트 블록 1개.
+
 ## [1.125.0] — 2026-07-21
 
 ### 추가

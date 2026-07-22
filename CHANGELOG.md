@@ -8,6 +8,11 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.125.1] — 2026-07-21
+
+### Fixed
+- **SuccessFactors: multi-brand RMK tenants keep their brand path** (parent #2099, post-v1.22.0) — holding companies that run several acquired brands off one shared RMK instance disambiguate them by a path segment (`careers.nemetschek.com/Bluebeam/` vs `…/Vectorworks/`); the adapter used to collapse the configured URL to its origin, silently scanning the parent brand's postings. The endpoint now preserves the brand prefix, stripping only a trailing `/search/` or `/tile-search-results/` segment so nothing ever doubles onto itself; single-domain tenants are byte-for-byte unchanged. New exported `resolveTenantBase` helper + 1 ported test block in `tests/sources-successfactors.test.mjs`.
+
 ## [1.125.0] — 2026-07-21
 
 ### Added

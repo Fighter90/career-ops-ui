@@ -9,6 +9,11 @@
 ---
 
 
+## [1.125.1] — 2026-07-21
+
+### 修復
+- **SuccessFactors:多品牌 RMK 租戶保留其品牌路徑**(父專案 #2099,v1.22.0 之後)— 同時經營多個收購品牌、共用同一套 RMK 執行個體的控股公司,以路徑片段來區分品牌(`careers.nemetschek.com/Bluebeam/` vs `…/Vectorworks/`);此轉接器先前會將設定的 URL 收斂為其 origin,因而悄悄地只掃描母品牌的職缺。現在該端點會保留品牌前綴,只剝除結尾的 `/search/` 或 `/tile-search-results/` 區段,確保掃描絕不會自我重複;單一網域的租戶逐位元組不變。新增匯出的 `resolveTenantBase` 輔助函式,並在 `tests/sources-successfactors.test.mjs` 中移植 1 個測試區塊。
+
 ## [1.125.0] — 2026-07-21
 
 ### 新增

@@ -11,6 +11,12 @@ Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portugu
 ---
 
 
+## [1.125.1] — 2026-07-21
+
+### Corrigé
+- **SuccessFactors : les tenants RMK multi-marques conservent leur chemin de marque** (parent #2099, post-v1.22.0) — les holdings qui exploitent plusieurs marques acquises depuis une seule instance RMK partagée les distinguent par un segment de chemin (`careers.nemetschek.com/Bluebeam/` contre `…/Vectorworks/`) ; l'adaptateur réduisait auparavant l'URL configurée à son origine, scannant silencieusement les offres de la marque parente. Le endpoint préserve désormais le préfixe de marque, ne retirant qu'un segment final `/search/` ou `/tile-search-results/` afin que rien ne se duplique jamais sur lui-même ; les tenants à domaine unique restent inchangés au bit près. Nouveau helper exporté `resolveTenantBase` + 1 bloc de test porté dans `tests/sources-successfactors.test.mjs`.
+
+
 ## [1.125.0] — 2026-07-21
 
 ### Ajouté
