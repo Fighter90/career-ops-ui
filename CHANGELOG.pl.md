@@ -9,6 +9,11 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.125.3] — 2026-07-23
+
+### Naprawiono
+- **Prompty LLM po duńsku i w hindi odpowiadały po angielsku** (zgłoszone przez użytkownika) — `LOCALE_NAMES` i wszystkie pięć zbiorów `SCAFFOLD_STRINGS` w `server/lib/prompts.mjs` nigdy nie zostały rozszerzone o `da` i `hi`, więc `resolveLocale()` spadał do `en`, a każdy prompt AI — deep research (na żywo i ręczny), tryby, ocena, wywiad, networking, CV Studio — tracił dyrektywę `# Output language` w tych dwóch lokalizacjach. Obie są teraz pełnoprawne: dyrektywa językowa + zlokalizowany szkielet. Bramka regresji w `tests/locale-scaffold.test.mjs` przechodzi teraz kanoniczną listę 17 lokalizacji zamiast zahardkodowanych 12, a nowa bramka strukturalna odrzuca każdy klucz szkieletu spadający do angielskiego — przyszła lokalizacja, która pominie `prompts.mjs`, nie może już zostać wydana (+12 testów, zestaw liczy teraz **1969**).
+
 ## [1.125.2] — 2026-07-22
 
 ### Naprawiono

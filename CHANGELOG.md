@@ -8,6 +8,11 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.125.3] — 2026-07-23
+
+### Fixed
+- **Danish and Hindi LLM prompts answered in English** (user-reported) — `LOCALE_NAMES` and all five `SCAFFOLD_STRINGS` bags in `server/lib/prompts.mjs` were never extended for `da` or `hi` (each locale expansion after the 12-locale era skipped this file), so `resolveLocale()` fell back to `en` and every AI prompt — deep research (live and manual), mode runs, evaluate, interview, networking, CV Studio — lost its `# Output language` directive in those two locales. Both are now first-class: locale directive + localized scaffolding (readFiles / userContext / modeTemplate / modeRoleLine / evalRoleLine). The regression gate in `tests/locale-scaffold.test.mjs` now sweeps the canonical 17-locale list from `tests/helpers/i18n-vm.mjs` instead of a hardcoded 12, and a new structural parity gate fails any scaffold key that falls back to English in a non-EN locale — a future locale that misses `prompts.mjs` can no longer ship (+12 tests, suite now **1969**).
+
 ## [1.125.2] — 2026-07-22
 
 ### Fixed

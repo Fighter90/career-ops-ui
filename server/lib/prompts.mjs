@@ -30,6 +30,8 @@ const LOCALE_NAMES = {
   de: 'German',
   it: 'Italian',
   tr: 'Turkish',
+  da: 'Danish',
+  hi: 'Hindi',
 };
 
 /**
@@ -94,6 +96,8 @@ const SCAFFOLD_STRINGS = {
     de: 'Lesen Sie zuerst diese Dateien (sie liegen im Projektstammverzeichnis):',
     it: 'Leggi prima questi file (si trovano nella radice del progetto):',
     tr: 'Önce şu dosyaları okuyun (proje kök dizininde bulunurlar):',
+    da: 'Læs disse filer først (de findes i projektets rod):',
+    hi: 'पहले ये फ़ाइलें पढ़ें (ये प्रोजेक्ट रूट में मौजूद हैं):',
   },
   userContext: {
     en: 'User-supplied context:',
@@ -111,6 +115,8 @@ const SCAFFOLD_STRINGS = {
     de: 'Vom Benutzer bereitgestellter Kontext:',
     it: 'Contesto fornito dall\'utente:',
     tr: 'Kullanıcı tarafından sağlanan bağlam:',
+    da: 'Kontekst fra brugeren:',
+    hi: 'उपयोगकर्ता द्वारा दिया गया संदर्भ:',
   },
   modeTemplate: {
     en: 'mode template',
@@ -128,6 +134,8 @@ const SCAFFOLD_STRINGS = {
     de: 'Modusvorlage',
     it: 'modello di modalità',
     tr: 'mod şablonu',
+    da: 'tilstandsskabelon',
+    hi: 'मोड टेम्पलेट',
   },
   // Template STRINGS (not functions) with a `{slug}` placeholder. Storing
   // strings — resolved via a guarded own-key lookup and interpolated with
@@ -150,6 +158,8 @@ const SCAFFOLD_STRINGS = {
     de: 'Sie sind career-ops im Modus {slug}.',
     it: 'Sei career-ops in modalità {slug}.',
     tr: 'Sen {slug} modunda career-ops\'sun.',
+    da: 'Du er career-ops i {slug}-tilstand.',
+    hi: 'आप {slug} मोड में career-ops हैं।',
   },
   evalRoleLine: {
     en: 'You are career-ops. Evaluate this Job Description against the user\'s CV.',
@@ -167,6 +177,8 @@ const SCAFFOLD_STRINGS = {
     de: 'Sie sind career-ops. Bewerten Sie diese Job Description anhand des Lebenslaufs (CV) des Benutzers.',
     it: 'Sei career-ops. Valuta questo Job Description rispetto al CV dell\'utente.',
     tr: 'Sen career-ops\'sun. Bu Job Description\'ı kullanıcının CV\'sine göre değerlendir.',
+    da: 'Du er career-ops. Vurder denne Job Description i forhold til brugerens CV.',
+    hi: 'आप career-ops हैं। इस Job Description का मूल्यांकन उपयोगकर्ता के CV के आधार पर करें।',
   },
 };
 
