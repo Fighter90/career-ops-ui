@@ -386,7 +386,7 @@ Zapis w dowolnej zakładce propaguje natychmiast — bez restartu serwera.
 2. Wybierz dostawcę w **`LLM_PROVIDER`**: `auto` (użyj dowolnego ustawionego klucza) lub wymuś jeden z `claude` / `gemini` / `openai` / `qwen`.
 3. Wypełnij klucz + model dla wybranego dostawcy:
    - **Anthropic** — ustaw `ANTHROPIC_API_KEY` (console.anthropic.com), opcjonalnie `ANTHROPIC_MODEL` (domyślnie `claude-sonnet-4-6`).
-   - **Gemini** — ustaw `GEMINI_API_KEY` (aistudio.google.com/apikey), opcjonalnie `GEMINI_MODEL` (domyślnie `gemini-2.0-flash`).
+   - **Gemini** — ustaw `GEMINI_API_KEY` (aistudio.google.com/apikey), opcjonalnie `GEMINI_MODEL` (domyślnie `gemini-3.6-flash`).
    - **OpenAI** — ustaw `OPENAI_API_KEY` (platform.openai.com), opcjonalnie `OPENAI_MODEL` (domyślnie `gpt-5-codex`).
    - **Qwen** — ustaw `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), opcjonalnie `QWEN_MODEL` (domyślnie `qwen-max`). Dla punktu końcowego mainland-CN ustaw `QWEN_BASE_URL` w surowym `.env`.
 4. Kliknij **Save**. Klucze są zapisywane do `.env` projektu nadrzędnego; zmiana wchodzi w życie natychmiast — restart serwera nie jest potrzebny.
@@ -1056,7 +1056,7 @@ efekt).
    200 KB). Zwraca ugruntowany Markdown bezpośrednio do strony.
 2. **Gemini** — gdy ustawiony tylko `GEMINI_API_KEY`. Serwer tworzy
    `gemini-eval.mjs` z JD jako plikiem tymczasowym. Model darmowego planu
-   (`gemini-2.0-flash`) jest odpowiedni do rutynowego oceniania.
+   (`gemini-3.6-flash`) jest odpowiedni do rutynowego oceniania.
 3. **Ręczny** — brak klucza. Strona zwraca w pełni uformowany prompt,
    który możesz wkleić do Claude Code, ChatGPT lub dowolnego innego LLM.
 

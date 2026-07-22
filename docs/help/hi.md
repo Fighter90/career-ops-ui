@@ -459,7 +459,7 @@ Kimi के अंदर भी चला सकते हैं; वह इस 
    - **Anthropic** — `ANTHROPIC_API_KEY` सेट करें (console.anthropic.com),
      वैकल्पिक रूप से `ANTHROPIC_MODEL` (डिफ़ॉल्ट `claude-sonnet-4-6`)।
    - **Gemini** — `GEMINI_API_KEY` सेट करें (aistudio.google.com/apikey),
-     वैकल्पिक रूप से `GEMINI_MODEL` (डिफ़ॉल्ट `gemini-2.0-flash`)।
+     वैकल्पिक रूप से `GEMINI_MODEL` (डिफ़ॉल्ट `gemini-3.6-flash`)।
    - **OpenAI** — `OPENAI_API_KEY` सेट करें (platform.openai.com),
      वैकल्पिक रूप से `OPENAI_MODEL` (डिफ़ॉल्ट `gpt-5-codex`)।
    - **Qwen** — `QWEN_API_KEY` सेट करें (Alibaba Model Studio /
@@ -1299,7 +1299,7 @@ JD को ऑडिट ट्रेल के लिए `jds/jd-<date>-<ts>.txt`
    200 KB तक soft-capped)। सीधे पेज पर ग्राउंडेड मार्कडाउन लौटाता है।
 2. **Gemini** — जब सिर्फ़ `GEMINI_API_KEY` सेट हो। सर्वर JD को एक टेम्प
    फ़ाइल के तौर पर `gemini-eval.mjs` को स्पॉन करता है। रूटीन स्कोरिंग
-   के लिए फ़्री-टियर मॉडल (`gemini-2.0-flash`) ठीक है।
+   के लिए फ़्री-टियर मॉडल (`gemini-3.6-flash`) ठीक है।
 3. **Manual** — कोई key सेट नहीं है। पेज एक पूरी तरह तैयार प्रॉम्प्ट
    लौटाता है जिसे आप Claude Code, ChatGPT, या किसी भी और LLM में पेस्ट
    कर सकते हैं।

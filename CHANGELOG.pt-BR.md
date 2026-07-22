@@ -8,6 +8,14 @@ Traduções: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [한국�
 
 ---
 
+## [1.125.2] — 2026-07-22
+
+### Corrigido
+- **Deep research com Gemini: HTTP 502 (`MALFORMED_FUNCTION_CALL`)** (#145, contribuição de [@Alien10140](https://github.com/Alien10140)) — o prompt ao vivo de `/api/deep` mandava o modelo «Use WebFetch / WebSearch» e salvar o relatório em arquivo, mas provedores de API headless não têm canal de ferramentas; o Gemini respondia com uma chamada de função em vez de texto, aparecendo como um 502 vazio. `buildDeepPrompt` e `bundleProjectContext` agora aceitam a flag `headless`: execuções ao vivo (Anthropic/Gemini/cascata de fallback) recebem um prompt sem ferramentas que escreve o relatório a partir do contexto embutido, enquanto o prompt de copiar-e-colar para o Claude Code mantém as instruções de ferramentas. +1 teste em `tests/critical-fixes.test.mjs`.
+
+### Alterado
+- **Padrões do Gemini atualizados além do descontinuado `gemini-2.0-flash`** (#144, contribuição de [@Alien10140](https://github.com/Alien10140)) — o dropdown de Configuração, o fallback do servidor em `gemini.mjs` (que divergia em silêncio da dica), a cadeia de fallback do OpenRouter, `config.geminiModelHint` ×17 e o guia de ajuda ×17 agora nomeiam **`gemini-3.6-flash`**. O novo gate anti-deriva `tests/gemini-default-model.test.mjs` (+5 testes) fixa todas as superfícies no mesmo literal — a suíte chega a **1957 testes**.
+
 ## [1.125.1] — 2026-07-21
 
 ### Corrigido

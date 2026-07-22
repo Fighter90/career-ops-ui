@@ -394,7 +394,7 @@ Et gem i en hvilken som helst fane forplanter sig med det samme — ingen server
 2. Vælg din udbyder i **`LLM_PROVIDER`**: `auto` (brug hvilken nøgle der er sat), eller tving en med `claude` / `gemini` / `openai` / `qwen`.
 3. Udfyld nøglen + modellen for den udbyder, du valgte:
    - **Anthropic** — sæt `ANTHROPIC_API_KEY` (console.anthropic.com), valgfrit `ANTHROPIC_MODEL` (standard `claude-sonnet-4-6`).
-   - **Gemini** — sæt `GEMINI_API_KEY` (aistudio.google.com/apikey), valgfrit `GEMINI_MODEL` (standard `gemini-2.0-flash`).
+   - **Gemini** — sæt `GEMINI_API_KEY` (aistudio.google.com/apikey), valgfrit `GEMINI_MODEL` (standard `gemini-3.6-flash`).
    - **OpenAI** — sæt `OPENAI_API_KEY` (platform.openai.com), valgfrit `OPENAI_MODEL` (standard `gpt-5-codex`).
    - **Qwen** — sæt `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), valgfrit `QWEN_MODEL` (standard `qwen-max`). For fastlands-CN-endpointet sæt `QWEN_BASE_URL` i den rå `.env`.
 4. Klik på **Gem**. Nøgler skrives til det overordnede projekts `.env`; ændringen træder i kraft med det samme — ingen server-genstart nødvendig.
@@ -1117,7 +1117,7 @@ effekt).
    200 KB). Returnerer grundet markdown direkte til siden.
 2. **Gemini** — når kun `GEMINI_API_KEY` er sat. Serveren spawner
    `gemini-eval.mjs` med JD'en som en temp-fil. Gratis-niveau-model
-   (`gemini-2.0-flash`) er fin til rutinescoring.
+   (`gemini-3.6-flash`) er fin til rutinescoring.
 3. **Manuel** — ingen nøgle sat. Siden returnerer en fuldt formet prompt,
    du kan indsætte i Claude Code, ChatGPT eller en hvilken som helst anden LLM.
 

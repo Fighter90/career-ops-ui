@@ -421,7 +421,7 @@ Server-Neustart.
 2. Wählen Sie Ihren Anbieter in **`LLM_PROVIDER`**: `auto` (verwendet den gesetzten Schlüssel) oder erzwingen Sie einen mit `claude` / `gemini` / `openai` / `qwen`.
 3. Füllen Sie den Schlüssel + das Modell für den gewählten Anbieter aus:
    - **Anthropic** — setzen Sie `ANTHROPIC_API_KEY` (console.anthropic.com), optional `ANTHROPIC_MODEL` (default `claude-sonnet-4-6`).
-   - **Gemini** — setzen Sie `GEMINI_API_KEY` (aistudio.google.com/apikey), optional `GEMINI_MODEL` (default `gemini-2.0-flash`).
+   - **Gemini** — setzen Sie `GEMINI_API_KEY` (aistudio.google.com/apikey), optional `GEMINI_MODEL` (default `gemini-3.6-flash`).
    - **OpenAI** — setzen Sie `OPENAI_API_KEY` (platform.openai.com), optional `OPENAI_MODEL` (default `gpt-5-codex`).
    - **Qwen** — setzen Sie `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), optional `QWEN_MODEL` (default `qwen-max`). Für den Festland-CN-Endpunkt setzen Sie `QWEN_BASE_URL` in der rohen `.env`.
 4. Klicken Sie auf **Save**. Die Schlüssel werden in die `.env` des übergeordneten Projekts geschrieben; die Änderung wird sofort wirksam — kein Server-Neustart nötig.
@@ -1215,7 +1215,7 @@ Sie `save: true` im API-Aufruf — gleicher Effekt).
    200 KB). Gibt fundiertes Markdown direkt an die Seite zurück.
 2. **Gemini** — wenn nur `GEMINI_API_KEY` gesetzt ist. Der Server startet
    `gemini-eval.mjs` mit der JD als temporäre Datei. Das Modell des
-   kostenlosen Tarifs (`gemini-2.0-flash`) ist für routinemäßige Bewertung
+   kostenlosen Tarifs (`gemini-3.6-flash`) ist für routinemäßige Bewertung
    in Ordnung.
 3. **Manual** — kein Schlüssel gesetzt. Die Seite gibt einen
    vollständig ausformulierten Prompt zurück, den Sie in Claude Code,

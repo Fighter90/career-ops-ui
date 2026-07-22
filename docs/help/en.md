@@ -392,7 +392,7 @@ A save in any tab propagates immediately — no server restart.
 2. Pick your provider in **`LLM_PROVIDER`**: `auto` (use whichever key is set), or force one with `claude` / `gemini` / `openai` / `qwen`.
 3. Fill the key + model for the provider you chose:
    - **Anthropic** — set `ANTHROPIC_API_KEY` (console.anthropic.com), optionally `ANTHROPIC_MODEL` (default `claude-sonnet-4-6`).
-   - **Gemini** — set `GEMINI_API_KEY` (aistudio.google.com/apikey), optionally `GEMINI_MODEL` (default `gemini-2.0-flash`).
+   - **Gemini** — set `GEMINI_API_KEY` (aistudio.google.com/apikey), optionally `GEMINI_MODEL` (default `gemini-3.6-flash`).
    - **OpenAI** — set `OPENAI_API_KEY` (platform.openai.com), optionally `OPENAI_MODEL` (default `gpt-5-codex`).
    - **Qwen** — set `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), optionally `QWEN_MODEL` (default `qwen-max`). For the mainland-CN endpoint set `QWEN_BASE_URL` in the raw `.env`.
 4. Click **Save**. Keys write to the parent project's `.env`; the change takes effect immediately — no server restart needed.
@@ -1144,7 +1144,7 @@ effect).
    200 KB). Returns grounded markdown directly to the page.
 2. **Gemini** — when only `GEMINI_API_KEY` is set. Server spawns
    `gemini-eval.mjs` with the JD as a temp file. Free-tier model
-   (`gemini-2.0-flash`) is fine for routine scoring.
+   (`gemini-3.6-flash`) is fine for routine scoring.
 3. **Manual** — no key set. The page returns a fully-formed prompt
    you can paste into Claude Code, ChatGPT, or any other LLM.
 

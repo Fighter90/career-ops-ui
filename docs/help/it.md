@@ -399,7 +399,7 @@ Un salvataggio in qualsiasi scheda si propaga immediatamente — nessun riavvio 
 2. Scegli il tuo provider in **`LLM_PROVIDER`**: `auto` (usa qualunque chiave sia impostata), o forzane uno con `claude` / `gemini` / `openai` / `qwen`.
 3. Compila la chiave + modello per il provider che hai scelto:
    - **Anthropic** — imposta `ANTHROPIC_API_KEY` (console.anthropic.com), opzionalmente `ANTHROPIC_MODEL` (default `claude-sonnet-4-6`).
-   - **Gemini** — imposta `GEMINI_API_KEY` (aistudio.google.com/apikey), opzionalmente `GEMINI_MODEL` (default `gemini-2.0-flash`).
+   - **Gemini** — imposta `GEMINI_API_KEY` (aistudio.google.com/apikey), opzionalmente `GEMINI_MODEL` (default `gemini-3.6-flash`).
    - **OpenAI** — imposta `OPENAI_API_KEY` (platform.openai.com), opzionalmente `OPENAI_MODEL` (default `gpt-5-codex`).
    - **Qwen** — imposta `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), opzionalmente `QWEN_MODEL` (default `qwen-max`). Per l'endpoint della Cina continentale imposta `QWEN_BASE_URL` nel `.env` grezzo.
 4. Fai clic su **Save**. Le chiavi vengono scritte nel `.env` del progetto padre; la modifica ha effetto immediato — nessun riavvio del server necessario.
@@ -1147,7 +1147,7 @@ effetto).
    200 KB). Restituisce markdown fondato direttamente alla pagina.
 2. **Gemini** — quando è impostata solo `GEMINI_API_KEY`. Il server lancia
    `gemini-eval.mjs` con la JD come file temporaneo. Il modello del free-tier
-   (`gemini-2.0-flash`) va bene per il punteggio di routine.
+   (`gemini-3.6-flash`) va bene per il punteggio di routine.
 3. **Manuale** — nessuna chiave impostata. La pagina restituisce un prompt completamente formato
    che puoi incollare in Claude Code, ChatGPT, o qualsiasi altro LLM.
 

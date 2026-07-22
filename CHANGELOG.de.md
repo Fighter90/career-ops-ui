@@ -2,6 +2,14 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](CHANGELOG.md).
 
+## [1.125.2] — 2026-07-22
+
+### Behoben
+- **Deep Research über Gemini: HTTP 502 (`MALFORMED_FUNCTION_CALL`)** (#145, beigetragen von [@Alien10140](https://github.com/Alien10140)) — der Live-Prompt von `/api/deep` wies das Modell an, „Use WebFetch / WebSearch" zu nutzen und den Brief in eine Datei zu speichern, doch Headless-API-Anbieter haben keinen Tool-Kanal; Gemini antwortete mit einem Funktionsaufruf statt Text, was sich als leerer HTTP 502 zeigte. `buildDeepPrompt` und `bundleProjectContext` erhalten ein `headless`-Flag: Live-Läufe (Anthropic/Gemini/Fallback-Kaskade) bekommen einen Prompt ohne Tools, der den Brief aus dem eingebetteten Kontext schreibt, während der Copy-Paste-Prompt für Claude Code seine Tool-Anweisungen behält. +1 Test in `tests/critical-fixes.test.mjs`.
+
+### Geändert
+- **Gemini-Standards über das eingestellte `gemini-2.0-flash` hinaus angehoben** (#144, beigetragen von [@Alien10140](https://github.com/Alien10140)) — das Konfigurations-Dropdown, der Server-Fallback in `gemini.mjs` (der stillschweigend vom Hinweis abwich), die OpenRouter-Fallback-Kette, `config.geminiModelHint` ×17 und der Hilfeleitfaden ×17 nennen jetzt einheitlich **`gemini-3.6-flash`**. Das neue Drift-Gate `tests/gemini-default-model.test.mjs` (+5 Tests) pinnt alle Oberflächen auf dasselbe Literal — die Suite umfasst jetzt **1957 Tests**.
+
 ## [1.125.1] — 2026-07-21
 
 ### Behoben

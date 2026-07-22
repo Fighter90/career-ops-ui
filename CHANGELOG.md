@@ -8,6 +8,14 @@ Translations: [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) ·
 
 
 
+## [1.125.2] — 2026-07-22
+
+### Fixed
+- **Deep research over Gemini: HTTP 502 (`MALFORMED_FUNCTION_CALL`)** (#145, contributed by [@Alien10140](https://github.com/Alien10140)) — the live `/api/deep` prompt told the model to "Use WebFetch / WebSearch" and to save the brief to a file, but headless API providers have no tool channel; Gemini answered with a function call instead of text, surfacing as an empty HTTP 502. `buildDeepPrompt` and `bundleProjectContext` now take a `headless` flag: live runs (Anthropic/Gemini/fallback cascade) get a no-tools prompt that writes the brief from the inlined context, while the copy-paste prompt for Claude Code keeps its tool instructions. +1 test in `tests/critical-fixes.test.mjs`.
+
+### Changed
+- **Gemini defaults bumped past the deprecated `gemini-2.0-flash`** (#144, contributed by [@Alien10140](https://github.com/Alien10140)) — the Config dropdown, the server fallback in `gemini.mjs` (which silently disagreed with the hint), the OpenRouter fallback chain, `config.geminiModelHint` ×17 and the help guide ×17 now all name **`gemini-3.6-flash`**. The new drift gate `tests/gemini-default-model.test.mjs` (+5 tests) pins every surface to the same literal — the suite is now **1957 tests**.
+
 ## [1.125.1] — 2026-07-21
 
 ### Fixed

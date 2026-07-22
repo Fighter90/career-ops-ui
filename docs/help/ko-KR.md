@@ -357,7 +357,7 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 2. **`LLM_PROVIDER`**에서 공급자를 선택합니다: `auto`(설정된 키를 사용), 또는 `claude` / `gemini` / `openai` / `qwen` 로 강제 지정.
 3. 선택한 공급자의 키 + 모델을 채웁니다:
    - **Anthropic** — `ANTHROPIC_API_KEY`(console.anthropic.com) 설정, 선택적으로 `ANTHROPIC_MODEL`(기본값 `claude-sonnet-4-6`).
-   - **Gemini** — `GEMINI_API_KEY`(aistudio.google.com/apikey) 설정, 선택적으로 `GEMINI_MODEL`(기본값 `gemini-2.0-flash`).
+   - **Gemini** — `GEMINI_API_KEY`(aistudio.google.com/apikey) 설정, 선택적으로 `GEMINI_MODEL`(기본값 `gemini-3.6-flash`).
    - **OpenAI** — `OPENAI_API_KEY`(platform.openai.com) 설정, 선택적으로 `OPENAI_MODEL`(기본값 `gpt-5-codex`).
    - **Qwen** — `QWEN_API_KEY`(Alibaba Model Studio / DashScope, dashscope.console.aliyun.com) 설정, 선택적으로 `QWEN_MODEL`(기본값 `qwen-max`). 중국 본토 엔드포인트는 raw `.env` 에서 `QWEN_BASE_URL` 을 설정합니다.
 4. **Save** 를 클릭합니다. 키는 부모 프로젝트의 `.env` 에 기록됩니다; 변경은 즉시 반영됩니다 — 서버 재시작 불필요.
@@ -1019,7 +1019,7 @@ true`도 동일 효과).
    markdown을 직접 반환합니다.
 2. **Gemini** — `GEMINI_API_KEY`만 설정된 경우. 서버가 JD를 임시
    파일로 두고 `gemini-eval.mjs`를 스폰합니다. 무료 티어 모델
-   (`gemini-2.0-flash`)도 일상적 채점에 충분합니다.
+   (`gemini-3.6-flash`)도 일상적 채점에 충분합니다.
 3. **수동** — 키가 없을 때. 페이지가 Claude Code, ChatGPT 또는
    다른 LLM에 붙여넣을 수 있는 완성된 프롬프트를 반환합니다.
 

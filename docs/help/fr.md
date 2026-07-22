@@ -417,7 +417,7 @@ pas de redémarrage du serveur.
 2. Choisissez votre fournisseur dans **`LLM_PROVIDER`** : `auto` (utilise la clé définie), ou forcez-en un avec `claude` / `gemini` / `openai` / `qwen`.
 3. Renseignez la clé + le modèle du fournisseur choisi :
    - **Anthropic** — définissez `ANTHROPIC_API_KEY` (console.anthropic.com), éventuellement `ANTHROPIC_MODEL` (défaut `claude-sonnet-4-6`).
-   - **Gemini** — définissez `GEMINI_API_KEY` (aistudio.google.com/apikey), éventuellement `GEMINI_MODEL` (défaut `gemini-2.0-flash`).
+   - **Gemini** — définissez `GEMINI_API_KEY` (aistudio.google.com/apikey), éventuellement `GEMINI_MODEL` (défaut `gemini-3.6-flash`).
    - **OpenAI** — définissez `OPENAI_API_KEY` (platform.openai.com), éventuellement `OPENAI_MODEL` (défaut `gpt-5-codex`).
    - **Qwen** — définissez `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), éventuellement `QWEN_MODEL` (défaut `qwen-max`). Pour l'endpoint Chine continentale, définissez `QWEN_BASE_URL` dans le `.env` brut.
 4. Cliquez sur **Save**. Les clés s'écrivent dans le `.env` du projet parent ; le changement prend effet immédiatement — pas de redémarrage.
@@ -1148,7 +1148,7 @@ l'appel API — même effet).
    Renvoie du markdown ancré directement à la page.
 2. **Gemini** — quand seule `GEMINI_API_KEY` est définie. Le serveur lance
    `gemini-eval.mjs` avec l'offre en fichier temporaire. Le modèle du palier
-   gratuit (`gemini-2.0-flash`) convient à une notation de routine.
+   gratuit (`gemini-3.6-flash`) convient à une notation de routine.
 3. **Manuel** — aucune clé définie. La page renvoie un prompt entièrement
    formé que vous pouvez coller dans Claude Code, ChatGPT, ou tout autre LLM.
 

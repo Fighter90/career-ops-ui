@@ -328,7 +328,7 @@ JD。輔助器會生成逐步的投遞檢查清單:
 2. 在 **`LLM_PROVIDER`** 中選擇你的供應方:`auto`(使用已設定的金鑰),或用 `claude` / `gemini` / `openai` / `qwen` 強制指定一個。
 3. 填寫你所選供應方的金鑰 + 模型:
    - **Anthropic** —— 設定 `ANTHROPIC_API_KEY`(console.anthropic.com),選擇性 `ANTHROPIC_MODEL`(預設 `claude-sonnet-4-6`)。
-   - **Gemini** —— 設定 `GEMINI_API_KEY`(aistudio.google.com/apikey),選擇性 `GEMINI_MODEL`(預設 `gemini-2.0-flash`)。
+   - **Gemini** —— 設定 `GEMINI_API_KEY`(aistudio.google.com/apikey),選擇性 `GEMINI_MODEL`(預設 `gemini-3.6-flash`)。
    - **OpenAI** —— 設定 `OPENAI_API_KEY`(platform.openai.com),選擇性 `OPENAI_MODEL`(預設 `gpt-5-codex`)。
    - **Qwen** —— 設定 `QWEN_API_KEY`(阿里雲百鍊 / DashScope,dashscope.console.aliyun.com),選擇性 `QWEN_MODEL`(預設 `qwen-max`)。中國大陸端點請在 raw `.env` 中設定 `QWEN_BASE_URL`。
 4. 點擊 **Save**。金鑰寫入父專案的 `.env`;變更立即生效 —— 無需重啟伺服器。
@@ -962,7 +962,7 @@ hh.ru 透過讀取其公開搜尋頁面（`hh.ru/search/vacancy`）來掃描,與
    依據的 markdown 到頁面。
 2. **Gemini** — 只有設定 `GEMINI_API_KEY` 時。伺服器會 spawn
    `gemini-eval.mjs`,把 JD 當作暫存檔傳入。免費模型
-   (`gemini-2.0-flash`)對例行評分綽綽有餘。
+   (`gemini-3.6-flash`)對例行評分綽綽有餘。
 3. **手動** — 完全沒有金鑰。頁面會給你一段完整成形的提示,你可以
    貼到 Claude Code、ChatGPT 或任何其他 LLM。
 

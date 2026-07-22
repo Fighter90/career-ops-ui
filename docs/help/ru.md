@@ -371,7 +371,7 @@ behavioral / coding). Автоматически тянет данные из de
 2. Выберите провайдера в **`LLM_PROVIDER`**: `auto` (использует тот ключ, что задан) или принудительно один из `claude` / `gemini` / `openai` / `qwen`.
 3. Заполните ключ + модель выбранного провайдера:
    - **Anthropic** — задайте `ANTHROPIC_API_KEY` (console.anthropic.com), опционально `ANTHROPIC_MODEL` (по умолчанию `claude-sonnet-4-6`).
-   - **Gemini** — задайте `GEMINI_API_KEY` (aistudio.google.com/apikey), опционально `GEMINI_MODEL` (по умолчанию `gemini-2.0-flash`).
+   - **Gemini** — задайте `GEMINI_API_KEY` (aistudio.google.com/apikey), опционально `GEMINI_MODEL` (по умолчанию `gemini-3.6-flash`).
    - **OpenAI** — задайте `OPENAI_API_KEY` (platform.openai.com), опционально `OPENAI_MODEL` (по умолчанию `gpt-5-codex`).
    - **Qwen** — задайте `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), опционально `QWEN_MODEL` (по умолчанию `qwen-max`). Для endpoint материкового Китая задайте `QWEN_BASE_URL` в сыром `.env`.
 4. Нажмите **Save**. Ключи пишутся в `.env` родительского проекта; изменение вступает в силу немедленно — перезапуск сервера не нужен.
@@ -1032,7 +1032,7 @@ API-вызове — эффект тот же).
    soft-cap 200 KB). Возвращает grounded markdown прямо на страницу.
 2. **Gemini** — при заданном только `GEMINI_API_KEY`. Сервер спавнит
    `gemini-eval.mjs` с JD как временным файлом. Free-tier-модель
-   (`gemini-2.0-flash`) нормально справляется с рутинным скорингом.
+   (`gemini-3.6-flash`) нормально справляется с рутинным скорингом.
 3. **Manual** — ключ не задан. Страница возвращает готовый prompt,
    который можно вставить в Claude Code, ChatGPT или любой другой
    LLM.

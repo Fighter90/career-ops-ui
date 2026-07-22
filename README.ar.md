@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-1950%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-1957%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
+[![release](https://img.shields.io/badge/release-v1.125.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.2)
 
-> **🆕 أحدث إصدار — v1.125.1**
+> **🆕 أحدث إصدار — v1.125.2**
 >
 > **مصادر الوظائف على الصفحة الرئيسية.** يضيف الإصدار v1.125.0 قسمًا على cvstart.org يسرد **جميع مصادر المسح الـ67** كشرائح قابلة للنقر، تُزامَن مع السجل عند البناء وتُحمى من الانحراف. وقبل ذلك، **تكافؤ مع الأصل v1.22.0.** يضيف الإصدار v1.124.0 **خمسة مصادر مسح** — Welcome to the Jungle وAgentic Engineering Jobs وJobvite وGem وAlibaba Group (**67 محوّلاً** الآن) — إضافةً إلى التحقّق من العمل عن بُعد بالكامل في Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) وإصلاح رابط الوظيفة العام في SmartRecruiters.
 >

@@ -9,6 +9,14 @@
 ---
 
 
+## [1.125.2] — 2026-07-22
+
+### 修正
+- **Gemini でのディープリサーチ:HTTP 502(`MALFORMED_FUNCTION_CALL`)** (#145、[@Alien10140](https://github.com/Alien10140) の貢献) — ライブの `/api/deep` プロンプトはモデルに「Use WebFetch / WebSearch」とファイル保存を指示していましたが、ヘッドレス API プロバイダにはツールチャネルがなく、Gemini はテキストではなく関数呼び出しで応答し、空の HTTP 502 として現れていました。`buildDeepPrompt` と `bundleProjectContext` に `headless` フラグを追加:ライブ実行(Anthropic/Gemini/フォールバックカスケード)はインライン化されたコンテキストからブリーフを書くツールなしプロンプトを受け取り、Claude Code 用のコピー&ペーストプロンプトはツール指示を保持します。`tests/critical-fixes.test.mjs` にテスト +1。
+
+### 変更
+- **非推奨の `gemini-2.0-flash` を超えて Gemini デフォルトを更新** (#144、[@Alien10140](https://github.com/Alien10140) の貢献) — 設定ドロップダウン、`gemini.mjs` のサーバーフォールバック(ヒントと静かに食い違っていた値)、OpenRouter フォールバックチェーン、`config.geminiModelHint` ×17、ヘルプガイド ×17 がすべて **`gemini-3.6-flash`** を指すようになりました。新しいドリフトゲート `tests/gemini-default-model.test.mjs`(+5 テスト)がすべての面を同一リテラルに固定します — スイートは **1957 テスト**になりました。
+
 ## [1.125.1] — 2026-07-21
 
 ### 修正
