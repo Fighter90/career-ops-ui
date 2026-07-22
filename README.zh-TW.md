@@ -14,7 +14,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
 
-> **🆕 最新版本 — v1.125.0**
+> **🆕 最新版本 — v1.125.1**
 >
 > **登陸頁新增求職來源區塊。** v1.125.0 在 cvstart.org 新增一個區塊,將全部 **67 個掃描來源** 以可點擊標籤列出,並於建置時與登錄檔同步、由漂移關卡把關。在此之前,**父專案 v1.22.0 對齊。** v1.124.0 移植了 **五個掃描來源** — Welcome to the Jungle、Agentic Engineering Jobs、Jobvite、Gem 與 Alibaba Group(現有 **67 個轉接器**) — 以及 Arbeitsagentur 完全遠端驗證(`homeofficetyp=VOLLSTAENDIG`)與 SmartRecruiters 公開網址修正。
 >

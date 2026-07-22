@@ -14,7 +14,7 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
 
-> **🆕 En son sürüm — v1.125.0**
+> **🆕 En son sürüm — v1.125.1**
 >
 > **Landingde iş kaynakları.** v1.125.0, **67 tarama kaynağının tümünü** tıklanabilir çipler olarak listeleyen bir cvstart.org bölümü ekliyor; kayıt defteriyle build sırasında senkronize ve sapmaya karşı korunuyor. Bundan önce **üst proje v1.22.0 paritesi.** v1.124.0, **beş tarama kaynağını** taşıyor — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem ve Alibaba Group (artık **67 adaptör**) — buna ek olarak Arbeitsagentur'un tamamen-uzaktan doğrulamasını (`homeofficetyp=VOLLSTAENDIG`) ve SmartRecruiters'ın herkese açık URL düzeltmesini de taşıyor.
 >

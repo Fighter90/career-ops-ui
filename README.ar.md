@@ -14,7 +14,7 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
 
-> **🆕 أحدث إصدار — v1.125.0**
+> **🆕 أحدث إصدار — v1.125.1**
 >
 > **مصادر الوظائف على الصفحة الرئيسية.** يضيف الإصدار v1.125.0 قسمًا على cvstart.org يسرد **جميع مصادر المسح الـ67** كشرائح قابلة للنقر، تُزامَن مع السجل عند البناء وتُحمى من الانحراف. وقبل ذلك، **تكافؤ مع الأصل v1.22.0.** يضيف الإصدار v1.124.0 **خمسة مصادر مسح** — Welcome to the Jungle وAgentic Engineering Jobs وJobvite وGem وAlibaba Group (**67 محوّلاً** الآن) — إضافةً إلى التحقّق من العمل عن بُعد بالكامل في Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) وإصلاح رابط الوظيفة العام في SmartRecruiters.
 >

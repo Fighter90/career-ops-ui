@@ -14,7 +14,7 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
 
-> **🆕 Ultima release — v1.125.0**
+> **🆕 Ultima release — v1.125.1**
 >
 > **Fonti di lavoro sulla landing.** La v1.125.0 aggiunge una sezione su cvstart.org che elenca tutte le **67 sorgenti di scansione** come chip cliccabili, sincronizzata con il registro a ogni build e protetta da disallineamenti. Prima, v1.124.0 porta **cinque sorgenti di scansione** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem e Alibaba Group (ora **67 adattatori**) — oltre alla verifica del full-remote di Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) e alla correzione dell'URL pubblico di SmartRecruiters.
 >

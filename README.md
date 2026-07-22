@@ -16,7 +16,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
 
-> **🆕 Latest release — v1.125.0**
+> **🆕 Latest release — v1.125.1**
 >
 > **Job sources on the landing.** v1.125.0 adds a cvstart.org section listing all **67 scanner sources** as clickable chips, registry-synced at build and drift-gated. Before it, v1.124.0 ports **five scan sources** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem, and Alibaba Group (**67 adapters** now) — plus the Arbeitsagentur fully-remote verification (`homeofficetyp=VOLLSTAENDIG`) and the SmartRecruiters public-URL fix. Before it, v1.123.0 ported the **Oracle Recruiting Cloud** source and the repost-detector specialized-suffix fix. Before it, v1.122.0 added **हिन्दी (Hindi)** as the 17th interface language everywhere: the app UI, the in-app help guide, README, changelog, and every cvstart.org page (landing + Methodology/License/Changelog/Help). Also in this train: v1.120.0 (parent v1.20.0 parity) surfaced [the CareerOps Manifesto](https://career-ops.org/manifesto) across the app — sidebar-footer link, help §29 in 16 languages, README section. v1.121.0 adds four sections to [cvstart.org](https://cvstart.org): **Methodology** (the six-dimension scoring rubric, from [career-ops.org/methodology](https://career-ops.org/methodology)), **Compare**, **License**, and **Changelog** (all 16 languages), plus methodology links across the docs and help guide.
 >

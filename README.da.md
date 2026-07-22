@@ -14,7 +14,7 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
 
-> **🆕 Seneste udgivelse — v1.125.0**
+> **🆕 Seneste udgivelse — v1.125.1**
 >
 > **Jobkilder på landingssiden.** v1.125.0 tilføjer en cvstart.org-sektion, der lister alle **67 scanner-kilder** som klikbare chips — synkroniseret med registret ved build og beskyttet mod drift. Før det porterer v1.124.0 **fem scan-kilder** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem og Alibaba Group (**67 adaptere** nu) — plus Arbeitsagentur-fuldt-remote-verifikationen (`homeofficetyp=VOLLSTAENDIG`) og SmartRecruiters-public-URL-rettelsen.
 >

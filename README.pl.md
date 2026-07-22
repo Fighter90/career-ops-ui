@@ -14,7 +14,7 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
 
-> **🆕 Najnowsze wydanie — v1.125.0**
+> **🆕 Najnowsze wydanie — v1.125.1**
 >
 > **Źródła ofert na landingu.** v1.125.0 dodaje do cvstart.org sekcję z listą wszystkich **67 źródeł skanowania** jako klikalnych chipów — zsynchronizowaną z rejestrem podczas budowania i zabezpieczoną przed rozjazdem. Przed tym v1.124.0 przenosi **pięć źródeł skanowania** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem oraz Alibaba Group (**67 adapterów** teraz) — a także weryfikację pełnej pracy zdalnej Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) oraz poprawkę publicznych adresów URL SmartRecruiters.
 >

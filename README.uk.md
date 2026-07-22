@@ -14,7 +14,7 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
 
-> **🆕 Останній реліз — v1.125.0**
+> **🆕 Останній реліз — v1.125.1**
 >
 > **Джерела вакансій на лендінгу.** v1.125.0 додає на cvstart.org розділ, що перелічує всі **67 джерел сканування** у вигляді клікабельних чіпів — синхронізований з реєстром під час збірки та захищений від розсинхронізації. До цього v1.124.0 портує **п'ять джерел сканування** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem і Alibaba Group (тепер **67 адаптерів**) — а також перевірку повністю віддаленої роботи Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) і виправлення публічних URL SmartRecruiters.
 >

@@ -14,7 +14,7 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
 
-> **🆕 최신 릴리스 — v1.125.0**
+> **🆕 최신 릴리스 — v1.125.1**
 >
 > **랜딩 페이지의 채용 공고 소스.** v1.125.0은 cvstart.org에 **스캔 소스 67개** 전체를 클릭 가능한 칩으로 나열하는 섹션을 추가했으며, 빌드 시점에 레지스트리와 동기화되고 드리프트가 감시됩니다. 그 이전에는, **상위 v1.22.0 패리티.** v1.124.0은 Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem, Alibaba Group까지 **스캔 소스 5개**(이제 **어댑터 67개** — EN 62개 + RU 5개)를 포팅하고, 여기에 Arbeitsagentur의 완전 원격 근무 검증(`homeofficetyp=VOLLSTAENDIG`)과 SmartRecruiters의 공개 URL 수정 사항을 더합니다.
 >

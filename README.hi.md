@@ -16,7 +16,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
 
-> **🆕 नवीनतम रिलीज़ — v1.125.0**
+> **🆕 नवीनतम रिलीज़ — v1.125.1**
 >
 > **लैंडिंग पर जॉब स्रोत।** v1.125.0 cvstart.org पर एक सेक्शन जोड़ता है जो **सभी 67 स्कैनर स्रोतों** को क्लिक-योग्य चिप्स के रूप में सूचीबद्ध करता है, जो बिल्ड पर रजिस्ट्री से सिंक होता है और ड्रिफ़्ट-गेटेड है। इससे पहले, **पैरेंट v1.22.0 समता।** v1.124.0 **पाँच स्कैन स्रोत** पोर्ट करता है — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem, और Alibaba Group (अब **67 अडैप्टर**) — साथ ही Arbeitsagentur की पूर्ण-रिमोट पुष्टि (`homeofficetyp=VOLLSTAENDIG`) और SmartRecruiters पब्लिक-URL फ़िक्स।
 >
