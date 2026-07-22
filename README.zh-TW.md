@@ -711,8 +711,13 @@ MIT。詳見 [LICENSE](LICENSE)。
 
 感謝每一位協助打造 career-ops-ui 的人。本專案由 [Fighter90](https://github.com/Fighter90) 維護，並在社群貢獻下持續改善——完整名單請見[貢獻者圖譜](https://github.com/Fighter90/career-ops-ui/graphs/contributors)。
 
-[![貢獻者](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
-
-<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Fighter90"><img src="https://github.com/Fighter90.png" width="80" height="80" alt="Fighter90"/><br/><sub><b>Fighter90</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="80" height="80" alt="Alien10140"/><br/><sub><b>Alien10140</b></sub></a></td>
+    <td align="center"><a href="https://github.com/vignyl"><img src="https://github.com/vignyl.png" width="80" height="80" alt="vignyl"/><br/><sub><b>vignyl</b></sub></a></td>
+    <td align="center"><a href="https://github.com/bracketouverte"><img src="https://github.com/bracketouverte.png" width="80" height="80" alt="bracketouverte"/><br/><sub><b>bracketouverte</b></sub></a></td>
+  </tr>
+</table>
 
 近期社群貢獻:[@Alien10140](https://github.com/Alien10140) — Gemini 預設模型更新與深度研究 HTTP 502 修復(v1.125.2)。

@@ -756,8 +756,13 @@ Bygget oven på [career-ops](https://github.com/Fighter90/career-ops) af [santif
 
 Tak til alle, der hjælper med at bygge career-ops-ui. Projektet vedligeholdes af [Fighter90](https://github.com/Fighter90) og forbedres af bidrag fra fællesskabet — se den fulde liste på [bidragyder-grafen](https://github.com/Fighter90/career-ops-ui/graphs/contributors).
 
-[![Contributors](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
-
-<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Fighter90"><img src="https://github.com/Fighter90.png" width="80" height="80" alt="Fighter90"/><br/><sub><b>Fighter90</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="80" height="80" alt="Alien10140"/><br/><sub><b>Alien10140</b></sub></a></td>
+    <td align="center"><a href="https://github.com/vignyl"><img src="https://github.com/vignyl.png" width="80" height="80" alt="vignyl"/><br/><sub><b>vignyl</b></sub></a></td>
+    <td align="center"><a href="https://github.com/bracketouverte"><img src="https://github.com/bracketouverte.png" width="80" height="80" alt="bracketouverte"/><br/><sub><b>bracketouverte</b></sub></a></td>
+  </tr>
+</table>
 
 Seneste community-bidrag: [@Alien10140](https://github.com/Alien10140) — opdateringen af Gemini-standardmodellerne og rettelsen af HTTP 502 i deep research (v1.125.2).

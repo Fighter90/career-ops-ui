@@ -728,8 +728,13 @@ Construido sobre [career-ops](https://github.com/Fighter90/career-ops) por [sant
 
 Gracias a todas las personas que ayudan a construir career-ops-ui. El proyecto lo mantiene [Fighter90](https://github.com/Fighter90) y mejora gracias a las contribuciones de la comunidad — consulta la lista completa en el [gráfico de colaboradores](https://github.com/Fighter90/career-ops-ui/graphs/contributors).
 
-[![Colaboradores](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
-
-<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Fighter90"><img src="https://github.com/Fighter90.png" width="80" height="80" alt="Fighter90"/><br/><sub><b>Fighter90</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="80" height="80" alt="Alien10140"/><br/><sub><b>Alien10140</b></sub></a></td>
+    <td align="center"><a href="https://github.com/vignyl"><img src="https://github.com/vignyl.png" width="80" height="80" alt="vignyl"/><br/><sub><b>vignyl</b></sub></a></td>
+    <td align="center"><a href="https://github.com/bracketouverte"><img src="https://github.com/bracketouverte.png" width="80" height="80" alt="bracketouverte"/><br/><sub><b>bracketouverte</b></sub></a></td>
+  </tr>
+</table>
 
 Contribuciones recientes de la comunidad: [@Alien10140](https://github.com/Alien10140) — la actualización de los modelos Gemini por defecto y el arreglo del HTTP 502 de deep research (v1.125.2).
