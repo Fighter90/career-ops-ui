@@ -17,22 +17,7 @@
  *       careers_url: https://jobs.zf.com/
  *       enabled: true
  */
-import { fetchSuccessfactors, SF_HOST_RE } from '../../sources/successfactors.mjs';
-
-/** Resolve + host-pin the tenant origin from the entry, or null. */
-function tenantOrigin(company) {
-  const raw = String(company.api || company.careers_url || '').trim();
-  if (!raw) return null;
-  let u;
-  try {
-    u = new URL(raw);
-  } catch {
-    return null;
-  }
-  if (u.protocol !== 'https:') return null;
-  if (!u.hostname) return null;
-  return u.origin;
-}
+import { fetchSuccessfactors, SF_HOST_RE, resolveTenantBase } from '../../sources/successfactors.mjs';
 
 export const successfactorsAdapter = {
   id: 'successfactors',
@@ -48,8 +33,10 @@ export const successfactorsAdapter = {
     }
   },
   buildEndpoint(company) {
-    const origin = tenantOrigin(company);
-    return origin ? `${origin}/tile-search-results/` : null;
+    // Parent #2099: keep a brand/tenant path prefix (multi-brand RMK
+    // holdings) — resolveTenantBase strips only trailing endpoint segments.
+    const base = resolveTenantBase(company);
+    return base ? `${base}/tile-search-results/` : null;
   },
   fetch: fetchSuccessfactors,
 };

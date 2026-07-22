@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import {
   parseSuccessfactors, cityFromSlug, fetchSuccessfactors,
   assertSuccessfactorsUrl, meta, SF_HOST_RE,
+  resolveTenantBase,
 } from '../server/lib/sources/successfactors.mjs';
 import { successfactorsAdapter } from '../server/lib/portals/adapters/successfactors.mjs';
 
@@ -56,9 +57,12 @@ test('meta + adapter surface: provider-selected + SF-host-detected, host-pinned'
   assert.ok(!successfactorsAdapter.matches({}));
 
   // buildEndpoint host-pins to the entry origin's tile-search fragment
+  // #2099: a path in the configured URL is a brand/tenant prefix and is
+  // PRESERVED (pre-#2099 it collapsed to the origin, silently returning the
+  // parent brand's postings for multi-brand RMK holdings).
   assert.equal(
     successfactorsAdapter.buildEndpoint({ provider: 'successfactors', careers_url: 'https://jobs.zf.com/some/path' }),
-    'https://jobs.zf.com/tile-search-results/',
+    'https://jobs.zf.com/some/path/tile-search-results/',
   );
   assert.equal(successfactorsAdapter.buildEndpoint({ provider: 'successfactors' }), null);
   assert.equal(successfactorsAdapter.buildEndpoint({ careers_url: 'http://jobs.zf.com/' }), null); // non-https
@@ -139,4 +143,33 @@ test('fetchSuccessfactors: host guard rejects an off-host endpoint before fetch'
   const fetchImpl = async () => { called = true; return { ok: true, status: 200, text: async () => '' }; };
   await assert.rejects(() => fetchSuccessfactors('http://jobs.zf.com/tile-search-results/', { fetchImpl }), /HTTPS/);
   assert.equal(called, false); // guard fires before any fetch
+});
+
+test('resolveTenantBase: multi-brand RMK path preserved; endpoint segments never doubled (#2099)', () => {
+  // Single-domain tenant unaffected: base === origin.
+  assert.equal(resolveTenantBase({ careers_url: 'https://jobs.zf.com' }), 'https://jobs.zf.com');
+  // Brand path survives; trailing /search/ stripped.
+  assert.equal(
+    resolveTenantBase({ api: 'https://careers.nemetschek.com/Bluebeam/search/' }),
+    'https://careers.nemetschek.com/Bluebeam',
+  );
+  // Brand path without /search/ resolves the same.
+  assert.equal(
+    resolveTenantBase({ careers_url: 'https://careers.nemetschek.com/Bluebeam/' }),
+    'https://careers.nemetschek.com/Bluebeam',
+  );
+  // An api: pointing straight at the tile endpoint must not double the segment.
+  assert.equal(
+    successfactorsAdapter.buildEndpoint({ api: 'https://careers.nemetschek.com/Bluebeam/tile-search-results/' }),
+    'https://careers.nemetschek.com/Bluebeam/tile-search-results/',
+  );
+  // Adapter endpoint carries the brand path end-to-end.
+  assert.equal(
+    successfactorsAdapter.buildEndpoint({ careers_url: 'https://careers.nemetschek.com/Bluebeam/' }),
+    'https://careers.nemetschek.com/Bluebeam/tile-search-results/',
+  );
+  // Unparseable / non-https / empty → null.
+  assert.equal(resolveTenantBase({ careers_url: 'not a url' }), null);
+  assert.equal(resolveTenantBase({ careers_url: 'http://careers.nemetschek.com/Bluebeam/' }), null);
+  assert.equal(resolveTenantBase({}), null);
 });

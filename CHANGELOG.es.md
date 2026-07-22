@@ -11,6 +11,12 @@ Traducciones: [English](CHANGELOG.md) · [Português](CHANGELOG.pt-BR.md) · [�
 ---
 
 
+## [1.125.1] — 2026-07-21
+
+### Corregido
+- **SuccessFactors: los tenants RMK multimarca conservan su ruta de marca** (padre #2099, tras v1.22.0) — las empresas holding que gestionan varias marcas adquiridas desde una única instancia RMK compartida las distinguen mediante un segmento de ruta (`careers.nemetschek.com/Bluebeam/` frente a `…/Vectorworks/`); el adaptador solía colapsar la URL configurada a su origen, escaneando en silencio las ofertas de la marca matriz. El endpoint ahora conserva el prefijo de marca, eliminando solo un segmento final `/search/` o `/tile-search-results/` para que nada se duplique nunca sobre sí mismo; los tenants de dominio único quedan intactos byte a byte. Nuevo helper exportado `resolveTenantBase` + 1 bloque de test portado en `tests/sources-successfactors.test.mjs`.
+
+
 ## [1.125.0] — 2026-07-21
 
 ### Añadido

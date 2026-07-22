@@ -57,6 +57,37 @@ export function assertSuccessfactorsUrl(url) {
   return url;
 }
 
+/**
+ * Parent #2099 (post-v1.22.0): resolve the tenant BASE — origin plus any
+ * brand/tenant path prefix. Some holding companies run several acquired
+ * brands off one shared RMK instance, disambiguated by a path segment
+ * instead of a separate domain (careers.nemetschek.com/Bluebeam/ vs
+ * .../Vectorworks/); collapsing to the origin would silently return the
+ * parent brand's postings. A trailing known-endpoint segment — /search/
+ * (the page tenants commonly configure as careers_url) or
+ * /tile-search-results/ (an `api:` pointing straight at the endpoint this
+ * module builds) — is stripped so it never doubles onto itself. Single-domain
+ * tenants have an empty pathname, so base === origin unchanged.
+ *
+ * @param {{ api?: string, careers_url?: string }} company
+ * @returns {string|null} https base ("origin[/Brand]") or null
+ */
+export function resolveTenantBase(company) {
+  const raw = String((company && (company.api || company.careers_url)) || '').trim();
+  if (!raw) return null;
+  let u;
+  try {
+    u = new URL(raw);
+  } catch {
+    return null;
+  }
+  if (u.protocol !== 'https:' || !u.hostname) return null;
+  const path = u.pathname
+    .replace(/\/(?:search|tile-search-results)\/?$/i, '')
+    .replace(/\/+$/, '');
+  return u.origin + path;
+}
+
 // Minimal HTML entity decoder — titles carry named (&amp;) and numeric
 // (&#252; / &#xfc;) entities. We only need the handful that show up in job
 // titles / paths; anything else is left as-is.
