@@ -226,7 +226,10 @@ export function registerLlmRoutes(app) {
     const { company, role, run } = req.body || {};
     if (!company) return res.status(400).json({ error: 'company required' });
     const lang = resolveLocale(req);
-    const prompt = buildDeepPrompt(company, role, lang);
+    // Manual copy keeps Claude Code tool names (WebFetch/WebSearch). Live run
+    // must not — Gemini otherwise returns MALFORMED_FUNCTION_CALL (no tools).
+    const manualPrompt = buildDeepPrompt(company, role, lang);
+    const livePrompt = buildDeepPrompt(company, role, lang, { headless: true });
 
     // When run:true AND a key is configured, execute server-side and
     // return the rendered Markdown so the user sees real research output
@@ -235,11 +238,12 @@ export function registerLlmRoutes(app) {
     if (run) {
       let result = null;
       let mode = null;
+      const prompt = livePrompt;
       if (_provGate().wantAnthropic && hasAnthropicKey()) {
         mode = 'anthropic';
         // REVIEW-A1 — Anthropic has no filesystem; inline cv/profile/mode
         // content so "Read these files first" actually has files to read.
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'] });
+        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true });
         const fullPrompt = ctx + prompt;
         if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
           return res.status(413).json({
@@ -255,7 +259,7 @@ export function registerLlmRoutes(app) {
         // (cv.md + profile.yml + modes/deep.md inlined), NOT oferta-only
         // gemini-eval.mjs. runGemini already pipes through cleanLlmMarkdown.
         mode = 'gemini';
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'] });
+        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true });
         const fullPrompt = ctx + prompt;
         if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
           return res.status(413).json({
@@ -271,7 +275,7 @@ export function registerLlmRoutes(app) {
         const tp = _tailProvider();
         if (tp) {
           mode = tp.mode;
-          const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'] });
+          const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true });
           const fullPrompt = ctx + prompt;
           if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
             return res.status(413).json({
@@ -298,7 +302,7 @@ export function registerLlmRoutes(app) {
 
     res.json({
       mode: 'manual',
-      prompt,
+      prompt: manualPrompt,
       message: (hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey() || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey())
         ? 'Set { run: true } to execute via Anthropic/Gemini/OpenAI/Qwen/OpenRouter/GitHub Models, or copy the prompt into Claude Code.'
         : 'No API key set. Paste this into Claude Code for full deep research with WebFetch.',

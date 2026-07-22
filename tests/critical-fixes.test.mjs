@@ -21,7 +21,7 @@ import { isPrivateOrLoopbackHost } from '../server/lib/security.mjs';
 // escaped the temp root). Load the prompt builders DYNAMICALLY, inside before(),
 // after the env is set, so paths.mjs resolves to the temp dir. `security.mjs`
 // does not import paths.mjs, so it stays a static import.
-let buildLocaleDirective, resolveLocale, buildEvaluationPrompt, buildDeepPrompt, buildModePrompt;
+let buildLocaleDirective, resolveLocale, buildEvaluationPrompt, buildDeepPrompt, buildModePrompt, bundleProjectContext;
 
 let server;
 let baseUrl;
@@ -37,10 +37,12 @@ before(async () => {
   writeFileSync(resolve(dir, 'data', 'applications.md'), '');
   writeFileSync(resolve(dir, 'data', 'pipeline.md'), '# pipeline\n');
   writeFileSync(resolve(dir, 'modes', 'oferta.md'), 'oferta\n');
+  writeFileSync(resolve(dir, 'modes', '_shared.md'), '# shared\nUse WebSearch for comp.\n| WebFetch | fallback |\n');
+  writeFileSync(resolve(dir, 'modes', 'deep.md'), '# deep\nstructure\n');
   process.env.CAREER_OPS_ROOT = dir;
 
   // Import paths.mjs-backed modules ONLY after CAREER_OPS_ROOT is set.
-  ({ buildLocaleDirective, resolveLocale, buildEvaluationPrompt, buildDeepPrompt, buildModePrompt } =
+  ({ buildLocaleDirective, resolveLocale, buildEvaluationPrompt, buildDeepPrompt, buildModePrompt, bundleProjectContext } =
     await import('../server/lib/prompts.mjs'));
   const { createApp } = await import('../server/index.mjs');
   const app = createApp();
@@ -196,6 +198,27 @@ test('PR-2: buildDeepPrompt embeds the locale directive', () => {
   const p = buildDeepPrompt('Anthropic', 'Backend', 'ja');
   assert.match(p, /Respond in Japanese/);
 });
+
+// Headless /api/deep (Gemini generateContent) has no tools. Instructing
+// WebFetch/WebSearch causes finishReason MALFORMED_FUNCTION_CALL → HTTP 502.
+test('headless buildDeepPrompt must not name Claude Code tools', () => {
+  const manual = buildDeepPrompt('Live Nation Entertainment', '', 'en');
+  assert.match(manual, /WebFetch|WebSearch/);
+  assert.match(manual, /Save the output to interview-prep\//);
+
+  const live = buildDeepPrompt('Live Nation Entertainment', '', 'en', { headless: true });
+  assert.doesNotMatch(live, /WebFetch|WebSearch/);
+  assert.doesNotMatch(live, /Save the output to interview-prep\//);
+  assert.match(live, /Live Nation Entertainment/);
+  assert.match(live, /no (browsing|tool)|do NOT have access|without tools|training data|knowledge/i);
+});
+
+test('headless bundleProjectContext overrides inlined tool tables', () => {
+  const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true });
+  assert.match(ctx, /WebSearch/); // still inlined from modes/_shared.md
+  assert.match(ctx, /do NOT have access|headless API session/i);
+});
+
 
 test('PR-2: buildModePrompt embeds locale + strips lang/locale from rendered context', () => {
   const tmpl = 'mode template body';

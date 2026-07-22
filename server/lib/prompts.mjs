@@ -223,10 +223,27 @@ export function bundleProjectContext(opts = {}) {
     blocks.push(`--- ${f.label} ---\n${text}`);
   }
   if (!blocks.length) return '';
-  return [
+  const head = [
     '<project_context>',
     'You are running outside Claude Code, so the files referenced below',
     'are inlined here. Treat them as authoritative.',
+  ];
+  // Headless API runners (Gemini/Anthropic/OpenAI/…) have no tool channel.
+  // modes/_shared.md still lists WebSearch/WebFetch for Claude Code — without
+  // this override Gemini often emits finishReason MALFORMED_FUNCTION_CALL and
+  // /api/deep returns HTTP 502 with empty text.
+  if (opts.headless) {
+    head.push(
+      '',
+      'IMPORTANT — headless API session (no tools):',
+      'You do NOT have access to browsing, search, Playwright, or file writing.',
+      'Ignore any tool instructions or tool tables in the mode files below.',
+      'Write the full answer from the inlined context + your knowledge; mark',
+      'time-sensitive claims as estimates. The server persists the output.',
+    );
+  }
+  return [
+    ...head,
     '',
     blocks.join('\n\n'),
     '</project_context>',
@@ -342,10 +359,21 @@ ${jd}
 `;
 }
 
-export function buildDeepPrompt(company, role, lang) {
+export function buildDeepPrompt(company, role, lang, opts = {}) {
+  const headless = !!opts.headless;
+  const slug = `${slugify(company)}-${role ? slugify(role) : 'general'}.md`;
+  // Manual/copy-paste path keeps Claude Code tool names. Live /api/deep must
+  // not — Gemini treats "Use WebFetch / WebSearch" as a function call and
+  // returns MALFORMED_FUNCTION_CALL with no text (HTTP 502).
+  const how = headless
+    ? `Read modes/deep.md for structure. You do NOT have access to browsing, search, or file-writing tools — write the brief from your knowledge and the inlined project context; mark uncertain or time-sensitive claims as estimates. Cover:`
+    : `Read modes/deep.md for structure. Use WebFetch / WebSearch. Cover:`;
+  const footer = headless
+    ? `Output the full markdown brief now. (The server saves it to interview-prep/${slug}.)`
+    : `Save the output to interview-prep/${slug}`;
   return `${buildLocaleDirective(lang)}You are career-ops in deep-research mode. Produce a full company brief on ${company}${role ? ` for the role of ${role}` : ''}.
 
-Read modes/deep.md for structure. Use WebFetch / WebSearch. Cover:
+${how}
   1. Company snapshot (size, funding, runway, leadership)
   2. Engineering culture (stack, blogs, GitHub, conference talks)
   3. Recent news, layoffs, acquisitions, controversies
@@ -354,7 +382,7 @@ Read modes/deep.md for structure. Use WebFetch / WebSearch. Cover:
   6. Negotiation leverage points
   7. Three smart questions for the recruiter
 
-Save the output to interview-prep/${slugify(company)}-${role ? slugify(role) : 'general'}.md
+${footer}
 `;
 }
 
