@@ -745,7 +745,7 @@ Refresh the Health page — every required check should be green. Then:
    live deep-research in `interview-prep/`. All visible in the UI.
 
 > Translations of this guide live in each language-specific README:
-> [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Dansk](README.da.md) · [العربية](README.ar.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
+> [🇪🇸 Español](README.es.md) · [🇧🇷 Português (Brasil)](README.pt-BR.md) · [🇰🇷 한국어](README.ko-KR.md) · [🇯🇵 日本語](README.ja.md) · [🇷🇺 Русский](README.ru.md) · [🇨🇳 简体中文](README.zh-CN.md) · [🇹🇼 繁體中文](README.zh-TW.md) · [🇫🇷 Français](README.fr.md) · [🇵🇱 Polski](README.pl.md) · [🇺🇦 Українська](README.uk.md) · [🇩🇰 Dansk](README.da.md) · [🇸🇦 العربية](README.ar.md) · [🇩🇪 Deutsch](README.de.md) · [🇮🇹 Italiano](README.it.md) · [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 ---
 
@@ -768,4 +768,4 @@ Thanks to everyone who helps build career-ops-ui. The project is maintained by [
   </tr>
 </table>
 
-Recent community contributions: [@Alien10140](https://github.com/Alien10140) — the Gemini model defaults refresh and the deep-research HTTP 502 fix (v1.125.2).
+**[All contributors →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

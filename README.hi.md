@@ -745,7 +745,7 @@ Health पेज रीफ़्रेश करें — हर आवश्�
    लाइव डीप-रिसर्च `interview-prep/` में उतरती है। सब कुछ UI में दिखाई देता है।
 
 > इस गाइड के अनुवाद प्रत्येक भाषा-विशिष्ट README में उपलब्ध हैं:
-> [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Dansk](README.da.md) · [العربية](README.ar.md) · [Deutsch](README.de.md) · [Italiano](README.it.md) · [Türkçe](README.tr.md) | [हिन्दी](README.hi.md)
+> [🇪🇸 Español](README.es.md) · [🇧🇷 Português (Brasil)](README.pt-BR.md) · [🇰🇷 한국어](README.ko-KR.md) · [🇯🇵 日本語](README.ja.md) · [🇷🇺 Русский](README.ru.md) · [🇨🇳 简体中文](README.zh-CN.md) · [🇹🇼 繁體中文](README.zh-TW.md) · [🇫🇷 Français](README.fr.md) · [🇵🇱 Polski](README.pl.md) · [🇺🇦 Українська](README.uk.md) · [🇩🇰 Dansk](README.da.md) · [🇸🇦 العربية](README.ar.md) · [🇩🇪 Deutsch](README.de.md) · [🇮🇹 Italiano](README.it.md) · [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 ---
 
@@ -768,4 +768,4 @@ career-ops-ui बनाने में मदद करने वाले स�
   </tr>
 </table>
 
-हाल के कम्युनिटी योगदान: [@Alien10140](https://github.com/Alien10140) — Gemini डिफ़ॉल्ट मॉडल अपडेट और डीप रिसर्च HTTP 502 फ़िक्स (v1.125.2)।
+**[सभी योगदानकर्ता →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

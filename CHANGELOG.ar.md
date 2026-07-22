@@ -2,9 +2,9 @@
 
 جميع التغييرات المهمة في **career-ops-ui**. التنسيق وفق [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)، والإصدارات وفق [SemVer](https://semver.org/).
 
-الترجمات: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
+الترجمات: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
 
-> **ملاحظة بشأن الترجمة (v1.70.0)** — أُضيفت العربية كإحدى ثلاث لغات واجهة جديدة. يترجم هذا الملف أحدث الإدخالات؛ السجل الكامل في [CHANGELOG الإنجليزي](CHANGELOG.md) وهو المرجع المعتمد.
+> **ملاحظة بشأن الترجمة (v1.70.0)** — أُضيفت العربية كإحدى ثلاث لغات واجهة جديدة. يترجم هذا الملف أحدث الإدخالات؛ السجل الكامل في [🇬🇧 CHANGELOG الإنجليزي](CHANGELOG.md) وهو المرجع المعتمد.
 
 ---
 

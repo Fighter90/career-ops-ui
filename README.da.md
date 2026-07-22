@@ -742,7 +742,7 @@ Genindlæs Health-siden — hvert påkrævet tjek bør være grønt. Derefter:
    live deep-research i `interview-prep/`. Alt synligt i UI'en.
 
 > Oversættelser af denne vejledning findes i hver sprogspecifik README:
-> [English](README.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [العربية](README.ar.md)
+> [🇬🇧 English](README.md) · [🇪🇸 Español](README.es.md) · [🇧🇷 Português (Brasil)](README.pt-BR.md) · [🇰🇷 한국어](README.ko-KR.md) · [🇯🇵 日本語](README.ja.md) · [🇷🇺 Русский](README.ru.md) · [🇨🇳 简体中文](README.zh-CN.md) · [🇹🇼 繁體中文](README.zh-TW.md) · [🇫🇷 Français](README.fr.md) · [🇵🇱 Polski](README.pl.md) · [🇺🇦 Українська](README.uk.md) · [🇸🇦 العربية](README.ar.md)
 
 ---
 
@@ -765,4 +765,4 @@ Tak til alle, der hjælper med at bygge career-ops-ui. Projektet vedligeholdes a
   </tr>
 </table>
 
-Seneste community-bidrag: [@Alien10140](https://github.com/Alien10140) — opdateringen af Gemini-standardmodellerne og rettelsen af HTTP 502 i deep research (v1.125.2).
+**[Alle bidragydere →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

@@ -743,7 +743,7 @@ Health sayfasını yenileyin — gerekli her kontrol yeşil olmalıdır. Ardınd
    derinlemesine araştırma `interview-prep/` içine iner. Hepsi arayüzde görünür.
 
 > Bu kılavuzun çevirileri her dile özgü README dosyasında bulunur:
-> [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Dansk](README.da.md) · [العربية](README.ar.md)
+> [🇪🇸 Español](README.es.md) · [🇧🇷 Português (Brasil)](README.pt-BR.md) · [🇰🇷 한국어](README.ko-KR.md) · [🇯🇵 日本語](README.ja.md) · [🇷🇺 Русский](README.ru.md) · [🇨🇳 简体中文](README.zh-CN.md) · [🇹🇼 繁體中文](README.zh-TW.md) · [🇫🇷 Français](README.fr.md) · [🇵🇱 Polski](README.pl.md) · [🇺🇦 Українська](README.uk.md) · [🇩🇰 Dansk](README.da.md) · [🇸🇦 العربية](README.ar.md)
 
 ---
 
@@ -766,4 +766,4 @@ career-ops-ui'yi inşa etmeye yardım eden herkese teşekkürler. Proje [Fighter
   </tr>
 </table>
 
-Son topluluk katkıları: [@Alien10140](https://github.com/Alien10140) — Gemini varsayılan model güncellemesi ve deep research HTTP 502 düzeltmesi (v1.125.2).
+**[Tüm katkıda bulunanlar →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

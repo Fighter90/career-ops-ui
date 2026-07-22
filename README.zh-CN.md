@@ -686,7 +686,7 @@ echo "GEMINI_API_KEY=AIza..." >> career-ops/.env
 5. 报告落在 `reports/`,跟踪表写入 `data/applications.md`,实时深度调研存入 `interview-prep/`。全部可在 UI 中查阅。
 
 > 本指南的翻译位于各语言版本的 README:
-> [English](README.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [繁體中文](README.zh-TW.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Dansk](README.da.md) · [العربية](README.ar.md)
+> [🇬🇧 English](README.md) · [🇪🇸 Español](README.es.md) · [🇧🇷 Português (Brasil)](README.pt-BR.md) · [🇰🇷 한국어](README.ko-KR.md) · [🇯🇵 日本語](README.ja.md) · [🇷🇺 Русский](README.ru.md) · [🇹🇼 繁體中文](README.zh-TW.md) · [🇫🇷 Français](README.fr.md) · [🇵🇱 Polski](README.pl.md) · [🇺🇦 Українська](README.uk.md) · [🇩🇰 Dansk](README.da.md) · [🇸🇦 العربية](README.ar.md)
 
 ---
 
@@ -709,4 +709,4 @@ MIT。详见 [LICENSE](LICENSE)。
   </tr>
 </table>
 
-近期社区贡献:[@Alien10140](https://github.com/Alien10140) —— Gemini 默认模型更新与深度研究 HTTP 502 修复(v1.125.2)。
+**[全部贡献者 →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

@@ -135,7 +135,7 @@ Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacj
 
 ## Pełna dokumentacja
 
-Kompletna dokumentacja jest dostępna wyłącznie w wersji angielskiej: **[README.md](README.md)**
+Kompletna dokumentacja jest dostępna wyłącznie w wersji angielskiej: **[🇬🇧 README.md](README.md)**
 
 Zawiera szczegółowe opisy:
 - Pełnego API REST (wszystkie endpointy `/api/*`)
@@ -171,4 +171,4 @@ Zbudowane na bazie [career-ops](https://github.com/Fighter90/career-ops) autorst
   </tr>
 </table>
 
-Ostatnie wkłady społeczności: [@Alien10140](https://github.com/Alien10140) — odświeżenie domyślnych modeli Gemini i poprawka HTTP 502 w deep research (v1.125.2).
+**[Wszyscy współtwórcy →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

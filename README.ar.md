@@ -157,7 +157,7 @@ career-ops/
 
 ## التوثيق الكامل
 
-التوثيق الشامل متاح باللغة الإنجليزية فقط: **[README.md](README.md)**
+التوثيق الشامل متاح باللغة الإنجليزية فقط: **[🇬🇧 README.md](README.md)**
 
 يتضمن توصيفات تفصيلية لـ:
 - REST API الكامل (جميع نقاط النهاية `/api/*`)
@@ -197,6 +197,6 @@ MIT. التفاصيل: [LICENSE](LICENSE).
   </tr>
 </table>
 
-مساهمات المجتمع الأخيرة: [@Alien10140](https://github.com/Alien10140) — تحديث نماذج Gemini الافتراضية وإصلاح HTTP 502 في البحث المعمّق (v1.125.2).
+**[كل المساهمين ←](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**
 
 </div>

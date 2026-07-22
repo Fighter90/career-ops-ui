@@ -135,7 +135,7 @@ career-ops/
 
 ## Повна документація
 
-Вичерпна документація доступна лише англійською мовою: **[README.md](README.md)**
+Вичерпна документація доступна лише англійською мовою: **[🇬🇧 README.md](README.md)**
 
 Вона містить докладні описи:
 - Повного REST API (всі ендпоінти `/api/*`)
@@ -171,4 +171,4 @@ MIT. Деталі: [LICENSE](LICENSE).
   </tr>
 </table>
 
-Нещодавній внесок спільноти: [@Alien10140](https://github.com/Alien10140) — оновлення типових моделей Gemini та фікс HTTP 502 у deep research (v1.125.2).
+**[Усі контриб'ютори →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

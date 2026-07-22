@@ -715,7 +715,7 @@ Recarregue a página Health — todo check required deve estar verde. Em seguida
    deep-research ao vivo em `interview-prep/`. Tudo visível na UI.
 
 > As traduções deste guia vivem em cada README específico de idioma:
-> [English](README.md) · [Español](README.es.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Dansk](README.da.md) · [العربية](README.ar.md)
+> [🇬🇧 English](README.md) · [🇪🇸 Español](README.es.md) · [🇰🇷 한국어](README.ko-KR.md) · [🇯🇵 日本語](README.ja.md) · [🇷🇺 Русский](README.ru.md) · [🇨🇳 简体中文](README.zh-CN.md) · [🇹🇼 繁體中文](README.zh-TW.md) · [🇫🇷 Français](README.fr.md) · [🇵🇱 Polski](README.pl.md) · [🇺🇦 Українська](README.uk.md) · [🇩🇰 Dansk](README.da.md) · [🇸🇦 العربية](README.ar.md)
 
 ---
 
@@ -738,4 +738,4 @@ Obrigado a todas as pessoas que ajudam a construir o career-ops-ui. O projeto é
   </tr>
 </table>
 
-Contribuições recentes da comunidade: [@Alien10140](https://github.com/Alien10140) — a atualização dos modelos padrão do Gemini e a correção do HTTP 502 do deep research (v1.125.2).
+**[Todos os contribuidores →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

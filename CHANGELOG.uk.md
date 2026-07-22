@@ -2,9 +2,9 @@
 
 Усі важливі зміни **career-ops-ui**. Формат — [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), версії за [SemVer](https://semver.org/).
 
-Переклади: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Français](CHANGELOG.fr.md) · [Polski](CHANGELOG.pl.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
+Переклади: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
 
-> **Примітка щодо перекладу (v1.70.0)** — українську додано як одну з трьох нових мов інтерфейсу. Цей файл перекладає найновіші записи; повна історія — в [англійському CHANGELOG](CHANGELOG.md), який є нормативним джерелом.
+> **Примітка щодо перекладу (v1.70.0)** — українську додано як одну з трьох нових мов інтерфейсу. Цей файл перекладає найновіші записи; повна історія — в [🇬🇧 англійському CHANGELOG](CHANGELOG.md), який є нормативним джерелом.
 
 ---
 

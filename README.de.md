@@ -715,7 +715,7 @@ Aktualisieren Sie die Health-Seite — jede erforderliche Prüfung sollte grün 
 5. Berichte landen in `reports/`, der Tracker in `data/applications.md`, die Live-Tiefenrecherche in `interview-prep/`. Alles in der UI sichtbar.
 
 > Übersetzungen dieser Anleitung liegen in jeder sprachspezifischen README:
-> [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Dansk](README.da.md) · [العربية](README.ar.md)
+> [🇪🇸 Español](README.es.md) · [🇧🇷 Português (Brasil)](README.pt-BR.md) · [🇰🇷 한국어](README.ko-KR.md) · [🇯🇵 日本語](README.ja.md) · [🇷🇺 Русский](README.ru.md) · [🇨🇳 简体中文](README.zh-CN.md) · [🇹🇼 繁體中文](README.zh-TW.md) · [🇫🇷 Français](README.fr.md) · [🇵🇱 Polski](README.pl.md) · [🇺🇦 Українська](README.uk.md) · [🇩🇰 Dansk](README.da.md) · [🇸🇦 العربية](README.ar.md)
 
 ---
 
@@ -738,4 +738,4 @@ Dank an alle, die beim Aufbau von career-ops-ui helfen. Das Projekt wird von [Fi
   </tr>
 </table>
 
-Jüngste Community-Beiträge: [@Alien10140](https://github.com/Alien10140) — die Aktualisierung der Gemini-Standardmodelle und der Deep-Research-HTTP-502-Fix (v1.125.2).
+**[Alle Mitwirkenden →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

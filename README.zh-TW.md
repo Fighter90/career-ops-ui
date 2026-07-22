@@ -697,7 +697,7 @@ echo "GEMINI_API_KEY=AIza..." >> career-ops/.env
    即時深度研究在 `interview-prep/`。皆可於 UI 中檢視。
 
 > 本指南的翻譯版本位於各語言專屬 README:
-> [English](README.md) · [Español](README.es.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko-KR.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [简体中文](README.zh-CN.md) · [Français](README.fr.md) · [Polski](README.pl.md) · [Українська](README.uk.md) · [Dansk](README.da.md) · [العربية](README.ar.md)
+> [🇬🇧 English](README.md) · [🇪🇸 Español](README.es.md) · [🇧🇷 Português (Brasil)](README.pt-BR.md) · [🇰🇷 한국어](README.ko-KR.md) · [🇯🇵 日本語](README.ja.md) · [🇷🇺 Русский](README.ru.md) · [🇨🇳 简体中文](README.zh-CN.md) · [🇫🇷 Français](README.fr.md) · [🇵🇱 Polski](README.pl.md) · [🇺🇦 Українська](README.uk.md) · [🇩🇰 Dansk](README.da.md) · [🇸🇦 العربية](README.ar.md)
 
 ---
 
@@ -720,4 +720,4 @@ MIT。詳見 [LICENSE](LICENSE)。
   </tr>
 </table>
 
-近期社群貢獻:[@Alien10140](https://github.com/Alien10140) — Gemini 預設模型更新與深度研究 HTTP 502 修復(v1.125.2)。
+**[全部貢獻者 →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

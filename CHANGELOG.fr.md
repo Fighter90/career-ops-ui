@@ -2,11 +2,11 @@
 
 Tous les changements notables de **career-ops-ui**. Format selon [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versionnage [SemVer](https://semver.org/lang/fr/).
 
-Traductions : [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Português](CHANGELOG.pt-BR.md) · [한국어](CHANGELOG.ko-KR.md) · [日本語](CHANGELOG.ja.md) · [Русский](CHANGELOG.ru.md) · [简体中文](CHANGELOG.zh-CN.md) · [繁體中文](CHANGELOG.zh-TW.md) · [Polski](CHANGELOG.pl.md) · [Українська](CHANGELOG.uk.md) · [Dansk](CHANGELOG.da.md) · [العربية](CHANGELOG.ar.md) · [Deutsch](CHANGELOG.de.md) · [Italiano](CHANGELOG.it.md) · [Türkçe](CHANGELOG.tr.md) · [हिन्दी](CHANGELOG.hi.md)
+Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
 
-> **Note i18n** — depuis la v1.12.0, les entrées sont localisées dans chaque langue. Les entrées plus anciennes (v1.11.x, v1.10.x) résident dans le [CHANGELOG anglais](CHANGELOG.md), qui fait foi.
+> **Note i18n** — depuis la v1.12.0, les entrées sont localisées dans chaque langue. Les entrées plus anciennes (v1.11.x, v1.10.x) résident dans le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui fait foi.
 
-> **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
+> **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
 
 ---
 
@@ -910,7 +910,7 @@ Hérité gratuitement du `git pull` du parent (la web-ui délègue à ceux-ci) :
 
 ## Versions antérieures (v1.54.x et avant)
 
-Les entrées détaillées pour la v1.54.x et toutes les versions antérieures vivent dans le [CHANGELOG anglais](CHANGELOG.md), qui fait foi. Points de repère :
+Les entrées détaillées pour la v1.54.x et toutes les versions antérieures vivent dans le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui fait foi. Points de repère :
 
 - **v1.43.0** · Verbe `open` + script multi-plateforme pour faire passer le navigateur au premier plan.
 - **v1.42.0** · Correction de la route morte `#/portals` → lien profond vers la config.
@@ -921,4 +921,4 @@ Les entrées détaillées pour la v1.54.x et toutes les versions antérieures vi
 - **v1.12.0** · Début de la localisation des entrées de changelog par langue.
 - **v1.10.0** · Éditeur `#/profile` + UX d'import de CV, parité d'aide multi-locale, sélecteur de locale.
 
-Pour l'historique complet, voir [CHANGELOG.md](CHANGELOG.md).
+Pour l'historique complet, voir [🇬🇧 CHANGELOG.md](CHANGELOG.md).
