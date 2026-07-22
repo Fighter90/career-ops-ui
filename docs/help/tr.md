@@ -405,7 +405,7 @@ Herhangi bir sekmedeki bir kaydetme anında yayılır — sunucu yeniden başlat
 2. Sağlayıcınızı **`LLM_PROVIDER`** içinde seçin: `auto` (hangi anahtar ayarlıysa onu kullan) ya da `claude` / `gemini` / `openai` / `qwen` ile birini zorlayın.
 3. Seçtiğiniz sağlayıcı için anahtarı + modeli doldurun:
    - **Anthropic** — `ANTHROPIC_API_KEY` ayarlayın (console.anthropic.com), opsiyonel olarak `ANTHROPIC_MODEL` (varsayılan `claude-sonnet-4-6`).
-   - **Gemini** — `GEMINI_API_KEY` ayarlayın (aistudio.google.com/apikey), opsiyonel olarak `GEMINI_MODEL` (varsayılan `gemini-2.0-flash`).
+   - **Gemini** — `GEMINI_API_KEY` ayarlayın (aistudio.google.com/apikey), opsiyonel olarak `GEMINI_MODEL` (varsayılan `gemini-3.6-flash`).
    - **OpenAI** — `OPENAI_API_KEY` ayarlayın (platform.openai.com), opsiyonel olarak `OPENAI_MODEL` (varsayılan `gpt-5-codex`).
    - **Qwen** — `QWEN_API_KEY` ayarlayın (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), opsiyonel olarak `QWEN_MODEL` (varsayılan `qwen-max`). Anakara-CN uç noktası için ham `.env` içinde `QWEN_BASE_URL` ayarlayın.
 4. **Save**'e tıklayın. Anahtarlar üst projenin `.env` dosyasına yazılır; değişiklik anında geçerli olur — sunucu yeniden başlatması gerekmez.
@@ -1181,7 +1181,7 @@ için **💾 Save JD**'ye tıklayın (veya API çağrısında `save: true` geçi
    Gerekçelendirilmiş markdown'ı doğrudan sayfaya döndürür.
 2. **Gemini** — yalnızca `GEMINI_API_KEY` ayarlıyken. Sunucu, iş
    tanımını geçici bir dosya olarak `gemini-eval.mjs`'yi başlatır.
-   Ücretsiz-katman model (`gemini-2.0-flash`) rutin puanlama için
+   Ücretsiz-katman model (`gemini-3.6-flash`) rutin puanlama için
    yeterlidir.
 3. **Manual** — anahtar ayarlı değil. Sayfa, Claude Code, ChatGPT veya
    başka herhangi bir LLM'e yapıştırabileceğiniz tamamen biçimlendirilmiş

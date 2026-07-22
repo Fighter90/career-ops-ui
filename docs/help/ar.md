@@ -244,7 +244,7 @@ career-ops-ui **إضافات خالصة**. لا شيء داخل `career-ops/` ي
 2. اختر مزودك في **`LLM_PROVIDER`**: `auto` (يستخدم أي مفتاح مضبوط)، أو أجبر واحداً بـ `claude` / `gemini` / `openai` / `qwen`.
 3. أدخل المفتاح والنموذج للمزود الذي اخترته:
    - **Anthropic** — اضبط `ANTHROPIC_API_KEY` (console.anthropic.com)، اختيارياً `ANTHROPIC_MODEL` (الافتراضي `claude-sonnet-4-6`).
-   - **Gemini** — اضبط `GEMINI_API_KEY` (aistudio.google.com/apikey)، اختيارياً `GEMINI_MODEL` (الافتراضي `gemini-2.0-flash`).
+   - **Gemini** — اضبط `GEMINI_API_KEY` (aistudio.google.com/apikey)، اختيارياً `GEMINI_MODEL` (الافتراضي `gemini-3.6-flash`).
    - **OpenAI** — اضبط `OPENAI_API_KEY` (platform.openai.com)، اختيارياً `OPENAI_MODEL` (الافتراضي `gpt-5-codex`).
    - **Qwen** — اضبط `QWEN_API_KEY` (Alibaba Model Studio / DashScope، dashscope.console.aliyun.com)، اختيارياً `QWEN_MODEL` (الافتراضي `qwen-max`). لنقطة النهاية الصينية اضبط `QWEN_BASE_URL` في `.env` الخام.
 4. انقر **حفظ**. تُكتب المفاتيح إلى `.env` للمشروع الأب؛ التغيير يسري فوراً — لا إعادة تشغيل للخادم.
@@ -748,7 +748,7 @@ npm run scan -- --company Anthropic   # تضييق على شركة متتبّع�
 ### سلسلة الاحتياط
 
 1. **Anthropic** — مُفضَّل عند ضبط `ANTHROPIC_API_KEY`. يُجمّع الخادم `cv.md` و`config/profile.yml` و`modes/_shared.md` و`modes/oferta.md` في كتلة `<project_context>` قبل الـ prompt (كل ملف محدود بـ 16 كيلوبايت، الـ prompt الكامل محدود بـ 200 كيلوبايت). يُعيد markdown مستنداً للصفحة مباشرةً.
-2. **Gemini** — عند ضبط `GEMINI_API_KEY` فقط. الخادم يُشغّل `gemini-eval.mjs` مع توصيف الوظيفة كملف مؤقت. نموذج المستوى المجاني (`gemini-2.0-flash`) مناسب للتقييم الروتيني.
+2. **Gemini** — عند ضبط `GEMINI_API_KEY` فقط. الخادم يُشغّل `gemini-eval.mjs` مع توصيف الوظيفة كملف مؤقت. نموذج المستوى المجاني (`gemini-3.6-flash`) مناسب للتقييم الروتيني.
 3. **يدوي** — بدون مفتاح. تُعيد الصفحة prompt مُشكَّلاً بالكامل يمكنك لصقه في Claude Code أو ChatGPT أو أي LLM آخر.
 
 ### أقسام المخرجات (مخطط career-ops.org القياسي A-F)

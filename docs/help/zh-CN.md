@@ -326,7 +326,7 @@ LinkedIn / 邮件消息。把开场白个性化(嵌入一条来自深度调研�
 2. 在 **`LLM_PROVIDER`** 中选择你的供应方:`auto`(使用已设置的密钥),或用 `claude` / `gemini` / `openai` / `qwen` 强制指定一个。
 3. 填写你所选供应方的密钥 + 模型:
    - **Anthropic** —— 设置 `ANTHROPIC_API_KEY`(console.anthropic.com),可选 `ANTHROPIC_MODEL`(默认 `claude-sonnet-4-6`)。
-   - **Gemini** —— 设置 `GEMINI_API_KEY`(aistudio.google.com/apikey),可选 `GEMINI_MODEL`(默认 `gemini-2.0-flash`)。
+   - **Gemini** —— 设置 `GEMINI_API_KEY`(aistudio.google.com/apikey),可选 `GEMINI_MODEL`(默认 `gemini-3.6-flash`)。
    - **OpenAI** —— 设置 `OPENAI_API_KEY`(platform.openai.com),可选 `OPENAI_MODEL`(默认 `gpt-5-codex`)。
    - **Qwen** —— 设置 `QWEN_API_KEY`(阿里云百炼 / DashScope,dashscope.console.aliyun.com),可选 `QWEN_MODEL`(默认 `qwen-max`)。中国大陆端点请在 raw `.env` 中设置 `QWEN_BASE_URL`。
 4. 点击 **Save**。密钥写入父项目的 `.env`;更改立即生效 —— 无需重启服务器。
@@ -954,7 +954,7 @@ HTML 标签,返回最多 8 KB 纯文本。
    页面。
 2. **Gemini** — 当只设置了 `GEMINI_API_KEY` 时。服务器生成
    `gemini-eval.mjs` 子进程,把 JD 作为临时文件传入。免费层模型
-   (`gemini-2.0-flash`)足以应付常规评分。
+   (`gemini-3.6-flash`)足以应付常规评分。
 3. **手工** — 未设置 key 时。页面返回一个完整提示,你可以粘贴到
    Claude Code、ChatGPT 或其他 LLM。
 

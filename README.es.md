@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-1950%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1957%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
+[![release](https://img.shields.io/badge/release-v1.125.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.2)
 
-> **🆕 Última versión — v1.125.1**
+> **🆕 Última versión — v1.125.2**
 >
 > **Fuentes de empleo en la landing.** La v1.125.0 añade una sección en cvstart.org que lista las **67 fuentes de escaneo** como chips pulsables, sincronizada con el registro en cada build y protegida contra desincronizaciones. Antes, v1.124.0 incorpora **cinco fuentes de escaneo** — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem y Alibaba Group (**67 adaptadores** ahora) — además de la verificación de puestos totalmente remotos de Arbeitsagentur (`homeofficetyp=VOLLSTAENDIG`) y la corrección de la URL pública de SmartRecruiters.
 >

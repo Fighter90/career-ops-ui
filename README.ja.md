@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-1950%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1957%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
+[![release](https://img.shields.io/badge/release-v1.125.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.2)
 
-> **🆕 最新リリース — v1.125.1**
+> **🆕 最新リリース — v1.125.2**
 >
 > **ランディングページの求人ソース。** v1.125.0 は cvstart.org に **67 件のスキャナーソース** すべてをクリック可能なチップとして一覧表示するセクションを追加しました。ビルド時にレジストリと同期され、ドリフトも検知されます。これ以前は、**親 v1.22.0 パリティ。** v1.124.0 は **5 件のスキャンソース** — Welcome to the Jungle、Agentic Engineering Jobs、Jobvite、Gem、Alibaba Group(**67 個のアダプタ** に)— を移植し、さらに Arbeitsagentur の完全リモート判定強化(`homeofficetyp=VOLLSTAENDIG`)と SmartRecruiters の公開 URL 修正を加えました。
 >

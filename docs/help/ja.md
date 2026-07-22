@@ -367,7 +367,7 @@ Save 先は `interview-prep/<company>-<role>.md`。
 2. **`LLM_PROVIDER`** でプロバイダを選びます:`auto`(設定されているキーを使用)、または `claude` / `gemini` / `openai` / `qwen` で 1 つに固定。
 3. 選んだプロバイダのキー + モデルを入力します:
    - **Anthropic** — `ANTHROPIC_API_KEY`(console.anthropic.com)を設定、任意で `ANTHROPIC_MODEL`(既定 `claude-sonnet-4-6`)。
-   - **Gemini** — `GEMINI_API_KEY`(aistudio.google.com/apikey)を設定、任意で `GEMINI_MODEL`(既定 `gemini-2.0-flash`)。
+   - **Gemini** — `GEMINI_API_KEY`(aistudio.google.com/apikey)を設定、任意で `GEMINI_MODEL`(既定 `gemini-3.6-flash`)。
    - **OpenAI** — `OPENAI_API_KEY`(platform.openai.com)を設定、任意で `OPENAI_MODEL`(既定 `gpt-5-codex`)。
    - **Qwen** — `QWEN_API_KEY`(Alibaba Model Studio / DashScope、dashscope.console.aliyun.com)を設定、任意で `QWEN_MODEL`(既定 `qwen-max`)。中国本土エンドポイントは raw `.env` で `QWEN_BASE_URL` を設定します。
 4. **Save** をクリックします。キーは親プロジェクトの `.env` に書き込まれます;変更は即時に反映されます — サーバ再起動は不要です。
@@ -1047,7 +1047,7 @@ JD をテキストエリアに貼り付けるか、`#/pipeline` から `?url=<hr
    直接ページに返します。
 2. **Gemini** — `GEMINI_API_KEY` のみが設定されている場合。
    サーバが JD を一時ファイルとして `gemini-eval.mjs` を spawn
-   します。無料ティアモデル (`gemini-2.0-flash`) は通常の採点には
+   します。無料ティアモデル (`gemini-3.6-flash`) は通常の採点には
    十分です。
 3. **手動** — キー未設定。ページは Claude Code、ChatGPT、または
    他の任意の LLM に貼り付けられる完全な形のプロンプトを返します。

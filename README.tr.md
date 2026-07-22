@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-1950%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-1957%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.125.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.1)
+[![release](https://img.shields.io/badge/release-v1.125.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.125.2)
 
-> **🆕 En son sürüm — v1.125.1**
+> **🆕 En son sürüm — v1.125.2**
 >
 > **Landingde iş kaynakları.** v1.125.0, **67 tarama kaynağının tümünü** tıklanabilir çipler olarak listeleyen bir cvstart.org bölümü ekliyor; kayıt defteriyle build sırasında senkronize ve sapmaya karşı korunuyor. Bundan önce **üst proje v1.22.0 paritesi.** v1.124.0, **beş tarama kaynağını** taşıyor — Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem ve Alibaba Group (artık **67 adaptör**) — buna ek olarak Arbeitsagentur'un tamamen-uzaktan doğrulamasını (`homeofficetyp=VOLLSTAENDIG`) ve SmartRecruiters'ın herkese açık URL düzeltmesini de taşıyor.
 >

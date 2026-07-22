@@ -257,7 +257,7 @@ career-ops-ui — це **чисте доповнення**. Нічого все�
 2. Виберіть провайдера в **`LLM_PROVIDER`**: `auto` (використовувати будь-який встановлений ключ) або примусово вкажіть `claude` / `gemini` / `openai` / `qwen`.
 3. Заповніть ключ + модель для обраного провайдера:
    - **Anthropic** — встановіть `ANTHROPIC_API_KEY` (console.anthropic.com), за бажанням `ANTHROPIC_MODEL` (за замовчуванням `claude-sonnet-4-6`).
-   - **Gemini** — встановіть `GEMINI_API_KEY` (aistudio.google.com/apikey), за бажанням `GEMINI_MODEL` (за замовчуванням `gemini-2.0-flash`).
+   - **Gemini** — встановіть `GEMINI_API_KEY` (aistudio.google.com/apikey), за бажанням `GEMINI_MODEL` (за замовчуванням `gemini-3.6-flash`).
    - **OpenAI** — встановіть `OPENAI_API_KEY` (platform.openai.com), за бажанням `OPENAI_MODEL` (за замовчуванням `gpt-5-codex`).
    - **Qwen** — встановіть `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), за бажанням `QWEN_MODEL` (за замовчуванням `qwen-max`). Для материкового CN-ендпоінту встановіть `QWEN_BASE_URL` у вихідному `.env`.
 4. Натисніть **Save**. Ключі записуються до `.env` батьківського проєкту; зміна набирає чинності негайно — перезапуск сервера не потрібен.
@@ -774,7 +774,7 @@ hh.ru сканується читанням публічної пошуково�
 ### Ланцюжок резервних варіантів
 
 1. **Anthropic** — пріоритетний, коли встановлено `ANTHROPIC_API_KEY`. Сервер об'єднує `cv.md`, `config/profile.yml`, `modes/_shared.md` та `modes/oferta.md` у блок `<project_context>` перед промптом (кожен файл обмежений 16 КБ, м'яке обмеження всього промпту — 200 КБ). Повертає заземлений Markdown безпосередньо на сторінку.
-2. **Gemini** — коли встановлено лише `GEMINI_API_KEY`. Сервер запускає `gemini-eval.mjs` із текстом вакансії як тимчасовий файл. Модель безкоштовного рівня (`gemini-2.0-flash`) підходить для рутинного оцінювання.
+2. **Gemini** — коли встановлено лише `GEMINI_API_KEY`. Сервер запускає `gemini-eval.mjs` із текстом вакансії як тимчасовий файл. Модель безкоштовного рівня (`gemini-3.6-flash`) підходить для рутинного оцінювання.
 3. **Ручний режим** — ключ не встановлено. Сторінка повертає повністю сформований промпт, який можна вставити в Claude Code, ChatGPT або будь-який інший LLM.
 
 ### Розділи виведення (канонічна схема career-ops.org A-F)

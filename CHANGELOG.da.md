@@ -10,6 +10,14 @@ Oversættelser: [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Portu
 
 
 
+## [1.125.2] — 2026-07-22
+
+### Rettet
+- **Deep research via Gemini: HTTP 502 (`MALFORMED_FUNCTION_CALL`)** (#145, bidrag fra [@Alien10140](https://github.com/Alien10140)) — live-prompten i `/api/deep` bad modellen om at »Use WebFetch / WebSearch« og gemme briefet i en fil, men headless API-udbydere har ingen værktøjskanal; Gemini svarede med et funktionskald i stedet for tekst, hvilket viste sig som en tom HTTP 502. `buildDeepPrompt` og `bundleProjectContext` tager nu et `headless`-flag: live-kørsler (Anthropic/Gemini/fallback-kaskaden) får en prompt uden værktøjer, der skriver briefet ud fra den indlejrede kontekst, mens copy-paste-prompten til Claude Code beholder sine værktøjsinstruktioner. +1 test i `tests/critical-fixes.test.mjs`.
+
+### Ændret
+- **Gemini-standarder løftet forbi den udfasede `gemini-2.0-flash`** (#144, bidrag fra [@Alien10140](https://github.com/Alien10140)) — konfigurations-dropdownen, server-fallbacken i `gemini.mjs` (som i stilhed var uenig med hintet), OpenRouter-fallbackkæden, `config.geminiModelHint` ×17 og hjælpeguiden ×17 peger nu alle på **`gemini-3.6-flash`**. Den nye drift-gate `tests/gemini-default-model.test.mjs` (+5 tests) fastgør alle overflader til samme literal — suiten er nu på **1957 tests**.
+
 ## [1.125.1] — 2026-07-21
 
 ### Rettet

@@ -374,7 +374,7 @@ reiniciar el servidor.
 2. Elige tu proveedor en **`LLM_PROVIDER`**: `auto` (usa la clave que esté definida), o fuerza uno con `claude` / `gemini` / `openai` / `qwen`.
 3. Rellena la clave + modelo del proveedor que elegiste:
    - **Anthropic** — define `ANTHROPIC_API_KEY` (console.anthropic.com), opcionalmente `ANTHROPIC_MODEL` (default `claude-sonnet-4-6`).
-   - **Gemini** — define `GEMINI_API_KEY` (aistudio.google.com/apikey), opcionalmente `GEMINI_MODEL` (default `gemini-2.0-flash`).
+   - **Gemini** — define `GEMINI_API_KEY` (aistudio.google.com/apikey), opcionalmente `GEMINI_MODEL` (default `gemini-3.6-flash`).
    - **OpenAI** — define `OPENAI_API_KEY` (platform.openai.com), opcionalmente `OPENAI_MODEL` (default `gpt-5-codex`).
    - **Qwen** — define `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), opcionalmente `QWEN_MODEL` (default `qwen-max`). Para el endpoint de China continental define `QWEN_BASE_URL` en el `.env` crudo.
 4. Haz clic en **Save**. Las claves se escriben en el `.env` del proyecto padre; el cambio surte efecto al instante — sin reiniciar el servidor.
@@ -1041,7 +1041,7 @@ la llamada API — mismo efecto).
    fundamentado directo a la página.
 2. **Gemini** — cuando solo `GEMINI_API_KEY` está configurada. El
    servidor spawnea `gemini-eval.mjs` con el JD como archivo
-   temporal. El modelo del free tier (`gemini-2.0-flash`) está bien
+   temporal. El modelo del free tier (`gemini-3.6-flash`) está bien
    para scoring rutinario.
 3. **Manual** — sin clave configurada. La página devuelve un prompt
    completamente formado que puedes pegar en Claude Code, ChatGPT, o
