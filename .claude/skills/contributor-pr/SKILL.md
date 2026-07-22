@@ -38,9 +38,10 @@ empirically, and merges need explicit user authorization.
 - Needs the user's explicit go for THESE PRs (standing "merge all branches"
   does not auto-extend to external code; the classifier enforces this).
 - `gh pr merge <n> --squash --delete-branch`, oldest first; then
-  `git checkout main && git pull` (STANDALONE checkout — a checkout inside
-  a blocked compound command silently never runs; v1.125.2: a README commit
-  landed on the local pr-144 branch that way and had to be cherry-picked).
+  `git checkout main` as its OWN command, then `git pull` (a checkout
+  inside a blocked compound command silently never runs; v1.125.2: a
+  README commit landed on the local pr-144 branch that way and had to be
+  cherry-picked to main).
 - Full suite on merged main.
 
 ## Phase 3 — Release rollup (patch bump, one release for the pack)
