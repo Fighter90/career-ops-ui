@@ -74,12 +74,11 @@ against the actual registry yourself.
   a short translated narrative lead prepended to the body (old train stays
   below), and prepended trail items. Credit external contributors by
   @handle in the lead and the CHANGELOG entry. The README **Contributors
-  block is a hand-maintained row of circular avatars** (`<p>` of wsrv.nl
-  `mask=circle` images over GitHub avatar ids; contrib.rocks was dropped —
-  its ~24h server cache lags new contributors): when someone new lands
-  code, add their `<a><img></a>` ×17 in the site's contribution order
-  (bots excluded), + an "All contributors →" line below. Flags belong on
+  block is a hand-maintained row of circular avatars** — maintained by the
+  `contributor-pr` skill (see it for the URL template; `mask=circle`
+  REQUIRES `&output=png`, JPEG sources have no alpha). Flags belong on
   language LISTS only — never on code-literal file links.
+  External-contributor PRs have their own pipeline: `contributor-pr`.
 - `docs/help/en.md` §17: registry count sentence.
 - `qa/QA-REGRESSION-PROMPT-vX.Y.Z.md` (delta-focused sign-off checklist).
 - `npm version X.Y.Z --no-git-tag-version`; CLAUDE.md "(currently …)",
