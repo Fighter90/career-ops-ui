@@ -761,4 +761,6 @@ career-ops-ui बनाने में मदद करने वाले स�
 
 [![Contributors](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
 
+<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+
 हाल के कम्युनिटी योगदान: [@Alien10140](https://github.com/Alien10140) — Gemini डिफ़ॉल्ट मॉडल अपडेट और डीप रिसर्च HTTP 502 फ़िक्स (v1.125.2)।

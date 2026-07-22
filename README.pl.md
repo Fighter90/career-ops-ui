@@ -164,4 +164,6 @@ Zbudowane na bazie [career-ops](https://github.com/Fighter90/career-ops) autorst
 
 [![Współtwórcy](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
 
+<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+
 Ostatnie wkłady społeczności: [@Alien10140](https://github.com/Alien10140) — odświeżenie domyślnych modeli Gemini i poprawka HTTP 502 w deep research (v1.125.2).

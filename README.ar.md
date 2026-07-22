@@ -190,6 +190,8 @@ MIT. التفاصيل: [LICENSE](LICENSE).
 
 [![المساهمون](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
 
+<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+
 مساهمات المجتمع الأخيرة: [@Alien10140](https://github.com/Alien10140) — تحديث نماذج Gemini الافتراضية وإصلاح HTTP 502 في البحث المعمّق (v1.125.2).
 
 </div>

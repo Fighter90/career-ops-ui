@@ -730,4 +730,6 @@ career-ops-ui를 함께 만들어 주신 모든 분께 감사드립니다. 이 �
 
 [![기여자](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
 
+<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+
 최근 커뮤니티 기여: [@Alien10140](https://github.com/Alien10140) — Gemini 기본 모델 갱신과 딥 리서치 HTTP 502 수정 (v1.125.2).

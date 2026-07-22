@@ -735,4 +735,6 @@ MIT. См. [LICENSE](LICENSE).
 
 [![Участники](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
 
+<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+
 Недавний вклад сообщества: [@Alien10140](https://github.com/Alien10140) — обновление дефолтных моделей Gemini и фикс HTTP 502 в deep research (v1.125.2).

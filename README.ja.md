@@ -706,4 +706,6 @@ career-ops-ui の構築に協力してくださっているすべての方に感
 
 [![コントリビューター](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
 
+<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+
 最近のコミュニティ貢献: [@Alien10140](https://github.com/Alien10140) — Gemini デフォルトモデルの更新とディープリサーチ HTTP 502 の修正 (v1.125.2)。

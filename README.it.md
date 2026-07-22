@@ -758,4 +758,6 @@ Grazie a tutti coloro che aiutano a costruire career-ops-ui. Il progetto è mant
 
 [![Contributors](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
 
+<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+
 Contributi recenti della community: [@Alien10140](https://github.com/Alien10140) — l'aggiornamento dei modelli Gemini predefiniti e la correzione dell'HTTP 502 del deep research (v1.125.2).

@@ -713,4 +713,6 @@ MIT。詳見 [LICENSE](LICENSE)。
 
 [![貢獻者](https://contrib.rocks/image?repo=Fighter90/career-ops-ui&max=100)](https://github.com/Fighter90/career-ops-ui/graphs/contributors)
 
+<a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="48" height="48" alt="@Alien10140"/></a>
+
 近期社群貢獻:[@Alien10140](https://github.com/Alien10140) — Gemini 預設模型更新與深度研究 HTTP 502 修復(v1.125.2)。
