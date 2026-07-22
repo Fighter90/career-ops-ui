@@ -91,11 +91,22 @@ function fakeRes() {
   return r;
 }
 
+// Poll until `pred(res)` holds. Spawning a child node process is not
+// bounded by any fixed sleep — under coverage instrumentation or machine
+// load a 200ms wait flakes (seen locally on `npm run test:coverage`),
+// while CI stays green. 5s is far above any healthy spawn+exit.
+async function waitFor(res, pred, deadlineMs = 5000) {
+  const t0 = Date.now();
+  while (!pred(res) && Date.now() - t0 < deadlineMs) {
+    await new Promise((r) => setTimeout(r, 25));
+  }
+}
+
 test('streamNodeScript: sends start + log + done events', async () => {
   const res = fakeRes();
   streamNodeScript(res, 'echo.mjs');
-  // Wait for the child to exit (it's instant)
-  await new Promise((r) => setTimeout(r, 200));
+  // Wait for the child to exit (usually instant, but not bounded)
+  await waitFor(res, (r) => r.ended);
   // Headers
   assert.equal(res._status, 200);
   assert.equal(res.headers['Content-Type'], 'text/event-stream');
@@ -116,8 +127,8 @@ test('streamNodeScript: client-close kills the child', async () => {
   await new Promise((r) => setTimeout(r, 100));
   res.emit('close');
   // The child should die (we asserted `slow.mjs` would otherwise sleep 10s);
-  // wait briefly and confirm a `done` event arrives anyway.
-  await new Promise((r) => setTimeout(r, 500));
+  // confirm a `done`/`error` event arrives well before that.
+  await waitFor(res, (r) => /event: (done|error)/.test(r.chunks.join('')));
   const all = res.chunks.join('');
   assert.match(all, /event: (done|error)/);
 });
@@ -125,7 +136,7 @@ test('streamNodeScript: client-close kills the child', async () => {
 test('streamNodeScript: non-zero exit is reported in done event', async () => {
   const res = fakeRes();
   streamNodeScript(res, 'fail.mjs');
-  await new Promise((r) => setTimeout(r, 200));
+  await waitFor(res, (r) => r.ended);
   const all = res.chunks.join('');
   assert.match(all, /event: done[\s\S]*"code":7/);
 });
