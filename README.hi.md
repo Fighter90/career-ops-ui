@@ -759,13 +759,11 @@ MIT। [LICENSE](LICENSE) देखें।
 
 career-ops-ui बनाने में मदद करने वाले सभी का धन्यवाद। यह प्रोजेक्ट [Fighter90](https://github.com/Fighter90) द्वारा मेंटेन किया जाता है और सामुदायिक योगदान से बेहतर होता है — पूरी सूची [contributors graph](https://github.com/Fighter90/career-ops-ui/graphs/contributors) पर देखें।
 
-<table>
-  <tr>
-    <td align="center"><a href="https://github.com/Fighter90"><img src="https://github.com/Fighter90.png" width="80" height="80" alt="Fighter90"/><br/><sub><b>Fighter90</b></sub></a></td>
-    <td align="center"><a href="https://github.com/Alien10140"><img src="https://github.com/Alien10140.png" width="80" height="80" alt="Alien10140"/><br/><sub><b>Alien10140</b></sub></a></td>
-    <td align="center"><a href="https://github.com/vignyl"><img src="https://github.com/vignyl.png" width="80" height="80" alt="vignyl"/><br/><sub><b>vignyl</b></sub></a></td>
-    <td align="center"><a href="https://github.com/bracketouverte"><img src="https://github.com/bracketouverte.png" width="80" height="80" alt="bracketouverte"/><br/><sub><b>bracketouverte</b></sub></a></td>
-  </tr>
-</table>
+<p>
+  <a href="https://github.com/Fighter90" title="Fighter90"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle" width="80" height="80" alt="Fighter90"/></a>
+  <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle" width="80" height="80" alt="Alien10140"/></a>
+  <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle" width="80" height="80" alt="vignyl"/></a>
+  <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle" width="80" height="80" alt="bracketouverte"/></a>
+</p>
 
 **[सभी योगदानकर्ता →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

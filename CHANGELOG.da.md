@@ -2834,7 +2834,7 @@ $ open "http://127.0.0.1:4317/#/config?tab=modes"
 
 - **`docs: align AI-assistant list to career-ops.org/docs canonical`** ([Issue #1](https://github.com/Fighter90/career-ops-ui/issues/1)) — the upstream Quick Start lists Claude Code / Codex / OpenCode / Qwen CLI. Pre-v1.28 we drifted to Claude Code / Codex / Cursor / Gemini CLI / GitHub Copilot CLI, identically across all 8 locales. Resolution: aligned downstream.
   - 8 help-bundles ([`docs/help/<locale>.md`](docs/help/)) — intro paragraph + comparison-table row both now match upstream canonical. One-liner appended: *"other Claude-compatible CLIs work too via the same slash-command surface"*, localized per locale.
-  - 8 READMEs ([🇬🇧 `README*.md`](README.md)) — intro paragraph aligned with the same one-liner. The "Multi-CLI" feature bullet (about web-ui's own `CLAUDE.md`/`AGENTS.md`/`GEMINI.md` shim files, not about career-ops upstream) deliberately retains its wider list (Cursor / Aider / Gemini CLI) since those CLIs do drive our shims.
+  - 8 READMEs ([`README*.md`](README.md)) — intro paragraph aligned with the same one-liner. The "Multi-CLI" feature bullet (about web-ui's own `CLAUDE.md`/`AGENTS.md`/`GEMINI.md` shim files, not about career-ops upstream) deliberately retains its wider list (Cursor / Aider / Gemini CLI) since those CLIs do drive our shims.
 
 ### 🧪 Tests
 
@@ -3210,7 +3210,7 @@ $ open http://127.0.0.1:4317/#/config
 
 ### 🌐 RU CHANGELOG end-to-end (M-9 follow-up)
 
-- **`docs(translate): CHANGELOG.ru.md retry agent — full body translation`** ([🇷🇺 `CHANGELOG.ru.md`](CHANGELOG.ru.md)) — the v1.23.0 release shipped with the RU CHANGELOG retry agent still in flight (it had crashed once with a socket error and was re-dispatched). v1.24 picks up the agent's 1542-line full translation: every entry v1.23.0 → v1.6.0 has a publication-grade Russian body, no more EN-bodied stop-gaps. Style discipline matches the v1.22.0 README quality refresh: "функциональность" / "возможности" / "поведение" replace clunky "функционал"; "через" / "с помощью" replace "при помощи"; active voice over passive; "эндпоинт", "лимит запросов", "состояние гонки", "санитайзинг" as canonical terms; English abbreviations (TOCTOU, CSP, SSRF, WCAG, ATS, JD, SSE, REST, API) preserved.
+- **`docs(translate): CHANGELOG.ru.md retry agent — full body translation`** ([`CHANGELOG.ru.md`](CHANGELOG.ru.md)) — the v1.23.0 release shipped with the RU CHANGELOG retry agent still in flight (it had crashed once with a socket error and was re-dispatched). v1.24 picks up the agent's 1542-line full translation: every entry v1.23.0 → v1.6.0 has a publication-grade Russian body, no more EN-bodied stop-gaps. Style discipline matches the v1.22.0 README quality refresh: "функциональность" / "возможности" / "поведение" replace clunky "функционал"; "через" / "с помощью" replace "при помощи"; active voice over passive; "эндпоинт", "лимит запросов", "состояние гонки", "санитайзинг" as canonical terms; English abbreviations (TOCTOU, CSP, SSRF, WCAG, ATS, JD, SSE, REST, API) preserved.
 
 ### 🧪 Tests
 
