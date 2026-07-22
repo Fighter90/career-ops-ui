@@ -173,7 +173,7 @@ window.__I18N_DICT_DE = {
   'config.geminiKey': "Gemini-API-Schlüssel (Fallback)",
   'config.geminiHint': "Kostenlose Stufe unter aistudio.google.com/apikey. Wird als Fallback verwendet, wenn Anthropic nicht gesetzt ist.",
   'config.geminiModel': "Gemini-Modell",
-  'config.geminiModelHint': "Standard: gemini-2.0-flash.",
+  'config.geminiModelHint': "Standard: gemini-3.6-flash.",
   'config.openaiModel': "OpenAI- / Codex-Modell",
   'config.openaiModelHint': "Standard: gpt-5-codex. gpt-5 / gpt-5-mini für allgemeine Nutzung; o4-mini / o3 für Reasoning. Wird von der web-ui-OpenAI-Live-Bewertung und dem übergeordneten Codex/OpenAI-CLI-Ablauf genutzt.",
   'config.qwenKey': "QWEN_API_KEY",

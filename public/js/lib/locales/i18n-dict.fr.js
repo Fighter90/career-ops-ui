@@ -173,7 +173,7 @@ window.__I18N_DICT_FR = {
   'config.geminiKey': "Clé API Gemini (de secours)",
   'config.geminiHint': "Niveau gratuit sur aistudio.google.com/apikey. Utilisé comme de secours quand Anthropic n'est pas défini.",
   'config.geminiModel': "Modèle Gemini",
-  'config.geminiModelHint': "Par défaut : gemini-2.0-flash.",
+  'config.geminiModelHint': "Par défaut : gemini-3.6-flash.",
   'config.openaiModel': "Modèle OpenAI / Codex",
   'config.openaiModelHint': "Par défaut : gpt-5-codex. gpt-5 / gpt-5-mini pour un usage général ; o4-mini / o3 pour la réflexion. Utilisé par l'évaluation en direct de l'interface web OpenAI et le flux Codex/OpenAI CLI parent.",
   'config.qwenKey': "QWEN_API_KEY",

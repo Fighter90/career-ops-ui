@@ -173,7 +173,7 @@ window.__I18N_DICT_KO = {
   'config.geminiKey': "Gemini API 키 (대체)",
   'config.geminiHint': "aistudio.google.com/apikey 무료 티어. Anthropic 미설정시 대체.",
   'config.geminiModel': "Gemini 모델",
-  'config.geminiModelHint': "기본값: gemini-2.0-flash.",
+  'config.geminiModelHint': "기본값: gemini-3.6-flash.",
   'config.openaiModel': "OpenAI / Codex 모델",
   'config.openaiModelHint': "기본값: gpt-5-codex. 일반 용도는 gpt-5 / gpt-5-mini, 추론은 o4-mini / o3. web-ui OpenAI 라이브 평가와 상위 Codex/OpenAI CLI 흐름에서 사용.",
   'config.qwenKey': "QWEN_API_KEY",

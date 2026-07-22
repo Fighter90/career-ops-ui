@@ -173,7 +173,7 @@ window.__I18N_DICT_HI = {
   'config.geminiKey': "Gemini API की (फ़ॉलबैक)",
   'config.geminiHint': "aistudio.google.com/apikey पर फ्री टियर। Anthropic सेट न होने पर फ़ॉलबैक के रूप में उपयोग होता है।",
   'config.geminiModel': "Gemini मॉडल",
-  'config.geminiModelHint': "डिफ़ॉल्ट: gemini-2.0-flash।",
+  'config.geminiModelHint': "डिफ़ॉल्ट: gemini-3.6-flash।",
   'config.openaiModel': "OpenAI / Codex मॉडल",
   'config.openaiModelHint': "डिफ़ॉल्ट: gpt-5-codex। सामान्य उपयोग के लिए gpt-5 / gpt-5-mini; रीज़निंग के लिए o4-mini / o3। web-ui के OpenAI लाइव इवैल और पैरेंट Codex/OpenAI CLI फ़्लो द्वारा उपयोग किया जाता है।",
   'config.qwenKey': "QWEN_API_KEY",

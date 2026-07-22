@@ -173,7 +173,7 @@ window.__I18N_DICT_ZH_CN = {
   'config.geminiKey': "Gemini API 密钥 (备用)",
   'config.geminiHint': "aistudio.google.com/apikey 免费层。Anthropic 未设置时备用。",
   'config.geminiModel': "Gemini 模型",
-  'config.geminiModelHint': "默认: gemini-2.0-flash。",
+  'config.geminiModelHint': "默认: gemini-3.6-flash。",
   'config.openaiModel': "OpenAI / Codex 模型",
   'config.openaiModelHint': "默认: gpt-5-codex。通用用 gpt-5 / gpt-5-mini；推理用 o4-mini / o3。供 web-ui 的 OpenAI 实时评估和父项目 Codex/OpenAI CLI 流程使用。",
   'config.qwenKey': "QWEN_API_KEY",

@@ -172,7 +172,7 @@ window.__I18N_DICT_UK = {
   'config.geminiKey': "Gemini API key (резервний)",
   'config.geminiHint': "Безкоштовний рівень на aistudio.google.com/apikey. Використовується як резерв, коли Anthropic не встановлено.",
   'config.geminiModel': "Модель Gemini",
-  'config.geminiModelHint': "За замовчуванням: gemini-2.0-flash.",
+  'config.geminiModelHint': "За замовчуванням: gemini-3.6-flash.",
   'config.openaiModel': "Модель OpenAI / Codex",
   'config.openaiModelHint': "За замовчуванням: gpt-5-codex. gpt-5 / gpt-5-mini для загального використання; o4-mini / o3 для міркувань. Використовується live eval OpenAI у web-ui та батьківським Codex/OpenAI CLI.",
   'config.qwenKey': "QWEN_API_KEY",
