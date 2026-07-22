@@ -24,6 +24,7 @@ export const KNOWN_KEYS = [
   'GEMINI_MODEL',
   'OPENAI_API_KEY',        // headless live-eval (v1.55.0) + parent Codex/OpenAI CLI flow
   'OPENAI_MODEL',
+  'OPENAI_BASE_URL',
   'QWEN_API_KEY',          // headless live-eval via DashScope OpenAI-compatible (v1.55.0)
   'QWEN_MODEL',
   'OPENROUTER_API_KEY',    // headless live-eval via OpenRouter (v1.57.0); one key → 300+ models
@@ -97,6 +98,7 @@ export const KEY_GROUPS = {
   GEMINI_MODEL: 'core',
   OPENAI_API_KEY: 'core',
   OPENAI_MODEL: 'core',
+  OPENAI_BASE_URL: 'core',
   QWEN_API_KEY: 'core',
   QWEN_MODEL: 'core',
   OPENROUTER_API_KEY: 'core',
@@ -275,7 +277,7 @@ export function validateConfig(body) {
     // is the shared "is it real?" floor; here we just catch an
     // obviously-wrong paste (e.g. an OpenAI key in the Anthropic box).
     if (k === 'ANTHROPIC_API_KEY' && !/^sk-ant-\S{20,}$/.test(v) && !/^your_/i.test(v)) {
-      errors.push(`${k}: expected sk-ant-… format — an Anthropic key starts with "sk-ant-" followed by at least 20 characters. ${showVal(k, v)}, which doesn't match. If you pasted an OpenAI / Gemini / Qwen / OpenRouter key, put it in that provider's field instead. Get an Anthropic key at console.anthropic.com → API keys.`);
+      errors.push(`${k}: expected sk-ant-… format — an Anthropic key starts with "sk-ant-" followed by at least 20 characters. ${showVal(k, v)}, which doesn't match. If you pasted an OpenAI /[...]`);
     }
     if (k === 'PORT' && !/^\d{1,5}$/.test(v)) {
       errors.push(`PORT: must be 1-65535 — a whole number, digits only (the default is 4317); ${showVal(k, v)}.`);

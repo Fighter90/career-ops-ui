@@ -89,7 +89,7 @@ export async function runOpenAICompatible(prompt, opts = {}) {
 /** Run a prompt via the OpenAI API (model from OPENAI_MODEL). */
 export async function runOpenAI(prompt, opts = {}) {
   return runOpenAICompatible(prompt, {
-    url: OPENAI_URL,
+    url: opts.url || envKey('OPENAI_BASE_URL') || OPENAI_URL,
     apiKey: opts.apiKey || envKey('OPENAI_API_KEY'),
     model: opts.model || envKey('OPENAI_MODEL') || 'gpt-5-codex',
     label: 'OpenAI',
