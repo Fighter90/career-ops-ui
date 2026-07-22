@@ -1,6 +1,11 @@
 # Changelog (Türkçe)
 
-> Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
+> Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
+
+## [1.125.3] — 2026-07-23
+
+### Düzeltildi
+- **Danca ve Hintçe LLM istemleri İngilizce yanıt veriyordu** (kullanıcı bildirimi) — `server/lib/prompts.mjs` içindeki `LOCALE_NAMES` ve beş `SCAFFOLD_STRINGS` bloğu `da` ve `hi` için hiç genişletilmemişti; `resolveLocale()` `en`'e düşüyor ve her AI istemi — deep research (canlı ve manuel), modlar, değerlendirme, mülakat, networking, CV Studio — bu iki dilde `# Output language` yönergesini kaybediyordu. Artık ikisi de birinci sınıf: dil yönergesi + yerelleştirilmiş iskele. `tests/locale-scaffold.test.mjs` içindeki regresyon kapısı artık sabit kodlu 12 yerine kanonik 17 dillik listeyi tarıyor ve yeni yapısal parite kapısı İngilizceye düşen her iskele anahtarını başarısız sayıyor — gelecekte `prompts.mjs`'i atlayan bir dil artık yayınlanamaz (+12 test, paket artık **1969**).
 
 ## [1.125.2] — 2026-07-22
 

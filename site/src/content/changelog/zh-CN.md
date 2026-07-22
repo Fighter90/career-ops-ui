@@ -2,12 +2,17 @@
 
 **career-ops-ui** 的所有重要变更均记录于此。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/),版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
-翻译版本:[English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
+翻译版本:[🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [🇧🇷 Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [🇰🇷 한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [🇯🇵 日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [🇷🇺 Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [🇹🇼 繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [🇫🇷 Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [🇵🇱 Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [🇺🇦 Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [🇩🇰 Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [🇸🇦 العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [🇩🇪 Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [🇮🇹 Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [🇹🇷 Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [🇮🇳 हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
 
 > **说明** — 本文件已完整翻译为出版级简体中文(中国大陆用语规范),包含全部历史版本条目。代码块、提交信息、文件路径、URL、环境变量、命令行片段以及 CSP / SSRF / TOCTOU / WCAG / ATS / JD / SSE / REST / API 等通用英文缩写按原文保留。
 
 ---
 
+
+## [1.125.3] — 2026-07-23
+
+### 修复
+- **丹麦语和印地语的 LLM 提示词以英文回答**(用户报告)— `server/lib/prompts.mjs` 中的 `LOCALE_NAMES` 和五个 `SCAFFOLD_STRINGS` 块从未扩展到 `da` 和 `hi`,导致 `resolveLocale()` 回退到 `en`,深度研究(实时与手动)、模式运行、评估、面试、人脉、CV Studio 等所有 AI 提示词在这两个语言下都丢失了 `# Output language` 指令。现在两者均为一等公民: 语言指令 + 本地化脚手架。`tests/locale-scaffold.test.mjs` 的回归门现在遍历规范的 17 语言列表而非硬编码的 12 个,新的结构一致性门会让任何回退到英文的脚手架键失败 — 未来遗漏 `prompts.mjs` 的语言无法再发布(+12 个测试,套件现为 **1969** 个)。
 
 ## [1.125.2] — 2026-07-22
 

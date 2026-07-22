@@ -2,12 +2,17 @@
 
 **career-ops-ui** 의 모든 주요 변경 사항을 기록합니다. 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 를 따르며, 버전은 [Semantic Versioning](https://semver.org/) 을 준수합니다.
 
-번역: [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
+번역: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [🇧🇷 Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [🇯🇵 日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [🇷🇺 Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [🇨🇳 简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [🇫🇷 Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [🇵🇱 Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [🇺🇦 Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [🇩🇰 Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [🇸🇦 العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [🇩🇪 Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [🇮🇹 Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [🇹🇷 Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [🇮🇳 हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
 
 > **i18n 노트** — 이 파일은 완전히 한국어로 번역되었습니다. 모든 버전 항목의 본문이 출판 등급의 한국어로 제공되며, 영어 본문 임시 대체 표기는 더 이상 사용되지 않습니다.
 
 ---
 
+
+## [1.125.3] — 2026-07-23
+
+### 수정
+- **덴마크어·힌디어 LLM 프롬프트가 영어로 응답하던 문제** (사용자 제보) — `server/lib/prompts.mjs`의 `LOCALE_NAMES`와 다섯 개의 `SCAFFOLD_STRINGS` 블록이 `da`·`hi`로 확장되지 않아 `resolveLocale()`이 `en`으로 폴백했고, 딥 리서치(라이브·수동), 모드 실행, 평가, 인터뷰, 네트워킹, CV Studio 등 모든 AI 프롬프트에서 `# Output language` 지시문이 빠졌습니다. 이제 두 로케일 모두 정식 지원됩니다: 로케일 지시문 + 현지화된 스캐폴딩. `tests/locale-scaffold.test.mjs`의 회귀 게이트는 하드코딩된 12개 대신 정식 17개 로케일 목록을 순회하고, 새 구조 패리티 게이트는 영어로 폴백하는 스캐폴드 키를 실패시킵니다 — 앞으로 `prompts.mjs`를 놓친 로케일은 출시될 수 없습니다 (+12 테스트, 스위트 총 **1969**개).
 
 ## [1.125.2] — 2026-07-22
 
@@ -2726,7 +2731,7 @@ node -e "import('./server/lib/portals/registry.mjs').then(m => {
 
 ## 이전 릴리스 (v1.11.x 및 v1.10.x)
 
-v1.11.0 / v1.11.1 / v1.10.0–v1.10.3 의 상세 항목은 [영어 CHANGELOG](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) 에 있습니다. 요약:
+v1.11.0 / v1.11.1 / v1.10.0–v1.10.3 의 상세 항목은 [🇬🇧 영어 CHANGELOG](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) 에 있습니다. 요약:
 
 - **v1.11.1 — 2026-05-13** · 폴리시 슬라이스: `#/apply` 의 Playwright 힌트, 통일된 태그라인, 대시보드 점수 임계값 카드. 349/349 테스트.
 - **v1.11.0 — 2026-05-13** · 8개 help 번들과 8개 README 에 career-ops.org/docs 통합. 신규 `docs/career-ops-canonical.md`. Mode/Archetype/Pipeline/Tracker/Report/Scan history 개념 문서화. 348/349 테스트.

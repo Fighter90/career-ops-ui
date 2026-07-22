@@ -1,6 +1,11 @@
 # Changelog (Deutsch)
 
-> Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
+> Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
+
+## [1.125.3] — 2026-07-23
+
+### Behoben
+- **LLM-Prompts auf Dänisch und Hindi antworteten auf Englisch** (von Nutzern gemeldet) — `LOCALE_NAMES` und alle fünf `SCAFFOLD_STRINGS`-Blöcke in `server/lib/prompts.mjs` wurden nie um `da` und `hi` erweitert, sodass `resolveLocale()` auf `en` zurückfiel und jeder KI-Prompt — Deep Research (live und manuell), Modi, Bewertung, Interview, Networking, CV Studio — seine `# Output language`-Direktive in diesen beiden Sprachen verlor. Beide sind jetzt vollwertig: Sprachdirektive + lokalisiertes Gerüst. Das Regressions-Gate in `tests/locale-scaffold.test.mjs` durchläuft nun die kanonische Liste mit 17 Locales statt fest codierter 12, und ein neues strukturelles Paritäts-Gate lässt jeden Gerüstschlüssel durchfallen, der auf Englisch zurückfällt — eine künftige Locale, die `prompts.mjs` auslässt, kann nicht mehr ausgeliefert werden (+12 Tests, Suite jetzt **1969**).
 
 ## [1.125.2] — 2026-07-22
 

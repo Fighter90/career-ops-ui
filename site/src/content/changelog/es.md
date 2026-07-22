@@ -2,14 +2,19 @@
 
 Todos los cambios destacables de **career-ops-ui**. Formato según [Keep a Changelog](https://keepachangelog.com/es/1.1.0/), versionado [SemVer](https://semver.org/lang/es/).
 
-Traducciones: [English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
+Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [🇧🇷 Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [🇰🇷 한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [🇯🇵 日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [🇷🇺 Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [🇨🇳 简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [🇫🇷 Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [🇵🇱 Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [🇺🇦 Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [🇩🇰 Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [🇸🇦 العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [🇩🇪 Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [🇮🇹 Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [🇹🇷 Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [🇮🇳 हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
 
-> **Nota i18n** — desde v1.12.0 en adelante las entradas están localizadas en cada idioma. Las entradas anteriores (v1.11.x, v1.10.x) permanecen en ruso por convención del proyecto; el contenido normativo inglés está en [CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
+> **Nota i18n** — desde v1.12.0 en adelante las entradas están localizadas en cada idioma. Las entradas anteriores (v1.11.x, v1.10.x) permanecen en ruso por convención del proyecto; el contenido normativo inglés está en [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
 > **Nota de traducción (v1.22.0)** — este archivo está ahora íntegramente traducido al español técnico. Se han retirado los avisos provisionales "ver CHANGELOG.md en inglés" que aparecían en las entradas v1.13.0 a v1.21.0.
 
 ---
 
+
+## [1.125.3] — 2026-07-23
+
+### Corregido
+- **Los prompts LLM en danés e hindi respondían en inglés** (reportado por un usuario) — `LOCALE_NAMES` y los cinco bloques de `SCAFFOLD_STRINGS` en `server/lib/prompts.mjs` nunca se ampliaron para `da` ni `hi`, por lo que `resolveLocale()` caía a `en` y cada prompt de IA — deep research (en vivo y manual), modos, evaluación, entrevista, networking, CV Studio — perdía su directiva `# Output language` en esos dos idiomas. Ahora ambos son de primera clase: directiva de idioma + andamiaje localizado. La barrera de regresión en `tests/locale-scaffold.test.mjs` ahora recorre la lista canónica de 17 locales en lugar de una lista fija de 12, y una nueva verificación estructural falla si cualquier clave de andamiaje cae al inglés — un futuro locale que omita `prompts.mjs` ya no puede publicarse (+12 pruebas, la suite ahora **1969**).
 
 ## [1.125.2] — 2026-07-22
 
@@ -2628,7 +2633,7 @@ Página SPA *Batch evaluate*; *adapter registry* completo (refactor arquitectón
 
 ## Versiones anteriores (v1.11.x y v1.10.x)
 
-Las entradas detalladas para v1.11.0 / v1.11.1 / v1.10.0–v1.10.3 viven en el [CHANGELOG EN](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md). Resumen ejecutivo:
+Las entradas detalladas para v1.11.0 / v1.11.1 / v1.10.0–v1.10.3 viven en el [🇬🇧 CHANGELOG EN](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md). Resumen ejecutivo:
 
 - **v1.11.1 — 2026-05-13** · Pulido: pista de Playwright en `#/apply`, *taglines* unificadas, tarjeta de umbrales de puntuación en el *dashboard*. 349/349 pruebas.
 - **v1.11.0 — 2026-05-13** · Integración de career-ops.org/docs en los 8 *help bundles* y los 8 README. Nuevo `docs/career-ops-canonical.md`. Documentados los conceptos *Mode*/*Archetype*/*Pipeline*/*Tracker*/*Report*/*Scan history*. 348/349 pruebas.
