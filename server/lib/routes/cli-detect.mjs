@@ -18,6 +18,9 @@ import { existsSync, statSync, accessSync, constants } from 'node:fs';
 import { join, delimiter } from 'node:path';
 
 // Fixed allowlist: { id, display name, candidate binary basenames }.
+// Roster mirrors the parent's docs/SUPPORTED_CLIS.md (v1.126.0 sync — 8
+// first-class CLIs + Gemini as a legacy wrapper transitioned into
+// Antigravity; the Antigravity binary is `agy` per the parent matrix).
 const KNOWN = [
   { id: 'claude', name: 'Claude Code', bins: ['claude'] },
   { id: 'codex', name: 'Codex', bins: ['codex'] },
@@ -25,7 +28,9 @@ const KNOWN = [
   { id: 'opencode', name: 'OpenCode', bins: ['opencode'] },
   { id: 'copilot', name: 'GitHub Copilot CLI', bins: ['copilot', 'github-copilot-cli'] },
   { id: 'qwen', name: 'Qwen Code', bins: ['qwen', 'qwen-code'] },
-  { id: 'antigravity', name: 'Antigravity CLI', bins: ['antigravity'] },
+  { id: 'antigravity', name: 'Antigravity CLI', bins: ['agy', 'antigravity'] },
+  { id: 'grok', name: 'Grok Build CLI', bins: ['grok'] },
+  { id: 'kimi', name: 'Kimi CLI', bins: ['kimi'] },
 ];
 
 const IS_WIN = process.platform === 'win32';

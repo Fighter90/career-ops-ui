@@ -12,7 +12,7 @@
 ### career-ops について
 
 [career-ops](https://career-ops.org) は、任意の AI コーディング CLI
-(Claude Code、Gemini CLI、Codex、Qwen Code、OpenCode、GitHub Copilot CLI — 同じスラッシュコマンド・サーフェスで他の Claude 互換 CLI も動作します) 内で
+(Claude Code、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 同じスラッシュコマンド・サーフェスで他の Claude 互換 CLI も動作します) 内で
 スラッシュコマンドとして動作するオープンソースの求職システムです。
 モデル非依存です。各求人をあなたの CV と照らし合わせ、6 次元
 0.0–5.0 のルーブリックで評価し、ロールに合わせた PDF レジュメを生成し、
@@ -88,7 +88,7 @@
 
 | | career-ops (CLI) | career-ops-ui (本アプリ) |
 |---|---|---|
-| 実行場所 | Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI 内 | ブラウザの `http://127.0.0.1:4317` |
+| 実行場所 | Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) 内 | ブラウザの `http://127.0.0.1:4317` |
 | 表面 | `/career-ops <mode>` スラッシュコマンド | サイドバー、ワークフローごとに 1 ページ |
 | フォーム入力 | あり、Playwright MCP 経由 | なし — チェックリスト生成、CLI で仕上げ |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` (`#/cv`、`#/reports/:slug`、`#/evaluate`、`#/deep`、`#/interview-prep`) |
@@ -348,7 +348,7 @@ Save 先は `interview-prep/<company>-<role>.md`。
 
 > **v1.55 → v1.56 の新機能。** LLM キー未設定時は各画面の赤いバナーが ⚡ ライブ実行が手動プロンプトモードであることを示しここへ誘導;キー設定後はアクティブなプロバイダを示す控えめなチップになります。各 ⚡ ライブ実行ボタン(`#/auto`、`#/evaluate`、`#/deep`、モード)の前に正直な推定コストを表示(例:「推定コスト: OpenAI gpt-5-codex · ~$0.04/eval」、手動モードは API コストなし)。`#/scan` は副次フィルタを **詳細フィルター** ディスクロージャへ、`#/tracker` はクリック可能なファネルチップ + 任意のサーバーページネーション、`#/pipeline` は 1000 行超で仮想化。
 
-**AI CLIツール。** **AI CLIツール**タブは、サーバーにどのエージェントCLI(Claude Code、Codex、Gemini、OpenCode、Copilot、Qwen、Antigravity)がインストールされているかを表示 — 実行しない読み取り専用のPATHスキャン。**外観 → 会社ロゴを表示**(既定オフ)は各社のファビコンを自身のドメインから取得してスキャン表に表示します(サードパーティ不使用)。
+**AI CLIツール。** **AI CLIツール**タブは、サーバーにどのエージェントCLI(Claude Code、Codex、Gemini、OpenCode、Copilot、Qwen、Antigravity、Kimi CLI、Grok Build CLI)がインストールされているかを表示 — 実行しない読み取り専用のPATHスキャン。**外観 → 会社ロゴを表示**(既定オフ)は各社のファビコンを自身のドメインから取得してスキャン表に表示します(サードパーティ不使用)。
 
 2 つのタブ:
 
@@ -361,7 +361,7 @@ Save 先は `interview-prep/<company>-<role>.md`。
 
 どちらのタブでも、保存は即時に反映されます — サーバ再起動は不要です。
 
-**LLM プロバイダのセットアップ(ステップバイステップ)。** web UI の ⚡ ライブ評価は*ヘッドレス*で実行され、1 つの API キーを使用します。"OR" で動作します — これらの**いずれか 1 つ**を設定すればそれだけで動作し、複数設定した場合は `auto` がこの順で優先します:Anthropic → Gemini → OpenAI → Qwen。(career-ops 自体は CLI 非依存です — Claude Code、Codex、Gemini、OpenCode、Qwen、Copilot または Kimi の中でも実行でき、それはこのヘッドレスキーとは別です。)
+**LLM プロバイダのセットアップ(ステップバイステップ)。** web UI の ⚡ ライブ評価は*ヘッドレス*で実行され、1 つの API キーを使用します。"OR" で動作します — これらの**いずれか 1 つ**を設定すればそれだけで動作し、複数設定した場合は `auto` がこの順で優先します:Anthropic → Gemini → OpenAI → Qwen。(career-ops 自体は CLI 非依存です — Claude Code、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot または Kimi の中でも実行でき、それはこのヘッドレスキーとは別です。)
 
 1. `#/config` → **API keys & runtime** タブを開きます。
 2. **`LLM_PROVIDER`** でプロバイダを選びます:`auto`(設定されているキーを使用)、または `claude` / `gemini` / `openai` / `qwen` で 1 つに固定。

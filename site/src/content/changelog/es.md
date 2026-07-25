@@ -11,6 +11,14 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.126.0] — 2026-07-25
+
+### Añadido
+- **La pestaña de herramientas AI CLI ahora detecta las 8 CLIs de primera clase de career-ops** — el roster de `#/config` se sincronizó con `docs/SUPPORTED_CLIS.md` del padre: `server/lib/routes/cli-detect.mjs` gana **Grok Build CLI** (`grok`) y **Kimi CLI** (`kimi`), y Antigravity ahora prueba primero su binario canónico `agy`. El escaneo de PATH de solo lectura reporta ahora **9 herramientas**; sigue sin ejecutar ningún binario encontrado.
+
+### Cambiado
+- **Resincronización de la documentación con career-ops.org/docs** — se reconcilió cada superficie de docs con las páginas vivas del padre (leídas las 31). El roster canónico de asistentes IA (help ×17 + README ×17) lista ahora las 8 CLIs de primera clase — Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI — más Gemini CLI (wrapper heredado). Los paquetes de ayuda mantienen su estructura de 29 H2 / 105 H3.
+
 ## [1.125.4] — 2026-07-23
 
 ### Cambiado

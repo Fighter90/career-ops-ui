@@ -9,6 +9,14 @@
 ---
 
 
+## [1.126.0] — 2026-07-25
+
+### 추가
+- **AI CLI 도구 탭이 career-ops의 8개 일급 CLI를 모두 감지** — `#/config` 로스터를 상위의 `docs/SUPPORTED_CLIS.md`와 동기화: `server/lib/routes/cli-detect.mjs`에 **Grok Build CLI**(`grok`)와 **Kimi CLI**(`kimi`)가 추가되고, Antigravity는 이제 정규 바이너리 `agy`를 먼저 탐색합니다. 읽기 전용 PATH 스캔은 이제 **9개 도구**를 보고하며, 여전히 찾은 바이너리를 실행하지 않습니다.
+
+### 변경
+- **career-ops.org/docs와 문서 재동기화** — 모든 문서 표면을 상위의 라이브 페이지(31개 전부 읽음)와 대조했습니다. 정규 AI 어시스턴트 로스터(help ×17 + README ×17)는 이제 8개 일급 CLI — Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI — 와 Gemini CLI(레거시 래퍼)를 나열합니다. 도움말 번들은 29 H2 / 105 H3 구조를 유지합니다.
+
 ## [1.125.4] — 2026-07-23
 
 ### 변경

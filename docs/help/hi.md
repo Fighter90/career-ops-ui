@@ -13,8 +13,7 @@
 ### career-ops के बारे में
 
 [career-ops](https://career-ops.org) एक ओपन-सोर्स जॉब-सर्च सिस्टम है
-जो किसी भी AI कोडिंग CLI (Claude Code, Gemini CLI, Codex, Qwen Code,
-OpenCode, GitHub Copilot CLI — अन्य Claude-संगत CLI भी उसी
+जो किसी भी AI कोडिंग CLI (Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — अन्य Claude-संगत CLI भी उसी
 स्लैश-कमांड सतह के ज़रिए काम करते हैं) के अंदर स्लैश कमांड के रूप में
 चलता है। मॉडल-अज्ञेय (model-agnostic)। यह हर पोस्टिंग का मूल्यांकन
 आपके CV के मुकाबले छह-आयामी 0.0–5.0 रूब्रिक से करता है, टेलर्ड PDF
@@ -92,7 +91,7 @@ OpenCode, GitHub Copilot CLI — अन्य Claude-संगत CLI भी उ
 
 | | career-ops (CLI) | career-ops-ui (यह ऐप) |
 |---|---|---|
-| कहाँ चलता है | Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI के अंदर | आपके ब्राउज़र में `http://127.0.0.1:4317` |
+| कहाँ चलता है | Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) के अंदर | आपके ब्राउज़र में `http://127.0.0.1:4317` |
 | सतह | `/career-ops <mode>` स्लैश कमांड | प्रति वर्कफ़्लो एक पेज वाला साइडबार |
 | फ़ॉर्म-फ़िल | हाँ, Playwright MCP के ज़रिए | नहीं — चेकलिस्ट जनरेट करता है, आप CLI में पूरा करते हैं |
 | PDF | `generate-pdf.mjs` | `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` पर `📄 Generate PDF` |
@@ -448,7 +447,7 @@ LLM कॉल नहीं, कोई खर्च नहीं।
 के ज़रिए काम करता है — इनमें से **कोई भी एक** सेट करें और यह बस काम
 करता है; कई सेट होने पर, `auto` इस क्रम में उन्हें प्राथमिकता देता
 है: Anthropic → Gemini → OpenAI → Qwen। (career-ops खुद CLI-अज्ञेय
-है — आप इसे Claude Code, Codex, Gemini, OpenCode, Qwen, Copilot या
+है — आप इसे Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot या
 Kimi के अंदर भी चला सकते हैं; वह इस हेडलेस कुंजी से अलग है।)
 
 1. `#/config` → **API keys & runtime** टैब खोलें।
@@ -551,7 +550,7 @@ Save करने के बाद, **▶ Test Anthropic** या **▶ Test Gem
 **AI CLI tools टैब।** career-ops Claude-Code-driven है पर ओपन स्किल
 स्टैंडर्ड पर किसी भी एजेंट CLI के साथ काम करता है। **AI CLI tools**
 टैब उन्हें सूचीबद्ध करता है जिन्हें यह जानता है — Claude Code, Codex,
-Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity — और
+Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity, Kimi CLI, Grok Build CLI — और
 दिखाता है कि कौन-से **सर्वर चलाने वाली मशीन पर इंस्टॉल** हैं और
 कहाँ। यह सर्वर के `PATH` का एक रीड-ओनली स्कैन है: यह केवल जाँचता है
 कि बाइनरी मौजूद है या नहीं, यह **इसे कभी नहीं चलाता** (कोई
