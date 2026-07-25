@@ -9,6 +9,14 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.125.4] — 2026-07-23
+
+### Zmieniono
+- **zależności site** (dependabot #151–#153) — `sharp` 0.34.5→0.35.3, `svgo` 4.0.1→4.0.2, `fast-uri` (dev) 3.1.3→3.1.4 w `site/`; build Astro zielony, bez wpływu na SPA/serwer.
+
+### Uwagi
+- **Przegląd parzystości z projektem nadrzędnym (career-ops `37d17ec..254764a`, po v1.22.0)** — nic do portowania: guard błędnego wiersza w `set-status` (#2108) dotyczy tylko CLI (w web-ui wiersze trackera wybiera się jawnie w UI i żadna trasa nie wywołuje `set-status.mjs`), Risk Summary zlokalizowanych trybów (#2109) dotyczy plików `modes/<lang>/`, których web-ui nigdy nie czyta (tylko `modes/*.md` najwyższego poziomu), weryfikacja manifestu `update-system` (#2111) dotyczy tylko aktualizatora, a reszta to dokumentacja rodzica (turecki README, SIGNATURES ×4, SCRIPTS.md, akcenty es). VERSION rodzica pozostaje **1.22.0** — `parentVersion` bez zmian.
+
 ## [1.125.3] — 2026-07-23
 
 ### Naprawiono

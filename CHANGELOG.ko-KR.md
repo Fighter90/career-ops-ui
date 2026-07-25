@@ -9,6 +9,14 @@
 ---
 
 
+## [1.125.4] — 2026-07-23
+
+### 변경
+- **site 의존성** (dependabot #151–#153) — `site/`의 `sharp` 0.34.5→0.35.3, `svgo` 4.0.1→4.0.2, `fast-uri`(dev) 3.1.3→3.1.4; Astro 빌드 정상, SPA/서버 영향 없음.
+
+### 비고
+- **상위 프로젝트 패리티 스윕(career-ops `37d17ec..254764a`, v1.22.0 이후)** — 포팅할 것 없음: `set-status`의 잘못된 행 가드(#2108)는 CLI 전용(web-ui 트래커 행은 UI에서 명시적으로 선택되며 어떤 라우트도 `set-status.mjs`를 호출하지 않음), 로컬라이즈 모드의 Risk Summary(#2109)는 web-ui가 읽지 않는 `modes/<lang>/` 파일(최상위 `modes/*.md`만 읽음), `update-system` 매니페스트 검증(#2111)은 업데이터 전용, 나머지는 상위 문서(터키어 README, SIGNATURES ×4, SCRIPTS.md, es 악센트). 상위 VERSION은 **1.22.0** 유지 — `parentVersion` 변화 없음.
+
 ## [1.125.3] — 2026-07-23
 
 ### 수정
