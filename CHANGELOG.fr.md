@@ -11,6 +11,14 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.125.4] — 2026-07-23
+
+### Modifié
+- **dépendances du site** (dependabot #151–#153) — `sharp` 0.34.5→0.35.3, `svgo` 4.0.1→4.0.2, `fast-uri` (dev) 3.1.3→3.1.4 dans `site/` ; build Astro au vert, aucun impact SPA/serveur.
+
+### Notes
+- **Balayage de parité avec le parent (career-ops `37d17ec..254764a`, post-v1.22.0)** — rien à porter : le garde-fou de mauvaise ligne de `set-status` (#2108) est CLI uniquement (dans web-ui les lignes du tracker sont sélectionnées explicitement et aucune route n'invoque `set-status.mjs`), le Risk Summary des modes localisés (#2109) touche des fichiers `modes/<lang>/` que web-ui ne lit jamais (uniquement `modes/*.md` de premier niveau), la vérification de manifeste d'`update-system` (#2111) ne concerne que l'updater, et le reste est de la doc du parent (README turc, SIGNATURES ×4, SCRIPTS.md, accents es). Le VERSION du parent reste **1.22.0** — `parentVersion` inchangé.
+
 ## [1.125.3] — 2026-07-23
 
 ### Corrigé

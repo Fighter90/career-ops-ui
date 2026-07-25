@@ -2,6 +2,14 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.125.4] — 2026-07-23
+
+### Geändert
+- **site-Abhängigkeiten** (dependabot #151–#153) — `sharp` 0.34.5→0.35.3, `svgo` 4.0.1→4.0.2, `fast-uri` (dev) 3.1.3→3.1.4 in `site/`; Astro-Build grün, keine Auswirkung auf SPA/Server.
+
+### Hinweise
+- **Paritäts-Sweep des Elternprojekts (career-ops `37d17ec..254764a`, nach v1.22.0)** — nichts zu portieren: der Falsche-Zeile-Guard in `set-status` (#2108) ist reine CLI (in web-ui werden Tracker-Zeilen explizit in der UI ausgewählt, und keine Route ruft `set-status.mjs` auf), das Risk Summary der lokalisierten Modi (#2109) betrifft `modes/<lang>/`-Dateien, die web-ui nie liest (nur Top-Level-`modes/*.md`), die Manifest-Verifikation in `update-system` (#2111) betrifft nur den Updater, und der Rest ist Eltern-Doku (türkisches README, SIGNATURES ×4, SCRIPTS.md, es-Akzente). Das VERSION des Elternprojekts bleibt **1.22.0** — `parentVersion` unverändert.
+
 ## [1.125.3] — 2026-07-23
 
 ### Behoben

@@ -10,6 +10,14 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 
 
+## [1.125.4] — 2026-07-23
+
+### Ændret
+- **site-afhængigheder** (dependabot #151–#153) — `sharp` 0.34.5→0.35.3, `svgo` 4.0.1→4.0.2, `fast-uri` (dev) 3.1.3→3.1.4 i `site/`; Astro-build grønt, ingen påvirkning af SPA/server.
+
+### Noter
+- **Paritetsgennemgang af forælderen (career-ops `37d17ec..254764a`, efter v1.22.0)** — intet at portere: forkert-række-garden i `set-status` (#2108) er kun CLI (i web-ui vælges tracker-rækker eksplicit i UI'et, og ingen rute kalder `set-status.mjs`), Risk Summary i lokaliserede tilstande (#2109) rører `modes/<lang>/`-filer, som web-ui aldrig læser (kun `modes/*.md` på øverste niveau), manifest-verifikationen i `update-system` (#2111) gælder kun opdateringsværktøjet, og resten er forælderens dokumentation (tyrkisk README, SIGNATURES ×4, SCRIPTS.md, es-accenter). Forælderens VERSION forbliver **1.22.0** — `parentVersion` uændret.
+
 ## [1.125.3] — 2026-07-23
 
 ### Rettet

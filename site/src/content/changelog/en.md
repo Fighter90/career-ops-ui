@@ -8,6 +8,14 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.125.4] — 2026-07-23
+
+### Changed
+- **site dependencies** (dependabot #151–#153) — `sharp` 0.34.5→0.35.3, `svgo` 4.0.1→4.0.2, `fast-uri` (dev) 3.1.3→3.1.4 in `site/`; Astro build green, no SPA/server impact.
+
+### Notes
+- **Parent parity sweep (career-ops `37d17ec..254764a`, post-v1.22.0)** — nothing portable: the `set-status` wrong-row guard (#2108) is CLI-only (web-ui tracker rows are selected explicitly in the UI and no route shells into `set-status.mjs`), the localized-mode Risk Summary mirror (#2109) touches `modes/<lang>/` files web-ui never reads (top-level `modes/*.md` only), the `update-system` manifest verification (#2111) is updater-only, and the rest is parent docs (Turkish README, SIGNATURES ×4, SCRIPTS.md, es accents). Parent VERSION stays **1.22.0** — `parentVersion` unchanged.
+
 ## [1.125.3] — 2026-07-23
 
 ### Fixed

@@ -2,6 +2,14 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.125.4] — 2026-07-23
+
+### Değiştirildi
+- **site bağımlılıkları** (dependabot #151–#153) — `site/` içinde `sharp` 0.34.5→0.35.3, `svgo` 4.0.1→4.0.2, `fast-uri` (dev) 3.1.3→3.1.4; Astro derlemesi yeşil, SPA/sunucu etkilenmedi.
+
+### Notlar
+- **Üst proje parite taraması (career-ops `37d17ec..254764a`, v1.22.0 sonrası)** — taşınacak bir şey yok: `set-status` yanlış-satır korumasi (#2108) yalnızca CLI (web-ui'de izleyici satırları arayüzde açıkça seçilir ve hiçbir rota `set-status.mjs`'i çağırmaz), yerelleştirilmiş modlardaki Risk Summary (#2109) web-ui'nin hiç okumadığı `modes/<lang>/` dosyalarına dokunur (yalnızca üst düzey `modes/*.md` okunur), `update-system` manifest doğrulaması (#2111) yalnızca güncelleyiciye aittir, gerisi üst proje belgeleridir (Türkçe README, SIGNATURES ×4, SCRIPTS.md, es aksanları). Üst projenin VERSION'ı **1.22.0** olarak kalır — `parentVersion` değişmedi.
+
 ## [1.125.3] — 2026-07-23
 
 ### Düzeltildi

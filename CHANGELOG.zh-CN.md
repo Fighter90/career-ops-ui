@@ -9,6 +9,14 @@
 ---
 
 
+## [1.125.4] — 2026-07-23
+
+### 变更
+- **site 依赖**(dependabot #151–#153)— `site/` 中 `sharp` 0.34.5→0.35.3、`svgo` 4.0.1→4.0.2、`fast-uri`(dev)3.1.3→3.1.4;Astro 构建通过,对 SPA/服务器无影响。
+
+### 说明
+- **父项目一致性巡检(career-ops `37d17ec..254764a`,v1.22.0 之后)** — 无需移植: `set-status` 错行防护(#2108)仅限 CLI(web-ui 的跟踪器行在 UI 中显式选择,且没有路由调用 `set-status.mjs`);本地化模式的 Risk Summary(#2109)涉及 web-ui 从不读取的 `modes/<lang>/` 文件(仅读取顶层 `modes/*.md`);`update-system` 清单校验(#2111)仅限更新器;其余为父项目文档(土耳其语 README、SIGNATURES ×4、SCRIPTS.md、es 重音)。父项目 VERSION 保持 **1.22.0** — `parentVersion` 不变。
+
 ## [1.125.3] — 2026-07-23
 
 ### 修复
