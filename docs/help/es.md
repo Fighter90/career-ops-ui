@@ -924,7 +924,7 @@ directamente.
 /career-ops scan
 ```
 
-Dentro de Claude Code / Codex / Cursor / Gemini CLI. Usa tokens del
+Dentro de Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Usa tokens del
 modelo. Visita cada página de `tracked_companies` directamente y
 puede descubrir boards sin API (career pages, ATS custom, portales
 regionales). Más lento pero más amplio. Útil cuando una pasada ATS

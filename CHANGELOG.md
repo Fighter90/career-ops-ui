@@ -8,6 +8,11 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.126.1] — 2026-07-25
+
+### Fixed
+- **Two CLI-roster drift spots the v1.126.0 resync missed** — (1) the `#/config` → **API keys** tab intro (`config.providerModelNote`, i18n ×17) listed only 7 CLIs (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi) — **Antigravity** and **Grok Build** are now inserted after OpenCode; (2) a second comparison-table row in the help guide (×17) and the built-at-CI site help still read `Inside Claude Code / Codex / Cursor / Gemini CLI` — the pre-v1.28 stale set with **Cursor** — now the full `Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy)` roster. Both used slash/middot separators the v1.126.0 sweep's patterns didn't cover. i18n snapshot regenerated; suite stays **1969**.
+
 ## [1.126.0] — 2026-07-25
 
 ### Added

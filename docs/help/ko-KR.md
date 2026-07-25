@@ -905,7 +905,7 @@ Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
 /career-ops scan
 ```
 
-Claude Code / Codex / Cursor / Gemini CLI 내부에서. 모델 토큰을
+Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) 내부에서. 모델 토큰을
 사용합니다. 각 `tracked_companies` 페이지를 직접 방문하며 API가
 없는 보드(채용 페이지, 커스텀 ATS, 지역 포털)도 발견할 수
 있습니다. 느리지만 더 넓습니다. 채용 중인 것이 분명한 타깃에서

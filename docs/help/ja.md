@@ -928,7 +928,7 @@ Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
 /career-ops scan
 ```
 
-Claude Code / Codex / Cursor / Gemini CLI 内で実行。モデルトークンを
+Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) 内で実行。モデルトークンを
 使います。各 `tracked_companies` のページを直接訪問し、API のない
 ボード (採用ページ、カスタム ATS、地域ポータル) も発見できます。
 低速ですが広範囲。ATS スイープで結果ゼロでも、採用していると分かって

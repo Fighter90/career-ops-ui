@@ -947,7 +947,7 @@ Bez tokenów AI — trafia bezpośrednio do publicznych API portali.
 /career-ops scan
 ```
 
-Wewnątrz Claude Code / Codex / Cursor / Gemini CLI. Używa tokenów modelu.
+Wewnątrz Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Używa tokenów modelu.
 Odwiedza każdą stronę `tracked_companies` bezpośrednio i może odkrywać portale
 bez API (strony kariery, niestandardowy ATS, portale regionalne). Wolniejszy, ale
 szerszy. Przydatny gdy sweep ATS nie zwraca nic dla celu, o którym

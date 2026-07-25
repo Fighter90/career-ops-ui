@@ -163,7 +163,7 @@ window.__I18N_DICT_FR = {
   'config.gotoHealth': "Vérifier sur Health",
   'config.llmProvider': "Fournisseur LLM",
   'config.llmProviderHint': "auto = utiliser la clé définie, préférant Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = forcer celui-ci. Un fournisseur forcé sans clé → remplacement par un prompt manuel.",
-  'config.providerModelNote': "career-ops est indépendant de la CLI — vous l'exécutez à l'intérieur d'une quelconque interface CLI AI (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi), chacune avec son propre login. Cette interface web est séparée : ses évaluations en direct ⚡ s'exécutent sans interface et utilisent votre clé API Anthropic ou Gemini ci-dessous. La clé/model OpenAI sont stockés pour le flux Codex/OpenAI CLI parent — non utilisés par l'interface web elle-même.",
+  'config.providerModelNote': "career-ops est indépendant de la CLI — vous l'exécutez à l'intérieur d'une quelconque interface CLI AI (Claude Code · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi), chacune avec son propre login. Cette interface web est séparée : ses évaluations en direct ⚡ s'exécutent sans interface et utilisent votre clé API Anthropic ou Gemini ci-dessous. La clé/model OpenAI sont stockés pour le flux Codex/OpenAI CLI parent — non utilisés par l'interface web elle-même.",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → Clés d'API. v1.55.0 : exécute également l'évaluation en direct de l'interface web (3e dans l'ordre automatique, après Anthropic & Gemini) ; toujours lu par le flux Codex/OpenAI CLI parent aussi.",
   'config.anthropicKey': "Clé API Anthropic (Claude)",

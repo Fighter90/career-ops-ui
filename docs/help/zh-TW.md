@@ -854,7 +854,7 @@ boards API。
 /career-ops scan
 ```
 
-在 Claude Code / Codex / Cursor / Gemini CLI 中執行。會用到模型
+在 Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) 中執行。會用到模型
 tokens。直接造訪每個 `tracked_companies` 頁面,並能發掘非 API
 的職缺板(職涯頁面、客製化 ATS、區域入口)。較慢但範圍更廣。
 當 ATS 大掃描對你知道正在招人的目標公司毫無收穫時非常有用。

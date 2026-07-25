@@ -9,6 +9,11 @@
 ---
 
 
+## [1.126.1] — 2026-07-25
+
+### 修复
+- **v1.126.0 重新同步遗漏的两处 CLI 名单漂移** — (1) `#/config` 的 **API keys** 标签页导语(`config.providerModelNote`,i18n ×17)只列出 7 个 CLI — 现在 **Antigravity** 与 **Grok Build** 已插入 OpenCode 之后;(2) 帮助指南(×17)的第二个对比表行以及 CI 构建的站点 help 仍写着 `Inside Claude Code / Codex / Cursor / Gemini CLI`(含过时的 **Cursor**)— 现为完整名单。两处使用了 v1.126.0 扫描模式未覆盖的斜杠/间隔号分隔符。i18n 快照已重新生成;套件仍为 **1969**。
+
 ## [1.126.0] — 2026-07-25
 
 ### 新增
