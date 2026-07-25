@@ -15,7 +15,7 @@ latérale de l'aide.
 
 [career-ops](https://career-ops.org) est un système open-source de
 recherche d'emploi qui s'exécute sous forme de commandes slash dans
-n'importe quel CLI de codage IA (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI
+n'importe quel CLI de codage IA (Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy)
 — d'autres CLI compatibles Claude fonctionnent aussi via la même surface
 de commandes slash). Indépendant du modèle. Il évalue chaque offre par
 rapport à votre CV selon une grille à six dimensions notée de 0.0 à 5.0,
@@ -95,7 +95,7 @@ votre machine.
 
 | | career-ops (CLI) | career-ops-ui (cette application) |
 |---|---|---|
-| Où il s'exécute | dans Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI | `http://127.0.0.1:4317` dans votre navigateur |
+| Où il s'exécute | dans Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` dans votre navigateur |
 | Surface | commandes slash `/career-ops <mode>` | barre latérale avec une page par flux de travail |
 | Remplissage de formulaire | oui, via Playwright MCP | non — génère la checklist, vous terminez dans le CLI |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` sur `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
@@ -383,7 +383,7 @@ transitoire d'avant 1.34 a été promue en cette page).
 
 > **Nouveau en v1.55 → v1.56.** Sans **aucune** clé LLM, une bannière rouge sur chaque écran explique que ⚡ Run-live est en mode prompt-manuel et renvoie ici ; une fois une clé définie, elle devient une puce discrète nommant le fournisseur actif. Avant tout bouton ⚡ Run-live (`#/auto`, `#/evaluate`, `#/deep`, modes), une estimation honnête du coût s'affiche (p. ex. « Estimated cost: OpenAI gpt-5-codex · ~$0.04/eval », ou une note « pas de coût API » en mode manuel). `#/scan` range les filtres secondaires derrière un volet **Advanced filters** ; `#/tracker` ajoute des puces d'entonnoir cliquables + une pagination côté serveur optionnelle ; `#/pipeline` virtualise au-delà de 1000 lignes.
 
-**Outils CLI d'IA.** L'onglet **Outils CLI d'IA** indique quels CLI d'agent (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity) sont installés sur le serveur — une analyse du PATH en lecture seule, sans les exécuter. **Apparence → Afficher les logos d'entreprise** (désactivé par défaut) affiche le favicon de chaque entreprise dans le tableau de scan, récupéré depuis son propre domaine (jamais un service tiers).
+**Outils CLI d'IA.** L'onglet **Outils CLI d'IA** indique quels CLI d'agent (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) sont installés sur le serveur — une analyse du PATH en lecture seule, sans les exécuter. **Apparence → Afficher les logos d'entreprise** (désactivé par défaut) affiche le favicon de chaque entreprise dans le tableau de scan, récupéré depuis son propre domaine (jamais un service tiers).
 
 Trois onglets :
 
@@ -411,7 +411,7 @@ Trois onglets :
 Un enregistrement dans n'importe quel onglet se propage immédiatement —
 pas de redémarrage du serveur.
 
-**Configurer votre fournisseur LLM (pas à pas).** L'évaluation live ⚡ de l'UI web tourne *headless* et utilise une seule clé API. Elle fonctionne par « OU » — définissez **n'importe laquelle** et ça marche ; avec plusieurs, `auto` les préfère dans cet ordre : Anthropic → Gemini → OpenAI → Qwen. (career-ops lui-même est agnostique du CLI — vous l'exécutez aussi dans Claude Code, Codex, Gemini, OpenCode, Qwen, Copilot ou Kimi ; c'est distinct de cette clé headless.)
+**Configurer votre fournisseur LLM (pas à pas).** L'évaluation live ⚡ de l'UI web tourne *headless* et utilise une seule clé API. Elle fonctionne par « OU » — définissez **n'importe laquelle** et ça marche ; avec plusieurs, `auto` les préfère dans cet ordre : Anthropic → Gemini → OpenAI → Qwen. (career-ops lui-même est agnostique du CLI — vous l'exécutez aussi dans Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot ou Kimi ; c'est distinct de cette clé headless.)
 
 1. Ouvrez `#/config` → l'onglet **API keys & runtime**.
 2. Choisissez votre fournisseur dans **`LLM_PROVIDER`** : `auto` (utilise la clé définie), ou forcez-en un avec `claude` / `gemini` / `openai` / `qwen`.

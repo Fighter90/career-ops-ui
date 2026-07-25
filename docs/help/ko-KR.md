@@ -11,7 +11,7 @@
 
 ### career-ops 소개
 
-[career-ops](https://career-ops.org)는 모든 AI 코딩 CLI(Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI — 다른 Claude 호환 CLI도 동일한 슬래시 커맨드 인터페이스에서 작동합니다) 안에서
+[career-ops](https://career-ops.org)는 모든 AI 코딩 CLI(Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — 다른 Claude 호환 CLI도 동일한 슬래시 커맨드 인터페이스에서 작동합니다) 안에서
 슬래시 명령으로 동작하는 오픈소스 구직 시스템입니다. 모델
 무관(model-agnostic). 각 채용 공고를 여러분의 CV에 대해 6차원
 0.0–5.0 루브릭으로 평가하고, 맞춤형 PDF 이력서를 생성하며, 모든
@@ -87,7 +87,7 @@
 
 | | career-ops (CLI) | career-ops-ui (이 앱) |
 |---|---|---|
-| 실행 위치 | Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI 내부 | 브라우저의 `http://127.0.0.1:4317` |
+| 실행 위치 | Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) 내부 | 브라우저의 `http://127.0.0.1:4317` |
 | 표면 | `/career-ops <mode>` 슬래시 명령 | 워크플로우당 한 페이지를 가진 사이드바 |
 | 폼 채우기 | 예, Playwright MCP 경유 | 아니오 — 체크리스트만 생성. CLI에서 마무리 |
 | PDF | `generate-pdf.mjs` | `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep`의 `📄 Generate PDF` |
@@ -338,7 +338,7 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 
 > **v1.55 → v1.56 새 기능.** LLM 키가 없으면 모든 화면의 빨간 배너가 ⚡ 라이브 실행이 수동 프롬프트 모드임을 알리고 여기로 연결합니다; 키가 있으면 활성 제공자를 표시하는 조용한 칩이 됩니다. 모든 ⚡ 라이브 실행 버튼(`#/auto`, `#/evaluate`, `#/deep`, 모드) 앞에 정직한 예상 비용이 표시됩니다(예: "예상 비용: OpenAI gpt-5-codex · ~$0.04/eval", 수동 모드는 API 비용 없음). `#/scan`은 보조 필터를 **고급 필터** 디스클로저 뒤로, `#/tracker`는 클릭형 퍼널 칩 + 선택적 서버 페이지네이션, `#/pipeline`은 1000행 초과 시 가상화.
 
-**AI CLI 도구.** **AI CLI 도구** 탭은 서버에 어떤 에이전트 CLI(Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity)가 설치되어 있는지 보여줍니다 — 실행하지 않는 읽기 전용 PATH 스캔. **모양 → 회사 로고 표시**(기본 꺼짐)는 각 회사의 favicon을 자체 도메인에서 가져와 스캔 표에 표시합니다(제3자 서비스 아님).
+**AI CLI 도구.** **AI CLI 도구** 탭은 서버에 어떤 에이전트 CLI(Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI)가 설치되어 있는지 보여줍니다 — 실행하지 않는 읽기 전용 PATH 스캔. **모양 → 회사 로고 표시**(기본 꺼짐)는 각 회사의 favicon을 자체 도메인에서 가져와 스캔 표에 표시합니다(제3자 서비스 아님).
 
 두 탭:
 
@@ -351,7 +351,7 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 
 어느 탭에서 저장하든 즉시 반영됩니다 — 서버 재시작 불필요.
 
-**LLM 공급자 설정 (단계별).** web UI 의 ⚡ 라이브 평가는 *헤드리스*로 실행되며 하나의 API 키를 사용합니다. "OR" 로 동작합니다 — 이 중 **아무거나 하나만** 설정하면 바로 동작하며, 여러 개를 설정하면 `auto` 가 다음 순서로 선호합니다: Anthropic → Gemini → OpenAI → Qwen. (career-ops 자체는 CLI 비종속입니다 — Claude Code, Codex, Gemini, OpenCode, Qwen, Copilot 또는 Kimi 안에서도 실행하며, 그것은 이 헤드리스 키와는 별개입니다.)
+**LLM 공급자 설정 (단계별).** web UI 의 ⚡ 라이브 평가는 *헤드리스*로 실행되며 하나의 API 키를 사용합니다. "OR" 로 동작합니다 — 이 중 **아무거나 하나만** 설정하면 바로 동작하며, 여러 개를 설정하면 `auto` 가 다음 순서로 선호합니다: Anthropic → Gemini → OpenAI → Qwen. (career-ops 자체는 CLI 비종속입니다 — Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot 또는 Kimi 안에서도 실행하며, 그것은 이 헤드리스 키와는 별개입니다.)
 
 1. `#/config` → **API keys & runtime** 탭을 엽니다.
 2. **`LLM_PROVIDER`**에서 공급자를 선택합니다: `auto`(설정된 키를 사용), 또는 `claude` / `gemini` / `openai` / `qwen` 로 강제 지정.

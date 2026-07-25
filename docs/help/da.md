@@ -13,7 +13,7 @@ hjælpe-sidebjælken.
 ### Om career-ops
 
 [career-ops](https://career-ops.org) er et open source-jobsøgningssystem,
-der kører som skråstreg-kommandoer inde i enhver AI-kodnings-CLI (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI — andre Claude-kompatible CLI'er virker også via den samme skråstreg-kommandoflade). Modelagnostisk. Det
+der kører som skråstreg-kommandoer inde i enhver AI-kodnings-CLI (Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — andre Claude-kompatible CLI'er virker også via den samme skråstreg-kommandoflade). Modelagnostisk. Det
 evaluerer hvert opslag mod dit CV med en seks-dimensionel 0,0–5,0
 rubrik, genererer skræddersyede PDF-CV'er og sporer hver ansøgning
 lokalt på din maskine.
@@ -87,7 +87,7 @@ lokalt på din maskine.
 
 | | career-ops (CLI) | career-ops-ui (denne app) |
 |---|---|---|
-| Hvor det kører | inde i Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI | `http://127.0.0.1:4317` i din browser |
+| Hvor det kører | inde i Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` i din browser |
 | Flade | `/career-ops <mode>` skråstreg-kommandoer | sidebjælke med én side per arbejdsgang |
 | Formularudfyldning | ja, via Playwright MCP | nej — genererer tjeklisten, du afslutter i CLI'en |
 | PDF | `generate-pdf.mjs` | `📄 Generér PDF` på `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
@@ -362,7 +362,7 @@ forfremmet til denne side).
 
 > **Nyt i v1.55 → v1.56.** Med **ingen** LLM-nøgle sat forklarer et rødt banner på hver skærm, at ⚡ Run-live er i manuel-prompt-tilstand og linker hertil; når en nøgle er sat, bliver det en stille chip, der navngiver den aktive udbyder. Før enhver ⚡ Run-live-knap (`#/auto`, `#/evaluate`, `#/deep`, modes) vises et ærligt omkostningsskøn (f.eks. "Estimeret omkostning: OpenAI gpt-5-codex · ~$0,04/eval", eller en ingen-API-omkostning-note i manuel tilstand). `#/scan` gemmer sekundære filtre bag en **Avancerede filtre**-foldning; `#/tracker` tilføjer klikbare tragt-chips + valgfri server-side-paginering; `#/pipeline` virtualiserer ud over 1000 rækker.
 
-**AI CLI-værktøjer.** Fanen **AI CLI-værktøjer** viser, hvilke agent-CLI'er (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity) der er installeret på serveren — en skrivebeskyttet PATH-scanning uden at køre dem. **Udseende → Vis firmalogoer** (fra som standard) viser hvert firmas favicon i scanningstabellen, hentet fra dets eget domæne (aldrig en tredjepartstjeneste).
+**AI CLI-værktøjer.** Fanen **AI CLI-værktøjer** viser, hvilke agent-CLI'er (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) der er installeret på serveren — en skrivebeskyttet PATH-scanning uden at køre dem. **Udseende → Vis firmalogoer** (fra som standard) viser hvert firmas favicon i scanningstabellen, hentet fra dets eget domæne (aldrig en tredjepartstjeneste).
 
 Tre faner:
 
@@ -388,7 +388,7 @@ Tre faner:
 
 Et gem i en hvilken som helst fane forplanter sig med det samme — ingen server-genstart.
 
-**Opsætning af din LLM-udbyder (trin for trin).** Web-UI'ens ⚡ live-evaluering kører *headless* og bruger én API-nøgle. Den virker via "ELLER" — sæt **en hvilken som helst** af disse, og det virker bare; med flere sat foretrækker `auto` dem i denne rækkefølge: Anthropic → Gemini → OpenAI → Qwen. (career-ops selv er CLI-agnostisk — du kører den også inde i Claude Code, Codex, Gemini, OpenCode, Qwen, Copilot eller Kimi; det er adskilt fra denne headless-nøgle.)
+**Opsætning af din LLM-udbyder (trin for trin).** Web-UI'ens ⚡ live-evaluering kører *headless* og bruger én API-nøgle. Den virker via "ELLER" — sæt **en hvilken som helst** af disse, og det virker bare; med flere sat foretrækker `auto` dem i denne rækkefølge: Anthropic → Gemini → OpenAI → Qwen. (career-ops selv er CLI-agnostisk — du kører den også inde i Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot eller Kimi; det er adskilt fra denne headless-nøgle.)
 
 1. Åbn `#/config` → fanen **API-nøgler og runtime**.
 2. Vælg din udbyder i **`LLM_PROVIDER`**: `auto` (brug hvilken nøgle der er sat), eller tving en med `claude` / `gemini` / `openai` / `qwen`.

@@ -2,6 +2,14 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.126.0] — 2026-07-25
+
+### Hinzugefügt
+- **Der Tab „AI CLI tools" erkennt jetzt alle 8 erstklassigen career-ops-CLIs** — das `#/config`-Roster wurde mit `docs/SUPPORTED_CLIS.md` des Elternprojekts synchronisiert: `server/lib/routes/cli-detect.mjs` erhält **Grok Build CLI** (`grok`) und **Kimi CLI** (`kimi`), und Antigravity prüft nun zuerst seine kanonische Binärdatei `agy`. Der schreibgeschützte PATH-Scan meldet jetzt **9 Werkzeuge**; er führt eine gefundene Binärdatei weiterhin nie aus.
+
+### Geändert
+- **Dokumentations-Resync mit career-ops.org/docs** — jede Doku-Fläche wurde mit den Live-Seiten des Elternprojekts abgeglichen (alle 31 gelesen). Das kanonische KI-Assistenten-Roster (help ×17 + README ×17) listet nun die 8 erstklassigen CLIs — Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI — plus Gemini CLI (Legacy-Wrapper). Die Hilfe-Bundles behalten ihre 29 H2 / 105 H3-Struktur.
+
 ## [1.125.4] — 2026-07-23
 
 ### Geändert

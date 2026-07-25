@@ -9,6 +9,14 @@
 ---
 
 
+## [1.126.0] — 2026-07-25
+
+### 追加
+- **AI CLI ツールタブが career-ops の 8 つの一級 CLI をすべて検出** — `#/config` のロスターを親の `docs/SUPPORTED_CLIS.md` と同期: `server/lib/routes/cli-detect.mjs` に **Grok Build CLI**(`grok`)と **Kimi CLI**(`kimi`)を追加し、Antigravity は正規バイナリ `agy` を優先的に探索します。読み取り専用の PATH スキャンは **9 ツール** を報告するようになり、見つかったバイナリを実行しない点は変わりません。
+
+### 変更
+- **career-ops.org/docs とのドキュメント再同期** — すべてのドキュメント面を親のライブページ(全 31 ページを読了)と突き合わせました。正規の AI アシスタントロスター(help ×17 + README ×17)は、8 つの一級 CLI — Claude Code、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI — と Gemini CLI(レガシーラッパー)を列挙します。ヘルプバンドルは 29 H2 / 105 H3 構造を維持します。
+
 ## [1.125.4] — 2026-07-23
 
 ### 変更

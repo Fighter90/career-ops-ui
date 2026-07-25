@@ -2,6 +2,14 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.126.0] — 2026-07-25
+
+### Eklendi
+- **AI CLI araçları sekmesi artık career-ops'un 8 birinci sınıf CLI'sinin tümünü algılıyor** — `#/config` listesi üst projenin `docs/SUPPORTED_CLIS.md` dosyasıyla senkronlandı: `server/lib/routes/cli-detect.mjs` **Grok Build CLI** (`grok`) ve **Kimi CLI** (`kimi`) kazanıyor ve Antigravity artık önce kanonik `agy` ikili dosyasını yokluyor. Salt-okunur PATH taraması artık **9 araç** bildiriyor; bulunan bir ikiliyi hâlâ asla çalıştırmıyor.
+
+### Değiştirildi
+- **career-ops.org/docs ile dokümantasyon yeniden senkronu** — her doküman yüzeyi üst projenin canlı sayfalarıyla (31'inin tümü okundu) karşılaştırıldı. Kanonik AI asistan listesi (help ×17 + README ×17) artık 8 birinci sınıf CLI'yi — Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI — ve Gemini CLI'yi (eski sarmalayıcı) listeliyor. Yardım paketleri 29 H2 / 105 H3 yapısını koruyor.
+
 ## [1.125.4] — 2026-07-23
 
 ### Değiştirildi

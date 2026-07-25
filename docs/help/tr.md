@@ -13,7 +13,7 @@ kenar çubuğundaki içindekiler tablosu üzerinden geçin.
 ### career-ops hakkında
 
 [career-ops](https://career-ops.org), herhangi bir yapay zeka
-kodlama CLI'sinin (Claude Code, Gemini CLI, Codex, Qwen Code, OpenCode, GitHub Copilot CLI — diğer Claude uyumlu CLI'ler de aynı slash-komut yüzeyi üzerinden çalışır) içinde slash komutları olarak çalışan açık kaynaklı bir iş arama sistemidir. Modelden bağımsızdır.
+kodlama CLI'sinin (Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — diğer Claude uyumlu CLI'ler de aynı slash-komut yüzeyi üzerinden çalışır) içinde slash komutları olarak çalışan açık kaynaklı bir iş arama sistemidir. Modelden bağımsızdır.
 Her ilanı CV'nizle altı boyutlu, 0.0–5.0 puanlık bir
 rubrik üzerinden değerlendirir, size özel PDF özgeçmişler oluşturur ve
 her başvuruyu makinenizde yerel olarak takip eder.
@@ -87,7 +87,7 @@ her başvuruyu makinenizde yerel olarak takip eder.
 
 | | career-ops (CLI) | career-ops-ui (bu uygulama) |
 |---|---|---|
-| Nerede çalışır | Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI içinde | tarayıcınızda `http://127.0.0.1:4317` |
+| Nerede çalışır | Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) içinde | tarayıcınızda `http://127.0.0.1:4317` |
 | Yüzey | `/career-ops <mode>` slash komutları | her iş akışı için bir sayfa içeren kenar çubuğu |
 | Form doldurma | evet, Playwright MCP aracılığıyla | hayır — kontrol listesini oluşturur, siz CLI'de tamamlarsınız |
 | PDF | `generate-pdf.mjs` | `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` üzerinde `📄 Generate PDF` |
@@ -372,7 +372,7 @@ terfi ettirildi).
 
 > **v1.55 → v1.56'da yeni.** Hiçbir LLM anahtarı ayarlı **değilken**, her ekranda kırmızı bir afiş ⚡ Run-live'ın elle-prompt modunda olduğunu açıklar ve buraya bağlanır; bir anahtar ayarlandığında, aktif sağlayıcıyı adlandıran sessiz bir çipe dönüşür. Herhangi bir ⚡ Run-live düğmesinden önce (`#/auto`, `#/evaluate`, `#/deep`, modlar) dürüst bir maliyet tahmini gösterilir (ör. "Estimated cost: OpenAI gpt-5-codex · ~$0.04/eval" veya elle modda API-maliyeti-yok notu). `#/scan` ikincil filtreleri bir **Advanced filters** açılırının arkasına gizler; `#/tracker` tıklanabilir huni çipleri + opsiyonel sunucu tarafı sayfalama ekler; `#/pipeline` 1000 satırın ötesinde sanallaştırır.
 
-**Yapay zeka CLI araçları.** **Yapay zeka CLI araçları** sekmesi, sunucuda hangi ajan CLI'larının (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity) kurulu olduğunu gösterir — çalıştırmadan salt okunur bir PATH taraması. **Görünüm → Şirket logolarını göster** (varsayılan kapalı), her şirketin favicon'unu kendi alan adından alıp tarama tablosunda gösterir (asla üçüncü taraf servis değil).
+**Yapay zeka CLI araçları.** **Yapay zeka CLI araçları** sekmesi, sunucuda hangi ajan CLI'larının (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) kurulu olduğunu gösterir — çalıştırmadan salt okunur bir PATH taraması. **Görünüm → Şirket logolarını göster** (varsayılan kapalı), her şirketin favicon'unu kendi alan adından alıp tarama tablosunda gösterir (asla üçüncü taraf servis değil).
 
 Üç sekme:
 
@@ -399,7 +399,7 @@ terfi ettirildi).
 
 Herhangi bir sekmedeki bir kaydetme anında yayılır — sunucu yeniden başlatması gerekmez.
 
-**LLM sağlayıcınızı ayarlama (adım adım).** Web arayüzünün ⚡ canlı değerlendirmesi *headless* çalışır ve tek bir API anahtarı kullanır. "OR" mantığıyla çalışır — bunlardan **herhangi birini** ayarlayın ve öylece çalışır; birkaçı ayarlıysa, `auto` şu sırayla tercih eder: Anthropic → Gemini → OpenAI → Qwen. (career-ops'un kendisi CLI'den bağımsızdır — onu Claude Code, Codex, Gemini, OpenCode, Qwen, Copilot veya Kimi içinde de çalıştırırsınız; bu, bu headless anahtardan ayrıdır.)
+**LLM sağlayıcınızı ayarlama (adım adım).** Web arayüzünün ⚡ canlı değerlendirmesi *headless* çalışır ve tek bir API anahtarı kullanır. "OR" mantığıyla çalışır — bunlardan **herhangi birini** ayarlayın ve öylece çalışır; birkaçı ayarlıysa, `auto` şu sırayla tercih eder: Anthropic → Gemini → OpenAI → Qwen. (career-ops'un kendisi CLI'den bağımsızdır — onu Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot veya Kimi içinde de çalıştırırsınız; bu, bu headless anahtardan ayrıdır.)
 
 1. `#/config` → **API keys & runtime** sekmesini açın.
 2. Sağlayıcınızı **`LLM_PROVIDER`** içinde seçin: `auto` (hangi anahtar ayarlıysa onu kullan) ya da `claude` / `gemini` / `openai` / `qwen` ile birini zorlayın.

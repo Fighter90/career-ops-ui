@@ -9,6 +9,14 @@
 ---
 
 
+## [1.126.0] — 2026-07-25
+
+### Добавлено
+- **Вкладка AI CLI tools теперь детектит все 8 первоклассных CLI career-ops** — ростер `#/config` синхронизирован с родительским `docs/SUPPORTED_CLIS.md`: в `server/lib/routes/cli-detect.mjs` добавлены **Grok Build CLI** (`grok`) и **Kimi CLI** (`kimi`), а Antigravity теперь сначала ищет канонический бинарник `agy`. Read-only-скан PATH теперь сообщает **9 инструментов**; найденный бинарник по-прежнему никогда не запускается.
+
+### Изменено
+- **Ресинк документации с career-ops.org/docs** — сверил каждую поверхность доков с живыми страницами родителя (прочитаны все 31). Канонический ростер AI-ассистентов (help ×17 + README ×17) теперь перечисляет 8 первоклассных CLI — Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI — плюс Gemini CLI (legacy-обёртка). Help-бандлы сохраняют структуру 29 H2 / 105 H3.
+
 ## [1.125.4] — 2026-07-23
 
 ### Изменено

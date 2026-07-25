@@ -9,6 +9,14 @@
 ---
 
 
+## [1.126.0] — 2026-07-25
+
+### 新增
+- **AI CLI 工具选项卡现在检测 career-ops 全部 8 个一级 CLI** — `#/config` 名单已与父项目 `docs/SUPPORTED_CLIS.md` 同步:`server/lib/routes/cli-detect.mjs` 新增 **Grok Build CLI**(`grok`)与 **Kimi CLI**(`kimi`),Antigravity 现在优先探测其规范二进制 `agy`。只读 PATH 扫描现报告 **9 个工具**,仍然从不执行找到的二进制。
+
+### 变更
+- **与 career-ops.org/docs 的文档重新同步** — 已将每个文档面与父项目的实时页面(全部 31 页已读)核对。规范 AI 助手名单(help ×17 + README ×17)现列出 8 个一级 CLI — Claude Code、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI — 外加 Gemini CLI(旧版包装)。帮助包保持 29 H2 / 105 H3 结构。
+
 ## [1.125.4] — 2026-07-23
 
 ### 变更

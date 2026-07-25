@@ -10,7 +10,7 @@
 ### 关于 career-ops
 
 [career-ops](https://career-ops.org) 是一个开源求职系统,以 slash 命
-令的形式在任意 AI 编码 CLI(Claude Code、Gemini CLI、Codex、Qwen Code、OpenCode、GitHub Copilot CLI — 其他 Claude 兼容 CLI 也通过相同的斜杠命令接口运行)中运行。它与具体模型无关。系统按六维 0.0–5.0 评
+令的形式在任意 AI 编码 CLI(Claude Code、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 兼容 CLI 也通过相同的斜杠命令接口运行)中运行。它与具体模型无关。系统按六维 0.0–5.0 评
 分体系将每个职位与你的 CV 匹配,生成定制化的 PDF 简历,并在本地机器
 上追踪每一次申请记录。
 
@@ -77,7 +77,7 @@
 
 | | career-ops(CLI) | career-ops-ui(本应用) |
 |---|---|---|
-| 运行位置 | Claude Code / Gemini CLI / Codex / Qwen Code / OpenCode / GitHub Copilot CLI 内部 | 浏览器中的 `http://127.0.0.1:4317` |
+| 运行位置 | Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) 内部 | 浏览器中的 `http://127.0.0.1:4317` |
 | 界面形式 | `/career-ops <mode>` slash 命令 | 侧边栏,每个工作流对应一页 |
 | 表单填写 | 支持,通过 Playwright MCP | 不支持 — 生成清单,你在 CLI 中完成填写 |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` 按钮位于 `#/cv`、`#/reports/:slug`、`#/evaluate`、`#/deep`、`#/interview-prep` |
@@ -307,7 +307,7 @@ LinkedIn / 邮件消息。把开场白个性化(嵌入一条来自深度调研�
 
 > **v1.55 → v1.56 新功能。** 未设置 LLM 密钥时,每屏的红色横幅说明 ⚡ 实时运行处于手动提示模式并链接至此;设置密钥后变为显示活动提供方的低调徽标。每个 ⚡ 实时运行按钮(`#/auto`、`#/evaluate`、`#/deep`、模式)前显示诚实的预计费用(如“预计费用:OpenAI gpt-5-codex · ~$0.04/eval”,手动模式则无 API 费用)。`#/scan` 将次要筛选收入**高级筛选**折叠区;`#/tracker` 新增可点击漏斗芯片 + 可选服务端分页;`#/pipeline` 超过 1000 行时虚拟化。
 
-**AI CLI 工具。** **AI CLI 工具**标签页显示服务器上安装了哪些智能体 CLI(Claude Code、Codex、Gemini、OpenCode、Copilot、Qwen、Antigravity)——只读 PATH 扫描,不运行。**外观 → 显示公司徽标**(默认关闭)从各公司自己域名获取 favicon 显示在扫描表中(非第三方服务)。
+**AI CLI 工具。** **AI CLI 工具**标签页显示服务器上安装了哪些智能体 CLI(Claude Code、Codex、Gemini、OpenCode、Copilot、Qwen、Antigravity、Kimi CLI、Grok Build CLI)——只读 PATH 扫描,不运行。**外观 → 显示公司徽标**(默认关闭)从各公司自己域名获取 favicon 显示在扫描表中(非第三方服务)。
 
 两个选项卡:
 
@@ -320,7 +320,7 @@ LinkedIn / 邮件消息。把开场白个性化(嵌入一条来自深度调研�
 
 两个选项卡的任意保存都会立即生效 — 无需重启服务器。
 
-**设置你的 LLM 供应方(分步)。** web UI 的 ⚡ 实时评估以*无头*方式运行,使用一个 API 密钥。它通过 "OR" 工作 —— 设置其中**任意一个**即可正常工作;设置多个时,`auto` 按此顺序优先:Anthropic → Gemini → OpenAI → Qwen。(career-ops 本身是 CLI 无关的 —— 你也可以在 Claude Code、Codex、Gemini、OpenCode、Qwen、Copilot 或 Kimi 内运行它;那与此无头密钥无关。)
+**设置你的 LLM 供应方(分步)。** web UI 的 ⚡ 实时评估以*无头*方式运行,使用一个 API 密钥。它通过 "OR" 工作 —— 设置其中**任意一个**即可正常工作;设置多个时,`auto` 按此顺序优先:Anthropic → Gemini → OpenAI → Qwen。(career-ops 本身是 CLI 无关的 —— 你也可以在 Claude Code、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot 或 Kimi 内运行它;那与此无头密钥无关。)
 
 1. 打开 `#/config` → **API keys & runtime** 选项卡。
 2. 在 **`LLM_PROVIDER`** 中选择你的供应方:`auto`(使用已设置的密钥),或用 `claude` / `gemini` / `openai` / `qwen` 强制指定一个。

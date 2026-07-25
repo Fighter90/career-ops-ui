@@ -42,14 +42,14 @@ test('detectClis reports the fake gemini as installed with its path, others not'
   assert.equal(claude.installed, false);
   assert.equal(claude.path, null);
   // The known allowlist is fixed (7 agent CLIs).
-  assert.equal(tools.length, 7);
+  assert.equal(tools.length, 9);
 });
 
 test('GET /api/cli-detect returns the tools list + platform', async () => {
   const r = await fetch(`${baseUrl}/api/cli-detect`);
   assert.equal(r.status, 200);
   const j = await r.json();
-  assert.ok(Array.isArray(j.tools) && j.tools.length === 7);
+  assert.ok(Array.isArray(j.tools) && j.tools.length === 9);
   assert.ok(j.tools.every((t) => typeof t.id === 'string' && typeof t.installed === 'boolean'));
   assert.equal(typeof j.platform, 'string');
 });
