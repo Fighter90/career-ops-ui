@@ -163,7 +163,7 @@ window.__I18N_DICT_ES = {
   'config.gotoHealth': "Verificar en Health",
   'config.llmProvider': "Proveedor LLM",
   'config.llmProviderHint': "auto = usa la clave que esté definida, prefiriendo Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = forzar ese. Proveedor forzado sin clave → modo manual.",
-  'config.providerModelNote': "career-ops es agnóstico de CLI — lo ejecutas dentro de cualquier CLI de IA (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi), cada una con su propio inicio de sesión. Esta interfaz web es aparte: su eval en vivo ⚡ corre headless y usa tu clave Anthropic o Gemini de abajo. La clave/modelo OpenAI se guardan para el flujo Codex/OpenAI del proyecto padre — no los usa la interfaz web.",
+  'config.providerModelNote': "career-ops es agnóstico de CLI — lo ejecutas dentro de cualquier CLI de IA (Claude Code · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi), cada una con su propio inicio de sesión. Esta interfaz web es aparte: su eval en vivo ⚡ corre headless y usa tu clave Anthropic o Gemini de abajo. La clave/modelo OpenAI se guardan para el flujo Codex/OpenAI del proyecto padre — no los usa la interfaz web.",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys. v1.55.0: también ejecuta la eval en vivo de web-ui (3ª en el orden auto, tras Anthropic y Gemini); aún la lee el flujo Codex/OpenAI del proyecto padre.",
   'config.anthropicKey': "Clave API Anthropic (Claude)",

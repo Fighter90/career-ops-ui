@@ -929,7 +929,7 @@ IA consumido — bate diretamente nas APIs públicas dos boards.
 /career-ops scan
 ```
 
-Dentro de Claude Code / Codex / Cursor / Gemini CLI. Usa tokens do
+Dentro de Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Usa tokens do
 modelo. Visita cada página de `tracked_companies` diretamente e pode
 descobrir boards não-API (páginas de carreiras, ATS custom, portais
 regionais). Mais lento, porém mais amplo. Útil quando uma varredura

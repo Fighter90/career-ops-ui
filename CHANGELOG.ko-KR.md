@@ -9,6 +9,11 @@
 ---
 
 
+## [1.126.1] — 2026-07-25
+
+### 수정
+- **v1.126.0 재동기화가 놓친 CLI 로스터 드리프트 두 곳** — (1) `#/config`의 **API keys** 탭 인트로(`config.providerModelNote`, i18n ×17)가 7개 CLI만 나열 — 이제 **Antigravity**와 **Grok Build**가 OpenCode 뒤에 삽입됨; (2) 도움말 가이드(×17)의 두 번째 비교표 행과 CI 빌드 사이트 help가 여전히 `Inside Claude Code / Codex / Cursor / Gemini CLI`(구식 **Cursor** 포함)였음 — 이제 전체 로스터. 둘 다 v1.126.0 스윕 패턴이 다루지 못한 슬래시/가운뎃점 구분자를 사용. i18n 스냅샷 재생성; 스위트는 **1969** 유지.
+
 ## [1.126.0] — 2026-07-25
 
 ### 추가

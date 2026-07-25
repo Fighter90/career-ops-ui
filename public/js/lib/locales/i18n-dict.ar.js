@@ -162,7 +162,7 @@ window.__I18N_DICT_AR = {
   'config.gotoHealth': "التحقق في الصحة",
   'config.llmProvider': "مزوّد LLM",
   'config.llmProviderHint': "auto = استخدام أي مفتاح متاح، مع تفضيل Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = إجبار هذا المزوّد. مزوّد مجبر بدون مفتاح → وضع الأمر اليدوي.",
-  'config.providerModelNote': "career-ops محايد للأداة — يمكنك تشغيله داخل أي أداة برمجة ذكاء اصطناعي (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi)، لكل منها تسجيل دخول خاص بها. واجهة الويب هذه منفصلة: تقييمها المباشر ⚡ يعمل بدون واجهة ويستخدم مفتاح Anthropic أو Gemini API أدناه. مفتاح/نموذج OpenAI مخزّن لتدفق Codex/OpenAI CLI الأصلي — غير مستخدم من واجهة الويب نفسها.",
+  'config.providerModelNote': "career-ops محايد للأداة — يمكنك تشغيله داخل أي أداة برمجة ذكاء اصطناعي (Claude Code · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi)، لكل منها تسجيل دخول خاص بها. واجهة الويب هذه منفصلة: تقييمها المباشر ⚡ يعمل بدون واجهة ويستخدم مفتاح Anthropic أو Gemini API أدناه. مفتاح/نموذج OpenAI مخزّن لتدفق Codex/OpenAI CLI الأصلي — غير مستخدم من واجهة الويب نفسها.",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → مفاتيح API. v1.55.0: يشغّل أيضًا التقييم المباشر لواجهة الويب (الثالث في الترتيب التلقائي، بعد Anthropic وGemini)؛ لا يزال يُقرأ أيضًا بواسطة تدفق Codex/OpenAI CLI الأصلي.",
   'config.anthropicKey': "مفتاح Anthropic API (Claude)",

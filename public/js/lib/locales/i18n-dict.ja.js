@@ -163,7 +163,7 @@ window.__I18N_DICT_JA = {
   'config.gotoHealth': "Health で確認",
   'config.llmProvider': "LLM プロバイダ",
   'config.llmProviderHint': "auto = 設定済みのキーを使用し Anthropic → Gemini → OpenAI → Qwen → OpenRouter を優先。claude / gemini / openai / qwen / openrouter = そのプロバイダを強制。強制プロバイダのキー無し → 手動プロンプト。",
-  'config.providerModelNote': "career-ops は CLI 非依存です — 任意の AI コーディング CLI（Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi）内で実行し、各自でログインします。この Web UI は別物で、⚡ ライブ評価はヘッドレスで動作し下記の Anthropic か Gemini の API キーを使います。OpenAI のキー/モデルは親の Codex/OpenAI CLI フロー用に保存され、Web UI 自体は使いません。",
+  'config.providerModelNote': "career-ops は CLI 非依存です — 任意の AI コーディング CLI（Claude Code · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi）内で実行し、各自でログインします。この Web UI は別物で、⚡ ライブ評価はヘッドレスで動作し下記の Anthropic か Gemini の API キーを使います。OpenAI のキー/モデルは親の Codex/OpenAI CLI フロー用に保存され、Web UI 自体は使いません。",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys。v1.55.0: web-ui ライブ評価も実行（auto 順で Anthropic・Gemini の次、3番目）。親の Codex/OpenAI CLI フローでも引き続き使用。",
   'config.anthropicKey': "Anthropic API キー (Claude)",

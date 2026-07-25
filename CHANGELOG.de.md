@@ -2,6 +2,11 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.126.1] — 2026-07-25
+
+### Behoben
+- **Zwei CLI-Roster-Drift-Stellen, die der v1.126.0-Resync übersah** — (1) das Intro des **API keys**-Tabs in `#/config` (`config.providerModelNote`, i18n ×17) listete nur 7 CLIs — **Antigravity** und **Grok Build** werden nun nach OpenCode eingefügt; (2) eine zweite Vergleichstabellen-Zeile im Hilfe-Guide (×17) und das im CI gebaute Site-Help zeigten weiterhin `Inside Claude Code / Codex / Cursor / Gemini CLI` — das veraltete Set mit **Cursor** — jetzt das vollständige Roster. Beide nutzten Schrägstrich-/Mittelpunkt-Trenner, die die Muster des v1.126.0-Sweeps nicht abdeckten. i18n-Snapshot neu generiert; Suite bleibt bei **1969**.
+
 ## [1.126.0] — 2026-07-25
 
 ### Hinzugefügt

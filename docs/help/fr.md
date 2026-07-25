@@ -1032,7 +1032,7 @@ SmartRecruiters / Workday (URL ATS reconnaissables). Aucun token IA consommé
 /career-ops scan
 ```
 
-Dans Claude Code / Codex / Cursor / Gemini CLI. Utilise des tokens de modèle.
+Dans Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Utilise des tokens de modèle.
 Visite chaque page `tracked_companies` directement et peut découvrir des
 sites non-API (pages carrières, ATS personnalisés, portails régionaux). Plus
 lent mais plus large. Utile quand une passe ATS ne renvoie rien pour une

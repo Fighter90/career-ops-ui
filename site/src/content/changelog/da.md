@@ -10,6 +10,11 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 
 
+## [1.126.1] — 2026-07-25
+
+### Rettet
+- **To CLI-roster-drift-steder som v1.126.0-resyncen missede** — (1) introen på **API keys**-fanen i `#/config` (`config.providerModelNote`, i18n ×17) listede kun 7 CLIer — nu indsættes **Antigravity** og **Grok Build** efter OpenCode; (2) en anden sammenligningstabel-række i hjælpeguiden (×17) og det CI-byggede site-help stod stadig `Inside Claude Code / Codex / Cursor / Gemini CLI` — det forældede sæt med **Cursor** — nu det fulde roster. Begge brugte skråstreg/midtpunkt-separatorer som v1.126.0-fejningens mønstre ikke dækkede. i18n-snapshot regenereret; suiten forbliver **1969**.
+
 ## [1.126.0] — 2026-07-25
 
 ### Tilføjet

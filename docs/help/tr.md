@@ -1062,7 +1062,7 @@ Yapay zeka token'ı tüketmez — genel boards API'lerine doğrudan gider.
 /career-ops scan
 ```
 
-Claude Code / Codex / Cursor / Gemini CLI içinde. Model token'ları
+Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) içinde. Model token'ları
 kullanır. Her `tracked_companies` sayfasını doğrudan ziyaret eder ve
 API-olmayan kartları keşfedebilir (kariyer sayfaları, özel ATS,
 bölgesel portallar). Daha yavaş ama daha geniş. İşe aldığını bildiğiniz

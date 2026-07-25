@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.126.1] — 2026-07-25
+
+### Düzeltildi
+- **v1.126.0 yeniden senkronunun kaçırdığı iki CLI listesi kayması** — (1) `#/config` **API keys** sekmesi girişi (`config.providerModelNote`, i18n ×17) yalnızca 7 CLI listeliyordu — artık **Antigravity** ve **Grok Build** OpenCode'dan sonra ekleniyor; (2) yardım kılavuzundaki (×17) ikinci karşılaştırma tablosu satırı ve CI'da derlenen site help'i hâlâ `Inside Claude Code / Codex / Cursor / Gemini CLI` (eski **Cursor** içeren küme) diyordu — artık tam liste. İkisi de v1.126.0 taramasının desenlerinin kapsamadığı eğik çizgi/orta nokta ayırıcıları kullanıyordu. i18n anlık görüntüsü yeniden üretildi; paket **1969**'da kalıyor.
+
 ## [1.126.0] — 2026-07-25
 
 ### Eklendi

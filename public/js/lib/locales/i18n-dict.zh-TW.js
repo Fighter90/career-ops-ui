@@ -163,7 +163,7 @@ window.__I18N_DICT_ZH_TW = {
   'config.gotoHealth': "在 Health 驗證",
   'config.llmProvider': "LLM 供應方",
   'config.llmProviderHint': "auto = 使用已設定的任一 key，優先 Anthropic → Gemini → OpenAI → Qwen → OpenRouter。claude / gemini / openai / qwen / openrouter = 強制該方。強制方無 key → 手動 prompt。",
-  'config.providerModelNote': "career-ops 與 CLI 無關 —— 你在任意 AI 編碼 CLI（Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi）內執行它，各自登入。此 Web 介面是獨立的：其 ⚡ 即時評估以無頭方式執行，使用下方的 Anthropic 或 Gemini API 金鑰。OpenAI 金鑰/模型僅為父專案 Codex/OpenAI CLI 流程而儲存 —— Web 介面本身不使用。",
+  'config.providerModelNote': "career-ops 與 CLI 無關 —— 你在任意 AI 編碼 CLI（Claude Code · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi）內執行它，各自登入。此 Web 介面是獨立的：其 ⚡ 即時評估以無頭方式執行，使用下方的 Anthropic 或 Gemini API 金鑰。OpenAI 金鑰/模型僅為父專案 Codex/OpenAI CLI 流程而儲存 —— Web 介面本身不使用。",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys。v1.55.0：也執行 web-ui 即時評估（auto 順序中第 3 位，在 Anthropic 與 Gemini 之後）；父專案 Codex/OpenAI CLI 流程仍會讀取。",
   'config.anthropicKey': "Anthropic API 金鑰 (Claude)",

@@ -11,6 +11,11 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.126.1] — 2026-07-25
+
+### Corregido
+- **Dos puntos de deriva del roster de CLI que el resync de v1.126.0 omitió** — (1) el intro de la pestaña **API keys** de `#/config` (`config.providerModelNote`, i18n ×17) listaba solo 7 CLIs — ahora **Antigravity** y **Grok Build** se insertan tras OpenCode; (2) una segunda fila de tabla comparativa en la guía de ayuda (×17) y el help del sitio (construido en CI) aún decían `Inside Claude Code / Codex / Cursor / Gemini CLI` — el conjunto obsoleto con **Cursor** — ahora el roster completo. Ambos usaban separadores barra/punto medio que los patrones del barrido v1.126.0 no cubrían. Snapshot i18n regenerado; suite sigue en **1969**.
+
 ## [1.126.0] — 2026-07-25
 
 ### Añadido

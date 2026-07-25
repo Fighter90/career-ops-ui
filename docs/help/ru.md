@@ -921,7 +921,7 @@ SmartRecruiters / Workday (распознаваемые ATS-URL). AI-токен�
 /career-ops scan
 ```
 
-Внутри Claude Code / Codex / Cursor / Gemini CLI. Использует токены
+Внутри Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Использует токены
 модели. Заходит на каждую страницу `tracked_companies` напрямую и
 умеет находить доски без API (career-страницы, кастомные ATS,
 региональные порталы). Медленнее, но шире. Полезно, когда

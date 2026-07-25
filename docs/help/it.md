@@ -1034,7 +1034,7 @@ Nessun token AI consumato — colpisce le API dei board pubblici direttamente.
 /career-ops scan
 ```
 
-Dentro Claude Code / Codex / Cursor / Gemini CLI. Usa token del modello.
+Dentro Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Usa token del modello.
 Visita ogni pagina `tracked_companies` direttamente e può scoprire board
 non-API (pagine carriere, ATS custom, portali regionali). Più lento ma
 più ampio. Utile quando una scansione ATS non restituisce nulla per un target che

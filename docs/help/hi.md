@@ -1181,7 +1181,7 @@ npm run scan -- --company Anthropic   # narrow to one tracked company
 /career-ops scan
 ```
 
-Claude Code / Codex / Cursor / Gemini CLI के अंदर। मॉडल टोकन इस्तेमाल
+Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) के अंदर। मॉडल टोकन इस्तेमाल
 करता है। हर `tracked_companies` पेज पर सीधे जाता है और non-API बोर्ड्स
 (career pages, कस्टम ATS, रीजनल पोर्टल्स) भी खोज सकता है। धीमा पर
 ज़्यादा व्यापक। तब उपयोगी जब ATS स्वीप किसी ऐसे टारगेट के लिए कुछ न

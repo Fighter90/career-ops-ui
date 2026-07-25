@@ -11,6 +11,11 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.126.1] — 2026-07-25
+
+### Corrigé
+- **Deux points de dérive du roster CLI que le resync de v1.126.0 a manqués** — (1) l'intro de l'onglet **API keys** de `#/config` (`config.providerModelNote`, i18n ×17) ne listait que 7 CLIs — **Antigravity** et **Grok Build** sont désormais insérés après OpenCode ; (2) une seconde ligne de tableau comparatif dans le guide d'aide (×17) et le help du site (construit en CI) affichaient encore `Inside Claude Code / Codex / Cursor / Gemini CLI` — l'ensemble obsolète avec **Cursor** — désormais le roster complet. Les deux utilisaient des séparateurs slash/point médian que les motifs du balayage v1.126.0 ne couvraient pas. Snapshot i18n régénéré ; la suite reste à **1969**.
+
 ## [1.126.0] — 2026-07-25
 
 ### Ajouté
