@@ -9,6 +9,11 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.129.0] — 2026-07-29
+
+### Dodano
+- **Faseta poziomu + kolumna wieku w `#/scan`** — biblioteka `job-facets.js` z v1.128.0 jest teraz wpięta w UI skanowania (wcześniej tylko logika). Nowa lista **Poziom** klasyfikuje tytuł każdej oferty na lead/staff/senior/mid/junior/stażysta (`JobFacets.seniorityFromTitle`) i wypełnia się tym, co faktycznie jest w wynikach (jak faseta Kraj); tytuły bez słowa poziomu zawsze przechodzą. Utrzymywana w zapisanych wyszukiwaniach, Resecie i Zastosuj. Tabela zyskuje kolumnę **Poziom** (badge) i beztokenową kolumnę **Wiek** (`dziś` / `Nd`, z `JobFacets.daysSince`). 12 kluczy i18n ×17, +3 testy → **2069**.
+
 ## [1.128.0] — 2026-07-29
 
 ### Dodano

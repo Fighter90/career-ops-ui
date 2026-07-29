@@ -260,6 +260,33 @@ Router.register('scan', async () => {
     c('option', { value: '7' }, t('scan.age7d', 'Last 7 days')),
     c('option', { value: '30' }, t('scan.age30d', 'Last 30 days')),
   ]);
+  // v1.129.0 — Seniority facet (zero-token, client-side via job-facets.js).
+  // Buckets each posting's title into lead/staff/senior/mid/junior/intern;
+  // the dropdown auto-populates from what's actually in the results (like the
+  // country filter). Titles with no seniority word (bucket null) always pass.
+  const SEN_ORDER = (window.JobFacets && window.JobFacets.SENIORITY_ORDER) || ['lead', 'staff', 'senior', 'mid', 'junior', 'intern'];
+  const senOf = (r) => (window.JobFacets ? window.JobFacets.seniorityFromTitle(r && r.title) : null);
+  // Literal-key label lookup: a concatenated dynamic key would read as an
+  // unmapped key to the i18n-coverage gate, so every key here is a literal.
+  const senLabel = (s) => ({
+    lead: t('scan.sen.lead', 'Lead'), staff: t('scan.sen.staff', 'Staff'),
+    senior: t('scan.sen.senior', 'Senior'), mid: t('scan.sen.mid', 'Mid'),
+    junior: t('scan.sen.junior', 'Junior'), intern: t('scan.sen.intern', 'Intern'),
+  }[s] || s);
+  const filterSeniority = c('select', { className: 'select' }, [
+    c('option', { value: '' }, t('scan.allSeniority', 'All seniority')),
+  ]);
+  function paintSeniorityOptions(rows) {
+    const prev = filterSeniority.value;
+    while (filterSeniority.children.length > 1) filterSeniority.removeChild(filterSeniority.lastChild);
+    const counts = {};
+    for (const r of rows || []) { const s = senOf(r); if (s) counts[s] = (counts[s] || 0) + 1; }
+    for (const s of SEN_ORDER) {
+      if (!counts[s]) continue;
+      filterSeniority.appendChild(c('option', { value: s }, `${senLabel(s)} (${counts[s]})`));
+    }
+    if (prev && [...filterSeniority.options].some((o) => o.value === prev)) filterSeniority.value = prev;
+  }
   // v1.80.0 — ⭐ favorites-only toggle (localStorage-backed, by job URL).
   const favOnly = c('input', { type: 'checkbox', id: 'fav-only' });
 
@@ -546,6 +573,7 @@ Router.register('scan', async () => {
     // v1.78.0 — refresh the country dropdown from the (scope-filtered) corpus so
     // it lists exactly the countries present, each with a count.
     paintCountryOptions(allRows);
+    paintSeniorityOptions(allRows);
     const enWhen = lastResults.en?.when ? new Date(lastResults.en.when).toLocaleString('ru') : null;
     const ruWhen = lastResults.ru?.when ? new Date(lastResults.ru.when).toLocaleString('ru') : null;
 
@@ -599,6 +627,7 @@ Router.register('scan', async () => {
     const fr = filterRemote.value;
     const fs = filterSource.value;
     const fc = filterCountry.value; // v1.78.0 — country code or '' (all)
+    const fsen = filterSeniority.value; // v1.129.0 — seniority bucket or '' (all)
     const fa = parseInt(filterAge.value, 10); // v1.80.0 — max age in days (NaN = any)
     const ageCutoff = Number.isFinite(fa) && fa > 0 ? Date.now() - fa * 86400000 : null;
     // v1.80.0 — favorites-only: snapshot the starred set once per render.
@@ -615,6 +644,9 @@ Router.register('scan', async () => {
       if (fr === 'reloc' && !r.relocates) return false;
       if (fs && r.source !== fs) return false;
       if (fc && !window.Countries.rowInCountry(r, fc)) return false;
+      // v1.129.0 — seniority: keep only the selected bucket; titles with no
+      // seniority word (bucket null) always pass, like the other facets.
+      if (fsen && senOf(r) !== fsen) return false;
       if (favSet && !favSet.has(r.url)) return false;
       // age: rows with a parseable date older than the cutoff are dropped;
       // dateless rows pass (don't penalize missing data).
@@ -715,21 +747,36 @@ Router.register('scan', async () => {
         ? c('td', { style: { minWidth: '160px' } },
             c('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } }, [logo, c('span', null, r.company || '—')]))
         : c('td', { style: { minWidth: '160px' } }, r.company || '—');
+      // v1.129.0 — zero-token seniority bucket + freshness ("Nd" / today) from
+      // job-facets.js. Both are best-effort: a title with no seniority word or
+      // a job with no listed date renders an empty cell.
+      const sen = senOf(r);
+      const senCell = c('td', null, sen
+        ? c('span', { className: 'badge', style: { fontSize: '11px' } }, senLabel(sen))
+        : '');
+      const days = window.JobFacets ? window.JobFacets.daysSince(r.date) : null;
+      const freshText = days == null ? '' : (days <= 0 ? t('scan.freshToday', 'today') : days + t('scan.dSuffix', 'd'));
+      const freshCell = c('td', {
+        style: { fontSize: '13px', color: 'var(--foggy)', whiteSpace: 'nowrap' },
+        title: r.date || '',
+      }, freshText);
       return c('tr', null, [
         starCell,
         companyCell,
         titleCell,
+        senCell,
         c('td', { style: { fontSize: '13px', color: 'var(--foggy)' } }, r.location || '—'),
         c('td', null, c('span', { className: 'badge ' + wtClass }, wt)),
         c('td', null, r.relocates ? c('span', { className: 'badge badge-info' }, t('scan.relocBadge', 'reloc')) : ''),
         c('td', { style: { fontSize: '13px', color: 'var(--foggy)' } }, r.salary || ''),
+        freshCell,
         c('td', null, c('span', { className: 'tag' }, r.source)),
       ]);
     }));
     resultsEl.appendChild(c('div', { className: 'table-wrap' },
       c('table', { className: 'tbl' }, [
         c('thead', null, c('tr', null,
-          ['★', t('scan.col.company'), t('scan.col.role'), t('scan.col.loc'), t('scan.col.type'), 'Reloc', t('scan.col.salary'), t('scan.col.source')].map((h) => c('th', null, h))
+          ['★', t('scan.col.company'), t('scan.col.role'), t('scan.col.seniority', 'Seniority'), t('scan.col.loc'), t('scan.col.type'), 'Reloc', t('scan.col.salary'), t('scan.col.age', 'Age'), t('scan.col.source')].map((h) => c('th', null, h))
         )),
         tbody,
       ])
@@ -751,6 +798,7 @@ Router.register('scan', async () => {
     filterSalaryMax.value = '';
     filterSource.value = '';
     filterCountry.value = '';
+    filterSeniority.value = '';
     filterScope.value = 'all';
     filterAge.value = '';
     favOnly.checked = false;
@@ -763,6 +811,7 @@ Router.register('scan', async () => {
       text: filterText.value, exclude: filterExclude.value, remote: filterRemote.value,
       salaryMin: filterSalaryMin.value, salaryMax: filterSalaryMax.value,
       source: filterSource.value, country: filterCountry.value,
+      seniority: filterSeniority.value,
       scope: filterScope.value, age: filterAge.value, favOnly: favOnly.checked,
       tech: [...activeTech], level: [...activeLevel], dynamic: [...activeDynamic],
     };
@@ -776,6 +825,7 @@ Router.register('scan', async () => {
     filterSalaryMax.value = s.salaryMax || '';
     filterSource.value = s.source || '';
     filterCountry.value = s.country || '';
+    filterSeniority.value = s.seniority || '';
     filterScope.value = s.scope || 'all';
     filterAge.value = s.age || '';
     favOnly.checked = !!s.favOnly;
@@ -788,7 +838,7 @@ Router.register('scan', async () => {
   ;[filterText, filterExclude, filterSalaryMin, filterSalaryMax].forEach((el) =>
     el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyFilters(); } }));
   // Selects/checkboxes feel broken if they need a second click, so they apply on change.
-  ;[filterRemote, filterSource, filterCountry, filterScope, filterAge, favOnly].forEach((el) =>
+  ;[filterRemote, filterSource, filterCountry, filterSeniority, filterScope, filterAge, favOnly].forEach((el) =>
     el.addEventListener('change', applyFilters));
 
   // v1.80.0 — saved-searches bar (localStorage via window.ScanPrefs).
@@ -970,6 +1020,7 @@ Router.register('scan', async () => {
         field(t('scan.salaryTo', 'Salary to'), filterSalaryMax),
         field(t('scan.lblSource', 'Source'), filterSource),
         field(t('scan.lblCountry', 'Country'), filterCountry),
+        field(t('scan.lblSeniority', 'Seniority'), filterSeniority),
         field(t('scan.lblAge', 'Posted within'), filterAge),
         field(t('scan.lblScope', 'Scope'), filterScope),
         // v1.80.0 — ⭐ favorites-only toggle (labelled checkbox field).

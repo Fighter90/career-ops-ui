@@ -8,6 +8,11 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.129.0] — 2026-07-29
+
+### Added
+- **`#/scan` seniority facet + freshness column** — the `job-facets.js` library shipped in v1.128.0 is now wired into the scan UI (previously logic-only). A new **Seniority** filter dropdown buckets each posting's title into lead/staff/senior/mid/junior/intern (`JobFacets.seniorityFromTitle`) and auto-populates from what's actually in the results — exactly like the Country facet; titles with no seniority word always pass. It round-trips through saved searches, Reset, and the Apply flow. The results table gains a **Seniority** badge column and a zero-token **Age** column showing freshness (`today` / `Nd`, from `JobFacets.daysSince(job.date)`; blank when the posting has no date). 12 new i18n keys ×17 (`scan.allSeniority`, `scan.lblSeniority`, `scan.col.seniority`, `scan.col.age`, `scan.freshToday`, `scan.dSuffix`, `scan.sen.{lead,staff,senior,mid,junior,intern}`). +`tests/scan-seniority-facet-v1129.test.mjs` (3) → suite **2069**.
+
 ## [1.128.0] — 2026-07-29
 
 ### Added
