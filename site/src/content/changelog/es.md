@@ -11,6 +11,11 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.129.0] — 2026-07-29
+
+### Añadido
+- **Faceta de nivel + columna de antigüedad en `#/scan`** — la librería `job-facets.js` de v1.128.0 ya está integrada en la UI de escaneo (antes solo lógica). Un nuevo desplegable **Nivel** clasifica el título de cada oferta en lead/staff/senior/mid/junior/becario (`JobFacets.seniorityFromTitle`) y se autocompleta con lo que hay en los resultados —como la faceta de País—; los títulos sin palabra de nivel siempre pasan. Se conserva en búsquedas guardadas, Restablecer y Aplicar. La tabla gana una columna **Nivel** (badge) y una columna **Antigüedad** sin tokens (`hoy` / `Nd`, de `JobFacets.daysSince`). 12 claves i18n ×17, +3 tests → **2069**.
+
 ## [1.128.0] — 2026-07-29
 
 ### Añadido

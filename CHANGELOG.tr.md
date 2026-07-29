@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.129.0] — 2026-07-29
+
+### Eklendi
+- **`#/scan` seviye faseti + yaş sütunu** — v1.128.0'de gelen `job-facets.js` kütüphanesi artık tarama arayüzüne bağlı (önceden yalnızca mantıktı). Yeni **Seviye** açılır menüsü her ilan başlığını lead/staff/senior/orta/junior/stajyer olarak sınıflar (`JobFacets.seniorityFromTitle`) ve sonuçlarda gerçekte olanlarla otomatik dolar (Ülke faseti gibi); seviye kelimesi olmayan başlıklar hep geçer. Kayıtlı aramalar, Sıfırla ve Uygula'da korunur. Tablo bir **Seviye** rozet sütunu ve token'sız bir **Yaş** sütunu (`bugün` / `Ng`, `JobFacets.daysSince`'ten) kazanır. 12 i18n anahtarı ×17, +3 test → **2069**.
+
 ## [1.128.0] — 2026-07-29
 
 ### Eklendi
