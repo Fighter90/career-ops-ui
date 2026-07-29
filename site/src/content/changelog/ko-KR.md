@@ -9,6 +9,11 @@
 ---
 
 
+## [1.129.1] — 2026-07-29
+
+### 수정
+- **v1.128/v1.129 웹 포트에 대한 AI 리뷰 후속 조치**(모두 권고, 원천 수정): `job-facets.js` 레벨 우선순위(명시적 수식어가 관리 단어보다 우선 — `Senior Engineering Manager` → `senior`, 이전 `lead`); `states.mjs` 폴백이 더 이상 고정되지 않음(성공 읽기는 메모이즈, 폴백은 캐시 없이 반환 — 부팅 시 일시적으로 부재한 부모는 다음 호출에 재읽기) + 존재하지만 손상된 파일에 `console.warn`; `score-tone.js` — 점수 없는 행은 중립(`muted`), 빨강 아님; `domainFromName()`은 `/api/logo` 전에 비-ASCII 슬러그 건너뜀; +`tests/states.test.mjs` 격리 가드. +4 테스트 → **2073**.
+
 ## [1.129.0] — 2026-07-29
 
 ### 추가

@@ -35,9 +35,11 @@ let cache = null;
 
 /**
  * Read the canonical states from `templates/states.yml`, falling back to the
- * built-in list if the file is missing or malformed. Cached per process (the
- * parent file does not change under a running server; matches how PATHS
- * resolves once — see tests/paths-once.test.mjs).
+ * built-in list if the file is missing or malformed. A SUCCESSFUL read is
+ * memoized per process (the parent file does not change under a running
+ * server; matches how PATHS resolves once — see tests/paths-once.test.mjs); a
+ * FALLBACK is NOT cached, so a transiently-unavailable parent recovers on the
+ * next call instead of being pinned for the process lifetime.
  * @returns {CanonicalState[]}
  */
 export function readCanonicalStates() {
@@ -59,13 +61,22 @@ export function readCanonicalStates() {
             group: typeof s.dashboard_group === 'string' ? s.dashboard_group : id,
           });
         }
+        // Only a SUCCESSFUL parse is memoized. A present-but-malformed file
+        // (parsed to nothing) is drift worth surfacing to ops, not silent.
         if (parsed.length) { cache = parsed; return parsed; }
+        console.warn(`⚠️  states: ${PATHS.statesYml} has no usable states — using the built-in fallback`);
       }
     }
-  } catch {
-    /* fall through to FALLBACK */
+  } catch (err) {
+    // A present file that failed to read/parse is drift; a genuinely absent
+    // file is the expected fresh-clone / CI case and stays quiet.
+    if (existsSync(PATHS.statesYml)) {
+      console.warn(`⚠️  states: ${PATHS.statesYml} failed to parse (${err instanceof Error ? err.message : String(err)}) — using the built-in fallback`);
+    }
   }
-  cache = FALLBACK;
+  // NOTE: the FALLBACK is returned but deliberately NOT cached, so a parent
+  // whose templates/ was momentarily unavailable at boot (or updated live) is
+  // re-read on the next call instead of being pinned for the process lifetime.
   return FALLBACK;
 }
 

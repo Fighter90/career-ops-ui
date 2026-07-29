@@ -2,6 +2,11 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.129.1] — 2026-07-29
+
+### Behoben
+- **KI-Review-Nachträge zu den Web-Ports aus v1.128/v1.129** (alle beratend, an der Quelle behoben): Level-Präzedenz in `job-facets.js` (ein expliziter Modifikator schlägt nun ein Management-Wort — `Senior Engineering Manager` → `senior`, zuvor `lead`); der Fallback in `states.mjs` wird nicht mehr fixiert (ein erfolgreiches Lesen wird memoisiert, der Fallback ungecacht zurückgegeben — ein beim Boot kurz nicht verfügbares Elternprojekt wird beim nächsten Aufruf neu gelesen) + `console.warn` bei einer vorhandenen, aber fehlerhaften Datei; `score-tone.js` — eine Zeile ohne Score ist neutral (`muted`), nicht rot; `domainFromName()` überspringt Nicht-ASCII-Slugs vor `/api/logo`; +ein Isolations-Guard in `tests/states.test.mjs`. +4 Tests → **2073**.
+
 ## [1.129.0] — 2026-07-29
 
 ### Hinzugefügt

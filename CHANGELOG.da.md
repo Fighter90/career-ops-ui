@@ -10,6 +10,11 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 
 
+## [1.129.1] — 2026-07-29
+
+### Rettet
+- **AI-review-opfølgninger på web-portene fra v1.128/v1.129** (alle rådgivende, rettet ved kilden): niveau-præcedens i `job-facets.js` (en eksplicit modifikator vinder nu over et ledelsesord — `Senior Engineering Manager` → `senior`, før `lead`); fallback i `states.mjs` fastlåses ikke længere (en vellykket læsning memoiseres, fallback returneres ucachet — en forælder der er midlertidigt utilgængelig ved boot genlæses ved næste kald) + `console.warn` ved en tilstedeværende men misdannet fil; `score-tone.js` — en række uden score er neutral (`muted`), ikke rød; `domainFromName()` springer ikke-ASCII-slugs over før `/api/logo`; +en isolationsvagt i `tests/states.test.mjs`. +4 tests → **2073**.
+
 ## [1.129.0] — 2026-07-29
 
 ### Tilføjet

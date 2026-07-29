@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.129.1] — 2026-07-29
+
+### Fixed
+- **AI-review follow-ups on the v1.128.0/v1.129.0 web-ports** (all advisory, none blocking; fixed at source):
+  - **`job-facets.js` seniority precedence** — an explicit modifier now wins over a management word: `Senior Engineering Manager` → `senior` (was `lead`), `Staff Manager` → `staff`, while a bare `Engineering Manager` stays `lead` and `Senior Staff Engineer` → `staff`. The modifier buckets (staff/senior/junior/intern) are tested before the role-level `lead` bucket.
+  - **`server/lib/states.mjs` fallback is no longer pinned** — a SUCCESSFUL `templates/states.yml` read is still memoized, but the built-in FALLBACK is returned **uncached**, so a parent whose `templates/` was momentarily unavailable at boot (or updated live) is re-read on the next call instead of being stuck for the process lifetime. A present-but-malformed file now emits a `console.warn` (drift is surfaced to ops) while a genuinely absent file stays quiet.
+  - **`score-tone.js` — a not-yet-scored row is neutral, not red** — a null/blank score now returns `muted` (`.score-muted`) instead of `bad`; a real low grade (`D`/`F`) still reads `bad`.
+  - **`company-logo.js` `domainFromName()` skips non-ASCII slugs** — a name like `株式会社` no longer builds an invalid host handed to `/api/logo` (whose `looksLikeHost` guard would reject it anyway); it goes straight to the letter-avatar, sparing the round-trip.
+  - **`tests/states.test.mjs` isolation guard** — a first sanity assertion pins `PATHS.statesYml` to the temp `CAREER_OPS_ROOT`, so if the per-file test isolation ever regresses the fallback assertions fail loudly instead of silently passing against the real parent's file. +4 tests → **2073**.
+
 ## [1.129.0] — 2026-07-29
 
 ### Added

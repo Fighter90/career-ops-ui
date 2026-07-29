@@ -2,6 +2,11 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.129.1] — 2026-07-29
+
+### Düzeltildi
+- **v1.128/v1.129 web taşımalarına dair AI inceleme takipleri** (hepsi tavsiye niteliğinde, kaynağında düzeltildi): `job-facets.js` seviye önceliği (açık bir niteleyici artık yönetim kelimesini yener — `Senior Engineering Manager` → `senior`, önceden `lead`); `states.mjs` yedeği artık sabitlenmiyor (başarılı okuma belleğe alınır, yedek önbelleksiz döner — açılışta geçici olarak erişilemeyen üst proje sonraki çağrıda yeniden okunur) + mevcut ama bozuk dosyada `console.warn`; `score-tone.js` — puansız satır nötr (`muted`), kırmızı değil; `domainFromName()` `/api/logo` öncesi ASCII olmayan slug'ları atlar; +`tests/states.test.mjs` izolasyon koruması. +4 test → **2073**.
+
 ## [1.129.0] — 2026-07-29
 
 ### Eklendi

@@ -56,16 +56,24 @@
   // generic IC role with none of the ladder words sits in the broad "mid".
   var SENIORITY_ORDER = ['lead', 'staff', 'senior', 'mid', 'junior', 'intern'];
 
-  /** Bucket a job title into a seniority band, or null when nothing matches. */
+  /**
+   * Bucket a job title into a seniority band, or null when nothing matches.
+   *
+   * EXPLICIT seniority modifiers (staff / senior / junior / intern) are tested
+   * BEFORE the role-level "lead" bucket, so a modifier is never swallowed by a
+   * management word: "Senior Engineering Manager" → 'senior', "Staff Manager" →
+   * 'staff', while a bare "Engineering Manager" (no modifier) → 'lead'. Staff
+   * outranks senior ("Senior Staff Engineer" → 'staff').
+   */
   function seniorityFromTitle(title) {
     if (!title || typeof title !== 'string') return null;
     var t = ' ' + title.toLowerCase() + ' ';
-    if (/\b(head|vp|vice president|director|chief|manager|mgr|lead)\b/.test(t)) return 'lead';
     if (/\b(staff|principal|distinguished|fellow|architect)\b/.test(t)) return 'staff';
     if (/\b(senior|sr\.?|snr)\b/.test(t)) return 'senior';
     if (/\b(junior|jr\.?|entry|graduate|associate)\b/.test(t)) return 'junior';
     if (/\b(intern|internship|working student|apprentice)\b/.test(t)) return 'intern';
-    if (/\b(engineer|developer|scientist|designer|analyst|manager|specialist|consultant)\b/.test(t)) return 'mid';
+    if (/\b(head|vp|vice president|director|chief|manager|mgr|lead)\b/.test(t)) return 'lead';
+    if (/\b(engineer|developer|scientist|designer|analyst|specialist|consultant)\b/.test(t)) return 'mid';
     return null;
   }
 

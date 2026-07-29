@@ -173,6 +173,11 @@ window.CompanyLogo = (function () {
 
     var slug = cleaned.replace(/\s+/g, '');
     if (slug.length < 2) return null;
+    // Only guess a domain from an ASCII-DNS-safe slug. A non-ASCII name
+    // ("株式会社") would otherwise build an invalid host that /api/logo's
+    // looksLikeHost guard rejects anyway — skip straight to the avatar and
+    // spare the round-trip. (Server-side validation is the real boundary.)
+    if (!/^[a-z0-9-]+$/.test(slug)) return null;
     return slug + '.com';
   }
 

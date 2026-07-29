@@ -44,8 +44,16 @@ test('scoreTone: letter-grade fallback when unparsable', () => {
   assert.equal(ScoreTone.scoreTone('B'), 'warn');
   assert.equal(ScoreTone.scoreTone('C+'), 'muted');
   assert.equal(ScoreTone.scoreTone('D'), 'bad');
-  assert.equal(ScoreTone.scoreTone(''), 'bad');
-  assert.equal(ScoreTone.scoreTone(null), 'bad');
+  assert.equal(ScoreTone.scoreTone('F'), 'bad');
+});
+
+test('scoreTone: a not-yet-scored row is neutral (muted), never red', () => {
+  // A pending/unevaluated row (no score) must not render red — it reads muted.
+  assert.equal(ScoreTone.scoreTone(''), 'muted');
+  assert.equal(ScoreTone.scoreTone('   '), 'muted');
+  assert.equal(ScoreTone.scoreTone(null), 'muted');
+  assert.equal(ScoreTone.scoreTone(undefined), 'muted');
+  assert.equal(ScoreTone.scoreClass(''), 'score-muted');
 });
 
 test('scoreClass: maps tone → tracker CSS class (4 tiers)', () => {

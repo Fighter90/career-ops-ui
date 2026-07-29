@@ -2,6 +2,11 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.129.1] — 2026-07-29
+
+### Corretto
+- **Follow-up della revisione IA sui port web di v1.128/v1.129** (tutti consultivi, corretti all'origine): precedenza di livello in `job-facets.js` (un modificatore esplicito ora batte una parola di gestione — `Senior Engineering Manager` → `senior`, prima `lead`); il fallback in `states.mjs` non è più bloccato (una lettura riuscita è memoizzata, il fallback è restituito senza cache — un padre momentaneamente non disponibile al boot viene riletto alla chiamata successiva) + `console.warn` su un file presente ma malformato; `score-tone.js` — una riga senza punteggio è neutra (`muted`), non rossa; `domainFromName()` salta gli slug non-ASCII prima di `/api/logo`; +una guardia di isolamento in `tests/states.test.mjs`. +4 test → **2073**.
+
 ## [1.129.0] — 2026-07-29
 
 ### Aggiunto

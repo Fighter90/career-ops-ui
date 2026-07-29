@@ -11,6 +11,11 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.129.1] — 2026-07-29
+
+### Corrigé
+- **Suites de la revue IA sur les ports web de v1.128/v1.129** (toutes consultatives, corrigées à la source) : précédence de niveau dans `job-facets.js` (un modificateur explicite l'emporte désormais sur un mot de management — `Senior Engineering Manager` → `senior`, avant `lead`) ; le fallback de `states.mjs` n'est plus figé (une lecture réussie est mémoïsée, le fallback est renvoyé sans cache — un parent momentanément indisponible au démarrage est relu ensuite) + `console.warn` sur un fichier présent mais malformé ; `score-tone.js` — une ligne sans score est neutre (`muted`), pas rouge ; `domainFromName()` ignore les slugs non-ASCII avant `/api/logo` ; +une garde d'isolation dans `tests/states.test.mjs`. +4 tests → **2073**.
+
 ## [1.129.0] — 2026-07-29
 
 ### Ajouté
