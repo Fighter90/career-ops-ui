@@ -11,7 +11,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -33,7 +33,7 @@ after(() => { if (ROOT) rmSync(ROOT, { recursive: true, force: true }); });
 
 /** Ensure states.yml is absent, then drop the cache so the fallback is read. */
 function useFallback() {
-  if (existsSync(STATES_YML)) rmSync(STATES_YML);
+  rmSync(STATES_YML, { force: true });
   states._resetStatesCache();
 }
 /** Write a states.yml, then drop the cache so it is read live. */
@@ -96,7 +96,7 @@ test('the FALLBACK is NOT cached — a file appearing later is picked up without
   // Boot-race guard (v1.129.1): read with the file absent → fallback; then the
   // file appears. WITHOUT calling _resetStatesCache, the next read must pick it
   // up (proving the fallback was returned uncached, not pinned for the process).
-  if (existsSync(STATES_YML)) rmSync(STATES_YML);
+  rmSync(STATES_YML, { force: true });
   states._resetStatesCache();
   assert.ok(!states.canonicalLabels().includes('LateState'), 'fallback while absent');
   writeFileSync(STATES_YML,

@@ -12,7 +12,7 @@
  * or a CI-isolated test whose CAREER_OPS_ROOT has no templates/). It is kept
  * byte-identical to the shipped states.yml, so behaviour is stable either way.
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { PATHS } from './paths.mjs';
 
@@ -44,9 +44,22 @@ let cache = null;
  */
 export function readCanonicalStates() {
   if (cache) return cache;
+  // Read the file directly and branch on the error rather than existsSync-then-
+  // read: a check-then-read pair is both a TOCTOU race (js/file-system-race)
+  // and a redundant stat. ENOENT = the expected fresh-clone / CI-isolated case
+  // (stay quiet); any other read error, or a present-but-empty parse, is drift
+  // worth a one-line warn so ops can see the tracker diverge from the parent.
+  let raw = null;
   try {
-    if (existsSync(PATHS.statesYml)) {
-      const doc = yaml.load(readFileSync(PATHS.statesYml, 'utf8'));
+    raw = readFileSync(PATHS.statesYml, 'utf8');
+  } catch (err) {
+    if (err && err.code !== 'ENOENT') {
+      console.warn(`⚠️  states: ${PATHS.statesYml} failed to read (${err instanceof Error ? err.message : String(err)}) — using the built-in fallback`);
+    }
+  }
+  if (raw != null) {
+    try {
+      const doc = yaml.load(raw);
       const list = doc && Array.isArray(doc.states) ? doc.states : null;
       if (list && list.length) {
         const parsed = [];
@@ -61,16 +74,12 @@ export function readCanonicalStates() {
             group: typeof s.dashboard_group === 'string' ? s.dashboard_group : id,
           });
         }
-        // Only a SUCCESSFUL parse is memoized. A present-but-malformed file
-        // (parsed to nothing) is drift worth surfacing to ops, not silent.
+        // Only a SUCCESSFUL parse is memoized.
         if (parsed.length) { cache = parsed; return parsed; }
-        console.warn(`⚠️  states: ${PATHS.statesYml} has no usable states — using the built-in fallback`);
       }
-    }
-  } catch (err) {
-    // A present file that failed to read/parse is drift; a genuinely absent
-    // file is the expected fresh-clone / CI case and stays quiet.
-    if (existsSync(PATHS.statesYml)) {
+      // Present but unparseable / no usable states → drift, not silent.
+      console.warn(`⚠️  states: ${PATHS.statesYml} has no usable states — using the built-in fallback`);
+    } catch (err) {
       console.warn(`⚠️  states: ${PATHS.statesYml} failed to parse (${err instanceof Error ? err.message : String(err)}) — using the built-in fallback`);
     }
   }
