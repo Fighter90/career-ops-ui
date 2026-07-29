@@ -9,6 +9,14 @@
 ---
 
 
+## [1.128.0] — 2026-07-29
+
+### 新增
+- **从父项目自有 Web 应用(`../web/`,Next.js)移植四项解决方案** — 以原生 JS/ESM 重新实现,无新依赖:(1)`server/lib/states.mjs` 实时读取 `templates/states.yml` 作为跟踪器状态词汇的唯一来源(含 CI 回退)— 免除每次发布的手动白名单重新同步;POST 将别名(西班牙语/旧版)折叠为规范标签,GET 漏斗按规范状态分桶;(2)ATS 托管行的公司徽标 — `domainFromName()`(约 90 个品牌→域名);(3)`score-tone.js` — 4 级评分色调(≥4.2/3.8/3.0 + 字母回退);(4)`job-facets.js` — seniority/source/days 分面。+21 个测试。
+
+### 说明
+- 未移植(仅概念):父项目的智能体动作层(`actions/registry.ts` + `api/assistant/route.ts`)— 供 `docs-fab` 升级为副驾时的蓝图。无新来源(注册表 **70**),无 i18n/help 变更。
+
 ## [1.127.0] — 2026-07-29
 
 ### 新增

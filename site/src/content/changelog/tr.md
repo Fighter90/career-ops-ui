@@ -2,6 +2,14 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.128.0] — 2026-07-29
+
+### Eklendi
+- **Üst projenin kendi web uygulamasından (`../web/`, Next.js) dört çözüm taşındı**, saf JS/ESM ile yeniden yazıldı, yeni bağımlılık yok: (1) `server/lib/states.mjs`, izleyicinin durum sözlüğü için `templates/states.yml`'i canlı okur (CI yedeği) — her sürümdeki manuel beyaz liste yeniden senkronunu kaldırır; POST takma adları (İspanyolca/eski) kanonik etikete katlar, GET hunisi kanonik duruma göre gruplar; (2) ATS barındırmalı satırlarda şirket logoları — `domainFromName()` (~90 marka→alan adı); (3) `score-tone.js` — 4 kademeli puan tonu (≥4.2/3.8/3.0 + harf yedeği); (4) `job-facets.js` — seniority/source/days facet'leri. +21 test.
+
+### Notlar
+- Taşınmadı (yalnızca kavram): üst projenin ajan eylem katmanı (`actions/registry.ts` + `api/assistant/route.ts`) — `docs-fab` bir yardımcı pilota dönüşürse diye taslak. Yeni kaynak yok (kayıt defteri **70**), i18n/help değişikliği yok.
+
 ## [1.127.0] — 2026-07-29
 
 ### Eklendi

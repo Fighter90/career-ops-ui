@@ -9,6 +9,14 @@
 ---
 
 
+## [1.128.0] — 2026-07-29
+
+### 추가
+- **상위 프로젝트 자체 웹앱(`../web/`, Next.js)에서 4개 솔루션 포팅** — 바닐라 JS/ESM로 재구현, 새 의존성 없음: (1) `server/lib/states.mjs`가 `templates/states.yml`을 트래커 상태 어휘의 단일 소스로 실시간 읽음(CI 폴백) — 매 릴리스 수동 화이트리스트 재동기화 제거; POST는 별칭(스페인어/레거시)을 정규 라벨로 접고, GET 퍼널은 정규 상태로 버킷; (2) ATS 호스트 행의 회사 로고 — `domainFromName()`(~90 브랜드→도메인); (3) `score-tone.js` — 4단계 점수 톤(≥4.2/3.8/3.0 + 문자 폴백); (4) `job-facets.js` — seniority/source/days 파셋. +21 테스트.
+
+### 비고
+- 미포팅(개념만): 상위의 에이전트 액션 레이어(`actions/registry.ts` + `api/assistant/route.ts`) — `docs-fab`가 코파일럿이 될 때의 청사진. 새 소스 없음(레지스트리 **70**), i18n/help 변경 없음.
+
 ## [1.127.0] — 2026-07-29
 
 ### 추가
