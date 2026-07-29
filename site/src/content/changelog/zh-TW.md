@@ -9,6 +9,17 @@
 ---
 
 
+## [1.127.0] — 2026-07-29
+
+### 新增
+- **三個新掃描來源(career-ops v1.23.0 一致性)** — 註冊表現提供 **70 個配接器(65 EN + 5 RU)**:**Flowxtra**(免驗證全站聚合器)、**VDAB**(法蘭德斯公共就業服務關鍵字 API)、**iCIMS**(`careers-<tenant>.icims.com` 入口,區別於 `jibeapply`)。此外 **Cursor** 回歸 CLI 名單(parent #2115):`cli-detect` 現偵測 `cursor`(**10 個工具**),並在 help/README/config ×17 還原名單。
+
+### 修復
+- **agenticjobs** 從 HTML 抓取改為 REST API(#2167);當 `location.name` 僅為工作模式時,**Greenhouse** 從 `/offices` 還原城市(#2104);**role-matcher** 一致性(#1933/#2164/#2009:MTS 前綴、`product` 基線、重音摺疊、次基線分歧)。
+
+### 備註
+- **未移植。** v1.23.0 大部分為 web-ui 不呼叫的 CLI/儀表板介面(batch-tailor、discover-ats、NL/PT 模式、PDF 主題、Go 儀表板、updater/doctor);中繼腳本無需改動。父專案 VERSION → **1.23.0**。
+
 ## [1.126.1] — 2026-07-25
 
 ### 修復

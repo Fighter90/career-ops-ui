@@ -9,6 +9,17 @@
 ---
 
 
+## [1.127.0] — 2026-07-29
+
+### 新增
+- **三个新扫描来源(career-ops v1.23.0 一致性)** — 注册表现提供 **70 个适配器(65 EN + 5 RU)**:**Flowxtra**(免鉴权全站聚合器)、**VDAB**(佛兰德公共就业服务关键词 API)、**iCIMS**(`careers-<tenant>.icims.com` 门户,区别于 `jibeapply`)。此外 **Cursor** 回归 CLI 名单(parent #2115):`cli-detect` 现检测 `cursor`(**10 个工具**),并在 help/README/config ×17 恢复名单。
+
+### 修复
+- **agenticjobs** 从 HTML 抓取改为 REST API(#2167);当 `location.name` 仅为工作模式时,**Greenhouse** 从 `/offices` 恢复城市(#2104);**role-matcher** 一致性(#1933/#2164/#2009:MTS 前缀、`product` 基线、重音折叠、次基线分歧)。
+
+### 说明
+- **未移植。** v1.23.0 大部分为 web-ui 不调用的 CLI/仪表盘界面(batch-tailor、discover-ats、NL/PT 模式、PDF 主题、Go 仪表盘、updater/doctor);中继脚本无需改动。父项目 VERSION → **1.23.0**。
+
 ## [1.126.1] — 2026-07-25
 
 ### 修复

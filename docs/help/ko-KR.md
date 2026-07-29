@@ -11,7 +11,7 @@
 
 ### career-ops 소개
 
-[career-ops](https://career-ops.org)는 모든 AI 코딩 CLI(Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — 다른 Claude 호환 CLI도 동일한 슬래시 커맨드 인터페이스에서 작동합니다) 안에서
+[career-ops](https://career-ops.org)는 모든 AI 코딩 CLI(Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — 다른 Claude 호환 CLI도 동일한 슬래시 커맨드 인터페이스에서 작동합니다) 안에서
 슬래시 명령으로 동작하는 오픈소스 구직 시스템입니다. 모델
 무관(model-agnostic). 각 채용 공고를 여러분의 CV에 대해 6차원
 0.0–5.0 루브릭으로 평가하고, 맞춤형 PDF 이력서를 생성하며, 모든
@@ -87,7 +87,7 @@
 
 | | career-ops (CLI) | career-ops-ui (이 앱) |
 |---|---|---|
-| 실행 위치 | Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) 내부 | 브라우저의 `http://127.0.0.1:4317` |
+| 실행 위치 | Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) 내부 | 브라우저의 `http://127.0.0.1:4317` |
 | 표면 | `/career-ops <mode>` 슬래시 명령 | 워크플로우당 한 페이지를 가진 사이드바 |
 | 폼 채우기 | 예, Playwright MCP 경유 | 아니오 — 체크리스트만 생성. CLI에서 마무리 |
 | PDF | `generate-pdf.mjs` | `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep`의 `📄 Generate PDF` |
@@ -338,7 +338,7 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 
 > **v1.55 → v1.56 새 기능.** LLM 키가 없으면 모든 화면의 빨간 배너가 ⚡ 라이브 실행이 수동 프롬프트 모드임을 알리고 여기로 연결합니다; 키가 있으면 활성 제공자를 표시하는 조용한 칩이 됩니다. 모든 ⚡ 라이브 실행 버튼(`#/auto`, `#/evaluate`, `#/deep`, 모드) 앞에 정직한 예상 비용이 표시됩니다(예: "예상 비용: OpenAI gpt-5-codex · ~$0.04/eval", 수동 모드는 API 비용 없음). `#/scan`은 보조 필터를 **고급 필터** 디스클로저 뒤로, `#/tracker`는 클릭형 퍼널 칩 + 선택적 서버 페이지네이션, `#/pipeline`은 1000행 초과 시 가상화.
 
-**AI CLI 도구.** **AI CLI 도구** 탭은 서버에 어떤 에이전트 CLI(Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI)가 설치되어 있는지 보여줍니다 — 실행하지 않는 읽기 전용 PATH 스캔. **모양 → 회사 로고 표시**(기본 꺼짐)는 각 회사의 favicon을 자체 도메인에서 가져와 스캔 표에 표시합니다(제3자 서비스 아님).
+**AI CLI 도구.** **AI CLI 도구** 탭은 서버에 어떤 에이전트 CLI(Claude Code, Cursor, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI)가 설치되어 있는지 보여줍니다 — 실행하지 않는 읽기 전용 PATH 스캔. **모양 → 회사 로고 표시**(기본 꺼짐)는 각 회사의 favicon을 자체 도메인에서 가져와 스캔 표에 표시합니다(제3자 서비스 아님).
 
 두 탭:
 
@@ -351,7 +351,7 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 
 어느 탭에서 저장하든 즉시 반영됩니다 — 서버 재시작 불필요.
 
-**LLM 공급자 설정 (단계별).** web UI 의 ⚡ 라이브 평가는 *헤드리스*로 실행되며 하나의 API 키를 사용합니다. "OR" 로 동작합니다 — 이 중 **아무거나 하나만** 설정하면 바로 동작하며, 여러 개를 설정하면 `auto` 가 다음 순서로 선호합니다: Anthropic → Gemini → OpenAI → Qwen. (career-ops 자체는 CLI 비종속입니다 — Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot 또는 Kimi 안에서도 실행하며, 그것은 이 헤드리스 키와는 별개입니다.)
+**LLM 공급자 설정 (단계별).** web UI 의 ⚡ 라이브 평가는 *헤드리스*로 실행되며 하나의 API 키를 사용합니다. "OR" 로 동작합니다 — 이 중 **아무거나 하나만** 설정하면 바로 동작하며, 여러 개를 설정하면 `auto` 가 다음 순서로 선호합니다: Anthropic → Gemini → OpenAI → Qwen. (career-ops 자체는 CLI 비종속입니다 — Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot 또는 Kimi 안에서도 실행하며, 그것은 이 헤드리스 키와는 별개입니다.)
 
 1. `#/config` → **API keys & runtime** 탭을 엽니다.
 2. **`LLM_PROVIDER`**에서 공급자를 선택합니다: `auto`(설정된 키를 사용), 또는 `claude` / `gemini` / `openai` / `qwen` 로 강제 지정.
@@ -597,7 +597,7 @@ search_queries:
     enabled: false
 ```
 
-`search_queries`는 AI 기반 Option B 스캔(Claude Code / Codex
+`search_queries`는 AI 기반 Option B 스캔(Claude Code / Cursor / Codex
 내부의 `/career-ops scan`)을 구동합니다. 인프로세스
 `npm run scan` (공개 보드 API만 호출)에서는 실행되지 **않습니다**.
 `tracked_companies`에 아직 없는 회사의 롤을 발견하고 싶을 때
@@ -905,7 +905,7 @@ Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
 /career-ops scan
 ```
 
-Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) 내부에서. 모델 토큰을
+Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) 내부에서. 모델 토큰을
 사용합니다. 각 `tracked_companies` 페이지를 직접 방문하며 API가
 없는 보드(채용 페이지, 커스텀 ATS, 지역 포털)도 발견할 수
 있습니다. 느리지만 더 넓습니다. 채용 중인 것이 분명한 타깃에서
@@ -1544,7 +1544,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 
 ## 17. 새 채용 포털 소스를 추가하는 방법
 
-career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. v1.119.0 기준으로 `server/lib/sources/` 레지스트리는 **67**개의 어댑터를 포함합니다 — **영문 62개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
+career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. v1.119.0 기준으로 `server/lib/sources/` 레지스트리는 **70**개의 어댑터를 포함합니다 — **영문 62개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
 
 > **v1.69.0 (P-14) — 드롭인 자동 검색.** 12번째 소스 추가는 이제
 > **순수 파일 드롭**입니다. 레지스트리

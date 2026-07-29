@@ -4,7 +4,7 @@
 
 ## 1. What career-ops is
 
-An open-source job-search system that runs as commands inside an AI coding CLI (Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI — plus Gemini CLI as a legacy wrapper). Model-agnostic. The CLI evaluates each posting against your CV using a structured rubric, generates tailored PDF resumes, and tracks every application locally.
+An open-source job-search system that runs as commands inside an AI coding CLI (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI — plus Gemini CLI as a legacy wrapper). Model-agnostic. The CLI evaluates each posting against your CV using a structured rubric, generates tailored PDF resumes, and tracks every application locally.
 
 ### Problem it solves
 
@@ -131,7 +131,7 @@ Alternative MCP registration via `.claude/settings.local.json`:
 
 | | career-ops (CLI) | career-ops-ui (this repo) |
 |---|---|---|
-| **Where it runs** | Inside Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) | `http://127.0.0.1:4317` in your browser |
+| **Where it runs** | Inside Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) | `http://127.0.0.1:4317` in your browser |
 | **Primary surface** | `/career-ops <mode>` slash commands | Sidebar with one page per workflow |
 | **Form fill** | Yes, via Playwright MCP | No — generates the checklist; submission stays in the CLI |
 | **PDF generation** | `generate-pdf.mjs <input.html> <output.pdf>` | `📄 Generate PDF` button on `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |

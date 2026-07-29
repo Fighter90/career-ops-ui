@@ -94,14 +94,15 @@ test('#/reports view source contains the score-thresholds card scaffold', () => 
 });
 
 test('v1.74.0 — every help-bundle + README lists the canonical AI assistants', () => {
-  // career-ops.org/docs canonical AI-assistant roster (v1.126.0 sync with the
-  // parent's docs/SUPPORTED_CLIS.md): 8 first-class CLIs — Claude Code, Codex,
-  // OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot
-  // CLI — plus Gemini CLI as a legacy wrapper (transitioned into Antigravity).
-  // (Pre-v1.28 stale list "Cursor, Gemini CLI, GitHub Copilot CLI" — with
-  // Cursor — is still banned by the next test.) This canary keeps the web-ui
-  // docs aligned with the parent's supported-assistant roster.
-  const CANON = ['Claude Code', 'Gemini CLI', 'Codex', 'Qwen Code', 'OpenCode', 'GitHub Copilot CLI', 'Antigravity CLI', 'Grok Build CLI', 'Kimi'];
+  // career-ops.org/docs canonical AI-assistant roster (v1.127.0 sync with the
+  // parent's docs/SUPPORTED_CLIS.md): 9 first-class CLIs — Claude Code, Cursor
+  // (re-added by parent #2115), Codex, OpenCode, Antigravity CLI, Grok Build
+  // CLI, Qwen Code, Kimi, GitHub Copilot CLI — plus Gemini CLI as a legacy
+  // wrapper (transitioned into Antigravity). The NEXT test still bans the
+  // exact pre-v1.28 3-CLI tail "Cursor, Gemini CLI, GitHub Copilot CLI"; Cursor
+  // as a roster member (followed by Codex) does not trip it. This canary keeps
+  // the web-ui docs aligned with the parent's supported-assistant roster.
+  const CANON = ['Claude Code', 'Cursor', 'Gemini CLI', 'Codex', 'Qwen Code', 'OpenCode', 'GitHub Copilot CLI', 'Antigravity CLI', 'Grok Build CLI', 'Kimi'];
   for (const lang of HELP_BUNDLES) {
     const text = readFileSync(resolve(ROOT, 'docs', 'help', `${lang}.md`), 'utf8');
     for (const a of CANON) assert.ok(text.includes(a), `docs/help/${lang}.md missing "${a}" — AI-list drift`);

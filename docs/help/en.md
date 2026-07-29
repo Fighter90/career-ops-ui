@@ -13,7 +13,7 @@ help sidebar.
 ### About career-ops
 
 [career-ops](https://career-ops.org) is an open-source job-search system
-that runs as slash commands inside any AI coding CLI (Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — other Claude-compatible CLIs work too via the same slash-command surface). Model-agnostic. It
+that runs as slash commands inside any AI coding CLI (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — other Claude-compatible CLIs work too via the same slash-command surface). Model-agnostic. It
 evaluates each posting against your CV with a six-dimension 0.0–5.0
 rubric, generates tailored PDF résumés, and tracks every application
 locally on your machine.
@@ -87,7 +87,7 @@ locally on your machine.
 
 | | career-ops (CLI) | career-ops-ui (this app) |
 |---|---|---|
-| Where it runs | inside Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` in your browser |
+| Where it runs | inside Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` in your browser |
 | Surface | `/career-ops <mode>` slash commands | sidebar with one page per workflow |
 | Form-fill | yes, via Playwright MCP | no — generates the checklist, you finish in the CLI |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` on `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
@@ -386,7 +386,7 @@ Three tabs:
 
 A save in any tab propagates immediately — no server restart.
 
-**Setting up your LLM provider (step by step).** The web UI's ⚡ live evaluation runs *headless* and uses one API key. It works via "OR" — set **any one** of these and it just works; with several set, `auto` prefers them in this order: Anthropic → Gemini → OpenAI → Qwen. (career-ops itself is CLI-agnostic — you also run it inside Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot or Kimi; that's separate from this headless key.)
+**Setting up your LLM provider (step by step).** The web UI's ⚡ live evaluation runs *headless* and uses one API key. It works via "OR" — set **any one** of these and it just works; with several set, `auto` prefers them in this order: Anthropic → Gemini → OpenAI → Qwen. (career-ops itself is CLI-agnostic — you also run it inside Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot or Kimi; that's separate from this headless key.)
 
 1. Open `#/config` → the **API keys & runtime** tab.
 2. Pick your provider in **`LLM_PROVIDER`**: `auto` (use whichever key is set), or force one with `claude` / `gemini` / `openai` / `qwen`.
@@ -467,7 +467,7 @@ fire a tiny prompt (≤256 tokens output) so you spend essentially
 nothing while confirming the key is wired up correctly. Returns a
 ~200-character sample on success.
 
-**AI CLI tools tab.** career-ops is Claude-Code-driven but works with any agent CLI on the open skill standard. The **AI CLI tools** tab lists the ones it knows about — Claude Code, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity, Kimi CLI, Grok Build CLI — and shows which are **installed on the machine running the server** and where. It's a read-only scan of the server's `PATH`: it only checks whether the binary exists, it **never runs it** (no `--version`, no execution), and writes nothing. If none show up, install one (e.g. Claude Code) to drive the pipeline from your terminal.
+**AI CLI tools tab.** career-ops is Claude-Code-driven but works with any agent CLI on the open skill standard. The **AI CLI tools** tab lists the ones it knows about — Claude Code, Cursor, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity, Kimi CLI, Grok Build CLI — and shows which are **installed on the machine running the server** and where. It's a read-only scan of the server's `PATH`: it only checks whether the binary exists, it **never runs it** (no `--version`, no execution), and writes nothing. If none show up, install one (e.g. Claude Code) to drive the pipeline from your terminal.
 
 **Appearance — company logos.** The **Appearance** card has one toggle: **Show company logos in the scan table**. Off by default. When on, each scan row shows the company's logo — its **favicon fetched from its own domain** and proxied through the server (`/api/logo`), so no third-party logo service ever learns which employers you're viewing. Postings hosted on a shared job board (Greenhouse, Lever, Ashby, …) show a coloured **letter badge** instead of the board's icon, and any logo that fails to load falls back to the same badge. It's purely cosmetic — nothing is written and no CV/profile data is involved.
 
@@ -684,7 +684,7 @@ search_queries:
 ```
 
 `search_queries` drive the AI-powered Option B scan (`/career-ops scan`
-inside Claude Code / Codex). They are NOT executed by the in-process
+inside Claude Code / Cursor / Codex). They are NOT executed by the in-process
 `npm run scan` (which only hits public boards APIs). Use them when
 you want to discover roles at companies not yet in
 `tracked_companies`. Set `enabled: false` to keep an entry without
@@ -1031,7 +1031,7 @@ No AI tokens consumed — it hits the public boards APIs directly.
 /career-ops scan
 ```
 
-Inside Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Uses model tokens.
+Inside Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Uses model tokens.
 Visits each `tracked_companies` page directly and can discover non-API
 boards (career pages, custom ATS, regional portals). Slower but
 broader. Useful when an ATS sweep returns nothing for a target you
@@ -1677,7 +1677,7 @@ output, and search the issue tracker on
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
 how to fetch + normalize one board's results. As of v1.119.0 the
-`server/lib/sources/` registry ships **67** adapters — **62 English + 5 Russian**
+`server/lib/sources/` registry ships **70** adapters — **65 English + 5 Russian**
 boards. The English set spans the major ATSes (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), board-wide aggregators selected by an
 explicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,

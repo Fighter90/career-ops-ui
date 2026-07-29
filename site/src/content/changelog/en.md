@@ -8,6 +8,23 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.127.0] — 2026-07-29
+
+### Added
+- **Three new scan sources (parent career-ops v1.23.0 parity)** — the registry now ships **70 adapters (65 English + 5 Russian)**:
+  - **Flowxtra** (`flowxtra`) — a board-wide, no-auth aggregator (`app.flowxtra.com/api/central/jobs`) that lists live postings across every hosted company in one paginated call. Source + adapter + `tests/sources-flowxtra.test.mjs` (25 cases).
+  - **VDAB** (`vdab`) — Flanders' public employment service; queries the public `vindeenjob` JSON API (`www.vdab.be`) by keyword, recall-first like Arbeitsagentur (filtering happens downstream). +`tests/sources-vdab.test.mjs` (24 cases).
+  - **iCIMS** (`icims`) — the classic iCIMS hosted-portal search pages (`careers-<tenant>.icims.com`), auto-detected from any `*.icims.com` `careers_url`. Distinct from the existing `jibeapply` (iCIMS's JibeApply product); the per-job `enrichDate` hook is omitted (the in-process scanner returns jobs directly, undated). +`tests/sources-icims.test.mjs` (11 cases).
+- **Cursor re-added to the supported-CLI roster (parent #2115)** — the parent restored Cursor as a first-class host (`.cursor/skills/career-ops/SKILL.md`). `server/lib/routes/cli-detect.mjs` now probes the `cursor` binary too (**10 tools** reported: 9 first-class + Gemini legacy), and every roster surface — help ×17 (intro / comparison table / provider-setup list / AI-CLI-tools tab), README ×17, the `#/config` API-keys tab (`config.providerModelNote`, i18n ×17), `docs/career-ops-canonical.md`, and the `canonical-docs-coverage` gate — lists Cursor again.
+
+### Fixed
+- **Agentic Engineering Jobs: HTML scraper → REST API (parent #2167/#2143)** — `server/lib/sources/agenticjobs.mjs` now reads the documented `agentic-engineering-jobs.com/api/v1/jobs` REST endpoint instead of parsing job cards out of HTML (the scraper broke). Same emitted job shape (salary min/max/currency now surfaced), `FEED_URL` points at the API, host pin unchanged. Test suite rewritten to feed canned JSON.
+- **Greenhouse: recover the city when `location.name` is a work model (parent #2104)** — boards that put "Hybrid"/"Distributed" in `location.name` and keep the real city only in the separate `/offices` endpoint no longer have every role silently dropped by the location filter. A second `/offices` request (paid only for boards that exhibit the pattern, fail-soft) folds the city back in via `buildOfficeMap`/`isWorkModelOnly`/`officesUrlFor`. +`tests/sources-greenhouse-offices.test.mjs` (6 cases).
+- **role-matcher parity (parent #1933 / #2164 / #2009)** — the mirrored `server/lib/role-matcher.mjs` (feeds the repost detector) now strips the "Member of Technical Staff" boilerplate prefix before tokenizing, treats `product` as a baseline token so PM sibling specialties stay distinct, NFD-folds accents (no phantom "nior" from "Sênior"), and treats a lone sub-baseline qualifier (associate/junior/entry/intern) as a disagreement. +4 assertions blocks in `tests/detect-reposts.test.mjs`.
+
+### Notes
+- **Not ported (CLI-only or relay).** The bulk of parent v1.23.0 is CLI/dashboard surface web-ui does not shell into: `batch-tailor.mjs`, `company-history.mjs`, `contacts.mjs`, `discover-ats.mjs`, `outcome.mjs`, `pipeline-lock.mjs`, `skill-extract.mjs`, `theme-style.mjs`, `sync-pdf-flags.mjs`, the Dutch/Portuguese modes, the CV section-partial HTML system, PDF profile theming, the Go dashboard's RESPONDED tab, and the updater/doctor fixes. The relayed scripts (`analyze-patterns.mjs` Hired recognition #2145, `salary-gap.mjs` range parse #2200, `stats.mjs`, `funnel-velocity.mjs`) need no web-ui change — the fail-soft relays absorb their shape. The parent's own DNS-cache/`decodeEntities`/scan-timeout hardening lives in provider internals web-ui already guards via `safe-fetch`/`http-json`. Parent VERSION → **1.23.0** (`parentVersion`).
+
 ## [1.126.1] — 2026-07-25
 
 ### Fixed

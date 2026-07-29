@@ -7,25 +7,25 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-1969%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2045%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.126.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.126.1)
+[![release](https://img.shields.io/badge/release-v1.127.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.127.0)
 
-> **🆕 最新版本 — v1.126.1**
+> **🆕 最新版本 — v1.127.0**
 >
-> **CLI 名单漂移补丁。** v1.126.1 修复了 v1.126.0 扫描遗漏的两处:`#/config` API keys 标签页导语(i18n ×17)现列出 Antigravity + Grok Build,帮助指南 ×17(及 CI 构建的站点 help)中过时的 `Cursor / Gemini CLI` 行现为完整的 8 个 CLI 名单。 **文档与 CLI 名单重新同步。** v1.126.0 将每个文档面(help ×17、README ×17、wiki)与实时 career-ops.org/docs(全部 31 页已读)核对,并让 `#/config` 的 AI CLI 工具扫描检测全部 8 个一级 CLI — **Grok Build CLI** 与 **Kimi CLI** 加入 Claude Code、Codex、OpenCode、Antigravity、Qwen 和 Copilot(现报告 **9 个工具**,仍从不执行)。 **维护同步。** v1.125.4 汇总了 dependabot 的 site 依赖升级(`sharp` 0.35.3、`svgo` 4.0.2、`fast-uri` 3.1.4),并记录父项目一致性巡检(v1.22.0 之后,#2108–#2168): set-status 错行防护、本地化模式 Risk Summary 和更新器清单校验均为 CLI 侧 — 无需移植(**1969 个测试** 不变)。 **提示词语言修复。** v1.125.3 让丹麦语和印地语在所有 AI 提示词中成为一等公民 — 深度研究(实时与手动)、模式运行、评估、面试、人脉和 CV Studio 现在在这两个语言下都会输出 `# Output language` 指令(此前回答是英文),语言门现在遍历全部 17 个语言(**1969 个测试**)。 **外部贡献者包。** v1.125.2 合并了 [@Alien10140](https://github.com/Alien10140) 的首批社区 PR——实时深度研究 HTTP 502 修复(面向 API 提供方的无工具 headless 提示词),以及把 Gemini 默认模型从已弃用的 `gemini-2.0-flash` 升至 `gemini-3.6-flash`,由新的 5 测试防漂移门固定(**1957 个测试**)。v1.125.1 让多品牌 SuccessFactors RMK 租户保留品牌路径(父项目 #2099)。**落地页新增求职来源板块。** v1.125.0 在 cvstart.org 新增一个板块,将全部 **67 个扫描来源** 以可点击标签的形式列出,并在构建时与注册表同步、由漂移检测把关。在此之前,**与父项目 v1.22.0 对齐。** v1.124.0 移植了**五个扫描来源** —— Welcome to the Jungle、Agentic Engineering Jobs、Jobvite、Gem 与 Alibaba Group(**67 个适配器**),并加入了 Arbeitsagentur 的全远程职位核实(`homeofficetyp=VOLLSTAENDIG`)以及 SmartRecruiters 的公开链接修复。
+> **父项目 v1.23.0 一致性。** v1.127.0 移植三个新扫描来源 — **Flowxtra**、**VDAB**、**iCIMS**(注册表现 **70 个适配器**,65 EN + 5 RU)—,镜像 agenticjobs 的 HTML→REST 迁移、Greenhouse 城市恢复与 role-matcher 修复,并将 **Cursor** 重新加入 CLI 名单(parent #2115 — `cli-detect` 报告 10 个工具)。 **CLI 名单漂移补丁。** v1.126.1 修复了 v1.126.0 扫描遗漏的两处:`#/config` API keys 标签页导语(i18n ×17)现列出 Antigravity + Grok Build,帮助指南 ×17(及 CI 构建的站点 help)中过时的 `Cursor / Gemini CLI` 行现为完整的 8 个 CLI 名单。 **文档与 CLI 名单重新同步。** v1.126.0 将每个文档面(help ×17、README ×17、wiki)与实时 career-ops.org/docs(全部 31 页已读)核对,并让 `#/config` 的 AI CLI 工具扫描检测全部 8 个一级 CLI — **Grok Build CLI** 与 **Kimi CLI** 加入 Claude Code、Cursor、Codex、OpenCode、Antigravity、Qwen 和 Copilot(现报告 **9 个工具**,仍从不执行)。 **维护同步。** v1.125.4 汇总了 dependabot 的 site 依赖升级(`sharp` 0.35.3、`svgo` 4.0.2、`fast-uri` 3.1.4),并记录父项目一致性巡检(v1.22.0 之后,#2108–#2168): set-status 错行防护、本地化模式 Risk Summary 和更新器清单校验均为 CLI 侧 — 无需移植(**1969 个测试** 不变)。 **提示词语言修复。** v1.125.3 让丹麦语和印地语在所有 AI 提示词中成为一等公民 — 深度研究(实时与手动)、模式运行、评估、面试、人脉和 CV Studio 现在在这两个语言下都会输出 `# Output language` 指令(此前回答是英文),语言门现在遍历全部 17 个语言(**1969 个测试**)。 **外部贡献者包。** v1.125.2 合并了 [@Alien10140](https://github.com/Alien10140) 的首批社区 PR——实时深度研究 HTTP 502 修复(面向 API 提供方的无工具 headless 提示词),以及把 Gemini 默认模型从已弃用的 `gemini-2.0-flash` 升至 `gemini-3.6-flash`,由新的 5 测试防漂移门固定(**1957 个测试**)。v1.125.1 让多品牌 SuccessFactors RMK 租户保留品牌路径(父项目 #2099)。**落地页新增求职来源板块。** v1.125.0 在 cvstart.org 新增一个板块,将全部 **70 个扫描来源** 以可点击标签的形式列出,并在构建时与注册表同步、由漂移检测把关。在此之前,**与父项目 v1.22.0 对齐。** v1.124.0 移植了**五个扫描来源** —— Welcome to the Jungle、Agentic Engineering Jobs、Jobvite、Gem 与 Alibaba Group(**70 个适配器**),并加入了 Arbeitsagentur 的全远程职位核实(`homeofficetyp=VOLLSTAENDIG`)以及 SmartRecruiters 的公开链接修复。
 >
-> _CLI 名单漂移补丁 · 文档与 CLI 名单重新同步 · 维护同步 · da/hi 提示词语言修复 · 外部贡献者包 · 深度研究 502 修复 · Gemini 3.6 默认 · SF 品牌路径修复 · 落地页来源区块 · 5 个来源 · 67 个适配器 · 父项目 v1.22 对齐 · Oracle Cloud · 62 个适配器 · 父项目 v1.21 对齐 · 印地语 · 17 种语言 · CareerOps 宣言 · cvstart.org 方法论/许可证/更新日志页面 · 父项目 v1.19 对齐 · 61 个适配器 · 落地页实时星标 + 贡献者 · 父项目 v1.18 对齐 · 54 个适配器 · Hired 状态 · 累计统计 · 对齐包 · 50 适配器 · 用量计量重做 · 设计打磨 · 用量计量 · 浮动帮助助手 · 文档与 QA 整合 · 安全待办清理 · 文档与 QA ×16 · Scan 排除 · 流水线概览 · 安全加固 2 · 净化器加固 · 安全加固 · AI 用量与成本 · 公司徽标 · AI CLI 工具 · 向文档提问 · 简历定制 + 求职信 · 两页纸自动填充 · DOCX 导出 · 门户健康 · 应用内错误报告器 · 16 locales · 6 个 LLM 提供方 · 46 个扫描器适配器 · 职业方向 · 职业规划 · 统计重构 · 记忆层 · CV Studio · 人脉拓展规划器 · mock interview · two-pager 市场契合度 · 与父级 career-ops v1.16.0 对齐。_
+> _父项目 v1.23 一致性 · +3 来源 · 70 适配器 · Cursor · CLI 名单漂移补丁 · 文档与 CLI 名单重新同步 · 维护同步 · da/hi 提示词语言修复 · 外部贡献者包 · 深度研究 502 修复 · Gemini 3.6 默认 · SF 品牌路径修复 · 落地页来源区块 · 5 个来源 · 67 个适配器 · 父项目 v1.22 对齐 · Oracle Cloud · 62 个适配器 · 父项目 v1.21 对齐 · 印地语 · 17 种语言 · CareerOps 宣言 · cvstart.org 方法论/许可证/更新日志页面 · 父项目 v1.19 对齐 · 61 个适配器 · 落地页实时星标 + 贡献者 · 父项目 v1.18 对齐 · 54 个适配器 · Hired 状态 · 累计统计 · 对齐包 · 50 适配器 · 用量计量重做 · 设计打磨 · 用量计量 · 浮动帮助助手 · 文档与 QA 整合 · 安全待办清理 · 文档与 QA ×16 · Scan 排除 · 流水线概览 · 安全加固 2 · 净化器加固 · 安全加固 · AI 用量与成本 · 公司徽标 · AI CLI 工具 · 向文档提问 · 简历定制 + 求职信 · 两页纸自动填充 · DOCX 导出 · 门户健康 · 应用内错误报告器 · 16 locales · 6 个 LLM 提供方 · 46 个扫描器适配器 · 职业方向 · 职业规划 · 统计重构 · 记忆层 · CV Studio · 人脉拓展规划器 · mock interview · two-pager 市场契合度 · 与父级 career-ops v1.16.0 对齐。_
 
 <!-- DO NOT REVERT: locale-specific dashboard screenshot (dashboard-zh-CN.png). Each README uses its own ./images/dashboard-<locale>.png — never replace with dashboard-en.png. Generated by scripts/capture-dashboard-screenshots.mjs. -->
 ![career-ops-ui — 指挥中心](./images/dashboard-zh-CN.png)
 
 ## 关于 career-ops
 
-[career-ops](https://career-ops.org) 是一套开源求职系统,以 slash 命令的形式运行在任意 AI 编码 CLI(Claude Code、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 兼容 CLI 也通过相同的斜杠命令接口运行)中。模型无关。它基于六维 0.0–5.0 评分体系,将每个职位与你的 CV 匹配,生成定制 PDF 简历,并在本地跟踪每一次投递 —— 无云端账户、无遥测、无自动提交。
+[career-ops](https://career-ops.org) 是一套开源求职系统,以 slash 命令的形式运行在任意 AI 编码 CLI(Claude Code、Cursor、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 兼容 CLI 也通过相同的斜杠命令接口运行)中。模型无关。它基于六维 0.0–5.0 评分体系,将每个职位与你的 CV 匹配,生成定制 PDF 简历,并在本地跟踪每一次投递 —— 无云端账户、无遥测、无自动提交。
 
 **本仓库(career-ops-ui)** 是其上层的 Web 界面。CLI 仍负责表单填写(经由 Playwright MCP)与 slash 命令模式;SPA 则在同一份 `cv.md` / `data/applications.md` / `reports/` 文件之上,提供 CRM 风格的浏览器视图。二者共用同一份数据。
 
@@ -133,7 +133,7 @@ npx career-ops-ui init        # npx runs the local bin even without `npm link`
 - **深度调研** 通过 Anthropic SDK 实时调研公司,自动内联 cv / profile / mode 文件。
 - **编辑** `cv.md`,提供并排 markdown 预览与服务端 XSS 清理。
 - **维护** 系统:doctor、verify、normalize、dedup、merge —— 均为一键完成。
-- **多 CLI:** 在 Claude Code、Codex、Cursor、Aider 或 Gemini CLI 中等价驱动 —— `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` 均指向同一份事实来源。
+- **多 CLI:** 在 Claude Code、Cursor、Codex、Cursor、Aider 或 Gemini CLI 中等价驱动 —— `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` 均指向同一份事实来源。
 
 它完全是加法:`career-ops/` 内部一字不改。你的所有定制照旧属于你。
 

@@ -6,7 +6,7 @@
 
 ### Про career-ops
 
-[career-ops](https://career-ops.org) — це система пошуку роботи з відкритим кодом, яка працює як slash-команди всередині будь-якого AI coding CLI (Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — інші CLI, сумісні з Claude, теж працюють через той самий slash-command поверхней). Не залежить від моделі. Оцінює кожну вакансію порівняно з вашим CV за шестивимірною рубрикою 0.0–5.0, генерує адаптовані PDF-резюме та відстежує кожну заявку локально на вашому комп'ютері.
+[career-ops](https://career-ops.org) — це система пошуку роботи з відкритим кодом, яка працює як slash-команди всередині будь-якого AI coding CLI (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — інші CLI, сумісні з Claude, теж працюють через той самий slash-command поверхней). Не залежить від моделі. Оцінює кожну вакансію порівняно з вашим CV за шестивимірною рубрикою 0.0–5.0, генерує адаптовані PDF-резюме та відстежує кожну заявку локально на вашому комп'ютері.
 
 **Канонічні посилання (читайте в порядку при першому встановленні):**
 
@@ -60,7 +60,7 @@
 
 | | career-ops (CLI) | career-ops-ui (цей застосунок) |
 |---|---|---|
-| Де працює | всередині Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` у браузері |
+| Де працює | всередині Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` у браузері |
 | Поверхня | slash-команди `/career-ops <mode>` | бічна панель з окремою сторінкою для кожного кроку |
 | Заповнення форм | так, через Playwright MCP | ні — генерує чеклист, ви завершуєте в CLI |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` на `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
@@ -241,7 +241,7 @@ career-ops-ui — це **чисте доповнення**. Нічого все�
 
 > **Нове у v1.55 → v1.56.** Без LLM-ключа червоний банер на кожному екрані пояснює, що ⚡ Run-live працює в режимі ручного промпту, та посилається сюди; щойно ключ встановлено — банер стає тихим чипом з назвою активного провайдера. Перед будь-якою кнопкою ⚡ Run-live (`#/auto`, `#/evaluate`, `#/deep`, режими) показується чесна орієнтовна вартість (наприклад, «Estimated cost: OpenAI gpt-5-codex · ~$0.04/eval» або примітка про відсутність витрат у ручному режимі). `#/scan` ховає додаткові фільтри за розкриванням **Advanced filters**; `#/tracker` додає кліковані воронкові чипи та необов'язкову серверну пагінацію; `#/pipeline` віртуалізується після 1000 рядків.
 
-**Інструменти CLI для ШІ.** Вкладка **Інструменти CLI для ШІ** показує, які агентські CLI (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) встановлені на сервері — сканування PATH лише для читання, без запуску. **Вигляд → Показувати логотипи компаній** (типово вимкнено) показує favicon кожної компанії в таблиці сканування, узятий з її власного домену (не сторонній сервіс).
+**Інструменти CLI для ШІ.** Вкладка **Інструменти CLI для ШІ** показує, які агентські CLI (Claude Code, Cursor, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) встановлені на сервері — сканування PATH лише для читання, без запуску. **Вигляд → Показувати логотипи компаній** (типово вимкнено) показує favicon кожної компанії в таблиці сканування, узятий з її власного домену (не сторонній сервіс).
 
 Три вкладки:
 
@@ -251,7 +251,7 @@ career-ops-ui — це **чисте доповнення**. Нічого все�
 
 Збереження на будь-якій вкладці набирає чинності негайно — перезапуск сервера не потрібен.
 
-**Налаштування LLM-провайдера (покроково).** ⚡ Live evaluation у web UI працює *headless* та використовує один API-ключ. Він працює за принципом «АБО» — встановіть **будь-який один** із них, і все запрацює; якщо встановлено кілька, `auto` надає перевагу в такому порядку: Anthropic → Gemini → OpenAI → Qwen. (career-ops сам по собі є CLI-агностичним — ви також запускаєте його всередині Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot або Kimi; це відокремлено від цього headless-ключа.)
+**Налаштування LLM-провайдера (покроково).** ⚡ Live evaluation у web UI працює *headless* та використовує один API-ключ. Він працює за принципом «АБО» — встановіть **будь-який один** із них, і все запрацює; якщо встановлено кілька, `auto` надає перевагу в такому порядку: Anthropic → Gemini → OpenAI → Qwen. (career-ops сам по собі є CLI-агностичним — ви також запускаєте його всередині Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot або Kimi; це відокремлено від цього headless-ключа.)
 
 1. Відкрийте `#/config` → вкладку **API keys & runtime**.
 2. Виберіть провайдера в **`LLM_PROVIDER`**: `auto` (використовувати будь-який встановлений ключ) або примусово вкажіть `claude` / `gemini` / `openai` / `qwen`.
@@ -441,7 +441,7 @@ search_queries:
     enabled: false
 ```
 
-`search_queries` керують AI-powered скануванням Варіанту Б (`/career-ops scan` всередині Claude Code / Codex). Вони НЕ виконуються в процесі `npm run scan` (який лише звертається до публічних API дошок). Використовуйте їх, коли хочете знаходити ролі в компаніях, яких ще немає в `tracked_companies`. Встановіть `enabled: false`, щоб зберегти запис без запуску.
+`search_queries` керують AI-powered скануванням Варіанту Б (`/career-ops scan` всередині Claude Code / Cursor / Codex). Вони НЕ виконуються в процесі `npm run scan` (який лише звертається до публічних API дошок). Використовуйте їх, коли хочете знаходити ролі в компаніях, яких ще немає в `tracked_companies`. Встановіть `enabled: false`, щоб зберегти запис без запуску.
 
 ### `tracked_companies`
 
@@ -696,7 +696,7 @@ npm run scan -- --company Anthropic   # narrow to one tracked company
 /career-ops scan
 ```
 
-Всередині Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Використовує токени моделі. Відвідує кожну сторінку `tracked_companies` безпосередньо та може знаходити не-API-дошки (сторінки careers, власні ATS, регіональні портали). Повільніше, але ширше охоплення. Корисно, коли ATS-прохід не повертає нічого для цілі, яка, як ви знаєте, набирає людей.
+Всередині Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Використовує токени моделі. Відвідує кожну сторінку `tracked_companies` безпосередньо та може знаходити не-API-дошки (сторінки careers, власні ATS, регіональні портали). Повільніше, але ширше охоплення. Корисно, коли ATS-прохід не повертає нічого для цілі, яка, як ви знаєте, набирає людей.
 
 **Вивід (обидва шляхи)** — нові URL вакансій додаються до `data/pipeline.md`, кожен відвіданий URL записується до `data/scan-history.tsv` (дедублікація для всіх майбутніх сканувань), виводиться зведення: сканованих компаній · знайдено вакансій · відфільтровано за назвою · пропущено дублікатів · додано нових пропозицій.
 
@@ -1155,7 +1155,7 @@ npm run doctor
 
 ## 17. Як додати нове джерело вакансій
 
-career-ops-ui розглядає кожну дошку вакансій як **адаптер** — один файл у [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), що знає, як отримати та нормалізувати результати однієї дошки. Станом на v1.119.0 реєстр `server/lib/sources/` постачається з **67** адаптерами — **62 англомовних + 5 російськомовних** дошок. Англомовний набір охоплює основні ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), загальнодошкові агрегатори, що вибираються через явний `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), та ATS на тенант, які автоматично визначаються з хоста `careers_url` або явного `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Повний список ніколи не потрібно рахувати тут вручну — він автоматично виявляється з `server/lib/sources/` і показується наживо у випадному списку Source на `#/scan`.** Дивіться §5 щодо YAML та `docs/portals-examples.md` щодо готових записів для копіювання.
+career-ops-ui розглядає кожну дошку вакансій як **адаптер** — один файл у [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), що знає, як отримати та нормалізувати результати однієї дошки. Станом на v1.119.0 реєстр `server/lib/sources/` постачається з **70** адаптерами — **65 англомовних + 5 російськомовних** дошок. Англомовний набір охоплює основні ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), загальнодошкові агрегатори, що вибираються через явний `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), та ATS на тенант, які автоматично визначаються з хоста `careers_url` або явного `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Повний список ніколи не потрібно рахувати тут вручну — він автоматично виявляється з `server/lib/sources/` і показується наживо у випадному списку Source на `#/scan`.** Дивіться §5 щодо YAML та `docs/portals-examples.md` щодо готових записів для копіювання.
 
 > **v1.69.0 (P-14) — підключи та використовуй з автовідкриттям.** Додавання 12-го джерела тепер — це **просто скинути файл**. Реєстр ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs)) більше не містить вручну підтримуваного списку — при завантаженні він сканує цю папку (`readdirSync` + динамічний `import()`) та збирає блок `export const meta` з кожного `*.mjs`. Напишіть адаптер, оголосіть його `meta` — і він одразу видимий для сканера, випадаючого фільтра `#/scan` та RU-диспетчера — **редагування `registry.mjs` не потрібне**. (RU-джерела все одно потребують одного рядка в `portals.yml` батьківського проєкту; дивіться Крок 5.)
 

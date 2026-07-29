@@ -73,12 +73,12 @@ test('GET /api/scan/sources includes the EN ATS + aggregator sources', async () 
     enValues,
     [
     '4dayweek', 'agenticjobs', 'alibaba', 'amazon', 'arbeitnow', 'arbeitsagentur', 'ashby', 'avature', 'bamboohr',
-    'beesite', 'breezy', 'comeet', 'csod', 'dassault', 'deutschebahn', 'echojobs', 'gem', 'getonbrd',
-    'glints', 'greenhouse', 'hackernews', 'hecklerkoch', 'higheredjobs', 'himalayas', 'ibm', 'jibeapply', 'jobicy',
+    'beesite', 'breezy', 'comeet', 'csod', 'dassault', 'deutschebahn', 'echojobs', 'flowxtra', 'gem', 'getonbrd',
+    'glints', 'greenhouse', 'hackernews', 'hecklerkoch', 'higheredjobs', 'himalayas', 'ibm', 'icims', 'jibeapply', 'jobicy',
     'jobspresso', 'jobstreet', 'jobvite', 'justjoin', 'landingjobs', 'larajobs', 'lever', 'meituan', 'nodesk',
     'nofluffjobs', 'oraclecloud', 'personio', 'phenom', 'pinpoint', 'radancy', 'recruitee', 'remoteok', 'remotive',
     'rheinmetall', 'rippling', 'rss', 'smartrecruiters', 'softgarden', 'solidjobs', 'successfactors', 'teamtailor', 'tencent',
-    'thehub', 'themuse', 'tkms', 'weworkremotely', 'workable', 'workday', 'workingnomads', 'wttj',
+    'thehub', 'themuse', 'tkms', 'vdab', 'weworkremotely', 'workable', 'workday', 'workingnomads', 'wttj',
   ],
   );
 });

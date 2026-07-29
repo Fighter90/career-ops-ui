@@ -109,6 +109,10 @@ import { agenticjobsAdapter } from './adapters/agenticjobs.mjs';
 import { jobviteAdapter } from './adapters/jobvite.mjs';
 import { gemAdapter } from './adapters/gem.mjs';
 import { alibabaAdapter } from './adapters/alibaba.mjs';
+// v1.127.0 — parent career-ops v1.23.0 parity: 3 new sources.
+import { flowxtraAdapter } from './adapters/flowxtra.mjs';
+import { vdabAdapter } from './adapters/vdab.mjs';
+import { icimsAdapter } from './adapters/icims.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -206,6 +210,9 @@ export const ALL_ADAPTERS = [
   jobviteAdapter,
   gemAdapter,
   alibabaAdapter,
+  flowxtraAdapter,
+  vdabAdapter,
+  icimsAdapter,
 ];
 
 /**

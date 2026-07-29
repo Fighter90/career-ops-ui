@@ -7,25 +7,25 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-1969%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2045%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.126.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.126.1)
+[![release](https://img.shields.io/badge/release-v1.127.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.127.0)
 
-> **🆕 최신 릴리스 — v1.126.1**
+> **🆕 최신 릴리스 — v1.127.0**
 >
-> **CLI 로스터 드리프트 패치.** v1.126.1은 v1.126.0 스윕이 놓친 두 곳을 수정: `#/config` API keys 탭 인트로(i18n ×17)가 이제 Antigravity + Grok Build를 나열하고, 도움말 가이드 ×17(및 CI 빌드 사이트 help)의 구식 `Cursor / Gemini CLI` 행이 이제 전체 8-CLI 로스터를 담습니다. **문서·CLI 로스터 재동기화.** v1.126.0은 모든 문서 표면(help ×17, README ×17, wiki)을 라이브 career-ops.org/docs(31페이지 전부 읽음)와 대조하고, `#/config`의 AI CLI 도구 스캔이 8개 일급 CLI를 모두 감지하도록 합니다 — **Grok Build CLI**와 **Kimi CLI**가 Claude Code·Codex·OpenCode·Antigravity·Qwen·Copilot에 합류(이제 **9개 도구** 보고, 여전히 실행 안 함). **유지보수 동기화.** v1.125.4는 dependabot site 업데이트(`sharp` 0.35.3, `svgo` 4.0.2, `fast-uri` 3.1.4)를 통합하고 상위 프로젝트 패리티 스윕(v1.22.0 이후, #2108–#2168)을 기록합니다: set-status 잘못된 행 가드, 로컬라이즈 모드 Risk Summary, 업데이터 매니페스트 검증은 모두 CLI 전용 — 포팅할 것 없음(**1969 테스트** 변화 없음). **프롬프트 로케일 수정.** v1.125.3은 덴마크어와 힌디어를 모든 AI 프롬프트에서 정식 지원합니다 — 딥 리서치(라이브·수동), 모드 실행, 평가, 인터뷰, 네트워킹, CV Studio가 이제 이 두 로케일에서 `# Output language` 지시문을 내보내며(이전에는 영어로 응답), 로케일 게이트는 17개 로케일 전체를 검사합니다(**1969 테스트**). **외부 기여자 팩.** v1.125.2는 [@Alien10140](https://github.com/Alien10140)의 첫 커뮤니티 PR을 병합합니다 — 라이브 딥 리서치 HTTP 502 수정(API 제공자용 도구 없는 헤드리스 프롬프트)과 지원 종료된 `gemini-2.0-flash`를 `gemini-3.6-flash`로 올린 Gemini 기본값, 새 5-테스트 드리프트 게이트로 고정(**1957 테스트**). v1.125.1은 멀티 브랜드 SuccessFactors RMK 테넌트의 브랜드 경로를 유지합니다(부모 #2099). **랜딩 페이지의 채용 공고 소스.** v1.125.0은 cvstart.org에 **스캔 소스 67개** 전체를 클릭 가능한 칩으로 나열하는 섹션을 추가했으며, 빌드 시점에 레지스트리와 동기화되고 드리프트가 감시됩니다. 그 이전에는, **상위 v1.22.0 패리티.** v1.124.0은 Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem, Alibaba Group까지 **스캔 소스 5개**(이제 **어댑터 67개** — EN 62개 + RU 5개)를 포팅하고, 여기에 Arbeitsagentur의 완전 원격 근무 검증(`homeofficetyp=VOLLSTAENDIG`)과 SmartRecruiters의 공개 URL 수정 사항을 더합니다.
+> **상위 v1.23.0 패리티.** v1.127.0은 3개의 새 스캔 소스 — **Flowxtra**, **VDAB**, **iCIMS** (레지스트리 이제 **70개 어댑터**, 65 EN + 5 RU) — 를 포팅하고, agenticjobs HTML→REST 전환·Greenhouse 도시 복구·role-matcher 수정을 미러링하며, **Cursor**를 CLI 로스터에 복귀시킵니다(parent #2115 — `cli-detect` 10개 도구 보고). **CLI 로스터 드리프트 패치.** v1.126.1은 v1.126.0 스윕이 놓친 두 곳을 수정: `#/config` API keys 탭 인트로(i18n ×17)가 이제 Antigravity + Grok Build를 나열하고, 도움말 가이드 ×17(및 CI 빌드 사이트 help)의 구식 `Cursor / Gemini CLI` 행이 이제 전체 8-CLI 로스터를 담습니다. **문서·CLI 로스터 재동기화.** v1.126.0은 모든 문서 표면(help ×17, README ×17, wiki)을 라이브 career-ops.org/docs(31페이지 전부 읽음)와 대조하고, `#/config`의 AI CLI 도구 스캔이 8개 일급 CLI를 모두 감지하도록 합니다 — **Grok Build CLI**와 **Kimi CLI**가 Claude Code·Cursor·Codex·OpenCode·Antigravity·Qwen·Copilot에 합류(이제 **9개 도구** 보고, 여전히 실행 안 함). **유지보수 동기화.** v1.125.4는 dependabot site 업데이트(`sharp` 0.35.3, `svgo` 4.0.2, `fast-uri` 3.1.4)를 통합하고 상위 프로젝트 패리티 스윕(v1.22.0 이후, #2108–#2168)을 기록합니다: set-status 잘못된 행 가드, 로컬라이즈 모드 Risk Summary, 업데이터 매니페스트 검증은 모두 CLI 전용 — 포팅할 것 없음(**1969 테스트** 변화 없음). **프롬프트 로케일 수정.** v1.125.3은 덴마크어와 힌디어를 모든 AI 프롬프트에서 정식 지원합니다 — 딥 리서치(라이브·수동), 모드 실행, 평가, 인터뷰, 네트워킹, CV Studio가 이제 이 두 로케일에서 `# Output language` 지시문을 내보내며(이전에는 영어로 응답), 로케일 게이트는 17개 로케일 전체를 검사합니다(**1969 테스트**). **외부 기여자 팩.** v1.125.2는 [@Alien10140](https://github.com/Alien10140)의 첫 커뮤니티 PR을 병합합니다 — 라이브 딥 리서치 HTTP 502 수정(API 제공자용 도구 없는 헤드리스 프롬프트)과 지원 종료된 `gemini-2.0-flash`를 `gemini-3.6-flash`로 올린 Gemini 기본값, 새 5-테스트 드리프트 게이트로 고정(**1957 테스트**). v1.125.1은 멀티 브랜드 SuccessFactors RMK 테넌트의 브랜드 경로를 유지합니다(부모 #2099). **랜딩 페이지의 채용 공고 소스.** v1.125.0은 cvstart.org에 **스캔 소스 67개** 전체를 클릭 가능한 칩으로 나열하는 섹션을 추가했으며, 빌드 시점에 레지스트리와 동기화되고 드리프트가 감시됩니다. 그 이전에는, **상위 v1.22.0 패리티.** v1.124.0은 Welcome to the Jungle, Agentic Engineering Jobs, Jobvite, Gem, Alibaba Group까지 **스캔 소스 5개**(이제 **어댑터 67개** — EN 62개 + RU 5개)를 포팅하고, 여기에 Arbeitsagentur의 완전 원격 근무 검증(`homeofficetyp=VOLLSTAENDIG`)과 SmartRecruiters의 공개 URL 수정 사항을 더합니다.
 >
-> _CLI 로스터 드리프트 패치 · 문서·CLI 로스터 재동기화 · 유지보수 동기화 · da/hi 프롬프트 로케일 수정 · 외부 기여자 팩 · 딥 리서치 502 수정 · Gemini 3.6 기본값 · SF 브랜드 경로 수정 · 랜딩 소스 섹션 · 소스 5개 · 어댑터 67개 · 부모 v1.22 패리티 · Oracle Cloud · 어댑터 62개 · 부모 v1.21 패리티 · 힌디어 · 17개 언어 · 선언문 · cvstart.org 방법론/라이선스/체인지로그 페이지 · 부모 v1.19 패리티 · 61개 어댑터 · 랜딩 실시간 스타 + 기여자 · 부모 v1.18 패리티 · 어댑터 54개 · Hired 상태 · 누적 통계 · 패리티 팩 · 어댑터 50 · 사용량 미터 재작업 · 디자인 다듬기 · 사용량 미터 · 떠 있는 도움말 어시스턴트 · 문서 및 QA 통합 · 보안 백로그 정리 · 문서 및 QA ×16 · Scan 제외 · 파이프라인 개요 · 보안 강화 2 · 새니타이저 강화 · 보안 강화 · AI 사용량 · 회사 로고 · AI CLI 도구 · 문서에 질문 · CV 맞춤 + 커버레터 · 투페이저 자동 채우기 · DOCX 내보내기 · 포털 상태 · 인앱 버그 리포터 · 통계 재구성 · 16 locales · 6개 LLM 프로바이더 · 46개 스캐너 어댑터 · 커리어 방향성 · 커리어 플랜 · 메모리 레이어 · CV Studio · 네트워킹 플래너 · mock interview · 투페이저 시장 적합성 · 상위 career-ops v1.16.0 패리티._
+> _상위 v1.23 패리티 · +3 소스 · 70 어댑터 · Cursor · CLI 로스터 드리프트 패치 · 문서·CLI 로스터 재동기화 · 유지보수 동기화 · da/hi 프롬프트 로케일 수정 · 외부 기여자 팩 · 딥 리서치 502 수정 · Gemini 3.6 기본값 · SF 브랜드 경로 수정 · 랜딩 소스 섹션 · 소스 5개 · 어댑터 67개 · 부모 v1.22 패리티 · Oracle Cloud · 어댑터 62개 · 부모 v1.21 패리티 · 힌디어 · 17개 언어 · 선언문 · cvstart.org 방법론/라이선스/체인지로그 페이지 · 부모 v1.19 패리티 · 61개 어댑터 · 랜딩 실시간 스타 + 기여자 · 부모 v1.18 패리티 · 어댑터 54개 · Hired 상태 · 누적 통계 · 패리티 팩 · 어댑터 50 · 사용량 미터 재작업 · 디자인 다듬기 · 사용량 미터 · 떠 있는 도움말 어시스턴트 · 문서 및 QA 통합 · 보안 백로그 정리 · 문서 및 QA ×16 · Scan 제외 · 파이프라인 개요 · 보안 강화 2 · 새니타이저 강화 · 보안 강화 · AI 사용량 · 회사 로고 · AI CLI 도구 · 문서에 질문 · CV 맞춤 + 커버레터 · 투페이저 자동 채우기 · DOCX 내보내기 · 포털 상태 · 인앱 버그 리포터 · 통계 재구성 · 16 locales · 6개 LLM 프로바이더 · 46개 스캐너 어댑터 · 커리어 방향성 · 커리어 플랜 · 메모리 레이어 · CV Studio · 네트워킹 플래너 · mock interview · 투페이저 시장 적합성 · 상위 career-ops v1.16.0 패리티._
 
 <!-- DO NOT REVERT: locale-specific dashboard screenshot (dashboard-ko-KR.png). Each README uses its own ./images/dashboard-<locale>.png — never replace with dashboard-en.png. Generated by scripts/capture-dashboard-screenshots.mjs. -->
 ![career-ops-ui — 커맨드 센터](./images/dashboard-ko-KR.png)
 
 ## career-ops 소개
 
-[career-ops](https://career-ops.org)는 모든 AI 코딩 CLI(Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — 다른 Claude 호환 CLI도 동일한 슬래시 커맨드 인터페이스에서 작동합니다) 안에서 슬래시 명령으로 동작하는 오픈소스 구직 시스템입니다. 모델 무관(model-agnostic)으로 설계되어 있으며, 6차원 0.0–5.0 루브릭으로 각 채용 공고를 사용자의 CV와 대조하여 평가하고, 맞춤형 PDF 이력서를 생성하며, 모든 지원 이력을 로컬에 기록합니다. 클라우드 계정도, 텔레메트리도, 자동 제출 기능도 사용하지 않습니다.
+[career-ops](https://career-ops.org)는 모든 AI 코딩 CLI(Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — 다른 Claude 호환 CLI도 동일한 슬래시 커맨드 인터페이스에서 작동합니다) 안에서 슬래시 명령으로 동작하는 오픈소스 구직 시스템입니다. 모델 무관(model-agnostic)으로 설계되어 있으며, 6차원 0.0–5.0 루브릭으로 각 채용 공고를 사용자의 CV와 대조하여 평가하고, 맞춤형 PDF 이력서를 생성하며, 모든 지원 이력을 로컬에 기록합니다. 클라우드 계정도, 텔레메트리도, 자동 제출 기능도 사용하지 않습니다.
 
 **이 저장소(career-ops-ui)** 는 그 위에 얹은 완성도 높은 웹 인터페이스입니다. 폼 자동 입력(Playwright MCP 경유)과 슬래시 명령 모드는 여전히 CLI가 담당하며, SPA는 동일한 `cv.md` / `data/applications.md` / `reports/` 파일 위에 CRM 형태의 브라우저 화면을 제공합니다. 두 도구는 같은 데이터를 공유합니다.
 
@@ -133,7 +133,7 @@ npx career-ops-ui init        # npx runs the local bin even without `npm link`
 - **딥 리서치** — Anthropic SDK를 통한 라이브 회사 리서치를 수행하며, cv / profile / mode 파일을 자동으로 인라인 처리합니다.
 - **편집** — `cv.md`를 사이드 바이 사이드 마크다운 프리뷰와 서버 사이드 XSS 새니타이즈로 편집합니다.
 - **유지보수** — doctor, verify, normalize, dedup, merge를 모두 원클릭으로 실행합니다.
-- **멀티 CLI** — Claude Code, Codex, Cursor, Aider, Gemini CLI에서 동일하게 동작합니다. `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` 심(shim)이 단일 진실 공급원(single source of truth)을 가리킵니다.
+- **멀티 CLI** — Claude Code, Cursor, Codex, Cursor, Aider, Gemini CLI에서 동일하게 동작합니다. `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` 심(shim)이 단일 진실 공급원(single source of truth)을 가리킵니다.
 
 순수한 추가물입니다. `career-ops/` 내부는 어떤 것도 변경되지 않으며, 사용자가 적용한 커스터마이징은 그대로 유지됩니다.
 

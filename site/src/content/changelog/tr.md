@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.127.0] — 2026-07-29
+
+### Eklendi
+- **Üç yeni tarama kaynağı (career-ops v1.23.0 paritesi)** — kayıt defteri artık **70 adaptör (65 EN + 5 RU)** sunuyor: **Flowxtra** (kimlik doğrulamasız genel toplayıcı), **VDAB** (Flaman kamu istihdam servisinin anahtar kelime API'si) ve **iCIMS** (`careers-<tenant>.icims.com` portalları, `jibeapply`'dan ayrı). Ayrıca **Cursor** CLI listesine geri döndü (parent #2115): `cli-detect` artık `cursor`'ı algılıyor (**10 araç**), liste help/README/config ×17'de geri getirildi.
+
+### Düzeltildi
+- **agenticjobs** HTML kazımadan REST API'ye geçti (#2167); `location.name` yalnızca çalışma modeliyken **Greenhouse** şehri `/offices`'ten kurtarıyor (#2104); **role-matcher** paritesi (#1933/#2164/#2009: MTS öneki, `product` taban çizgisi, aksan katlama, alt-taban uyuşmazlığı).
+
+### Notlar
+- **Taşınmadı.** v1.23.0'ün çoğu web-ui'nin kullanmadığı CLI/pano yüzeyi (batch-tailor, discover-ats, NL/PT modları, PDF temaları, Go panosu, updater/doctor); aktarma betikleri değişmiyor. Üst projenin VERSION'ı → **1.23.0**.
+
 ## [1.126.1] — 2026-07-25
 
 ### Düzeltildi

@@ -163,7 +163,7 @@ window.__I18N_DICT_TR = {
   'config.gotoHealth': "Sağlık'ta doğrula",
   'config.llmProvider': "LLM sağlayıcı",
   'config.llmProviderHint': "auto = ayarlanmış olan anahtarı kullanır, öncelik sırası Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = belirtileni zorlar. Anahtarı olmayan zorunlu bir sağlayıcı → manuel-prompt yedeğine düşer.",
-  'config.providerModelNote': "career-ops CLI'dan bağımsızdır — herhangi bir AI kodlama CLI'ında (Claude Code · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi) çalıştırırsınız, her birinin kendi girişi vardır. Bu web arayüzü ayrıdır: ⚡ canlı değerlendirmesi headless çalışır ve aşağıdaki Anthropic veya Gemini API anahtarınızı kullanır. OpenAI anahtarı/modeli üst Codex/OpenAI CLI akışı için saklanır — web arayüzünün kendisi tarafından kullanılmaz.",
+  'config.providerModelNote': "career-ops CLI'dan bağımsızdır — herhangi bir AI kodlama CLI'ında (Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi) çalıştırırsınız, her birinin kendi girişi vardır. Bu web arayüzü ayrıdır: ⚡ canlı değerlendirmesi headless çalışır ve aşağıdaki Anthropic veya Gemini API anahtarınızı kullanır. OpenAI anahtarı/modeli üst Codex/OpenAI CLI akışı için saklanır — web arayüzünün kendisi tarafından kullanılmaz.",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys. v1.55.0: web-ui canlı değerlendirmesini de çalıştırır (otomatik sırada 3.; Anthropic ve Gemini'den sonra); üst Codex/OpenAI CLI akışı tarafından da okunur.",
   'config.anthropicKey': "Anthropic API anahtarı (Claude)",

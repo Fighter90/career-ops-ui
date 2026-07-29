@@ -14,7 +14,7 @@ bestimmten Abschnitt.
 ### Über career-ops
 
 [career-ops](https://career-ops.org) ist ein Open-Source-Jobsuchsystem,
-das als Slash-Befehle innerhalb jeder KI-Coding-CLI läuft (Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — andere Claude-kompatible CLIs funktionieren über dieselbe Slash-Befehl-Oberfläche ebenfalls). Modellunabhängig. Es
+das als Slash-Befehle innerhalb jeder KI-Coding-CLI läuft (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — andere Claude-kompatible CLIs funktionieren über dieselbe Slash-Befehl-Oberfläche ebenfalls). Modellunabhängig. Es
 bewertet jede Ausschreibung anhand Ihres CV mit einem sechsdimensionalen
 0.0–5.0-Bewertungsschema, generiert maßgeschneiderte PDF-Lebensläufe und
 verfolgt jede Bewerbung lokal auf Ihrem Rechner.
@@ -88,7 +88,7 @@ verfolgt jede Bewerbung lokal auf Ihrem Rechner.
 
 | | career-ops (CLI) | career-ops-ui (diese App) |
 |---|---|---|
-| Wo es läuft | innerhalb Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` in Ihrem Browser |
+| Wo es läuft | innerhalb Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` in Ihrem Browser |
 | Oberfläche | `/career-ops <mode>` Slash-Befehle | Seitenleiste mit einer Seite pro Workflow |
 | Formularausfüllen | ja, über Playwright MCP | nein — generiert die Checkliste, Sie schließen in der CLI ab |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` auf `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
@@ -385,7 +385,7 @@ transiente Modal vor 1.34 wurde zu dieser Seite befördert).
 
 > **Neu in v1.55 → v1.56.** Ohne gesetzten LLM-Schlüssel erklärt ein rotes Banner auf jedem Bildschirm, dass ⚡ Run-live im manuellen Prompt-Modus ist, und verlinkt hierher; sobald ein Schlüssel gesetzt ist, wird es zu einem stillen Chip, der den aktiven Anbieter nennt. Vor jeder ⚡ Run-live-Schaltfläche (`#/auto`, `#/evaluate`, `#/deep`, modes) wird eine ehrliche Kostenschätzung angezeigt (z. B. „Estimated cost: OpenAI gpt-5-codex · ~$0.04/eval" oder ein Hinweis zu fehlenden API-Kosten im manuellen Modus). `#/scan` verbirgt sekundäre Filter hinter einer **Advanced filters**-Ausklappung; `#/tracker` fügt anklickbare Trichter-Chips + optionale serverseitige Paginierung hinzu; `#/pipeline` virtualisiert ab 1000 Zeilen.
 
-**KI-CLI-Tools.** Der Tab **KI-CLI-Tools** zeigt, welche Agent-CLIs (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) auf dem Server installiert sind — ein schreibgeschützter PATH-Scan, ohne sie auszuführen. **Darstellung → Firmenlogos anzeigen** (standardmäßig aus) zeigt das Favicon jeder Firma in der Scan-Tabelle, geholt von ihrer eigenen Domain (nie ein Drittanbieterdienst).
+**KI-CLI-Tools.** Der Tab **KI-CLI-Tools** zeigt, welche Agent-CLIs (Claude Code, Cursor, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) auf dem Server installiert sind — ein schreibgeschützter PATH-Scan, ohne sie auszuführen. **Darstellung → Firmenlogos anzeigen** (standardmäßig aus) zeigt das Favicon jeder Firma in der Scan-Tabelle, geholt von ihrer eigenen Domain (nie ein Drittanbieterdienst).
 
 Drei Tabs:
 
@@ -415,7 +415,7 @@ Drei Tabs:
 Ein Speichern in einem beliebigen Tab wirkt sich sofort aus — kein
 Server-Neustart.
 
-**Einrichten Ihres LLM-Anbieters (Schritt für Schritt).** Die ⚡ Live-Bewertung der Web-UI läuft *headless* und verwendet einen API-Schlüssel. Sie funktioniert per „ODER" — setzen Sie **einen beliebigen** dieser Schlüssel, und es funktioniert einfach; wenn mehrere gesetzt sind, bevorzugt `auto` sie in dieser Reihenfolge: Anthropic → Gemini → OpenAI → Qwen. (career-ops selbst ist CLI-agnostisch — Sie führen es auch innerhalb von Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot oder Kimi aus; das ist von diesem Headless-Schlüssel getrennt.)
+**Einrichten Ihres LLM-Anbieters (Schritt für Schritt).** Die ⚡ Live-Bewertung der Web-UI läuft *headless* und verwendet einen API-Schlüssel. Sie funktioniert per „ODER" — setzen Sie **einen beliebigen** dieser Schlüssel, und es funktioniert einfach; wenn mehrere gesetzt sind, bevorzugt `auto` sie in dieser Reihenfolge: Anthropic → Gemini → OpenAI → Qwen. (career-ops selbst ist CLI-agnostisch — Sie führen es auch innerhalb von Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot oder Kimi aus; das ist von diesem Headless-Schlüssel getrennt.)
 
 1. Öffnen Sie `#/config` → den Tab **API keys & runtime**.
 2. Wählen Sie Ihren Anbieter in **`LLM_PROVIDER`**: `auto` (verwendet den gesetzten Schlüssel) oder erzwingen Sie einen mit `claude` / `gemini` / `openai` / `qwen`.
@@ -730,7 +730,7 @@ search_queries:
 ```
 
 `search_queries` treiben den KI-gestützten Option-B-Scan (`/career-ops scan`
-innerhalb Claude Code / Codex) an. Sie werden NICHT vom prozessinternen
+innerhalb Claude Code / Cursor / Codex) an. Sie werden NICHT vom prozessinternen
 `npm run scan` ausgeführt (das nur öffentliche Board-APIs anspricht).
 Verwenden Sie sie, wenn Sie Rollen bei Unternehmen entdecken möchten, die
 noch nicht in `tracked_companies` sind. Setzen Sie `enabled: false`, um
@@ -1093,7 +1093,7 @@ Keine AI-Token verbraucht — es spricht die öffentlichen Board-APIs direkt an.
 /career-ops scan
 ```
 
-Innerhalb Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Verwendet
+Innerhalb Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Verwendet
 Modell-Token. Besucht jede `tracked_companies`-Seite direkt und kann
 Nicht-API-Boards entdecken (Karriereseiten, benutzerdefinierte ATS,
 regionale Portale). Langsamer, aber breiter. Nützlich, wenn ein
@@ -1779,7 +1779,7 @@ kopieren Sie die Ausgabe und durchsuchen Sie den Issue-Tracker unter
 
 ## 17. So fügen Sie eine neue Jobportal-Quelle hinzu
 
-career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß, wie man die Ergebnisse eines Boards abruft + normalisiert. Seit v1.119.0 liefert die `server/lib/sources/`-Registry **67** Adapter — **62 englische + 5 russische** Boards. Das englische Set umfasst die großen ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-weite Aggregatoren, die per explizitem `provider:` ausgewählt werden (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), sowie Per-Mandant-ATSes, die automatisch aus einem `careers_url`-Host oder einer expliziten `api:`-URL erkannt werden (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Die vollständige Liste muss hier niemals von Hand gezählt werden — sie wird automatisch aus `server/lib/sources/` ermittelt und live im Source-Dropdown von `#/scan` angezeigt.** Siehe §5 für das YAML und `docs/portals-examples.md` für Kopier-Einfüge-Einträge.
+career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß, wie man die Ergebnisse eines Boards abruft + normalisiert. Seit v1.119.0 liefert die `server/lib/sources/`-Registry **70** Adapter — **65 englische + 5 russische** Boards. Das englische Set umfasst die großen ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-weite Aggregatoren, die per explizitem `provider:` ausgewählt werden (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), sowie Per-Mandant-ATSes, die automatisch aus einem `careers_url`-Host oder einer expliziten `api:`-URL erkannt werden (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Die vollständige Liste muss hier niemals von Hand gezählt werden — sie wird automatisch aus `server/lib/sources/` ermittelt und live im Source-Dropdown von `#/scan` angezeigt.** Siehe §5 für das YAML und `docs/portals-examples.md` für Kopier-Einfüge-Einträge.
 
 > **v1.69.0 (P-14) — Drop-in-Auto-Discovery.** Das Hinzufügen einer 12. Quelle ist
 > jetzt ein **reines Datei-Ablegen**. Die Registry

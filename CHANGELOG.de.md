@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.127.0] — 2026-07-29
+
+### Hinzugefügt
+- **Drei neue Scan-Quellen (career-ops v1.23.0-Parität)** — das Registry führt nun **70 Adapter (65 EN + 5 RU)**: **Flowxtra** (board-weiter Aggregator ohne Auth), **VDAB** (Keyword-API des flämischen Arbeitsdienstes) und **iCIMS** (`careers-<tenant>.icims.com`-Portale, getrennt von `jibeapply`). Zudem kehrt **Cursor** ins CLI-Roster zurück (parent #2115): `cli-detect` erkennt jetzt `cursor` (**10 Werkzeuge**), Roster in help/README/config ×17 wiederhergestellt.
+
+### Behoben
+- **agenticjobs** wechselte vom HTML-Scraping zur REST-API (#2167); **Greenhouse** holt die Stadt aus `/offices`, wenn `location.name` nur ein Arbeitsmodell ist (#2104); **role-matcher**-Parität (#1933/#2164/#2009: MTS-Präfix, `product`-Baseline, Akzentfaltung, Sub-Baseline-Uneinigkeit).
+
+### Hinweise
+- **Nicht portiert.** Der Großteil von v1.23.0 ist CLI/Dashboard-Fläche, die web-ui nicht nutzt (batch-tailor, discover-ats, NL/PT-Modi, PDF-Themes, Go-Dashboard, updater/doctor); Relay-Skripte unverändert. VERSION des Elternprojekts → **1.23.0**.
+
 ## [1.126.1] — 2026-07-25
 
 ### Behoben

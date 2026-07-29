@@ -23,6 +23,10 @@ import { join, delimiter } from 'node:path';
 // Antigravity; the Antigravity binary is `agy` per the parent matrix).
 const KNOWN = [
   { id: 'claude', name: 'Claude Code', bins: ['claude'] },
+  // v1.127.0 — parent career-ops v1.23.0 re-added Cursor as a first-class host
+  // (#2115: skill entrypoint at .cursor/skills/career-ops/SKILL.md). Cursor
+  // ships a `cursor` PATH launcher.
+  { id: 'cursor', name: 'Cursor', bins: ['cursor'] },
   { id: 'codex', name: 'Codex', bins: ['codex'] },
   { id: 'gemini', name: 'Gemini CLI', bins: ['gemini'] },
   { id: 'opencode', name: 'OpenCode', bins: ['opencode'] },
