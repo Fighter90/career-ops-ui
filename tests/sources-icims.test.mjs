@@ -162,7 +162,7 @@ test('assertIcimsUrl: https + *.icims.com, throws off-scheme / off-host / unpars
   const u = `${ORIGIN}/jobs/search`;
   assert.equal(assertIcimsUrl(u), u);
   assert.throws(() => assertIcimsUrl('http://careers-a.icims.com/jobs'), /HTTPS/);
-  assert.throws(() => assertIcimsUrl('https://example.com/jobs'), /icims\.com/);
+  assert.throws(() => assertIcimsUrl('https://example.com/jobs'), /host must be \*\.icims\.com/);
   assert.throws(() => assertIcimsUrl('nonsense'), /invalid URL/);
 });
 
@@ -221,6 +221,6 @@ test('fetchIcims: host guard rejects a non-https / non-icims endpoint before any
   let called = false;
   const fetchImpl = async () => { called = true; return { ok: true, status: 200, text: async () => '' }; };
   await assert.rejects(() => fetchIcims('http://careers-a.icims.com/jobs/search', { fetchImpl }), /HTTPS/);
-  await assert.rejects(() => fetchIcims('https://example.com/jobs/search', { fetchImpl }), /icims\.com/);
+  await assert.rejects(() => fetchIcims('https://example.com/jobs/search', { fetchImpl }), /host must be \*\.icims\.com/);
   assert.equal(called, false); // guard fires before any fetch
 });
