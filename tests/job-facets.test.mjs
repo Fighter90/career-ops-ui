@@ -21,6 +21,17 @@ test('seniorityFromTitle buckets titles senior→junior', () => {
   assert.equal(JF.seniorityFromTitle('Junior Developer'), 'junior');
 });
 
+test('seniorityFromTitle: an explicit modifier wins over a management word (precedence)', () => {
+  // A senior/staff modifier must not be swallowed by "manager"/"lead" (the
+  // v1.129.1 precedence fix). A bare management title stays 'lead'.
+  assert.equal(JF.seniorityFromTitle('Senior Engineering Manager'), 'senior');
+  assert.equal(JF.seniorityFromTitle('Staff Manager'), 'staff');
+  assert.equal(JF.seniorityFromTitle('Junior Manager'), 'junior');
+  assert.equal(JF.seniorityFromTitle('Engineering Manager'), 'lead');  // no modifier
+  assert.equal(JF.seniorityFromTitle('Senior Staff Engineer'), 'staff'); // staff outranks senior
+  assert.equal(JF.seniorityFromTitle('Principal Engineer'), 'staff');
+});
+
 test('seniorityFromTitle: generic IC role → mid, no keyword at all → null (parent default)', () => {
   // A plain IC role with no ladder word sits in the broad middle.
   assert.equal(JF.seniorityFromTitle('Software Engineer'), 'mid');

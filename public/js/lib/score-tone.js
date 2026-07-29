@@ -33,7 +33,11 @@
       if (num >= 3.0) return 'muted';
       return 'bad';
     }
-    const g = (typeof score === 'string' ? score.trim().toUpperCase()[0] : '') || '';
+    // No score at all (null / undefined / blank) is a not-yet-evaluated row —
+    // neutral, never red. A real low grade ("D"/"F") still reads 'bad'.
+    const s = (typeof score === 'string' ? score.trim() : '');
+    if (!s) return 'muted';
+    const g = s.toUpperCase()[0];
     if (g === 'A') return 'good';
     if (g === 'B') return 'warn';
     if (g === 'C') return 'muted';

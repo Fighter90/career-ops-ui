@@ -9,6 +9,11 @@
 ---
 
 
+## [1.129.1] — 2026-07-29
+
+### 修復
+- **對 v1.128/v1.129 web 移植的 AI 審查跟進**(均為諮詢性,源頭修復):`job-facets.js` 級別優先序(顯式修飾詞現在勝過管理詞 — `Senior Engineering Manager` → `senior`,原為 `lead`);`states.mjs` 回退不再被固定(成功讀取仍記憶化,回退不快取回傳 — 啟動時父專案短暫不可用會在下次呼叫重讀)+ 對存在但損毀的檔案 `console.warn`;`score-tone.js` — 無評分的列為中性(`muted`)而非紅色;`domainFromName()` 在 `/api/logo` 前跳過非 ASCII slug;+`tests/states.test.mjs` 隔離守衛。+4 個測試 → **2073**。
+
 ## [1.129.0] — 2026-07-29
 
 ### 新增

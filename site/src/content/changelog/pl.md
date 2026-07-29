@@ -9,6 +9,11 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.129.1] — 2026-07-29
+
+### Naprawiono
+- **Następstwa przeglądu AI portów web z v1.128/v1.129** (wszystkie doradcze, naprawione u źródła): precedencja poziomu w `job-facets.js` (jawny modyfikator wygrywa teraz ze słowem menedżerskim — `Senior Engineering Manager` → `senior`, było `lead`); fallback w `states.mjs` nie jest już przypięty (udany odczyt jest memoizowany, fallback zwracany bez cache — chwilowo niedostępny rodzic przy starcie jest odczytany ponownie) + `console.warn` przy obecnym, lecz uszkodzonym pliku; `score-tone.js` — wiersz bez oceny jest neutralny (`muted`), nie czerwony; `domainFromName()` pomija sluggi nie-ASCII przed `/api/logo`; +strażnik izolacji w `tests/states.test.mjs`. +4 testy → **2073**.
+
 ## [1.129.0] — 2026-07-29
 
 ### Dodano
