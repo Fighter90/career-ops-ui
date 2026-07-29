@@ -18,7 +18,7 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ## [1.129.0] — 2026-07-29
 
 ### Tilføjet
-- **Niveaufacet + alderskolonne på `#/scan`** — `job-facets.js`-biblioteket fra v1.128.0 er nu koblet til scan-UI'et (før kun logik). En ny **Niveau**-dropdown inddeler hver opslags titel i lead/staff/senior/mid/junior/praktikant (`JobFacets.seniorityFromTitle`) og udfyldes ud fra det, der faktisk er i resultaterne (som Land-facetten); titler uden niveauord passerer altid. Bevares i gemte søgninger, Nulstil og Anvend. Tabellen får en **Niveau**-badgekolonne og en token-fri **Alder**-kolonne (`i dag` / `Nd`, fra `JobFacets.daysSince`). 12 i18n-nøgler ×17, +3 tests → **2069**.
+- **Niveaufacet + alderskolonne på `#/scan`** — `job-facets.js`-biblioteket fra v1.128.0 er nu koblet til scan-UI'et (før kun logik). En ny **Niveau**-dropdown inddeler hver opslags titel i lead/staff/senior/mid/junior/praktikant (`JobFacets.seniorityFromTitle`) og udfyldes ud fra det, der faktisk er i resultaterne (som Land-facetten); titler uden niveauord passerer altid. Bevares i gemte søgninger, Nulstil og Anvend. Tabellen får en **Niveau**-badgekolonne og en token-fri **Alder**-kolonne (`i dag` / `Nd`, fra `JobFacets.daysSince`). 12 i18n-nøgler ×17, +3 tests → **2073**.
 
 ## [1.128.0] — 2026-07-29
 
