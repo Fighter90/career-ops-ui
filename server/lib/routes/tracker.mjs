@@ -14,10 +14,14 @@ import { PATHS, path as projPath } from '../paths.mjs';
 import { parseApplications, today } from '../parsers.mjs';
 import { safeReadApps } from '../store.mjs';
 import { withFileLock } from '../file-lock.mjs';
+import { canonicalizeStatus } from '../states.mjs';
 
-// v1.118.0 — parent v1.18.0 parity: 'Hired' joins the canonical set
-// (templates/states.yml id:hired — offer accepted, job landed).
-const ALLOWED_STATUSES = ['Evaluated', 'Applied', 'Responded', 'Interview', 'Offer', 'Hired', 'Rejected', 'Discarded', 'SKIP'];
+// v1.128.0 (parent web/ port #2) — the canonical status vocabulary is no
+// longer hardcoded here. `server/lib/states.mjs` reads the parent's
+// `templates/states.yml` live (id/label/aliases), so the whitelist — and
+// alias folding (Spanish/legacy labels the parent writer may emit) — stays in
+// sync with the parent automatically instead of needing a manual re-sync every
+// release (the v1.118.0 'Hired' addition was one such sweep).
 
 export function registerTrackerRoutes(app) {
   // v1.55.8 — UX-8: OPTIONAL server-side pagination + a whole-history
@@ -33,9 +37,14 @@ export function registerTrackerRoutes(app) {
     if (page === undefined && pageSize === undefined && status === undefined) {
       return res.json({ rows: all }); // legacy shape — untouched
     }
+    // Fold each raw status to its canonical bucket (parent web/ port #3) so a
+    // Spanish/legacy label the parent writer may emit (e.g. "contratada",
+    // "**Applied**") lands in the same bucket as its canonical form instead of
+    // spawning a phantom funnel entry. Unknown labels keep their raw value.
     const funnel = {};
     for (const r of all) {
-      const s = (r && r.status) || 'Evaluated';
+      const raw = (r && r.status) || 'Evaluated';
+      const s = canonicalizeStatus(raw) || raw;
       funnel[s] = (funnel[s] || 0) + 1;
     }
     const wanted = status ? all.filter((r) => (r && r.status) === status) : all;
@@ -59,7 +68,9 @@ export function registerTrackerRoutes(app) {
     const cell = (s) => String(s || '').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
     const safeCompany = cell(company);
     const safeRole = cell(role);
-    const safeStatus = ALLOWED_STATUSES.includes(status) ? status : 'Evaluated';
+    // Fold any label/id/alias (case-insensitive, stray ** tolerated) to its
+    // canonical label; unrecognized → 'Evaluated' (the safe default, as before).
+    const safeStatus = canonicalizeStatus(status) || 'Evaluated';
     const safeScore = (score && /^[\d.]+\/?5?$/.test(String(score))) ? String(score).replace(/\/5$/, '') + '/5' : '—';
     const safeDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : today();
     const safeReport = reportSlug ? `[${cell(reportSlug)}](reports/${cell(reportSlug).replace(/^reports\//, '').replace(/\.md$/, '')}.md)` : '';

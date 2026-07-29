@@ -11,6 +11,14 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.128.0] — 2026-07-29
+
+### Ajouté
+- **Quatre solutions portées depuis la propre web app du parent (`../web/`, Next.js)**, réécrites en JS vanilla/ESM, sans nouvelle dépendance : (1) `server/lib/states.mjs` lit `templates/states.yml` en direct comme vocabulaire canonique des statuts du tracker (fallback CI) — supprime la resync manuelle de la whitelist à chaque release ; POST replie les alias (espagnol/legacy) sur le libellé canonique, le funnel du GET regroupe par statut canonique ; (2) logos d'entreprise sur les lignes hébergées par un ATS via `domainFromName()` (~90 marques→domaine) ; (3) `score-tone.js` — teinte de score à 4 niveaux (≥4.2/3.8/3.0 + repli lettre) ; (4) `job-facets.js` — facettes seniority/source/days. +21 tests.
+
+### Notes
+- Non porté (concept seul) : la couche d'actions agentiques du parent (`actions/registry.ts` + `api/assistant/route.ts`) — plan pour quand `docs-fab` deviendra un copilote. Aucune nouvelle source (registre **70**), aucun changement i18n/help.
+
 ## [1.127.0] — 2026-07-29
 
 ### Ajouté

@@ -163,7 +163,12 @@ Router.register('tracker', async () => {
     el.addEventListener('input', () => { pager.reset(); applyFilters(); })
   );
   function row(r) {
-    const scoreCls = r.scoreNum >= 4 ? 'score-high' : r.scoreNum >= 3 ? 'score-mid' : 'score-low';
+    // v1.128.0 (parent web/ port #3) — finer 4-tier tone (>=4.2/3.8/3.0) with a
+    // letter-grade fallback, via the shared ScoreTone helper. Falls back to the
+    // old coarse split only if the helper script somehow didn't load.
+    const scoreCls = (window.ScoreTone && window.ScoreTone.scoreClass)
+      ? window.ScoreTone.scoreClass(r.scoreNum ?? r.score)
+      : (r.scoreNum >= 4 ? 'score-high' : r.scoreNum >= 3 ? 'score-mid' : 'score-low');
     return c('tr', null, [
       c('td', null, r.num || ''),
       c('td', null, r.date || ''),

@@ -89,6 +89,11 @@ export const PATHS = {
   // layer on explicit Save; never overwritten by system updates.
   careerPlan: path('config', 'career-plan.md'),
   portals: path('portals.yml'),
+  // v1.128.0 — the parent's canonical application-state definitions
+  // (id/label/aliases/dashboard_group). System layer, read-only; the tracker
+  // reads it live instead of hardcoding a status whitelist (parent web/ port
+  // #2 — see server/lib/states.mjs). A hardcoded fallback covers CI isolation.
+  statesYml: path('templates', 'states.yml'),
   packageJson: path('package.json'),
   version: path('VERSION'),
   envFile: path('.env'),

@@ -10,6 +10,14 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 
 
+## [1.128.0] — 2026-07-29
+
+### Tilføjet
+- **Fire løsninger porteret fra forælderens egen web-app (`../web/`, Next.js)**, genimplementeret i vanilla JS/ESM, uden nye afhængigheder: (1) `server/lib/states.mjs` læser `templates/states.yml` live som trackerens kanoniske statusordforråd (CI-fallback) — fjerner den manuelle whitelist-resync hver udgivelse; POST folder aliasser (spansk/legacy) til den kanoniske etiket, GET-funnel grupperer efter kanonisk status; (2) firmalogoer på ATS-hostede rækker via `domainFromName()` (~90 brand→domæne); (3) `score-tone.js` — 4-trins score-tone (≥4.2/3.8/3.0 + bogstav-fallback); (4) `job-facets.js` — seniority/source/days-facetter. +21 tests.
+
+### Noter
+- Ikke porteret (kun koncept): forælderens agent-handlingslag (`actions/registry.ts` + `api/assistant/route.ts`) — plan for når `docs-fab` bliver en copilot. Ingen nye kilder (register **70**), ingen i18n/help-ændringer.
+
 ## [1.127.0] — 2026-07-29
 
 ### Tilføjet

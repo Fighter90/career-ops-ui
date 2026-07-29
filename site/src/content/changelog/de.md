@@ -2,6 +2,14 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.128.0] — 2026-07-29
+
+### Hinzugefügt
+- **Vier Lösungen aus der eigenen Web-App des Elternprojekts (`../web/`, Next.js) portiert**, in Vanilla-JS/ESM neu implementiert, ohne neue Abhängigkeiten: (1) `server/lib/states.mjs` liest `templates/states.yml` live als kanonisches Status-Vokabular des Trackers (CI-Fallback) — beseitigt die manuelle Whitelist-Resync pro Release; POST faltet Aliase (Spanisch/Legacy) auf das kanonische Label, der GET-Funnel bucketet nach kanonischem Status; (2) Firmenlogos in ATS-gehosteten Zeilen via `domainFromName()` (~90 Marke→Domain); (3) `score-tone.js` — 4-stufiger Score-Ton (≥4.2/3.8/3.0 + Buchstaben-Fallback); (4) `job-facets.js` — seniority/source/days-Facetten. +21 Tests.
+
+### Hinweise
+- Nicht portiert (nur Konzept): die agentische Aktionsschicht des Elternprojekts (`actions/registry.ts` + `api/assistant/route.ts`) — Blaupause, falls `docs-fab` vom Hilfe-Chat zum Co-Piloten wird. Keine neuen Quellen (Registry **70**), keine i18n/Help-Änderungen.
+
 ## [1.127.0] — 2026-07-29
 
 ### Hinzugefügt

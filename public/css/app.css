@@ -957,6 +957,9 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 }
 .score-high { background: rgba(0,138,5,.16); color: var(--kazan-text); }
 .score-mid { background: rgba(255,180,0,.18); color: var(--darjeeling-text); }
+/* v1.128.0 (parent web/ port #3) — the neutral fourth tone (3.0–3.8): a
+   passing-but-unremarkable score, distinct from the warn-yellow of 3.8–4.2. */
+.score-muted { background: rgba(120,120,128,.14); color: var(--foggy); }
 .score-low { background: rgba(255,56,92,.13); color: var(--rausch-text); }
 /* v1.22.0 (M-3) — WCAG 1.4.1 "use of color". Prefix a redundant glyph
  * so the high/mid/low tier is legible without perceiving hue. The

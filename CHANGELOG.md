@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.128.0] — 2026-07-29
+
+### Added
+- **Four solutions ported from the parent's own web app (`../web/`, Next.js)** — re-implemented in vanilla JS / ESM, no new deps:
+  - **Canonical states read live from `templates/states.yml`** (`server/lib/states.mjs`) — the tracker's status vocabulary is no longer hardcoded. `canonicalLabels()` + `canonicalizeStatus()` read the parent's single source of truth (with a byte-identical CI fallback), so the whitelist and alias folding stay in sync automatically instead of needing a manual re-sync every parent release (the v1.118.0 'Hired' add was one such sweep). `POST /api/tracker` now folds any label/id/alias (Spanish/legacy, stray `**`) to its canonical label; the `GET /api/tracker` funnel buckets by canonical status so aliases no longer spawn phantom entries. +`tests/states.test.mjs`.
+  - **Company logos on ATS-hosted rows** — `public/js/lib/company-logo.js` gains `domainFromName()` (a curated ~90-entry brand→domain override map + legal-suffix stripping + slug fallback). When the posting URL is a shared ATS host (greenhouse/lever/…) — the majority of rows — the employer domain is now derived from the company name and fed to the existing SSRF-safe `/api/logo` proxy before dropping to a letter-avatar (now 1–2 initials). +`tests/company-logo-domain.test.mjs`.
+  - **Finer score tone** — `public/js/lib/score-tone.js` (`window.ScoreTone`) replaces the coarse ≥4/≥3 split with a 4-tier tone (≥4.2 / ≥3.8 / ≥3.0) + a letter-grade fallback; `#/tracker` score cells use it (new neutral `.score-muted` tier). +`tests/score-tone.test.mjs`.
+  - **Zero-token job facets** — `public/js/lib/job-facets.js` (`window.JobFacets`): `seniorityFromTitle()`, `sourceFromUrl()` (dot-boundary-anchored host match), `daysSince()` — a reusable client lib for cheap filtering. +`tests/job-facets.test.mjs`.
+
+### Notes
+- **Not ported (CONCEPT-only).** The parent web app's agentic action layer (`actions/registry.ts` + `api/assistant/route.ts` — one registry both the UI and the AI assistant dispatch, `sideEffect`-gated with confirm-before-write) is the blueprint if `docs-fab.js` ever grows from a read-only help chat into an acting co-pilot; a large, spec-worthy build left for later. Analytics / cv-quality / logbuf / logo+usage routes are already at or above parity. No new scan sources (registry stays **70**); no i18n/help changes.
+
 ## [1.127.0] — 2026-07-29
 
 ### Added
