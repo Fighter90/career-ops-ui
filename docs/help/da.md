@@ -13,7 +13,7 @@ hjælpe-sidebjælken.
 ### Om career-ops
 
 [career-ops](https://career-ops.org) er et open source-jobsøgningssystem,
-der kører som skråstreg-kommandoer inde i enhver AI-kodnings-CLI (Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — andre Claude-kompatible CLI'er virker også via den samme skråstreg-kommandoflade). Modelagnostisk. Det
+der kører som skråstreg-kommandoer inde i enhver AI-kodnings-CLI (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — andre Claude-kompatible CLI'er virker også via den samme skråstreg-kommandoflade). Modelagnostisk. Det
 evaluerer hvert opslag mod dit CV med en seks-dimensionel 0,0–5,0
 rubrik, genererer skræddersyede PDF-CV'er og sporer hver ansøgning
 lokalt på din maskine.
@@ -87,7 +87,7 @@ lokalt på din maskine.
 
 | | career-ops (CLI) | career-ops-ui (denne app) |
 |---|---|---|
-| Hvor det kører | inde i Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` i din browser |
+| Hvor det kører | inde i Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` i din browser |
 | Flade | `/career-ops <mode>` skråstreg-kommandoer | sidebjælke med én side per arbejdsgang |
 | Formularudfyldning | ja, via Playwright MCP | nej — genererer tjeklisten, du afslutter i CLI'en |
 | PDF | `generate-pdf.mjs` | `📄 Generér PDF` på `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
@@ -362,7 +362,7 @@ forfremmet til denne side).
 
 > **Nyt i v1.55 → v1.56.** Med **ingen** LLM-nøgle sat forklarer et rødt banner på hver skærm, at ⚡ Run-live er i manuel-prompt-tilstand og linker hertil; når en nøgle er sat, bliver det en stille chip, der navngiver den aktive udbyder. Før enhver ⚡ Run-live-knap (`#/auto`, `#/evaluate`, `#/deep`, modes) vises et ærligt omkostningsskøn (f.eks. "Estimeret omkostning: OpenAI gpt-5-codex · ~$0,04/eval", eller en ingen-API-omkostning-note i manuel tilstand). `#/scan` gemmer sekundære filtre bag en **Avancerede filtre**-foldning; `#/tracker` tilføjer klikbare tragt-chips + valgfri server-side-paginering; `#/pipeline` virtualiserer ud over 1000 rækker.
 
-**AI CLI-værktøjer.** Fanen **AI CLI-værktøjer** viser, hvilke agent-CLI'er (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) der er installeret på serveren — en skrivebeskyttet PATH-scanning uden at køre dem. **Udseende → Vis firmalogoer** (fra som standard) viser hvert firmas favicon i scanningstabellen, hentet fra dets eget domæne (aldrig en tredjepartstjeneste).
+**AI CLI-værktøjer.** Fanen **AI CLI-værktøjer** viser, hvilke agent-CLI'er (Claude Code, Cursor, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) der er installeret på serveren — en skrivebeskyttet PATH-scanning uden at køre dem. **Udseende → Vis firmalogoer** (fra som standard) viser hvert firmas favicon i scanningstabellen, hentet fra dets eget domæne (aldrig en tredjepartstjeneste).
 
 Tre faner:
 
@@ -388,7 +388,7 @@ Tre faner:
 
 Et gem i en hvilken som helst fane forplanter sig med det samme — ingen server-genstart.
 
-**Opsætning af din LLM-udbyder (trin for trin).** Web-UI'ens ⚡ live-evaluering kører *headless* og bruger én API-nøgle. Den virker via "ELLER" — sæt **en hvilken som helst** af disse, og det virker bare; med flere sat foretrækker `auto` dem i denne rækkefølge: Anthropic → Gemini → OpenAI → Qwen. (career-ops selv er CLI-agnostisk — du kører den også inde i Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot eller Kimi; det er adskilt fra denne headless-nøgle.)
+**Opsætning af din LLM-udbyder (trin for trin).** Web-UI'ens ⚡ live-evaluering kører *headless* og bruger én API-nøgle. Den virker via "ELLER" — sæt **en hvilken som helst** af disse, og det virker bare; med flere sat foretrækker `auto` dem i denne rækkefølge: Anthropic → Gemini → OpenAI → Qwen. (career-ops selv er CLI-agnostisk — du kører den også inde i Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot eller Kimi; det er adskilt fra denne headless-nøgle.)
 
 1. Åbn `#/config` → fanen **API-nøgler og runtime**.
 2. Vælg din udbyder i **`LLM_PROVIDER`**: `auto` (brug hvilken nøgle der er sat), eller tving en med `claude` / `gemini` / `openai` / `qwen`.
@@ -682,7 +682,7 @@ search_queries:
 ```
 
 `search_queries` driver det AI-drevne Option B-scan (`/career-ops scan`
-inde i Claude Code / Codex). De udføres IKKE af det in-process
+inde i Claude Code / Cursor / Codex). De udføres IKKE af det in-process
 `npm run scan` (som kun rammer offentlige boards-API'er). Brug dem, når
 du vil opdage roller hos virksomheder, der endnu ikke er i
 `tracked_companies`. Sæt `enabled: false` for at beholde en post uden at
@@ -1008,7 +1008,7 @@ Ingen AI-tokens forbruges — det rammer de offentlige boards-API'er direkte.
 /career-ops scan
 ```
 
-Inde i Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Bruger model-tokens.
+Inde i Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Bruger model-tokens.
 Besøger hver `tracked_companies`-side direkte og kan opdage ikke-API-
 boards (karrieresider, custom ATS, regionale portaler). Langsommere men
 bredere. Nyttig når et ATS-sweep ikke returnerer noget for et mål, du
@@ -1647,7 +1647,7 @@ outputtet, og søg i issue-trackeren på
 
 ## 17. Sådan tilføjer du en ny jobportal-kilde
 
-career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. Pr. v1.119.0 leverer `server/lib/sources/`-registreringen **67** adaptere — **62 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
+career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. Pr. v1.119.0 leverer `server/lib/sources/`-registreringen **70** adaptere — **65 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** At tilføje en 12. kilde er nu
 > et **rent fil-drop**. Registreringen

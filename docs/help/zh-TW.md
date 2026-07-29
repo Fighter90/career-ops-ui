@@ -10,7 +10,7 @@
 ### 關於 career-ops
 
 [career-ops](https://career-ops.org) 是一個開源求職系統,以 slash
-指令的形式運作於任何 AI 編碼 CLI 內(Claude Code、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 相容 CLI 也透過相同的斜線指令介面運作)。模型無關。它以六維 0.0–5.0 評分
+指令的形式運作於任何 AI 編碼 CLI 內(Claude Code、Cursor、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 相容 CLI 也透過相同的斜線指令介面運作)。模型無關。它以六維 0.0–5.0 評分
 量表將每個職缺與你的 CV 進行配對,產生客製化 PDF 履歷,並在本機
 追蹤每一次申請。
 
@@ -77,7 +77,7 @@
 
 | | career-ops (CLI) | career-ops-ui (本應用) |
 |---|---|---|
-| 運行位置 | Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) 內 | 瀏覽器中的 `http://127.0.0.1:4317` |
+| 運行位置 | Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) 內 | 瀏覽器中的 `http://127.0.0.1:4317` |
 | 介面 | `/career-ops <mode>` slash 指令 | 側邊欄,每個工作流一個頁面 |
 | 表單填寫 | 有,經 Playwright MCP | 無 — 產生檢查清單,你在 CLI 完成 |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF`,出現在 `#/cv`、`#/reports/:slug`、`#/evaluate`、`#/deep`、`#/interview-prep` |
@@ -309,7 +309,7 @@ JD。輔助器會生成逐步的投遞檢查清單:
 
 > **v1.55 → v1.56 新功能。** 未設定 LLM 金鑰時,每螢幕的紅色橫幅說明 ⚡ 即時執行處於手動提示模式並連結至此;設定金鑰後變為顯示作用中提供方的低調徽章。每個 ⚡ 即時執行按鈕(`#/auto`、`#/evaluate`、`#/deep`、模式)前顯示誠實的預估費用(如「預估費用:OpenAI gpt-5-codex · ~$0.04/eval」,手動模式則無 API 費用)。`#/scan` 將次要篩選收入**進階篩選**摺疊區;`#/tracker` 新增可點擊漏斗晶片 + 可選伺服器端分頁;`#/pipeline` 超過 1000 列時虛擬化。
 
-**AI CLI 工具。** **AI CLI 工具**分頁顯示伺服器上安裝了哪些代理 CLI(Claude Code、Codex、Gemini、OpenCode、Copilot、Qwen、Antigravity、Kimi CLI、Grok Build CLI)——唯讀 PATH 掃描,不執行。**外觀 → 顯示公司標誌**(預設關閉)從各公司自己網域取得 favicon 顯示在掃描表中(非第三方服務)。
+**AI CLI 工具。** **AI CLI 工具**分頁顯示伺服器上安裝了哪些代理 CLI(Claude Code、Cursor、Codex、Gemini、OpenCode、Copilot、Qwen、Antigravity、Kimi CLI、Grok Build CLI)——唯讀 PATH 掃描,不執行。**外觀 → 顯示公司標誌**(預設關閉)從各公司自己網域取得 favicon 顯示在掃描表中(非第三方服務)。
 
 兩個分頁:
 
@@ -322,7 +322,7 @@ JD。輔助器會生成逐步的投遞檢查清單:
 
 任一分頁儲存後皆立即生效 — 無需重啟伺服器。
 
-**設定你的 LLM 供應方(逐步)。** web UI 的 ⚡ 即時評估以*無頭*方式執行,使用一個 API 金鑰。它透過 "OR" 運作 —— 設定其中**任意一個**即可正常運作;設定多個時,`auto` 按此順序優先:Anthropic → Gemini → OpenAI → Qwen。(career-ops 本身是 CLI 無關的 —— 你也可以在 Claude Code、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot 或 Kimi 內執行它;那與此無頭金鑰無關。)
+**設定你的 LLM 供應方(逐步)。** web UI 的 ⚡ 即時評估以*無頭*方式執行,使用一個 API 金鑰。它透過 "OR" 運作 —— 設定其中**任意一個**即可正常運作;設定多個時,`auto` 按此順序優先:Anthropic → Gemini → OpenAI → Qwen。(career-ops 本身是 CLI 無關的 —— 你也可以在 Claude Code、Cursor、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot 或 Kimi 內執行它;那與此無頭金鑰無關。)
 
 1. 開啟 `#/config` → **API keys & runtime** 分頁。
 2. 在 **`LLM_PROVIDER`** 中選擇你的供應方:`auto`(使用已設定的金鑰),或用 `claude` / `gemini` / `openai` / `qwen` 強制指定一個。
@@ -557,6 +557,7 @@ search_queries:
 ```
 
 `search_queries` 驅動 AI 動力的 Option B 掃描(在 Claude Code /
+Cursor /
 Codex 內執行 `/career-ops scan`)。它們 **不會** 被行內的
 `npm run scan` 執行(後者僅打公開職缺板 API)。當你想要在尚未
 進入 `tracked_companies` 的公司發掘角色時才用。設 `enabled: false`
@@ -854,7 +855,7 @@ boards API。
 /career-ops scan
 ```
 
-在 Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) 中執行。會用到模型
+在 Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy) 中執行。會用到模型
 tokens。直接造訪每個 `tracked_companies` 頁面,並能發掘非 API
 的職缺板(職涯頁面、客製化 ATS、區域入口)。較慢但範圍更廣。
 當 ATS 大掃描對你知道正在招人的目標公司毫無收穫時非常有用。
@@ -1464,7 +1465,7 @@ scan 執行、設定變更、mode 執行。
 
 ## 17. 如何新增職位入口網站來源
 
-career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。截至 v1.119.0,`server/lib/sources/` 註冊表內建 **67** 個 adapter —— **62 個英文 + 5 個俄文**板塊。英文集合涵蓋主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由明確 `provider:` 選擇的全板塊聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及從 `careers_url` 主機或明確 `api:` URL 自動偵測的按租戶 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整清單永遠無需在此手動統計 —— 它會從 `server/lib/sources/` 自動探索,並在 `#/scan` 的 Source 下拉選單中即時顯示。** YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
+career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。截至 v1.119.0,`server/lib/sources/` 註冊表內建 **70** 個 adapter —— **65 個英文 + 5 個俄文**板塊。英文集合涵蓋主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由明確 `provider:` 選擇的全板塊聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及從 `careers_url` 主機或明確 `api:` URL 自動偵測的按租戶 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整清單永遠無需在此手動統計 —— 它會從 `server/lib/sources/` 自動探索,並在 `#/scan` 的 Source 下拉選單中即時顯示。** YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 直接放入即自動探索。** 新增第 12 個來源現在只需**純粹的檔案放入**。registry
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

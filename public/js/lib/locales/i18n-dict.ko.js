@@ -163,7 +163,7 @@ window.__I18N_DICT_KO = {
   'config.gotoHealth': "Health 에서 확인",
   'config.llmProvider': "LLM 공급자",
   'config.llmProviderHint': "auto = 설정된 키를 사용하며 Anthropic → Gemini → OpenAI → Qwen → OpenRouter 순으로 우선. claude / gemini / openai / qwen / openrouter = 해당 공급자 강제. 강제 공급자 키 없음 → 수동 프롬프트.",
-  'config.providerModelNote': "career-ops는 CLI 비종속적입니다 — 어떤 AI 코딩 CLI(Claude Code · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi)에서든 실행하며 각자 로그인합니다. 이 웹 UI는 별개입니다: ⚡ 라이브 평가는 헤드리스로 아래의 Anthropic 또는 Gemini API 키를 사용합니다. OpenAI 키/모델은 상위 Codex/OpenAI CLI 흐름용으로 저장되며 웹 UI 자체는 사용하지 않습니다.",
+  'config.providerModelNote': "career-ops는 CLI 비종속적입니다 — 어떤 AI 코딩 CLI(Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi)에서든 실행하며 각자 로그인합니다. 이 웹 UI는 별개입니다: ⚡ 라이브 평가는 헤드리스로 아래의 Anthropic 또는 Gemini API 키를 사용합니다. OpenAI 키/모델은 상위 Codex/OpenAI CLI 흐름용으로 저장되며 웹 UI 자체는 사용하지 않습니다.",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys. v1.55.0: web-ui 라이브 평가도 실행(auto 순서에서 Anthropic·Gemini 다음 3번째); 상위 Codex/OpenAI CLI 흐름에서도 계속 사용.",
   'config.anthropicKey': "Anthropic API 키 (Claude)",

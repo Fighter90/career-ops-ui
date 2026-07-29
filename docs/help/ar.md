@@ -6,7 +6,7 @@
 
 ### حول career-ops
 
-[career-ops](https://career-ops.org) نظام مفتوح المصدر للبحث عن عمل، يعمل عبر أوامر مائلة داخل أي واجهة سطر أوامر لبرمجة الذكاء الاصطناعي (Claude Code، Codex، OpenCode، Antigravity CLI، Grok Build CLI، Qwen Code، Kimi، GitHub Copilot CLI، Gemini CLI (legacy) — وأي واجهة متوافقة مع Claude تعمل بالطريقة ذاتها). النظام مستقل عن النموذج المستخدم. يقيّم كل إعلان وظيفي مقابل سيرتك الذاتية CV وفق معيار سداسي الأبعاد يتراوح بين 0.0 و5.0، ويُنشئ سيرًا ذاتية PDF مخصصة، ويتتبع كل طلب توظيف محلياً على جهازك.
+[career-ops](https://career-ops.org) نظام مفتوح المصدر للبحث عن عمل، يعمل عبر أوامر مائلة داخل أي واجهة سطر أوامر لبرمجة الذكاء الاصطناعي (Claude Code، Cursor، Codex، OpenCode، Antigravity CLI، Grok Build CLI، Qwen Code، Kimi، GitHub Copilot CLI، Gemini CLI (legacy) — وأي واجهة متوافقة مع Claude تعمل بالطريقة ذاتها). النظام مستقل عن النموذج المستخدم. يقيّم كل إعلان وظيفي مقابل سيرتك الذاتية CV وفق معيار سداسي الأبعاد يتراوح بين 0.0 و5.0، ويُنشئ سيرًا ذاتية PDF مخصصة، ويتتبع كل طلب توظيف محلياً على جهازك.
 
 **المرجع الأساسي (اقرأها بهذا الترتيب عند التثبيت الأول):**
 
@@ -59,7 +59,7 @@
 
 | | career-ops (CLI) | career-ops-ui (هذا التطبيق) |
 |---|---|---|
-| أين يعمل | داخل Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` في متصفحك |
+| أين يعمل | داخل Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` في متصفحك |
 | الواجهة | أوامر `/career-ops <mode>` مائلة | شريط جانبي بصفحة لكل مرحلة |
 | ملء النماذج | نعم، عبر Playwright MCP | لا — يُنشئ قائمة مراجعة وأنت تكملها في CLI |
 | PDF | `generate-pdf.mjs` | `📄 توليد PDF` في `#/cv` و`#/reports/:slug` و`#/evaluate` و`#/deep` و`#/interview-prep` |
@@ -228,7 +228,7 @@ career-ops-ui **إضافات خالصة**. لا شيء داخل `career-ops/` ي
 
 > **جديد في v1.55 → v1.56.** عند غياب أي مفتاح LLM، يظهر شريط أحمر على كل شاشة يوضح أن ⚡ التشغيل المباشر في وضع الـ prompt اليدوي ويُحيل إلى هنا؛ بمجرد ضبط مفتاح يتحول إلى شريحة هادئة تُسمّي المزود النشط. قبل أي زر ⚡ تشغيل مباشر (`#/auto` و`#/evaluate` و`#/deep` والأوضاع) يظهر تقدير صريح للتكلفة (مثلاً "التكلفة المقدّرة: OpenAI gpt-5-codex · ~$0.04/تقييم"، أو ملاحظة بلا تكلفة API في الوضع اليدوي). `#/scan` يخفي المرشحات الثانوية خلف إفصاح **مرشحات متقدمة**؛ `#/tracker` يضيف شرائح قمع قابلة للنقر + ترقيم اختياري من جهة الخادم؛ `#/pipeline` يُظهر صفوف افتراضية تتجاوز 1000.
 
-**أدوات CLI للذكاء الاصطناعي.** يعرض تبويب **أدوات CLI للذكاء الاصطناعي** أيّ CLI وكيلية (Claude Code وCodex وGemini وOpenCode وCopilot وQwen وAntigravity وKimi CLI وGrok Build CLI) مثبَّتة على الخادم — فحص للـPATH للقراءة فقط دون تشغيلها. **المظهر → إظهار شعارات الشركات** (معطّل افتراضياً) يعرض أيقونة كل شركة في جدول الفحص، مجلوبة من نطاقها الخاص (لا خدمة خارجية).
+**أدوات CLI للذكاء الاصطناعي.** يعرض تبويب **أدوات CLI للذكاء الاصطناعي** أيّ CLI وكيلية (Claude Code وCursor وCodex وGemini وOpenCode وCopilot وQwen وAntigravity وKimi CLI وGrok Build CLI) مثبَّتة على الخادم — فحص للـPATH للقراءة فقط دون تشغيلها. **المظهر → إظهار شعارات الشركات** (معطّل افتراضياً) يعرض أيقونة كل شركة في جدول الفحص، مجلوبة من نطاقها الخاص (لا خدمة خارجية).
 
 ثلاث تبويبات:
 
@@ -238,7 +238,7 @@ career-ops-ui **إضافات خالصة**. لا شيء داخل `career-ops/` ي
 
 أي حفظ في تبويبة يُطبَّق فوراً — لا إعادة تشغيل للخادم.
 
-**إعداد مزود LLM خطوة بخطوة.** التقييم المباشر ⚡ في الواجهة يعمل *بلا رأس* ويستخدم مفتاح API واحداً. يعمل بمنطق "أو" — اضبط **أياً** منها ويعمل مباشرةً؛ مع عدة مفاتيح مضبوطة، يُفضّل `auto` بهذا الترتيب: Anthropic → Gemini → OpenAI → Qwen. (career-ops نفسه مستقل عن CLI — يمكنك أيضاً تشغيله داخل Claude Code وCodex وGemini وOpenCode وAntigravity وGrok Build وQwen وCopilot وKimi؛ هذا منفصل عن مفتاح headless هذا.)
+**إعداد مزود LLM خطوة بخطوة.** التقييم المباشر ⚡ في الواجهة يعمل *بلا رأس* ويستخدم مفتاح API واحداً. يعمل بمنطق "أو" — اضبط **أياً** منها ويعمل مباشرةً؛ مع عدة مفاتيح مضبوطة، يُفضّل `auto` بهذا الترتيب: Anthropic → Gemini → OpenAI → Qwen. (career-ops نفسه مستقل عن CLI — يمكنك أيضاً تشغيله داخل Claude Code وCursor وCodex وGemini وOpenCode وAntigravity وGrok Build وQwen وCopilot وKimi؛ هذا منفصل عن مفتاح headless هذا.)
 
 1. افتح `#/config` → تبويبة **مفاتيح API والبيئة التشغيلية**.
 2. اختر مزودك في **`LLM_PROVIDER`**: `auto` (يستخدم أي مفتاح مضبوط)، أو أجبر واحداً بـ `claude` / `gemini` / `openai` / `qwen`.
@@ -425,7 +425,7 @@ search_queries:
     enabled: false
 ```
 
-تُشغّل `search_queries` مسح الخيار B المدعوم بالذكاء الاصطناعي (`/career-ops scan` داخل Claude Code / Codex). لا تُنفَّذ بواسطة `npm run scan` الداخلي (الذي يضرب فقط APIs البوابات العامة). استخدمها عندما تريد اكتشاف أدوار في شركات غير موجودة في `tracked_companies` بعد. اضبط `enabled: false` للإبقاء على إدخال بدون تشغيله.
+تُشغّل `search_queries` مسح الخيار B المدعوم بالذكاء الاصطناعي (`/career-ops scan` داخل Claude Code / Cursor / Codex). لا تُنفَّذ بواسطة `npm run scan` الداخلي (الذي يضرب فقط APIs البوابات العامة). استخدمها عندما تريد اكتشاف أدوار في شركات غير موجودة في `tracked_companies` بعد. اضبط `enabled: false` للإبقاء على إدخال بدون تشغيله.
 
 ### `tracked_companies`
 
@@ -671,7 +671,7 @@ npm run scan -- --company Anthropic   # تضييق على شركة متتبّع�
 /career-ops scan
 ```
 
-داخل Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). يستخدم رموز النموذج. يزور كل صفحة في `tracked_companies` مباشرةً ويستطيع اكتشاف البوابات غير الـ API (صفحات الوظائف، ATS مخصص، بوابات إقليمية). أبطأ لكنه أوسع. مفيد عندما يعيد مسح ATS صفراً لهدف تعرف أنه يوظّف.
+داخل Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). يستخدم رموز النموذج. يزور كل صفحة في `tracked_companies` مباشرةً ويستطيع اكتشاف البوابات غير الـ API (صفحات الوظائف، ATS مخصص، بوابات إقليمية). أبطأ لكنه أوسع. مفيد عندما يعيد مسح ATS صفراً لهدف تعرف أنه يوظّف.
 
 **المخرجات (كلا المسارين)** — روابط الإعلانات الجديدة مُلحَقة في `data/pipeline.md`، كل رابط تمت زيارته مُسجَّل في `data/scan-history.tsv` (إزالة التكرار عبر كل عمليات المسح المستقبلية)، ملخص مطبوع: الشركات الممسوحة · الوظائف الموجودة · المصفّاة بالعنوان · المكررات المتخطاة · العروض الجديدة المضافة.
 
@@ -1128,7 +1128,7 @@ npm run doctor
 
 ## 17. كيفية إضافة مصدر بوابة وظائف جديد
 
-يُعامِل career-ops-ui كل بوابة وظائف بوصفها **محوّلاً** — ملف واحد ضمن [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. اعتباراً من v1.119.0 يشحن سجل `server/lib/sources/` مع **67** محوّلاً — **62 إنجليزية + 5 روسية** بوابات. تشمل المجموعة الإنجليزية أنظمة ATS الرئيسية (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)، والمُجمّعات على مستوى اللوحة المُختارة عبر `provider:` صريح (RemoteOK، Remotive، We Work Remotely، NoDesk، Get on Board، Amazon، …)، وأنظمة ATS لكل مستأجر التي يُكتشف تلقائياً من مضيف `careers_url` أو من عنوان `api:` صريح (BambooHR، Personio، Recruitee، Teamtailor، Avature، SAP SuccessFactors، …). **لا حاجة أبداً لعدّ القائمة الكاملة يدوياً هنا — إذ تُكتشف تلقائياً من `server/lib/sources/` وتُعرض حيّةً في القائمة المنسدلة Source على `#/scan`.** انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
+يُعامِل career-ops-ui كل بوابة وظائف بوصفها **محوّلاً** — ملف واحد ضمن [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. اعتباراً من v1.119.0 يشحن سجل `server/lib/sources/` مع **70** محوّلاً — **65 إنجليزية + 5 روسية** بوابات. تشمل المجموعة الإنجليزية أنظمة ATS الرئيسية (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)، والمُجمّعات على مستوى اللوحة المُختارة عبر `provider:` صريح (RemoteOK، Remotive، We Work Remotely، NoDesk، Get on Board، Amazon، …)، وأنظمة ATS لكل مستأجر التي يُكتشف تلقائياً من مضيف `careers_url` أو من عنوان `api:` صريح (BambooHR، Personio، Recruitee، Teamtailor، Avature، SAP SuccessFactors، …). **لا حاجة أبداً لعدّ القائمة الكاملة يدوياً هنا — إذ تُكتشف تلقائياً من `server/lib/sources/` وتُعرض حيّةً في القائمة المنسدلة Source على `#/scan`.** انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
 
 > **v1.69.0 (P-14) — اكتشاف تلقائي عند الإضافة.** إضافة مصدر ثاني عشر الآن **مجرد إسقاط ملف**. لم يعد السجل
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

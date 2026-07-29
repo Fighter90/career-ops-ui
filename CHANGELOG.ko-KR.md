@@ -9,6 +9,17 @@
 ---
 
 
+## [1.127.0] — 2026-07-29
+
+### 추가
+- **3개의 새 스캔 소스(career-ops v1.23.0 패리티)** — 레지스트리가 이제 **70개 어댑터(65 EN + 5 RU)**를 제공합니다: **Flowxtra**(무인증 전역 애그리게이터), **VDAB**(플랑드르 공공고용서비스 키워드 API), **iCIMS**(`careers-<tenant>.icims.com` 포털, `jibeapply`와 별개). 또한 **Cursor**가 CLI 로스터에 복귀(parent #2115): `cli-detect`가 이제 `cursor`를 감지(**10개 도구**)하고 help/README/config ×17에 로스터가 복원됩니다.
+
+### 수정
+- **agenticjobs**가 HTML 스크래핑에서 REST API로 전환(#2167); **Greenhouse**는 `location.name`이 근무 형태뿐일 때 `/offices`에서 도시를 복구(#2104); **role-matcher** 패리티(#1933/#2164/#2009: MTS 접두사, `product` 베이스라인, 악센트 폴딩, 서브-베이스라인 불일치).
+
+### 비고
+- **미포팅.** v1.23.0 대부분은 web-ui가 쓰지 않는 CLI/대시보드 표면(batch-tailor, discover-ats, NL/PT 모드, PDF 테마, Go 대시보드, updater/doctor); 릴레이 스크립트는 변경 불필요. 상위 VERSION → **1.23.0**.
+
 ## [1.126.1] — 2026-07-25
 
 ### 수정

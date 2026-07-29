@@ -9,6 +9,17 @@
 ---
 
 
+## [1.127.0] — 2026-07-29
+
+### 追加
+- **3 つの新スキャンソース(career-ops v1.23.0 パリティ)** — レジストリは **70 アダプター(65 EN + 5 RU)** に: **Flowxtra**(無認証の全体アグリゲーター)、**VDAB**(フランダース公共雇用サービスのキーワード API)、**iCIMS**(`careers-<tenant>.icims.com` ポータル、`jibeapply` とは別)。さらに **Cursor** が CLI ロスターに復帰(parent #2115): `cli-detect` が `cursor` も検出(**10 ツール**)し、help/README/config ×17 にロスターを復元。
+
+### 修正
+- **agenticjobs** を HTML スクレイピングから REST API へ(#2167);**Greenhouse** は `location.name` が勤務形態のみのとき `/offices` から都市を復元(#2104);**role-matcher** パリティ(#1933/#2164/#2009: MTS 接頭辞、`product` ベースライン、アクセント畳み込み、サブベースライン不一致)。
+
+### 補足
+- **未移植。** v1.23.0 の大半は web-ui が使わない CLI/ダッシュボード面(batch-tailor、discover-ats、NL/PT モード、PDF テーマ、Go ダッシュボード、updater/doctor);リレースクリプトは変更不要。親 VERSION → **1.23.0**。
+
 ## [1.126.1] — 2026-07-25
 
 ### 修正

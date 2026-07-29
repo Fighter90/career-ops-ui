@@ -4,7 +4,11 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { roleFuzzyMatch, roleTokens } from '../server/lib/role-matcher.mjs';
+import {
+  roleFuzzyMatch,
+  roleTokens,
+  SUB_BASELINE_SENIORITY,
+} from '../server/lib/role-matcher.mjs';
 import {
   parseScanHistory,
   detectReposts,
@@ -37,6 +41,65 @@ test('role-matcher: roleFuzzyMatch matches variants, rejects distinct roles & ba
   );
   // …but reposting annotations are meta noise, not a specialization.
   assert.equal(roleFuzzyMatch('Data Engineer (Repost)', 'Data Engineer'), true);
+});
+
+test('role-matcher #1933: MTS prefix stripped so titles match on their suffix', () => {
+  // The "Member of Technical Staff" boilerplate prefix is stripped, so two
+  // MTS titles are matched on their suffix, not the shared boilerplate.
+  assert.equal(
+    roleFuzzyMatch(
+      'Member of Technical Staff, Backend Platform',
+      'Member of Technical Staff, Backend Platform',
+    ),
+    true,
+  );
+  // Different suffixes → different openings despite the identical prefix.
+  assert.equal(
+    roleFuzzyMatch(
+      'Member of Technical Staff, Connector Platform',
+      'Member of Technical Staff, Backend Platform',
+    ),
+    false,
+  );
+  // "member"/"technical" keep their normal discriminating role elsewhere:
+  // the prefix is stripped only as the literal MTS phrase.
+  assert.equal(roleTokens('Member of Technical Staff, Backend Platform').includes('member'), false);
+  assert.equal(roleTokens('Technical Program Manager').includes('technical'), true);
+});
+
+test('role-matcher #2164: "product" is a baseline token — PM siblings stay distinct', () => {
+  // "Product Manager - Marketplace" vs "Product Manager - AI": "ai" is dropped
+  // by the tokenizer, leaving only [product, manager]. With "product" a
+  // baseline token, the overlap is baseline-only → not the same opening.
+  assert.equal(
+    roleFuzzyMatch('Product Manager - Marketplace', 'Product Manager - AI'),
+    false,
+  );
+});
+
+test('role-matcher #2009: accent fold — "Sênior" leaves no phantom token', () => {
+  // NFD accent folding keeps the accented spelling in the ASCII vocabulary:
+  // "Sênior" folds to "senior" (a stopword) rather than splitting into
+  // ["s", "nior"] and leaking a phantom "nior" token.
+  assert.equal(roleTokens('Sênior Backend Engineer').includes('nior'), false);
+  assert.equal(roleTokens('Sênior Backend Engineer').includes('backend'), true);
+  // Folded, an accented repost still matches its plain-ASCII twin.
+  assert.equal(roleFuzzyMatch('Sênior Data Engineer', 'Senior Data Engineer'), true);
+});
+
+test('role-matcher #2009: a lone sub-baseline qualifier is a disagreement', () => {
+  assert.ok(SUB_BASELINE_SENIORITY.has('associate'));
+  // "Associate X" and a bare "X" at one company are two real openings.
+  assert.equal(
+    roleFuzzyMatch('Associate Product Manager, Team', 'Product Manager, Team'),
+    false,
+  );
+  // A lone above-baseline qualifier (senior) is NOT a disagreement — the same
+  // opening is routinely reposted with/without it.
+  assert.equal(
+    roleFuzzyMatch('Senior Data Engineer, Analytics', 'Data Engineer, Analytics'),
+    true,
+  );
 });
 
 test('parseScanHistory: web-ui TSV → rows, drops bad date / bad url', () => {

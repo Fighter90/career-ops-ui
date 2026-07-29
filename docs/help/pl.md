@@ -13,7 +13,7 @@ do konkretnej sekcji za pomocą spisu treści w pasku bocznym pomocy.
 ### O career-ops
 
 [career-ops](https://career-ops.org) to system poszukiwania pracy o otwartym kodzie źródłowym,
-działający jako polecenia slash w dowolnym CLI do kodowania AI (Claude Code, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — inne CLI kompatybilne z Claude też działają przez tę samą powierzchnię poleceń slash). Niezależny od modelu. Ocenia każde ogłoszenie względem Twojego CV według sześciowymiarowej skali 0,0–5,0, generuje dopasowane CV w formacie PDF i śledzi każdą aplikację lokalnie na Twoim komputerze.
+działający jako polecenia slash w dowolnym CLI do kodowania AI (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — inne CLI kompatybilne z Claude też działają przez tę samą powierzchnię poleceń slash). Niezależny od modelu. Ocenia każde ogłoszenie względem Twojego CV według sześciowymiarowej skali 0,0–5,0, generuje dopasowane CV w formacie PDF i śledzi każdą aplikację lokalnie na Twoim komputerze.
 
 **Kanoniczne odniesienia (czytaj w tej kolejności przy pierwszej instalacji):**
 
@@ -83,7 +83,7 @@ działający jako polecenia slash w dowolnym CLI do kodowania AI (Claude Code, C
 
 | | career-ops (CLI) | career-ops-ui (ta aplikacja) |
 |---|---|---|
-| Gdzie działa | wewnątrz Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` w Twojej przeglądarce |
+| Gdzie działa | wewnątrz Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI / Gemini CLI (legacy) | `http://127.0.0.1:4317` w Twojej przeglądarce |
 | Powierzchnia | polecenia slash `/career-ops <mode>` | pasek boczny z jedną stroną na workflow |
 | Wypełnianie formularzy | tak, przez Playwright MCP | nie — generuje listę kontrolną, resztę kończysz w CLI |
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` na `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
@@ -354,7 +354,7 @@ do tej strony).
 
 > **Nowość w v1.55 → v1.56.** Przy **braku** ustawionego klucza LLM, czerwony baner na każdym ekranie wyjaśnia, że ⚡ Run-live jest w trybie ręcznego promptu i zawiera link tutaj; gdy klucz jest ustawiony, staje się spokojnym chipem z nazwą aktywnego dostawcy. Przed każdym przyciskiem ⚡ Run-live (`#/auto`, `#/evaluate`, `#/deep`, tryby) wyświetlane jest uczciwe przybliżenie kosztów (np. „Szacowany koszt: OpenAI gpt-5-codex · ~$0.04/eval", lub notatka bez kosztów API w trybie ręcznym). `#/scan` chowa filtry drugorzędne za ujawnieniem **Advanced filters**; `#/tracker` dodaje klikalne chipy lejka + opcjonalne stronicowanie po stronie serwera; `#/pipeline` wirtualizuje powyżej 1000 wierszy.
 
-**Narzędzia CLI AI.** Karta **Narzędzia CLI AI** pokazuje, które agentowe CLI (Claude Code, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) są zainstalowane na serwerze — skan PATH tylko do odczytu, bez uruchamiania. **Wygląd → Pokazuj logo firm** (domyślnie wyłączone) pokazuje favicon każdej firmy w tabeli skanowania, pobrany z jej własnej domeny (nigdy z usługi zewnętrznej).
+**Narzędzia CLI AI.** Karta **Narzędzia CLI AI** pokazuje, które agentowe CLI (Claude Code, Cursor, Codex, Gemini, OpenCode, Copilot, Qwen, Antigravity, Kimi CLI, Grok Build CLI) są zainstalowane na serwerze — skan PATH tylko do odczytu, bez uruchamiania. **Wygląd → Pokazuj logo firm** (domyślnie wyłączone) pokazuje favicon każdej firmy w tabeli skanowania, pobrany z jej własnej domeny (nigdy z usługi zewnętrznej).
 
 Trzy zakładki:
 
@@ -380,7 +380,7 @@ Trzy zakładki:
 
 Zapis w dowolnej zakładce propaguje natychmiast — bez restartu serwera.
 
-**Konfigurowanie dostawcy LLM (krok po kroku).** ⚡ Ocena na żywo w interfejsie webowym działa *headless* i używa jednego klucza API. Działa przez „OR" — ustaw **którykolwiek jeden** z nich i po prostu działa; przy kilku ustawionych, `auto` preferuje je w tej kolejności: Anthropic → Gemini → OpenAI → Qwen. (sam career-ops jest agnostyczny co do CLI — uruchamiasz go również wewnątrz Claude Code, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot lub Kimi; to jest oddzielne od tego klucza headless.)
+**Konfigurowanie dostawcy LLM (krok po kroku).** ⚡ Ocena na żywo w interfejsie webowym działa *headless* i używa jednego klucza API. Działa przez „OR" — ustaw **którykolwiek jeden** z nich i po prostu działa; przy kilku ustawionych, `auto` preferuje je w tej kolejności: Anthropic → Gemini → OpenAI → Qwen. (sam career-ops jest agnostyczny co do CLI — uruchamiasz go również wewnątrz Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot lub Kimi; to jest oddzielne od tego klucza headless.)
 
 1. Otwórz `#/config` → zakładkę **API keys & runtime**.
 2. Wybierz dostawcę w **`LLM_PROVIDER`**: `auto` (użyj dowolnego ustawionego klucza) lub wymuś jeden z `claude` / `gemini` / `openai` / `qwen`.
@@ -652,7 +652,7 @@ search_queries:
 ```
 
 `search_queries` napędzają skan Opcji B oparty na AI (`/career-ops scan`
-wewnątrz Claude Code / Codex). NIE są wykonywane przez `npm run scan`
+wewnątrz Claude Code / Cursor / Codex). NIE są wykonywane przez `npm run scan`
 w procesie (który trafia tylko do publicznych API portali). Używaj ich, gdy
 chcesz odkrywać role w firmach, których nie ma jeszcze w
 `tracked_companies`. Ustaw `enabled: false`, aby zachować wpis bez
@@ -947,7 +947,7 @@ Bez tokenów AI — trafia bezpośrednio do publicznych API portali.
 /career-ops scan
 ```
 
-Wewnątrz Claude Code / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Używa tokenów modelu.
+Wewnątrz Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwen Code / Kimi / GitHub Copilot CLI (Gemini CLI legacy). Używa tokenów modelu.
 Odwiedza każdą stronę `tracked_companies` bezpośrednio i może odkrywać portale
 bez API (strony kariery, niestandardowy ATS, portale regionalne). Wolniejszy, ale
 szerszy. Przydatny gdy sweep ATS nie zwraca nic dla celu, o którym
@@ -1580,7 +1580,7 @@ wynik i przeszukaj tracker problemów na
 
 ## 17. Jak dodać nowe źródło ofert pracy
 
-career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie jak pobrać i znormalizować wyniki jednego portalu. Od v1.119.0 rejestr `server/lib/sources/` dostarcza **67** adapterów — **62 angielskich + 5 rosyjskich** portali. Zestaw angielski obejmuje główne ATS-y (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregatory ogólnoportalowe wybierane przez jawny `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) oraz ATS-y na tenant automatycznie wykrywane z hosta `careers_url` lub jawnego adresu `api:` (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Pełnej listy nigdy nie trzeba liczyć tu ręcznie — jest automatycznie wykrywana z `server/lib/sources/` i pokazywana na żywo w rozwijanym menu Source na `#/scan`.** Patrz §5 po YAML oraz `docs/portals-examples.md` po gotowe wpisy do skopiowania.
+career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie jak pobrać i znormalizować wyniki jednego portalu. Od v1.119.0 rejestr `server/lib/sources/` dostarcza **70** adapterów — **65 angielskich + 5 rosyjskich** portali. Zestaw angielski obejmuje główne ATS-y (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregatory ogólnoportalowe wybierane przez jawny `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) oraz ATS-y na tenant automatycznie wykrywane z hosta `careers_url` lub jawnego adresu `api:` (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Pełnej listy nigdy nie trzeba liczyć tu ręcznie — jest automatycznie wykrywana z `server/lib/sources/` i pokazywana na żywo w rozwijanym menu Source na `#/scan`.** Patrz §5 po YAML oraz `docs/portals-examples.md` po gotowe wpisy do skopiowania.
 
 > **v1.69.0 (P-14) — plug-in z auto-odkrywaniem.** Dodanie 12. źródła to teraz
 > **czyste wrzucenie pliku**. Rejestr

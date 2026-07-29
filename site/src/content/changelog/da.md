@@ -10,6 +10,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 
 
+## [1.127.0] — 2026-07-29
+
+### Tilføjet
+- **Tre nye scan-kilder (career-ops v1.23.0-paritet)** — registret rummer nu **70 adaptere (65 EN + 5 RU)**: **Flowxtra** (board-wide aggregator uden auth), **VDAB** (den flamske jobservices keyword-API) og **iCIMS** (`careers-<tenant>.icims.com`-portaler, adskilt fra `jibeapply`). Desuden vender **Cursor** tilbage til CLI-rosteret (parent #2115): `cli-detect` registrerer nu `cursor` (**10 værktøjer**), roster genoprettet i help/README/config ×17.
+
+### Rettet
+- **agenticjobs** skiftede fra HTML-scraping til REST-API (#2167); **Greenhouse** genfinder byen fra `/offices`, når `location.name` kun er en arbejdsmodel (#2104); **role-matcher**-paritet (#1933/#2164/#2009: MTS-præfiks, `product`-baseline, accent-foldning, sub-baseline-uenighed).
+
+### Noter
+- **Ikke porteret.** Størstedelen af v1.23.0 er CLI/dashboard-flade som web-ui ikke bruger (batch-tailor, discover-ats, NL/PT-tilstande, PDF-temaer, Go-dashboard, updater/doctor); relay-scripts uændret. Forælderens VERSION → **1.23.0**.
+
 ## [1.126.1] — 2026-07-25
 
 ### Rettet

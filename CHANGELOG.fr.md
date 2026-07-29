@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.127.0] — 2026-07-29
+
+### Ajouté
+- **Trois nouvelles sources de scan (parité career-ops v1.23.0)** — le registre compte désormais **70 adaptateurs (65 EN + 5 RU)** : **Flowxtra** (agrégateur global sans auth), **VDAB** (API par mot-clé du service public flamand de l'emploi) et **iCIMS** (portails `careers-<tenant>.icims.com`, distinct de `jibeapply`). De plus **Cursor** revient au roster des CLIs (parent #2115) : `cli-detect` détecte désormais `cursor` (**10 outils**), roster restauré dans help/README/config ×17.
+
+### Corrigé
+- **agenticjobs** passe du scraping HTML à l'API REST (#2167) ; **Greenhouse** récupère la ville depuis `/offices` quand `location.name` n'est qu'un modèle de travail (#2104) ; parité **role-matcher** (#1933/#2164/#2009 : préfixe MTS, base `product`, repli des accents, désaccord sous-baseline).
+
+### Notes
+- **Non porté.** L'essentiel de v1.23.0 est une surface CLI/dashboard que web-ui n'utilise pas (batch-tailor, discover-ats, modes NL/PT, thèmes PDF, dashboard Go, updater/doctor) ; les scripts relayés ne changent pas. VERSION du parent → **1.23.0**.
+
 ## [1.126.1] — 2026-07-25
 
 ### Corrigé
