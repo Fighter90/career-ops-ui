@@ -10,7 +10,7 @@
 ## [1.129.0] — 2026-07-29
 
 ### Hinzugefügt
-- **Level-Facette + Alter-Spalte auf `#/scan`** — die in v1.128.0 gelieferte `job-facets.js`-Lib ist nun an die Scan-UI angebunden (zuvor nur Logik). Ein neues **Level**-Dropdown ordnet den Titel jeder Stelle in lead/staff/senior/mid/junior/praktikant ein (`JobFacets.seniorityFromTitle`) und füllt sich aus dem, was tatsächlich in den Ergebnissen steht (wie die Land-Facette); Titel ohne Level-Wort passieren immer. Bleibt in gespeicherten Suchen, Zurücksetzen und Anwenden erhalten. Die Tabelle erhält eine **Level**-Badge-Spalte und eine token-freie **Alter**-Spalte (`heute` / `Nd`, aus `JobFacets.daysSince`). 12 i18n-Schlüssel ×17, +3 Tests → **2073**.
+- **Level-Facette + Alter-Spalte auf `#/scan`** — die in v1.128.0 gelieferte `job-facets.js`-Lib ist nun an die Scan-UI angebunden (zuvor nur Logik). Ein neues **Level**-Dropdown ordnet den Titel jeder Stelle in lead/staff/senior/mid/junior/praktikant ein (`JobFacets.seniorityFromTitle`) und füllt sich aus dem, was tatsächlich in den Ergebnissen steht (wie die Land-Facette); Titel ohne Level-Wort passieren immer. Bleibt in gespeicherten Suchen, Zurücksetzen und Anwenden erhalten. Die Tabelle erhält eine **Level**-Badge-Spalte und eine token-freie **Alter**-Spalte (`heute` / `Nd`, aus `JobFacets.daysSince`). 12 i18n-Schlüssel ×17, +3 Tests → **2069**.
 
 ## [1.128.0] — 2026-07-29
 

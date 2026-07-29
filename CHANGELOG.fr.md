@@ -19,7 +19,7 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ## [1.129.0] — 2026-07-29
 
 ### Ajouté
-- **Facette Niveau + colonne Ancienneté sur `#/scan`** — la lib `job-facets.js` livrée en v1.128.0 est désormais reliée à l'UI de scan (auparavant purement logique). Un nouveau menu **Niveau** classe le titre de chaque offre en lead/staff/senior/confirmé/junior/stagiaire (`JobFacets.seniorityFromTitle`) et se remplit à partir de ce qui figure dans les résultats (comme la facette Pays) ; les titres sans mot de niveau passent toujours. Conservé dans les recherches enregistrées, Réinitialiser et Appliquer. Le tableau gagne une colonne **Niveau** (badge) et une colonne **Ancienneté** sans token (`auj.` / `Nj`, de `JobFacets.daysSince`). 12 clés i18n ×17, +3 tests → **2073**.
+- **Facette Niveau + colonne Ancienneté sur `#/scan`** — la lib `job-facets.js` livrée en v1.128.0 est désormais reliée à l'UI de scan (auparavant purement logique). Un nouveau menu **Niveau** classe le titre de chaque offre en lead/staff/senior/confirmé/junior/stagiaire (`JobFacets.seniorityFromTitle`) et se remplit à partir de ce qui figure dans les résultats (comme la facette Pays) ; les titres sans mot de niveau passent toujours. Conservé dans les recherches enregistrées, Réinitialiser et Appliquer. Le tableau gagne une colonne **Niveau** (badge) et une colonne **Ancienneté** sans token (`auj.` / `Nj`, de `JobFacets.daysSince`). 12 clés i18n ×17, +3 tests → **2069**.
 
 ## [1.128.0] — 2026-07-29
 

@@ -16,7 +16,7 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ## [1.129.0] — 2026-07-29
 
 ### Adicionado
-- **Faceta de nível + coluna de idade em `#/scan`** — a lib `job-facets.js` da v1.128.0 agora está integrada na UI de varredura (antes só lógica). Um novo dropdown **Nível** classifica o título de cada vaga em lead/staff/sênior/pleno/júnior/estagiário (`JobFacets.seniorityFromTitle`) e se autopreenche com o que há nos resultados —como a faceta de País—; títulos sem palavra de nível sempre passam. Persiste em buscas salvas, Redefinir e Aplicar. A tabela ganha uma coluna **Nível** (badge) e uma coluna **Idade** sem tokens (`hoje` / `Nd`, de `JobFacets.daysSince`). 12 chaves i18n ×17, +3 testes → **2073**.
+- **Faceta de nível + coluna de idade em `#/scan`** — a lib `job-facets.js` da v1.128.0 agora está integrada na UI de varredura (antes só lógica). Um novo dropdown **Nível** classifica o título de cada vaga em lead/staff/sênior/pleno/júnior/estagiário (`JobFacets.seniorityFromTitle`) e se autopreenche com o que há nos resultados —como a faceta de País—; títulos sem palavra de nível sempre passam. Persiste em buscas salvas, Redefinir e Aplicar. A tabela ganha uma coluna **Nível** (badge) e uma coluna **Idade** sem tokens (`hoje` / `Nd`, de `JobFacets.daysSince`). 12 chaves i18n ×17, +3 testes → **2069**.
 
 ## [1.128.0] — 2026-07-29
 

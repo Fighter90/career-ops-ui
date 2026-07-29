@@ -10,7 +10,7 @@
 ## [1.129.0] — 2026-07-29
 
 ### Aggiunto
-- **Faccetta Livello + colonna Età su `#/scan`** — la libreria `job-facets.js` rilasciata in v1.128.0 è ora collegata alla UI di scansione (prima solo logica). Un nuovo menu **Livello** classifica il titolo di ogni offerta in lead/staff/senior/intermedio/junior/stagista (`JobFacets.seniorityFromTitle`) e si autopopola da ciò che c'è nei risultati (come la faccetta Paese); i titoli senza parola di livello passano sempre. Mantenuta in ricerche salvate, Reimposta e Applica. La tabella guadagna una colonna **Livello** (badge) e una colonna **Età** senza token (`oggi` / `Ng`, da `JobFacets.daysSince`). 12 chiavi i18n ×17, +3 test → **2073**.
+- **Faccetta Livello + colonna Età su `#/scan`** — la libreria `job-facets.js` rilasciata in v1.128.0 è ora collegata alla UI di scansione (prima solo logica). Un nuovo menu **Livello** classifica il titolo di ogni offerta in lead/staff/senior/intermedio/junior/stagista (`JobFacets.seniorityFromTitle`) e si autopopola da ciò che c'è nei risultati (come la faccetta Paese); i titoli senza parola di livello passano sempre. Mantenuta in ricerche salvate, Reimposta e Applica. La tabella guadagna una colonna **Livello** (badge) e una colonna **Età** senza token (`oggi` / `Ng`, da `JobFacets.daysSince`). 12 chiavi i18n ×17, +3 test → **2069**.
 
 ## [1.128.0] — 2026-07-29
 
