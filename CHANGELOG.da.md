@@ -8,6 +8,14 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.131.1] — 2026-07-31
+
+### Rettet
+- **Host-pinning-konsistens for adapterne i de to v1.130.0-kilder** (code-review-opfølgninger, forsvar-i-dybden; ingen adfærdsændring for gyldige input):
+  - **`a16z-speedrun-talent`-adapteren** genvaliderer nu `api:`/`a16z-speedrun-talent:`-overskrivningen ved `buildEndpoint` (HTTPS + eksakt host `speedrun-talent-network.com`) og falder tilbage til det kanoniske feed, hvis det fejler — paritet med `cryptocurrencyjobs`-adapteren, så en off-host-værdi aldrig når frem til fetch-slottet (tidligere afhang det udelukkende af fetch-tids-vagten `assertSpeedrunUrl`). Det eksakte host-tjek er nu et enkelt eksporteret `SPEEDRUN_TALENT_HOST_RE`, som deles af vagten og adapteren.
+  - **`cryptocurrencyjobs`-parseren** — `cleanUrl` bruger nu den samme eksakte host-vagt som `assertCryptocurrencyJobsUrl` og adapter-overskrivningen (var `endsWith`, som accepterede subdomæner). Parseren er aldrig mere tilladende end SSRF-vagten: et `sub.cryptocurrencyjobs.co`-linkelement kasseres.
+  - +2 tests → suite **2135**.
+
 ## [1.131.0] — 2026-07-31
 
 ### Tilføjet

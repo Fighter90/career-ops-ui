@@ -11,6 +11,14 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.131.1] — 2026-07-31
+
+### Corregido
+- **Consistencia del anclaje de host de los adaptadores en las dos fuentes de v1.130.0** (seguimientos de la revisión de código, defensa en profundidad; sin cambio de comportamiento para entradas válidas):
+  - El adaptador **`a16z-speedrun-talent`** ahora revalida la anulación `api:` / `a16z-speedrun-talent:` en `buildEndpoint` (HTTPS + host exacto `speedrun-talent-network.com`) y recurre al feed canónico cuando falla — paridad con el adaptador `cryptocurrencyjobs`, de modo que un valor de host distinto nunca llega a la ranura de descarga (antes dependía únicamente de la comprobación `assertSpeedrunUrl` en el momento de la descarga). La comprobación de host exacto es ahora una única `SPEEDRUN_TALENT_HOST_RE` exportada, compartida por la comprobación y el adaptador.
+  - El analizador de **`cryptocurrencyjobs`** — `cleanUrl` ahora usa la misma comprobación de host por coincidencia exacta que `assertCryptocurrencyJobsUrl` y la anulación del adaptador (antes era `endsWith`, que aceptaba subdominios). El analizador nunca es más permisivo que la comprobación SSRF: un enlace de elemento `sub.cryptocurrencyjobs.co` se descarta.
+  - +2 tests → suite **2135**.
+
 ## [1.131.0] — 2026-07-31
 
 ### Añadido

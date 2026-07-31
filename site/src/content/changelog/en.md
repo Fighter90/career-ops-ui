@@ -8,6 +8,14 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.131.1] — 2026-07-31
+
+### Fixed
+- **Adapter host-pinning consistency on the two v1.130.0 sources** (code-review follow-ups, defense-in-depth; no behavior change for valid inputs):
+  - **`a16z-speedrun-talent` adapter** now re-validates the `api:` / `a16z-speedrun-talent:` override at `buildEndpoint` (HTTPS + exact host `speedrun-talent-network.com`) and falls back to the canonical feed when it fails — parity with the `cryptocurrencyjobs` adapter, so an off-host value never reaches the fetch slot (previously it relied solely on the fetch-time `assertSpeedrunUrl` guard). The exact-host check is now a single exported `SPEEDRUN_TALENT_HOST_RE` shared by the guard and the adapter.
+  - **`cryptocurrencyjobs` parser** — `cleanUrl` now uses the same exact-match host guard as `assertCryptocurrencyJobsUrl` and the adapter override (was `endsWith`, which accepted subdomains). The parser is never more permissive than the SSRF guard: a `sub.cryptocurrencyjobs.co` item link is dropped.
+  - +2 tests (`tests/sources-a16z-speedrun-talent.test.mjs` off-host/non-HTTPS/subdomain override → feed; `tests/sources-cryptocurrencyjobs.test.mjs` subdomain link dropped) → suite **2135**.
+
 ## [1.131.0] — 2026-07-31
 
 ### Added

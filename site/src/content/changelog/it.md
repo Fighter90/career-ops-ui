@@ -2,6 +2,14 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.131.1] — 2026-07-31
+
+### Corretto
+- **Coerenza del pinning dell'host degli adattatori sulle due sorgenti v1.130.0** (follow-up di code review, difesa in profondità; nessuna modifica di comportamento per input validi):
+  - L'adattatore **`a16z-speedrun-talent`** ora rivalida l'override `api:` / `a16z-speedrun-talent:` in `buildEndpoint` (HTTPS + host esatto `speedrun-talent-network.com`) e torna al feed canonico quando la validazione fallisce — parità con l'adattatore `cryptocurrencyjobs`, così un valore fuori host non raggiunge mai lo slot di fetch (in precedenza si basava solo sulla guardia a tempo di fetch `assertSpeedrunUrl`). Il controllo dell'host esatto è ora una singola `SPEEDRUN_TALENT_HOST_RE` esportata, condivisa dalla guardia e dall'adattatore.
+  - Il **parser `cryptocurrencyjobs`** — `cleanUrl` ora usa la stessa guardia dell'host a corrispondenza esatta di `assertCryptocurrencyJobsUrl` e dell'override dell'adattatore (era `endsWith`, che accettava sottodomini). Il parser non è mai più permissivo della guardia SSRF: un link di elemento `sub.cryptocurrencyjobs.co` viene scartato.
+  - +2 test → suite **2135**.
+
 ## [1.131.0] — 2026-07-31
 
 ### Aggiunto

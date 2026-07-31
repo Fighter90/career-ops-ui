@@ -9,6 +9,14 @@
 ---
 
 
+## [1.131.1] — 2026-07-31
+
+### 修復
+- **兩個 v1.130.0 來源的配接器主機固定一致性**(程式碼審查跟進項目,縱深防禦;對合法輸入無行為變化):
+  - **`a16z-speedrun-talent` 配接器**現在會在 `buildEndpoint` 重新驗證 `api:` / `a16z-speedrun-talent:` 覆寫值(HTTPS + 精確主機 `speedrun-talent-network.com`),失敗時降級回退至規範動態消息 — 與 `cryptocurrencyjobs` 配接器一致,確保非法主機值永遠不會進入擷取槽位(先前僅依賴擷取時的 `assertSpeedrunUrl` 把關)。精確主機檢查現已整併為單一匯出的 `SPEEDRUN_TALENT_HOST_RE`,由把關函式與配接器共用。
+  - **`cryptocurrencyjobs` 解析器** — `cleanUrl` 現在使用與 `assertCryptocurrencyJobsUrl` 及配接器覆寫值相同的精確比對主機把關(原為 `endsWith`,會誤放行子網域)。解析器絕不會比 SSRF 把關更寬鬆:`sub.cryptocurrencyjobs.co` 的項目連結會被捨棄。
+  - +2 個測試 → **2135**。
+
 ## [1.131.0] — 2026-07-31
 
 ### 新增

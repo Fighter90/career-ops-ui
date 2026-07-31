@@ -9,6 +9,14 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.131.1] — 2026-07-31
+
+### Naprawiono
+- **Spójność przypinania hosta adaptera dla dwóch źródeł z v1.130.0** (następstwa przeglądu kodu, obrona w głąb; brak zmiany zachowania dla poprawnych danych wejściowych):
+  - Adapter **`a16z-speedrun-talent`** teraz ponownie waliduje nadpisanie `api:` / `a16z-speedrun-talent:` w `buildEndpoint` (HTTPS + dokładny host `speedrun-talent-network.com`) i wraca do kanonicznego kanału, gdy walidacja zawiedzie — parytet z adapterem `cryptocurrencyjobs`, dzięki czemu wartość spoza hosta nigdy nie trafia do gniazda pobierania (wcześniej polegał wyłącznie na strażniku `assertSpeedrunUrl` w momencie pobierania). Dokładne sprawdzenie hosta to teraz pojedynczy eksportowany `SPEEDRUN_TALENT_HOST_RE` współdzielony przez strażnika i adapter.
+  - Parser **`cryptocurrencyjobs`** — `cleanUrl` używa teraz tego samego dokładnego strażnika hosta co `assertCryptocurrencyJobsUrl` i nadpisanie adaptera (było `endsWith`, które akceptowało subdomeny). Parser nigdy nie jest bardziej permisywny niż strażnik SSRF: link do pozycji z `sub.cryptocurrencyjobs.co` jest odrzucany.
+  - +2 testy → zestaw **2135**.
+
 ## [1.131.0] — 2026-07-31
 
 ### Dodano

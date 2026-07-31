@@ -40,6 +40,13 @@ import { fetchJson, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 const SITE_ORIGIN = 'https://speedrun-talent-network.com';
 const TRUSTED_HOST = 'speedrun-talent-network.com';
 
+/**
+ * Exact-match host guard (no subdomains). Single source of truth shared by
+ * `assertSpeedrunUrl` (fetch-time SSRF guard) and the adapter's endpoint
+ * re-validation, mirroring `CRYPTOCURRENCYJOBS_HOST_RE`.
+ */
+export const SPEEDRUN_TALENT_HOST_RE = /^speedrun-talent-network\.com$/i;
+
 /** Canonical API listing URL (adapter default endpoint). */
 export const FEED_URL = `${SITE_ORIGIN}/api/v1/jobs`;
 
@@ -71,7 +78,7 @@ export function assertSpeedrunUrl(url) {
     throw new Error(`a16z-speedrun-talent: invalid URL: ${url}`);
   }
   if (parsed.protocol !== 'https:') throw new Error(`a16z-speedrun-talent: URL must use HTTPS: ${url}`);
-  if (parsed.hostname !== TRUSTED_HOST) {
+  if (!SPEEDRUN_TALENT_HOST_RE.test(parsed.hostname)) {
     throw new Error(`a16z-speedrun-talent: untrusted hostname "${parsed.hostname}" — must be ${TRUSTED_HOST}`);
   }
   return url;

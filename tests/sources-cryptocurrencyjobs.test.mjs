@@ -119,6 +119,22 @@ test('splitTitle: splits on the last " at " and handles the no-separator case', 
   assert.deepEqual(splitTitle('Role with no separator'), { title: 'Role with no separator', company: '' });
 });
 
+test('parseCryptocurrencyJobsRss: a subdomain link is dropped (parser is exact-host, never looser than the SSRF guard)', () => {
+  // A link on sub.cryptocurrencyjobs.co is NOT the trusted apex host. The
+  // parser's cleanUrl now uses the same exact-match guard as
+  // assertCryptocurrencyJobsUrl + the adapter override, so it drops the row
+  // rather than accepting a host the override slot would reject (the v1.131.1
+  // asymmetry fix).
+  const rss = '<?xml version="1.0"?><rss><channel>'
+    + '<item><title>Apex Role at Acme</title><link>https://cryptocurrencyjobs.co/x/apex/</link></item>'
+    + '<item><title>Sub Role at Bad</title><link>https://sub.cryptocurrencyjobs.co/x/sub/</link></item>'
+    + '</channel></rss>';
+  const jobs = parseCryptocurrencyJobsRss(rss);
+  assert.equal(jobs.length, 1, 'only the apex-host row survives');
+  assert.equal(jobs[0].url, 'https://cryptocurrencyjobs.co/x/apex/');
+  assert.ok(jobs.every((j) => new URL(j.url).hostname === 'cryptocurrencyjobs.co'));
+});
+
 test('fetchCryptocurrencyJobs: normalizes via fake fetchImpl (fetchText path)', async () => {
   let capturedOpts = null;
   const fetchImpl = async (_url, opts) => { capturedOpts = opts; return { ok: true, text: async () => RSS }; };

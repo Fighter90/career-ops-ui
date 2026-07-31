@@ -102,14 +102,14 @@ function stripTags(html) {
   return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-// Keep only absolute HTTPS links hosted on the trusted board domain.
+// Keep only absolute HTTPS links on the exact trusted board host. Uses the same
+// exact-match guard as assertCryptocurrencyJobsUrl + the adapter override, so
+// the parser is never more permissive than the SSRF guard (no subdomains).
 function cleanUrl(value) {
   if (!value) return '';
   try {
     const parsed = new URL(value.trim());
-    const host = parsed.hostname.toLowerCase();
-    const trusted = host === TRUSTED_HOST || host.endsWith(`.${TRUSTED_HOST}`);
-    return parsed.protocol === 'https:' && trusted ? parsed.href : '';
+    return parsed.protocol === 'https:' && CRYPTOCURRENCYJOBS_HOST_RE.test(parsed.hostname) ? parsed.href : '';
   } catch {
     return '';
   }
