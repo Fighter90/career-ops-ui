@@ -1129,6 +1129,8 @@ tabela GitHub-Flavored Markdown.
 
 `Hired` (v1.118.0) to szczęśliwy stan końcowy — oferta została przyjęta. Tracker oznacza go świąteczną odznaką i wita banerem „praca zdobyta”.
 
+**Tablica zakładek etapów (v1.131.0).** Nad tabelą **pasek zakładek etapów** pozwala przejść przez cały lejek: zakładka **Wszystkie** plus jedna zakładka na każdy kanoniczny status, każda pokazuje na żywo liczbę z całej historii — **w tym etapy z zerową liczbą**, dzięki czemu cały pipeline jest zawsze widoczny na pierwszy rzut oka. Kliknij etap, aby przefiltrować do niego tabelę; kliknij ponownie, aby wrócić do **Wszystkie**. Zakładki (oraz składanie zlokalizowanych/starszych aliasów statusów w liczbach) pochodzą z `GET /api/tracker/stages`, która czyta ten sam plik `templates/states.yml`, którego używa serwer — dzięki czemu zestaw zakładek pozostaje automatycznie zsynchronizowany ze słownictwem statusów rodzica, bez zakodowanej na sztywno listy na stronie. Wyszukiwanie, filtr wyniku, sortowalne kolumny oraz raport/PDF/legalność w każdym wierszu pozostają bez zmian; a przy włączonym pokazywaniu logo, firma w każdym wierszu pokazuje znak marki.
+
 Biała lista statusów jest egzekwowana po stronie serwera; wysłanie czegokolwiek innego w
 `POST /api/tracker` domyślnie ustawia `Evaluated`. Kanoniczne
 przejście `Evaluated → Applied` jest automatyczne, gdy potwierdzisz

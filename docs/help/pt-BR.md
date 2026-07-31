@@ -1128,6 +1128,8 @@ como uma tabela GitHub-Flavored Markdown.
 
 `Hired` (v1.118.0) é o estado final feliz — a oferta foi aceita. O tracker o marca com um badge comemorativo e o recebe com um banner de «vaga conquistada».
 
+**Board de abas de estágio (v1.131.0).** Acima da tabela, uma **faixa de abas de estágio** permite percorrer o funil: uma aba **All** mais uma aba por status canônico, cada uma mostrando uma contagem ao vivo do histórico completo — **incluindo estágios com contagem zero**, para que o pipeline completo esteja sempre visível de relance. Clique em um estágio para filtrar a tabela por ele; clique nele de novo para voltar a **All**. As abas (e a dobra de aliases de status localizados/legados nas contagens) vêm de `GET /api/tracker/stages`, que lê o mesmo `templates/states.yml` usado pelo servidor — assim o conjunto de abas permanece sincronizado automaticamente com o vocabulário de status do pai, sem lista fixa na página. A busca, o filtro de score, as colunas ordenáveis e as ações de relatório/PDF/legitimidade por linha permanecem inalteradas; com os logos habilitados, a empresa de cada linha mostra uma marca.
+
 O whitelist de status é aplicado no servidor; enviar qualquer outra
 coisa em um `POST /api/tracker` faz default para `Evaluated`. A
 transição canônica `Evaluated → Applied` é automática quando você

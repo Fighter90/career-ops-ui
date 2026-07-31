@@ -1191,6 +1191,8 @@ GitHub-Flavored Markdown-tabel.
 
 `Hired` (v1.118.0) er den lykkelige slutstatus — tilbuddet blev accepteret. Trackeren markerer den med et festligt badge og byder den velkommen med et «jobbet er i hus»-banner.
 
+**Fanebladstavle for stadier (v1.131.0).** Over tabellen lader en **fanebladsstrimmel** dig gå gennem tragten: en **Alle**-fane plus én fane pr. kanonisk status, hver med et live optalt tal for hele historikken — **inklusive nul-tælling-stadier**, så hele pipelinen altid er synlig på et øjekast. Klik på et stadie for at filtrere tabellen til det; klik på det igen for at vende tilbage til **Alle**. Fanerne (og tællingernes foldning af lokaliserede/legacy statusaliasser) kommer fra `GET /api/tracker/stages`, som læser den samme `templates/states.yml`, som serveren bruger — så fanesættet automatisk holder sig synkront med forælderens statusordforråd, uden en hardkodet liste på siden. Søgning, score-filtret, sorterbare kolonner og de rækkevise rapport-/PDF-/legitimitets-muligheder er uændret; med logoer aktiveret viser hver rækkes firma et brandmærke.
+
 Status-whitelisten håndhæves server-side; at sende noget andet i
 en `POST /api/tracker` defaulter til `Evaluated`. Den kanoniske
 `Evaluated → Applied`-overgang er automatisk, når du bekræfter

@@ -8,6 +8,13 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.131.0] — 2026-07-31
+
+### Adicionado
+- **Board de abas de estágio (CRM) do `#/tracker`** (portado da view `/pipeline` do web app do pai). A barra de chips de funil + dropdown de status do tracker são substituídos por uma **faixa de abas de estágio**: uma aba **All** mais uma aba por status canônico — **Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired** — cada uma mostrando uma contagem ao vivo do histórico completo, **incluindo estágios com contagem zero** para que o funil completo esteja sempre visível (o visual CRM). A aba ativa comanda o filtro; clicar nela de novo limpa de volta para All. As linhas mantêm o tom de score, legitimidade, PDF e as ações de relatório, e a célula da empresa agora mostra a marca da empresa (logo) quando os logos estão habilitados (desabilitado por padrão → zero requisições extras).
+  - Nova rota somente leitura **`GET /api/tracker/stages`** retorna o funil canônico (rótulos em ordem) + um mapa de dobra de aliases, extraído de `server/lib/states.mjs` (`templates/states.yml`, com o fallback embutido) — assim o cliente **nunca fixa a whitelist de status**. A resposta legada de `GET /api/tracker` sem parâmetros permanece inalterada (só `{ rows }`).
+  - Nova lib de cliente pura e testada por unidade **`public/js/lib/tracker-stages.js`** agrupa as linhas nos estágios do servidor, tolerando negrito markdown perdido e aliases localizados (ex.: `aplicado` → `Applied`). As abas são acessíveis (role tablist/tab, aria-selected, área de toque ≥44 px, contagens no nome acessível de cada aba). Sem novas chaves i18n. Suíte **2133**.
+
 ## [1.130.0] — 2026-07-31
 
 ### Adicionado

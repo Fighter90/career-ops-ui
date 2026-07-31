@@ -8,6 +8,13 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.131.0] — 2026-07-31
+
+### Added
+- **`#/tracker` CRM stage-tab board** (ported from the parent web app's `/pipeline` view). The tracker's funnel-chip bar + status dropdown are replaced by a proper **stage-tab strip**: an **All** tab plus one tab per canonical status — **Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired** — each showing a live whole-history count, **including zero-count stages** so the full funnel is always visible at a glance (the CRM look). The active tab drives the filter; clicking it again clears back to All. Rows keep their score-tone, legitimacy, PDF and report affordances, and the company cell now shows a **brand logo** when logos are enabled (off by default → zero extra requests, same contract as `#/scan`).
+  - New read-only route **`GET /api/tracker/stages`** returns the canonical funnel (labels in order) + an alias-fold map, sourced from `server/lib/states.mjs` (`templates/states.yml`, with the built-in fallback) — so the client **never hardcodes the status whitelist** (the v1.128.0 doctrine): a parent that renames or reorders a stage flows through with no client change. The legacy no-param `GET /api/tracker` response is unchanged (`{ rows }` only).
+  - New pure, unit-tested client lib **`public/js/lib/tracker-stages.js`** (`window.TrackerStages` — `foldStatus`, `stageCounts`) buckets rows against the server's stages, tolerating stray markdown bold and localized aliases (e.g. `aplicado` → `Applied`). Tabs are accessible (`role="tablist"`/`tab`, `aria-selected`, ≥44 px hit area, counts folded into each tab's accessible name); focus stays on the active tab after a switch. No new i18n keys (stage labels render verbatim like the row badges). +`tests/tracker-stages.test.mjs` (6) +`tests/tracker-stages-endpoint.test.mjs` (4); suite **2133**.
+
 ## [1.130.0] — 2026-07-31
 
 ### Added

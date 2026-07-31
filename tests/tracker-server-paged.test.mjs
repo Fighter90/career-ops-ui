@@ -123,8 +123,11 @@ test('pageSize is clamped to a sane maximum', async () => {
   assert.ok(body.pageSize <= 500, `pageSize ${body.pageSize} must be capped`);
 });
 
-// ── client funnel chips (tracker.js is browser-only → source-static)
-test('#/tracker renders a clickable funnel chip bar', async () => {
+// ── client CRM stage-tab strip (tracker.js is browser-only → source-static)
+// v1.131.0 replaced the v1.55.8 funnel chip bar with a canonical stage-tab
+// board (parent web/ `/pipeline` port): tabs over GET /api/tracker/stages, ALL
+// + every stage incl. zero-count, folding via window.TrackerStages.
+test('#/tracker renders a clickable stage-tab strip', async () => {
   const { readFileSync } = await import('node:fs');
   const { fileURLToPath } = await import('node:url');
   const { dirname, resolve: r } = await import('node:path');
@@ -132,14 +135,19 @@ test('#/tracker renders a clickable funnel chip bar', async () => {
   const TR = readFileSync(r(__d, '..', 'public', 'js', 'views', 'tracker.js'), 'utf8');
   const DICT = legacyDictText();
   const CSS = readFileSync(r(__d, '..', 'public', 'css', 'app.css'), 'utf8');
-  assert.match(TR, /className: 'tracker-funnel'/, 'a .tracker-funnel bar must exist');
-  assert.match(TR, /tracker-chip/, 'chips use the .tracker-chip class');
-  // Clicking a chip drives the Status filter (toggle on re-click).
-  assert.match(TR, /filterStatus\.value = \(filterStatus\.value === value\) \? '' : value/);
-  assert.match(TR, /'aria-pressed'/, 'chips expose pressed state for a11y');
-  assert.match(TR, /t\('track\.funnelAria'/, 'funnel region is labelled');
-  assert.match(CSS, /\.tracker-chip\b/);
-  assert.match(CSS, /\.tracker-chip--active\b/);
+  assert.match(TR, /className: 'tracker-tabs'/, 'a .tracker-tabs strip must exist');
+  assert.match(TR, /tracker-tab/, 'tabs use the .tracker-tab class');
+  assert.match(TR, /role: 'tablist'/, 'the strip is a tablist');
+  assert.match(TR, /role: 'tab'/, 'each tab exposes role=tab');
+  // Clicking the active tab clears back to ALL (toggle on re-click).
+  assert.match(TR, /activeStage = \(activeStage === stageValue\) \? '' : stageValue/);
+  assert.match(TR, /'aria-selected'/, 'tabs expose selected state for a11y');
+  assert.match(TR, /t\('track\.funnelAria'/, 'the tablist is labelled');
+  // Counts (incl. zero-count stages) come from the shared, unit-tested lib.
+  assert.match(TR, /window\.TrackerStages/, 'the shared TrackerStages lib is used');
+  assert.match(TR, /\.stageCounts\(/, 'tab counts come from TrackerStages.stageCounts');
+  assert.match(CSS, /\.tracker-tabs\b/);
+  assert.match(CSS, /\.tracker-tab\.is-active\b/);
   const line = DICT.split('\n').find((l) => l.includes("'track.funnelAria'"));
   assert.ok(line, 'track.funnelAria i18n key missing');
   for (const loc of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr']) {

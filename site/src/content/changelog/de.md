@@ -2,6 +2,13 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.131.0] — 2026-07-31
+
+### Hinzugefügt
+- **`#/tracker`-CRM-Stage-Tab-Board** (portiert aus der `/pipeline`-Ansicht der Web-App des Elternprojekts). Die Funnel-Chip-Leiste + das Status-Dropdown des Trackers werden durch eine **Stage-Tab-Leiste** ersetzt: ein **Alle**-Tab plus ein Tab pro kanonischem Status — **Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired** — jeweils mit einer live berechneten Gesamtverlaufs-Anzahl, **einschließlich Stufen mit null Treffern**, sodass der vollständige Funnel stets sichtbar bleibt (der CRM-Look). Der aktive Tab steuert den Filter; erneutes Klicken setzt ihn zurück auf Alle. Zeilen behalten ihren Score-Ton, Legitimitäts-, PDF- und Report-Hinweise, und die Firmen-Zelle zeigt jetzt ein Markenlogo, wenn Logos aktiviert sind (standardmäßig aus → keine zusätzlichen Anfragen).
+  - Neue schreibgeschützte Route **`GET /api/tracker/stages`** liefert den kanonischen Funnel (Labels in Reihenfolge) + eine Alias-Faltungs-Map, gespeist aus `server/lib/states.mjs` (`templates/states.yml`, mit dem eingebauten Fallback) — sodass der Client **die Status-Whitelist niemals hartcodiert**. Die Legacy-Antwort von `GET /api/tracker` ohne Parameter bleibt unverändert (nur `{ rows }`).
+  - Neue reine, unit-getestete Client-Lib **`public/js/lib/tracker-stages.js`** ordnet Zeilen den Stufen des Servers zu und toleriert dabei verirrte Markdown-Fettschrift sowie lokalisierte Aliase (z. B. `aplicado` → `Applied`). Die Tabs sind barrierefrei (Rolle tablist/tab, aria-selected, ≥44 px Trefferfläche, Anzahl im barrierefreien Namen jedes Tabs). Keine neuen i18n-Schlüssel. Suite **2133**.
+
 ## [1.130.0] — 2026-07-31
 
 ### Hinzugefügt

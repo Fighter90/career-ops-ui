@@ -9,6 +9,13 @@
 ---
 
 
+## [1.131.0] — 2026-07-31
+
+### 新增
+- **`#/tracker` CRM 阶段标签看板**(从父项目 Web 应用的 `/pipeline` 视图移植而来)。跟踪器原有的漏斗筹码栏 + 状态下拉菜单被替换为**阶段标签条**:一个 **All** 标签加上每个规范状态各一个标签 — **Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired** — 每个标签都显示实时的全历史计数,**包括零计数阶段**,以便完整漏斗始终可见(CRM 风格)。当前激活的标签驱动过滤;再次点击它会清除回 All。行仍保留分数色调、合规性、PDF 与报告的可操作项,当徽标功能启用时(默认关闭 → 零额外请求),公司单元格现在会显示品牌徽标。
+  - 新增只读路由 **`GET /api/tracker/stages`**,返回规范漏斗(按顺序排列的标签)+ 别名折叠映射,来源于 `server/lib/states.mjs`(`templates/states.yml`,并有内置回退)— 因此客户端**永远不会硬编码状态白名单**。旧版无参数 `GET /api/tracker` 响应保持不变(仅 `{ rows }`)。
+  - 新增纯函数、已做单元测试的客户端库 **`public/js/lib/tracker-stages.js`**,依据服务器返回的阶段对行进行分桶,可容忍杂散的 markdown 加粗标记与本地化别名(例如 `aplicado` → `Applied`)。标签具备无障碍支持(role tablist/tab、aria-selected、≥44 px 点击区域,计数包含在每个标签的无障碍名称中)。无新增 i18n 键。测试套件 **2133**。
+
 ## [1.130.0] — 2026-07-31
 
 ### 新增
