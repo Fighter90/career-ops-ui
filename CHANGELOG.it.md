@@ -2,6 +2,13 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.131.0] — 2026-07-31
+
+### Aggiunto
+- **Bacheca a schede di stadio (CRM) per `#/tracker`** (portata dalla vista `/pipeline` dell'app web del padre). La barra a chip del funnel + il menu a tendina di stato del tracker sono sostituiti da una **striscia di schede di stadio**: una scheda **Tutti** più una scheda per ogni stato canonico — **Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired** — ciascuna con un conteggio live sull'intera cronologia, **incluse le fasi a conteggio zero** così l'intero funnel è sempre visibile (l'aspetto CRM). La scheda attiva guida il filtro; un secondo clic la deseleziona tornando a Tutti. Le righe mantengono la tonalità del punteggio, la legittimità e le funzioni PDF e report, e la cella dell'azienda ora mostra un logo del brand quando i loghi sono abilitati (disattivati di default → zero richieste extra).
+  - Nuova rotta di sola lettura **`GET /api/tracker/stages`** restituisce il funnel canonico (etichette in ordine) + una mappa di fusione degli alias, presa da `server/lib/states.mjs` (`templates/states.yml`, con il fallback integrato) — così il client **non codifica mai staticamente la whitelist di stato**. La risposta legacy senza parametri di `GET /api/tracker` è invariata (solo `{ rows }`).
+  - Nuova libreria client pura e testata a livello di unità **`public/js/lib/tracker-stages.js`** raggruppa le righe secondo gli stadi del server, tollerando grassetto markdown residuo e alias localizzati (es. `aplicado` → `Applied`). Le schede sono accessibili (role tablist/tab, aria-selected, area di tocco ≥44 px, conteggi nel nome accessibile di ciascuna scheda). Nessuna nuova chiave i18n. Suite **2133**.
+
 ## [1.130.0] — 2026-07-31
 
 ### Aggiunto

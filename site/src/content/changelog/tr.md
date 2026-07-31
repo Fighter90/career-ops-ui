@@ -2,6 +2,13 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.131.0] — 2026-07-31
+
+### Eklendi
+- **`#/tracker` CRM aşama-sekmesi panosu** (üst projenin web uygulamasının `/pipeline` görünümünden taşındı). İzleyicinin huni-çipi çubuğu + durum açılır menüsü bir **aşama-sekmesi şeridi** ile değiştirildi: bir **Tümü** sekmesi artı her kanonik durum için bir sekme — **Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired** — her biri canlı bir tüm-geçmiş sayısı gösteriyor, **sıfır sayılı aşamalar dahil** olmak üzere, böylece tüm huni her zaman görünür kalıyor (CRM görünümü). Etkin sekme filtreyi yönlendirir; tekrar tıklamak Tümü'ne geri temizler. Satırlar puan-tonu, meşruiyet, PDF ve rapor olanaklarını korur ve şirket hücresi artık logolar etkinleştirildiğinde bir marka logosu gösterir (varsayılan olarak kapalı → sıfır ekstra istek).
+  - Yeni salt-okunur rota **`GET /api/tracker/stages`** kanonik huniyi (sırayla etiketler) + bir takma-ad-katlama haritasını döndürür, `server/lib/states.mjs`'ten kaynaklanır (`templates/states.yml`, yerleşik yedekle) — böylece istemci **durum beyaz listesini asla sabit kodlamaz**. Eski parametresiz `GET /api/tracker` yanıtı değişmedi (yalnızca `{ rows }`).
+  - Yeni saf, birim test edilmiş istemci kitaplığı **`public/js/lib/tracker-stages.js`** satırları sunucunun aşamalarına göre gruplandırır, başıboş markdown kalın yazısını ve yerelleştirilmiş takma adları (ör. `aplicado` → `Applied`) tolere eder. Sekmeler erişilebilir (role tablist/tab, aria-selected, ≥44 px dokunma alanı, her sekmenin erişilebilir adında sayılar). Yeni i18n anahtarı yok. Paket **2133**.
+
 ## [1.130.0] — 2026-07-31
 
 ### Eklendi

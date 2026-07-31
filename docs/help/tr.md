@@ -1257,6 +1257,8 @@ GitHub-Flavored Markdown tablosu olarak bulunur.
 
 `Hired` (v1.118.0) mutlu son durumudur — teklif kabul edildi. Takipçi bunu kutlama rozetiyle işaretler ve «iş bulundu» banner'ıyla karşılar.
 
+**Aşama-sekmesi panosu (v1.131.0).** Tablonun üstünde bir **aşama-sekmesi şeridi** huni boyunca gezinmenizi sağlar: bir **Tümü** sekmesi artı her kanonik durum için bir sekme, her biri canlı bir tüm-geçmiş sayısı gösterir — **sıfır sayılı aşamalar dahil**, böylece tüm hat her zaman tek bakışta görünür. Bir aşamaya tıklamak tabloyu ona filtreler; tekrar tıklamak **Tümü**'ne döner. Sekmeler (ve sayıların yerelleştirilmiş/eski durum takma adlarını katlaması) `GET /api/tracker/stages`'ten gelir, bu da sunucunun kullandığı aynı `templates/states.yml`'i okur — böylece sekme kümesi, sayfada sabit kodlanmış bir liste olmadan üst projenin durum sözlüğüyle otomatik olarak senkronize kalır. Search, puan filtresi, sıralanabilir sütunlar ve satır başına rapor/PDF/meşruiyet değişmeden kalır; logolar etkinleştirildiğinde her satırın şirketi bir marka işareti gösterir.
+
 Durum beyaz listesi sunucu tarafında zorlanır; bir `POST /api/tracker`'da
 başka herhangi bir şey göndermek `Evaluated`'a varsayılır. Kanonik
 `Evaluated → Applied` geçişi, `/career-ops apply`'ın sonunda

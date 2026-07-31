@@ -1120,6 +1120,8 @@ tabla GitHub-Flavored Markdown.
 
 `Hired` (v1.118.0) es el estado final feliz: la oferta fue aceptada. El tracker lo marca con una insignia celebratoria y lo recibe con un banner de «trabajo conseguido».
 
+**Tablero de pestañas de etapa (v1.131.0).** Encima de la tabla, una **franja de pestañas de etapa** permite recorrer el embudo: una pestaña **All** más una por cada estado canónico, cada una mostrando un recuento en vivo de todo el historial —**incluidas las etapas con recuento cero**, para que el embudo completo sea siempre visible de un vistazo. Pulsa una etapa para filtrar la tabla a esa etapa; púlsala de nuevo para volver a **All**. Las pestañas (y el plegado de alias de estado localizados/legacy de los recuentos) provienen de `GET /api/tracker/stages`, que lee el mismo `templates/states.yml` que usa el servidor — así el conjunto de pestañas se mantiene sincronizado automáticamente con el vocabulario de estados del padre, sin lista fija en la página. La búsqueda, el filtro de puntuación, las columnas ordenables y el informe/PDF/legitimidad por fila no cambian; con los logos activados, la empresa de cada fila muestra una marca.
+
 La whitelist de estados se aplica del lado del servidor; enviar
 cualquier otra cosa en un `POST /api/tracker` cae por defecto a
 `Evaluated`. La transición canónica `Evaluated → Applied` es

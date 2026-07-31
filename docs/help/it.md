@@ -1220,6 +1220,8 @@ tabella GitHub-Flavored Markdown.
 
 `Hired` (v1.118.0) è lo stato finale felice — l'offerta è stata accettata. Il tracker lo contrassegna con un badge celebrativo e lo accoglie con un banner «lavoro ottenuto».
 
+**Bacheca a schede di stadio (v1.131.0).** Sopra la tabella una **striscia di schede di stadio** permette di percorrere il funnel: una scheda **Tutti** più una scheda per ogni stato canonico, ciascuna con un conteggio live sull'intera cronologia — **incluse le fasi a conteggio zero**, così l'intera pipeline è sempre visibile a colpo d'occhio. Clicca su uno stadio per filtrare la tabella su di esso; clicca di nuovo per tornare a **Tutti**. Le schede (e la fusione degli alias di stato localizzati/legacy nei conteggi) provengono da `GET /api/tracker/stages`, che legge lo stesso `templates/states.yml` usato dal server — così l'insieme delle schede resta automaticamente sincronizzato col vocabolario di stato del padre, senza alcuna lista hardcoded nella pagina. La ricerca, il filtro per punteggio, le colonne ordinabili e le funzioni per riga di report/PDF/legittimità restano invariate; con i loghi abilitati, l'azienda di ogni riga mostra un marchio del brand.
+
 La whitelist degli stati è imposta lato server; inviare qualcos'altro in
 un `POST /api/tracker` fa il default a `Evaluated`. La transizione canonica
 `Evaluated → Applied` è automatica quando confermi

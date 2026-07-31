@@ -9,6 +9,13 @@
 ---
 
 
+## [1.131.0] — 2026-07-31
+
+### 新增
+- **`#/tracker` CRM 階段分頁看板**(移植自父專案 web app 的 `/pipeline` 檢視)。追蹤器原本的漏斗晶片列 + 狀態下拉選單,已由**階段分頁列**取代:一個 **All** 分頁,外加每個規範狀態各一個分頁 — **Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired** — 每個分頁都顯示即時的全歷史計數,**包含零計數的階段**,讓完整漏斗隨時可見(CRM 風格)。使用中的分頁驅動篩選;再次點擊會清除回到 All。各列仍保有其分數色調、合法性、PDF 與報告等操作項,且啟用標誌後,公司欄現在會顯示品牌標誌(預設關閉 → 零額外請求)。
+  - 新增唯讀路由 **`GET /api/tracker/stages`**,回傳規範漏斗(依序排列的標籤)+ 別名摺疊對映表,來源為 `server/lib/states.mjs`(`templates/states.yml`,並附內建回退)— 因此客戶端**永不硬編碼狀態白名單**。舊版無參數的 `GET /api/tracker` 回應維持不變(僅 `{ rows }`)。
+  - 新增純函式、附單元測試的客戶端函式庫 **`public/js/lib/tracker-stages.js`**,依伺服器的階段將各列分類,並容許零散的 markdown 粗體與在地化別名(例如 `aplicado` → `Applied`)。分頁具備無障礙支援(role tablist/tab、aria-selected、≥44 px 命中區域、計數包含在每個分頁的無障礙名稱中)。無新增 i18n 鍵。測試套件現為 **2133** 個。
+
 ## [1.130.0] — 2026-07-31
 
 ### 新增

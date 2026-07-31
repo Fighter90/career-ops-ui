@@ -14,7 +14,7 @@ import { PATHS, path as projPath } from '../paths.mjs';
 import { parseApplications, today } from '../parsers.mjs';
 import { safeReadApps } from '../store.mjs';
 import { withFileLock } from '../file-lock.mjs';
-import { canonicalizeStatus } from '../states.mjs';
+import { canonicalizeStatus, readCanonicalStates } from '../states.mjs';
 
 // v1.128.0 (parent web/ port #2) — the canonical status vocabulary is no
 // longer hardcoded here. `server/lib/states.mjs` reads the parent's
@@ -54,6 +54,31 @@ export function registerTrackerRoutes(app) {
     const start = (pg - 1) * ps;
     const rows = wanted.slice(start, start + ps);
     res.json({ rows, total, page: pg, pageSize: ps, funnel });
+  });
+
+  // v1.131.0 — the #/tracker CRM stage-tab board (parent web/ `/pipeline` port)
+  // needs the FULL canonical funnel — labels in order, including zero-count
+  // stages — plus an alias-fold map, so the client can bucket rows without ever
+  // hardcoding the whitelist (the v1.128.0 doctrine). Read-only, no writes, no
+  // user input, no external fetch; sourced from server/lib/states.mjs
+  // (templates/states.yml, with the built-in fallback). Cacheable.
+  app.get('/api/tracker/stages', (req, res) => {
+    const states = readCanonicalStates();
+    const stages = states.map((s) => s.label);
+    // Fold key → canonical label. Keys are lowercased/trimmed to match the
+    // client's TrackerStages.norm(); labels/ids/aliases never carry markdown.
+    const aliases = {};
+    const put = (key, label) => {
+      const k = String(key == null ? '' : key).trim().toLowerCase();
+      if (k) aliases[k] = label;
+    };
+    for (const s of states) {
+      put(s.label, s.label);
+      put(s.id, s.label);
+      for (const a of (s.aliases || [])) put(a, s.label);
+    }
+    res.set('Cache-Control', 'public, max-age=300');
+    res.json({ stages, aliases });
   });
 
   app.post('/api/tracker', async (req, res) => {

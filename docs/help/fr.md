@@ -1221,6 +1221,8 @@ forme de tableau GitHub-Flavored Markdown.
 
 `Hired` (v1.118.0) est l'état final heureux — l'offre a été acceptée. Le tracker le marque d'un badge de célébration et l'accueille avec une bannière « poste décroché ».
 
+**Tableau à onglets d'étape (v1.131.0).** Au-dessus du tableau, une **bande d'onglets d'étape** permet de parcourir l'entonnoir : un onglet **All** plus un onglet par statut canonique, chacun affichant un compte en direct sur tout l'historique — **y compris les étapes à zéro** — afin que le pipeline complet reste toujours visible d'un coup d'œil. Cliquez sur une étape pour filtrer le tableau dessus ; cliquez à nouveau pour revenir à **All**. Les onglets (et le repli des alias de statut localisés/hérités dans les comptes) proviennent de `GET /api/tracker/stages`, qui lit le même `templates/states.yml` que le serveur — de sorte que l'ensemble des onglets reste automatiquement synchronisé avec le vocabulaire de statuts du parent, sans liste codée en dur sur la page. La recherche, le filtre de score, les colonnes triables et les actions rapport/PDF/légitimité par ligne restent inchangés ; avec les logos activés, l'entreprise de chaque ligne affiche une marque.
+
 La liste blanche de statuts est imposée côté serveur ; envoyer autre chose
 dans un `POST /api/tracker` retombe sur `Evaluated`. La transition canonique
 `Evaluated → Applied` est automatique quand vous confirmez `Submitted.` à la

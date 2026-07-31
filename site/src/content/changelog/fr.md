@@ -11,6 +11,13 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.131.0] — 2026-07-31
+
+### Ajouté
+- **Le tableau à onglets d'étape CRM de `#/tracker`** (porté depuis la vue `/pipeline` de l'application web du parent). La barre de puces d'entonnoir et le menu déroulant de statut du tracker sont remplacés par une **bande d'onglets d'étape** : un onglet **All** plus un onglet par statut canonique — **Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired** — chacun affichant un compte en direct sur tout l'historique, **y compris les étapes à zéro** afin que l'entonnoir complet reste toujours visible (l'aspect CRM). L'onglet actif pilote le filtre ; cliquer dessus à nouveau réinitialise vers All. Les lignes conservent leur teinte de score, leur légitimité, leurs actions PDF et rapport, et la cellule entreprise affiche désormais un logo de marque quand les logos sont activés (désactivé par défaut → zéro requête supplémentaire).
+  - Nouvelle route en lecture seule **`GET /api/tracker/stages`** renvoie l'entonnoir canonique (libellés dans l'ordre) + une carte de repli des alias, sourcée depuis `server/lib/states.mjs` (`templates/states.yml`, avec le repli intégré) — afin que le client **ne code jamais en dur la liste blanche de statuts**. La réponse historique de `GET /api/tracker` sans paramètre est inchangée (`{ rows }` uniquement).
+  - Nouvelle lib client pure et testée unitairement **`public/js/lib/tracker-stages.js`** répartit les lignes selon les étapes du serveur, en tolérant les emphases markdown superflues et les alias localisés (p. ex. `aplicado` → `Applied`). Les onglets sont accessibles (rôle tablist/tab, aria-selected, zone cliquable ≥44 px, comptes inclus dans le nom accessible de chaque onglet). Aucune nouvelle clé i18n. Suite **2133**.
+
 ## [1.130.0] — 2026-07-31
 
 ### Ajouté

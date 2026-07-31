@@ -9,6 +9,13 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.131.0] — 2026-07-31
+
+### Dodano
+- **Tablica CRM z zakładkami etapów na `#/tracker`** (przeniesiona z widoku `/pipeline` aplikacji webowej rodzica). Pasek chipów lejka + rozwijane menu statusu w trackerze zastępuje **pasek zakładek etapów**: zakładka **Wszystkie** plus jedna zakładka na każdy kanoniczny status — **Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired** — każda pokazuje na żywo liczbę z całej historii, **w tym etapy z zerową liczbą**, dzięki czemu cały lejek jest zawsze widoczny (wygląd CRM). Aktywna zakładka steruje filtrem; kliknięcie jej ponownie czyści z powrotem do Wszystkie. Wiersze zachowują ton oceny, legalność, funkcje PDF i raportu, a komórka firmy pokazuje teraz logo marki, jeśli włączono pokazywanie logo firm (domyślnie wyłączone → zero dodatkowych zapytań).
+  - Nowa trasa tylko do odczytu **`GET /api/tracker/stages`** zwraca kanoniczny lejek (etykiety w kolejności) + mapę składania aliasów, pochodzącą z `server/lib/states.mjs` (`templates/states.yml`, z wbudowanym fallbackiem) — dzięki czemu klient **nigdy nie zakodowuje na sztywno białej listy statusów**. Odpowiedź starszego `GET /api/tracker` bez parametrów jest niezmieniona (tylko `{ rows }`).
+  - Nowa czysta, pokryta testami jednostkowymi biblioteka kliencka **`public/js/lib/tracker-stages.js`** grupuje wiersze według etapów zwróconych przez serwer, tolerując przypadkowe pogrubienia markdown i zlokalizowane aliasy (np. `aplicado` → `Applied`). Zakładki są dostępne (rola tablist/tab, aria-selected, obszar dotykowy ≥44 px, liczby w dostępnej nazwie każdej zakładki). Bez nowych kluczy i18n. Zestaw testów **2133**.
+
 ## [1.130.0] — 2026-07-31
 
 ### Dodano

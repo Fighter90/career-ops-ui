@@ -8,7 +8,12 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.131.0] — 2026-07-31
 
+### Tilføjet
+- **`#/tracker` CRM-fanebladstavle** (porteret fra forælderens web-apps `/pipeline`-visning). Trackerens funnel-chip-bar + status-dropdown erstattes af en **fanebladsstrimmel**: en **Alle**-fane plus én fane pr. kanonisk status — **Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired** — hver med et live optalt tal for hele historikken, **inklusive nul-tælling-stadier**, så hele tragten altid er synlig (CRM-udseendet). Den aktive fane styrer filtret; et nyt klik på den rydder tilbage til Alle. Rækkerne beholder deres score-tone, legitimitet, PDF- og rapport-muligheder, og firmacellen viser nu et brandlogo, når logoer er aktiveret (fra som standard → nul ekstra forespørgsler).
+  - Ny read-only rute **`GET /api/tracker/stages`** returnerer den kanoniske tragt (etiketter i rækkefølge) + et alias-foldningskort, hentet fra `server/lib/states.mjs` (`templates/states.yml`, med den indbyggede fallback) — så klienten **aldrig hardkoder statuswhitelisten**. Det legacy parameterløse `GET /api/tracker`-svar er uændret (kun `{ rows }`).
+  - Nyt rent, enhedstestet klientbibliotek **`public/js/lib/tracker-stages.js`** grupperer rækker efter serverens stadier og tolererer forvildet markdown-fed skrift og lokaliserede aliasser (fx `aplicado` → `Applied`). Fanerne er tilgængelige (role tablist/tab, aria-selected, ≥44 px hit-areal, tællinger i hver fanes tilgængelighedsnavn). Ingen nye i18n-nøgler. Suite **2133**.
 
 ## [1.130.0] — 2026-07-31
 

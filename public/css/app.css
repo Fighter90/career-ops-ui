@@ -744,30 +744,47 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .scan-advanced > summary::before { content: '⚙ '; }
 .scan-advanced[open] > summary { font-weight: 600; }
 
-/* v1.55.8 — UX-8: #/tracker clickable funnel summary chips. */
-.tracker-funnel {
+/* v1.131.0 — #/tracker CRM stage-tab strip (parent web/ `/pipeline` board port;
+   replaces the v1.55.8 funnel chip bar). Underline-active tabs across the full
+   canonical funnel — ALL + every stage the server sent, zero-count stages
+   included — each with a live whole-history count. */
+.tracker-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 2px;
+  border-bottom: 1px solid var(--slate);
   margin-bottom: 12px;
 }
-.tracker-chip {
+.tracker-tab {
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--foggy);
   font: inherit;
   font-size: 13px;
-  padding: 5px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--border, rgba(0,0,0,.12));
-  background: var(--bg-subtle, rgba(0,0,0,.03));
-  color: var(--hof);
-  cursor: pointer;
-}
-.tracker-chip:hover { border-color: var(--rausch); }
-.tracker-chip--active {
-  background: var(--rausch);
-  color: #fff;
-  border-color: var(--rausch-dark);
   font-weight: 600;
+  /* WCAG 2.5.5 — ≥ 44 px hit area, matching the .tab-btn treatment. */
+  min-height: 44px;
+  padding: 9px 12px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
 }
+.tracker-tab:hover { color: var(--hof); }
+.tracker-tab.is-active {
+  color: var(--rausch);
+  border-bottom-color: var(--rausch);
+}
+.tracker-tab-n {
+  color: var(--foggy);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.tracker-tab.is-active .tracker-tab-n { color: var(--rausch); }
 
 /* v1.58.21 (U-1) — removed `.cv-breadcrumb` (was v1.56.0 UX-9 chip).
    #/cv now uses the standard `.page-title` + `.page-subtitle` pair

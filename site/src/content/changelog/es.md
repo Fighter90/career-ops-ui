@@ -11,6 +11,13 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.131.0] — 2026-07-31
+
+### Añadido
+- **Tablero de pestañas de etapa CRM en `#/tracker`** (portado desde la vista `/pipeline` de la app web del padre). La barra de chips de embudo y el desplegable de estado del tracker se sustituyen por una **franja de pestañas de etapa**: una pestaña **All** más una por cada estado canónico —**Evaluated · Applied · Responded · Interview · Offer · Rejected · Discarded · SKIP · Hired**— cada una mostrando un recuento en vivo de todo el historial, **incluidas las etapas con recuento cero** para que el embudo completo sea siempre visible (el aspecto CRM). La pestaña activa controla el filtro; volver a pulsarla la limpia de vuelta a All. Las filas conservan su tono de puntuación, legitimidad, PDF e informe, y la celda de empresa ahora muestra un logo de marca cuando los logos están activados (desactivado por defecto → cero peticiones adicionales).
+  - Nueva ruta de solo lectura **`GET /api/tracker/stages`** devuelve el embudo canónico (etiquetas en orden) + un mapa de plegado de alias, obtenido de `server/lib/states.mjs` (`templates/states.yml`, con el fallback integrado) — así el cliente **nunca fija de forma hardcodeada la whitelist de estados**. La respuesta legacy de `GET /api/tracker` sin parámetros no cambia (`{ rows }` solamente).
+  - Nueva librería de cliente pura y con tests unitarios **`public/js/lib/tracker-stages.js`** agrupa las filas según las etapas del servidor, tolerando negrita markdown perdida y alias localizados (p. ej. `aplicado` → `Applied`). Las pestañas son accesibles (role tablist/tab, aria-selected, área táctil ≥44 px, recuentos en el nombre accesible de cada pestaña). Sin nuevas claves i18n. Suite **2133**.
+
 ## [1.130.0] — 2026-07-31
 
 ### Añadido

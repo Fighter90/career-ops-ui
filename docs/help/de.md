@@ -1296,6 +1296,8 @@ GitHub-Flavored-Markdown-Tabelle.
 
 `Hired` (v1.118.0) ist der glückliche Endzustand — das Angebot wurde angenommen. Der Tracker markiert ihn mit einem feierlichen Badge und begrüßt ihn mit einem „Job gelandet”-Banner.
 
+**Stage-Tab-Board (v1.131.0).** Oberhalb der Tabelle lässt Sie eine **Stage-Tab-Leiste** durch den Funnel wandern: ein **Alle**-Tab plus ein Tab pro kanonischem Status, jeweils mit einer live berechneten Gesamtverlaufs-Anzahl — **einschließlich Stufen mit null Treffern**, sodass die gesamte Pipeline stets auf einen Blick sichtbar ist. Klicken Sie auf eine Stufe, um die Tabelle darauf zu filtern; klicken Sie erneut, um zu **Alle** zurückzukehren. Die Tabs (und die Faltung lokalisierter/veralteter Status-Aliase in den Zählungen) stammen aus `GET /api/tracker/stages`, das dieselbe `templates/states.yml` liest, die auch der Server verwendet — sodass die Tab-Menge automatisch mit dem Status-Vokabular des Elternprojekts synchron bleibt, ohne hartcodierte Liste auf der Seite. Suche, der Score-Filter, sortierbare Spalten und die Report-/PDF-/Legitimitäts-Hinweise pro Zeile bleiben unverändert; bei aktivierten Logos zeigt jede Firmenzeile eine Marke.
+
 Die Status-Whitelist wird serverseitig durchgesetzt; das Senden von etwas
 anderem in einem `POST /api/tracker` fällt auf `Evaluated` zurück. Der
 kanonische `Evaluated → Applied`-Übergang ist automatisch, wenn Sie
