@@ -542,7 +542,7 @@ event: error    data: { message }
 npm test                       # 1856 यूनिट/इंटीग्रेशन टेस्ट
 npm run test:e2e               # 20 स्मोक e2e (अपना सर्वर खुद बूट करता है)
 npm run test:e2e:full          # 23 व्यापक e2e
-npm run test:e2e:browser       # 90 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×16 + theme)
+npm run test:e2e:browser       # 90 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×17 + theme)
 npm run test:coverage          # `npm test` जैसा ही, साथ में V8 कवरेज
 ```
 
