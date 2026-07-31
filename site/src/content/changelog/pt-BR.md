@@ -8,6 +8,14 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.131.1] — 2026-07-31
+
+### Corrigido
+- **Consistência de fixação de host (host-pinning) dos adaptadores nas duas fontes da v1.130.0** (desdobramentos de revisão de código, defesa em profundidade; sem mudança de comportamento para entradas válidas):
+  - O adaptador **`a16z-speedrun-talent`** agora revalida o override `api:` / `a16z-speedrun-talent:` em `buildEndpoint` (HTTPS + host exato `speedrun-talent-network.com`) e recai para o feed canônico quando a validação falha — paridade com o adaptador `cryptocurrencyjobs`, de modo que um valor de host diferente nunca alcança o slot de busca (antes dependia só da guarda `assertSpeedrunUrl` em tempo de busca). A checagem de host exato agora é uma única `SPEEDRUN_TALENT_HOST_RE` exportada, compartilhada pela guarda e pelo adaptador.
+  - O parser **`cryptocurrencyjobs`** — `cleanUrl` agora usa a mesma guarda de host por correspondência exata que `assertCryptocurrencyJobsUrl` e o override do adaptador (antes era `endsWith`, que aceitava subdomínios). O parser nunca é mais permissivo que a guarda de SSRF: um link de item `sub.cryptocurrencyjobs.co` é descartado.
+  - +2 testes → suíte **2135**.
+
 ## [1.131.0] — 2026-07-31
 
 ### Adicionado

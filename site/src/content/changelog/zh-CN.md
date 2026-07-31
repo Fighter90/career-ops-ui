@@ -9,6 +9,14 @@
 ---
 
 
+## [1.131.1] — 2026-07-31
+
+### 修复
+- **两个 v1.130.0 来源的适配器主机锁定一致性**(代码评审跟进,纵深防御;对合法输入无行为变化):
+  - **`a16z-speedrun-talent` 适配器**现在会在 `buildEndpoint` 处重新校验 `api:` / `a16z-speedrun-talent:` 覆盖值(HTTPS + 精确匹配主机 `speedrun-talent-network.com`),校验失败时回退到规范信息流 — 与 `cryptocurrencyjobs` 适配器保持一致,因此越权主机值永远不会到达抓取环节(此前仅依赖抓取时的 `assertSpeedrunUrl` 守卫)。精确主机校验现为单一导出的 `SPEEDRUN_TALENT_HOST_RE`,由守卫与适配器共用。
+  - **`cryptocurrencyjobs` 解析器** — `cleanUrl` 现在使用与 `assertCryptocurrencyJobsUrl` 及适配器覆盖值相同的精确匹配主机守卫(此前为 `endsWith`,会接受子域名)。解析器的宽松度永远不会超过 SSRF 守卫:`sub.cryptocurrencyjobs.co` 的条目链接会被丢弃。
+  - +2 个测试 → 套件 **2135**。
+
 ## [1.131.0] — 2026-07-31
 
 ### 新增

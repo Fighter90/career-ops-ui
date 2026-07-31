@@ -2,6 +2,14 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.131.1] — 2026-07-31
+
+### Düzeltildi
+- **v1.130.0'daki iki kaynağın adaptör ana bilgisayar sabitleme tutarlılığı** (kod incelemesi takip işleri, derinlemesine savunma; geçerli girdiler için davranış değişikliği yok):
+  - **`a16z-speedrun-talent` adaptörü** artık `api:` / `a16z-speedrun-talent:` geçersiz kılmasını `buildEndpoint`'te yeniden doğruluyor (HTTPS + tam ana bilgisayar `speedrun-talent-network.com`) ve başarısız olduğunda kanonik beslemeye geri dönüyor — `cryptocurrencyjobs` adaptörüyle parite, böylece ana bilgisayar dışı bir değer asla getirme yuvasına ulaşmıyor (önceden yalnızca getirme zamanındaki `assertSpeedrunUrl` koruyucusuna güveniyordu). Tam ana bilgisayar kontrolü artık koruyucu ve adaptör tarafından paylaşılan tek, dışa aktarılmış bir **`SPEEDRUN_TALENT_HOST_RE`**.
+  - **`cryptocurrencyjobs` ayrıştırıcısı** — `cleanUrl` artık `assertCryptocurrencyJobsUrl` ve adaptör geçersiz kılmasıyla aynı tam eşleşen ana bilgisayar koruyucusunu kullanıyor (önceden alt alan adlarını kabul eden `endsWith` idi). Ayrıştırıcı asla SSRF koruyucusundan daha izin verici değil: bir `sub.cryptocurrencyjobs.co` ilan bağlantısı düşürülüyor.
+  - +2 test → paket **2135**.
+
 ## [1.131.0] — 2026-07-31
 
 ### Eklendi

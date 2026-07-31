@@ -9,6 +9,14 @@
 ---
 
 
+## [1.131.1] — 2026-07-31
+
+### 수정
+- **v1.130.0의 두 소스에 대한 어댑터 호스트 고정 일관성**(코드 리뷰 후속 조치, 심층 방어; 유효한 입력에 대한 동작 변화 없음):
+  - **`a16z-speedrun-talent` 어댑터**가 이제 `buildEndpoint`에서 `api:` / `a16z-speedrun-talent:` 오버라이드를 재검증하며(HTTPS + 정확한 호스트 `speedrun-talent-network.com`), 검증에 실패하면 정규 피드로 폴백합니다 — `cryptocurrencyjobs` 어댑터와의 패리티로, 호스트가 다른 값이 fetch 슬롯에 도달하는 일이 없습니다(이전에는 fetch 시점의 `assertSpeedrunUrl` 가드에만 의존했습니다). 정확 호스트 검사는 이제 가드와 어댑터가 공유하는 단일 export `SPEEDRUN_TALENT_HOST_RE`로 통합되었습니다.
+  - **`cryptocurrencyjobs` 파서** — `cleanUrl`이 이제 `assertCryptocurrencyJobsUrl` 및 어댑터 오버라이드와 동일한 정확 일치 호스트 가드를 사용합니다(이전에는 서브도메인을 허용하는 `endsWith`였습니다). 파서는 SSRF 가드보다 더 관대해질 수 없습니다: `sub.cryptocurrencyjobs.co` 아이템 링크는 폐기됩니다.
+  - +2 테스트 → 스위트 **2135**.
+
 ## [1.131.0] — 2026-07-31
 
 ### 추가

@@ -11,6 +11,14 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.131.1] — 2026-07-31
+
+### Corrigé
+- **Cohérence de l'épinglage d'hôte des adaptateurs sur les deux sources de v1.130.0** (suites de revue de code, défense en profondeur ; aucun changement de comportement pour les entrées valides) :
+  - **L'adaptateur `a16z-speedrun-talent`** revalide désormais la surcharge `api:` / `a16z-speedrun-talent:` au niveau de `buildEndpoint` (HTTPS + hôte exact `speedrun-talent-network.com`) et se replie sur le flux canonique en cas d'échec — parité avec l'adaptateur `cryptocurrencyjobs`, de sorte qu'une valeur hors hôte n'atteint jamais l'emplacement de récupération (auparavant, cela reposait uniquement sur la garde `assertSpeedrunUrl` au moment de la récupération). Le contrôle d'hôte exact est désormais une unique regex exportée `SPEEDRUN_TALENT_HOST_RE`, partagée par la garde et l'adaptateur.
+  - **Le parseur `cryptocurrencyjobs`** — `cleanUrl` utilise désormais la même garde d'hôte à correspondance exacte que `assertCryptocurrencyJobsUrl` et la surcharge de l'adaptateur (c'était `endsWith`, qui acceptait les sous-domaines). Le parseur n'est jamais plus permissif que la garde SSRF : un lien d'offre `sub.cryptocurrencyjobs.co` est désormais écarté.
+  - +2 tests → suite **2135**.
+
 ## [1.131.0] — 2026-07-31
 
 ### Ajouté

@@ -3,8 +3,11 @@
  *
  * Board-wide, zero-auth JSON aggregator — matches ONLY on
  * `provider: a16z-speedrun-talent`. Endpoint is the fixed public feed,
- * overridable via `api:` / `a16z-speedrun-talent:`. The source-level
- * assertSpeedrunUrl is the hard SSRF guard at fetch time.
+ * overridable via `api:` / `a16z-speedrun-talent:` (host-pinned to
+ * speedrun-talent-network.com) for testing or a mirror. The source-level
+ * assertSpeedrunUrl is the hard SSRF guard at fetch time; pinning the override
+ * here too keeps an off-host value out of the fetch slot entirely (parity with
+ * the cryptocurrencyjobs adapter).
  *
  * Example portals.yml entry:
  *
@@ -13,7 +16,7 @@
  *       provider: a16z-speedrun-talent
  *       enabled: true
  */
-import { fetchSpeedrunTalent, FEED_URL } from '../../sources/a16z-speedrun-talent.mjs';
+import { fetchSpeedrunTalent, FEED_URL, SPEEDRUN_TALENT_HOST_RE } from '../../sources/a16z-speedrun-talent.mjs';
 
 export const a16zSpeedrunTalentAdapter = {
   id: 'a16z-speedrun-talent',
@@ -22,7 +25,14 @@ export const a16zSpeedrunTalentAdapter = {
     return company.provider === 'a16z-speedrun-talent';
   },
   buildEndpoint(company) {
-    return company['a16z-speedrun-talent'] || company.api || FEED_URL;
+    const override = company['a16z-speedrun-talent'] || company.api;
+    if (override) {
+      try {
+        const u = new URL(override);
+        if (u.protocol === 'https:' && SPEEDRUN_TALENT_HOST_RE.test(u.hostname)) return override;
+      } catch { /* fall through to the canonical feed */ }
+    }
+    return FEED_URL;
   },
   fetch: fetchSpeedrunTalent,
 };

@@ -258,3 +258,14 @@ test('adapter: matches only provider=a16z-speedrun-talent; buildEndpoint default
   assert.equal(a16zSpeedrunTalentAdapter.buildEndpoint({ 'a16z-speedrun-talent': custom }), custom);
   assert.equal(a16zSpeedrunTalentAdapter.buildEndpoint({ api: custom }), custom);
 });
+
+test('adapter: buildEndpoint re-validates the override host — off-host/non-https/garbage → canonical feed', () => {
+  // Parity with the cryptocurrencyjobs adapter: an off-host or non-HTTPS
+  // override never reaches the fetch slot; it falls back to FEED_URL rather
+  // than deferring the rejection to the fetch-time assertSpeedrunUrl guard.
+  const be = (c) => a16zSpeedrunTalentAdapter.buildEndpoint(c);
+  assert.equal(be({ api: 'https://evil.example.com/api/v1/jobs' }), FEED_URL, 'off-host → feed');
+  assert.equal(be({ 'a16z-speedrun-talent': 'https://sub.speedrun-talent-network.com/x' }), FEED_URL, 'subdomain → feed (exact host only)');
+  assert.equal(be({ api: 'http://speedrun-talent-network.com/api/v1/jobs' }), FEED_URL, 'non-https → feed');
+  assert.equal(be({ api: 'not a url' }), FEED_URL, 'garbage → feed');
+});
