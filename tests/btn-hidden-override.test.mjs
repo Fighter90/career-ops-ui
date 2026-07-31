@@ -13,10 +13,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { loadAppCss } from './helpers/css.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const CSS = readFileSync(resolve(ROOT, 'public', 'css', 'app.css'), 'utf8');
+const CSS = loadAppCss();
 const SCAN = readFileSync(resolve(ROOT, 'public', 'js', 'views', 'scan.js'), 'utf8');
 
 test('app.css carries a .btn[hidden] { display: none } override', () => {

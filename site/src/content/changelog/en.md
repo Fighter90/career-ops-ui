@@ -8,6 +8,14 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.131.2] — 2026-07-31
+
+### Changed
+- **`app.css` split into three ordered stylesheets** (file-size-contract debt — the single file had grown to ~1990 LOC, well past the 800-LOC hard target). It is now `app.css` (~672 — a11y, design tokens/theme, sidebar, main, buttons, content-shell), **`components.css`** (~595 — cards, grids, paginator, badges, tables, forms, log/console, markdown, language switcher, chip filter, connection banner), and **`overlays.css`** (~737 — toast, notifications drawer, modal, misc/responsive, the `[dir="rtl"]` mirror, docs-fab, usage-hud), each within the hard limit.
+  - The cut is **contiguous and in-order**, so the cascade is **byte-for-byte identical** to the pre-split file; `index.html` loads the three as ordered `<link>`s. **No behavior, markup, or i18n change.**
+  - CSS-asserting tests now read the concatenation via a shared `tests/helpers/css.mjs::loadAppCss()` helper (agnostic to which physical file holds a rule). New `tests/css-modularization.test.mjs` locks the split (files exist · each ≤ 800 LOC · index.html link order) → suite **2138**. Verified in-browser: all three stylesheets parse and their rules apply (0 console errors).
+  - `scan.js` (~1254) and `config.js` (~1010) remain the outstanding file-size debts.
+
 ## [1.131.1] — 2026-07-31
 
 ### Fixed

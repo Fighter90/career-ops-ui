@@ -17,9 +17,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { loadAppCss } from './helpers/css.mjs';
 
 const __d = dirname(fileURLToPath(import.meta.url));
-const CSS = readFileSync(resolve(__d, '..', 'public', 'css', 'app.css'), 'utf8');
+const CSS = loadAppCss();
 // Collapse whitespace so selector/declaration matching is
 // formatting-agnostic (newlines vs spaces don't matter).
 const FLAT = CSS.replace(/\s+/g, ' ');

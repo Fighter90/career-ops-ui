@@ -1,0 +1,737 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ * overlays.css — split out of app.css (v1.131.2, file-size-contract debt).
+ * Loaded AFTER components.css in index.html, in original source order (cascade
+ * byte-for-byte identical). Holds: toast, notifications drawer, modal, misc +
+ * responsive/reduced-motion blocks, the [dir="rtl"] mirror, docs-fab widget,
+ * and the usage-hud widget.
+ * ───────────────────────────────────────────────────────────────────────── */
+/* ───────────────────────── toast ───────────────────────── */
+.toast {
+  position: fixed;
+  right: var(--space-5);
+  /* DES-1: clear the bottom-right docs FAB (60px + 24px offset) so a toast
+     never lands under the launcher and truncates. The FAB mirrors to the
+     left in RTL while the toast stays right, so this only ever adds a small
+     bottom gap there — harmless. */
+  bottom: calc(var(--space-5) + 60px + var(--space-3));
+  background: var(--hof);
+  color: white;
+  padding: 14px 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  font-weight: 500;
+  font-size: 14px;
+  z-index: 1000;
+  max-width: 360px;
+  /* v1.57.1 — detailed what/where/why error messages must wrap and stay
+     readable instead of being clipped to one line. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-height: 50vh;
+  overflow-y: auto;
+  animation: slide-in 200ms ease-out;
+}
+.toast.error { background: var(--rausch); }
+.toast.success { background: var(--kazan); }
+/* U-4 (v1.58.24) — collapsible technical detail inside the toast. The
+   human sentence stays at the top; the "(METHOD /path · HTTP NNN)"
+   postfix is tucked into <details> so it's reachable (BUG-006
+   invariant) without dominating the toast. */
+.toast .toast-msg { margin: 0; }
+.toast .toast-detail { margin-top: 6px; font-size: 12px; opacity: .9; }
+.toast .toast-detail > summary { cursor: pointer; -webkit-user-select: none; user-select: none; list-style: none; }
+.toast .toast-detail > summary::marker { content: ''; }
+.toast .toast-detail > summary::after { content: ' ▾'; opacity: .7; }
+.toast .toast-detail[open] > summary::after { content: ' ▴'; }
+.toast .toast-detail > code { display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; background: rgba(0,0,0,.15); padding: 4px 6px; border-radius: 4px; }
+
+/* U-8 (v1.58.28) — collapsible <details> wrapper around the generated
+   prompt on the 7 mode pages. Default closed so the page chrome and
+   the Copy / Run-live actions stay visible above the fold. */
+.prompt-block { margin: var(--space-3, 12px) 0; }
+.prompt-block > summary { cursor: pointer; -webkit-user-select: none; user-select: none; padding: 6px 8px; border-radius: 4px; background: var(--beach, #f7f7f7); font-weight: 600; }
+.prompt-block > summary:hover { filter: brightness(0.97); }
+.prompt-block[open] > summary { margin-bottom: 8px; }
+
+/* U-11 (v1.58.31) — header info chip used in the Tracker Legitimacy
+   column. Keyboard-reachable via tabIndex=0 + focus-visible ring;
+   role=img + aria-label carry the explanation text to screen readers. */
+.th-info { display: inline-block; margin-left: 2px; cursor: help; font-size: .85em; color: var(--foggy, #999); }
+.th-info:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 2px; border-radius: 2px; }
+
+/* U-12 (v1.58.32) — Help TOC filter input. The KO/JA placeholders
+   are 5-10% wider than EN; pin a min-width so they never get clipped
+   if the .help-toc card squeezes the input. 16ch sits comfortably
+   above all 8 locale placeholders. */
+.help-toc__filter { min-width: 16ch; }
+
+/* UX-D-K (v1.58.45) — scroll-spy current-section highlight in the
+   #/help TOC. As the user scrolls the help body, an IntersectionObserver
+   in help.js applies `.toc-current` to the link whose H2 is currently
+   in the reading band. Uses the brand color and a left-border so the
+   active item reads at a glance, including in dark mode. */
+/* UX-D-B (v1.58.48) — Dashboard global banner shown until the user
+   replaces the default "Acceptance Test" / template profile. Yellow
+   warning band at the top of the view so the user can't miss it
+   while every advisor output is still addressed to the fixture name. */
+.hero-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-3, 12px);
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: var(--space-4, 16px);
+  background: var(--paper, #fff);
+  border: 1px solid var(--slate, #ddd);
+}
+.hero-banner--warning {
+  background: #fff8e1;
+  border-color: #f0c674;
+  color: #5a4500;
+}
+.hero-banner__msg { margin: 0; font-size: 14px; flex: 1; }
+
+.help-toc a.toc-current {
+  color: var(--rausch, #ff385c);
+  font-weight: 600;
+  border-left: 3px solid var(--rausch, #ff385c);
+  padding-left: 8px;
+  margin-left: -11px; /* keeps the link-row geometry aligned */
+}
+
+/* U-15 (v1.58.33) — CV Save button dirty-state. When the editor has
+   unsaved changes, the button gets a `.btn-dirty` class which paints
+   a subtle ring + a "● " bullet prefix via :before so the user can
+   tell from across the page that something is unsaved. */
+.btn.btn-dirty { box-shadow: 0 0 0 3px var(--rausch-dark, #e31c5f); }
+.btn.btn-dirty::before { content: '● '; opacity: .9; }
+
+/* v1.58.34 — Notifications bell + right-slide drawer (closes U-13). */
+.notif-bell {
+  position: relative;
+  background: transparent;
+  border: 1px solid var(--slate, #ddd);
+  border-radius: 8px;
+  width: 36px; height: 36px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.notif-bell:hover { background: var(--beach, #f7f7f7); }
+.notif-bell:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 2px; }
+.notif-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  background: var(--rausch, #ff385c);
+  color: #fff;
+  min-width: 16px; height: 16px;
+  border-radius: 8px;
+  font-size: 10px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0 4px;
+}
+/* v1.58.35 — author `display:` on .notif-badge / .notif-drawer
+   overrode the UA `[hidden] { display: none }` (same specificity,
+   author wins) so the `hidden` attribute did nothing — the badge
+   showed `0` constantly and the drawer never hid. Explicit overrides
+   restore the expected hiding behaviour. */
+.notif-badge[hidden] { display: none; }
+.notif-drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(380px, 92vw);
+  background: var(--paper, #fff);
+  border-left: 1px solid var(--slate, #ddd);
+  box-shadow: -8px 0 24px rgba(0,0,0,.1);
+  z-index: 9999;
+  display: flex; flex-direction: column;
+  animation: notif-slide-in 200ms ease-out;
+}
+/* v1.58.35 — explicit `[hidden]` override. The `.notif-drawer`
+   `display: flex` above shadowed the UA `[hidden] { display: none }`
+   rule (same author-level specificity, last rule wins), so the
+   drawer was VISIBLE on every page load even though the markup had
+   `hidden` set. Restore correct hide-by-attribute behaviour. */
+.notif-drawer[hidden] { display: none; }
+@keyframes notif-slide-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+.notif-drawer__head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--slate, #eee);
+}
+.notif-drawer__head h2 { margin: 0; font-size: 16px; }
+.notif-drawer__close {
+  background: transparent; border: none; font-size: 24px; cursor: pointer;
+  padding: 0; width: 32px; height: 32px; line-height: 1;
+}
+.notif-drawer__close:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 2px; border-radius: 4px; }
+
+/* UX-A12 (v1.58.60) — Clear all button (drawer head) + per-item ×
+   dismiss button. Clear-all sits between the title and the close ×.
+   Per-item × floats top-right inside each .notif-item without
+   disturbing the existing flex-column layout (absolute positioning). */
+.notif-drawer__clear-all {
+  background: transparent; border: 1px solid var(--slate, #ddd);
+  font-size: 12px; padding: 4px 10px; border-radius: 6px;
+  cursor: pointer; color: var(--foggy, #666);
+  margin-left: auto; margin-right: 8px;
+}
+.notif-drawer__clear-all:hover { background: var(--beach, #fafafa); color: var(--hof, #000); }
+.notif-drawer__clear-all[hidden] { display: none; }
+/* v1.98.0 — in-app bug reporter trigger, mirrors the clear-all chip. */
+.notif-drawer__report-bug {
+  background: transparent; border: 1px solid var(--slate, #ddd);
+  font-size: 12px; padding: 4px 10px; border-radius: 6px;
+  cursor: pointer; color: var(--foggy, #666);
+  margin-left: auto; margin-right: 8px; white-space: nowrap;
+}
+.notif-drawer__report-bug:hover { background: var(--beach, #fafafa); color: var(--hof, #000); }
+.notif-drawer__report-bug[hidden] { display: none; }
+.notif-item { position: relative; }
+.notif-item__dismiss {
+  position: absolute; top: 6px; right: 8px;
+  background: transparent; border: none;
+  font-size: 14px; line-height: 1;
+  width: 20px; height: 20px; padding: 0;
+  cursor: pointer; color: var(--foggy, #999);
+  opacity: 0.6;
+}
+.notif-item__dismiss:hover { opacity: 1; color: var(--hof, #000); }
+.notif-item__dismiss:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 1px; border-radius: 4px; opacity: 1; }
+
+/* UX-A9 (v1.58.62) — summary chip at the top of the API-keys tab.
+   Two pills (`Active: X` + `Keys: N / 5`) on a soft surface so the
+   user can see the OR-fallback resolution without scrolling through
+   5 separate provider sections.
+
+   v1.59.2 — dropped `position: sticky` + `z-index: 5`. The sticky
+   chip created a new stacking context that overlapped the tab labels
+   and the page header on scroll (user-reported). The chip is at the
+   top of a short panel already; scroll behaviour brings the user
+   back to it naturally. */
+.api-keys__summary {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  background: var(--surface-elev1, #f3f4f6);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin: 0 0 14px;
+  font-size: 0.92em;
+  line-height: 1.4;
+}
+.api-keys__summary[hidden] { display: none; }
+.api-keys__active { font-weight: 600; }
+.api-keys__count { color: var(--foggy, #666); }
+.notif-drawer__list { list-style: none; margin: 0; padding: 8px; overflow-y: auto; flex: 1; }
+.notif-drawer__empty { margin: 24px; color: var(--foggy, #999); font-size: 13px; text-align: center; }
+.notif-item {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border-left: 3px solid var(--slate, #ddd);
+  margin-bottom: 8px;
+  background: var(--beach, #fafafa);
+}
+.notif-item--error   { border-left-color: var(--rausch, #ff385c); }
+.notif-item--success { border-left-color: var(--kazan, #00a699); }
+.notif-item > time { font-size: 11px; color: var(--foggy, #999); }
+.notif-item__msg { margin: 0; font-size: 13px; }
+.notif-item__detail { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--foggy, #999); background: transparent; }
+
+/* U-9 (v1.58.29) — Pipeline counter ↔ filter row. Above 720 px the
+   flex gap-3 layout already works; at narrower widths the filter
+   input is cramped, so stack vertically and stretch it full-width. */
+@media (max-width: 720px) {
+  .pipeline-controls { flex-direction: column; align-items: stretch !important; }
+  .pipeline-controls > #pipe-filter { max-width: none !important; width: 100%; }
+}
+@keyframes slide-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ───────────────────────── modal ───────────────────────── */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal[hidden] { display: none; }
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(2px);
+}
+.modal-card {
+  position: relative;
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  width: min(900px, 92vw);
+  max-height: 88vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+.modal-header {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--slate);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-header h3 { margin: 0; font-size: 18px; font-weight: 700; }
+.modal-close { font-size: 28px; color: var(--foggy); padding: 0 6px; line-height: 1; }
+.modal-close:hover { color: var(--hof); }
+.modal-body {
+  padding: var(--space-5);
+  overflow-y: auto;
+}
+
+/* v1.44.0 — confirm() dialog message (was an inline style; promoted to
+   a token-based rule per the hand-written-CSS convention). */
+.modal-msg {
+  margin: 0 0 var(--space-4);
+  line-height: 1.5;
+}
+
+/* v1.46.0 — scan SSE error banner (#24); inline style promoted to a
+   token-based rule, same convention as .modal-msg above. */
+.scan-error-banner {
+  background: var(--rose, #fdeaea);
+  border-color: var(--rose-border, #e0a0a0);
+  color: var(--rose-ink, #8a2b2b);
+  margin-bottom: var(--space-3);
+}
+.scan-error-banner .btn { margin-left: var(--space-3); }
+
+/* v1.63.0/1.63.1 — progress bar + caption shown while a scan is in flight. */
+.scan-progress-wrap { margin: var(--space-2, 8px) 0; }
+.scan-progress-wrap[hidden] { display: none; }
+.scan-progress-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rausch);
+  margin-bottom: 4px;
+}
+.scan-progress {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  border-radius: var(--radius);
+  background: var(--line);
+  overflow: hidden;
+}
+.scan-progress__bar {
+  position: absolute;
+  top: 0;
+  left: -40%;
+  height: 100%;
+  width: 40%;
+  border-radius: var(--radius);
+  background: var(--rausch);
+  animation: scan-indeterminate 1.1s ease-in-out infinite;
+}
+/* once a progress event lands, switch to a determinate fill (width set inline) */
+.scan-progress.is-determinate .scan-progress__bar {
+  animation: none;
+  left: 0;
+  transition: width 0.3s ease;
+}
+@keyframes scan-indeterminate {
+  0%   { left: -40%; }
+  100% { left: 100%; }
+}
+/* explicit override — UA [hidden] is a no-op once an author display: lands */
+.scan-progress[hidden] { display: none; }
+
+/* ───────────────────────── misc ───────────────────────── */
+.loading { padding: var(--space-7); text-align: center; color: var(--foggy); }
+.empty {
+  padding: var(--space-7);
+  text-align: center;
+  color: var(--foggy);
+  border: 2px dashed var(--slate);
+  border-radius: var(--radius-lg);
+}
+
+.flex { display: flex; align-items: center; gap: var(--space-3); }
+.flex-between { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); }
+
+/* v1.69.1 — #/health check cards. A long check name/value (e.g. "PROFILE
+   CUSTOMIZED · still on template …", "PLAYWRIGHT (PARENT NODE_MODULES)")
+   used to collide with the right-hand Fix button + status badge and spill
+   out of the card, because flex children default to min-width:auto and
+   never shrink. Let the left text shrink + wrap, keep the action group
+   intact, and wrap it below on narrow cards. */
+.health-check-row { flex-wrap: wrap; align-items: flex-start; gap: var(--space-2) var(--space-3); }
+.health-check-row > :first-child { min-width: 0; flex: 1 1 140px; }
+.health-check-row > :last-child { flex: 0 0 auto; margin-left: auto; }
+.health-check-row .metric-label { overflow-wrap: anywhere; }
+.health-fix { white-space: nowrap; }
+.gap-1 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-4); }
+.mt-3 { margin-top: var(--space-4); }
+.mt-5 { margin-top: var(--space-6); }
+.mb-3 { margin-bottom: var(--space-4); }
+
+.tag {
+  display: inline-block;
+  background: var(--beach);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  font-size: 12px;
+  color: var(--foggy);
+  margin-right: 4px;
+}
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); transition: transform var(--transition); }
+  .main { margin-left: 0; }
+  .topbar { padding: 0 var(--space-4); }
+  .content { padding: var(--space-5) var(--space-4); }
+  .page-title { font-size: 24px; }
+}
+
+/* Tab buttons (used on /#/config). Inline-styled fields would balloon
+   the view file; isolate the visual treatment here. */
+.tab-btn {
+  appearance: none;
+  border: 1px solid var(--slate);
+  background: var(--paper);
+  color: var(--hof);
+  border-radius: 8px;
+  /* WCAG 2.5.5 (v1.20.0): config / Modes / Profile tab buttons get a
+     ≥ 44 px hit area. Previous 8px+16px landed around 36 px. */
+  padding: 10px 18px;
+  min-height: 44px;
+  box-sizing: border-box;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+.tab-btn:hover { background: var(--beach); }
+.tab-btn.is-active {
+  background: var(--rausch);
+  border-color: var(--rausch);
+  color: #fff;
+}
+
+/* NEW-D2-motion (v1.59.6) — respect the OS-level reduced-motion
+   preference. WCAG 2.3.3 (AAA) recommends suppressing animations
+   above 5 Hz; we go further and reduce every transition / animation
+   to a no-op when the user opts in. scroll-behavior is auto so the
+   help TOC click-to-scroll lands instantly (consistent with how
+   reduced-motion users expect navigation to behave). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* scan loading stripe: no slide — show a calm full bar instead */
+  .scan-progress__bar { left: 0; width: 100%; opacity: 0.65; }
+}
+
+/* ───────────────────────────────────────────────────────────────────────
+   I18N-EXPAND (v1.70.0) — Right-to-left support (Arabic).
+
+   i18n.js sets <html dir="rtl"> for RTL locales. The dir attribute alone
+   gives correct text alignment, bidi reordering, and list/marker sides for
+   prose. This block mirrors the physical-direction chrome that the layout
+   assumes is on the left/right so the whole shell flips coherently. Scoped
+   under [dir="rtl"] so LTR locales are byte-for-byte unaffected.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* Sidebar pinned to the right; its divider moves to the left edge. */
+[dir="rtl"] .sidebar {
+  left: auto;
+  right: 0;
+  border-right: 0;
+  border-left: 1px solid var(--slate);
+}
+/* Main content clears the sidebar on the right instead of the left. */
+[dir="rtl"] .main {
+  margin-left: 0;
+  margin-right: var(--sidebar-w);
+}
+/* Sidebar-toggle floats top-left in RTL. */
+[dir="rtl"] .sidebar-toggle { left: auto; right: 8px; }
+
+/* Notifications drawer slides in from / docks to the left. */
+[dir="rtl"] .notif-drawer {
+  right: auto;
+  left: 0;
+  border-left: 0;
+  border-right: 1px solid var(--slate, #ddd);
+}
+[dir="rtl"] .notif-item,
+[dir="rtl"] .notif-item--error,
+[dir="rtl"] .notif-item--success {
+  border-left: 0;
+}
+[dir="rtl"] .notif-item { border-right: 3px solid var(--slate, #ddd); }
+[dir="rtl"] .notif-item--error   { border-right-color: var(--rausch, #ff385c); }
+[dir="rtl"] .notif-item--success { border-right-color: var(--kazan, #00a699); }
+[dir="rtl"] .notif-badge { right: auto; left: -4px; }
+[dir="rtl"] .notif-drawer__close { right: auto; left: 8px; }
+
+/* Markdown content: tables, blockquotes, and prose align to the right. */
+[dir="rtl"] .md th,
+[dir="rtl"] .md td { text-align: right; }
+[dir="rtl"] .md blockquote {
+  border-left: 0;
+  border-right: 3px solid var(--rausch);
+  padding-left: 0;
+  padding-right: var(--space-4);
+}
+
+/* Mirror the small physical margins used as inline spacing. */
+[dir="rtl"] .th-info { margin-left: 0; margin-right: 2px; }
+[dir="rtl"] .health-check-row > :last-child { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .scan-error-banner .btn { margin-left: 0; margin-right: var(--space-3); }
+
+/* Off-canvas sidebar slides from the right on mobile. */
+@media (max-width: 768px) {
+  [dir="rtl"] .sidebar { transform: translateX(100%); }
+  [dir="rtl"] body.sidebar-open .sidebar { transform: translateX(0); }
+  [dir="rtl"] .main { margin-left: 0 !important; margin-right: 0 !important; }
+}
+@media (max-width: 600px) {
+  [dir="rtl"] .sidebar { transform: translateX(100%); }
+  [dir="rtl"] .main { margin-right: 0; }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Ask-the-docs floating assistant (docs-fab.js, v1.113.0)
+   A gradient chat launcher pinned bottom-right (bottom-left in RTL) on every
+   page, opening a compact grounded-help chat panel. Self-contained cool-gradient
+   accent (deliberately distinct from the coral brand, per the requested look);
+   theme-aware surfaces via light/dark blocks. CSP-safe (no inline handlers).
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --fab-grad: linear-gradient(135deg, #6aa8ff 0%, #a487e6 100%);
+  --fab-glow: 0 6px 26px rgba(112, 140, 240, .50);
+  --fab-accent: #2f9fb8;               /* teal chip accent (AA on light) */
+  --fab-panel-bg: #ffffff;
+  --fab-panel-head: linear-gradient(180deg, rgba(106,168,255,.10), rgba(164,135,230,.06));
+  --fab-bubble-bot: #f1f3f8;
+  --fab-border: rgba(0, 0, 0, .10);
+}
+:root[data-theme="dark"] {
+  --fab-accent: #6fd2e6;
+  --fab-panel-bg: #1b1f27;
+  --fab-panel-head: linear-gradient(180deg, rgba(106,168,255,.16), rgba(164,135,230,.10));
+  --fab-bubble-bot: #262b34;
+  --fab-border: rgba(255, 255, 255, .10);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fab-accent: #6fd2e6;
+    --fab-panel-bg: #1b1f27;
+    --fab-panel-head: linear-gradient(180deg, rgba(106,168,255,.16), rgba(164,135,230,.10));
+    --fab-bubble-bot: #262b34;
+    --fab-border: rgba(255, 255, 255, .10);
+  }
+}
+
+.docs-fab {
+  position: fixed; right: 24px; bottom: 24px; z-index: 1150;
+  width: 60px; height: 60px; border: none; border-radius: 50%;
+  background: var(--fab-grad); color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--fab-glow);
+  transition: transform var(--transition, .18s ease), box-shadow var(--transition, .18s ease), filter var(--transition, .18s ease);
+}
+.docs-fab:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 10px 32px rgba(112, 140, 240, .62); }
+.docs-fab:active { transform: translateY(0) scale(.98); }
+.docs-fab:focus-visible { outline: 3px solid var(--fab-accent); outline-offset: 3px; }
+
+.docs-fab__panel {
+  position: fixed; right: 24px; bottom: 96px; z-index: 1150;
+  width: 380px; max-width: calc(100vw - 40px);
+  height: 560px; max-height: calc(100vh - 130px);
+  display: flex; flex-direction: column;
+  background: var(--fab-panel-bg); color: var(--hof, #222);
+  border: 1px solid var(--fab-border); border-radius: 20px;
+  box-shadow: var(--shadow-lg, 0 8px 28px rgba(0,0,0,.18));
+  overflow: hidden;
+  animation: docs-fab-in .18s ease;
+}
+.docs-fab__panel[hidden] { display: none; }   /* beat the UA/author display cascade */
+@keyframes docs-fab-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.docs-fab__head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; background: var(--fab-panel-head);
+  border-bottom: 1px solid var(--fab-border);
+}
+.docs-fab__avatar {
+  width: 44px; height: 44px; border-radius: 50%; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--fab-grad); color: #fff;
+  box-shadow: 0 2px 8px rgba(112, 140, 240, .4);
+}
+.docs-fab__head-meta { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.docs-fab__title { font-weight: 700; font-size: 15px; line-height: 1.2; }
+.docs-fab__status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--foggy, #888); }
+.docs-fab__dot { width: 8px; height: 8px; border-radius: 50%; background: #35c759; box-shadow: 0 0 0 3px rgba(53, 199, 89, .18); }
+.docs-fab__close {
+  flex: none; width: 30px; height: 30px; border: none; border-radius: 8px;
+  background: transparent; color: var(--foggy, #888); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition, .18s ease), color var(--transition, .18s ease);
+}
+.docs-fab__close:hover { background: var(--fab-bubble-bot); color: var(--hof, #222); }
+.docs-fab__close:focus-visible { outline: 2px solid var(--fab-accent); outline-offset: 2px; }
+
+.docs-fab__log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.docs-fab__bubble { max-width: 88%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
+.docs-fab__bubble--bot { align-self: flex-start; background: var(--fab-bubble-bot); border-bottom-left-radius: 5px; }
+.docs-fab__bubble--me { align-self: flex-end; background: var(--fab-grad); color: #fff; border-bottom-right-radius: 5px; }
+.docs-fab__bubble .md :first-child { margin-top: 0; }
+.docs-fab__bubble .md :last-child { margin-bottom: 0; }
+.docs-fab__src { margin-top: 8px; font-size: 11px; color: var(--foggy, #888); }
+
+.docs-fab__chips { display: flex; flex-wrap: wrap; gap: 8px; align-self: flex-start; }
+.docs-fab__chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 14px; border-radius: 999px; cursor: pointer;
+  background: transparent; color: var(--fab-accent);
+  border: 1px solid color-mix(in srgb, var(--fab-accent) 45%, transparent);
+  font-size: 13px; font-weight: 500;
+  transition: background var(--transition, .18s ease), border-color var(--transition, .18s ease), transform var(--transition, .18s ease);
+}
+.docs-fab__chip:hover { background: color-mix(in srgb, var(--fab-accent) 12%, transparent); transform: translateY(-1px); }
+.docs-fab__chip:focus-visible { outline: 2px solid var(--fab-accent); outline-offset: 2px; }
+.docs-fab__chip-ic { font-size: 14px; line-height: 1; }
+
+.docs-fab__bar { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-top: 1px solid var(--fab-border); }
+.docs-fab__input { flex: 1; border-radius: 999px; }
+.docs-fab__send {
+  flex: none; width: 44px; height: 44px; border: none; border-radius: 14px;
+  background: var(--fab-grad); color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 12px rgba(112, 140, 240, .4);
+  transition: transform var(--transition, .18s ease), filter var(--transition, .18s ease);
+}
+.docs-fab__send:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.docs-fab__send:disabled { opacity: .55; cursor: default; transform: none; }
+.docs-fab__send:focus-visible { outline: 2px solid var(--fab-accent); outline-offset: 2px; }
+
+/* RTL — mirror to the bottom-left corner. */
+[dir="rtl"] .docs-fab,
+[dir="rtl"] .docs-fab__panel { right: auto; left: 24px; }
+[dir="rtl"] .docs-fab__bubble--bot { border-bottom-left-radius: 14px; border-bottom-right-radius: 5px; }
+[dir="rtl"] .docs-fab__bubble--me { border-bottom-right-radius: 14px; border-bottom-left-radius: 5px; }
+
+@media (max-width: 480px) {
+  .docs-fab__panel { right: 12px; left: 12px; width: auto; bottom: 88px; height: auto; max-height: calc(100vh - 120px); }
+  [dir="rtl"] .docs-fab__panel { right: 12px; left: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .docs-fab, .docs-fab__send, .docs-fab__chip { transition: none; }
+  .docs-fab__panel { animation: none; }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   AI usage & cost HUD (usage-hud.js, v1.114.0)
+   A compact "USAGE" meter pinned bottom-left (bottom-right in RTL) on every
+   page: gauge header + per-window token bars (24h/7d/30d) + an est-cost footer.
+   Collapsible; theme-aware; CSP-safe. Opposite corner from the docs launcher.
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --hud-bg: #ffffff;
+  --hud-border: rgba(0, 0, 0, .10);
+  --hud-track: #eceff4;
+  --hud-bar: #34c759;
+}
+:root[data-theme="dark"] { --hud-bg: #1b1f27; --hud-border: rgba(255,255,255,.10); --hud-track: #2b313b; --hud-bar: #37d15f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --hud-bg: #1b1f27; --hud-border: rgba(255,255,255,.10); --hud-track: #2b313b; --hud-bar: #37d15f; }
+}
+
+/* Pinned to the BOTTOM of the sidebar column (bottom-right in RTL) — full
+   sidebar width, matching the sidebar surface, sitting just on top of it
+   (z above the sidebar's 10). It never covers the menu: usage-hud.js publishes
+   its height as the `--usage-hud-pad` custom property and the rule below adds
+   it to the sidebar's own padding (no inline-style clobbering — v1.116 review
+   finding), so the nav + version footer always scroll clear above it. */
+.sidebar { padding-bottom: calc(var(--space-5) + var(--usage-hud-pad, 0px)); }
+.usage-hud {
+  position: fixed; left: 0; bottom: 0; z-index: 11;
+  width: var(--sidebar-w); max-width: 100vw;
+  background: var(--paper); color: var(--hof, #222);
+  border-top: 1px solid var(--slate); border-right: 1px solid var(--slate);
+  padding: 10px var(--space-3, 12px); font-size: 13px;
+}
+.usage-hud__head {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  background: none; border: none; padding: 2px 0 8px; cursor: pointer;
+  color: var(--foggy, #888); font: inherit;
+}
+.usage-hud__head:focus-visible { outline: 2px solid var(--hud-bar); outline-offset: 2px; border-radius: 6px; }
+.usage-hud__ic { display: inline-flex; color: var(--foggy, #888); }
+.usage-hud__title { text-transform: uppercase; letter-spacing: .08em; font-size: 11px; font-weight: 700; flex: 1; text-align: left; }
+.usage-hud__chev { transition: transform var(--transition, .18s ease); font-size: 12px; }
+.usage-hud--collapsed .usage-hud__chev { transform: rotate(-90deg); }
+.usage-hud--collapsed { padding-bottom: 10px; }
+.usage-hud__bodywrap[hidden] { display: none; }
+
+.usage-hud__meter { margin: 0 0 10px; }
+.usage-hud__meter:last-child { margin-bottom: 0; }
+.usage-hud__meterhead { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 5px; }
+.usage-hud__win { font-weight: 600; font-size: 12px; color: var(--hof, #333); }
+.usage-hud__val { font-size: 12px; color: var(--foggy, #888); font-variant-numeric: tabular-nums; }
+.usage-hud__bar { display: block; height: 6px; border-radius: 999px; background: var(--hud-track); overflow: hidden; }
+.usage-hud__barfill { display: block; height: 100%; border-radius: 999px; background: var(--hud-bar); transition: width var(--transition, .3s ease); }
+.usage-hud__empty { font-size: 12px; color: var(--foggy, #888); line-height: 1.5; }
+.usage-hud__footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--hud-border); font-size: 11px; color: var(--foggy, #888); }
+.usage-hud__footcost { font-weight: 700; color: var(--hof, #333); font-variant-numeric: tabular-nums; }
+
+[dir="rtl"] .usage-hud { left: auto; right: 0; border-right: none; border-left: 1px solid var(--slate); }
+[dir="rtl"] .usage-hud__title { text-align: right; }
+
+/* Hidden on mobile — a pinned corner card would cover scarce screen space;
+   the full usage view lives at #/usage. */
+@media (max-width: 900px) { .usage-hud { display: none; } }
+@media (prefers-reduced-motion: reduce) { .usage-hud__barfill, .usage-hud__chev { transition: none; } }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   v1.115.0 — conservative design polish (coral brand kept)
+   Adds cohesion + tactility to the shared components WITHOUT restructuring:
+   dashboard metric cards now feel interactive like the QA tiles; content cards
+   lift a hair on hover; primary/dark/danger buttons gain a resting shadow +
+   gentle hover lift for depth; big numbers align via tabular-nums; and the
+   focus ring gets a soft coral halo so keyboard focus reads as intentional.
+   All motion respects prefers-reduced-motion.
+   ────────────────────────────────────────────────────────────────────────── */
+.metric-card { transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition); }
+.metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--rausch); }
+.metric-value { font-variant-numeric: tabular-nums; }
+
+.card:hover { transform: translateY(-1px); }
+
+.btn-primary, .btn-dark, .btn-danger { box-shadow: 0 1px 2px rgba(0, 0, 0, .10); }
+.btn-primary:hover, .btn-dark:hover, .btn-danger:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, .16); }
+
+/* Soft coral halo behind the crisp 2px keyboard ring on interactive controls
+   ONLY — deliberately NOT a global `*:focus-visible` (that re-paints the
+   spurious ring on managed-focus route <h1>s; the v1.58.x lesson). Inputs
+   already carry their own halo at higher specificity. */
+.btn:focus-visible, .qa-tile:focus-visible, .nav-item:focus-visible,
+a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .12); }
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-card, .card, .btn-primary, .btn-dark, .btn-danger { transition: none; }
+  .metric-card:hover, .card:hover, .btn-primary:hover, .btn-dark:hover, .btn-danger:hover { transform: none; }
+}

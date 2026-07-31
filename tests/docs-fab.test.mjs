@@ -13,6 +13,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { loadAssembledDict } from './helpers/i18n-vm.mjs';
+import { loadAppCss } from './helpers/css.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const read = (...p) => readFileSync(resolve(__dirname, '..', ...p), 'utf8');
@@ -62,11 +63,11 @@ test('the 5 fab.* keys + docs.err exist in all 16 locales (assembled per-key map
 });
 
 test('docs-fab panel respects [hidden] with an explicit display:none override (v1.58.35 lesson)', () => {
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.docs-fab__panel\[hidden\]\s*\{\s*display:\s*none/);
 });
 
 test('docs-fab launcher mirrors to bottom-left in RTL', () => {
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\[dir="rtl"\][^{]*\.docs-fab[^{]*\{[^}]*left:\s*24px/);
 });

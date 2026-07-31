@@ -14,11 +14,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { loadAppCss } from './helpers/css.mjs';
 
 const __d = dirname(fileURLToPath(import.meta.url));
 const HTML = readFileSync(resolve(__d, '..', 'public', 'index.html'), 'utf8');
 const APP = readFileSync(resolve(__d, '..', 'public', 'js', 'app.js'), 'utf8');
-const CSS = readFileSync(resolve(__d, '..', 'public', 'css', 'app.css'), 'utf8');
+const CSS = loadAppCss();
 const CSS_FLAT = CSS.replace(/\s+/g, ' ');
 
 test('index.html: a .kbd-shortcut badge lives in the search pill', () => {

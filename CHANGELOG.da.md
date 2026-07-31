@@ -8,6 +8,13 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.131.2] — 2026-07-31
+
+### Ændret
+- **`app.css` opdelt i tre ordnede stylesheets** (file-size-contract-gæld — den enkelte fil var vokset til ca. 1990 LOC, langt over den hårde grænse på 800 LOC). Den er nu `app.css` (~672 — a11y, design-tokens/tema, sidebar, main, knapper, content-shell), **`components.css`** (~595 — kort, grids, paginator, badges, tabeller, formularer, log/konsol, markdown, sprogskifter, chip-filter, forbindelsesbanner) og **`overlays.css`** (~737 — toast, notifikationsskuffe, modal, diverse/responsivt, `[dir="rtl"]`-spejlingen, docs-fab, usage-hud), hver inden for den hårde grænse.
+  - Snittet er **sammenhængende og i rækkefølge**, så cascaden er **byte-for-byte identisk** med filen før opdelingen; `index.html` indlæser de tre som ordnede `<link>`s. **Ingen ændring af adfærd, markup eller i18n.**
+  - CSS-testene læser nu konkatenationen via en delt hjælper, `tests/helpers/css.mjs::loadAppCss()`. Den nye `tests/css-modularization.test.mjs` fastlåser opdelingen (filerne findes · hver ≤ 800 LOC · `index.html`-linkrækkefølge) → suite **2138**. Verificeret i browseren: alle tre stylesheets parses, og deres regler anvendes.
+
 ## [1.131.1] — 2026-07-31
 
 ### Rettet

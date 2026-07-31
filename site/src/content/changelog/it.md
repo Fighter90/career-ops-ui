@@ -2,6 +2,13 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.131.2] — 2026-07-31
+
+### Modificato
+- **`app.css` diviso in tre fogli di stile ordinati** (debito da contratto sulla dimensione dei file — il singolo file era cresciuto a ~1990 LOC, ben oltre il limite rigido di 800 LOC). Ora è `app.css` (~672 — accessibilità, token di design/tema, sidebar, main, pulsanti, content-shell), **`components.css`** (~595 — card, griglie, paginatore, badge, tabelle, form, log/console, markdown, selettore lingua, filtro a chip, banner di connessione) e **`overlays.css`** (~737 — toast, cassetto notifiche, modale, varie/responsive, lo specchio `[dir="rtl"]`, docs-fab, usage-hud), ciascuno entro il limite rigido.
+  - Il taglio è **contiguo e in ordine**, quindi la cascata è **identica byte per byte** al file pre-divisione; `index.html` carica i tre come `<link>` ordinati. **Nessuna modifica di comportamento, markup o i18n.**
+  - I test che verificano il CSS ora leggono la concatenazione tramite un helper condiviso `tests/helpers/css.mjs::loadAppCss()`. Il nuovo `tests/css-modularization.test.mjs` blocca la divisione (i file esistono · ciascuno ≤ 800 LOC · ordine dei link in index.html) → suite **2138**. Verificato nel browser: tutti e tre i fogli di stile vengono analizzati e le loro regole vengono applicate.
+
 ## [1.131.1] — 2026-07-31
 
 ### Corretto

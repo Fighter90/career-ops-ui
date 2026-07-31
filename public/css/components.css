@@ -1,0 +1,595 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ * components.css — split out of app.css (v1.131.2, file-size-contract debt).
+ * Loaded AFTER app.css in index.html, in original source order, so the cascade
+ * is byte-for-byte identical to the pre-split single file. Holds: cards, grids,
+ * paginator, badges, tables, forms, log/console, markdown, language switcher,
+ * chip filter, connection banner.
+ * ───────────────────────────────────────────────────────────────────────── */
+/* ───────────────────────── cards ───────────────────────── */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--slate);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.card:hover { box-shadow: var(--shadow-md); }
+
+.card-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+/* v1.55.5 — UX-3: dashboard hero. The two P0 CTAs dominate; a single
+   focal recent-activity hint sits under them; status buckets are
+   demoted to quiet chips so they don't compete for attention. */
+.dash-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 24px;
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255,56,92,.06) 0%, rgba(255,56,92,.02) 100%);
+}
+.dash-hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-hero {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 14px 22px;
+  border-radius: 12px;
+}
+.dash-hero-focal {
+  font-size: 14px;
+  color: var(--hof);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.dash-hero-focal:hover { text-decoration: underline; }
+.dash-hero-focal--empty { color: var(--foggy); }
+.dash-hero-focal-label { font-weight: 600; }
+.dash-hero-focal-title { color: var(--foggy); }
+.dash-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 12px;
+  border-radius: 999px;
+  background: var(--bg-subtle, rgba(0,0,0,.04));
+  color: var(--foggy);
+}
+
+/* v1.55.6 — UX-4: #/scan "Advanced filters" disclosure. Quiet,
+   discoverable summary; body indents under it when expanded. */
+.scan-advanced { display: inline-block; }
+.scan-advanced > summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--rausch-text, var(--rausch));
+  -webkit-user-select: none;
+  user-select: none;
+  list-style: none;
+  padding: 6px 2px;
+}
+.scan-advanced > summary::-webkit-details-marker { display: none; }
+.scan-advanced > summary::before { content: '⚙ '; }
+.scan-advanced[open] > summary { font-weight: 600; }
+
+/* v1.131.0 — #/tracker CRM stage-tab strip (parent web/ `/pipeline` board port;
+   replaces the v1.55.8 funnel chip bar). Underline-active tabs across the full
+   canonical funnel — ALL + every stage the server sent, zero-count stages
+   included — each with a live whole-history count. */
+.tracker-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  border-bottom: 1px solid var(--slate);
+  margin-bottom: 12px;
+}
+.tracker-tab {
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--foggy);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  /* WCAG 2.5.5 — ≥ 44 px hit area, matching the .tab-btn treatment. */
+  min-height: 44px;
+  padding: 9px 12px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
+}
+.tracker-tab:hover { color: var(--hof); }
+.tracker-tab.is-active {
+  color: var(--rausch);
+  border-bottom-color: var(--rausch);
+}
+.tracker-tab-n {
+  color: var(--foggy);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.tracker-tab.is-active .tracker-tab-n { color: var(--rausch); }
+
+/* v1.58.21 (U-1) — removed `.cv-breadcrumb` (was v1.56.0 UX-9 chip).
+   #/cv now uses the standard `.page-title` + `.page-subtitle` pair
+   like every other page; H1 stays as the single semantic heading. */
+
+/* v1.56.0 — UX-10: quiet, honest cost ballpark next to ⚡ Run live. */
+.cost-hint {
+  font-size: 12px;
+  color: var(--foggy);
+  margin: 8px 0 0;
+}
+.cost-hint[hidden] { display: none; }
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.metric-label {
+  color: var(--foggy);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-weight: 600;
+}
+.metric-value {
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: var(--hof);
+}
+.metric-sub { color: var(--foggy); font-size: 13px; }
+
+/* ───────────────────────── grids ───────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+@media (max-width: 900px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* UX-A14 (v1.59.0) — Mobile (≤ 420 px) pass. Targets phone-sized
+   viewports that the desktop-first layout otherwise pushes to a
+   horizontal scroll. Five specific issues from the audit baseline:
+   1. .card-row (4 dashboard metric cards) sits in a 4-up grid that
+      forces a 900+ px floor — collapse to 1-up below 420.
+   2. .dash-hero CTAs sat side-by-side; on a 360 px iPhone they wrap
+      mid-label. Stack vertically with full-width buttons.
+   3. .page-header puts H1+sub on the left and action buttons on the
+      right via flex-between; on phones the right side overflows.
+      Stack vertically; right-align buttons row.
+   4. .qa-grid minmax(220px, 1fr) leaves ~120 px gutter on phones;
+      tighten the floor to 160px.
+   5. .api-keys__summary chips wrap at 360 px — keep flex-wrap but
+      drop horizontal padding for breathing room. */
+@media (max-width: 420px) {
+  .card-row { grid-template-columns: 1fr; }
+  .dash-hero-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dash-hero-cta .btn-hero { width: 100%; }
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+  .qa-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .api-keys__summary { padding: 8px 10px; gap: 6px; }
+  /* Notifications drawer was already responsive (right: 0, fixed),
+     but the head's clear-all + close together exceeded the available
+     header width on the smallest viewports. Wrap-friendly gap. */
+  .notif-drawer__head { gap: 6px; }
+}
+
+.section { margin-top: var(--space-6); }
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 var(--space-4);
+}
+
+/* ── Quick-action grid on Dashboard (Command Center) ── */
+.qa-group { margin-bottom: var(--space-5); }
+.qa-group-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foggy);
+  margin: 0 0 var(--space-3);
+}
+.qa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+.qa-tile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  box-shadow: var(--shadow-1);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease;
+}
+.qa-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--rausch);
+}
+.qa-tile:focus-visible {
+  outline: 2px solid var(--rausch);
+  outline-offset: 2px;
+}
+/* UX-A15 (v1.58.63) — primary tile (Pipeline). Subtle accent border +
+   slightly larger icon + bolder label so the highest-frequency action
+   draws the eye first without crowding out the rest of the grid. */
+.qa-tile--primary {
+  border-color: var(--rausch);
+  border-width: 1px;
+  box-shadow: 0 0 0 1px var(--rausch) inset, var(--shadow-1);
+}
+.qa-tile--primary .qa-icon { font-size: 26px; }
+.qa-tile--primary .qa-label { font-weight: 600; }
+.qa-icon {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.qa-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.qa-label { font-weight: 600; font-size: 14px; }
+.qa-sub { font-size: 12px; color: var(--foggy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── Paginator (UI.paginate) ── */
+.paginator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding: var(--space-3) 0;
+  margin-top: var(--space-3);
+}
+.paginator .pg-btn { min-width: 36px; padding: 4px 10px; }
+.paginator .pg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.paginator .pg-summary {
+  font-size: 13px;
+  color: var(--foggy);
+  padding: 0 var(--space-2);
+}
+
+/* ───────────────────────── badges ───────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--beach);
+  color: var(--hof);
+}
+.badge-ok { background: rgba(0,138,5,.12); color: var(--kazan-text); }
+.badge-warn { background: rgba(255,180,0,.18); color: var(--darjeeling-text); }
+.badge-bad { background: rgba(255,56,92,.13); color: var(--rausch-text); }
+.badge-info { background: rgba(0,166,153,.13); color: var(--babu-text); }
+/* v1.118.0 — parent v1.18.0 parity: canonical 'Hired' state (job landed). */
+.badge-hired { background: rgba(0,138,5,.2); color: var(--kazan-text); box-shadow: inset 0 0 0 1px rgba(0,138,5,.35); }
+.hired-banner { display: flex; align-items: center; gap: 10px; border: 1px solid rgba(0,138,5,.35); background: rgba(0,138,5,.08); }
+.hired-banner-emoji { font-size: 22px; line-height: 1; }
+
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 13px;
+  background: var(--beach);
+}
+.score-high { background: rgba(0,138,5,.16); color: var(--kazan-text); }
+.score-mid { background: rgba(255,180,0,.18); color: var(--darjeeling-text); }
+/* v1.128.0 (parent web/ port #3) — the neutral fourth tone (3.0–3.8): a
+   passing-but-unremarkable score, distinct from the warn-yellow of 3.8–4.2. */
+.score-muted { background: rgba(120,120,128,.14); color: var(--foggy); }
+.score-low { background: rgba(255,56,92,.13); color: var(--rausch-text); }
+/* v1.22.0 (M-3) — WCAG 1.4.1 "use of color". Prefix a redundant glyph
+ * so the high/mid/low tier is legible without perceiving hue. The
+ * glyph uses ::before so existing render sites don't need to change.
+ * aria-hidden via content-visibility prevents screen-readers voicing
+ * the symbol when the numeric score is already announced.
+ */
+.score-high::before,
+.score-mid::before,
+.score-low::before {
+  display: inline-block;
+  margin-right: 6px;
+  font-weight: 700;
+}
+.score-high::before { content: '✓'; }
+.score-mid::before  { content: '◐'; }
+.score-low::before  { content: '○'; }
+
+/* ───────────────────────── tables ───────────────────────── */
+.table-wrap {
+  border: 1px solid var(--slate);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+table.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--paper);
+}
+table.tbl th, table.tbl td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--slate);
+  font-size: 14px;
+}
+table.tbl th {
+  background: var(--beach);
+  font-weight: 600;
+  color: var(--foggy);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+table.tbl tr:last-child td { border-bottom: none; }
+table.tbl tr:hover td { background: var(--beach); }
+/* v1.13.0 — boosted rows (seniority_boost match) get a subtle accent
+   strip so they're scannable even in dark mode. */
+table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch); }
+
+/* ───────────────────────── forms ───────────────────────── */
+.field { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-4); }
+.field label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--hof);
+}
+.field-hint { color: var(--foggy); font-size: 13px; }
+
+/* v1.68.0 — #/scan result-filter panel: every filter is a labelled .field
+   (label above its control), laid out in one wrapping row with an Apply/Reset
+   action group, plus a usage hint below. */
+.scan-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: flex-end;
+  margin-bottom: var(--space-3);
+}
+.scan-filters .scan-field { margin-bottom: 0; flex: 1 1 160px; min-width: 140px; max-width: 240px; }
+.scan-field__label { font-weight: 600; font-size: 13px; color: var(--hof); }
+.scan-filters .scan-field .input,
+.scan-filters .scan-field .select { width: 100%; }
+.scan-filters__actions { flex: 0 0 auto; }
+.scan-filters__hint { margin: 0 0 var(--space-4); max-width: 72ch; }
+.input, .textarea, .select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--slate);
+  border-radius: var(--radius);
+  background: var(--paper);
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.input:focus, .textarea:focus, .select:focus {
+  border-color: var(--hof);
+  box-shadow: 0 0 0 3px rgba(34,34,34,.08);
+}
+/* M-1 (v1.58.9, WCAG 2.4.7 Level AA) — the `.input/.textarea/.select`
+   baseline above (and `.searchbar input` below) zero `outline`, which
+   silently overrode the global `*:focus-visible` ring on every form
+   field (88 focusable elements per page). Re-establish a visible
+   keyboard-only ring at higher specificity than the form-base rules.
+   Mouse focus stays clean (uses `:focus`, not `:focus-visible`). */
+.input:focus-visible,
+.textarea:focus-visible,
+.select:focus-visible {
+  outline: 2px solid var(--rausch, #ff385c);
+  outline-offset: 0;
+  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.18);
+  border-color: var(--rausch, #ff385c);
+}
+.searchbar input:focus-visible {
+  outline: 2px solid var(--rausch, #ff385c);
+  outline-offset: 2px;
+}
+.textarea { resize: vertical; min-height: 140px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; line-height: 1.5; }
+.row { display: flex; gap: var(--space-3); }
+.row > * { flex: 1; }
+
+/* ───────────────────────── log/console ───────────────────────── */
+.console {
+  background: #111;
+  color: #c5e6c5;
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  max-height: 480px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.console .err { color: #ff8a8a; }
+.console .meta { color: #888; }
+
+/* ───────────────────────── markdown ───────────────────────── */
+.md {
+  line-height: 1.7;
+  font-size: 15px;
+}
+.md h1 { font-size: 26px; margin-top: 0; }
+.md h2 { font-size: 20px; margin-top: var(--space-6); padding-top: var(--space-3); border-top: 1px solid var(--slate); }
+.md h3 { font-size: 17px; margin-top: var(--space-5); }
+.md table { width: 100%; border-collapse: collapse; margin: var(--space-3) 0; }
+.md th, .md td { padding: 8px 12px; border: 1px solid var(--slate); font-size: 13.5px; text-align: left; }
+.md th { background: var(--beach); }
+.md code { background: var(--beach); padding: 2px 6px; border-radius: 6px; font-size: 13px; }
+.md pre { background: #111; color: #c5e6c5; padding: var(--space-4); border-radius: var(--radius); overflow-x: auto; }
+.md pre code { background: transparent; color: inherit; padding: 0; }
+.md a { color: var(--rausch); }
+.md blockquote { border-left: 3px solid var(--rausch); padding-left: var(--space-4); color: var(--foggy); margin: var(--space-3) 0; }
+
+/* ───────────────────────── language switcher ───────────────────────── */
+.lang-switcher {
+  padding-bottom: 8px;
+}
+/* I18N-EXPAND (v1.70.0) — native <select> language picker. Replaces the
+   old wrapping .lang-btn row (12 locales wrapped to 3 lines). The control
+   keeps a ≥ 28 px target height (WCAG 2.5.8, carried over from UX-A4) and
+   full-width so long native labels (Українська, 简体中文) never clip. */
+.lang-select {
+  width: 100%;
+  min-height: 32px;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--slate);
+  background: var(--paper);
+  color: var(--hof);
+  cursor: pointer;
+  font-weight: 500;
+  transition: border-color var(--transition), background var(--transition);
+}
+.lang-select:hover { border-color: var(--foggy); }
+.lang-select:focus-visible { outline: 2px solid var(--rausch); outline-offset: 1px; }
+
+/* ───────────────────────── chip filter ───────────────────────── */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  /* WCAG 2.5.8 spaced-target exception (v1.20.0): bumped gap 6 → 8 so
+     each chip has ≥ 24 px of breathing room from its neighbors. */
+  gap: 8px;
+  align-items: center;
+}
+.chip-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--foggy);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-right: 4px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  /* WCAG 2.5.8 (v1.20.0): bumped chip touch target to ≥ 28 × 28 px
+     paired with `.chip-row gap: 8px` so we meet AA via the
+     spaced-target exception (≥ 24 px target + ≥ 24 px spacing).
+     Previous 5px+11px landed around 22 × 50 px. */
+  min-height: 28px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--slate);
+  background: var(--paper);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--hof);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+  user-select: none;
+}
+.chip:hover { background: var(--beach); }
+.chip.on {
+  background: var(--hof);
+  color: var(--paper);
+  border-color: var(--hof);
+}
+.chip-count {
+  font-weight: 700;
+  font-size: 11px;
+  opacity: .7;
+}
+.chip.clear {
+  background: transparent;
+  border-color: transparent;
+  color: var(--rausch);
+  font-weight: 600;
+}
+.chip.clear:hover { background: rgba(255,56,92,.08); }
+
+/* ───────────────────────── connection banner ───────────────────────── */
+.conn-banner {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--rausch);
+  color: white;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.conn-banner[hidden] { display: none; }
+.conn-banner .btn-dark { background: rgba(0,0,0,.4); border: none; }
+.conn-banner .btn-dark:hover { background: rgba(0,0,0,.6); }
+
+/* v1.55.3 (UX-2) — 4-provider OR onboarding. .onboarding-warn is the
+   loud cold-start banner (0 keys); .onboarding-ok is a quiet
+   provider chip (≥1 key). */
+#onboarding-banner[hidden] { display: none; }
+#onboarding-banner.onboarding-warn {
+  position: sticky;
+  top: 0;
+  z-index: 49;
+  background: var(--rausch);
+  color: #fff;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+  font-weight: 500;
+}
+#onboarding-banner.onboarding-warn .btn-dark { background: rgba(0,0,0,.4); border: none; }
+#onboarding-banner.onboarding-warn .btn-dark:hover { background: rgba(0,0,0,.6); }
+#onboarding-banner.onboarding-ok {
+  padding: 6px 24px;
+  font-size: 12px;
+  color: var(--foggy);
+  background: var(--bg-subtle, rgba(0,0,0,.03));
+  border-bottom: 1px solid var(--border, rgba(0,0,0,.08));
+}
+/* v1.22.0 (M-3) — WCAG 1.4.1 redundant cue. The banner used to rely
+ * on the red `--rausch` background alone to signal "server down".
+ * The leading ⚠ glyph gives a non-color signal that works for users
+ * who can't perceive hue, in monochrome / high-contrast modes, and
+ * with grayscale screenshots.
+ */
+.conn-msg::before {
+  content: '⚠ ';
+  font-weight: 700;
+  margin-right: 4px;
+}
+

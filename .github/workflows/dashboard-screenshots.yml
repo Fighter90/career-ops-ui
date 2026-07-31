@@ -46,7 +46,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'public/css/app.css'
+      - 'public/css/*.css'
       - 'public/js/views/dashboard.js'
       - 'public/js/lib/i18n.js'
       - 'public/js/lib/i18n-dict.js'

@@ -12,6 +12,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { loadAssembledDict } from './helpers/i18n-vm.mjs';
+import { loadAppCss } from './helpers/css.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const read = (...p) => readFileSync(resolve(__dirname, '..', ...p), 'utf8');
@@ -29,7 +30,7 @@ test('usage-hud is CSP-safe: no inline on* handlers, uses addEventListener', () 
 
 test('usage-hud is pinned to the sidebar bottom (fixed, full sidebar width) and pads the sidebar so nav is never covered', () => {
   assert.match(SRC, /document\.body\.appendChild/);
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   // Fixed to the bottom-left, sidebar-width, on top of the sidebar.
   assert.match(css, /\.usage-hud\s*\{[^}]*position:\s*fixed[^}]*left:\s*0[^}]*bottom:\s*0/);
   assert.match(css, /\.usage-hud\s*\{[^}]*width:\s*var\(--sidebar-w\)/);
@@ -82,12 +83,12 @@ test('the 3 hud.* keys exist in all 16 locales', () => {
 
 test('usage-hud collapse state persists (localStorage) and body respects [hidden]', () => {
   assert.match(SRC, /localStorage\.setItem\(/);
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.usage-hud__bodywrap\[hidden\]\s*\{\s*display:\s*none/);
 });
 
 test('usage-hud mirrors to the sidebar bottom-right edge in RTL', () => {
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\[dir="rtl"\]\s*\.usage-hud\s*\{[^}]*right:\s*0/);
 });
 
