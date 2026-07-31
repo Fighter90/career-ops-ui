@@ -9,6 +9,22 @@
 ---
 
 
+## [1.130.0] — 2026-07-31
+
+### 追加
+- **親 career-ops v1.24.0 から新スキャンソース2件を移植**(インプロセス、新規依存なし;いずれも `#/scan` の Source フィルターと cvstart.org のランディングページに表示されます)：
+  - **a16z Speedrun**(`a16z-speedrun-talent`、#2231)— a16z Speedrun の *タレントネットワーク* ボード全体 JSON フィード。`speedrun-talent-network.com` にホスト固定、HTTPS 限定、0 始まりのページネーション(上限あり)、企業別の `q`/設定引き回し、fail-soft。
+  - **Cryptocurrency Jobs**(`cryptocurrencyjobs`)— Web3 求人ボード `cryptocurrencyjobs.co` を、公開 RSS 2.0 フィード経由で取り込み(認証不要)。二段階の XML エンティティデコード、リモート限定の求人、タイトル末尾の `"… at <Company>"` から雇用主を抽出。
+  - レジストリ合計は **72 ソース(67 EN + 5 RU)** になりました(`ALL_ADAPTERS` = 英語圏ポータルアダプタ 67 件)。
+
+### 修正
+- **`echojobs` — ハイブリッド勤務がリモートと区別されるように**(親 #2258 に準拠)。大文字小文字を区別しない `hybrid` マーカーが検出されると、`Remote` に丸め込まれる代わりに `"<City> · Hybrid"`(都市名がない場合は単に `Hybrid`)と `workplaceType: 'Hybrid'` を返すようになりました。
+- **`radancy` — レガシー TalentBrew マークアップ + JSON 結果フラグメント転送**(親 a3e6df9 に準拠)、注入可能な `opts.fetchJson` でゲート。
+
+### 補足
+- **未移植 — CLI 専用の親機能。** career-ops v1.24.0 の大規模な CLI/モード面は web-ui の対象外のままです。web-ui はビューア+薄い書き込みスルーであり、モードホストではありません：コンプライアンス/管轄区域テーブル、連絡先電話帳 + vCard、面接トランスクリプトのデブリーフ/通話プラットフォーム検出、台帳の set-status、結果記録、二段階トリアージ、jd-similarity、バージョン管理された応募先 CV アーティファクトのスキーマ、doctor の Playwright-MCP 検出、`portals/fix-slugs.mjs`。親の `scan.mjs` にあるスキャンオーケストレーションの変更 — Interamt.de の Playwright スキャナー、iCIMS リバース ATS のフルスイープ、国籍適格性によるリモートフィルター、DNS ルックアップのペーシング、StepStone の `rltr` 重複排除、スキャン履歴の正規化された会社カラム — も対象外です：web-ui は EN/RU スキャナーをインプロセスで実行しており、`scan.mjs` へシェルアウトしません。
+- **すでに対応済み。** `role-matcher` のアクセント畳み込み修正(#2209)は v1.127.0 で移植済みのため、ここでは no-op です。
+
 ## [1.129.1] — 2026-07-29
 
 ### 修正

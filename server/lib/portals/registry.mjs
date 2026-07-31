@@ -113,6 +113,9 @@ import { alibabaAdapter } from './adapters/alibaba.mjs';
 import { flowxtraAdapter } from './adapters/flowxtra.mjs';
 import { vdabAdapter } from './adapters/vdab.mjs';
 import { icimsAdapter } from './adapters/icims.mjs';
+// v1.130.0 — parent career-ops v1.24.0 parity: 2 new sources.
+import { a16zSpeedrunTalentAdapter } from './adapters/a16z-speedrun-talent.mjs';
+import { cryptocurrencyjobsAdapter } from './adapters/cryptocurrencyjobs.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -213,6 +216,8 @@ export const ALL_ADAPTERS = [
   flowxtraAdapter,
   vdabAdapter,
   icimsAdapter,
+  a16zSpeedrunTalentAdapter,
+  cryptocurrencyjobsAdapter,
 ];
 
 /**

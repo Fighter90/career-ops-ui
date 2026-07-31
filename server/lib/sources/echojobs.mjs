@@ -65,6 +65,10 @@ function toIsoDate(ms) {
   return Number.isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);
 }
 
+// Guards against a doubled marker when the board already spells the work model
+// into the location itself ("Berlin (Hybrid)", "Hybrid - London").
+const HYBRID_MARKER = /\bhybrid\b/i;
+
 /**
  * Normalize a single EchoJobs feed item into the rich web-ui job shape.
  * Exported for unit tests.
@@ -73,8 +77,16 @@ function toIsoDate(ms) {
  *   - url:      `url` — an absolute `https:` posting URL on the company's own
  *               ATS host (NOT echojobs.io); non-https/malformed drop the item.
  *   - company:  `company_name`, falling back to the entry name, then "EchoJobs".
- *   - location: joined `locations`; falls back to "Remote" for a placeless
- *               remote/hybrid role.
+ *   - location: joined `locations`, with " · Hybrid" appended when `remote_type`
+ *               is hybrid ("Berlin · Hybrid"), and falling back to a bare
+ *               "Hybrid" / "Remote" when the posting lists no place at all.
+ *               Hybrid is NEVER collapsed into "Remote": the emitted string is
+ *               what the client location filter matches on, so collapsing it
+ *               would make a `block: ["Hybrid"]` rule unmatchable and let hybrid
+ *               roles pass a remote-only filter (#2258). A placeless on_site
+ *               posting keeps "" — only remote/hybrid are placeless-tolerant.
+ *   - workplaceType: "Hybrid" for a hybrid role, "Remote" for an otherwise
+ *               remote one, "" otherwise (isRemote stays true for both).
  *   - date:     ISO date derived from `posted_at` (epoch ms).
  *
  * @param {any} j @param {string} [fallbackCompany]
@@ -111,9 +123,24 @@ export function normalizeEchojobsJob(j, fallbackCompany) {
       .map((l) => l.trim())
       .join(', ');
   }
-  const remoteish = j.remote_type === 'remote' || j.remote_type === 'hybrid';
-  if (!location && remoteish) location = 'Remote';
-  const isRemote = remoteish || /remote/i.test(location);
+  // The feed is a third-party aggregate, so `remote_type` is compared
+  // case/whitespace-insensitively: a "Hybrid" variant must not fall through
+  // silently and become an unmarked, unfilterable role (#2258).
+  const remoteType = typeof j.remote_type === 'string' ? j.remote_type.trim().toLowerCase() : '';
+  const isHybrid = remoteType === 'hybrid';
+  if (isHybrid) {
+    // A hybrid role keeps its city AND gains the marker ("Berlin · Hybrid"), or
+    // is a bare "Hybrid" when placeless. Marking only the placeless ones would
+    // leave `block: ["Hybrid"]` half-working — catching the placeless roles but
+    // silently passing every hybrid that happens to list a city (#2258).
+    if (!HYBRID_MARKER.test(location)) location = [location, 'Hybrid'].filter(Boolean).join(' · ');
+  } else if (!location && remoteType === 'remote') {
+    // Only remote/hybrid are placeless-tolerant; a placeless on_site posting
+    // keeps "", which passes the filter under "don't penalize missing data".
+    location = 'Remote';
+  }
+  const isRemote = remoteType === 'remote' || isHybrid || /remote/i.test(location);
+  const workplaceType = isHybrid ? 'Hybrid' : isRemote ? 'Remote' : '';
 
   return {
     id: `echojobs-${url}`,
@@ -123,7 +150,7 @@ export function normalizeEchojobsJob(j, fallbackCompany) {
     salary: '',
     location,
     isRemote,
-    workplaceType: isRemote ? 'Remote' : '',
+    workplaceType,
     relocates: false,
     date: toIsoDate(j.posted_at),
     snippet: '',

@@ -10,6 +10,22 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 
 
+## [1.130.0] — 2026-07-31
+
+### Tilføjet
+- **To nye scan-kilder porteret fra forælderens career-ops v1.24.0** (in-process, ingen nye afhængigheder; begge optræder i `#/scan`s Kilde-filter og på cvstart.org-landingssiden):
+  - **a16z Speedrun** (`a16z-speedrun-talent`, #2231) — det boardbrede JSON-feed for a16z Speedruns *talent-network*. Host-pinned til `speedrun-talent-network.com`, kun HTTPS, 0-indekseret paginering med et sideloft, per-virksomheds `q`/config-threading, fail-soft.
+  - **Cryptocurrency Jobs** (`cryptocurrencyjobs`) — Web3-jobboardet `cryptocurrencyjobs.co`, hentet via dets offentlige RSS 2.0-feed (ingen auth). To-pas XML-entitetsdekodning, kun fjernopslag (remote), arbejdsgiver parset fra titlens hale `"… at <Company>"`.
+  - Registret rummer nu i alt **72 kilder = 67 engelske + 5 russiske** (`ALL_ADAPTERS` = 67 engelske portal-adaptere).
+
+### Rettet
+- **`echojobs` — hybride roller forbliver adskillelige fra remote** (spejler forælderens #2258). En case-insensitive `hybrid`-markør giver nu `"<By> · Hybrid"` (eller et bart `Hybrid`, når der ikke er nogen by) og `workplaceType: 'Hybrid'`, i stedet for at blive kollapset til `Remote`.
+- **`radancy` — legacy TalentBrew-markup + JSON-resultatfragment-transport** (spejler forælderens a3e6df9), gatet af en injicerbar `opts.fetchJson`.
+
+### Noter
+- **Ikke porteret — kun CLI-funktioner i forælderen.** career-ops v1.24.0's store CLI-/tilstandsflade forbliver uden for web-ui, som er en fremviser + tynd write-through, ikke en tilstandsvært: compliance-/jurisdiktionstabellerne, kontakt-telefonbogen + vCard, interview-transskript-debriefing/opkaldsplatform-detektion, ledger-statusskift, resultatregistrering, to-pas-triage, jd-similarity, det versionerede ansøgnings-CV-artefaktskema, doctors Playwright-MCP-detektion og `portals/fix-slugs.mjs`. Scan-orkestreringsændringer, der findes i forælderens `scan.mjs` — Interamt.de-Playwright-scanneren, iCIMS reverse-ATS-fuldsweep, land-berettigelses-remote-filteret, DNS-lookup-pacing, StepStones `rltr`-deduplikering og den normaliserede firmakolonne i scan-historikken — gælder ikke: web-ui kører EN/RU-scannerne in-process og shell'er ikke ud til `scan.mjs`.
+- **Allerede dækket.** `role-matcher`s accent-foldningsrettelse (#2209) blev porteret i v1.127.0, så det er en no-op her.
+
 ## [1.129.1] — 2026-07-29
 
 ### Rettet

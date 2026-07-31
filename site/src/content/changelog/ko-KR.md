@@ -9,6 +9,22 @@
 ---
 
 
+## [1.130.0] — 2026-07-31
+
+### 추가
+- **상위 career-ops v1.24.0에서 이식된 2개의 새 스캔 소스**(인프로세스, 새 의존성 없음; 둘 다 `#/scan` Source 필터와 cvstart.org 랜딩에 표시됩니다):
+  - **a16z Speedrun**(`a16z-speedrun-talent`, #2231) — a16z Speedrun *talent-network* 보드 전체 JSON 피드. `speedrun-talent-network.com`에 호스트 고정, HTTPS 전용, 페이지 상한이 있는 0-인덱스 페이지네이션, 회사별 `q`/설정 스레딩, fail-soft.
+  - **Cryptocurrency Jobs**(`cryptocurrencyjobs`) — Web3 채용 보드 `cryptocurrencyjobs.co`, 공개 RSS 2.0 피드로 수집(무인증). 2-패스 XML 엔티티 디코드, 원격 전용 공고, 제목 끝의 `"… at <Company>"`에서 고용주 파싱.
+  - 레지스트리 총합은 이제 **72개 소스 = 영문 67개 + 러시아어 5개**입니다(`ALL_ADAPTERS` = 영문 포털 어댑터 67개).
+
+### 수정
+- **`echojobs` — 하이브리드 근무 형태가 원격과 구분되어 유지**(상위 #2258 미러링). 대소문자 구분 없는 `hybrid` 마커가 이제 `"<City> · Hybrid"`(도시가 없으면 단순 `Hybrid`)와 `workplaceType: 'Hybrid'`를 생성하며, 더 이상 `Remote`로 뭉뚱그려지지 않습니다.
+- **`radancy` — 레거시 TalentBrew 마크업 + JSON 결과 프래그먼트 전송**(상위 a3e6df9 미러링), 주입 가능한 `opts.fetchJson`으로 게이트됩니다.
+
+### 비고
+- **미포팅 — CLI 전용 상위 기능.** career-ops v1.24.0의 방대한 CLI/모드 표면은 web-ui에 들어오지 않습니다. web-ui는 모드 호스트가 아니라 뷰어 + 씬(thin) 라이트스루입니다: 컴플라이언스/관할권 테이블, 연락처 전화번호부 + vCard, 인터뷰 트랜스크립트 디브리프/콜 플랫폼 감지, 원장 set-status, 결과 기록, 투패스 트리아지, jd-similarity, 버전 관리되는 지원-CV 아티팩트 스키마, doctor의 Playwright-MCP 감지, `portals/fix-slugs.mjs`가 여기 해당합니다. 상위의 `scan.mjs`에 있는 스캔 오케스트레이션 변경 사항 — Interamt.de Playwright 스캐너, iCIMS 리버스-ATS 전체 스윕, 국가 자격 원격 필터, DNS 조회 페이싱, StepStone `rltr` 중복 제거, 스캔 기록의 정규화된 회사 컬럼 — 도 적용되지 않습니다: web-ui는 EN/RU 스캐너를 인프로세스로 실행하며 `scan.mjs`로 셸아웃하지 않습니다.
+- **이미 반영됨.** `role-matcher` 악센트 폴딩 수정(#2209)은 v1.127.0에서 이미 이식되어, 여기서는 변경 사항이 없습니다.
+
 ## [1.129.1] — 2026-07-29
 
 ### 수정

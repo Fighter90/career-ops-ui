@@ -99,16 +99,17 @@ test('registry: Workday defaults site=External when careers_url omits site', () 
 
 test('registry: ALL_ADAPTERS has the expected entries', async () => {
   const { ALL_ADAPTERS } = await import('../server/lib/portals/registry.mjs');
-  assert.equal(ALL_ADAPTERS.length, 65);
+  assert.equal(ALL_ADAPTERS.length, 67);
   const ids = ALL_ADAPTERS.map((a) => a.id).sort();
   assert.deepEqual(ids, [
-    '4dayweek', 'agenticjobs', 'alibaba', 'amazon', 'arbeitnow', 'arbeitsagentur', 'ashby', 'avature', 'bamboohr',
-    'beesite', 'breezy', 'comeet', 'csod', 'dassault', 'deutschebahn', 'echojobs', 'flowxtra', 'gem', 'getonbrd',
-    'glints', 'greenhouse', 'hackernews', 'hecklerkoch', 'higheredjobs', 'himalayas', 'ibm', 'icims', 'jibeapply', 'jobicy',
-    'jobspresso', 'jobstreet', 'jobvite', 'justjoin', 'landingjobs', 'larajobs', 'lever', 'meituan', 'nodesk',
-    'nofluffjobs', 'oraclecloud', 'personio', 'phenom', 'pinpoint', 'radancy', 'recruitee', 'remoteok', 'remotive',
-    'rheinmetall', 'rippling', 'rss', 'smartrecruiters', 'softgarden', 'solidjobs', 'successfactors', 'teamtailor', 'tencent',
-    'thehub', 'themuse', 'tkms', 'vdab', 'weworkremotely', 'workable', 'workday', 'workingnomads', 'wttj',
+    '4dayweek', 'a16z-speedrun-talent', 'agenticjobs', 'alibaba', 'amazon', 'arbeitnow', 'arbeitsagentur', 'ashby', 'avature',
+    'bamboohr', 'beesite', 'breezy', 'comeet', 'cryptocurrencyjobs', 'csod', 'dassault', 'deutschebahn', 'echojobs',
+    'flowxtra', 'gem', 'getonbrd', 'glints', 'greenhouse', 'hackernews', 'hecklerkoch', 'higheredjobs', 'himalayas',
+    'ibm', 'icims', 'jibeapply', 'jobicy', 'jobspresso', 'jobstreet', 'jobvite', 'justjoin', 'landingjobs',
+    'larajobs', 'lever', 'meituan', 'nodesk', 'nofluffjobs', 'oraclecloud', 'personio', 'phenom', 'pinpoint',
+    'radancy', 'recruitee', 'remoteok', 'remotive', 'rheinmetall', 'rippling', 'rss', 'smartrecruiters', 'softgarden',
+    'solidjobs', 'successfactors', 'teamtailor', 'tencent', 'thehub', 'themuse', 'tkms', 'vdab', 'weworkremotely',
+    'workable', 'workday', 'workingnomads', 'wttj',
   ]);
 });
 

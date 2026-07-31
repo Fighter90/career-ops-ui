@@ -9,6 +9,22 @@
 ---
 
 
+## [1.130.0] — 2026-07-31
+
+### 新增
+- **兩個新掃描來源,移植自父專案 career-ops v1.24.0**(同進程,無新相依;皆出現於 `#/scan` 的 Source 篩選器與 cvstart.org 落地頁):
+  - **a16z Speedrun**(`a16z-speedrun-talent`,#2231)— a16z Speedrun *人才網絡*(talent-network)全站 JSON 動態消息。主機固定為 `speedrun-talent-network.com`,僅限 HTTPS,0 起始分頁並附頁數上限,依公司貫穿 `q`/設定,失敗自動降級。
+  - **Cryptocurrency Jobs**(`cryptocurrencyjobs`)— Web3 職缺看板 `cryptocurrencyjobs.co`,透過其公開 RSS 2.0 動態消息擷取(零驗證)。兩階段 XML 實體解碼,僅列出遠端職缺,雇主名稱從標題尾端的「"… at <Company>"」解析而得。
+  - 註冊表總數現為 **72 個來源 = 67 個英文 + 5 個俄文**(`ALL_ADAPTERS` = 67 個英文入口配接器)。
+
+### 修復
+- **`echojobs` — 混合制職缺與遠端職缺保持可區分**(鏡像父專案 #2258)。不分大小寫的 `hybrid` 標記現在會產生 `"<City> · Hybrid"`(無城市時則為單純的 `Hybrid`)與 `workplaceType: 'Hybrid'`,而不再被併入 `Remote`。
+- **`radancy` — 舊版 TalentBrew 標記語言 + JSON 結果片段傳輸**(鏡像父專案 a3e6df9),以可注入的 `opts.fetchJson` 把關。
+
+### 備註
+- **未移植 — 僅限 CLI 的父專案功能。** career-ops v1.24.0 龐大的 CLI/模式面向仍不進入 web-ui(它是檢視器 + 輕量寫入通道,不是模式主機):合規/管轄區資料表、聯絡人電話簿 + vCard、面試逐字稿覆盤 / 通話平台偵測、ledger set-status、結果紀錄、兩階段篩選、jd-similarity、具版本的申請-CV artifact schema、doctor 的 Playwright-MCP 偵測,以及 `portals/fix-slugs.mjs`。存在於父專案 `scan.mjs` 中的掃描編排變更 — Interamt.de 的 Playwright 掃描器、iCIMS 反向 ATS 全面掃描、國家資格遠端篩選、DNS 查詢節流、StepStone 的 `rltr` 去重,以及掃描歷史的正規化公司欄位 — 皆不適用:web-ui 以同進程執行 EN/RU 掃描器,不會 shell 呼叫 `scan.mjs`。
+- **已涵蓋。** `role-matcher` 的重音摺疊修復(#2209)已於 v1.127.0 移植,此處為 no-op。
+
 ## [1.129.1] — 2026-07-29
 
 ### 修復

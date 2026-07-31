@@ -8,6 +8,22 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.130.0] — 2026-07-31
+
+### Adicionado
+- **Duas novas fontes de varredura portadas do career-ops pai v1.24.0** (em processo, sem novas dependências; ambas aparecem no filtro Fonte de `#/scan` e na landing do cvstart.org):
+  - **a16z Speedrun** (`a16z-speedrun-talent`, #2231) — o feed JSON de todo o board da *rede de talentos* do a16z Speedrun. Fixado no host `speedrun-talent-network.com`, somente HTTPS, paginação indexada a partir de 0 com limite de páginas, `q`/config encadeados por empresa, fail-soft.
+  - **Cryptocurrency Jobs** (`cryptocurrencyjobs`) — o board de vagas Web3 `cryptocurrencyjobs.co`, ingerido via seu feed RSS 2.0 público (zero-auth). Decodificação de entidades XML em duas passagens, vagas somente remotas, empregador extraído da cauda do título `"… at <Company>"`.
+  - O registro agora soma **72 fontes = 67 em inglês + 5 russas** (`ALL_ADAPTERS` = 67 adaptadores de portais em inglês).
+
+### Corrigido
+- **`echojobs` — vagas híbridas continuam distinguíveis do remoto** (espelha o #2258 do pai). Um marcador `hybrid` sem distinção de maiúsculas/minúsculas agora produz `"<City> · Hybrid"` (ou um `Hybrid` isolado quando não há cidade) e `workplaceType: 'Hybrid'`, em vez de ser colapsado em `Remote`.
+- **`radancy` — markup legado do TalentBrew + transporte via fragmento JSON de resultados** (espelha o commit a3e6df9 do pai), condicionado a um `opts.fetchJson` injetável.
+
+### Notas
+- **Não portado — recursos do pai exclusivos de CLI.** A ampla superfície de CLI/modos da career-ops v1.24.0 permanece fora do web-ui, que é um visualizador + escrita fina, não um host de modos: as tabelas de compliance/jurisdição, a agenda de contatos + vCard, o transcript-debrief de entrevista / detecção de plataforma de chamada, o `set-status` do ledger, o registro de outcome, a triagem em duas passagens, o jd-similarity, o schema versionado de artefato de CV de candidatura, a detecção do Playwright-MCP no doctor, e `portals/fix-slugs.mjs`. Mudanças de orquestração de varredura que vivem no `scan.mjs` do pai — o scanner Playwright do Interamt.de, a varredura reversa completa do iCIMS, o filtro de elegibilidade remota por país, o espaçamento de lookups de DNS, a deduplicação `rltr` do StepStone e a coluna de empresa normalizada no histórico de varredura — não se aplicam: o web-ui roda os scanners EN/RU em processo e não invoca `scan.mjs`.
+- **Já coberto.** A correção de dobra de acentos do `role-matcher` (#2209) foi portada na v1.127.0, então é um no-op aqui.
+
 ## [1.129.1] — 2026-07-29
 
 ### Corrigido

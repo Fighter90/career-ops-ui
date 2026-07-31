@@ -11,6 +11,22 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.130.0] — 2026-07-31
+
+### Ajouté
+- **Deux nouvelles sources de scan portées depuis career-ops v1.24.0 (parent)** (en-process, sans nouvelle dépendance ; les deux apparaissent dans le filtre Source de `#/scan` et sur la landing cvstart.org) :
+  - **a16z Speedrun** (`a16z-speedrun-talent`, #2231) — le flux JSON global du board *talent-network* d'a16z Speedrun. Épinglé à l'hôte `speedrun-talent-network.com`, HTTPS uniquement, pagination indexée à 0 avec plafond de pages, `q`/config par entreprise, fail-soft.
+  - **Cryptocurrency Jobs** (`cryptocurrencyjobs`) — le board d'emploi Web3 `cryptocurrencyjobs.co`, ingéré via son flux RSS 2.0 public (zéro authentification). Décodage des entités XML en deux passes, offres remote uniquement, employeur extrait de la fin du titre `"… at <Entreprise>"`.
+  - Le registre totalise désormais **72 sources = 67 anglaises + 5 russes** (`ALL_ADAPTERS` = 67 adaptateurs de portails anglais).
+
+### Corrigé
+- **`echojobs` — les postes hybrides restent distincts du remote** (reflète le correctif parent #2258). Un marqueur `hybrid` insensible à la casse produit désormais `"<Ville> · Hybrid"` (ou un simple `Hybrid` en l'absence de ville) et `workplaceType: 'Hybrid'`, au lieu d'être fondu dans `Remote`.
+- **`radancy` — balisage TalentBrew hérité + transport par fragment JSON de résultats** (reflète le commit parent a3e6df9), conditionné par un `opts.fetchJson` injectable.
+
+### Notes
+- **Non porté — fonctionnalités du parent réservées au CLI.** La large surface CLI/modes de career-ops v1.24.0 reste hors de web-ui, qui est une visionneuse + écriture directe légère, pas un hôte de modes : les tableaux de conformité/juridiction, le carnet de contacts + vCard, le débrief de transcription d'entretien / détection de plateforme d'appel, le `set-status` du ledger, l'enregistrement des issues, le triage en deux passes, la similarité de JD, le schéma versionné des artefacts CV de candidature, la détection Playwright-MCP du doctor, et `portals/fix-slugs.mjs`. Les changements d'orchestration de scan qui vivent dans le `scan.mjs` du parent — le scanner Playwright Interamt.de, le balayage complet iCIMS reverse-ATS, le filtre remote par éligibilité pays, le cadencement des résolutions DNS, la déduplication `rltr` de StepStone, et la colonne d'entreprise normalisée de l'historique de scan — ne s'appliquent pas : web-ui exécute les scanners EN/RU en-process et n'invoque jamais `scan.mjs`.
+- **Déjà couvert.** Le correctif de repli des accents de `role-matcher` (#2209) a été porté en v1.127.0 ; c'est donc un no-op ici.
+
 ## [1.129.1] — 2026-07-29
 
 ### Corrigé
