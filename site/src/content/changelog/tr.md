@@ -2,6 +2,13 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.131.2] — 2026-07-31
+
+### Değiştirildi
+- **`app.css` üç sıralı stil sayfasına bölündü** (dosya-boyutu-sözleşmesi borcu — tek dosya ~1990 satıra kadar büyümüştü, 800 satırlık sert hedefin çok üzerinde). Artık `app.css` (~672 — erişilebilirlik, tasarım token'ları/tema, kenar çubuğu, ana içerik, düğmeler, içerik kabuğu), **`components.css`** (~595 — kartlar, ızgaralar, sayfalayıcı, rozetler, tablolar, formlar, günlük/konsol, markdown, dil değiştirici, çip filtresi, bağlantı afişi) ve **`overlays.css`** (~737 — toast, bildirim çekmecesi, modal, çeşitli/duyarlı, `[dir="rtl"]` aynası, docs-fab, usage-hud), her biri sert sınırın içinde.
+  - Kesim **bitişik ve sırayla** yapıldı, böylece kaskad bölünmeden önceki dosyayla **bayt bayt aynı**; `index.html` üçünü sıralı `<link>`ler olarak yüklüyor. **Davranış, biçimlendirme veya i18n değişikliği yok.**
+  - CSS doğrulayan testler artık birleştirilmiş içeriği paylaşılan bir `tests/helpers/css.mjs::loadAppCss()` yardımcısı üzerinden okuyor. Yeni `tests/css-modularization.test.mjs` bölünmeyi kilitliyor (dosyalar var · her biri ≤ 800 satır · index.html bağlantı sırası) → paket **2138**. Tarayıcıda doğrulandı: üç stil sayfası da ayrıştırılıyor ve kuralları uygulanıyor.
+
 ## [1.131.1] — 2026-07-31
 
 ### Düzeltildi

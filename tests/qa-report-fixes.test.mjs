@@ -11,6 +11,7 @@ import { legacyDictText, loadAssembledDict } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadAppCss } from './helpers/css.mjs';
 
 const __d = dirname(fileURLToPath(import.meta.url));
 const read = (...p) => readFileSync(resolve(__d, '..', ...p), 'utf8');
@@ -39,7 +40,7 @@ test('BUG-007/008: UI exposes dismissToast; health view dismisses + reuses butto
 });
 
 test('UX-A14 (v1.59.0): mobile (≤ 420 px) media query addresses dashboard / hero / qa-grid / api-keys / drawer', () => {
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   // The media query block must exist and target ≤ 420 px specifically.
   assert.match(css, /@media \(max-width:\s*420px\)\s*\{/,
     'app.css must declare a @media (max-width: 420px) block');
@@ -116,7 +117,7 @@ test('UX-A15 (v1.58.63): dashboard Pipeline tile carries the qa-tile--primary vi
   assert.match(dash, /qa\('📥',\s*'nav\.pipeline',[^)]*,\s*'\/pipeline',\s*true\)/,
     'Pipeline tile must be flagged primary so it gets the accent');
   // CSS rule present.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.qa-tile--primary\s*\{/, 'app.css must style .qa-tile--primary');
   assert.match(css, /\.qa-tile--primary\s+\.qa-label\s*\{[^}]*font-weight:\s*600/,
     'primary tile label must be bolder (font-weight: 600)');
@@ -163,7 +164,7 @@ test('UX-A9 (v1.58.62 + v1.59.2): #/config API-keys panel has an Active/Keys sum
     assert.ok(dict.includes(`'${key}'`), `i18n-dict.js must define '${key}'`);
   }
   // CSS rule present and (v1.59.2) NOT sticky-overlapping.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.api-keys__summary\s*\{/, 'app.css must style .api-keys__summary');
   // v1.59.2 — assert the sticky positioning is gone (it created
   // overlap with the tablist + page header on scroll).
@@ -214,7 +215,7 @@ test('UX-A12 (v1.58.60): notifications drawer supports Clear all + per-entry dis
     assert.ok(dict.includes(`'${key}'`), `i18n-dict.js must define '${key}'`);
   }
   // CSS rules present.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.notif-drawer__clear-all\s*\{/, 'CSS must style .notif-drawer__clear-all');
   assert.match(css, /\.notif-item__dismiss\s*\{/, 'CSS must style .notif-item__dismiss');
 });
@@ -287,7 +288,7 @@ test('UX-A7 (v1.58.57): cost-line auto-refreshes when LLM_PROVIDER changes (prov
 });
 
 test('UX-A4 (v1.70.0): .lang-select meets WCAG 2.5.8 minimum touch-target (≥ 28 px)', () => {
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   // I18N-EXPAND (v1.70.0) — the wrapping .lang-btn row was replaced by a
   // native <select> (12 locales). The control keeps the WCAG 2.5.8 target
   // height carried over from the original UX-A4 fix (now 32 px) and goes
@@ -320,7 +321,7 @@ test('UX-A3 (v1.58.55): dashboard renders an active-provider chip wired to /api/
     assert.ok(dict.includes(`'${key}'`), `i18n-dict.js must define '${key}'`);
   }
   // CSS rule present.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.dash-chip--provider\s*\{/, 'app.css must define .dash-chip--provider');
 });
 
@@ -344,7 +345,7 @@ test('UX-A1 (v1.58.54): showResult prepends a brief-warning when ≥3 canonical 
     'deep.js must conditionally appendChild(briefWarning) into the card');
 
   // The .brief-warning class must have a real CSS rule (not just markup).
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.brief-warning\s*\{/, 'app.css must define a .brief-warning rule');
 
   // All 8 locales must carry the three UX-A1 i18n keys.
@@ -366,7 +367,7 @@ test('UX-A6 (v1.58.53): every saved-research card flows through a single `render
 });
 
 test('NEW-D2-motion (v1.59.6): CSS honours prefers-reduced-motion: reduce', () => {
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)\s*\{/,
     'app.css must declare a @media (prefers-reduced-motion: reduce) block');
   // The block must neutralize both animation + transition + scroll-behavior.
@@ -412,7 +413,7 @@ test('UX-A5-r4 (v1.59.9): scroll-spy is initial-paint-eager (synchronous compute
   // previous cycle where `.toc-current` was attached but a later CSS
   // rule reset border-left). Assert the rule has both color AND a
   // visible border-left declaration.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*color:\s*var\(--rausch/,
     '.help-toc a.toc-current must paint color from --rausch');
   assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*border-left:\s*\d+px\s+solid\s+var\(--rausch/,
@@ -491,7 +492,7 @@ test('UX-D-B (v1.58.48): #/dashboard renders a fixture-profile warning banner wh
         `'${key}' must have a non-empty ${lang} value`);
     }
   }
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.hero-banner\s*\{/, '.hero-banner CSS rule must exist');
   assert.match(css, /\.hero-banner--warning\s*\{/, '.hero-banner--warning rule must exist');
 });
@@ -546,7 +547,7 @@ test('UX-D-K (v1.58.45) — scroll-spy highlights current section via `.toc-curr
   assert.match(help, /classList\.remove\('toc-current'\)/,
     'old current link must lose the .toc-current class');
   // CSS rule provides the visual.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.help-toc\s+a\.toc-current\s*\{/,
     '.help-toc a.toc-current CSS rule must exist');
 });
@@ -601,7 +602,7 @@ test('UX-D-J (v1.58.42): every advisor view renders a localized ETA chip next to
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'advisor.eta' must have a non-empty ${lang} value`);
   }
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.advisor-eta\b/, '.advisor-eta CSS rule must exist');
 });
 
@@ -692,7 +693,7 @@ test('v1.58.35: notifications drawer hides via `[hidden]` (CSS override) + help 
   // `[hidden] { display: none }` rule. Fix in app.css:
   //     .notif-drawer[hidden] { display: none; }
   //     .notif-badge[hidden]  { display: none; }
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.notif-drawer\[hidden\]\s*\{[^}]*display:\s*none/,
     "must add an explicit '.notif-drawer[hidden] { display: none }' rule");
   assert.match(css, /\.notif-badge\[hidden\]\s*\{[^}]*display:\s*none/,
@@ -778,7 +779,7 @@ test('v1.58.34: notifications drawer wires bell + onToast subscribe + 4 i18n key
     }
   }
   // CSS contract — bell, drawer, item rules exist.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   for (const sel of ['.notif-bell', '.notif-badge', '.notif-drawer', '.notif-drawer__head', '.notif-item']) {
     assert.match(css, new RegExp(`${sel.replace(/[.\-]/g, (m) => '\\' + m)}\\s*\\{`),
       `${sel} CSS rule must exist`);
@@ -798,7 +799,7 @@ test('U-13/U-14/U-15 (v1.58.33): toast journal + page-header spacing safety net 
     'UI return must export getToastHistory');
 
   // U-14 — global page-header safety net rule.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.page-header h1 \+ p\s*\{[^}]*margin-block-start:\s*var\(--space-2\)/,
     '.page-header h1 + p rule must set margin-block-start: var(--space-2)');
 
@@ -831,7 +832,7 @@ test('U-12 (v1.58.32): help TOC filter input carries `.help-toc__filter` class +
   const help = read('public', 'js', 'views', 'help.js');
   assert.match(help, /className:\s*'input help-toc__filter'/,
     'tocSearch must carry className "input help-toc__filter"');
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.help-toc__filter\s*\{[^}]*min-width:\s*16ch/,
     '.help-toc__filter must declare min-width: 16ch (fits all 8 locale placeholders)');
 });
@@ -852,7 +853,7 @@ test('U-11 (v1.58.31): tracker Legitimacy column header has localized info chip 
     assert.ok(new RegExp(`${keyPat}\\s*:\\s*['"][^'"]+['"]`).test(row[1]),
       `'track.col.legitimacy.help' must have a non-empty ${lang} value`);
   }
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.th-info\s*\{/, '.th-info CSS rule must exist');
   assert.match(css, /\.th-info:focus-visible\s*\{/, '.th-info:focus-visible rule must exist (keyboard ring)');
 });
@@ -879,7 +880,7 @@ test('U-9 (v1.58.29): pipeline counter ↔ filter row stacks at narrow viewports
   const pipeline = read('public', 'js', 'views', 'pipeline.js');
   assert.match(pipeline, /className:\s*'flex gap-3 mb-3 pipeline-controls'/,
     'pipeline counter/filter row must carry the .pipeline-controls class');
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /@media\s*\(max-width:\s*720px\)\s*\{[\s\S]*?\.pipeline-controls\s*\{[^}]*flex-direction:\s*column/,
     '@media (max-width: 720px) must stack .pipeline-controls');
 });
@@ -904,7 +905,7 @@ test('U-8 (v1.58.28): mode-page Generate-prompt wraps the <pre> in a collapsible
     }
   }
   // CSS rule must exist:
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.prompt-block\s*\{/, '.prompt-block rule must exist');
   assert.match(css, /\.prompt-block\s*>\s*summary\s*\{/, '.prompt-block > summary rule must exist');
 });
@@ -983,7 +984,7 @@ test('U-4 (v1.58.24): toast splits the "(METHOD /path · HTTP NNN)" postfix into
   }
 
   // CSS contract — collapsible block exists:
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.toast\s+\.toast-detail\s*\{/, '.toast .toast-detail rule must exist');
   assert.match(css, /\.toast\s+\.toast-detail\s+>\s+code\s*\{/, '.toast .toast-detail > code rule must exist');
 });
@@ -1043,7 +1044,7 @@ test('U-2 (v1.58.22): #/auto separates ✨ from the H1 via a .page-icon span', (
       `auto.title[${lang}] must not start with ✨ (moved to .page-icon span): '${m[1]}'`);
   }
   // CSS must define the grid header + icon class:
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.page-header--icon\s*\{[^}]*display:\s*grid/,
     '.page-header--icon must declare display: grid');
   assert.match(css, /\.page-icon\s*\{[^}]*line-height:\s*1/,
@@ -1154,7 +1155,7 @@ test('v1.58.16: btn-primary/btn-danger hover no longer flickers (gradient stays,
   // gradient ↔ solid, so the 180ms transition snapped and the user
   // perceived a brief flash. The new rule keeps the gradient on hover
   // and dims via `filter: brightness(...)`, which interpolates cleanly.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   // Pre-fix solid-background hover must be gone:
   assert.ok(
     !/\.btn-primary:hover\s*\{\s*background:\s*var\(--rausch-dark\)/.test(css),
@@ -1297,7 +1298,7 @@ test('M-8 (v1.58.13): apply checklist renders interactive checkboxes + persists 
   );
 
   // CSS must define .apply-checklist with full-row click target sizing.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.apply-checklist\s*\{/, 'app.css must define .apply-checklist');
   assert.match(css, /\.apply-checklist label\s*\{[^}]*min-height:\s*32px/m,
     '.apply-checklist label must have min-height ≥32px for click-target');
@@ -1366,7 +1367,7 @@ test('M-4 (v1.58.11): saved-research card has CSS gap between title and date (no
 
   // CSS must define the .saved-card flex container with non-zero gap so
   // a future tweak to the JSX can't reintroduce the collapsed-margin bug.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   assert.match(css, /\.saved-card\s*\{[^}]*display:\s*inline-flex[^}]*gap:\s*var\(--space-2[^)]*\)/m,
     '.saved-card must declare inline-flex + gap');
   assert.match(css, /\.saved-card__title\b/, 'CSS must define .saved-card__title');
@@ -1416,7 +1417,7 @@ test('M-1 (v1.58.9): form fields get a visible :focus-visible ring (WCAG 2.4.7)'
   // (to avoid mouse-focus ring noise), which silently overrode the
   // global `*:focus-visible` ring on every form field. Re-establish a
   // visible keyboard-only ring at higher specificity than the form-base.
-  const css = read('public', 'css', 'app.css');
+  const css = loadAppCss();
   // The new rule must declare a visible outline on input/textarea/select focus-visible.
   assert.match(
     css,

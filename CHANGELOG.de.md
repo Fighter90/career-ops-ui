@@ -2,6 +2,13 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.131.2] — 2026-07-31
+
+### Geändert
+- **`app.css` in drei geordnete Stylesheets aufgeteilt** (File-Size-Contract-Schuld — die einzelne Datei war auf ~1990 LOC angewachsen, weit über dem harten 800-LOC-Ziel). Sie ist nun `app.css` (~672 — a11y, Design-Tokens/Theme, Sidebar, Main, Buttons, Content-Shell), **`components.css`** (~595 — Karten, Grids, Paginator, Badges, Tabellen, Formulare, Log/Konsole, Markdown, Sprachumschalter, Chip-Filter, Verbindungsbanner) und **`overlays.css`** (~737 — Toast, Benachrichtigungs-Drawer, Modal, Sonstiges/Responsive, der `[dir="rtl"]`-Spiegel, docs-fab, usage-hud), jede innerhalb des harten Limits.
+  - Der Schnitt ist **zusammenhängend und in Reihenfolge**, sodass die Kaskade **byte-für-byte identisch** zur Datei vor der Aufteilung ist; `index.html` lädt die drei als geordnete `<link>`s. **Keine Verhaltens-, Markup- oder i18n-Änderung.**
+  - CSS-prüfende Tests lesen die Verkettung nun über einen gemeinsamen `tests/helpers/css.mjs::loadAppCss()`-Helper. Der neue `tests/css-modularization.test.mjs` fixiert die Aufteilung (Dateien existieren · jede ≤ 800 LOC · `index.html`-Link-Reihenfolge) → Suite **2138**. Im Browser verifiziert: Alle drei Stylesheets werden geparst und ihre Regeln greifen.
+
 ## [1.131.1] — 2026-07-31
 
 ### Behoben

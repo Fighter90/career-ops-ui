@@ -16,7 +16,12 @@
     <!-- v1.98.0 — error ring buffer for the in-app bug reporter. Loads first so
          it captures failures from the very first paint (parent web-v0.2.0 parity). -->
     <script src="/js/lib/logbuf.js"></script>
+    <!-- v1.131.2 — app.css was split into three ordered stylesheets (file-size
+         contract, no bundler). They MUST load in this exact order — the cascade
+         is byte-for-byte identical to the pre-split single file. -->
     <link rel="stylesheet" href="/css/app.css" />
+    <link rel="stylesheet" href="/css/components.css" />
+    <link rel="stylesheet" href="/css/overlays.css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />

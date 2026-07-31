@@ -21,6 +21,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { loadAppCss } from './helpers/css.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const APP_CSS = resolve(__dirname, '..', 'public', 'css', 'app.css');
@@ -44,7 +45,7 @@ function readBlock(src, selector) {
 }
 
 test('.btn rule carries min-height: 44px (WCAG 2.5.5 floor)', () => {
-  const src = readFileSync(APP_CSS, 'utf8');
+  const src = loadAppCss();
   const block = readBlock(src, '.btn');
   assert.ok(block, '.btn rule not found in app.css');
   assert.match(block, /min-height:\s*44px/i,
@@ -56,7 +57,7 @@ test('.btn rule carries flex-shrink: 0 (anti-squash under parent flex)', () => {
   // center` + a too-tight implicit/explicit height can squash the
   // button below its min-height. The v1.26.1 fix adds this anti-squash
   // guard so the row grows to fit the button instead.
-  const src = readFileSync(APP_CSS, 'utf8');
+  const src = loadAppCss();
   const block = readBlock(src, '.btn');
   assert.match(block, /flex-shrink:\s*0/,
     '.btn block missing flex-shrink: 0 — header rows can squash buttons under flex layout');
@@ -68,7 +69,7 @@ test('.btn-sm keeps the relaxed 32 px floor (small-control exception)', () => {
   // class for dense table-row controls (Edit / Delete) with
   // min-height: 32 px. The v1.26.1 fix on `.btn` must NOT regress this
   // — small buttons keep their floor.
-  const src = readFileSync(APP_CSS, 'utf8');
+  const src = loadAppCss();
   const block = readBlock(src, '.btn-sm');
   assert.ok(block, '.btn-sm rule not found');
   assert.match(block, /min-height:\s*32px/,
@@ -79,7 +80,7 @@ test('.btn-sm has its own min-height (does NOT inherit .btn 44 px)', () => {
   // Because CSS source order matters: `.btn-sm` is defined AFTER `.btn`,
   // and `min-height: 32px` overrides the cascaded 44 px from `.btn`.
   // Verify this stays true even with the v1.26.1 update.
-  const src = readFileSync(APP_CSS, 'utf8');
+  const src = loadAppCss();
   // Find the source-order position of each rule.
   const btnIdx = src.indexOf('\n.btn {');
   const smIdx = src.indexOf('\n.btn-sm');

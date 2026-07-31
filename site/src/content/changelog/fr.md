@@ -11,6 +11,13 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.131.2] — 2026-07-31
+
+### Modifié
+- **`app.css` scindé en trois feuilles de style ordonnées** (dette de contrat de taille de fichier — le fichier unique avait grossi jusqu'à ~1990 lignes, bien au-delà de la limite stricte de 800 lignes). Il se compose désormais de `app.css` (~672 — a11y, tokens de design/thème, barre latérale, contenu principal, boutons, content-shell), **`components.css`** (~595 — cartes, grilles, paginateur, badges, tableaux, formulaires, log/console, markdown, sélecteur de langue, filtre à puces, bannière de connexion), et **`overlays.css`** (~737 — toast, tiroir de notifications, modale, divers/responsive, le miroir `[dir="rtl"]`, docs-fab, usage-hud), chacune dans la limite stricte.
+  - Le découpage est **contigu et dans l'ordre**, si bien que la cascade est **identique octet pour octet** au fichier avant scission ; `index.html` charge les trois fichiers comme des `<link>` ordonnés. **Aucun changement de comportement, de balisage ou d'i18n.**
+  - Les tests portant sur le CSS lisent désormais la concaténation via un utilitaire partagé `tests/helpers/css.mjs::loadAppCss()`. Un nouveau `tests/css-modularization.test.mjs` verrouille la scission (les fichiers existent · chacun ≤ 800 lignes · ordre des liens dans index.html) → suite **2138**. Vérifié dans le navigateur : les trois feuilles de style s'analysent correctement et leurs règles s'appliquent.
+
 ## [1.131.1] — 2026-07-31
 
 ### Corrigé

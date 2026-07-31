@@ -9,6 +9,13 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.131.2] — 2026-07-31
+
+### Zmieniono
+- **Podział `app.css` na trzy uporządkowane arkusze stylów** (dług kontraktu rozmiaru pliku — pojedynczy plik urósł do ~1990 LOC, znacznie ponad twardy cel 800 LOC). Teraz jest to `app.css` (~672 — a11y, tokeny projektowe/motyw, pasek boczny, główna treść, przyciski, powłoka treści), **`components.css`** (~595 — karty, siatki, paginator, odznaki, tabele, formularze, log/konsola, markdown, przełącznik języka, filtr chipów, baner połączenia) oraz **`overlays.css`** (~737 — toast, szuflada powiadomień, modal, różne/responsywność, lustrzane odbicie `[dir="rtl"]`, docs-fab, usage-hud), każdy w granicach twardego limitu.
+  - Podział jest **ciągły i zachowuje kolejność**, więc kaskada jest **identyczna co do bajtu** z plikiem sprzed podziału; `index.html` ładuje trzy pliki jako uporządkowane `<link>`. **Bez zmiany zachowania, znaczników czy i18n.**
+  - Testy odwołujące się do CSS czytają teraz połączenie plików przez współdzielony pomocnik `tests/helpers/css.mjs::loadAppCss()`. Nowy plik `tests/css-modularization.test.mjs` zabezpiecza podział (pliki istnieją · każdy ≤ 800 LOC · kolejność linków w index.html) → zestaw **2138**. Zweryfikowano w przeglądarce: wszystkie trzy arkusze stylów parsują się poprawnie, a ich reguły są stosowane.
+
 ## [1.131.1] — 2026-07-31
 
 ### Naprawiono

@@ -16,6 +16,7 @@ import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
+import { loadAppCss } from './helpers/css.mjs';
 
 let projectRoot, server, baseUrl;
 
@@ -134,7 +135,7 @@ test('#/tracker renders a clickable stage-tab strip', async () => {
   const __d = dirname(fileURLToPath(import.meta.url));
   const TR = readFileSync(r(__d, '..', 'public', 'js', 'views', 'tracker.js'), 'utf8');
   const DICT = legacyDictText();
-  const CSS = readFileSync(r(__d, '..', 'public', 'css', 'app.css'), 'utf8');
+  const CSS = loadAppCss();
   assert.match(TR, /className: 'tracker-tabs'/, 'a .tracker-tabs strip must exist');
   assert.match(TR, /tracker-tab/, 'tabs use the .tracker-tab class');
   assert.match(TR, /role: 'tablist'/, 'the strip is a tablist');

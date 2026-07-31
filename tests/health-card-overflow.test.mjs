@@ -12,6 +12,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadAppCss } from './helpers/css.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -21,7 +22,7 @@ test('health.js tags the check row with .health-check-row', () => {
 });
 
 test('app.css constrains the health row so it cannot overflow', () => {
-  const css = readFileSync(resolve(ROOT, 'public', 'css', 'app.css'), 'utf8');
+  const css = loadAppCss();
   assert.match(css, /\.health-check-row\b/, 'missing .health-check-row rule');
   // The left content must be allowed to shrink (min-width:0) and the action
   // group must keep its size — that pair is what stops the collision.

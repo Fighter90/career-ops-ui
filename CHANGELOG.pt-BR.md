@@ -8,6 +8,13 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.131.2] — 2026-07-31
+
+### Alterado
+- **`app.css` dividido em três folhas de estilo ordenadas** (débito do contrato de tamanho de arquivo — o arquivo único havia crescido para ~1990 LOC, bem além da meta rígida de 800 LOC). Agora são `app.css` (~672 — a11y, tokens de design/tema, sidebar, main, botões, content-shell), **`components.css`** (~595 — cards, grids, paginador, badges, tabelas, formulários, log/console, markdown, seletor de idioma, filtro de chips, banner de conexão) e **`overlays.css`** (~737 — toast, gaveta de notificações, modal, misc/responsivo, o espelho `[dir="rtl"]`, docs-fab, usage-hud), cada uma dentro do limite rígido.
+  - O corte é **contíguo e na mesma ordem**, então a cascata é **byte a byte idêntica** ao arquivo pré-split; `index.html` carrega as três como `<link>`s ordenados. **Nenhuma mudança de comportamento, markup ou i18n.**
+  - Os testes que verificam CSS agora leem a concatenação via um helper compartilhado `tests/helpers/css.mjs::loadAppCss()`. O novo `tests/css-modularization.test.mjs` trava o split (arquivos existem · cada um ≤ 800 LOC · ordem dos links no index.html) → suíte **2138**. Verificado no navegador: as três folhas de estilo são interpretadas (parse) e suas regras se aplicam.
+
 ## [1.131.1] — 2026-07-31
 
 ### Corrigido

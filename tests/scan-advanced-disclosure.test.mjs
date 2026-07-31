@@ -16,10 +16,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { loadAppCss } from './helpers/css.mjs';
 
 const __d = dirname(fileURLToPath(import.meta.url));
 const SCAN = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'scan.js'), 'utf8');
-const CSS = readFileSync(resolve(__d, '..', 'public', 'css', 'app.css'), 'utf8');
+const CSS = loadAppCss();
 
 test('a labelled .scan-filters panel exists (label-above-field, a11y-associated)', () => {
   assert.match(SCAN, /className: 'scan-filters'/, 'scan.js must build a .scan-filters panel');

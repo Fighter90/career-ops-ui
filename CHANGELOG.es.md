@@ -11,6 +11,13 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.131.2] — 2026-07-31
+
+### Cambiado
+- **División de `app.css` en tres hojas de estilo ordenadas** (deuda de contrato de tamaño de archivo — el archivo único había crecido hasta ~1990 LOC, muy por encima del límite estricto de 800 LOC). Ahora es `app.css` (~672 — accesibilidad, tokens de diseño/tema, barra lateral, contenido principal, botones, content-shell), **`components.css`** (~595 — tarjetas, grids, paginador, badges, tablas, formularios, log/consola, markdown, selector de idioma, filtro de chips, banner de conexión) y **`overlays.css`** (~737 — toast, cajón de notificaciones, modal, misceláneo/responsive, el espejo `[dir="rtl"]`, docs-fab, usage-hud), cada una dentro del límite estricto.
+  - El corte es **contiguo y en orden**, de modo que la cascada es **byte a byte idéntica** al archivo previo a la división; `index.html` carga las tres como `<link>` ordenados. **Sin cambio de comportamiento, marcado ni i18n.**
+  - Los tests que verifican CSS ahora leen la concatenación mediante un helper compartido `tests/helpers/css.mjs::loadAppCss()`. El nuevo `tests/css-modularization.test.mjs` fija la división (los archivos existen · cada uno ≤ 800 LOC · el orden de enlaces de index.html) → suite **2138**. Verificado en el navegador: las tres hojas de estilo se parsean y sus reglas se aplican.
+
 ## [1.131.1] — 2026-07-31
 
 ### Corregido
