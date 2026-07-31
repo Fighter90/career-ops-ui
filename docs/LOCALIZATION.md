@@ -1,8 +1,8 @@
 # Localization guide
 
-How translation works in **career-ops-ui**, and how to add or edit a language. The SPA ships **16 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr` — and every user-facing string flows through the i18n layer. **Arabic (`ar`) is right-to-left** (I18N-EXPAND, v1.70.0): `i18n.js` sets `<html dir="rtl">` for RTL locales and `app.css` carries a scoped `[dir="rtl"]` block. The in-app language picker is a flag-prefixed `<select>` (`renderLangSwitcher` in `public/js/app.js`).
+How translation works in **career-ops-ui**, and how to add or edit a language. The SPA ships **17 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi` (Hindi added v1.122.0) — and every user-facing string flows through the i18n layer. **Arabic (`ar`) is right-to-left** (I18N-EXPAND, v1.70.0): `i18n.js` sets `<html dir="rtl">` for RTL locales and `app.css` carries a scoped `[dir="rtl"]` block. The in-app language picker is a flag-prefixed `<select>` (`renderLangSwitcher` in `public/js/app.js`).
 
-> **Help guide (v1.71.1; de/it/tr in v1.85.0).** The long-form help bundle (`docs/help/<locale>.md`) is fully translated in all **16 locales** — `pl`/`uk`/`ar` bundles were added in v1.71.1 and `de`/`it`/`tr` in v1.85.0, each holding the gated 20 H2 / 78 H3 structure (§20 "Statistics by target roles" added in v1.86.0).
+> **Help guide (v1.71.1; de/it/tr in v1.85.0).** The long-form help bundle (`docs/help/<locale>.md`) is fully translated in all **17 locales** — `pl`/`uk`/`ar` bundles were added in v1.71.1 and `de`/`it`/`tr` in v1.85.0, each holding the gated 29 H2 / 105 H3 structure (§20 "Statistics by target roles" added in v1.86.0).
 
 > Server diagnostics stay **English by policy** (consistency across logs). Only client-owned UI strings are localized. Don't add per-locale text to server error bodies.
 
@@ -49,7 +49,7 @@ The fallback is a dev convenience — a key missing from the dictionary fails CI
 
 ## Common task — add or edit a translation key
 
-1. **Add the key to all 16 locale files** in `public/js/lib/locales/` — same key, translated value:
+1. **Add the key to all 17 locale files** in `public/js/lib/locales/` — same key, translated value:
    ```js
    // i18n-dict.en.js
    'scan.newButton': 'Run scan',
@@ -78,7 +78,7 @@ When several keys must always read identically in **every** locale (e.g. the sid
 - The alias **target must exist** as a real key (in the per-locale files).
 - **No chains** — an alias target must not itself be an alias.
 - An alias key must **not** also appear in the per-locale tables.
-- Only alias keys that are byte-identical in all 16 locales. Keys that merely collapse in English but diverge elsewhere (e.g. `nav.config` "App settings" vs `config.title`, which differ in Spanish) stay **independent**.
+- Only alias keys that are byte-identical in all 17 locales. Keys that merely collapse in English but diverge elsewhere (e.g. `nav.config` "App settings" vs `config.title`, which differ in Spanish) stay **independent**.
 
 ---
 
@@ -108,7 +108,7 @@ Adding, say, French (`fr`) touches a fixed set of files. Work through them in or
      JSON.stringify(loadAssembledDict(), null, 2) + "\n");
    '
    ```
-7. **Companion content** (for a fully-supported locale): `docs/help/fr.md` (help bundle, must keep the 20 H2 / 78 H3 parity), `CHANGELOG.fr.md`, `README.fr.md`.
+7. **Companion content** (for a fully-supported locale): `docs/help/fr.md` (help bundle, must keep the 29 H2 / 105 H3 parity), `CHANGELOG.fr.md`, `README.fr.md`.
 8. **Run all gates** and fix any parity failures.
 
 ---
@@ -126,7 +126,7 @@ node scripts/check-changelog-parity.mjs   # all CHANGELOG.<locale>.md at the sam
 
 | Gate | What it locks |
 |---|---|
-| `tests/i18n-coverage.test.mjs` | every key present in all 16 locales; every `t('key')` call maps to a real entry |
+| `tests/i18n-coverage.test.mjs` | every key present in all 17 locales; every `t('key')` call maps to a real entry |
 | `tests/i18n-locale-files.test.mjs` | per-locale key parity · alias integrity · `index.html` load order · assembled dict ≡ snapshot |
 | `tests/i18n-alias.test.mjs` | alias targets exist, no chains, `t(alias) === t(canonical)` in every locale |
 | `tools/i18n-audit.mjs` | no personal data, no empty values, no bare-calendar-date placeholders, no broken aliases |

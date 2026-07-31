@@ -542,7 +542,7 @@ When `run: true` is set on `/api/deep` or `/api/mode/:slug`, the server prefers 
 npm test                       # 1945 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×16 + theme)
+npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
