@@ -22,7 +22,19 @@
  * then pinned to the tenant host the adapter derived from the entry (same
  * model as successfactors), enforced HTTPS + `redirect:'error'` and a
  * /search-jobs path shape via assertRadancyUrl. Safety caps preserved from
- * the parent: MAX_PAGES=200, MAX_JOBS=2000.
+ * the parent: MAX_PAGES=200, DEFAULT_MAX_JOBS=2000 (overridable per-entry via
+ * `max_pages` / `max_jobs`).
+ *
+ * Two markup generations, two transports (parent parity):
+ *   (a) MODERN markup — <li class="search-results-list__item"> with a
+ *       `search-results-list__job-link` anchor. Parsed by parseModernResults().
+ *   (b) LEGACY markup — a bare <li> holding the anchor itself, no list-item
+ *       class to split on (careers.unitedhealthgroup.com, kaiserpermanentejobs.org).
+ *       Parsed by parseLegacyResults(); parseResults() tries modern first, then
+ *       falls back to legacy. On legacy tenants the ?p=N page is catastrophically
+ *       heavy (a facet blob repeated per page), so fetchRadancy prefers the JSON
+ *       results-fragment endpoint (buildFragmentUrl/readFragmentTotals) when the
+ *       caller supplies a `fetchJson` capability, and falls back to ?p=N otherwise.
  *
  * Used by the radancy adapter (server/lib/portals/adapters/radancy.mjs).
  */
@@ -39,8 +51,12 @@ export const meta = {
 export const RADANCY_LIST_RE = /\/[a-z]{2}\/search-jobs$/i;
 
 const MAX_PAGES = 200; // safety cap (~15/page ⇒ up to ~3000 postings)
-const MAX_JOBS = 2000; // cap total postings pulled
+const DEFAULT_MAX_JOBS = 2000; // default cap on total postings pulled
 const PAGE_DELAY_MS = 150; // polite pacing — full walks are >100 sequential requests
+
+// Page size for the JSON results-fragment transport. 100 is honored live by the
+// known legacy tenants (UHG, Kaiser); the plain ?p=N HTML page hard-codes 15.
+const FRAGMENT_RECORDS_PER_PAGE = 100;
 
 const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
 
@@ -105,14 +121,51 @@ export function assertRadancyUrl(url) {
 }
 
 /**
- * Parse one search-results page into rich job objects. Anchors on the stable
- * generic `search-results-list__` class prefix, reads title + location within
- * one <li>, resolves the relative href against the tenant origin. Rows without
- * a title or a resolvable URL are dropped; ids dedup within the page.
- * Exported for unit tests.
+ * Build one rich job object from parsed fields — the shared shape BOTH the
+ * modern and legacy parsers emit, so the emitted contract stays identical
+ * regardless of which markup generation a tenant serves.
+ * @param {string} id @param {string} title @param {string} url
+ * @param {string} location @param {string} companyName
+ */
+function makeJob(id, title, url, location, companyName) {
+  const isRemote = REMOTE_RE.test(title) || REMOTE_RE.test(location);
+  return {
+    id: `radancy-${id}`,
+    title,
+    company: companyName,
+    url,
+    salary: '',
+    location,
+    isRemote,
+    workplaceType: isRemote ? 'Remote' : '',
+    relocates: false,
+    date: '', // the SSR list carries no posting date
+    snippet: '',
+    source: 'radancy',
+  };
+}
+
+/**
+ * Parse one search-results page (or results fragment) into rich job objects.
+ * Radancy tenants serve two markup generations, so we try the MODERN
+ * `search-results-list__item` markup first (existing tenants keep their exact
+ * behavior) and fall back to the LEGACY bare-anchor markup only when the modern
+ * parser finds nothing. Exported for unit tests.
  * @param {string} html @param {string} origin @param {string} [companyName]
  */
 export function parseResults(html, origin, companyName = '') {
+  const modern = parseModernResults(html, origin, companyName);
+  return modern.length ? modern : parseLegacyResults(html, origin, companyName);
+}
+
+/**
+ * Parse the MODERN `search-results-list__item` markup. Anchors on the stable
+ * generic `search-results-list__` class prefix, reads title + location within
+ * one <li>, resolves the relative href against the tenant origin. Rows without
+ * a title or a resolvable URL are dropped; ids dedup within the page.
+ * @param {string} html @param {string} origin @param {string} [companyName]
+ */
+export function parseModernResults(html, origin, companyName = '') {
   if (typeof html !== 'string') return [];
   const out = [];
   const seen = new Set();
@@ -136,24 +189,117 @@ export function parseResults(html, origin, companyName = '') {
     }
     const locM = block.match(/__job-info--location[\s\S]*?<span>([\s\S]*?)<\/span>/);
     const location = locM ? clean(locM[1]) : '';
-    const isRemote = REMOTE_RE.test(title) || REMOTE_RE.test(location);
     seen.add(id);
-    out.push({
-      id: `radancy-${id}`,
-      title,
-      company: companyName,
-      url,
-      salary: '',
-      location,
-      isRemote,
-      workplaceType: isRemote ? 'Remote' : '',
-      relocates: false,
-      date: '', // the SSR list carries no posting date
-      snippet: '',
-      source: 'radancy',
-    });
+    out.push(makeJob(id, title, url, location, companyName));
   }
   return out;
+}
+
+/**
+ * Parse the LEGACY markup, seen live on careers.unitedhealthgroup.com and
+ * www.kaiserpermanentejobs.org: the anchor IS the row, with no list-item class
+ * to split on —
+ *   <li><a href="/job/{city}/{slug}/{org}/{id}" data-job-id="{id}">
+ *        <h2>{Title}</h2>
+ *        <span class="job-id job-info">{reqNo}</span>      (UHG only)
+ *        <span class="job-location">{City, State}</span>
+ *      </a>
+ *      <button class="js-save-job-btn" data-job-id="{id}">…</button></li>
+ * Anchored on <a> carrying BOTH data-job-id and a /job/ href, so the sibling
+ * save-job <button> (which repeats data-job-id) can't produce a phantom row.
+ * Attribute order is not assumed; ids dedup within the page.
+ * @param {string} html @param {string} origin @param {string} [companyName]
+ */
+export function parseLegacyResults(html, origin, companyName = '') {
+  if (typeof html !== 'string') return [];
+  const out = [];
+  const seen = new Set();
+  // Anchors never nest, so a non-greedy run to </a> is a safe row boundary.
+  const anchors = html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi);
+  for (const a of anchors) {
+    const attrs = a[1];
+    const inner = a[2];
+    const idM = attrs.match(/data-job-id="([^"]+)"/i);
+    if (!idM) continue;
+    const hrefM = attrs.match(/href="([^"]+)"/i);
+    if (!hrefM) continue;
+    const href = decodeEntities(hrefM[1]);
+    if (!/\/job\//.test(href)) continue;
+    const id = idM[1];
+    if (seen.has(id)) continue;
+
+    // Title lives in the heading. Falling back to the anchor's full text would
+    // swallow the req-number and location spans (UHG renders both inside the
+    // anchor), so strip element content first and only then accept bare text.
+    const headM = inner.match(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/i);
+    const title = clean(headM ? headM[1] : inner.replace(/<span[\s\S]*?<\/span>/gi, ' '));
+    if (!title) continue;
+
+    let url;
+    try {
+      url = new URL(href, origin).href;
+    } catch {
+      continue;
+    }
+    const locM = inner.match(/class="[^"]*job-location[^"]*"[^>]*>([\s\S]*?)<\/span>/i);
+    const location = locM ? clean(locM[1]) : '';
+    seen.add(id);
+    out.push(makeJob(id, title, url, location, companyName));
+  }
+  return out;
+}
+
+/**
+ * Build the JSON results-fragment URL for a given 1-based page.
+ *
+ * SearchResultsModuleName MUST be sent — without it the server returns an empty
+ * result set (silent, not an error). SearchFiltersModuleName is deliberately
+ * ABSENT — sending it re-attaches a multi-megabyte facet blob to every page.
+ * @param {string} listUrl Base search-jobs URL (no trailing slash).
+ * @param {number} page 1-based page number.
+ * @param {number} [recordsPerPage]
+ */
+export function buildFragmentUrl(listUrl, page, recordsPerPage = FRAGMENT_RECORDS_PER_PAGE) {
+  const q = new URLSearchParams({
+    ActiveFacetID: '0',
+    CurrentPage: String(page),
+    RecordsPerPage: String(recordsPerPage),
+    Distance: '50',
+    RadiusUnitType: '0',
+    Keywords: '',
+    Location: '',
+    ShowRadius: 'False',
+    IsPagination: 'True',
+    CustomFacetName: '',
+    FacetTerm: '',
+    FacetType: '0',
+    SearchResultsModuleName: 'Search Results',
+    SortCriteria: '0',
+    SortDirection: '0',
+    SearchType: '5',
+  });
+  return `${listUrl}/results?${q.toString()}`;
+}
+
+/**
+ * Read the server's own result/page totals out of a results fragment. The
+ * fragment re-embeds <section id="search-results" data-total-results
+ * data-total-pages …>, so pagination can be bounded by the server's own count.
+ * @param {string} html
+ * @returns {{totalResults: number|null, totalPages: number|null}}
+ */
+export function readFragmentTotals(html) {
+  if (typeof html !== 'string') return { totalResults: null, totalPages: null };
+  const num = (re) => {
+    const m = html.match(re);
+    if (!m) return null;
+    const n = Number(m[1]);
+    return Number.isInteger(n) && n >= 0 ? n : null;
+  };
+  return {
+    totalResults: num(/data-total-results="(\d+)"/),
+    totalPages: num(/data-total-pages="(\d+)"/),
+  };
 }
 
 /** Resolve the page cap: positive integer `max_pages`, else default. */
@@ -163,13 +309,30 @@ function resolveMaxPages(company) {
   return MAX_PAGES;
 }
 
+/** Resolve the total-postings cap: positive integer `max_jobs`, else default. */
+function resolveMaxJobs(company) {
+  const v = company && company.max_jobs;
+  if (Number.isInteger(v) && v > 0) return v;
+  return DEFAULT_MAX_JOBS;
+}
+
 /**
- * Fetch + normalize a Radancy tenant's postings by walking ?p=N (1-based)
- * until an empty page, a no-fresh-ids page (server clamped ?p= to the last
- * page, or looped), or MAX_JOBS. A transient mid-scan failure keeps the jobs
- * collected so far — it never discards earlier pages.
+ * Fetch + normalize a Radancy tenant's postings.
+ *
+ * Preferred transport: the JSON results fragment (buildFragmentUrl) — on the
+ * legacy-markup tenants the plain ?p=N HTML page carries a multi-megabyte facet
+ * blob per page, so the fragment is dramatically cheaper. It is attempted only
+ * when the caller supplies a `fetchJson` capability (mirrors the parent's
+ * `ctx.fetchJson` gate); any failure — non-JSON, no results, endpoint absent —
+ * falls through to the ?p=N walk below, so tenants without the fragment endpoint
+ * (and callers that pass no fetchJson) are unaffected.
+ *
+ * Fallback transport: walk ?p=N (1-based) until an empty page, a no-fresh-ids
+ * page (server clamped ?p= to the last page, or looped), or maxJobs. A transient
+ * mid-scan failure keeps the jobs collected so far — it never discards earlier
+ * pages.
  * @param {string} endpoint search-jobs list URL (from buildEndpoint)
- * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
+ * @param {{ fetchImpl?: Function, fetchJson?: Function, signal?: AbortSignal, company?: object }} [opts]
  */
 export async function fetchRadancy(endpoint, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
@@ -178,9 +341,70 @@ export async function fetchRadancy(endpoint, opts = {}) {
   const name = (company && typeof company.name === 'string' && company.name.trim()) ? company.name.trim() : 'Radancy';
 
   const maxPages = resolveMaxPages(company);
+  const maxJobs = resolveMaxJobs(company);
   const jobs = [];
   const seen = new Set();
 
+  // Dedupe-and-append helper shared by both transports. Returns the count of
+  // rows that were fresh (not previously seen) this call.
+  const push = (rows) => {
+    let fresh = 0;
+    for (const row of rows) {
+      if (seen.has(row.id)) continue;
+      seen.add(row.id);
+      fresh++;
+      jobs.push(row);
+    }
+    return fresh;
+  };
+
+  // ── Preferred transport: the JSON results fragment ─────────────────────────
+  const fetchJsonImpl = typeof opts.fetchJson === 'function' ? opts.fetchJson : null;
+  if (fetchJsonImpl) {
+    const fragHeaders = { accept: 'application/json', 'x-requested-with': 'XMLHttpRequest' };
+    try {
+      const first = await fetchJsonImpl(buildFragmentUrl(endpoint, 1), { signal, redirect: 'error', headers: fragHeaders });
+      const firstHtml = typeof first?.results === 'string' ? first.results : '';
+      const firstRows = firstHtml ? parseResults(firstHtml, origin, name) : [];
+      if (firstRows.length) {
+        const { totalResults, totalPages } = readFragmentTotals(firstHtml);
+        // Bound by the server's own page count when it gives one; the local caps
+        // still apply so a bogus total can't drive an unbounded walk.
+        const lastPage = Math.min(totalPages ?? maxPages, maxPages);
+        push(firstRows);
+
+        for (let page = 2; page <= lastPage && jobs.length < maxJobs; page++) {
+          await delay(PAGE_DELAY_MS, signal);
+          let rows;
+          try {
+            const json = await fetchJsonImpl(buildFragmentUrl(endpoint, page), { signal, redirect: 'error', headers: fragHeaders });
+            const frag = typeof json?.results === 'string' ? json.results : '';
+            rows = frag ? parseResults(frag, origin, name) : [];
+          } catch {
+            break; // a mid-walk blip shouldn't discard earlier pages
+          }
+          if (rows.length === 0) break;
+          if (push(rows) === 0) break; // server clamped the page — stop
+        }
+
+        // Never truncate silently: report the count actually RETURNED. jobs.length
+        // is the pre-slice buffer — the page loop only checks `jobs.length < maxJobs`
+        // BEFORE fetching, so the final page can push it past the cap.
+        const returned = Math.min(jobs.length, maxJobs);
+        if (totalResults && returned < totalResults) {
+          console.error(
+            `⚠️  radancy: ${name} truncated at ${returned} of ${totalResults} postings`
+            + ' — raise max_jobs/max_pages on this entry for more',
+          );
+        }
+        return jobs.slice(0, maxJobs);
+      }
+    } catch {
+      // fall through to the HTML transport
+    }
+  }
+
+  // ── Fallback transport: the ?p=N HTML walk ─────────────────────────────────
   for (let page = 1; page <= maxPages; page++) {
     if (page > 1) await delay(PAGE_DELAY_MS, signal);
     let rows;
@@ -196,16 +420,9 @@ export async function fetchRadancy(endpoint, opts = {}) {
     }
     if (rows.length === 0) break; // past the last page
 
-    let fresh = 0;
-    for (const row of rows) {
-      if (seen.has(row.id)) continue;
-      seen.add(row.id);
-      fresh++;
-      jobs.push(row);
-    }
     // No new ids → the server clamped ?p= to the last page (or looped). Stop.
-    if (fresh === 0) break;
-    if (jobs.length >= MAX_JOBS) break;
+    if (push(rows) === 0) break;
+    if (jobs.length >= maxJobs) break;
   }
-  return jobs.slice(0, MAX_JOBS);
+  return jobs.slice(0, maxJobs);
 }

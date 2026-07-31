@@ -142,6 +142,7 @@ Router.register('scan', async () => {
   // a temporarily-unreachable backend). Kept alphabetical by label.
   const FALLBACK_SOURCES = [
     { value: '4dayweek',        label: '4 Day Week' },
+    { value: 'a16z-speedrun-talent', label: 'a16z Speedrun' },
     { value: 'agenticjobs',     label: 'Agentic Jobs' },
     { value: 'alibaba',         label: 'Alibaba' },
     { value: 'amazon',          label: 'Amazon' },
@@ -153,6 +154,7 @@ Router.register('scan', async () => {
     { value: 'beesite',         label: 'beesite (GJB)' },
     { value: 'breezy',          label: 'Breezy HR' },
     { value: 'comeet',          label: 'Comeet' },
+    { value: 'cryptocurrencyjobs', label: 'Cryptocurrency Jobs' },
     { value: 'csod',            label: 'Cornerstone' },
     { value: 'dassault',        label: 'Dassault Systèmes' },
     { value: 'deutschebahn',    label: 'Deutsche Bahn' },

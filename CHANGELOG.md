@@ -8,6 +8,22 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.130.0] — 2026-07-31
+
+### Added
+- **Two new scan sources ported from parent career-ops v1.24.0** (in-process, no new deps; both appear in the `#/scan` Source filter and on the cvstart.org landing):
+  - **a16z Speedrun** (`a16z-speedrun-talent`, #2231) — the a16z Speedrun *talent-network* board-wide JSON feed. Host-pinned to `speedrun-talent-network.com`, HTTPS-only, 0-indexed pagination with a page cap, per-company `q`/config threading, fail-soft. +`server/lib/sources/a16z-speedrun-talent.mjs` + adapter + `tests/sources-a16z-speedrun-talent.test.mjs` (16).
+  - **Cryptocurrency Jobs** (`cryptocurrencyjobs`) — the Web3 job board `cryptocurrencyjobs.co`, ingested via its public RSS 2.0 feed (zero-auth). Two-pass XML-entity decode, remote-only listings, employer parsed from the `"… at <Company>"` title tail. +`server/lib/sources/cryptocurrencyjobs.mjs` + adapter + `tests/sources-cryptocurrencyjobs.test.mjs` (14).
+  - Registry total is now **72 sources = 67 English + 5 Russian** (`ALL_ADAPTERS` = 67 EN portal adapters).
+
+### Fixed
+- **`echojobs` — hybrid roles stay distinguishable from remote** (mirrors parent #2258). A case-insensitive `hybrid` marker in the posting's remote-type now yields `"<City> · Hybrid"` (or a bare `Hybrid` when no city is present) and `workplaceType: 'Hybrid'`, instead of being collapsed into `Remote`. +`tests/sources-echojobs.test.mjs` (7).
+- **`radancy` — legacy TalentBrew markup + JSON results-fragment transport** (mirrors parent a3e6df9). The adapter now parses TalentBrew HTML listings and, when available, the JSON results fragment (`buildFragmentUrl`/`readFragmentTotals`), gated on an injectable `opts.fetchJson`. +`tests/sources-radancy.test.mjs` (13).
+
+### Notes
+- **Not ported — CLI-only parent features.** career-ops v1.24.0's large CLI/mode surface stays out of web-ui, which is a viewer + thin write-through, not a mode host: the compliance/jurisdiction tables (`interview-redflag` protected-grounds, `oferta` immigration-status / jurisdiction-prohibited / agency-licensing, `offer-prep` restrictive-covenant, `check-table-freshness`), the contacts phonebook + vCard export + `company-history`, the interview transcript-debrief / call-platform detection / plan wiring, `ledger` set-status, `outcome` recording + archiving, two-pass `triage`, `jd-similarity` CV-reuse hints, the versioned application-CV artifact schema, `doctor` Playwright-MCP detection, and `portals/fix-slugs.mjs` (web-ui exposes read-only `POST /api/portals/health`, never auto-writes `portals.yml`). Scan-orchestration changes that live in the parent's `scan.mjs` — the **Interamt.de Playwright scanner**, iCIMS reverse-ATS full sweep (#2141), country-eligibility remote filter (#2095), DNS-lookup pacing + negative-cache resolver, StepStone `rltr` dedup (#1982), and the scan-history normalized-company column (#2243) — are not applicable: web-ui runs the EN/RU scanners **in-process** and does not shell into `scan.mjs`.
+- **Already covered.** The `role-matcher` accent-folding fix (#2209 — fold accented Latin before tokenizing) was ported in **v1.127.0** (`normalizeTitle` NFD fold in `server/lib/role-matcher.mjs`), so parent v1.24.0's change is a no-op here. Read-only relays (`stats.mjs`, `salary-gap.mjs`, `analyze-patterns.mjs`, `followup-*`) absorb the parent's shape tweaks through their fail-soft path — no code change needed.
+
 ## [1.129.1] — 2026-07-29
 
 ### Fixed

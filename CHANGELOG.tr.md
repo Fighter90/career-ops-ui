@@ -2,6 +2,22 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.130.0] — 2026-07-31
+
+### Eklendi
+- **Üst proje career-ops v1.24.0'dan taşınan iki yeni tarama kaynağı** (işlem içinde, yeni bağımlılık yok; ikisi de `#/scan` Kaynak filtresinde ve cvstart.org açılış sayfasında görünüyor):
+  - **a16z Speedrun** (`a16z-speedrun-talent`, #2231) — a16z Speedrun *yetenek ağı* panosu genelindeki JSON beslemesi. `speedrun-talent-network.com`'a ana bilgisayar sabitli, yalnızca HTTPS, sayfa sınırlı 0-indeksli sayfalama, şirket başına `q`/yapılandırma iş parçacığı, hataya karşı toleranslı.
+  - **Cryptocurrency Jobs** (`cryptocurrencyjobs`) — Web3 iş panosu `cryptocurrencyjobs.co`, herkese açık RSS 2.0 beslemesi üzerinden alınıyor (kimlik doğrulamasız). İki geçişli XML varlık çözme, yalnızca uzaktan ilanlar, işveren başlık kuyruğundaki `"… at <Company>"` kalıbından ayrıştırılıyor.
+  - Kayıt defteri toplamı artık **72 kaynak = 67 İngilizce + 5 Rusça** (`ALL_ADAPTERS` = 67 İngilizce portal adaptörü).
+
+### Düzeltildi
+- **`echojobs` — hibrit roller uzaktandan ayırt edilebilir kalıyor** (üst projenin #2258'ini yansıtıyor). Büyük/küçük harf duyarsız bir `hybrid` işareti artık `"<Şehir> · Hibrit"` (şehir yoksa yalnızca `Hibrit`) ve `workplaceType: 'Hybrid'` üretiyor, `Remote`'a indirgenmek yerine.
+- **`radancy` — eski TalentBrew biçimlendirmesi + JSON sonuç-parçası taşıması** (üst projenin a3e6df9'unu yansıtıyor), enjekte edilebilir `opts.fetchJson` ile kapılı.
+
+### Notlar
+- **Taşınmadı — yalnızca CLI üst proje özellikleri.** career-ops v1.24.0'ün geniş CLI/mod yüzeyi web-ui'nin dışında kalıyor; web-ui bir görüntüleyici + ince yazma-geçişidir, bir mod barındırıcısı değil: uyumluluk/yargı bölgesi tabloları, kişi telefon rehberi + vCard, mülakat transkript-değerlendirmesi / çağrı platformu algılama, defter durum belirleme, sonuç kaydı, iki geçişli triyaj, iş ilanı benzerliği, sürümlü başvuru-CV yapı şeması, doctor Playwright-MCP algılama ve `portals/fix-slugs.mjs`. Üst projenin `scan.mjs`'inde yaşayan tarama-orkestrasyonu değişiklikleri — Interamt.de Playwright tarayıcısı, iCIMS ters-ATS tam taraması, ülke uygunluğu uzaktan filtresi, DNS arama hızlandırması, StepStone `rltr` yinelenen giderme ve tarama geçmişi normalleştirilmiş şirket sütunu — geçerli değil: web-ui EN/RU tarayıcılarını işlem içinde çalıştırır ve `scan.mjs`'e kabuk açmaz.
+- **Zaten kapsanmış.** `role-matcher` aksan katlama düzeltmesi (#2209) v1.127.0'de taşınmıştı, bu yüzden burada no-op'tur.
+
 ## [1.129.1] — 2026-07-29
 
 ### Düzeltildi
