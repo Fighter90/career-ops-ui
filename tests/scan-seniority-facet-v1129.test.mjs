@@ -6,14 +6,8 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
 import { I18N_LANGS, localeSource } from './helpers/i18n-vm.mjs';
 import { loadScanSrc } from './helpers/scan-src.mjs';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const read = (...p) => readFileSync(resolve(__dirname, '..', ...p), 'utf8');
 
 test('scan.js wires a seniority filter via JobFacets into filtering + state', () => {
   const src = loadScanSrc();

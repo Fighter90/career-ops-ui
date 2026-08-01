@@ -7,13 +7,9 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
 import { loadAssembledDict } from './helpers/i18n-vm.mjs';
 import { loadScanSrc } from './helpers/scan-src.mjs';
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const scan = loadScanSrc();
 
 test('scan.js routes the summary/badge strings through t()', () => {
