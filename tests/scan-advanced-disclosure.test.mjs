@@ -13,9 +13,8 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
+import { dirname } from 'node:path';
 import { loadAppCss } from './helpers/css.mjs';
 import { loadScanSrc } from './helpers/scan-src.mjs';
 
