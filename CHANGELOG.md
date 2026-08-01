@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.132.0] — 2026-07-31
+
+### Changed
+- **`#/scan` results-rendering subsystem extracted to `public/js/lib/scan-results.js`** (file-size-contract paydown — `public/js/views/scan.js` had grown to ~1254 LOC). The subsystem — `renderResults`, `buildChipRow`, `getRows`, the row/facet builders, the seniority/country option painters, and the `FALLBACK_SOURCES` registry mirror — moves into a `window.ScanResults.create(ctx)` factory that closes over a context object the view supplies (filter elements, the active-facet Sets, the paginator, two-pager data, and a `lastResults` getter). **No behaviour change** — the functions were moved verbatim and their closure vars mechanically rewired to `ctx.*`; `scan.js` is now ~906 LOC. (Still above the 800-LOC target — a second extraction pass is planned; the file-size contract for the two remaining JS-view outliers, `scan.js` and `config.js`, is tracked in `docs/sdd/CONVENTIONS.md`.)
+- Source-static tests read the two files via `tests/helpers/scan-src.mjs::loadScanSrc()` (like `loadAppCss()`); `tests/scan-fallback-sources.test.mjs` now reads the registry mirror from `scan-results.js`.
+- **New in-browser regression gate** — `tests/playwright-scan-filters.mjs` seeds a canned `data/last-scan.json` and drives every `#/scan` filter (Source, Seniority, Remote, Age, text include/exclude), asserting exact row counts, so the extraction is verified against real browser behaviour (run via `npm run test:e2e:browser`). Stable filter-control ids (`#scan-filter-*`, `#scan-apply`) were added for it.
+
+### Housekeeping
+- The README "Latest release" banner is slimmed to a one-line summary + a link to the full changelog (the long per-version narrative wall is retired — history lives in `CHANGELOG*.md`). Applied across all 17 locales.
+- **CodeQL cleanup** — removed the dead `readFileSync`/`resolve`/`APP_CSS` path-scaffolding left over from the v1.131.2 `loadAppCss()` migration in four CSS source-guard tests (`design-polish-v1115`, `managed-focus-no-ring`, `toast-fab-clearance`, `wcag-target-size`); those imports had become unused once the tests switched to `loadAppCss()`, closing the eight open `js/unused-local-variable` code-scanning alerts. Test-only, no behaviour change.
+
 ## [1.131.2] — 2026-07-31
 
 ### Changed

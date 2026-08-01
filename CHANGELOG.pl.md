@@ -9,6 +9,14 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.132.0] — 2026-07-31
+
+### Zmieniono
+- **Podsystem renderowania wyników `#/scan` wyodrębniono do `public/js/lib/scan-results.js`** (dług kontraktu rozmiaru pliku — `public/js/views/scan.js` urósł do ~1254 LOC). Podsystem (`renderResults`, `buildChipRow`, `getRows`, generatory wierszy/fasetek, funkcje renderujące opcje oraz lustrzane odbicie rejestru `FALLBACK_SOURCES`) przeniesiono do fabryki `window.ScanResults.create(ctx)`, domykającej się nad obiektem kontekstu dostarczanym przez widok. Bez zmiany zachowania — funkcje przeniesiono dosłownie, a zmienne domknięcia mechanicznie przełączono na `ctx.*`; `scan.js` ma teraz ~906 LOC (planowany jest drugi etap wyodrębniania w kierunku celu 800 LOC).
+- Testy statyczne źródła czytają oba pliki przez `tests/helpers/scan-src.mjs::loadScanSrc()`; `tests/scan-fallback-sources.test.mjs` czyta teraz lustrzane odbicie rejestru z `scan-results.js`.
+- **Nowa bramka regresji w przeglądarce** — `tests/playwright-scan-filters.mjs` zasiewa gotowy plik `data/last-scan.json` i przechodzi przez każdy filtr `#/scan`, sprawdzając dokładne liczby wierszy (`npm run test:e2e:browser`); dodano stabilne identyfikatory kontrolek filtra (`#scan-filter-*`, `#scan-apply`).
+- Baner „Najnowsze wydanie” w README uproszczono do jednowierszowego podsumowania z linkiem do pełnego dziennika zmian (długa, wielowersyjna ściana narracji została wycofana). Zastosowano we wszystkich 17 lokalizacjach.
+
 ## [1.131.2] — 2026-07-31
 
 ### Zmieniono

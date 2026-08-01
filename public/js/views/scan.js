@@ -101,20 +101,20 @@ Router.register('scan', async () => {
   const resultsEl = c('div', { id: 'scan-results' });
 
   const dryRun = c('input', { type: 'checkbox', id: 'dry-run' });
-  const filterText = c('input', { className: 'input', placeholder: t('scan.filterText') });
+  const filterText = c('input', { className: 'input', id: 'scan-filter-text', placeholder: t('scan.filterText') });
   // v1.109.0 — "Exclude" keywords: comma-separated terms; a row is hidden if its
   // company/title/location contains ANY of them. Pairs with the include search
   // (which now treats commas as OR — "roles to find").
-  const filterExclude = c('input', { className: 'input', placeholder: t('scan.filterExclude', 'Exclude words (comma-separated)…') });
+  const filterExclude = c('input', { className: 'input', id: 'scan-filter-exclude', placeholder: t('scan.filterExclude', 'Exclude words (comma-separated)…') });
   // v1.78.1 — consume a one-shot search term handed off from the top-bar global
   // search (Enter on a non-URL query → #/scan with this box pre-filled). The
-  // initial renderResults() below reads filterText.value, so the first paint is
+  // initial SR.render() below reads filterText.value, so the first paint is
   // already filtered by the term.
   if (window.__scanSearchPrefill) {
     filterText.value = window.__scanSearchPrefill;
     window.__scanSearchPrefill = '';
   }
-  const filterRemote = c('select', { className: 'select' }, [
+  const filterRemote = c('select', { className: 'select', id: 'scan-filter-remote' }, [
     c('option', { value: '' }, t('scan.allTypes')),
     c('option', { value: 'remote' }, t('scan.remoteOnly')),
     c('option', { value: 'hybrid' }, t('scan.hybrid')),
@@ -127,11 +127,11 @@ Router.register('scan', async () => {
   // render ABOVE each input (the .field wrapper), so no in-field placeholder.
   const filterSalaryMin = c('input', {
     type: 'number', inputmode: 'numeric', min: '0', step: '1000',
-    className: 'input', 'aria-label': t('scan.salaryFrom', 'Salary from'),
+    className: 'input', id: 'scan-filter-salary-min', 'aria-label': t('scan.salaryFrom', 'Salary from'),
   });
   const filterSalaryMax = c('input', {
     type: 'number', inputmode: 'numeric', min: '0', step: '1000',
-    className: 'input', 'aria-label': t('scan.salaryTo', 'Salary to'),
+    className: 'input', id: 'scan-filter-salary-max', 'aria-label': t('scan.salaryTo', 'Salary to'),
   });
   // v1.29.0 — source dropdown is now dynamic. We fetch the canonical
   // list from `GET /api/scan/sources` (backed by
@@ -140,81 +140,7 @@ Router.register('scan', async () => {
   // Fallback list mirrors the registry at build time and is only used
   // if the fetch fails (offline / server starting up / cached SPA hits
   // a temporarily-unreachable backend). Kept alphabetical by label.
-  const FALLBACK_SOURCES = [
-    { value: '4dayweek',        label: '4 Day Week' },
-    { value: 'a16z-speedrun-talent', label: 'a16z Speedrun' },
-    { value: 'agenticjobs',     label: 'Agentic Jobs' },
-    { value: 'alibaba',         label: 'Alibaba' },
-    { value: 'amazon',          label: 'Amazon' },
-    { value: 'arbeitnow',       label: 'Arbeitnow' },
-    { value: 'arbeitsagentur',  label: 'Arbeitsagentur' },
-    { value: 'ashby',           label: 'Ashby' },
-    { value: 'avature',         label: 'Avature' },
-    { value: 'bamboohr',        label: 'BambooHR' },
-    { value: 'beesite',         label: 'beesite (GJB)' },
-    { value: 'breezy',          label: 'Breezy HR' },
-    { value: 'comeet',          label: 'Comeet' },
-    { value: 'cryptocurrencyjobs', label: 'Cryptocurrency Jobs' },
-    { value: 'csod',            label: 'Cornerstone' },
-    { value: 'dassault',        label: 'Dassault Systèmes' },
-    { value: 'deutschebahn',    label: 'Deutsche Bahn' },
-    { value: 'echojobs',        label: 'EchoJobs' },
-    { value: 'flowxtra',        label: 'Flowxtra' },
-    { value: 'gem',             label: 'Gem' },
-    { value: 'getonbrd',        label: 'Get on Board' },
-    { value: 'glints',          label: 'Glints' },
-    { value: 'greenhouse',      label: 'Greenhouse' },
-    { value: 'hackernews',      label: 'Hacker News (Who is hiring)' },
-    { value: 'hecklerkoch',     label: 'Heckler & Koch' },
-    { value: 'higheredjobs',    label: 'HigherEdJobs' },
-    { value: 'himalayas',       label: 'Himalayas' },
-    { value: 'ibm',             label: 'IBM' },
-    { value: 'icims',           label: 'iCIMS' },
-    { value: 'jibeapply',       label: 'JibeApply (iCIMS)' },
-    { value: 'jobicy',          label: 'Jobicy' },
-    { value: 'jobspresso',      label: 'Jobspresso' },
-    { value: 'jobstreet',       label: 'Jobstreet / SEEK' },
-    { value: 'jobvite',         label: 'Jobvite' },
-    { value: 'justjoin',        label: 'JustJoin.it' },
-    { value: 'landingjobs',     label: 'Landing.jobs' },
-    { value: 'larajobs',        label: 'LaraJobs' },
-    { value: 'lever',           label: 'Lever' },
-    { value: 'meituan',         label: 'Meituan' },
-    { value: 'nodesk',          label: 'NoDesk' },
-    { value: 'nofluffjobs',     label: 'NoFluffJobs' },
-    { value: 'oraclecloud',     label: 'Oracle Cloud (ORC)' },
-    { value: 'personio',        label: 'Personio' },
-    { value: 'phenom',          label: 'Phenom' },
-    { value: 'pinpoint',        label: 'Pinpoint' },
-    { value: 'radancy',         label: 'Radancy' },
-    { value: 'recruitee',       label: 'Recruitee' },
-    { value: 'remoteok',        label: 'RemoteOK' },
-    { value: 'remotive',        label: 'Remotive' },
-    { value: 'rheinmetall',     label: 'Rheinmetall' },
-    { value: 'rippling',        label: 'Rippling' },
-    { value: 'rss',             label: 'RSS' },
-    { value: 'successfactors',  label: 'SAP SuccessFactors' },
-    { value: 'smartrecruiters', label: 'SmartRecruiters' },
-    { value: 'softgarden',      label: 'softgarden' },
-    { value: 'solidjobs',       label: 'SolidJobs' },
-    { value: 'teamtailor',      label: 'Teamtailor' },
-    { value: 'tencent',         label: 'Tencent' },
-    { value: 'thehub',          label: 'The Hub' },
-    { value: 'themuse',         label: 'The Muse' },
-    { value: 'tkms',            label: 'TKMS' },
-    { value: 'vdab',            label: 'VDAB' },
-    { value: 'weworkremotely',  label: 'We Work Remotely' },
-    { value: 'workable',        label: 'Workable' },
-    { value: 'workday',         label: 'Workday' },
-    { value: 'workingnomads',   label: 'Working Nomads' },
-    { value: 'wttj',            label: 'Welcome to the Jungle' },
-    { value: 'geekjob',         label: 'GeekJob' },
-    { value: 'getmatch',        label: 'GetMatch' },
-    { value: 'habr-career',     label: 'Habr Career' },
-    { value: 'hh.ru',           label: 'hh.ru' },
-    { value: 'trudvsem',        label: 'Trudvsem' },
-  ];
-  const filterSource = c('select', { className: 'select' }, [
+  const filterSource = c('select', { className: 'select', id: 'scan-filter-source' }, [
     c('option', { value: '' }, t('scan.allSources')),
   ]);
   function paintSourceOptions(list) {
@@ -225,7 +151,7 @@ Router.register('scan', async () => {
       .sort((a, b) => a.label.localeCompare(b.label))
       .forEach((s) => filterSource.appendChild(c('option', { value: s.value }, s.label)));
   }
-  paintSourceOptions(FALLBACK_SOURCES);
+  paintSourceOptions(window.ScanResults.FALLBACK_SOURCES);
   // Best-effort live refresh from the registry. Network failure → keep
   // the fallback list. Race vs. user interaction is fine — appending
   // to a <select> after first paint doesn't reset the user's choice.
@@ -239,24 +165,16 @@ Router.register('scan', async () => {
   // from the countries detected in the current result set, so the user can keep
   // only roles tied to a given country — alongside the Remote/Hybrid/Onsite
   // work-type filter (search both country-bound AND remote work).
-  const filterCountry = c('select', { className: 'select' }, [
+  const filterCountry = c('select', { className: 'select', id: 'scan-filter-country' }, [
     c('option', { value: '' }, t('scan.allCountries', 'All countries')),
   ]);
-  function paintCountryOptions(rows) {
-    const prev = filterCountry.value;
-    while (filterCountry.children.length > 1) filterCountry.removeChild(filterCountry.lastChild);
-    for (const co of window.Countries.countriesIn(rows)) {
-      filterCountry.appendChild(c('option', { value: co.code }, `${co.flag} ${co.name} (${co.count})`));
-    }
-    if (prev && [...filterCountry.options].some((o) => o.value === prev)) filterCountry.value = prev;
-  }
-  const filterScope = c('select', { className: 'select' }, [
+  const filterScope = c('select', { className: 'select', id: 'scan-filter-scope' }, [
     c('option', { value: 'all' }, t('scan.scopeAll')),
     c('option', { value: 'fresh' }, t('scan.scopeFresh')),
   ]);
   // v1.80.0 — "Posted within" age filter (client-side, by job.date). Jobs with
   // no listed date pass (don't penalize missing data, like the other filters).
-  const filterAge = c('select', { className: 'select' }, [
+  const filterAge = c('select', { className: 'select', id: 'scan-filter-age' }, [
     c('option', { value: '' }, t('scan.ageAny', 'Any time')),
     c('option', { value: '1' }, t('scan.age1d', 'Last 24 hours')),
     c('option', { value: '7' }, t('scan.age7d', 'Last 7 days')),
@@ -266,29 +184,9 @@ Router.register('scan', async () => {
   // Buckets each posting's title into lead/staff/senior/mid/junior/intern;
   // the dropdown auto-populates from what's actually in the results (like the
   // country filter). Titles with no seniority word (bucket null) always pass.
-  const SEN_ORDER = (window.JobFacets && window.JobFacets.SENIORITY_ORDER) || ['lead', 'staff', 'senior', 'mid', 'junior', 'intern'];
-  const senOf = (r) => (window.JobFacets ? window.JobFacets.seniorityFromTitle(r && r.title) : null);
-  // Literal-key label lookup: a concatenated dynamic key would read as an
-  // unmapped key to the i18n-coverage gate, so every key here is a literal.
-  const senLabel = (s) => ({
-    lead: t('scan.sen.lead', 'Lead'), staff: t('scan.sen.staff', 'Staff'),
-    senior: t('scan.sen.senior', 'Senior'), mid: t('scan.sen.mid', 'Mid'),
-    junior: t('scan.sen.junior', 'Junior'), intern: t('scan.sen.intern', 'Intern'),
-  }[s] || s);
-  const filterSeniority = c('select', { className: 'select' }, [
+  const filterSeniority = c('select', { className: 'select', id: 'scan-filter-seniority' }, [
     c('option', { value: '' }, t('scan.allSeniority', 'All seniority')),
   ]);
-  function paintSeniorityOptions(rows) {
-    const prev = filterSeniority.value;
-    while (filterSeniority.children.length > 1) filterSeniority.removeChild(filterSeniority.lastChild);
-    const counts = {};
-    for (const r of rows || []) { const s = senOf(r); if (s) counts[s] = (counts[s] || 0) + 1; }
-    for (const s of SEN_ORDER) {
-      if (!counts[s]) continue;
-      filterSeniority.appendChild(c('option', { value: s }, `${senLabel(s)} (${counts[s]})`));
-    }
-    if (prev && [...filterSeniority.options].some((o) => o.value === prev)) filterSeniority.value = prev;
-  }
   // v1.80.0 — ⭐ favorites-only toggle (localStorage-backed, by job URL).
   const favOnly = c('input', { type: 'checkbox', id: 'fav-only' });
 
@@ -422,7 +320,7 @@ Router.register('scan', async () => {
   // then the live poll + terminal `done` refill it with the new run's results.
   function resetResultsCache() {
     lastResults = { en: null, ru: null };
-    renderResults();
+    SR.render();
   }
   function runEnScan() {
     lastRunFn = runEnScan;
@@ -549,18 +447,10 @@ Router.register('scan', async () => {
     } catch {
       lastResults = { en: null, ru: null };
     }
-    renderResults();
+    SR.render();
     // F-011: notify the Active-Companies counter (and any other listener)
     // that the result corpus changed so they can recompute their labels.
     document.body.dispatchEvent(new CustomEvent('scan:refresh'));
-  }
-  function getRows() {
-    const scope = filterScope.value || 'all';
-    const en = lastResults.en;
-    const ru = lastResults.ru;
-    const enRows = (scope === 'fresh' ? en?.fresh : (en?.filtered || en?.fresh)) || [];
-    const ruRows = (scope === 'fresh' ? ru?.fresh : (ru?.filtered || ru?.fresh)) || [];
-    return [...enRows, ...ruRows];
   }
   // v1.30.0 — replaces the hardcoded 200-row truncation. UI.paginate
   // auto-clamps the page when filters narrow the list (so the user
@@ -568,230 +458,22 @@ Router.register('scan', async () => {
   // onChange when paginator buttons are clicked. PAGE_SIZE picked to
   // match the prior 200-row visual density per page.
   const PAGE_SIZE = 200;
-  const pager = UI.paginate({ pageSize: PAGE_SIZE, onChange: () => renderResults() });
-  function renderResults() {
-    resultsEl.innerHTML = '';
-    const allRows = getRows();
-    // v1.78.0 — refresh the country dropdown from the (scope-filtered) corpus so
-    // it lists exactly the countries present, each with a count.
-    paintCountryOptions(allRows);
-    paintSeniorityOptions(allRows);
-    const enWhen = lastResults.en?.when ? new Date(lastResults.en.when).toLocaleString('ru') : null;
-    const ruWhen = lastResults.ru?.when ? new Date(lastResults.ru.when).toLocaleString('ru') : null;
-
-    // Header summary — labels neutralized to "ATS / Regional" so the
-    // adapter geography isn't baked into the UI (F-010).
-    const atsLabel = t('scan.atsBadge', 'ATS adapters');
-    const regionalLabel = t('scan.regionalBadge', 'Regional portals');
-    const summary = c('div', { className: 'flex gap-3 mb-3', style: { flexWrap: 'wrap' } }, [
-      enWhen && c('span', { className: 'badge badge-info' }, `${atsLabel} · ${enWhen} · ${lastResults.en.fresh?.length || 0} ${t('scan.pillNew', 'new')} / ${lastResults.en.filtered?.length || 0} ${t('scan.pillMatching', 'matching')}`),
-      ruWhen && c('span', { className: 'badge badge-info' }, `${regionalLabel} · ${ruWhen} · ${lastResults.ru.fresh?.length || 0} ${t('scan.pillNew', 'new')} / ${lastResults.ru.filtered?.length || 0} ${t('scan.pillMatching', 'matching')}`),
-    ]);
-    resultsEl.appendChild(summary);
-
-    if (!allRows.length) {
-      resultsEl.appendChild(c('div', { className: 'empty' }, t('scan.noResults')));
-      return;
-    }
-
-    // ── Chip facets (skills + level + dynamic keywords) ──
-    // Dynamic keywords adapt to whatever roles the user actually scanned —
-    // gives meaningful chips even for non-engineering profiles (marketing,
-    // design, finance, …) where the hardcoded TECH_GROUPS would be empty.
-    const facets = window.Skills.computeFacets(allRows);
-    // Filter dynamic keywords by script — non-Russian UI shouldn't show
-    // Cyrillic-only tokens like "разработчик" leaking from Habr data.
-    const lang = (window.I18n && I18n.getLang()) || 'en';
-    const script = lang === 'ru' ? 'all' : 'latin';
-    const dynKeywords = window.Skills.extractDynamicKeywords(allRows, { limit: 20, script });
-    const dynCounts = Object.fromEntries(dynKeywords);
-    // v1.55.6 — UX-4: the stack / level / dynamic facet chips are a
-    // secondary refinement — collapse them behind the same "Advanced
-    // filters" disclosure so a fresh result set leads with the table,
-    // not a wall of chips. The body keeps the original flex-column.
-    const chipsContainer = c('details', { className: 'mb-3 scan-advanced' });
-    chipsContainer.appendChild(c('summary', null, t('scan.advancedFilters', 'Advanced filters')));
-    const chipsBody = c('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' } });
-    if (Object.keys(facets.tech).length) chipsBody.appendChild(buildChipRow(t('scan.chip.stack'), facets.tech, activeTech));
-    if (Object.keys(facets.level).length) chipsBody.appendChild(buildChipRow(t('scan.chip.level'), facets.level, activeLevel));
-    if (dynKeywords.length) chipsBody.appendChild(buildChipRow(t('scan.chip.dynamic', 'Keywords'), dynCounts, activeDynamic));
-    // Only surface the cluster when there is at least one chip row.
-    if (chipsBody.childNodes.length) {
-      chipsContainer.appendChild(chipsBody);
-      resultsEl.appendChild(chipsContainer);
-    }
-
-    // ── Now apply ALL filters (text/remote/source + chips) ──
-    const q = (filterText.value || '').toLowerCase().trim();
-    // Comma-separated OR for include ("roles to find"), and exclude terms.
-    const qTerms = q ? q.split(',').map((s) => s.trim()).filter(Boolean) : [];
-    const exTerms = (filterExclude.value || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
-    const fr = filterRemote.value;
-    const fs = filterSource.value;
-    const fc = filterCountry.value; // v1.78.0 — country code or '' (all)
-    const fsen = filterSeniority.value; // v1.129.0 — seniority bucket or '' (all)
-    const fa = parseInt(filterAge.value, 10); // v1.80.0 — max age in days (NaN = any)
-    const ageCutoff = Number.isFinite(fa) && fa > 0 ? Date.now() - fa * 86400000 : null;
-    // v1.80.0 — favorites-only: snapshot the starred set once per render.
-    const favSet = favOnly.checked ? new Set(window.ScanPrefs.listFavorites()) : null;
-    const salMin = parseInt(filterSalaryMin.value, 10);
-    const salMax = parseInt(filterSalaryMax.value, 10);
-    const rows = allRows.filter((r) => {
-      const hay = (r.company + ' ' + r.title + ' ' + (r.location || '')).toLowerCase();
-      if (qTerms.length && !qTerms.some((term) => hay.includes(term))) return false;      // include (OR)
-      if (exTerms.length && exTerms.some((term) => hay.includes(term))) return false;      // exclude (ANY)
-      if (fr === 'remote' && !r.isRemote) return false;
-      if (fr === 'hybrid' && !/hybrid/i.test(r.workplaceType || '')) return false;
-      if (fr === 'onsite' && (r.isRemote || /remote|hybrid/i.test(r.workplaceType || ''))) return false;
-      if (fr === 'reloc' && !r.relocates) return false;
-      if (fs && r.source !== fs) return false;
-      if (fc && !window.Countries.rowInCountry(r, fc)) return false;
-      // v1.129.0 — seniority: keep only the selected bucket; titles with no
-      // seniority word (bucket null) always pass, like the other facets.
-      if (fsen && senOf(r) !== fsen) return false;
-      if (favSet && !favSet.has(r.url)) return false;
-      // age: rows with a parseable date older than the cutoff are dropped;
-      // dateless rows pass (don't penalize missing data).
-      if (ageCutoff !== null && r.date) {
-        const t0 = Date.parse(r.date);
-        if (Number.isFinite(t0) && t0 < ageCutoff) return false;
-      }
-      if (!window.Skills.salaryInRange(r, salMin, salMax)) return false;
-      if (!window.Skills.rowMatches(r, activeTech, activeLevel)) return false;
-      if (activeDynamic.size) {
-        let any = false;
-        for (const k of activeDynamic) if (window.Skills.rowHasKeyword(r, k)) { any = true; break; }
-        if (!any) return false;
-      }
-      return true;
-    });
-    if (!rows.length) {
-      resultsEl.appendChild(c('div', { className: 'empty' }, t('track.noMatch')));
-      return;
-    }
-    // v1.12.0 — sort boosted rows to the top of each render. Stable
-    // within the boosted/non-boosted partition so the underlying scan
-    // order is preserved otherwise. Boost is sourced from
-    // `portals.yml::title_filter.seniority_boost` and stamped server-side
-    // by both en-scanner and ru-scanner.
-    // v1.30.0 — sort the FULL filtered set FIRST (so the boost-to-top
-    // invariant holds across pages), then page-slice.
-    const sortedAll = rows.slice().sort((a, b) => {
-      const ab = a && a._boosted ? 1 : 0;
-      const bb = b && b._boosted ? 1 : 0;
-      return bb - ab;
-    });
-    const sorted = pager.slice(sortedAll);
-    const tbody = c('tbody', null, sorted.map((r) => {
-      const wt = r.workplaceType || (r.isRemote ? 'Remote' : 'Onsite');
-      const wtClass = /remote/i.test(wt) ? 'badge-ok' : /hybrid/i.test(wt) ? 'badge-info' : '';
-      // Title cell shows a "⬆ boosted" pill before the link when the
-      // server-side scanner matched a `seniority_boost` keyword on the
-      // title. Title attribute reveals WHICH keyword matched, so the
-      // user can trace it back to portals.yml.
-      // v1.76.0 — trust badge (parent career-ops v1.13.0). Only shown when
-      // trust_filter is enabled AND the posting is below "high" trust. The badge
-      // is language-neutral (⚠ + score/100); the tooltip lists the flag codes,
-      // so it renders identically across all 12 locales with no i18n keys.
-      const trustBadge = (r._trustLevel && r._trustLevel !== 'high') ? c('span', {
-        className: 'badge ' + (r._trustLevel === 'low' ? 'badge-bad' : 'badge-warn'),
-        title: 'Trust ' + (r._trustScore != null ? r._trustScore + '/100' : '?')
-          + (r._trustFlags && r._trustFlags.length ? ' · ' + r._trustFlags.join(', ') : ''),
-        style: { marginRight: '6px', fontSize: '11px' },
-      }, '⚠ ' + (r._trustScore != null ? r._trustScore : '')) : null;
-      // v1.89.0 — fit-to-what-you-want badge. Only shown when the two-pager
-      // yields a matchable signal (FitScore returns null otherwise — never a
-      // fabricated number). Colour tiers: ≥66 ok, ≥40 info, else bad. Tooltip
-      // lists what matched / what a deal-breaker violated.
-      let fitBadge = null;
-      if (twoPagerData && window.FitScore) {
-        const fit = window.FitScore.scoreJob(r, twoPagerData, window.Countries);
-        if (fit && fit.score != null) {
-          const cls = fit.score >= 66 ? 'badge-ok' : fit.score >= 40 ? 'badge-info' : 'badge-bad';
-          const tip = [
-            fit.matched.length ? '✓ ' + fit.matched.map((x) => x.label).join(', ') : '',
-            fit.violated.length ? '✗ ' + fit.violated.map((x) => x.label).join(', ') : '',
-          ].filter(Boolean).join(' · ');
-          fitBadge = c('span', {
-            className: 'badge ' + cls,
-            title: t('scan.fitTip', 'Fit to what you want') + (tip ? ' · ' + tip : ''),
-            style: { marginRight: '6px', fontSize: '11px' },
-          }, '◎ ' + fit.score);
-        }
-      }
-      const titleCell = c('td', null, [
-        r._boosted ? c('span', {
-          className: 'badge badge-info',
-          title: t('scan.boostedBy', 'Boosted by') + ': ' + (r._boostedBy || '?'),
-          style: { marginRight: '6px', fontSize: '11px' },
-        }, '⬆ ' + t('scan.boosted', 'boosted')) : null,
-        fitBadge,
-        trustBadge,
-        c('a', { href: r.url, target: '_blank', rel: 'noopener', style: { color: 'var(--rausch)' } }, r.title),
-      ]);
-      // v1.80.0 — ⭐ favorite toggle (localStorage, by URL). Re-renders so the
-      // "favorites only" filter reflects the change immediately.
-      const starred = window.ScanPrefs.isFavorite(r.url);
-      const starCell = c('td', { style: { width: '28px', textAlign: 'center' } },
-        c('button', {
-          type: 'button',
-          className: 'btn-star' + (starred ? ' on' : ''),
-          title: starred ? t('scan.unstar', 'Remove from favorites') : t('scan.star', 'Add to favorites'),
-          'aria-label': starred ? t('scan.unstar', 'Remove from favorites') : t('scan.star', 'Add to favorites'),
-          'aria-pressed': starred ? 'true' : 'false',
-          onClick: () => { window.ScanPrefs.toggleFavorite(r.url); renderResults(); },
-          style: { background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '15px', lineHeight: '1', color: starred ? 'var(--rausch)' : 'var(--foggy)' },
-        }, starred ? '★' : '☆'));
-      // Optional company logo (favicon of the company's own domain) — off by
-      // default; window.CompanyLogo.badge returns null when disabled.
-      const logo = window.CompanyLogo ? window.CompanyLogo.badge(r.url, r.company) : null;
-      const companyCell = logo
-        ? c('td', { style: { minWidth: '160px' } },
-            c('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } }, [logo, c('span', null, r.company || '—')]))
-        : c('td', { style: { minWidth: '160px' } }, r.company || '—');
-      // v1.129.0 — zero-token seniority bucket + freshness ("Nd" / today) from
-      // job-facets.js. Both are best-effort: a title with no seniority word or
-      // a job with no listed date renders an empty cell.
-      const sen = senOf(r);
-      const senCell = c('td', null, sen
-        ? c('span', { className: 'badge', style: { fontSize: '11px' } }, senLabel(sen))
-        : '');
-      const days = window.JobFacets ? window.JobFacets.daysSince(r.date) : null;
-      const freshText = days == null ? '' : (days <= 0 ? t('scan.freshToday', 'today') : days + t('scan.dSuffix', 'd'));
-      const freshCell = c('td', {
-        style: { fontSize: '13px', color: 'var(--foggy)', whiteSpace: 'nowrap' },
-        title: r.date || '',
-      }, freshText);
-      return c('tr', null, [
-        starCell,
-        companyCell,
-        titleCell,
-        senCell,
-        c('td', { style: { fontSize: '13px', color: 'var(--foggy)' } }, r.location || '—'),
-        c('td', null, c('span', { className: 'badge ' + wtClass }, wt)),
-        c('td', null, r.relocates ? c('span', { className: 'badge badge-info' }, t('scan.relocBadge', 'reloc')) : ''),
-        c('td', { style: { fontSize: '13px', color: 'var(--foggy)' } }, r.salary || ''),
-        freshCell,
-        c('td', null, c('span', { className: 'tag' }, r.source)),
-      ]);
-    }));
-    resultsEl.appendChild(c('div', { className: 'table-wrap' },
-      c('table', { className: 'tbl' }, [
-        c('thead', null, c('tr', null,
-          ['★', t('scan.col.company'), t('scan.col.role'), t('scan.col.seniority', 'Seniority'), t('scan.col.loc'), t('scan.col.type'), 'Reloc', t('scan.col.salary'), t('scan.col.age', 'Age'), t('scan.col.source')].map((h) => c('th', null, h))
-        )),
-        tbody,
-      ])
-    ));
-    // v1.30.0 — paginator replaces the v1.12-v1.29.x "first 200 of N"
-    // hint. controls() returns null when there's only one page, so
-    // small result sets stay clean.
-    resultsEl.appendChild(pager.controls(sorted.length, rows.length));
-  }
+  const pager = UI.paginate({ pageSize: PAGE_SIZE, onChange: () => SR.render() });
+  // v1.132.0 — the results-rendering subsystem was extracted to
+  // public/js/lib/scan-results.js (file-size-contract split). It closes over
+  // this context; lastResults is passed as a getter because refreshResults()
+  // reassigns it. FALLBACK_SOURCES also moved there (window.ScanResults).
+  const SR = window.ScanResults.create({
+    resultsEl, t,
+    filterScope, filterText, filterExclude, filterRemote, filterSource,
+    filterCountry, filterSeniority, filterAge, favOnly, filterSalaryMin, filterSalaryMax,
+    activeTech, activeLevel, activeDynamic, pager, twoPagerData,
+    getLastResults: () => lastResults,
+  });
 
   // v1.68.0 — filters are now Apply-driven (was live-on-input). The user asked
   // for an explicit "Apply" so the salary range visibly re-filters the results.
-  function applyFilters() { pager.reset(); renderResults(); }
+  function applyFilters() { pager.reset(); SR.render(); }
   function resetFilters() {
     filterText.value = '';
     filterExclude.value = '';
@@ -876,43 +558,13 @@ Router.register('scan', async () => {
   } }, '🗑 ' + t('scan.deleteSearch', 'Delete'));
   const savedSearchBar = c('div', { className: 'flex', style: { gap: '8px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '8px' } },
     [ssSelect, ssName, ssSaveBtn, ssDelBtn]);
-  const applyBtn = c('button', { className: 'btn btn-primary', type: 'button', onClick: applyFilters }, t('scan.applyFilters', 'Apply'));
+  const applyBtn = c('button', { className: 'btn btn-primary', type: 'button', id: 'scan-apply', onClick: applyFilters }, t('scan.applyFilters', 'Apply'));
   const resetBtn = c('button', { className: 'btn btn-ghost', type: 'button', onClick: resetFilters }, t('scan.resetFilters', 'Reset'));
   // Labelled field: the control is WRAPPED in a <label> (implicit association
   // → accessible name for SR users, no id wiring needed). .field is a flex
   // column so the caption text sits ABOVE the control.
   const field = (labelText, el) => c('label', { className: 'field scan-field' }, [c('span', { className: 'scan-field__label' }, labelText), el]);
 
-  // Build a chip row for one facet category. Active selections survive across re-renders
-  // because activeTech / activeLevel are scoped above.
-  function buildChipRow(label, counts, activeSet) {
-    const row = c('div', { className: 'chip-row' }, c('span', { className: 'chip-label' }, label));
-    // Sort by count desc, then alpha
-    const ordered = Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-    if (!ordered.length) {
-      row.appendChild(c('span', { style: { color: 'var(--foggy)', fontSize: '12px' } }, '—'));
-      return row;
-    }
-    for (const [name, count] of ordered) {
-      const isOn = activeSet.has(name);
-      const chip = c('span', {
-        className: 'chip' + (isOn ? ' on' : ''),
-        onClick: () => {
-          if (activeSet.has(name)) activeSet.delete(name);
-          else activeSet.add(name);
-          renderResults();
-        },
-      }, [name, c('span', { className: 'chip-count' }, String(count))]);
-      row.appendChild(chip);
-    }
-    if (activeSet.size) {
-      row.appendChild(c('span', {
-        className: 'chip clear',
-        onClick: () => { activeSet.clear(); renderResults(); },
-      }, t('scan.chip.clear')));
-    }
-    return row;
-  }
 
   // v1.83.0 — repost / ghost-posting detector (parent career-ops v1.15.0).
   // A collapsed panel that lazy-loads GET /api/scan/reposts on first open:
@@ -1150,7 +802,7 @@ Router.register('scan', async () => {
       // setLabel closure below. Falls back to the static tracked count
       // before the first scan completes.
       function activeFromLastScan() {
-        const rows = getRows();
+        const rows = SR.getRows();
         const seen = new Set();
         for (const r of rows) {
           const name = (r && (r.company || r.companyName));
@@ -1184,8 +836,8 @@ Router.register('scan', async () => {
         },
       }, '▸ ' + t('scan.activeCo') + ` ${labelN()}`);
       // Hook into the existing refreshResults() flow without restructuring
-      // the closure: every renderResults() call invalidates this counter,
-      // and renderResults() is itself called from refreshResults() right
+      // the closure: every SR.render() call invalidates this counter,
+      // and SR.render() is itself called from refreshResults() right
       // after the new /api/scan-results comes back. Re-stamp the label
       // every time the SSE done event fires by listening to a custom
       // event the page dispatches on body.

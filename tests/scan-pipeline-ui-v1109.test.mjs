@@ -8,12 +8,13 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const read = (...p) => readFileSync(resolve(__dirname, '..', ...p), 'utf8');
 
 test('scan.js has an Exclude field wired into filtering + saved-search state', () => {
-  const src = read('public', 'js', 'views', 'scan.js');
+  const src = loadScanSrc();
   assert.match(src, /const filterExclude = /);
   // include treated as comma-OR, exclude hides on ANY match
   assert.match(src, /qTerms\.some\(\(term\) => hay\.includes\(term\)\)/);

@@ -9,6 +9,14 @@
 ---
 
 
+## [1.132.0] — 2026-07-31
+
+### 變更
+- **`#/scan` 結果渲染子系統抽取至 `public/js/lib/scan-results.js`**(檔案大小規範債務攤還 — `public/js/views/scan.js` 已成長至 ~1254 行)。該子系統(`renderResults`、`buildChipRow`、`getRows`、列/面向建構器、選項繪製器,以及 `FALLBACK_SOURCES` 註冊表鏡像)已移入一個 `window.ScanResults.create(ctx)` 工廠函式,其閉包捕捉檢視所提供的情境物件。**無行為變化** — 函式原封不動搬移,閉包變數改接至 `ctx.*`;`scan.js` 現為 ~906 行(第二輪抽取以邁向 800 行目標,現正規劃中)。
+- 原始碼靜態測試透過 `tests/helpers/scan-src.mjs::loadScanSrc()` 讀取這兩個檔案;`tests/scan-fallback-sources.test.mjs` 現在改為從 `scan-results.js` 讀取註冊表鏡像。
+- **新增瀏覽器內回歸測試把關** — `tests/playwright-scan-filters.mjs` 植入一份固定的 `data/last-scan.json`,並驅動每一個 `#/scan` 篩選器,斷言精確的列數(`npm run test:e2e:browser`);並新增了穩定的篩選控制項 ID(`#scan-filter-*`、`#scan-apply`)。
+- README「最新版本」橫幅精簡為單行摘要 + 完整變更日誌連結(冗長的多版本敘事牆已退役)。已套用至全部 17 個語系。
+
 ## [1.131.2] — 2026-07-31
 
 ### 變更

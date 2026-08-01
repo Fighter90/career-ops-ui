@@ -17,9 +17,10 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { loadAppCss } from './helpers/css.mjs';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 
 const __d = dirname(fileURLToPath(import.meta.url));
-const SCAN = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'scan.js'), 'utf8');
+const SCAN = loadScanSrc();
 const CSS = loadAppCss();
 
 test('a labelled .scan-filters panel exists (label-above-field, a11y-associated)', () => {

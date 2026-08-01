@@ -2,6 +2,14 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.132.0] — 2026-07-31
+
+### Değiştirildi
+- **`#/scan` sonuç-render alt sistemi `public/js/lib/scan-results.js`'e çıkarıldı** (dosya-boyutu-sözleşmesi borcu — `public/js/views/scan.js` ~1254 satıra kadar büyümüştü). Alt sistem (`renderResults`, `buildChipRow`, `getRows`, satır/faset oluşturucuları, seçenek boyacıları ve `FALLBACK_SOURCES` kayıt defteri aynası) görünümün sağladığı bir bağlam nesnesini kapsayan bir `window.ScanResults.create(ctx)` fabrikasına taşındı. **Davranış değişikliği yok** — fonksiyonlar birebir taşındı, kapatma değişkenleri `ctx.*`'e yeniden bağlandı; `scan.js` artık ~906 satır (800 satırlık hedefe doğru ikinci bir çıkarma geçişi planlanıyor).
+- Kaynak-statik testler her iki dosyayı `tests/helpers/scan-src.mjs::loadScanSrc()` üzerinden okuyor; `tests/scan-fallback-sources.test.mjs` artık kayıt defteri aynasını `scan-results.js`'ten okuyor.
+- **Yeni tarayıcı-içi regresyon kapısı** — `tests/playwright-scan-filters.mjs` hazır bir `data/last-scan.json` tohumluyor ve her `#/scan` filtresini çalıştırarak tam satır sayılarını doğruluyor (`npm run test:e2e:browser`); bunun için kararlı filtre kimlikleri (`#scan-filter-*`, `#scan-apply`) eklendi.
+- README "En son sürüm" afişi tek satırlık bir özet + tam changelog'a bir bağlantıya indirildi (uzun çok-sürümlü anlatı duvarı kaldırıldı). Tüm 17 yerelleştirmede uygulandı.
+
 ## [1.131.2] — 2026-07-31
 
 ### Değiştirildi
