@@ -8,6 +8,14 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.132.0] — 2026-07-31
+
+### Ændret
+- **`#/scan`-resultatgengivelses-delsystemet blev udtrukket til `public/js/lib/scan-results.js`** (afvikling af file-size-contract-gæld — `public/js/views/scan.js` var vokset til ~1254 LOC). Delsystemet (`renderResults`, `buildChipRow`, `getRows`, række-/facet-bygherrerne, valgmulighedsmalerne og `FALLBACK_SOURCES`-registerspejlet) blev flyttet ind i en `window.ScanResults.create(ctx)`-fabrik, der lukker over et kontekstobjekt, som visningen leverer. Ingen adfærdsændring — funktionerne blev flyttet ordret, og closure-variablerne blev omkoblet til `ctx.*`; `scan.js` er nu ~906 LOC (en anden udtrækningsrunde mod 800-LOC-målet er planlagt).
+- Kildestatiske tests læser begge filer via `tests/helpers/scan-src.mjs::loadScanSrc()`; `tests/scan-fallback-sources.test.mjs` læser nu registerspejlet fra `scan-results.js`.
+- **Ny regressionsspærring i browseren** — `tests/playwright-scan-filters.mjs` sår en foruddefineret `data/last-scan.json` og gennemkører hvert `#/scan`-filter, idet den verificerer nøjagtige rækketal (`npm run test:e2e:browser`); stabile filter-id'er (`#scan-filter-*`, `#scan-apply`) blev tilføjet.
+- README's "Seneste udgivelse"-banner er skåret ned til et enkeltlinjeresumé + et link til den fulde ændringslog (den lange fortællemur på tværs af flere versioner er udfaset). Anvendt på tværs af alle 17 lokaliteter.
+
 ## [1.131.2] — 2026-07-31
 
 ### Ændret

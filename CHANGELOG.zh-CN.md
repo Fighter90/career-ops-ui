@@ -9,6 +9,13 @@
 ---
 
 
+## [1.132.0] — 2026-07-31
+
+### 变更
+- **`#/scan` 结果渲染子系统提取到 `public/js/lib/scan-results.js`**(文件体积契约技术债 — `public/js/views/scan.js` 已膨胀至约 1254 行)。该子系统 — `renderResults`、`buildChipRow`、行构建器与分面构建器、选项绘制器,以及 `FALLBACK_SOURCES` 注册表镜像 — 移入一个 `window.ScanResults.create(ctx)` 工厂函数,该工厂闭包捕获由视图提供的上下文对象。**行为无变化** — 这些函数被逐字移动,闭包变量改接到 `ctx.*`;`scan.js` 现为约 906 行(计划进行第二轮提取以达到 800 行目标)。
+- **新增浏览器内回归门** — `tests/playwright-scan-filters.mjs` 预置一份规范的 `data/last-scan.json`,并驱动每一个 `#/scan` 筛选项,断言精确的行数,从而针对真实浏览器行为验证此次拆分。
+- **README 横幅精简** — 冗长的逐版本"最新版本"叙述墙被撤下,改为一行摘要 + 指向完整变更日志(本文件)的链接。
+
 ## [1.131.2] — 2026-07-31
 
 ### 变更

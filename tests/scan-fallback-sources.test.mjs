@@ -16,11 +16,11 @@ import { join, dirname } from 'node:path';
 import { SOURCES } from '../server/lib/sources/registry.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SCAN_JS = join(__dirname, '..', 'public', 'js', 'views', 'scan.js');
+const SCAN_JS = join(__dirname, '..', 'public', 'js', 'lib', 'scan-results.js');
 
 function parseFallbackSources(src) {
   const start = src.indexOf('const FALLBACK_SOURCES = [');
-  assert.ok(start !== -1, 'FALLBACK_SOURCES declaration not found in scan.js');
+  assert.ok(start !== -1, 'FALLBACK_SOURCES declaration not found in scan-results.js');
   const end = src.indexOf('];', start);
   const block = src.slice(start, end);
   const entries = [...block.matchAll(/\{\s*value:\s*'([^']+)',\s*label:\s*'((?:[^'\\]|\\.)*)'\s*\}/g)]
@@ -28,7 +28,7 @@ function parseFallbackSources(src) {
   return entries;
 }
 
-test('scan.js FALLBACK_SOURCES mirrors the server source registry exactly', () => {
+test('scan-results.js FALLBACK_SOURCES mirrors the server source registry exactly', () => {
   const src = readFileSync(SCAN_JS, 'utf8');
   const fallback = parseFallbackSources(src);
 

@@ -11,9 +11,10 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { loadAssembledDict } from './helpers/i18n-vm.mjs';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const scan = readFileSync(resolve(ROOT, 'public', 'js', 'views', 'scan.js'), 'utf8');
+const scan = loadScanSrc();
 
 test('scan.js routes the summary/badge strings through t()', () => {
   for (const key of ['scan.pillNew', 'scan.pillMatching', 'scan.newOffers', 'scan.relocBadge']) {

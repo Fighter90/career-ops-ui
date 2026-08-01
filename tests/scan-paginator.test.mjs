@@ -21,6 +21,7 @@ import { legacyDictText } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -32,12 +33,12 @@ function readSrc(...rel) {
 // ───────────────── static-source canaries ─────────────────
 
 test('scan.js wires UI.paginate with PAGE_SIZE=200', () => {
-  const src = readSrc('public', 'js', 'views', 'scan.js');
+  const src = loadScanSrc();
   assert.match(src, /const\s+PAGE_SIZE\s*=\s*200/,
     'scan.js must declare PAGE_SIZE=200 (preserves prior visual density)');
   assert.match(src, /UI\.paginate\s*\(\s*\{\s*pageSize\s*:\s*PAGE_SIZE/,
     'scan.js must construct paginator with the PAGE_SIZE constant');
-  assert.match(src, /onChange\s*:\s*\(\s*\)\s*=>\s*renderResults\s*\(\s*\)/,
+  assert.match(src, /onChange\s*:\s*\(\s*\)\s*=>\s*SR\.render\s*\(\s*\)/,
     'paginator must re-render results on page change');
 });
 
@@ -45,17 +46,17 @@ test('scan.js resets paginator to page 1 when filters apply', () => {
   // v1.68.0 — filters are Apply-driven. applyFilters() must reset the pager
   // (page 1) before re-rendering, so applying on a deep page doesn't leave
   // the user staring at an empty slice. resetFilters() routes through it too.
-  const src = readSrc('public', 'js', 'views', 'scan.js');
+  const src = loadScanSrc();
   assert.match(src,
-    /function\s+applyFilters\s*\(\s*\)\s*\{\s*pager\.reset\(\)\s*;\s*renderResults\(\)\s*;?\s*\}/,
-    'applyFilters() must reset pager + renderResults');
+    /function\s+applyFilters\s*\(\s*\)\s*\{\s*pager\.reset\(\)\s*;\s*SR\.render\(\)\s*;?\s*\}/,
+    'applyFilters() must reset pager + render (SR.render — results subsystem in scan-results.js)');
 });
 
 test('scan.js uses pager.slice(sortedAll) — pages over the FULL sorted set', () => {
   // The pre-v1.30 bug-class: slicing BEFORE sorting would surface
   // different boosted rows on different pages. v1.30 sorts the full
   // filtered set first, then paginates.
-  const src = readSrc('public', 'js', 'views', 'scan.js');
+  const src = loadScanSrc();
   // Sort must produce `sortedAll` from `rows.slice()` (full set, not truncated).
   assert.match(src, /const\s+sortedAll\s*=\s*rows\.slice\(\)\.sort\b/,
     'scan.js must sort the FULL filtered set into sortedAll before paginating');
@@ -64,15 +65,15 @@ test('scan.js uses pager.slice(sortedAll) — pages over the FULL sorted set', (
 });
 
 test('scan.js appends pager.controls AFTER the table', () => {
-  const src = readSrc('public', 'js', 'views', 'scan.js');
-  assert.match(src, /resultsEl\.appendChild\s*\(\s*pager\.controls\s*\(\s*sorted\.length\s*,\s*rows\.length\s*\)\s*\)/,
-    'scan.js must append pager.controls(visible, total) after the results table');
+  const src = loadScanSrc();
+  assert.match(src, /(?:ctx\.)?resultsEl\.appendChild\s*\(\s*(?:ctx\.)?pager\.controls\s*\(\s*sorted\.length\s*,\s*rows\.length\s*\)\s*\)/,
+    'the render subsystem must append pager.controls(visible, total) after the results table');
 });
 
 test('scan.js no longer truncates with rows.slice(0, 200)', () => {
   // The pre-v1.30 line was `rows.slice(0, 200).sort(...)`. Make sure
   // it's gone — that pattern is the bug we're fixing.
-  const src = readSrc('public', 'js', 'views', 'scan.js');
+  const src = loadScanSrc();
   assert.doesNotMatch(src, /rows\.slice\s*\(\s*0\s*,\s*200\s*\)/,
     'scan.js still has the pre-v1.30 200-row truncation');
 });

@@ -10,12 +10,13 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { I18N_LANGS, localeSource } from './helpers/i18n-vm.mjs';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const read = (...p) => readFileSync(resolve(__dirname, '..', ...p), 'utf8');
 
 test('scan.js wires a seniority filter via JobFacets into filtering + state', () => {
-  const src = read('public', 'js', 'views', 'scan.js');
+  const src = loadScanSrc();
   // dropdown + auto-populate from results (like the country facet)
   assert.match(src, /const filterSeniority = /);
   assert.match(src, /function paintSeniorityOptions/);
@@ -31,7 +32,7 @@ test('scan.js wires a seniority filter via JobFacets into filtering + state', ()
 });
 
 test('scan.js renders a seniority badge column + a freshness (daysSince) column', () => {
-  const src = read('public', 'js', 'views', 'scan.js');
+  const src = loadScanSrc();
   assert.match(src, /const senCell = /);
   assert.match(src, /senLabel\(sen\)/);
   assert.match(src, /window\.JobFacets\.daysSince\(r\.date\)/);

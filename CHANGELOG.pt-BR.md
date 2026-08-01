@@ -8,6 +8,13 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.132.0] — 2026-07-31
+
+### Alterado
+- **Subsistema de renderização de resultados do `#/scan` extraído para `public/js/lib/scan-results.js`** (amortização do contrato de tamanho de arquivo — `public/js/views/scan.js` havia crescido para ~1254 LOC). O subsistema — `renderResults`, `buildChipRow`, os construtores de linha/facetas, os pintores de opções e o espelho do registro `FALLBACK_SOURCES` — passa para uma fábrica `window.ScanResults.create(ctx)` que fecha sobre um objeto de contexto fornecido pela view. **Nenhuma mudança de comportamento** — as funções foram movidas literalmente (verbatim) e suas variáveis de closure foram religadas para `ctx.*`; `scan.js` agora tem ~906 LOC (uma segunda passada de extração rumo à meta de 800 LOC está planejada).
+- **Novo portão de regressão no navegador** — `tests/playwright-scan-filters.mjs` semeia um `data/last-scan.json` fixo e conduz cada filtro de `#/scan`, verificando contagens exatas de linhas, de modo que a extração é validada contra o comportamento real do navegador.
+- **Banner do README enxugado** — a longa narrativa por versão de "Última versão" é aposentada em favor de um resumo de uma linha + um link para o changelog completo (este arquivo).
+
 ## [1.131.2] — 2026-07-31
 
 ### Alterado

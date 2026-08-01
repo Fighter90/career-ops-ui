@@ -2,6 +2,14 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.132.0] — 2026-07-31
+
+### Modificato
+- **Il sottosistema di rendering dei risultati di `#/scan` è stato estratto in `public/js/lib/scan-results.js`** (debito da contratto sulla dimensione dei file — `public/js/views/scan.js` era cresciuto a ~1254 LOC). Il sottosistema — `renderResults`, `buildChipRow`, `getRows`, i builder di righe/faccette, i pittori delle opzioni e lo specchio del registro `FALLBACK_SOURCES` — si è spostato in una factory `window.ScanResults.create(ctx)` che chiude su un oggetto di contesto fornito dalla vista. **Nessuna modifica di comportamento** — le funzioni sono state spostate testualmente, le variabili di chiusura ricollegate meccanicamente a `ctx.*`; `scan.js` è ora ~906 LOC (è pianificato un secondo passaggio di estrazione verso l'obiettivo di 800 LOC).
+- I test source-static leggono entrambi i file tramite `tests/helpers/scan-src.mjs::loadScanSrc()`; `tests/scan-fallback-sources.test.mjs` ora legge lo specchio del registro da `scan-results.js`.
+- **Nuovo gate di regressione in-browser** — `tests/playwright-scan-filters.mjs` semina un `data/last-scan.json` predefinito e guida ogni filtro di `#/scan`, verificando i conteggi esatti delle righe (`npm run test:e2e:browser`); sono stati aggiunti id stabili per i controlli dei filtri (`#scan-filter-*`, `#scan-apply`).
+- Il banner "Ultima release" del README è stato snellito a un riepilogo di una riga + un link al changelog completo (il lungo muro narrativo multi-versione è stato ritirato). Applicato in tutte le 17 localizzazioni.
+
 ## [1.131.2] — 2026-07-31
 
 ### Modificato
