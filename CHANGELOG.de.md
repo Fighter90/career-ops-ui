@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.133.0] — 2026-08-01
+
+### Hinzugefügt
+- **Erkennung frisch finanzierter Unternehmen (`#/funded`, Parent-Parität #2117)** — eine neue schreibgeschützte Ansicht, die das Skript `company-funded.mjs` des Elternprojekts career-ops über `GET /api/company-funded` weiterleitet: eine zur Durchsicht bereitgestellte Liste kürzlich finanzierter Unternehmen, ermittelt aus öffentlichen, host-gepinnten Finanzierungs-Feeds (TechCrunch, PR Newswire, The Guardian, Hacker News). Das Relay führt das Skript mit `--json --dry-run` aus (JSON auf stdout, keine Dateischreibvorgänge), leitet Benutzereingaben niemals in `--sources` weiter, unterliegt Rate-Limiting und wird ausschließlich durch den Nutzer ausgelöst (eine „Entdecken“-Schaltfläche, niemals beim Laden der Seite). Neues Routenmodul `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, unter Sourcing.
+- **Wöchentlicher Interview-Digest (`#/interview-digest`, Parent-Parität #2129/#2130)** — eine neue schreibgeschützte Ansicht, die das LLM-freie Skript `weekly-digest.mjs` des Elternprojekts über `GET /api/interview/weekly-digest` weiterleitet: eine mechanische Zusammenfassung der Interview-Sitzungsnotizen — mit welchen Unternehmen und in welchen Runden Sie diese Woche ein Interview hatten, wiederkehrende Kompetenzen und nach bestem Ermessen ermittelte offene Lücken. Der optionale `?from=&to=`-Zeitraum wird nur weitergeleitet, wenn BEIDE Werte gültige `YYYY-MM-DD`-Daten sind; ein leerer Zeitraum ergibt einen gültigen `available:true`-Digest. Ergänzt in `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`, unter Analytics.
+- Beide Relays folgen dem etablierten Fail-soft-`available:false`-Vertrag, wenn das Elternskript fehlt (CI, eigenständige Installationen). 26 neue i18n-Schlüssel ×17 Sprachversionen; CI-isolierte Suite `tests/parity-routes-v1133.test.mjs` (+5 → 2143).
+
+### Hinweise
+- Das Elternprojekt career-ops ist über v1.24.0 hinaus fortgeschritten — mit der Follow-up-Tracker-Seite (#1422) der Next.js-Web-App und dem Backend-PDF-Rendering (#2182) — nicht portiert: web-ui verfügt bereits über ein eigenes Follow-up-Relay und eigene PDF-Runner, und die zugrunde liegende Härtung von `followup-cadence.mjs` kommt über das Shell-out-Relay ohnehin kostenlos mit. Die Änderungen an `set-status.mjs` / `tracker-utils.mjs` sind CLI-intern und werden nicht gespiegelt.
+
 ## [1.132.0] — 2026-07-31
 
 ### Geändert

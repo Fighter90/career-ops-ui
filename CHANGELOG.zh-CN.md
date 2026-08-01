@@ -9,6 +9,16 @@
 ---
 
 
+## [1.133.0] — 2026-08-01
+
+### 新增
+- **获投公司发现(`#/funded`,与父项目 #2117 对齐)** — 新增一个只读视图,通过 `GET /api/company-funded` 中继父项目 career-ops 的 `company-funded.mjs`:这是一份供你先行审阅的近期获投公司列表,数据来自公开的、主机锁定的融资信息流(TechCrunch、PR Newswire、The Guardian、Hacker News)。该中继以 `--json --dry-run` 方式运行脚本(JSON 输出到 stdout,不写入任何文件),绝不会把用户输入透传进 `--sources`,自带限流,并且由用户主动触发(一个 Discover 按钮,绝不会在挂载时自动运行)。新增路由模块 `server/lib/routes/funded.mjs` + `public/js/views/funded.js`,归入 Sourcing 分组。
+- **每周面试摘要(`#/interview-digest`,与父项目 #2129/#2130 对齐)** — 新增一个只读视图,通过 `GET /api/interview/weekly-digest` 中继父项目零 LLM 的 `weekly-digest.mjs`:对面试环节记录做机械式汇总 —— 本周与哪些公司、在哪些轮次进行了面试、反复出现的能力项,以及尽力而为得出的待补差距。可选的 `?from=&to=` 区间仅在两者均为合法的 `YYYY-MM-DD` 时才会被透传;空区间同样是合法的 `available:true` 摘要。新增至 `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`,归入 Analytics 分组。
+- 当父项目脚本不存在时(CI、独立安装),两个中继均遵循既有的故障自降级 `available:false` 约定。新增 26 个 i18n 键 ×17;CI 隔离测试套件 `tests/parity-routes-v1133.test.mjs`(+5 → **2143**)。
+
+### 说明
+- 父项目 career-ops 已推进到 v1.24.0 之后,带来了 Next.js **web/** 应用的**跟进跟踪器页面**(#1422)与**后端 PDF 渲染**(#2182)—— **未移植**:web-ui 已有自己的跟进中继与 PDF 运行器,底层 `followup-cadence.mjs` 的加固会通过外壳调用中继自动生效、无需额外改动。`set-status.mjs` / `tracker-utils.mjs` 的改动属于 CLI 内部实现,未做镜像。
+
 ## [1.132.0] — 2026-07-31
 
 ### 变更

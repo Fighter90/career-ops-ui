@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2138%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.132.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.132.0)
+[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
 
-> **🆕 最新版本 — v1.132.0** — 將 `#/scan` 的結果渲染子系統抽離為獨立模組（`public/js/lib/scan-results.js`）以符合檔案大小規範；行為位元組級不變，並在真實瀏覽器中驗證。 **2138 個測試.**
+> **🆕 最新版本 — v1.133.0** — 兩個新的唯讀父專案對齊中繼：**獲投公司**（`#/funded`）從公開資金動態消息來源呈現近期獲得資金的公司，**每週面試摘要**（`#/interview-digest`）彙整你的面試場次 — 兩者皆外殼呼叫父專案 career-ops 腳本，失敗自動降級，不寫入任何內容。 **2143 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

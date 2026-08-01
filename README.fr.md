@@ -7,14 +7,14 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2138%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.132.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.132.0)
+[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
 
-> **🆕 Dernière version — v1.132.0** — le sous-système de rendu des résultats de `#/scan` est extrait dans son propre module (`public/js/lib/scan-results.js`) afin de respecter le contrat de taille de fichier ; le comportement est préservé à l'octet près et vérifié dans un navigateur réel. **2138 tests.**
+> **🆕 Dernière version — v1.133.0** — deux nouveaux relais de parité avec le parent en lecture seule : **Découverte des entreprises financées** (`#/funded`) affiche les entreprises récemment financées à partir de flux de financement publics, et **Résumé hebdomadaire des entretiens** (`#/interview-digest`) synthétise vos sessions d'entretien — les deux exécutent des scripts career-ops du parent via un shell-out, en mode fail-soft, sans écriture. **2143 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

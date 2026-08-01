@@ -21,7 +21,7 @@
  */
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, unlinkSync } from 'node:fs';
 import { resolve, sep } from 'node:path';
-import { PATHS, path as projPath } from '../paths.mjs';
+import { PATHS, path as projPath, PROJECT_ROOT } from '../paths.mjs';
 import { slugify, today } from '../parsers.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
 import { bundleProjectContext, resolveLocale } from '../prompts.mjs';
@@ -29,6 +29,14 @@ import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { withFileLock } from '../file-lock.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
+import { runNodeScript } from '../runner.mjs';
+import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
+
+// Strict YYYY-MM-DD gate for the optional weekly-digest range params — only a
+// value that matches reaches the shelled-out arg list (runNodeScript uses an
+// arg array, no shell, but validate anyway so a bad value degrades to the
+// script's default current-week range instead of a script-side error).
+const YMD_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 const MAX_TURNS = 40;          // hard cap on history length accepted per request
 const MAX_TEXT = 6000;         // per-turn answer/question length cap
@@ -214,5 +222,39 @@ export function registerInterviewRoutes(app) {
     if (!existsSync(file)) return res.status(404).json({ error: 'not found' });
     unlinkSync(file);
     res.json({ ok: true, deleted: safe });
+  });
+
+  // v1.133.0 (parent parity #2129/#2130) — Weekly Interview Digest.
+  // Shells out to the parent's zero-LLM `weekly-digest.mjs` (JSON stdout:
+  // a mechanical roll-up of `interview-prep/sessions/*.md` — which companies
+  // you interviewed with this week, rounds, recurring competencies, and
+  // best-effort open gaps from question-bank.md) instead of reimplementing
+  // the session-schema parser — the parent stays the source of truth. An
+  // empty range is a valid `available:true` digest with empty arrays (NOT a
+  // failure). Read-only; fail-soft { available:false } when the script is
+  // absent (CI, standalone installs) so the panel shows an honest note.
+  app.get('/api/interview/weekly-digest', llmRateLimit, async (req, res) => {
+    const script = 'weekly-digest.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      res.json({ available: false, reason: 'script-not-found' });
+      return;
+    }
+    // Optional range: pass --from/--to ONLY when BOTH are valid YYYY-MM-DD
+    // (the parent script rejects exactly one of the pair); otherwise fall
+    // through to its default current-week range.
+    const from = String(req.query.from || '');
+    const to = String(req.query.to || '');
+    const args = YMD_RE.test(from) && YMD_RE.test(to) ? ['--from', from, '--to', to] : [];
+    const r = await runNodeScript(script, args, { timeoutMs: 30_000 });
+    const data = parseJsonStdout(r.stdout);
+    if (r.code !== 0 || !data) {
+      res.json({
+        available: false,
+        reason: r.killed ? 'timeout' : 'script-error',
+        detail: sanitizeDetail(r.stderr),
+      });
+      return;
+    }
+    res.json({ available: true, ...data });
   });
 }
