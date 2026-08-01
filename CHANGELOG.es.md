@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.133.0] — 2026-08-01
+
+### Añadido
+- **Descubrimiento de empresas financiadas (`#/funded`, paridad con el padre #2117)** — una nueva vista de solo lectura que retransmite el `company-funded.mjs` del career-ops padre vía `GET /api/company-funded`: una lista de revisión previa de empresas recientemente financiadas, descubiertas a partir de feeds de financiación públicos y anclados a su host (TechCrunch, PR Newswire, The Guardian, Hacker News). El relé ejecuta el script con `--json --dry-run` (JSON a stdout, sin escrituras en disco), nunca hila la entrada del usuario hacia `--sources`, lleva limitación de tasa, y se activa por el usuario (un botón Descubrir, nunca al montar). Nuevo módulo de ruta `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, bajo Búsqueda.
+- **Resumen semanal de entrevistas (`#/interview-digest`, paridad con el padre #2129/#2130)** — una nueva vista de solo lectura que retransmite el `weekly-digest.mjs` del padre, de cero-LLM, vía `GET /api/interview/weekly-digest`: un resumen mecánico de las notas de sesión de entrevista — con qué empresas y rondas entrevistaste esta semana, competencias recurrentes, y brechas abiertas (best-effort). El rango opcional `?from=&to=` solo se hila cuando AMBOS son `YYYY-MM-DD` válidos; un rango vacío es un resumen `available:true` válido. Añadido a `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`, bajo Analítica.
+- Ambos relés siguen el contrato establecido de degradación segura `available:false` cuando el script del padre está ausente (CI, instalaciones independientes). 26 nuevas claves i18n ×17 idiomas; suite aislada para CI `tests/parity-routes-v1133.test.mjs` (+5 → 2143).
+
+### Notas
+- El career-ops padre avanzó más allá de v1.24.0 con la página Follow-up Tracker de la app Next.js `web/` (#1422) y el renderizado de PDF en el backend (#2182) — no portado: web-ui ya tiene su propio relé de seguimiento y sus propios runners de PDF, y el endurecimiento subyacente de `followup-cadence.mjs` llega gratis vía el relé shell-out. Los cambios de `set-status.mjs` / `tracker-utils.mjs` son internos de CLI y no se reflejan.
+
 ## [1.132.0] — 2026-07-31
 
 ### Cambiado

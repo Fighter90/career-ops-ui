@@ -7,14 +7,14 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2138%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.132.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.132.0)
+[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
 
-> **🆕 Останній реліз — v1.132.0** — підсистему рендерингу результатів `#/scan` винесено в окремий модуль (`public/js/lib/scan-results.js`) для дотримання контракту розміру файлу; поведінка ідентична побайтово, перевірено в реальному браузері. **2138 тестів.**
+> **🆕 Останній реліз — v1.133.0** — два нові тільки-для-читання ретрансляції паритету з батьком: **Профінансовані компанії** (`#/funded`) показують нещодавно профінансовані компанії з публічних стрічок про фінансування, а **Щотижневий дайджест співбесід** (`#/interview-digest`) підсумовує ваші сесії співбесід — обидві звертаються до скриптів батьківського career-ops, fail-soft, без записів. **2143 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

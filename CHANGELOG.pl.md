@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.133.0] — 2026-08-01
+
+### Dodano
+- **Wykrywanie sfinansowanych firm (`#/funded`, parytet z rodzicem #2117)** — nowy widok tylko do odczytu, przekazujący skrypt `company-funded.mjs` rodzica career-ops przez `GET /api/company-funded`: lista firm niedawno sfinansowanych, przeznaczona najpierw do przejrzenia (review-first), wykrytych z publicznych, przypiętych do hosta kanałów o finansowaniu (TechCrunch, PR Newswire, The Guardian, Hacker News). Przekaźnik uruchamia skrypt z `--json --dry-run` (JSON na stdout, bez zapisu plików), nigdy nie przekazuje danych wejściowych użytkownika do `--sources`, ma ograniczanie liczby żądań i jest wyzwalany przez użytkownika (przycisk Discover, nigdy przy montowaniu). Nowy moduł trasy `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, w grupie **Pozyskiwanie**.
+- **Cotygodniowe podsumowanie rozmów kwalifikacyjnych (`#/interview-digest`, parytet z rodzicem #2129/#2130)** — nowy widok tylko do odczytu, przekazujący skrypt rodzica `weekly-digest.mjs` (bez LLM) przez `GET /api/interview/weekly-digest`: mechaniczne zestawienie notatek z sesji rozmów kwalifikacyjnych — z jakimi firmami i na jakich rundach rozmawiałeś w tym tygodniu, powtarzające się kompetencje oraz szacunkowe (best-effort) otwarte luki. Opcjonalny zakres `?from=&to=` jest przekazywany tylko wtedy, gdy OBIE wartości są poprawnymi datami `YYYY-MM-DD`; pusty zakres to prawidłowe podsumowanie `available:true`. Dodano do `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`, w grupie **Analityka**.
+- Oba przekaźniki stosują się do ustalonego kontraktu fail-soft `available:false`, gdy skrypt rodzica jest niedostępny (CI, samodzielne instalacje). 26 nowych kluczy i18n ×17 lokalizacji; izolowany dla CI zestaw testów `tests/parity-routes-v1133.test.mjs` (+5 → 2143).
+
+### Uwagi
+- Rodzic career-ops posunął się dalej niż v1.24.0 dzięki stronie Follow-up Tracker w aplikacji Next.js **web/** (#1422) oraz renderowaniu PDF po stronie backendu (#2182) — nieprzeniesione: web-ui ma już własny przekaźnik follow-up oraz uruchamiacze PDF, a leżące u podstaw utwardzenie `followup-cadence.mjs` trafia tu za darmo przez przekaźnik typu shell-out. Zmiany w `set-status.mjs` / `tracker-utils.mjs` są wewnętrzne dla CLI i nie zostały odzwierciedlone.
+
 ## [1.132.0] — 2026-07-31
 
 ### Zmieniono

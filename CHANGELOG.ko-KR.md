@@ -9,6 +9,16 @@
 ---
 
 
+## [1.133.0] — 2026-08-01
+
+### 추가
+- **투자 유치 기업 발굴(`#/funded`, 상위 패리티 #2117)** — 상위 career-ops의 `company-funded.mjs`를 `GET /api/company-funded`로 중계하는 새로운 읽기 전용 뷰입니다: 공개적이고 호스트가 고정된 펀딩 피드(TechCrunch, PR Newswire, The Guardian, Hacker News)에서 발견한, 최근 투자를 유치한 기업들의 검토 우선 목록입니다. 이 릴레이는 스크립트를 `--json --dry-run`으로 실행하고(stdout으로 JSON 출력, 파일 쓰기 없음), 사용자 입력을 결코 `--sources`에 전달하지 않으며, 속도 제한이 적용되고, 사용자가 직접 실행해야 합니다(Discover 버튼 — 마운트 시 자동 실행 없음). 새 라우트 모듈 `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, Sourcing 아래.
+- **주간 인터뷰 다이제스트(`#/interview-digest`, 상위 패리티 #2129/#2130)** — 상위의 LLM을 사용하지 않는 `weekly-digest.mjs`를 `GET /api/interview/weekly-digest`로 중계하는 새로운 읽기 전용 뷰입니다: 이번 주 인터뷰한 회사와 라운드, 반복되는 역량, 최선 노력으로 파악한 공백을 기계적으로 집계합니다. 선택적 `?from=&to=` 범위는 둘 다 유효한 `YYYY-MM-DD`일 때만 전달되며, 빈 범위도 유효한 `available:true` 다이제스트입니다. `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`에 추가, Analytics 아래.
+- 두 릴레이 모두 상위 스크립트가 없을 때(CI, 독립 설치) 기존의 페일소프트 `available:false` 계약을 따릅니다. 26개의 새 i18n 키 ×17개 로케일; CI 격리 스위트 `tests/parity-routes-v1133.test.mjs`(+5 → 2143).
+
+### 비고
+- 상위 career-ops가 Next.js `web/` 앱의 Follow-up Tracker 페이지(#1422)와 백엔드 PDF 렌더링(#2182)을 갖춘 v1.24.0을 넘어 발전했습니다 — 포팅되지 않음: web-ui는 이미 자체 팔로업 릴레이와 PDF 러너를 갖추고 있으며, 근간이 되는 `followup-cadence.mjs` 하드닝은 셸아웃 릴레이를 통해 자동으로 반영됩니다. `set-status.mjs` / `tracker-utils.mjs` 변경 사항은 CLI 내부용이며 미러링되지 않습니다.
+
 ## [1.132.0] — 2026-07-31
 
 ### 변경

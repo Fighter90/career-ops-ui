@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.133.0] — 2026-08-01
+
+### Tilføjet
+- **Opdagelse af finansierede virksomheder (`#/funded`, forælder-paritet #2117)** — en ny skrivebeskyttet visning, der videreformidler forælderens career-ops `company-funded.mjs` via `GET /api/company-funded`: en liste med fokus på gennemgang over nyligt finansierede virksomheder, fundet fra offentlige, host-pinnede finansieringsfeeds (TechCrunch, PR Newswire, The Guardian, Hacker News). Relæet kører scriptet med `--json --dry-run` (JSON til stdout, ingen filskrivninger), sender aldrig brugerinput videre til `--sources`, har rate limiting og udløses af brugeren (en Opdag-knap, aldrig ved indlæsning). Nyt rutemodul `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, under Sourcing.
+- **Ugentligt interviewresumé (`#/interview-digest`, forælder-paritet #2129/#2130)** — en ny skrivebeskyttet visning, der videreformidler forælderens nul-LLM `weekly-digest.mjs` via `GET /api/interview/weekly-digest`: en mekanisk sammenfatning af interviewsessionsnoterne — hvilke virksomheder og runder du har interviewet med i denne uge, tilbagevendende kompetencer og bedst-mulige åbne huller. Det valgfrie `?from=&to=`-interval sendes kun med, når BEGGE er gyldige `YYYY-MM-DD`; et tomt interval er et gyldigt `available:true`-resumé. Tilføjet til `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`, under Analyse.
+- Begge relæer følger den etablerede fail-soft `available:false`-kontrakt, når forælderens script ikke er til stede (CI, standalone-installationer). 26 nye i18n-nøgler ×17 lokaliteter; CI-isoleret suite `tests/parity-routes-v1133.test.mjs` (+5 → 2143).
+
+### Noter
+- Forælderens career-ops er avanceret forbi v1.24.0 med Next.js web/-appens Follow-up Tracker-side (#1422) og backend-PDF-rendering (#2182) — ikke porteret: web-ui har allerede sit eget follow-up-relæ og PDF-runnere, og den underliggende `followup-cadence.mjs`-hærdning kommer gratis med via shell-out-relæet. `set-status.mjs`/`tracker-utils.mjs`-ændringerne er CLI-interne og spejles ikke.
+
 ## [1.132.0] — 2026-07-31
 
 ### Ændret

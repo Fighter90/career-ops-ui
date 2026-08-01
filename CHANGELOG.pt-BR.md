@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.133.0] — 2026-08-01
+
+### Adicionado
+- **Descoberta de empresas financiadas (`#/funded`, paridade com o pai #2117)** — uma nova view somente leitura que retransmite o `company-funded.mjs` do career-ops pai via `GET /api/company-funded`: uma lista para revisão prévia de empresas recém-financiadas, descobertas a partir de feeds públicos de financiamento com host fixado (TechCrunch, PR Newswire, The Guardian, Hacker News). A retransmissão executa o script com `--json --dry-run` (JSON para stdout, sem escrita de arquivos), nunca encaminha entrada do usuário para `--sources`, aplica limite de taxa e é acionada pelo usuário (um botão Descobrir, nunca ao montar a página). Novo módulo de rota `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, em Sourcing.
+- **Resumo semanal de entrevistas (`#/interview-digest`, paridade com o pai #2129/#2130)** — uma nova view somente leitura que retransmite o `weekly-digest.mjs` zero-LLM do pai via `GET /api/interview/weekly-digest`: uma consolidação mecânica das notas de sessão de entrevista — quais empresas e rodadas você teve entrevistas nesta semana, competências recorrentes e lacunas em aberto (best-effort). O intervalo opcional `?from=&to=` só é encaminhado quando AMBOS os valores são `YYYY-MM-DD` válidos; um intervalo vazio é um resumo `available:true` válido. Adicionado a `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`, em Analytics.
+- Ambas as retransmissões seguem o contrato consolidado de fail-soft `available:false` para quando o script do pai estiver ausente (CI, instalações standalone). 26 novas chaves de i18n ×17 locales; suíte isolada para CI `tests/parity-routes-v1133.test.mjs` (+5 → 2143).
+
+### Notas
+- O career-ops pai avançou além da v1.24.0 com a página Follow-up Tracker (#1422) do app web/ em Next.js e a renderização de PDF no backend (#2182) — não portadas: o web-ui já tem sua própria retransmissão de follow-up e seus próprios runners de PDF, e o robustecimento subjacente do `followup-cadence.mjs` chega de graça via a retransmissão por shell-out. As mudanças em `set-status.mjs` / `tracker-utils.mjs` são internas à CLI e não são espelhadas.
+
 ## [1.132.0] — 2026-07-31
 
 ### Alterado

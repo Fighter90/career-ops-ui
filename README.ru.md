@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2138%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.132.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.132.0)
+[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
 
-> **🆕 Последний релиз — v1.132.0** — подсистема рендеринга результатов `#/scan` вынесена в собственный модуль (`public/js/lib/scan-results.js`) во исполнение контракта размера файла; поведение сохранено побайтово и проверено вживую в браузере. **2138 тестов.**
+> **🆕 Последний релиз — v1.133.0** — два новых read-only релея паритета с родителем: **Профинансированные компании** (`#/funded`) показывает недавно профинансированные компании из публичных фидов о финансировании (TechCrunch, PR Newswire, The Guardian, Hacker News), а **Еженедельный дайджест интервью** (`#/interview-digest`) сводит воедино ваши сессии интервью — оба шеллятся в скрипты родительского career-ops, fail-soft, без записи. **2143 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

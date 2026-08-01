@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.133.0] — 2026-08-01
+
+### Added
+- **Funded-company discovery (`#/funded`, parent parity #2117)** — a new read-only view relaying the parent career-ops `company-funded.mjs` via `GET /api/company-funded`: a review-first list of recently funded companies discovered from public, host-pinned funding feeds (TechCrunch, PR Newswire, The Guardian, Hacker News). The relay runs the script with `--json --dry-run` (JSON to stdout, **no file writes**), never threads user input into `--sources` (no SSRF surface beyond the parent's own fixed feeds), carries `llmRateLimit`, and is user-triggered (a Discover button, never on mount). New route module `server/lib/routes/funded.mjs` (the 32nd) + `public/js/views/funded.js`, under **Sourcing**.
+- **Weekly interview digest (`#/interview-digest`, parent parity #2129/#2130)** — a new read-only view relaying the parent's zero-LLM `weekly-digest.mjs` via `GET /api/interview/weekly-digest`: a mechanical roll-up of `interview-prep/sessions/*.md` — which companies and rounds you interviewed with this week, recurring competencies, and best-effort open gaps. Optional `?from=&to=` range is threaded ONLY when BOTH are valid `YYYY-MM-DD`; an empty range is a valid `available:true` digest (not a failure). Added to `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`, under **Analytics**.
+- Both relays follow the established fail-soft `{ available:false }` contract (like `/api/stats/lifetime`) when the parent script is absent (CI, standalone installs), so each view shows an honest note. 26 new i18n keys ×17 locales; CI-isolated suite `tests/parity-routes-v1133.test.mjs` (+5 → **2143**: success passthrough, `--from`/`--to` threading, the read-only `--dry-run` guarantee, and the script-error fail-soft path).
+
+### Notes
+- Parent career-ops advanced past v1.24.0 with the Next.js **web/** app's **Follow-up Tracker page** (#1422) and **backend PDF render** (#2182) — **not ported**: web-ui already has its own follow-up relay (v1.117.0) and PDF runners, and the underlying `followup-cadence.mjs` hardening (impossible-date rejection, null-safe `addDays`, legacy-bullet parsing) arrives for free via the shell-out relay. The `set-status.mjs` / `tracker-utils.mjs` changes are CLI-internal (exit-code / lock helpers) and not mirrored.
+
 ## [1.132.0] — 2026-07-31
 
 ### Changed

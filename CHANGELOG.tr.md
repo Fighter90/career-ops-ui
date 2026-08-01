@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.133.0] — 2026-08-01
+
+### Eklendi
+- **Finanse edilen şirket keşfi (`#/funded`, üst proje paritesi #2117)** — üst proje career-ops'un `company-funded.mjs`'ini `GET /api/company-funded` üzerinden aktaran yeni bir salt-okunur görünüm: herkese açık, ana bilgisayara sabitlenmiş finansman beslemelerinden (TechCrunch, PR Newswire, The Guardian, Hacker News) keşfedilen, yakın zamanda finanse edilmiş şirketlerin inceleme-öncelikli bir listesi. Aktarım, betiği `--json --dry-run` ile çalıştırır (stdout'a JSON, dosya yazması yok), kullanıcı girdisini asla `--sources`'a aktarmaz, hız sınırlaması taşır ve kullanıcı tarafından tetiklenir (bir Keşfet düğmesi, asla bağlanma sırasında değil). Yeni rota modülü `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, Kaynak bulma altında.
+- **Haftalık mülakat özeti (`#/interview-digest`, üst proje paritesi #2129/#2130)** — üst projenin sıfır-LLM `weekly-digest.mjs`'ini `GET /api/interview/weekly-digest` üzerinden aktaran yeni bir salt-okunur görünüm: mülakat oturumu notlarının mekanik bir toplu özeti — bu hafta hangi şirketlerle ve hangi turlarda mülakat yaptığınız, tekrar eden yetkinlikler ve elden geldiğince tespit edilen açık boşluklar. İsteğe bağlı `?from=&to=` aralığı yalnızca İKİSİ de geçerli `YYYY-MM-DD` olduğunda aktarılır; boş bir aralık geçerli bir `available:true` özetidir. `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`'e eklendi, Analitik altında.
+- Her iki aktarım da üst proje betiği yokken (CI, bağımsız kurulumlar) yerleşik hataya karşı toleranslı `available:false` sözleşmesini izler. 26 yeni i18n anahtarı ×17 yerelleştirme; CI-izole paket `tests/parity-routes-v1133.test.mjs` (+5 → 2143).
+
+### Notlar
+- Üst proje career-ops, Next.js `web/` uygulamasının Takip İzleyicisi sayfası (#1422) ve arka uç PDF render'ı (#2182) ile v1.24.0'ın ötesine geçti — taşınmadı: web-ui'nin zaten kendi takip aktarımı ve PDF çalıştırıcıları var ve alttaki `followup-cadence.mjs` sağlamlaştırması kabuk-açma aktarımı üzerinden bedavaya geliyor. `set-status.mjs` / `tracker-utils.mjs` değişiklikleri CLI-dahilidir ve yansıtılmıyor.
+
 ## [1.132.0] — 2026-07-31
 
 ### Değiştirildi

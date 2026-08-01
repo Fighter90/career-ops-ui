@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2138%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.132.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.132.0)
+[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
 
-> **🆕 أحدث إصدار — v1.132.0** — تم فصل نظام عرض نتائج `#/scan` الفرعي إلى وحدة مستقلة (`public/js/lib/scan-results.js`) للوفاء بعقد حجم الملف؛ السلوك مطابق بايتًا ببايت وتم التحقق منه في متصفح حقيقي. **2138 اختبارًا.**
+> **🆕 أحدث إصدار — v1.133.0** — مساران جديدان للقراءة فقط بتكافؤ مع المشروع الأصل: **شركات ممولة** (`#/funded`) تعرض الشركات التي حصلت مؤخراً على تمويل من تغذيات تمويل عامة، و**موجز المقابلات الأسبوعي** (`#/interview-digest`) يجمع جلسات مقابلاتك — كلاهما يُمرِّر سكربتات المشروع الأصل career-ops، بأسلوب فشل آمن، ودون أي كتابة. **2143 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

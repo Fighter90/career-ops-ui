@@ -9,6 +9,16 @@
 ---
 
 
+## [1.133.0] — 2026-08-01
+
+### 追加
+- **資金調達企業ディスカバリー(`#/funded`、親パリティ #2117)** — 親 career-ops の `company-funded.mjs` を `GET /api/company-funded` 経由でリレーする新しい読み取り専用ビューです。公開されホスト固定された資金調達フィード(TechCrunch、PR Newswire、The Guardian、Hacker News)から発見された、最近資金調達を行った企業のレビューファーストな一覧を表示します。このリレーはスクリプトを `--json --dry-run` で実行し(JSON を標準出力へ、ファイル書き込みなし)、ユーザー入力を `--sources` へ決して引き渡さず、レートリミットを備え、ユーザートリガー式です(マウント時ではなく Discover ボタンによって起動)。新しいルートモジュール `server/lib/routes/funded.mjs` + `public/js/views/funded.js` が Sourcing 配下に追加されました。
+- **週次面接ダイジェスト(`#/interview-digest`、親パリティ #2129/#2130)** — 親のゼロ LLM `weekly-digest.mjs` を `GET /api/interview/weekly-digest` 経由でリレーする新しい読み取り専用ビューです。面接セッションのメモを機械的に集約し、今週どの企業・どのラウンドで面接を行ったか、繰り返し登場するコンピテンシー、ベストエフォートで抽出した未解決のギャップを示します。オプションの `?from=&to=` 範囲は両方とも有効な `YYYY-MM-DD` の場合にのみ引き渡され、範囲が空でも有効な `available:true` ダイジェストになります。`server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js` に追加され、Analytics 配下に置かれます。
+- 両リレーとも、親スクリプトが存在しない場合(CI、スタンドアロンインストール)には既存の fail-soft な `available:false` コントラクトに従います。新規 i18n キー 26 個 ×17 ロケール、CI 分離型スイート `tests/parity-routes-v1133.test.mjs`(+5 → **2143**)。
+
+### 補足
+- 親 career-ops は v1.24.0 以降、Next.js の web/ アプリに Follow-up Tracker ページ(#1422)とバックエンド PDF レンダリング(#2182)を追加しましたが、これらは移植していません — web-ui にはすでに独自のフォローアップリレーと PDF ランナーがあり、基盤となる `followup-cadence.mjs` の堅牢化はシェルアウトリレー経由で自動的に取り込まれます。`set-status.mjs` / `tracker-utils.mjs` の変更は CLI 内部のものであり、ミラーしません。
+
 ## [1.132.0] — 2026-07-31
 
 ### 変更

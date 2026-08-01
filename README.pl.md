@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2138%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.132.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.132.0)
+[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
 
-> **🆕 Najnowsze wydanie — v1.132.0** — podsystem renderowania wyników `#/scan` wydzielono do osobnego modułu (`public/js/lib/scan-results.js`), aby spełnić kontrakt rozmiaru pliku; zachowanie identyczne co do bajtu, zweryfikowane w prawdziwej przeglądarce. **2138 testów.**
+> **🆕 Najnowsze wydanie — v1.133.0** — dwa nowe przekaźniki parytetu z rodzicem, tylko do odczytu: **Sfinansowane firmy** (`#/funded`) pokazuje niedawno sfinansowane firmy z publicznych kanałów o finansowaniu, a **Cotygodniowe podsumowanie rozmów kwalifikacyjnych** (`#/interview-digest`) zestawia Twoje sesje rozmów kwalifikacyjnych — oba przekazują dane przez shell-out do skryptów rodzica career-ops, fail-soft, bez zapisów. **2143 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

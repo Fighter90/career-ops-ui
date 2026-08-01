@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2138%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.132.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.132.0)
+[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
 
-> **🆕 Seneste udgivelse — v1.132.0** — `#/scan`-resultatrenderingens undersystem er udtrukket til sit eget modul (`public/js/lib/scan-results.js`) for at overholde filstørrelseskontrakten; adfærden er byte-identisk og verificeret i en rigtig browser. **2138 tests.**
+> **🆕 Seneste udgivelse — v1.133.0** — to nye read-only relæer med forælder-paritet: **Finansierede virksomheder** (`#/funded`) viser nyligt finansierede virksomheder fra offentlige finansieringsfeeds, og **Ugentligt interviewresumé** (`#/interview-digest`) sammenfatter dine interviewsessioner — begge shell'er ud til forælderens career-ops-scripts, fail-soft, ingen skrivninger. **2143 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

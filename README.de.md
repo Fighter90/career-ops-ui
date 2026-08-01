@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2138%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.132.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.132.0)
+[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
 
-> **🆕 Neueste Version — v1.132.0** — das Ergebnis-Rendering-Subsystem von `#/scan` wurde in ein eigenes Modul (`public/js/lib/scan-results.js`) ausgelagert, um den Dateigrößen-Vertrag einzuhalten; Verhalten byte-identisch, im echten Browser verifiziert. **2138 Tests.**
+> **🆕 Neueste Version — v1.133.0** — zwei neue schreibgeschützte Parent-Paritäts-Relays: **Finanzierte Unternehmen** (`#/funded`) zeigt kürzlich finanzierte Unternehmen aus öffentlichen Finanzierungs-Feeds, und **Wöchentlicher Interview-Digest** (`#/interview-digest`) fasst Ihre Interview-Sitzungen zusammen — beide rufen Skripte des Elternprojekts career-ops auf, fail-soft, keine Schreibvorgänge. **2143 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

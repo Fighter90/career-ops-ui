@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2138%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.132.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.132.0)
+[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.132.0** — `#/scan` के परिणाम-रेंडरिंग सबसिस्टम को फ़ाइल-आकार अनुबंध पूरा करने के लिए अलग मॉड्यूल (`public/js/lib/scan-results.js`) में निकाला गया; व्यवहार बाइट-दर-बाइट अपरिवर्तित, वास्तविक ब्राउज़र में सत्यापित। **2138 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.133.0** — दो नए रीड-ओनली पैरेंट-पैरिटी रिले: **फ़ंडेड कंपनियां** (`#/funded`) सार्वजनिक फ़ंडिंग फ़ीड्स से हाल ही में फ़ंडेड कंपनियों को सामने लाता है, और **साप्ताहिक इंटरव्यू डाइजेस्ट** (`#/interview-digest`) आपके इंटरव्यू सेशंस का रोल-अप करता है — दोनों पैरेंट career-ops स्क्रिप्ट्स में शेल-आउट करते हैं, fail-soft, कोई राइट नहीं। **2143 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

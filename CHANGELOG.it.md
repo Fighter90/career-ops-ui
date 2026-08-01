@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.133.0] — 2026-08-01
+
+### Aggiunto
+- **Scoperta aziende finanziate (`#/funded`, parità col padre #2117)** — una nuova vista di sola lettura che inoltra lo script `company-funded.mjs` del career-ops padre tramite `GET /api/company-funded`: un elenco a revisione preventiva di aziende recentemente finanziate, scoperte da feed pubblici di finanziamento con host fissato (TechCrunch, PR Newswire, The Guardian, Hacker News). L'inoltro esegue lo script con `--json --dry-run` (JSON su stdout, nessuna scrittura su file), non passa mai l'input dell'utente in `--sources`, applica un limite di frequenza ed è attivato dall'utente (un pulsante Scopri, mai al montaggio). Nuovo modulo di rotta `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, sotto Sourcing.
+- **Digest settimanale dei colloqui (`#/interview-digest`, parità col padre #2129/#2130)** — una nuova vista di sola lettura che inoltra lo script zero-LLM `weekly-digest.mjs` del padre tramite `GET /api/interview/weekly-digest`: un riepilogo meccanico delle note di sessione dei colloqui — con quali aziende e in quali fasi hai fatto colloqui questa settimana, competenze ricorrenti e lacune aperte stimate al meglio. L'intervallo opzionale `?from=&to=` viene passato solo quando ENTRAMBI sono `YYYY-MM-DD` validi; un intervallo vuoto è un digest `available:true` valido. Aggiunto a `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`, sotto Analytics.
+- Entrambi gli inoltri seguono il contratto consolidato fail-soft `available:false` quando lo script del padre è assente (CI, installazioni standalone). 26 nuove chiavi i18n ×17 locale; suite CI-isolata `tests/parity-routes-v1133.test.mjs` (+5 → 2143).
+
+### Note
+- Il career-ops padre è avanzato oltre la v1.24.0 con la pagina Follow-up Tracker dell'app web/ Next.js (#1422) e il rendering PDF lato backend (#2182) — non portati: web-ui ha già un proprio inoltro follow-up e i propri runner PDF, e l'irrobustimento sottostante di `followup-cadence.mjs` arriva gratis tramite l'inoltro con shell-out. Le modifiche a `set-status.mjs` / `tracker-utils.mjs` sono interne alla CLI e non vengono replicate.
+
 ## [1.132.0] — 2026-07-31
 
 ### Modificato
