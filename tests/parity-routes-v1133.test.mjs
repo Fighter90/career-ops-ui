@@ -13,9 +13,10 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 let server, baseUrl, root;
 
@@ -40,7 +41,13 @@ console.log(JSON.stringify({
 
 // A good fake company-funded.mjs: writes a marker ONLY when NOT --dry-run
 // (the relay must pass --dry-run, so the marker must NEVER appear), and emits
-// JSON only when --json is present (the relay must pass --json).
+// JSON only when --json is present (the relay must pass --json). The result
+// shape mirrors the REAL parent output verbatim (top-level `companies`, each
+// { company, amount, round, funding: { status, confidence, sources:
+// [{ source, title, url, observed_date, date_precision }] }, discovery_score,
+// suggested_action } + generated_at/window_months/sort/dry_run/diagnostics) —
+// the v1.133.1 fix: the first cut assumed a `candidates` key that the parent
+// never emits, so the #/funded table always rendered empty.
 const FUNDED_OK = `
 import { writeFileSync } from 'fs';
 import { dirname, join } from 'path';
@@ -51,11 +58,22 @@ const json = a.includes('--json');
 const rootDir = dirname(fileURLToPath(import.meta.url));
 if (!dry) writeFileSync(join(rootDir, 'FUNDED_ARTIFACT_MARKER.json'), '{}');
 const result = {
-  generatedAt: '2026-08-01',
+  generated_at: '2026-08-02',
+  window_months: 3,
+  sort: 'date',
+  dry_run: dry,
   sources: ['techcrunch', 'prnewswire', 'guardian', 'hn'],
-  candidates: [{ company: 'NovaAI', signal: 'Series B $30M', source: 'techcrunch',
-    url: 'https://techcrunch.com/novaai', observedDate: { value: '2026-07-28', precision: 'day' } }],
-  diagnostics: [{ source: 'techcrunch', status: 'ok', fetched_items: 40, candidate_count: 1 }],
+  diagnostics: [
+    { source: 'techcrunch', status: 'ok', fetched_items: 40, funding_like_items: 12, candidate_count: 1, blocked: false, errors: [] },
+    { source: 'prnewswire', status: 'ok', fetched_items: 20, funding_like_items: 0, candidate_count: 0, blocked: false, errors: [] },
+  ],
+  companies: [{
+    company: 'NovaAI', amount: '$30M', round: 'Series B',
+    funding: { status: 'recent_funding', confidence: 'high', sources: [
+      { source: 'techcrunch', title: 'NovaAI raises $30M Series B', url: 'https://techcrunch.com/novaai', observed_date: '2026-07-28', date_precision: 'day' },
+    ] },
+    discovery_score: 80, suggested_action: 'review_company_manually',
+  }],
 };
 if (json) console.log(JSON.stringify(result));`;
 
@@ -108,12 +126,22 @@ test('weekly-digest threads --from/--to only when BOTH are valid YYYY-MM-DD', as
   assert.equal(bad.metadata.range.from, 'DEFAULT-from');
 });
 
-test('GET /api/company-funded relays the company-funded.mjs JSON', async () => {
+test('GET /api/company-funded relays the company-funded.mjs JSON (parent `companies` shape)', async () => {
   const r = await fetch(baseUrl + '/api/company-funded');
   const d = await r.json();
   assert.equal(d.available, true);
-  assert.equal(d.candidates.length, 1);
-  assert.equal(d.candidates[0].company, 'NovaAI');
+  // The parent emits the ranked list under `companies` (NOT `candidates`) —
+  // the v1.133.1 regression guard for the #/funded empty-table bug.
+  assert.ok(Array.isArray(d.companies), 'result must carry a `companies` array');
+  assert.equal(d.companies.length, 1);
+  assert.equal(d.companies[0].company, 'NovaAI');
+  assert.equal(d.companies[0].round, 'Series B');
+  assert.equal(d.companies[0].amount, '$30M');
+  // The evidence link + source + date the #/funded view renders come from
+  // funding.sources[0] — assert the exact path the client reads.
+  assert.equal(d.companies[0].funding.sources[0].url, 'https://techcrunch.com/novaai');
+  assert.equal(d.companies[0].funding.sources[0].source, 'techcrunch');
+  assert.equal(d.companies[0].funding.sources[0].observed_date, '2026-07-28');
   assert.equal(d.sources.length, 4);
   assert.equal(d.diagnostics[0].status, 'ok');
 });
@@ -136,4 +164,18 @@ test('company-funded relay fails soft when the script errors', async () => {
   assert.equal(typeof d.detail, 'string');
   // Restore the good script for isolation from any later test.
   writeFileSync(join(root, 'company-funded.mjs'), FUNDED_OK);
+});
+
+test('#/funded view reads the parent `companies` field, not `candidates` (v1.133.1 regression guard)', () => {
+  // The view is browser-only, so this is a source-static canary: the first cut
+  // read `res.candidates`, a key the parent never emits, so the table was always
+  // empty. Lock the correct field access at the client layer too.
+  const src = readFileSync(fileURLToPath(new URL('../public/js/views/funded.js', import.meta.url)), 'utf8');
+  assert.match(src, /res\.companies/, 'funded.js must read res.companies (the parent output key)');
+  assert.doesNotMatch(src, /res\.candidates/, 'funded.js must NOT read res.candidates — the parent never emits it');
+  assert.match(src, /funding\.sources/, 'funded.js must read the evidence link/source/date via funding.sources[0]');
+  // UI.el(tag, attrs, children) takes children as ONE param (a node or an
+  // array) — passing table cells as varargs renders only the first column.
+  // The v1.133.1 second fix: rows MUST pass their cells as an array.
+  assert.match(src, /c\('tr',\s*\{\},\s*\[/, "funded.js table rows must pass cells as an array — c('tr', {}, [ … ]) — not varargs");
 });

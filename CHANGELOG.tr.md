@@ -2,6 +2,12 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.133.1] — 2026-08-02
+
+### Düzeltildi
+- **`#/funded` (Finanse edilen şirketler) artık sonuçları gösteriyor** — üst projenin `company-funded.mjs`'i eksiksiz bir liste döndürdüğünde bile tablonun her zaman "finanse edilmiş şirket yok" göstermesine neden olan iki hata vardı. (1) Görünüm sonuçları `res.candidates` altında okuyordu, ancak üst proje bunları `companies` altında yayınlıyor (her biri `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`); istemci artık doğru anahtarı okuyor ve gerçek kanıt şeklini eşliyor. (2) Sonuç tablosu hücrelerini `UI.el('tr', {}, …)`'a değişken sayıda bağımsız değişken (varargs) olarak geçiriyordu, ancak `UI.el(tag, attrs, children)` `children`'ı tek bir düğüm veya dizi olarak alıyor, bu yüzden yalnızca ilk sütun (Şirket) render ediliyordu — hücreler artık bir dizi olarak geçiriliyor. Gerçek bir tarayıcıda doğrulandı: dört besleme genelinde 11 şirket, Şirket / Finansman sinyali / Kaynak / Tarih sütunlarıyla ve çalışan kanıt bağlantılarıyla render ediliyor, sıfır konsol hatası. Boş bir tarama artık kaynak başına tanılamaları da gösteriyor, böylece sessiz bir haber günü engellenmiş bir beslemeden ayırt edilebiliyor.
+- `tests/parity-routes-v1133.test.mjs` içinde regresyon korumaları: sahte üst proje betiği artık gerçek `companies` çıktı şeklini yayınlıyor (orijinal test sabiti yanlış `candidates` şeklini yansıtıyordu — hatanın yeşil geçerek yayınlanmasının tam nedeni buydu), ayrıca `funded.js`'in `res.companies`'i okuduğunu (asla `res.candidates`'i değil) ve tablo satırlarını dizi children ile oluşturduğunu doğrulayan kaynak-statik kanaryalar eklendi (+1 → 2144).
+
 ## [1.133.0] — 2026-08-01
 
 ### Eklendi

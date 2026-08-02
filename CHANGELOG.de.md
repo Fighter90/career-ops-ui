@@ -2,6 +2,12 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.133.1] — 2026-08-02
+
+### Behoben
+- **`#/funded` (Finanzierte Unternehmen) zeigt jetzt Ergebnisse an** — zwei Fehler sorgten dafür, dass die Tabelle immer „keine finanzierten Unternehmen“ anzeigte, selbst wenn `company-funded.mjs` des Elternprojekts eine vollständige Liste zurückgab. (1) Die Ansicht las die Ergebnisse unter `res.candidates`, aber das Elternprojekt liefert sie unter `companies` (jeweils `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`); der Client liest nun den richtigen Schlüssel und bildet die tatsächliche Belegstruktur ab. (2) Die Ergebnistabelle übergab ihre Zellen als Varargs an `UI.el('tr', {}, …)`, aber `UI.el(tag, attrs, children)` erwartet `children` als einzelnen Knoten oder Array, sodass nur die erste Spalte (Unternehmen) gerendert wurde — Zellen werden jetzt als Array übergeben. In einem echten Browser verifiziert: 11 Unternehmen aus den vier Feeds werden mit den Spalten Unternehmen / Finanzierungssignal / Quelle / Datum sowie funktionierenden Belegs-Links gerendert, ohne Konsolenfehler. Ein leerer Durchlauf zeigt nun auch die Pro-Quelle-Diagnose an, sodass sich ein ruhiger Nachrichtentag von einem blockierten Feed unterscheiden lässt.
+- Regressions-Absicherungen in `tests/parity-routes-v1133.test.mjs`: Das simulierte Skript des Elternprojekts liefert nun die tatsächliche `companies`-Ausgabeform (die ursprüngliche Fixture spiegelte fälschlich die `candidates`-Form wider — genau deshalb konnte der Fehler mit grüner Suite ausgeliefert werden), zusätzlich quellcode-statische Prüfungen, dass `funded.js` `res.companies` liest (niemals `res.candidates`) und Tabellenzeilen mit Array-Children baut (+1 → 2144).
+
 ## [1.133.0] — 2026-08-01
 
 ### Hinzugefügt
