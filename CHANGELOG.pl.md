@@ -9,6 +9,12 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.133.1] — 2026-08-02
+
+### Naprawiono
+- **`#/funded` (Sfinansowane firmy) teraz renderuje wyniki** — dwa błędy sprawiały, że tabela zawsze pokazywała „brak sfinansowanych firm”, nawet gdy skrypt rodzica `company-funded.mjs` zwracał pełną listę. (1) Widok odczytywał wyniki spod klucza `res.candidates`, podczas gdy rodzic emituje je pod `companies` (każdy element ma postać `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`); klient teraz odczytuje właściwy klucz i mapuje rzeczywisty kształt dowodów. (2) Tabela wyników przekazywała swoje komórki do `UI.el('tr', {}, …)` jako argumenty zmiennej długości (varargs), podczas gdy `UI.el(tag, attrs, children)` przyjmuje `children` jako pojedynczy węzeł lub tablicę, więc renderowała się tylko pierwsza kolumna (Firma) — komórki są teraz przekazywane jako tablica. Zweryfikowano w prawdziwej przeglądarce: 11 firm z czterech kanałów renderuje się z kolumnami Firma / Sygnał finansowania / Źródło / Data oraz działającymi linkami do dowodów, zero błędów w konsoli. Pusty wynik ujawnia teraz również diagnostykę per źródło, dzięki czemu spokojny dzień bez wiadomości można odróżnić od zablokowanego kanału.
+- Zabezpieczenia regresji w `tests/parity-routes-v1133.test.mjs`: fałszywy skrypt rodzica emituje teraz prawdziwy kształt wyjścia `companies` (oryginalna fixtura odzwierciedlała błędny kształt `candidates` — co jest dokładnie powodem, dla którego ten błąd trafił do produkcji z zielonymi testami), a także statyczne kanarki źródłowe sprawdzające, że `funded.js` odczytuje `res.companies` (nigdy `res.candidates`) i buduje wiersze tabeli z komórkami jako tablicą (+1 → 2144).
+
 ## [1.133.0] — 2026-08-01
 
 ### Dodano

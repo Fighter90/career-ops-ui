@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2144%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
+[![release](https://img.shields.io/badge/release-v1.133.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.1)
 
-> **🆕 Latest release — v1.133.0** — two new read-only parent-parity relays: **Funded companies** (`#/funded`) surfaces recently funded companies from public funding feeds (TechCrunch, PR Newswire, The Guardian, Hacker News), and **Weekly interview digest** (`#/interview-digest`) rolls up your interview sessions — both shell out to parent career-ops scripts, fail-soft, no writes. **2143 tests.**
+> **🆕 Latest release — v1.133.1** — fix: **Funded companies** (`#/funded`) now renders results — the parent discovery output is read under the correct `companies` key, and the results table builds all four columns (a `UI.el` children-as-array fix). Verified in a real browser. **2144 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

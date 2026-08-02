@@ -8,6 +8,12 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.133.1] — 2026-08-02
+
+### Rettet
+- **`#/funded` (Finansierede virksomheder) viser nu resultater** — to fejl fik tabellen til altid at vise "ingen finansierede virksomheder", selv når forælderens `company-funded.mjs` returnerede en fuld liste. (1) Visningen læste resultaterne under `res.candidates`, men forælderen udsender dem under `companies` (hver `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`); klienten læser nu den korrekte nøgle og mapper den reelle evidensform. (2) Resultattabellen sendte sine celler til `UI.el('tr', {}, …)` som varargs, men `UI.el(tag, attrs, children)` forventer `children` som en enkelt node eller et array, så kun den første kolonne (Virksomhed) blev gengivet — cellerne sendes nu som et array. Verificeret i en rigtig browser: 11 virksomheder på tværs af de fire feeds gengives med kolonnerne Virksomhed / Finansieringssignal / Kilde / Dato og fungerende evidenslinks, ingen konsolfejl. Et tomt resultat viser nu også diagnostik pr. kilde, så en stille nyhedsdag kan skelnes fra et blokeret feed.
+- Regressionsspærringer i `tests/parity-routes-v1133.test.mjs`: det simulerede forælderscript udsender nu den reelle `companies`-outputform (den oprindelige fixture spejlede den forkerte `candidates`-form — hvilket er præcis grunden til, at fejlen slap igennem med grønne tests), plus kildestatiske kanariefugle for, at `funded.js` læser `res.companies` (aldrig `res.candidates`) og bygger tabelrækker med børn som array (+1 → 2144).
+
 ## [1.133.0] — 2026-08-01
 
 ### Tilføjet

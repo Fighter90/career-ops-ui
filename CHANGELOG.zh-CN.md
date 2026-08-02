@@ -9,6 +9,12 @@
 ---
 
 
+## [1.133.1] — 2026-08-02
+
+### 修复
+- **`#/funded`(获投公司)现在能够正确渲染结果** — 两个 bug 导致该表格即使父项目的 `company-funded.mjs` 已经返回完整列表,也始终显示「暂无获投公司」。(1) 视图此前从 `res.candidates` 读取结果,但父项目实际以 `companies` 输出(每条记录形如 `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`);客户端现在读取正确的键,并按真实的证据结构进行映射。(2) 结果表此前把单元格以变长参数的形式传给 `UI.el('tr', {}, …)`,但 `UI.el(tag, attrs, children)` 的 `children` 参数只接受单个节点或数组,因此此前只有第一列(Company)会被渲染 —— 单元格现在以数组形式传入。已在真实浏览器中验证:四个信息流共 11 家公司渲染出 Company / Funding signal / Source / Date 四列,证据链接可正常点击,控制台零报错。结果为空时现在也会展示各信息源的诊断信息,以便区分「今日无新闻」与「信息流被屏蔽」两种情况。
+- **`tests/parity-routes-v1133.test.mjs`** 中新增回归防护:伪造的父项目脚本现在会产出真实的 `companies` 输出结构(此前的 fixture 错误地照搬了 `candidates` 结构 —— 这正是该 bug 能够绿灯发布的原因),并新增源码静态断言(canary),确认 `funded.js` 读取的是 `res.companies`(绝不是 `res.candidates`),且构建表格行时以数组形式传入子节点(+1 → **2144**)。
+
 ## [1.133.0] — 2026-08-01
 
 ### 新增

@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2144%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
+[![release](https://img.shields.io/badge/release-v1.133.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.1)
 
-> **🆕 최신 릴리스 — v1.133.0** — 두 개의 새로운 읽기 전용 상위 패리티 릴레이: **투자 유치 기업**(`#/funded`)은 공개 펀딩 피드(TechCrunch, PR Newswire, The Guardian, Hacker News)에서 최근 투자를 유치한 기업을 보여주고, **주간 인터뷰 다이제스트**(`#/interview-digest`)는 인터뷰 세션을 집계합니다 — 둘 다 상위 career-ops 스크립트를 셸아웃 방식으로 호출하며, 페일소프트이고, 쓰기 작업이 없습니다. **2143 테스트.**
+> **🆕 최신 릴리스 — v1.133.1** — 수정: **투자 유치 기업**(`#/funded`)이 이제 결과를 렌더링합니다 — 상위 발굴 결과를 올바른 `companies` 키에서 읽고, 결과 테이블이 네 개 열을 모두 구성합니다(`UI.el` children-배열화 수정). 실제 브라우저에서 검증했습니다. **2144 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

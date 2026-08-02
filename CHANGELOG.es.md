@@ -11,6 +11,12 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.133.1] — 2026-08-02
+
+### Corregido
+- **`#/funded` (Empresas financiadas) ahora renderiza resultados** — dos errores hacían que la tabla mostrara siempre "no hay empresas financiadas" incluso cuando el `company-funded.mjs` del padre devolvía una lista completa. (1) La vista leía los resultados bajo `res.candidates`, pero el padre los emite bajo `companies` (cada una `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`); el cliente ahora lee la clave correcta y mapea la forma real de la evidencia. (2) La tabla de resultados pasaba sus celdas a `UI.el('tr', {}, …)` como argumentos variádicos, pero `UI.el(tag, attrs, children)` espera `children` como un único nodo o un array, así que solo se renderizaba la primera columna (Empresa) — las celdas ahora se pasan como un array. Verificado en un navegador real: 11 empresas de los cuatro feeds se renderizan con las columnas Empresa / Señal de financiación / Fuente / Fecha y enlaces de evidencia funcionales, cero errores de consola. Un resultado vacío ahora también muestra el diagnóstico por fuente, de modo que un día tranquilo de noticias se distingue de un feed bloqueado.
+- Guardas de regresión en `tests/parity-routes-v1133.test.mjs`: el script simulado del padre ahora emite la forma real de salida `companies` (el fixture original reflejaba la forma incorrecta `candidates` — la razón exacta por la que el error se publicó con la suite en verde), más comprobaciones estáticas de que `funded.js` lee `res.companies` (nunca `res.candidates`) y construye las filas de la tabla con hijos en forma de array (+1 → 2144).
+
 ## [1.133.0] — 2026-08-01
 
 ### Añadido

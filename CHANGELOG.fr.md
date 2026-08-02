@@ -11,6 +11,12 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.133.1] — 2026-08-02
+
+### Corrigé
+- **`#/funded` (Entreprises financées) affiche désormais les résultats** — deux bugs faisaient que le tableau affichait toujours « aucune entreprise financée » même lorsque le `company-funded.mjs` du parent renvoyait une liste complète. (1) La vue lisait les résultats sous `res.candidates`, mais le parent les émet sous `companies` (chaque élément `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`) ; le client lit désormais la bonne clé et fait correspondre la forme réelle des preuves. (2) Le tableau de résultats passait ses cellules à `UI.el('tr', {}, …)` sous forme d'arguments variadiques, mais `UI.el(tag, attrs, children)` attend `children` comme un nœud unique ou un tableau, si bien que seule la première colonne (Entreprise) s'affichait — les cellules sont désormais passées sous forme de tableau. Vérifié dans un navigateur réel : 11 entreprises réparties sur les quatre flux s'affichent avec les colonnes Entreprise / Signal de financement / Source / Date et des liens de preuve fonctionnels, zéro erreur console. Un passage vide fait désormais aussi apparaître le diagnostic par source, afin qu'une journée d'actualité calme se distingue d'un flux bloqué.
+- Garde-fous de régression dans `tests/parity-routes-v1133.test.mjs` : le faux script parent émet désormais la véritable forme de sortie `companies` (le fixture d'origine reproduisait à tort la forme `candidates` — ce qui explique précisément pourquoi le bug est passé au vert), plus des canaris statiques vérifiant que `funded.js` lit `res.companies` (jamais `res.candidates`) et construit les lignes du tableau avec des enfants sous forme de tableau (+1 → 2144).
+
 ## [1.133.0] — 2026-08-01
 
 ### Ajouté

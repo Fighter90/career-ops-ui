@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2144%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
+[![release](https://img.shields.io/badge/release-v1.133.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.1)
 
-> **🆕 最新版本 — v1.133.0** — 两个新的只读、父项目一致性中继:**获投公司**(`#/funded`)从公开融资信息流中呈现近期获投公司,**每周面试摘要**(`#/interview-digest`)汇总你的面试环节记录 —— 两者均外壳调用父项目 career-ops 脚本,故障自降级,不写入任何内容。**2143 个测试。**
+> **🆕 最新版本 — v1.133.1** — 修复:**获投公司**(`#/funded`)现在能够正确渲染结果 —— 父项目的发现结果现在从正确的 `companies` 键读取,结果表格现在能构建全部四列(修复了 `UI.el` 子节点数组问题)。已在真实浏览器中验证。**2144 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

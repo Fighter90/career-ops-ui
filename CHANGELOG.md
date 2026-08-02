@@ -8,6 +8,12 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.133.1] — 2026-08-02
+
+### Fixed
+- **`#/funded` (Funded companies) now renders results** — two bugs made the table always show "no funded companies" even when the parent's `company-funded.mjs` returned a full list. **(1)** The view read the results under `res.candidates`, but the parent emits them under **`companies`** (each `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`); the client now reads the correct key and maps the real evidence shape. **(2)** The results table passed its cells to `UI.el('tr', {}, …)` as **varargs**, but `UI.el(tag, attrs, children)` takes `children` as a single node or **array**, so only the first column (Company) rendered — cells are now passed as an array. Verified in a real browser: **11 companies** across the four feeds render with Company / Funding signal / Source / Date columns and working evidence links, zero console errors. An empty pass now also surfaces the per-source diagnostics (`source: status (fetched/funding-like)`) so a quiet news day is distinguishable from a blocked feed.
+- Regression guards in `tests/parity-routes-v1133.test.mjs`: the fake parent script now emits the **real** `companies` output shape (the original fixture mirrored the wrong `candidates` shape — which is exactly why the bug shipped green), plus source-static canaries that `funded.js` reads `res.companies` (never `res.candidates`) and builds table rows with array children (+1 → **2144**).
+
 ## [1.133.0] — 2026-08-01
 
 ### Added

@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2143%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2144%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.133.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.0)
+[![release](https://img.shields.io/badge/release-v1.133.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.1)
 
-> **🆕 最新リリース — v1.133.0** — 2 つの新しい読み取り専用の親パリティリレー: **資金調達企業**(`#/funded`)は公開の資金調達フィードから最近資金調達を行った企業を表示し、**週次面接ダイジェスト**(`#/interview-digest`)はあなたの面接セッションを集約します — いずれも親 career-ops のスクリプトへシェルアウトし、fail-soft で書き込みは一切行いません。 **2143 テスト.**
+> **🆕 最新リリース — v1.133.1** — 修正：**資金調達企業**（`#/funded`）が結果を表示するようになりました — 親のディスカバリー出力を正しい `companies` キーから読み取り、結果テーブルが4列すべてを構築するようになりました（`UI.el` の children を配列にする修正）。実機ブラウザで検証済みです。 **2144 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 
