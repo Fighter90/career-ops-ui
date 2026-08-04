@@ -166,7 +166,7 @@
 ## [1.119.4] — 2026-07-13
 
 ### Değiştirildi
-- **LICENSE yazarı belirtiyor** — telif satırı artık şöyle: *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (kanonik MIT metni dokunulmadı). Yeni **NOTICE.md** lisanslamayı ayrıntılı açıklıyor: telif hakkını kim tutuyor, MIT izni tam olarak neyi kapsıyor (kod, belgeler, çeviriler, landing, wiki), neyi KAPSAMIYOR (çalışma zamanı verileriniz, üst proje, iş ilanı içerikleri, ticari markalar), üçüncü taraf bileşen tablosu (express/js-yaml — MIT; Astro/Tailwind — MIT; Figtree ve JetBrains Mono yazı tipleri — SIL OFL 1.1; sharp — Apache-2.0) ve isteğe bağlı bir atıf satırı.
+- **LICENSE yazarı belirtiyor** — telif satırı artık şöyle: *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (kanonik MIT metni dokunulmadı). Yeni **NOTICE.md** lisanslamayı ayrıntılı açıklıyor: telif hakkını kim tutuyor, MIT izni tam olarak neyi kapsıyor (kod, belgeler, çeviriler, landing, wiki), neyi KAPSAMIYOR (çalışma zamanı verileriniz, üst proje, iş ilanı içerikleri, ticari markalar), üçüncü taraf bileşen tablosu (express/js-yaml — MIT; Astro/Tailwind — MIT; Figtree ve JetBrains Mono yazı tipleri — SIL OFL 1.1; sharp — Apache-2.0) ve isteğe bağlı bir atıf satırı.
 
 ## [1.119.3] — 2026-07-13
 
@@ -178,7 +178,7 @@
 ### Eklendi
 - **CONTRIBUTING.md** — landing'in ve README'nin başından beri bağlantı verdiği katkıda bulunan rehberi artık mevcut: kurulum, proje haritası, katı güvenlik/no-build kuralları, test katmanları, tarama kaynağı eklemek için «iki kayıt» walkthrough'u, ×16 i18n sözleşmesi, commit/PR kuralları ve sürüm süreci.
 - **Landing'de dil bayrakları** — cvstart.org dil değiştirici, alt bilgideki dil ızgarası ve «kendi dilinde oku» banner'ı artık her yerel ayarın bayrağını endoniminin yanında gösteriyor (uygulamanın dil `<select>`'iyle aynı bölgesel gösterge seti; bayrak glifleri olmayan yerlerde bölge harflerine düşer).
-- **Landing altbilgi düzeltmeleri** — ölü Discussions bağlantısı (özellik depoda etkin değil) artık projenin **wiki**'sine gidiyor ve altbilgi yazarı belirtiyor: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+- **Landing altbilgi düzeltmeleri** — ölü Discussions bağlantısı (özellik depoda etkin değil) artık projenin **wiki**'sine gidiyor ve altbilgi yazarı belirtiyor: **Sergei Emelianov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
 
 ## [1.119.1] — 2026-07-13
 

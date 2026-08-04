@@ -214,7 +214,7 @@
   "method.canonical": "メソドロジー全文 — career-ops.org/methodology",
   "method.docsLink": "開発者向けドキュメント & ガイド — career-ops.org/docs",
   "license.title": "ライセンス",
-  "license.lead": "career-ops-uiはMITライセンスのもとで公開されている無料のオープンソースソフトウェアです。以下の正式な英語原文が法的拘束力を持つバージョンであり、著作権者はSergey Emelyanov (Fighter90) およびcareer-ops-uiのコントリビューターです。",
+  "license.lead": "career-ops-uiはMITライセンスのもとで公開されている無料のオープンソースソフトウェアです。以下の正式な英語原文が法的拘束力を持つバージョンであり、著作権者はSergei Emelianov (Fighter90) およびcareer-ops-uiのコントリビューターです。",
   "license.notice": "サードパーティ製コンポーネントと、ライセンスが対象とする範囲・対象外の範囲について: NOTICE.md",
   "changelog.title": "変更履歴",
   "changelog.lead": "すべての注目すべき変更をリリースごとに記録しています。同じファイルがリポジトリに収録されており、17言語すべてに翻訳されています。",

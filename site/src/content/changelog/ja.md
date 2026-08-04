@@ -173,7 +173,7 @@
 ## [1.119.4] — 2026-07-13
 
 ### 変更
-- **LICENSE に作者を明記** — 著作権行は *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* になりました(MIT の正規本文は無変更)。新しい **NOTICE.md** がライセンスを詳細に解説:著作権者は誰か、MIT 許諾が正確に何をカバーするか(コード、ドキュメント、翻訳、ランディング、wiki)、何をカバーしないか(実行時のあなたのデータ、親プロジェクト、求人ボードのコンテンツ、商標)、サードパーティ構成要素の表(express/js-yaml — MIT、Astro/Tailwind — MIT、フォント Figtree と JetBrains Mono — SIL OFL 1.1、sharp — Apache-2.0)、任意の帰属表示の一文。
+- **LICENSE に作者を明記** — 著作権行は *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* になりました(MIT の正規本文は無変更)。新しい **NOTICE.md** がライセンスを詳細に解説:著作権者は誰か、MIT 許諾が正確に何をカバーするか(コード、ドキュメント、翻訳、ランディング、wiki)、何をカバーしないか(実行時のあなたのデータ、親プロジェクト、求人ボードのコンテンツ、商標)、サードパーティ構成要素の表(express/js-yaml — MIT、Astro/Tailwind — MIT、フォント Figtree と JetBrains Mono — SIL OFL 1.1、sharp — Apache-2.0)、任意の帰属表示の一文。
 
 ## [1.119.3] — 2026-07-13
 
@@ -185,7 +185,7 @@
 ### 追加
 - **CONTRIBUTING.md** — ランディングと README がずっとリンクしていたコントリビューターガイドがついに実在します:セットアップ、プロジェクトマップ、セキュリティ/ノービルドの厳格ルール、テスト階層、スキャンソース追加の「2 つのレジストリ」ウォークスルー、×16 i18n 契約、コミット/PR 規約、リリースプロセス。
 - **ランディングの言語フラグ** — cvstart.org の言語スイッチャー、フッターの言語グリッド、「あなたの言語で読む」バナーに、各ロケールの国旗をエンドニムの横に表示するようになりました(アプリの言語 `<select>` と同じ地域指示子セット。国旗グリフのない環境では地域文字に退化)。
-- **ランディングのフッター修正** — 機能が有効化されていないためリンク切れだった Discussions は、プロジェクトの **wiki** を指すようになりました。フッターには作者のクレジットを追加:**Sergey Emelyanov**([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/))。
+- **ランディングのフッター修正** — 機能が有効化されていないためリンク切れだった Discussions は、プロジェクトの **wiki** を指すようになりました。フッターには作者のクレジットを追加:**Sergei Emelianov**([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/))。
 
 ## [1.119.1] — 2026-07-13
 

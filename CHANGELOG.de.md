@@ -190,7 +190,7 @@
 ## [1.119.4] — 2026-07-13
 
 ### Geändert
-- **LICENSE nennt den Autor** — die Copyright-Zeile lautet jetzt: *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (kanonischer MIT-Text unangetastet). Eine neue **NOTICE.md** schlüsselt die Lizenzierung im Detail auf: wer das Copyright hält, was der MIT-Grant genau abdeckt (Code, Doku, Übersetzungen, Landing, Wiki), was NICHT abgedeckt ist (deine Laufzeitdaten, das Elternprojekt, Jobbörsen-Inhalte, Marken), die Tabelle der Drittkomponenten (express/js-yaml — MIT; Astro/Tailwind — MIT; die Schriften Figtree und JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) und eine optionale Attributionszeile.
+- **LICENSE nennt den Autor** — die Copyright-Zeile lautet jetzt: *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (kanonischer MIT-Text unangetastet). Eine neue **NOTICE.md** schlüsselt die Lizenzierung im Detail auf: wer das Copyright hält, was der MIT-Grant genau abdeckt (Code, Doku, Übersetzungen, Landing, Wiki), was NICHT abgedeckt ist (deine Laufzeitdaten, das Elternprojekt, Jobbörsen-Inhalte, Marken), die Tabelle der Drittkomponenten (express/js-yaml — MIT; Astro/Tailwind — MIT; die Schriften Figtree und JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) und eine optionale Attributionszeile.
 
 ## [1.119.3] — 2026-07-13
 
@@ -202,7 +202,7 @@
 ### Hinzugefügt
 - **CONTRIBUTING.md** — der Contributor-Guide, auf den Landing und README schon immer verlinkt haben, existiert jetzt: Setup, Projektkarte, die harten Security-/No-Build-Regeln, Test-Ebenen, der Zwei-Registries-Walkthrough zum Hinzufügen einer Scan-Quelle, der ×16-i18n-Vertrag, Commit-/PR-Konventionen und der Release-Prozess.
 - **Sprachflaggen auf der Landing** — der Sprachumschalter von cvstart.org, das Sprachraster im Footer und das „In deiner Sprache lesen"-Banner zeigen jetzt die Flagge jeder Locale neben ihrem Endonym (dasselbe Regionalindikator-Set wie das Sprach-`<select>` der App; degradiert zu Regionsbuchstaben, wo Flaggen-Glyphen fehlen).
-- **Landing-Footer-Fixes** — der tote Discussions-Link (Feature im Repo nicht aktiviert) zeigt jetzt auf das Projekt-**Wiki**, und der Footer nennt den Autor: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+- **Landing-Footer-Fixes** — der tote Discussions-Link (Feature im Repo nicht aktiviert) zeigt jetzt auf das Projekt-**Wiki**, und der Footer nennt den Autor: **Sergei Emelianov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
 
 ## [1.119.1] — 2026-07-13
 

@@ -22,7 +22,7 @@ Delta driver for v1.119.2 — **CONTRIBUTING.md + landing language flags + foote
 ## §3 — Landing footer fixes
 
 1. The Community column links: GitHub · Issues · **Wiki** (`/wiki` — replaces the dead `/discussions` link; Discussions is not enabled on the repo) · Contributing guide. All four return HTTP 200.
-2. The bottom bar credits the author between the license and the disclaimer: `footer.createdBy` (localized ×16) + **Sergey Emelyanov** → `https://sergey-cv.com/` (`rel="noopener author"`) · **LinkedIn** → `https://www.linkedin.com/in/sergey-emelyanov-in-job/`.
+2. The bottom bar credits the author between the license and the disclaimer: `footer.createdBy` (localized ×16) + **Sergei Emelianov** → `https://sergey-cv.com/` (`rel="noopener author"`) · **LinkedIn** → `https://www.linkedin.com/in/sergey-emelyanov-in-job/`.
 3. RTL spot-check: `/ar/` shows the flags and the author line correctly mirrored.
 
 ## §4 — Docs & gates

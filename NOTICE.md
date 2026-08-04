@@ -5,7 +5,7 @@ This file explains **what the [MIT License](LICENSE) covers, who holds the copyr
 ## Copyright holder
 
 **career-ops-ui** — Copyright © 2026
-**Sergey Emelyanov** (GitHub: [Fighter90](https://github.com/Fighter90) · [sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/))
+**Sergei Emelianov** (GitHub: [Fighter90](https://github.com/Fighter90) · [sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/))
 and the [career-ops-ui contributors](https://github.com/Fighter90/career-ops-ui/graphs/contributors).
 
 Each contributor retains copyright over their contributions; by contributing they license their work under the same MIT terms (see [CONTRIBUTING.md](CONTRIBUTING.md) → License).
@@ -58,4 +58,4 @@ Dev/test tooling (Playwright, @astrojs/check, TypeScript for `site/` only) is no
 
 MIT does not require visible credit beyond preserving the license text, but if you build on this project a link back is welcome:
 
-> Based on [career-ops-ui](https://github.com/Fighter90/career-ops-ui) by Sergey Emelyanov and contributors, MIT license.
+> Based on [career-ops-ui](https://github.com/Fighter90/career-ops-ui) by Sergei Emelianov and contributors, MIT license.

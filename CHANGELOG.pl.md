@@ -197,7 +197,7 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ## [1.119.4] — 2026-07-13
 
 ### Zmieniono
-- **LICENSE wskazuje autora** — linia praw autorskich brzmi teraz: *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (kanoniczny tekst MIT nietknięty). Nowy **NOTICE.md** szczegółowo opisuje licencjonowanie: kto posiada prawa autorskie, co dokładnie obejmuje grant MIT (kod, dokumentację, tłumaczenia, landing, wiki), czego NIE obejmuje (twoje dane w runtime, projekt nadrzędny, treści z tablic ogłoszeń, znaki towarowe), tabelę komponentów zewnętrznych (express/js-yaml — MIT; Astro/Tailwind — MIT; fonty Figtree i JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) oraz opcjonalną linię atrybucji.
+- **LICENSE wskazuje autora** — linia praw autorskich brzmi teraz: *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (kanoniczny tekst MIT nietknięty). Nowy **NOTICE.md** szczegółowo opisuje licencjonowanie: kto posiada prawa autorskie, co dokładnie obejmuje grant MIT (kod, dokumentację, tłumaczenia, landing, wiki), czego NIE obejmuje (twoje dane w runtime, projekt nadrzędny, treści z tablic ogłoszeń, znaki towarowe), tabelę komponentów zewnętrznych (express/js-yaml — MIT; Astro/Tailwind — MIT; fonty Figtree i JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) oraz opcjonalną linię atrybucji.
 
 ## [1.119.3] — 2026-07-13
 
@@ -209,7 +209,7 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ### Dodano
 - **CONTRIBUTING.md** — przewodnik współtwórcy, do którego landing i README linkowały od początku, teraz istnieje: konfiguracja, mapa projektu, twarde reguły bezpieczeństwa/no-build, poziomy testów, walkthrough „dwóch rejestrów" przy dodawaniu źródła skanowania, kontrakt i18n ×16, konwencje commitów/PR i proces wydania.
 - **Flagi języków na landingu** — przełącznik języków cvstart.org, siatka języków w stopce i baner „czytaj w swoim języku" pokazują teraz flagę każdej lokalizacji obok jej endonimu (ten sam zestaw wskaźników regionalnych co w językowym `<select>` aplikacji; degraduje do liter regionu tam, gdzie brak glifów flag).
-- **Poprawki stopki landingu** — martwy link Discussions (funkcja nie jest włączona w repozytorium) prowadzi teraz do **wiki** projektu, a stopka wskazuje autora: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+- **Poprawki stopki landingu** — martwy link Discussions (funkcja nie jest włączona w repozytorium) prowadzi teraz do **wiki** projektu, a stopka wskazuje autora: **Sergei Emelianov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
 
 ## [1.119.1] — 2026-07-13
 

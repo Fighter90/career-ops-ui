@@ -190,7 +190,7 @@
 ## [1.119.4] — 2026-07-13
 
 ### Modificato
-- **LICENSE nomina l'autore** — la riga di copyright ora recita: *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (testo MIT canonico intatto). Un nuovo **NOTICE.md** dettaglia il licenziamento: chi detiene il copyright, cosa copre esattamente la concessione MIT (codice, doc, traduzioni, la landing, la wiki), cosa NON copre (i tuoi dati a runtime, il progetto padre, i contenuti delle job board, i marchi), la tabella dei componenti di terze parti (express/js-yaml — MIT; Astro/Tailwind — MIT; i font Figtree e JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) e una riga di attribuzione facoltativa.
+- **LICENSE nomina l'autore** — la riga di copyright ora recita: *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (testo MIT canonico intatto). Un nuovo **NOTICE.md** dettaglia il licenziamento: chi detiene il copyright, cosa copre esattamente la concessione MIT (codice, doc, traduzioni, la landing, la wiki), cosa NON copre (i tuoi dati a runtime, il progetto padre, i contenuti delle job board, i marchi), la tabella dei componenti di terze parti (express/js-yaml — MIT; Astro/Tailwind — MIT; i font Figtree e JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) e una riga di attribuzione facoltativa.
 
 ## [1.119.3] — 2026-07-13
 
@@ -202,7 +202,7 @@
 ### Aggiunto
 - **CONTRIBUTING.md** — la guida del contributore a cui landing e README puntavano da sempre ora esiste: installazione, mappa del progetto, le regole dure sicurezza/no-build, i livelli di test, il walkthrough dei «due registri» per aggiungere una sorgente di scansione, il contratto i18n ×16, le convenzioni di commit/PR e il processo di release.
 - **Bandiere delle lingue sulla landing** — il selettore di lingue di cvstart.org, la griglia delle lingue nel footer e il banner «leggi nella tua lingua» ora mostrano la bandiera di ogni locale accanto al suo endonimo (lo stesso set di indicatori regionali del `<select>` di lingua dell'app; degrada a lettere di regione dove mancano i glifi delle bandiere).
-- **Correzioni del footer della landing** — il link morto a Discussions (funzione non abilitata sul repo) ora punta alla **wiki** del progetto, e il footer accredita l'autore: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+- **Correzioni del footer della landing** — il link morto a Discussions (funzione non abilitata sul repo) ora punta alla **wiki** del progetto, e il footer accredita l'autore: **Sergei Emelianov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
 
 ## [1.119.1] — 2026-07-13
 

@@ -212,7 +212,7 @@
   "method.canonical": "Full methodology — career-ops.org/methodology",
   "method.docsLink": "Developer docs & guides — career-ops.org/docs",
   "license.title": "License",
-  "license.lead": "career-ops-ui is free and open source under the MIT license. The canonical English text below is the legally binding version; the copyright holder is Sergey Emelyanov (Fighter90) and the career-ops-ui contributors.",
+  "license.lead": "career-ops-ui is free and open source under the MIT license. The canonical English text below is the legally binding version; the copyright holder is Sergei Emelianov (Fighter90) and the career-ops-ui contributors.",
   "license.notice": "Third-party components and what the license does and does not cover: NOTICE.md",
   "changelog.title": "Changelog",
   "changelog.lead": "Every notable change, release by release. The same file ships in the repository and is translated into all 17 languages.",

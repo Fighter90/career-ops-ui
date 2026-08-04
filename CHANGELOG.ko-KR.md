@@ -196,7 +196,7 @@
 ## [1.119.4] — 2026-07-13
 
 ### 변경
-- **LICENSE에 작성자 명시** — 저작권 줄이 이제 *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors*입니다(MIT 정식 본문은 그대로). 새 **NOTICE.md**가 라이선스를 상세히 설명합니다: 저작권 보유자, MIT 허가가 정확히 무엇을 포함하는지(코드, 문서, 번역, 랜딩, 위키), 무엇을 포함하지 않는지(런타임의 사용자 데이터, 부모 프로젝트, 채용 보드 콘텐츠, 상표), 서드파티 구성 요소 표(express/js-yaml — MIT; Astro/Tailwind — MIT; Figtree·JetBrains Mono 글꼴 — SIL OFL 1.1; sharp — Apache-2.0), 선택적 저작자 표시 문구.
+- **LICENSE에 작성자 명시** — 저작권 줄이 이제 *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors*입니다(MIT 정식 본문은 그대로). 새 **NOTICE.md**가 라이선스를 상세히 설명합니다: 저작권 보유자, MIT 허가가 정확히 무엇을 포함하는지(코드, 문서, 번역, 랜딩, 위키), 무엇을 포함하지 않는지(런타임의 사용자 데이터, 부모 프로젝트, 채용 보드 콘텐츠, 상표), 서드파티 구성 요소 표(express/js-yaml — MIT; Astro/Tailwind — MIT; Figtree·JetBrains Mono 글꼴 — SIL OFL 1.1; sharp — Apache-2.0), 선택적 저작자 표시 문구.
 
 ## [1.119.3] — 2026-07-13
 
@@ -208,7 +208,7 @@
 ### 추가
 - **CONTRIBUTING.md** — 랜딩과 README가 줄곧 링크해 온 기여자 가이드가 이제 실제로 존재합니다: 설치, 프로젝트 맵, 엄격한 보안/노빌드 규칙, 테스트 계층, 스캔 소스 추가를 위한 «두 레지스트리» 워크스루, ×16 i18n 계약, 커밋/PR 규약, 릴리스 프로세스.
 - **랜딩의 언어 국기** — cvstart.org의 언어 전환기, 푸터의 언어 그리드, «당신의 언어로 읽기» 배너가 이제 각 로케일의 국기를 엔도님 옆에 표시합니다(앱의 언어 `<select>`와 같은 지역 지시자 세트; 국기 글리프가 없는 곳에서는 지역 문자로 대체).
-- **랜딩 푸터 수정** — 저장소에서 기능이 비활성화되어 죽어 있던 Discussions 링크가 이제 프로젝트 **위키**를 가리키며, 푸터에 작성자 크레딧이 추가되었습니다: **Sergey Emelyanov**([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+- **랜딩 푸터 수정** — 저장소에서 기능이 비활성화되어 죽어 있던 Discussions 링크가 이제 프로젝트 **위키**를 가리키며, 푸터에 작성자 크레딧이 추가되었습니다: **Sergei Emelianov**([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
 
 ## [1.119.1] — 2026-07-13
 

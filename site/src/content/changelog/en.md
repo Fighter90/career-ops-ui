@@ -188,7 +188,7 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ## [1.119.4] — 2026-07-13
 
 ### Changed
-- **LICENSE names the author** — the copyright line now reads *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (canonical MIT text untouched). A new **NOTICE.md** spells the licensing out in detail: who holds copyright, exactly what the MIT grant covers (code, docs, translations, the landing, the wiki), what it does NOT cover (your runtime data, the parent project, job-board content, trademarks), the third-party component table (express/js-yaml MIT; Astro/Tailwind MIT; Figtree & JetBrains Mono under SIL OFL 1.1; sharp Apache-2.0) and an optional attribution line.
+- **LICENSE names the author** — the copyright line now reads *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (canonical MIT text untouched). A new **NOTICE.md** spells the licensing out in detail: who holds copyright, exactly what the MIT grant covers (code, docs, translations, the landing, the wiki), what it does NOT cover (your runtime data, the parent project, job-board content, trademarks), the third-party component table (express/js-yaml MIT; Astro/Tailwind MIT; Figtree & JetBrains Mono under SIL OFL 1.1; sharp Apache-2.0) and an optional attribution line.
 
 ## [1.119.3] — 2026-07-13
 
@@ -200,7 +200,7 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ### Added
 - **CONTRIBUTING.md** — the contributor guide the landing and README have linked to all along now exists: setup, project map, the hard security/no-build rules, testing tiers, the two-registry walkthrough for adding a scan source, the ×16 i18n contract, commit/PR conventions and the release process.
 - **Language flags on the landing** — the cvstart.org language switcher, the footer language grid and the "read in your language" banner now show each locale's flag next to its endonym (same regional-indicator set as the app's language `<select>`; degrades to region letters where flag glyphs are missing).
-- **Landing footer fixes** — the dead Discussions link (the feature is not enabled on the repo) now points to the project **wiki**, and the footer credits the author: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+- **Landing footer fixes** — the dead Discussions link (the feature is not enabled on the repo) now points to the project **wiki**, and the footer credits the author: **Sergei Emelianov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
 
 ## [1.119.1] — 2026-07-13
 
