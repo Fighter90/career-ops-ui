@@ -196,7 +196,7 @@
 ## [1.119.4] — 2026-07-13
 
 ### 变更
-- **LICENSE 写明作者** — 版权行现为 *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors*(MIT 规范正文未动)。新增 **NOTICE.md** 详细阐述许可:版权归属、MIT 授权确切涵盖什么(代码、文档、翻译、落地页、wiki)、不涵盖什么(你的运行时数据、父项目、招聘板块内容、商标)、第三方组件表(express/js-yaml — MIT;Astro/Tailwind — MIT;Figtree 与 JetBrains Mono 字体 — SIL OFL 1.1;sharp — Apache-2.0)以及可选的署名行。
+- **LICENSE 写明作者** — 版权行现为 *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors*(MIT 规范正文未动)。新增 **NOTICE.md** 详细阐述许可:版权归属、MIT 授权确切涵盖什么(代码、文档、翻译、落地页、wiki)、不涵盖什么(你的运行时数据、父项目、招聘板块内容、商标)、第三方组件表(express/js-yaml — MIT;Astro/Tailwind — MIT;Figtree 与 JetBrains Mono 字体 — SIL OFL 1.1;sharp — Apache-2.0)以及可选的署名行。
 
 ## [1.119.3] — 2026-07-13
 
@@ -208,7 +208,7 @@
 ### 新增
 - **CONTRIBUTING.md** — 落地页和 README 一直链接的贡献者指南现在真的存在了:安装、项目地图、安全/免构建硬规则、测试层级、添加扫描源的「双注册表」演练、×16 i18n 契约、提交/PR 规范与发布流程。
 - **落地页语言旗帜** — cvstart.org 的语言切换器、页脚语言栅格和「用你的语言阅读」横幅现在在每个语言的自称旁显示其旗帜(与应用语言 `<select>` 相同的区域指示符集;在缺少旗帜字形的平台上退化为区域字母)。
-- **落地页页脚修复** — 失效的 Discussions 链接(仓库未启用该功能)现指向项目 **wiki**,页脚新增作者署名:**Sergey Emelyanov**([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/))。
+- **落地页页脚修复** — 失效的 Discussions 链接(仓库未启用该功能)现指向项目 **wiki**,页脚新增作者署名:**Sergei Emelianov**([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/))。
 
 ## [1.119.1] — 2026-07-13
 

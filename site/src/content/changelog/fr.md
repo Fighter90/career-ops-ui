@@ -177,7 +177,7 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ## [1.119.4] — 2026-07-13
 
 ### Modifié
-- **LICENSE nomme l'auteur** — la ligne de copyright indique désormais : *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (texte MIT canonique intact). Un nouveau **NOTICE.md** détaille la licence : qui détient le copyright, ce que couvre exactement la concession MIT (code, docs, traductions, la landing, le wiki), ce qu'elle NE couvre PAS (vos données à l'exécution, le projet parent, le contenu des job boards, les marques), le tableau des composants tiers (express/js-yaml — MIT ; Astro/Tailwind — MIT ; les polices Figtree et JetBrains Mono — SIL OFL 1.1 ; sharp — Apache-2.0) et une ligne d'attribution facultative.
+- **LICENSE nomme l'auteur** — la ligne de copyright indique désormais : *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (texte MIT canonique intact). Un nouveau **NOTICE.md** détaille la licence : qui détient le copyright, ce que couvre exactement la concession MIT (code, docs, traductions, la landing, le wiki), ce qu'elle NE couvre PAS (vos données à l'exécution, le projet parent, le contenu des job boards, les marques), le tableau des composants tiers (express/js-yaml — MIT ; Astro/Tailwind — MIT ; les polices Figtree et JetBrains Mono — SIL OFL 1.1 ; sharp — Apache-2.0) et une ligne d'attribution facultative.
 
 ## [1.119.3] — 2026-07-13
 
@@ -189,7 +189,7 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ### Ajouté
 - **CONTRIBUTING.md** — le guide du contributeur vers lequel la landing et le README pointaient depuis toujours existe désormais : installation, carte du projet, les règles dures sécurité/no-build, les niveaux de test, le walkthrough des « deux registres » pour ajouter une source de scan, le contrat i18n ×16, les conventions de commits/PR et le processus de release.
 - **Drapeaux des langues sur la landing** — le sélecteur de langues de cvstart.org, la grille des langues du pied de page et la bannière « lisez dans votre langue » affichent désormais le drapeau de chaque locale à côté de son endonyme (le même jeu d'indicateurs régionaux que le `<select>` de langue de l'app ; dégrade en lettres de région là où les glyphes de drapeau manquent).
-- **Corrections du pied de page de la landing** — le lien mort vers Discussions (fonction non activée sur le dépôt) pointe désormais vers le **wiki** du projet, et le pied de page crédite l'auteur : **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+- **Corrections du pied de page de la landing** — le lien mort vers Discussions (fonction non activée sur le dépôt) pointe désormais vers le **wiki** du projet, et le pied de page crédite l'auteur : **Sergei Emelianov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
 
 ## [1.119.1] — 2026-07-13
 

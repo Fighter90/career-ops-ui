@@ -172,7 +172,7 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ## [1.119.4] — 2026-07-13
 
 ### Ændret
-- **LICENSE nævner forfatteren** — copyright-linjen lyder nu: *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (kanonisk MIT-tekst urørt). En ny **NOTICE.md** udfolder licenseringen i detaljer: hvem der holder copyright, præcis hvad MIT-tilladelsen dækker (kode, docs, oversættelser, landingen, wikien), hvad den IKKE dækker (dine runtime-data, forældreprojektet, jobboard-indhold, varemærker), tabellen over tredjepartskomponenter (express/js-yaml — MIT; Astro/Tailwind — MIT; skrifttyperne Figtree og JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) og en valgfri krediteringslinje.
+- **LICENSE nævner forfatteren** — copyright-linjen lyder nu: *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (kanonisk MIT-tekst urørt). En ny **NOTICE.md** udfolder licenseringen i detaljer: hvem der holder copyright, præcis hvad MIT-tilladelsen dækker (kode, docs, oversættelser, landingen, wikien), hvad den IKKE dækker (dine runtime-data, forældreprojektet, jobboard-indhold, varemærker), tabellen over tredjepartskomponenter (express/js-yaml — MIT; Astro/Tailwind — MIT; skrifttyperne Figtree og JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) og en valgfri krediteringslinje.
 
 ## [1.119.3] — 2026-07-13
 
@@ -184,7 +184,7 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ### Tilføjet
 - **CONTRIBUTING.md** — bidragyderguiden, som landingen og README altid har linket til, findes nu: opsætning, projektkort, de hårde sikkerheds-/no-build-regler, testniveauer, to-registre-gennemgangen til at tilføje en scanningskilde, ×16-i18n-kontrakten, commit-/PR-konventioner og release-processen.
 - **Sprogflag på landingen** — cvstart.orgs sprogvælger, footerens sproggitter og "læs på dit sprog"-banneret viser nu hver lokalitets flag ved siden af dens endonym (samme sæt regionale indikatorer som appens sprog-`<select>`; degraderer til regionsbogstaver, hvor flagglyffer mangler).
-- **Landing-footer-rettelser** — det døde Discussions-link (funktionen er ikke aktiveret på repoet) peger nu på projektets **wiki**, og footeren krediterer forfatteren: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+- **Landing-footer-rettelser** — det døde Discussions-link (funktionen er ikke aktiveret på repoet) peger nu på projektets **wiki**, og footeren krediterer forfatteren: **Sergei Emelianov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
 
 ## [1.119.1] — 2026-07-13
 

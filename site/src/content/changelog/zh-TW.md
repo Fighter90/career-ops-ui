@@ -173,7 +173,7 @@
 ## [1.119.4] — 2026-07-13
 
 ### 變更
-- **LICENSE 載明作者** — 版權行現為 *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors*(MIT 規範本文未動)。新增 **NOTICE.md** 詳細闡述授權:版權歸屬、MIT 授權確切涵蓋什麼(程式碼、文件、翻譯、落地頁、wiki)、不涵蓋什麼(你的執行期資料、父專案、職缺看板內容、商標)、第三方元件表(express/js-yaml — MIT;Astro/Tailwind — MIT;Figtree 與 JetBrains Mono 字型 — SIL OFL 1.1;sharp — Apache-2.0)以及可選的署名行。
+- **LICENSE 載明作者** — 版權行現為 *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors*(MIT 規範本文未動)。新增 **NOTICE.md** 詳細闡述授權:版權歸屬、MIT 授權確切涵蓋什麼(程式碼、文件、翻譯、落地頁、wiki)、不涵蓋什麼(你的執行期資料、父專案、職缺看板內容、商標)、第三方元件表(express/js-yaml — MIT;Astro/Tailwind — MIT;Figtree 與 JetBrains Mono 字型 — SIL OFL 1.1;sharp — Apache-2.0)以及可選的署名行。
 
 ## [1.119.3] — 2026-07-13
 
@@ -185,7 +185,7 @@
 ### 新增
 - **CONTRIBUTING.md** — 落地頁與 README 一直連結的貢獻者指南現在真的存在了:安裝、專案地圖、安全/免建置硬規則、測試層級、新增掃描來源的「雙註冊表」演練、×16 i18n 契約、提交/PR 規範與發布流程。
 - **落地頁語言旗幟** — cvstart.org 的語言切換器、頁尾語言網格和「用你的語言閱讀」橫幅現在在每個語言的自稱旁顯示其旗幟(與應用語言 `<select>` 相同的區域指示符集;在缺少旗幟字形的平台上退化為區域字母)。
-- **落地頁頁尾修復** — 失效的 Discussions 連結(儲存庫未啟用該功能)現指向專案 **wiki**,頁尾新增作者署名:**Sergey Emelyanov**([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/))。
+- **落地頁頁尾修復** — 失效的 Discussions 連結(儲存庫未啟用該功能)現指向專案 **wiki**,頁尾新增作者署名:**Sergei Emelianov**([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/))。
 
 ## [1.119.1] — 2026-07-13
 

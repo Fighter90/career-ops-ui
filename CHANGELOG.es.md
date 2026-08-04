@@ -200,7 +200,7 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ## [1.119.4] — 2026-07-13
 
 ### Cambiado
-- **LICENSE nombra al autor** — la línea de copyright ahora dice: *Sergey Emelyanov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (texto MIT canónico intacto). Un nuevo **NOTICE.md** detalla el licenciamiento: quién posee el copyright, qué cubre exactamente la concesión MIT (código, docs, traducciones, la landing, la wiki), qué NO cubre (tus datos en runtime, el proyecto padre, el contenido de las bolsas de empleo, las marcas), la tabla de componentes de terceros (express/js-yaml — MIT; Astro/Tailwind — MIT; las fuentes Figtree y JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) y una línea de atribución opcional.
+- **LICENSE nombra al autor** — la línea de copyright ahora dice: *Sergei Emelianov (Fighter90) <https://sergey-cv.com> and career-ops-ui contributors* (texto MIT canónico intacto). Un nuevo **NOTICE.md** detalla el licenciamiento: quién posee el copyright, qué cubre exactamente la concesión MIT (código, docs, traducciones, la landing, la wiki), qué NO cubre (tus datos en runtime, el proyecto padre, el contenido de las bolsas de empleo, las marcas), la tabla de componentes de terceros (express/js-yaml — MIT; Astro/Tailwind — MIT; las fuentes Figtree y JetBrains Mono — SIL OFL 1.1; sharp — Apache-2.0) y una línea de atribución opcional.
 
 ## [1.119.3] — 2026-07-13
 
@@ -212,7 +212,7 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ### Añadido
 - **CONTRIBUTING.md** — la guía del contribuidor que la landing y el README enlazaban desde siempre ahora existe: instalación, mapa del proyecto, las reglas duras de seguridad/no-build, niveles de testing, el walkthrough de los «dos registros» para añadir una fuente de escaneo, el contrato i18n ×16, convenciones de commits/PR y el proceso de release.
 - **Banderas de idiomas en la landing** — el selector de idiomas de cvstart.org, la cuadrícula de idiomas del pie y el banner «lee en tu idioma» ahora muestran la bandera de cada locale junto a su endónimo (el mismo set de indicadores regionales que el `<select>` de idioma de la app; degrada a letras de región donde faltan los glifos de bandera).
-- **Arreglos del pie de la landing** — el enlace muerto a Discussions (la función no está habilitada en el repo) ahora apunta a la **wiki** del proyecto, y el pie acredita al autor: **Sergey Emelyanov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
+- **Arreglos del pie de la landing** — el enlace muerto a Discussions (la función no está habilitada en el repo) ahora apunta a la **wiki** del proyecto, y el pie acredita al autor: **Sergei Emelianov** ([sergey-cv.com](https://sergey-cv.com/) · [LinkedIn](https://www.linkedin.com/in/sergey-emelyanov-in-job/)).
 
 ## [1.119.1] — 2026-07-13
 
