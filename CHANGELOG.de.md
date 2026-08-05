@@ -2,6 +2,21 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.134.0] — 2026-08-05
+
+Parität mit dem übergeordneten Projekt career-ops **v1.25.0**.
+
+### Hinzugefügt
+- **Neue Scan-Quelle: getManfred** (`manfred`) — ein board-weiter Feed spanischer/EU-Tech-Stellen mit veröffentlichten Gehältern, von `www.getmanfred.com/api/v2/public/offers` (ohne Auth, host-gepinnt + nur HTTPS, vollständiger Katalog in einer einzigen Anfrage). Quelle + Adapter + eine CI-isolierte Suite (`tests/sources-manfred.test.mjs`); die Registry umfasst nun **73 Quellen = 68 englische + 5 russische** (`ALL_ADAPTERS` 68). Erscheint im `#/scan`-Quellenfilter und auf der cvstart.org-Landing.
+
+### Behoben
+- **Der a16z-Speedrun-Feed wurde stillschweigend auf 50 Stellen gekürzt** (#2404) — der Feed begrenzt eine Seite auf 50, aber die Quelle forderte `PER_PAGE = 100` an, sodass die Paginierung nach Seite 1 stoppte. Auf 50 korrigiert.
+- **Tote Boards werfen jetzt einen Fehler, statt als „aktiv, aber leer“ gelesen zu werden** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: Ein Fetch-Fehlschlag, bei dem keine einzige Anfrage jemals aufgelöst wurde, wirft nun einen Fehler (sodass die `#/portals`-Zustandsprüfung und der Scan einen echten Fehlschlag protokollieren), statt ihn stillschweigend zu einer leeren Liste zu verschlucken; ein Fehlschlag mitten im Scan nach mindestens einem Erfolg behält die Teilergebnisse.
+- **workable nutzt jetzt die öffentliche Widget-API** (#5ab8425) — umgestellt auf `apply.workable.com/api/v1/widget/accounts/<slug>`, die die vollständige Stellenliste eines großen Kontos in einer einzigen Anfrage liefert, sodass große Konten nicht mehr gekürzt werden.
+
+### Hinweise
+- Nicht portiert (nur CLI oder von web-ui nicht gespiegelt): die Perf-Überarbeitung des Titel-Bucketings von `detect-reposts` #2389; die Unicode-Firmenschlüssel-Fixes (die eigene Tracker-Deduplizierung von web-ui ist bereits nicht-lateinisch-sicher); `scan --since`; `cv-facts`; der CV-Vorlagen-/PDF-Audit-Durchlauf; `doctor`; die Direktive zu nicht vertrauenswürdigen Inhalten in den Modi.
+
 ## [1.133.1] — 2026-08-02
 
 ### Behoben

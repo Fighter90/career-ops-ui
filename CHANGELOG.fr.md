@@ -11,6 +11,21 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.134.0] — 2026-08-05
+
+Parité avec career-ops parent **v1.25.0**.
+
+### Ajouté
+- **Nouvelle source de scan : getManfred** (`manfred`) — un flux à l'échelle du site des offres tech espagnoles/européennes avec salaires publiés, depuis `www.getmanfred.com/api/v2/public/offers` (zéro authentification, épinglé à l'hôte + HTTPS uniquement, catalogue complet en une seule requête). Source + adaptateur + une suite isolée pour CI (`tests/sources-manfred.test.mjs`) ; le registre compte désormais **73 sources = 68 EN + 5 RU** (`ALL_ADAPTERS` 68). Apparaît dans le filtre Source de `#/scan` et sur la page d'accueil cvstart.org.
+
+### Corrigé
+- **Le flux a16z Speedrun tronquait silencieusement à 50 offres** (#2404) — le flux plafonne une page à 50, mais la source demandait `PER_PAGE = 100`, si bien que la pagination s'arrêtait après la page 1. Corrigé à 50.
+- **Les sites morts déclenchent désormais une erreur au lieu d'être lus comme « actifs mais vides »** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors` : un échec de récupération où aucune requête n'aboutit déclenche désormais une erreur (afin que la santé de `#/portals` et le scan enregistrent un véritable échec), au lieu de le ramener silencieusement à une liste vide ; un échec en cours de scan après au moins un succès conserve les résultats partiels.
+- **workable utilise désormais l'API publique du widget** (#5ab8425) — bascule vers `apply.workable.com/api/v1/widget/accounts/<slug>`, qui renvoie en une seule requête la liste complète des offres d'un grand compte, si bien que les grands comptes ne sont plus tronqués.
+
+### Notes
+- Non porté (uniquement CLI ou non reflété par web-ui) : la réécriture de performance à bucketisation de titres de `detect-reposts` #2389 ; les correctifs de clé d'entreprise Unicode (la déduplication du tracker de web-ui est déjà sûre pour le non-latin) ; `scan --since` ; `cv-facts` ; la passe d'audit du modèle de CV / PDF ; `doctor` ; la directive de contenu non fiable des modes.
+
 ## [1.133.1] — 2026-08-02
 
 ### Corrigé

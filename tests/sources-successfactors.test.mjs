@@ -138,6 +138,17 @@ test('fetchSuccessfactors: paginates by startrow until an empty page, CI-isolate
   assert.ok(jobs.every((j) => j.company === 'ZF'));
 });
 
+test('fetchSuccessfactors: THROWS on a total outage (page-0 fetch fails, dead board ≠ empty board)', async () => {
+  // The RMK tile fetch is left uncaught precisely so a transport error
+  // propagates: an unreachable board must reject so scan/portal-health record a
+  // failure, NOT resolve to [] which reads as "live but empty" (meituan/tencent
+  // contract). This web-ui port is RMK-only — there is no post-RMK CSB probe.
+  await assert.rejects(
+    () => fetchSuccessfactors(ENDPOINT, { fetchImpl: async () => { throw new Error('tenant down'); }, company: { name: 'ZF' } }),
+    /tenant down/,
+  );
+});
+
 test('fetchSuccessfactors: host guard rejects an off-host endpoint before fetch', async () => {
   let called = false;
   const fetchImpl = async () => { called = true; return { ok: true, status: 200, text: async () => '' }; };

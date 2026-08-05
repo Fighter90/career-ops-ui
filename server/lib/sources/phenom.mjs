@@ -188,6 +188,11 @@ export async function fetchPhenom(endpoint, opts = {}) {
   const jobs = [];
   const seen = new Set();
   let total = null;
+  // A first-page failure (page 0 here, 0-based) means the board is unreachable,
+  // not empty — it must THROW so scan/portal-health record a failure instead of
+  // "live but empty" (meituan/tencent idiom). Only a mid-scan failure (after
+  // ≥1 successful page = proof of life) keeps the partials collected so far.
+  let succeededOnce = false;
 
   for (let page = 0; page < maxPages; page++) {
     if (page > 0) await delay(PAGE_DELAY_MS, signal);
@@ -222,9 +227,11 @@ export async function fetchPhenom(endpoint, opts = {}) {
           locationData: {},
         }),
       });
-    } catch {
+    } catch (err) {
+      if (!succeededOnce) throw err;
       break; // keep jobs collected so far — a transient mid-scan failure shouldn't discard earlier pages
     }
+    succeededOnce = true;
     const { total: pageTotal, jobs: rows } = parseRefineSearch(json, cfg, name);
     if (total === null) total = pageTotal;
     if (rows.length === 0) break;

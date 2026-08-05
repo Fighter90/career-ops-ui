@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2144%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.133.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.1)
+[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
 
-> **🆕 最新版本 — v1.133.1** — 修復：**獲投公司**（`#/funded`）現在會渲染結果 — 父專案的探索結果現在讀取自正確的 `companies` 鍵，且結果表格會建構全部四欄（一項 `UI.el` 子節點陣列化修復）。已在真實瀏覽器中驗證。 **2144 個測試.**
+> **🆕 最新版本 — v1.134.0** — 對齊父專案 career-ops **v1.25.0**：新增掃描來源 **getManfred**(西班牙／歐盟科技職缺，附公開薪資 → **73 個來源**)，並修復多項來源供應商問題 —— a16z Speedrun 不再截斷至 50 筆職缺、失效的職缺板現在會呈現真實的失敗而非「正常但空白」、**workable** 改用公開 widget API 讓大型帳號可完整掃描。 **2184 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

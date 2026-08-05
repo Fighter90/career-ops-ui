@@ -8,7 +8,7 @@
  *   → { jobs: [ { id, title, company, url, location, remote, published_at, … } ],
  *       total, page, page_size, total_pages, facets }
  *
- * Pagination is **0-indexed** and 100/page; the response carries `total_pages`,
+ * Pagination is **0-indexed** and 50/page; the response carries `total_pages`,
  * so iteration is bounded by min(total_pages, max_pages). The default cap is
  * modest — the board is several thousand roles, so raise `max_pages` on the
  * entry or narrow server-side with `q:` (the feed runs full-text search with
@@ -50,7 +50,7 @@ export const SPEEDRUN_TALENT_HOST_RE = /^speedrun-talent-network\.com$/i;
 /** Canonical API listing URL (adapter default endpoint). */
 export const FEED_URL = `${SITE_ORIGIN}/api/v1/jobs`;
 
-const PER_PAGE = 100; // feed page size
+const PER_PAGE = 50; // feed page size — the API caps a page at 50; PER_PAGE=100 made the `rawCount < PER_PAGE` guard stop after page 1, truncating to 50 jobs (parent #2404)
 const DEFAULT_MAX_PAGES = 3; // modest default (parent parity) — raise via max_pages
 const MAX_PAGES_CAP = 120; // hard stop on request count regardless of max_pages
 const PAGE_DELAY_MS = 0; // no documented rate limit (parent parity); tunable via opts

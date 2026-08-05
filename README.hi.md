@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2144%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.133.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.1)
+[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.133.1** — सुधार: **फ़ंडेड कंपनियां** (`#/funded`) अब परिणाम दिखाता है — पैरेंट की डिस्कवरी आउटपुट अब सही `companies` कुंजी के अंतर्गत पढ़ी जाती है, और परिणाम तालिका सभी चारों कॉलम बनाती है (एक `UI.el` चिल्ड्रन-ऐज़-ऐरे फ़िक्स)। एक वास्तविक ब्राउज़र में सत्यापित। **2144 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.134.0** — पैरेंट career-ops **v1.25.0** पैरिटी: एक नया स्कैन स्रोत **getManfred** (स्पेनिश/EU टेक, प्रकाशित सैलरी → **73 स्रोत**), साथ ही प्रोवाइडर फ़िक्स — a16z Speedrun अब 50 जॉब्स तक सीमित नहीं रहता, मृत बोर्ड्स अब "लाइव लेकिन खाली" के बजाय एक वास्तविक विफलता दिखाते हैं, और **workable** सार्वजनिक विजेट API का उपयोग करता है ताकि बड़े अकाउंट पूरी तरह स्कैन हों। **2184 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

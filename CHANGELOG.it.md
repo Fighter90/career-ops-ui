@@ -2,6 +2,21 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.134.0] — 2026-08-05
+
+Parità con career-ops padre v1.25.0.
+
+### Aggiunto
+- **Nuova sorgente di scansione: getManfred** (`manfred`) — un feed a livello di board di ruoli tech spagnoli/UE con stipendi pubblicati, da `www.getmanfred.com/api/v2/public/offers` (zero autenticazione, host fissato + solo HTTPS, catalogo completo in una singola richiesta). Sorgente + adattatore + una suite CI-isolata (`tests/sources-manfred.test.mjs`); il registro ora conta **73** sorgenti = 68 inglesi + 5 russe (`ALL_ADAPTERS` 68). Compare nel filtro Sorgente di `#/scan` e sulla landing di cvstart.org.
+
+### Corretto
+- **Il feed a16z Speedrun si troncava silenziosamente a 50 lavori** (#2404) — il feed limita una pagina a 50, ma la sorgente richiedeva `PER_PAGE = 100`, quindi la paginazione si fermava dopo la pagina 1. Corretto a 50.
+- **Le bacheche morte ora generano un errore invece di leggersi come "attive ma vuote"** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: un fallimento di fetch in cui nessuna richiesta si risolve mai ora genera un errore (così `#/portals` health e la scansione registrano un vero fallimento), invece di ridurlo silenziosamente a un elenco vuoto; un fallimento a metà scansione dopo almeno un successo mantiene i risultati parziali.
+- **workable ora usa l'API pubblica del widget** (#5ab8425) — passato a `apply.workable.com/api/v1/widget/accounts/<slug>`, che restituisce in un'unica richiesta l'elenco completo degli annunci di un account grande, così gli account grandi non vengono più troncati.
+
+### Note
+- Non portato (solo CLI o non replicato da web-ui): la riscrittura delle prestazioni con bucket per titolo di detect-reposts #2389; le correzioni per chiavi aziendali Unicode (la deduplicazione del tracker di web-ui è già sicura per caratteri non latini); `scan --since`; `cv-facts`; il passaggio di audit su template CV / PDF; `doctor`; la direttiva sui contenuti non attendibili delle modalità.
+
 ## [1.133.1] — 2026-08-02
 
 ### Corretto

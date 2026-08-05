@@ -7,14 +7,14 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2144%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.133.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.1)
+[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
 
-> **🆕 Dernière version — v1.133.1** — correction : **Entreprises financées** (`#/funded`) affiche désormais les résultats — la sortie de découverte du parent est lue sous la bonne clé `companies`, et le tableau de résultats construit les quatre colonnes (une correction de `UI.el` pour passer les enfants sous forme de tableau). Vérifié dans un navigateur réel. **2144 tests.**
+> **🆕 Dernière version — v1.134.0** — parité avec career-ops parent **v1.25.0** : une nouvelle source de scan **getManfred** (offres tech espagnoles/européennes, salaires publiés → **73 sources**), ainsi que des correctifs de fournisseurs — a16z Speedrun ne tronque plus à 50 offres, les sites morts affichent désormais un véritable échec au lieu d'être « actifs mais vides », et **workable** utilise l'API publique du widget pour que les grands comptes soient scannés intégralement. **2184 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

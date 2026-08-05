@@ -8,6 +8,21 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.134.0] — 2026-08-05
+
+Paritet med forælder-projektet career-ops **v1.25.0**.
+
+### Tilføjet
+- **Ny scan-kilde: getManfred** (`manfred`) — et boardbredt feed af spanske/EU-teknologijob med offentliggjorte lønninger, fra `www.getmanfred.com/api/v2/public/offers` (ingen auth, host-pinned + kun HTTPS, fuldt katalog i én enkelt forespørgsel). Kilde + adapter + en CI-isoleret suite (`tests/sources-manfred.test.mjs`); registret rummer nu **73 kilder = 68 engelske + 5 russiske** (`ALL_ADAPTERS` 68). Optræder i `#/scan`s Kilde-filter og på cvstart.org-landingssiden.
+
+### Rettet
+- **a16z Speedrun-feedet blev stille afkortet til 50 job** (#2404) — feedet loftbelægger en side ved 50, men kilden anmodede om `PER_PAGE = 100`, så pagineringen stoppede efter side 1. Rettet til 50.
+- **Døde jobopslagstavler kaster nu en fejl i stedet for at blive læst som "live, men tom"** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: en hentningsfejl, hvor ingen forespørgsel nogensinde blev afsluttet, kaster nu en fejl (så `#/portals`-sundhedstjek og scanningen registrerer en reel fejl), i stedet for at sluge den til en tom liste; en fejl midt i scanningen efter mindst én succes bevarer de delvise resultater.
+- **workable bruger nu den offentlige widget-API** (#5ab8425) — skiftet til `apply.workable.com/api/v1/widget/accounts/<slug>`, som returnerer en stor kontos fulde opslagsliste i én enkelt forespørgsel, så store konti ikke længere afkortes.
+
+### Noter
+- Ikke porteret (kun CLI eller ikke spejlet af web-ui): detect-reposts #2389's titel-bucketing-ydelsesomskrivning; Unicode-firmanøgle-rettelserne (web-ui's eget tracker-dedup er allerede sikkert for ikke-latinske tegn); `scan --since`; `cv-facts`; CV-skabelon-/PDF-revisionsgennemgangen; `doctor`; tilstandenes direktiv for utroværdigt indhold.
+
 ## [1.133.1] — 2026-08-02
 
 ### Rettet

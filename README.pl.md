@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2144%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.133.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.1)
+[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
 
-> **🆕 Najnowsze wydanie — v1.133.1** — poprawka: **Sfinansowane firmy** (`#/funded`) teraz renderuje wyniki — wynik wykrywania rodzica jest odczytywany spod właściwego klucza `companies`, a tabela wyników buduje wszystkie cztery kolumny (poprawka `UI.el` dotycząca przekazywania dzieci jako tablicy). Zweryfikowano w prawdziwej przeglądarce. **2144 testów.**
+> **🆕 Najnowsze wydanie — v1.134.0** — parytet z rodzicem career-ops **v1.25.0**: nowe źródło skanowania **getManfred** (hiszpańsko-unijna branża tech, podane wynagrodzenia → **73 źródła**), a także poprawki dostawców — kanał a16z Speedrun nie obcina już wyniku do 50 ofert, martwe portale teraz zgłaszają rzeczywistą awarię zamiast wyglądać na „działające, ale puste”, a **workable** korzysta z publicznego API widżetu, dzięki czemu duże konta są skanowane w pełni. **2184 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

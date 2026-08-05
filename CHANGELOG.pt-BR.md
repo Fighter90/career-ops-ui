@@ -8,6 +8,21 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.134.0] — 2026-08-05
+
+Paridade com o career-ops pai **v1.25.0**.
+
+### Adicionado
+- **Nova fonte de varredura: getManfred** (`manfred`) — um feed de todo o board com vagas de tecnologia da Espanha/UE com salários publicados, a partir de `www.getmanfred.com/api/v2/public/offers` (zero-auth, host fixado + somente HTTPS, catálogo completo em uma única requisição). Fonte + adaptador + uma suíte isolada para CI (`tests/sources-manfred.test.mjs`); o registro agora soma **73 fontes = 68 em inglês + 5 russas** (`ALL_ADAPTERS` 68). Aparece no filtro Fonte de `#/scan` e na landing do cvstart.org.
+
+### Corrigido
+- **O feed da a16z Speedrun estava truncando silenciosamente em 50 vagas** (#2404) — o feed limita uma página a 50, mas a fonte solicitava `PER_PAGE = 100`, então a paginação parava depois da página 1. Corrigido para 50.
+- **Boards mortos agora lançam erro em vez de serem lidos como "ativos, porém vazios"** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: uma falha de busca em que nenhuma requisição jamais se resolve agora lança um erro (para que a saúde de `#/portals` e a varredura registrem uma falha real), em vez de a engolir e resultar numa lista vazia; uma falha no meio da varredura, após pelo menos um sucesso, preserva os resultados parciais.
+- **workable agora usa a API pública do widget** (#5ab8425) — trocado para `apply.workable.com/api/v1/widget/accounts/<slug>`, que retorna a lista completa de vagas de uma conta grande em uma única requisição, então contas grandes não são mais truncadas.
+
+### Notas
+- Não portado (exclusivo de CLI ou não espelhado pelo web-ui): a reescrita de performance com bucketing por título do detect-reposts #2389; as correções de chave de empresa Unicode (a deduplicação do próprio tracker do web-ui já é segura para não-Latin); `scan --since`; `cv-facts`; a auditoria do template de CV / PDF; `doctor`; a diretiva de conteúdo não confiável dos modos.
+
 ## [1.133.1] — 2026-08-02
 
 ### Corrigido

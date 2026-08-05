@@ -1591,7 +1591,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 
 ## 17. 新しい求人ポータルソースを追加する方法
 
-career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。`server/lib/sources/` レジストリは **72** 個のアダプタを同梱しています — **英語圏 67 個 + ロシア系 5 個** のボードです。英語圏のセットは主要な ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、明示的な `provider:` で選択されるボード全体のアグリゲーター(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …)、および `careers_url` ホストまたは明示的な `api:` URL から自動検出されるテナント単位の ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)にわたります。**完全なリストをここで手作業で数える必要はまったくありません — `server/lib/sources/` から自動検出され、`#/scan` の Source ドロップダウンにライブで表示されます。** YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
+career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。`server/lib/sources/` レジストリは **73** 個のアダプタを同梱しています — **英語圏 68 個 + ロシア系 5 個** のボードです。英語圏のセットは主要な ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、明示的な `provider:` で選択されるボード全体のアグリゲーター(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …)、および `careers_url` ホストまたは明示的な `api:` URL から自動検出されるテナント単位の ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)にわたります。**完全なリストをここで手作業で数える必要はまったくありません — `server/lib/sources/` から自動検出され、`#/scan` の Source ドロップダウンにライブで表示されます。** YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
 
 > **v1.69.0 (P-14) — ドロップイン自動検出。** 12 個目のソース追加はいまや **ファイルを置くだけ** で完結します。レジストリ
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

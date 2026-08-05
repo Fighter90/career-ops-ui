@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2144%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.133.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.1)
+[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
 
-> **🆕 Latest release — v1.133.1** — fix: **Funded companies** (`#/funded`) now renders results — the parent discovery output is read under the correct `companies` key, and the results table builds all four columns (a `UI.el` children-as-array fix). Verified in a real browser. **2144 tests.**
+> **🆕 Latest release — v1.134.0** — parent career-ops **v1.25.0** parity: a new scan source **getManfred** (Spanish/EU tech, published salaries → **73 sources**), plus provider fixes — a16z Speedrun no longer truncates to 50 jobs, dead boards now surface a real failure instead of "live but empty", and **workable** uses the public widget API so large accounts scan fully. **2184 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

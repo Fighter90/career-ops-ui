@@ -116,6 +116,7 @@ import { icimsAdapter } from './adapters/icims.mjs';
 // v1.130.0 — parent career-ops v1.24.0 parity: 2 new sources.
 import { a16zSpeedrunTalentAdapter } from './adapters/a16z-speedrun-talent.mjs';
 import { cryptocurrencyjobsAdapter } from './adapters/cryptocurrencyjobs.mjs';
+import { manfredAdapter } from './adapters/manfred.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -218,6 +219,7 @@ export const ALL_ADAPTERS = [
   icimsAdapter,
   a16zSpeedrunTalentAdapter,
   cryptocurrencyjobsAdapter,
+  manfredAdapter,
 ];
 
 /**
