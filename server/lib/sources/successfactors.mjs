@@ -228,6 +228,14 @@ export function parseSuccessfactors(html, { jobBase, fallbackCompany = '' } = {}
 
 /**
  * Fetch + normalize an RMK tenant's job list (paginated by `startrow`).
+ *
+ * A fetch failure must THROW, not be swallowed into []: an unreachable board is
+ * UNREACHABLE, not empty, so scan/portal-health record a failure instead of
+ * "live but empty" (meituan/tencent idiom). The `startrow` fetch is left
+ * uncaught precisely so a transport error propagates. This web-ui port carries
+ * only the RMK tile scraper (no CSB JSON fallback), so there is no post-RMK CSB
+ * `probe` carve-out to preserve — the sole transport throws on any failure.
+ *
  * @param {string} endpoint tenant tile-search endpoint (host-pinned, from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
  */

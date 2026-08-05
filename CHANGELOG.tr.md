@@ -2,6 +2,21 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.134.0] — 2026-08-05
+
+Üst proje career-ops v1.25.0 paritesi.
+
+### Eklendi
+- **Yeni tarama kaynağı: getManfred** (`manfred`) — yayınlanmış maaşlarla İspanyol/AB teknoloji rollerinin pano-geneli bir beslemesi, `www.getmanfred.com/api/v2/public/offers`'tan (sıfır-kimlik doğrulama, ana bilgisayara sabitlenmiş + yalnızca-HTTPS, tek istekli tam katalog). Kaynak + adaptör + CI-izole bir paket (`tests/sources-manfred.test.mjs`); kayıt defteri artık 73 kaynak = 68 İngilizce + 5 Rusça (`ALL_ADAPTERS` 68). `#/scan` Kaynak filtresinde ve cvstart.org açılış sayfasında görünür.
+
+### Düzeltildi
+- **a16z Speedrun beslemesi sessizce 50 işe kısaltılıyordu** (#2404) — besleme bir sayfayı 50 ile sınırlıyor ancak kaynak `PER_PAGE = 100` istiyordu, bu yüzden sayfalama 1. sayfadan sonra duruyordu. 50'ye düzeltildi.
+- **Ölü panolar artık "canlı ama boş" olarak okunmak yerine hata fırlatıyor** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: hiçbir isteğin hiç çözümlenmediği bir getirme hatası artık hata fırlatıyor (böylece `#/portals` sağlığı ve tarama gerçek bir hatayı kaydediyor), onu boş bir listeye yutmak yerine; en az bir başarıdan sonraki bir tarama-ortası hata kısmi sonuçları koruyor.
+- **workable artık genel widget API'sini kullanıyor** (#5ab8425) — büyük bir hesabın tam ilan listesini tek bir istekte döndüren `apply.workable.com/api/v1/widget/accounts/<slug>`'a geçildi, böylece büyük hesaplar artık kısaltılmıyor.
+
+### Notlar
+- Taşınmadı (yalnızca CLI veya web-ui tarafından yansıtılmıyor): detect-reposts #2389 başlık-gruplama performans yeniden yazımı; Unicode şirket-anahtarı düzeltmeleri (web-ui'nin kendi takipçi çiftlemesi zaten Latin-olmayan-güvenli); `scan --since`; `cv-facts`; CV şablonu / PDF denetim geçişi; `doctor`; modes güvenilmeyen-içerik direktifi.
+
 ## [1.133.1] — 2026-08-02
 
 ### Düzeltildi

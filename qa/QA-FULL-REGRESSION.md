@@ -3,7 +3,7 @@
 > A complete, standing regression checklist for the **entire** app — not a
 > per-release delta. Run before a milestone, a risky refactor, or a
 > confidence check. Current baseline: **v1.131.1** · **2135** unit/integration ·
-> **72** scan sources (67 EN + 5 RU) · **31** route modules · **17** UI locales.
+> **72** scan sources (68 EN + 5 RU) · **31** route modules · **17** UI locales.
 >
 > Golden rules while testing:
 > - **Never point a running test/server at the real parent.** Use a throw-away
@@ -42,12 +42,12 @@
 - [ ] **Scan-source host-pinning** — every source module pins its host (exact-match regex + HTTPS + `redirect: 'error'`), and each adapter's `buildEndpoint` re-validates any `api:` override before it reaches the fetch slot (v1.131.1 parity across a16z-speedrun-talent + cryptocurrencyjobs).
 - [ ] **Rate-limit** (`llmRateLimit`) + **file-lock** (`withFileLock`) on the write paths.
 - [ ] **Parent is read-only** except explicit user writes: `POST /api/pipeline`, `POST /api/tracker`, `PUT /api/cv`, `POST /api/jds`, `DELETE /api/{jds,interview-prep}/:name`, `POST /api/config`, the streaming runners, and the user-layer writers (`career-plan`, `two-pager`, `memory`, `networking`, `followup/seed`). No other route mutates the parent.
-- [ ] All 31 route modules registered in `server/index.mjs` (`register<Topic>Routes(app)`); `GET /api/scan/sources` returns 72 (67 EN + 5 RU).
+- [ ] All 32 route modules registered in `server/index.mjs` (`register<Topic>Routes(app)`); `GET /api/scan/sources` returns 72 (68 EN + 5 RU).
 
 ## 3. Scanners (in-process, zero-token)
 
 - [ ] `GET /api/scan/sources` lists all 72; the EN set includes the newest (a16z-speedrun-talent, cryptocurrencyjobs); RU set is the 5 canonical.
-- [ ] `ALL_ADAPTERS.length === 67` (`tests/adapter-registry.test.mjs`) with the exact sorted id list.
+- [ ] `ALL_ADAPTERS.length === 68` (`tests/adapter-registry.test.mjs`) with the exact sorted id list.
 - [ ] `FALLBACK_SOURCES` in `public/js/views/scan.js` matches the live registry (drift gate `tests/scan-fallback-sources.test.mjs`).
 - [ ] A `dryRun=1` scan against a fixture returns normalized job objects; no real network needed in tests (`fetchImpl` injection).
 - [ ] `#/scan`: source dropdown, Advanced-filters disclosure, Country + **Seniority** facets, Remote/Hybrid/Onsite, Exclude keywords, saved searches/★ favorites, per-source cap, "Posted within" age, **Age** freshness column, `◎` fit badge, repost 🔁 panel. Logos toggle-gated.
@@ -101,7 +101,7 @@ Boot each route via `#/<route>`; confirm the view renders and the browser consol
 - [ ] Unit/integration ≥ **2135**; smoke E2E ≥ 20; comprehensive E2E ≥ 23; Playwright ≥ its floor.
 - [ ] Help bundles exactly **29 H2 / 105 H3** ×17; CHANGELOG parity ×17.
 - [ ] Coverage: keep the ~93 % line / ~83 % branch baseline at or above (80 % line floor).
-- [ ] Registry 72 sources / `ALL_ADAPTERS` 67; 31 route modules; 17 locales.
+- [ ] Registry 73 sources / `ALL_ADAPTERS` 68; 32 route modules; 17 locales.
 
 ## 10. Known traps (don't re-chase)
 

@@ -9,6 +9,21 @@
 ---
 
 
+## [1.134.0] — 2026-08-05
+
+對齊父專案 career-ops v1.25.0。
+
+### 新增
+- **新增掃描來源:getManfred**(`manfred`)—— 一個橫跨全站的西班牙／歐盟科技職缺消息來源,附帶公開薪資,取自 `www.getmanfred.com/api/v2/public/offers`(零驗證、主機固定 + 僅限 HTTPS、單一請求取得完整目錄)。新增來源 + adapter,以及一套 CI 隔離測試套件(`tests/sources-manfred.test.mjs`);註冊表現有 **73** 個來源 = 68 個英文 + 5 個俄文(`ALL_ADAPTERS` 68)。已出現在 `#/scan` 的 Source 篩選器,以及 cvstart.org 首頁。
+
+### 修復
+- **a16z Speedrun 消息來源會靜默截斷至 50 筆職缺**(#2404)—— 該消息來源每頁上限為 50 筆,但此來源原本請求 `PER_PAGE = 100`,導致第一頁後分頁即中止。已修正為 50。
+- **失效的職缺板現在會拋出錯誤,而非誤判為「正常但空白」**(#2379)—— `cryptocurrencyjobs`、`phenom`、`radancy`、`successfactors`:當沒有任何一次請求成功解析時,現在會拋出錯誤(使 `#/portals` 健康檢查與掃描能記錄真實的失敗),而非將其吞噬為一份空清單;掃描過程中若在至少一次成功之後才失敗,仍會保留部分結果。
+- **workable 現已改用公開 widget API**(#5ab8425)—— 已切換至 `apply.workable.com/api/v1/widget/accounts/<slug>`,可於單一請求中取得大型帳號的完整職缺清單,大型帳號因此不再遭到截斷。
+
+### 備註
+- 未移植(僅限 CLI 或未鏡射至 web-ui):detect-reposts #2389 的標題分組效能重寫;Unicode 公司鍵修復(web-ui 自身的追蹤器去重機制已對非拉丁字元安全);`scan --since`;`cv-facts`;CV 範本／PDF 稽核工作;`doctor`;modes 未受信任內容指令。
+
 ## [1.133.1] — 2026-08-02
 
 ### 修復

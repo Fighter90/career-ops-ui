@@ -9,6 +9,21 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.134.0] — 2026-08-05
+
+Parytet z rodzicem career-ops **v1.25.0**.
+
+### Dodano
+- **Nowe źródło skanowania: getManfred** (`manfred`) — ogólny kanał hiszpańsko-unijnych ofert pracy w branży tech z podanymi wynagrodzeniami, z `www.getmanfred.com/api/v2/public/offers` (bez autoryzacji, przypięty do hosta + tylko HTTPS, pełny katalog w jednym żądaniu). Źródło + adapter oraz izolowany dla CI zestaw testów (`tests/sources-manfred.test.mjs`); rejestr liczy teraz 73 źródła = 68 angielskich + 5 rosyjskich (`ALL_ADAPTERS` 68). Widoczne w filtrze Source na `#/scan` oraz na landingu cvstart.org.
+
+### Naprawiono
+- **Kanał a16z Speedrun po cichu obcinał wynik do 50 ofert** (#2404) — kanał ogranicza stronę do 50 pozycji, ale źródło żądało `PER_PAGE = 100`, więc paginacja zatrzymywała się po pierwszej stronie. Poprawiono na 50.
+- **Martwe portale teraz zgłaszają błąd zamiast być odczytywane jako „działające, ale puste”** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: nieudane pobranie, w którym żadne żądanie nigdy się nie rozstrzygnęło, teraz zgłasza błąd (dzięki czemu stan `#/portals` i skan odnotowują rzeczywistą awarię), zamiast wyciszać go do pustej listy; awaria w połowie skanowania po co najmniej jednym sukcesie zachowuje wyniki częściowe.
+- **workable korzysta teraz z publicznego API widżetu** (#5ab8425) — przełączono na `apply.workable.com/api/v1/widget/accounts/<slug>`, który zwraca pełną listę ofert dużego konta w jednym żądaniu, więc duże konta nie są już obcinane.
+
+### Uwagi
+- Nieprzeniesione (tylko CLI lub nie odzwierciedlone przez web-ui): przepisanie wydajnościowe grupowania tytułów w detect-reposts #2389; poprawki kluczy firm dla Unicode (własna deduplikacja trackera w web-ui jest już bezpieczna dla znaków innych niż łacińskie); `scan --since`; `cv-facts`; przegląd szablonu CV / PDF; `doctor`; dyrektywa o niezaufanej treści w trybach.
+
 ## [1.133.1] — 2026-08-02
 
 ### Naprawiono

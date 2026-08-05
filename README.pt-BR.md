@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2144%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.133.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.133.1)
+[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
 
-> **🆕 Última versão — v1.133.1** — correção: **Empresas financiadas** (`#/funded`) agora renderiza os resultados — a saída de descoberta do pai é lida a partir da chave `companies` correta, e a tabela de resultados constrói as quatro colunas (uma correção de `UI.el` com filhos em array). Verificado em um navegador real. **2144 testes.**
+> **🆕 Última versão — v1.134.0** — paridade com o career-ops pai **v1.25.0**: uma nova fonte de varredura, a **getManfred** (vagas de tecnologia da Espanha/UE com salários publicados → **73 fontes**), além de correções de provedores — o a16z Speedrun não trunca mais em 50 vagas, boards mortos agora revelam uma falha real em vez de "ativo mas vazio", e o **workable** usa a API pública do widget para que contas grandes sejam varridas por completo. **2184 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

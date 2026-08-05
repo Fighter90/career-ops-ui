@@ -358,14 +358,29 @@ export async function fetchRadancy(endpoint, opts = {}) {
     return fresh;
   };
 
+  // Proof of life across BOTH transports: any resolved request — including a
+  // fragment 200 that parses to zero rows — proves the tenant is reachable, so
+  // a later HTML page-1 failure must not read as "unreachable". Only when NO
+  // request on either transport ever resolved does a page-1 failure THROW, so
+  // scan/portal-health record a failure instead of "live but empty"
+  // (meituan/tencent idiom).
+  let succeededOnce = false;
+
   // ── Preferred transport: the JSON results fragment ─────────────────────────
   const fetchJsonImpl = typeof opts.fetchJson === 'function' ? opts.fetchJson : null;
   if (fetchJsonImpl) {
     const fragHeaders = { accept: 'application/json', 'x-requested-with': 'XMLHttpRequest' };
     try {
       const first = await fetchJsonImpl(buildFragmentUrl(endpoint, 1), { signal, redirect: 'error', headers: fragHeaders });
-      const firstHtml = typeof first?.results === 'string' ? first.results : '';
+      // Proof of life only for a WELL-FORMED fragment response: a string
+      // `results` — even "" (zero rows) — counts, but a missing/non-string
+      // `results` or a response that crashes parsing leaves this false, so a
+      // failing HTML fallback still surfaces the malformed initial response
+      // instead of returning [].
+      const firstIsString = typeof first?.results === 'string';
+      const firstHtml = firstIsString ? first.results : '';
       const firstRows = firstHtml ? parseResults(firstHtml, origin, name) : [];
+      if (firstIsString) succeededOnce = true;
       if (firstRows.length) {
         const { totalResults, totalPages } = readFragmentTotals(firstHtml);
         // Bound by the server's own page count when it gives one; the local caps
@@ -405,6 +420,10 @@ export async function fetchRadancy(endpoint, opts = {}) {
   }
 
   // ── Fallback transport: the ?p=N HTML walk ─────────────────────────────────
+  // A page-1 failure here — when NO request on either transport ever resolved
+  // (no fragment endpoint / it threw) — means the board is unreachable, not
+  // empty: THROW. A resolved fragment request above, or a mid-scan failure
+  // here, keeps the partials collected so far instead.
   for (let page = 1; page <= maxPages; page++) {
     if (page > 1) await delay(PAGE_DELAY_MS, signal);
     let rows;
@@ -415,9 +434,11 @@ export async function fetchRadancy(endpoint, opts = {}) {
         headers: { accept: 'text/html' },
       });
       rows = parseResults(html, origin, name);
-    } catch {
+    } catch (err) {
+      if (!succeededOnce) throw err;
       break; // keep jobs collected so far — a transient mid-scan failure shouldn't discard earlier pages
     }
+    succeededOnce = true;
     if (rows.length === 0) break; // past the last page
 
     // No new ids → the server clamped ?p= to the last page (or looped). Stop.

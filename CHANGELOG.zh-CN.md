@@ -9,6 +9,21 @@
 ---
 
 
+## [1.134.0] — 2026-08-05
+
+父项目 career-ops **v1.25.0** 对齐。
+
+### 新增
+- **新增扫描来源:getManfred**(`manfred`)—— 面向西班牙/欧盟科技职位、含公开薪资的全板块信息流,来自 `www.getmanfred.com/api/v2/public/offers`(零鉴权,主机锁定 + 仅限 HTTPS,单次请求获取完整目录)。新增来源 + 适配器 + 一套 CI 隔离测试套件(`tests/sources-manfred.test.mjs`);注册表现为 **73 个来源 = 68 个英文 + 5 个俄文**(`ALL_ADAPTERS` 68)。已出现在 `#/scan` 的 Source 筛选器与 cvstart.org 落地页中。
+
+### 修复
+- **a16z Speedrun 信息流曾悄悄截断为 50 条职位**(#2404)—— 该信息流单页上限为 50 条,但该来源请求的是 `PER_PAGE = 100`,导致翻页在第一页之后就停止。已更正为 50。
+- **失效招聘板现在会抛出异常,而不再被误读为「存活但为空」**(#2379)—— `cryptocurrencyjobs`、`phenom`、`radancy`、`successfactors`:当没有任何请求成功返回时,现在会抛出异常(以便 `#/portals` 健康检查与扫描记录到真实的失败),而不再被悄悄吞掉、返回空列表;若失败发生在至少一次成功之后,扫描仍会保留已取得的部分结果。
+- **workable 现在使用公开的 widget API**(#5ab8425)—— 已切换为 `apply.workable.com/api/v1/widget/accounts/<slug>`,该接口能一次性返回大账号的完整职位列表,因此大账号不再被截断。
+
+### 说明
+- 未移植(仅限 CLI 或未被 web-ui 镜像):`detect-reposts` #2389 的标题分桶性能重写;Unicode 公司键修复(web-ui 自身的跟踪器去重本就对非拉丁字符安全);`scan --since`;`cv-facts`;CV 模板 / PDF 审计流程;`doctor`;modes 的不可信内容指令。
+
 ## [1.133.1] — 2026-08-02
 
 ### 修复

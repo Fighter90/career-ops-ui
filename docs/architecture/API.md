@@ -263,7 +263,7 @@ Queries: `dryRun=1` (skip writes to `data/scan-history.tsv` + `data/last-scan.js
 
 ### `GET /api/scan/sources` → `{ sources: [{ value, label, region, configKey? }, ...] }` *(v1.29.0)*
 
-Canonical source registry, served from `server/lib/sources/registry.mjs`. Returns **72 entries** (67 EN-region incl. RSS + 5 RU) as of v1.130.0 — the list auto-grows as adapters are added. The `#/scan` source-filter dropdown fetches this on mount and rebuilds its `<option>` list dynamically. **Since v1.69.0 (P-14)** the registry auto-discovers adapters: dropping a `<slug>.mjs` with an `export const meta = { value, label, region, configKey? }` block into `server/lib/sources/` adds it here automatically — no registry edit. `Cache-Control: max-age=60`.
+Canonical source registry, served from `server/lib/sources/registry.mjs`. Returns **73 entries** (68 EN-region incl. RSS + 5 RU) as of v1.134.0 — the list auto-grows as adapters are added. The `#/scan` source-filter dropdown fetches this on mount and rebuilds its `<option>` list dynamically. **Since v1.69.0 (P-14)** the registry auto-discovers adapters: dropping a `<slug>.mjs` with an `export const meta = { value, label, region, configKey? }` block into `server/lib/sources/` adds it here automatically — no registry edit. `Cache-Control: max-age=60`.
 
 ### `GET /api/scan/regional/config` → `{ sources, area, per_page, only_remote, queries }`
 

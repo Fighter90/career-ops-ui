@@ -217,6 +217,32 @@ test('radancy fetch falls back when the fragment parses to zero rows', async () 
   assert.ok(emptyText > 0);
 });
 
+test('radancy fetch THROWS on a total outage (page-1 HTML fails, nothing resolved)', async () => {
+  // No fetchJson capability → straight to the HTML transport; page 1 fails and
+  // NO request on either transport ever resolved, so the tenant is unreachable,
+  // not empty. It must reject so scan/portal-health record a failure instead of
+  // "live but empty" (meituan/tencent contract), NOT swallow to [].
+  await assert.rejects(
+    () => fetchRadancy('https://careers.munichre.com/en/search-jobs', {
+      fetchImpl: async () => { throw new Error('tenant down'); },
+      company: { name: 'Munich Re' },
+    }),
+    /tenant down/,
+  );
+});
+
+test('radancy fetch does NOT throw when the fragment resolved (zero rows) then the HTML fallback fails', async () => {
+  // A resolved fragment request is proof of life even at zero rows: when the
+  // HTML fallback then fails (e.g. 403 on ?p=1), fetch() must NOT throw
+  // "unreachable" for a tenant it just talked to — it returns what it has ([]).
+  const jobs = await fetchRadancy('https://careers.munichre.com/en/search-jobs', {
+    fetchJson: async () => ({ results: '', hasJobs: false }),
+    fetchImpl: async () => { throw new Error('403 on the HTML page'); },
+    company: { name: 'Munich Re' },
+  });
+  assert.deepEqual(jobs, []);
+});
+
 test('radancy fetch honors max_jobs on the fragment transport', async () => {
   const jobs = await muteErrors(() => fetchRadancy('https://careers.unitedhealthgroup.com/en/search-jobs', {
     fetchJson: async () => ({ results: LEGACY_UHG, hasJobs: true }),

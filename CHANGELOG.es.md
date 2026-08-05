@@ -11,6 +11,21 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.134.0] — 2026-08-05
+
+Paridad con career-ops padre **v1.25.0**.
+
+### Añadido
+- **Nueva fuente de escaneo: getManfred** (`manfred`) — un feed de todo el board de puestos tecnológicos españoles/UE con salarios publicados, desde `www.getmanfred.com/api/v2/public/offers` (sin autenticación, anclado a host + solo HTTPS, catálogo completo en una sola petición). Fuente + adaptador + una suite aislada para CI (`tests/sources-manfred.test.mjs`); el registro ahora son 73 fuentes = 68 en inglés + 5 en ruso (`ALL_ADAPTERS` 68). Aparece en el filtro de Fuente de `#/scan` y en la landing de cvstart.org.
+
+### Corregido
+- **El feed de a16z Speedrun truncaba silenciosamente a 50 empleos** (#2404) — el feed limita una página a 50, pero la fuente solicitaba `PER_PAGE = 100`, así que la paginación se detenía tras la primera página. Corregido a 50.
+- **Los boards muertos ahora lanzan un error en vez de leerse como "en vivo pero vacíos"** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: un fallo de descarga en el que ninguna petición llega a resolverse ahora lanza un error (de modo que la salud de `#/portals` y el escaneo registran un fallo real), en vez de silenciarlo como una lista vacía; un fallo a mitad de escaneo tras al menos un éxito conserva los resultados parciales.
+- **workable ahora usa la API pública de widget** (#5ab8425) — cambiado a `apply.workable.com/api/v1/widget/accounts/<slug>`, que devuelve el listado completo de publicaciones de una cuenta grande en una sola petición, de modo que las cuentas grandes ya no se truncan.
+
+### Notas
+- No portado (exclusivo de CLI o no reflejado en web-ui): la reescritura de rendimiento por agrupación de títulos de detect-reposts #2389; las correcciones de clave de empresa Unicode (la deduplicación del tracker propio de web-ui ya es segura para no-latinos); `scan --since`; `cv-facts`; la pasada de auditoría de plantilla de CV / PDF; `doctor`; la directiva de contenido no confiable de los modos.
+
 ## [1.133.1] — 2026-08-02
 
 ### Corregido

@@ -48,6 +48,7 @@ window.ScanResults = (function () {
     { value: 'landingjobs',     label: 'Landing.jobs' },
     { value: 'larajobs',        label: 'LaraJobs' },
     { value: 'lever',           label: 'Lever' },
+    { value: 'manfred',         label: 'getManfred' },
     { value: 'meituan',         label: 'Meituan' },
     { value: 'nodesk',          label: 'NoDesk' },
     { value: 'nofluffjobs',     label: 'NoFluffJobs' },

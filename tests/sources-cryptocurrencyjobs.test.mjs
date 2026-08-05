@@ -152,6 +152,17 @@ test('fetchCryptocurrencyJobs: threads maxResults through to the parser', async 
   assert.equal(jobs.length, 2);
 });
 
+test('fetchCryptocurrencyJobs: THROWS on a transport failure (dead board ≠ empty board)', async () => {
+  // A failed feed fetch must REJECT, not resolve to []: scan/portal-health then
+  // record a failure, whereas [] would read as "live but empty" and a dead
+  // board would never trip escalation (meituan/tencent contract). Single fetch,
+  // so this outage is the only request — nothing ever resolved.
+  await assert.rejects(
+    () => fetchCryptocurrencyJobs(FEED_URL, { fetchImpl: async () => { throw new Error('network down'); } }),
+    /network down/,
+  );
+});
+
 test('assertCryptocurrencyJobsUrl: pins host to cryptocurrencyjobs.co over HTTPS', () => {
   assert.equal(assertCryptocurrencyJobsUrl(FEED_URL), FEED_URL);
   assert.throws(() => assertCryptocurrencyJobsUrl('https://evil.com/index.xml'), /untrusted hostname/);

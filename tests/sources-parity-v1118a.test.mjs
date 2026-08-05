@@ -181,6 +181,19 @@ test('phenom: fetch paginates via from/size until totalHits, forwards facets, pr
   assert.equal(partialCalls, 2);
 });
 
+test('phenom: fetch THROWS when the first page fails (dead board ≠ empty board)', async () => {
+  // A first-page failure means the tenant is unreachable, not empty — nothing
+  // ever resolved. It must reject so scan/portal-health record a failure
+  // instead of "live but empty" (meituan/tencent contract), NOT swallow to [].
+  await assert.rejects(
+    () => fetchPhenom('https://careers.allianz.com/widgets', {
+      fetchImpl: async () => { throw new Error('endpoint down'); },
+      company: { name: 'Allianz', api: 'https://careers.allianz.com' },
+    }),
+    /endpoint down/,
+  );
+});
+
 test('radancy: list URL resolution + endpoint shape guard; SSR parse decodes entities safely', () => {
   assert.equal(resolveListUrl({ api: 'https://careers.munichre.com/en/search-jobs' }), 'https://careers.munichre.com/en/search-jobs');
   assert.equal(resolveListUrl({ careers_url: 'https://careers.munichre.com/de/some-page' }), 'https://careers.munichre.com/de/search-jobs');

@@ -8,6 +8,21 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.134.0] — 2026-08-05
+
+Parent career-ops **v1.25.0** parity.
+
+### Added
+- **New scan source: getManfred** (`manfred`, parent #9474ff1) — a board-wide feed of Spanish/EU tech roles with **published salaries**, from `www.getmanfred.com/api/v2/public/offers` (zero-auth, host-pinned + HTTPS-only, single-request full catalogue, per-company fail-soft). Source + adapter + a CI-isolated suite (`tests/sources-manfred.test.mjs`); registry now **73 sources = 68 EN + 5 RU** (`ALL_ADAPTERS` 68). Appears in the `#/scan` Source filter (FALLBACK + live registry) and on the cvstart.org landing.
+
+### Fixed
+- **a16z Speedrun feed was silently truncating to 50 jobs** (parent #2404) — the feed caps a page at 50, but the source requested `PER_PAGE = 100`, so the `rawCount < PER_PAGE` guard stopped after page 1. Corrected to 50 so pagination continues.
+- **Dead boards now throw instead of reading as "live but empty"** (parent #2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, and `successfactors` sources: a fetch failure where **no** request ever resolved now **throws** (so `#/portals` health and the scan record a real failure) instead of swallowing it to `[]`; a mid-scan failure after ≥1 success keeps partials (proof-of-life). `radancy` proves life across both transports; `successfactors` keeps the RMK-answered carve-out.
+- **workable now uses the public widget API** (parent #5ab8425) — switched from the offset/limit-capped `api/v3` endpoint to `apply.workable.com/api/v1/widget/accounts/<slug>` (host-pinned, `redirect:'error'`), which returns a large account's **full** posting list in one request, so big accounts are no longer silently truncated. The adapter endpoint is unchanged (the source derives the account slug and rebuilds the widget URL).
+
+### Notes
+- **Not ported** (CLI-only or not mirrored by web-ui): the `detect-reposts` #2389 title-bucketing rewrite (an O(N²)→O(N) perf optimization over the parent's large scan-history CLI; web-ui's reposts run in-process over the user's own bounded history, so the pairwise cost is negligible — the match semantics are unchanged); the Unicode company-key fixes (`company-history` / `fingerprint-core` / `tracker-utils` / `merge-tracker`), which web-ui does not carry — web-ui's own tracker dedup already compares full lowercased company strings and is non-Latin-safe; `scan --since` + `scan-ats-full` checkpoints (web-ui runs the scanners in-process and has its own "Posted within" age filter); `cv-facts` / `verify-cv-facts`, the CV Awards/Honors template + hiring-manager audit PDF pass, `doctor`, and the modes untrusted-content directive.
+
 ## [1.133.1] — 2026-08-02
 
 ### Fixed

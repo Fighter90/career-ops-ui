@@ -189,9 +189,12 @@ export function parseCryptocurrencyJobsRss(xml, maxResults) {
 }
 
 /**
- * Fetch + normalize the Cryptocurrency Jobs feed. Transport errors propagate to
- * the en-scanner, which wraps every source fetch in try/catch and skips a board
- * that throws (zero-abort per-source, matching nodesk / larajobs / wwr).
+ * Fetch + normalize the Cryptocurrency Jobs feed. A single fetch, so a failed
+ * fetch must THROW, not be swallowed into []: a dead board is UNREACHABLE, not
+ * empty. Swallowing it makes a dead board read as "live but empty", so
+ * portal-health never escalates and coverage decays silently (same contract as
+ * meituan/tencent). The transport error propagates to the caller (the
+ * en-scanner catches per-source throws and records a failure).
  *
  * @param {string} feedUrl
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, maxResults?: number, company?: object }} [opts]
