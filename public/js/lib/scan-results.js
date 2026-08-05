@@ -250,7 +250,7 @@ window.ScanResults = (function () {
       // so it renders identically across all 12 locales with no i18n keys.
       const trustBadge = (r._trustLevel && r._trustLevel !== 'high') ? c('span', {
         className: 'badge ' + (r._trustLevel === 'low' ? 'badge-bad' : 'badge-warn'),
-        title: 'Trust ' + (r._trustScore != null ? r._trustScore + '/100' : '?')
+        title: t('scan.trustTip', 'Trust') + ' ' + (r._trustScore != null ? r._trustScore + '/100' : '?')
           + (r._trustFlags && r._trustFlags.length ? ' · ' + r._trustFlags.join(', ') : ''),
         style: { marginRight: '6px', fontSize: '11px' },
       }, '⚠ ' + (r._trustScore != null ? r._trustScore : '')) : null;
@@ -333,7 +333,7 @@ window.ScanResults = (function () {
     ctx.resultsEl.appendChild(c('div', { className: 'table-wrap' },
       c('table', { className: 'tbl' }, [
         c('thead', null, c('tr', null,
-          ['★', t('scan.col.company'), t('scan.col.role'), t('scan.col.seniority', 'Seniority'), t('scan.col.loc'), t('scan.col.type'), 'Reloc', t('scan.col.salary'), t('scan.col.age', 'Age'), t('scan.col.source')].map((h) => c('th', null, h))
+          ['★', t('scan.col.company'), t('scan.col.role'), t('scan.col.seniority', 'Seniority'), t('scan.col.loc'), t('scan.col.type'), t('scan.col.reloc', 'Reloc'), t('scan.col.salary'), t('scan.col.age', 'Age'), t('scan.col.source')].map((h) => c('th', null, h))
         )),
         tbody,
       ])
@@ -355,20 +355,31 @@ window.ScanResults = (function () {
     }
     for (const [name, count] of ordered) {
       const isOn = activeSet.has(name);
+      // Stateful toggle chip — keyboard-operable (WCAG 2.1.1): a bare <span>
+      // isn't focusable/announced, so give it button semantics + Enter/Space.
+      const toggle = () => {
+        if (activeSet.has(name)) activeSet.delete(name);
+        else activeSet.add(name);
+        render();
+      };
       const chip = c('span', {
         className: 'chip' + (isOn ? ' on' : ''),
-        onClick: () => {
-          if (activeSet.has(name)) activeSet.delete(name);
-          else activeSet.add(name);
-          render();
-        },
+        role: 'button',
+        tabindex: '0',
+        'aria-pressed': String(isOn),
+        onClick: toggle,
+        onKeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } },
       }, [name, c('span', { className: 'chip-count' }, String(count))]);
       row.appendChild(chip);
     }
     if (activeSet.size) {
+      const clearAll = () => { activeSet.clear(); render(); };
       row.appendChild(c('span', {
         className: 'chip clear',
-        onClick: () => { activeSet.clear(); render(); },
+        role: 'button',
+        tabindex: '0',
+        onClick: clearAll,
+        onKeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); clearAll(); } },
       }, t('scan.chip.clear')));
     }
     return row;

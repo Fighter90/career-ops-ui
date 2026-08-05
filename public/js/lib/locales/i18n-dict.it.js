@@ -491,6 +491,8 @@ window.__I18N_DICT_IT = {
   'scan.col.type': "Tipo",
   'scan.col.salary': "Stipendio",
   'scan.col.source': "Fonte",
+  'scan.col.reloc': "Trasf.",
+  'scan.trustTip': "Affidabilità",
   'scan.activeCo': "Aziende attive",
   'scan.activeCo.help': "Attive: aziende che attualmente restituiscono risultati. Totale: configurate in portals.yml.",
   'scan.tagClickToFilter': "Clicca per filtrare i risultati per questa azienda",

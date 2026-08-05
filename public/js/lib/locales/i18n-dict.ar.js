@@ -490,6 +490,8 @@ window.__I18N_DICT_AR = {
   'scan.col.type': "النوع",
   'scan.col.salary': "الراتب",
   'scan.col.source': "المصدر",
+  'scan.col.reloc': "انتقال",
+  'scan.trustTip': "الثقة",
   'scan.activeCo': "الشركات النشطة",
   'scan.activeCo.help': "نشط: الشركات التي تظهر نتائجها حاليًا. الإجمالي: المُضبَّطة في portals.yml.",
   'scan.tagClickToFilter': "انقر لتصفية النتائج حسب هذه الشركة",

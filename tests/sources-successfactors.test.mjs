@@ -139,14 +139,31 @@ test('fetchSuccessfactors: paginates by startrow until an empty page, CI-isolate
 });
 
 test('fetchSuccessfactors: THROWS on a total outage (page-0 fetch fails, dead board ≠ empty board)', async () => {
-  // The RMK tile fetch is left uncaught precisely so a transport error
-  // propagates: an unreachable board must reject so scan/portal-health record a
-  // failure, NOT resolve to [] which reads as "live but empty" (meituan/tencent
+  // A page-0 failure (nothing ever fetched, `succeededOnce` false) propagates:
+  // an unreachable board must reject so scan/portal-health record a failure,
+  // NOT resolve to [] which reads as "live but empty" (meituan/tencent
   // contract). This web-ui port is RMK-only — there is no post-RMK CSB probe.
   await assert.rejects(
     () => fetchSuccessfactors(ENDPOINT, { fetchImpl: async () => { throw new Error('tenant down'); }, company: { name: 'ZF' } }),
     /tenant down/,
   );
+});
+
+test('fetchSuccessfactors: a mid-scan failure keeps partials (does NOT discard page-1 tiles or re-throw)', async () => {
+  // v1.134.1 regression guard (sibling of radancy/phenom): once ≥1 page has
+  // succeeded, a LATER page failure must return what was already scraped — not
+  // throw. Throwing would discard the tiles and, if the failure is a 404 on an
+  // out-of-range startrow, get a live tenant quarantined as permanently dead.
+  let calls = 0;
+  const fetchImpl = (url, opts) => {
+    calls += 1;
+    if (calls === 1) return Promise.resolve({ ok: true, status: 200, text: async () => HTML }); // startrow=0 → 2 tiles
+    return Promise.reject(Object.assign(new Error('page-2 blip'), { status: 404 })); // startrow=2 → transport failure
+  };
+  const jobs = await fetchSuccessfactors(ENDPOINT, { fetchImpl, company: { name: 'ZF' } });
+  assert.equal(calls, 2);
+  assert.equal(jobs.length, 2, 'page-1 partials preserved despite the page-2 failure');
+  assert.ok(jobs.every((j) => j.source === 'successfactors'));
 });
 
 test('fetchSuccessfactors: host guard rejects an off-host endpoint before fetch', async () => {

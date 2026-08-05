@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.134.1] — 2026-08-05
+
+Validation-hardening — fixes surfaced by a full-project audit (all locales + code).
+
+### Fixed
+- **`successfactors` no longer discards scraped jobs on a mid-scan failure** (regression in the v1.134.0 dead-board-throw port) — its RMK pagination loop had no `try/catch`, so a failure on page 2+ (after page 1 succeeded) threw and dropped everything already collected. Worse, if that mid-pagination failure was a 404 (plausible on an out-of-range `startrow` behind a WAF), `en-scanner`'s permanent-failure check would **quarantine a live tenant** as dead for days. Now mirrors `phenom`/`radancy`: a page-0 failure (nothing fetched) still throws (dead board), but a later-page failure keeps the partials (`+1` regression test).
+- **`#/scan` filter chips are now keyboard-operable** (WCAG 2.1.1) — the stack/level/dynamic-keyword facet chips (and the "clear" chip) were `<span onClick>` with no `tabindex`/role, so keyboard and screen-reader users couldn't reach or toggle them (the `.chip:focus-visible` CSS was dead). They now carry `role="button"`, `tabindex="0"`, `aria-pressed` (toggles), and Enter/Space activation.
+- **Three hardcoded English strings are now localized** — the `#/scan` trust-badge tooltip ("Trust …"), the `#/scan` relocation column header ("Reloc"), and the `#/dashboard` score header ("Score") were bare literals the i18n parity gate couldn't see (they were never keys), so they stayed English in all 16 non-English locales. Now `scan.trustTip` + `scan.col.reloc` (2 new keys ×17) and a reuse of the existing `track.col.score`. A source-static guard locks them so the gap can't silently return.
+
+### Security
+- **`fast-uri` 3.1.4 → 3.1.5** in the `site/` build lockfile (Dependabot GHSA — high: host confusion via a backslash authority introducer). Transitive dev-only dependency of the cvstart.org Astro toolchain; `npm audit` now reports 0 vulnerabilities and the Astro build is unchanged (86 pages, green). Does not touch the SPA or server (`express` + `js-yaml` only).
+
 ## [1.134.0] — 2026-08-05
 
 Parent career-ops **v1.25.0** parity.

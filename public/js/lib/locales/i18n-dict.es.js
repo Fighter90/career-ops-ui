@@ -491,6 +491,8 @@ window.__I18N_DICT_ES = {
   'scan.col.type': "Tipo",
   'scan.col.salary': "Salario",
   'scan.col.source': "Fuente",
+  'scan.col.reloc': "Reubic.",
+  'scan.trustTip': "Confianza",
   'scan.activeCo': "Empresas activas",
   'scan.activeCo.help': "Activas: empresas con resultados ahora. Total: configurado en portals.yml.",
   'scan.tagClickToFilter': "Clic para filtrar resultados por esta empresa",

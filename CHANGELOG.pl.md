@@ -9,6 +9,15 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.134.1] — 2026-08-05
+
+Wzmocnienie walidacji — poprawki wykryte podczas pełnego audytu projektu.
+
+### Naprawiono
+- **`successfactors` nie odrzuca już zebranych ofert przy błędzie w połowie skanowania** (regresja we wdrożeniu „dead-board-throw” z v1.134.0) — jego pętla paginacji nie miała `try/catch`, więc błąd na stronie 2 lub kolejnej (po sukcesie strony 1) zgłaszał wyjątek i odrzucał wszystko, co już zebrano; a jeśli tym błędem był `404` (nieprawidłowy zakres `startrow`), `en-scanner` kwarantannował aktywnego najemcę jako martwego na wiele dni. Teraz zachowuje się jak `phenom`/`radancy`: błąd na stronie 0 wciąż zgłasza wyjątek (martwa tablica), ale błąd na kolejnej stronie zachowuje częściowe wyniki.
+- **Chipy filtrów na `#/scan` są teraz obsługiwane z klawiatury** (WCAG 2.1.1) — chipy fasetowe (oraz chip „wyczyść”) były elementami `<span>` z obsługą kliknięcia, ale bez `tabindex`/role, więc użytkownicy klawiatury i czytników ekranu nie mogli do nich dotrzeć ani ich przełączać. Teraz mają `role="button"`, `tabindex="0"`, `aria-pressed` oraz aktywację klawiszami Enter/Spacja.
+- **Trzy zakodowane na stałe angielskie ciągi są teraz zlokalizowane** — podpowiedź (tooltip) plakietki zaufania na `#/scan`, nagłówek kolumny relokacji na `#/scan` oraz nagłówek wyniku (score) na `#/dashboard` były gołymi literałami, których nie widział mechanizm kontroli parytetu i18n (nigdy nie były kluczami), więc pozostawały w języku angielskim we wszystkich lokalizacjach innych niż angielska. Teraz to `scan.trustTip` + `scan.col.reloc` (2 nowe klucze) oraz ponowne użycie `track.col.score`, wraz ze statyczną strażą źródłową (source-static guard).
+
 ## [1.134.0] — 2026-08-05
 
 Parytet z rodzicem career-ops **v1.25.0**.

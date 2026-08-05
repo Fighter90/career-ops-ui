@@ -11,6 +11,15 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.134.1] — 2026-08-05
+
+Renforcement de la validation — corrections révélées par un audit complet du projet.
+
+### Corrigé
+- **`successfactors` ne perd plus les offres récupérées en cas d'échec en cours de scan** (régression introduite par le portage « lever une erreur sur board mort » de la v1.134.0) — sa boucle de pagination n'avait pas de `try/catch`, si bien qu'un échec à la page 2 ou plus (après le succès de la page 1) levait une erreur et supprimait tout ce qui avait déjà été collecté ; et si cet échec était un `404` (un `startrow` hors limites), `en-scanner` mettait en quarantaine pendant des jours un tenant pourtant actif. Reproduit désormais le comportement de `phenom`/`radancy` : un échec à la page 0 lève toujours une erreur (board mort), mais un échec à une page ultérieure conserve les résultats partiels.
+- **Les puces de filtre de `#/scan` sont désormais utilisables au clavier** (WCAG 2.1.1) — les puces de facette (ainsi que la puce « effacer ») étaient des `span` avec un gestionnaire de clic mais sans `tabindex` ni rôle, si bien que les utilisateurs de clavier et de lecteur d'écran ne pouvaient ni les atteindre ni les activer. Elles portent désormais `role="button"`, `tabindex="0"`, `aria-pressed`, et une activation par Entrée/Espace.
+- **Trois chaînes anglaises codées en dur sont désormais localisées** — l'infobulle du badge de confiance de `#/scan`, l'en-tête de colonne de relocalisation de `#/scan`, et l'en-tête de score de `#/dashboard` étaient des littéraux bruts que la passerelle de parité i18n ne pouvait pas voir (ils n'ont jamais été des clés), si bien qu'ils restaient en anglais dans chaque langue non anglaise. Ce sont désormais `scan.trustTip` + `scan.col.reloc` (2 nouvelles clés) et une réutilisation de `track.col.score`, avec une garde statique au niveau du code source.
+
 ## [1.134.0] — 2026-08-05
 
 Parité avec career-ops parent **v1.25.0**.

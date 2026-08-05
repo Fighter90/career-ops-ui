@@ -491,6 +491,8 @@ window.__I18N_DICT_ZH_CN = {
   'scan.col.type': "类型",
   'scan.col.salary': "薪资",
   'scan.col.source': "来源",
+  'scan.col.reloc': "搬迁",
+  'scan.trustTip': "信任",
   'scan.activeCo': "活动公司",
   'scan.activeCo.help': "活动:当前有结果的公司。合计:在 portals.yml 中配置的数量。",
   'scan.tagClickToFilter': "点击按此公司筛选结果",

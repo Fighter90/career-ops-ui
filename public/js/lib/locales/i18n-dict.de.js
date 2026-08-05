@@ -491,6 +491,8 @@ window.__I18N_DICT_DE = {
   'scan.col.type': "Typ",
   'scan.col.salary': "Gehalt",
   'scan.col.source': "Quelle",
+  'scan.col.reloc': "Umzug",
+  'scan.trustTip': "Vertrauen",
   'scan.activeCo': "Aktive Unternehmen",
   'scan.activeCo.help': "Aktiv: Unternehmen, die aktuell Ergebnisse liefern. Gesamt: in portals.yml konfiguriert.",
   'scan.tagClickToFilter': "Klicken, um Ergebnisse nach diesem Unternehmen zu filtern",

@@ -8,6 +8,15 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.134.1] — 2026-08-05
+
+Validering-hærdning — rettelser afdækket af en fuldstændig projektgennemgang.
+
+### Rettet
+- **`successfactors` kasserer ikke længere hentede job ved en fejl midt i scanningen** (regression i v1.134.0's port af "dødt-opslagstavle-kaster-fejl") — dens pagineringsloop havde ingen `try/catch`, så en fejl på side 2 eller senere (efter at side 1 var lykkedes) kastede en fejl og kasserede alt, hvad der allerede var indsamlet; og hvis denne fejl var en `404` (en `startrow` uden for området), ville `en-scanner` sætte en live tenant i karantæne som "død" i flere dage. Spejler nu `phenom`/`radancy`: en fejl på side 0 kaster stadig en fejl (død opslagstavle), men en fejl på en senere side bevarer de delvise resultater.
+- **`#/scan`-facetfiltrenes chips er nu tastaturbetjenbare** (WCAG 2.1.1) — facet-chippene (og "ryd"-chippen) var spans med en klik-handler, men uden `tabindex`/rolle, så tastatur- og skærmlæserbrugere ikke kunne nå eller aktivere dem. De bærer nu `role="button"`, `tabindex="0"`, `aria-pressed` og Enter/Space-aktivering.
+- **Tre hardkodede engelske strenge er nu lokaliseret** — `#/scan`-tillidsbadgets tooltip, `#/scan`-relokeringskolonnens overskrift og `#/dashboard`-scoreoverskriften var bare literaler, som i18n-paritetstjekket ikke kunne se (de var aldrig nøgler), så de blev stående på engelsk i alle ikke-engelske lokaliteter. Nu `scan.trustTip` + `scan.col.reloc` (2 nye nøgler) + genbrug af `track.col.score`, med en kildestatisk vagt.
+
 ## [1.134.0] — 2026-08-05
 
 Paritet med forælder-projektet career-ops **v1.25.0**.

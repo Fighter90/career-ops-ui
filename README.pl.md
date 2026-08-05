@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
+[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
 
-> **🆕 Najnowsze wydanie — v1.134.0** — parytet z rodzicem career-ops **v1.25.0**: nowe źródło skanowania **getManfred** (hiszpańsko-unijna branża tech, podane wynagrodzenia → **73 źródła**), a także poprawki dostawców — kanał a16z Speedrun nie obcina już wyniku do 50 ofert, martwe portale teraz zgłaszają rzeczywistą awarię zamiast wyglądać na „działające, ale puste”, a **workable** korzysta z publicznego API widżetu, dzięki czemu duże konta są skanowane w pełni. **2184 testów.**
+> **🆕 Najnowsze wydanie — v1.134.1** — wzmocnienie walidacji: **`successfactors`** nie odrzuca już zebranych ofert (i nie kwarantannuje błędnie aktywnej tablicy) przy błędzie w połowie skanowania; chipy filtrów **`#/scan`** są teraz obsługiwane z klawiatury (WCAG 2.1.1); a trzy zakodowane na stałe angielskie ciągi są teraz zlokalizowane we wszystkich 17 lokalizacjach. **2187 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

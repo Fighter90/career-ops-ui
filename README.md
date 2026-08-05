@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
+[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
 
-> **🆕 Latest release — v1.134.0** — parent career-ops **v1.25.0** parity: a new scan source **getManfred** (Spanish/EU tech, published salaries → **73 sources**), plus provider fixes — a16z Speedrun no longer truncates to 50 jobs, dead boards now surface a real failure instead of "live but empty", and **workable** uses the public widget API so large accounts scan fully. **2184 tests.**
+> **🆕 Latest release — v1.134.1** — validation-hardening: `successfactors` no longer discards scraped jobs (or wrongly quarantines a live board) on a mid-scan failure; the `#/scan` filter chips are now keyboard-operable (WCAG 2.1.1); and three hardcoded English strings (trust tooltip, Reloc/Score headers) are now localized across all 17 locales. **2187 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

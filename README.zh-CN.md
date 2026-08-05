@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
+[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
 
-> **🆕 最新版本 — v1.134.0** — 父项目 career-ops **v1.25.0** 对齐:新增扫描来源 **getManfred**(西班牙/欧盟科技职位,含公开薪资 → **73 个来源**),并修复了多项来源问题 —— a16z Speedrun 不再截断为 50 条职位,失效招聘板现在会呈现真实的失败,而不再是「存活但为空」,**workable** 改用公开 widget API,使大账号能够完整扫描。**2184 个测试。**
+> **🆕 最新版本 — v1.134.1** — 验证加固：**`successfactors`** 在扫描中途失败时不再丢弃已抓取的职位（也不会将存活的招聘板误判为失效并加以隔离）；**`#/scan`** 筛选芯片现已支持键盘操作（符合 WCAG 2.1.1）；三处硬编码的英文字符串现已在全部 17 种语言中完成本地化。**2187 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

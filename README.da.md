@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
+[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
 
-> **🆕 Seneste udgivelse — v1.134.0** — paritet med forælder-projektet career-ops **v1.25.0**: en ny scan-kilde **getManfred** (spanske/EU-teknologijob med offentliggjorte lønninger → **73 kilder**), samt rettelser til udbydere — a16z Speedrun afkorter ikke længere til 50 job, døde jobopslagstavler viser nu en reel fejl i stedet for "live, men tom", og **workable** bruger den offentlige widget-API, så store konti scannes fuldt ud. **2184 tests.**
+> **🆕 Seneste udgivelse — v1.134.1** — validering-hærdning: **`successfactors`** kasserer ikke længere hentede job (eller sætter fejlagtigt en live opslagstavle i karantæne) ved en fejl midt i scanningen; **`#/scan`**-facetfiltrenes chips er nu tastaturbetjenbare (WCAG 2.1.1); og tre hardkodede engelske strenge er nu lokaliseret i alle 17 lokaliteter. **2187 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

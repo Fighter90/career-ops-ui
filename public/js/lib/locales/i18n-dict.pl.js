@@ -490,6 +490,8 @@ window.__I18N_DICT_PL = {
   'scan.col.type': "Typ",
   'scan.col.salary': "Wynagrodzenie",
   'scan.col.source': "Źródło",
+  'scan.col.reloc': "Reloc.",
+  'scan.trustTip': "Zaufanie",
   'scan.activeCo': "Aktywne firmy",
   'scan.activeCo.help': "Aktywne: firmy aktualnie wyświetlające wyniki. Łącznie: skonfigurowane w portals.yml.",
   'scan.tagClickToFilter': "Kliknij, aby filtrować wyniki według tej firmy",
