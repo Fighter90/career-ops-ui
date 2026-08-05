@@ -183,6 +183,12 @@ function normalize(j, url) {
   return {
     id: `wk-${j.shortcode || j.id}`,
     title: (j.title || '').trim(),
+    // The widget payload carries the account name at the TOP level
+    // (`payload.name`), not per-job, so this is normally '' — deliberately left
+    // for the scanner to backfill from the tracked entry's `c.name`
+    // (en-scanner stamps `company: i.company || c.name`), identical to the
+    // Ashby/Lever contract. `c.name` is the user's canonical portals.yml name,
+    // a cleaner display value than the raw ATS account name would be.
     company: j.company || j.account?.name || '',
     url,
     salary: '',
