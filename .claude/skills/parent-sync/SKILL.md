@@ -9,6 +9,12 @@ Proven across v1.119.0 (parent 1.19), v1.120.0 (1.20), v1.123.0 (1.21). Each pha
 below is a hard gate — do not skip, do not reorder. The parent repo (`..`) is
 **READ-ONLY** except the user-authorized `git pull` itself.
 
+**Also covers audit-driven patch releases** (no parent delta — e.g. v1.134.1
+validation-hardening from a full-project + all-locales audit). Skip Phases 1–2
+(no pull, no provider port); Phases 3–7 apply UNCHANGED — QA prompt, docs ×17,
+site changelog resync, wiki, cross-surface verify are all still mandatory. The
+count that moves on a fix-only release is usually just the **test count**.
+
 ## Phase 1 — Pull & scope
 
 1. `cd .. && git rev-parse HEAD` (save OLD), `git pull`, `cat VERSION`.
@@ -80,7 +86,13 @@ against the actual registry yourself.
   language LISTS only — never on code-literal file links.
   External-contributor PRs have their own pipeline: `contributor-pr`.
 - `docs/help/en.md` §17: registry count sentence.
-- `qa/QA-REGRESSION-PROMPT-vX.Y.Z.md` (delta-focused sign-off checklist).
+- `qa/QA-REGRESSION-PROMPT-vX.Y.Z.md` (delta-focused sign-off checklist) —
+  **MANDATORY EVERY release, patch included** (v1.134.1 lesson: shipped without
+  it, user flagged the gap). Model it on the previous release's file: §0 gates
+  (exact `node --test` lines for the new/changed suites + the new test count),
+  §1 what-changed, §2 manual browser pass, §3 contract/security invariants,
+  §4 not-ported/not-applicable, §5 sign-off. It is the last EN-doc artifact —
+  do not merge the release branch until it exists.
 - `npm version X.Y.Z --no-git-tag-version`; CLAUDE.md "(currently …)",
   `.claude/PROJECT-CONTEXT.md` repo-state line, `docs/sdd/CONVENTIONS.md`
   counts (test count AFTER the full run).
@@ -120,7 +132,13 @@ every line carries exactly 17 flags).
   CONVENTIONS, PROJECT-CONTEXT, wiki.
 - `node tools/i18n-audit.mjs` if dicts changed; regenerate
   `tests/fixtures/i18n-dict.snapshot.json` via `tests/helpers/i18n-vm.mjs`.
-- Site build only if `site/` changed (Node ≥ 22 via nvm).
+- Site build only if `site/` changed (Node ≥ 22 via nvm). **Run it AFTER all
+  17 root CHANGELOGs are final** — `site/scripts/sync-assets.mjs` (prebuild)
+  copies each `CHANGELOG.<L>.md` → committed `site/src/content/changelog/<L>.md`,
+  so a build mid-fan-out snapshots a partial set (v1.134.1: 8 mirrors staged
+  stale, parity gate blind — it only checks the ROOT files). After the fan-out,
+  re-run `npm run build` once and confirm `grep -L '<new-version>'
+  site/src/content/changelog/*.md` is empty before committing.
 - URL-presence assertions in new tests: extraction + strict equality, never
   `String.includes(url)` or unanchored regexes (CodeQL flags both).
 
@@ -148,9 +166,49 @@ every line carries exactly 17 flags).
    `gh api /users/Fighter90/packages/npm/career-ops-ui/versions` (run gh from
    the repo dir, not the wiki clone), cvstart.org version badge.
 
+## Phase 7 — Final cross-surface verification (every release, patch included)
+
+The user's standing sign-off question is *"docs/sdd? help? README? site? wiki?
+на всех языках проверил?"* — answer it with a live sweep, not from memory. When
+a release moves a count (source/test/locale) grep the repo + wiki for the OLD
+number first (see the [[release-fanout-misses-these-surfaces]] memory), then
+confirm each surface:
+
+- **README ×17** — exactly one `🆕 vX.Y.Z` banner + one `📜` CHANGELOG line per
+  file; `tests-<N>` + `release-vX.Y.Z` badges swept; zero stale old-version /
+  old-count tokens. `for L in "" .es .pt-BR …; do …; done`.
+- **CHANGELOG ×17** — exactly one `## [X.Y.Z]` per file; `check-changelog-parity`
+  green.
+- **help ×17** (`docs/help/<L>.md`) — §17 source-count sentence matches the
+  registry; **help never carries a test count** (don't add one). If the source
+  count didn't change, help is untouched — verify, don't edit.
+- **docs/sdd/CONVENTIONS.md** — "Current count as of **vX.Y.Z**: **N**" test
+  baseline bumped. **docs/architecture/** `OVERVIEW.md`/`API.md` "N adapters as
+  of vPREV" are historical attributions — leave them unless the count changed.
+- **site** — `site/src/content/changelog/*.md` all 17 carry the new entry
+  (build-generated, see Phase 5); `site/src/generated/facts.json` version =
+  new; live `cvstart.org` HTML carries the version token (raw
+  `/generated/facts.json` 404 is expected — it's bundled at build).
+- **wiki ×17** — Home banners (version · adapters · tests), Testing-and-QA +
+  Release-Process counts. Scanner-Providers "as-of" + per-provider row change
+  ONLY when a source was added. Watch localized/CJK/Arabic-diacritic postfixes
+  when sweeping the count (a naive grep misses ja "アダプター N 個", ar shadda forms).
+- **runtime** — local `/api/health` version + parentVersion; Release + Publish
+  (package version) + Pages runs all `success`; Dependabot alerts 0 open if a
+  lockfile bump shipped.
+
 ## Known traps
 
 - gh commands resolve the repo from cwd — never run them from the wiki clone.
+- **Skipping the QA prompt.** `qa/QA-REGRESSION-PROMPT-vX.Y.Z.md` is a HARD
+  Phase-3 artifact for EVERY release, patch included — the easiest thing to
+  forget on a fix-only ship (v1.134.1 shipped without it). No merge until it
+  exists.
+- **Site changelog mirror is build-time-generated.** `sync-assets.mjs` regens
+  `site/src/content/changelog/*.md` from the root CHANGELOGs; a site build run
+  BEFORE the fan-out finishes commits a partial set, and the parity gate (root
+  only) won't catch it. Always re-run the site build after the fan-out and grep
+  the 17 mirrors for the new version.
 - grep may treat emoji-bearing JS as binary — use `grep -a` / `rg`.
 - The scratchpad wiki clone vanishes between sessions; always re-clone.
 - CodeQL on main is advisory-red at worst; known FP classes (missing-rate-limiting,
