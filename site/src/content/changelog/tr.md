@@ -2,6 +2,55 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.134.1] — 2026-08-05
+
+Doğrulama sağlamlaştırması — kapsamlı bir proje denetimiyle ortaya çıkan düzeltmeler.
+
+### Düzeltildi
+- **`successfactors` artık tarama-ortası bir hatada kazınan işleri atmıyor** (v1.134.0'daki ölü-pano-fırlatma aktarımında bir regresyon) — sayfalama döngüsünde `try/catch` yoktu, bu yüzden 2. sayfa ve sonrasında (1. sayfa başarılı olduktan sonra) bir hata fırlatılıyor ve o ana kadar toplanan her şeyi düşürüyordu; ve bu hata bir `404` ise (aralık dışı bir `startrow`), `en-scanner` canlı bir kiracıyı günlerce ölü olarak karantinaya alıyordu. Şimdi `phenom`/`radancy` ile aynı: 0. sayfadaki bir hata hâlâ fırlatılıyor (ölü pano), ancak daha sonraki bir sayfadaki hata kısmi sonuçları koruyor.
+- **`#/scan` filtre çipleri artık klavyeyle çalıştırılabiliyor** (WCAG 2.1.1) — faset çipleri (ve "temizle" çipi) bir tıklama işleyicisine sahip ama `tabindex`/rolü olmayan span'lerdi, bu yüzden klavye ve ekran okuyucu kullanıcıları onlara erişemiyor veya değiştiremiyordu. Şimdi `role="button"`, `tabindex="0"`, `aria-pressed` taşıyorlar ve Enter/Boşluk ile etkinleştiriliyorlar.
+- **Üç sabit kodlanmış İngilizce dize artık yerelleştirildi** — `#/scan` güven-rozeti araç ipucu, `#/scan` yer değiştirme sütun başlığı ve `#/dashboard` puan başlığı, i18n parite kapısının göremediği çıplak literallerdi (hiçbir zaman anahtar olmamışlardı), bu yüzden İngilizce olmayan her yerelleştirmede İngilizce kalıyorlardı. Şimdi `scan.trustTip` + `scan.col.reloc` (2 yeni anahtar) ve mevcut `track.col.score`'un yeniden kullanımı var, kaynak-statik bir koruyucuyla (`tests/scan-chip-a11y.test.mjs`) sabitlenmiş.
+- +3 test → paket **2187**.
+
+## [1.134.0] — 2026-08-05
+
+Üst proje career-ops v1.25.0 paritesi.
+
+### Eklendi
+- **Yeni tarama kaynağı: getManfred** (`manfred`) — yayınlanmış maaşlarla İspanyol/AB teknoloji rollerinin pano-geneli bir beslemesi, `www.getmanfred.com/api/v2/public/offers`'tan (sıfır-kimlik doğrulama, ana bilgisayara sabitlenmiş + yalnızca-HTTPS, tek istekli tam katalog). Kaynak + adaptör + CI-izole bir paket (`tests/sources-manfred.test.mjs`); kayıt defteri artık 73 kaynak = 68 İngilizce + 5 Rusça (`ALL_ADAPTERS` 68). `#/scan` Kaynak filtresinde ve cvstart.org açılış sayfasında görünür.
+
+### Düzeltildi
+- **a16z Speedrun beslemesi sessizce 50 işe kısaltılıyordu** (#2404) — besleme bir sayfayı 50 ile sınırlıyor ancak kaynak `PER_PAGE = 100` istiyordu, bu yüzden sayfalama 1. sayfadan sonra duruyordu. 50'ye düzeltildi.
+- **Ölü panolar artık "canlı ama boş" olarak okunmak yerine hata fırlatıyor** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: hiçbir isteğin hiç çözümlenmediği bir getirme hatası artık hata fırlatıyor (böylece `#/portals` sağlığı ve tarama gerçek bir hatayı kaydediyor), onu boş bir listeye yutmak yerine; en az bir başarıdan sonraki bir tarama-ortası hata kısmi sonuçları koruyor.
+- **workable artık genel widget API'sini kullanıyor** (#5ab8425) — büyük bir hesabın tam ilan listesini tek bir istekte döndüren `apply.workable.com/api/v1/widget/accounts/<slug>`'a geçildi, böylece büyük hesaplar artık kısaltılmıyor.
+
+### Notlar
+- Taşınmadı (yalnızca CLI veya web-ui tarafından yansıtılmıyor): detect-reposts #2389 başlık-gruplama performans yeniden yazımı; Unicode şirket-anahtarı düzeltmeleri (web-ui'nin kendi takipçi çiftlemesi zaten Latin-olmayan-güvenli); `scan --since`; `cv-facts`; CV şablonu / PDF denetim geçişi; `doctor`; modes güvenilmeyen-içerik direktifi.
+
+## [1.133.1] — 2026-08-02
+
+### Düzeltildi
+- **`#/funded` (Finanse edilen şirketler) artık sonuçları gösteriyor** — üst projenin `company-funded.mjs`'i eksiksiz bir liste döndürdüğünde bile tablonun her zaman "finanse edilmiş şirket yok" göstermesine neden olan iki hata vardı. (1) Görünüm sonuçları `res.candidates` altında okuyordu, ancak üst proje bunları `companies` altında yayınlıyor (her biri `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`); istemci artık doğru anahtarı okuyor ve gerçek kanıt şeklini eşliyor. (2) Sonuç tablosu hücrelerini `UI.el('tr', {}, …)`'a değişken sayıda bağımsız değişken (varargs) olarak geçiriyordu, ancak `UI.el(tag, attrs, children)` `children`'ı tek bir düğüm veya dizi olarak alıyor, bu yüzden yalnızca ilk sütun (Şirket) render ediliyordu — hücreler artık bir dizi olarak geçiriliyor. Gerçek bir tarayıcıda doğrulandı: dört besleme genelinde 11 şirket, Şirket / Finansman sinyali / Kaynak / Tarih sütunlarıyla ve çalışan kanıt bağlantılarıyla render ediliyor, sıfır konsol hatası. Boş bir tarama artık kaynak başına tanılamaları da gösteriyor, böylece sessiz bir haber günü engellenmiş bir beslemeden ayırt edilebiliyor.
+- `tests/parity-routes-v1133.test.mjs` içinde regresyon korumaları: sahte üst proje betiği artık gerçek `companies` çıktı şeklini yayınlıyor (orijinal test sabiti yanlış `candidates` şeklini yansıtıyordu — hatanın yeşil geçerek yayınlanmasının tam nedeni buydu), ayrıca `funded.js`'in `res.companies`'i okuduğunu (asla `res.candidates`'i değil) ve tablo satırlarını dizi children ile oluşturduğunu doğrulayan kaynak-statik kanaryalar eklendi (+1 → 2144).
+
+## [1.133.0] — 2026-08-01
+
+### Eklendi
+- **Finanse edilen şirket keşfi (`#/funded`, üst proje paritesi #2117)** — üst proje career-ops'un `company-funded.mjs`'ini `GET /api/company-funded` üzerinden aktaran yeni bir salt-okunur görünüm: herkese açık, ana bilgisayara sabitlenmiş finansman beslemelerinden (TechCrunch, PR Newswire, The Guardian, Hacker News) keşfedilen, yakın zamanda finanse edilmiş şirketlerin inceleme-öncelikli bir listesi. Aktarım, betiği `--json --dry-run` ile çalıştırır (stdout'a JSON, dosya yazması yok), kullanıcı girdisini asla `--sources`'a aktarmaz, hız sınırlaması taşır ve kullanıcı tarafından tetiklenir (bir Keşfet düğmesi, asla bağlanma sırasında değil). Yeni rota modülü `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, Kaynak bulma altında.
+- **Haftalık mülakat özeti (`#/interview-digest`, üst proje paritesi #2129/#2130)** — üst projenin sıfır-LLM `weekly-digest.mjs`'ini `GET /api/interview/weekly-digest` üzerinden aktaran yeni bir salt-okunur görünüm: mülakat oturumu notlarının mekanik bir toplu özeti — bu hafta hangi şirketlerle ve hangi turlarda mülakat yaptığınız, tekrar eden yetkinlikler ve elden geldiğince tespit edilen açık boşluklar. İsteğe bağlı `?from=&to=` aralığı yalnızca İKİSİ de geçerli `YYYY-MM-DD` olduğunda aktarılır; boş bir aralık geçerli bir `available:true` özetidir. `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`'e eklendi, Analitik altında.
+- Her iki aktarım da üst proje betiği yokken (CI, bağımsız kurulumlar) yerleşik hataya karşı toleranslı `available:false` sözleşmesini izler. 26 yeni i18n anahtarı ×17 yerelleştirme; CI-izole paket `tests/parity-routes-v1133.test.mjs` (+5 → 2143).
+
+### Notlar
+- Üst proje career-ops, Next.js `web/` uygulamasının Takip İzleyicisi sayfası (#1422) ve arka uç PDF render'ı (#2182) ile v1.24.0'ın ötesine geçti — taşınmadı: web-ui'nin zaten kendi takip aktarımı ve PDF çalıştırıcıları var ve alttaki `followup-cadence.mjs` sağlamlaştırması kabuk-açma aktarımı üzerinden bedavaya geliyor. `set-status.mjs` / `tracker-utils.mjs` değişiklikleri CLI-dahilidir ve yansıtılmıyor.
+
+## [1.132.0] — 2026-07-31
+
+### Değiştirildi
+- **`#/scan` sonuç-render alt sistemi `public/js/lib/scan-results.js`'e çıkarıldı** (dosya-boyutu-sözleşmesi borcu — `public/js/views/scan.js` ~1254 satıra kadar büyümüştü). Alt sistem (`renderResults`, `buildChipRow`, `getRows`, satır/faset oluşturucuları, seçenek boyacıları ve `FALLBACK_SOURCES` kayıt defteri aynası) görünümün sağladığı bir bağlam nesnesini kapsayan bir `window.ScanResults.create(ctx)` fabrikasına taşındı. **Davranış değişikliği yok** — fonksiyonlar birebir taşındı, kapatma değişkenleri `ctx.*`'e yeniden bağlandı; `scan.js` artık ~906 satır (800 satırlık hedefe doğru ikinci bir çıkarma geçişi planlanıyor).
+- Kaynak-statik testler her iki dosyayı `tests/helpers/scan-src.mjs::loadScanSrc()` üzerinden okuyor; `tests/scan-fallback-sources.test.mjs` artık kayıt defteri aynasını `scan-results.js`'ten okuyor.
+- **Yeni tarayıcı-içi regresyon kapısı** — `tests/playwright-scan-filters.mjs` hazır bir `data/last-scan.json` tohumluyor ve her `#/scan` filtresini çalıştırarak tam satır sayılarını doğruluyor (`npm run test:e2e:browser`); bunun için kararlı filtre kimlikleri (`#scan-filter-*`, `#scan-apply`) eklendi.
+- README "En son sürüm" afişi tek satırlık bir özet + tam changelog'a bir bağlantıya indirildi (uzun çok-sürümlü anlatı duvarı kaldırıldı). Tüm 17 yerelleştirmede uygulandı.
+
 ## [1.131.2] — 2026-07-31
 
 ### Değiştirildi

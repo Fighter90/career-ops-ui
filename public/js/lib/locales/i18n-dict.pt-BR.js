@@ -491,6 +491,8 @@ window.__I18N_DICT_PT_BR = {
   'scan.col.type': "Tipo",
   'scan.col.salary': "Salário",
   'scan.col.source': "Fonte",
+  'scan.col.reloc': "Realoc.",
+  'scan.trustTip': "Confiança",
   'scan.activeCo': "Empresas ativas",
   'scan.activeCo.help': "Ativas: empresas com resultados agora. Total: configurado em portals.yml.",
   'scan.tagClickToFilter': "Clique para filtrar resultados por esta empresa",

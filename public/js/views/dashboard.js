@@ -343,7 +343,7 @@ function recentTable(rows, scoreClass) {
   return c('div', { className: 'table-wrap' },
     c('table', { className: 'tbl' }, [
       c('thead', null, c('tr', null,
-        [t('scan.col.company'), t('scan.col.role'), 'Score', t('track.col.status'), t('track.col.date')].map((h) => c('th', null, h))
+        [t('scan.col.company'), t('scan.col.role'), t('track.col.score', 'Score'), t('track.col.status'), t('track.col.date')].map((h) => c('th', null, h))
       )),
       tbody,
     ])

@@ -8,6 +8,54 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.134.1] — 2026-08-05
+
+Validering-hærdning — rettelser afdækket af en fuldstændig projektgennemgang.
+
+### Rettet
+- **`successfactors` kasserer ikke længere hentede job ved en fejl midt i scanningen** (regression i v1.134.0's port af "dødt-opslagstavle-kaster-fejl") — dens pagineringsloop havde ingen `try/catch`, så en fejl på side 2 eller senere (efter at side 1 var lykkedes) kastede en fejl og kasserede alt, hvad der allerede var indsamlet; og hvis denne fejl var en `404` (en `startrow` uden for området), ville `en-scanner` sætte en live tenant i karantæne som "død" i flere dage. Spejler nu `phenom`/`radancy`: en fejl på side 0 kaster stadig en fejl (død opslagstavle), men en fejl på en senere side bevarer de delvise resultater.
+- **`#/scan`-facetfiltrenes chips er nu tastaturbetjenbare** (WCAG 2.1.1) — facet-chippene (og "ryd"-chippen) var spans med en klik-handler, men uden `tabindex`/rolle, så tastatur- og skærmlæserbrugere ikke kunne nå eller aktivere dem. De bærer nu `role="button"`, `tabindex="0"`, `aria-pressed` og Enter/Space-aktivering.
+- **Tre hardkodede engelske strenge er nu lokaliseret** — `#/scan`-tillidsbadgets tooltip, `#/scan`-relokeringskolonnens overskrift og `#/dashboard`-scoreoverskriften var bare literaler, som i18n-paritetstjekket ikke kunne se (de var aldrig nøgler), så de blev stående på engelsk i alle ikke-engelske lokaliteter. Nu `scan.trustTip` + `scan.col.reloc` (2 nye nøgler) + genbrug af `track.col.score`, med en kildestatisk vagt.
+
+## [1.134.0] — 2026-08-05
+
+Paritet med forælder-projektet career-ops **v1.25.0**.
+
+### Tilføjet
+- **Ny scan-kilde: getManfred** (`manfred`) — et boardbredt feed af spanske/EU-teknologijob med offentliggjorte lønninger, fra `www.getmanfred.com/api/v2/public/offers` (ingen auth, host-pinned + kun HTTPS, fuldt katalog i én enkelt forespørgsel). Kilde + adapter + en CI-isoleret suite (`tests/sources-manfred.test.mjs`); registret rummer nu **73 kilder = 68 engelske + 5 russiske** (`ALL_ADAPTERS` 68). Optræder i `#/scan`s Kilde-filter og på cvstart.org-landingssiden.
+
+### Rettet
+- **a16z Speedrun-feedet blev stille afkortet til 50 job** (#2404) — feedet loftbelægger en side ved 50, men kilden anmodede om `PER_PAGE = 100`, så pagineringen stoppede efter side 1. Rettet til 50.
+- **Døde jobopslagstavler kaster nu en fejl i stedet for at blive læst som "live, men tom"** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: en hentningsfejl, hvor ingen forespørgsel nogensinde blev afsluttet, kaster nu en fejl (så `#/portals`-sundhedstjek og scanningen registrerer en reel fejl), i stedet for at sluge den til en tom liste; en fejl midt i scanningen efter mindst én succes bevarer de delvise resultater.
+- **workable bruger nu den offentlige widget-API** (#5ab8425) — skiftet til `apply.workable.com/api/v1/widget/accounts/<slug>`, som returnerer en stor kontos fulde opslagsliste i én enkelt forespørgsel, så store konti ikke længere afkortes.
+
+### Noter
+- Ikke porteret (kun CLI eller ikke spejlet af web-ui): detect-reposts #2389's titel-bucketing-ydelsesomskrivning; Unicode-firmanøgle-rettelserne (web-ui's eget tracker-dedup er allerede sikkert for ikke-latinske tegn); `scan --since`; `cv-facts`; CV-skabelon-/PDF-revisionsgennemgangen; `doctor`; tilstandenes direktiv for utroværdigt indhold.
+
+## [1.133.1] — 2026-08-02
+
+### Rettet
+- **`#/funded` (Finansierede virksomheder) viser nu resultater** — to fejl fik tabellen til altid at vise "ingen finansierede virksomheder", selv når forælderens `company-funded.mjs` returnerede en fuld liste. (1) Visningen læste resultaterne under `res.candidates`, men forælderen udsender dem under `companies` (hver `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`); klienten læser nu den korrekte nøgle og mapper den reelle evidensform. (2) Resultattabellen sendte sine celler til `UI.el('tr', {}, …)` som varargs, men `UI.el(tag, attrs, children)` forventer `children` som en enkelt node eller et array, så kun den første kolonne (Virksomhed) blev gengivet — cellerne sendes nu som et array. Verificeret i en rigtig browser: 11 virksomheder på tværs af de fire feeds gengives med kolonnerne Virksomhed / Finansieringssignal / Kilde / Dato og fungerende evidenslinks, ingen konsolfejl. Et tomt resultat viser nu også diagnostik pr. kilde, så en stille nyhedsdag kan skelnes fra et blokeret feed.
+- Regressionsspærringer i `tests/parity-routes-v1133.test.mjs`: det simulerede forælderscript udsender nu den reelle `companies`-outputform (den oprindelige fixture spejlede den forkerte `candidates`-form — hvilket er præcis grunden til, at fejlen slap igennem med grønne tests), plus kildestatiske kanariefugle for, at `funded.js` læser `res.companies` (aldrig `res.candidates`) og bygger tabelrækker med børn som array (+1 → 2144).
+
+## [1.133.0] — 2026-08-01
+
+### Tilføjet
+- **Opdagelse af finansierede virksomheder (`#/funded`, forælder-paritet #2117)** — en ny skrivebeskyttet visning, der videreformidler forælderens career-ops `company-funded.mjs` via `GET /api/company-funded`: en liste med fokus på gennemgang over nyligt finansierede virksomheder, fundet fra offentlige, host-pinnede finansieringsfeeds (TechCrunch, PR Newswire, The Guardian, Hacker News). Relæet kører scriptet med `--json --dry-run` (JSON til stdout, ingen filskrivninger), sender aldrig brugerinput videre til `--sources`, har rate limiting og udløses af brugeren (en Opdag-knap, aldrig ved indlæsning). Nyt rutemodul `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, under Sourcing.
+- **Ugentligt interviewresumé (`#/interview-digest`, forælder-paritet #2129/#2130)** — en ny skrivebeskyttet visning, der videreformidler forælderens nul-LLM `weekly-digest.mjs` via `GET /api/interview/weekly-digest`: en mekanisk sammenfatning af interviewsessionsnoterne — hvilke virksomheder og runder du har interviewet med i denne uge, tilbagevendende kompetencer og bedst-mulige åbne huller. Det valgfrie `?from=&to=`-interval sendes kun med, når BEGGE er gyldige `YYYY-MM-DD`; et tomt interval er et gyldigt `available:true`-resumé. Tilføjet til `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`, under Analyse.
+- Begge relæer følger den etablerede fail-soft `available:false`-kontrakt, når forælderens script ikke er til stede (CI, standalone-installationer). 26 nye i18n-nøgler ×17 lokaliteter; CI-isoleret suite `tests/parity-routes-v1133.test.mjs` (+5 → 2143).
+
+### Noter
+- Forælderens career-ops er avanceret forbi v1.24.0 med Next.js web/-appens Follow-up Tracker-side (#1422) og backend-PDF-rendering (#2182) — ikke porteret: web-ui har allerede sit eget follow-up-relæ og PDF-runnere, og den underliggende `followup-cadence.mjs`-hærdning kommer gratis med via shell-out-relæet. `set-status.mjs`/`tracker-utils.mjs`-ændringerne er CLI-interne og spejles ikke.
+
+## [1.132.0] — 2026-07-31
+
+### Ændret
+- **`#/scan`-resultatgengivelses-delsystemet blev udtrukket til `public/js/lib/scan-results.js`** (afvikling af file-size-contract-gæld — `public/js/views/scan.js` var vokset til ~1254 LOC). Delsystemet (`renderResults`, `buildChipRow`, `getRows`, række-/facet-bygherrerne, valgmulighedsmalerne og `FALLBACK_SOURCES`-registerspejlet) blev flyttet ind i en `window.ScanResults.create(ctx)`-fabrik, der lukker over et kontekstobjekt, som visningen leverer. Ingen adfærdsændring — funktionerne blev flyttet ordret, og closure-variablerne blev omkoblet til `ctx.*`; `scan.js` er nu ~906 LOC (en anden udtrækningsrunde mod 800-LOC-målet er planlagt).
+- Kildestatiske tests læser begge filer via `tests/helpers/scan-src.mjs::loadScanSrc()`; `tests/scan-fallback-sources.test.mjs` læser nu registerspejlet fra `scan-results.js`.
+- **Ny regressionsspærring i browseren** — `tests/playwright-scan-filters.mjs` sår en foruddefineret `data/last-scan.json` og gennemkører hvert `#/scan`-filter, idet den verificerer nøjagtige rækketal (`npm run test:e2e:browser`); stabile filter-id'er (`#scan-filter-*`, `#scan-apply`) blev tilføjet.
+- README's "Seneste udgivelse"-banner er skåret ned til et enkeltlinjeresumé + et link til den fulde ændringslog (den lange fortællemur på tværs af flere versioner er udfaset). Anvendt på tværs af alle 17 lokaliteter.
+
 ## [1.131.2] — 2026-07-31
 
 ### Ændret

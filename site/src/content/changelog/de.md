@@ -2,6 +2,54 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.134.1] — 2026-08-05
+
+Validierungs-Härtung — durch ein vollständiges Projekt-Audit aufgedeckte Fehlerbehebungen.
+
+### Behoben
+- **`successfactors` verwirft bei einem Fehlschlag mitten im Scan nicht mehr die bereits gesammelten Stellen** (Regression aus dem v1.134.0-Port des Tote-Boards-Throw) — seine Paginierungsschleife hatte kein `try/catch`, sodass ein Fehlschlag auf Seite 2 oder später (nachdem Seite 1 erfolgreich war) einen Fehler warf und alles bereits Gesammelte verwarf; und wenn dieser Fehlschlag ein `404` war (ein außerhalb des Bereichs liegendes `startrow`), quarantänierte `en-scanner` einen aktiven Tenant tagelang als tot. Spiegelt nun `phenom`/`radancy`: Ein Fehlschlag auf Seite 0 wirft weiterhin einen Fehler (totes Board), aber ein späterer Seitenfehlschlag behält die Teilergebnisse.
+- **Die `#/scan`-Filter-Chips sind jetzt per Tastatur bedienbar** (WCAG 2.1.1) — die Facetten-Chips (und der „Zurücksetzen“-Chip) waren Spans mit einem Klick-Handler, aber ohne `tabindex`/Rolle, sodass Tastatur- und Screenreader-Nutzer sie weder erreichen noch umschalten konnten. Sie tragen nun `role="button"`, `tabindex="0"`, `aria-pressed` und Enter/Leertaste-Aktivierung.
+- **Drei hartcodierte englische Zeichenketten sind jetzt lokalisiert** — der `#/scan`-Vertrauens-Badge-Tooltip, die `#/scan`-Umzugs-Spaltenüberschrift und die `#/dashboard`-Punktzahl-Überschrift waren literale Zeichenketten, die das i18n-Paritätsgate nicht erkennen konnte (sie waren nie Schlüssel), sodass sie in jeder nicht-englischen Sprachversion englisch blieben. Jetzt `scan.trustTip` + `scan.col.reloc` (2 neue Schlüssel) + eine Wiederverwendung von `track.col.score`, mit einer quellcode-statischen Absicherung.
+
+## [1.134.0] — 2026-08-05
+
+Parität mit dem übergeordneten Projekt career-ops **v1.25.0**.
+
+### Hinzugefügt
+- **Neue Scan-Quelle: getManfred** (`manfred`) — ein board-weiter Feed spanischer/EU-Tech-Stellen mit veröffentlichten Gehältern, von `www.getmanfred.com/api/v2/public/offers` (ohne Auth, host-gepinnt + nur HTTPS, vollständiger Katalog in einer einzigen Anfrage). Quelle + Adapter + eine CI-isolierte Suite (`tests/sources-manfred.test.mjs`); die Registry umfasst nun **73 Quellen = 68 englische + 5 russische** (`ALL_ADAPTERS` 68). Erscheint im `#/scan`-Quellenfilter und auf der cvstart.org-Landing.
+
+### Behoben
+- **Der a16z-Speedrun-Feed wurde stillschweigend auf 50 Stellen gekürzt** (#2404) — der Feed begrenzt eine Seite auf 50, aber die Quelle forderte `PER_PAGE = 100` an, sodass die Paginierung nach Seite 1 stoppte. Auf 50 korrigiert.
+- **Tote Boards werfen jetzt einen Fehler, statt als „aktiv, aber leer“ gelesen zu werden** (#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: Ein Fetch-Fehlschlag, bei dem keine einzige Anfrage jemals aufgelöst wurde, wirft nun einen Fehler (sodass die `#/portals`-Zustandsprüfung und der Scan einen echten Fehlschlag protokollieren), statt ihn stillschweigend zu einer leeren Liste zu verschlucken; ein Fehlschlag mitten im Scan nach mindestens einem Erfolg behält die Teilergebnisse.
+- **workable nutzt jetzt die öffentliche Widget-API** (#5ab8425) — umgestellt auf `apply.workable.com/api/v1/widget/accounts/<slug>`, die die vollständige Stellenliste eines großen Kontos in einer einzigen Anfrage liefert, sodass große Konten nicht mehr gekürzt werden.
+
+### Hinweise
+- Nicht portiert (nur CLI oder von web-ui nicht gespiegelt): die Perf-Überarbeitung des Titel-Bucketings von `detect-reposts` #2389; die Unicode-Firmenschlüssel-Fixes (die eigene Tracker-Deduplizierung von web-ui ist bereits nicht-lateinisch-sicher); `scan --since`; `cv-facts`; der CV-Vorlagen-/PDF-Audit-Durchlauf; `doctor`; die Direktive zu nicht vertrauenswürdigen Inhalten in den Modi.
+
+## [1.133.1] — 2026-08-02
+
+### Behoben
+- **`#/funded` (Finanzierte Unternehmen) zeigt jetzt Ergebnisse an** — zwei Fehler sorgten dafür, dass die Tabelle immer „keine finanzierten Unternehmen“ anzeigte, selbst wenn `company-funded.mjs` des Elternprojekts eine vollständige Liste zurückgab. (1) Die Ansicht las die Ergebnisse unter `res.candidates`, aber das Elternprojekt liefert sie unter `companies` (jeweils `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`); der Client liest nun den richtigen Schlüssel und bildet die tatsächliche Belegstruktur ab. (2) Die Ergebnistabelle übergab ihre Zellen als Varargs an `UI.el('tr', {}, …)`, aber `UI.el(tag, attrs, children)` erwartet `children` als einzelnen Knoten oder Array, sodass nur die erste Spalte (Unternehmen) gerendert wurde — Zellen werden jetzt als Array übergeben. In einem echten Browser verifiziert: 11 Unternehmen aus den vier Feeds werden mit den Spalten Unternehmen / Finanzierungssignal / Quelle / Datum sowie funktionierenden Belegs-Links gerendert, ohne Konsolenfehler. Ein leerer Durchlauf zeigt nun auch die Pro-Quelle-Diagnose an, sodass sich ein ruhiger Nachrichtentag von einem blockierten Feed unterscheiden lässt.
+- Regressions-Absicherungen in `tests/parity-routes-v1133.test.mjs`: Das simulierte Skript des Elternprojekts liefert nun die tatsächliche `companies`-Ausgabeform (die ursprüngliche Fixture spiegelte fälschlich die `candidates`-Form wider — genau deshalb konnte der Fehler mit grüner Suite ausgeliefert werden), zusätzlich quellcode-statische Prüfungen, dass `funded.js` `res.companies` liest (niemals `res.candidates`) und Tabellenzeilen mit Array-Children baut (+1 → 2144).
+
+## [1.133.0] — 2026-08-01
+
+### Hinzugefügt
+- **Erkennung frisch finanzierter Unternehmen (`#/funded`, Parent-Parität #2117)** — eine neue schreibgeschützte Ansicht, die das Skript `company-funded.mjs` des Elternprojekts career-ops über `GET /api/company-funded` weiterleitet: eine zur Durchsicht bereitgestellte Liste kürzlich finanzierter Unternehmen, ermittelt aus öffentlichen, host-gepinnten Finanzierungs-Feeds (TechCrunch, PR Newswire, The Guardian, Hacker News). Das Relay führt das Skript mit `--json --dry-run` aus (JSON auf stdout, keine Dateischreibvorgänge), leitet Benutzereingaben niemals in `--sources` weiter, unterliegt Rate-Limiting und wird ausschließlich durch den Nutzer ausgelöst (eine „Entdecken“-Schaltfläche, niemals beim Laden der Seite). Neues Routenmodul `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, unter Sourcing.
+- **Wöchentlicher Interview-Digest (`#/interview-digest`, Parent-Parität #2129/#2130)** — eine neue schreibgeschützte Ansicht, die das LLM-freie Skript `weekly-digest.mjs` des Elternprojekts über `GET /api/interview/weekly-digest` weiterleitet: eine mechanische Zusammenfassung der Interview-Sitzungsnotizen — mit welchen Unternehmen und in welchen Runden Sie diese Woche ein Interview hatten, wiederkehrende Kompetenzen und nach bestem Ermessen ermittelte offene Lücken. Der optionale `?from=&to=`-Zeitraum wird nur weitergeleitet, wenn BEIDE Werte gültige `YYYY-MM-DD`-Daten sind; ein leerer Zeitraum ergibt einen gültigen `available:true`-Digest. Ergänzt in `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`, unter Analytics.
+- Beide Relays folgen dem etablierten Fail-soft-`available:false`-Vertrag, wenn das Elternskript fehlt (CI, eigenständige Installationen). 26 neue i18n-Schlüssel ×17 Sprachversionen; CI-isolierte Suite `tests/parity-routes-v1133.test.mjs` (+5 → 2143).
+
+### Hinweise
+- Das Elternprojekt career-ops ist über v1.24.0 hinaus fortgeschritten — mit der Follow-up-Tracker-Seite (#1422) der Next.js-Web-App und dem Backend-PDF-Rendering (#2182) — nicht portiert: web-ui verfügt bereits über ein eigenes Follow-up-Relay und eigene PDF-Runner, und die zugrunde liegende Härtung von `followup-cadence.mjs` kommt über das Shell-out-Relay ohnehin kostenlos mit. Die Änderungen an `set-status.mjs` / `tracker-utils.mjs` sind CLI-intern und werden nicht gespiegelt.
+
+## [1.132.0] — 2026-07-31
+
+### Geändert
+- **`#/scan`-Ergebnis-Rendering-Subsystem nach `public/js/lib/scan-results.js` extrahiert** (File-Size-Contract-Schuld — `public/js/views/scan.js` war auf ~1254 LOC angewachsen). Das Subsystem (`renderResults`, `buildChipRow`, `getRows`, die Zeilen-/Facetten-Builder, die Options-Painter und der `FALLBACK_SOURCES`-Registry-Spiegel) wurde in eine `window.ScanResults.create(ctx)`-Factory verschoben, die über ein vom View bereitgestelltes Kontextobjekt schließt. Keine Verhaltensänderung — die Funktionen wurden unverändert verschoben, die Closure-Variablen auf `ctx.*` umverdrahtet; `scan.js` umfasst nun ~906 LOC (ein zweiter Extraktionsdurchgang in Richtung des 800-LOC-Ziels ist geplant).
+- Quellcode-statische Tests lesen beide Dateien über `tests/helpers/scan-src.mjs::loadScanSrc()`; `tests/scan-fallback-sources.test.mjs` liest den Registry-Spiegel nun aus `scan-results.js`.
+- **Neues Regressions-Gate im Browser** — `tests/playwright-scan-filters.mjs` setzt ein vorgefertigtes `data/last-scan.json` und steuert jeden `#/scan`-Filter, wobei exakte Zeilenanzahlen geprüft werden (`npm run test:e2e:browser`); stabile Filter-IDs (`#scan-filter-*`, `#scan-apply`) wurden hinzugefügt.
+- Das README-Banner „Latest release“ wurde auf eine einzeilige Zusammenfassung + einen Link zum vollständigen Changelog verschlankt (die lange, versionsübergreifende Fließtext-Wand entfällt). Angewendet in allen 17 Sprachversionen.
+
 ## [1.131.2] — 2026-07-31
 
 ### Geändert

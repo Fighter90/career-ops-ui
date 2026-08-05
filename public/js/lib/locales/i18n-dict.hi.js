@@ -493,6 +493,8 @@ window.__I18N_DICT_HI = {
   'scan.col.type': "प्रकार",
   'scan.col.salary': "वेतन",
   'scan.col.source': "स्रोत",
+  'scan.col.reloc': "स्थानां.",
+  'scan.trustTip': "विश्वास",
   'scan.activeCo': "सक्रिय कंपनियाँ",
   'scan.activeCo.help': "सक्रिय: वे कंपनियाँ जो फ़िलहाल परिणाम दे रही हैं। कुल: portals.yml में कॉन्फ़िगर की गई।",
   'scan.tagClickToFilter': "इस कंपनी के अनुसार परिणाम फ़िल्टर करने के लिए क्लिक करें",

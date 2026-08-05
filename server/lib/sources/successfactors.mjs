@@ -234,7 +234,11 @@ export function parseSuccessfactors(html, { jobBase, fallbackCompany = '' } = {}
  * "live but empty" (meituan/tencent idiom). The `startrow` fetch is left
  * uncaught precisely so a transport error propagates. This web-ui port carries
  * only the RMK tile scraper (no CSB JSON fallback), so there is no post-RMK CSB
- * `probe` carve-out to preserve — the sole transport throws on any failure.
+ * `probe` carve-out to preserve. Dead-board contract (parent v1.25.0 #2379): a
+ * page-0 failure (nothing ever fetched) THROWS so scan/portal-health record a
+ * real failure; a mid-pagination failure after ≥1 successful page keeps the
+ * partials already collected (a transient page-N 5xx/404 must NOT discard the
+ * scraped tiles nor get a live tenant quarantined as permanently dead).
  *
  * @param {string} endpoint tenant tile-search endpoint (host-pinned, from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
@@ -249,14 +253,27 @@ export async function fetchSuccessfactors(endpoint, opts = {}) {
   const out = [];
   const seen = new Set();
   let startrow = 0;
+  let succeededOnce = false;
   for (let page = 0; page < MAX_PAGES; page += 1) {
     const pageUrl = new URL(base.href);
     pageUrl.searchParams.set('startrow', String(startrow));
-    const html = await fetchText(fetchImpl, pageUrl.href, {
-      signal,
-      redirect: 'error',
-      headers: { accept: 'text/html' },
-    });
+    let html;
+    try {
+      html = await fetchText(fetchImpl, pageUrl.href, {
+        signal,
+        redirect: 'error',
+        headers: { accept: 'text/html' },
+      });
+    } catch (err) {
+      // Dead-board contract: a failure with NO successful request means the
+      // board is unreachable, not empty — THROW so scan/portal-health record a
+      // real failure. A mid-pagination failure after ≥1 successful page keeps
+      // the partials already scraped (a transient page-N 5xx/404 must not
+      // discard them, nor get a live tenant quarantined as permanently dead).
+      if (!succeededOnce) throw err;
+      break;
+    }
+    succeededOnce = true;
     const tiles = parseSuccessfactors(html, { jobBase, fallbackCompany });
     if (tiles.length === 0) break;
 

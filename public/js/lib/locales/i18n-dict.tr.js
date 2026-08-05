@@ -491,6 +491,8 @@ window.__I18N_DICT_TR = {
   'scan.col.type': "Tür",
   'scan.col.salary': "Maaş",
   'scan.col.source': "Kaynak",
+  'scan.col.reloc': "Taşınma",
+  'scan.trustTip': "Güven",
   'scan.activeCo': "Aktif şirketler",
   'scan.activeCo.help': "Aktif: şu anda sonuç veren şirketler. Toplam: portals.yml içinde yapılandırılmış.",
   'scan.tagClickToFilter': "Sonuçları bu şirkete göre filtrelemek için tıklayın",

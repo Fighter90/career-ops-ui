@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2184%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.0)
+[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
 
-> **🆕 أحدث إصدار — v1.134.0** — تكافؤ مع المشروع الأصل career-ops **v1.25.0**: مصدر مسح جديد، **getManfred** (تقنية إسبانية/اتحاد أوروبي، أجور منشورة ← **73 مصدراً**)، إضافة إلى إصلاحات للمزوّدين — لم تعد تغذية a16z Speedrun تُقتَطع إلى 50 وظيفة، وأصبحت اللوحات الميتة تُظهر فشلاً حقيقياً بدلاً من "حيّة لكن فارغة"، وأصبح **workable** يستخدم واجهة الودجت العامة بحيث تُمسح الحسابات الكبيرة بالكامل. **2184 اختبارًا.**
+> **🆕 أحدث إصدار — v1.134.1** — تصليب التحقق من الصحة: لم يعد **`successfactors`** يُهدر الوظائف المُجمَّعة (أو يحجر لوحة حيّة عن طريق الخطأ) عند فشل في منتصف المسح؛ وأصبحت رقاقات تصفية **`#/scan`** قابلة للتشغيل عبر لوحة المفاتيح (WCAG 2.1.1)؛ وأصبحت ثلاث سلاسل نصية إنجليزية مُثبَّتة يدوياً مُترجَمة الآن في جميع اللغات الـ17. **2187 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

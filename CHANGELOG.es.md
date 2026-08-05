@@ -11,6 +11,15 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.134.1] — 2026-08-05
+
+Endurecimiento de validación — correcciones detectadas por una auditoría integral del proyecto.
+
+### Corregido
+- **`successfactors` ya no descarta los empleos extraídos ante un fallo a mitad de escaneo** (regresión introducida en el port de "lanzar error en board muerto" de v1.134.0) — su bucle de paginación no tenía `try/catch`, así que un fallo en la página 2 o posterior (tras el éxito de la página 1) lanzaba un error y descartaba todo lo ya recolectado; y si ese fallo era un `404` (un `startrow` fuera de rango), `en-scanner` ponía en cuarentena durante días a un tenant en realidad activo, como si estuviera muerto. Ahora imita a `phenom`/`radancy`: un fallo en la página 0 sigue lanzando error (board muerto), pero un fallo en una página posterior conserva los resultados parciales.
+- **Los chips de filtro de `#/scan` ya se pueden operar con teclado** (WCAG 2.1.1) — los chips de faceta (y el chip "borrar") eran `span` con un manejador de clic pero sin `tabindex` ni rol, así que los usuarios de teclado y lector de pantalla no podían alcanzarlos ni activarlos. Ahora llevan `role="button"`, `tabindex="0"`, `aria-pressed` y activación con Intro/Espacio.
+- **Tres cadenas en inglés codificadas de forma fija ya están localizadas** — el tooltip de la insignia de confianza de `#/scan`, la cabecera de columna de reubicación de `#/scan` y la cabecera de puntuación de `#/dashboard` eran literales sueltos que la puerta de paridad i18n no podía detectar (nunca fueron claves), así que permanecían en inglés en todos los idiomas que no fueran el inglés. Ahora son `scan.trustTip` + `scan.col.reloc` (2 claves nuevas) más una reutilización de `track.col.score`, con una comprobación estática de código fuente.
+
 ## [1.134.0] — 2026-08-05
 
 Paridad con career-ops padre **v1.25.0**.

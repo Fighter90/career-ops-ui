@@ -491,6 +491,8 @@ window.__I18N_DICT_KO = {
   'scan.col.type': "유형",
   'scan.col.salary': "급여",
   'scan.col.source': "소스",
+  'scan.col.reloc': "이전",
+  'scan.trustTip': "신뢰",
   'scan.activeCo': "활성 회사",
   'scan.activeCo.help': "활성: 현재 결과가 있는 회사. 총합: portals.yml 에 설정된 수.",
   'scan.tagClickToFilter': "이 회사로 결과 필터링",

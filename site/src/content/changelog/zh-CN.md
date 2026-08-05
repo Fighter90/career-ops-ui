@@ -9,6 +9,53 @@
 ---
 
 
+## [1.134.1] — 2026-08-05
+
+验证加固 —— 本次修复源自一次全项目审计。
+
+### 修复
+- **`successfactors` 在扫描中途失败时不再丢弃已抓取的职位**（v1.134.0 移植「失效招聘板抛出异常」逻辑时引入的回归）——其翻页循环此前没有 `try/catch`，因此第 2 页及之后的请求一旦失败（此前第 1 页已成功获取），就会抛出异常并丢弃全部已收集的结果；若该失败恰好是一次 `404`（`startrow` 超出范围），`en-scanner` 便会把一个存活的租户误判为失效，并将其隔离数天。现已与 `phenom`／`radancy` 保持一致：第 0 页失败仍会抛出异常（判定为失效招聘板），但后续页面的失败会保留已取得的部分结果。
+- **`#/scan` 筛选芯片现在支持键盘操作**（符合 WCAG 2.1.1）——此前分面芯片（以及「清除」芯片）只是带点击事件处理器的 `span`，没有 `tabindex`／role，键盘用户与屏幕阅读器用户都无法聚焦或切换它们。现在它们带有 `role="button"`、`tabindex="0"`、`aria-pressed`，并支持 Enter／Space 键激活。
+- **三处硬编码的英文字符串现已完成本地化**——`#/scan` 的信任徽章提示文字、`#/scan` 的搬迁列表头，以及 `#/dashboard` 的评分列表头此前均为裸字面量，i18n 一致性检查无法识别它们（它们从未被登记为键），因此在所有非英文语言环境中都一直显示英文。现已改用 `scan.trustTip` + `scan.col.reloc`（2 个新键）以及复用现有的 `track.col.score`，并配有源码静态断言加以锁定。
+
+## [1.134.0] — 2026-08-05
+
+父项目 career-ops **v1.25.0** 对齐。
+
+### 新增
+- **新增扫描来源:getManfred**(`manfred`)—— 面向西班牙/欧盟科技职位、含公开薪资的全板块信息流,来自 `www.getmanfred.com/api/v2/public/offers`(零鉴权,主机锁定 + 仅限 HTTPS,单次请求获取完整目录)。新增来源 + 适配器 + 一套 CI 隔离测试套件(`tests/sources-manfred.test.mjs`);注册表现为 **73 个来源 = 68 个英文 + 5 个俄文**(`ALL_ADAPTERS` 68)。已出现在 `#/scan` 的 Source 筛选器与 cvstart.org 落地页中。
+
+### 修复
+- **a16z Speedrun 信息流曾悄悄截断为 50 条职位**(#2404)—— 该信息流单页上限为 50 条,但该来源请求的是 `PER_PAGE = 100`,导致翻页在第一页之后就停止。已更正为 50。
+- **失效招聘板现在会抛出异常,而不再被误读为「存活但为空」**(#2379)—— `cryptocurrencyjobs`、`phenom`、`radancy`、`successfactors`:当没有任何请求成功返回时,现在会抛出异常(以便 `#/portals` 健康检查与扫描记录到真实的失败),而不再被悄悄吞掉、返回空列表;若失败发生在至少一次成功之后,扫描仍会保留已取得的部分结果。
+- **workable 现在使用公开的 widget API**(#5ab8425)—— 已切换为 `apply.workable.com/api/v1/widget/accounts/<slug>`,该接口能一次性返回大账号的完整职位列表,因此大账号不再被截断。
+
+### 说明
+- 未移植(仅限 CLI 或未被 web-ui 镜像):`detect-reposts` #2389 的标题分桶性能重写;Unicode 公司键修复(web-ui 自身的跟踪器去重本就对非拉丁字符安全);`scan --since`;`cv-facts`;CV 模板 / PDF 审计流程;`doctor`;modes 的不可信内容指令。
+
+## [1.133.1] — 2026-08-02
+
+### 修复
+- **`#/funded`(获投公司)现在能够正确渲染结果** — 两个 bug 导致该表格即使父项目的 `company-funded.mjs` 已经返回完整列表,也始终显示「暂无获投公司」。(1) 视图此前从 `res.candidates` 读取结果,但父项目实际以 `companies` 输出(每条记录形如 `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`);客户端现在读取正确的键,并按真实的证据结构进行映射。(2) 结果表此前把单元格以变长参数的形式传给 `UI.el('tr', {}, …)`,但 `UI.el(tag, attrs, children)` 的 `children` 参数只接受单个节点或数组,因此此前只有第一列(Company)会被渲染 —— 单元格现在以数组形式传入。已在真实浏览器中验证:四个信息流共 11 家公司渲染出 Company / Funding signal / Source / Date 四列,证据链接可正常点击,控制台零报错。结果为空时现在也会展示各信息源的诊断信息,以便区分「今日无新闻」与「信息流被屏蔽」两种情况。
+- **`tests/parity-routes-v1133.test.mjs`** 中新增回归防护:伪造的父项目脚本现在会产出真实的 `companies` 输出结构(此前的 fixture 错误地照搬了 `candidates` 结构 —— 这正是该 bug 能够绿灯发布的原因),并新增源码静态断言(canary),确认 `funded.js` 读取的是 `res.companies`(绝不是 `res.candidates`),且构建表格行时以数组形式传入子节点(+1 → **2144**)。
+
+## [1.133.0] — 2026-08-01
+
+### 新增
+- **获投公司发现(`#/funded`,与父项目 #2117 对齐)** — 新增一个只读视图,通过 `GET /api/company-funded` 中继父项目 career-ops 的 `company-funded.mjs`:这是一份供你先行审阅的近期获投公司列表,数据来自公开的、主机锁定的融资信息流(TechCrunch、PR Newswire、The Guardian、Hacker News)。该中继以 `--json --dry-run` 方式运行脚本(JSON 输出到 stdout,不写入任何文件),绝不会把用户输入透传进 `--sources`,自带限流,并且由用户主动触发(一个 Discover 按钮,绝不会在挂载时自动运行)。新增路由模块 `server/lib/routes/funded.mjs` + `public/js/views/funded.js`,归入 Sourcing 分组。
+- **每周面试摘要(`#/interview-digest`,与父项目 #2129/#2130 对齐)** — 新增一个只读视图,通过 `GET /api/interview/weekly-digest` 中继父项目零 LLM 的 `weekly-digest.mjs`:对面试环节记录做机械式汇总 —— 本周与哪些公司、在哪些轮次进行了面试、反复出现的能力项,以及尽力而为得出的待补差距。可选的 `?from=&to=` 区间仅在两者均为合法的 `YYYY-MM-DD` 时才会被透传;空区间同样是合法的 `available:true` 摘要。新增至 `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`,归入 Analytics 分组。
+- 当父项目脚本不存在时(CI、独立安装),两个中继均遵循既有的故障自降级 `available:false` 约定。新增 26 个 i18n 键 ×17;CI 隔离测试套件 `tests/parity-routes-v1133.test.mjs`(+5 → **2143**)。
+
+### 说明
+- 父项目 career-ops 已推进到 v1.24.0 之后,带来了 Next.js **web/** 应用的**跟进跟踪器页面**(#1422)与**后端 PDF 渲染**(#2182)—— **未移植**:web-ui 已有自己的跟进中继与 PDF 运行器,底层 `followup-cadence.mjs` 的加固会通过外壳调用中继自动生效、无需额外改动。`set-status.mjs` / `tracker-utils.mjs` 的改动属于 CLI 内部实现,未做镜像。
+
+## [1.132.0] — 2026-07-31
+
+### 变更
+- **`#/scan` 结果渲染子系统提取到 `public/js/lib/scan-results.js`**(文件体积契约技术债 — `public/js/views/scan.js` 已膨胀至约 1254 行)。该子系统 — `renderResults`、`buildChipRow`、行构建器与分面构建器、选项绘制器,以及 `FALLBACK_SOURCES` 注册表镜像 — 移入一个 `window.ScanResults.create(ctx)` 工厂函数,该工厂闭包捕获由视图提供的上下文对象。**行为无变化** — 这些函数被逐字移动,闭包变量改接到 `ctx.*`;`scan.js` 现为约 906 行(计划进行第二轮提取以达到 800 行目标)。
+- **新增浏览器内回归门** — `tests/playwright-scan-filters.mjs` 预置一份规范的 `data/last-scan.json`,并驱动每一个 `#/scan` 筛选项,断言精确的行数,从而针对真实浏览器行为验证此次拆分。
+- **README 横幅精简** — 冗长的逐版本"最新版本"叙述墙被撤下,改为一行摘要 + 指向完整变更日志(本文件)的链接。
+
 ## [1.131.2] — 2026-07-31
 
 ### 变更

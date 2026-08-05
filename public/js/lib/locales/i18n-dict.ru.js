@@ -491,6 +491,8 @@ window.__I18N_DICT_RU = {
   'scan.col.type': "Тип",
   'scan.col.salary': "Зарплата",
   'scan.col.source': "Источник",
+  'scan.col.reloc': "Релок.",
+  'scan.trustTip': "Доверие",
   'scan.activeCo': "Активные компании",
   'scan.activeCo.help': "Активные: компании, по которым сейчас есть результаты. Всего: настроено в portals.yml.",
   'scan.tagClickToFilter': "Кликнуть, чтобы отфильтровать результаты по компании",

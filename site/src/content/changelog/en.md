@@ -8,6 +8,60 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.134.1] — 2026-08-05
+
+Validation-hardening — fixes surfaced by a full-project audit (all locales + code).
+
+### Fixed
+- **`successfactors` no longer discards scraped jobs on a mid-scan failure** (regression in the v1.134.0 dead-board-throw port) — its RMK pagination loop had no `try/catch`, so a failure on page 2+ (after page 1 succeeded) threw and dropped everything already collected. Worse, if that mid-pagination failure was a 404 (plausible on an out-of-range `startrow` behind a WAF), `en-scanner`'s permanent-failure check would **quarantine a live tenant** as dead for days. Now mirrors `phenom`/`radancy`: a page-0 failure (nothing fetched) still throws (dead board), but a later-page failure keeps the partials (`+1` regression test).
+- **`#/scan` filter chips are now keyboard-operable** (WCAG 2.1.1) — the stack/level/dynamic-keyword facet chips (and the "clear" chip) were `<span onClick>` with no `tabindex`/role, so keyboard and screen-reader users couldn't reach or toggle them (the `.chip:focus-visible` CSS was dead). They now carry `role="button"`, `tabindex="0"`, `aria-pressed` (toggles), and Enter/Space activation.
+- **Three hardcoded English strings are now localized** — the `#/scan` trust-badge tooltip ("Trust …"), the `#/scan` relocation column header ("Reloc"), and the `#/dashboard` score header ("Score") were bare literals the i18n parity gate couldn't see (they were never keys), so they stayed English in all 16 non-English locales. Now `scan.trustTip` + `scan.col.reloc` (2 new keys ×17) and a reuse of the existing `track.col.score`. A source-static guard locks them so the gap can't silently return.
+
+### Security
+- **`fast-uri` 3.1.4 → 3.1.5** in the `site/` build lockfile (Dependabot GHSA — high: host confusion via a backslash authority introducer). Transitive dev-only dependency of the cvstart.org Astro toolchain; `npm audit` now reports 0 vulnerabilities and the Astro build is unchanged (86 pages, green). Does not touch the SPA or server (`express` + `js-yaml` only).
+
+## [1.134.0] — 2026-08-05
+
+Parent career-ops **v1.25.0** parity.
+
+### Added
+- **New scan source: getManfred** (`manfred`, parent #9474ff1) — a board-wide feed of Spanish/EU tech roles with **published salaries**, from `www.getmanfred.com/api/v2/public/offers` (zero-auth, host-pinned + HTTPS-only, single-request full catalogue, per-company fail-soft). Source + adapter + a CI-isolated suite (`tests/sources-manfred.test.mjs`); registry now **73 sources = 68 EN + 5 RU** (`ALL_ADAPTERS` 68). Appears in the `#/scan` Source filter (FALLBACK + live registry) and on the cvstart.org landing.
+
+### Fixed
+- **a16z Speedrun feed was silently truncating to 50 jobs** (parent #2404) — the feed caps a page at 50, but the source requested `PER_PAGE = 100`, so the `rawCount < PER_PAGE` guard stopped after page 1. Corrected to 50 so pagination continues.
+- **Dead boards now throw instead of reading as "live but empty"** (parent #2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, and `successfactors` sources: a fetch failure where **no** request ever resolved now **throws** (so `#/portals` health and the scan record a real failure) instead of swallowing it to `[]`; a mid-scan failure after ≥1 success keeps partials (proof-of-life). `radancy` proves life across both transports; `successfactors` keeps the RMK-answered carve-out.
+- **workable now uses the public widget API** (parent #5ab8425) — switched from the offset/limit-capped `api/v3` endpoint to `apply.workable.com/api/v1/widget/accounts/<slug>` (host-pinned, `redirect:'error'`), which returns a large account's **full** posting list in one request, so big accounts are no longer silently truncated. The adapter endpoint is unchanged (the source derives the account slug and rebuilds the widget URL).
+
+### Notes
+- **Not ported** (CLI-only or not mirrored by web-ui): the `detect-reposts` #2389 title-bucketing rewrite (an O(N²)→O(N) perf optimization over the parent's large scan-history CLI; web-ui's reposts run in-process over the user's own bounded history, so the pairwise cost is negligible — the match semantics are unchanged); the Unicode company-key fixes (`company-history` / `fingerprint-core` / `tracker-utils` / `merge-tracker`), which web-ui does not carry — web-ui's own tracker dedup already compares full lowercased company strings and is non-Latin-safe; `scan --since` + `scan-ats-full` checkpoints (web-ui runs the scanners in-process and has its own "Posted within" age filter); `cv-facts` / `verify-cv-facts`, the CV Awards/Honors template + hiring-manager audit PDF pass, `doctor`, and the modes untrusted-content directive.
+
+## [1.133.1] — 2026-08-02
+
+### Fixed
+- **`#/funded` (Funded companies) now renders results** — two bugs made the table always show "no funded companies" even when the parent's `company-funded.mjs` returned a full list. **(1)** The view read the results under `res.candidates`, but the parent emits them under **`companies`** (each `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`); the client now reads the correct key and maps the real evidence shape. **(2)** The results table passed its cells to `UI.el('tr', {}, …)` as **varargs**, but `UI.el(tag, attrs, children)` takes `children` as a single node or **array**, so only the first column (Company) rendered — cells are now passed as an array. Verified in a real browser: **11 companies** across the four feeds render with Company / Funding signal / Source / Date columns and working evidence links, zero console errors. An empty pass now also surfaces the per-source diagnostics (`source: status (fetched/funding-like)`) so a quiet news day is distinguishable from a blocked feed.
+- Regression guards in `tests/parity-routes-v1133.test.mjs`: the fake parent script now emits the **real** `companies` output shape (the original fixture mirrored the wrong `candidates` shape — which is exactly why the bug shipped green), plus source-static canaries that `funded.js` reads `res.companies` (never `res.candidates`) and builds table rows with array children (+1 → **2144**).
+
+## [1.133.0] — 2026-08-01
+
+### Added
+- **Funded-company discovery (`#/funded`, parent parity #2117)** — a new read-only view relaying the parent career-ops `company-funded.mjs` via `GET /api/company-funded`: a review-first list of recently funded companies discovered from public, host-pinned funding feeds (TechCrunch, PR Newswire, The Guardian, Hacker News). The relay runs the script with `--json --dry-run` (JSON to stdout, **no file writes**), never threads user input into `--sources` (no SSRF surface beyond the parent's own fixed feeds), carries `llmRateLimit`, and is user-triggered (a Discover button, never on mount). New route module `server/lib/routes/funded.mjs` (the 32nd) + `public/js/views/funded.js`, under **Sourcing**.
+- **Weekly interview digest (`#/interview-digest`, parent parity #2129/#2130)** — a new read-only view relaying the parent's zero-LLM `weekly-digest.mjs` via `GET /api/interview/weekly-digest`: a mechanical roll-up of `interview-prep/sessions/*.md` — which companies and rounds you interviewed with this week, recurring competencies, and best-effort open gaps. Optional `?from=&to=` range is threaded ONLY when BOTH are valid `YYYY-MM-DD`; an empty range is a valid `available:true` digest (not a failure). Added to `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`, under **Analytics**.
+- Both relays follow the established fail-soft `{ available:false }` contract (like `/api/stats/lifetime`) when the parent script is absent (CI, standalone installs), so each view shows an honest note. 26 new i18n keys ×17 locales; CI-isolated suite `tests/parity-routes-v1133.test.mjs` (+5 → **2143**: success passthrough, `--from`/`--to` threading, the read-only `--dry-run` guarantee, and the script-error fail-soft path).
+
+### Notes
+- Parent career-ops advanced past v1.24.0 with the Next.js **web/** app's **Follow-up Tracker page** (#1422) and **backend PDF render** (#2182) — **not ported**: web-ui already has its own follow-up relay (v1.117.0) and PDF runners, and the underlying `followup-cadence.mjs` hardening (impossible-date rejection, null-safe `addDays`, legacy-bullet parsing) arrives for free via the shell-out relay. The `set-status.mjs` / `tracker-utils.mjs` changes are CLI-internal (exit-code / lock helpers) and not mirrored.
+
+## [1.132.0] — 2026-07-31
+
+### Changed
+- **`#/scan` results-rendering subsystem extracted to `public/js/lib/scan-results.js`** (file-size-contract paydown — `public/js/views/scan.js` had grown to ~1254 LOC). The subsystem — `renderResults`, `buildChipRow`, `getRows`, the row/facet builders, the seniority/country option painters, and the `FALLBACK_SOURCES` registry mirror — moves into a `window.ScanResults.create(ctx)` factory that closes over a context object the view supplies (filter elements, the active-facet Sets, the paginator, two-pager data, and a `lastResults` getter). **No behaviour change** — the functions were moved verbatim and their closure vars mechanically rewired to `ctx.*`; `scan.js` is now ~906 LOC. (Still above the 800-LOC target — a second extraction pass is planned; the file-size contract for the two remaining JS-view outliers, `scan.js` and `config.js`, is tracked in `docs/sdd/CONVENTIONS.md`.)
+- Source-static tests read the two files via `tests/helpers/scan-src.mjs::loadScanSrc()` (like `loadAppCss()`); `tests/scan-fallback-sources.test.mjs` now reads the registry mirror from `scan-results.js`.
+- **New in-browser regression gate** — `tests/playwright-scan-filters.mjs` seeds a canned `data/last-scan.json` and drives every `#/scan` filter (Source, Seniority, Remote, Age, text include/exclude), asserting exact row counts, so the extraction is verified against real browser behaviour (run via `npm run test:e2e:browser`). Stable filter-control ids (`#scan-filter-*`, `#scan-apply`) were added for it.
+
+### Housekeeping
+- The README "Latest release" banner is slimmed to a one-line summary + a link to the full changelog (the long per-version narrative wall is retired — history lives in `CHANGELOG*.md`). Applied across all 17 locales.
+- **CodeQL cleanup** — removed the dead `readFileSync`/`resolve`/`APP_CSS` path-scaffolding left over from the v1.131.2 `loadAppCss()` migration in four CSS source-guard tests (`design-polish-v1115`, `managed-focus-no-ring`, `toast-fab-clearance`, `wcag-target-size`); those imports had become unused once the tests switched to `loadAppCss()`, closing the eight open `js/unused-local-variable` code-scanning alerts. Test-only, no behaviour change.
+
 ## [1.131.2] — 2026-07-31
 
 ### Changed

@@ -491,6 +491,8 @@ window.__I18N_DICT_JA = {
   'scan.col.type': "タイプ",
   'scan.col.salary': "給与",
   'scan.col.source': "ソース",
+  'scan.col.reloc': "移転",
+  'scan.trustTip': "信頼",
   'scan.activeCo': "アクティブな会社",
   'scan.activeCo.help': "アクティブ: 現在結果を出している会社。合計: portals.yml で設定された数。",
   'scan.tagClickToFilter': "この会社で結果をフィルタ",

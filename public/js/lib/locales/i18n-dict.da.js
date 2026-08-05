@@ -490,6 +490,8 @@ window.__I18N_DICT_DA = {
   'scan.col.type': "Type",
   'scan.col.salary': "Løn",
   'scan.col.source': "Kilde",
+  'scan.col.reloc': "Reloc.",
+  'scan.trustTip': "Tillid",
   'scan.activeCo': "Aktive virksomheder",
   'scan.activeCo.help': "Aktive: virksomheder, der i øjeblikket viser resultater. I alt: konfigureret i portals.yml.",
   'scan.tagClickToFilter': "Klik for at filtrere resultater efter denne virksomhed",

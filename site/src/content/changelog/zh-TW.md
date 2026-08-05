@@ -8,6 +8,53 @@
 
 ---
 
+## [1.134.1] — 2026-08-05
+
+驗證強化 — 本次修復源自一次全專案稽核。
+
+### 修復
+- **`successfactors` 現在不會在掃描中途失敗時捨棄已擷取的職缺**（v1.134.0 死板拋出邏輯移植所致的回歸）— 其分頁迴圈原本沒有 `try/catch`，因此第 2 頁起（第 1 頁已成功）發生失敗即會拋出錯誤並捨棄所有已收集的結果；而若該次失敗是 `404`（超出範圍的 `startrow`），`en-scanner` 便會將一個仍在運作的租戶誤判為失效長達數日。現已對齊 `phenom`／`radancy`：第 0 頁失敗仍會拋出錯誤（判定為失效看板），但較晚頁面的失敗會保留已取得的部分結果。
+- **`#/scan` 篩選晶片現已可用鍵盤操作**（WCAG 2.1.1）— 面向晶片（以及「清除」晶片）原本是帶有點擊事件處理器的 `span`，卻沒有 `tabindex`／角色，導致鍵盤與螢幕閱讀器使用者無法聚焦或切換它們。現在皆已附上 `role="button"`、`tabindex="0"`、`aria-pressed`，並支援 Enter／Space 鍵啟用。
+- **三個硬編碼的英文字串現已完成本地化** — `#/scan` 信任徽章提示、`#/scan` 搬遷欄位標頭，以及 `#/dashboard` 評分標頭原本皆為裸露字面值，i18n 對應完整性檢查機制看不到它們（因為它們從未被定義為鍵），因此在所有非英文語系中始終顯示英文。現已改用 `scan.trustTip` + `scan.col.reloc`（2 個新鍵）以及重複使用既有的 `track.col.score`，並附上原始碼靜態測試把關。
+
+## [1.134.0] — 2026-08-05
+
+對齊父專案 career-ops v1.25.0。
+
+### 新增
+- **新增掃描來源:getManfred**(`manfred`)—— 一個橫跨全站的西班牙／歐盟科技職缺消息來源,附帶公開薪資,取自 `www.getmanfred.com/api/v2/public/offers`(零驗證、主機固定 + 僅限 HTTPS、單一請求取得完整目錄)。新增來源 + adapter,以及一套 CI 隔離測試套件(`tests/sources-manfred.test.mjs`);註冊表現有 **73** 個來源 = 68 個英文 + 5 個俄文(`ALL_ADAPTERS` 68)。已出現在 `#/scan` 的 Source 篩選器,以及 cvstart.org 首頁。
+
+### 修復
+- **a16z Speedrun 消息來源會靜默截斷至 50 筆職缺**(#2404)—— 該消息來源每頁上限為 50 筆,但此來源原本請求 `PER_PAGE = 100`,導致第一頁後分頁即中止。已修正為 50。
+- **失效的職缺板現在會拋出錯誤,而非誤判為「正常但空白」**(#2379)—— `cryptocurrencyjobs`、`phenom`、`radancy`、`successfactors`:當沒有任何一次請求成功解析時,現在會拋出錯誤(使 `#/portals` 健康檢查與掃描能記錄真實的失敗),而非將其吞噬為一份空清單;掃描過程中若在至少一次成功之後才失敗,仍會保留部分結果。
+- **workable 現已改用公開 widget API**(#5ab8425)—— 已切換至 `apply.workable.com/api/v1/widget/accounts/<slug>`,可於單一請求中取得大型帳號的完整職缺清單,大型帳號因此不再遭到截斷。
+
+### 備註
+- 未移植(僅限 CLI 或未鏡射至 web-ui):detect-reposts #2389 的標題分組效能重寫;Unicode 公司鍵修復(web-ui 自身的追蹤器去重機制已對非拉丁字元安全);`scan --since`;`cv-facts`;CV 範本／PDF 稽核工作;`doctor`;modes 未受信任內容指令。
+
+## [1.133.1] — 2026-08-02
+
+### 修復
+- **`#/funded`（獲投公司）現在會渲染結果** — 兩個錯誤讓此表格即使在父專案的 `company-funded.mjs` 已回傳完整清單時，仍一律顯示查無獲投公司。(1)檢視原本從 `res.candidates` 讀取結果，但父專案實際發出的鍵是 `companies`(每筆為 `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }`);客戶端現在讀取正確的鍵，並對映至真實的證據結構。(2)結果表格先前以可變參數方式將儲存格傳入 `UI.el('tr', {}, …)`，但 `UI.el(tag, attrs, children)` 的 `children` 參數僅接受單一節點或陣列，因此只有第一欄（公司）會被渲染 — 儲存格現在改以陣列傳入。已在真實瀏覽器中驗證：四個消息來源共 11 間公司皆已正確渲染，涵蓋公司／募資訊號／來源／日期四欄，證據連結可正常運作，0 主控台錯誤。空結果現在也會一併顯示各來源的診斷資訊，讓「今日無新聞」與「來源被封鎖」得以區分。
+- `tests/parity-routes-v1133.test.mjs` 新增回歸測試把關：假父專案指令稿現在會發出真實的 `companies` 輸出結構（原始測試固件鏡射了錯誤的 `candidates` 結構 — 這正是此錯誤能夠綠燈上線的原因），並新增原始碼靜態測試哨兵，斷言 `funded.js` 讀取的是 `res.companies`（絕非 `res.candidates`），且以陣列形式建構表格列的子節點（+1 → **2144**）。
+
+## [1.133.0] — 2026-08-01
+
+### 新增
+- **獲投公司探索（`#/funded`，對齊父專案 #2117）** — 一個新的唯讀檢視，透過 `GET /api/company-funded` 中繼父專案 career-ops 的 `company-funded.mjs`：一份「先審閱、後採用」的近期獲得資金公司清單，發掘自公開、且主機固定的資金動態消息來源（TechCrunch、PR Newswire、The Guardian、Hacker News）。此中繼以 `--json --dry-run` 執行腳本（JSON 輸出至 stdout，不寫入任何檔案），絕不將使用者輸入納入 `--sources`，附帶速率限制，並由使用者觸發（一個 **Discover** 按鈕，絕不在掛載時自動執行）。新增路由模組 `server/lib/routes/funded.mjs` + `public/js/views/funded.js`，歸類於 Sourcing 之下。
+- **每週面試摘要（`#/interview-digest`，對齊父專案 #2129/#2130）** — 一個新的唯讀檢視，透過 `GET /api/interview/weekly-digest` 中繼父專案零 LLM 的 `weekly-digest.mjs`：機械式彙整面試場次筆記——本週與哪些公司、哪些輪次進行了面試、重複出現的職能，以及盡力而為的待補缺口。選用的 `?from=&to=` 範圍僅在兩者皆為合法 `YYYY-MM-DD` 時才會被納入；空範圍屬於合法的 `available:true` 摘要。新增至 `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`，歸類於 Analytics 之下。
+- 兩個中繼皆遵循既有的失敗自動降級 `available:false` 契約，適用於父專案腳本缺席時（CI、獨立安裝）。新增 26 個 i18n 鍵 ×17 語系；CI 隔離測試套件 `tests/parity-routes-v1133.test.mjs`（+5 → **2143**）。
+
+### 備註
+- 父專案 career-ops 已推進超過 v1.24.0，帶來 Next.js `web/` 應用的 Follow-up Tracker 頁面（#1422）與後端 PDF 渲染（#2182）——未移植：web-ui 已有自己的跟進中繼與 PDF 執行器，而底層的 `followup-cadence.mjs` 強化透過外殼呼叫中繼即可免費取得。`set-status.mjs` / `tracker-utils.mjs` 的變更屬於 CLI 內部，未鏡像移植。
+
+## [1.132.0] — 2026-07-31
+
+### 變更
+- **`#/scan` 結果渲染子系統抽取至 `public/js/lib/scan-results.js`**(檔案大小規範債務攤還 — `public/js/views/scan.js` 已成長至 ~1254 行)。該子系統(`renderResults`、`buildChipRow`、`getRows`、列/面向建構器、選項繪製器,以及 `FALLBACK_SOURCES` 註冊表鏡像)已移入一個 `window.ScanResults.create(ctx)` 工廠函式,其閉包捕捉檢視所提供的情境物件。**無行為變化** — 函式原封不動搬移,閉包變數改接至 `ctx.*`;`scan.js` 現為 ~906 行(第二輪抽取以邁向 800 行目標,現正規劃中)。
+- 原始碼靜態測試透過 `tests/helpers/scan-src.mjs::loadScanSrc()` 讀取這兩個檔案;`tests/scan-fallback-sources.test.mjs` 現在改為從 `scan-results.js` 讀取註冊表鏡像。
+- **新增瀏覽器內回歸測試把關** — `tests/playwright-scan-filters.mjs` 植入一份固定的 `data/last-scan.json`,並驅動每一個 `#/scan` 篩選器,斷言精確的列數(`npm run test:e2e:browser`);並新增了穩定的篩選控制項 ID(`#scan-filter-*`、`#scan-apply`)。
+- README「最新版本」橫幅精簡為單行摘要 + 完整變更日誌連結(冗長的多版本敘事牆已退役)。已套用至全部 17 個語系。
 
 ## [1.131.2] — 2026-07-31
 

@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.134.1] — 2026-08-05
+
+Doğrulama sağlamlaştırması — kapsamlı bir proje denetimiyle ortaya çıkan düzeltmeler.
+
+### Düzeltildi
+- **`successfactors` artık tarama-ortası bir hatada kazınan işleri atmıyor** (v1.134.0'daki ölü-pano-fırlatma aktarımında bir regresyon) — sayfalama döngüsünde `try/catch` yoktu, bu yüzden 2. sayfa ve sonrasında (1. sayfa başarılı olduktan sonra) bir hata fırlatılıyor ve o ana kadar toplanan her şeyi düşürüyordu; ve bu hata bir `404` ise (aralık dışı bir `startrow`), `en-scanner` canlı bir kiracıyı günlerce ölü olarak karantinaya alıyordu. Şimdi `phenom`/`radancy` ile aynı: 0. sayfadaki bir hata hâlâ fırlatılıyor (ölü pano), ancak daha sonraki bir sayfadaki hata kısmi sonuçları koruyor.
+- **`#/scan` filtre çipleri artık klavyeyle çalıştırılabiliyor** (WCAG 2.1.1) — faset çipleri (ve "temizle" çipi) bir tıklama işleyicisine sahip ama `tabindex`/rolü olmayan span'lerdi, bu yüzden klavye ve ekran okuyucu kullanıcıları onlara erişemiyor veya değiştiremiyordu. Şimdi `role="button"`, `tabindex="0"`, `aria-pressed` taşıyorlar ve Enter/Boşluk ile etkinleştiriliyorlar.
+- **Üç sabit kodlanmış İngilizce dize artık yerelleştirildi** — `#/scan` güven-rozeti araç ipucu, `#/scan` yer değiştirme sütun başlığı ve `#/dashboard` puan başlığı, i18n parite kapısının göremediği çıplak literallerdi (hiçbir zaman anahtar olmamışlardı), bu yüzden İngilizce olmayan her yerelleştirmede İngilizce kalıyorlardı. Şimdi `scan.trustTip` + `scan.col.reloc` (2 yeni anahtar) ve mevcut `track.col.score`'un yeniden kullanımı var, kaynak-statik bir koruyucuyla (`tests/scan-chip-a11y.test.mjs`) sabitlenmiş.
+- +3 test → paket **2187**.
+
 ## [1.134.0] — 2026-08-05
 
 Üst proje career-ops v1.25.0 paritesi.

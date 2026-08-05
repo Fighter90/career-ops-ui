@@ -9119,6 +9119,25 @@
     "tr": "Tür",
     "hi": "प्रकार"
   },
+  "scan.col.reloc": {
+    "en": "Reloc",
+    "es": "Reubic.",
+    "pt-BR": "Realoc.",
+    "ko": "이전",
+    "ja": "移転",
+    "ru": "Релок.",
+    "zh-CN": "搬迁",
+    "zh-TW": "搬遷",
+    "fr": "Réinst.",
+    "pl": "Reloc.",
+    "uk": "Релок.",
+    "da": "Reloc.",
+    "ar": "انتقال",
+    "de": "Umzug",
+    "it": "Trasf.",
+    "tr": "Taşınma",
+    "hi": "स्थानां."
+  },
   "scan.col.salary": {
     "en": "Salary",
     "es": "Salario",
@@ -9156,6 +9175,25 @@
     "it": "Fonte",
     "tr": "Kaynak",
     "hi": "स्रोत"
+  },
+  "scan.trustTip": {
+    "en": "Trust",
+    "es": "Confianza",
+    "pt-BR": "Confiança",
+    "ko": "신뢰",
+    "ja": "信頼",
+    "ru": "Доверие",
+    "zh-CN": "信任",
+    "zh-TW": "信任",
+    "fr": "Confiance",
+    "pl": "Zaufanie",
+    "uk": "Довіра",
+    "da": "Tillid",
+    "ar": "الثقة",
+    "de": "Vertrauen",
+    "it": "Affidabilità",
+    "tr": "Güven",
+    "hi": "विश्वास"
   },
   "scan.activeCo": {
     "en": "Active companies",

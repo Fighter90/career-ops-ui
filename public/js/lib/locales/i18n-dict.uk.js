@@ -490,6 +490,8 @@ window.__I18N_DICT_UK = {
   'scan.col.type': "Тип",
   'scan.col.salary': "Зарплата",
   'scan.col.source': "Джерело",
+  'scan.col.reloc': "Релок.",
+  'scan.trustTip': "Довіра",
   'scan.activeCo': "Активні компанії",
   'scan.activeCo.help': "Активні: компанії, що зараз повертають результати. Всього: налаштовано в portals.yml.",
   'scan.tagClickToFilter': "Клікніть, щоб фільтрувати результати за цією компанією",

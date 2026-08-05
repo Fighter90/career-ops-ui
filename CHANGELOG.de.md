@@ -2,6 +2,15 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.134.1] — 2026-08-05
+
+Validierungs-Härtung — durch ein vollständiges Projekt-Audit aufgedeckte Fehlerbehebungen.
+
+### Behoben
+- **`successfactors` verwirft bei einem Fehlschlag mitten im Scan nicht mehr die bereits gesammelten Stellen** (Regression aus dem v1.134.0-Port des Tote-Boards-Throw) — seine Paginierungsschleife hatte kein `try/catch`, sodass ein Fehlschlag auf Seite 2 oder später (nachdem Seite 1 erfolgreich war) einen Fehler warf und alles bereits Gesammelte verwarf; und wenn dieser Fehlschlag ein `404` war (ein außerhalb des Bereichs liegendes `startrow`), quarantänierte `en-scanner` einen aktiven Tenant tagelang als tot. Spiegelt nun `phenom`/`radancy`: Ein Fehlschlag auf Seite 0 wirft weiterhin einen Fehler (totes Board), aber ein späterer Seitenfehlschlag behält die Teilergebnisse.
+- **Die `#/scan`-Filter-Chips sind jetzt per Tastatur bedienbar** (WCAG 2.1.1) — die Facetten-Chips (und der „Zurücksetzen“-Chip) waren Spans mit einem Klick-Handler, aber ohne `tabindex`/Rolle, sodass Tastatur- und Screenreader-Nutzer sie weder erreichen noch umschalten konnten. Sie tragen nun `role="button"`, `tabindex="0"`, `aria-pressed` und Enter/Leertaste-Aktivierung.
+- **Drei hartcodierte englische Zeichenketten sind jetzt lokalisiert** — der `#/scan`-Vertrauens-Badge-Tooltip, die `#/scan`-Umzugs-Spaltenüberschrift und die `#/dashboard`-Punktzahl-Überschrift waren literale Zeichenketten, die das i18n-Paritätsgate nicht erkennen konnte (sie waren nie Schlüssel), sodass sie in jeder nicht-englischen Sprachversion englisch blieben. Jetzt `scan.trustTip` + `scan.col.reloc` (2 neue Schlüssel) + eine Wiederverwendung von `track.col.score`, mit einer quellcode-statischen Absicherung.
+
 ## [1.134.0] — 2026-08-05
 
 Parität mit dem übergeordneten Projekt career-ops **v1.25.0**.

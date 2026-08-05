@@ -9,6 +9,53 @@
 ---
 
 
+## [1.134.1] — 2026-08-05
+
+검증 강화 — 전체 프로젝트 감사에서 드러난 수정 사항입니다.
+
+### 수정
+- **`successfactors`가 이제 스캔 중간 실패 시에도 이미 수집한 채용 공고를 버리지 않습니다**(v1.134.0의 죽은 게시판 예외 포팅에서 발생한 회귀) — 페이지네이션 루프에 `try/catch`가 없어서, 1페이지가 성공한 뒤 2페이지 이상에서 실패하면 예외가 던져지면서 이미 수집한 결과가 모두 사라졌습니다. 게다가 그 실패가 `404`(범위를 벗어난 `startrow`)였다면, `en-scanner`가 살아 있는 테넌트를 며칠씩 죽은 것으로 격리해 버렸습니다. 이제 `phenom`/`radancy`와 동일하게 동작합니다: 0페이지 실패는 여전히 예외를 던지지만(죽은 게시판), 이후 페이지의 실패는 부분 결과를 그대로 유지합니다.
+- **`#/scan`의 필터 칩이 이제 키보드로 조작 가능합니다**(WCAG 2.1.1) — 패싯 칩("지우기" 칩 포함)이 클릭 핸들러만 있는 `span`이었고 `tabindex`/role이 없어서, 키보드와 스크린리더 사용자는 이를 선택하거나 토글할 수 없었습니다. 이제 `role="button"`, `tabindex="0"`, `aria-pressed`를 갖추었으며 Enter/Space로 활성화할 수 있습니다.
+- **하드코딩된 영어 문자열 3개가 이제 현지화되었습니다** — `#/scan`의 신뢰 배지 툴팁, `#/scan`의 이전(relocation) 열 헤더, `#/dashboard`의 점수 열 헤더는 i18n 패리티 게이트가 감지할 수 없는 순수 리터럴(키가 아님)이었기 때문에, 영어가 아닌 모든 로케일에서 계속 영어로 남아 있었습니다. 이제 `scan.trustTip` + `scan.col.reloc`(신규 키 2개)와 기존 `track.col.score`의 재사용으로 대체되었으며, 소스 정적 가드가 이를 고정합니다.
+
+## [1.134.0] — 2026-08-05
+
+상위 career-ops **v1.25.0** 패리티.
+
+### 추가
+- **새로운 스캔 소스: getManfred**(`manfred`) — `www.getmanfred.com/api/v2/public/offers`에서 제공되는, 급여가 공개된 스페인/EU 기술직 게시판 전체 피드입니다(무인증, 호스트 고정 + HTTPS 전용, 단일 요청으로 전체 카탈로그 수집). 소스 + 어댑터 + CI 격리 스위트(`tests/sources-manfred.test.mjs`)를 추가했습니다; 레지스트리는 이제 **73개 소스 = 영문 68개 + 러시아어 5개**입니다(`ALL_ADAPTERS` 68). `#/scan` Source 필터와 cvstart.org 랜딩에 표시됩니다.
+
+### 수정
+- **a16z Speedrun 피드가 조용히 50개로 잘리고 있었습니다**(#2404) — 피드는 페이지당 50개로 상한이 있지만 소스는 `PER_PAGE = 100`을 요청하고 있었기 때문에, 1페이지 이후 페이지네이션이 멈췄습니다. 50으로 정정했습니다.
+- **죽은 게시판이 이제 "라이브지만 비어 있음"으로 읽히는 대신 예외를 던집니다**(#2379) — `cryptocurrencyjobs`, `phenom`, `radancy`, `successfactors`: 어떤 요청도 완료되지 않는 fetch 실패가 이제 예외를 던지므로(`#/portals` 상태 확인과 스캔이 실제 실패를 기록합니다), 빈 목록으로 조용히 삼켜지지 않습니다; 최소 한 번 성공한 이후 스캔 도중 발생한 실패는 부분 결과를 그대로 유지합니다.
+- **workable이 이제 공개 위젯 API를 사용합니다**(#5ab8425) — `apply.workable.com/api/v1/widget/accounts/<slug>`로 전환되어, 대형 계정의 전체 채용 목록을 한 번의 요청으로 반환하므로 대형 계정이 더 이상 잘리지 않습니다.
+
+### 비고
+- 포팅되지 않음(CLI 전용이거나 web-ui에서 미러링하지 않음): detect-reposts #2389 제목 버킷팅 성능 재작성; 유니코드 회사 키 수정(web-ui 자체 트래커 중복 제거는 이미 비라틴 문자에 안전함); `scan --since`; `cv-facts`; CV 템플릿 / PDF 감사 패스; `doctor`; 모드 미신뢰 콘텐츠 지시문.
+
+## [1.133.1] — 2026-08-02
+
+### 수정
+- **`#/funded`(투자 유치 기업)가 이제 결과를 렌더링합니다** — 상위의 `company-funded.mjs`가 전체 목록을 반환해도 테이블에 항상 "투자 유치 기업 없음"이 표시되던 두 가지 버그를 수정했습니다. (1) 뷰가 결과를 `res.candidates` 아래에서 읽고 있었지만, 상위는 실제로 `companies`(각 항목은 `{ company, amount, round, funding: { sources: [{ source, url, observed_date }] } }` 형태) 아래에 결과를 내보냅니다 — 이제 클라이언트가 올바른 키를 읽고 실제 증거 구조에 맞춰 매핑합니다. (2) 결과 테이블이 셀을 `UI.el('tr', {}, …)`에 가변 인자로 전달했지만, `UI.el(tag, attrs, children)`은 `children`을 단일 노드 또는 배열로 받으므로 첫 번째 열(Company)만 렌더링되고 있었습니다 — 이제 셀은 배열로 전달됩니다. 실제 브라우저에서 검증: 4개 피드에 걸쳐 11개 기업이 Company / Funding signal / Source / Date 열과 정상 작동하는 증거 링크로 렌더링되며 콘솔 오류는 0건입니다. 결과가 없을 때도 이제 소스별 진단 정보가 함께 표시되어, 조용한 뉴스 날과 차단된 피드를 구분할 수 있습니다.
+- `tests/parity-routes-v1133.test.mjs`의 회귀 가드: 가짜 상위 스크립트가 이제 실제 `companies` 출력 형태를 내보냅니다(원래 픽스처가 잘못된 `candidates` 형태를 그대로 반영하고 있었고, 이것이 버그가 그린 상태로 배포된 정확한 이유입니다). 또한 `funded.js`가 `res.companies`를 읽고(`res.candidates`는 절대 읽지 않음) 배열 children으로 테이블 행을 구성하는지 확인하는 소스-정적 카나리아를 추가했습니다(+1 → 2144).
+
+## [1.133.0] — 2026-08-01
+
+### 추가
+- **투자 유치 기업 발굴(`#/funded`, 상위 패리티 #2117)** — 상위 career-ops의 `company-funded.mjs`를 `GET /api/company-funded`로 중계하는 새로운 읽기 전용 뷰입니다: 공개적이고 호스트가 고정된 펀딩 피드(TechCrunch, PR Newswire, The Guardian, Hacker News)에서 발견한, 최근 투자를 유치한 기업들의 검토 우선 목록입니다. 이 릴레이는 스크립트를 `--json --dry-run`으로 실행하고(stdout으로 JSON 출력, 파일 쓰기 없음), 사용자 입력을 결코 `--sources`에 전달하지 않으며, 속도 제한이 적용되고, 사용자가 직접 실행해야 합니다(Discover 버튼 — 마운트 시 자동 실행 없음). 새 라우트 모듈 `server/lib/routes/funded.mjs` + `public/js/views/funded.js`, Sourcing 아래.
+- **주간 인터뷰 다이제스트(`#/interview-digest`, 상위 패리티 #2129/#2130)** — 상위의 LLM을 사용하지 않는 `weekly-digest.mjs`를 `GET /api/interview/weekly-digest`로 중계하는 새로운 읽기 전용 뷰입니다: 이번 주 인터뷰한 회사와 라운드, 반복되는 역량, 최선 노력으로 파악한 공백을 기계적으로 집계합니다. 선택적 `?from=&to=` 범위는 둘 다 유효한 `YYYY-MM-DD`일 때만 전달되며, 빈 범위도 유효한 `available:true` 다이제스트입니다. `server/lib/routes/interview.mjs` + `public/js/views/interview-digest.js`에 추가, Analytics 아래.
+- 두 릴레이 모두 상위 스크립트가 없을 때(CI, 독립 설치) 기존의 페일소프트 `available:false` 계약을 따릅니다. 26개의 새 i18n 키 ×17개 로케일; CI 격리 스위트 `tests/parity-routes-v1133.test.mjs`(+5 → 2143).
+
+### 비고
+- 상위 career-ops가 Next.js `web/` 앱의 Follow-up Tracker 페이지(#1422)와 백엔드 PDF 렌더링(#2182)을 갖춘 v1.24.0을 넘어 발전했습니다 — 포팅되지 않음: web-ui는 이미 자체 팔로업 릴레이와 PDF 러너를 갖추고 있으며, 근간이 되는 `followup-cadence.mjs` 하드닝은 셸아웃 릴레이를 통해 자동으로 반영됩니다. `set-status.mjs` / `tracker-utils.mjs` 변경 사항은 CLI 내부용이며 미러링되지 않습니다.
+
+## [1.132.0] — 2026-07-31
+
+### 변경
+- **`#/scan` 결과 렌더링 서브시스템을 `public/js/lib/scan-results.js`로 추출**(파일 크기 계약 부채 해소 — `public/js/views/scan.js`가 ~1254줄까지 늘어났습니다). `renderResults`, `buildChipRow`, 행/패싯 빌더, 옵션 페인터, `FALLBACK_SOURCES` 레지스트리 미러를 포함한 서브시스템이 뷰가 제공하는 컨텍스트 객체를 클로저로 감싸는 `window.ScanResults.create(ctx)` 팩토리로 이동합니다. **동작 변화 없음** — 함수들은 그대로 옮겨졌고 클로저 변수만 `ctx.*`로 재배선되었습니다. `scan.js`는 이제 ~906줄입니다(800줄 목표를 향한 두 번째 추출 단계가 예정되어 있습니다).
+- **새로운 인브라우저 회귀 게이트** — `tests/playwright-scan-filters.mjs`가 고정된 `data/last-scan.json`을 시드하고 모든 `#/scan` 필터를 구동하여 정확한 행 수를 검증하므로, 추출이 실제 브라우저 동작에 대해 검증됩니다.
+- **README 배너 슬림화** — 버전별 "최신 릴리스" 서술이 길게 이어지던 배너를 한 줄 요약 + 전체 변경 로그(이 파일) 링크로 대체합니다.
+
 ## [1.131.2] — 2026-07-31
 
 ### 변경

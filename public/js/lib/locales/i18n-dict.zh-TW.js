@@ -491,6 +491,8 @@ window.__I18N_DICT_ZH_TW = {
   'scan.col.type': "類型",
   'scan.col.salary': "薪資",
   'scan.col.source': "來源",
+  'scan.col.reloc': "搬遷",
+  'scan.trustTip': "信任",
   'scan.activeCo': "活動公司",
   'scan.activeCo.help': "活動:目前有結果的公司。合計:在 portals.yml 中設定的數量。",
   'scan.tagClickToFilter': "點擊按此公司篩選結果",
