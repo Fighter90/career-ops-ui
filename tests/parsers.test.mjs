@@ -107,6 +107,37 @@ test('parsePipeline: ignores non-URL lines in fence', () => {
   assert.deepEqual(parsePipeline(md), ['https://x.com/1']);
 });
 
+test('parsePipeline: extracts pending checklist rows and ignores processed rows', () => {
+  const md = `# Pipeline
+
+## Pending
+- [ ] https://a.com/job/1 | Acme | Product Owner | Remote
+- [ ] https://b.com/job/2 | Beta | Product Manager | Pittsburgh
+
+## Processed
+- [x] https://done.com/job/3 | Done Co | Product Owner | Remote
+`;
+  assert.deepEqual(parsePipeline(md), [
+    'https://a.com/job/1',
+    'https://b.com/job/2',
+  ]);
+});
+
+test('removePipelineUrl: removes one checklist row without rewriting the file', () => {
+  const before = `# Pipeline
+
+## Pending
+- [ ] https://a.com/job/1 | Acme | Product Owner | Remote
+- [ ] https://b.com/job/2 | Beta | Product Manager | Pittsburgh
+
+## Processed
+`;
+  const after = removePipelineUrl(before, 'https://a.com/job/1');
+  assert.doesNotMatch(after, /https:\/\/a\.com\/job\/1/);
+  assert.match(after, /- \[ \] https:\/\/b\.com\/job\/2 \| Beta/);
+  assert.deepEqual(parsePipeline(after), ['https://b.com/job/2']);
+});
+
 // ───────────────────────── addPipelineUrl ─────────────────────────
 
 test('addPipelineUrl: adds new url', () => {

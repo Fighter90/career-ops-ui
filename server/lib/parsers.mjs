@@ -109,20 +109,34 @@ export function parseApplications(text) {
   });
 }
 
+/** Extract a pending URL from either a bare line or a Markdown checklist row. */
+function pipelineUrlFromLine(line) {
+  let candidate = line.trim();
+  const checklist = candidate.match(/^- \[([ xX])\]\s+(.+)$/);
+  if (checklist) {
+    if (checklist[1].toLowerCase() === 'x') return '';
+    candidate = checklist[2].trim();
+  }
+  // v1.84.0 (#1017) — a line may carry optional metadata columns; the URL is
+  // the first ` | `-delimited token. Bare URLs are unaffected.
+  const url = candidate.split(/\s+\|\s+/)[0].trim();
+  return url.startsWith('http') || url.startsWith('local:') ? url : '';
+}
+
 /**
  * Parse pipeline.md → list of pending URLs.
- * URLs live inside the first ```code-fence``` block, one per line.
+ *
+ * Supports both historical fenced URL lists and the current parent scanner's
+ * `- [ ] URL | Company | Role | Location` rows. Checked rows are processed and
+ * therefore excluded. Scan the whole document so mixed-format files remain
+ * readable while users migrate between parent versions.
  */
 export function parsePipeline(text) {
   if (!text) return [];
-  const fenceMatch = text.match(/```([\s\S]*?)```/);
-  const block = fenceMatch ? fenceMatch[1] : text;
-  return block
-    .split('\n')
-    // v1.84.0 (#1017) — a line may carry an optional `| <compensation>` column;
-    // the URL is the first ` | `-delimited token. Bare URLs are unaffected.
-    .map((l) => l.trim().split(/\s+\|\s+/)[0].trim())
-    .filter((l) => l && (l.startsWith('http') || l.startsWith('local:')));
+  return text
+    .split(/\r?\n/)
+    .map(pipelineUrlFromLine)
+    .filter(Boolean);
 }
 
 /**
@@ -165,6 +179,9 @@ export function addPipelineUrl(text, url, opts = {}) {
   const validate = typeof opts.validate === 'function' ? opts.validate : defaultUrlGate;
   if (!validate(trimmed)) return text; // refuse to write an invalid URL
 
+  // Dedup across both supported parent formats, including checklist rows.
+  if (parsePipeline(text).includes(trimmed)) return text;
+
   // Keep existing FULL lines (preserve any trailing `| comp` already written).
   const fenceMatch = text && text.match(/```([\s\S]*?)```/);
   const existingLines = (fenceMatch ? fenceMatch[1] : (text || ''))
@@ -174,9 +191,6 @@ export function addPipelineUrl(text, url, opts = {}) {
       const u = l.split(/\s+\|\s+/)[0].trim();
       return u.startsWith('http') || u.startsWith('local:');
     });
-  // Dedup on the URL token (ignore the comp column).
-  if (existingLines.some((l) => l.split(/\s+\|\s+/)[0].trim() === trimmed)) return text;
-
   const comp = sanitizePipelineComp(opts.comp);
   const newLine = comp ? `${trimmed} | ${comp}` : trimmed;
   const fenceContent = [...existingLines, newLine].join('\n');
@@ -195,12 +209,11 @@ export function addPipelineUrl(text, url, opts = {}) {
  * Remove a URL from pipeline.md.
  */
 export function removePipelineUrl(text, url) {
-  const remaining = parsePipeline(text).filter((u) => u !== url);
-  const fenceContent = remaining.join('\n');
-  if (text.includes('```')) {
-    return text.replace(/```[\s\S]*?```/, '```\n' + fenceContent + '\n```');
-  }
-  return text;
+  const eol = text.includes('\r\n') ? '\r\n' : '\n';
+  return text
+    .split(/\r?\n/)
+    .filter((line) => pipelineUrlFromLine(line) !== url)
+    .join(eol);
 }
 
 /**
