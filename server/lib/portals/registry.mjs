@@ -117,6 +117,12 @@ import { icimsAdapter } from './adapters/icims.mjs';
 import { a16zSpeedrunTalentAdapter } from './adapters/a16z-speedrun-talent.mjs';
 import { cryptocurrencyjobsAdapter } from './adapters/cryptocurrencyjobs.mjs';
 import { manfredAdapter } from './adapters/manfred.mjs';
+// v1.135.0 — parent career-ops v1.26.0 parity: 5 new zero-auth sources.
+import { joinAdapter } from './adapters/join.mjs';
+import { joinupAdapter } from './adapters/joinup.mjs';
+import { getroAdapter } from './adapters/getro.mjs';
+import { considerAdapter } from './adapters/consider.mjs';
+import { remotliAdapter } from './adapters/remotli.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -220,6 +226,11 @@ export const ALL_ADAPTERS = [
   a16zSpeedrunTalentAdapter,
   cryptocurrencyjobsAdapter,
   manfredAdapter,
+  joinAdapter,
+  joinupAdapter,
+  getroAdapter,
+  considerAdapter,
+  remotliAdapter,
 ];
 
 /**

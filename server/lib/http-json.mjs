@@ -75,6 +75,43 @@ export async function fetchText(fetchImpl, url, opts = {}) {
 }
 
 /**
+ * Retrying sibling of {@link fetchJson} for feeds that paginate into the
+ * hundreds of pages, where a single transient upstream blip mid-sweep used to
+ * abort the whole provider and return nothing (parent career-ops #2506,
+ * `providers/_http.mjs::fetchJsonWithRetry`). Retries ONLY transient failures —
+ * HTTP 429, HTTP ≥ 500, and network/timeout errors that carry no `.status` —
+ * with an abort-aware backoff. A permanent 4xx (e.g. 404) is NOT retried: it is
+ * rethrown immediately so the caller's dead-board logic still fires. Once the
+ * retry budget is exhausted the last error propagates unchanged, so the caller
+ * decides throw-vs-keep-partials exactly as it would for a single fetch.
+ *
+ * @param {typeof fetch} fetchImpl
+ * @param {string} url
+ * @param {{ method?: string, headers?: Record<string,string>, body?: string,
+ *           signal?: AbortSignal, redirect?: 'error'|'follow'|'manual',
+ *           retries?: number, retryDelayMs?: number }} [opts]
+ * @returns {Promise<any>}
+ */
+export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
+  const { retries = 2, retryDelayMs = 500, signal, ...rest } = opts;
+  let lastErr;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      return await fetchJson(fetchImpl, url, { ...rest, signal });
+    } catch (err) {
+      lastErr = err;
+      const status = err && typeof err.status === 'number' ? err.status : undefined;
+      // Transient = 429, any 5xx, or a network/timeout error (no HTTP status).
+      // A permanent 4xx is not worth retrying — rethrow now.
+      const transient = status === undefined || status === 429 || status >= 500;
+      if (!transient || attempt === retries || signal?.aborted) throw err;
+      await delay(retryDelayMs, signal);
+    }
+  }
+  throw lastErr;
+}
+
+/**
  * Abort-aware delay. Resolves after `ms`, or immediately if `signal` is (or
  * becomes) aborted — so a courtesy rate-limit pause between pagination pages
  * can't hold a scan open after the client disconnects.

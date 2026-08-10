@@ -8,6 +8,27 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.135.0] — 2026-08-11
+
+Paritet med forælder-projektet career-ops **v1.26.0** — fem nye scan-kilder uden godkendelse plus korrektionsrettelser til fire opslagstavler, som web-ui allerede har. Registret rummer nu **78 kilder = 73 engelske + 5 russiske** (`ALL_ADAPTERS` 73).
+
+### Tilføjet
+- **Fem nye scan-kilder** (hver med kilde + adapter + en CI-isoleret suite; de optræder i `#/scan`s Kilde-filter og på cvstart.org-landingssiden):
+  - **`join`** (JOIN) — en virksomheds JOIN-opslagstavle fra Next.js' `__NEXT_DATA__` på `join.com/companies/<slug>` (vært-fastgjort, sidebegrænset).
+  - **`getro`** (Getro) — VC-"talentnetværk"-porteføljetavler via den offentlige `api.getro.com` POST-API, pagineret nyeste-først; hvert job tilskrives porteføljearbejdsgiveren, ikke fonden.
+  - **`consider`** (Consider) — getconsider.com VC-porteføljetavler via en same-origin POST; den konfigurationsstyrede vært er fastgjort af en strukturel SSRF-vagt (kun offentlig HTTPS-vært).
+  - **`joinup`** (JOINUP) — den schweiziske opslagstavle joinup.ch, som læser den SSR'ede nyeste side; fejler lukket ved et scraper-brud.
+  - **`remotli`** (Remotli) — remotli.ch, fjernstillinger hos schweiziske virksomheder (CHF-lønninger); udsender arbejdsgiverens egen ATS-ansøgnings-URL, så krydslistninger deduplikeres.
+
+### Rettet
+- **a16z Speedrun** afbryder ikke længere hele opslagstavlen ved en forbigående fejl — sidehentninger går nu gennem en delt `fetchJsonWithRetry` (begrænsede genforsøg kun ved forbigående 429/5xx/timeout, aldrig en permanent 4xx), og sidebudgettet er tilpasset den 50-jobs side.
+- **arbeitsagentur** er flyttet til v6 Jobsuche-API'en (`/pc/v6/jobs`) — det gamle v4-endpoint giver 404; svarformen er omdøbt, og fjernfiltrering indsnævres nu server-side.
+- **thehub** er flyttet til v2 `jobsandfeatured`-API'en; rækker bærer ingen offentliggørelsesdato og er undtaget fra alderfilteret.
+- **hackernews** finder pålideligt den månedlige "Who is hiring?"-tråd ved at filtrere Algolia-opslaget til kontotagget `author_whoishiring` i stedet for en fritekstforespørgsel.
+
+### Noter
+- Ikke porteret (web-ui er allerede sikker, relæ-absorberet eller kun CLI): Unicode-rolle-dedup-/virksomhedsmatch-nøglerne (web-ui's genopslags-gruppering nøgler allerede virksomheden på en almindelig små bogstaver-streng, så forskellige ikke-latinske arbejdsgivere aldrig kollapser); opfølgnings-afvisnings-forsinkelsessignalet + finansierede-virksomheder-finpudsningerne (relæet er skrivebeskyttet, fail-soft); scan-miljøoverstyrbare stier og `--flag=value`-parsing (web-ui kører scannerne in-process); User-Agent-konsolideringsomskrivningen (web-ui centraliserer den allerede); og kun-CLI-punkter (utroværdigt-indhold-rosteret, oferta/tilbudsforberedelse, doctor, cover-/CV-skabelonændringer).
+
 ## [1.134.1] — 2026-08-05
 
 Validering-hærdning — rettelser afdækket af en fuldstændig projektgennemgang.

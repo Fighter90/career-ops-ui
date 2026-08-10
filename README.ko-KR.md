@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
+[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
 
-> **🆕 최신 릴리스 — v1.134.1** — 검증 강화: **`successfactors`**가 스캔 중간 실패 시(또는 라이브 게시판을 잘못 격리하는 경우) 더 이상 이미 수집한 채용 공고를 버리지 않으며, **`#/scan`**의 필터 칩이 이제 키보드로 조작 가능합니다(WCAG 2.1.1). 그리고 하드코딩된 영어 문자열 3개가 17개 로케일 전체에서 현지화되었습니다. **2187 테스트.**
+> **🆕 최신 릴리스 — v1.135.0** — 상위 career-ops **v1.26.0** 패리티: **다섯 개의 새로운 무인증 스캔 소스**인 JOIN, Getro, Consider, JOINUP, Remotli와, a16z Speedrun(일시적 오류 재시도로 더 이상 게시판 전체가 중단되지 않음), Arbeitsagentur(v6 Jobsuche API), The Hub(v2 API), Hacker News(whoishiring 계정 조회)에 대한 정확성 수정입니다. 레지스트리는 이제 **78개 스캔 소스**입니다. **2306 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

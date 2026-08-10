@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
+[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
 
-> **🆕 最新リリース — v1.134.1** — 検証の堅牢化：**`successfactors`** はスキャン中の失敗で収集済みの求人を破棄しなくなり（稼働中のボードを誤って隔離することもなくなりました）、**`#/scan`** のフィルターチップはキーボードで操作できるようになり（WCAG 2.1.1）、3つのハードコードされた英語文字列が全17ロケールでローカライズされました。 **2187 テスト.**
+> **🆕 最新リリース — v1.135.0** — 親 career-ops **v1.26.0** パリティ:**5つの新しい認証不要スキャンソース** — JOIN、Getro、Consider、JOINUP、Remotli — に加え、a16z Speedrun(一時的な不具合でのリトライにより、ボード全体の中断がなくなりました)、Arbeitsagentur(v6 Jobsuche API)、The Hub(v2 API)、Hacker News(whoishiring アカウント検索)への正確性の修正です。レジストリは **78 スキャンソース** になりました。**2306 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
+[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
 
-> **🆕 Seneste udgivelse — v1.134.1** — validering-hærdning: **`successfactors`** kasserer ikke længere hentede job (eller sætter fejlagtigt en live opslagstavle i karantæne) ved en fejl midt i scanningen; **`#/scan`**-facetfiltrenes chips er nu tastaturbetjenbare (WCAG 2.1.1); og tre hardkodede engelske strenge er nu lokaliseret i alle 17 lokaliteter. **2187 tests.**
+> **🆕 Seneste udgivelse — v1.135.0** — forælder-career-ops **v1.26.0**-paritet: **fem nye scan-kilder uden godkendelse** — JOIN, Getro, Consider, JOINUP og Remotli — plus korrektionsrettelser til a16z Speedrun (forbigående-genforsøg, ikke længere afbrydes hele opslagstavlen), Arbeitsagentur (v6 Jobsuche-API), The Hub (v2-API) og Hacker News (opslag via kontoen whoishiring). Registret rummer nu **78 scan-kilder**. **2306 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

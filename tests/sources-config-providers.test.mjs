@@ -70,14 +70,16 @@ test('arbeitsagentur: parseArbeitsagenturConfig clamps + filters', () => {
   assert.equal(cfg.size, 100); // clamped to API max
 });
 
-test('arbeitsagentur: buildLocation appends only non-DE country', () => {
-  assert.equal(buildLocation({ ort: 'Berlin', region: 'Berlin', land: 'Deutschland' }), 'Berlin, Berlin');
-  assert.equal(buildLocation({ ort: 'Wien', land: 'Österreich' }), 'Wien, Österreich');
+test('arbeitsagentur: buildLocation (v6 stellenlokationen) drops region enum, appends only non-DE country', () => {
+  // v6 nests the address under stellenlokationen[].adresse and its `region` is an
+  // uppercase federal-state enum, deliberately dropped rather than joined (#2494).
+  assert.equal(buildLocation([{ adresse: { ort: 'Berlin', region: 'BERLIN', land: 'DEUTSCHLAND' } }]), 'Berlin');
+  assert.equal(buildLocation([{ adresse: { ort: 'Wien', land: 'Österreich' } }]), 'Wien, Österreich');
 });
 
-test('arbeitsagentur: normalizeJob builds detail url + drops invalid', () => {
-  assert.equal(normalizeJob({ titel: '', refnr: 'x' }), null);
-  const j = normalizeJob({ titel: 'Remote Data Scientist', refnr: '10000-123/456', arbeitgeber: 'ACME' });
+test('arbeitsagentur: normalizeJob (v6 fields) builds detail url + drops invalid', () => {
+  assert.equal(normalizeJob({ stellenangebotsTitel: '', referenznummer: 'x' }), null);
+  const j = normalizeJob({ stellenangebotsTitel: 'Remote Data Scientist', referenznummer: '10000-123/456', firma: 'ACME' });
   assert.equal(j.company, 'ACME');
   assert.equal(j.isRemote, true);
   assert.ok(j.url.startsWith('https://www.arbeitsagentur.de/jobsuche/jobdetail/'));
@@ -91,9 +93,9 @@ test('arbeitsagentur: fetchArbeitsagentur throws when no keywords', async () => 
 });
 
 test('arbeitsagentur: fetchArbeitsagentur dedups by refnr across keywords', async () => {
-  const payload = { stellenangebote: [
-    { titel: 'ML Engineer', refnr: 'A1', arbeitgeber: 'ACME', arbeitsort: { ort: 'Berlin', land: 'Deutschland' } },
-    { titel: 'Data Scientist', refnr: 'A2', arbeitgeber: 'BetaCo' },
+  const payload = { ergebnisliste: [
+    { stellenangebotsTitel: 'ML Engineer', referenznummer: 'A1', firma: 'ACME', stellenlokationen: [{ adresse: { ort: 'Berlin', land: 'Deutschland' } }] },
+    { stellenangebotsTitel: 'Data Scientist', referenznummer: 'A2', firma: 'BetaCo' },
   ] };
   const jobs = await fetchArbeitsagentur(undefined, {
     fetchImpl: okJson(payload),

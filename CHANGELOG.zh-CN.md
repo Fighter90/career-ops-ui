@@ -9,6 +9,27 @@
 ---
 
 
+## [1.135.0] — 2026-08-11
+
+父项目 career-ops **v1.26.0** 对齐 —— 五个新的零鉴权扫描来源,以及对 web-ui 已有的四块招聘板所做的正确性修复。注册表现为 **78 个来源 = 73 个英文 + 5 个俄文**(`ALL_ADAPTERS` 73)。
+
+### 新增
+- **五个新的扫描来源**(每个均含来源 + 适配器 + 一套 CI 隔离测试套件;均已出现在 `#/scan` 的 Source 筛选器与 cvstart.org 落地页中):
+  - **`join`**(JOIN)—— 从 `join.com/companies/<slug>` 页面的 Next.js `__NEXT_DATA__` 中读取某公司的 JOIN 招聘板(主机锁定、页数封顶)。
+  - **`getro`**(Getro)—— 通过公开的 `api.getro.com` POST API 获取风投「人才网络」投资组合招聘板,按最新优先分页;每个职位归属于投资组合中的雇主公司,而非基金本身。
+  - **`consider`**(Consider)—— 通过同源 POST 请求获取 getconsider.com 的风投投资组合招聘板;配置驱动的主机由结构化 SSRF 守卫锁定(仅限公开 HTTPS 主机)。
+  - **`joinup`**(JOINUP)—— 瑞士招聘板 joinup.ch,读取服务端渲染的最新一页;抓取逻辑一旦失效即快速失败(fail-closed)。
+  - **`remotli`**(Remotli)—— remotli.ch,瑞士公司的远程职位(瑞士法郎薪资);输出雇主自身的 ATS 投递 URL,以便交叉列表能够去重。
+
+### 修复
+- **a16z Speedrun 不再因短暂波动而中止整块招聘板** —— 各页请求现在统一通过共享的 `fetchJsonWithRetry`(仅对短暂性的 429/5xx/超时做有限次重试,绝不重试永久性的 4xx),并针对单页 50 条职位重新调整了页数预算。
+- **arbeitsagentur 已迁移至 v6 Jobsuche API**(`/pc/v6/jobs`)—— 旧版 v4 接口已返回 404;响应结构已更名,且远程职位过滤现改为在服务端完成。
+- **thehub 已迁移至 v2 `jobsandfeatured` API**—— 各条记录不再携带发布日期,已从「时效性过滤」中豁免。
+- **hackernews 现通过筛选 Algolia 查询中的 `author_whoishiring` 账号标签、而非自由文本查询,来可靠地定位每月「Who is hiring?」帖子**。
+
+### 说明
+- 未移植(web-ui 已足够安全、已由中继吸收、或仅限 CLI):Unicode 角色去重/公司匹配相关的键(web-ui 的重复投递分组本就对公司名按纯小写字符串做键,因此不同的非拉丁字符雇主永远不会被误合并);跟进环节的拒信延迟信号 + 获投公司相关的小幅修正(均为只读中继,故障自降级);扫描的环境变量可覆写路径与 `--flag=value` 解析(web-ui 的扫描器是进程内运行的);User-Agent 整合重构(web-ui 早已集中处理);以及仅限 CLI 的条目(不可信内容名单、oferta/offer-prep、doctor、封面信/简历模板改动)。
+
 ## [1.134.1] — 2026-08-05
 
 验证加固 —— 本次修复源自一次全项目审计。

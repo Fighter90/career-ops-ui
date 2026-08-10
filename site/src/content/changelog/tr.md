@@ -2,6 +2,27 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.135.0] — 2026-08-11
+
+Üst proje career-ops **v1.26.0** paritesi — beş yeni sıfır-kimlik-doğrulama tarama kaynağı artı web-ui'nin zaten taşıdığı dört panoya doğruluk düzeltmeleri. Kayıt defteri artık **78 kaynak = 73 İngilizce + 5 Rusça** (`ALL_ADAPTERS` 73).
+
+### Eklendi
+- **Beş yeni tarama kaynağı** (her biri bir kaynak + adaptör + CI-izole bir paket; `#/scan` Kaynak filtresinde ve cvstart.org açılış sayfasında görünüyorlar):
+  - **`join`** (JOIN) — bir şirketin JOIN panosu, `join.com/companies/<slug>` içindeki Next.js `__NEXT_DATA__`'sından (ana bilgisayara sabitli, sayfa sınırlı).
+  - **`getro`** (Getro) — VC "yetenek ağı" portföy panoları, herkese açık `api.getro.com` POST API'si üzerinden, en yeniden-eskiye sayfalanmış; her iş fona değil portföy işverenine atfediliyor.
+  - **`consider`** (Consider) — getconsider.com VC portföy panoları, aynı-kökenli bir POST üzerinden; yapılandırma-güdümlü ana bilgisayar yapısal bir SSRF koruyucusuyla sabitleniyor (yalnızca herkese açık HTTPS ana bilgisayarı).
+  - **`joinup`** (JOINUP) — İsviçre panosu joinup.ch, SSR edilmiş en yeni sayfayı okuyor; bir kazıyıcı kırılmasında hata-kapalı davranıyor.
+  - **`remotli`** (Remotli) — remotli.ch, İsviçreli şirketlerdeki uzaktan roller (CHF maaşları); işverenin kendi ATS başvuru URL'sini yayınlıyor, böylece çapraz-listelemeler çiftlemeden ayıklanıyor.
+
+### Düzeltildi
+- **a16z Speedrun** artık geçici bir aksaklıkta tüm panoyu iptal etmiyor — sayfa getirmeleri artık paylaşılan bir `fetchJsonWithRetry` üzerinden geçiyor (yalnızca geçici 429/5xx/zaman aşımında sınırlı yeniden denemeler, asla kalıcı bir 4xx'te), ve sayfa bütçesi 50 işlik sayfa için yeniden boyutlandırıldı.
+- **arbeitsagentur** v6 Jobsuche API'sine (`/pc/v6/jobs`) taşındı — eski v4 uç noktası 404 veriyor; yanıt şekli yeniden adlandırıldı ve uzaktan filtreleme artık sunucu tarafında daralıyor.
+- **thehub** v2 `jobsandfeatured` API'sine taşındı; satırlar yayın tarihi taşımıyor ve yaş filtresinden muaf.
+- **hackernews**, Algolia aramasını serbest metin sorgusu yerine `author_whoishiring` hesap etiketine filtreleyerek aylık "Kim işe alıyor?" konusunu güvenilir şekilde buluyor.
+
+### Notlar
+- Taşınmadı (web-ui zaten güvenli, aktarım-tarafından-emilmiş veya yalnızca-CLI): Unicode rol-çiftleme / şirket-eşleştirme anahtarları (web-ui'nin tekrar-ilan gruplaması zaten şirketi düz küçük harfle anahtarlıyor, bu yüzden farklı Latin-olmayan işverenler asla çökmüyor); takip reddi-gecikme sinyali + finanse edilen şirket rötuşları (salt-okunur, hataya-toleranslı olarak aktarılıyor); tarama ortam-değiştirilebilir yolları ve `--flag=value` ayrıştırması (web-ui tarayıcıları işlem içinde çalıştırıyor); User-Agent birleştirme yeniden düzenlemesi (web-ui zaten bunu merkezileştiriyor); ve yalnızca-CLI öğeleri (güvenilmeyen-içerik listesi, oferta/offer-prep, doctor, kapak/CV şablon değişiklikleri).
+
 ## [1.134.1] — 2026-08-05
 
 Doğrulama sağlamlaştırması — kapsamlı bir proje denetimiyle ortaya çıkan düzeltmeler.

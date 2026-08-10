@@ -205,19 +205,51 @@ test('fetchSpeedrunTalent: falls back to joined keywords[] when q: is absent', a
   assert.equal(new URL(calls[0].url).searchParams.get('q'), 'machine learning');
 });
 
-test('fetchSpeedrunTalent: clamps an oversized max_pages to the 120-page cap + warns', async () => {
+test('fetchSpeedrunTalent: clamps an oversized max_pages to the 1000-page cap + warns', async () => {
   // Same 100 urls every page → dedups to 100, so the ONLY bound is the page cap.
   const sameRec = (i) => ({ title: `Role ${i}`, company: `Co ${i}`, url: `https://speedrun-talent-network.com/jobs/same-${i}`, remote: false });
   const calls = [];
   const fetchImpl = async (url) => {
     calls.push(url);
-    return { ok: true, json: async () => ({ jobs: Array.from({ length: 100 }, (_, i) => sameRec(i)), total: 50000, total_pages: 500 }) };
+    return { ok: true, json: async () => ({ jobs: Array.from({ length: 100 }, (_, i) => sameRec(i)), total: 5_000_000, total_pages: 50_000 }) };
   };
   const { warnings } = await withCapturedErrors(
-    () => fetchSpeedrunTalent(FEED_URL, { fetchImpl, company: { max_pages: 9999 } }),
+    () => fetchSpeedrunTalent(FEED_URL, { fetchImpl, company: { max_pages: 999_999 } }),
   );
-  assert.equal(calls.length, 120); // clamped to MAX_PAGES_CAP
-  assert.ok(warnings.some((w) => w.includes('truncated at max_pages=120')));
+  assert.equal(calls.length, 1000); // clamped to MAX_PAGES_CAP (parent #36d0c44: 120 → 1000)
+  assert.ok(warnings.some((w) => w.includes('truncated at max_pages=1000')));
+});
+
+test('fetchSpeedrunTalent: retries a transient page failure instead of aborting the board (#2506)', async () => {
+  // First attempt at page 0 returns a transient 503; the retry succeeds, so the
+  // board is scanned in full rather than aborting to nothing.
+  const attempts = new Map();
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(url);
+    const page = Number(new URL(url).searchParams.get('page'));
+    const n = (attempts.get(page) || 0) + 1;
+    attempts.set(page, n);
+    if (page === 0 && n === 1) return { ok: false, status: 503 }; // transient blip
+    const body = page === 0
+      ? { jobs: Array.from({ length: 100 }, (_, i) => mkRec(i, 0)), total_pages: 2 }
+      : { jobs: [mkRec(100, 1), mkRec(101, 1)], total_pages: 2 };
+    return { ok: true, json: async () => body };
+  };
+  // pageDelayMs:1 → retry backoff is 1ms (no real wait) and inter-page delay is negligible.
+  const jobs = await fetchSpeedrunTalent(FEED_URL, { fetchImpl, pageDelayMs: 1, company: { max_pages: 5 } });
+  assert.equal(attempts.get(0), 2); // page 0 fetched twice (1 fail + 1 retry)
+  assert.equal(jobs.length, 102);   // full board, not aborted
+});
+
+test('fetchSpeedrunTalent: a PERMANENT 4xx on the first page is not retried and throws', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => { calls.push(url); return { ok: false, status: 404 }; };
+  await assert.rejects(
+    () => fetchSpeedrunTalent(FEED_URL, { fetchImpl, pageDelayMs: 1, company: { max_pages: 3 } }),
+    /HTTP 404/,
+  );
+  assert.equal(calls.length, 1); // 404 is permanent — no retry
 });
 
 test('fetchSpeedrunTalent: throws on a malformed FIRST page (shape-change canary)', async () => {
