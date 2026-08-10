@@ -14,7 +14,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
 
-> **🆕 最新版本 — v1.135.0** — 對齊父專案 career-ops **v1.26.0**：**五個新的零驗證掃描來源** — JOIN、Getro、Consider、JOINUP 與 Remotli — 加上對 a16z Speedrun(暫時性重試,不再中止整個看板)、Arbeitsagentur(v6 版 Jobsuche API)、The Hub(v2 版 API)與 Hacker News(以 whoishiring 帳號查詢)的正確性修復。註冊表現有 **78 個掃描來源**。**2306 個測試.**
+> **🆕 最新版本 — v1.135.0** — 對齊父專案 career-ops **v1.26.0**：**五個新的零驗證掃描來源** — JOIN、Getro、Consider、JOINUP 與 Remotli — 加上對 a16z Speedrun（暫時性重試，不再中止整個看板）、Arbeitsagentur（v6 版 Jobsuche API）、The Hub（v2 版 API）與 Hacker News（以 whoishiring 帳號查詢）的正確性修復。註冊表現有 **78 個掃描來源**。**2306 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 
