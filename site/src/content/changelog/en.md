@@ -8,6 +8,32 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.135.0] — 2026-08-11
+
+Parent career-ops **v1.26.0** parity — **five new zero-auth scan sources** plus correctness fixes to four boards web-ui already carries. Registry now **78 sources = 73 EN + 5 RU** (`ALL_ADAPTERS` 73).
+
+### Added
+- **Five new scan sources** (parent #825 / #2527 / #2464), each a self-registering source + adapter + CI-isolated suite, appearing in the `#/scan` Source filter (FALLBACK + live registry) and on the cvstart.org landing:
+  - **`join`** (JOIN, parent #2527) — reads a company's JOIN board from the Next.js `__NEXT_DATA__` embedded in `join.com/companies/<slug>` (host-pinned, page-capped, `redirect:'error'`); detected from a `join.com` careers URL.
+  - **`getro`** (Getro, parent #825) — VC "talent-network" portfolio boards (b2venture, Point Nine, Speedinvest, …) via the public `api.getro.com/api/v2/collections/{id}/search/jobs` POST API, paginated newest-first with an age-bounded early stop; the numeric board id is set explicitly (`getro_collection:`), and each job is attributed to the **portfolio employer**, not the fund.
+  - **`consider`** (Consider, parent #825) — getconsider.com VC portfolio boards (Founderful, Creandum, Balderton, …) via the same-origin `/api-boards/search-jobs` POST; the POST host is config-driven from the board's careers URL and pinned by a **structural SSRF guard** (public HTTPS host only — rejects IP-literals, loopback, `*.internal`).
+  - **`joinup`** (JOINUP, parent #825) — the Swiss startup board joinup.ch, reading the SSR'd newest page of `joinup.ch/browse/jobs` (`__NEXT_DATA__`); fail-closed on a scraper break.
+  - **`remotli`** (Remotli, parent #2464) — remotli.ch, a curated board of remote roles at Swiss companies (salaries in CHF), via the public `remotli.ch/api/jobs?remote=all` JSON API; emits the employer's own ATS `applyUrl` as the canonical link (so cross-listings dedup) and the real employer as the company.
+
+### Fixed
+- **a16z Speedrun no longer aborts the whole board on a transient blip** (parent #2506) — the feed paginates into the hundreds of pages, so a single mid-sweep 429/5xx/timeout used to abort the provider and return nothing. Page fetches now go through a new shared `fetchJsonWithRetry` (bounded retries on transient failures only — a permanent 4xx is never retried), and the page budget is re-sized for the 50-job page (`DEFAULT_MAX_PAGES` 3→6, `MAX_PAGES_CAP` 120→1000, parent #36d0c44). web-ui's page-0-throw / later-page-keep-partials dead-board contract is preserved.
+- **arbeitsagentur moved to the v6 Jobsuche API** (parent #2494) — the old `/pc/v4/jobs` endpoint 404s; v6 (`/pc/v6/jobs`) renames the response shape (`ergebnisliste`, `referenznummer`, `stellenangebotsTitel`, `stellenlokationen[]`) and drops the detail-endpoint remote verification (v6's detail endpoint 403s to the public key), so `remoteMatch:'filter'` now narrows server-side with `homeoffice=nv_true` + the same title check.
+- **The Hub moved to the v2 `jobsandfeatured` API** (parent #6b33fc4) — from `api/jobs` to `api/v2/jobsandfeatured` (`json.jobs.docs`/`.pages` envelope), posting URLs rebuilt from the job id, `countryCode=EU` sent by default; The Hub rows carry no posted date and are exempt from the age filter (emit `date: ''`).
+- **hackernews finds the monthly "Who is hiring?" thread reliably** (parent #3aa5e15) — the Algolia lookup filters by the `whoishiring` account tag (`tags=story,author_whoishiring`) instead of a free-text query that could rank an unrelated recent story above the real thread once enough time had passed since it posted.
+
+### Notes
+- **Not ported** (web-ui already safe, relay-absorbed, or CLI-only):
+  - The Unicode-aware role-dedup / company-matching keys (parent #2569 / #2587 / #2429 family): web-ui's repost grouping already keys company on a plain lowercase (`detect-reposts.mjs`), so distinct non-Latin employers never collapse to one key — the exact bug those fixed. `trust-validator`'s ASCII company/hostname heuristic degrades gracefully (returns "no flag" for a non-Latin name, never a silent merge), and role-token matching mirrors the parent's *deliberate* "non-Latin role distinction out of scope" decision.
+  - The `followup` rejection-latency signal (parent #2014) + new `rejection-latency.mjs`, and the `company-funded` touch-ups: web-ui relays these read-only, and the fail-soft relay absorbs the shape change with no code edit.
+  - `scan` env-overridable pipeline/history paths (#2568) and `--flag=value` parsing (#2589): web-ui runs the scanners in-process with its own `paths.mjs` and has no CLI arg surface.
+  - The UA-consolidation refactor (`oraclecloud`/`vdab`/`jobspresso` → shared `_http.mjs`, #2536): a no-op for web-ui, which already centralizes `BROWSER_LIKE_USER_AGENT` in `http-json.mjs`.
+  - CLI-only / non-mirrored: the untrusted-content coverage roster (#2521), `oferta`/`offer-prep` lawyer routing, `doctor` subscription warnings, cover-letter signature block + unresolved-token guard, CV empty-section trimming, YC-seed paging, `.gitattributes`/`.npmignore`, and the parent's own Next.js `web/` changes.
+
 ## [1.134.1] — 2026-08-05
 
 Validation-hardening — fixes surfaced by a full-project audit (all locales + code).

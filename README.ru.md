@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
+[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
 
-> **🆕 Последний релиз — v1.134.1** — усиление валидации: **`successfactors`** больше не отбрасывает собранные вакансии (и не помещает по ошибке живую доску в карантин) при сбое в середине скана; фильтр-чипы **`#/scan`** теперь управляются с клавиатуры (WCAG 2.1.1); а три хардкоженные англоязычные строки теперь локализованы во всех 17 локалях. **2187 тестов.**
+> **🆕 Последний релиз — v1.135.0** — паритет с родительским career-ops **v1.26.0**: **пять новых источников сканирования без авторизации** — JOIN, Getro, Consider, JOINUP и Remotli — плюс исправления корректности для a16z Speedrun (повтор при временных сбоях, доска больше не прерывается целиком), Arbeitsagentur (API Jobsuche v6), The Hub (API v2) и Hacker News (поиск по учётной записи whoishiring). Реестр теперь насчитывает **78 источников сканирования**. **2306 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

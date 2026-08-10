@@ -2,6 +2,27 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.135.0] — 2026-08-11
+
+Parität mit dem übergeordneten Projekt career-ops **v1.26.0** — fünf neue Scan-Quellen ohne Authentifizierung sowie Korrekturfixes für vier Boards, die web-ui bereits unterstützt. Die Registry umfasst nun **78 Quellen = 73 englische + 5 russische** (`ALL_ADAPTERS` 73).
+
+### Hinzugefügt
+- **Fünf neue Scan-Quellen** (jeweils eine Quelle + ein Adapter + eine CI-isolierte Test-Suite; sie erscheinen im `#/scan`-Quellenfilter und auf der cvstart.org-Landingpage):
+  - **`join`** (JOIN) — das JOIN-Board eines Unternehmens aus den Next.js-`__NEXT_DATA__` unter `join.com/companies/<slug>` (host-gepinnt, seitenbegrenzt).
+  - **`getro`** (Getro) — Portfolio-Boards von VC-„Talent-Network“-Programmen über die öffentliche `api.getro.com`-POST-API, paginiert nach neuesten zuerst; jede Stelle wird dem Portfolio-Arbeitgeber zugeordnet, nicht dem Fonds.
+  - **`consider`** (Consider) — VC-Portfolio-Boards von getconsider.com über eine Same-Origin-POST-Anfrage; der konfigurationsgesteuerte Host wird durch eine strukturelle SSRF-Absicherung gepinnt (nur öffentliche HTTPS-Hosts).
+  - **`joinup`** (JOINUP) — das Schweizer Board joinup.ch, liest die serverseitig gerenderte neueste Seite aus; schlägt bei einem Scraper-Bruch sicher fehl (fail-closed).
+  - **`remotli`** (Remotli) — remotli.ch, Remote-Stellen bei Schweizer Unternehmen (Gehälter in CHF); gibt die eigene Bewerbungs-URL des ATS des Arbeitgebers aus, sodass Cross-Postings dedupliziert werden.
+
+### Behoben
+- **a16z Speedrun** bricht das gesamte Board nicht mehr wegen eines vorübergehenden Ausfalls ab — Seitenabrufe laufen jetzt über ein gemeinsames `fetchJsonWithRetry` (begrenzte Wiederholungsversuche nur bei vorübergehenden 429/5xx/Timeout-Fehlern, niemals bei einem dauerhaften 4xx), und das Seitenbudget wurde für die 50-Stellen-Seite neu bemessen.
+- **arbeitsagentur** wurde auf die v6-Jobsuche-API (`/pc/v6/jobs`) umgestellt — der alte v4-Endpunkt liefert jetzt 404; die Antwortstruktur wurde umbenannt, und die Remote-Filterung grenzt nun serverseitig ein.
+- **thehub** wurde auf die v2-`jobsandfeatured`-API umgestellt; Einträge enthalten kein Veröffentlichungsdatum und sind vom Alters-Filter ausgenommen.
+- **hackernews** findet den monatlichen „Who is hiring?“-Thread jetzt zuverlässig, indem die Algolia-Abfrage auf das Konto-Tag `author_whoishiring` gefiltert wird, statt auf eine Freitextsuche.
+
+### Hinweise
+- Nicht portiert (web-ui ist bereits sicher, wird per Relay übernommen oder ist nur CLI-relevant): die Unicode-Schlüssel für Rollen-Deduplizierung/Firmen-Abgleich (die Repost-Gruppierung von web-ui verwendet für den Firmenschlüssel bereits ein einfaches Kleinschreibungs-Schema, sodass unterschiedliche nicht-lateinische Arbeitgeber niemals zusammenfallen); das Ablehnungs-Latenz-Signal für Follow-ups + die company-funded-Feinschliffe (schreibgeschützt weitergeleitet, fail-soft); über Umgebungsvariablen überschreibbare Scan-Pfade und das Parsen von `--flag=value` (web-ui führt die Scanner in-process aus); das Refactoring zur Konsolidierung des User-Agent (web-ui zentralisiert dies bereits); sowie reine CLI-Punkte (Liste nicht vertrauenswürdiger Inhalte, oferta/offer-prep, doctor, Änderungen an Anschreiben-/Lebenslauf-Vorlagen).
+
 ## [1.134.1] — 2026-08-05
 
 Validierungs-Härtung — durch ein vollständiges Projekt-Audit aufgedeckte Fehlerbehebungen.

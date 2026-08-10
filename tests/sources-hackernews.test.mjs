@@ -208,6 +208,16 @@ test('fetchHackerNews: handles children:null gracefully (returns [])', async () 
   assert.deepEqual(jobs, []);
 });
 
+// --- SEARCH_URL lookup strategy (parent #3aa5e15) ---
+
+test('SEARCH_URL filters by the whoishiring account tag, not a free-text query', () => {
+  // A free-text "Ask HN Who is hiring" query could rank an unrelated recent
+  // story above the real monthly thread; the account tag returns only its own
+  // threads so date-ordering surfaces the latest real one first.
+  assert.match(SEARCH_URL, /tags=story,author_whoishiring/);
+  assert.doesNotMatch(SEARCH_URL, /query=/);
+});
+
 // --- assertHnUrl ---
 
 test('assertHnUrl: accepts valid hn.algolia.com HTTPS URLs', () => {

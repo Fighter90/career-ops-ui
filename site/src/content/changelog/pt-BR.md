@@ -8,6 +8,27 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.135.0] — 2026-08-11
+
+Paridade com o career-ops pai **v1.26.0** — cinco novas fontes de varredura zero-auth, além de correções de precisão em quatro boards que o web-ui já possui. O registro agora soma **78 fontes = 73 em inglês + 5 russas** (`ALL_ADAPTERS` 73).
+
+### Adicionado
+- **Cinco novas fontes de varredura** (cada uma com fonte + adaptador + suíte isolada para CI; aparecem no filtro de Fonte do `#/scan` e na landing do cvstart.org):
+  - **`join`** (JOIN) — o board JOIN de uma empresa a partir do `__NEXT_DATA__` do Next.js em `join.com/companies/<slug>` (host fixado, com limite de páginas).
+  - **`getro`** (Getro) — boards de portfólio de "rede de talentos" de VCs via a API pública POST `api.getro.com`, paginada da mais recente para a mais antiga; cada vaga é atribuída à empresa do portfólio, não ao fundo.
+  - **`consider`** (Consider) — boards de portfólio de VCs do getconsider.com via um POST de mesma origem; o host configurável é fixado por uma guarda estrutural de SSRF (somente host HTTPS público).
+  - **`joinup`** (JOINUP) — o board suíço joinup.ch, lendo a página mais recente renderizada no servidor (SSR); falha fechada (fail-closed) em caso de quebra do scraper.
+  - **`remotli`** (Remotli) — remotli.ch, vagas remotas em empresas suíças (salários em CHF); emite a própria URL de candidatura do ATS do empregador, para que listagens cruzadas sejam deduplicadas.
+
+### Corrigido
+- **a16z Speedrun não aborta mais o board inteiro em uma falha transitória** — as buscas de página agora passam por um `fetchJsonWithRetry` compartilhado (novas tentativas limitadas apenas para 429/5xx/timeout transitórios, nunca para um 4xx permanente), e o orçamento de páginas foi redimensionado para a página de 50 vagas.
+- **arbeitsagentur migrado para a API Jobsuche v6** (`/pc/v6/jobs`) — o endpoint v4 antigo retorna 404; o formato da resposta foi renomeado e a filtragem remota agora é restringida no lado do servidor.
+- **thehub migrado para a API v2 `jobsandfeatured`** — as linhas não trazem data de publicação e são isentas do filtro de idade.
+- **hackernews agora encontra a thread mensal "Who is hiring?" de forma confiável**, filtrando a busca no Algolia pela tag de conta `author_whoishiring`, em vez de uma consulta em texto livre.
+
+### Notas
+- Não portado (o web-ui já é seguro, absorvido via retransmissão, ou é exclusivo de CLI): as chaves de deduplicação de vaga / correspondência de empresa com suporte a Unicode (o agrupamento de repostagens do web-ui já usa uma chave de empresa em minúsculas simples, então empregadores distintos não latinos nunca colapsam); o sinal de latência de rejeição do follow-up + os ajustes do company-funded (retransmitidos somente leitura, fail-soft); os caminhos de varredura configuráveis por variável de ambiente e o parsing de `--flag=value` (o web-ui roda os scanners em processo); a refatoração de consolidação do User-Agent (o web-ui já a centraliza); e os itens exclusivos de CLI (lista de conteúdo não confiável, `oferta`/`offer-prep`, `doctor`, mudanças de template de carta de apresentação/CV).
+
 ## [1.134.1] — 2026-08-05
 
 Fortalecimento de validação — correções reveladas por uma auditoria completa do projeto.

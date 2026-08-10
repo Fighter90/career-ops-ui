@@ -2,7 +2,15 @@
  * Hacker News "Ask HN: Who is hiring?" source — no auth required.
  *
  * Two-step fetch via Algolia HN API:
- *   1. GET SEARCH_URL → find the latest monthly hiring thread objectID.
+ *   1. GET SEARCH_URL → find the latest monthly hiring thread objectID, filtered
+ *      to stories posted by the "whoishiring" account (tags=story,author_whoishiring)
+ *      rather than a free-text query (parent #3aa5e15). A free-text
+ *      "Ask HN Who is hiring" query against search_by_date can, once enough time
+ *      passes since the monthly thread posted, rank an unrelated recent story
+ *      above it in the top date-sorted hits — every one fails the title regex
+ *      and the provider throws "thread not found" while the real thread sits a
+ *      few pages back. The account tag returns only its own threads, so
+ *      date-ordering always surfaces the latest real one first.
  *   2. GET ITEMS_BASE + id → thread's top-level `children` are job posts (free-form text).
  *
  * Posts are free-form; we guarantee only:
@@ -16,7 +24,7 @@
 const UA = 'career-ops-web-ui/1.0';
 
 export const SEARCH_URL =
-  'https://hn.algolia.com/api/v1/search_by_date?tags=story&query=Ask%20HN%20Who%20is%20hiring&hitsPerPage=5';
+  'https://hn.algolia.com/api/v1/search_by_date?tags=story,author_whoishiring&hitsPerPage=5';
 
 export const ITEMS_BASE = 'https://hn.algolia.com/api/v1/items/';
 

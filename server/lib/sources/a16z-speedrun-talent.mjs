@@ -35,7 +35,7 @@
  * Used by the a16z-speedrun-talent adapter
  * (server/lib/portals/adapters/a16z-speedrun-talent.mjs).
  */
-import { fetchJson, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { fetchJsonWithRetry, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 
 const SITE_ORIGIN = 'https://speedrun-talent-network.com';
 const TRUSTED_HOST = 'speedrun-talent-network.com';
@@ -51,8 +51,13 @@ export const SPEEDRUN_TALENT_HOST_RE = /^speedrun-talent-network\.com$/i;
 export const FEED_URL = `${SITE_ORIGIN}/api/v1/jobs`;
 
 const PER_PAGE = 50; // feed page size — the API caps a page at 50; PER_PAGE=100 made the `rawCount < PER_PAGE` guard stop after page 1, truncating to 50 jobs (parent #2404)
-const DEFAULT_MAX_PAGES = 3; // modest default (parent parity) — raise via max_pages
-const MAX_PAGES_CAP = 120; // hard stop on request count regardless of max_pages
+const DEFAULT_MAX_PAGES = 6; // × PER_PAGE = the 300-job default scan (parent #36d0c44 — sized in 50-job pages)
+// Runaway bound, not a coverage target: iteration already stops at the feed's
+// reported total_pages (or a short page), so on an honest feed the cap costs
+// nothing and full-board sweeps keep working as the board grows. It only bites a
+// misbehaving feed or an absurd max_pages entry (parent #36d0c44: ~353 pages /
+// ~17.6k jobs as of 2026-08), same policy as workday's cap.
+const MAX_PAGES_CAP = 1000; // hard stop on request count regardless of max_pages
 const PAGE_DELAY_MS = 0; // no documented rate limit (parent parity); tunable via opts
 
 /** Upper bound on jobs returned across all pages — bounds memory defensively. */
@@ -241,10 +246,17 @@ export async function fetchSpeedrunTalent(feedUrl = FEED_URL, opts = {}) {
 
     let json;
     try {
-      json = await fetchJson(fetchImpl, url, {
+      // This board paginates into the hundreds of pages, so a single transient
+      // upstream blip mid-sweep used to abort the whole provider and return
+      // NOTHING (parent #2506). Retry transient failures (429/5xx/timeout);
+      // a permanent 4xx is not retried. Once retries are exhausted the error
+      // propagates here and the page-0-throw / later-page-keep-partials rule
+      // below decides the outcome (web-ui dead-board contract).
+      json = await fetchJsonWithRetry(fetchImpl, url, {
         signal,
         redirect: 'error',
         headers: { accept: 'application/json', 'user-agent': BROWSER_LIKE_USER_AGENT },
+        retryDelayMs: pageDelayMs > 0 ? pageDelayMs : 500,
       });
     } catch (err) {
       if (page === 0) throw err;

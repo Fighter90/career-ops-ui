@@ -8,6 +8,27 @@
 
 ---
 
+## [1.135.0] — 2026-08-11
+
+對齊父專案 career-ops **v1.26.0** — 五個新的零驗證掃描來源，加上對 web-ui 既有四個看板的正確性修復。註冊表現有 **78 個來源 = 73 個英文 + 5 個俄文**（`ALL_ADAPTERS` 73）。
+
+### 新增
+- **五個新掃描來源**（各自為一個來源 + adapter + CI 隔離測試套件；皆已出現在 `#/scan` 的 Source 篩選器與 cvstart.org 首頁）：
+  - **`join`**（JOIN）— 透過 `join.com/companies/<slug>` 中 Next.js 的 `__NEXT_DATA__` 讀取公司自己的 JOIN 看板（主機固定、頁數上限）。
+  - **`getro`**（Getro）— 透過公開的 `api.getro.com` POST API 讀取創投「人才網絡」投資組合看板，依最新優先排序分頁；每筆職缺皆歸屬於投資組合中的雇主，而非基金本身。
+  - **`consider`**（Consider）— 透過同源 POST 讀取 getconsider.com 的創投投資組合看板；設定驅動的主機由結構化 SSRF 防護把關（僅限公開 HTTPS 主機）。
+  - **`joinup`**（JOINUP）— 瑞士看板 joinup.ch，讀取伺服器端渲染（SSR）後的最新頁面；爬蟲邏輯故障時採失敗封閉策略。
+  - **`remotli`**（Remotli）— remotli.ch，瑞士公司的遠端職缺（瑞士法郎薪資）；會發出雇主自身的 ATS 投遞連結，使跨站重複刊登得以去重。
+
+### 修復
+- **a16z Speedrun** 不會再因暫時性異常而中止整個看板 — 頁面擷取現已改用共用的 `fetchJsonWithRetry`（僅對暫時性的 429／5xx／逾時進行有限次數重試，永不重試永久性的 4xx），並已重新調整頁數上限以配合單頁 50 筆職缺。
+- **arbeitsagentur** 已改用 v6 版 Jobsuche API（`/pc/v6/jobs`）— 舊版 v4 端點已回傳 404；回應結構已重新命名，遠端篩選現已改為伺服器端縮限。
+- **thehub** 已改用 v2 版 `jobsandfeatured` API；各列不再附帶刊登日期，並排除於時效篩選之外。
+- **hackernews** 現能可靠找到每月的「Who is hiring?」討論串 — 已將 Algolia 查詢改為以 `author_whoishiring` 帳號標籤過濾，取代原本的自由文字查詢。
+
+### 備註
+- 未移植（web-ui 已屬安全、由中繼吸收，或僅限 CLI）：Unicode 角色去重／公司比對鍵（web-ui 的轉發分組本就以純小寫字串作為公司鍵，因此不同的非拉丁文雇主名稱永遠不會被誤併）；跟進的拒絕延遲訊號 + 獲投公司微調（皆以唯讀方式中繼，失敗自動降級）；掃描的環境變數可覆寫路徑與 `--flag=value` 解析（web-ui 以同進程執行掃描器）；User-Agent 整併重構（web-ui 已將其集中管理）；以及僅限 CLI 的項目（未受信任內容名單、oferta／offer-prep、doctor、求職信／CV 範本變更）。
+
 ## [1.134.1] — 2026-08-05
 
 驗證強化 — 本次修復源自一次全專案稽核。

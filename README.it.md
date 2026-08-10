@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
+[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
 
-> **🆕 Ultima release — v1.134.1** — irrobustimento della validazione: **`successfactors`** non scarta più i lavori raccolti (né mette in quarantena per errore una bacheca attiva) in caso di fallimento a metà scansione; le chip di filtro di **`#/scan`** sono ora azionabili da tastiera (WCAG 2.1.1); e tre stringhe inglesi hardcoded sono ora localizzate in tutte le 17 localizzazioni. **2187 test.**
+> **🆕 Ultima release — v1.135.0** — parità con career-ops padre **v1.26.0**: **cinque nuove sorgenti di scansione a zero autenticazione** — JOIN, Getro, Consider, JOINUP e Remotli — più correzioni di correttezza ad a16z Speedrun (retry sui blip transitori, niente più interruzioni dell'intera bacheca), Arbeitsagentur (API Jobsuche v6), The Hub (API v2) e Hacker News (ricerca sull'account whoishiring). Il registro ora conta **78 sorgenti di scansione**. **2306 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

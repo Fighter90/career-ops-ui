@@ -11,6 +11,27 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.135.0] — 2026-08-11
+
+Parité avec career-ops parent **v1.26.0** — cinq nouvelles sources de scan sans authentification, plus des corrections de justesse pour quatre boards que web-ui prenait déjà en charge. Le registre compte désormais **78 sources = 73 EN + 5 RU** (`ALL_ADAPTERS` 73).
+
+### Ajouté
+- **Cinq nouvelles sources de scan** (chacune avec une source + un adaptateur + une suite isolée pour CI ; elles apparaissent dans le filtre Source de `#/scan` et sur la page d'accueil cvstart.org) :
+  - **`join`** (JOIN) — le board JOIN d'une entreprise, lu depuis les données Next.js `__NEXT_DATA__` de `join.com/companies/<slug>` (épinglé à l'hôte, plafonné en pages).
+  - **`getro`** (Getro) — les boards de portefeuille « réseau de talents » des VC via l'API publique POST `api.getro.com`, paginée du plus récent au plus ancien ; chaque offre est attribuée à l'entreprise du portefeuille, pas au fonds.
+  - **`consider`** (Consider) — les boards de portefeuille VC de getconsider.com via une requête POST du même domaine ; l'hôte piloté par la configuration est épinglé par une garde SSRF structurelle (hôte HTTPS public uniquement).
+  - **`joinup`** (JOINUP) — le board suisse joinup.ch, qui lit la page la plus récente rendue côté serveur ; échoue de façon fermée en cas de rupture du scraper.
+  - **`remotli`** (Remotli) — remotli.ch, des postes en remote dans des entreprises suisses (salaires en CHF) ; émet l'URL de candidature propre à l'ATS de l'employeur afin que les doublons croisés soient dédupliqués.
+
+### Corrigé
+- **a16z Speedrun n'interrompt plus tout le board sur un incident transitoire** — les récupérations de page passent désormais par un `fetchJsonWithRetry` partagé (relances bornées uniquement sur des 429/5xx/timeout transitoires, jamais sur un 4xx permanent), et le budget de pages a été redimensionné pour la page de 50 offres.
+- **arbeitsagentur** est passé à l'API Jobsuche v6 (`/pc/v6/jobs`) — l'ancien point de terminaison v4 renvoie désormais des 404 ; la forme de la réponse a été renommée et le filtrage remote se fait désormais côté serveur.
+- **thehub** est passé à l'API v2 `jobsandfeatured` ; les lignes ne portent aucune date de publication et sont exemptées du filtre d'ancienneté.
+- **hackernews** trouve désormais de façon fiable le fil mensuel « Who is hiring? » en filtrant la recherche Algolia sur le tag de compte `author_whoishiring` plutôt que sur une requête en texte libre.
+
+### Notes
+- Non porté (web-ui est déjà sûr, absorbé par le relais, ou réservé à la CLI) : les clés de déduplication de rôle / correspondance d'entreprise Unicode (le regroupement des reposts de web-ui met déjà l'entreprise en clé sur une simple minuscule, si bien que des employeurs non latins distincts ne fusionnent jamais) ; le signal de latence de rejet du followup + les retouches company-funded (relayés en lecture seule, avec repli silencieux) ; les chemins de scan surchargeables par variable d'environnement et l'analyse `--flag=value` (web-ui exécute les scanners en process) ; la refactorisation de consolidation du User-Agent (web-ui la centralise déjà) ; et les éléments réservés à la CLI (registre de contenu non fiable, oferta/offer-prep, doctor, changements de modèle de lettre de motivation/CV).
+
 ## [1.134.1] — 2026-08-05
 
 Renforcement de la validation — corrections révélées par un audit complet du projet.

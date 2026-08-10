@@ -2,6 +2,27 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.135.0] — 2026-08-11
+
+Parità con career-ops padre **v1.26.0** — cinque nuove sorgenti di scansione a zero autenticazione più correzioni di correttezza a quattro bacheche già presenti in web-ui. Il registro ora conta **78 sorgenti = 73 EN + 5 RU** (`ALL_ADAPTERS` 73).
+
+### Aggiunto
+- **Cinque nuove sorgenti di scansione** (ciascuna con una sorgente + adattatore + suite CI-isolata; compaiono nel filtro Sorgente di `#/scan` e sulla landing di cvstart.org):
+  - **`join`** (JOIN) — la bacheca JOIN di un'azienda ricavata dal `__NEXT_DATA__` di Next.js in `join.com/companies/<slug>` (host fissato, pagine limitate).
+  - **`getro`** (Getro) — bacheche di portfolio "talent-network" dei VC tramite l'API pubblica POST `api.getro.com`, paginata dal più recente; ogni lavoro è attribuito all'azienda del portfolio, non al fondo.
+  - **`consider`** (Consider) — bacheche di portfolio VC di getconsider.com tramite una POST same-origin; l'host configurabile è fissato da una guardia SSRF strutturale (solo host HTTPS pubblico).
+  - **`joinup`** (JOINUP) — la bacheca svizzera joinup.ch, che legge la pagina più recente renderizzata lato server; si blocca (fail-closed) in caso di rottura dello scraper.
+  - **`remotli`** (Remotli) — remotli.ch, ruoli da remoto presso aziende svizzere (stipendi in CHF); emette l'URL di candidatura ATS proprio del datore di lavoro, così le inserzioni incrociate vengono deduplicate.
+
+### Corretto
+- **a16z Speedrun non interrompe più l'intera bacheca per un intoppo transitorio** — i fetch delle pagine ora passano attraverso un `fetchJsonWithRetry` condiviso (tentativi limitati solo su 429/5xx/timeout transitori, mai su un 4xx permanente), e il budget di pagina è stato ridimensionato per la pagina da 50 lavori.
+- **arbeitsagentur è passata alla API Jobsuche v6** (`/pc/v6/jobs`) — il vecchio endpoint v4 restituisce 404; la forma della risposta è stata rinominata e il filtraggio remoto ora si restringe lato server.
+- **thehub è passata alla API v2 `jobsandfeatured`** — le righe non portano una data di pubblicazione e sono esenti dal filtro per età.
+- **hackernews trova ora in modo affidabile il thread mensile "Who is hiring?"** filtrando la ricerca Algolia sul tag account `author_whoishiring` invece che su una query in testo libero.
+
+### Note
+- Non portato (web-ui è già sicuro, assorbito dall'inoltro, o solo CLI): le chiavi di deduplicazione ruoli / corrispondenza aziende Unicode (il raggruppamento dei ripescaggi di web-ui fa già chiave sull'azienda in minuscolo semplice, quindi datori di lavoro distinti non latini non collassano mai); il segnale di latenza di rifiuto del follow-up + le rifiniture di company-funded (inoltrati in sola lettura, fail-soft); i percorsi di scansione sovrascrivibili da variabili d'ambiente e il parsing `--flag=value` (web-ui esegue gli scanner in-process); il refactoring di consolidamento dello User-Agent (web-ui lo centralizza già); e le voci solo CLI (elenco contenuti non attendibili, oferta/offer-prep, doctor, modifiche ai template CV/lettera di presentazione).
+
 ## [1.134.1] — 2026-08-05
 
 Irrobustimento della validazione — correzioni emerse da un audit a livello di intero progetto.

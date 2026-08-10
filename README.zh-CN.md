@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2187%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.134.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.134.1)
+[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
 
-> **🆕 最新版本 — v1.134.1** — 验证加固：**`successfactors`** 在扫描中途失败时不再丢弃已抓取的职位（也不会将存活的招聘板误判为失效并加以隔离）；**`#/scan`** 筛选芯片现已支持键盘操作（符合 WCAG 2.1.1）；三处硬编码的英文字符串现已在全部 17 种语言中完成本地化。**2187 个测试。**
+> **🆕 最新版本 — v1.135.0** — 父项目 career-ops **v1.26.0** 对齐：**五个新的零鉴权扫描来源**——JOIN、Getro、Consider、JOINUP 与 Remotli——以及对 a16z Speedrun（短暂波动重试，不再中止整块招聘板）、Arbeitsagentur（v6 Jobsuche API）、The Hub（v2 API）与 Hacker News（whoishiring 账号查询）的正确性修复。注册表现为 **78 个扫描来源**。**2306 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

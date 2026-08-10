@@ -1,13 +1,28 @@
 /**
  * The Hub source — board-wide public JSON API (Nordic / EU startups).
- *   GET https://thehub.io/api/jobs?page=N
+ *   GET https://thehub.io/api/v2/jobsandfeatured?page=N&countryCode=EU
  *
- * Response shape: { docs: [ { id, title, company: { name }, location: { address,
- *   locality, country }, absoluteJobUrl, isRemote, publishedAt, createdAt,
- *   ... } ], total, page, pages, limit }
+ * v2 migration (parent career-ops 6b33fc4 + ae905db): the old `/api/jobs`
+ * endpoint moved to `/api/v2/jobsandfeatured`, which wraps the list in a
+ * `jobs` envelope and no longer carries a per-posting URL or posting date.
  *
- * Paginated 15/page via `?page=N` (1-indexed); `pages` field bounds the loop.
- * Default cap is 3 pages; override via opts.maxPages (clamped to [1, 50]).
+ * Response shape: { jobs: { docs: [ { id, title, company: { name },
+ *   location: { address, locality, country }, isRemote, ... } ], total, page,
+ *   pages, limit } }
+ *
+ * Because the response has no job URL, the canonical posting URL is built from
+ * `id` as `https://thehub.io/jobs/{id}` (host-pinned constant + encoded id, so
+ * it is never attacker-controlled). Because the response has no posting date,
+ * every row emits `date: ''` — thehub rows are exempt from the scanner's age
+ * filter (there is no date to fabricate).
+ *
+ * `countryCode` is required on every v2 request: omitting it scopes results to
+ * the caller's geo-IP, so coverage would depend on where this server runs
+ * (harmful behind a VPN / non-EU host). We default it to `EU`; an explicit
+ * `countryCode` on an overridden endpoint (via `thehub:` / `api:`) is honored.
+ *
+ * Paginated 15/page via `?page=N` (1-indexed); the `jobs.pages` field bounds
+ * the loop. Default cap is 3 pages; override via opts.maxPages (clamped to [1, 50]).
  *
  * Ported from parent career-ops `providers/thehub.mjs` — reimplemented to the
  * web-ui source contract (no code lifted).
@@ -17,11 +32,12 @@
 
 const UA = 'career-ops-web-ui/1.0';
 const TRUSTED_HOST = 'thehub.io';
+const DEFAULT_COUNTRY_CODE = 'EU';
 const PER_PAGE = 15;
 const DEFAULT_MAX_PAGES = 3;
 const MAX_PAGES_CAP = 50;
 
-export const FEED_BASE = 'https://thehub.io/api/jobs';
+export const FEED_BASE = 'https://thehub.io/api/v2/jobsandfeatured';
 
 export const meta = {
   value: 'thehub',
@@ -50,30 +66,31 @@ export function assertTheHubUrl(url) {
   return url;
 }
 
-function toIsoDate(value) {
-  if (typeof value !== 'string' || !value.trim()) return '';
-  const ms = Date.parse(value);
-  return Number.isNaN(ms) ? '' : new Date(ms).toISOString().slice(0, 10);
+/**
+ * Build a paginated request URL: sets `page`, and adds `countryCode=EU` unless
+ * the endpoint already carries a `countryCode`. `feedUrl` is validated by
+ * {@link assertTheHubUrl} before this runs, so `new URL` never throws here.
+ * @param {string} feedUrl
+ * @param {number} page
+ * @returns {string}
+ */
+function buildPageUrl(feedUrl, page) {
+  const u = new URL(feedUrl);
+  u.searchParams.set('page', String(page));
+  if (!u.searchParams.has('countryCode')) {
+    u.searchParams.set('countryCode', DEFAULT_COUNTRY_CODE);
+  }
+  return u.href;
 }
 
 function cleanText(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function cleanTheHubUrl(value) {
-  const raw = cleanText(value);
-  if (!raw) return '';
-  try {
-    const parsed = new URL(raw);
-    return parsed.protocol === 'https:' && parsed.hostname === TRUSTED_HOST ? parsed.href : '';
-  } catch {
-    return '';
-  }
-}
-
 /**
- * Map a raw The Hub job object to the 12-field web-ui normalized shape.
- * Returns null for rows missing a valid title or thehub.io URL.
+ * Map a raw The Hub v2 job object to the 12-field web-ui normalized shape.
+ * Returns null for rows missing a valid title or id. The v2 response carries
+ * no posting date, so `date` is always '' (exempt from the age filter).
  * @param {any} j
  * @returns {object|null}
  */
@@ -83,8 +100,11 @@ function normalize(j) {
   const title = cleanText(j.title);
   if (!title) return null;
 
-  const url = cleanTheHubUrl(j.absoluteJobUrl);
-  if (!url) return null;
+  // v2 has no per-posting URL — build the canonical page from the id. Host is a
+  // hardcoded constant and the id is encoded, so the URL is never off-host.
+  const id = j.id != null ? String(j.id).trim() : '';
+  if (!id) return null;
+  const url = `https://${TRUSTED_HOST}/jobs/${encodeURIComponent(id)}`;
 
   const company =
     j.company && typeof j.company === 'object' && cleanText(j.company.name)
@@ -99,10 +119,8 @@ function normalize(j) {
   const remote = j.isRemote === true;
   const location = [base, remote ? 'Remote' : ''].filter(Boolean).join(', ');
 
-  const date = toIsoDate(j.publishedAt) || toIsoDate(j.createdAt);
-
   return {
-    id: `thehub-${j.id != null ? String(j.id) : url}`,
+    id: `thehub-${id}`,
     title,
     company,
     url,
@@ -111,17 +129,22 @@ function normalize(j) {
     isRemote: remote,
     workplaceType: remote ? 'Remote' : 'Onsite',
     relocates: false,
-    date,
+    date: '', // v2 API carries no posting date — exempt from the age filter
     snippet: '',
     source: 'thehub',
   };
 }
 
 /**
- * Fetch + normalize The Hub public jobs API (paginated).
+ * Fetch + normalize The Hub public v2 jobs API (paginated).
+ *
+ * Dead-board contract: a failure on the first request (HTTP error, network
+ * reject, or malformed shape) throws so a dead board reads as a failure. Once
+ * page 1 has succeeded, a later page failing mid-pagination stops the loop and
+ * keeps whatever was already collected.
  *
  * @param {string} feedUrl  Base API endpoint (default: FEED_BASE)
- * @param {{ fetchImpl?: Function, signal?: AbortSignal, maxPages?: number }} [opts]
+ * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object, maxPages?: number }} [opts]
  * @returns {Promise<object[]>}
  */
 export async function fetchTheHub(feedUrl = FEED_BASE, opts = {}) {
@@ -139,39 +162,44 @@ export async function fetchTheHub(feedUrl = FEED_BASE, opts = {}) {
   const out = [];
 
   for (let page = 1; page <= maxPages; page++) {
-    const pageUrl = `${feedUrl}?page=${page}`;
-    const res = await fetchImpl(pageUrl, { signal, redirect: 'error', headers });
+    const pageUrl = buildPageUrl(feedUrl, page);
 
-    if (!res.ok) {
-      // On the first page a non-2xx is a hard failure; later pages are best-effort.
-      if (page === 1) {
+    let json;
+    try {
+      // redirect:'error' refuses server-side redirects (SSRF guard).
+      const res = await fetchImpl(pageUrl, { signal, redirect: 'error', headers });
+      if (!res.ok) {
         const err = new Error(`TheHub: HTTP ${res.status} (${pageUrl})`);
         err.status = res.status;
         throw err;
       }
+      json = await res.json();
+    } catch (err) {
+      // First request fails → dead board, surface it. Later page fails after
+      // ≥1 success → keep the partials already collected.
+      if (page === 1) throw err;
       break;
     }
 
-    const json = await res.json();
-
-    if (!json || !Array.isArray(json.docs)) {
+    const jobs = json && json.jobs;
+    if (!jobs || !Array.isArray(jobs.docs)) {
       if (page === 1) {
         throw new Error(
-          `TheHub: unexpected API response on page ${page} — expected { docs: [...] }, got keys: [${json ? Object.keys(json).join(', ') : 'null'}]`,
+          `TheHub: unexpected API response on page ${page} — expected { jobs: { docs: [...] } }, got keys: [${json ? Object.keys(json).join(', ') : 'null'}]`,
         );
       }
       break;
     }
 
-    for (const j of json.docs) {
+    for (const j of jobs.docs) {
       const normalized = normalize(j);
       if (normalized) out.push(normalized);
     }
 
     // Stop when we've reached the last page or received a short page.
-    const totalPages = Number.isInteger(json.pages) ? json.pages : Infinity;
+    const totalPages = Number.isInteger(jobs.pages) ? jobs.pages : Infinity;
     if (page >= Math.min(totalPages, maxPages)) break;
-    if (json.docs.length < PER_PAGE) break;
+    if (jobs.docs.length < PER_PAGE) break;
   }
 
   return out;
