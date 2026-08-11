@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.140.0] — 2026-08-12
+
+**Anlayışlı istatistikler: daha zengin maaş rakamları** — `#/stats`'teki "Pipeline'ım" maaş dökümü artık (yalnız medyan değil) **ortalamayı**, bir **yıllık ⇄ aylık** anahtarını ve ülke başına **min · ort · medyan · maks** tablosunu gösteriyor. Faz 3'ün ilk dilimi. Kullanıcı bildirimli bir UX düzeltmesi (parent-sync yok).
+
+### Eklendi
+- **Ortalama maaş** — `RoleStats.salaryStats` artık `minUsd`/`medianUsd`/`maxUsd` yanında `avgUsd` döndürüyor. Medyan aykırı değerlere dayanıklıdır, ortalama çarpıklığı gösterir — birlikte bir dağılım olarak okunur.
+- Maaş bölümünde **yıllık ⇄ aylık anahtarı** ve ülke başına **min · ort · medyan · maks tablosu** (para birimi ve dönem seçicilerine bağlı). 8 yeni i18n anahtarı × **17 dil**.
+
+### Notlar
+- Rakamlar hâlâ yalnızca okunabilir maaşlı ilanlardan türetilir ve USD'ye normalize edilir (gösterge niteliğinde). Takım: **2361** test (+1).
+
 ## [1.139.0] — 2026-08-12
 
 **Anlaşılır: `?` yardım ipuçları** — tıklayınca «ne yapar / nasıl çalışır / ne beklenir» sorularını dilinizde açıklayan, yeniden kullanılabilir ve CSP-güvenli bir `?` düğmesi. Kullanıcı bildirimli bir UX düzeltmesi (parent-sync yok).

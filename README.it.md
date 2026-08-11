@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Ultima release — v1.139.0** — **comprensibile: suggerimenti `?`** — un `?` riutilizzabile e sicuro per la CSP accanto ai titoli, alle 5 schede di `#/stats` e a 8 titoli di viste IA/analitiche apre un popover localizzato «cosa fa / come funziona / cosa aspettarsi» (accessibile, RTL, adattato al tema). 14 nuove chiavi ×17 lingue. **2360 test.**
+> **🆕 Ultima release — v1.140.0** — **statistiche perspicaci: cifre salariali più ricche** — la ripartizione salariale di "La mia pipeline" su `#/stats` mostra ora la **media** (non solo la mediana), un interruttore **all'anno ⇄ al mese** e una tabella **min · media · mediana · max** per paese. 8 chiavi ×17 lingue. **2361 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

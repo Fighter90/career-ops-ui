@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.139.0** — **更易理解：`?` 說明提示** — 標題、`#/stats` 的 5 個分頁和 8 個 AI／分析檢視標題旁的可重複使用、符合 CSP 的 `?` 會開啟在地化的「這是什麼 / 如何運作 / 會得到什麼」彈出框（可存取、RTL、隨主題）。14 個新鍵 ×17 種語言。 **2360 個測試.**
+> **🆕 最新版本 — v1.140.0** — **有洞察力的統計：更豐富的薪資數字** — `#/stats` 的「我的管道」薪資細分現在顯示**平均值**（不只是中位數）、**每年 ⇄ 每月**切換，以及依國家的**最低 · 平均 · 中位數 · 最高**表格。8 個鍵 ×17 種語言。 **2361 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

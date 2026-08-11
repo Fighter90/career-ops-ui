@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.140.0] — 2026-08-12
+
+**Insightful stats: richer salary figures** — the `#/stats` "My pipeline" salary breakdown now shows the **average** (not just the median), a **per-year ⇄ per-month** toggle, and a **min · avg · median · max** table per country. First slice of roadmap Phase 3. A user-reported UX pass (no parent-sync).
+
+### Added
+- **Average (mean) salary** — `RoleStats.salaryStats` now returns `avgUsd` alongside `minUsd`/`medianUsd`/`maxUsd`. The median resists outliers; the average exposes right-skew (a few very-high postings pull it above the median), so the two together read as a distribution rather than a single point.
+- **Per-year ⇄ per-month toggle** on the salary section — every figure divides by 12 for the monthly view, respecting the currency selector.
+- **Min · avg · median · max table per country** under the "salary by country" chart, driven by the same currency + period controls. 8 new i18n keys × **17 locales**.
+
+### Notes
+- Salary figures are still derived only from postings/applications with a parseable salary and normalized to USD via approximate FX — indicative, not authoritative (the existing caveat stays on the section).
+- Remaining Phase 3 — interactive/rebuildable charts, the "Unknown" archetype fix (orientation), and funded-company enrichment — continues in later releases (`docs/UX-ROADMAP.md`).
+- Suite: **2361** tests (+1: an average-right-skew case in `tests/role-stats.test.mjs`).
+
 ## [1.139.0] — 2026-08-12
 
 **Understandable: `?` help hints** — a reusable, CSP-safe `?` affordance that explains "what this does / how it works / what to expect" on demand, in your language. A user-reported UX pass (no parent-sync).

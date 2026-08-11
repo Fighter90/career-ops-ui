@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.140.0] — 2026-08-12
+
+**Statistiques éclairantes : chiffres de salaire plus riches** — la répartition salariale de « Mon pipeline » sur `#/stats` affiche désormais la **moyenne** (pas seulement la médiane), une bascule **par an ⇄ par mois** et un tableau **min · moy · médiane · max** par pays. Premier volet de la Phase 3. Ajustement UX signalé par l'utilisateur (sans parent-sync).
+
+### Ajouté
+- **Salaire moyen** — `RoleStats.salaryStats` renvoie désormais `avgUsd` aux côtés de `minUsd`/`medianUsd`/`maxUsd`. La médiane résiste aux valeurs extrêmes, la moyenne révèle l'asymétrie ; ensemble elles se lisent comme une distribution.
+- **Bascule par an ⇄ par mois** et un **tableau min · moy · médiane · max par pays** dans la section salaire, pilotés par les sélecteurs de devise et de période. 8 nouvelles clés i18n × **17 langues**.
+
+### Notes
+- Les chiffres proviennent toujours uniquement d'offres au salaire lisible et sont normalisés en USD (indicatifs). Suite : **2361** tests (+1).
+
 ## [1.139.0] — 2026-08-12
 
 **Compréhensible : bulles d'aide `?`** — un bouton `?` réutilisable et sûr pour la CSP qui, au clic, explique « ce que ça fait / comment ça marche / à quoi s'attendre » dans votre langue. Ajustement UX signalé par l'utilisateur (sans parent-sync).

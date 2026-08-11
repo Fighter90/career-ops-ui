@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Última versão — v1.139.0** — **compreensível: dicas de ajuda `?`** — um `?` reutilizável e seguro para CSP ao lado de títulos, das 5 abas de `#/stats` e de 8 títulos de telas de IA/analytics abre um popover localizado de «o que faz / como funciona / o que esperar» (acessível, RTL, adaptado ao tema). 14 novas chaves ×17 idiomas. **2360 testes.**
+> **🆕 Última versão — v1.140.0** — **estatísticas úteis: números salariais mais ricos** — o detalhamento salarial de "Meu pipeline" em `#/stats` agora mostra a **média** (não só a mediana), uma alternância **por ano ⇄ por mês** e uma tabela **mín · média · mediana · máx** por país. 8 chaves ×17 idiomas. **2361 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

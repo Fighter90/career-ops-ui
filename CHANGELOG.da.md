@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.140.0] — 2026-08-12
+
+**Indsigtsfulde statistikker: rigere løntal** — lønopdelingen i "Min pipeline" på `#/stats` viser nu **gennemsnittet** (ikke kun medianen), en **pr. år ⇄ pr. måned**-skifter og en **min · gns · median · maks**-tabel pr. land. Første del af Fase 3. En brugerrapporteret UX-justering (uden parent-sync).
+
+### Tilføjet
+- **Gennemsnitsløn** — `RoleStats.salaryStats` returnerer nu `avgUsd` ved siden af `minUsd`/`medianUsd`/`maxUsd`. Medianen modstår outliers, gennemsnittet afslører skævhed — sammen læses de som en fordeling.
+- **Pr. år ⇄ pr. måned-skifter** og en **min · gns · median · maks-tabel pr. land** i lønsektionen, styret af valuta- og periodevælgerne. 8 nye i18n-nøgler × **17 sprog**.
+
+### Noter
+- Tallene stammer stadig kun fra opslag med læsbar løn og normaliseres til USD (vejledende). Suite: **2361** tests (+1).
+
 ## [1.139.0] — 2026-08-12
 
 **Forståeligt: `?` hjælpetips** — en genanvendelig, CSP-sikker `?`-knap, der ved klik forklarer "hvad den gør / hvordan den virker / hvad man kan forvente" på dit sprog. En brugerrapporteret UX-justering (uden parent-sync).

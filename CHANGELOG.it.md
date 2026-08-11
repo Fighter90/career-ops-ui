@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.140.0] — 2026-08-12
+
+**Statistiche perspicaci: cifre salariali più ricche** — la ripartizione salariale di "La mia pipeline" su `#/stats` mostra ora la **media** (non solo la mediana), un interruttore **all'anno ⇄ al mese** e una tabella **min · media · mediana · max** per paese. Prima parte della Fase 3. Aggiustamento UX segnalato dall'utente (senza parent-sync).
+
+### Aggiunto
+- **Salario medio** — `RoleStats.salaryStats` ora restituisce `avgUsd` accanto a `minUsd`/`medianUsd`/`maxUsd`. La mediana resiste agli outlier, la media rivela l'asimmetria — insieme si leggono come una distribuzione.
+- **Interruttore all'anno ⇄ al mese** e una **tabella min · media · mediana · max per paese** nella sezione salari, guidati dai selettori di valuta e periodo. 8 nuove chiavi i18n × **17 lingue**.
+
+### Note
+- Le cifre derivano ancora solo da annunci con salario leggibile e sono normalizzate in USD (indicative). Suite: **2361** test (+1).
+
 ## [1.139.0] — 2026-08-12
 
 **Comprensibile: suggerimenti `?`** — un pulsante `?` riutilizzabile e sicuro per la CSP che, al clic, spiega «cosa fa / come funziona / cosa aspettarsi» nella tua lingua. Aggiustamento UX segnalato dall'utente (senza parent-sync).

@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Son sürüm — v1.139.0** — **anlaşılır: `?` yardım ipuçları** — başlıkların, `#/stats`'in 5 sekmesinin ve 8 AI/analitik görünüm başlığının yanındaki yeniden kullanılabilir, CSP-güvenli `?`, yerelleştirilmiş bir «ne yapar / nasıl çalışır / ne beklenir» açılır kutusu (erişilebilir, RTL, temaya uyumlu) açar. 14 yeni anahtar ×17 dil. **2360 test.**
+> **🆕 Son sürüm — v1.140.0** — **anlayışlı istatistikler: daha zengin maaş rakamları** — `#/stats`'teki "Pipeline'ım" maaş dökümü artık (yalnız medyan değil) **ortalamayı**, bir **yıllık ⇄ aylık** anahtarını ve ülke başına **min · ort · medyan · maks** tablosunu gösteriyor. 8 anahtar ×17 dil. **2361 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

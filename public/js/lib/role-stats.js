@@ -141,8 +141,12 @@
 
   function salaryStats(usdMidpoints) {
     const arr = usdMidpoints.slice().sort((a, b) => a - b);
-    if (!arr.length) return { count: 0, minUsd: null, medianUsd: null, maxUsd: null };
-    return { count: arr.length, minUsd: arr[0], medianUsd: median(arr), maxUsd: arr[arr.length - 1] };
+    if (!arr.length) return { count: 0, minUsd: null, avgUsd: null, medianUsd: null, maxUsd: null };
+    // v1.140.0 — mean alongside the median. Median resists outliers; the average
+    // exposes skew (a few very-high postings pull it above the median), so the
+    // two together read as a distribution, not a single point.
+    const avg = Math.round(arr.reduce((s, n) => s + n, 0) / arr.length);
+    return { count: arr.length, minUsd: arr[0], avgUsd: avg, medianUsd: median(arr), maxUsd: arr[arr.length - 1] };
   }
 
   /**
