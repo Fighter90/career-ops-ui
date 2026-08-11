@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2345%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
+[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 أحدث إصدار — v1.136.0** — تكافؤ مع المشروع الأصل career-ops **v1.26.x**: مصدر مسح جديد لـ**Eightfold AI** إضافة إلى موجة من **الجودة والمتانة** — مفاتيح إزالة تكرار الشركات/الأدوار مُدرِكة لـUnicode (لم تعد الأحرف غير اللاتينية تندمج)، وتوقفت `fetchJsonWithRetry` عن إعادة المحاولة عند رفض إعادة توجيه، واكتسب `title_filter.positive` مجموعات AND بالفاصل ` + `، وتصليب `oraclecloud`/`workable`/`personio`. أصبح السجل الآن **79 مصدر مسح**. **2343 اختبارًا.**
+> **🆕 أحدث إصدار — v1.137.0** — **إصلاحات قابلية القراءة والعرض**: مشكلة النص الأبيض على الأبيض / الأسود على الأسود في الوضع الليلي على شاشات عديدة (`#/pipeline`، وتبويبات `#/stats`، و`#/config`، و`#/two-pager`) عولجت من جذرها — خمسة عشر رمزاً من رموز السمة لم تكن مُعرَّفة إطلاقاً، فكانت تعود إلى قيم فاتحة/داكنة ثابتة يدوياً؛ تسميات الرسوم البيانية في `#/stats` تُختصَر الآن بعلامة حذف بدلاً من أن تُقطَع في منتصف الكلمة؛ وتُعرَض `#/career-plan` الآن كنص مُنسَّق سهل القراءة بدلاً من Markdown خام. **2345 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

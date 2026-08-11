@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2345%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
+[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.136.0** — 상위 career-ops **v1.26.x** 패리티: 새로운 **Eightfold AI** 스캔 소스와 **품질 및 견고성** 강화 물결입니다 — 유니코드 인식 회사/역할 중복 제거 키(비라틴 문자가 더 이상 합쳐지지 않음), `fetchJsonWithRetry`가 거부된 리다이렉트 재시도를 중단하고, `title_filter.positive`에 ` + ` AND 그룹이 추가되었으며, `oraclecloud`/`workable`/`personio` 강화가 포함됩니다. 레지스트리는 이제 **79개 스캔 소스**입니다. **2343 테스트.**
+> **🆕 최신 릴리스 — v1.137.0** — **가독성 및 렌더링 수정**: 여러 화면(`#/pipeline`, `#/stats` 탭, `#/config`, `#/two-pager`)에 걸친 다크 모드 백색-바탕-백색 / 흑색-바탕-흑색 문제를 근본 원인부터 해결했습니다 — 테마 토큰 15개가 선언되지 않아 하드코딩된 라이트/블랙 값으로 폴백되고 있었습니다; `#/stats`의 차트 레이블은 이제 단어 중간에서 잘리는 대신 말줄임표로 표시됩니다; 그리고 `#/career-plan`은 가공되지 않은 마크다운 대신 서식이 적용된 읽기 쉬운 텍스트로 렌더링됩니다. **2345 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

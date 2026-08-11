@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.137.0] — 2026-08-11
+
+**Correcciones de legibilidad y renderizado** — contraste en modo oscuro, etiquetas de gráficos y el plan de carrera. Una revisión de UX motivada por un reporte de usuario (sin parent-sync).
+
+### Corregido
+- **Modo oscuro en blanco-sobre-blanco / negro-sobre-negro en muchas pantallas** — quince propiedades personalizadas de CSS que varias vistas referenciaban (`--fg`, `--panel`, `--panel-2`, `--ok`, `--danger`, `--card`, …) nunca se habían declarado, así que recurrían a valores fijos claros/negros: correcto en modo claro, ilegible en modo oscuro (los chips de resumen de `#/pipeline`, la pestaña activa de `#/stats`, "Active / Keys" + "✓ set" de `#/config`, las secciones de `#/two-pager`, la burbuja de pregunta de `#/mock-interview`, el texto de error). Ahora son alias de los tokens reales que sí responden al tema, así que lo siguen automáticamente — **0 fallos de contraste WCAG-AA en las 29 vistas**, verificado por un auditor automatizado; la pestaña activa de `#/config` pasó a un estilo de insignia con tinte legible. Una protección de regresión (`tests/dark-theme-tokens.test.mjs`) mantiene ese alias.
+- **Las etiquetas de los gráficos de `#/stats` se cortaban a mitad de palabra** («Senior Backend Engineer» → «…Enginee») — ahora se truncan con elipsis y conservan la etiqueta completa como tooltip al pasar el cursor.
+- **`#/career-plan` mostraba el plan generado como Markdown sin procesar** — ahora se renderiza automáticamente como texto legible y con formato (el Markdown editable permanece en el área de texto; el botón Vista previa lo alterna).
+
+### Notas
+- `#/career-plan`, `#/two-pager`, `#/stats` y el resumen semanal de entrevistas no están rotos — muestran estados vacíos hasta que generas un plan o tienes datos. Se planea para la próxima entrega una guía en pantalla más clara y pistas de ayuda `?` (`docs/UX-ROADMAP.md`).
+
 ## [1.136.0] — 2026-08-11
 
 Paridad con career-ops padre **v1.26.x** (posterior a v1.26.0 en la rama principal) — una nueva fuente sin autenticación más una ronda de mejoras de calidad y robustez portadas a los espejos de web-ui. El registro ahora son **79 fuentes = 74 en inglés + 5 en ruso** (`ALL_ADAPTERS` 74).

@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2345%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
+[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.136.0** — 對齊父專案 career-ops **v1.26.x**：新增一個 **Eightfold AI** 掃描來源，加上一波**品質與穩健性**強化 — 支援 Unicode 的公司／職稱去重鍵（非拉丁文字不再被誤併）、`fetchJsonWithRetry` 不再重試遭拒的重新導向、`title_filter.positive` 新增 ` + ` AND 群組，以及 `oraclecloud`／`workable`／`personio` 強化。註冊表現有 **79 個掃描來源**。**2343 個測試.**
+> **🆕 最新版本 — v1.137.0** — **可讀性與呈現修復**：深色模式下多個畫面（`#/pipeline`、`#/stats` 分頁、`#/config`、`#/two-pager`）出現的白底白字／黑底黑字問題已從根本修復 — 十五個主題 token 從未宣告，因此退回為硬編碼的淺色／黑色數值；`#/stats` 的圖表標籤現在會以省略號結尾，而非在單字中間被截斷；`#/career-plan` 現在會渲染為易讀的格式化文字，而非未經處理的 Markdown。**2345 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

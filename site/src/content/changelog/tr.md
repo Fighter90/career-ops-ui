@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.137.0] — 2026-08-11
+
+**Okunabilirlik ve render düzeltmeleri** — karanlık mod kontrastı, grafik etiketleri ve kariyer planı. Kullanıcı tarafından bildirilen bir UX geçişi (üst proje senkronizasyonu yok).
+
+### Düzeltildi
+- **Birçok ekranda karanlık modda beyaz-üzerine-beyaz / siyah-üzerine-siyah** — birkaç görünümün referans verdiği on beş CSS özel özelliği (`--fg`, `--panel`, `--panel-2`, `--ok`, `--danger`, `--card`, …) hiçbir zaman tanımlanmamıştı, bu yüzden sabit kodlanmış açık/siyah değerlere geri dönüyorlardı: açık modda sorun yoktu, karanlık modda okunamazdı (`#/pipeline` genel bakış çipleri, `#/stats` etkin sekme, `#/config` "Etkin / Anahtarlar" + "✓ ayarlandı", `#/two-pager` bölümleri, `#/mock-interview` soru balonu, hata metni). Artık gerçek temaya duyarlı belirteçlere takma adlandırılmış durumdalar, böylece temayı otomatik olarak takip ediyorlar — otomatik bir denetleyiciyle doğrulanmış, **29 görünümün tümünde 0 WCAG-AA kontrast hatası**; `#/config` etkin sekmesi okunabilir, tonlanmış bir stile taşındı. Bir regresyon koruyucusu (`tests/dark-theme-tokens.test.mjs`) onları takma adlı tutuyor.
+- **`#/stats` grafik etiketleri kelimenin ortasından kesiliyordu** ("Senior Backend Engineer" → "…Enginee") — artık üç nokta ile kısaltılıyor ve tam etiket bir üzerine gelme araç ipucu olarak korunuyor.
+- **`#/career-plan` oluşturulan planı ham Markdown olarak gösteriyordu** — artık biçimlendirilmiş, okunabilir metin olarak otomatik render ediliyor (düzenlenebilir Markdown metin kutusunda kalıyor; Önizleme onu değiştiriyor).
+
+### Notlar
+- `#/career-plan`, `#/two-pager`, `#/stats` ve haftalık mülakat özeti bozuk değil — bir plan oluşturana / veriniz olana kadar boş durumlar gösteriyorlar. Daha açık sayfa içi rehberlik ve `?` yardım ipuçları bir sonraki adım olarak planlanıyor (`docs/UX-ROADMAP.md`).
+
 ## [1.136.0] — 2026-08-11
 
 Üst proje career-ops **v1.26.x** paritesi (v1.26.0 sonrası ana hat) — bir yeni sıfır-kimlik-doğrulama kaynak artı web-ui yansılarına yönelik bir kalite ve sağlamlık düzeltmeleri dalgası. Kayıt defteri artık **79 kaynak = 74 İngilizce + 5 Rusça** (`ALL_ADAPTERS` 74).

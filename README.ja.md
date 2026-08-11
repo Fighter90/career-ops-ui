@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2345%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
+[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新リリース — v1.136.0** — 親 career-ops **v1.26.x** パリティ:新しい **Eightfold AI** スキャンソースに加え、**品質・堅牢性** の改善が一連続きます — Unicode 対応の企業/役職重複排除キー(非ラテン文字がもはや誤って統合されません)、`fetchJsonWithRetry` が拒否されたリダイレクトをリトライしなくなり、`title_filter.positive` に ` + ` の AND グループが追加され、`oraclecloud`/`workable`/`personio` の堅牢化が行われました。レジストリは **79 スキャンソース** になりました。**2343 テスト.**
+> **🆕 最新リリース — v1.137.0** — **可読性・レンダリングの修正**:多数の画面(`#/pipeline`、`#/stats` の各タブ、`#/config`、`#/two-pager`)で発生していたダークモードの白地に白文字・黒地に黒文字を根本から修正 — 15個のテーマトークンが一度も宣言されておらず、ハードコードされたライト/ブラック値にフォールバックしていました。`#/stats` のチャートラベルは単語の途中で切れる代わりに省略記号で切り詰められるようになり、`#/career-plan` は Markdown の生テキストではなく整形済みの読みやすいテキストとしてレンダリングされるようになりました。**2345 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

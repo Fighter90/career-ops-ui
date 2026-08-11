@@ -103,6 +103,34 @@
   --sidebar-w: 256px;
   --topbar-h: 80px;
   --transition: 180ms cubic-bezier(.2, .8, .2, 1);
+  /* v1.137.0 — alias tokens that several views referenced WITHOUT a definition
+     (`--fg`, `--panel`, `--panel-2`, `--surface-elev1`, `--line`). Undefined,
+     they silently fell back to hardcoded LIGHT/BLACK literals — so text went
+     white-on-white (#/pipeline overview chips) or black-on-black (#/stats
+     active tab) in dark mode, plus chat bubbles / two-pager chips. Aliased to
+     the real theme-aware tokens; because `--hof`/`--paper`/`--slate` are
+     re-declared in the dark blocks, these follow the theme with no per-block
+     override of their own. */
+  --fg: var(--hof);
+  --panel: var(--paper);
+  --panel-2: var(--slate);
+  --surface-elev1: var(--slate);
+  --line: var(--slate);
+  /* Semantic text/surface aliases, same story: these were referenced as text
+     colors (`--ok` the "✓ set" green, `--err`/`--danger` reds, `--muted`/`--ink`)
+     or surfaces (`--card`/`--border`) with hardcoded fallbacks that only work on
+     a light background. All are text/surface-role (no `background: var(--danger)`
+     anywhere), so aliasing to the AA-tuned theme-aware tokens is safe. */
+  --ok: var(--kazan-text);
+  --go: var(--kazan-text);
+  --err: var(--rausch-text);
+  --error: var(--rausch-text);
+  --danger: var(--rausch-text);
+  --warn: var(--darjeeling-text);
+  --muted: var(--foggy);
+  --ink: var(--hof);
+  --card: var(--paper);
+  --border: var(--slate);
   color-scheme: light;
 }
 

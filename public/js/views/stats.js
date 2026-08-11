@@ -34,7 +34,7 @@ Router.register('stats', async () => {
     const rows = items.filter((x) => x.value > 0);
     if (!rows.length) return c('p', { style: { color: 'var(--foggy)', padding: '8px 0' } }, t('stats.noData', 'No data for this selection.'));
     const max = Math.max(...rows.map((r) => r.value));
-    const barW = 320; const rowH = 26; const labelW = 150;
+    const barW = 320; const rowH = 26; const labelW = 200;
     const svg = document.createElementNS(SVGNS, 'svg');
     svg.setAttribute('width', '100%');
     svg.setAttribute('viewBox', `0 0 ${labelW + barW + 80} ${rows.length * rowH + 8}`);
@@ -45,7 +45,16 @@ Router.register('stats', async () => {
       const label = document.createElementNS(SVGNS, 'text');
       label.setAttribute('x', '0'); label.setAttribute('y', String(y + rowH / 2 + 4));
       label.setAttribute('font-size', '13'); label.setAttribute('fill', 'currentColor');
-      label.textContent = (r.label || '').slice(0, 22);
+      // Ellipsize instead of hard-cutting the last letters ("…Engineer" was
+      // clipped to "…Enginee"); keep the full text as an SVG <title> tooltip.
+      const fullLabel = String(r.label || '');
+      const MAXC = 26;
+      label.textContent = fullLabel.length > MAXC ? fullLabel.slice(0, MAXC - 1) + '…' : fullLabel;
+      if (fullLabel.length > MAXC) {
+        const ttl = document.createElementNS(SVGNS, 'title');
+        ttl.textContent = fullLabel;
+        label.appendChild(ttl);
+      }
       const rect = document.createElementNS(SVGNS, 'rect');
       rect.setAttribute('x', String(labelW)); rect.setAttribute('y', String(y));
       rect.setAttribute('width', String(w)); rect.setAttribute('height', String(rowH - 8));

@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.137.0] — 2026-08-11
+
+**Læsbarheds- og renderingsrettelser** — mørk-tilstand-kontrast, diagramlabels og karriereplanen. En brugerrapporteret UX-gennemgang (ingen forælder-synkronisering).
+
+### Rettet
+- **Hvid-på-hvid / sort-på-sort i mørk tilstand på mange skærme** — femten CSS-brugeregenskaber, som flere visninger refererede til (`--fg`, `--panel`, `--panel-2`, `--ok`, `--danger`, `--card`, …), var aldrig deklareret, så de faldt tilbage til hardkodede lyse/sorte værdier: fint i lys tilstand, ulæseligt i mørk tilstand (`#/pipeline`-oversigtens chips, `#/stats`' aktive fane, `#/config`'s "Aktiv / Nøgler" + "✓ sat", `#/two-pager`-sektioner, `#/mock-interview`-spørgsmålsboblen, fejltekst). De er nu aliaset til de rigtige temabevidste tokens, så de følger temaet automatisk — **0 WCAG-AA-kontrastfejl på tværs af alle 29 visninger**, verificeret af en automatiseret revisor; `#/config`s aktive fane er flyttet til en læsbar tonet stil (`.tab-btn.is-active`). En regressionsspærring (`tests/dark-theme-tokens.test.mjs`) holder dem aliaset.
+- **`#/stats`-diagramlabels blev afskåret midt i et ord** ("Senior Backend Engineer" → "…Enginee") — de bliver nu elliptisk afkortet, mens den fulde label bevares som et hover-tooltip.
+- **`#/career-plan` viste den genererede plan som rå Markdown** — den gengives nu automatisk som formateret, læsbar tekst via `UI.md()` (den redigerbare Markdown forbliver i tekstfeltet; Forhåndsvisning skifter mellem dem).
+
+### Noter
+- `#/career-plan`, `#/two-pager`, `#/stats` og det ugentlige interviewsammendrag er ikke defekte — de viser tomme tilstande, indtil du genererer en plan / har data. Klarere vejledning på siden og `?`-hjælpehints er planlagt som næste skridt (`docs/UX-ROADMAP.md`).
+
 ## [1.136.0] — 2026-08-11
 
 Paritet med forælder-projektet career-ops **v1.26.x** (efter v1.26.0-hovedgrenen) — én ny kilde uden godkendelse plus en bølge af kvalitets- og robusthedsporteringer til kode, som web-ui spejler. Registret rummer nu **79 kilder = 74 engelske + 5 russiske** (`ALL_ADAPTERS` 74).
