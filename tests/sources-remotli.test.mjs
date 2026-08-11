@@ -244,8 +244,7 @@ test('fetchRemotli: walks pages, aggregates all rows, stops after the short page
 });
 
 test('fetchRemotli: dedupes rows repeated by url across pages', async () => {
-  const fetchImpl = async (url) => {
-    const page = Number(new URL(url).searchParams.get('page'));
+  const fetchImpl = async () => {
     // Every page returns the SAME 50 rows → after dedup only 50 survive.
     return jsonResponse({ jobs: Array.from({ length: 50 }, (_, i) => mk(i)), pagination: { totalPages: 3 } });
   };
