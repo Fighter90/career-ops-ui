@@ -123,6 +123,8 @@ import { joinupAdapter } from './adapters/joinup.mjs';
 import { getroAdapter } from './adapters/getro.mjs';
 import { considerAdapter } from './adapters/consider.mjs';
 import { remotliAdapter } from './adapters/remotli.mjs';
+// v1.136.0 — parent career-ops v1.26.x parity: Eightfold AI boards.
+import { eightfoldAdapter } from './adapters/eightfold.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -231,6 +233,7 @@ export const ALL_ADAPTERS = [
   getroAdapter,
   considerAdapter,
   remotliAdapter,
+  eightfoldAdapter,
 ];
 
 /**

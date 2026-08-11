@@ -9,6 +9,25 @@
 ---
 
 
+## [1.136.0] — 2026-08-11
+
+상위 career-ops **v1.26.x** 패리티(v1.26.0 메인라인 이후) — 새로운 무인증 소스 1개와, web-ui 미러에 코드로 반영된 품질 및 견고성 포팅 물결입니다. 레지스트리는 이제 **79개 소스 = 영문 74개 + 러시아어 5개**입니다(`ALL_ADAPTERS` 74).
+
+### 추가
+- **`eightfold`**(Eightfold AI, #2684) — 무인증 `https://<tenant>.eightfold.ai/api/apply/v2/jobs` API를 통한 채용 게시판으로, `*.eightfold.ai`에 호스트가 고정됩니다(브랜드 처리된 `careers.<company>.com` CNAME은 의도적으로 거부됩니다); 안전 상한과 함께 페이지네이션되며, 죽은 게시판은 예외를 던지고(dead-board-throw), URL 중복 제거를 수행합니다. 소스 + 어댑터 + CI 격리 스위트를 갖추었습니다; `#/scan`의 Source 필터와 랜딩에 표시됩니다.
+
+### 수정
+- **유니코드 인식 중복 제거 및 역할 키**(#2569 / #2587 / #2667) — 새로운 공유 `normalizeTextKey`(NFKC, 모든 문자 체계의 문자/결합기호/숫자를 유지)가 ASCII 전용 키를 대체합니다: `detect-reposts`는 이제 폭/구두점 변형("Acme, Inc." ≡ "Acme Inc")을 하나로 묶으면서도 서로 다른 비라틴 문자 고용주는 절대 합치지 않으며, `role-matcher`는 전각(full-width) 제목을 정규화하면서도 비라틴 문자 역할 토큰을 지우지 않고 유지합니다.
+- **`fetchJsonWithRetry`가 이제 거부된 리다이렉트를 재시도하지 않습니다**(#2657) — `redirect:'error'` 가드가 3xx를 만나는 것은 결정적(deterministic)이므로, 이제는 재시도 불가능한 것으로 처리되어 재시도 예산을 소모하는 대신 즉시 실패합니다.
+- **`title_filter.positive`의 AND 그룹**(#2552) — positive 항목 내부의 공백으로 구분된 ` + `는 이제 순서와 무관하게 모든 용어가 제목에 나타나야 함을 요구합니다.
+- **`oraclecloud`가 번호가 붙은 테넌트 에펙스(apex)를 허용합니다** `oraclecloud1.com … oraclecloud99.com`(#2683) — 범위가 제한된 패밀리이며(앞자리 0 없음, 숫자 2자리 이하), 와일드카드 에펙스는 절대 아닙니다.
+- **`workable` 강화**(#2675) — Cloudflare가 앞단에 있는 호스트에 대해 재시도, 브라우저와 유사한 헤더, 요청 직렬화를 적용했습니다.
+- **`personio`가 HTML 스크레이핑으로 대체됩니다** — XML 피드가 비활성화된 경우, 아무것도 반환하지 않는 대신입니다.
+- **`states`의 FALLBACK 별칭이 상위와 재동기화되었습니다**(#2615).
+
+### 비고
+- 포팅되지 않음(web-ui에서 미러링하지 않거나 CLI 전용): reply-matcher(#2672), jd-similarity(#2661), jd-skill-gap(#2686), scan의 env-path(#2568) / `--flag=value`(#2589) 파싱, 그리고 cover-letter / CV-template / doctor / ollama / generate-pdf 변경 사항. 웹의 `js-yaml`/`nanoid` HIGH 권고는 web-ui v1.135.0에서 이미 패치되었습니다.
+
 ## [1.135.0] — 2026-08-11
 
 상위 career-ops **v1.26.0** 패리티 — 다섯 개의 새로운 무인증 스캔 소스와, web-ui가 이미 보유한 네 개 게시판에 대한 정확성 수정입니다. 레지스트리는 이제 **78개 소스 = 영문 73개 + 러시아어 5개**입니다(`ALL_ADAPTERS` 73).

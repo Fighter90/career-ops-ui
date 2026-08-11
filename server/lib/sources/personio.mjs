@@ -65,6 +65,20 @@ function extractText(inner) {
   return decodeXmlEntities(inner).trim();
 }
 
+// Looped to a fixed point rather than a single pass: a single global replace
+// only removes non-overlapping matches in one left-to-right sweep, which CodeQL
+// flags as an incomplete sanitizer (js/incomplete-sanitization) since adversarial
+// nesting can leave a `<`-fragment behind. Repeating until the string stops
+// changing removes any tag that pass N reveals. Used by the HTML fallback parser.
+function stripTags(s) {
+  let prev;
+  do {
+    prev = s;
+    s = s.replace(/<[^>]*>/g, '');
+  } while (s !== prev);
+  return s;
+}
+
 function tagText(block, tag) {
   const m = block.match(new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)</${tag}>`));
   return m ? extractText(m[1]) : '';
@@ -135,7 +149,76 @@ export function parsePersonioXml(xml, companyName, host) {
 }
 
 /**
- * Fetch + normalize a Personio tenant's XML jobs feed.
+ * Fallback parser for tenants whose /xml feed is disabled (404 on /xml, 200 on
+ * the careers page). The page is server-rendered by the shared Personio frontend
+ * build, so the full job list is already present in the initial HTML — no
+ * headless browser needed. Each job is an `<a href="/job/{id}">` carrying the
+ * stable, non-hashed marker class `job-box`, wrapping an `<h3>` title and a
+ * `<span class="…jobMetaText…">` with the first location line. Only the stable
+ * `job-box` / `jobMetaText` substrings are matched so the regex stays independent
+ * of the build-specific hashed CSS-module suffixes (e.g. `page_jobTitle__K0ilk`).
+ *
+ * No creation date is exposed on the listing page, so `date` is always ''
+ * (unlike parsePersonioXml's createdAt). Exported for unit tests.
+ *
+ * @param {string} html careers page HTML body
+ * @param {string} companyName value written into job.company
+ * @param {string} host validated tenant host, e.g. `acme.jobs.personio.de`
+ */
+export function parsePersonioHtml(html, companyName, host) {
+  if (typeof html !== 'string') return [];
+  const jobs = [];
+  const seen = new Set();
+  // href may carry a trailing query string (e.g. "/job/2560093?language=en"
+  // when the page was fetched with ?language=en) — the numeric id is what we
+  // need, so the query part (if any) is matched and discarded. class and href
+  // aren't guaranteed in a fixed order on the anchor, so the opening tag's
+  // attributes are captured as one blob and checked independently.
+  const anchorRe = /<a\b([^>]*)>([\s\S]*?)<\/a>/g;
+  let m;
+  while ((m = anchorRe.exec(html))) {
+    const attrs = m[1];
+    if (!/\bclass="[^"]*\bjob-box\b[^"]*"/.test(attrs)) continue;
+    const hrefMatch = attrs.match(/\bhref="\/job\/(\d+)(?:\?[^"]*)?"/);
+    if (!hrefMatch) continue;
+    const id = hrefMatch[1];
+    if (seen.has(id)) continue;
+    const block = m[2];
+
+    const titleMatch = block.match(/<h3\b[^>]*>([\s\S]*?)<\/h3>/);
+    if (!titleMatch) continue;
+    const title = decodeXmlEntities(stripTags(titleMatch[1])).trim();
+    if (!title) continue;
+
+    const locMatch = block.match(/<span\b[^>]*class="[^"]*jobMetaText[^"]*"[^>]*>([\s\S]*?)<\/span>/);
+    const location = locMatch ? decodeXmlEntities(stripTags(locMatch[1])).trim() : '';
+    const isRemote = REMOTE_RE.test(location) || REMOTE_RE.test(title);
+
+    seen.add(id);
+    jobs.push({
+      id: `personio-${id}`,
+      title,
+      company: companyName,
+      url: `https://${host}/job/${id}`,
+      salary: '',
+      location,
+      isRemote,
+      workplaceType: isRemote ? 'Remote' : 'Onsite',
+      relocates: false,
+      date: '',
+      snippet: '',
+      source: 'personio',
+    });
+  }
+  return jobs;
+}
+
+/**
+ * Fetch + normalize a Personio tenant's jobs. Primary path is the public XML
+ * feed; when a tenant disables it (404 on /xml) the careers page is scraped
+ * instead — see {@link parsePersonioHtml}. Any other error (network, 5xx,
+ * blocked) is a genuine dead board and rethrown; if the HTML fallback itself
+ * fails/errors, that error propagates too (dead board preserved).
  * @param {string} apiUrl `https://<slug>.jobs.personio.(de|com)/xml` (from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
  */
@@ -143,9 +226,26 @@ export async function fetchPersonio(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
   assertPersonioUrl(apiUrl);
   const host = new URL(apiUrl).hostname;
-  const text = await fetchText(fetchImpl, apiUrl, {
-    signal,
-    headers: { accept: 'application/xml, text/xml' },
-  });
-  return parsePersonioXml(text, company.name || '', host);
+  try {
+    const text = await fetchText(fetchImpl, apiUrl, {
+      signal,
+      headers: { accept: 'application/xml, text/xml' },
+    });
+    return parsePersonioXml(text, company.name || '', host);
+  } catch (err) {
+    // A non-404 failure is a genuine dead board — rethrow, no silent fallback.
+    if (err?.status !== 404) throw err;
+    // Some tenants disable the public XML feed (404 on /xml, 200 on the page).
+    // The careers page is server-rendered with the full job list in its initial
+    // HTML, so fall back to scraping it directly instead of giving up.
+    // ?language=en forces English titles — unlike the XML feed (no language
+    // param; always the tenant default), the HTML page respects it.
+    const pageUrl = `https://${host}/?language=en`;
+    assertPersonioUrl(pageUrl);
+    const html = await fetchText(fetchImpl, pageUrl, {
+      signal,
+      headers: { accept: 'text/html' },
+    });
+    return parsePersonioHtml(html, company.name || '', host);
+  }
 }

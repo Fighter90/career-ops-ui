@@ -11,6 +11,25 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.136.0] — 2026-08-11
+
+Paridad con career-ops padre **v1.26.x** (posterior a v1.26.0 en la rama principal) — una nueva fuente sin autenticación más una ronda de mejoras de calidad y robustez portadas a los espejos de web-ui. El registro ahora son **79 fuentes = 74 en inglés + 5 en ruso** (`ALL_ADAPTERS` 74).
+
+### Añadido
+- **`eightfold`** (Eightfold AI, #2684) — boards de captación de talento vía la API sin autenticación `https://<tenant>.eightfold.ai/api/apply/v2/jobs`, anclada a host a `*.eightfold.ai` (el CNAME de marca `careers.<company>.com` se rechaza deliberadamente); paginada con un límite de seguridad, lanzamiento de error ante board muerto, y deduplicación de URL. Fuente + adaptador + suite aislada para CI; aparece en el filtro de Fuente de `#/scan` y en la landing.
+
+### Corregido
+- **Deduplicación y claves de rol con reconocimiento Unicode** (#2569 / #2587 / #2667) — una nueva `normalizeTextKey` compartida (NFKC, conserva letras/marcas/dígitos de cualquier alfabeto) sustituye a las claves solo-ASCII: `detect-reposts` ahora agrupa variantes de ancho/puntuación del nombre de empresa ("Acme, Inc." ≡ "Acme Inc") y nunca colapsa empleadores no latinos distintos, mientras que `role-matcher` pliega títulos en ancho completo y conserva los tokens de rol no latinos en lugar de borrarlos.
+- **`fetchJsonWithRetry` ya no reintenta una redirección rechazada** (#2657) — una protección `redirect:'error'` que encuentra un 3xx es determinista, así que ahora es no reintentable y falla rápido en lugar de agotar el presupuesto de reintentos.
+- **Grupos AND de `title_filter.positive`** (#2552) — un ` + ` delimitado por espacios dentro de una entrada positiva ahora exige que todos los términos aparezcan en el título, en cualquier orden.
+- **`oraclecloud` acepta los apex de tenant numerados** `oraclecloud1.com … oraclecloud99.com` (#2683) — una familia acotada (sin cero inicial, ≤ 2 dígitos), nunca un apex comodín.
+- **`workable` reforzado** (#2675) — reintentos, cabeceras similares a un navegador, y serialización de peticiones frente al host tras Cloudflare.
+- **`personio` recurre a un scraping HTML** cuando el feed XML está desactivado, en lugar de devolver nada.
+- **Los alias FALLBACK de `states` resincronizados** con el padre (#2615).
+
+### Notas
+- No portado (no reflejado por web-ui, o exclusivo de CLI): reply-matcher (#2672), jd-similarity (#2661), jd-skill-gap (#2686), el parseo de scan env-path (#2568) / `--flag=value` (#2589), y los cambios de cover-letter / plantilla de CV / doctor / ollama / generate-pdf. Los avisos HIGH de `js-yaml`/`nanoid` del lado web ya se habían corregido en web-ui v1.135.0.
+
 ## [1.135.0] — 2026-08-11
 
 Paridad con career-ops padre **v1.26.0** — cinco nuevas fuentes de escaneo sin autenticación más correcciones de precisión en cuatro boards que web-ui ya incorpora. El registro ahora son **78 fuentes = 73 en inglés + 5 en ruso** (`ALL_ADAPTERS` 73).

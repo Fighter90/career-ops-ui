@@ -9,6 +9,25 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.136.0] — 2026-08-11
+
+Parytet z rodzicem career-ops **v1.26.x** (po głównej linii v1.26.0) — jedno nowe źródło bez autoryzacji oraz fala poprawek jakości i odporności dla kodu odzwierciedlanego w web-ui. Rejestr liczy teraz **79 źródeł = 74 angielskie + 5 rosyjskich** (`ALL_ADAPTERS` 74).
+
+### Dodano
+- **`eightfold`** (Eightfold AI, #2684) — tablice rekrutacyjne poprzez bezautoryzacyjne API `https://<tenant>.eightfold.ai/api/apply/v2/jobs`, przypięte do hosta `*.eightfold.ai` (markowy CNAME `careers.<company>.com` jest celowo odrzucany); stronicowane z limitem bezpieczeństwa, zgłasza błąd dla martwej tablicy, deduplikacja adresów URL. Źródło + adapter oraz izolowany dla CI zestaw testów; pojawia się w filtrze Source na `#/scan` oraz na landingu.
+
+### Naprawiono
+- **Deduplikacja i klucze ról świadome Unicode** (#2569 / #2587 / #2667) — nowa współdzielona `normalizeTextKey` (NFKC, zachowuje litery/znaki diakrytyczne/cyfry z każdego alfabetu) zastępuje klucze ograniczone do ASCII: `detect-reposts` teraz grupuje warianty firm różniące się szerokością znaków/interpunkcją ("Acme, Inc." ≡ "Acme Inc") i nigdy nie zlewa odrębnych pracodawców spoza alfabetu łacińskiego, a `role-matcher` składa tytuły o pełnej szerokości i zachowuje tokeny ról spoza alfabetu łacińskiego, zamiast je wymazywać.
+- **`fetchJsonWithRetry` nie ponawia już odrzuconego przekierowania** (#2657) — zabezpieczenie `redirect:'error'` napotykające 3xx jest deterministyczne, więc jest teraz nieponawialne i zawodzi szybko, zamiast zużywać budżet ponowień.
+- **Grupy AND w `title_filter.positive`** (#2552) — rozdzielony spacjami ` + ` wewnątrz wpisu pozytywnego wymaga teraz, aby każdy termin wystąpił w tytule, w dowolnym porządku.
+- **`oraclecloud` akceptuje numerowane domeny najemcy** `oraclecloud1.com … oraclecloud99.com` (#2683) — ograniczona rodzina (bez wiodącego zera, ≤ 2 cyfry), nigdy dowolna domena wieloznaczna.
+- **`workable` wzmocniony** (#2675) — ponowienia, nagłówki przypominające przeglądarkę oraz serializacja żądań wobec hosta osłanianego przez Cloudflare.
+- **`personio` przechodzi na zeskrobywanie HTML**, gdy kanał XML jest wyłączony, zamiast zwracać brak wyników.
+- **Aliasy FALLBACK dla `states` ponownie zsynchronizowane** z rodzicem (#2615).
+
+### Uwagi
+- Nieprzeniesione (nie odzwierciedlone przez web-ui lub tylko CLI): reply-matcher (#2672), jd-similarity (#2661), jd-skill-gap (#2686), parsowanie ścieżki środowiskowej skanowania (#2568) / `--flag=value` (#2589) oraz zmiany dla listu motywacyjnego / szablonu CV / doctor / ollama / generate-pdf. Zagrożenia HIGH dla webowych `js-yaml`/`nanoid` zostały już naprawione w web-ui v1.135.0.
+
 ## [1.135.0] — 2026-08-11
 
 Parytet z rodzicem career-ops **v1.26.0** — pięć nowych źródeł skanowania bez autoryzacji oraz poprawki poprawności dla czterech tablic, które web-ui już obsługuje. Rejestr liczy teraz **78 źródeł = 73 angielskie + 5 rosyjskich** (`ALL_ADAPTERS` 73).

@@ -29,6 +29,7 @@ window.ScanResults = (function () {
     { value: 'dassault',        label: 'Dassault Systèmes' },
     { value: 'deutschebahn',    label: 'Deutsche Bahn' },
     { value: 'echojobs',        label: 'EchoJobs' },
+    { value: 'eightfold',       label: 'Eightfold' },
     { value: 'flowxtra',        label: 'Flowxtra' },
     { value: 'gem',             label: 'Gem' },
     { value: 'getonbrd',        label: 'Get on Board' },

@@ -46,13 +46,42 @@ export function compileKeyword(kw) {
 }
 
 /**
+ * An AND-group: whitespace-delimited ` + ` between terms in a single
+ * `title_filter.positive` entry means EVERY term must appear in the title, in
+ * any order (parent career-ops #2552). `title_filter.positive` is otherwise a
+ * hand-maintained list of literal spellings, and real titles vary in word order
+ * and separators — an AND-group lets one entry require a conjunction
+ * ("staff + platform") without enumerating every ordering. The surrounding
+ * whitespace is REQUIRED on purpose: a bare `split('+')` would shatter "c++"
+ * and "front+back" into fragments that match almost every title.
+ */
+const AND_SEPARATOR = /\s+\+\s+/;
+
+/**
+ * Compile one already-lowercased `positive` entry. An AND-group (` + `) becomes
+ * a matcher that requires EVERY term; anything else is a plain
+ * {@link compileKeyword}. Each term keeps its own word-boundary treatment, so a
+ * 2–3-letter term still can't hit inside another word.
+ * @param {string} kw already-lowercased keyword
+ */
+export function compilePositiveKeyword(kw) {
+  if (!AND_SEPARATOR.test(kw)) return compileKeyword(kw);
+  const matchers = kw.split(AND_SEPARATOR).map((t) => t.trim()).filter(Boolean).map(compileKeyword);
+  if (matchers.length === 0) return compileKeyword(kw);
+  return (lower) => matchers.every((m) => m(lower));
+}
+
+/**
  * Compile a raw keyword list (tolerating malformed entries) into an array of
  * matcher functions. Exposed so the RU scanner can compile its negative list
  * once while keeping the lowercased array for collision warnings.
  * @param {unknown} arr
+ * @param {(kw: string) => (lower: string) => boolean} [compiler] per-entry
+ *   compiler — {@link compileKeyword} (default) for negatives, or
+ *   {@link compilePositiveKeyword} for AND-group-aware positives.
  * @returns {Array<(lower: string) => boolean>}
  */
-export function compileKeywordList(arr) {
+export function compileKeywordList(arr, compiler = compileKeyword) {
   // v1.79.0 — trim BEFORE the length check (parent career-ops v1.14.0 #1261):
   // a whitespace-only keyword ("  ") otherwise survives length>0 and compiles
   // into a substring matcher that matches almost everything.
@@ -60,7 +89,7 @@ export function compileKeywordList(arr) {
     .filter((k) => typeof k === 'string')
     .map((k) => k.trim().toLowerCase())
     .filter((k) => k.length > 0)
-    .map(compileKeyword);
+    .map(compiler);
 }
 
 /**
@@ -70,7 +99,7 @@ export function compileKeywordList(arr) {
  * @returns {(title: string) => boolean} predicate — true = keep the job
  */
 export function buildTitleFilter(titleFilter) {
-  const positive = compileKeywordList(titleFilter?.positive);
+  const positive = compileKeywordList(titleFilter?.positive, compilePositiveKeyword);
   const negative = compileKeywordList(titleFilter?.negative);
   return (title) => {
     const lower = (title || '').toLowerCase();

@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
+[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
 
-> **🆕 Última versão — v1.135.0** — paridade com o career-ops pai **v1.26.0**: **cinco novas fontes de varredura zero-auth** — JOIN, Getro, Consider, JOINUP e Remotli — além de correções de precisão no a16z Speedrun (nova tentativa em falhas transitórias, sem mais abortar o board inteiro), no Arbeitsagentur (API Jobsuche v6), no The Hub (API v2) e no Hacker News (busca pela conta whoishiring). O registro agora soma **78 fontes de varredura**. **2306 testes.**
+> **🆕 Última versão — v1.136.0** — paridade com o career-ops pai **v1.26.x**: uma nova fonte de varredura **Eightfold AI** além de uma onda de **qualidade e robustez** — chaves de deduplicação de empresa/cargo com suporte a Unicode (não-Latin não colapsa mais), o `fetchJsonWithRetry` para de tentar novamente um redirecionamento recusado, `title_filter.positive` ganha grupos AND com ` + `, e o reforço de `oraclecloud`/`workable`/`personio`. O registro agora soma **79 fontes de varredura**. **2343 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

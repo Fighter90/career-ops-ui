@@ -102,6 +102,30 @@ test('fetchJsonWithRetry: does NOT retry a permanent 404 — throws on the first
   assert.equal(calls, 1);
 });
 
+test('fetchJsonWithRetry: does NOT retry a refused redirect (deterministic, #2657)', async () => {
+  let calls = 0;
+  const fake = async () => {
+    calls += 1;
+    // shape undici throws for `fetch(url, { redirect: 'error' })` meeting a 3xx
+    const err = new TypeError('fetch failed');
+    err.cause = new Error('unexpected redirect');
+    throw err;
+  };
+  await assert.rejects(() => fetchJsonWithRetry(fake, 'https://x/api', { retries: 3, retryDelayMs: 0 }), TypeError);
+  assert.equal(calls, 1); // refused redirect is non-retryable — one attempt only
+});
+
+test('fetchJsonWithRetry: a plain network TypeError (no redirect cause) is still retried', async () => {
+  let calls = 0;
+  const fake = async () => {
+    calls += 1;
+    if (calls === 1) throw new TypeError('network error'); // no .cause → transient
+    return { ok: true, json: async () => ({ ok: 1 }) };
+  };
+  assert.deepEqual(await fetchJsonWithRetry(fake, 'https://x/api', { retries: 2, retryDelayMs: 0 }), { ok: 1 });
+  assert.equal(calls, 2);
+});
+
 test('fetchJsonWithRetry: propagates the last error after exhausting retries', async () => {
   let calls = 0;
   const fake = async () => { calls += 1; return { ok: false, status: 502 }; };

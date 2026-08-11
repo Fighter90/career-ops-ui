@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
+[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
 
-> **🆕 Latest release — v1.135.0** — parent career-ops **v1.26.0** parity: **five new zero-auth scan sources** — JOIN, Getro, Consider, JOINUP and Remotli — plus correctness fixes to a16z Speedrun (transient-retry, no more whole-board aborts), Arbeitsagentur (v6 Jobsuche API), The Hub (v2 API) and Hacker News (whoishiring-account lookup). Registry now **78 scan sources**. **2306 tests.**
+> **🆕 Latest release — v1.136.0** — parent career-ops **v1.26.x** parity: a new **Eightfold AI** scan source plus a **quality & robustness** wave — Unicode-aware company/role dedup keys (non-Latin no longer collapses), `fetchJsonWithRetry` stops retrying a refused redirect, `title_filter.positive` gains ` + ` AND-groups, and `oraclecloud`/`workable`/`personio` hardening. Registry now **79 scan sources**. **2343 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
+[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
 
-> **🆕 最新版本 — v1.135.0** — 父项目 career-ops **v1.26.0** 对齐：**五个新的零鉴权扫描来源**——JOIN、Getro、Consider、JOINUP 与 Remotli——以及对 a16z Speedrun（短暂波动重试，不再中止整块招聘板）、Arbeitsagentur（v6 Jobsuche API）、The Hub（v2 API）与 Hacker News（whoishiring 账号查询）的正确性修复。注册表现为 **78 个扫描来源**。**2306 个测试。**
+> **🆕 最新版本 — v1.136.0** — 父项目 career-ops **v1.26.x** 对齐：新增一个 **Eightfold AI** 扫描来源，以及一波**质量与健壮性**改进——Unicode 感知的公司/角色去重键（非拉丁字符不再被误合并）、`fetchJsonWithRetry` 不再重试被拒绝的重定向、`title_filter.positive` 新增 ` + ` AND 分组，以及 `oraclecloud`/`workable`/`personio` 加固。注册表现为 **79 个扫描来源**。**2343 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

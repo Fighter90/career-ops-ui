@@ -17,6 +17,7 @@
  */
 import { readFileSync, existsSync } from 'node:fs';
 import { roleFuzzyMatch } from './role-matcher.mjs';
+import { normalizeTextKey } from './text-key.mjs';
 
 export const DEFAULT_WINDOW_DAYS = 90;
 
@@ -82,7 +83,10 @@ export function detectReposts(rows, windowDays = DEFAULT_WINDOW_DAYS) {
 
   const byCompany = new Map();
   for (const row of valid) {
-    const key = row.company.toLowerCase();
+    // Unicode-aware key (#2569): folds width/punctuation/spacing so "Acme, Inc."
+    // and "Acme Inc" cluster, and non-Latin employers («Тинькофф», 「サイボウズ」)
+    // key to themselves instead of collapsing under an ASCII strip.
+    const key = normalizeTextKey(row.company) || row.company.toLowerCase();
     if (!byCompany.has(key)) byCompany.set(key, []);
     byCompany.get(key).push(row);
   }

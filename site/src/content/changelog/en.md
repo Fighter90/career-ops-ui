@@ -8,6 +8,27 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.136.0] — 2026-08-11
+
+Parent career-ops **v1.26.x** parity (post-v1.26.0 mainline) — one new zero-auth source plus a wave of **quality & robustness** ports to code web-ui mirrors. Registry now **79 sources = 74 EN + 5 RU** (`ALL_ADAPTERS` 74).
+
+### Added
+- **`eightfold`** (Eightfold AI, parent #2684) — talent-acquisition boards via the zero-auth `https://<tenant>.eightfold.ai/api/apply/v2/jobs` API, host-pinned to `*.eightfold.ai` (the branded `careers.<company>.com` CNAME is deliberately rejected — the entry must point at the tenant host); paginated with a safety cap, dead-board-throw, url-dedup. Source + adapter + CI-isolated suite; appears in the `#/scan` Source filter and on the landing.
+
+### Fixed
+- **Unicode-aware dedup & role keys** (parent #2569 / #2587 / #2667) — a new shared `server/lib/text-key.mjs::normalizeTextKey` (NFKC + lowercase, keeps letters/marks/digits of **any** script) replaces the ASCII-only keys web-ui mirrored from the core:
+  - `detect-reposts` now keys the company on it, so width/punctuation/spacing variants (`"Acme, Inc."` ≡ `"Acme Inc"`) cluster and a genuine repost is no longer missed, while distinct non-Latin employers («Тинькофф» vs «Яндекс») never collapse to one key.
+  - `role-matcher` folds full-width titles (`ＳＥＮＩＯＲ …` ≡ `Senior …`) and keeps non-Latin role tokens instead of erasing them to an empty set that could never match.
+- **`fetchJsonWithRetry` no longer retries a refused redirect** (parent #2657) — our `redirect:'error'` SSRF guard meeting a 3xx surfaces as a no-status `TypeError` that looks transient but is deterministic; it's now classified non-retryable (via undici's `err.cause.message`), so it fails fast instead of burning the whole retry budget.
+- **`title_filter.positive` AND-groups** (parent #2552) — a whitespace-delimited ` + ` inside a positive entry (`"staff + platform"`) now requires **every** term to appear in the title, in any order; plain entries and `c++`-style terms are unaffected (the separator requires surrounding whitespace).
+- **`oraclecloud` accepts the numbered tenant apexes** `oraclecloud1.com … oraclecloud99.com` (parent #2683) — some tenants live only on a numbered apex (`<t>.fa.ocs.oraclecloud26.com`); the host pin now enumerates the bounded family (no leading zero, ≤ 2 digits — never a wildcard apex).
+- **`workable` hardened** (parent #2675) — the widget request now goes through the shared retry helper with browser-like headers + a per-account referer and process-wide request serialization against the Cloudflare-fronted host.
+- **`personio` falls back to an HTML scrape** when the XML jobs feed is disabled (404) instead of returning nothing — same host-pinning, dead-board contract preserved.
+- **`states` FALLBACK aliases resynced** with the parent's `states.yml` (#2615) — `evaluated` gains `condicional/hold/evaluar/verificar`, `skip` gains `geo blocker/geo_blocker` (the live parent file is still read first; this only backstops a fresh clone).
+
+### Notes
+- **Not ported** (not mirrored by web-ui, or CLI-only): `reply-matcher` corroboration (#2672), `jd-similarity` seniority gate (#2661), `jd-skill-gap` heading recognition (#2686) — web-ui has no email-reply / JD-analysis surface; `scan` env-path (#2568) / `--flag=value` (#2589) parsing and the per-run dedup-read perf (#… ) — web-ui runs the scanners in-process; cover-letter / CV-template / doctor / ollama / generate-pdf changes — CLI-only. The web `js-yaml`/`nanoid` HIGH advisories were already patched in web-ui v1.135.0.
+
 ## [1.135.0] — 2026-08-11
 
 Parent career-ops **v1.26.0** parity — **five new zero-auth scan sources** plus correctness fixes to four boards web-ui already carries. Registry now **78 sources = 73 EN + 5 RU** (`ALL_ADAPTERS` 73).

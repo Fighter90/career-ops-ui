@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
+[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.135.0** — पैरेंट career-ops **v1.26.0** पैरिटी: **पाँच नए ज़ीरो-ऑथ स्कैन स्रोत** — JOIN, Getro, Consider, JOINUP और Remotli — साथ ही a16z Speedrun (क्षणिक-रीट्राई, अब पूरे बोर्ड का अबॉर्ट नहीं), Arbeitsagentur (v6 Jobsuche API), The Hub (v2 API), और Hacker News (whoishiring-अकाउंट लुकअप) में सुधार। रजिस्ट्री अब **78 स्कैन स्रोत**। **2306 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.136.0** — पैरेंट career-ops **v1.26.x** पैरिटी: एक नया **Eightfold AI** स्कैन स्रोत, साथ ही एक **क्वालिटी व रोबस्टनेस** लहर — Unicode-अवेयर कंपनी/role डीडुप कीज़ (non-Latin अब नहीं समेटा जाता), `fetchJsonWithRetry` एक रिजेक्टेड रीडायरेक्ट पर रीट्राई करना बंद करता है, `title_filter.positive` को ` + ` AND-groups मिलते हैं, और `oraclecloud`/`workable`/`personio` हार्डनिंग। रजिस्ट्री अब **79 स्कैन स्रोत**। **2343 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

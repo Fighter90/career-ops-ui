@@ -13,7 +13,7 @@ import assert from 'node:assert/strict';
 import { fetchBambooHR, parseBambooHRResponse, assertBambooHRUrl } from '../server/lib/sources/bamboohr.mjs';
 import { fetchBreezy, parseBreezyResponse, assertBreezyUrl } from '../server/lib/sources/breezy.mjs';
 import { fetchComeet, parseComeetResponse, assertComeetUrl, isComeetApiUrl, redactToken } from '../server/lib/sources/comeet.mjs';
-import { fetchPersonio, parsePersonioXml, assertPersonioUrl } from '../server/lib/sources/personio.mjs';
+import { fetchPersonio, parsePersonioXml, parsePersonioHtml, assertPersonioUrl } from '../server/lib/sources/personio.mjs';
 import { fetchRecruitee, parseRecruiteeResponse, assertRecruiteeUrl } from '../server/lib/sources/recruitee.mjs';
 import { fetchSolidJobs, parseSolidJobsResponse, assertSolidJobsUrl, isSolidJobsUrl } from '../server/lib/sources/solidjobs.mjs';
 
@@ -128,6 +128,74 @@ test('personio: fetch (text) + adapter detection + SSRF guard', async () => {
   assert.equal(jobs[0].isRemote, true);
   assert.equal(personioAdapter.buildEndpoint({ careers_url: 'https://acme.jobs.personio.com' }), 'https://acme.jobs.personio.com/xml');
   assert.throws(() => assertPersonioUrl('https://evil.com/xml'), /untrusted hostname/);
+});
+
+// HTML fallback shape served when a tenant disables the /xml feed. Class names
+// carry build-specific hashed suffixes; only the stable job-box / jobMetaText
+// substrings are matched. Two job-box anchors + one unrelated nav link.
+const PERSONIO_HTML = `<ul><li>
+    <a class="page_job__haA3E job-box" href="/job/2378948"><div class="page_jobHeaderContent__c_2JP">
+      <h3 class="page_jobTitle__K0ilk jb-title">ML-QA Engineer</h3>
+      <div class="page_jobMeta__GhU10 jb-description">
+        <div class="page_jobMetaItem__olmVi"><span class="page_jobMetaText__5yzux">Berlin AI Campus, Munich</span></div>
+        <div class="page_jobMetaItem__olmVi"><span class="page_jobMetaText__5yzux">Vollzeit</span></div>
+      </div>
+    </div></a>
+  </li><li>
+    <a class="page_job__haA3E job-box" href="/job/2540715?language=en"><div class="page_jobHeaderContent__c_2JP">
+      <h3 class="page_jobTitle__K0ilk jb-title">Senior Engineer (m/f/d) &amp; Lead</h3>
+      <div class="page_jobMeta__GhU10 jb-description">
+        <div class="page_jobMetaItem__olmVi"><span class="page_jobMetaText__5yzux">Remote</span></div>
+      </div>
+    </div></a>
+  </li><li>
+    <a class="nav-link" href="/privacy-policy">Datenschutzerklärung</a>
+  </li></ul>`;
+
+test('personio: parsePersonioHtml scrapes job-box anchors, ignores nav links, strips ?language= + decodes entities', () => {
+  const jobs = parsePersonioHtml(PERSONIO_HTML, 'Acme', 'acme.jobs.personio.de');
+  assert.equal(jobs.length, 2); // the /privacy-policy nav-link is ignored
+  assert.equal(jobs[0].title, 'ML-QA Engineer');
+  assert.equal(jobs[0].url, 'https://acme.jobs.personio.de/job/2378948');
+  assert.equal(jobs[0].location, 'Berlin AI Campus, Munich'); // first jobMetaText span only
+  assert.equal(jobs[0].company, 'Acme');
+  assert.equal(jobs[0].source, 'personio');
+  assert.equal(jobs[0].date, ''); // no createdAt exposed on the listing page
+  assert.equal(jobs[1].title, 'Senior Engineer (m/f/d) & Lead'); // &amp; decoded
+  assert.equal(jobs[1].url, 'https://acme.jobs.personio.de/job/2540715'); // ?language=en stripped
+  assert.equal(jobs[1].isRemote, true);
+  // empty / non-string page → empty result (no crash)
+  assert.equal(parsePersonioHtml('', 'X', 'acme.jobs.personio.de').length, 0);
+  assert.equal(parsePersonioHtml(null, 'X', 'acme.jobs.personio.de').length, 0);
+});
+
+test('personio: fetch falls back to HTML scrape when the /xml feed is disabled (404)', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(url);
+    if (url.endsWith('/xml')) return { ok: false, status: 404 }; // feed disabled
+    return { ok: true, text: async () => PERSONIO_HTML };         // careers page
+  };
+  const jobs = await fetchPersonio('https://acme.jobs.personio.de/xml', { fetchImpl, company: { name: 'Acme' } });
+  assert.equal(calls.length, 2);
+  assert.equal(calls[1], 'https://acme.jobs.personio.de/?language=en');
+  assert.equal(jobs.length, 2);
+  assert.equal(jobs[0].title, 'ML-QA Engineer');
+  assert.equal(jobs[0].url, 'https://acme.jobs.personio.de/job/2378948');
+  assert.equal(jobs[0].source, 'personio'); // jobs come from the HTML fallback
+});
+
+test('personio: fetch re-throws a non-404 XML error without falling back to HTML', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(url);
+    return { ok: false, status: 500 };
+  };
+  await assert.rejects(
+    fetchPersonio('https://acme.jobs.personio.de/xml', { fetchImpl, company: { name: 'Acme' } }),
+    /HTTP 500/,
+  );
+  assert.equal(calls.length, 1); // only /xml was hit — no fallback on a 500
 });
 
 // ─────────────────────────────── Recruitee ──────────────────────────────

@@ -8,6 +8,25 @@
 
 ---
 
+## [1.136.0] — 2026-08-11
+
+對齊父專案 career-ops **v1.26.x**（v1.26.0 主線之後）— 一個新的零驗證來源，加上對 web-ui 鏡像程式碼的一系列品質與穩健性移植。註冊表現有 **79 個來源 = 74 個英文 + 5 個俄文**（`ALL_ADAPTERS` 74）。
+
+### 新增
+- **`eightfold`**（Eightfold AI，#2684）— 透過零驗證的 `https://<tenant>.eightfold.ai/api/apply/v2/jobs` API 讀取人才招募看板，主機固定為 `*.eightfold.ai`（品牌化的 `careers.<company>.com` CNAME 則刻意予以拒絕）；採分頁讀取，並設有安全上限、失效看板拋出、URL 去重。含來源 + adapter + CI 隔離測試套件；已出現在 `#/scan` 的 Source 篩選器與首頁。
+
+### 修復
+- **支援 Unicode 的去重與職稱鍵**（#2569 / #2587 / #2667）— 新的共用 `normalizeTextKey`（NFKC，保留任何文字系統的字母／符號／數字）取代了僅限 ASCII 的鍵：`detect-reposts` 現在能將全形／半形與標點差異的公司變體歸為同一群（"Acme, Inc." 等同於 "Acme Inc"），且絕不會把不同的非拉丁文雇主誤併；而 `role-matcher` 會折合全形職稱，並保留非拉丁文職稱字詞，而非將其抹除。
+- **`fetchJsonWithRetry` 不再對遭拒的重新導向進行重試**（#2657）— `redirect:'error'` 防護遇上 3xx 屬於確定性結果，因此現已標記為不可重試，會直接快速失敗，而不會白白耗盡重試預算。
+- **`title_filter.positive` 的 AND 群組**（#2552）— positive 項目中以空白分隔的 ` + ` 現在會要求每個詞彙皆須出現在職稱中，不論順序。
+- **`oraclecloud` 現已接受帶編號的租戶頂級網域** `oraclecloud1.com … oraclecloud99.com`（#2683）— 一個有界的網域家族（不含前導零、至多 2 位數字），絕非萬用字元頂級網域。
+- **`workable` 強化**（#2675）— 針對由 Cloudflare 代管的主機加入重試、類瀏覽器標頭與請求序列化。
+- **`personio` 在 XML 動態消息被停用時會改用 HTML 爬取作為後備方案**，而不是直接回傳空結果。
+- **`states` 的 FALLBACK 別名已與父專案重新同步**（#2615）。
+
+### 備註
+- 未移植（web-ui 未鏡像該功能，或僅限 CLI）：`reply-matcher`（#2672）、`jd-similarity`（#2661）、`jd-skill-gap`（#2686）、掃描的環境變數路徑（#2568）／`--flag=value`（#2589）解析，以及求職信／CV 範本／doctor／ollama／generate-pdf 相關變更。網頁版的 `js-yaml`／`nanoid` HIGH 級別安全公告已於 web-ui v1.135.0 修補。
+
 ## [1.135.0] — 2026-08-11
 
 對齊父專案 career-ops **v1.26.0** — 五個新的零驗證掃描來源，加上對 web-ui 既有四個看板的正確性修復。註冊表現有 **78 個來源 = 73 個英文 + 5 個俄文**（`ALL_ADAPTERS` 73）。

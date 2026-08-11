@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
+[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
 
-> **🆕 Najnowsze wydanie — v1.135.0** — parytet z rodzicem career-ops **v1.26.0**: **pięć nowych źródeł skanowania bez autoryzacji** — JOIN, Getro, Consider, JOINUP i Remotli — a także poprawki poprawności dla a16z Speedrun (ponowienia przy przejściowych błędach, koniec przerywania całej tablicy), Arbeitsagentur (API Jobsuche v6), The Hub (API v2) oraz Hacker News (wyszukiwanie po koncie whoishiring). Rejestr liczy teraz **78 źródeł skanowania**. **2306 testów.**
+> **🆕 Najnowsze wydanie — v1.136.0** — parytet z rodzicem career-ops **v1.26.x**: nowe źródło skanowania **Eightfold AI** oraz fala **jakości i odporności** — klucze deduplikacji firm/ról świadome Unicode (znaki spoza alfabetu łacińskiego nie zlewają się już ze sobą), `fetchJsonWithRetry` przestaje ponawiać odrzucone przekierowanie, `title_filter.positive` zyskuje grupy AND ` + `, a także wzmocnienia `oraclecloud`/`workable`/`personio`. Rejestr liczy teraz **79 źródeł skanowania**. **2343 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 
