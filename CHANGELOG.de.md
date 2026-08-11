@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.140.0] — 2026-08-12
+
+**Aufschlussreiche Statistiken: reichere Gehaltszahlen** — die Gehaltsaufschlüsselung unter „Meine Pipeline" auf `#/stats` zeigt jetzt den **Durchschnitt** (nicht nur den Median), einen **pro Jahr ⇄ pro Monat**-Umschalter und eine **Min · Ø · Median · Max**-Tabelle je Land. Erster Teil von Phase 3. Eine nutzergemeldete UX-Anpassung (ohne parent-sync).
+
+### Hinzugefügt
+- **Durchschnittsgehalt** — `RoleStats.salaryStats` liefert nun `avgUsd` neben `minUsd`/`medianUsd`/`maxUsd`. Der Median trotzt Ausreißern, der Durchschnitt zeigt die Schiefe — zusammen lesen sie sich als Verteilung.
+- **Pro-Jahr ⇄ Pro-Monat-Umschalter** und eine **Min · Ø · Median · Max-Tabelle je Land** im Gehaltsbereich, gesteuert von Währungs- und Zeitraum-Auswahl. 8 neue i18n-Schlüssel × **17 Sprachen**.
+
+### Hinweise
+- Die Zahlen stammen weiterhin nur aus Anzeigen mit lesbarem Gehalt und werden auf USD normalisiert (Richtwerte). Suite: **2361** Tests (+1).
+
 ## [1.139.0] — 2026-08-12
 
 **Verständlich: `?`-Hilfehinweise** — eine wiederverwendbare, CSP-sichere `?`-Schaltfläche, die beim Klick „was es tut / wie es funktioniert / was zu erwarten ist" in Ihrer Sprache erklärt. Eine nutzergemeldete UX-Anpassung (ohne parent-sync).

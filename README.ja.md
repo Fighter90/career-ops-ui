@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新リリース — v1.139.0** — **わかりやすく：`?` ヘルプヒント** — 見出し、`#/stats` の5タブ、8つのAI／分析ビュータイトルの横にある再利用可能でCSP安全な `?` が、翻訳済みの「何をするか / どう動くか / 何が得られるか」ポップオーバー（アクセシブル、RTL、テーマ対応）を開きます。14個の新キー ×17ロケール。 **2360 テスト.**
+> **🆕 最新リリース — v1.140.0** — **役立つ統計：より豊かな給与数値** — `#/stats` の「マイパイプライン」給与内訳に、（中央値だけでなく）**平均**、**年間 ⇄ 月間**切替、国別の**最小・平均・中央値・最大**表を追加。8個のキー ×17ロケール。 **2361 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

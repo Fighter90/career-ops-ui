@@ -25,13 +25,13 @@ Make every page self-explanatory, in every language. (Split out of the original 
 - [x] i18n fan-out ×17 (14 keys) for the first wave.
 - [ ] **Next wave** — extend the `?` hint to the remaining view headers (config, scan, tracker, cv-studio, apply, …) so the affordance is truly on *every* page.
 
-## Phase 3 — v1.140.0 "Insightful stats"
+## Phase 3 — "Insightful stats" (in progress)
 
 Make the numbers correct, detailed, and visual.
 
-- [ ] **Richer salary stats** — min / max / **average** (not just median), **monthly + yearly**, per country/role.
-- [ ] **Interactive, rebuildable charts** on `#/stats` (choose metric/dimension/period, re-render).
-- [ ] **Correctness** — fix the "Unknown" archetype bucketing so recommendations aren't nonsensical ("double down on Unknown").
+- [x] **Richer salary stats** (v1.140.0) — **average** (mean) added alongside min/median/max; **per-year ⇄ per-month** toggle; a **min·avg·median·max table per country** on `#/stats` "My pipeline".
+- [ ] **Interactive, rebuildable charts** on `#/stats` (choose metric/dimension/period, re-render) — next.
+- [ ] **Correctness** — fix the "Unknown" archetype bucketing so recommendations aren't nonsensical ("double down on Unknown"). Note: "Unknown" is **LLM output** from `#/orientation`, not a code literal — this is a prompt-quality fix (constrain the archetype vocabulary + handle an out-of-vocab archetype gracefully client-side).
 - [ ] **Funded companies** enrichment — company description, logo, salary range, open vacancies, visualization.
 
 ## Phase 5 — Nous Research / Hermes provider

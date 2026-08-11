@@ -30,6 +30,31 @@ Router.register('stats', async () => {
     ]);
   }
 
+  // v1.140.0 — a min/avg/median/max salary breakdown per country. `money` formats
+  // a USD amount into the selected currency; `per` applies the year⇄month divisor.
+  function salaryTable(rows, money, per) {
+    const th = (txt, left) => c('th', { style: { textAlign: left ? 'left' : 'right', padding: '5px 8px', color: 'var(--foggy)', fontWeight: '600', fontSize: '12px', whiteSpace: 'nowrap', borderBottom: '1px solid var(--line)' } }, txt);
+    const td = (txt, left) => c('td', { style: { textAlign: left ? 'left' : 'right', padding: '5px 8px', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap', borderBottom: '1px solid var(--line)' } }, txt);
+    const head = c('tr', null, [
+      th(t('stats.colCountry', 'Country'), true), th('n'),
+      th(t('stats.colMin', 'Min')), th(t('stats.colAvg', 'Avg')), th(t('stats.colMedian', 'Median')), th(t('stats.colMax', 'Max')),
+    ]);
+    const body = rows.map((cc) => c('tr', null, [
+      td(`${cc.flag || ''} ${cc.name}`.trim(), true),
+      td(String(cc.salary.count)),
+      td(money(per(cc.salary.minUsd))),
+      td(money(per(cc.salary.avgUsd))),
+      td(money(per(cc.salary.medianUsd))),
+      td(money(per(cc.salary.maxUsd))),
+    ]));
+    return c('div', { style: { overflowX: 'auto', marginTop: '12px' } }, [
+      c('table', { style: { borderCollapse: 'collapse', width: '100%', fontSize: '13px' } }, [
+        c('thead', null, head),
+        c('tbody', null, body),
+      ]),
+    ]);
+  }
+
   function barChart(items, valueFmt) {
     const rows = items.filter((x) => x.value > 0);
     if (!rows.length) return c('p', { style: { color: 'var(--foggy)', padding: '8px 0' } }, t('stats.noData', 'No data for this selection.'));
@@ -353,10 +378,18 @@ Router.register('stats', async () => {
     }
     let curState = 'USD';
     const curSel = currencySelect((v) => { curState = v; draw(); });
+    // v1.140.0 — annual ⇄ monthly toggle (÷12) for the salary figures.
+    let perState = 'year';
+    const perSel = c('select', { className: 'lang-select', 'aria-label': t('stats.period', 'Period') }, [
+      c('option', { value: 'year' }, t('stats.perYear', 'Per year')),
+      c('option', { value: 'month' }, t('stats.perMonth', 'Per month')),
+    ]);
+    perSel.addEventListener('change', () => { perState = perSel.value; draw(); });
     wrap.appendChild(c('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', margin: '8px 0 20px' } }, [
       labeled(t('stats.roleFilter', 'Role'), roleSel),
       labeled(t('stats.countryFilter', 'Country'), countrySel),
       labeled(t('stats.currency', 'Currency'), curSel),
+      labeled(t('stats.period', 'Period'), perSel),
     ]));
 
     const charts = c('div');
@@ -383,11 +416,16 @@ Router.register('stats', async () => {
       if (country) vac = vac.filter((v) => v.code === country);
       charts.appendChild(section(t('stats.vacanciesByCountry', 'Vacancies by country'), barChart(vac)));
 
-      let sal = agg.salaryByCountry.map((cc) => ({ label: `${cc.flag || ''} ${cc.name}`.trim(), value: cc.salary.medianUsd || 0, code: cc.code, n: cc.salary.count }));
-      if (country) sal = sal.filter((v) => v.code === country);
+      // period divisor: annual figures ÷12 when "Per month" is selected.
+      const per = (n) => (n == null ? null : (perState === 'month' ? n / 12 : n));
+      let rows = agg.salaryByCountry.slice();
+      if (country) rows = rows.filter((cc) => cc.code === country);
+      rows = rows.filter((cc) => cc.salary && cc.salary.count > 0);
+      let sal = rows.map((cc) => ({ label: `${cc.flag || ''} ${cc.name}`.trim(), value: per(cc.salary.medianUsd) || 0, code: cc.code, n: cc.salary.count }));
       const salNode = sal.some((s) => s.value > 0)
         ? c('div', null, [
           barChart(sal, money),
+          salaryTable(rows, money, per),
           c('p', { style: { color: 'var(--foggy)', fontSize: '12px', marginTop: '10px' } },
             t('stats.sampleCaveat', 'Based only on postings with a parseable salary — sparse data, treat as indicative. Amounts normalized to USD (approximate FX).')),
         ])

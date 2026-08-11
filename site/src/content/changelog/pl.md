@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.140.0] — 2026-08-12
+
+**Wnikliwe statystyki: bogatsze dane o wynagrodzeniach** — rozbicie wynagrodzeń w „Mój pipeline" na `#/stats` pokazuje teraz **średnią** (nie tylko medianę), przełącznik **rocznie ⇄ miesięcznie** i tabelę **min · śr · mediana · maks** wg kraju. Pierwsza część Fazy 3. Poprawka UX zgłoszona przez użytkownika (bez parent-sync).
+
+### Dodano
+- **Średnie wynagrodzenie** — `RoleStats.salaryStats` zwraca teraz `avgUsd` obok `minUsd`/`medianUsd`/`maxUsd`. Mediana jest odporna na wartości odstające, średnia ujawnia skośność — razem czytają się jak rozkład.
+- **Przełącznik rocznie ⇄ miesięcznie** i **tabela min · śr · mediana · maks wg kraju** w sekcji wynagrodzeń, sterowane selektorami waluty i okresu. 8 nowych kluczy i18n × **17 języków**.
+
+### Uwagi
+- Liczby wciąż pochodzą tylko z ofert z czytelnym wynagrodzeniem i są normalizowane do USD (orientacyjne). Zestaw: **2361** testów (+1).
+
 ## [1.139.0] — 2026-08-12
 
 **Zrozumiałość: podpowiedzi `?`** — wielokrotnego użytku, bezpieczny dla CSP przycisk `?`, który po kliknięciu wyjaśnia „co to robi / jak działa / czego oczekiwać" w Twoim języku. Poprawka UX zgłoszona przez użytkownika (bez parent-sync).

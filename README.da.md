@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Seneste udgivelse — v1.139.0** — **forståeligt: `?` hjælpetips** — et genanvendeligt, CSP-sikkert `?` ved siden af overskrifter, de 5 `#/stats`-faner og 8 AI-/analyse-visningstitler åbner en lokaliseret "hvad den gør / hvordan den virker / hvad man kan forvente"-popover (tilgængelig, RTL, tema-tilpasset). 14 nye nøgler ×17 sprog. **2360 tests.**
+> **🆕 Seneste udgivelse — v1.140.0** — **indsigtsfulde statistikker: rigere løntal** — lønopdelingen i "Min pipeline" på `#/stats` viser nu **gennemsnittet** (ikke kun medianen), en **pr. år ⇄ pr. måned**-skifter og en **min · gns · median · maks**-tabel pr. land. 8 nøgler ×17 sprog. **2361 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

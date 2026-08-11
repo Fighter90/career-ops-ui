@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Latest release — v1.139.0** — **understandable: `?` help hints** — a reusable, CSP-safe `?` next to headings, the 5 `#/stats` tabs, and 8 AI/analytics view titles opens a localized "what this does / how it works / what to expect" popover (accessible, RTL, theme-aware). 14 new keys ×17 locales. **2360 tests.**
+> **🆕 Latest release — v1.140.0** — **insightful stats: richer salary figures** — the `#/stats` "My pipeline" salary breakdown now shows the **average** (not just the median), a **per-year ⇄ per-month** toggle, and a **min · avg · median · max** table per country. 8 keys ×17 locales. **2361 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

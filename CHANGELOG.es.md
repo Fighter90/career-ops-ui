@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.140.0] — 2026-08-12
+
+**Estadísticas útiles: cifras salariales más ricas** — el desglose salarial de "Mi pipeline" en `#/stats` ahora muestra la **media** (no solo la mediana), un cambio **por año ⇄ por mes** y una tabla **mín · media · mediana · máx** por país. Primer tramo de la Fase 3. Ajuste de UX reportado por el usuario (sin parent-sync).
+
+### Añadido
+- **Salario medio (media)** — `RoleStats.salaryStats` ahora devuelve `avgUsd` junto a `minUsd`/`medianUsd`/`maxUsd`. La mediana resiste los valores atípicos; la media revela el sesgo, así que juntas se leen como una distribución.
+- **Cambio por año ⇄ por mes** y una **tabla mín · media · mediana · máx por país** en la sección salarial, con los selectores de moneda y periodo. 8 nuevas claves i18n × **17 idiomas**.
+
+### Notas
+- Las cifras siguen derivándose solo de anuncios con salario legible y normalizadas a USD (indicativas). Suite: **2361** pruebas (+1).
+
 ## [1.139.0] — 2026-08-12
 
 **Comprensible: pistas de ayuda `?`** — un botón `?` reutilizable y seguro para CSP que, al hacer clic, explica «qué hace / cómo funciona / qué esperar» en tu idioma. Ajuste de UX reportado por el usuario (sin parent-sync).

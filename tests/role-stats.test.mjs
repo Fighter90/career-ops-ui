@@ -102,8 +102,26 @@ test('aggregate: counts, country breakdown, salary-by-country', () => {
   assert.equal(r.byCountry.length, 4);
   const remote = r.salaryByCountry.find((c) => c.code === 'remote');
   assert.equal(remote.salary.medianUsd, 150000);
+  assert.equal(remote.salary.avgUsd, 150000);   // single sample → avg == median (v1.140.0)
   // salaryByCountry sorted by median desc → remote ($150k) leads.
   assert.equal(r.salaryByCountry[0].code, 'remote');
+});
+
+test('salaryStats: average exposes right-skew (v1.140.0)', () => {
+  // three remote postings, one very high → median resists it, average is pulled up.
+  const jobs = [
+    { title: 'Data Scientist', location: 'Remote', salary: '$100k' },
+    { title: 'Data Scientist', location: 'Remote', salary: '$100k' },
+    { title: 'Data Scientist', location: 'Remote', salary: '$400k' },
+  ];
+  const r = RS.aggregate(jobs, ['Data Scientist'], C);
+  const remote = r.salaryByCountry.find((c) => c.code === 'remote');
+  assert.equal(remote.salary.count, 3);
+  assert.equal(remote.salary.minUsd, 100000);
+  assert.equal(remote.salary.maxUsd, 400000);
+  assert.equal(remote.salary.medianUsd, 100000);        // middle value, unmoved by the outlier
+  assert.equal(remote.salary.avgUsd, 200000);           // (100+100+400)/3 → skew visible
+  assert.ok(remote.salary.avgUsd > remote.salary.medianUsd, 'avg must exceed median under right-skew');
 });
 
 test('aggregate: empty / no-scan input is safe', () => {
