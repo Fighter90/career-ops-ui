@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新リリース — v1.138.0** — **インターフェース言語での生成** — すべての AI 生成（キャリアプラン、オリエンテーション、市場レポート、模擬面接、ネットワーキング、「ドキュメントに質問」、メモリノート、two-pager）が常に英語ではなく UI で選択した言語で返るようになりました。加えてレビュー由来のテスト強化（CSS カラーロール・カナリアと `UI.md()` XSS ローダーの自己プローブ）。 **2356 テスト.**
+> **🆕 最新リリース — v1.139.0** — **わかりやすく：`?` ヘルプヒント** — 見出し、`#/stats` の5タブ、8つのAI／分析ビュータイトルの横にある再利用可能でCSP安全な `?` が、翻訳済みの「何をするか / どう動くか / 何が得られるか」ポップオーバー（アクセシブル、RTL、テーマ対応）を開きます。14個の新キー ×17ロケール。 **2360 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/interview-digest — Weekly interview digest (v1.133.0, parent parity #2129/#2130).
  *
@@ -13,7 +13,7 @@ Router.register('interview-digest', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('digest.title', 'Weekly interview digest')));
+  root.appendChild(HelpHint.title(t('digest.title', 'Weekly interview digest'), 'help.hint.digest'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('digest.subtitle', 'A mechanical roll-up of your interview sessions this week — which companies and rounds, recurring competencies, and open gaps. Zero-LLM; reads your interview-prep session notes.')));
 

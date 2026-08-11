@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Najnowsze wydanie — v1.138.0** — **generowanie w języku interfejsu** — każda generacja AI (plan kariery, orientacja, raport rynkowy, próbna rozmowa, networking, „zapytaj dokumentację”, notatka pamięci, two-pager) odpowiada teraz w języku wybranym w UI zamiast zawsze po angielsku; plus wzmocnienia testów z przeglądu (kanarek ról kolorów CSS i autosonda ładowarki XSS `UI.md()`). **2356 testów.**
+> **🆕 Najnowsze wydanie — v1.139.0** — **zrozumiałość: podpowiedzi `?`** — wielokrotnego użytku, bezpieczny dla CSP `?` obok nagłówków, 5 kart `#/stats` i 8 tytułów widoków AI/analitycznych otwiera zlokalizowany dymek „co to robi / jak działa / czego oczekiwać" (dostępny, RTL, zależny od motywu). 14 nowych kluczy ×17 języków. **2360 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

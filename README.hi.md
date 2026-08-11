@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.138.0** — **आपकी इंटरफ़ेस भाषा में जनरेशन** — हर AI जनरेशन (करियर प्लान, ओरिएंटेशन, मार्केट रिपोर्ट, मॉक इंटरव्यू, नेटवर्किंग, «डॉक्स से पूछें», मेमोरी-नोट, two-pager) अब हमेशा अंग्रेज़ी के बजाय UI में चुनी गई भाषा में उत्तर देता है; साथ ही समीक्षा-प्रेरित परीक्षण सुदृढ़ीकरण (एक CSS रंग-भूमिका कैनरी और एक `UI.md()` XSS लोडर स्व-जाँच)। **2356 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.139.0** — **समझने में आसान: `?` सहायता संकेत** — शीर्षकों, `#/stats` के 5 टैब और 8 AI/एनालिटिक्स व्यू शीर्षकों के बगल में एक पुन: प्रयोज्य, CSP-सुरक्षित `?` एक स्थानीयकृत «यह क्या करता है / कैसे काम करता है / क्या अपेक्षा करें» पॉपओवर (सुलभ, RTL, थीम-अनुरूप) खोलता है। 14 नई कुंजियाँ ×17 भाषाएँ। **2360 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

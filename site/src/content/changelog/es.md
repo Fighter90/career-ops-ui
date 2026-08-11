@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.139.0] — 2026-08-12
+
+**Comprensible: pistas de ayuda `?`** — un botón `?` reutilizable y seguro para CSP que, al hacer clic, explica «qué hace / cómo funciona / qué esperar» en tu idioma. Ajuste de UX reportado por el usuario (sin parent-sync).
+
+### Añadido
+- **Popover de pista de ayuda `?`** (`window.HelpHint`) — un `?` redondo junto a un encabezado abre un popover ligero, adaptado al tema y reflejado en RTL, que muestra una explicación localizada mediante `UI.md()`; accesible (`role="tooltip"`, `aria-expanded`, cierre con Escape o clic fuera, foco restaurado) y seguro para CSP.
+- **`?` en las 5 pestañas de `#/stats`** y en **8 títulos de vistas de IA/analítica** (career-plan, orientación, two-pager, networking, entrevista simulada, memoria, funded, resumen semanal) — 14 nuevas claves i18n × **17 idiomas**.
+
+### Notas
+- Todas las vistas ya tenían un subtítulo de una línea; el `?` añade la explicación más detallada bajo demanda y hace que los estados vacíos se expliquen por sí solos. Suite: **2360** pruebas (+4).
+
 ## [1.138.0] — 2026-08-12
 
 **Generación en el idioma de tu interfaz** — cada generación con IA ahora responde en el idioma que has elegido en la interfaz, además de refuerzos de pruebas surgidos de la revisión. Ajuste de UX reportado por el usuario (sin parent-sync).

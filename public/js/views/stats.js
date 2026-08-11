@@ -104,16 +104,16 @@ Router.register('stats', async () => {
   // ── tab bar ───────────────────────────────────────────────────────────────
   const panel = c('div');
   const tabDefs = [
-    { id: 'market', label: t('stats.tabMarket', 'Market report'), render: renderMarket },
-    { id: 'pipeline', label: t('stats.tabPipeline', 'My pipeline'), render: renderPipeline },
-    { id: 'trend', label: t('stats.tabTrend', 'Target-role trend'), render: renderTrend },
+    { id: 'market', label: t('stats.tabMarket', 'Market report'), hint: 'stats.hint.market', render: renderMarket },
+    { id: 'pipeline', label: t('stats.tabPipeline', 'My pipeline'), hint: 'stats.hint.pipeline', render: renderPipeline },
+    { id: 'trend', label: t('stats.tabTrend', 'Target-role trend'), hint: 'stats.hint.trend', render: renderTrend },
     // v1.117.0 (parent parity) — rejection patterns + per-ATS-vendor advance
     // rate from the parent's analyze-patterns.mjs (read-only shell-out).
-    { id: 'patterns', label: t('stats.tabPatterns', 'Rejection patterns'), render: renderPatterns },
+    { id: 'patterns', label: t('stats.tabPatterns', 'Rejection patterns'), hint: 'stats.hint.patterns', render: renderPatterns },
     // v1.118.0 (parent v1.18.0 parity) — lifetime pipeline stats (stats.mjs
     // #1605) + compensation observations (salary-gap.mjs), both read-only
     // shell-outs relayed by /api/stats/lifetime and /api/stats/salary-gap.
-    { id: 'lifetime', label: t('stats.tabLifetime', 'Lifetime'), render: renderLifetime },
+    { id: 'lifetime', label: t('stats.tabLifetime', 'Lifetime'), hint: 'stats.hint.lifetime', render: renderLifetime },
   ];
   const tabBar = c('div', { className: 'tabs', role: 'tablist',
     style: { display: 'flex', gap: '6px', flexWrap: 'wrap', borderBottom: '1px solid var(--line, #e5e7eb)', margin: '4px 0 18px' } });
@@ -126,6 +126,10 @@ Router.register('stats', async () => {
     tabBar.appendChild(b);
   });
   root.appendChild(tabBar);
+  // v1.139.0 — a caption for the active tab carrying a `?` help hint ("Rejection
+  // patterns (?)"). Kept OUTSIDE the tablist so the tablist holds only tabs.
+  const hintRow = c('div', { style: { display: 'flex', alignItems: 'center', gap: '2px', margin: '-8px 0 14px', minHeight: '20px', fontSize: '13px', fontWeight: '600', color: 'var(--ink, #111)' } });
+  root.appendChild(hintRow);
   root.appendChild(panel);
 
   let active = null;
@@ -138,6 +142,13 @@ Router.register('stats', async () => {
       b.style.color = on ? 'var(--fg, #111)' : 'var(--foggy)';
       b.style.borderBottomColor = on ? 'var(--accent, #4c8bf5)' : 'transparent';
     });
+    // refresh the active-tab caption + its help hint
+    const activeDef = tabDefs.find((d) => d.id === id);
+    hintRow.textContent = '';
+    if (activeDef) {
+      hintRow.appendChild(c('span', null, activeDef.label));
+      if (window.HelpHint && activeDef.hint) hintRow.appendChild(window.HelpHint.icon(activeDef.hint, { sectionLabel: activeDef.label }));
+    }
     panel.textContent = '';
     panel.appendChild(c('div', { className: 'loading' }, t('common.loading', 'Loading…')));
     const def = tabDefs.find((d) => d.id === id);

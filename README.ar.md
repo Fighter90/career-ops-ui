@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 أحدث إصدار — v1.138.0** — **التوليد بلغة واجهتك** — كل توليد بالذكاء الاصطناعي (خطة المسار المهني، التوجيه، تقرير السوق، المقابلة التجريبية، التواصل، «اسأل التوثيق»، ملاحظة الذاكرة، two-pager) يردّ الآن باللغة المختارة في الواجهة بدل الإنجليزية دائماً؛ إضافةً إلى تعزيزات اختبار من المراجعة (كناري أدوار ألوان CSS وفحص ذاتي لمحمّل XSS في `UI.md()`). **2356 اختبارًا.**
+> **🆕 أحدث إصدار — v1.139.0** — **سهولة الفهم: تلميحات `?`** — زر `?` قابل لإعادة الاستخدام وآمن لـ CSP بجوار العناوين وعلامات التبويب الخمس في `#/stats` و8 عناوين لشاشات الذكاء الاصطناعي/التحليلات يفتح نافذة منبثقة مترجمة «ماذا يفعل / كيف يعمل / ماذا تتوقع» (متاحة للوصول، RTL، متوافقة مع السمة). 14 مفتاحًا جديدًا ×17 لغة. **2360 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Latest release — v1.138.0** — **generation in your interface language** — every AI generation (career plan, orientation, market report, mock interview, networking, “ask the docs”, memory-note, two-pager) now answers in the language selected in the UI instead of always English; plus review-driven test hardening (a CSS colour-role canary and a `UI.md()` XSS-loader self-probe). **2356 tests.**
+> **🆕 Latest release — v1.139.0** — **understandable: `?` help hints** — a reusable, CSP-safe `?` next to headings, the 5 `#/stats` tabs, and 8 AI/analytics view titles opens a localized "what this does / how it works / what to expect" popover (accessible, RTL, theme-aware). 14 new keys ×17 locales. **2360 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

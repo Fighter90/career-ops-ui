@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, ReportExport */
+/* global Router, API, UI, I18n, ReportExport, HelpHint */
 /**
  * #/career-plan — AI career development plan (v1.95.0, Epic 26).
  *
@@ -15,7 +15,7 @@ Router.register('career-plan', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('plan.title', 'Career plan')));
+  root.appendChild(HelpHint.title(t('plan.title', 'Career plan'), 'help.hint.careerPlan'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('plan.subtitle', 'A concrete development plan built from your own CV and profile — goals, a month-by-month roadmap, skills, and pitfalls. Generate it, edit it, save it, export it.')));
 

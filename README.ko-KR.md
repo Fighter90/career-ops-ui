@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.138.0** — **인터페이스 언어로 생성** — 모든 AI 생성(커리어 플랜, 오리엔테이션, 시장 리포트, 모의 면접, 네트워킹, 「문서에 묻기」, 메모리 노트, two-pager)이 이제 항상 영어가 아니라 UI에서 선택한 언어로 응답합니다. 아울러 리뷰에서 나온 테스트 강화(CSS 색 역할 카나리아와 `UI.md()` XSS 로더 자가 점검). **2356 테스트.**
+> **🆕 최신 릴리스 — v1.139.0** — **이해하기 쉽게: `?` 도움말 힌트** — 제목, `#/stats`의 5개 탭, 8개 AI/분석 화면 제목 옆의 재사용 가능하고 CSP 안전한 `?`가 현지화된 "무엇을 하는지 / 어떻게 작동하는지 / 무엇을 기대할지" 팝오버(접근성, RTL, 테마 대응)를 엽니다. 14개 새 키 ×17개 로케일. **2360 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

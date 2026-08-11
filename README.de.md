@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Neueste Version — v1.138.0** — **Generierung in deiner Oberflächensprache** — jede KI-Generierung (Karriereplan, Orientierung, Marktbericht, Mock-Interview, Networking, „Frag die Doku“, Memory-Notiz, Two-Pager) antwortet jetzt in der im UI gewählten Sprache statt immer auf Englisch; plus Review-getriebene Test-Härtung (ein CSS-Farbrollen-Kanarienvogel und ein `UI.md()`-XSS-Loader-Selbsttest). **2356 Tests.**
+> **🆕 Neueste Version — v1.139.0** — **verständlich: `?`-Hilfehinweise** — ein wiederverwendbares, CSP-sicheres `?` neben Überschriften, den 5 `#/stats`-Tabs und 8 KI-/Analyse-Ansichtstiteln öffnet ein lokalisiertes „was es tut / wie es funktioniert / was zu erwarten ist"-Popover (barrierefrei, RTL, themenbewusst). 14 neue Schlüssel ×17 Sprachen. **2360 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

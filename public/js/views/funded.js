@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/funded — Funded-company discovery (v1.133.0, parent parity #2117).
  *
@@ -14,7 +14,7 @@ Router.register('funded', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('funded.title', 'Funded companies')));
+  root.appendChild(HelpHint.title(t('funded.title', 'Funded companies'), 'help.hint.funded'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('funded.subtitle', 'Recently funded companies to review as fresh targets — discovered from public funding news (TechCrunch, PR Newswire, The Guardian, Hacker News). A starting list for manual review, never an endorsement.')));
 

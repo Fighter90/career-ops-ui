@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.139.0] — 2026-08-12
+
+**Zrozumiałość: podpowiedzi `?`** — wielokrotnego użytku, bezpieczny dla CSP przycisk `?`, który po kliknięciu wyjaśnia „co to robi / jak działa / czego oczekiwać" w Twoim języku. Poprawka UX zgłoszona przez użytkownika (bez parent-sync).
+
+### Dodano
+- **Dymek podpowiedzi `?`** (`window.HelpHint`) — okrągły `?` obok nagłówka otwiera lekki, zależny od motywu i lustrzany w RTL dymek, który renderuje zlokalizowane wyjaśnienie przez `UI.md()`; dostępny (`role="tooltip"`, `aria-expanded`, zamykanie Escape/kliknięciem poza, przywracanie fokusu) i bezpieczny dla CSP.
+- **`?` na 5 kartach `#/stats`** oraz na **8 tytułach widoków AI/analitycznych** (career-plan, orientacja, two-pager, networking, próbna rozmowa, pamięć, funded, tygodniowe podsumowanie) — 14 nowych kluczy i18n × **17 języków**.
+
+### Uwagi
+- Wszystkie widoki miały już jednoliniowy podtytuł; `?` dodaje głębsze wyjaśnienie na żądanie i sprawia, że puste stany same się tłumaczą. Zestaw: **2360** testów (+4).
+
 ## [1.138.0] — 2026-08-12
 
 **Generowanie w języku interfejsu** — każda generacja AI odpowiada teraz w języku wybranym w UI, plus wzmocnienia testów z przeglądu. Poprawka UX zgłoszona przez użytkownika (bez parent-sync).
