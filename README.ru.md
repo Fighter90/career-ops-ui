@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2345%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2347%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Последний релиз — v1.137.0** — **исправления читаемости и отображения**: белый на белом / чёрный на чёрном в тёмной теме на многих экранах (`#/pipeline`, вкладки `#/stats`, `#/config`, `#/two-pager`) исправлено в первопричине — пятнадцать тема-токенов никогда не были объявлены и откатывались на захардкоженные светлые/чёрные значения; подписи графиков `#/stats` теперь обрезаются эллипсисом вместо обрыва посреди слова; а `#/career-plan` отрисовывается как читаемый форматированный текст вместо необработанного Markdown. **2345 тестов.**
+> **🆕 Последний релиз — v1.137.0** — **исправления читаемости и отображения**: белый на белом / чёрный на чёрном в тёмной теме на многих экранах (`#/pipeline`, вкладки `#/stats`, `#/config`, `#/two-pager`) исправлено в первопричине — пятнадцать тема-токенов никогда не были объявлены и откатывались на захардкоженные светлые/чёрные значения; подписи графиков `#/stats` теперь обрезаются эллипсисом вместо обрыва посреди слова; а `#/career-plan` отрисовывается как читаемый форматированный текст вместо необработанного Markdown. **2347 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2345%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2347%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Ultima release — v1.137.0** — **correzioni di leggibilità e rendering**: bianco su bianco / nero su nero in modalità scura su molte schermate (le tab di `#/pipeline`, `#/stats`, `#/config`, `#/two-pager`) risolto alla radice — quindici token del tema non erano mai stati dichiarati e ricadevano su valori chiaro/nero hardcoded; le etichette dei grafici di `#/stats` ora vengono troncate con ellissi invece che a metà parola; e `#/career-plan` viene renderizzato come testo formattato leggibile invece che come Markdown non elaborato. **2345 test.**
+> **🆕 Ultima release — v1.137.0** — **correzioni di leggibilità e rendering**: bianco su bianco / nero su nero in modalità scura su molte schermate (le tab di `#/pipeline`, `#/stats`, `#/config`, `#/two-pager`) risolto alla radice — quindici token del tema non erano mai stati dichiarati e ricadevano su valori chiaro/nero hardcoded; le etichette dei grafici di `#/stats` ora vengono troncate con ellissi invece che a metà parola; e `#/career-plan` viene renderizzato come testo formattato leggibile invece che come Markdown non elaborato. **2347 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

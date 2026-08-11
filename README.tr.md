@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2345%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2347%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Son sürüm — v1.137.0** — **okunabilirlik ve render düzeltmeleri**: birçok ekranda karanlık modda beyaz-üzerine-beyaz / siyah-üzerine-siyah (`#/pipeline`, `#/stats` sekmeleri, `#/config`, `#/two-pager`) kökten düzeltildi — on beş tema belirteci hiçbir zaman tanımlanmamıştı ve sabit kodlanmış açık/siyah değerlere geri dönüyordu; `#/stats` grafik etiketleri artık kelimenin ortasından kesilmek yerine üç nokta ile kısaltılıyor; ve `#/career-plan` ham Markdown yerine okunabilir, biçimlendirilmiş metin olarak render ediliyor. **2345 test.**
+> **🆕 Son sürüm — v1.137.0** — **okunabilirlik ve render düzeltmeleri**: birçok ekranda karanlık modda beyaz-üzerine-beyaz / siyah-üzerine-siyah (`#/pipeline`, `#/stats` sekmeleri, `#/config`, `#/two-pager`) kökten düzeltildi — on beş tema belirteci hiçbir zaman tanımlanmamıştı ve sabit kodlanmış açık/siyah değerlere geri dönüyordu; `#/stats` grafik etiketleri artık kelimenin ortasından kesilmek yerine üç nokta ile kısaltılıyor; ve `#/career-plan` ham Markdown yerine okunabilir, biçimlendirilmiş metin olarak render ediliyor. **2347 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

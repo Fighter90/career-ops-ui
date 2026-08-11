@@ -7,7 +7,7 @@ User-reported UX pass (no parent-sync). Dark-mode contrast, chart labels, career
 ## §0 — Gates
 
 ```bash
-npm test                                       # full suite — 2345, exit 0 (capture $? directly, never | grep)
+npm test                                       # full suite — 2347, exit 0 (capture $? directly, never | grep)
 node --test tests/dark-theme-tokens.test.mjs   # alias tokens declared + mapped to theme-aware tokens
 node --test tests/css-modularization.test.mjs  # app.css still < 800 LOC after the alias block
 node scripts/check-changelog-parity.mjs        # all 16 locales at v1.137.0
@@ -40,4 +40,4 @@ node scripts/check-changelog-parity.mjs        # all 16 locales at v1.137.0
 
 ## §5 — Sign-off
 
-Suite **2345** green · **0 dark-mode WCAG-AA failures** / 29 views · pipeline/stats/config/two-pager/mock-interview readable in dark · career-plan renders formatted · light mode byte-identical · CHANGELOG parity ×17.
+Suite **2347** green · **0 dark-mode WCAG-AA failures** / 29 views · pipeline/stats/config/two-pager/mock-interview readable in dark · career-plan renders formatted · light mode byte-identical · CHANGELOG parity ×17.

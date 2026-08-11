@@ -12,7 +12,13 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { loadAppCss } from './helpers/css.mjs';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const read = (p) => readFileSync(resolve(ROOT, p), 'utf8');
 
 const ALIAS = {
   '--fg': '--hof',
@@ -49,4 +55,21 @@ test('the alias targets themselves are theme-aware (redeclared under dark)', () 
     const decls = css.match(new RegExp(`\\${target}\\s*:`, 'g')) || [];
     assert.ok(decls.length >= 2, `${target} must be declared in both light and dark blocks (found ${decls.length})`);
   }
+});
+
+// ── source-static canaries for the two JS readability fixes (v1.137.0) ──────
+
+test('career-plan auto-renders the generated plan as formatted HTML (not raw Markdown)', () => {
+  const src = read('public/js/views/career-plan.js');
+  // after a successful generate, the plan is rendered via UI.md (escape-first
+  // XSS boundary) into the preview — not left as raw Markdown in the textarea.
+  assert.match(src, /editor\.value\s*=\s*res\.markdown/, 'generate still fills the editable textarea');
+  assert.match(src, /preview\.appendChild\([\s\S]*UI\.md\(res\.markdown\)/, 'generate must auto-render res.markdown via UI.md into the preview');
+});
+
+test('#/stats bar-chart labels ellipsize with a full-text <title> instead of a hard cut', () => {
+  const src = read('public/js/views/stats.js');
+  assert.doesNotMatch(src, /\.slice\(0,\s*22\)/, 'the old hard 22-char slice must be gone');
+  assert.match(src, /slice\(0,\s*MAXC\s*-\s*1\)\s*\+\s*'…'/, 'long labels ellipsize');
+  assert.match(src, /createElementNS\(SVGNS,\s*'title'\)/, 'full label kept as an SVG <title> tooltip');
 });
