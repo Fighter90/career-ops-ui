@@ -48,7 +48,7 @@ Router.register('stats', async () => {
       // Ellipsize instead of hard-cutting the last letters ("…Engineer" was
       // clipped to "…Enginee"); keep the full text as an SVG <title> tooltip.
       const fullLabel = String(r.label || '');
-      const MAXC = 26;
+      const MAXC = 30; // labelW is 200px; ~30 chars fit before the bar at x=200
       label.textContent = fullLabel.length > MAXC ? fullLabel.slice(0, MAXC - 1) + '…' : fullLabel;
       if (fullLabel.length > MAXC) {
         const ttl = document.createElementNS(SVGNS, 'title');

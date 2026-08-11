@@ -1,7 +1,13 @@
 # SENIOR UX-DESIGNER AUDIT — career-ops-ui
 
-> **Baseline: v1.117.2** (31 route modules · 28 views · 16 locales ·
-> help bundles 28 H2 / 102 H3 · 50 scanner adapters = 45 EN + 5 RU).
+> **Baseline: v1.137.0** (32 route modules · 30 views · **17 locales** ·
+> help bundles 29 H2 / 105 H3 · **79 scanner sources = 74 EN + 5 RU**).
+> The active design roadmap is **`docs/UX-ROADMAP.md`** (Phases 2–4:
+> `?`-help hints + page descriptions, richer stats/charts, portals→settings
+> + filter redesign) — treat those as planned work, not findings.
+> Dark-mode contrast is guarded from v1.137.0 (theme-aware alias tokens;
+> 0 WCAG-AA text failures across all views) — judge the dark theme against
+> that baseline, not as broken.
 > Re-verify the live `package.json` version before you start — features
 > land continuously.
 >
@@ -87,6 +93,8 @@ concept it serves:
 | `#/stats` (Rejection patterns) | patterns tab (v1.117.0) | Does the outcome mix + per-ATS-vendor advance rate read clearly? Small-sample caveat visible? Honest empty state? |
 | `#/cv-studio` (Add to CV) | add-entry (v1.117.0) | Is "suggestions only, never writes" clear? Does the URL/paste → ATS-bullets flow read as grounded (no fabrication)? |
 | `#/apply` (knock-out pre-scan) | v1.117.0 | Are visa/degree/salary disqualifiers surfaced *before* form-filling, legibly? |
+| `#/funded` | funded-company discovery (v1.133.0) | Is "recently funded → fresh targets, review-first, never an endorsement" honest? Is the read-only "nothing is saved" framing clear? Is the empty/sparse state legible? |
+| `#/interview-digest` | weekly interview digest (v1.133.0) | Is the zero-LLM roll-up's purpose + expected result clear *before* loading? Is "No sessions in this range" an honest empty state (not "broken")? |
 | `#/help` | the docs, in-app | Does it answer the questions the journey raises, in the user's language? |
 
 ## Heuristic lenses (apply all; cite evidence per finding)
@@ -118,9 +126,9 @@ concept it serves:
 9. **Accessibility as UX** — keyboard-only completion of the core
    journey; screen-reader sensibility of names/roles/status (not just
    WCAG box-ticking — does it make sense *aurally*?).
-10. **i18n integrity** — switch through all 16 locales on the core
+10. **i18n integrity** — switch through all 17 locales on the core
     flow (en · es · pt-BR · ko · ja · ru · zh-CN · zh-TW · fr · pl ·
-    uk · da · ar · de · it · tr; Arabic is RTL): truncation,
+    uk · da · ar · de · it · tr · hi; Arabic is RTL): truncation,
     untranslated leakage, RTL/character issues, terminology drift
     from the docs.
 11. **Cognitive load & progressive disclosure** — is power kept
@@ -146,7 +154,7 @@ concept it serves:
 4. Compare 2–3 screens side-by-side with their career-ops.org/docs
    page for promise fidelity & terminology.
 
-## Output — `qa/v54-regression/<DATE>-UX-AUDIT.md`
+## Output — `qa/reports/<DATE>-UX-AUDIT.md`
 
 - **Intended user & outcome** (1 paragraph, from the docs).
 - **Top 5 user-impact findings** (the executive summary).
@@ -248,7 +256,7 @@ findings are all shipped and locked — SSRF `timeoutMs` honored, batch +
 key-smoke routes rate-limited, router render-epoch guard, empty-tracker
 relay keyed to exact messages + stderr path-stripping, memory/career-plan
 markdown sanitized, raw `fetch()` routed through `API.*`, usage-HUD
-backoff, CI i18n step at 16 locales. Do **not** re-file these; re-open
+backoff, CI i18n step at 17 locales. Do **not** re-file these; re-open
 only with concrete live regression evidence. The **open design backlog**
 (P4 report) — token-enforcement gate, skeletons, spacing/shadow/radius/
 type/color consolidation, motion system, IA regroup + `#/about` — is
@@ -272,25 +280,25 @@ separately from findings. Cite evidence for every claim.
 
 ---
 
-## §UX-A — EXHAUSTIVE UX MATRIX (every page × every control × 16 locales)
+## §UX-A — EXHAUSTIVE UX MATRIX (every page × every control × 17 locales)
 
 > Sweep this in full. For every cell, rate **GOOD / FRICTION /
 > BROKEN** with evidence (screenshot, route, exact copy, locale).
 > "It works" is not enough — judge whether it works *well for the
 > user career-ops.org describes*. One root cause = one finding.
 
-### §UX-A.0 — The 16-locale lens (apply to EVERY page below)
+### §UX-A.0 — The 17-locale lens (apply to EVERY page below)
 
 Locales: **en · es · pt-BR · ko · ja · ru · zh-CN · zh-TW · fr · pl ·
-uk · da · ar · de · it · tr** (Arabic is RTL — `<html dir="rtl">`; the
-chrome mirrors via the `[dir="rtl"]` block in `app.css`). Per page,
+uk · da · ar · de · it · tr · hi** (Arabic is RTL — `<html dir="rtl">`;
+the chrome mirrors via the `[dir="rtl"]` block in `app.css`). Per page,
 per locale, judge:
 
 1. **Completeness** — zero untranslated strings / raw `key.path` /
    leftover English inside a localized sentence (regression class:
    I18N-012/013 "smart questions"/`Deep research` RU; I18N-011
    help-TOC CLOSED v1.58.2 — TOC now matches the sidebar `nav.*`
-   term in all 16 locales, verify it stays so). Mixed-language UI is
+   term in all 17 locales, verify it stays so). Mixed-language UI is
    a trust defect, file it.
 2. **Fit & truncation** — CJK (`ko`/`ja`/`zh`) and longer Romance
    (`es`/`pt-BR`) strings must not clip, wrap mid-word, overflow
@@ -307,13 +315,13 @@ per locale, judge:
    the `⌘K`/`Ctrl K` hint platform-correct; placeholders that are
    examples (ISO date) stay neutral but labels around them localize.
 
-### §UX-A.1 — Per-page heuristic pass (all pages, all 16 locales)
+### §UX-A.1 — Per-page heuristic pass (all pages, all 17 locales)
 
 For **every** route — `#/dashboard #/scan #/pipeline #/evaluate
 #/deep #/cv #/tracker #/reports #/activity #/config #/profile
 #/health #/help #/auto #/apply #/batch #/two-pager #/mock-interview
 #/networking #/cv-studio #/memory #/stats #/career-plan #/orientation
-#/usage #/docs-assistant` + mode pages `#/project #/training #/followup
+#/usage #/docs-assistant #/funded #/interview-digest` + mode pages `#/project #/training #/followup
 #/contacto #/interview-prep #/patterns #/batch-prompt` + aliases
 `#/settings #/portals #/outreach` + the 404 — plus the two page-agnostic
 widgets on every route (the **docs FAB**, bottom-right, and the
@@ -353,7 +361,7 @@ say what went wrong, where, and how to fix it — never an opaque
 
 ### §UX-A.4 — End-to-end task journeys (the docs' core flows)
 
-Walk each as the target user, 16 locales spot-checked: (a) paste a JD
+Walk each as the target user, 17 locales spot-checked: (a) paste a JD
 → score → decide (the score→action thresholds from the docs);
 (b) `#/auto` one-URL pipeline end-to-end; (c) scan portals → triage
 → pipeline → evaluate → track; (d) deep-research a company → saved

@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2347%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2351%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Latest release — v1.137.0** — **readability & rendering fixes**: dark-mode white-on-white / black-on-black across many screens (pipeline, `#/stats` tabs, `#/config`, `#/two-pager`) fixed at the root — five theme tokens were never declared and fell back to hardcoded light/black; `#/stats` chart labels now ellipsize instead of cutting mid-word; and the `#/career-plan` output now renders as readable formatted text instead of raw Markdown. **2347 tests.**
+> **🆕 Latest release — v1.137.0** — **readability & rendering fixes**: dark-mode white-on-white / black-on-black across many screens (pipeline, `#/stats` tabs, `#/config`, `#/two-pager`) fixed at the root — fifteen theme tokens were never declared and fell back to hardcoded light/black; `#/stats` chart labels now ellipsize instead of cutting mid-word; and the `#/career-plan` output now renders as readable formatted text instead of raw Markdown. **2351 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

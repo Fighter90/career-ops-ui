@@ -3,10 +3,16 @@
 > Paste verbatim to an agent (or run it as a senior product/UX
 > designer, 10+ yrs). Produces a **design-quality audit + a
 > structured design export** of the whole product — every page, every
-> component, every key user flow, all 16 locales — judged against the
-> canonical product intent at **<https://career-ops.org/docs>**.
+> component, every key user flow, all **17 locales** — judged against
+> the canonical product intent at **<https://career-ops.org/docs>**.
 >
-> Output **one** file: `qa/v158-regression/<YYYY-MM-DD>-DESIGN-EXPORT.md`.
+> Output **one** file: `qa/reports/<YYYY-MM-DD>-DESIGN-EXPORT.md`.
+>
+> Current baseline **v1.137.0** (32 route modules · 79 scan sources =
+> 74 EN + 5 RU · 17 locales). The active design roadmap is
+> **`docs/UX-ROADMAP.md`** — treat its Phase 2–4 items as planned work,
+> not findings. Dark-mode contrast is guarded from v1.137.0 (theme-aware
+> alias tokens — see Part 1 §1).
 >
 > Sibling prompts: `REGRESSION-FINAL.md` proves *nothing regressed*,
 > `FUNCTIONALITY-CHECK.md` proves *it works*, `UX-AUDIT-PROMPT.md`
@@ -45,7 +51,14 @@ exact value + where it's defined (`public/css/app.css`,
 1. **Design tokens** — every CSS custom property: colour (light + dark
    `[data-theme="dark"]`), spacing scale, radius, shadow, typography
    (family, size ramp, weight, line-height), z-index layers, motion
-   (durations, easings). Tabulate token → value → usage.
+   (durations, easings). Tabulate token → value → usage. **Include the
+   v1.137.0 alias tokens** — `--fg`/`--panel`/`--panel-2`/`--line`/
+   `--surface-elev1`/`--ok`/`--go`/`--err`/`--error`/`--danger`/`--warn`/
+   `--muted`/`--ink`/`--card`/`--border` are declared on `:root` as
+   `var(--real-token)` aliases (→ `--hof`/`--paper`/`--slate`/
+   `--kazan-text`/`--rausch-text`/`--darjeeling-text`/`--foggy`), so they
+   follow the theme with no per-block override; note this indirection in
+   the token table (a view referencing `--panel-2` gets `--slate`).
 2. **Grid & layout** — app shell (sidebar width, content max-width,
    header/footer), breakpoints actually used, page-header pattern
    (`.page-header` / `.page-title` / `.page-subtitle`).
@@ -60,8 +73,8 @@ exact value + where it's defined (`public/css/app.css`,
    a11y contract (role, name, keyboard), the file + line.
 4. **Iconography & emoji** — every glyph used as UI affordance, where,
    and whether it has a text/`aria-label` equivalent.
-5. **Content & i18n surface** — the 16 locales (`en es pt-BR ko ja ru
-   zh-CN zh-TW fr pl uk da ar de it tr`; Arabic is RTL — `<html
+5. **Content & i18n surface** — the 17 locales (`en es pt-BR ko ja ru
+   zh-CN zh-TW fr pl uk da ar de it tr hi`; Arabic is RTL — `<html
    dir="rtl">` + the `[dir="rtl"]` mirror block in `app.css`); how
    `t()` + the per-locale `i18n-dict.<lang>.js` files + the assembler
    + `<html lang>` work; the per-route `document.title` pattern.
@@ -116,7 +129,7 @@ Flows (cite the score→action thresholds from the docs where relevant):
    vectors / roles / strengths, framed reflection-not-test → MD/PDF
    export). Grade each for the manual-vs-live honesty and export
    craft.
-9. **v1.98–v1.109 surface** (same craft bar) — the in-app **bug
+9. **v1.98–v1.137 surface** (same craft bar) — the in-app **bug
    reporter** (notifications drawer → 🐞 → preview → GitHub issue),
    `#/portals` (health probe → dead-slug flags), `#/two-pager` **export**
    (✨ live auto-fill → review → Preview & export MD/PDF/**DOCX**),
@@ -140,7 +153,7 @@ For every interactive element on every route (`#/dashboard #/scan
 #/pipeline #/evaluate #/deep #/cv #/tracker #/reports #/activity
 #/config #/profile #/health #/help #/auto #/apply #/batch
 #/two-pager #/mock-interview #/networking #/cv-studio #/memory
-#/stats #/career-plan #/orientation` (the last two = **Growth** nav
+#/stats #/career-plan #/orientation #/funded #/interview-digest` (career-plan/orientation = **Growth** nav
 group) + mode slugs `#/project #/training #/followup #/contacto
 #/interview-prep #/patterns #/batch-prompt` + aliases `#/settings
 #/portals #/outreach` + 404): rest / hover / focus-visible (**must be a
@@ -169,7 +182,7 @@ to WCAG 1.4.3, target size ≥ 24×24 (2.5.8).
 
 Group findings: **Blocker / High / Medium / Low**, each with route,
 evidence, the design fix, and the token/component it touches. Map
-each to the project's one-fix-ship doctrine (bump + CHANGELOG ×16 +
+each to the project's one-fix-ship doctrine (bump + CHANGELOG ×17 +
 test + Playwright-verify + AI-review LGTM + CI-watch — never batch,
 HIGH→LOW). Cross-reference open items already tracked in
 `qa/v158-regression/FIX-PROMPT-v158.md §5` so nothing is re-filed.

@@ -19,6 +19,8 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 ### Notes
 - `#/career-plan`, `#/two-pager`, `#/memory`, `#/stats`, and the weekly interview digest are **not broken** — every endpoint returns 200; they render empty states (no plan generated yet / no interview sessions logged in the selected week). Clearer on-page "what this does / how to use it" guidance and `?` help hints land in the next release.
+- The generated career plan renders through `UI.md()`, the app's **escape-first** client XSS boundary (`api.js` HTML-escapes every byte before any tag transform) — same path `reports`/`orientation`/`cv-studio` use. A new `tests/ui-md-xss.test.mjs` feeds `<img onerror>`/`<script>`/`javascript:` payloads through it and asserts no live tag/handler survives.
+- Repo tidy: `docs/UX-ROADMAP.md` records the Phase 2–4 UX plan; the two perennial QA prompts (`qa/UX-AUDIT-PROMPT.md`, `qa/DESIGNER-EXPORT-PROMPT.md`) were actualized to the v1.137.0 baseline (32 route modules · 79 sources · 17 locales); and 59 superseded per-release QA prompts moved to `qa/archive/superseded-prompts/`.
 
 ## [1.136.0] — 2026-08-11
 
