@@ -35,6 +35,11 @@ const JS_DIR = resolve(ROOT, 'public', 'js');
 const TEXT_ROLE = ['fg', 'ink', 'muted', 'ok', 'go', 'err', 'error', 'danger', 'warn'];
 const SURFACE_ROLE = ['card', 'panel', 'panel-2', 'surface-elev1', 'line', 'border'];
 
+/** Escape every regex metacharacter (incl. backslash) before interpolating a
+ *  token into a `new RegExp(...)`. Tokens are safe constants today, but escaping
+ *  fully keeps the builder correct if the lists ever grow. */
+const reEsc = (s) => String(s).replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
+
 /** Recursively collect files under dir matching one of the extensions. */
 function walk(dir, exts, acc = []) {
   for (const ent of readdirSync(dir, { withFileTypes: true })) {
@@ -65,7 +70,10 @@ function violations(src, prop, tokens) {
   const found = [];
   for (const tok of tokens) {
     // CSS + JS-string forms: <prop> : [quote] var(--tok)
-    const re = new RegExp(`\\b(?:${prop})\\s*:\\s*['"\`]?\\s*var\\(--${tok.replace(/[-]/g, '\\-')}\\)`, 'g');
+    // `(?<![\w-])` so `color` does NOT match the `-color` of `background-color` /
+    // `border-color` (a surface token there is a border/fill role, not a text
+    // colour) and `background` does not match a `--x-background` custom prop.
+    const re = new RegExp(`(?<![\\w-])(?:${prop})\\s*:\\s*['"\`]?\\s*var\\(--${reEsc(tok)}\\)`, 'g');
     if (re.test(clean)) found.push(tok);
   }
   return found;
@@ -96,7 +104,7 @@ test('every alias token referenced in code actually resolves to a declared token
   const declared = new Set([...appCss.matchAll(/--([a-z0-9-]+)\s*:/gi)].map((m) => m[1]));
   for (const tok of [...TEXT_ROLE, ...SURFACE_ROLE]) {
     // Only assert declaration for aliases actually referenced somewhere.
-    const referenced = FILES.some((f) => new RegExp(`var\\(--${tok.replace(/[-]/g, '\\-')}\\)`).test(stripBlockComments(readFileSync(f, 'utf8'))));
+    const referenced = FILES.some((f) => new RegExp(`var\\(--${reEsc(tok)}\\)`).test(stripBlockComments(readFileSync(f, 'utf8'))));
     if (referenced) assert.ok(declared.has(tok), `alias --${tok} is referenced but never declared in app.css`);
   }
 });
