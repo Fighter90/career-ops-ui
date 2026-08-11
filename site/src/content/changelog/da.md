@@ -8,6 +8,22 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.138.0] — 2026-08-12
+
+**Generering på dit interfaces sprog** — hver AI-generering svarer nu på det sprog, du har valgt i UI'et, plus review-drevne teststyrkelser. En brugerrapporteret UX-justering (uden parent-sync).
+
+### Ændret
+- **AI-genereringer respekterer nu UI-sproget.** Med interfacet på russisk, spansk, japansk, … kommer den genererede tekst tilbage på **det** sprog i stedet for altid engelsk. Output-sprogdirektivet føres gennem **alle** genererings-endpoints — karriereplan, orientering, markedsrapport, mock-interview, networking-plan, «spørg dokumentationen», hukommelsesnote-forslaget og two-pager-udkastet. Kode og identifikatorer forbliver engelske (fx two-pager YAML-nøgler); kun prosa, overskrifter og punkter lokaliseres.
+
+### Rettet
+- **CSS-farverolle-vagt** (`tests/css-role-tokens.test.mjs`) — en statisk kanariefugl for, at v1.137.0-mørketilstandens alias-tokens aldrig ombytter rolle: tekst-tokens (`--fg`/`--danger`/`--ok`/…) bruges aldrig som `background`, og overflade-tokens (`--card`/`--panel`/`--line`/…) aldrig som tekst-`color`, på tværs af al CSS og SPA'ens inline-styles.
+- **`UI.md()` XSS-loaderens selvtest** — testen, der loader `md()` fra `api.js`, prober nu `md('<script>…')` lige efter udtrækket og kaster fejl, hvis escapen mangler, så en fremtidig fejlskæring fejler **højlydt** i stedet for at gøre sikkerhedssuiten grøn på en afkortet funktion.
+- **Scroll-vagt på `#/career-plan`** — `scrollIntoView` efter generering kører kun, når forhåndsvisningen stadig er forbundet til dokumentet.
+
+### Noter
+- `docs/UX-ROADMAP.md` opdateret: `?`-hjælpetips + sidebeskrivelser + tomme tilstande rykker til **v1.139.0**; en **Nous Research / Hermes**-udbyder — med en cloud-server + Telegram-deployment-guide og et Hermes-skill — spores som **Fase 5 / 5b**.
+- Suite: **2356** tests (+5).
+
 ## [1.137.0] — 2026-08-11
 
 **Læsbarheds- og renderingsrettelser** — mørk-tilstand-kontrast, diagramlabels og karriereplanen. En brugerrapporteret UX-gennemgang (ingen forælder-synkronisering).

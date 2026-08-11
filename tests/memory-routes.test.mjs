@@ -74,6 +74,19 @@ test('POST /suggest seeds a behavioural prompt from the tracker (no live call)',
   assert.match(prompt, /APPLICATION TRACKER/);
 });
 
+test('POST /suggest threads the UI locale into the prompt (v1.138.0)', async () => {
+  const ru = await fetch(`${baseUrl}/api/memory/suggest`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ lang: 'ru' }) });
+  assert.equal(ru.status, 200);
+  const { prompt } = await ru.json();
+  assert.match(prompt, /Output language/);            // directive prepended
+  assert.match(prompt, /Russian/);                    // resolved locale name
+  assert.match(prompt, /BEHAVIOURAL and PREFERENCE patterns/); // base instructions preserved
+  // en → no directive noise
+  const en = await fetch(`${baseUrl}/api/memory/suggest`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ lang: 'en' }) });
+  const { prompt: enPrompt } = await en.json();
+  assert.doesNotMatch(enPrompt, /Output language/);
+});
+
 test('normalizeMemory routes the markdown through stripDangerousMarkdown (SRV-M4)', async () => {
   const { normalizeMemory } = await import('../server/lib/routes/memory.mjs');
   const out = normalizeMemory({ markdown: 'note<script>alert(1)</script> ok' });

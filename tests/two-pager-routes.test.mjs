@@ -85,3 +85,17 @@ test('POST /api/two-pager/draft returns a Mnookin prompt with candidate material
   assert.match(prompt, /who_i_am/);
   assert.match(prompt, /Jane Dev/);          // cv.md inlined
 });
+
+test('POST /api/two-pager/draft threads the UI locale into the prompt (v1.138.0)', async () => {
+  const r = await fetch(`${baseUrl}/api/two-pager/draft`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ lang: 'ru' }) });
+  assert.equal(r.status, 200);
+  const { prompt } = await r.json();
+  assert.match(prompt, /Output language/);   // directive prepended
+  assert.match(prompt, /Russian/);           // resolved locale name
+  assert.match(prompt, /who_i_am/);          // YAML keys stay English (identifiers untouched)
+  assert.match(prompt, /Mnookin/);           // base instructions preserved
+  // en → no directive
+  const en = await fetch(`${baseUrl}/api/two-pager/draft`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ lang: 'en' }) });
+  const { prompt: enPrompt } = await en.json();
+  assert.doesNotMatch(enPrompt, /Output language/);
+});

@@ -58,7 +58,7 @@ Router.register('docs-assistant', async () => {
     log.appendChild(pending);
     pending.scrollIntoView({ block: 'end' });
     try {
-      const res = await API.post('/api/docs-assistant/ask', { question, run: true });
+      const res = await API.post('/api/docs-assistant/ask', { question, run: true, lang: (I18n.getLang && I18n.getLang()) || 'en' });
       pending.remove();
       if (res.answer) {
         const parts = [c('div', { className: 'md', html: UI.md(res.answer) })];

@@ -74,7 +74,9 @@ Router.register('career-plan', async () => {
         // the textarea below stays available for editing. Preview toggles it.
         preview.textContent = '';
         preview.appendChild(c('div', { className: 'card md', html: UI.md(res.markdown), style: { padding: '16px', marginTop: '4px' } }));
-        preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Guard: scrollIntoView on a detached node is a silent no-op, but only
+        // scroll when actually laid out (view still mounted) to avoid surprises.
+        if (preview.isConnected) preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
         UI.toast(t('plan.generated', 'Plan generated — review, edit, then Save'), 'success');
       } else if (res && res.prompt) {
         const body = c('div', null, [

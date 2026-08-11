@@ -2,6 +2,22 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.138.0] — 2026-08-12
+
+**Generierung in deiner Oberflächensprache** — jede KI-Generierung antwortet nun in der im UI gewählten Sprache, plus Review-getriebene Test-Härtung. Eine nutzergemeldete UX-Anpassung (ohne parent-sync).
+
+### Geändert
+- **KI-Generierungen respektieren jetzt die UI-Sprache.** Ist die Oberfläche auf Russisch, Spanisch, Japanisch, … eingestellt, kommt der generierte Text **in dieser** Sprache zurück statt immer auf Englisch. Die Ausgabesprach-Direktive läuft durch **alle** Generierungs-Endpunkte — Karriereplan, Orientierung, Marktbericht, Mock-Interview, Networking-Plan, „Frag die Doku“, den Memory-Notiz-Vorschlag und den Two-Pager-Entwurf. Code und Bezeichner bleiben englisch (z. B. die YAML-Schlüssel des Two-Pagers); nur Prosa, Überschriften und Stichpunkte werden lokalisiert.
+
+### Behoben
+- **CSS-Farbrollen-Wächter** (`tests/css-role-tokens.test.mjs`) — ein statischer Kanarienvogel, dass die Dark-Mode-Alias-Tokens aus v1.137.0 ihre Rolle nie umkehren: Text-Rollen-Tokens (`--fg`/`--danger`/`--ok`/…) nie als `background`, Flächen-Tokens (`--card`/`--panel`/`--line`/…) nie als Text-`color`, über das gesamte CSS und die Inline-Styles der SPA.
+- **`UI.md()`-XSS-Loader-Selbsttest** — der Test, der `md()` aus `api.js` lädt, prüft jetzt `md('<script>…')` direkt nach der Extraktion und wirft, wenn das Escaping fehlt, sodass ein künftiger Fehlschnitt **laut** fehlschlägt, statt die Sicherheits-Suite auf einer abgeschnittenen Funktion grün zu färben.
+- **Scroll-Wächter auf `#/career-plan`** — das `scrollIntoView` nach der Generierung läuft nur, wenn die Vorschau noch mit dem Dokument verbunden ist.
+
+### Hinweise
+- `docs/UX-ROADMAP.md` aktualisiert: die `?`-Hilfe-Hinweise + Seitenbeschreibungen + Leerzustände sind nun **v1.139.0**; ein **Nous Research / Hermes**-Provider — mit Cloud-Server- + Telegram-Deployment-Guide und einem Hermes-Skill — wird als **Phase 5 / 5b** geführt.
+- Suite: **2356** Tests (+5).
+
 ## [1.137.0] — 2026-08-11
 
 **Lesbarkeits- und Rendering-Fixes** — Dark-Mode-Kontrast, Diagrammbeschriftungen und der Karriereplan. Ein nutzergemeldeter UX-Durchgang (kein Parent-Sync).

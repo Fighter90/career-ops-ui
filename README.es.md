@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2351%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Última versión — v1.137.0** — **correcciones de legibilidad y renderizado**: el problema de blanco-sobre-blanco / negro-sobre-negro en modo oscuro en muchas pantallas (`#/pipeline`, las pestañas de `#/stats`, `#/config`, `#/two-pager`) se corrigió de raíz — quince tokens de tema nunca se habían declarado y recurrían a valores fijos claros/negros; las etiquetas de los gráficos de `#/stats` ahora se truncan con elipsis en lugar de cortarse a mitad de palabra; y `#/career-plan` se renderiza como texto legible y con formato en lugar de Markdown sin procesar. **2351 tests.**
+> **🆕 Última versión — v1.138.0** — **generación en el idioma de tu interfaz** — cada generación con IA (plan de carrera, orientación, informe de mercado, entrevista simulada, networking, «pregunta a la documentación», nota de memoria, two-pager) ahora responde en el idioma elegido en la UI en vez de siempre en inglés; además de refuerzos de pruebas de la revisión (un canario de rol de color CSS y una auto-sonda del cargador XSS de `UI.md()`). **2356 tests.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

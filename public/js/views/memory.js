@@ -44,7 +44,7 @@ Router.register('memory', async () => {
   suggestBtn.addEventListener('click', async () => {
     suggestBtn.disabled = true;
     try {
-      const { prompt } = await API.post('/api/memory/suggest', {});
+      const { prompt } = await API.post('/api/memory/suggest', { lang: (I18n.getLang && I18n.getLang()) || 'en' });
       const body = c('div', null, [
         c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } },
           t('mem.suggestHelp', 'Run this in any LLM, review the behavioural bullets it proposes, then paste an edited version into your memory note above. It reads your tracker — it never invents facts.')),

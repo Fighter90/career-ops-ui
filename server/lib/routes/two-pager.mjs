@@ -21,7 +21,7 @@ import { dirname } from 'node:path';
 import yaml from 'js-yaml';
 import { PATHS } from '../paths.mjs';
 import { withFileLock } from '../file-lock.mjs';
-import { bundleProjectContext } from '../prompts.mjs';
+import { bundleProjectContext, resolveLocale, buildLocaleDirective } from '../prompts.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
 
@@ -109,7 +109,11 @@ export function registerTwoPagerRoutes(app) {
     if (!ctx) {
       return res.status(400).json({ error: 'no candidate materials yet — add your CV / profile first' });
     }
-    const prompt = `${DRAFT_INSTRUCTIONS}${ctx}`;
+    // Output-language directive (v1.138.0): the drafted two-pager prose (loves /
+    // must_haves / …) comes back in the UI locale; the YAML keys stay English so
+    // the auto-fill parse is unaffected.
+    const dir = buildLocaleDirective(resolveLocale(req));
+    const prompt = `${dir ? dir + '\n\n' : ''}${DRAFT_INSTRUCTIONS}${ctx}`;
 
     if (!body.run) {
       return res.json({

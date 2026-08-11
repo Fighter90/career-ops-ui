@@ -46,5 +46,15 @@ export function loadMd() {
   const ctx = createContext({});
   runInContext(bundle, ctx);
   if (typeof ctx.__md !== 'function') throw new Error('ui-md loader: md did not evaluate to a function');
+  // Self-probe (v1.138.0): the brace-matcher above assumes no stray `{`/`}` in
+  // strings/regex/comments inside the extracted functions. If a future edit to
+  // api.js breaks that assumption the extraction mis-slices SILENTLY and the XSS
+  // suite would assert against a truncated function — a green false-positive on a
+  // security boundary. Prove the loaded `md` still escapes before handing it back,
+  // so a bad extraction fails LOUDLY here instead.
+  const probe = ctx.__md('<script>alert(1)</script>');
+  if (typeof probe !== 'string' || /<script/i.test(probe) || !/&lt;script&gt;/i.test(probe)) {
+    throw new Error(`ui-md loader: escape-first self-probe FAILED (mis-sliced extraction?). Got: ${probe}`);
+  }
   return ctx.__md;
 }

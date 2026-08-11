@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2351%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.137.0** — **可讀性與呈現修復**：深色模式下多個畫面（`#/pipeline`、`#/stats` 分頁、`#/config`、`#/two-pager`）出現的白底白字／黑底黑字問題已從根本修復 — 十五個主題 token 從未宣告，因此退回為硬編碼的淺色／黑色數值；`#/stats` 的圖表標籤現在會以省略號結尾，而非在單字中間被截斷；`#/career-plan` 現在會渲染為易讀的格式化文字，而非未經處理的 Markdown。**2351 個測試.**
+> **🆕 最新版本 — v1.138.0** — **依介面語言生成** — 所有 AI 生成（職涯規劃、定位、市場報告、模擬面試、人脈、「向文件提問」、記憶便箋、two-pager）現在都以 UI 中所選語言回覆，而非總是英語；並含評審驅動的測試加固（一個 CSS 顏色角色金絲雀與 `UI.md()` XSS 載入器自檢）。 **2356 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

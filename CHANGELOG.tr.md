@@ -2,6 +2,22 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.138.0] — 2026-08-12
+
+**Arayüz dilinde üretim** — her AI üretimi artık arayüzde seçtiğin dilde yanıt veriyor; ayrıca incelemeden doğan test sağlamlaştırmaları. Kullanıcı bildirimli bir UX düzeltmesi (parent-sync yok).
+
+### Değişti
+- **AI üretimleri artık arayüz dilini gözetiyor.** Arayüz Rusça, İspanyolca, Japonca … olduğunda üretilen metin her zaman İngilizce yerine **o** dilde dönüyor. Çıktı-dili yönergesi **tüm** üretim uç noktalarına iletiliyor — kariyer planı, yönlendirme, pazar raporu, deneme mülakatı, networking planı, «belgeye sor», bellek notu önerisi ve two-pager taslağı. Kod ve tanımlayıcılar İngilizce kalır (ör. two-pager YAML anahtarları); yalnızca düzyazı, başlıklar ve maddeler yerelleştirilir.
+
+### Düzeltildi
+- **CSS renk-rolü koruması** (`tests/css-role-tokens.test.mjs`) — v1.137.0 karanlık mod takma-ad token'larının rolü asla ters çevirmediğini doğrulayan statik bir kanarya: metin-rolü token'ları (`--fg`/`--danger`/`--ok`/…) asla `background` olarak, yüzey token'ları (`--card`/`--panel`/`--line`/…) asla metin `color`'ı olarak kullanılmaz; tüm CSS ve SPA satır-içi stillerinde.
+- **`UI.md()` XSS yükleyici öz-sondası** — `api.js`'ten `md()`'i yükleyen test artık çıkarımın hemen ardından `md('<script>…')`'i yokluyor ve escape eksikse hata fırlatıyor; böylece gelecekteki hatalı bir dilimleme, güvenlik takımını kırpılmış bir fonksiyon üzerinde yeşile boyamak yerine **yüksek sesle** başarısız oluyor.
+- **`#/career-plan` kaydırma koruması** — üretim sonrası `scrollIntoView` yalnızca önizleme hâlâ belgeye bağlıysa çalışır.
+
+### Notlar
+- `docs/UX-ROADMAP.md` güncellendi: `?` yardım ipuçları + sayfa açıklamaları + boş durumlar artık **v1.139.0**; bir **Nous Research / Hermes** sağlayıcısı — bulut sunucu + Telegram dağıtım kılavuzu ve bir Hermes becerisi ile — **Aşama 5 / 5b** olarak izleniyor.
+- Takım: **2356** test (+5).
+
 ## [1.137.0] — 2026-08-11
 
 **Okunabilirlik ve render düzeltmeleri** — karanlık mod kontrastı, grafik etiketleri ve kariyer planı. Kullanıcı tarafından bildirilen bir UX geçişi (üst proje senkronizasyonu yok).

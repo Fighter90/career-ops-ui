@@ -8,6 +8,22 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.138.0] — 2026-08-12
+
+**Generation in your interface language** — every AI generation now answers in the language you've picked in the UI, plus review-driven test hardening. A user-reported UX pass (no parent-sync).
+
+### Changed
+- **AI generations now respect the UI language.** With the interface set to Russian, Spanish, Japanese, … the generated text now comes back in **that** language instead of always English. The output-language directive is threaded through **every** generation endpoint — career plan, orientation, market report, mock interview, networking plan, "ask the docs", the memory-note suggestion, and the two-pager draft. Code and identifiers stay English (e.g. the two-pager YAML keys); only prose, headings, and bullets are localized. Server-side, `resolveLocale(req)` + `buildLocaleDirective(lang)` now also cover `POST /api/memory/suggest` and `POST /api/two-pager/draft`; the client sends the active `lang` on all eight generate calls.
+
+### Fixed
+- **CSS colour-role guard** (`tests/css-role-tokens.test.mjs`) — a source-static canary asserting the v1.137.0 dark-mode alias tokens never invert role: text-role tokens (`--fg`/`--danger`/`--ok`/…) are never used as a `background`, and surface-role tokens (`--card`/`--panel`/`--line`/…) never as a text `color`, across all hand-written CSS **and** the SPA inline styles. Makes the "0 WCAG-AA failures across 29 views" claim machine-checkable (both AI reviews asked for it).
+- **`UI.md()` XSS-loader self-probe** — the test-only extractor that vm-loads `md()` from `api.js` now probes `md('<script>…')` immediately after extraction and throws if the escape is missing, so a future mis-slice of the brace-matched source fails **loudly** instead of turning the security suite green against a truncated function.
+- **`#/career-plan` scroll guard** — the post-generate `scrollIntoView` now runs only when the preview is still connected to the document.
+
+### Notes
+- `docs/UX-ROADMAP.md` updated: the `?`-help-hints + page-descriptions + empty-state pass is now **v1.139.0**; a **Nous Research / Hermes** provider — plus a cloud-server + Telegram deployment guide and a Hermes skill — is tracked as **Phase 5 / 5b**.
+- Suite: **2356** tests (+5: two generation-language canaries, three colour-role guards).
+
 ## [1.137.0] — 2026-08-11
 
 **Readability & rendering fixes** — dark-mode contrast, chart labels, and the career plan. A user-reported UX pass (no parent-sync).

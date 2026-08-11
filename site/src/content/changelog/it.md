@@ -2,6 +2,22 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.138.0] — 2026-08-12
+
+**Generazione nella lingua della tua interfaccia** — ogni generazione IA ora risponde nella lingua scelta nell'UI, più rafforzamenti dei test emersi dalla revisione. Un aggiustamento UX segnalato dall'utente (senza parent-sync).
+
+### Modificato
+- **Le generazioni IA ora rispettano la lingua dell'interfaccia.** Con l'interfaccia in russo, spagnolo, giapponese, … il testo generato torna in **quella** lingua invece che sempre in inglese. La direttiva di lingua di output attraversa **tutti** gli endpoint di generazione — piano di carriera, orientamento, report di mercato, colloquio simulato, piano di networking, «chiedi alla documentazione», il suggerimento della nota di memoria e la bozza del two-pager. Codice e identificatori restano in inglese (es. le chiavi YAML del two-pager); solo prosa, titoli e punti vengono localizzati.
+
+### Corretto
+- **Guardia dei ruoli di colore CSS** (`tests/css-role-tokens.test.mjs`) — un canarino statico che i token alias della modalità scura di v1.137.0 non invertano mai il ruolo: i token di testo (`--fg`/`--danger`/`--ok`/…) mai come `background`, e quelli di superficie (`--card`/`--panel`/`--line`/…) mai come `color` di testo, in tutto il CSS e negli stili inline della SPA.
+- **Auto-sonda del loader XSS di `UI.md()`** — il test che carica `md()` da `api.js` ora sonda `md('<script>…')` subito dopo l'estrazione e solleva un errore se manca l'escape, così un futuro taglio errato fallisce **rumorosamente** invece di lasciare verde la suite di sicurezza su una funzione troncata.
+- **Guardia di scroll su `#/career-plan`** — lo `scrollIntoView` dopo la generazione viene eseguito solo se l'anteprima è ancora connessa al documento.
+
+### Note
+- `docs/UX-ROADMAP.md` aggiornato: i suggerimenti `?` + descrizioni di pagina + stati vuoti passano a **v1.139.0**; un provider **Nous Research / Hermes** — con una guida al deploy su server cloud + Telegram e uno skill Hermes — è tracciato come **Fase 5 / 5b**.
+- Suite: **2356** test (+5).
+
 ## [1.137.0] — 2026-08-11
 
 **Correzioni di leggibilità e rendering** — contrasto in modalità scura, etichette dei grafici e il piano di carriera. Un intervento UX segnalato da un utente (nessun parent-sync).
