@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2351%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
+[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Neueste Version — v1.136.0** — Parität mit dem übergeordneten Projekt career-ops **v1.26.x**: eine neue Scan-Quelle **Eightfold AI** sowie eine Welle von **Qualitäts- und Robustheits**-Verbesserungen — Unicode-fähige Dedup-Schlüssel für Firmen/Rollen (nicht-lateinische Schrift kollabiert nicht mehr), `fetchJsonWithRetry` wiederholt einen abgelehnten Redirect nicht mehr, `title_filter.positive` erhält ` + `-UND-Gruppen, sowie Härtung von `oraclecloud`/`workable`/`personio`. Die Registry umfasst nun **79 Scan-Quellen**. **2343 Tests.**
+> **🆕 Neueste Version — v1.137.0** — **Lesbarkeits- und Rendering-Fixes**: Dark-Mode Weiß-auf-Weiß / Schwarz-auf-Schwarz auf vielen Bildschirmen (`#/pipeline`, `#/stats`-Tabs, `#/config`, `#/two-pager`) an der Wurzel behoben — fünfzehn Theme-Tokens waren nie deklariert und fielen auf hartcodierte Hell-/Schwarz-Werte zurück; Diagrammbeschriftungen in `#/stats` werden jetzt mit Auslassungspunkten gekürzt, statt mitten im Wort abgeschnitten zu werden; und `#/career-plan` wird als lesbarer, formatierter Text gerendert statt als rohes Markdown. **2351 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

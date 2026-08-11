@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2351%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
+[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Última versión — v1.136.0** — paridad con career-ops padre **v1.26.x**: una nueva fuente de escaneo **Eightfold AI** más una ronda de **calidad y robustez** — claves de deduplicación de empresa/rol con reconocimiento Unicode (lo no latino ya no colapsa), `fetchJsonWithRetry` deja de reintentar una redirección rechazada, `title_filter.positive` incorpora grupos AND con ` + `, y refuerzos en `oraclecloud`/`workable`/`personio`. El registro ahora son **79 fuentes de escaneo**. **2343 tests.**
+> **🆕 Última versión — v1.137.0** — **correcciones de legibilidad y renderizado**: el problema de blanco-sobre-blanco / negro-sobre-negro en modo oscuro en muchas pantallas (`#/pipeline`, las pestañas de `#/stats`, `#/config`, `#/two-pager`) se corrigió de raíz — quince tokens de tema nunca se habían declarado y recurrían a valores fijos claros/negros; las etiquetas de los gráficos de `#/stats` ahora se truncan con elipsis en lugar de cortarse a mitad de palabra; y `#/career-plan` se renderiza como texto legible y con formato en lugar de Markdown sin procesar. **2351 tests.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

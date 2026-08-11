@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.137.0] — 2026-08-11
+
+**Poprawki czytelności i renderowania** — kontrast w trybie ciemnym, etykiety wykresów oraz plan kariery. Przegląd UX zgłoszony przez użytkownika (bez synchronizacji z rodzicem).
+
+### Naprawiono
+- **Trwałe „białe na białym” / „czarne na czarnym” w trybie ciemnym na wielu ekranach** — piętnaście własnych właściwości CSS, do których odwoływało się kilka widoków (`--fg`, `--panel`, `--panel-2`, `--ok`, `--danger`, `--card`, …), nigdy nie zostało zadeklarowanych, więc spadały do zakodowanych na stałe wartości jasnych/czarnych: w porządku w trybie jasnym, nieczytelne w trybie ciemnym (chipy przeglądu na `#/pipeline`, aktywna karta na `#/stats`, „Aktywne / Klucze” + „✓ ustawiono” na `#/config`, sekcje `#/two-pager`, bąbelek pytania na `#/mock-interview`, tekst błędów). Teraz są aliasowane do rzeczywistych tokenów świadomych motywu, dzięki czemu automatycznie podążają za motywem — **0 błędów kontrastu WCAG-AA we wszystkich 29 widokach**, zweryfikowane przez automatyczny audytor; aktywna karta na `#/config` przeszła na czytelny, podbarwiony styl. Strażnik regresji (`tests/dark-theme-tokens.test.mjs`) utrzymuje ich aliasowanie.
+- **Etykiety wykresów na `#/stats` były przycinane w połowie słowa** („Senior Backend Engineer” → „…Enginee”) — teraz są skracane wielokropkiem, a pełna etykieta pojawia się jako podpowiedź (tooltip) po najechaniu kursorem.
+- **`#/career-plan` wyświetlał wygenerowany plan jako surowy Markdown** — teraz jest automatycznie renderowany jako sformatowany, czytelny tekst (edytowalny Markdown pozostaje w polu tekstowym; przełącznik Podgląd go przełącza).
+
+### Uwagi
+- `#/career-plan`, `#/two-pager`, `#/stats` oraz tygodniowe podsumowanie rozmów kwalifikacyjnych nie są uszkodzone — pokazują stany puste, dopóki nie wygenerujesz planu / nie będziesz mieć danych. Jaśniejsze wskazówki na stronie oraz podpowiedzi pomocy `?` są planowane jako następny krok (`docs/UX-ROADMAP.md`).
+
 ## [1.136.0] — 2026-08-11
 
 Parytet z rodzicem career-ops **v1.26.x** (po głównej linii v1.26.0) — jedno nowe źródło bez autoryzacji oraz fala poprawek jakości i odporności dla kodu odzwierciedlanego w web-ui. Rejestr liczy teraz **79 źródeł = 74 angielskie + 5 rosyjskich** (`ALL_ADAPTERS` 74).

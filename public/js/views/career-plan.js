@@ -70,7 +70,11 @@ Router.register('career-plan', async () => {
       const res = await API.post('/api/career-plan/generate', { run: true, horizon: horizon.value, focus: focus.value, lang: (I18n.getLang && I18n.getLang()) || 'en' });
       if (res && res.markdown) {
         editor.value = res.markdown;
+        // Show the plan as READABLE formatted text immediately (no raw tags) —
+        // the textarea below stays available for editing. Preview toggles it.
         preview.textContent = '';
+        preview.appendChild(c('div', { className: 'card md', html: UI.md(res.markdown), style: { padding: '16px', marginTop: '4px' } }));
+        preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
         UI.toast(t('plan.generated', 'Plan generated — review, edit, then Save'), 'success');
       } else if (res && res.prompt) {
         const body = c('div', null, [

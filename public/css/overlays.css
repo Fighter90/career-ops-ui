@@ -420,9 +420,14 @@
 }
 .tab-btn:hover { background: var(--beach); }
 .tab-btn.is-active {
-  background: var(--rausch);
+  /* Was a solid --rausch fill with #fff text — only ~2.94:1 on the brighter
+     dark-mode pink (below WCAG AA). Now the readable tinted-badge pattern:
+     a low-alpha rausch wash + the AA-tuned --rausch-text + a rausch border,
+     legible in both themes (mirrors .badge-bad). */
+  background: rgba(255, 56, 92, .16);
   border-color: var(--rausch);
-  color: #fff;
+  color: var(--rausch-text);
+  font-weight: 700;
 }
 
 /* NEW-D2-motion (v1.59.6) — respect the OS-level reduced-motion

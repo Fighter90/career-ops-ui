@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.137.0] — 2026-08-11
+
+**Readability & rendering fixes** — dark-mode contrast, chart labels, and the career plan. A user-reported UX pass (no parent-sync).
+
+### Fixed
+- **Dark-mode white-on-white / black-on-black across many screens** — **fifteen** CSS custom properties several views referenced (`--fg`, `--panel`, `--panel-2`, `--surface-elev1`, `--line`, `--ok`, `--go`, `--err`, `--error`, `--danger`, `--warn`, `--muted`, `--ink`, `--card`, `--border`) were **never declared** in the palette, so `var(--fg, #111)` / `var(--panel-2, #eef1f6)` / `var(--ok, #008a05)` silently fell back to hardcoded **light/black** literals: fine in light mode, unreadable in dark (the `#/pipeline` overview chips, `#/stats` active tab, `#/config` "Active / Keys" + "✓ set", `#/two-pager` sections, `#/mock-interview` question bubble, error text, and more). They're now **aliased to the real theme-aware tokens** (`--hof`/`--paper`/`--slate`/`--kazan-text`/`--rausch-text`/…) on `:root`, so they follow the theme automatically. The `#/config` active tab (a solid pink pill with white text, ~2.94:1) became the readable tinted-badge pattern. Verified with an automated alpha-composited contrast auditor: **0 WCAG-AA failures across all 29 views** in dark mode (was: pipeline chip ~1→12.2, stats tab ~1→15.8). A regression guard (`tests/dark-theme-tokens.test.mjs`) keeps every alias declared and mapped to a theme-aware token.
+- **`#/stats` chart labels were hard-cut mid-word** ("Senior Backend Engineer" → "…Enginee") — the SVG bar chart now **ellipsizes** (`…`) with the full label kept as a hover `<title>`, and the label column is wider.
+- **`#/career-plan` showed the generated plan as raw Markdown** (`##`, `**`, table pipes) — it now **auto-renders the plan as formatted, readable text** the moment it's generated (the editable Markdown stays in the textarea below; Preview toggles the rendered view).
+
+### Notes
+- `#/career-plan`, `#/two-pager`, `#/memory`, `#/stats`, and the weekly interview digest are **not broken** — every endpoint returns 200; they render empty states (no plan generated yet / no interview sessions logged in the selected week). Clearer on-page "what this does / how to use it" guidance and `?` help hints land in the next release.
+- The generated career plan renders through `UI.md()`, the app's **escape-first** client XSS boundary (`api.js` HTML-escapes every byte before any tag transform) — same path `reports`/`orientation`/`cv-studio` use. A new `tests/ui-md-xss.test.mjs` feeds `<img onerror>`/`<script>`/`javascript:` payloads through it and asserts no live tag/handler survives.
+- Repo tidy: `docs/UX-ROADMAP.md` records the Phase 2–4 UX plan; the two perennial QA prompts (`qa/UX-AUDIT-PROMPT.md`, `qa/DESIGNER-EXPORT-PROMPT.md`) were actualized to the v1.137.0 baseline (32 route modules · 79 sources · 17 locales); and 59 superseded per-release QA prompts moved to `qa/archive/superseded-prompts/`.
+
 ## [1.136.0] — 2026-08-11
 
 Parent career-ops **v1.26.x** parity (post-v1.26.0 mainline) — one new zero-auth source plus a wave of **quality & robustness** ports to code web-ui mirrors. Registry now **79 sources = 74 EN + 5 RU** (`ALL_ADAPTERS` 74).

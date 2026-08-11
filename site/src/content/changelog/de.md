@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.137.0] — 2026-08-11
+
+**Lesbarkeits- und Rendering-Fixes** — Dark-Mode-Kontrast, Diagrammbeschriftungen und der Karriereplan. Ein nutzergemeldeter UX-Durchgang (kein Parent-Sync).
+
+### Behoben
+- **Dark-Mode Weiß-auf-Weiß / Schwarz-auf-Schwarz auf vielen Bildschirmen** — fünfzehn CSS-Custom-Properties, auf die mehrere Ansichten verwiesen (`--fg`, `--panel`, `--panel-2`, `--ok`, `--danger`, `--card`, …), waren nie deklariert und fielen daher auf hartcodierte Hell-/Schwarz-Werte zurück: im Light-Mode unproblematisch, im Dark-Mode unlesbar (die Übersichts-Chips von `#/pipeline`, der aktive Tab von `#/stats`, „Aktiv / Schlüssel“ + „✓ gesetzt“ in `#/config`, die Abschnitte von `#/two-pager`, die Fragenblase von `#/mock-interview`, Fehlertext). Sie sind jetzt auf die tatsächlichen themenfähigen Tokens aliasiert und folgen damit automatisch dem Theme — **0 WCAG-AA-Kontrastfehler über alle 29 Ansichten**, verifiziert durch einen automatisierten Prüfer; der aktive Tab von `#/config` wechselte zu einem gut lesbaren, getönten Stil. Eine Regressions-Absicherung (`tests/dark-theme-tokens.test.mjs`) hält sie aliasiert.
+- **Diagrammbeschriftungen in `#/stats` wurden mitten im Wort abgeschnitten** („Senior Backend Engineer“ → „…Enginee“) — sie werden jetzt mit Auslassungspunkten gekürzt, wobei die vollständige Beschriftung als Hover-Tooltip erhalten bleibt.
+- **`#/career-plan` zeigte den generierten Plan als rohes Markdown an** — er wird jetzt automatisch als formatierter, lesbarer Text gerendert (das editierbare Markdown bleibt im Textfeld; „Vorschau“ schaltet um).
+
+### Hinweise
+- `#/career-plan`, `#/two-pager`, `#/stats` und der wöchentliche Interview-Digest sind nicht defekt — sie zeigen Leerzustände an, bis Sie einen Plan generieren bzw. Daten vorliegen. Klarere Hinweise auf der Seite und `?`-Hilfe-Tooltips sind als Nächstes geplant (`docs/UX-ROADMAP.md`).
+
 ## [1.136.0] — 2026-08-11
 
 Parität mit dem übergeordneten Projekt career-ops **v1.26.x** (nachgelagerter v1.26.0-Mainline-Stand) — eine neue Quelle ohne Authentifizierung sowie eine Welle von Qualitäts- und Robustheits-Ports für die web-ui-Spiegel. Die Registry umfasst nun **79 Quellen = 74 englische + 5 russische** (`ALL_ADAPTERS` 74).

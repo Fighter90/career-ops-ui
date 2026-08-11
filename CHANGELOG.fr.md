@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.137.0] — 2026-08-11
+
+**Corrections de lisibilité et de rendu** — contraste en mode sombre, libellés de graphiques et plan de carrière. Une passe UX signalée par un utilisateur (pas de parent-sync).
+
+### Corrigé
+- **Blanc sur blanc / noir sur noir en mode sombre sur de nombreux écrans** — quinze propriétés CSS personnalisées référencées par plusieurs vues (`--fg`, `--panel`, `--panel-2`, `--ok`, `--danger`, `--card`, …) n'étaient jamais déclarées, si bien qu'elles retombaient sur des valeurs claires/noires codées en dur : correct en mode clair, illisible en mode sombre (les puces de synthèse de `#/pipeline`, l'onglet actif de `#/stats`, « Active / Keys » + « ✓ set » de `#/config`, les sections de `#/two-pager`, la bulle de question de `#/mock-interview`, le texte d'erreur). Elles sont désormais aliasées vers les vrais tokens sensibles au thème, si bien qu'elles suivent automatiquement le thème — **0 échec de contraste WCAG-AA sur les 29 vues**, vérifié par un auditeur automatisé ; l'onglet actif de `#/config` est passé à un style teinté lisible. Un test de garde-fou (`tests/dark-theme-tokens.test.mjs`) maintient cet aliasing.
+- **Les libellés des graphiques de `#/stats` étaient tronqués en plein mot** (« Senior Backend Engineer » → « …Enginee ») — ils s'affichent désormais avec une ellipse, le libellé complet restant disponible via une infobulle au survol.
+- **`#/career-plan` affichait le plan généré en Markdown brut** — il s'affiche désormais automatiquement en texte formaté et lisible (le Markdown éditable reste dans la zone de texte ; « Aperçu » permet de basculer l'affichage).
+
+### Notes
+- `#/career-plan`, `#/two-pager`, `#/stats` et le résumé hebdomadaire d'entretien ne sont pas cassés — ils affichent des états vides jusqu'à ce qu'un plan soit généré ou que des données soient disponibles. Des indications sur la page plus claires et des info-bulles d'aide `?` sont prévues ensuite (`docs/UX-ROADMAP.md`).
+
 ## [1.136.0] — 2026-08-11
 
 Parité avec career-ops parent **v1.26.x** (mainline post-v1.26.0) — une nouvelle source sans authentification plus une vague de portages qualité et robustesse vers les miroirs de code de web-ui. Le registre compte désormais **79 sources = 74 EN + 5 RU** (`ALL_ADAPTERS` 74).

@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.137.0] — 2026-08-11
+
+**Correções de legibilidade e renderização** — contraste no modo escuro, rótulos de gráficos e o plano de carreira. Um ajuste de UX reportado por usuário (sem parent-sync).
+
+### Corrigido
+- **Branco-sobre-branco / preto-sobre-preto no modo escuro em muitas telas** — quinze propriedades CSS customizadas que várias views referenciavam (`--fg`, `--panel`, `--panel-2`, `--ok`, `--danger`, `--card`, …) nunca haviam sido declaradas, então recaíam em valores fixos claros/pretos: tudo bem no modo claro, ilegível no modo escuro (os chips de visão geral do `#/pipeline`, a aba ativa do `#/stats`, "Ativo / Chaves" + "✓ definido" do `#/config`, as seções do `#/two-pager`, o balão de pergunta do `#/mock-interview`, texto de erro). Agora elas são vinculadas por alias aos tokens reais que respeitam o tema, então seguem o tema automaticamente — **0 falhas de contraste WCAG-AA em todas as 29 views**, verificado por um auditor automatizado; a aba ativa do `#/config` passou a usar um estilo tintado legível. Uma guarda de regressão (`tests/dark-theme-tokens.test.mjs`) mantém esse alias.
+- **Os rótulos de gráfico do `#/stats` eram cortados no meio da palavra** ("Senior Backend Engineer" → "…Enginee") — agora eles recebem elipse (…), mantendo o rótulo completo como tooltip ao passar o mouse.
+- **O `#/career-plan` exibia o plano gerado como Markdown bruto** — agora ele é renderizado automaticamente como texto formatado e legível (o Markdown editável permanece na caixa de texto; o botão Visualizar alterna entre os dois).
+
+### Notas
+- `#/career-plan`, `#/two-pager`, `#/stats` e o resumo semanal de entrevistas não estão quebrados — eles exibem estados vazios até que você gere um plano / tenha dados. Orientações mais claras na tela e dicas de ajuda `?` estão planejadas para os próximos passos (`docs/UX-ROADMAP.md`).
+
 ## [1.136.0] — 2026-08-11
 
 Paridade com o career-ops pai **v1.26.x** (mainline pós-v1.26.0) — uma nova fonte zero-auth, além de uma onda de portes de qualidade e robustez para os trechos de código que o web-ui espelha. O registro agora soma **79 fontes = 74 em inglês + 5 russas** (`ALL_ADAPTERS` 74).

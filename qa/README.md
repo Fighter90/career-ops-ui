@@ -2,6 +2,16 @@
 
 Tracks regressions, fix-prompts, and live evidence across releases.
 
+> **Layout (v1.137.0).** The perennial prompts (`REGRESSION-FINAL.md`,
+> `UX-AUDIT-PROMPT.md`, `DESIGNER-EXPORT-PROMPT.md`, `FUNCTIONALITY-CHECK.md`,
+> `REGRESSION-PROMPT-FINAL.md`) + the base `QA-REGRESSION-PROMPT.md` + the
+> **current** per-release delta `QA-REGRESSION-PROMPT-v<latest>.md` + the
+> `-v1.76.0-FULL` parent-parity driver live at the top level. **Superseded
+> per-release delta prompts (≤ v1.136.0) are archived under
+> [`archive/superseded-prompts/`](./archive/superseded-prompts/).** Dated run
+> reports go under [`reports/`](./reports/). The active design roadmap is
+> [`../docs/UX-ROADMAP.md`](../docs/UX-ROADMAP.md).
+
 ## LATEST — whole-project regression driver — v1.78.2
 
 > **[`QA-REGRESSION-PROMPT.md`](./QA-REGRESSION-PROMPT.md)** is the canonical,

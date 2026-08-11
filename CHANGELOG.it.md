@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.137.0] — 2026-08-11
+
+**Correzioni di leggibilità e rendering** — contrasto in modalità scura, etichette dei grafici e il piano di carriera. Un intervento UX segnalato da un utente (nessun parent-sync).
+
+### Corretto
+- **Bianco su bianco / nero su nero in modalità scura su molte schermate** — quindici proprietà CSS personalizzate referenziate da diverse viste (`--fg`, `--panel`, `--panel-2`, `--ok`, `--danger`, `--card`, …) non erano mai state dichiarate, quindi ricadevano su valori chiaro/nero hardcoded: corretto in modalità chiara, illeggibile in modalità scura (i chip di panoramica di `#/pipeline`, la tab attiva di `#/stats`, "Attivo / Chiavi" + "✓ impostato" di `#/config`, le sezioni di `#/two-pager`, il fumetto della domanda di `#/mock-interview`, il testo di errore). Ora sono aliasate ai veri token theme-aware, quindi seguono automaticamente il tema — **0 violazioni di contrasto WCAG-AA su tutte le 29 viste**, verificato da un revisore automatico; la tab attiva di `#/config` è passata a uno stile con tinta più leggibile. Una guardia di regressione (`tests/dark-theme-tokens.test.mjs`) mantiene l'aliasing.
+- **Le etichette dei grafici di `#/stats` venivano troncate a metà parola** ("Senior Backend Engineer" → "…Enginee") — ora vengono troncate con ellissi, mantenendo l'etichetta completa come tooltip al passaggio del mouse.
+- **`#/career-plan` mostrava il piano generato come Markdown non elaborato** — ora viene renderizzato automaticamente come testo formattato e leggibile (il Markdown modificabile resta nella textarea; il pulsante Anteprima lo attiva/disattiva).
+
+### Note
+- `#/career-plan`, `#/two-pager`, `#/stats` e il digest settimanale dei colloqui non sono rotti — mostrano stati vuoti finché non generi un piano o non hai dati. Indicazioni più chiare in pagina e suggerimenti di aiuto `?` sono previsti come prossimo passo (`docs/UX-ROADMAP.md`).
+
 ## [1.136.0] — 2026-08-11
 
 Parità con il career-ops padre **v1.26.x** (mainline post-v1.26.0) — una nuova sorgente a zero autenticazione più un'ondata di port di qualità e robustezza ai mirror di web-ui. Il registro ora conta **79 sorgenti = 74 EN + 5 RU** (`ALL_ADAPTERS` 74).
