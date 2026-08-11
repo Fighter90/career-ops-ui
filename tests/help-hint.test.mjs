@@ -20,6 +20,10 @@ import { dirname, resolve } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(resolve(ROOT, p), 'utf8');
+/** Escape every regex metacharacter (incl. backslash) before interpolating a
+ *  key into `new RegExp(...)`. Keys are safe constants, but escaping fully keeps
+ *  the matcher correct and satisfies CodeQL's incomplete-escaping query. */
+const reEsc = (s) => String(s).replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
 
 test('help-hint.js exposes the primitive and is CSP-safe', () => {
   const src = read('public/js/lib/help-hint.js');
@@ -60,7 +64,7 @@ test('the 8 AI/analytics views build their H1 via HelpHint.title()', () => {
   };
   for (const [view, key] of Object.entries(views)) {
     const src = read(`public/js/views/${view}.js`);
-    assert.match(src, new RegExp(`HelpHint\\.title\\(.*'${key.replace(/\./g, '\\.')}'`), `${view}.js must wire ${key} via HelpHint.title`);
+    assert.match(src, new RegExp(`HelpHint\\.title\\(.*'${reEsc(key)}'`), `${view}.js must wire ${key} via HelpHint.title`);
   }
 });
 
@@ -73,6 +77,6 @@ test('every hint key referenced in code is present in the EN dictionary', () => 
     'stats.hint.market', 'stats.hint.pipeline', 'stats.hint.trend', 'stats.hint.patterns', 'stats.hint.lifetime',
   ];
   for (const k of keys) {
-    assert.match(en, new RegExp(`'${k.replace(/\./g, '\\.')}':\\s*"`), `EN dict missing ${k}`);
+    assert.match(en, new RegExp(`'${reEsc(k)}':\\s*"`), `EN dict missing ${k}`);
   }
 });
