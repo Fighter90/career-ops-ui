@@ -9,6 +9,22 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.138.0] — 2026-08-12
+
+**Generowanie w języku interfejsu** — każda generacja AI odpowiada teraz w języku wybranym w UI, plus wzmocnienia testów z przeglądu. Poprawka UX zgłoszona przez użytkownika (bez parent-sync).
+
+### Zmieniono
+- **Generacje AI respektują teraz język interfejsu.** Gdy interfejs jest po rosyjsku, hiszpańsku, japońsku, … wygenerowany tekst wraca **w tym** języku zamiast zawsze po angielsku. Dyrektywa języka wyjścia jest przekazywana przez **wszystkie** endpointy generowania — plan kariery, orientację, raport rynkowy, próbną rozmowę, plan networkingu, „zapytaj dokumentację”, sugestię notatki pamięci i szkic two-pager. Kod i identyfikatory pozostają po angielsku (np. klucze YAML w two-pager); lokalizowane są tylko proza, nagłówki i punkty.
+
+### Naprawiono
+- **Strażnik ról kolorów CSS** (`tests/css-role-tokens.test.mjs`) — statyczny kanarek sprawdzający, że tokeny-aliasy trybu ciemnego z v1.137.0 nigdy nie odwracają roli: tokeny tekstowe (`--fg`/`--danger`/`--ok`/…) nigdy jako `background`, a tokeny powierzchni (`--card`/`--panel`/`--line`/…) nigdy jako tekstowy `color`, w całym CSS i stylach inline SPA.
+- **Autosonda ładowarki XSS `UI.md()`** — test ładujący `md()` z `api.js` sonduje teraz `md('<script>…')` tuż po ekstrakcji i rzuca błąd, gdy brak escapowania, więc przyszłe błędne cięcie zawodzi **głośno**, zamiast zazieleniać zestaw bezpieczeństwa na uciętej funkcji.
+- **Strażnik przewijania na `#/career-plan`** — `scrollIntoView` po generacji uruchamia się tylko, gdy podgląd jest wciąż połączony z dokumentem.
+
+### Uwagi
+- `docs/UX-ROADMAP.md` zaktualizowany: podpowiedzi `?` + opisy stron + stany puste przechodzą do **v1.139.0**; dostawca **Nous Research / Hermes** — z przewodnikiem wdrożenia na serwerze chmurowym + Telegram i skillem Hermes — jest śledzony jako **Faza 5 / 5b**.
+- Zestaw: **2356** testów (+5).
+
 ## [1.137.0] — 2026-08-11
 
 **Poprawki czytelności i renderowania** — kontrast w trybie ciemnym, etykiety wykresów oraz plan kariery. Przegląd UX zgłoszony przez użytkownika (bez synchronizacji z rodzicem).

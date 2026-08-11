@@ -56,7 +56,7 @@ Router.register('networking', async () => {
     const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('net.building', 'Researching and drafting…'));
     output.appendChild(pending);
     try {
-      const res = await API.post('/api/networking/plan', { company, role: current.role, jd: jdInput.value.trim(), run: true });
+      const res = await API.post('/api/networking/plan', { company, role: current.role, jd: jdInput.value.trim(), run: true, lang: (I18n.getLang && I18n.getLang()) || 'en' });
       pending.remove();
       if (res.markdown) {
         current.markdown = res.markdown;

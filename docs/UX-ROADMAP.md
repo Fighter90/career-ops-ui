@@ -11,17 +11,20 @@ Fix what's outright unreadable/broken.
 - [x] **Career plan** rendered raw Markdown → auto-renders formatted, readable text.
 - [x] **Config active tab** low-contrast pink pill → readable tinted-badge pattern.
 
-## Phase 2 — v1.138.0 "Understandable"
+## Phase 2a — v1.138.0 "Generation in your language" ✅ (shipped)
 
-Make every page self-explanatory, in every language.
+- [x] **Generation language** — every AI generation now outputs in the selected UI language. The `# Output language` directive (`resolveLocale` + `buildLocaleDirective`) is threaded through **all 8** generation endpoints (career-plan, orientation, market, mock-interview, networking, docs-assistant, memory-suggest, two-pager) and the client sends the active `lang` on all 8 generate POSTs. Code + identifiers (e.g. two-pager YAML keys) stay English; only prose is localized. **cv-studio is deliberately excluded** — a résumé/cover letter must follow the CV/JD target-market language, not the UI chrome. +2 canaries. Shipped with review-driven hardening: a source-static CSS colour-role guard, a `UI.md()` XSS-loader self-probe, and a `#/career-plan` scroll guard.
+
+## Phase 2b — v1.139.0 "Understandable"
+
+Make every page self-explanatory, in every language. (Split out of the original Phase 2; generation-language shipped first as v1.138.0.)
 
 - [ ] Reusable **`?` help-hint** component (CSP-safe popover, accessible, RTL) on every view header + the 5 `#/stats` tabs — click `?` → localized description (the "Rejection patterns (?)" pattern).
 - [ ] **Page descriptions** — one-line "what this does / how to use it / what result to expect" on every view, prominent in empty states.
 - [ ] **Clearer empty states** — `#/career-plan`, weekly digest, `#/stats`, `#/funded` explain how to populate them instead of looking broken.
-- [ ] **Generation language** — every AI generation (career-plan, market report, orientation, networking, two-pager draft, cv-studio, memory suggest, mock-interview) outputs in the selected UI language; thread `lang` into each endpoint + a `# Output language` system-prompt directive.
 - [ ] i18n fan-out ×17 for all new strings.
 
-## Phase 3 — v1.139.0 "Insightful stats"
+## Phase 3 — v1.140.0 "Insightful stats"
 
 Make the numbers correct, detailed, and visual.
 
@@ -30,7 +33,31 @@ Make the numbers correct, detailed, and visual.
 - [ ] **Correctness** — fix the "Unknown" archetype bucketing so recommendations aren't nonsensical ("double down on Unknown").
 - [ ] **Funded companies** enrichment — company description, logo, salary range, open vacancies, visualization.
 
-## Phase 4 — v1.140.0 "Settings & filters"
+## Phase 5 — Nous Research / Hermes provider
+
+Add **Nous Research (Hermes)** as an LLM provider in the OR-router, per <https://hermes-agent.nousresearch.com/docs>.
+
+- [ ] **Scope first (blocked on API details).** The Hermes docs describe an *autonomous agent product* (tool-calling, skills, voice, 20+ messaging platforms) that "works with Nous Portal / OpenRouter / OpenAI / any endpoint" — **not** a documented hosted chat-completions API. Before coding, confirm the actual endpoint + auth from **Nous Portal** and/or the [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent) repo: base URL, API-key header, whether it's OpenAI-`/chat/completions`-compatible, model ids, streaming, tool-calling shape.
+- [ ] **If a Nous Portal endpoint is OpenAI-compatible** — the light path: add it like the existing providers — a `NOUS_API_KEY` (`server/lib/env-config.mjs` + `#/config`), a dispatch branch in `server/lib/llm-dispatch.mjs::runActiveProvider` / `providerAvailable`, a row in the provider-order cascade, the model catalogue + hint, `cli-detect`/help/README roster, and `server/lib/llm-pricing.mjs`. Mirror the OpenAI/Qwen branch (they're already `/chat/completions`-shaped).
+- [ ] **If it's the agent runtime (not a plain API)** — heavier: decide whether web-ui shells to a locally-run Hermes agent or calls a Nous Portal agent endpoint; likely a new relay route rather than a `runActiveProvider` branch. Revisit scope once the API contract is known.
+- [ ] Tests (CI-isolated, stubbed transport) + i18n for any new `#/config` strings + docs.
+
+*Standalone item — independent of Phases 2–4; do the scoping spike before committing to an approach.*
+
+### Phase 5b — Hermes docs, cloud + Telegram deployment guide, and a Hermes skill
+
+A **documentation-and-skill deliverable** that can ship independently of (and ahead of) the provider-integration code above — it explains what Hermes is, how to run career-ops-ui on a **cloud server**, and how to wire the pipeline to **Telegram through Hermes**, then packages that flow as a reusable skill.
+
+- [ ] **README — new "Hermes agent + Telegram" section.** In the primary `README.md` (and mirrored ×17 with the changelog-parity discipline): who Hermes is (Nous Research autonomous agent), why you'd bridge career-ops-ui to it, and a linked pointer to the full deep-dive under `docs/`. Keep the README entry short — a teaser + link, not the whole guide.
+- [ ] **`docs/` — dedicated deep-dive** (`docs/integrations/HERMES.md`, linked from `docs/architecture/OVERVIEW.md` and the docs index): (1) Hermes overview + the two integration shapes from Phase 5 (OpenAI-compatible endpoint vs. agent runtime); (2) **cloud-server deployment** — provisioning a small VPS, Node ≥18, `.env` with the provider key(s), running the server behind a reverse proxy over HTTPS, process-manager/systemd, the read-only parent-career-ops contract in a headless box, security-header/CSP invariants that must survive the move off `127.0.0.1`; (3) **Telegram via Hermes** — connecting a Telegram bot to a running Hermes agent, and how career-ops-ui events/reports reach that channel (relay route vs. Hermes tool-call), with the SSRF/`isValidJobUrl` + no-secrets-in-logs guards called out. Threat-model note + explicit "what NOT to expose" list.
+- [ ] **In-app help guide — new H2 section ×17.** Add a "Hermes & Telegram" H2 to `docs/help/<lang>.md` for all 17 locales (gated H2/H3 counts bumped in the coverage tests), plus the `docs-assistant`/`DocsFab` grounding picks it up automatically. Reachable from `#/help`.
+- [ ] **cvstart.org site — landing/docs surface.** A short marketing-side explainer (Astro `site/`, Node-22 CI build) that mirrors the README teaser and deep-links to the GitHub docs page; keep prose drift in sync with the ×17 wording.
+- [ ] **A Hermes skill (to be created).** Author a `.claude/skills/<hermes-*>/SKILL.md` that operationalizes the guide: given the user's intent ("connect career-ops to Telegram via Hermes" / "deploy this to a cloud box"), it walks the documented steps, checks prerequisites (keys, endpoint reachability via the SSRF-safe path, Node version), and never writes secrets to disk/logs. Register it in the skill list; its body cross-links `docs/integrations/HERMES.md` as the single source of truth so the two never drift.
+- [ ] **Consistency gate.** One scoped version/section-count sweep across README ×17 + help ×17 + CONVENTIONS + architecture + site + wiki, and a canary test asserting the new help H2 exists in every locale (parity-gated, snapshot regenerated).
+
+*The docs + skill can land before the provider code — but keep them honest: mark anything blocked on the Phase 5 API-contract spike as "planned / not-yet-wired" rather than documenting an endpoint that doesn't exist yet.*
+
+## Phase 4 — v1.141.0 "Settings & filters"
 
 Consolidate configuration; make filters beautiful.
 

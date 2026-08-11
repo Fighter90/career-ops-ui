@@ -157,7 +157,7 @@ Router.register('two-pager', async () => {
       // Ask the server to run it live; it falls back to a manual prompt when no
       // provider is configured. Auto-fill only ever populates editable fields —
       // the user still reviews and clicks Save.
-      const res = await API.post('/api/two-pager/draft', { run: true });
+      const res = await API.post('/api/two-pager/draft', { run: true, lang: (I18n.getLang && I18n.getLang()) || 'en' });
       if (res && res.fields) {
         applyFields(res.fields);
         UI.toast(t('twoPager.aiFilled', 'Fields drafted from your CV — review, then Save'), 'success');

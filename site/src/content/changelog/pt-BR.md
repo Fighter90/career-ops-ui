@@ -8,6 +8,22 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.138.0] — 2026-08-12
+
+**Geração no idioma da sua interface** — cada geração por IA agora responde no idioma escolhido na interface, além de reforços de teste vindos da revisão. Ajuste de UX reportado pelo usuário (sem parent-sync).
+
+### Alterado
+- **As gerações por IA agora respeitam o idioma da interface.** Com a interface em russo, espanhol, japonês, … o texto gerado volta **nesse** idioma em vez de sempre em inglês. A diretiva de idioma de saída passa por **todos** os endpoints de geração — plano de carreira, orientação, relatório de mercado, entrevista simulada, plano de networking, «pergunte à documentação», a sugestão de nota de memória e o rascunho do two-pager. Código e identificadores permanecem em inglês (ex.: as chaves YAML do two-pager); só a prosa, títulos e itens são localizados.
+
+### Corrigido
+- **Guarda de papel de cor CSS** (`tests/css-role-tokens.test.mjs`) — um canário estático de que os tokens-alias do modo escuro da v1.137.0 nunca invertem o papel: tokens de texto (`--fg`/`--danger`/`--ok`/…) nunca como `background`, e os de superfície (`--card`/`--panel`/`--line`/…) nunca como `color` de texto, em todo o CSS e nos estilos inline da SPA.
+- **Auto-sonda do carregador XSS do `UI.md()`** — o teste que carrega `md()` de `api.js` agora testa `md('<script>…')` logo após a extração e lança erro se o escape faltar, para que um corte errado futuro falhe **ruidosamente** em vez de deixar a suíte de segurança verde.
+- **Guarda de scroll em `#/career-plan`** — o `scrollIntoView` pós-geração só roda se a prévia ainda estiver conectada ao documento.
+
+### Notas
+- `docs/UX-ROADMAP.md` atualizado: as dicas de ajuda `?` + descrições de página + estados vazios passam para **v1.139.0**; um provedor **Nous Research / Hermes** — com guia de deploy em servidor cloud + Telegram e um skill de Hermes — é registrado como **Fase 5 / 5b**.
+- Suíte: **2356** testes (+5).
+
 ## [1.137.0] — 2026-08-11
 
 **Correções de legibilidade e renderização** — contraste no modo escuro, rótulos de gráficos e o plano de carreira. Um ajuste de UX reportado por usuário (sem parent-sync).

@@ -24,6 +24,7 @@ import { PATHS } from '../paths.mjs';
 import { withFileLock } from '../file-lock.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
+import { resolveLocale, buildLocaleDirective } from '../prompts.mjs';
 
 const MAX_MEMORY = 8 * 1024;   // a note, not a document
 const MAX_MINE = 24 * 1024;    // cap on tracker text mined for suggestions
@@ -73,7 +74,7 @@ export function registerMemoryRoutes(app) {
   // Build a draft prompt seeded with the user's own tracker (best-effort). The
   // user runs it in any LLM, reviews, and pastes an edited result into the note
   // — we never auto-write derived claims.
-  app.post('/api/memory/suggest', llmRateLimit, (_req, res) => {
+  app.post('/api/memory/suggest', llmRateLimit, (req, res) => {
     let tracker = '';
     if (existsSync(PATHS.applications)) {
       try { tracker = readFileSync(PATHS.applications, 'utf8').slice(0, MAX_MINE); } catch { tracker = ''; }
@@ -81,7 +82,10 @@ export function registerMemoryRoutes(app) {
     if (!tracker.trim()) {
       return res.status(400).json({ error: 'no application tracker yet — evaluate a few roles first, then suggest.' });
     }
-    const prompt = `${SUGGEST_INSTRUCTIONS}APPLICATION TRACKER:\n"""\n${tracker}\n"""\n`;
+    // Output-language directive so the suggested note comes back in the UI locale
+    // (v1.138.0). Keys/identifiers stay English; prose is localized.
+    const dir = buildLocaleDirective(resolveLocale(req));
+    const prompt = `${dir ? dir + '\n\n' : ''}${SUGGEST_INSTRUCTIONS}APPLICATION TRACKER:\n"""\n${tracker}\n"""\n`;
     res.json({ prompt, message: 'Run this in any LLM, review the bullets, then paste an edited version into your memory note.' });
   });
 }

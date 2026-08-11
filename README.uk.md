@@ -7,14 +7,14 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2351%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Останній реліз — v1.137.0** — **виправлення читабельності та рендерингу**: білий на білому / чорний на чорному в темній темі на багатьох екранах (`#/pipeline`, вкладки `#/stats`, `#/config`, `#/two-pager`) виправлено в корені — п'ятнадцять токенів теми ніколи не були оголошені й відкочувалися до захардкоджених світлих/чорних значень; підписи графіків `#/stats` тепер скорочуються трьома крапками замість обрізання посередині слова; а `#/career-plan` рендериться як читабельний форматований текст замість необробленого Markdown. **2351 тестів.**
+> **🆕 Останній реліз — v1.138.0** — **генерація мовою інтерфейсу** — кожна AI-генерація (кар’єрний план, орієнтація, звіт по ринку, мок-інтерв’ю, нетворкінг, «запитати документацію», нотатка пам’яті, two-pager) тепер відповідає обраною в інтерфейсі мовою, а не завжди англійською; плюс посилення тестів за підсумками рев’ю (канарок CSS-ролей кольору та самоперевірка XSS-завантажувача `UI.md()`). **2356 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

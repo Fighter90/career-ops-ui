@@ -11,6 +11,22 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.138.0] — 2026-08-12
+
+**Génération dans la langue de votre interface** — chaque génération IA répond désormais dans la langue choisie dans l'UI, plus des renforts de tests issus de la revue. Ajustement UX signalé par l'utilisateur (sans parent-sync).
+
+### Modifié
+- **Les générations IA respectent désormais la langue de l'interface.** Avec l'interface en russe, espagnol, japonais, … le texte généré revient dans **cette** langue au lieu de toujours l'anglais. La directive de langue de sortie traverse **tous** les endpoints de génération — plan de carrière, orientation, rapport de marché, entretien simulé, plan de networking, « demander à la doc », la suggestion de note mémoire et le brouillon du two-pager. Le code et les identifiants restent en anglais (p. ex. les clés YAML du two-pager) ; seuls la prose, les titres et les puces sont localisés.
+
+### Corrigé
+- **Garde de rôle de couleur CSS** (`tests/css-role-tokens.test.mjs`) — un canari statique vérifiant que les jetons alias du mode sombre de v1.137.0 n'inversent jamais leur rôle : les jetons de texte (`--fg`/`--danger`/`--ok`/…) jamais en `background`, et ceux de surface (`--card`/`--panel`/`--line`/…) jamais en `color` de texte, dans tout le CSS et les styles inline de la SPA.
+- **Auto-sonde du chargeur XSS de `UI.md()`** — le test qui charge `md()` depuis `api.js` sonde maintenant `md('<script>…')` juste après l'extraction et lève une erreur si l'échappement manque, de sorte qu'une future découpe erronée échoue **bruyamment** au lieu de laisser la suite de sécurité au vert.
+- **Garde de défilement sur `#/career-plan`** — le `scrollIntoView` après génération ne s'exécute que si l'aperçu est encore connecté au document.
+
+### Notes
+- `docs/UX-ROADMAP.md` mis à jour : les astuces d'aide `?` + descriptions de page + états vides passent en **v1.139.0** ; un fournisseur **Nous Research / Hermes** — avec un guide de déploiement serveur cloud + Telegram et un skill Hermes — est suivi en **Phase 5 / 5b**.
+- Suite : **2356** tests (+5).
+
 ## [1.137.0] — 2026-08-11
 
 **Corrections de lisibilité et de rendu** — contraste en mode sombre, libellés de graphiques et plan de carrière. Une passe UX signalée par un utilisateur (pas de parent-sync).

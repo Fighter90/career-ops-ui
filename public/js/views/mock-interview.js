@@ -76,7 +76,7 @@ Router.register('mock-interview', async () => {
     const pending = c('div', { className: 'loading', style: { alignSelf: 'flex-start', color: 'var(--foggy)' } }, t('mock.thinking', 'Interviewer is thinking…'));
     thread.appendChild(pending);
     try {
-      const res = await API.post('/api/mock-interview/turn', { role: session.role, company: session.company, jd: session.jd, history, run: true });
+      const res = await API.post('/api/mock-interview/turn', { role: session.role, company: session.company, jd: session.jd, history, run: true, lang: (I18n.getLang && I18n.getLang()) || 'en' });
       pending.remove();
       if (res.markdown) {
         history.push({ speaker: 'interviewer', text: res.markdown });

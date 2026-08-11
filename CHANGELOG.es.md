@@ -11,6 +11,22 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.138.0] — 2026-08-12
+
+**Generación en el idioma de tu interfaz** — cada generación con IA ahora responde en el idioma que has elegido en la interfaz, además de refuerzos de pruebas surgidos de la revisión. Ajuste de UX reportado por el usuario (sin parent-sync).
+
+### Cambiado
+- **Las generaciones con IA ahora respetan el idioma de la interfaz.** Con la interfaz en ruso, español, japonés, … el texto generado vuelve en **ese** idioma en lugar de siempre en inglés. La directiva de idioma de salida se propaga por **todos** los endpoints de generación — plan de carrera, orientación, informe de mercado, entrevista simulada, plan de networking, «pregunta a la documentación», la sugerencia de nota de memoria y el borrador del two-pager. El código y los identificadores siguen en inglés (p. ej. las claves YAML del two-pager); solo se localiza la prosa, los títulos y las viñetas.
+
+### Corregido
+- **Guardia de rol de color CSS** (`tests/css-role-tokens.test.mjs`) — un canario estático que verifica que los tokens alias del modo oscuro de v1.137.0 nunca invierten su rol: los tokens de texto (`--fg`/`--danger`/`--ok`/…) nunca se usan como `background`, y los de superficie (`--card`/`--panel`/`--line`/…) nunca como `color` de texto, en todo el CSS y los estilos inline de la SPA.
+- **Auto-sonda del cargador XSS de `UI.md()`** — el test que carga `md()` desde `api.js` ahora prueba `md('<script>…')` justo tras la extracción y lanza un error si falta el escape, de modo que un futuro corte erróneo falla **ruidosamente** en vez de dejar verde la suite de seguridad.
+- **Guardia de scroll en `#/career-plan`** — el `scrollIntoView` tras generar solo se ejecuta si la vista previa sigue conectada al documento.
+
+### Notas
+- `docs/UX-ROADMAP.md` actualizado: las pistas de ayuda `?` + descripciones de página + estados vacíos pasan a **v1.139.0**; un proveedor **Nous Research / Hermes** — con una guía de despliegue en servidor cloud + Telegram y un skill de Hermes — se registra como **Fase 5 / 5b**.
+- Suite: **2356** pruebas (+5).
+
 ## [1.137.0] — 2026-08-11
 
 **Correcciones de legibilidad y renderizado** — contraste en modo oscuro, etiquetas de gráficos y el plan de carrera. Una revisión de UX motivada por un reporte de usuario (sin parent-sync).
