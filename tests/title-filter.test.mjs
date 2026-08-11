@@ -7,7 +7,25 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { compileKeyword, compileKeywordList, buildTitleFilter } from '../server/lib/location-filter.mjs';
+import { compileKeyword, compileKeywordList, compilePositiveKeyword, buildTitleFilter } from '../server/lib/location-filter.mjs';
+
+test('compilePositiveKeyword #2552: " + " AND-group requires every term, any order', () => {
+  const m = compilePositiveKeyword('staff + platform');
+  assert.equal(m('staff platform engineer'), true);
+  assert.equal(m('platform staff engineer'), true); // order-independent
+  assert.equal(m('staff engineer'), false);         // missing "platform"
+  assert.equal(m('platform engineer'), false);       // missing "staff"
+  // a plain entry (no " + ") stays a single matcher; "c++" is NOT split
+  assert.equal(compilePositiveKeyword('c++')('senior c++ dev'), true);
+  assert.equal(compilePositiveKeyword('golang')('golang backend'), true);
+});
+
+test('buildTitleFilter #2552: positive AND-group gates the whole title', () => {
+  const keep = buildTitleFilter({ positive: ['python + ml', 'rust'] });
+  assert.equal(keep('Senior Python ML Engineer'), true);   // AND-group satisfied
+  assert.equal(keep('Rust Engineer'), true);               // plain OR term
+  assert.equal(keep('Python Engineer'), false);            // "ml" missing → group fails, no other positive
+});
 
 test('compileKeyword: 2-3 letter acronyms match on word boundaries', () => {
   const coo = compileKeyword('coo');

@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2306%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2343%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.135.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.135.0)
+[![release](https://img.shields.io/badge/release-v1.136.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.136.0)
 
-> **🆕 Son sürüm — v1.135.0** — üst proje career-ops **v1.26.0** paritesi: **beş yeni sıfır-kimlik-doğrulama tarama kaynağı** — JOIN, Getro, Consider, JOINUP ve Remotli — artı a16z Speedrun (geçici-yeniden-deneme, artık tüm-pano iptali yok), Arbeitsagentur (v6 Jobsuche API'si), The Hub (v2 API) ve Hacker News (whoishiring-hesap araması) için doğruluk düzeltmeleri. Kayıt defteri artık **78 tarama kaynağı**. **2306 test.**
+> **🆕 Son sürüm — v1.136.0** — üst proje career-ops **v1.26.x** paritesi: yeni bir **Eightfold AI** tarama kaynağı artı bir **kalite ve sağlamlık** dalgası — Unicode-duyarlı şirket/rol çiftleme anahtarları (Latin olmayanlar artık çökmüyor), `fetchJsonWithRetry` artık reddedilen bir yönlendirmeyi yeniden denemeyi durduruyor, `title_filter.positive` ` + ` VE-grupları kazanıyor ve `oraclecloud`/`workable`/`personio` sağlamlaştırması. Kayıt defteri artık **79 tarama kaynağı**. **2343 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

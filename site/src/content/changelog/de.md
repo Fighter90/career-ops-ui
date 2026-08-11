@@ -2,6 +2,25 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.136.0] — 2026-08-11
+
+Parität mit dem übergeordneten Projekt career-ops **v1.26.x** (nachgelagerter v1.26.0-Mainline-Stand) — eine neue Quelle ohne Authentifizierung sowie eine Welle von Qualitäts- und Robustheits-Ports für die web-ui-Spiegel. Die Registry umfasst nun **79 Quellen = 74 englische + 5 russische** (`ALL_ADAPTERS` 74).
+
+### Hinzugefügt
+- **`eightfold`** (Eightfold AI, #2684) — Talent-Acquisition-Boards über die authentifizierungsfreie `https://<tenant>.eightfold.ai/api/apply/v2/jobs`-API, host-gepinnt auf `*.eightfold.ai` (der gebrandete `careers.<company>.com`-CNAME wird absichtlich abgelehnt); paginiert mit einer Sicherheitsobergrenze, Tote-Board-Throw, URL-Dedup. Quelle + Adapter + CI-isolierte Test-Suite; erscheint im `#/scan`-Quellenfilter und auf der Landingpage.
+
+### Behoben
+- **Unicode-fähige Dedup- und Rollen-Schlüssel** (#2569 / #2587 / #2667) — ein neues gemeinsames `normalizeTextKey` (NFKC, behält Buchstaben/Diakritika/Ziffern jeder Schrift) ersetzt die rein ASCII-basierten Schlüssel: `detect-reposts` gruppiert nun Breiten-/Interpunktions-Firmenvarianten („Acme, Inc.“ ≡ „Acme Inc“) und fasst niemals unterschiedliche nicht-lateinische Arbeitgeber zusammen, während `role-matcher` Halbbreiten-/Vollbreiten-Titel zusammenführt und nicht-lateinische Rollen-Tokens beibehält, statt sie zu löschen.
+- **`fetchJsonWithRetry` wiederholt einen abgelehnten Redirect nicht mehr** (#2657) — eine `redirect:'error'`-Absicherung, die auf einen 3xx trifft, ist deterministisch, daher ist dies jetzt nicht wiederholbar und schlägt sofort fehl, statt das Wiederholungsbudget zu verbrauchen.
+- **`title_filter.positive`-UND-Gruppen** (#2552) — ein durch Leerzeichen begrenztes ` + ` innerhalb eines positiven Eintrags verlangt nun, dass jeder Begriff im Titel vorkommt, in beliebiger Reihenfolge.
+- **`oraclecloud` akzeptiert die durchnummerierten Tenant-Apex-Domains** `oraclecloud1.com … oraclecloud99.com` (#2683) — eine begrenzte Familie (keine führende Null, ≤ 2 Ziffern), niemals eine Wildcard-Apex-Domain.
+- **`workable` gehärtet** (#2675) — Wiederholungsversuche, browserähnliche Header und Anfrage-Serialisierung gegenüber dem Cloudflare-vorgeschalteten Host.
+- **`personio` weicht auf ein HTML-Scraping aus**, wenn der XML-Feed deaktiviert ist, statt nichts zurückzugeben.
+- **`states`-FALLBACK-Aliase erneut synchronisiert** mit dem übergeordneten Projekt (#2615).
+
+### Hinweise
+- Nicht portiert (von web-ui nicht gespiegelt, oder nur CLI-relevant): reply-matcher (#2672), jd-similarity (#2661), jd-skill-gap (#2686), das Parsen von scan env-path (#2568) / `--flag=value` (#2589) sowie Änderungen an Anschreiben/CV-Vorlage/doctor/ollama/generate-pdf. Die HIGH-Advisories für `js-yaml`/`nanoid` im Web wurden bereits in web-ui v1.135.0 gepatcht.
+
 ## [1.135.0] — 2026-08-11
 
 Parität mit dem übergeordneten Projekt career-ops **v1.26.0** — fünf neue Scan-Quellen ohne Authentifizierung sowie Korrekturfixes für vier Boards, die web-ui bereits unterstützt. Die Registry umfasst nun **78 Quellen = 73 englische + 5 russische** (`ALL_ADAPTERS` 73).

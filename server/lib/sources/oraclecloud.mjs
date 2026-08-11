@@ -52,7 +52,12 @@
  */
 import { fetchJson, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 
-export const ORACLE_HOST_RE = /^[a-z0-9-]+\.fa\.(?:[a-z0-9-]+\.)?(?:ocs\.)?oraclecloud\.com$/i;
+// `oraclecloud(?:[1-9][0-9]?)?` = the unnumbered apex plus the numbered family
+// oraclecloud1.com … oraclecloud99.com (some tenants live only on a numbered
+// apex, e.g. `<tenant>.fa.ocs.oraclecloud26.com`, whose unnumbered sibling does
+// not resolve — parent career-ops #2683). No leading zero and at most two digits
+// keeps this a BOUNDED host pin, never a wildcard `oraclecloud<anything>.com`.
+export const ORACLE_HOST_RE = /^[a-z0-9-]+\.fa\.(?:[a-z0-9-]+\.)?(?:ocs\.)?oraclecloud(?:[1-9][0-9]?)?\.com$/i;
 
 export const PAGE_SIZE = 200;
 export const MAX_PAGES = 25; // safety cap (~5000 jobs); hard ceiling like workday

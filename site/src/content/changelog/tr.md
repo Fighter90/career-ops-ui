@@ -2,6 +2,25 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.136.0] — 2026-08-11
+
+Üst proje career-ops **v1.26.x** paritesi (v1.26.0 sonrası ana hat) — bir yeni sıfır-kimlik-doğrulama kaynak artı web-ui yansılarına yönelik bir kalite ve sağlamlık düzeltmeleri dalgası. Kayıt defteri artık **79 kaynak = 74 İngilizce + 5 Rusça** (`ALL_ADAPTERS` 74).
+
+### Eklendi
+- **`eightfold`** (Eightfold AI, #2684) — sıfır-kimlik-doğrulama `https://<tenant>.eightfold.ai/api/apply/v2/jobs` API'si üzerinden yetenek-kazanımı panoları, `*.eightfold.ai`'a ana bilgisayar-sabitli (markalı `careers.<company>.com` CNAME'i kasıtlı olarak reddediliyor); bir güvenlik üst sınırıyla sayfalanmış, ölü-pano-fırlatma, url-çiftleme. Kaynak + adaptör + CI-izole paket; `#/scan` Kaynak filtresinde ve açılış sayfasında görünüyor.
+
+### Düzeltildi
+- **Unicode-duyarlı çiftleme ve rol anahtarları** (#2569 / #2587 / #2667) — yeni bir paylaşılan `normalizeTextKey` (NFKC, herhangi bir yazı sisteminin harflerini/işaretlerini/rakamlarını koruyor) yalnızca-ASCII anahtarların yerini alıyor: `detect-reposts` artık genişlik/noktalama şirket varyantlarını kümeliyor ("Acme, Inc." ≡ "Acme Inc") ve farklı Latin-olmayan işverenleri asla çökertmiyor, `role-matcher` ise tam-genişlikli unvanları katlıyor ve Latin-olmayan rol belirteçlerini silmek yerine koruyor.
+- **`fetchJsonWithRetry` artık reddedilen bir yönlendirmeyi yeniden denemiyor** (#2657) — bir 3xx ile karşılaşan `redirect:'error'` koruyucusu determinist olduğundan, artık yeniden-denenemez olarak işaretleniyor ve yeniden deneme bütçesini tüketmek yerine hızlıca başarısız oluyor.
+- **`title_filter.positive` VE-grupları** (#2552) — pozitif bir girdi içindeki boşlukla ayrılmış bir ` + ` artık her terimin, herhangi bir sırada, başlıkta görünmesini gerektiriyor.
+- **`oraclecloud`, numaralandırılmış kiracı apekslerini kabul ediyor** `oraclecloud1.com … oraclecloud99.com` (#2683) — sınırlı bir aile (baştaki sıfır yok, ≤ 2 hane), asla bir joker aleksi değil.
+- **`workable` sağlamlaştırıldı** (#2675) — Cloudflare-önlü ana bilgisayara karşı yeniden deneme, tarayıcı-benzeri başlıklar ve istek serileştirmesi.
+- **`personio`**, XML beslemesi devre dışıyken hiçbir şey döndürmek yerine bir HTML kazımasına düşüyor.
+- **`states` FALLBACK takma adları** üst projeyle yeniden eşzamanlandı (#2615).
+
+### Notlar
+- Taşınmadı (web-ui tarafından yansılanmıyor veya yalnızca-CLI): reply-matcher (#2672), jd-similarity (#2661), jd-skill-gap (#2686), tarama ortam-yolu (#2568) / `--flag=value` (#2589) ayrıştırması, ve kapak mektubu / CV-şablonu / doctor / ollama / generate-pdf değişiklikleri. Web `js-yaml`/`nanoid` YÜKSEK önerileri web-ui v1.135.0'da zaten yamalanmıştı.
+
 ## [1.135.0] — 2026-08-11
 
 Üst proje career-ops **v1.26.0** paritesi — beş yeni sıfır-kimlik-doğrulama tarama kaynağı artı web-ui'nin zaten taşıdığı dört panoya doğruluk düzeltmeleri. Kayıt defteri artık **78 kaynak = 73 İngilizce + 5 Rusça** (`ALL_ADAPTERS` 73).

@@ -8,6 +8,25 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.136.0] — 2026-08-11
+
+Paritet med forælder-projektet career-ops **v1.26.x** (efter v1.26.0-hovedgrenen) — én ny kilde uden godkendelse plus en bølge af kvalitets- og robusthedsporteringer til kode, som web-ui spejler. Registret rummer nu **79 kilder = 74 engelske + 5 russiske** (`ALL_ADAPTERS` 74).
+
+### Tilføjet
+- **`eightfold`** (Eightfold AI, #2684) — opslagstavler til talentrekruttering via den godkendelsesfrie `https://<tenant>.eightfold.ai/api/apply/v2/jobs`-API, vært-fastgjort til `*.eightfold.ai` (den brandede `careers.<company>.com`-CNAME afvises med vilje); pagineret med et sikkerhedsloft, dødt-opslagstavle-kast og URL-dedup. Kilde + adapter + en CI-isoleret suite; optræder i `#/scan`s Kilde-filter og på landingssiden.
+
+### Rettet
+- **Unicode-bevidste dedup- og rollenøgler** (#2569 / #2587 / #2667) — en ny fælles `normalizeTextKey` (NFKC, bevarer bogstaver/mærker/cifre fra ethvert skriftsystem) afløser de rent ASCII-baserede nøgler: `detect-reposts` klynger nu virksomhedsvarianter med forskellig bredde/tegnsætning ("Acme, Inc." ≡ "Acme Inc") og kollapser aldrig forskellige ikke-latinske arbejdsgivere, mens `role-matcher` folder fuldbredde-titler sammen og bevarer ikke-latinske rolle-tokens i stedet for at udslette dem.
+- **`fetchJsonWithRetry` forsøger ikke længere igen ved en afvist omdirigering** (#2657) — en `redirect:'error'`-vagt, der møder en 3xx, er deterministisk, så den er nu ikke-genforsøgbar og fejler hurtigt i stedet for at opbruge genforsøgsbudgettet.
+- **`title_filter.positive`-AND-grupper** (#2552) — et mellemrumsafgrænset ` + ` inden i en positiv post kræver nu, at hvert udtryk indgår i titlen, i vilkårlig rækkefølge.
+- **`oraclecloud` accepterer de nummererede tenant-apex-domæner** `oraclecloud1.com … oraclecloud99.com` (#2683) — en afgrænset familie (intet foranstillet nul, ≤ 2 cifre), aldrig et wildcard-apex.
+- **`workable` hærdet** (#2675) — genforsøg, browser-lignende headers og serialisering af forespørgsler mod den Cloudflare-fordelte vært.
+- **`personio` falder tilbage til en HTML-scrape**, når XML-feedet er deaktiveret, i stedet for at returnere ingenting.
+- **`states` FALLBACK-aliasser er resynkroniseret** med forælderen (#2615).
+
+### Noter
+- Ikke porteret (ikke spejlet af web-ui, eller kun CLI): reply-matcher (#2672), jd-similarity (#2661), jd-skill-gap (#2686), scan env-path (#2568) / `--flag=value`-parsing (#2589), samt ændringer til cover-letter / CV-skabelon / doctor / ollama / generate-pdf. De HIGH-sårbarhedsadvarsler for web-`js-yaml`/`nanoid` var allerede rettet i web-ui v1.135.0.
+
 ## [1.135.0] — 2026-08-11
 
 Paritet med forælder-projektet career-ops **v1.26.0** — fem nye scan-kilder uden godkendelse plus korrektionsrettelser til fire opslagstavler, som web-ui allerede har. Registret rummer nu **78 kilder = 73 engelske + 5 russiske** (`ALL_ADAPTERS` 73).

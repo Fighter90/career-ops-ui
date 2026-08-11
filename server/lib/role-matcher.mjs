@@ -98,6 +98,11 @@ export const BASELINE_TOKENS = new Set([
 function normalizeTitle(value) {
   const text = typeof value === 'string' ? value : String(value ?? '');
   return text
+    // NFKC folds compatibility/width variants first (full-width「ＳＥＮＩＯＲ」→
+    // "senior", ﬁ ligature → "fi") so a full-width repost of a title matches its
+    // half-width twin (#2569); NFD + strip-Mn then folds combining accents
+    // (café → cafe), as before.
+    .normalize('NFKC')
     .toLowerCase()
     .normalize('NFD')
     .replace(/\p{Mn}/gu, '');
@@ -126,7 +131,12 @@ export function roleTokens(role) {
     // tokenized identically to the bare title and got merged over it (#2165).
     // "cicd" / "tcpip" / "uiux" survive as content tokens.
     .replace(/\b([a-z0-9]{1,3})\/([a-z0-9]{1,3})\b/g, '$1$2')
-    .replace(/[^a-z0-9\s]/g, ' ')
+    // Unicode-aware strip (#2569): keep letters/digits of ANY script, not just
+    // ASCII, so a non-Latin title tokenizes to its real words (「エンジニア 東京」→
+    // ["エンジニア","東京"]) and reposts of it can match — instead of collapsing to
+    // an empty token set that never matches anything. ASCII titles are byte-for-
+    // byte unaffected ([^a-z0-9\s] and [^\p{L}\p{N}\s] agree on ASCII).
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
     .split(/\s+/)
     .filter((w) => (w.length > 3 || SHORT_SPECIALTY.has(w)) && !ROLE_STOPWORDS.has(w));
 }
@@ -152,8 +162,12 @@ export function roleFuzzyMatch(a, b) {
   // title that tokenizes to 0 words (e.g. a company posting just "Member of
   // Technical Staff" with no suffix) — tokenization can never be the reason
   // an exact repost fails to dedupe.
-  const textA = String(a ?? '').trim().toLowerCase();
-  const textB = String(b ?? '').trim().toLowerCase();
+  // NFKC-fold before the equality check so a full-width repost matches its
+  // half-width twin here (#2569) instead of falling through to the strict
+  // token/opening rules below. NFKC is identity on ASCII, so Latin titles are
+  // unaffected.
+  const textA = String(a ?? '').normalize('NFKC').trim().toLowerCase();
+  const textB = String(b ?? '').normalize('NFKC').trim().toLowerCase();
   if (textA && textA === textB) return true;
 
   const senA = extractSeniorities(a);

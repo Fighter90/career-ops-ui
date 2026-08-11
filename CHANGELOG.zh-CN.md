@@ -9,6 +9,25 @@
 ---
 
 
+## [1.136.0] — 2026-08-11
+
+父项目 career-ops **v1.26.x** 对齐(v1.26.0 主线之后)—— 一个新的零鉴权来源,以及对 web-ui 镜像所做的一波质量与健壮性移植。注册表现为 **79 个来源 = 74 个英文 + 5 个俄文**(`ALL_ADAPTERS` 74)。
+
+### 新增
+- **`eightfold`**(Eightfold AI,#2684)—— 通过零鉴权的 `https://<tenant>.eightfold.ai/api/apply/v2/jobs` API 获取人才招聘板,主机锁定至 `*.eightfold.ai`(故意拒绝品牌化的 `careers.<company>.com` CNAME);分页并设有安全上限、失效招聘板抛出异常、URL 去重。新增来源 + 适配器 + 一套 CI 隔离测试套件;已出现在 `#/scan` 的 Source 筛选器与落地页中。
+
+### 修复
+- **Unicode 感知的去重与角色键**(#2569 / #2587 / #2667)—— 新增共享的 `normalizeTextKey`(NFKC,保留任意文字体系的字母/符号/数字),取代了此前仅支持 ASCII 的键:`detect-reposts` 现在能够聚类全角/半角与标点变体的公司名(例如 "Acme, Inc." ≡ "Acme Inc"),且绝不会把不同的非拉丁字符雇主误合并;`role-matcher` 则会折叠全角职位名称,并保留非拉丁字符的职位词元,而不是将其抹除。
+- **`fetchJsonWithRetry` 不再重试被拒绝的重定向**(#2657)—— `redirect:'error'` 守卫遇到 3xx 响应时行为是确定性的,因此现在将其判定为不可重试,直接快速失败,而不再耗尽重试预算。
+- **`title_filter.positive` 的 AND 分组**(#2552)—— positive 条目中以空白分隔的 ` + ` 现在要求标题中必须出现全部词项(顺序不限)。
+- **`oraclecloud` 现已支持带编号的租户顶级域名** `oraclecloud1.com … oraclecloud99.com`(#2683)—— 这是一个有限的域名族(不允许前导零,至多 2 位数字),绝非通配顶级域名。
+- **`workable` 加固**(#2675)—— 针对 Cloudflare 前置的主机,增加了重试、类浏览器请求头,以及请求串行化。
+- **`personio` 现在会回退到 HTML 抓取**,当 XML 信息流被禁用时不再返回空结果。
+- **`states` 的 FALLBACK 别名已与父项目重新同步**(#2615)。
+
+### 说明
+- 未移植(未被 web-ui 镜像,或仅限 CLI):`reply-matcher`(#2672)、`jd-similarity`(#2661)、`jd-skill-gap`(#2686)、scan 的环境变量路径(#2568)/ `--flag=value` 解析(#2589),以及封面信 / CV 模板 / `doctor` / `ollama` / 生成 PDF 相关改动。Web 端的 `js-yaml`/`nanoid` HIGH 级安全公告已在 web-ui v1.135.0 中修复。
+
 ## [1.135.0] — 2026-08-11
 
 父项目 career-ops **v1.26.0** 对齐 —— 五个新的零鉴权扫描来源,以及对 web-ui 已有的四块招聘板所做的正确性修复。注册表现为 **78 个来源 = 73 个英文 + 5 个俄文**(`ALL_ADAPTERS` 73)。

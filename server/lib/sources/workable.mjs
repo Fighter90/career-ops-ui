@@ -24,8 +24,43 @@
  * A total fetch failure THROWS (dead-board contract): the scanner treats a
  * throw as "board unreachable" and an empty array as "board reachable, no
  * matching roles". We never swallow a network/HTTP error into `[]`.
+ *
+ * HARDENING (parent career-ops parity — commit feabcd4, "harden workable with
+ * retry, headers, and serialization"): the widget request carries browser-like
+ * headers (the shared BROWSER_LIKE_USER_AGENT + accept-language + origin + a
+ * per-account referer), retries transient failures (429 / 5xx / network) via the
+ * shared `fetchJsonWithRetry`, and is serialized process-wide against
+ * apply.workable.com — Cloudflare fronts every tenant on that single host, so one
+ * in-flight request at a time avoids self-inflicted rate-limiting. A permanent
+ * 4xx is not retried; once the retry budget is spent the error propagates and the
+ * dead-board throw fires. (The web-ui source is single-request — it has no
+ * markdown fallback — so the parent's give-up-early-on-long-Retry-After branch,
+ * whose only purpose is to fall through to that feed, does not apply here.)
  */
-const UA = 'career-ops-web-ui/1.0';
+import { fetchJsonWithRetry, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+
+// Browser-like request headers. apply.workable.com sits behind Cloudflare, which
+// can block a generic UA outright; the shared BROWSER_LIKE_USER_AGENT keeps every
+// worked-around source pinned to one Chrome version instead of drifting per file.
+// `referer` is per-account, added in fetchWorkable. Mirrors the parent's
+// WORKABLE_HEADERS.
+const WORKABLE_HEADERS = {
+  'user-agent': BROWSER_LIKE_USER_AGENT,
+  accept: 'application/json',
+  'accept-language': 'en-US,en;q=0.9',
+  origin: 'https://apply.workable.com',
+};
+
+// Process-wide serialization: apply.workable.com fronts every tenant on the same
+// host, so this process never needs more than one in-flight request to it at a
+// time. Mirrors the parent's `serialized()` — errors are swallowed off the queue
+// tail so one failed fetch can't wedge every later one.
+let workableQueue = Promise.resolve();
+function serialized(fn) {
+  const result = workableQueue.then(fn, fn);
+  workableQueue = result.then(() => undefined, () => undefined);
+  return result;
+}
 
 // v1.69.0 (P-14) — self-describing adapter metadata; see ashby.mjs for the rationale.
 export const meta = {
@@ -124,7 +159,7 @@ function safeJobUrl(raw) {
 }
 
 export async function fetchWorkable(apiUrl, opts = {}) {
-  const { fetchImpl = fetch, signal } = opts;
+  const { fetchImpl = fetch, signal, retryDelayMs = 500 } = opts;
 
   const slug = resolveWorkableSlug(apiUrl);
   if (!slug) throw new Error(`Workable: cannot derive account slug from ${apiUrl}`);
@@ -132,17 +167,23 @@ export async function fetchWorkable(apiUrl, opts = {}) {
   // Build on a hard-coded host and re-assert (defence in depth); `redirect:
   // 'error'` closes the SSRF-via-redirect vector, matching the parent.
   const url = assertWorkableUrl(widgetUrlForSlug(slug));
-  const res = await fetchImpl(url, {
-    signal,
-    redirect: 'error',
-    headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
-  if (!res.ok) {
-    const err = new Error(`Workable: HTTP ${res.status} (${url})`);
-    err.status = res.status;
-    throw err;
-  }
-  const data = await res.json();
+  const referer = `https://apply.workable.com/${slug}/`;
+
+  // Serialized process-wide (one in-flight request against the shared
+  // apply.workable.com host) and retried on transient failures via the shared
+  // helper: `fetchJsonWithRetry` retries 429 / 5xx / network errors and rethrows
+  // a permanent 4xx immediately, so once the budget is spent the error propagates
+  // and the dead-board throw fires (single-request contract). The error keeps its
+  // `.status` (set by http-json.mjs on a non-2xx), preserving the scanner's
+  // outage-vs-empty branch.
+  const data = await serialized(() =>
+    fetchJsonWithRetry(fetchImpl, url, {
+      signal,
+      redirect: 'error',
+      headers: { ...WORKABLE_HEADERS, referer },
+      retryDelayMs,
+    }),
+  );
   return parseWorkableWidget(data);
 }
 

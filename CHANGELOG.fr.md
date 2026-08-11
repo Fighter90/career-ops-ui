@@ -11,6 +11,25 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.136.0] — 2026-08-11
+
+Parité avec career-ops parent **v1.26.x** (mainline post-v1.26.0) — une nouvelle source sans authentification plus une vague de portages qualité et robustesse vers les miroirs de code de web-ui. Le registre compte désormais **79 sources = 74 EN + 5 RU** (`ALL_ADAPTERS` 74).
+
+### Ajouté
+- **`eightfold`** (Eightfold AI, #2684) — boards d'acquisition de talents via l'API sans authentification `https://<tenant>.eightfold.ai/api/apply/v2/jobs`, épinglée à l'hôte `*.eightfold.ai` (le CNAME de marque `careers.<company>.com` est délibérément rejeté) ; paginée avec un plafond de sécurité, une erreur levée en cas de board mort, et une déduplication d'URL. Source + adaptateur + suite isolée pour CI ; apparaît dans le filtre Source de `#/scan` et sur la page d'accueil.
+
+### Corrigé
+- **Déduplication et clés de rôle sensibles à Unicode** (#2569 / #2587 / #2667) — une nouvelle fonction partagée `normalizeTextKey` (NFKC, qui conserve les lettres/signes diacritiques/chiffres de toute écriture) remplace les clés ASCII uniquement : `detect-reposts` regroupe désormais les variantes d'entreprise selon la largeur/ponctuation (« Acme, Inc. » ≡ « Acme Inc ») et ne fusionne plus jamais des employeurs non latins distincts, tandis que `role-matcher` replie les intitulés en pleine largeur et conserve les tokens de rôle non latins au lieu de les effacer.
+- **`fetchJsonWithRetry` ne relance plus une redirection refusée** (#2657) — une garde `redirect:'error'` qui rencontre un 3xx est déterministe, elle est donc désormais non-relançable et échoue rapidement au lieu de consommer le budget de relances.
+- **Groupes ET de `title_filter.positive`** (#2552) — un ` + ` délimité par des espaces à l'intérieur d'une entrée positive exige désormais que chaque terme apparaisse dans le titre, dans n'importe quel ordre.
+- **`oraclecloud` accepte les apex de tenant numérotés** `oraclecloud1.com … oraclecloud99.com` (#2683) — une famille bornée (pas de zéro initial, ≤ 2 chiffres), jamais un apex générique.
+- **`workable` renforcé** (#2675) — relances, en-têtes imitant un navigateur, et sérialisation des requêtes face à l'hôte derrière Cloudflare.
+- **`personio` bascule vers un scraping HTML** lorsque le flux XML est désactivé, au lieu de ne rien renvoyer.
+- **Les alias FALLBACK de `states` resynchronisés** avec le parent (#2615).
+
+### Notes
+- Non porté (non reflété par web-ui, ou réservé à la CLI) : reply-matcher (#2672), jd-similarity (#2661), jd-skill-gap (#2686), les chemins de scan surchargeables par variable d'environnement (#2568) / l'analyse `--flag=value` (#2589), et les changements de lettre de motivation / modèle de CV / doctor / ollama / generate-pdf. Les alertes HIGH `js-yaml`/`nanoid` du web avaient déjà été corrigées dans web-ui v1.135.0.
+
 ## [1.135.0] — 2026-08-11
 
 Parité avec career-ops parent **v1.26.0** — cinq nouvelles sources de scan sans authentification, plus des corrections de justesse pour quatre boards que web-ui prenait déjà en charge. Le registre compte désormais **78 sources = 73 EN + 5 RU** (`ALL_ADAPTERS` 73).

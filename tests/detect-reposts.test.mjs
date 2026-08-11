@@ -43,6 +43,39 @@ test('role-matcher: roleFuzzyMatch matches variants, rejects distinct roles & ba
   assert.equal(roleFuzzyMatch('Data Engineer (Repost)', 'Data Engineer'), true);
 });
 
+test('role-matcher #2569: Unicode-aware tokens — non-Latin survives, full-width folds', () => {
+  // A non-Latin title now yields real content tokens instead of collapsing to []
+  // (which never matches anything). (The shared NFD+strip-Mn accent fold also
+  // folds Japanese voiced marks, and length>3 drops very short tokens — both
+  // pre-existing and consistent, so we assert the shape, not a specific glyph.)
+  assert.ok(roleTokens('エンジニア 東京').length > 0, 'non-Latin no longer collapses to []');
+  assert.deepEqual(roleTokens('ＢＡＣＫＥＮＤ Ｅｎｇｉｎｅｅｒ'), roleTokens('Backend Engineer'));
+  // Two DISTINCT non-Latin roles must not be forced to match (was: []∩[]=match-risk).
+  assert.equal(roleFuzzyMatch('エンジニア 東京', 'デザイナー 大阪'), false);
+  // A genuine full-width repost of a title now matches its half-width twin.
+  assert.equal(roleFuzzyMatch('ＳＥＮＩＯＲ Ｂａｃｋｅｎｄ Ｅｎｇｉｎｅｅｒ', 'Senior Backend Engineer'), true);
+  // ASCII titles are byte-for-byte unaffected by the Unicode strip.
+  assert.deepEqual(roleTokens('Staff Data Engineer'), roleTokens('Staff Data Engineer'));
+});
+
+test('detectReposts #2569: company key folds width/punctuation/spacing variants', () => {
+  // "Acme, Inc." and "Acme Inc" are the SAME employer — under the old plain
+  // lowercase key they landed in different groups and a genuine repost went
+  // undetected. The Unicode key ("acmeinc") now clusters them.
+  const rows = parseScanHistory([
+    '2026-06-01\tlinkedin\ta\tAcme, Inc.\tData Engineer\thttps://x.com/1',
+    '2026-06-10\tlinkedin\tb\tAcme Inc\tData Engineer\thttps://x.com/2',
+  ].join('\n'));
+  assert.equal(detectReposts(rows, 90).length, 1, 'punctuation/space variants cluster');
+
+  // …but two DISTINCT non-Latin employers stay separate (no empty-key collapse).
+  const distinct = parseScanHistory([
+    '2026-06-01\thh\tc\tТинькофф\tАналитик\thttps://y.com/1',
+    '2026-06-05\thh\td\tЯндекс\tАналитик\thttps://y.com/2',
+  ].join('\n'));
+  assert.equal(detectReposts(distinct, 90).length, 0, 'different non-Latin companies never merge');
+});
+
 test('role-matcher #1933: MTS prefix stripped so titles match on their suffix', () => {
   // The "Member of Technical Staff" boilerplate prefix is stripped, so two
   // MTS titles are matched on their suffix, not the shared boilerplate.

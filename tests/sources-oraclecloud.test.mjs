@@ -66,6 +66,16 @@ test('assertOraclecloudUrl: accepts base, <region>, and .ocs. host variants', ()
   assert.equal(assertOraclecloudUrl(region), region);
   const ocs = 'https://acme.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs';
   assert.equal(assertOraclecloudUrl(ocs), ocs);
+  // Numbered apex family oraclecloud1.com … oraclecloud99.com (parent #2683).
+  const numbered = 'https://tenant.fa.ocs.oraclecloud26.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs';
+  assert.equal(assertOraclecloudUrl(numbered), numbered);
+});
+
+test('assertOraclecloudUrl: the numbered apex stays a BOUNDED family (no leading zero, ≤2 digits)', () => {
+  // oraclecloud100.com (3 digits) and oraclecloud0.com (leading zero) must NOT
+  // widen into a wildcard apex — the pin enumerates a finite family only.
+  assert.throws(() => assertOraclecloudUrl('https://t.fa.oraclecloud100.com/jobs'), /untrusted hostname/);
+  assert.throws(() => assertOraclecloudUrl('https://t.fa.oraclecloud0.com/jobs'), /untrusted hostname/);
 });
 
 test('assertOraclecloudUrl: rejects lookalike hosts, plain HTTP, and junk', () => {

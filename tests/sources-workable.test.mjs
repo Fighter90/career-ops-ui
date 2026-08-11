@@ -9,7 +9,16 @@
  * accounts. The adapter still hands us the v3 URL, so the source derives the
  * <slug> and rebuilds the host-pinned widget URL.
  *
- * All tests inject a fake `fetchImpl` — CI-isolated, no network.
+ * HARDENING parity (parent career-ops commit feabcd4, "harden workable with
+ * retry, headers, and serialization"): the widget request now carries
+ * browser-like headers (shared BROWSER_LIKE_USER_AGENT + accept-language +
+ * origin + a per-account referer), retries transient failures (429 / 5xx /
+ * network) via the shared `fetchJsonWithRetry`, and is serialized process-wide
+ * against apply.workable.com. A permanent 4xx is not retried; the dead-board
+ * throw still fires once the retry budget is spent.
+ *
+ * All tests inject a fake `fetchImpl` — CI-isolated, no network. Failure-path
+ * tests pass `retryDelayMs: 0` so retries don't wait real time.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -161,10 +170,12 @@ test('workable: resolveWorkableSlug rejects off-domain / malformed / traversal',
 });
 
 // ── dead-board contract: a total fetch failure THROWS, not [] ──────────
-test('workable: non-ok HTTP throws with the status attached (dead board)', async () => {
+test('workable: a transient 5xx is retried, then throws with the status attached (dead board)', async () => {
+  let attempts = 0;
   await assert.rejects(
     () => fetchWorkable(ADAPTER_V3_URL, {
-      fetchImpl: async () => ({ ok: false, status: 503, json: async () => ({}) }),
+      fetchImpl: async () => { attempts++; return { ok: false, status: 503, json: async () => ({}) }; },
+      retryDelayMs: 0,
     }),
     (err) => {
       assert.match(err.message, /HTTP 503/);
@@ -172,6 +183,67 @@ test('workable: non-ok HTTP throws with the status attached (dead board)', async
       return true;
     },
   );
+  assert.ok(attempts >= 2, `a transient 5xx must be retried before the dead-board throw (attempts=${attempts})`);
+});
+
+test('workable: a permanent 404 throws immediately WITHOUT retrying (dead board)', async () => {
+  let attempts = 0;
+  await assert.rejects(
+    () => fetchWorkable(ADAPTER_V3_URL, {
+      fetchImpl: async () => { attempts++; return { ok: false, status: 404, json: async () => ({}) }; },
+      retryDelayMs: 0,
+    }),
+    (err) => {
+      assert.match(err.message, /HTTP 404/);
+      assert.equal(err.status, 404);
+      return true;
+    },
+  );
+  assert.equal(attempts, 1, 'a permanent 4xx must not be retried');
+});
+
+// ── HARDENING: browser-like headers on the widget request ──────────────
+test('workable: sends browser-like UA + accept-language + origin + per-account referer', async () => {
+  const cap = {};
+  await fetchWorkable(ADAPTER_V3_URL, { fetchImpl: okJson(WIDGET_PAYLOAD, cap), retryDelayMs: 0 });
+  const h = cap.options?.headers || {};
+  assert.match(h['user-agent'] || '', /Mozilla\/5\.0/, 'must send a browser-like User-Agent');
+  assert.equal(h['accept-language'], 'en-US,en;q=0.9', 'must send accept-language');
+  assert.equal(h.origin, 'https://apply.workable.com', 'must send the workable origin');
+  assert.equal(h.referer, 'https://apply.workable.com/optimile/', 'must send a per-account referer matching the slug');
+});
+
+// ── HARDENING: retry a transient 429 and recover on the widget API ─────
+test('workable: retries a transient 429 on the widget API and recovers', async () => {
+  let attempts = 0;
+  const jobs = await fetchWorkable(ADAPTER_V3_URL, {
+    retryDelayMs: 0,
+    fetchImpl: async () => {
+      attempts++;
+      if (attempts === 1) return { ok: false, status: 429, json: async () => ({}) };
+      return { ok: true, json: async () => WIDGET_PAYLOAD };
+    },
+  });
+  assert.equal(attempts, 2, 'should retry once and recover on the second attempt');
+  assert.equal(jobs.length, 2, 'recovered payload must parse into the same 2 jobs');
+});
+
+// ── HARDENING: process-wide serialization of concurrent requests ───────
+test('workable: serializes concurrent requests process-wide (no in-flight overlap)', async () => {
+  let inFlight = 0;
+  let overlapped = false;
+  const slowFetch = async () => {
+    inFlight++;
+    if (inFlight > 1) overlapped = true;
+    await new Promise((r) => setTimeout(r, 10));
+    inFlight--;
+    return { ok: true, json: async () => WIDGET_PAYLOAD };
+  };
+  await Promise.all([
+    fetchWorkable(ADAPTER_V3_URL, { fetchImpl: slowFetch, retryDelayMs: 0 }),
+    fetchWorkable('https://apply.workable.com/api/v3/accounts/other-co/jobs?details=true', { fetchImpl: slowFetch, retryDelayMs: 0 }),
+  ]);
+  assert.equal(overlapped, false, 'two concurrent workable.fetch() calls must not overlap in-flight');
 });
 
 test('workable: an unresolvable slug throws before any fetch', async () => {

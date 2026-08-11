@@ -27,6 +27,15 @@ export const BROWSER_LIKE_USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
 /**
+ * undici's `err.cause.message` for a `fetch(url, { redirect: 'error' })` that
+ * meets a 3xx. Undocumented and undici-internal, so it is pinned here (and by a
+ * test) — if a Node upgrade changes the wording, `fetchJsonWithRetry` reverts to
+ * over-retrying a deterministic failure, which the test catches loudly. Mirrors
+ * parent career-ops `providers/_http.mjs` (#2657).
+ */
+export const REDIRECT_REFUSAL_CAUSE_MESSAGE = 'unexpected redirect';
+
+/**
  * @param {typeof fetch} fetchImpl
  * @param {string} url
  * @param {{ method?: string, headers?: Record<string,string>, body?: string,
@@ -85,6 +94,16 @@ export async function fetchText(fetchImpl, url, opts = {}) {
  * retry budget is exhausted the last error propagates unchanged, so the caller
  * decides throw-vs-keep-partials exactly as it would for a single fetch.
  *
+ * A **refused redirect** (our `redirect: 'error'` SSRF guard meeting a 3xx)
+ * surfaces from undici as a bare `TypeError` with no `.status` — the same shape
+ * as a transient network error — but it is deterministic and will never succeed
+ * on retry, so retrying it just burns the whole budget before failing. It is
+ * distinguished by `err.cause.message === 'unexpected redirect'` and classified
+ * non-retryable (parent career-ops #2657; the wording is undici-internal and
+ * pinned by a test so a silent revert to over-retrying fails loudly. Node < 18.5
+ * reports `cause` as undefined, so the check simply doesn't fire there and the
+ * old — retryable — classification stands).
+ *
  * @param {typeof fetch} fetchImpl
  * @param {string} url
  * @param {{ method?: string, headers?: Record<string,string>, body?: string,
@@ -101,9 +120,15 @@ export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
     } catch (err) {
       lastErr = err;
       const status = err && typeof err.status === 'number' ? err.status : undefined;
+      // A refused redirect looks like a no-status network error but is
+      // deterministic — never retry it (parent #2657).
+      const redirectRefusal = status === undefined
+        && err instanceof TypeError
+        && err?.cause?.message === REDIRECT_REFUSAL_CAUSE_MESSAGE;
       // Transient = 429, any 5xx, or a network/timeout error (no HTTP status).
       // A permanent 4xx is not worth retrying — rethrow now.
-      const transient = status === undefined || status === 429 || status >= 500;
+      const transient = !redirectRefusal
+        && (status === undefined || status === 429 || status >= 500);
       if (!transient || attempt === retries || signal?.aborted) throw err;
       await delay(retryDelayMs, signal);
     }
