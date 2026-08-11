@@ -17,7 +17,7 @@ step.
 - **SPA**: Vanilla JS, hash-router, no framework, no bundler. Files served as-is from `public/`.
 - **Tests**: `node --test` + Playwright. Baseline at v1.69.0 = 1079 unit / 70 Playwright (smoke+full-cycle+forms+locale-sweep) + 20 smoke E2E + 23 comprehensive E2E. Don't reduce coverage.
 - **i18n**: 13 locales (`en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar` — `ar` is RTL). Per-locale DICTs in `public/js/lib/locales/i18n-dict.<lang>.js`, merged by the `i18n-dict.js` assembler (I18N-SPLIT v1.60.0); CI canary + the byte-for-byte `tests/fixtures/i18n-dict.snapshot.json` enforce every key exists in every locale.
-- **Scanner sources**: each job board is a self-registering adapter in `server/lib/sources/<slug>.mjs`. Since v1.69.0 (P-14) `registry.mjs` auto-discovers them at boot via each file's `export const meta` block — drop a file in, no registry edit. (As of v1.83.0: 41 sources, 36 EN + 5 RU.)
+- **Scanner sources**: each job board is a self-registering adapter in `server/lib/sources/<slug>.mjs`. Since v1.69.0 (P-14) `registry.mjs` auto-discovers them at boot via each file's `export const meta` block — drop a file in, no registry edit. (As of v1.136.0: 79 sources, 74 EN + 5 RU.)
 - **Repost detector (v1.83.0)**: `server/lib/detect-reposts.mjs` + `server/lib/role-matcher.mjs` cluster `data/scan-history.tsv` rows re-listed under different URLs within a window; read-only `GET /api/scan/reposts` → a 🔁 panel on `#/scan`. Not a source.
 
 ## Hard rules (Copilot, don't break these)
