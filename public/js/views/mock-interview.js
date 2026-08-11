@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/mock-interview — Mock Interview 2.0 (v1.90.0, Epic 15).
  *
@@ -14,7 +14,7 @@ Router.register('mock-interview', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('mock.title', 'Mock interview')));
+  root.appendChild(HelpHint.title(t('mock.title', 'Mock interview'), 'help.hint.mock'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('mock.subtitle', 'Rehearse turn by turn against a real role. Every answer gets STAR+R feedback, a score, and a follow-up — grounded in your CV, two-pager, and story bank.')));
 

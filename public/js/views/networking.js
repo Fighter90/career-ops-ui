@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/networking — Networking & deep company research (v1.91.0, Epic 16).
  *
@@ -13,7 +13,7 @@ Router.register('networking', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('net.title', 'Networking & research')));
+  root.appendChild(HelpHint.title(t('net.title', 'Networking & research'), 'help.hint.networking'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('net.subtitle', 'Turn a company into a plan: who to contact, the warmest way in, and outreach drafts — grounded in your CV and two-pager.')));
 

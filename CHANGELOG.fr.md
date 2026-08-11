@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.139.0] — 2026-08-12
+
+**Compréhensible : bulles d'aide `?`** — un bouton `?` réutilisable et sûr pour la CSP qui, au clic, explique « ce que ça fait / comment ça marche / à quoi s'attendre » dans votre langue. Ajustement UX signalé par l'utilisateur (sans parent-sync).
+
+### Ajouté
+- **Bulle d'aide `?`** (`window.HelpHint`) — un `?` rond à côté d'un titre ouvre une bulle légère, adaptée au thème et inversée en RTL, qui affiche une explication localisée via `UI.md()` ; accessible (`role="tooltip"`, `aria-expanded`, fermeture par Échap/clic extérieur, focus restauré) et sûre pour la CSP.
+- **`?` sur les 5 onglets de `#/stats`** et sur **8 titres de vues IA/analytiques** (career-plan, orientation, two-pager, networking, entretien simulé, mémoire, funded, récap hebdomadaire) — 14 nouvelles clés i18n × **17 langues**.
+
+### Notes
+- Toutes les vues avaient déjà un sous-titre d'une ligne ; le `?` ajoute l'explication approfondie à la demande et rend les états vides explicites. Suite : **2360** tests (+4).
+
 ## [1.138.0] — 2026-08-12
 
 **Génération dans la langue de votre interface** — chaque génération IA répond désormais dans la langue choisie dans l'UI, plus des renforts de tests issus de la revue. Ajustement UX signalé par l'utilisateur (sans parent-sync).

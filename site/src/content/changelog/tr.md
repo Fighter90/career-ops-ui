@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.139.0] — 2026-08-12
+
+**Anlaşılır: `?` yardım ipuçları** — tıklayınca «ne yapar / nasıl çalışır / ne beklenir» sorularını dilinizde açıklayan, yeniden kullanılabilir ve CSP-güvenli bir `?` düğmesi. Kullanıcı bildirimli bir UX düzeltmesi (parent-sync yok).
+
+### Eklendi
+- **`?` yardım ipucu açılır kutusu** (`window.HelpHint`) — bir başlığın yanındaki yuvarlak `?`, temaya uyumlu ve RTL'de yansıtılan hafif bir açılır kutu açar ve `UI.md()` ile yerelleştirilmiş bir açıklama gösterir; erişilebilir (`role="tooltip"`, `aria-expanded`, Escape/dışa tıklama ile kapanma, odak geri yükleme) ve CSP-güvenli.
+- **`#/stats`'in 5 sekmesine** ve **8 AI/analitik görünüm başlığına** (career-plan, yönlendirme, two-pager, networking, deneme mülakatı, bellek, funded, haftalık özet) `?` eklendi — 14 yeni i18n anahtarı × **17 dil**.
+
+### Notlar
+- Tüm görünümlerde zaten tek satırlık bir alt başlık vardı; `?`, istendiğinde daha derin açıklamayı ekler ve boş durumları kendini açıklar hale getirir. Takım: **2360** test (+4).
+
 ## [1.138.0] — 2026-08-12
 
 **Arayüz dilinde üretim** — her AI üretimi artık arayüzde seçtiğin dilde yanıt veriyor; ayrıca incelemeden doğan test sağlamlaştırmaları. Kullanıcı bildirimli bir UX düzeltmesi (parent-sync yok).

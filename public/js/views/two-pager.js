@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/two-pager — Candidate market fit: the two-pager (v1.89.0, Epic 14).
  *
@@ -21,7 +21,7 @@ Router.register('two-pager', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('twoPager.title', 'Your two-pager')));
+  root.appendChild(HelpHint.title(t('twoPager.title', 'Your two-pager'), 'help.hint.twoPager'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('twoPager.subtitle', 'What YOU actually want from your next role. Feeds every evaluation and powers a fit-to-what-you-want score on each posting.')));
 

@@ -7,14 +7,14 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Останній реліз — v1.138.0** — **генерація мовою інтерфейсу** — кожна AI-генерація (кар’єрний план, орієнтація, звіт по ринку, мок-інтерв’ю, нетворкінг, «запитати документацію», нотатка пам’яті, two-pager) тепер відповідає обраною в інтерфейсі мовою, а не завжди англійською; плюс посилення тестів за підсумками рев’ю (канарок CSS-ролей кольору та самоперевірка XSS-завантажувача `UI.md()`). **2356 тестів.**
+> **🆕 Останній реліз — v1.139.0** — **зрозумілість: підказки `?`** — багаторазова, безпечна для CSP `?` біля заголовків, 5 вкладок `#/stats` і 8 заголовків ШІ/аналітичних екранів відкриває локалізоване спливне вікно «що це / як працює / чого очікувати» (доступно, RTL, залежить від теми). 14 нових ключів ×17 локалей. **2360 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

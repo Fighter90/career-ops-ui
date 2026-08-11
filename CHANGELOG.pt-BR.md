@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.139.0] — 2026-08-12
+
+**Compreensível: dicas de ajuda `?`** — um botão `?` reutilizável e seguro para CSP que, ao clicar, explica «o que faz / como funciona / o que esperar» no seu idioma. Ajuste de UX reportado pelo usuário (sem parent-sync).
+
+### Adicionado
+- **Popover de dica de ajuda `?`** (`window.HelpHint`) — um `?` redondo ao lado de um título abre um popover leve, adaptado ao tema e espelhado em RTL, que exibe uma explicação localizada via `UI.md()`; acessível (`role="tooltip"`, `aria-expanded`, fecha com Escape ou clique fora, foco restaurado) e seguro para CSP.
+- **`?` nas 5 abas de `#/stats`** e em **8 títulos de telas de IA/analytics** (career-plan, orientação, two-pager, networking, entrevista simulada, memória, funded, resumo semanal) — 14 novas chaves i18n × **17 idiomas**.
+
+### Notas
+- Todas as telas já tinham um subtítulo de uma linha; o `?` acrescenta a explicação mais detalhada sob demanda e faz os estados vazios se explicarem sozinhos. Suíte: **2360** testes (+4).
+
 ## [1.138.0] — 2026-08-12
 
 **Geração no idioma da sua interface** — cada geração por IA agora responde no idioma escolhido na interface, além de reforços de teste vindos da revisão. Ajuste de UX reportado pelo usuário (sem parent-sync).

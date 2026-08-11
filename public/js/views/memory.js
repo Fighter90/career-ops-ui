@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/memory — Memory layer (v1.93.0, Epic 24).
  *
@@ -14,7 +14,7 @@ Router.register('memory', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('mem.title', 'Memory')));
+  root.appendChild(HelpHint.title(t('mem.title', 'Memory'), 'help.hint.memory'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('mem.subtitle', 'A short note the assistant keeps in mind on every task — your preferences and how you like to work. It never becomes a source of new facts about you.')));
 

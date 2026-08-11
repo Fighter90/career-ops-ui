@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.139.0] — 2026-08-12
+
+**Forståeligt: `?` hjælpetips** — en genanvendelig, CSP-sikker `?`-knap, der ved klik forklarer "hvad den gør / hvordan den virker / hvad man kan forvente" på dit sprog. En brugerrapporteret UX-justering (uden parent-sync).
+
+### Tilføjet
+- **`?` hjælpetip-popover** (`window.HelpHint`) — et rundt `?` ved siden af en overskrift åbner en let, tema-tilpasset og RTL-spejlet popover, der viser en lokaliseret forklaring via `UI.md()`; tilgængelig (`role="tooltip"`, `aria-expanded`, luk med Escape/klik udenfor, fokus gendannet) og CSP-sikker.
+- **`?` på de 5 faner i `#/stats`** og på **8 AI-/analyse-visningstitler** (career-plan, orientering, two-pager, networking, mock-interview, hukommelse, funded, ugentlig opsummering) — 14 nye i18n-nøgler × **17 sprog**.
+
+### Noter
+- Alle visninger havde allerede en enkeltlinjes undertitel; `?` tilføjer den dybere forklaring efter behov og gør tomme tilstande selvforklarende. Suite: **2360** tests (+4).
+
 ## [1.138.0] — 2026-08-12
 
 **Generering på dit interfaces sprog** — hver AI-generering svarer nu på det sprog, du har valgt i UI'et, plus review-drevne teststyrkelser. En brugerrapporteret UX-justering (uden parent-sync).

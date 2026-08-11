@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.138.0** — **按界面语言生成** — 所有 AI 生成（职业规划、定位、市场报告、模拟面试、人脉、「向文档提问」、记忆便笺、two-pager）现在都以 UI 中所选语言回复，而非总是英语；并含评审驱动的测试加固（一个 CSS 颜色角色金丝雀与 `UI.md()` XSS 加载器自检）。 **2356 个测试。**
+> **🆕 最新版本 — v1.139.0** — **更易理解：`?` 帮助提示** — 标题、`#/stats` 的 5 个标签页和 8 个 AI／分析视图标题旁的可复用、符合 CSP 的 `?` 会打开本地化的「这是什么 / 如何运作 / 会得到什么」弹出框（可访问、RTL、随主题）。14 个新键 ×17 种语言。 **2360 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

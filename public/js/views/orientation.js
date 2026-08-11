@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, ReportExport */
+/* global Router, API, UI, I18n, ReportExport, HelpHint */
 /**
  * #/orientation — Career orientation profile (v1.96.0, Epic 27).
  *
@@ -14,7 +14,7 @@ Router.register('orientation', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('orient.title', 'Career orientation')));
+  root.appendChild(HelpHint.title(t('orient.title', 'Career orientation'), 'help.hint.orientation'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('orient.subtitle', 'Which directions fit you — inferred from your own CV and profile: best-fit career vectors, recommended roles, strengths, and how your CV reads. A reflection, not a psychometric test.')));
 

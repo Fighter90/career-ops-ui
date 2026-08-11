@@ -8,6 +8,21 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.139.0] — 2026-08-12
+
+**Understandable: `?` help hints** — a reusable, CSP-safe `?` affordance that explains "what this does / how it works / what to expect" on demand, in your language. A user-reported UX pass (no parent-sync).
+
+### Added
+- **`?` help-hint popover** (`public/js/lib/help-hint.js` → `window.HelpHint`): a small round `?` button next to a heading opens a lightweight, theme-aware, RTL-mirrored popover that renders a localized explanation through `UI.md()` (the escape-first XSS boundary). Accessible — a real `<button>` with `aria-expanded`, the popover is `role="tooltip"`, and Escape / outside-click close it with focus returning to the button; CSP-safe (handlers via `addEventListener`, static `?` glyph); singleton (one popover open at a time), positioned under the icon and clamped to the viewport.
+- **`?` on the 5 `#/stats` tabs** — the active-tab caption ("Rejection patterns (?)") now carries a hint explaining each analytics view (Market report, My pipeline, Target-role trend, Rejection patterns, Lifetime) — directly answering "what is this tab for".
+- **`?` on 8 AI/analytics view titles** — career-plan, orientation, two-pager, networking, mock-interview, memory, funded, and the weekly interview digest each get an inline title `?` (`HelpHint.title`) so "what is this / how do I use it / what result to expect" is one click away even when the page is empty.
+- 14 new i18n keys × **17 locales** (`help.hint.*` + `stats.hint.*`); assembled-dict snapshot regenerated (1161 → 1175 keys). Guarded by `tests/help-hint.test.mjs` (CSP-safe, wired, EN-present) + the existing i18n parity/latin-leak/personal-data gates.
+
+### Notes
+- All 30 views already carried a one-line `page-subtitle`; the `?` hints add the deeper on-demand explanation on top, which also makes empty states (`#/career-plan`, the weekly digest, `#/funded`) self-explanatory instead of looking broken.
+- `docs/UX-ROADMAP.md`: Phase 2b "Understandable" is now shipping — the `?`-hint system landed here; extending `?` to the remaining views continues in a later release.
+- Suite: **2360** tests (+4: `tests/help-hint.test.mjs`).
+
 ## [1.138.0] — 2026-08-12
 
 **Generation in your interface language** — every AI generation now answers in the language you've picked in the UI, plus review-driven test hardening. A user-reported UX pass (no parent-sync).

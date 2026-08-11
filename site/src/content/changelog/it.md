@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.139.0] — 2026-08-12
+
+**Comprensibile: suggerimenti `?`** — un pulsante `?` riutilizzabile e sicuro per la CSP che, al clic, spiega «cosa fa / come funziona / cosa aspettarsi» nella tua lingua. Aggiustamento UX segnalato dall'utente (senza parent-sync).
+
+### Aggiunto
+- **Popover di suggerimento `?`** (`window.HelpHint`) — un `?` rotondo accanto a un titolo apre un popover leggero, adattato al tema e speculare in RTL, che mostra una spiegazione localizzata tramite `UI.md()`; accessibile (`role="tooltip"`, `aria-expanded`, chiusura con Esc/clic esterno, focus ripristinato) e sicuro per la CSP.
+- **`?` sulle 5 schede di `#/stats`** e su **8 titoli di viste IA/analitiche** (career-plan, orientamento, two-pager, networking, colloquio simulato, memoria, funded, riepilogo settimanale) — 14 nuove chiavi i18n × **17 lingue**.
+
+### Note
+- Tutte le viste avevano già un sottotitolo di una riga; il `?` aggiunge la spiegazione più approfondita su richiesta e rende gli stati vuoti autoesplicativi. Suite: **2360** test (+4).
+
 ## [1.138.0] — 2026-08-12
 
 **Generazione nella lingua della tua interfaccia** — ogni generazione IA ora risponde nella lingua scelta nell'UI, più rafforzamenti dei test emersi dalla revisione. Un aggiustamento UX segnalato dall'utente (senza parent-sync).

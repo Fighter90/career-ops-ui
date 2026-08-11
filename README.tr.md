@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2356%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2360%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Son sürüm — v1.138.0** — **arayüz dilinde üretim** — her AI üretimi (kariyer planı, yönlendirme, pazar raporu, deneme mülakatı, networking, «belgeye sor», bellek notu, two-pager) artık her zaman İngilizce yerine UI’de seçilen dilde yanıt veriyor; ayrıca incelemeden doğan test sağlamlaştırmaları (bir CSS renk-rolü kanaryası ve bir `UI.md()` XSS yükleyici öz-sondası). **2356 test.**
+> **🆕 Son sürüm — v1.139.0** — **anlaşılır: `?` yardım ipuçları** — başlıkların, `#/stats`'in 5 sekmesinin ve 8 AI/analitik görünüm başlığının yanındaki yeniden kullanılabilir, CSP-güvenli `?`, yerelleştirilmiş bir «ne yapar / nasıl çalışır / ne beklenir» açılır kutusu (erişilebilir, RTL, temaya uyumlu) açar. 14 yeni anahtar ×17 dil. **2360 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

@@ -15,14 +15,15 @@ Fix what's outright unreadable/broken.
 
 - [x] **Generation language** — every AI generation now outputs in the selected UI language. The `# Output language` directive (`resolveLocale` + `buildLocaleDirective`) is threaded through **all 8** generation endpoints (career-plan, orientation, market, mock-interview, networking, docs-assistant, memory-suggest, two-pager) and the client sends the active `lang` on all 8 generate POSTs. Code + identifiers (e.g. two-pager YAML keys) stay English; only prose is localized. **cv-studio is deliberately excluded** — a résumé/cover letter must follow the CV/JD target-market language, not the UI chrome. +2 canaries. Shipped with review-driven hardening: a source-static CSS colour-role guard, a `UI.md()` XSS-loader self-probe, and a `#/career-plan` scroll guard.
 
-## Phase 2b — v1.139.0 "Understandable"
+## Phase 2b — v1.139.0 "Understandable" ✅ (shipped, first wave)
 
 Make every page self-explanatory, in every language. (Split out of the original Phase 2; generation-language shipped first as v1.138.0.)
 
-- [ ] Reusable **`?` help-hint** component (CSP-safe popover, accessible, RTL) on every view header + the 5 `#/stats` tabs — click `?` → localized description (the "Rejection patterns (?)" pattern).
-- [ ] **Page descriptions** — one-line "what this does / how to use it / what result to expect" on every view, prominent in empty states.
-- [ ] **Clearer empty states** — `#/career-plan`, weekly digest, `#/stats`, `#/funded` explain how to populate them instead of looking broken.
-- [ ] i18n fan-out ×17 for all new strings.
+- [x] Reusable **`?` help-hint** component (`window.HelpHint` — CSP-safe popover via `UI.md()`, accessible `role="tooltip"`/`aria-expanded`/Escape, RTL, theme-aware) — shipped and wired to the 5 `#/stats` tabs (the "Rejection patterns (?)" pattern) + 8 AI/analytics view titles.
+- [x] **Page descriptions** — already present: every one of the 30 views carries a one-line `page-subtitle`; the `?` adds the deeper on-demand explanation on top.
+- [x] **Clearer empty states** — the `?` on `#/career-plan`, the weekly digest, and `#/funded` explains how to populate them (directly answers the "seems broken / unclear what this is for" reports).
+- [x] i18n fan-out ×17 (14 keys) for the first wave.
+- [ ] **Next wave** — extend the `?` hint to the remaining view headers (config, scan, tracker, cv-studio, apply, …) so the affordance is truly on *every* page.
 
 ## Phase 3 — v1.140.0 "Insightful stats"
 
