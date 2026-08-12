@@ -168,6 +168,39 @@ export function hasGitHubModelsKey() {
   return isUsableKey(envKey('GITHUB_MODELS_API_KEY'));
 }
 
+// Hermes (v1.151.0) — Nous Research's self-hosted agent runtime exposes an
+// OpenAI-compatible API Server (`hermes gateway`): POST /v1/chat/completions,
+// Bearer `API_SERVER_KEY`, default bind http://127.0.0.1:8642/v1. It's Shape A
+// from docs/integrations/HERMES.md — just another OpenAI-compatible provider,
+// reachable at a user-configured local base URL (loopback by default). This is
+// a CONFIGURED provider endpoint (like OPENROUTER/QWEN), not a user-supplied
+// job URL, so it does not — and must not — pass through the isValidJobUrl SSRF
+// guard; that guard is for scanned job postings only.
+const HERMES_BASE_DEFAULT = 'http://127.0.0.1:8642/v1';
+
+/** Resolve the full chat/completions URL from a Hermes base (accepts a `…/v1`
+ *  base per Hermes docs, or a full `…/chat/completions` URL). */
+export function hermesChatUrl(base) {
+  const b = String(base || HERMES_BASE_DEFAULT).trim().replace(/\/+$/, '');
+  return b.endsWith('/chat/completions') ? b : `${b}/chat/completions`;
+}
+
+/** Run a prompt via a local Hermes API Server (OpenAI-compatible). */
+export async function runHermes(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || hermesChatUrl(envKey('HERMES_BASE_URL')),
+    apiKey: opts.apiKey || envKey('HERMES_API_KEY'),
+    model: opts.model || envKey('HERMES_MODEL') || 'hermes-agent',
+    label: 'Hermes',
+    ...opts,
+  });
+}
+
+/** "Is the Hermes key set?" — same effectiveEnv view (v1.151.0). */
+export function hasHermesKey() {
+  return isUsableKey(envKey('HERMES_API_KEY'));
+}
+
 /**
  * Curated fallback model list (v1.57.0) — used when the live
  * OpenRouter catalogue can't be fetched (offline, rate-limited, 5xx)

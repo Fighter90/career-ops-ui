@@ -30,6 +30,9 @@ export const KNOWN_KEYS = [
   'OPENROUTER_MODEL',
   'GITHUB_MODELS_API_KEY', // headless live-eval via GitHub Models (v1.74.0) — GitHub Copilot CLI's API surface; a GitHub PAT with the `models` scope, OpenAI-compatible
   'GITHUB_MODELS_MODEL',
+  'HERMES_API_KEY',        // headless live-eval via a local Hermes API Server (v1.151.0) — Nous Research's `hermes gateway` exposes an OpenAI-compatible /v1/chat/completions (Bearer API_SERVER_KEY)
+  'HERMES_BASE_URL',       // Hermes API Server base (default http://127.0.0.1:8642/v1); change if you set API_SERVER_PORT
+  'HERMES_MODEL',          // Hermes profile / model id (default `hermes-agent`)
   // ── Server runtime ──
   'PORT',
   'HOST',
@@ -41,7 +44,7 @@ export const KNOWN_KEYS = [
  * one provider; with no key it falls through to the manual-prompt
  * path exactly like the pre-v1.39 no-key behaviour.
  */
-export const LLM_PROVIDERS = ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github'];
+export const LLM_PROVIDERS = ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'];
 
 /**
  * Effective provider preference order from LLM_PROVIDER:
@@ -62,10 +65,12 @@ export function providerOrder(env = process.env) {
   if (v === 'qwen') return ['qwen'];
   if (v === 'openrouter') return ['openrouter'];
   if (v === 'github') return ['github'];
-  // OpenRouter + GitHub Models sit at the TAIL of the auto order: a user who
-  // already had Anthropic/Gemini/OpenAI/Qwen working keeps that exact routing;
-  // they only kick in when one is the sole configured key.
-  return ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github'];
+  if (v === 'hermes') return ['hermes'];
+  // OpenRouter + GitHub Models + Hermes sit at the TAIL of the auto order: a
+  // user who already had Anthropic/Gemini/OpenAI/Qwen working keeps that exact
+  // routing; they only kick in when one is the sole configured key. Hermes is
+  // last (it's a local gateway you opt into by running `hermes gateway`).
+  return ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'];
 }
 
 /**
@@ -103,12 +108,15 @@ export const KEY_GROUPS = {
   OPENROUTER_MODEL: 'core',
   GITHUB_MODELS_API_KEY: 'core',
   GITHUB_MODELS_MODEL: 'core',
+  HERMES_API_KEY: 'core',
+  HERMES_BASE_URL: 'core',
+  HERMES_MODEL: 'core',
   PORT: 'runtime',
   HOST: 'runtime',
 };
 
 /** Keys whose values are secret and must never be returned in plain text. */
-export const SECRET_KEYS = new Set(['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY', 'GITHUB_MODELS_API_KEY']);
+export const SECRET_KEYS = new Set(['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY', 'GITHUB_MODELS_API_KEY', 'HERMES_API_KEY']);
 
 /**
  * Parse an .env file body into a plain object. Preserves the raw text

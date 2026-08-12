@@ -152,9 +152,12 @@ test('providerOrder: explicit openrouter pin → [openrouter]', () => {
   assert.deepEqual(providerOrder({ LLM_PROVIDER: 'openrouter' }), ['openrouter']);
 });
 
-test('providerOrder: auto appends openrouter at the tail (never overrides existing setups)', () => {
+test('providerOrder: auto appends openrouter/github/hermes at the tail (never overrides existing setups)', () => {
   assert.deepEqual(providerOrder({ LLM_PROVIDER: 'auto' }),
-    ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github']);
+    ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes']);
+  // v1.151.0 — Hermes is the last tail entry + a valid explicit pin.
+  assert.deepEqual(providerOrder({ LLM_PROVIDER: 'hermes' }), ['hermes']);
+  assert.ok(SECRET_KEYS.has('HERMES_API_KEY') && !SECRET_KEYS.has('HERMES_BASE_URL'));
 });
 
 test('validateConfig: a real-shape OpenRouter key validates', () => {

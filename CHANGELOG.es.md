@@ -11,6 +11,22 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.151.0] — 2026-08-12
+
+**Hermes ya es un proveedor de LLM conectado (Phase 5)** — el spike de alcance de Phase 5 confirmó que Hermes de Nous Research incluye un **API Server compatible con OpenAI** (`hermes gateway` → `POST /v1/chat/completions`), así que career-ops-ui ahora ejecuta evaluaciones en vivo a través de un Hermes local igual que OpenAI/Qwen. Define `HERMES_API_KEY` en **Ajustes de la app** y entra en el orden auto (el último). Cierra el último punto abierto del roadmap — **Phase 5, Shape A**.
+
+### Añadido
+- **Proveedor LLM Hermes (Shape A)** — `runHermes` sobre el cliente compartido `runOpenAICompatible` (`server/lib/openai.mjs`), en **ambas** cascadas (`llm-dispatch.mjs` + `routes/llm.mjs`), en la cola del orden auto + el pin `LLM_PROVIDER=hermes`, `/api/status/providers` y `llm-pricing.mjs`. Alcanza una base URL local configurable (por defecto `http://127.0.0.1:8642/v1`) con auth Bearer — es un endpoint de proveedor CONFIGURADO (como OpenRouter/Qwen), no una URL de empleo del usuario, así que no pasa por el guard SSRF.
+- **Campos en `#/config`** — `HERMES_API_KEY` (secreto) + `HERMES_BASE_URL` + `HERMES_MODEL` (por defecto `hermes-agent`), con 6 nuevas claves i18n × **17 locales** (snapshot 1208 → 1214).
+
+### Cambiado
+- Se resuelve el spike de alcance: `docs/integrations/HERMES.md`, la ayuda integrada §30 (× 17), el aviso del README (× 14), la skill `hermes-bridge` y el roadmap pasan de "planificado / aún sin conectar" a **conectado (Shape A)**. Shape B (un relay de runtime de agente a medida) no fue necesario.
+
+### Notas
+- **Seguridad:** el fetch del proveedor es un endpoint configurado, de la misma categoría que los otros proveedores compatibles con OpenAI — sin nueva superficie SSRF, sin cambios de CSP/sanitizador. `HERMES_API_KEY` es una `SECRET_KEY` (nunca se muestra).
+- Pruebas (aisladas en CI, transporte simulado): `tests/hermes-provider.test.mjs` (+5); el canario "sin rama Hermes" de v1.146.0 se **invierte** para afirmar que SÍ está conectado; las pruebas de superficie de proveedores actualizadas al orden de 7 proveedores.
+- Conjunto: **2390** pruebas (+5).
+
 ## [1.150.0] — 2026-08-12
 
 **Estados vacíos consistentes (pulido de Phase 4)** — cada panel de "aún no hay nada" ahora se renderiza con el único estilo compartido `.empty`, en lugar de que algunas vistas redeclaren el aspecto en línea con un `40px` mágico. Pequeña corrección de consistencia visual; los estados vacíos de `#/activity`, `#/cv-studio`, `#/stats` y `#/usage` ahora coinciden con todos los demás (relleno de 48px tokenizado + borde discontinuo).

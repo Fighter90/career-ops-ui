@@ -36,14 +36,14 @@ Make the numbers correct, detailed, and visual.
 
 ## Phase 5 — Nous Research / Hermes provider
 
-Add **Nous Research (Hermes)** as an LLM provider in the OR-router, per <https://hermes-agent.nousresearch.com/docs>.
+Add **Nous Research (Hermes)** as an LLM provider in the OR-router, per <https://hermes-agent.nousresearch.com/docs>. **✅ SHIPPED v1.151.0 (Shape A).**
 
-- [ ] **Scope first (blocked on API details).** The Hermes docs describe an *autonomous agent product* (tool-calling, skills, voice, 20+ messaging platforms) that "works with Nous Portal / OpenRouter / OpenAI / any endpoint" — **not** a documented hosted chat-completions API. Before coding, confirm the actual endpoint + auth from **Nous Portal** and/or the [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent) repo: base URL, API-key header, whether it's OpenAI-`/chat/completions`-compatible, model ids, streaming, tool-calling shape.
-- [ ] **If a Nous Portal endpoint is OpenAI-compatible** — the light path: add it like the existing providers — a `NOUS_API_KEY` (`server/lib/env-config.mjs` + `#/config`), a dispatch branch in `server/lib/llm-dispatch.mjs::runActiveProvider` / `providerAvailable`, a row in the provider-order cascade, the model catalogue + hint, `cli-detect`/help/README roster, and `server/lib/llm-pricing.mjs`. Mirror the OpenAI/Qwen branch (they're already `/chat/completions`-shaped).
-- [ ] **If it's the agent runtime (not a plain API)** — heavier: decide whether web-ui shells to a locally-run Hermes agent or calls a Nous Portal agent endpoint; likely a new relay route rather than a `runActiveProvider` branch. Revisit scope once the API contract is known.
-- [ ] Tests (CI-isolated, stubbed transport) + i18n for any new `#/config` strings + docs.
+- [x] **Scope done.** The scoping spike found that while Hermes is an autonomous-agent runtime, its `hermes gateway` **API Server** exposes an **OpenAI-compatible** `POST /v1/chat/completions` (base `http://127.0.0.1:8642/v1`, Bearer `API_SERVER_KEY`, streaming, `GET /v1/models`) — so Shape A applies. Confirmed from the [API Server](https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server) docs + the [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent) repo.
+- [x] **Shape A — OpenAI-compatible endpoint (v1.151.0).** Added like the existing providers: `HERMES_API_KEY` + `HERMES_BASE_URL` + `HERMES_MODEL` (`server/lib/env-config.mjs` + `#/config` fields ×17), `runHermes` on the shared `runOpenAICompatible` client (`server/lib/openai.mjs`), dispatch branches in **both** `server/lib/llm-dispatch.mjs` and `routes/llm.mjs` (`runActiveProvider` / gate / tail), the provider-order cascade tail + `LLM_PROVIDER=hermes` pin, `/api/status/providers`, and a `server/lib/llm-pricing.mjs` row. (`cli-detect` intentionally unchanged — Hermes is a *provider*, not a coding-agent CLI.)
+- [~] **Shape B (agent runtime)** — not needed; the API Server made Shape A sufficient. Retained in `docs/integrations/HERMES.md` as the alternative had the contract been runtime-only.
+- [x] **Tests + i18n + docs (v1.151.0).** CI-isolated stubbed-transport tests (`tests/hermes-provider.test.mjs` + updated provider-surface tests + the inverted `hermes-docs` canary), 6 new `#/config` i18n keys ×17 (snapshot 1208→1214), and `HERMES.md`/help/README updated from "planned" to "wired".
 
-*Standalone item — independent of Phases 2–4; do the scoping spike before committing to an approach.*
+*Standalone item — independent of Phases 2–4. The cloud-deploy + Telegram bridge (Phase 5b docs) remain operator how-to, not app features.*
 
 ### Phase 5b — Hermes docs, cloud + Telegram deployment guide, and a Hermes skill
 

@@ -2036,11 +2036,11 @@ career-ops — 이 앱이 화면을 제공하는 상위 프로젝트 — 는 [th
 
 ## 30. Hermes & Telegram
 
-**Nous Research의 Hermes**는 오픈 자율 에이전트입니다 — 툴 호출, 스킬, 그리고 Telegram을 포함한 20개 이상의 메시징 채널을 지원합니다. 이 섹션은 career-ops-ui를 클라우드 서버에서 실행하고 그 이벤트를 Hermes 에이전트를 통해 Telegram으로 연결하는 방법을 설명합니다. **이것은 계획이지 출시된 기능이 아닙니다:** LLM 제공자로서의 Hermes는 아직 연결되지 않았으며(Nous Portal API 계약 확인에 막혀 있음), 현재 앱의 어떤 코드도 Hermes를 호출하지 않습니다. 전체 설계 + 배포 가이드는 `docs/integrations/HERMES.md`에 있고, `hermes-bridge` 스킬이 각 단계를 안내합니다.
+**Nous Research의 Hermes**는 오픈 자율 에이전트입니다 — 툴 호출, 스킬, 그리고 Telegram을 포함한 20개 이상의 메시징 채널. **v1.151.0부터 Hermes는 연결된 LLM 제공자입니다:** OpenAI 호환 API Server(`hermes gateway`)를 실행하고 **앱 설정**에서 `HERMES_API_KEY`를 지정하면 career-ops-ui가 로컬 Hermes를 통해 라이브 평가를 실행합니다. 이 섹션은 앱을 클라우드 서버에서 실행하고 그 이벤트를 Hermes를 통해 Telegram으로 연결하는 방법도 다룹니다 — 이 두 가지는 앱 기능이 아니라 운영자 안내입니다. 전체 가이드는 `docs/integrations/HERMES.md`이며, `hermes-bridge` 스킬이 단계를 안내합니다.
 
 ### Hermes란 무엇인가
 
-Hermes는 에이전트 런타임이며 — 확인할 수 있는 한 — 단순한 호스팅형 chat-completions API가 아닙니다. 이는 통합을 두 가지 형태로 만듭니다. **형태 A:** Nous Portal 엔드포인트가 OpenAI 호환으로 밝혀지면, Hermes는 앱의 제공자 캐스케이드에 또 하나의 LLM 제공자로 추가됩니다. **형태 B:** 에이전트 런타임으로만 접근 가능하다면, 앱은 전용 relay 라우트나 로컬로 실행되는 에이전트를 통해 통신합니다. 어느 쪽인지는 코드를 작성하기 *전에* Nous Portal과 `NousResearch/hermes-agent` 저장소에서 확인합니다 — 그래서 제공자는 의도적으로 아직 구현되지 않았습니다.
+Hermes는 여러분의 LLM 제공자에 연결되는 에이전트 런타임이며 — **OpenAI 호환 API Server**도 노출합니다: `hermes gateway`는 `http://127.0.0.1:8642/v1`에서 Bearer 키(자체 `API_SERVER_KEY`)로 `POST /v1/chat/completions`를 제공합니다. 그래서 career-ops-ui는 이를 또 하나의 제공자로 취급합니다(가이드의 「Shape A」 경로): 앱은 OpenAI나 Qwen과 똑같이 그 로컬 엔드포인트로 POST하고, Hermes는 내부에 설정한 모델로 요청을 라우팅합니다. auto 순서에서 **마지막**에 있어 기존 Anthropic/Gemini/OpenAI/Qwen 설정을 절대 덮어쓰지 않습니다.
 
 ### 클라우드 서버에서 실행하기
 

@@ -8,6 +8,22 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.151.0] — 2026-08-12
+
+**Hermes agora é um provedor de LLM conectado (Phase 5)** — o spike de escopo da Phase 5 confirmou que o Hermes da Nous Research inclui um **API Server compatível com OpenAI** (`hermes gateway` → `POST /v1/chat/completions`), então o career-ops-ui agora roda avaliações ao vivo por um Hermes local igual a OpenAI/Qwen. Defina `HERMES_API_KEY` em **Configurações do app** e ele entra na ordem auto (por último). Encerra o último item aberto do roadmap — **Phase 5, Shape A**.
+
+### Adicionado
+- **Provedor LLM Hermes (Shape A)** — `runHermes` no cliente compartilhado `runOpenAICompatible` (`server/lib/openai.mjs`), em **ambas** as cascatas (`llm-dispatch.mjs` + `routes/llm.mjs`), na cauda da ordem auto + o pin `LLM_PROVIDER=hermes`, `/api/status/providers` e `llm-pricing.mjs`. Alcança uma base URL local configurável (padrão `http://127.0.0.1:8642/v1`) com auth Bearer — é um endpoint de provedor CONFIGURADO (como OpenRouter/Qwen), não uma URL de vaga do usuário, então não passa pelo guard SSRF.
+- **Campos em `#/config`** — `HERMES_API_KEY` (secreto) + `HERMES_BASE_URL` + `HERMES_MODEL` (padrão `hermes-agent`), com 6 novas chaves i18n × **17 idiomas** (snapshot 1208 → 1214).
+
+### Alterado
+- O spike de escopo foi resolvido: `docs/integrations/HERMES.md`, a ajuda integrada §30 (× 17), a chamada do README (× 14), a skill `hermes-bridge` e o roadmap passam de "planejado / ainda não conectado" para **conectado (Shape A)**. Shape B (um relay sob medida do runtime de agente) não foi necessário.
+
+### Notas
+- **Segurança:** o fetch do provedor é um endpoint configurado, da mesma categoria dos outros provedores compatíveis com OpenAI — sem nova superfície SSRF, sem mudança de CSP/sanitizador. `HERMES_API_KEY` é uma `SECRET_KEY` (nunca exibida).
+- Testes (isolados em CI, transporte simulado): `tests/hermes-provider.test.mjs` (+5); o canário "sem ramo Hermes" da v1.146.0 é **invertido** para afirmar que ESTÁ conectado; testes de superfície de provedores atualizados para a ordem de 7 provedores.
+- Suíte: **2390** testes (+5).
+
 ## [1.150.0] — 2026-08-12
 
 **Estados vazios consistentes (polimento da Phase 4)** — cada painel de "ainda não há nada" agora usa o único estilo compartilhado `.empty`, em vez de algumas telas redeclararem o visual inline com um `40px` mágico. Pequena correção de consistência visual; os estados vazios de `#/activity`, `#/cv-studio`, `#/stats` e `#/usage` agora combinam com todos os outros (padding de 48px tokenizado + borda tracejada).

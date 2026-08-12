@@ -9,6 +9,22 @@
 ---
 
 
+## [1.151.0] — 2026-08-12
+
+**Hermes が接続済みの LLM プロバイダーに(Phase 5)** — Phase 5 のスコーピングで、Nous Research の Hermes が **OpenAI 互換の API Server**(`hermes gateway` → `POST /v1/chat/completions`)を備えることを確認。career-ops-ui は OpenAI/Qwen と同様にローカルの Hermes 経由でライブ評価を実行します。**アプリ設定** で `HERMES_API_KEY` を設定すると auto 順に加わります(最後)。ロードマップ最後の未解決項目 — **Phase 5, Shape A** — を完了。
+
+### 追加
+- **Hermes LLM プロバイダー(Shape A)** — 共有 `runOpenAICompatible` クライアント上の `runHermes`(`server/lib/openai.mjs`)、**両方** のカスケード(`llm-dispatch.mjs` + `routes/llm.mjs`)にゲート、auto 順の末尾 + `LLM_PROVIDER=hermes` ピン、`/api/status/providers`、`llm-pricing.mjs`。ユーザー設定可能なローカル base URL(既定 `http://127.0.0.1:8642/v1`)へ Bearer 認証で到達 — ユーザー提供の求人 URL ではなく設定済みプロバイダーのエンドポイント(OpenRouter/Qwen と同様)なので SSRF ガードは通りません。
+- **`#/config` フィールド** — `HERMES_API_KEY`(秘密) + `HERMES_BASE_URL` + `HERMES_MODEL`(既定 `hermes-agent`)、6 個の新しい i18n キー × **17 言語**(スナップショット 1208 → 1214)。
+
+### 変更
+- スコーピングが解決:`docs/integrations/HERMES.md`、アプリ内ヘルプ §30(× 17)、README ティーザー(× 14)、`hermes-bridge` スキル、ロードマップが「計画中 / 未接続」から **接続済み(Shape A)** に移行。Shape B(専用のエージェントランタイム relay)は不要でした。
+
+### 補足
+- **セキュリティ:** プロバイダーの fetch は設定済みエンドポイントで、他の OpenAI 互換プロバイダーと同カテゴリ — 新たな SSRF 面なし、CSP/サニタイザー変更なし。`HERMES_API_KEY` は `SECRET_KEY`(決して出力しません)。
+- テスト(CI 隔離、トランスポートスタブ):`tests/hermes-provider.test.mjs`(+5);v1.146.0 の「Hermes 分岐なし」カナリアを、接続済みであると断言するよう **反転**;プロバイダー面テストを 7 プロバイダー順に更新。
+- スイート:**2390** 件のテスト(+5)。
+
 ## [1.150.0] — 2026-08-12
 
 **一貫した空状態 (Phase 4の仕上げ)** — 「まだ何もありません」パネルはすべて、いくつかのビューが魔法の `40px` でインライン再宣言する代わりに、単一の共有 `.empty` スタイルで描画されるようになりました。小さな視覚的一貫性の修正で、`#/activity`・`#/cv-studio`・`#/stats`・`#/usage` の空状態が他のすべてと一致します(トークン化された48pxパディング + 破線ボーダー)。

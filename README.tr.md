@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Son sürüm — v1.150.0** — **Tutarlı boş durumlar** — her "henüz bir şey yok" paneli artık paylaşılan `.empty` stiliyle çiziliyor; `#/activity`, `#/cv-studio`, `#/stats` ve `#/usage` gereksiz bir satır içi geçersiz kılmayı kaldırarak diğerleriyle eşleşti (belirteçlenmiş 48px dolgu + kesikli kenarlık). **2385 test.**
+> **🆕 Son sürüm — v1.151.0** — **Hermes artık bağlı bir LLM sağlayıcısı (Phase 5)** — Nous Research’ün Hermes’i OpenAI uyumlu bir API Server sunar; **Uygulama ayarları**’nda `HERMES_API_KEY` ayarlayın, career-ops-ui yerel `hermes gateway`’iniz üzerinden canlı değerlendirmeler çalıştırsın (auto sırasında sonuncu). Yol haritasının son açık maddesini kapatır. **2390 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 
@@ -626,7 +626,7 @@ Claude Code içindeki mevcut `/career-ops apply` Playwright form doldurma akış
 
 **Nous Research'in [Hermes](https://hermes-agent.nousresearch.com/docs)'i**, açık kaynaklı, otonom bir ajandır (araç çağırma, skill'ler, 20'den fazla mesajlaşma kanalı). career-ops-ui'yi bir **bulut sunucusunda** çalıştırabilir ve olaylarını — tamamlanmış bir tarama, yeni bir rapor, acil bir takip — **bir Hermes ajanı üzerinden Telegram'a** bağlayarak, pipeline'ın sizi zaten olduğunuz yerde bulmasını sağlayabilirsiniz.
 
-> **Planlandı / henüz bağlanmadı.** Hermes'in bir *LLM sağlayıcısı* olarak kullanımı, Phase 5 API sözleşme spike'ına bağlı olarak engellenmiş durumda — şu an hiçbir sunucu kodu Hermes'i çağırmıyor. Bugün sunulan şey, **entegrasyon tasarımı + dağıtım kılavuzu** ile bulut dağıtımı ve Telegram-bridge adımlarında yol gösteren bir **`hermes-bridge` skill'i**dir (secret'lar diske veya loglara asla dokunmaz; SSRF / CSP / no-secrets değişmezleri `127.0.0.1`'den taşındıktan sonra da geçerliliğini korur).
+> **Artık bağlı (v1.151.0).** *LLM sağlayıcısı* olarak Hermes yayında: OpenAI uyumlu API Server’ını (`hermes gateway`) çalıştırın ve **Uygulama ayarları**’nda `HERMES_API_KEY` değerini ayarlayın — career-ops-ui canlı değerlendirmelerini yerel Hermes’iniz üzerinden çalıştırır (auto sırasında sonuncu). Aşağıdaki **bulut sunucusu dağıtımı** ve **Telegram köprüsü** operatör kılavuzu olmaya devam eder; bir **`hermes-bridge` skill’i** bunları izletir (secret’lar diske veya loglara asla dokunmaz; SSRF / CSP / no-secrets değişmezleri `127.0.0.1`’den taşındıktan sonra da geçerliliğini korur).
 
 📖 **Tam kılavuz:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — iki entegrasyon şekli, bulut sunucusu dağıtımı (reverse proxy + HTTPS + systemd), Telegram-via-Hermes ve tehdit modelinin “NELER açığa ÇIKARILMAMALI” listesi.
 

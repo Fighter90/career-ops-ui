@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新リリース — v1.150.0** — **一貫した空状態** — 「まだ何もありません」パネルはすべて共有の `.empty` スタイルで描画されるようになりました。`#/activity`・`#/cv-studio`・`#/stats`・`#/usage` は冗長なインライン上書きを削除し、他と同一に(トークン化された48pxパディング + 破線ボーダー)。 **2385 テスト.**
+> **🆕 最新リリース — v1.151.0** — **Hermes が接続済みの LLM プロバイダーに(Phase 5)** — Nous Research の Hermes は OpenAI 互換の API Server を公開するので、**アプリ設定** で `HERMES_API_KEY` を設定すれば career-ops-ui はローカルの `hermes gateway` 経由でライブ評価を実行します(auto 順の最後)。ロードマップ最後の未解決項目を完了。 **2390 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 
@@ -604,7 +604,7 @@ production-readiness アセスメント(デプロイメントゲート、リス�
 
 **Nous Researchの[Hermes](https://hermes-agent.nousresearch.com/docs)**は、オープンな自律型エージェントです(ツール呼び出し、スキル、20以上のメッセージングチャネルに対応)。career-ops-uiを**クラウドサーバー**上で動かし、そのイベント——完了したスキャン、新しいレポート、緊急のフォローアップ——を**Hermesエージェント経由でTelegram**に橋渡しすることで、パイプラインの通知をあなたがすでにいる場所に届けられます。
 
-> **計画中 / 未実装。** *LLMプロバイダー*としてのHermesは、Phase 5のAPI契約スパイクによってブロックされており、現時点でHermesを呼び出すサーバーコードはまだありません。現在提供されているのは**統合デザイン + デプロイガイド**、そしてクラウドデプロイとTelegramブリッジの手順を案内する**`hermes-bridge`スキル**です(シークレットはディスクやログに一切触れません。`127.0.0.1`から移行しても、SSRF / CSP / no-secretsの不変条件は維持されます)。
+> **接続済み(v1.151.0)。** *LLM プロバイダー* としての Hermes は稼働中です:OpenAI 互換の API Server(`hermes gateway`)を起動し、**アプリ設定** で `HERMES_API_KEY` を設定すると、career-ops-ui はローカルの Hermes を通じてライブ評価を実行します(auto 順の最後)。下記の **クラウドサーバーへのデプロイ** と **Telegram ブリッジ** は引き続き運用者向けの手引きで、**`hermes-bridge` スキル** がそれらを案内します(シークレットはディスクやログに一切触れません。`127.0.0.1` から移行しても SSRF / CSP / no-secrets の不変条件は維持されます)。
 
 📖 **完全ガイド:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — 2つの統合形態、クラウドサーバーへのデプロイ(リバースプロキシ + HTTPS + systemd)、Telegram-via-Hermes、および脅威モデルの「公開してはならないもの」一覧を解説しています。
 

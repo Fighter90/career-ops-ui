@@ -23,7 +23,7 @@ import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { runGemini } from '../gemini.mjs';
 import { validateEvaluationReport } from '../eval-validate.mjs';
-import { runOpenAI, runQwen, runOpenRouter, runGitHubModels, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey } from '../openai.mjs';
+import { runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey } from '../openai.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { recordUsage } from '../llm-usage.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
@@ -48,6 +48,7 @@ function _provGate() {
     wantAnthropic: o.includes('anthropic'), wantGemini: o.includes('gemini'),
     wantOpenAI: o.includes('openai'), wantQwen: o.includes('qwen'),
     wantOpenRouter: o.includes('openrouter'), wantGitHub: o.includes('github'),
+    wantHermes: o.includes('hermes'),
   };
 }
 
@@ -66,8 +67,11 @@ function _tailProvider() {
   // every major model), so an existing Anthropic/Gemini/OpenAI/Qwen
   // setup is never silently re-routed through it.
   if (g.wantOpenRouter && hasOpenRouterKey()) return { mode: 'openrouter', run: runOpenRouter };
-  // v1.74.0 — GitHub Models (Copilot) is last in the auto tail.
+  // v1.74.0 — GitHub Models (Copilot) is in the auto tail.
   if (g.wantGitHub && hasGitHubModelsKey()) return { mode: 'github', run: runGitHubModels };
+  // v1.151.0 — Hermes (local OpenAI-compatible API Server) is last: you opt in
+  // by running `hermes gateway`, so it never silently re-routes an existing setup.
+  if (g.wantHermes && hasHermesKey()) return { mode: 'hermes', run: runHermes };
   return null;
 }
 
@@ -303,7 +307,7 @@ export function registerLlmRoutes(app) {
     res.json({
       mode: 'manual',
       prompt: manualPrompt,
-      message: (hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey() || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey())
+      message: (hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey() || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey() || hasHermesKey())
         ? 'Set { run: true } to execute via Anthropic/Gemini/OpenAI/Qwen/OpenRouter/GitHub Models, or copy the prompt into Claude Code.'
         : 'No API key set. Paste this into Claude Code for full deep research with WebFetch.',
     });
@@ -418,7 +422,7 @@ export function registerLlmRoutes(app) {
       mode: 'manual',
       slug,
       prompt,
-      message: (hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey() || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey())
+      message: (hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey() || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey() || hasHermesKey())
         ? 'Set { run: true } to execute via Anthropic/Gemini/OpenAI/Qwen/OpenRouter/GitHub Models, or copy this prompt into Claude Code.'
         : 'No API key set. Copy this prompt into Claude Code (it has WebFetch/WebSearch).',
     });

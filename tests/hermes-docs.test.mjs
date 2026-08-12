@@ -30,9 +30,9 @@ test('docs/integrations/HERMES.md exists with the required structure + honesty m
   assert.match(doc, /[Cc]loud-server deployment/, 'covers cloud-server deployment');
   assert.match(doc, /Telegram/, 'covers Telegram');
   assert.match(doc, /what NOT to expose/i, 'has the threat-model "what NOT to expose" list');
-  // Honesty: the provider is NOT wired.
-  assert.match(doc, /planned \/ not-yet-wired/i, 'marked planned / not-yet-wired');
-  assert.match(doc, /blocked/i, 'states the provider work is blocked');
+  // v1.151.0 — Shape A is now WIRED; the doc must say so (was "planned/not-yet-wired").
+  assert.match(doc, /WIRED/i, 'marks the Shape A provider as wired');
+  assert.match(doc, /shipped.*v1\.151\.0|v1\.151\.0.*shipped|Shape A.*shipped/i, 'attributes the provider to v1.151.0');
   // Security invariants that must survive the move off loopback are named.
   assert.match(doc, /SSRF/, 'names the SSRF guard');
   assert.match(doc, /CSP/, 'names CSP');
@@ -44,7 +44,7 @@ test('the README (EN) carries the Hermes teaser and links the deep-dive', () => 
   const r = read('README.md');
   assert.match(r, /^## Hermes agent \+ Telegram$/m, 'has the Hermes H2 section');
   assert.match(r, /docs\/integrations\/HERMES\.md/, 'links the deep-dive doc');
-  assert.match(r, /planned \/ not-yet-wired/i, 'teaser keeps the not-yet-wired honesty marker');
+  assert.match(r, /wired \(v1\.151\.0\)/i, 'teaser reflects the wired provider (v1.151.0)');
   assert.match(r, /hermes-bridge/, 'mentions the hermes-bridge skill');
 });
 
@@ -54,17 +54,21 @@ test('the hermes-bridge skill exists with valid frontmatter and a scoping gate',
   const s = read(p);
   assert.match(s, /^name:\s*hermes-bridge\s*$/m, 'frontmatter name is hermes-bridge');
   assert.match(s, /^description:\s*.+/m, 'frontmatter has a description');
-  // The skill must refuse to invent an endpoint / claim the provider is wired.
-  assert.match(s, /planned \/ not-yet-wired/i, 'skill states not-yet-wired');
+  // v1.151.0 — Shape A shipped; the skill reflects that + keeps the security guardrail.
+  assert.match(s, /Shape A.*WIRED|WIRED.*Shape A/i, 'skill states Shape A is wired');
   assert.match(s, /docs\/integrations\/HERMES\.md/, 'skill cross-links the single source of truth');
   assert.match(s, /never/i, 'skill states a hard guardrail (secrets never to disk/logs)');
 });
 
-test('no source code claims a wired Hermes LLM provider (guards against a stray branch)', () => {
-  // llm-dispatch must NOT have a Hermes/Nous provider branch yet — the whole
-  // point of v1.146.0 is docs-ahead-of-code. If someone wires it, they must
-  // update this canary + the roadmap in the same change.
+test('the Hermes provider is now wired into the dispatch cascade (v1.151.0)', () => {
+  // v1.146.0 shipped docs-ahead-of-code and this canary asserted NO Hermes
+  // branch existed. v1.151.0 confirmed the Nous Portal / Hermes API Server is
+  // OpenAI-compatible (Shape A) and wired it as the 7th provider — so the guard
+  // inverts: Hermes must now be in the cascade, via the shared OpenAI-compatible
+  // client (not a bespoke agent-runtime relay). If someone rips it out, this
+  // fails and the docs/roadmap must be reconciled in the same change.
   const dispatch = read('server/lib/llm-dispatch.mjs');
-  assert.doesNotMatch(dispatch, /hermes/i, 'llm-dispatch has no hermes branch yet');
-  assert.doesNotMatch(dispatch, /nous/i, 'llm-dispatch has no nous branch yet');
+  assert.match(dispatch, /wantHermes/, 'llm-dispatch gates a Hermes provider');
+  assert.match(dispatch, /mode: 'hermes', run: runHermes/, 'llm-dispatch runs Hermes via the shared client');
+  assert.match(read('server/lib/openai.mjs'), /export async function runHermes/, 'Hermes rides runOpenAICompatible');
 });

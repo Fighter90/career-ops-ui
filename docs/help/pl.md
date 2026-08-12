@@ -2098,11 +2098,11 @@ Link w stopce paska bocznego otwiera stronę manifestu. Możesz też przeczytać
 
 ## 30. Hermes & Telegram
 
-**Hermes od Nous Research** to otwarty, autonomiczny agent — wywoływanie narzędzi, skille oraz ponad 20 kanałów komunikacji, w tym Telegram. Ta sekcja wyjaśnia, jak uruchomić career-ops-ui na serwerze w chmurze i połączyć jego zdarzenia z Telegramem za pomocą agenta Hermes. **To plan, a nie gotowa funkcja:** Hermes jako dostawca LLM nie jest jeszcze podłączony (zablokowany do czasu potwierdzenia kontraktu API w Nous Portal), więc obecnie żaden kod aplikacji nie wywołuje Hermesa. Pełny przewodnik projektowania + wdrożenia znajduje się w `docs/integrations/HERMES.md`, a skill `hermes-bridge` prowadzi przez kolejne kroki.
+**Hermes od Nous Research** to otwarty, autonomiczny agent — wywoływanie narzędzi, skille oraz ponad 20 kanałów komunikacji, w tym Telegram. **Od v1.151.0 Hermes jest podłączonym dostawcą LLM:** uruchom jego zgodny z OpenAI API Server (`hermes gateway`), ustaw `HERMES_API_KEY` w **Ustawieniach aplikacji**, a career-ops-ui uruchomi ewaluacje na żywo przez Twojego lokalnego Hermesa. Ta sekcja obejmuje też uruchamianie aplikacji na serwerze w chmurze i mostkowanie jej zdarzeń do Telegrama przez Hermesa — te dwie części to przewodnik dla operatorów, a nie funkcje aplikacji. Pełny przewodnik jest w `docs/integrations/HERMES.md`, a skill `hermes-bridge` prowadzi przez kroki.
 
 ### Czym jest Hermes
 
-Hermes to runtime agenta — a nie, na ile możemy potwierdzić, zwykłe hostowane API chat-completions. To kształtuje integrację na dwa sposoby. **Forma A:** jeśli endpoint Nous Portal okaże się zgodny z OpenAI, Hermes dołącza jako kolejny dostawca LLM w kaskadzie aplikacji. **Forma B:** jeśli jest dostępny tylko jako runtime agenta, aplikacja komunikuje się z nim przez dedykowaną trasę relay lub lokalnie uruchomionego agenta. Które podejście obowiązuje, potwierdza się w Nous Portal i repozytorium `NousResearch/hermes-agent` *przed* napisaniem jakiegokolwiek kodu — dlatego dostawca celowo nie został jeszcze zbudowany.
+Hermes to runtime agenta, który łączy się z Twoimi własnymi dostawcami LLM — a także udostępnia **API Server zgodny z OpenAI**: `hermes gateway` serwuje `POST /v1/chat/completions` pod `http://127.0.0.1:8642/v1` z kluczem Bearer (jego `API_SERVER_KEY`). Dlatego career-ops-ui traktuje go jak kolejnego dostawcę (ścieżka „Shape A” z przewodnika): aplikacja robi POST na ten lokalny endpoint tak samo jak dla OpenAI czy Qwen, a Hermes kieruje żądanie do modelu skonfigurowanego w środku. Jest **ostatni** w kolejności auto, więc nigdy nie nadpisuje istniejącej konfiguracji Anthropic/Gemini/OpenAI/Qwen.
 
 ### Uruchamianie na serwerze w chmurze
 

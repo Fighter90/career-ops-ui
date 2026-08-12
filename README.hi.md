@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.150.0** — **एकसमान खाली अवस्थाएँ** — हर "अभी कुछ नहीं" पैनल अब साझा `.empty` स्टाइल से रेंडर होता है; `#/activity`, `#/cv-studio`, `#/stats`, `#/usage` ने एक अनावश्यक इनलाइन ओवरराइड हटाकर बाकी सबसे मिलान किया (टोकनयुक्त 48px पैडिंग + धराशायी बॉर्डर)। **2385 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.151.0** — **Hermes अब एक जुड़ा हुआ LLM प्रोवाइडर है (Phase 5)** — Nous Research का Hermes एक OpenAI-संगत API Server प्रकट करता है, तो **App settings** में `HERMES_API_KEY` सेट करें और career-ops-ui आपके स्थानीय `hermes gateway` के माध्यम से लाइव evals चलाता है (auto क्रम में अंतिम)। रोडमैप का अंतिम खुला बिंदु पूरा करता है। **2390 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 
@@ -629,7 +629,7 @@ Claude Code के अंदर मौजूदा `/career-ops apply` Playwrigh
 
 **Nous Research के [Hermes](https://hermes-agent.nousresearch.com/docs)** एक ओपन, स्वायत्त एजेंट है (टूल-कॉलिंग, स्किल्स, 20+ मैसेजिंग चैनल)। आप career-ops-ui को किसी **क्लाउड सर्वर** पर चला सकते हैं और उसके इवेंट्स — एक पूरा हुआ स्कैन, एक नई रिपोर्ट, एक अर्जेंट फ़ॉलो-अप — को **Hermes एजेंट के ज़रिए Telegram** से जोड़ सकते हैं, ताकि पाइपलाइन आप तक वहीं पहुँचे जहाँ आप पहले से मौजूद हैं।
 
-> **योजनाबद्ध / अभी तक नहीं जोड़ा गया।** एक *LLM प्रोवाइडर* के रूप में Hermes, Phase 5 के API-कॉन्ट्रैक्ट स्पाइक पर अटका है — अभी तक कोई सर्वर कोड Hermes को कॉल नहीं करता। आज जो उपलब्ध है वह है **इंटीग्रेशन डिज़ाइन + डिप्लॉयमेंट गाइड** और एक **`hermes-bridge` स्किल** जो क्लाउड-डिप्लॉय और Telegram-ब्रिज के चरणों से गुज़रती है (सीक्रेट्स कभी डिस्क या लॉग्स को नहीं छूते; SSRF / CSP / नो-सीक्रेट्स इनवेरिएंट्स `127.0.0.1` से हटने के बाद भी बरकरार रहते हैं)।
+> **अब जुड़ा हुआ (v1.151.0).** *LLM प्रोवाइडर* के रूप में Hermes लाइव है: इसका OpenAI-संगत API Server (`hermes gateway`) चलाएँ और **App settings** में `HERMES_API_KEY` सेट करें — फिर career-ops-ui आपके स्थानीय Hermes के माध्यम से लाइव मूल्यांकन चलाता है (auto क्रम में अंतिम)। नीचे दिया **क्लाउड-सर्वर डिप्लॉयमेंट** और **Telegram ब्रिज** अब भी ऑपरेटर मार्गदर्शन है; एक **`hermes-bridge` स्किल** इनसे गुज़ारती है (सीक्रेट्स कभी डिस्क या लॉग्स को नहीं छूते; SSRF / CSP / नो-सीक्रेट्स इनवेरिएंट्स `127.0.0.1` से हटने के बाद भी बरकरार रहते हैं)।
 
 📖 **पूरी गाइड:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — दो इंटीग्रेशन प्रकार, क्लाउड-सर्वर डिप्लॉयमेंट (रिवर्स प्रॉक्सी + HTTPS + systemd), Telegram-via-Hermes, और थ्रेट-मॉडल की “क्या EXPOSE न करें” सूची।
 

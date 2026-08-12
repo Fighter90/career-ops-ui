@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Latest release — v1.150.0** — **Consistent empty states** — every “nothing here yet” panel now renders through the one shared `.empty` style; `#/activity`, `#/cv-studio`, `#/stats`, `#/usage` dropped a redundant inline override so they match every other panel (tokenized 48px padding + dashed border). **2385 tests.**
+> **🆕 Latest release — v1.151.0** — **Hermes is now a wired LLM provider (Phase 5)** — Nous Research’s Hermes ships an OpenAI-compatible API Server, so set `HERMES_API_KEY` in **App settings** and career-ops-ui runs live evals through your local `hermes gateway` (last in the auto provider order). Closes the roadmap’s final open item. **2390 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 
@@ -629,7 +629,7 @@ For the production-readiness assessment (deployment gates, risk register, deferr
 
 **Nous Research's [Hermes](https://hermes-agent.nousresearch.com/docs)** is an open autonomous agent (tool-calling, skills, 20+ messaging channels). You can run career-ops-ui on a **cloud server** and bridge its events — a finished scan, a new report, an urgent follow-up — to **Telegram through a Hermes agent**, so the pipeline reaches you where you already are.
 
-> **Planned / not-yet-wired.** Hermes as an *LLM provider* is blocked on a Phase 5 API-contract spike — no server code calls Hermes yet. What ships today is the **integration design + deployment guide** and a **`hermes-bridge` skill** that walks the cloud-deploy and Telegram-bridge steps (secrets never touch disk or logs; the SSRF / CSP / no-secrets invariants survive the move off `127.0.0.1`).
+> **Now wired (v1.151.0).** Hermes as an *LLM provider* is live: run its OpenAI-compatible API Server (`hermes gateway`) and set `HERMES_API_KEY` in **App settings** — career-ops-ui then runs live evaluations through your local Hermes (last in the auto provider order). The **cloud-server deployment** and **Telegram bridge** below remain operator how-to; a **`hermes-bridge` skill** walks those steps (secrets never touch disk or logs; the SSRF / CSP / no-secrets invariants survive the move off `127.0.0.1`).
 
 📖 **Full guide:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — the two integration shapes, cloud-server deployment (reverse proxy + HTTPS + systemd), Telegram-via-Hermes, and the threat-model "what NOT to expose" list.
 

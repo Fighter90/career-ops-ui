@@ -192,6 +192,26 @@ Router.register('config', async () => {
       hintKey: 'config.githubModelHint',
       hintFallback: 'Default: openai/gpt-4o-mini. Publisher-namespaced ids — openai/gpt-4o, openai/gpt-4.1, meta/Llama-3.3-70B-Instruct, deepseek/DeepSeek-V3, …',
     },
+    {
+      // Hermes (v1.151.0) — Nous Research's local agent runtime exposes an
+      // OpenAI-compatible API Server via `hermes gateway`. Last in the auto order.
+      key: 'HERMES_API_KEY', secret: true,
+      labelKey: 'config.hermesKey', label: 'HERMES_API_KEY',
+      hintKey: 'config.hermesHint',
+      hintFallback: 'The Bearer key of a running Hermes API Server (its API_SERVER_KEY, set in ~/.hermes/.env; start it with `hermes gateway`). Hermes is Nous Research\'s self-hosted agent — it exposes an OpenAI-compatible /v1/chat/completions locally. When set, runs the web-ui ⚡ live eval (last in the auto order). See docs/integrations/HERMES.md.',
+    },
+    {
+      key: 'HERMES_BASE_URL', secret: false,
+      labelKey: 'config.hermesBaseUrl', label: 'HERMES_BASE_URL',
+      hintKey: 'config.hermesBaseUrlHint',
+      hintFallback: 'Default: http://127.0.0.1:8642/v1 (Hermes API Server\'s loopback bind). Change the port here if you set API_SERVER_PORT. A full …/chat/completions URL also works.',
+    },
+    {
+      key: 'HERMES_MODEL', secret: false,
+      labelKey: 'config.hermesModel', label: 'HERMES_MODEL',
+      hintKey: 'config.hermesModelHint',
+      hintFallback: 'Default: hermes-agent. The Hermes profile / model id to send (Hermes routes it to whatever provider you configured inside it).',
+    },
     // v1.19.0 — HH_USER_AGENT removed from the UI per user direction.
     // The server still honors the env var if a power user sets it via
     // career-ops/.env, but it's no longer advertised through #/config —

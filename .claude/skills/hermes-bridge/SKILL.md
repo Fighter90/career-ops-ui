@@ -10,12 +10,14 @@ This skill *operationalizes* that guide — it does not restate it. If the two e
 disagree, the doc wins; fix the skill to match. Read the doc first, then walk the
 steps below.
 
-> **Status: planned / not-yet-wired.** The Hermes *provider* integration is blocked
-> on the Phase 5 API-contract spike. This skill can (a) deploy the existing UI to a
-> cloud box and (b) prepare the Telegram-via-Hermes bridge, but it must **never**
-> claim the provider is wired, invent a Hermes endpoint, or write code that calls a
-> Hermes API that has not been confirmed. When the user asks to "use Hermes as the
-> LLM," stop and run the scoping gate (step 0) — do not guess the contract.
+> **Status (v1.151.0): the LLM-provider path — Shape A — is WIRED.** Hermes's
+> `hermes gateway` exposes an OpenAI-compatible `POST /v1/chat/completions`, so
+> career-ops-ui already integrates it as a provider: set `HERMES_API_KEY` (+
+> optionally `HERMES_BASE_URL`, `HERMES_MODEL`) in `#/config`. What this skill
+> still *does* is the operator how-to: (a) deploy the existing UI to a cloud box
+> and (b) prepare the Telegram-via-Hermes bridge — neither is a shipped app
+> feature. It must still **never** route a secret to disk/log/Telegram or weaken a
+> security header.
 
 ## Non-negotiable guardrails (apply to every step)
 
@@ -34,15 +36,15 @@ steps below.
    `stripDangerousMarkdown()` / `UI.md()` markdown boundary, and no-secrets-in-logs
    all stay intact. Do not relax a header to make remote deployment easier.
 
-## Step 0 — Scope the Hermes contract (gate before ANY provider code)
+## Step 0 — The provider is already wired (Shape A, v1.151.0)
 
-Before treating Hermes as an LLM provider, confirm from **Nous Portal** and the
-[`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent) repo:
-base URL, auth header, whether it is OpenAI-`/chat/completions`-compatible, model
-ids, streaming, tool-calling shape. Classify into **Shape A** (OpenAI-compatible →
-provider-cascade branch) or **Shape B** (agent runtime → relay route / local
-shell). If the contract is unknown, **stop here** and report that the provider is
-blocked — do not scaffold a branch against a guessed endpoint.
+The scoping spike is done: Hermes's API Server (`hermes gateway`) is
+OpenAI-compatible (`POST /v1/chat/completions` at `http://127.0.0.1:8642/v1`,
+Bearer `API_SERVER_KEY`, streaming, `GET /v1/models`), so **Shape A shipped** —
+career-ops-ui reaches it via the shared `runOpenAICompatible` client. To use it,
+the user just sets `HERMES_API_KEY` in `#/config` and starts `hermes gateway`; no
+new code is needed. This skill's job from here is the deployment + Telegram
+how-to below. (Shape B — a bespoke agent-runtime relay — was not needed.)
 
 ## Step 1 — Prerequisite check (deployment)
 
@@ -73,7 +75,7 @@ minimum useful summary + a link the authenticated user opens themselves.
 
 ## Step 4 — Honesty check before you finish
 
-Confirm you did **not**: invent a Hermes endpoint, claim the provider is wired,
-weaken a security header, or route a secret to disk/log/Telegram. If the user
-wanted the LLM-provider integration specifically, restate that it is blocked on
-step 0's scoping spike and point them at `docs/UX-ROADMAP.md` Phase 5.
+Confirm you did **not**: weaken a security header, expose `0.0.0.0` directly to
+the internet, or route a secret to disk/log/Telegram. If the user only wanted the
+LLM-provider integration, that already shipped (Shape A) — point them at
+`#/config` (`HERMES_API_KEY`) and `docs/integrations/HERMES.md`.
