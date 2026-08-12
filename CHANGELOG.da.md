@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.160.0] — 2026-08-13
+
+**Rettet (HØJ) — udbydertekst modsiger ikke længere løftet om 7 udbydere.** `#/config` sagde, at live-evalueringen "bruger din Anthropic- eller Gemini-nøgle", og at OpenAI-nøglen "ikke bruges af web-UI'en"; dashboardet sagde "Anthropic-first scoring" — falsk siden 7-udbyder-kaskaden (v1.157.0).
+
+### Rettet
+- `config.providerModelNote` (×17): siger nu, at ⚡ live-evalueringen kører headless med en hvilken som helst af dine syv nøgler (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes), automatisk ordnet med fallback. Den falske OpenAI-sætning er fjernet.
+- `dash.quick.evaluateSub` (×17): udbyderneutral ("0–5 match-score"). `Keys: N / 5` → `N / 7`.
+
+### Noter
+- Kun tekst; ingen ændring af rute/CSP/SSRF/skrivning. Ingen nye i18n-nøgler (snapshot 1217). Suite: **2413** (+3).
+
 ## [1.159.0] — 2026-08-13
 
 **Rettet (HØJ) — rapportmetadata er ikke længere sprogafhængige.** Rapporter genereret på et andet sprog end engelsk viste en tom metadatastribe på `#/reports`, fordi `parseReportHeader` kun genkendte engelske fede etiketter.

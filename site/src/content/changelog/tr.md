@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.160.0] — 2026-08-13
+
+**Düzeltildi (YÜKSEK) — sağlayıcı metni artık 7 sağlayıcı vaadiyle çelişmiyor.** `#/config`, canlı değerlendirmenin "Anthropic veya Gemini anahtarını kullandığını" ve OpenAI anahtarının "web arayüzü tarafından kullanılmadığını" söylüyordu; panoda "Anthropic-first scoring" yazıyordu — 7 sağlayıcı zincirinden (v1.157.0) beri yanlış.
+
+### Düzeltildi
+- `config.providerModelNote` (×17): artık ⚡ canlı değerlendirmenin yedi anahtarından (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes) herhangi biriyle başsız çalıştığını, otomatik sıralı ve yedekli olduğunu belirtiyor. Yanlış OpenAI cümlesi kaldırıldı.
+- `dash.quick.evaluateSub` (×17): sağlayıcıdan bağımsız ("0–5 uygunluk puanı"). `Keys: N / 5` → `N / 7`.
+
+### Notlar
+- Yalnızca metin; rota/CSP/SSRF/yazma değişikliği yok. Yeni i18n anahtarı yok (anlık görüntü 1217). Takım: **2413** (+3).
+
 ## [1.159.0] — 2026-08-13
 
 **Düzeltildi (YÜKSEK) — rapor meta verileri artık dile bağlı değil.** İngilizce dışında bir dilde üretilen raporlar `#/reports` üzerinde boş bir meta veri şeridi gösteriyordu, çünkü `parseReportHeader` yalnızca İngilizce kalın etiketleri tanıyordu.

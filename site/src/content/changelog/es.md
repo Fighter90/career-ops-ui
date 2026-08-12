@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.160.0] — 2026-08-13
+
+**Corregido (ALTA) — el texto sobre proveedores ya no contradice la promesa de 7 proveedores.** `#/config` decía que la evaluación en vivo "usa tu clave de Anthropic o Gemini" y que la de OpenAI "no la usa el web UI"; el panel decía "Score Anthropic-first" — falso desde la cascada de 7 proveedores (v1.157.0).
+
+### Corregido
+- `config.providerModelNote` (×17): ahora dice que la ⚡ evaluación en vivo headless funciona con cualquiera de tus siete claves (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes), con orden automático y reserva. Eliminada la frase falsa sobre OpenAI.
+- `dash.quick.evaluateSub` (×17): neutral respecto al proveedor ("Puntuación de ajuste 0–5"). `Keys: N / 5` → `N / 7`.
+
+### Notas
+- Solo texto; sin cambios de ruta/CSP/SSRF/escritura. Sin nuevas claves i18n (snapshot 1217). Conjunto: **2413** (+3).
+
 ## [1.159.0] — 2026-08-13
 
 **Corregido (ALTA) — los metadatos del informe ya no dependen del idioma.** Los informes generados en un idioma distinto del inglés mostraban una franja de metadatos vacía en `#/reports` (sin puntuación, fecha ni legitimidad), porque `parseReportHeader` solo reconocía las etiquetas en negrita en inglés.

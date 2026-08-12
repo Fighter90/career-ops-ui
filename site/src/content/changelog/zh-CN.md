@@ -9,6 +9,17 @@
 ---
 
 
+## [1.160.0] — 2026-08-13
+
+**修复 (HIGH) — 提供方文案不再与 7 家提供方的承诺矛盾。** `#/config` 称实时评估"使用你的 Anthropic 或 Gemini 密钥",OpenAI 密钥"不被 Web UI 使用";仪表盘写"Anthropic-first scoring" — 自 7 提供方级联(v1.157.0)起皆为错误。
+
+### 修复
+- `config.providerModelNote`(×17):现声明 ⚡ 实时评估以无头方式在七个提供方密钥(Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes)中任意一个上运行,自动排序并回退。删除关于 OpenAI 的错误句子。
+- `dash.quick.evaluateSub`(×17):提供方中立("0–5 匹配评分")。`Keys: N / 5` → `N / 7`。
+
+### 说明
+- 仅文案;无路由/CSP/SSRF/写入变更。无新增 i18n 键(快照 1217)。套件:**2413** (+3)。
+
 ## [1.159.0] — 2026-08-13
 
 **修复 (HIGH) — 报告元数据不再与语言耦合。** 以非英语语言生成的报告在 `#/reports` 上显示空白元数据条(无评分/日期/合法性),因为 `parseReportHeader` 只识别英文粗体标签。

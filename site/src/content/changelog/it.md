@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.160.0] — 2026-08-13
+
+**Corretto (ALTA) — il testo sui provider non contraddice più la promessa dei 7 provider.** `#/config` diceva che la valutazione live "usa la tua chiave Anthropic o Gemini" e che quella OpenAI "non è usata dal web UI"; la dashboard diceva "Score Anthropic-first" — falso dalla cascata a 7 provider (v1.157.0).
+
+### Corretto
+- `config.providerModelNote` (×17): ora dice che la ⚡ valutazione live gira headless con una qualsiasi delle tue sette chiavi (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes), ordinate automaticamente con fallback. Rimossa la frase falsa su OpenAI.
+- `dash.quick.evaluateSub` (×17): neutro ("Punteggio di idoneità 0–5"). `Keys: N / 5` → `N / 7`.
+
+### Note
+- Solo testo; nessuna modifica a route/CSP/SSRF/scrittura. Nessuna nuova chiave i18n (snapshot 1217). Suite: **2413** (+3).
+
 ## [1.159.0] — 2026-08-13
 
 **Corretto (ALTA) — i metadati del report non dipendono più dalla lingua.** I report generati in una lingua diversa dall'inglese mostravano una striscia di metadati vuota su `#/reports`, perché `parseReportHeader` riconosceva solo le etichette in grassetto in inglese.

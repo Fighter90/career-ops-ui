@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.160.0] — 2026-08-13
+
+**Corrigé (HAUTE) — le texte sur les fournisseurs ne contredit plus la promesse des 7 fournisseurs.** `#/config` disait que l'évaluation en direct "utilise votre clé Anthropic ou Gemini" et que celle d'OpenAI "n'est pas utilisée par le web UI" ; le tableau de bord affichait "Scoring Anthropic-first" — faux depuis la cascade à 7 fournisseurs (v1.157.0).
+
+### Corrigé
+- `config.providerModelNote` (×17) : indique désormais que l'⚡ évaluation en direct headless fonctionne avec l'une quelconque de vos sept clés (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes), ordonnées automatiquement avec repli. Phrase erronée sur OpenAI supprimée.
+- `dash.quick.evaluateSub` (×17) : neutre ("Score d'adéquation 0–5"). `Keys: N / 5` → `N / 7`.
+
+### Notes
+- Texte uniquement ; aucun changement de route/CSP/SSRF/écriture. Aucune nouvelle clé i18n (instantané 1217). Suite : **2413** (+3).
+
 ## [1.159.0] — 2026-08-13
 
 **Corrigé (HAUTE) — les métadonnées du rapport ne dépendent plus de la langue.** Les rapports générés dans une langue autre que l'anglais affichaient une bande de métadonnées vide sur `#/reports`, car `parseReportHeader` ne reconnaissait que les libellés en gras en anglais.

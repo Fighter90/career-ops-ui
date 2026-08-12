@@ -428,7 +428,7 @@ Router.register('config', async () => {
     const activeLabel = c('span', { className: 'api-keys__active' },
       t('config.activeProvider', 'Active') + ': ' + active);
     const countLabel = c('span', { className: 'api-keys__count' },
-      t('config.keysConfiguredPrefix', 'Keys') + ': ' + count + ' / 5');
+      t('config.keysConfiguredPrefix', 'Keys') + ': ' + count + ' / 7');
     // Atomic swap — never leaves the chip empty mid-update.
     apiSummary.replaceChildren(activeLabel, countLabel);
   }

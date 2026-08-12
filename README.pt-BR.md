@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2410%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2413%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versão — v1.159.0** — **Metadados de relatório por idioma (correção)** — Relatórios em idioma diferente do inglês mostravam uma faixa de metadados vazia (sem pontuação/data/legitimidade). `parseReportHeader` agora lê o bloco invariante `## Machine Summary` (relatórios em inglês ficam idênticos) e tolera formatos numéricos locais. **2410 testes.**
+> **🆕 Última versão — v1.160.0** — **Texto de provedores honesto (correção)** — `#/config` e o painel diziam que a pontuação usa só Anthropic/Gemini (e que OpenAI "não é usado") — falso desde a cascata de 7 provedores. Agora nomeia os sete, o cartão Avaliar é neutro e `Keys: N/5` → `N/7`. **2413 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 
