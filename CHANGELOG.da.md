@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.156.0] — 2026-08-12
+
+**Refaktor — opdel `scan.js` under størrelsesgrænsen (P-16) + en CodeQL-rettelse.** `scan.js` var **906 linjer**; to adfærdsbevarende fabrikker blev udtrukket → **648**. Fuldender view-opdelingsparret P-15/P-16.
+
+### Ændret
+- Nye `scan/runner.js` (scan-udførelsesmotor) og `scan/filters.js` (filter-tilstandsmaskine) via `ctx`/`refs`-poser; `scan.js` forbinder begge.
+
+### Rettet
+- CodeQL `js/useless-assignment-to-local` (#428) i `config/tab-controller.js`: `let n = i;` → `let n;`.
+
+### Noter
+- Ren refaktor, ingen adfærdsændring; 4 kildelæsende tests ompeget. Begge store views nu under 800 (P-15/P-16 færdig). Suite: **2396** tests.
+
 ## [1.155.0] — 2026-08-12
 
 **Refaktor — opdel `config.js` under størrelsesgrænsen (P-15).** `config.js` var **1030 linjer** (over 800-grænsen); to adfærdsbevarende moduler blev udtrukket, ned til **783**.

@@ -14,7 +14,7 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.155.0** — **更清晰的 config 视图(重构)** — 将 `config.js`(1030 行)拆分到 800 行上限以下的两个保持行为的模块 —— 字段数据 + 选项卡栏工厂。纯重构,行为不变。 **2396 个测试。**
+> **🆕 最新版本 — v1.156.0** — **更清晰的 scan 视图(重构)** — 将 `scan.js`(906 行)拆分到 800 行上限以下的 runner + filters 工厂(P-16,完成 P-15 的 config 拆分)。行为不变;并清除 CodeQL #428。 **2396 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

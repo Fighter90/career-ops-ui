@@ -12,10 +12,15 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(resolve(ROOT, p), 'utf8');
-const SCAN = read('public/js/views/scan.js');
+// P-16 file-size split: runScanAll + streamTo moved from views/scan.js into
+// views/scan/runner.js; the module-scope poll handles + __cancelActiveScanPoll
+// stay in views/scan.js. Read the concatenated scan-view source so the checks
+// below find each pattern wherever it now lives.
+const SCAN = loadScanSrc();
 const APP = read('public/js/app.js');
 const HTML = read('public/index.html');
 

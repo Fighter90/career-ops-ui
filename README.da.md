@@ -14,7 +14,7 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Seneste udgivelse — v1.155.0** — **Renere config-visning (refaktor)** — `config.js` (1030 linjer) opdelt under 800-grænsen i to adfærdsbevarende moduler — feltdata + en fanebjælke-fabrik. Ren refaktor, ingen adfærdsændring. **2396 tests.**
+> **🆕 Seneste udgivelse — v1.156.0** — **Renere scan-visning (refaktor)** — `scan.js` (906 linjer) opdelt under 800-grænsen i en runner- og en filter-fabrik (P-16, fuldender config-opdelingen fra P-15). Ingen adfærdsændring; rydder også CodeQL #428. **2396 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

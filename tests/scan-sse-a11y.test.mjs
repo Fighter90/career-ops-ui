@@ -8,13 +8,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { legacyDictText } from './helpers/i18n-vm.mjs';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const R = (...p) => resolve(__dirname, '..', ...p);
-const SCAN = readFileSync(R('public', 'js', 'views', 'scan.js'), 'utf8');
+// P-16 file-size split: the scan-execution engine (setScanRunning, stopScan,
+// streamTo, runScanAll, activeES, …) moved from views/scan.js into
+// views/scan/runner.js. Read the concatenated scan-view source so the wiring
+// assertions below stay agnostic to which physical file now holds each pattern.
+const SCAN = loadScanSrc();
 const DICT = legacyDictText();
 
 test('#5: SSE console is an aria-live log region, keyboard-scrollable', () => {

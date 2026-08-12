@@ -14,7 +14,7 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versão — v1.155.0** — **Visão de config mais limpa (refactor)** — `config.js` (1030 linhas) foi dividido sob o limite de 800 em dois módulos que preservam o comportamento — dados de campos + uma fábrica da barra de abas. Refactor puro, sem mudança de comportamento. **2396 testes.**
+> **🆕 Última versão — v1.156.0** — **Visão de scan mais limpa (refactor)** — `scan.js` (906 linhas) dividido sob o limite de 800 em uma fábrica runner e uma de filtros (P-16, completa o split de config da P-15). Sem mudança de comportamento; também fecha o CodeQL #428. **2396 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

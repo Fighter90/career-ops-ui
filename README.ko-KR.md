@@ -14,7 +14,7 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.155.0** — **더 깔끔한 config 뷰(리팩터)** — `config.js`(1030줄)를 800줄 한도 아래로 두 개의 동작 보존 모듈 — 필드 데이터 + 탭 바 팩토리 — 로 분할했습니다. 순수 리팩터, 동작 변화 없음. **2396 테스트.**
+> **🆕 최신 릴리스 — v1.156.0** — **더 깔끔한 scan 뷰(리팩터)** — `scan.js`(906줄)를 800줄 한도 아래로 runner + filters 팩토리로 분할(P-16, P-15 config 분할 완성). 동작 변화 없음; CodeQL #428도 해결. **2396 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

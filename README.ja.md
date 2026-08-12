@@ -14,7 +14,7 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新リリース — v1.155.0** — **すっきりした config ビュー(リファクタ)** — `config.js`(1030 行)を 800 行上限内に、挙動を保つ 2 モジュール — フィールドデータ + タブバーのファクトリ — に分割。純粋なリファクタで挙動変更なし。 **2396 テスト.**
+> **🆕 最新リリース — v1.156.0** — **すっきりした scan ビュー(リファクタ)** — `scan.js`(906 行)を 800 行上限内に runner + filters ファクトリへ分割(P-16、P-15 の config 分割を完了)。挙動変更なし; CodeQL #428 も解消。 **2396 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

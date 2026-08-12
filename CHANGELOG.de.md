@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.156.0] — 2026-08-12
+
+**Refactor — `scan.js` unter das Größenlimit aufteilen (P-16) + ein CodeQL-Fix.** `scan.js` hatte **906 Zeilen**; zwei verhaltensbewahrende Factories wurden herausgezogen → **648**. Vervollständigt das View-Split-Paar P-15/P-16.
+
+### Geändert
+- Neue `scan/runner.js` (Scan-Ausführungs-Engine) und `scan/filters.js` (Filter-Zustandsmaschine) über `ctx`/`refs`-Bags; `scan.js` verdrahtet beide.
+
+### Behoben
+- CodeQL `js/useless-assignment-to-local` (#428) in `config/tab-controller.js`: `let n = i;` → `let n;`.
+
+### Hinweise
+- Reiner Refactor, keine Verhaltensänderung; 4 quelllesende Tests umgeleitet. Beide großen Views jetzt unter 800 (P-15/P-16 fertig). Suite: **2396** Tests.
+
 ## [1.155.0] — 2026-08-12
 
 **Refactor — `config.js` unter das Größenlimit aufteilen (P-15).** `config.js` hatte **1030 Zeilen** (über dem 800-Limit); zwei verhaltensbewahrende Module wurden herausgezogen, auf **783**.

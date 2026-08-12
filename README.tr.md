@@ -14,7 +14,7 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Son sürüm — v1.155.0** — **Daha temiz config görünümü (refactor)** — `config.js` (1030 satır) 800 sınırının altına, davranışı koruyan iki modüle bölündü — alan verisi + sekme çubuğu fabrikası. Saf refactor, davranış değişikliği yok. **2396 test.**
+> **🆕 Son sürüm — v1.156.0** — **Daha temiz scan görünümü (refactor)** — `scan.js` (906 satır) 800 sınırının altına runner + filters fabrikasına bölündü (P-16, P-15 config bölünmesini tamamlar). Davranış değişikliği yok; CodeQL #428’i de kapatır. **2396 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 
