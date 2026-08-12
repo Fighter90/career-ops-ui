@@ -2233,3 +2233,19 @@ Altı ilke — "daha az yere daha iyi başvur", "hacim yerine sinyal", "anahtar 
 ### Okuma ve imzalama
 
 Kenar çubuğu altbilgisindeki bağlantı manifesto sayfasını açar. `MANIFESTO.md` dosyasını üst projede de okuyabilir veya imza sayfasını açmak için orada `npm run manifesto` çalıştırabilirsin. İmzalamak isteğe bağlıdır ve on saniye sürer — imzan üst depodaki `SIGNATURES.md` defterinde herkese açık bir commit'e dönüşür. Uygulamadaki hiçbir şey imzalayıp imzalamadığına bağlı değildir.
+
+## 30. Hermes & Telegram
+
+**Nous Research'ün Hermes'i** açık, otonom bir ajandır — araç çağırma, skill'ler ve Telegram dahil 20'den fazla mesajlaşma kanalı. Bu bölüm, career-ops-ui'yi bir bulut sunucusunda nasıl çalıştıracağınızı ve olaylarını bir Hermes ajanı üzerinden Telegram'a nasıl köprüleyeceğinizi anlatır. **Bu bir plandır, teslim edilmiş bir özellik değil:** LLM sağlayıcısı olarak Hermes henüz bağlanmadı (Nous Portal API sözleşmesinin doğrulanması beklenirken engellendi), dolayısıyla bugün uygulamada hiçbir şey Hermes'i çağırmıyor. Tam tasarım + dağıtım kılavuzu `docs/integrations/HERMES.md` içindedir ve `hermes-bridge` skill'i adımları izletir.
+
+### Hermes nedir
+
+Hermes bir ajan çalışma zamanıdır — doğrulayabildiğimiz kadarıyla, basit bir barındırılan chat-completions API'si değil. Bu, entegrasyonu iki şekilde biçimlendirir. **Biçim A:** bir Nous Portal uç noktasının OpenAI uyumlu olduğu ortaya çıkarsa, Hermes uygulamanın sağlayıcı kaskadına bir LLM sağlayıcısı daha olarak eklenir. **Biçim B:** yalnızca ajan çalışma zamanı olarak erişilebiliyorsa, uygulama onunla özel bir relay rotası veya yerel çalışan bir ajan üzerinden konuşur. Hangisinin geçerli olduğu, herhangi bir kod yazılmadan *önce* Nous Portal ve `NousResearch/hermes-agent` deposundan doğrulanır — sağlayıcının kasıtlı olarak henüz inşa edilmemiş olmasının nedeni budur.
+
+### Bir bulut sunucusunda çalıştırma
+
+career-ops-ui varsayılan olarak `127.0.0.1`'e bağlanır. Bir sunucuda yaşayan bir Hermes ajanına ulaşmak için loopback'ten dikkatle çıkarsınız. Uygulamayı loopback'e bağlı tutun ve önüne HTTPS'i sonlandıran bir reverse proxy (nginx veya Caddy) koyun; systemd veya pm2 altında root olmayan bir kullanıcı olarak çalıştırın; ve headless makinede üst proje career-ops ile salt-okunur sözleşmeyi bozulmadan koruyun. Güvenlik zarfı taşınmadan sonra da ayakta kalmalı: satır içi script içermeyen bir Content-Security-Policy, kullanıcının sağladığı her URL getirmede SSRF koruması, markdown/XSS sınırı ve loglarda hiçbir sır bulunmaması. Kılavuzda tam kontrol listesi var — `0.0.0.0`'ı asla doğrudan genel internete açmayın.
+
+### Hermes üzerinden Telegram
+
+Köprü, uygulama olaylarını — tamamlanmış bir tarama, yeni bir rapor, az önce aciliyet kazanmış bir takip — Hermes üzerinden bir Telegram sohbetine ulaştırır. Telegram bot jetonu career-ops-ui'de değil, Hermes'in kendi yapılandırmasında yaşar. Yalnızca yararlı asgariyi gönderin: "Tarama tamamlandı — 12 yeni eşleşme" ve kendinizin açtığı bir bağlantı. Kanala CV metnini, maaş rakamlarını, rapor gövdelerini, API anahtarlarını veya iç URL'leri **asla göndermeyin** — kılavuzun tehdit modeli "NELERİN açığa çıkarılmaması gerektiği" listesi kuraldır. Bu sayfaya `#/help` üzerinden erişilebilir ve uygulama içi belge asistanı sorulara buna dayanarak yanıt verir.

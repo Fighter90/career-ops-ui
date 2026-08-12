@@ -8,6 +8,22 @@
 
 ---
 
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram —— 應用內說明章節 + cvstart.org 介面(Phase 5b，第 2 部分)** —— Hermes 文件工作的第二部分,也是最後一部分:操作說明現已放入應用自己的說明指南中,涵蓋全部 17 種語言,應用內文件助理也據此回答 Hermes 相關問題。仍僅限文件 —— Hermes LLM 供應方路徑仍處於 **規劃中 / 尚未接上**(Phase 5)。
+
+### 新增
+- **應用內說明 §30「Hermes & Telegram」× 17 種語言** —— 新的指南章節(Hermes 是什麼 + 兩種整合形態;在雲端伺服器上執行;經 Hermes 轉發到 Telegram + 「不該公開什麼」規則),可從 `#/help` 存取。`docs-assistant` / `DocsFab` 的 grounding 會自動取得它(兩者都讀取 `docs/help/<lang>.md`)。
+- **cvstart.org —— 指向 Hermes 指南的連結**,跳轉到 GitHub 文件。
+
+### 變更
+- 說明套件門檻提升至 **29 → 30 H2 / 105 → 108 H3**(`canonical-docs-coverage`、`help-ui`、`help-ru-config-section`);§30 新增 3 個 H3。
+
+### 說明
+- **目前仍沒有任何程式碼呼叫 Hermes。** 新哨兵測試 `tests/help-hermes-section.test.mjs` 斷言每種語言都包含帶有語言無關錨點(`docs/integrations/HERMES.md`、`hermes-bridge`、`#/help`、`127.0.0.1`、Telegram)的 §30。該供應方仍卡在 Phase 5 的 API 合約調查上。
+- 這就收尾了 Phase 5b 的 **文件 + 技能** 交付物;供應方整合(Phase 5)仍是一個獨立且被阻擋的事項。
+- 套件:**2378** 項測試(+2:`tests/help-hermes-section.test.mjs`)。
+
 ## [1.146.0] — 2026-08-12
 
 **Hermes 代理 + Telegram——整合指南 + 一個 skill（Phase 5b，第 1 部分）** — 你可以在雲端伺服器上執行 career-ops-ui,並透過 Nous Research 的 Hermes 代理把它的事件(一次完成的掃描、一份新報告、一次緊急跟進)串接到 Telegram。本次發布提供設計 + 部署文件與一個 hermes-bridge skill;Hermes LLM 供應方路徑仍處於規劃中/尚未接上的狀態(卡在 Phase 5 的 API 契約調查上)。這是刻意讓文件先行於程式碼。

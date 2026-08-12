@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.146.0** — **Hermes 代理 + Telegram** — 在雲端伺服器上執行 career-ops-ui，並透過 Nous Research 的 Hermes 代理將其事件橋接到 Telegram。附上整合指南 + **`hermes-bridge`** 技能；LLM 供應商路徑仍處於 **規劃中 / 尚未接上**。 **2376 個測試.**
+> **🆕 最新版本 — v1.147.0** — **說明指南中的 Hermes & Telegram** — Hermes 雲端部署 + Telegram 橋接的操作說明現已成為所有 17 種語言的應用內說明章節（§30），文件助理也會依此回答問題。仍僅限文件 — 該供應商仍處於 **規劃中 / 尚未接上**。 **2378 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

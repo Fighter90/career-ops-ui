@@ -9,6 +9,22 @@
 ---
 
 
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — アプリ内ヘルプセクション + cvstart.org 面(Phase 5b・第2部)** — Hermesドキュメント作業の2つ目にして最後の部分です:手順が17言語すべてでアプリ自身のヘルプガイド内に収まり、アプリ内ドキュメントアシスタントがそれを基にHermesの質問に答えます。引き続きドキュメントのみ — HermesのLLMプロバイダー経路は **計画中 / 未接続** のままです(Phase 5)。
+
+### 追加
+- **アプリ内ヘルプ §30「Hermes & Telegram」× 17言語** — 新しいガイドセクション(Hermesとは + 2つの統合形態;クラウドサーバーでの実行;Hermes経由のTelegram + 「公開してはならないもの」ルール)。`#/help`からアクセス可能。`docs-assistant` / `DocsFab`のグラウンディングが自動的に取り込みます(どちらも`docs/help/<lang>.md`を読むため)。
+- **cvstart.org — Hermesガイドへのリンク**。GitHubのドキュメントへ誘導。
+
+### 変更
+- ヘルプバンドルのゲートを **29 → 30 H2 / 105 → 108 H3** に引き上げ(`canonical-docs-coverage`、`help-ui`、`help-ru-config-section`);§30がH3を3つ追加。
+
+### 補足
+- **まだHermesを呼び出す処理はありません。** 新しいカナリア`tests/help-hermes-section.test.mjs`が、すべての言語に§30が言語非依存のアンカー(`docs/integrations/HERMES.md`、`hermes-bridge`、`#/help`、`127.0.0.1`、Telegram)とともに存在することを検証します。プロバイダーはPhase 5のAPI契約スパイクによって引き続きブロックされています。
+- これでPhase 5bの**ドキュメント + スキル**成果物が完了します;プロバイダー統合(Phase 5)は別個のブロック中の項目として残ります。
+- スイート:**2378**件のテスト(+2:`tests/help-hermes-section.test.mjs`)。
+
 ## [1.146.0] — 2026-08-12
 
 **Hermesエージェント + Telegram — 統合ガイドとスキル（Phase 5b・第1部）** — career-ops-uiをクラウドサーバーで動かし、そのイベント（完了したスキャン、新しいレポート、緊急のフォローアップ）をNous ResearchのHermesエージェント経由でTelegramに橋渡しできます。このリリースでは設計＋デプロイのドキュメントとhermes-bridgeスキルを提供します。HermesのLLMプロバイダー経路は依然として計画中／未接続のままです（Phase 5のAPI契約スパイクに阻まれています）。意図的にコードより先にドキュメントを整えています。

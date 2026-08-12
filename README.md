@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Latest release — v1.146.0** — **Hermes agent + Telegram** — run career-ops-ui on a cloud server and bridge its events to Telegram through a Nous Research Hermes agent. Ships the integration guide ([`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)) + a **`hermes-bridge` skill**; the LLM-provider path stays **planned / not-yet-wired**. **2376 tests.**
+> **🆕 Latest release — v1.147.0** — **Hermes & Telegram in the help guide** — the Hermes cloud-deploy + Telegram-bridge how-to is now an in-app help section (§30) in all 17 languages, and the docs assistant answers from it. Still docs-only — the provider stays **planned / not-yet-wired**. **2378 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

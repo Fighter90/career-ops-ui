@@ -8,6 +8,22 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — the in-app help section + cvstart.org surface (Phase 5b, part 2)** — the second and final slice of the Hermes docs work: the how-to now lives inside the app's own help guide, in all 17 languages, and the in-app docs assistant answers Hermes questions from it. Still docs-only — the Hermes LLM-provider path remains **planned / not-yet-wired** (Phase 5).
+
+### Added
+- **In-app help §30 "Hermes & Telegram" × 17 locales** — a new help-guide section (what Hermes is + the two integration shapes; running on a cloud server; Telegram via Hermes + the "what NOT to expose" rule), reachable from `#/help`. The `docs-assistant` / floating "Ask the docs" `DocsFab` grounding picks it up automatically — no wiring needed, since both read `docs/help/<lang>.md`.
+- **cvstart.org — a short Hermes explainer** mirroring the README teaser and deep-linking to the GitHub guide.
+
+### Changed
+- Help-bundle gate lifted **29 → 30 H2 / 105 → 108 H3** (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`); §30 adds 3 H3s.
+
+### Notes
+- **Still nothing calls Hermes.** New canary `tests/help-hermes-section.test.mjs` asserts every locale carries the §30 section with its language-independent anchors (`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram). The provider stays blocked on the Phase 5 API-contract spike.
+- This closes the Phase 5b **docs + skill** deliverable; the provider integration (Phase 5) remains a separate, blocked item.
+- Suite: **2378** tests (+2: `tests/help-hermes-section.test.mjs`).
+
 ## [1.146.0] — 2026-08-12
 
 **Hermes agent + Telegram — the integration guide + a skill (Phase 5b, part 1)** — you can run career-ops-ui on a cloud server and bridge its events (a finished scan, a new report, an urgent follow-up) to Telegram through a Nous Research **Hermes** agent. This release ships the *design + deployment docs* and a **`hermes-bridge` skill**; the Hermes LLM-provider path stays **planned / not-yet-wired** (blocked on the Phase 5 API-contract spike). Docs-ahead-of-code by design.

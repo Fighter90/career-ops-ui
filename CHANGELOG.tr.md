@@ -2,6 +2,22 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — uygulama içi yardım bölümü + cvstart.org yüzeyi (Phase 5b, bölüm 2)** — Hermes belge çalışmasının ikinci ve son parçası: nasıl yapılır artık uygulamanın kendi yardım kılavuzunun içinde, 17 dilin tümünde yaşıyor ve uygulama içi belge asistanı Hermes sorularını buradan yanıtlıyor. Hâlâ yalnızca belge — Hermes LLM sağlayıcı yolu **planlandı / henüz bağlanmadı** durumunda kalıyor (Phase 5).
+
+### Eklendi
+- **Uygulama içi yardım §30 "Hermes & Telegram" × 17 dil** — yeni bir kılavuz bölümü (Hermes nedir + iki entegrasyon biçimi; bir bulut sunucusunda çalıştırma; Hermes üzerinden Telegram + "NEYİN açığa çıkarılmaması gerektiği" kuralı), `#/help` üzerinden erişilebilir. `docs-assistant` / `DocsFab` grounding'i bunu otomatik alır çünkü ikisi de `docs/help/<lang>.md` okur.
+- **cvstart.org — Hermes kılavuzuna bir bağlantı**, GitHub'daki belgeye yönlendirir.
+
+### Değişti
+- Yardım paketi eşiği **29 → 30 H2 / 105 → 108 H3** yükseltildi (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`); §30 üç H3 ekler.
+
+### Notlar
+- **Hâlâ hiçbir şey Hermes'i çağırmıyor.** Yeni kanarya testi `tests/help-hermes-section.test.mjs`, her dilin §30'u dilden bağımsız çıpalarıyla (`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram) içerdiğini doğrular. Sağlayıcı, Phase 5 API sözleşmesine kadar engelli kalır.
+- Bu, Phase 5b'nin **belge + skill** çıktısını kapatır; sağlayıcı entegrasyonu (Phase 5) ayrı, engellenmiş bir madde olarak kalır.
+- Takım: **2378** test (+2: `tests/help-hermes-section.test.mjs`).
+
 ## [1.146.0] — 2026-08-12
 
 **Hermes ajanı + Telegram — entegrasyon kılavuzu + bir skill (Phase 5b, bölüm 1)** — career-ops-ui'yi bir bulut sunucusunda çalıştırabilir ve olaylarını (tamamlanmış bir tarama, yeni bir rapor, acil bir takip) Nous Research'ün Hermes ajanı üzerinden Telegram'a bağlayabilirsiniz. Bu sürüm tasarım + dağıtım belgelerini ve bir hermes-bridge skill'ini sunar; Hermes LLM sağlayıcı yolu hâlâ planlanan / henüz bağlanmamış durumda (Phase 5 API sözleşmesi spike'ına tıkanmış). Belgeler kasıtlı olarak koddan önde.

@@ -8,6 +8,22 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — det indbyggede hjælpeafsnit + cvstart.org-fladen (Phase 5b, del 2)** — den anden og sidste del af Hermes-dokumentationsarbejdet: vejledningen bor nu inde i appens egen hjælpeguide på alle 17 sprog, og den indbyggede dokumentationsassistent svarer på Hermes-spørgsmål ud fra den. Stadig kun dokumentation — Hermes' LLM-udbyder-vej forbliver **planlagt / endnu ikke tilsluttet** (Phase 5).
+
+### Tilføjet
+- **Indbygget hjælp §30 "Hermes & Telegram" × 17 sprog** — et nyt guideafsnit (hvad Hermes er + de to integrationsformer; kørsel på en cloud-server; Telegram via Hermes + reglen "hvad man IKKE skal eksponere"), tilgængeligt fra `#/help`. Grounding i `docs-assistant` / `DocsFab` opfanger det automatisk, da begge læser `docs/help/<lang>.md`.
+- **cvstart.org — et link til Hermes-guiden**, der peger på dokumentet på GitHub.
+
+### Ændret
+- Hjælpebundtets gate hævet **29 → 30 H2 / 105 → 108 H3** (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`); §30 tilføjer 3 H3.
+
+### Noter
+- **Intet kalder stadig Hermes.** Den nye canary `tests/help-hermes-section.test.mjs` sikrer, at hvert sprog har §30 med dens sprog-uafhængige ankre (`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram). Udbyderen forbliver blokeret indtil API-kontrakten fra Phase 5.
+- Dette lukker **dokumentation + skill**-leverancen for Phase 5b; udbyder-integrationen (Phase 5) forbliver et separat, blokeret punkt.
+- Suite: **2378** tests (+2: `tests/help-hermes-section.test.mjs`).
+
 ## [1.146.0] — 2026-08-12
 
 **Hermes-agent + Telegram — integrationsguiden + en skill (Phase 5b, del 1)** — du kan køre career-ops-ui på en cloud-server og bygge bro mellem dens events (et afsluttet scan, en ny rapport, en akut follow-up) og Telegram via en Hermes-agent fra Nous Research. Denne udgivelse leverer design- + deployment-dokumentationen og en hermes-bridge-skill; Hermes' LLM-provider-vej er stadig planlagt / endnu ikke tilkoblet (blokeret af Phase 5's API-kontrakt-spike). Dokumentation før kode, med vilje.

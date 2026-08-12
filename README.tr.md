@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Son sürüm — v1.146.0** — **Hermes ajanı + Telegram** — career-ops-ui'yi bir bulut sunucusunda çalıştırın ve olaylarını Nous Research'ün Hermes ajanı üzerinden Telegram'a bağlayın. Entegrasyon kılavuzunu + bir **`hermes-bridge`** becerisini sunar; LLM sağlayıcı yolu hâlâ **planlandı / henüz bağlanmadı** durumunda. **2376 test.**
+> **🆕 Son sürüm — v1.147.0** — **Yardım kılavuzunda Hermes & Telegram** — Hermes bulut dağıtımı + Telegram köprüsü nasıl yapılır kılavuzu artık 17 dilin tümünde uygulama içi bir yardım bölümü (§30) haline geldi ve belge asistanı buradan yanıt veriyor. Hâlâ yalnızca belge — sağlayıcı **planlandı / henüz bağlanmadı** durumunda kalmaya devam ediyor. **2378 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

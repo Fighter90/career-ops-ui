@@ -2104,3 +2104,19 @@ Seis princípios — "candidate-se melhor a menos vagas", "sinal em vez de volum
 ### Lendo e assinando
 
 O link no rodapé da barra lateral abre a página do manifesto. Você também pode ler o `MANIFESTO.md` no projeto pai, ou rodar `npm run manifesto` lá para abrir a página de assinatura. Assinar é opcional e leva dez segundos — sua assinatura se torna um commit público no registro `SIGNATURES.md` do repositório pai. Nada no app depende de você assinar.
+
+## 30. Hermes & Telegram
+
+**O Hermes, da Nous Research,** é um agente autônomo aberto — tool-calling, skills e mais de 20 canais de mensagens, Telegram entre eles. Esta seção explica como você executaria o career-ops-ui em um servidor na nuvem e conectaria seus eventos ao Telegram através de um agente Hermes. **É um plano, não um recurso já pronto:** o Hermes como provedor de LLM ainda não está conectado (bloqueado até confirmar o contrato de API do Nous Portal), então nada no app chama o Hermes hoje. O guia completo de design + implantação está em `docs/integrations/HERMES.md`, e a skill `hermes-bridge` percorre os passos.
+
+### O que é o Hermes
+
+O Hermes é um runtime de agente — não, até onde podemos confirmar, uma simples API hospedada de chat-completions. Isso molda a integração de duas formas. **Forma A:** se um endpoint do Nous Portal for compatível com OpenAI, o Hermes entra como mais um provedor de LLM na cascata do app. **Forma B:** se ele só for acessível como runtime de agente, o app se comunica com ele por uma rota de relay dedicada ou um agente executado localmente. Qual delas se aplica é confirmado no Nous Portal e no repositório `NousResearch/hermes-agent` *antes* de escrever qualquer código — por isso o provedor deliberadamente ainda não foi construído.
+
+### Executar em um servidor na nuvem
+
+O career-ops-ui escuta em `127.0.0.1` por padrão. Para alcançar um agente Hermes que vive em um servidor você sai do loopback — com cuidado. Mantenha o app no loopback e coloque na frente um reverse proxy (nginx ou Caddy) que faça a terminação HTTPS; execute-o sob systemd ou pm2 como usuário não-root; e mantenha intacto o contrato somente-leitura com o projeto pai career-ops na máquina headless. O envelope de segurança precisa sobreviver à mudança: uma Content-Security-Policy sem scripts inline, a proteção SSRF em cada fetch de URL fornecida pelo usuário, a fronteira markdown/XSS e nenhum segredo nos logs. O guia tem a lista completa — nunca exponha `0.0.0.0` diretamente à internet.
+
+### Telegram via Hermes
+
+A ponte faz os eventos do app — um scan concluído, um novo relatório, um follow-up que acabou de ficar urgente — chegarem a um chat do Telegram através do Hermes. O token do bot do Telegram vive na config do próprio Hermes, nunca no career-ops-ui. Envie apenas o mínimo útil: "Scan concluído — 12 novas correspondências" mais um link que você mesmo abre. **Nunca envie** o texto do CV, valores salariais, corpo de relatórios, chaves de API ou URLs internas para o canal — a lista do modelo de ameaças "o que NÃO expor" do guia é a regra. Esta página é acessível a partir de `#/help`, e o assistente de documentação integrado responde perguntas com base nela.

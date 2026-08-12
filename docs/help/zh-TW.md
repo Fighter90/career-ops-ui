@@ -1942,3 +1942,19 @@ career-ops——本應用程式所包覆的父專案——是 [CareerOps 宣言]
 ### 閱讀與簽署
 
 側邊欄底部頁尾中的連結會開啟宣言頁面。你也可以閱讀父專案中的 `MANIFESTO.md`，或在那裡執行 `npm run manifesto` 以開啟簽署頁面。簽署是選擇性的，只需十秒——你的簽名會成為父專案儲存庫 `SIGNATURES.md` 名冊中的一筆公開提交。無論你是否簽署，應用程式中的任何功能都不受影響。
+
+## 30. Hermes & Telegram
+
+**Nous Research 的 Hermes** 是一個開放的自主代理 —— 支援工具呼叫、技能，以及包含 Telegram 在內的 20 多個訊息通道。本章節說明如何在雲端伺服器上執行 career-ops-ui，並透過 Hermes 代理把它的事件橋接到 Telegram。**這是一項計畫，而非已發布的功能:** 作為 LLM 供應方的 Hermes 尚未接上(卡在確認 Nous Portal 的 API 合約上)，因此目前沒有任何應用程式碼呼叫 Hermes。完整的設計 + 部署指南見 `docs/integrations/HERMES.md`，`hermes-bridge` 技能會帶你走完各個步驟。
+
+### Hermes 是什麼
+
+Hermes 是一個代理執行環境 —— 就我們所能確認的而言，並不是一個簡單的託管式 chat-completions API。這從兩個方向決定了整合方式。**形態 A:** 若某個 Nous Portal 端點被證實相容 OpenAI，Hermes 就作為又一個 LLM 供應方加入應用的級聯。**形態 B:** 若它只能作為代理執行環境存取，應用則透過專用的 relay 路由或本機執行的代理與其通訊。究竟適用哪一種，會在寫任何程式碼*之前*從 Nous Portal 與 `NousResearch/hermes-agent` 儲存庫確認 —— 這正是該供應方被刻意尚未建構的原因。
+
+### 在雲端伺服器上執行
+
+career-ops-ui 預設繫結 `127.0.0.1`。要存取位於伺服器上的 Hermes 代理，你要謹慎地離開 loopback。讓應用仍繫結 loopback，在前面放一個負責終結 HTTPS 的 reverse proxy(nginx 或 Caddy)；用 systemd 或 pm2 以非 root 使用者執行；並在無頭伺服器上保持對父專案 career-ops 的唯讀約定不變。安全邊界必須在遷移後依然成立:不含行內指令碼的 Content-Security-Policy、對每個使用者提供 URL 抓取的 SSRF 防護、markdown/XSS 邊界，以及日誌中不含任何金鑰。指南裡有完整清單 —— 切勿把 `0.0.0.0` 直接暴露到公網。
+
+### 經 Hermes 轉發到 Telegram
+
+這座橋把應用事件 —— 一次完成的掃描、一份新報告、一次剛變緊急的追蹤 —— 經 Hermes 送達某個 Telegram 聊天。Telegram 機器人權杖存放在 Hermes 自己的設定裡，絕不在 career-ops-ui 中。只傳送有用的最少內容:「掃描完成 —— 12 筆新符合」外加一個你自己開啟的連結。**切勿向頻道傳送** 履歷文字、薪資數字、報告內文、API 金鑰或內部 URL —— 指南中威脅模型「不該公開什麼」清單就是規則。本頁可從 `#/help` 存取，應用內的文件助理會據此回答問題。

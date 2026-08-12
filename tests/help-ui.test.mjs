@@ -90,8 +90,9 @@ test('every help doc covers the same 28 sections (all 16 gated locales — §28 
   // v1.29.0 — 16 → 17 (added "How to add a new job-portal source" — v1.29.0); 17 → 18 (added §18 "Notifications" — v1.58.35)
   // alongside the 3 new RU adapters: Trudvsem / GetMatch / GeekJob).
   // v1.60.0 — 18 → 19 (added §19 "Localizing the app into your language").
+  // v1.120.0 — 28 → 29 (§29 "The CareerOps Manifesto"); v1.147.0 — 29 → 30 (§30 "Hermes & Telegram").
   const helpDir = resolve(ROOT, 'docs', 'help');
-  const SECTION_COUNT = 29;
+  const SECTION_COUNT = 30;
   const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
   for (const lang of ALL_LOCALES) {
     const fname = `${lang}.md`;

@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新リリース — v1.146.0** — **Hermesエージェント + Telegram** — career-ops-uiをクラウドサーバー上で実行し、Nous ResearchのHermesエージェントを介してイベントをTelegramに橋渡しする。統合ガイドと **`hermes-bridge` スキル**を追加。LLMプロバイダー経路は **計画中 / 未接続** のまま。 **2376 テスト.**
+> **🆕 最新リリース — v1.147.0** — **ヘルプガイドのHermes & Telegram** — Hermesのクラウドデプロイ + Telegramブリッジの手順が、17言語すべてでアプリ内ヘルプセクション(§30)になり、ドキュメントアシスタントもそこから回答するようになった。引き続きドキュメントのみ — プロバイダーは **計画中 / 未接続** のまま。 **2378 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

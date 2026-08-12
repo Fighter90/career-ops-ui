@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.146.0** — **Hermes 에이전트 + Telegram** — 클라우드 서버에서 career-ops-ui를 실행하고 Nous Research의 Hermes 에이전트를 통해 이벤트를 Telegram으로 연결합니다. 통합 가이드와 **`hermes-bridge` 스킬**을 제공합니다; LLM 제공자 경로는 여전히 **계획 중 / 아직 미연동**입니다. **2376 테스트.**
+> **🆕 최신 릴리스 — v1.147.0** — **도움말 가이드의 Hermes & Telegram** — Hermes 클라우드 배포 + Telegram 브리지 사용법이 이제 17개 언어 전체에서 앱 내 도움말 섹션(§30)으로 제공되며, 문서 어시스턴트가 이를 바탕으로 답변합니다. 여전히 문서 전용입니다 — 제공자는 **계획됨 / 아직 미연동** 상태로 유지됩니다. **2378 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

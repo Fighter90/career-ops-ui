@@ -2190,3 +2190,19 @@ Six principles — "apply better to fewer", "signal over volume", "evidence over
 ### Reading and signing it
 
 The link in the sidebar footer opens the manifesto page. You can also read `MANIFESTO.md` in the parent project, or run `npm run manifesto` there to open the signing page. Signing is optional and takes ten seconds — your signature becomes a public commit in the parent repository's `SIGNATURES.md` ledger. Nothing in the app depends on whether you sign.
+
+## 30. Hermes & Telegram
+
+**Nous Research's Hermes** is an open autonomous agent — tool-calling, skills, and 20+ messaging channels, Telegram among them. This section explains how you would run career-ops-ui on a cloud server and bridge its events to Telegram through a Hermes agent. **It is a plan, not a shipped feature:** Hermes as an LLM provider is not yet wired (blocked on confirming the Nous Portal API contract), so nothing in the app calls Hermes today. The full design + deployment guide lives in `docs/integrations/HERMES.md`, and the `hermes-bridge` skill walks the steps.
+
+### What Hermes is
+
+Hermes is an agent runtime — not, as far as we can confirm, a plain hosted chat-completions API. That shapes the integration two ways. **Shape A:** if a Nous Portal endpoint turns out to be OpenAI-compatible, Hermes becomes just another LLM provider in the app's cascade, added like the existing ones. **Shape B:** if it is only reachable as an agent runtime, the app talks to it through a dedicated relay route or a locally-run agent instead. Which one applies is confirmed from Nous Portal and the `NousResearch/hermes-agent` repo *before* any code is written — that is why the provider is deliberately not built yet.
+
+### Running on a cloud server
+
+career-ops-ui binds to `127.0.0.1` by default. To reach a Hermes agent that lives on a server you move off loopback — carefully. Keep the app bound to loopback and put a reverse proxy (nginx or Caddy) in front that terminates HTTPS; run it under systemd or pm2 as a non-root user; and keep the read-only parent-career-ops contract intact on the headless box. The security envelope has to survive the move: a Content-Security-Policy with no inline scripts, the SSRF guard on every user-supplied URL fetch, the markdown/XSS boundary, and no secrets in logs. The guide has the full checklist — never expose `0.0.0.0` to the public internet directly.
+
+### Telegram via Hermes
+
+The bridge lets app events — a finished scan, a new report, a follow-up that just went urgent — reach a Telegram chat through Hermes. The Telegram bot token lives in Hermes's own config, never in career-ops-ui. Send only the minimum that is useful: "Scan finished — 12 new matches" plus a link you open yourself. **Never send** CV text, salary numbers, raw report bodies, API keys, or internal URLs to the channel — the guide's threat-model "what NOT to expose" list is the rule. This page is reachable from `#/help`, and the in-app docs assistant answers questions grounded in it.
