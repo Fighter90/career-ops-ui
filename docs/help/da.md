@@ -352,7 +352,7 @@ forfremmet til denne side).
 > **CLI (v1.38.0).** Én kommando kører kæden: `career-ops-ui setup` (bootstrap → installér → start). Standalone-verber: `career-ops-ui doctor` (env/nøgler/værktøjs-tjek — samme motor som Health-siden; exit 1 ved enhver påkrævet fejl), `career-ops-ui run`, `career-ops-ui init` (udbyder+nøgle-wizard, v1.39.0).
 > **Udbydere (v1.39.0).** API-nøgle-fanen tilføjer en `LLM_PROVIDER`-select (`auto` = Anthropic→Gemini standard · `claude` · `gemini`) og et `OPENAI_API_KEY`-felt (Codex/OpenCode CLI-siden). `career-ops-ui init` er en interaktiv wizard til det samme.
 >
-> **Udbydere (v1.57.0).** Headless live-eval spænder nu over **Anthropic → Gemini → OpenAI → Qwen → OpenRouter** (`auto`-rækkefølgen; `LLM_PROVIDER` fastlåser én). **OpenRouter** — én `OPENROUTER_API_KEY` fronter 300+ modeller; `OPENROUTER_MODEL`-dropdownen indlæser OpenRouters live-katalog (server-side proxy, kurateret offline-fallback). Også rettet: nøgler indsat med en efterstillet linjeskift / omgivende mellemrum trimmes nu før validering, så `/#/config` ikke længere viser "validation failed" for nogen udbyder.
+> **Udbydere (v1.57.0).** Headless live-eval spænder nu over **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes** (`auto`-rækkefølgen; `LLM_PROVIDER` fastlåser én). **OpenRouter** — én `OPENROUTER_API_KEY` fronter 300+ modeller; `OPENROUTER_MODEL`-dropdownen indlæser OpenRouters live-katalog (server-side proxy, kurateret offline-fallback). Også rettet: nøgler indsat med en efterstillet linjeskift / omgivende mellemrum trimmes nu før validering, så `/#/config` ikke længere viser "validation failed" for nogen udbyder.
 
 
 
@@ -388,7 +388,7 @@ Tre faner:
 
 Et gem i en hvilken som helst fane forplanter sig med det samme — ingen server-genstart.
 
-**Opsætning af din LLM-udbyder (trin for trin).** Web-UI'ens ⚡ live-evaluering kører *headless* og bruger én API-nøgle. Den virker via "ELLER" — sæt **en hvilken som helst** af disse, og det virker bare; med flere sat foretrækker `auto` dem i denne rækkefølge: Anthropic → Gemini → OpenAI → Qwen. (career-ops selv er CLI-agnostisk — du kører den også inde i Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot eller Kimi; det er adskilt fra denne headless-nøgle.)
+**Opsætning af din LLM-udbyder (trin for trin).** Web-UI'ens ⚡ live-evaluering kører *headless* og bruger én API-nøgle. Den virker via "ELLER" — sæt **en hvilken som helst** af disse, og det virker bare; med flere sat foretrækker `auto` dem i denne rækkefølge: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. (career-ops selv er CLI-agnostisk — du kører den også inde i Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot eller Kimi; det er adskilt fra denne headless-nøgle.)
 
 1. Åbn `#/config` → fanen **API-nøgler og runtime**.
 2. Vælg din udbyder i **`LLM_PROVIDER`**: `auto` (brug hvilken nøgle der er sat), eller tving en med `claude` / `gemini` / `openai` / `qwen`.

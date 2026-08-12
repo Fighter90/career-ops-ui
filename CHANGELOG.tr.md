@@ -2,6 +2,21 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.152.0] — 2026-08-12
+
+**Hermes sağlayıcısı — kablolama tamamlandı + doküman güncellemesi.** v1.151.0 Hermes entegrasyonunun kod incelemesi iki gerçek boşluk ve dört tamlık maddesi buldu; hepsi burada düzeltildi ve uygulamanın tüm LLM sağlayıcı listesi tüm doküman yüzeylerinde ve 17 dilde tam yediye çıkarıldı.
+
+### Düzeltildi
+- **`#/config` Hermes’i zorlayamıyordu** — `LLM_PROVIDER` açılır listesi yalnızca altı sağlayıcı listeliyordu, bu yüzden `HERMES_API_KEY` ayarlanabiliyor ama Hermes UI’dan zorlanamıyordu. Artık `hermes` 8. seçenek ve yeni bir eşlik testi açılır listenin `LLM_PROVIDERS`’tan tekrar sapmasını engelliyor.
+- **Kısa kendi barındırılan anahtarlar sessizce reddediliyordu** — `isUsableKey`’in 20 karakter tabanı bulut anahtarlarına göreydi; `hasHermesKey` artık gevşetilmiş 8 karakter tabanı kullanıyor (Hermes dokümanının örneği 19 karakter).
+
+### Değiştirildi
+- Sağlayıcı listesi README (× 17), uygulama içi yardım (× 17), `config.llmProviderHint` sözlüğü (× 17) ve `docs/sdd`’de tam yediye normalleştirildi; `hermesChatUrl` yolsuz bir ana bilgisayarı tamamlıyor; manuel yedek metni Hermes’i anıyor.
+
+### Notlar
+- **Güvenlik değişmedi** — yeni rota veya SSRF/CSP değişikliği yok; health/doctor bir `HERMES_API_KEY` satırı kazanıyor.
+- Takım: **2392** test (+2).
+
 ## [1.151.0] — 2026-08-12
 
 **Hermes artık bağlı bir LLM sağlayıcısı (Phase 5)** — Phase 5 kapsam çalışması, Nous Research’ün Hermes’inin **OpenAI uyumlu bir API Server** (`hermes gateway` → `POST /v1/chat/completions`) içerdiğini doğruladı; böylece career-ops-ui canlı değerlendirmeleri artık tıpkı OpenAI/Qwen gibi yerel bir Hermes üzerinden çalıştırıyor. **Uygulama ayarları**’nda `HERMES_API_KEY` ayarlayın; auto sırasına katılır (en son). Yol haritasının son açık maddesini kapatır — **Phase 5, Shape A**.

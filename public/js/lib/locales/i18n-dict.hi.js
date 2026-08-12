@@ -162,7 +162,7 @@ window.__I18N_DICT_HI = {
   'config.viewProfile': "रीड-ओनली सारांश देखें →",
   'config.gotoHealth': "Health पर सत्यापित करें",
   'config.llmProvider': "LLM प्रोवाइडर",
-  'config.llmProviderHint': "auto = जो भी की सेट है उसका उपयोग करें, प्राथमिकता Anthropic → Gemini → OpenAI → Qwen → OpenRouter। claude / gemini / openai / qwen / openrouter = उसी को ज़बरदस्ती चुनें। बिना की वाला ज़बरदस्ती चुना गया प्रोवाइडर → मैन्युअल-प्रॉम्प्ट फ़ॉलबैक।",
+  'config.llmProviderHint': "auto = जो भी की सेट है उसका उपयोग करें, प्राथमिकता Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes। claude / gemini / openai / qwen / openrouter / github / hermes = उसी को ज़बरदस्ती चुनें। बिना की वाला ज़बरदस्ती चुना गया प्रोवाइडर → मैन्युअल-प्रॉम्प्ट फ़ॉलबैक।",
   'config.providerModelNote': "career-ops CLI-निरपेक्ष है — आप इसे किसी भी AI कोडिंग CLI (Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi) के अंदर चलाते हैं, हर एक का अपना लॉगिन। यह वेब UI अलग है: इसका ⚡ लाइव इवैल हेडलेस चलता है और नीचे दी गई आपकी Anthropic या Gemini API की का उपयोग करता है। OpenAI की/मॉडल पैरेंट Codex/OpenAI CLI फ़्लो के लिए सहेजे जाते हैं — इनका उपयोग वेब UI खुद नहीं करता।",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys। v1.55.0: web-ui लाइव इवैल भी चलाता है (auto क्रम में तीसरा, Anthropic व Gemini के बाद); पैरेंट Codex/OpenAI CLI फ़्लो द्वारा भी पढ़ा जाता है।",

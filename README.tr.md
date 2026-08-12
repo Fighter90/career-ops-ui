@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Son sürüm — v1.151.0** — **Hermes artık bağlı bir LLM sağlayıcısı (Phase 5)** — Nous Research’ün Hermes’i OpenAI uyumlu bir API Server sunar; **Uygulama ayarları**’nda `HERMES_API_KEY` ayarlayın, career-ops-ui yerel `hermes gateway`’iniz üzerinden canlı değerlendirmeler çalıştırsın (auto sırasında sonuncu). Yol haritasının son açık maddesini kapatır. **2390 test.**
+> **🆕 Son sürüm — v1.152.0** — **Hermes sağlayıcısı — kablolama tamamlandı** — v1.151.0 Hermes entegrasyonunun kod incelemesi iki gerçek boşluğu düzeltti (`#/config` açılır listesi Hermes’i zorlayamıyordu; kısa kendi barındırılan anahtarlar reddediliyordu) ve LLM sağlayıcı listesini tüm doküman yüzeylerinde ve 17 dilde tam yediye çıkardı. **2392 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 
@@ -609,7 +609,7 @@ Herhangi bir şirket girdisini açık bir `api:` URL'siyle de genişletebilirsin
 
 ## Sınırlamalar
 
-Tamamen LLM güdümlü modların (`oferta`, `deep`, `contacto`, `apply`, `batch`, `patterns`, `followup`) gerçekten çalışması için bir LLM gereklidir. Web arayüzü, bir sağlayıcıyı `auto` sırasından **Anthropic → Gemini → OpenAI → Qwen → OpenRouter** (veya `LLM_PROVIDER` neyi sabitlerse) çözer:
+Tamamen LLM güdümlü modların (`oferta`, `deep`, `contacto`, `apply`, `batch`, `patterns`, `followup`) gerçekten çalışması için bir LLM gereklidir. Web arayüzü, bir sağlayıcıyı `auto` sırasından **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes** (veya `LLM_PROVIDER` neyi sabitlerse) çözer:
 
 1. **Anthropic (tercih edilen)** — üst projenin `.env` dosyasında `ANTHROPIC_API_KEY` ayarlayın. `cv.md` / `config/profile.yml` / `modes/_shared.md` / mod şablonu otomatik olarak satır içine yerleştirilmiş şekilde `runAnthropic` üzerinden yönlendirir (REVIEW-A1). v1.8.0+'da `claude-sonnet-4-6` ile bir derinlemesine araştırma çağrısı için 26 KB temellendirilmiş markdown döndürerek canlı doğrulandı.
 2. **`gemini-eval.mjs`** yedek olarak — yalnızca `GEMINI_API_KEY` ayarlıyken kutudan çıktığı gibi çalışır.

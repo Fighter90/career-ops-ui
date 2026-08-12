@@ -9,6 +9,21 @@
 ---
 
 
+## [1.152.0] — 2026-08-12
+
+**Hermes 제공자 — 배선 완료 + 문서 최신화.** v1.151.0 Hermes 통합의 코드 리뷰에서 실제 결함 2건과 완성도 항목 4건을 발견해 모두 여기서 수정했으며, 앱 전체의 LLM 제공자 목록을 모든 문서 표면과 17개 언어에서 완전한 7개로 맞췄습니다.
+
+### 수정됨
+- **`#/config`에서 Hermes를 강제할 수 없었음** — `LLM_PROVIDER` 드롭다운이 6개 제공자만 나열해 `HERMES_API_KEY`는 설정해도 UI에서 Hermes를 강제할 수 없었습니다. 이제 `hermes`가 8번째 옵션이며, 새 패리티 테스트가 드롭다운이 `LLM_PROVIDERS`에서 다시 어긋나지 않도록 막습니다.
+- **짧은 자체 호스팅 키가 조용히 거부됨** — `isUsableKey`의 20자 하한은 클라우드 키 기준이었고, `hasHermesKey`는 이제 완화된 8자 하한을 씁니다(Hermes 문서 예시가 19자).
+
+### 변경됨
+- 제공자 목록을 README(× 17), 인앱 도움말(× 17), `config.llmProviderHint` 사전(× 17), `docs/sdd`에서 완전한 7개로 정규화했고, `hermesChatUrl`이 경로 없는 호스트를 보완하며, 수동 폴백 문구가 Hermes를 명시합니다.
+
+### 참고
+- **보안 변화 없음** — 새 라우트·SSRF/CSP 변경 없음; health/doctor에 `HERMES_API_KEY` 행이 추가됩니다.
+- 스위트: **2392**개 테스트(+2).
+
 ## [1.151.0] — 2026-08-12
 
 **Hermes가 이제 연결된 LLM 제공자입니다(Phase 5)** — Phase 5 스코핑 스파이크에서 Nous Research의 Hermes가 **OpenAI 호환 API Server**(`hermes gateway` → `POST /v1/chat/completions`)를 제공함을 확인했고, 이제 career-ops-ui는 OpenAI/Qwen과 똑같이 로컬 Hermes를 통해 라이브 평가를 실행합니다. **앱 설정**에서 `HERMES_API_KEY`를 지정하면 auto 순서에 합류합니다(마지막). 로드맵의 마지막 미해결 항목 — **Phase 5, Shape A** — 을 마무리합니다.

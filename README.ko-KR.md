@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.151.0** — **Hermes가 이제 연결된 LLM 제공자입니다(Phase 5)** — Nous Research의 Hermes가 OpenAI 호환 API Server를 노출하므로, **앱 설정**에서 `HERMES_API_KEY`를 지정하면 career-ops-ui가 로컬 `hermes gateway`를 통해 라이브 평가를 실행합니다(auto 순서에서 마지막). 로드맵의 마지막 미해결 항목을 마무리합니다. **2390 테스트.**
+> **🆕 최신 릴리스 — v1.152.0** — **Hermes 제공자 — 배선 완료** — v1.151.0 Hermes 통합의 코드 리뷰로 실제 결함 2건(`#/config` 드롭다운이 Hermes를 강제하지 못함, 짧은 자체 호스팅 키가 거부됨)을 고치고, LLM 제공자 목록을 모든 문서 표면과 17개 언어에서 완전한 7개로 맞췄습니다. **2392 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

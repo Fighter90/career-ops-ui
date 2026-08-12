@@ -162,7 +162,7 @@ window.__I18N_DICT_DE = {
   'config.viewProfile': "Schreibgeschützte Zusammenfassung anzeigen →",
   'config.gotoHealth': "In Health überprüfen",
   'config.llmProvider': "LLM-Anbieter",
-  'config.llmProviderHint': "auto = verwendet den gesetzten Schlüssel, bevorzugt Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = erzwingt diesen. Ein erzwungener Anbieter ohne Schlüssel → Fallback auf manuellen Prompt.",
+  'config.llmProviderHint': "auto = verwendet den gesetzten Schlüssel, bevorzugt Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. claude / gemini / openai / qwen / openrouter / github / hermes = erzwingt diesen. Ein erzwungener Anbieter ohne Schlüssel → Fallback auf manuellen Prompt.",
   'config.providerModelNote': "career-ops ist CLI-unabhängig — Sie führen es in einer beliebigen KI-Coding-CLI aus (Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi), jede mit eigenem Login. Diese Web-UI ist separat: Ihre ⚡ Live-Bewertung läuft headless und nutzt Ihren Anthropic- oder Gemini-API-Schlüssel unten. Der OpenAI-Schlüssel/das Modell werden für den übergeordneten Codex/OpenAI-CLI-Ablauf gespeichert — von der Web-UI selbst nicht genutzt.",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API-Schlüssel. v1.55.0: führt jetzt auch die web-ui-Live-Bewertung aus (an 3. Stelle der Auto-Reihenfolge, nach Anthropic & Gemini); wird weiterhin auch vom übergeordneten Codex/OpenAI-CLI-Ablauf gelesen.",

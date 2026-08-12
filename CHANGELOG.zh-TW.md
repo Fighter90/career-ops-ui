@@ -8,6 +8,21 @@
 
 ---
 
+## [1.152.0] — 2026-08-12
+
+**Hermes 供應方 — 接線完成 + 文件同步。** 對 v1.151.0 Hermes 整合的程式碼審查發現兩處真實缺口與四項完整性事項,皆於此修正;並將全應用的 LLM 供應方清單在所有文件面與 17 種語言中補齊為完整的七個。
+
+### 修復
+- **`#/config` 無法強制 Hermes** — `LLM_PROVIDER` 下拉僅列出六個供應方,因此可設定 `HERMES_API_KEY` 卻無法在 UI 中強制 Hermes。現在 `hermes` 是第 8 個選項,新增的一致性測試可防止下拉再次與 `LLM_PROVIDERS` 偏離。
+- **較短的自架金鑰被靜默拒絕** — `isUsableKey` 的 20 字元下限是按雲端金鑰校準的;`hasHermesKey` 現改用放寬的 8 字元下限(Hermes 文件範例為 19 字元)。
+
+### 變更
+- 供應方清單在 README(× 17)、應用內說明(× 17)、`config.llmProviderHint` 字典(× 17)與 `docs/sdd` 中統一為完整七個;`hermesChatUrl` 會補全無路徑的主機;手動回退文案點名 Hermes。
+
+### 說明
+- **安全性不變** — 無新路由、無 SSRF/CSP 變動;health/doctor 新增一列 `HERMES_API_KEY`。
+- 套件:**2392** 項測試(+2)。
+
 ## [1.151.0] — 2026-08-12
 
 **Hermes 現已成為已接上的 LLM 供應方（Phase 5）** — Phase 5 的調查確認 Nous Research 的 Hermes 提供一個 **相容 OpenAI 的 API Server**（`hermes gateway` → `POST /v1/chat/completions`),因此 career-ops-ui 現在像 OpenAI/Qwen 一樣透過本機 Hermes 執行即時評估。在 **應用設定** 中設定 `HERMES_API_KEY`,它便加入 auto 順序(最後一個)。收尾路線圖最後一個未決項 —— **Phase 5, Shape A**。

@@ -9,6 +9,21 @@
 ---
 
 
+## [1.152.0] — 2026-08-12
+
+**Hermes プロバイダー — 配線を完了 + ドキュメント最新化。** v1.151.0 の Hermes 統合のコードレビューで実際の欠陥 2 件と完成度項目 4 件を発見し、いずれも本リリースで修正。アプリ全体の LLM プロバイダー一覧を、全ドキュメント面と 17 言語で完全な 7 つに揃えました。
+
+### 修正
+- **`#/config` で Hermes を強制できなかった** — `LLM_PROVIDER` ドロップダウンが 6 プロバイダーしか並べず、`HERMES_API_KEY` を設定しても UI から Hermes を強制できませんでした。`hermes` を 8 番目の選択肢に追加し、新しいパリティテストがドロップダウンの `LLM_PROVIDERS` からのずれを防ぎます。
+- **短いセルフホスト鍵が黙って拒否されていた** — `isUsableKey` の 20 文字下限はクラウド鍵向けで、`hasHermesKey` は緩和した 8 文字下限を使います(Hermes ドキュメントの例は 19 文字)。
+
+### 変更
+- プロバイダー一覧を README(× 17)、アプリ内ヘルプ(× 17)、`config.llmProviderHint` 辞書(× 17)、`docs/sdd` で完全な 7 つに正規化。`hermesChatUrl` はパスなしホストを補完し、手動フォールバック文言が Hermes を明記します。
+
+### 備考
+- **セキュリティは不変** — 新規ルートや SSRF/CSP の変更なし。health/doctor に `HERMES_API_KEY` 行を追加。
+- スイート:**2392** 件のテスト(+2)。
+
 ## [1.151.0] — 2026-08-12
 
 **Hermes が接続済みの LLM プロバイダーに(Phase 5)** — Phase 5 のスコーピングで、Nous Research の Hermes が **OpenAI 互換の API Server**(`hermes gateway` → `POST /v1/chat/completions`)を備えることを確認。career-ops-ui は OpenAI/Qwen と同様にローカルの Hermes 経由でライブ評価を実行します。**アプリ設定** で `HERMES_API_KEY` を設定すると auto 順に加わります(最後)。ロードマップ最後の未解決項目 — **Phase 5, Shape A** — を完了。

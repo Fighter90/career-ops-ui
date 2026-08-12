@@ -2,6 +2,21 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.152.0] — 2026-08-12
+
+**Hermes-Provider — Verdrahtung abgeschlossen + Doku-Aktualisierung.** Ein Code-Review der Hermes-Integration aus v1.151.0 fand zwei echte Lücken und vier Vollständigkeitspunkte; alle hier behoben, und die LLM-Provider-Liste der gesamten App ist auf die vollen sieben über alle Doku-Flächen und die 17 Sprachen gebracht.
+
+### Behoben
+- **`#/config` konnte Hermes nicht erzwingen** — das `LLM_PROVIDER`-Dropdown listete nur sechs Provider, man konnte `HERMES_API_KEY` setzen, Hermes aber nicht aus der UI erzwingen. `hermes` ist jetzt die 8. Option, und ein neuer Paritätstest verhindert erneutes Abweichen des Dropdowns von `LLM_PROVIDERS`.
+- **Kurze selbstgehostete Schlüssel wurden still verworfen** — die 20-Zeichen-Grenze von `isUsableKey` war auf Cloud-Schlüssel ausgelegt; `hasHermesKey` nutzt nun eine gelockerte Grenze von 8 (das Beispiel der Hermes-Doku hat 19 Zeichen).
+
+### Geändert
+- Die Provider-Liste wurde in README (× 17), In-App-Hilfe (× 17), dem `config.llmProviderHint`-Dict (× 17) und `docs/sdd` auf die vollen sieben normalisiert; `hermesChatUrl` ergänzt einen Host ohne Pfad; der manuelle Fallback-Text nennt Hermes.
+
+### Hinweise
+- **Sicherheit unverändert** — keine neue Route, keine SSRF/CSP-Änderung; health/doctor erhält eine `HERMES_API_KEY`-Zeile.
+- Suite: **2392** Tests (+2).
+
 ## [1.151.0] — 2026-08-12
 
 **Hermes ist jetzt ein angebundener LLM-Provider (Phase 5)** — der Phase-5-Spike bestätigte, dass Nous Researchs Hermes einen **OpenAI-kompatiblen API Server** mitbringt (`hermes gateway` → `POST /v1/chat/completions`), sodass career-ops-ui Live-Auswertungen nun über ein lokales Hermes genau wie OpenAI/Qwen ausführt. Setzen Sie `HERMES_API_KEY` in den **App-Einstellungen**, und es reiht sich in die auto-Reihenfolge ein (zuletzt). Schließt den letzten offenen Roadmap-Punkt — **Phase 5, Shape A**.

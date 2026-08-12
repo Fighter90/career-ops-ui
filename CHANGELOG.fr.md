@@ -11,6 +11,21 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.152.0] — 2026-08-12
+
+**Fournisseur Hermes — câblage terminé + actualisation des docs.** Une revue de code de l’intégration Hermes de v1.151.0 a relevé deux vrais manques et quatre points de complétude ; tous corrigés ici, et la liste des fournisseurs LLM de toute l’app passe aux sept complets sur toutes les surfaces de docs et les 17 langues.
+
+### Corrigé
+- **`#/config` ne pouvait pas forcer Hermes** — le menu `LLM_PROVIDER` ne listait que six fournisseurs, on pouvait donc définir `HERMES_API_KEY` sans pouvoir forcer Hermes depuis l’UI. `hermes` est désormais la 8ᵉ option, et un nouveau test de parité empêche le menu de diverger à nouveau de `LLM_PROVIDERS`.
+- **Les clés locales courtes étaient rejetées en silence** — le plancher de 20 caractères d’`isUsableKey` visait les clés cloud ; `hasHermesKey` utilise désormais un plancher assoupli de 8 (l’exemple des docs Hermes fait 19 caractères).
+
+### Modifié
+- La liste des fournisseurs a été normalisée aux sept complets dans le README (× 17), l’aide intégrée (× 17), le dict `config.llmProviderHint` (× 17) et `docs/sdd` ; `hermesChatUrl` complète un hôte sans chemin ; le texte de repli manuel nomme Hermes.
+
+### Notes
+- **Sécurité inchangée** — aucune nouvelle route ni changement SSRF/CSP ; health/doctor gagne une ligne `HERMES_API_KEY`.
+- Suite : **2392** tests (+2).
+
 ## [1.151.0] — 2026-08-12
 
 **Hermes est désormais un fournisseur LLM branché (Phase 5)** — le spike de cadrage de la Phase 5 a confirmé que le Hermes de Nous Research embarque un **API Server compatible OpenAI** (`hermes gateway` → `POST /v1/chat/completions`), donc career-ops-ui exécute maintenant des évaluations en direct via un Hermes local exactement comme OpenAI/Qwen. Définissez `HERMES_API_KEY` dans **Réglages de l’app** et il rejoint l’ordre auto (en dernier). Clôt le dernier point ouvert de la roadmap — **Phase 5, Shape A**.

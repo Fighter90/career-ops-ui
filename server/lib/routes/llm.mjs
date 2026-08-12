@@ -308,7 +308,7 @@ export function registerLlmRoutes(app) {
       mode: 'manual',
       prompt: manualPrompt,
       message: (hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey() || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey() || hasHermesKey())
-        ? 'Set { run: true } to execute via Anthropic/Gemini/OpenAI/Qwen/OpenRouter/GitHub Models, or copy the prompt into Claude Code.'
+        ? 'Set { run: true } to execute via Anthropic/Gemini/OpenAI/Qwen/OpenRouter/GitHub Models/Hermes, or copy the prompt into Claude Code.'
         : 'No API key set. Paste this into Claude Code for full deep research with WebFetch.',
     });
   });
@@ -423,7 +423,7 @@ export function registerLlmRoutes(app) {
       slug,
       prompt,
       message: (hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey() || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey() || hasHermesKey())
-        ? 'Set { run: true } to execute via Anthropic/Gemini/OpenAI/Qwen/OpenRouter/GitHub Models, or copy this prompt into Claude Code.'
+        ? 'Set { run: true } to execute via Anthropic/Gemini/OpenAI/Qwen/OpenRouter/GitHub Models/Hermes, or copy this prompt into Claude Code.'
         : 'No API key set. Copy this prompt into Claude Code (it has WebFetch/WebSearch).',
     });
   });

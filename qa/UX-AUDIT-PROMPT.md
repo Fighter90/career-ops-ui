@@ -1,10 +1,11 @@
 # SENIOR UX-DESIGNER AUDIT — career-ops-ui
 
-> **Baseline: v1.137.0** (32 route modules · 30 views · **17 locales** ·
-> help bundles 29 H2 / 105 H3 · **79 scanner sources = 74 EN + 5 RU**).
-> The active design roadmap is **`docs/UX-ROADMAP.md`** (Phases 2–4:
-> `?`-help hints + page descriptions, richer stats/charts, portals→settings
-> + filter redesign) — treat those as planned work, not findings.
+> **Baseline: v1.152.0** (32 route modules · 30 views · **17 locales** ·
+> help bundles 30 H2 / 108 H3 · **79 scanner sources = 74 EN + 5 RU** ·
+> **7 headless LLM providers**: Anthropic → Gemini → OpenAI → Qwen →
+> OpenRouter → GitHub Models → Hermes, auto-ordered).
+> The UX roadmap **`docs/UX-ROADMAP.md`** (Phases 1–5) is fully shipped;
+> treat any residual Phase items as done, not findings.
 > Dark-mode contrast is guarded from v1.137.0 (theme-aware alias tokens;
 > 0 WCAG-AA text failures across all views) — judge the dark theme against
 > that baseline, not as broken.
@@ -65,7 +66,7 @@ concept it serves:
 | Screen | Doc concept | Judge |
 |---|---|---|
 | `#/dashboard` | entry / overview | Does a new user know what to do next? |
-| `#/config` (API keys / Profile / Modes) | Quick Start Steps 3–5 | Is the §Step-5 schema legible *as fields*? Do field descriptions match the docs' wording? Is "what do I put here" answered in-context? Is the provider model honest — does the user understand the CLI-agnostic parent (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi) vs the headless web-ui eval that runs on **any one** of the Anthropic/Gemini/OpenAI/Qwen API keys ("OR", auto-ordered)? Can a user with only ONE provider key tell it will work, pick it, save, and succeed without reading code? |
+| `#/config` (API keys / Profile / Modes) | Quick Start Steps 3–5 | Is the §Step-5 schema legible *as fields*? Do field descriptions match the docs' wording? Is "what do I put here" answered in-context? Is the provider model honest — does the user understand the CLI-agnostic parent (Claude Code · Codex · Gemini · OpenCode · Qwen · Copilot · Kimi) vs the headless web-ui eval that runs on **any one** of the seven provider keys — Anthropic/Gemini/OpenAI/Qwen/OpenRouter/GitHub Models/Hermes ("OR", auto-ordered)? Can a user with only ONE provider key tell it will work, pick it, save, and succeed without reading code? |
 | `#/auto`, Cmd+K | the auto-pipeline promise ("paste a URL → full report in 1–2 min") | Is the 1-click promise visible, trustworthy, and honest about progress/cost? |
 | `#/scan` | Scan Job Portals guide | Is a multi-minute crawl legible (progress, stop, results)? |
 | `#/pipeline` | pipeline reference | Triage clarity at 100s of rows. |

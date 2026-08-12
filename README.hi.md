@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.151.0** — **Hermes अब एक जुड़ा हुआ LLM प्रोवाइडर है (Phase 5)** — Nous Research का Hermes एक OpenAI-संगत API Server प्रकट करता है, तो **App settings** में `HERMES_API_KEY` सेट करें और career-ops-ui आपके स्थानीय `hermes gateway` के माध्यम से लाइव evals चलाता है (auto क्रम में अंतिम)। रोडमैप का अंतिम खुला बिंदु पूरा करता है। **2390 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.152.0** — **Hermes प्रदाता — वायरिंग पूर्ण** — v1.151.0 Hermes एकीकरण की कोड समीक्षा ने दो वास्तविक कमियाँ ठीक कीं (`#/config` ड्रॉपडाउन Hermes को बाध्य नहीं कर सका; छोटी सेल्फ-होस्टेड कुंजियाँ अस्वीकृत होती थीं) और LLM प्रदाता सूची को सभी दस्तावेज़-सतहों और 17 भाषाओं में पूरे सात तक लाया। **2392 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 
@@ -612,7 +612,7 @@ russian_portals:
 
 ## सीमाएँ
 
-पूर्णतः LLM-संचालित मोड (`oferta`, `deep`, `contacto`, `apply`, `batch`, `patterns`, `followup`) को वास्तव में चलने के लिए एक LLM की आवश्यकता होती है। वेब UI `auto` क्रम **Anthropic → Gemini → OpenAI → Qwen → OpenRouter** (या जो भी `LLM_PROVIDER` पिन करता है) से एक प्रोवाइडर रिज़ॉल्व करता है:
+पूर्णतः LLM-संचालित मोड (`oferta`, `deep`, `contacto`, `apply`, `batch`, `patterns`, `followup`) को वास्तव में चलने के लिए एक LLM की आवश्यकता होती है। वेब UI `auto` क्रम **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes** (या जो भी `LLM_PROVIDER` पिन करता है) से एक प्रोवाइडर रिज़ॉल्व करता है:
 
 1. **Anthropic (प्राथमिकता)** — पैरेंट प्रोजेक्ट के `.env` में `ANTHROPIC_API_KEY` सेट करें। `runAnthropic` से रूट होता है जिसमें `cv.md` / `config/profile.yml` / `modes/_shared.md` / मोड टेम्पलेट स्वचालित रूप से इनलाइन होते हैं (REVIEW-A1)। v1.8.0+ में लाइव सत्यापित, जहाँ `claude-sonnet-4-6` एक डीप-रिसर्च कॉल के लिए 26 KB का ग्राउंडेड markdown लौटाता है।
 2. **`gemini-eval.mjs`** फ़ॉलबैक के रूप में — जब केवल `GEMINI_API_KEY` सेट हो तो यह बॉक्स से बाहर काम करता है।

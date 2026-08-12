@@ -362,7 +362,7 @@ terfi ettirildi).
 > **CLI (v1.38.0).** Tek komut zinciri çalıştırır: `career-ops-ui setup` (bootstrap → install → start). Bağımsız fiiller: `career-ops-ui doctor` (env/anahtar/araç kontrolü — Health sayfasıyla aynı motor; gerekli herhangi bir başarısızlıkta exit 1), `career-ops-ui run`, `career-ops-ui init` (sağlayıcı+anahtar sihirbazı, v1.39.0).
 > **Sağlayıcılar (v1.39.0).** API-anahtarları sekmesi bir `LLM_PROVIDER` seçimi (`auto` = Anthropic→Gemini varsayılan · `claude` · `gemini`) ve bir `OPENAI_API_KEY` alanı (Codex/OpenCode CLI tarafı) ekler. `career-ops-ui init` aynısı için etkileşimli bir sihirbazdır.
 >
-> **Sağlayıcılar (v1.57.0).** Headless canlı değerlendirme artık **Anthropic → Gemini → OpenAI → Qwen → OpenRouter** kapsar (`auto` sırası; `LLM_PROVIDER` birini sabitler). **OpenRouter** — tek bir `OPENROUTER_API_KEY` 300+ modelin önüne geçer; `OPENROUTER_MODEL` açılır menüsü OpenRouter'ın canlı kataloğunu yükler (sunucu tarafı proxy, seçilmiş çevrimdışı yedek). Ayrıca düzeltildi: sonda satır sonu / çevresinde boşluk ile yapıştırılan anahtarlar artık doğrulamadan önce kırpılır, böylece `/#/config` hiçbir sağlayıcı için artık "validation failed" göstermez.
+> **Sağlayıcılar (v1.57.0).** Headless canlı değerlendirme artık **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes** kapsar (`auto` sırası; `LLM_PROVIDER` birini sabitler). **OpenRouter** — tek bir `OPENROUTER_API_KEY` 300+ modelin önüne geçer; `OPENROUTER_MODEL` açılır menüsü OpenRouter'ın canlı kataloğunu yükler (sunucu tarafı proxy, seçilmiş çevrimdışı yedek). Ayrıca düzeltildi: sonda satır sonu / çevresinde boşluk ile yapıştırılan anahtarlar artık doğrulamadan önce kırpılır, böylece `/#/config` hiçbir sağlayıcı için artık "validation failed" göstermez.
 
 
 
@@ -399,7 +399,7 @@ terfi ettirildi).
 
 Herhangi bir sekmedeki bir kaydetme anında yayılır — sunucu yeniden başlatması gerekmez.
 
-**LLM sağlayıcınızı ayarlama (adım adım).** Web arayüzünün ⚡ canlı değerlendirmesi *headless* çalışır ve tek bir API anahtarı kullanır. "OR" mantığıyla çalışır — bunlardan **herhangi birini** ayarlayın ve öylece çalışır; birkaçı ayarlıysa, `auto` şu sırayla tercih eder: Anthropic → Gemini → OpenAI → Qwen. (career-ops'un kendisi CLI'den bağımsızdır — onu Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot veya Kimi içinde de çalıştırırsınız; bu, bu headless anahtardan ayrıdır.)
+**LLM sağlayıcınızı ayarlama (adım adım).** Web arayüzünün ⚡ canlı değerlendirmesi *headless* çalışır ve tek bir API anahtarı kullanır. "OR" mantığıyla çalışır — bunlardan **herhangi birini** ayarlayın ve öylece çalışır; birkaçı ayarlıysa, `auto` şu sırayla tercih eder: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. (career-ops'un kendisi CLI'den bağımsızdır — onu Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot veya Kimi içinde de çalıştırırsınız; bu, bu headless anahtardan ayrıdır.)
 
 1. `#/config` → **API keys & runtime** sekmesini açın.
 2. Sağlayıcınızı **`LLM_PROVIDER`** içinde seçin: `auto` (hangi anahtar ayarlıysa onu kullan) ya da `claude` / `gemini` / `openai` / `qwen` ile birini zorlayın.

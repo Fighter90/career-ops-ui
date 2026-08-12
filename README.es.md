@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Última versión — v1.151.0** — **Hermes ya es un proveedor de LLM conectado (Phase 5)** — Hermes de Nous Research expone un API Server compatible con OpenAI, así que define `HERMES_API_KEY` en **Ajustes de la app** y career-ops-ui ejecuta evals en vivo a través de tu `hermes gateway` local (último en el orden auto). Cierra el último punto abierto del roadmap. **2390 tests.**
+> **🆕 Última versión — v1.152.0** — **Proveedor Hermes — cableado completado** — Una revisión de código de la integración de Hermes de v1.151.0 corrigió dos fallos reales (el desplegable de `#/config` no podía forzar Hermes; se rechazaban claves locales cortas) y llevó el roster de proveedores LLM a los siete completos en todas las superficies de docs y los 17 idiomas. **2392 tests.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

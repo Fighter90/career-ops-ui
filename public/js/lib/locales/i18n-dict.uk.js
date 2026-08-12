@@ -161,7 +161,7 @@ window.__I18N_DICT_UK = {
   'config.viewProfile': "Переглянути зведення лише для читання →",
   'config.gotoHealth': "Перевірити в Health",
   'config.llmProvider': "Провайдер LLM",
-  'config.llmProviderHint': "auto = використовувати будь-який встановлений ключ, перевага Anthropic → Gemini → OpenAI → Qwen → OpenRouter. claude / gemini / openai / qwen / openrouter = примусово вибрати. Примусовий провайдер без ключа → ручний режим промптів.",
+  'config.llmProviderHint': "auto = використовувати будь-який встановлений ключ, перевага Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. claude / gemini / openai / qwen / openrouter / github / hermes = примусово вибрати. Примусовий провайдер без ключа → ручний режим промптів.",
   'config.providerModelNote': "career-ops агностичний до CLI — ви запускаєте його в будь-якому AI coding CLI (Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi), кожен зі своїм входом. Цей web UI окремий: його ⚡ live eval запускається headless і використовує ваш ключ Anthropic або Gemini нижче. Ключ/модель OpenAI зберігаються для батьківського Codex/OpenAI CLI — web UI їх не використовує.",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys. v1.55.0: також запускає live eval web-ui (3-й у порядку auto, після Anthropic & Gemini); також читається батьківським Codex/OpenAI CLI.",

@@ -8,11 +8,13 @@
 >
 > Output **one** file: `qa/reports/<YYYY-MM-DD>-DESIGN-EXPORT.md`.
 >
-> Current baseline **v1.137.0** (32 route modules · 79 scan sources =
-> 74 EN + 5 RU · 17 locales). The active design roadmap is
-> **`docs/UX-ROADMAP.md`** — treat its Phase 2–4 items as planned work,
-> not findings. Dark-mode contrast is guarded from v1.137.0 (theme-aware
-> alias tokens — see Part 1 §1).
+> Current baseline **v1.152.0** (32 route modules · 79 scan sources =
+> 74 EN + 5 RU · 17 locales · **7 headless LLM providers** auto-ordered
+> Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models →
+> Hermes). The UX roadmap **`docs/UX-ROADMAP.md`** (Phases 1–5) is fully
+> shipped — treat any residual Phase items as done, not findings.
+> Dark-mode contrast is guarded from v1.137.0 (theme-aware alias tokens —
+> see Part 1 §1).
 >
 > Sibling prompts: `REGRESSION-FINAL.md` proves *nothing regressed*,
 > `FUNCTIONALITY-CHECK.md` proves *it works*, `UX-AUDIT-PROMPT.md`

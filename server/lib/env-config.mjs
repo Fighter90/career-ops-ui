@@ -188,10 +188,14 @@ export function effectiveEnv(key, envFilePath) {
  * has{Anthropic,Gemini,OpenAI,Qwen}Key() and the /api/health key rows
  * so every "is it configured?" answer agrees.
  */
-export function isUsableKey(raw) {
+export function isUsableKey(raw, minLen = 20) {
   if (typeof raw !== 'string') return false;
   const v = raw.trim();
-  if (v.length < 20) return false;                       // no real key is this short
+  // v1.151.1 — `minLen` defaults to 20 (cloud keys are comfortably longer), but
+  // a self-hosted Hermes gateway key (`API_SERVER_KEY`) is user-chosen and may be
+  // short (the Hermes docs' own example `change-me-local-dev` is 19 chars), so
+  // `hasHermesKey` passes a lower floor. The placeholder rejections below still apply.
+  if (v.length < minLen) return false;                   // too short to be a real key
   if (/^your_.*_here$/i.test(v)) return false;           // shipped-template form (matches maskSecret)
   if (/_here$/i.test(v)) return false;
   if (/^(your[_-]|changeme|placeholder|example|sk-xxx|todo$|none$|null$|test[_-]?key|enter[_-]|add[_-]your)/i.test(v)) return false;

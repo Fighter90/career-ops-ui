@@ -95,10 +95,10 @@ Router.register('config', async () => {
     {
       // v1.39.0 (WS8.2) — explicit provider preference.
       key: 'LLM_PROVIDER', secret: false, kind: 'select',
-      options: ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github'], defaultValue: 'auto',
+      options: ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'], defaultValue: 'auto',
       labelKey: 'config.llmProvider', label: 'LLM_PROVIDER',
       hintKey: 'config.llmProviderHint',
-      hintFallback: 'auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models. claude / gemini / openai / qwen / openrouter / github = force that one. A forced provider with no key → manual-prompt fallback.',
+      hintFallback: 'auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. claude / gemini / openai / qwen / openrouter / github / hermes = force that one. A forced provider with no key → manual-prompt fallback.',
     },
     {
       key: 'ANTHROPIC_API_KEY', secret: true,

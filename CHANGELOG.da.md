@@ -8,6 +8,21 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.152.0] — 2026-08-12
+
+**Hermes-udbyder — færdig kabling + docs-ajourføring.** En kodegennemgang af Hermes-integrationen fra v1.151.0 fandt to reelle huller og fire fuldstændighedspunkter; alle rettet her, og hele appens LLM-udbyderliste er bragt op til de fulde syv på alle docs-flader og de 17 sprog.
+
+### Rettet
+- **`#/config` kunne ikke tvinge Hermes** — `LLM_PROVIDER`-dropdownen viste kun seks udbydere, så man kunne sætte `HERMES_API_KEY` men ikke tvinge Hermes fra UI. Nu er `hermes` den 8. mulighed, og en ny paritetstest forhindrer dropdownen i igen at afvige fra `LLM_PROVIDERS`.
+- **Korte self-hosted nøgler blev afvist i stilhed** — 20-tegns-gulvet i `isUsableKey` var kalibreret til cloud-nøgler; `hasHermesKey` bruger nu et lempet gulv på 8 (Hermes-docs’ eget eksempel er 19 tegn).
+
+### Ændret
+- Udbyderlisten blev normaliseret til de fulde syv i README (× 17), in-app-hjælp (× 17), `config.llmProviderHint`-dict (× 17) og `docs/sdd`; `hermesChatUrl` udfylder en vært uden sti; den manuelle fallback-tekst nævner Hermes.
+
+### Noter
+- **Sikkerhed uændret** — ingen ny rute eller SSRF/CSP-ændring; health/doctor får en `HERMES_API_KEY`-række.
+- Suite: **2392** tests (+2).
+
 ## [1.151.0] — 2026-08-12
 
 **Hermes er nu en tilsluttet LLM-udbyder (Phase 5)** — Phase 5-spiket bekræftede, at Nous Research’ Hermes har en **OpenAI-kompatibel API Server** (`hermes gateway` → `POST /v1/chat/completions`), så career-ops-ui kører nu live-evalueringer via en lokal Hermes præcis som OpenAI/Qwen. Sæt `HERMES_API_KEY` i **App-indstillinger**, og den træder ind i auto-rækkefølgen (sidst). Lukker roadmappens sidste åbne punkt — **Phase 5, Shape A**.

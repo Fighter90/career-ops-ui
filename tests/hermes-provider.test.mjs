@@ -20,6 +20,10 @@ test('hermesChatUrl resolves a /v1 base or a full URL', () => {
   assert.equal(hermesChatUrl('file:///etc/passwd'), 'http://127.0.0.1:8642/v1/chat/completions');
   assert.equal(hermesChatUrl('gopher://x/y'), 'http://127.0.0.1:8642/v1/chat/completions');
   assert.equal(hermesChatUrl('https://remote-hermes.example/v1'), 'https://remote-hermes.example/v1/chat/completions'); // https allowed
+  // v1.151.1 — a bare host with no path (a mis-paste that drops the `/v1`) is
+  // completed to the full `/v1/chat/completions`, not a `/v1`-less 404 URL.
+  assert.equal(hermesChatUrl('http://127.0.0.1:8642'), 'http://127.0.0.1:8642/v1/chat/completions');
+  assert.equal(hermesChatUrl('http://127.0.0.1:8642/'), 'http://127.0.0.1:8642/v1/chat/completions');
 });
 
 test('runHermes POSTs OpenAI-compatible JSON with a Bearer key and default model', async () => {

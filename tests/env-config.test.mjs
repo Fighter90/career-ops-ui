@@ -10,7 +10,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import {
   KNOWN_KEYS, SECRET_KEYS, LLM_PROVIDERS, providerOrder,
-  parseEnv, maskSecret, validateConfig, normalizeConfigValue, updateEnvFile, effectiveEnv,
+  parseEnv, maskSecret, validateConfig, normalizeConfigValue, updateEnvFile, effectiveEnv, isUsableKey,
 } from '../server/lib/env-config.mjs';
 
 // ────────────────────── parseEnv ──────────────────────
@@ -158,6 +158,19 @@ test('providerOrder: auto appends openrouter/github/hermes at the tail (never ov
   // v1.151.0 — Hermes is the last tail entry + a valid explicit pin.
   assert.deepEqual(providerOrder({ LLM_PROVIDER: 'hermes' }), ['hermes']);
   assert.ok(SECRET_KEYS.has('HERMES_API_KEY') && !SECRET_KEYS.has('HERMES_BASE_URL'));
+});
+
+test('isUsableKey: minLen relaxes the floor for short self-hosted keys (v1.151.1)', () => {
+  // Cloud default is 20 chars — the Hermes docs' own example is 19, so the
+  // default floor would silently reject it (finding #2), but the relaxed
+  // floor `hasHermesKey` passes accepts it.
+  assert.equal(isUsableKey('change-me-local-dev'), false);       // 19 chars < default 20
+  assert.equal(isUsableKey('change-me-local-dev', 8), true);     // accepted at the Hermes floor
+  assert.equal(isUsableKey('localdevkey', 8), true);             // an 11-char local key
+  assert.equal(isUsableKey('short', 8), false);                  // 5 chars < 8 → still junk
+  // Placeholder rejections still apply regardless of the floor.
+  assert.equal(isUsableKey('your_key_here', 8), false);
+  assert.equal(isUsableKey('xxxxxxxxxx', 8), false);             // single repeated char
 });
 
 test('validateConfig: a real-shape OpenRouter key validates', () => {
