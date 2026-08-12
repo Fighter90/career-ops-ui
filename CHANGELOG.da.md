@@ -8,6 +8,21 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.146.0] — 2026-08-12
+
+**Hermes-agent + Telegram — integrationsguiden + en skill (Phase 5b, del 1)** — du kan køre career-ops-ui på en cloud-server og bygge bro mellem dens events (et afsluttet scan, en ny rapport, en akut follow-up) og Telegram via en Hermes-agent fra Nous Research. Denne udgivelse leverer design- + deployment-dokumentationen og en hermes-bridge-skill; Hermes' LLM-provider-vej er stadig planlagt / endnu ikke tilkoblet (blokeret af Phase 5's API-kontrakt-spike). Dokumentation før kode, med vilje.
+
+### Tilføjet
+- **`docs/integrations/HERMES.md`** — det dybdegående dokument: de to integrationsformer (OpenAI-kompatibelt endpoint vs. agent-runtime), cloud-server-deployment (reverse proxy + HTTPS + systemd, den read-only parent-kontrakt på en headless boks), Telegram-via-Hermes, og en trusselsmodel-liste over "hvad man IKKE skal eksponere" (ingen CV / løn / rapportindhold / nøgler til kanalen).
+- **`## Hermes agent + Telegram`**-teaser i README — en kort henvisning + link, i den engelske README og gengivet i de fuldt oversatte README'er for hvert sprog.
+- En **`hermes-bridge`-skill** (`.claude/skills/hermes-bridge/`), der operationaliserer guiden — kontrol af forudsætninger og afgrænsning (Node ≥ 18, nøgler til stede, endpointets tilgængelighed via den SSRF-sikre vej), skriver aldrig secrets til disk/logs, og afviser at opfinde et Hermes-endpoint eller hævde, at provideren er tilkoblet.
+- En **Integrations**-sektion i `docs/architecture/OVERVIEW.md` linker til guiden.
+
+### Noter
+- **Intet kalder Hermes endnu.** En canary-test (`tests/hermes-docs.test.mjs`) sikrer markørerne for ærlighed "planlagt / endnu ikke tilkoblet", og at `llm-dispatch.mjs` ikke har nogen Hermes/Nous-gren — så en senere tilkobling af provideren skal opdatere dokumentationen + roadmappet i samme ændring.
+- **Udskudt til v1.147.0** (Phase 5b, del 2): hjælpesektionen "Hermes & Telegram" H2 × 17 sprog i appen, samt cvstart.org's marketingside.
+- Suite: **2376** tests (+4: `tests/hermes-docs.test.mjs`).
+
 ## [1.145.0] — 2026-08-12
 
 **Indsigtsfulde statistikker (fortsat): et genopbyggeligt diagram** — fanen "Målrolle-tendens" på `#/stats` har nu en **Byg et diagram**-widget: vælg en metrik × dimension, og det gentegnes live. En brugerønsket UX-anmodning (uden parent-sync).

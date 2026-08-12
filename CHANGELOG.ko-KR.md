@@ -9,6 +9,21 @@
 ---
 
 
+## [1.146.0] — 2026-08-12
+
+**Hermes 에이전트 + Telegram — 통합 가이드 + 스킬(Phase 5b, 1부)** — 클라우드 서버에서 career-ops-ui를 실행하고, 그 이벤트(완료된 스캔, 새 리포트, 긴급한 후속 조치)를 Nous Research의 Hermes 에이전트를 통해 Telegram으로 연결할 수 있습니다. 이번 릴리스는 설계 + 배포 문서와 hermes-bridge 스킬을 제공합니다. Hermes LLM 제공자 경로는 여전히 계획됨/아직 연결되지 않음 상태입니다(Phase 5 API 계약 스파이크에 막혀 있음). 의도적으로 코드보다 문서가 앞서 있습니다.
+
+### 추가
+- **`docs/integrations/HERMES.md`** — 심층 가이드: 두 가지 통합 형태(OpenAI 호환 엔드포인트 vs. 에이전트 런타임), 클라우드 서버 배포(reverse proxy + HTTPS + systemd, 헤드리스 서버에서의 읽기 전용 parent 계약), Hermes를 통한 Telegram 연동, 그리고 위협 모델 "노출하지 말아야 할 것" 목록(CV / 연봉 / 리포트 본문 / 키를 채널에 노출하지 않음).
+- README의 **`## Hermes agent + Telegram`** 예고 — 영어 README와 완전히 번역된 각 언어 README에 짧은 안내와 링크가 반영됨.
+- 가이드를 실행 가능하게 만드는 **`hermes-bridge` 스킬**(`.claude/skills/hermes-bridge/`) — 전제 조건 + 범위 게이트 검사(Node ≥ 18, 키 존재 여부, SSRF에 안전한 경로를 통한 엔드포인트 접근성 확인), 비밀 정보를 디스크/로그에 절대 기록하지 않으며, Hermes 엔드포인트를 임의로 만들어내거나 제공자가 연결되었다고 주장하지 않음.
+- `docs/architecture/OVERVIEW.md`의 **통합** 섹션이 가이드를 링크함.
+
+### 참고
+- **아직 Hermes를 호출하는 코드는 없습니다.** 캐너리 테스트(`tests/hermes-docs.test.mjs`)가 "계획됨/아직 연결되지 않음" 정직성 표시와 `llm-dispatch.mjs`에 Hermes/Nous 분기가 없음을 확인합니다 — 따라서 나중에 제공자를 연결할 때는 같은 변경에서 문서 + 로드맵도 함께 업데이트해야 합니다.
+- **v1.147.0으로 연기됨**(Phase 5b, 2부): 앱 내 도움말의 "Hermes & Telegram" H2 × 17개 언어, 그리고 cvstart.org 마케팅 페이지.
+- 스위트: **2376**개 테스트(+4: `tests/hermes-docs.test.mjs`).
+
 ## [1.145.0] — 2026-08-12
 
 **통찰력 있는 통계(계속): 재구성 가능한 차트** — `#/stats`의 "목표 직무 추세" 탭에 **차트 만들기** 위젯이 생겼습니다: 지표 × 차원을 고르면 실시간으로 다시 그립니다. 사용자 UX 요청(부모 동기화 없음).

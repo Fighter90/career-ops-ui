@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Ultima release — v1.145.0** — **statistiche perspicaci (segue): un grafico ricostruibile** — la scheda tendenza ruoli di `#/stats` guadagna un widget **Crea un grafico**: scegli metrica (offerte / mediano / medio) × dimensione (per paese / per ruolo), ridisegno in tempo reale. **2372 test.**
+> **🆕 Ultima release — v1.146.0** — **agente Hermes + Telegram** — esegui career-ops-ui su un server cloud e collega i suoi eventi a Telegram tramite un agente Hermes di Nous Research. Include la guida all'integrazione + una skill **`hermes-bridge`**; il percorso del provider LLM resta **pianificato / non ancora collegato**. **2376 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 
@@ -621,6 +621,17 @@ L'esistente flusso di compilazione moduli con Playwright `/career-ops apply` den
 Per la valutazione della prontezza per la produzione (gate di deployment, registro dei rischi, lavoro rimandato), vedi [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md). In sintesi: pronto per single-tenant su loopback; l'esposizione LAN attende il gate di autenticazione P-12 di v2.0.
 
 ---
+
+## Agente Hermes + Telegram
+
+**[Hermes](https://hermes-agent.nousresearch.com/docs) di Nous Research** è un agente autonomo aperto (tool-calling, skill, oltre 20 canali di messaggistica). Puoi eseguire career-ops-ui su un **server cloud** e collegare i suoi eventi — una scansione completata, un nuovo report, un follow-up urgente — a **Telegram tramite un agente Hermes**, così la pipeline ti raggiunge dove ti trovi già.
+
+> **Pianificato / non ancora collegato.** Hermes come *provider LLM* è bloccato da uno spike sul contratto API di Phase 5 — al momento nessun codice server chiama Hermes. Ciò che è disponibile oggi è il **design dell'integrazione + la guida al deployment** e una **skill `hermes-bridge`** che guida attraverso i passaggi di cloud-deploy e Telegram-bridge (i secret non toccano mai il disco o i log; gli invarianti SSRF / CSP / no-secrets sopravvivono al trasferimento da `127.0.0.1`).
+
+📖 **Guida completa:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — le due forme di integrazione, il deployment su server cloud (reverse proxy + HTTPS + systemd), Telegram-via-Hermes e l'elenco del threat model su «cosa NON esporre».
+
+---
+
 
 ## Localizzazione
 

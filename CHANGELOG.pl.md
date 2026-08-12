@@ -9,6 +9,21 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.146.0] — 2026-08-12
+
+**Agent Hermes + Telegram — przewodnik integracyjny + skill (Phase 5b, część 1)** — możesz uruchomić career-ops-ui na serwerze w chmurze i przekazywać jego zdarzenia (zakończony skan, nowy raport, pilny follow-up) do Telegrama za pomocą agenta Hermes od Nous Research. To wydanie dostarcza dokumentację projektową + wdrożeniową oraz skill hermes-bridge; ścieżka dostawcy LLM Hermes wciąż jest zaplanowana / jeszcze niepodłączona (zablokowana przez spike dotyczący kontraktu API w Phase 5). Dokumentacja z wyprzedzeniem względem kodu — celowo.
+
+### Dodano
+- **`docs/integrations/HERMES.md`** — dogłębna analiza: dwie formy integracji (endpoint kompatybilny z OpenAI vs. runtime agenta), wdrożenie na serwerze w chmurze (reverse proxy + HTTPS + systemd, kontrakt tylko do odczytu z parentem na maszynie headless), Telegram przez Hermes oraz lista modelu zagrożeń „czego NIE ujawniać" (żadnego CV / wynagrodzenia / treści raportów / kluczy na kanał).
+- Zapowiedź **`## Hermes agent + Telegram`** w README — krótkie wskazanie + link, w angielskim README i odzwierciedlone w przetłumaczonych README każdego języka.
+- **Skill `hermes-bridge`** (`.claude/skills/hermes-bridge/`), która operacjonalizuje przewodnik — sprawdzenia wymagań wstępnych i zakresu (Node ≥ 18, obecność kluczy, dostępność endpointu przez ścieżkę bezpieczną wobec SSRF), nigdy nie zapisuje sekretów na dysku/w logach i odmawia wymyślania endpointu Hermes lub twierdzenia, że dostawca jest podłączony.
+- Sekcja **Integrations** w `docs/architecture/OVERVIEW.md` linkuje do przewodnika.
+
+### Uwagi
+- **Nic jeszcze nie wywołuje Hermesa.** Test kanarkowy (`tests/hermes-docs.test.mjs`) sprawdza znaczniki uczciwości „zaplanowane / jeszcze niepodłączone" oraz to, że `llm-dispatch.mjs` nie ma żadnej gałęzi Hermes/Nous — więc podłączenie dostawcy później musi zaktualizować dokumentację + roadmapę w tej samej zmianie.
+- **Odłożone do v1.147.0** (Phase 5b, część 2): sekcja H2 „Hermes & Telegram" w pomocy w aplikacji × 17 języków oraz powierzchnia marketingowa cvstart.org.
+- Zestaw: **2376** testów (+4: `tests/hermes-docs.test.mjs`).
+
 ## [1.145.0] — 2026-08-12
 
 **Wnikliwe statystyki (cd.): przebudowywalny wykres** — karta „Trend ról docelowych" na `#/stats` ma teraz widżet **Zbuduj wykres**: wybierz metrykę × wymiar, a on odrysuje się na żywo. Prośba UX od użytkownika (bez parent-sync).

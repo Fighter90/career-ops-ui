@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新リリース — v1.145.0** — **役立つ統計（続き）：再構築できるグラフ** — `#/stats` の目標職種トレンドタブに **グラフを作成** ウィジェット：指標（求人数/中央値/平均給与）× ディメンション（国別/職種別）を選ぶとライブで描き直し。 **2372 テスト.**
+> **🆕 最新リリース — v1.146.0** — **Hermesエージェント + Telegram** — career-ops-uiをクラウドサーバー上で実行し、Nous ResearchのHermesエージェントを介してイベントをTelegramに橋渡しする。統合ガイドと **`hermes-bridge` スキル**を追加。LLMプロバイダー経路は **計画中 / 未接続** のまま。 **2376 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 
@@ -599,6 +599,17 @@ Claude Code 内の既存の `/career-ops apply` Playwright フォーム入力フ
 production-readiness アセスメント(デプロイメントゲート、リスク台帳、繰延項目)については [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md) を参照してください。TL;DR: シングルテナントのループバック用途では準備完了。LAN への公開は v2.0 P-12 の認証ゲートを待っています。
 
 ---
+
+## Hermesエージェント + Telegram (Hermes agent + Telegram)
+
+**Nous Researchの[Hermes](https://hermes-agent.nousresearch.com/docs)**は、オープンな自律型エージェントです(ツール呼び出し、スキル、20以上のメッセージングチャネルに対応)。career-ops-uiを**クラウドサーバー**上で動かし、そのイベント——完了したスキャン、新しいレポート、緊急のフォローアップ——を**Hermesエージェント経由でTelegram**に橋渡しすることで、パイプラインの通知をあなたがすでにいる場所に届けられます。
+
+> **計画中 / 未実装。** *LLMプロバイダー*としてのHermesは、Phase 5のAPI契約スパイクによってブロックされており、現時点でHermesを呼び出すサーバーコードはまだありません。現在提供されているのは**統合デザイン + デプロイガイド**、そしてクラウドデプロイとTelegramブリッジの手順を案内する**`hermes-bridge`スキル**です(シークレットはディスクやログに一切触れません。`127.0.0.1`から移行しても、SSRF / CSP / no-secretsの不変条件は維持されます)。
+
+📖 **完全ガイド:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — 2つの統合形態、クラウドサーバーへのデプロイ(リバースプロキシ + HTTPS + systemd)、Telegram-via-Hermes、および脅威モデルの「公開してはならないもの」一覧を解説しています。
+
+---
+
 
 ## ローカライズ (Localization)
 

@@ -117,6 +117,10 @@
 3. **Writes to the parent are explicit user actions only.** No automatic "convenience" writes. See `DATA-FLOWS.md` for the full list.
 4. **Sanitizers are not duplicated.** One `isValidJobUrl`, one `stripDangerousMarkdown`, one `sanitizeJobDescription`. Adding a parallel implementation = bug.
 
+## Integrations
+
+- **Hermes agent + Telegram** — running career-ops-ui on a cloud server and bridging its events to Telegram through a Nous Research Hermes agent. The integration design, the cloud-deploy guide, and the threat model live in [`../integrations/HERMES.md`](../integrations/HERMES.md); the `hermes-bridge` skill (`.claude/skills/hermes-bridge/`) operationalizes it. **Status: planned / not-yet-wired** — the Hermes *LLM-provider* path is blocked on the Phase 5 API-contract spike ([`../UX-ROADMAP.md`](../UX-ROADMAP.md)); no server code calls Hermes today.
+
 ## Where to look first when…
 
 | Symptom | Look at |

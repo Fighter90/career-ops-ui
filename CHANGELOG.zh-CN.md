@@ -9,6 +9,21 @@
 ---
 
 
+## [1.146.0] — 2026-08-12
+
+**Hermes 代理 + Telegram——集成指南 + 一个 skill（Phase 5b，第 1 部分）** — 你可以在云服务器上运行 career-ops-ui,并通过 Nous Research 的 Hermes 代理把它的事件(一次完成的扫描、一份新报告、一次紧急跟进)桥接到 Telegram。本次发布提供了设计 + 部署文档和一个 hermes-bridge skill;Hermes LLM 提供方路径仍处于计划中/尚未接入状态(卡在 Phase 5 的 API 契约调研上)。这是刻意让文档先行于代码。
+
+### 新增
+- **`docs/integrations/HERMES.md`** — 深度指南:两种集成形态(兼容 OpenAI 的 endpoint 与代理运行时)、云服务器部署(reverse proxy + HTTPS + systemd,在无头服务器上对 parent 的只读约定)、经 Hermes 转发到 Telegram,以及一份威胁模型「不能暴露什么」清单(不向频道暴露简历/薪资/报告正文/密钥)。
+- README 中的 **`## Hermes agent + Telegram`** 预告 — 英文 README 中的简短指引 + 链接,并同步到已完整翻译的各语言 README。
+- 一个让指南可落地执行的 **`hermes-bridge` skill**(`.claude/skills/hermes-bridge/`)——前置条件与范围门检查(Node ≥ 18、密钥是否存在、通过 SSRF 安全路径确认 endpoint 可达),从不把密钥写入磁盘/日志,并拒绝臆造 Hermes 的 endpoint 或声称该提供方已接入。
+- `docs/architecture/OVERVIEW.md` 中新增 **Integrations** 小节链接到该指南。
+
+### 说明
+- **目前还没有任何代码调用 Hermes。** 一个哨兵测试(`tests/hermes-docs.test.mjs`)断言「计划中/尚未接入」的诚实标记仍然存在,并确认 `llm-dispatch.mjs` 中没有 Hermes/Nous 分支——因此以后接入该提供方时,必须在同一次改动里同步更新文档 + roadmap。
+- **推迟到 v1.147.0**（Phase 5b，第 2 部分）:应用内帮助中的「Hermes & Telegram」H2 小节 × 17 种语言,以及 cvstart.org 的营销页面。
+- 套件:**2376** 项测试(+4:`tests/hermes-docs.test.mjs`)。
+
 ## [1.145.0] — 2026-08-12
 
 **有洞察力的统计（续）：可重建图表** — `#/stats` 的「目标职位趋势」标签页新增 **构建图表** 小部件：选择指标 × 维度即可实时重绘。用户提出的 UX 需求（无 parent-sync）。

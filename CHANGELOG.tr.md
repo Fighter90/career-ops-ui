@@ -2,6 +2,21 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.146.0] — 2026-08-12
+
+**Hermes ajanı + Telegram — entegrasyon kılavuzu + bir skill (Phase 5b, bölüm 1)** — career-ops-ui'yi bir bulut sunucusunda çalıştırabilir ve olaylarını (tamamlanmış bir tarama, yeni bir rapor, acil bir takip) Nous Research'ün Hermes ajanı üzerinden Telegram'a bağlayabilirsiniz. Bu sürüm tasarım + dağıtım belgelerini ve bir hermes-bridge skill'ini sunar; Hermes LLM sağlayıcı yolu hâlâ planlanan / henüz bağlanmamış durumda (Phase 5 API sözleşmesi spike'ına tıkanmış). Belgeler kasıtlı olarak koddan önde.
+
+### Eklendi
+- **`docs/integrations/HERMES.md`** — derinlemesine inceleme: iki entegrasyon biçimi (OpenAI uyumlu endpoint vs. ajan çalışma zamanı), bulut sunucusuna dağıtım (reverse proxy + HTTPS + systemd, başsız bir makinede salt okunur parent sözleşmesi), Hermes üzerinden Telegram ve bir tehdit modeli «NEYİN açığa çıkarılmaması gerektiği» listesi (kanal'a CV / maaş / rapor içeriği / anahtar sızdırılmaz).
+- README'deki **`## Hermes agent + Telegram`** tanıtımı — İngilizce README'de kısa bir yönlendirme + bağlantı, her dilin tam çevrilmiş README'sinde de yansıtılır.
+- Kılavuzu işlevsel kılan bir **`hermes-bridge` skill'i** (`.claude/skills/hermes-bridge/`) — ön koşul + kapsam denetimleri (Node ≥ 18, anahtarların varlığı, SSRF'ye karşı güvenli yol üzerinden endpoint erişilebilirliği), sırları asla diske/loglara yazmaz ve bir Hermes endpoint'i icat etmeyi veya sağlayıcının bağlı olduğunu iddia etmeyi reddeder.
+- `docs/architecture/OVERVIEW.md`'deki bir **Integrations** bölümü kılavuza bağlanır.
+
+### Notlar
+- **Şu an hiçbir şey Hermes'i çağırmıyor.** Bir kanarya testi (`tests/hermes-docs.test.mjs`) «planlanan / henüz bağlanmamış» dürüstlük işaretlerini ve `llm-dispatch.mjs`'de hiçbir Hermes/Nous dalı olmadığını doğrular — yani sağlayıcının ileride bağlanması, belgeleri + yol haritasını aynı değişiklikte güncellemek zorundadır.
+- **v1.147.0'a ertelendi** (Phase 5b, bölüm 2): uygulama içi yardımdaki «Hermes & Telegram» H2 bölümü × 17 dil ve cvstart.org pazarlama yüzeyi.
+- Takım: **2376** test (+4: `tests/hermes-docs.test.mjs`).
+
 ## [1.145.0] — 2026-08-12
 
 **Anlayışlı istatistikler (devam): yeniden oluşturulabilir grafik** — `#/stats`'teki "Hedef rol eğilimi" sekmesinde artık bir **Grafik oluştur** aracı var: bir metrik × boyut seçin, canlı olarak yeniden çizilsin. Kullanıcı bildirimli bir UX isteği (parent-sync yok).

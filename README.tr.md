@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Son sürüm — v1.145.0** — **anlayışlı istatistikler (devam): yeniden oluşturulabilir grafik** — `#/stats` hedef rol eğilimi sekmesine **Grafik oluştur** aracı: metrik (ilanlar / medyan / ortalama) × boyut (ülkeye göre / role göre) seçin, canlı yeniden çizim. **2372 test.**
+> **🆕 Son sürüm — v1.146.0** — **Hermes ajanı + Telegram** — career-ops-ui'yi bir bulut sunucusunda çalıştırın ve olaylarını Nous Research'ün Hermes ajanı üzerinden Telegram'a bağlayın. Entegrasyon kılavuzunu + bir **`hermes-bridge`** becerisini sunar; LLM sağlayıcı yolu hâlâ **planlandı / henüz bağlanmadı** durumunda. **2376 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 
@@ -621,6 +621,17 @@ Claude Code içindeki mevcut `/career-ops apply` Playwright form doldurma akış
 Üretime hazırlık değerlendirmesi için (dağıtım kapıları, risk kaydı, ertelenmiş işler), [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md) dosyasına bakın. Özet: tek kiracılı loopback için hazır; LAN'a açılma, v2.0 P-12 kimlik doğrulama kapısını bekler.
 
 ---
+
+## Hermes ajanı + Telegram
+
+**Nous Research'in [Hermes](https://hermes-agent.nousresearch.com/docs)'i**, açık kaynaklı, otonom bir ajandır (araç çağırma, skill'ler, 20'den fazla mesajlaşma kanalı). career-ops-ui'yi bir **bulut sunucusunda** çalıştırabilir ve olaylarını — tamamlanmış bir tarama, yeni bir rapor, acil bir takip — **bir Hermes ajanı üzerinden Telegram'a** bağlayarak, pipeline'ın sizi zaten olduğunuz yerde bulmasını sağlayabilirsiniz.
+
+> **Planlandı / henüz bağlanmadı.** Hermes'in bir *LLM sağlayıcısı* olarak kullanımı, Phase 5 API sözleşme spike'ına bağlı olarak engellenmiş durumda — şu an hiçbir sunucu kodu Hermes'i çağırmıyor. Bugün sunulan şey, **entegrasyon tasarımı + dağıtım kılavuzu** ile bulut dağıtımı ve Telegram-bridge adımlarında yol gösteren bir **`hermes-bridge` skill'i**dir (secret'lar diske veya loglara asla dokunmaz; SSRF / CSP / no-secrets değişmezleri `127.0.0.1`'den taşındıktan sonra da geçerliliğini korur).
+
+📖 **Tam kılavuz:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — iki entegrasyon şekli, bulut sunucusu dağıtımı (reverse proxy + HTTPS + systemd), Telegram-via-Hermes ve tehdit modelinin “NELER açığa ÇIKARILMAMALI” listesi.
+
+---
+
 
 ## Yerelleştirme
 

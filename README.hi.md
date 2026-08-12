@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.145.0** — **अंतर्दृष्टिपूर्ण आँकड़े (जारी): पुनर्निर्माण-योग्य चार्ट** — `#/stats` लक्षित-भूमिका रुझान टैब को **चार्ट बनाएँ** विजेट मिला: मीट्रिक (रिक्तियाँ / माध्यिका / औसत) × आयाम (देश/भूमिका अनुसार) चुनें, लाइव पुनः-रेंडर। **2372 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.146.0** — **Hermes एजेंट + Telegram** — career-ops-ui को क्लाउड सर्वर पर चलाएँ और Nous Research के Hermes एजेंट के ज़रिए इसके इवेंट्स को Telegram से जोड़ें। इंटीग्रेशन गाइड + **`hermes-bridge`** स्किल शामिल है; LLM-प्रोवाइडर पथ अभी भी **योजनाबद्ध / अभी तक न जोड़ा गया** है। **2376 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 
@@ -624,6 +624,17 @@ Claude Code के अंदर मौजूदा `/career-ops apply` Playwrigh
 प्रोडक्शन-रेडीनेस आकलन (डिप्लॉयमेंट गेट्स, रिस्क रजिस्टर, टाला गया कार्य) के लिए [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md) देखें। संक्षेप में: सिंगल-टेनेंट लूपबैक के लिए तैयार; LAN एक्सपोज़र v2.0 P-12 ऑथ गेट का इंतज़ार कर रहा है।
 
 ---
+
+## Hermes एजेंट + Telegram
+
+**Nous Research के [Hermes](https://hermes-agent.nousresearch.com/docs)** एक ओपन, स्वायत्त एजेंट है (टूल-कॉलिंग, स्किल्स, 20+ मैसेजिंग चैनल)। आप career-ops-ui को किसी **क्लाउड सर्वर** पर चला सकते हैं और उसके इवेंट्स — एक पूरा हुआ स्कैन, एक नई रिपोर्ट, एक अर्जेंट फ़ॉलो-अप — को **Hermes एजेंट के ज़रिए Telegram** से जोड़ सकते हैं, ताकि पाइपलाइन आप तक वहीं पहुँचे जहाँ आप पहले से मौजूद हैं।
+
+> **योजनाबद्ध / अभी तक नहीं जोड़ा गया।** एक *LLM प्रोवाइडर* के रूप में Hermes, Phase 5 के API-कॉन्ट्रैक्ट स्पाइक पर अटका है — अभी तक कोई सर्वर कोड Hermes को कॉल नहीं करता। आज जो उपलब्ध है वह है **इंटीग्रेशन डिज़ाइन + डिप्लॉयमेंट गाइड** और एक **`hermes-bridge` स्किल** जो क्लाउड-डिप्लॉय और Telegram-ब्रिज के चरणों से गुज़रती है (सीक्रेट्स कभी डिस्क या लॉग्स को नहीं छूते; SSRF / CSP / नो-सीक्रेट्स इनवेरिएंट्स `127.0.0.1` से हटने के बाद भी बरकरार रहते हैं)।
+
+📖 **पूरी गाइड:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — दो इंटीग्रेशन प्रकार, क्लाउड-सर्वर डिप्लॉयमेंट (रिवर्स प्रॉक्सी + HTTPS + systemd), Telegram-via-Hermes, और थ्रेट-मॉडल की “क्या EXPOSE न करें” सूची।
+
+---
+
 
 ## स्थानीयकरण
 
