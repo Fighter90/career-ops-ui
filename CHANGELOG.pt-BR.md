@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.141.0] — 2026-08-12
+
+**Estatísticas úteis (cont.): enriquecimento de empresas financiadas** — `#/funded` agora é mais visual: logos de empresa, um gráfico por valor de financiamento e cartões com rodada / valor / pontuação de descoberta / ação sugerida. Ajuste de UX reportado pelo usuário (sem parent-sync).
+
+### Alterado
+- **`#/funded` — tabela plana → grade de cartões.** Cada empresa recém-financiada é agora um cartão com **logo** (derivado do nome via `CompanyLogo`, com avatar de letra como fallback), chips de **rodada** + **valor**, a **pontuação de descoberta** e a **ação sugerida** do projeto pai, além do link e da data da notícia.
+- **Visualização do valor de financiamento** — um gráfico de barras das maiores empresas por valor divulgado; valores em texto livre ("$120M"/"€1.5B") são convertidos em magnitude por um novo `parseAmount`. 3 novas chaves i18n × **17 idiomas**.
+
+### Notas
+- Continua **somente leitura** sobre `GET /api/company-funded`; descrição e faixa salarial não estão na fonte de financiamento. Suíte: **2363** testes (+2).
+
 ## [1.140.0] — 2026-08-12
 
 **Estatísticas úteis: números salariais mais ricos** — o detalhamento salarial de "Meu pipeline" em `#/stats` agora mostra a **média** (não só a mediana), uma alternância **por ano ⇄ por mês** e uma tabela **mín · média · mediana · máx** por país. Primeira parte da Fase 3. Ajuste de UX reportado pelo usuário (sem parent-sync).

@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Última versão — v1.140.0** — **estatísticas úteis: números salariais mais ricos** — o detalhamento salarial de "Meu pipeline" em `#/stats` agora mostra a **média** (não só a mediana), uma alternância **por ano ⇄ por mês** e uma tabela **mín · média · mediana · máx** por país. 8 chaves ×17 idiomas. **2361 testes.**
+> **🆕 Última versão — v1.141.0** — **estatísticas úteis (cont.): enriquecimento de empresas financiadas** — `#/funded` agora é uma grade de cartões visual: **logos** de empresa, um **gráfico por valor** de financiamento e cartões com **rodada / valor / pontuação / ação sugerida**. 3 chaves ×17 idiomas. **2363 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

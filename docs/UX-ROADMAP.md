@@ -32,7 +32,7 @@ Make the numbers correct, detailed, and visual.
 - [x] **Richer salary stats** (v1.140.0) — **average** (mean) added alongside min/median/max; **per-year ⇄ per-month** toggle; a **min·avg·median·max table per country** on `#/stats` "My pipeline".
 - [ ] **Interactive, rebuildable charts** on `#/stats` (choose metric/dimension/period, re-render) — next.
 - [ ] **Correctness** — fix the "Unknown" archetype bucketing so recommendations aren't nonsensical ("double down on Unknown"). Note: "Unknown" is **LLM output** from `#/orientation`, not a code literal — this is a prompt-quality fix (constrain the archetype vocabulary + handle an out-of-vocab archetype gracefully client-side).
-- [ ] **Funded companies** enrichment — company description, logo, salary range, open vacancies, visualization.
+- [x] **Funded companies** enrichment (v1.141.0) — company **logo** + **funding-amount visualization** + **discovery-score / suggested-action** cards. (Description + salary range aren't in the public funding feed, so they're out of scope for this source; revisit if an enrichment source is added.)
 
 ## Phase 5 — Nous Research / Hermes provider
 
@@ -58,7 +58,7 @@ A **documentation-and-skill deliverable** that can ship independently of (and ah
 
 *The docs + skill can land before the provider code — but keep them honest: mark anything blocked on the Phase 5 API-contract spike as "planned / not-yet-wired" rather than documenting an endpoint that doesn't exist yet.*
 
-## Phase 4 — v1.141.0 "Settings & filters"
+## Phase 4 — v1.142.0 "Settings & filters"
 
 Consolidate configuration; make filters beautiful.
 

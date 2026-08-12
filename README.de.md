@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Neueste Version — v1.140.0** — **aufschlussreiche Statistiken: reichere Gehaltszahlen** — die Gehaltsaufschlüsselung unter „Meine Pipeline" auf `#/stats` zeigt jetzt den **Durchschnitt** (nicht nur den Median), einen **pro Jahr ⇄ pro Monat**-Umschalter und eine **Min · Ø · Median · Max**-Tabelle je Land. 8 Schlüssel ×17 Sprachen. **2361 Tests.**
+> **🆕 Neueste Version — v1.141.0** — **aufschlussreiche Statistiken (Forts.): Anreicherung finanzierter Unternehmen** — `#/funded` ist jetzt ein visuelles Kartenraster: Firmen**logos**, ein **Diagramm nach Betrag** und Karten mit **Runde / Betrag / Score / vorgeschlagener Aktion**. 3 Schlüssel ×17 Sprachen. **2363 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

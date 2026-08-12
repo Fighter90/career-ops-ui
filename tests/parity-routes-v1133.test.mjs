@@ -174,8 +174,11 @@ test('#/funded view reads the parent `companies` field, not `candidates` (v1.133
   assert.match(src, /res\.companies/, 'funded.js must read res.companies (the parent output key)');
   assert.doesNotMatch(src, /res\.candidates/, 'funded.js must NOT read res.candidates — the parent never emits it');
   assert.match(src, /funding\.sources/, 'funded.js must read the evidence link/source/date via funding.sources[0]');
-  // UI.el(tag, attrs, children) takes children as ONE param (a node or an
-  // array) — passing table cells as varargs renders only the first column.
-  // The v1.133.1 second fix: rows MUST pass their cells as an array.
-  assert.match(src, /c\('tr',\s*\{\},\s*\[/, "funded.js table rows must pass cells as an array — c('tr', {}, [ … ]) — not varargs");
+  // v1.140.x — the flat table became an enriched card grid (logo + round/amount/
+  // score chips + suggested action + a funding-amount chart). UI.el children are
+  // still passed as arrays (the varargs pitfall the v1.133.1 fix guarded against),
+  // so lock the card render + the enrichment wiring instead of the old <tr> shape.
+  assert.match(src, /className: 'card'/, 'funded.js must render companies as cards');
+  assert.match(src, /CompanyLogo\.(badge|avatar)/, 'funded cards must show a company logo/avatar');
+  assert.match(src, /discovery_score/, 'funded cards must surface the discovery score');
 });

@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.141.0] — 2026-08-12
+
+**Statistiche perspicaci (segue): arricchimento delle aziende finanziate** — `#/funded` è ora più visivo: loghi aziendali, un grafico per importo di finanziamento e schede con round / importo / punteggio di scoperta / azione suggerita. Aggiustamento UX segnalato dall'utente (senza parent-sync).
+
+### Modificato
+- **`#/funded` — tabella piatta → griglia di schede.** Ogni azienda finanziata di recente è ora una scheda con **logo** (derivato dal nome via `CompanyLogo`, avatar a lettera come ripiego), chip di **round** + **importo**, il **punteggio di scoperta** e l'**azione suggerita** del progetto principale, oltre a link e data della notizia.
+- **Visualizzazione dell'importo di finanziamento** — un grafico a barre delle maggiori aziende per importo divulgato; gli importi in testo libero ("$120M"/"€1.5B") vengono convertiti in grandezza da un nuovo `parseAmount`. 3 nuove chiavi i18n × **17 lingue**.
+
+### Note
+- Ancora **sola lettura** su `GET /api/company-funded`; descrizione e fascia salariale non sono nella fonte di finanziamento. Suite: **2363** test (+2).
+
 ## [1.140.0] — 2026-08-12
 
 **Statistiche perspicaci: cifre salariali più ricche** — la ripartizione salariale di "La mia pipeline" su `#/stats` mostra ora la **media** (non solo la mediana), un interruttore **all'anno ⇄ al mese** e una tabella **min · media · mediana · max** per paese. Prima parte della Fase 3. Aggiustamento UX segnalato dall'utente (senza parent-sync).

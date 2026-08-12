@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.141.0] — 2026-08-12
+
+**Indsigtsfulde statistikker (fortsat): berigelse af finansierede virksomheder** — `#/funded` er nu mere visuel: virksomhedslogoer, et diagram efter finansieringsbeløb og kort med runde / beløb / opdagelsesscore / foreslået handling. En brugerrapporteret UX-justering (uden parent-sync).
+
+### Ændret
+- **`#/funded` — flad tabel → kortgitter.** Hver nyligt finansieret virksomhed er nu et kort med et **logo** (udledt af navnet via `CompanyLogo`, bogstavavatar som reserve), **runde**- + **beløb**-chips, forældreprojektets **opdagelsesscore** og **foreslåede handling** samt link og dato for finansieringsnyheden.
+- **Visualisering af finansieringsbeløb** — et vandret søjlediagram over de største virksomheder efter oplyst beløb; fritekstbeløb ("$120M"/"€1.5B") parses til en størrelse med et nyt `parseAmount`. 3 nye i18n-nøgler × **17 sprog**.
+
+### Noter
+- Stadig **skrivebeskyttet** over `GET /api/company-funded`; beskrivelse og lønramme findes ikke i finansieringskilden. Suite: **2363** tests (+2).
+
 ## [1.140.0] — 2026-08-12
 
 **Indsigtsfulde statistikker: rigere løntal** — lønopdelingen i "Min pipeline" på `#/stats` viser nu **gennemsnittet** (ikke kun medianen), en **pr. år ⇄ pr. måned**-skifter og en **min · gns · median · maks**-tabel pr. land. Første del af Fase 3. En brugerrapporteret UX-justering (uden parent-sync).
