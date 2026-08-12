@@ -45,6 +45,33 @@ Router.register('portals', async () => {
     const link = company.careers_url
       ? c('a', { href: company.careers_url, target: '_blank', rel: 'noopener noreferrer', style: { fontSize: '12px', color: 'var(--foggy)' } }, company.careers_url.replace(/^https?:\/\//, '').slice(0, 60))
       : null;
+    // v1.144.0 — enable/disable toggle (writes portals.yml; the scanner skips
+    // disabled companies via `c.enabled !== false`). Keyed by careers_url, so a
+    // company without one can't be toggled from here.
+    const canToggle = !!company.careers_url;
+    // `enabled` may be an un-normalized field (undefined = watched, like the
+    // scanner's `!== false`), so treat anything but an explicit false as ON.
+    const isOn = company.enabled !== false;
+    const toggleBtn = c('button', {
+      className: 'btn btn-ghost btn-sm', type: 'button',
+      'aria-label': isOn ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'),
+    }, isOn ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'));
+    if (!canToggle) toggleBtn.disabled = true;
+    else toggleBtn.addEventListener('click', async () => {
+      const next = !isOn;
+      toggleBtn.disabled = true;
+      try {
+        await API.post('/api/portals/toggle', { careers_url: company.careers_url, enabled: next });
+        company.enabled = next;
+        UI.toast(next
+          ? t('portals.enabledToast', 'Portal enabled — the scanner will watch it')
+          : t('portals.disabledToast', 'Portal disabled — the scanner will skip it'), 'success');
+        renderList(companies);
+      } catch (err) {
+        UI.toast((err && err.message) || t('portals.toggleFailed', 'Could not update the portal'), 'error');
+        toggleBtn.disabled = false;
+      }
+    });
     return c('div', {
       className: 'card',
       style: { display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', margin: '0 0 6px', flexWrap: 'wrap' },
@@ -53,6 +80,7 @@ Router.register('portals', async () => {
       ...meta,
       link,
       badge,
+      toggleBtn,
     ]);
   }
 

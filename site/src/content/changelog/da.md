@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.144.0] — 2026-08-12
+
+**Indstillinger og filtre (Fase 4, del 1): aktivér/deaktivér fulgte portaler** — du kan nu slå en overvåget virksomhed til eller fra fra `#/portals`, og scanneren respekterer det. En brugerønsket UX-anmodning (uden parent-sync).
+
+### Tilføjet
+- **Aktivér/Deaktivér-knap per virksomhed på `#/portals`** — ét klik slukker en portal (EN-scanneren springer allerede virksomheder med `enabled: false` over, så en deaktiveret portal falder ud af alle fremtidige scanninger) eller tænder den igen, med en optimistisk notifikation.
+- **`POST /api/portals/toggle`** — en eksplicit brugerskrivning, der kirurgisk og med parse-validering skifter en virksomheds `enabled`-flag i `portals.yml` (kommentarer, rækkefølge og øvrige felter bevares). 5 nye i18n-nøgler × **17 sprog**; snapshot 1195 → 1200.
+
+### Noter
+- Ændringen i scanneren var **nul** — `en-scanner.mjs` filtrerer allerede `enabled !== false`. Suite: **2370** tests (+3).
+
 ## [1.143.0] — 2026-08-12
 
 **Forståeligt (fortsat): `?`-tips på de centrale arbejdsvisninger** — hjælpe-`?` dækker nu de ni vigtigste handlingssider, på alle sprog. En brugerrapporteret UX-justering (uden parent-sync).

@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.144.0] — 2026-08-12
+
+**Configurações e filtros (Fase 4, parte 1): ativar/desativar portais monitorados** — agora você pode ligar ou desligar uma empresa vigiada em `#/portals`, e o scanner respeita isso. Pedido de UX do usuário (sem parent-sync).
+
+### Adicionado
+- **Botão Ativar/Desativar por empresa em `#/portals`** — um clique desliga um portal (o scanner EN já ignora empresas com `enabled: false`, então um portal desativado sai de todos os scans futuros) ou o liga novamente, com um aviso otimista.
+- **`POST /api/portals/toggle`** — uma escrita explícita do usuário que altera cirurgicamente e com validação de parse o flag `enabled` de uma empresa em `portals.yml` (comentários, ordem e demais campos preservados). 5 novas chaves i18n × **17 idiomas**; snapshot 1195 → 1200.
+
+### Notas
+- A mudança no scanner foi **zero** — `en-scanner.mjs` já filtra `enabled !== false`. Suíte: **2370** testes (+3).
+
 ## [1.143.0] — 2026-08-12
 
 **Compreensível (cont.): dicas `?` nas telas de trabalho principais** — o `?` de ajuda agora cobre as nove páginas de ação principais, em todos os idiomas. Ajuste de UX reportado pelo usuário (sem parent-sync).

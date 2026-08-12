@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.144.0] — 2026-08-12
+
+**Ustawienia i filtry (Faza 4, część 1): włączanie/wyłączanie śledzonych portali** — możesz teraz włączyć lub wyłączyć obserwowaną firmę z `#/portals`, a skaner to respektuje. Prośba UX od użytkownika (bez parent-sync).
+
+### Dodano
+- **Przełącznik Włącz/Wyłącz dla firmy na `#/portals`** — jedno kliknięcie wyłącza portal (skaner EN już pomija firmy `enabled: false`, więc wyłączony portal wypada ze wszystkich przyszłych skanów) lub włącza go z powrotem, z optymistycznym powiadomieniem.
+- **`POST /api/portals/toggle`** — jawny zapis użytkownika, który chirurgicznie i z walidacją parsowania przełącza flagę `enabled` firmy w `portals.yml` (komentarze, kolejność i pozostałe pola zachowane). 5 nowych kluczy i18n × **17 języków**; snapshot 1195 → 1200.
+
+### Uwagi
+- Zmiana w skanerze wyniosła **zero** — `en-scanner.mjs` już filtruje `enabled !== false`. Zestaw: **2370** testów (+3).
+
 ## [1.143.0] — 2026-08-12
 
 **Zrozumiałość (cd.): podpowiedzi `?` na głównych widokach roboczych** — pomocnicze `?` obejmuje teraz dziewięć głównych stron akcji, we wszystkich językach. Poprawka UX zgłoszona przez użytkownika (bez parent-sync).

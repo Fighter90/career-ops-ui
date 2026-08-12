@@ -62,7 +62,7 @@ A **documentation-and-skill deliverable** that can ship independently of (and ah
 
 Consolidate configuration; make filters beautiful.
 
-- [ ] **Portals → Settings** — move `#/portals` into the settings area; enable/disable each portal; sync the enabled set with the source list, the `#/scan` filter selects, and what actually gets scanned.
+- [~] **Portals → Settings** — v1.144.0 added **enable/disable per portal** on `#/portals` (`POST /api/portals/toggle`, surgical portals.yml write; the scanner already honors `enabled: false`). Still to do: move `#/portals` fully into a settings nav section.
 - [ ] **Scan filters redesign** — cleaner, more readable, more attractive filter panel.
 - [ ] **Overall visual polish** — senior-designer pass on spacing, hierarchy, and consistency across all pages.
 

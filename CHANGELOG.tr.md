@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.144.0] — 2026-08-12
+
+**Ayarlar ve filtreler (Aşama 4, bölüm 1): izlenen portalları etkinleştir/devre dışı bırak** — artık izlenen bir şirketi `#/portals`'tan açıp kapatabilirsiniz ve tarayıcı buna uyar. Kullanıcı bildirimli bir UX isteği (parent-sync yok).
+
+### Eklendi
+- **`#/portals`'ta şirket başına Etkinleştir/Devre dışı bırak düğmesi** — tek tıkla bir portalı kapatır (EN tarayıcı zaten `enabled: false` şirketleri atlar, böylece devre dışı portal sonraki tüm taramalardan düşer) veya yeniden açar, iyimser bir bildirimle.
+- **`POST /api/portals/toggle`** — `portals.yml`'deki bir şirketin `enabled` bayrağını cerrahi biçimde ve ayrıştırma doğrulamasıyla değiştiren açık bir kullanıcı yazımı (yorumlar, sıra ve diğer alanlar korunur). 5 yeni i18n anahtarı × **17 dil**; anlık görüntü 1195 → 1200.
+
+### Notlar
+- Tarayıcı değişikliği **sıfır** oldu — `en-scanner.mjs` zaten `enabled !== false` ile filtreliyor. Takım: **2370** test (+3).
+
 ## [1.143.0] — 2026-08-12
 
 **Anlaşılır (devam): ana iş akışı görünümlerinde `?` ipuçları** — yardım `?`'i artık tüm dillerde dokuz ana eylem sayfasını kapsıyor. Kullanıcı bildirimli bir UX düzeltmesi (parent-sync yok).

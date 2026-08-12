@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.144.0] — 2026-08-12
+
+**Impostazioni e filtri (Fase 4, parte 1): abilita/disabilita i portali seguiti** — ora puoi accendere o spegnere un'azienda monitorata da `#/portals`, e lo scanner lo rispetta. Richiesta UX dell'utente (senza parent-sync).
+
+### Aggiunto
+- **Interruttore Abilita/Disabilita per azienda su `#/portals`** — un clic spegne un portale (lo scanner EN salta già le aziende con `enabled: false`, quindi un portale disabilitato esce da tutte le scansioni future) o lo riaccende, con un avviso ottimistico.
+- **`POST /api/portals/toggle`** — una scrittura esplicita dell'utente che commuta chirurgicamente e con validazione di parsing il flag `enabled` di un'azienda in `portals.yml` (commenti, ordine e altri campi preservati). 5 nuove chiavi i18n × **17 lingue**; snapshot 1195 → 1200.
+
+### Note
+- La modifica allo scanner è stata **zero** — `en-scanner.mjs` filtra già `enabled !== false`. Suite: **2370** test (+3).
+
 ## [1.143.0] — 2026-08-12
 
 **Comprensibile (segue): suggerimenti `?` sulle viste di lavoro principali** — il `?` di aiuto copre ora le nove pagine d'azione principali, in tutte le lingue. Aggiustamento UX segnalato dall'utente (senza parent-sync).

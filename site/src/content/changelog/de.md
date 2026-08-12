@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.144.0] — 2026-08-12
+
+**Einstellungen & Filter (Phase 4, Teil 1): verfolgte Portale aktivieren/deaktivieren** — Sie können ein beobachtetes Unternehmen jetzt auf `#/portals` ein- oder ausschalten, und der Scanner beachtet das. Ein nutzergewünschtes UX-Feature (ohne parent-sync).
+
+### Hinzugefügt
+- **Aktivieren/Deaktivieren-Schalter pro Unternehmen auf `#/portals`** — ein Klick schaltet ein Portal aus (der EN-Scanner überspringt bereits Unternehmen mit `enabled: false`, sodass ein deaktiviertes Portal aus allen künftigen Scans fällt) oder wieder ein, mit einem optimistischen Toast.
+- **`POST /api/portals/toggle`** — ein expliziter Nutzer-Write, der das `enabled`-Flag eines Unternehmens in `portals.yml` chirurgisch und parse-validiert umschaltet (Kommentare, Reihenfolge und übrige Felder bleiben erhalten). 5 neue i18n-Schlüssel × **17 Sprachen**; Snapshot 1195 → 1200.
+
+### Hinweise
+- Die Scanner-Änderung war **null** — `en-scanner.mjs` filtert bereits `enabled !== false`. Suite: **2370** Tests (+3).
+
 ## [1.143.0] — 2026-08-12
 
 **Verständlich (Forts.): `?`-Hinweise auf den zentralen Arbeitsansichten** — das Hilfe-`?` deckt jetzt die neun wichtigsten Aktionsseiten ab, in allen Sprachen. Eine nutzergemeldete UX-Anpassung (ohne parent-sync).

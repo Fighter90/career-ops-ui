@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2365%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2370%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Seneste udgivelse — v1.143.0** — **forståeligt (fortsat): `?`-tips på arbejdsvisningerne** — hjælpe-`?` dækker nu 9 sider mere (scan, evaluate, cv-studio, tracker, config, deep, batch, auto, apply), på alle sprog. **2365 tests.**
+> **🆕 Seneste udgivelse — v1.144.0** — **indstillinger og filtre (Fase 4): aktivér/deaktivér fulgte portaler** — slå en overvåget virksomhed til/fra fra `#/portals` (`POST /api/portals/toggle`, kirurgisk portals.yml-skrivning); scanneren springer allerede `enabled: false`-virksomheder over. **2370 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 
