@@ -1,6 +1,6 @@
 # SENIOR UX-DESIGNER AUDIT — career-ops-ui
 
-> **Baseline: v1.157.0** (32 route modules · 30 views · **17 locales** ·
+> **Baseline: v1.158.0** (32 route modules · 30 views · **17 locales** ·
 > help bundles **31 H2 / 112 H3** — §31 "Running the whole stack in the cloud"
 > added v1.154.0 · **79 scanner sources = 74 EN + 5 RU** ·
 > **7 headless LLM providers**: Anthropic → Gemini → OpenAI → Qwen →

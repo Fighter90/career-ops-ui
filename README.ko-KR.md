@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2402%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.157.0** — **모든 제공자에서 라이브 평가(수정)** — `OPENROUTER_API_KEY`만 설정한 사용자가 잘못 수동 모드로 강제되었습니다. 원인: 키 없는 `LLM_PROVIDER=claude` 핀(`init`) — 이제 설정된 어떤 제공자로도 대체되며, 클라이언트는 `/api/status/providers`(7개 전부)를 읽습니다. **2401 테스트.**
+> **🆕 최신 릴리스 — v1.158.0** — **표시상의 사소한 수정** — HelpHint의 «?»가 더 이상 브라우저 탭 제목에 새어 나오지 않으며, cvstart.org 랜딩이 통계 배너와 맞춰 «7 AI providers»(17이 아님)로 표시됩니다. **2402개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

@@ -2,6 +2,175 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.158.0] — 2026-08-12
+
+**Düzeltildi — iki kozmetik görüntüleme hatası (sekme başlığına sızan bir «?» ve açılış sayfasında yanlış sağlayıcı sayısı).** Yalnızca görüntüleme; davranış, güvenlik veya veri akışı değişikliği yok.
+
+### Düzeltildi
+- HelpHint'in «?» işareti artık `document.title`'a sızmıyor. Yönlendirici sekme başlığını ham `h1.textContent`'ten türetiyordu, bu yüzden sekme «Vacancy search» yerine «Vacancy search?» gösteriyordu. `router.js::focusNewView` artık başlığı klonluyor, `.help-hint`'i kaldırıyor ve sonra metni okuyor; görünen «?» dokunulmadan kalıyor.
+- cvstart.org «7» yerine «17 AI providers» gösteriyordu. `Features.astro`'daki `sub()` yardımcısı, kart bazlı değiştirmeden önce tüm `{n}` değerlerini dil sayısıyla (17) yeniden yazıyordu; artık `{n}` kart bazında çözülüyor (sağlayıcılar → 7, diller → 17).
+
+### Notlar
+- Sunucu, rota, CSP, SSRF veya i18n anahtarı değişikliği yok; `facts.json` biçimi değişmedi. Takım: **2402** test (+1).
+
+## [1.157.0] — 2026-08-12
+
+**Düzeltildi — canlı değerlendirmeler artık yalnızca Anthropic/Gemini değil, YAPILANDIRILMIŞ herhangi bir sağlayıcıyla çalışıyor.** Yalnızca `OPENROUTER_API_KEY` ayarlı bir kullanıcı yanlışlıkla manuel moda zorlanıyordu.
+
+### Düzeltildi
+- **Kök neden:** anahtarsız bir `LLM_PROVIDER` sabiti (ör. `init`’ten gelen `LLM_PROVIDER=claude`) çıkmaza giriyordu; artık yapılandırılmış sağlayıcılar arasında auto sırasına geri düşüyor (`selectActiveProvider` + her iki dağıtım kaskadında).
+- İstemci kapılaması (`#/deep` + mode-page görünümleri) artık eski Anthropic/Gemini yoklaması yerine `window.ProviderStatus` (`/api/status/providers`, yedisi) kullanıyor; yeniden yazılmış metinler (deep/eval × 17) + panodaki «Canlı değerlendirmeler» rozeti + `config.llmProviderHint`.
+
+### Notlar
+- Güvenlik değişikliği yok. Takım: **2401** test (+5).
+
+## [1.156.0] — 2026-08-12
+
+**Refactor — `scan.js`’i boyut sınırının altına bölmek (P-16) + bir CodeQL düzeltmesi.** `scan.js` **906 satırdı**; davranışı koruyan iki fabrika çıkarılarak **648**’e indirildi. P-15/P-16 görünüm-bölme çiftini tamamlar.
+
+### Değiştirildi
+- Yeni `scan/runner.js` (tarama yürütme motoru) ve `scan/filters.js` (filtre durum makinesi) `ctx`/`refs` torbalarıyla; `scan.js` ikisini bağlar.
+
+### Düzeltildi
+- CodeQL `js/useless-assignment-to-local` (#428) `config/tab-controller.js`: `let n = i;` → `let n;`.
+
+### Notlar
+- Saf refactor, davranış değişikliği yok; kaynağı okuyan 4 test yeniden yönlendirildi. İki büyük görünüm de artık 800’ün altında (P-15/P-16 tamam). Takım: **2396** test.
+
+## [1.155.0] — 2026-08-12
+
+**Refactor — `config.js`’i boyut sınırının altına bölmek (P-15).** `config.js` **1030 satırdı** (800 sınırının üstünde); davranışı koruyan iki modül çıkarılarak **783**’e indirildi.
+
+### Değiştirildi
+- Yeni `config/field-specs.js` (alan verisi + model listeleri) ve `config/tab-controller.js` (sekme çubuğu fabrikası); `config.js` bunlara başvurur, render mantığı değişmez.
+
+### Notlar
+- Saf refactor, davranış değişikliği yok; kaynağı okuyan 6 test yeniden yönlendirildi. `scan.js` (906) olduğu gibi bırakıldı (zaten kısmen bölünmüş; çekirdek temiz bir mekanik bölme için fazla bağlı). Takım: **2396** test.
+
+## [1.154.0] — 2026-08-12
+
+**Yeni kılavuz — "Tüm yığını bulutta çalıştır."** career-ops’un kendine ait bir bulut/sunucu anlatısı yok, biz de ekledik: üst **career-ops** hattını, bu **career-ops-ui** görüntüleyiciyi ve yapay zekâ **motorunu** (Claude Code üzerinden **Claude aboneliği**, yerel **Hermes**, veya API anahtarları) küçük ve her zaman açık bir sunucuya koymak için adım adım tarif. 17 dilde **Yardım §31**, bir README bölümü ve bir wiki sayfası olarak gelir.
+
+### Eklendi
+- **Yardım §31 "Tüm yığını bulutta çalıştır"** (× 17) — üç parça, hazırlama + kurulum, motor seçimi, güvenli yayınlama (HTTPS ters proxy + kimlik doğrulama + CSP/SSRF/XSS/sır-yok değişmezleri). Yardım paketi **31 H2 / 112 H3**’e büyür.
+- **README** — "Tüm yığını bulutta çalıştır" bölümü (× 17) + wiki’de **Cloud-Deployment** sayfası.
+
+### Notlar
+- **Yalnız docs** — rota, sunucu veya istemci değişikliği yok; yeni i18n anahtarı yok. 4 yardım testi 31 H2 / 112 H3 sözleşmesine geçer. Takım: **2396** test (değişmedi).
+
+## [1.153.0] — 2026-08-12
+
+**Jobvite tarayıcısı herkese açık XML akışına taşındı (ebeveyn senkronu).** Ebeveyn, Jobvite JSON API’sini emekliye ayırdı (artık sıfır iş döndürüyor); web-ui’nin source’u aynı ölü uç noktayı kullanıyordu, bu yüzden izlenen her Jobvite şirketi sessizce boş taranıyordu. Ebeveyn düzeltmesini (`#2623`) taşır: source artık `companyEId` ile anahtarlanan herkese açık kiracı-başına **XML akışını** okur.
+
+### Düzeltildi
+- Source, emekli JSON API’sini çağırıp sıfır iş döndürüyordu; artık `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` çağırıp XML `<result><job>…` ayrıştırıyor (CDATA + varlıklar, `detail-url`, `apply-url`’den önce).
+
+### Değiştirildi
+- `companyEId` çözümü: (1) portaldaki `company_eid:`, (2) açık bir `api:`’nin `c=` parametresi, (3) pano sayfası keşfi. `fetchText` (`http-json.mjs`) non-ok hatasına `.location`/`.retryAfter` ekler (salt okunur, geriye dönük uyumlu).
+
+### Notlar
+- **Güvenlik** — iki host (`jobs.jobvite.com`, `app.jobvite.com`) her istekten önce `assertJobviteUrl` ile sabitlenir: yalnız https, katı izin listesi, **hiçbir yönlendirme izlenmez**. `companyEId` yalnızca bir `?c=` değeridir; source sayısı değişmez.
+- Takım: **2396** test (+4).
+
+## [1.152.0] — 2026-08-12
+
+**Hermes sağlayıcısı — kablolama tamamlandı + doküman güncellemesi.** v1.151.0 Hermes entegrasyonunun kod incelemesi iki gerçek boşluk ve dört tamlık maddesi buldu; hepsi burada düzeltildi ve uygulamanın tüm LLM sağlayıcı listesi tüm doküman yüzeylerinde ve 17 dilde tam yediye çıkarıldı.
+
+### Düzeltildi
+- **`#/config` Hermes’i zorlayamıyordu** — `LLM_PROVIDER` açılır listesi yalnızca altı sağlayıcı listeliyordu, bu yüzden `HERMES_API_KEY` ayarlanabiliyor ama Hermes UI’dan zorlanamıyordu. Artık `hermes` 8. seçenek ve yeni bir eşlik testi açılır listenin `LLM_PROVIDERS`’tan tekrar sapmasını engelliyor.
+- **Kısa kendi barındırılan anahtarlar sessizce reddediliyordu** — `isUsableKey`’in 20 karakter tabanı bulut anahtarlarına göreydi; `hasHermesKey` artık gevşetilmiş 8 karakter tabanı kullanıyor (Hermes dokümanının örneği 19 karakter).
+
+### Değiştirildi
+- Sağlayıcı listesi README (× 17), uygulama içi yardım (× 17), `config.llmProviderHint` sözlüğü (× 17) ve `docs/sdd`’de tam yediye normalleştirildi; `hermesChatUrl` yolsuz bir ana bilgisayarı tamamlıyor; manuel yedek metni Hermes’i anıyor.
+
+### Notlar
+- **Güvenlik değişmedi** — yeni rota veya SSRF/CSP değişikliği yok; health/doctor bir `HERMES_API_KEY` satırı kazanıyor.
+- Takım: **2392** test (+2).
+
+## [1.151.0] — 2026-08-12
+
+**Hermes artık bağlı bir LLM sağlayıcısı (Phase 5)** — Phase 5 kapsam çalışması, Nous Research’ün Hermes’inin **OpenAI uyumlu bir API Server** (`hermes gateway` → `POST /v1/chat/completions`) içerdiğini doğruladı; böylece career-ops-ui canlı değerlendirmeleri artık tıpkı OpenAI/Qwen gibi yerel bir Hermes üzerinden çalıştırıyor. **Uygulama ayarları**’nda `HERMES_API_KEY` ayarlayın; auto sırasına katılır (en son). Yol haritasının son açık maddesini kapatır — **Phase 5, Shape A**.
+
+### Eklendi
+- **Hermes LLM sağlayıcısı (Shape A)** — paylaşılan `runOpenAICompatible` istemcisi üzerinde `runHermes` (`server/lib/openai.mjs`), **her iki** kaskatta (`llm-dispatch.mjs` + `routes/llm.mjs`), auto sırasının sonunda + `LLM_PROVIDER=hermes` sabiti, `/api/status/providers` ve `llm-pricing.mjs`. Yapılandırılabilir yerel bir base URL’ye (varsayılan `http://127.0.0.1:8642/v1`) Bearer kimlik doğrulamasıyla ulaşır — bu, kullanıcı tarafından verilen bir iş URL’si değil, YAPILANDIRILMIŞ bir sağlayıcı uç noktasıdır (OpenRouter/Qwen gibi), dolayısıyla SSRF korumasına dokunmaz.
+- **`#/config` alanları** — `HERMES_API_KEY` (gizli) + `HERMES_BASE_URL` + `HERMES_MODEL` (varsayılan `hermes-agent`), 6 yeni i18n anahtarı × **17 dil** (anlık görüntü 1208 → 1214).
+
+### Değişti
+- Kapsam çalışması çözüldü: `docs/integrations/HERMES.md`, uygulama içi yardım §30 (× 17), README tanıtımı (× 14), `hermes-bridge` skill’i ve yol haritası "planlandı / henüz bağlanmadı"dan **bağlandı (Shape A)**’ya geçiyor. Shape B (özel bir ajan çalışma zamanı relay’i) gerekmedi.
+
+### Notlar
+- **Güvenlik:** sağlayıcı fetch’i yapılandırılmış bir uç noktadır, diğer OpenAI uyumlu sağlayıcılarla aynı kategoride — yeni SSRF yüzeyi yok, CSP/sanitizer değişikliği yok. `HERMES_API_KEY` bir `SECRET_KEY`’dir (asla gösterilmez).
+- Testler (CI-izole, sahte taşıma): `tests/hermes-provider.test.mjs` (+5); v1.146.0’ın "Hermes dalı yok" kanaryası, BAĞLI olduğunu doğrulamak için **tersine çevrildi**; sağlayıcı yüzey testleri 7 sağlayıcı sırasına güncellendi.
+- Takım: **2390** test (+5).
+
+## [1.150.0] — 2026-08-12
+
+**Tutarlı boş durumlar (Phase 4 rötuşu)** — her "henüz bir şey yok" paneli artık bazı görünümlerin görünümü sihirli bir `40px` ile satır içi yeniden tanımlaması yerine, tek bir paylaşılan `.empty` stiliyle çiziliyor. Küçük bir görsel tutarlılık düzeltmesi; `#/activity`, `#/cv-studio`, `#/stats` ve `#/usage` boş durumları artık diğerlerinin tümüyle eşleşiyor (belirteçlenmiş 48px dolgu + kesikli kenarlık).
+
+### Değişti
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** boş panellerdeki satır içi `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` ifadesini kaldırdı — üç özellik de zaten paylaşılan `.empty` sınıfı tarafından sağlanıyor (`--space-7` = 48px, ortalanmış, soluk, kesikli kenarlık). Böylece bu dördü diğer ~25 `.empty` paneliyle birebir aynı çiziliyor.
+- Görünüme özgü meşru geçersiz kılmalar (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) el değmeden kaldı — yalnızca tamamen gereksiz yeniden tanımlamalar çıkarıldı.
+
+### Notlar
+- **Yalnızca istemci CSS kullanımı temizliği** — rota, sunucu, i18n anahtarı veya CSS kuralı değişikliği yok (`.empty` sınıfının kendisi değişmedi); sözlük anlık görüntüsü 1208. Tarayıcıda doğrulandı (`#/usage` boş paneli 48px dolgu + kesikli kenarlık hesaplıyor, 0 konsol hatası).
+- Yeni kanarya testi `tests/empty-state-consistency.test.mjs`, `.empty`'yi tek doğruluk kaynağı olarak korur. Phase 5 (Hermes sağlayıcısı) engelli kalmaya devam ediyor.
+- Takım: **2385** test (+2: `tests/empty-state-consistency.test.mjs`).
+
+## [1.149.0] — 2026-08-12
+
+**Portallar Ayarlara taşındı (Phase 4)** — `#/portals` artık *Sourcing* altında değil, *Uygulama ayarları* yanındaki **Setup** gezinme grubunda. v1.144.0'dan beri bu bir ayar yüzeyi (takip edilen şirketleri aç/kapat + bir ATS sağlık yoklaması), bir sourcing eylemi değil — dolayısıyla ait olduğu yer burası. Yalnızca gezinme değişikliği; sayfa ve rotası değişmedi.
+
+### Değişti
+- **`#/portals` gezinme öğesi → Setup grubu** (`public/index.html` içinde), *Uygulama ayarları*'nın hemen ardına yerleştirildi. *Sourcing* grubundan çıkarıldı (grup Scan / Pipeline / Auto-pipeline / Finanse edilen şirketleri korur). `#/portals` rotası, görünümü ve `nav.portals` etiketi değişmedi — yalnızca kenar çubuğundaki konum değişti.
+
+### Notlar
+- **Yalnızca gezinme biçimlendirmesi** — rota, görünüm, i18n anahtarı veya sunucu değişikliği yok. Tarayıcıda doğrulandı (0 konsol hatası); `tests/portals-nav-placement.test.mjs` ile korunuyor.
+- Takım: **2383** test (+2: `tests/portals-nav-placement.test.mjs`).
+
+## [1.148.0] — 2026-08-12
+
+**Daha derli toplu tarama filtreleri (Phase 4) — filtre paneli artık düzenli bir ızgara** — `#/scan` filtre paneli, değişken genişlikte katı kutulardan oluşan dağınık bir flex-wrap'ten duyarlı bir ızgaraya geçti ve Uygula / Sıfırla eylemleri artık kendi ayrı, sağa hizalı satırında yer alıyor. Aynı filtreler, aynı davranış — sadece daha okunaklı. Bir tasarım rötuşu (parent-sync yok).
+
+### Değişti
+- **`#/scan` filtre paneli → duyarlı ızgara** — `.scan-filters` artık `repeat(auto-fill, minmax(180px, 1fr))` sütunları ve eşit boşluklarla `display: grid`, böylece 11 etiketli filtre her genişlikte dağınık bir satıra sarmak yerine düzenli sütunlara hizalanır.
+- **Uygula / Sıfırla eylemleri** kendi satırında tüm ızgarayı kaplar, ince bir çizgiyle ayrılır ve sağa hizalanır. `scan.js`'deki eski gizli etiket hilesi + iç flex sarmalayıcı kaldırıldı.
+
+### Notlar
+- **Yalnızca CSS + küçük bir DOM temizliği** — her filtre id'si (`#scan-filter-*`, `#scan-apply`) ve `SR.render()` bağlantısı değişmedi, dolayısıyla Playwright akışı el değmeden kaldı. Yeni i18n anahtarı yok.
+- Tarayıcıda doğrulandı (0 konsol hatası); `tests/scan-filters-grid.test.mjs` ile korunuyor.
+- Takım: **2381** test (+3: `tests/scan-filters-grid.test.mjs`).
+
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — uygulama içi yardım bölümü + cvstart.org yüzeyi (Phase 5b, bölüm 2)** — Hermes belge çalışmasının ikinci ve son parçası: nasıl yapılır artık uygulamanın kendi yardım kılavuzunun içinde, 17 dilin tümünde yaşıyor ve uygulama içi belge asistanı Hermes sorularını buradan yanıtlıyor. Hâlâ yalnızca belge — Hermes LLM sağlayıcı yolu **planlandı / henüz bağlanmadı** durumunda kalıyor (Phase 5).
+
+### Eklendi
+- **Uygulama içi yardım §30 "Hermes & Telegram" × 17 dil** — yeni bir kılavuz bölümü (Hermes nedir + iki entegrasyon biçimi; bir bulut sunucusunda çalıştırma; Hermes üzerinden Telegram + "NEYİN açığa çıkarılmaması gerektiği" kuralı), `#/help` üzerinden erişilebilir. `docs-assistant` / `DocsFab` grounding'i bunu otomatik alır çünkü ikisi de `docs/help/<lang>.md` okur.
+- **cvstart.org — Hermes kılavuzuna bir bağlantı**, GitHub'daki belgeye yönlendirir.
+
+### Değişti
+- Yardım paketi eşiği **29 → 30 H2 / 105 → 108 H3** yükseltildi (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`); §30 üç H3 ekler.
+
+### Notlar
+- **Hâlâ hiçbir şey Hermes'i çağırmıyor.** Yeni kanarya testi `tests/help-hermes-section.test.mjs`, her dilin §30'u dilden bağımsız çıpalarıyla (`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram) içerdiğini doğrular. Sağlayıcı, Phase 5 API sözleşmesine kadar engelli kalır.
+- Bu, Phase 5b'nin **belge + skill** çıktısını kapatır; sağlayıcı entegrasyonu (Phase 5) ayrı, engellenmiş bir madde olarak kalır.
+- Takım: **2378** test (+2: `tests/help-hermes-section.test.mjs`).
+
+## [1.146.0] — 2026-08-12
+
+**Hermes ajanı + Telegram — entegrasyon kılavuzu + bir skill (Phase 5b, bölüm 1)** — career-ops-ui'yi bir bulut sunucusunda çalıştırabilir ve olaylarını (tamamlanmış bir tarama, yeni bir rapor, acil bir takip) Nous Research'ün Hermes ajanı üzerinden Telegram'a bağlayabilirsiniz. Bu sürüm tasarım + dağıtım belgelerini ve bir hermes-bridge skill'ini sunar; Hermes LLM sağlayıcı yolu hâlâ planlanan / henüz bağlanmamış durumda (Phase 5 API sözleşmesi spike'ına tıkanmış). Belgeler kasıtlı olarak koddan önde.
+
+### Eklendi
+- **`docs/integrations/HERMES.md`** — derinlemesine inceleme: iki entegrasyon biçimi (OpenAI uyumlu endpoint vs. ajan çalışma zamanı), bulut sunucusuna dağıtım (reverse proxy + HTTPS + systemd, başsız bir makinede salt okunur parent sözleşmesi), Hermes üzerinden Telegram ve bir tehdit modeli «NEYİN açığa çıkarılmaması gerektiği» listesi (kanal'a CV / maaş / rapor içeriği / anahtar sızdırılmaz).
+- README'deki **`## Hermes agent + Telegram`** tanıtımı — İngilizce README'de kısa bir yönlendirme + bağlantı, her dilin tam çevrilmiş README'sinde de yansıtılır.
+- Kılavuzu işlevsel kılan bir **`hermes-bridge` skill'i** (`.claude/skills/hermes-bridge/`) — ön koşul + kapsam denetimleri (Node ≥ 18, anahtarların varlığı, SSRF'ye karşı güvenli yol üzerinden endpoint erişilebilirliği), sırları asla diske/loglara yazmaz ve bir Hermes endpoint'i icat etmeyi veya sağlayıcının bağlı olduğunu iddia etmeyi reddeder.
+- `docs/architecture/OVERVIEW.md`'deki bir **Integrations** bölümü kılavuza bağlanır.
+
+### Notlar
+- **Şu an hiçbir şey Hermes'i çağırmıyor.** Bir kanarya testi (`tests/hermes-docs.test.mjs`) «planlanan / henüz bağlanmamış» dürüstlük işaretlerini ve `llm-dispatch.mjs`'de hiçbir Hermes/Nous dalı olmadığını doğrular — yani sağlayıcının ileride bağlanması, belgeleri + yol haritasını aynı değişiklikte güncellemek zorundadır.
+- **v1.147.0'a ertelendi** (Phase 5b, bölüm 2): uygulama içi yardımdaki «Hermes & Telegram» H2 bölümü × 17 dil ve cvstart.org pazarlama yüzeyi.
+- Takım: **2376** test (+4: `tests/hermes-docs.test.mjs`).
+
 ## [1.145.0] — 2026-08-12
 
 **Anlayışlı istatistikler (devam): yeniden oluşturulabilir grafik** — `#/stats`'teki "Hedef rol eğilimi" sekmesinde artık bir **Grafik oluştur** aracı var: bir metrik × boyut seçin, canlı olarak yeniden çizilsin. Kullanıcı bildirimli bir UX isteği (parent-sync yok).

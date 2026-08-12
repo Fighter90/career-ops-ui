@@ -9,6 +9,175 @@
 ---
 
 
+## [1.158.0] — 2026-08-12
+
+**修正 — 表示上の軽微なバグ2件(タブタイトルに漏れる «?» と、ランディングの誤ったプロバイダー数)。** 表示のみで、動作・セキュリティ・データフローの変更なし。
+
+### 修正
+- HelpHint の «?» が `document.title` に漏れなくなりました。ルーターが未加工の `h1.textContent` からタブタイトルを生成し「Vacancy search?」と表示していました。`router.js::focusNewView` は見出しを複製し `.help-hint` を除去してからテキストを読みます。画面上の «?» はそのままです。
+- cvstart.org が «7» ではなく «17 AI providers» と表示していました。`Features.astro` の `sub()` がカード別置換の前にすべての `{n}` をロケール数(17)へ書き換えていました。現在 `{n}` はカード別に解決されます(プロバイダー → 7、言語 → 17)。
+
+### 備考
+- サーバー・ルート・CSP・SSRF・i18n キーの変更なし。スイート: **2402** テスト(+1)。
+
+## [1.157.0] — 2026-08-12
+
+**修正 — ライブ評価が Anthropic/Gemini だけでなく、設定済みの任意のプロバイダーで実行されるように。** `OPENROUTER_API_KEY` のみ設定したユーザーが誤って手動モードに強制されていました。
+
+### 修正
+- **根本原因:** キー未設定の `LLM_PROVIDER` ピン(例:`init` の `LLM_PROVIDER=claude`)が行き止まりに。現在は設定済みプロバイダーの中で auto 順にフォールバックします(`selectActiveProvider` + 2 つのディスパッチ)。
+- クライアントのゲーティング(`#/deep` + mode-page ビュー)が古い Anthropic/Gemini プローブではなく `window.ProviderStatus`(`/api/status/providers`、7 種)を使用。文言を刷新(deep/eval × 17)+ ダッシュボードの「ライブ評価」バッジ + `config.llmProviderHint`。
+
+### 備考
+- セキュリティ変更なし。スイート:**2401** 件のテスト(+5)。
+
+## [1.156.0] — 2026-08-12
+
+**リファクタ — `scan.js` をサイズ上限内に分割(P-16)+ CodeQL 修正。** `scan.js` は **906 行**でした。挙動を保つ 2 ファクトリを抽出し **648 行** に。P-15/P-16 のビュー分割ペアを完了。
+
+### 変更
+- 新規 `scan/runner.js`(スキャン実行エンジン)と `scan/filters.js`(フィルタ状態機械)を `ctx`/`refs` バッグで抽出。`scan.js` が両者を結線。
+
+### 修正
+- CodeQL `js/useless-assignment-to-local`(#428) `config/tab-controller.js`:`let n = i;` → `let n;`。
+
+### 備考
+- 純粋なリファクタで挙動変更なし。ソースを読む 4 テストを付け替え。大きい 2 ビューとも 800 未満に(P-15/P-16 完了)。スイート:**2396** 件のテスト。
+
+## [1.155.0] — 2026-08-12
+
+**リファクタ — `config.js` をサイズ上限内に分割(P-15)。** `config.js` は **1030 行**(800 行上限超過)でした。挙動を保つ 2 モジュールを抽出し **783 行** に。
+
+### 変更
+- 新規 `config/field-specs.js`(フィールドデータ + モデル一覧)と `config/tab-controller.js`(タブバーのファクトリ)を抽出。`config.js` はそれらを参照し、描画ロジックは不変。
+
+### 備考
+- 純粋なリファクタで挙動変更なし。ソースを読む 6 テストを付け替え。`scan.js`(906)は現状維持(既に一部分割済み。コアの結合が強く、機械的な分割はかえって悪化)。スイート:**2396** 件のテスト。
+
+## [1.154.0] — 2026-08-12
+
+**新ガイド — 「スタック全体をクラウドで動かす」。** career-ops 自体にはクラウド/サーバーの手引きがないため追加:親の **career-ops** パイプライン、この **career-ops-ui** ビューアー、AI **エンジン**(Claude Code 経由の **Claude サブスクリプション**、ローカル **Hermes**、または API キー)を常時稼働の小型サーバーに載せる手順。17 言語の **ヘルプ §31**、README セクション、Wiki ページとして提供。
+
+### 追加
+- **ヘルプ §31「スタック全体をクラウドで動かす」**(× 17)—— 3 つの構成要素、プロビジョニング + インストール、エンジン選択、安全な公開(HTTPS リバースプロキシ + 認証 + CSP/SSRF/XSS/秘密を残さない不変条件)。ヘルプは **31 H2 / 112 H3** に拡大。
+- **README** — 「スタック全体をクラウドで動かす」節(× 17)+ Wiki の **Cloud-Deployment** ページ。
+
+### 備考
+- **ドキュメントのみ** — ルート・サーバー・クライアント変更なし、新規 i18n キーなし。ヘルプの 4 テストは 31 H2 / 112 H3 契約へ。スイート:**2396** 件のテスト(変更なし)。
+
+## [1.153.0] — 2026-08-12
+
+**Jobvite スキャナーを公開 XML フィードへ移行(親同期)。** 親が Jobvite の JSON API を廃止(現在は 0 件)し、web-ui の source も同じ死んだエンドポイントを使っていたため、追跡中の Jobvite 企業が静かに空スキャンになっていました。親の修正(`#2623`)を移植:`companyEId` をキーにした公開テナント別 **XML フィード**を読みます。
+
+### 修正
+- source は廃止された JSON API を叩いて 0 件を返していました。現在は `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` を叩き、XML `<result><job>…` を解析します(CDATA + エンティティ、`apply-url` より `detail-url` を優先)。
+
+### 変更
+- `companyEId` 解決:(1) ポータルの `company_eid:`、(2) 明示 `api:` の `c=`、(3) ボードページのディスカバリ。`fetchText`(`http-json.mjs`)が non-ok エラーに `.location`/`.retryAfter` を付与(読み取り専用・後方互換)。
+
+### 備考
+- **セキュリティ** — 2 ホスト(`jobs.jobvite.com`、`app.jobvite.com`)を `assertJobviteUrl` で毎回ピン留め:https のみ、厳格な許可リスト、**リダイレクト非追従**。`companyEId` は `?c=` の値のみ。source 数は不変。
+- スイート:**2396** 件のテスト(+4)。
+
+## [1.152.0] — 2026-08-12
+
+**Hermes プロバイダー — 配線を完了 + ドキュメント最新化。** v1.151.0 の Hermes 統合のコードレビューで実際の欠陥 2 件と完成度項目 4 件を発見し、いずれも本リリースで修正。アプリ全体の LLM プロバイダー一覧を、全ドキュメント面と 17 言語で完全な 7 つに揃えました。
+
+### 修正
+- **`#/config` で Hermes を強制できなかった** — `LLM_PROVIDER` ドロップダウンが 6 プロバイダーしか並べず、`HERMES_API_KEY` を設定しても UI から Hermes を強制できませんでした。`hermes` を 8 番目の選択肢に追加し、新しいパリティテストがドロップダウンの `LLM_PROVIDERS` からのずれを防ぎます。
+- **短いセルフホスト鍵が黙って拒否されていた** — `isUsableKey` の 20 文字下限はクラウド鍵向けで、`hasHermesKey` は緩和した 8 文字下限を使います(Hermes ドキュメントの例は 19 文字)。
+
+### 変更
+- プロバイダー一覧を README(× 17)、アプリ内ヘルプ(× 17)、`config.llmProviderHint` 辞書(× 17)、`docs/sdd` で完全な 7 つに正規化。`hermesChatUrl` はパスなしホストを補完し、手動フォールバック文言が Hermes を明記します。
+
+### 備考
+- **セキュリティは不変** — 新規ルートや SSRF/CSP の変更なし。health/doctor に `HERMES_API_KEY` 行を追加。
+- スイート:**2392** 件のテスト(+2)。
+
+## [1.151.0] — 2026-08-12
+
+**Hermes が接続済みの LLM プロバイダーに(Phase 5)** — Phase 5 のスコーピングで、Nous Research の Hermes が **OpenAI 互換の API Server**(`hermes gateway` → `POST /v1/chat/completions`)を備えることを確認。career-ops-ui は OpenAI/Qwen と同様にローカルの Hermes 経由でライブ評価を実行します。**アプリ設定** で `HERMES_API_KEY` を設定すると auto 順に加わります(最後)。ロードマップ最後の未解決項目 — **Phase 5, Shape A** — を完了。
+
+### 追加
+- **Hermes LLM プロバイダー(Shape A)** — 共有 `runOpenAICompatible` クライアント上の `runHermes`(`server/lib/openai.mjs`)、**両方** のカスケード(`llm-dispatch.mjs` + `routes/llm.mjs`)にゲート、auto 順の末尾 + `LLM_PROVIDER=hermes` ピン、`/api/status/providers`、`llm-pricing.mjs`。ユーザー設定可能なローカル base URL(既定 `http://127.0.0.1:8642/v1`)へ Bearer 認証で到達 — ユーザー提供の求人 URL ではなく設定済みプロバイダーのエンドポイント(OpenRouter/Qwen と同様)なので SSRF ガードは通りません。
+- **`#/config` フィールド** — `HERMES_API_KEY`(秘密) + `HERMES_BASE_URL` + `HERMES_MODEL`(既定 `hermes-agent`)、6 個の新しい i18n キー × **17 言語**(スナップショット 1208 → 1214)。
+
+### 変更
+- スコーピングが解決:`docs/integrations/HERMES.md`、アプリ内ヘルプ §30(× 17)、README ティーザー(× 14)、`hermes-bridge` スキル、ロードマップが「計画中 / 未接続」から **接続済み(Shape A)** に移行。Shape B(専用のエージェントランタイム relay)は不要でした。
+
+### 補足
+- **セキュリティ:** プロバイダーの fetch は設定済みエンドポイントで、他の OpenAI 互換プロバイダーと同カテゴリ — 新たな SSRF 面なし、CSP/サニタイザー変更なし。`HERMES_API_KEY` は `SECRET_KEY`(決して出力しません)。
+- テスト(CI 隔離、トランスポートスタブ):`tests/hermes-provider.test.mjs`(+5);v1.146.0 の「Hermes 分岐なし」カナリアを、接続済みであると断言するよう **反転**;プロバイダー面テストを 7 プロバイダー順に更新。
+- スイート:**2390** 件のテスト(+5)。
+
+## [1.150.0] — 2026-08-12
+
+**一貫した空状態 (Phase 4の仕上げ)** — 「まだ何もありません」パネルはすべて、いくつかのビューが魔法の `40px` でインライン再宣言する代わりに、単一の共有 `.empty` スタイルで描画されるようになりました。小さな視覚的一貫性の修正で、`#/activity`・`#/cv-studio`・`#/stats`・`#/usage` の空状態が他のすべてと一致します(トークン化された48pxパディング + 破線ボーダー)。
+
+### 変更
+- **`#/activity`・`#/cv-studio`・`#/stats`・`#/usage`** が空パネルのインライン `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` を削除 — 3つのプロパティはすべて共有の `.empty` クラスが既に提供します(`--space-7` = 48px、中央揃え、淡色、破線ボーダー)。これでこの4つは他の約25個の `.empty` パネルと同一に描画されます。
+- ビュー固有の正当な上書き(`#/dashboard` `width:100%`、`#/pipeline` `border:none`)はそのまま — 純粋に冗長な再宣言のみ削除。
+
+### 補足
+- **クライアントのCSS利用の整理のみ** — ルート/サーバー/i18nキー/CSSルールの変更なし(`.empty` クラス自体は不変);辞書スナップショット1208。ブラウザ検証(`#/usage` の空パネルが48pxパディング + 破線ボーダーで計算、コンソールエラー0)。
+- 新しいカナリア `tests/empty-state-consistency.test.mjs` が `.empty` を唯一の真実の源として維持します。Phase 5(Hermesプロバイダー)は引き続きブロック中。
+- スイート:**2385**件のテスト(+2:`tests/empty-state-consistency.test.mjs`)。
+
+## [1.149.0] — 2026-08-12
+
+**ポータルを設定へ移動 (Phase 4)** — `#/portals` は *Sourcing* の下ではなく、*アプリ設定* の隣の **Setup** ナビゲーショングループに配置されました。v1.144.0以降これはソーシングの操作ではなく設定画面(追跡企業の有効/無効 + ATSのヘルスチェック)なので、ここが本来の場所です。ナビゲーションのみの変更で、ページとルートは不変です。
+
+### 変更
+- **`#/portals` ナビ項目 → Setup グループ**(`public/index.html`)、*アプリ設定* の直後に配置。*Sourcing* グループから削除(グループには Scan / Pipeline / Auto-pipeline / 資金調達企業 が残ります)。`#/portals` ルート、ビュー、`nav.portals` ラベルは不変 — サイドバー位置のみ移動。
+
+### 補足
+- **ナビのマークアップのみ** — ルート/ビュー/i18nキー/サーバー変更なし。ブラウザ検証(コンソールエラー0);`tests/portals-nav-placement.test.mjs` で保護。
+- スイート:**2383**件のテスト(+2:`tests/portals-nav-placement.test.mjs`)。
+
+## [1.148.0] — 2026-08-12
+
+**見やすくなったスキャンフィルター (Phase 4) — フィルターパネルが整然としたグリッドに** — `#/scan` のフィルターパネルが、幅バラバラの箱による不揃いなflex-wrapからレスポンシブグリッドになり、適用 / リセットのアクションは右寄せの独立した行に配置されました。フィルターも挙動も同じ — 読みやすさだけ向上。デザインの手直し(parent-syncなし)。
+
+### 変更
+- **`#/scan` フィルターパネル → レスポンシブグリッド** — `.scan-filters` は `repeat(auto-fill, minmax(180px, 1fr))` の列と均一な間隔を持つ `display: grid` になり、ラベル付きの11個のフィルターがどの幅でも不揃いに折り返さず整った列に揃います。
+- **適用 / リセットのアクション**はグリッド全幅の独立した行を占め、細い罫線で区切られ右寄せに。`scan.js` の旧・隠しラベルのハック + 内部flexラッパーを削除。
+
+### 補足
+- **CSS + わずかなDOM整理のみ** — フィルターのid(`#scan-filter-*`、`#scan-apply`)と `SR.render()` の配線は不変なので、Playwrightのフローは無傷。新しいi18nキーなし。
+- ブラウザ検証済み(コンソールエラー0);`tests/scan-filters-grid.test.mjs` で保護。
+- スイート:**2381**件のテスト(+3:`tests/scan-filters-grid.test.mjs`)。
+
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — アプリ内ヘルプセクション + cvstart.org 面(Phase 5b・第2部)** — Hermesドキュメント作業の2つ目にして最後の部分です:手順が17言語すべてでアプリ自身のヘルプガイド内に収まり、アプリ内ドキュメントアシスタントがそれを基にHermesの質問に答えます。引き続きドキュメントのみ — HermesのLLMプロバイダー経路は **計画中 / 未接続** のままです(Phase 5)。
+
+### 追加
+- **アプリ内ヘルプ §30「Hermes & Telegram」× 17言語** — 新しいガイドセクション(Hermesとは + 2つの統合形態;クラウドサーバーでの実行;Hermes経由のTelegram + 「公開してはならないもの」ルール)。`#/help`からアクセス可能。`docs-assistant` / `DocsFab`のグラウンディングが自動的に取り込みます(どちらも`docs/help/<lang>.md`を読むため)。
+- **cvstart.org — Hermesガイドへのリンク**。GitHubのドキュメントへ誘導。
+
+### 変更
+- ヘルプバンドルのゲートを **29 → 30 H2 / 105 → 108 H3** に引き上げ(`canonical-docs-coverage`、`help-ui`、`help-ru-config-section`);§30がH3を3つ追加。
+
+### 補足
+- **まだHermesを呼び出す処理はありません。** 新しいカナリア`tests/help-hermes-section.test.mjs`が、すべての言語に§30が言語非依存のアンカー(`docs/integrations/HERMES.md`、`hermes-bridge`、`#/help`、`127.0.0.1`、Telegram)とともに存在することを検証します。プロバイダーはPhase 5のAPI契約スパイクによって引き続きブロックされています。
+- これでPhase 5bの**ドキュメント + スキル**成果物が完了します;プロバイダー統合(Phase 5)は別個のブロック中の項目として残ります。
+- スイート:**2378**件のテスト(+2:`tests/help-hermes-section.test.mjs`)。
+
+## [1.146.0] — 2026-08-12
+
+**Hermesエージェント + Telegram — 統合ガイドとスキル（Phase 5b・第1部）** — career-ops-uiをクラウドサーバーで動かし、そのイベント（完了したスキャン、新しいレポート、緊急のフォローアップ）をNous ResearchのHermesエージェント経由でTelegramに橋渡しできます。このリリースでは設計＋デプロイのドキュメントとhermes-bridgeスキルを提供します。HermesのLLMプロバイダー経路は依然として計画中／未接続のままです（Phase 5のAPI契約スパイクに阻まれています）。意図的にコードより先にドキュメントを整えています。
+
+### 追加
+- **`docs/integrations/HERMES.md`** — 詳細解説:2つの統合形態(OpenAI互換エンドポイント vs. エージェントランタイム)、クラウドサーバーへのデプロイ(reverse proxy＋HTTPS＋systemd、ヘッドレス機での読み取り専用のparent契約)、Hermes経由のTelegram連携、そして脅威モデルの「絶対に公開してはいけないもの」リスト(CV/給与/レポート本文/キーをチャンネルに出さない)。
+- READMEの **`## Hermes agent + Telegram`** ティーザー — 英語版READMEに短い案内とリンクを追加し、完全に翻訳された各言語のREADMEにも反映。
+- ガイドを実行可能にする**`hermes-bridge`スキル**(`.claude/skills/hermes-bridge/`) — 前提条件＋スコープゲートの確認(Node ≥ 18、キーの有無、SSRF安全な経路でのエンドポイント到達性)、秘密情報をディスク／ログに書き込まない、Hermesのエンドポイントを勝手に作り出したりプロバイダーが接続済みだと主張したりしない。
+- `docs/architecture/OVERVIEW.md`の**Integrations**セクションがガイドにリンク。
+
+### 補足
+- **まだHermesを呼び出す処理はありません。** カナリアテスト(`tests/hermes-docs.test.mjs`)が「計画中／未接続」という正直な表示と、`llm-dispatch.mjs`にHermes/Nousの分岐が存在しないことを検証しています — つまり将来プロバイダーを接続する際は、同じ変更でドキュメント＋ロードマップも更新する必要があります。
+- **v1.147.0へ延期**(Phase 5b・第2部):アプリ内ヘルプの「Hermes & Telegram」H2 × 17言語、およびcvstart.orgのマーケティング面。
+- スイート:**2376**件のテスト(+4:`tests/hermes-docs.test.mjs`)。
+
 ## [1.145.0] — 2026-08-12
 
 **役立つ統計（続き）：再構築できるグラフ** — `#/stats` の「目標職種トレンド」タブに **グラフを作成** ウィジェットが追加：指標 × ディメンションを選ぶとライブで描き直します。ユーザーからのUX要望（parent-syncなし）。

@@ -2,6 +2,175 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.158.0] — 2026-08-12
+
+**Behoben — zwei kosmetische Anzeigefehler (ein in den Tab-Titel durchgesickertes «?» und eine falsche Anbieterzahl auf der Landingpage).** Nur Anzeige; keine Änderung an Verhalten, Sicherheit oder Datenfluss.
+
+### Behoben
+- Das «?» von HelpHint sickert nicht mehr in `document.title`. Der Router leitete den Tab-Titel aus dem rohen `h1.textContent` ab, sodass der Tab «Vacancy search?» statt «Vacancy search» zeigte. `router.js::focusNewView` klont die Überschrift nun, entfernt `.help-hint` und liest dann den Text; das sichtbare «?» bleibt unberührt.
+- cvstart.org zeigte «17 AI providers» statt «7». Der `sub()`-Helper in `Features.astro` ersetzte alle `{n}` durch die Sprachanzahl (17) vor der kartenweisen Ersetzung; `{n}` wird jetzt pro Karte aufgelöst (Anbieter → 7, Sprachen → 17).
+
+### Hinweise
+- Keine Änderung an Server, Route, CSP, SSRF oder i18n-Schlüsseln; `facts.json`-Form unverändert. Suite: **2402** Tests (+1).
+
+## [1.157.0] — 2026-08-12
+
+**Behoben — Live-Evals laufen jetzt mit JEDEM konfigurierten Provider, nicht nur Anthropic/Gemini.** Ein Nutzer mit nur `OPENROUTER_API_KEY` wurde fälschlich in den manuellen Modus gezwungen.
+
+### Behoben
+- **Ursache:** ein `LLM_PROVIDER`-Pin ohne Schlüssel (z. B. `LLM_PROVIDER=claude` aus `init`) lief ins Leere; nun wird auf die Auto-Reihenfolge unter den konfigurierten Providern zurückgegriffen (in `selectActiveProvider` + beiden Dispatch-Kaskaden).
+- Das Client-Gating (`#/deep` + mode-page-Views) nutzt jetzt `window.ProviderStatus` (`/api/status/providers`, alle 7) statt der veralteten Anthropic/Gemini-Prüfung; überarbeitete Texte (deep/eval × 17) + „Live-Evals“-Badge im Dashboard + `config.llmProviderHint`.
+
+### Hinweise
+- Keine Sicherheitsänderung. Suite: **2401** Tests (+5).
+
+## [1.156.0] — 2026-08-12
+
+**Refactor — `scan.js` unter das Größenlimit aufteilen (P-16) + ein CodeQL-Fix.** `scan.js` hatte **906 Zeilen**; zwei verhaltensbewahrende Factories wurden herausgezogen → **648**. Vervollständigt das View-Split-Paar P-15/P-16.
+
+### Geändert
+- Neue `scan/runner.js` (Scan-Ausführungs-Engine) und `scan/filters.js` (Filter-Zustandsmaschine) über `ctx`/`refs`-Bags; `scan.js` verdrahtet beide.
+
+### Behoben
+- CodeQL `js/useless-assignment-to-local` (#428) in `config/tab-controller.js`: `let n = i;` → `let n;`.
+
+### Hinweise
+- Reiner Refactor, keine Verhaltensänderung; 4 quelllesende Tests umgeleitet. Beide großen Views jetzt unter 800 (P-15/P-16 fertig). Suite: **2396** Tests.
+
+## [1.155.0] — 2026-08-12
+
+**Refactor — `config.js` unter das Größenlimit aufteilen (P-15).** `config.js` hatte **1030 Zeilen** (über dem 800-Limit); zwei verhaltensbewahrende Module wurden herausgezogen, auf **783**.
+
+### Geändert
+- Neue `config/field-specs.js` (Felddaten + Modelllisten) und `config/tab-controller.js` (Tab-Leisten-Factory); `config.js` referenziert sie, die Render-Logik bleibt unverändert.
+
+### Hinweise
+- Reiner Refactor, keine Verhaltensänderung; 6 quelllesende Tests umgeleitet. `scan.js` (906) bleibt wie es ist (bereits teilweise aufgeteilt; Kern zu stark gekoppelt für eine saubere mechanische Aufteilung). Suite: **2396** Tests.
+
+## [1.154.0] — 2026-08-12
+
+**Neuer Leitfaden — „Den ganzen Stack in der Cloud betreiben“.** career-ops hat keine eigene Cloud/Server-Story, also fügen wir eine hinzu: eine Schritt-für-Schritt-Anleitung, um die übergeordnete **career-ops**-Pipeline, diesen **career-ops-ui**-Viewer und die KI-**Engine** (ein **Claude-Abo** über Claude Code, ein lokales **Hermes**, oder API-Schlüssel) auf einen kleinen Always-on-Server zu bringen. Als **Hilfe §31** in 17 Sprachen, ein README-Abschnitt und eine Wiki-Seite.
+
+### Hinzugefügt
+- **Hilfe §31 „Den ganzen Stack in der Cloud betreiben“** (× 17) — die drei Teile, Bereitstellen + Installieren, Engine wählen, sicher exponieren (HTTPS-Reverse-Proxy + Auth + die CSP/SSRF/XSS/keine-Secrets-Invarianten). Das Hilfe-Bundle wächst auf **31 H2 / 112 H3**.
+- **README** — ein Abschnitt „Den ganzen Stack in der Cloud betreiben“ (× 17) + eine **Cloud-Deployment**-Wiki-Seite.
+
+### Hinweise
+- **Nur Docs** — keine Route, kein Server, keine Client-Änderung; kein neuer i18n-Schlüssel. Die 4 Hilfe-Tests wechseln auf den 31 H2 / 112 H3-Vertrag. Suite: **2396** Tests (unverändert).
+
+## [1.153.0] — 2026-08-12
+
+**Jobvite-Scanner auf den öffentlichen XML-Feed migriert (Parent-Sync).** Der Parent hat die Jobvite-JSON-API stillgelegt (liefert jetzt null Jobs); der web-ui-Source nutzte denselben toten Endpunkt, sodass jede getrackte Jobvite-Firma still leer scannte. Portiert den Parent-Fix (`#2623`): der Source liest jetzt den öffentlichen Per-Tenant-**XML-Feed**, geschlüsselt über `companyEId`.
+
+### Behoben
+- Der Source rief die stillgelegte JSON-API auf und lieferte null Jobs; er ruft nun `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` auf und parst das XML `<result><job>…` (CDATA + Entities, `detail-url` vor `apply-url`).
+
+### Geändert
+- `companyEId`-Auflösung: (1) `company_eid:` am Portal, (2) `c=` einer expliziten `api:`-URL, (3) Board-Seiten-Discovery. `fetchText` (`http-json.mjs`) hängt `.location`/`.retryAfter` an den non-ok-Fehler (nur-lesend, rückwärtskompatibel).
+
+### Hinweise
+- **Sicherheit** — zwei Hosts (`jobs.jobvite.com`, `app.jobvite.com`) per `assertJobviteUrl` gepinnt: nur https, strikte Allowlist, **kein Redirect wird verfolgt**. `companyEId` ist nur ein `?c=`-Wert; Source-Anzahl unverändert.
+- Suite: **2396** Tests (+4).
+
+## [1.152.0] — 2026-08-12
+
+**Hermes-Provider — Verdrahtung abgeschlossen + Doku-Aktualisierung.** Ein Code-Review der Hermes-Integration aus v1.151.0 fand zwei echte Lücken und vier Vollständigkeitspunkte; alle hier behoben, und die LLM-Provider-Liste der gesamten App ist auf die vollen sieben über alle Doku-Flächen und die 17 Sprachen gebracht.
+
+### Behoben
+- **`#/config` konnte Hermes nicht erzwingen** — das `LLM_PROVIDER`-Dropdown listete nur sechs Provider, man konnte `HERMES_API_KEY` setzen, Hermes aber nicht aus der UI erzwingen. `hermes` ist jetzt die 8. Option, und ein neuer Paritätstest verhindert erneutes Abweichen des Dropdowns von `LLM_PROVIDERS`.
+- **Kurze selbstgehostete Schlüssel wurden still verworfen** — die 20-Zeichen-Grenze von `isUsableKey` war auf Cloud-Schlüssel ausgelegt; `hasHermesKey` nutzt nun eine gelockerte Grenze von 8 (das Beispiel der Hermes-Doku hat 19 Zeichen).
+
+### Geändert
+- Die Provider-Liste wurde in README (× 17), In-App-Hilfe (× 17), dem `config.llmProviderHint`-Dict (× 17) und `docs/sdd` auf die vollen sieben normalisiert; `hermesChatUrl` ergänzt einen Host ohne Pfad; der manuelle Fallback-Text nennt Hermes.
+
+### Hinweise
+- **Sicherheit unverändert** — keine neue Route, keine SSRF/CSP-Änderung; health/doctor erhält eine `HERMES_API_KEY`-Zeile.
+- Suite: **2392** Tests (+2).
+
+## [1.151.0] — 2026-08-12
+
+**Hermes ist jetzt ein angebundener LLM-Provider (Phase 5)** — der Phase-5-Spike bestätigte, dass Nous Researchs Hermes einen **OpenAI-kompatiblen API Server** mitbringt (`hermes gateway` → `POST /v1/chat/completions`), sodass career-ops-ui Live-Auswertungen nun über ein lokales Hermes genau wie OpenAI/Qwen ausführt. Setzen Sie `HERMES_API_KEY` in den **App-Einstellungen**, und es reiht sich in die auto-Reihenfolge ein (zuletzt). Schließt den letzten offenen Roadmap-Punkt — **Phase 5, Shape A**.
+
+### Hinzugefügt
+- **Hermes-LLM-Provider (Shape A)** — `runHermes` auf dem gemeinsamen `runOpenAICompatible`-Client (`server/lib/openai.mjs`), in **beiden** Kaskaden (`llm-dispatch.mjs` + `routes/llm.mjs`), am Ende der auto-Reihenfolge + `LLM_PROVIDER=hermes`-Pin, `/api/status/providers` und `llm-pricing.mjs`. Er erreicht eine konfigurierbare lokale Basis-URL (Standard `http://127.0.0.1:8642/v1`) mit Bearer-Auth — ein KONFIGURIERTER Provider-Endpoint (wie OpenRouter/Qwen), keine nutzergelieferte Job-URL, also ohne SSRF-Guard.
+- **`#/config`-Felder** — `HERMES_API_KEY` (geheim) + `HERMES_BASE_URL` + `HERMES_MODEL` (Standard `hermes-agent`), mit 6 neuen i18n-Schlüsseln × **17 Sprachen** (Snapshot 1208 → 1214).
+
+### Geändert
+- Der Scoping-Spike ist gelöst: `docs/integrations/HERMES.md`, die In-App-Hilfe §30 (× 17), der README-Teaser (× 14), die `hermes-bridge`-Skill und die Roadmap gehen von „geplant / noch nicht angebunden" zu **angebunden (Shape A)**. Shape B (ein maßgeschneidertes Agent-Runtime-Relay) war nicht nötig.
+
+### Hinweise
+- **Sicherheit:** der Provider-Fetch ist ein konfigurierter Endpoint, derselben Kategorie wie die anderen OpenAI-kompatiblen Provider — keine neue SSRF-Fläche, keine CSP-/Sanitizer-Änderung. `HERMES_API_KEY` ist ein `SECRET_KEY` (wird nie ausgegeben).
+- Tests (CI-isoliert, Transport-Stub): `tests/hermes-provider.test.mjs` (+5); der v1.146.0-Canary „kein Hermes-Zweig" ist **invertiert**, um zu bestätigen, dass er DA ist; Provider-Flächen-Tests auf die 7-Provider-Reihenfolge aktualisiert.
+- Suite: **2390** Tests (+5).
+
+## [1.150.0] — 2026-08-12
+
+**Konsistente Leerzustände (Phase-4-Feinschliff)** — jedes „noch nichts hier"-Panel wird jetzt über den einen gemeinsamen `.empty`-Stil gerendert, statt dass einige Ansichten das Aussehen inline mit einem magischen `40px` erneut deklarieren. Kleine visuelle Konsistenzkorrektur; die Leerzustände auf `#/activity`, `#/cv-studio`, `#/stats` und `#/usage` passen jetzt zu allen anderen (tokenisiertes 48px-Padding + gestrichelter Rahmen).
+
+### Geändert
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** entfernten ihr Inline-`style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` auf Leer-Panels — alle drei Eigenschaften liefert bereits die gemeinsame `.empty`-Klasse (`--space-7` = 48px, zentriert, gedämpft, gestrichelter Rahmen). So rendern diese vier identisch zu den ~25 anderen `.empty`-Panels.
+- Berechtigte Überschreibungen pro Ansicht (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) bleiben unangetastet — nur die rein redundanten Re-Deklarationen wurden entfernt.
+
+### Hinweise
+- **Nur Bereinigung der CSS-Nutzung im Client** — keine Änderung an Route, Server, i18n-Schlüssel oder CSS-Regeln (die `.empty`-Klasse ist unverändert); Wörterbuch-Snapshot 1208. Im Browser verifiziert (das leere `#/usage`-Panel berechnet 48px Padding + gestrichelten Rahmen, 0 Konsolenfehler).
+- Der neue Canary `tests/empty-state-consistency.test.mjs` hält `.empty` als einzige Quelle der Wahrheit. Phase 5 (Hermes-Provider) bleibt blockiert.
+- Suite: **2385** Tests (+2: `tests/empty-state-consistency.test.mjs`).
+
+## [1.149.0] — 2026-08-12
+
+**Portale in die Einstellungen verschoben (Phase 4)** — `#/portals` liegt jetzt in der Navigationsgruppe **Setup** neben den *App-Einstellungen*, statt unter *Sourcing*. Seit v1.144.0 ist es eine Einstellungsfläche (verfolgte Firmen aktivieren/deaktivieren + ein ATS-Health-Probe), keine Sourcing-Aktion — also gehört es dorthin. Nur eine Navigationsänderung; die Seite und ihre Route bleiben unverändert.
+
+### Geändert
+- **`#/portals`-Navigationselement → Setup-Gruppe** (in `public/index.html`), direkt nach den *App-Einstellungen* platziert. Aus der *Sourcing*-Gruppe entfernt (die Scan / Pipeline / Auto-pipeline / Finanzierte Firmen behält). Die Route `#/portals`, die Ansicht und das Label `nav.portals` sind unverändert — nur die Position in der Seitenleiste hat sich bewegt.
+
+### Hinweise
+- **Nur Navigations-Markup** — keine Änderung an Route, Ansicht, i18n-Schlüssel oder Server. Im Browser verifiziert (0 Konsolenfehler); abgesichert durch `tests/portals-nav-placement.test.mjs`.
+- Suite: **2383** Tests (+2: `tests/portals-nav-placement.test.mjs`).
+
+## [1.148.0] — 2026-08-12
+
+**Übersichtlichere Scan-Filter (Phase 4) — das Filterpanel ist jetzt ein aufgeräumtes Raster** — das Filterpanel von `#/scan` wechselte von einem ungleichmäßigen Flex-Wrap aus starren Boxen unterschiedlicher Breite zu einem responsiven Raster, und die Aktionen Anwenden / Zurücksetzen liegen nun in ihrer eigenen abgetrennten, rechtsbündigen Zeile. Gleiche Filter, gleiches Verhalten — nur besser lesbar. Eine Design-Feinpolitur (ohne parent-sync).
+
+### Geändert
+- **`#/scan`-Filterpanel → responsives Raster** — `.scan-filters` ist jetzt `display: grid` mit `repeat(auto-fill, minmax(180px, 1fr))`-Spalten und gleichmäßigen Abständen, sodass sich die 11 beschrifteten Filter bei jeder Breite in ordentliche Spalten einreihen, statt in eine ungleichmäßige Zeile umzubrechen.
+- **Aktionen Anwenden / Zurücksetzen** erstrecken sich über das ganze Raster in einer eigenen Zeile, durch eine Haarlinie getrennt und rechtsbündig. Der alte Trick mit verstecktem Label + der innere Flex-Wrapper in `scan.js` wurden entfernt.
+
+### Hinweise
+- **Nur CSS + eine kleine DOM-Bereinigung** — jede Filter-id (`#scan-filter-*`, `#scan-apply`) und die `SR.render()`-Verdrahtung sind unverändert, der Playwright-Ablauf bleibt also unberührt. Keine neuen i18n-Schlüssel.
+- Im Browser verifiziert (0 Konsolenfehler); abgesichert durch `tests/scan-filters-grid.test.mjs`.
+- Suite: **2381** Tests (+3: `tests/scan-filters-grid.test.mjs`).
+
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — der In-App-Hilfeabschnitt + die cvstart.org-Fläche (Phase 5b, Teil 2)** — der zweite und letzte Teil der Hermes-Dokumentationsarbeit: die Anleitung lebt jetzt im eigenen Hilfeleitfaden der App, in allen 17 Sprachen, und der eingebaute Dokumentations-Assistent beantwortet Hermes-Fragen daraus. Weiterhin nur Dokumentation — der Hermes-LLM-Provider-Pfad bleibt **geplant / noch nicht angebunden** (Phase 5).
+
+### Hinzugefügt
+- **In-App-Hilfe §30 „Hermes & Telegram" × 17 Sprachen** — ein neuer Leitfaden-Abschnitt (was Hermes ist + die zwei Integrationsformen; Betrieb auf einem Cloud-Server; Telegram via Hermes + die Regel „was NICHT exponiert werden darf"), erreichbar über `#/help`. Das Grounding von `docs-assistant` / `DocsFab` greift ihn automatisch auf, da beide `docs/help/<lang>.md` lesen.
+- **cvstart.org — ein Link zum Hermes-Leitfaden**, der auf das Dokument auf GitHub zeigt.
+
+### Geändert
+- Hilfe-Bundle-Gate angehoben **29 → 30 H2 / 105 → 108 H3** (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`); §30 fügt 3 H3 hinzu.
+
+### Hinweise
+- **Noch ruft nichts Hermes auf.** Der neue Canary `tests/help-hermes-section.test.mjs` stellt sicher, dass jede Sprache die §30 mit ihren sprachunabhängigen Ankern enthält (`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram). Der Provider bleibt bis zum API-Vertrag aus Phase 5 blockiert.
+- Das schließt das **Dokumentations- + Skill**-Ergebnis von Phase 5b ab; die Provider-Integration (Phase 5) bleibt ein separater, blockierter Punkt.
+- Suite: **2378** Tests (+2: `tests/help-hermes-section.test.mjs`).
+
+## [1.146.0] — 2026-08-12
+
+**Hermes-Agent + Telegram — der Integrationsleitfaden + eine Skill (Phase 5b, Teil 1)** — Sie können career-ops-ui auf einem Cloud-Server betreiben und dessen Events (ein abgeschlossener Scan, ein neuer Report, ein dringender Follow-up) über einen Hermes-Agent von Nous Research zu Telegram überbrücken. Diese Version liefert die Design- + Deployment-Dokumentation und eine hermes-bridge-Skill; der Hermes-LLM-Provider-Pfad bleibt geplant / noch nicht angebunden (blockiert durch den API-Vertrags-Spike der Phase 5). Dokumentation bewusst vor dem Code.
+
+### Hinzugefügt
+- **`docs/integrations/HERMES.md`** — die Tiefenanalyse: die zwei Integrationsformen (OpenAI-kompatibler Endpoint vs. Agent-Runtime), Cloud-Server-Deployment (Reverse Proxy + HTTPS + systemd, der Read-only-Vertrag mit dem Parent auf einer Headless-Maschine), Telegram via Hermes, und eine Bedrohungsmodell-Liste „was NICHT exponiert werden darf" (kein Lebenslauf / Gehalt / Report-Inhalt / Keys in den Kanal).
+- **`## Hermes agent + Telegram`**-Teaser im README — ein kurzer Hinweis + Link, im englischen README und in allen vollständig übersetzten lokalisierten READMEs gespiegelt.
+- Eine **`hermes-bridge`-Skill** (`.claude/skills/hermes-bridge/`), die den Leitfaden operationalisiert — Prüfungen von Voraussetzungen und Geltungsbereich (Node ≥ 18, Keys vorhanden, Erreichbarkeit des Endpoints über den SSRF-sicheren Pfad), schreibt niemals Secrets auf Disk/in Logs und verweigert das Erfinden eines Hermes-Endpoints oder die Behauptung, der Provider sei angebunden.
+- Ein **Integrations**-Abschnitt in `docs/architecture/OVERVIEW.md` verlinkt den Leitfaden.
+
+### Hinweise
+- **Noch ruft nichts Hermes auf.** Ein Canary-Test (`tests/hermes-docs.test.mjs`) prüft die Ehrlichkeits-Marker „geplant / noch nicht angebunden" sowie, dass `llm-dispatch.mjs` keinen Hermes/Nous-Zweig hat — das spätere Anbinden des Providers muss also Dokumentation + Roadmap in derselben Änderung aktualisieren.
+- **Verschoben auf v1.147.0** (Phase 5b, Teil 2): der In-App-Hilfeabschnitt „Hermes & Telegram" H2 × 17 Sprachen und die Marketing-Fläche von cvstart.org.
+- Suite: **2376** Tests (+4: `tests/hermes-docs.test.mjs`).
+
 ## [1.145.0] — 2026-08-12
 
 **Aufschlussreiche Statistiken (Forts.): ein neu baubares Diagramm** — der Tab „Zielrollen-Trend" auf `#/stats` hat jetzt ein **Diagramm erstellen**-Widget: eine Metrik × Dimension wählen und es zeichnet sich live neu. Ein nutzergewünschtes UX-Feature (ohne parent-sync).

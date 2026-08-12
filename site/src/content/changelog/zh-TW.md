@@ -8,6 +8,175 @@
 
 ---
 
+## [1.158.0] — 2026-08-12
+
+**修復 — 兩個顯示層面的小問題(分頁標題中洩漏的 «?» 以及著陸頁錯誤的供應商數量)。** 僅顯示,無行為、安全或資料流變更。
+
+### 修復
+- HelpHint 的 «?» 不再洩漏到 `document.title`。路由器從未處理的 `h1.textContent` 衍生分頁標題,導致顯示為「Vacancy search?」而非「Vacancy search」。現在 `router.js::focusNewView` 複製標題、移除 `.help-hint` 後再讀取文字;頁面上可見的 «?» 保持不變。
+- cvstart.org 顯示「17 AI providers」而非「7」。`Features.astro` 的 `sub()` 在按卡片替換前就把所有 `{n}` 改為語言數(17);現在 `{n}` 按卡片解析(供應商 → 7,語言 → 17)。
+
+### 說明
+- 無伺服器、路由、CSP、SSRF 或 i18n 鍵變更。套件:**2402** 項測試(+1)。
+
+## [1.157.0] — 2026-08-12
+
+**修復 —— 即時評估現在可用任一已設定的供應方執行,不再僅限 Anthropic/Gemini。** 僅設定 `OPENROUTER_API_KEY` 的使用者被錯誤強制進入手動模式。
+
+### 修復
+- **根本原因:** 無金鑰的 `LLM_PROVIDER` 釘選(如 `init` 寫入的 `LLM_PROVIDER=claude`)會走進死胡同;現在會在已設定的供應方之間按 auto 順序回退(在 `selectActiveProvider` 與兩條派發級聯中)。
+- 用戶端門控(`#/deep` 與 mode-page 檢視)現改用 `window.ProviderStatus`(`/api/status/providers`,全部 7 個),不再用過時的 Anthropic/Gemini 探測;重寫文案(deep/eval × 17)+ 儀表板「即時評估」徽章 + `config.llmProviderHint`。
+
+### 說明
+- 無安全變更。套件:**2401** 項測試(+5)。
+
+## [1.156.0] — 2026-08-12
+
+**重構 —— 將 `scan.js` 拆分到大小上限以下(P-16)+ 一個 CodeQL 修復。** `scan.js` 原有 **906 行**;提取了兩個保持行為的工廠 → **648 行**。完成 P-15/P-16 檢視拆分。
+
+### 變更
+- 新增 `scan/runner.js`(掃描執行引擎)與 `scan/filters.js`(過濾狀態機),透過 `ctx`/`refs` 包;`scan.js` 連接兩者。
+
+### 修復
+- CodeQL `js/useless-assignment-to-local`(#428)於 `config/tab-controller.js`:`let n = i;` → `let n;`。
+
+### 說明
+- 純重構,行為不變;4 個讀取原始碼的測試已改指向。兩個大檢視現均低於 800(P-15/P-16 完成)。套件:**2396** 項測試。
+
+## [1.155.0] — 2026-08-12
+
+**重構 —— 將 `config.js` 拆分到大小上限以下(P-15)。** `config.js` 原有 **1030 行**(超過 800 行上限);提取了兩個保持行為的模組,降到 **783 行**。
+
+### 變更
+- 新增 `config/field-specs.js`(欄位資料 + 模型清單)與 `config/tab-controller.js`(分頁列工廠);`config.js` 引用它們,渲染邏輯不變。
+
+### 說明
+- 純重構,行為不變;6 個讀取原始碼的測試已改指向。`scan.js`(906)維持原樣(已部分拆分;核心耦合過重,機械拆分反而更糟)。套件:**2396** 項測試。
+
+## [1.154.0] — 2026-08-12
+
+**新指南 —— 「在雲端執行整個技術棧」。** career-ops 自身沒有雲/伺服器說明,故新增一份:把父級 **career-ops** 流水線、此 **career-ops-ui** 檢視器與 AI **引擎**(透過 Claude Code 的 **Claude 訂閱**、本機 **Hermes**,或 API 金鑰)放到一台常開小型伺服器上的分步指南。以 17 種語言的**說明 §31**、README 章節和 wiki 頁面提供。
+
+### 新增
+- **說明 §31 「在雲端執行整個技術棧」**(× 17)—— 三個部分、開通 + 安裝、選擇引擎、安全暴露(HTTPS 反向代理 + 認證 + CSP/SSRF/XSS/無金鑰不變式)。說明包擴展到 **31 H2 / 112 H3**。
+- **README** —— 「在雲端執行整個技術棧」章節(× 17)+ wiki 的 **Cloud-Deployment** 頁面。
+
+### 說明
+- **僅文件** —— 無路由、伺服器或用戶端改動;無新增 i18n 鍵。說明的 4 個測試改為 31 H2 / 112 H3 契約。套件:**2396** 項測試(不變)。
+
+## [1.153.0] — 2026-08-12
+
+**Jobvite 掃描器遷移到公開 XML 來源(父專案同步)。** 父專案下線了 Jobvite JSON API(現在回傳零職缺);web-ui 的 source 用的正是這個失效端點,因此任何被追蹤的 Jobvite 公司都靜默掃描為空。移植父專案修復(`#2623`):現在讀取以 `companyEId` 為鍵的公開按租戶 **XML 來源**。
+
+### 修復
+- source 呼叫已下線的 JSON API 並回傳零職缺;現改為呼叫 `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` 並解析 XML `<result><job>…`(CDATA + 實體解碼,`detail-url` 優先於 `apply-url`)。
+
+### 變更
+- `companyEId` 解析:(1) 入口的 `company_eid:`,(2) 明確 `api:` 的 `c=` 參數,(3) 看板頁探索。`fetchText`(`http-json.mjs`)在 non-ok 錯誤上附加 `.location`/`.retryAfter`(唯讀,向後相容)。
+
+### 說明
+- **安全** — 兩個主機(`jobs.jobvite.com`、`app.jobvite.com`)在每次請求前由 `assertJobviteUrl` 固定:僅 https、嚴格白名單、**從不跟隨重新導向**。`companyEId` 僅為 `?c=` 值;source 數量不變。
+- 套件:**2396** 項測試(+4)。
+
+## [1.152.0] — 2026-08-12
+
+**Hermes 供應方 — 接線完成 + 文件同步。** 對 v1.151.0 Hermes 整合的程式碼審查發現兩處真實缺口與四項完整性事項,皆於此修正;並將全應用的 LLM 供應方清單在所有文件面與 17 種語言中補齊為完整的七個。
+
+### 修復
+- **`#/config` 無法強制 Hermes** — `LLM_PROVIDER` 下拉僅列出六個供應方,因此可設定 `HERMES_API_KEY` 卻無法在 UI 中強制 Hermes。現在 `hermes` 是第 8 個選項,新增的一致性測試可防止下拉再次與 `LLM_PROVIDERS` 偏離。
+- **較短的自架金鑰被靜默拒絕** — `isUsableKey` 的 20 字元下限是按雲端金鑰校準的;`hasHermesKey` 現改用放寬的 8 字元下限(Hermes 文件範例為 19 字元)。
+
+### 變更
+- 供應方清單在 README(× 17)、應用內說明(× 17)、`config.llmProviderHint` 字典(× 17)與 `docs/sdd` 中統一為完整七個;`hermesChatUrl` 會補全無路徑的主機;手動回退文案點名 Hermes。
+
+### 說明
+- **安全性不變** — 無新路由、無 SSRF/CSP 變動;health/doctor 新增一列 `HERMES_API_KEY`。
+- 套件:**2392** 項測試(+2)。
+
+## [1.151.0] — 2026-08-12
+
+**Hermes 現已成為已接上的 LLM 供應方（Phase 5）** — Phase 5 的調查確認 Nous Research 的 Hermes 提供一個 **相容 OpenAI 的 API Server**（`hermes gateway` → `POST /v1/chat/completions`),因此 career-ops-ui 現在像 OpenAI/Qwen 一樣透過本機 Hermes 執行即時評估。在 **應用設定** 中設定 `HERMES_API_KEY`,它便加入 auto 順序(最後一個)。收尾路線圖最後一個未決項 —— **Phase 5, Shape A**。
+
+### 新增
+- **Hermes LLM 供應方（Shape A）** — 共享 `runOpenAICompatible` 客戶端之上的 `runHermes`(`server/lib/openai.mjs`),在 **兩個** 級聯(`llm-dispatch.mjs` + `routes/llm.mjs`)中設閘,auto 順序尾端 + `LLM_PROVIDER=hermes` 固定項、`/api/status/providers`、`llm-pricing.mjs`。以 Bearer 認證存取可設定的本機 base URL(預設 `http://127.0.0.1:8642/v1`)—— 這是 **已設定** 的供應方端點(如 OpenRouter/Qwen),而非使用者提供的職缺 URL,因此不經過 SSRF 防護。
+- **`#/config` 欄位** — `HERMES_API_KEY`(機密) + `HERMES_BASE_URL` + `HERMES_MODEL`(預設 `hermes-agent`),6 個新 i18n 鍵 × **17 種語言**(快照 1208 → 1214)。
+
+### 變更
+- 調查已解決:`docs/integrations/HERMES.md`、應用內說明 §30（× 17）、README 預告（× 14）、`hermes-bridge` 技能與路線圖,從「規劃中 / 尚未接上」轉為 **已接上（Shape A）**。無需 Shape B(客製的代理執行環境 relay)。
+
+### 說明
+- **安全:** 供應方的 fetch 是一個已設定端點,與其它相容 OpenAI 的供應方同類 —— 無新增 SSRF 面,無 CSP/清洗器改動。`HERMES_API_KEY` 是 `SECRET_KEY`(絕不回顯)。
+- 測試(CI 隔離、樁傳輸):`tests/hermes-provider.test.mjs`(+5);v1.146.0 的「無 Hermes 分支」哨兵被 **反轉**,改為斷言其已接上;供應方面測試更新為 7 供應方順序。
+- 套件:**2390** 項測試(+5)。
+
+## [1.150.0] — 2026-08-12
+
+**一致的空狀態(Phase 4 打磨)** — 每個「尚無內容」面板現在都透過唯一的共享 `.empty` 樣式繪製,而不再由個別視圖用魔法數字 `40px` 行內重複宣告外觀。一次小的視覺一致性修正;`#/activity`、`#/cv-studio`、`#/stats`、`#/usage` 的空狀態現在與其它所有面板一致(權杖化的 48px 內距 + 虛線邊框)。
+
+### 變更
+- **`#/activity`、`#/cv-studio`、`#/stats`、`#/usage`** 移除了空面板上的行內 `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` —— 這三個屬性共享的 `.empty` 類別已經提供(`--space-7` = 48px、置中、淡色、虛線邊框)。於是這四個與其它約 25 個 `.empty` 面板繪製完全一致。
+- 各視圖正當的覆寫(`#/dashboard` `width:100%`、`#/pipeline` `border:none`)未動 —— 僅移除純冗餘的重複宣告。
+
+### 說明
+- **僅用戶端 CSS 用法清理** —— 無路由、伺服器、i18n 鍵或 CSS 規則改動(`.empty` 類別本身不變);字典快照 1208。已在瀏覽器驗證(`#/usage` 空面板計算為 48px 內距 + 虛線邊框,0 主控台錯誤)。
+- 新哨兵測試 `tests/empty-state-consistency.test.mjs` 讓 `.empty` 保持唯一真實來源。Phase 5(Hermes 供應方)仍被阻擋。
+- 套件:**2385** 項測試(+2:`tests/empty-state-consistency.test.mjs`)。
+
+## [1.149.0] — 2026-08-12
+
+**入口已移入設定(Phase 4)** — `#/portals` 現位於 **Setup** 導覽分組中、*應用設定* 旁,而不再在 *Sourcing* 下。自 v1.144.0 起它就是一個設定介面(啟用/停用追蹤的公司 + ATS 健康探測),而非 sourcing 操作 —— 所以這才是它該在的位置。僅導覽調整;頁面與路由不變。
+
+### 變更
+- **`#/portals` 導覽項 → Setup 分組**(位於 `public/index.html`),緊接 *應用設定* 之後。已從 *Sourcing* 分組移除(該分組保留 Scan / Pipeline / Auto-pipeline / 已融資公司)。`#/portals` 路由、視圖與 `nav.portals` 標籤均不變 —— 僅側邊欄位置移動。
+
+### 說明
+- **僅導覽標記** —— 無路由、視圖、i18n 鍵或伺服器改動。已在瀏覽器驗證(0 主控台錯誤);由 `tests/portals-nav-placement.test.mjs` 保護。
+- 套件:**2383** 項測試(+2:`tests/portals-nav-placement.test.mjs`)。
+
+## [1.148.0] — 2026-08-12
+
+**更清爽的掃描篩選(Phase 4)—— 篩選面板現已改為整潔的網格** —— `#/scan` 的篩選面板從寬度參差、由剛性方框組成的 flex-wrap 改為響應式網格,「套用 / 重設」操作現在獨佔一列並靠右對齊。篩選項與行為不變 —— 只是更易閱讀。一次設計打磨(無 parent-sync)。
+
+### 變更
+- **`#/scan` 篩選面板 → 響應式網格** —— `.scan-filters` 現為 `display: grid`,欄為 `repeat(auto-fill, minmax(180px, 1fr))`,間距均勻,使 11 個帶標籤的篩選項在任意寬度下都對齊成整潔的欄,而不再參差地換行。
+- **套用 / 重設操作** 橫跨整個網格獨佔一列,以一條細線分隔並靠右對齊。移除了 `scan.js` 中舊的隱藏標籤技巧 + 內部 flex 包裹。
+
+### 說明
+- **僅 CSS + 少量 DOM 清理** —— 每個篩選項 id(`#scan-filter-*`、`#scan-apply`)與 `SR.render()` 的接線均未改動,因此 Playwright 流程不受影響。無新增 i18n 鍵。
+- 已在瀏覽器驗證(0 主控台錯誤);由 `tests/scan-filters-grid.test.mjs` 保護。
+- 套件:**2381** 項測試(+3:`tests/scan-filters-grid.test.mjs`)。
+
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram —— 應用內說明章節 + cvstart.org 介面(Phase 5b，第 2 部分)** —— Hermes 文件工作的第二部分,也是最後一部分:操作說明現已放入應用自己的說明指南中,涵蓋全部 17 種語言,應用內文件助理也據此回答 Hermes 相關問題。仍僅限文件 —— Hermes LLM 供應方路徑仍處於 **規劃中 / 尚未接上**(Phase 5)。
+
+### 新增
+- **應用內說明 §30「Hermes & Telegram」× 17 種語言** —— 新的指南章節(Hermes 是什麼 + 兩種整合形態;在雲端伺服器上執行;經 Hermes 轉發到 Telegram + 「不該公開什麼」規則),可從 `#/help` 存取。`docs-assistant` / `DocsFab` 的 grounding 會自動取得它(兩者都讀取 `docs/help/<lang>.md`)。
+- **cvstart.org —— 指向 Hermes 指南的連結**,跳轉到 GitHub 文件。
+
+### 變更
+- 說明套件門檻提升至 **29 → 30 H2 / 105 → 108 H3**(`canonical-docs-coverage`、`help-ui`、`help-ru-config-section`);§30 新增 3 個 H3。
+
+### 說明
+- **目前仍沒有任何程式碼呼叫 Hermes。** 新哨兵測試 `tests/help-hermes-section.test.mjs` 斷言每種語言都包含帶有語言無關錨點(`docs/integrations/HERMES.md`、`hermes-bridge`、`#/help`、`127.0.0.1`、Telegram)的 §30。該供應方仍卡在 Phase 5 的 API 合約調查上。
+- 這就收尾了 Phase 5b 的 **文件 + 技能** 交付物;供應方整合(Phase 5)仍是一個獨立且被阻擋的事項。
+- 套件:**2378** 項測試(+2:`tests/help-hermes-section.test.mjs`)。
+
+## [1.146.0] — 2026-08-12
+
+**Hermes 代理 + Telegram——整合指南 + 一個 skill（Phase 5b，第 1 部分）** — 你可以在雲端伺服器上執行 career-ops-ui,並透過 Nous Research 的 Hermes 代理把它的事件(一次完成的掃描、一份新報告、一次緊急跟進)串接到 Telegram。本次發布提供設計 + 部署文件與一個 hermes-bridge skill;Hermes LLM 供應方路徑仍處於規劃中/尚未接上的狀態(卡在 Phase 5 的 API 契約調查上)。這是刻意讓文件先行於程式碼。
+
+### 新增
+- **`docs/integrations/HERMES.md`** — 深度指南:兩種整合形態(相容 OpenAI 的 endpoint 與代理執行環境)、雲端伺服器部署(reverse proxy + HTTPS + systemd,在無頭伺服器上對 parent 的唯讀約定)、經 Hermes 轉發到 Telegram,以及一份威脅模型「不可暴露的內容」清單(不向頻道暴露履歷/薪資/報告內文/金鑰)。
+- README 中的 **`## Hermes agent + Telegram`** 預告 — 英文 README 中的簡短指引 + 連結,並同步到已完整翻譯的各語言 README。
+- 一個讓指南可落實執行的 **`hermes-bridge` skill**(`.claude/skills/hermes-bridge/`)——前提條件與範圍檢查(Node ≥ 18、金鑰是否存在、透過 SSRF 安全路徑確認 endpoint 可連通),絕不將金鑰寫入磁碟/日誌,並拒絕捏造 Hermes 的 endpoint 或宣稱該供應方已接上。
+- `docs/architecture/OVERVIEW.md` 中新增 **Integrations** 小節連結到該指南。
+
+### 說明
+- **目前還沒有任何程式碼呼叫 Hermes。** 一個哨兵測試(`tests/hermes-docs.test.mjs`)斷言「規劃中/尚未接上」的誠實標記仍然存在,並確認 `llm-dispatch.mjs` 中沒有 Hermes/Nous 分支——因此日後接上該供應方時,必須在同一次變更中同步更新文件 + roadmap。
+- **延後至 v1.147.0**（Phase 5b，第 2 部分):應用內說明中的「Hermes & Telegram」H2 小節 × 17 種語言,以及 cvstart.org 的行銷頁面。
+- 套件:**2376** 項測試(+4:`tests/hermes-docs.test.mjs`)。
+
 ## [1.145.0] — 2026-08-12
 
 **有洞察力的統計（續）：可重建圖表** — `#/stats` 的「目標職位趨勢」分頁新增 **建立圖表** 小工具：選擇指標 × 維度即可即時重繪。使用者提出的 UX 需求（無 parent-sync）。

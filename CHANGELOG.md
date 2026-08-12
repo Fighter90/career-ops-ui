@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.158.0] — 2026-08-12
+
+**Fixed — two cosmetic display bugs (a leaked "?" in tab titles, a wrong provider count on the landing).** Display-only; no behaviour, security, or data-flow change.
+
+### Fixed
+- **The HelpHint `?` no longer leaks into `document.title`.** Views built via `HelpHint.title(text, key)` render their `<h1>` as `[<span>text</span>, <button class="help-hint">?</button>]`; the router derived the per-route tab title from the raw `h1.textContent`, so the tab (and the screen-reader "page changed" announcement) read "Vacancy search?" instead of "Vacancy search". `router.js::focusNewView` now deep-clones the heading, strips `.help-hint`, then reads the text — the live heading's visible "?" is untouched.
+- **cvstart.org showed "17 AI providers" instead of "7".** The landing's `Features.astro` `sub()` helper eagerly rewrote every `{n}` to the locale count (17) before the per-card override could set the providers card to `facts.providers` (7), so the feature card and the stats banner disagreed on the same page. `{n}` is now resolved per-card (providers → 7, languages → 17).
+
+### Notes
+- No server, route, CSP, SSRF, or i18n-key change; `facts.json` shape unchanged (`providers: 7`, `locales: 17`).
+- Tests: `tests/document-title-per-route.test.mjs` (+1, source-static guard that the title is computed from a `.help-hint`-stripped clone). Suite: **2402** tests (+1); Playwright smoke/full-cycle/forms 62/62.
+
 ## [1.157.0] — 2026-08-12
 
 **Fixed — live evals now run on ANY configured provider, not just Anthropic/Gemini.** A user with only `OPENROUTER_API_KEY` set was wrongly forced into manual mode ("set ANTHROPIC_API_KEY or GEMINI_API_KEY…"). Two independent causes: a stale server-side pin, and stale client-side gating.

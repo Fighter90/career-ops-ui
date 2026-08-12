@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.158.0] — 2026-08-12
+
+**Corretto — due bug cosmetici di visualizzazione (un «?» che trapelava nel titolo della scheda e un conteggio dei provider errato nella landing).** Solo visualizzazione; nessuna modifica a comportamento, sicurezza o flusso dei dati.
+
+### Corretto
+- Il «?» di HelpHint non trapela più in `document.title`. Il router derivava il titolo della scheda dal `h1.textContent` grezzo, mostrando «Vacancy search?» invece di «Vacancy search». `router.js::focusNewView` ora clona l'intestazione, rimuove `.help-hint` e poi legge il testo; il «?» visibile resta intatto.
+- cvstart.org mostrava «17 AI providers» invece di «7». L'helper `sub()` in `Features.astro` riscriveva ogni `{n}` con il numero di lingue (17) prima della sostituzione per scheda; ora `{n}` è risolto per scheda (provider → 7, lingue → 17).
+
+### Note
+- Nessuna modifica a server, route, CSP, SSRF o chiavi i18n; forma di `facts.json` invariata. Suite: **2402** test (+1).
+
 ## [1.157.0] — 2026-08-12
 
 **Corretto — le valutazioni live ora girano con QUALSIASI provider configurato, non solo Anthropic/Gemini.** Un utente con solo `OPENROUTER_API_KEY` veniva forzato erroneamente in modalità manuale.

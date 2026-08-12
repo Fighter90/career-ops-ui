@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2402%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versão — v1.157.0** — **Evals ao vivo com qualquer provedor (correção)** — Um usuário com apenas `OPENROUTER_API_KEY` era forçado ao modo manual. Causa: um pin `LLM_PROVIDER=claude` (do `init`) sem chave; agora recorre a qualquer provedor configurado, e o cliente lê `/api/status/providers` (os 7), não só Anthropic/Gemini. **2401 testes.**
+> **🆕 Última versão — v1.158.0** — **Correções cosméticas de exibição** — A «?» do HelpHint não vaza mais para o título da aba, e a landing cvstart.org agora diz «7 AI providers» (não 17), combinando com o painel de estatísticas. **2402 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

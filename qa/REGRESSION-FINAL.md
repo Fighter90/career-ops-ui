@@ -8,7 +8,7 @@
 > `qa/reports/<YYYY-MM-DD>-REGRESSION.md` (current reports home; the old
 > `qa/v54-regression/` path is retired).
 >
-> **Current baseline — v1.157.0 (update on each release):**
+> **Current baseline — v1.158.0 (update on each release):**
 >
 > - **16 locales** (`en es pt-BR ko ja ru zh-CN zh-TW fr pl uk da ar de
 >   it tr`; ar = RTL). Everywhere the *body* below says "9 locales" read

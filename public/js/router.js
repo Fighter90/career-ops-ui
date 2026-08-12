@@ -59,9 +59,16 @@ window.Router = (function () {
     // and distinct per route with no new i18n keys. Set BEFORE the
     // first-paint guard below so the initial tab is titled too.
     const heading = content.querySelector('h1, .page-title');
-    const viewTitle = heading
-      ? heading.textContent.trim().replace(/\s+/g, ' ')
-      : '';
+    // v1.158.0 (NIT-1) — exclude the HelpHint "?" affordance (a
+    // `button.help-hint` appended inside the h1 by HelpHint.title) from the
+    // computed title, so document.title reads "Vacancy search" not
+    // "Vacancy search?". Clone-and-strip so the live DOM heading is untouched.
+    let viewTitle = '';
+    if (heading) {
+      const clone = heading.cloneNode(true);
+      clone.querySelectorAll('.help-hint').forEach((el) => el.remove());
+      viewTitle = clone.textContent.trim().replace(/\s+/g, ' ');
+    }
     document.title = viewTitle
       ? `${viewTitle} — career-ops-ui`
       : 'career-ops-ui — command center';

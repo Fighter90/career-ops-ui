@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.158.0] — 2026-08-12
+
+**Düzeltildi — iki kozmetik görüntüleme hatası (sekme başlığına sızan bir «?» ve açılış sayfasında yanlış sağlayıcı sayısı).** Yalnızca görüntüleme; davranış, güvenlik veya veri akışı değişikliği yok.
+
+### Düzeltildi
+- HelpHint'in «?» işareti artık `document.title`'a sızmıyor. Yönlendirici sekme başlığını ham `h1.textContent`'ten türetiyordu, bu yüzden sekme «Vacancy search» yerine «Vacancy search?» gösteriyordu. `router.js::focusNewView` artık başlığı klonluyor, `.help-hint`'i kaldırıyor ve sonra metni okuyor; görünen «?» dokunulmadan kalıyor.
+- cvstart.org «7» yerine «17 AI providers» gösteriyordu. `Features.astro`'daki `sub()` yardımcısı, kart bazlı değiştirmeden önce tüm `{n}` değerlerini dil sayısıyla (17) yeniden yazıyordu; artık `{n}` kart bazında çözülüyor (sağlayıcılar → 7, diller → 17).
+
+### Notlar
+- Sunucu, rota, CSP, SSRF veya i18n anahtarı değişikliği yok; `facts.json` biçimi değişmedi. Takım: **2402** test (+1).
+
 ## [1.157.0] — 2026-08-12
 
 **Düzeltildi — canlı değerlendirmeler artık yalnızca Anthropic/Gemini değil, YAPILANDIRILMIŞ herhangi bir sağlayıcıyla çalışıyor.** Yalnızca `OPENROUTER_API_KEY` ayarlı bir kullanıcı yanlışlıkla manuel moda zorlanıyordu.

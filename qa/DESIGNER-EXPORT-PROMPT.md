@@ -8,7 +8,7 @@
 >
 > Output **one** file: `qa/reports/<YYYY-MM-DD>-DESIGN-EXPORT.md`.
 >
-> Current baseline **v1.157.0** (32 route modules · 79 scan sources =
+> Current baseline **v1.158.0** (32 route modules · 79 scan sources =
 > 74 EN + 5 RU · 17 locales · help 31 H2 / 112 H3 · **7 headless LLM
 > providers** auto-ordered Anthropic → Gemini → OpenAI → Qwen → OpenRouter →
 > GitHub Models → Hermes — a keyless forced `LLM_PROVIDER` falls back to any

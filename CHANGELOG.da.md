@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.158.0] — 2026-08-12
+
+**Rettet — to kosmetiske visningsfejl (et «?» der lækkede i fanetitlen og et forkert udbyderantal på landingssiden).** Kun visning; ingen ændring af adfærd, sikkerhed eller dataflow.
+
+### Rettet
+- HelpHints «?» lækker ikke længere til `document.title`. Routeren udledte fanetitlen fra det rå `h1.textContent`, så fanen viste «Vacancy search?» i stedet for «Vacancy search». `router.js::focusNewView` kloner nu overskriften, fjerner `.help-hint` og læser derefter teksten; det synlige «?» er urørt.
+- cvstart.org viste «17 AI providers» i stedet for «7». `sub()`-helperen i `Features.astro` omskrev alle `{n}` til sprogantallet (17) før den kortvise substitution; `{n}` løses nu pr. kort (udbydere → 7, sprog → 17).
+
+### Noter
+- Ingen ændring af server, rute, CSP, SSRF eller i18n-nøgler; `facts.json`-form uændret. Suite: **2402** tests (+1).
+
 ## [1.157.0] — 2026-08-12
 
 **Rettet — live-evals kører nu på ENHVER konfigureret udbyder, ikke kun Anthropic/Gemini.** En bruger med kun `OPENROUTER_API_KEY` blev fejlagtigt tvunget i manuel tilstand.

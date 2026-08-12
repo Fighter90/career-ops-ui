@@ -8,10 +8,12 @@ interface Props {
 }
 const { locale } = Astro.props;
 const adaptersRounded = Math.floor(facts.adapters / 5) * 5;
-const sub = (s: string) =>
-  s
-    .replace('{adapters}', String(adaptersRounded))
-    .replace(/\{n\}/g, String(facts.locales));
+// v1.158.0 (NIT-2) — `sub()` must NOT resolve `{n}` itself. It used to
+// `.replace(/\{n\}/g, facts.locales)`, which greedily rewrote the providers
+// card's `{n}` to the locale count (17) BEFORE the per-card override below
+// could set it to facts.providers (7). `{n}` is now resolved per-card so the
+// providers card reads "7" and the languages card reads "17".
+const sub = (s: string) => s.replace('{adapters}', String(adaptersRounded));
 
 const CARDS = [
   { icon: 'search', n: 1, subst: true },
@@ -39,8 +41,9 @@ const CARDS = [
       {CARDS.map((c) => {
         let title = t(locale, `features.${c.n}.title`);
         let desc = t(locale, `features.${c.n}.desc`);
-        title = sub(title).replace('{n}', String('providers' in c && c.providers ? facts.providers : facts.locales));
-        desc = sub(desc);
+        const nValue = String('providers' in c && c.providers ? facts.providers : facts.locales);
+        title = sub(title).replace(/\{n\}/g, nValue);
+        desc = sub(desc).replace(/\{n\}/g, nValue);
         return (
           <li class="card reveal">
             <span class="icon-chip mb-4"><Icon name={c.icon} class="h-5 w-5" /></span>
