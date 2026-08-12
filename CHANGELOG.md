@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.154.0] — 2026-08-12
+
+**New guide — "Running the whole stack in the cloud."** career-ops has no cloud/server story of its own, so this adds one: a step-by-step recipe for putting the parent **career-ops** pipeline, this **career-ops-ui** viewer, and the AI **engine** (a **Claude subscription** via the Claude Code CLI, a local **Hermes** gateway, or provider API keys) on a small always-on server — provision, pick your engine, and expose it safely. It ships as in-app **Help §31** in all 17 languages, a README section, a wiki page, and (via the help mirror) the site.
+
+### Added
+- **In-app Help §31 "Running the whole stack in the cloud"** (× 17 locales) — the three moving parts (pipeline / viewer / engine), provision + install (VPS, Node ≥ 18), pick your engine (Claude subscription / Hermes / API keys, mixable), and expose it safely (HTTPS reverse proxy + auth + the CSP/SSRF/XSS/no-secrets invariants that must survive the move off `127.0.0.1`). Help bundle grows to **31 H2 / 112 H3** (was 30/108).
+- **README** — a `## Run the whole stack in the cloud` section (× 17) pointing to Help §31, `docs/integrations/HERMES.md`, and the new wiki page.
+- **Wiki** — a dedicated **Cloud-Deployment** page (the three-parts table, provision, engine choice, and the "must survive the move" invariants), linked from Home.
+
+### Notes
+- **Docs-only** — no route, no server, no client-code change; no new i18n key (help is Markdown, not the dict). The four help-bundle gate tests move to the 31 H2 / 112 H3 contract (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`, `locales-de-it-tr`).
+- Grounded in the existing `docs/integrations/HERMES.md` §2 cloud-deployment checklist and the parent's own docs (which recommend Node 22.5+ and the eight first-class agent CLIs).
+- Suite: **2396** tests (unchanged — the gate assertions were updated, not added).
+
 ## [1.153.0] — 2026-08-12
 
 **Jobvite scanner migrated to the public XML feed (parent-sync).** The parent career-ops retired the Jobvite JSON API (it now 302-redirects and returns zero jobs); web-ui's jobvite source used that same dead endpoint, so any tracked Jobvite company silently scanned empty. This ports the parent's fix (`#2623`) into the web-ui source contract: the source now reads the public per-tenant **XML feed** on a different host, keyed by an opaque `companyEId`.

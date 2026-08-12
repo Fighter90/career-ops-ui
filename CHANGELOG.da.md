@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.154.0] — 2026-08-12
+
+**Ny guide — "Kør hele stakken i skyen."** career-ops har ingen egen sky/server-fortælling, så vi tilføjer en: en trin-for-trin-opskrift på at lægge det overordnede **career-ops**-pipeline, denne **career-ops-ui**-fremviser og AI-**motoren** (et **Claude-abonnement** via Claude Code, en lokal **Hermes**, eller API-nøgler) på en lille altid-tændt server. Leveres som **Hjælp §31** på 17 sprog, et README-afsnit og en wiki-side.
+
+### Tilføjet
+- **Hjælp §31 "Kør hele stakken i skyen"** (× 17) — de tre dele, klargør + installer, vælg motor, og eksponer sikkert (HTTPS reverse proxy + auth + CSP/SSRF/XSS/ingen-hemmeligheder-invarianterne). Hjælpe-bundtet vokser til **31 H2 / 112 H3**.
+- **README** — et "Kør hele stakken i skyen"-afsnit (× 17) + en **Cloud-Deployment**-wiki-side.
+
+### Noter
+- **Kun docs** — ingen rute, server eller klientændring; ingen ny i18n-nøgle. De 4 hjælpe-tests flytter til 31 H2 / 112 H3-kontrakten. Suite: **2396** tests (uændret).
+
 ## [1.153.0] — 2026-08-12
 
 **Jobvite-scanneren migreret til det offentlige XML-feed (forælder-sync).** Forælderen pensionerede Jobvites JSON-API (returnerer nu nul job); web-ui’s source brugte samme døde endpoint, så enhver sporet Jobvite-virksomhed scannede tomt i stilhed. Porterer forælderens fix (`#2623`): source’en læser nu det offentlige per-tenant **XML-feed**, nøglet på `companyEId`.

@@ -12,9 +12,9 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Seneste udgivelse — v1.153.0** — **Jobvite-scanner rettet (forælder-sync)** — Forælderen pensionerede Jobvites JSON-API, så enhver sporet Jobvite-virksomhed scannede tomt i stilhed. Porterer forælderens fix — source’en læser nu det offentlige per-tenant XML-feed (nøglet på `companyEId`, to fastgjorte hosts, ingen redirect følges). **2396 tests.**
+> **🆕 Seneste udgivelse — v1.154.0** — **Kør hele stakken i skyen** — En ny trin-for-trin-guide til at lægge det overordnede career-ops-pipeline + denne fremviser + din AI-motor (et Claude-abonnement, en lokal Hermes, eller API-nøgler) på en lille altid-tændt server — som Hjælp §31 på 17 sprog, et README-afsnit og en wiki-side. **2396 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 
@@ -619,6 +619,14 @@ De fuldt LLM-drevne tilstande (`oferta`, `deep`, `contacto`, `apply`, `batch`, `
 Det eksisterende `/career-ops apply` Playwright-formularudfyldningsflow inde i Claude Code forbliver den eneste måde at virkelig auto-udfylde ansøgningsformularer på — UI'ens *Apply helper* genererer en tjekliste i stedet.
 
 For vurderingen af produktionsparathed (deployment-gates, risikoregister, udskudt arbejde) se [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md). TL;DR: klar til single-tenant loopback; LAN-eksponering afventer v2.0 P-12 auth-gate.
+
+---
+
+## Kør hele stakken i skyen
+
+career-ops er bedst **altid tændt** — scanner mens du sover, tilgængelig fra enhver browser. For at lægge hele stakken på en lille server — det overordnede **career-ops**-pipeline, denne **career-ops-ui**-fremviser, og **motoren** der kører AI’en (dit **Claude-abonnement** via Claude Code-CLI’en, en lokal **Hermes**-gateway, eller provider-API-nøgler) — klargør en VPS (Node ≥ 18), installer forælderen + dette repo, vælg din motor, og eksponer fremviseren bag en **HTTPS reverse proxy med autentificering**, mens sikkerhedsinvarianterne (CSP, SSRF-guard, XSS-grænse, ingen hemmeligheder i logs) forbliver intakte.
+
+📖 Den indbyggede **Hjælp §31** ("Kør hele stakken i skyen") gennemgår det trin for trin på alle 17 sprog; operatør-tjeklisten er [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), og [wiki-siden om sky-deployment](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) har opslagstabellerne.
 
 ---
 

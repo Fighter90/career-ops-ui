@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.154.0] — 2026-08-12
+
+**Neuer Leitfaden — „Den ganzen Stack in der Cloud betreiben“.** career-ops hat keine eigene Cloud/Server-Story, also fügen wir eine hinzu: eine Schritt-für-Schritt-Anleitung, um die übergeordnete **career-ops**-Pipeline, diesen **career-ops-ui**-Viewer und die KI-**Engine** (ein **Claude-Abo** über Claude Code, ein lokales **Hermes**, oder API-Schlüssel) auf einen kleinen Always-on-Server zu bringen. Als **Hilfe §31** in 17 Sprachen, ein README-Abschnitt und eine Wiki-Seite.
+
+### Hinzugefügt
+- **Hilfe §31 „Den ganzen Stack in der Cloud betreiben“** (× 17) — die drei Teile, Bereitstellen + Installieren, Engine wählen, sicher exponieren (HTTPS-Reverse-Proxy + Auth + die CSP/SSRF/XSS/keine-Secrets-Invarianten). Das Hilfe-Bundle wächst auf **31 H2 / 112 H3**.
+- **README** — ein Abschnitt „Den ganzen Stack in der Cloud betreiben“ (× 17) + eine **Cloud-Deployment**-Wiki-Seite.
+
+### Hinweise
+- **Nur Docs** — keine Route, kein Server, keine Client-Änderung; kein neuer i18n-Schlüssel. Die 4 Hilfe-Tests wechseln auf den 31 H2 / 112 H3-Vertrag. Suite: **2396** Tests (unverändert).
+
 ## [1.153.0] — 2026-08-12
 
 **Jobvite-Scanner auf den öffentlichen XML-Feed migriert (Parent-Sync).** Der Parent hat die Jobvite-JSON-API stillgelegt (liefert jetzt null Jobs); der web-ui-Source nutzte denselben toten Endpunkt, sodass jede getrackte Jobvite-Firma still leer scannte. Portiert den Parent-Fix (`#2623`): der Source liest jetzt den öffentlichen Per-Tenant-**XML-Feed**, geschlüsselt über `companyEId`.

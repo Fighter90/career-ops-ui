@@ -14,9 +14,9 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.153.0** — **Jobvite स्कैनर ठीक किया (पैरेंट-सिंक)** — पैरेंट ने Jobvite JSON API सेवानिवृत्त कर दी, इसलिए कोई भी ट्रैक की गई Jobvite कंपनी चुपचाप खाली स्कैन होती थी। पैरेंट फ़िक्स पोर्ट किया — source अब सार्वजनिक प्रति-टेनेंट XML फ़ीड पढ़ता है (`companyEId` कुंजी, दो पिन किए गए होस्ट, कोई रीडायरेक्ट नहीं)। **2396 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.154.0** — **पूरे स्टैक को क्लाउड में चलाएँ** — पैरेंट career-ops पाइपलाइन + इस व्यूअर + आपके AI इंजन (एक Claude सदस्यता, एक स्थानीय Hermes, या API कुंजियाँ) को एक छोटे हमेशा-चालू सर्वर पर रखने की नई चरण-दर-चरण गाइड — 17 भाषाओं में सहायता §31, एक README अनुभाग और एक wiki पृष्ठ के रूप में। **2396 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 
@@ -622,6 +622,14 @@ russian_portals:
 Claude Code के अंदर मौजूदा `/career-ops apply` Playwright फ़ॉर्म-फ़िल फ़्लो ही आवेदन फ़ॉर्म को सही मायनों में ऑटो-फ़िल करने का एकमात्र तरीका बना हुआ है — UI का *Apply helper* इसके बजाय एक चेकलिस्ट जनरेट करता है।
 
 प्रोडक्शन-रेडीनेस आकलन (डिप्लॉयमेंट गेट्स, रिस्क रजिस्टर, टाला गया कार्य) के लिए [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md) देखें। संक्षेप में: सिंगल-टेनेंट लूपबैक के लिए तैयार; LAN एक्सपोज़र v2.0 P-12 ऑथ गेट का इंतज़ार कर रहा है।
+
+---
+
+## पूरे स्टैक को क्लाउड में चलाएँ
+
+career-ops **हमेशा चालू** रहने पर सर्वोत्तम है — जब आप सोते हैं तब स्कैन करता है, किसी भी ब्राउज़र से पहुँच योग्य। पूरे स्टैक को एक छोटे सर्वर पर रखने के लिए — पैरेंट **career-ops** पाइपलाइन, यह **career-ops-ui** व्यूअर, और AI चलाने वाला **इंजन** (Claude Code CLI के माध्यम से आपकी **Claude सदस्यता**, एक स्थानीय **Hermes** गेटवे, या प्रदाता API कुंजियाँ) — एक VPS (Node ≥ 18) तैयार करें, पैरेंट + यह रिपॉज़िटरी इंस्टॉल करें, अपना इंजन चुनें, और सुरक्षा अपरिवर्तनीयताओं (CSP, SSRF गार्ड, XSS सीमा, लॉग में कोई रहस्य नहीं) को बरकरार रखते हुए व्यूअर को **प्रमाणीकरण सहित HTTPS रिवर्स प्रॉक्सी** के पीछे प्रकट करें।
+
+📖 इन-ऐप **सहायता §31** ("पूरे स्टैक को क्लाउड में चलाएँ") सभी 17 भाषाओं में चरण-दर-चरण मार्गदर्शन देती है; ऑपरेटर चेकलिस्ट [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) है, और [क्लाउड परिनियोजन wiki पृष्ठ](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) में संदर्भ तालिकाएँ हैं।
 
 ---
 

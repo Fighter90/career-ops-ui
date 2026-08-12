@@ -12,9 +12,9 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versão — v1.153.0** — **Scanner do Jobvite corrigido (sync com o pai)** — O pai aposentou a API JSON do Jobvite, então toda empresa Jobvite rastreada escaneava vazia em silêncio. Porta o fix do pai — o source agora lê o feed XML público por inquilino (chave `companyEId`, dois hosts fixados, sem seguir redirecionamentos). **2396 testes.**
+> **🆕 Última versão — v1.154.0** — **Rode todo o stack na nuvem** — Um novo guia passo a passo para pôr o pipeline pai career-ops + este visualizador + seu motor de IA (uma assinatura Claude, um Hermes local, ou chaves de API) num servidor pequeno sempre ligado — como Ajuda §31 nos 17 idiomas, uma seção do README e uma página wiki. **2396 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 
@@ -595,6 +595,14 @@ Os modos totalmente LLM-driven (`oferta`, `deep`, `contacto`, `apply`, `batch`, 
 O fluxo existente `/career-ops apply` com Playwright dentro do Claude Code continua sendo a única forma de preencher formulários de candidatura de fato automaticamente — o *Apply helper* da UI gera um checklist no lugar.
 
 Para a avaliação de production-readiness (deployment gates, registro de riscos, trabalho diferido), veja [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md). TL;DR: pronto para single-tenant loopback; exposição em LAN aguarda o gate de auth P-12 em v2.0.
+
+---
+
+## Rode todo o stack na nuvem
+
+O career-ops rende melhor **sempre ligado** — rastreando enquanto você dorme, acessível de qualquer navegador. Para colocar todo o stack num servidor pequeno — o pipeline pai **career-ops**, este visualizador **career-ops-ui**, e o **motor** que roda a IA (sua **assinatura Claude** via CLI do Claude Code, um **Hermes** local, ou chaves de API) — provisione um VPS (Node ≥ 18), instale o pai + este repo, escolha seu motor, e exponha o visualizador atrás de um **proxy reverso HTTPS com autenticação** mantendo intactas as invariantes de segurança (CSP, guard SSRF, limite XSS, sem segredos em logs).
+
+📖 A **Ajuda §31** no app ("Rodar todo o stack na nuvem") mostra o passo a passo nos 17 idiomas; o checklist do operador é [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), e a [página wiki de deploy na nuvem](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) tem as tabelas de referência.
 
 ---
 

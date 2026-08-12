@@ -12,9 +12,9 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Najnowsze wydanie — v1.153.0** — **Skaner Jobvite naprawiony (sync z rodzicem)** — Rodzic wycofał API JSON Jobvite, więc każda śledzona firma Jobvite skanowała się po cichu pusto. Port poprawki rodzica — source czyta teraz publiczny kanał XML per-tenant (klucz `companyEId`, dwa przypięte hosty, bez śledzenia przekierowań). **2396 testów.**
+> **🆕 Najnowsze wydanie — v1.154.0** — **Uruchom cały stack w chmurze** — Nowy przewodnik krok po kroku, jak umieścić nadrzędny pipeline career-ops + tę przeglądarkę + silnik AI (subskrypcja Claude, lokalny Hermes, lub klucze API) na małym, zawsze włączonym serwerze — jako Pomoc §31 w 17 językach, sekcja README i strona wiki. **2396 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 
@@ -130,6 +130,14 @@ career-ops/
 ```
 
 Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacji, brak bundlera — cały interfejs to mniej niż 30 KB zminifikowanego kodu.
+
+## Uruchom cały stack w chmurze
+
+career-ops działa najlepiej **zawsze włączony** — skanuje, gdy śpisz, dostępny z dowolnej przeglądarki. Aby umieścić cały stack na małym serwerze — nadrzędny pipeline **career-ops**, tę przeglądarkę **career-ops-ui** oraz **silnik** uruchamiający AI (Twoja **subskrypcja Claude** przez CLI Claude Code, lokalna brama **Hermes**, lub klucze API) — postaw VPS (Node ≥ 18), zainstaluj rodzica + to repo, wybierz silnik i wystaw przeglądarkę za **odwrotnym proxy HTTPS z uwierzytelnianiem**, zachowując nienaruszone niezmienniki bezpieczeństwa (CSP, guard SSRF, granica XSS, brak sekretów w logach).
+
+📖 Wbudowana **Pomoc §31** („Uruchom cały stack w chmurze”) prowadzi krok po kroku we wszystkich 17 językach; lista kontrolna operatora to [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), a [wiki wdrożenia w chmurze](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) zawiera tabele referencyjne.
+
+---
 
 ## Pełna dokumentacja
 

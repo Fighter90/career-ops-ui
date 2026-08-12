@@ -12,9 +12,9 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Son sürüm — v1.153.0** — **Jobvite tarayıcısı düzeltildi (ebeveyn senkronu)** — Ebeveyn, Jobvite JSON API’sini emekliye ayırdı, bu yüzden izlenen her Jobvite şirketi sessizce boş taranıyordu. Ebeveyn düzeltmesini taşır — source artık herkese açık kiracı-başına XML akışını okur (`companyEId` anahtarı, iki sabitlenmiş host, hiçbir yönlendirme izlenmez). **2396 test.**
+> **🆕 Son sürüm — v1.154.0** — **Tüm yığını bulutta çalıştır** — Üst career-ops hattını + bu görüntüleyiciyi + AI motorunuzu (bir Claude aboneliği, yerel bir Hermes, veya API anahtarları) küçük ve her zaman açık bir sunucuya koymak için yeni bir adım adım kılavuz — 17 dilde Yardım §31, bir README bölümü ve bir wiki sayfası olarak. **2396 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 
@@ -619,6 +619,14 @@ Tamamen LLM güdümlü modların (`oferta`, `deep`, `contacto`, `apply`, `batch`
 Claude Code içindeki mevcut `/career-ops apply` Playwright form doldurma akışı, başvuru formlarını gerçekten otomatik doldurmanın tek yolu olmaya devam eder — arayüzün *Apply helper*'ı bunun yerine bir kontrol listesi oluşturur.
 
 Üretime hazırlık değerlendirmesi için (dağıtım kapıları, risk kaydı, ertelenmiş işler), [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md) dosyasına bakın. Özet: tek kiracılı loopback için hazır; LAN'a açılma, v2.0 P-12 kimlik doğrulama kapısını bekler.
+
+---
+
+## Tüm yığını bulutta çalıştır
+
+career-ops **her zaman açık** olduğunda en iyisidir — siz uyurken tarar, herhangi bir tarayıcıdan erişilebilir. Tüm yığını küçük bir sunucuya koymak için — üst **career-ops** hattı, bu **career-ops-ui** görüntüleyici ve yapay zekâyı çalıştıran **motor** (Claude Code CLI üzerinden **Claude aboneliğiniz**, yerel bir **Hermes** ağ geçidi veya sağlayıcı API anahtarları) — bir VPS hazırlayın (Node ≥ 18), üst projeyi + bu depoyu kurun, motorunuzu seçin ve görüntüleyiciyi güvenlik değişmezlerini (CSP, SSRF koruması, XSS sınırı, günlüklerde sır yok) bozmadan **kimlik doğrulamalı HTTPS ters proxy** arkasında yayınlayın.
+
+📖 Uygulama içi **Yardım §31** ("Tüm yığını bulutta çalıştır") tüm 17 dilde adım adım anlatır; operatör kontrol listesi [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), ve [bulut dağıtımı wiki sayfası](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) referans tablolarını içerir.
 
 ---
 

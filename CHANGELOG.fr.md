@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.154.0] — 2026-08-12
+
+**Nouveau guide — « Exécuter toute la stack dans le cloud ».** career-ops n’a pas de récit cloud/serveur propre ; on en ajoute un : une recette pas à pas pour mettre le pipeline parent **career-ops**, ce visualiseur **career-ops-ui** et le **moteur** IA (un **abonnement Claude** via Claude Code, un **Hermes** local, ou des clés API) sur un petit serveur toujours actif. Livré comme **Aide §31** dans les 17 langues, une section du README et une page wiki.
+
+### Ajouté
+- **Aide §31 « Exécuter toute la stack dans le cloud »** (× 17) — les trois parties, provisionner + installer, choisir le moteur, exposer en sécurité (reverse-proxy HTTPS + auth + les invariantes CSP/SSRF/XSS/aucun-secret). Le bundle d’aide passe à **31 H2 / 112 H3**.
+- **README** — une section « Exécuter toute la stack dans le cloud » (× 17) + une page **Cloud-Deployment** dans le wiki.
+
+### Notes
+- **Docs uniquement** — aucune route, serveur ni changement client ; aucune nouvelle clé i18n. Les 4 tests d’aide passent au contrat 31 H2 / 112 H3. Suite : **2396** tests (inchangée).
+
 ## [1.153.0] — 2026-08-12
 
 **Le scanner Jobvite migre vers le flux XML public (sync parent).** Le parent a retiré l’API JSON de Jobvite (elle renvoie zéro offre) ; le source de web-ui utilisait ce même endpoint mort, donc toute entreprise Jobvite suivie scannait à vide en silence. Portage du correctif parent (`#2623`) : le source lit désormais le **flux XML** public par tenant, avec la clé `companyEId`.

@@ -12,9 +12,9 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Neueste Version — v1.153.0** — **Jobvite-Scanner behoben (Parent-Sync)** — Der Parent hat die Jobvite-JSON-API stillgelegt, sodass jede getrackte Jobvite-Firma still leer scannte. Portiert den Parent-Fix — der Source liest jetzt den öffentlichen Per-Tenant-XML-Feed (Schlüssel `companyEId`, zwei gepinnte Hosts, kein Redirect wird verfolgt). **2396 Tests.**
+> **🆕 Neueste Version — v1.154.0** — **Den ganzen Stack in der Cloud betreiben** — Ein neuer Schritt-für-Schritt-Leitfaden, um die übergeordnete career-ops-Pipeline + diesen Viewer + deine KI-Engine (ein Claude-Abo, ein lokales Hermes, oder API-Schlüssel) auf einen kleinen Always-on-Server zu bringen — als Hilfe §31 in 17 Sprachen, ein README-Abschnitt und eine Wiki-Seite. **2396 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 
@@ -619,6 +619,14 @@ Die vollständig LLM-gesteuerten Modi (`oferta`, `deep`, `contacto`, `apply`, `b
 Der bestehende `/career-ops apply`-Playwright-Formular-Ausfüllfluss innerhalb von Claude Code bleibt die einzige Möglichkeit, Bewerbungsformulare wirklich automatisch auszufüllen — der *Apply helper* der UI generiert stattdessen eine Checkliste.
 
 Für die Bewertung der Produktionsreife (Deployment-Gates, Risikoregister, aufgeschobene Arbeit) siehe [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md). Kurzfassung: bereit für Single-Tenant-Loopback; die LAN-Exposition wartet auf das v2.0-P-12-Auth-Gate.
+
+---
+
+## Den ganzen Stack in der Cloud betreiben
+
+career-ops ist am besten **immer an** — scannt, während du schläfst, aus jedem Browser erreichbar. Um den ganzen Stack auf einen kleinen Server zu legen — die übergeordnete **career-ops**-Pipeline, diesen **career-ops-ui**-Viewer und die **Engine**, die die KI ausführt (dein **Claude-Abo** über die Claude-Code-CLI, ein lokales **Hermes**-Gateway oder Provider-API-Schlüssel) — richte einen VPS ein (Node ≥ 18), installiere das Parent + dieses Repo, wähle deine Engine und stelle den Viewer hinter einen **HTTPS-Reverse-Proxy mit Authentifizierung**, während die Sicherheits-Invarianten (CSP, SSRF-Guard, XSS-Grenze, keine Secrets in Logs) intakt bleiben.
+
+📖 Die integrierte **Hilfe §31** („Den ganzen Stack in der Cloud betreiben“) führt Schritt für Schritt in allen 17 Sprachen; die Betreiber-Checkliste ist [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), und die [Cloud-Deployment-Wiki-Seite](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) enthält die Referenztabellen.
 
 ---
 

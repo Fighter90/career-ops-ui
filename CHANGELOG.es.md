@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.154.0] — 2026-08-12
+
+**Nueva guía — "Ejecutar todo el stack en la nube."** career-ops no trae historia propia de nube/servidor, así que se añade una: una receta paso a paso para poner el pipeline padre **career-ops**, este visor **career-ops-ui** y el **motor** de IA (una **suscripción de Claude** vía Claude Code, un **Hermes** local, o claves de API) en un servidor pequeño siempre encendido. Llega como **Ayuda §31** en los 17 idiomas, una sección del README y una página wiki.
+
+### Añadido
+- **Ayuda §31 "Ejecutar todo el stack en la nube"** (× 17) — las tres partes, aprovisionar + instalar, elegir motor y exponer con seguridad (proxy inverso HTTPS + auth + las invariantes CSP/SSRF/XSS/sin-secretos). El bundle de ayuda crece a **31 H2 / 112 H3**.
+- **README** — una sección "Ejecuta todo el stack en la nube" (× 17) + una página **Cloud-Deployment** en la wiki.
+
+### Notas
+- **Solo docs** — sin ruta, servidor ni cambio de cliente; sin nueva clave i18n. Los 4 tests de la ayuda pasan al contrato 31 H2 / 112 H3. Conjunto: **2396** pruebas (sin cambios).
+
 ## [1.153.0] — 2026-08-12
 
 **El scanner de Jobvite migró al feed XML público (sync con el padre).** El padre retiró la API JSON de Jobvite (ahora devuelve cero empleos); el source de web-ui usaba ese mismo endpoint muerto, así que cualquier empresa Jobvite rastreada quedaba vacía en silencio. Porta el fix del padre (`#2623`): ahora lee el **feed XML** público por inquilino, con clave `companyEId`.

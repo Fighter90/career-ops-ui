@@ -12,9 +12,9 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 أحدث إصدار — v1.153.0** — **إصلاح ماسح Jobvite (مزامنة مع الأصل)** — أوقف الأصل واجهة JSON الخاصة بـ Jobvite، فكانت أي شركة Jobvite متتبَّعة تُمسح فارغة بصمت. نقل إصلاح الأصل — يقرأ source الآن موجز XML العام لكل مستأجر (مفتاح `companyEId`، مضيفان مثبّتان، دون اتباع أي تحويل). **2396 اختبارًا.**
+> **🆕 أحدث إصدار — v1.154.0** — **تشغيل المنظومة كاملةً في السحابة** — دليل جديد خطوة بخطوة لوضع خط الأنابيب الأصل career-ops + هذا العارض + محرّك الذكاء الاصطناعي (اشتراك Claude، أو Hermes محلي، أو مفاتيح API) على خادم صغير دائم التشغيل — بوصفه المساعدة §31 بـ17 لغة، وقسمًا في README، وصفحة ويكي. **2396 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 
@@ -152,6 +152,14 @@ career-ops/
 <div dir="rtl">
 
 للخادم تبعيتان إنتاجيتان فقط: `express` و`js-yaml`. لا transpile، لا bundler — حجم الواجهة بالكامل أقل من 30 كيلوبايت.
+
+## تشغيل المنظومة كاملةً في السحابة
+
+يعمل career-ops على أفضل نحو حين يكون **دائم التشغيل** — يمسح بينما تنام، ويمكن الوصول إليه من أي متصفح. لوضع المنظومة كاملةً على خادم صغير — خط الأنابيب الأصل **career-ops**، وهذا العارض **career-ops-ui**، و**المحرّك** الذي يشغّل الذكاء الاصطناعي (**اشتراك Claude** عبر واجهة Claude Code، أو بوابة **Hermes** محلية، أو مفاتيح API) — جهّز خادمًا افتراضيًا (Node ≥ 18)، وثبّت الأصل + هذا المستودع، واختر محرّكك، واعرض العارض خلف **بروكسي عكسي HTTPS مع مصادقة** مع بقاء ثوابت الأمان (CSP، حارس SSRF، حدّ XSS، لا أسرار في السجلات) سليمة.
+
+📖 تشرح **المساعدة §31** داخل التطبيق («تشغيل المنظومة كاملةً في السحابة») الخطوات بالتفصيل بجميع اللغات الـ17؛ قائمة المشغّل هي [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)، وتحتوي [صفحة ويكي النشر السحابي](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) على جداول مرجعية.
+
+---
 
 ## التوثيق الكامل
 
