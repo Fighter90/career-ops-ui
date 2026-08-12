@@ -189,7 +189,13 @@ export function hermesChatUrl(base) {
   const raw = String(base || HERMES_BASE_DEFAULT).trim();
   const safe = /^https?:\/\//i.test(raw) ? raw : HERMES_BASE_DEFAULT;
   const b = safe.replace(/\/+$/, '');
-  return b.endsWith('/chat/completions') ? b : `${b}/chat/completions`;
+  if (b.endsWith('/chat/completions')) return b;
+  // v1.151.1 — a bare host with no path (`http://127.0.0.1:8642`, a common
+  // mis-paste that drops the `/v1`) needs the full `/v1/chat/completions`, not
+  // just `/chat/completions` (which 404s). A base that already carries a path
+  // (`…/v1`, `…/openai`) only needs `/chat/completions` appended.
+  if (/^https?:\/\/[^/]+$/i.test(b)) return `${b}/v1/chat/completions`;
+  return `${b}/chat/completions`;
 }
 
 /** Run a prompt via a local Hermes API Server (OpenAI-compatible). */
@@ -203,9 +209,13 @@ export async function runHermes(prompt, opts = {}) {
   });
 }
 
-/** "Is the Hermes key set?" — same effectiveEnv view (v1.151.0). */
+/** "Is the Hermes key set?" — same effectiveEnv view (v1.151.0). Unlike the
+ *  cloud providers, a self-hosted `hermes gateway`'s `API_SERVER_KEY` is
+ *  user-chosen and may be short (the Hermes docs' own example
+ *  `change-me-local-dev` is 19 chars), so we relax `isUsableKey`'s 20-char floor
+ *  to 8 here — still enough to reject empty/placeholder junk (v1.151.1). */
 export function hasHermesKey() {
-  return isUsableKey(envKey('HERMES_API_KEY'));
+  return isUsableKey(envKey('HERMES_API_KEY'), 8);
 }
 
 /**

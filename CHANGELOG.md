@@ -8,6 +8,24 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.152.0] — 2026-08-12
+
+**Hermes provider — completed wiring + docs actualization.** A detailed code review of the v1.151.0 Hermes integration surfaced two real gaps and four completeness items; all are fixed here, and the whole app's LLM-provider roster is brought up to the full seven (Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes) across every doc surface and all 17 locales.
+
+### Fixed
+- **`#/config` could not force Hermes** — the `LLM_PROVIDER` dropdown listed only six providers (GitHub was the last), so a user with both a cloud key and a local Hermes could set `HERMES_API_KEY` but had no way to *force* Hermes from the UI (only by hand-editing `.env`). `hermes` is now the 8th option (`auto` + 7 providers), and the field hint (`config.llmProviderHint` × 17 + the JS fallback) names the full seven-provider order. New `provider-selector.test.mjs` guard asserts the dropdown can never drift from `LLM_PROVIDERS` again.
+- **Short self-hosted keys were silently rejected** — `isUsableKey`'s 20-char floor was calibrated for cloud keys, but a `hermes gateway`'s `API_SERVER_KEY` is user-chosen and may be short (the Hermes docs' own example `change-me-local-dev` is 19 chars). `hasHermesKey` now uses a relaxed 8-char floor (still rejects empty/placeholder junk), so a legitimate short local key is no longer dropped to manual-mode without a diagnostic.
+
+### Changed
+- **`hermesChatUrl` completes a bare host** — `HERMES_BASE_URL=http://127.0.0.1:8642` (a mis-paste that drops the `/v1`) now resolves to `…/v1/chat/completions` instead of a `/v1`-less 404.
+- **Manual-fallback copy** in `routes/llm.mjs` now names Hermes in the "execute via …" provider list.
+- **Provider-roster actualization** — the six-provider chain/force-list strings were normalized to the full seven across README (× 17), the in-app help (× 17), the `config.llmProviderHint` dict (× 17), and `docs/sdd`. `CONVENTIONS.md` corrected to "all 16 non-EN locales". Assembled-dict snapshot regenerated (1214 keys).
+
+### Notes
+- **Security unchanged** — no new route, no SSRF/CSP/sanitizer change. The relaxed key floor only affects the local-loopback Hermes gateway; the provider endpoint stays trusted config (not a scanned job URL). `HERMES_API_KEY` remains a `SECRET_KEY`.
+- Health/doctor now carries a `HERMES_API_KEY` row (was omitted in v1.151.0), so `#/health` and `career-ops-ui doctor` list all seven providers.
+- Suite: **2392** tests (+2: the `isUsableKey` minLen guard + the dropdown-vs-`LLM_PROVIDERS` parity guard).
+
 ## [1.151.0] — 2026-08-12
 
 **Hermes is now a wired LLM provider (Phase 5)** — the Phase 5 scoping spike confirmed that Nous Research's Hermes ships an **OpenAI-compatible API Server** (`hermes gateway` → `POST /v1/chat/completions`), so career-ops-ui now runs live evaluations through a local Hermes exactly like OpenAI/Qwen. Set `HERMES_API_KEY` in **App settings** and it joins the auto provider order (last). This closes the roadmap's final open item — **Phase 5, Shape A**.

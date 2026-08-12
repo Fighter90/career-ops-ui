@@ -220,7 +220,7 @@ career-ops-ui **إضافات خالصة**. لا شيء داخل `career-ops/` ي
 > **CLI (v1.38.0).** أمر واحد ينفّذ السلسلة: `career-ops-ui setup` (تهيئة → تثبيت → تشغيل). أوامر مستقلة: `career-ops-ui doctor` (فحص البيئة والمفاتيح والأدوات — نفس محرك صفحة الصحة؛ الخروج 1 عند أي فشل مطلوب)، `career-ops-ui run`، `career-ops-ui init` (معالج المزود والمفتاح، v1.39.0).
 > **المزودون (v1.39.0).** تبويبة مفاتيح API تضيف `LLM_PROVIDER` (`auto` = Anthropic→Gemini الافتراضي · `claude` · `gemini`) وحقل `OPENAI_API_KEY` (جهة CLI لـ Codex/OpenCode). `career-ops-ui init` معالج تفاعلي للشيء ذاته.
 >
-> **المزودون (v1.57.0).** التقييم المباشر الآن بلا رأس يمتد عبر **Anthropic → Gemini → OpenAI → Qwen → OpenRouter** (ترتيب `auto`؛ `LLM_PROVIDER` يثبّت واحداً). **OpenRouter** — مفتاح `OPENROUTER_API_KEY` واحد يوفر 300+ نموذج؛ القائمة المنسدلة `OPENROUTER_MODEL` تحمّل الكتالوج الحي من OpenRouter (بروكسي من جهة الخادم، مع احتياطي نظير مُنقّح دون اتصال). كذلك تم الإصلاح: المفاتيح الملصوقة بمسافة لاحقة / محيطة تُقلَّص الآن قبل التحقق، فلن تعود `/#/config` تُظهر "فشل التحقق" لأي مزود.
+> **المزودون (v1.57.0).** التقييم المباشر الآن بلا رأس يمتد عبر **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes** (ترتيب `auto`؛ `LLM_PROVIDER` يثبّت واحداً). **OpenRouter** — مفتاح `OPENROUTER_API_KEY` واحد يوفر 300+ نموذج؛ القائمة المنسدلة `OPENROUTER_MODEL` تحمّل الكتالوج الحي من OpenRouter (بروكسي من جهة الخادم، مع احتياطي نظير مُنقّح دون اتصال). كذلك تم الإصلاح: المفاتيح الملصوقة بمسافة لاحقة / محيطة تُقلَّص الآن قبل التحقق، فلن تعود `/#/config` تُظهر "فشل التحقق" لأي مزود.
 
 ---
 
@@ -238,7 +238,7 @@ career-ops-ui **إضافات خالصة**. لا شيء داخل `career-ops/` ي
 
 أي حفظ في تبويبة يُطبَّق فوراً — لا إعادة تشغيل للخادم.
 
-**إعداد مزود LLM خطوة بخطوة.** التقييم المباشر ⚡ في الواجهة يعمل *بلا رأس* ويستخدم مفتاح API واحداً. يعمل بمنطق "أو" — اضبط **أياً** منها ويعمل مباشرةً؛ مع عدة مفاتيح مضبوطة، يُفضّل `auto` بهذا الترتيب: Anthropic → Gemini → OpenAI → Qwen. (career-ops نفسه مستقل عن CLI — يمكنك أيضاً تشغيله داخل Claude Code وCursor وCodex وGemini وOpenCode وAntigravity وGrok Build وQwen وCopilot وKimi؛ هذا منفصل عن مفتاح headless هذا.)
+**إعداد مزود LLM خطوة بخطوة.** التقييم المباشر ⚡ في الواجهة يعمل *بلا رأس* ويستخدم مفتاح API واحداً. يعمل بمنطق "أو" — اضبط **أياً** منها ويعمل مباشرةً؛ مع عدة مفاتيح مضبوطة، يُفضّل `auto` بهذا الترتيب: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. (career-ops نفسه مستقل عن CLI — يمكنك أيضاً تشغيله داخل Claude Code وCursor وCodex وGemini وOpenCode وAntigravity وGrok Build وQwen وCopilot وKimi؛ هذا منفصل عن مفتاح headless هذا.)
 
 1. افتح `#/config` → تبويبة **مفاتيح API والبيئة التشغيلية**.
 2. اختر مزودك في **`LLM_PROVIDER`**: `auto` (يستخدم أي مفتاح مضبوط)، أو أجبر واحداً بـ `claude` / `gemini` / `openai` / `qwen`.

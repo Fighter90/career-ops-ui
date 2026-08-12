@@ -7,14 +7,14 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Dernière version — v1.151.0** — **Hermes est désormais un fournisseur LLM branché (Phase 5)** — le Hermes de Nous Research expose un API Server compatible OpenAI ; définissez `HERMES_API_KEY` dans **Réglages de l’app** et career-ops-ui exécute des évals en direct via votre `hermes gateway` local (dernier dans l’ordre auto). Clôt le dernier point ouvert de la roadmap. **2390 tests.**
+> **🆕 Dernière version — v1.152.0** — **Fournisseur Hermes — câblage terminé** — Une revue de code de l’intégration Hermes de v1.151.0 a corrigé deux vrais manques (le menu de `#/config` ne pouvait pas forcer Hermes ; les clés locales courtes étaient rejetées) et porté la liste des fournisseurs LLM aux sept complets sur toutes les surfaces de docs et les 17 langues. **2392 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 
@@ -576,7 +576,7 @@ Vous pouvez aussi étendre toute entrée d'entreprise avec une URL `api:` explic
 
 ## Limites
 
-Les modes entièrement pilotés par LLM (`oferta`, `deep`, `contacto`, `apply`, `batch`, `patterns`, `followup`) ont besoin d'un LLM pour s'exécuter réellement. L'UI résout un fournisseur selon l'ordre `auto` **Anthropic → Gemini → OpenAI → Qwen → OpenRouter** (ou ce que `LLM_PROVIDER` épingle) :
+Les modes entièrement pilotés par LLM (`oferta`, `deep`, `contacto`, `apply`, `batch`, `patterns`, `followup`) ont besoin d'un LLM pour s'exécuter réellement. L'UI résout un fournisseur selon l'ordre `auto` **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes** (ou ce que `LLM_PROVIDER` épingle) :
 
 1. **Anthropic (préféré)** — définissez `ANTHROPIC_API_KEY` dans le `.env` du projet parent. Passe par `runAnthropic` avec `cv.md` / `config/profile.yml` / `modes/_shared.md` / modèle de mode inlinés automatiquement (REVIEW-A1). Vérifié en live dès la v1.8.0 avec `claude-sonnet-4-6` renvoyant 26 Ko de markdown ancré pour un appel de recherche approfondie.
 2. **`gemini-eval.mjs`** en repli — fonctionne d'emblée quand seule `GEMINI_API_KEY` est définie.

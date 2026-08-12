@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新リリース — v1.151.0** — **Hermes が接続済みの LLM プロバイダーに(Phase 5)** — Nous Research の Hermes は OpenAI 互換の API Server を公開するので、**アプリ設定** で `HERMES_API_KEY` を設定すれば career-ops-ui はローカルの `hermes gateway` 経由でライブ評価を実行します(auto 順の最後)。ロードマップ最後の未解決項目を完了。 **2390 テスト.**
+> **🆕 最新リリース — v1.152.0** — **Hermes プロバイダー — 配線を完了** — v1.151.0 の Hermes 統合のコードレビューで実際の欠陥 2 件(`#/config` ドロップダウンで Hermes を強制できない、短いセルフホスト鍵が拒否される)を修正し、LLM プロバイダー一覧を全ドキュメント面と 17 言語で完全な 7 つに揃えました。 **2392 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

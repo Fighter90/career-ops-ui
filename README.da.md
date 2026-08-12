@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Seneste udgivelse — v1.151.0** — **Hermes er nu en tilsluttet LLM-udbyder (Phase 5)** — Nous Research’ Hermes eksponerer en OpenAI-kompatibel API Server, så sæt `HERMES_API_KEY` i **App-indstillinger**, og career-ops-ui kører live-evalueringer via din lokale `hermes gateway` (sidst i auto-rækkefølgen). Lukker roadmappens sidste åbne punkt. **2390 tests.**
+> **🆕 Seneste udgivelse — v1.152.0** — **Hermes-udbyder — kabling færdig** — En kodegennemgang af Hermes-integrationen fra v1.151.0 rettede to reelle huller (`#/config`-dropdownen kunne ikke tvinge Hermes; korte self-hosted nøgler blev afvist) og bragte LLM-udbyderlisten op til de fulde syv på alle docs-flader og de 17 sprog. **2392 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 
@@ -609,7 +609,7 @@ Du kan også udvide enhver virksomhedspost med en eksplicit `api:`-URL. Se [`doc
 
 ## Begrænsninger
 
-De fuldt LLM-drevne tilstande (`oferta`, `deep`, `contacto`, `apply`, `batch`, `patterns`, `followup`) har brug for en LLM for faktisk at køre. Web-UI'en løser en provider fra `auto`-rækkefølgen **Anthropic → Gemini → OpenAI → Qwen → OpenRouter** (eller hvad `LLM_PROVIDER` fastlåser):
+De fuldt LLM-drevne tilstande (`oferta`, `deep`, `contacto`, `apply`, `batch`, `patterns`, `followup`) har brug for en LLM for faktisk at køre. Web-UI'en løser en provider fra `auto`-rækkefølgen **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes** (eller hvad `LLM_PROVIDER` fastlåser):
 
 1. **Anthropic (foretrukket)** — sæt `ANTHROPIC_API_KEY` i det overordnede projekts `.env`. Ruter gennem `runAnthropic` med `cv.md` / `config/profile.yml` / `modes/_shared.md` / tilstandsskabelon indlejret automatisk (REVIEW-A1). Verificeret live i v1.8.0+ med `claude-sonnet-4-6`, der returnerede 26 KB jordforbundet markdown for et deep-research-kald.
 2. **`gemini-eval.mjs`** som fallback — virker ud af boksen, når kun `GEMINI_API_KEY` er sat.

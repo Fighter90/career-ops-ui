@@ -320,7 +320,7 @@ LinkedIn / 邮件消息。把开场白个性化(嵌入一条来自深度调研�
 
 两个选项卡的任意保存都会立即生效 — 无需重启服务器。
 
-**设置你的 LLM 供应方(分步)。** web UI 的 ⚡ 实时评估以*无头*方式运行,使用一个 API 密钥。它通过 "OR" 工作 —— 设置其中**任意一个**即可正常工作;设置多个时,`auto` 按此顺序优先:Anthropic → Gemini → OpenAI → Qwen。(career-ops 本身是 CLI 无关的 —— 你也可以在 Claude Code、Cursor、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot 或 Kimi 内运行它;那与此无头密钥无关。)
+**设置你的 LLM 供应方(分步)。** web UI 的 ⚡ 实时评估以*无头*方式运行,使用一个 API 密钥。它通过 "OR" 工作 —— 设置其中**任意一个**即可正常工作;设置多个时,`auto` 按此顺序优先:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes。(career-ops 本身是 CLI 无关的 —— 你也可以在 Claude Code、Cursor、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot 或 Kimi 内运行它;那与此无头密钥无关。)
 
 1. 打开 `#/config` → **API keys & runtime** 选项卡。
 2. 在 **`LLM_PROVIDER`** 中选择你的供应方:`auto`(使用已设置的密钥),或用 `claude` / `gemini` / `openai` / `qwen` 强制指定一个。
@@ -341,7 +341,7 @@ LinkedIn / 邮件消息。把开场白个性化(嵌入一条来自深度调研�
 > **v1.54.3 —— Modes 选项卡结构化表单。** `modes/_profile.md` 不再是按区块的原始 markdown 编辑器,而是从已文档化的 schema 派生的字段表单。列表型区块 —— **Target Roles / Adaptive Framing / Comp Targets** —— 渲染为可重复的逐行输入(增删行);散文区块 —— **Exit Narrative / Location Policy** —— 渲染为带标签的 textarea;任何未知或非列表区块回退为带标签的逐字 textarea。保存**仍按区块合并** —— 前言、未改动区块与自定义区块按字节保留。*Advanced: raw markdown* 折叠区保留,用于整文件编辑:增删区块或编辑前言。
 > **提供方(v1.39.0)。** API-keys 选项卡新增 `LLM_PROVIDER` 选择(`auto`=Anthropic→Gemini · `claude` · `gemini`)与 `OPENAI_API_KEY` 字段(Codex/OpenCode CLI 端)。`career-ops-ui init` 为交互向导。
 >
-> **提供方(v1.57.0）。** 无头实时评估现覆盖 **Anthropic → Gemini → OpenAI → Qwen → OpenRouter**（`auto` 顺序；`LLM_PROVIDER` 固定其一）。**OpenRouter** —— 一个 `OPENROUTER_API_KEY` 即接入 300+ 模型；`OPENROUTER_MODEL` 下拉从 OpenRouter 实时目录加载（服务端代理，离线时精选回退）。另修复：带换行/空格粘贴的 key 在校验前被修剪，`/#/config` 不再对任何提供方显示「validation failed」。
+> **提供方(v1.57.0）。** 无头实时评估现覆盖 **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes**（`auto` 顺序；`LLM_PROVIDER` 固定其一）。**OpenRouter** —— 一个 `OPENROUTER_API_KEY` 即接入 300+ 模型；`OPENROUTER_MODEL` 下拉从 OpenRouter 实时目录加载（服务端代理，离线时精选回退）。另修复：带换行/空格粘贴的 key 在校验前被修剪，`/#/config` 不再对任何提供方显示「validation failed」。
 
 
 

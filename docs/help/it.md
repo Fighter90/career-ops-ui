@@ -357,7 +357,7 @@ a questa pagina).
 > **CLI (v1.38.0).** Un comando fa la catena: `career-ops-ui setup` (bootstrap → install → start). Verbi autonomi: `career-ops-ui doctor` (controllo env/chiavi/tooling — stesso motore della pagina Health; exit 1 su qualsiasi errore richiesto), `career-ops-ui run`, `career-ops-ui init` (procedura guidata provider+chiave, v1.39.0).
 > **Provider (v1.39.0).** La scheda API-keys aggiunge un select `LLM_PROVIDER` (`auto` = default Anthropic→Gemini · `claude` · `gemini`) e un campo `OPENAI_API_KEY` (lato CLI Codex/OpenCode). `career-ops-ui init` è una procedura guidata interattiva per lo stesso.
 >
-> **Provider (v1.57.0).** La valutazione in tempo reale headless ora copre **Anthropic → Gemini → OpenAI → Qwen → OpenRouter** (l'ordine `auto`; `LLM_PROVIDER` ne fissa uno). **OpenRouter** — una sola `OPENROUTER_API_KEY` fa da facciata a 300+ modelli; il menu a tendina `OPENROUTER_MODEL` carica il catalogo in tempo reale di OpenRouter (proxy lato server, ripiego offline curato). Corretto anche: le chiavi incollate con un newline finale / spazi circostanti ora vengono ripulite prima della validazione, così `/#/config` non mostra più "validation failed" per nessun provider.
+> **Provider (v1.57.0).** La valutazione in tempo reale headless ora copre **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes** (l'ordine `auto`; `LLM_PROVIDER` ne fissa uno). **OpenRouter** — una sola `OPENROUTER_API_KEY` fa da facciata a 300+ modelli; il menu a tendina `OPENROUTER_MODEL` carica il catalogo in tempo reale di OpenRouter (proxy lato server, ripiego offline curato). Corretto anche: le chiavi incollate con un newline finale / spazi circostanti ora vengono ripulite prima della validazione, così `/#/config` non mostra più "validation failed" per nessun provider.
 
 
 
@@ -393,7 +393,7 @@ Tre schede:
 
 Un salvataggio in qualsiasi scheda si propaga immediatamente — nessun riavvio del server.
 
-**Configurare il tuo provider LLM (passo per passo).** La valutazione in tempo reale ⚡ della web UI gira *headless* e usa una sola chiave API. Funziona con "OR" — imposta **una qualsiasi** di queste e funziona; con diverse impostate, `auto` le preferisce in quest'ordine: Anthropic → Gemini → OpenAI → Qwen. (career-ops in sé è agnostica rispetto alla CLI — la esegui anche dentro Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot o Kimi; questo è separato da questa chiave headless.)
+**Configurare il tuo provider LLM (passo per passo).** La valutazione in tempo reale ⚡ della web UI gira *headless* e usa una sola chiave API. Funziona con "OR" — imposta **una qualsiasi** di queste e funziona; con diverse impostate, `auto` le preferisce in quest'ordine: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. (career-ops in sé è agnostica rispetto alla CLI — la esegui anche dentro Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot o Kimi; questo è separato da questa chiave headless.)
 
 1. Apri `#/config` → la scheda **API keys & runtime**.
 2. Scegli il tuo provider in **`LLM_PROVIDER`**: `auto` (usa qualunque chiave sia impostata), o forzane uno con `claude` / `gemini` / `openai` / `qwen`.

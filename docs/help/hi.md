@@ -446,7 +446,7 @@ LLM कॉल नहीं, कोई खर्च नहीं।
 मूल्यांकन *हेडलेस* चलता है और एक API कुंजी उपयोग करता है। यह "OR"
 के ज़रिए काम करता है — इनमें से **कोई भी एक** सेट करें और यह बस काम
 करता है; कई सेट होने पर, `auto` इस क्रम में उन्हें प्राथमिकता देता
-है: Anthropic → Gemini → OpenAI → Qwen। (career-ops खुद CLI-अज्ञेय
+है: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes। (career-ops खुद CLI-अज्ञेय
 है — आप इसे Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot या
 Kimi के अंदर भी चला सकते हैं; वह इस हेडलेस कुंजी से अलग है।)
 

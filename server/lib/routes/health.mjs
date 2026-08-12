@@ -60,6 +60,7 @@ export function registerHealthRoutes(app) {
     const qwenSet = hasQwenKey();
     const openrouterSet = hasOpenRouterKey();
     const githubSet = hasGitHubModelsKey();
+    const hermesSet = hasHermesKey();
     checks.push({ name: 'GEMINI_API_KEY', required: false, ok: geminiSet, value: geminiSet ? 'set' : 'unset (manual mode)' });
     checks.push({ name: 'ANTHROPIC_API_KEY', required: false, ok: anthropicSet, value: anthropicSet ? 'set' : 'unset (set to enable live "Run" buttons)' });
     // v1.58.8 — every headless live-eval provider gets a row on `#/health`,
@@ -73,6 +74,9 @@ export function registerHealthRoutes(app) {
     // v1.74.2 — GitHub Models (GitHub Copilot CLI's API) joins the optional
     // live-eval provider rows; same isUsableKey gate as the others.
     checks.push({ name: 'GITHUB_MODELS_API_KEY', required: false, ok: githubSet, value: githubSet ? 'set' : 'unset (manual mode)' });
+    // v1.151.0 — Hermes (Nous Research's local OpenAI-compatible API Server) is
+    // the 7th live-eval provider; same isUsableKey gate + "manual mode" wording.
+    checks.push({ name: 'HERMES_API_KEY', required: false, ok: hermesSet, value: hermesSet ? 'set' : 'unset (manual mode)' });
     // v1.28.1 — HH_USER_AGENT health row removed. The hh.ru adapter falls
     // back to a baked-in UA when the env var is unset; the 403-from-non-RU
     // gate is documented in help-bundle §16 troubleshooting and the

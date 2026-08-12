@@ -41,6 +41,20 @@ test('env-config exposes the full v1.57.0 provider surface', () => {
   assert.deepEqual(LLM_PROVIDERS, ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes']);
 });
 
+test('config.js LLM_PROVIDER dropdown tracks LLM_PROVIDERS (no drift)', () => {
+  // v1.151.1 — the `#/config` <select> options are a hand-maintained array; when
+  // GitHub (v1.74.0) then Hermes (v1.151.0) were added they had to be appended
+  // by hand, and Hermes was missed (review finding #1: the key field existed but
+  // the provider was unforceable). This guard fails if the two ever diverge again.
+  const d = dirname(fileURLToPath(import.meta.url));
+  const cfg = readFileSync(resolve(d, '..', 'public', 'js', 'views', 'config.js'), 'utf8');
+  const m = cfg.match(/key: 'LLM_PROVIDER'[\s\S]*?options: \[([^\]]+)\]/);
+  assert.ok(m, 'could not locate the LLM_PROVIDER options array in config.js');
+  const opts = m[1].split(',').map((s) => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+  assert.deepEqual(opts, LLM_PROVIDERS,
+    `dropdown options ${JSON.stringify(opts)} must match LLM_PROVIDERS ${JSON.stringify(LLM_PROVIDERS)}`);
+});
+
 test('init parseArgs: flag-driven', () => {
   const o = parseArgs(['--provider', 'CLAUDE', '--anthropic-key', 'sk-x', '--yes']);
   assert.equal(o.provider, 'claude');

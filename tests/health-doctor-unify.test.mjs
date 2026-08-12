@@ -61,6 +61,7 @@ test('Health: surfaces all the checks Doctor used to expose', async () => {
   for (const expected of [
     'Profile customized',
     'GEMINI_API_KEY',
+    'HERMES_API_KEY', // v1.151.0 — the 7th live-eval provider gets a health/doctor row
     // v1.28.1 — HH_USER_AGENT removed (see file header).
     'Playwright (parent node_modules)',
     'Parent project dependencies',

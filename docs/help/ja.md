@@ -338,7 +338,7 @@ Save 先は `interview-prep/<company>-<role>.md`。
 > **CLI (v1.38.0)。** 1 コマンドで全チェーン:`career-ops-ui setup`。動詞:`career-ops-ui doctor`(env/キー/ツール検査 — Health と同一エンジン;必須失敗で exit 1)、`career-ops-ui run`、`career-ops-ui init`(プロバイダ+キーウィザード、v1.39.0)。
 > **プロバイダ (v1.39.0)。** API-keys タブに `LLM_PROVIDER` セレクト(`auto`=Anthropic→Gemini · `claude` · `gemini`)と `OPENAI_API_KEY` フィールド(Codex/OpenCode CLI 側)を追加。`career-ops-ui init` が対話ウィザード。
 >
-> **プロバイダ (v1.57.0)。** ヘッドレス・ライブ評価が **Anthropic → Gemini → OpenAI → Qwen → OpenRouter**（`auto` 順序、`LLM_PROVIDER` で固定）に拡張。**OpenRouter** — `OPENROUTER_API_KEY` 一つで 300+ モデルにアクセス。`OPENROUTER_MODEL` ドロップダウンは OpenRouter のライブカタログを読み込み（サーバ側プロキシ、オフライン時は厳選フォールバック）。さらに修正: 改行/空白付きで貼り付けたキーを検証前にトリムするため、`/#/config` でどのプロバイダでも「validation failed」が出なくなりました。
+> **プロバイダ (v1.57.0)。** ヘッドレス・ライブ評価が **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes**（`auto` 順序、`LLM_PROVIDER` で固定）に拡張。**OpenRouter** — `OPENROUTER_API_KEY` 一つで 300+ モデルにアクセス。`OPENROUTER_MODEL` ドロップダウンは OpenRouter のライブカタログを読み込み（サーバ側プロキシ、オフライン時は厳選フォールバック）。さらに修正: 改行/空白付きで貼り付けたキーを検証前にトリムするため、`/#/config` でどのプロバイダでも「validation failed」が出なくなりました。
 
 
 
@@ -361,7 +361,7 @@ Save 先は `interview-prep/<company>-<role>.md`。
 
 どちらのタブでも、保存は即時に反映されます — サーバ再起動は不要です。
 
-**LLM プロバイダのセットアップ(ステップバイステップ)。** web UI の ⚡ ライブ評価は*ヘッドレス*で実行され、1 つの API キーを使用します。"OR" で動作します — これらの**いずれか 1 つ**を設定すればそれだけで動作し、複数設定した場合は `auto` がこの順で優先します:Anthropic → Gemini → OpenAI → Qwen。(career-ops 自体は CLI 非依存です — Claude Code、Cursor、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot または Kimi の中でも実行でき、それはこのヘッドレスキーとは別です。)
+**LLM プロバイダのセットアップ(ステップバイステップ)。** web UI の ⚡ ライブ評価は*ヘッドレス*で実行され、1 つの API キーを使用します。"OR" で動作します — これらの**いずれか 1 つ**を設定すればそれだけで動作し、複数設定した場合は `auto` がこの順で優先します:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes。(career-ops 自体は CLI 非依存です — Claude Code、Cursor、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot または Kimi の中でも実行でき、それはこのヘッドレスキーとは別です。)
 
 1. `#/config` → **API keys & runtime** タブを開きます。
 2. **`LLM_PROVIDER`** でプロバイダを選びます:`auto`(設定されているキーを使用)、または `claude` / `gemini` / `openai` / `qwen` で 1 つに固定。

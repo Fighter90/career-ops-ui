@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.151.0** — **Hermes 现已成为已接入的 LLM 提供方(Phase 5）** — Nous Research 的 Hermes 暴露一个兼容 OpenAI 的 API Server,在 **应用设置** 中设置 `HERMES_API_KEY`,career-ops-ui 便会通过你本地的 `hermes gateway` 运行实时评估(auto 顺序中的最后一个)。收尾路线图最后一个未决项。 **2390 个测试。**
+> **🆕 最新版本 — v1.152.0** — **Hermes 提供方 — 接线完成** — 对 v1.151.0 Hermes 集成的代码评审修复了两处真实缺口(`#/config` 下拉无法强制 Hermes;较短的自托管密钥被拒绝),并将 LLM 提供方列表在所有文档面和 17 种语言中补齐为完整的七个。 **2392 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

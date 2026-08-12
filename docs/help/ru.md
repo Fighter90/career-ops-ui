@@ -339,7 +339,7 @@ behavioral / coding). Автоматически тянет данные из de
 > **CLI (v1.38.0).** Одна команда — вся цепочка: `career-ops-ui setup`. Verbs: `career-ops-ui doctor` (проверка env/ключей/тулинга — тот же движок, что Health; exit 1 при любом обязательном провале), `career-ops-ui run`, `career-ops-ui init` (мастер провайдер+ключ, v1.39.0).
 > **Провайдеры (v1.39.0).** Во вкладке API-keys добавлены select `LLM_PROVIDER` (`auto`=Anthropic→Gemini · `claude` · `gemini`) и поле `OPENAI_API_KEY` (сторона Codex/OpenCode CLI). `career-ops-ui init` — интерактивный мастер того же.
 >
-> **Провайдеры (v1.57.0).** Headless live-eval теперь охватывает **Anthropic → Gemini → OpenAI → Qwen → OpenRouter** (порядок `auto`; `LLM_PROVIDER` фиксирует один). **OpenRouter** — один `OPENROUTER_API_KEY` открывает 300+ моделей; выпадающий список `OPENROUTER_MODEL` грузит живой каталог OpenRouter (серверный прокси, кураторский offline-fallback). Также исправлено: ключи, вставленные с переносом строки / пробелами, тримятся до валидации — `/#/config` больше не показывает «validation failed» ни для одного провайдера.
+> **Провайдеры (v1.57.0).** Headless live-eval теперь охватывает **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes** (порядок `auto`; `LLM_PROVIDER` фиксирует один). **OpenRouter** — один `OPENROUTER_API_KEY` открывает 300+ моделей; выпадающий список `OPENROUTER_MODEL` грузит живой каталог OpenRouter (серверный прокси, кураторский offline-fallback). Также исправлено: ключи, вставленные с переносом строки / пробелами, тримятся до валидации — `/#/config` больше не показывает «validation failed» ни для одного провайдера.
 
 
 
@@ -365,7 +365,7 @@ behavioral / coding). Автоматически тянет данные из de
 Сохранение в любой вкладке применяется немедленно — перезапуск
 сервера не нужен.
 
-**Настройка LLM-провайдера (пошагово).** ⚡ live-оценка веб-UI работает *headless* и использует один API-ключ. Работает через "OR" — задайте **любой один** из них, и всё заработает; при нескольких заданных `auto` предпочитает их в таком порядке: Anthropic → Gemini → OpenAI → Qwen. (сам career-ops CLI-агностичен — вы также запускаете его внутри Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot или Kimi; это отдельно от этого headless-ключа.)
+**Настройка LLM-провайдера (пошагово).** ⚡ live-оценка веб-UI работает *headless* и использует один API-ключ. Работает через "OR" — задайте **любой один** из них, и всё заработает; при нескольких заданных `auto` предпочитает их в таком порядке: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. (сам career-ops CLI-агностичен — вы также запускаете его внутри Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot или Kimi; это отдельно от этого headless-ключа.)
 
 1. Откройте `#/config` → вкладку **API keys & runtime**.
 2. Выберите провайдера в **`LLM_PROVIDER`**: `auto` (использует тот ключ, что задан) или принудительно один из `claude` / `gemini` / `openai` / `qwen`.
