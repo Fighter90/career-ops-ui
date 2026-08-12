@@ -13,6 +13,8 @@ import { dirname, resolve } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(resolve(ROOT, p), 'utf8');
+/** Full regex-metachar escape (incl. backslash) before interpolating into RegExp. */
+const reEsc = (s) => String(s).replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
 
 test('stats.js wires a rebuildable metric × dimension chart', () => {
   const src = read('public/js/views/stats.js');
@@ -32,6 +34,6 @@ test('stats.js wires a rebuildable metric × dimension chart', () => {
 test('the 8 rebuildable-chart i18n keys are present in the EN dictionary', () => {
   const en = read('public/js/lib/locales/i18n-dict.en.js');
   for (const k of ['stats.customChart', 'stats.metric', 'stats.dimension', 'stats.metricVacancies', 'stats.metricMedian', 'stats.metricAvg', 'stats.dimCountry', 'stats.dimRole']) {
-    assert.match(en, new RegExp(`'${k.replace(/\./g, '\\.')}':\\s*"`), `EN dict missing ${k}`);
+    assert.match(en, new RegExp(`'${reEsc(k)}':\\s*"`), `EN dict missing ${k}`);
   }
 });
