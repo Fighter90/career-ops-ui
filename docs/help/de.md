@@ -1282,6 +1282,14 @@ Die Einzelreport-Ansicht hat auch:
 - **🔗 Open JD** — öffnet die ursprüngliche Stellenausschreibung in einem
   neuen Tab.
 
+### Einen Bericht als PDF exportieren
+
+Öffne einen gespeicherten Bericht und klicke auf **📄 Generate PDF**. Das
+führt `generate-pdf.mjs` im Elternprojekt aus und schreibt die Datei nach
+`output/*.pdf` (benötigt Playwright; die Health-Seite zeigt, ob es
+installiert ist). Es wird nichts irgendwohin gesendet: prüfe das PDF, bevor
+du es einer Bewerbung anhängst.
+
 ---
 
 ## 11. Tracker (`#/tracker`)

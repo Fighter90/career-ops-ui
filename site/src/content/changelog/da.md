@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.163.0] — 2026-08-13
+
+**Rettet (LAV) — den indbyggede "Spørg dokumentationen"-assistent dækker nu eksport af en rapport til PDF.** Den svarede, at guiden ikke dækkede det, selvom `#/reports/:slug` har en fungerende 📄 Generate PDF-knap.
+
+### Rettet
+- Tilføjet en H3 **"Eksportér en rapport til PDF"** under §10 Rapporter i **alle 17 hjælpe-bundter** (hvor knappen er, filen lander i `output/*.pdf`, kræver Playwright, gennemgå før afsendelse). Assistentens søgning viser nu Rapporter-sektionen.
+
+### Noter
+- Kun docs/hjælp; ingen ændring af kode/rute/CSP/SSRF/skrivning. Hjælpe-gate **112 → 113 H3** (31 H2 uændret). `tests/help-reports-pdf-section.test.mjs` (+2). Suite: **2420** (+2).
+
 ## [1.162.0] — 2026-08-13
 
 **Rettet (MELLEM) — hjælpe-"?" er nu et ≥24×24 pegemål (WCAG 2.5.8).** `.help-hint` var 18×18 px med `padding:0`, under minimum, på hver overskrift.

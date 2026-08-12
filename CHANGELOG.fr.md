@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.163.0] — 2026-08-13
+
+**Corrigé (BASSE) — l'assistant "Interroger les docs" couvre désormais l'export d'un rapport en PDF.** Il répondait que le guide ne le couvrait pas, alors que `#/reports/:slug` a un bouton 📄 Generate PDF fonctionnel.
+
+### Corrigé
+- Ajout d'un H3 **"Exporter un rapport en PDF"** sous §10 Rapports dans les **17 bundles d'aide** (où est le bouton, le fichier va dans `output/*.pdf`, nécessite Playwright, relire avant envoi). La recherche de l'assistant remonte désormais la section Rapports.
+
+### Notes
+- Docs/aide uniquement ; aucun changement de code/route/CSP/SSRF/écriture. Seuil d'aide **112 → 113 H3** (31 H2 inchangé). `tests/help-reports-pdf-section.test.mjs` (+2). Suite : **2420** (+2).
+
 ## [1.162.0] — 2026-08-13
 
 **Corrigé (MOYENNE) — le "?" d'aide est désormais une cible de ≥24×24 (WCAG 2.5.8).** `.help-hint` mesurait 18×18 px avec `padding:0`, sous le minimum, sur chaque en-tête.

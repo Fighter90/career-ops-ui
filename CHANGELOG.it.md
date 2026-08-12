@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.163.0] — 2026-08-13
+
+**Corretto (BASSA) — l'assistente in-app "Chiedi ai docs" ora copre l'esportazione di un report in PDF.** Rispondeva che la guida non lo copriva, benché `#/reports/:slug` abbia un pulsante 📄 Generate PDF funzionante.
+
+### Corretto
+- Aggiunto un H3 **"Esportare un report in PDF"** sotto §10 Report in **tutti i 17 bundle di aiuto** (dov'è il pulsante, il file finisce in `output/*.pdf`, richiede Playwright, rivedere prima di inviare). Il recupero dell'assistente ora mostra la sezione Report.
+
+### Note
+- Solo docs/aiuto; nessuna modifica a codice/route/CSP/SSRF/scrittura. Soglia aiuto **112 → 113 H3** (31 H2 invariato). `tests/help-reports-pdf-section.test.mjs` (+2). Suite: **2420** (+2).
+
 ## [1.162.0] — 2026-08-13
 
 **Corretto (MEDIA) — il "?" di aiuto è ora un bersaglio di ≥24×24 (WCAG 2.5.8).** `.help-hint` misurava 18×18 px con `padding:0`, sotto il minimo, su ogni intestazione.

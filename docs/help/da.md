@@ -1177,6 +1177,13 @@ Enkelt-rapport-visningen har også:
 - **← Alle rapporter** — tilbage til gitteret.
 - **🔗 Åbn JD** — åbner det oprindelige jobopslag i en ny fane.
 
+### Eksportér en rapport til PDF
+
+Åbn en gemt rapport, og klik på **📄 Generate PDF**. Den kører
+`generate-pdf.mjs` i forældre-projektet og skriver filen til `output/*.pdf`
+(kræver Playwright; Health-siden viser, om den er installeret). Intet sendes
+nogen steder: gennemgå PDF'en, før du vedhæfter den til en ansøgning.
+
 ---
 
 ## 11. Tracker (`#/tracker`)

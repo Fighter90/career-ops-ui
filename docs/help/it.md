@@ -1206,6 +1206,13 @@ La vista del singolo rapporto ha anche:
 - **← All reports** — torna alla griglia.
 - **🔗 Open JD** — apre l'offerta di lavoro originale in una nuova scheda.
 
+### Esportare un report in PDF
+
+Apri un report salvato e fai clic su **📄 Generate PDF**. Esegue
+`generate-pdf.mjs` nel progetto padre e scrive il file in `output/*.pdf`
+(richiede Playwright; la pagina Salute indica se è installato). Non viene
+inviato nulla: controlla il PDF prima di allegarlo a una candidatura.
+
 ---
 
 ## 11. Tracker (`#/tracker`)

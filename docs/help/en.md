@@ -1204,6 +1204,14 @@ The single-report view also has:
 - **← All reports** — back to the grid.
 - **🔗 Open JD** — opens the original job posting in a new tab.
 
+### Export a report to PDF
+
+Open a saved report and click **📄 Generate PDF**. It streams
+`generate-pdf.mjs` in the parent project and writes the file to
+`output/*.pdf` (this needs Playwright — the Health page shows whether it
+is installed). Nothing is sent anywhere: review the PDF before you attach
+it to an application.
+
 ---
 
 ## 11. Tracker (`#/tracker`)

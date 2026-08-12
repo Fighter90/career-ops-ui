@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2418%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2420%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.162.0** — **更大的 "?" 点按目标(无障碍修复)** — 帮助 "?" 是 18×18 px 目标,低于 WCAG 2.5.8 的 24×24 最小值。现在盒子为 24×24,可见圆环仍为 18px(由 `::before` 绘制),无位移。 **2418 项测试。**
+> **🆕 最新版本 — v1.163.0** — **帮助涵盖报告 → PDF(修复)** — "询问文档"助手称指南未涵盖将报告导出为 PDF,尽管 `#/reports/:slug` 有 📄 Generate PDF 按钮。已向全部 17 个帮助包添加"将报告导出为 PDF"章节。 **2420 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

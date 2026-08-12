@@ -1207,6 +1207,14 @@ La vue rapport individuel a aussi :
 - **← All reports** — retour à la grille.
 - **🔗 Open JD** — ouvre l'offre d'origine dans un nouvel onglet.
 
+### Exporter un rapport en PDF
+
+Ouvrez un rapport enregistré et cliquez sur **📄 Generate PDF**. Cela
+exécute `generate-pdf.mjs` dans le projet parent et écrit le fichier dans
+`output/*.pdf` (nécessite Playwright ; la page Santé indique s'il est
+installé). Rien n'est envoyé : relisez le PDF avant de le joindre à une
+candidature.
+
 ---
 
 ## 11. Tracker (`#/tracker`)

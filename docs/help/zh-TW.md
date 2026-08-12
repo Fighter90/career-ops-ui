@@ -1019,6 +1019,12 @@ evaluate** 子節(在父專案執行 `./batch/batch-runner.sh`),讓它
 - **← All reports** — 回到網格。
 - **🔗 Open JD** — 在新分頁開啟原始職缺貼文。
 
+### 將報告匯出為 PDF
+
+開啟已儲存的報告並點擊 **📄 Generate PDF**。它會在父專案中執行
+`generate-pdf.mjs`,並將檔案寫入 `output/*.pdf`(需要 Playwright — 健康頁面會
+顯示是否已安裝)。不會傳送到任何地方:在把 PDF 附到申請之前先檢查一下。
+
 ---
 
 ## 11. 追蹤器(`#/tracker`)

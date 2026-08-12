@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2418%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2420%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Neueste Version — v1.162.0** — **Größeres "?"-Tippziel (a11y-Fix)** — das Hilfe-"?" war ein 18×18-px-Ziel, unter dem WCAG-2.5.8-Minimum von 24×24. Die Box ist jetzt 24×24, der sichtbare Ring bleibt 18px (via `::before`), ohne Verschiebung. **2418 Tests.**
+> **🆕 Neueste Version — v1.163.0** — **Hilfe deckt Bericht → PDF ab (Fix)** — der "Frag die Docs"-Assistent sagte, der Leitfaden decke den PDF-Export eines Berichts nicht ab, trotz des 📄 Generate PDF-Buttons auf `#/reports/:slug`. Ein Abschnitt "Einen Bericht als PDF exportieren" wurde allen 17 Hilfe-Bundles hinzugefügt. **2420 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

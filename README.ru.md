@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2418%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2420%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Последний релиз — v1.162.0** — **Крупнее тап-цель «?» (a11y-фикс)** — «?»-подсказка была целью 18×18 px, ниже минимума 24×24 WCAG 2.5.8. Теперь бокс 24×24, а видимое кольцо остаётся 18px (через `::before`), без сдвигов. **2418 тестов.**
+> **🆕 Последний релиз — v1.163.0** — **Справка охватывает отчёт → PDF (фикс)** — ассистент «Спросить документацию» говорил, что руководство не описывает экспорт отчёта в PDF, хотя на `#/reports/:slug` есть кнопка 📄 Generate PDF. Во все 17 бандлов справки добавлен раздел «Экспорт отчёта в PDF». **2420 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

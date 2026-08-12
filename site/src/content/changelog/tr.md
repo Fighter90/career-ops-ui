@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.163.0] — 2026-08-13
+
+**Düzeltildi (DÜŞÜK) — uygulama içi "Belgelere sor" asistanı artık bir raporu PDF olarak dışa aktarmayı kapsıyor.** `#/reports/:slug`'da çalışan bir 📄 Generate PDF düğmesi olmasına rağmen kılavuzun bunu kapsamadığını söylüyordu.
+
+### Düzeltildi
+- **17 yardım paketinin** tamamında §10 Raporlar altına **"Bir raporu PDF olarak dışa aktarma"** H3'ü eklendi (düğme nerede, dosya `output/*.pdf`'e yazılır, Playwright gerekir, göndermeden önce gözden geçir). Asistan getirimi artık Raporlar bölümünü gösteriyor.
+
+### Notlar
+- Yalnızca belge/yardım; kod/rota/CSP/SSRF/yazma değişikliği yok. Yardım eşiği **112 → 113 H3** (31 H2 değişmedi). `tests/help-reports-pdf-section.test.mjs` (+2). Takım: **2420** (+2).
+
 ## [1.162.0] — 2026-08-13
 
 **Düzeltildi (ORTA) — yardım "?" artık ≥24×24 işaretçi hedefi (WCAG 2.5.8).** `.help-hint` her başlıkta `padding:0` ile 18×18 px, minimumun altındaydı.

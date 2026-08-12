@@ -83,9 +83,9 @@ test('de/it/tr ship help, README and CHANGELOG bundles', () => {
     assert.ok(existsSync(resolve(ROOT, 'docs', 'help', `${l}.md`)), `docs/help/${l}.md must exist`);
     assert.ok(existsSync(resolve(ROOT, `README.${l}.md`)), `README.${l}.md must exist`);
     assert.ok(existsSync(resolve(ROOT, `CHANGELOG.${l}.md`)), `CHANGELOG.${l}.md must exist`);
-    // help bundle holds the gated 31 H2 / 112 H3 structure (§29 manifesto v1.120.0; §30 Hermes & Telegram v1.147.0; §31 "Running the whole stack in the cloud" v1.154.0)
+    // help bundle holds the gated 31 H2 / 113 H3 structure (§29 manifesto v1.120.0; §30 Hermes & Telegram v1.147.0; §31 "Running the whole stack in the cloud" v1.154.0; §10 Reports "Export a report to PDF" v1.163.0/FIX-5)
     const help = readFileSync(resolve(ROOT, 'docs', 'help', `${l}.md`), 'utf8');
     assert.equal((help.match(/^## /gm) || []).length, 31, `docs/help/${l}.md must have 31 H2`);
-    assert.equal((help.match(/^### /gm) || []).length, 112, `docs/help/${l}.md must have 112 H3`);
+    assert.equal((help.match(/^### /gm) || []).length, 113, `docs/help/${l}.md must have 113 H3`);
   }
 });

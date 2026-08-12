@@ -1009,6 +1009,12 @@ URL 时,逐条点击就不现实了 — 跳转到第 14 节的 **Batch evaluate*
 - **← All reports** — 返回网格。
 - **🔗 Open JD** — 在新标签页打开原始职位发布页。
 
+### 将报告导出为 PDF
+
+打开已保存的报告并点击 **📄 Generate PDF**。它在父项目中运行
+`generate-pdf.mjs`,并将文件写入 `output/*.pdf`(需要 Playwright — 健康页面会
+显示是否已安装)。不会发送到任何地方:在把 PDF 附到申请之前先检查一下。
+
 ---
 
 ## 11. 跟踪器(`#/tracker`)

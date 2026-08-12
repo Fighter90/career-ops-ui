@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.163.0] — 2026-08-13
+
+**Corrigido (BAIXA) — o assistente "Pergunte aos docs" agora cobre exportar um relatório para PDF.** Antes respondia que o guia não cobria, apesar do controle 📄 Generate PDF em `#/reports/:slug`.
+
+### Corrigido
+- Adicionado um H3 **"Exportar um relatório para PDF"** em §10 Relatórios nos **17 pacotes de ajuda** (onde fica o botão, que o arquivo vai para `output/*.pdf`, precisa do Playwright, revisar antes de enviar). A recuperação do assistente agora mostra a seção Relatórios.
+
+### Notas
+- Apenas docs/ajuda; sem mudança de código/rota/CSP/SSRF/escrita. Limite de ajuda **112 → 113 H3** (31 H2 inalterado). `tests/help-reports-pdf-section.test.mjs` (+2). Conjunto: **2420** (+2).
+
 ## [1.162.0] — 2026-08-13
 
 **Corrigido (MÉDIA) — o "?" de ajuda agora é um alvo de ≥24×24 (WCAG 2.5.8).** `.help-hint` media 18×18 px com `padding:0`, abaixo do mínimo, em cada cabeçalho.
