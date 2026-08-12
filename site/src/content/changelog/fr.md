@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.144.0] — 2026-08-12
+
+**Paramètres et filtres (Phase 4, partie 1) : activer/désactiver les portails suivis** — vous pouvez désormais activer ou désactiver une entreprise surveillée depuis `#/portals`, et le scanner le respecte. Demande UX de l'utilisateur (sans parent-sync).
+
+### Ajouté
+- **Bouton Activer/Désactiver par entreprise sur `#/portals`** — un clic désactive un portail (le scanner EN ignore déjà les entreprises `enabled: false`, donc un portail désactivé disparaît de tous les scans futurs) ou le réactive, avec un toast optimiste.
+- **`POST /api/portals/toggle`** — une écriture utilisateur explicite qui bascule chirurgicalement et avec validation d'analyse le drapeau `enabled` d'une entreprise dans `portals.yml` (commentaires, ordre et autres champs préservés). 5 nouvelles clés i18n × **17 langues** ; snapshot 1195 → 1200.
+
+### Notes
+- Le changement du scanner a été **nul** — `en-scanner.mjs` filtre déjà `enabled !== false`. Suite : **2368** tests (+3).
+
 ## [1.143.0] — 2026-08-12
 
 **Compréhensible (suite) : bulles `?` sur les vues de travail principales** — le `?` d'aide couvre désormais les neuf pages d'action principales, dans toutes les langues. Ajustement UX signalé par l'utilisateur (sans parent-sync).

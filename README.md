@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2365%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2368%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Latest release — v1.143.0** — **understandable (cont.): `?` hints on the core workflow views** — the `?` help affordance now covers 9 more pages (scan, evaluate, cv-studio, tracker, config, deep, batch, auto, apply), in every language. **2365 tests.**
+> **🆕 Latest release — v1.144.0** — **settings & filters (Phase 4): enable/disable tracked portals** — turn a watched company on/off from `#/portals` (`POST /api/portals/toggle`, surgical portals.yml write); the scanner already skips `enabled: false` companies. **2368 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

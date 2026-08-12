@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2365%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2368%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Ultima release — v1.143.0** — **comprensibile (segue): suggerimenti `?` sulle viste di lavoro** — il `?` di aiuto copre ora altre 9 pagine (scan, evaluate, cv-studio, tracker, config, deep, batch, auto, apply), in tutte le lingue. **2365 test.**
+> **🆕 Ultima release — v1.144.0** — **impostazioni e filtri (Fase 4): abilita/disabilita i portali seguiti** — accendi o spegni un'azienda monitorata da `#/portals` (`POST /api/portals/toggle`, scrittura chirurgica di portals.yml); lo scanner salta già le aziende `enabled: false`. **2368 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

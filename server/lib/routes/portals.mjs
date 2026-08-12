@@ -17,10 +17,11 @@
  * `safeGet` (SSRF envelope) with a short timeout + tiny body cap; concurrency is
  * chunked so a big portals.yml can't fan out into a request storm.
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { PATHS } from '../paths.mjs';
 import { safeGet } from '../safe-fetch.mjs';
+import { withFileLock } from '../file-lock.mjs';
 
 const PROBE_TIMEOUT_MS = 12_000;
 const PROBE_CHUNK = 8; // concurrent probes
@@ -67,7 +68,74 @@ async function probeAll(companies) {
   return out;
 }
 
+/**
+ * Surgically set (or insert) a tracked company's `enabled:` flag in the RAW
+ * portals.yml text, keyed by an exact careers_url match. Text-based (not a yaml
+ * round-trip) so the user's file — comments, ordering, quoting — is preserved
+ * byte-for-byte outside the single line we touch, matching store.mjs's
+ * append-only write pattern. Returns the new text, or null if the company's
+ * careers_url isn't found. Exported for tests.
+ */
+export function setEnabledInRaw(raw, careersUrl, enabled) {
+  if (typeof raw !== 'string' || typeof careersUrl !== 'string' || !careersUrl) return null;
+  const lines = raw.split('\n');
+  const idx = lines.findIndex((l) => l.includes(careersUrl));
+  if (idx === -1) return null;
+  // Walk up to the list-item start ("- " at some indent) that owns this line.
+  let start = idx;
+  while (start > 0 && !/^\s*-\s/.test(lines[start])) start -= 1;
+  if (!/^\s*-\s/.test(lines[start])) return null;
+  const baseIndent = (lines[start].match(/^(\s*)-\s/) || [, ''])[1];
+  const keyIndent = baseIndent + '  ';
+  // Block end = first non-blank line dedented to/below the list-item indent.
+  let end = start + 1;
+  for (; end < lines.length; end += 1) {
+    const l = lines[end];
+    if (l.trim() === '') continue;
+    const ind = (l.match(/^(\s*)/) || [, ''])[1].length;
+    if (ind <= baseIndent.length) break;
+  }
+  // Existing `enabled:` within the block → flip its value; else insert one.
+  let enabledLine = -1;
+  for (let i = start; i < end; i += 1) { if (/^\s*enabled\s*:/.test(lines[i])) { enabledLine = i; break; } }
+  if (enabledLine !== -1) {
+    lines[enabledLine] = lines[enabledLine].replace(/^(\s*enabled\s*:\s*)\S.*$/, `$1${enabled}`);
+  } else {
+    lines.splice(start + 1, 0, `${keyIndent}enabled: ${enabled}`);
+  }
+  return lines.join('\n');
+}
+
 export function registerPortalsRoutes(app) {
+  // POST /api/portals/toggle { careers_url, enabled } — explicit user write:
+  // flip a watched company's enabled flag in portals.yml so the scanner
+  // (en-scanner filters `c.enabled !== false`) skips or resumes it. Surgical +
+  // parse-validated: if the edit wouldn't re-parse to valid YAML, we refuse to
+  // write. Same write-through contract as POST /api/tracker / PUT /api/cv.
+  app.post('/api/portals/toggle', async (req, res) => {
+    const body = (req.body && typeof req.body === 'object') ? req.body : {};
+    const careersUrl = typeof body.careers_url === 'string' ? body.careers_url : '';
+    const enabled = body.enabled !== false; // default true
+    if (!careersUrl) return res.status(400).json({ error: 'careers_url is required' });
+    if (!existsSync(PATHS.portals)) return res.status(404).json({ error: 'portals.yml not found' });
+    try {
+      let ok = false;
+      await withFileLock(PATHS.portals, async () => {
+        const raw = readFileSync(PATHS.portals, 'utf8');
+        const next = setEnabledInRaw(raw, careersUrl, enabled);
+        if (next === null) return; // company not found — leave ok=false
+        // safety net: the edited text MUST still parse, or we don't write it.
+        try { yaml.load(next); } catch { return; }
+        writeFileSync(PATHS.portals, next);
+        ok = true;
+      });
+      if (!ok) return res.status(404).json({ error: 'company not found in portals.yml (or the edit would not parse)' });
+      return res.json({ ok: true, careers_url: careersUrl, enabled });
+    } catch (e) {
+      return res.status(500).json({ error: String((e && e.message) || e).slice(0, 200) });
+    }
+  });
+
   app.post('/api/portals/health', async (_req, res) => {
     const tracked = loadTracked();
     if (tracked === null) return res.status(404).json({ error: 'portals.yml not found or unreadable' });

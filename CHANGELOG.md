@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.144.0] — 2026-08-12
+
+**Settings & filters (Phase 4, part 1): enable/disable tracked portals** — you can now turn a watched company on or off from `#/portals`, and the scanner honors it. A user-reported UX request (no parent-sync).
+
+### Added
+- **`POST /api/portals/toggle`** — an explicit user write that flips a watched company's `enabled` flag in `portals.yml`, keyed by `careers_url`. The edit is **surgical + parse-validated**: only the target company's `enabled:` line is inserted/flipped (comments, ordering, and every other field preserved byte-for-byte, matching the `store.mjs` write pattern), and the result must still parse as YAML or the write is refused. Same write-through contract as `POST /api/tracker` / `PUT /api/cv`.
+- **Enable / Disable toggle per company on `#/portals`** — one click turns a portal off (the EN scanner already skips `enabled: false` companies, so a disabled portal drops out of every future scan) or back on, with an optimistic toast.
+- 5 new i18n keys × **17 locales** (`portals.disable` / `enable` / `enabledToast` / `disabledToast` / `toggleFailed`); assembled-dict snapshot 1195 → 1200.
+
+### Notes
+- The scanner change was **zero** — `en-scanner.mjs` already filters `companies.filter((c) => c.enabled !== false)`; this release adds the UI + a safe write path to set it.
+- **Deferred to a later Phase-4 slice** (subjective / cosmetic — they want your eye): the scan-filter visual redesign and moving `#/portals` fully into a settings nav section. `#/portals` remains the portal-settings surface for now.
+- Suite: **2368** tests (+3: `setEnabledInRaw` insert/flip/not-found + the toggle round-trip + unknown-url 404 in `tests/portals-routes.test.mjs`).
+
 ## [1.143.0] — 2026-08-12
 
 **Understandable (cont.): `?` hints on the core workflow views** — the `?` help affordance now covers the nine main workflow/decision pages, in every language. A user-reported UX pass (no parent-sync).
