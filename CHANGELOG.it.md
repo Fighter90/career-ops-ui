@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.150.0] — 2026-08-12
+
+**Stati vuoti coerenti (rifinitura Phase 4)** — ogni pannello "ancora niente qui" ora si renderizza tramite l'unico stile condiviso `.empty`, invece che alcune viste ridichiarino l'aspetto inline con un `40px` magico. Piccola correzione di coerenza visiva; gli stati vuoti di `#/activity`, `#/cv-studio`, `#/stats` e `#/usage` ora combaciano con tutti gli altri (padding di 48px tokenizzato + bordo tratteggiato).
+
+### Modificato
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** hanno rimosso il loro `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` inline sui pannelli vuoti — tutte e tre le proprietà sono già fornite dalla classe condivisa `.empty` (`--space-7` = 48px, centrato, attenuato, bordo tratteggiato). Così questi quattro si renderizzano identici agli altri ~25 pannelli `.empty`.
+- Gli override legittimi per vista (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) non sono toccati — rimosse solo le ridichiarazioni puramente ridondanti.
+
+### Note
+- **Solo pulizia dell'uso di CSS lato client** — nessuna modifica a rotta, server, chiave i18n o regole CSS (la classe `.empty` è invariata); snapshot del dizionario 1208. Verificato nel browser (il pannello vuoto di `#/usage` calcola 48px di padding + bordo tratteggiato, 0 errori di console).
+- Il nuovo canarino `tests/empty-state-consistency.test.mjs` mantiene `.empty` come unica fonte di verità. La Phase 5 (provider Hermes) resta bloccata.
+- Suite: **2385** test (+2: `tests/empty-state-consistency.test.mjs`).
+
 ## [1.149.0] — 2026-08-12
 
 **Portali spostati nelle Impostazioni (Phase 4)** — `#/portals` ora si trova nel gruppo di navigazione **Setup**, accanto a *Impostazioni app*, invece che sotto *Sourcing*. Dalla v1.144.0 è una superficie di configurazione (abilita/disabilita le aziende monitorate + una sonda di salute dell'ATS), non un'azione di sourcing — quindi è lì che deve stare. Solo modifica di navigazione; la pagina e la sua rotta non cambiano.

@@ -23,7 +23,7 @@ Router.register('cv-studio', async () => {
   cvMarkdown = cvMarkdown || '';
 
   if (!cvMarkdown.trim()) {
-    root.appendChild(c('div', { className: 'empty', style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' } }, [
+    root.appendChild(c('div', { className: 'empty' }, [
       c('p', null, t('cvs.noCv', 'No CV yet. Add one on the CV page, then come back to diagnose and polish it.')),
       c('a', { className: 'btn', href: '#/cv' }, t('cvs.goCv', 'Open CV')),
     ]));

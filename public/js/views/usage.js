@@ -26,7 +26,7 @@ Router.register('usage', async () => {
   }
 
   if (!data.totalCalls) {
-    root.appendChild(c('div', { className: 'empty', style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' } },
+    root.appendChild(c('div', { className: 'empty' },
       c('p', null, t('usage.empty', 'No AI generations recorded yet. Run an evaluation, report, or chat with a provider key set, and usage will appear here.'))));
     return root;
   }

@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2383%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Seneste udgivelse — v1.149.0** — **Portaler flyttet til Indstillinger** — `#/portals` ligger nu i **Setup**-gruppen ved siden af *App-indstillinger* (det har været en indstillingsflade siden v1.144.0), i stedet for under *Sourcing*. Kun navigationsændring. **2383 tests.**
+> **🆕 Seneste udgivelse — v1.150.0** — **Konsistente tomme tilstande** — hvert "endnu ikke noget her"-panel gengives nu via den delte `.empty`-stil; `#/activity`, `#/cv-studio`, `#/stats` og `#/usage` fjernede en overflødig inline-tilsidesættelse, så de matcher alle de andre (tokeniseret 48px padding + stiplet kant). **2385 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

@@ -121,7 +121,7 @@ Router.register('stats', async () => {
   }
 
   const emptyState = (msg, ctaLabel, href) => c('div',
-    { className: 'empty', style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' } }, [
+    { className: 'empty' }, [
       c('p', null, msg),
       href ? c('a', { className: 'btn', href }, ctaLabel) : null,
     ].filter(Boolean));

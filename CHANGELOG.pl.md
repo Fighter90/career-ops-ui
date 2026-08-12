@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.150.0] — 2026-08-12
+
+**Spójne stany puste (dopracowanie Phase 4)** — każdy panel „jeszcze nic tu nie ma" renderuje się teraz przez jeden wspólny styl `.empty`, zamiast by kilka widoków redeklarowało wygląd inline z magicznym `40px`. Drobna poprawka spójności wizualnej; puste stany `#/activity`, `#/cv-studio`, `#/stats` i `#/usage` pasują teraz do wszystkich innych (tokenizowany padding 48px + przerywana ramka).
+
+### Zmieniono
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** usunęły swój inline `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` na pustych panelach — wszystkie trzy właściwości zapewnia już wspólna klasa `.empty` (`--space-7` = 48px, wyśrodkowane, przygaszone, przerywana ramka). Dzięki temu te cztery renderują się identycznie jak ~25 innych paneli `.empty`.
+- Uzasadnione nadpisania per-widok (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) pozostają — usunięto tylko czysto redundantne redeklaracje.
+
+### Uwagi
+- **Tylko porządki użycia CSS po stronie klienta** — bez zmiany trasy, serwera, klucza i18n czy reguł CSS (klasa `.empty` bez zmian); snapshot słownika 1208. Zweryfikowane w przeglądarce (pusty panel `#/usage` wylicza 48px paddingu + przerywaną ramkę, 0 błędów konsoli).
+- Nowy test kanarkowy `tests/empty-state-consistency.test.mjs` utrzymuje `.empty` jako jedyne źródło prawdy. Phase 5 (dostawca Hermes) pozostaje zablokowana.
+- Zestaw: **2385** testów (+2: `tests/empty-state-consistency.test.mjs`).
+
 ## [1.149.0] — 2026-08-12
 
 **Portale przeniesione do Ustawień (Phase 4)** — `#/portals` znajduje się teraz w grupie nawigacji **Setup**, obok *Ustawień aplikacji*, zamiast pod *Sourcing*. Od v1.144.0 to powierzchnia ustawień (włączanie/wyłączanie śledzonych firm + sonda stanu ATS), a nie akcja sourcingu — więc tam jest jego miejsce. Tylko zmiana nawigacji; strona i jej trasa bez zmian.

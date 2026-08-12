@@ -9,6 +9,19 @@
 ---
 
 
+## [1.150.0] — 2026-08-12
+
+**一致的空状态(Phase 4 打磨)** — 每个"暂无内容"面板现在都通过唯一的共享 `.empty` 样式渲染,而不再由个别视图用魔法数字 `40px` 内联重复声明外观。一次小的视觉一致性修复;`#/activity`、`#/cv-studio`、`#/stats`、`#/usage` 的空状态现在与其它所有面板一致(令牌化的 48px 内边距 + 虚线边框)。
+
+### 变更
+- **`#/activity`、`#/cv-studio`、`#/stats`、`#/usage`** 移除了空面板上的内联 `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` —— 这三个属性共享的 `.empty` 类已经提供(`--space-7` = 48px、居中、淡色、虚线边框)。于是这四个与其它约 25 个 `.empty` 面板渲染完全一致。
+- 各视图正当的覆盖(`#/dashboard` `width:100%`、`#/pipeline` `border:none`)未动 —— 仅移除纯冗余的重复声明。
+
+### 说明
+- **仅客户端 CSS 用法清理** —— 无路由、服务器、i18n 键或 CSS 规则改动(`.empty` 类本身不变);字典快照 1208。已在浏览器验证(`#/usage` 空面板计算为 48px 内边距 + 虚线边框,0 控制台错误)。
+- 新哨兵测试 `tests/empty-state-consistency.test.mjs` 让 `.empty` 保持唯一真实来源。Phase 5(Hermes 提供方)仍被阻塞。
+- 套件:**2385** 项测试(+2:`tests/empty-state-consistency.test.mjs`)。
+
 ## [1.149.0] — 2026-08-12
 
 **门户已移入设置(Phase 4)** — `#/portals` 现位于 **Setup** 导航分组中、*应用设置* 旁,而不再在 *Sourcing* 下。自 v1.144.0 起它就是一个设置界面(启用/停用被追踪的公司 + ATS 健康探测),而非 sourcing 操作 —— 所以这才是它该在的位置。仅导航调整;页面与路由不变。

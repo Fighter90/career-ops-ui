@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2383%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Última versión — v1.149.0** — **Portales movidos a Ajustes** — `#/portals` ahora está en el grupo **Setup** junto a *Ajustes de la app* (es una superficie de configuración desde v1.144.0), en vez de en *Sourcing*. Solo cambio de navegación. **2383 tests.**
+> **🆕 Última versión — v1.150.0** — **Estados vacíos consistentes** — cada panel de "aún no hay nada" se renderiza ahora con el estilo compartido `.empty`; `#/activity`, `#/cv-studio`, `#/stats` y `#/usage` eliminaron una anulación en línea redundante para coincidir con todos los demás (relleno de 48px tokenizado + borde discontinuo). **2385 tests.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

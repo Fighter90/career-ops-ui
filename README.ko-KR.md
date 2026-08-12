@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2383%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.149.0** — **포털을 설정으로 이동** — `#/portals`가 이제 *Sourcing* 대신 *앱 설정* 옆의 **Setup** 그룹에 있습니다(v1.144.0부터 설정 화면). 내비게이션만 변경. **2383 테스트.**
+> **🆕 최신 릴리스 — v1.150.0** — **일관된 빈 상태** — 모든 "아직 없음" 패널이 이제 공유 `.empty` 스타일로 렌더링됩니다; `#/activity`, `#/cv-studio`, `#/stats`, `#/usage`가 중복 인라인 재정의를 제거해 나머지와 동일해졌습니다(토큰화된 48px 패딩 + 점선 테두리). **2385 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

@@ -11,6 +11,19 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.150.0] — 2026-08-12
+
+**États vides cohérents (finition Phase 4)** — chaque panneau « rien pour l'instant » s'affiche désormais via l'unique style partagé `.empty`, au lieu que quelques vues redéclarent l'apparence en inline avec un `40px` magique. Petite correction de cohérence visuelle ; les états vides de `#/activity`, `#/cv-studio`, `#/stats` et `#/usage` s'alignent maintenant sur tous les autres (padding de 48px tokenisé + bordure en pointillés).
+
+### Modifié
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** ont retiré leur `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` inline sur les panneaux vides — les trois propriétés sont déjà fournies par la classe partagée `.empty` (`--space-7` = 48px, centré, atténué, bordure en pointillés). Ces quatre s'affichent donc à l'identique des ~25 autres panneaux `.empty`.
+- Les surcharges légitimes par vue (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) sont intactes — seules les redéclarations purement redondantes ont été retirées.
+
+### Notes
+- **Nettoyage d'usage CSS côté client uniquement** — aucun changement de route, serveur, clé i18n ni règle CSS (la classe `.empty` est inchangée) ; snapshot du dictionnaire 1208. Vérifié dans le navigateur (le panneau vide de `#/usage` calcule 48px de padding + bordure en pointillés, 0 erreur de console).
+- Le nouveau canari `tests/empty-state-consistency.test.mjs` garde `.empty` comme source unique de vérité. La Phase 5 (fournisseur Hermes) reste bloquée.
+- Suite : **2385** tests (+2 : `tests/empty-state-consistency.test.mjs`).
+
 ## [1.149.0] — 2026-08-12
 
 **Portails déplacés dans Réglages (Phase 4)** — `#/portals` se trouve désormais dans le groupe de navigation **Setup**, à côté des *Réglages de l'app*, au lieu de sous *Sourcing*. Depuis la v1.144.0, c'est une surface de configuration (activer/désactiver les entreprises suivies + une sonde de santé de l'ATS), pas une action de sourcing — donc c'est là qu'il doit être. Changement de navigation uniquement ; la page et sa route sont inchangées.

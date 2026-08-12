@@ -17,7 +17,7 @@ Router.register('activity', async () => {
   let activeFilter = '';
 
   const tableBody = c('tbody');
-  const empty = c('div', { className: 'empty', style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' } }, t('activity.empty'));
+  const empty = c('div', { className: 'empty' }, t('activity.empty'));
   empty.hidden = true;
 
   function renderRow(evt) {
