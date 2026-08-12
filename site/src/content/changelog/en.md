@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.160.0] — 2026-08-13
+
+**Fixed (HIGH) — provider copy no longer contradicts the 7-provider promise.** `#/config` said the web-ui live eval "uses your Anthropic or Gemini API key" and that the OpenAI key is "not used by the web UI itself"; `#/dashboard`'s Evaluate card said "Anthropic-first scoring" — all false since the OpenRouter / 7-provider cascade shipped (v1.157.0), and self-contradicted on the same screen (the header chip read `Active: OpenRouter`).
+
+### Fixed
+- **`config.providerModelNote` (×17)** now states the truth: the headless ⚡ live eval runs on **any one of your seven provider keys** — Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes — auto-ordered, with fallback when a pinned provider has no key. The false "OpenAI … not used by the web UI itself" sentence is removed.
+- **`dash.quick.evaluateSub` (×17)** is now vendor-neutral ("0–5 fit scoring"), not "Anthropic-first scoring"; the `dashboard.js` fallback matches.
+- **`Keys: N / 5` → `N / 7`** — the denominator now matches the seven configurable provider key slots (`SECRET_KEYS`), the same second-order drift.
+
+### Notes
+- Copy-only; no route, CSP, SSRF, or parent-write change. Two existing i18n keys reworded ×17 (no new keys; snapshot stays 1217).
+- Tests: `tests/provider-copy-honesty.test.mjs` (+3: ≥5 provider names ×17, EN drops the exclusivity claims, Evaluate subtitle vendor-neutral ×17). Suite: **2413** (+3).
+
 ## [1.159.0] — 2026-08-13
 
 **Fixed (HIGH) — report metadata is no longer language-coupled.** Reports generated in a non-English locale rendered a blank metadata strip on `#/reports` (no score pill, date, or legitimacy chip), because `parseReportHeader` matched only English `**Score:**` / `**Legitimacy:**` / `**Date:**` bold labels — so the docs' "Score → next step" table sat above cards that showed no score.

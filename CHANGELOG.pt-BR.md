@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.160.0] — 2026-08-13
+
+**Corrigido (ALTA) — o texto sobre provedores não contradiz mais a promessa de 7 provedores.** `#/config` dizia que a avaliação ao vivo "usa sua chave Anthropic ou Gemini" e que a do OpenAI "não é usada pelo web UI"; o painel dizia "Score Anthropic-first" — falso desde a cascata de 7 provedores (v1.157.0).
+
+### Corrigido
+- `config.providerModelNote` (×17): agora diz que a ⚡ avaliação ao vivo headless funciona com qualquer uma das suas sete chaves (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes), ordenadas automaticamente com fallback. Frase falsa sobre OpenAI removida.
+- `dash.quick.evaluateSub` (×17): neutro quanto ao provedor ("Pontuação de adequação 0–5"). `Keys: N / 5` → `N / 7`.
+
+### Notas
+- Apenas texto; sem mudança de rota/CSP/SSRF/escrita. Sem novas chaves i18n (snapshot 1217). Conjunto: **2413** (+3).
+
 ## [1.159.0] — 2026-08-13
 
 **Corrigido (ALTA) — os metadados do relatório não dependem mais do idioma.** Relatórios gerados em idioma diferente do inglês mostravam uma faixa de metadados vazia em `#/reports`, porque `parseReportHeader` só reconhecia rótulos em negrito em inglês.

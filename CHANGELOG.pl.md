@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.160.0] — 2026-08-13
+
+**Naprawiono (WYSOKIE) — tekst o dostawcach nie zaprzecza już obietnicy 7 dostawców.** `#/config` mówił, że ocena na żywo "używa klucza Anthropic lub Gemini", a klucz OpenAI "nie jest używany przez web UI"; pulpit pokazywał "Anthropic-first scoring" — fałsz od kaskady 7 dostawców (v1.157.0).
+
+### Naprawiono
+- `config.providerModelNote` (×17): teraz mówi, że ⚡ ocena na żywo działa bezgłowo na dowolnym z siedmiu kluczy (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes), uporządkowanych automatycznie z rezerwą. Usunięto fałszywe zdanie o OpenAI.
+- `dash.quick.evaluateSub` (×17): neutralny ("Ocena dopasowania 0–5"). `Keys: N / 5` → `N / 7`.
+
+### Uwagi
+- Tylko tekst; bez zmian trasy/CSP/SSRF/zapisu. Bez nowych kluczy i18n (migawka 1217). Zestaw: **2413** (+3).
+
 ## [1.159.0] — 2026-08-13
 
 **Naprawiono (WYSOKIE) — metadane raportu nie są już powiązane z językiem.** Raporty generowane w języku innym niż angielski pokazywały pusty pasek metadanych na `#/reports`, ponieważ `parseReportHeader` rozpoznawał tylko angielskie etykiety pogrubione.

@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2410%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2413%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Neueste Version — v1.159.0** — **Sprachbewusste Bericht-Metadaten (Fix)** — Berichte in einer anderen Sprache als Englisch zeigten einen leeren Metadatenstreifen (ohne Score/Datum/Legitimität). `parseReportHeader` liest jetzt den sprachinvarianten `## Machine Summary`-Block (englische Berichte bleiben identisch) und toleriert lokale Zahlenformate. **2410 Tests.**
+> **🆕 Neueste Version — v1.160.0** — **Ehrlicher Anbieter-Text (Fix)** — `#/config` und das Dashboard behaupteten, nur mit Anthropic/Gemini zu bewerten (und OpenAI werde "nicht genutzt") — falsch seit der 7-Anbieter-Kaskade. Jetzt werden alle sieben genannt, die Bewerten-Karte ist neutral und `Keys: N/5` → `N/7`. **2413 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

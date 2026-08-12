@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.160.0] — 2026-08-13
+
+**Behoben (HOCH) — der Anbieter-Text widerspricht nicht mehr dem 7-Anbieter-Versprechen.** `#/config` sagte, die Live-Bewertung "nutzt deinen Anthropic- oder Gemini-Schlüssel" und der OpenAI-Schlüssel werde "nicht von der Web-UI selbst genutzt"; das Dashboard zeigte "Anthropic-first-Scoring" — falsch seit der 7-Anbieter-Kaskade (v1.157.0).
+
+### Behoben
+- `config.providerModelNote` (×17): sagt jetzt, dass die ⚡ Live-Bewertung headless mit einem beliebigen deiner sieben Schlüssel (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes) läuft, automatisch geordnet mit Fallback. Der falsche OpenAI-Satz ist entfernt.
+- `dash.quick.evaluateSub` (×17): anbieterneutral ("0–5 Eignungs-Score"). `Keys: N / 5` → `N / 7`.
+
+### Hinweise
+- Nur Text; keine Änderung an Route/CSP/SSRF/Schreibzugriff. Keine neuen i18n-Schlüssel (Snapshot 1217). Suite: **2413** (+3).
+
 ## [1.159.0] — 2026-08-13
 
 **Behoben (HOCH) — Berichts-Metadaten sind nicht mehr sprachgekoppelt.** In einer anderen Sprache als Englisch erzeugte Berichte zeigten auf `#/reports` einen leeren Metadatenstreifen, weil `parseReportHeader` nur englische Fettschrift-Labels erkannte.

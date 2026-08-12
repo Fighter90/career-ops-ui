@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2410%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2413%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Последний релиз — v1.159.0** — **Метаданные отчёта с учётом языка (фикс)** — Отчёты на не-английском языке показывали пустую полосу метаданных (без оценки/даты/легитимности). `parseReportHeader` теперь читает языко-независимый блок `## Machine Summary` (английские отчёты идентичны) и допускает локальные форматы чисел. **2410 тестов.**
+> **🆕 Последний релиз — v1.160.0** — **Честный текст о провайдерах (фикс)** — `#/config` и дашборд утверждали, что оценка идёт только на Anthropic/Gemini (а OpenAI «не используется») — ложь после каскада 7 провайдеров. Теперь названы все семь, карточка Evaluate нейтральна, `Keys: N/5` → `N/7`. **2413 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

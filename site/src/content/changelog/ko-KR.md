@@ -9,6 +9,17 @@
 ---
 
 
+## [1.160.0] — 2026-08-13
+
+**수정 (HIGH) — 제공자 안내 문구가 더 이상 7개 제공자 약속과 모순되지 않습니다.** `#/config`는 라이브 평가가 "Anthropic 또는 Gemini 키를 사용"하고 OpenAI 키는 "웹 UI에서 사용되지 않는다"고 했고, 대시보드는 "Anthropic-first scoring"이라 표시했습니다 — 7개 제공자 캐스케이드(v1.157.0) 이후로 거짓.
+
+### 수정됨
+- `config.providerModelNote` (×17): 이제 ⚡ 라이브 평가가 일곱 제공자 키(Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes) 중 아무거나로 헤드리스 실행된다고 명시. 거짓 OpenAI 문장 제거.
+- `dash.quick.evaluateSub` (×17): 제공자 중립("0–5 적합도 점수"). `Keys: N / 5` → `N / 7`.
+
+### 참고
+- 문구만; 라우트/CSP/SSRF/쓰기 변경 없음. 새 i18n 키 없음(스냅샷 1217). 총 **2413** (+3).
+
 ## [1.159.0] — 2026-08-13
 
 **수정 (HIGH) — 리포트 메타데이터가 더 이상 언어에 종속되지 않습니다.** 영어가 아닌 로케일로 생성된 리포트는 `#/reports`에서 빈 메타데이터 영역(점수/날짜/정당성 없음)으로 표시되었습니다. `parseReportHeader`가 영어 굵은 라벨만 인식했기 때문입니다.

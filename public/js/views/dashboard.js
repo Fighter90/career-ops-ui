@@ -225,7 +225,7 @@ Router.register('dashboard', async () => {
         // UX-A15 (v1.58.63) — Pipeline is the highest-frequency action
         // by far; mark it primary so the eye lands here first.
         qa('📥', 'nav.pipeline', 'Pipeline', 'dash.quick.pipelineSub', `${data.counts.pipeline} pending URLs`, '/pipeline', true),
-        qa('▶', 'dash.quick.evaluateCta', 'Evaluate a JD', 'dash.quick.evaluateSub', 'Anthropic-first scoring', '/evaluate'),
+        qa('▶', 'dash.quick.evaluateCta', 'Evaluate a JD', 'dash.quick.evaluateSub', '0–5 fit scoring', '/evaluate'),
         qa('≡', 'nav.tracker', 'Tracker', 'dash.quick.trackerSub', `${data.counts.applications} applications`, '/tracker'),
       ]),
 
