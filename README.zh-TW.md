@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2402%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.157.0** — **任一供應方的即時評估(修復)** — 僅設定 `OPENROUTER_API_KEY` 的使用者被強制進入手動模式。根因:無金鑰的 `LLM_PROVIDER=claude` 釘選(來自 `init`)—— 現在回退到任一已設定供應方,用戶端讀取 `/api/status/providers`(全部 7 個)。 **2401 個測試.**
+> **🆕 最新版本 — v1.158.0** — **顯示層面的小修復** — HelpHint 的 «?» 不再洩漏到瀏覽器分頁標題,cvstart.org 著陸頁現在顯示「7 AI providers」(而非 17),與統計橫幅一致。 **2402 項測試。**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

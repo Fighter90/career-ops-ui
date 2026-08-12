@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.158.0] — 2026-08-12
+
+**Corrigido — dois bugs cosméticos de exibição (uma «?» vazando no título da aba e uma contagem de provedores errada na landing).** Apenas visual; sem mudança de comportamento, segurança ou fluxo de dados.
+
+### Corrigido
+- A «?» do HelpHint não vaza mais para `document.title`. O router derivava o título da aba do `h1.textContent` bruto, então a aba mostrava «Vacancy search?» em vez de «Vacancy search». `router.js::focusNewView` agora clona o cabeçalho, remove `.help-hint` e lê o texto; a «?» visível do cabeçalho fica intacta.
+- cvstart.org mostrava «17 AI providers» em vez de «7». O helper `sub()` de `Features.astro` reescrevia todo `{n}` com a contagem de idiomas (17) antes da substituição por cartão; agora `{n}` é resolvido por cartão (provedores → 7, idiomas → 17).
+
+### Notas
+- Sem mudança de servidor, rota, CSP, SSRF ou chaves i18n; forma de `facts.json` inalterada. Conjunto: **2402** testes (+1).
+
 ## [1.157.0] — 2026-08-12
 
 **Corrigido — as avaliações ao vivo agora rodam com QUALQUER provedor configurado, não só Anthropic/Gemini.** Um usuário com apenas `OPENROUTER_API_KEY` era forçado erroneamente ao modo manual.

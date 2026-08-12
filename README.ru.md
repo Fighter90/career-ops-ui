@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2402%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Последний релиз — v1.157.0** — **Живые оценки на любом провайдере (фикс)** — Пользователь лишь с `OPENROUTER_API_KEY` ошибочно попадал в ручной режим. Причина: пин `LLM_PROVIDER=claude` (из `init`) без ключа заходил в тупик — теперь откат к любому настроенному провайдеру, а клиент читает `/api/status/providers` (все 7), не только Anthropic/Gemini. **2401 тестов.**
+> **🆕 Последний релиз — v1.158.0** — **Косметические исправления отображения** — «?» из HelpHint больше не протекает в заголовок вкладки браузера, а лендинг cvstart.org теперь показывает «7 AI providers» (а не 17), совпадая с баннером статистики. **2402 теста.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

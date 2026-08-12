@@ -8,6 +8,204 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.158.0] — 2026-08-12
+
+**Fixed — two cosmetic display bugs (a leaked "?" in tab titles, a wrong provider count on the landing).** Display-only; no behaviour, security, or data-flow change.
+
+### Fixed
+- **The HelpHint `?` no longer leaks into `document.title`.** Views built via `HelpHint.title(text, key)` render their `<h1>` as `[<span>text</span>, <button class="help-hint">?</button>]`; the router derived the per-route tab title from the raw `h1.textContent`, so the tab (and the screen-reader "page changed" announcement) read "Vacancy search?" instead of "Vacancy search". `router.js::focusNewView` now deep-clones the heading, strips `.help-hint`, then reads the text — the live heading's visible "?" is untouched.
+- **cvstart.org showed "17 AI providers" instead of "7".** The landing's `Features.astro` `sub()` helper eagerly rewrote every `{n}` to the locale count (17) before the per-card override could set the providers card to `facts.providers` (7), so the feature card and the stats banner disagreed on the same page. `{n}` is now resolved per-card (providers → 7, languages → 17).
+
+### Notes
+- No server, route, CSP, SSRF, or i18n-key change; `facts.json` shape unchanged (`providers: 7`, `locales: 17`).
+- Tests: `tests/document-title-per-route.test.mjs` (+1, source-static guard that the title is computed from a `.help-hint`-stripped clone). Suite: **2402** tests (+1); Playwright smoke/full-cycle/forms 62/62.
+
+## [1.157.0] — 2026-08-12
+
+**Fixed — live evals now run on ANY configured provider, not just Anthropic/Gemini.** A user with only `OPENROUTER_API_KEY` set was wrongly forced into manual mode ("set ANTHROPIC_API_KEY or GEMINI_API_KEY…"). Two independent causes: a stale server-side pin, and stale client-side gating.
+
+### Fixed
+- **Root cause — a keyless `LLM_PROVIDER` pin dead-ended.** Running `init` with Claude Code writes `LLM_PROVIDER=claude`; if you later add only, say, an OpenRouter key, the forced-claude routing found no Anthropic key and fell through to a manual prompt — even though OpenRouter was configured and fully supported. Now **a forced provider whose key isn't set falls back to the auto order among the *configured* providers** (a pin that DOES have its key stays forced). Applied consistently in `env-config.mjs::selectActiveProvider` and **both** dispatch cascades (`routes/llm.mjs::_provGate` + `llm-dispatch.mjs::gate`), so `/api/status/providers` and the actual run always agree.
+- **Client gating was stale.** `#/deep` and the mode-page views (`#/contacto`, `#/interview-prep`, `#/project`, …) decided "Run live vs manual" by probing `/api/health` for only `ANTHROPIC_API_KEY` / `GEMINI_API_KEY`. They now use the new `window.ProviderStatus` helper, which reads `/api/status/providers` (`activeProvider`, honoring all seven + the pin). No more ⚡-button that promises a live run the server would refuse.
+- **Misleading copy.** `deep.tipManual`, `deep.needKey`, and `eval.manualMode` (× 17) no longer name only Anthropic/Gemini — they point at "any provider key … in App settings". `config.llmProviderHint` (× 17) explains the new pin-fallback. `#/dashboard`'s system card now shows a single honest **Live evals · ready/manual** badge (derived from all seven provider rows) instead of Anthropic/Gemini-only badges.
+
+### Added
+- **`public/js/lib/provider-status.js`** — `window.ProviderStatus` (`.live()` → `{ available, engine, activeProvider, keysConfigured }`, plus a 7-provider label map): the single client source of truth for live-eval availability. Loaded after `api.js`.
+
+### Notes
+- No security-surface change — provider endpoints are still trusted config; no route, CSP, or SSRF change. The fallback only picks among keys the operator already configured.
+- Tests: `tests/live-provider-gating.test.mjs` (+4, source-static guard against the stale 2-provider probe) + a `selectActiveProvider` keyless-pin-fallback case; the old "pin with no key → null" assertion updated to the new fallback. 3 new `dash.system.*` keys × 17 (snapshot 1214 → 1217).
+- Suite: **2401** tests (+5); Playwright smoke/full-cycle/forms 62/62.
+
+## [1.156.0] — 2026-08-12
+
+**Refactor — split `scan.js` under the file-size limit (P-16), + a CodeQL fix.** `public/js/views/scan.js` was **906 lines**, over the 800-line hard limit. Two cohesive, behavior-preserving factories were extracted, bringing it to **648** — completing the view-split pair started with `config.js` in v1.155.0.
+
+### Changed
+- **`scan/runner.js`** (new, 276 lines) — `window.createScanRunner(ctx)` → `{ runScanAll, stopScan }`: the scan-execution engine (Scan/Stop run-state, the indeterminate/determinate progress bar, the persistent error banner + Retry, the SSE console stream, and the per-source runners for ATS / regional / both).
+- **`scan/filters.js`** (new, 76 lines) — `window.createScanFilters(refs, deps)` → `{ applyFilters, resetFilters, getFilterState, setFilterState }`: the result-filter state machine that backs saved searches.
+- `scan.js` (648) wires both via `ctx`/`refs` bags (the same pattern as `lib/scan-results.js`); the live-poll teardown timers stay at `scan.js` top level (shared classic-`<script>` scope). Both new files load before `scan.js` in `index.html`.
+
+### Fixed
+- **CodeQL `js/useless-assignment-to-local` (#428)** in `config/tab-controller.js` — `let n = i;` where `n` is reassigned on every non-returning branch → `let n;`. Harmless dead-store introduced by the v1.155.0 extraction (moved verbatim from config.js), now cleared.
+
+### Notes
+- **Pure refactor, zero behavior change** — moved code is byte-identical (de-indent only); no route, server, i18n, or CSS change. Four source-reading tests were repointed to the new files (the `loadScanSrc()` helper now concatenates `scan.js` + `scan/runner.js` + `scan/filters.js` + `lib/scan-results.js`); assertions otherwise identical.
+- Both oversized views (`config.js`, `scan.js`) are now under the 800-line limit; **P-15/P-16 complete**.
+- Suite: **2396** tests (unchanged — tests repointed, not added); Playwright scan+smoke 26/26 in-browser.
+
+## [1.155.0] — 2026-08-12
+
+**Refactor — split `config.js` under the file-size limit (P-15).** `public/js/views/config.js` was **1030 lines**, over the project's 800-line hard limit. Two cohesive, behavior-preserving modules were extracted, bringing it to **783**.
+
+### Changed
+- **`config/field-specs.js`** (new) — the pure, read-only field-spec data: the curated per-provider model lists + the `FIELDS` descriptor table (API keys / runtime / regional). `window.ConfigFieldSpecs`, loaded before the view.
+- **`config/tab-controller.js`** (new) — the `#/config` tab-bar controller (ARIA tablist + keyboard nav + panel swapping) as a `createConfigTabController(c, panelHost)` factory returning `{ tabBtn, activate }`.
+- `config.js` now references both; the render logic (fieldRow, profile/section editors, save flow) is unchanged. Both new files are wired into `index.html` before `config.js`.
+
+### Notes
+- **Pure refactor, zero behavior change** — no route, no server, no i18n key, no CSS. Six source-reading tests were repointed to the new files (they assert on the moved field/model/tab markup); the assertions are otherwise identical.
+- **`scan.js` (906) is intentionally left as-is.** Its results-rendering was already extracted to `lib/scan-results.js` (v1.132.0); the remaining core is a tightly-coupled event-wiring closure bound to ~18 filter/DOM refs, where a mechanical factory extraction would need an 18-argument signature and *worsen* coupling — the opposite of the rule's intent. A proper split needs a filter-state model refactor, deferred rather than force-fit.
+- Suite: **2396** tests (unchanged — tests repointed, not added).
+
+## [1.154.0] — 2026-08-12
+
+**New guide — "Running the whole stack in the cloud."** career-ops has no cloud/server story of its own, so this adds one: a step-by-step recipe for putting the parent **career-ops** pipeline, this **career-ops-ui** viewer, and the AI **engine** (a **Claude subscription** via the Claude Code CLI, a local **Hermes** gateway, or provider API keys) on a small always-on server — provision, pick your engine, and expose it safely. It ships as in-app **Help §31** in all 17 languages, a README section, a wiki page, and (via the help mirror) the site.
+
+### Added
+- **In-app Help §31 "Running the whole stack in the cloud"** (× 17 locales) — the three moving parts (pipeline / viewer / engine), provision + install (VPS, Node ≥ 18), pick your engine (Claude subscription / Hermes / API keys, mixable), and expose it safely (HTTPS reverse proxy + auth + the CSP/SSRF/XSS/no-secrets invariants that must survive the move off `127.0.0.1`). Help bundle grows to **31 H2 / 112 H3** (was 30/108).
+- **README** — a `## Run the whole stack in the cloud` section (× 17) pointing to Help §31, `docs/integrations/HERMES.md`, and the new wiki page.
+- **Wiki** — a dedicated **Cloud-Deployment** page (the three-parts table, provision, engine choice, and the "must survive the move" invariants), linked from Home.
+
+### Notes
+- **Docs-only** — no route, no server, no client-code change; no new i18n key (help is Markdown, not the dict). The four help-bundle gate tests move to the 31 H2 / 112 H3 contract (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`, `locales-de-it-tr`).
+- Grounded in the existing `docs/integrations/HERMES.md` §2 cloud-deployment checklist and the parent's own docs (which recommend Node 22.5+ and the eight first-class agent CLIs).
+- Suite: **2396** tests (unchanged — the gate assertions were updated, not added).
+
+## [1.153.0] — 2026-08-12
+
+**Jobvite scanner migrated to the public XML feed (parent-sync).** The parent career-ops retired the Jobvite JSON API (it now 302-redirects and returns zero jobs); web-ui's jobvite source used that same dead endpoint, so any tracked Jobvite company silently scanned empty. This ports the parent's fix (`#2623`) into the web-ui source contract: the source now reads the public per-tenant **XML feed** on a different host, keyed by an opaque `companyEId`.
+
+### Fixed
+- **Jobvite returned zero jobs** — the source fetched `https://jobs.jobvite.com/api/company/{slug}/jobs` (retired). It now fetches `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` and parses the XML `<result><job>…` payload (CDATA + entity-decode, `detail-url` preferred over `apply-url`, `http:`→`https:` on display-only per-job URLs).
+
+### Changed
+- **companyEId resolution** — the tenant key changed from the vanity slug (`tylertech`) to an opaque `companyEId` (`q6NaVfwI`) not present in the careers URL. Resolution order: (1) `company_eid:` on the portal entry, (2) the `c=` param of an explicit `api:` URL, (3) board-page discovery (scrape `companyEId` from the inline JS). Prefer (1) in `portals.yml` — one line, survives board redesigns, skips a request.
+- **`server/lib/http-json.mjs`** — `fetchText` now attaches `.location` / `.retryAfter` to the thrown non-ok error (read-only; lets jobvite tell an empty board — a `NoJobs.htm` redirect — from a retired tenant, without ever following the redirect). Backward-compatible: both fields are `null` for a plain error, so existing `redirect:'error'` callers are unaffected.
+
+### CI
+- **Pages deploy no longer flips the status badge on a superseded build** — `deploy-pages.yml` used `concurrency.cancel-in-progress: true`, so when a merge touching `docs/help/**` auto-fired a Pages build **and** a manual dispatch raced it, the older run was cancelled and surfaced as a red "check" ("Some checks were not successful") even though the site deployed fine. Switched to `cancel-in-progress: false` (GitHub's recommended Pages pattern) so a second run queues instead of cancelling — the status stays green.
+
+### Notes
+- **Security** — the source pins **two** hosts (`jobs.jobvite.com` for discovery, `app.jobvite.com` for the feed) via `assertJobviteUrl` before every fetch: https-only, strict-hostname allowlist, **no redirect ever followed** (`redirect:'error'` for discovery, `redirect:'manual'` for the feed — the 3xx is read but never chased). The `companyEId` is only ever a `?c=` query value; feed/board URLs are rebuilt from the resolved slug/eId, never fetched verbatim from user input. Registry source count unchanged (`meta.value='jobvite'` preserved).
+- Parent-sync: this was the only web-ui-relevant change in the 17 parent commits since parentVersion 1.26.0 (the others — an LLM re-ranker, `verify-cv-facts`, `liveness-core`, and two `web/` fixes — have no web-ui mirror).
+- Suite: **2396** tests (+4: `tests/sources-jobvite.test.mjs` rewritten for the XML contract — config/`c=`/discovery eId resolution, XML parse, the two-host guard, empty-feed handling).
+
+## [1.152.0] — 2026-08-12
+
+**Hermes provider — completed wiring + docs actualization.** A detailed code review of the v1.151.0 Hermes integration surfaced two real gaps and four completeness items; all are fixed here, and the whole app's LLM-provider roster is brought up to the full seven (Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes) across every doc surface and all 17 locales.
+
+### Fixed
+- **`#/config` could not force Hermes** — the `LLM_PROVIDER` dropdown listed only six providers (GitHub was the last), so a user with both a cloud key and a local Hermes could set `HERMES_API_KEY` but had no way to *force* Hermes from the UI (only by hand-editing `.env`). `hermes` is now the 8th option (`auto` + 7 providers), and the field hint (`config.llmProviderHint` × 17 + the JS fallback) names the full seven-provider order. New `provider-selector.test.mjs` guard asserts the dropdown can never drift from `LLM_PROVIDERS` again.
+- **Short self-hosted keys were silently rejected** — `isUsableKey`'s 20-char floor was calibrated for cloud keys, but a `hermes gateway`'s `API_SERVER_KEY` is user-chosen and may be short (the Hermes docs' own example `change-me-local-dev` is 19 chars). `hasHermesKey` now uses a relaxed 8-char floor (still rejects empty/placeholder junk), so a legitimate short local key is no longer dropped to manual-mode without a diagnostic.
+
+### Changed
+- **`hermesChatUrl` completes a bare host** — `HERMES_BASE_URL=http://127.0.0.1:8642` (a mis-paste that drops the `/v1`) now resolves to `…/v1/chat/completions` instead of a `/v1`-less 404.
+- **Manual-fallback copy** in `routes/llm.mjs` now names Hermes in the "execute via …" provider list.
+- **Provider-roster actualization** — the six-provider chain/force-list strings were normalized to the full seven across README (× 17), the in-app help (× 17), the `config.llmProviderHint` dict (× 17), and `docs/sdd`. `CONVENTIONS.md` corrected to "all 16 non-EN locales". Assembled-dict snapshot regenerated (1214 keys).
+
+### Notes
+- **Security unchanged** — no new route, no SSRF/CSP/sanitizer change. The relaxed key floor only affects the local-loopback Hermes gateway; the provider endpoint stays trusted config (not a scanned job URL). `HERMES_API_KEY` remains a `SECRET_KEY`.
+- Health/doctor now carries a `HERMES_API_KEY` row (was omitted in v1.151.0), so `#/health` and `career-ops-ui doctor` list all seven providers.
+- Suite: **2392** tests (+2: the `isUsableKey` minLen guard + the dropdown-vs-`LLM_PROVIDERS` parity guard).
+
+## [1.151.0] — 2026-08-12
+
+**Hermes is now a wired LLM provider (Phase 5)** — the Phase 5 scoping spike confirmed that Nous Research's Hermes ships an **OpenAI-compatible API Server** (`hermes gateway` → `POST /v1/chat/completions`), so career-ops-ui now runs live evaluations through a local Hermes exactly like OpenAI/Qwen. Set `HERMES_API_KEY` in **App settings** and it joins the auto provider order (last). This closes the roadmap's final open item — **Phase 5, Shape A**.
+
+### Added
+- **Hermes LLM provider (Shape A)** — `runHermes` on the shared `runOpenAICompatible` client (`server/lib/openai.mjs`), gated in **both** cascades (`llm-dispatch.mjs` + `routes/llm.mjs`), added to the auto provider-order tail + the `LLM_PROVIDER=hermes` pin, `/api/status/providers`, and `server/lib/llm-pricing.mjs`. It reaches a user-configured local base URL (default `http://127.0.0.1:8642/v1`) with Bearer auth — a **configured provider endpoint** (like OpenRouter/Qwen), not a user-supplied job URL, so it does not touch the `isValidJobUrl` SSRF guard.
+- **`#/config` fields** — `HERMES_API_KEY` (secret) + `HERMES_BASE_URL` + `HERMES_MODEL` (default `hermes-agent`), with 6 new i18n keys × **17 locales** (assembled-dict snapshot 1208 → 1214).
+
+### Changed
+- The scoping spike is resolved: `docs/integrations/HERMES.md`, the in-app help §30 (× 17), the README teaser (× 14), the `hermes-bridge` skill, and `docs/UX-ROADMAP.md` all move from "planned / not-yet-wired" to **wired (Shape A)**. Shape B (a bespoke agent-runtime relay) was not needed.
+
+### Notes
+- **Security:** the provider fetch is a configured endpoint, identical in category to the existing OpenAI-compatible providers — no new SSRF surface, no CSP/sanitizer change. `HERMES_API_KEY` is a `SECRET_KEY` (never echoed).
+- Tests (CI-isolated, stubbed transport): `tests/hermes-provider.test.mjs` (+5); the v1.146.0 "no Hermes branch" canary is **inverted** to assert it IS wired; the provider-surface tests updated to the 7-provider order.
+- Suite: **2390** tests (+5: `tests/hermes-provider.test.mjs`).
+
+## [1.150.0] — 2026-08-12
+
+**Consistent empty states (Phase 4 polish)** — every "nothing here yet" panel now renders through the one shared `.empty` style instead of a few views re-declaring the look inline with a magic `40px`. Small visual-consistency fix; the empty states on `#/activity`, `#/cv-studio`, `#/stats`, and `#/usage` now match every other one (tokenized 48px padding + the dashed border).
+
+### Changed
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** dropped their redundant inline `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` on empty-state panels — all three properties are already provided by the shared `.empty` class (tokenized `--space-7` = 48px, centered, muted, dashed border). So those four now render pixel-identical to the ~25 other `.empty` panels instead of drifting a few px on a hardcoded number.
+- Genuine per-view overrides (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) are untouched — only the pure-redundant re-declarations were removed.
+
+### Notes
+- **Client CSS-usage cleanup only** — no route, no server, no i18n key, no CSS-rule change (the `.empty` class itself is unchanged); app dict snapshot stays 1208. Browser-verified (the `#/usage` empty panel computes to 48px padding + dashed border, no inline style, 0 console errors).
+- New canary `tests/empty-state-consistency.test.mjs` keeps `.empty` the single source of truth — a view may still add a layout-specific override (width/border) but not re-state padding/centering/colour.
+- Completes the concrete slice of Phase 4's "overall visual polish"; broader taste-driven refinement across all pages remains open to direction. Phase 5 (Hermes provider) stays blocked on the API-contract spike.
+- Suite: **2385** tests (+2: `tests/empty-state-consistency.test.mjs`).
+
+## [1.149.0] — 2026-08-12
+
+**Portals moved into Settings (Phase 4)** — `#/portals` now lives in the **Setup** nav group next to *App settings*, instead of under *Sourcing*. Since v1.144.0 it's a settings surface (enable/disable tracked companies + an ATS health probe), not a sourcing action — so this is where it belongs. Nav-only change; the page and its route are untouched.
+
+### Changed
+- **`#/portals` nav item → Setup group** (in `public/index.html`), placed right after *App settings*. Removed from the *Sourcing* group (which keeps Scan / Pipeline / Auto-pipeline / Funded companies). The `#/portals` route, the view, and the `nav.portals` label are unchanged — only the sidebar position moved.
+
+### Notes
+- **Nav markup only** — no route, no view, no i18n key, no server change. Browser-verified (the Portals item now renders under the *Setup* header, 0 console errors); guarded by `tests/portals-nav-placement.test.mjs`.
+- Completes the Phase 4 "Portals → Settings" item. The remaining Phase 4 line — a whole-app visual-polish pass — is tracked separately.
+- Suite: **2383** tests (+2: `tests/portals-nav-placement.test.mjs`).
+
+## [1.148.0] — 2026-08-12
+
+**Cleaner scan filters (Phase 4) — the result-filter panel is now a tidy grid** — the `#/scan` filter panel moved from a ragged flex-wrap of rigid, variable-width boxes to a responsive grid, and the Apply/Reset actions now sit on their own separated, right-aligned row. Same filters, same behaviour — just easier to read. A senior-designer polish pass (no parent-sync).
+
+### Changed
+- **`#/scan` result-filter panel → responsive grid** — `.scan-filters` is now `display: grid` with `repeat(auto-fill, minmax(180px, 1fr))` columns and even gutters, so the 11 labelled filters align into tidy columns at every width instead of wrapping into a ragged row of 160–240px boxes.
+- **Apply / Reset actions** span the full grid on their own row, separated by a hairline and right-aligned, so they read as the panel's primary action. Dropped the old hidden-label alignment hack + inner flex wrapper in `scan.js` (buttons are now direct children of `.scan-filters__actions`).
+
+### Notes
+- **CSS + one small DOM cleanup only** — every filter input id (`#scan-filter-*`, `#scan-apply`) and the `SR.render()` wiring are unchanged, so the Playwright scan-filter flow is untouched. No new i18n keys.
+- Browser-verified (grid renders 4 columns at 1100px, actions row separated + right-aligned, 0 console errors); guarded by `tests/scan-filters-grid.test.mjs`.
+- Remaining Phase 4: the broader "overall visual polish across all pages" pass is a subjective, whole-app design task left for explicit direction; the `#/portals` → settings-nav move is still open.
+- Suite: **2381** tests (+3: `tests/scan-filters-grid.test.mjs`).
+
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — the in-app help section + cvstart.org surface (Phase 5b, part 2)** — the second and final slice of the Hermes docs work: the how-to now lives inside the app's own help guide, in all 17 languages, and the in-app docs assistant answers Hermes questions from it. Still docs-only — the Hermes LLM-provider path remains **planned / not-yet-wired** (Phase 5).
+
+### Added
+- **In-app help §30 "Hermes & Telegram" × 17 locales** — a new help-guide section (what Hermes is + the two integration shapes; running on a cloud server; Telegram via Hermes + the "what NOT to expose" rule), reachable from `#/help`. The `docs-assistant` / floating "Ask the docs" `DocsFab` grounding picks it up automatically — no wiring needed, since both read `docs/help/<lang>.md`.
+- **cvstart.org — a short Hermes explainer** mirroring the README teaser and deep-linking to the GitHub guide.
+
+### Changed
+- Help-bundle gate lifted **29 → 30 H2 / 105 → 108 H3** (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`); §30 adds 3 H3s.
+
+### Notes
+- **Still nothing calls Hermes.** New canary `tests/help-hermes-section.test.mjs` asserts every locale carries the §30 section with its language-independent anchors (`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram). The provider stays blocked on the Phase 5 API-contract spike.
+- This closes the Phase 5b **docs + skill** deliverable; the provider integration (Phase 5) remains a separate, blocked item.
+- Suite: **2378** tests (+2: `tests/help-hermes-section.test.mjs`).
+
+## [1.146.0] — 2026-08-12
+
+**Hermes agent + Telegram — the integration guide + a skill (Phase 5b, part 1)** — you can run career-ops-ui on a cloud server and bridge its events (a finished scan, a new report, an urgent follow-up) to Telegram through a Nous Research **Hermes** agent. This release ships the *design + deployment docs* and a **`hermes-bridge` skill**; the Hermes LLM-provider path stays **planned / not-yet-wired** (blocked on the Phase 5 API-contract spike). Docs-ahead-of-code by design.
+
+### Added
+- **`docs/integrations/HERMES.md`** — the deep-dive: the two integration shapes (OpenAI-compatible endpoint vs. agent runtime), cloud-server deployment (reverse proxy + HTTPS + systemd, the read-only parent contract on a headless box), Telegram-via-Hermes, and a threat-model "what NOT to expose" list (no CV / salary / report bodies / keys to the channel).
+- **`## Hermes agent + Telegram`** README teaser — a short pointer + link, in the EN README and mirrored across the fully-translated locale READMEs.
+- **A `hermes-bridge` skill** (`.claude/skills/hermes-bridge/`) that operationalizes the guide — prerequisite + scoping-gate checks (Node ≥ 18, keys present, endpoint reachability via the SSRF-safe path), never writes secrets to disk/logs, and refuses to invent a Hermes endpoint or claim the provider is wired.
+- An **Integrations** section in `docs/architecture/OVERVIEW.md` links the guide.
+
+### Notes
+- **Nothing calls Hermes yet.** A canary (`tests/hermes-docs.test.mjs`) asserts the "planned / not-yet-wired" honesty markers *and* that `llm-dispatch.mjs` has no Hermes/Nous branch — so wiring the provider later must update the docs + roadmap in the same change.
+- **Deferred to v1.147.0** (Phase 5b, part 2): the in-app help "Hermes & Telegram" H2 × 17 and the cvstart.org marketing surface.
+- Suite: **2376** tests (+4: `tests/hermes-docs.test.mjs`).
+
 ## [1.145.0] — 2026-08-12
 
 **Insightful stats (cont.): a rebuildable chart** — the `#/stats` "Target-role trend" tab now has a **Build a chart** widget: pick a metric × dimension and it re-renders live. First of the Phase-3 interactive-chart work. A user-reported UX request (no parent-sync).

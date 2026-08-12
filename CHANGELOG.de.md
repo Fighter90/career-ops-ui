@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.158.0] — 2026-08-12
+
+**Behoben — zwei kosmetische Anzeigefehler (ein in den Tab-Titel durchgesickertes «?» und eine falsche Anbieterzahl auf der Landingpage).** Nur Anzeige; keine Änderung an Verhalten, Sicherheit oder Datenfluss.
+
+### Behoben
+- Das «?» von HelpHint sickert nicht mehr in `document.title`. Der Router leitete den Tab-Titel aus dem rohen `h1.textContent` ab, sodass der Tab «Vacancy search?» statt «Vacancy search» zeigte. `router.js::focusNewView` klont die Überschrift nun, entfernt `.help-hint` und liest dann den Text; das sichtbare «?» bleibt unberührt.
+- cvstart.org zeigte «17 AI providers» statt «7». Der `sub()`-Helper in `Features.astro` ersetzte alle `{n}` durch die Sprachanzahl (17) vor der kartenweisen Ersetzung; `{n}` wird jetzt pro Karte aufgelöst (Anbieter → 7, Sprachen → 17).
+
+### Hinweise
+- Keine Änderung an Server, Route, CSP, SSRF oder i18n-Schlüsseln; `facts.json`-Form unverändert. Suite: **2402** Tests (+1).
+
 ## [1.157.0] — 2026-08-12
 
 **Behoben — Live-Evals laufen jetzt mit JEDEM konfigurierten Provider, nicht nur Anthropic/Gemini.** Ein Nutzer mit nur `OPENROUTER_API_KEY` wurde fälschlich in den manuellen Modus gezwungen.

@@ -64,6 +64,38 @@ test('document.title is set BEFORE the first-paint early-return', () => {
   );
 });
 
+test('v1.158.0 (NIT-1): the HelpHint "?" affordance is excluded from the title', () => {
+  // HelpHint.title() builds the page <h1> as `[<span>text</span>,
+  // <button class="help-hint">?</button>]`. Reading the raw h1.textContent
+  // used to fold the "?" into document.title ("Vacancy search?"). The fix
+  // clones the heading, strips `.help-hint`, then reads textContent — so the
+  // "?" never leaks AND the live DOM heading (still showing its "?") is
+  // untouched. Assert that clone-strip-read contract, in order.
+  // Strip comments so the assertions match executable code, not the prose
+  // above (which necessarily mentions "clone" and ".help-hint" too).
+  const code = fnMatch[0]
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/[^\n]*/g, '');
+  // Clone the heading (so the live DOM's own "?" is never mutated)…
+  assert.match(
+    code,
+    /cloneNode\(\s*true\s*\)/,
+    'must deep-clone the heading, never mutate the live DOM to compute the title',
+  );
+  // …strip every `.help-hint` from that clone…
+  assert.match(
+    code,
+    /querySelectorAll\(\s*['"]\.help-hint['"]\s*\)[\s\S]*?\.remove\(\)/,
+    'must remove .help-hint node(s) from the clone before reading the title',
+  );
+  // …and read the title text from the stripped clone (not the raw heading).
+  assert.match(
+    code,
+    /clone\.textContent/,
+    'the title text must come from the stripped clone, so "?" cannot leak',
+  );
+});
+
 test('falls back to the product default when a view has no heading', () => {
   // 404 and every real view have an <h1>, but the expression must be
   // defensive (empty heading → product default, never "undefined").

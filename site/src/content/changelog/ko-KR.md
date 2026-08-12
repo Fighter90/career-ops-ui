@@ -9,6 +9,175 @@
 ---
 
 
+## [1.158.0] — 2026-08-12
+
+**수정 — 두 가지 표시상의 사소한 버그(탭 제목에 새어 나온 «?»와 랜딩의 잘못된 제공자 수).** 표시 전용이며 동작·보안·데이터 흐름 변경 없음.
+
+### 수정됨
+- HelpHint의 «?»가 더 이상 `document.title`에 새어 나오지 않습니다. 라우터가 가공되지 않은 `h1.textContent`에서 탭 제목을 만들어 «Vacancy search?»로 표시되었습니다. 이제 `router.js::focusNewView`가 제목을 복제하고 `.help-hint`를 제거한 뒤 텍스트를 읽습니다. 화면의 «?»는 그대로입니다.
+- cvstart.org가 «7» 대신 «17 AI providers»를 표시했습니다. `Features.astro`의 `sub()`가 카드별 치환 전에 모든 `{n}`을 로케일 수(17)로 바꿨습니다. 이제 `{n}`은 카드별로 해석됩니다(제공자 → 7, 언어 → 17).
+
+### 참고
+- 서버·라우트·CSP·SSRF·i18n 키 변경 없음. 총 **2402**개 테스트(+1).
+
+## [1.157.0] — 2026-08-12
+
+**수정됨 — 라이브 평가가 이제 Anthropic/Gemini뿐 아니라 설정된 어떤 제공자로도 실행됩니다.** `OPENROUTER_API_KEY`만 설정한 사용자가 잘못 수동 모드로 강제되었습니다.
+
+### 수정됨
+- **근본 원인:** 키 없는 `LLM_PROVIDER` 핀(예: `init`의 `LLM_PROVIDER=claude`)이 막다른 길로 갔습니다. 이제 설정된 제공자들 사이에서 auto 순서로 대체됩니다(`selectActiveProvider` + 두 디스패치 캐스케이드).
+- 클라이언트 게이팅(`#/deep` + mode-page 뷰)이 이제 오래된 Anthropic/Gemini 프로브 대신 `window.ProviderStatus`(`/api/status/providers`, 7개)를 사용; 문구 재작성(deep/eval × 17) + 대시보드 «라이브 평가» 배지 + `config.llmProviderHint`.
+
+### 참고
+- 보안 변화 없음. 스위트: **2401**개 테스트(+5).
+
+## [1.156.0] — 2026-08-12
+
+**리팩터 — `scan.js`를 파일 크기 한도 아래로 분할(P-16) + CodeQL 수정.** `scan.js`는 **906줄**이었고, 동작 보존 팩토리 두 개를 추출해 **648줄**로. P-15/P-16 뷰 분할 쌍을 완성.
+
+### 변경됨
+- 새 `scan/runner.js`(스캔 실행 엔진)와 `scan/filters.js`(필터 상태 머신)를 `ctx`/`refs` 백으로 추출; `scan.js`가 둘을 연결.
+
+### 수정됨
+- CodeQL `js/useless-assignment-to-local`(#428) `config/tab-controller.js`: `let n = i;` → `let n;`.
+
+### 참고
+- 순수 리팩터, 동작 변화 없음; 소스를 읽는 테스트 4개 재지정. 두 큰 뷰 모두 800 미만(P-15/P-16 완료). 스위트: **2396**개 테스트.
+
+## [1.155.0] — 2026-08-12
+
+**리팩터 — `config.js`를 파일 크기 한도 아래로 분할(P-15).** `config.js`는 **1030줄**(800줄 한도 초과)이었고, 동작을 보존하는 두 모듈을 추출해 **783줄**로 줄였습니다.
+
+### 변경됨
+- 새 `config/field-specs.js`(필드 데이터 + 모델 목록)와 `config/tab-controller.js`(탭 바 팩토리) 추출; `config.js`가 이를 참조하며 렌더 로직은 그대로.
+
+### 참고
+- 순수 리팩터, 동작 변화 없음; 소스를 읽는 테스트 6개를 재지정. `scan.js`(906)는 그대로 둠(이미 부분 분할됨; 코어가 너무 결합되어 깔끔한 기계적 분할이 어려움). 스위트: **2396**개 테스트.
+
+## [1.154.0] — 2026-08-12
+
+**새 가이드 — "클라우드에서 전체 스택 실행."** career-ops에는 자체 클라우드/서버 안내가 없어 하나 추가했습니다: 부모 **career-ops** 파이프라인, 이 **career-ops-ui** 뷰어, AI **엔진**(Claude Code를 통한 **Claude 구독**, 로컬 **Hermes**, 또는 API 키)을 항상 켜진 소형 서버에 올리는 단계별 레시피. 17개 언어의 **도움말 §31**, README 섹션, 위키 페이지로 제공됩니다.
+
+### 추가됨
+- **도움말 §31 "클라우드에서 전체 스택 실행"**(× 17) — 세 부분, 프로비저닝 + 설치, 엔진 선택, 안전한 노출(HTTPS 리버스 프록시 + 인증 + CSP/SSRF/XSS/비밀-없음 불변식). 도움말 번들이 **31 H2 / 112 H3**로 확장.
+- **README** — "클라우드에서 전체 스택 실행" 섹션(× 17) + 위키 **Cloud-Deployment** 페이지.
+
+### 참고
+- **문서 전용** — 라우트·서버·클라이언트 변경 없음, 새 i18n 키 없음. 도움말 4개 테스트가 31 H2 / 112 H3 계약으로 이동. 스위트: **2396**개 테스트(변화 없음).
+
+## [1.153.0] — 2026-08-12
+
+**Jobvite 스캐너가 공개 XML 피드로 이전(부모 동기화).** 부모가 Jobvite JSON API를 폐기(이제 0건 반환)했고, web-ui source가 같은 죽은 엔드포인트를 써서 추적 중인 Jobvite 회사가 조용히 빈 결과로 스캔되었습니다. 부모 픽스(`#2623`)를 이식: 이제 `companyEId`로 키를 매기는 공개 테넌트별 **XML 피드**를 읽습니다.
+
+### 수정됨
+- source가 폐기된 JSON API를 호출해 0건을 반환했습니다. 이제 `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}`를 호출하고 XML `<result><job>…`를 파싱합니다(CDATA + 엔터티, `apply-url`보다 `detail-url` 우선).
+
+### 변경됨
+- `companyEId` 해석: (1) 포털의 `company_eid:`, (2) 명시적 `api:`의 `c=` 파라미터, (3) 보드 페이지 디스커버리. `fetchText`(`http-json.mjs`)가 non-ok 오류에 `.location`/`.retryAfter`를 부착(읽기 전용, 하위 호환).
+
+### 참고
+- **보안** — 두 호스트(`jobs.jobvite.com`, `app.jobvite.com`)를 `assertJobviteUrl`로 매 요청 고정: https 전용, 엄격한 허용목록, **리디렉션 미추적**. `companyEId`는 오직 `?c=` 값이며, source 개수 변화 없음.
+- 스위트: **2396**개 테스트(+4).
+
+## [1.152.0] — 2026-08-12
+
+**Hermes 제공자 — 배선 완료 + 문서 최신화.** v1.151.0 Hermes 통합의 코드 리뷰에서 실제 결함 2건과 완성도 항목 4건을 발견해 모두 여기서 수정했으며, 앱 전체의 LLM 제공자 목록을 모든 문서 표면과 17개 언어에서 완전한 7개로 맞췄습니다.
+
+### 수정됨
+- **`#/config`에서 Hermes를 강제할 수 없었음** — `LLM_PROVIDER` 드롭다운이 6개 제공자만 나열해 `HERMES_API_KEY`는 설정해도 UI에서 Hermes를 강제할 수 없었습니다. 이제 `hermes`가 8번째 옵션이며, 새 패리티 테스트가 드롭다운이 `LLM_PROVIDERS`에서 다시 어긋나지 않도록 막습니다.
+- **짧은 자체 호스팅 키가 조용히 거부됨** — `isUsableKey`의 20자 하한은 클라우드 키 기준이었고, `hasHermesKey`는 이제 완화된 8자 하한을 씁니다(Hermes 문서 예시가 19자).
+
+### 변경됨
+- 제공자 목록을 README(× 17), 인앱 도움말(× 17), `config.llmProviderHint` 사전(× 17), `docs/sdd`에서 완전한 7개로 정규화했고, `hermesChatUrl`이 경로 없는 호스트를 보완하며, 수동 폴백 문구가 Hermes를 명시합니다.
+
+### 참고
+- **보안 변화 없음** — 새 라우트·SSRF/CSP 변경 없음; health/doctor에 `HERMES_API_KEY` 행이 추가됩니다.
+- 스위트: **2392**개 테스트(+2).
+
+## [1.151.0] — 2026-08-12
+
+**Hermes가 이제 연결된 LLM 제공자입니다(Phase 5)** — Phase 5 스코핑 스파이크에서 Nous Research의 Hermes가 **OpenAI 호환 API Server**(`hermes gateway` → `POST /v1/chat/completions`)를 제공함을 확인했고, 이제 career-ops-ui는 OpenAI/Qwen과 똑같이 로컬 Hermes를 통해 라이브 평가를 실행합니다. **앱 설정**에서 `HERMES_API_KEY`를 지정하면 auto 순서에 합류합니다(마지막). 로드맵의 마지막 미해결 항목 — **Phase 5, Shape A** — 을 마무리합니다.
+
+### 추가
+- **Hermes LLM 제공자(Shape A)** — 공유 `runOpenAICompatible` 클라이언트 위의 `runHermes`(`server/lib/openai.mjs`), **두** 캐스케이드(`llm-dispatch.mjs` + `routes/llm.mjs`)에 게이트, auto 순서 꼬리 + `LLM_PROVIDER=hermes` 핀, `/api/status/providers`, `llm-pricing.mjs`. 사용자 설정 가능한 로컬 base URL(기본 `http://127.0.0.1:8642/v1`)에 Bearer 인증으로 접근 — 사용자 제공 채용 URL이 아니라 설정된 제공자 엔드포인트(OpenRouter/Qwen처럼)이므로 SSRF 가드를 거치지 않습니다.
+- **`#/config` 필드** — `HERMES_API_KEY`(비밀) + `HERMES_BASE_URL` + `HERMES_MODEL`(기본 `hermes-agent`), 6개 새 i18n 키 × **17개 언어**(스냅샷 1208 → 1214).
+
+### 변경
+- 스코핑 스파이크가 해결됨: `docs/integrations/HERMES.md`, 앱 내 도움말 §30(× 17), README 예고(× 14), `hermes-bridge` 스킬, 로드맵이 "계획됨 / 아직 미연동"에서 **연동됨(Shape A)** 으로 전환. Shape B(맞춤형 에이전트 런타임 relay)는 불필요했습니다.
+
+### 참고
+- **보안:** 제공자 fetch는 설정된 엔드포인트로, 다른 OpenAI 호환 제공자와 동일한 범주 — 새 SSRF 표면 없음, CSP/새니타이저 변경 없음. `HERMES_API_KEY`는 `SECRET_KEY`(절대 노출되지 않음).
+- 테스트(CI 격리, 전송 스텁): `tests/hermes-provider.test.mjs`(+5); v1.146.0의 "Hermes 분기 없음" 캐너리를 연결됨을 확인하도록 **반전**; 제공자 표면 테스트를 7개 제공자 순서로 업데이트.
+- 스위트: **2390**개 테스트(+5).
+
+## [1.150.0] — 2026-08-12
+
+**일관된 빈 상태 (Phase 4 다듬기)** — 모든 "아직 없음" 패널이 이제 일부 뷰가 마법의 `40px`로 인라인 재선언하는 대신, 하나의 공유 `.empty` 스타일로 렌더링됩니다. 작은 시각적 일관성 수정; `#/activity`, `#/cv-studio`, `#/stats`, `#/usage`의 빈 상태가 이제 나머지 전부와 일치합니다(토큰화된 48px 패딩 + 점선 테두리).
+
+### 변경
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`**가 빈 패널의 인라인 `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }`를 제거했습니다 — 세 속성 모두 공유 `.empty` 클래스가 이미 제공합니다(`--space-7` = 48px, 가운데 정렬, 흐린 색, 점선 테두리). 그래서 이 넷이 나머지 ~25개 `.empty` 패널과 동일하게 렌더링됩니다.
+- 뷰별 정당한 재정의(`#/dashboard` `width:100%`, `#/pipeline` `border:none`)는 그대로 — 순수 중복 재선언만 제거.
+
+### 참고
+- **클라이언트 CSS 사용 정리뿐** — 라우트/서버/i18n 키/CSS 규칙 변경 없음(`.empty` 클래스 자체는 불변); 사전 스냅샷 1208. 브라우저 검증(`#/usage` 빈 패널이 48px 패딩 + 점선 테두리로 계산, 콘솔 오류 0).
+- 새 캐너리 `tests/empty-state-consistency.test.mjs`가 `.empty`를 유일한 진실 원천으로 유지합니다. Phase 5(Hermes 제공자)는 여전히 차단됨.
+- 스위트: **2385**개 테스트(+2: `tests/empty-state-consistency.test.mjs`).
+
+## [1.149.0] — 2026-08-12
+
+**포털을 설정으로 이동 (Phase 4)** — `#/portals`가 이제 *Sourcing* 아래가 아니라 *앱 설정* 옆의 **Setup** 내비게이션 그룹에 있습니다. v1.144.0부터 이것은 소싱 액션이 아니라 설정 화면(추적 회사 활성화/비활성화 + ATS 상태 점검)이므로, 여기가 제자리입니다. 내비게이션만 바뀌며 페이지와 라우트는 그대로입니다.
+
+### 변경
+- **`#/portals` 내비게이션 항목 → Setup 그룹** (`public/index.html`), *앱 설정* 바로 뒤에 배치. *Sourcing* 그룹에서 제거(그룹은 Scan / Pipeline / Auto-pipeline / 자금 조달 기업을 유지). `#/portals` 라우트, 뷰, `nav.portals` 라벨은 그대로 — 사이드바 위치만 이동.
+
+### 참고
+- **내비게이션 마크업만** — 라우트/뷰/i18n 키/서버 변경 없음. 브라우저 검증(콘솔 오류 0); `tests/portals-nav-placement.test.mjs`로 보호.
+- 스위트: **2383**개 테스트(+2: `tests/portals-nav-placement.test.mjs`).
+
+## [1.148.0] — 2026-08-12
+
+**더 깔끔한 스캔 필터 (Phase 4) — 필터 패널이 이제 정돈된 그리드** — `#/scan` 필터 패널이 폭이 제각각인 상자들의 들쭉날쭉한 flex-wrap에서 반응형 그리드로 바뀌었고, 적용 / 초기화 액션은 이제 오른쪽 정렬된 별도 행을 차지합니다. 필터도 동작도 그대로 — 읽기만 더 쉬워졌습니다. 디자인 다듬기(parent-sync 없음).
+
+### 변경
+- **`#/scan` 필터 패널 → 반응형 그리드** — `.scan-filters`는 이제 `repeat(auto-fill, minmax(180px, 1fr))` 열과 균일한 간격을 가진 `display: grid`라서, 라벨이 붙은 11개 필터가 어떤 폭에서도 들쭉날쭉 줄바꿈되지 않고 정돈된 열로 정렬됩니다.
+- **적용 / 초기화 액션**이 전체 그리드를 가로질러 자체 행을 차지하며, 얇은 선으로 구분되고 오른쪽 정렬됩니다. `scan.js`의 옛 숨김 라벨 트릭 + 내부 flex 래퍼를 제거했습니다.
+
+### 참고
+- **CSS + 작은 DOM 정리뿐** — 모든 필터 id(`#scan-filter-*`, `#scan-apply`)와 `SR.render()` 연결은 그대로여서 Playwright 흐름은 영향받지 않습니다. 새 i18n 키 없음.
+- 브라우저 검증 완료(콘솔 오류 0); `tests/scan-filters-grid.test.mjs`로 보호.
+- 스위트: **2381**개 테스트(+3: `tests/scan-filters-grid.test.mjs`).
+
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — 앱 내 도움말 섹션 + cvstart.org 표면 (Phase 5b, 2부)** — Hermes 문서 작업의 두 번째이자 마지막 부분입니다: 사용법이 이제 17개 언어 전체에서 앱 자체 도움말 가이드 안에 담기며, 앱 내 문서 어시스턴트가 이를 바탕으로 Hermes 질문에 답합니다. 여전히 문서 전용입니다 — Hermes LLM 제공자 경로는 **계획됨 / 아직 미연동** 상태로 유지됩니다(Phase 5).
+
+### 추가
+- **앱 내 도움말 §30 "Hermes & Telegram" × 17개 언어** — 새 가이드 섹션(Hermes란 무엇인가 + 두 가지 통합 형태; 클라우드 서버에서 실행; Hermes를 통한 Telegram + "노출하지 말아야 할 것" 규칙), `#/help`에서 접근 가능. `docs-assistant` / `DocsFab` 그라운딩이 자동으로 이를 가져옵니다(둘 다 `docs/help/<lang>.md`를 읽음).
+- **cvstart.org — Hermes 가이드 링크**, GitHub 문서로 연결.
+
+### 변경
+- 도움말 번들 게이트 **29 → 30 H2 / 105 → 108 H3**로 상향(`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`); §30이 H3 3개를 추가.
+
+### 참고
+- **여전히 아무것도 Hermes를 호출하지 않습니다.** 새 캐너리 `tests/help-hermes-section.test.mjs`가 모든 언어에 §30이 언어 독립 앵커(`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram)와 함께 있는지 확인합니다. 제공자는 Phase 5 API 계약 스파이크에 여전히 막혀 있습니다.
+- 이로써 Phase 5b의 **문서 + 스킬** 산출물이 마무리됩니다; 제공자 통합(Phase 5)은 별개의 차단된 항목으로 남습니다.
+- 스위트: **2378**개 테스트(+2: `tests/help-hermes-section.test.mjs`).
+
+## [1.146.0] — 2026-08-12
+
+**Hermes 에이전트 + Telegram — 통합 가이드 + 스킬(Phase 5b, 1부)** — 클라우드 서버에서 career-ops-ui를 실행하고, 그 이벤트(완료된 스캔, 새 리포트, 긴급한 후속 조치)를 Nous Research의 Hermes 에이전트를 통해 Telegram으로 연결할 수 있습니다. 이번 릴리스는 설계 + 배포 문서와 hermes-bridge 스킬을 제공합니다. Hermes LLM 제공자 경로는 여전히 계획됨/아직 연결되지 않음 상태입니다(Phase 5 API 계약 스파이크에 막혀 있음). 의도적으로 코드보다 문서가 앞서 있습니다.
+
+### 추가
+- **`docs/integrations/HERMES.md`** — 심층 가이드: 두 가지 통합 형태(OpenAI 호환 엔드포인트 vs. 에이전트 런타임), 클라우드 서버 배포(reverse proxy + HTTPS + systemd, 헤드리스 서버에서의 읽기 전용 parent 계약), Hermes를 통한 Telegram 연동, 그리고 위협 모델 "노출하지 말아야 할 것" 목록(CV / 연봉 / 리포트 본문 / 키를 채널에 노출하지 않음).
+- README의 **`## Hermes agent + Telegram`** 예고 — 영어 README와 완전히 번역된 각 언어 README에 짧은 안내와 링크가 반영됨.
+- 가이드를 실행 가능하게 만드는 **`hermes-bridge` 스킬**(`.claude/skills/hermes-bridge/`) — 전제 조건 + 범위 게이트 검사(Node ≥ 18, 키 존재 여부, SSRF에 안전한 경로를 통한 엔드포인트 접근성 확인), 비밀 정보를 디스크/로그에 절대 기록하지 않으며, Hermes 엔드포인트를 임의로 만들어내거나 제공자가 연결되었다고 주장하지 않음.
+- `docs/architecture/OVERVIEW.md`의 **통합** 섹션이 가이드를 링크함.
+
+### 참고
+- **아직 Hermes를 호출하는 코드는 없습니다.** 캐너리 테스트(`tests/hermes-docs.test.mjs`)가 "계획됨/아직 연결되지 않음" 정직성 표시와 `llm-dispatch.mjs`에 Hermes/Nous 분기가 없음을 확인합니다 — 따라서 나중에 제공자를 연결할 때는 같은 변경에서 문서 + 로드맵도 함께 업데이트해야 합니다.
+- **v1.147.0으로 연기됨**(Phase 5b, 2부): 앱 내 도움말의 "Hermes & Telegram" H2 × 17개 언어, 그리고 cvstart.org 마케팅 페이지.
+- 스위트: **2376**개 테스트(+4: `tests/hermes-docs.test.mjs`).
+
 ## [1.145.0] — 2026-08-12
 
 **통찰력 있는 통계(계속): 재구성 가능한 차트** — `#/stats`의 "목표 직무 추세" 탭에 **차트 만들기** 위젯이 생겼습니다: 지표 × 차원을 고르면 실시간으로 다시 그립니다. 사용자 UX 요청(부모 동기화 없음).

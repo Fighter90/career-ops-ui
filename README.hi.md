@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2402%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.157.0** — **किसी भी प्रदाता पर लाइव इवैल्स (फ़िक्स)** — केवल `OPENROUTER_API_KEY` वाला उपयोगकर्ता मैनुअल मोड में बाध्य हो जाता था। कारण: बिना कुंजी वाला `LLM_PROVIDER=claude` पिन (`init` से) — अब किसी भी कॉन्फ़िगर किए प्रदाता पर वापस चला जाता है, और क्लाइंट `/api/status/providers` (सभी 7) पढ़ता है। **2401 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.158.0** — **कॉस्मेटिक प्रदर्शन फ़िक्स** — HelpHint का «?» अब ब्राउज़र टैब शीर्षक में लीक नहीं होता, और cvstart.org लैंडिंग अब आँकड़े बैनर से मेल खाते हुए «7 AI providers» (17 नहीं) दिखाती है। **2402 परीक्षण।**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 
