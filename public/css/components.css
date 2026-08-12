@@ -374,7 +374,9 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
    its control). v1.148.0 — laid out on a responsive GRID (was a ragged
    flex-wrap of rigid 160–240px boxes) so the controls align into tidy columns
    with even gutters at every width; the Apply/Reset actions sit on their own
-   separated, right-aligned row that spans the grid. */
+   separated, right-aligned row that spans the grid. The `min(180px, 100%)` track
+   floor lets a column collapse to full-width below 180px rather than overflowing
+   the panel on very narrow viewports. */
 .scan-filters {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));

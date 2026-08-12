@@ -22,7 +22,10 @@ test('.scan-filters is a responsive grid, not a flex-wrap', () => {
   const css = loadAppCss();
   const block = css.slice(css.indexOf('.scan-filters {'), css.indexOf('.scan-filters .scan-field'));
   assert.match(block, /display:\s*grid/, '.scan-filters uses display:grid');
-  assert.match(block, /grid-template-columns:\s*repeat\(auto-fill,\s*minmax\(/, 'auto-fill minmax columns');
+  // minmax(min(180px, 100%), 1fr): tidy ~180px columns that still collapse to a
+  // single full-width column below 180px instead of overflowing the panel.
+  assert.match(block, /grid-template-columns:\s*repeat\(auto-fill,\s*minmax\(min\(180px,\s*100%\),\s*1fr\)\)/,
+    'auto-fill minmax(min(180px,100%),1fr) columns');
   assert.doesNotMatch(block, /flex-wrap/, 'no leftover flex-wrap on the panel');
 });
 
