@@ -52,6 +52,7 @@ test('every help locale carries the §30 "Hermes & Telegram" section with its an
 
 test('the EN §30 has exactly three H3 subsections (what/cloud/telegram)', () => {
   const section = hermesSection(read('en'));
+  assert.ok(section, 'en.md: could not slice the Hermes section');
   const h3 = (section.match(/^### /gm) || []).length;
   assert.equal(h3, 3, `EN §30 should have 3 H3s, got ${h3}`);
 });

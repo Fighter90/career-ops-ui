@@ -104,8 +104,9 @@ test('every help-bundle §5 references HH_USER_AGENT for the hh.ru gate', () => 
 
 test('every help-bundle keeps the 30-H2 parity contract after v1.29.1 edit', () => {
   // Belt-and-suspenders: the v1.29.1 expansion is a ### subsection of
-  // §5 — H2 count stays at 25 (v1.60.0 added §19 Localizing the app; v1.86.0 added §20 Statistics by target roles; v1.89.0 added §21 Your two-pager; v1.90.0 added §22 Mock interview; v1.91.0 added §23 Networking; v1.92.0 added §24 CV Studio; v1.93.0 added §25 Memory). If a future change accidentally
-  // promotes the H3 to H2 we want it to fail here.
+  // §5 — the H2 count is now 30 (§19 Localizing the app … §25 Memory … §28 Career
+  // orientation; §29 The CareerOps Manifesto v1.120.0; §30 Hermes & Telegram v1.147.0).
+  // If a future change accidentally promotes an H3 to H2 we want it to fail here.
   let baseline = null;
   for (const lang of LOCALES) {
     const text = readHelp(lang);
