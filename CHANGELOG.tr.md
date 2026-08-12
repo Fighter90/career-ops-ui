@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.156.0] — 2026-08-12
+
+**Refactor — `scan.js`’i boyut sınırının altına bölmek (P-16) + bir CodeQL düzeltmesi.** `scan.js` **906 satırdı**; davranışı koruyan iki fabrika çıkarılarak **648**’e indirildi. P-15/P-16 görünüm-bölme çiftini tamamlar.
+
+### Değiştirildi
+- Yeni `scan/runner.js` (tarama yürütme motoru) ve `scan/filters.js` (filtre durum makinesi) `ctx`/`refs` torbalarıyla; `scan.js` ikisini bağlar.
+
+### Düzeltildi
+- CodeQL `js/useless-assignment-to-local` (#428) `config/tab-controller.js`: `let n = i;` → `let n;`.
+
+### Notlar
+- Saf refactor, davranış değişikliği yok; kaynağı okuyan 4 test yeniden yönlendirildi. İki büyük görünüm de artık 800’ün altında (P-15/P-16 tamam). Takım: **2396** test.
+
 ## [1.155.0] — 2026-08-12
 
 **Refactor — `config.js`’i boyut sınırının altına bölmek (P-15).** `config.js` **1030 satırdı** (800 sınırının üstünde); davranışı koruyan iki modül çıkarılarak **783**’e indirildi.

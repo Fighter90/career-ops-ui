@@ -8,6 +8,23 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.156.0] — 2026-08-12
+
+**Refactor — split `scan.js` under the file-size limit (P-16), + a CodeQL fix.** `public/js/views/scan.js` was **906 lines**, over the 800-line hard limit. Two cohesive, behavior-preserving factories were extracted, bringing it to **648** — completing the view-split pair started with `config.js` in v1.155.0.
+
+### Changed
+- **`scan/runner.js`** (new, 276 lines) — `window.createScanRunner(ctx)` → `{ runScanAll, stopScan }`: the scan-execution engine (Scan/Stop run-state, the indeterminate/determinate progress bar, the persistent error banner + Retry, the SSE console stream, and the per-source runners for ATS / regional / both).
+- **`scan/filters.js`** (new, 76 lines) — `window.createScanFilters(refs, deps)` → `{ applyFilters, resetFilters, getFilterState, setFilterState }`: the result-filter state machine that backs saved searches.
+- `scan.js` (648) wires both via `ctx`/`refs` bags (the same pattern as `lib/scan-results.js`); the live-poll teardown timers stay at `scan.js` top level (shared classic-`<script>` scope). Both new files load before `scan.js` in `index.html`.
+
+### Fixed
+- **CodeQL `js/useless-assignment-to-local` (#428)** in `config/tab-controller.js` — `let n = i;` where `n` is reassigned on every non-returning branch → `let n;`. Harmless dead-store introduced by the v1.155.0 extraction (moved verbatim from config.js), now cleared.
+
+### Notes
+- **Pure refactor, zero behavior change** — moved code is byte-identical (de-indent only); no route, server, i18n, or CSS change. Four source-reading tests were repointed to the new files (the `loadScanSrc()` helper now concatenates `scan.js` + `scan/runner.js` + `scan/filters.js` + `lib/scan-results.js`); assertions otherwise identical.
+- Both oversized views (`config.js`, `scan.js`) are now under the 800-line limit; **P-15/P-16 complete**.
+- Suite: **2396** tests (unchanged — tests repointed, not added); Playwright scan+smoke 26/26 in-browser.
+
 ## [1.155.0] — 2026-08-12
 
 **Refactor — split `config.js` under the file-size limit (P-15).** `public/js/views/config.js` was **1030 lines**, over the project's 800-line hard limit. Two cohesive, behavior-preserving modules were extracted, bringing it to **783**.

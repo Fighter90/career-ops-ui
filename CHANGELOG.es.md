@@ -11,6 +11,19 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.156.0] — 2026-08-12
+
+**Refactor — dividir `scan.js` bajo el límite de tamaño (P-16) + un arreglo de CodeQL.** `scan.js` tenía **906 líneas**; se extrajeron dos fábricas que preservan el comportamiento → **648**. Completa el par de divisiones de vistas P-15/P-16.
+
+### Cambiado
+- Nuevos `scan/runner.js` (motor de ejecución del escaneo) y `scan/filters.js` (máquina de estado de filtros), vía bolsas `ctx`/`refs`; `scan.js` conecta ambos.
+
+### Corregido
+- CodeQL `js/useless-assignment-to-local` (#428) en `config/tab-controller.js`: `let n = i;` → `let n;`.
+
+### Notas
+- Refactor puro, sin cambio de comportamiento; 4 tests que leen el fuente se repuntaron. Ambas vistas grandes ahora bajo 800 (P-15/P-16 hecho). Conjunto: **2396** pruebas.
+
 ## [1.155.0] — 2026-08-12
 
 **Refactor — dividir `config.js` bajo el límite de tamaño (P-15).** `config.js` tenía **1030 líneas** (sobre el límite de 800); se extrajeron dos módulos que preservan el comportamiento, dejándolo en **783**.

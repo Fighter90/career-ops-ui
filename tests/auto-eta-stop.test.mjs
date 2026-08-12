@@ -18,10 +18,14 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { loadAppCss } from './helpers/css.mjs';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 
 const __d = dirname(fileURLToPath(import.meta.url));
 const AUTO = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'auto.js'), 'utf8');
-const SCAN = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'scan.js'), 'utf8');
+// P-16 file-size split: setScanRunning + the Stop-button btn-danger promotion
+// moved from views/scan.js into views/scan/runner.js. Read the concatenated
+// scan-view source so these assertions find the pattern wherever it now lives.
+const SCAN = loadScanSrc();
 const DICT = legacyDictText();
 const CSS = loadAppCss();
 const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];

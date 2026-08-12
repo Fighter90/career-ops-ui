@@ -14,7 +14,7 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Najnowsze wydanie — v1.155.0** — **Czystszy widok config (refaktor)** — `config.js` (1030 linii) podzielony poniżej limitu 800 na dwa moduły zachowujące zachowanie — dane pól + fabryka paska zakładek. Czysty refaktor, bez zmiany zachowania. **2396 testów.**
+> **🆕 Najnowsze wydanie — v1.156.0** — **Czystszy widok scan (refaktor)** — `scan.js` (906 linii) podzielony poniżej limitu 800 na fabrykę runner i filtrów (P-16, kończy podział config z P-15). Bez zmiany zachowania; usuwa też CodeQL #428. **2396 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

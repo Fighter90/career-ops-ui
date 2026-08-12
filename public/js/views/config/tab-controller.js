@@ -43,7 +43,10 @@
     function onTabKey(e) {
       const i = TABS.findIndex((x) => x.btn === e.currentTarget);
       if (i < 0) return;
-      let n = i;
+      // n is assigned on every non-returning branch below (the final `else return`
+      // covers unmatched keys), so it needs no initializer — CodeQL
+      // js/useless-assignment-to-local (#428).
+      let n;
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = (i + 1) % TABS.length;
       else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = (i - 1 + TABS.length) % TABS.length;
       else if (e.key === 'Home') n = 0;

@@ -16,7 +16,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.155.0** — **साफ़ config व्यू (रिफैक्टर)** — `config.js` (1030 पंक्तियाँ) को 800 सीमा के नीचे दो व्यवहार-संरक्षी मॉड्यूल — फ़ील्ड डेटा + टैब-बार फ़ैक्टरी — में विभाजित किया। शुद्ध रिफैक्टर, व्यवहार में बदलाव नहीं। **2396 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.156.0** — **साफ़ scan व्यू (रिफैक्टर)** — `scan.js` (906 पंक्तियाँ) को 800 सीमा के नीचे runner + filters फ़ैक्टरी में विभाजित (P-16, P-15 के config विभाजन को पूर्ण)। व्यवहार में बदलाव नहीं; CodeQL #428 भी हल। **2396 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

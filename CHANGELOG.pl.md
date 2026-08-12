@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.156.0] — 2026-08-12
+
+**Refaktor — podzielić `scan.js` poniżej limitu rozmiaru (P-16) + poprawka CodeQL.** `scan.js` miał **906 linii**; wyodrębniono dwie fabryki zachowujące zachowanie → **648**. Kończy parę podziałów widoków P-15/P-16.
+
+### Zmieniono
+- Nowe `scan/runner.js` (silnik wykonania skanu) i `scan/filters.js` (maszyna stanów filtrów) przez worki `ctx`/`refs`; `scan.js` łączy oba.
+
+### Naprawiono
+- CodeQL `js/useless-assignment-to-local` (#428) w `config/tab-controller.js`: `let n = i;` → `let n;`.
+
+### Uwagi
+- Czysty refaktor, bez zmiany zachowania; 4 testy czytające źródło przekierowano. Oba duże widoki poniżej 800 (P-15/P-16 gotowe). Zestaw: **2396** testów.
+
 ## [1.155.0] — 2026-08-12
 
 **Refaktor — podzielić `config.js` poniżej limitu rozmiaru (P-15).** `config.js` miał **1030 linii** (ponad limit 800); wyodrębniono dwa moduły zachowujące zachowanie, do **783**.

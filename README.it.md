@@ -14,7 +14,7 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Ultima release — v1.155.0** — **Vista config più pulita (refactor)** — `config.js` (1030 righe) diviso sotto il limite di 800 in due moduli che preservano il comportamento — dati dei campi + una factory della barra delle schede. Refactor puro, nessun cambio di comportamento. **2396 test.**
+> **🆕 Ultima release — v1.156.0** — **Vista scan più pulita (refactor)** — `scan.js` (906 righe) diviso sotto il limite di 800 in una factory runner e una di filtri (P-16, completa la divisione config di P-15). Nessun cambio di comportamento; risolve anche CodeQL #428. **2396 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

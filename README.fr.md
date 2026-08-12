@@ -14,7 +14,7 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Dernière version — v1.155.0** — **Vue config plus propre (refactor)** — `config.js` (1030 lignes) scindé sous la limite de 800 en deux modules préservant le comportement — données de champs + une fabrique de la barre d’onglets. Refactor pur, aucun changement de comportement. **2396 tests.**
+> **🆕 Dernière version — v1.156.0** — **Vue scan plus propre (refactor)** — `scan.js` (906 lignes) scindé sous la limite de 800 en une fabrique runner et une de filtres (P-16, complète le découpage config de P-15). Aucun changement de comportement ; corrige aussi CodeQL #428. **2396 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 
