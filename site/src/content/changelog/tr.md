@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.145.0] — 2026-08-12
+
+**Anlayışlı istatistikler (devam): yeniden oluşturulabilir grafik** — `#/stats`'teki "Hedef rol eğilimi" sekmesinde artık bir **Grafik oluştur** aracı var: bir metrik × boyut seçin, canlı olarak yeniden çizilsin. Kullanıcı bildirimli bir UX isteği (parent-sync yok).
+
+### Eklendi
+- **Yeniden oluşturulabilir metrik × boyut grafiği** — bir **metrik** (İlanlar / Medyan maaş / Ortalama maaş) ve bir **boyut** (Ülkeye göre / Role göre) seçin, çubuk grafik anında yeniden çizilir. Maaş metrikleri para birimi + yıllık ⇄ aylık anahtarına uyar; ilanlar basit bir sayımdır.
+- 8 yeni i18n anahtarı × **17 dil**; anlık görüntü 1200 → 1208.
+
+### Notlar
+- Tarayıcıda doğrulandı (0 konsol hatası). Takım: **2372** test (+2).
+
 ## [1.144.0] — 2026-08-12
 
 **Ayarlar ve filtreler (Aşama 4, bölüm 1): izlenen portalları etkinleştir/devre dışı bırak** — artık izlenen bir şirketi `#/portals`'tan açıp kapatabilirsiniz ve tarayıcı buna uyar. Kullanıcı bildirimli bir UX isteği (parent-sync yok).

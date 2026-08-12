@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.145.0] — 2026-08-12
+
+**Wnikliwe statystyki (cd.): przebudowywalny wykres** — karta „Trend ról docelowych" na `#/stats` ma teraz widżet **Zbuduj wykres**: wybierz metrykę × wymiar, a on odrysuje się na żywo. Prośba UX od użytkownika (bez parent-sync).
+
+### Dodano
+- **Przebudowywalny wykres metryka × wymiar** — wybierz **metrykę** (Oferty / Mediana wynagrodzenia / Średnie wynagrodzenie) i **wymiar** (Wg kraju / Wg roli), a wykres słupkowy odrysuje się natychmiast. Metryki wynagrodzeń respektują walutę + przełącznik rocznie ⇄ miesięcznie; oferty to zwykłe zliczenie.
+- 8 nowych kluczy i18n × **17 języków**; snapshot 1200 → 1208.
+
+### Uwagi
+- Zweryfikowano w przeglądarce (0 błędów konsoli). Zestaw: **2372** testów (+2).
+
 ## [1.144.0] — 2026-08-12
 
 **Ustawienia i filtry (Faza 4, część 1): włączanie/wyłączanie śledzonych portali** — możesz teraz włączyć lub wyłączyć obserwowaną firmę z `#/portals`, a skaner to respektuje. Prośba UX od użytkownika (bez parent-sync).

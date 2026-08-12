@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.145.0] — 2026-08-12
+
+**Indsigtsfulde statistikker (fortsat): et genopbyggeligt diagram** — fanen "Målrolle-tendens" på `#/stats` har nu en **Byg et diagram**-widget: vælg en metrik × dimension, og det gentegnes live. En brugerønsket UX-anmodning (uden parent-sync).
+
+### Tilføjet
+- **Genopbyggeligt metrik × dimension-diagram** — vælg en **metrik** (Stillinger / Medianløn / Gennemsnitsløn) og en **dimension** (Efter land / Efter rolle), og søjlediagrammet gentegnes med det samme. Løn-metrikker respekterer valuta + pr. år ⇄ pr. måned-skifteren; stillinger er en simpel optælling.
+- 8 nye i18n-nøgler × **17 sprog**; snapshot 1200 → 1208.
+
+### Noter
+- Verificeret i browseren (0 konsolfejl). Suite: **2372** tests (+2).
+
 ## [1.144.0] — 2026-08-12
 
 **Indstillinger og filtre (Fase 4, del 1): aktivér/deaktivér fulgte portaler** — du kan nu slå en overvåget virksomhed til eller fra fra `#/portals`, og scanneren respekterer det. En brugerønsket UX-anmodning (uden parent-sync).

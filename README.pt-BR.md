@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2370%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Última versão — v1.144.0** — **configurações e filtros (Fase 4): ativar/desativar portais monitorados** — ligue ou desligue uma empresa vigiada em `#/portals` (`POST /api/portals/toggle`, escrita cirúrgica de portals.yml); o scanner já ignora empresas `enabled: false`. **2370 testes.**
+> **🆕 Última versão — v1.145.0** — **estatísticas úteis (cont.): um gráfico reconstruível** — a aba de tendência de cargos de `#/stats` ganha um widget **Criar um gráfico**: escolha métrica (vagas / mediano / médio) × dimensão (por país / por cargo) e ele se recompõe ao vivo. **2372 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

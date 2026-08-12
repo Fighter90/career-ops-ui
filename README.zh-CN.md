@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2370%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.144.0** — **设置与过滤（阶段 4）：启用/停用被跟踪的门户** — 在 `#/portals` 打开或关闭被监视的公司（`POST /api/portals/toggle`，对 portals.yml 的外科式写入）；扫描器已跳过 `enabled: false` 的公司。 **2370 个测试。**
+> **🆕 最新版本 — v1.145.0** — **有洞察力的统计（续）：可重建图表** — `#/stats` 目标职位趋势标签页新增 **构建图表** 小部件：选择指标（职位数/中位数/平均薪资）× 维度（按国家/按职位），实时重绘。 **2372 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

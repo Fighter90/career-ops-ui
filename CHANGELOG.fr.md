@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.145.0] — 2026-08-12
+
+**Statistiques éclairantes (suite) : un graphique reconstructible** — l'onglet « Tendance des rôles cibles » sur `#/stats` a désormais un widget **Créer un graphique** : choisissez une métrique × dimension et il se redessine en direct. Demande UX de l'utilisateur (sans parent-sync).
+
+### Ajouté
+- **Graphique reconstructible métrique × dimension** — choisissez une **métrique** (Offres / Salaire médian / Salaire moyen) et une **dimension** (Par pays / Par poste), et le graphique à barres se redessine instantanément. Les métriques de salaire respectent la devise + la bascule par an ⇄ par mois ; les offres sont un simple décompte.
+- 8 nouvelles clés i18n × **17 langues** ; snapshot 1200 → 1208.
+
+### Notes
+- Vérifié dans le navigateur (0 erreur console). Suite : **2372** tests (+2).
+
 ## [1.144.0] — 2026-08-12
 
 **Paramètres et filtres (Phase 4, partie 1) : activer/désactiver les portails suivis** — vous pouvez désormais activer ou désactiver une entreprise surveillée depuis `#/portals`, et le scanner le respecte. Demande UX de l'utilisateur (sans parent-sync).

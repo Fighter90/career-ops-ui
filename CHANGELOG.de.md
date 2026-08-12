@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.145.0] — 2026-08-12
+
+**Aufschlussreiche Statistiken (Forts.): ein neu baubares Diagramm** — der Tab „Zielrollen-Trend" auf `#/stats` hat jetzt ein **Diagramm erstellen**-Widget: eine Metrik × Dimension wählen und es zeichnet sich live neu. Ein nutzergewünschtes UX-Feature (ohne parent-sync).
+
+### Hinzugefügt
+- **Neu baubares Metrik × Dimension-Diagramm** — wählen Sie eine **Metrik** (Stellen / Median-Gehalt / Durchschnittsgehalt) und eine **Dimension** (Nach Land / Nach Rolle), und das Balkendiagramm zeichnet sich sofort neu. Gehalts-Metriken beachten Währung + Pro-Jahr ⇄ Pro-Monat-Umschalter; Stellen sind eine einfache Zählung.
+- 8 neue i18n-Schlüssel × **17 Sprachen**; Snapshot 1200 → 1208.
+
+### Hinweise
+- Im Browser verifiziert (0 Konsolenfehler). Suite: **2372** Tests (+2).
+
 ## [1.144.0] — 2026-08-12
 
 **Einstellungen & Filter (Phase 4, Teil 1): verfolgte Portale aktivieren/deaktivieren** — Sie können ein beobachtetes Unternehmen jetzt auf `#/portals` ein- oder ausschalten, und der Scanner beachtet das. Ein nutzergewünschtes UX-Feature (ohne parent-sync).
