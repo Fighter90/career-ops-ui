@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.164.0] — 2026-08-13
+
+**Rettet (LAV) — søgefeltets placeholder løber ikke længere over på noget sprog.** "Find a company, role or URL…" blev beskåret (nowrap), når søgefeltet skrumpede; "…or URL"-halvdelen var aldrig synlig.
+
+### Rettet
+- `top.search` (×17) er nu den korte **"Søg eller indsæt URL"** (≤24 tegn på hvert sprog), passer selv i et smalt felt og bevarer URL-henvisningen. Fallback i `index.html` matcher; `aria-label` bevarer den fulde detalje.
+
+### Noter
+- Kun tekst; ingen ændring af rute/CSP/SSRF/skrivning. Én eksisterende i18n-nøgle omformuleret ×17 (ingen nye; snapshot 1219). `tests/search-placeholder-fit.test.mjs` (+2). Suite: **2422** (+2).
+
 ## [1.163.0] — 2026-08-13
 
 **Rettet (LAV) — den indbyggede "Spørg dokumentationen"-assistent dækker nu eksport af en rapport til PDF.** Den svarede, at guiden ikke dækkede det, selvom `#/reports/:slug` har en fungerende 📄 Generate PDF-knap.

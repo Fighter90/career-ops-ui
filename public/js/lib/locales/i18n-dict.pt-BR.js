@@ -210,7 +210,7 @@ window.__I18N_DICT_PT_BR = {
   'activity.empty': "Sem atividade ainda — adicione uma URL ou execute um scan.",
   'activity.refresh': "Atualizar",
   'activity.truncated': "Mostrando os {n} eventos mais recentes; o histórico anterior não é exibido.",
-  'top.search': "Buscar empresa, vaga ou URL…",
+  'top.search': "Buscar ou colar URL",
   'top.search.label': "Buscar empresas, vagas ou URLs",
   'top.search.aria': "Busca global — Cmd+K para focar, cole uma URL e Enter para auto-pipeline",
   'top.doctor': "Diagnóstico",

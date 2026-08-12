@@ -210,7 +210,7 @@ window.__I18N_DICT_TR = {
   'activity.empty': "Henüz etkinlik yok — bir URL eklemeyi veya bir tarama çalıştırmayı deneyin.",
   'activity.refresh': "Yenile",
   'activity.truncated': "En son {n} olay gösteriliyor; daha eski geçmiş görüntülenmiyor.",
-  'top.search': "Bir şirket, rol veya URL bulun…",
+  'top.search': "Ara veya URL yapıştır",
   'top.search.label': "Şirketleri, rolleri veya URL'leri ara",
   'top.search.aria': "Genel arama — odaklanmak için Cmd+K, otomatik-pipeline için bir URL yapıştırıp Enter'a basın",
   'top.doctor': "Doctor",

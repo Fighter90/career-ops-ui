@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.164.0] — 2026-08-13
+
+**Behoben (NIEDRIG) — der Suchleisten-Platzhalter läuft in keiner Sprache mehr über.** "Find a company, role or URL…" wurde abgeschnitten (nowrap), wenn die Suchleiste schrumpfte; die "…or URL"-Hälfte war nie sichtbar.
+
+### Behoben
+- `top.search` (×17) ist jetzt das kurze **"Suchen oder URL einfügen"** (≤24 Zeichen in jeder Sprache), passt auch in eine schmale Leiste und behält den URL-Hinweis. Der Fallback in `index.html` passt; das `aria-label` behält das volle Detail.
+
+### Hinweise
+- Nur Text; keine Änderung an Route/CSP/SSRF/Schreibzugriff. Ein bestehender i18n-Schlüssel neu formuliert ×17 (keine neuen; Snapshot 1219). `tests/search-placeholder-fit.test.mjs` (+2). Suite: **2422** (+2).
+
 ## [1.163.0] — 2026-08-13
 
 **Behoben (NIEDRIG) — der In-App-Assistent "Frag die Docs" deckt jetzt den PDF-Export eines Berichts ab.** Er antwortete, der Leitfaden decke das nicht ab, obwohl `#/reports/:slug` einen funktionierenden 📄 Generate PDF-Button hat.

@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.164.0] — 2026-08-13
+
+**Fixed (LOW) — the top-bar search placeholder no longer overflows in any locale.** "Find a company, role or URL…" was clipped (nowrap, `scrollWidth > clientWidth`) when the searchbar flex-shrinks on a busy top bar — and the "…or URL" half, which teaches the paste-a-URL auto-pipeline flow, was never visible.
+
+### Fixed
+- `top.search` (×17) is now the short **"Search or paste a URL"** (≤24 chars in every locale), so it fits even in a narrow searchbar while keeping the URL affordance. The hardcoded `index.html` placeholder fallback matches. The input's `aria-label` still conveys the full "Cmd+K … paste a URL and Enter" detail.
+
+### Notes
+- Copy-only; no route, CSP, SSRF, or parent-write change. One existing i18n key reworded ×17 (no new keys; snapshot 1219).
+- Tests: `tests/search-placeholder-fit.test.mjs` (+2). Suite: **2422** (+2).
+
 ## [1.163.0] — 2026-08-13
 
 **Fixed (LOW) — the in-app "Ask the docs" assistant now covers exporting a report to PDF.** Asked "How do I export a report to PDF?", the assistant answered that the guide didn't cover it — although `#/reports/:slug` has a working 📄 Generate PDF control.

@@ -210,7 +210,7 @@ window.__I18N_DICT_RU = {
   'activity.empty': "Пока пусто — добавьте URL или запустите скан.",
   'activity.refresh': "Обновить",
   'activity.truncated': "Показаны последние {n} событий; более старая история не отображается.",
-  'top.search': "Найти компанию, роль или URL…",
+  'top.search': "Поиск или вставьте URL",
   'top.search.label': "Поиск компаний, ролей или URL",
   'top.search.aria': "Глобальный поиск — Cmd+K для фокуса, вставьте URL и Enter для auto-pipeline",
   'top.doctor': "Диагностика",

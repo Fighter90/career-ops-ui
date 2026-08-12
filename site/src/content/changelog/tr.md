@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.164.0] — 2026-08-13
+
+**Düzeltildi (DÜŞÜK) — üst çubuk arama yer tutucusu artık hiçbir dilde taşmıyor.** "Find a company, role or URL…" arama çubuğu küçüldüğünde kırpılıyordu; "…or URL" yarısı asla görünmüyordu.
+
+### Düzeltildi
+- `top.search` (×17) artık kısa **"Ara veya URL yapıştır"** (her dilde ≤24 karakter), dar bir çubukta bile sığar ve URL ipucunu korur. `index.html` yedeği eşleşir; `aria-label` tam ayrıntıyı korur.
+
+### Notlar
+- Yalnızca metin; rota/CSP/SSRF/yazma değişikliği yok. Mevcut bir i18n anahtarı ×17 yeniden yazıldı (yeni yok; anlık görüntü 1219). `tests/search-placeholder-fit.test.mjs` (+2). Takım: **2422** (+2).
+
 ## [1.163.0] — 2026-08-13
 
 **Düzeltildi (DÜŞÜK) — uygulama içi "Belgelere sor" asistanı artık bir raporu PDF olarak dışa aktarmayı kapsıyor.** `#/reports/:slug`'da çalışan bir 📄 Generate PDF düğmesi olmasına rağmen kılavuzun bunu kapsamadığını söylüyordu.

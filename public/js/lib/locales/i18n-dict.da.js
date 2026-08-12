@@ -209,7 +209,7 @@ window.__I18N_DICT_DA = {
   'activity.empty': "Ingen aktivitet endnu — prøv at tilføje en URL eller køre en scanning.",
   'activity.refresh': "Opdatér",
   'activity.truncated': "Viser de seneste {n} hændelser; ældre historik vises ikke.",
-  'top.search': "Find en virksomhed, rolle eller URL…",
+  'top.search': "Søg eller indsæt URL",
   'top.search.label': "Søg i virksomheder, roller eller URL'er",
   'top.search.aria': "Global søgning — Cmd+K for fokus, indsæt en URL og Enter for auto-pipeline",
   'top.doctor': "Doctor",

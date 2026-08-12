@@ -210,7 +210,7 @@ window.__I18N_DICT_KO = {
   'activity.empty': "아직 활동이 없습니다 — URL 추가 또는 스캔 실행을 시도해 보세요.",
   'activity.refresh': "새로고침",
   'activity.truncated': "가장 최근 {n}개 이벤트만 표시 — 이전 기록은 표시되지 않습니다.",
-  'top.search': "회사, 직무 또는 URL 검색…",
+  'top.search': "검색 또는 URL 붙여넣기",
   'top.search.label': "회사, 직무 또는 URL 검색",
   'top.search.aria': "전역 검색 — Cmd+K 로 포커스, URL 을 붙여 넣고 Enter 로 auto-pipeline",
   'top.doctor': "진단",

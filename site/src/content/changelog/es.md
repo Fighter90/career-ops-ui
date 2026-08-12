@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.164.0] — 2026-08-13
+
+**Corregido (BAJA) — el marcador de posición de la búsqueda ya no se desborda en ningún idioma.** "Find a company, role or URL…" se recortaba (nowrap) al encoger la barra; la mitad "…or URL" nunca se veía.
+
+### Corregido
+- `top.search` (×17) ahora es el corto **"Buscar o pegar una URL"** (≤24 caracteres en cada idioma), cabe incluso en una barra estrecha y mantiene la referencia a URL. El fallback en `index.html` coincide; el `aria-label` conserva el detalle completo.
+
+### Notas
+- Solo texto; sin cambios de ruta/CSP/SSRF/escritura. Una clave i18n reformulada ×17 (sin nuevas; snapshot 1219). `tests/search-placeholder-fit.test.mjs` (+2). Conjunto: **2422** (+2).
+
 ## [1.163.0] — 2026-08-13
 
 **Corregido (BAJA) — el asistente "Pregunta a los docs" ya cubre exportar un informe a PDF.** Antes respondía que la guía no lo cubría, pese a existir el control 📄 Generate PDF en `#/reports/:slug`.

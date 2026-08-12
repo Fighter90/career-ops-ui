@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2420%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2422%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.163.0** — **帮助涵盖报告 → PDF(修复)** — "询问文档"助手称指南未涵盖将报告导出为 PDF,尽管 `#/reports/:slug` 有 📄 Generate PDF 按钮。已向全部 17 个帮助包添加"将报告导出为 PDF"章节。 **2420 项测试。**
+> **🆕 最新版本 — v1.164.0** — **搜索占位符能容纳(修复)** — "Find a company, role or URL…" 在每种语言下被截断,隐藏了 "…or URL"。现在是简短的 "搜索或粘贴 URL"(≤24 字符,×17),URL 提示始终可见。 **2422 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

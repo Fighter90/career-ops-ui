@@ -210,7 +210,7 @@ window.__I18N_DICT_JA = {
   'activity.empty': "まだアクティビティはありません — URL を追加するかスキャンを実行してみてください。",
   'activity.refresh': "更新",
   'activity.truncated': "最新の {n} 件のイベントを表示 — 古い履歴は表示されません。",
-  'top.search': "会社、役割、URL を検索…",
+  'top.search': "検索または URL を貼付",
   'top.search.label': "会社、役割、URL を検索",
   'top.search.aria': "グローバル検索 — Cmd+K でフォーカス、URL を貼り付け Enter で auto-pipeline",
   'top.doctor': "診断",

@@ -209,7 +209,7 @@ window.__I18N_DICT_UK = {
   'activity.empty': "Активності немає — спробуйте додати URL або запустити сканування.",
   'activity.refresh': "Оновити",
   'activity.truncated': "Показано {n} останніх подій; старіша історія не відображається.",
-  'top.search': "Знайти компанію, роль або URL…",
+  'top.search': "Пошук або вставте URL",
   'top.search.label': "Пошук компаній, ролей або URL",
   'top.search.aria': "Глобальний пошук — Cmd+K для фокусу, вставте URL і Enter для auto-pipeline",
   'top.doctor': "Doctor",

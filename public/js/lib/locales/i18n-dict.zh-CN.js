@@ -210,7 +210,7 @@ window.__I18N_DICT_ZH_CN = {
   'activity.empty': "暂无活动 — 试试添加 URL 或运行扫描。",
   'activity.refresh': "刷新",
   'activity.truncated': "仅显示最近 {n} 条事件;较早的历史不显示。",
-  'top.search': "查找公司、职位或 URL…",
+  'top.search': "搜索或粘贴 URL",
   'top.search.label': "搜索公司、职位或 URL",
   'top.search.aria': "全局搜索 — Cmd+K 聚焦,粘贴 URL 并按 Enter 触发 auto-pipeline",
   'top.doctor': "诊断",

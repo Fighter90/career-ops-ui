@@ -209,7 +209,7 @@ window.__I18N_DICT_AR = {
   'activity.empty': "لا نشاط بعد — جرّب إضافة رابط أو تشغيل مسح.",
   'activity.refresh': "تحديث",
   'activity.truncated': "يعرض {n} حدثًا من الأحدث؛ السجل الأقدم غير معروض.",
-  'top.search': "ابحث عن شركة أو دور أو رابط…",
+  'top.search': "ابحث أو ألصق رابطًا",
   'top.search.label': "بحث في الشركات والأدوار والروابط",
   'top.search.aria': "بحث شامل — Cmd+K للتركيز، الصق رابطًا واضغط Enter للخط التلقائي",
   'top.doctor': "الفحص",
