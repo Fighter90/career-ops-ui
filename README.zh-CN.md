@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2418%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.161.0** — **"未检测到评分"标签(修复)** — 在多语言解析器(v1.159.0)之后,无评分的报告显示空白条。`#/reports` 现在显示一个可打开报告的柔和"未检测到评分"标签;日期照常显示。 **2416 项测试。**
+> **🆕 最新版本 — v1.162.0** — **更大的 "?" 点按目标(无障碍修复)** — 帮助 "?" 是 18×18 px 目标,低于 WCAG 2.5.8 的 24×24 最小值。现在盒子为 24×24,可见圆环仍为 18px(由 `::before` 绘制),无位移。 **2418 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

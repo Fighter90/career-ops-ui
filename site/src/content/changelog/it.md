@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.162.0] — 2026-08-13
+
+**Corretto (MEDIA) — il "?" di aiuto è ora un bersaglio di ≥24×24 (WCAG 2.5.8).** `.help-hint` misurava 18×18 px con `padding:0`, sotto il minimo, su ogni intestazione.
+
+### Corretto
+- Il box `.help-hint` è ora **24×24** (il bersaglio misurabile) mentre l'**anello visibile resta a 18px** — disegnato da un `::before` centrato, quindi il glifo e la linea di base dell'`<h1>` sono invariati. Gli stati hover/attivo/focus seguono l'anello; margine 6→3px per mantenere lo spazio.
+
+### Note
+- Solo CSS; nessuna modifica a JS/i18n/route/CSP/SSRF/scrittura. `tests/help-hint-target-size.test.mjs` (+2). Suite: **2418** (+2).
+
 ## [1.161.0] — 2026-08-13
 
 **Corretto (MEDIA) — `#/reports` mostra un chip "Punteggio non rilevato" invece di spazio vuoto.** Dopo il parser multilingua di v1.159.0, un report senza punteggio analizzabile mostrava un'area vuota, indistinguibile da un errore.

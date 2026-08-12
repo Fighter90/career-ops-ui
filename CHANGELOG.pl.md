@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.162.0] — 2026-08-13
+
+**Naprawiono (ŚREDNIE) — "?" pomocy jest teraz celem ≥24×24 (WCAG 2.5.8).** `.help-hint` miał 18×18 px z `padding:0`, poniżej minimum, na każdym nagłówku.
+
+### Naprawiono
+- Pole `.help-hint` ma teraz **24×24** (mierzalny cel), a **widoczny pierścień pozostaje 18px** — rysowany wyśrodkowanym `::before`, więc glif i linia bazowa `<h1>` bez zmian. Stany hover/aktywny/fokus podążają za pierścieniem; margines 6→3px zachowuje odstęp.
+
+### Uwagi
+- Tylko CSS; bez zmian JS/i18n/trasy/CSP/SSRF/zapisu. `tests/help-hint-target-size.test.mjs` (+2). Zestaw: **2418** (+2).
+
 ## [1.161.0] — 2026-08-13
 
 **Naprawiono (ŚREDNIE) — `#/reports` pokazuje chip "Nie wykryto wyniku" zamiast pustego miejsca.** Po parserze wielojęzycznym z v1.159.0 raport bez możliwego do odczytania wyniku pokazywał pusty obszar, nieodróżnialny od błędu.

@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.162.0] — 2026-08-13
+
+**Corrigé (MOYENNE) — le "?" d'aide est désormais une cible de ≥24×24 (WCAG 2.5.8).** `.help-hint` mesurait 18×18 px avec `padding:0`, sous le minimum, sur chaque en-tête.
+
+### Corrigé
+- La boîte `.help-hint` fait désormais **24×24** (la cible mesurable) tandis que **l'anneau visible reste à 18px** via un `::before` centré — le glyphe et la ligne de base du `<h1>` sont inchangés. Les états survol/actif/focus suivent l'anneau ; marge 6→3px pour conserver l'écart.
+
+### Notes
+- CSS uniquement ; aucun changement JS/i18n/route/CSP/SSRF/écriture. `tests/help-hint-target-size.test.mjs` (+2). Suite : **2418** (+2).
+
 ## [1.161.0] — 2026-08-13
 
 **Corrigé (MOYENNE) — `#/reports` affiche une puce "Score non détecté" au lieu d'un espace vide.** Après l'analyseur multilingue de v1.159.0, un rapport sans score analysable affichait une zone vide, indistinguable d'un échec.

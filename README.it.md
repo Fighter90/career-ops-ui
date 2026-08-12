@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2418%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Ultima release — v1.161.0** — **Chip "Punteggio non rilevato" (fix)** — Dopo il parser multilingua (v1.159.0), un report senza punteggio mostrava una striscia vuota. `#/reports` ora mostra un chip attenuato "Punteggio non rilevato" che apre il report; la data resta. **2416 test.**
+> **🆕 Ultima release — v1.162.0** — **Bersaglio "?" più grande (fix a11y)** — il "?" di aiuto era un bersaglio di 18×18 px, sotto il minimo 24×24 di WCAG 2.5.8. Il box è ora 24×24 e l'anello visibile resta a 18px (via `::before`), senza spostamenti. **2418 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

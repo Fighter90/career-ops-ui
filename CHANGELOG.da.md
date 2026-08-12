@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.162.0] — 2026-08-13
+
+**Rettet (MELLEM) — hjælpe-"?" er nu et ≥24×24 pegemål (WCAG 2.5.8).** `.help-hint` var 18×18 px med `padding:0`, under minimum, på hver overskrift.
+
+### Rettet
+- `.help-hint`-boksen er nu **24×24** (det målbare mål), mens den **synlige ring forbliver 18px** — tegnet af et centreret `::before`, så glyffen og `<h1>`-grundlinjen er uændret. Hover/aktiv/fokus følger ringen; margin 6→3px bevarer afstanden.
+
+### Noter
+- Kun CSS; ingen ændring af JS/i18n/rute/CSP/SSRF/skrivning. `tests/help-hint-target-size.test.mjs` (+2). Suite: **2418** (+2).
+
 ## [1.161.0] — 2026-08-13
 
 **Rettet (MELLEM) — `#/reports` viser en "Score ikke fundet"-chip i stedet for tomt felt.** Efter den sprogbevidste parser i v1.159.0 viste en rapport uden læsbar score et tomt område — umuligt at skelne fra en fejl.

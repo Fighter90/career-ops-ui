@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2418%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versión — v1.161.0** — **Chip "puntuación no detectada" (corrección)** — Tras el analizador multi-idioma (v1.159.0), un informe sin puntuación mostraba una franja vacía. `#/reports` ahora muestra un chip atenuado "Puntuación no detectada" que abre el informe; la fecha se mantiene. **2416 pruebas.**
+> **🆕 Última versión — v1.162.0** — **Objetivo táctil "?" más grande (corrección a11y)** — el "?" de ayuda era un objetivo de 18×18 px, bajo el mínimo 24×24 de WCAG 2.5.8. Su caja ahora es 24×24 y el anillo visible sigue en 18px (con `::before`), sin desplazamientos. **2418 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 
