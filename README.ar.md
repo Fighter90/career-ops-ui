@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 أحدث إصدار — v1.156.0** — **عرض scan أنظف (إعادة هيكلة)** — قُسّم `scan.js` (906 أسطر) تحت حدّ 800 إلى مصنع runner ومصنع فلاتر (P-16، يُكمل تقسيم config من P-15). دون تغيير سلوك؛ ويعالج أيضًا CodeQL #428. **2396 اختبارًا.**
+> **🆕 أحدث إصدار — v1.157.0** — **تقييمات مباشرة مع أي مزوّد (إصلاح)** — كان المستخدم الذي عيّن `OPENROUTER_API_KEY` فقط يُجبَر على الوضع اليدوي. السبب: تثبيت `LLM_PROVIDER=claude` (من `init`) دون مفتاح — يتراجع الآن إلى أي مزوّد مُهيّأ، ويقرأ العميل `/api/status/providers` (السبعة). **2401 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

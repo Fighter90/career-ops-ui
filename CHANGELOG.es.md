@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.157.0] — 2026-08-12
+
+**Corregido — las evaluaciones en vivo ahora se ejecutan con CUALQUIER proveedor configurado, no solo Anthropic/Gemini.** Un usuario con solo `OPENROUTER_API_KEY` era forzado erróneamente al modo manual.
+
+### Corregido
+- **Causa raíz:** un pin `LLM_PROVIDER` sin clave (p. ej. `LLM_PROVIDER=claude` de `init`) llevaba a un callejón sin salida; ahora recurre al orden auto entre los proveedores configurados (en `selectActiveProvider` + ambas cascadas de despacho).
+- El gating del cliente (`#/deep` + vistas mode-page) ahora usa `window.ProviderStatus` (`/api/status/providers`, los 7) en vez del sondeo obsoleto de Anthropic/Gemini; textos reformulados (deep/eval × 17) + insignia «Evals en vivo» del dashboard + `config.llmProviderHint`.
+
+### Notas
+- Sin cambios de seguridad. Conjunto: **2401** pruebas (+5).
+
 ## [1.156.0] — 2026-08-12
 
 **Refactor — dividir `scan.js` bajo el límite de tamaño (P-16) + un arreglo de CodeQL.** `scan.js` tenía **906 líneas**; se extrajeron dos fábricas que preservan el comportamiento → **648**. Completa el par de divisiones de vistas P-15/P-16.

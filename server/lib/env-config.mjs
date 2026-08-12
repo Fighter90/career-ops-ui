@@ -84,7 +84,18 @@ export function providerOrder(env = process.env) {
  */
 export function selectActiveProvider(keysConfigured, env = process.env) {
   const set = new Set(keysConfigured || []);
-  return providerOrder(env).find((p) => set.has(p)) || null;
+  const order = providerOrder(env);
+  const pick = order.find((p) => set.has(p));
+  if (pick) return pick;
+  // v1.157.0 — a pinned LLM_PROVIDER whose key isn't configured must NOT dead-end
+  // when OTHER providers ARE configured. A user who ran `init` with Claude Code
+  // gets `LLM_PROVIDER=claude`; if they later add only, say, OPENROUTER_API_KEY,
+  // the stale pin used to force manual mode. Fall back to the auto order among
+  // the configured keys so "set any provider key and it works" holds.
+  if (order.length === 1) {
+    return ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'].find((p) => set.has(p)) || null;
+  }
+  return null;
 }
 
 /**

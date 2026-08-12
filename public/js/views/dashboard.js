@@ -374,16 +374,19 @@ function systemStatusCard(h, t) {
   //   - Gemini key set / unset
   const req = h.checks.filter((x) => x.required);
   const reqOk = req.filter((x) => x.ok).length;
-  const anth = h.checks.find((x) => x.name === 'ANTHROPIC_API_KEY');
-  const gem = h.checks.find((x) => x.name === 'GEMINI_API_KEY');
+  // v1.157.0 — "Live evals" readiness reflects ANY of the seven providers
+  // (Anthropic / Gemini / OpenAI / Qwen / OpenRouter / GitHub Models / Hermes),
+  // not just Anthropic/Gemini — so a user whose only key is e.g. OpenRouter no
+  // longer sees a misleading "unset". Which engine would run is on /#/health.
+  const PROVIDER_KEYS = ['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY', 'GITHUB_MODELS_API_KEY', 'HERMES_API_KEY'];
+  const liveReady = PROVIDER_KEYS.some((k) => h.checks.find((x) => x.name === k)?.ok === true);
   const tag = (label, value, ok) =>
     c('div', { className: 'badge ' + (ok ? 'badge-ok' : 'badge-warn') }, label + ' · ' + value);
   return c('div', { className: 'card' }, [
     c('div', { className: 'flex gap-3', style: { flexWrap: 'wrap', alignItems: 'center' } }, [
       tag(t('dash.system.required', 'Required'), `${reqOk}/${req.length}`, reqOk === req.length),
       tag(t('dash.system.warnings', 'Warnings'), String(h.warnings || 0), (h.warnings || 0) === 0),
-      tag('Anthropic', anth?.ok ? t('dash.system.set', 'set') : t('dash.system.unset', 'unset'), !!anth?.ok),
-      tag('Gemini', gem?.ok ? t('dash.system.set', 'set') : t('dash.system.unset', 'unset'), !!gem?.ok),
+      tag(t('dash.system.liveEvals', 'Live evals'), liveReady ? t('dash.system.ready', 'ready') : t('dash.system.manual', 'manual'), liveReady),
       c('div', { style: { marginLeft: 'auto' } },
         c('button', {
           className: 'btn btn-ghost btn-sm',

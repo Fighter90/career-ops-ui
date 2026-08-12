@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新リリース — v1.156.0** — **すっきりした scan ビュー(リファクタ)** — `scan.js`(906 行)を 800 行上限内に runner + filters ファクトリへ分割(P-16、P-15 の config 分割を完了)。挙動変更なし; CodeQL #428 も解消。 **2396 テスト.**
+> **🆕 最新リリース — v1.157.0** — **任意のプロバイダーでライブ評価(修正)** — `OPENROUTER_API_KEY` のみのユーザーが誤って手動モードに。原因はキー未設定の `LLM_PROVIDER=claude`(`init` 由来)—— 現在は設定済みの任意プロバイダーにフォールバックし、クライアントは `/api/status/providers`(全 7)を参照します。 **2401 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

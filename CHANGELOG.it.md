@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.157.0] — 2026-08-12
+
+**Corretto — le valutazioni live ora girano con QUALSIASI provider configurato, non solo Anthropic/Gemini.** Un utente con solo `OPENROUTER_API_KEY` veniva forzato erroneamente in modalità manuale.
+
+### Corretto
+- **Causa radice:** un pin `LLM_PROVIDER` senza chiave (es. `LLM_PROVIDER=claude` da `init`) finiva in un vicolo cieco; ora ripiega sull’ordine auto tra i provider configurati (in `selectActiveProvider` + entrambe le cascate di dispatch).
+- Il gating lato client (`#/deep` + viste mode-page) usa ora `window.ProviderStatus` (`/api/status/providers`, tutti e 7) invece del probe obsoleto Anthropic/Gemini; testi riscritti (deep/eval × 17) + badge «Valutazioni live» della dashboard + `config.llmProviderHint`.
+
+### Note
+- Nessun cambiamento di sicurezza. Suite: **2401** test (+5).
+
 ## [1.156.0] — 2026-08-12
 
 **Refactor — dividere `scan.js` sotto il limite di dimensione (P-16) + un fix CodeQL.** `scan.js` era di **906 righe**; estratte due factory che preservano il comportamento → **648**. Completa la coppia di divisioni delle view P-15/P-16.

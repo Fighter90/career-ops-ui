@@ -9,6 +9,17 @@
 ---
 
 
+## [1.157.0] — 2026-08-12
+
+**修正 — ライブ評価が Anthropic/Gemini だけでなく、設定済みの任意のプロバイダーで実行されるように。** `OPENROUTER_API_KEY` のみ設定したユーザーが誤って手動モードに強制されていました。
+
+### 修正
+- **根本原因:** キー未設定の `LLM_PROVIDER` ピン(例:`init` の `LLM_PROVIDER=claude`)が行き止まりに。現在は設定済みプロバイダーの中で auto 順にフォールバックします(`selectActiveProvider` + 2 つのディスパッチ)。
+- クライアントのゲーティング(`#/deep` + mode-page ビュー)が古い Anthropic/Gemini プローブではなく `window.ProviderStatus`(`/api/status/providers`、7 種)を使用。文言を刷新(deep/eval × 17)+ ダッシュボードの「ライブ評価」バッジ + `config.llmProviderHint`。
+
+### 備考
+- セキュリティ変更なし。スイート:**2401** 件のテスト(+5)。
+
 ## [1.156.0] — 2026-08-12
 
 **リファクタ — `scan.js` をサイズ上限内に分割(P-16)+ CodeQL 修正。** `scan.js` は **906 行**でした。挙動を保つ 2 ファクトリを抽出し **648 行** に。P-15/P-16 のビュー分割ペアを完了。

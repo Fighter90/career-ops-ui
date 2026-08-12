@@ -134,17 +134,16 @@
     let liveAvailable = false;
     let liveEngine = '';
 
-    // Probe Anthropic OR Gemini availability without blocking initial render.
-    // When a key is available, we flip "▶ Run" to be the PRIMARY button
+    // Probe live-eval availability without blocking initial render. When ANY
+    // provider is wired up (v1.157.0 — the server's active provider, any of the
+    // seven, not just Anthropic/Gemini), flip "▶ Run" to be the PRIMARY button
     // (executes via API, returns Markdown to the browser) and demote the
     // prompt-only flow to a ghost button. The user's expectation on
     // /#/contacto, /#/interview-prep, /#/project, etc. is "do the thing",
     // not "give me a prompt to paste somewhere else".
-    API.get('/api/health').then((h) => {
-      const anth = h.checks?.find((x) => x.name === 'ANTHROPIC_API_KEY')?.ok === true;
-      const gem = h.checks?.find((x) => x.name === 'GEMINI_API_KEY')?.ok === true;
-      if (anth) { liveAvailable = true; liveEngine = 'Anthropic'; }
-      else if (gem) { liveAvailable = true; liveEngine = 'Gemini'; }
+    window.ProviderStatus.live().then((ls) => {
+      liveAvailable = ls.available;
+      liveEngine = ls.engine;
       if (liveAvailable) {
         // Promote runLive → primary, demote manualBtn → ghost.
         runLiveBtn.style.display = '';

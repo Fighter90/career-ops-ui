@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.157.0] — 2026-08-12
+
+**Corrigé — les évals en direct s’exécutent désormais avec N’IMPORTE QUEL fournisseur configuré, pas seulement Anthropic/Gemini.** Un utilisateur n’ayant que `OPENROUTER_API_KEY` était forcé à tort en mode manuel.
+
+### Corrigé
+- **Cause racine :** un pin `LLM_PROVIDER` sans clé (p. ex. `LLM_PROVIDER=claude` issu de `init`) menait à une impasse ; il se rabat maintenant sur l’ordre auto parmi les fournisseurs configurés (dans `selectActiveProvider` + les deux cascades de dispatch).
+- Le gating côté client (`#/deep` + vues mode-page) utilise maintenant `window.ProviderStatus` (`/api/status/providers`, les 7) au lieu de la sonde obsolète Anthropic/Gemini ; textes reformulés (deep/eval × 17) + badge « Évals en direct » du dashboard + `config.llmProviderHint`.
+
+### Notes
+- Aucun changement de sécurité. Suite : **2401** tests (+5).
+
 ## [1.156.0] — 2026-08-12
 
 **Refactor — scinder `scan.js` sous la limite de taille (P-16) + un correctif CodeQL.** `scan.js` faisait **906 lignes** ; deux fabriques préservant le comportement ont été extraites → **648**. Complète la paire de découpages de vues P-15/P-16.

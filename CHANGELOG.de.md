@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.157.0] — 2026-08-12
+
+**Behoben — Live-Evals laufen jetzt mit JEDEM konfigurierten Provider, nicht nur Anthropic/Gemini.** Ein Nutzer mit nur `OPENROUTER_API_KEY` wurde fälschlich in den manuellen Modus gezwungen.
+
+### Behoben
+- **Ursache:** ein `LLM_PROVIDER`-Pin ohne Schlüssel (z. B. `LLM_PROVIDER=claude` aus `init`) lief ins Leere; nun wird auf die Auto-Reihenfolge unter den konfigurierten Providern zurückgegriffen (in `selectActiveProvider` + beiden Dispatch-Kaskaden).
+- Das Client-Gating (`#/deep` + mode-page-Views) nutzt jetzt `window.ProviderStatus` (`/api/status/providers`, alle 7) statt der veralteten Anthropic/Gemini-Prüfung; überarbeitete Texte (deep/eval × 17) + „Live-Evals“-Badge im Dashboard + `config.llmProviderHint`.
+
+### Hinweise
+- Keine Sicherheitsänderung. Suite: **2401** Tests (+5).
+
 ## [1.156.0] — 2026-08-12
 
 **Refactor — `scan.js` unter das Größenlimit aufteilen (P-16) + ein CodeQL-Fix.** `scan.js` hatte **906 Zeilen**; zwei verhaltensbewahrende Factories wurden herausgezogen → **648**. Vervollständigt das View-Split-Paar P-15/P-16.

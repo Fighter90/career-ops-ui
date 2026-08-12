@@ -10,17 +10,15 @@ Router.register('deep', async () => {
   let liveAvailable = false;
   let liveEngine = '';
 
-  // Probe whether Gemini OR Anthropic is wired up so we know whether to
-  // show "Run live" alongside "Copy prompt" or only the manual flow.
-  // Anthropic preferred (better at structured deep-research output).
-  try {
-    const h = await API.get('/api/health');
-    const anth = h.checks?.find((x) => x.name === 'ANTHROPIC_API_KEY')?.ok === true;
-    const gem = h.checks?.find((x) => x.name === 'GEMINI_API_KEY')?.ok === true;
-    if (anth) { liveAvailable = true; liveEngine = 'Anthropic'; }
-    else if (gem) { liveAvailable = true; liveEngine = 'Gemini'; }
-  } catch {
-    liveAvailable = false;
+  // v1.157.0 — "Run live" availability follows the SERVER's active provider, i.e.
+  // ANY of the seven (Anthropic / Gemini / OpenAI / Qwen / OpenRouter / GitHub
+  // Models / Hermes) honoring the auto order + LLM_PROVIDER — not just Anthropic
+  // or Gemini. `/api/status/providers` (via window.ProviderStatus) is the single
+  // source of truth the server's dispatch cascade also uses.
+  {
+    const ls = await window.ProviderStatus.live();
+    liveAvailable = ls.available;
+    liveEngine = ls.engine;
   }
 
   // UX-A6 (v1.58.52, NEW-M4-r1) — extracted from the inline render

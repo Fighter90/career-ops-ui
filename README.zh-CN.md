@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.156.0** — **更清晰的 scan 视图(重构)** — 将 `scan.js`(906 行)拆分到 800 行上限以下的 runner + filters 工厂(P-16,完成 P-15 的 config 拆分)。行为不变;并清除 CodeQL #428。 **2396 个测试。**
+> **🆕 最新版本 — v1.157.0** — **任意提供方的实时评估(修复)** — 仅设置 `OPENROUTER_API_KEY` 的用户被强制进入手动模式。根因:无密钥的 `LLM_PROVIDER=claude` 固定(来自 `init`)—— 现在回退到任意已配置提供方,客户端读取 `/api/status/providers`(全部 7 个)。 **2401 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

@@ -80,7 +80,7 @@
       options: ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'], defaultValue: 'auto',
       labelKey: 'config.llmProvider', label: 'LLM_PROVIDER',
       hintKey: 'config.llmProviderHint',
-      hintFallback: 'auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. claude / gemini / openai / qwen / openrouter / github / hermes = force that one. A forced provider with no key → manual-prompt fallback.',
+      hintFallback: "auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. claude / gemini / openai / qwen / openrouter / github / hermes = prefer that one — but if its key isn't set it falls back to any other provider you have configured. Only with no provider key at all → manual-prompt fallback.",
     },
     {
       key: 'ANTHROPIC_API_KEY', secret: true,

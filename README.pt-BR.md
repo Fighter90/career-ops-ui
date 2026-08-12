@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versão — v1.156.0** — **Visão de scan mais limpa (refactor)** — `scan.js` (906 linhas) dividido sob o limite de 800 em uma fábrica runner e uma de filtros (P-16, completa o split de config da P-15). Sem mudança de comportamento; também fecha o CodeQL #428. **2396 testes.**
+> **🆕 Última versão — v1.157.0** — **Evals ao vivo com qualquer provedor (correção)** — Um usuário com apenas `OPENROUTER_API_KEY` era forçado ao modo manual. Causa: um pin `LLM_PROVIDER=claude` (do `init`) sem chave; agora recorre a qualquer provedor configurado, e o cliente lê `/api/status/providers` (os 7), não só Anthropic/Gemini. **2401 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

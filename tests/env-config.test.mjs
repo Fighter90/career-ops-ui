@@ -11,6 +11,7 @@ import { resolve } from 'node:path';
 import {
   KNOWN_KEYS, SECRET_KEYS, LLM_PROVIDERS, providerOrder,
   parseEnv, maskSecret, validateConfig, normalizeConfigValue, updateEnvFile, effectiveEnv, isUsableKey,
+  selectActiveProvider,
 } from '../server/lib/env-config.mjs';
 
 // ────────────────────── parseEnv ──────────────────────
@@ -171,6 +172,20 @@ test('isUsableKey: minLen relaxes the floor for short self-hosted keys (v1.151.1
   // Placeholder rejections still apply regardless of the floor.
   assert.equal(isUsableKey('your_key_here', 8), false);
   assert.equal(isUsableKey('xxxxxxxxxx', 8), false);             // single repeated char
+});
+
+test('selectActiveProvider: a keyless pin falls back to a configured provider (v1.157.0)', () => {
+  // The bug: LLM_PROVIDER=claude (from `init` with Claude Code) + only OpenRouter
+  // configured used to return null → forced manual mode. Now it falls back.
+  assert.equal(selectActiveProvider(['openrouter'], { LLM_PROVIDER: 'claude' }), 'openrouter');
+  assert.equal(selectActiveProvider(['qwen'], { LLM_PROVIDER: 'gemini' }), 'qwen');
+  // A pin whose OWN key IS set stays honored (no fallback).
+  assert.equal(selectActiveProvider(['anthropic', 'openrouter'], { LLM_PROVIDER: 'claude' }), 'anthropic');
+  // auto picks the first configured in the canonical order.
+  assert.equal(selectActiveProvider(['github', 'openrouter'], { LLM_PROVIDER: 'auto' }), 'openrouter');
+  // No provider key at all → null (manual).
+  assert.equal(selectActiveProvider([], { LLM_PROVIDER: 'claude' }), null);
+  assert.equal(selectActiveProvider([], { LLM_PROVIDER: 'auto' }), null);
 });
 
 test('validateConfig: a real-shape OpenRouter key validates', () => {

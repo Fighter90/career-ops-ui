@@ -7,14 +7,14 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Dernière version — v1.156.0** — **Vue scan plus propre (refactor)** — `scan.js` (906 lignes) scindé sous la limite de 800 en une fabrique runner et une de filtres (P-16, complète le découpage config de P-15). Aucun changement de comportement ; corrige aussi CodeQL #428. **2396 tests.**
+> **🆕 Dernière version — v1.157.0** — **Évals en direct sur tout fournisseur (correctif)** — Un utilisateur n’ayant que `OPENROUTER_API_KEY` était forcé en mode manuel. Cause : un pin `LLM_PROVIDER=claude` (issu de `init`) sans clé ; il se rabat désormais sur tout fournisseur configuré, et le client lit `/api/status/providers` (les 7). **2401 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 
