@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.141.0] — 2026-08-12
+
+**Anlayışlı istatistikler (devam): finansman alan şirketlerin zenginleştirilmesi** — `#/funded` artık daha görsel: şirket logoları, finansman tutarına göre bir grafik ve tur / tutar / keşif puanı / önerilen eylem içeren kartlar. Kullanıcı bildirimli bir UX düzeltmesi (parent-sync yok).
+
+### Değişti
+- **`#/funded` — düz tablo → kart ızgarası.** Yakın zamanda finansman alan her şirket artık bir kart: **logo** (`CompanyLogo` ile addan türetilir, başarısızsa harf avatarı), **tur** + **tutar** çipleri, üst projenin **keşif puanı** ve **önerilen eylemi**, ayrıca finansman haberi bağlantısı ve tarihi.
+- **Finansman tutarı görselleştirmesi** — açıklanan tutara göre en büyük şirketlerin yatay çubuk grafiği; "$120M"/"€1.5B" gibi serbest metin tutarlar yeni bir `parseAmount` ile büyüklüğe ayrıştırılır. 3 yeni i18n anahtarı × **17 dil**.
+
+### Notlar
+- Hâlâ `GET /api/company-funded` üzerinde **salt okunur**; açıklama ve maaş aralığı finansman kaynağında yok. Takım: **2363** test (+2).
+
 ## [1.140.0] — 2026-08-12
 
 **Anlayışlı istatistikler: daha zengin maaş rakamları** — `#/stats`'teki "Pipeline'ım" maaş dökümü artık (yalnız medyan değil) **ortalamayı**, bir **yıllık ⇄ aylık** anahtarını ve ülke başına **min · ort · medyan · maks** tablosunu gösteriyor. Faz 3'ün ilk dilimi. Kullanıcı bildirimli bir UX düzeltmesi (parent-sync yok).

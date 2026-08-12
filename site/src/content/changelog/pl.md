@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.141.0] — 2026-08-12
+
+**Wnikliwe statystyki (cd.): wzbogacenie firm z finansowaniem** — `#/funded` jest teraz bardziej wizualne: logotypy firm, wykres wg kwoty finansowania i karty z rundą / kwotą / oceną odkrycia / sugerowanym działaniem. Poprawka UX zgłoszona przez użytkownika (bez parent-sync).
+
+### Zmieniono
+- **`#/funded` — płaska tabela → siatka kart.** Każda niedawno dofinansowana firma to teraz karta z **logo** (wyprowadzonym z nazwy przez `CompanyLogo`, awatar literowy w razie niepowodzenia), chipami **rundy** + **kwoty**, **oceną odkrycia** i **sugerowanym działaniem** z projektu nadrzędnego oraz linkiem i datą newsa.
+- **Wizualizacja kwoty finansowania** — poziomy wykres słupkowy największych firm wg ujawnionej kwoty; wolny tekst kwot ("$120M"/"€1.5B") jest parsowany do wielkości przez nowy `parseAmount`. 3 nowe klucze i18n × **17 języków**.
+
+### Uwagi
+- Nadal **tylko do odczytu** przez `GET /api/company-funded`; opis i widełki płacowe nie występują w źródle finansowania. Zestaw: **2363** testów (+2).
+
 ## [1.140.0] — 2026-08-12
 
 **Wnikliwe statystyki: bogatsze dane o wynagrodzeniach** — rozbicie wynagrodzeń w „Mój pipeline" na `#/stats` pokazuje teraz **średnią** (nie tylko medianę), przełącznik **rocznie ⇄ miesięcznie** i tabelę **min · śr · mediana · maks** wg kraju. Pierwsza część Fazy 3. Poprawka UX zgłoszona przez użytkownika (bez parent-sync).

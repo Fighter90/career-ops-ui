@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.141.0] — 2026-08-12
+
+**Statistiques éclairantes (suite) : enrichissement des entreprises financées** — `#/funded` devient plus visuel : logos d'entreprise, un graphique par montant de financement et des cartes avec tour / montant / score de découverte / action suggérée. Ajustement UX signalé par l'utilisateur (sans parent-sync).
+
+### Modifié
+- **`#/funded` — tableau plat → grille de cartes.** Chaque entreprise récemment financée est désormais une carte avec un **logo** (dérivé du nom via `CompanyLogo`, avatar à lettre en repli), des puces **tour** + **montant**, le **score de découverte** et l'**action suggérée** du projet parent, ainsi que le lien et la date de l'actualité.
+- **Visualisation du montant de financement** — un graphique à barres des plus grandes entreprises par montant divulgué ; les montants en texte libre ("$120M"/"€1.5B") sont convertis en magnitude par un nouveau `parseAmount`. 3 nouvelles clés i18n × **17 langues**.
+
+### Notes
+- Toujours en **lecture seule** sur `GET /api/company-funded` ; description et fourchette salariale absentes du flux de financement. Suite : **2363** tests (+2).
+
 ## [1.140.0] — 2026-08-12
 
 **Statistiques éclairantes : chiffres de salaire plus riches** — la répartition salariale de « Mon pipeline » sur `#/stats` affiche désormais la **moyenne** (pas seulement la médiane), une bascule **par an ⇄ par mois** et un tableau **min · moy · médiane · max** par pays. Premier volet de la Phase 3. Ajustement UX signalé par l'utilisateur (sans parent-sync).

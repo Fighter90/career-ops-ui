@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Ultima release — v1.140.0** — **statistiche perspicaci: cifre salariali più ricche** — la ripartizione salariale di "La mia pipeline" su `#/stats` mostra ora la **media** (non solo la mediana), un interruttore **all'anno ⇄ al mese** e una tabella **min · media · mediana · max** per paese. 8 chiavi ×17 lingue. **2361 test.**
+> **🆕 Ultima release — v1.141.0** — **statistiche perspicaci (segue): arricchimento delle aziende finanziate** — `#/funded` è ora una griglia di schede visiva: **loghi** aziendali, un **grafico per importo** e schede con **round / importo / punteggio / azione suggerita**. 3 chiavi ×17 lingue. **2363 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

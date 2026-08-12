@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2361%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.140.0** — **有洞察力的统计：更丰富的薪资数字** — `#/stats` 的「我的管道」薪资细分现在显示**平均值**（不只是中位数）、**每年 ⇄ 每月**切换，以及按国家的**最低 · 平均 · 中位数 · 最高**表格。8 个键 ×17 种语言。 **2361 个测试。**
+> **🆕 最新版本 — v1.141.0** — **有洞察力的统计（续）：融资公司信息增强** — `#/funded` 现在是可视化卡片网格：公司**徽标**、**融资额图表**，以及**轮次 / 金额 / 发现评分 / 建议操作**卡片。3 个键 ×17 种语言。 **2363 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

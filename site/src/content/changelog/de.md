@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.141.0] — 2026-08-12
+
+**Aufschlussreiche Statistiken (Forts.): Anreicherung finanzierter Unternehmen** — `#/funded` ist jetzt visueller: Firmenlogos, ein Diagramm nach Finanzierungsbetrag und Karten mit Runde / Betrag / Discovery-Score / vorgeschlagener Aktion. Eine nutzergemeldete UX-Anpassung (ohne parent-sync).
+
+### Geändert
+- **`#/funded` — flache Tabelle → Kartenraster.** Jedes kürzlich finanzierte Unternehmen ist nun eine Karte mit **Logo** (aus dem Namen via `CompanyLogo` abgeleitet, Buchstaben-Avatar als Rückfall), **Runde**- + **Betrag**-Chips, dem **Discovery-Score** und der **vorgeschlagenen Aktion** des Elternprojekts sowie Link und Datum der Finanzierungsnews.
+- **Visualisierung des Finanzierungsbetrags** — ein horizontales Balkendiagramm der größten Unternehmen nach offengelegtem Betrag; Freitext-Beträge ("$120M"/"€1.5B") werden per neuem `parseAmount` in eine Größe geparst. 3 neue i18n-Schlüssel × **17 Sprachen**.
+
+### Hinweise
+- Weiterhin **nur lesend** über `GET /api/company-funded`; Beschreibung und Gehaltsspanne fehlen in der Finanzierungsquelle. Suite: **2363** Tests (+2).
+
 ## [1.140.0] — 2026-08-12
 
 **Aufschlussreiche Statistiken: reichere Gehaltszahlen** — die Gehaltsaufschlüsselung unter „Meine Pipeline" auf `#/stats` zeigt jetzt den **Durchschnitt** (nicht nur den Median), einen **pro Jahr ⇄ pro Monat**-Umschalter und eine **Min · Ø · Median · Max**-Tabelle je Land. Erster Teil von Phase 3. Eine nutzergemeldete UX-Anpassung (ohne parent-sync).

@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.141.0] — 2026-08-12
+
+**Insightful stats (cont.): funded-company enrichment** — `#/funded` becomes a richer, more visual view: company **logos**, a **funding-amount chart**, and per-company **round / amount / discovery-score / suggested-action** cards. A user-reported UX pass (no parent-sync).
+
+### Changed
+- **`#/funded` — flat table → enriched card grid.** Each recently-funded company is now a card with a **logo** (derived from the company name via `CompanyLogo`, letter-avatar fallback), **round** + **amount** chips, the parent's **discovery score** and **suggested action** (previously discarded from the relay payload), and the funding-news source link + date.
+- **Funding-amount visualization** — a horizontal bar chart of the top companies by disclosed amount; free-text amounts ("$120M" / "€1.5B" / "500K") are parsed to a magnitude via a new `parseAmount`.
+- 3 new i18n keys × **17 locales** (`funded.byAmount` / `funded.score` / `funded.action`); assembled-dict snapshot 1183 → 1186.
+
+### Notes
+- Still **read-only** over `GET /api/company-funded` (host-pinned public feeds — TechCrunch / PR Newswire / The Guardian / Hacker News); no writes, no LLM, no new route. The "verify a company independently" caveat stays. **Description** and **salary range** aren't in the funding feed, so they're out of scope for this source.
+- Remaining Phase 3 — interactive/rebuildable charts + the "Unknown" archetype fix (orientation prompt-quality) — continues later (`docs/UX-ROADMAP.md`).
+- Suite: **2363** tests (+2: `tests/funded-view.test.mjs` — `parseAmount` + card-render wiring; the v1.133.1 regression guard updated table→cards).
+
 ## [1.140.0] — 2026-08-12
 
 **Insightful stats: richer salary figures** — the `#/stats` "My pipeline" salary breakdown now shows the **average** (not just the median), a **per-year ⇄ per-month** toggle, and a **min · avg · median · max** table per country. First slice of roadmap Phase 3. A user-reported UX pass (no parent-sync).
