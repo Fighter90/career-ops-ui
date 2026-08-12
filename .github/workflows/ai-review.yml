@@ -114,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out (full history for the diff)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -234,7 +234,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out PR head (full history for the diff)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
