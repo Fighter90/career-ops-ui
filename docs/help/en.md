@@ -2193,11 +2193,11 @@ The link in the sidebar footer opens the manifesto page. You can also read `MANI
 
 ## 30. Hermes & Telegram
 
-**Nous Research's Hermes** is an open autonomous agent — tool-calling, skills, and 20+ messaging channels, Telegram among them. This section explains how you would run career-ops-ui on a cloud server and bridge its events to Telegram through a Hermes agent. **It is a plan, not a shipped feature:** Hermes as an LLM provider is not yet wired (blocked on confirming the Nous Portal API contract), so nothing in the app calls Hermes today. The full design + deployment guide lives in `docs/integrations/HERMES.md`, and the `hermes-bridge` skill walks the steps.
+**Nous Research's Hermes** is an open autonomous agent — tool-calling, skills, and 20+ messaging channels, Telegram among them. **As of v1.151.0, Hermes is a wired LLM provider:** run its OpenAI-compatible API Server (`hermes gateway`), set `HERMES_API_KEY` in **App settings**, and career-ops-ui runs its live evaluations through your local Hermes. This section also covers running the app on a cloud server and bridging its events to Telegram through Hermes — those two are operator how-to, not app features. The full guide is `docs/integrations/HERMES.md`, and the `hermes-bridge` skill walks the steps.
 
 ### What Hermes is
 
-Hermes is an agent runtime — not, as far as we can confirm, a plain hosted chat-completions API. That shapes the integration two ways. **Shape A:** if a Nous Portal endpoint turns out to be OpenAI-compatible, Hermes becomes just another LLM provider in the app's cascade, added like the existing ones. **Shape B:** if it is only reachable as an agent runtime, the app talks to it through a dedicated relay route or a locally-run agent instead. Which one applies is confirmed from Nous Portal and the `NousResearch/hermes-agent` repo *before* any code is written — that is why the provider is deliberately not built yet.
+Hermes is an agent runtime that connects to your own LLM providers — and it also exposes an **OpenAI-compatible API Server**: `hermes gateway` serves `POST /v1/chat/completions` at `http://127.0.0.1:8642/v1` with a Bearer key (its `API_SERVER_KEY`). That is why career-ops-ui treats it as just another provider (the "Shape A" path in the guide): the app POSTs to that local endpoint exactly as it does for OpenAI or Qwen, and Hermes routes the request to whatever model you configured inside it. It sits **last** in the auto provider order, so it never overrides an existing Anthropic/Gemini/OpenAI/Qwen setup.
 
 ### Running on a cloud server
 

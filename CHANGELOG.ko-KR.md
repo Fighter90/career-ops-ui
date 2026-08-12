@@ -9,6 +9,22 @@
 ---
 
 
+## [1.151.0] — 2026-08-12
+
+**Hermes가 이제 연결된 LLM 제공자입니다(Phase 5)** — Phase 5 스코핑 스파이크에서 Nous Research의 Hermes가 **OpenAI 호환 API Server**(`hermes gateway` → `POST /v1/chat/completions`)를 제공함을 확인했고, 이제 career-ops-ui는 OpenAI/Qwen과 똑같이 로컬 Hermes를 통해 라이브 평가를 실행합니다. **앱 설정**에서 `HERMES_API_KEY`를 지정하면 auto 순서에 합류합니다(마지막). 로드맵의 마지막 미해결 항목 — **Phase 5, Shape A** — 을 마무리합니다.
+
+### 추가
+- **Hermes LLM 제공자(Shape A)** — 공유 `runOpenAICompatible` 클라이언트 위의 `runHermes`(`server/lib/openai.mjs`), **두** 캐스케이드(`llm-dispatch.mjs` + `routes/llm.mjs`)에 게이트, auto 순서 꼬리 + `LLM_PROVIDER=hermes` 핀, `/api/status/providers`, `llm-pricing.mjs`. 사용자 설정 가능한 로컬 base URL(기본 `http://127.0.0.1:8642/v1`)에 Bearer 인증으로 접근 — 사용자 제공 채용 URL이 아니라 설정된 제공자 엔드포인트(OpenRouter/Qwen처럼)이므로 SSRF 가드를 거치지 않습니다.
+- **`#/config` 필드** — `HERMES_API_KEY`(비밀) + `HERMES_BASE_URL` + `HERMES_MODEL`(기본 `hermes-agent`), 6개 새 i18n 키 × **17개 언어**(스냅샷 1208 → 1214).
+
+### 변경
+- 스코핑 스파이크가 해결됨: `docs/integrations/HERMES.md`, 앱 내 도움말 §30(× 17), README 예고(× 14), `hermes-bridge` 스킬, 로드맵이 "계획됨 / 아직 미연동"에서 **연동됨(Shape A)** 으로 전환. Shape B(맞춤형 에이전트 런타임 relay)는 불필요했습니다.
+
+### 참고
+- **보안:** 제공자 fetch는 설정된 엔드포인트로, 다른 OpenAI 호환 제공자와 동일한 범주 — 새 SSRF 표면 없음, CSP/새니타이저 변경 없음. `HERMES_API_KEY`는 `SECRET_KEY`(절대 노출되지 않음).
+- 테스트(CI 격리, 전송 스텁): `tests/hermes-provider.test.mjs`(+5); v1.146.0의 "Hermes 분기 없음" 캐너리를 연결됨을 확인하도록 **반전**; 제공자 표면 테스트를 7개 제공자 순서로 업데이트.
+- 스위트: **2390**개 테스트(+5).
+
 ## [1.150.0] — 2026-08-12
 
 **일관된 빈 상태 (Phase 4 다듬기)** — 모든 "아직 없음" 패널이 이제 일부 뷰가 마법의 `40px`로 인라인 재선언하는 대신, 하나의 공유 `.empty` 스타일로 렌더링됩니다. 작은 시각적 일관성 수정; `#/activity`, `#/cv-studio`, `#/stats`, `#/usage`의 빈 상태가 이제 나머지 전부와 일치합니다(토큰화된 48px 패딩 + 점선 테두리).

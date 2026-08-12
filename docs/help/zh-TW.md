@@ -1945,11 +1945,11 @@ career-ops——本應用程式所包覆的父專案——是 [CareerOps 宣言]
 
 ## 30. Hermes & Telegram
 
-**Nous Research 的 Hermes** 是一個開放的自主代理 —— 支援工具呼叫、技能，以及包含 Telegram 在內的 20 多個訊息通道。本章節說明如何在雲端伺服器上執行 career-ops-ui，並透過 Hermes 代理把它的事件橋接到 Telegram。**這是一項計畫，而非已發布的功能:** 作為 LLM 供應方的 Hermes 尚未接上(卡在確認 Nous Portal 的 API 合約上)，因此目前沒有任何應用程式碼呼叫 Hermes。完整的設計 + 部署指南見 `docs/integrations/HERMES.md`，`hermes-bridge` 技能會帶你走完各個步驟。
+**Nous Research 的 Hermes** 是一個開放的自主代理 —— 支援工具呼叫、技能,以及包含 Telegram 在內的 20 多個訊息通道。**自 v1.151.0 起,Hermes 是一個已接上的 LLM 供應方:** 執行它相容 OpenAI 的 API Server(`hermes gateway`),在 **應用設定** 中設定 `HERMES_API_KEY`,career-ops-ui 便會透過你本機的 Hermes 執行即時評估。本節也介紹如何在雲端伺服器上執行應用,並經 Hermes 把其事件橋接到 Telegram —— 這兩部分是面向維運者的指引,而非應用功能。完整指南見 `docs/integrations/HERMES.md`,`hermes-bridge` 技能會帶你走完各步驟。
 
 ### Hermes 是什麼
 
-Hermes 是一個代理執行環境 —— 就我們所能確認的而言，並不是一個簡單的託管式 chat-completions API。這從兩個方向決定了整合方式。**形態 A:** 若某個 Nous Portal 端點被證實相容 OpenAI，Hermes 就作為又一個 LLM 供應方加入應用的級聯。**形態 B:** 若它只能作為代理執行環境存取，應用則透過專用的 relay 路由或本機執行的代理與其通訊。究竟適用哪一種，會在寫任何程式碼*之前*從 Nous Portal 與 `NousResearch/hermes-agent` 儲存庫確認 —— 這正是該供應方被刻意尚未建構的原因。
+Hermes 是一個連接到你自己的 LLM 供應方的代理執行環境 —— 同時它還暴露一個 **相容 OpenAI 的 API Server**:`hermes gateway` 在 `http://127.0.0.1:8642/v1` 以 Bearer 金鑰(其 `API_SERVER_KEY`)提供 `POST /v1/chat/completions`。因此 career-ops-ui 把它當作又一個供應方(指南中的「Shape A」路徑):應用像呼叫 OpenAI 或 Qwen 一樣向那個本機端點發 POST,Hermes 再把請求路由到你在其內部設定的模型。它在 auto 順序中排 **最後**,因此絕不會覆寫既有的 Anthropic/Gemini/OpenAI/Qwen 設定。
 
 ### 在雲端伺服器上執行
 

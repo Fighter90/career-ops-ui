@@ -1,11 +1,13 @@
 # Hermes agent + Telegram — integration guide
 
-> **Status: planned / not-yet-wired.** This document is the *design contract* for
-> bridging career-ops-ui to **Nous Research's Hermes** agent and, through it, to
-> **Telegram**. The provider integration itself is **not shipped** — it is blocked
-> on the Phase 5 API-contract spike (see [`docs/UX-ROADMAP.md`](../UX-ROADMAP.md)
-> Phase 5). Nothing here describes an endpoint the server calls today. Read it as
-> "how this *will* work and how to deploy toward it," not "what runs now."
+> **Status (v1.151.0): the LLM-provider path — Shape A — is now WIRED.** The
+> Phase 5 scoping spike confirmed Hermes ships an **OpenAI-compatible API Server**
+> (`hermes gateway` → `POST /v1/chat/completions`, Bearer auth), so career-ops-ui
+> now talks to a running Hermes as just another provider in its cascade (set
+> `HERMES_API_KEY` in `#/config`). What remains *forward-looking* in this doc is
+> the **cloud-server deployment** playbook (§2) and the **Telegram bridge** (§3) —
+> those are how-to guidance, not shipped app features. See
+> [`docs/UX-ROADMAP.md`](../UX-ROADMAP.md) Phase 5.
 
 `career-ops-ui` is an Express + vanilla-JS viewer that sits inside the parent
 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) pipeline. It is
@@ -20,29 +22,32 @@ two things that go beyond that default:
 ## 1. What Hermes is (and what it is not)
 
 **Hermes** is Nous Research's open autonomous-agent product — tool-calling, skills,
-voice, and connectors to 20+ messaging platforms (Telegram among them). Its docs
-(<https://hermes-agent.nousresearch.com/docs>) and the
-[`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent) repo
-describe an **agent runtime** that "works with Nous Portal / OpenRouter / OpenAI /
-any endpoint" — **not**, as of this writing, a documented hosted
-`/chat/completions` API you can drop in next to Anthropic or OpenAI.
+voice, and connectors to 20+ messaging platforms (Telegram among them). It's an
+**agent runtime** that "works with Nous Portal / OpenRouter / OpenAI / any
+endpoint" (self-hosted: "a $5 VPS, a GPU cluster, or serverless"). Crucially, per
+its docs (<https://hermes-agent.nousresearch.com/docs>) and the
+[`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent) repo,
+it **also exposes an OpenAI-compatible API Server** — `hermes gateway` binds
+`http://127.0.0.1:8642` and serves `POST /v1/chat/completions` (Bearer auth via
+`API_SERVER_KEY`, streaming, `GET /v1/models`).
 
-That distinction drives the whole integration and is why the code is not written
-yet. There are **two possible shapes**, and which one applies must be confirmed
-from **Nous Portal** and/or the repo before any code lands:
+That API Server is exactly **Shape A**, so that's the path career-ops-ui took
+(v1.151.0). Two shapes exist; A is the one that applies here:
 
-### Shape A — Hermes exposes an OpenAI-compatible endpoint (the light path)
+### Shape A — Hermes's OpenAI-compatible API Server (WIRED, v1.151.0)
 
-If Nous Portal (or a self-hosted Hermes) offers an OpenAI-style
-`POST /v1/chat/completions`, then Hermes becomes **just another LLM provider** in
-the existing cascade. The work mirrors the Qwen/OpenAI branches (they are already
-`/chat/completions`-shaped):
+`hermes gateway` exposes an OpenAI-style `POST /v1/chat/completions`, so Hermes is
+**just another LLM provider** in the existing cascade, mirroring the Qwen/OpenAI
+branches (already `/chat/completions`-shaped). What shipped in v1.151.0:
 
-- a `NOUS_API_KEY` in [`server/lib/env-config.mjs`](../../server/lib/env-config.mjs)
-  + a field in `#/config`;
+- `HERMES_API_KEY` (the gateway's `API_SERVER_KEY`) + `HERMES_BASE_URL` (default
+  `http://127.0.0.1:8642/v1`) + `HERMES_MODEL` (default `hermes-agent`) in
+  [`server/lib/env-config.mjs`](../../server/lib/env-config.mjs) + fields in `#/config`;
+- `runHermes` in [`server/lib/openai.mjs`](../../server/lib/openai.mjs) riding the
+  shared `runOpenAICompatible` client (Bearer auth, timeout, `cleanLlmMarkdown`);
 - a dispatch branch in
   [`server/lib/llm-dispatch.mjs`](../../server/lib/llm-dispatch.mjs)
-  (`runActiveProvider` / `providerAvailable`);
+  (`runActiveProvider` / `providerAvailable`) **and** the mirror in `routes/llm.mjs`;
 - a row in the provider-order cascade;
 - the model catalogue + a `#/config` hint;
 - `cli-detect` / help / README roster entries;
@@ -66,9 +71,10 @@ In this shape, Telegram delivery is Hermes's job, not the server's: career-ops-u
 hands Hermes a message (or Hermes calls career-ops-ui as a **tool**), and Hermes
 fans it out to whatever channels the user has connected.
 
-**Decision gate:** run the Phase 5 scoping spike (confirm base URL, auth header,
-whether it is OpenAI-compatible, model ids, streaming, tool-calling shape) before
-committing to Shape A or B. Do not write the provider until the contract is known.
+**Decision (resolved, v1.151.0):** the scoping spike confirmed the API Server is
+OpenAI-compatible (base URL, Bearer auth, model ids, streaming all verified), so
+**Shape A shipped** and Shape B was not needed. This section is retained to explain
+the alternative had the contract turned out to be agent-runtime-only.
 
 ---
 
@@ -178,15 +184,18 @@ leaves the box.
 |---|---|
 | This guide + the README teaser | **shipped** (v1.146.0) |
 | A `hermes-bridge` skill that walks the deployment | **shipped** (v1.146.0) |
-| In-app help §"Hermes & Telegram" ×17 + site surface | planned (v1.147.0) |
-| Provider integration (Shape A **or** B) | **blocked** on the Phase 5 API-contract spike |
+| In-app help §"Hermes & Telegram" ×17 + site surface | **shipped** (v1.147.0) |
+| **Provider integration — Shape A** (OpenAI-compatible API Server) | **shipped** (v1.151.0) |
+| Cloud-server deployment playbook (§2) | how-to guidance (not an app feature) |
+| Telegram bridge (§3) | how-to guidance (not an app feature) |
 
-To unblock the provider work, confirm the actual Hermes/Nous Portal contract
-(base URL, auth, OpenAI-compatibility, model ids, streaming, tool-calling) from
-Nous Portal and the [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent)
-repo, then follow **Shape A** (light, provider-cascade) or **Shape B** (relay
-route / local shell) as the contract dictates. Until then, everything above is a
-plan — no server code calls Hermes.
+The Phase 5 scoping spike is done: `hermes gateway` exposes an OpenAI-compatible
+`POST /v1/chat/completions` (base `http://127.0.0.1:8642/v1`, Bearer
+`API_SERVER_KEY`), so **Shape A** applied and shipped in v1.151.0 — set
+`HERMES_API_KEY` in `#/config` and the ⚡ live eval runs through your local Hermes
+gateway (last in the auto provider order). **Shape B** (a bespoke agent-runtime
+relay) was not needed. The §2 cloud-deploy and §3 Telegram sections remain
+how-to guidance for operators, not shipped app behaviour.
 
 ---
 

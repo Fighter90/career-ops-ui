@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Последний релиз — v1.150.0** — **Единообразные пустые состояния** — каждая панель «пока ничего нет» теперь отрисовывается общим стилем `.empty`; `#/activity`, `#/cv-studio`, `#/stats` и `#/usage` убрали избыточное inline-переопределение и совпадают с остальными (токенизированный отступ 48px + пунктирная рамка). **2385 тестов.**
+> **🆕 Последний релиз — v1.151.0** — **Hermes теперь подключённый LLM-провайдер (Phase 5)** — Hermes от Nous Research выставляет OpenAI-совместимый API Server, так что задайте `HERMES_API_KEY` в **Настройках приложения**, и career-ops-ui выполняет живые оценки через ваш локальный `hermes gateway` (последний в auto-порядке). Закрывает последний открытый пункт роадмапа. **2390 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 
@@ -602,7 +602,7 @@ russian_portals:
 
 **[Hermes](https://hermes-agent.nousresearch.com/docs) от Nous Research** — это открытый автономный агент (вызов инструментов, навыки/skills, более 20 каналов обмена сообщениями). Вы можете запустить career-ops-ui на **облачном сервере** и связать его события — завершённое сканирование, новый отчёт, срочный фоллоу-ап — с **Telegram через агента Hermes**, чтобы конвейер (pipeline) достигал вас там, где вы уже находитесь.
 
-> **Запланировано / пока не подключено.** Hermes как *LLM-провайдер* заблокирован спайком по API-контракту Phase 5 — на данный момент никакой серверный код не вызывает Hermes. Сегодня доступны **дизайн интеграции + руководство по развёртыванию**, а также **скилл `hermes-bridge`**, который проводит через шаги облачного деплоя и Telegram-бриджа (секреты никогда не касаются диска или логов; инварианты SSRF / CSP / no-secrets сохраняются и после переезда с `127.0.0.1`).
+> **Теперь подключён (v1.151.0).** Hermes как *LLM-провайдер* работает: запустите его OpenAI-совместимый API Server (`hermes gateway`) и задайте `HERMES_API_KEY` в **Настройках приложения** — тогда career-ops-ui выполняет живые оценки через ваш локальный Hermes (последний в auto-порядке). **Развёртывание на облачном сервере** и **мост с Telegram** ниже остаются руководством для операторов; скилл **`hermes-bridge`** проводит по ним (секреты никогда не касаются диска или логов; инварианты SSRF / CSP / no-secrets сохраняются после переезда с `127.0.0.1`).
 
 📖 **Полное руководство:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — две формы интеграции, развёртывание на облачном сервере (reverse proxy + HTTPS + systemd), Telegram через Hermes, а также список модели угроз «что НЕЛЬЗЯ раскрывать».
 

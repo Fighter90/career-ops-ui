@@ -9,6 +9,22 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.151.0] — 2026-08-12
+
+**Hermes jest teraz podłączonym dostawcą LLM (Phase 5)** — spike zakresu Phase 5 potwierdził, że Hermes od Nous Research ma **API Server zgodny z OpenAI** (`hermes gateway` → `POST /v1/chat/completions`), więc career-ops-ui uruchamia teraz ewaluacje na żywo przez lokalnego Hermesa tak jak OpenAI/Qwen. Ustaw `HERMES_API_KEY` w **Ustawieniach aplikacji**, a dołączy do kolejności auto (ostatni). Zamyka ostatni otwarty punkt roadmapy — **Phase 5, Shape A**.
+
+### Dodano
+- **Dostawca LLM Hermes (Shape A)** — `runHermes` na współdzielonym kliencie `runOpenAICompatible` (`server/lib/openai.mjs`), w **obu** kaskadach (`llm-dispatch.mjs` + `routes/llm.mjs`), na końcu kolejności auto + pin `LLM_PROVIDER=hermes`, `/api/status/providers` i `llm-pricing.mjs`. Sięga do konfigurowalnego lokalnego base URL (domyślnie `http://127.0.0.1:8642/v1`) z auth Bearer — to SKONFIGUROWANY endpoint dostawcy (jak OpenRouter/Qwen), a nie URL oferty od użytkownika, więc nie przechodzi przez guard SSRF.
+- **Pola `#/config`** — `HERMES_API_KEY` (sekret) + `HERMES_BASE_URL` + `HERMES_MODEL` (domyślnie `hermes-agent`), 6 nowych kluczy i18n × **17 języków** (snapshot 1208 → 1214).
+
+### Zmieniono
+- Spike zakresu rozwiązany: `docs/integrations/HERMES.md`, pomoc w aplikacji §30 (× 17), zapowiedź README (× 14), skill `hermes-bridge` i roadmapa przechodzą z „zaplanowane / jeszcze niepodłączone" na **podłączone (Shape A)**. Shape B (dedykowany relay runtime agenta) nie był potrzebny.
+
+### Uwagi
+- **Bezpieczeństwo:** fetch dostawcy to skonfigurowany endpoint, tej samej kategorii co inni dostawcy zgodni z OpenAI — brak nowej powierzchni SSRF, brak zmian CSP/sanitizera. `HERMES_API_KEY` to `SECRET_KEY` (nigdy nie wyświetlany).
+- Testy (izolowane w CI, zaślepka transportu): `tests/hermes-provider.test.mjs` (+5); kanarek „brak gałęzi Hermes" z v1.146.0 jest **odwrócony**, by potwierdzać, że JEST podłączona; testy powierzchni dostawców zaktualizowane do kolejności 7 dostawców.
+- Zestaw: **2390** testów (+5).
+
 ## [1.150.0] — 2026-08-12
 
 **Spójne stany puste (dopracowanie Phase 4)** — każdy panel „jeszcze nic tu nie ma" renderuje się teraz przez jeden wspólny styl `.empty`, zamiast by kilka widoków redeklarowało wygląd inline z magicznym `40px`. Drobna poprawka spójności wizualnej; puste stany `#/activity`, `#/cv-studio`, `#/stats` i `#/usage` pasują teraz do wszystkich innych (tokenizowany padding 48px + przerywana ramka).

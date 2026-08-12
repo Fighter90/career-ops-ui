@@ -11,6 +11,22 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.151.0] — 2026-08-12
+
+**Hermes est désormais un fournisseur LLM branché (Phase 5)** — le spike de cadrage de la Phase 5 a confirmé que le Hermes de Nous Research embarque un **API Server compatible OpenAI** (`hermes gateway` → `POST /v1/chat/completions`), donc career-ops-ui exécute maintenant des évaluations en direct via un Hermes local exactement comme OpenAI/Qwen. Définissez `HERMES_API_KEY` dans **Réglages de l’app** et il rejoint l’ordre auto (en dernier). Clôt le dernier point ouvert de la roadmap — **Phase 5, Shape A**.
+
+### Ajouté
+- **Fournisseur LLM Hermes (Shape A)** — `runHermes` sur le client partagé `runOpenAICompatible` (`server/lib/openai.mjs`), dans les **deux** cascades (`llm-dispatch.mjs` + `routes/llm.mjs`), en queue de l’ordre auto + le pin `LLM_PROVIDER=hermes`, `/api/status/providers` et `llm-pricing.mjs`. Il atteint une base URL locale configurable (par défaut `http://127.0.0.1:8642/v1`) avec auth Bearer — c’est un endpoint de fournisseur CONFIGURÉ (comme OpenRouter/Qwen), pas une URL d’offre fournie par l’utilisateur, donc il ne passe pas par le guard SSRF.
+- **Champs `#/config`** — `HERMES_API_KEY` (secret) + `HERMES_BASE_URL` + `HERMES_MODEL` (par défaut `hermes-agent`), avec 6 nouvelles clés i18n × **17 langues** (snapshot 1208 → 1214).
+
+### Modifié
+- Le spike de cadrage est résolu : `docs/integrations/HERMES.md`, l’aide intégrée §30 (× 17), le teaser README (× 14), la skill `hermes-bridge` et la roadmap passent de « planifié / pas encore branché » à **branché (Shape A)**. Shape B (un relais dédié de runtime d’agent) n’a pas été nécessaire.
+
+### Notes
+- **Sécurité :** le fetch du fournisseur est un endpoint configuré, de la même catégorie que les autres fournisseurs compatibles OpenAI — pas de nouvelle surface SSRF, pas de changement CSP/sanitizer. `HERMES_API_KEY` est une `SECRET_KEY` (jamais affichée).
+- Tests (isolés en CI, transport simulé) : `tests/hermes-provider.test.mjs` (+5) ; le canari « pas de branche Hermes » de v1.146.0 est **inversé** pour affirmer qu’elle EST branchée ; les tests de surface des fournisseurs mis à jour à l’ordre à 7 fournisseurs.
+- Suite : **2390** tests (+5).
+
 ## [1.150.0] — 2026-08-12
 
 **États vides cohérents (finition Phase 4)** — chaque panneau « rien pour l'instant » s'affiche désormais via l'unique style partagé `.empty`, au lieu que quelques vues redéclarent l'apparence en inline avec un `40px` magique. Petite correction de cohérence visuelle ; les états vides de `#/activity`, `#/cv-studio`, `#/stats` et `#/usage` s'alignent maintenant sur tous les autres (padding de 48px tokenisé + bordure en pointillés).

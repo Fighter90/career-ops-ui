@@ -1929,11 +1929,11 @@ career-ops——这款应用所依托的父项目——是 [CareerOps 宣言](ht
 
 ## 30. Hermes & Telegram
 
-**Nous Research 的 Hermes** 是一个开放的自主智能体 —— 支持工具调用、技能，以及包括 Telegram 在内的 20 多个消息渠道。本章节说明如何在云服务器上运行 career-ops-ui，并通过 Hermes 智能体把它的事件桥接到 Telegram。**这是一项计划，而非已发布的功能:** 作为 LLM 提供方的 Hermes 尚未接入(卡在确认 Nous Portal 的 API 契约上)，因此目前没有任何应用代码调用 Hermes。完整的设计 + 部署指南见 `docs/integrations/HERMES.md`，`hermes-bridge` 技能会带你走完各个步骤。
+**Nous Research 的 Hermes** 是一个开放的自主智能体 —— 支持工具调用、技能,以及包括 Telegram 在内的 20 多个消息渠道。**自 v1.151.0 起,Hermes 是一个已接入的 LLM 提供方:** 运行它兼容 OpenAI 的 API Server(`hermes gateway`),在 **应用设置** 中设置 `HERMES_API_KEY`,career-ops-ui 便会通过你本地的 Hermes 运行实时评估。本节还介绍如何在云服务器上运行应用,并经 Hermes 把其事件桥接到 Telegram —— 这两部分是面向运维者的指引,而非应用功能。完整指南见 `docs/integrations/HERMES.md`,`hermes-bridge` 技能会带你走完各步骤。
 
 ### Hermes 是什么
 
-Hermes 是一个智能体运行时 —— 就我们所能确认的而言，并不是一个简单的托管式 chat-completions API。这从两个方向决定了集成方式。**形态 A:** 如果某个 Nous Portal 端点被证实兼容 OpenAI，Hermes 就作为又一个 LLM 提供方加入应用的级联。**形态 B:** 如果它只能作为智能体运行时访问，应用则通过专用的 relay 路由或本地运行的智能体与其通信。究竟适用哪一种，会在写任何代码*之前*从 Nous Portal 和 `NousResearch/hermes-agent` 仓库确认 —— 这正是该提供方被刻意尚未构建的原因。
+Hermes 是一个连接到你自己的 LLM 提供方的智能体运行时 —— 同时它还暴露一个 **兼容 OpenAI 的 API Server**:`hermes gateway` 在 `http://127.0.0.1:8642/v1` 以 Bearer 密钥(其 `API_SERVER_KEY`)提供 `POST /v1/chat/completions`。因此 career-ops-ui 把它当作又一个提供方(指南中的「Shape A」路径):应用像调用 OpenAI 或 Qwen 一样向那个本地端点发 POST,Hermes 再把请求路由到你在其内部配置的模型。它在 auto 顺序中排 **最后**,因此绝不会覆盖既有的 Anthropic/Gemini/OpenAI/Qwen 配置。
 
 ### 在云服务器上运行
 

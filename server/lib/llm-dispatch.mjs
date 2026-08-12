@@ -15,8 +15,8 @@
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from './anthropic.mjs';
 import { runGemini } from './gemini.mjs';
 import {
-  runOpenAI, runQwen, runOpenRouter, runGitHubModels,
-  hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey,
+  runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes,
+  hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey,
 } from './openai.mjs';
 import { providerOrder } from './env-config.mjs';
 import { recordUsage } from './llm-usage.mjs';
@@ -30,22 +30,24 @@ function gate() {
     wantAnthropic: o.includes('anthropic'), wantGemini: o.includes('gemini'),
     wantOpenAI: o.includes('openai'), wantQwen: o.includes('qwen'),
     wantOpenRouter: o.includes('openrouter'), wantGitHub: o.includes('github'),
+    wantHermes: o.includes('hermes'),
   };
 }
 
-/** First keyed provider in the auto tail (OpenAI → Qwen → OpenRouter → GitHub), or null. */
+/** First keyed provider in the auto tail (OpenAI → Qwen → OpenRouter → GitHub → Hermes), or null. */
 function tailProvider(g) {
   if (g.wantOpenAI && hasOpenAIKey()) return { mode: 'openai', run: runOpenAI };
   if (g.wantQwen && hasQwenKey()) return { mode: 'qwen', run: runQwen };
   if (g.wantOpenRouter && hasOpenRouterKey()) return { mode: 'openrouter', run: runOpenRouter };
   if (g.wantGitHub && hasGitHubModelsKey()) return { mode: 'github', run: runGitHubModels };
+  if (g.wantHermes && hasHermesKey()) return { mode: 'hermes', run: runHermes };
   return null;
 }
 
 /** True when at least one provider key is configured (any provider). */
 export function providerAvailable() {
   return hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey()
-    || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey();
+    || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey() || hasHermesKey();
 }
 
 /**

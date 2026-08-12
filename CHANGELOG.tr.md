@@ -2,6 +2,22 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.151.0] — 2026-08-12
+
+**Hermes artık bağlı bir LLM sağlayıcısı (Phase 5)** — Phase 5 kapsam çalışması, Nous Research’ün Hermes’inin **OpenAI uyumlu bir API Server** (`hermes gateway` → `POST /v1/chat/completions`) içerdiğini doğruladı; böylece career-ops-ui canlı değerlendirmeleri artık tıpkı OpenAI/Qwen gibi yerel bir Hermes üzerinden çalıştırıyor. **Uygulama ayarları**’nda `HERMES_API_KEY` ayarlayın; auto sırasına katılır (en son). Yol haritasının son açık maddesini kapatır — **Phase 5, Shape A**.
+
+### Eklendi
+- **Hermes LLM sağlayıcısı (Shape A)** — paylaşılan `runOpenAICompatible` istemcisi üzerinde `runHermes` (`server/lib/openai.mjs`), **her iki** kaskatta (`llm-dispatch.mjs` + `routes/llm.mjs`), auto sırasının sonunda + `LLM_PROVIDER=hermes` sabiti, `/api/status/providers` ve `llm-pricing.mjs`. Yapılandırılabilir yerel bir base URL’ye (varsayılan `http://127.0.0.1:8642/v1`) Bearer kimlik doğrulamasıyla ulaşır — bu, kullanıcı tarafından verilen bir iş URL’si değil, YAPILANDIRILMIŞ bir sağlayıcı uç noktasıdır (OpenRouter/Qwen gibi), dolayısıyla SSRF korumasına dokunmaz.
+- **`#/config` alanları** — `HERMES_API_KEY` (gizli) + `HERMES_BASE_URL` + `HERMES_MODEL` (varsayılan `hermes-agent`), 6 yeni i18n anahtarı × **17 dil** (anlık görüntü 1208 → 1214).
+
+### Değişti
+- Kapsam çalışması çözüldü: `docs/integrations/HERMES.md`, uygulama içi yardım §30 (× 17), README tanıtımı (× 14), `hermes-bridge` skill’i ve yol haritası "planlandı / henüz bağlanmadı"dan **bağlandı (Shape A)**’ya geçiyor. Shape B (özel bir ajan çalışma zamanı relay’i) gerekmedi.
+
+### Notlar
+- **Güvenlik:** sağlayıcı fetch’i yapılandırılmış bir uç noktadır, diğer OpenAI uyumlu sağlayıcılarla aynı kategoride — yeni SSRF yüzeyi yok, CSP/sanitizer değişikliği yok. `HERMES_API_KEY` bir `SECRET_KEY`’dir (asla gösterilmez).
+- Testler (CI-izole, sahte taşıma): `tests/hermes-provider.test.mjs` (+5); v1.146.0’ın "Hermes dalı yok" kanaryası, BAĞLI olduğunu doğrulamak için **tersine çevrildi**; sağlayıcı yüzey testleri 7 sağlayıcı sırasına güncellendi.
+- Takım: **2390** test (+5).
+
 ## [1.150.0] — 2026-08-12
 
 **Tutarlı boş durumlar (Phase 4 rötuşu)** — her "henüz bir şey yok" paneli artık bazı görünümlerin görünümü sihirli bir `40px` ile satır içi yeniden tanımlaması yerine, tek bir paylaşılan `.empty` stiliyle çiziliyor. Küçük bir görsel tutarlılık düzeltmesi; `#/activity`, `#/cv-studio`, `#/stats` ve `#/usage` boş durumları artık diğerlerinin tümüyle eşleşiyor (belirteçlenmiş 48px dolgu + kesikli kenarlık).

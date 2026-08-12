@@ -2,6 +2,22 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.151.0] — 2026-08-12
+
+**Hermes ist jetzt ein angebundener LLM-Provider (Phase 5)** — der Phase-5-Spike bestätigte, dass Nous Researchs Hermes einen **OpenAI-kompatiblen API Server** mitbringt (`hermes gateway` → `POST /v1/chat/completions`), sodass career-ops-ui Live-Auswertungen nun über ein lokales Hermes genau wie OpenAI/Qwen ausführt. Setzen Sie `HERMES_API_KEY` in den **App-Einstellungen**, und es reiht sich in die auto-Reihenfolge ein (zuletzt). Schließt den letzten offenen Roadmap-Punkt — **Phase 5, Shape A**.
+
+### Hinzugefügt
+- **Hermes-LLM-Provider (Shape A)** — `runHermes` auf dem gemeinsamen `runOpenAICompatible`-Client (`server/lib/openai.mjs`), in **beiden** Kaskaden (`llm-dispatch.mjs` + `routes/llm.mjs`), am Ende der auto-Reihenfolge + `LLM_PROVIDER=hermes`-Pin, `/api/status/providers` und `llm-pricing.mjs`. Er erreicht eine konfigurierbare lokale Basis-URL (Standard `http://127.0.0.1:8642/v1`) mit Bearer-Auth — ein KONFIGURIERTER Provider-Endpoint (wie OpenRouter/Qwen), keine nutzergelieferte Job-URL, also ohne SSRF-Guard.
+- **`#/config`-Felder** — `HERMES_API_KEY` (geheim) + `HERMES_BASE_URL` + `HERMES_MODEL` (Standard `hermes-agent`), mit 6 neuen i18n-Schlüsseln × **17 Sprachen** (Snapshot 1208 → 1214).
+
+### Geändert
+- Der Scoping-Spike ist gelöst: `docs/integrations/HERMES.md`, die In-App-Hilfe §30 (× 17), der README-Teaser (× 14), die `hermes-bridge`-Skill und die Roadmap gehen von „geplant / noch nicht angebunden" zu **angebunden (Shape A)**. Shape B (ein maßgeschneidertes Agent-Runtime-Relay) war nicht nötig.
+
+### Hinweise
+- **Sicherheit:** der Provider-Fetch ist ein konfigurierter Endpoint, derselben Kategorie wie die anderen OpenAI-kompatiblen Provider — keine neue SSRF-Fläche, keine CSP-/Sanitizer-Änderung. `HERMES_API_KEY` ist ein `SECRET_KEY` (wird nie ausgegeben).
+- Tests (CI-isoliert, Transport-Stub): `tests/hermes-provider.test.mjs` (+5); der v1.146.0-Canary „kein Hermes-Zweig" ist **invertiert**, um zu bestätigen, dass er DA ist; Provider-Flächen-Tests auf die 7-Provider-Reihenfolge aktualisiert.
+- Suite: **2390** Tests (+5).
+
 ## [1.150.0] — 2026-08-12
 
 **Konsistente Leerzustände (Phase-4-Feinschliff)** — jedes „noch nichts hier"-Panel wird jetzt über den einen gemeinsamen `.empty`-Stil gerendert, statt dass einige Ansichten das Aussehen inline mit einem magischen `40px` erneut deklarieren. Kleine visuelle Konsistenzkorrektur; die Leerzustände auf `#/activity`, `#/cv-studio`, `#/stats` und `#/usage` passen jetzt zu allen anderen (tokenisiertes 48px-Padding + gestrichelter Rahmen).

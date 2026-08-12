@@ -2,6 +2,22 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.151.0] — 2026-08-12
+
+**Hermes è ora un provider LLM collegato (Phase 5)** — lo spike di analisi della Phase 5 ha confermato che il Hermes di Nous Research include un **API Server compatibile con OpenAI** (`hermes gateway` → `POST /v1/chat/completions`), quindi career-ops-ui ora esegue valutazioni live tramite un Hermes locale esattamente come OpenAI/Qwen. Imposta `HERMES_API_KEY` in **Impostazioni app** ed entra nell’ordine auto (ultimo). Chiude l’ultimo punto aperto della roadmap — **Phase 5, Shape A**.
+
+### Aggiunto
+- **Provider LLM Hermes (Shape A)** — `runHermes` sul client condiviso `runOpenAICompatible` (`server/lib/openai.mjs`), in **entrambe** le cascate (`llm-dispatch.mjs` + `routes/llm.mjs`), in coda all’ordine auto + il pin `LLM_PROVIDER=hermes`, `/api/status/providers` e `llm-pricing.mjs`. Raggiunge una base URL locale configurabile (default `http://127.0.0.1:8642/v1`) con auth Bearer — è un endpoint di provider CONFIGURATO (come OpenRouter/Qwen), non un URL di offerta dell’utente, quindi non tocca il guard SSRF.
+- **Campi `#/config`** — `HERMES_API_KEY` (segreto) + `HERMES_BASE_URL` + `HERMES_MODEL` (default `hermes-agent`), con 6 nuove chiavi i18n × **17 lingue** (snapshot 1208 → 1214).
+
+### Modificato
+- Lo spike di analisi è risolto: `docs/integrations/HERMES.md`, l’aiuto in-app §30 (× 17), il teaser del README (× 14), la skill `hermes-bridge` e la roadmap passano da "pianificato / non ancora collegato" a **collegato (Shape A)**. Shape B (un relay su misura del runtime di agente) non è stato necessario.
+
+### Note
+- **Sicurezza:** il fetch del provider è un endpoint configurato, della stessa categoria degli altri provider compatibili con OpenAI — nessuna nuova superficie SSRF, nessuna modifica a CSP/sanitizer. `HERMES_API_KEY` è una `SECRET_KEY` (mai mostrata).
+- Test (isolati in CI, trasporto simulato): `tests/hermes-provider.test.mjs` (+5); il canarino "nessun ramo Hermes" di v1.146.0 è **invertito** per affermare che C’È; i test di superficie dei provider aggiornati all’ordine a 7 provider.
+- Suite: **2390** test (+5).
+
 ## [1.150.0] — 2026-08-12
 
 **Stati vuoti coerenti (rifinitura Phase 4)** — ogni pannello "ancora niente qui" ora si renderizza tramite l'unico stile condiviso `.empty`, invece che alcune viste ridichiarino l'aspetto inline con un `40px` magico. Piccola correzione di coerenza visiva; gli stati vuoti di `#/activity`, `#/cv-studio`, `#/stats` e `#/usage` ora combaciano con tutti gli altri (padding di 48px tokenizzato + bordo tratteggiato).

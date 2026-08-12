@@ -8,6 +8,22 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.151.0] — 2026-08-12
+
+**Hermes is now a wired LLM provider (Phase 5)** — the Phase 5 scoping spike confirmed that Nous Research's Hermes ships an **OpenAI-compatible API Server** (`hermes gateway` → `POST /v1/chat/completions`), so career-ops-ui now runs live evaluations through a local Hermes exactly like OpenAI/Qwen. Set `HERMES_API_KEY` in **App settings** and it joins the auto provider order (last). This closes the roadmap's final open item — **Phase 5, Shape A**.
+
+### Added
+- **Hermes LLM provider (Shape A)** — `runHermes` on the shared `runOpenAICompatible` client (`server/lib/openai.mjs`), gated in **both** cascades (`llm-dispatch.mjs` + `routes/llm.mjs`), added to the auto provider-order tail + the `LLM_PROVIDER=hermes` pin, `/api/status/providers`, and `server/lib/llm-pricing.mjs`. It reaches a user-configured local base URL (default `http://127.0.0.1:8642/v1`) with Bearer auth — a **configured provider endpoint** (like OpenRouter/Qwen), not a user-supplied job URL, so it does not touch the `isValidJobUrl` SSRF guard.
+- **`#/config` fields** — `HERMES_API_KEY` (secret) + `HERMES_BASE_URL` + `HERMES_MODEL` (default `hermes-agent`), with 6 new i18n keys × **17 locales** (assembled-dict snapshot 1208 → 1214).
+
+### Changed
+- The scoping spike is resolved: `docs/integrations/HERMES.md`, the in-app help §30 (× 17), the README teaser (× 14), the `hermes-bridge` skill, and `docs/UX-ROADMAP.md` all move from "planned / not-yet-wired" to **wired (Shape A)**. Shape B (a bespoke agent-runtime relay) was not needed.
+
+### Notes
+- **Security:** the provider fetch is a configured endpoint, identical in category to the existing OpenAI-compatible providers — no new SSRF surface, no CSP/sanitizer change. `HERMES_API_KEY` is a `SECRET_KEY` (never echoed).
+- Tests (CI-isolated, stubbed transport): `tests/hermes-provider.test.mjs` (+5); the v1.146.0 "no Hermes branch" canary is **inverted** to assert it IS wired; the provider-surface tests updated to the 7-provider order.
+- Suite: **2390** tests (+5: `tests/hermes-provider.test.mjs`).
+
 ## [1.150.0] — 2026-08-12
 
 **Consistent empty states (Phase 4 polish)** — every "nothing here yet" panel now renders through the one shared `.empty` style instead of a few views re-declaring the look inline with a magic `40px`. Small visual-consistency fix; the empty states on `#/activity`, `#/cv-studio`, `#/stats`, and `#/usage` now match every other one (tokenized 48px padding + the dashed border).

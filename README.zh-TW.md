@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.150.0** — **一致的空狀態** — 每個「尚無內容」面板現在都透過共享的 `.empty` 樣式繪製;`#/activity`、`#/cv-studio`、`#/stats`、`#/usage` 移除了冗餘的行內覆寫,與其它面板保持一致(權杖化的 48px 內距 + 虛線邊框)。 **2385 個測試.**
+> **🆕 最新版本 — v1.151.0** — **Hermes 現已成為已接上的 LLM 供應方(Phase 5）** — Nous Research 的 Hermes 暴露一個相容 OpenAI 的 API Server,在 **應用設定** 中設定 `HERMES_API_KEY`,career-ops-ui 便會透過你本機的 `hermes gateway` 執行即時評估(auto 順序中的最後一個)。收尾路線圖最後一個未決項。 **2390 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 
@@ -604,7 +604,7 @@ Claude Code 中既有的 `/career-ops apply` Playwright 表單填寫流程,仍�
 
 **Nous Research 的 [Hermes](https://hermes-agent.nousresearch.com/docs)** 是一個開放的自主代理(支援工具呼叫、技能/skill,以及 20 多個訊息通道)。你可以在**雲端伺服器**上執行 career-ops-ui,並將其事件——一次完成的掃描、一份新報告、一次緊急追蹤——透過**Hermes 代理橋接到 Telegram**,讓管線(pipeline)在你已經所在的地方觸及你。
 
-> **規劃中 / 尚未串接。** 作為*LLM 供應方*的 Hermes 目前卡在 Phase 5 的 API 合約 spike 上——目前尚無任何伺服器程式碼呼叫 Hermes。今天交付的是**整合設計 + 部署指南**,以及一個**`hermes-bridge` 技能(skill)**,會引導你完成雲端部署與 Telegram 橋接的各個步驟(機密永不落地、永不寫入日誌;SSRF / CSP / 無機密不變式在從 `127.0.0.1` 遷出後依然維持)。
+> **現已接上(v1.151.0）。** 作為 *LLM 供應方* 的 Hermes 已上線:執行它相容 OpenAI 的 API Server(`hermes gateway`),在 **應用設定** 中設定 `HERMES_API_KEY` —— career-ops-ui 便會透過你本機的 Hermes 執行即時評估(auto 順序中的最後一個)。下方的 **雲端伺服器部署** 與 **Telegram 橋接** 仍是面向維運者的指引;一個 **`hermes-bridge` 技能** 會帶你走完它們(機密永不落地、永不寫入日誌;SSRF / CSP / 無機密不變式在從 `127.0.0.1` 遷出後依然維持)。
 
 📖 **完整指南:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) —— 兩種整合形態、雲端伺服器部署(反向代理 + HTTPS + systemd)、Telegram-via-Hermes,以及威脅模型中「不該公開什麼」的清單。
 

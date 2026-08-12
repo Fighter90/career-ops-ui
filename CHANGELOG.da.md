@@ -8,6 +8,22 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.151.0] — 2026-08-12
+
+**Hermes er nu en tilsluttet LLM-udbyder (Phase 5)** — Phase 5-spiket bekræftede, at Nous Research’ Hermes har en **OpenAI-kompatibel API Server** (`hermes gateway` → `POST /v1/chat/completions`), så career-ops-ui kører nu live-evalueringer via en lokal Hermes præcis som OpenAI/Qwen. Sæt `HERMES_API_KEY` i **App-indstillinger**, og den træder ind i auto-rækkefølgen (sidst). Lukker roadmappens sidste åbne punkt — **Phase 5, Shape A**.
+
+### Tilføjet
+- **Hermes LLM-udbyder (Shape A)** — `runHermes` på den delte `runOpenAICompatible`-klient (`server/lib/openai.mjs`), i **begge** kaskader (`llm-dispatch.mjs` + `routes/llm.mjs`), i halen af auto-rækkefølgen + `LLM_PROVIDER=hermes`-pin, `/api/status/providers` og `llm-pricing.mjs`. Den når en konfigurerbar lokal base-URL (standard `http://127.0.0.1:8642/v1`) med Bearer-auth — det er et KONFIGURERET udbyder-endpoint (som OpenRouter/Qwen), ikke en bruger-leveret job-URL, så den rører ikke SSRF-værnet.
+- **`#/config`-felter** — `HERMES_API_KEY` (hemmelig) + `HERMES_BASE_URL` + `HERMES_MODEL` (standard `hermes-agent`), med 6 nye i18n-nøgler × **17 sprog** (snapshot 1208 → 1214).
+
+### Ændret
+- Scoping-spiket er løst: `docs/integrations/HERMES.md`, den indbyggede hjælp §30 (× 17), README-teaseren (× 14), `hermes-bridge`-skillen og roadmappet går fra "planlagt / endnu ikke tilsluttet" til **tilsluttet (Shape A)**. Shape B (et skræddersyet agent-runtime-relay) var ikke nødvendigt.
+
+### Noter
+- **Sikkerhed:** udbyder-fetch er et konfigureret endpoint, i samme kategori som de andre OpenAI-kompatible udbydere — ingen ny SSRF-flade, ingen CSP-/saniterings-ændring. `HERMES_API_KEY` er en `SECRET_KEY` (vises aldrig).
+- Tests (CI-isolerede, stub-transport): `tests/hermes-provider.test.mjs` (+5); v1.146.0-canaryen "ingen Hermes-gren" er **vendt om** til at bekræfte, at den ER tilsluttet; udbyder-flade-tests opdateret til 7-udbyder-rækkefølgen.
+- Suite: **2390** tests (+5).
+
 ## [1.150.0] — 2026-08-12
 
 **Konsistente tomme tilstande (Phase 4-finpudsning)** — hvert "endnu ikke noget her"-panel gengives nu via den ene delte `.empty`-stil i stedet for, at nogle visninger redeklarerer udseendet inline med et magisk `40px`. Lille visuel konsistensrettelse; de tomme tilstande på `#/activity`, `#/cv-studio`, `#/stats` og `#/usage` matcher nu alle de andre (tokeniseret 48px padding + stiplet kant).

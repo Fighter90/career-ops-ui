@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2390%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.150.0** — **일관된 빈 상태** — 모든 "아직 없음" 패널이 이제 공유 `.empty` 스타일로 렌더링됩니다; `#/activity`, `#/cv-studio`, `#/stats`, `#/usage`가 중복 인라인 재정의를 제거해 나머지와 동일해졌습니다(토큰화된 48px 패딩 + 점선 테두리). **2385 테스트.**
+> **🆕 최신 릴리스 — v1.151.0** — **Hermes가 이제 연결된 LLM 제공자입니다(Phase 5)** — Nous Research의 Hermes가 OpenAI 호환 API Server를 노출하므로, **앱 설정**에서 `HERMES_API_KEY`를 지정하면 career-ops-ui가 로컬 `hermes gateway`를 통해 라이브 평가를 실행합니다(auto 순서에서 마지막). 로드맵의 마지막 미해결 항목을 마무리합니다. **2390 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 
@@ -602,7 +602,7 @@ production-readiness 평가(배포 게이트, 리스크 등록부, 보류된 작
 
 **Nous Research의 [Hermes](https://hermes-agent.nousresearch.com/docs)**는 오픈소스 자율 에이전트입니다(툴 호출, 스킬, 20개 이상의 메시징 채널 지원). career-ops-ui를 **클라우드 서버**에서 실행하고, 완료된 스캔·새 리포트·긴급 후속 조치 같은 이벤트를 **Hermes 에이전트를 통해 Telegram**으로 연결하면, 파이프라인의 알림이 여러분이 이미 있는 곳으로 도착합니다.
 
-> **계획됨 / 아직 연결되지 않음.** *LLM 제공자*로서의 Hermes는 Phase 5 API 계약 스파이크에 막혀 있어, 현재 어떤 서버 코드도 Hermes를 호출하지 않습니다. 오늘 제공되는 것은 **통합 설계 + 배포 가이드**, 그리고 클라우드 배포와 Telegram 브리지 단계를 안내하는 **`hermes-bridge` 스킬**입니다(비밀 값은 디스크나 로그에 전혀 닿지 않으며, SSRF / CSP / no-secrets 불변조건은 `127.0.0.1`을 벗어난 뒤에도 그대로 유지됩니다).
+> **이제 연결됨 (v1.151.0).** *LLM 제공자*로서의 Hermes가 라이브입니다: OpenAI 호환 API Server(`hermes gateway`)를 실행하고 **앱 설정**에서 `HERMES_API_KEY`를 지정하면 career-ops-ui가 로컬 Hermes를 통해 라이브 평가를 실행합니다(auto 순서에서 마지막). 아래의 **클라우드 서버 배포**와 **Telegram 브리지**는 여전히 운영자 안내이며, **`hermes-bridge` 스킬**이 이를 안내합니다(비밀 값은 디스크나 로그에 전혀 닿지 않으며, SSRF / CSP / no-secrets 불변조건은 `127.0.0.1`을 벗어난 뒤에도 유지됩니다).
 
 📖 **전체 가이드:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — 두 가지 통합 형태, 클라우드 서버 배포(리버스 프록시 + HTTPS + systemd), Telegram-via-Hermes, 그리고 위협 모델의 “노출하지 말아야 할 것” 목록을 다룹니다.
 

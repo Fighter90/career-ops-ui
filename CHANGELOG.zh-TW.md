@@ -8,6 +8,22 @@
 
 ---
 
+## [1.151.0] — 2026-08-12
+
+**Hermes 現已成為已接上的 LLM 供應方（Phase 5）** — Phase 5 的調查確認 Nous Research 的 Hermes 提供一個 **相容 OpenAI 的 API Server**（`hermes gateway` → `POST /v1/chat/completions`),因此 career-ops-ui 現在像 OpenAI/Qwen 一樣透過本機 Hermes 執行即時評估。在 **應用設定** 中設定 `HERMES_API_KEY`,它便加入 auto 順序(最後一個)。收尾路線圖最後一個未決項 —— **Phase 5, Shape A**。
+
+### 新增
+- **Hermes LLM 供應方（Shape A）** — 共享 `runOpenAICompatible` 客戶端之上的 `runHermes`(`server/lib/openai.mjs`),在 **兩個** 級聯(`llm-dispatch.mjs` + `routes/llm.mjs`)中設閘,auto 順序尾端 + `LLM_PROVIDER=hermes` 固定項、`/api/status/providers`、`llm-pricing.mjs`。以 Bearer 認證存取可設定的本機 base URL(預設 `http://127.0.0.1:8642/v1`)—— 這是 **已設定** 的供應方端點(如 OpenRouter/Qwen),而非使用者提供的職缺 URL,因此不經過 SSRF 防護。
+- **`#/config` 欄位** — `HERMES_API_KEY`(機密) + `HERMES_BASE_URL` + `HERMES_MODEL`(預設 `hermes-agent`),6 個新 i18n 鍵 × **17 種語言**(快照 1208 → 1214)。
+
+### 變更
+- 調查已解決:`docs/integrations/HERMES.md`、應用內說明 §30（× 17）、README 預告（× 14）、`hermes-bridge` 技能與路線圖,從「規劃中 / 尚未接上」轉為 **已接上（Shape A）**。無需 Shape B(客製的代理執行環境 relay)。
+
+### 說明
+- **安全:** 供應方的 fetch 是一個已設定端點,與其它相容 OpenAI 的供應方同類 —— 無新增 SSRF 面,無 CSP/清洗器改動。`HERMES_API_KEY` 是 `SECRET_KEY`(絕不回顯)。
+- 測試(CI 隔離、樁傳輸):`tests/hermes-provider.test.mjs`(+5);v1.146.0 的「無 Hermes 分支」哨兵被 **反轉**,改為斷言其已接上;供應方面測試更新為 7 供應方順序。
+- 套件:**2390** 項測試(+5)。
+
 ## [1.150.0] — 2026-08-12
 
 **一致的空狀態(Phase 4 打磨)** — 每個「尚無內容」面板現在都透過唯一的共享 `.empty` 樣式繪製,而不再由個別視圖用魔法數字 `40px` 行內重複宣告外觀。一次小的視覺一致性修正;`#/activity`、`#/cv-studio`、`#/stats`、`#/usage` 的空狀態現在與其它所有面板一致(權杖化的 48px 內距 + 虛線邊框)。
