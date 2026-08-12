@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2381%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2383%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.148.0** — **더 깔끔한 스캔 필터** — `#/scan` 필터 패널이 이제 정돈된 반응형 그리드입니다(이전엔 들쭉날쭉한 flex-wrap), 적용 / 초기화는 오른쪽 정렬된 별도 행에 배치. 필터는 그대로, 읽기는 더 쉽게. **2381 테스트.**
+> **🆕 최신 릴리스 — v1.149.0** — **포털을 설정으로 이동** — `#/portals`가 이제 *Sourcing* 대신 *앱 설정* 옆의 **Setup** 그룹에 있습니다(v1.144.0부터 설정 화면). 내비게이션만 변경. **2383 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

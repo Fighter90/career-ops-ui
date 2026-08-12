@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.149.0] — 2026-08-12
+
+**Portale in die Einstellungen verschoben (Phase 4)** — `#/portals` liegt jetzt in der Navigationsgruppe **Setup** neben den *App-Einstellungen*, statt unter *Sourcing*. Seit v1.144.0 ist es eine Einstellungsfläche (verfolgte Firmen aktivieren/deaktivieren + ein ATS-Health-Probe), keine Sourcing-Aktion — also gehört es dorthin. Nur eine Navigationsänderung; die Seite und ihre Route bleiben unverändert.
+
+### Geändert
+- **`#/portals`-Navigationselement → Setup-Gruppe** (in `public/index.html`), direkt nach den *App-Einstellungen* platziert. Aus der *Sourcing*-Gruppe entfernt (die Scan / Pipeline / Auto-pipeline / Finanzierte Firmen behält). Die Route `#/portals`, die Ansicht und das Label `nav.portals` sind unverändert — nur die Position in der Seitenleiste hat sich bewegt.
+
+### Hinweise
+- **Nur Navigations-Markup** — keine Änderung an Route, Ansicht, i18n-Schlüssel oder Server. Im Browser verifiziert (0 Konsolenfehler); abgesichert durch `tests/portals-nav-placement.test.mjs`.
+- Suite: **2383** Tests (+2: `tests/portals-nav-placement.test.mjs`).
+
 ## [1.148.0] — 2026-08-12
 
 **Übersichtlichere Scan-Filter (Phase 4) — das Filterpanel ist jetzt ein aufgeräumtes Raster** — das Filterpanel von `#/scan` wechselte von einem ungleichmäßigen Flex-Wrap aus starren Boxen unterschiedlicher Breite zu einem responsiven Raster, und die Aktionen Anwenden / Zurücksetzen liegen nun in ihrer eigenen abgetrennten, rechtsbündigen Zeile. Gleiche Filter, gleiches Verhalten — nur besser lesbar. Eine Design-Feinpolitur (ohne parent-sync).
