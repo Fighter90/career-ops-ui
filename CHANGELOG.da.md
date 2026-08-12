@@ -8,6 +8,20 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.153.0] — 2026-08-12
+
+**Jobvite-scanneren migreret til det offentlige XML-feed (forælder-sync).** Forælderen pensionerede Jobvites JSON-API (returnerer nu nul job); web-ui’s source brugte samme døde endpoint, så enhver sporet Jobvite-virksomhed scannede tomt i stilhed. Porterer forælderens fix (`#2623`): source’en læser nu det offentlige per-tenant **XML-feed**, nøglet på `companyEId`.
+
+### Rettet
+- Source’en kaldte det pensionerede JSON-API og returnerede nul job; den kalder nu `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` og parser XML `<result><job>…` (CDATA + entiteter, `detail-url` før `apply-url`).
+
+### Ændret
+- `companyEId`-opløsning: (1) `company_eid:` på portalen, (2) `c=` fra et eksplicit `api:`, (3) board-side-discovery. `fetchText` (`http-json.mjs`) vedhæfter `.location`/`.retryAfter` til non-ok-fejlen (skrivebeskyttet, bagudkompatibel).
+
+### Noter
+- **Sikkerhed** — to hosts (`jobs.jobvite.com`, `app.jobvite.com`) fastgjort af `assertJobviteUrl`: kun https, streng allowlist, **ingen redirect følges**. `companyEId` er kun en `?c=`-værdi; source-antal uændret.
+- Suite: **2396** tests (+4).
+
 ## [1.152.0] — 2026-08-12
 
 **Hermes-udbyder — færdig kabling + docs-ajourføring.** En kodegennemgang af Hermes-integrationen fra v1.151.0 fandt to reelle huller og fire fuldstændighedspunkter; alle rettet her, og hele appens LLM-udbyderliste er bragt op til de fulde syv på alle docs-flader og de 17 sprog.

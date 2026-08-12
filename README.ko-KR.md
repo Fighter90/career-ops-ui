@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.152.0** — **Hermes 제공자 — 배선 완료** — v1.151.0 Hermes 통합의 코드 리뷰로 실제 결함 2건(`#/config` 드롭다운이 Hermes를 강제하지 못함, 짧은 자체 호스팅 키가 거부됨)을 고치고, LLM 제공자 목록을 모든 문서 표면과 17개 언어에서 완전한 7개로 맞췄습니다. **2392 테스트.**
+> **🆕 최신 릴리스 — v1.153.0** — **Jobvite 스캐너 수정(부모 동기화)** — 부모가 Jobvite JSON API를 폐기해 추적 중인 Jobvite 회사가 조용히 빈 결과로 스캔되었습니다. 부모 픽스를 이식 — 이제 source가 공개 테넌트별 XML 피드(`companyEId` 키, 두 호스트 고정, 리디렉션 미추적)를 읽습니다. **2396 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

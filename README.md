@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Latest release — v1.152.0** — **Hermes provider — wiring completed** — A code review of the v1.151.0 Hermes integration fixed two real gaps (the `#/config` dropdown couldn’t force Hermes; short self-hosted keys were rejected) and brought the LLM-provider roster to the full seven across every doc surface and all 17 locales. **2392 tests.**
+> **🆕 Latest release — v1.153.0** — **Jobvite scanner fixed (parent-sync)** — The parent retired Jobvite’s JSON API, so any tracked Jobvite company silently scanned empty. This ports the parent’s fix — the source now reads Jobvite’s public per-tenant XML feed (keyed by `companyEId`, two-host SSRF-pinned, no redirects followed). **2396 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

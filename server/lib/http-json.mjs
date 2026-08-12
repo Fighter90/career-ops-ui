@@ -66,6 +66,14 @@ export async function fetchJson(fetchImpl, url, opts = {}) {
  * `redirect: 'error'` to close the SSRF redirect vector, and an Error with
  * `.status` on a non-2xx response.
  *
+ * Under `redirect: 'manual'` a 3xx arrives as a non-ok response instead of being
+ * followed — so the thrown error also carries `.location` (the raw Location
+ * header) and `.retryAfter`. This is READ-ONLY: it lets a caller tell WHICH
+ * redirect it hit (jobvite distinguishes a feed pointing at NoJobs.htm — an
+ * empty board — from a retired tenant) WITHOUT ever gaining the ability to
+ * follow it. Both fields are null for a plain non-redirect error, so existing
+ * `redirect:'error'` callers are unaffected. Mirrors parent `providers/_http.mjs`.
+ *
  * @param {typeof fetch} fetchImpl
  * @param {string} url
  * @param {{ method?: string, headers?: Record<string,string>, body?: string,
@@ -78,6 +86,10 @@ export async function fetchText(fetchImpl, url, opts = {}) {
   if (!res.ok) {
     const err = new Error(`HTTP ${res.status} (${url})`);
     err.status = res.status;
+    // Populated only under redirect:'manual', where the 3xx is surfaced rather
+    // than followed. res.headers may be absent on a hand-rolled test stub.
+    err.location = res.headers?.get?.('location') ?? null;
+    err.retryAfter = res.headers?.get?.('retry-after') ?? null;
     throw err;
   }
   return await res.text();

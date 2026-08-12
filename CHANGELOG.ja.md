@@ -9,6 +9,20 @@
 ---
 
 
+## [1.153.0] — 2026-08-12
+
+**Jobvite スキャナーを公開 XML フィードへ移行(親同期)。** 親が Jobvite の JSON API を廃止(現在は 0 件)し、web-ui の source も同じ死んだエンドポイントを使っていたため、追跡中の Jobvite 企業が静かに空スキャンになっていました。親の修正(`#2623`)を移植:`companyEId` をキーにした公開テナント別 **XML フィード**を読みます。
+
+### 修正
+- source は廃止された JSON API を叩いて 0 件を返していました。現在は `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` を叩き、XML `<result><job>…` を解析します(CDATA + エンティティ、`apply-url` より `detail-url` を優先)。
+
+### 変更
+- `companyEId` 解決:(1) ポータルの `company_eid:`、(2) 明示 `api:` の `c=`、(3) ボードページのディスカバリ。`fetchText`(`http-json.mjs`)が non-ok エラーに `.location`/`.retryAfter` を付与(読み取り専用・後方互換)。
+
+### 備考
+- **セキュリティ** — 2 ホスト(`jobs.jobvite.com`、`app.jobvite.com`)を `assertJobviteUrl` で毎回ピン留め:https のみ、厳格な許可リスト、**リダイレクト非追従**。`companyEId` は `?c=` の値のみ。source 数は不変。
+- スイート:**2396** 件のテスト(+4)。
+
 ## [1.152.0] — 2026-08-12
 
 **Hermes プロバイダー — 配線を完了 + ドキュメント最新化。** v1.151.0 の Hermes 統合のコードレビューで実際の欠陥 2 件と完成度項目 4 件を発見し、いずれも本リリースで修正。アプリ全体の LLM プロバイダー一覧を、全ドキュメント面と 17 言語で完全な 7 つに揃えました。

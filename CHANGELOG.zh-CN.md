@@ -9,6 +9,20 @@
 ---
 
 
+## [1.153.0] — 2026-08-12
+
+**Jobvite 扫描器迁移到公开 XML 源(父项目同步)。** 父项目下线了 Jobvite JSON API(现在返回零职位);web-ui 的 source 用的正是这个失效端点,因此任何被跟踪的 Jobvite 公司都静默扫描为空。移植父项目修复(`#2623`):现在读取以 `companyEId` 为键的公开按租户 **XML 源**。
+
+### 修复
+- source 调用已下线的 JSON API 并返回零职位;现改为调用 `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` 并解析 XML `<result><job>…`(CDATA + 实体解码,`detail-url` 优先于 `apply-url`)。
+
+### 变更
+- `companyEId` 解析:(1) 门户的 `company_eid:`,(2) 显式 `api:` 的 `c=` 参数,(3) 看板页发现。`fetchText`(`http-json.mjs`)在 non-ok 错误上附加 `.location`/`.retryAfter`(只读,向后兼容)。
+
+### 说明
+- **安全** — 两个主机(`jobs.jobvite.com`、`app.jobvite.com`)在每次请求前由 `assertJobviteUrl` 固定:仅 https、严格白名单、**从不跟随重定向**。`companyEId` 仅为 `?c=` 值;source 数量不变。
+- 套件:**2396** 项测试(+4)。
+
 ## [1.152.0] — 2026-08-12
 
 **Hermes 提供方 — 接线完成 + 文档同步。** 对 v1.151.0 Hermes 集成的代码评审发现两处真实缺口和四项完整性事项,已全部在此修复;并将全应用的 LLM 提供方列表在所有文档面和 17 种语言中补齐为完整的七个。

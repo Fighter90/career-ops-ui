@@ -7,14 +7,14 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Dernière version — v1.152.0** — **Fournisseur Hermes — câblage terminé** — Une revue de code de l’intégration Hermes de v1.151.0 a corrigé deux vrais manques (le menu de `#/config` ne pouvait pas forcer Hermes ; les clés locales courtes étaient rejetées) et porté la liste des fournisseurs LLM aux sept complets sur toutes les surfaces de docs et les 17 langues. **2392 tests.**
+> **🆕 Dernière version — v1.153.0** — **Scanner Jobvite corrigé (sync parent)** — Le parent a retiré l’API JSON de Jobvite, donc toute entreprise Jobvite suivie scannait à vide en silence. Portage du correctif parent — le source lit désormais le flux XML public par tenant (clé `companyEId`, deux hôtes épinglés, aucune redirection suivie). **2396 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

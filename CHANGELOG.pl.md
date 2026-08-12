@@ -9,6 +9,20 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.153.0] — 2026-08-12
+
+**Skaner Jobvite przeniesiony na publiczny kanał XML (sync z rodzicem).** Rodzic wycofał API JSON Jobvite (zwraca zero ofert); source w web-ui używał tego samego martwego endpointu, więc każda śledzona firma Jobvite skanowała się po cichu pusto. Port poprawki rodzica (`#2623`): source czyta teraz publiczny kanał **XML** per-tenant, kluczowany przez `companyEId`.
+
+### Naprawiono
+- Source wołał wycofane API JSON i zwracał zero ofert; teraz woła `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` i parsuje XML `<result><job>…` (CDATA + encje, `detail-url` przed `apply-url`).
+
+### Zmieniono
+- Rozwiązywanie `companyEId`: (1) `company_eid:` w portalu, (2) parametr `c=` jawnego `api:`, (3) odkrywanie ze strony boardu. `fetchText` (`http-json.mjs`) dołącza `.location`/`.retryAfter` do błędu non-ok (tylko odczyt, wstecznie zgodne).
+
+### Uwagi
+- **Bezpieczeństwo** — dwa hosty (`jobs.jobvite.com`, `app.jobvite.com`) przypięte przez `assertJobviteUrl`: tylko https, ścisła allowlista, **żadne przekierowanie nie jest śledzone**. `companyEId` to tylko wartość `?c=`; liczba sources bez zmian.
+- Zestaw: **2396** testów (+4).
+
 ## [1.152.0] — 2026-08-12
 
 **Dostawca Hermes — okablowanie ukończone + aktualizacja dokumentacji.** Przegląd kodu integracji Hermes z v1.151.0 wykrył dwie realne luki i cztery elementy kompletności; wszystkie naprawiono tutaj, a lista dostawców LLM w całej aplikacji została doprowadzona do pełnej siódemki na wszystkich powierzchniach dokumentacji i w 17 językach.
