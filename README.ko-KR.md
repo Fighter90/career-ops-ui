@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2381%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.147.0** — **도움말 가이드의 Hermes & Telegram** — Hermes 클라우드 배포 + Telegram 브리지 사용법이 이제 17개 언어 전체에서 앱 내 도움말 섹션(§30)으로 제공되며, 문서 어시스턴트가 이를 바탕으로 답변합니다. 여전히 문서 전용입니다 — 제공자는 **계획됨 / 아직 미연동** 상태로 유지됩니다. **2378 테스트.**
+> **🆕 최신 릴리스 — v1.148.0** — **더 깔끔한 스캔 필터** — `#/scan` 필터 패널이 이제 정돈된 반응형 그리드입니다(이전엔 들쭉날쭉한 flex-wrap), 적용 / 초기화는 오른쪽 정렬된 별도 행에 배치. 필터는 그대로, 읽기는 더 쉽게. **2381 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

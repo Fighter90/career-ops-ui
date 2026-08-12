@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.148.0] — 2026-08-12
+
+**Übersichtlichere Scan-Filter (Phase 4) — das Filterpanel ist jetzt ein aufgeräumtes Raster** — das Filterpanel von `#/scan` wechselte von einem ungleichmäßigen Flex-Wrap aus starren Boxen unterschiedlicher Breite zu einem responsiven Raster, und die Aktionen Anwenden / Zurücksetzen liegen nun in ihrer eigenen abgetrennten, rechtsbündigen Zeile. Gleiche Filter, gleiches Verhalten — nur besser lesbar. Eine Design-Feinpolitur (ohne parent-sync).
+
+### Geändert
+- **`#/scan`-Filterpanel → responsives Raster** — `.scan-filters` ist jetzt `display: grid` mit `repeat(auto-fill, minmax(180px, 1fr))`-Spalten und gleichmäßigen Abständen, sodass sich die 11 beschrifteten Filter bei jeder Breite in ordentliche Spalten einreihen, statt in eine ungleichmäßige Zeile umzubrechen.
+- **Aktionen Anwenden / Zurücksetzen** erstrecken sich über das ganze Raster in einer eigenen Zeile, durch eine Haarlinie getrennt und rechtsbündig. Der alte Trick mit verstecktem Label + der innere Flex-Wrapper in `scan.js` wurden entfernt.
+
+### Hinweise
+- **Nur CSS + eine kleine DOM-Bereinigung** — jede Filter-id (`#scan-filter-*`, `#scan-apply`) und die `SR.render()`-Verdrahtung sind unverändert, der Playwright-Ablauf bleibt also unberührt. Keine neuen i18n-Schlüssel.
+- Im Browser verifiziert (0 Konsolenfehler); abgesichert durch `tests/scan-filters-grid.test.mjs`.
+- Suite: **2381** Tests (+3: `tests/scan-filters-grid.test.mjs`).
+
 ## [1.147.0] — 2026-08-12
 
 **Hermes & Telegram — der In-App-Hilfeabschnitt + die cvstart.org-Fläche (Phase 5b, Teil 2)** — der zweite und letzte Teil der Hermes-Dokumentationsarbeit: die Anleitung lebt jetzt im eigenen Hilfeleitfaden der App, in allen 17 Sprachen, und der eingebaute Dokumentations-Assistent beantwortet Hermes-Fragen daraus. Weiterhin nur Dokumentation — der Hermes-LLM-Provider-Pfad bleibt **geplant / noch nicht angebunden** (Phase 5).

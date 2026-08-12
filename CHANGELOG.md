@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.148.0] — 2026-08-12
+
+**Cleaner scan filters (Phase 4) — the result-filter panel is now a tidy grid** — the `#/scan` filter panel moved from a ragged flex-wrap of rigid, variable-width boxes to a responsive grid, and the Apply/Reset actions now sit on their own separated, right-aligned row. Same filters, same behaviour — just easier to read. A senior-designer polish pass (no parent-sync).
+
+### Changed
+- **`#/scan` result-filter panel → responsive grid** — `.scan-filters` is now `display: grid` with `repeat(auto-fill, minmax(180px, 1fr))` columns and even gutters, so the 11 labelled filters align into tidy columns at every width instead of wrapping into a ragged row of 160–240px boxes.
+- **Apply / Reset actions** span the full grid on their own row, separated by a hairline and right-aligned, so they read as the panel's primary action. Dropped the old hidden-label alignment hack + inner flex wrapper in `scan.js` (buttons are now direct children of `.scan-filters__actions`).
+
+### Notes
+- **CSS + one small DOM cleanup only** — every filter input id (`#scan-filter-*`, `#scan-apply`) and the `SR.render()` wiring are unchanged, so the Playwright scan-filter flow is untouched. No new i18n keys.
+- Browser-verified (grid renders 4 columns at 1100px, actions row separated + right-aligned, 0 console errors); guarded by `tests/scan-filters-grid.test.mjs`.
+- Remaining Phase 4: the broader "overall visual polish across all pages" pass is a subjective, whole-app design task left for explicit direction; the `#/portals` → settings-nav move is still open.
+- Suite: **2381** tests (+3: `tests/scan-filters-grid.test.mjs`).
+
 ## [1.147.0] — 2026-08-12
 
 **Hermes & Telegram — the in-app help section + cvstart.org surface (Phase 5b, part 2)** — the second and final slice of the Hermes docs work: the how-to now lives inside the app's own help guide, in all 17 languages, and the in-app docs assistant answers Hermes questions from it. Still docs-only — the Hermes LLM-provider path remains **planned / not-yet-wired** (Phase 5).

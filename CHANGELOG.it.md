@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.148.0] — 2026-08-12
+
+**Filtri di ricerca più chiari (Phase 4) — il pannello dei filtri è ora una griglia ordinata** — il pannello dei filtri di `#/scan` è passato da un flex-wrap irregolare di riquadri rigidi di larghezza variabile a una griglia responsiva, e le azioni Applica / Reimposta ora occupano una loro riga separata e allineata a destra. Stessi filtri, stesso comportamento — solo più leggibili. Una rifinitura di design (senza parent-sync).
+
+### Modificato
+- **Pannello dei filtri di `#/scan` → griglia responsiva** — `.scan-filters` è ora `display: grid` con colonne `repeat(auto-fill, minmax(180px, 1fr))` e spaziature uniformi, così gli 11 filtri etichettati si allineano in colonne ordinate a qualsiasi larghezza invece di andare a capo in una riga irregolare.
+- **Azioni Applica / Reimposta** occupano l'intera griglia su una loro riga, separate da una sottile linea e allineate a destra. Rimosso il vecchio trucco dell'etichetta nascosta + il wrapper flex interno in `scan.js`.
+
+### Note
+- **Solo CSS + una piccola pulizia del DOM** — ogni id di filtro (`#scan-filter-*`, `#scan-apply`) e il cablaggio di `SR.render()` sono invariati, quindi il flusso Playwright non è toccato. Nessuna nuova chiave i18n.
+- Verificato nel browser (0 errori di console); protetto da `tests/scan-filters-grid.test.mjs`.
+- Suite: **2381** test (+3: `tests/scan-filters-grid.test.mjs`).
+
 ## [1.147.0] — 2026-08-12
 
 **Hermes & Telegram — la sezione di aiuto in-app + la superficie su cvstart.org (Phase 5b, parte 2)** — la seconda e ultima parte del lavoro di documentazione di Hermes: la guida pratica ora vive dentro la guida di aiuto dell'app stessa, in tutte le 17 lingue, e l'assistente di documentazione integrato risponde alle domande su Hermes a partire da essa. Resta solo documentazione — il percorso del provider LLM Hermes rimane **pianificato / non ancora collegato** (Phase 5).

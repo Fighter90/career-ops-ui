@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2381%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.147.0** — **帮助指南中的 Hermes & Telegram** — Hermes 云部署 + Telegram 桥接的操作说明现已成为所有 17 种语言的应用内帮助章节（§30），文档助手也会据此回答问题。仍然仅限文档 — 该提供商仍处于 **计划中 / 尚未接入** 状态。 **2378 个测试。**
+> **🆕 最新版本 — v1.148.0** — **更清爽的扫描筛选** — `#/scan` 筛选面板现已改为整洁的响应式网格(此前是参差的 flex-wrap),「应用 / 重置」独占一行并右对齐。筛选项不变,更易阅读。 **2381 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

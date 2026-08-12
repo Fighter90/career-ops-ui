@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2381%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 أحدث إصدار — v1.147.0** — **Hermes & Telegram في دليل المساعدة** — أصبح شرح النشر السحابي لـ Hermes + جسر Telegram الآن قسم مساعدة مدمجًا في التطبيق (§30) بجميع اللغات الـ17، ويجيب مساعد التوثيق استنادًا إليه. لا يزال الأمر يقتصر على التوثيق فقط — يظل المزوّد **مخططًا له / غير متصل بعد**. **2378 اختبارًا.**
+> **🆕 أحدث إصدار — v1.148.0** — **مرشّحات فحص أوضح** — أصبحت لوحة مرشّحات `#/scan` الآن شبكة متجاوبة مرتّبة (كانت flex-wrap غير منتظم)، مع «تطبيق / إعادة تعيين» في صف خاص محاذى إلى اليمين. المرشّحات نفسها، وأسهل قراءة. **2381 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

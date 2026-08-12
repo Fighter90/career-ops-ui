@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.148.0] — 2026-08-12
+
+**Klarere scan-filtre (Phase 4) — filterpanelet er nu et ryddeligt grid** — filterpanelet i `#/scan` gik fra et ujævnt flex-wrap af stive bokse med varierende bredde til et responsivt grid, og handlingerne Anvend / Nulstil ligger nu på deres egen adskilte, højrestillede række. Samme filtre, samme adfærd — bare nemmere at læse. En designfinpudsning (uden parent-sync).
+
+### Ændret
+- **`#/scan`-filterpanelet → responsivt grid** — `.scan-filters` er nu `display: grid` med `repeat(auto-fill, minmax(180px, 1fr))`-kolonner og ensartede mellemrum, så de 11 mærkede filtre justeres i ryddelige kolonner ved enhver bredde i stedet for at ombrydes til en ujævn række.
+- **Handlingerne Anvend / Nulstil** spænder over hele gridet på deres egen række, adskilt af en tynd streg og højrestillet. Fjernede det gamle skjulte-label-trick + den indre flex-wrapper i `scan.js`.
+
+### Noter
+- **Kun CSS + en lille DOM-oprydning** — hvert filter-id (`#scan-filter-*`, `#scan-apply`) og `SR.render()`-forbindelsen er uændret, så Playwright-flowet er urørt. Ingen nye i18n-nøgler.
+- Verificeret i browseren (0 konsolfejl); beskyttet af `tests/scan-filters-grid.test.mjs`.
+- Suite: **2381** tests (+3: `tests/scan-filters-grid.test.mjs`).
+
 ## [1.147.0] — 2026-08-12
 
 **Hermes & Telegram — det indbyggede hjælpeafsnit + cvstart.org-fladen (Phase 5b, del 2)** — den anden og sidste del af Hermes-dokumentationsarbejdet: vejledningen bor nu inde i appens egen hjælpeguide på alle 17 sprog, og den indbyggede dokumentationsassistent svarer på Hermes-spørgsmål ud fra den. Stadig kun dokumentation — Hermes' LLM-udbyder-vej forbliver **planlagt / endnu ikke tilsluttet** (Phase 5).
