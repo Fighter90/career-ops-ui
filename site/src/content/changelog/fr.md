@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.142.0] — 2026-08-12
+
+**Correction : fini l'archétype de carrière « Unknown »** — `#/orientation` classe désormais toujours parmi les huit vecteurs de carrière nommés, au lieu de répondre parfois « Unknown » et de vous conseiller d'y « miser davantage ». Correction signalée par l'utilisateur (sans parent-sync).
+
+### Corrigé
+- **`#/orientation` — le prompt IA interdit désormais un archétype hors ensemble.** Le modèle DOIT classer le top 3 parmi exactement les huit vecteurs nommés et ne **jamais** répondre « Unknown »/« N/A »/« données insuffisantes » ni inventer un libellé. Si le CV est mince, il nomme quand même les trois plus proches à moindre confiance et indique les preuves manquantes.
+
+### Notes
+- Changement de prompt serveur uniquement (`buildOrientationPrompt`) ; aucun changement i18n/schéma. Suite : **2364** tests (+1).
+
 ## [1.141.0] — 2026-08-12
 
 **Statistiques éclairantes (suite) : enrichissement des entreprises financées** — `#/funded` devient plus visuel : logos d'entreprise, un graphique par montant de financement et des cartes avec tour / montant / score de découverte / action suggérée. Ajustement UX signalé par l'utilisateur (sans parent-sync).

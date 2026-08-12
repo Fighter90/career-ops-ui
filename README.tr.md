@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2364%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Son sürüm — v1.141.0** — **anlayışlı istatistikler (devam): finansman alan şirketlerin zenginleştirilmesi** — `#/funded` artık görsel bir kart ızgarası: şirket **logoları**, **tutara göre grafik** ve **tur / tutar / puan / önerilen eylem** kartları. 3 anahtar ×17 dil. **2363 test.**
+> **🆕 Son sürüm — v1.142.0** — **düzeltme: artık "Unknown" arketip yok** — `#/orientation` artık bazen "Unknown" yanıtlamak yerine her zaman sekiz adlandırılmış kariyer vektöründen sıralama yapıyor (AI istem kısıtı). **2364 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

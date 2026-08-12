@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.142.0] — 2026-08-12
+
+**Correctness: no more "Unknown" career archetype** — `#/orientation` now always ranks from the eight named career vectors instead of occasionally answering "Unknown" and recommending you "double down" on it. A user-reported fix (no parent-sync).
+
+### Fixed
+- **`#/orientation` — the AI prompt now forbids an out-of-set archetype.** The model MUST rank the top three from **exactly** the eight named vectors (Functionalist / Administrator / Communicator / Specialist / Analyst / Innovator / Manager / Entrepreneur) and may **never** answer "Unknown" / "N/A" / "insufficient data" or invent a new label. When the CV is thin it still names the three closest fits at lower confidence and says what evidence is missing — instead of declining and producing nonsensical "double down on Unknown" advice.
+
+### Notes
+- Server-side prompt change only (`buildOrientationPrompt`); no i18n / schema change. The generated profile stays localized via the existing output-language directive.
+- Suite: **2364** tests (+1: `tests/orientation-routes.test.mjs` — the prompt names the eight vectors and forbids "Unknown").
+
 ## [1.141.0] — 2026-08-12
 
 **Insightful stats (cont.): funded-company enrichment** — `#/funded` becomes a richer, more visual view: company **logos**, a **funding-amount chart**, and per-company **round / amount / discovery-score / suggested-action** cards. A user-reported UX pass (no parent-sync).

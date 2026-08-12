@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2364%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.141.0** — **통찰력 있는 통계(계속): 투자받은 회사 정보 보강** — `#/funded`가 이제 시각적 카드 그리드입니다: 회사 **로고**, **투자 금액 차트**, 그리고 **라운드 / 금액 / 발굴 점수 / 권장 조치** 카드. 3개 키 ×17개 로케일. **2363 테스트.**
+> **🆕 최신 릴리스 — v1.142.0** — **정확성: "Unknown" 아키타입 제거** — `#/orientation`이 이제 가끔 "Unknown"으로 답하는 대신 항상 여덟 개의 명명된 커리어 벡터 중에서 순위를 매깁니다(AI 프롬프트 제약). **2364 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

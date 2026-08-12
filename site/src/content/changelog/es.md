@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.142.0] — 2026-08-12
+
+**Corrección: se acabó el arquetipo profesional "Unknown"** — `#/orientation` ahora siempre clasifica entre los ocho vectores de carrera nombrados en lugar de responder a veces "Unknown" y recomendarte "redoblar" en él. Corrección reportada por el usuario (sin parent-sync).
+
+### Corregido
+- **`#/orientation` — el prompt de IA ahora prohíbe un arquetipo fuera del conjunto.** El modelo DEBE clasificar los tres primeros entre exactamente los ocho vectores nombrados y **nunca** responder "Unknown"/"N/A"/"datos insuficientes" ni inventar una etiqueta. Con un CV escaso, igual nombra los tres más cercanos con menor confianza y dice qué evidencia falta, en vez de declinar.
+
+### Notas
+- Solo cambio de prompt del servidor (`buildOrientationPrompt`); sin cambios de i18n/esquema. Suite: **2364** pruebas (+1).
+
 ## [1.141.0] — 2026-08-12
 
 **Estadísticas útiles (cont.): enriquecimiento de empresas financiadas** — `#/funded` es ahora más visual: logos de empresa, un gráfico por importe de financiación y tarjetas con ronda / importe / puntuación de descubrimiento / acción sugerida. Ajuste de UX reportado por el usuario (sin parent-sync).

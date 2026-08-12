@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2364%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.141.0** — **有洞察力的統計（續）：募資公司資訊強化** — `#/funded` 現在是視覺化卡片網格：公司**標誌**、**募資額圖表**，以及**輪次 / 金額 / 發現評分 / 建議操作**卡片。3 個鍵 ×17 種語言。 **2363 個測試.**
+> **🆕 最新版本 — v1.142.0** — **修正：不再出現「Unknown」原型** — `#/orientation` 現在始終從八個具名的職業向量中排名，而非偶爾回答「Unknown」並建議「加倍投入」（AI 提示約束）。 **2364 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

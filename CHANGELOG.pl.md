@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.142.0] — 2026-08-12
+
+**Poprawka: koniec z archetypem kariery „Unknown"** — `#/orientation` zawsze klasyfikuje teraz spośród ośmiu nazwanych wektorów kariery, zamiast czasem odpowiadać „Unknown" i doradzać „postawienie na niego". Poprawka zgłoszona przez użytkownika (bez parent-sync).
+
+### Naprawiono
+- **`#/orientation` — prompt AI zabrania teraz archetypu spoza zbioru.** Model MUSI uszeregować top 3 spośród dokładnie ośmiu nazwanych wektorów i **nigdy** nie odpowiadać „Unknown"/„N/A"/„za mało danych" ani wymyślać etykiety. Przy ubogim CV i tak nazywa trzy najbliższe z niższą pewnością i mówi, jakich dowodów brakuje.
+
+### Uwagi
+- Tylko zmiana promptu serwera (`buildOrientationPrompt`); bez zmian i18n/schematu. Zestaw: **2364** testów (+1).
+
 ## [1.141.0] — 2026-08-12
 
 **Wnikliwe statystyki (cd.): wzbogacenie firm z finansowaniem** — `#/funded` jest teraz bardziej wizualne: logotypy firm, wykres wg kwoty finansowania i karty z rundą / kwotą / oceną odkrycia / sugerowanym działaniem. Poprawka UX zgłoszona przez użytkownika (bez parent-sync).

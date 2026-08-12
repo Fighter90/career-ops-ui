@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.142.0] — 2026-08-12
+
+**Düzeltme: artık "Unknown" kariyer arketipi yok** — `#/orientation` artık bazen "Unknown" yanıtlayıp ona "daha çok yüklenmenizi" önermek yerine, her zaman sekiz adlandırılmış kariyer vektöründen sıralama yapıyor. Kullanıcı bildirimli bir düzeltme (parent-sync yok).
+
+### Düzeltildi
+- **`#/orientation` — AI istemi artık küme dışı bir arketipi yasaklıyor.** Model, ilk üçü tam olarak sekiz adlandırılmış vektörden sıralamak ZORUNDA ve **asla** "Unknown"/"N/A"/"yetersiz veri" yanıtlayamaz veya yeni etiket uyduramaz. Özgeçmiş zayıfsa yine de en yakın üçünü daha düşük güvenle adlandırır ve hangi kanıtın eksik olduğunu söyler.
+
+### Notlar
+- Yalnızca sunucu istemi değişikliği (`buildOrientationPrompt`); i18n/şema değişikliği yok. Takım: **2364** test (+1).
+
 ## [1.141.0] — 2026-08-12
 
 **Anlayışlı istatistikler (devam): finansman alan şirketlerin zenginleştirilmesi** — `#/funded` artık daha görsel: şirket logoları, finansman tutarına göre bir grafik ve tur / tutar / keşif puanı / önerilen eylem içeren kartlar. Kullanıcı bildirimli bir UX düzeltmesi (parent-sync yok).

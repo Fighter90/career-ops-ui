@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.142.0] — 2026-08-12
+
+**Correzione: basta con l'archetipo di carriera "Unknown"** — `#/orientation` ora classifica sempre tra gli otto vettori di carriera nominati invece di rispondere talvolta "Unknown" e consigliarti di "puntarci di più". Correzione segnalata dall'utente (senza parent-sync).
+
+### Corretto
+- **`#/orientation` — il prompt IA vieta ora un archetipo fuori insieme.** Il modello DEVE classificare i primi tre tra esattamente gli otto vettori nominati e non **mai** rispondere "Unknown"/"N/A"/"dati insufficienti" né inventare un'etichetta. Con un CV scarno nomina comunque i tre più vicini con minore fiducia e dice quali prove mancano.
+
+### Note
+- Solo modifica del prompt server (`buildOrientationPrompt`); nessuna modifica i18n/schema. Suite: **2364** test (+1).
+
 ## [1.141.0] — 2026-08-12
 
 **Statistiche perspicaci (segue): arricchimento delle aziende finanziate** — `#/funded` è ora più visivo: loghi aziendali, un grafico per importo di finanziamento e schede con round / importo / punteggio di scoperta / azione suggerita. Aggiustamento UX segnalato dall'utente (senza parent-sync).
