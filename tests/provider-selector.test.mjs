@@ -47,7 +47,9 @@ test('config.js LLM_PROVIDER dropdown tracks LLM_PROVIDERS (no drift)', () => {
   // by hand, and Hermes was missed (review finding #1: the key field existed but
   // the provider was unforceable). This guard fails if the two ever diverge again.
   const d = dirname(fileURLToPath(import.meta.url));
-  const cfg = readFileSync(resolve(d, '..', 'public', 'js', 'views', 'config.js'), 'utf8');
+  // v1.155.0 (P-15 split) — the FIELDS descriptor table (incl. the LLM_PROVIDER
+  // dropdown) moved from config.js to config/field-specs.js.
+  const cfg = readFileSync(resolve(d, '..', 'public', 'js', 'views', 'config', 'field-specs.js'), 'utf8');
   const m = cfg.match(/key: 'LLM_PROVIDER'[\s\S]*?options: \[([^\]]+)\]/);
   assert.ok(m, 'could not locate the LLM_PROVIDER options array in config.js');
   const opts = m[1].split(',').map((s) => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);

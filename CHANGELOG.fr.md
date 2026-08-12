@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.155.0] — 2026-08-12
+
+**Refactor — scinder `config.js` sous la limite de taille (P-15).** `config.js` faisait **1030 lignes** (au-dessus de la limite de 800) ; deux modules préservant le comportement ont été extraits, le ramenant à **783**.
+
+### Modifié
+- Nouveaux `config/field-specs.js` (données de champs + listes de modèles) et `config/tab-controller.js` (fabrique de la barre d’onglets) ; `config.js` les référence, la logique de rendu ne change pas.
+
+### Notes
+- Refactor pur, aucun changement de comportement ; 6 tests lisant la source ont été repointés. `scan.js` (906) reste tel quel (déjà partiellement scindé ; cœur trop couplé pour un découpage mécanique propre). Suite : **2396** tests.
+
 ## [1.154.0] — 2026-08-12
 
 **Nouveau guide — « Exécuter toute la stack dans le cloud ».** career-ops n’a pas de récit cloud/serveur propre ; on en ajoute un : une recette pas à pas pour mettre le pipeline parent **career-ops**, ce visualiseur **career-ops-ui** et le **moteur** IA (un **abonnement Claude** via Claude Code, un **Hermes** local, ou des clés API) sur un petit serveur toujours actif. Livré comme **Aide §31** dans les 17 langues, une section du README et une page wiki.

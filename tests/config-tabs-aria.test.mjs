@@ -14,7 +14,11 @@ import { dirname, resolve } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
-const CONFIG = readFileSync(R('public', 'js', 'views', 'config.js'), 'utf8');
+// v1.155.0 (P-15 split) — the tablist container stays in config.js; the tab
+// buttons (role='tab', aria-*, tabindex, keyboard nav) moved to the
+// config/tab-controller.js factory. Assert against both.
+const CONFIG = readFileSync(R('public', 'js', 'views', 'config.js'), 'utf8')
+  + '\n' + readFileSync(R('public', 'js', 'views', 'config', 'tab-controller.js'), 'utf8');
 const DICT = legacyDictText();
 
 test('tablist container has role=tablist + an aria-label', () => {

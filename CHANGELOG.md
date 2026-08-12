@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.155.0] — 2026-08-12
+
+**Refactor — split `config.js` under the file-size limit (P-15).** `public/js/views/config.js` was **1030 lines**, over the project's 800-line hard limit. Two cohesive, behavior-preserving modules were extracted, bringing it to **783**.
+
+### Changed
+- **`config/field-specs.js`** (new) — the pure, read-only field-spec data: the curated per-provider model lists + the `FIELDS` descriptor table (API keys / runtime / regional). `window.ConfigFieldSpecs`, loaded before the view.
+- **`config/tab-controller.js`** (new) — the `#/config` tab-bar controller (ARIA tablist + keyboard nav + panel swapping) as a `createConfigTabController(c, panelHost)` factory returning `{ tabBtn, activate }`.
+- `config.js` now references both; the render logic (fieldRow, profile/section editors, save flow) is unchanged. Both new files are wired into `index.html` before `config.js`.
+
+### Notes
+- **Pure refactor, zero behavior change** — no route, no server, no i18n key, no CSS. Six source-reading tests were repointed to the new files (they assert on the moved field/model/tab markup); the assertions are otherwise identical.
+- **`scan.js` (906) is intentionally left as-is.** Its results-rendering was already extracted to `lib/scan-results.js` (v1.132.0); the remaining core is a tightly-coupled event-wiring closure bound to ~18 filter/DOM refs, where a mechanical factory extraction would need an 18-argument signature and *worsen* coupling — the opposite of the rule's intent. A proper split needs a filter-state model refactor, deferred rather than force-fit.
+- Suite: **2396** tests (unchanged — tests repointed, not added).
+
 ## [1.154.0] — 2026-08-12
 
 **New guide — "Running the whole stack in the cloud."** career-ops has no cloud/server story of its own, so this adds one: a step-by-step recipe for putting the parent **career-ops** pipeline, this **career-ops-ui** viewer, and the AI **engine** (a **Claude subscription** via the Claude Code CLI, a local **Hermes** gateway, or provider API keys) on a small always-on server — provision, pick your engine, and expose it safely. It ships as in-app **Help §31** in all 17 languages, a README section, a wiki page, and (via the help mirror) the site.

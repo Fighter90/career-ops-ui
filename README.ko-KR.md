@@ -14,7 +14,7 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.154.0** — **클라우드에서 전체 스택 실행** — 부모 career-ops 파이프라인 + 이 뷰어 + AI 엔진(Claude 구독, 로컬 Hermes, 또는 API 키)을 항상 켜진 소형 서버에 올리는 새 단계별 가이드 — 17개 언어의 도움말 §31, README 섹션, 위키 페이지로. **2396 테스트.**
+> **🆕 최신 릴리스 — v1.155.0** — **더 깔끔한 config 뷰(리팩터)** — `config.js`(1030줄)를 800줄 한도 아래로 두 개의 동작 보존 모듈 — 필드 데이터 + 탭 바 팩토리 — 로 분할했습니다. 순수 리팩터, 동작 변화 없음. **2396 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

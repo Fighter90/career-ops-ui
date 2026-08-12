@@ -26,7 +26,9 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(resolve(ROOT, p), 'utf8');
 
 const geminiSrc = read('server/lib/gemini.mjs');
-const configSrc = read('public/js/views/config.js');
+// v1.155.0 (P-15 split) — GEMINI_MODELS + its dropdown field moved from
+// config.js to config/field-specs.js.
+const configSrc = read('public/js/views/config/field-specs.js');
 const openaiSrc = read('server/lib/openai.mjs');
 
 const serverDefault = (geminiSrc.match(/envKey\('GEMINI_MODEL'\)\s*\|\|\s*'([^']+)'/) || [])[1];

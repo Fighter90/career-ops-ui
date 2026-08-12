@@ -14,7 +14,7 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Seneste udgivelse — v1.154.0** — **Kør hele stakken i skyen** — En ny trin-for-trin-guide til at lægge det overordnede career-ops-pipeline + denne fremviser + din AI-motor (et Claude-abonnement, en lokal Hermes, eller API-nøgler) på en lille altid-tændt server — som Hjælp §31 på 17 sprog, et README-afsnit og en wiki-side. **2396 tests.**
+> **🆕 Seneste udgivelse — v1.155.0** — **Renere config-visning (refaktor)** — `config.js` (1030 linjer) opdelt under 800-grænsen i to adfærdsbevarende moduler — feltdata + en fanebjælke-fabrik. Ren refaktor, ingen adfærdsændring. **2396 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

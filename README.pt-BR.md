@@ -14,7 +14,7 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versão — v1.154.0** — **Rode todo o stack na nuvem** — Um novo guia passo a passo para pôr o pipeline pai career-ops + este visualizador + seu motor de IA (uma assinatura Claude, um Hermes local, ou chaves de API) num servidor pequeno sempre ligado — como Ajuda §31 nos 17 idiomas, uma seção do README e uma página wiki. **2396 testes.**
+> **🆕 Última versão — v1.155.0** — **Visão de config mais limpa (refactor)** — `config.js` (1030 linhas) foi dividido sob o limite de 800 em dois módulos que preservam o comportamento — dados de campos + uma fábrica da barra de abas. Refactor puro, sem mudança de comportamento. **2396 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 
