@@ -377,7 +377,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
    separated, right-aligned row that spans the grid. */
 .scan-filters {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
   gap: var(--space-3) var(--space-4);
   align-items: end;
   margin-bottom: var(--space-3);
