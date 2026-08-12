@@ -682,10 +682,10 @@ Router.register('scan', async () => {
           c('span', { className: 'scan-field__label' }, t('scan.favOnly', '★ Favorites')),
           c('span', { className: 'flex', style: { gap: '6px', alignItems: 'center', height: '38px' } }, [favOnly, c('span', { style: { fontSize: '13px', color: 'var(--foggy)' } }, t('scan.favOnlyHint', 'starred only'))]),
         ]),
-        c('div', { className: 'scan-filters__actions field' }, [
-          c('label', { 'aria-hidden': 'true', style: { visibility: 'hidden' } }, '·'),
-          c('div', { className: 'flex', style: { gap: '8px' } }, [applyBtn, resetBtn]),
-        ]),
+        // v1.148.0 — actions are a full-width, right-aligned row (styled by
+        // .scan-filters__actions); the old hidden-label alignment hack + inner
+        // flex wrapper are no longer needed.
+        c('div', { className: 'scan-filters__actions' }, [applyBtn, resetBtn]),
       ]),
       c('p', { className: 'field-hint scan-filters__hint' }, t('scan.filtersHint',
         'Fill any boxes and press Apply. Salary from/to keeps only jobs whose pay overlaps your range — jobs with no listed salary are hidden once you set a salary. Amounts are compared as plain numbers (currency is ignored).')),

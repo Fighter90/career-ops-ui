@@ -11,6 +11,19 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.148.0] — 2026-08-12
+
+**Filtres de recherche plus clairs (Phase 4) — le panneau de filtres est désormais une grille ordonnée** — le panneau de filtres de `#/scan` est passé d'un flex-wrap irrégulier de boîtes rigides de largeur variable à une grille responsive, et les actions Appliquer / Réinitialiser occupent maintenant leur propre ligne séparée et alignée à droite. Mêmes filtres, même comportement — juste plus lisibles. Une retouche de design (sans parent-sync).
+
+### Modifié
+- **Panneau de filtres de `#/scan` → grille responsive** — `.scan-filters` est désormais `display: grid` avec des colonnes `repeat(auto-fill, minmax(180px, 1fr))` et des gouttières régulières, de sorte que les 11 filtres étiquetés s'alignent en colonnes ordonnées à toute largeur au lieu de s'enrouler en une ligne irrégulière.
+- **Actions Appliquer / Réinitialiser** occupent toute la grille sur leur propre ligne, séparées par un filet et alignées à droite. Suppression de l'ancien bricolage d'étiquette masquée + du wrapper flex interne dans `scan.js`.
+
+### Notes
+- **CSS + un petit nettoyage du DOM uniquement** — chaque id de filtre (`#scan-filter-*`, `#scan-apply`) et le câblage de `SR.render()` sont inchangés, donc le flux Playwright n'est pas touché. Aucune nouvelle clé i18n.
+- Vérifié dans le navigateur (0 erreur de console) ; protégé par `tests/scan-filters-grid.test.mjs`.
+- Suite : **2381** tests (+3 : `tests/scan-filters-grid.test.mjs`).
+
 ## [1.147.0] — 2026-08-12
 
 **Hermes & Telegram — la section d'aide intégrée + la surface cvstart.org (Phase 5b, partie 2)** — la deuxième et dernière partie du travail de documentation Hermes : le mode d'emploi vit désormais dans le guide d'aide de l'application elle-même, dans les 17 langues, et l'assistant de documentation intégré répond aux questions sur Hermes à partir de lui. Toujours uniquement documentaire — le chemin du fournisseur LLM Hermes reste **prévu / pas encore connecté** (Phase 5).

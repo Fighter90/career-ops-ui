@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.148.0] — 2026-08-12
+
+**Daha derli toplu tarama filtreleri (Phase 4) — filtre paneli artık düzenli bir ızgara** — `#/scan` filtre paneli, değişken genişlikte katı kutulardan oluşan dağınık bir flex-wrap'ten duyarlı bir ızgaraya geçti ve Uygula / Sıfırla eylemleri artık kendi ayrı, sağa hizalı satırında yer alıyor. Aynı filtreler, aynı davranış — sadece daha okunaklı. Bir tasarım rötuşu (parent-sync yok).
+
+### Değişti
+- **`#/scan` filtre paneli → duyarlı ızgara** — `.scan-filters` artık `repeat(auto-fill, minmax(180px, 1fr))` sütunları ve eşit boşluklarla `display: grid`, böylece 11 etiketli filtre her genişlikte dağınık bir satıra sarmak yerine düzenli sütunlara hizalanır.
+- **Uygula / Sıfırla eylemleri** kendi satırında tüm ızgarayı kaplar, ince bir çizgiyle ayrılır ve sağa hizalanır. `scan.js`'deki eski gizli etiket hilesi + iç flex sarmalayıcı kaldırıldı.
+
+### Notlar
+- **Yalnızca CSS + küçük bir DOM temizliği** — her filtre id'si (`#scan-filter-*`, `#scan-apply`) ve `SR.render()` bağlantısı değişmedi, dolayısıyla Playwright akışı el değmeden kaldı. Yeni i18n anahtarı yok.
+- Tarayıcıda doğrulandı (0 konsol hatası); `tests/scan-filters-grid.test.mjs` ile korunuyor.
+- Takım: **2381** test (+3: `tests/scan-filters-grid.test.mjs`).
+
 ## [1.147.0] — 2026-08-12
 
 **Hermes & Telegram — uygulama içi yardım bölümü + cvstart.org yüzeyi (Phase 5b, bölüm 2)** — Hermes belge çalışmasının ikinci ve son parçası: nasıl yapılır artık uygulamanın kendi yardım kılavuzunun içinde, 17 dilin tümünde yaşıyor ve uygulama içi belge asistanı Hermes sorularını buradan yanıtlıyor. Hâlâ yalnızca belge — Hermes LLM sağlayıcı yolu **planlandı / henüz bağlanmadı** durumunda kalıyor (Phase 5).

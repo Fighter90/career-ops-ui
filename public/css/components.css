@@ -370,21 +370,36 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 }
 .field-hint { color: var(--foggy); font-size: 13px; }
 
-/* v1.68.0 — #/scan result-filter panel: every filter is a labelled .field
-   (label above its control), laid out in one wrapping row with an Apply/Reset
-   action group, plus a usage hint below. */
+/* #/scan result-filter panel: every filter is a labelled .field (label above
+   its control). v1.148.0 — laid out on a responsive GRID (was a ragged
+   flex-wrap of rigid 160–240px boxes) so the controls align into tidy columns
+   with even gutters at every width; the Apply/Reset actions sit on their own
+   separated, right-aligned row that spans the grid. The `min(180px, 100%)` track
+   floor lets a column collapse to full-width below 180px rather than overflowing
+   the panel on very narrow viewports. */
 .scan-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
+  gap: var(--space-3) var(--space-4);
+  align-items: end;
   margin-bottom: var(--space-3);
 }
-.scan-filters .scan-field { margin-bottom: 0; flex: 1 1 160px; min-width: 140px; max-width: 240px; }
+.scan-filters .scan-field { margin-bottom: 0; min-width: 0; }
 .scan-field__label { font-weight: 600; font-size: 13px; color: var(--hof); }
 .scan-filters .scan-field .input,
 .scan-filters .scan-field .select { width: 100%; }
-.scan-filters__actions { flex: 0 0 auto; }
+/* Actions span the full grid, separated from the filters by a hairline, and
+   right-align so Apply/Reset read as the panel's primary action. */
+.scan-filters__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
 .scan-filters__hint { margin: 0 0 var(--space-4); max-width: 72ch; }
 .input, .textarea, .select {
   width: 100%;

@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.148.0] — 2026-08-12
+
+**Filtros de busca mais claros (Phase 4) — o painel de filtros agora é uma grade organizada** — o painel de filtros do `#/scan` saiu de um flex-wrap irregular de caixas rígidas de largura variável para uma grade responsiva, e as ações Aplicar / Redefinir agora ficam em sua própria linha separada e alinhada à direita. Mesmos filtros, mesmo comportamento — só mais fáceis de ler. Um retoque de design (sem parent-sync).
+
+### Alterado
+- **Painel de filtros do `#/scan` → grade responsiva** — `.scan-filters` agora é `display: grid` com colunas `repeat(auto-fill, minmax(180px, 1fr))` e espaçamento uniforme, de modo que os 11 filtros rotulados se alinham em colunas organizadas em qualquer largura em vez de quebrarem em uma linha irregular.
+- **Ações Aplicar / Redefinir** ocupam toda a grade em sua própria linha, separadas por uma linha fina e alinhadas à direita. Removido o antigo truque de rótulo oculto + o wrapper flex interno em `scan.js`.
+
+### Notas
+- **Apenas CSS + uma pequena limpeza do DOM** — cada id de filtro (`#scan-filter-*`, `#scan-apply`) e a ligação do `SR.render()` não mudam, então o fluxo do Playwright fica intacto. Sem novas chaves i18n.
+- Verificado no navegador (0 erros de console); protegido por `tests/scan-filters-grid.test.mjs`.
+- Suíte: **2381** testes (+3: `tests/scan-filters-grid.test.mjs`).
+
 ## [1.147.0] — 2026-08-12
 
 **Hermes & Telegram — a seção de ajuda integrada + superfície no cvstart.org (Phase 5b, parte 2)** — a segunda e última parte do trabalho de documentação do Hermes: o tutorial agora vive dentro do próprio guia de ajuda do app, em todos os 17 idiomas, e o assistente de documentação integrado responde a perguntas sobre o Hermes a partir dele. Ainda é apenas documentação — o caminho do provedor LLM Hermes permanece **planejado / ainda não conectado** (Phase 5).

@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.148.0] — 2026-08-12
+
+**Czytelniejsze filtry skanowania (Phase 4) — panel filtrów jest teraz uporządkowaną siatką** — panel filtrów `#/scan` przeszedł z poszarpanego flex-wrap sztywnych pól o zmiennej szerokości na responsywną siatkę, a akcje Zastosuj / Wyczyść zajmują teraz własny, oddzielony i wyrównany do prawej wiersz. Te same filtry, to samo zachowanie — po prostu czytelniej. Szlif projektowy (bez parent-sync).
+
+### Zmieniono
+- **Panel filtrów `#/scan` → responsywna siatka** — `.scan-filters` to teraz `display: grid` z kolumnami `repeat(auto-fill, minmax(180px, 1fr))` i równymi odstępami, więc 11 opisanych filtrów układa się w schludne kolumny przy każdej szerokości zamiast zawijać się w nierówny wiersz.
+- **Akcje Zastosuj / Wyczyść** obejmują całą siatkę we własnym wierszu, oddzielone cienką linią i wyrównane do prawej. Usunięto stary trik z ukrytą etykietą + wewnętrzny wrapper flex w `scan.js`.
+
+### Uwagi
+- **Tylko CSS + drobne porządki w DOM** — każdy id filtra (`#scan-filter-*`, `#scan-apply`) i podłączenie `SR.render()` są bez zmian, więc przepływ Playwright pozostaje nietknięty. Bez nowych kluczy i18n.
+- Zweryfikowane w przeglądarce (0 błędów konsoli); chronione przez `tests/scan-filters-grid.test.mjs`.
+- Zestaw: **2381** testów (+3: `tests/scan-filters-grid.test.mjs`).
+
 ## [1.147.0] — 2026-08-12
 
 **Hermes & Telegram — sekcja pomocy w aplikacji + powierzchnia cvstart.org (Phase 5b, część 2)** — druga i ostatnia część prac nad dokumentacją Hermesa: instrukcja mieszka teraz wewnątrz własnego przewodnika pomocy aplikacji, we wszystkich 17 językach, a wbudowany asystent dokumentacji odpowiada na jej podstawie na pytania o Hermes. Nadal wyłącznie dokumentacja — ścieżka dostawcy LLM Hermes pozostaje **zaplanowana / jeszcze niepodłączona** (Phase 5).
