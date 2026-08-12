@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.163.0] — 2026-08-13
+
+**Naprawiono (NISKIE) — asystent "Zapytaj dokumentację" obejmuje teraz eksport raportu do PDF.** Odpowiadał, że przewodnik tego nie obejmuje, choć `#/reports/:slug` ma działający przycisk 📄 Generate PDF.
+
+### Naprawiono
+- Dodano H3 **"Eksport raportu do PDF"** w §10 Raporty we **wszystkich 17 pakietach pomocy** (gdzie jest przycisk, plik trafia do `output/*.pdf`, wymaga Playwrighta, sprawdź przed wysłaniem). Wyszukiwanie asystenta pokazuje teraz sekcję Raporty.
+
+### Uwagi
+- Tylko dokumentacja/pomoc; bez zmian kodu/trasy/CSP/SSRF/zapisu. Próg pomocy **112 → 113 H3** (31 H2 bez zmian). `tests/help-reports-pdf-section.test.mjs` (+2). Zestaw: **2420** (+2).
+
 ## [1.162.0] — 2026-08-13
 
 **Naprawiono (ŚREDNIE) — "?" pomocy jest teraz celem ≥24×24 (WCAG 2.5.8).** `.help-hint` miał 18×18 px z `padding:0`, poniżej minimum, na każdym nagłówku.

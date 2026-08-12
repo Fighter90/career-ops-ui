@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2418%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2420%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.162.0** — **बड़ा "?" टैप लक्ष्य (a11y फ़िक्स)** — मदद "?" 18×18 px लक्ष्य था, WCAG 2.5.8 के 24×24 न्यूनतम से कम। बॉक्स अब 24×24 है जबकि दृश्य वलय 18px रहता है (`::before` द्वारा), कोई खिसकाव नहीं। **2418 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.163.0** — **हेल्प रिपोर्ट → PDF को कवर करता है (फ़िक्स)** — "डॉक्स से पूछें" सहायक कहता था कि गाइड रिपोर्ट को PDF में निर्यात करना कवर नहीं करता, जबकि `#/reports/:slug` पर 📄 Generate PDF बटन है। सभी 17 हेल्प बंडलों में "रिपोर्ट को PDF में निर्यात करें" खंड जोड़ा गया। **2420 परीक्षण।**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

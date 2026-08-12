@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.163.0] — 2026-08-13
+
+**Fixed (LOW) — the in-app "Ask the docs" assistant now covers exporting a report to PDF.** Asked "How do I export a report to PDF?", the assistant answered that the guide didn't cover it — although `#/reports/:slug` has a working 📄 Generate PDF control.
+
+### Fixed
+- Added an **"Export a report to PDF"** H3 under §10 Reports in **all 17 help bundles** (where the button is, that the file lands in `output/*.pdf`, needs Playwright, review-before-send). The docs-assistant retrieval (`splitSections`/`topSections`) now surfaces the Reports section for a PDF-export question.
+
+### Notes
+- Docs/help only; no code, route, CSP, SSRF, or parent-write change. Help gate moves **112 → 113 H3** (31 H2 unchanged); updated in `help-ru-config-section` + `locales-de-it-tr`.
+- Tests: `tests/help-reports-pdf-section.test.mjs` (+2: guidance present ×17, retrieval surfaces Reports). Suite: **2420** (+2).
+
 ## [1.162.0] — 2026-08-13
 
 **Fixed (MEDIUM) — the "?" help affordance is now a ≥24×24 pointer target (WCAG 2.5.8).** `.help-hint` measured 18×18 px with `padding:0`, below the Target Size (Minimum) floor, on every page heading.

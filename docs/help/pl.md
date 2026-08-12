@@ -1115,6 +1115,13 @@ Widok jednego raportu zawiera też:
 - **← All reports** — powrót do siatki.
 - **🔗 Open JD** — otwiera oryginalne ogłoszenie o pracę w nowej zakładce.
 
+### Eksport raportu do PDF
+
+Otwórz zapisany raport i kliknij **📄 Generate PDF**. Uruchamia to
+`generate-pdf.mjs` w projekcie nadrzędnym i zapisuje plik w `output/*.pdf`
+(wymaga Playwrighta; strona Zdrowie pokazuje, czy jest zainstalowany). Nic
+nie jest wysyłane: sprawdź PDF, zanim dołączysz go do aplikacji.
+
 ---
 
 ## 11. Tracker (`#/tracker`)

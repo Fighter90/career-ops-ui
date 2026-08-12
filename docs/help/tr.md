@@ -1243,6 +1243,13 @@ Tek rapor görünümünde ayrıca şunlar vardır:
 - **← All reports** — ızgaraya geri.
 - **🔗 Open JD** — orijinal iş ilanını yeni bir sekmede açar.
 
+### Bir raporu PDF olarak dışa aktarma
+
+Kaydedilmiş bir raporu açın ve **📄 Generate PDF**'e tıklayın. Bu, üst
+projede `generate-pdf.mjs` çalıştırır ve dosyayı `output/*.pdf` konumuna
+yazar (Playwright gerekir; Sağlık sayfası kurulu olup olmadığını gösterir).
+Hiçbir yere gönderilmez: bir başvuruya eklemeden önce PDF'i gözden geçirin.
+
 ---
 
 ## 11. Tracker (`#/tracker`)

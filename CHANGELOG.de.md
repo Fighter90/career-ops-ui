@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.163.0] — 2026-08-13
+
+**Behoben (NIEDRIG) — der In-App-Assistent "Frag die Docs" deckt jetzt den PDF-Export eines Berichts ab.** Er antwortete, der Leitfaden decke das nicht ab, obwohl `#/reports/:slug` einen funktionierenden 📄 Generate PDF-Button hat.
+
+### Behoben
+- Ein H3 **"Einen Bericht als PDF exportieren"** unter §10 Berichte in **allen 17 Hilfe-Bundles** hinzugefügt (wo der Button ist, dass die Datei nach `output/*.pdf` geht, Playwright nötig, vor dem Senden prüfen). Die Assistenten-Suche zeigt jetzt die Berichte-Sektion.
+
+### Hinweise
+- Nur Docs/Hilfe; keine Änderung an Code/Route/CSP/SSRF/Schreibzugriff. Hilfe-Gate **112 → 113 H3** (31 H2 unverändert). `tests/help-reports-pdf-section.test.mjs` (+2). Suite: **2420** (+2).
+
 ## [1.162.0] — 2026-08-13
 
 **Behoben (MITTEL) — das Hilfe-"?" ist jetzt ein ≥24×24-Zeigeziel (WCAG 2.5.8).** `.help-hint` maß 18×18 px mit `padding:0`, unter dem Minimum, auf jeder Überschrift.

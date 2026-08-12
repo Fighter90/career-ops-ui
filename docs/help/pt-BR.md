@@ -1114,6 +1114,13 @@ A vista de um único relatório também tem:
 - **← All reports** — volta para o grid.
 - **🔗 Open JD** — abre a postagem de vaga original em uma nova aba.
 
+### Exportar um relatório para PDF
+
+Abra um relatório salvo e clique em **📄 Generate PDF**. Ele executa
+`generate-pdf.mjs` no projeto pai e grava o arquivo em `output/*.pdf`
+(precisa do Playwright; a página Saúde mostra se está instalado). Nada é
+enviado: revise o PDF antes de anexá-lo a uma candidatura.
+
 ---
 
 ## 11. Tracker (`#/tracker`)

@@ -1106,6 +1106,14 @@ La vista de reporte individual también tiene:
 - **← All reports** — vuelve al grid.
 - **🔗 Open JD** — abre el job posting original en una pestaña nueva.
 
+### Exportar un informe a PDF
+
+Abre un informe guardado y pulsa **📄 Generate PDF**. Ejecuta
+`generate-pdf.mjs` en el proyecto padre y escribe el archivo en
+`output/*.pdf` (requiere Playwright; la página Salud indica si está
+instalado). No se envía nada: revisa el PDF antes de adjuntarlo a una
+candidatura.
+
 ---
 
 ## 11. Tracker (`#/tracker`)
