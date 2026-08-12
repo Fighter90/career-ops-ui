@@ -7,14 +7,14 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2413%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Останній реліз — v1.160.0** — **Чесний текст про провайдерів (виправлення)** — `#/config` і дашборд стверджували, що оцінка йде лише на Anthropic/Gemini (а OpenAI «не використовується») — хибно від каскаду 7 провайдерів. Тепер названо всіх сімох, картка Оцінити нейтральна, `Keys: N/5` → `N/7`. **2413 тестів.**
+> **🆕 Останній реліз — v1.161.0** — **Чип «Оцінку не розпізнано» (виправлення)** — Після мовно-незалежного парсера (v1.159.0) звіт без оцінки показував порожню смугу. `#/reports` тепер показує приглушений чип «Оцінку не розпізнано», що відкриває звіт; дата лишається. **2416 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

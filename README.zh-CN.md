@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2413%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.160.0** — **诚实的提供方文案(修复)** — `#/config` 和仪表盘称仅用 Anthropic/Gemini 评分(且 OpenAI"不使用")— 自 7 提供方级联起为错误。现在列出全部七家,Evaluate 卡片中立,`Keys: N/5` → `N/7`。 **2413 项测试。**
+> **🆕 最新版本 — v1.161.0** — **"未检测到评分"标签(修复)** — 在多语言解析器(v1.159.0)之后,无评分的报告显示空白条。`#/reports` 现在显示一个可打开报告的柔和"未检测到评分"标签;日期照常显示。 **2416 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

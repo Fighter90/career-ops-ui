@@ -739,6 +739,8 @@ window.__I18N_DICT_JA = {
   'rep.thrLow': "特別な個人的理由がなければスキップ",
   'rep.thresholdsSource': "出典: ",
   'rep.empty': "まだレポートがありません。最初の評価を行ってください。",
+  'rep.scoreUnparsed': "スコア未検出",
+  'rep.scoreUnparsedHint': "スコアを見るにはレポートを開いてください",
   'cv.title': "履歴書",
   'cv.subtitle': "評価の真実の情報源。すべてのスクリプトが cv.md を読みます。",
   'cv.markdown': "Markdown",

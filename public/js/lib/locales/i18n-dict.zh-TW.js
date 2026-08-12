@@ -739,6 +739,8 @@ window.__I18N_DICT_ZH_TW = {
   'rep.thrLow': "除非有特定個人理由,跳過",
   'rep.thresholdsSource': "來自 ",
   'rep.empty': "尚無報告。進行首次評估。",
+  'rep.scoreUnparsed': "未偵測到評分",
+  'rep.scoreUnparsedHint': "開啟報告查看評分",
   'cv.title': "履歷",
   'cv.subtitle': "評估的真實來源。所有指令稿讀取 cv.md。",
   'cv.markdown': "Markdown",

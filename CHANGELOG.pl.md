@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.161.0] — 2026-08-13
+
+**Naprawiono (ŚREDNIE) — `#/reports` pokazuje chip "Nie wykryto wyniku" zamiast pustego miejsca.** Po parserze wielojęzycznym z v1.159.0 raport bez możliwego do odczytania wyniku pokazywał pusty obszar, nieodróżnialny od błędu.
+
+### Naprawiono
+- Komórka wyniku się rozgałęzia: jest wynik → pigułka tonu; brak wyniku → wyciszony chip **`.score-muted`** ("Nie wykryto wyniku", ×17) z podpowiedzią "Otwórz raport…". Karta pozostaje `role="link"` obsługiwanym z klawiatury, data się wyświetla.
+- Ponownie używa istniejącego neutralnego tokenu; bez nowego koloru.
+
+### Uwagi
+- Tylko klient; bez zmian trasy/CSP/SSRF/zapisu. +2 klucze i18n ×17 (migawka 1217 → 1219). Zestaw: **2416** (+3).
+
 ## [1.160.0] — 2026-08-13
 
 **Naprawiono (WYSOKIE) — tekst o dostawcach nie zaprzecza już obietnicy 7 dostawców.** `#/config` mówił, że ocena na żywo "używa klucza Anthropic lub Gemini", a klucz OpenAI "nie jest używany przez web UI"; pulpit pokazywał "Anthropic-first scoring" — fałsz od kaskady 7 dostawców (v1.157.0).

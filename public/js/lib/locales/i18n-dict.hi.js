@@ -742,6 +742,8 @@ window.__I18N_DICT_HI = {
   'rep.thrLow': "छोड़ दें जब तक कि आपके पास कोई खास व्यक्तिगत कारण न हो",
   'rep.thresholdsSource': "से ",
   'rep.empty': "अभी तक कोई रिपोर्ट नहीं। अपना पहला मूल्यांकन करें।",
+  'rep.scoreUnparsed': "स्कोर नहीं मिला",
+  'rep.scoreUnparsedHint': "स्कोर देखने के लिए रिपोर्ट खोलें",
   'cv.title': "CV",
   'cv.subtitle': "मूल्यांकन के लिए सत्य का स्रोत। सभी स्क्रिप्ट cv.md पढ़ती हैं।",
   'cv.markdown': "मार्कडाउन",

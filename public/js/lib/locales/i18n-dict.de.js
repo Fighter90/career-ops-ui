@@ -739,6 +739,8 @@ window.__I18N_DICT_DE = {
   'rep.thrLow': "Überspringen, sofern Sie keinen konkreten persönlichen Grund haben",
   'rep.thresholdsSource': "Aus ",
   'rep.empty': "Noch keine Berichte. Machen Sie Ihre erste Bewertung.",
+  'rep.scoreUnparsed': "Score nicht erkannt",
+  'rep.scoreUnparsedHint': "Öffne den Bericht, um den Score zu sehen",
   'cv.title': "CV",
   'cv.subtitle': "Source of Truth für Bewertungen. Alle Skripte lesen cv.md.",
   'cv.markdown': "Markdown",

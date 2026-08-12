@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2413%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Ultima release — v1.160.0** — **Testo provider onesto (fix)** — `#/config` e la dashboard dicevano di valutare solo con Anthropic/Gemini (e che OpenAI "non è usato") — falso dalla cascata a 7 provider. Ora sono nominati tutti e sette, la card Valuta è neutrale e `Keys: N/5` → `N/7`. **2413 test.**
+> **🆕 Ultima release — v1.161.0** — **Chip "Punteggio non rilevato" (fix)** — Dopo il parser multilingua (v1.159.0), un report senza punteggio mostrava una striscia vuota. `#/reports` ora mostra un chip attenuato "Punteggio non rilevato" che apre il report; la data resta. **2416 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

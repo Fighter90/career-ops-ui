@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.161.0] — 2026-08-13
+
+**Fixed (MEDIUM) — `#/reports` shows a "score not detected" chip instead of blank space.** After the v1.159.0 locale-aware parser, a report that still has no parseable score rendered an empty metadata area — indistinguishable from a failed evaluation, with no recovery affordance.
+
+### Fixed
+- The score cell now branches: a parsed score → the tone pill; **no score → a muted `.score-muted` chip** reading "Score not detected" (localized ×17) with an "Open the report to see the score" tooltip. The card stays a keyboard-operable `role="link"` that opens the report (where the score lives in the body), and the date still renders (v1.159.0 mtime fallback), so cards never lose their anchor.
+- Reuses the existing neutral tone token — no new colour (`score-tone.js` already specifies a no-score row as *muted*).
+
+### Notes
+- Client-only; no route/CSP/SSRF/parent-write change. +2 i18n keys ×17 (`rep.scoreUnparsed`, `rep.scoreUnparsedHint`; snapshot 1217 → 1219).
+- Tests: `tests/reports-unparsed-chip.test.mjs` (+3). Suite: **2416** (+3).
+
 ## [1.160.0] — 2026-08-13
 
 **Fixed (HIGH) — provider copy no longer contradicts the 7-provider promise.** `#/config` said the web-ui live eval "uses your Anthropic or Gemini API key" and that the OpenAI key is "not used by the web UI itself"; `#/dashboard`'s Evaluate card said "Anthropic-first scoring" — all false since the OpenRouter / 7-provider cascade shipped (v1.157.0), and self-contradicted on the same screen (the header chip read `Active: OpenRouter`).

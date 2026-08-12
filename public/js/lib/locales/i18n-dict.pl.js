@@ -738,6 +738,8 @@ window.__I18N_DICT_PL = {
   'rep.thrLow': "Pomiń, chyba że masz konkretny osobisty powód",
   'rep.thresholdsSource': "Z ",
   'rep.empty': "Brak raportów. Wykonaj pierwszą ocenę.",
+  'rep.scoreUnparsed': "Nie wykryto wyniku",
+  'rep.scoreUnparsedHint': "Otwórz raport, aby zobaczyć wynik",
   'cv.title': "CV",
   'cv.subtitle': "Źródło prawdy dla ocen. Wszystkie skrypty czytają cv.md.",
   'cv.markdown': "Markdown",

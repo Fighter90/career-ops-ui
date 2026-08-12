@@ -74,7 +74,17 @@ Router.register('reports', async (params) => {
             rep.legitimacy && c('span', { className: 'tag' }, rep.legitimacy),
           ]),
         ]),
-        rep.scoreNum != null && c('span', { className: 'score-pill ' + cls }, rep.score),
+        // FIX-3 (v1.161.0) — a report with no parseable score (after the
+        // v1.159.0 locale-aware parser) shows a MUTED chip, not empty space,
+        // so the user can tell "unparsed" from "failed". The whole card is
+        // already a role=link that opens the report (where the score is in the
+        // body); the chip reuses the existing neutral `.score-muted` token.
+        rep.scoreNum != null
+          ? c('span', { className: 'score-pill ' + cls }, rep.score)
+          : c('span', {
+            className: 'score-pill score-muted',
+            title: t('rep.scoreUnparsedHint', 'Open the report to see the score'),
+          }, t('rep.scoreUnparsed', 'Score not detected')),
       ]),
     ]);
   }

@@ -739,6 +739,8 @@ window.__I18N_DICT_TR = {
   'rep.thrLow': "Belirli bir kişisel nedeniniz yoksa atlayın",
   'rep.thresholdsSource': "Kaynak: ",
   'rep.empty': "Henüz rapor yok. İlk değerlendirmenizi yapın.",
+  'rep.scoreUnparsed': "Puan algılanmadı",
+  'rep.scoreUnparsedHint': "Puanı görmek için raporu aç",
   'cv.title': "CV",
   'cv.subtitle': "Değerlendirmeler için doğruluk kaynağı. Tüm betikler cv.md dosyasını okur.",
   'cv.markdown': "Markdown",

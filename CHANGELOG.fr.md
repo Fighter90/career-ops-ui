@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.161.0] — 2026-08-13
+
+**Corrigé (MOYENNE) — `#/reports` affiche une puce "Score non détecté" au lieu d'un espace vide.** Après l'analyseur multilingue de v1.159.0, un rapport sans score analysable affichait une zone vide, indistinguable d'un échec.
+
+### Corrigé
+- La cellule de score se ramifie désormais : score présent → pilule de ton ; sans score → puce **`.score-muted`** ("Score non détecté", ×17) avec l'info-bulle "Ouvrez le rapport…". La carte reste un `role="link"` opérable au clavier et la date s'affiche.
+- Réutilise le jeton neutre existant ; aucune nouvelle couleur.
+
+### Notes
+- Client uniquement ; aucun changement de route/CSP/SSRF/écriture. +2 clés i18n ×17 (instantané 1217 → 1219). Suite : **2416** (+3).
+
 ## [1.160.0] — 2026-08-13
 
 **Corrigé (HAUTE) — le texte sur les fournisseurs ne contredit plus la promesse des 7 fournisseurs.** `#/config` disait que l'évaluation en direct "utilise votre clé Anthropic ou Gemini" et que celle d'OpenAI "n'est pas utilisée par le web UI" ; le tableau de bord affichait "Scoring Anthropic-first" — faux depuis la cascade à 7 fournisseurs (v1.157.0).

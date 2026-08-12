@@ -739,6 +739,8 @@ window.__I18N_DICT_IT = {
   'rep.thrLow': "Salta a meno che tu non abbia una ragione personale specifica",
   'rep.thresholdsSource': "Da ",
   'rep.empty': "Ancora nessun rapporto. Effettua la tua prima valutazione.",
+  'rep.scoreUnparsed': "Punteggio non rilevato",
+  'rep.scoreUnparsedHint': "Apri il report per vedere il punteggio",
   'cv.title': "CV",
   'cv.subtitle': "Fonte di verità per le valutazioni. Tutti gli script leggono cv.md.",
   'cv.markdown': "Markdown",

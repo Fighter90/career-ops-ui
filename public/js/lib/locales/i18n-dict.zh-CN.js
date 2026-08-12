@@ -739,6 +739,8 @@ window.__I18N_DICT_ZH_CN = {
   'rep.thrLow': "除非有特定个人理由,跳过",
   'rep.thresholdsSource': "来自 ",
   'rep.empty': "尚无报告。进行首次评估。",
+  'rep.scoreUnparsed': "未检测到评分",
+  'rep.scoreUnparsedHint': "打开报告查看评分",
   'cv.title': "简历",
   'cv.subtitle': "评估的真实来源。所有脚本读取 cv.md。",
   'cv.markdown': "Markdown",

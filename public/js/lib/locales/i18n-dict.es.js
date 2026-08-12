@@ -739,6 +739,8 @@ window.__I18N_DICT_ES = {
   'rep.thrLow': "Salta salvo razón específica personal",
   'rep.thresholdsSource': "De ",
   'rep.empty': "Aún no hay reportes. Haz tu primera evaluación.",
+  'rep.scoreUnparsed': "Puntuación no detectada",
+  'rep.scoreUnparsedHint': "Abre el informe para ver la puntuación",
   'cv.title': "CV",
   'cv.subtitle': "Fuente de verdad para evaluaciones. Todos los scripts leen cv.md.",
   'cv.markdown': "Markdown",

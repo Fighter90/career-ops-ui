@@ -738,6 +738,8 @@ window.__I18N_DICT_UK = {
   'rep.thrLow': "Пропустіть, якщо немає конкретної особистої причини",
   'rep.thresholdsSource': "З ",
   'rep.empty': "Звітів ще немає. Зробіть першу оцінку.",
+  'rep.scoreUnparsed': "Оцінку не розпізнано",
+  'rep.scoreUnparsedHint': "Відкрийте звіт, щоб побачити оцінку",
   'cv.title': "CV",
   'cv.subtitle': "Першоджерело для оцінок. Всі скрипти читають cv.md.",
   'cv.markdown': "Markdown",
