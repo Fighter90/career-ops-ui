@@ -8,6 +8,17 @@
 
 ---
 
+## [1.157.0] — 2026-08-12
+
+**修復 —— 即時評估現在可用任一已設定的供應方執行,不再僅限 Anthropic/Gemini。** 僅設定 `OPENROUTER_API_KEY` 的使用者被錯誤強制進入手動模式。
+
+### 修復
+- **根本原因:** 無金鑰的 `LLM_PROVIDER` 釘選(如 `init` 寫入的 `LLM_PROVIDER=claude`)會走進死胡同;現在會在已設定的供應方之間按 auto 順序回退(在 `selectActiveProvider` 與兩條派發級聯中)。
+- 用戶端門控(`#/deep` 與 mode-page 檢視)現改用 `window.ProviderStatus`(`/api/status/providers`,全部 7 個),不再用過時的 Anthropic/Gemini 探測;重寫文案(deep/eval × 17)+ 儀表板「即時評估」徽章 + `config.llmProviderHint`。
+
+### 說明
+- 無安全變更。套件:**2401** 項測試(+5)。
+
 ## [1.156.0] — 2026-08-12
 
 **重構 —— 將 `scan.js` 拆分到大小上限以下(P-16)+ 一個 CodeQL 修復。** `scan.js` 原有 **906 行**;提取了兩個保持行為的工廠 → **648 行**。完成 P-15/P-16 檢視拆分。

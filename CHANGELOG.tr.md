@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.157.0] — 2026-08-12
+
+**Düzeltildi — canlı değerlendirmeler artık yalnızca Anthropic/Gemini değil, YAPILANDIRILMIŞ herhangi bir sağlayıcıyla çalışıyor.** Yalnızca `OPENROUTER_API_KEY` ayarlı bir kullanıcı yanlışlıkla manuel moda zorlanıyordu.
+
+### Düzeltildi
+- **Kök neden:** anahtarsız bir `LLM_PROVIDER` sabiti (ör. `init`’ten gelen `LLM_PROVIDER=claude`) çıkmaza giriyordu; artık yapılandırılmış sağlayıcılar arasında auto sırasına geri düşüyor (`selectActiveProvider` + her iki dağıtım kaskadında).
+- İstemci kapılaması (`#/deep` + mode-page görünümleri) artık eski Anthropic/Gemini yoklaması yerine `window.ProviderStatus` (`/api/status/providers`, yedisi) kullanıyor; yeniden yazılmış metinler (deep/eval × 17) + panodaki «Canlı değerlendirmeler» rozeti + `config.llmProviderHint`.
+
+### Notlar
+- Güvenlik değişikliği yok. Takım: **2401** test (+5).
+
 ## [1.156.0] — 2026-08-12
 
 **Refactor — `scan.js`’i boyut sınırının altına bölmek (P-16) + bir CodeQL düzeltmesi.** `scan.js` **906 satırdı**; davranışı koruyan iki fabrika çıkarılarak **648**’e indirildi. P-15/P-16 görünüm-bölme çiftini tamamlar.

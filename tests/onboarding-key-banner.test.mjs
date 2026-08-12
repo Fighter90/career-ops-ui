@@ -59,10 +59,12 @@ test('selectActiveProvider: none configured → null', () => {
   assert.equal(selectActiveProvider([], {}), null);
 });
 
-test('selectActiveProvider: LLM_PROVIDER pin with no matching key → null', () => {
-  // pinned to openai but only gemini key present → falls through
-  assert.equal(selectActiveProvider(['gemini'], { LLM_PROVIDER: 'openai' }), null);
-  // pinned to claude with anthropic key → anthropic
+test('selectActiveProvider: a keyless pin falls back to a configured provider (v1.157.0)', () => {
+  // v1.157.0 — a pinned provider whose key isn't set no longer dead-ends at null;
+  // it falls back to the auto order among the CONFIGURED keys (so a stale
+  // LLM_PROVIDER=claude from `init` doesn't trap a user whose only key is another).
+  assert.equal(selectActiveProvider(['gemini'], { LLM_PROVIDER: 'openai' }), 'gemini');
+  // pinned to claude with anthropic key present → stays anthropic (pin honored)
   assert.equal(selectActiveProvider(['anthropic', 'gemini'], { LLM_PROVIDER: 'claude' }), 'anthropic');
 });
 

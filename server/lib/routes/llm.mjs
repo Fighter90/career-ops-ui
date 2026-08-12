@@ -38,12 +38,29 @@ import {
   resolveLocale,
 } from '../prompts.mjs';
 
-// v1.39.0 (WS8.2) — honor LLM_PROVIDER. auto → both (legacy
-// Anthropic→Gemini); claude → Anthropic only; gemini → Gemini
-// only. A forced provider with no key falls through to the
-// manual-prompt path exactly like the pre-v1.39 no-key case.
+// v1.39.0 (WS8.2) — honor LLM_PROVIDER. auto → the full order; claude →
+// Anthropic only; gemini → Gemini only; etc.
+// v1.157.0 — a *forced* provider whose key isn't set no longer dead-ends at the
+// manual-prompt path when OTHER providers are configured: it falls back to the
+// auto order among the configured keys. A user who ran `init` with Claude Code
+// gets `LLM_PROVIDER=claude`; adding only, say, OPENROUTER_API_KEY should still
+// run live. (If the forced provider DOES have a key, it stays forced.) This
+// mirrors env-config.mjs::selectActiveProvider so the "⚡ Run live" affordance
+// the SPA shows can never contradict what the dispatch actually does.
+function _hasKeyFor(p) {
+  return (p === 'anthropic' && hasAnthropicKey())
+    || (p === 'gemini' && hasGeminiKey())
+    || (p === 'openai' && hasOpenAIKey())
+    || (p === 'qwen' && hasQwenKey())
+    || (p === 'openrouter' && hasOpenRouterKey())
+    || (p === 'github' && hasGitHubModelsKey())
+    || (p === 'hermes' && hasHermesKey());
+}
 function _provGate() {
-  const o = providerOrder();
+  let o = providerOrder();
+  if (o.length === 1 && !_hasKeyFor(o[0])) {
+    o = ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'];
+  }
   return {
     wantAnthropic: o.includes('anthropic'), wantGemini: o.includes('gemini'),
     wantOpenAI: o.includes('openai'), wantQwen: o.includes('qwen'),

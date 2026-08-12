@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.157.0] — 2026-08-12
+
+**Rettet — live-evals kører nu på ENHVER konfigureret udbyder, ikke kun Anthropic/Gemini.** En bruger med kun `OPENROUTER_API_KEY` blev fejlagtigt tvunget i manuel tilstand.
+
+### Rettet
+- **Årsag:** et `LLM_PROVIDER`-pin uden nøgle (fx `LLM_PROVIDER=claude` fra `init`) endte blindt; nu falder den tilbage til auto-rækkefølgen blandt de konfigurerede udbydere (i `selectActiveProvider` + begge dispatch-kaskader).
+- Klient-gating (`#/deep` + mode-page-views) bruger nu `window.ProviderStatus` (`/api/status/providers`, alle 7) i stedet for den forældede Anthropic/Gemini-probe; omskrevne tekster (deep/eval × 17) + «Live-evals»-badge på dashboardet + `config.llmProviderHint`.
+
+### Noter
+- Ingen sikkerhedsændringer. Suite: **2401** tests (+5).
+
 ## [1.156.0] — 2026-08-12
 
 **Refaktor — opdel `scan.js` under størrelsesgrænsen (P-16) + en CodeQL-rettelse.** `scan.js` var **906 linjer**; to adfærdsbevarende fabrikker blev udtrukket → **648**. Fuldender view-opdelingsparret P-15/P-16.

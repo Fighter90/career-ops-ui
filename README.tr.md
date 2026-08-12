@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Son sürüm — v1.156.0** — **Daha temiz scan görünümü (refactor)** — `scan.js` (906 satır) 800 sınırının altına runner + filters fabrikasına bölündü (P-16, P-15 config bölünmesini tamamlar). Davranış değişikliği yok; CodeQL #428’i de kapatır. **2396 test.**
+> **🆕 Son sürüm — v1.157.0** — **Her sağlayıcıda canlı değerlendirme (düzeltme)** — Yalnızca `OPENROUTER_API_KEY` olan bir kullanıcı manuel moda zorlanıyordu. Neden: anahtarsız `LLM_PROVIDER=claude` sabiti (`init`’ten) — artık yapılandırılmış herhangi bir sağlayıcıya geri düşer ve istemci `/api/status/providers`’ı (yedisi) okur. **2401 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

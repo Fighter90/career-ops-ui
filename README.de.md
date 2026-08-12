@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Neueste Version — v1.156.0** — **Sauberere scan-Ansicht (Refactor)** — `scan.js` (906 Zeilen) unter das 800-Limit in eine Runner- und eine Filter-Factory aufgeteilt (P-16, vervollständigt den config-Split aus P-15). Keine Verhaltensänderung; behebt auch CodeQL #428. **2396 Tests.**
+> **🆕 Neueste Version — v1.157.0** — **Live-Evals mit jedem Provider (Fix)** — Ein Nutzer mit nur `OPENROUTER_API_KEY` wurde in den manuellen Modus gezwungen. Ursache: ein `LLM_PROVIDER=claude`-Pin (aus `init`) ohne Schlüssel — greift nun auf jeden konfigurierten Provider zurück, und der Client liest `/api/status/providers` (alle 7). **2401 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

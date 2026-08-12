@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2401%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Latest release — v1.156.0** — **Cleaner scan view (refactor)** — `scan.js` (906 lines) split under the 800-line limit into a runner + a filters factory (P-16, completing the P-15 config split). Zero behavior change; also clears CodeQL #428. **2396 tests.**
+> **🆕 Latest release — v1.157.0** — **Live evals on any provider (fix)** — A user with only `OPENROUTER_API_KEY` was wrongly forced into manual mode. Root cause: a keyless `LLM_PROVIDER=claude` pin (from `init`) dead-ended — now it falls back to any configured provider, and the client gating reads `/api/status/providers` (all 7), not just Anthropic/Gemini. **2401 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

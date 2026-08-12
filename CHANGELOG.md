@@ -8,6 +8,23 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.157.0] — 2026-08-12
+
+**Fixed — live evals now run on ANY configured provider, not just Anthropic/Gemini.** A user with only `OPENROUTER_API_KEY` set was wrongly forced into manual mode ("set ANTHROPIC_API_KEY or GEMINI_API_KEY…"). Two independent causes: a stale server-side pin, and stale client-side gating.
+
+### Fixed
+- **Root cause — a keyless `LLM_PROVIDER` pin dead-ended.** Running `init` with Claude Code writes `LLM_PROVIDER=claude`; if you later add only, say, an OpenRouter key, the forced-claude routing found no Anthropic key and fell through to a manual prompt — even though OpenRouter was configured and fully supported. Now **a forced provider whose key isn't set falls back to the auto order among the *configured* providers** (a pin that DOES have its key stays forced). Applied consistently in `env-config.mjs::selectActiveProvider` and **both** dispatch cascades (`routes/llm.mjs::_provGate` + `llm-dispatch.mjs::gate`), so `/api/status/providers` and the actual run always agree.
+- **Client gating was stale.** `#/deep` and the mode-page views (`#/contacto`, `#/interview-prep`, `#/project`, …) decided "Run live vs manual" by probing `/api/health` for only `ANTHROPIC_API_KEY` / `GEMINI_API_KEY`. They now use the new `window.ProviderStatus` helper, which reads `/api/status/providers` (`activeProvider`, honoring all seven + the pin). No more ⚡-button that promises a live run the server would refuse.
+- **Misleading copy.** `deep.tipManual`, `deep.needKey`, and `eval.manualMode` (× 17) no longer name only Anthropic/Gemini — they point at "any provider key … in App settings". `config.llmProviderHint` (× 17) explains the new pin-fallback. `#/dashboard`'s system card now shows a single honest **Live evals · ready/manual** badge (derived from all seven provider rows) instead of Anthropic/Gemini-only badges.
+
+### Added
+- **`public/js/lib/provider-status.js`** — `window.ProviderStatus` (`.live()` → `{ available, engine, activeProvider, keysConfigured }`, plus a 7-provider label map): the single client source of truth for live-eval availability. Loaded after `api.js`.
+
+### Notes
+- No security-surface change — provider endpoints are still trusted config; no route, CSP, or SSRF change. The fallback only picks among keys the operator already configured.
+- Tests: `tests/live-provider-gating.test.mjs` (+4, source-static guard against the stale 2-provider probe) + a `selectActiveProvider` keyless-pin-fallback case; the old "pin with no key → null" assertion updated to the new fallback. 3 new `dash.system.*` keys × 17 (snapshot 1214 → 1217).
+- Suite: **2401** tests (+5); Playwright smoke/full-cycle/forms 62/62.
+
 ## [1.156.0] — 2026-08-12
 
 **Refactor — split `scan.js` under the file-size limit (P-16), + a CodeQL fix.** `public/js/views/scan.js` was **906 lines**, over the 800-line hard limit. Two cohesive, behavior-preserving factories were extracted, bringing it to **648** — completing the view-split pair started with `config.js` in v1.155.0.

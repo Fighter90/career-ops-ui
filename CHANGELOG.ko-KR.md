@@ -9,6 +9,17 @@
 ---
 
 
+## [1.157.0] — 2026-08-12
+
+**수정됨 — 라이브 평가가 이제 Anthropic/Gemini뿐 아니라 설정된 어떤 제공자로도 실행됩니다.** `OPENROUTER_API_KEY`만 설정한 사용자가 잘못 수동 모드로 강제되었습니다.
+
+### 수정됨
+- **근본 원인:** 키 없는 `LLM_PROVIDER` 핀(예: `init`의 `LLM_PROVIDER=claude`)이 막다른 길로 갔습니다. 이제 설정된 제공자들 사이에서 auto 순서로 대체됩니다(`selectActiveProvider` + 두 디스패치 캐스케이드).
+- 클라이언트 게이팅(`#/deep` + mode-page 뷰)이 이제 오래된 Anthropic/Gemini 프로브 대신 `window.ProviderStatus`(`/api/status/providers`, 7개)를 사용; 문구 재작성(deep/eval × 17) + 대시보드 «라이브 평가» 배지 + `config.llmProviderHint`.
+
+### 참고
+- 보안 변화 없음. 스위트: **2401**개 테스트(+5).
+
 ## [1.156.0] — 2026-08-12
 
 **리팩터 — `scan.js`를 파일 크기 한도 아래로 분할(P-16) + CodeQL 수정.** `scan.js`는 **906줄**이었고, 동작 보존 팩토리 두 개를 추출해 **648줄**로. P-15/P-16 뷰 분할 쌍을 완성.

@@ -24,8 +24,25 @@ import { recordUsage } from './llm-usage.mjs';
 // Mirror llm.mjs BF-3 soft cap: 200 KB ≈ ~50K tokens.
 export const PROMPT_SIZE_SOFT_CAP = 200 * 1024;
 
+// v1.157.0 — a forced provider whose key isn't set falls back to the auto order
+// among the configured keys (mirrors env-config.mjs::selectActiveProvider +
+// routes/llm.mjs::_provGate), so a stale `LLM_PROVIDER=claude` never dead-ends a
+// user whose only key is e.g. OpenRouter. A forced provider that DOES have a key
+// stays forced.
+function _hasKeyFor(p) {
+  return (p === 'anthropic' && hasAnthropicKey())
+    || (p === 'gemini' && hasGeminiKey())
+    || (p === 'openai' && hasOpenAIKey())
+    || (p === 'qwen' && hasQwenKey())
+    || (p === 'openrouter' && hasOpenRouterKey())
+    || (p === 'github' && hasGitHubModelsKey())
+    || (p === 'hermes' && hasHermesKey());
+}
 function gate() {
-  const o = providerOrder();
+  let o = providerOrder();
+  if (o.length === 1 && !_hasKeyFor(o[0])) {
+    o = ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'];
+  }
   return {
     wantAnthropic: o.includes('anthropic'), wantGemini: o.includes('gemini'),
     wantOpenAI: o.includes('openai'), wantQwen: o.includes('qwen'),

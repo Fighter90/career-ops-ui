@@ -9,6 +9,17 @@
 ---
 
 
+## [1.157.0] — 2026-08-12
+
+**修复 —— 实时评估现在可用任意已配置的提供方运行,不再仅限 Anthropic/Gemini。** 仅设置 `OPENROUTER_API_KEY` 的用户被错误地强制进入手动模式。
+
+### 修复
+- **根本原因:** 无密钥的 `LLM_PROVIDER` 固定(如 `init` 写入的 `LLM_PROVIDER=claude`)会走进死胡同;现在会在已配置的提供方之间按 auto 顺序回退(在 `selectActiveProvider` 与两条派发级联中)。
+- 客户端门控(`#/deep` 与 mode-page 视图)现改用 `window.ProviderStatus`(`/api/status/providers`,全部 7 个),不再用过时的 Anthropic/Gemini 探测;重写文案(deep/eval × 17)+ 仪表盘「实时评估」徽章 + `config.llmProviderHint`。
+
+### 说明
+- 无安全变更。套件:**2401** 项测试(+5)。
+
 ## [1.156.0] — 2026-08-12
 
 **重构 —— 将 `scan.js` 拆分到大小上限以下(P-16)+ 一个 CodeQL 修复。** `scan.js` 原有 **906 行**;提取了两个保持行为的工厂 → **648 行**。完成 P-15/P-16 视图拆分。
