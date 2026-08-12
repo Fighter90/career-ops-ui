@@ -612,13 +612,20 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
  * CSP-safe (handlers via addEventListener), theme-aware, RTL-mirrored. The
  * icon is inline with the heading; the popover is position:fixed and rendered
  * into <body>, positioned by help-hint.js and clamped to the viewport. */
+/* FIX-4 (v1.162.0) — the "?" pointer target is now 24×24 (WCAG 2.5.8 Target
+ * Size Minimum), while the VISIBLE ring stays 18px. The box is 24×24 and
+ * transparent; the 18px bordered circle is drawn by ::before, centered in the
+ * box, so the hit area grows without enlarging the glyph or shifting the h1
+ * baseline (the page-title line is taller than 24px). margin trimmed 6→3px so
+ * the visual gap to the title text is unchanged (box grew 3px each side). */
 .help-hint {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  margin: 0 0 0 6px;
+  width: 24px;
+  height: 24px;
+  margin: 0 0 0 3px;
   padding: 0;
   flex: 0 0 auto;
   vertical-align: middle;
@@ -627,21 +634,34 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   line-height: 1;
   color: var(--foggy);
   background: transparent;
+  border: 0;
+  cursor: help;
+  transition: color .12s ease;
+}
+.help-hint::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
   border: 1px solid var(--line);
   border-radius: 50%;
-  cursor: help;
-  transition: color .12s ease, border-color .12s ease, background .12s ease;
+  background: transparent;
+  transition: border-color .12s ease, background .12s ease;
 }
-[dir="rtl"] .help-hint { margin: 0 6px 0 0; }
+[dir="rtl"] .help-hint { margin: 0 3px 0 0; }
 .help-hint:hover,
 .help-hint[aria-expanded="true"] {
   color: #fff;
+}
+.help-hint:hover::before,
+.help-hint[aria-expanded="true"]::before {
   background: var(--rausch);
   border-color: var(--rausch);
 }
 .help-hint:focus-visible {
   outline: 2px solid var(--rausch);
   outline-offset: 2px;
+  border-radius: 50%;
 }
 
 .help-pop {

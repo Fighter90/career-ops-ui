@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.162.0] — 2026-08-13
+
+**Corrigido (MÉDIA) — o "?" de ajuda agora é um alvo de ≥24×24 (WCAG 2.5.8).** `.help-hint` media 18×18 px com `padding:0`, abaixo do mínimo, em cada cabeçalho.
+
+### Corrigido
+- A caixa de `.help-hint` agora é **24×24** (o alvo mensurável) enquanto o **anel visível continua 18px** via um `::before` centralizado — o glifo e a linha de base do `<h1>` não mudam. Estados hover/ativo/foco acompanham o anel; margem 6→3px para manter o espaço.
+
+### Notas
+- Apenas CSS; sem mudança de JS/i18n/rota/CSP/SSRF/escrita. `tests/help-hint-target-size.test.mjs` (+2). Conjunto: **2418** (+2).
+
 ## [1.161.0] — 2026-08-13
 
 **Corrigido (MÉDIA) — `#/reports` mostra um chip "pontuação não detectada" em vez de espaço vazio.** Após o analisador multi-idioma da v1.159.0, um relatório sem pontuação analisável mostrava uma área vazia, indistinguível de uma falha.

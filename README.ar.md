@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2418%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 أحدث إصدار — v1.161.0** — **شارة "لم يُكتشف التقييم" (إصلاح)** — بعد المحلّل المتعدد اللغات (v1.159.0)، كان التقرير بلا تقييم يعرض شريطًا فارغًا. يعرض `#/reports` الآن شارة خافتة "لم يُكتشف التقييم" تفتح التقرير؛ ويبقى التاريخ. **2416 اختبار.**
+> **🆕 أحدث إصدار — v1.162.0** — **هدف لمس "?" أكبر (إصلاح وصول)** — كان "?" المساعدة هدفًا بحجم 18×18 بكسل، دون حد 24×24 في WCAG 2.5.8. صار الصندوق 24×24 والحلقة المرئية تبقى 18 بكسل (عبر `::before`) دون إزاحة. **2418 اختبار.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

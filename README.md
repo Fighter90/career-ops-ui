@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2418%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Latest release — v1.161.0** — **"Score not detected" chip (fix)** — After the locale-aware parser (v1.159.0), a report with no parseable score showed a blank strip — indistinguishable from a failure. `#/reports` now renders a muted "Score not detected" chip that opens the report; the date still shows. **2416 tests.**
+> **🆕 Latest release — v1.162.0** — **Bigger "?" tap target (a11y fix)** — the help "?" on every page heading was an 18×18 px pointer target, under the WCAG 2.5.8 24×24 minimum. Its box is now 24×24 while the visible ring stays 18px (drawn by `::before`), so nothing shifts. **2418 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.162.0] — 2026-08-13
+
+**Düzeltildi (ORTA) — yardım "?" artık ≥24×24 işaretçi hedefi (WCAG 2.5.8).** `.help-hint` her başlıkta `padding:0` ile 18×18 px, minimumun altındaydı.
+
+### Düzeltildi
+- `.help-hint` kutusu artık **24×24** (ölçülebilir hedef), **görünen halka 18px kalıyor** — ortalanmış bir `::before` ile çizilir, böylece glif ve `<h1>` taban çizgisi değişmez. Hover/etkin/odak durumları halkayı izler; kenar boşluğu 6→3px ile boşluk korunur.
+
+### Notlar
+- Yalnızca CSS; JS/i18n/rota/CSP/SSRF/yazma değişikliği yok. `tests/help-hint-target-size.test.mjs` (+2). Takım: **2418** (+2).
+
 ## [1.161.0] — 2026-08-13
 
 **Düzeltildi (ORTA) — `#/reports` boşluk yerine "Puan algılanmadı" çipi gösteriyor.** v1.159.0 dil-duyarlı ayrıştırıcıdan sonra bile puanı ayrıştırılamayan bir rapor boş alan gösteriyordu — başarısızlıktan ayırt edilemez.

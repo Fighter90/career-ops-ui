@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.162.0] — 2026-08-13
+
+**Fixed (MEDIUM) — the "?" help affordance is now a ≥24×24 pointer target (WCAG 2.5.8).** `.help-hint` measured 18×18 px with `padding:0`, below the Target Size (Minimum) floor, on every page heading.
+
+### Fixed
+- `.help-hint` box is now **24×24** (the measurable pointer target) while the **visible ring stays 18px**, drawn by a centered `::before` — so the glyph size and the `<h1>` baseline/line-height are unchanged (page-title lines are taller than 24px). Hover / active / focus-visible states move with the ring; the margin trims 6→3px so the gap to the title is identical. The v1.158.0 `document.title` clone-strip (which excludes `.help-hint`) is untouched.
+
+### Notes
+- CSS-only; no JS, i18n, route, CSP, SSRF, or parent-write change.
+- Tests: `tests/help-hint-target-size.test.mjs` (+2). Suite: **2418** (+2).
+
 ## [1.161.0] — 2026-08-13
 
 **Fixed (MEDIUM) — `#/reports` shows a "score not detected" chip instead of blank space.** After the v1.159.0 locale-aware parser, a report that still has no parseable score rendered an empty metadata area — indistinguishable from a failed evaluation, with no recovery affordance.

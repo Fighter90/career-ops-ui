@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2418%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.161.0** — **"점수 감지 안 됨" 칩 (수정)** — 로케일 파서(v1.159.0) 이후에도 점수 없는 리포트는 빈 영역을 보였습니다. `#/reports`가 이제 리포트를 여는 흐린 "점수 감지 안 됨" 칩을 표시하며 날짜는 유지됩니다. **2416개 테스트.**
+> **🆕 최신 릴리스 — v1.162.0** — **더 큰 "?" 탭 대상 (접근성 수정)** — 도움말 "?"가 18×18 px 대상으로 WCAG 2.5.8의 24×24 최소 미만이었습니다. 이제 박스는 24×24이고 보이는 링은 18px 유지(`::before`)라 이동이 없습니다. **2418개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

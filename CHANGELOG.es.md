@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.162.0] — 2026-08-13
+
+**Corregido (MEDIA) — el "?" de ayuda ahora es un objetivo de ≥24×24 (WCAG 2.5.8).** `.help-hint` medía 18×18 px con `padding:0`, por debajo del mínimo, en cada encabezado.
+
+### Corregido
+- La caja de `.help-hint` ahora es **24×24** (el objetivo medible) mientras el **anillo visible sigue en 18px** mediante un `::before` centrado — el glifo y la línea base del `<h1>` no cambian. Estados hover/activo/foco se mueven con el anillo; margen 6→3px para conservar el espacio.
+
+### Notas
+- Solo CSS; sin cambios de JS/i18n/ruta/CSP/SSRF/escritura. `tests/help-hint-target-size.test.mjs` (+2). Conjunto: **2418** (+2).
+
 ## [1.161.0] — 2026-08-13
 
 **Corregido (MEDIA) — `#/reports` muestra un chip "puntuación no detectada" en vez de espacio vacío.** Tras el analizador multi-idioma de v1.159.0, un informe sin puntuación analizable mostraba un área vacía, indistinguible de un fallo.

@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.162.0] — 2026-08-13
+
+**Behoben (MITTEL) — das Hilfe-"?" ist jetzt ein ≥24×24-Zeigeziel (WCAG 2.5.8).** `.help-hint` maß 18×18 px mit `padding:0`, unter dem Minimum, auf jeder Überschrift.
+
+### Behoben
+- Die `.help-hint`-Box ist jetzt **24×24** (das messbare Ziel), während der **sichtbare Ring 18px bleibt** — von einem zentrierten `::before` gezeichnet, sodass Glyph und `<h1>`-Grundlinie unverändert sind. Hover/aktiv/Fokus folgen dem Ring; Rand 6→3px erhält den Abstand.
+
+### Hinweise
+- Nur CSS; keine Änderung an JS/i18n/Route/CSP/SSRF/Schreibzugriff. `tests/help-hint-target-size.test.mjs` (+2). Suite: **2418** (+2).
+
 ## [1.161.0] — 2026-08-13
 
 **Behoben (MITTEL) — `#/reports` zeigt einen "Score nicht erkannt"-Chip statt Leerraum.** Nach dem sprachbewussten Parser aus v1.159.0 zeigte ein Bericht ohne lesbaren Score einen leeren Bereich — nicht von einem Fehlschlag zu unterscheiden.
