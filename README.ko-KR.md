@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2402%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2410%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.158.0** — **표시상의 사소한 수정** — HelpHint의 «?»가 더 이상 브라우저 탭 제목에 새어 나오지 않으며, cvstart.org 랜딩이 통계 배너와 맞춰 «7 AI providers»(17이 아님)로 표시됩니다. **2402개 테스트.**
+> **🆕 최신 릴리스 — v1.159.0** — **로케일 인식 리포트 메타데이터 (수정)** — 영어가 아닌 언어의 리포트는 빈 메타데이터 영역(점수/날짜/정당성 없음)을 보였습니다. `parseReportHeader`가 이제 언어 불변 `## Machine Summary` 블록을 읽고(영어 리포트는 동일), 로케일 숫자 형식을 허용합니다. **2410개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

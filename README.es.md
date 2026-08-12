@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2402%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2410%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versión — v1.158.0** — **Correcciones cosméticas de visualización** — La «?» de HelpHint ya no se filtra en el título de la pestaña, y la landing de cvstart.org ahora dice «7 AI providers» (no 17), coincidiendo con el panel de estadísticas. **2402 pruebas.**
+> **🆕 Última versión — v1.159.0** — **Metadatos de informe según idioma (corrección)** — Los informes en un idioma distinto del inglés mostraban una franja de metadatos vacía (sin puntuación/fecha/legitimidad). `parseReportHeader` ahora lee el bloque invariante `## Machine Summary` (los informes en inglés quedan idénticos) y tolera formatos numéricos locales. **2410 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

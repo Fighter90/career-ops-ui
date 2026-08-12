@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2402%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2410%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.158.0** — **कॉस्मेटिक प्रदर्शन फ़िक्स** — HelpHint का «?» अब ब्राउज़र टैब शीर्षक में लीक नहीं होता, और cvstart.org लैंडिंग अब आँकड़े बैनर से मेल खाते हुए «7 AI providers» (17 नहीं) दिखाती है। **2402 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.159.0** — **लोकेल-सजग रिपोर्ट मेटाडेटा (फ़िक्स)** — अंग्रेज़ी के अलावा किसी भाषा की रिपोर्टें खाली मेटाडेटा पट्टी (स्कोर/तिथि/वैधता रहित) दिखाती थीं। `parseReportHeader` अब भाषा-अपरिवर्तनीय `## Machine Summary` ब्लॉक पढ़ता है (अंग्रेज़ी रिपोर्टें समान) और स्थानीय संख्या प्रारूप सहन करता है। **2410 परीक्षण।**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

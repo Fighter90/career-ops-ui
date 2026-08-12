@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.159.0] — 2026-08-13
+
+**Düzeltildi (YÜKSEK) — rapor meta verileri artık dile bağlı değil.** İngilizce dışında bir dilde üretilen raporlar `#/reports` üzerinde boş bir meta veri şeridi gösteriyordu, çünkü `parseReportHeader` yalnızca İngilizce kalın etiketleri tanıyordu.
+
+### Düzeltildi
+- `parseReportHeader` artık dilden bağımsız `## Machine Summary` YAML bloğunu ayrıştırıyor (`score:` / `legitimacy:` / `date:` — `auto-pipeline`'ın zaten okuduğu kaynak): İngilizce etiketler → Machine Summary → yerelleştirilmiş etiketler (`REPORT_LABELS`, 17 dil). İngilizce raporlar bayt bayt aynı kalır.
+- Toleranslı sayı ayrıştırma (`1.5/5`, `1,5/5`, `1.5 из 5`, `4.5 out of 5`); gövdede tarih yoksa dosya mtime'ına düşer.
+
+### Notlar
+- Yalnızca okuma/ayrıştırma; rota, CSP, SSRF veya üst yazma değişikliği yok. Yeni i18n anahtarı yok. Takım: **2410** (+8).
+
 ## [1.158.0] — 2026-08-12
 
 **Düzeltildi — iki kozmetik görüntüleme hatası (sekme başlığına sızan bir «?» ve açılış sayfasında yanlış sağlayıcı sayısı).** Yalnızca görüntüleme; davranış, güvenlik veya veri akışı değişikliği yok.

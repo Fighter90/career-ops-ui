@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2402%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2410%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Seneste udgivelse — v1.158.0** — **Kosmetiske visningsrettelser** — HelpHints «?» lækker ikke længere til browserfanens titel, og cvstart.org-landingssiden viser nu «7 AI providers» (ikke 17), så det matcher statistikbanneret. **2402 tests.**
+> **🆕 Seneste udgivelse — v1.159.0** — **Sprogbevidste rapportmetadata (rettelse)** — Rapporter på et andet sprog end engelsk viste en tom metadatastribe (uden score/dato/legitimitet). `parseReportHeader` læser nu den sproguafhængige `## Machine Summary`-blok (engelske rapporter er identiske) og tolererer lokale talformater. **2410 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

@@ -17,7 +17,7 @@
  * fills that gap. Writes go through stripDangerousMarkdown (same XSS
  * pass as cv.md). 1 MB cap. Atomic write.
  */
-import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync, mkdirSync, statSync } from 'node:fs';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { parseReportHeader } from '../parsers.mjs';
 import { safeListReports } from '../store.mjs';
@@ -44,7 +44,9 @@ export function registerReportsRoutes(app) {
     const file = projPath('reports', `${slug}.md`);
     if (!existsSync(file)) return res.status(404).json({ error: 'not found' });
     const text = readFileSync(file, 'utf8');
-    res.json({ slug, ...parseReportHeader(text), markdown: text });
+    // FIX-1 (v1.159.0): mtime date fallback, same as the list builder.
+    const mtime = statSync(file).mtime;
+    res.json({ slug, ...parseReportHeader(text, { mtime }), markdown: text });
   });
 
   // v1.16.0 (G-007 follow-up): write the report markdown to

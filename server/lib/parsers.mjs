@@ -204,10 +204,112 @@ export function removePipelineUrl(text, url) {
 }
 
 /**
- * Parse a report file's header (the first heading + bold metadata).
- * Returns { title, date, archetype, score, scoreNum, url, legitimacy, pdf }.
+ * FIX-1 (v1.159.0) — locale-aware prose labels for the report score /
+ * legitimacy lines, used ONLY as a last-resort fallback when neither the
+ * English bold labels nor the language-invariant `## Machine Summary` block
+ * carried the fact. Keyed by the 17 UI-dict locale codes (note `ko`, not
+ * `ko-KR`). A per-locale entry is required — `report-header-locale.test.mjs`
+ * fails the build if a locale is added without one, so a new locale can't
+ * silently regress non-English report parsing.
  */
-export function parseReportHeader(text) {
+export const REPORT_LABELS = {
+  en: { score: ['Score'], legitimacy: ['Legitimacy'] },
+  es: { score: ['Puntuación', 'Puntaje'], legitimacy: ['Legitimidad'] },
+  'pt-BR': { score: ['Pontuação'], legitimacy: ['Legitimidade'] },
+  ko: { score: ['점수'], legitimacy: ['정당성', '진위'] },
+  ja: { score: ['スコア', '評価'], legitimacy: ['正当性', '信頼性'] },
+  ru: { score: ['Оценка', 'Балл'], legitimacy: ['Легитимность'] },
+  'zh-CN': { score: ['评分', '分数'], legitimacy: ['合法性', '真实性'] },
+  'zh-TW': { score: ['評分', '分數'], legitimacy: ['合法性', '真實性'] },
+  fr: { score: ['Score', 'Note'], legitimacy: ['Légitimité'] },
+  pl: { score: ['Wynik', 'Ocena'], legitimacy: ['Wiarygodność'] },
+  uk: { score: ['Оцінка', 'Бал'], legitimacy: ['Легітимність'] },
+  da: { score: ['Score', 'Pointtal'], legitimacy: ['Legitimitet'] },
+  ar: { score: ['الدرجة', 'التقييم'], legitimacy: ['المشروعية', 'الشرعية'] },
+  de: { score: ['Bewertung', 'Punktzahl'], legitimacy: ['Legitimität', 'Seriosität'] },
+  it: { score: ['Punteggio', 'Valutazione'], legitimacy: ['Legittimità'] },
+  tr: { score: ['Puan', 'Skor'], legitimacy: ['Meşruiyet', 'Güvenilirlik'] },
+  hi: { score: ['स्कोर'], legitimacy: ['वैधता'] },
+};
+
+// Flattened, de-duplicated label word lists (English first as universal).
+const LABEL_WORDS = { score: [], legitimacy: [] };
+for (const kind of ['score', 'legitimacy']) {
+  const seen = new Set();
+  for (const loc of Object.values(REPORT_LABELS)) {
+    for (const w of loc[kind]) {
+      if (!seen.has(w)) { seen.add(w); LABEL_WORDS[kind].push(w); }
+    }
+  }
+}
+
+const escapeReMeta = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * FIX-1 — locale-tolerant "score string → number". Accepts `4.5/5`,
+ * `4.5 / 5`, `4,5/5` (comma decimal), `1.5 из 5` / `4.5 out of 5`, and a bare
+ * `4.5`. Returns null when there is no in-range (0–5) number.
+ */
+export function scoreStringToNum(s) {
+  if (s == null) return null;
+  const m = String(s).match(/(\d+(?:[.,]\d+)?)/);
+  if (!m) return null;
+  const n = parseFloat(m[1].replace(',', '.'));
+  return Number.isFinite(n) && n >= 0 && n <= 5 ? n : null;
+}
+
+/**
+ * FIX-1 — the language-invariant `## Machine Summary` block body, or '' when
+ * the report has none. The heading itself is emitted in English by the parent
+ * oferta template regardless of the report's prose locale, so its `score:` /
+ * `legitimacy:` / `date:` YAML keys are the reliable, locale-free source.
+ */
+function machineSummaryBlock(text) {
+  const at = text.search(/^##\s+Machine Summary/im);
+  if (at === -1) return '';
+  const after = text.slice(at);
+  const rest = after.slice(after.indexOf('\n') + 1);
+  const nextH = rest.search(/^##\s/m);
+  return nextH === -1 ? rest : rest.slice(0, nextH);
+}
+
+// Grab a `key: value` (or `key - value`) line, case-insensitive.
+function yamlValue(src, key) {
+  const m = src.match(new RegExp('^\\s*' + key + '\\s*[:\\-]\\s*(.+)$', 'im'));
+  return m ? m[1].trim() : '';
+}
+
+// Last-resort: find any localized prose label (`Оценка: …`, `评分：…`,
+// optionally bold-wrapped) and return its value. Runs only after the bold
+// labels and the Machine Summary block came up empty.
+function proseLabelValue(text, kind) {
+  for (const w of LABEL_WORDS[kind]) {
+    const re = new RegExp('\\*{0,2}\\s*' + escapeReMeta(w) + '[^:：\\n]*[:：]\\s*(.+)', 'i');
+    const m = text.match(re);
+    if (m) return m[1].replace(/\*+\s*$/, '').trim();
+  }
+  return '';
+}
+
+function toIsoDate(d) {
+  const dt = d instanceof Date ? d : new Date(d);
+  if (Number.isNaN(dt.getTime())) return '';
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+}
+
+/**
+ * Parse a report file's header (the first heading + metadata).
+ * Returns { title, date, archetype, score, scoreNum, url, legitimacy, pdf }.
+ *
+ * FIX-1 (v1.159.0): parsing is no longer English-only. Order of precedence:
+ *   1. English `**Score:**`-style bold labels  → keeps EN reports byte-identical.
+ *   2. the language-invariant `## Machine Summary` YAML block  → all locales.
+ *   3. locale-aware prose labels (REPORT_LABELS)  → last resort.
+ * `scoreNum` is derived with locale-tolerant numeric parsing, and `date`
+ * falls back to `opts.mtime` (the file mtime the list builder already has) so
+ * a card never loses its chronological anchor.
+ */
+export function parseReportHeader(text, opts = {}) {
   const out = {
     title: '',
     date: '',
@@ -218,12 +320,17 @@ export function parseReportHeader(text) {
     legitimacy: '',
     pdf: '',
   };
-  if (!text) return out;
+  const mtimeIso = opts.mtime ? toIsoDate(opts.mtime) : '';
+  if (!text) {
+    out.date = mtimeIso;
+    return out;
+  }
 
   const titleMatch = text.match(/^#\s+(.+)$/m);
   if (titleMatch) out.title = titleMatch[1].trim();
 
-  const fields = {
+  // (1) English bold labels — primary; preserves EN reports exactly.
+  const enFields = {
     date: /\*\*Date:\*\*\s*(.+)/,
     archetype: /\*\*Archetype:\*\*\s*(.+)/,
     score: /\*\*Score:\*\*\s*(.+)/,
@@ -231,15 +338,31 @@ export function parseReportHeader(text) {
     legitimacy: /\*\*Legitimacy:\*\*\s*(.+)/,
     pdf: /\*\*PDF:\*\*\s*(.+)/,
   };
-  for (const [k, re] of Object.entries(fields)) {
+  for (const [k, re] of Object.entries(enFields)) {
     const m = text.match(re);
     if (m) out[k] = m[1].trim();
   }
 
-  if (out.score) {
-    const m = out.score.match(/([\d.]+)/);
-    out.scoreNum = m ? parseFloat(m[1]) : null;
-  }
+  // (2) `## Machine Summary` block — language-invariant. Fills only the
+  //     fields the English labels didn't (non-EN + auto-pipeline reports).
+  const src = machineSummaryBlock(text) || text;
+  if (!out.score) out.score = yamlValue(src, 'score');
+  if (!out.legitimacy) out.legitimacy = yamlValue(src, 'legitimacy');
+  if (!out.date) out.date = yamlValue(src, 'date');
+  if (!out.url) out.url = yamlValue(src, 'url');
+  if (!out.archetype) out.archetype = yamlValue(src, 'archetype');
+  if (!out.pdf) out.pdf = yamlValue(src, 'pdf');
+
+  // (3) Locale-aware prose labels — last resort.
+  if (!out.score) out.score = proseLabelValue(text, 'score');
+  if (!out.legitimacy) out.legitimacy = proseLabelValue(text, 'legitimacy');
+
+  // (4) Numeric score, locale-tolerant.
+  out.scoreNum = scoreStringToNum(out.score);
+
+  // (5) Date never null when the file mtime is known.
+  if (!out.date) out.date = mtimeIso;
+
   return out;
 }
 

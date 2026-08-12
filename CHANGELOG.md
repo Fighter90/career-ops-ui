@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.159.0] — 2026-08-13
+
+**Fixed (HIGH) — report metadata is no longer language-coupled.** Reports generated in a non-English locale rendered a blank metadata strip on `#/reports` (no score pill, date, or legitimacy chip), because `parseReportHeader` matched only English `**Score:**` / `**Legitimacy:**` / `**Date:**` bold labels — so the docs' "Score → next step" table sat above cards that showed no score.
+
+### Fixed
+- **`parseReportHeader` now parses the language-invariant `## Machine Summary` YAML block.** Precedence: English bold labels (keeps EN reports byte-identical) → the `## Machine Summary` block's `score:` / `legitimacy:` / `date:` keys (the same locale-free source `auto-pipeline` already reads) → locale-aware prose labels (`REPORT_LABELS`, all 17 locales) as a last resort. A Russian/Japanese/Arabic report now yields a real `scoreNum`, date and legitimacy.
+- **Locale-tolerant score parsing** — `1.5/5`, `1.5 / 5`, `1,5/5` (comma decimal), `1.5 из 5`, `4.5 out of 5` and bare `4.5` all resolve; out-of-range (0–5) values reject.
+- **Date never null** — falls back to the report file's mtime (already in the list payload) when the body has no parseable date, so cards keep their chronological anchor.
+
+### Notes
+- Read/parse only — no route, CSP, SSRF, or parent-write change; parent files stay read-only. No i18n-dict key change.
+- Tests: `tests/report-header-locale.test.mjs` (+8: EN byte-identity, RU Machine-Summary parse, mtime fallback, unparsed shape, numeric tolerance, 17-locale label coverage, localized-prose fallback) + a live `GET /api/reports` RU-fixture integration case. Suite: **2410** (+8).
+
 ## [1.158.0] — 2026-08-12
 
 **Fixed — two cosmetic display bugs (a leaked "?" in tab titles, a wrong provider count on the landing).** Display-only; no behaviour, security, or data-flow change.
