@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2370%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Neueste Version — v1.144.0** — **Einstellungen & Filter (Phase 4): verfolgte Portale aktivieren/deaktivieren** — ein beobachtetes Unternehmen auf `#/portals` ein-/ausschalten (`POST /api/portals/toggle`, chirurgischer portals.yml-Write); der Scanner überspringt bereits `enabled: false`-Unternehmen. **2370 Tests.**
+> **🆕 Neueste Version — v1.145.0** — **aufschlussreiche Statistiken (Forts.): ein neu baubares Diagramm** — der Zielrollen-Trend-Tab von `#/stats` erhält ein **Diagramm erstellen**-Widget: Metrik (Stellen / Median / Durchschnitt) × Dimension (nach Land / nach Rolle) wählen, Live-Neuzeichnung. **2372 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

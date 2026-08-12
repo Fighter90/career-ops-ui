@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.145.0] — 2026-08-12
+
+**Insightful stats (cont.): a rebuildable chart** — the `#/stats` "Target-role trend" tab now has a **Build a chart** widget: pick a metric × dimension and it re-renders live. First of the Phase-3 interactive-chart work. A user-reported UX request (no parent-sync).
+
+### Added
+- **Rebuildable metric × dimension chart** — choose a **metric** (Vacancies / Median salary / Average salary) and a **dimension** (By country / By role), and the bar chart re-renders instantly. Salary metrics honor the existing currency + per-year ⇄ per-month controls; vacancies are a plain count. Built from the same aggregation (`RoleStats.aggregate`) already computed for the tab — no new data or endpoint.
+- 8 new i18n keys × **17 locales** (`stats.customChart` / `metric` / `dimension` / `metricVacancies` / `metricMedian` / `metricAvg` / `dimCountry` / `dimRole`); assembled-dict snapshot 1200 → 1208.
+
+### Notes
+- The widget lives on the **Target-role trend** tab (which owns the scan-derived role/country/salary aggregation). v1.140.0's changelog mislabeled this same section as "My pipeline" — it was always `renderTrend`.
+- Browser-verified: the metric + dimension selects render and the chart re-renders on change, 0 console errors.
+- Suite: **2372** tests (+2: `tests/stats-custom-chart.test.mjs` — the wiring + EN-keys guard).
+
 ## [1.144.0] — 2026-08-12
 
 **Settings & filters (Phase 4, part 1): enable/disable tracked portals** — you can now turn a watched company on or off from `#/portals`, and the scanner honors it. A user-reported UX request (no parent-sync).

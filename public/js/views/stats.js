@@ -385,6 +385,22 @@ Router.register('stats', async () => {
       c('option', { value: 'month' }, t('stats.perMonth', 'Per month')),
     ]);
     perSel.addEventListener('change', () => { perState = perSel.value; draw(); });
+    // v1.145.0 — rebuildable chart: pick a metric × dimension and re-render.
+    let metricState = 'vacancies'; // vacancies | median | avg
+    let dimState = 'country';      // country | role
+    const metricSel = c('select', { className: 'lang-select', 'aria-label': t('stats.metric', 'Metric') }, [
+      c('option', { value: 'vacancies' }, t('stats.metricVacancies', 'Vacancies')),
+      c('option', { value: 'median' }, t('stats.metricMedian', 'Median salary')),
+      c('option', { value: 'avg' }, t('stats.metricAvg', 'Average salary')),
+    ]);
+    metricSel.value = metricState;
+    metricSel.addEventListener('change', () => { metricState = metricSel.value; draw(); });
+    const dimSel = c('select', { className: 'lang-select', 'aria-label': t('stats.dimension', 'Dimension') }, [
+      c('option', { value: 'country' }, t('stats.dimCountry', 'By country')),
+      c('option', { value: 'role' }, t('stats.dimRole', 'By role')),
+    ]);
+    dimSel.value = dimState;
+    dimSel.addEventListener('change', () => { dimState = dimSel.value; draw(); });
     wrap.appendChild(c('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', margin: '8px 0 20px' } }, [
       labeled(t('stats.roleFilter', 'Role'), roleSel),
       labeled(t('stats.countryFilter', 'Country'), countrySel),
@@ -394,8 +410,39 @@ Router.register('stats', async () => {
 
     const charts = c('div');
     wrap.appendChild(charts);
+
+    // The rebuildable chart, driven by metricSel/dimSel + the currency/period.
+    function customChart() {
+      const money = moneyFmt(curState);
+      const per = (n) => (n == null ? null : (perState === 'month' ? n / 12 : n));
+      const isSalary = metricState !== 'vacancies';
+      const val = (o) => {
+        if (metricState === 'vacancies') return (dimState === 'role' ? (o.total || 0) : (o.count || 0));
+        const s = o.salary || {};
+        return per(metricState === 'median' ? s.medianUsd : s.avgUsd) || 0;
+      };
+      const src = dimState === 'role'
+        ? (agg.perRole || [])
+        : (isSalary ? agg.salaryByCountry : agg.byCountry);
+      const items = src.map((o) => ({
+        label: dimState === 'role' ? o.role : `${o.flag || ''} ${o.name}`.trim(),
+        value: val(o),
+      })).filter((x) => x.value > 0).sort((a, b) => b.value - a.value);
+      const body = items.length
+        ? barChart(items, isSalary ? money : undefined)
+        : c('p', { style: { color: 'var(--foggy)' } }, t('stats.noData', 'No data for this combination yet.'));
+      return c('div', { className: 'card', style: { padding: '16px', margin: '0 0 20px' } }, [
+        c('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', margin: '0 0 12px' } }, [
+          c('h2', { style: { fontSize: '15px', margin: '0', flex: '1 1 auto' } }, t('stats.customChart', 'Build a chart')),
+          metricSel, dimSel,
+        ]),
+        body,
+      ]);
+    }
+
     function draw() {
       charts.textContent = '';
+      charts.appendChild(customChart());
       const role = roleSel.value; const country = countrySel.value;
       const money = moneyFmt(curState);
 

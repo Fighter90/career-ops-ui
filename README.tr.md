@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2370%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Son sürüm — v1.144.0** — **ayarlar ve filtreler (Aşama 4): izlenen portalları etkinleştir/devre dışı bırak** — izlenen bir şirketi `#/portals`'tan açıp kapatın (`POST /api/portals/toggle`, portals.yml'e cerrahi yazım); tarayıcı zaten `enabled: false` şirketleri atlar. **2370 test.**
+> **🆕 Son sürüm — v1.145.0** — **anlayışlı istatistikler (devam): yeniden oluşturulabilir grafik** — `#/stats` hedef rol eğilimi sekmesine **Grafik oluştur** aracı: metrik (ilanlar / medyan / ortalama) × boyut (ülkeye göre / role göre) seçin, canlı yeniden çizim. **2372 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

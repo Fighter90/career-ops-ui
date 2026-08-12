@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.145.0] — 2026-08-12
+
+**Statistiche perspicaci (segue): un grafico ricostruibile** — la scheda "Tendenza ruoli target" su `#/stats` ha ora un widget **Crea un grafico**: scegli una metrica × dimensione e si ridisegna in tempo reale. Richiesta UX dell'utente (senza parent-sync).
+
+### Aggiunto
+- **Grafico ricostruibile metrica × dimensione** — scegli una **metrica** (Offerte / Stipendio mediano / Stipendio medio) e una **dimensione** (Per paese / Per ruolo), e il grafico a barre si ridisegna all'istante. Le metriche salariali rispettano la valuta + l'interruttore all'anno ⇄ al mese; le offerte sono un semplice conteggio.
+- 8 nuove chiavi i18n × **17 lingue**; snapshot 1200 → 1208.
+
+### Note
+- Verificato nel browser (0 errori console). Suite: **2372** test (+2).
+
 ## [1.144.0] — 2026-08-12
 
 **Impostazioni e filtri (Fase 4, parte 1): abilita/disabilita i portali seguiti** — ora puoi accendere o spegnere un'azienda monitorata da `#/portals`, e lo scanner lo rispetta. Richiesta UX dell'utente (senza parent-sync).

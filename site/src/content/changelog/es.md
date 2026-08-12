@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.145.0] — 2026-08-12
+
+**Estadísticas útiles (cont.): un gráfico reconstruible** — la pestaña "Tendencia de roles objetivo" en `#/stats` ahora tiene un widget **Crear un gráfico**: elige una métrica × dimensión y se recompone en vivo. Solicitud de UX del usuario (sin parent-sync).
+
+### Añadido
+- **Gráfico reconstruible métrica × dimensión** — elige una **métrica** (Vacantes / Salario mediano / Salario medio) y una **dimensión** (Por país / Por rol) y el gráfico de barras se recompone al instante. Las métricas salariales respetan la moneda + el interruptor por año ⇄ por mes; las vacantes son un simple conteo.
+- 8 nuevas claves i18n × **17 idiomas**; snapshot 1200 → 1208.
+
+### Notas
+- Verificado en el navegador (0 errores de consola). Suite: **2372** pruebas (+2).
+
 ## [1.144.0] — 2026-08-12
 
 **Ajustes y filtros (Fase 4, parte 1): activar/desactivar portales seguidos** — ahora puedes encender o apagar una empresa vigilada desde `#/portals`, y el escáner lo respeta. Solicitud de UX del usuario (sin parent-sync).

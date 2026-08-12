@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2370%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Последний релиз — v1.144.0** — **настройки и фильтры (Фаза 4): включение/отключение отслеживаемых порталов** — включайте и выключайте отслеживаемую компанию на `#/portals` (`POST /api/portals/toggle`, хирургическая запись в portals.yml); сканер уже пропускает компании `enabled: false`. **2370 тестов.**
+> **🆕 Последний релиз — v1.145.0** — **полезная статистика (продолжение): перестраиваемый график** — на вкладке тренда ролей `#/stats` появился виджет **Построить график**: выберите метрику (вакансии / медиана / среднее) × измерение (по странам / по ролям) — перерисовка вживую. **2372 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

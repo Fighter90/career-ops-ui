@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2370%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.144.0** — **설정 및 필터(Phase 4): 추적 포털 활성화/비활성화** — `#/portals`에서 감시 회사를 켜고 끄기(`POST /api/portals/toggle`, portals.yml 외과적 쓰기); 스캐너는 이미 `enabled: false` 회사를 건너뜁니다. **2370 테스트.**
+> **🆕 최신 릴리스 — v1.145.0** — **통찰력 있는 통계(계속): 재구성 가능한 차트** — `#/stats`의 목표 직무 추세 탭에 **차트 만들기** 위젯 추가: 지표(공고/중앙값/평균 연봉) × 차원(국가별/직무별)을 골라 실시간 재구성. **2372 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

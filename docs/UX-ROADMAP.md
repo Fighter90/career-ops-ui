@@ -30,7 +30,7 @@ Make every page self-explanatory, in every language. (Split out of the original 
 Make the numbers correct, detailed, and visual.
 
 - [x] **Richer salary stats** (v1.140.0) — **average** (mean) added alongside min/median/max; **per-year ⇄ per-month** toggle; a **min·avg·median·max table per country** on `#/stats` "My pipeline".
-- [ ] **Interactive, rebuildable charts** on `#/stats` (choose metric/dimension/period, re-render) — next.
+- [~] **Interactive, rebuildable charts** on `#/stats` (v1.145.0) — a **Build a chart** widget on the Target-role trend tab: metric (vacancies / median / average salary) × dimension (by country / by role) selects that re-render live, honoring the currency + period. More metrics/dimensions + export can follow.
 - [x] **Correctness** (v1.142.0) — the `#/orientation` AI prompt now MUST rank the top-3 from exactly the 8 named vectors and may NEVER answer "Unknown"/"N/A"/invent a label (a thin CV still gets the 3 closest at lower confidence). Server-only prompt constraint; no more "double down on Unknown".
 - [x] **Funded companies** enrichment (v1.141.0) — company **logo** + **funding-amount visualization** + **discovery-score / suggested-action** cards. (Description + salary range aren't in the public funding feed, so they're out of scope for this source; revisit if an enrichment source is added.)
 
