@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Seneste udgivelse — v1.145.0** — **indsigtsfulde statistikker (fortsat): et genopbyggeligt diagram** — `#/stats` målrolle-tendens-fanen får en **Byg et diagram**-widget: vælg metrik (stillinger / median / gennemsnit) × dimension (efter land / efter rolle), gentegnes live. **2372 tests.**
+> **🆕 Seneste udgivelse — v1.146.0** — **Hermes-agent + Telegram** — kør career-ops-ui på en cloud-server og bro dens events til Telegram via en Nous Research Hermes-agent. Leverer integrationsguiden + en **`hermes-bridge`**-færdighed; LLM-udbyderstien er stadig **planlagt / endnu ikke tilsluttet**. **2376 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 
@@ -621,6 +621,17 @@ Det eksisterende `/career-ops apply` Playwright-formularudfyldningsflow inde i C
 For vurderingen af produktionsparathed (deployment-gates, risikoregister, udskudt arbejde) se [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md). TL;DR: klar til single-tenant loopback; LAN-eksponering afventer v2.0 P-12 auth-gate.
 
 ---
+
+## Hermes-agent + Telegram
+
+**Nous Research's [Hermes](https://hermes-agent.nousresearch.com/docs)** er en åben, autonom agent (tool-calling, skills, 20+ beskedkanaler). Du kan køre career-ops-ui på en **cloud-server** og bygge bro mellem dens hændelser — et afsluttet scan, en ny rapport, en akut opfølgning — til **Telegram via en Hermes-agent**, så pipelinen når dig, dér hvor du allerede er.
+
+> **Planlagt / endnu ikke koblet til.** Hermes som *LLM-udbyder* er blokeret af et Phase 5 API-kontrakt-spike — ingen serverkode kalder Hermes endnu. Det, der leveres i dag, er **integrationsdesignet + deployment-guiden** samt en **`hermes-bridge`-skill**, der guider dig gennem cloud-deploy- og Telegram-bridge-trinnene (secrets rører aldrig disk eller logs; SSRF-/CSP-/ingen-secrets-invarianterne overlever flytningen væk fra `127.0.0.1`).
+
+📖 **Fuld guide:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — de to integrationsformer, cloud-server-deployment (reverse proxy + HTTPS + systemd), Telegram-via-Hermes, samt threat-model-listen over »hvad man IKKE skal eksponere«.
+
+---
+
 
 ## Lokalisering
 

@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Latest release — v1.145.0** — **insightful stats (cont.): a rebuildable chart** — the `#/stats` Target-role-trend tab gets a **Build a chart** widget: pick a metric (vacancies / median / average salary) × dimension (by country / by role) and it re-renders live. **2372 tests.**
+> **🆕 Latest release — v1.146.0** — **Hermes agent + Telegram** — run career-ops-ui on a cloud server and bridge its events to Telegram through a Nous Research Hermes agent. Ships the integration guide ([`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)) + a **`hermes-bridge` skill**; the LLM-provider path stays **planned / not-yet-wired**. **2376 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 
@@ -622,6 +622,16 @@ The fully LLM-driven modes (`oferta`, `deep`, `contacto`, `apply`, `batch`, `pat
 The existing `/career-ops apply` Playwright form-fill flow inside Claude Code remains the only way to truly auto-fill application forms — the UI's *Apply helper* generates a checklist instead.
 
 For the production-readiness assessment (deployment gates, risk register, deferred work), see [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md). TL;DR: ready for single-tenant loopback; LAN exposure waits on the v2.0 P-12 auth gate.
+
+---
+
+## Hermes agent + Telegram
+
+**Nous Research's [Hermes](https://hermes-agent.nousresearch.com/docs)** is an open autonomous agent (tool-calling, skills, 20+ messaging channels). You can run career-ops-ui on a **cloud server** and bridge its events — a finished scan, a new report, an urgent follow-up — to **Telegram through a Hermes agent**, so the pipeline reaches you where you already are.
+
+> **Planned / not-yet-wired.** Hermes as an *LLM provider* is blocked on a Phase 5 API-contract spike — no server code calls Hermes yet. What ships today is the **integration design + deployment guide** and a **`hermes-bridge` skill** that walks the cloud-deploy and Telegram-bridge steps (secrets never touch disk or logs; the SSRF / CSP / no-secrets invariants survive the move off `127.0.0.1`).
+
+📖 **Full guide:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — the two integration shapes, cloud-server deployment (reverse proxy + HTTPS + systemd), Telegram-via-Hermes, and the threat-model "what NOT to expose" list.
 
 ---
 

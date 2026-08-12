@@ -2,6 +2,21 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.146.0] — 2026-08-12
+
+**Agente Hermes + Telegram — la guida di integrazione + una skill (Phase 5b, parte 1)** — puoi eseguire career-ops-ui su un server cloud e collegare i suoi eventi (una scansione completata, un nuovo report, un follow-up urgente) a Telegram tramite un agente Hermes di Nous Research. Questa versione porta la documentazione di design + deployment e una skill hermes-bridge; il percorso del provider LLM Hermes resta pianificato / non ancora collegato (bloccato dallo spike sul contratto API della Phase 5). Documentazione intenzionalmente davanti al codice.
+
+### Aggiunto
+- **`docs/integrations/HERMES.md`** — l'analisi approfondita: le due forme di integrazione (endpoint compatibile con OpenAI vs. runtime dell'agente), il deployment su server cloud (reverse proxy + HTTPS + systemd, il contratto di sola lettura con il parent su una macchina headless), Telegram tramite Hermes, e un elenco da modello di minaccia «cosa NON esporre» (niente CV / stipendio / corpo dei report / chiavi verso il canale).
+- Il teaser **`## Hermes agent + Telegram`** nel README — un breve rimando + link, nel README in inglese e replicato nei README tradotti di ogni lingua.
+- Una **skill `hermes-bridge`** (`.claude/skills/hermes-bridge/`) che rende operativa la guida — controlli di prerequisiti e di ambito (Node ≥ 18, chiavi presenti, raggiungibilità dell'endpoint tramite il percorso sicuro da SSRF), non scrive mai segreti su disco/log, e si rifiuta di inventare un endpoint Hermes o di affermare che il provider sia collegato.
+- Una sezione **Integrations** in `docs/architecture/OVERVIEW.md` collega alla guida.
+
+### Note
+- **Per ora nulla chiama Hermes.** Un test canarino (`tests/hermes-docs.test.mjs`) verifica i marcatori di onestà «pianificato / non ancora collegato» e che `llm-dispatch.mjs` non abbia alcun ramo Hermes/Nous — quindi collegare il provider in futuro dovrà aggiornare documentazione + roadmap nella stessa modifica.
+- **Rinviato a v1.147.0** (Phase 5b, parte 2): la sezione di aiuto in-app «Hermes & Telegram» H2 × 17 lingue e la superficie di marketing di cvstart.org.
+- Suite: **2376** test (+4: `tests/hermes-docs.test.mjs`).
+
 ## [1.145.0] — 2026-08-12
 
 **Statistiche perspicaci (segue): un grafico ricostruibile** — la scheda "Tendenza ruoli target" su `#/stats` ha ora un widget **Crea un grafico**: scegli una metrica × dimensione e si ridisegna in tempo reale. Richiesta UX dell'utente (senza parent-sync).

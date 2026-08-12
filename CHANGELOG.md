@@ -8,6 +8,21 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.146.0] — 2026-08-12
+
+**Hermes agent + Telegram — the integration guide + a skill (Phase 5b, part 1)** — you can run career-ops-ui on a cloud server and bridge its events (a finished scan, a new report, an urgent follow-up) to Telegram through a Nous Research **Hermes** agent. This release ships the *design + deployment docs* and a **`hermes-bridge` skill**; the Hermes LLM-provider path stays **planned / not-yet-wired** (blocked on the Phase 5 API-contract spike). Docs-ahead-of-code by design.
+
+### Added
+- **`docs/integrations/HERMES.md`** — the deep-dive: the two integration shapes (OpenAI-compatible endpoint vs. agent runtime), cloud-server deployment (reverse proxy + HTTPS + systemd, the read-only parent contract on a headless box), Telegram-via-Hermes, and a threat-model "what NOT to expose" list (no CV / salary / report bodies / keys to the channel).
+- **`## Hermes agent + Telegram`** README teaser — a short pointer + link, in the EN README and mirrored across the fully-translated locale READMEs.
+- **A `hermes-bridge` skill** (`.claude/skills/hermes-bridge/`) that operationalizes the guide — prerequisite + scoping-gate checks (Node ≥ 18, keys present, endpoint reachability via the SSRF-safe path), never writes secrets to disk/logs, and refuses to invent a Hermes endpoint or claim the provider is wired.
+- An **Integrations** section in `docs/architecture/OVERVIEW.md` links the guide.
+
+### Notes
+- **Nothing calls Hermes yet.** A canary (`tests/hermes-docs.test.mjs`) asserts the "planned / not-yet-wired" honesty markers *and* that `llm-dispatch.mjs` has no Hermes/Nous branch — so wiring the provider later must update the docs + roadmap in the same change.
+- **Deferred to v1.147.0** (Phase 5b, part 2): the in-app help "Hermes & Telegram" H2 × 17 and the cvstart.org marketing surface.
+- Suite: **2376** tests (+4: `tests/hermes-docs.test.mjs`).
+
 ## [1.145.0] — 2026-08-12
 
 **Insightful stats (cont.): a rebuildable chart** — the `#/stats` "Target-role trend" tab now has a **Build a chart** widget: pick a metric × dimension and it re-renders live. First of the Phase-3 interactive-chart work. A user-reported UX request (no parent-sync).

@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.145.0** — **有洞察力的统计（续）：可重建图表** — `#/stats` 目标职位趋势标签页新增 **构建图表** 小部件：选择指标（职位数/中位数/平均薪资）× 维度（按国家/按职位），实时重绘。 **2372 个测试。**
+> **🆕 最新版本 — v1.146.0** — **Hermes 代理 + Telegram** — 在云服务器上运行 career-ops-ui，并通过 Nous Research 的 Hermes 代理将其事件桥接到 Telegram。附带集成指南 + **`hermes-bridge`** 技能；LLM 提供商路径仍处于 **计划中 / 尚未接入**。 **2376 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 
@@ -596,6 +596,17 @@ Claude Code 中现有的 `/career-ops apply` Playwright 表单填写流程,仍�
 关于 production-readiness 评估(部署门、风险登记、待办工作),见 [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md)。TL;DR:可用于单租户 loopback;LAN 暴露须等待 v2.0 的 P-12 auth gate。
 
 ---
+
+## Hermes 智能体 + Telegram (Hermes agent + Telegram)
+
+**Nous Research 的 [Hermes](https://hermes-agent.nousresearch.com/docs)** 是一个开放的自主智能体(支持工具调用、技能/skill,以及 20 多个消息渠道)。你可以在**云服务器**上运行 career-ops-ui,并将其事件——一次完成的扫描、一份新报告、一次紧急跟进——通过**Hermes 智能体桥接到 Telegram**,让流水线(pipeline)在你已经所在的地方触达你。
+
+> **规划中 / 尚未接通。** 作为*LLM 提供方*的 Hermes 目前卡在 Phase 5 的 API 契约 spike 上——目前还没有任何服务器代码调用 Hermes。今天已交付的是**集成设计 + 部署指南**,以及一个**`hermes-bridge` 技能(skill)**,它会引导你完成云端部署和 Telegram 桥接的各个步骤(密钥永不落盘、永不写入日志;SSRF / CSP / 无密钥不变式在从 `127.0.0.1` 迁出后依然保持)。
+
+📖 **完整指南:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) —— 两种集成形态、云服务器部署(反向代理 + HTTPS + systemd)、Telegram-via-Hermes,以及威胁模型中“不该暴露什么”的清单。
+
+---
+
 
 ## 本地化(Localization)
 

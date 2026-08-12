@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 최신 릴리스 — v1.145.0** — **통찰력 있는 통계(계속): 재구성 가능한 차트** — `#/stats`의 목표 직무 추세 탭에 **차트 만들기** 위젯 추가: 지표(공고/중앙값/평균 연봉) × 차원(국가별/직무별)을 골라 실시간 재구성. **2372 테스트.**
+> **🆕 최신 릴리스 — v1.146.0** — **Hermes 에이전트 + Telegram** — 클라우드 서버에서 career-ops-ui를 실행하고 Nous Research의 Hermes 에이전트를 통해 이벤트를 Telegram으로 연결합니다. 통합 가이드와 **`hermes-bridge` 스킬**을 제공합니다; LLM 제공자 경로는 여전히 **계획 중 / 아직 미연동**입니다. **2376 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 
@@ -597,6 +597,17 @@ Claude Code 내부의 기존 `/career-ops apply` Playwright 폼 자동 입력 �
 production-readiness 평가(배포 게이트, 리스크 등록부, 보류된 작업)는 [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md)를 참고하십시오. 요약하자면, 싱글 테넌트 loopback 환경에서는 사용 준비가 되어 있으며, LAN 노출은 v2.0 P-12 auth gate를 기다리고 있습니다.
 
 ---
+
+## Hermes 에이전트 + Telegram (Hermes agent + Telegram)
+
+**Nous Research의 [Hermes](https://hermes-agent.nousresearch.com/docs)**는 오픈소스 자율 에이전트입니다(툴 호출, 스킬, 20개 이상의 메시징 채널 지원). career-ops-ui를 **클라우드 서버**에서 실행하고, 완료된 스캔·새 리포트·긴급 후속 조치 같은 이벤트를 **Hermes 에이전트를 통해 Telegram**으로 연결하면, 파이프라인의 알림이 여러분이 이미 있는 곳으로 도착합니다.
+
+> **계획됨 / 아직 연결되지 않음.** *LLM 제공자*로서의 Hermes는 Phase 5 API 계약 스파이크에 막혀 있어, 현재 어떤 서버 코드도 Hermes를 호출하지 않습니다. 오늘 제공되는 것은 **통합 설계 + 배포 가이드**, 그리고 클라우드 배포와 Telegram 브리지 단계를 안내하는 **`hermes-bridge` 스킬**입니다(비밀 값은 디스크나 로그에 전혀 닿지 않으며, SSRF / CSP / no-secrets 불변조건은 `127.0.0.1`을 벗어난 뒤에도 그대로 유지됩니다).
+
+📖 **전체 가이드:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — 두 가지 통합 형태, 클라우드 서버 배포(리버스 프록시 + HTTPS + systemd), Telegram-via-Hermes, 그리고 위협 모델의 “노출하지 말아야 할 것” 목록을 다룹니다.
+
+---
+
 
 ## 현지화 (Localization)
 

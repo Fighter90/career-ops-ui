@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2372%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Последний релиз — v1.145.0** — **полезная статистика (продолжение): перестраиваемый график** — на вкладке тренда ролей `#/stats` появился виджет **Построить график**: выберите метрику (вакансии / медиана / среднее) × измерение (по странам / по ролям) — перерисовка вживую. **2372 тестов.**
+> **🆕 Последний релиз — v1.146.0** — **агент Hermes + Telegram** — запускайте career-ops-ui на облачном сервере и связывайте его события с Telegram через агента Hermes от Nous Research. Добавлены руководство по интеграции + навык **`hermes-bridge`**; путь LLM-провайдера остаётся **запланированным / пока не подключённым**. **2376 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 
@@ -597,6 +597,17 @@ russian_portals:
 Оценку production-готовности (deployment-гейты, реестр рисков, отложенные работы) см. в [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md). TL;DR: проект готов к single-tenant loopback; выставление в LAN ожидает auth-gate из v2.0 P-12.
 
 ---
+
+## Агент Hermes + Telegram
+
+**[Hermes](https://hermes-agent.nousresearch.com/docs) от Nous Research** — это открытый автономный агент (вызов инструментов, навыки/skills, более 20 каналов обмена сообщениями). Вы можете запустить career-ops-ui на **облачном сервере** и связать его события — завершённое сканирование, новый отчёт, срочный фоллоу-ап — с **Telegram через агента Hermes**, чтобы конвейер (pipeline) достигал вас там, где вы уже находитесь.
+
+> **Запланировано / пока не подключено.** Hermes как *LLM-провайдер* заблокирован спайком по API-контракту Phase 5 — на данный момент никакой серверный код не вызывает Hermes. Сегодня доступны **дизайн интеграции + руководство по развёртыванию**, а также **скилл `hermes-bridge`**, который проводит через шаги облачного деплоя и Telegram-бриджа (секреты никогда не касаются диска или логов; инварианты SSRF / CSP / no-secrets сохраняются и после переезда с `127.0.0.1`).
+
+📖 **Полное руководство:** [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) — две формы интеграции, развёртывание на облачном сервере (reverse proxy + HTTPS + systemd), Telegram через Hermes, а также список модели угроз «что НЕЛЬЗЯ раскрывать».
+
+---
+
 
 ## Локализация
 
