@@ -11,7 +11,7 @@
 - **`POST /api/portals/toggle`** — `portals.yml`'deki bir şirketin `enabled` bayrağını cerrahi biçimde ve ayrıştırma doğrulamasıyla değiştiren açık bir kullanıcı yazımı (yorumlar, sıra ve diğer alanlar korunur). 5 yeni i18n anahtarı × **17 dil**; anlık görüntü 1195 → 1200.
 
 ### Notlar
-- Tarayıcı değişikliği **sıfır** oldu — `en-scanner.mjs` zaten `enabled !== false` ile filtreliyor. Takım: **2368** test (+3).
+- Tarayıcı değişikliği **sıfır** oldu — `en-scanner.mjs` zaten `enabled !== false` ile filtreliyor. Takım: **2370** test (+3).
 
 ## [1.143.0] — 2026-08-12
 

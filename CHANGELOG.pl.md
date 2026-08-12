@@ -18,7 +18,7 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - **`POST /api/portals/toggle`** — jawny zapis użytkownika, który chirurgicznie i z walidacją parsowania przełącza flagę `enabled` firmy w `portals.yml` (komentarze, kolejność i pozostałe pola zachowane). 5 nowych kluczy i18n × **17 języków**; snapshot 1195 → 1200.
 
 ### Uwagi
-- Zmiana w skanerze wyniosła **zero** — `en-scanner.mjs` już filtruje `enabled !== false`. Zestaw: **2368** testów (+3).
+- Zmiana w skanerze wyniosła **zero** — `en-scanner.mjs` już filtruje `enabled !== false`. Zestaw: **2370** testów (+3).
 
 ## [1.143.0] — 2026-08-12
 

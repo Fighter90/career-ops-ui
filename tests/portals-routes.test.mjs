@@ -71,6 +71,24 @@ test('setEnabledInRaw: inserts / flips / not-found, preserving the rest (v1.144.
   assert.match(flip, /- name: Globex[\s\S]*enabled: false/);               // existing true → false
   assert.doesNotMatch(flip, /enabled: true/);
   assert.equal(setEnabledInRaw(raw, 'https://nope.co/x', false), null);    // unknown → null
+  assert.equal(setEnabledInRaw(raw, 'https://x.co/acme', 'nope'), null);   // non-boolean → null
+});
+
+test('setEnabledInRaw: anchors on the careers_url value — no prefix / comment collision (v1.144.0)', async () => {
+  const { setEnabledInRaw } = await import('../server/lib/routes/portals.mjs');
+  // Two companies whose careers_url share a prefix; the shorter appears first,
+  // and it's also mentioned in a comment. Toggling the shorter must hit ONLY it.
+  const raw = 'tracked_companies:\n'
+    + '  # watch https://co.example/jobs for changes\n'
+    + '  - name: Short\n    careers_url: https://co.example/jobs\n'
+    + '  - name: LongEu\n    careers_url: https://co.example/jobs/eu\n';
+  const out = setEnabledInRaw(raw, 'https://co.example/jobs', false);
+  // Short gets enabled:false; LongEu is untouched.
+  assert.match(out, /- name: Short\n {4}enabled: false\n {4}careers_url: https:\/\/co\.example\/jobs\n/);
+  assert.match(out, /- name: LongEu\n {4}careers_url: https:\/\/co\.example\/jobs\/eu\n/);
+  assert.doesNotMatch(out, /- name: LongEu\n {4}enabled:/); // LongEu did NOT get a flag
+  // The comment line is preserved verbatim.
+  assert.match(out, /# watch https:\/\/co\.example\/jobs for changes/);
 });
 
 test('POST /api/portals/toggle disables a company in portals.yml → scanner-honored enabled flag (v1.144.0)', async () => {
@@ -99,4 +117,15 @@ test('POST /api/portals/toggle: unknown careers_url → 404, no write', async ()
     body: JSON.stringify({ careers_url: 'https://not-tracked.example/x', enabled: false }),
   });
   assert.equal(r.status, 404);
+});
+
+test('POST /api/portals/toggle: non-boolean enabled → 400 (no silent enable of a user file)', async () => {
+  for (const bad of ['false', 0, null, undefined]) {
+    // eslint-disable-next-line no-await-in-loop
+    const r = await fetch(`${baseUrl}/api/portals/toggle`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ careers_url: 'http://127.0.0.1:9/careers', enabled: bad }),
+    });
+    assert.equal(r.status, 400, `enabled=${JSON.stringify(bad)} must be rejected`);
+  }
 });

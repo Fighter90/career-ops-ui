@@ -20,7 +20,7 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - **`POST /api/portals/toggle`** — une écriture utilisateur explicite qui bascule chirurgicalement et avec validation d'analyse le drapeau `enabled` d'une entreprise dans `portals.yml` (commentaires, ordre et autres champs préservés). 5 nouvelles clés i18n × **17 langues** ; snapshot 1195 → 1200.
 
 ### Notes
-- Le changement du scanner a été **nul** — `en-scanner.mjs` filtre déjà `enabled !== false`. Suite : **2368** tests (+3).
+- Le changement du scanner a été **nul** — `en-scanner.mjs` filtre déjà `enabled !== false`. Suite : **2370** tests (+3).
 
 ## [1.143.0] — 2026-08-12
 

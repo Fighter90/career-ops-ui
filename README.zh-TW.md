@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2368%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2370%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.144.0** — **設定與過濾（階段 4）：啟用/停用追蹤的入口** — 在 `#/portals` 開啟或關閉受監看的公司（`POST /api/portals/toggle`，對 portals.yml 的外科式寫入）；掃描器已略過 `enabled: false` 的公司。 **2368 個測試.**
+> **🆕 最新版本 — v1.144.0** — **設定與過濾（階段 4）：啟用/停用追蹤的入口** — 在 `#/portals` 開啟或關閉受監看的公司（`POST /api/portals/toggle`，對 portals.yml 的外科式寫入）；掃描器已略過 `enabled: false` 的公司。 **2370 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

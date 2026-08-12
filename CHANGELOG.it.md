@@ -11,7 +11,7 @@
 - **`POST /api/portals/toggle`** — una scrittura esplicita dell'utente che commuta chirurgicamente e con validazione di parsing il flag `enabled` di un'azienda in `portals.yml` (commenti, ordine e altri campi preservati). 5 nuove chiavi i18n × **17 lingue**; snapshot 1195 → 1200.
 
 ### Note
-- La modifica allo scanner è stata **zero** — `en-scanner.mjs` filtra già `enabled !== false`. Suite: **2368** test (+3).
+- La modifica allo scanner è stata **zero** — `en-scanner.mjs` filtra già `enabled !== false`. Suite: **2370** test (+3).
 
 ## [1.143.0] — 2026-08-12
 

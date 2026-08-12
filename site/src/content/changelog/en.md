@@ -20,7 +20,7 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ### Notes
 - The scanner change was **zero** — `en-scanner.mjs` already filters `companies.filter((c) => c.enabled !== false)`; this release adds the UI + a safe write path to set it.
 - **Deferred to a later Phase-4 slice** (subjective / cosmetic — they want your eye): the scan-filter visual redesign and moving `#/portals` fully into a settings nav section. `#/portals` remains the portal-settings surface for now.
-- Suite: **2368** tests (+3: `setEnabledInRaw` insert/flip/not-found + the toggle round-trip + unknown-url 404 in `tests/portals-routes.test.mjs`).
+- Suite: **2370** tests (+3: `setEnabledInRaw` insert/flip/not-found + the toggle round-trip + unknown-url 404 in `tests/portals-routes.test.mjs`).
 
 ## [1.143.0] — 2026-08-12
 

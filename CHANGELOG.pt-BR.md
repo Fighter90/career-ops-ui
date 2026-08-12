@@ -17,7 +17,7 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 - **`POST /api/portals/toggle`** — uma escrita explícita do usuário que altera cirurgicamente e com validação de parse o flag `enabled` de uma empresa em `portals.yml` (comentários, ordem e demais campos preservados). 5 novas chaves i18n × **17 idiomas**; snapshot 1195 → 1200.
 
 ### Notas
-- A mudança no scanner foi **zero** — `en-scanner.mjs` já filtra `enabled !== false`. Suíte: **2368** testes (+3).
+- A mudança no scanner foi **zero** — `en-scanner.mjs` já filtra `enabled !== false`. Suíte: **2370** testes (+3).
 
 ## [1.143.0] — 2026-08-12
 

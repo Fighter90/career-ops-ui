@@ -7,7 +7,7 @@ User-reported UX request (no parent-sync). You can turn a watched company on/off
 ## §0 — Gates
 
 ```bash
-npm test                                       # full suite — 2368, exit 0 (capture $? directly, never | grep)
+npm test                                       # full suite — 2370, exit 0 (capture $? directly, never | grep)
 node --test tests/portals-routes.test.mjs      # setEnabledInRaw + POST /api/portals/toggle round-trip + 404
 node tools/i18n-audit.mjs                       # dictionary clean; snapshot 1200 keys
 node scripts/check-changelog-parity.mjs        # all 16 locales at v1.144.0
@@ -41,4 +41,4 @@ The **scan-filter visual redesign** and moving `#/portals` fully into a settings
 
 ## §5 — Sign-off
 
-Suite **2368** green · toggle writes `enabled` surgically (comments preserved) · parse-validated / 404 on unknown · scanner skips disabled · localized button+toasts ×17 · 0 console errors · i18n 17/17 · CHANGELOG parity ×17.
+Suite **2370** green · toggle writes `enabled` surgically (comments preserved) · parse-validated / 404 on unknown · scanner skips disabled · localized button+toasts ×17 · 0 console errors · i18n 17/17 · CHANGELOG parity ×17.

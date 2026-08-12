@@ -17,7 +17,7 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 - **`POST /api/portals/toggle`** — en eksplicit brugerskrivning, der kirurgisk og med parse-validering skifter en virksomheds `enabled`-flag i `portals.yml` (kommentarer, rækkefølge og øvrige felter bevares). 5 nye i18n-nøgler × **17 sprog**; snapshot 1195 → 1200.
 
 ### Noter
-- Ændringen i scanneren var **nul** — `en-scanner.mjs` filtrerer allerede `enabled !== false`. Suite: **2368** tests (+3).
+- Ændringen i scanneren var **nul** — `en-scanner.mjs` filtrerer allerede `enabled !== false`. Suite: **2370** tests (+3).
 
 ## [1.143.0] — 2026-08-12
 

@@ -11,7 +11,7 @@
 - **`POST /api/portals/toggle`** — ein expliziter Nutzer-Write, der das `enabled`-Flag eines Unternehmens in `portals.yml` chirurgisch und parse-validiert umschaltet (Kommentare, Reihenfolge und übrige Felder bleiben erhalten). 5 neue i18n-Schlüssel × **17 Sprachen**; Snapshot 1195 → 1200.
 
 ### Hinweise
-- Die Scanner-Änderung war **null** — `en-scanner.mjs` filtert bereits `enabled !== false`. Suite: **2368** Tests (+3).
+- Die Scanner-Änderung war **null** — `en-scanner.mjs` filtert bereits `enabled !== false`. Suite: **2370** Tests (+3).
 
 ## [1.143.0] — 2026-08-12
 

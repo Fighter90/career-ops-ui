@@ -17,7 +17,7 @@
  * `safeGet` (SSRF envelope) with a short timeout + tiny body cap; concurrency is
  * chunked so a big portals.yml can't fan out into a request storm.
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, renameSync, existsSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { PATHS } from '../paths.mjs';
 import { safeGet } from '../safe-fetch.mjs';
@@ -78,8 +78,15 @@ async function probeAll(companies) {
  */
 export function setEnabledInRaw(raw, careersUrl, enabled) {
   if (typeof raw !== 'string' || typeof careersUrl !== 'string' || !careersUrl) return null;
+  if (typeof enabled !== 'boolean') return null;
   const lines = raw.split('\n');
-  const idx = lines.findIndex((l) => l.includes(careersUrl));
+  // Anchor on the ACTUAL `careers_url:`/`api:` value line (optional quotes, an
+  // optional trailing comment) — not a bare substring, so a URL that is a prefix
+  // of another (`…/jobs` vs `…/jobs/eu`) or one mentioned in a comment can't
+  // toggle the wrong company.
+  const esc = careersUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const keyRe = new RegExp(`^\\s*(?:careers_url|api)\\s*:\\s*["']?${esc}["']?\\s*(?:#.*)?$`);
+  const idx = lines.findIndex((l) => keyRe.test(l));
   if (idx === -1) return null;
   // Walk up to the list-item start ("- " at some indent) that owns this line.
   let start = idx;
@@ -95,11 +102,13 @@ export function setEnabledInRaw(raw, careersUrl, enabled) {
     const ind = (l.match(/^(\s*)/) || [, ''])[1].length;
     if (ind <= baseIndent.length) break;
   }
-  // Existing `enabled:` within the block → flip its value; else insert one.
+  // Existing `enabled:` within the block → set its value (handles an empty value
+  // too); else insert one. We rewrite the whole value (a trailing inline comment
+  // on the enabled line, rare, is dropped — acceptable).
   let enabledLine = -1;
   for (let i = start; i < end; i += 1) { if (/^\s*enabled\s*:/.test(lines[i])) { enabledLine = i; break; } }
   if (enabledLine !== -1) {
-    lines[enabledLine] = lines[enabledLine].replace(/^(\s*enabled\s*:\s*)\S.*$/, `$1${enabled}`);
+    lines[enabledLine] = lines[enabledLine].replace(/^(\s*enabled\s*:).*$/, `$1 ${enabled}`);
   } else {
     lines.splice(start + 1, 0, `${keyIndent}enabled: ${enabled}`);
   }
@@ -115,21 +124,32 @@ export function registerPortalsRoutes(app) {
   app.post('/api/portals/toggle', async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const careersUrl = typeof body.careers_url === 'string' ? body.careers_url : '';
-    const enabled = body.enabled !== false; // default true
     if (!careersUrl) return res.status(400).json({ error: 'careers_url is required' });
+    // This writes a user-owned parent file — demand a real boolean, don't coerce
+    // a missing / "false" / 0 into a silent enable.
+    if (typeof body.enabled !== 'boolean') return res.status(400).json({ error: 'enabled must be a boolean' });
+    const enabled = body.enabled;
     if (!existsSync(PATHS.portals)) return res.status(404).json({ error: 'portals.yml not found' });
     try {
-      let ok = false;
+      let outcome = 'not-found'; // 'ok' | 'not-found' | 'parse-error'
       await withFileLock(PATHS.portals, async () => {
         const raw = readFileSync(PATHS.portals, 'utf8');
         const next = setEnabledInRaw(raw, careersUrl, enabled);
-        if (next === null) return; // company not found — leave ok=false
-        // safety net: the edited text MUST still parse, or we don't write it.
-        try { yaml.load(next); } catch { return; }
-        writeFileSync(PATHS.portals, next);
-        ok = true;
+        if (next === null) return; // company careers_url not found → 404
+        // Safety net: the surgical edit MUST still parse, or we refuse to write.
+        try { yaml.load(next); } catch { outcome = 'parse-error'; return; }
+        // Atomic write (temp in the same dir + rename) so a crash mid-write can't
+        // truncate the user's portals.yml.
+        const tmp = PATHS.portals + '.tmp-' + process.pid;
+        writeFileSync(tmp, next);
+        renameSync(tmp, PATHS.portals);
+        outcome = 'ok';
       });
-      if (!ok) return res.status(404).json({ error: 'company not found in portals.yml (or the edit would not parse)' });
+      if (outcome === 'parse-error') {
+        console.warn('[portals/toggle] surgical edit produced invalid YAML — refused to write');
+        return res.status(500).json({ error: 'internal error: the edit would not re-parse; portals.yml left unchanged' });
+      }
+      if (outcome !== 'ok') return res.status(404).json({ error: 'company not found in portals.yml (no matching careers_url)' });
       return res.json({ ok: true, careers_url: careersUrl, enabled });
     } catch (e) {
       return res.status(500).json({ error: String((e && e.message) || e).slice(0, 200) });

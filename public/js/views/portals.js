@@ -49,13 +49,16 @@ Router.register('portals', async () => {
     // disabled companies via `c.enabled !== false`). Keyed by careers_url, so a
     // company without one can't be toggled from here.
     const canToggle = !!company.careers_url;
+    // `enabled` may be an un-normalized field (undefined = watched, like the
+    // scanner's `!== false`), so treat anything but an explicit false as ON.
+    const isOn = company.enabled !== false;
     const toggleBtn = c('button', {
       className: 'btn btn-ghost btn-sm', type: 'button',
-      'aria-label': company.enabled ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'),
-    }, company.enabled ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'));
+      'aria-label': isOn ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'),
+    }, isOn ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'));
     if (!canToggle) toggleBtn.disabled = true;
     else toggleBtn.addEventListener('click', async () => {
-      const next = !company.enabled;
+      const next = !isOn;
       toggleBtn.disabled = true;
       try {
         await API.post('/api/portals/toggle', { careers_url: company.careers_url, enabled: next });

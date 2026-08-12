@@ -20,7 +20,7 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 - **`POST /api/portals/toggle`** — una escritura explícita del usuario que cambia quirúrgicamente y con validación de parseo el flag `enabled` de una empresa en `portals.yml` (comentarios, orden y demás campos se conservan). 5 nuevas claves i18n × **17 idiomas**; snapshot 1195 → 1200.
 
 ### Notas
-- El cambio en el escáner fue **cero** — `en-scanner.mjs` ya filtra `enabled !== false`. Suite: **2368** pruebas (+3).
+- El cambio en el escáner fue **cero** — `en-scanner.mjs` ya filtra `enabled !== false`. Suite: **2370** pruebas (+3).
 
 ## [1.143.0] — 2026-08-12
 
