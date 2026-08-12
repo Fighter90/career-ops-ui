@@ -15,6 +15,11 @@ test('hermesChatUrl resolves a /v1 base or a full URL', () => {
   assert.equal(hermesChatUrl('http://127.0.0.1:9000/v1'), 'http://127.0.0.1:9000/v1/chat/completions'); // custom port
   assert.equal(hermesChatUrl('http://127.0.0.1:9000/v1/'), 'http://127.0.0.1:9000/v1/chat/completions'); // trailing slash
   assert.equal(hermesChatUrl('http://h/v1/chat/completions'), 'http://h/v1/chat/completions'); // full URL passthrough
+  // Defense-in-depth: a non-http(s) scheme (user-writable HERMES_BASE_URL) must
+  // never reach fetch — it falls back to the loopback default.
+  assert.equal(hermesChatUrl('file:///etc/passwd'), 'http://127.0.0.1:8642/v1/chat/completions');
+  assert.equal(hermesChatUrl('gopher://x/y'), 'http://127.0.0.1:8642/v1/chat/completions');
+  assert.equal(hermesChatUrl('https://remote-hermes.example/v1'), 'https://remote-hermes.example/v1/chat/completions'); // https allowed
 });
 
 test('runHermes POSTs OpenAI-compatible JSON with a Bearer key and default model', async () => {

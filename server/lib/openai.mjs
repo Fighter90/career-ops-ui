@@ -179,9 +179,16 @@ export function hasGitHubModelsKey() {
 const HERMES_BASE_DEFAULT = 'http://127.0.0.1:8642/v1';
 
 /** Resolve the full chat/completions URL from a Hermes base (accepts a `…/v1`
- *  base per Hermes docs, or a full `…/chat/completions` URL). */
+ *  base per Hermes docs, or a full `…/chat/completions` URL).
+ *  Defense-in-depth: `HERMES_BASE_URL` is user-writable via `#/config`, so this
+ *  string reaches a server-side fetch — only `http(s):` is honoured; any other
+ *  scheme (`file:`, `gopher:`, …) falls back to the loopback default rather than
+ *  reaching `fetch`. (The provider endpoint is trusted config, not a scanned job
+ *  URL, so it doesn't go through `isValidJobUrl`; this is the cheap belt.) */
 export function hermesChatUrl(base) {
-  const b = String(base || HERMES_BASE_DEFAULT).trim().replace(/\/+$/, '');
+  const raw = String(base || HERMES_BASE_DEFAULT).trim();
+  const safe = /^https?:\/\//i.test(raw) ? raw : HERMES_BASE_DEFAULT;
+  const b = safe.replace(/\/+$/, '');
   return b.endsWith('/chat/completions') ? b : `${b}/chat/completions`;
 }
 
