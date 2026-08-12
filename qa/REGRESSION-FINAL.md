@@ -8,7 +8,7 @@
 > `qa/reports/<YYYY-MM-DD>-REGRESSION.md` (current reports home; the old
 > `qa/v54-regression/` path is retired).
 >
-> **Current baseline — v1.118.2 (update on each release):**
+> **Current baseline — v1.157.0 (update on each release):**
 >
 > - **16 locales** (`en es pt-BR ko ja ru zh-CN zh-TW fr pl uk da ar de
 >   it tr`; ar = RTL). Everywhere the *body* below says "9 locales" read
@@ -110,20 +110,25 @@ reader / the accessibility tree:
 while the web-ui ⚡ eval is headless and key-driven.
 
 - `LLM_PROVIDER` select MUST offer `auto · claude · gemini · openai ·
-  qwen`. `auto` = first provider whose key is set, preferring
-  **Anthropic → Gemini → OpenAI → Qwen** (`providerOrder()`); an
-  explicit value pins exactly one; forced + no key ⇒ manual prompt.
+  qwen · openrouter · github · hermes` (8 options — all **7 providers** +
+  auto). `auto` = first provider whose key is set, preferring **Anthropic →
+  Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes**
+  (`providerOrder()`); an explicit value prefers that one — **but as of
+  v1.157.0, a forced provider whose key isn't set falls back to any OTHER
+  configured provider** (a keyless `LLM_PROVIDER=claude` from `init` no longer
+  dead-ends); only with NO provider key at all ⇒ manual prompt.
 - Per-provider model `<select>`s for Anthropic, Gemini, OpenAI
-  (`OPENAI_MODEL`, default `gpt-5-codex`) and Qwen (`QWEN_MODEL`,
-  default `qwen-max`). `*_API_KEY` ∈ `SECRET_KEYS` (masked, never
-  logged); `*_MODEL` and `LLM_PROVIDER` are **not** secret.
-- `KNOWN_KEYS` includes `ANTHROPIC_*`, `GEMINI_*`, `OPENAI_*`,
-  `QWEN_*`, `LLM_PROVIDER`, `PORT`, `HOST`; all LLM keys are
-  `KEY_GROUPS.core`. Saving applies live — honoured **without a
-  server restart** (see §6).
-- The "works via OR" contract: with ONLY one of the four keys set,
+  (`OPENAI_MODEL`, default `gpt-5-codex`), Qwen (`QWEN_MODEL`, default
+  `qwen-max`), OpenRouter (remote select), GitHub Models, and Hermes
+  (`HERMES_MODEL`). `*_API_KEY` ∈ `SECRET_KEYS` (masked, never logged);
+  `*_MODEL` and `LLM_PROVIDER` are **not** secret.
+- `KNOWN_KEYS` includes `ANTHROPIC_*`, `GEMINI_*`, `OPENAI_*`, `QWEN_*`,
+  `OPENROUTER_*`, `GITHUB_MODELS_*`, `HERMES_*`, `LLM_PROVIDER`, `PORT`,
+  `HOST`; all LLM keys are `KEY_GROUPS.core`. Saving applies live — honoured
+  **without a server restart** (see §6).
+- The "works via OR" contract: with ONLY one of the seven keys set,
   `#/evaluate` ⚡ run-live MUST succeed via that provider; the result
-  header reports which (`anthropic`/`gemini`/`openai`/`qwen`). Same
+  header reports which. Same
   for `#/deep`, `#/mode/:slug`, and the `#/auto` pipeline. No key
   anywhere ⇒ the copy-paste manual prompt, never a hard error.
 
@@ -190,10 +195,11 @@ With a key ONLY in the parent `.env` (NOT in the server's boot
 never error on a different/stale one. `effectiveEnv()` resolves
 keys/model as: non-empty `process.env` wins, else current parent
 `.env`; detection (`hasAnthropicKey`/`hasGeminiKey`/`hasOpenAIKey`/
-`hasQwenKey`) matches the key actually sent; no restart needed after
-a `.env` / `POST /api/config` change. Walk the OR matrix: for each of
-the 4 providers, set ONLY its key in `.env` and confirm a live eval
-runs via exactly that provider (`anthropic`/`gemini`/`openai`/`qwen`
+`hasQwenKey`/`hasOpenRouterKey`/`hasGitHubModelsKey`/`hasHermesKey`) matches
+the key actually sent; no restart needed after a `.env` / `POST /api/config`
+change. Walk the OR matrix: for each of the **7 providers**, set ONLY its key
+in `.env` and confirm a live eval runs via exactly that provider
+(`anthropic`/`gemini`/`openai`/`qwen`/`openrouter`/`github`/`hermes`
 in the response). Keys are never logged or echoed — the no-leak
 canary is green in `tests/anthropic.test.mjs` and
 `tests/openai.test.mjs`.
@@ -261,12 +267,16 @@ the ★ ones live.
   v1.55.2**): `#cv-editor` has a descriptive `aria-label`
   (`cv.editorAria` ×9); no redundant `aria-labelledby`.
   `tests/cv-editor-a11y.test.mjs`.
-- ★ **4-provider OR onboarding** (UX-2, **CLOSED v1.55.3**):
+- ★ **7-provider OR onboarding** (UX-2, **CLOSED v1.55.3**; extended to 7
+  providers through v1.151.0):
   `GET /api/status/providers` → `{activeProvider, activeModel,
-  keysConfigured}`; SPA `#onboarding-banner` shows a red banner (0
+  keysConfigured}` (lists every configured provider incl. `openrouter` /
+  `github` / `hermes`); SPA `#onboarding-banner` shows a red banner (0
   keys, CTA → `#/config?tab=api-keys`) or a quiet active-provider
-  chip (≥1). `selectActiveProvider()` honors the `LLM_PROVIDER` pin.
-  `tests/onboarding-key-banner.test.mjs`.
+  chip (≥1). `selectActiveProvider()` honors the `LLM_PROVIDER` pin **but as
+  of v1.157.0 falls back to any configured provider when the pinned one has
+  no key** (see §3). `tests/onboarding-key-banner.test.mjs`,
+  `tests/live-provider-gating.test.mjs`.
 - **`#/auto` ETA + `#/scan` Stop prominence** (UX-6, **CLOSED
   v1.55.4**): `.auto-eta` "~1–2 min" next to Run; `setScanRunning`
   flips Stop `btn-ghost`↔`btn-danger` while `aria-busy`.
