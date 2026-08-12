@@ -9,6 +9,22 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — sekcja pomocy w aplikacji + powierzchnia cvstart.org (Phase 5b, część 2)** — druga i ostatnia część prac nad dokumentacją Hermesa: instrukcja mieszka teraz wewnątrz własnego przewodnika pomocy aplikacji, we wszystkich 17 językach, a wbudowany asystent dokumentacji odpowiada na jej podstawie na pytania o Hermes. Nadal wyłącznie dokumentacja — ścieżka dostawcy LLM Hermes pozostaje **zaplanowana / jeszcze niepodłączona** (Phase 5).
+
+### Dodano
+- **Pomoc w aplikacji §30 „Hermes & Telegram" × 17 języków** — nowa sekcja przewodnika (czym jest Hermes + dwie formy integracji; uruchamianie na serwerze w chmurze; Telegram przez Hermes + reguła „czego NIE ujawniać"), dostępna z `#/help`. Grounding `docs-assistant` / `DocsFab` pobiera ją automatycznie, ponieważ oba czytają `docs/help/<lang>.md`.
+- **cvstart.org — link do przewodnika Hermes** kierujący do dokumentu na GitHub.
+
+### Zmieniono
+- Próg pakietu pomocy podniesiony **29 → 30 H2 / 105 → 108 H3** (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`); §30 dodaje 3 H3.
+
+### Uwagi
+- **Wciąż nic nie wywołuje Hermesa.** Nowy test kanarkowy `tests/help-hermes-section.test.mjs` sprawdza, że każdy język zawiera §30 z jej niezależnymi od języka kotwicami (`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram). Dostawca pozostaje zablokowany do czasu kontraktu API z Phase 5.
+- To zamyka produkt **dokumentacja + skill** dla Phase 5b; integracja dostawcy (Phase 5) pozostaje osobnym, zablokowanym elementem.
+- Zestaw: **2378** testów (+2: `tests/help-hermes-section.test.mjs`).
+
 ## [1.146.0] — 2026-08-12
 
 **Agent Hermes + Telegram — przewodnik integracyjny + skill (Phase 5b, część 1)** — możesz uruchomić career-ops-ui na serwerze w chmurze i przekazywać jego zdarzenia (zakończony skan, nowy raport, pilny follow-up) do Telegrama za pomocą agenta Hermes od Nous Research. To wydanie dostarcza dokumentację projektową + wdrożeniową oraz skill hermes-bridge; ścieżka dostawcy LLM Hermes wciąż jest zaplanowana / jeszcze niepodłączona (zablokowana przez spike dotyczący kontraktu API w Phase 5). Dokumentacja z wyprzedzeniem względem kodu — celowo.

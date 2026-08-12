@@ -7,14 +7,14 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Останній реліз — v1.146.0** — **агент Hermes + Telegram** — запускайте career-ops-ui на хмарному сервері та з'єднуйте його події з Telegram через агента Hermes від Nous Research. Додає посібник з інтеграції + навичку **`hermes-bridge`**; шлях LLM-провайдера залишається **запланованим / ще не підключеним**. **2376 тестів.**
+> **🆕 Останній реліз — v1.147.0** — **Hermes & Telegram у довіднику** — інструкція з хмарного розгортання Hermes + мосту з Telegram тепер є вбудованим розділом довідки в застосунку (§30) усіма 17 мовами, і асистент документації відповідає на її основі. Це й досі лише документація — провайдер залишається **запланованим / ще не підключеним**. **2378 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

@@ -9,6 +9,22 @@
 ---
 
 
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — 앱 내 도움말 섹션 + cvstart.org 표면 (Phase 5b, 2부)** — Hermes 문서 작업의 두 번째이자 마지막 부분입니다: 사용법이 이제 17개 언어 전체에서 앱 자체 도움말 가이드 안에 담기며, 앱 내 문서 어시스턴트가 이를 바탕으로 Hermes 질문에 답합니다. 여전히 문서 전용입니다 — Hermes LLM 제공자 경로는 **계획됨 / 아직 미연동** 상태로 유지됩니다(Phase 5).
+
+### 추가
+- **앱 내 도움말 §30 "Hermes & Telegram" × 17개 언어** — 새 가이드 섹션(Hermes란 무엇인가 + 두 가지 통합 형태; 클라우드 서버에서 실행; Hermes를 통한 Telegram + "노출하지 말아야 할 것" 규칙), `#/help`에서 접근 가능. `docs-assistant` / `DocsFab` 그라운딩이 자동으로 이를 가져옵니다(둘 다 `docs/help/<lang>.md`를 읽음).
+- **cvstart.org — Hermes 가이드 링크**, GitHub 문서로 연결.
+
+### 변경
+- 도움말 번들 게이트 **29 → 30 H2 / 105 → 108 H3**로 상향(`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`); §30이 H3 3개를 추가.
+
+### 참고
+- **여전히 아무것도 Hermes를 호출하지 않습니다.** 새 캐너리 `tests/help-hermes-section.test.mjs`가 모든 언어에 §30이 언어 독립 앵커(`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram)와 함께 있는지 확인합니다. 제공자는 Phase 5 API 계약 스파이크에 여전히 막혀 있습니다.
+- 이로써 Phase 5b의 **문서 + 스킬** 산출물이 마무리됩니다; 제공자 통합(Phase 5)은 별개의 차단된 항목으로 남습니다.
+- 스위트: **2378**개 테스트(+2: `tests/help-hermes-section.test.mjs`).
+
 ## [1.146.0] — 2026-08-12
 
 **Hermes 에이전트 + Telegram — 통합 가이드 + 스킬(Phase 5b, 1부)** — 클라우드 서버에서 career-ops-ui를 실행하고, 그 이벤트(완료된 스캔, 새 리포트, 긴급한 후속 조치)를 Nous Research의 Hermes 에이전트를 통해 Telegram으로 연결할 수 있습니다. 이번 릴리스는 설계 + 배포 문서와 hermes-bridge 스킬을 제공합니다. Hermes LLM 제공자 경로는 여전히 계획됨/아직 연결되지 않음 상태입니다(Phase 5 API 계약 스파이크에 막혀 있음). 의도적으로 코드보다 문서가 앞서 있습니다.

@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Seneste udgivelse — v1.146.0** — **Hermes-agent + Telegram** — kør career-ops-ui på en cloud-server og bro dens events til Telegram via en Nous Research Hermes-agent. Leverer integrationsguiden + en **`hermes-bridge`**-færdighed; LLM-udbyderstien er stadig **planlagt / endnu ikke tilsluttet**. **2376 tests.**
+> **🆕 Seneste udgivelse — v1.147.0** — **Hermes & Telegram i hjælpeguiden** — vejledningen til Hermes cloud-deploy + Telegram-bro er nu et indbygget hjælpeafsnit i appen (§30) på alle 17 sprog, og dokumentassistenten svarer ud fra den. Stadig kun dokumentation — udbyderen forbliver **planlagt / endnu ikke tilsluttet**. **2378 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

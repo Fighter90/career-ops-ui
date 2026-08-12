@@ -11,6 +11,22 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — la section d'aide intégrée + la surface cvstart.org (Phase 5b, partie 2)** — la deuxième et dernière partie du travail de documentation Hermes : le mode d'emploi vit désormais dans le guide d'aide de l'application elle-même, dans les 17 langues, et l'assistant de documentation intégré répond aux questions sur Hermes à partir de lui. Toujours uniquement documentaire — le chemin du fournisseur LLM Hermes reste **prévu / pas encore connecté** (Phase 5).
+
+### Ajouté
+- **Aide intégrée §30 « Hermes & Telegram » × 17 langues** — une nouvelle section du guide (ce qu'est Hermes + les deux formes d'intégration ; exécution sur un serveur cloud ; Telegram via Hermes + la règle « ce qu'il ne faut PAS exposer »), accessible depuis `#/help`. Le grounding de `docs-assistant` / `DocsFab` la reprend automatiquement, puisque les deux lisent `docs/help/<lang>.md`.
+- **cvstart.org — un lien vers le guide Hermes** pointant vers le document sur GitHub.
+
+### Modifié
+- Seuil du bundle d'aide relevé **29 → 30 H2 / 105 → 108 H3** (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`) ; §30 ajoute 3 H3.
+
+### Notes
+- **Rien n'appelle encore Hermes.** Le nouveau canari `tests/help-hermes-section.test.mjs` vérifie que chaque langue comporte la §30 avec ses ancres indépendantes de la langue (`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram). Le fournisseur reste bloqué en attendant le contrat d'API de la Phase 5.
+- Cela clôt le livrable **documentation + skill** de la Phase 5b ; l'intégration du fournisseur (Phase 5) reste un élément distinct et bloqué.
+- Suite : **2378** tests (+2 : `tests/help-hermes-section.test.mjs`).
+
 ## [1.146.0] — 2026-08-12
 
 **Agent Hermes + Telegram — le guide d'intégration + une skill (Phase 5b, partie 1)** — vous pouvez exécuter career-ops-ui sur un serveur cloud et relier ses événements (un scan terminé, un nouveau rapport, un suivi urgent) à Telegram via un agent Hermes de Nous Research. Cette version livre la documentation de conception + déploiement et une skill hermes-bridge ; le chemin du fournisseur LLM Hermes reste planifié / pas encore branché (bloqué par le spike de contrat d'API de la Phase 5). Documentation en avance sur le code, volontairement.

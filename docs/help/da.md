@@ -2151,3 +2151,19 @@ Seks principper — "ansøg bedre, til færre", "signal frem for volumen", "evid
 ### Læsning og underskrivelse
 
 Linket i sidebjælke-footeren åbner manifest-siden. Du kan også læse `MANIFESTO.md` i moderprojektet eller køre `npm run manifesto` der for at åbne underskriftssiden. At underskrive er valgfrit og tager ti sekunder — din underskrift bliver et offentligt commit i moderprojektets `SIGNATURES.md`-register. Intet i appen afhænger af, om du underskriver.
+
+## 30. Hermes & Telegram
+
+**Hermes fra Nous Research** er en åben, autonom agent — tool-calling, skills og mere end 20 beskedkanaler, heriblandt Telegram. Dette afsnit forklarer, hvordan du ville køre career-ops-ui på en cloud-server og bygge bro mellem dens events og Telegram via en Hermes-agent. **Det er en plan, ikke en leveret funktion:** Hermes som LLM-udbyder er endnu ikke tilsluttet (blokeret indtil Nous Portals API-kontrakt er bekræftet), så intet i appen kalder Hermes i dag. Den fulde design- + deployment-guide ligger i `docs/integrations/HERMES.md`, og `hermes-bridge`-skillen gennemgår trinnene.
+
+### Hvad Hermes er
+
+Hermes er en agent-runtime — ikke, så vidt vi kan bekræfte, et almindeligt hostet chat-completions-API. Det former integrationen på to måder. **Form A:** hvis et Nous Portal-endpoint viser sig at være OpenAI-kompatibelt, tilføjes Hermes som endnu en LLM-udbyder i appens kaskade. **Form B:** hvis det kun er tilgængeligt som agent-runtime, taler appen med den via en dedikeret relay-rute eller en lokalt kørende agent. Hvilken der gælder, bekræftes fra Nous Portal og `NousResearch/hermes-agent`-repoet *inden* der skrives kode — derfor er udbyderen bevidst ikke bygget endnu.
+
+### Kørsel på en cloud-server
+
+career-ops-ui binder til `127.0.0.1` som standard. For at nå en Hermes-agent, der lever på en server, forlader du loopback — forsigtigt. Hold appen bundet til loopback, og sæt en reverse proxy (nginx eller Caddy) foran, der terminerer HTTPS; kør den under systemd eller pm2 som en ikke-root-bruger; og hold den skrivebeskyttede kontrakt med parent-projektet career-ops intakt på den headless maskine. Sikkerhedsrammen skal overleve flytningen: en Content-Security-Policy uden inline-scripts, SSRF-værnet på hver hentning af en brugerangivet URL, markdown/XSS-grænsen og ingen hemmeligheder i logs. Guiden har den fulde tjekliste — eksponér aldrig `0.0.0.0` direkte mod internettet.
+
+### Telegram via Hermes
+
+Broen får appens events — en afsluttet scanning, en ny rapport, en opfølgning der lige er blevet akut — frem til en Telegram-chat via Hermes. Telegram-bottens token lever i Hermes' egen config, aldrig i career-ops-ui. Send kun det nyttige minimum: "Scanning afsluttet — 12 nye match" plus et link, du selv åbner. **Send aldrig** CV-tekst, lønbeløb, rapportindhold, API-nøgler eller interne URL'er til kanalen — guidens trusselsmodel-liste "hvad man IKKE skal eksponere" er reglen. Denne side kan nås fra `#/help`, og den indbyggede dokumentationsassistent besvarer spørgsmål ud fra den.

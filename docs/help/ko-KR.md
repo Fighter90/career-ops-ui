@@ -2033,3 +2033,19 @@ career-ops — 이 앱이 화면을 제공하는 상위 프로젝트 — 는 [th
 ### 읽고 서명하기
 
 사이드바 푸터의 링크를 클릭하면 선언문 페이지가 열립니다. 상위 프로젝트에서 `MANIFESTO.md`를 직접 읽거나, 그곳에서 `npm run manifesto`를 실행해 서명 페이지를 열 수도 있습니다. 서명은 선택 사항이며 10초면 충분합니다 — 서명하면 상위 저장소의 `SIGNATURES.md` 원장에 공개 커밋으로 기록됩니다. 이 앱의 어떤 기능도 서명 여부에 좌우되지 않습니다.
+
+## 30. Hermes & Telegram
+
+**Nous Research의 Hermes**는 오픈 자율 에이전트입니다 — 툴 호출, 스킬, 그리고 Telegram을 포함한 20개 이상의 메시징 채널을 지원합니다. 이 섹션은 career-ops-ui를 클라우드 서버에서 실행하고 그 이벤트를 Hermes 에이전트를 통해 Telegram으로 연결하는 방법을 설명합니다. **이것은 계획이지 출시된 기능이 아닙니다:** LLM 제공자로서의 Hermes는 아직 연결되지 않았으며(Nous Portal API 계약 확인에 막혀 있음), 현재 앱의 어떤 코드도 Hermes를 호출하지 않습니다. 전체 설계 + 배포 가이드는 `docs/integrations/HERMES.md`에 있고, `hermes-bridge` 스킬이 각 단계를 안내합니다.
+
+### Hermes란 무엇인가
+
+Hermes는 에이전트 런타임이며 — 확인할 수 있는 한 — 단순한 호스팅형 chat-completions API가 아닙니다. 이는 통합을 두 가지 형태로 만듭니다. **형태 A:** Nous Portal 엔드포인트가 OpenAI 호환으로 밝혀지면, Hermes는 앱의 제공자 캐스케이드에 또 하나의 LLM 제공자로 추가됩니다. **형태 B:** 에이전트 런타임으로만 접근 가능하다면, 앱은 전용 relay 라우트나 로컬로 실행되는 에이전트를 통해 통신합니다. 어느 쪽인지는 코드를 작성하기 *전에* Nous Portal과 `NousResearch/hermes-agent` 저장소에서 확인합니다 — 그래서 제공자는 의도적으로 아직 구현되지 않았습니다.
+
+### 클라우드 서버에서 실행하기
+
+career-ops-ui는 기본적으로 `127.0.0.1`에 바인딩됩니다. 서버에 있는 Hermes 에이전트에 도달하려면 신중하게 loopback을 벗어나야 합니다. 앱은 loopback에 그대로 두고 앞단에 HTTPS를 종료하는 reverse proxy(nginx 또는 Caddy)를 두며, systemd 또는 pm2로 비-root 사용자로 실행하고, headless 서버에서 부모 career-ops에 대한 읽기 전용 계약을 그대로 유지하세요. 보안 경계는 이전 후에도 유지되어야 합니다: 인라인 스크립트가 없는 Content-Security-Policy, 사용자 제공 URL 페치마다의 SSRF 가드, markdown/XSS 경계, 그리고 로그에 비밀 정보 없음. 가이드에 전체 체크리스트가 있습니다 — `0.0.0.0`을 공용 인터넷에 직접 노출하지 마세요.
+
+### Hermes를 통한 Telegram
+
+이 브리지는 앱 이벤트 — 완료된 스캔, 새 리포트, 방금 긴급해진 후속 조치 — 를 Hermes를 통해 Telegram 채팅으로 전달합니다. Telegram 봇 토큰은 career-ops-ui가 아니라 Hermes 자체 설정에 있습니다. 유용한 최소한만 보내세요: "스캔 완료 — 새 매칭 12건"과 여러분이 직접 여는 링크. CV 텍스트, 급여 수치, 리포트 원문, API 키, 내부 URL은 **절대 채널로 보내지 마세요** — 가이드의 위협 모델 "노출하지 말아야 할 것" 목록이 규칙입니다. 이 페이지는 `#/help`에서 접근할 수 있으며, 앱 내 문서 어시스턴트가 이를 바탕으로 질문에 답합니다.

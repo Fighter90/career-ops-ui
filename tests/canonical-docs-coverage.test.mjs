@@ -50,7 +50,7 @@ test('every help bundle references all 5 canonical career-ops.org guides', () =>
   }
 });
 
-test('every help bundle keeps the 29-H2 parity contract', () => {
+test('every help bundle keeps the 30-H2 parity contract', () => {
   // Belt-and-suspenders next to tests/help-ui.test.mjs::section-parity.
   // If a future edit splits a section we want the regression here too.
   // v1.29.0 — bar lifted 16 → 17 by adding §17 "How to add a new
@@ -65,7 +65,8 @@ test('every help bundle keeps the 29-H2 parity contract', () => {
     assert.equal(h2, baseline, `${lang}.md has ${h2} H2 sections, expected ${baseline}`);
   }
   // v1.120.0 — 28 → 29: §29 "The CareerOps Manifesto" (parent v1.20.0 parity).
-  assert.equal(baseline, 29, `expected 29 H2 sections in every bundle, got ${baseline}`);
+  // v1.147.0 — 29 → 30: §30 "Hermes & Telegram" (Phase 5b, part 2).
+  assert.equal(baseline, 30, `expected 30 H2 sections in every bundle, got ${baseline}`);
 });
 
 test('every README references the canonical front page + ≥3 sub-guides', () => {

@@ -102,10 +102,11 @@ test('every help-bundle §5 references HH_USER_AGENT for the hh.ru gate', () => 
   }
 });
 
-test('every help-bundle keeps the 25-H2 parity contract after v1.29.1 edit', () => {
+test('every help-bundle keeps the 30-H2 parity contract after v1.29.1 edit', () => {
   // Belt-and-suspenders: the v1.29.1 expansion is a ### subsection of
-  // §5 — H2 count stays at 25 (v1.60.0 added §19 Localizing the app; v1.86.0 added §20 Statistics by target roles; v1.89.0 added §21 Your two-pager; v1.90.0 added §22 Mock interview; v1.91.0 added §23 Networking; v1.92.0 added §24 CV Studio; v1.93.0 added §25 Memory). If a future change accidentally
-  // promotes the H3 to H2 we want it to fail here.
+  // §5 — the H2 count is now 30 (§19 Localizing the app … §25 Memory … §28 Career
+  // orientation; §29 The CareerOps Manifesto v1.120.0; §30 Hermes & Telegram v1.147.0).
+  // If a future change accidentally promotes an H3 to H2 we want it to fail here.
   let baseline = null;
   for (const lang of LOCALES) {
     const text = readHelp(lang);
@@ -114,7 +115,8 @@ test('every help-bundle keeps the 25-H2 parity contract after v1.29.1 edit', () 
     assert.equal(h2, baseline, `${lang}.md has ${h2} H2 sections, expected ${baseline}`);
   }
   // v1.120.0 — 28 → 29: §29 "The CareerOps Manifesto" (parent v1.20.0 parity).
-  assert.equal(baseline, 29, `expected 29 H2 sections, got ${baseline}`);
+  // v1.147.0 — 29 → 30: §30 "Hermes & Telegram" (Phase 5b, part 2).
+  assert.equal(baseline, 30, `expected 30 H2 sections, got ${baseline}`);
 });
 
 test('WS10: every help-bundle has identical H3 parity (en + 7 locales)', () => {
@@ -129,5 +131,5 @@ test('WS10: every help-bundle has identical H3 parity (en + 7 locales)', () => {
     if (baseline === null) baseline = h3;
     assert.equal(h3, baseline, `${lang}.md has ${h3} H3 subsections, expected ${baseline}`);
   }
-  assert.equal(baseline, 105, `expected 105 H3 subsections per bundle, got ${baseline}`); // v1.58.35 §18 added 3 H3s; v1.62.x §5 added "rss (RSS / Atom boards)"; v1.64.0 §7 added "Scanning hh.ru from outside Russia"; v1.86.0 §20 Statistics added 3 H3s; v1.89.0 §21 Your two-pager added 3 H3s; v1.90.0 §22 Mock interview added 3 H3s; v1.91.0 §23 Networking added 3 H3s; v1.92.0 §24 CV Studio added 3 H3s; v1.93.0 §25 Memory added 3 H3s; v1.94.0 §26 Statistics rework added 3 H3s; v1.95.0 §27 Career plan added 3 H3s; v1.96.0 §28 Career orientation added 3 H3s; v1.118.0 §26 added 'Lifetime & compensation'; v1.120.0 §29 The CareerOps Manifesto added 2 H3s
+  assert.equal(baseline, 108, `expected 108 H3 subsections per bundle, got ${baseline}`); // v1.147.0 §30 Hermes & Telegram added 3 H3s; v1.58.35 §18 added 3 H3s; v1.62.x §5 added "rss (RSS / Atom boards)"; v1.64.0 §7 added "Scanning hh.ru from outside Russia"; v1.86.0 §20 Statistics added 3 H3s; v1.89.0 §21 Your two-pager added 3 H3s; v1.90.0 §22 Mock interview added 3 H3s; v1.91.0 §23 Networking added 3 H3s; v1.92.0 §24 CV Studio added 3 H3s; v1.93.0 §25 Memory added 3 H3s; v1.94.0 §26 Statistics rework added 3 H3s; v1.95.0 §27 Career plan added 3 H3s; v1.96.0 §28 Career orientation added 3 H3s; v1.118.0 §26 added 'Lifetime & compensation'; v1.120.0 §29 The CareerOps Manifesto added 2 H3s
 });

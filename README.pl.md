@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2376%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2378%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Najnowsze wydanie — v1.146.0** — **agent Hermes + Telegram** — uruchom career-ops-ui na serwerze w chmurze i połącz jego zdarzenia z Telegramem za pomocą agenta Hermes od Nous Research. Zawiera przewodnik integracji + umiejętność **`hermes-bridge`**; ścieżka dostawcy LLM pozostaje **zaplanowana / jeszcze niepodłączona**. **2376 testów.**
+> **🆕 Najnowsze wydanie — v1.147.0** — **Hermes & Telegram w przewodniku pomocy** — instrukcja wdrożenia w chmurze Hermes + mostka Telegram jest teraz wbudowaną sekcją pomocy w aplikacji (§30) we wszystkich 17 językach, a asystent dokumentacji odpowiada na jej podstawie. Nadal wyłącznie dokumentacja — dostawca pozostaje **zaplanowany / jeszcze niepodłączony**. **2378 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

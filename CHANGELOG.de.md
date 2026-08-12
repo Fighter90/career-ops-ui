@@ -2,6 +2,22 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.147.0] — 2026-08-12
+
+**Hermes & Telegram — der In-App-Hilfeabschnitt + die cvstart.org-Fläche (Phase 5b, Teil 2)** — der zweite und letzte Teil der Hermes-Dokumentationsarbeit: die Anleitung lebt jetzt im eigenen Hilfeleitfaden der App, in allen 17 Sprachen, und der eingebaute Dokumentations-Assistent beantwortet Hermes-Fragen daraus. Weiterhin nur Dokumentation — der Hermes-LLM-Provider-Pfad bleibt **geplant / noch nicht angebunden** (Phase 5).
+
+### Hinzugefügt
+- **In-App-Hilfe §30 „Hermes & Telegram" × 17 Sprachen** — ein neuer Leitfaden-Abschnitt (was Hermes ist + die zwei Integrationsformen; Betrieb auf einem Cloud-Server; Telegram via Hermes + die Regel „was NICHT exponiert werden darf"), erreichbar über `#/help`. Das Grounding von `docs-assistant` / `DocsFab` greift ihn automatisch auf, da beide `docs/help/<lang>.md` lesen.
+- **cvstart.org — ein Link zum Hermes-Leitfaden**, der auf das Dokument auf GitHub zeigt.
+
+### Geändert
+- Hilfe-Bundle-Gate angehoben **29 → 30 H2 / 105 → 108 H3** (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`); §30 fügt 3 H3 hinzu.
+
+### Hinweise
+- **Noch ruft nichts Hermes auf.** Der neue Canary `tests/help-hermes-section.test.mjs` stellt sicher, dass jede Sprache die §30 mit ihren sprachunabhängigen Ankern enthält (`docs/integrations/HERMES.md`, `hermes-bridge`, `#/help`, `127.0.0.1`, Telegram). Der Provider bleibt bis zum API-Vertrag aus Phase 5 blockiert.
+- Das schließt das **Dokumentations- + Skill**-Ergebnis von Phase 5b ab; die Provider-Integration (Phase 5) bleibt ein separater, blockierter Punkt.
+- Suite: **2378** Tests (+2: `tests/help-hermes-section.test.mjs`).
+
 ## [1.146.0] — 2026-08-12
 
 **Hermes-Agent + Telegram — der Integrationsleitfaden + eine Skill (Phase 5b, Teil 1)** — Sie können career-ops-ui auf einem Cloud-Server betreiben und dessen Events (ein abgeschlossener Scan, ein neuer Report, ein dringender Follow-up) über einen Hermes-Agent von Nous Research zu Telegram überbrücken. Diese Version liefert die Design- + Deployment-Dokumentation und eine hermes-bridge-Skill; der Hermes-LLM-Provider-Pfad bleibt geplant / noch nicht angebunden (blockiert durch den API-Vertrags-Spike der Phase 5). Dokumentation bewusst vor dem Code.
