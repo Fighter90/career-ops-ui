@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.165.0] — 2026-08-13
+
+**Naprawiono (NISKIE) — termin "Two-pager" jest teraz spójny w obrębie każdego języka.** W arabskim pasek boczny pokazywał łacińskie "Two-pager", podczas gdy `<h1>` był w pełni zlokalizowany — jedyny łaciński ciąg w skądinąd lustrzanej nawigacji RTL.
+
+### Naprawiono
+- **Decyzja wdrożona:** w każdym języku `nav.twoPager` i `twoPager.title` używają zgodnego terminu (oba po łacinie albo oba zlokalizowane). Tylko arabski był rozdzielony; jego etykieta nawigacji jest teraz zlokalizowana ("الصفحتان"). Nowy test-kanarek zawodzi, jeśli któryś język znów je rozdzieli.
+
+### Uwagi
+- Tylko tekst; bez zmian trasy/CSP/SSRF/zapisu. Zmieniono 1 wartość i18n (ar); bez nowych kluczy (migawka 1219). `tests/two-pager-term-consistency.test.mjs` (+2). Zestaw: **2424** (+2).
+
 ## [1.164.0] — 2026-08-13
 
 **Naprawiono (NISKIE) — placeholder wyszukiwania nie przelewa się już w żadnym języku.** "Find a company, role or URL…" był ucinany (nowrap), gdy pasek się kurczył; połowa "…or URL" nigdy nie była widoczna.

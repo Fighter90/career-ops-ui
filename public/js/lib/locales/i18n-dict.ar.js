@@ -849,7 +849,7 @@ window.__I18N_DICT_AR = {
   'scan.relocBadge': "انتقال",
 
   // ── Two-pager · ملاءمة السوق التي تريدها (Epic 14 / v1.89.0) ──
-  'nav.twoPager': "Two-pager",
+  'nav.twoPager': "الصفحتان",
   'twoPager.title': "الصفحتان الخاصتان بك",
   'twoPager.subtitle': "ما تريده أنت فعلاً من دورك القادم. يغذّي كل تقييم ويشغّل درجة ملاءمة لما تريده على كل إعلان.",
   'twoPager.whoLabel': "من أنا",

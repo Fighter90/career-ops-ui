@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.165.0] — 2026-08-13
+
+**Behoben (NIEDRIG) — der Begriff "Two-pager" ist jetzt innerhalb jeder Sprache konsistent.** Im Arabischen zeigte die Seitenleiste das lateinische "Two-pager", während der `<h1>` vollständig lokalisiert war — die einzige lateinische Zeichenkette in einer ansonsten gespiegelten RTL-Navigation.
+
+### Behoben
+- **Entscheidung durchgesetzt:** pro Sprache stimmen `nav.twoPager` und `twoPager.title` beim Begriff überein (beide Latein oder beide lokalisiert). Nur Arabisch war getrennt; sein Navi-Label ist jetzt lokalisiert ("الصفحتان"). Ein neuer Canary schlägt fehl, wenn eine Sprache sie wieder trennt.
+
+### Hinweise
+- Nur Text; keine Änderung an Route/CSP/SSRF/Schreibzugriff. Ein i18n-Wert geändert (ar); keine neuen Schlüssel (Snapshot 1219). `tests/two-pager-term-consistency.test.mjs` (+2). Suite: **2424** (+2).
+
 ## [1.164.0] — 2026-08-13
 
 **Behoben (NIEDRIG) — der Suchleisten-Platzhalter läuft in keiner Sprache mehr über.** "Find a company, role or URL…" wurde abgeschnitten (nowrap), wenn die Suchleiste schrumpfte; die "…or URL"-Hälfte war nie sichtbar.
