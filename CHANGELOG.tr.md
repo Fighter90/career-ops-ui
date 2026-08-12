@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.150.0] — 2026-08-12
+
+**Tutarlı boş durumlar (Phase 4 rötuşu)** — her "henüz bir şey yok" paneli artık bazı görünümlerin görünümü sihirli bir `40px` ile satır içi yeniden tanımlaması yerine, tek bir paylaşılan `.empty` stiliyle çiziliyor. Küçük bir görsel tutarlılık düzeltmesi; `#/activity`, `#/cv-studio`, `#/stats` ve `#/usage` boş durumları artık diğerlerinin tümüyle eşleşiyor (belirteçlenmiş 48px dolgu + kesikli kenarlık).
+
+### Değişti
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** boş panellerdeki satır içi `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` ifadesini kaldırdı — üç özellik de zaten paylaşılan `.empty` sınıfı tarafından sağlanıyor (`--space-7` = 48px, ortalanmış, soluk, kesikli kenarlık). Böylece bu dördü diğer ~25 `.empty` paneliyle birebir aynı çiziliyor.
+- Görünüme özgü meşru geçersiz kılmalar (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) el değmeden kaldı — yalnızca tamamen gereksiz yeniden tanımlamalar çıkarıldı.
+
+### Notlar
+- **Yalnızca istemci CSS kullanımı temizliği** — rota, sunucu, i18n anahtarı veya CSS kuralı değişikliği yok (`.empty` sınıfının kendisi değişmedi); sözlük anlık görüntüsü 1208. Tarayıcıda doğrulandı (`#/usage` boş paneli 48px dolgu + kesikli kenarlık hesaplıyor, 0 konsol hatası).
+- Yeni kanarya testi `tests/empty-state-consistency.test.mjs`, `.empty`'yi tek doğruluk kaynağı olarak korur. Phase 5 (Hermes sağlayıcısı) engelli kalmaya devam ediyor.
+- Takım: **2385** test (+2: `tests/empty-state-consistency.test.mjs`).
+
 ## [1.149.0] — 2026-08-12
 
 **Portallar Ayarlara taşındı (Phase 4)** — `#/portals` artık *Sourcing* altında değil, *Uygulama ayarları* yanındaki **Setup** gezinme grubunda. v1.144.0'dan beri bu bir ayar yüzeyi (takip edilen şirketleri aç/kapat + bir ATS sağlık yoklaması), bir sourcing eylemi değil — dolayısıyla ait olduğu yer burası. Yalnızca gezinme değişikliği; sayfa ve rotası değişmedi.

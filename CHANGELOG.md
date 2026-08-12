@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.150.0] — 2026-08-12
+
+**Consistent empty states (Phase 4 polish)** — every "nothing here yet" panel now renders through the one shared `.empty` style instead of a few views re-declaring the look inline with a magic `40px`. Small visual-consistency fix; the empty states on `#/activity`, `#/cv-studio`, `#/stats`, and `#/usage` now match every other one (tokenized 48px padding + the dashed border).
+
+### Changed
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** dropped their redundant inline `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` on empty-state panels — all three properties are already provided by the shared `.empty` class (tokenized `--space-7` = 48px, centered, muted, dashed border). So those four now render pixel-identical to the ~25 other `.empty` panels instead of drifting a few px on a hardcoded number.
+- Genuine per-view overrides (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) are untouched — only the pure-redundant re-declarations were removed.
+
+### Notes
+- **Client CSS-usage cleanup only** — no route, no server, no i18n key, no CSS-rule change (the `.empty` class itself is unchanged); app dict snapshot stays 1208. Browser-verified (the `#/usage` empty panel computes to 48px padding + dashed border, no inline style, 0 console errors).
+- New canary `tests/empty-state-consistency.test.mjs` keeps `.empty` the single source of truth — a view may still add a layout-specific override (width/border) but not re-state padding/centering/colour.
+- Completes the concrete slice of Phase 4's "overall visual polish"; broader taste-driven refinement across all pages remains open to direction. Phase 5 (Hermes provider) stays blocked on the API-contract spike.
+- Suite: **2385** tests (+2: `tests/empty-state-consistency.test.mjs`).
+
 ## [1.149.0] — 2026-08-12
 
 **Portals moved into Settings (Phase 4)** — `#/portals` now lives in the **Setup** nav group next to *App settings*, instead of under *Sourcing*. Since v1.144.0 it's a settings surface (enable/disable tracked companies + an ATS health probe), not a sourcing action — so this is where it belongs. Nav-only change; the page and its route are untouched.

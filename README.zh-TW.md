@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2383%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.149.0** — **入口已移入設定** — `#/portals` 現位於 *應用設定* 旁的 **Setup** 分組(自 v1.144.0 起即為設定介面),不再在 *Sourcing* 下。僅導覽調整。 **2383 個測試.**
+> **🆕 最新版本 — v1.150.0** — **一致的空狀態** — 每個「尚無內容」面板現在都透過共享的 `.empty` 樣式繪製;`#/activity`、`#/cv-studio`、`#/stats`、`#/usage` 移除了冗餘的行內覆寫,與其它面板保持一致(權杖化的 48px 內距 + 虛線邊框)。 **2385 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.150.0] — 2026-08-12
+
+**Konsistente tomme tilstande (Phase 4-finpudsning)** — hvert "endnu ikke noget her"-panel gengives nu via den ene delte `.empty`-stil i stedet for, at nogle visninger redeklarerer udseendet inline med et magisk `40px`. Lille visuel konsistensrettelse; de tomme tilstande på `#/activity`, `#/cv-studio`, `#/stats` og `#/usage` matcher nu alle de andre (tokeniseret 48px padding + stiplet kant).
+
+### Ændret
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** fjernede deres inline `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` på tomme paneler — alle tre egenskaber leveres allerede af den delte `.empty`-klasse (`--space-7` = 48px, centreret, dæmpet, stiplet kant). Så disse fire gengives identisk med de ~25 andre `.empty`-paneler.
+- Legitime per-visnings-tilsidesættelser (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) er urørte — kun de rent overflødige redeklarationer blev fjernet.
+
+### Noter
+- **Kun oprydning i CSS-brug på klienten** — ingen ændring af rute, server, i18n-nøgle eller CSS-regler (`.empty`-klassen er uændret); ordbogs-snapshot 1208. Verificeret i browseren (det tomme `#/usage`-panel beregner 48px padding + stiplet kant, 0 konsolfejl).
+- Den nye canary `tests/empty-state-consistency.test.mjs` holder `.empty` som eneste kilde til sandhed. Phase 5 (Hermes-udbyder) er fortsat blokeret.
+- Suite: **2385** tests (+2: `tests/empty-state-consistency.test.mjs`).
+
 ## [1.149.0] — 2026-08-12
 
 **Portaler flyttet til Indstillinger (Phase 4)** — `#/portals` ligger nu i **Setup**-navigationsgruppen ved siden af *App-indstillinger* i stedet for under *Sourcing*. Siden v1.144.0 er det en indstillingsflade (aktivér/deaktivér fulgte virksomheder + en ATS-sundhedsprobe), ikke en sourcing-handling — så det er der, den hører til. Kun navigationsændring; siden og dens rute er uændret.

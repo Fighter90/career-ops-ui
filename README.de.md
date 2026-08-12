@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2383%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Neueste Version — v1.149.0** — **Portale in die Einstellungen verschoben** — `#/portals` liegt jetzt in der **Setup**-Gruppe neben den *App-Einstellungen* (seit v1.144.0 eine Einstellungsfläche), statt unter *Sourcing*. Nur eine Navigationsänderung. **2383 Tests.**
+> **🆕 Neueste Version — v1.150.0** — **Konsistente Leerzustände** — jedes „noch nichts hier"-Panel wird jetzt über den gemeinsamen `.empty`-Stil gerendert; `#/activity`, `#/cv-studio`, `#/stats` und `#/usage` haben eine redundante Inline-Überschreibung entfernt, um zu allen anderen zu passen (tokenisiertes 48px-Padding + gestrichelter Rahmen). **2385 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

@@ -11,6 +11,19 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.150.0] — 2026-08-12
+
+**Estados vacíos consistentes (pulido de Phase 4)** — cada panel de "aún no hay nada" ahora se renderiza con el único estilo compartido `.empty`, en lugar de que algunas vistas redeclaren el aspecto en línea con un `40px` mágico. Pequeña corrección de consistencia visual; los estados vacíos de `#/activity`, `#/cv-studio`, `#/stats` y `#/usage` ahora coinciden con todos los demás (relleno de 48px tokenizado + borde discontinuo).
+
+### Cambiado
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** eliminaron su `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` en línea en los paneles vacíos — las tres propiedades ya las aporta la clase compartida `.empty` (`--space-7` = 48px, centrado, atenuado, borde discontinuo). Así esos cuatro se renderizan idénticos a los ~25 otros paneles `.empty`.
+- Las anulaciones legítimas por vista (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) no se tocan — solo se quitaron las redeclaraciones puramente redundantes.
+
+### Notas
+- **Solo limpieza de uso de CSS en el cliente** — sin cambios de ruta, servidor, clave i18n ni reglas CSS (la clase `.empty` no cambia); snapshot del diccionario 1208. Verificado en el navegador (el panel vacío de `#/usage` calcula 48px de relleno + borde discontinuo, 0 errores de consola).
+- El nuevo canario `tests/empty-state-consistency.test.mjs` mantiene `.empty` como única fuente de verdad. Phase 5 (proveedor Hermes) sigue bloqueada.
+- Conjunto: **2385** pruebas (+2: `tests/empty-state-consistency.test.mjs`).
+
 ## [1.149.0] — 2026-08-12
 
 **Portales movidos a Ajustes (Phase 4)** — `#/portals` ahora vive en el grupo de navegación **Setup**, junto a *Ajustes de la app*, en lugar de bajo *Sourcing*. Desde v1.144.0 es una superficie de configuración (activar/desactivar empresas seguidas + una sonda de salud del ATS), no una acción de sourcing — así que es donde corresponde. Cambio solo de navegación; la página y su ruta no cambian.

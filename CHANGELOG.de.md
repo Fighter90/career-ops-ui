@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.150.0] — 2026-08-12
+
+**Konsistente Leerzustände (Phase-4-Feinschliff)** — jedes „noch nichts hier"-Panel wird jetzt über den einen gemeinsamen `.empty`-Stil gerendert, statt dass einige Ansichten das Aussehen inline mit einem magischen `40px` erneut deklarieren. Kleine visuelle Konsistenzkorrektur; die Leerzustände auf `#/activity`, `#/cv-studio`, `#/stats` und `#/usage` passen jetzt zu allen anderen (tokenisiertes 48px-Padding + gestrichelter Rahmen).
+
+### Geändert
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** entfernten ihr Inline-`style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` auf Leer-Panels — alle drei Eigenschaften liefert bereits die gemeinsame `.empty`-Klasse (`--space-7` = 48px, zentriert, gedämpft, gestrichelter Rahmen). So rendern diese vier identisch zu den ~25 anderen `.empty`-Panels.
+- Berechtigte Überschreibungen pro Ansicht (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) bleiben unangetastet — nur die rein redundanten Re-Deklarationen wurden entfernt.
+
+### Hinweise
+- **Nur Bereinigung der CSS-Nutzung im Client** — keine Änderung an Route, Server, i18n-Schlüssel oder CSS-Regeln (die `.empty`-Klasse ist unverändert); Wörterbuch-Snapshot 1208. Im Browser verifiziert (das leere `#/usage`-Panel berechnet 48px Padding + gestrichelten Rahmen, 0 Konsolenfehler).
+- Der neue Canary `tests/empty-state-consistency.test.mjs` hält `.empty` als einzige Quelle der Wahrheit. Phase 5 (Hermes-Provider) bleibt blockiert.
+- Suite: **2385** Tests (+2: `tests/empty-state-consistency.test.mjs`).
+
 ## [1.149.0] — 2026-08-12
 
 **Portale in die Einstellungen verschoben (Phase 4)** — `#/portals` liegt jetzt in der Navigationsgruppe **Setup** neben den *App-Einstellungen*, statt unter *Sourcing*. Seit v1.144.0 ist es eine Einstellungsfläche (verfolgte Firmen aktivieren/deaktivieren + ein ATS-Health-Probe), keine Sourcing-Aktion — also gehört es dorthin. Nur eine Navigationsänderung; die Seite und ihre Route bleiben unverändert.

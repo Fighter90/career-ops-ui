@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.150.0] — 2026-08-12
+
+**Estados vazios consistentes (polimento da Phase 4)** — cada painel de "ainda não há nada" agora usa o único estilo compartilhado `.empty`, em vez de algumas telas redeclararem o visual inline com um `40px` mágico. Pequena correção de consistência visual; os estados vazios de `#/activity`, `#/cv-studio`, `#/stats` e `#/usage` agora combinam com todos os outros (padding de 48px tokenizado + borda tracejada).
+
+### Alterado
+- **`#/activity`, `#/cv-studio`, `#/stats`, `#/usage`** removeram seu `style: { padding: '40px', textAlign: 'center', color: 'var(--foggy)' }` inline nos painéis vazios — as três propriedades já vêm da classe compartilhada `.empty` (`--space-7` = 48px, centralizado, esmaecido, borda tracejada). Assim, esses quatro renderizam idênticos aos ~25 outros painéis `.empty`.
+- Sobreposições legítimas por tela (`#/dashboard` `width:100%`, `#/pipeline` `border:none`) não foram tocadas — só as redeclarações puramente redundantes saíram.
+
+### Notas
+- **Apenas limpeza de uso de CSS no cliente** — sem mudança de rota, servidor, chave i18n ou regras CSS (a classe `.empty` não muda); snapshot do dicionário 1208. Verificado no navegador (o painel vazio de `#/usage` calcula 48px de padding + borda tracejada, 0 erros de console).
+- O novo canário `tests/empty-state-consistency.test.mjs` mantém `.empty` como fonte única de verdade. A Phase 5 (provedor Hermes) segue bloqueada.
+- Suíte: **2385** testes (+2: `tests/empty-state-consistency.test.mjs`).
+
 ## [1.149.0] — 2026-08-12
 
 **Portais movidos para Configurações (Phase 4)** — `#/portals` agora fica no grupo de navegação **Setup**, ao lado de *Configurações do app*, em vez de sob *Sourcing*. Desde a v1.144.0 é uma superfície de configuração (ativar/desativar empresas monitoradas + uma sonda de saúde do ATS), não uma ação de sourcing — então é onde ele pertence. Apenas mudança de navegação; a página e a rota não mudam.

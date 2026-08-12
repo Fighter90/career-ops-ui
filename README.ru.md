@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2383%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Последний релиз — v1.149.0** — **Порталы перенесены в Настройки** — `#/portals` теперь в группе **Setup** рядом с *Настройками приложения* (это экран настроек с v1.144.0), а не в *Sourcing*. Изменение только навигации. **2383 тестов.**
+> **🆕 Последний релиз — v1.150.0** — **Единообразные пустые состояния** — каждая панель «пока ничего нет» теперь отрисовывается общим стилем `.empty`; `#/activity`, `#/cv-studio`, `#/stats` и `#/usage` убрали избыточное inline-переопределение и совпадают с остальными (токенизированный отступ 48px + пунктирная рамка). **2385 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

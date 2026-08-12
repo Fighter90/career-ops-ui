@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2383%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Última versão — v1.149.0** — **Portais movidos para Configurações** — `#/portals` agora fica no grupo **Setup** ao lado de *Configurações do app* (é uma superfície de configuração desde v1.144.0), em vez de em *Sourcing*. Apenas mudança de navegação. **2383 testes.**
+> **🆕 Última versão — v1.150.0** — **Estados vazios consistentes** — cada painel de "ainda não há nada" agora usa o estilo compartilhado `.empty`; `#/activity`, `#/cv-studio`, `#/stats` e `#/usage` removeram uma sobreposição inline redundante para combinar com todos os outros (padding de 48px tokenizado + borda tracejada). **2385 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2383%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2385%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.149.0** — **पोर्टल्स सेटिंग्स में ले जाए गए** — `#/portals` अब *Sourcing* के बजाय *ऐप सेटिंग्स* के पास **Setup** समूह में है (v1.144.0 से यह एक सेटिंग सतह है)। केवल नेविगेशन बदलाव। **2383 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.150.0** — **एकसमान खाली अवस्थाएँ** — हर "अभी कुछ नहीं" पैनल अब साझा `.empty` स्टाइल से रेंडर होता है; `#/activity`, `#/cv-studio`, `#/stats`, `#/usage` ने एक अनावश्यक इनलाइन ओवरराइड हटाकर बाकी सबसे मिलान किया (टोकनयुक्त 48px पैडिंग + धराशायी बॉर्डर)। **2385 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 
