@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.161.0] — 2026-08-13
+
+**Corregido (MEDIA) — `#/reports` muestra un chip "puntuación no detectada" en vez de espacio vacío.** Tras el analizador multi-idioma de v1.159.0, un informe sin puntuación analizable mostraba un área vacía, indistinguible de un fallo.
+
+### Corregido
+- La celda de puntuación ahora se ramifica: con puntuación → píldora de tono; sin puntuación → chip **`.score-muted`** con "Puntuación no detectada" (×17) y una pista "Abre el informe…". La tarjeta sigue siendo un `role="link"` operable por teclado y la fecha se mantiene.
+- Reutiliza el token neutro existente; sin color nuevo.
+
+### Notas
+- Solo cliente; sin cambios de ruta/CSP/SSRF/escritura. +2 claves i18n ×17 (snapshot 1217 → 1219). Conjunto: **2416** (+3).
+
 ## [1.160.0] — 2026-08-13
 
 **Corregido (ALTA) — el texto sobre proveedores ya no contradice la promesa de 7 proveedores.** `#/config` decía que la evaluación en vivo "usa tu clave de Anthropic o Gemini" y que la de OpenAI "no la usa el web UI"; el panel decía "Score Anthropic-first" — falso desde la cascada de 7 proveedores (v1.157.0).

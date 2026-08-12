@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.161.0] — 2026-08-13
+
+**Rettet (MELLEM) — `#/reports` viser en "Score ikke fundet"-chip i stedet for tomt felt.** Efter den sprogbevidste parser i v1.159.0 viste en rapport uden læsbar score et tomt område — umuligt at skelne fra en fejl.
+
+### Rettet
+- Score-cellen forgrener nu: score → tone-pille; ingen score → dæmpet **`.score-muted`**-chip ("Score ikke fundet", ×17) med tooltip "Åbn rapporten…". Kortet forbliver et tastatur-betjenbart `role="link"`, og datoen vises.
+- Genbruger det eksisterende neutrale token; ingen ny farve.
+
+### Noter
+- Kun klient; ingen ændring af rute/CSP/SSRF/skrivning. +2 i18n-nøgler ×17 (snapshot 1217 → 1219). Suite: **2416** (+3).
+
 ## [1.160.0] — 2026-08-13
 
 **Rettet (HØJ) — udbydertekst modsiger ikke længere løftet om 7 udbydere.** `#/config` sagde, at live-evalueringen "bruger din Anthropic- eller Gemini-nøgle", og at OpenAI-nøglen "ikke bruges af web-UI'en"; dashboardet sagde "Anthropic-first scoring" — falsk siden 7-udbyder-kaskaden (v1.157.0).

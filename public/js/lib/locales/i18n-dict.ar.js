@@ -738,6 +738,8 @@ window.__I18N_DICT_AR = {
   'rep.thrLow': "تخطَّ ما لم يكن لديك سبب شخصي محدد",
   'rep.thresholdsSource': "من ",
   'rep.empty': "لا تقارير بعد. أجرِ تقييمك الأول.",
+  'rep.scoreUnparsed': "لم يُكتشف التقييم",
+  'rep.scoreUnparsedHint': "افتح التقرير لرؤية التقييم",
   'cv.title': "السيرة الذاتية",
   'cv.subtitle': "مصدر الحقيقة للتقييمات. جميع النصوص تقرأ cv.md.",
   'cv.markdown': "Markdown",

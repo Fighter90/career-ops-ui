@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.161.0] — 2026-08-13
+
+**Behoben (MITTEL) — `#/reports` zeigt einen "Score nicht erkannt"-Chip statt Leerraum.** Nach dem sprachbewussten Parser aus v1.159.0 zeigte ein Bericht ohne lesbaren Score einen leeren Bereich — nicht von einem Fehlschlag zu unterscheiden.
+
+### Behoben
+- Die Score-Zelle verzweigt jetzt: Score vorhanden → Ton-Pille; kein Score → gedämpfter **`.score-muted`**-Chip ("Score nicht erkannt", ×17) mit Tooltip "Öffne den Bericht…". Die Karte bleibt ein tastaturbedienbares `role="link"`, und das Datum wird angezeigt.
+- Nutzt den vorhandenen neutralen Token; keine neue Farbe.
+
+### Hinweise
+- Nur Client; keine Änderung an Route/CSP/SSRF/Schreibzugriff. +2 i18n-Schlüssel ×17 (Snapshot 1217 → 1219). Suite: **2416** (+3).
+
 ## [1.160.0] — 2026-08-13
 
 **Behoben (HOCH) — der Anbieter-Text widerspricht nicht mehr dem 7-Anbieter-Versprechen.** `#/config` sagte, die Live-Bewertung "nutzt deinen Anthropic- oder Gemini-Schlüssel" und der OpenAI-Schlüssel werde "nicht von der Web-UI selbst genutzt"; das Dashboard zeigte "Anthropic-first-Scoring" — falsch seit der 7-Anbieter-Kaskade (v1.157.0).

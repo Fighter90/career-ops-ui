@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2413%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.160.0** — **정직한 제공자 문구 (수정)** — `#/config`와 대시보드는 Anthropic/Gemini로만 평가한다고(그리고 OpenAI는 "사용 안 함"이라고) 했으나 7개 제공자 캐스케이드 이후로 거짓. 이제 일곱 제공자를 모두 명시하고, Evaluate 카드는 중립이며 `Keys: N/5` → `N/7`. **2413개 테스트.**
+> **🆕 최신 릴리스 — v1.161.0** — **"점수 감지 안 됨" 칩 (수정)** — 로케일 파서(v1.159.0) 이후에도 점수 없는 리포트는 빈 영역을 보였습니다. `#/reports`가 이제 리포트를 여는 흐린 "점수 감지 안 됨" 칩을 표시하며 날짜는 유지됩니다. **2416개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

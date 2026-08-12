@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2413%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新リリース — v1.160.0** — **正直なプロバイダー文言(修正)** — `#/config` とダッシュボードは Anthropic/Gemini のみで採点する(OpenAI は「使わない」)と述べていましたが、7 プロバイダーカスケード以降は誤り。現在は 7 つすべてを明記し、Evaluate カードは中立、`Keys: N/5` → `N/7`。 **2413 テスト。**
+> **🆕 最新リリース — v1.161.0** — **「スコア未検出」チップ(修正)** — ロケール対応パーサー(v1.159.0)後もスコアの無いレポートは空欄でした。`#/reports` はレポートを開く控えめな「スコア未検出」チップを表示し、日付は残ります。 **2416 テスト。**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

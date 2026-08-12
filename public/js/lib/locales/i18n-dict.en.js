@@ -739,6 +739,8 @@ window.__I18N_DICT_EN = {
   'rep.thrLow': "Skip unless you have a specific personal reason",
   'rep.thresholdsSource': "From ",
   'rep.empty': "No reports yet. Make your first evaluation.",
+  'rep.scoreUnparsed': "Score not detected",
+  'rep.scoreUnparsedHint': "Open the report to see the score",
   'cv.title': "CV",
   'cv.subtitle': "Source of truth for evaluations. All scripts read cv.md.",
   'cv.markdown': "Markdown",

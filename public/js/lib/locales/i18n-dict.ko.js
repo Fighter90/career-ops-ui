@@ -739,6 +739,8 @@ window.__I18N_DICT_KO = {
   'rep.thrLow': "특별한 개인적 이유 없으면 건너뜀",
   'rep.thresholdsSource': "출처: ",
   'rep.empty': "아직 보고서가 없습니다. 첫 평가를 수행하세요.",
+  'rep.scoreUnparsed': "점수 감지 안 됨",
+  'rep.scoreUnparsedHint': "점수를 보려면 리포트를 여세요",
   'cv.title': "이력서",
   'cv.subtitle': "평가의 진실 소스. 모든 스크립트가 cv.md를 읽습니다.",
   'cv.markdown': "마크다운",

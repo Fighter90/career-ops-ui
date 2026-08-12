@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.161.0] — 2026-08-13
+
+**Corretto (MEDIA) — `#/reports` mostra un chip "Punteggio non rilevato" invece di spazio vuoto.** Dopo il parser multilingua di v1.159.0, un report senza punteggio analizzabile mostrava un'area vuota, indistinguibile da un errore.
+
+### Corretto
+- La cella del punteggio ora si ramifica: con punteggio → pillola di tono; senza → chip **`.score-muted`** attenuato ("Punteggio non rilevato", ×17) con tooltip "Apri il report…". La card resta un `role="link"` operabile da tastiera e la data si mostra.
+- Riusa il token neutro esistente; nessun colore nuovo.
+
+### Note
+- Solo client; nessuna modifica a route/CSP/SSRF/scrittura. +2 chiavi i18n ×17 (snapshot 1217 → 1219). Suite: **2416** (+3).
+
 ## [1.160.0] — 2026-08-13
 
 **Corretto (ALTA) — il testo sui provider non contraddice più la promessa dei 7 provider.** `#/config` diceva che la valutazione live "usa la tua chiave Anthropic o Gemini" e che quella OpenAI "non è usata dal web UI"; la dashboard diceva "Score Anthropic-first" — falso dalla cascata a 7 provider (v1.157.0).

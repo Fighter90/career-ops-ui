@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.161.0] — 2026-08-13
+
+**Düzeltildi (ORTA) — `#/reports` boşluk yerine "Puan algılanmadı" çipi gösteriyor.** v1.159.0 dil-duyarlı ayrıştırıcıdan sonra bile puanı ayrıştırılamayan bir rapor boş alan gösteriyordu — başarısızlıktan ayırt edilemez.
+
+### Düzeltildi
+- Puan hücresi artık dallanıyor: puan varsa → ton hapı; yoksa → sönük **`.score-muted`** çipi ("Puan algılanmadı", ×17) ve "Raporu aç…" ipucu. Kart klavyeyle kullanılabilir `role="link"` olarak kalır ve tarih gösterilir.
+- Mevcut nötr belirteci yeniden kullanır; yeni renk yok.
+
+### Notlar
+- Yalnızca istemci; rota/CSP/SSRF/yazma değişikliği yok. +2 i18n anahtarı ×17 (anlık görüntü 1217 → 1219). Takım: **2416** (+3).
+
 ## [1.160.0] — 2026-08-13
 
 **Düzeltildi (YÜKSEK) — sağlayıcı metni artık 7 sağlayıcı vaadiyle çelişmiyor.** `#/config`, canlı değerlendirmenin "Anthropic veya Gemini anahtarını kullandığını" ve OpenAI anahtarının "web arayüzü tarafından kullanılmadığını" söylüyordu; panoda "Anthropic-first scoring" yazıyordu — 7 sağlayıcı zincirinden (v1.157.0) beri yanlış.

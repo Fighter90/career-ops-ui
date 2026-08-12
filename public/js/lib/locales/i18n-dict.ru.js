@@ -739,6 +739,8 @@ window.__I18N_DICT_RU = {
   'rep.thrLow': "Пропустите, если нет персональной причины",
   'rep.thresholdsSource': "Из ",
   'rep.empty': "Отчётов пока нет. Сделайте первую оценку.",
+  'rep.scoreUnparsed': "Оценка не распознана",
+  'rep.scoreUnparsedHint': "Откройте отчёт, чтобы увидеть оценку",
   'cv.title': "CV",
   'cv.subtitle': "Источник истины для оценки. Все скрипты читают cv.md.",
   'cv.markdown': "Markdown",

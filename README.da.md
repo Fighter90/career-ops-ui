@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2413%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2416%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Seneste udgivelse — v1.160.0** — **Ærlig udbydertekst (rettelse)** — `#/config` og dashboardet påstod, at der kun scores med Anthropic/Gemini (og at OpenAI "ikke bruges") — falsk siden 7-udbyder-kaskaden. Nu nævnes alle syv, Evaluer-kortet er neutralt, og `Keys: N/5` → `N/7`. **2413 tests.**
+> **🆕 Seneste udgivelse — v1.161.0** — **"Score ikke fundet"-chip (rettelse)** — Efter den sprogbevidste parser (v1.159.0) viste en rapport uden score en tom stribe. `#/reports` viser nu en dæmpet "Score ikke fundet"-chip, der åbner rapporten; datoen vises stadig. **2416 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

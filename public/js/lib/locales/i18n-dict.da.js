@@ -738,6 +738,8 @@ window.__I18N_DICT_DA = {
   'rep.thrLow': "Spring over, medmindre du har en konkret personlig grund",
   'rep.thresholdsSource': "Fra ",
   'rep.empty': "Ingen rapporter endnu. Lav din første vurdering.",
+  'rep.scoreUnparsed': "Score ikke fundet",
+  'rep.scoreUnparsedHint': "Åbn rapporten for at se score",
   'cv.title': "CV",
   'cv.subtitle': "Kilde til sandhed for vurderinger. Alle scripts læser cv.md.",
   'cv.markdown': "Markdown",

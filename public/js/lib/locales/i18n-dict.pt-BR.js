@@ -739,6 +739,8 @@ window.__I18N_DICT_PT_BR = {
   'rep.thrLow': "Pule, salvo razão específica pessoal",
   'rep.thresholdsSource': "De ",
   'rep.empty': "Ainda sem relatórios. Faça sua primeira avaliação.",
+  'rep.scoreUnparsed': "Pontuação não detectada",
+  'rep.scoreUnparsedHint': "Abra o relatório para ver a pontuação",
   'cv.title': "CV",
   'cv.subtitle': "Fonte de verdade para avaliações. Todos os scripts leem cv.md.",
   'cv.markdown': "Markdown",
