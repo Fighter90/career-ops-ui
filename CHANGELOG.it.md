@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.149.0] — 2026-08-12
+
+**Portali spostati nelle Impostazioni (Phase 4)** — `#/portals` ora si trova nel gruppo di navigazione **Setup**, accanto a *Impostazioni app*, invece che sotto *Sourcing*. Dalla v1.144.0 è una superficie di configurazione (abilita/disabilita le aziende monitorate + una sonda di salute dell'ATS), non un'azione di sourcing — quindi è lì che deve stare. Solo modifica di navigazione; la pagina e la sua rotta non cambiano.
+
+### Modificato
+- **Elemento di navigazione `#/portals` → gruppo Setup** (in `public/index.html`), collocato subito dopo *Impostazioni app*. Rimosso dal gruppo *Sourcing* (che conserva Scan / Pipeline / Auto-pipeline / Aziende finanziate). La rotta `#/portals`, la vista e l'etichetta `nav.portals` non cambiano — si è spostata solo la posizione nella barra laterale.
+
+### Note
+- **Solo markup di navigazione** — nessuna modifica a rotta, vista, chiave i18n o server. Verificato nel browser (0 errori di console); protetto da `tests/portals-nav-placement.test.mjs`.
+- Suite: **2383** test (+2: `tests/portals-nav-placement.test.mjs`).
+
 ## [1.148.0] — 2026-08-12
 
 **Filtri di ricerca più chiari (Phase 4) — il pannello dei filtri è ora una griglia ordinata** — il pannello dei filtri di `#/scan` è passato da un flex-wrap irregolare di riquadri rigidi di larghezza variabile a una griglia responsiva, e le azioni Applica / Reimposta ora occupano una loro riga separata e allineata a destra. Stessi filtri, stesso comportamento — solo più leggibili. Una rifinitura di design (senza parent-sync).

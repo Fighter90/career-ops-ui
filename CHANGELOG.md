@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.149.0] — 2026-08-12
+
+**Portals moved into Settings (Phase 4)** — `#/portals` now lives in the **Setup** nav group next to *App settings*, instead of under *Sourcing*. Since v1.144.0 it's a settings surface (enable/disable tracked companies + an ATS health probe), not a sourcing action — so this is where it belongs. Nav-only change; the page and its route are untouched.
+
+### Changed
+- **`#/portals` nav item → Setup group** (in `public/index.html`), placed right after *App settings*. Removed from the *Sourcing* group (which keeps Scan / Pipeline / Auto-pipeline / Funded companies). The `#/portals` route, the view, and the `nav.portals` label are unchanged — only the sidebar position moved.
+
+### Notes
+- **Nav markup only** — no route, no view, no i18n key, no server change. Browser-verified (the Portals item now renders under the *Setup* header, 0 console errors); guarded by `tests/portals-nav-placement.test.mjs`.
+- Completes the Phase 4 "Portals → Settings" item. The remaining Phase 4 line — a whole-app visual-polish pass — is tracked separately.
+- Suite: **2383** tests (+2: `tests/portals-nav-placement.test.mjs`).
+
 ## [1.148.0] — 2026-08-12
 
 **Cleaner scan filters (Phase 4) — the result-filter panel is now a tidy grid** — the `#/scan` filter panel moved from a ragged flex-wrap of rigid, variable-width boxes to a responsive grid, and the Apply/Reset actions now sit on their own separated, right-aligned row. Same filters, same behaviour — just easier to read. A senior-designer polish pass (no parent-sync).

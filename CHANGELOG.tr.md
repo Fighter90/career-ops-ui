@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.149.0] — 2026-08-12
+
+**Portallar Ayarlara taşındı (Phase 4)** — `#/portals` artık *Sourcing* altında değil, *Uygulama ayarları* yanındaki **Setup** gezinme grubunda. v1.144.0'dan beri bu bir ayar yüzeyi (takip edilen şirketleri aç/kapat + bir ATS sağlık yoklaması), bir sourcing eylemi değil — dolayısıyla ait olduğu yer burası. Yalnızca gezinme değişikliği; sayfa ve rotası değişmedi.
+
+### Değişti
+- **`#/portals` gezinme öğesi → Setup grubu** (`public/index.html` içinde), *Uygulama ayarları*'nın hemen ardına yerleştirildi. *Sourcing* grubundan çıkarıldı (grup Scan / Pipeline / Auto-pipeline / Finanse edilen şirketleri korur). `#/portals` rotası, görünümü ve `nav.portals` etiketi değişmedi — yalnızca kenar çubuğundaki konum değişti.
+
+### Notlar
+- **Yalnızca gezinme biçimlendirmesi** — rota, görünüm, i18n anahtarı veya sunucu değişikliği yok. Tarayıcıda doğrulandı (0 konsol hatası); `tests/portals-nav-placement.test.mjs` ile korunuyor.
+- Takım: **2383** test (+2: `tests/portals-nav-placement.test.mjs`).
+
 ## [1.148.0] — 2026-08-12
 
 **Daha derli toplu tarama filtreleri (Phase 4) — filtre paneli artık düzenli bir ızgara** — `#/scan` filtre paneli, değişken genişlikte katı kutulardan oluşan dağınık bir flex-wrap'ten duyarlı bir ızgaraya geçti ve Uygula / Sıfırla eylemleri artık kendi ayrı, sağa hizalı satırında yer alıyor. Aynı filtreler, aynı davranış — sadece daha okunaklı. Bir tasarım rötuşu (parent-sync yok).

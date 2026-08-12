@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.149.0] — 2026-08-12
+
+**Portale przeniesione do Ustawień (Phase 4)** — `#/portals` znajduje się teraz w grupie nawigacji **Setup**, obok *Ustawień aplikacji*, zamiast pod *Sourcing*. Od v1.144.0 to powierzchnia ustawień (włączanie/wyłączanie śledzonych firm + sonda stanu ATS), a nie akcja sourcingu — więc tam jest jego miejsce. Tylko zmiana nawigacji; strona i jej trasa bez zmian.
+
+### Zmieniono
+- **Element nawigacji `#/portals` → grupa Setup** (w `public/index.html`), umieszczony tuż za *Ustawieniami aplikacji*. Usunięty z grupy *Sourcing* (która zachowuje Scan / Pipeline / Auto-pipeline / Firmy z finansowaniem). Trasa `#/portals`, widok i etykieta `nav.portals` bez zmian — przesunęła się tylko pozycja na pasku bocznym.
+
+### Uwagi
+- **Tylko znaczniki nawigacji** — bez zmiany trasy, widoku, klucza i18n czy serwera. Zweryfikowane w przeglądarce (0 błędów konsoli); chronione przez `tests/portals-nav-placement.test.mjs`.
+- Zestaw: **2383** testów (+2: `tests/portals-nav-placement.test.mjs`).
+
 ## [1.148.0] — 2026-08-12
 
 **Czytelniejsze filtry skanowania (Phase 4) — panel filtrów jest teraz uporządkowaną siatką** — panel filtrów `#/scan` przeszedł z poszarpanego flex-wrap sztywnych pól o zmiennej szerokości na responsywną siatkę, a akcje Zastosuj / Wyczyść zajmują teraz własny, oddzielony i wyrównany do prawej wiersz. Te same filtry, to samo zachowanie — po prostu czytelniej. Szlif projektowy (bez parent-sync).

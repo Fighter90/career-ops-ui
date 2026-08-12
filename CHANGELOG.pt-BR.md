@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.149.0] — 2026-08-12
+
+**Portais movidos para Configurações (Phase 4)** — `#/portals` agora fica no grupo de navegação **Setup**, ao lado de *Configurações do app*, em vez de sob *Sourcing*. Desde a v1.144.0 é uma superfície de configuração (ativar/desativar empresas monitoradas + uma sonda de saúde do ATS), não uma ação de sourcing — então é onde ele pertence. Apenas mudança de navegação; a página e a rota não mudam.
+
+### Alterado
+- **Item de navegação `#/portals` → grupo Setup** (em `public/index.html`), colocado logo após *Configurações do app*. Removido do grupo *Sourcing* (que mantém Scan / Pipeline / Auto-pipeline / Empresas financiadas). A rota `#/portals`, a visão e o rótulo `nav.portals` não mudam — só a posição na barra lateral.
+
+### Notas
+- **Apenas marcação de navegação** — sem rota, visão, chave i18n ou mudança de servidor. Verificado no navegador (0 erros de console); protegido por `tests/portals-nav-placement.test.mjs`.
+- Suíte: **2383** testes (+2: `tests/portals-nav-placement.test.mjs`).
+
 ## [1.148.0] — 2026-08-12
 
 **Filtros de busca mais claros (Phase 4) — o painel de filtros agora é uma grade organizada** — o painel de filtros do `#/scan` saiu de um flex-wrap irregular de caixas rígidas de largura variável para uma grade responsiva, e as ações Aplicar / Redefinir agora ficam em sua própria linha separada e alinhada à direita. Mesmos filtros, mesmo comportamento — só mais fáceis de ler. Um retoque de design (sem parent-sync).

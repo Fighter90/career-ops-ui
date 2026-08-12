@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.149.0] — 2026-08-12
+
+**Portaler flyttet til Indstillinger (Phase 4)** — `#/portals` ligger nu i **Setup**-navigationsgruppen ved siden af *App-indstillinger* i stedet for under *Sourcing*. Siden v1.144.0 er det en indstillingsflade (aktivér/deaktivér fulgte virksomheder + en ATS-sundhedsprobe), ikke en sourcing-handling — så det er der, den hører til. Kun navigationsændring; siden og dens rute er uændret.
+
+### Ændret
+- **`#/portals`-navigationselement → Setup-gruppen** (i `public/index.html`), placeret lige efter *App-indstillinger*. Fjernet fra *Sourcing*-gruppen (som beholder Scan / Pipeline / Auto-pipeline / Finansierede virksomheder). Ruten `#/portals`, visningen og `nav.portals`-etiketten er uændret — kun positionen i sidebjælken flyttede sig.
+
+### Noter
+- **Kun navigations-markup** — ingen ændring af rute, visning, i18n-nøgle eller server. Verificeret i browseren (0 konsolfejl); beskyttet af `tests/portals-nav-placement.test.mjs`.
+- Suite: **2383** tests (+2: `tests/portals-nav-placement.test.mjs`).
+
 ## [1.148.0] — 2026-08-12
 
 **Klarere scan-filtre (Phase 4) — filterpanelet er nu et ryddeligt grid** — filterpanelet i `#/scan` gik fra et ujævnt flex-wrap af stive bokse med varierende bredde til et responsivt grid, og handlingerne Anvend / Nulstil ligger nu på deres egen adskilte, højrestillede række. Samme filtre, samme adfærd — bare nemmere at læse. En designfinpudsning (uden parent-sync).

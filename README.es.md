@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2381%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2383%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Última versión — v1.148.0** — **Filtros de búsqueda más claros** — el panel de filtros de `#/scan` ahora es una cuadrícula responsiva ordenada (antes un flex-wrap irregular), con Aplicar / Restablecer en una fila propia alineada a la derecha. Mismos filtros, más fáciles de leer. **2381 tests.**
+> **🆕 Última versión — v1.149.0** — **Portales movidos a Ajustes** — `#/portals` ahora está en el grupo **Setup** junto a *Ajustes de la app* (es una superficie de configuración desde v1.144.0), en vez de en *Sourcing*. Solo cambio de navegación. **2383 tests.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

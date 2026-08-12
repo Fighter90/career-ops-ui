@@ -62,7 +62,7 @@ A **documentation-and-skill deliverable** that can ship independently of (and ah
 
 Consolidate configuration; make filters beautiful.
 
-- [~] **Portals → Settings** — v1.144.0 added **enable/disable per portal** on `#/portals` (`POST /api/portals/toggle`, surgical portals.yml write; the scanner already honors `enabled: false`). Still to do: move `#/portals` fully into a settings nav section.
+- [x] **Portals → Settings** — v1.144.0 added **enable/disable per portal** on `#/portals` (`POST /api/portals/toggle`, surgical portals.yml write; the scanner already honors `enabled: false`); **v1.148.0** redesigned the scan-filter panel into a responsive grid; **v1.149.0** moved the `#/portals` nav item out of *Sourcing* into the *Setup* (settings) group next to *App settings* (`tests/portals-nav-placement.test.mjs`).
 - [x] **Scan filters redesign** *(v1.148.0)* — the `#/scan` result-filter panel moved from a ragged `flex-wrap` of rigid 160–240px boxes to a responsive `grid` (`repeat(auto-fill, minmax(180px, 1fr))`, even gutters), with Apply/Reset on a separated, right-aligned full-width row. CSS + a small `scan.js` cleanup only — all `#scan-filter-*` ids + `SR.render()` wiring preserved. Guarded by `tests/scan-filters-grid.test.mjs`.
 - [ ] **Overall visual polish** — senior-designer pass on spacing, hierarchy, and consistency across all pages. *(Whole-app, subjective — left for explicit user direction rather than an autonomous aesthetic call.)*
 
