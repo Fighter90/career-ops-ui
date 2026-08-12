@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.155.0] — 2026-08-12
+
+**Refaktor — opdel `config.js` under størrelsesgrænsen (P-15).** `config.js` var **1030 linjer** (over 800-grænsen); to adfærdsbevarende moduler blev udtrukket, ned til **783**.
+
+### Ændret
+- Nye `config/field-specs.js` (feltdata + modellister) og `config/tab-controller.js` (fanebjælke-fabrik); `config.js` refererer dem, render-logik uændret.
+
+### Noter
+- Ren refaktor, ingen adfærdsændring; 6 kildelæsende tests blev ompeget. `scan.js` (906) forbliver som den er (allerede delvist opdelt; kernen for tæt koblet til en ren mekanisk opdeling). Suite: **2396** tests.
+
 ## [1.154.0] — 2026-08-12
 
 **Ny guide — "Kør hele stakken i skyen."** career-ops har ingen egen sky/server-fortælling, så vi tilføjer en: en trin-for-trin-opskrift på at lægge det overordnede **career-ops**-pipeline, denne **career-ops-ui**-fremviser og AI-**motoren** (et **Claude-abonnement** via Claude Code, en lokal **Hermes**, eller API-nøgler) på en lille altid-tændt server. Leveres som **Hjælp §31** på 17 sprog, et README-afsnit og en wiki-side.

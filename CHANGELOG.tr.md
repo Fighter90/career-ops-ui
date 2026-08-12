@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.155.0] — 2026-08-12
+
+**Refactor — `config.js`’i boyut sınırının altına bölmek (P-15).** `config.js` **1030 satırdı** (800 sınırının üstünde); davranışı koruyan iki modül çıkarılarak **783**’e indirildi.
+
+### Değiştirildi
+- Yeni `config/field-specs.js` (alan verisi + model listeleri) ve `config/tab-controller.js` (sekme çubuğu fabrikası); `config.js` bunlara başvurur, render mantığı değişmez.
+
+### Notlar
+- Saf refactor, davranış değişikliği yok; kaynağı okuyan 6 test yeniden yönlendirildi. `scan.js` (906) olduğu gibi bırakıldı (zaten kısmen bölünmüş; çekirdek temiz bir mekanik bölme için fazla bağlı). Takım: **2396** test.
+
 ## [1.154.0] — 2026-08-12
 
 **Yeni kılavuz — "Tüm yığını bulutta çalıştır."** career-ops’un kendine ait bir bulut/sunucu anlatısı yok, biz de ekledik: üst **career-ops** hattını, bu **career-ops-ui** görüntüleyiciyi ve yapay zekâ **motorunu** (Claude Code üzerinden **Claude aboneliği**, yerel **Hermes**, veya API anahtarları) küçük ve her zaman açık bir sunucuya koymak için adım adım tarif. 17 dilde **Yardım §31**, bir README bölümü ve bir wiki sayfası olarak gelir.

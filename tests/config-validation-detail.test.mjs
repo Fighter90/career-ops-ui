@@ -58,7 +58,11 @@ test('UI.toast keeps error messages on screen long enough to read', () => {
 // ── 2. config.js PORT/HOST defaults ──
 
 test('config.js: PORT defaults to 4317, HOST defaults to 127.0.0.1', () => {
-  const src = read('public', 'js', 'views', 'config.js');
+  // v1.155.0 (P-15 split) — the PORT/HOST field specs moved to
+  // config/field-specs.js; the fieldRow renderer that USES the default stays
+  // in config.js. Assert against both.
+  const src = read('public', 'js', 'views', 'config', 'field-specs.js')
+    + '\n' + read('public', 'js', 'views', 'config.js');
   const port = src.match(/key: 'PORT'[\s\S]{0,160}?label: 'PORT'/);
   assert.ok(port && /defaultValue: '4317'/.test(port[0]), "PORT field missing defaultValue '4317'");
   const host = src.match(/key: 'HOST'[\s\S]{0,160}?label: 'HOST'/);

@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.155.0] — 2026-08-12
+
+**Refaktor — podzielić `config.js` poniżej limitu rozmiaru (P-15).** `config.js` miał **1030 linii** (ponad limit 800); wyodrębniono dwa moduły zachowujące zachowanie, do **783**.
+
+### Zmieniono
+- Nowe `config/field-specs.js` (dane pól + listy modeli) i `config/tab-controller.js` (fabryka paska zakładek); `config.js` je referencuje, logika renderu bez zmian.
+
+### Uwagi
+- Czysty refaktor, bez zmiany zachowania; 6 testów czytających źródło przekierowano. `scan.js` (906) bez zmian (już częściowo podzielony; rdzeń zbyt sprzężony na czysty podział mechaniczny). Zestaw: **2396** testów.
+
 ## [1.154.0] — 2026-08-12
 
 **Nowy przewodnik — „Uruchom cały stack w chmurze”.** career-ops nie ma własnej historii chmury/serwera, więc ją dodajemy: przepis krok po kroku, jak umieścić nadrzędny pipeline **career-ops**, tę przeglądarkę **career-ops-ui** i **silnik** AI (**subskrypcja Claude** przez Claude Code, lokalny **Hermes**, lub klucze API) na małym, zawsze włączonym serwerze. Dostarczane jako **Pomoc §31** w 17 językach, sekcja README i strona wiki.

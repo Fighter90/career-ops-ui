@@ -28,7 +28,7 @@ test('env-config: OPENROUTER_MODEL is core + non-secret, follows the key', () =>
 });
 
 test('config.js defines OPENROUTER_MODELS fallback defaulting to openrouter/auto', () => {
-  const src = read('public', 'js', 'views', 'config.js');
+  const src = read('public', 'js', 'views', 'config', 'field-specs.js');
   assert.match(src, /const OPENROUTER_MODELS = \[/, 'OPENROUTER_MODELS list missing');
   const list = src.match(/const OPENROUTER_MODELS = \[([\s\S]*?)\]/)[1];
   const first = list.split(',').map((s) => s.trim().replace(/['"]/g, '')).filter(Boolean)[0];
@@ -36,7 +36,7 @@ test('config.js defines OPENROUTER_MODELS fallback defaulting to openrouter/auto
 });
 
 test('config.js wires a remote OPENROUTER_MODEL select after OPENROUTER_API_KEY', () => {
-  const src = read('public', 'js', 'views', 'config.js');
+  const src = read('public', 'js', 'views', 'config', 'field-specs.js');
   const field = src.match(/key: 'OPENROUTER_MODEL'[\s\S]{0,320}?labelKey: 'config\.openrouterModel'/);
   assert.ok(field, 'OPENROUTER_MODEL field block (key → labelKey) not found together');
   for (const tok of ['secret: false', "kind: 'select-remote'",

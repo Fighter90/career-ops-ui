@@ -14,7 +14,7 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新リリース — v1.154.0** — **スタック全体をクラウドで動かす** — 親の career-ops パイプライン + このビューアー + AI エンジン(Claude サブスクリプション、ローカル Hermes、または API キー)を常時稼働の小型サーバーに載せる新しい手順ガイド —— 17 言語のヘルプ §31、README セクション、Wiki ページとして。 **2396 テスト.**
+> **🆕 最新リリース — v1.155.0** — **すっきりした config ビュー(リファクタ)** — `config.js`(1030 行)を 800 行上限内に、挙動を保つ 2 モジュール — フィールドデータ + タブバーのファクトリ — に分割。純粋なリファクタで挙動変更なし。 **2396 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

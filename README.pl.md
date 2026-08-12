@@ -14,7 +14,7 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Najnowsze wydanie — v1.154.0** — **Uruchom cały stack w chmurze** — Nowy przewodnik krok po kroku, jak umieścić nadrzędny pipeline career-ops + tę przeglądarkę + silnik AI (subskrypcja Claude, lokalny Hermes, lub klucze API) na małym, zawsze włączonym serwerze — jako Pomoc §31 w 17 językach, sekcja README i strona wiki. **2396 testów.**
+> **🆕 Najnowsze wydanie — v1.155.0** — **Czystszy widok config (refaktor)** — `config.js` (1030 linii) podzielony poniżej limitu 800 na dwa moduły zachowujące zachowanie — dane pól + fabryka paska zakładek. Czysty refaktor, bez zmiany zachowania. **2396 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

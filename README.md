@@ -16,7 +16,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Latest release — v1.154.0** — **Run the whole stack in the cloud** — A new step-by-step guide for putting the parent career-ops pipeline + this viewer + your AI engine (a Claude subscription, a local Hermes, or API keys) on a small always-on server — as in-app Help §31 in all 17 languages, a README section, and a wiki page. **2396 tests.**
+> **🆕 Latest release — v1.155.0** — **Cleaner config view (refactor)** — `config.js` (1030 lines) was split under the 800-line limit into two behavior-preserving modules — field-specs data + a tab-controller factory. Pure refactor, zero behavior change. **2396 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

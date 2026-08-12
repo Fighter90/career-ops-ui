@@ -32,7 +32,7 @@ test('env-config exposes OPENAI_MODEL as a core, non-secret key', () => {
 });
 
 test('config.js defines an OPENAI_MODELS list defaulting to gpt-5-codex', () => {
-  const src = read('public', 'js', 'views', 'config.js');
+  const src = read('public', 'js', 'views', 'config', 'field-specs.js');
   assert.match(src, /const OPENAI_MODELS = \[/, 'OPENAI_MODELS list missing');
   // first entry is the default; gpt-5-codex is the Codex CLI default
   const list = src.match(/const OPENAI_MODELS = \[([\s\S]*?)\]/)[1];
@@ -41,7 +41,7 @@ test('config.js defines an OPENAI_MODELS list defaulting to gpt-5-codex', () => 
 });
 
 test('config.js wires an OPENAI_MODEL select FIELD after OPENAI_API_KEY', () => {
-  const src = read('public', 'js', 'views', 'config.js');
+  const src = read('public', 'js', 'views', 'config', 'field-specs.js');
   // Bounded same-object window (not a whitespace-pinned regex): proves
   // the select wiring belongs to the OPENAI_MODEL field, but survives
   // reformatting / trailing-comma edits within that window.

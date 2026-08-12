@@ -14,7 +14,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.154.0** — **在雲端執行整個技術棧** — 把父級 career-ops 流水線 + 此檢視器 + AI 引擎(Claude 訂閱、本機 Hermes 或 API 金鑰)放到常開小型伺服器上的全新分步指南 —— 以 17 種語言的說明 §31、README 章節和 wiki 頁面提供。 **2396 個測試.**
+> **🆕 最新版本 — v1.155.0** — **更清晰的 config 檢視(重構)** — 將 `config.js`(1030 行)拆分到 800 行上限以下的兩個保持行為的模組 —— 欄位資料 + 分頁列工廠。純重構,行為不變。 **2396 個測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 
