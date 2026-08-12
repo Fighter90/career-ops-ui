@@ -33,8 +33,10 @@ export function safeListReports() {
     .map((f) => {
       try {
         const text = readFileSync(projPath('reports', f), 'utf8');
-        const header = parseReportHeader(text);
         const stat = statSync(projPath('reports', f));
+        // FIX-1 (v1.159.0): pass the file mtime so a report whose body has no
+        // parseable date (common in non-EN reports) still gets a date anchor.
+        const header = parseReportHeader(text, { mtime: stat.mtime });
         return { slug: f.replace(/\.md$/, ''), file: f, mtime: stat.mtime, ...header };
       } catch {
         return null;

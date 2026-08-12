@@ -161,3 +161,35 @@ test('GET /api/reports/test-report returns just-written content', async () => {
   const body = await r.json();
   assert.match(body.markdown, /Round trip/);
 });
+
+// FIX-1 (v1.159.0) — a non-English report must yield full metadata on the
+// live list/read path, not just in the unit test. Writes a RU report whose
+// only machine-readable score/legitimacy live in the `## Machine Summary`
+// block and asserts GET /api/reports parses them (pre-fix: scoreNum null).
+test('FIX-1: GET /api/reports parses a Russian report via Machine Summary', async () => {
+  const ru = `# Оценка вакансии: Пример — Ведущий инженер
+
+## Блок C — Уровень и стратегия
+Оценка соответствия: 1.5 / 5
+Легитимность: High Confidence
+
+## Machine Summary
+score: 1.5 / 5
+legitimacy: High
+company: Пример
+role: Ведущий инженер
+`;
+  writeFileSync(resolve(dir, 'reports', 'ru-report.md'), ru);
+  try {
+    const r = await fetch(baseUrl + '/api/reports');
+    assert.equal(r.status, 200);
+    const { reports } = await r.json();
+    const row = reports.find((x) => x.slug === 'ru-report');
+    assert.ok(row, 'ru-report present in the list');
+    assert.equal(row.scoreNum, 1.5, 'scoreNum parsed from the Machine Summary block');
+    assert.ok(/^high/i.test(row.legitimacy), 'legitimacy parsed');
+    assert.ok(row.date, 'date filled (Machine Summary or mtime fallback)');
+  } finally {
+    rmSync(resolve(dir, 'reports', 'ru-report.md'), { force: true });
+  }
+});

@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.159.0] — 2026-08-13
+
+**Corretto (ALTA) — i metadati del report non dipendono più dalla lingua.** I report generati in una lingua diversa dall'inglese mostravano una striscia di metadati vuota su `#/reports`, perché `parseReportHeader` riconosceva solo le etichette in grassetto in inglese.
+
+### Corretto
+- `parseReportHeader` ora analizza il blocco YAML invariante `## Machine Summary` (`score:` / `legitimacy:` / `date:` — la stessa fonte che `auto-pipeline` già legge): etichette inglesi → blocco Machine Summary → etichette localizzate (`REPORT_LABELS`, 17 lingue). I report in inglese restano identici byte per byte.
+- Analisi numerica tollerante (`1.5/5`, `1,5/5`, `1.5 из 5`, `4.5 out of 5`); la data ripiega sul mtime del file quando manca.
+
+### Note
+- Solo lettura/analisi; nessuna modifica a route, CSP, SSRF o scrittura sul padre. Nessuna nuova chiave i18n. Suite: **2410** (+8).
+
 ## [1.158.0] — 2026-08-12
 
 **Corretto — due bug cosmetici di visualizzazione (un «?» che trapelava nel titolo della scheda e un conteggio dei provider errato nella landing).** Solo visualizzazione; nessuna modifica a comportamento, sicurezza o flusso dei dati.

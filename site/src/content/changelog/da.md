@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.159.0] — 2026-08-13
+
+**Rettet (HØJ) — rapportmetadata er ikke længere sprogafhængige.** Rapporter genereret på et andet sprog end engelsk viste en tom metadatastribe på `#/reports`, fordi `parseReportHeader` kun genkendte engelske fede etiketter.
+
+### Rettet
+- `parseReportHeader` parser nu den sproguafhængige `## Machine Summary`-YAML-blok (`score:` / `legitimacy:` / `date:` — samme kilde som `auto-pipeline` allerede læser): engelske etiketter → Machine Summary → lokaliserede etiketter (`REPORT_LABELS`, 17 sprog). Engelske rapporter er byte-for-byte identiske.
+- Tolerant talparsing (`1.5/5`, `1,5/5`, `1.5 из 5`, `4.5 out of 5`); datoen falder tilbage til filens mtime, når teksten mangler den.
+
+### Noter
+- Kun læsning/parsing; ingen ændring af rute, CSP, SSRF eller forælder-skrivning. Ingen nye i18n-nøgler. Suite: **2410** (+8).
+
 ## [1.158.0] — 2026-08-12
 
 **Rettet — to kosmetiske visningsfejl (et «?» der lækkede i fanetitlen og et forkert udbyderantal på landingssiden).** Kun visning; ingen ændring af adfærd, sikkerhed eller dataflow.

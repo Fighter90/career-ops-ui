@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.159.0] — 2026-08-13
+
+**Corrigé (HAUTE) — les métadonnées du rapport ne dépendent plus de la langue.** Les rapports générés dans une langue autre que l'anglais affichaient une bande de métadonnées vide sur `#/reports`, car `parseReportHeader` ne reconnaissait que les libellés en gras en anglais.
+
+### Corrigé
+- `parseReportHeader` analyse désormais le bloc YAML invariant `## Machine Summary` (`score:` / `legitimacy:` / `date:` — la même source que lit déjà `auto-pipeline`) : libellés anglais → bloc Machine Summary → libellés localisés (`REPORT_LABELS`, les 17 langues). Les rapports en anglais restent identiques octet pour octet.
+- Analyse numérique tolérante (`1.5/5`, `1,5/5`, `1.5 из 5`, `4.5 out of 5`) ; la date se rabat sur le mtime du fichier si le corps n'en a pas.
+
+### Notes
+- Lecture/analyse uniquement ; aucun changement de route, CSP, SSRF ou écriture parent. Aucune nouvelle clé i18n. Suite : **2410** (+8).
+
 ## [1.158.0] — 2026-08-12
 
 **Corrigé — deux bugs cosmétiques d'affichage (un « ? » qui fuit dans le titre d'onglet et un nombre de fournisseurs erroné sur la landing).** Affichage uniquement ; aucun changement de comportement, de sécurité ou de flux de données.

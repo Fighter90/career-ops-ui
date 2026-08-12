@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.159.0] — 2026-08-13
+
+**Naprawiono (WYSOKIE) — metadane raportu nie są już powiązane z językiem.** Raporty generowane w języku innym niż angielski pokazywały pusty pasek metadanych na `#/reports`, ponieważ `parseReportHeader` rozpoznawał tylko angielskie etykiety pogrubione.
+
+### Naprawiono
+- `parseReportHeader` analizuje teraz niezależny od języka blok YAML `## Machine Summary` (`score:` / `legitimacy:` / `date:` — to samo źródło, które już czyta `auto-pipeline`): etykiety angielskie → blok Machine Summary → etykiety lokalne (`REPORT_LABELS`, 17 języków). Raporty angielskie pozostają identyczne bajt po bajcie.
+- Tolerancyjne parsowanie liczby (`1.5/5`, `1,5/5`, `1.5 из 5`, `4.5 out of 5`); data przechodzi na mtime pliku, gdy jej brak.
+
+### Uwagi
+- Tylko odczyt/analiza; bez zmian trasy, CSP, SSRF ani zapisu do rodzica. Bez nowych kluczy i18n. Zestaw: **2410** (+8).
+
 ## [1.158.0] — 2026-08-12
 
 **Naprawiono — dwa kosmetyczne błędy wyświetlania (przeciekające «?» w tytule karty oraz błędna liczba dostawców na landingu).** Tylko wyświetlanie; bez zmian zachowania, bezpieczeństwa ani przepływu danych.

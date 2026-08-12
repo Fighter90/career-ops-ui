@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.159.0] — 2026-08-13
+
+**Behoben (HOCH) — Berichts-Metadaten sind nicht mehr sprachgekoppelt.** In einer anderen Sprache als Englisch erzeugte Berichte zeigten auf `#/reports` einen leeren Metadatenstreifen, weil `parseReportHeader` nur englische Fettschrift-Labels erkannte.
+
+### Behoben
+- `parseReportHeader` parst jetzt den sprachinvarianten `## Machine Summary`-YAML-Block (`score:` / `legitimacy:` / `date:` — dieselbe Quelle, die `auto-pipeline` bereits liest): englische Labels → Machine Summary → lokalisierte Labels (`REPORT_LABELS`, 17 Sprachen). Englische Berichte bleiben Byte für Byte identisch.
+- Toleranter Zahl-Parse (`1.5/5`, `1,5/5`, `1.5 из 5`, `4.5 out of 5`); das Datum fällt auf die Datei-mtime zurück, wenn der Text keines hat.
+
+### Hinweise
+- Nur Lesen/Parsen; keine Änderung an Route, CSP, SSRF oder Eltern-Schreibzugriff. Keine neuen i18n-Schlüssel. Suite: **2410** (+8).
+
 ## [1.158.0] — 2026-08-12
 
 **Behoben — zwei kosmetische Anzeigefehler (ein in den Tab-Titel durchgesickertes «?» und eine falsche Anbieterzahl auf der Landingpage).** Nur Anzeige; keine Änderung an Verhalten, Sicherheit oder Datenfluss.
