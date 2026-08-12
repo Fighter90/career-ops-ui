@@ -82,7 +82,7 @@ test('docs/help/{lang}.md exists for every supported locale', () => {
   }
 });
 
-test('every help doc covers the same 28 sections (all 16 gated locales — §28 v1.96.0)', () => {
+test('every help doc covers the same 30 sections (all 16 gated locales — §30 v1.147.0)', () => {
   // Full user-journey coverage: from initial setup + API keys to
   // applying for jobs and preparing for interviews. v1.9.2 expanded
   // from 14 → 16 sections (added App settings & API keys, Interview
