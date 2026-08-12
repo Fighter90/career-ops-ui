@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.154.0] — 2026-08-12
+
+**Nuova guida — "Esegui l’intero stack nel cloud."** career-ops non ha una propria storia cloud/server, quindi ne aggiungiamo una: una ricetta passo passo per mettere la pipeline padre **career-ops**, questo visualizzatore **career-ops-ui** e il **motore** IA (un **abbonamento Claude** via Claude Code, un **Hermes** locale, o chiavi API) su un piccolo server sempre attivo. Arriva come **Aiuto §31** in 17 lingue, una sezione del README e una pagina wiki.
+
+### Aggiunto
+- **Aiuto §31 "Esegui l’intero stack nel cloud"** (× 17) — le tre parti, provisioning + installazione, scelta del motore, esposizione sicura (reverse proxy HTTPS + auth + le invarianti CSP/SSRF/XSS/nessun-segreto). Il bundle di aiuto cresce a **31 H2 / 112 H3**.
+- **README** — una sezione "Esegui l’intero stack nel cloud" (× 17) + una pagina **Cloud-Deployment** nel wiki.
+
+### Note
+- **Solo docs** — nessuna rotta, server o modifica client; nessuna nuova chiave i18n. I 4 test di aiuto passano al contratto 31 H2 / 112 H3. Suite: **2396** test (invariata).
+
 ## [1.153.0] — 2026-08-12
 
 **Scanner Jobvite migrato al feed XML pubblico (sync con il parent).** Il parent ha ritirato l’API JSON di Jobvite (ora restituisce zero offerte); il source di web-ui usava lo stesso endpoint morto, quindi ogni azienda Jobvite tracciata scansionava vuota in silenzio. Porta il fix del parent (`#2623`): il source ora legge il **feed XML** pubblico per-tenant, con chiave `companyEId`.

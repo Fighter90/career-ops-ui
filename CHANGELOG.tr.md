@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.154.0] — 2026-08-12
+
+**Yeni kılavuz — "Tüm yığını bulutta çalıştır."** career-ops’un kendine ait bir bulut/sunucu anlatısı yok, biz de ekledik: üst **career-ops** hattını, bu **career-ops-ui** görüntüleyiciyi ve yapay zekâ **motorunu** (Claude Code üzerinden **Claude aboneliği**, yerel **Hermes**, veya API anahtarları) küçük ve her zaman açık bir sunucuya koymak için adım adım tarif. 17 dilde **Yardım §31**, bir README bölümü ve bir wiki sayfası olarak gelir.
+
+### Eklendi
+- **Yardım §31 "Tüm yığını bulutta çalıştır"** (× 17) — üç parça, hazırlama + kurulum, motor seçimi, güvenli yayınlama (HTTPS ters proxy + kimlik doğrulama + CSP/SSRF/XSS/sır-yok değişmezleri). Yardım paketi **31 H2 / 112 H3**’e büyür.
+- **README** — "Tüm yığını bulutta çalıştır" bölümü (× 17) + wiki’de **Cloud-Deployment** sayfası.
+
+### Notlar
+- **Yalnız docs** — rota, sunucu veya istemci değişikliği yok; yeni i18n anahtarı yok. 4 yardım testi 31 H2 / 112 H3 sözleşmesine geçer. Takım: **2396** test (değişmedi).
+
 ## [1.153.0] — 2026-08-12
 
 **Jobvite tarayıcısı herkese açık XML akışına taşındı (ebeveyn senkronu).** Ebeveyn, Jobvite JSON API’sini emekliye ayırdı (artık sıfır iş döndürüyor); web-ui’nin source’u aynı ölü uç noktayı kullanıyordu, bu yüzden izlenen her Jobvite şirketi sessizce boş taranıyordu. Ebeveyn düzeltmesini (`#2623`) taşır: source artık `companyEId` ile anahtarlanan herkese açık kiracı-başına **XML akışını** okur.

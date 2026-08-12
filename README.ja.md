@@ -12,9 +12,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新リリース — v1.153.0** — **Jobvite スキャナーを修正(親同期)** — 親が Jobvite の JSON API を廃止したため、追跡中の Jobvite 企業が静かに空スキャンになっていました。親の修正を移植 — source は公開テナント別 XML フィード(`companyEId` キー、2 ホストをピン留め、リダイレクト非追従)を読みます。 **2396 テスト.**
+> **🆕 最新リリース — v1.154.0** — **スタック全体をクラウドで動かす** — 親の career-ops パイプライン + このビューアー + AI エンジン(Claude サブスクリプション、ローカル Hermes、または API キー)を常時稼働の小型サーバーに載せる新しい手順ガイド —— 17 言語のヘルプ §31、README セクション、Wiki ページとして。 **2396 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 
@@ -597,6 +597,14 @@ russian_portals:
 Claude Code 内の既存の `/career-ops apply` Playwright フォーム入力フローは、応募フォームを真に自動入力できる唯一の手段であり続けます。UI 側の *Apply helper* は、その代わりにチェックリストを生成します。
 
 production-readiness アセスメント(デプロイメントゲート、リスク台帳、繰延項目)については [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md) を参照してください。TL;DR: シングルテナントのループバック用途では準備完了。LAN への公開は v2.0 P-12 の認証ゲートを待っています。
+
+---
+
+## スタック全体をクラウドで動かす
+
+career-ops は **常時稼働** が最適です — 就寝中もスキャンし、どのブラウザからも到達できます。スタック全体を小さなサーバーに載せるには — 親の **career-ops** パイプライン、この **career-ops-ui** ビューアー、そして AI を動かす **エンジン**(Claude Code CLI 経由の **Claude サブスクリプション**、ローカルの **Hermes** ゲートウェイ、またはプロバイダー API キー)—— VPS(Node ≥ 18)を用意し、親 + このリポジトリを入れ、エンジンを選び、**認証付き HTTPS リバースプロキシ** の背後にビューアーを公開しつつ、セキュリティ不変条件(CSP、SSRF ガード、XSS 境界、ログに秘密を残さない)を保ちます。
+
+📖 アプリ内 **ヘルプ §31**(「スタック全体をクラウドで動かす」)が 17 言語で手順を案内します。運用チェックリストは [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)、[クラウドデプロイの Wiki ページ](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) に参照テーブルがあります。
 
 ---
 

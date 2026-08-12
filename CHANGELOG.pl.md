@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.154.0] — 2026-08-12
+
+**Nowy przewodnik — „Uruchom cały stack w chmurze”.** career-ops nie ma własnej historii chmury/serwera, więc ją dodajemy: przepis krok po kroku, jak umieścić nadrzędny pipeline **career-ops**, tę przeglądarkę **career-ops-ui** i **silnik** AI (**subskrypcja Claude** przez Claude Code, lokalny **Hermes**, lub klucze API) na małym, zawsze włączonym serwerze. Dostarczane jako **Pomoc §31** w 17 językach, sekcja README i strona wiki.
+
+### Dodano
+- **Pomoc §31 „Uruchom cały stack w chmurze”** (× 17) — trzy części, provisioning + instalacja, wybór silnika, bezpieczne wystawienie (odwrotne proxy HTTPS + auth + niezmienniki CSP/SSRF/XSS/bez-sekretów). Bundle pomocy rośnie do **31 H2 / 112 H3**.
+- **README** — sekcja „Uruchom cały stack w chmurze” (× 17) + strona **Cloud-Deployment** w wiki.
+
+### Uwagi
+- **Tylko docs** — bez trasy, serwera i zmian klienta; bez nowego klucza i18n. 4 testy pomocy przechodzą na kontrakt 31 H2 / 112 H3. Zestaw: **2396** testów (bez zmian).
+
 ## [1.153.0] — 2026-08-12
 
 **Skaner Jobvite przeniesiony na publiczny kanał XML (sync z rodzicem).** Rodzic wycofał API JSON Jobvite (zwraca zero ofert); source w web-ui używał tego samego martwego endpointu, więc każda śledzona firma Jobvite skanowała się po cichu pusto. Port poprawki rodzica (`#2623`): source czyta teraz publiczny kanał **XML** per-tenant, kluczowany przez `companyEId`.

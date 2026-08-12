@@ -12,9 +12,9 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.153.0** — **Jobvite 스캐너 수정(부모 동기화)** — 부모가 Jobvite JSON API를 폐기해 추적 중인 Jobvite 회사가 조용히 빈 결과로 스캔되었습니다. 부모 픽스를 이식 — 이제 source가 공개 테넌트별 XML 피드(`companyEId` 키, 두 호스트 고정, 리디렉션 미추적)를 읽습니다. **2396 테스트.**
+> **🆕 최신 릴리스 — v1.154.0** — **클라우드에서 전체 스택 실행** — 부모 career-ops 파이프라인 + 이 뷰어 + AI 엔진(Claude 구독, 로컬 Hermes, 또는 API 키)을 항상 켜진 소형 서버에 올리는 새 단계별 가이드 — 17개 언어의 도움말 §31, README 섹션, 위키 페이지로. **2396 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 
@@ -595,6 +595,14 @@ russian_portals:
 Claude Code 내부의 기존 `/career-ops apply` Playwright 폼 자동 입력 플로우는 지원 양식을 실제로 자동 작성하는 유일한 경로로 남아 있습니다. UI의 *Apply helper*는 그 대신 체크리스트를 생성합니다.
 
 production-readiness 평가(배포 게이트, 리스크 등록부, 보류된 작업)는 [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md)를 참고하십시오. 요약하자면, 싱글 테넌트 loopback 환경에서는 사용 준비가 되어 있으며, LAN 노출은 v2.0 P-12 auth gate를 기다리고 있습니다.
+
+---
+
+## 클라우드에서 전체 스택 실행
+
+career-ops는 **항상 켜져 있을 때** 가장 좋습니다 — 자는 동안 스캔하고, 어느 브라우저에서든 접근 가능합니다. 전체 스택을 작은 서버에 올리려면 — 부모 **career-ops** 파이프라인, 이 **career-ops-ui** 뷰어, 그리고 AI를 실행하는 **엔진**(Claude Code CLI를 통한 **Claude 구독**, 로컬 **Hermes** 게이트웨이, 또는 제공자 API 키) — VPS(Node ≥ 18)를 프로비저닝하고, 부모 + 이 저장소를 설치하고, 엔진을 고르고, **인증이 있는 HTTPS 리버스 프록시** 뒤에 뷰어를 노출하되 보안 불변식(CSP, SSRF 가드, XSS 경계, 로그에 비밀 없음)을 그대로 유지합니다.
+
+📖 인앱 **도움말 §31**("클라우드에서 전체 스택 실행")이 17개 언어로 단계별로 안내합니다; 운영자 체크리스트는 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), [클라우드 배포 위키 페이지](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment)에 참조 표가 있습니다.
 
 ---
 

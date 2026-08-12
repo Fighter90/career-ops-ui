@@ -12,9 +12,9 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.153.0** — **Jobvite 扫描器修复(父项目同步)** — 父项目下线了 Jobvite JSON API,导致任何被跟踪的 Jobvite 公司都静默扫描为空。移植父项目修复 — source 现在读取公开的按租户 XML 源(以 `companyEId` 为键、固定两个主机、从不跟随重定向)。 **2396 个测试。**
+> **🆕 最新版本 — v1.154.0** — **在云端运行整个技术栈** — 把父级 career-ops 流水线 + 此查看器 + AI 引擎(Claude 订阅、本地 Hermes 或 API 密钥)放到常开小型服务器上的全新分步指南 —— 以 17 种语言的帮助 §31、README 章节和 wiki 页面提供。 **2396 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 
@@ -594,6 +594,14 @@ russian_portals:
 Claude Code 中现有的 `/career-ops apply` Playwright 表单填写流程,仍是真正自动填写投递表单的唯一手段 —— UI 的 *Apply helper* 改为生成核对清单。
 
 关于 production-readiness 评估(部署门、风险登记、待办工作),见 [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md)。TL;DR:可用于单租户 loopback;LAN 暴露须等待 v2.0 的 P-12 auth gate。
+
+---
+
+## 在云端运行整个技术栈
+
+career-ops **常开** 时最佳 —— 在你睡觉时扫描,可从任何浏览器访问。要把整个技术栈放到一台小型服务器上 —— 父级 **career-ops** 流水线、此 **career-ops-ui** 查看器,以及运行 AI 的**引擎**(通过 Claude Code CLI 的 **Claude 订阅**、本地 **Hermes** 网关,或提供方 API 密钥)—— 开通一台 VPS(Node ≥ 18),安装父项目 + 本仓库,选择引擎,并将查看器置于**带认证的 HTTPS 反向代理**之后,同时保持安全不变式(CSP、SSRF 防护、XSS 边界、日志不含机密)完好。
+
+📖 应用内**帮助 §31**(“在云端运行整个技术栈”)以 17 种语言逐步讲解;运维清单见 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md),[云部署 wiki 页面](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) 提供参考表格。
 
 ---
 

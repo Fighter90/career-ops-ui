@@ -12,9 +12,9 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Dernière version — v1.153.0** — **Scanner Jobvite corrigé (sync parent)** — Le parent a retiré l’API JSON de Jobvite, donc toute entreprise Jobvite suivie scannait à vide en silence. Portage du correctif parent — le source lit désormais le flux XML public par tenant (clé `companyEId`, deux hôtes épinglés, aucune redirection suivie). **2396 tests.**
+> **🆕 Dernière version — v1.154.0** — **Exécuter toute la stack dans le cloud** — Un nouveau guide pas à pas pour mettre le pipeline parent career-ops + ce visualiseur + votre moteur IA (un abonnement Claude, un Hermes local, ou des clés API) sur un petit serveur toujours actif — comme Aide §31 dans les 17 langues, une section du README et une page wiki. **2396 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 
@@ -586,6 +586,14 @@ Les modes entièrement pilotés par LLM (`oferta`, `deep`, `contacto`, `apply`, 
 Le flux de remplissage de formulaire Playwright existant dans `/career-ops apply` au sein de Claude Code reste le seul moyen de vraiment remplir les formulaires automatiquement — l'*Apply helper* de l'UI génère une checklist à la place.
 
 Pour l'évaluation de production-readiness (barrières de déploiement, registre des risques, travail différé), voir [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md). En bref : prêt pour le single-tenant en loopback ; l'exposition LAN attend la barrière d'auth P-12 de la v2.0.
+
+---
+
+## Exécuter toute la stack dans le cloud
+
+career-ops est au mieux **toujours actif** — il scanne pendant votre sommeil, accessible depuis n’importe quel navigateur. Pour mettre toute la stack sur un petit serveur — le pipeline parent **career-ops**, ce visualiseur **career-ops-ui**, et le **moteur** qui exécute l’IA (votre **abonnement Claude** via le CLI Claude Code, une passerelle **Hermes** locale, ou des clés API) — provisionnez un VPS (Node ≥ 18), installez le parent + ce dépôt, choisissez votre moteur, et exposez le visualiseur derrière un **reverse-proxy HTTPS avec authentification** en gardant intactes les invariantes de sécurité (CSP, garde SSRF, frontière XSS, aucun secret dans les logs).
+
+📖 L’**Aide §31** intégrée (« Exécuter toute la stack dans le cloud ») détaille chaque étape dans les 17 langues ; la checklist opérateur est [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), et la [page wiki de déploiement cloud](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) contient les tableaux de référence.
 
 ---
 

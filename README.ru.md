@@ -12,9 +12,9 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
+[![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Последний релиз — v1.153.0** — **Сканер Jobvite исправлен (синк с родителем)** — Родитель вывел из эксплуатации JSON API Jobvite, из-за чего любая отслеживаемая компания Jobvite молча сканировалась пустой. Порт родительского фикса — source теперь читает публичный по-тенантный XML-фид (ключ `companyEId`, два закреплённых хоста, редиректы не следуются). **2396 тестов.**
+> **🆕 Последний релиз — v1.154.0** — **Запуск всего стека в облаке** — Новый пошаговый гайд: разместить родительский пайплайн career-ops + этот вьюер + движок ИИ (подписка Claude, локальный Hermes или ключи API) на небольшом постоянно включённом сервере — как Справка §31 на 17 языках, раздел README и вики-страница. **2396 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 
@@ -595,6 +595,14 @@ russian_portals:
 Имеющийся внутри Claude Code сценарий `/career-ops apply` с Playwright по-прежнему остаётся единственным способом действительно автозаполнить формы заявок — *Apply helper* в UI вместо этого выдаёт чек-лист.
 
 Оценку production-готовности (deployment-гейты, реестр рисков, отложенные работы) см. в [`docs/PRODUCTION-READINESS.md`](docs/PRODUCTION-READINESS.md). TL;DR: проект готов к single-tenant loopback; выставление в LAN ожидает auth-gate из v2.0 P-12.
+
+---
+
+## Запуск всего стека в облаке
+
+career-ops лучше всего работает **постоянно включённым** — сканирует, пока вы спите, доступен из любого браузера. Чтобы разместить весь стек на небольшом сервере — родительский пайплайн **career-ops**, этот вьюер **career-ops-ui** и **движок**, выполняющий ИИ (ваша **подписка Claude** через CLI Claude Code, локальный **Hermes**-шлюз или ключи API провайдеров) — поднимите VPS (Node ≥ 18), установите родителя + этот репозиторий, выберите движок и выставьте вьюер за **HTTPS обратным прокси с аутентификацией**, сохранив инварианты безопасности (CSP, SSRF-guard, граница XSS, никаких секретов в логах).
+
+📖 Встроенная **Справка §31** («Запуск всего стека в облаке») проводит по шагам на всех 17 языках; чек-лист оператора — [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), а на [вики-странице облачного развёртывания](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) есть справочные таблицы.
 
 ---
 
