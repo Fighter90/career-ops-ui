@@ -9,6 +9,20 @@
 ---
 
 
+## [1.153.0] — 2026-08-12
+
+**Jobvite 스캐너가 공개 XML 피드로 이전(부모 동기화).** 부모가 Jobvite JSON API를 폐기(이제 0건 반환)했고, web-ui source가 같은 죽은 엔드포인트를 써서 추적 중인 Jobvite 회사가 조용히 빈 결과로 스캔되었습니다. 부모 픽스(`#2623`)를 이식: 이제 `companyEId`로 키를 매기는 공개 테넌트별 **XML 피드**를 읽습니다.
+
+### 수정됨
+- source가 폐기된 JSON API를 호출해 0건을 반환했습니다. 이제 `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}`를 호출하고 XML `<result><job>…`를 파싱합니다(CDATA + 엔터티, `apply-url`보다 `detail-url` 우선).
+
+### 변경됨
+- `companyEId` 해석: (1) 포털의 `company_eid:`, (2) 명시적 `api:`의 `c=` 파라미터, (3) 보드 페이지 디스커버리. `fetchText`(`http-json.mjs`)가 non-ok 오류에 `.location`/`.retryAfter`를 부착(읽기 전용, 하위 호환).
+
+### 참고
+- **보안** — 두 호스트(`jobs.jobvite.com`, `app.jobvite.com`)를 `assertJobviteUrl`로 매 요청 고정: https 전용, 엄격한 허용목록, **리디렉션 미추적**. `companyEId`는 오직 `?c=` 값이며, source 개수 변화 없음.
+- 스위트: **2396**개 테스트(+4).
+
 ## [1.152.0] — 2026-08-12
 
 **Hermes 제공자 — 배선 완료 + 문서 최신화.** v1.151.0 Hermes 통합의 코드 리뷰에서 실제 결함 2건과 완성도 항목 4건을 발견해 모두 여기서 수정했으며, 앱 전체의 LLM 제공자 목록을 모든 문서 표면과 17개 언어에서 완전한 7개로 맞췄습니다.

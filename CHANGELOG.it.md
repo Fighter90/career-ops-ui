@@ -2,6 +2,20 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.153.0] — 2026-08-12
+
+**Scanner Jobvite migrato al feed XML pubblico (sync con il parent).** Il parent ha ritirato l’API JSON di Jobvite (ora restituisce zero offerte); il source di web-ui usava lo stesso endpoint morto, quindi ogni azienda Jobvite tracciata scansionava vuota in silenzio. Porta il fix del parent (`#2623`): il source ora legge il **feed XML** pubblico per-tenant, con chiave `companyEId`.
+
+### Corretto
+- Il source chiamava l’API JSON ritirata e restituiva zero offerte; ora chiama `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` e fa il parse dell’XML `<result><job>…` (CDATA + entità, `detail-url` prima di `apply-url`).
+
+### Modificato
+- Risoluzione di `companyEId`: (1) `company_eid:` sul portale, (2) il `c=` di un `api:` esplicito, (3) discovery dalla pagina del board. `fetchText` (`http-json.mjs`) allega `.location`/`.retryAfter` all’errore non-ok (sola lettura, retrocompatibile).
+
+### Note
+- **Sicurezza** — due host (`jobs.jobvite.com`, `app.jobvite.com`) fissati da `assertJobviteUrl`: solo https, allowlist stretta, **nessun redirect seguito**. Il `companyEId` è solo un valore `?c=`; conteggio dei source invariato.
+- Suite: **2396** test (+4).
+
 ## [1.152.0] — 2026-08-12
 
 **Provider Hermes — cablaggio completato + allineamento docs.** Una revisione del codice dell’integrazione Hermes di v1.151.0 ha trovato due lacune reali e quattro punti di completezza; tutti corretti qui, e il roster dei provider LLM dell’intera app è portato ai sette completi su tutte le superfici di docs e le 17 lingue.

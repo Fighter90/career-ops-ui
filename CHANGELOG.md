@@ -8,6 +8,25 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.153.0] — 2026-08-12
+
+**Jobvite scanner migrated to the public XML feed (parent-sync).** The parent career-ops retired the Jobvite JSON API (it now 302-redirects and returns zero jobs); web-ui's jobvite source used that same dead endpoint, so any tracked Jobvite company silently scanned empty. This ports the parent's fix (`#2623`) into the web-ui source contract: the source now reads the public per-tenant **XML feed** on a different host, keyed by an opaque `companyEId`.
+
+### Fixed
+- **Jobvite returned zero jobs** — the source fetched `https://jobs.jobvite.com/api/company/{slug}/jobs` (retired). It now fetches `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` and parses the XML `<result><job>…` payload (CDATA + entity-decode, `detail-url` preferred over `apply-url`, `http:`→`https:` on display-only per-job URLs).
+
+### Changed
+- **companyEId resolution** — the tenant key changed from the vanity slug (`tylertech`) to an opaque `companyEId` (`q6NaVfwI`) not present in the careers URL. Resolution order: (1) `company_eid:` on the portal entry, (2) the `c=` param of an explicit `api:` URL, (3) board-page discovery (scrape `companyEId` from the inline JS). Prefer (1) in `portals.yml` — one line, survives board redesigns, skips a request.
+- **`server/lib/http-json.mjs`** — `fetchText` now attaches `.location` / `.retryAfter` to the thrown non-ok error (read-only; lets jobvite tell an empty board — a `NoJobs.htm` redirect — from a retired tenant, without ever following the redirect). Backward-compatible: both fields are `null` for a plain error, so existing `redirect:'error'` callers are unaffected.
+
+### CI
+- **Pages deploy no longer flips the status badge on a superseded build** — `deploy-pages.yml` used `concurrency.cancel-in-progress: true`, so when a merge touching `docs/help/**` auto-fired a Pages build **and** a manual dispatch raced it, the older run was cancelled and surfaced as a red "check" ("Some checks were not successful") even though the site deployed fine. Switched to `cancel-in-progress: false` (GitHub's recommended Pages pattern) so a second run queues instead of cancelling — the status stays green.
+
+### Notes
+- **Security** — the source pins **two** hosts (`jobs.jobvite.com` for discovery, `app.jobvite.com` for the feed) via `assertJobviteUrl` before every fetch: https-only, strict-hostname allowlist, **no redirect ever followed** (`redirect:'error'` for discovery, `redirect:'manual'` for the feed — the 3xx is read but never chased). The `companyEId` is only ever a `?c=` query value; feed/board URLs are rebuilt from the resolved slug/eId, never fetched verbatim from user input. Registry source count unchanged (`meta.value='jobvite'` preserved).
+- Parent-sync: this was the only web-ui-relevant change in the 17 parent commits since parentVersion 1.26.0 (the others — an LLM re-ranker, `verify-cv-facts`, `liveness-core`, and two `web/` fixes — have no web-ui mirror).
+- Suite: **2396** tests (+4: `tests/sources-jobvite.test.mjs` rewritten for the XML contract — config/`c=`/discovery eId resolution, XML parse, the two-host guard, empty-feed handling).
+
 ## [1.152.0] — 2026-08-12
 
 **Hermes provider — completed wiring + docs actualization.** A detailed code review of the v1.151.0 Hermes integration surfaced two real gaps and four completeness items; all are fixed here, and the whole app's LLM-provider roster is brought up to the full seven (Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes) across every doc surface and all 17 locales.

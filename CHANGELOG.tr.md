@@ -2,6 +2,20 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.153.0] — 2026-08-12
+
+**Jobvite tarayıcısı herkese açık XML akışına taşındı (ebeveyn senkronu).** Ebeveyn, Jobvite JSON API’sini emekliye ayırdı (artık sıfır iş döndürüyor); web-ui’nin source’u aynı ölü uç noktayı kullanıyordu, bu yüzden izlenen her Jobvite şirketi sessizce boş taranıyordu. Ebeveyn düzeltmesini (`#2623`) taşır: source artık `companyEId` ile anahtarlanan herkese açık kiracı-başına **XML akışını** okur.
+
+### Düzeltildi
+- Source, emekli JSON API’sini çağırıp sıfır iş döndürüyordu; artık `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` çağırıp XML `<result><job>…` ayrıştırıyor (CDATA + varlıklar, `detail-url`, `apply-url`’den önce).
+
+### Değiştirildi
+- `companyEId` çözümü: (1) portaldaki `company_eid:`, (2) açık bir `api:`’nin `c=` parametresi, (3) pano sayfası keşfi. `fetchText` (`http-json.mjs`) non-ok hatasına `.location`/`.retryAfter` ekler (salt okunur, geriye dönük uyumlu).
+
+### Notlar
+- **Güvenlik** — iki host (`jobs.jobvite.com`, `app.jobvite.com`) her istekten önce `assertJobviteUrl` ile sabitlenir: yalnız https, katı izin listesi, **hiçbir yönlendirme izlenmez**. `companyEId` yalnızca bir `?c=` değeridir; source sayısı değişmez.
+- Takım: **2396** test (+4).
+
 ## [1.152.0] — 2026-08-12
 
 **Hermes sağlayıcısı — kablolama tamamlandı + doküman güncellemesi.** v1.151.0 Hermes entegrasyonunun kod incelemesi iki gerçek boşluk ve dört tamlık maddesi buldu; hepsi burada düzeltildi ve uygulamanın tüm LLM sağlayıcı listesi tüm doküman yüzeylerinde ve 17 dilde tam yediye çıkarıldı.

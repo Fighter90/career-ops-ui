@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.152.0** — **Hermes 提供方 — 接线完成** — 对 v1.151.0 Hermes 集成的代码评审修复了两处真实缺口(`#/config` 下拉无法强制 Hermes;较短的自托管密钥被拒绝),并将 LLM 提供方列表在所有文档面和 17 种语言中补齐为完整的七个。 **2392 个测试。**
+> **🆕 最新版本 — v1.153.0** — **Jobvite 扫描器修复(父项目同步)** — 父项目下线了 Jobvite JSON API,导致任何被跟踪的 Jobvite 公司都静默扫描为空。移植父项目修复 — source 现在读取公开的按租户 XML 源(以 `companyEId` 为键、固定两个主机、从不跟随重定向)。 **2396 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

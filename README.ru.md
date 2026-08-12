@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Последний релиз — v1.152.0** — **Провайдер Hermes — разведение завершено** — Код-рев’ю интеграции Hermes из v1.151.0 исправило два реальных пробела (список `#/config` не мог форсировать Hermes; короткие self-hosted ключи отклонялись) и довело перечень LLM-провайдеров до полных семи на всех поверхностях документации и в 17 языках. **2392 тестов.**
+> **🆕 Последний релиз — v1.153.0** — **Сканер Jobvite исправлен (синк с родителем)** — Родитель вывел из эксплуатации JSON API Jobvite, из-за чего любая отслеживаемая компания Jobvite молча сканировалась пустой. Порт родительского фикса — source теперь читает публичный по-тенантный XML-фид (ключ `companyEId`, два закреплённых хоста, редиректы не следуются). **2396 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

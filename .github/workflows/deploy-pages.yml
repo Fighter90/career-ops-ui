@@ -19,9 +19,16 @@ permissions:
   pages: write
   id-token: write
 
+# Allow only one concurrent Pages deployment, but do NOT cancel an in-progress
+# one — a superseded build that gets cancelled surfaces as a red "check" in the
+# commit-status rollup ("Some checks were not successful") even though nothing
+# broke. Queuing instead of cancelling keeps the status green. This is GitHub's
+# own recommended Pages pattern. (A push that touches docs/help/** or site/**
+# already auto-fires this workflow, so a manual dispatch on the same merge is
+# what created the race — prefer letting the push trigger handle it.)
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:

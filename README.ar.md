@@ -7,14 +7,14 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 أحدث إصدار — v1.152.0** — **مزوّد Hermes — اكتمل التوصيل** — أصلحت مراجعة كود لتكامل Hermes في v1.151.0 ثغرتين حقيقيتين (قائمة `#/config` لم تستطع فرض Hermes؛ ورُفضت المفاتيح المحلية القصيرة)، ورفعت قائمة مزوّدي LLM إلى السبعة الكاملة على كل أسطح الوثائق واللغات الـ17. **2392 اختبارًا.**
+> **🆕 أحدث إصدار — v1.153.0** — **إصلاح ماسح Jobvite (مزامنة مع الأصل)** — أوقف الأصل واجهة JSON الخاصة بـ Jobvite، فكانت أي شركة Jobvite متتبَّعة تُمسح فارغة بصمت. نقل إصلاح الأصل — يقرأ source الآن موجز XML العام لكل مستأجر (مفتاح `companyEId`، مضيفان مثبّتان، دون اتباع أي تحويل). **2396 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

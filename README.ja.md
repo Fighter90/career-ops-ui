@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2392%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2396%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新リリース — v1.152.0** — **Hermes プロバイダー — 配線を完了** — v1.151.0 の Hermes 統合のコードレビューで実際の欠陥 2 件(`#/config` ドロップダウンで Hermes を強制できない、短いセルフホスト鍵が拒否される)を修正し、LLM プロバイダー一覧を全ドキュメント面と 17 言語で完全な 7 つに揃えました。 **2392 テスト.**
+> **🆕 最新リリース — v1.153.0** — **Jobvite スキャナーを修正(親同期)** — 親が Jobvite の JSON API を廃止したため、追跡中の Jobvite 企業が静かに空スキャンになっていました。親の修正を移植 — source は公開テナント別 XML フィード(`companyEId` キー、2 ホストをピン留め、リダイレクト非追従)を読みます。 **2396 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

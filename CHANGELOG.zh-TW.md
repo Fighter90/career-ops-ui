@@ -8,6 +8,20 @@
 
 ---
 
+## [1.153.0] — 2026-08-12
+
+**Jobvite 掃描器遷移到公開 XML 來源(父專案同步)。** 父專案下線了 Jobvite JSON API(現在回傳零職缺);web-ui 的 source 用的正是這個失效端點,因此任何被追蹤的 Jobvite 公司都靜默掃描為空。移植父專案修復(`#2623`):現在讀取以 `companyEId` 為鍵的公開按租戶 **XML 來源**。
+
+### 修復
+- source 呼叫已下線的 JSON API 並回傳零職缺;現改為呼叫 `https://app.jobvite.com/CompanyJobs/Xml.aspx?c={companyEId}` 並解析 XML `<result><job>…`(CDATA + 實體解碼,`detail-url` 優先於 `apply-url`)。
+
+### 變更
+- `companyEId` 解析:(1) 入口的 `company_eid:`,(2) 明確 `api:` 的 `c=` 參數,(3) 看板頁探索。`fetchText`(`http-json.mjs`)在 non-ok 錯誤上附加 `.location`/`.retryAfter`(唯讀,向後相容)。
+
+### 說明
+- **安全** — 兩個主機(`jobs.jobvite.com`、`app.jobvite.com`)在每次請求前由 `assertJobviteUrl` 固定:僅 https、嚴格白名單、**從不跟隨重新導向**。`companyEId` 僅為 `?c=` 值;source 數量不變。
+- 套件:**2396** 項測試(+4)。
+
 ## [1.152.0] — 2026-08-12
 
 **Hermes 供應方 — 接線完成 + 文件同步。** 對 v1.151.0 Hermes 整合的程式碼審查發現兩處真實缺口與四項完整性事項,皆於此修正;並將全應用的 LLM 供應方清單在所有文件面與 17 種語言中補齊為完整的七個。
