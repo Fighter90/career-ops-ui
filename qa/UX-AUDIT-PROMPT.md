@@ -1,11 +1,16 @@
 # SENIOR UX-DESIGNER AUDIT — career-ops-ui
 
-> **Baseline: v1.152.0** (32 route modules · 30 views · **17 locales** ·
-> help bundles 30 H2 / 108 H3 · **79 scanner sources = 74 EN + 5 RU** ·
+> **Baseline: v1.157.0** (32 route modules · 30 views · **17 locales** ·
+> help bundles **31 H2 / 112 H3** — §31 "Running the whole stack in the cloud"
+> added v1.154.0 · **79 scanner sources = 74 EN + 5 RU** ·
 > **7 headless LLM providers**: Anthropic → Gemini → OpenAI → Qwen →
-> OpenRouter → GitHub Models → Hermes, auto-ordered).
+> OpenRouter → GitHub Models → Hermes, auto-ordered — and as of v1.157.0 a
+> forced `LLM_PROVIDER` with no key falls back to any configured provider, so
+> live evals run on ANY key, not just Anthropic/Gemini).
 > The UX roadmap **`docs/UX-ROADMAP.md`** (Phases 1–5) is fully shipped;
 > treat any residual Phase items as done, not findings.
+> The oversized views were split under the 800-line limit (config.js P-15,
+> scan.js P-16, v1.155–v1.156) — a pure refactor, no UX change.
 > Dark-mode contrast is guarded from v1.137.0 (theme-aware alias tokens;
 > 0 WCAG-AA text failures across all views) — judge the dark theme against
 > that baseline, not as broken.

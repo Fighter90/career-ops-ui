@@ -64,8 +64,12 @@ dedicated 404 view, not silently fall back to dashboard).
 ## §2 — The core journey actually completes (Scenario A, cold start)
 
 Empty parent files; set up exactly ONE provider key. Repeat the whole
-arc once per provider (**Anthropic, Gemini, OpenAI, Qwen** — the "OR"
-promise):
+arc once per provider (**Anthropic, Gemini, OpenAI, Qwen, OpenRouter,
+GitHub Models, Hermes** — all seven; the "OR" promise). **v1.157.0:** even
+with a stale `LLM_PROVIDER=claude` pin (as `init` writes), setting only a
+non-Anthropic key (e.g. `OPENROUTER_API_KEY`) MUST still run live — a keyless
+forced provider falls back to any configured one, so `#/deep` shows ⚡ Run
+live and `#/dashboard` shows **Live evals · ready**:
 
 1. Land on `#/dashboard` with **0 keys** → the red onboarding banner
    states ⚡ Run-live is manual-prompt mode and links to
