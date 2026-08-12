@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.143.0] — 2026-08-12
+
+**Comprensible (cont.): pistas `?` en las vistas de trabajo principales** — el `?` de ayuda ahora cubre las nueve páginas de acción principales, en todos los idiomas. Ajuste de UX reportado por el usuario (sin parent-sync).
+
+### Añadido
+- **Pista de ayuda `?` en 9 títulos de vistas más** — `#/scan`, `#/evaluate`, `#/cv-studio`, `#/tracker`, `#/config`, `#/deep`, `#/batch`, `#/auto`, `#/apply` reciben un `?` en línea (vía `HelpHint.title`) que abre un popover localizado de «qué hace / cómo usarlo / qué esperar» — el mismo componente seguro para CSP de v1.139.0.
+- 9 nuevas claves i18n × **17 idiomas** (`help.hint.scan`/…/`apply`); snapshot 1186 → 1195.
+
+### Notas
+- Verificado en el navegador (0 errores de consola). Suite: **2365** pruebas (+1).
+
 ## [1.142.0] — 2026-08-12
 
 **Corrección: se acabó el arquetipo profesional "Unknown"** — `#/orientation` ahora siempre clasifica entre los ocho vectores de carrera nombrados en lugar de responder a veces "Unknown" y recomendarte "redoblar" en él. Corrección reportada por el usuario (sin parent-sync).

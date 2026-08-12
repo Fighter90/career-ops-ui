@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 
 // Module-level handle for the active scan-results poll. We track it across
 // view renders so navigating away from /scan during an in-flight scan
@@ -618,7 +618,7 @@ Router.register('scan', async () => {
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('scan.title')),
+        HelpHint.title(t('scan.title'), 'help.hint.scan'),
         // F-010: neutral label, no EN/RU split. apiCompanies is the
         // count of ATS-tracked companies; the rest are regional portals.
         c('p', { className: 'page-subtitle' }, t('scan.subtitle')),

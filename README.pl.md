@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2364%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2365%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Najnowsze wydanie — v1.142.0** — **poprawka: koniec z archetypem „Unknown"** — `#/orientation` zawsze klasyfikuje teraz spośród ośmiu nazwanych wektorów kariery zamiast czasem odpowiadać „Unknown" i doradzać „postawienie na niego" (ograniczenie promptu AI). **2364 testów.**
+> **🆕 Najnowsze wydanie — v1.143.0** — **zrozumiałość (cd.): podpowiedzi `?` na widokach roboczych** — pomocnicze `?` obejmuje teraz kolejne 9 stron (scan, evaluate, cv-studio, tracker, config, deep, batch, auto, apply), we wszystkich językach. **2365 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

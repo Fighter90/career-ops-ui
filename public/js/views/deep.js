@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 Router.register('deep', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -259,7 +259,7 @@ Router.register('deep', async () => {
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('deep.title')),
+        HelpHint.title(t('deep.title'), 'help.hint.deep'),
         c('p', { className: 'page-subtitle' }, t('deep.subtitle')),
       ]),
     ]),

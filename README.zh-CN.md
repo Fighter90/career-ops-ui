@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2364%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2365%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 最新版本 — v1.142.0** — **修正：不再出现「Unknown」原型** — `#/orientation` 现在始终从八个命名的职业向量中排名，而非偶尔回答「Unknown」并建议「加倍投入」（AI 提示约束）。 **2364 个测试。**
+> **🆕 最新版本 — v1.143.0** — **更易理解（续）：核心工作流页面的 `?` 提示** — 帮助 `?` 现在再覆盖 9 个页面（scan、evaluate、cv-studio、tracker、config、deep、batch、auto、apply），支持所有语言。 **2365 个测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

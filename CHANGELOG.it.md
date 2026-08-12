@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.143.0] — 2026-08-12
+
+**Comprensibile (segue): suggerimenti `?` sulle viste di lavoro principali** — il `?` di aiuto copre ora le nove pagine d'azione principali, in tutte le lingue. Aggiustamento UX segnalato dall'utente (senza parent-sync).
+
+### Aggiunto
+- **Suggerimento `?` su altri 9 titoli di viste** — `#/scan`, `#/evaluate`, `#/cv-studio`, `#/tracker`, `#/config`, `#/deep`, `#/batch`, `#/auto`, `#/apply` ricevono un `?` inline (via `HelpHint.title`) che apre un popover localizzato «cosa fa / come usarlo / cosa aspettarsi» — lo stesso componente sicuro per la CSP di v1.139.0.
+- 9 nuove chiavi i18n × **17 lingue** (`help.hint.scan`/…/`apply`); snapshot 1186 → 1195.
+
+### Note
+- Verificato nel browser (0 errori console). Suite: **2365** test (+1).
+
 ## [1.142.0] — 2026-08-12
 
 **Correzione: basta con l'archetipo di carriera "Unknown"** — `#/orientation` ora classifica sempre tra gli otto vettori di carriera nominati invece di rispondere talvolta "Unknown" e consigliarti di "puntarci di più". Correzione segnalata dall'utente (senza parent-sync).

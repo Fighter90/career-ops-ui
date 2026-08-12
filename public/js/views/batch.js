@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/batch — Batch evaluate (v1.13.0). SPA mirror of the CLI loop
  * documented at career-ops.org/docs/.../batch-evaluate-offers.
@@ -21,7 +21,7 @@ Router.register('batch', async () => {
   } catch (e) {
     return c('div', null, [
       c('header', { className: 'page-header' },
-        c('h1', { className: 'page-title' }, t('batch.title', 'Batch evaluate'))),
+        HelpHint.title(t('batch.title', 'Batch evaluate'), 'help.hint.batch')),
       c('div', { className: 'empty' }, (e && e.message) || 'failed to load'),
     ]);
   }
@@ -187,7 +187,7 @@ Router.register('batch', async () => {
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('batch.title', 'Batch evaluate')),
+        HelpHint.title(t('batch.title', 'Batch evaluate'), 'help.hint.batch'),
         c('p', { className: 'page-subtitle' },
           t('batch.subtitle', 'Score 10+ JDs at once via batch/batch-runner.sh — see ') + ' '),
         c('p', { style: { fontSize: '13px', color: 'var(--foggy)' } }, [

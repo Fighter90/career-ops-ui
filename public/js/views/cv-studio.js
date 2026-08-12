@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, CvDiagnostics, CvPrivacy */
+/* global Router, API, UI, I18n, CvDiagnostics, CvPrivacy, HelpHint */
 /**
  * #/cv-studio — CV Studio (v1.92.0, Epic 21).
  *
@@ -14,7 +14,7 @@ Router.register('cv-studio', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('cvs.title', 'CV Studio')));
+  root.appendChild(HelpHint.title(t('cvs.title', 'CV Studio'), 'help.hint.cvStudio'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('cvs.subtitle', 'Diagnose your CV, mask it for safe sharing, and rewrite stiff lines in your own voice — grounded only in what you actually wrote.')));
 

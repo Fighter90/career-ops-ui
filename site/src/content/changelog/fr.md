@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.143.0] — 2026-08-12
+
+**Compréhensible (suite) : bulles `?` sur les vues de travail principales** — le `?` d'aide couvre désormais les neuf pages d'action principales, dans toutes les langues. Ajustement UX signalé par l'utilisateur (sans parent-sync).
+
+### Ajouté
+- **Bulle d'aide `?` sur 9 titres de vues de plus** — `#/scan`, `#/evaluate`, `#/cv-studio`, `#/tracker`, `#/config`, `#/deep`, `#/batch`, `#/auto`, `#/apply` reçoivent un `?` en ligne (via `HelpHint.title`) qui ouvre une bulle localisée « ce que ça fait / comment l'utiliser / à quoi s'attendre » — le même composant sûr pour la CSP que v1.139.0.
+- 9 nouvelles clés i18n × **17 langues** (`help.hint.scan`/…/`apply`) ; snapshot 1186 → 1195.
+
+### Notes
+- Vérifié dans le navigateur (0 erreur console). Suite : **2365** tests (+1).
+
 ## [1.142.0] — 2026-08-12
 
 **Correction : fini l'archétype de carrière « Unknown »** — `#/orientation` classe désormais toujours parmi les huit vecteurs de carrière nommés, au lieu de répondre parfois « Unknown » et de vous conseiller d'y « miser davantage ». Correction signalée par l'utilisateur (sans parent-sync).

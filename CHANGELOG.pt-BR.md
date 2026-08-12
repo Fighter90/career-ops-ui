@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.143.0] — 2026-08-12
+
+**Compreensível (cont.): dicas `?` nas telas de trabalho principais** — o `?` de ajuda agora cobre as nove páginas de ação principais, em todos os idiomas. Ajuste de UX reportado pelo usuário (sem parent-sync).
+
+### Adicionado
+- **Dica de ajuda `?` em mais 9 títulos de telas** — `#/scan`, `#/evaluate`, `#/cv-studio`, `#/tracker`, `#/config`, `#/deep`, `#/batch`, `#/auto`, `#/apply` recebem um `?` embutido (via `HelpHint.title`) que abre um popover localizado de «o que faz / como usar / o que esperar» — o mesmo componente seguro para CSP da v1.139.0.
+- 9 novas chaves i18n × **17 idiomas** (`help.hint.scan`/…/`apply`); snapshot 1186 → 1195.
+
+### Notas
+- Verificado no navegador (0 erros de console). Suíte: **2365** testes (+1).
+
 ## [1.142.0] — 2026-08-12
 
 **Correção: fim do arquétipo profissional "Unknown"** — `#/orientation` agora sempre classifica entre os oito vetores de carreira nomeados em vez de às vezes responder "Unknown" e recomendar "dobrar a aposta" nele. Correção reportada pelo usuário (sem parent-sync).

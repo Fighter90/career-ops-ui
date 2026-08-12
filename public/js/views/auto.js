@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/auto — one-click AutoPipeline screen (WS5, v1.34.0).
  *
@@ -246,7 +246,7 @@ Router.register('auto', async () => {
     // in line-wrap. The i18n value drops the leading emoji + space.
     c('header', { className: 'page-header page-header--icon' }, [
       c('span', { className: 'page-icon', 'aria-hidden': 'true' }, '✨'),
-      c('h1', { className: 'page-title' }, t('auto.title', 'Auto-pipeline a URL')),
+      HelpHint.title(t('auto.title', 'Auto-pipeline a URL'), 'help.hint.auto'),
       c('p', { className: 'page-subtitle' },
         t('auto.subtitle', 'Paste one job URL. One click runs the whole flow — validate, fetch, evaluate against your CV, save the report, add it to the tracker.')),
     ]),

@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 Router.register('tracker', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -232,7 +232,7 @@ Router.register('tracker', async () => {
     hiredBanner,
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('track.title')),
+        HelpHint.title(t('track.title'), 'help.hint.tracker'),
         c('p', { className: 'page-subtitle' }, `${rows.length} ${t('track.entriesIn')} data/applications.md`),
       ]),
       // U-10 (v1.58.30) — Normalize / Dedup / Merge buttons disabled when
