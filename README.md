@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2364%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Latest release — v1.141.0** — **insightful stats (cont.): funded-company enrichment** — `#/funded` is now a visual card grid: company **logos**, a **funding-amount chart**, and per-company **round / amount / discovery-score / suggested-action** cards. 3 keys ×17 locales. **2363 tests.**
+> **🆕 Latest release — v1.142.0** — **correctness: no more "Unknown" career archetype** — `#/orientation` now always ranks from the eight named career vectors instead of occasionally answering "Unknown" and telling you to "double down" on it (AI-prompt constraint). **2364 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

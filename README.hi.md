@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2364%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.141.0** — **अंतर्दृष्टिपूर्ण आँकड़े (जारी): फंडिंग पाई कंपनियों का संवर्धन** — `#/funded` अब एक दृश्यात्मक कार्ड ग्रिड है: कंपनी **लोगो**, **राशि के अनुसार चार्ट**, और **राउंड / राशि / स्कोर / सुझाई गई कार्रवाई** कार्ड। 3 कुंजियाँ ×17 भाषाएँ। **2363 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.142.0** — **सुधार: अब कोई "Unknown" आर्किटाइप नहीं** — `#/orientation` अब कभी-कभी "Unknown" उत्तर देने के बजाय हमेशा आठ नामित करियर वेक्टरों में से रैंक करता है (AI प्रॉम्प्ट बाधा)। **2364 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

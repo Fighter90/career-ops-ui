@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.142.0] — 2026-08-12
+
+**Rettelse: ikke flere "Unknown" karrierearketyper** — `#/orientation` rangerer nu altid blandt de otte navngivne karrierevektorer i stedet for nogle gange at svare "Unknown" og anbefale, at du "satser mere" på den. En brugerrapporteret rettelse (uden parent-sync).
+
+### Rettet
+- **`#/orientation` — AI-prompten forbyder nu en arketype uden for sættet.** Modellen SKAL rangere top 3 blandt præcis de otte navngivne vektorer og må **aldrig** svare "Unknown"/"N/A"/"utilstrækkelige data" eller opfinde en etiket. Ved et tyndt CV navngiver den stadig de tre nærmeste med lavere tillid og siger, hvilken evidens der mangler.
+
+### Noter
+- Kun ændring af serverprompt (`buildOrientationPrompt`); ingen i18n-/skemaændring. Suite: **2364** tests (+1).
+
 ## [1.141.0] — 2026-08-12
 
 **Indsigtsfulde statistikker (fortsat): berigelse af finansierede virksomheder** — `#/funded` er nu mere visuel: virksomhedslogoer, et diagram efter finansieringsbeløb og kort med runde / beløb / opdagelsesscore / foreslået handling. En brugerrapporteret UX-justering (uden parent-sync).

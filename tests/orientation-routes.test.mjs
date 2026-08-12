@@ -35,6 +35,18 @@ test('buildOrientationPrompt frames a reflection (not a test) and inlines contex
   assert.match(p, /<project_context>/);
 });
 
+test('buildOrientationPrompt constrains the vectors — no "Unknown" archetype (v1.142.0)', () => {
+  const p = buildOrientationPrompt('<project_context>CV…</project_context>', 'en');
+  // the eight named vectors must be present…
+  for (const v of ['Functionalist', 'Administrator', 'Communicator', 'Specialist', 'Analyst', 'Innovator', 'Manager', 'Entrepreneur']) {
+    assert.match(p, new RegExp(v), `orientation prompt must name the ${v} vector`);
+  }
+  // …and the model must be told to never answer "Unknown"/"N/A" or decline.
+  assert.match(p, /NEVER answer/i);
+  assert.match(p, /"Unknown"/);
+  assert.match(p, /do not decline to choose/i);
+});
+
 test('POST /api/orientation/generate returns a manual prompt seeded from CV/profile (no key)', async () => {
   const r = await fetch(`${baseUrl}/api/orientation/generate`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' });
   assert.equal(r.status, 200);

@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.142.0] — 2026-08-12
+
+**Korrektur: kein "Unknown"-Karrierearchetyp mehr** — `#/orientation` ordnet jetzt immer den acht benannten Karrierevektoren zu, statt gelegentlich "Unknown" zu antworten und zu empfehlen, darauf "zu setzen". Eine nutzergemeldete Korrektur (ohne parent-sync).
+
+### Behoben
+- **`#/orientation` — der KI-Prompt verbietet jetzt einen Archetyp außerhalb des Sets.** Das Modell MUSS die Top 3 aus genau den acht benannten Vektoren wählen und darf **nie** "Unknown"/"N/A"/"unzureichende Daten" antworten oder ein Label erfinden. Bei dünnem Lebenslauf benennt es dennoch die drei nächsten mit geringerer Sicherheit und nennt die fehlende Evidenz.
+
+### Hinweise
+- Nur Server-Prompt-Änderung (`buildOrientationPrompt`); keine i18n-/Schema-Änderung. Suite: **2364** Tests (+1).
+
 ## [1.141.0] — 2026-08-12
 
 **Aufschlussreiche Statistiken (Forts.): Anreicherung finanzierter Unternehmen** — `#/funded` ist jetzt visueller: Firmenlogos, ein Diagramm nach Finanzierungsbetrag und Karten mit Runde / Betrag / Discovery-Score / vorgeschlagener Aktion. Eine nutzergemeldete UX-Anpassung (ohne parent-sync).

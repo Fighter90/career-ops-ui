@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2364%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Последний релиз — v1.141.0** — **полезная статистика (продолжение): обогащение профинансированных компаний** — `#/funded` теперь наглядная сетка карточек: **логотипы** компаний, **график по сумме** финансирования и карточки с **раундом / суммой / оценкой / рекомендуемым действием**. 3 ключа ×17 локалей. **2363 тестов.**
+> **🆕 Последний релиз — v1.142.0** — **исправление: больше нет «Unknown» архетипа** — `#/orientation` теперь всегда ранжирует из восьми названных карьерных векторов, а не отвечает иногда «Unknown» и не советует «удвоить ставку» (ограничение промпта ИИ). **2364 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

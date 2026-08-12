@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2363%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2364%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 Última versão — v1.141.0** — **estatísticas úteis (cont.): enriquecimento de empresas financiadas** — `#/funded` agora é uma grade de cartões visual: **logos** de empresa, um **gráfico por valor** de financiamento e cartões com **rodada / valor / pontuação / ação sugerida**. 3 chaves ×17 idiomas. **2363 testes.**
+> **🆕 Última versão — v1.142.0** — **correção: fim do arquétipo "Unknown"** — `#/orientation` agora sempre classifica entre os oito vetores de carreira nomeados em vez de às vezes responder "Unknown" e recomendar "dobrar a aposta" (restrição do prompt de IA). **2364 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 
