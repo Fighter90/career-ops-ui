@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.164.0] — 2026-08-13
+
+**Naprawiono (NISKIE) — placeholder wyszukiwania nie przelewa się już w żadnym języku.** "Find a company, role or URL…" był ucinany (nowrap), gdy pasek się kurczył; połowa "…or URL" nigdy nie była widoczna.
+
+### Naprawiono
+- `top.search` (×17) to teraz krótkie **"Szukaj lub wklej URL"** (≤24 znaki w każdym języku), mieści się nawet w wąskim pasku i zachowuje wskazówkę URL. Fallback w `index.html` pasuje; `aria-label` zachowuje pełny opis.
+
+### Uwagi
+- Tylko tekst; bez zmian trasy/CSP/SSRF/zapisu. Jeden istniejący klucz i18n przeredagowany ×17 (bez nowych; migawka 1219). `tests/search-placeholder-fit.test.mjs` (+2). Zestaw: **2422** (+2).
+
 ## [1.163.0] — 2026-08-13
 
 **Naprawiono (NISKIE) — asystent "Zapytaj dokumentację" obejmuje teraz eksport raportu do PDF.** Odpowiadał, że przewodnik tego nie obejmuje, choć `#/reports/:slug` ma działający przycisk 📄 Generate PDF.

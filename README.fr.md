@@ -7,14 +7,14 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2420%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2422%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Dernière version — v1.163.0** — **L'aide couvre rapport → PDF (correctif)** — l'assistant "Interroger les docs" disait que le guide ne couvrait pas l'export d'un rapport en PDF, malgré le bouton 📄 Generate PDF sur `#/reports/:slug`. Une section "Exporter un rapport en PDF" a été ajoutée aux 17 bundles d'aide. **2420 tests.**
+> **🆕 Dernière version — v1.164.0** — **Le placeholder de recherche tient (correctif)** — « Find a company, role or URL… » était tronqué dans chaque langue, cachant « …or URL ». C'est désormais le court « Chercher ou coller URL » (≤24 caractères, ×17), la mention URL est toujours visible. **2422 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

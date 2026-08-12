@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.164.0] — 2026-08-13
+
+**Corrigido (BAIXA) — o placeholder da busca não transborda mais em nenhum idioma.** "Find a company, role or URL…" era cortado (nowrap) quando a barra encolhia; a metade "…or URL" nunca aparecia.
+
+### Corrigido
+- `top.search` (×17) agora é o curto **"Buscar ou colar URL"** (≤24 caracteres em cada idioma), cabe até numa barra estreita e mantém a referência a URL. O fallback em `index.html` combina; o `aria-label` preserva o detalhe completo.
+
+### Notas
+- Apenas texto; sem mudança de rota/CSP/SSRF/escrita. Uma chave i18n reformulada ×17 (sem novas; snapshot 1219). `tests/search-placeholder-fit.test.mjs` (+2). Conjunto: **2422** (+2).
+
 ## [1.163.0] — 2026-08-13
 
 **Corrigido (BAIXA) — o assistente "Pergunte aos docs" agora cobre exportar um relatório para PDF.** Antes respondia que o guia não cobria, apesar do controle 📄 Generate PDF em `#/reports/:slug`.

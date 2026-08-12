@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2420%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2422%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Neueste Version — v1.163.0** — **Hilfe deckt Bericht → PDF ab (Fix)** — der "Frag die Docs"-Assistent sagte, der Leitfaden decke den PDF-Export eines Berichts nicht ab, trotz des 📄 Generate PDF-Buttons auf `#/reports/:slug`. Ein Abschnitt "Einen Bericht als PDF exportieren" wurde allen 17 Hilfe-Bundles hinzugefügt. **2420 Tests.**
+> **🆕 Neueste Version — v1.164.0** — **Such-Platzhalter passt (Fix)** — "Find a company, role or URL…" wurde in jeder Sprache abgeschnitten und verbarg "…or URL". Jetzt das kurze "Suchen oder URL einfügen" (≤24 Zeichen, ×17), der URL-Hinweis ist immer sichtbar. **2422 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

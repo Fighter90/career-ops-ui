@@ -210,7 +210,7 @@ window.__I18N_DICT_EN = {
   'activity.empty': "No activity yet — try adding a URL or running a scan.",
   'activity.refresh': "Refresh",
   'activity.truncated': "Showing the most recent {n} events; older history is not displayed.",
-  'top.search': "Find a company, role or URL…",
+  'top.search': "Search or paste a URL",
   'top.search.label': "Search companies, roles, or URLs",
   'top.search.aria': "Global search — Cmd+K to focus, paste a URL and Enter for auto-pipeline",
   'top.doctor': "Doctor",

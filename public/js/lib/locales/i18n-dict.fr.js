@@ -210,7 +210,7 @@ window.__I18N_DICT_FR = {
   'activity.empty': "Aucune activité encore — essayez d’ajouter une URL ou de lancer un scan.",
   'activity.refresh': "Actualiser",
   'activity.truncated': "Affichage des {n} événements les plus récents ; l'historique plus ancien n'est pas affiché.",
-  'top.search': "Rechercher une entreprise, un rôle ou une URL…",
+  'top.search': "Chercher ou coller URL",
   'top.search.label': "Recherche d'entreprises, de rôles ou d'URLs",
   'top.search.aria': "Recherche globale — Cmd+K pour se concentrer, collez une URL et appuyez sur Entrée pour le pipeline automatique",
   'top.doctor': "Docteur",
