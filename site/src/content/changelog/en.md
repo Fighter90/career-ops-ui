@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.143.0] — 2026-08-12
+
+**Understandable (cont.): `?` hints on the core workflow views** — the `?` help affordance now covers the nine main workflow/decision pages, in every language. A user-reported UX pass (no parent-sync).
+
+### Added
+- **`?` help hint on 9 more view titles** — `#/scan`, `#/evaluate`, `#/cv-studio`, `#/tracker`, `#/config`, `#/deep`, `#/batch`, `#/auto`, `#/apply` each get an inline title `?` (via `HelpHint.title`) that opens a localized "what this does / how to use it / what result to expect" popover — the same CSP-safe, theme-aware, RTL-mirrored primitive shipped in v1.139.0.
+- 9 new i18n keys × **17 locales** (`help.hint.scan` / `evaluate` / `cvStudio` / `tracker` / `config` / `deep` / `batch` / `auto` / `apply`); assembled-dict snapshot 1186 → 1195.
+
+### Notes
+- Browser-verified in EN (scan / evaluate / config / tracker / batch render the `?` + popover, 0 console errors). `#/config` and `#/batch` each have two page-title `<h1>`s (main render + error state) — both wired.
+- The remaining lighter views (`#/dashboard`, `#/cv`, `#/reports`, `#/usage`, `#/pipeline`, `#/portals`, `#/activity`, `#/docs-assistant`) are a later wave.
+- Suite: **2365** tests (+1: the 9-workflow-view wiring guard in `tests/help-hint.test.mjs`).
+
 ## [1.142.0] — 2026-08-12
 
 **Correctness: no more "Unknown" career archetype** — `#/orientation` now always ranks from the eight named career vectors instead of occasionally answering "Unknown" and recommending you "double down" on it. A user-reported fix (no parent-sync).

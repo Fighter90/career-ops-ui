@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 Router.register('evaluate', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -113,7 +113,7 @@ Router.register('evaluate', async () => {
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('eval.title')),
+        HelpHint.title(t('eval.title'), 'help.hint.evaluate'),
         c('p', { className: 'page-subtitle' }, t('eval.subtitle')),
       ]),
     ]),

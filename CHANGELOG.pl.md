@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.143.0] — 2026-08-12
+
+**Zrozumiałość (cd.): podpowiedzi `?` na głównych widokach roboczych** — pomocnicze `?` obejmuje teraz dziewięć głównych stron akcji, we wszystkich językach. Poprawka UX zgłoszona przez użytkownika (bez parent-sync).
+
+### Dodano
+- **Podpowiedź `?` na kolejnych 9 tytułach widoków** — `#/scan`, `#/evaluate`, `#/cv-studio`, `#/tracker`, `#/config`, `#/deep`, `#/batch`, `#/auto`, `#/apply` otrzymują wbudowane `?` (przez `HelpHint.title`), które otwiera zlokalizowany dymek „co to robi / jak używać / czego oczekiwać" — ten sam bezpieczny dla CSP komponent z v1.139.0.
+- 9 nowych kluczy i18n × **17 języków** (`help.hint.scan`/…/`apply`); snapshot 1186 → 1195.
+
+### Uwagi
+- Zweryfikowano w przeglądarce (0 błędów konsoli). Zestaw: **2365** testów (+1).
+
 ## [1.142.0] — 2026-08-12
 
 **Poprawka: koniec z archetypem kariery „Unknown"** — `#/orientation` zawsze klasyfikuje teraz spośród ośmiu nazwanych wektorów kariery, zamiast czasem odpowiadać „Unknown" i doradzać „postawienie na niego". Poprawka zgłoszona przez użytkownika (bez parent-sync).

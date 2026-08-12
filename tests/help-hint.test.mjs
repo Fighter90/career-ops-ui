@@ -68,12 +68,32 @@ test('the 8 AI/analytics views build their H1 via HelpHint.title()', () => {
   }
 });
 
+test('the 9 core workflow views build their H1 via HelpHint.title() (v1.143.0)', () => {
+  const views = {
+    scan: 'help.hint.scan',
+    evaluate: 'help.hint.evaluate',
+    'cv-studio': 'help.hint.cvStudio',
+    tracker: 'help.hint.tracker',
+    config: 'help.hint.config',
+    deep: 'help.hint.deep',
+    batch: 'help.hint.batch',
+    auto: 'help.hint.auto',
+    apply: 'help.hint.apply',
+  };
+  for (const [view, key] of Object.entries(views)) {
+    const src = read(`public/js/views/${view}.js`);
+    assert.match(src, new RegExp(`HelpHint\\.title\\(.*'${reEsc(key)}'`), `${view}.js must wire ${key} via HelpHint.title`);
+  }
+});
+
 test('every hint key referenced in code is present in the EN dictionary', () => {
   const en = read('public/js/lib/locales/i18n-dict.en.js');
   const keys = [
     'help.hint.aria',
     'help.hint.careerPlan', 'help.hint.orientation', 'help.hint.twoPager', 'help.hint.networking',
     'help.hint.mock', 'help.hint.memory', 'help.hint.funded', 'help.hint.digest',
+    'help.hint.scan', 'help.hint.evaluate', 'help.hint.cvStudio', 'help.hint.tracker', 'help.hint.config',
+    'help.hint.deep', 'help.hint.batch', 'help.hint.auto', 'help.hint.apply',
     'stats.hint.market', 'stats.hint.pipeline', 'stats.hint.trend', 'stats.hint.patterns', 'stats.hint.lifetime',
   ];
   for (const k of keys) {

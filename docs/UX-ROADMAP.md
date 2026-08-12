@@ -23,7 +23,7 @@ Make every page self-explanatory, in every language. (Split out of the original 
 - [x] **Page descriptions** — already present: every one of the 30 views carries a one-line `page-subtitle`; the `?` adds the deeper on-demand explanation on top.
 - [x] **Clearer empty states** — the `?` on `#/career-plan`, the weekly digest, and `#/funded` explains how to populate them (directly answers the "seems broken / unclear what this is for" reports).
 - [x] i18n fan-out ×17 (14 keys) for the first wave.
-- [ ] **Next wave** — extend the `?` hint to the remaining view headers (config, scan, tracker, cv-studio, apply, …) so the affordance is truly on *every* page.
+- [~] **Next wave** — v1.143.0 added the `?` to the 9 core workflow views (scan, evaluate, cv-studio, tracker, config, deep, batch, auto, apply). Remaining lighter views (dashboard, cv, reports, usage, pipeline, portals, activity, docs-assistant) are a final wave.
 
 ## Phase 3 — "Insightful stats" (in progress)
 

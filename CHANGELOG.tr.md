@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.143.0] — 2026-08-12
+
+**Anlaşılır (devam): ana iş akışı görünümlerinde `?` ipuçları** — yardım `?`'i artık tüm dillerde dokuz ana eylem sayfasını kapsıyor. Kullanıcı bildirimli bir UX düzeltmesi (parent-sync yok).
+
+### Eklendi
+- **9 görünüm başlığına daha `?` yardım ipucu** — `#/scan`, `#/evaluate`, `#/cv-studio`, `#/tracker`, `#/config`, `#/deep`, `#/batch`, `#/auto`, `#/apply` satır içi bir `?` alır (`HelpHint.title` ile) ve yerelleştirilmiş bir «ne yapar / nasıl kullanılır / ne beklenir» açılır kutusu açar — v1.139.0'daki aynı CSP-güvenli bileşen.
+- 9 yeni i18n anahtarı × **17 dil** (`help.hint.scan`/…/`apply`); anlık görüntü 1186 → 1195.
+
+### Notlar
+- Tarayıcıda doğrulandı (0 konsol hatası). Takım: **2365** test (+1).
+
 ## [1.142.0] — 2026-08-12
 
 **Düzeltme: artık "Unknown" kariyer arketipi yok** — `#/orientation` artık bazen "Unknown" yanıtlayıp ona "daha çok yüklenmenizi" önermek yerine, her zaman sekiz adlandırılmış kariyer vektöründen sıralama yapıyor. Kullanıcı bildirimli bir düzeltme (parent-sync yok).

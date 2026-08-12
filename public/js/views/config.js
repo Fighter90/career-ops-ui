@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * /#/config — application configuration. Lets the user set the API
  * keys, scanner knobs, and server settings WITHOUT shelling out to
@@ -18,7 +18,7 @@ Router.register('config', async () => {
   } catch (e) {
     return c('div', null, [
       c('header', { className: 'page-header' },
-        c('h1', { className: 'page-title' }, t('config.title', 'App settings'))),
+        HelpHint.title(t('config.title', 'App settings'), 'help.hint.config')),
       c('div', { className: 'empty' }, e.message || 'failed to load'),
     ]);
   }
@@ -960,7 +960,7 @@ Router.register('config', async () => {
   const root = c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('config.title', 'App settings')),
+        HelpHint.title(t('config.title', 'App settings'), 'help.hint.config'),
         c('p', { className: 'page-subtitle' },
           t('config.subtitle', 'API keys + scanner knobs. Saved to ') + ' ' + (cfg.envFile || '.env')),
       ]),

@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.143.0] — 2026-08-12
+
+**Forståeligt (fortsat): `?`-tips på de centrale arbejdsvisninger** — hjælpe-`?` dækker nu de ni vigtigste handlingssider, på alle sprog. En brugerrapporteret UX-justering (uden parent-sync).
+
+### Tilføjet
+- **`?`-hjælpetip på 9 flere visningstitler** — `#/scan`, `#/evaluate`, `#/cv-studio`, `#/tracker`, `#/config`, `#/deep`, `#/batch`, `#/auto`, `#/apply` får et indlejret `?` (via `HelpHint.title`), der åbner en lokaliseret "hvad den gør / hvordan man bruger den / hvad man kan forvente"-popover — samme CSP-sikre komponent som i v1.139.0.
+- 9 nye i18n-nøgler × **17 sprog** (`help.hint.scan`/…/`apply`); snapshot 1186 → 1195.
+
+### Noter
+- Verificeret i browseren (0 konsolfejl). Suite: **2365** tests (+1).
+
 ## [1.142.0] — 2026-08-12
 
 **Rettelse: ikke flere "Unknown" karrierearketyper** — `#/orientation` rangerer nu altid blandt de otte navngivne karrierevektorer i stedet for nogle gange at svare "Unknown" og anbefale, at du "satser mere" på den. En brugerrapporteret rettelse (uden parent-sync).

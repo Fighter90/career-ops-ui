@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2364%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2365%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.137.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.137.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.142.0** — **सुधार: अब कोई "Unknown" आर्किटाइप नहीं** — `#/orientation` अब कभी-कभी "Unknown" उत्तर देने के बजाय हमेशा आठ नामित करियर वेक्टरों में से रैंक करता है (AI प्रॉम्प्ट बाधा)। **2364 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.143.0** — **समझने में आसान (जारी): वर्कफ़्लो व्यू पर `?` संकेत** — सहायता `?` अब 9 और पृष्ठों (scan, evaluate, cv-studio, tracker, config, deep, batch, auto, apply) को सभी भाषाओं में कवर करता है। **2365 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 
