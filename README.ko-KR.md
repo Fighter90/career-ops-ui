@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.167.0** — **상승 표면이 헤어라인과 분리됨 (디자인 수정)** — `--panel-2`/`--surface-elev1`이 테두리와 같은 `--slate`로 해석되어 구분이 없었습니다. 전용 테마 토큰 `--elev`가 이를 뒷받침합니다. **2428개 테스트.**
+> **🆕 최신 릴리스 — v1.168.0** — **더 큰 체크박스 탭 대상 (접근성 수정)** — `#/scan`, `#/config`, `#/evaluate`, `#/cv-studio`의 체크박스/라디오 라벨 행이 ~22 px로 WCAG 2.5.8의 24 px 최소 미만이었습니다. `:has()` 규칙이 ≥24 px를 보장합니다. **2429개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

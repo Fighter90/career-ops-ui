@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新リリース — v1.167.0** — **隆起サーフェスがヘアラインと分離(デザイン修正)** — `--panel-2`/`--surface-elev1` が枠線と同じ `--slate` に解決され区別がありませんでした。専用のテーマ対応トークン `--elev` が担います。 **2428 テスト。**
+> **🆕 最新リリース — v1.168.0** — **チェックボックスのタップ対象を拡大(a11y 修正)** — `#/scan`・`#/config`・`#/evaluate`・`#/cv-studio` のチェックボックス/ラジオのラベル行が ~22 px で、WCAG 2.5.8 の 24 px 未満でした。`:has()` ルールで ≥24 px を保証。 **2429 テスト。**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

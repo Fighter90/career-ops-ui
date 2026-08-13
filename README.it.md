@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Ultima release — v1.167.0** — **Superfici rialzate distinte dai filetti (fix di design)** — `--panel-2`/`--surface-elev1` si risolvevano nello stesso `--slate` dei bordi, senza separazione. Un token di tema dedicato `--elev` ora le sostiene. **2428 test.**
+> **🆕 Ultima release — v1.168.0** — **Bersagli tattili delle checkbox più grandi (fix a11y)** — le righe di checkbox/radio su `#/scan`, `#/config`, `#/evaluate`, `#/cv-studio` erano ~22 px, sotto il minimo di 24 px di WCAG 2.5.8. Una regola `:has()` garantisce ≥24 px. **2429 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

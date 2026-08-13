@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.167.0** — **抬升表面与分隔线区分(设计修复)** — `--panel-2`/`--surface-elev1` 解析为与边框相同的 `--slate`,没有区分。专用主题令牌 `--elev` 现在支撑它们。 **2428 项测试。**
+> **🆕 最新版本 — v1.168.0** — **更大的复选框点按目标(无障碍修复)** — `#/scan`、`#/config`、`#/evaluate`、`#/cv-studio` 上的复选框/单选标签行为 ~22 px,低于 WCAG 2.5.8 的 24 px 最小值。`:has()` 规则保证 ≥24 px。 **2429 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

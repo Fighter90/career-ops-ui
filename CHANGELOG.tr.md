@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.168.0] — 2026-08-13
+
+**Düzeltildi (DÜŞÜK, a11y) — onay kutusu satırları artık WCAG 2.5.8'in 24×24 minimumunu karşılıyor (D-2).** `#/scan`, `#/config`, `#/evaluate` ve `#/cv-studio` üzerindeki onay kutusu/radyo etiketleri ~22 px'lik bir bantta duruyordu.
+
+### Düzeltildi
+- Kapsamı sınırlı `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` kuralı ≥24 px'lik bir bant garanti eder. Yalnızca `min-height` — etiketler zaten flex, hiçbir şey kaymaz; `.apply-checklist` (32 px) zaten uyumluydu.
+
+### Notlar
+- Yalnızca CSS; davranış/JS/i18n/rota/CSP/SSRF/yazma değişikliği yok. `tests/checkbox-target-size.test.mjs` (+1). Takım: **2429** (+1).
+
 ## [1.167.0] — 2026-08-13
 
 **Düzeltildi (DÜŞÜK, tasarım sistemi) — yükseltilmiş yüzeyler artık ince çizgilerden ayrışıyor (D-3).** `--panel-2` / `--surface-elev1` tokenları, ince çizgiler `--line` / `--border` ile aynı `--slate` değerine çözümleniyordu, görsel ayrım yoktu.

@@ -653,6 +653,20 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   margin-top: 12px;
 }
 
+/* FIX-9 / D-2 (v1.168.0) — WCAG 2.5.8 Target Size (Minimum): a <label> that
+   wraps a checkbox/radio IS the clickable target. Native/18px boxes left the
+   row band ~22px (2px under the 24px floor) on #/scan, #/config, #/evaluate,
+   #/cv-studio. Guarantee ≥24px via min-height only — every such label in the
+   app is already flex/inline-flex (`.flex`, inline-flex, etc.), so this only
+   grows the band when it's below 24px and shifts nothing; a plain inline label
+   would ignore min-height and keep its prior size. `.apply-checklist` rows are
+   already 32px and unaffected. */
+label:has(> input[type="checkbox"]),
+label:has(> input[type="radio"]) {
+  min-height: 24px;
+  align-items: center;
+}
+
 /* ───────────────────────── content shell ───────────────────────── */
 .content {
   padding: var(--space-7) var(--space-6);

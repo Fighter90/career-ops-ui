@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.168.0] — 2026-08-13
+
+**Corrigé (BASSE, a11y) — les lignes de case cochée respectent désormais le minimum 24×24 de WCAG 2.5.8 (D-2).** Les libellés de case/radio sur `#/scan`, `#/config`, `#/evaluate` et `#/cv-studio` étaient dans une bande de ~22 px.
+
+### Corrigé
+- Une règle ciblée `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` garantit une bande ≥24 px. `min-height` seulement — les libellés sont déjà flex, rien ne bouge ; `.apply-checklist` (32 px) était déjà conforme.
+
+### Notes
+- CSS uniquement ; aucun changement de comportement/JS/i18n/route/CSP/SSRF/écriture. `tests/checkbox-target-size.test.mjs` (+1). Suite : **2429** (+1).
+
 ## [1.167.0] — 2026-08-13
 
 **Corrigé (BASSE, design-system) — les surfaces surélevées se distinguent désormais des filets (D-3).** Les tokens `--panel-2` / `--surface-elev1` se résolvaient en `--slate`, la même valeur que les filets `--line` / `--border`, sans séparation visuelle.

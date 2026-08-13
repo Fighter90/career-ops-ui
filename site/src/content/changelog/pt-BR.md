@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.168.0] — 2026-08-13
+
+**Corrigido (BAIXA, a11y) — as linhas de checkbox agora atendem ao mínimo 24×24 do WCAG 2.5.8 (D-2).** Os rótulos de checkbox/radio em `#/scan`, `#/config`, `#/evaluate` e `#/cv-studio` ficavam numa faixa de ~22 px.
+
+### Corrigido
+- Uma regra restrita `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` garante uma faixa ≥24 px. Apenas `min-height` — os rótulos já são flex, nada se desloca; `.apply-checklist` (32 px) já cumpria.
+
+### Notas
+- Apenas CSS; sem mudança de comportamento/JS/i18n/rota/CSP/SSRF/escrita. `tests/checkbox-target-size.test.mjs` (+1). Conjunto: **2429** (+1).
+
 ## [1.167.0] — 2026-08-13
 
 **Corrigido (BAIXA, design-system) — superfícies elevadas agora se separam das linhas (D-3).** Os tokens `--panel-2` / `--surface-elev1` resolviam para `--slate`, igual às linhas `--line` / `--border`, sem separação visual.
