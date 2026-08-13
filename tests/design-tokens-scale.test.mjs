@@ -22,7 +22,7 @@ const APP = FILES[0];
 
 test('D-4: the --font-size-* ramp and --z-* layers are defined on :root', () => {
   for (const t of ['xs', 'sm', 'md', 'base', 'lg', 'xl', '2xl']) {
-    assert.match(APP, new RegExp(`--font-size-${t.replace('2xl', '2xl')}:\\s*\\d`), `--font-size-${t} defined`);
+    assert.match(APP, new RegExp(`--font-size-${t}:\\s*\\d`), `--font-size-${t} defined`);
   }
   for (const t of ['topbar', 'sidebar', 'hud', 'banner', 'modal', 'popover', 'toast', 'fab', 'drawer', 'skiplink']) {
     assert.match(APP, new RegExp(`--z-${t}:\\s*\\d`), `--z-${t} defined`);
