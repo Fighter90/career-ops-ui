@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.173.0] — 2026-08-13
+
+**Aggiunto (LOW, configurazione) — Hermes entra nell'elenco delle CLI di IA rilevate (parità con career-ops).**
+
+### Aggiunto
+- La scheda `#/config` → "Strumenti CLI di IA" ora rileva **Hermes** (Nous Research), il runtime di agente appena supportato dal progetto padre (binario `hermes`). L'elenco fisso in `server/lib/routes/cli-detect.mjs` cresce da 10 a 11 strumenti; il rilevamento resta una scansione di PATH in sola lettura (nessun binario viene mai eseguito).
+
+### Note
+- Nessun cambiamento a i18n / route / CSP / SSRF / scrittura sul padre; l'elenco è fisso, mai un input. Suite: **2444** (il canary di cli-detect aggiornato da 10 a 11).
+
 ## [1.172.0] — 2026-08-13
 
 **Corretto (MEDIUM, scanner) — un'entità HTML malformata poteva mandare in crash una sorgente di scansione (parità con career-ops #2150).**

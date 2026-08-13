@@ -18,9 +18,10 @@ import { existsSync, statSync, accessSync, constants } from 'node:fs';
 import { join, delimiter } from 'node:path';
 
 // Fixed allowlist: { id, display name, candidate binary basenames }.
-// Roster mirrors the parent's docs/SUPPORTED_CLIS.md (v1.126.0 sync — 8
-// first-class CLIs + Gemini as a legacy wrapper transitioned into
-// Antigravity; the Antigravity binary is `agy` per the parent matrix).
+// Roster mirrors the parent's docs/SUPPORTED_CLIS.md (v1.173.0 sync — 10
+// first-class CLIs incl. Cursor + Hermes, plus Gemini as a legacy wrapper
+// transitioned into Antigravity; the Antigravity binary is `agy` per the
+// parent matrix).
 const KNOWN = [
   { id: 'claude', name: 'Claude Code', bins: ['claude'] },
   // v1.127.0 — parent career-ops v1.23.0 re-added Cursor as a first-class host
@@ -35,6 +36,9 @@ const KNOWN = [
   { id: 'antigravity', name: 'Antigravity CLI', bins: ['agy', 'antigravity'] },
   { id: 'grok', name: 'Grok Build CLI', bins: ['grok'] },
   { id: 'kimi', name: 'Kimi CLI', bins: ['kimi'] },
+  // v1.173.0 — parent added Hermes (Nous Research) as a supported agent runtime
+  // (docs/SUPPORTED_CLIS.md; HERMES.md auto-injects AGENTS.md). PATH launcher `hermes`.
+  { id: 'hermes', name: 'Hermes', bins: ['hermes'] },
 ];
 
 const IS_WIN = process.platform === 'win32';

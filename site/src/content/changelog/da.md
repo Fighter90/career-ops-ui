@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.173.0] — 2026-08-13
+
+**Tilføjet (LOW, konfiguration) — Hermes føjes til listen over registrerede AI-CLI'er (career-ops-paritet).**
+
+### Tilføjet
+- Fanen `#/config` → "AI CLI-værktøjer" registrerer nu **Hermes** (Nous Research), forældreprojektets nyligt understøttede agent-runtime (binær `hermes`). Den faste tilladelsesliste i `server/lib/routes/cli-detect.mjs` vokser fra 10 til 11 værktøjer; registrering forbliver en skrivebeskyttet PATH-scanning (ingen binær køres nogensinde).
+
+### Noter
+- Ingen ændring af i18n / rute / CSP / SSRF / forælderskrivning; listen er fast, aldrig input. Suite: **2444** (cli-detect-kanariefuglen opdateret 10 → 11).
+
 ## [1.172.0] — 2026-08-13
 
 **Rettet (MEDIUM, scanner) — en misdannet HTML-entitet kunne få en scanningskilde til at gå ned (career-ops #2150-paritet).**

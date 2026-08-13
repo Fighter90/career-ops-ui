@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.173.0] — 2026-08-13
+
+**Eklendi (LOW, yapılandırma) — Hermes, algılanan yapay zeka CLI listesine katıldı (career-ops paritesi).**
+
+### Eklendi
+- `#/config` → "Yapay Zeka CLI Araçları" sekmesi artık üst projenin yeni desteklediği aracı çalışma zamanı **Hermes**'i (Nous Research, ikili `hermes`) algılıyor. `server/lib/routes/cli-detect.mjs` içindeki sabit izin listesi 10'dan 11 araca çıkıyor; algılama salt okunur bir PATH taraması olarak kalıyor (hiçbir ikili asla çalıştırılmaz).
+
+### Notlar
+- i18n / rota / CSP / SSRF / üst yazma değişikliği yok; liste sabittir, asla girdi değildir. Takım: **2444** (cli-detect kanaryası 10 → 11 güncellendi).
+
 ## [1.172.0] — 2026-08-13
 
 **Düzeltildi (MEDIUM, tarayıcı) — bozuk bir HTML varlığı bir tarama kaynağını çökertebiliyordu (career-ops #2150 paritesi).**

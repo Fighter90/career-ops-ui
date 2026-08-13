@@ -12,11 +12,11 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.172.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.172.0)
+[![release](https://img.shields.io/badge/release-v1.173.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.173.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.172.0** — **修复 HTML 实体解码器崩溃** — 格式错误的数字实体(例如 `&#99999999;`)可能抛出 `RangeError` 并中止扫描源;共享解码器现在将数字引用限制在 XML 1.0 Char 集合内(career-ops #2150 对齐)。**2444 项测试。**
+> **🆕 最新版本 — v1.173.0** — **Hermes 加入 AI CLI 检测器** — `#/config` "AI CLI 工具"选项卡现在会探测父项目新支持的代理运行时 Hermes(Nous Research);只读 PATH 扫描,11 个工具。**2444 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

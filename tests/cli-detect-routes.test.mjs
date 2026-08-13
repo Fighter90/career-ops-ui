@@ -41,16 +41,19 @@ test('detectClis reports the fake gemini as installed with its path, others not'
   const claude = tools.find((t) => t.id === 'claude');
   assert.equal(claude.installed, false);
   assert.equal(claude.path, null);
-  // The known allowlist is fixed (10 agent CLIs: 9 first-class incl. Cursor
-  // v1.127.0/parent #2115 + Gemini). See server/lib/routes/cli-detect.mjs.
-  assert.equal(tools.length, 10);
+  // The known allowlist is fixed (11 agent CLIs: 10 first-class incl. Cursor
+  // (v1.127.0/parent #2115) and Hermes (v1.173.0) + Gemini). See
+  // server/lib/routes/cli-detect.mjs.
+  assert.equal(tools.length, 11);
+  // v1.173.0 — Hermes is probed (parent SUPPORTED_CLIS.md parity).
+  assert.ok(tools.some((t) => t.id === 'hermes'), 'hermes must be in the roster');
 });
 
 test('GET /api/cli-detect returns the tools list + platform', async () => {
   const r = await fetch(`${baseUrl}/api/cli-detect`);
   assert.equal(r.status, 200);
   const j = await r.json();
-  assert.ok(Array.isArray(j.tools) && j.tools.length === 10);
+  assert.ok(Array.isArray(j.tools) && j.tools.length === 11);
   assert.ok(j.tools.every((t) => typeof t.id === 'string' && typeof t.installed === 'boolean'));
   assert.equal(typeof j.platform, 'string');
 });
