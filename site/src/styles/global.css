@@ -78,7 +78,7 @@ body {
   .btn-primary,
   .btn-secondary,
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[0.95rem] font-semibold transition duration-200 ease-out;
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-6 py-3 text-[0.95rem] font-semibold transition duration-200 ease-out;
   }
   .btn-primary {
     @apply text-white;
