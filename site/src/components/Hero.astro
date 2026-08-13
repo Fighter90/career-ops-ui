@@ -12,7 +12,7 @@ interface Props {
 }
 const { locale } = Astro.props;
 const shot = screenshotFor(locale.file);
-const adaptersRounded = Math.floor(facts.adapters / 5) * 5; // honest "~55"
+const adaptersRounded = Math.floor(facts.adapters / 5) * 5; // honest, registry-derived count
 ---
 
 <section class="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">

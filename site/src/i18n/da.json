@@ -1,6 +1,6 @@
 {
   "meta.title": "career-ops-ui — gratis open source-kommandocentral til jobsøgning",
-  "meta.desc": "Gratis open source-alternativ til Jobscan, der kører på din maskine. Scan ~55 jobportaler, få AI-matchscore mod dit CV — 100% lokalt.",
+  "meta.desc": "Gratis open source-alternativ til Jobscan, der kører på din maskine. Scan ~{adapters} jobportaler, få AI-matchscore mod dit CV — 100% lokalt.",
   "meta.helpTitle": "Brugervejledning — career-ops-ui",
   "meta.helpDesc": "Den komplette career-ops-ui-vejledning: installation, scanning af jobportaler, AI-matchscores, CV Studio, ansøgningstracker og fejlfinding.",
   "a11y.skip": "Spring til indhold",

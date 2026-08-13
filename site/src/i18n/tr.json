@@ -1,6 +1,6 @@
 {
   "meta.title": "career-ops-ui — iş arayışınız için ücretsiz, açık kaynak komuta merkezi",
-  "meta.desc": "Kendi makinenizde çalışan ücretsiz, açık kaynak Jobscan alternatifi. ~55 iş panosunu tarayın, ilanları CV'nize göre yapay zekayla puanlayın — %100 yerel.",
+  "meta.desc": "Kendi makinenizde çalışan ücretsiz, açık kaynak Jobscan alternatifi. ~{adapters} iş panosunu tarayın, ilanları CV'nize göre yapay zekayla puanlayın — %100 yerel.",
   "meta.helpTitle": "Kullanıcı kılavuzu — career-ops-ui",
   "meta.helpDesc": "Eksiksiz career-ops-ui kılavuzu: kurulum, iş panolarını tarama, yapay zeka uyum puanları, CV Studio, başvuru takibi ve sorun giderme.",
   "a11y.skip": "İçeriğe atla",

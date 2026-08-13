@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.174.0] — 2026-08-13
+
+**Rettet (HIGH, rapporter) — lokaliserede rapporter viste "Score not detected"; SEO-beskrivelsen var forældet.**
+
+### Rettet
+- **Score-parsing (FIND-1)** — en ikke-engelsk rapport, hvis H1 indeholder score-etikettens ord (`# Оценка вакансии: <titel>`), forveksler ikke længere den titel med scoren. `parseReportHeader` forankrer nu på den lokaliserede **fede** etiket (`**Оценка:** 1.5 / 5`), springer overskriftslinjer over og kræver etiketten lige før dens kolon — så RU-rapporter, der viste "Score not detected", viser deres rigtige score.
+- **Legitimitets-chip (FIND-2)** — Markdown-fremhævning fjernes fra værdien, så chippen viser "High Confidence" og ikke "** High Confidence".
+- **Score-overløb** — en score-linje med efterhængt statustekst ("1.8, Status: Evaluated, …") komprimeres til kun scoren; `.score-pill` får en no-wrap/overflow-grænse, og kortets titelkolonne kan skrumpe, så en farvet chip aldrig løber ud over kortkanten.
+- **SEO-beskrivelse (FIND-3)** — cvstart.org's meta / OG / Twitter-beskrivelser (alle 17 sprog) hard-kodede "Scan ~55 job boards", mens brødteksten talte det rigtige register ("~75"). Beskrivelsen indsætter nu det register-afledte antal, så den ikke driver igen.
+
+### Noter
+- Server-parser + klient-render/CSS + site-i18n; ingen ændring af rute / CSP / SSRF / forælderskrivning. Tests: `tests/report-header-locale.test.mjs` (+4). Suite: **2448** (+4).
+
 ## [1.173.0] — 2026-08-13
 
 **Tilføjet (LOW, konfiguration) — Hermes føjes til listen over registrerede AI-CLI'er (career-ops-paritet).**

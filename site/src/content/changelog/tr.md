@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.174.0] — 2026-08-13
+
+**Düzeltildi (HIGH, raporlar) — yerelleştirilmiş raporlar "Score not detected" gösteriyordu; SEO açıklaması eskimişti.**
+
+### Düzeltildi
+- **Puan ayrıştırma (FIND-1)** — H1'i puan etiketi sözcüğünü içeren İngilizce olmayan bir rapor (`# Оценка вакансии: <başlık>`) artık o başlığı puan sanmıyor. `parseReportHeader` şimdi yerelleştirilmiş **kalın** etikete (`**Оценка:** 1.5 / 5`) sabitleniyor, başlık satırlarını atlıyor ve etiketin iki noktaya bitişik olmasını istiyor — böylece "Score not detected" gösteren RU raporları gerçek puanını gösteriyor.
+- **Meşruiyet rozeti (FIND-2)** — değerden Markdown vurgusu temizleniyor, rozet "** High Confidence" yerine "High Confidence" gösteriyor.
+- **Puan taşması** — sonuna durum metni eklenmiş bir puan satırı ("1.8, Status: Evaluated, …") yalnızca puana sıkıştırılıyor; `.score-pill` bir kaydırma-yok/taşma sınırı kazanıyor ve başlık sütunu daralabiliyor, böylece renkli rozet kart kenarından hiç taşmıyor.
+- **SEO açıklaması (FIND-3)** — cvstart.org'un meta / OG / Twitter açıklamaları (17 dilin tümü) "Scan ~55 job boards" değerini sabit kodluyordu, oysa gövde gerçek kayıt defterini sayıyordu ("~75"). Açıklama artık kayıt defterinden türetilen sayıyı yerleştiriyor, böylece bir daha kaymıyor.
+
+### Notlar
+- Sunucu ayrıştırıcı + istemci render/CSS + site i18n; rota / CSP / SSRF / üst yazma değişikliği yok. Testler: `tests/report-header-locale.test.mjs` (+4). Takım: **2448** (+4).
+
 ## [1.173.0] — 2026-08-13
 
 **Eklendi (LOW, yapılandırma) — Hermes, algılanan yapay zeka CLI listesine katıldı (career-ops paritesi).**

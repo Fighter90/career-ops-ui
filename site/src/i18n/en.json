@@ -1,6 +1,6 @@
 {
   "meta.title": "career-ops-ui — free, open-source job search command center",
-  "meta.desc": "Free, open-source Jobscan alternative that runs on your machine. Scan ~55 job boards, get AI match scores against your CV, build ATS resumes — 100% local.",
+  "meta.desc": "Free, open-source Jobscan alternative that runs on your machine. Scan ~{adapters} job boards, get AI match scores against your CV, build ATS resumes — 100% local.",
   "meta.helpTitle": "User guide — career-ops-ui",
   "meta.helpDesc": "The full career-ops-ui user guide: setup, scanning job boards, AI fit scores, CV Studio, application tracker and troubleshooting — in your language.",
   "a11y.skip": "Skip to content",

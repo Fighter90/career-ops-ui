@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2444%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2448%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.173.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.173.0)
+[![release](https://img.shields.io/badge/release-v1.174.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.174.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.173.0** — **Hermes AI CLI डिटेक्टर में शामिल** — `#/config` "AI CLI टूल्स" टैब अब पैरेंट प्रोजेक्ट के नए एजेंट रनटाइम Hermes (Nous Research) का पता लगाता है; केवल-पढ़ने वाली PATH स्कैन, 11 टूल्स। **2444 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.174.0** — **स्थानीयकृत रिपोर्ट स्कोर + SEO फिक्स** — गैर-अंग्रेज़ी रिपोर्ट अब "Score not detected" नहीं दिखातीं (लेबल शब्द वाले H1 को स्कोर समझा जा रहा था); वैधता चिप्स अतिरिक्त `**` हटाती हैं, लंबे स्कोर कार्ड से बाहर नहीं जाते, और cvstart.org विवरण असली रजिस्ट्री गिनता है (~75)। **2448 परीक्षण।**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

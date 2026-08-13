@@ -1,6 +1,6 @@
 {
   "meta.title": "career-ops-ui — 免費開源的求職指揮中心",
-  "meta.desc": "在你自己電腦上執行的免費開源 Jobscan 替代方案。搜尋約 55 個求職平台,用 AI 依你的履歷為每則職缺評分 — 資料 100% 本地。",
+  "meta.desc": "在你自己電腦上執行的免費開源 Jobscan 替代方案。搜尋約 {adapters} 個求職平台,用 AI 依你的履歷為每則職缺評分 — 資料 100% 本地。",
   "meta.helpTitle": "使用者指南 — career-ops-ui",
   "meta.helpDesc": "career-ops-ui 完整指南:安裝、搜尋求職平台、AI 匹配評分、CV Studio、求職追蹤器與疑難排解。",
   "a11y.skip": "跳至內容",

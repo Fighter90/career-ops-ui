@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.174.0] — 2026-08-13
+
+**Corretto (HIGH, report) — i report localizzati mostravano "Score not detected"; la descrizione SEO era obsoleta.**
+
+### Corretto
+- **Parsing del punteggio (FIND-1)** — un report non inglese il cui H1 contiene la parola dell'etichetta del punteggio (`# Оценка вакансии: <titolo>`) non scambia più quel titolo per il punteggio. `parseReportHeader` ora si ancora all'etichetta **in grassetto** localizzata (`**Оценка:** 1.5 / 5`), salta le righe di intestazione e richiede l'etichetta adiacente ai due punti — così i report RU che mostravano "Score not detected" espongono il punteggio reale.
+- **Chip di legittimità (FIND-2)** — l'enfasi Markdown viene rimossa dal valore, così il chip mostra "High Confidence" invece di "** High Confidence".
+- **Overflow del punteggio** — una riga di punteggio con testo di stato in coda ("1.8, Status: Evaluated, …") viene compattata al solo punteggio; `.score-pill` ottiene un limite no-wrap/overflow e la colonna del titolo può restringersi, così un chip colorato non esce mai dal bordo della card.
+- **Descrizione SEO (FIND-3)** — le descrizioni meta / OG / Twitter di cvstart.org (tutte le 17 lingue) fissavano "Scan ~55 job boards" mentre il corpo contava il registro reale ("~75"). Ora la descrizione interpola il conteggio derivato dal registro, così non deriva più.
+
+### Note
+- Parser del server + render/CSS del client + i18n del sito; nessun cambiamento a route / CSP / SSRF / scrittura sul padre. Test: `tests/report-header-locale.test.mjs` (+4). Suite: **2448** (+4).
+
 ## [1.173.0] — 2026-08-13
 
 **Aggiunto (LOW, configurazione) — Hermes entra nell'elenco delle CLI di IA rilevate (parità con career-ops).**

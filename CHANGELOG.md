@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.174.0] — 2026-08-13
+
+**Fixed (HIGH, reports) — localized reports read "Score not detected"; the SEO description was stale.**
+
+### Fixed
+- **Score parsing (FIND-1)** — a non-English report whose H1 contains the score-label word (`# Оценка вакансии: <title>`) no longer has that title mistaken for the score. `parseReportHeader` now anchors on the localized **bold** label (`**Оценка:** 1.5 / 5`), skips heading lines, and requires the label adjacent to its colon — so RU reports that showed "Score not detected" render their real score.
+- **Legitimacy chip (FIND-2)** — markdown emphasis is stripped from the value, so a chip reads "High Confidence", not "** High Confidence".
+- **Score overflow** — a score line with trailing status text ("1.8, Status: Evaluated, …") is compacted to just the score; `.score-pill` gains a no-wrap/overflow cap and the card's title column can shrink, so a coloured chip never spills past the card edge.
+- **SEO description (FIND-3)** — the cvstart.org meta / OG / Twitter descriptions (all 17 locales) hard-coded "Scan ~55 job boards" while the body counted the live registry ("~75"). The description now interpolates the registry-derived count, so it can't drift again.
+
+### Notes
+- Server parser + client render/CSS + site i18n; no route / CSP / SSRF / parent-write change. Tests: `tests/report-header-locale.test.mjs` (+4). Suite: **2448** (+4).
+
 ## [1.173.0] — 2026-08-13
 
 **Added (LOW, config) — Hermes joins the detected AI-CLI roster (career-ops parity).**

@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.174.0] — 2026-08-13
+
+**Corrigido (HIGH, relatórios) — relatórios localizados mostravam "Score not detected"; a descrição SEO estava desatualizada.**
+
+### Corrigido
+- **Parsing da pontuação (FIND-1)** — um relatório não inglês cujo H1 contém a palavra do rótulo de pontuação (`# Оценка вакансии: <título>`) não confunde mais esse título com a pontuação. `parseReportHeader` agora se ancora no rótulo **em negrito** localizado (`**Оценка:** 1.5 / 5`), pula linhas de cabeçalho e exige o rótulo junto aos dois-pontos — então relatórios RU que mostravam "Score not detected" exibem a pontuação real.
+- **Chip de legitimidade (FIND-2)** — a ênfase Markdown é removida do valor, então o chip mostra "High Confidence" em vez de "** High Confidence".
+- **Estouro da pontuação** — uma linha de pontuação com texto de status extra ("1.8, Status: Evaluated, …") é compactada para apenas a pontuação; `.score-pill` ganha um limite de não-quebra/overflow e a coluna do título pode encolher, então um chip colorido nunca ultrapassa a borda do card.
+- **Descrição SEO (FIND-3)** — as descrições meta / OG / Twitter do cvstart.org (todos os 17 idiomas) fixavam "Scan ~55 job boards" enquanto o corpo contava o registro real ("~75"). A descrição agora interpola a contagem do registro, então não desvia de novo.
+
+### Notas
+- Parser do servidor + render/CSS do cliente + i18n do site; sem mudança de rota / CSP / SSRF / escrita no pai. Testes: `tests/report-header-locale.test.mjs` (+4). Suíte: **2448** (+4).
+
 ## [1.173.0] — 2026-08-13
 
 **Adicionado (LOW, configuração) — Hermes entra no roster de CLIs de IA detectadas (paridade com career-ops).**

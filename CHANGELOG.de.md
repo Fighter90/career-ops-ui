@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.174.0] — 2026-08-13
+
+**Behoben (HIGH, Berichte) — lokalisierte Berichte zeigten „Score not detected"; die SEO-Beschreibung war veraltet.**
+
+### Behoben
+- **Score-Parsing (FIND-1)** — ein nicht-englischer Bericht, dessen H1 das Score-Label-Wort enthält (`# Оценка вакансии: <Titel>`), verwechselt diesen Titel nicht mehr mit dem Score. `parseReportHeader` verankert nun am lokalisierten **fetten** Label (`**Оценка:** 1.5 / 5`), überspringt Überschriftszeilen und verlangt das Label direkt vor seinem Doppelpunkt — so zeigen RU-Berichte, die „Score not detected" anzeigten, ihren echten Score.
+- **Seriositäts-Chip (FIND-2)** — Markdown-Hervorhebung wird aus dem Wert entfernt, der Chip zeigt „High Confidence" statt „** High Confidence".
+- **Score-Überlauf** — eine Score-Zeile mit angehängtem Statustext („1.8, Status: Evaluated, …") wird auf den reinen Score komprimiert; `.score-pill` erhält eine Kein-Umbruch-/Overflow-Grenze und die Titelspalte kann schrumpfen, sodass ein farbiger Chip nie über den Kartenrand hinausläuft.
+- **SEO-Beschreibung (FIND-3)** — die meta / OG / Twitter-Beschreibungen von cvstart.org (alle 17 Sprachen) codierten „Scan ~55 job boards" fest, während der Fließtext das echte Registry zählte („~75"). Die Beschreibung fügt nun die Registry-abgeleitete Zahl ein und driftet nicht mehr.
+
+### Hinweise
+- Server-Parser + Client-Render/CSS + Site-i18n; keine Änderung an Route / CSP / SSRF / Eltern-Schreibzugriff. Tests: `tests/report-header-locale.test.mjs` (+4). Suite: **2448** (+4).
+
 ## [1.173.0] — 2026-08-13
 
 **Hinzugefügt (LOW, Konfiguration) — Hermes wird in die erkannte KI-CLI-Liste aufgenommen (career-ops-Parität).**

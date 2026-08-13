@@ -7,16 +7,16 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2444%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2448%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.173.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.173.0)
+[![release](https://img.shields.io/badge/release-v1.174.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.174.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.173.0** — **Hermes entra no detector de CLIs de IA** — a aba `#/config` "Ferramentas CLI de IA" agora detecta Hermes (Nous Research), o novo runtime de agente do projeto pai; varredura de PATH somente leitura, 11 ferramentas. **2444 testes.**
+> **🆕 Última versão — v1.174.0** — **Pontuações de relatórios localizados + correção de SEO** — relatórios não ingleses não mostram mais "Score not detected" (um H1 com a palavra do rótulo era confundido com a pontuação); chips de legitimidade removem `**` soltos, pontuações longas param de estourar o card e a descrição do cvstart.org conta o registro real (~75). **2448 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

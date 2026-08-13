@@ -67,8 +67,11 @@ Router.register('reports', async (params) => {
       },
     }, [
       c('div', { className: 'flex-between' }, [
-        c('div', null, [
-          c('div', { style: { fontWeight: 700, fontSize: '15.5px' } }, rep.title || rep.slug),
+        // v1.174.0 — minWidth:0 lets a long title/legitimacy tag shrink and wrap
+        // instead of pushing the score pill past the card edge (flex children
+        // default to min-width:auto).
+        c('div', { style: { minWidth: 0 } }, [
+          c('div', { style: { fontWeight: 700, fontSize: '15.5px', overflowWrap: 'anywhere' } }, rep.title || rep.slug),
           c('div', { className: 'flex gap-1 mt-3' }, [
             rep.date && c('span', { className: 'tag' }, rep.date),
             rep.legitimacy && c('span', { className: 'tag' }, rep.legitimacy),

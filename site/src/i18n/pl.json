@@ -1,6 +1,6 @@
 {
   "meta.title": "career-ops-ui — darmowe, otwartoźródłowe centrum dowodzenia szukaniem pracy",
-  "meta.desc": "Darmowa, otwartoźródłowa alternatywa dla Jobscan działająca na Twoim komputerze. Skanuj ~55 portali, oceniaj oferty AI względem CV — 100% lokalnie.",
+  "meta.desc": "Darmowa, otwartoźródłowa alternatywa dla Jobscan działająca na Twoim komputerze. Skanuj ~{adapters} portali, oceniaj oferty AI względem CV — 100% lokalnie.",
   "meta.helpTitle": "Podręcznik użytkownika — career-ops-ui",
   "meta.helpDesc": "Pełny podręcznik career-ops-ui: instalacja, skanowanie portali z ofertami, oceny dopasowania AI, CV Studio, tracker aplikacji i rozwiązywanie problemów.",
   "a11y.skip": "Przejdź do treści",

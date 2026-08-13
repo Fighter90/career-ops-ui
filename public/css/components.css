@@ -301,6 +301,15 @@
   align-items: center;
   justify-content: center;
   min-width: 48px;
+  /* v1.174.0 — a score chip must stay compact: never wrap, never grow past the
+     card. The parser already compacts the value, but this is the hard cap so a
+     stray long value (e.g. a report whose score line carried trailing status
+     text) can't spill its coloured background out of the card. */
+  flex-shrink: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding: 4px 10px;
   border-radius: var(--radius-pill);
   font-weight: 700;
