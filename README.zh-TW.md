@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.165.0** — **一致的「Two-pager」術語(修復)** — 阿拉伯語側邊欄顯示拉丁文「Two-pager」,而標題已在地化 — 是 RTL 導航中唯一的拉丁文單字。現在每種語言的導覽標籤與標題一致(由探針強制)。 **2424 項測試。**
+> **🆕 最新版本 — v1.166.0** — **與文件一致的評分標準措辭(修復)** — UI/網站/wiki 說「六維度評分標準」,而文件說「五個維度加上綜合評分」(5+1=6)。已在 README/網站/說明/wiki ×17 採用文件措辭。 **2426 項測試。**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 
@@ -23,7 +23,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 ## 關於 career-ops
 
-[career-ops](https://career-ops.org) 是一套開源求職系統,以 slash 指令的形式運行於任何 AI 編碼 CLI(Claude Code、Cursor、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 相容 CLI 也透過相同的斜線指令介面運作)之內。模型無關。它以六維度 0.0–5.0 評分準則將每一筆職缺與你的 CV 進行配對、產生量身打造的 PDF 履歷,並在本機追蹤每一次投遞 — 不需要雲端帳號、不收集遙測資料、絕不自動送出。
+[career-ops](https://career-ops.org) 是一套開源求職系統,以 slash 指令的形式運行於任何 AI 編碼 CLI(Claude Code、Cursor、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 相容 CLI 也透過相同的斜線指令介面運作)之內。模型無關。它以五維加整體綜合評分度 0.0–5.0 評分準則將每一筆職缺與你的 CV 進行配對、產生量身打造的 PDF 履歷,並在本機追蹤每一次投遞 — 不需要雲端帳號、不收集遙測資料、絕不自動送出。
 
 **本儲存庫(career-ops-ui)** 是建構於其上的精緻網頁介面。CLI 仍負責表單填寫(透過 Playwright MCP)與 slash 指令模式;SPA 則在相同的 `cv.md` / `data/applications.md` / `reports/` 檔案之上,提供 CRM 風格的瀏覽器介面。兩者共用同一份資料。
 

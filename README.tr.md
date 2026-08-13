@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Son sürüm — v1.165.0** — **Tutarlı "Two-pager" terimi (düzeltme)** — Arapça kenar çubuğu Latin "Two-pager" gösterirken başlık yerelleştirilmişti — RTL gezinmesindeki tek Latin sözcük. Artık dil başına gezinme etiketi ve başlık uyuşuyor (bir kanarya zorluyor). **2424 test.**
+> **🆕 Son sürüm — v1.166.0** — **Belgelerle uyumlu rubrik ifadesi (düzeltme)** — UI/site/wiki "altı boyutlu rubrik" derken belgeler "beş boyut artı bütünsel bir genel puan" diyor (5+1=6). Belge ifadesi README/site/yardım/wiki ×17'de benimsendi. **2426 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 
@@ -23,7 +23,7 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 ## career-ops hakkında
 
-[career-ops](https://career-ops.org), herhangi bir yapay zeka kodlama CLI'sinin (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — diğer Claude uyumlu CLI'ler de aynı eğik-çizgi-komut yüzeyi üzerinden çalışır) içinde eğik çizgi komutları olarak çalışan açık kaynaklı bir iş arama sistemidir. Model bağımsızdır. Her ilanı CV'nize göre altı boyutlu 0.0–5.0 değerlendirme ölçeğiyle değerlendirir, size özel PDF özgeçmişler üretir ve her başvuruyu yerel olarak takip eder — bulut hesabı yok, telemetri yok, otomatik gönderim yok.
+[career-ops](https://career-ops.org), herhangi bir yapay zeka kodlama CLI'sinin (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — diğer Claude uyumlu CLI'ler de aynı eğik-çizgi-komut yüzeyi üzerinden çalışır) içinde eğik çizgi komutları olarak çalışan açık kaynaklı bir iş arama sistemidir. Model bağımsızdır. Her ilanı CV'nize göre beş boyut ve bütünsel bir genel puan içeren 0.0–5.0 değerlendirme ölçeğiyle değerlendirir, size özel PDF özgeçmişler üretir ve her başvuruyu yerel olarak takip eder — bulut hesabı yok, telemetri yok, otomatik gönderim yok.
 
 **Bu depo (career-ops-ui)**, bunun üzerine oturan cilalı bir web arayüzüdür. CLI, form doldurma (Playwright MCP aracılığıyla) ve eğik-çizgi-komut modlarına sahip olmaya devam eder; SPA ise aynı `cv.md` / `data/applications.md` / `reports/` dosyaları üzerinde CRM tarzı bir tarayıcı yüzeyi sunar. Her ikisi de aynı veriyi paylaşır.
 

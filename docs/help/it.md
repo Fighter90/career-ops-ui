@@ -32,7 +32,7 @@ candidatura localmente sulla tua macchina.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — installa Chromium + registra l'MCP per PDF e compilazione moduli.
 - [Come career-ops valuta gli annunci di lavoro](https://career-ops.org/methodology)
-  — la metodologia di valutazione: le sei dimensioni, la soglia di
+  — la metodologia di valutazione: le cinque dimensioni più un punteggio globale olistico, la soglia di
   candidatura a 4.0 e ciò che il sistema si rifiuta esplicitamente di
   fare. Riassunta anche su
   [cvstart.org/methodology](https://cvstart.org/methodology/) nella tua lingua.

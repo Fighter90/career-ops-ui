@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Ultima release — v1.165.0** — **Termine "Two-pager" coerente (fix)** — la barra araba mostrava il latino "Two-pager" mentre il titolo era localizzato — l'unica parola latina in una navigazione RTL. Ora, per lingua, l'etichetta di navigazione e il titolo concordano (garantito da un canarino). **2424 test.**
+> **🆕 Ultima release — v1.166.0** — **Terminologia della rubrica allineata ai docs (fix)** — UI/sito/wiki dicevano "rubrica a sei dimensioni" mentre i docs dicono "cinque dimensioni più un punteggio globale olistico" (5+1=6). Adottata la formulazione dei docs in README/sito/aiuto/wiki ×17. **2426 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 
@@ -23,7 +23,7 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 
 ## Informazioni su career-ops
 
-[career-ops](https://career-ops.org) è un sistema open-source per la ricerca di lavoro che gira come slash command dentro qualsiasi CLI di coding con IA (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — funzionano anche altre CLI compatibili con Claude tramite la stessa superficie di slash command). Indipendente dal modello. Valuta ogni annuncio rispetto al tuo CV con una griglia a sei dimensioni da 0.0 a 5.0, genera CV in PDF su misura e tiene traccia di ogni candidatura localmente — nessun account cloud, nessuna telemetria, nessun invio automatico.
+[career-ops](https://career-ops.org) è un sistema open-source per la ricerca di lavoro che gira come slash command dentro qualsiasi CLI di coding con IA (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — funzionano anche altre CLI compatibili con Claude tramite la stessa superficie di slash command). Indipendente dal modello. Valuta ogni annuncio rispetto al tuo CV con una griglia a cinque dimensioni più un punteggio globale olistico da 0.0 a 5.0, genera CV in PDF su misura e tiene traccia di ogni candidatura localmente — nessun account cloud, nessuna telemetria, nessun invio automatico.
 
 **Questo repository (career-ops-ui)** è un'interfaccia web curata che ci sta sopra. La CLI continua a gestire la compilazione dei moduli (tramite Playwright MCP) e le modalità slash command; la SPA ti offre una superficie browser in stile CRM sugli stessi file `cv.md` / `data/applications.md` / `reports/`. Entrambe condividono gli stessi dati.
 

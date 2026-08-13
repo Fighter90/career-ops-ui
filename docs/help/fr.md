@@ -18,7 +18,7 @@ recherche d'emploi qui s'exécute sous forme de commandes slash dans
 n'importe quel CLI de codage IA (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy)
 — d'autres CLI compatibles Claude fonctionnent aussi via la même surface
 de commandes slash). Indépendant du modèle. Il évalue chaque offre par
-rapport à votre CV selon une grille à six dimensions notée de 0.0 à 5.0,
+rapport à votre CV selon une grille à cinq dimensions plus un score global holistique notée de 0.0 à 5.0,
 génère des CV PDF sur mesure, et suit chaque candidature localement sur
 votre machine.
 
@@ -35,7 +35,7 @@ votre machine.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — installer Chromium + enregistrer le MCP pour le PDF et le remplissage de formulaires.
 - [Comment career-ops note les offres d'emploi](https://career-ops.org/methodology)
-  — la méthodologie de notation : les six dimensions, le seuil de
+  — la méthodologie de notation : les cinq dimensions plus un score global holistique, le seuil de
   candidature à 4.0, et ce que le système refuse explicitement de faire.
   Également résumée sur
   [cvstart.org/methodology](https://cvstart.org/methodology/) dans votre langue.

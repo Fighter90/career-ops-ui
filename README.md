@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Latest release — v1.165.0** — **Consistent "Two-pager" term (fix)** — the Arabic sidebar showed the Latin "Two-pager" while the page title was localized — the only Latin word in an RTL nav. Now, per locale, the nav label and page title agree on the term (a canary enforces it). **2424 tests.**
+> **🆕 Latest release — v1.166.0** — **Docs-aligned rubric wording (fix)** — the UI/site/wiki said "six-dimension rubric" while career-ops.org/docs says "five dimensions plus a holistic global score" (5+1=6). Adopted the docs' wording across README/site/help/wiki ×17. **2426 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 
@@ -25,7 +25,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 ## About career-ops
 
-[career-ops](https://career-ops.org) is an open-source job-search system that runs as slash commands inside any AI coding CLI (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — other Claude-compatible CLIs work too via the same slash-command surface). Model-agnostic. It evaluates each posting against your CV with a six-dimension 0.0–5.0 rubric, generates tailored PDF résumés, and tracks every application locally — no cloud accounts, no telemetry, no auto-submit.
+[career-ops](https://career-ops.org) is an open-source job-search system that runs as slash commands inside any AI coding CLI (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — other Claude-compatible CLIs work too via the same slash-command surface). Model-agnostic. It evaluates each posting against your CV with a 0.0–5.0 rubric of five dimensions plus a holistic global score, generates tailored PDF résumés, and tracks every application locally — no cloud accounts, no telemetry, no auto-submit.
 
 **This repository (career-ops-ui)** is a polished web interface on top. The CLI keeps owning form-fill (via Playwright MCP) and slash-command modes; the SPA gives you a CRM-style browser surface over the same `cv.md` / `data/applications.md` / `reports/` files. Both share the same data.
 

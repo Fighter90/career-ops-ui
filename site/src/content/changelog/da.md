@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.166.0] — 2026-08-13
+
+**Rettet (LAV) — rubrik-terminologien afspejler nu den kanoniske dokumentation.** career-ops.org/docs beskriver "fem dimensioner plus en holistisk samlet score", men web-ui, cvstart.org og wiki sagde alle "rubrik med seks dimensioner" (5 + 1 = 6, men ordvalget stemte ikke).
+
+### Rettet
+- Vedtog dokumentationens formulering — **"fem dimensioner plus en holistisk samlet score"** — konsistent i README ×17, cvstart.org-sitet ×17, hjælpe-guiden ×17, `docs/career-ops-canonical.md` og wiki (Home ×17 + Features).
+
+### Noter
+- Kun docs/marketing; ingen ændring af kode/i18n-nøgle/rute/CSP/SSRF/skrivning. `tests/rubric-terminology.test.mjs` (+2). Suite: **2426** (+2).
+
 ## [1.165.0] — 2026-08-13
 
 **Rettet (LAV) — "Two-pager"-termen er nu konsistent inden for hvert sprog.** På arabisk viste sidebjælken det latinske "Two-pager", mens `<h1>` var fuldt lokaliseret — den eneste latinske streng i en ellers spejlvendt RTL-navigation.

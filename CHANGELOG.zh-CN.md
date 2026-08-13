@@ -9,6 +9,16 @@
 ---
 
 
+## [1.166.0] — 2026-08-13
+
+**修复 (LOW) — 评分标准术语现在与规范文档一致。** career-ops.org/docs 描述为"五个维度加上一个整体综合评分",但 Web UI、cvstart.org 和 wiki 都说"六维度评分标准"(5 + 1 = 6,但用词不一致)。
+
+### 修复
+- 采用文档措辞 — **"五个维度加上综合评分"** — 一致应用于 README ×17、cvstart.org 站点 ×17、帮助指南 ×17、`docs/career-ops-canonical.md` 和 wiki(Home ×17 + Features)。
+
+### 说明
+- 仅文档/营销文案;无代码/i18n 键/路由/CSP/SSRF/写入变更。`tests/rubric-terminology.test.mjs`(+2)。套件:**2426** (+2)。
+
 ## [1.165.0] — 2026-08-13
 
 **修复 (LOW) — "Two-pager" 术语现在在每种语言内保持一致。** 阿拉伯语侧边栏显示拉丁文 "Two-pager",而 `<h1>` 已完全本地化 — 是在其他方面镜像的 RTL 导航中唯一的拉丁文字符串。

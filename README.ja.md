@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新リリース — v1.165.0** — **一貫した「Two-pager」用語(修正)** — アラビア語のサイドバーはラテン文字の「Two-pager」を、タイトルは翻訳形を表示していました — RTL ナビで唯一のラテン語。今はロケールごとにナビラベルとタイトルが一致(カナリアで担保)。 **2424 テスト。**
+> **🆕 最新リリース — v1.166.0** — **ドキュメントに合わせたルーブリック表現(修正)** — UI/サイト/wiki は「6 次元ルーブリック」でしたが、ドキュメントは「5 つの評価次元 + 総合スコア」です(5+1=6)。ドキュメントの表現を README/サイト/ヘルプ/wiki ×17 に採用。 **2426 テスト。**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

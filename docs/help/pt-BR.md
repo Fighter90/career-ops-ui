@@ -15,7 +15,7 @@ uma seção específica via sumário no menu lateral de ajuda.
 [career-ops](https://career-ops.org) é um sistema open source de
 busca de emprego que roda como slash commands dentro de qualquer CLI
 de programação com IA (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — outras CLIs compatíveis com Claude também funcionam pela mesma superfície de slash-commands). Independente de modelo. Avalia cada vaga contra seu CV
-com uma rubrica de seis dimensões 0.0–5.0, gera currículos PDF
+com uma rubrica de cinco dimensões mais uma pontuação global holística 0.0–5.0, gera currículos PDF
 personalizados e registra cada candidatura localmente na sua máquina.
 
 **Referência canônica (leia na ordem na primeira instalação):**
@@ -32,7 +32,7 @@ personalizados e registra cada candidatura localmente na sua máquina.
   — instale o Chromium + registre o MCP para PDF e preenchimento de
   formulários.
 - [How career-ops scores job listings](https://career-ops.org/methodology)
-  — a metodologia de pontuação: as seis dimensões, o limiar de 4.0
+  — a metodologia de pontuação: as cinco dimensões mais uma pontuação global holística, o limiar de 4.0
   para candidatura, e o que o sistema se recusa explicitamente a
   fazer. Também resumido em
   [cvstart.org/methodology](https://cvstart.org/methodology/) no seu

@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.166.0] — 2026-08-13
+
+**Behoben (NIEDRIG) — die Rubrik-Terminologie spiegelt jetzt die kanonischen Docs.** career-ops.org/docs beschreibt „fünf Dimensionen plus eine ganzheitliche Gesamtbewertung", aber Web-UI, cvstart.org und das Wiki sagten alle „Rubrik mit sechs Dimensionen" (5 + 1 = 6, aber der Wortlaut wich ab).
+
+### Behoben
+- Die Docs-Formulierung — **„fünf Dimensionen plus eine ganzheitliche Gesamtbewertung"** — konsistent in README ×17, der cvstart.org-Site ×17, dem Hilfe-Guide ×17, `docs/career-ops-canonical.md` und dem Wiki (Home ×17 + Features) übernommen.
+
+### Hinweise
+- Nur Docs/Marketing; keine Änderung an Code/i18n-Schlüssel/Route/CSP/SSRF/Schreibzugriff. `tests/rubric-terminology.test.mjs` (+2). Suite: **2426** (+2).
+
 ## [1.165.0] — 2026-08-13
 
 **Behoben (NIEDRIG) — der Begriff "Two-pager" ist jetzt innerhalb jeder Sprache konsistent.** Im Arabischen zeigte die Seitenleiste das lateinische "Two-pager", während der `<h1>` vollständig lokalisiert war — die einzige lateinische Zeichenkette in einer ansonsten gespiegelten RTL-Navigation.

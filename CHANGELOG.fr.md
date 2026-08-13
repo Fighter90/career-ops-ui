@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.166.0] — 2026-08-13
+
+**Corrigé (BASSE) — la terminologie de la grille reflète désormais les docs canoniques.** career-ops.org/docs décrit « cinq dimensions plus un score global holistique », mais le web-ui, cvstart.org et le wiki disaient « grille à six dimensions » (5 + 1 = 6, mais le vocabulaire divergeait).
+
+### Corrigé
+- Adoption de la formulation des docs — **« cinq dimensions plus un score global holistique »** — de façon cohérente dans README ×17, le site cvstart.org ×17, le guide d'aide ×17, `docs/career-ops-canonical.md` et le wiki (Home ×17 + Features).
+
+### Notes
+- Docs/marketing uniquement ; aucun changement de code/clé i18n/route/CSP/SSRF/écriture. `tests/rubric-terminology.test.mjs` (+2). Suite : **2426** (+2).
+
 ## [1.165.0] — 2026-08-13
 
 **Corrigé (BASSE) — le terme « Two-pager » est désormais cohérent au sein de chaque langue.** En arabe, la barre latérale affichait le latin « Two-pager » alors que le `<h1>` était entièrement localisé — la seule chaîne latine dans une navigation RTL par ailleurs en miroir.

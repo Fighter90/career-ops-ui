@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.166.0] — 2026-08-13
+
+**Naprawiono (NISKIE) — terminologia rubryki odzwierciedla teraz kanoniczne docs.** career-ops.org/docs opisuje „pięć wymiarów plus całościowa ocena globalna", ale web-ui, cvstart.org i wiki mówiły „rubryka o sześciu wymiarach" (5 + 1 = 6, lecz słownictwo się różniło).
+
+### Naprawiono
+- Przyjęto sformułowanie z docs — **„pięć wymiarów plus całościowa ocena globalna"** — spójnie w README ×17, na stronie cvstart.org ×17, w przewodniku pomocy ×17, w `docs/career-ops-canonical.md` i w wiki (Home ×17 + Features).
+
+### Uwagi
+- Tylko docs/marketing; bez zmian kodu/klucza i18n/trasy/CSP/SSRF/zapisu. `tests/rubric-terminology.test.mjs` (+2). Zestaw: **2426** (+2).
+
 ## [1.165.0] — 2026-08-13
 
 **Naprawiono (NISKIE) — termin "Two-pager" jest teraz spójny w obrębie każdego języka.** W arabskim pasek boczny pokazywał łacińskie "Two-pager", podczas gdy `<h1>` był w pełni zlokalizowany — jedyny łaciński ciąg w skądinąd lustrzanej nawigacji RTL.
