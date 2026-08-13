@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.181.0] — 2026-08-14
+
+**Geändert (NIEDRIG, Scanner) — Getro-Paritätsport (Eltern #2640): Gehalt, alle Standorte und `work_mode`-Remote-Erkennung.**
+
+### Geändert
+- Die sichere Hälfte der `providers/getro.mjs`-Erweiterung des Eltern-Projekts (#2640) nach `server/lib/sources/getro.mjs` portiert. Eine Getro-Stelle trägt jetzt einen **Gehalts**-Anzeigestring (aus `compensation_amount_min/max_cents` + Währung, nur jährlich — nach der remotli/lever-Stringkonvention, die der Gehaltsfilter des Clients neu parst), ihr **Standort** vereint **alle** `locations` (zuvor nur den ersten), und `work_mode: 'remote'` wird neben dem bestehenden `remote`-Flag / Standorttext als Remote-Signal anerkannt. Reines Daten-Mapping aus der API-Antwort, die web-ui ohnehin abruft — kein neuer Host, keine Änderung der SSRF-Oberfläche.
+
+### Hinweise
+- Bewusst NICHT portiert: das **Auto-Resolve** der `collection_id` des Eltern-Projekts (es holt das eigene `careers_url` des Boards — ein beliebiger Host — gehört daher in eine separate Änderung über die `safeGet`-SSRF-Grenze von web-ui) und das angehobene 1500-Seiten-Hardlimit (web-ui behält sein 200-Seiten- / 4000-Stellen-Limit für browserausgelöste Scans). Die übrigen 11 Eltern-Commits dieser Synchronisierung haben kein Spiegelbild in web-ui. Tests: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Behoben (MITTEL, Berichte) — die `#/reports`-Liste ist jetzt eine Tabelle, und eine echte Bewertung, die ein Machine-Summary-Platzhalter verdeckte, wird wiederhergestellt.**

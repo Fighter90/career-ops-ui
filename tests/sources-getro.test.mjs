@@ -18,6 +18,9 @@ import {
   resolveCollection,
   assertGetroUrl,
   normalizeGetroJob,
+  getroSalary,
+  getroLocation,
+  deriveWorkplace,
   fetchGetro,
   API_BASE,
   meta,
@@ -261,4 +264,57 @@ test('fetchGetro: age cutoff breaks pagination once a dated job is older than th
     'https://jobs.b2venture.vc/recent',
     'https://jobs.b2venture.vc/undated',
   ]);
+});
+
+// ---------------------------------------------------------------------------
+// parent parity #2640 — salary, all-locations, work_mode remote-detect
+// ---------------------------------------------------------------------------
+
+test('getroSalary: annual comp cents → display string the client can re-parse', () => {
+  assert.equal(
+    getroSalary({ compensation_amount_min_cents: 10_000_000, compensation_amount_max_cents: 15_000_000, compensation_currency: 'usd' }),
+    '100000–150000 USD',
+  );
+  assert.equal(getroSalary({ compensation_amount_min_cents: 12_000_000, compensation_currency: 'EUR' }), 'from 120000 EUR');
+  assert.equal(getroSalary({ compensation_amount_max_cents: 9_000_000 }), 'up to 90000');
+  // min > max is normalised low→high.
+  assert.equal(getroSalary({ compensation_amount_min_cents: 15_000_000, compensation_amount_max_cents: 10_000_000, compensation_currency: 'USD' }), '100000–150000 USD');
+});
+
+test('getroSalary: a non-annual period or absent figure yields "" (missing = pass)', () => {
+  assert.equal(getroSalary({ compensation_amount_min_cents: 5000, compensation_period: 'hour' }), '', 'hourly is not an annual figure');
+  assert.equal(getroSalary({ compensation_period: 'month', compensation_amount_min_cents: 500_000 }), '', 'monthly is not annual');
+  assert.equal(getroSalary({}), '', 'no comp fields');
+  assert.equal(getroSalary({ compensation_amount_min_cents: 0, compensation_amount_max_cents: -1 }), '', 'zero/negative are unusable');
+  assert.equal(getroSalary(null), '');
+  // period 'year' (explicit) is accepted.
+  assert.equal(getroSalary({ compensation_period: 'year', compensation_amount_min_cents: 8_000_000, compensation_currency: 'gbp' }), 'from 80000 GBP');
+});
+
+test('getroLocation: joins ALL locations, falls back to searchable_locations', () => {
+  assert.equal(getroLocation({ locations: ['Zurich', 'Berlin', ' '] }), 'Zurich, Berlin');
+  assert.equal(getroLocation({ locations: [], searchable_locations: ['London', 'Remote - EU'] }), 'London, Remote - EU');
+  assert.equal(getroLocation({}), '');
+});
+
+test('deriveWorkplace: work_mode:"remote" marks the job remote (parent #2640)', () => {
+  assert.equal(deriveWorkplace({ work_mode: 'remote' }).isRemote, true);
+  assert.equal(deriveWorkplace({ work_mode: 'onsite' }, 'Zurich').isRemote, false);
+});
+
+test('normalizeGetroJob: carries the salary string + all-locations + work_mode remote', () => {
+  const n = normalizeGetroJob({
+    title: 'Staff Engineer',
+    url: 'https://jobs.b2venture.vc/x',
+    organization: { name: 'Acme' },
+    locations: ['Zurich', 'Berlin'],
+    work_mode: 'remote',
+    compensation_amount_min_cents: 12_000_000,
+    compensation_amount_max_cents: 16_000_000,
+    compensation_currency: 'CHF',
+  });
+  assert.equal(n.salary, '120000–160000 CHF');
+  assert.equal(n.location, 'Zurich, Berlin');
+  assert.equal(n.isRemote, true);
+  assert.equal(n.workplaceType, 'Remote');
 });

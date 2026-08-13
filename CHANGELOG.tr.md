@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.181.0] — 2026-08-14
+
+**Değiştirildi (DÜŞÜK, tarayıcı) — Getro parite portu (üst #2640): maaş, tüm konumlar ve `work_mode` uzaktan tespiti.**
+
+### Değiştirildi
+- Üst projenin `providers/getro.mjs` genişletmesinin (#2640) güvenli yarısı `server/lib/sources/getro.mjs`'ye taşındı. Bir Getro ilanı artık bir **maaş** görüntü dizesi taşıyor (`compensation_amount_min/max_cents` + para biriminden, yalnızca yıllık — istemci maaş filtresinin yeniden ayrıştırdığı remotli/lever dize sözleşmesini yansıtır), **konumu** `locations`'ın **tümünü** birleştiriyor (önceden yalnızca ilki) ve `work_mode: 'remote'` mevcut `remote` bayrağı / konum metni ile birlikte uzaktan sinyali olarak tanınıyor. web-ui'nin zaten aldığı API yanıtından saf veri eşlemesi — yeni ana bilgisayar yok, SSRF yüzeyi değişikliği yok.
+
+### Notlar
+- Bilerek taşınmadı: üst projenin `collection_id` **otomatik çözümlemesi** (panonun kendi `careers_url`'sini — rastgele bir ana bilgisayar — getirdiğinden, web-ui'nin `safeGet` SSRF sınırından geçen ayrı bir değişikliğe aittir) ve yükseltilen 1500 sayfalık sabit üst sınır (web-ui, tarayıcı tetikli taramalar için 200 sayfa / 4000 ilan sınırını korur). Bu senkronizasyondaki diğer 11 üst commit'in web-ui'de aynası yok. Testler: `tests/sources-getro.test.mjs` (+5). Takım: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Düzeltildi (ORTA, raporlar) — `#/reports` listesi artık bir tablo ve bir Machine Summary yer tutucusunun gizlediği gerçek bir puan geri kazanıldı.**

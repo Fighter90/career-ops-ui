@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.181.0] — 2026-08-14
+
+**Modificato (BASSO, scanner) — port di parità Getro (padre #2640): stipendio, tutte le località e rilevamento remoto via `work_mode`.**
+
+### Modificato
+- Portata la metà sicura dell'estensione `providers/getro.mjs` del padre (#2640) in `server/lib/sources/getro.mjs`. Un'offerta Getro ora porta una stringa di **stipendio** (da `compensation_amount_min/max_cents` + valuta, solo annuale — riprendendo la convenzione di stringa remotli/lever che il filtro stipendio del client rianalizza), la sua **località** unisce **tutte** le `locations` (prima solo la prima), e `work_mode: 'remote'` è riconosciuto come segnale remoto accanto al `remote` / testo località esistenti. Puro mapping di dati dalla risposta API che web-ui già recupera — nessun nuovo host, nessun cambiamento di superficie SSRF.
+
+### Note
+- Volutamente NON portato: l'**auto-resolve** del `collection_id` del padre (recupera il `careers_url` della board stessa — un host arbitrario — quindi spetta a una modifica separata instradata dal confine SSRF `safeGet` di web-ui) e il tetto elevato a 1500 pagine (web-ui mantiene il tetto di 200 pagine / 4000 offerte per le scansioni avviate dal browser). Gli altri 11 commit del padre in questa sincronizzazione non hanno mirror in web-ui. Test: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Corretto (MEDIO, report) — l'elenco `#/reports` è ora una tabella e viene recuperato un punteggio reale che un segnaposto di Machine Summary nascondeva.**

@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.181.0] — 2026-08-14
+
+**Zmieniono (NISKIE, skaner) — port parytetu Getro (rodzic #2640): wynagrodzenie, wszystkie lokalizacje i wykrywanie zdalnej pracy przez `work_mode`.**
+
+### Zmieniono
+- Przeniesiono bezpieczną połowę rozszerzenia `providers/getro.mjs` rodzica (#2640) do `server/lib/sources/getro.mjs`. Oferta Getro niesie teraz ciąg **wynagrodzenia** (z `compensation_amount_min/max_cents` + waluta, tylko roczne — zgodnie z konwencją ciągu remotli/lever, którą filtr wynagrodzeń klienta ponownie parsuje), jej **lokalizacja** łączy **wszystkie** `locations` (wcześniej tylko pierwszą), a `work_mode: 'remote'` jest uznawany za sygnał zdalny obok istniejącej flagi `remote` / tekstu lokalizacji. Czyste mapowanie danych z odpowiedzi API, którą web-ui i tak pobiera — bez nowego hosta, bez zmiany powierzchni SSRF.
+
+### Uwagi
+- Celowo NIE przeniesiono: **auto-rozwiązywania** `collection_id` rodzica (pobiera `careers_url` samej tablicy — dowolny host — więc należy do osobnej zmiany przez granicę SSRF `safeGet` web-ui) oraz podniesionego limitu 1500 stron (web-ui zachowuje limit 200 stron / 4000 ofert dla skanów uruchamianych z przeglądarki). Pozostałe 11 commitów rodzica w tej synchronizacji nie ma odpowiednika w web-ui. Testy: `tests/sources-getro.test.mjs` (+5). Zestaw: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Poprawiono (ŚREDNIE, raporty) — lista `#/reports` jest teraz tabelą, a odzyskano prawdziwy wynik, który ukrywał symbol zastępczy Machine Summary.**

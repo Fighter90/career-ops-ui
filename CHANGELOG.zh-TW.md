@@ -8,6 +8,16 @@
 
 ---
 
+## [1.181.0] — 2026-08-14
+
+**變更(低,掃描器)——Getro 對齊移植(父 #2640):薪資、全部地點、`work_mode` 遠端辨識。**
+
+### 變更
+- 將父級 `providers/getro.mjs` 擴充(#2640)的安全部分移植到 `server/lib/sources/getro.mjs`。Getro 職缺現在帶有**薪資**顯示字串(來自 `compensation_amount_min/max_cents` + 幣別,僅年薪——沿用用戶端薪資過濾器會重新解析的 remotli/lever 字串慣例),其**地點**合併**全部** `locations`(此前僅第一個),且 `work_mode: 'remote'` 與現有的 `remote` 旗標 / 地點文字一同被視為遠端訊號。純粹是對 web-ui 已取得的 API 回應的資料映射——無新主機,無 SSRF 面變更。
+
+### 說明
+- 有意未移植:父級的 `collection_id` **自動解析**(它會抓取看板自身的 `careers_url`——任意主機——因此應作為獨立變更經由 web-ui 的 `safeGet` SSRF 邊界)以及提升到 1500 頁的硬上限(web-ui 為瀏覽器觸發的掃描保持 200 頁 / 4000 個職缺上限)。本次同步中其餘 11 個父級提交在 web-ui 無鏡像。測試:`tests/sources-getro.test.mjs`(+5)。套件:**2470**(+5)。
+
 ## [1.180.0] — 2026-08-14
 
 **修復(中,報告)——`#/reports` 清單現在是表格,並復原了被 Machine Summary 佔位符隱藏的真實評分。**

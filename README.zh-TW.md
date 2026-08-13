@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2465%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2470%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.180.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.180.0)
+[![release](https://img.shields.io/badge/release-v1.181.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.181.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.180.0** — **報告改為表格** — `#/reports` 現在是表格(報告 · 日期 · 可信度 · 評分);過長的「未偵測到評分」標籤不再逐字元換行報告名,並復原了被 Machine Summary 佔位符隱藏的真實評分。 **2465 項測試。**
+> **🆕 最新版本 — v1.181.0** — **Getro:薪資與全部地點** — Getro 掃描器現在顯示薪資、合併職缺的全部地點,並辨識 `work_mode: remote`(對齊父級 #2640)。 **2470 項測試。**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 
