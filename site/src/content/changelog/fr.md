@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.175.0] — 2026-08-13
+
+**Corrigé (LOW, durcissement) — un garde de régression pour la description SEO de FIND-3 + un strip de légitimité résistant aux valeurs nulles (suite de l'AI-review).**
+
+### Corrigé
+- **Garde de parité de la description SEO** — le correctif v1.174.0 qui a remplacé un "~55" codé en dur dans le `meta.desc` de chaque langue par un placeholder `{adapters}` dérivé du registre n'avait pas de test et pouvait régresser en silence à la prochaine édition d'une locale. Le nouveau `tests/site-meta-desc-parity.test.mjs` (isolé CI) échoue si l'un des 17 `site/src/i18n/*.json` perd le placeholder ou recode un compte, ou si `Landing.astro` cesse de l'interpoler dans les trois méta-descriptions.
+- **Strip de légitimité résistant aux nuls** — `stripEmphasis` renvoie `''` pour une entrée nulle plutôt que la chaîne "undefined" (les champs sont initialisés en chaîne, c'est de la défense en profondeur).
+
+### Notes
+- Test + un garde d'une ligne dans l'analyseur ; aucun changement de route / CSP / SSRF / écriture parent. Tests : `tests/site-meta-desc-parity.test.mjs` (+3). Suite : **2451** (+3).
+
 ## [1.174.0] — 2026-08-13
 
 **Corrigé (HIGH, rapports) — les rapports localisés affichaient « Score not detected » ; la description SEO était obsolète.**

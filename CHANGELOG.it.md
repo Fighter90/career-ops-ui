@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.175.0] — 2026-08-13
+
+**Corretto (LOW, irrobustimento) — una guardia di regressione per la descrizione SEO di FIND-3 + uno strip di legittimità sicuro ai valori nulli (follow-up dell'AI-review).**
+
+### Corretto
+- **Guardia di parità della descrizione SEO** — la correzione di v1.174.0 che ha sostituito un "~55" fisso nel `meta.desc` di ogni lingua con un placeholder `{adapters}` derivato dal registro non aveva test, quindi poteva regredire in silenzio alla prossima modifica di una locale. Il nuovo `tests/site-meta-desc-parity.test.mjs` (isolato in CI) fallisce se uno dei 17 `site/src/i18n/*.json` perde il placeholder o rifissa un conteggio, o se `Landing.astro` smette di interpolarlo nelle tre metadescrizioni.
+- **Strip di legittimità sicuro ai nulli** — `stripEmphasis` restituisce `''` per un input nullish invece della stringa "undefined" (i campi sono inizializzati a stringa, quindi è difesa in profondità).
+
+### Note
+- Test + una guardia di una riga nel parser; nessun cambiamento a route / CSP / SSRF / scrittura sul padre. Test: `tests/site-meta-desc-parity.test.mjs` (+3). Suite: **2451** (+3).
+
 ## [1.174.0] — 2026-08-13
 
 **Corretto (HIGH, report) — i report localizzati mostravano "Score not detected"; la descrizione SEO era obsoleta.**

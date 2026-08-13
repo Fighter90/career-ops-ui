@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2448%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2451%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.174.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.174.0)
+[![release](https://img.shields.io/badge/release-v1.175.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.175.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.174.0** — **Puntuaciones de informes localizados + arreglo SEO** — los informes no ingleses ya no muestran "Score not detected" (un H1 con la palabra de la etiqueta se confundía con la puntuación); los chips de legitimidad quitan `**` sueltos, las puntuaciones largas dejan de desbordar la tarjeta y la descripción de cvstart.org cuenta el registro real (~75). **2448 pruebas.**
+> **🆕 Última versión — v1.175.0** — **Guardia de regresión de la descripción SEO** — una prueba de CI ahora falla si alguno de los 17 idiomas del sitio pierde el marcador `{adapters}` o vuelve a fijar un recuento (la deriva del bug "~55"), más un strip de legitimidad a prueba de nulos. **2451 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

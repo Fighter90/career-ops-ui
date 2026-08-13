@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.175.0] — 2026-08-13
+
+**Fixed (LOW, hardening) — a regression guard for the FIND-3 SEO description + a nullish-safe legitimacy strip (AI-review follow-up).**
+
+### Fixed
+- **SEO description parity guard** — the v1.174.0 fix that swapped a hard-coded "~55" in every locale's `meta.desc` for a registry-derived `{adapters}` placeholder had no test, so it could silently regress on the next locale edit. New CI-isolated `tests/site-meta-desc-parity.test.mjs` fails if any of the 17 `site/src/i18n/*.json` drops the placeholder or re-hard-codes a count, or if `Landing.astro` stops interpolating it into all three description metas.
+- **Nullish-safe legitimacy strip** — `stripEmphasis` returns `''` for a nullish input instead of the string "undefined" (fields are string-initialized, so this is defense-in-depth).
+
+### Notes
+- Test + a one-line parser guard; no route / CSP / SSRF / parent-write change. Tests: `tests/site-meta-desc-parity.test.mjs` (+3). Suite: **2451** (+3).
+
 ## [1.174.0] — 2026-08-13
 
 **Fixed (HIGH, reports) — localized reports read "Score not detected"; the SEO description was stale.**
