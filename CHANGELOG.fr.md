@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.181.0] — 2026-08-14
+
+**Ajouté (scanner) — les tableaux Getro affichent désormais le salaire, toutes les localisations et les postes en télétravail.**
+
+### Ajouté
+- Le scanner **Getro** (tableaux de réseaux de talents de fonds) affiche désormais un **salaire** sur chaque poste (fourchette annuelle + devise), liste **toutes** les localisations au lieu de la première seulement et signale les postes en **télétravail**. Un poste Getro dans votre scan et votre suivi porte désormais le même détail salaire + localisation que les autres tableaux.
+
+### Notes
+- Scanner uniquement ; aucune nouvelle dépendance, aucun changement de route / CSP / SSRF. Tests : `tests/sources-getro.test.mjs` (+5). Suite : **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Corrigé (MOYEN, rapports) — la liste `#/reports` est désormais un tableau, et un score réel que masquait un espace réservé de Machine Summary est récupéré.**

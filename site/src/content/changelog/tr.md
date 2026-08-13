@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.181.0] — 2026-08-14
+
+**Eklendi (tarayıcı) — Getro iş panoları artık maaş, tüm konumları ve uzaktan ilanları gösteriyor.**
+
+### Eklendi
+- **Getro** tarayıcısı (fonların yetenek ağı panoları) artık her ilanda bir **maaş** (yıllık aralık + para birimi) gösteriyor, yalnızca ilkini değil **tüm** konumları listeliyor ve **uzaktan** ilanları etiketliyor. Taramanızdaki ve takipçinizdeki bir Getro ilanı artık diğer panolarla aynı maaş + konum ayrıntısını taşıyor.
+
+### Notlar
+- Yalnızca tarayıcı; yeni bağımlılık yok, rota / CSP / SSRF değişikliği yok. Testler: `tests/sources-getro.test.mjs` (+5). Takım: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Düzeltildi (ORTA, raporlar) — `#/reports` listesi artık bir tablo ve bir Machine Summary yer tutucusunun gizlediği gerçek bir puan geri kazanıldı.**

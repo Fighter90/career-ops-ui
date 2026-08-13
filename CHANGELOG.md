@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.181.0] — 2026-08-14
+
+**Added (scanner) — Getro job boards now show salary, every location, and remote roles.**
+
+### Added
+- The **Getro** scanner (VC talent-network boards) now surfaces a **salary** figure on each role (annual pay range + currency), lists **all** of a role's locations instead of just the first, and tags **remote** roles. A Getro posting in your scan and tracker now carries the same salary + location detail as every other board.
+
+### Notes
+- Scanner-only; no new dependency, no route / CSP / SSRF change. Tests: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Fixed (MEDIUM, reports) — the `#/reports` list is now a table, and a real score a Machine Summary placeholder was hiding is recovered.**

@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.181.0] — 2026-08-14
+
+**Dodano (skaner) — tablice Getro pokazują teraz wynagrodzenie, wszystkie lokalizacje i oferty zdalne.**
+
+### Dodano
+- Skaner **Getro** (tablice sieci talentów funduszy) pokazuje teraz **wynagrodzenie** przy każdej ofercie (roczny przedział + waluta), wypisuje **wszystkie** lokalizacje zamiast tylko pierwszej i oznacza oferty **zdalne**. Oferta Getro w skanie i śledzeniu ma teraz te same dane o wynagrodzeniu i lokalizacji co pozostałe tablice.
+
+### Uwagi
+- Tylko skaner; bez nowej zależności, bez zmian tras / CSP / SSRF. Testy: `tests/sources-getro.test.mjs` (+5). Zestaw: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Poprawiono (ŚREDNIE, raporty) — lista `#/reports` jest teraz tabelą, a odzyskano prawdziwy wynik, który ukrywał symbol zastępczy Machine Summary.**

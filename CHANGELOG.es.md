@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.181.0] — 2026-08-14
+
+**Añadido (escáner) — los tableros de Getro ahora muestran salario, todas las ubicaciones y puestos remotos.**
+
+### Añadido
+- El escáner de **Getro** (tableros de redes de talento de fondos) ahora muestra una cifra de **salario** en cada puesto (rango anual + moneda), lista **todas** las ubicaciones en lugar de solo la primera y etiqueta los puestos **remotos**. Un puesto de Getro en tu escaneo y seguimiento ahora tiene el mismo detalle de salario + ubicación que los demás tableros.
+
+### Notas
+- Solo escáner; sin nueva dependencia, sin cambios de ruta / CSP / SSRF. Pruebas: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Corregido (MEDIO, informes) — la lista `#/reports` ahora es una tabla y se recupera una puntuación real que un marcador de posición de Machine Summary ocultaba.**

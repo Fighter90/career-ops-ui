@@ -4,9 +4,8 @@
  * portfolio companies). Powers b2venture, Earlybird, Point Nine, Speedinvest,
  * Cherry, HV Capital, Atomico, and many other VC boards.
  *
- * Ported from parent career-ops `providers/getro.mjs` into the web-ui source
- * contract (rich job objects + `meta` for auto-discovery). The public search
- * API is:
+ * Built to the web-ui source contract (rich job objects + `meta` for
+ * auto-discovery). The public search API is:
  *   POST https://api.getro.com/api/v2/collections/{collection_id}/search/jobs
  *   body: {"hitsPerPage":N,"page":P}
  *   -> { results: { jobs: [ {title,url,organization:{name},locations[],created_at} ], count } }
@@ -122,11 +121,11 @@ function hashUrl(s) {
 }
 
 /**
- * Derive the workplace signal for a Getro job. Getro exposes remoteness either
- * as a boolean `remote` flag or purely in the location text ("Remote - US"),
- * so both are honoured; on-site is only asserted when there is a location to
- * assert it about (an empty location stays unknown, "missing = pass"). Exported
- * for tests.
+ * Derive the workplace signal for a Getro job. Getro exposes remoteness as a
+ * boolean `remote` flag, a `work_mode: 'remote'` field, or purely in the
+ * location text ("Remote - US"), so all are honoured; on-site
+ * is only asserted when there is a location to assert it about (an empty
+ * location stays unknown, "missing = pass"). Exported for tests.
  * @param {any} job
  * @param {string} [location]
  * @returns {{ isRemote: boolean, workplaceType: string }}
@@ -134,12 +133,56 @@ function hashUrl(s) {
 export function deriveWorkplace(job, location = '') {
   const flag = Boolean(
     job && (job.remote === true || job.remote === 'true'
-      || job.workplace_type === 'remote' || job.workplaceType === 'remote'),
+      || job.workplace_type === 'remote' || job.workplaceType === 'remote'
+      || job.work_mode === 'remote'),
   );
   const loc = String(location || '');
   const isRemote = flag || /\bremote\b/i.test(loc);
   const workplaceType = isRemote ? 'Remote' : (loc ? 'Onsite' : '');
   return { isRemote, workplaceType };
+}
+
+/**
+ * Build the salary DISPLAY STRING from a Getro job's compensation fields.
+ * web-ui's job shape carries salary as a string that the client
+ * `Skills.parseSalaryRange` re-parses, so this follows the same remotli/lever
+ * string convention. Only an ANNUAL figure is emitted: an hourly/monthly
+ * `compensation_period` would read as a wildly-off yearly number in the filter,
+ * so those return '' ("missing = pass"). Amounts are cents → whole units.
+ * Exported for tests.
+ * @param {any} job
+ * @returns {string}
+ */
+export function getroSalary(job) {
+  const period = typeof job?.compensation_period === 'string' ? job.compensation_period.trim().toLowerCase() : '';
+  if (period && period !== 'year') return '';
+  const minCents = Number(job?.compensation_amount_min_cents);
+  const maxCents = Number(job?.compensation_amount_max_cents);
+  const min = Number.isFinite(minCents) && minCents > 0 ? Math.round(minCents / 100) : null;
+  const max = Number.isFinite(maxCents) && maxCents > 0 ? Math.round(maxCents / 100) : null;
+  if (min == null && max == null) return '';
+  const currency = typeof job?.compensation_currency === 'string' ? job.compensation_currency.trim().toUpperCase() : '';
+  const cur = currency ? ` ${currency}` : '';
+  if (min != null && max != null) return `${Math.min(min, max)}–${Math.max(min, max)}${cur}`;
+  if (min != null) return `from ${min}${cur}`;
+  return `up to ${max}${cur}`;
+}
+
+/**
+ * All known locations joined (not just the first). Getro boards commonly list
+ * several offices for one role; showing only `locations[0]`
+ * dropped the rest. Falls back to `searchable_locations` when `locations` is
+ * empty. Remoteness is carried separately by deriveWorkplace/workplaceType, so
+ * the location string stays the real places only. Exported for tests.
+ * @param {any} job
+ * @returns {string}
+ */
+export function getroLocation(job) {
+  const fromArray = (arr) => (Array.isArray(arr)
+    ? arr.filter((l) => typeof l === 'string' && l.trim()).map((l) => l.trim())
+    : []);
+  const parts = fromArray(job?.locations);
+  return (parts.length > 0 ? parts : fromArray(job?.searchable_locations)).join(', ');
 }
 
 /**
@@ -149,7 +192,8 @@ export function deriveWorkplace(job, location = '') {
  * Field mapping:
  *   - company:  the PORTFOLIO employer (`organization.name`), NOT the fund —
  *               falls back to `organization_name`, then the portal entry name.
- *   - location: first of `locations` / `searchable_locations`.
+ *   - location: ALL of `locations` (or `searchable_locations`), comma-joined.
+ *   - salary:   annual `compensation_amount_min/max_cents` → display string.
  *   - date:     `created_at` (Unix seconds or ISO) → ISO string, else ''.
  *
  * @param {any} job
@@ -172,9 +216,7 @@ export function normalizeGetroJob(job, fallbackCompany = '', createdMs) {
     || (typeof fallbackCompany === 'string' ? fallbackCompany.trim() : '')
     || '';
 
-  const location = (Array.isArray(job.locations) && typeof job.locations[0] === 'string' && job.locations[0].trim())
-    || (Array.isArray(job.searchable_locations) && typeof job.searchable_locations[0] === 'string' && job.searchable_locations[0].trim())
-    || '';
+  const location = getroLocation(job);
 
   const { isRemote, workplaceType } = deriveWorkplace(job, location);
 
@@ -183,7 +225,7 @@ export function normalizeGetroJob(job, fallbackCompany = '', createdMs) {
     title,
     company,
     url,
-    salary: '',
+    salary: getroSalary(job),
     location,
     isRemote,
     workplaceType,
@@ -197,7 +239,7 @@ export function normalizeGetroJob(job, fallbackCompany = '', createdMs) {
 /**
  * Fetch + normalize a Getro collection's jobs, paginating newest-first.
  *
- * Config is read from `opts.company` (parent parity): `getro_collection`
+ * Config is read from `opts.company`: `getro_collection`
  * (required numeric id), `getro_max_pages` (default 40, hard cap 200),
  * `getro_max_age_days` (default 90, pagination bound; 0 disables the cutoff).
  *

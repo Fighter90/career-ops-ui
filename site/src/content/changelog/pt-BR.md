@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.181.0] — 2026-08-14
+
+**Adicionado (scanner) — os quadros do Getro agora mostram salário, todas as localizações e vagas remotas.**
+
+### Adicionado
+- O scanner do **Getro** (quadros de redes de talentos de fundos) agora mostra um valor de **salário** em cada vaga (faixa anual + moeda), lista **todas** as localizações em vez de apenas a primeira e marca vagas **remotas**. Uma vaga do Getro no seu scan e rastreador agora traz o mesmo detalhe de salário + localização que os outros quadros.
+
+### Notas
+- Apenas scanner; sem nova dependência, sem mudança de rota / CSP / SSRF. Testes: `tests/sources-getro.test.mjs` (+5). Suíte: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Corrigido (MÉDIO, relatórios) — a lista `#/reports` agora é uma tabela e uma pontuação real que um marcador do Machine Summary escondia é recuperada.**

@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.181.0] — 2026-08-14
+
+**Aggiunto (scanner) — le bacheche Getro ora mostrano stipendio, tutte le località e posizioni da remoto.**
+
+### Aggiunto
+- Lo scanner **Getro** (bacheche delle reti di talenti dei fondi) ora mostra uno **stipendio** su ogni posizione (fascia annuale + valuta), elenca **tutte** le località invece della sola prima e contrassegna le posizioni **da remoto**. Una posizione Getro nel tuo scan e tracker porta ora lo stesso dettaglio di stipendio + località delle altre bacheche.
+
+### Note
+- Solo scanner; nessuna nuova dipendenza, nessun cambiamento a route / CSP / SSRF. Test: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Corretto (MEDIO, report) — l'elenco `#/reports` è ora una tabella e viene recuperato un punteggio reale che un segnaposto di Machine Summary nascondeva.**

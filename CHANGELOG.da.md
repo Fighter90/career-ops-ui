@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.181.0] — 2026-08-14
+
+**Tilføjet (scanner) — Getro-jobtavler viser nu løn, alle lokationer og fjernstillinger.**
+
+### Tilføjet
+- **Getro**-scanneren (fondes talentnetværkstavler) viser nu en **løn** på hvert job (årligt interval + valuta), lister **alle** lokationer i stedet for kun den første og markerer **fjern**-stillinger. Et Getro-job i din scanning og tracker bærer nu samme løn- + lokationsdetalje som de øvrige tavler.
+
+### Noter
+- Kun scanner; ingen ny afhængighed, ingen ændring af rute / CSP / SSRF. Tests: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Rettet (MELLEM, rapporter) — `#/reports`-listen er nu en tabel, og en reel score, som en Machine Summary-pladsholder skjulte, gendannes.**

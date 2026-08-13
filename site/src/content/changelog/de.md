@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.181.0] — 2026-08-14
+
+**Hinzugefügt (Scanner) — Getro-Jobboards zeigen jetzt Gehalt, alle Standorte und Remote-Stellen.**
+
+### Hinzugefügt
+- Der **Getro**-Scanner (Talent-Netzwerk-Boards von Fonds) zeigt jetzt bei jeder Stelle ein **Gehalt** (Jahresspanne + Währung), listet **alle** Standorte statt nur des ersten und markiert **Remote**-Stellen. Eine Getro-Stelle in Scan und Tracker trägt nun dieselben Gehalts- + Standortdetails wie die übrigen Boards.
+
+### Hinweise
+- Nur Scanner; keine neue Abhängigkeit, keine Änderung an Route / CSP / SSRF. Tests: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+
 ## [1.180.0] — 2026-08-14
 
 **Behoben (MITTEL, Berichte) — die `#/reports`-Liste ist jetzt eine Tabelle, und eine echte Bewertung, die ein Machine-Summary-Platzhalter verdeckte, wird wiederhergestellt.**
