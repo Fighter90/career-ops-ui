@@ -34,7 +34,12 @@ Router.register('networking', async () => {
     field(t('net.companyLabel', 'Company'), companyInput),
     field(t('net.roleLabel', 'Role'), roleInput),
     field(t('net.jdLabel', 'Job description'), jdInput),
-    c('div', null, buildBtn),
+    c('div', { style: { display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' } }, [
+      buildBtn,
+      // P4-ETA (v1.170.0) — honest duration hint for a long AI generation.
+      c('span', { className: 'eta-hint', title: t('common.etaTitle', 'Typical generation time') },
+        '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '30')),
+    ]),
   ]);
   root.appendChild(setup);
 

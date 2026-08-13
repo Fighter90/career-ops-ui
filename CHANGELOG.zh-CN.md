@@ -9,6 +9,16 @@
 ---
 
 
+## [1.170.0] — 2026-08-13
+
+**新增 (LOW) — 长 AI 生成的诚实 ETA 提示(P4-ETA)。** 繁重的生成(职业规划 ~40 秒、定位 / 市场 / 人脉 ~30 秒、two-pager ~20 秒)只显示"生成中…",没有时长感知。
+
+### 新增
+- 每个长生成按钮旁现在显示柔和的 **`⏱ ~N秒`** 提示(与 `#/auto` 的 ETA 一致)。共享 `.eta-hint` 样式 + 两个通用键(`common.eta` `~{n}s`、`common.etaTitle`)。
+
+### 说明
+- 仅客户端;无路由/CSP/SSRF/写入变更。i18n 键 +2 ×17(快照 1219 → 1221)。`tests/generation-eta-hint.test.mjs`(+2)。套件:**2434** (+2)。
+
 ## [1.169.0] — 2026-08-13
 
 **新增 (LOW) — 内联 PDF 预览(D-5)。** `GET /api/output/pdfs/:name` 强制 `Content-Disposition: attachment`,因此连 `#/cv` 的"打开"链接也是下载而非显示。

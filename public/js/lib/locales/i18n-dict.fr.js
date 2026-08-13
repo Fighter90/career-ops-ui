@@ -222,6 +222,8 @@ window.__I18N_DICT_FR = {
   'common.loading': "Chargement…",
   'common.error': "Erreur",
   'common.retry': "Réessayer",
+  'common.eta': "~{n}s",
+  'common.etaTitle': "Temps de génération typique",
   'common.save': "Enregistrer",
   'common.cancel': "Annuler",
   'common.confirm': "Confirmer",

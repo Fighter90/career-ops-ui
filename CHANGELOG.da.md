@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.170.0] — 2026-08-13
+
+**Tilføjet (LAV) — ærlige ETA-hints på lange AI-genereringer (P4-ETA).** Tunge genereringer (karriereplan ~40 s, orientering / marked / netværk ~30 s, two-pager ~20 s) viste blot "Genererer…" uden fornemmelse af varighed.
+
+### Tilføjet
+- Hver knap til lang generering har nu et dæmpet **`⏱ ~Ns`**-hint ved siden af (som ETA'en på `#/auto`). Delt `.eta-hint`-stil + to generiske nøgler (`common.eta` `~{n}s`, `common.etaTitle`).
+
+### Noter
+- Kun klient; ingen ændring af rute/CSP/SSRF/skrivning. +2 i18n-nøgler ×17 (snapshot 1219 → 1221). `tests/generation-eta-hint.test.mjs` (+2). Suite: **2434** (+2).
+
 ## [1.169.0] — 2026-08-13
 
 **Tilføjet (LAV) — inline PDF-forhåndsvisning (D-5).** `GET /api/output/pdfs/:name` tvang `Content-Disposition: attachment`, så selv "Åbn"-linket på `#/cv` downloadede i stedet for at vise.

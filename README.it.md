@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Ultima release — v1.169.0** — **Anteprima PDF inline (D-5)** — i PDF erano serviti come `attachment`, quindi anche "Apri" su `#/cv` li scaricava. `?inline=1` serve lo stesso file inline; la lista apre un'**👁 Anteprima** in una nuova scheda (Scarica invariato). **2432 test.**
+> **🆕 Ultima release — v1.170.0** — **ETA onesta sulle lunghe generazioni IA (P4-ETA)** — piano di carriera / orientamento / mercato / networking / two-pager mostravano solo "Generazione…". Ogni pulsante porta ora un suggerimento `⏱ ~Ns` (come l'ETA di `#/auto`). **2434 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

@@ -222,6 +222,8 @@ window.__I18N_DICT_RU = {
   'common.loading': "Загрузка…",
   'common.error': "Ошибка",
   'common.retry': "Повторить",
+  'common.eta': "~{n} с",
+  'common.etaTitle': "Обычное время генерации",
   'common.save': "Сохранить",
   'common.cancel': "Отмена",
   'common.confirm': "Подтвердить",

@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.170.0] — 2026-08-13
+
+**Ajouté (BASSE) — indices d'ETA honnêtes sur les longues générations IA (P4-ETA).** Les générations lourdes (plan de carrière ~40 s, orientation / marché / réseautage ~30 s, two-pager ~20 s) affichaient un simple « Génération… » sans indication de durée.
+
+### Ajouté
+- Chaque bouton de génération longue porte désormais un indice discret **`⏱ ~Ns`** à côté (comme l'ETA de `#/auto`). Style `.eta-hint` partagé + deux clés génériques (`common.eta` `~{n}s`, `common.etaTitle`).
+
+### Notes
+- Côté client uniquement ; aucun changement de route/CSP/SSRF/écriture. +2 clés i18n ×17 (instantané 1219 → 1221). `tests/generation-eta-hint.test.mjs` (+2). Suite : **2434** (+2).
+
 ## [1.169.0] — 2026-08-13
 
 **Ajouté (BASSE) — aperçu PDF en ligne (D-5).** `GET /api/output/pdfs/:name` forçait `Content-Disposition: attachment`, si bien que même le bouton « Ouvrir » de `#/cv` téléchargeait au lieu d'afficher.

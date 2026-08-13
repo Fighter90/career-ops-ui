@@ -77,7 +77,10 @@ Router.register('two-pager', async () => {
   const draftBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('twoPager.aiFill', '✨ AI fill assistant'));
   const previewBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('twoPager.preview', '👁 Preview & export'));
   const saveBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('twoPager.save', 'Save two-pager'));
-  const actions = c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', margin: '4px 0 8px' } }, [saveBtn, draftBtn, previewBtn]);
+  // P4-ETA (v1.170.0) — honest duration hint next to the ✨ AI-fill generation.
+  const draftEta = c('span', { className: 'eta-hint', title: t('common.etaTitle', 'Typical generation time') },
+    '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '20'));
+  const actions = c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', margin: '4px 0 8px' } }, [saveBtn, draftBtn, draftEta, previewBtn]);
   root.appendChild(actions);
   root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '0 0 24px' } },
     t('twoPager.privacyNote', 'Stored in your parent project’s user layer (config/two-pager.yml) — never sent anywhere except the LLM prompts you run.')));

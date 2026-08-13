@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.170.0] — 2026-08-13
+
+**Added (LOW) — honest ETA hints on long AI generations (P4-ETA).** Heavy generations (career-plan ~40 s observed, orientation / market / networking ~30 s, two-pager AI-fill ~20 s) showed a bare "Generating…" with no sense of how long to wait.
+
+### Added
+- Each long-generation button now carries a muted **`⏱ ~Ns`** hint next to it, mirroring the `#/auto` ETA (set expectations before the click). Shared `.eta-hint` style + two generic i18n keys — `common.eta` (`~{n}s`, substituted per page) and `common.etaTitle` ("Typical generation time") — so a page passes its typical seconds without a new key each time.
+
+### Notes
+- Client-only; no route, CSP, SSRF, or parent-write change. +2 i18n keys ×17 (`common.eta`, `common.etaTitle`; snapshot 1219 → 1221).
+- Tests: `tests/generation-eta-hint.test.mjs` (+2). Suite: **2434** (+2).
+
 ## [1.169.0] — 2026-08-13
 
 **Added (LOW) — inline PDF preview (D-5).** `GET /api/output/pdfs/:name` forced `Content-Disposition: attachment`, so even the `#/cv` "Open" link downloaded the file instead of showing it — the docs stress "review it before sending it anywhere".

@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.170.0] — 2026-08-13
+
+**Adicionado (BAIXA) — dicas de ETA honestas em gerações IA longas (P4-ETA).** Gerações pesadas (plano de carreira ~40 s, orientação / mercado / networking ~30 s, two-pager ~20 s) mostravam apenas "Gerando…" sem indicar a duração.
+
+### Adicionado
+- Cada botão de geração longa agora exibe uma dica **`⏱ ~Ns`** ao lado, como a ETA de `#/auto`. Estilo `.eta-hint` compartilhado + duas chaves genéricas (`common.eta` `~{n}s`, `common.etaTitle`).
+
+### Notas
+- Apenas cliente; sem mudança de rota/CSP/SSRF/escrita. +2 chaves i18n ×17 (snapshot 1219 → 1221). `tests/generation-eta-hint.test.mjs` (+2). Conjunto: **2434** (+2).
+
 ## [1.169.0] — 2026-08-13
 
 **Adicionado (BAIXA) — pré-visualização de PDF inline (D-5).** `GET /api/output/pdfs/:name` forçava `Content-Disposition: attachment`, então até o botão "Abrir" de `#/cv` baixava em vez de exibir.

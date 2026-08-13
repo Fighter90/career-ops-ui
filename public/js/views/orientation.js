@@ -19,7 +19,12 @@ Router.register('orientation', async () => {
     t('orient.subtitle', 'Which directions fit you — inferred from your own CV and profile: best-fit career vectors, recommended roles, strengths, and how your CV reads. A reflection, not a psychometric test.')));
 
   const genBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('orient.generate', 'Generate profile'));
-  root.appendChild(c('div', { style: { margin: '0 0 16px' } }, genBtn));
+  root.appendChild(c('div', { style: { display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', margin: '0 0 16px' } }, [
+    genBtn,
+    // P4-ETA (v1.170.0) — honest duration hint for a long AI generation.
+    c('span', { className: 'eta-hint', title: t('common.etaTitle', 'Typical generation time') },
+      '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '30')),
+  ]));
 
   const out = c('div');
   root.appendChild(out);

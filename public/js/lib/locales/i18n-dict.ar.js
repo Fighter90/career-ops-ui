@@ -221,6 +221,8 @@ window.__I18N_DICT_AR = {
   'common.loading': "جارٍ التحميل…",
   'common.error': "خطأ",
   'common.retry': "إعادة المحاولة",
+  'common.eta': "~{n} ثانية",
+  'common.etaTitle': "زمن التوليد المعتاد",
   'common.save': "حفظ",
   'common.cancel': "إلغاء",
   'common.confirm': "تأكيد",

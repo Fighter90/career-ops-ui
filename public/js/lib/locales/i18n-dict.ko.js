@@ -222,6 +222,8 @@ window.__I18N_DICT_KO = {
   'common.loading': "로딩 중…",
   'common.error': "오류",
   'common.retry': "다시 시도",
+  'common.eta': "약 {n}초",
+  'common.etaTitle': "일반적인 생성 시간",
   'common.save': "저장",
   'common.cancel': "취소",
   'common.confirm': "확인",

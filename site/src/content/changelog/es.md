@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.170.0] — 2026-08-13
+
+**Añadido (BAJA) — indicaciones de ETA honestas en generaciones IA largas (P4-ETA).** Las generaciones pesadas (plan de carrera ~40 s, orientación / mercado / networking ~30 s, two-pager ~20 s) mostraban solo "Generando…" sin indicar la duración.
+
+### Añadido
+- Cada botón de generación larga muestra ahora una pista **`⏱ ~Ns`** al lado, como la ETA de `#/auto`. Estilo `.eta-hint` compartido + dos claves genéricas (`common.eta` `~{n}s`, `common.etaTitle`).
+
+### Notas
+- Solo cliente; sin cambios de ruta/CSP/SSRF/escritura. +2 claves i18n ×17 (snapshot 1219 → 1221). `tests/generation-eta-hint.test.mjs` (+2). Conjunto: **2434** (+2).
+
 ## [1.169.0] — 2026-08-13
 
 **Añadido (BAJA) — vista previa de PDF en línea (D-5).** `GET /api/output/pdfs/:name` forzaba `Content-Disposition: attachment`, así que incluso el botón "Abrir" de `#/cv` descargaba en vez de mostrar.

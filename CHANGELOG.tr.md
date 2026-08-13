@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.170.0] — 2026-08-13
+
+**Eklendi (DÜŞÜK) — uzun yapay zekâ oluşturmalarında dürüst ETA ipuçları (P4-ETA).** Ağır oluşturmalar (kariyer planı ~40 sn, yönlendirme / pazar / networking ~30 sn, two-pager ~20 sn) süre hissi olmadan yalnızca "Oluşturuluyor…" gösteriyordu.
+
+### Eklendi
+- Her uzun oluşturma düğmesinin yanında artık sönük bir **`⏱ ~Nsn`** ipucu var (`#/auto` ETA'sı gibi). Paylaşılan `.eta-hint` stili + iki genel anahtar (`common.eta` `~{n}s`, `common.etaTitle`).
+
+### Notlar
+- Yalnızca istemci; rota/CSP/SSRF/yazma değişikliği yok. +2 i18n anahtarı ×17 (anlık görüntü 1219 → 1221). `tests/generation-eta-hint.test.mjs` (+2). Takım: **2434** (+2).
+
 ## [1.169.0] — 2026-08-13
 
 **Eklendi (DÜŞÜK) — satır içi PDF önizleme (D-5).** `GET /api/output/pdfs/:name`, `Content-Disposition: attachment` dayatıyordu; bu yüzden `#/cv`'deki "Aç" bağlantısı bile göstermek yerine indiriyordu.

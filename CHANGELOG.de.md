@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.170.0] — 2026-08-13
+
+**Hinzugefügt (NIEDRIG) — ehrliche ETA-Hinweise bei langen KI-Generierungen (P4-ETA).** Aufwändige Generierungen (Karriereplan ~40 s, Orientierung / Markt / Networking ~30 s, Two-Pager ~20 s) zeigten nur „Generiere…" ohne Dauer-Gefühl.
+
+### Hinzugefügt
+- Neben jedem Button für lange Generierung steht jetzt ein gedämpfter **`⏱ ~Ns`**-Hinweis (wie die ETA auf `#/auto`). Gemeinsamer `.eta-hint`-Stil + zwei generische Schlüssel (`common.eta` `~{n}s`, `common.etaTitle`).
+
+### Hinweise
+- Nur Client; keine Änderung an Route/CSP/SSRF/Schreibzugriff. +2 i18n-Schlüssel ×17 (Snapshot 1219 → 1221). `tests/generation-eta-hint.test.mjs` (+2). Suite: **2434** (+2).
+
 ## [1.169.0] — 2026-08-13
 
 **Hinzugefügt (NIEDRIG) — Inline-PDF-Vorschau (D-5).** `GET /api/output/pdfs/:name` erzwang `Content-Disposition: attachment`, sodass selbst der „Öffnen"-Link auf `#/cv` herunterlud statt anzuzeigen.

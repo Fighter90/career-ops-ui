@@ -222,6 +222,8 @@ window.__I18N_DICT_TR = {
   'common.loading': "Yükleniyor…",
   'common.error': "Hata",
   'common.retry': "Yeniden dene",
+  'common.eta': "~{n}sn",
+  'common.etaTitle': "Tipik oluşturma süresi",
   'common.save': "Kaydet",
   'common.cancel': "İptal",
   'common.confirm': "Onayla",

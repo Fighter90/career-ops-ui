@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.169.0** — **内联 PDF 预览(D-5)** — PDF 以 `attachment` 提供,连 `#/cv` 的"打开"也会下载。`?inline=1` 以内联方式提供同一文件;列表在新标签打开 **👁 预览**(下载不变)。 **2432 项测试。**
+> **🆕 最新版本 — v1.170.0** — **长 AI 生成的诚实 ETA(P4-ETA)** — 职业规划 / 定位 / 市场 / 人脉 / two-pager 只显示"生成中…"。每个生成按钮现在带 `⏱ ~N秒` 提示(与 `#/auto` ETA 一致)。 **2434 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

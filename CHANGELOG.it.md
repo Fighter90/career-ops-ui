@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.170.0] — 2026-08-13
+
+**Aggiunto (BASSA) — suggerimenti ETA onesti sulle lunghe generazioni IA (P4-ETA).** Le generazioni pesanti (piano di carriera ~40 s, orientamento / mercato / networking ~30 s, two-pager ~20 s) mostravano solo "Generazione…" senza percezione della durata.
+
+### Aggiunto
+- Accanto a ogni pulsante di generazione lunga compare ora un suggerimento attenuato **`⏱ ~Ns`** (come l'ETA di `#/auto`). Stile `.eta-hint` condiviso + due chiavi generiche (`common.eta` `~{n}s`, `common.etaTitle`).
+
+### Note
+- Solo client; nessuna modifica a route/CSP/SSRF/scrittura. +2 chiavi i18n ×17 (snapshot 1219 → 1221). `tests/generation-eta-hint.test.mjs` (+2). Suite: **2434** (+2).
+
 ## [1.169.0] — 2026-08-13
 
 **Aggiunto (BASSA) — anteprima PDF inline (D-5).** `GET /api/output/pdfs/:name` forzava `Content-Disposition: attachment`, quindi anche il pulsante "Apri" su `#/cv` scaricava invece di mostrare.
