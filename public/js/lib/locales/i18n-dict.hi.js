@@ -758,7 +758,7 @@ window.__I18N_DICT_HI = {
   'cv.pdfTitle': "जनरेट की गई PDF",
   'cv.pdfRunning': "PDF जनरेट हो रही है…",
   'cv.pdfDone': "PDF जनरेट हुई",
-  'cv.openPdf': "खोलें",
+  'cv.openPdf': "पूर्वावलोकन",
   'cv.downloadPdf': "डाउनलोड करें",
   'cv.pdfNeedsPlaywright': "Playwright मौजूद नहीं है। पैरेंट प्रोजेक्ट में चलाएं:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
   'set.title': "प्रोफ़ाइल",

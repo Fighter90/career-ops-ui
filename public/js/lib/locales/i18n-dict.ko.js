@@ -755,7 +755,7 @@ window.__I18N_DICT_KO = {
   'cv.pdfTitle': "생성된 PDF",
   'cv.pdfRunning': "PDF 생성 중…",
   'cv.pdfDone': "PDF 생성됨",
-  'cv.openPdf': "열기",
+  'cv.openPdf': "미리보기",
   'cv.downloadPdf': "다운로드",
   'cv.pdfNeedsPlaywright': "Playwright 가 없습니다. 부모 프로젝트에서 실행:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
   'set.title': "프로필",

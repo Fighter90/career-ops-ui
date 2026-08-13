@@ -754,7 +754,7 @@ window.__I18N_DICT_PL = {
   'cv.pdfTitle': "Wygenerowane pliki PDF",
   'cv.pdfRunning': "Generowanie PDF…",
   'cv.pdfDone': "PDF wygenerowany",
-  'cv.openPdf': "Otwórz",
+  'cv.openPdf': "Podgląd",
   'cv.downloadPdf': "Pobierz",
   'cv.pdfNeedsPlaywright': "Brakuje Playwright. Uruchom w projekcie nadrzędnym:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
   'set.title': "Profil",

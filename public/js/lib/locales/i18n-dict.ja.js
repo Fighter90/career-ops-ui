@@ -755,7 +755,7 @@ window.__I18N_DICT_JA = {
   'cv.pdfTitle': "生成された PDF",
   'cv.pdfRunning': "PDF を生成中…",
   'cv.pdfDone': "PDF が生成されました",
-  'cv.openPdf': "開く",
+  'cv.openPdf': "プレビュー",
   'cv.downloadPdf': "ダウンロード",
   'cv.pdfNeedsPlaywright': "Playwright がありません。親プロジェクトで実行:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
   'set.title': "プロフィール",

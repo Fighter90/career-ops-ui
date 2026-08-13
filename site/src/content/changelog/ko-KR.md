@@ -9,6 +9,17 @@
 ---
 
 
+## [1.169.0] — 2026-08-13
+
+**추가 (LOW) — 인라인 PDF 미리보기 (D-5).** `GET /api/output/pdfs/:name`가 `Content-Disposition: attachment`를 강제해 `#/cv`의 "열기" 링크조차 표시 대신 다운로드했습니다.
+
+### 추가됨
+- **`?inline=1`**은 동일한 정제 파일을 `Content-Disposition: inline`으로 제공해 새 탭에서 **👁 미리보기**로 렌더링합니다. 기본값은 여전히 다운로드. 새 라우트 없음; 동일한 이름 가드 적용.
+- `#/cv` PDF 목록의 첫 버튼이 **👁 미리보기**(다운로드 옆). `cv.openPdf` "열기" → "미리보기" ×17.
+
+### 참고
+- CSP/SSRF 변경 없음 — 동일한 `sanitizePathName`. 기존 i18n 키 1개 재작성 ×17(스냅샷 1219). `tests/output-pdfs.test.mjs` (+3). 총 **2432** (+3).
+
 ## [1.168.0] — 2026-08-13
 
 **수정 (LOW, a11y) — 체크박스 행이 이제 WCAG 2.5.8의 24×24 최소 타깃 크기를 충족합니다 (D-2).** `#/scan`, `#/config`, `#/evaluate`, `#/cv-studio`의 체크박스/라디오 라벨이 ~22 px 밴드였습니다.

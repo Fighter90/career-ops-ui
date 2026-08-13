@@ -114,3 +114,31 @@ test('Health: Playwright + parent-deps checks present, marked optional', async (
   assert.match(playwright.value, /npm install/);
   assert.match(parentDeps.value, /npm install/);
 });
+
+// D-5 (v1.169.0) — `?inline=1` serves the SAME file with an inline disposition
+// so the browser renders it (review-before-send preview) instead of forcing a
+// download. The default (no param) must stay `attachment`.
+test('D-5: GET /api/output/pdfs/:name?inline=1 serves an inline preview', async () => {
+  const r = await fetch(baseUrl + '/api/output/pdfs/cv-2026-05-03.pdf?inline=1');
+  assert.equal(r.status, 200);
+  assert.equal(r.headers.get('content-type'), 'application/pdf');
+  assert.match(
+    r.headers.get('content-disposition'),
+    /^inline;\s*filename="cv-2026-05-03\.pdf"/,
+    'inline=1 must switch Content-Disposition to inline',
+  );
+  const text = await r.text();
+  assert.ok(text.includes('%PDF-1.4'), 'same bytes served');
+});
+
+test('D-5: the default (no inline param) is still a download (attachment)', async () => {
+  const r = await fetch(baseUrl + '/api/output/pdfs/cv-2026-05-03.pdf');
+  assert.match(r.headers.get('content-disposition'), /^attachment;/, 'default stays attachment');
+});
+
+test('D-5: ?inline=1 still enforces the path/name guards (no bypass)', async () => {
+  const r1 = await fetch(baseUrl + '/api/output/pdfs/cv.txt?inline=1');
+  assert.equal(r1.status, 400, 'non-.pdf rejected even with inline');
+  const r2 = await fetch(baseUrl + '/api/output/pdfs/' + encodeURIComponent('../../etc/passwd.pdf') + '?inline=1');
+  assert.ok(r2.status >= 400, 'path traversal still blocked with inline');
+});

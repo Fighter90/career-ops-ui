@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.169.0] — 2026-08-13
+
+**Hinzugefügt (NIEDRIG) — Inline-PDF-Vorschau (D-5).** `GET /api/output/pdfs/:name` erzwang `Content-Disposition: attachment`, sodass selbst der „Öffnen"-Link auf `#/cv` herunterlud statt anzuzeigen.
+
+### Hinzugefügt
+- **`?inline=1`** liefert dieselbe bereinigte Datei mit `Content-Disposition: inline`, für eine **👁 Vorschau** in einem neuen Tab; Standard bleibt Download. Keine neue Route; dieselben Namens-Guards.
+- Der erste Button der PDF-Liste auf `#/cv` ist jetzt **👁 Vorschau** neben **⬇ Herunterladen**. `cv.openPdf` „Öffnen" → „Vorschau" ×17.
+
+### Hinweise
+- Keine CSP/SSRF-Änderung — dasselbe `sanitizePathName`. Ein bestehender i18n-Schlüssel neu formuliert ×17 (Snapshot 1219). `tests/output-pdfs.test.mjs` (+3). Suite: **2432** (+3).
+
 ## [1.168.0] — 2026-08-13
 
 **Behoben (NIEDRIG, a11y) — Checkbox-Zeilen erfüllen jetzt das 24×24-Minimum von WCAG 2.5.8 (D-2).** Checkbox-/Radio-Labels auf `#/scan`, `#/config`, `#/evaluate` und `#/cv-studio` lagen in einem ~22-px-Band.

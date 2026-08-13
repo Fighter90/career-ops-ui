@@ -8,6 +8,17 @@
 
 ---
 
+## [1.169.0] — 2026-08-13
+
+**新增 (LOW) — 內聯 PDF 預覽(D-5)。** `GET /api/output/pdfs/:name` 強制 `Content-Disposition: attachment`,因此連 `#/cv` 的「開啟」連結也是下載而非顯示。
+
+### 新增
+- **`?inline=1`** 以 `Content-Disposition: inline` 提供同一個經過驗證的檔案,讓瀏覽器在新分頁中算繪為 **👁 預覽**。預設(無參數)仍為下載。無新路由;相同的名稱防護。
+- `#/cv` PDF 清單的第一個按鈕現為 **👁 預覽**(在下載旁邊)。`cv.openPdf`「開啟」→「預覽」×17。
+
+### 說明
+- 無 CSP/SSRF 變更 — 相同的 `sanitizePathName`。重寫 1 個現有 i18n 鍵 ×17(快照 1219)。`tests/output-pdfs.test.mjs`(+3)。套件:**2432** (+3)。
+
 ## [1.168.0] — 2026-08-13
 
 **修復 (LOW, a11y) — 核取方塊列現在符合 WCAG 2.5.8 的 24×24 最小目標尺寸(D-2)。** `#/scan`、`#/config`、`#/evaluate`、`#/cv-studio` 上的核取方塊/單選標籤處於 ~22 px 的帶中。

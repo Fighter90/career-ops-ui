@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.169.0] — 2026-08-13
+
+**Added (LOW) — inline PDF preview (D-5).** `GET /api/output/pdfs/:name` forced `Content-Disposition: attachment`, so even the `#/cv` "Open" link downloaded the file instead of showing it — the docs stress "review it before sending it anywhere".
+
+### Added
+- **`?inline=1`** on `GET /api/output/pdfs/:name` serves the SAME sanitized file with `Content-Disposition: inline`, so the browser renders it in a new tab for a review-before-send **👁 Preview**. The default (no param) stays a download (attachment). No new route/surface; the same path-name guards apply.
+- The `#/cv` generated-PDF list's first button is now **👁 Preview** (opens `?inline=1`) next to the unchanged **⬇ Download**. `cv.openPdf` reworded "Open" → "Preview" ×17.
+
+### Notes
+- No CSP/SSRF change — same `sanitizePathName` gate; `inline` only affects the disposition header on the user's own generated PDF (served `application/pdf`). One existing i18n key reworded ×17 (no new keys; snapshot 1219).
+- Tests: `tests/output-pdfs.test.mjs` (+3: inline header, default-attachment, path guards under `?inline=1`). Suite: **2432** (+3).
+
 ## [1.168.0] — 2026-08-13
 
 **Fixed (LOW, a11y) — checkbox rows now meet the WCAG 2.5.8 24×24 target-size floor (D-2).** Checkbox/radio labels on `#/scan`, `#/config`, `#/evaluate` and `#/cv-studio` sat in a ~22 px band — 2 px under the minimum.

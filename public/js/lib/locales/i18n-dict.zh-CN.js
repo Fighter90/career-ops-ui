@@ -755,7 +755,7 @@ window.__I18N_DICT_ZH_CN = {
   'cv.pdfTitle': "已生成的 PDF",
   'cv.pdfRunning': "生成 PDF 中…",
   'cv.pdfDone': "PDF 已生成",
-  'cv.openPdf': "打开",
+  'cv.openPdf': "预览",
   'cv.downloadPdf': "下载",
   'cv.pdfNeedsPlaywright': "缺少 Playwright。在父项目中运行:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
   'set.title': "个人资料",

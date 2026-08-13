@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.168.0** — **बड़े चेकबॉक्स टैप लक्ष्य (a11y फ़िक्स)** — `#/scan`, `#/config`, `#/evaluate`, `#/cv-studio` पर चेकबॉक्स/रेडियो लेबल पंक्तियाँ ~22 px थीं, WCAG 2.5.8 के 24 px न्यूनतम से कम। एक `:has()` नियम ≥24 px की गारंटी देता है। **2429 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.169.0** — **इनलाइन PDF पूर्वावलोकन (D-5)** — PDF `attachment` के रूप में दिए जाते थे, इसलिए `#/cv` का "खोलें" भी उन्हें डाउनलोड करता था। `?inline=1` उसी फ़ाइल को इनलाइन देता है; सूची नई टैब में **👁 पूर्वावलोकन** खोलती है (डाउनलोड अपरिवर्तित)। **2432 परीक्षण।**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

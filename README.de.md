@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Neueste Version — v1.168.0** — **Größere Checkbox-Tippziele (a11y-Fix)** — Checkbox-/Radio-Zeilen auf `#/scan`, `#/config`, `#/evaluate`, `#/cv-studio` waren ~22 px, unter dem WCAG-2.5.8-Minimum von 24 px. Eine `:has()`-Regel garantiert ≥24 px. **2429 Tests.**
+> **🆕 Neueste Version — v1.169.0** — **Inline-PDF-Vorschau (D-5)** — PDFs wurden als `attachment` ausgeliefert, sodass selbst „Öffnen" auf `#/cv` sie herunterlud. `?inline=1` liefert dieselbe Datei inline; die Liste öffnet eine **👁 Vorschau** in einem neuen Tab (Download unverändert). **2432 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

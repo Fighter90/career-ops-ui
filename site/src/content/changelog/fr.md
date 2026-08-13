@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.169.0] — 2026-08-13
+
+**Ajouté (BASSE) — aperçu PDF en ligne (D-5).** `GET /api/output/pdfs/:name` forçait `Content-Disposition: attachment`, si bien que même le bouton « Ouvrir » de `#/cv` téléchargeait au lieu d'afficher.
+
+### Ajouté
+- **`?inline=1`** sert le MÊME fichier assaini avec `Content-Disposition: inline`, pour un **👁 Aperçu** dans un nouvel onglet ; le défaut reste un téléchargement. Aucune nouvelle route ; mêmes gardes de nom.
+- Le premier bouton de la liste de PDF sur `#/cv` est désormais **👁 Aperçu** à côté de **⬇ Télécharger**. `cv.openPdf` « Ouvrir » → « Aperçu » ×17.
+
+### Notes
+- Aucun changement CSP/SSRF — même `sanitizePathName`. Une clé i18n reformulée ×17 (instantané 1219). `tests/output-pdfs.test.mjs` (+3). Suite : **2432** (+3).
+
 ## [1.168.0] — 2026-08-13
 
 **Corrigé (BASSE, a11y) — les lignes de case cochée respectent désormais le minimum 24×24 de WCAG 2.5.8 (D-2).** Les libellés de case/radio sur `#/scan`, `#/config`, `#/evaluate` et `#/cv-studio` étaient dans une bande de ~22 px.

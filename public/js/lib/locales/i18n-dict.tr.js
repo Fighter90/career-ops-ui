@@ -755,7 +755,7 @@ window.__I18N_DICT_TR = {
   'cv.pdfTitle': "Oluşturulan PDF'ler",
   'cv.pdfRunning': "PDF oluşturuluyor…",
   'cv.pdfDone': "PDF oluşturuldu",
-  'cv.openPdf': "Aç",
+  'cv.openPdf': "Önizleme",
   'cv.downloadPdf': "İndir",
   'cv.pdfNeedsPlaywright': "Playwright eksik. Üst projede çalıştırın:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
   'set.title': "Profil",
