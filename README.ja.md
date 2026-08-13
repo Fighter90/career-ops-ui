@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2437%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新リリース — v1.170.0** — **長い AI 生成の正直な ETA(P4-ETA)** — キャリアプラン / オリエンテーション / マーケット / ネットワーキング / ツーページャーが「生成中…」だけを表示していました。各ボタンに `⏱ ~N秒` ヒントを追加(`#/auto` の ETA と同様)。 **2434 テスト。**
+> **🆕 最新リリース — v1.171.0** — **タイプスケール + z-index トークン(D-4、第一歩)** — `--font-size-*` と `--z-*` レイヤーを導入; すべての z-index リテラルを移行(値保持)し、主要フォントサイズがランプを使用。ピクセル変化なし。 **2437 テスト。**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

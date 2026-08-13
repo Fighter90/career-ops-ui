@@ -21,7 +21,7 @@
   box-shadow: var(--shadow-lg);
   font-weight: 500;
   font-size: 14px;
-  z-index: 1000;
+  z-index: var(--z-toast);
   max-width: 360px;
   /* v1.57.1 — detailed what/where/why error messages must wrap and stay
      readable instead of being clipped to one line. */
@@ -38,12 +38,12 @@
    postfix is tucked into <details> so it's reachable (BUG-006
    invariant) without dominating the toast. */
 .toast .toast-msg { margin: 0; }
-.toast .toast-detail { margin-top: 6px; font-size: 12px; opacity: .9; }
+.toast .toast-detail { margin-top: 6px; font-size: var(--font-size-sm); opacity: .9; }
 .toast .toast-detail > summary { cursor: pointer; -webkit-user-select: none; user-select: none; list-style: none; }
 .toast .toast-detail > summary::marker { content: ''; }
 .toast .toast-detail > summary::after { content: ' ▾'; opacity: .7; }
 .toast .toast-detail[open] > summary::after { content: ' ▴'; }
-.toast .toast-detail > code { display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; background: rgba(0,0,0,.15); padding: 4px 6px; border-radius: 4px; }
+.toast .toast-detail > code { display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--font-size-xs); background: rgba(0,0,0,.15); padding: 4px 6px; border-radius: 4px; }
 
 /* U-8 (v1.58.28) — collapsible <details> wrapper around the generated
    prompt on the 7 mode pages. Default closed so the page chrome and
@@ -112,7 +112,7 @@
   border: 1px solid var(--slate, #ddd);
   border-radius: 8px;
   width: 36px; height: 36px;
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   cursor: pointer;
   transition: background var(--transition);
 }
@@ -142,7 +142,7 @@
   background: var(--paper, #fff);
   border-left: 1px solid var(--slate, #ddd);
   box-shadow: -8px 0 24px rgba(0,0,0,.1);
-  z-index: 9999;
+  z-index: var(--z-drawer);
   display: flex; flex-direction: column;
   animation: notif-slide-in 200ms ease-out;
 }
@@ -174,7 +174,7 @@
    disturbing the existing flex-column layout (absolute positioning). */
 .notif-drawer__clear-all {
   background: transparent; border: 1px solid var(--slate, #ddd);
-  font-size: 12px; padding: 4px 10px; border-radius: 6px;
+  font-size: var(--font-size-sm); padding: 4px 10px; border-radius: 6px;
   cursor: pointer; color: var(--foggy, #666);
   margin-left: auto; margin-right: 8px;
 }
@@ -183,7 +183,7 @@
 /* v1.98.0 — in-app bug reporter trigger, mirrors the clear-all chip. */
 .notif-drawer__report-bug {
   background: transparent; border: 1px solid var(--slate, #ddd);
-  font-size: 12px; padding: 4px 10px; border-radius: 6px;
+  font-size: var(--font-size-sm); padding: 4px 10px; border-radius: 6px;
   cursor: pointer; color: var(--foggy, #666);
   margin-left: auto; margin-right: 8px; white-space: nowrap;
 }
@@ -225,7 +225,7 @@
 .api-keys__active { font-weight: 600; }
 .api-keys__count { color: var(--foggy, #666); }
 .notif-drawer__list { list-style: none; margin: 0; padding: 8px; overflow-y: auto; flex: 1; }
-.notif-drawer__empty { margin: 24px; color: var(--foggy, #999); font-size: 13px; text-align: center; }
+.notif-drawer__empty { margin: 24px; color: var(--foggy, #999); font-size: var(--font-size-md); text-align: center; }
 .notif-item {
   display: flex; flex-direction: column; gap: 4px;
   padding: 10px 12px;
@@ -236,9 +236,9 @@
 }
 .notif-item--error   { border-left-color: var(--rausch, #ff385c); }
 .notif-item--success { border-left-color: var(--kazan, #00a699); }
-.notif-item > time { font-size: 11px; color: var(--foggy, #999); }
-.notif-item__msg { margin: 0; font-size: 13px; }
-.notif-item__detail { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--foggy, #999); background: transparent; }
+.notif-item > time { font-size: var(--font-size-xs); color: var(--foggy, #999); }
+.notif-item__msg { margin: 0; font-size: var(--font-size-md); }
+.notif-item__detail { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--font-size-xs); color: var(--foggy, #999); background: transparent; }
 
 /* U-9 (v1.58.29) — Pipeline counter ↔ filter row. Above 720 px the
    flex gap-3 layout already works; at narrower widths the filter
@@ -256,7 +256,7 @@
 .modal {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: var(--z-modal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -286,8 +286,8 @@
   justify-content: space-between;
   align-items: center;
 }
-.modal-header h3 { margin: 0; font-size: 18px; font-weight: 700; }
-.modal-close { font-size: 28px; color: var(--foggy); padding: 0 6px; line-height: 1; }
+.modal-header h3 { margin: 0; font-size: var(--font-size-lg); font-weight: 700; }
+.modal-close { font-size: var(--font-size-2xl); color: var(--foggy); padding: 0 6px; line-height: 1; }
 .modal-close:hover { color: var(--hof); }
 .modal-body {
   padding: var(--space-5);
@@ -316,7 +316,7 @@
 .scan-progress-wrap[hidden] { display: none; }
 .scan-progress-label {
   display: block;
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--rausch);
   margin-bottom: 4px;
@@ -387,7 +387,7 @@
   background: var(--beach);
   border-radius: var(--radius-sm);
   padding: 2px 8px;
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   color: var(--foggy);
   margin-right: 4px;
 }
@@ -550,7 +550,7 @@
 }
 
 .docs-fab {
-  position: fixed; right: 24px; bottom: 24px; z-index: 1150;
+  position: fixed; right: 24px; bottom: 24px; z-index: var(--z-fab);
   width: 60px; height: 60px; border: none; border-radius: 50%;
   background: var(--fab-grad); color: #fff; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
@@ -562,7 +562,7 @@
 .docs-fab:focus-visible { outline: 3px solid var(--fab-accent); outline-offset: 3px; }
 
 .docs-fab__panel {
-  position: fixed; right: 24px; bottom: 96px; z-index: 1150;
+  position: fixed; right: 24px; bottom: 96px; z-index: var(--z-fab);
   width: 380px; max-width: calc(100vw - 40px);
   height: 560px; max-height: calc(100vh - 130px);
   display: flex; flex-direction: column;
@@ -587,8 +587,8 @@
   box-shadow: 0 2px 8px rgba(112, 140, 240, .4);
 }
 .docs-fab__head-meta { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-.docs-fab__title { font-weight: 700; font-size: 15px; line-height: 1.2; }
-.docs-fab__status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--foggy, #888); }
+.docs-fab__title { font-weight: 700; font-size: var(--font-size-base); line-height: 1.2; }
+.docs-fab__status { display: flex; align-items: center; gap: 6px; font-size: var(--font-size-sm); color: var(--foggy, #888); }
 .docs-fab__dot { width: 8px; height: 8px; border-radius: 50%; background: #35c759; box-shadow: 0 0 0 3px rgba(53, 199, 89, .18); }
 .docs-fab__close {
   flex: none; width: 30px; height: 30px; border: none; border-radius: 8px;
@@ -605,7 +605,7 @@
 .docs-fab__bubble--me { align-self: flex-end; background: var(--fab-grad); color: #fff; border-bottom-right-radius: 5px; }
 .docs-fab__bubble .md :first-child { margin-top: 0; }
 .docs-fab__bubble .md :last-child { margin-bottom: 0; }
-.docs-fab__src { margin-top: 8px; font-size: 11px; color: var(--foggy, #888); }
+.docs-fab__src { margin-top: 8px; font-size: var(--font-size-xs); color: var(--foggy, #888); }
 
 .docs-fab__chips { display: flex; flex-wrap: wrap; gap: 8px; align-self: flex-start; }
 .docs-fab__chip {
@@ -613,7 +613,7 @@
   padding: 8px 14px; border-radius: 999px; cursor: pointer;
   background: transparent; color: var(--fab-accent);
   border: 1px solid color-mix(in srgb, var(--fab-accent) 45%, transparent);
-  font-size: 13px; font-weight: 500;
+  font-size: var(--font-size-md); font-weight: 500;
   transition: background var(--transition, .18s ease), border-color var(--transition, .18s ease), transform var(--transition, .18s ease);
 }
 .docs-fab__chip:hover { background: color-mix(in srgb, var(--fab-accent) 12%, transparent); transform: translateY(-1px); }
@@ -673,11 +673,11 @@
    finding), so the nav + version footer always scroll clear above it. */
 .sidebar { padding-bottom: calc(var(--space-5) + var(--usage-hud-pad, 0px)); }
 .usage-hud {
-  position: fixed; left: 0; bottom: 0; z-index: 11;
+  position: fixed; left: 0; bottom: 0; z-index: var(--z-hud);
   width: var(--sidebar-w); max-width: 100vw;
   background: var(--paper); color: var(--hof, #222);
   border-top: 1px solid var(--slate); border-right: 1px solid var(--slate);
-  padding: 10px var(--space-3, 12px); font-size: 13px;
+  padding: 10px var(--space-3, 12px); font-size: var(--font-size-md);
 }
 .usage-hud__head {
   display: flex; align-items: center; gap: 8px; width: 100%;
@@ -686,8 +686,8 @@
 }
 .usage-hud__head:focus-visible { outline: 2px solid var(--hud-bar); outline-offset: 2px; border-radius: 6px; }
 .usage-hud__ic { display: inline-flex; color: var(--foggy, #888); }
-.usage-hud__title { text-transform: uppercase; letter-spacing: .08em; font-size: 11px; font-weight: 700; flex: 1; text-align: left; }
-.usage-hud__chev { transition: transform var(--transition, .18s ease); font-size: 12px; }
+.usage-hud__title { text-transform: uppercase; letter-spacing: .08em; font-size: var(--font-size-xs); font-weight: 700; flex: 1; text-align: left; }
+.usage-hud__chev { transition: transform var(--transition, .18s ease); font-size: var(--font-size-sm); }
 .usage-hud--collapsed .usage-hud__chev { transform: rotate(-90deg); }
 .usage-hud--collapsed { padding-bottom: 10px; }
 .usage-hud__bodywrap[hidden] { display: none; }
@@ -695,12 +695,12 @@
 .usage-hud__meter { margin: 0 0 10px; }
 .usage-hud__meter:last-child { margin-bottom: 0; }
 .usage-hud__meterhead { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 5px; }
-.usage-hud__win { font-weight: 600; font-size: 12px; color: var(--hof, #333); }
-.usage-hud__val { font-size: 12px; color: var(--foggy, #888); font-variant-numeric: tabular-nums; }
+.usage-hud__win { font-weight: 600; font-size: var(--font-size-sm); color: var(--hof, #333); }
+.usage-hud__val { font-size: var(--font-size-sm); color: var(--foggy, #888); font-variant-numeric: tabular-nums; }
 .usage-hud__bar { display: block; height: 6px; border-radius: 999px; background: var(--hud-track); overflow: hidden; }
 .usage-hud__barfill { display: block; height: 100%; border-radius: 999px; background: var(--hud-bar); transition: width var(--transition, .3s ease); }
-.usage-hud__empty { font-size: 12px; color: var(--foggy, #888); line-height: 1.5; }
-.usage-hud__footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--hud-border); font-size: 11px; color: var(--foggy, #888); }
+.usage-hud__empty { font-size: var(--font-size-sm); color: var(--foggy, #888); line-height: 1.5; }
+.usage-hud__footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--hud-border); font-size: var(--font-size-xs); color: var(--foggy, #888); }
 .usage-hud__footcost { font-weight: 700; color: var(--hof, #333); font-variant-numeric: tabular-nums; }
 
 [dir="rtl"] .usage-hud { left: auto; right: 0; border-right: none; border-left: 1px solid var(--slate); }

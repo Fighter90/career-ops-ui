@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2437%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Seneste udgivelse — v1.170.0** — **Ærlig ETA på lange AI-genereringer (P4-ETA)** — karriereplan / orientering / marked / netværk / two-pager viste blot "Genererer…". Hver knap har nu et `⏱ ~Ns`-hint (som ETA'en på `#/auto`). **2434 tests.**
+> **🆕 Seneste udgivelse — v1.171.0** — **Typeskala + z-index-tokens (D-4, første trin)** — indførte `--font-size-*` og `--z-*`-lag; hver z-index-literal migreret (værdier bevaret), og kerne-størrelserne bruger rampen. Ingen pixel-ændring. **2437 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

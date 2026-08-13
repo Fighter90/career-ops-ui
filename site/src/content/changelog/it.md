@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.171.0] — 2026-08-13
+
+**Modificato (BASSA, design-system) — token di scala tipografica + livelli z-index (D-4, primo passo).** Dimensioni e impilamento erano letterali per componente.
+
+### Modificato
+- **Livelli z-index** — introdotti token `--z-*` (`--z-topbar` … `--z-skiplink`) e **migrato ogni letterale z-index**. Valori preservati, impilamento identico; un nuovo canarino vieta nuovi numeri magici.
+- **Scala tipografica** — rampa `--font-size-*` (`xs 11` … `2xl 28`, base = Inter 15px); migrate le dimensioni centrali (nessun cambiamento visivo). I valori fuori rampa migrano in modo incrementale (`docs/UX-ROADMAP.md`).
+
+### Note
+- Solo token CSS; nessuna modifica a comportamento/JS/i18n/route/CSP/SSRF/scrittura. Nessun cambiamento di pixel. `tests/design-tokens-scale.test.mjs` (+3). Suite: **2437** (+3).
+
 ## [1.170.0] — 2026-08-13
 
 **Aggiunto (BASSA) — suggerimenti ETA onesti sulle lunghe generazioni IA (P4-ETA).** Le generazioni pesanti (piano di carriera ~40 s, orientamento / mercato / networking ~30 s, two-pager ~20 s) mostravano solo "Generazione…" senza percezione della durata.

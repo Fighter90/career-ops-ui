@@ -57,7 +57,7 @@
 .dash-chip {
   display: inline-block;
   padding: 3px 10px;
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   border-radius: 999px;
   background: var(--bg-subtle, rgba(0,0,0,.04));
   color: var(--foggy);
@@ -68,7 +68,7 @@
 .scan-advanced { display: inline-block; }
 .scan-advanced > summary {
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--font-size-md);
   color: var(--rausch-text, var(--rausch));
   -webkit-user-select: none;
   user-select: none;
@@ -96,7 +96,7 @@
   background: none;
   color: var(--foggy);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--font-size-md);
   font-weight: 600;
   /* WCAG 2.5.5 — ≥ 44 px hit area, matching the .tab-btn treatment. */
   min-height: 44px;
@@ -127,7 +127,7 @@
 
 /* v1.56.0 — UX-10: quiet, honest cost ballpark next to ⚡ Run live. */
 .cost-hint {
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   color: var(--foggy);
   margin: 8px 0 0;
 }
@@ -140,7 +140,7 @@
 }
 .metric-label {
   color: var(--foggy);
-  font-size: 13px;
+  font-size: var(--font-size-md);
   text-transform: uppercase;
   letter-spacing: 0.4px;
   font-weight: 600;
@@ -151,7 +151,7 @@
   letter-spacing: -1px;
   color: var(--hof);
 }
-.metric-sub { color: var(--foggy); font-size: 13px; }
+.metric-sub { color: var(--foggy); font-size: var(--font-size-md); }
 
 /* ───────────────────────── grids ───────────────────────── */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
@@ -204,7 +204,7 @@
 /* ── Quick-action grid on Dashboard (Command Center) ── */
 .qa-group { margin-bottom: var(--space-5); }
 .qa-group-title {
-  font-size: 13px;
+  font-size: var(--font-size-md);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -251,13 +251,13 @@
 .qa-tile--primary .qa-icon { font-size: 26px; }
 .qa-tile--primary .qa-label { font-weight: 600; }
 .qa-icon {
-  font-size: 22px;
+  font-size: var(--font-size-xl);
   line-height: 1;
   flex-shrink: 0;
 }
 .qa-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .qa-label { font-weight: 600; font-size: 14px; }
-.qa-sub { font-size: 12px; color: var(--foggy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.qa-sub { font-size: var(--font-size-sm); color: var(--foggy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ── Paginator (UI.paginate) ── */
 .paginator {
@@ -271,7 +271,7 @@
 .paginator .pg-btn { min-width: 36px; padding: 4px 10px; }
 .paginator .pg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .paginator .pg-summary {
-  font-size: 13px;
+  font-size: var(--font-size-md);
   color: var(--foggy);
   padding: 0 var(--space-2);
 }
@@ -282,7 +282,7 @@
   align-items: center;
   padding: 4px 10px;
   border-radius: var(--radius-pill);
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   font-weight: 600;
   background: var(--beach);
   color: var(--hof);
@@ -294,7 +294,7 @@
 /* v1.118.0 — parent v1.18.0 parity: canonical 'Hired' state (job landed). */
 .badge-hired { background: rgba(0,138,5,.2); color: var(--kazan-text); box-shadow: inset 0 0 0 1px rgba(0,138,5,.35); }
 .hired-banner { display: flex; align-items: center; gap: 10px; border: 1px solid rgba(0,138,5,.35); background: rgba(0,138,5,.08); }
-.hired-banner-emoji { font-size: 22px; line-height: 1; }
+.hired-banner-emoji { font-size: var(--font-size-xl); line-height: 1; }
 
 .score-pill {
   display: inline-flex;
@@ -304,7 +304,7 @@
   padding: 4px 10px;
   border-radius: var(--radius-pill);
   font-weight: 700;
-  font-size: 13px;
+  font-size: var(--font-size-md);
   background: var(--beach);
 }
 .score-high { background: rgba(0,138,5,.16); color: var(--kazan-text); }
@@ -351,7 +351,7 @@ table.tbl th {
   background: var(--beach);
   font-weight: 600;
   color: var(--foggy);
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -365,10 +365,10 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .field { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-4); }
 .field label {
   font-weight: 600;
-  font-size: 13px;
+  font-size: var(--font-size-md);
   color: var(--hof);
 }
-.field-hint { color: var(--foggy); font-size: 13px; }
+.field-hint { color: var(--foggy); font-size: var(--font-size-md); }
 
 /* #/scan result-filter panel: every filter is a labelled .field (label above
    its control). v1.148.0 — laid out on a responsive GRID (was a ragged
@@ -385,7 +385,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   margin-bottom: var(--space-3);
 }
 .scan-filters .scan-field { margin-bottom: 0; min-width: 0; }
-.scan-field__label { font-weight: 600; font-size: 13px; color: var(--hof); }
+.scan-field__label { font-weight: 600; font-size: var(--font-size-md); color: var(--hof); }
 .scan-filters .scan-field .input,
 .scan-filters .scan-field .select { width: 100%; }
 /* Actions span the full grid, separated from the filters by a hairline, and
@@ -457,7 +457,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 /* ───────────────────────── markdown ───────────────────────── */
 .md {
   line-height: 1.7;
-  font-size: 15px;
+  font-size: var(--font-size-base);
 }
 .md h1 { font-size: 26px; margin-top: 0; }
 .md h2 { font-size: 20px; margin-top: var(--space-6); padding-top: var(--space-3); border-top: 1px solid var(--slate); }
@@ -465,7 +465,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .md table { width: 100%; border-collapse: collapse; margin: var(--space-3) 0; }
 .md th, .md td { padding: 8px 12px; border: 1px solid var(--slate); font-size: 13.5px; text-align: left; }
 .md th { background: var(--beach); }
-.md code { background: var(--beach); padding: 2px 6px; border-radius: 6px; font-size: 13px; }
+.md code { background: var(--beach); padding: 2px 6px; border-radius: 6px; font-size: var(--font-size-md); }
 .md pre { background: #111; color: #c5e6c5; padding: var(--space-4); border-radius: var(--radius); overflow-x: auto; }
 .md pre code { background: transparent; color: inherit; padding: 0; }
 .md a { color: var(--rausch); }
@@ -482,7 +482,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .lang-select {
   width: 100%;
   min-height: 32px;
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   padding: 6px 10px;
   border-radius: 6px;
   border: 1px solid var(--slate);
@@ -505,7 +505,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   align-items: center;
 }
 .chip-label {
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--foggy);
   text-transform: uppercase;
@@ -540,7 +540,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 }
 .chip-count {
   font-weight: 700;
-  font-size: 11px;
+  font-size: var(--font-size-xs);
   opacity: .7;
 }
 .chip.clear {
@@ -555,7 +555,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .conn-banner {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: var(--z-banner);
   background: var(--rausch);
   color: white;
   padding: 12px 24px;
@@ -577,7 +577,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 #onboarding-banner.onboarding-warn {
   position: sticky;
   top: 0;
-  z-index: 49;
+  z-index: calc(var(--z-banner) - 1);
   background: var(--rausch);
   color: #fff;
   padding: 10px 24px;
@@ -591,7 +591,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 #onboarding-banner.onboarding-warn .btn-dark:hover { background: rgba(0,0,0,.6); }
 #onboarding-banner.onboarding-ok {
   padding: 6px 24px;
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   color: var(--foggy);
   background: var(--bg-subtle, rgba(0,0,0,.03));
   border-bottom: 1px solid var(--border, rgba(0,0,0,.08));
@@ -629,7 +629,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   padding: 0;
   flex: 0 0 auto;
   vertical-align: middle;
-  font-size: 11px;
+  font-size: var(--font-size-xs);
   font-weight: 700;
   line-height: 1;
   color: var(--foggy);
@@ -666,7 +666,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 
 .help-pop {
   position: fixed;
-  z-index: 950;
+  z-index: var(--z-popover);
   max-width: 320px;
   padding: 12px 14px;
   color: var(--ink);
@@ -674,12 +674,12 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   border: 1px solid var(--line);
   border-radius: var(--radius-lg, 12px);
   box-shadow: var(--shadow-lg, 0 8px 30px rgba(0,0,0,.18));
-  font-size: 13px;
+  font-size: var(--font-size-md);
   line-height: 1.5;
 }
 .help-pop-title {
   font-weight: 700;
-  font-size: 13px;
+  font-size: var(--font-size-md);
   margin: 0 0 4px;
   color: var(--ink);
 }
@@ -688,7 +688,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .help-pop-body p:last-child { margin-bottom: 0; }
 .help-pop-body strong { color: var(--ink); }
 .help-pop-body code {
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   padding: 1px 4px;
   border-radius: 4px;
   background: var(--bg-subtle, rgba(0,0,0,.05));

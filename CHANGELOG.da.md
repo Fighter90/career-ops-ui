@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.171.0] — 2026-08-13
+
+**Ændret (LAV, design-system) — typeskala + z-index-lag-tokens (D-4, første trin).** Størrelser og stabling var literaler pr. komponent.
+
+### Ændret
+- **z-index-lag** — indførte `--z-*`-tokens (`--z-topbar` … `--z-skiplink`) og **migrerede hver z-index-literal**. Værdier bevaret, stabling identisk; en ny kanariefugl forbyder nye magiske tal.
+- **Typeskala** — `--font-size-*`-rampe (`xs 11` … `2xl 28`, base = Inter 15px); migrerede kerne-størrelserne (ingen visuel ændring). Værdier uden for rampen migreres gradvist (`docs/UX-ROADMAP.md`).
+
+### Noter
+- Kun CSS-token; ingen ændring af adfærd/JS/i18n/rute/CSP/SSRF/skrivning. Ingen pixel-ændring. `tests/design-tokens-scale.test.mjs` (+3). Suite: **2437** (+3).
+
 ## [1.170.0] — 2026-08-13
 
 **Tilføjet (LAV) — ærlige ETA-hints på lange AI-genereringer (P4-ETA).** Tunge genereringer (karriereplan ~40 s, orientering / marked / netværk ~30 s, two-pager ~20 s) viste blot "Genererer…" uden fornemmelse af varighed.

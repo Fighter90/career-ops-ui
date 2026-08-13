@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.171.0] — 2026-08-13
+
+**Changed (LOW, design-system) — type-scale + z-index layer tokens (D-4, first step).** Sizes and stacking were literal per component; the system couldn't be reproduced from tokens alone.
+
+### Changed
+- **z-index layers** — introduced named `--z-*` tokens (`--z-topbar` … `--z-skiplink`) and **migrated every z-index literal** to them. Values are preserved, so stacking is **byte-identical**; a new canary forbids fresh bare z-index magic numbers.
+- **Type scale** — introduced a `--font-size-*` ramp (`xs 11` / `sm 12` / `md 13` / `base 15` / `lg 18` / `xl 22` / `2xl 28`, base = Inter 15px) and migrated the core sizes the components already used (value-preserving, zero visual change). Off-ramp one-offs (14 / 16 / 20 / 24 …) and weight/line-height tokens migrate incrementally as components are touched — tracked in `docs/UX-ROADMAP.md`.
+
+### Notes
+- CSS-token only; no behaviour, JS, i18n, route, CSP, SSRF, or parent-write change. No pixel changes (all migrations preserve the exact value).
+- Tests: `tests/design-tokens-scale.test.mjs` (+3: tokens defined, no bare z-index, base font uses the ramp). Suite: **2437** (+3).
+
 ## [1.170.0] — 2026-08-13
 
 **Added (LOW) — honest ETA hints on long AI generations (P4-ETA).** Heavy generations (career-plan ~40 s observed, orientation / market / networking ~30 s, two-pager AI-fill ~20 s) showed a bare "Generating…" with no sense of how long to wait.

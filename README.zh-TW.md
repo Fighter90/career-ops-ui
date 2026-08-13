@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2437%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.170.0** — **長 AI 生成的誠實 ETA(P4-ETA)** — 職涯規劃 / 定位 / 市場 / 人脈 / two-pager 只顯示「生成中…」。每個生成按鈕現在帶 `⏱ ~N秒` 提示(與 `#/auto` ETA 一致)。 **2434 項測試。**
+> **🆕 最新版本 — v1.171.0** — **字級刻度 + z-index 權杖(D-4,第一步)** — 引入 `--font-size-*` 與 `--z-*` 層;遷移所有 z-index 字面量(值保持),核心字級使用刻度。無像素變化。 **2437 項測試。**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.171.0] — 2026-08-13
+
+**Zmieniono (NISKIE, design-system) — tokeny skali typograficznej + warstwy z-index (D-4, pierwszy krok).** Rozmiary i nakładanie były literałami per komponent.
+
+### Zmieniono
+- **Warstwy z-index** — wprowadzono tokeny `--z-*` (`--z-topbar` … `--z-skiplink`) i **zmigrowano każdy literał z-index**. Wartości zachowane, nakładanie identyczne; nowy kanarek zakazuje nowych magicznych liczb.
+- **Skala typograficzna** — rampa `--font-size-*` (`xs 11` … `2xl 28`, base = Inter 15px); zmigrowano główne rozmiary (bez zmian wizualnych). Wartości spoza rampy migrują stopniowo (`docs/UX-ROADMAP.md`).
+
+### Uwagi
+- Tylko token CSS; bez zmian zachowania/JS/i18n/trasy/CSP/SSRF/zapisu. Bez zmian pikseli. `tests/design-tokens-scale.test.mjs` (+3). Zestaw: **2437** (+3).
+
 ## [1.170.0] — 2026-08-13
 
 **Dodano (NISKIE) — uczciwe wskazówki ETA przy długich generacjach AI (P4-ETA).** Ciężkie generacje (plan kariery ~40 s, orientacja / rynek / networking ~30 s, two-pager ~20 s) pokazywały tylko „Generowanie…" bez informacji o czasie.

@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.171.0] — 2026-08-13
+
+**Geändert (NIEDRIG, Design-System) — Typo-Skala + z-index-Layer-Tokens (D-4, erster Schritt).** Größen und Stapelung waren pro Komponente literal.
+
+### Geändert
+- **z-index-Layer** — `--z-*`-Tokens (`--z-topbar` … `--z-skiplink`) eingeführt und **jedes z-index-Literal migriert**. Werte erhalten, Stapelung identisch; ein neuer Canary verbietet neue Magic Numbers.
+- **Typo-Skala** — `--font-size-*`-Rampe (`xs 11` … `2xl 28`, Basis = Inter 15px); die Kern-Größen migriert (keine visuelle Änderung). Werte außerhalb der Rampe migrieren schrittweise (`docs/UX-ROADMAP.md`).
+
+### Hinweise
+- Nur CSS-Token; keine Änderung an Verhalten/JS/i18n/Route/CSP/SSRF/Schreibzugriff. Keine Pixel-Änderung. `tests/design-tokens-scale.test.mjs` (+3). Suite: **2437** (+3).
+
 ## [1.170.0] — 2026-08-13
 
 **Hinzugefügt (NIEDRIG) — ehrliche ETA-Hinweise bei langen KI-Generierungen (P4-ETA).** Aufwändige Generierungen (Karriereplan ~40 s, Orientierung / Markt / Networking ~30 s, Two-Pager ~20 s) zeigten nur „Generiere…" ohne Dauer-Gefühl.
