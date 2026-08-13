@@ -13,13 +13,13 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ## [1.181.0] — 2026-08-14
 
-**Modifié (FAIBLE, scanner) — portage de parité Getro (parent #2640) : salaire, toutes les localisations et détection distante par `work_mode`.**
+**Ajouté (scanner) — les tableaux Getro affichent désormais le salaire, toutes les localisations et les postes en télétravail.**
 
-### Modifié
-- Portage de la moitié sûre de l'extension `providers/getro.mjs` du parent (#2640) vers `server/lib/sources/getro.mjs`. Une offre Getro porte désormais une chaîne de **salaire** (depuis `compensation_amount_min/max_cents` + devise, annuel uniquement — reprenant la convention de chaîne remotli/lever que le filtre de salaire du client réanalyse), sa **localisation** joint **toutes** les `locations` (auparavant la première seulement), et `work_mode: 'remote'` est reconnu comme signal distant aux côtés du `remote` / texte de localisation existants. Pur mappage de données de la réponse API que web-ui récupère déjà — aucun nouvel hôte, aucun changement de surface SSRF.
+### Ajouté
+- Le scanner **Getro** (tableaux de réseaux de talents de fonds) affiche désormais un **salaire** sur chaque poste (fourchette annuelle + devise), liste **toutes** les localisations au lieu de la première seulement et signale les postes en **télétravail**. Un poste Getro dans votre scan et votre suivi porte désormais le même détail salaire + localisation que les autres tableaux.
 
 ### Notes
-- Volontairement NON porté : l'**auto-résolution** du `collection_id` du parent (elle récupère le `careers_url` du tableau lui-même — un hôte arbitraire — elle relève donc d'un changement distinct passant par la frontière SSRF `safeGet` de web-ui) et le plafond relevé à 1500 pages (web-ui garde son plafond de 200 pages / 4000 offres pour les scans déclenchés depuis le navigateur). Les 11 autres commits du parent dans cette synchronisation n'ont pas de miroir dans web-ui. Tests : `tests/sources-getro.test.mjs` (+5). Suite : **2470** (+5).
+- Scanner uniquement ; aucune nouvelle dépendance, aucun changement de route / CSP / SSRF. Tests : `tests/sources-getro.test.mjs` (+5). Suite : **2470** (+5).
 
 ## [1.180.0] — 2026-08-14
 

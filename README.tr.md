@@ -16,7 +16,7 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.181.0** — **Getro: maaş ve tüm konumlar** — Getro tarayıcısı artık maaşı gösteriyor, bir ilanın tüm konumlarını birleştiriyor ve `work_mode: remote`'u tanıyor (üst #2640 paritesi). **2470 test.**
+> **🆕 Son sürüm — v1.181.0** — **Getro: maaş ve tüm konumlar** — Getro tarayıcısı artık her ilanda maaş gösteriyor, tüm konumları (yalnızca ilkini değil) listeliyor ve uzaktan ilanları etiketliyor. **2470 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

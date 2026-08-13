@@ -16,7 +16,7 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.181.0** — **Getro: løn og alle lokationer** — Getro-scanneren viser nu løn, samler alle et jobs lokationer og anerkender `work_mode: remote` (paritet med forælder #2640). **2470 tests.**
+> **🆕 Seneste udgivelse — v1.181.0** — **Getro: løn og alle lokationer** — Getro-scanneren viser nu løn på hvert job, lister alle lokationer (ikke kun den første) og markerer fjernstillinger. **2470 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

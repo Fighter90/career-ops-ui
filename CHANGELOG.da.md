@@ -10,13 +10,13 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ## [1.181.0] — 2026-08-14
 
-**Ændret (LAV, scanner) — Getro-paritetsport (forælder #2640): løn, alle lokationer og `work_mode`-fjernregistrering.**
+**Tilføjet (scanner) — Getro-jobtavler viser nu løn, alle lokationer og fjernstillinger.**
 
-### Ændret
-- Portede den sikre halvdel af forælderens `providers/getro.mjs`-udvidelse (#2640) til `server/lib/sources/getro.mjs`. Et Getro-job bærer nu en **løn**-visningsstreng (fra `compensation_amount_min/max_cents` + valuta, kun årlig — efter remotli/lever-strengkonventionen, som klientens lønfilter genfortolker), dets **lokation** samler **alle** `locations` (før kun den første), og `work_mode: 'remote'` anerkendes som et fjernsignal ved siden af det eksisterende `remote`-flag / lokationstekst. Ren datamapping fra API-svaret, web-ui allerede henter — ingen ny vært, ingen ændring af SSRF-overflade.
+### Tilføjet
+- **Getro**-scanneren (fondes talentnetværkstavler) viser nu en **løn** på hvert job (årligt interval + valuta), lister **alle** lokationer i stedet for kun den første og markerer **fjern**-stillinger. Et Getro-job i din scanning og tracker bærer nu samme løn- + lokationsdetalje som de øvrige tavler.
 
 ### Noter
-- Bevidst IKKE portet: forælderens `collection_id`-**auto-resolve** (den henter tavlens eget `careers_url` — en vilkårlig vært — så den hører til en separat ændring gennem web-uis `safeGet` SSRF-grænse) og det hævede loft på 1500 sider (web-ui beholder sit loft på 200 sider / 4000 job for browser-udløste scanninger). De øvrige 11 forælder-commits i denne synkronisering har ingen spejling i web-ui. Tests: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+- Kun scanner; ingen ny afhængighed, ingen ændring af rute / CSP / SSRF. Tests: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
 
 ## [1.180.0] — 2026-08-14
 

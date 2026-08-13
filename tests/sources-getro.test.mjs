@@ -1,6 +1,6 @@
 /**
  * Getro source + adapter — CI-isolated tests (fake fetchImpl, no network, no
- * parent-project dependency). Parent career-ops `providers/getro.mjs` parity:
+ * parent-project dependency). Contract under test:
  * a numeric collection id interpolated straight into the API URL (so non-numeric
  * ids must be rejected), created_at-DESCENDING pagination with an age-based
  * pagination bound, portfolio-employer attribution, url dedup, and the
@@ -267,7 +267,7 @@ test('fetchGetro: age cutoff breaks pagination once a dated job is older than th
 });
 
 // ---------------------------------------------------------------------------
-// parent parity #2640 — salary, all-locations, work_mode remote-detect
+// salary, all-locations, work_mode remote-detect
 // ---------------------------------------------------------------------------
 
 test('getroSalary: annual comp cents → display string the client can re-parse', () => {
@@ -297,7 +297,7 @@ test('getroLocation: joins ALL locations, falls back to searchable_locations', (
   assert.equal(getroLocation({}), '');
 });
 
-test('deriveWorkplace: work_mode:"remote" marks the job remote (parent #2640)', () => {
+test('deriveWorkplace: work_mode:"remote" marks the job remote', () => {
   assert.equal(deriveWorkplace({ work_mode: 'remote' }).isRemote, true);
   assert.equal(deriveWorkplace({ work_mode: 'onsite' }, 'Zurich').isRemote, false);
 });

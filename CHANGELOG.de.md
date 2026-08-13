@@ -4,13 +4,13 @@
 
 ## [1.181.0] — 2026-08-14
 
-**Geändert (NIEDRIG, Scanner) — Getro-Paritätsport (Eltern #2640): Gehalt, alle Standorte und `work_mode`-Remote-Erkennung.**
+**Hinzugefügt (Scanner) — Getro-Jobboards zeigen jetzt Gehalt, alle Standorte und Remote-Stellen.**
 
-### Geändert
-- Die sichere Hälfte der `providers/getro.mjs`-Erweiterung des Eltern-Projekts (#2640) nach `server/lib/sources/getro.mjs` portiert. Eine Getro-Stelle trägt jetzt einen **Gehalts**-Anzeigestring (aus `compensation_amount_min/max_cents` + Währung, nur jährlich — nach der remotli/lever-Stringkonvention, die der Gehaltsfilter des Clients neu parst), ihr **Standort** vereint **alle** `locations` (zuvor nur den ersten), und `work_mode: 'remote'` wird neben dem bestehenden `remote`-Flag / Standorttext als Remote-Signal anerkannt. Reines Daten-Mapping aus der API-Antwort, die web-ui ohnehin abruft — kein neuer Host, keine Änderung der SSRF-Oberfläche.
+### Hinzugefügt
+- Der **Getro**-Scanner (Talent-Netzwerk-Boards von Fonds) zeigt jetzt bei jeder Stelle ein **Gehalt** (Jahresspanne + Währung), listet **alle** Standorte statt nur des ersten und markiert **Remote**-Stellen. Eine Getro-Stelle in Scan und Tracker trägt nun dieselben Gehalts- + Standortdetails wie die übrigen Boards.
 
 ### Hinweise
-- Bewusst NICHT portiert: das **Auto-Resolve** der `collection_id` des Eltern-Projekts (es holt das eigene `careers_url` des Boards — ein beliebiger Host — gehört daher in eine separate Änderung über die `safeGet`-SSRF-Grenze von web-ui) und das angehobene 1500-Seiten-Hardlimit (web-ui behält sein 200-Seiten- / 4000-Stellen-Limit für browserausgelöste Scans). Die übrigen 11 Eltern-Commits dieser Synchronisierung haben kein Spiegelbild in web-ui. Tests: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+- Nur Scanner; keine neue Abhängigkeit, keine Änderung an Route / CSP / SSRF. Tests: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
 
 ## [1.180.0] — 2026-08-14
 

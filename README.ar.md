@@ -16,7 +16,7 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.181.0** — **Getro: الراتب وجميع المواقع** — يعرض ماسح Getro الآن الراتب، ويجمع كل مواقع الوظيفة، ويعترف بـ `work_mode: remote` (تكافؤ مع الأصل #2640). **2470 اختبار.**
+> **🆕 أحدث إصدار — v1.181.0** — **Getro: الراتب وجميع المواقع** — يعرض ماسح Getro الآن الراتب لكل وظيفة، ويسرد جميع المواقع (لا الأول فقط)، ويضع علامة على الوظائف عن بُعد. **2470 اختبار.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

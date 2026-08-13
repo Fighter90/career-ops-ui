@@ -16,7 +16,7 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.181.0** — **Getro: stipendio e tutte le località** — lo scanner Getro ora mostra lo stipendio, unisce tutte le località di un'offerta e riconosce `work_mode: remote` (parità col padre #2640). **2470 test.**
+> **🆕 Ultima release — v1.181.0** — **Getro: stipendio e tutte le località** — lo scanner Getro ora mostra lo stipendio su ogni posizione, elenca tutte le località (non solo la prima) e contrassegna le posizioni da remoto. **2470 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

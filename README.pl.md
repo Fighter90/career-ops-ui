@@ -16,7 +16,7 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.181.0** — **Getro: wynagrodzenie i wszystkie lokalizacje** — skaner Getro pokazuje teraz wynagrodzenie, łączy wszystkie lokalizacje oferty i uwzględnia `work_mode: remote` (parytet z rodzicem #2640). **2470 testów.**
+> **🆕 Najnowsze wydanie — v1.181.0** — **Getro: wynagrodzenie i wszystkie lokalizacje** — skaner Getro pokazuje teraz wynagrodzenie przy każdej ofercie, wypisuje wszystkie lokalizacje (nie tylko pierwszą) i oznacza oferty zdalne. **2470 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

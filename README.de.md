@@ -16,7 +16,7 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.181.0** — **Getro: Gehalt & alle Standorte** — der Getro-Scanner zeigt jetzt ein Gehalt, vereint alle Standorte einer Stelle und erkennt `work_mode: remote` (Parität mit Eltern #2640). **2470 Tests.**
+> **🆕 Neueste Version — v1.181.0** — **Getro: Gehalt & alle Standorte** — der Getro-Scanner zeigt jetzt bei jeder Stelle ein Gehalt, listet alle Standorte (nicht nur den ersten) und markiert Remote-Stellen. **2470 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

@@ -16,7 +16,7 @@ _Неофициальный интерфейс — не аффилирован �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.181.0** — **Getro: зарплата и все локации** — сканер Getro теперь показывает зарплату, объединяет все локации вакансии и учитывает `work_mode: remote` (паритет с родителем #2640). **2470 тестов.**
+> **🆕 Последний релиз — v1.181.0** — **Getro: зарплата и все локации** — сканер Getro теперь показывает зарплату по каждой вакансии, перечисляет все локации (а не только первую) и отмечает удалённые вакансии. **2470 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

@@ -4,9 +4,8 @@
  * portfolio companies). Powers b2venture, Earlybird, Point Nine, Speedinvest,
  * Cherry, HV Capital, Atomico, and many other VC boards.
  *
- * Ported from parent career-ops `providers/getro.mjs` into the web-ui source
- * contract (rich job objects + `meta` for auto-discovery). The public search
- * API is:
+ * Built to the web-ui source contract (rich job objects + `meta` for
+ * auto-discovery). The public search API is:
  *   POST https://api.getro.com/api/v2/collections/{collection_id}/search/jobs
  *   body: {"hitsPerPage":N,"page":P}
  *   -> { results: { jobs: [ {title,url,organization:{name},locations[],created_at} ], count } }
@@ -123,8 +122,8 @@ function hashUrl(s) {
 
 /**
  * Derive the workplace signal for a Getro job. Getro exposes remoteness as a
- * boolean `remote` flag, a `work_mode: 'remote'` field (parent parity, #2640),
- * or purely in the location text ("Remote - US"), so all are honoured; on-site
+ * boolean `remote` flag, a `work_mode: 'remote'` field, or purely in the
+ * location text ("Remote - US"), so all are honoured; on-site
  * is only asserted when there is a location to assert it about (an empty
  * location stays unknown, "missing = pass"). Exported for tests.
  * @param {any} job
@@ -144,11 +143,10 @@ export function deriveWorkplace(job, location = '') {
 }
 
 /**
- * Build the salary DISPLAY STRING from a Getro job's compensation fields
- * (parent parity, #2640 — the parent emits a `{min,max,currency}` object for
- * its own salary_filter; web-ui's job shape carries salary as a string that the
- * client `Skills.parseSalaryRange` re-parses, so we mirror the remotli/lever
- * string convention here). Only an ANNUAL figure is emitted: an hourly/monthly
+ * Build the salary DISPLAY STRING from a Getro job's compensation fields.
+ * web-ui's job shape carries salary as a string that the client
+ * `Skills.parseSalaryRange` re-parses, so this follows the same remotli/lever
+ * string convention. Only an ANNUAL figure is emitted: an hourly/monthly
  * `compensation_period` would read as a wildly-off yearly number in the filter,
  * so those return '' ("missing = pass"). Amounts are cents → whole units.
  * Exported for tests.
@@ -171,8 +169,8 @@ export function getroSalary(job) {
 }
 
 /**
- * All known locations joined (not just the first — parent parity, #2640). Getro
- * boards commonly list several offices for one role; showing only `locations[0]`
+ * All known locations joined (not just the first). Getro boards commonly list
+ * several offices for one role; showing only `locations[0]`
  * dropped the rest. Falls back to `searchable_locations` when `locations` is
  * empty. Remoteness is carried separately by deriveWorkplace/workplaceType, so
  * the location string stays the real places only. Exported for tests.
@@ -241,7 +239,7 @@ export function normalizeGetroJob(job, fallbackCompany = '', createdMs) {
 /**
  * Fetch + normalize a Getro collection's jobs, paginating newest-first.
  *
- * Config is read from `opts.company` (parent parity): `getro_collection`
+ * Config is read from `opts.company`: `getro_collection`
  * (required numeric id), `getro_max_pages` (default 40, hard cap 200),
  * `getro_max_age_days` (default 90, pagination bound; 0 disables the cutoff).
  *

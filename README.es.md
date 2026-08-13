@@ -16,7 +16,7 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.181.0** — **Getro: salario y todas las ubicaciones** — el escáner de Getro ahora muestra el salario, une todas las ubicaciones de un puesto y reconoce `work_mode: remote` (paridad con el padre #2640). **2470 pruebas.**
+> **🆕 Última versión — v1.181.0** — **Getro: salario y todas las ubicaciones** — el escáner de Getro ahora muestra el salario en cada puesto, lista todas las ubicaciones (no solo la primera) y etiqueta los puestos remotos. **2470 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

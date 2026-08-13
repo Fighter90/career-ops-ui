@@ -16,7 +16,7 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.181.0** — **Getro: 급여 및 전체 위치** — Getro 스캐너가 이제 급여를 표시하고 채용의 모든 위치를 결합하며 `work_mode: remote`를 인식합니다 (상위 #2640 패리티). **2470개 테스트.**
+> **🆕 최신 릴리스 — v1.181.0** — **Getro: 급여 및 전체 위치** — Getro 스캐너가 이제 각 채용의 급여를 표시하고, (첫 번째만이 아닌) 모든 위치를 나열하며, 원격 채용을 표시합니다. **2470개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

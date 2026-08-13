@@ -13,13 +13,13 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ## [1.181.0] — 2026-08-14
 
-**Cambiado (BAJO, escáner) — port de paridad de Getro (padre #2640): salario, todas las ubicaciones y detección remota por `work_mode`.**
+**Añadido (escáner) — los tableros de Getro ahora muestran salario, todas las ubicaciones y puestos remotos.**
 
-### Cambiado
-- Se portó la mitad segura de la extensión de `providers/getro.mjs` del padre (#2640) a `server/lib/sources/getro.mjs`. Un empleo de Getro ahora lleva una cadena de **salario** (desde `compensation_amount_min/max_cents` + moneda, solo anual — replicando la convención de cadena de remotli/lever que el filtro de salario del cliente vuelve a analizar), su **ubicación** une **todas** las `locations` (antes solo la primera), y `work_mode: 'remote'` se reconoce como señal remota junto al `remote` / texto de ubicación existentes. Puro mapeo de datos de la respuesta de la API que web-ui ya obtiene — sin nuevo host, sin cambio de superficie SSRF.
+### Añadido
+- El escáner de **Getro** (tableros de redes de talento de fondos) ahora muestra una cifra de **salario** en cada puesto (rango anual + moneda), lista **todas** las ubicaciones en lugar de solo la primera y etiqueta los puestos **remotos**. Un puesto de Getro en tu escaneo y seguimiento ahora tiene el mismo detalle de salario + ubicación que los demás tableros.
 
 ### Notas
-- NO portado a propósito: el **auto-resolve** del `collection_id` del padre (obtiene el `careers_url` del propio tablero — un host arbitrario — así que corresponde a un cambio aparte enrutado por el límite SSRF `safeGet` de web-ui) y el tope elevado de 1500 páginas (web-ui mantiene su tope de 200 páginas / 4000 empleos para escaneos disparados desde el navegador). Los otros 11 commits del padre en esta sincronización no tienen espejo en web-ui. Pruebas: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+- Solo escáner; sin nueva dependencia, sin cambios de ruta / CSP / SSRF. Pruebas: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
 
 ## [1.180.0] — 2026-08-14
 

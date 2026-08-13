@@ -16,7 +16,7 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.181.0** — **Getro : salaire et toutes les localisations** — le scanner Getro affiche désormais le salaire, joint toutes les localisations d'un poste et reconnaît `work_mode: remote` (parité parent #2640). **2470 tests.**
+> **🆕 Dernière version — v1.181.0** — **Getro : salaire et toutes les localisations** — le scanner Getro affiche désormais le salaire sur chaque poste, liste toutes les localisations (pas seulement la première) et signale les postes en télétravail. **2470 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

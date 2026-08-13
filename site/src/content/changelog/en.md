@@ -10,13 +10,13 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 ## [1.181.0] — 2026-08-14
 
-**Changed (LOW, scanner) — Getro parity port (parent #2640): salary, all-locations, and `work_mode` remote-detect.**
+**Added (scanner) — Getro job boards now show salary, every location, and remote roles.**
 
-### Changed
-- Ported the safe half of the parent's `providers/getro.mjs` extension (#2640) into `server/lib/sources/getro.mjs`. A Getro job now carries a **salary** display string (from `compensation_amount_min/max_cents` + currency, annual only — mirroring the remotli/lever string convention the client salary filter re-parses), its **location** joins **all** `locations` (was only the first), and `work_mode: 'remote'` is honoured as a remote signal alongside the existing `remote` flag / location text. Pure data-mapping from the API response web-ui already fetches — no new host, no SSRF-surface change.
+### Added
+- The **Getro** scanner (VC talent-network boards) now surfaces a **salary** figure on each role (annual pay range + currency), lists **all** of a role's locations instead of just the first, and tags **remote** roles. A Getro posting in your scan and tracker now carries the same salary + location detail as every other board.
 
 ### Notes
-- Deliberately NOT ported: the parent's `collection_id` **auto-resolve** (it fetches the board's own `careers_url` — an arbitrary host — so it belongs in a separate change routed through web-ui's `safeGet` SSRF boundary) and the raised 1500-page hard cap (web-ui keeps its 200-page / 4000-job cap for browser-triggered scans). The other 11 parent commits in this sync have no web-ui mirror. Tests: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
+- Scanner-only; no new dependency, no route / CSP / SSRF change. Tests: `tests/sources-getro.test.mjs` (+5). Suite: **2470** (+5).
 
 ## [1.180.0] — 2026-08-14
 
