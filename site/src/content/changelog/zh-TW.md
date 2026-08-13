@@ -8,6 +8,17 @@
 
 ---
 
+## [1.175.0] — 2026-08-13
+
+**修復 (LOW, 加固) — 為 FIND-3 SEO 描述加回歸護欄 + 空值安全的合法性剝離(AI 評審跟進)。**
+
+### 修復
+- **SEO 描述一致性護欄** — v1.174.0 將各語言 `meta.desc` 中硬編碼的 "~55" 換成註冊表衍生的 `{adapters}` 佔位符,但沒有測試,下次編輯某個語言時可能悄悄回退。新的 CI 隔離測試 `tests/site-meta-desc-parity.test.mjs` 在 17 個 `site/src/i18n/*.json` 中任一遺失佔位符、重新硬編碼計數,或 `Landing.astro` 停止把它插入三個描述中繼標籤時失敗。
+- **空值安全的合法性剝離** — `stripEmphasis` 對空值輸入回傳 `''` 而非字串 "undefined"(欄位以字串初始化,屬縱深防禦)。
+
+### 說明
+- 測試 + 解析器一行護欄;無路由 / CSP / SSRF / 父寫入變更。測試:`tests/site-meta-desc-parity.test.mjs`(+3)。套件:**2451**(+3)。
+
 ## [1.174.0] — 2026-08-13
 
 **修復 (HIGH, 報告) — 本地化報告顯示 "Score not detected";SEO 描述過時。**

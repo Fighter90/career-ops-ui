@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.175.0] — 2026-08-13
+
+**Düzeltildi (LOW, sağlamlaştırma) — FIND-3 SEO açıklaması için bir regresyon nöbetçisi + null'a dayanıklı meşruiyet temizliği (AI-review takibi).**
+
+### Düzeltildi
+- **SEO açıklaması parite nöbetçisi** — her dilin `meta.desc` alanındaki sabit kodlu "~55"i kayıt defterinden türetilen `{adapters}` yer tutucusuyla değiştiren v1.174.0 düzeltmesinin testi yoktu, bu yüzden bir sonraki dil düzenlemesinde sessizce geri dönebiliyordu. Yeni, CI'dan yalıtılmış `tests/site-meta-desc-parity.test.mjs`, 17 `site/src/i18n/*.json` dosyasından biri yer tutucuyu kaybederse veya bir sayıyı yeniden sabit kodlarsa ya da `Landing.astro` onu üç açıklama meta'sına yerleştirmeyi bırakırsa başarısız olur.
+- **Null'a dayanıklı meşruiyet temizliği** — `stripEmphasis` boş girdi için "undefined" dizesi yerine `''` döndürür (alanlar dize olarak başlatılır, yani derinlemesine savunma).
+
+### Notlar
+- Test + ayrıştırıcıda tek satırlık bir nöbetçi; rota / CSP / SSRF / üst yazma değişikliği yok. Testler: `tests/site-meta-desc-parity.test.mjs` (+3). Takım: **2451** (+3).
+
 ## [1.174.0] — 2026-08-13
 
 **Düzeltildi (HIGH, raporlar) — yerelleştirilmiş raporlar "Score not detected" gösteriyordu; SEO açıklaması eskimişti.**

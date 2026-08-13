@@ -281,8 +281,10 @@ function yamlValue(src, key) {
 
 // v1.174.0 (FIND-2) — strip markdown emphasis markers (**bold** / *italic*)
 // from an extracted value, so a legitimacy chip reads "High Confidence", not
-// "** High Confidence".
-const stripEmphasis = (s) => String(s).replace(/\*+/g, '').trim();
+// "** High Confidence". v1.175.0 — nullish-safe (a nullish input yields '',
+// never the string "undefined"; the fields are string-initialized, so this is
+// defense-in-depth per the AI review).
+const stripEmphasis = (s) => (s == null ? '' : String(s).replace(/\*+/g, '').trim());
 
 // v1.174.0 (FIND-1) — a localized BOLD label line: `**Оценка:** 1.5 / 5` /
 // `**Label**: value`. Requiring the leading `**` is what makes this immune to

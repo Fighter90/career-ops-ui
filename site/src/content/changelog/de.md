@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.175.0] — 2026-08-13
+
+**Behoben (LOW, Härtung) — ein Regressionswächter für die FIND-3-SEO-Beschreibung + ein nullsicheres Seriositäts-Strip (AI-Review-Nachbereitung).**
+
+### Behoben
+- **Paritätswächter der SEO-Beschreibung** — der v1.174.0-Fix, der ein fest codiertes "~55" im `meta.desc` jeder Sprache durch einen registry-abgeleiteten `{adapters}`-Platzhalter ersetzte, hatte keinen Test und konnte bei der nächsten Locale-Bearbeitung still regredieren. Der neue CI-isolierte `tests/site-meta-desc-parity.test.mjs` schlägt fehl, wenn eine der 17 `site/src/i18n/*.json` den Platzhalter verliert oder eine Zahl erneut fest codiert, oder wenn `Landing.astro` ihn nicht mehr in alle drei Beschreibungs-Metas interpoliert.
+- **Nullsicheres Seriositäts-Strip** — `stripEmphasis` liefert `''` für einen nullish-Eingang statt der Zeichenkette "undefined" (die Felder sind string-initialisiert, also Verteidigung in der Tiefe).
+
+### Hinweise
+- Test + ein einzeiliger Wächter im Parser; keine Änderung an Route / CSP / SSRF / Eltern-Schreibzugriff. Tests: `tests/site-meta-desc-parity.test.mjs` (+3). Suite: **2451** (+3).
+
 ## [1.174.0] — 2026-08-13
 
 **Behoben (HIGH, Berichte) — lokalisierte Berichte zeigten „Score not detected"; die SEO-Beschreibung war veraltet.**

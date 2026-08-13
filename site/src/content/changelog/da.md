@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.175.0] — 2026-08-13
+
+**Rettet (LOW, hærdning) — en regressionsvagt for FIND-3 SEO-beskrivelsen + en nullsikker legitimitets-strip (AI-review-opfølgning).**
+
+### Rettet
+- **Paritetsvagt for SEO-beskrivelsen** — v1.174.0-rettelsen, der udskiftede et hard-kodet "~55" i hvert sprogs `meta.desc` med en register-afledt `{adapters}`-pladsholder, havde ingen test og kunne regressere i stilhed ved næste locale-redigering. Den nye CI-isolerede `tests/site-meta-desc-parity.test.mjs` fejler, hvis en af de 17 `site/src/i18n/*.json` mister pladsholderen eller hard-koder et antal igen, eller hvis `Landing.astro` holder op med at interpolere den ind i alle tre beskrivelses-metaer.
+- **Nullsikker legitimitets-strip** — `stripEmphasis` returnerer `''` for et nullish-input i stedet for strengen "undefined" (felterne er streng-initialiserede, så det er forsvar i dybden).
+
+### Noter
+- Test + en enkeltlinjes vagt i parseren; ingen ændring af rute / CSP / SSRF / forælderskrivning. Tests: `tests/site-meta-desc-parity.test.mjs` (+3). Suite: **2451** (+3).
+
 ## [1.174.0] — 2026-08-13
 
 **Rettet (HIGH, rapporter) — lokaliserede rapporter viste "Score not detected"; SEO-beskrivelsen var forældet.**

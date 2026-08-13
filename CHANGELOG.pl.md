@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.175.0] — 2026-08-13
+
+**Naprawiono (LOW, utwardzanie) — strażnik regresji dla opisu SEO z FIND-3 + odporny na nulle strip wiarygodności (kontynuacja AI-review).**
+
+### Naprawiono
+- **Strażnik parytetu opisu SEO** — poprawka v1.174.0, która zamieniła zakodowane na sztywno "~55" w `meta.desc` każdego języka na placeholder `{adapters}` z rejestru, nie miała testu i mogła po cichu się cofnąć przy następnej edycji locale. Nowy, izolowany od CI `tests/site-meta-desc-parity.test.mjs` zawodzi, jeśli którykolwiek z 17 `site/src/i18n/*.json` utraci placeholder lub ponownie zakoduje liczbę, albo jeśli `Landing.astro` przestanie go wstawiać do trzech meta-opisów.
+- **Odporny na nulle strip wiarygodności** — `stripEmphasis` zwraca `''` dla wejścia nullish zamiast napisu "undefined" (pola są inicjalizowane jako napis, więc to obrona w głąb).
+
+### Uwagi
+- Test + jednoliniowy strażnik w parserze; bez zmian tras / CSP / SSRF / zapisu do rodzica. Testy: `tests/site-meta-desc-parity.test.mjs` (+3). Zestaw: **2451** (+3).
+
 ## [1.174.0] — 2026-08-13
 
 **Naprawiono (HIGH, raporty) — zlokalizowane raporty pokazywały „Score not detected"; opis SEO był nieaktualny.**

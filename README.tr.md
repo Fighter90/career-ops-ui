@@ -7,16 +7,16 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2448%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2451%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.174.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.174.0)
+[![release](https://img.shields.io/badge/release-v1.175.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.175.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.174.0** — **Yerelleştirilmiş rapor puanları + SEO düzeltmesi** — İngilizce olmayan raporlar artık "Score not detected" göstermiyor (etiket sözcüğü içeren bir H1 puan sanılıyordu); meşruiyet rozetleri artık `**` kalıntılarını siliyor, uzun puanlar kartı taşırmıyor ve cvstart.org açıklaması gerçek kayıt defterini sayıyor (~75). **2448 test.**
+> **🆕 Son sürüm — v1.175.0** — **SEO açıklaması regresyon nöbetçisi** — 17 site dilinden biri `{adapters}` yer tutucusunu kaybeder veya bir sayıyı yeniden sabit kodlarsa ("~55" hatasının nedeni) bir CI testi artık başarısız olur; ayrıca null'a dayanıklı meşruiyet temizliği. **2451 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.175.0] — 2026-08-13
+
+**Corregido (LOW, endurecimiento) — una guardia de regresión para la descripción SEO de FIND-3 + un strip de legitimidad a prueba de nulos (seguimiento de la AI-review).**
+
+### Corregido
+- **Guardia de paridad de la descripción SEO** — el arreglo de v1.174.0 que cambió un "~55" fijo en el `meta.desc` de cada idioma por un marcador `{adapters}` derivado del registro no tenía prueba, así que podía regresar en silencio en la próxima edición de un idioma. El nuevo `tests/site-meta-desc-parity.test.mjs` (aislado de CI) falla si alguno de los 17 `site/src/i18n/*.json` pierde el marcador o vuelve a fijar un recuento, o si `Landing.astro` deja de interpolarlo en las tres metadescripciones.
+- **Strip de legitimidad a prueba de nulos** — `stripEmphasis` devuelve `''` para una entrada nula en lugar de la cadena "undefined" (los campos se inicializan como cadena, así que es defensa en profundidad).
+
+### Notas
+- Prueba + una guarda de una línea en el analizador; sin cambios de ruta / CSP / SSRF / escritura al padre. Pruebas: `tests/site-meta-desc-parity.test.mjs` (+3). Suite: **2451** (+3).
+
 ## [1.174.0] — 2026-08-13
 
 **Corregido (HIGH, informes) — los informes localizados mostraban "Score not detected"; la descripción SEO estaba desactualizada.**

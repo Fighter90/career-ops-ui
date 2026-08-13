@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.175.0] — 2026-08-13
+
+**Corrigido (LOW, robustez) — uma guarda de regressão para a descrição SEO do FIND-3 + um strip de legitimidade seguro a nulos (follow-up da AI-review).**
+
+### Corrigido
+- **Guarda de paridade da descrição SEO** — a correção de v1.174.0 que trocou um "~55" fixo no `meta.desc` de cada idioma por um placeholder `{adapters}` derivado do registro não tinha teste, então podia regredir em silêncio na próxima edição de um idioma. O novo `tests/site-meta-desc-parity.test.mjs` (isolado de CI) falha se algum dos 17 `site/src/i18n/*.json` perder o placeholder ou refixar uma contagem, ou se `Landing.astro` parar de interpolá-lo nas três metadescrições.
+- **Strip de legitimidade seguro a nulos** — `stripEmphasis` retorna `''` para entrada nula em vez da string "undefined" (os campos são inicializados como string, então é defesa em profundidade).
+
+### Notas
+- Teste + uma guarda de uma linha no parser; sem mudança de rota / CSP / SSRF / escrita no pai. Testes: `tests/site-meta-desc-parity.test.mjs` (+3). Suíte: **2451** (+3).
+
 ## [1.174.0] — 2026-08-13
 
 **Corrigido (HIGH, relatórios) — relatórios localizados mostravam "Score not detected"; a descrição SEO estava desatualizada.**
