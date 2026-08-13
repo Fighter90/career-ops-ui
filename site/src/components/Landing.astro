@@ -22,6 +22,13 @@ interface Props {
 }
 const { locale } = Astro.props;
 
+// v1.174.0 (FIND-3) — the SEO description carried a hard-coded "~55" while the
+// page body counts the live registry ("~75"). Substitute the same honest,
+// registry-derived count into the meta description so Google + social previews
+// match the body and can't drift again.
+const adaptersRounded = Math.floor(facts.adapters / 5) * 5;
+const metaDesc = t(locale, 'meta.desc').replace('{adapters}', String(adaptersRounded));
+
 // JSON-LD SoftwareApplication — price 0 USD, MIT, version from package.json.
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -30,7 +37,7 @@ const jsonLd = {
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'macOS, Linux, Windows (WSL)',
   softwareVersion: facts.version,
-  description: t(locale, 'meta.desc'),
+  description: metaDesc,
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   license: 'https://github.com/Fighter90/career-ops-ui/blob/main/LICENSE',
   inLanguage: ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'],
@@ -43,7 +50,7 @@ const jsonLd = {
   locale={locale}
   page=""
   title={t(locale, 'meta.title')}
-  description={t(locale, 'meta.desc')}
+  description={metaDesc}
   jsonLd={jsonLd}
 >
   <Header locale={locale} page="" />

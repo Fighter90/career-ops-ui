@@ -8,6 +8,19 @@
 
 ---
 
+## [1.174.0] — 2026-08-13
+
+**修復 (HIGH, 報告) — 本地化報告顯示 "Score not detected";SEO 描述過時。**
+
+### 修復
+- **評分解析 (FIND-1)** — H1 中包含評分標籤詞的非英文報告(`# Оценка вакансии: <標題>`)不再把該標題誤當作評分。`parseReportHeader` 現在錨定到本地化的**粗體**標籤(`**Оценка:** 1.5 / 5`),跳過標題行,並要求標籤緊鄰冒號 — 因此顯示 "Score not detected" 的 RU 報告會展示真實評分。
+- **合法性徽章 (FIND-2)** — 從值中移除 Markdown 強調,徽章顯示 "High Confidence" 而非 "** High Confidence"。
+- **評分溢出** — 帶尾隨狀態文字的評分行("1.8, Status: Evaluated, …")被壓縮為僅評分;`.score-pill` 新增不換行/溢出上限,標題欄可收縮,因此彩色徽章不會溢出卡片邊緣。
+- **SEO 描述 (FIND-3)** — cvstart.org 的 meta / OG / Twitter 描述(全部 17 種語言)硬編碼 "Scan ~55 job boards",而內文依真實註冊表計數("~75")。描述現在插入註冊表衍生的計數,不會再漂移。
+
+### 說明
+- 伺服器解析器 + 用戶端渲染/CSS + 網站 i18n;無路由 / CSP / SSRF / 父寫入變更。測試:`tests/report-header-locale.test.mjs`(+4)。套件:**2448**(+4)。
+
 ## [1.173.0] — 2026-08-13
 
 **新增 (LOW, 設定) — Hermes 加入被偵測的 AI CLI 清單 (career-ops 對齊)。**

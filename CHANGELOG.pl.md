@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.174.0] — 2026-08-13
+
+**Naprawiono (HIGH, raporty) — zlokalizowane raporty pokazywały „Score not detected"; opis SEO był nieaktualny.**
+
+### Naprawiono
+- **Parsowanie oceny (FIND-1)** — raport nieanglojęzyczny, którego H1 zawiera słowo etykiety oceny (`# Оценка вакансии: <tytuł>`), nie myli już tego tytułu z oceną. `parseReportHeader` kotwiczy teraz na zlokalizowanej **pogrubionej** etykiecie (`**Оценка:** 1.5 / 5`), pomija wiersze nagłówków i wymaga, by etykieta sąsiadowała z dwukropkiem — więc raporty RU pokazujące „Score not detected" wyświetlają prawdziwą ocenę.
+- **Odznaka wiarygodności (FIND-2)** — z wartości usuwane jest wyróżnienie Markdown, więc odznaka pokazuje „High Confidence", a nie „** High Confidence".
+- **Przepełnienie oceny** — wiersz oceny z doczepionym tekstem statusu („1.8, Status: Evaluated, …") jest skracany do samej oceny; `.score-pill` zyskuje limit bez zawijania/overflow, a kolumna tytułu może się kurczyć, więc kolorowa odznaka nigdy nie wychodzi poza kartę.
+- **Opis SEO (FIND-3)** — opisy meta / OG / Twitter cvstart.org (wszystkie 17 języków) miały na sztywno „Scan ~55 job boards", podczas gdy treść liczyła realny rejestr („~75"). Opis wstawia teraz liczbę z rejestru, więc już się nie rozjedzie.
+
+### Uwagi
+- Parser serwera + render/CSS klienta + i18n witryny; bez zmian tras / CSP / SSRF / zapisu do rodzica. Testy: `tests/report-header-locale.test.mjs` (+4). Zestaw: **2448** (+4).
+
 ## [1.173.0] — 2026-08-13
 
 **Dodano (LOW, konfiguracja) — Hermes dołącza do wykrywanej listy CLI AI (parytet z career-ops).**

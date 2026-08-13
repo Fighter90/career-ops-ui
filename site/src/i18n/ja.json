@@ -1,6 +1,6 @@
 {
   "meta.title": "career-ops-ui — 無料・オープンソースの就職活動コマンドセンター",
-  "meta.desc": "自分のマシンで動く、無料のオープンソースJobscan代替。約55の求人ボードを検索し、CVに対するAI適合スコアを取得 — データは100%ローカル。",
+  "meta.desc": "自分のマシンで動く、無料のオープンソースJobscan代替。約{adapters}の求人ボードを検索し、CVに対するAI適合スコアを取得 — データは100%ローカル。",
   "meta.helpTitle": "ユーザーガイド — career-ops-ui",
   "meta.helpDesc": "career-ops-uiの完全ガイド:セットアップ、求人ボードの検索、AI適合スコア、CV Studio、応募トラッカー、トラブルシューティング。",
   "a11y.skip": "コンテンツへスキップ",

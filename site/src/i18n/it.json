@@ -1,6 +1,6 @@
 {
   "meta.title": "career-ops-ui — centro di comando gratuito e open source per la ricerca di lavoro",
-  "meta.desc": "Alternativa gratuita e open source a Jobscan che gira sul tuo computer. Scansiona ~55 job board, valuta ogni annuncio con l'IA contro il tuo CV — 100% locale.",
+  "meta.desc": "Alternativa gratuita e open source a Jobscan che gira sul tuo computer. Scansiona ~{adapters} job board, valuta ogni annuncio con l'IA contro il tuo CV — 100% locale.",
   "meta.helpTitle": "Guida utente — career-ops-ui",
   "meta.helpDesc": "La guida completa di career-ops-ui: installazione, scansione delle job board, punteggi di compatibilità IA, CV Studio, tracker delle candidature e risoluzione dei problemi.",
   "a11y.skip": "Salta al contenuto",

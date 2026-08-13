@@ -1,6 +1,6 @@
 {
   "meta.title": "career-ops-ui — 무료 오픈소스 구직 커맨드 센터",
-  "meta.desc": "내 컴퓨터에서 실행되는 무료 오픈소스 Jobscan 대안. 약 55개 채용 보드를 검색하고 CV 대비 AI 적합도 점수를 받아보세요 — 데이터는 100% 로컬.",
+  "meta.desc": "내 컴퓨터에서 실행되는 무료 오픈소스 Jobscan 대안. 약 {adapters}개 채용 보드를 검색하고 CV 대비 AI 적합도 점수를 받아보세요 — 데이터는 100% 로컬.",
   "meta.helpTitle": "사용자 가이드 — career-ops-ui",
   "meta.helpDesc": "career-ops-ui 전체 가이드: 설치, 채용 보드 검색, AI 적합도 점수, CV Studio, 지원 트래커, 문제 해결.",
   "a11y.skip": "본문으로 건너뛰기",

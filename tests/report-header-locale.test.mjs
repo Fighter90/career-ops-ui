@@ -123,3 +123,46 @@ test('FIX-1: localized prose fallback (RU labels, no Machine Summary block)', ()
   assert.equal(h.scoreNum, 2.0);
   assert.ok(/medium/i.test(h.legitimacy));
 });
+
+// ── v1.174.0 audit repro (FIND-1 / FIND-2 / overflow) ──────────────────────
+// The real broken reports: an H1 that CONTAINS the score label word
+// ("# Оценка вакансии: <title>", note the trailing colon), the real score in
+// the localized BOLD form, and NO Machine Summary block. Pre-fix, the loose
+// prose matcher grabbed the H1 title → score = the vacancy name → scoreNum null
+// → "Score not detected". Legitimacy carried unstripped `**` markers.
+const RU_BOLD_NO_MS = `# Оценка вакансии: Anthropic — Global Applied AI Architecture Lead
+
+**Оценка:** 1.5 / 5
+**Легитимность:** ** High Confidence
+
+## Блок A — описание
+…текст…
+`;
+
+test('FIND-1: an H1 that contains the label word is never grabbed as the score', () => {
+  const h = parseReportHeader(RU_BOLD_NO_MS, { mtime: new Date('2026-07-01T10:00:00Z') });
+  assert.equal(h.scoreNum, 1.5, 'scoreNum from the bold **Оценка:** line, not the H1');
+  assert.doesNotMatch(h.score, /Anthropic|Architecture|Lead/, 'score is not the vacancy title');
+  assert.ok(/1\.5/.test(h.score), 'score display carries the number');
+});
+
+test('FIND-2: markdown emphasis is stripped from the legitimacy value', () => {
+  const h = parseReportHeader(RU_BOLD_NO_MS, { mtime: new Date('2026-07-01T10:00:00Z') });
+  assert.equal(h.legitimacy, 'High Confidence', 'no leading/trailing ** in the chip');
+  assert.doesNotMatch(h.legitimacy, /\*/, 'no asterisks survive in the legitimacy value');
+});
+
+test('overflow: a score line with trailing status text compacts to just the score', () => {
+  const md = '# Оценка вакансии: Пример\n\n**Оценка:** 1.8, Status: Evaluated, применение не рекомендовано.\n';
+  const h = parseReportHeader(md, { mtime: new Date('2026-05-21T10:00:00Z') });
+  assert.equal(h.scoreNum, 1.8);
+  assert.doesNotMatch(h.score, /Status|рекомендовано/, 'score chip carries no trailing prose');
+  assert.ok(h.score.length <= 12, `score display stays short (was "${h.score}")`);
+});
+
+test('FIND-1: the bold label beats a same-word H1 even when both have a colon', () => {
+  // Both the heading and the score line start with "Оценка" and a colon.
+  const md = '# Оценка вакансии: X — Y\n\n**Оценка:** 3.0 / 5\n**Легитимность:** Medium\n';
+  const h = parseReportHeader(md);
+  assert.equal(h.scoreNum, 3.0);
+});

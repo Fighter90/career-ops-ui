@@ -7,16 +7,16 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2444%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2448%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.173.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.173.0)
+[![release](https://img.shields.io/badge/release-v1.174.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.174.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.173.0** — **Hermes rejoint le détecteur de CLI d'IA** — l'onglet `#/config` « Outils CLI d'IA » détecte désormais Hermes (Nous Research), le nouvel environnement d'agent du projet parent ; scan de PATH en lecture seule, 11 outils. **2444 tests.**
+> **🆕 Dernière version — v1.174.0** — **Scores des rapports localisés + correctif SEO** — les rapports non anglais n'affichent plus « Score not detected » (un H1 contenant le mot de l'étiquette était pris pour le score) ; les puces de légitimité retirent les `**` parasites, les scores longs ne débordent plus de la carte et la description de cvstart.org compte le registre réel (~75). **2448 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

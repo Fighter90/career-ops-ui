@@ -1,6 +1,6 @@
 {
   "meta.title": "career-ops-ui — kostenlose Open-Source-Kommandozentrale für die Jobsuche",
-  "meta.desc": "Kostenlose Open-Source-Alternative zu Jobscan, läuft auf deinem Rechner. Scanne ~55 Jobbörsen, erhalte KI-Match-Scores gegen deinen CV — 100% lokal.",
+  "meta.desc": "Kostenlose Open-Source-Alternative zu Jobscan, läuft auf deinem Rechner. Scanne ~{adapters} Jobbörsen, erhalte KI-Match-Scores gegen deinen CV — 100% lokal.",
   "meta.helpTitle": "Benutzerhandbuch — career-ops-ui",
   "meta.helpDesc": "Das vollständige career-ops-ui-Handbuch: Installation, Scannen von Jobbörsen, KI-Match-Scores, CV Studio, Bewerbungs-Tracker und Fehlerbehebung.",
   "a11y.skip": "Zum Inhalt springen",

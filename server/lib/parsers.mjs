@@ -279,14 +279,51 @@ function yamlValue(src, key) {
   return m ? m[1].trim() : '';
 }
 
-// Last-resort: find any localized prose label (`Оценка: …`, `评分：…`,
-// optionally bold-wrapped) and return its value. Runs only after the bold
+// v1.174.0 (FIND-2) — strip markdown emphasis markers (**bold** / *italic*)
+// from an extracted value, so a legitimacy chip reads "High Confidence", not
+// "** High Confidence".
+const stripEmphasis = (s) => String(s).replace(/\*+/g, '').trim();
+
+// v1.174.0 (FIND-1) — a localized BOLD label line: `**Оценка:** 1.5 / 5` /
+// `**Label**: value`. Requiring the leading `**` is what makes this immune to
+// a plain H1 that merely contains the label word (`# Оценка вакансии: …`) —
+// headings use `#`, never `**`. The colon must sit next to the label.
+function boldLabelValue(text, words) {
+  for (const w of words) {
+    const re = new RegExp('\\*\\*\\s*' + escapeReMeta(w) + '\\s*\\*{0,2}\\s*[:：]\\s*\\*{0,2}\\s*(.+)', 'i');
+    const m = text.match(re);
+    if (m) return stripEmphasis(m[1]);
+  }
+  return '';
+}
+
+// v1.174.0 (overflow) — keep the score field compact so a chip never renders a
+// trailing status sentence ("1.8, Status: Evaluated, …") and blow out its
+// coloured block. A clean "X.X" / "X.X / Y" is returned verbatim (EN reports
+// stay byte-identical); anything with trailing prose collapses to the numeric
+// fraction, or `<num> / 5` when only a bare number survives.
+function compactScore(raw, num) {
+  if (!raw) return raw;
+  if (/^\s*\d+(?:[.,]\d+)?\s*(?:\/\s*\d+(?:[.,]\d+)?)?\s*$/.test(raw)) return raw.trim();
+  const frac = String(raw).match(/\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?/);
+  if (frac) return frac[0].replace(/\s+/g, ' ').trim();
+  return num != null ? `${num} / 5` : raw;
+}
+
+// Last-resort: a localized prose label (`Оценка: …`, `评分：…`, optionally
+// bold-wrapped) on its OWN line. v1.174.0 (FIND-1): scan line-by-line, skip
+// heading lines (`# …`) entirely, and require the label to sit at the line
+// start immediately before the colon — so `# Оценка вакансии: <title>` and
+// `Общая оценка …:` can never hijack the field. Runs only after the bold
 // labels and the Machine Summary block came up empty.
 function proseLabelValue(text, kind) {
-  for (const w of LABEL_WORDS[kind]) {
-    const re = new RegExp('\\*{0,2}\\s*' + escapeReMeta(w) + '[^:：\\n]*[:：]\\s*(.+)', 'i');
-    const m = text.match(re);
-    if (m) return m[1].replace(/\*+\s*$/, '').trim();
+  for (const line of String(text).split('\n')) {
+    if (/^\s*#/.test(line)) continue;
+    for (const w of LABEL_WORDS[kind]) {
+      const re = new RegExp('^\\s*\\*{0,2}\\s*' + escapeReMeta(w) + '\\s*\\*{0,2}\\s*[:：]\\s*(.+)', 'i');
+      const m = line.match(re);
+      if (m) return stripEmphasis(m[1]);
+    }
   }
   return '';
 }
@@ -353,12 +390,20 @@ export function parseReportHeader(text, opts = {}) {
   if (!out.archetype) out.archetype = yamlValue(src, 'archetype');
   if (!out.pdf) out.pdf = yamlValue(src, 'pdf');
 
-  // (3) Locale-aware prose labels — last resort.
+  // (2.5) Localized BOLD labels (`**Оценка:** 1.5/5`). Beats the loose prose
+  //       fallback so a body H1 that merely contains the label word can't win.
+  if (!out.score) out.score = boldLabelValue(text, LABEL_WORDS.score);
+  if (!out.legitimacy) out.legitimacy = boldLabelValue(text, LABEL_WORDS.legitimacy);
+
+  // (3) Locale-aware prose labels — last resort (heading-safe, colon-anchored).
   if (!out.score) out.score = proseLabelValue(text, 'score');
   if (!out.legitimacy) out.legitimacy = proseLabelValue(text, 'legitimacy');
 
-  // (4) Numeric score, locale-tolerant.
+  // (4) Normalize: strip stray emphasis from the legitimacy chip (FIND-2),
+  //     derive the numeric score, and compact the score display (overflow).
+  out.legitimacy = stripEmphasis(out.legitimacy);
   out.scoreNum = scoreStringToNum(out.score);
+  out.score = compactScore(out.score, out.scoreNum);
 
   // (5) Date never null when the file mtime is known.
   if (!out.date) out.date = mtimeIso;
