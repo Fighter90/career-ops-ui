@@ -21,7 +21,7 @@
   position: absolute;
   top: -100px;
   left: 8px;
-  z-index: 10000;
+  z-index: var(--z-skiplink);
   padding: 12px 20px;
   background: #222;
   color: #fff;
@@ -104,6 +104,28 @@
   --sidebar-w: 256px;
   --topbar-h: 80px;
   --transition: 180ms cubic-bezier(.2, .8, .2, 1);
+  /* D-4 (v1.171.0) — type scale (base = Inter 15px) and z-index layers. The
+     ramp names the sizes the components already use so they can migrate
+     incrementally; the z-index layers name every stacking context (values
+     preserved, so the stacking order is byte-identical). z-index is
+     theme-invariant → defined here only. */
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-md: 13px;
+  --font-size-base: 15px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 28px;
+  --z-topbar: 5;
+  --z-sidebar: 10;   /* backdrop sits one below via calc(var(--z-sidebar) - 1) */
+  --z-hud: 11;
+  --z-banner: 50;    /* onboarding banner one below via calc(var(--z-banner) - 1) */
+  --z-modal: 200;
+  --z-popover: 950;
+  --z-toast: 1000;
+  --z-fab: 1150;
+  --z-drawer: 9999;
+  --z-skiplink: 10000;
   /* v1.137.0 — alias tokens that several views referenced WITHOUT a definition
      (`--fg`, `--panel`, `--panel-2`, `--surface-elev1`, `--line`). Undefined,
      they silently fell back to hardcoded LIGHT/BLACK literals — so text went
@@ -213,7 +235,7 @@ html, body {
   background: var(--paper);
   color: var(--hof);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 15px;
+  font-size: var(--font-size-base);
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -248,7 +270,7 @@ input, textarea, select {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  z-index: 10;
+  z-index: var(--z-sidebar);
   /* Allow vertical scroll when content (18 nav items + 6 group headers
      + footer) is taller than the viewport. The footer stays at the
      bottom on tall windows because the inner column is min-h-full. */
@@ -286,7 +308,7 @@ input, textarea, select {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.4);
-  z-index: 9;
+  z-index: calc(var(--z-sidebar) - 1);
 }
 body.sidebar-open .sidebar-backdrop { display: block; }
 
@@ -338,7 +360,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .nav { display: flex; flex-direction: column; gap: 2px; }
 .nav-group {
   margin: 14px 12px 4px;
-  font-size: 11px;
+  font-size: var(--font-size-xs);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -385,10 +407,10 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   flex-direction: column;
   gap: var(--space-2);
 }
-.sidebar-footer .version { font-weight: 600; font-size: 13px; color: var(--foggy); }
-.sidebar-footer .hint { font-size: 12px; color: var(--foggy); }
+.sidebar-footer .version { font-weight: 600; font-size: var(--font-size-md); color: var(--foggy); }
+.sidebar-footer .hint { font-size: var(--font-size-sm); color: var(--foggy); }
 .sidebar-footer .manifesto-link {
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   color: var(--foggy);
   text-decoration: none;
 }
@@ -412,7 +434,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   justify-content: space-between;
   padding: 0 var(--space-6);
   gap: var(--space-5);
-  z-index: 5;
+  z-index: var(--z-topbar);
 }
 
 .searchbar {
@@ -540,7 +562,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .auto-eta,
 .advisor-eta,
 .eta-hint {
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   color: var(--foggy);
   white-space: nowrap;
   align-self: center;
@@ -550,7 +572,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
    `min-height: 44px` from .btn. Small buttons relax this for dense
    table-row controls (Edit / Delete / etc.) but keep min-height ≥ 32 px
    plus 8 px row spacing so the effective spaced target stays ≥ 44 px. */
-.btn-sm { padding: 6px 12px; font-size: 13px; min-height: 32px; }
+.btn-sm { padding: 6px 12px; font-size: var(--font-size-md); min-height: 32px; }
 .btn-block { width: 100%; }
 
 /* M-4 (v1.58.11) — saved-research / saved-prep card. Pre-fix the
@@ -709,7 +731,7 @@ label:has(> input[type="radio"]) {
 .page-subtitle {
   color: var(--foggy);
   margin: var(--space-2) 0 0;
-  font-size: 15px;
+  font-size: var(--font-size-base);
 }
 /* U-14 (v1.58.33) — safety-net rule for any page that uses raw <h1>+<p>
    without the .page-subtitle class. Mirrors the canonical spacing so

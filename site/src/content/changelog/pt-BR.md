@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.171.0] — 2026-08-13
+
+**Alterado (BAIXA, design-system) — tokens de escala tipográfica + camadas z-index (D-4, primeiro passo).** Tamanhos e empilhamento eram literais por componente.
+
+### Alterado
+- **Camadas z-index** — adicionados tokens `--z-*` (`--z-topbar` … `--z-skiplink`) e **migrado cada literal z-index**. Valores preservados, empilhamento idêntico; um novo canário proíbe novos números mágicos.
+- **Escala tipográfica** — rampa `--font-size-*` (`xs 11` … `2xl 28`, base = Inter 15px); migrados os tamanhos centrais (sem mudança visual). Valores fora da rampa migram incrementalmente (`docs/UX-ROADMAP.md`).
+
+### Notas
+- Apenas token CSS; sem mudança de comportamento/JS/i18n/rota/CSP/SSRF/escrita. Sem mudança de pixels. `tests/design-tokens-scale.test.mjs` (+3). Conjunto: **2437** (+3).
+
 ## [1.170.0] — 2026-08-13
 
 **Adicionado (BAIXA) — dicas de ETA honestas em gerações IA longas (P4-ETA).** Gerações pesadas (plano de carreira ~40 s, orientação / mercado / networking ~30 s, two-pager ~20 s) mostravam apenas "Gerando…" sem indicar a duração.

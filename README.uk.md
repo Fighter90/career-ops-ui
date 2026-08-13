@@ -7,14 +7,14 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2437%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Останній реліз — v1.170.0** — **Чесний ETA для довгих AI-генерацій (P4-ETA)** — кар'єрний план / орієнтація / ринок / нетворкінг / two-pager показували лише «Генерація…». Кожна кнопка тепер має підказку `⏱ ~N с` (як ETA на `#/auto`). **2434 тестів.**
+> **🆕 Останній реліз — v1.171.0** — **Токени типошкали + z-index (D-4, перший крок)** — додано `--font-size-*` і шари `--z-*`; кожен літерал z-index мігровано (значення збережені), основні розміри використовують рампу. Без піксельних змін. **2437 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

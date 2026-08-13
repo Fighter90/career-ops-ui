@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.171.0] — 2026-08-13
+
+**Değiştirildi (DÜŞÜK, tasarım sistemi) — yazı ölçeği + z-index katman belirteçleri (D-4, ilk adım).** Boyutlar ve katmanlama bileşen başına düz değerdi.
+
+### Değiştirildi
+- **z-index katmanları** — `--z-*` belirteçleri (`--z-topbar` … `--z-skiplink`) eklendi ve **her z-index düz değeri taşındı**. Değerler korundu, katmanlama aynı; yeni bir kanarya yeni sihirli sayıları yasaklıyor.
+- **Yazı ölçeği** — `--font-size-*` rampası (`xs 11` … `2xl 28`, taban = Inter 15px); bileşenlerin zaten kullandığı çekirdek boyutlar taşındı (görsel değişiklik yok). Rampa dışı değerler kademeli taşınır (`docs/UX-ROADMAP.md`).
+
+### Notlar
+- Yalnızca CSS belirteci; davranış/JS/i18n/rota/CSP/SSRF/yazma değişikliği yok. Piksel değişikliği yok. `tests/design-tokens-scale.test.mjs` (+3). Takım: **2437** (+3).
+
 ## [1.170.0] — 2026-08-13
 
 **Eklendi (DÜŞÜK) — uzun yapay zekâ oluşturmalarında dürüst ETA ipuçları (P4-ETA).** Ağır oluşturmalar (kariyer planı ~40 sn, yönlendirme / pazar / networking ~30 sn, two-pager ~20 sn) süre hissi olmadan yalnızca "Oluşturuluyor…" gösteriyordu.

@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2437%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versión — v1.170.0** — **ETA honesta en generaciones IA largas (P4-ETA)** — plan de carrera / orientación / mercado / networking / two-pager mostraban solo "Generando…". Cada botón lleva ahora una pista `⏱ ~Ns` (como la ETA de `#/auto`). **2434 pruebas.**
+> **🆕 Última versión — v1.171.0** — **Tokens de escala tipográfica + z-index (D-4, primer paso)** — se añadieron `--font-size-*` y capas `--z-*`; se migró cada literal z-index (valores preservados) y los tamaños centrales usan la rampa. Sin cambios de píxeles. **2437 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

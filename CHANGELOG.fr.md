@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.171.0] — 2026-08-13
+
+**Modifié (BASSE, design-system) — jetons d'échelle typographique + couches z-index (D-4, première étape).** Les tailles et l'empilement étaient littéraux par composant.
+
+### Modifié
+- **Couches z-index** — jetons `--z-*` (`--z-topbar` … `--z-skiplink`) introduits, et **chaque littéral z-index migré**. Valeurs préservées, empilement identique ; un nouveau canari interdit les nouveaux nombres magiques.
+- **Échelle typographique** — rampe `--font-size-*` (`xs 11` … `2xl 28`, base = Inter 15px) ; tailles centrales migrées (aucun changement visuel). Les valeurs hors rampe migrent progressivement (`docs/UX-ROADMAP.md`).
+
+### Notes
+- Jeton CSS uniquement ; aucun changement de comportement/JS/i18n/route/CSP/SSRF/écriture. Aucun changement de pixel. `tests/design-tokens-scale.test.mjs` (+3). Suite : **2437** (+3).
+
 ## [1.170.0] — 2026-08-13
 
 **Ajouté (BASSE) — indices d'ETA honnêtes sur les longues générations IA (P4-ETA).** Les générations lourdes (plan de carrière ~40 s, orientation / marché / réseautage ~30 s, two-pager ~20 s) affichaient un simple « Génération… » sans indication de durée.

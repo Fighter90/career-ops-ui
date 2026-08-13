@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2437%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Son sürüm — v1.170.0** — **Uzun yapay zekâ oluşturmalarında dürüst ETA (P4-ETA)** — kariyer planı / yönlendirme / pazar / networking / two-pager yalnızca "Oluşturuluyor…" gösteriyordu. Her düğmede artık `⏱ ~Nsn` ipucu var (`#/auto` ETA'sı gibi). **2434 test.**
+> **🆕 Son sürüm — v1.171.0** — **Yazı ölçeği + z-index belirteçleri (D-4, ilk adım)** — `--font-size-*` ve `--z-*` katmanları eklendi; her z-index düz değeri taşındı (değerler korundu), çekirdek boyutlar rampayı kullanıyor. Piksel değişikliği yok. **2437 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 
