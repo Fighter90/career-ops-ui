@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.172.0] — 2026-08-13
+
+**Behoben (MEDIUM, Scanner) — eine fehlerhafte HTML-Entität konnte eine Scan-Quelle zum Absturz bringen (career-ops #2150-Parität).**
+
+### Behoben
+- Die Quellen `oraclecloud`, `gem` und `dassault` dekodierten numerische HTML-Entitäten mit einer schwachen `Number.isFinite`-Prüfung vor `String.fromCodePoint` — eine Referenz über `0x10FFFF` (z. B. `&#99999999;` aus einem fehlerhaften oder feindlichen Feed) warf einen nicht abgefangenen `RangeError` und brach das gesamte Parsen dieser Quelle ab. Ein gemeinsames Modul `server/lib/html-entities.mjs` (spiegelt das `_html-entities.mjs` des Elternprojekts) beschränkt numerische Referenzen nun auf die XML-1.0-§2.2-Char-Menge, sodass `String.fromCodePoint` niemals werfen kann, und trennt Hex- und Dezimalabgleich, sodass `&#1a2;` nicht mehr falsch geparst wird. Die drei Quellen importieren es.
+
+### Hinweise
+- Keine Änderung für gültige Feeds; keine Änderung an JS / i18n / Route / CSP / SSRF / Eltern-Schreibzugriff. Die Konsolidierung der ~20 verbliebenen Decoder-Kopien in den Quellen wird in `qa/PARENT-SYNC-WORKLIST-v1.26.0.md` verfolgt.
+- Tests: `tests/html-entities.test.mjs` (+7). Suite: **2444** (+7).
+
 ## [1.171.0] — 2026-08-13
 
 **Geändert (NIEDRIG, Design-System) — Typo-Skala + z-index-Layer-Tokens (D-4, erster Schritt).** Größen und Stapelung waren pro Komponente literal.

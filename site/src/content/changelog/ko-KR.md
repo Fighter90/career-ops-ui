@@ -9,6 +9,17 @@
 ---
 
 
+## [1.172.0] — 2026-08-13
+
+**수정됨 (MEDIUM, 스캐너) — 잘못된 HTML 엔티티가 스캔 소스를 중단시킬 수 있었음 (career-ops #2150 동등성).**
+
+### 수정됨
+- `oraclecloud`, `gem`, `dassault` 소스는 숫자 HTML 엔티티를 `String.fromCodePoint` 이전에 단순한 `Number.isFinite` 검사만으로 디코딩했습니다 — `0x10FFFF`를 넘는 참조(예: 잘못되었거나 악의적인 피드의 `&#99999999;`)는 잡히지 않은 `RangeError`를 던져 해당 소스의 전체 파싱을 중단시켰습니다. 공유 모듈 `server/lib/html-entities.mjs`(상위 프로젝트의 `_html-entities.mjs`를 반영)가 이제 숫자 참조를 XML 1.0 §2.2 Char 집합으로 제한하여 `String.fromCodePoint`가 절대 던지지 않으며, 16진수와 10진수를 별도로 매칭하여 `&#1a2;`가 더 이상 잘못 파싱되지 않습니다. 세 소스가 이를 가져옵니다.
+
+### 참고
+- 유효한 피드에는 변화 없음; JS / i18n / 라우트 / CSP / SSRF / 상위 쓰기 변경 없음. 소스에 남은 ~20개 디코더 사본 통합은 `qa/PARENT-SYNC-WORKLIST-v1.26.0.md`에 기록됨.
+- 테스트: `tests/html-entities.test.mjs` (+7). 전체: **2444** (+7).
+
 ## [1.171.0] — 2026-08-13
 
 **변경 (LOW, 디자인 시스템) — 타입 스케일 + z-index 레이어 토큰 (D-4, 첫 단계).** 크기와 쌓임이 컴포넌트별 리터럴이었습니다.

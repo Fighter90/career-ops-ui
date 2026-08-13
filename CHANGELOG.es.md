@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.172.0] — 2026-08-13
+
+**Corregido (MEDIUM, escáner) — una entidad HTML mal formada podía bloquear una fuente de escaneo (paridad con career-ops #2150).**
+
+### Corregido
+- Las fuentes `oraclecloud`, `gem` y `dassault` decodificaban entidades HTML numéricas con una comprobación `Number.isFinite` insuficiente antes de `String.fromCodePoint` — una referencia por encima de `0x10FFFF` (p. ej. `&#99999999;` en un feed mal formado o malicioso) lanzaba un `RangeError` no capturado y abortaba todo el análisis de esa fuente. Un módulo compartido `server/lib/html-entities.mjs` (espejo del `_html-entities.mjs` del proyecto padre) ahora restringe las referencias numéricas al conjunto Char de XML 1.0 §2.2, de modo que `String.fromCodePoint` nunca puede lanzar, y distingue hexadecimal de decimal por separado para que `&#1a2;` ya no se interprete mal. Las tres fuentes lo importan.
+
+### Notas
+- Sin cambios para feeds válidos; sin cambios en JS / i18n / rutas / CSP / SSRF / escritura al padre. La consolidación de las ~20 copias restantes del decodificador se rastrea en `qa/PARENT-SYNC-WORKLIST-v1.26.0.md`.
+- Pruebas: `tests/html-entities.test.mjs` (+7). Suite: **2444** (+7).
+
 ## [1.171.0] — 2026-08-13
 
 **Cambiado (BAJA, sistema de diseño) — tokens de escala tipográfica + capas z-index (D-4, primer paso).** Los tamaños y el apilamiento eran literales por componente.

@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.172.0] — 2026-08-13
+
+**Düzeltildi (MEDIUM, tarayıcı) — bozuk bir HTML varlığı bir tarama kaynağını çökertebiliyordu (career-ops #2150 paritesi).**
+
+### Düzeltildi
+- `oraclecloud`, `gem` ve `dassault` kaynakları, sayısal HTML varlıklarını `String.fromCodePoint` öncesinde yalnızca zayıf bir `Number.isFinite` denetimiyle çözüyordu — `0x10FFFF` üzerindeki bir başvuru (ör. bozuk veya kötü niyetli bir akıştan `&#99999999;`) yakalanmayan bir `RangeError` fırlatıp o kaynağın tüm ayrıştırmasını iptal ediyordu. Ortak bir modül `server/lib/html-entities.mjs` (üst projenin `_html-entities.mjs` dosyasını yansıtır) artık sayısal başvuruları XML 1.0 §2.2 Char kümesiyle sınırlar; böylece `String.fromCodePoint` asla fırlatamaz ve onaltılık ile ondalığı ayrı eşleştirdiği için `&#1a2;` artık yanlış ayrıştırılmaz. Üç kaynak bunu içe aktarır.
+
+### Notlar
+- Geçerli akışlar için davranış değişmez; JS / i18n / rota / CSP / SSRF / üst yazma değişikliği yok. Kaynaklardaki kalan ~20 çözücü kopyasının birleştirilmesi `qa/PARENT-SYNC-WORKLIST-v1.26.0.md` içinde izleniyor.
+- Testler: `tests/html-entities.test.mjs` (+7). Takım: **2444** (+7).
+
 ## [1.171.0] — 2026-08-13
 
 **Değiştirildi (DÜŞÜK, tasarım sistemi) — yazı ölçeği + z-index katman belirteçleri (D-4, ilk adım).** Boyutlar ve katmanlama bileşen başına düz değerdi.

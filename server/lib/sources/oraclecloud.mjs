@@ -51,6 +51,7 @@
  * (server/lib/portals/adapters/oraclecloud.mjs).
  */
 import { fetchJson, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 // `oraclecloud(?:[1-9][0-9]?)?` = the unnumbered apex plus the numbered family
 // oraclecloud1.com … oraclecloud99.com (some tenants live only on a numbered
@@ -86,22 +87,6 @@ export function assertOraclecloudUrl(url) {
     throw new Error(`oraclecloud: untrusted hostname "${parsed.hostname}" — must match *.fa[.<region>][.ocs].oraclecloud.com`);
   }
   return url;
-}
-
-// Minimal HTML entity decoder — titles/descriptions carry named (&amp;) and
-// numeric (&#252; / &#xfc;) entities. Same idiom as successfactors/avature.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-/** @param {string} s */
-function decodeEntities(s) {
-  return s.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const code = body[1] === 'x' || body[1] === 'X'
-        ? parseInt(body.slice(2), 16)
-        : parseInt(body.slice(1), 10);
-      return Number.isFinite(code) ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
 }
 
 /** Strip tags + collapse whitespace. @param {string} s */
