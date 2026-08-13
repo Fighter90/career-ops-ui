@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.172.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.172.0)
+[![release](https://img.shields.io/badge/release-v1.173.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.173.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.172.0** — **HTML 엔티티 디코더 크래시 수정** — 잘못된 숫자 엔티티(예: `&#99999999;`)가 `RangeError`를 던져 스캔 소스를 중단시킬 수 있었음; 공유 디코더가 이제 숫자 참조를 XML 1.0 Char 집합으로 제한 (career-ops #2150 동등성). **2444개 테스트.**
+> **🆕 최신 릴리스 — v1.173.0** — **Hermes가 AI CLI 감지기에 추가** — `#/config` "AI CLI 도구" 탭이 이제 상위 프로젝트의 새 에이전트 런타임 Hermes(Nous Research)를 탐지; 읽기 전용 PATH 스캔, 11개 도구. **2444개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

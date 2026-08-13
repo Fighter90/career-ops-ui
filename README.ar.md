@@ -12,11 +12,11 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.172.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.172.0)
+[![release](https://img.shields.io/badge/release-v1.173.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.173.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.172.0** — **إصلاح تعطُّل مفكِّك كِيانات HTML** — كِيان رقمي مشوَّه (مثل `&#99999999;`) كان قد يُطلق `RangeError` ويُجهض مصدر مسح؛ مفكِّك مشترك يُقيّد الآن المراجع الرقمية بمجموعة Char في XML 1.0 (تكافؤ career-ops #2150). **2444 اختبار.**
+> **🆕 أحدث إصدار — v1.173.0** — **Hermes ينضم إلى كاشف أدوات CLI للذكاء الاصطناعي** — تبويب `#/config` «أدوات CLI للذكاء الاصطناعي» يكتشف الآن Hermes (Nous Research)، بيئة تشغيل الوكيل الجديدة للمشروع الأصل؛ مسح PATH للقراءة فقط، 11 أداة. **2444 اختبار.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

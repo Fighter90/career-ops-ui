@@ -12,11 +12,11 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.172.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.172.0)
+[![release](https://img.shields.io/badge/release-v1.173.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.173.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.172.0** — **HTML エンティティデコーダーのクラッシュ修正** — 不正な数値エンティティ（例: `&#99999999;`）が `RangeError` を投げてスキャンソースを中断させ得た。共有デコーダーが数値参照を XML 1.0 Char 集合に制限（career-ops #2150 パリティ）。**2444 テスト。**
+> **🆕 最新リリース — v1.173.0** — **Hermes が AI CLI 検出に追加** — `#/config`「AI CLI ツール」タブが親プロジェクトの新エージェントランタイム Hermes（Nous Research）を検出。読み取り専用 PATH スキャン、11 ツール。**2444 テスト。**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

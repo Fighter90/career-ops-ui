@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.173.0] — 2026-08-13
+
+**Adicionado (LOW, configuração) — Hermes entra no roster de CLIs de IA detectadas (paridade com career-ops).**
+
+### Adicionado
+- A aba `#/config` → "Ferramentas CLI de IA" agora detecta **Hermes** (Nous Research), o novo runtime de agente suportado pelo projeto pai (binário `hermes`). `server/lib/routes/cli-detect.mjs` amplia sua lista fixa de 10 para 11 ferramentas; a detecção continua sendo uma varredura de PATH somente leitura (nenhum binário é executado).
+
+### Notas
+- Sem mudança de i18n / rota / CSP / SSRF / escrita no pai; o roster é uma lista fixa, nunca entrada. Suíte: **2444** (o canário do cli-detect atualizado de 10 para 11).
+
 ## [1.172.0] — 2026-08-13
 
 **Corrigido (MEDIUM, scanner) — uma entidade HTML malformada podia derrubar uma fonte de varredura (paridade com career-ops #2150).**

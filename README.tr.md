@@ -12,11 +12,11 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.172.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.172.0)
+[![release](https://img.shields.io/badge/release-v1.173.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.173.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.172.0** — **HTML varlık çözücü çökme düzeltmesi** — bozuk bir sayısal varlık (ör. `&#99999999;`) bir `RangeError` fırlatıp bir tarama kaynağını iptal edebiliyordu; ortak bir çözücü artık sayısal başvuruları XML 1.0 Char kümesiyle sınırlıyor (career-ops #2150 paritesi). **2444 test.**
+> **🆕 Son sürüm — v1.173.0** — **Hermes yapay zeka CLI algılayıcısına katıldı** — `#/config` "Yapay Zeka CLI Araçları" sekmesi artık üst projenin yeni aracı çalışma zamanı Hermes'i (Nous Research) algılıyor; salt okunur PATH taraması, 11 araç. **2444 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

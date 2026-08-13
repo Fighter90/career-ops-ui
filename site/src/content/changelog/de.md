@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.173.0] — 2026-08-13
+
+**Hinzugefügt (LOW, Konfiguration) — Hermes wird in die erkannte KI-CLI-Liste aufgenommen (career-ops-Parität).**
+
+### Hinzugefügt
+- Der Tab `#/config` → „KI-CLI-Werkzeuge" erkennt nun **Hermes** (Nous Research), die neu unterstützte Agent-Laufzeit des Elternprojekts (Binärdatei `hermes`). Die feste Allowlist in `server/lib/routes/cli-detect.mjs` wächst von 10 auf 11 Werkzeuge; die Erkennung bleibt ein schreibgeschützter PATH-Scan (es wird nie eine Binärdatei ausgeführt).
+
+### Hinweise
+- Keine Änderung an i18n / Route / CSP / SSRF / Eltern-Schreibzugriff; die Liste ist fest, niemals Eingabe. Suite: **2444** (der cli-detect-Canary von 10 auf 11 aktualisiert).
+
 ## [1.172.0] — 2026-08-13
 
 **Behoben (MEDIUM, Scanner) — eine fehlerhafte HTML-Entität konnte eine Scan-Quelle zum Absturz bringen (career-ops #2150-Parität).**

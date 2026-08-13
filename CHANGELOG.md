@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.173.0] — 2026-08-13
+
+**Added (LOW, config) — Hermes joins the detected AI-CLI roster (career-ops parity).**
+
+### Added
+- The `#/config` → "AI CLI tools" tab now probes for **Hermes** (Nous Research), the parent's newly supported agent runtime (binary `hermes`). `server/lib/routes/cli-detect.mjs` grows its fixed allowlist from 10 to 11 tools; detection stays a read-only PATH scan (no binary is ever executed).
+
+### Notes
+- No i18n / route / CSP / SSRF / parent-write change; the roster is a fixed allowlist, never input. Suite: **2444** (the cli-detect canary updated 10 → 11).
+
 ## [1.172.0] — 2026-08-13
 
 **Fixed (MEDIUM, scanner) — a malformed HTML entity could crash a scan source (career-ops #2150 parity).**

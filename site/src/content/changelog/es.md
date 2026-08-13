@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.173.0] — 2026-08-13
+
+**Añadido (LOW, configuración) — Hermes se suma al roster de CLIs de IA detectadas (paridad con career-ops).**
+
+### Añadido
+- La pestaña `#/config` → "Herramientas CLI de IA" ahora detecta **Hermes** (Nous Research), el nuevo entorno de agente compatible del proyecto padre (binario `hermes`). `server/lib/routes/cli-detect.mjs` amplía su lista fija de 10 a 11 herramientas; la detección sigue siendo un escaneo de PATH de solo lectura (nunca se ejecuta ningún binario).
+
+### Notas
+- Sin cambios en i18n / rutas / CSP / SSRF / escritura al padre; el roster es una lista fija, nunca entrada. Suite: **2444** (el canario de cli-detect se actualizó de 10 a 11).
+
 ## [1.172.0] — 2026-08-13
 
 **Corregido (MEDIUM, escáner) — una entidad HTML mal formada podía bloquear una fuente de escaneo (paridad con career-ops #2150).**
