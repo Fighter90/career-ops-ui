@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.178.0] — 2026-08-13
+
+**Naprawiono (LOW, parytet z rodzicem) — dwie przestarzałe stałe dopasowano do rodzica (PARENT-SYNC GAP #4 + #5).**
+
+### Naprawiono
+- **User-Agent przeglądarki (GAP #4)** — `BROWSER_LIKE_USER_AGENT` (wysyłany przez workable/workday/oraclecloud/a16z/eightfold do przejścia bramek WAF/bot) podniesiony z Chrome 131 do **151**, zgodnie z `user-agent.mjs` rodzica; stara wersja jest częściej blokowana. Chroniony testem `Chrome major ≥ 151`.
+- **FALLBACK stanów trackera (GAP #5)** — ostateczny `FALLBACK` w `states.mjs` (używany tylko gdy żywy `templates/states.yml` jest nieczytelny — świeży klon / izolowany katalog CI) zyskał tureckie aliasy stanów rodzica (#2615): değerlendirildi, başvuruldu, yanıt verildi, mülakat, teklif, reddedildi, iptal edildi, uygun değil, kabul edildi/işe alındı. W produkcji żywy plik już je dostarczał.
+
+### Uwagi
+- Tylko dwie stałe; bez zmian tras / CSP / SSRF / zapisu do rodzica. Testy: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1). Zestaw: **2456** (+2).
+
 ## [1.177.0] — 2026-08-13
 
 **Naprawiono (MEDIUM, skaner) — csod (Cornerstone) zwracał 0 ofert u najemców chroniących API wyszukiwania ciasteczkami sesji (parent #2769, PARENT-SYNC GAP #1).**

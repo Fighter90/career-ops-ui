@@ -8,6 +8,17 @@
 
 ---
 
+## [1.178.0] — 2026-08-13
+
+**أُصلح (LOW، تكافؤ مع الأصل) — تحديث ثابتَين قديمَين ليطابقا المشروع الأصل (PARENT-SYNC GAP #4 + #5).**
+
+### أُصلح
+- **User-Agent للمتصفح (GAP #4)** — رُفِع `BROWSER_LIKE_USER_AGENT` (تُرسله workable/workday/oraclecloud/a16z/eightfold لتجاوز بوابات WAF/الروبوتات) من Chrome 131 إلى **151** ليطابق `user-agent.mjs` في الأصل؛ فالإصدار القديم أكثر عرضة للحجب. محمي باختبار `Chrome major ≥ 151`.
+- **FALLBACK لحالات المتتبِّع (GAP #5)** — اكتسب `FALLBACK` الاحتياطي في `states.mjs` (يُستخدم فقط عندما يتعذّر قراءة `templates/states.yml` الحيّ — نسخة جديدة / جذر CI معزول) أسماء الحالات التركية من الأصل (#2615): değerlendirildi، başvuruldu، yanıt verildi، mülakat، teklif، reddedildi، iptal edildi، uygun değil، kabul edildi/işe alındı. في الإنتاج كان الملف الحيّ يوفّرها بالفعل.
+
+### ملاحظات
+- ثابتان فقط؛ لا تغيير في المسارات / CSP / SSRF / الكتابة إلى الأصل. الاختبارات: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1). المجموعة: **2456** (+2).
+
 ## [1.177.0] — 2026-08-13
 
 **أُصلح (MEDIUM، الماسح) — كان csod (Cornerstone) يُرجِع 0 وظيفة لدى المستأجرين الذين يحمون واجهة البحث بكوكيز الجلسة (parent #2769، PARENT-SYNC GAP #1).**

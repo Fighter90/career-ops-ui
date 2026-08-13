@@ -4,7 +4,15 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchJson, fetchJsonWithRetry, delay } from '../server/lib/http-json.mjs';
+import { fetchJson, fetchJsonWithRetry, delay, BROWSER_LIKE_USER_AGENT } from '../server/lib/http-json.mjs';
+
+test('BROWSER_LIKE_USER_AGENT is a current Chrome build (parent-parity, v1.178.0)', () => {
+  // WAF/bot gates challenge a stale Chrome version; keep it near the parent's
+  // user-agent.mjs (bumped 131 → 151). Guards against silent drift back down.
+  const m = BROWSER_LIKE_USER_AGENT.match(/Chrome\/(\d+)\./);
+  assert.ok(m, 'UA must carry a Chrome/<major> token');
+  assert.ok(Number(m[1]) >= 151, `Chrome major must be >= 151 (was ${m[1]})`);
+});
 
 test('fetchJson: returns parsed JSON on 2xx', async () => {
   const fake = async () => ({ ok: true, json: async () => ({ a: 1 }) });

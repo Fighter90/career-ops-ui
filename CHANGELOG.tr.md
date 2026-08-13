@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.178.0] — 2026-08-13
+
+**Düzeltildi (LOW, üst parite) — iki eski sabit üst projeye uyacak şekilde güncellendi (PARENT-SYNC GAP #4 + #5).**
+
+### Düzeltildi
+- **Tarayıcı User-Agent (GAP #4)** — `BROWSER_LIKE_USER_AGENT` (workable/workday/oraclecloud/a16z/eightfold tarafından WAF/bot geçitlerini aşmak için gönderilir) Chrome 131'den **151**'e yükseltildi, üst projenin `user-agent.mjs`'iyle uyumlu; eski bir sürüm daha sık engellenir. Bir `Chrome major ≥ 151` testiyle korunuyor.
+- **Tracker durumları FALLBACK (GAP #5)** — `states.mjs`'deki son çare `FALLBACK` (yalnızca canlı `templates/states.yml` okunamadığında kullanılır — taze klon / CI izole kök) üst projenin Türkçe durum takma adlarını (#2615) kazandı: değerlendirildi, başvuruldu, yanıt verildi, mülakat, teklif, reddedildi, iptal edildi, uygun değil, kabul edildi/işe alındı. Üretimde canlı dosya bunları zaten sağlıyordu.
+
+### Notlar
+- Yalnızca iki sabit; rota / CSP / SSRF / üst yazma değişikliği yok. Testler: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1). Takım: **2456** (+2).
+
 ## [1.177.0] — 2026-08-13
 
 **Düzeltildi (MEDIUM, tarayıcı) — arama API'sini oturum çerezleriyle koruyan kiracılarda csod (Cornerstone) 0 iş döndürüyordu (parent #2769, PARENT-SYNC GAP #1).**

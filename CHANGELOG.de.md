@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.178.0] — 2026-08-13
+
+**Behoben (LOW, Eltern-Parität) — zwei veraltete Konstanten an das Elternprojekt angeglichen (PARENT-SYNC GAP #4 + #5).**
+
+### Behoben
+- **Browser-User-Agent (GAP #4)** — `BROWSER_LIKE_USER_AGENT` (von workable/workday/oraclecloud/a16z/eightfold gesendet, um WAF/Bot-Gates zu passieren) von Chrome 131 auf **151** angehoben, passend zum `user-agent.mjs` des Elternprojekts; ein veralteter Build wird häufiger blockiert. Durch einen `Chrome major ≥ 151`-Test abgesichert.
+- **Tracker-Status-FALLBACK (GAP #5)** — der Notfall-`FALLBACK` in `states.mjs` (nur genutzt, wenn die Live-`templates/states.yml` unlesbar ist — frischer Klon / CI-isolierte Wurzel) erhielt die türkischen Status-Aliase des Elternprojekts (#2615): değerlendirildi, başvuruldu, yanıt verildi, mülakat, teklif, reddedildi, iptal edildi, uygun değil, kabul edildi/işe alındı. In Produktion lieferte die Live-Datei sie bereits.
+
+### Hinweise
+- Nur zwei Konstanten; keine Änderung an Route / CSP / SSRF / Eltern-Schreibzugriff. Tests: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1). Suite: **2456** (+2).
+
 ## [1.177.0] — 2026-08-13
 
 **Behoben (MEDIUM, Scanner) — csod (Cornerstone) lieferte 0 Jobs bei Tenants, die die Such-API hinter Session-Cookies sperren (parent #2769, PARENT-SYNC GAP #1).**

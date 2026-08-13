@@ -9,6 +9,17 @@
 ---
 
 
+## [1.178.0] — 2026-08-13
+
+**修复 (LOW, 父项目对齐) — 将两个过时常量更新为与父项目一致(PARENT-SYNC GAP #4 + #5)。**
+
+### 修复
+- **浏览器 User-Agent(GAP #4)** — `BROWSER_LIKE_USER_AGENT`(workable/workday/oraclecloud/a16z/eightfold 用于通过 WAF/机器人门)从 Chrome 131 升到 **151**,与父项目 `user-agent.mjs` 一致;过时版本更易被拦截。由 `Chrome major ≥ 151` 测试守护。
+- **追踪器状态 FALLBACK(GAP #5)** — `states.mjs` 的最后备用 `FALLBACK`(仅当实时 `templates/states.yml` 不可读时使用 — 全新克隆 / CI 隔离根)新增父项目的土耳其语状态别名(#2615):değerlendirildi、başvuruldu、yanıt verildi、mülakat、teklif、reddedildi、iptal edildi、uygun değil、kabul edildi/işe alındı。生产中实时文件已提供这些。
+
+### 说明
+- 仅两个常量;无路由 / CSP / SSRF / 父写入变更。测试:`tests/http-json.test.mjs`(+1) + `tests/states.test.mjs`(+1)。套件:**2456**(+2)。
+
 ## [1.177.0] — 2026-08-13
 
 **修复 (MEDIUM, 扫描器) — 对用会话 Cookie 保护搜索 API 的租户,csod(Cornerstone)返回 0 个职位(parent #2769,PARENT-SYNC GAP #1)。**

@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.178.0] — 2026-08-13
+
+**Rettet (LOW, forælder-paritet) — to forældede konstanter opdateret, så de matcher forælderen (PARENT-SYNC GAP #4 + #5).**
+
+### Rettet
+- **Browser-User-Agent (GAP #4)** — `BROWSER_LIKE_USER_AGENT` (sendt af workable/workday/oraclecloud/a16z/eightfold for at komme gennem WAF/bot-gates) hævet fra Chrome 131 til **151**, så den matcher forælderens `user-agent.mjs`; en gammel build udfordres oftere. Beskyttet af en `Chrome major ≥ 151`-test.
+- **Tracker-tilstands-FALLBACK (GAP #5)** — den sidste udvej `FALLBACK` i `states.mjs` (bruges kun når den live `templates/states.yml` er ulæselig — frisk klon / CI-isoleret rod) fik forælderens tyrkiske status-aliaser (#2615): değerlendirildi, başvuruldu, yanıt verildi, mülakat, teklif, reddedildi, iptal edildi, uygun değil, kabul edildi/işe alındı. I produktion leverede den live fil dem allerede.
+
+### Noter
+- Kun to konstanter; ingen ændring af rute / CSP / SSRF / forælderskrivning. Tests: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1). Suite: **2456** (+2).
+
 ## [1.177.0] — 2026-08-13
 
 **Rettet (MEDIUM, scanner) — csod (Cornerstone) returnerede 0 job på lejere, der beskytter søge-API'et med session-cookies (parent #2769, PARENT-SYNC GAP #1).**
