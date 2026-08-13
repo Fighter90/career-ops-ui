@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.167.0] — 2026-08-13
+
+**Rettet (LAV, design-system) — hævede flader adskiller sig nu fra hårlinjer (D-3).** Tokenerne `--panel-2` / `--surface-elev1` blev til `--slate` — samme værdi som hårlinjerne `--line` / `--border` — uden visuel adskillelse.
+
+### Rettet
+- Et dedikeret, tema-bevidst token **`--elev`** (`#eef1f6` lys / `#1e232e` mørk, forskellig fra `--slate` i begge temaer) understøtter nu hævede flader; hårlinjerne bliver på `--slate`. De øvrige fund (D-2, D-4, D-5, P4-ETA) er backlog i `docs/UX-ROADMAP.md`.
+
+### Noter
+- Kun CSS-token; ingen ændring af adfærd/JS/i18n/rute/CSP/SSRF/skrivning. `tests/elevation-token.test.mjs` (+2). Suite: **2428** (+2).
+
 ## [1.166.0] — 2026-08-13
 
 **Rettet (LAV) — rubrik-terminologien afspejler nu den kanoniske dokumentation.** career-ops.org/docs beskriver "fem dimensioner plus en holistisk samlet score", men web-ui, cvstart.org og wiki sagde alle "rubrik med seks dimensioner" (5 + 1 = 6, men ordvalget stemte ikke).

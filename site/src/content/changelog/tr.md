@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.167.0] — 2026-08-13
+
+**Düzeltildi (DÜŞÜK, tasarım sistemi) — yükseltilmiş yüzeyler artık ince çizgilerden ayrışıyor (D-3).** `--panel-2` / `--surface-elev1` tokenları, ince çizgiler `--line` / `--border` ile aynı `--slate` değerine çözümleniyordu, görsel ayrım yoktu.
+
+### Düzeltildi
+- Temaya duyarlı özel bir token **`--elev`** (açık `#eef1f6` / koyu `#1e232e`, her iki temada `--slate`'ten farklı) artık yükseltilmiş yüzeyleri destekliyor; ince çizgiler `--slate`'te kalıyor. Kalan bulgular (D-2, D-4, D-5, P4-ETA) `docs/UX-ROADMAP.md`'de backlog.
+
+### Notlar
+- Yalnızca CSS token; davranış/JS/i18n/rota/CSP/SSRF/yazma değişikliği yok. `tests/elevation-token.test.mjs` (+2). Takım: **2428** (+2).
+
 ## [1.166.0] — 2026-08-13
 
 **Düzeltildi (DÜŞÜK) — rubrik terminolojisi artık kanonik belgeleri yansıtıyor.** career-ops.org/docs "beş boyut artı bütünsel bir genel puan" diye tanımlıyor, ancak web-ui, cvstart.org ve wiki hepsi "altı boyutlu rubrik" diyordu (5 + 1 = 6, ama sözcükler uyuşmuyordu).

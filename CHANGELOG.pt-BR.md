@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.167.0] — 2026-08-13
+
+**Corrigido (BAIXA, design-system) — superfícies elevadas agora se separam das linhas (D-3).** Os tokens `--panel-2` / `--surface-elev1` resolviam para `--slate`, igual às linhas `--line` / `--border`, sem separação visual.
+
+### Corrigido
+- Um token temático dedicado **`--elev`** passa a sustentar as superfícies elevadas (`#eef1f6` claro / `#1e232e` escuro, distinto de `--slate`); as linhas ficam em `--slate`. Os achados restantes (D-2, D-4, D-5, P4-ETA) ficam como backlog em `docs/UX-ROADMAP.md`.
+
+### Notas
+- Apenas token CSS; sem mudança de comportamento/JS/i18n/rota/CSP/SSRF/escrita. `tests/elevation-token.test.mjs` (+2). Conjunto: **2428** (+2).
+
 ## [1.166.0] — 2026-08-13
 
 **Corrigido (BAIXA) — a terminologia da rubrica agora espelha os docs canônicos.** career-ops.org/docs descreve "cinco dimensões mais uma pontuação global holística", mas o web-ui, o cvstart.org e o wiki diziam "rubrica de seis dimensões" (5 + 1 = 6, mas o vocabulário não batia).

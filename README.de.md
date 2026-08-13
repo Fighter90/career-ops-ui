@@ -7,14 +7,14 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Neueste Version — v1.166.0** — **Docs-konforme Rubrik-Formulierung (Fix)** — UI/Site/Wiki sagten „Rubrik mit sechs Dimensionen", während die Docs „fünf Dimensionen plus eine ganzheitliche Gesamtbewertung" sagen (5+1=6). Docs-Formulierung in README/Site/Hilfe/Wiki ×17 übernommen. **2426 Tests.**
+> **🆕 Neueste Version — v1.167.0** — **Erhöhte Flächen von Haarlinien getrennt (Design-Fix)** — `--panel-2`/`--surface-elev1` lösten zum selben `--slate` wie die Rahmen auf, ohne Trennung. Ein dediziertes Theme-Token `--elev` trägt sie jetzt. **2428 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.167.0] — 2026-08-13
+
+**Corretto (BASSA, design-system) — le superfici rialzate ora si distinguono dai filetti (D-3).** I token `--panel-2` / `--surface-elev1` si risolvevano in `--slate`, lo stesso valore dei filetti `--line` / `--border`, senza separazione visiva.
+
+### Corretto
+- Un token dedicato e consapevole del tema **`--elev`** (`#eef1f6` chiaro / `#1e232e` scuro, distinto da `--slate` in entrambi i temi) sostiene ora le superfici rialzate; i filetti restano su `--slate`. Gli altri rilievi (D-2, D-4, D-5, P4-ETA) sono backlog in `docs/UX-ROADMAP.md`.
+
+### Note
+- Solo token CSS; nessuna modifica a comportamento/JS/i18n/route/CSP/SSRF/scrittura. `tests/elevation-token.test.mjs` (+2). Suite: **2428** (+2).
+
 ## [1.166.0] — 2026-08-13
 
 **Corretto (BASSA) — la terminologia della rubrica ora rispecchia i docs canonici.** career-ops.org/docs descrive "cinque dimensioni più un punteggio globale olistico", ma il web-ui, cvstart.org e il wiki dicevano "rubrica a sei dimensioni" (5 + 1 = 6, ma il lessico divergeva).

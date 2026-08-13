@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.167.0] — 2026-08-13
+
+**Corregido (BAJA, sistema de diseño) — las superficies elevadas ahora se separan de las líneas divisorias (D-3).** Los tokens `--panel-2` / `--surface-elev1` se resolvían como `--slate`, igual que las líneas `--line` / `--border`, sin separación visual.
+
+### Corregido
+- Un token temático dedicado **`--elev`** respalda ahora las superficies elevadas (`#eef1f6` claro / `#1e232e` oscuro, distinto de `--slate`); las líneas siguen en `--slate`. Los hallazgos restantes (D-2, D-4, D-5, P4-ETA) quedan como backlog en `docs/UX-ROADMAP.md`.
+
+### Notas
+- Solo token CSS; sin cambios de comportamiento/JS/i18n/ruta/CSP/SSRF/escritura. `tests/elevation-token.test.mjs` (+2). Conjunto: **2428** (+2).
+
 ## [1.166.0] — 2026-08-13
 
 **Corregido (BAJA) — la terminología de la rúbrica ahora refleja los docs canónicos.** career-ops.org/docs describe "cinco dimensiones más una puntuación global holística", pero el web-ui, cvstart.org y el wiki decían "rúbrica de seis dimensiones" (5 + 1 = 6, pero el vocabulario no coincidía).

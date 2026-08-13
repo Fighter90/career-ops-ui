@@ -68,4 +68,18 @@ Consolidate configuration; make filters beautiful.
 
 ---
 
+## Known design-system debt (tracked, from the post-v1.158.0 design-export audit)
+
+Restated here so it is not re-filed. Shipped items are checked; the rest are
+deliberate, tracked backlog (each its own future release — behaviour changes are
+never bundled into a token-only ship).
+
+- [x] **D-3 — elevation token** *(v1.167.0)* — `--panel-2` / `--surface-elev1` resolved to `--slate`, the same value as the `--line` / `--border` hairlines, so an elevated panel had no separation from a bordered card. A dedicated theme-aware `--elev` token (`#eef1f6` light / `#1e232e` dark) now backs the raised surfaces; hairlines stay on `--slate`. Guarded by `tests/elevation-token.test.mjs`.
+- [ ] **D-2 — checkbox target size** — the native checkbox rows in `#/batch`, `#/config`, `#/scan`, `#/evaluate`, `#/cv-studio` sit in a ~22 px label band, 2 px under the WCAG 2.5.8 24×24 floor (`.apply-checklist` at 32 px is already compliant). Fix is per-view (each checkbox needs a ≥24 px label band), so it is NOT a single-file token change — a small dedicated release, not part of the D-3 token ship.
+- [ ] **D-4 — type-scale & z-index tokens** — sizes/weights/line-heights and layering are literal per component; the system cannot be fully reproduced from tokens alone. Introduce `--font-size-*` / `--z-*` ramps and migrate incrementally. This is the standing P4 token-system backlog (restated, not re-filed).
+- [ ] **D-5 — inline PDF preview** — PDF exports are served `Content-Disposition: attachment` (download only). Offer an inline "Preview PDF" alongside Download (same route, `inline` disposition variant). Behaviour change → its own release.
+- [ ] **P4-ETA — long-generation ETA** — heavy AI generations (e.g. career-plan ~40 s) show "Generating…" with no ETA/percentage. Reuse the `#/auto` ETA/cost-hint component on the long-running AI pages. Behaviour change → its own release.
+
+---
+
 *Each phase updates docs (help ×17, README ×17, CHANGELOG ×17, CONVENTIONS, architecture), the cvstart.org site, and the wiki, and is browser-verified across all 17 locales before ship.*

@@ -23,8 +23,11 @@ const read = (p) => readFileSync(resolve(ROOT, p), 'utf8');
 const ALIAS = {
   '--fg': '--hof',
   '--panel': '--paper',
-  '--panel-2': '--slate',
-  '--surface-elev1': '--slate',
+  // v1.167.0 (D-3): the raised-surface aliases now resolve to the dedicated
+  // theme-aware `--elev` token (distinct from the `--slate` hairline), so an
+  // elevated panel/chip separates from a bordered card.
+  '--panel-2': '--elev',
+  '--surface-elev1': '--elev',
   '--line': '--slate',
   // semantic text/surface aliases (v1.137.0)
   '--ok': '--kazan-text',
@@ -49,9 +52,10 @@ test('previously-undefined alias tokens are declared and mapped to theme-aware t
 
 test('the alias targets themselves are theme-aware (redeclared under dark)', () => {
   const css = loadAppCss();
-  // --hof / --paper / --slate must each be redeclared in a dark block, otherwise
-  // the aliases above would resolve to a single (light) value in both themes.
-  for (const target of ['--hof', '--paper', '--slate']) {
+  // --hof / --paper / --slate / --elev must each be redeclared in a dark block,
+  // otherwise the aliases above would resolve to a single (light) value in both
+  // themes. (--elev added v1.167.0 / D-3.)
+  for (const target of ['--hof', '--paper', '--slate', '--elev']) {
     const decls = css.match(new RegExp(`\\${target}\\s*:`, 'g')) || [];
     assert.ok(decls.length >= 2, `${target} must be declared in both light and dark blocks (found ${decls.length})`);
   }

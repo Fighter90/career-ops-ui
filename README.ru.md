@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Последний релиз — v1.166.0** — **Формулировка рубрики по докам (фикс)** — UI/сайт/вики говорили «шестимерная рубрика», а доки — «пять измерений плюс целостная общая оценка» (5+1=6). Формулировка документации принята в README/сайте/справке/вики ×17. **2426 тестов.**
+> **🆕 Последний релиз — v1.167.0** — **Приподнятые поверхности отделены от разделителей (дизайн-фикс)** — `--panel-2`/`--surface-elev1` разрешались в тот же `--slate`, что и границы, без отделения. Отдельный тематический токен `--elev` теперь стоит за ними. **2428 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

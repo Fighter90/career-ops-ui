@@ -79,7 +79,8 @@
   --hof: #222222;              /* primary text */
   --foggy: #717171;            /* secondary text */
   --beach: #f7f7f7;            /* canvas */
-  --slate: #ebebeb;            /* divider */
+  --slate: #ebebeb;            /* divider / hairline */
+  --elev: #eef1f6;             /* D-3 (v1.167.0): raised surface, distinct from the --slate hairline so an elevated panel/chip separates from a bordered card */
   --paper: #ffffff;            /* card / surface */
   --kazan: #008a05;            /* success green — for fills/borders */
   --kazan-text: #066507;      /* AA-passing variant for text on light (v1.19.0) */
@@ -113,8 +114,8 @@
      override of their own. */
   --fg: var(--hof);
   --panel: var(--paper);
-  --panel-2: var(--slate);
-  --surface-elev1: var(--slate);
+  --panel-2: var(--elev);
+  --surface-elev1: var(--elev);
   --line: var(--slate);
   /* Semantic text/surface aliases, same story: these were referenced as text
      colors (`--ok` the "✓ set" green, `--err`/`--danger` reds, `--muted`/`--ink`)
@@ -148,6 +149,7 @@
   --foggy: #9ca3af;
   --beach: #0f1115;
   --slate: #2a2f3a;
+  --elev: #1e232e;
   --paper: #161a22;
   --kazan: #34d399;
   --kazan-text: #6ee7b7;    /* WCAG AA on dark surfaces (v1.19.0) */
@@ -171,6 +173,7 @@
     --foggy: #9ca3af;
     --beach: #0f1115;
     --slate: #2a2f3a;
+    --elev: #1e232e;
     --paper: #161a22;
     --kazan: #34d399;
     --kazan-text: #6ee7b7;

@@ -7,14 +7,14 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versión — v1.166.0** — **Redacción de rúbrica alineada con los docs (corrección)** — la UI/sitio/wiki decían "rúbrica de seis dimensiones" mientras los docs dicen "cinco dimensiones más una puntuación global holística" (5+1=6). Se adoptó la redacción de los docs en README/sitio/ayuda/wiki ×17. **2426 pruebas.**
+> **🆕 Última versión — v1.167.0** — **Superficies elevadas separadas de las líneas (corrección de diseño)** — `--panel-2`/`--surface-elev1` se resolvían como el mismo `--slate` que los bordes, sin separación. Un token temático dedicado `--elev` las respalda ahora. **2428 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

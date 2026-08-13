@@ -7,14 +7,14 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.166.0** — **与文档一致的评分标准措辞(修复)** — UI/站点/wiki 说"六维度评分标准",而文档说"五个维度加上综合评分"(5+1=6)。已在 README/站点/帮助/wiki ×17 采用文档措辞。 **2426 项测试。**
+> **🆕 最新版本 — v1.167.0** — **抬升表面与分隔线区分(设计修复)** — `--panel-2`/`--surface-elev1` 解析为与边框相同的 `--slate`,没有区分。专用主题令牌 `--elev` 现在支撑它们。 **2428 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 
