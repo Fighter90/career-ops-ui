@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.172.0] — 2026-08-13
+
+**Corretto (MEDIUM, scanner) — un'entità HTML malformata poteva mandare in crash una sorgente di scansione (parità con career-ops #2150).**
+
+### Corretto
+- Le sorgenti `oraclecloud`, `gem` e `dassault` decodificavano le entità HTML numeriche con un debole controllo `Number.isFinite` prima di `String.fromCodePoint` — un riferimento superiore a `0x10FFFF` (es. `&#99999999;` da un feed malformato o ostile) sollevava un `RangeError` non catturato e interrompeva l'intero parsing di quella sorgente. Un modulo condiviso `server/lib/html-entities.mjs` (che rispecchia il `_html-entities.mjs` del progetto padre) ora limita i riferimenti numerici all'insieme Char di XML 1.0 §2.2, così `String.fromCodePoint` non può mai sollevare eccezioni, e distingue esadecimale e decimale separatamente affinché `&#1a2;` non venga più interpretato male. Le tre sorgenti lo importano.
+
+### Note
+- Nessun cambiamento per i feed validi; nessun cambiamento a JS / i18n / route / CSP / SSRF / scrittura sul padre. Il consolidamento delle ~20 copie del decoder rimaste nelle sorgenti è tracciato in `qa/PARENT-SYNC-WORKLIST-v1.26.0.md`.
+- Test: `tests/html-entities.test.mjs` (+7). Suite: **2444** (+7).
+
 ## [1.171.0] — 2026-08-13
 
 **Modificato (BASSA, design-system) — token di scala tipografica + livelli z-index (D-4, primo passo).** Dimensioni e impilamento erano letterali per componente.

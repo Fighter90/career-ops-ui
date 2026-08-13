@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.172.0] — 2026-08-13
+
+**Corrigido (MEDIUM, scanner) — uma entidade HTML malformada podia derrubar uma fonte de varredura (paridade com career-ops #2150).**
+
+### Corrigido
+- As fontes `oraclecloud`, `gem` e `dassault` decodificavam entidades HTML numéricas com uma verificação `Number.isFinite` insuficiente antes de `String.fromCodePoint` — uma referência acima de `0x10FFFF` (ex.: `&#99999999;` de um feed malformado ou malicioso) lançava um `RangeError` não capturado e abortava toda a análise daquela fonte. Um módulo compartilhado `server/lib/html-entities.mjs` (espelho do `_html-entities.mjs` do projeto pai) agora restringe as referências numéricas ao conjunto Char do XML 1.0 §2.2, então `String.fromCodePoint` nunca lança, e distingue hexadecimal de decimal separadamente para que `&#1a2;` não seja mais interpretado errado. As três fontes o importam.
+
+### Notas
+- Sem mudança para feeds válidos; sem mudança de JS / i18n / rota / CSP / SSRF / escrita no pai. A consolidação das ~20 cópias restantes do decodificador está registrada em `qa/PARENT-SYNC-WORKLIST-v1.26.0.md`.
+- Testes: `tests/html-entities.test.mjs` (+7). Suíte: **2444** (+7).
+
 ## [1.171.0] — 2026-08-13
 
 **Alterado (BAIXA, design-system) — tokens de escala tipográfica + camadas z-index (D-4, primeiro passo).** Tamanhos e empilhamento eram literais por componente.

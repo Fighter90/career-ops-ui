@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.172.0] — 2026-08-13
+
+**Rettet (MEDIUM, scanner) — en misdannet HTML-entitet kunne få en scanningskilde til at gå ned (career-ops #2150-paritet).**
+
+### Rettet
+- Kilderne `oraclecloud`, `gem` og `dassault` afkodede numeriske HTML-entiteter med en svag `Number.isFinite`-kontrol før `String.fromCodePoint` — en reference over `0x10FFFF` (f.eks. `&#99999999;` fra et misdannet eller fjendtligt feed) kastede en ufanget `RangeError` og afbrød hele parsningen af den kilde. Et delt modul `server/lib/html-entities.mjs` (spejler forældreprojektets `_html-entities.mjs`) begrænser nu numeriske referencer til XML 1.0 §2.2 Char-sættet, så `String.fromCodePoint` aldrig kan kaste, og matcher hex og decimal separat, så `&#1a2;` ikke længere fejltolkes. De tre kilder importerer det.
+
+### Noter
+- Ingen ændring for gyldige feeds; ingen ændring af JS / i18n / rute / CSP / SSRF / forælderskrivning. Konsolidering af de resterende ~20 dekoder-kopier i kilderne spores i `qa/PARENT-SYNC-WORKLIST-v1.26.0.md`.
+- Tests: `tests/html-entities.test.mjs` (+7). Suite: **2444** (+7).
+
 ## [1.171.0] — 2026-08-13
 
 **Ændret (LAV, design-system) — typeskala + z-index-lag-tokens (D-4, første trin).** Størrelser og stabling var literaler pr. komponent.

@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.172.0] — 2026-08-13
+
+**Fixed (MEDIUM, scanner) — a malformed HTML entity could crash a scan source (career-ops #2150 parity).**
+
+### Fixed
+- The `oraclecloud`, `gem` and `dassault` sources decoded numeric HTML entities with a bare `Number.isFinite` guard before `String.fromCodePoint` — a reference above `0x10FFFF` (e.g. `&#99999999;` from a malformed or adversarial feed) threw an uncaught `RangeError` and aborted that source's entire parse. A shared `server/lib/html-entities.mjs` (mirroring the parent's `_html-entities.mjs`) now restricts numeric references to the XML 1.0 §2.2 Char set so `String.fromCodePoint` can never throw, and matches hex vs decimal separately so `&#1a2;` no longer mis-parses. The three sources import it.
+
+### Notes
+- No change for valid feeds; no JS / i18n / route / CSP / SSRF / parent-write change. Consolidating the ~20 remaining in-source decoder copies is tracked in `qa/PARENT-SYNC-WORKLIST-v1.26.0.md`.
+- Tests: `tests/html-entities.test.mjs` (+7). Suite: **2444** (+7).
+
 ## [1.171.0] — 2026-08-13
 
 **Changed (LOW, design-system) — type-scale + z-index layer tokens (D-4, first step).** Sizes and stacking were literal per component; the system couldn't be reproduced from tokens alone.

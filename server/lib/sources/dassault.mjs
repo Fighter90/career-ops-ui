@@ -27,6 +27,7 @@
  * Used by the dassault adapter (server/lib/portals/adapters/dassault.mjs).
  */
 import { fetchText } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 export const ORIGIN = 'https://www.3ds.com';
 export const FEED_BASE = `${ORIGIN}/apisearch/card_search_api`;
@@ -67,20 +68,6 @@ export function buildUrl(start = 0, feedBase = FEED_BASE) {
   for (const r of REFINES) base.searchParams.append('r', r);
   base.searchParams.set('start', String(start));
   return base.href;
-}
-
-// Minimal HTML entity decoder — titles/URLs/locations carry named (&amp;, &apos;)
-// and numeric (&#252; / &#xfc;) entities.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-/** @param {string} s */
-function decodeEntities(s) {
-  return String(s).replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const code = body[1] === 'x' || body[1] === 'X' ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
-      return Number.isFinite(code) ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
 }
 
 // Pull every <Meta name="X"><MetaString name="value">V</MetaString> pair from one

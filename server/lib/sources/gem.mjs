@@ -27,6 +27,7 @@
  * (server/lib/portals/adapters/gem.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 const API_HOST = 'jobs.gem.com';
 export const GEM_API_URL = `https://${API_HOST}/api/public/graphql/batch`;
@@ -136,23 +137,6 @@ function toIsoDateFromSeconds(value) {
   const n = Number(value);
   if (!Number.isFinite(n) || n <= 0) return '';
   return new Date(n * 1000).toISOString().slice(0, 10);
-}
-
-// Minimal HTML entity decoder — JDs carry named (&amp;) and numeric (&#252; /
-// &#xfc;) entities. Mirrors the other web-ui scraping sources (avature,
-// successfactors) rather than importing the parent's helper.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-/** @param {string} s */
-function decodeEntities(s) {
-  return s.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const code = body[1] === 'x' || body[1] === 'X'
-        ? parseInt(body.slice(2), 16)
-        : parseInt(body.slice(1), 10);
-      return Number.isFinite(code) ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
 }
 
 /** Strip tags → decode entities → collapse whitespace. @param {unknown} html */

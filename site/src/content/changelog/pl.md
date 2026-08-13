@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.172.0] — 2026-08-13
+
+**Naprawiono (MEDIUM, skaner) — zniekształcona encja HTML mogła zawiesić źródło skanowania (parytet z career-ops #2150).**
+
+### Naprawiono
+- Źródła `oraclecloud`, `gem` i `dassault` dekodowały numeryczne encje HTML ze słabym sprawdzeniem `Number.isFinite` przed `String.fromCodePoint` — odwołanie powyżej `0x10FFFF` (np. `&#99999999;` ze zniekształconego lub złośliwego kanału) zgłaszało nieprzechwycony `RangeError` i przerywało całe parsowanie tego źródła. Wspólny moduł `server/lib/html-entities.mjs` (odzwierciedlający `_html-entities.mjs` projektu nadrzędnego) ogranicza teraz odwołania numeryczne do zbioru Char XML 1.0 §2.2, więc `String.fromCodePoint` nigdy nie zgłosi wyjątku, i osobno dopasowuje szesnastkowe i dziesiętne, dzięki czemu `&#1a2;` nie jest już błędnie parsowane. Trzy źródła go importują.
+
+### Uwagi
+- Bez zmian dla poprawnych kanałów; bez zmian JS / i18n / tras / CSP / SSRF / zapisu do rodzica. Konsolidacja pozostałych ~20 kopii dekodera w źródłach jest śledzona w `qa/PARENT-SYNC-WORKLIST-v1.26.0.md`.
+- Testy: `tests/html-entities.test.mjs` (+7). Zestaw: **2444** (+7).
+
 ## [1.171.0] — 2026-08-13
 
 **Zmieniono (NISKIE, design-system) — tokeny skali typograficznej + warstwy z-index (D-4, pierwszy krok).** Rozmiary i nakładanie były literałami per komponent.

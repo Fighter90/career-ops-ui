@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.172.0] — 2026-08-13
+
+**Corrigé (MEDIUM, scanner) — une entité HTML malformée pouvait planter une source de scan (parité career-ops #2150).**
+
+### Corrigé
+- Les sources `oraclecloud`, `gem` et `dassault` décodaient les entités HTML numériques avec un simple contrôle `Number.isFinite` avant `String.fromCodePoint` — une référence au-dessus de `0x10FFFF` (p. ex. `&#99999999;` dans un flux malformé ou malveillant) levait un `RangeError` non capturé et interrompait toute l'analyse de cette source. Un module partagé `server/lib/html-entities.mjs` (miroir du `_html-entities.mjs` du projet parent) restreint désormais les références numériques au jeu Char de XML 1.0 §2.2, si bien que `String.fromCodePoint` ne peut jamais lever, et distingue l'hexadécimal du décimal séparément pour que `&#1a2;` ne soit plus mal interprété. Les trois sources l'importent.
+
+### Notes
+- Aucun changement pour les flux valides ; aucun changement JS / i18n / route / CSP / SSRF / écriture parent. La consolidation des ~20 copies restantes du décodeur est suivie dans `qa/PARENT-SYNC-WORKLIST-v1.26.0.md`.
+- Tests : `tests/html-entities.test.mjs` (+7). Suite : **2444** (+7).
+
 ## [1.171.0] — 2026-08-13
 
 **Modifié (BASSE, design-system) — jetons d'échelle typographique + couches z-index (D-4, première étape).** Les tailles et l'empilement étaient littéraux par composant.

@@ -8,6 +8,17 @@
 
 ---
 
+## [1.172.0] — 2026-08-13
+
+**修復 (MEDIUM, 掃描器) — 格式錯誤的 HTML 實體可能使掃描來源崩潰 (career-ops #2150 對齊)。**
+
+### 修復
+- `oraclecloud`、`gem` 與 `dassault` 來源在 `String.fromCodePoint` 之前僅以簡單的 `Number.isFinite` 檢查來解碼數字 HTML 實體 — 超過 `0x10FFFF` 的參照(例如格式錯誤或惡意來源中的 `&#99999999;`)會擲出未捕捉的 `RangeError`,中止該來源的整個解析。共用模組 `server/lib/html-entities.mjs`(鏡射父專案的 `_html-entities.mjs`)現在將數字參照限制在 XML 1.0 §2.2 Char 集合內,使 `String.fromCodePoint` 永不擲出,並分別比對十六進位與十進位,因此 `&#1a2;` 不再被錯誤解析。三個來源皆匯入它。
+
+### 說明
+- 對有效來源無行為變化;無 JS / i18n / 路由 / CSP / SSRF / 父寫入變更。合併其餘約 20 個來源內解碼器副本的工作記錄於 `qa/PARENT-SYNC-WORKLIST-v1.26.0.md`。
+- 測試:`tests/html-entities.test.mjs`(+7)。套件:**2444**(+7)。
+
 ## [1.171.0] — 2026-08-13
 
 **變更 (LOW,設計系統) — 字級刻度 + z-index 層權杖(D-4,第一步)。** 尺寸和堆疊此前按元件寫成字面量。
