@@ -53,6 +53,7 @@
  * documents how to wire a tenant in via a `tracked_companies:` entry.
  */
 import { fetchText } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 export const BOARD_HOST = 'jobs.jobvite.com';
 export const FEED_HOST = 'app.jobvite.com';
@@ -217,36 +218,6 @@ export function isEmptyBoardRedirect(err, requestUrl) {
 // the obvious lazy patterns are polynomial-backtracking on input that never
 // closes a tag (CodeQL js/polynomial-redos, high). indexOf walks it once. This
 // mirrors the parent's fixed provider, which switched to the same technique.
-
-const XML_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-
-/** Codepoint → string, guarding invalid / illegal-XML / astral-overflow values. */
-function fromCodePoint(code) {
-  const legalXmlChar = code === 0x9 || code === 0xa || code === 0xd
-    || (code >= 0x20 && code <= 0xd7ff)
-    || (code >= 0xe000 && code <= 0xfffd)
-    || (code >= 0x10000 && code <= 0x10ffff);
-  if (!legalXmlChar) return null;
-  try { return String.fromCodePoint(code); } catch { return null; }
-}
-
-/**
- * Decode the XML entities that appear in this feed, including numeric refs
- * (`&#8217;` right quote, `&#x2013;` en dash) that show up in real titles.
- * An illegal codepoint is left as written (visible and inert) rather than
- * emitting NUL / a lone surrogate into a job title. @param {string} s
- */
-function decodeEntities(s) {
-  return String(s).replace(/&(#x[0-9a-fA-F]+|#\d+|amp|lt|gt|quot|apos|nbsp);/g, (match, body) => {
-    if (body[0] === '#') {
-      const code = body[1] === 'x' || body[1] === 'X'
-        ? Number.parseInt(body.slice(2), 16)
-        : Number.parseInt(body.slice(1), 10);
-      return fromCodePoint(code) ?? match;
-    }
-    return XML_ENTITIES[body] ?? match;
-  });
-}
 
 /** Read one tag out of a `<job>` block, unwrapping CDATA. Index-based (no regex). */
 function tagText(block, name) {

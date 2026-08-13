@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.179.0] — 2026-08-13
+
+**Changed (LOW, scanner) — consolidated 20 duplicate HTML-entity decoders onto the shared module (parent-sync follow-up, closes the worklist).**
+
+### Changed
+- 20 scraping scan sources each carried their own `decodeEntities`/`decodeXmlEntities` (+ a `fromCodePoint` helper) — copies that had drifted (three could throw a `RangeError`, fixed in v1.172.0; others admitted NUL/C0 or mis-parsed `&#1a2;`). All now route through the single `server/lib/html-entities.mjs` (the XML-1.0-Char-safe decoder), removing ~237 lines of duplication. The 8 RSS-style sources gained `&nbsp;` decoding (they handled only 5 named entities before); cryptocurrencyjobs's deliberate double-decode is preserved via an alias. `hh` keeps its own decoder (it handles `&mdash;`/`&ndash;`, outside the shared 6). A new guard test fails if any source re-grows a local decoder.
+
+### Notes
+- Behaviour-preserving refactor; no route / CSP / SSRF / parent-write change. Tests: `tests/decoder-consolidation.test.mjs` (+2). Suite: **2458** (+2).
+
 ## [1.178.0] — 2026-08-13
 
 **Fixed (LOW, parent-parity) — refreshed two stale constants to match the parent (PARENT-SYNC GAP #4 + #5).**

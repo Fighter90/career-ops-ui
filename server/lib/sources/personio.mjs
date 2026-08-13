@@ -13,6 +13,8 @@
  * Used by the personio adapter (server/lib/portals/adapters/personio.mjs).
  */
 import { fetchText } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
+const decodeXmlEntities = decodeEntities;
 
 export const PERSONIO_HOST_RE = /^[a-z0-9][a-z0-9-]*\.jobs\.personio\.(de|com)$/;
 const REMOTE_RE = /remote|homeoffice|home\s*office|ortsunabh|deutschlandweit|bundesweit/i;
@@ -36,27 +38,6 @@ export function assertPersonioUrl(url) {
     throw new Error(`personio: untrusted hostname "${parsed.hostname}" — must match <slug>.jobs.personio.(de|com)`);
   }
   return url;
-}
-
-function fromCodePoint(cp) {
-  try {
-    return String.fromCodePoint(cp);
-  } catch {
-    return '';
-  }
-}
-
-// Decode the XML entities that appear in Personio job text. Numeric forms first;
-// &amp; LAST so "&amp;lt;" yields "&lt;" rather than over-decoding to "<".
-function decodeXmlEntities(s) {
-  return s
-    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => fromCodePoint(parseInt(h, 16)))
-    .replace(/&#(\d+);/g, (_, d) => fromCodePoint(parseInt(d, 10)))
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'")
-    .replace(/&amp;/g, '&');
 }
 
 function extractText(inner) {

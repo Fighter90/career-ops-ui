@@ -9,6 +9,16 @@
 ---
 
 
+## [1.179.0] — 2026-08-13
+
+**变更 (LOW, 扫描器) — 将 20 个重复的 HTML 实体解码器合并到共享模块(对齐后续,关闭 worklist)。**
+
+### 变更
+- 20 个抓取型扫描源各自带有 `decodeEntities`/`decodeXmlEntities`(+ `fromCodePoint` 助手)——这些副本已漂移(其中三个可能抛出 `RangeError`,已在 v1.172.0 修复;其余允许 NUL/C0 或错误解析 `&#1a2;`)。现在全部经由单一的 `server/lib/html-entities.mjs`(符合 XML 1.0 Char 的安全解码器),移除约 237 行重复。8 个 RSS 型源新增 `&nbsp;` 解码(此前只处理 5 个实体);cryptocurrencyjobs 有意的双重解码通过别名保留。`hh` 保留自有解码器(处理 `&mdash;`/`&ndash;`,在共享 6 个之外)。新的守护测试在任何源重建本地解码器时失败。
+
+### 说明
+- 保持行为的重构;无路由 / CSP / SSRF / 父写入变更。测试:`tests/decoder-consolidation.test.mjs`(+2)。套件:**2458**(+2)。
+
 ## [1.178.0] — 2026-08-13
 
 **修复 (LOW, 父项目对齐) — 将两个过时常量更新为与父项目一致(PARENT-SYNC GAP #4 + #5)。**

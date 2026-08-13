@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.179.0] — 2026-08-13
+
+**Cambiado (LOW, escáner) — se consolidaron 20 decodificadores de entidades HTML duplicados en el módulo compartido (seguimiento de paridad, cierra el worklist).**
+
+### Cambiado
+- 20 fuentes de escaneo tenían cada una su propio `decodeEntities`/`decodeXmlEntities` (+ un helper `fromCodePoint`) — copias que habían derivado (tres podían lanzar `RangeError`, corregido en v1.172.0; otras admitían NUL/C0 o interpretaban mal `&#1a2;`). Ahora todas pasan por el único `server/lib/html-entities.mjs` (decodificador seguro según XML 1.0 Char), eliminando ~237 líneas de duplicación. Las 8 fuentes tipo RSS ganaron la decodificación de `&nbsp;` (antes solo manejaban 5 entidades); se preserva la doble decodificación deliberada de cryptocurrencyjobs mediante un alias. `hh` mantiene su decodificador (maneja `&mdash;`/`&ndash;`, fuera de las 6 compartidas). Una nueva prueba de guardia falla si alguna fuente vuelve a crear un decodificador local.
+
+### Notas
+- Refactor que preserva el comportamiento; sin cambios de ruta / CSP / SSRF / escritura al padre. Pruebas: `tests/decoder-consolidation.test.mjs` (+2). Suite: **2458** (+2).
+
 ## [1.178.0] — 2026-08-13
 
 **Corregido (LOW, paridad con el padre) — se actualizaron dos constantes obsoletas para igualar al padre (PARENT-SYNC GAP #4 + #5).**

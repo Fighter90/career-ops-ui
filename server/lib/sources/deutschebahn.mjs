@@ -27,6 +27,7 @@
  * Used by the deutschebahn adapter (server/lib/portals/adapters/deutschebahn.mjs).
  */
 import { fetchText, delay } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 export const meta = {
   value: 'deutschebahn',
@@ -43,26 +44,6 @@ const MAX_PAGES = 60; // safety cap on request count (60*20 = 1200 postings)
 const MAX_JOBS = 1000; // cap total postings pulled
 const PAGE_DELAY_MS = 150; // polite pacing between page requests
 
-// Robust HTML entity decoder — named (&amp;) and numeric (&#252; / &#xfc;)
-// entities. A malformed/out-of-range numeric entity (e.g. `&#99999999;` or a
-// lone surrogate half `&#xD800;`) degrades to the literal text instead of
-// throwing a RangeError and aborting the whole parse. Hex/decimal are matched
-// separately so a decimal entity can't absorb trailing hex letters.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-/** @param {string} s */
-function decodeEntities(s) {
-  return String(s).replace(/&(#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const isHex = body[1] === 'x' || body[1] === 'X';
-      const code = parseInt(body.slice(isHex ? 2 : 1), isHex ? 16 : 10);
-      const valid = Number.isFinite(code) && code >= 0 && code <= 0x10ffff && !(code >= 0xd800 && code <= 0xdfff);
-      return valid ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
-}
-
-/** @param {string} s */
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }

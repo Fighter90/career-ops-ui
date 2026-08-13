@@ -37,6 +37,7 @@
  * (server/lib/portals/adapters/remotli.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 const ORIGIN = 'https://remotli.ch';
 const API_PATH = '/api/jobs';
@@ -91,27 +92,6 @@ export function toEpochMs(value) {
   if (!value) return undefined;
   const parsed = Date.parse(/** @type {string} */ (value));
   return Number.isNaN(parsed) ? undefined : parsed;
-}
-
-// Minimal HTML entity decoder (inlined, mirroring server/lib/sources/
-// agenticjobs.mjs — web-ui has no shared decoder). Named entities + numeric
-// (&#252; / &#xfc;), with a codepoint-range guard so a malformed/adversarial
-// entity (e.g. "&#99999999;") can't throw a RangeError from String.fromCodePoint
-// and crash the whole parse. Out-of-range entities pass through VERBATIM.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-
-/** @param {string} s */
-function decodeEntities(s) {
-  return s.replace(/&(#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const isHex = body[1] === 'x' || body[1] === 'X';
-      const code = parseInt(body.slice(isHex ? 2 : 1), isHex ? 16 : 10);
-      const valid =
-        Number.isFinite(code) && code >= 0 && code <= 0x10ffff && !(code >= 0xd800 && code <= 0xdfff);
-      return valid ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
 }
 
 /**

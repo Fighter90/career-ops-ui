@@ -13,6 +13,8 @@
  * Used by the teamtailor adapter (server/lib/portals/adapters/teamtailor.mjs).
  */
 import { fetchText } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
+const decodeXmlEntities = decodeEntities;
 
 export const TEAMTAILOR_HOST_RE = /^[a-z0-9][a-z0-9-]*\.teamtailor\.com$/;
 const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
@@ -42,21 +44,6 @@ function toIsoDate(value) {
   if (!value) return '';
   const parsed = Date.parse(value);
   return Number.isNaN(parsed) ? '' : new Date(parsed).toISOString().slice(0, 10);
-}
-
-function fromCodePoint(cp) {
-  try { return String.fromCodePoint(cp); } catch { return ''; }
-}
-
-function decodeXmlEntities(s) {
-  return s
-    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => fromCodePoint(parseInt(h, 16)))
-    .replace(/&#(\d+);/g, (_, d) => fromCodePoint(parseInt(d, 10)))
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'")
-    .replace(/&amp;/g, '&');
 }
 
 function extractText(inner) {

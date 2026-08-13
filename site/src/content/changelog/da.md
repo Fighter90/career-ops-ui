@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.179.0] — 2026-08-13
+
+**Ændret (LOW, scanner) — 20 duplikerede HTML-entitetsdekodere samlet i det delte modul (paritets-opfølgning, lukker worklisten).**
+
+### Ændret
+- 20 scraping-kilder havde hver sin egen `decodeEntities`/`decodeXmlEntities` (+ en `fromCodePoint`-hjælper) — kopier der var drevet fra hinanden (tre kunne kaste en `RangeError`, rettet i v1.172.0; andre tillod NUL/C0 eller fejltolkede `&#1a2;`). Alle går nu gennem den ene `server/lib/html-entities.mjs` (XML 1.0 Char-sikker dekoder), hvilket fjerner ~237 linjers duplikering. De 8 RSS-lignende kilder fik `&nbsp;`-dekodning (før håndterede de kun 5 entiteter); cryptocurrencyjobs' bevidste dobbelt-dekodning bevares via et alias. `hh` beholder sin egen dekoder (den håndterer `&mdash;`/`&ndash;`, uden for de delte 6). En ny vagt-test fejler, hvis en kilde igen laver en lokal dekoder.
+
+### Noter
+- Adfærdsbevarende refaktorering; ingen ændring af rute / CSP / SSRF / forælderskrivning. Tests: `tests/decoder-consolidation.test.mjs` (+2). Suite: **2458** (+2).
+
 ## [1.178.0] — 2026-08-13
 
 **Rettet (LOW, forælder-paritet) — to forældede konstanter opdateret, så de matcher forælderen (PARENT-SYNC GAP #4 + #5).**

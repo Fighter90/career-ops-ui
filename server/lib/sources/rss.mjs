@@ -7,6 +7,7 @@
  *
  * Used by the rss adapter (server/lib/portals/adapters/rss.mjs).
  */
+import { decodeEntities } from '../html-entities.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
 
@@ -25,25 +26,6 @@ function djb2(str) {
   }
   // >>> 0 converts to unsigned 32-bit, then toString(36) for compactness
   return (h >>> 0).toString(36);
-}
-
-// ── HTML entity + CDATA helpers ──────────────────────────────────────
-const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-
-/** Codepoint → string, guarding against invalid/astral overflow values. */
-function safeFromCodePoint(cp) {
-  try {
-    return Number.isInteger(cp) && cp >= 0 && cp <= 0x10ffff ? String.fromCodePoint(cp) : '';
-  } catch {
-    return '';
-  }
-}
-
-function decodeEntities(str) {
-  return str
-    .replace(/&([a-z]+);/gi, (_, e) => ENTITIES[e.toLowerCase()] ?? _)
-    .replace(/&#(\d+);/g, (_, n) => safeFromCodePoint(Number(n)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, h) => safeFromCodePoint(parseInt(h, 16)));
 }
 
 /** Strip CDATA wrapper if present, then decode entities. */

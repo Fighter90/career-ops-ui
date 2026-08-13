@@ -26,6 +26,7 @@
  * Used by the hecklerkoch adapter (server/lib/portals/adapters/hecklerkoch.mjs).
  */
 import { fetchText } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 export const DEFAULT_LIST_URL = 'https://www.heckler-koch.com/de/Karriere/Stellenangebote';
 // Host match — heckler-koch.com or any subdomain. Anchored so a path or
@@ -39,26 +40,6 @@ export const meta = {
   region: 'en',
 };
 
-// Minimal HTML entity decoder — inlined from the parent's shared
-// `providers/_html-entities.mjs` (web-ui convention: no cross-repo helper).
-// Range-guarded: a code point above 0x10FFFF or a lone surrogate half
-// (&#xD800;) degrades to the literal text instead of throwing RangeError and
-// aborting the whole parse.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-/** @param {string} s */
-function decodeEntities(s) {
-  return s.replace(/&(#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const isHex = body[1] === 'x' || body[1] === 'X';
-      const code = parseInt(body.slice(isHex ? 2 : 1), isHex ? 16 : 10);
-      const valid = Number.isFinite(code) && code >= 0 && code <= 0x10ffff && !(code >= 0xd800 && code <= 0xdfff);
-      return valid ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
-}
-
-/** @param {string} s */
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }

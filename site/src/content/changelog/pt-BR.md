@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.179.0] — 2026-08-13
+
+**Alterado (LOW, scanner) — 20 decodificadores de entidades HTML duplicados consolidados no módulo compartilhado (follow-up de paridade, fecha o worklist).**
+
+### Alterado
+- 20 fontes de varredura tinham cada uma seu próprio `decodeEntities`/`decodeXmlEntities` (+ um helper `fromCodePoint`) — cópias que haviam divergido (três podiam lançar `RangeError`, corrigido em v1.172.0; outras admitiam NUL/C0 ou faziam parse errado de `&#1a2;`). Agora todas passam pelo único `server/lib/html-entities.mjs` (decodificador seguro conforme XML 1.0 Char), removendo ~237 linhas de duplicação. As 8 fontes tipo RSS ganharam a decodificação de `&nbsp;` (antes só tratavam 5 entidades); a dupla decodificação deliberada do cryptocurrencyjobs é preservada por um alias. `hh` mantém seu decodificador (trata `&mdash;`/`&ndash;`, fora dos 6 compartilhados). Um novo teste-guarda falha se alguma fonte recriar um decodificador local.
+
+### Notas
+- Refatoração que preserva o comportamento; sem mudança de rota / CSP / SSRF / escrita no pai. Testes: `tests/decoder-consolidation.test.mjs` (+2). Suíte: **2458** (+2).
+
 ## [1.178.0] — 2026-08-13
 
 **Corrigido (LOW, paridade com o pai) — duas constantes desatualizadas foram atualizadas para igualar ao pai (PARENT-SYNC GAP #4 + #5).**

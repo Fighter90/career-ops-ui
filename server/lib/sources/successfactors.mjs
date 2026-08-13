@@ -23,6 +23,7 @@
  * (server/lib/portals/adapters/successfactors.mjs).
  */
 import { fetchText } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 // Hosts detect() auto-claims (the parent's trusted SF/jobs2web hosts). Branded
 // RMK portals (jobs.zf.com …) are NOT auto-claimed — they carry an explicit
@@ -88,24 +89,6 @@ export function resolveTenantBase(company) {
   return u.origin + path;
 }
 
-// Minimal HTML entity decoder — titles carry named (&amp;) and numeric
-// (&#252; / &#xfc;) entities. We only need the handful that show up in job
-// titles / paths; anything else is left as-is.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-/** @param {string} s */
-function decodeEntities(s) {
-  return s.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const code = body[1] === 'x' || body[1] === 'X'
-        ? parseInt(body.slice(2), 16)
-        : parseInt(body.slice(1), 10);
-      return Number.isFinite(code) ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
-}
-
-/** @param {string} s */
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
