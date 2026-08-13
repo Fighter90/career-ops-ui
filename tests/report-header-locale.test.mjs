@@ -158,11 +158,16 @@ test('overflow: a score line with trailing status text compacts to just the scor
   assert.equal(h.scoreNum, 1.8);
   assert.doesNotMatch(h.score, /Status|рекомендовано/, 'score chip carries no trailing prose');
   assert.ok(h.score.length <= 12, `score display stays short (was "${h.score}")`);
+  // AI-review #2 — a bold label with NO derivable number yields an empty score
+  // (→ muted "Score not detected" chip), never trailing prose in the field.
+  const noNum = parseReportHeader('# Оценка вакансии: X\n\n**Оценка:** применение не рекомендовано.\n');
+  assert.equal(noNum.scoreNum, null);
+  assert.equal(noNum.score, '', 'no number → empty score field, not prose');
 });
 
 test('FIND-1: the bold label beats a same-word H1 even when both have a colon', () => {
   // Both the heading and the score line start with "Оценка" and a colon.
   const md = '# Оценка вакансии: X — Y\n\n**Оценка:** 3.0 / 5\n**Легитимность:** Medium\n';
-  const h = parseReportHeader(md);
+  const h = parseReportHeader(md, { mtime: new Date('2026-05-27T10:00:00Z') });
   assert.equal(h.scoreNum, 3.0);
 });

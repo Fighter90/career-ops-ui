@@ -307,7 +307,10 @@ function compactScore(raw, num) {
   if (/^\s*\d+(?:[.,]\d+)?\s*(?:\/\s*\d+(?:[.,]\d+)?)?\s*$/.test(raw)) return raw.trim();
   const frac = String(raw).match(/\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?/);
   if (frac) return frac[0].replace(/\s+/g, ' ').trim();
-  return num != null ? `${num} / 5` : raw;
+  // No fraction and no derivable number → empty, so the value falls through to
+  // the muted "Score not detected" chip (reports.js) instead of leaving trailing
+  // status prose in the score field / its accessible name (AI-review #2).
+  return num != null ? `${num} / 5` : '';
 }
 
 // Last-resort: a localized prose label (`Оценка: …`, `评分：…`, optionally
