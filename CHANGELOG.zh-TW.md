@@ -8,6 +8,16 @@
 
 ---
 
+## [1.177.0] — 2026-08-13
+
+**修復 (MEDIUM, 掃描器) — 對用工作階段 Cookie 保護搜尋 API 的租戶,csod(Cornerstone)回傳 0 個職缺(parent #2769,PARENT-SYNC GAP #1)。**
+
+### 修復
+- 部分 Cornerstone 租戶在啟動招聘網站首頁設定工作階段 Cookie,若這些 Cookie 不隨匿名 bearer 權杖一起回傳,搜尋 API 就回傳 `401 CSOD Unauthorized`。`sources/csod.mjs` 現在用新的 `fetchResponse` 輔助函式讀取啟動頁,從其 `Set-Cookie` 值建立 `Cookie` 標頭(`cookieHeaderFrom` — 僅 name=value,jar 語意)並在搜尋 POST 上重放。僅同源(主機固定 + `redirect:'error'`),工作階段 Cookie 絕不會到達第三方;不設定 Cookie 的租戶與之前完全相同。
+
+### 說明
+- 新增 `server/lib/http-json.mjs::fetchResponse`(純新增;不影響現有來源)。無路由 / CSP / SSRF / 父寫入變更。測試:`tests/sources-parity-v1118a.test.mjs`(+1)。套件:**2454**(+1)。
+
 ## [1.176.0] — 2026-08-13
 
 **修復 (MEDIUM, 報告) — RU 表未列出的粗體標籤下的評分仍顯示 "Score not detected"(FIND-5)。**

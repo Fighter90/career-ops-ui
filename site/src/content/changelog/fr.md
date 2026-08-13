@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.177.0] — 2026-08-13
+
+**Corrigé (MEDIUM, scanner) — csod (Cornerstone) renvoyait 0 offre sur les locataires qui protègent l'API de recherche par des cookies de session (parent #2769, PARENT-SYNC GAP #1).**
+
+### Corrigé
+- Certains locataires Cornerstone posent des cookies de session sur la page d'accueil du site carrières et répondent `401 CSOD Unauthorized` à l'API de recherche si ces cookies ne reviennent pas avec le jeton bearer anonyme. `sources/csod.mjs` lit désormais le bootstrap via un nouvel utilitaire `fetchResponse`, construit un en-tête `Cookie` à partir de ses valeurs `Set-Cookie` (`cookieHeaderFrom` — nom=valeur seulement, sémantique de jar) et le rejoue sur le POST de recherche. Même origine uniquement (hôte épinglé + `redirect:'error'`), donc les cookies de session ne peuvent jamais atteindre un tiers ; un locataire sans cookie se comporte comme avant.
+
+### Notes
+- Nouveau `server/lib/http-json.mjs::fetchResponse` (additif ; sources existantes intactes). Aucun changement de route / CSP / SSRF / écriture parent. Tests : `tests/sources-parity-v1118a.test.mjs` (+1). Suite : **2454** (+1).
+
 ## [1.176.0] — 2026-08-13
 
 **Corrigé (MEDIUM, rapports) — un score sous une étiquette en gras que la table RU ne liste pas affichait encore « Score not detected » (FIND-5).**

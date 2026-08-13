@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.177.0] — 2026-08-13
+
+**Fixed (MEDIUM, scanner) — csod (Cornerstone) returned 0 jobs on tenants that gate the search API behind session cookies (parent #2769, PARENT-SYNC GAP #1).**
+
+### Fixed
+- Some Cornerstone tenants set session cookies on the bootstrap career-site home page and answer `401 CSOD Unauthorized` on the search API unless those cookies come back alongside the anonymous bearer token. `sources/csod.mjs` now reads the bootstrap through a new `fetchResponse` helper, builds a `Cookie` header from its `Set-Cookie` values (`cookieHeaderFrom` — name=value only, jar semantics), and replays it on the search POST. Same-origin only (host-pinned + `redirect:'error'`), so session cookies can never reach a third party; a tenant that sets no cookies behaves exactly as before.
+
+### Notes
+- New `server/lib/http-json.mjs::fetchResponse` (additive; existing sources unaffected). No route / CSP / SSRF / parent-write change. Tests: `tests/sources-parity-v1118a.test.mjs` (+1). Suite: **2454** (+1).
+
 ## [1.176.0] — 2026-08-13
 
 **Fixed (MEDIUM, reports) — a score under a bold label the RU table doesn't list still read "Score not detected" (FIND-5).**

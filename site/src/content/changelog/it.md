@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.177.0] — 2026-08-13
+
+**Corretto (MEDIUM, scanner) — csod (Cornerstone) restituiva 0 offerte sui tenant che proteggono l'API di ricerca con cookie di sessione (parent #2769, PARENT-SYNC GAP #1).**
+
+### Corretto
+- Alcuni tenant Cornerstone impostano cookie di sessione sulla home del sito carriere e rispondono `401 CSOD Unauthorized` all'API di ricerca se quei cookie non tornano insieme al token bearer anonimo. `sources/csod.mjs` ora legge il bootstrap tramite un nuovo helper `fetchResponse`, costruisce un header `Cookie` dai suoi valori `Set-Cookie` (`cookieHeaderFrom` — solo nome=valore, semantica jar) e lo ripete sul POST di ricerca. Solo stessa origine (host fissato + `redirect:'error'`), quindi i cookie di sessione non raggiungono mai terze parti; un tenant senza cookie si comporta come prima.
+
+### Note
+- Nuovo `server/lib/http-json.mjs::fetchResponse` (additivo; sorgenti esistenti intatte). Nessun cambiamento a route / CSP / SSRF / scrittura sul padre. Test: `tests/sources-parity-v1118a.test.mjs` (+1). Suite: **2454** (+1).
+
 ## [1.176.0] — 2026-08-13
 
 **Corretto (MEDIUM, report) — un punteggio sotto un'etichetta in grassetto che la tabella RU non elenca mostrava ancora "Score not detected" (FIND-5).**

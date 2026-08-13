@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.177.0] — 2026-08-13
+
+**Corregido (MEDIUM, escáner) — csod (Cornerstone) devolvía 0 empleos en inquilinos que protegen la API de búsqueda con cookies de sesión (parent #2769, PARENT-SYNC GAP #1).**
+
+### Corregido
+- Algunos inquilinos de Cornerstone fijan cookies de sesión en la página de inicio del sitio de carreras y responden `401 CSOD Unauthorized` en la API de búsqueda salvo que esas cookies vuelvan junto al token portador anónimo. `sources/csod.mjs` ahora lee el bootstrap con un nuevo helper `fetchResponse`, arma una cabecera `Cookie` con sus valores `Set-Cookie` (`cookieHeaderFrom` — solo nombre=valor, semántica de jar) y la reenvía en el POST de búsqueda. Solo mismo origen (host fijado + `redirect:'error'`), así las cookies de sesión nunca llegan a un tercero; un inquilino sin cookies se comporta igual que antes.
+
+### Notas
+- Nuevo `server/lib/http-json.mjs::fetchResponse` (aditivo; fuentes existentes sin afectar). Sin cambios de ruta / CSP / SSRF / escritura al padre. Pruebas: `tests/sources-parity-v1118a.test.mjs` (+1). Suite: **2454** (+1).
+
 ## [1.176.0] — 2026-08-13
 
 **Corregido (MEDIUM, informes) — una puntuación bajo una etiqueta en negrita que la tabla RU no lista seguía mostrando "Score not detected" (FIND-5).**

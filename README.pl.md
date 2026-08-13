@@ -7,16 +7,16 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2453%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2454%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.176.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.176.0)
+[![release](https://img.shields.io/badge/release-v1.177.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.177.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.176.0** — **Parsowanie wyniku (FIND-5)** — wynik pod pogrubioną etykietą, której nie ma w tabeli RU (`**Итоговый балл:**`, `**Скор:**`), jest teraz wykrywany po formie wartości `X.X / 5` — niezależnie od języka, bezpiecznie wobec nagłówków i dat. **2453 testów.**
+> **🆕 Najnowsze wydanie — v1.177.0** — **Odtwarzanie ciasteczek csod (parent #2769)** — najemcy Cornerstone chroniący API wyszukiwania ciasteczkami sesji (401 → 0 ofert) znów działają: `Set-Cookie` ze strony bootstrap jest odtwarzany jako nagłówek `Cookie` w POST wyszukiwania, tylko to samo pochodzenie. **2454 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.177.0] — 2026-08-13
+
+**Düzeltildi (MEDIUM, tarayıcı) — arama API'sini oturum çerezleriyle koruyan kiracılarda csod (Cornerstone) 0 iş döndürüyordu (parent #2769, PARENT-SYNC GAP #1).**
+
+### Düzeltildi
+- Bazı Cornerstone kiracıları kariyer sitesi açılış sayfasında oturum çerezleri ayarlar ve bu çerezler anonim bearer belirteciyle birlikte geri gelmezse arama API'sine `401 CSOD Unauthorized` yanıtı verir. `sources/csod.mjs` artık açılışı yeni bir `fetchResponse` yardımcısıyla okur, `Set-Cookie` değerlerinden bir `Cookie` başlığı kurar (`cookieHeaderFrom` — yalnızca ad=değer, jar semantiği) ve arama POST'unda yeniden gönderir. Yalnızca aynı köken (host sabitlenmiş + `redirect:'error'`), böylece oturum çerezleri asla üçüncü tarafa ulaşamaz; çerez ayarlamayan bir kiracı eskisi gibi davranır.
+
+### Notlar
+- Yeni `server/lib/http-json.mjs::fetchResponse` (eklemeli; mevcut kaynaklar etkilenmez). Rota / CSP / SSRF / üst yazma değişikliği yok. Testler: `tests/sources-parity-v1118a.test.mjs` (+1). Takım: **2454** (+1).
+
 ## [1.176.0] — 2026-08-13
 
 **Düzeltildi (MEDIUM, raporlar) — RU tablosunun listelemediği kalın bir etiket altındaki puan hâlâ "Score not detected" gösteriyordu (FIND-5).**

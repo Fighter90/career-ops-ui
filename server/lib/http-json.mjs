@@ -95,6 +95,41 @@ export async function fetchText(fetchImpl, url, opts = {}) {
   return await res.text();
 }
 
+// Statuses whose response has no body — reading .text() on them is a no-op.
+const NULL_BODY_STATUSES = new Set([204, 205, 304]);
+
+/**
+ * Response-returning sibling of {@link fetchText}/{@link fetchJson} for the rare
+ * source that needs the RESPONSE HEADERS. csod (Cornerstone) reads the bootstrap
+ * home page's `Set-Cookie` to prime the session its search API demands — some
+ * tenants answer `401 CSOD Unauthorized` without those cookies (parent #2769).
+ * Same SSRF stance (`redirect: 'error'` by default, so a 3xx can't be followed
+ * to a private host). Non-2xx throws with `.status`, like the siblings.
+ *
+ * Returns a small `{ status, headers, text() }` shape rather than the live
+ * Response: the body is read once here and handed back via `text()`, and
+ * `headers` is passed through untouched so `headers.getSetCookie()` (repeated
+ * Set-Cookie) still works on a real fetch — and a hand-rolled test stub can
+ * expose whatever `headers` it likes. Mirrors parent `providers/_http.mjs`.
+ *
+ * @param {typeof fetch} fetchImpl
+ * @param {string} url
+ * @param {{ method?: string, headers?: Record<string,string>, body?: string,
+ *           signal?: AbortSignal, redirect?: 'error'|'follow'|'manual' }} [opts]
+ * @returns {Promise<{ status: number, headers: any, text: () => Promise<string> }>}
+ */
+export async function fetchResponse(fetchImpl, url, opts = {}) {
+  const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
+  const res = await fetchImpl(url, { method, headers, body, signal, redirect });
+  if (!res.ok) {
+    const err = new Error(`HTTP ${res.status} (${url})`);
+    err.status = res.status;
+    throw err;
+  }
+  const text = NULL_BODY_STATUSES.has(res.status) ? '' : await res.text();
+  return { status: res.status, headers: res.headers, text: async () => text };
+}
+
 /**
  * Retrying sibling of {@link fetchJson} for feeds that paginate into the
  * hundreds of pages, where a single transient upstream blip mid-sweep used to

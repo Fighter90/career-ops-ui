@@ -7,7 +7,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { meta as csodMeta, CSOD_HOST_RE, resolveConfig as csodConfig, assertCsodUrl, extractToken, parseCsodDate, cleanLocations, parseRequisitions, fetchCsod } from '../server/lib/sources/csod.mjs';
+import { meta as csodMeta, CSOD_HOST_RE, resolveConfig as csodConfig, assertCsodUrl, extractToken, parseCsodDate, cleanLocations, parseRequisitions, fetchCsod, cookieHeaderFrom } from '../server/lib/sources/csod.mjs';
 import { csodAdapter } from '../server/lib/portals/adapters/csod.mjs';
 import { meta as phenomMeta, PHENOM_HOST_RE, resolveConfig as phenomConfig, assertPhenomUrl, slugify, parsePhenomDate, jobLocation, parseRefineSearch, fetchPhenom } from '../server/lib/sources/phenom.mjs';
 import { phenomAdapter } from '../server/lib/portals/adapters/phenom.mjs';
@@ -109,6 +109,40 @@ test('csod: fetch pulls the anonymous token, POST-paginates via totalCount, dedu
   );
   // Evil endpoint rejected before any request.
   await assert.rejects(() => fetchCsod('https://evil.example.com/ux/ats/careersite/1/home', { fetchImpl }), /untrusted hostname/);
+});
+
+test('csod: replays bootstrap Set-Cookie as a Cookie header on the search API (parent #2769)', async () => {
+  // cookieHeaderFrom: only name=value survives; attributes dropped; last def wins.
+  assert.equal(cookieHeaderFrom(['SID=abc; Path=/; HttpOnly', 'X=1; Secure']), 'SID=abc; X=1');
+  assert.equal(cookieHeaderFrom(['SID=a', 'SID=b']), 'SID=b');
+  assert.equal(cookieHeaderFrom(['nonsense', '=novalue', 'ok=1']), 'ok=1');
+  assert.equal(cookieHeaderFrom([]), '');
+  assert.equal(cookieHeaderFrom(undefined), '');
+
+  // Integration: a tenant that sets session cookies on the bootstrap page must
+  // see them replayed on the search POST, or it answers 401 CSOD Unauthorized.
+  const company = { name: 'OHB', api: 'https://career-ohb.csod.com/ux/ats/careersite/4/home?c=career-ohb' };
+  const setCookies = ['CSODSESSIONID=deadbeef; Path=/; HttpOnly; Secure', 'AWSALB=xyz; Path=/'];
+  let sawCookie = null;
+  const impl = async (url, init = {}) => {
+    if (init.method === 'POST') {
+      sawCookie = init.headers?.cookie ?? null;
+      return jsonResponse({ data: { totalCount: 1, requisitions: [{ requisitionId: 1, displayJobTitle: 'X', postingEffectiveDate: '7/3/2026', locations: [] }] } });
+    }
+    return { ok: true, status: 200, headers: { getSetCookie: () => setCookies }, text: async () => '{"token":"tok.z"}' };
+  };
+  const jobs = await fetchCsod(company.api, { fetchImpl: impl, company });
+  assert.equal(jobs.length, 1);
+  assert.equal(sawCookie, 'CSODSESSIONID=deadbeef; AWSALB=xyz', 'search POST replays the bootstrap cookies');
+
+  // A tenant that sets no cookies → no cookie header (pre-#2769 behavior preserved).
+  let sawCookie2 = 'unset';
+  const noCookieImpl = async (url, init = {}) => {
+    if (init.method === 'POST') { sawCookie2 = init.headers?.cookie ?? null; return jsonResponse({ data: { totalCount: 0, requisitions: [] } }); }
+    return { ok: true, status: 200, headers: { getSetCookie: () => [] }, text: async () => '{"token":"tok.z"}' };
+  };
+  await fetchCsod(company.api, { fetchImpl: noCookieImpl, company });
+  assert.equal(sawCookie2, null, 'no Set-Cookie → no cookie header sent');
 });
 
 test('phenom: config defaults + phenom block; endpoint guard; slugify; refineSearch parse', () => {

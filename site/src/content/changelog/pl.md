@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.177.0] — 2026-08-13
+
+**Naprawiono (MEDIUM, skaner) — csod (Cornerstone) zwracał 0 ofert u najemców chroniących API wyszukiwania ciasteczkami sesji (parent #2769, PARENT-SYNC GAP #1).**
+
+### Naprawiono
+- Niektórzy najemcy Cornerstone ustawiają ciasteczka sesji na stronie startowej witryny kariery i odpowiadają `401 CSOD Unauthorized` na API wyszukiwania, o ile te ciasteczka nie wrócą razem z anonimowym tokenem bearer. `sources/csod.mjs` czyta teraz bootstrap przez nowego helpera `fetchResponse`, buduje nagłówek `Cookie` z wartości `Set-Cookie` (`cookieHeaderFrom` — tylko name=value, semantyka jar) i odtwarza go w POST wyszukiwania. Tylko to samo pochodzenie (przypięty host + `redirect:'error'`), więc ciasteczka sesji nigdy nie trafią do strony trzeciej; najemca bez ciasteczek działa jak wcześniej.
+
+### Uwagi
+- Nowy `server/lib/http-json.mjs::fetchResponse` (dodatkowy; istniejące źródła bez zmian). Bez zmian tras / CSP / SSRF / zapisu do rodzica. Testy: `tests/sources-parity-v1118a.test.mjs` (+1). Zestaw: **2454** (+1).
+
 ## [1.176.0] — 2026-08-13
 
 **Naprawiono (MEDIUM, raporty) — wynik pod pogrubioną etykietą, której nie ma w tabeli RU, wciąż pokazywał "Score not detected" (FIND-5).**

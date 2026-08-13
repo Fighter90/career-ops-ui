@@ -25,7 +25,28 @@
  *
  * Used by the csod adapter (server/lib/portals/adapters/csod.mjs).
  */
-import { fetchJson, fetchText, delay } from '../http-json.mjs';
+import { fetchJson, fetchResponse, delay } from '../http-json.mjs';
+
+/**
+ * v1.177.0 (parent #2769) — build a `Cookie` request header from the bootstrap
+ * response's `Set-Cookie` headers. Only the leading `name=value` pair is
+ * meaningful on a request; attributes (Path/HttpOnly/Secure/SameSite/Expires)
+ * describe browser-jar storage and are dropped. A repeated name takes its last
+ * definition (jar semantics). Returns '' when nothing usable was set — the
+ * caller then sends no cookie header at all.
+ * @param {string[]} setCookies @returns {string}
+ */
+export function cookieHeaderFrom(setCookies) {
+  const jar = new Map();
+  for (const raw of Array.isArray(setCookies) ? setCookies : []) {
+    if (typeof raw !== 'string') continue;
+    const pair = raw.split(';', 1)[0].trim();
+    const eq = pair.indexOf('=');
+    if (eq <= 0) continue; // no '=', or an empty name — not a cookie
+    jar.set(pair.slice(0, eq).trim(), pair.slice(eq + 1).trim());
+  }
+  return [...jar].map(([name, value]) => `${name}=${value}`).join('; ');
+}
 
 export const CSOD_HOST_RE = /(?:^|\.)csod\.com$/i;
 
@@ -190,11 +211,22 @@ export async function fetchCsod(endpoint, opts = {}) {
   if (!cfg) throw new Error(`csod: cannot resolve careersite URL for ${company.name || endpoint}`);
   const name = (company && typeof company.name === 'string' && company.name.trim()) ? company.name.trim() : 'Cornerstone';
 
-  const html = await fetchText(fetchImpl, cfg.homeUrl, {
+  // The bootstrap page yields two things, not one: the anonymous bearer token,
+  // and — on some tenants — the session cookies the search API demands (it
+  // answers "401 CSOD Unauthorized" until they come back with it; parent #2769).
+  // Read the response through fetchResponse to see Set-Cookie, then replay it as
+  // a Cookie header on the search POST. Same-origin only (assertCsodUrl pins the
+  // host; redirect:'error' keeps a 3xx from moving the cookies to another host),
+  // so this can never send session cookies to a third party.
+  const res = await fetchResponse(fetchImpl, cfg.homeUrl, {
     signal,
     redirect: 'error',
     headers: { accept: 'text/html' },
   });
+  const cookie = cookieHeaderFrom(
+    typeof res?.headers?.getSetCookie === 'function' ? res.headers.getSetCookie() : [],
+  );
+  const html = await res.text();
   const token = extractToken(html);
   if (!token) throw new Error(`csod: no anonymous token on ${cfg.homeUrl}`);
 
@@ -213,6 +245,7 @@ export async function fetchCsod(endpoint, opts = {}) {
         'content-type': 'application/json',
         accept: 'application/json',
         authorization: `Bearer ${token}`,
+        ...(cookie ? { cookie } : {}),
       },
       body: JSON.stringify({
         careerSiteId: cfg.siteId,

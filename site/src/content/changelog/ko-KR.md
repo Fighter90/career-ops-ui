@@ -9,6 +9,16 @@
 ---
 
 
+## [1.177.0] — 2026-08-13
+
+**수정됨 (MEDIUM, 스캐너) — 검색 API를 세션 쿠키로 보호하는 테넌트에서 csod(Cornerstone)가 0건을 반환하던 문제 (parent #2769, PARENT-SYNC GAP #1).**
+
+### 수정됨
+- 일부 Cornerstone 테넌트는 부트스트랩 채용 사이트 홈에서 세션 쿠키를 설정하고, 그 쿠키가 익명 베어러 토큰과 함께 돌아오지 않으면 검색 API에서 `401 CSOD Unauthorized`를 반환합니다. `sources/csod.mjs`는 이제 새 `fetchResponse` 헬퍼로 부트스트랩을 읽어 `Set-Cookie` 값으로 `Cookie` 헤더를 만들고(`cookieHeaderFrom` — name=value만, jar 시맨틱) 검색 POST에 다시 보냅니다. 동일 출처 전용(호스트 고정 + `redirect:'error'`)이라 세션 쿠키가 제3자에게 갈 수 없으며, 쿠키를 설정하지 않는 테넌트는 이전과 동일하게 동작합니다.
+
+### 참고
+- 새 `server/lib/http-json.mjs::fetchResponse`(추가형; 기존 소스 영향 없음). 라우트 / CSP / SSRF / 상위 쓰기 변경 없음. 테스트: `tests/sources-parity-v1118a.test.mjs` (+1). 전체: **2454** (+1).
+
 ## [1.176.0] — 2026-08-13
 
 **수정됨 (MEDIUM, 리포트) — RU 표에 없는 굵은 라벨 아래의 점수가 여전히 "Score not detected"로 표시됨 (FIND-5).**

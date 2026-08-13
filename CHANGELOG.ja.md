@@ -9,6 +9,16 @@
 ---
 
 
+## [1.177.0] — 2026-08-13
+
+**修正 (MEDIUM, スキャナー) — 検索 API をセッションクッキーで保護するテナントで csod（Cornerstone）が 0 件を返していた（parent #2769、PARENT-SYNC GAP #1）。**
+
+### 修正
+- 一部の Cornerstone テナントはブートストラップの採用サイトホームでセッションクッキーを設定し、それが匿名ベアラートークンと共に戻らないと検索 API で `401 CSOD Unauthorized` を返します。`sources/csod.mjs` は新しい `fetchResponse` ヘルパーでブートストラップを読み、`Set-Cookie` 値から `Cookie` ヘッダーを組み立て（`cookieHeaderFrom` — name=value のみ、jar セマンティクス）、検索 POST に再送します。同一オリジンのみ（ホスト固定 + `redirect:'error'`）なので、セッションクッキーが第三者に届くことはなく、クッキーを設定しないテナントは従来どおり動作します。
+
+### 備考
+- 新規 `server/lib/http-json.mjs::fetchResponse`（追加のみ。既存ソースに影響なし）。ルート / CSP / SSRF / 親書き込みの変更なし。テスト: `tests/sources-parity-v1118a.test.mjs` (+1)。スイート: **2454** (+1)。
+
 ## [1.176.0] — 2026-08-13
 
 **修正 (MEDIUM, レポート) — RU 表にない太字ラベル下のスコアが依然 "Score not detected" と表示された（FIND-5）。**
