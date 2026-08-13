@@ -10,6 +10,17 @@
 
 
 
+## [1.178.0] — 2026-08-13
+
+**Исправлено (LOW, паритет с родителем) — две устаревшие константы обновлены под родителя (PARENT-SYNC GAP #4 + #5).**
+
+### Исправлено
+- **User-Agent браузера (GAP #4)** — `BROWSER_LIKE_USER_AGENT` (его шлют workable/workday/oraclecloud/a16z/eightfold для прохождения WAF/бот-фильтров) поднят с Chrome 131 до **151** под родительский `user-agent.mjs`; устаревшую сборку чаще блокируют. Защищено тестом `Chrome major ≥ 151`.
+- **FALLBACK статусов трекера (GAP #5)** — резервный `FALLBACK` в `states.mjs` (используется только когда живой `templates/states.yml` нечитаем — свежий клон / изолированный CI-корень) получил турецкие алиасы статусов из родителя (#2615): değerlendirildi, başvuruldu, yanıt verildi, mülakat, teklif, reddedildi, iptal edildi, uygun değil, kabul edildi/işe alındı. В проде живой файл уже их давал.
+
+### Примечания
+- Только две константы; без изменений маршрутов / CSP / SSRF / записи в родителя. Тесты: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1). Набор: **2456** (+2).
+
 ## [1.177.0] — 2026-08-13
 
 **Исправлено (MEDIUM, сканер) — csod (Cornerstone) возвращал 0 вакансий у арендаторов, закрывающих search-API сессионными куками (parent #2769, PARENT-SYNC GAP #1).**

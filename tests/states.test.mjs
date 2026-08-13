@@ -74,6 +74,16 @@ test('fallback canonicalizeStatus folds label/id/alias, tolerates ** / trim / ju
   assert.equal(states.canonicalizeStatus(null), null);
 });
 
+test('FALLBACK folds the parent Turkish aliases (v1.178.0 / parent #2615 parity)', () => {
+  useFallback();
+  assert.equal(states.canonicalizeStatus('değerlendirildi'), 'Evaluated');
+  assert.equal(states.canonicalizeStatus('başvuruldu'), 'Applied');
+  assert.equal(states.canonicalizeStatus('mülakat'), 'Interview');
+  assert.equal(states.canonicalizeStatus('teklif'), 'Offer');
+  assert.equal(states.canonicalizeStatus('reddedildi'), 'Rejected');
+  assert.equal(states.canonicalizeStatus('işe alındı'), 'Hired');
+});
+
 test('reads templates/states.yml live (a label/alias only in the file)', () => {
   useFile(
     'states:\n' +

@@ -18,17 +18,20 @@ import { PATHS } from './paths.mjs';
 
 /** @typedef {{ id: string, label: string, aliases: string[], description: string, group: string }} CanonicalState */
 
-/** @type {CanonicalState[]} — mirror of templates/states.yml (parent v1.23.0). */
+/** @type {CanonicalState[]} — mirror of templates/states.yml ids/labels/aliases
+ * (parent v1.26.0; #2615 added the Turkish aliases below). The live file uses
+ * `dashboard_group`/`terminal`; this last-resort constant maps to the internal
+ * `group` shape and omits `terminal` (unused here). */
 const FALLBACK = [
-  { id: 'evaluated', label: 'Evaluated', aliases: ['evaluada', 'condicional', 'hold', 'evaluar', 'verificar'], description: 'Offer evaluated with report, pending decision', group: 'evaluated' },
-  { id: 'applied', label: 'Applied', aliases: ['aplicado', 'enviada', 'aplicada', 'sent'], description: 'Application submitted', group: 'applied' },
-  { id: 'responded', label: 'Responded', aliases: ['respondido'], description: 'Company has responded (not yet interview)', group: 'responded' },
-  { id: 'interview', label: 'Interview', aliases: ['entrevista'], description: 'Active interview process', group: 'interview' },
-  { id: 'offer', label: 'Offer', aliases: ['oferta'], description: 'Offer received', group: 'offer' },
-  { id: 'rejected', label: 'Rejected', aliases: ['rechazado', 'rechazada'], description: 'Rejected by company', group: 'rejected' },
-  { id: 'discarded', label: 'Discarded', aliases: ['descartado', 'descartada', 'cerrada', 'cancelada'], description: 'Discarded by candidate or offer closed', group: 'discarded' },
-  { id: 'skip', label: 'SKIP', aliases: ['no_aplicar', 'no aplicar', 'skip', 'monitor', 'geo blocker', 'geo_blocker'], description: "Doesn't fit, don't apply", group: 'skip' },
-  { id: 'hired', label: 'Hired', aliases: ['contratado', 'contratada', 'hired', 'accepted', 'accept'], description: 'Offer accepted, job landed!', group: 'hired' },
+  { id: 'evaluated', label: 'Evaluated', aliases: ['evaluada', 'condicional', 'hold', 'evaluar', 'verificar', 'değerlendirildi', 'degerlendirildi'], description: 'Offer evaluated with report, pending decision', group: 'evaluated' },
+  { id: 'applied', label: 'Applied', aliases: ['aplicado', 'enviada', 'aplicada', 'sent', 'başvuruldu', 'basvuruldu'], description: 'Application submitted', group: 'applied' },
+  { id: 'responded', label: 'Responded', aliases: ['respondido', 'yanıt verildi', 'yanıt_verildi', 'yanit verildi', 'yanit_verildi'], description: 'Company has responded (not yet interview)', group: 'responded' },
+  { id: 'interview', label: 'Interview', aliases: ['entrevista', 'mülakat', 'mulakat'], description: 'Active interview process', group: 'interview' },
+  { id: 'offer', label: 'Offer', aliases: ['oferta', 'teklif'], description: 'Offer received', group: 'offer' },
+  { id: 'rejected', label: 'Rejected', aliases: ['rechazado', 'rechazada', 'reddedildi'], description: 'Rejected by company', group: 'rejected' },
+  { id: 'discarded', label: 'Discarded', aliases: ['descartado', 'descartada', 'cerrada', 'cancelada', 'iptal edildi', 'iptal_edildi', 'ıptal edildi', 'ıptal_edildi'], description: 'Discarded by candidate or offer closed', group: 'discarded' },
+  { id: 'skip', label: 'SKIP', aliases: ['no_aplicar', 'no aplicar', 'skip', 'monitor', 'geo blocker', 'geo_blocker', 'uygun değil', 'uygun_değil', 'uygun degil', 'uygun_degil'], description: "Doesn't fit, don't apply", group: 'skip' },
+  { id: 'hired', label: 'Hired', aliases: ['contratado', 'contratada', 'hired', 'accepted', 'accept', 'kabul edildi', 'kabul_edildi', 'işe alındı', 'ise alindi', 'işe alindi'], description: 'Offer accepted, job landed!', group: 'hired' },
 ];
 
 let cache = null;

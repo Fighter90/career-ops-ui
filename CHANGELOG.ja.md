@@ -9,6 +9,17 @@
 ---
 
 
+## [1.178.0] — 2026-08-13
+
+**修正 (LOW, 親パリティ) — 古い定数 2 つを親に合わせて更新（PARENT-SYNC GAP #4 + #5）。**
+
+### 修正
+- **ブラウザ User-Agent (GAP #4)** — `BROWSER_LIKE_USER_AGENT`（workable/workday/oraclecloud/a16z/eightfold が WAF/ボットゲート通過に送信）を Chrome 131 → **151** に更新し、親の `user-agent.mjs` に合わせました。古いビルドは弾かれやすいためです。`Chrome major ≥ 151` テストで保護。
+- **トラッカー状態 FALLBACK (GAP #5)** — `states.mjs` の最終手段 `FALLBACK`（ライブの `templates/states.yml` が読めないときのみ使用 — 新規クローン / CI 分離ルート）に親のトルコ語ステータス別名（#2615）を追加: değerlendirildi, başvuruldu, yanıt verildi, mülakat, teklif, reddedildi, iptal edildi, uygun değil, kabul edildi/işe alındı。本番ではライブファイルが既に提供していました。
+
+### 備考
+- 定数 2 つのみ。ルート / CSP / SSRF / 親書き込みの変更なし。テスト: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1)。スイート: **2456** (+2)。
+
 ## [1.177.0] — 2026-08-13
 
 **修正 (MEDIUM, スキャナー) — 検索 API をセッションクッキーで保護するテナントで csod（Cornerstone）が 0 件を返していた（parent #2769、PARENT-SYNC GAP #1）。**

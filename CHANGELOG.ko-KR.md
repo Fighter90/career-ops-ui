@@ -9,6 +9,17 @@
 ---
 
 
+## [1.178.0] — 2026-08-13
+
+**수정됨 (LOW, 상위 패리티) — 오래된 상수 두 개를 상위와 일치하도록 갱신 (PARENT-SYNC GAP #4 + #5).**
+
+### 수정됨
+- **브라우저 User-Agent (GAP #4)** — `BROWSER_LIKE_USER_AGENT`(workable/workday/oraclecloud/a16z/eightfold가 WAF/봇 게이트 통과에 사용)를 Chrome 131에서 **151**로 올려 상위 `user-agent.mjs`와 일치시킴; 오래된 빌드는 차단되기 쉽습니다. `Chrome major ≥ 151` 테스트로 보호.
+- **트래커 상태 FALLBACK (GAP #5)** — `states.mjs`의 최후 수단 `FALLBACK`(라이브 `templates/states.yml`을 읽을 수 없을 때만 사용 — 새 클론 / CI 격리 루트)에 상위의 터키어 상태 별칭(#2615) 추가: değerlendirildi, başvuruldu, yanıt verildi, mülakat, teklif, reddedildi, iptal edildi, uygun değil, kabul edildi/işe alındı. 프로덕션에서는 라이브 파일이 이미 제공했습니다.
+
+### 참고
+- 상수 두 개뿐; 라우트 / CSP / SSRF / 상위 쓰기 변경 없음. 테스트: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1). 전체: **2456** (+2).
+
 ## [1.177.0] — 2026-08-13
 
 **수정됨 (MEDIUM, 스캐너) — 검색 API를 세션 쿠키로 보호하는 테넌트에서 csod(Cornerstone)가 0건을 반환하던 문제 (parent #2769, PARENT-SYNC GAP #1).**

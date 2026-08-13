@@ -2,6 +2,17 @@
 
 > यह परिवर्तन-सूची v1.122.0 से शुरू होती है — वह संस्करण जिसमें हिन्दी स्थानीयकरण जोड़ा गया। पिछले संस्करणों के लिए [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) देखें।
 
+## [1.178.0] — 2026-08-13
+
+**सुधारा गया (LOW, पैरेंट पैरिटी) — दो पुराने कॉन्स्टेंट पैरेंट से मिलाने के लिए अपडेट किए (PARENT-SYNC GAP #4 + #5)।**
+
+### सुधारा गया
+- **ब्राउज़र User-Agent (GAP #4)** — `BROWSER_LIKE_USER_AGENT` (workable/workday/oraclecloud/a16z/eightfold इसे WAF/बॉट गेट पार करने के लिए भेजते हैं) को Chrome 131 से **151** किया, पैरेंट के `user-agent.mjs` से मिलाते हुए; पुराना बिल्ड अधिक बार ब्लॉक होता है। `Chrome major ≥ 151` टेस्ट से सुरक्षित।
+- **ट्रैकर स्टेट्स FALLBACK (GAP #5)** — `states.mjs` का अंतिम-उपाय `FALLBACK` (केवल तब उपयोग जब लाइव `templates/states.yml` अपठनीय हो — ताज़ा क्लोन / CI-आइसोलेटेड रूट) को पैरेंट के तुर्की स्टेटस उपनाम (#2615) मिले: değerlendirildi, başvuruldu, yanıt verildi, mülakat, teklif, reddedildi, iptal edildi, uygun değil, kabul edildi/işe alındı। प्रोडक्शन में लाइव फ़ाइल पहले से ये देती थी।
+
+### टिप्पणियाँ
+- केवल दो कॉन्स्टेंट; रूट / CSP / SSRF / पैरेंट-राइट में कोई बदलाव नहीं। टेस्ट: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1)। सूट: **2456** (+2)।
+
 ## [1.177.0] — 2026-08-13
 
 **सुधारा गया (MEDIUM, स्कैनर) — जो टेनेंट सर्च API को सेशन कुकीज़ से सुरक्षित रखते हैं, वहाँ csod (Cornerstone) 0 नौकरियाँ लौटा रहा था (parent #2769, PARENT-SYNC GAP #1)।**

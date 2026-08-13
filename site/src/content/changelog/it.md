@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.178.0] — 2026-08-13
+
+**Corretto (LOW, parità col padre) — due costanti obsolete allineate al padre (PARENT-SYNC GAP #4 + #5).**
+
+### Corretto
+- **User-Agent del browser (GAP #4)** — `BROWSER_LIKE_USER_AGENT` (inviato da workable/workday/oraclecloud/a16z/eightfold per superare i gate WAF/bot) portato da Chrome 131 a **151**, allineando il `user-agent.mjs` del padre; una versione vecchia è più spesso bloccata. Protetto da un test `Chrome major ≥ 151`.
+- **FALLBACK degli stati del tracker (GAP #5)** — il `FALLBACK` di ultima istanza in `states.mjs` (usato solo quando il `templates/states.yml` live è illeggibile — clone nuovo / root isolata in CI) ha guadagnato gli alias di stato turchi del padre (#2615): değerlendirildi, başvuruldu, yanıt verildi, mülakat, teklif, reddedildi, iptal edildi, uygun değil, kabul edildi/işe alındı. In produzione il file live li forniva già.
+
+### Note
+- Solo due costanti; nessun cambiamento a route / CSP / SSRF / scrittura sul padre. Test: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1). Suite: **2456** (+2).
+
 ## [1.177.0] — 2026-08-13
 
 **Corretto (MEDIUM, scanner) — csod (Cornerstone) restituiva 0 offerte sui tenant che proteggono l'API di ricerca con cookie di sessione (parent #2769, PARENT-SYNC GAP #1).**

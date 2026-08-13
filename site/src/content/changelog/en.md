@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.178.0] — 2026-08-13
+
+**Fixed (LOW, parent-parity) — refreshed two stale constants to match the parent (PARENT-SYNC GAP #4 + #5).**
+
+### Fixed
+- **Browser User-Agent (GAP #4)** — `BROWSER_LIKE_USER_AGENT` (sent by workable/workday/oraclecloud/a16z/eightfold to clear WAF/bot gates) bumped Chrome 131 → **151**, matching the parent's `user-agent.mjs`; a stale build is likelier to be challenged. Guarded by a `Chrome major ≥ 151` test.
+- **Tracker states FALLBACK (GAP #5)** — `states.mjs`'s last-resort `FALLBACK` (used only when the live `templates/states.yml` is unreadable — a fresh clone / CI-isolated root) gained the parent's Turkish status aliases (#2615): değerlendirildi, başvuruldu, yanıt verildi, mülakat, teklif, reddedildi, iptal edildi, uygun değil, kabul edildi/işe alındı. In production the live file already provided these.
+
+### Notes
+- Two constants only; no route / CSP / SSRF / parent-write change. Tests: `tests/http-json.test.mjs` (+1) + `tests/states.test.mjs` (+1). Suite: **2456** (+2).
+
 ## [1.177.0] — 2026-08-13
 
 **Fixed (MEDIUM, scanner) — csod (Cornerstone) returned 0 jobs on tenants that gate the search API behind session cookies (parent #2769, PARENT-SYNC GAP #1).**
