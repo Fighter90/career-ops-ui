@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.168.0] — 2026-08-13
+
+**Rettet (LAV, a11y) — afkrydsningsrækker opfylder nu WCAG 2.5.8's 24×24-minimum (D-2).** Afkrydsnings-/radiolabels på `#/scan`, `#/config`, `#/evaluate` og `#/cv-studio` lå i et ~22 px-bånd.
+
+### Rettet
+- En afgrænset regel `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` garanterer et ≥24 px-bånd. Kun `min-height` — labels er allerede flex, intet forskydes; `.apply-checklist` (32 px) overholdt allerede.
+
+### Noter
+- Kun CSS; ingen ændring af adfærd/JS/i18n/rute/CSP/SSRF/skrivning. `tests/checkbox-target-size.test.mjs` (+1). Suite: **2429** (+1).
+
 ## [1.167.0] — 2026-08-13
 
 **Rettet (LAV, design-system) — hævede flader adskiller sig nu fra hårlinjer (D-3).** Tokenerne `--panel-2` / `--surface-elev1` blev til `--slate` — samme værdi som hårlinjerne `--line` / `--border` — uden visuel adskillelse.

@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.168.0] — 2026-08-13
+
+**Naprawiono (NISKIE, a11y) — wiersze pól wyboru spełniają teraz minimum 24×24 WCAG 2.5.8 (D-2).** Etykiety pól wyboru/radio na `#/scan`, `#/config`, `#/evaluate` i `#/cv-studio` mieściły się w paśmie ~22 px.
+
+### Naprawiono
+- Ograniczona reguła `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` gwarantuje pasmo ≥24 px. Tylko `min-height` — etykiety są już flex, nic się nie przesuwa; `.apply-checklist` (32 px) już był zgodny.
+
+### Uwagi
+- Tylko CSS; bez zmian zachowania/JS/i18n/trasy/CSP/SSRF/zapisu. `tests/checkbox-target-size.test.mjs` (+1). Zestaw: **2429** (+1).
+
 ## [1.167.0] — 2026-08-13
 
 **Naprawiono (NISKIE, design-system) — powierzchnie wypukłe oddzielają się teraz od linii (D-3).** Tokeny `--panel-2` / `--surface-elev1` rozwiązywały się do `--slate`, tej samej wartości co linie `--line` / `--border`, bez separacji wizualnej.

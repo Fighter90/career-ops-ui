@@ -9,6 +9,16 @@
 ---
 
 
+## [1.168.0] — 2026-08-13
+
+**修复 (LOW, a11y) — 复选框行现在满足 WCAG 2.5.8 的 24×24 最小目标尺寸(D-2)。** `#/scan`、`#/config`、`#/evaluate`、`#/cv-studio` 上的复选框/单选标签处于 ~22 px 的条带中。
+
+### 修复
+- 限定规则 `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` 保证 ≥24 px 的条带。仅 `min-height` — 标签本就是 flex,无位移;`.apply-checklist`(32 px)已合规。
+
+### 说明
+- 仅 CSS;无行为/JS/i18n/路由/CSP/SSRF/写入变更。`tests/checkbox-target-size.test.mjs`(+1)。套件:**2429** (+1)。
+
 ## [1.167.0] — 2026-08-13
 
 **修复 (LOW,设计系统) — 抬升表面现在与分隔线区分开(D-3)。** `--panel-2` / `--surface-elev1` 解析为 `--slate`,与分隔线 `--line` / `--border` 相同,没有视觉区分。

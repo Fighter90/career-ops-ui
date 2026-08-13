@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.168.0] — 2026-08-13
+
+**Behoben (NIEDRIG, a11y) — Checkbox-Zeilen erfüllen jetzt das 24×24-Minimum von WCAG 2.5.8 (D-2).** Checkbox-/Radio-Labels auf `#/scan`, `#/config`, `#/evaluate` und `#/cv-studio` lagen in einem ~22-px-Band.
+
+### Behoben
+- Eine begrenzte Regel `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` garantiert ein ≥24-px-Band. Nur `min-height` — die Labels sind bereits flex, nichts verschiebt sich; `.apply-checklist` (32 px) war bereits konform.
+
+### Hinweise
+- Nur CSS; keine Änderung an Verhalten/JS/i18n/Route/CSP/SSRF/Schreibzugriff. `tests/checkbox-target-size.test.mjs` (+1). Suite: **2429** (+1).
+
 ## [1.167.0] — 2026-08-13
 
 **Behoben (NIEDRIG, Design-System) — erhöhte Flächen heben sich jetzt von Haarlinien ab (D-3).** Die Tokens `--panel-2` / `--surface-elev1` lösten zu `--slate` auf — demselben Wert wie die Haarlinien `--line` / `--border` — ohne visuelle Trennung.

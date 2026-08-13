@@ -9,6 +9,16 @@
 ---
 
 
+## [1.168.0] — 2026-08-13
+
+**修正 (LOW, a11y) — チェックボックス行が WCAG 2.5.8 の 24×24 最小ターゲットサイズを満たすように(D-2)。** `#/scan`・`#/config`・`#/evaluate`・`#/cv-studio` のチェックボックス/ラジオのラベルが ~22 px の帯でした。
+
+### 修正
+- 限定的なルール `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` が ≥24 px の帯を保証。`min-height` のみ — ラベルは既に flex なのでずれなし。`.apply-checklist`(32 px)は既に準拠。
+
+### 備考
+- CSS のみ。動作/JS/i18n/ルート/CSP/SSRF/書き込み変更なし。`tests/checkbox-target-size.test.mjs`(+1)。スイート: **2429** (+1)。
+
 ## [1.167.0] — 2026-08-13
 
 **修正 (LOW、デザインシステム) — 隆起サーフェスがヘアラインと区別されるように(D-3)。** `--panel-2` / `--surface-elev1` がヘアライン `--line` / `--border` と同じ `--slate` に解決され、区別がありませんでした。

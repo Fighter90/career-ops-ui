@@ -9,6 +9,16 @@
 ---
 
 
+## [1.168.0] — 2026-08-13
+
+**수정 (LOW, a11y) — 체크박스 행이 이제 WCAG 2.5.8의 24×24 최소 타깃 크기를 충족합니다 (D-2).** `#/scan`, `#/config`, `#/evaluate`, `#/cv-studio`의 체크박스/라디오 라벨이 ~22 px 밴드였습니다.
+
+### 수정됨
+- 범위가 지정된 규칙 `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }`가 ≥24 px 밴드를 보장합니다. `min-height`만 — 라벨은 이미 flex이므로 이동 없음; `.apply-checklist`(32 px)는 이미 준수.
+
+### 참고
+- CSS만; 동작/JS/i18n/라우트/CSP/SSRF/쓰기 변경 없음. `tests/checkbox-target-size.test.mjs` (+1). 총 **2429** (+1).
+
 ## [1.167.0] — 2026-08-13
 
 **수정 (LOW, 디자인 시스템) — 상승 표면이 이제 헤어라인과 구분됩니다 (D-3).** `--panel-2` / `--surface-elev1`이 헤어라인 `--line` / `--border`와 동일한 `--slate`로 해석되어 구분이 없었습니다.

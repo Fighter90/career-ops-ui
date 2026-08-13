@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.168.0] — 2026-08-13
+
+**Corregido (BAJA, a11y) — las filas de casilla cumplen ahora el mínimo de 24×24 de WCAG 2.5.8 (D-2).** Las etiquetas de casilla/radio en `#/scan`, `#/config`, `#/evaluate` y `#/cv-studio` estaban en una banda de ~22 px.
+
+### Corregido
+- Una regla acotada `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` garantiza una banda ≥24 px. Solo `min-height` — las etiquetas ya son flex, no se desplaza nada; `.apply-checklist` (32 px) ya cumplía.
+
+### Notas
+- Solo CSS; sin cambios de comportamiento/JS/i18n/ruta/CSP/SSRF/escritura. `tests/checkbox-target-size.test.mjs` (+1). Conjunto: **2429** (+1).
+
 ## [1.167.0] — 2026-08-13
 
 **Corregido (BAJA, sistema de diseño) — las superficies elevadas ahora se separan de las líneas divisorias (D-3).** Los tokens `--panel-2` / `--surface-elev1` se resolvían como `--slate`, igual que las líneas `--line` / `--border`, sin separación visual.

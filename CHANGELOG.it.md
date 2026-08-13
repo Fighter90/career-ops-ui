@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.168.0] — 2026-08-13
+
+**Corretto (BASSA, a11y) — le righe delle checkbox rispettano ora il minimo 24×24 di WCAG 2.5.8 (D-2).** Le etichette di checkbox/radio su `#/scan`, `#/config`, `#/evaluate` e `#/cv-studio` stavano in una banda di ~22 px.
+
+### Corretto
+- Una regola circoscritta `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` garantisce una banda ≥24 px. Solo `min-height` — le etichette sono già flex, nulla si sposta; `.apply-checklist` (32 px) era già conforme.
+
+### Note
+- Solo CSS; nessuna modifica a comportamento/JS/i18n/route/CSP/SSRF/scrittura. `tests/checkbox-target-size.test.mjs` (+1). Suite: **2429** (+1).
+
 ## [1.167.0] — 2026-08-13
 
 **Corretto (BASSA, design-system) — le superfici rialzate ora si distinguono dai filetti (D-3).** I token `--panel-2` / `--surface-elev1` si risolvevano in `--slate`, lo stesso valore dei filetti `--line` / `--border`, senza separazione visiva.

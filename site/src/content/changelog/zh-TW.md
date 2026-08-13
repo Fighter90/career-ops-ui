@@ -8,6 +8,16 @@
 
 ---
 
+## [1.168.0] — 2026-08-13
+
+**修復 (LOW, a11y) — 核取方塊列現在符合 WCAG 2.5.8 的 24×24 最小目標尺寸(D-2)。** `#/scan`、`#/config`、`#/evaluate`、`#/cv-studio` 上的核取方塊/單選標籤處於 ~22 px 的帶中。
+
+### 修復
+- 限定規則 `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` 保證 ≥24 px 的帶。僅 `min-height` — 標籤本就是 flex,無位移;`.apply-checklist`(32 px)已合規。
+
+### 說明
+- 僅 CSS;無行為/JS/i18n/路由/CSP/SSRF/寫入變更。`tests/checkbox-target-size.test.mjs`(+1)。套件:**2429** (+1)。
+
 ## [1.167.0] — 2026-08-13
 
 **修復 (LOW,設計系統) — 抬升表面現在與分隔線區分開(D-3)。** `--panel-2` / `--surface-elev1` 解析為 `--slate`,與分隔線 `--line` / `--border` 相同,沒有視覺區分。

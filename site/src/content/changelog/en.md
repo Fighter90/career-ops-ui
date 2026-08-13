@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.168.0] — 2026-08-13
+
+**Fixed (LOW, a11y) — checkbox rows now meet the WCAG 2.5.8 24×24 target-size floor (D-2).** Checkbox/radio labels on `#/scan`, `#/config`, `#/evaluate` and `#/cv-studio` sat in a ~22 px band — 2 px under the minimum.
+
+### Fixed
+- A scoped `label:has(> input[type="checkbox"/"radio"]) { min-height: 24px }` rule guarantees a ≥24 px clickable band. `min-height` only — every such label is already flex/inline-flex, so nothing shifts; `.apply-checklist` (32 px) was already compliant. Completes the design-export a11y target-size items alongside the v1.162.0 `?` fix.
+
+### Notes
+- CSS-only; no behaviour, JS, i18n, route, CSP, SSRF, or parent-write change.
+- Tests: `tests/checkbox-target-size.test.mjs` (+1). Suite: **2429** (+1).
+
 ## [1.167.0] — 2026-08-13
 
 **Fixed (LOW, design-system) — elevated surfaces now separate from hairlines (D-3).** The raised-surface tokens `--panel-2` / `--surface-elev1` resolved to `--slate` — the same value as the `--line` / `--border` hairlines — so an elevated panel or chip inside a bordered card had no visual separation.
