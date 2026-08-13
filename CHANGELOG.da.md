@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.177.0] — 2026-08-13
+
+**Rettet (MEDIUM, scanner) — csod (Cornerstone) returnerede 0 job på lejere, der beskytter søge-API'et med session-cookies (parent #2769, PARENT-SYNC GAP #1).**
+
+### Rettet
+- Nogle Cornerstone-lejere sætter session-cookies på bootstrap-karrieresidens forside og svarer `401 CSOD Unauthorized` på søge-API'et, medmindre de cookies kommer tilbage sammen med det anonyme bearer-token. `sources/csod.mjs` læser nu bootstrap via en ny `fetchResponse`-hjælper, bygger en `Cookie`-header af dens `Set-Cookie`-værdier (`cookieHeaderFrom` — kun name=value, jar-semantik) og gentager den på søge-POST'en. Kun samme origin (host fastlåst + `redirect:'error'`), så session-cookies aldrig kan nå en tredjepart; en lejer uden cookies opfører sig som før.
+
+### Noter
+- Ny `server/lib/http-json.mjs::fetchResponse` (additiv; eksisterende kilder upåvirket). Ingen ændring af rute / CSP / SSRF / forælderskrivning. Tests: `tests/sources-parity-v1118a.test.mjs` (+1). Suite: **2454** (+1).
+
 ## [1.176.0] — 2026-08-13
 
 **Rettet (MEDIUM, rapporter) — en score under en fed etiket, som RU-tabellen ikke lister, viste stadig "Score not detected" (FIND-5).**

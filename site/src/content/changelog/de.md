@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.177.0] — 2026-08-13
+
+**Behoben (MEDIUM, Scanner) — csod (Cornerstone) lieferte 0 Jobs bei Tenants, die die Such-API hinter Session-Cookies sperren (parent #2769, PARENT-SYNC GAP #1).**
+
+### Behoben
+- Manche Cornerstone-Tenants setzen Session-Cookies auf der Bootstrap-Startseite der Karriereseite und antworten der Such-API mit `401 CSOD Unauthorized`, sofern diese Cookies nicht zusammen mit dem anonymen Bearer-Token zurückkommen. `sources/csod.mjs` liest den Bootstrap nun über einen neuen `fetchResponse`-Helfer, baut aus dessen `Set-Cookie`-Werten einen `Cookie`-Header (`cookieHeaderFrom` — nur name=value, Jar-Semantik) und spielt ihn auf dem Such-POST erneut ein. Nur gleicher Origin (Host angeheftet + `redirect:'error'`), sodass Session-Cookies nie zu Dritten gelangen; ein Tenant ohne Cookies verhält sich wie zuvor.
+
+### Hinweise
+- Neu `server/lib/http-json.mjs::fetchResponse` (additiv; bestehende Quellen unberührt). Keine Änderung an Route / CSP / SSRF / Eltern-Schreibzugriff. Tests: `tests/sources-parity-v1118a.test.mjs` (+1). Suite: **2454** (+1).
+
 ## [1.176.0] — 2026-08-13
 
 **Behoben (MEDIUM, Berichte) — ein Score unter einem fetten Label, das die RU-Tabelle nicht listet, zeigte weiter "Score not detected" (FIND-5).**

@@ -9,6 +9,16 @@
 ---
 
 
+## [1.177.0] — 2026-08-13
+
+**修复 (MEDIUM, 扫描器) — 对用会话 Cookie 保护搜索 API 的租户,csod(Cornerstone)返回 0 个职位(parent #2769,PARENT-SYNC GAP #1)。**
+
+### 修复
+- 部分 Cornerstone 租户在引导招聘站点首页设置会话 Cookie,若这些 Cookie 不随匿名 bearer 令牌一起回传,搜索 API 就返回 `401 CSOD Unauthorized`。`sources/csod.mjs` 现在用新的 `fetchResponse` 助手读取引导页,从其 `Set-Cookie` 值构建 `Cookie` 头(`cookieHeaderFrom` — 仅 name=value,jar 语义)并在搜索 POST 上重放。仅同源(主机固定 + `redirect:'error'`),会话 Cookie 绝不会到达第三方;不设置 Cookie 的租户与之前完全相同。
+
+### 说明
+- 新增 `server/lib/http-json.mjs::fetchResponse`(纯新增;不影响现有源)。无路由 / CSP / SSRF / 父写入变更。测试:`tests/sources-parity-v1118a.test.mjs`(+1)。套件:**2454**(+1)。
+
 ## [1.176.0] — 2026-08-13
 
 **修复 (MEDIUM, 报告) — RU 表未列出的粗体标签下的评分仍显示 "Score not detected"(FIND-5)。**
