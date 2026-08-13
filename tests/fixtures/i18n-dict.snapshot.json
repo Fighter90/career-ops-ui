@@ -13774,6 +13774,25 @@
     "tr": "Puan",
     "hi": "स्कोर"
   },
+  "rep.colReport": {
+    "en": "Report",
+    "es": "Informe",
+    "pt-BR": "Relatório",
+    "ko": "리포트",
+    "ja": "レポート",
+    "ru": "Отчёт",
+    "zh-CN": "报告",
+    "zh-TW": "報告",
+    "fr": "Rapport",
+    "pl": "Raport",
+    "uk": "Звіт",
+    "da": "Rapport",
+    "ar": "التقرير",
+    "de": "Bericht",
+    "it": "Report",
+    "tr": "Rapor",
+    "hi": "रिपोर्ट"
+  },
   "rep.thrAction": {
     "en": "Next step",
     "es": "Siguiente paso",

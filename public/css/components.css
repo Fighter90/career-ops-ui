@@ -370,6 +370,19 @@ table.tbl tr:hover td { background: var(--beach); }
    strip so they're scannable even in dark mode. */
 table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch); }
 
+/* v1.180.0 — #/reports list is a table (was a card grid). Its own scroll
+   wrapper keeps the rounded border AND lets the 4-column table scroll
+   horizontally on a narrow viewport instead of the report title breaking
+   one character per line (the old card-grid "вёрстка поехала" bug). */
+.reports-scroll {
+  border: 1px solid var(--slate);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+}
+.reports-tbl { min-width: 520px; }
+.reports-tbl td.report-title-cell { font-weight: 600; overflow-wrap: anywhere; }
+.reports-tbl tr.report-row { cursor: pointer; }
+
 /* ───────────────────────── forms ───────────────────────── */
 .field { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-4); }
 .field label {

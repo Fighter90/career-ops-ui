@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.180.0] — 2026-08-14
+
+**Rettet (MELLEM, rapporter) — `#/reports`-listen er nu en tabel, og en reel score, som en Machine Summary-pladsholder skjulte, gendannes.**
+
+### Rettet
+- **`#/reports`-listen er en tabel (Rapport · Dato · Legitimitet · Score), ikke et gitter med 4 kort.** En lang "Score ikke fundet"-chip pressede titelkolonnen næsten til nul, og kortets `overflow-wrap: anywhere` brød rapportnavnet ét tegn ad gangen. Nu har hvert felt sin egen kolonne, navnecellen ombrydes ved ord, og tabellen ruller vandret på en smal skærm (ny `.reports-scroll`-container). Ny i18n-nøgle `rep.colReport` ×17.
+- **En reel score i brødteksten (`**Итоговый балл:** 1.8 / 5`) skjules ikke længere af en Machine Summary-pladsholder (`score: —`).** Når `## Machine Summary`-blokken bar en ikke-numerisk eller uden for området-score, optog den den parsede score-plads og blokerede fed værdiform-fallback, så rapporten viste "Score ikke fundet" trods en reel `X / 5` i brødteksten. `parseReportHeader` gendanner nu brødtekstens værdiform, når intet brugbart tal overlevede (trin 4.5).
+
+### Noter
+- Kun klient + parser; ingen ændring af rute / CSP / SSRF / forælderskrivning. Tests: `tests/reports-table.test.mjs` (+5), `tests/report-header-locale.test.mjs` (+2). Suite: **2465** (+7).
+
 ## [1.179.0] — 2026-08-13
 
 **Ændret (LOW, scanner) — 20 duplikerede HTML-entitetsdekodere samlet i det delte modul (paritets-opfølgning, lukker worklisten).**

@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2458%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2465%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.179.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.179.0)
+[![release](https://img.shields.io/badge/release-v1.180.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.180.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.179.0** — **डिकोडर समेकन** — स्कैन स्रोतों में 20 डुप्लिकेट HTML एंटिटी डिकोडर अब एकल साझा मॉड्यूल से गुज़रते हैं (−237 पंक्तियाँ), पुनः-दोहराव के विरुद्ध गार्ड के साथ। व्यवहार-संरक्षी। **2458 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.180.0** — **रिपोर्ट अब तालिका में** — `#/reports` अब एक तालिका है (रिपोर्ट · तिथि · वैधता · स्कोर); एक लंबा "स्कोर नहीं मिला" चिप अब नाम को प्रति-वर्ण नहीं तोड़ता, और Machine Summary प्लेसहोल्डर द्वारा छिपाया गया असली स्कोर पुनः प्राप्त होता है। **2465 परीक्षण।**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

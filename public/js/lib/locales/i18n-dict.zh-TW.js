@@ -734,6 +734,7 @@ window.__I18N_DICT_ZH_TW = {
   'rep.subtitle': "來自 reports/ 的已儲存評估與深度研究報告",
   'rep.thresholdsTitle': "Score → 下一步",
   'rep.score': "Score",
+  'rep.colReport': "報告",
   'rep.thrAction': "下一步",
   'rep.thr45': "執行 /career-ops apply — 高配對,立即申請",
   'rep.thr40': "申請,或先 /career-ops contacto (warm intro)",

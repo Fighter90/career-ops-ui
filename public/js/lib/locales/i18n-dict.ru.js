@@ -734,6 +734,7 @@ window.__I18N_DICT_RU = {
   'rep.subtitle': "Сохранённые отчёты оценки и глубокого исследования из reports/",
   'rep.thresholdsTitle': "Score → следующий шаг",
   'rep.score': "Score",
+  'rep.colReport': "Отчёт",
   'rep.thrAction': "Следующий шаг",
   'rep.thr45': "/career-ops apply — высокий fit, подавайте сразу",
   'rep.thr40': "Подавайте или /career-ops contacto для warm intro",

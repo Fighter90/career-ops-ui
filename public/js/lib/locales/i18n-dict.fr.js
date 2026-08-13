@@ -734,6 +734,7 @@ window.__I18N_DICT_FR = {
   'rep.subtitle': "Rapports d'évaluation et de recherche approfondie enregistrés dans le dossier reports/",
   'rep.thresholdsTitle': "Score → prochaine étape",
   'rep.score': "Note",
+  'rep.colReport': "Rapport",
   'rep.thrAction': "Prochaine étape",
   'rep.thr45': "Exécuter /career-ops apply — adéquation élevée, soumettre immédiatement",
   'rep.thr40': "Postuler, ou /career-ops contacto pour une introduction chaude en premier",

@@ -7,16 +7,16 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2458%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2465%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.179.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.179.0)
+[![release](https://img.shields.io/badge/release-v1.180.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.180.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.179.0** — **デコーダー統合** — スキャンソース全体で重複していた 20 個の HTML エンティティデコーダーが 1 つの共有モジュールを通るようになり（−237 行）、再重複を防ぐガード付き。動作は保存。**2458 テスト。**
+> **🆕 最新リリース — v1.180.0** — **レポートをテーブル化** — `#/reports` がテーブル(レポート · 日付 · 信頼性 · スコア)になり、長い「スコア未検出」チップが名前を1文字ずつ改行しなくなり、Machine Summary のプレースホルダーが隠していた実スコアを復元します。 **2465 テスト。**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

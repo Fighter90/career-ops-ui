@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.180.0] — 2026-08-14
+
+**Corrigido (MÉDIO, relatórios) — a lista `#/reports` agora é uma tabela e uma pontuação real que um marcador do Machine Summary escondia é recuperada.**
+
+### Corrigido
+- **A lista `#/reports` é uma tabela (Relatório · Data · Legitimidade · Pontuação), não uma grade de 4 cartões.** Um chip longo de "Pontuação não detectada" espremia a coluna do título quase a zero, e o `overflow-wrap: anywhere` do título do cartão quebrava o nome do relatório caractere por caractere. Agora cada campo tem sua própria coluna, a célula do nome quebra por palavras e a tabela rola horizontalmente em telas estreitas (novo contêiner `.reports-scroll`). Nova chave i18n `rep.colReport` ×17.
+- **Uma pontuação real no corpo (`**Итоговый балл:** 1.8 / 5`) não é mais escondida por um marcador do Machine Summary (`score: —`).** Quando o bloco `## Machine Summary` trazia uma pontuação não numérica ou fora do intervalo, ele ocupava o espaço da pontuação analisada e bloqueava o fallback de forma-valor em negrito, então o relatório exibia "Pontuação não detectada" apesar de um `X / 5` real no corpo. `parseReportHeader` agora recupera a forma-valor do corpo sempre que nenhum número utilizável sobrevive (passo 4.5).
+
+### Notas
+- Apenas cliente + analisador; sem mudança de rota / CSP / SSRF / escrita no pai. Testes: `tests/reports-table.test.mjs` (+5), `tests/report-header-locale.test.mjs` (+2). Suíte: **2465** (+7).
+
 ## [1.179.0] — 2026-08-13
 
 **Alterado (LOW, scanner) — 20 decodificadores de entidades HTML duplicados consolidados no módulo compartilhado (follow-up de paridade, fecha o worklist).**

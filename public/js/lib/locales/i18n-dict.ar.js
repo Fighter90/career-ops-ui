@@ -733,6 +733,7 @@ window.__I18N_DICT_AR = {
   'rep.subtitle': "تقارير التقييم والبحث المعمّق المحفوظة من reports/",
   'rep.thresholdsTitle': "النتيجة ← الخطوة التالية",
   'rep.score': "النتيجة",
+  'rep.colReport': "التقرير",
   'rep.thrAction': "الخطوة التالية",
   'rep.thr45': "شغّل /career-ops apply — ملاءمة عالية، تقدّم فورًا",
   'rep.thr40': "قدّم، أو /career-ops contacto لمقدمة دافئة أولًا",
