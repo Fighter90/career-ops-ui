@@ -7,16 +7,16 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2451%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2453%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.175.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.175.0)
+[![release](https://img.shields.io/badge/release-v1.176.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.176.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.175.0** — **Regressionswächter der SEO-Beschreibung** — ein CI-Test schlägt nun fehl, wenn eine der 17 Site-Sprachen den `{adapters}`-Platzhalter verliert oder eine Zahl erneut fest codiert (die Drift hinter dem "~55"-Bug), plus ein nullsicheres Seriositäts-Strip. **2451 Tests.**
+> **🆕 Neueste Version — v1.176.0** — **Score-Parsing (FIND-5)** — ein Score unter einem fetten Label, das die RU-Tabelle nicht listet (`**Итоговый балл:**`, `**Скор:**`), wird nun über seine `X.X / 5`-Wertform erkannt — sprachunabhängig, sicher gegenüber Überschriften und Daten. **2453 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.176.0] — 2026-08-13
+
+**Corrigido (MEDIUM, relatórios) — uma pontuação sob um rótulo em negrito que a tabela RU não lista ainda mostrava "Score not detected" (FIND-5).**
+
+### Corrigido
+- Dois relatórios RU escreviam a pontuação como `**Итоговый балл:** 1.8 / 5` / `**Скор:** 1.8 / 5` — rótulos em negrito que `REPORT_LABELS.ru` não enumera (só conhece "Оценка"/"Балл"), então a pontuação ficava sem parse. Em vez de ampliar a lista de sinônimos, `parseReportHeader` agora recorre à **forma do valor**: uma fração sobre a rubrica /5 sob QUALQUER rótulo em negrito. É independente de idioma, imune a um cabeçalho (sem `**`, sem valor `/5`) e rejeita uma data como `5/5/2026` (lookahead negativo no denominador).
+
+### Notas
+- Apenas o parser do servidor; sem mudança de rota / CSP / SSRF / escrita no pai. Testes: `tests/report-header-locale.test.mjs` (+2). Suíte: **2453** (+2).
+
 ## [1.175.0] — 2026-08-13
 
 **Corrigido (LOW, robustez) — uma guarda de regressão para a descrição SEO do FIND-3 + um strip de legitimidade seguro a nulos (follow-up da AI-review).**

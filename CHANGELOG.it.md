@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.176.0] — 2026-08-13
+
+**Corretto (MEDIUM, report) — un punteggio sotto un'etichetta in grassetto che la tabella RU non elenca mostrava ancora "Score not detected" (FIND-5).**
+
+### Corretto
+- Due report RU scrivevano il punteggio come `**Итоговый балл:** 1.8 / 5` / `**Скор:** 1.8 / 5` — etichette in grassetto che `REPORT_LABELS.ru` non enumera (conosce solo "Оценка"/"Балл"), quindi il punteggio restava non analizzato. Invece di ampliare l'elenco di sinonimi, `parseReportHeader` ora ripiega sulla **forma del valore**: una frazione sulla rubrica /5 sotto QUALSIASI etichetta in grassetto. È indipendente dalla lingua, immune a un'intestazione (niente `**`, niente valore `/5`) e rifiuta una data come `5/5/2026` (lookahead negativo sul denominatore).
+
+### Note
+- Solo parser del server; nessun cambiamento a route / CSP / SSRF / scrittura sul padre. Test: `tests/report-header-locale.test.mjs` (+2). Suite: **2453** (+2).
+
 ## [1.175.0] — 2026-08-13
 
 **Corretto (LOW, irrobustimento) — una guardia di regressione per la descrizione SEO di FIND-3 + uno strip di legittimità sicuro ai valori nulli (follow-up dell'AI-review).**

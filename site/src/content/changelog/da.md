@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.176.0] — 2026-08-13
+
+**Rettet (MEDIUM, rapporter) — en score under en fed etiket, som RU-tabellen ikke lister, viste stadig "Score not detected" (FIND-5).**
+
+### Rettet
+- To RU-rapporter skrev scoren som `**Итоговый балл:** 1.8 / 5` / `**Скор:** 1.8 / 5` — fede etiketter, som `REPORT_LABELS.ru` ikke opregner (den kender kun "Оценка"/"Балл"), så scoren forblev uparset. I stedet for at udvide synonymlisten falder `parseReportHeader` nu tilbage på **værdiformen**: en brøk over /5-rubrikken under EN HVILKEN SOM HELST fed etiket. Den er sproguafhængig, immun over for en overskrift (ingen `**`, ingen `/5`-værdi) og afviser en dato som `5/5/2026` (negativt lookahead på nævneren).
+
+### Noter
+- Kun server-parser; ingen ændring af rute / CSP / SSRF / forælderskrivning. Tests: `tests/report-header-locale.test.mjs` (+2). Suite: **2453** (+2).
+
 ## [1.175.0] — 2026-08-13
 
 **Rettet (LOW, hærdning) — en regressionsvagt for FIND-3 SEO-beskrivelsen + en nullsikker legitimitets-strip (AI-review-opfølgning).**

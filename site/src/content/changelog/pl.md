@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.176.0] — 2026-08-13
+
+**Naprawiono (MEDIUM, raporty) — wynik pod pogrubioną etykietą, której nie ma w tabeli RU, wciąż pokazywał "Score not detected" (FIND-5).**
+
+### Naprawiono
+- Dwa raporty RU zapisywały wynik jako `**Итоговый балл:** 1.8 / 5` / `**Скор:** 1.8 / 5` — pogrubione etykiety, których `REPORT_LABELS.ru` nie wylicza (zna tylko „Оценка"/„Балл"), więc wynik nie był parsowany. Zamiast rozbudowywać listę synonimów, `parseReportHeader` sięga teraz po **formę wartości**: ułamek według rubryki /5 pod DOWOLNĄ pogrubioną etykietą. Jest niezależny od języka, odporny na nagłówek (brak `**`, brak wartości `/5`) i odrzuca datę taką jak `5/5/2026` (negatywny lookahead na mianowniku).
+
+### Uwagi
+- Tylko parser serwera; bez zmian tras / CSP / SSRF / zapisu do rodzica. Testy: `tests/report-header-locale.test.mjs` (+2). Zestaw: **2453** (+2).
+
 ## [1.175.0] — 2026-08-13
 
 **Naprawiono (LOW, utwardzanie) — strażnik regresji dla opisu SEO z FIND-3 + odporny na nulle strip wiarygodności (kontynuacja AI-review).**
