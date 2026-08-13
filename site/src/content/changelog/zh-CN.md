@@ -9,6 +9,17 @@
 ---
 
 
+## [1.169.0] — 2026-08-13
+
+**新增 (LOW) — 内联 PDF 预览(D-5)。** `GET /api/output/pdfs/:name` 强制 `Content-Disposition: attachment`,因此连 `#/cv` 的"打开"链接也是下载而非显示。
+
+### 新增
+- **`?inline=1`** 以 `Content-Disposition: inline` 提供同一个经过校验的文件,让浏览器在新标签中渲染为 **👁 预览**。默认(无参数)仍为下载。无新路由;相同的名称防护。
+- `#/cv` PDF 列表的第一个按钮现为 **👁 预览**(在下载旁边)。`cv.openPdf` "打开" → "预览" ×17。
+
+### 说明
+- 无 CSP/SSRF 变更 — 相同的 `sanitizePathName`。重写 1 个现有 i18n 键 ×17(快照 1219)。`tests/output-pdfs.test.mjs`(+3)。套件:**2432** (+3)。
+
 ## [1.168.0] — 2026-08-13
 
 **修复 (LOW, a11y) — 复选框行现在满足 WCAG 2.5.8 的 24×24 最小目标尺寸(D-2)。** `#/scan`、`#/config`、`#/evaluate`、`#/cv-studio` 上的复选框/单选标签处于 ~22 px 的条带中。

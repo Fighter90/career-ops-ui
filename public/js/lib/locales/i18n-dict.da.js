@@ -754,7 +754,7 @@ window.__I18N_DICT_DA = {
   'cv.pdfTitle': "Genererede PDF'er",
   'cv.pdfRunning': "Genererer PDF…",
   'cv.pdfDone': "PDF genereret",
-  'cv.openPdf': "Åbn",
+  'cv.openPdf': "Forhåndsvisning",
   'cv.downloadPdf': "Download",
   'cv.pdfNeedsPlaywright': "Playwright mangler. Kør i det overordnede projekt:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
   'set.title': "Profil",

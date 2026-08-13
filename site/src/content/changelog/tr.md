@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.169.0] — 2026-08-13
+
+**Eklendi (DÜŞÜK) — satır içi PDF önizleme (D-5).** `GET /api/output/pdfs/:name`, `Content-Disposition: attachment` dayatıyordu; bu yüzden `#/cv`'deki "Aç" bağlantısı bile göstermek yerine indiriyordu.
+
+### Eklendi
+- **`?inline=1`**, AYNI temizlenmiş dosyayı `Content-Disposition: inline` ile sunar; tarayıcı yeni sekmede **👁 Önizleme** olarak işler. Varsayılan (parametresiz) hâlâ indirmedir. Yeni rota yok; aynı ad korumaları.
+- `#/cv` PDF listesindeki ilk düğme artık **👁 Önizleme** (İndir'in yanında). `cv.openPdf` "Aç" → "Önizleme" ×17.
+
+### Notlar
+- CSP/SSRF değişikliği yok — aynı `sanitizePathName`. Mevcut bir i18n anahtarı ×17 yeniden yazıldı (anlık görüntü 1219). `tests/output-pdfs.test.mjs` (+3). Takım: **2432** (+3).
+
 ## [1.168.0] — 2026-08-13
 
 **Düzeltildi (DÜŞÜK, a11y) — onay kutusu satırları artık WCAG 2.5.8'in 24×24 minimumunu karşılıyor (D-2).** `#/scan`, `#/config`, `#/evaluate` ve `#/cv-studio` üzerindeki onay kutusu/radyo etiketleri ~22 px'lik bir bantta duruyordu.

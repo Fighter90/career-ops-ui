@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.169.0] — 2026-08-13
+
+**Aggiunto (BASSA) — anteprima PDF inline (D-5).** `GET /api/output/pdfs/:name` forzava `Content-Disposition: attachment`, quindi anche il pulsante "Apri" su `#/cv` scaricava invece di mostrare.
+
+### Aggiunto
+- **`?inline=1`** serve lo STESSO file sanificato con `Content-Disposition: inline`, per un'**👁 Anteprima** in una nuova scheda; il default resta il download. Nessuna nuova route; stesse protezioni sul nome.
+- Il primo pulsante della lista PDF su `#/cv` è ora **👁 Anteprima** accanto a **⬇ Scarica**. `cv.openPdf` "Apri" → "Anteprima" ×17.
+
+### Note
+- Nessuna modifica CSP/SSRF — stesso `sanitizePathName`. Una chiave i18n riformulata ×17 (snapshot 1219). `tests/output-pdfs.test.mjs` (+3). Suite: **2432** (+3).
+
 ## [1.168.0] — 2026-08-13
 
 **Corretto (BASSA, a11y) — le righe delle checkbox rispettano ora il minimo 24×24 di WCAG 2.5.8 (D-2).** Le etichette di checkbox/radio su `#/scan`, `#/config`, `#/evaluate` e `#/cv-studio` stavano in una banda di ~22 px.

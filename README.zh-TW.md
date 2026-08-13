@@ -7,14 +7,14 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新版本 — v1.168.0** — **更大的核取方塊點按目標(無障礙修復)** — `#/scan`、`#/config`、`#/evaluate`、`#/cv-studio` 上的核取方塊/單選標籤列為 ~22 px,低於 WCAG 2.5.8 的 24 px 最小值。`:has()` 規則保證 ≥24 px。 **2429 項測試。**
+> **🆕 最新版本 — v1.169.0** — **內聯 PDF 預覽(D-5)** — PDF 以 `attachment` 提供,連 `#/cv` 的「開啟」也會下載。`?inline=1` 以內聯方式提供同一檔案;清單在新分頁開啟 **👁 預覽**(下載不變)。 **2432 項測試。**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

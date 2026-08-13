@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Najnowsze wydanie — v1.168.0** — **Większe cele dotykowe pól wyboru (poprawka a11y)** — wiersze pól wyboru/radio na `#/scan`, `#/config`, `#/evaluate`, `#/cv-studio` miały ~22 px, poniżej minimum 24 px WCAG 2.5.8. Reguła `:has()` gwarantuje ≥24 px. **2429 testów.**
+> **🆕 Najnowsze wydanie — v1.169.0** — **Podgląd PDF w przeglądarce (D-5)** — PDF-y serwowano jako `attachment`, więc nawet „Otwórz" na `#/cv` je pobierał. `?inline=1` serwuje ten sam plik inline; lista otwiera **👁 Podgląd** w nowej karcie (Pobierz bez zmian). **2432 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

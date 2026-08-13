@@ -754,7 +754,7 @@ window.__I18N_DICT_UK = {
   'cv.pdfTitle': "Згенеровані PDF",
   'cv.pdfRunning': "Генерація PDF…",
   'cv.pdfDone': "PDF згенеровано",
-  'cv.openPdf': "Відкрити",
+  'cv.openPdf': "Перегляд",
   'cv.downloadPdf': "Завантажити",
   'cv.pdfNeedsPlaywright': "Playwright відсутній. Запустіть у батьківському проєкті:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
   'set.title': "Профіль",

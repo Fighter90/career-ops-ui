@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.169.0] — 2026-08-13
+
+**Tilføjet (LAV) — inline PDF-forhåndsvisning (D-5).** `GET /api/output/pdfs/:name` tvang `Content-Disposition: attachment`, så selv "Åbn"-linket på `#/cv` downloadede i stedet for at vise.
+
+### Tilføjet
+- **`?inline=1`** leverer den SAMME sanerede fil med `Content-Disposition: inline`, til en **👁 Forhåndsvisning** i en ny fane; standard er stadig download. Ingen ny rute; samme navne-guards.
+- Første knap i PDF-listen på `#/cv` er nu **👁 Forhåndsvisning** ved siden af **⬇ Download**. `cv.openPdf` "Åbn" → "Forhåndsvisning" ×17.
+
+### Noter
+- Ingen CSP/SSRF-ændring — samme `sanitizePathName`. Én eksisterende i18n-nøgle omformuleret ×17 (snapshot 1219). `tests/output-pdfs.test.mjs` (+3). Suite: **2432** (+3).
+
 ## [1.168.0] — 2026-08-13
 
 **Rettet (LAV, a11y) — afkrydsningsrækker opfylder nu WCAG 2.5.8's 24×24-minimum (D-2).** Afkrydsnings-/radiolabels på `#/scan`, `#/config`, `#/evaluate` og `#/cv-studio` lå i et ~22 px-bånd.

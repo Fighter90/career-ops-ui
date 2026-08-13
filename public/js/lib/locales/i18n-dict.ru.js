@@ -755,7 +755,7 @@ window.__I18N_DICT_RU = {
   'cv.pdfTitle': "Сгенерированные PDF",
   'cv.pdfRunning': "Генерация PDF…",
   'cv.pdfDone': "PDF готов",
-  'cv.openPdf': "Открыть",
+  'cv.openPdf': "Предпросмотр",
   'cv.downloadPdf': "Скачать",
   'cv.pdfNeedsPlaywright': "Playwright не установлен. В родительском проекте:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
   'set.title': "Профиль",

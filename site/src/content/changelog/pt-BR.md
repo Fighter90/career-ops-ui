@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.169.0] — 2026-08-13
+
+**Adicionado (BAIXA) — pré-visualização de PDF inline (D-5).** `GET /api/output/pdfs/:name` forçava `Content-Disposition: attachment`, então até o botão "Abrir" de `#/cv` baixava em vez de exibir.
+
+### Adicionado
+- **`?inline=1`** serve o MESMO arquivo saneado com `Content-Disposition: inline`, para uma **👁 Pré-visualização** em nova aba; o padrão continua download. Sem nova rota; mesmas proteções de nome.
+- O primeiro botão da lista de PDFs em `#/cv` agora é **👁 Pré-visualizar** ao lado de **⬇ Baixar**. `cv.openPdf` alterado para "Pré-visualizar" ×17.
+
+### Notas
+- Sem mudança de CSP/SSRF — mesmo `sanitizePathName`. Uma chave i18n reformulada ×17 (snapshot 1219). `tests/output-pdfs.test.mjs` (+3). Conjunto: **2432** (+3).
+
 ## [1.168.0] — 2026-08-13
 
 **Corrigido (BAIXA, a11y) — as linhas de checkbox agora atendem ao mínimo 24×24 do WCAG 2.5.8 (D-2).** Os rótulos de checkbox/radio em `#/scan`, `#/config`, `#/evaluate` e `#/cv-studio` ficavam numa faixa de ~22 px.

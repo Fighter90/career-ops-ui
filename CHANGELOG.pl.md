@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.169.0] — 2026-08-13
+
+**Dodano (NISKIE) — podgląd PDF w przeglądarce (D-5).** `GET /api/output/pdfs/:name` wymuszał `Content-Disposition: attachment`, więc nawet przycisk „Otwórz" na `#/cv` pobierał zamiast wyświetlać.
+
+### Dodano
+- **`?inline=1`** serwuje TEN SAM zweryfikowany plik z `Content-Disposition: inline`, do **👁 Podglądu** w nowej karcie; domyślnie nadal pobieranie. Bez nowej trasy; te same zabezpieczenia nazwy.
+- Pierwszy przycisk listy PDF na `#/cv` to teraz **👁 Podgląd** obok **⬇ Pobierz**. `cv.openPdf` „Otwórz" → „Podgląd" ×17.
+
+### Uwagi
+- Bez zmian CSP/SSRF — ten sam `sanitizePathName`. Jeden istniejący klucz i18n przeredagowany ×17 (migawka 1219). `tests/output-pdfs.test.mjs` (+3). Zestaw: **2432** (+3).
+
 ## [1.168.0] — 2026-08-13
 
 **Naprawiono (NISKIE, a11y) — wiersze pól wyboru spełniają teraz minimum 24×24 WCAG 2.5.8 (D-2).** Etykiety pól wyboru/radio na `#/scan`, `#/config`, `#/evaluate` i `#/cv-studio` mieściły się w paśmie ~22 px.

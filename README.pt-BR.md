@@ -7,14 +7,14 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Última versão — v1.168.0** — **Alvos de toque de checkbox maiores (correção a11y)** — as linhas de checkbox/radio em `#/scan`, `#/config`, `#/evaluate`, `#/cv-studio` mediam ~22 px, abaixo do mínimo de 24 px do WCAG 2.5.8. Uma regra `:has()` garante ≥24 px. **2429 testes.**
+> **🆕 Última versão — v1.169.0** — **Pré-visualização de PDF inline (D-5)** — os PDFs eram servidos como `attachment`, então até "Abrir" em `#/cv` os baixava. `?inline=1` serve o mesmo arquivo inline; a lista abre uma **👁 Pré-visualização** em nova aba (Baixar inalterado). **2432 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

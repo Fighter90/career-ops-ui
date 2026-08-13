@@ -7,14 +7,14 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 最新リリース — v1.168.0** — **チェックボックスのタップ対象を拡大(a11y 修正)** — `#/scan`・`#/config`・`#/evaluate`・`#/cv-studio` のチェックボックス/ラジオのラベル行が ~22 px で、WCAG 2.5.8 の 24 px 未満でした。`:has()` ルールで ≥24 px を保証。 **2429 テスト。**
+> **🆕 最新リリース — v1.169.0** — **インライン PDF プレビュー(D-5)** — PDF が `attachment` で提供され、`#/cv` の「開く」でもダウンロードされていました。`?inline=1` が同じファイルをインライン提供し、一覧は新しいタブで **👁 プレビュー** を開きます(ダウンロードは不変)。 **2432 テスト。**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

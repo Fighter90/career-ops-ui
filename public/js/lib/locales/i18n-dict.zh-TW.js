@@ -755,7 +755,7 @@ window.__I18N_DICT_ZH_TW = {
   'cv.pdfTitle': "已產生的 PDF",
   'cv.pdfRunning': "產生 PDF 中…",
   'cv.pdfDone': "PDF 已產生",
-  'cv.openPdf': "開啟",
+  'cv.openPdf': "預覽",
   'cv.downloadPdf': "下載",
   'cv.pdfNeedsPlaywright': "缺少 Playwright。在父專案中執行:\n  cd \"$CAREER_OPS_ROOT\" && npm install && npx playwright install chromium",
   'set.title': "個人資料",

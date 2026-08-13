@@ -50,7 +50,10 @@ Router.register('cv', async () => {
         c('div', { style: { color: 'var(--foggy)', fontSize: '12px', marginBottom: '8px' } },
           `${(f.size / 1024).toFixed(1)} KB · ${new Date(f.mtime).toLocaleString()}`),
         c('div', { className: 'flex gap-3' }, [
-          c('a', { className: 'btn btn-ghost btn-sm', href: url, target: '_blank', rel: 'noopener' }, '↗ ' + t('cv.openPdf', 'Open')),
+          // D-5 (v1.169.0) — `?inline=1` makes the browser RENDER the PDF in a
+          // new tab (review-before-send) instead of downloading it; the old
+          // attachment route forced a download even from this "open" link.
+          c('a', { className: 'btn btn-ghost btn-sm', href: url + '?inline=1', target: '_blank', rel: 'noopener' }, '👁 ' + t('cv.openPdf', 'Preview')),
           c('a', { className: 'btn btn-primary btn-sm', href: url, download: f.name }, '⬇ ' + t('cv.downloadPdf', 'Download')),
         ]),
       ]));

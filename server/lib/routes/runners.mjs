@@ -13,7 +13,7 @@
  *
  * Generated PDFs:
  *   GET /api/output/pdfs         → list { name, size, mtime }[]
- *   GET /api/output/pdfs/:name   → download (Content-Disposition: attachment)
+ *   GET /api/output/pdfs/:name   → download (attachment); `?inline=1` → inline preview (D-5)
  */
 import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { PATHS, path as projPath } from '../paths.mjs';
@@ -166,9 +166,14 @@ export function registerRunnerRoutes(app) {
     if (!safe || !safe.endsWith('.pdf')) return res.status(400).json({ error: 'invalid name' });
     const file = projPath('output', safe);
     if (!existsSync(file)) return res.status(404).json({ error: 'not found' });
-    // Trigger a real download with the original filename intact.
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${safe}"`);
+    // D-5 (v1.169.0) — default is a download (attachment, original filename).
+    // `?inline=1` serves the SAME sanitized file with `Content-Disposition:
+    // inline` so the browser renders it in a new tab for a review-before-send
+    // PREVIEW (the docs stress "Review it before sending it anywhere"). No new
+    // route, no new surface — same path validation.
+    const inline = req.query.inline === '1' || req.query.disposition === 'inline';
+    res.setHeader('Content-Disposition', `${inline ? 'inline' : 'attachment'}; filename="${safe}"`);
     res.sendFile(file);
   });
 

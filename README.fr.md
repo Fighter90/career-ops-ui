@@ -7,14 +7,14 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2429%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Dernière version — v1.168.0** — **Cibles tactiles de case plus grandes (correctif a11y)** — les lignes de case/radio sur `#/scan`, `#/config`, `#/evaluate`, `#/cv-studio` mesuraient ~22 px, sous le minimum de 24 px de WCAG 2.5.8. Une règle `:has()` garantit ≥24 px. **2429 tests.**
+> **🆕 Dernière version — v1.169.0** — **Aperçu PDF en ligne (D-5)** — les PDF étaient servis en `attachment`, donc même « Ouvrir » sur `#/cv` les téléchargeait. `?inline=1` sert le même fichier en ligne ; la liste ouvre un **👁 Aperçu** dans un nouvel onglet (Télécharger inchangé). **2432 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

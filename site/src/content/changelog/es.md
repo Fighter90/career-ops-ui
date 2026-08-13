@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.169.0] — 2026-08-13
+
+**Añadido (BAJA) — vista previa de PDF en línea (D-5).** `GET /api/output/pdfs/:name` forzaba `Content-Disposition: attachment`, así que incluso el botón "Abrir" de `#/cv` descargaba en vez de mostrar.
+
+### Añadido
+- **`?inline=1`** sirve el MISMO archivo saneado con `Content-Disposition: inline`, para una **👁 Vista previa** en una pestaña nueva; el valor por defecto sigue siendo descarga. Sin nueva ruta; se aplican los mismos guardas de nombre.
+- El primer botón de la lista de PDFs en `#/cv` es ahora **👁 Vista previa** junto a **⬇ Descargar**. `cv.openPdf` cambiado a "Vista previa" ×17.
+
+### Notas
+- Sin cambios de CSP/SSRF — mismo `sanitizePathName`. Una clave i18n reformulada ×17 (snapshot 1219). `tests/output-pdfs.test.mjs` (+3). Conjunto: **2432** (+3).
+
 ## [1.168.0] — 2026-08-13
 
 **Corregido (BAJA, a11y) — las filas de casilla cumplen ahora el mínimo de 24×24 de WCAG 2.5.8 (D-2).** Las etiquetas de casilla/radio en `#/scan`, `#/config`, `#/evaluate` y `#/cv-studio` estaban en una banda de ~22 px.
