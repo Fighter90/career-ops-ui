@@ -299,6 +299,20 @@ function boldLabelValue(text, words) {
   return '';
 }
 
+// v1.176.0 (FIND-5) — language-independent score fallback. Finds a score under
+// ANY bold label (`**Итоговый балл:** 1.8 / 5`, `**Скор:** 1.8 / 5`) by matching
+// the VALUE form (a fraction over the /5 rubric denominator) rather than a
+// synonym list — so localized labels the REPORT_LABELS table doesn't enumerate
+// still parse. A plain heading can't match (no `**`, no `/5` value); a date like
+// `5/5/2026` can't either (the negative lookahead rejects a denominator followed
+// by another `/` or digit).
+function boldScoreValueForm(text) {
+  const m = String(text).match(
+    /\*\*[^*\n]+?\*\*[ \t]*[:：]?[ \t]*(\d+(?:[.,]\d+)?[ \t]*\/[ \t]*5(?:[.,]0)?)(?![\d/])/,
+  );
+  return m ? m[1].replace(/[ \t]+/g, ' ').trim() : '';
+}
+
 // v1.174.0 (overflow) — keep the score field compact so a chip never renders a
 // trailing status sentence ("1.8, Status: Evaluated, …") and blow out its
 // coloured block. A clean "X.X" / "X.X / Y" is returned verbatim (EN reports
@@ -399,6 +413,10 @@ export function parseReportHeader(text, opts = {}) {
   //       fallback so a body H1 that merely contains the label word can't win.
   if (!out.score) out.score = boldLabelValue(text, LABEL_WORDS.score);
   if (!out.legitimacy) out.legitimacy = boldLabelValue(text, LABEL_WORDS.legitimacy);
+
+  // (2.6) FIND-5 — score under a bold label the table doesn't enumerate
+  //       (`**Итоговый балл:**`, `**Скор:**`), matched by the /5 value form.
+  if (!out.score) out.score = boldScoreValueForm(text);
 
   // (3) Locale-aware prose labels — last resort (heading-safe, colon-anchored).
   if (!out.score) out.score = proseLabelValue(text, 'score');

@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.176.0] — 2026-08-13
+
+**Fixed (MEDIUM, reports) — a score under a bold label the RU table doesn't list still read "Score not detected" (FIND-5).**
+
+### Fixed
+- Two RU reports wrote the score as `**Итоговый балл:** 1.8 / 5` / `**Скор:** 1.8 / 5` — bold labels `REPORT_LABELS.ru` doesn't enumerate (it knows only "Оценка"/"Балл"), so the score stayed unparsed. Rather than grow a synonym list, `parseReportHeader` now falls back to the **value form**: a fraction over the /5 rubric under ANY bold label. It's language-independent, immune to a heading (no `**`, no `/5` value), and rejects a date like `5/5/2026` (negative lookahead on the denominator).
+
+### Notes
+- Server parser only; no route / CSP / SSRF / parent-write change. Tests: `tests/report-header-locale.test.mjs` (+2: the two RU labels + a date-not-a-score guard). Suite: **2453** (+2).
+
 ## [1.175.0] — 2026-08-13
 
 **Fixed (LOW, hardening) — a regression guard for the FIND-3 SEO description + a nullish-safe legitimacy strip (AI-review follow-up).**

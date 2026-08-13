@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.176.0] — 2026-08-13
+
+**Behoben (MEDIUM, Berichte) — ein Score unter einem fetten Label, das die RU-Tabelle nicht listet, zeigte weiter "Score not detected" (FIND-5).**
+
+### Behoben
+- Zwei RU-Berichte schrieben den Score als `**Итоговый балл:** 1.8 / 5` / `**Скор:** 1.8 / 5` — fette Labels, die `REPORT_LABELS.ru` nicht aufführt (kennt nur „Оценка"/„Балл"), sodass der Score ungeparst blieb. Statt die Synonymliste zu erweitern, greift `parseReportHeader` nun auf die **Wertform** zurück: ein Bruch über das /5-Raster unter EINEM BELIEBIGEN fetten Label. Sie ist sprachunabhängig, immun gegen eine Überschrift (kein `**`, kein `/5`-Wert) und weist ein Datum wie `5/5/2026` ab (negativer Lookahead auf den Nenner).
+
+### Hinweise
+- Nur Server-Parser; keine Änderung an Route / CSP / SSRF / Eltern-Schreibzugriff. Tests: `tests/report-header-locale.test.mjs` (+2). Suite: **2453** (+2).
+
 ## [1.175.0] — 2026-08-13
 
 **Behoben (LOW, Härtung) — ein Regressionswächter für die FIND-3-SEO-Beschreibung + ein nullsicheres Seriositäts-Strip (AI-Review-Nachbereitung).**

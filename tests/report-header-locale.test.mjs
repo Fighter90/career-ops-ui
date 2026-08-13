@@ -171,3 +171,23 @@ test('FIND-1: the bold label beats a same-word H1 even when both have a colon', 
   const h = parseReportHeader(md, { mtime: new Date('2026-05-27T10:00:00Z') });
   assert.equal(h.scoreNum, 3.0);
 });
+
+// ── v1.176.0 FIND-5 — score in a bold label the RU table does not enumerate ──
+// Two RU reports read "Score not detected" because REPORT_LABELS.ru only knows
+// "Оценка"/"Балл" — the score was written as **Итоговый балл:** / **Скор:**.
+// Rather than grow a synonym list, the parser falls back to the VALUE form
+// (X.X / 5 in any bold label): language-independent, heading-immune.
+test('FIND-5: a score under an unlisted bold label is caught by the /5 value form', () => {
+  const total = parseReportHeader('# Оценка вакансии: Anthropic — Lead\n\n**Итоговый балл:** 1.8 / 5\nприменение не рекомендовано.\n', { mtime: new Date('2026-05-21T10:00:00Z') });
+  assert.equal(total.scoreNum, 1.8, '"Итоговый балл" via value-form');
+  assert.doesNotMatch(total.score, /Anthropic|балл/i, 'score is the number, not the title/label');
+
+  const skor = parseReportHeader('# Оценка вакансии: Anthropic — Lead\n\n**Скор:** 1.8 / 5\n', { mtime: new Date('2026-05-21T10:00:00Z') });
+  assert.equal(skor.scoreNum, 1.8, '"Скор" via value-form');
+});
+
+test('FIND-5: the value-form fallback does not mistake a date (5/5/2026) for a score', () => {
+  const h = parseReportHeader('# Заметка\n\n**Дедлайн:** 5/5/2026\nтекст без оценки.\n');
+  assert.equal(h.scoreNum, null, 'a date is not a /5 score');
+  assert.equal(h.score, '');
+});

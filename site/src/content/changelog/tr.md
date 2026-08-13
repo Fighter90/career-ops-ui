@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.176.0] — 2026-08-13
+
+**Düzeltildi (MEDIUM, raporlar) — RU tablosunun listelemediği kalın bir etiket altındaki puan hâlâ "Score not detected" gösteriyordu (FIND-5).**
+
+### Düzeltildi
+- İki RU raporu puanı `**Итоговый балл:** 1.8 / 5` / `**Скор:** 1.8 / 5` olarak yazıyordu — `REPORT_LABELS.ru`'nun saymadığı kalın etiketler (yalnızca "Оценка"/"Балл" bilir), bu yüzden puan ayrıştırılmadan kalıyordu. Eş anlamlı listesini büyütmek yerine, `parseReportHeader` artık **değer biçimine** düşüyor: herhangi bir kalın etiket altında /5 ölçütüne göre bir kesir. Dilden bağımsızdır, bir başlığa bağışıktır (`**` yok, `/5` değeri yok) ve `5/5/2026` gibi bir tarihi reddeder (paydaya negatif ileri bakış).
+
+### Notlar
+- Yalnızca sunucu ayrıştırıcı; rota / CSP / SSRF / üst yazma değişikliği yok. Testler: `tests/report-header-locale.test.mjs` (+2). Takım: **2453** (+2).
+
 ## [1.175.0] — 2026-08-13
 
 **Düzeltildi (LOW, sağlamlaştırma) — FIND-3 SEO açıklaması için bir regresyon nöbetçisi + null'a dayanıklı meşruiyet temizliği (AI-review takibi).**
