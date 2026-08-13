@@ -33,7 +33,7 @@
 - [Playwright सेट अप करें](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — Chromium इंस्टॉल करें + PDF और फ़ॉर्म-फ़िल के लिए MCP रजिस्टर करें।
 - [career-ops जॉब लिस्टिंग को कैसे स्कोर करता है](https://career-ops.org/methodology)
-  — स्कोरिंग मेथडोलॉजी: छह आयाम, 4.0 अप्लाई थ्रेशोल्ड, और सिस्टम
+  — स्कोरिंग मेथडोलॉजी: पाँच आयाम + एक वैश्विक स्कोर, 4.0 अप्लाई थ्रेशोल्ड, और सिस्टम
   स्पष्ट रूप से क्या करने से इनकार करता है। आपकी भाषा में
   [cvstart.org/methodology](https://cvstart.org/methodology/) पर भी
   संक्षेप में उपलब्ध।

@@ -14,7 +14,7 @@ kenar çubuğundaki içindekiler tablosu üzerinden geçin.
 
 [career-ops](https://career-ops.org), herhangi bir yapay zeka
 kodlama CLI'sinin (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — diğer Claude uyumlu CLI'ler de aynı slash-komut yüzeyi üzerinden çalışır) içinde slash komutları olarak çalışan açık kaynaklı bir iş arama sistemidir. Modelden bağımsızdır.
-Her ilanı CV'nizle altı boyutlu, 0.0–5.0 puanlık bir
+Her ilanı CV'nizle beş boyut ve bütünsel bir genel puan içeren, 0.0–5.0 puanlık bir
 rubrik üzerinden değerlendirir, size özel PDF özgeçmişler oluşturur ve
 her başvuruyu makinenizde yerel olarak takip eder.
 
@@ -31,7 +31,7 @@ her başvuruyu makinenizde yerel olarak takip eder.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — Chromium'u kurun + PDF ve form doldurma için MCP'yi kaydedin.
 - [career-ops iş ilanlarını nasıl puanlar](https://career-ops.org/methodology)
-  — puanlama metodolojisi: altı boyut, 4.0 başvuru eşiği ve sistemin
+  — puanlama metodolojisi: beş boyut ve bütünsel bir genel puan, 4.0 başvuru eşiği ve sistemin
   kesinlikle yapmayı reddettiği şeyler. Kendi dilinizde
   [cvstart.org/methodology](https://cvstart.org/methodology/) adresinde de özetlenmiştir.
 

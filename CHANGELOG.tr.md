@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.166.0] — 2026-08-13
+
+**Düzeltildi (DÜŞÜK) — rubrik terminolojisi artık kanonik belgeleri yansıtıyor.** career-ops.org/docs "beş boyut artı bütünsel bir genel puan" diye tanımlıyor, ancak web-ui, cvstart.org ve wiki hepsi "altı boyutlu rubrik" diyordu (5 + 1 = 6, ama sözcükler uyuşmuyordu).
+
+### Düzeltildi
+- Belgelerin ifadesi — **"beş boyut artı bütünsel bir genel puan"** — README ×17, cvstart.org sitesi ×17, yardım kılavuzu ×17, `docs/career-ops-canonical.md` ve wiki (Home ×17 + Features) genelinde tutarlı biçimde benimsendi.
+
+### Notlar
+- Yalnızca belge/pazarlama; kod/i18n anahtarı/rota/CSP/SSRF/yazma değişikliği yok. `tests/rubric-terminology.test.mjs` (+2). Takım: **2426** (+2).
+
 ## [1.165.0] — 2026-08-13
 
 **Düzeltildi (DÜŞÜK) — "Two-pager" terimi artık her dil içinde tutarlı.** Arapçada kenar çubuğu Latin "Two-pager" gösterirken `<h1>` tamamen yerelleştirilmişti — aksi halde aynalanmış RTL gezinmesindeki tek Latin dizesi.

@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.165.0** — **일관된 "Two-pager" 용어 (수정)** — 아랍어 사이드바는 라틴 "Two-pager"를, 제목은 현지화된 형태를 보였습니다 — RTL 내비의 유일한 라틴 단어. 이제 로케일별로 내비 라벨과 제목이 일치합니다(카나리로 강제). **2424개 테스트.**
+> **🆕 최신 릴리스 — v1.166.0** — **문서에 맞춘 루브릭 표현 (수정)** — UI/사이트/위키는 "6차원 루브릭"이라 했지만 문서는 "다섯 차원과 종합 전체 점수"라고 합니다(5+1=6). 문서 표현을 README/사이트/도움말/위키 ×17에 적용. **2426개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

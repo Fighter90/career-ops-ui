@@ -15,7 +15,7 @@
 [career-ops](https://career-ops.org) — open-source-система поиска
 работы, которая запускается как slash-команды внутри любого AI-CLI
 для разработки (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — другие Claude-совместимые CLI работают через тот же интерфейс slash-команд). Модель-агностична. Оценивает каждую вакансию против
-вашего CV по шестимерной рубрике 0.0–5.0, генерирует подогнанные
+вашего CV по рубрике из пяти измерений плюс целостная общая оценка 0.0–5.0, генерирует подогнанные
 PDF-резюме и отслеживает каждую заявку локально на вашей машине.
 
 **Канонические источники (читайте по порядку при первой установке):**
@@ -31,7 +31,7 @@ PDF-резюме и отслеживает каждую заявку локал�
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — установка Chromium и регистрация MCP для PDF и заполнения форм.
 - [How career-ops scores job listings](https://career-ops.org/methodology)
-  — методология оценки: шесть параметров, порог отклика 4.0 и то,
+  — методология оценки: пять параметров плюс целостная общая оценка, порог отклика 4.0 и то,
   что система принципиально не делает. Также кратко изложено на
   [cvstart.org/methodology](https://cvstart.org/methodology/) на вашем языке.
 

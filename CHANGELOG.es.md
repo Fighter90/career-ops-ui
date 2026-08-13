@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.166.0] — 2026-08-13
+
+**Corregido (BAJA) — la terminología de la rúbrica ahora refleja los docs canónicos.** career-ops.org/docs describe "cinco dimensiones más una puntuación global holística", pero el web-ui, cvstart.org y el wiki decían "rúbrica de seis dimensiones" (5 + 1 = 6, pero el vocabulario no coincidía).
+
+### Corregido
+- Se adoptó la redacción de los docs — **"cinco dimensiones más una puntuación global holística"** — en README ×17, el sitio cvstart.org ×17, la guía de ayuda ×17, `docs/career-ops-canonical.md` y el wiki (Home ×17 + Features).
+
+### Notas
+- Solo docs/marketing; sin cambios de código/clave i18n/ruta/CSP/SSRF/escritura. `tests/rubric-terminology.test.mjs` (+2). Conjunto: **2426** (+2).
+
 ## [1.165.0] — 2026-08-13
 
 **Corregido (BAJA) — el término "Two-pager" ahora es coherente en cada idioma.** En árabe la barra lateral mostraba el latino "Two-pager" mientras el `<h1>` estaba localizado — la única cadena latina en una navegación RTL por lo demás reflejada.

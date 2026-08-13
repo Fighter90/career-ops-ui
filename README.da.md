@@ -7,14 +7,14 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Seneste udgivelse — v1.165.0** — **Konsistent "Two-pager"-term (rettelse)** — den arabiske sidebjælke viste det latinske "Two-pager", mens titlen var lokaliseret — det eneste latinske ord i en RTL-navigation. Nu er nav-etiket og titel enige pr. sprog (håndhævet af en kanariefugl). **2424 tests.**
+> **🆕 Seneste udgivelse — v1.166.0** — **Docs-tilpasset rubrik-ordlyd (rettelse)** — UI/site/wiki sagde "rubrik med seks dimensioner", mens docs siger "fem dimensioner plus en holistisk samlet score" (5+1=6). Docs-ordlyden er vedtaget i README/site/hjælp/wiki ×17. **2426 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

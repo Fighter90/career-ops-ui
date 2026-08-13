@@ -10,7 +10,7 @@
 ### 关于 career-ops
 
 [career-ops](https://career-ops.org) 是一个开源求职系统,以 slash 命
-令的形式在任意 AI 编码 CLI(Claude Code、Cursor、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 兼容 CLI 也通过相同的斜杠命令接口运行)中运行。它与具体模型无关。系统按六维 0.0–5.0 评
+令的形式在任意 AI 编码 CLI(Claude Code、Cursor、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 兼容 CLI 也通过相同的斜杠命令接口运行)中运行。它与具体模型无关。系统按五维加整体综合评分 0.0–5.0 评
 分体系将每个职位与你的 CV 匹配,生成定制化的 PDF 简历,并在本地机器
 上追踪每一次申请记录。
 

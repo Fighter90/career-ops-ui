@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.166.0] — 2026-08-13
+
+**Fixed (LOW) — rubric terminology now mirrors the canonical docs.** career-ops.org/docs describes the scoring rubric as "five scoring dimensions plus a holistic global score", but the web-ui, cvstart.org and the wiki all said "six-dimension rubric" — the numbers reconcile (5 + 1 = 6) but the vocabulary didn't.
+
+### Fixed
+- Adopted the docs' phrasing — **"five dimensions plus a holistic global score"** — consistently across README ×17, the cvstart.org site copy ×17 (`method.*` / `how.3` / `features.2` / `meta.methodologyDesc`), the in-app help guide ×17, `docs/career-ops-canonical.md`, and the wiki (Home ×17 + Features). The 6th factor (global fit) is now framed as the holistic global score, matching the docs.
+
+### Notes
+- Docs/marketing copy only; no code, i18n-dict key, route, CSP, SSRF, or parent-write change (the SPA UI never used the phrase).
+- Tests: `tests/rubric-terminology.test.mjs` (+2, guards the English source surfaces against the "six-dimension" drift). Suite: **2426** (+2).
+
 ## [1.165.0] — 2026-08-13
 
 **Fixed (LOW) — the "Two-pager" term is now consistent within every locale.** In Arabic the sidebar showed the Latin "Two-pager" while the page `<h1>` was fully localized ("الصفحتان الخاصتان بك") — the only Latin string in an otherwise mirrored RTL nav.

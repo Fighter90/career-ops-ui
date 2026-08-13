@@ -27,7 +27,7 @@ Eliminates the manual tracking-via-spreadsheets / cover-letters-from-scratch loo
 | **Tracker** | The historical log of every evaluation + application status (`data/applications.md`, GFM markdown table). |
 | **Report** | A full A–G scored evaluation per JD, saved to `reports/<NNN>-<company>-<DATE>.md`. |
 | **Scan history** | Append-only log of every scanned URL (`data/scan-history.tsv`); used for dedup across future scans. |
-| **Scoring rubric** | Six-dimension 0.0–5.0 score with explicit action thresholds (see §5 below). |
+| **Scoring rubric** | Five-dimension 0.0–5.0 score plus a holistic global fit with explicit action thresholds (see §5 below). |
 
 ## 2. Onboarding (first run)
 

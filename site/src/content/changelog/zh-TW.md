@@ -8,6 +8,16 @@
 
 ---
 
+## [1.166.0] — 2026-08-13
+
+**修復 (LOW) — 評分標準術語現在與規範文件一致。** career-ops.org/docs 描述為「五個維度加上整體綜合評分」,但 Web UI、cvstart.org 和 wiki 都說「六維度評分標準」(5 + 1 = 6,但用詞不一致)。
+
+### 修復
+- 採用文件措辭 — **「五個維度加上綜合評分」** — 一致套用於 README ×17、cvstart.org 網站 ×17、說明指南 ×17、`docs/career-ops-canonical.md` 和 wiki(Home ×17 + Features)。
+
+### 說明
+- 僅文件/行銷文案;無程式碼/i18n 鍵/路由/CSP/SSRF/寫入變更。`tests/rubric-terminology.test.mjs`(+2)。套件:**2426** (+2)。
+
 ## [1.165.0] — 2026-08-13
 
 **修復 (LOW) — 「Two-pager」術語現在在每種語言內保持一致。** 阿拉伯語側邊欄顯示拉丁文「Two-pager」,而 `<h1>` 已完全在地化 — 是在其他方面鏡像的 RTL 導航中唯一的拉丁文字串。

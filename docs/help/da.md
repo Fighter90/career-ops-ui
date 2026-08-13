@@ -31,7 +31,7 @@ lokalt på din maskine.
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — installér Chromium + registrér MCP'en til PDF og formularudfyldning.
 - [Sådan scorer career-ops jobopslag](https://career-ops.org/methodology)
-  — scoringsmetodologien: de seks dimensioner, 4,0-ansøgningstærsklen,
+  — scoringsmetodologien: de fem dimensioner plus en holistisk samlet score, 4,0-ansøgningstærsklen,
   og hvad systemet eksplicit nægter at gøre. Opsummeres også på
   [cvstart.org/methodology](https://cvstart.org/methodology/) på dit sprog.
 

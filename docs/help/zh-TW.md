@@ -10,7 +10,7 @@
 ### 關於 career-ops
 
 [career-ops](https://career-ops.org) 是一個開源求職系統,以 slash
-指令的形式運作於任何 AI 編碼 CLI 內(Claude Code、Cursor、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 相容 CLI 也透過相同的斜線指令介面運作)。模型無關。它以六維 0.0–5.0 評分
+指令的形式運作於任何 AI 編碼 CLI 內(Claude Code、Cursor、Codex、OpenCode、Antigravity CLI、Grok Build CLI、Qwen Code、Kimi、GitHub Copilot CLI、Gemini CLI (legacy) — 其他 Claude 相容 CLI 也透過相同的斜線指令介面運作)。模型無關。它以五維加整體綜合評分 0.0–5.0 評分
 量表將每個職缺與你的 CV 進行配對,產生客製化 PDF 履歷,並在本機
 追蹤每一次申請。
 
@@ -27,7 +27,7 @@
 - [Set up Playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright)
   — 安裝 Chromium 並註冊 MCP,以支援 PDF 與表單填寫。
 - [career-ops 如何為職缺評分](https://career-ops.org/methodology)
-  — 評分方法論:六個評分維度、4.0 分投遞門檻,以及本系統絕對
+  — 評分方法論:五個維度加上整體綜合評分、4.0 分投遞門檻,以及本系統絕對
   拒絕做的事。也可在 [cvstart.org/methodology](https://cvstart.org/methodology/) 以你
   慣用的語言查看摘要。
 
