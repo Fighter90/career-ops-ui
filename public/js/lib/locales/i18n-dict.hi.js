@@ -737,6 +737,7 @@ window.__I18N_DICT_HI = {
   'rep.subtitle': "reports/ से सहेजी गई मूल्यांकन और डीप-रिसर्च रिपोर्ट",
   'rep.thresholdsTitle': "स्कोर → अगला कदम",
   'rep.score': "स्कोर",
+  'rep.colReport': "रिपोर्ट",
   'rep.thrAction': "अगला कदम",
   'rep.thr45': "/career-ops apply चलाएं — उच्च फिट, तुरंत आगे बढ़ें",
   'rep.thr40': "आवेदन करें, या पहले वार्म इंट्रो के लिए /career-ops contacto",

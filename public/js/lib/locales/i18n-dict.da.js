@@ -733,6 +733,7 @@ window.__I18N_DICT_DA = {
   'rep.subtitle': "Gemte rapporter fra vurdering og dybdegående research fra reports/",
   'rep.thresholdsTitle': "Score → næste skridt",
   'rep.score': "Score",
+  'rep.colReport': "Rapport",
   'rep.thrAction': "Næste skridt",
   'rep.thr45': "Kør /career-ops apply — højt match, gå i gang med det samme",
   'rep.thr40': "Ansøg, eller /career-ops contacto for en varm introduktion først",

@@ -733,6 +733,7 @@ window.__I18N_DICT_PL = {
   'rep.subtitle': "Zapisane raporty ocen i dogłębnego researchu z reports/",
   'rep.thresholdsTitle': "Wynik → następny krok",
   'rep.score': "Wynik",
+  'rep.colReport': "Raport",
   'rep.thrAction': "Następny krok",
   'rep.thr45': "Uruchom /career-ops apply — wysokie dopasowanie, aplikuj natychmiast",
   'rep.thr40': "Aplikuj lub /career-ops contacto po ciepłe intro",

@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.180.0] — 2026-08-14
+
+**Fixed (MEDIUM, reports) — the `#/reports` list is now a table, and a real score a Machine Summary placeholder was hiding is recovered.**
+
+### Fixed
+- **The `#/reports` list is a table (Report · Date · Legitimacy · Score), not a 4-card grid.** A long "Score not detected" chip used to squeeze the title column to near-zero, and the card title's `overflow-wrap: anywhere` then broke the report name one character per line. Every field now has its own column, the report-name cell wraps at word boundaries, and the table scrolls horizontally on a narrow viewport (new `.reports-scroll` container). New i18n key `rep.colReport` ×17.
+- **A real body score (`**Итоговый балл:** 1.8 / 5`) is no longer hidden by a Machine Summary placeholder (`score: —`).** When the `## Machine Summary` block carried a non-numeric or out-of-range score it filled the parsed score slot and blocked the bold-value-form fallback, so the report showed "Score not detected" despite a real `X / 5` in the body. `parseReportHeader` now recovers the body value form whenever no usable number survived (step 4.5).
+
+### Notes
+- Client + parser only; no route / CSP / SSRF / parent-write change. Tests: `tests/reports-table.test.mjs` (+5), `tests/report-header-locale.test.mjs` (+2). Suite: **2465** (+7).
+
 ## [1.179.0] — 2026-08-13
 
 **Changed (LOW, scanner) — consolidated 20 duplicate HTML-entity decoders onto the shared module (parent-sync follow-up, closes the worklist).**

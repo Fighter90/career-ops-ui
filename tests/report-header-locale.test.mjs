@@ -191,3 +191,31 @@ test('FIND-5: the value-form fallback does not mistake a date (5/5/2026) for a s
   assert.equal(h.scoreNum, null, 'a date is not a /5 score');
   assert.equal(h.score, '');
 });
+
+// ── v1.180.0 FIND-A — a Machine Summary PLACEHOLDER score hid a real body /5 ──
+// A report can carry `## Machine Summary\nscore: —` (the dash / "не определён"
+// the pipeline writes when it declines to score) while the human-readable body
+// still has a real `**Итоговый балл:** 1.8 / 5`. The MS placeholder occupied
+// out.score (non-null → the earlier value-form pass was skipped) yet
+// scoreStringToNum('—') is null, so the UI showed "Score not detected". The
+// step-4.5 rescue now takes the body /5 whenever no usable number survived.
+test('FIND-A: a Machine Summary placeholder score does not hide a real body /5 value', () => {
+  for (const placeholder of ['—', 'не определён', 'N/A']) {
+    const md = '# Оценка вакансии: Anthropic — Lead\n\n'
+      + '**Итоговый балл:** 1.8 / 5\nприменение не рекомендовано.\n\n'
+      + `## Machine Summary\nscore: ${placeholder}\nlegitimacy: High\n`;
+    const h = parseReportHeader(md, { mtime: new Date('2026-05-29T10:00:00Z') });
+    assert.equal(h.scoreNum, 1.8, `MS placeholder "${placeholder}" must not block the body value form`);
+    assert.match(h.score, /1[.,]8\s*\/\s*5/, 'the displayed score is the body /5, not the placeholder');
+  }
+});
+
+test('FIND-A: a valid Machine Summary score still wins (rescue only fires when scoreNum is null)', () => {
+  // Guard: the step-4.5 rescue must NOT override a good MS score with a stray
+  // /5 value form elsewhere in the body.
+  const md = '# Оценка вакансии: X\n\n'
+    + '**Пример расчёта:** 1.8 / 5 — иллюстрация.\n\n'
+    + '## Machine Summary\nscore: 4.5 / 5\nlegitimacy: High\n';
+  const h = parseReportHeader(md, { mtime: new Date('2026-05-29T10:00:00Z') });
+  assert.equal(h.scoreNum, 4.5, 'the valid MS score is authoritative, not the stray body value');
+});

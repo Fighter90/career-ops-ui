@@ -734,6 +734,7 @@ window.__I18N_DICT_ZH_CN = {
   'rep.subtitle': "来自 reports/ 的已保存评估与深度研究报告",
   'rep.thresholdsTitle': "Score → 下一步",
   'rep.score': "Score",
+  'rep.colReport': "报告",
   'rep.thrAction': "下一步",
   'rep.thr45': "运行 /career-ops apply — 高匹配,立即申请",
   'rep.thr40': "申请,或先 /career-ops contacto (warm intro)",

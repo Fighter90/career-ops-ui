@@ -426,6 +426,16 @@ export function parseReportHeader(text, opts = {}) {
   //     derive the numeric score, and compact the score display (overflow).
   out.legitimacy = stripEmphasis(out.legitimacy);
   out.scoreNum = scoreStringToNum(out.score);
+  // (4.5) FIND-A — rescue a body score the earlier steps couldn't turn into a
+  //   number. A Machine Summary placeholder (`score: —` / `score: не определён`)
+  //   or an out-of-range value occupies out.score and blocks the value-form
+  //   pass, leaving a real `**Итоговый балл:** 1.8 / 5` in the body unparsed. If
+  //   we still have no usable number, take the /5 value form now.
+  if (out.scoreNum == null) {
+    const vf = boldScoreValueForm(text);
+    const vfNum = scoreStringToNum(vf);
+    if (vfNum != null) { out.score = vf; out.scoreNum = vfNum; }
+  }
   out.score = compactScore(out.score, out.scoreNum);
 
   // (5) Date never null when the file mtime is known.

@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.180.0] — 2026-08-14
+
+**Corretto (MEDIO, report) — l'elenco `#/reports` è ora una tabella e viene recuperato un punteggio reale che un segnaposto di Machine Summary nascondeva.**
+
+### Corretto
+- **L'elenco `#/reports` è una tabella (Report · Data · Legittimità · Punteggio), non una griglia di 4 schede.** Un lungo chip "Punteggio non rilevato" comprimeva la colonna del titolo quasi a zero, e l'`overflow-wrap: anywhere` del titolo della scheda spezzava il nome del report un carattere alla volta. Ora ogni campo ha la propria colonna, la cella del nome va a capo per parole e la tabella scorre orizzontalmente su viewport stretti (nuovo contenitore `.reports-scroll`). Nuova chiave i18n `rep.colReport` ×17.
+- **Un punteggio reale nel corpo (`**Итоговый балл:** 1.8 / 5`) non è più nascosto da un segnaposto di Machine Summary (`score: —`).** Quando il blocco `## Machine Summary` portava un punteggio non numerico o fuori intervallo, occupava lo slot del punteggio analizzato e bloccava il fallback forma-valore in grassetto, così il report mostrava "Punteggio non rilevato" nonostante un `X / 5` reale nel corpo. `parseReportHeader` ora recupera la forma-valore dal corpo quando non sopravvive alcun numero utilizzabile (passo 4.5).
+
+### Note
+- Solo client + parser; nessun cambiamento a route / CSP / SSRF / scrittura sul padre. Test: `tests/reports-table.test.mjs` (+5), `tests/report-header-locale.test.mjs` (+2). Suite: **2465** (+7).
+
 ## [1.179.0] — 2026-08-13
 
 **Modificato (LOW, scanner) — 20 decoder di entità HTML duplicati consolidati sul modulo condiviso (follow-up di parità, chiude la worklist).**

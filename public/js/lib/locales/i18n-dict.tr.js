@@ -734,6 +734,7 @@ window.__I18N_DICT_TR = {
   'rep.subtitle': "reports/ dizinindeki kaydedilmiş değerlendirme ve derin-araştırma raporları",
   'rep.thresholdsTitle': "Puan → sonraki adım",
   'rep.score': "Puan",
+  'rep.colReport': "Rapor",
   'rep.thrAction': "Sonraki adım",
   'rep.thr45': "/career-ops apply çalıştırın — yüksek uyum, hemen ilerleyin",
   'rep.thr40': "Başvurun veya önce sıcak tanıştırma için /career-ops contacto",

@@ -734,6 +734,7 @@ window.__I18N_DICT_PT_BR = {
   'rep.subtitle': "Relatórios de avaliação e pesquisa salvos em reports/",
   'rep.thresholdsTitle': "Score → próximo passo",
   'rep.score': "Score",
+  'rep.colReport': "Relatório",
   'rep.thrAction': "Próximo passo",
   'rep.thr45': "Execute /career-ops apply — alto fit, candidate-se já",
   'rep.thr40': "Candidate-se, ou /career-ops contacto para warm intro primeiro",

@@ -45,19 +45,32 @@ Router.register('reports', async (params) => {
     ]);
   }
 
-  // 12 reports per page → 3 rows × 4-card grid on a wide screen
-  const cardsWrap = c('div', { className: 'card-row' });
+  // v1.180.0 — table layout (was a 4-card grid). A long "Score not detected"
+  // chip used to squeeze the title column to near-zero, and the card's
+  // `overflowWrap: anywhere` then broke the title one character per line
+  // ("вёрстка поехала"). A table gives every field its own column, the
+  // report-name cell wraps at word boundaries, and the wrap scrolls
+  // horizontally on narrow viewports (CONVENTIONS: wide content lives in an
+  // overflow-x container).
+  const tbody = c('tbody');
   const pgWrap = c('div');
-  const pager = UI.paginate({ pageSize: 12, onChange: () => render() });
+  const pager = UI.paginate({ pageSize: 20, onChange: () => render() });
 
-  function makeCard(rep) {
+  function makeRow(rep) {
     const cls = rep.scoreNum >= 4 ? 'score-high' : rep.scoreNum >= 3 ? 'score-mid' : 'score-low';
-    // WS2 #37 — was a mouse-only <div onClick>. Make it a real
-    // keyboard-operable control: role=link, tabindex, Enter/Space.
     const open = () => Router.go('/reports/' + rep.slug);
-    return c('div', {
-      className: 'card',
-      style: { cursor: 'pointer' },
+    // FIX-3 (v1.161.0) — a report with no parseable score shows a MUTED chip,
+    // not empty space, so the user can tell "unparsed" from "failed"; the whole
+    // row opens the report (where the score is in the body).
+    const scoreCell = rep.scoreNum != null
+      ? c('span', { className: 'score-pill ' + cls }, rep.score)
+      : c('span', {
+        className: 'score-pill score-muted',
+        title: t('rep.scoreUnparsedHint', 'Open the report to see the score'),
+      }, t('rep.scoreUnparsed', 'Score not detected'));
+    // WS2 #37 — keyboard-operable: role=link, tabindex, Enter/Space.
+    return c('tr', {
+      className: 'report-row',
       role: 'link',
       tabindex: '0',
       'aria-label': (rep.title || rep.slug),
@@ -66,37 +79,29 @@ Router.register('reports', async (params) => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
       },
     }, [
-      c('div', { className: 'flex-between' }, [
-        // v1.174.0 — minWidth:0 lets a long title/legitimacy tag shrink and wrap
-        // instead of pushing the score pill past the card edge (flex children
-        // default to min-width:auto).
-        c('div', { style: { minWidth: 0 } }, [
-          c('div', { style: { fontWeight: 700, fontSize: '15.5px', overflowWrap: 'anywhere' } }, rep.title || rep.slug),
-          c('div', { className: 'flex gap-1 mt-3' }, [
-            rep.date && c('span', { className: 'tag' }, rep.date),
-            rep.legitimacy && c('span', { className: 'tag' }, rep.legitimacy),
-          ]),
-        ]),
-        // FIX-3 (v1.161.0) — a report with no parseable score (after the
-        // v1.159.0 locale-aware parser) shows a MUTED chip, not empty space,
-        // so the user can tell "unparsed" from "failed". The whole card is
-        // already a role=link that opens the report (where the score is in the
-        // body); the chip reuses the existing neutral `.score-muted` token.
-        rep.scoreNum != null
-          ? c('span', { className: 'score-pill ' + cls }, rep.score)
-          : c('span', {
-            className: 'score-pill score-muted',
-            title: t('rep.scoreUnparsedHint', 'Open the report to see the score'),
-          }, t('rep.scoreUnparsed', 'Score not detected')),
-      ]),
+      c('td', { className: 'report-title-cell' }, rep.title || rep.slug),
+      c('td', null, rep.date || '—'),
+      c('td', null, rep.legitimacy || '—'),
+      c('td', null, scoreCell),
     ]);
   }
 
+  const tableWrap = c('div', { className: 'reports-scroll' },
+    c('table', { className: 'tbl reports-tbl' }, [
+      c('thead', null, c('tr', null, [
+        c('th', { scope: 'col' }, t('rep.colReport', 'Report')),
+        c('th', { scope: 'col' }, t('track.col.date', 'Date')),
+        c('th', { scope: 'col' }, t('track.col.legitimacy', 'Legitimacy')),
+        c('th', { scope: 'col' }, t('rep.score', 'Score')),
+      ])),
+      tbody,
+    ]));
+
   function render() {
     const page = pager.slice(reports);
-    cardsWrap.innerHTML = '';
+    tbody.innerHTML = '';
     pgWrap.innerHTML = '';
-    page.forEach((rep) => cardsWrap.appendChild(makeCard(rep)));
+    page.forEach((rep) => tbody.appendChild(makeRow(rep)));
     pgWrap.appendChild(pager.controls(page.length, reports.length));
   }
   render();
@@ -156,7 +161,7 @@ Router.register('reports', async (params) => {
       ]),
     ]),
     thresholdsCard,
-    cardsWrap,
+    tableWrap,
     pgWrap,
   ]);
 });

@@ -734,6 +734,7 @@ window.__I18N_DICT_EN = {
   'rep.subtitle': "Saved evaluation & deep-research reports from reports/",
   'rep.thresholdsTitle': "Score → next step",
   'rep.score': "Score",
+  'rep.colReport': "Report",
   'rep.thrAction': "Next step",
   'rep.thr45': "Run /career-ops apply — high fit, push immediately",
   'rep.thr40': "Apply, or /career-ops contacto for warm intro first",

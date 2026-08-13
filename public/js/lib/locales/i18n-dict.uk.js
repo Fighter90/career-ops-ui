@@ -733,6 +733,7 @@ window.__I18N_DICT_UK = {
   'rep.subtitle': "Збережені звіти оцінки та глибокого рісьорчу з reports/",
   'rep.thresholdsTitle': "Оцінка → наступний крок",
   'rep.score': "Оцінка",
+  'rep.colReport': "Звіт",
   'rep.thrAction': "Наступний крок",
   'rep.thr45': "Запустіть /career-ops apply — висока відповідність, подавайте негайно",
   'rep.thr40': "Подавайте або /career-ops contacto для теплого знайомства спочатку",

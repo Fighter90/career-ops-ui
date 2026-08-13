@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.180.0] — 2026-08-14
+
+**Behoben (MITTEL, Berichte) — die `#/reports`-Liste ist jetzt eine Tabelle, und eine echte Bewertung, die ein Machine-Summary-Platzhalter verdeckte, wird wiederhergestellt.**
+
+### Behoben
+- **Die `#/reports`-Liste ist eine Tabelle (Bericht · Datum · Legitimität · Bewertung), kein 4-Karten-Raster.** Ein langer Chip „Bewertung nicht erkannt" drückte die Titelspalte fast auf null, und das `overflow-wrap: anywhere` des Kartentitels brach den Berichtsnamen Zeichen für Zeichen um. Jetzt hat jedes Feld eine eigene Spalte, die Namenszelle bricht an Wortgrenzen um, und die Tabelle scrollt auf schmalen Viewports horizontal (neuer `.reports-scroll`-Container). Neuer i18n-Schlüssel `rep.colReport` ×17.
+- **Eine echte Bewertung im Text (`**Итоговый балл:** 1.8 / 5`) wird nicht mehr durch einen Machine-Summary-Platzhalter (`score: —`) verdeckt.** Trug der `## Machine Summary`-Block eine nicht-numerische oder außerhalb des Bereichs liegende Bewertung, belegte sie den geparsten Bewertungsplatz und blockierte den Fett-Wertform-Fallback, sodass der Bericht „Bewertung nicht erkannt" zeigte, obwohl im Text ein echtes `X / 5` stand. `parseReportHeader` stellt nun die Wertform aus dem Text wieder her, wenn keine brauchbare Zahl übrig blieb (Schritt 4.5).
+
+### Hinweise
+- Nur Client + Parser; keine Änderung an Route / CSP / SSRF / Eltern-Schreibzugriff. Tests: `tests/reports-table.test.mjs` (+5), `tests/report-header-locale.test.mjs` (+2). Suite: **2465** (+7).
+
 ## [1.179.0] — 2026-08-13
 
 **Geändert (LOW, Scanner) — 20 duplizierte HTML-Entitäten-Decoder auf das gemeinsame Modul zusammengeführt (Paritäts-Nachlauf, schließt die Worklist).**

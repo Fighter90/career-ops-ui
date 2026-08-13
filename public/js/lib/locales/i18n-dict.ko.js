@@ -734,6 +734,7 @@ window.__I18N_DICT_KO = {
   'rep.subtitle': "reports/ 에 저장된 평가 및 심층 조사 보고서",
   'rep.thresholdsTitle': "Score → 다음 단계",
   'rep.score': "Score",
+  'rep.colReport': "리포트",
   'rep.thrAction': "다음 단계",
   'rep.thr45': "/career-ops apply 실행 — 높은 적합도, 즉시 지원",
   'rep.thr40': "지원 또는 /career-ops contacto로 warm intro 먼저",

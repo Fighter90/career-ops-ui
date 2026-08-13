@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.180.0] — 2026-08-14
+
+**Poprawiono (ŚREDNIE, raporty) — lista `#/reports` jest teraz tabelą, a odzyskano prawdziwy wynik, który ukrywał symbol zastępczy Machine Summary.**
+
+### Poprawiono
+- **Lista `#/reports` to tabela (Raport · Data · Wiarygodność · Wynik), a nie siatka 4 kart.** Długi chip „Nie wykryto wyniku” ściskał kolumnę tytułu niemal do zera, a `overflow-wrap: anywhere` w tytule karty łamał nazwę raportu po jednym znaku. Teraz każde pole ma własną kolumnę, komórka nazwy zawija się po słowach, a na wąskim ekranie tabela przewija się w poziomie (nowy kontener `.reports-scroll`). Nowy klucz i18n `rep.colReport` ×17.
+- **Prawdziwy wynik w treści (`**Итоговый балл:** 1.8 / 5`) nie jest już ukrywany przez symbol zastępczy Machine Summary (`score: —`).** Gdy blok `## Machine Summary` zawierał wynik nieliczbowy lub spoza zakresu, zajmował miejsce sparsowanego wyniku i blokował rezerwowe parsowanie formy-wartości w pogrubieniu, więc raport pokazywał „Nie wykryto wyniku” mimo prawdziwego `X / 5` w treści. `parseReportHeader` odzyskuje teraz formę-wartość z treści, gdy nie pozostał żaden użyteczny numer (krok 4.5).
+
+### Uwagi
+- Tylko klient + parser; bez zmian tras / CSP / SSRF / zapisu do rodzica. Testy: `tests/reports-table.test.mjs` (+5), `tests/report-header-locale.test.mjs` (+2). Zestaw: **2465** (+7).
+
 ## [1.179.0] — 2026-08-13
 
 **Zmieniono (LOW, skaner) — 20 zduplikowanych dekoderów encji HTML scalono w jeden wspólny moduł (kontynuacja parytetu, zamyka worklist).**

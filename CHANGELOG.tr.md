@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.180.0] — 2026-08-14
+
+**Düzeltildi (ORTA, raporlar) — `#/reports` listesi artık bir tablo ve bir Machine Summary yer tutucusunun gizlediği gerçek bir puan geri kazanıldı.**
+
+### Düzeltildi
+- **`#/reports` listesi 4 kartlık bir ızgara değil, bir tablodur (Rapor · Tarih · Meşruiyet · Puan).** Uzun bir "Puan algılanmadı" çipi başlık sütununu neredeyse sıfıra sıkıştırıyor, ardından kart başlığındaki `overflow-wrap: anywhere` rapor adını harf harf bölüyordu. Artık her alanın kendi sütunu var, ad hücresi sözcüklerden bölünür ve dar ekranda tablo yatay kayar (yeni `.reports-scroll` konteyneri). Yeni i18n anahtarı `rep.colReport` ×17.
+- **Gövdedeki gerçek bir puan (`**Итоговый балл:** 1.8 / 5`) artık bir Machine Summary yer tutucusu (`score: —`) tarafından gizlenmiyor.** `## Machine Summary` bloğu sayısal olmayan veya aralık dışı bir puan taşıdığında, ayrıştırılmış puan yuvasını dolduruyor ve kalın değer-biçimi yedeğini engelliyordu; böylece gövdede gerçek bir `X / 5` olmasına rağmen rapor "Puan algılanmadı" gösteriyordu. `parseReportHeader` artık kullanılabilir bir sayı kalmadığında gövdenin değer-biçimini geri kazanır (adım 4.5).
+
+### Notlar
+- Yalnızca istemci + ayrıştırıcı; rota / CSP / SSRF / üst yazma değişikliği yok. Testler: `tests/reports-table.test.mjs` (+5), `tests/report-header-locale.test.mjs` (+2). Takım: **2465** (+7).
+
 ## [1.179.0] — 2026-08-13
 
 **Değiştirildi (LOW, tarayıcı) — 20 yinelenen HTML varlık çözücüsü ortak modülde birleştirildi (parite devamı, worklist'i kapatır).**

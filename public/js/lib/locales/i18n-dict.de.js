@@ -734,6 +734,7 @@ window.__I18N_DICT_DE = {
   'rep.subtitle': "Gespeicherte Bewertungs- & Tiefenrecherche-Berichte aus reports/",
   'rep.thresholdsTitle': "Score → nächster Schritt",
   'rep.score': "Score",
+  'rep.colReport': "Bericht",
   'rep.thrAction': "Nächster Schritt",
   'rep.thr45': "/career-ops apply ausführen — hohe Passung, sofort loslegen",
   'rep.thr40': "Bewerben oder zuerst /career-ops contacto für eine warme Einführung",

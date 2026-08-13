@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.180.0] — 2026-08-14
+
+**Corrigé (MOYEN, rapports) — la liste `#/reports` est désormais un tableau, et un score réel que masquait un espace réservé de Machine Summary est récupéré.**
+
+### Corrigé
+- **La liste `#/reports` est un tableau (Rapport · Date · Légitimité · Score), pas une grille de 4 cartes.** Une longue puce « Score non détecté » réduisait la colonne du titre à presque zéro, et le `overflow-wrap: anywhere` du titre de la carte coupait le nom du rapport caractère par caractère. Chaque champ a maintenant sa propre colonne, la cellule du nom passe à la ligne par mots, et le tableau défile horizontalement sur un écran étroit (nouveau conteneur `.reports-scroll`). Nouvelle clé i18n `rep.colReport` ×17.
+- **Un score réel dans le corps (`**Итоговый балл:** 1.8 / 5`) n'est plus masqué par un espace réservé de Machine Summary (`score: —`).** Lorsque le bloc `## Machine Summary` portait un score non numérique ou hors plage, il occupait l'emplacement du score analysé et bloquait le repli forme-valeur en gras, si bien que le rapport affichait « Score non détecté » malgré un `X / 5` réel dans le corps. `parseReportHeader` récupère désormais la forme-valeur du corps dès qu'aucun nombre utilisable ne subsiste (étape 4.5).
+
+### Notes
+- Client + analyseur uniquement ; aucun changement de route / CSP / SSRF / écriture parent. Tests : `tests/reports-table.test.mjs` (+5), `tests/report-header-locale.test.mjs` (+2). Suite : **2465** (+7).
+
 ## [1.179.0] — 2026-08-13
 
 **Modifié (LOW, scanner) — 20 décodeurs d'entités HTML dupliqués regroupés sur le module partagé (suite de la parité, clôt le worklist).**

@@ -734,6 +734,7 @@ window.__I18N_DICT_JA = {
   'rep.subtitle': "reports/ に保存された評価・詳細調査レポート",
   'rep.thresholdsTitle': "Score → 次のステップ",
   'rep.score': "Score",
+  'rep.colReport': "レポート",
   'rep.thrAction': "次のステップ",
   'rep.thr45': "/career-ops apply を実行 — 高フィット、即応募",
   'rep.thr40': "応募、または先に /career-ops contacto (warm intro)",

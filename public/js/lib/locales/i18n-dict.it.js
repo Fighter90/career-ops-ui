@@ -734,6 +734,7 @@ window.__I18N_DICT_IT = {
   'rep.subtitle': "Rapporti di valutazione e ricerca approfondita salvati da reports/",
   'rep.thresholdsTitle': "Punteggio → passo successivo",
   'rep.score': "Punteggio",
+  'rep.colReport': "Report",
   'rep.thrAction': "Passo successivo",
   'rep.thr45': "Esegui /career-ops apply — alta affinità, procedi subito",
   'rep.thr40': "Candidati, o /career-ops contacto prima per una presentazione calda",
