@@ -61,9 +61,6 @@ const FRAGMENT_RECORDS_PER_PAGE = 100;
 
 const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
 
-/** @param {string} s */
-
-/** @param {string} s */
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }

@@ -28,17 +28,6 @@ function djb2(str) {
   return (h >>> 0).toString(36);
 }
 
-
-/** Codepoint → string, guarding against invalid/astral overflow values. */
-function safeFromCodePoint(cp) {
-  try {
-    return Number.isInteger(cp) && cp >= 0 && cp <= 0x10ffff ? String.fromCodePoint(cp) : '';
-  } catch {
-    return '';
-  }
-}
-
-
 /** Strip CDATA wrapper if present, then decode entities. */
 function unwrap(raw) {
   if (!raw) return '';

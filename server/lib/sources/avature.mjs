@@ -54,8 +54,6 @@ export function assertAvatureUrl(url) {
   return url;
 }
 
-/** @param {string} s */
-
 /** Strip tags + collapse whitespace. @param {string} s */
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();

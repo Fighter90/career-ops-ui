@@ -40,13 +40,6 @@ export const meta = {
   region: 'en',
 };
 
-// Minimal HTML entity decoder — inlined from the parent's shared
-// `providers/_html-entities.mjs` (web-ui convention: no cross-repo helper).
-// Range-guarded: a code point above 0x10FFFF or a lone surrogate half
-// (&#xD800;) degrades to the literal text instead of throwing RangeError and
-/** @param {string} s */
-
-/** @param {string} s */
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }

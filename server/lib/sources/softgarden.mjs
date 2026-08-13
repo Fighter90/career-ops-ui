@@ -28,8 +28,6 @@ export const meta = {
 
 const MAX_JOBS = 1000;
 
-// Minimal HTML entity decoder — titles carry named (&amp;) and numeric
-
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }

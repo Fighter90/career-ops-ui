@@ -43,11 +43,6 @@ export const meta = {
   region: 'en',
 };
 
-// Minimal HTML entity decoder — inlined from the parent's shared
-// `providers/_html-entities.mjs` (web-ui convention: no cross-repo helper).
-/** @param {string} s */
-
-/** @param {string} s */
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }

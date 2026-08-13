@@ -46,8 +46,6 @@ function toIsoDate(value) {
   return Number.isNaN(parsed) ? '' : new Date(parsed).toISOString().slice(0, 10);
 }
 
-
-
 function extractText(inner) {
   const cdata = inner.match(/^\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*$/);
   if (cdata) return cdata[1].trim();

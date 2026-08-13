@@ -94,13 +94,6 @@ export function toEpochMs(value) {
   return Number.isNaN(parsed) ? undefined : parsed;
 }
 
-// Minimal HTML entity decoder (inlined, mirroring server/lib/sources/
-// agenticjobs.mjs — web-ui has no shared decoder). Named entities + numeric
-// (&#252; / &#xfc;), with a codepoint-range guard so a malformed/adversarial
-// entity (e.g. "&#99999999;") can't throw a RangeError from String.fromCodePoint
-
-/** @param {string} s */
-
 /**
  * Description → plain text for content filters and the snippet. Strip once, then
  * decode once — the house order, and the correct one for this API (it decodes on

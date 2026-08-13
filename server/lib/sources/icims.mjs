@@ -48,10 +48,6 @@ const HEADERS = {
   accept: 'text/html',
 };
 
-// Minimal HTML entity decoder — job titles carry named (&amp;) and numeric
-// (&#252; / &#xfc;) entities; we only need the handful that show up in titles /
-/** @param {string} s */
-
 /**
  * Defence-in-depth host guard on the endpoint the adapter builds. The portal
  * origin is per-tenant, so the endpoint is host-pinned to whatever the adapter

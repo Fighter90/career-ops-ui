@@ -219,16 +219,6 @@ export function isEmptyBoardRedirect(err, requestUrl) {
 // closes a tag (CodeQL js/polynomial-redos, high). indexOf walks it once. This
 // mirrors the parent's fixed provider, which switched to the same technique.
 
-
-/** Codepoint → string, guarding invalid / illegal-XML / astral-overflow values. */
-
-/**
- * Decode the XML entities that appear in this feed, including numeric refs
- * (`&#8217;` right quote, `&#x2013;` en dash) that show up in real titles.
- * An illegal codepoint is left as written (visible and inert) rather than
- * emitting NUL / a lone surrogate into a job title. @param {string} s
- */
-
 /** Read one tag out of a `<job>` block, unwrapping CDATA. Index-based (no regex). */
 function tagText(block, name) {
   const open = `<${name}>`;

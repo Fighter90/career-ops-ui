@@ -75,12 +75,6 @@ export function assertAgenticUrl(url) {
   return url;
 }
 
-// Minimal HTML entity decoder (inlined from parent career-ops
-// providers/_html-entities.mjs). Named entities + numeric (&#252; / &#xfc;),
-// with a codepoint-range guard so a malformed/adversarial entity can't throw a
-
-/** @param {string} s */
-
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 
 /**

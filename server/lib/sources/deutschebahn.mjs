@@ -44,13 +44,6 @@ const MAX_PAGES = 60; // safety cap on request count (60*20 = 1200 postings)
 const MAX_JOBS = 1000; // cap total postings pulled
 const PAGE_DELAY_MS = 150; // polite pacing between page requests
 
-// Robust HTML entity decoder — named (&amp;) and numeric (&#252; / &#xfc;)
-// entities. A malformed/out-of-range numeric entity (e.g. `&#99999999;` or a
-// lone surrogate half `&#xD800;`) degrades to the literal text instead of
-// throwing a RangeError and aborting the whole parse. Hex/decimal are matched
-/** @param {string} s */
-
-/** @param {string} s */
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }

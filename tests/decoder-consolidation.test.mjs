@@ -40,9 +40,16 @@ test('no scan source keeps a local HTML-entity decoder (all route through html-e
   }
 });
 
-test('the shared html-entities module is imported by the 20 consolidated sources', () => {
-  const users = readdirSync(SRC)
-    .filter((f) => f.endsWith('.mjs'))
-    .filter((f) => readFileSync(resolve(SRC, f), 'utf8').includes("from '../html-entities.mjs'"));
-  assert.ok(users.length >= 23, `expected ≥23 sources importing the shared decoder (20 consolidated + oraclecloud/gem/dassault), saw ${users.length}`);
+test('the shared html-entities module is imported by every consolidated source', () => {
+  // 20 consolidated in v1.179.0 + oraclecloud/gem/dassault migrated in v1.172.0.
+  const CONSOLIDATED = [
+    'agenticjobs', 'avature', 'deutschebahn', 'hecklerkoch', 'icims', 'radancy',
+    'remotli', 'rheinmetall', 'softgarden', 'successfactors', 'rss', 'jobvite',
+    'personio', 'cryptocurrencyjobs', 'higheredjobs', 'jobspresso', 'larajobs',
+    'nodesk', 'teamtailor', 'weworkremotely', 'oraclecloud', 'gem', 'dassault',
+  ];
+  for (const name of CONSOLIDATED) {
+    const src = readFileSync(resolve(SRC, `${name}.mjs`), 'utf8');
+    assert.match(src, /from ['"]\.\.\/html-entities\.mjs['"]/, `${name}.mjs must import the shared decoder`);
+  }
 });

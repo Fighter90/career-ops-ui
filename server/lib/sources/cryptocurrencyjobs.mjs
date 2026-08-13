@@ -58,10 +58,6 @@ function toIsoDate(value) {
   return Number.isNaN(parsed) ? '' : new Date(parsed).toISOString().slice(0, 10);
 }
 
-
-// Decode XML entities: numeric (&#38; / &#x27;) first, named five last (&amp;
-// last so "&amp;lt;" → "&lt;" not "<"). Same helper the other RSS sources use.
-
 // This feed's generator double-encodes entities at the source (verified live:
 // the raw XML carries e.g. `Social Media &amp;amp; Growth Lead`), so a single
 // canonical pass leaves a stray `&amp;` in some titles. Exactly TWO passes —

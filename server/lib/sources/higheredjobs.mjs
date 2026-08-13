@@ -55,10 +55,6 @@ function toIsoDate(value) {
   return Number.isNaN(parsed) ? '' : new Date(parsed).toISOString().slice(0, 10);
 }
 
-
-// Decode XML entities: numeric (&#38; / &#x27;) first, named five last (&amp;
-// last so "&amp;lt;" → "&lt;" not "<").
-
 function extractText(inner) {
   const cdata = inner.match(/^\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*$/);
   if (cdata) return cdata[1].trim();

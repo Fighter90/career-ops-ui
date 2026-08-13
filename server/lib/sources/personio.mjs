@@ -40,10 +40,6 @@ export function assertPersonioUrl(url) {
   return url;
 }
 
-
-// Decode the XML entities that appear in Personio job text. Numeric forms first;
-// &amp; LAST so "&amp;lt;" yields "&lt;" rather than over-decoding to "<".
-
 function extractText(inner) {
   const cdata = inner.match(/^\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*$/);
   if (cdata) return cdata[1].trim();

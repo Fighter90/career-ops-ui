@@ -89,11 +89,6 @@ export function resolveTenantBase(company) {
   return u.origin + path;
 }
 
-// Minimal HTML entity decoder — titles carry named (&amp;) and numeric
-// (&#252; / &#xfc;) entities. We only need the handful that show up in job
-/** @param {string} s */
-
-/** @param {string} s */
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
