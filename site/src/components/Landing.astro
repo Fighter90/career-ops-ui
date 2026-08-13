@@ -13,6 +13,7 @@ import OpenSource from './OpenSource.astro';
 import Faq from './Faq.astro';
 import FinalCta from './FinalCta.astro';
 import Footer from './Footer.astro';
+import VideoModal from './VideoModal.astro';
 import { t, type Locale } from '../i18n/locales';
 import facts from '../generated/facts.json';
 
@@ -60,4 +61,5 @@ const jsonLd = {
     <FinalCta locale={locale} />
   </main>
   <Footer locale={locale} page="" />
+  <VideoModal locale={locale} />
 </Base>
