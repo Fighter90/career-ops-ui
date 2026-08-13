@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.167.0] — 2026-08-13
+
+**Corrigé (BASSE, design-system) — les surfaces surélevées se distinguent désormais des filets (D-3).** Les tokens `--panel-2` / `--surface-elev1` se résolvaient en `--slate`, la même valeur que les filets `--line` / `--border`, sans séparation visuelle.
+
+### Corrigé
+- Un token dédié et adapté au thème **`--elev`** (`#eef1f6` clair / `#1e232e` sombre, distinct de `--slate` dans les deux thèmes) sous-tend désormais les surfaces surélevées ; les filets restent sur `--slate`. Les autres constats (D-2, D-4, D-5, P4-ETA) sont consignés en backlog dans `docs/UX-ROADMAP.md`.
+
+### Notes
+- Token CSS uniquement ; aucun changement de comportement/JS/i18n/route/CSP/SSRF/écriture. `tests/elevation-token.test.mjs` (+2). Suite : **2428** (+2).
+
 ## [1.166.0] — 2026-08-13
 
 **Corrigé (BASSE) — la terminologie de la grille reflète désormais les docs canoniques.** career-ops.org/docs décrit « cinq dimensions plus un score global holistique », mais le web-ui, cvstart.org et le wiki disaient « grille à six dimensions » (5 + 1 = 6, mais le vocabulaire divergeait).

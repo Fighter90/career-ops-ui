@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.167.0] — 2026-08-13
+
+**Fixed (LOW, design-system) — elevated surfaces now separate from hairlines (D-3).** The raised-surface tokens `--panel-2` / `--surface-elev1` resolved to `--slate` — the same value as the `--line` / `--border` hairlines — so an elevated panel or chip inside a bordered card had no visual separation.
+
+### Fixed
+- A dedicated theme-aware **`--elev`** token now backs the raised surfaces (`#eef1f6` light / `#1e232e` dark, distinct from `--slate` in both themes); the hairlines stay on `--slate`. Elevated chips (pipeline, two-pager, docs-assistant / mock-interview bubbles, funded bars) and panels now read as raised.
+- The remaining design-export findings (D-2 checkbox target size, D-4 type-scale / z-index tokens, D-5 inline PDF preview, P4 generation-ETA) are restated as tracked backlog in `docs/UX-ROADMAP.md` — each its own future release (behaviour changes are never bundled into a token ship).
+
+### Notes
+- CSS-token only; no behaviour, JS, i18n, route, CSP, SSRF, or parent-write change. Dark-mode contrast guard (`tests/dark-theme-tokens.test.mjs`) green.
+- Tests: `tests/elevation-token.test.mjs` (+2). Suite: **2428** (+2).
+
 ## [1.166.0] — 2026-08-13
 
 **Fixed (LOW) — rubric terminology now mirrors the canonical docs.** career-ops.org/docs describes the scoring rubric as "five scoring dimensions plus a holistic global score", but the web-ui, cvstart.org and the wiki all said "six-dimension rubric" — the numbers reconcile (5 + 1 = 6) but the vocabulary didn't.

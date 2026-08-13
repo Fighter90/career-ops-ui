@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.166.0** — **डॉक्स-संरेखित रूब्रिक शब्दावली (फ़िक्स)** — UI/साइट/विकी "छह-आयामी रूब्रिक" कहते थे जबकि डॉक्स कहते हैं "पाँच आयाम और एक समग्र वैश्विक स्कोर" (5+1=6)। डॉक्स की शब्दावली README/साइट/हेल्प/विकी ×17 में अपनाई गई। **2426 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.167.0** — **उठी सतहें हेयरलाइन से अलग (डिज़ाइन फ़िक्स)** — `--panel-2`/`--surface-elev1` किनारों वाले `--slate` में ही हल होते थे, बिना पृथक्करण। एक समर्पित थीम टोकन `--elev` अब उन्हें सहारा देता है। **2428 परीक्षण।**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

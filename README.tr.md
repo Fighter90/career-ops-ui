@@ -7,14 +7,14 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Son sürüm — v1.166.0** — **Belgelerle uyumlu rubrik ifadesi (düzeltme)** — UI/site/wiki "altı boyutlu rubrik" derken belgeler "beş boyut artı bütünsel bir genel puan" diyor (5+1=6). Belge ifadesi README/site/yardım/wiki ×17'de benimsendi. **2426 test.**
+> **🆕 Son sürüm — v1.167.0** — **Yükseltilmiş yüzeyler ince çizgilerden ayrıldı (tasarım düzeltmesi)** — `--panel-2`/`--surface-elev1` kenarlarla aynı `--slate`'e çözümleniyordu, ayrım yoktu. Temaya duyarlı özel bir token `--elev` artık onları destekliyor. **2428 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

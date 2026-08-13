@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Latest release — v1.166.0** — **Docs-aligned rubric wording (fix)** — the UI/site/wiki said "six-dimension rubric" while career-ops.org/docs says "five dimensions plus a holistic global score" (5+1=6). Adopted the docs' wording across README/site/help/wiki ×17. **2426 tests.**
+> **🆕 Latest release — v1.167.0** — **Elevated surfaces separate from hairlines (design fix)** — `--panel-2`/`--surface-elev1` resolved to the same `--slate` as the borders, so raised chips/panels had no separation. A dedicated theme-aware `--elev` token now backs them. **2428 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

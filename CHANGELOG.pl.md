@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.167.0] — 2026-08-13
+
+**Naprawiono (NISKIE, design-system) — powierzchnie wypukłe oddzielają się teraz od linii (D-3).** Tokeny `--panel-2` / `--surface-elev1` rozwiązywały się do `--slate`, tej samej wartości co linie `--line` / `--border`, bez separacji wizualnej.
+
+### Naprawiono
+- Dedykowany, świadomy motywu token **`--elev`** (`#eef1f6` jasny / `#1e232e` ciemny, różny od `--slate` w obu motywach) stoi teraz za powierzchniami wypukłymi; linie pozostają na `--slate`. Pozostałe ustalenia (D-2, D-4, D-5, P4-ETA) w backlogu `docs/UX-ROADMAP.md`.
+
+### Uwagi
+- Tylko token CSS; bez zmian zachowania/JS/i18n/trasy/CSP/SSRF/zapisu. `tests/elevation-token.test.mjs` (+2). Zestaw: **2428** (+2).
+
 ## [1.166.0] — 2026-08-13
 
 **Naprawiono (NISKIE) — terminologia rubryki odzwierciedla teraz kanoniczne docs.** career-ops.org/docs opisuje „pięć wymiarów plus całościowa ocena globalna", ale web-ui, cvstart.org i wiki mówiły „rubryka o sześciu wymiarach" (5 + 1 = 6, lecz słownictwo się różniło).

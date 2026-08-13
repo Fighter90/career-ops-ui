@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Najnowsze wydanie — v1.166.0** — **Sformułowanie rubryki zgodne z docs (poprawka)** — UI/strona/wiki mówiły „rubryka o sześciu wymiarach", a docs mówią „pięć wymiarów plus całościowa ocena globalna" (5+1=6). Przyjęto sformułowanie docs w README/stronie/pomocy/wiki ×17. **2426 testów.**
+> **🆕 Najnowsze wydanie — v1.167.0** — **Powierzchnie wypukłe oddzielone od linii (poprawka designu)** — `--panel-2`/`--surface-elev1` rozwiązywały się do tego samego `--slate` co obramowania, bez separacji. Dedykowany token motywu `--elev` teraz je wspiera. **2428 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

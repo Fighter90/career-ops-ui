@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.167.0] — 2026-08-13
+
+**Behoben (NIEDRIG, Design-System) — erhöhte Flächen heben sich jetzt von Haarlinien ab (D-3).** Die Tokens `--panel-2` / `--surface-elev1` lösten zu `--slate` auf — demselben Wert wie die Haarlinien `--line` / `--border` — ohne visuelle Trennung.
+
+### Behoben
+- Ein dediziertes, themenbewusstes Token **`--elev`** (`#eef1f6` hell / `#1e232e` dunkel, in beiden Themes von `--slate` verschieden) trägt jetzt die erhöhten Flächen; die Haarlinien bleiben auf `--slate`. Die übrigen Befunde (D-2, D-4, D-5, P4-ETA) stehen als Backlog in `docs/UX-ROADMAP.md`.
+
+### Hinweise
+- Nur CSS-Token; keine Änderung an Verhalten/JS/i18n/Route/CSP/SSRF/Schreibzugriff. `tests/elevation-token.test.mjs` (+2). Suite: **2428** (+2).
+
 ## [1.166.0] — 2026-08-13
 
 **Behoben (NIEDRIG) — die Rubrik-Terminologie spiegelt jetzt die kanonischen Docs.** career-ops.org/docs beschreibt „fünf Dimensionen plus eine ganzheitliche Gesamtbewertung", aber Web-UI, cvstart.org und das Wiki sagten alle „Rubrik mit sechs Dimensionen" (5 + 1 = 6, aber der Wortlaut wich ab).

@@ -7,14 +7,14 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2426%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2428%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Dernière version — v1.166.0** — **Formulation de la grille alignée sur les docs (correctif)** — l'UI/le site/le wiki disaient « grille à six dimensions » alors que les docs disent « cinq dimensions plus un score global holistique » (5+1=6). Formulation des docs adoptée dans README/site/aide/wiki ×17. **2426 tests.**
+> **🆕 Dernière version — v1.167.0** — **Surfaces surélevées distinctes des filets (correctif design)** — `--panel-2`/`--surface-elev1` se résolvaient au même `--slate` que les bordures, sans séparation. Un token de thème dédié `--elev` les sous-tend désormais. **2428 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 
