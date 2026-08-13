@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2422%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.164.0** — **검색 플레이스홀더가 들어맞음 (수정)** — "Find a company, role or URL…"가 모든 로케일에서 잘려 "…or URL"이 숨었습니다. 이제 짧은 "검색 또는 URL 붙여넣기"(≤24자, ×17)라 URL 안내가 항상 보입니다. **2422개 테스트.**
+> **🆕 최신 릴리스 — v1.165.0** — **일관된 "Two-pager" 용어 (수정)** — 아랍어 사이드바는 라틴 "Two-pager"를, 제목은 현지화된 형태를 보였습니다 — RTL 내비의 유일한 라틴 단어. 이제 로케일별로 내비 라벨과 제목이 일치합니다(카나리로 강제). **2424개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

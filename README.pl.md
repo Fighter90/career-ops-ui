@@ -7,14 +7,14 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2422%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Najnowsze wydanie — v1.164.0** — **Placeholder wyszukiwania się mieści (poprawka)** — "Find a company, role or URL…" był ucinany w każdym języku, ukrywając "…or URL". Teraz krótkie "Szukaj lub wklej URL" (≤24 znaki, ×17), wskazówka URL zawsze widoczna. **2422 testów.**
+> **🆕 Najnowsze wydanie — v1.165.0** — **Spójny termin "Two-pager" (poprawka)** — arabski pasek pokazywał łacińskie "Two-pager", a tytuł był zlokalizowany — jedyne łacińskie słowo w nawigacji RTL. Teraz w każdym języku etykieta nawigacji i tytuł są zgodne (wymusza to kanarek). **2424 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

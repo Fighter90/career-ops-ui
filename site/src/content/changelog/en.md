@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.165.0] — 2026-08-13
+
+**Fixed (LOW) — the "Two-pager" term is now consistent within every locale.** In Arabic the sidebar showed the Latin "Two-pager" while the page `<h1>` was fully localized ("الصفحتان الخاصتان بك") — the only Latin string in an otherwise mirrored RTL nav.
+
+### Fixed
+- **Decision enforced:** per locale, `nav.twoPager` and `twoPager.title` agree on the term — both keep the Latin product noun, or both localize it. Only Arabic was split; its nav label is now localized ("الصفحتان") to match its title. A new canary fails if any locale splits them again.
+
+### Notes
+- Copy-only; no route, CSP, SSRF, or parent-write change. One i18n value changed (ar); no new keys (snapshot 1219).
+- Tests: `tests/two-pager-term-consistency.test.mjs` (+2). Suite: **2424** (+2).
+
 ## [1.164.0] — 2026-08-13
 
 **Fixed (LOW) — the top-bar search placeholder no longer overflows in any locale.** "Find a company, role or URL…" was clipped (nowrap, `scrollWidth > clientWidth`) when the searchbar flex-shrinks on a busy top bar — and the "…or URL" half, which teaches the paste-a-URL auto-pipeline flow, was never visible.

@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.165.0] — 2026-08-13
+
+**Corrigido (BAIXA) — o termo "Two-pager" agora é coerente em cada idioma.** Em árabe a barra lateral mostrava o latino "Two-pager" enquanto o `<h1>` estava localizado — a única string latina numa navegação RTL de resto espelhada.
+
+### Corrigido
+- **Decisão aplicada:** por idioma, `nav.twoPager` e `twoPager.title` concordam no termo (ambos em latim ou ambos localizados). Só o árabe estava dividido; seu rótulo de navegação agora está localizado ("الصفحتان"). Um novo canário falha se algum idioma voltar a dividi-los.
+
+### Notas
+- Apenas texto; sem mudança de rota/CSP/SSRF/escrita. Um valor i18n alterado (ar); sem novas chaves (snapshot 1219). `tests/two-pager-term-consistency.test.mjs` (+2). Conjunto: **2424** (+2).
+
 ## [1.164.0] — 2026-08-13
 
 **Corrigido (BAIXA) — o placeholder da busca não transborda mais em nenhum idioma.** "Find a company, role or URL…" era cortado (nowrap) quando a barra encolhia; a metade "…or URL" nunca aparecia.

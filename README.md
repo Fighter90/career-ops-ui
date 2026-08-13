@@ -9,14 +9,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2422%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Latest release — v1.164.0** — **Search placeholder fits (fix)** — "Find a company, role or URL…" was clipped in every locale, hiding the "…or URL" hint. It's now the short "Search or paste a URL" (≤24 chars, ×17), so the paste-a-URL affordance is always visible. **2422 tests.**
+> **🆕 Latest release — v1.165.0** — **Consistent "Two-pager" term (fix)** — the Arabic sidebar showed the Latin "Two-pager" while the page title was localized — the only Latin word in an RTL nav. Now, per locale, the nav label and page title agree on the term (a canary enforces it). **2424 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

@@ -7,14 +7,14 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2422%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2424%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Ultima release — v1.164.0** — **Il placeholder di ricerca ci sta (fix)** — "Find a company, role or URL…" veniva troncato in ogni lingua, nascondendo "…or URL". Ora il breve "Cerca o incolla una URL" (≤24 caratteri, ×17), il riferimento all'URL è sempre visibile. **2422 test.**
+> **🆕 Ultima release — v1.165.0** — **Termine "Two-pager" coerente (fix)** — la barra araba mostrava il latino "Two-pager" mentre il titolo era localizzato — l'unica parola latina in una navigazione RTL. Ora, per lingua, l'etichetta di navigazione e il titolo concordano (garantito da un canarino). **2424 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

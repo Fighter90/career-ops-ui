@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.165.0] — 2026-08-13
+
+**Rettet (LAV) — "Two-pager"-termen er nu konsistent inden for hvert sprog.** På arabisk viste sidebjælken det latinske "Two-pager", mens `<h1>` var fuldt lokaliseret — den eneste latinske streng i en ellers spejlvendt RTL-navigation.
+
+### Rettet
+- **Beslutning håndhævet:** pr. sprog er `nav.twoPager` og `twoPager.title` enige om termen (begge latin eller begge lokaliseret). Kun arabisk var splittet; dets nav-etiket er nu lokaliseret ("الصفحتان"). En ny kanariefugl fejler, hvis et sprog igen splitter dem.
+
+### Noter
+- Kun tekst; ingen ændring af rute/CSP/SSRF/skrivning. Én i18n-værdi ændret (ar); ingen nye nøgler (snapshot 1219). `tests/two-pager-term-consistency.test.mjs` (+2). Suite: **2424** (+2).
+
 ## [1.164.0] — 2026-08-13
 
 **Rettet (LAV) — søgefeltets placeholder løber ikke længere over på noget sprog.** "Find a company, role or URL…" blev beskåret (nowrap), når søgefeltet skrumpede; "…or URL"-halvdelen var aldrig synlig.

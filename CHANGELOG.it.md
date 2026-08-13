@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.165.0] — 2026-08-13
+
+**Corretto (BASSA) — il termine "Two-pager" è ora coerente all'interno di ogni lingua.** In arabo la barra laterale mostrava il latino "Two-pager" mentre l'`<h1>` era completamente localizzato — l'unica stringa latina in una navigazione RTL altrimenti speculare.
+
+### Corretto
+- **Decisione applicata:** per lingua, `nav.twoPager` e `twoPager.title` concordano sul termine (entrambi in latino o entrambi localizzati). Solo l'arabo era diviso; la sua etichetta di navigazione è ora localizzata ("الصفحتان"). Un nuovo canarino fallisce se una lingua li separa di nuovo.
+
+### Note
+- Solo testo; nessuna modifica a route/CSP/SSRF/scrittura. Un valore i18n modificato (ar); nessuna nuova chiave (snapshot 1219). `tests/two-pager-term-consistency.test.mjs` (+2). Suite: **2424** (+2).
+
 ## [1.164.0] — 2026-08-13
 
 **Corretto (BASSA) — il placeholder della ricerca non trabocca più in nessuna lingua.** "Find a company, role or URL…" veniva troncato (nowrap) quando la barra si restringeva; la metà "…or URL" non era mai visibile.

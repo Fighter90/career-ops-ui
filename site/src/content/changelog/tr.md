@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.165.0] — 2026-08-13
+
+**Düzeltildi (DÜŞÜK) — "Two-pager" terimi artık her dil içinde tutarlı.** Arapçada kenar çubuğu Latin "Two-pager" gösterirken `<h1>` tamamen yerelleştirilmişti — aksi halde aynalanmış RTL gezinmesindeki tek Latin dizesi.
+
+### Düzeltildi
+- **Karar uygulandı:** dil başına `nav.twoPager` ve `twoPager.title` terimde uyuşur (ikisi de Latin ya da ikisi de yerelleştirilmiş). Yalnızca Arapça ayrıktı; gezinme etiketi artık yerelleştirildi ("الصفحتان"). Yeni bir kanarya, bir dil onları tekrar ayırırsa başarısız olur.
+
+### Notlar
+- Yalnızca metin; rota/CSP/SSRF/yazma değişikliği yok. Bir i18n değeri değişti (ar); yeni anahtar yok (anlık görüntü 1219). `tests/two-pager-term-consistency.test.mjs` (+2). Takım: **2424** (+2).
+
 ## [1.164.0] — 2026-08-13
 
 **Düzeltildi (DÜŞÜK) — üst çubuk arama yer tutucusu artık hiçbir dilde taşmıyor.** "Find a company, role or URL…" arama çubuğu küçüldüğünde kırpılıyordu; "…or URL" yarısı asla görünmüyordu.
