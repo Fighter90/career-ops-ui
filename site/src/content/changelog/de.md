@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.179.0] — 2026-08-13
+
+**Geändert (LOW, Scanner) — 20 duplizierte HTML-Entitäten-Decoder auf das gemeinsame Modul zusammengeführt (Paritäts-Nachlauf, schließt die Worklist).**
+
+### Geändert
+- 20 Scraping-Scan-Quellen trugen je einen eigenen `decodeEntities`/`decodeXmlEntities` (+ einen `fromCodePoint`-Helfer) — Kopien, die auseinandergedriftet waren (drei konnten einen `RangeError` werfen, in v1.172.0 behoben; andere ließen NUL/C0 zu oder parsten `&#1a2;` falsch). Alle laufen nun über das eine `server/lib/html-entities.mjs` (XML-1.0-Char-sicherer Decoder), was ~237 Zeilen Duplizierung entfernt. Die 8 RSS-artigen Quellen erhielten die `&nbsp;`-Dekodierung (zuvor nur 5 Entitäten); das absichtliche Doppel-Dekodieren von cryptocurrencyjobs bleibt per Alias erhalten. `hh` behält seinen Decoder (behandelt `&mdash;`/`&ndash;`, außerhalb der gemeinsamen 6). Ein neuer Wächter-Test schlägt fehl, wenn eine Quelle wieder einen lokalen Decoder anlegt.
+
+### Hinweise
+- Verhaltenserhaltende Refaktorierung; keine Änderung an Route / CSP / SSRF / Eltern-Schreibzugriff. Tests: `tests/decoder-consolidation.test.mjs` (+2). Suite: **2458** (+2).
+
 ## [1.178.0] — 2026-08-13
 
 **Behoben (LOW, Eltern-Parität) — zwei veraltete Konstanten an das Elternprojekt angeglichen (PARENT-SYNC GAP #4 + #5).**

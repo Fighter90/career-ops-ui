@@ -21,6 +21,7 @@
  * Used by the avature adapter (server/lib/portals/adapters/avature.mjs).
  */
 import { fetchText } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 // Avature hosts: the shared `*.avature.net` cluster (per-tenant subdomain) and
 // the bare apex. Branded custom domains are supported only when the entry pins
@@ -53,17 +54,7 @@ export function assertAvatureUrl(url) {
   return url;
 }
 
-const NAMED = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', '#8226': '•' };
 /** @param {string} s */
-function decodeEntities(s) {
-  return s.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z0-9]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const code = body[1] === 'x' || body[1] === 'X' ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
-      return Number.isFinite(code) ? String.fromCodePoint(code) : m;
-    }
-    return NAMED[String(body).toLowerCase()] ?? m;
-  });
-}
 
 /** Strip tags + collapse whitespace. @param {string} s */
 function clean(s) {

@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2456%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2458%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.178.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.178.0)
+[![release](https://img.shields.io/badge/release-v1.179.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.179.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.178.0** — **Обновление констант (паритет с родителем)** — User-Agent браузера поднят до Chrome 151 (паритет WAF/бот-фильтров), а fallback статусов трекера получил турецкие алиасы статусов из родителя. **2456 тестов.**
+> **🆕 Последний релиз — v1.179.0** — **Консолидация декодеров** — 20 дублирующихся декодеров HTML-сущностей в источниках сканирования теперь проходят через единый общий модуль (−237 строк), с гардом от повторного дублирования. Поведение сохранено. **2458 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

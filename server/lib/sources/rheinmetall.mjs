@@ -27,6 +27,7 @@
  * Used by the rheinmetall adapter (server/lib/portals/adapters/rheinmetall.mjs).
  */
 import { fetchText, delay } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 export const DEFAULT_LIST_URL = 'https://www.rheinmetall.com/en/career/vacancies';
 // Host match — rheinmetall.com or any subdomain. Anchored so a path or suffix
@@ -44,20 +45,7 @@ export const meta = {
 
 // Minimal HTML entity decoder — inlined from the parent's shared
 // `providers/_html-entities.mjs` (web-ui convention: no cross-repo helper).
-// Range-guarded so a malformed numeric entity degrades to literal text.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
 /** @param {string} s */
-function decodeEntities(s) {
-  return s.replace(/&(#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const isHex = body[1] === 'x' || body[1] === 'X';
-      const code = parseInt(body.slice(isHex ? 2 : 1), isHex ? 16 : 10);
-      const valid = Number.isFinite(code) && code >= 0 && code <= 0x10ffff && !(code >= 0xd800 && code <= 0xdfff);
-      return valid ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
-}
 
 /** @param {string} s */
 function clean(s) {

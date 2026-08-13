@@ -33,6 +33,7 @@
  * Used by the agenticjobs adapter (server/lib/portals/adapters/agenticjobs.mjs).
  */
 import { fetchJson, delay } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 const SITE_ORIGIN = 'https://agentic-engineering-jobs.com';
 const API_BASE = `${SITE_ORIGIN}/api/v1`;
@@ -77,22 +78,8 @@ export function assertAgenticUrl(url) {
 // Minimal HTML entity decoder (inlined from parent career-ops
 // providers/_html-entities.mjs). Named entities + numeric (&#252; / &#xfc;),
 // with a codepoint-range guard so a malformed/adversarial entity can't throw a
-// RangeError and crash the whole parse.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
 
 /** @param {string} s */
-function decodeEntities(s) {
-  return s.replace(/&(#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const isHex = body[1] === 'x' || body[1] === 'X';
-      const code = parseInt(body.slice(isHex ? 2 : 1), isHex ? 16 : 10);
-      const valid =
-        Number.isFinite(code) && code >= 0 && code <= 0x10ffff && !(code >= 0xd800 && code <= 0xdfff);
-      return valid ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
-}
 
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 

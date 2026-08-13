@@ -23,6 +23,8 @@
  * (server/lib/portals/adapters/cryptocurrencyjobs.mjs).
  */
 import { fetchText } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
+const decodeXmlEntities = decodeEntities;
 
 export const FEED_URL = 'https://cryptocurrencyjobs.co/index.xml';
 const TRUSTED_HOST = 'cryptocurrencyjobs.co';
@@ -56,22 +58,9 @@ function toIsoDate(value) {
   return Number.isNaN(parsed) ? '' : new Date(parsed).toISOString().slice(0, 10);
 }
 
-function fromCodePoint(cp) {
-  try { return String.fromCodePoint(cp); } catch { return ''; }
-}
 
 // Decode XML entities: numeric (&#38; / &#x27;) first, named five last (&amp;
 // last so "&amp;lt;" → "&lt;" not "<"). Same helper the other RSS sources use.
-function decodeXmlEntities(s) {
-  return s
-    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => fromCodePoint(parseInt(h, 16)))
-    .replace(/&#(\d+);/g, (_, d) => fromCodePoint(parseInt(d, 10)))
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'")
-    .replace(/&amp;/g, '&');
-}
 
 // This feed's generator double-encodes entities at the source (verified live:
 // the raw XML carries e.g. `Social Media &amp;amp; Growth Lead`), so a single

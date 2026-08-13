@@ -39,6 +39,7 @@
  * Used by the radancy adapter (server/lib/portals/adapters/radancy.mjs).
  */
 import { fetchText, delay } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 export const meta = {
   value: 'radancy',
@@ -60,22 +61,7 @@ const FRAGMENT_RECORDS_PER_PAGE = 100;
 
 const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
 
-// Minimal HTML entity decoder — mirrors the other HTML-scraping sources.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
 /** @param {string} s */
-function decodeEntities(s) {
-  return s.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const code = body[1] === 'x' || body[1] === 'X' ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
-      // String.fromCodePoint throws RangeError outside 0..0x10FFFF or on a lone
-      // surrogate half — a malformed/adversarial entity must degrade to the
-      // original text, never crash the whole parse.
-      const valid = Number.isFinite(code) && code >= 0 && code <= 0x10ffff && !(code >= 0xd800 && code <= 0xdfff);
-      return valid ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
-}
 
 /** @param {string} s */
 function clean(s) {

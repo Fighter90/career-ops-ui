@@ -18,6 +18,7 @@
  * Used by the softgarden adapter (server/lib/portals/adapters/softgarden.mjs).
  */
 import { fetchText } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 export const meta = {
   value: 'softgarden',
@@ -28,17 +29,6 @@ export const meta = {
 const MAX_JOBS = 1000;
 
 // Minimal HTML entity decoder — titles carry named (&amp;) and numeric
-// (&#252; / &#xfc;) entities. Mirrors successfactors.mjs / dassault.mjs.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-function decodeEntities(s) {
-  return s.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const code = body[1] === 'x' || body[1] === 'X' ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
-      return Number.isInteger(code) && code >= 0 && code <= 0x10ffff ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
-}
 
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();

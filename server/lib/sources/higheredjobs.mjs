@@ -16,6 +16,8 @@
  * Used by the higheredjobs adapter (server/lib/portals/adapters/higheredjobs.mjs).
  */
 import { fetchText } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
+const decodeXmlEntities = decodeEntities;
 
 const DEFAULT_CAT_ID = 68; // Higher Education category
 const TRUSTED_HOST = 'www.higheredjobs.com';
@@ -53,22 +55,9 @@ function toIsoDate(value) {
   return Number.isNaN(parsed) ? '' : new Date(parsed).toISOString().slice(0, 10);
 }
 
-function fromCodePoint(cp) {
-  try { return String.fromCodePoint(cp); } catch { return ''; }
-}
 
 // Decode XML entities: numeric (&#38; / &#x27;) first, named five last (&amp;
 // last so "&amp;lt;" → "&lt;" not "<").
-function decodeXmlEntities(s) {
-  return s
-    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => fromCodePoint(parseInt(h, 16)))
-    .replace(/&#(\d+);/g, (_, d) => fromCodePoint(parseInt(d, 10)))
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'")
-    .replace(/&amp;/g, '&');
-}
 
 function extractText(inner) {
   const cdata = inner.match(/^\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*$/);

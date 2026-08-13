@@ -24,6 +24,7 @@
  * (server/lib/portals/adapters/icims.mjs).
  */
 import { fetchText, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 // Hosts the adapter/source auto-claim: any `*.icims.com` subdomain (the
 // per-tenant portal). Bare `icims.com` and look-alikes (`evilicims.com`) are
@@ -49,20 +50,7 @@ const HEADERS = {
 
 // Minimal HTML entity decoder — job titles carry named (&amp;) and numeric
 // (&#252; / &#xfc;) entities; we only need the handful that show up in titles /
-// locations, anything else is left as-is. (Mirrors successfactors.mjs.)
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
 /** @param {string} s */
-function decodeEntities(s) {
-  return s.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (m, body) => {
-    if (body[0] === '#') {
-      const code = body[1] === 'x' || body[1] === 'X'
-        ? parseInt(body.slice(2), 16)
-        : parseInt(body.slice(1), 10);
-      return Number.isFinite(code) ? String.fromCodePoint(code) : m;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
-  });
-}
 
 /**
  * Defence-in-depth host guard on the endpoint the adapter builds. The portal

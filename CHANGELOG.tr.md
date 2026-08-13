@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.179.0] — 2026-08-13
+
+**Değiştirildi (LOW, tarayıcı) — 20 yinelenen HTML varlık çözücüsü ortak modülde birleştirildi (parite devamı, worklist'i kapatır).**
+
+### Değiştirildi
+- 20 kazıma tarama kaynağının her biri kendi `decodeEntities`/`decodeXmlEntities`'ini (+ bir `fromCodePoint` yardımcısı) taşıyordu — sürüklenmiş kopyalar (üçü `RangeError` fırlatabiliyordu, v1.172.0'de düzeltildi; diğerleri NUL/C0'a izin veriyor veya `&#1a2;`'yi yanlış ayrıştırıyordu). Artık hepsi tek `server/lib/html-entities.mjs`'ten (XML 1.0 Char güvenli çözücü) geçiyor ve ~237 satır yineleme kaldırıldı. 8 RSS tarzı kaynak `&nbsp;` çözümü kazandı (önceden yalnızca 5 varlık); cryptocurrencyjobs'un kasıtlı çift çözümü bir takma adla korundu. `hh` kendi çözücüsünü tutuyor (`&mdash;`/`&ndash;`'yi işler, ortak 6'nın dışında). Yeni bir nöbetçi test, herhangi bir kaynak yerel çözücü yeniden oluşturursa başarısız olur.
+
+### Notlar
+- Davranışı koruyan yeniden düzenleme; rota / CSP / SSRF / üst yazma değişikliği yok. Testler: `tests/decoder-consolidation.test.mjs` (+2). Takım: **2458** (+2).
+
 ## [1.178.0] — 2026-08-13
 
 **Düzeltildi (LOW, üst parite) — iki eski sabit üst projeye uyacak şekilde güncellendi (PARENT-SYNC GAP #4 + #5).**
