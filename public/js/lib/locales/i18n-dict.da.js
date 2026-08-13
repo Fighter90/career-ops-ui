@@ -221,6 +221,8 @@ window.__I18N_DICT_DA = {
   'common.loading': "Indlæser…",
   'common.error': "Fejl",
   'common.retry': "Prøv igen",
+  'common.eta': "~{n}s",
+  'common.etaTitle': "Typisk genereringstid",
   'common.save': "Gem",
   'common.cancel': "Annullér",
   'common.confirm': "Bekræft",

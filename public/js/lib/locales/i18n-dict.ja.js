@@ -222,6 +222,8 @@ window.__I18N_DICT_JA = {
   'common.loading': "読み込み中…",
   'common.error': "エラー",
   'common.retry': "再試行",
+  'common.eta': "約{n}秒",
+  'common.etaTitle': "一般的な生成時間",
   'common.save': "保存",
   'common.cancel': "キャンセル",
   'common.confirm': "確認",

@@ -7,14 +7,14 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 Последний релиз — v1.169.0** — **Inline-превью PDF (D-5)** — PDF отдавались как `attachment`, поэтому даже «Открыть» на `#/cv` скачивал их. `?inline=1` отдаёт тот же файл inline; список открывает **👁 Предпросмотр** в новой вкладке (Скачать без изменений). **2432 тестов.**
+> **🆕 Последний релиз — v1.170.0** — **Честный ETA для долгих AI-генераций (P4-ETA)** — карьерный план / ориентация / рынок / нетворкинг / two-pager показывали лишь «Генерация…». У каждой кнопки теперь подсказка `⏱ ~N с` (как ETA на `#/auto`). **2434 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

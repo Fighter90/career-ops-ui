@@ -9,14 +9,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 नवीनतम रिलीज़ — v1.169.0** — **इनलाइन PDF पूर्वावलोकन (D-5)** — PDF `attachment` के रूप में दिए जाते थे, इसलिए `#/cv` का "खोलें" भी उन्हें डाउनलोड करता था। `?inline=1` उसी फ़ाइल को इनलाइन देता है; सूची नई टैब में **👁 पूर्वावलोकन** खोलती है (डाउनलोड अपरिवर्तित)। **2432 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.170.0** — **लंबी AI जनन पर ईमानदार ETA (P4-ETA)** — करियर प्लान / ओरिएंटेशन / मार्केट / नेटवर्किंग / two-pager केवल "जनरेट हो रहा…" दिखाते थे। हर बटन पर अब `⏱ ~Nसे` संकेत है (`#/auto` ETA की तरह)। **2434 परीक्षण।**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

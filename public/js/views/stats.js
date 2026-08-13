@@ -203,6 +203,9 @@ Router.register('stats', async () => {
       c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [t('stats.marketRegion', 'Region / market'), region]),
       c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [t('stats.currency', 'Currency'), curSel]),
       genBtn,
+      // P4-ETA (v1.170.0) — honest duration hint for a long AI generation.
+      c('span', { className: 'eta-hint', title: t('common.etaTitle', 'Typical generation time') },
+        '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '30')),
     ]);
     const out = c('div');
     wrap.appendChild(controls);

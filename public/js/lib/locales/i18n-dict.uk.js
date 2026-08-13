@@ -221,6 +221,8 @@ window.__I18N_DICT_UK = {
   'common.loading': "Завантаження…",
   'common.error': "Помилка",
   'common.retry': "Повторити",
+  'common.eta': "~{n} с",
+  'common.etaTitle': "Звичайний час генерації",
   'common.save': "Зберегти",
   'common.cancel': "Скасувати",
   'common.confirm': "Підтвердити",

@@ -7,14 +7,14 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2432%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2434%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.154.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.154.0)
 
-> **🆕 최신 릴리스 — v1.169.0** — **인라인 PDF 미리보기 (D-5)** — PDF가 `attachment`로 제공되어 `#/cv`의 "열기"조차 다운로드했습니다. `?inline=1`이 같은 파일을 인라인으로 제공하며, 목록은 새 탭에서 **👁 미리보기**를 엽니다(다운로드 유지). **2432개 테스트.**
+> **🆕 최신 릴리스 — v1.170.0** — **긴 AI 생성의 정직한 ETA (P4-ETA)** — 커리어 플랜 / 오리엔테이션 / 마켓 / 네트워킹 / 투페이저가 "생성 중…"만 보였습니다. 각 버튼에 이제 `⏱ ~N초` 힌트가 표시됩니다(`#/auto` ETA처럼). **2434개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

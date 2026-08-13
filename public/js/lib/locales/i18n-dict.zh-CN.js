@@ -222,6 +222,8 @@ window.__I18N_DICT_ZH_CN = {
   'common.loading': "加载中…",
   'common.error': "错误",
   'common.retry': "重试",
+  'common.eta': "约{n}秒",
+  'common.etaTitle': "典型生成时间",
   'common.save': "保存",
   'common.cancel': "取消",
   'common.confirm': "确认",

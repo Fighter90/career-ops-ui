@@ -223,6 +223,8 @@ window.__I18N_DICT_HI = {
   'common.loading': "लोड हो रहा है…",
   'common.error': "त्रुटि",
   'common.retry': "पुनः प्रयास करें",
+  'common.eta': "~{n}से",
+  'common.etaTitle': "सामान्य जनन समय",
   'common.save': "सहेजें",
   'common.cancel': "रद्द करें",
   'common.confirm': "पुष्टि करें",

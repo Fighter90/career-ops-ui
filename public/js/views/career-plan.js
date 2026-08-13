@@ -39,6 +39,10 @@ Router.register('career-plan', async () => {
     c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [t('plan.horizon', 'Horizon'), horizon]),
     c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)', flex: '1 1 260px' } }, [t('plan.focus', 'Focus (optional)'), focus]),
     genBtn,
+    // P4-ETA (v1.170.0) — honest duration hint next to a long AI generation
+    // (career-plan ~40 s observed), mirroring the #/auto ETA pattern.
+    c('span', { className: 'eta-hint', title: t('common.etaTitle', 'Typical generation time') },
+      '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '40')),
   ]));
 
   // ── editable plan + actions ──
