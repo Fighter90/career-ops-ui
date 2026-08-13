@@ -1,0 +1,161 @@
+---
+/**
+ * VideoModal — a lightweight YouTube lightbox for the demo preview.
+ *
+ * Rendered ONCE per page (from Landing). Any element with `data-video-modal`
+ * opens it; the YouTube iframe is injected only on open (and removed on close,
+ * which stops playback), so nothing loads from youtube.com until the user asks.
+ * The site has no CSP, so the embed loads directly.
+ */
+import { t, type Locale } from '../i18n/locales';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const VIDEO_ID = 'LcVPUg9IsDk';
+---
+
+<div
+  id="video-modal"
+  class="video-modal"
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-label={t(locale, 'video.title')}
+  data-video-id={VIDEO_ID}
+>
+  <div class="video-modal__backdrop" data-video-close></div>
+  <div class="video-modal__dialog">
+    <button type="button" class="video-modal__close" data-video-close aria-label={t(locale, 'video.close')}>
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+    </button>
+    <div class="video-modal__frame" id="video-modal-frame"></div>
+  </div>
+</div>
+
+<style>
+  .video-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .video-modal[hidden] {
+    display: none;
+  }
+  .video-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(2px);
+    cursor: pointer;
+    animation: video-fade 0.15s ease-out;
+  }
+  .video-modal__dialog {
+    position: relative;
+    width: min(960px, 100%);
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+    animation: video-pop 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .video-modal__frame,
+  .video-modal__frame :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .video-modal__close {
+    position: absolute;
+    top: -44px;
+    inset-inline-end: 0;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    border: 0;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .video-modal__close:hover {
+    background: rgba(255, 255, 255, 0.32);
+  }
+  .video-modal__close:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+  @media (max-width: 640px) {
+    .video-modal__close {
+      top: auto;
+      bottom: -46px;
+      inset-inline-end: 50%;
+      transform: translateX(50%);
+    }
+  }
+  @keyframes video-fade {
+    from { opacity: 0; }
+  }
+  @keyframes video-pop {
+    from { opacity: 0; transform: scale(0.96); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .video-modal__backdrop,
+    .video-modal__dialog { animation: none; }
+  }
+</style>
+
+<script>
+  const modal = document.getElementById('video-modal');
+  if (modal) {
+    const frame = document.getElementById('video-modal-frame');
+    const id = modal.getAttribute('data-video-id');
+    let lastFocus: HTMLElement | null = null;
+
+    const open = (trigger?: EventTarget | null) => {
+      lastFocus = (trigger as HTMLElement) || (document.activeElement as HTMLElement);
+      if (frame) {
+        frame.innerHTML =
+          `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" ` +
+          `title="career-ops-ui preview" frameborder="0" ` +
+          `allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ` +
+          `referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+      }
+      modal.hidden = false;
+      document.documentElement.style.overflow = 'hidden';
+      modal.querySelector<HTMLElement>('.video-modal__close')?.focus();
+    };
+
+    const close = () => {
+      modal.hidden = true;
+      if (frame) frame.innerHTML = '';
+      document.documentElement.style.overflow = '';
+      if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+    };
+
+    document.querySelectorAll<HTMLElement>('[data-video-modal]').forEach((btn) =>
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        open(e.currentTarget);
+      }),
+    );
+    modal.querySelectorAll<HTMLElement>('[data-video-close]').forEach((btn) =>
+      btn.addEventListener('click', close),
+    );
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.hidden) close();
+    });
+  }
+</script>

@@ -2,6 +2,7 @@
 import { Picture } from 'astro:assets';
 import { t, type Locale } from '../i18n/locales';
 import { screenshotFor } from '../lib/screenshots';
+import WatchButton from './WatchButton.astro';
 
 interface Props {
   locale: Locale;
@@ -31,6 +32,10 @@ const captions = [1, 2, 3].map((i) => ({
         loading="lazy"
         class="block h-auto w-full"
       />
+    </div>
+
+    <div class="reveal mt-6 flex justify-center">
+      <WatchButton locale={locale} class="btn-secondary" />
     </div>
 
     <ul class="mt-8 grid gap-6 sm:grid-cols-3">

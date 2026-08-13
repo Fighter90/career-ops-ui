@@ -4,6 +4,7 @@ import { t, type Locale } from '../i18n/locales';
 import { screenshotFor } from '../lib/screenshots';
 import InstallTabs from './InstallTabs.astro';
 import Icon from './Icon.astro';
+import WatchButton from './WatchButton.astro';
 import facts from '../generated/facts.json';
 
 interface Props {
@@ -69,6 +70,9 @@ const adaptersRounded = Math.floor(facts.adapters / 5) * 5; // honest "~55"
           fetchpriority="high"
           class="block h-auto w-full"
         />
+      </div>
+      <div class="mt-5 flex justify-center">
+        <WatchButton locale={locale} class="btn-primary" />
       </div>
     </div>
   </div>

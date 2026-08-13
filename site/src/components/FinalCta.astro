@@ -2,6 +2,7 @@
 import { t, type Locale } from '../i18n/locales';
 import InstallTabs from './InstallTabs.astro';
 import Icon from './Icon.astro';
+import WatchButton from './WatchButton.astro';
 import facts from '../generated/facts.json';
 
 interface Props {
@@ -23,6 +24,7 @@ const { locale } = Astro.props;
         {t(locale, 'final.gh')}
         <Icon name="external-link" class="h-4 w-4" />
       </a>
+      <WatchButton locale={locale} class="btn-secondary" />
     </div>
   </div>
 </section>
