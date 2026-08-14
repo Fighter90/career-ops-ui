@@ -172,4 +172,27 @@ export function registerStatsRoutes(app) {
     }
     res.json({ available: true, ...data });
   });
+
+  // Funnel calibration vs market benchmarks + waiting list + per-stage velocity
+  // medians — a zero-token read-only relay of funnel-velocity.mjs (JSON stdout:
+  // { calibration, waiting, velocity }, each with its statistical-honesty
+  // caveats baked in). Same contract as /api/stats/lifetime.
+  app.get('/api/stats/funnel', llmRateLimit, async (_req, res) => {
+    const script = 'funnel-velocity.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      res.json({ available: false, reason: 'script-not-found' });
+      return;
+    }
+    const r = await runNodeScript(script, [], { timeoutMs: 60_000 });
+    const data = parseJsonStdout(r.stdout);
+    if (r.code !== 0 || !data) {
+      res.json({
+        available: false,
+        reason: r.killed ? 'timeout' : 'script-error',
+        detail: sanitizeDetail(r.stderr),
+      });
+      return;
+    }
+    res.json({ available: true, ...data });
+  });
 }

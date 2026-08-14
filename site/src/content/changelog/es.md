@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.185.0] — 2026-08-14
+
+**Añadido (estadísticas) — una pestaña "Embudo y velocidad": cómo se compara tu embudo con el mercado y con qué rapidez avanzas entre etapas.**
+
+### Añadido
+- Una nueva pestaña **Embudo y velocidad** en **Estadísticas** muestra tus tasas de **respuesta** e **entrevista** junto a rangos de referencia del mercado (con las advertencias de muestra pequeña y sesgo de selección), una **lista de espera** de postulaciones en curso pasadas la ventana típica de primera respuesta, y **días medianos por etapa** (Postulado → Respondido → Entrevista → Oferta), con las filas lentas censuradas por la derecha para que no sesguen las medianas. Solo lectura y sin tokens; lee solo tu propio seguimiento.
+
+### Notas
+- Nuevo `GET /api/stats/funnel` (degradación suave a `{available:false}` sin el script). +18 claves i18n ×17. Pruebas: `tests/stats-funnel-route.test.mjs` (+2). Suite: **2481**.
+
 ## [1.184.0] — 2026-08-14
 
 **Corregido (UI) — los mosaicos de acción rápida del Panel ahora se alinean en una cuadrícula pareja.**

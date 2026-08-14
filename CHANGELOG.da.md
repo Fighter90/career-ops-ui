@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.185.0] — 2026-08-14
+
+**Tilføjet (statistik) — en "Tragt og hastighed"-fane: hvordan din tragt sammenlignes med markedet, og hvor hurtigt du bevæger dig mellem trin.**
+
+### Tilføjet
+- En ny **Tragt og hastighed**-fane i **Statistik** viser dine **svar**- og **samtale**-rater ved siden af markedets benchmark-intervaller (med forbeholdene om lille stikprøve og udvælgelsesbias), en **venteliste** over igangværende ansøgninger ud over det typiske første-svar-vindue, og **mediandage pr. trin** (Ansøgt → Svaret → Samtale → Tilbud) — langsomme rækker højrecensureres, så de ikke skævvrider medianerne. Skrivebeskyttet og nul tokens; læser kun din egen tracker.
+
+### Noter
+- Ny `GET /api/stats/funnel` (blød fallback til `{available:false}` uden scriptet). +18 i18n-nøgler ×17. Tests: `tests/stats-funnel-route.test.mjs` (+2). Suite: **2481**.
+
 ## [1.184.0] — 2026-08-14
 
 **Rettet (UI) — Dashboardets hurtighandlingsfliser flugter nu i et jævnt gitter.**

@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.185.0] — 2026-08-14
+
+**Hinzugefügt (Statistik) — ein Tab "Funnel & Tempo": wie sich dein Funnel mit dem Markt vergleicht und wie schnell du zwischen Stufen vorankommst.**
+
+### Hinzugefügt
+- Ein neuer Tab **Funnel & Tempo** in **Statistik** zeigt deine **Antwort**- und **Interview**-Raten neben Markt-Benchmark-Bereichen (mit den Hinweisen zu kleiner Stichprobe und Selektionsbias), eine **Warteliste** laufender Bewerbungen jenseits des typischen Erst-Antwort-Fensters und **Median-Tage pro Stufe** (Beworben → Geantwortet → Interview → Angebot) — langsame Zeilen werden rechtszensiert, damit sie die Mediane nicht verzerren. Schreibgeschützt und ohne Tokens; liest nur deinen eigenen Tracker.
+
+### Hinweise
+- Neuer `GET /api/stats/funnel` (weicher Fallback auf `{available:false}` ohne das Skript). +18 i18n-Schlüssel ×17. Tests: `tests/stats-funnel-route.test.mjs` (+2). Suite: **2481**.
+
 ## [1.184.0] — 2026-08-14
 
 **Behoben (UI) — die Schnellaktions-Kacheln im Dashboard richten sich jetzt in einem gleichmäßigen Raster aus.**

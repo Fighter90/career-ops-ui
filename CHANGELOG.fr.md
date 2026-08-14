@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.185.0] — 2026-08-14
+
+**Ajouté (stats) — un onglet « Entonnoir et vélocité » : comment votre entonnoir se compare au marché et à quelle vitesse vous avancez entre les étapes.**
+
+### Ajouté
+- Un nouvel onglet **Entonnoir et vélocité** dans **Statistiques** affiche vos taux de **réponse** et d'**entretien** à côté des plages de repères du marché (avec les mises en garde petit échantillon et biais de sélection), une **liste d'attente** des candidatures en cours au-delà de la fenêtre habituelle de première réponse, et les **jours médians par étape** (Postulé → Répondu → Entretien → Offre) — les lignes lentes sont censurées à droite pour ne pas biaiser les médianes. Lecture seule et sans tokens ; ne lit que votre propre suivi.
+
+### Notes
+- Nouveau `GET /api/stats/funnel` (repli doux vers `{available:false}` sans le script). +18 clés i18n ×17. Tests : `tests/stats-funnel-route.test.mjs` (+2). Suite : **2481**.
+
 ## [1.184.0] — 2026-08-14
 
 **Corrigé (UI) — les tuiles d'action rapide du Tableau de bord s'alignent désormais sur une grille régulière.**

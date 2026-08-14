@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.185.0] — 2026-08-14
+
+**Eklendi (istatistik) — "Huni ve hız" sekmesi: huniniz piyasayla nasıl kıyaslanıyor ve aşamalar arasında ne kadar hızlı ilerliyorsunuz.**
+
+### Eklendi
+- **İstatistik**'teki yeni **Huni ve hız** sekmesi, piyasa kıyaslama aralıklarının yanında **yanıt** ve **mülakat** oranlarınızı (küçük örneklem ve seçim yanlılığı uyarılarıyla), tipik ilk yanıt penceresini aşan süregelen başvuruların bir **bekleme listesini** ve aşama başına **medyan günü** (Başvuruldu → Yanıtlandı → Mülakat → Teklif) gösterir — yavaş satırlar medyanları saptırmasın diye sağdan sansürlenir. Salt okunur ve sıfır token; yalnızca kendi takipçinizi okur.
+
+### Notlar
+- Yeni `GET /api/stats/funnel` (betik yoksa `{available:false}`'e yumuşak geri dönüş). +18 i18n anahtarı ×17. Testler: `tests/stats-funnel-route.test.mjs` (+2). Takım: **2481**.
+
 ## [1.184.0] — 2026-08-14
 
 **Düzeltildi (arayüz) — Panodaki hızlı işlem kutucukları artık düzgün bir ızgarada hizalanıyor.**

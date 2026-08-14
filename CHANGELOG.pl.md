@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.185.0] — 2026-08-14
+
+**Dodano (statystyki) — zakładka „Lejek i tempo": jak twój lejek wypada na tle rynku i jak szybko przechodzisz między etapami.**
+
+### Dodano
+- Nowa zakładka **Lejek i tempo** w **Statystykach** pokazuje twoje wskaźniki **odpowiedzi** i **rozmów** obok rynkowych zakresów odniesienia (z zastrzeżeniami o małej próbie i błędzie selekcji), **listę oczekujących** aplikacji w toku poza typowym oknem pierwszej odpowiedzi oraz **mediana dni na etap** (Zaaplikowano → Odpowiedź → Rozmowa → Oferta) — wolne wiersze są cenzurowane prawostronnie, by nie zaburzały median. Tylko do odczytu i bez tokenów; czyta wyłącznie twój tracker.
+
+### Uwagi
+- Nowy `GET /api/stats/funnel` (miękki fallback do `{available:false}` bez skryptu). +18 kluczy i18n ×17. Testy: `tests/stats-funnel-route.test.mjs` (+2). Zestaw: **2481**.
+
 ## [1.184.0] — 2026-08-14
 
 **Poprawiono (UI) — kafelki szybkich akcji na Pulpicie układają się teraz w równą siatkę.**

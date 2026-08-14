@@ -41,11 +41,11 @@ test('help-hint.js exposes the primitive and is CSP-safe', () => {
   assert.match(src, /role['"]?\s*:\s*['"]tooltip['"]/, 'popover is role=tooltip');
 });
 
-test('#/stats attaches a `?` hint to every one of the 5 tabs', () => {
+test('#/stats attaches a `?` hint to every one of the 6 tabs', () => {
   const src = read('public/js/views/stats.js');
   const hintKeys = [...src.matchAll(/hint:\s*'(stats\.hint\.[a-z]+)'/g)].map((m) => m[1]);
-  assert.equal(hintKeys.length, 5, `expected 5 tab hint keys, got ${hintKeys.length}: ${hintKeys}`);
-  for (const k of ['stats.hint.market', 'stats.hint.pipeline', 'stats.hint.trend', 'stats.hint.patterns', 'stats.hint.lifetime']) {
+  assert.equal(hintKeys.length, 6, `expected 6 tab hint keys, got ${hintKeys.length}: ${hintKeys}`);
+  for (const k of ['stats.hint.market', 'stats.hint.pipeline', 'stats.hint.trend', 'stats.hint.patterns', 'stats.hint.lifetime', 'stats.hint.funnel']) {
     assert.ok(hintKeys.includes(k), `missing tab hint ${k}`);
   }
   assert.match(src, /HelpHint\.icon\(/, 'stats renders the hint via HelpHint.icon');
@@ -94,7 +94,7 @@ test('every hint key referenced in code is present in the EN dictionary', () => 
     'help.hint.mock', 'help.hint.memory', 'help.hint.funded', 'help.hint.digest',
     'help.hint.scan', 'help.hint.evaluate', 'help.hint.cvStudio', 'help.hint.tracker', 'help.hint.config',
     'help.hint.deep', 'help.hint.batch', 'help.hint.auto', 'help.hint.apply',
-    'stats.hint.market', 'stats.hint.pipeline', 'stats.hint.trend', 'stats.hint.patterns', 'stats.hint.lifetime',
+    'stats.hint.market', 'stats.hint.pipeline', 'stats.hint.trend', 'stats.hint.patterns', 'stats.hint.lifetime', 'stats.hint.funnel',
   ];
   for (const k of keys) {
     assert.match(en, new RegExp(`'${reEsc(k)}':\\s*"`), `EN dict missing ${k}`);
