@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.189.0] — 2026-08-14
+
+**Düzeltildi (tarayıcı) — Roma rakamıyla yazılan kıdem seviyeleri artık Latin olmayan başlıklarda da sayılıyor.**
+
+### Düzeltildi
+- `skip_tiers` arkasındaki kademe sınıflandırıcısı artık **herhangi bir yazı sisteminde** rol kelimesinden sonra gelen Roma rakamı seviye ekini (I / II / III / IV / V) okuyor — "Инженер III", "エンジニア I", "Ingénieur IV" — yalnızca ASCII kelimelerden sonra değil. Önceden Latin olmayan bir kelimeden sonraki seviye rakamı yok sayılıyor ve ilan **mid**'e düşüyordu, bu yüzden `skip_tiers: [senior]` veya `[entry]` onları atlıyordu.
+
+### Notlar
+- `server/lib/classify-tier.mjs` içinde yazı sisteminden bağımsız lookbehind; ölü yinelenen `Sr.` eşleştiricisi kaldırıldı. `tests/classify-tier.test.mjs` (+1). Takım: **2498**.
+
+
 ## [1.188.0] — 2026-08-14
 
 **Düzeltildi (UI) — birincil eylem düğmeleri artık sayfa alt başlığına yapışık durmuyor.**

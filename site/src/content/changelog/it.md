@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.189.0] — 2026-08-14
+
+**Corretto (scanner) — i livelli di anzianità scritti in numeri romani ora contano anche nei titoli non latini.**
+
+### Corretto
+- Il classificatore di livello dietro `skip_tiers` ora legge un suffisso di livello in numeri romani (I / II / III / IV / V) dopo la parola del ruolo in **qualsiasi scrittura** — "Инженер III", "エンジニア I", "Ingénieur IV" — non solo dopo parole ASCII. Prima, un numero di livello dopo una parola non latina veniva ignorato e l'offerta cadeva su **mid**, quindi `skip_tiers: [senior]` o `[entry]` le mancava.
+
+### Note
+- Lookbehind indipendente dalla scrittura in `server/lib/classify-tier.mjs`; rimosso un matcher `Sr.` duplicato morto. `tests/classify-tier.test.mjs` (+1). Suite: **2498**.
+
+
 ## [1.188.0] — 2026-08-14
 
 **Corretto (UI) — i pulsanti d'azione principali non sono più attaccati al sottotitolo della pagina.**

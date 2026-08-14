@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.189.0] — 2026-08-14
+
+**Fixed (scanner) — seniority levels written as roman numerals now count on non-Latin titles too.**
+
+### Fixed
+- The tier classifier behind `skip_tiers` now reads a roman-numeral level suffix (I / II / III / IV / V) after a role word in **any script** — "Инженер III", "エンジニア I", "Ingénieur IV" — not only after ASCII words. Before, a level numeral following a non-Latin word was ignored and the posting fell back to **mid**, so `skip_tiers: [senior]` or `[entry]` missed those listings. The match now also lands on the numeral itself, keeping leftmost-marker classification honest.
+
+### Notes
+- Script-agnostic lookbehind in `server/lib/classify-tier.mjs`; removed a dead duplicate `Sr.` matcher. `tests/classify-tier.test.mjs` (+1: non-Latin numerals). Suite: **2498**.
+
+
 ## [1.188.0] — 2026-08-14
 
 **Fixed (UI) — lead action buttons no longer sit flush against the page subtitle.**

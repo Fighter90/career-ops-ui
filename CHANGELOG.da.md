@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.189.0] — 2026-08-14
+
+**Rettet (scanner) — senioritetsniveauer skrevet med romertal tæller nu også på ikke-latinske titler.**
+
+### Rettet
+- Tier-klassifikatoren bag `skip_tiers` læser nu et niveausuffiks i romertal (I / II / III / IV / V) efter jobordet i **enhver skrift** — "Инженер III", "エンジニア I", "Ingénieur IV" — ikke kun efter ASCII-ord. Før blev et niveautal efter et ikke-latinsk ord ignoreret, og opslaget faldt til **mid**, så `skip_tiers: [senior]` eller `[entry]` overså dem.
+
+### Noter
+- Skrift-uafhængig lookbehind i `server/lib/classify-tier.mjs`; fjernede en død dublet-`Sr.`-matcher. `tests/classify-tier.test.mjs` (+1). Suite: **2498**.
+
+
 ## [1.188.0] — 2026-08-14
 
 **Rettet (UI) — de primære handlingsknapper sidder ikke længere klods op ad sideundertitlen.**

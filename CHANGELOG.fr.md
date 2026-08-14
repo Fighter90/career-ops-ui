@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.189.0] — 2026-08-14
+
+**Corrigé (scanner) — les niveaux d'ancienneté en chiffres romains comptent désormais aussi sur les titres non latins.**
+
+### Corrigé
+- Le classificateur de niveau derrière `skip_tiers` lit maintenant un suffixe de niveau en chiffres romains (I / II / III / IV / V) après le mot du poste dans **n'importe quelle écriture** — « Инженер III », « エンジニア I », « Ingénieur IV » — pas seulement après des mots ASCII. Avant, un chiffre de niveau après un mot non latin était ignoré et l'offre retombait sur **mid**, donc `skip_tiers: [senior]` ou `[entry]` les manquait.
+
+### Notes
+- Lookbehind indépendant de l'écriture dans `server/lib/classify-tier.mjs` ; suppression d'un matcher `Sr.` en double mort. `tests/classify-tier.test.mjs` (+1). Suite : **2498**.
+
+
 ## [1.188.0] — 2026-08-14
 
 **Corrigé (UI) — les boutons d'action principaux ne collent plus au sous-titre de la page.**

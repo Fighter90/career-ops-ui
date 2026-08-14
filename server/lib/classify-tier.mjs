@@ -30,21 +30,24 @@ export function classifyTier(title) {
     { pattern: /\bstaff\b/i, tier: 'senior', weight: 4 },
     { pattern: /\blead\b/i, tier: 'senior', weight: 4 },
     { pattern: /\bsenior\b/i, tier: 'senior', weight: 4 },
-    { pattern: /\bsr\b/i, tier: 'senior', weight: 4 },
-    { pattern: /\bsr\./i, tier: 'senior', weight: 4 },
+    { pattern: /\bsr\b/i, tier: 'senior', weight: 4 }, // also matches "Sr." (\b fires before the dot)
     { pattern: /\bhead\s+of\b/i, tier: 'senior', weight: 4 },
-    { pattern: /\b[a-z]{2,}[\s-](iii|iv|v)\b/i, tier: 'senior', weight: 4 },
+    // Roman-numeral level tokens. The lookbehind requires a preceding space or
+    // hyphen — SCRIPT-AGNOSTIC, so "Engineer III" AND "Инженер III" / "エンジニア III"
+    // / "Ingénieur III" all match — and positions the match at the numeral itself
+    // (not at some ASCII word before it) so LEFTMOST comparison stays honest.
+    { pattern: /(?<=[\s-])(iii|iv|v)\b/i, tier: 'senior', weight: 4 },
 
     { pattern: /\bmid-level\b/i, tier: 'mid', weight: 3 },
     { pattern: /\bmid\b/i, tier: 'mid', weight: 3 },
-    { pattern: /\b[a-z]{2,}[\s-](ii)\b/i, tier: 'mid', weight: 3 },
+    { pattern: /(?<=[\s-])(ii)\b/i, tier: 'mid', weight: 3 },
     { pattern: /\b(l4|l5)\b/i, tier: 'mid', weight: 3 },
 
     { pattern: /\bentry-level\b/i, tier: 'entry', weight: 2 },
     { pattern: /\bentry\b/i, tier: 'entry', weight: 2 },
     { pattern: /\bassociate\b/i, tier: 'entry', weight: 2 },
     { pattern: /\bjunior\b/i, tier: 'entry', weight: 2 },
-    { pattern: /\b[a-z]{2,}[\s-](i)\b/i, tier: 'entry', weight: 2 },
+    { pattern: /(?<=[\s-])(i)\b/i, tier: 'entry', weight: 2 },
     { pattern: /\b(l1|l2)\b/i, tier: 'entry', weight: 2 },
 
     { pattern: /\binternship\b/i, tier: 'intern', weight: 1 },
