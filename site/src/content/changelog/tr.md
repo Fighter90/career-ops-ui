@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.193.0] — 2026-08-14
+
+**Eklendi (istatistikler) — hatırlatmaya değer mülakatları öne çıkaran bir "Mülakat sonrası sessizlik" sekmesi.**
+
+### Eklendi
+- `#/stats` içinde bir **Mülakat sonrası sessizlik** sekmesi: bir nezaket penceresini (varsayılan 30 gün) aşarak sessizleşen mülakatlar, aktif mülakatlarını ve takip panonu birleştirir — her birinin ne kadar süredir sessiz olduğu, son mülakat tarihi ve nedeniyle. Nazik bir hatırlatma/kapatma listesi; yalnızca öneri, asla bir ret iddiası değil. Token yok.
+
+### Notlar
+- Yeni `GET /api/stats/rejection-latency` rotası (fail-soft `{available:false}`). `tests/stats-rejection-latency-route.test.mjs` (+2). +10 i18n anahtarı ×17; `#/stats` help-hint 7→8 sekme. Takım: **2510**.
+
+
 ## [1.192.0] — 2026-08-14
 
 **Eklendi (cv-studio) — hiç sahip olmadığın sayıları yakalayan bir "CV'nizin gerçeklerini denetleyin" kapısı.**

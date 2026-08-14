@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.193.0] — 2026-08-14
+
+**Aggiunto (statistiche) — una scheda "Silenzio dopo il colloquio" che fa emergere i colloqui da sollecitare.**
+
+### Aggiunto
+- Una scheda **Silenzio dopo il colloquio** in `#/stats`: colloqui rimasti in silenzio oltre una finestra di cortesia (30 giorni di default), unendo i tuoi colloqui attivi e il tracker — con da quanto ciascuno è in silenzio, la data dell'ultimo colloquio e il motivo. Un elenco gentile di sollecito/chiusura; solo suggerimenti, mai un'affermazione di rifiuto. Senza token.
+
+### Note
+- Nuova rotta `GET /api/stats/rejection-latency` (fail-soft `{available:false}`). `tests/stats-rejection-latency-route.test.mjs` (+2). +10 chiavi i18n ×17; help-hint di `#/stats` da 7→8 schede. Suite: **2510**.
+
+
 ## [1.192.0] — 2026-08-14
 
 **Aggiunto (cv-studio) — un controllo "Verifica i fatti del tuo CV" che scova numeri che non hai mai avuto.**

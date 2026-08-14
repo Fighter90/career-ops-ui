@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.193.0] — 2026-08-14
+
+**Adicionado (estatísticas) — uma aba "Silêncio após a entrevista" que revela entrevistas que merecem um lembrete.**
+
+### Adicionado
+- Uma aba **Silêncio após a entrevista** em `#/stats`: entrevistas que ficaram em silêncio além de uma janela de cortesia (30 dias por padrão), unindo suas entrevistas ativas e o tracker — com há quanto cada uma está em silêncio, a data da última entrevista e o motivo. Uma lista suave de lembrete/fechamento; apenas sugestões, nunca afirma rejeição. Sem tokens.
+
+### Notas
+- Nova rota `GET /api/stats/rejection-latency` (fail-soft `{available:false}`). `tests/stats-rejection-latency-route.test.mjs` (+2). +10 chaves i18n ×17; help-hint de `#/stats` de 7→8 abas. Suíte: **2510**.
+
+
 ## [1.192.0] — 2026-08-14
 
 **Adicionado (cv-studio) — um controle "Verifique os fatos do seu CV" que pega números que você nunca teve.**

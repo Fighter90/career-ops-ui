@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.193.0] — 2026-08-14
+
+**Added (stats) — a "Silent after interview" tab that surfaces interviews worth a nudge.**
+
+### Added
+- A **Silent after interview** tab in `#/stats`: interviews that have gone quiet past a courtesy window (default 30 days), joining your active interviews and tracker — with how long each has been silent, the last interview date, and the reason. A gentle nudge / closure list; suggestion-only, never a rejection claim. Zero-token.
+
+### Notes
+- New `GET /api/stats/rejection-latency` relay (fail-soft `{available:false}` when the parent script is absent). `tests/stats-rejection-latency-route.test.mjs` (+2). +10 i18n keys ×17; `#/stats` help-hint bumped 7→8 tabs. Suite: **2510**.
+
+
 ## [1.192.0] — 2026-08-14
 
 **Added (cv-studio) — a "Fact-check your CV" gate that catches numbers you never actually had.**

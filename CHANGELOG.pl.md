@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.193.0] — 2026-08-14
+
+**Dodano (statystyki) — zakładka „Cisza po rozmowie", która pokazuje rozmowy warte przypomnienia.**
+
+### Dodano
+- Zakładka **Cisza po rozmowie** w `#/stats`: rozmowy, które ucichły po oknie grzecznościowym (domyślnie 30 dni), łącząc aktywne rozmowy i tracker — z tym, jak długo każda milczy, datą ostatniej rozmowy i powodem. Łagodna lista przypomnień/domknięć; tylko sugestie, nigdy twierdzenie o odmowie. Bez tokenów.
+
+### Uwagi
+- Nowa trasa `GET /api/stats/rejection-latency` (fail-soft `{available:false}`). `tests/stats-rejection-latency-route.test.mjs` (+2). +10 kluczy i18n ×17; help-hint `#/stats` z 7→8 zakładek. Zestaw: **2510**.
+
+
 ## [1.192.0] — 2026-08-14
 
 **Dodano (cv-studio) — zabezpieczenie „Sprawdź fakty w swoim CV", które wychwytuje liczby, których nigdy nie miałeś.**
