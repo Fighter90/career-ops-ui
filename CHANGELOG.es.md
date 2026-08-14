@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.190.0] — 2026-08-14
+
+**Añadido (tracker) — un panel "Historial de empresa" que te dice qué empresas realmente te responden.**
+
+### Añadido
+- Una tarjeta **Historial de empresa** en `#/tracker`: elige una empresa y obtén evidencia de solo lectura — cómo de receptiva ha sido contigo (**en silencio contigo** / **mixto** / **respondió antes**) y si el mismo puesto se **republica** — combinando tu tracker, seguimientos e historial de escaneo. Sin tokens; nunca se llama al escáner del proyecto.
+
+### Notas
+- Nueva ruta `GET /api/stats/company-history[?company=]` (fail-soft `{available:false}`). `tests/stats-company-history-route.test.mjs` (+3). +18 claves i18n ×17. Suite: **2501**.
+
+
 ## [1.189.0] — 2026-08-14
 
 **Corregido (escáner) — los niveles de antigüedad en números romanos ahora cuentan también en títulos no latinos.**

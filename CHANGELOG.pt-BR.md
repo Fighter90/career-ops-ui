@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.190.0] — 2026-08-14
+
+**Adicionado (tracker) — um painel "Histórico da empresa" que mostra quais empresas realmente respondem.**
+
+### Adicionado
+- Um cartão **Histórico da empresa** em `#/tracker`: escolha uma empresa e veja evidência somente-leitura — quão responsiva ela foi com você (**em silêncio com você** / **misto** / **respondeu antes**) e se a mesma vaga é **republicada** — juntando seu tracker, follow-ups e histórico de scan. Sem tokens; o scanner do projeto nunca é chamado.
+
+### Notas
+- Nova rota `GET /api/stats/company-history[?company=]` (fail-soft `{available:false}`). `tests/stats-company-history-route.test.mjs` (+3). +18 chaves i18n ×17. Suíte: **2501**.
+
+
 ## [1.189.0] — 2026-08-14
 
 **Corrigido (scanner) — níveis de senioridade em algarismos romanos agora contam também em títulos não latinos.**

@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.190.0] — 2026-08-14
+
+**Tilføjet (tracker) — et "Virksomhedshistorik"-panel, der viser hvilke virksomheder der faktisk svarer dig.**
+
+### Tilføjet
+- Et **Virksomhedshistorik**-kort på `#/tracker`: vælg en virksomhed og få skrivebeskyttet bevis — hvor lydhør den har været over for dig (**tavs over for dig** / **blandet** / **har svaret før**) og om den samme stilling bliver **genopslået** — samlet fra din tracker, opfølgninger og scan-historik. Ingen tokens; scanneren kaldes aldrig.
+
+### Noter
+- Ny `GET /api/stats/company-history[?company=]`-rute (fail-soft `{available:false}`). `tests/stats-company-history-route.test.mjs` (+3). +18 i18n-nøgler ×17. Suite: **2501**.
+
+
 ## [1.189.0] — 2026-08-14
 
 **Rettet (scanner) — senioritetsniveauer skrevet med romertal tæller nu også på ikke-latinske titler.**

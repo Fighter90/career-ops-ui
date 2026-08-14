@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.190.0] — 2026-08-14
+
+**Added (tracker) — a "Company history" panel that tells you which companies actually answer you.**
+
+### Added
+- A **Company history** card on `#/tracker`: pick a company and get read-only evidence — how responsive it has been to you (**silent on you** / **mixed** / **responded before**) and whether the same role keeps getting **reposted** — joined from your tracker, follow-ups, and scan history. Zero-token; the parent scanner is never called.
+
+### Notes
+- New `GET /api/stats/company-history[?company=]` relay (fail-soft `{available:false}` when the parent script is absent). `tests/stats-company-history-route.test.mjs` (+3). +18 i18n keys ×17. Suite: **2501**.
+
+
 ## [1.189.0] — 2026-08-14
 
 **Fixed (scanner) — seniority levels written as roman numerals now count on non-Latin titles too.**

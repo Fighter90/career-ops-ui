@@ -7,16 +7,16 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2498%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2501%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.189.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.189.0)
+[![release](https://img.shields.io/badge/release-v1.190.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.190.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.189.0** — **`skip_tiers` тепер розуміє будь-яку мову** — класифікатор грейду читає римські цифри (I/II/III/IV/V) після слова посади в будь-якій писемності («Инженер III», «エンジニア I», «Ingénieur IV»), а не лише після ASCII-слів; раніше вони падали в «mid» і проходили повз `skip_tiers`. **2498 тестів.**
+> **🆕 Останній реліз — v1.190.0** — **Які компанії реально вам відповідають?** — нова панель **Історія компанії** на `#/tracker`: виберіть компанію й побачите, чи мовчить вона у відповідь, змішано чи відповідала раніше — і чи переоприлюднюється та сама вакансія — з трекера, follow-up та історії сканів. **2501 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

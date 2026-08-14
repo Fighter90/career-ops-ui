@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.190.0] — 2026-08-14
+
+**Eklendi (takip panosu) — hangi şirketlerin sana gerçekten yanıt verdiğini gösteren bir "Şirket geçmişi" paneli.**
+
+### Eklendi
+- `#/tracker` üzerinde bir **Şirket geçmişi** kartı: bir şirket seç ve salt okunur kanıt al — sana ne kadar yanıt verdiği (**sana karşı sessiz** / **karışık** / **daha önce yanıt verdi**) ve aynı ilanın tekrar tekrar **yayınlanıp** yayınlanmadığı — takip panonu, takip mesajlarını ve tarama geçmişini birleştirerek. Token yok; tarayıcı hiç çağrılmaz.
+
+### Notlar
+- Yeni `GET /api/stats/company-history[?company=]` rotası (fail-soft `{available:false}`). `tests/stats-company-history-route.test.mjs` (+3). +18 i18n anahtarı ×17. Takım: **2501**.
+
+
 ## [1.189.0] — 2026-08-14
 
 **Düzeltildi (tarayıcı) — Roma rakamıyla yazılan kıdem seviyeleri artık Latin olmayan başlıklarda da sayılıyor.**

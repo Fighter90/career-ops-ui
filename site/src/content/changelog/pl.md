@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.190.0] — 2026-08-14
+
+**Dodano (tracker) — panel „Historia firmy", który pokazuje, które firmy naprawdę Ci odpowiadają.**
+
+### Dodano
+- Karta **Historia firmy** na `#/tracker`: wybierz firmę i zobacz dowody tylko do odczytu — jak bardzo Ci odpowiadała (**milczy wobec Ciebie** / **mieszane** / **odpowiedziała wcześniej**) i czy to samo stanowisko jest **publikowane ponownie** — łącząc tracker, follow-upy i historię skanów. Bez tokenów; skaner nie jest wywoływany.
+
+### Uwagi
+- Nowa trasa `GET /api/stats/company-history[?company=]` (fail-soft `{available:false}`). `tests/stats-company-history-route.test.mjs` (+3). +18 kluczy i18n ×17. Zestaw: **2501**.
+
+
 ## [1.189.0] — 2026-08-14
 
 **Naprawiono (skaner) — poziomy stażu zapisane cyframi rzymskimi liczą się teraz także w tytułach niełacińskich.**
