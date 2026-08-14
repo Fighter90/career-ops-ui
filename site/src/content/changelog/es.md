@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.182.0] — 2026-08-14
+
+**Corregido (escáner) — los rangos salariales ahora se leen igual en todos los idiomas.**
+
+### Corregido
+- Las cifras de salario en las filas de escaneo y seguimiento usan los símbolos neutrales **≥** y **≤** (p. ej. `≥ 120000 EUR`, `≤ 90000`) en lugar de las palabras inglesas "from" / "up to", que se filtraban sin traducir a interfaces no inglesas. Se aplica a cada tablero con rango de un solo lado (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); los rangos de dos lados (`100000–150000 USD`) ya eran neutrales.
+
+### Notas
+- Solo visualización — el filtro de salario del cliente analiza los números sin importar el prefijo, así que el filtrado no cambia. Suite: **2471**.
+
 ## [1.181.0] — 2026-08-14
 
 **Añadido (escáner) — los tableros de Getro ahora muestran salario, todas las ubicaciones y puestos remotos.**

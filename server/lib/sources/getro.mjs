@@ -164,8 +164,8 @@ export function getroSalary(job) {
   const currency = typeof job?.compensation_currency === 'string' ? job.compensation_currency.trim().toUpperCase() : '';
   const cur = currency ? ` ${currency}` : '';
   if (min != null && max != null) return `${Math.min(min, max)}–${Math.max(min, max)}${cur}`;
-  if (min != null) return `from ${min}${cur}`;
-  return `up to ${max}${cur}`;
+  if (min != null) return `≥ ${min}${cur}`;
+  return `≤ ${max}${cur}`;
 }
 
 /**
