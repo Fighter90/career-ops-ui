@@ -1,21 +1,20 @@
 #!/usr/bin/env bash
 # Shared advisory AI-review API call for .github/workflows/ai-review.yml.
 #
-# Reads the prompt from $1 (a file) and prints ONLY the review text to stdout
-# (the caller posts stdout verbatim as a public commit/PR comment). All failure
-# diagnostics — HTTP codes, raw error bodies — go to STDERR (the workflow log,
-# where GitHub masks registered secrets), never to stdout.
+# Reads the prompt from $1 (a file) and prints ONLY a real review to stdout. On
+# ANY failure or skip (no key, bad JSON, non-200, empty response) it prints
+# NOTHING to stdout and logs the reason to STDERR (the workflow log, where
+# GitHub masks registered secrets). The caller posts a comment only when stdout
+# is non-empty — so a failed/skipped review is silent, not a noisy comment.
 #
 # Provider preference:
 #   1. OpenRouter  — when OPENROUTER_API_KEY is set. Cheap + fast; the model is
 #      OPENROUTER_REVIEW_MODEL (repo variable) or a cheap default. OpenAI-compatible
 #      chat/completions API. NOTE: this sends the diff to OpenRouter's chosen upstream.
 #   2. Anthropic   — fallback when only ANTHROPIC_API_KEY is set.
-#   3. neither     — prints a skip notice.
+#   3. neither     — silent skip (stderr note only).
 #
-# Fail-SOFT throughout: on any error it prints a short generic notice to stdout
-# and exits 0, so the caller posts that and the workflow stays green (ci.yml is
-# the hard gate, never this advisory review). jq is preinstalled on ubuntu-latest.
+# Always exits 0 (advisory; ci.yml is the hard gate). jq is preinstalled on ubuntu-latest.
 set -uo pipefail
 
 PROMPT_FILE="${1:?prompt file required}"
@@ -28,7 +27,7 @@ if [ -n "${OPENROUTER_API_KEY:-}" ]; then
   # jq -Rs slurps the whole prompt file as one JSON string, escaping the diff.
   jq -Rs --arg m "$MODEL" '{model:$m,max_tokens:1500,messages:[{role:"user",content:.}]}' \
     "$PROMPT_FILE" > "$REQ"
-  jq -e . "$REQ" >/dev/null 2>&1 || { echo "(could not build request JSON — fail-soft)"; exit 0; }
+  jq -e . "$REQ" >/dev/null 2>&1 || { echo "AI review: could not build request JSON — skipping" >&2; exit 0; }
   HTTP=$(curl -sS -o "$RESP" -w '%{http_code}' --max-time 120 \
     https://openrouter.ai/api/v1/chat/completions \
     -H "Authorization: Bearer ${OPENROUTER_API_KEY}" \
@@ -37,8 +36,7 @@ if [ -n "${OPENROUTER_API_KEY:-}" ]; then
     -H "X-Title: career-ops-ui AI review" \
     --data-binary @"$REQ" || echo "000")
   if [ "$HTTP" != "200" ]; then
-    { echo "OpenRouter AI review failed — HTTP $HTTP:"; head -c 500 "$RESP" 2>/dev/null; echo; } >&2
-    echo "(OpenRouter AI review unavailable — HTTP $HTTP; see the workflow log)"
+    { echo "AI review: OpenRouter HTTP $HTTP — skipping (no comment):"; head -c 500 "$RESP" 2>/dev/null; echo; } >&2
     exit 0
   fi
   # content, else the model/provider error message, else empty. Never the raw body.
@@ -49,7 +47,7 @@ fi
 if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
   jq -Rs '{model:"claude-opus-4-7",max_tokens:1500,messages:[{role:"user",content:.}]}' \
     "$PROMPT_FILE" > "$REQ"
-  jq -e . "$REQ" >/dev/null 2>&1 || { echo "(could not build request JSON — fail-soft)"; exit 0; }
+  jq -e . "$REQ" >/dev/null 2>&1 || { echo "AI review: could not build request JSON — skipping" >&2; exit 0; }
   HTTP=$(curl -sS -o "$RESP" -w '%{http_code}' --max-time 120 \
     https://api.anthropic.com/v1/messages \
     -H "x-api-key: ${ANTHROPIC_API_KEY}" \
@@ -57,13 +55,12 @@ if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
     -H "content-type: application/json" \
     --data-binary @"$REQ" || echo "000")
   if [ "$HTTP" != "200" ]; then
-    { echo "Anthropic AI review failed — HTTP $HTTP:"; head -c 500 "$RESP" 2>/dev/null; echo; } >&2
-    echo "(Anthropic AI review unavailable — HTTP $HTTP; see the workflow log)"
+    { echo "AI review: Anthropic HTTP $HTTP — skipping (no comment):"; head -c 500 "$RESP" 2>/dev/null; echo; } >&2
     exit 0
   fi
   jq -r '([.content[]? | select(.type=="text") | .text] | join("")) // .error.message // ""' "$RESP" 2>/dev/null
   exit 0
 fi
 
-echo "(no OPENROUTER_API_KEY or ANTHROPIC_API_KEY set — AI review skipped; advisory only, ci.yml still gates)"
+echo "AI review: no OPENROUTER_API_KEY or ANTHROPIC_API_KEY set — skipping (advisory; ci.yml still gates)" >&2
 exit 0

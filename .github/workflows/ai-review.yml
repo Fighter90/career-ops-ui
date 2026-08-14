@@ -193,7 +193,8 @@ jobs:
           # never a non-zero exit).
           REVIEW="$(bash .github/scripts/ai-review-call.sh /tmp/prompt.txt)"
           if [ -z "$REVIEW" ]; then
-            REVIEW="(model returned no text)"
+            echo "AI review empty (provider failed or skipped) — not posting a comment."
+            exit 0
           fi
 
           # Post as a commit comment (advisory). Fail-soft on any error.
@@ -271,7 +272,7 @@ jobs:
             cat /tmp/pr.diff
           } > /tmp/prompt.txt
           REVIEW="$(bash .github/scripts/ai-review-call.sh /tmp/prompt.txt)"
-          if [ -z "$REVIEW" ]; then REVIEW="(model returned no text)"; fi
+          if [ -z "$REVIEW" ]; then echo "AI review empty (provider failed or skipped) — not posting."; exit 0; fi
           BODY=$(printf '🤖 **AI review — advisory** (CLAUDE.md bar; ci.yml is the hard gate)\n\n%s\n\n_Posted by the AI Review workflow. Maintainers retain merge authority._' "$REVIEW")
           if gh api -X POST "repos/${REPO}/issues/${PR_NUMBER}/comments" -f body="$BODY" >/dev/null 2>&1; then
             echo "✓ AI review posted to PR #${PR_NUMBER}"
