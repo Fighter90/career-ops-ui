@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.192.0] — 2026-08-14
+
+**Ajouté (cv-studio) — un garde-fou « Vérifiez les faits de votre CV » qui attrape les chiffres que vous n'avez jamais eus.**
+
+### Ajouté
+- Une carte **Vérifiez les faits de votre CV** dans `#/cv-studio` : collez un CV ou une lettre adaptés et vérifiez chaque métrique et fait affirmé par rapport à vos vrais CV, profil et two-pager. Vous obtenez un verdict **pass / warn / block** plus les métriques inventées, les faits non étayés et les phrases interdites / d'avertissement exactes. Sans LLM ; rien n'est écrit.
+
+### Notes
+- Nouvelle route `POST /api/cv-studio/verify-facts` : écrit le texte dans un fichier temporaire jetable et lance `verify-cv-facts.mjs`, en se fiant au verdict JSON même si le script sort en 1 sur un block. `tests/cv-studio-verify-facts-route.test.mjs` (+4). +15 clés i18n ×17. Suite : **2508**.
+
+
 ## [1.191.0] — 2026-08-14
 
 **Ajouté (stats) — un onglet « Quoi apprendre ensuite » qui classe les compétences à apprendre en priorité.**

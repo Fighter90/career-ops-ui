@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.192.0] — 2026-08-14
+
+**Añadido (cv-studio) — un control "Verifica los datos de tu CV" que caza números que nunca tuviste.**
+
+### Añadido
+- Una tarjeta **Verifica los datos de tu CV** en `#/cv-studio`: pega un CV o carta adaptados y comprueba cada métrica y dato afirmado contra tu CV, perfil y two-pager reales. Obtienes un veredicto **pass / warn / block** más las métricas inventadas, los datos sin respaldo y las frases prohibidas / de advertencia exactas. Sin LLM; no se escribe nada.
+
+### Notas
+- Nueva ruta `POST /api/cv-studio/verify-facts`: escribe el texto en un archivo temporal desechable y ejecuta `verify-cv-facts.mjs`, confiando en el veredicto JSON aunque el script salga con 1 en un block. `tests/cv-studio-verify-facts-route.test.mjs` (+4). +15 claves i18n ×17. Suite: **2508**.
+
+
 ## [1.191.0] — 2026-08-14
 
 **Añadido (estadísticas) — una pestaña "Qué aprender a continuación" que ordena las habilidades a aprender primero.**

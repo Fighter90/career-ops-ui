@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.192.0] — 2026-08-14
+
+**Aggiunto (cv-studio) — un controllo "Verifica i fatti del tuo CV" che scova numeri che non hai mai avuto.**
+
+### Aggiunto
+- Una scheda **Verifica i fatti del tuo CV** in `#/cv-studio`: incolla un CV o una lettera su misura e verifica ogni metrica e fatto rispetto al tuo CV, profilo e two-pager reali. Ottieni un verdetto **pass / warn / block** più le metriche inventate, i fatti non supportati e le frasi vietate / di avviso esatte. Senza LLM; non viene scritto nulla.
+
+### Note
+- Nuova rotta `POST /api/cv-studio/verify-facts`: scrive il testo in un file temporaneo usa-e-getta ed esegue `verify-cv-facts.mjs`, fidandosi del verdetto JSON anche se lo script esce con 1 su un block. `tests/cv-studio-verify-facts-route.test.mjs` (+4). +15 chiavi i18n ×17. Suite: **2508**.
+
+
 ## [1.191.0] — 2026-08-14
 
 **Aggiunto (statistiche) — una scheda "Cosa imparare dopo" che ordina le competenze da imparare prima.**

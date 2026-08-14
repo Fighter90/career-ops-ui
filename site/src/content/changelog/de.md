@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.192.0] — 2026-08-14
+
+**Hinzugefügt (cv-studio) — ein "Fakten im Lebenslauf prüfen"-Wächter, der Zahlen findet, die du nie hattest.**
+
+### Hinzugefügt
+- Eine **Fakten im Lebenslauf prüfen**-Karte in `#/cv-studio`: füge einen angepassten Lebenslauf oder ein Anschreiben ein und prüfe jede behauptete Kennzahl und Tatsache gegen deinen echten Lebenslauf, dein Profil und den Two-Pager. Du bekommst ein **pass / warn / block**-Urteil plus die genauen erfundenen Kennzahlen, unbelegten Fakten und verbotenen / hinweisenden Phrasen. Kein LLM; nichts wird geschrieben.
+
+### Hinweise
+- Neue Route `POST /api/cv-studio/verify-facts`: schreibt den Text in eine Einweg-Temp-Datei und führt `verify-cv-facts.mjs` aus, wobei sie dem JSON-Urteil vertraut, auch wenn das Skript bei block mit 1 endet. `tests/cv-studio-verify-facts-route.test.mjs` (+4). +15 i18n-Schlüssel ×17. Suite: **2508**.
+
+
 ## [1.191.0] — 2026-08-14
 
 **Hinzugefügt (Statistik) — ein "Was als Nächstes lernen"-Tab, der die zuerst zu lernenden Fähigkeiten rankt.**

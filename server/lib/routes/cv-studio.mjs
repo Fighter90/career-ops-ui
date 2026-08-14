@@ -13,12 +13,16 @@
  * No file writes — the user edits their CV via the existing PUT /api/cv. Live
  * runs use the shared provider cascade; no key → manual prompt (honest).
  */
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { PATHS, path as projPath } from '../paths.mjs';
+import { existsSync, readFileSync, readdirSync, writeFileSync, rmSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { PATHS, path as projPath, PROJECT_ROOT } from '../paths.mjs';
 import { resolveLocale, bundleProjectContext } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
+import { runNodeScript } from '../runner.mjs';
+import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 import { isValidJobUrl } from '../security.mjs';
 import { safeGet } from '../safe-fetch.mjs';
 
@@ -27,6 +31,7 @@ const MAX_SAMPLE = 8 * 1024;     // per writing sample
 const MAX_SAMPLES = 3;           // how many samples to inline
 const MAX_JD = 24 * 1024;        // the target job description to tailor against
 const MAX_HEADLINE = 200;        // optional target-role / headline hint
+const MAX_VERIFY = 64 * 1024;    // the generated document to fact-check (CV + cover letter)
 
 /** Read voice-dna.md + up to N writing samples as a bounded grounding block. */
 export function readVoiceContext() {
@@ -325,5 +330,45 @@ export function registerCvStudioRoutes(app) {
     if (r.mode === 'manual') return res.json({ mode: 'manual', prompt, message: 'No provider available — copy this prompt into any LLM.' });
     if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
     return res.json({ mode: r.mode, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage });
+  });
+
+  // POST /api/cv-studio/verify-facts — a zero-token truthfulness gate. Writes the
+  // client's generated CV / cover-letter text to a throwaway temp file (never the
+  // parent), then runs verify-cv-facts.mjs against it with cv.md + profile +
+  // two-pager as the source of truth, returning a pass / warn / block verdict plus
+  // the exact invented metrics, unsupported facts, and forbidden / warn phrases.
+  // No LLM, no writes to the user's files; the temp dir is removed in a finally.
+  app.post('/api/cv-studio/verify-facts', llmRateLimit, async (req, res) => {
+    const body = req.body || {};
+    const text = (typeof body.text === 'string' ? body.text : '').slice(0, MAX_VERIFY).trim();
+    if (!text) return res.status(400).json({ error: 'no text to verify' });
+    const script = 'verify-cv-facts.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      return res.json({ available: false, reason: 'script-not-found' });
+    }
+    let dir = null;
+    try {
+      dir = mkdtempSync(join(tmpdir(), 'coui-verify-'));
+      const tmp = join(dir, 'candidate.md');
+      writeFileSync(tmp, text, 'utf8');
+      const argv = [tmp, '--source', 'cv.md', '--source', 'config/profile.yml', '--source', 'config/two-pager.yml', '--json'];
+      const r = await runNodeScript(script, argv, { timeoutMs: 30_000 });
+      const data = parseJsonStdout(r.stdout);
+      // verify-cv-facts.mjs exits 1 on a 'block' verdict but still prints the
+      // JSON verdict — a block is a SUCCESSFUL check, not a script error. Trust
+      // the JSON whenever it carries a verdict; fail soft only on timeout or
+      // unparseable output.
+      if (r.killed) {
+        return res.json({ available: false, reason: 'timeout', detail: sanitizeDetail(r.stderr) });
+      }
+      if (!data || typeof data.verdict !== 'string') {
+        return res.json({ available: false, reason: 'script-error', detail: sanitizeDetail(r.stderr) });
+      }
+      return res.json({ available: true, ...data });
+    } catch (e) {
+      return res.json({ available: false, reason: 'script-error', detail: sanitizeDetail(String((e && e.message) || e)) });
+    } finally {
+      if (dir) { try { rmSync(dir, { recursive: true, force: true }); } catch { /* ignore */ } }
+    }
   });
 }

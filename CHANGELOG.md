@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.192.0] — 2026-08-14
+
+**Added (cv-studio) — a "Fact-check your CV" gate that catches numbers you never actually had.**
+
+### Added
+- A **Fact-check your CV** card in `#/cv-studio`: paste a tailored CV or cover letter and check every asserted metric and fact against your real CV, profile, and two-pager. You get a **pass / warn / block** verdict plus the exact invented metrics, unsupported facts, and forbidden / advisory phrases — so a generated résumé can't quietly claim a number that isn't yours. Zero-LLM; nothing is written.
+
+### Notes
+- New `POST /api/cv-studio/verify-facts` relay: writes the text to a throwaway temp file (never your files) and runs `verify-cv-facts.mjs` against it, trusting the JSON verdict even though the script exits 1 on a block. `tests/cv-studio-verify-facts-route.test.mjs` (+4). +15 i18n keys ×17. Suite: **2508**.
+
+
 ## [1.191.0] — 2026-08-14
 
 **Added (stats) — a "What to learn next" tab that ranks the skills worth learning first.**
