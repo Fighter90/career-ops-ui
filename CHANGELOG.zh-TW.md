@@ -8,6 +8,17 @@
 
 ---
 
+## [1.196.0] — 2026-08-14
+
+**修復 (安全) — Workday 轉接器以主機名而非子字串驗證 `api` 端點。**
+
+### 修復
+- `portals.yml` 中的 Workday `api:` 值現在只有在其**主機名**為 `myworkdayjobs.com`（或 `.myworkdayjobs.com` 子網域）時才被接受。舊檢查是子字串比對，因此任何僅包含該字串的 URL——例如 `https://evil.com/?x=myworkdayjobs.com`——都會通過並被當作端點使用。真實的 Workday 端點不受影響。（由 CodeQL 回報，#443。）
+
+### 說明
+- 新增 `isWorkdayApi()` 解析 URL 並檢查主機（`server/lib/portals/adapters/workday.mjs`）。`tests/workday-adapter-endpoint.test.mjs`（+1）。測試套件：**2522**。
+
+
 ## [1.195.0] — 2026-08-14
 
 **效能 (掃描器) — 在大掃描歷史上重複職位偵測依然很快。**

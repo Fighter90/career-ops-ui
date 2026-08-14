@@ -24,15 +24,33 @@ const HOST_PATTERN = /https?:\/\/([^./]+)\.(wd\d+)\.myworkdayjobs\.com(\/[^?#]*)
 // A Workday locale prefix looks like `en-US`, `fr-FR`, `zh-CN`, etc.
 const LOCALE = /^[a-z]{2}-[a-z]{2}$/i;
 
+// True only when `api` is a real Workday API endpoint. The hostname is PARSED
+// and checked (exact `myworkdayjobs.com` or a `.myworkdayjobs.com` subdomain) —
+// not substring-matched — so `https://evil.com/?x=myworkdayjobs.com` and
+// `https://myworkdayjobs.com.evil.com/…` are rejected, and buildEndpoint never
+// hands such a URL back as a fetchable endpoint (#443). Empty / unparseable → false.
+function isWorkdayApi(api) {
+  if (typeof api !== 'string' || !api) return false;
+  try {
+    const u = new URL(api);
+    // http(s) only (mirrors HOST_PATTERN for careers_url) and no embedded
+    // credentials — `https://user:pass@host` would otherwise ride into fetch.
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return false;
+    if (u.username || u.password) return false;
+    const host = u.hostname.toLowerCase();
+    return host === 'myworkdayjobs.com' || host.endsWith('.myworkdayjobs.com');
+  } catch { return false; }
+}
+
 export const workdayAdapter = {
   id: 'workday',
   label: 'Workday',
   matches(company) {
-    if (company.api && company.api.includes('myworkdayjobs.com')) return true;
+    if (isWorkdayApi(company.api)) return true;
     return HOST_PATTERN.test(company.careers_url || '');
   },
   buildEndpoint(company) {
-    if (company.api && company.api.includes('myworkdayjobs.com')) return company.api;
+    if (isWorkdayApi(company.api)) return company.api;
     const m = (company.careers_url || '').match(HOST_PATTERN);
     if (!m) return null;
     // HOST_PATTERN is case-insensitive (hostnames are), but Workday's CXS path

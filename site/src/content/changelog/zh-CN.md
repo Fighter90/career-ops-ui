@@ -9,6 +9,17 @@
 ---
 
 
+## [1.196.0] — 2026-08-14
+
+**修复 (安全) — Workday 适配器按主机名而非子串校验 `api` 端点。**
+
+### 修复
+- `portals.yml` 中的 Workday `api:` 值现在只有在其**主机名**为 `myworkdayjobs.com`（或 `.myworkdayjobs.com` 子域）时才被接受。旧检查是子串匹配，因此任何仅包含该字符串的 URL——例如 `https://evil.com/?x=myworkdayjobs.com`——都会通过并被当作端点使用。真实的 Workday 端点不受影响。（由 CodeQL 报告，#443。）
+
+### 说明
+- 新增 `isWorkdayApi()` 解析 URL 并检查主机（`server/lib/portals/adapters/workday.mjs`）。`tests/workday-adapter-endpoint.test.mjs`（+1）。测试套件：**2522**。
+
+
 ## [1.195.0] — 2026-08-14
 
 **性能 (扫描器) — 在大扫描历史上重复职位检测依然很快。**

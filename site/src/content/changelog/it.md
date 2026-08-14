@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.196.0] — 2026-08-14
+
+**Corretto (sicurezza) — l'adapter Workday valida un endpoint `api` in base al suo hostname, non a una sottostringa.**
+
+### Corretto
+- Un valore `api:` Workday in `portals.yml` ora è accettato solo quando il suo **hostname** è `myworkdayjobs.com` (o un sottodominio `.myworkdayjobs.com`). Il vecchio controllo era una corrispondenza di sottostringa, quindi qualsiasi URL che contenesse soltanto la stringa — es. `https://evil.com/?x=myworkdayjobs.com` — passava e sarebbe stato usato come endpoint. Gli endpoint Workday reali non sono interessati. (Segnalato da CodeQL, #443.)
+
+### Note
+- Il nuovo `isWorkdayApi()` analizza l'URL e verifica l'host (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). Suite: **2522**.
+
+
 ## [1.195.0] — 2026-08-14
 
 **Prestazioni (scanner) — il rilevamento dei repost resta veloce su cronologie di scansione grandi.**

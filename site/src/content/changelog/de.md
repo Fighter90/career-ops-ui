@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.196.0] — 2026-08-14
+
+**Behoben (Sicherheit) — der Workday-Adapter validiert einen `api`-Endpunkt über seinen Hostnamen, nicht über eine Teilzeichenfolge.**
+
+### Behoben
+- Ein Workday-`api:`-Wert in `portals.yml` wird jetzt nur akzeptiert, wenn sein **Hostname** `myworkdayjobs.com` (oder eine `.myworkdayjobs.com`-Subdomain) ist. Die alte Prüfung war ein Teilzeichenfolgen-Match, sodass jede URL, die die Zeichenfolge nur enthielt — z. B. `https://evil.com/?x=myworkdayjobs.com` — durchkam und als Endpunkt verwendet worden wäre. Echte Workday-Endpunkte sind nicht betroffen. (Von CodeQL gemeldet, #443.)
+
+### Hinweise
+- Neues `isWorkdayApi()` parst die URL und prüft den Host (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). Suite: **2522**.
+
+
 ## [1.195.0] — 2026-08-14
 
 **Performance (Scanner) — die Repost-Erkennung bleibt bei großen Scan-Historien schnell.**

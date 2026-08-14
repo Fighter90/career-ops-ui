@@ -9,6 +9,17 @@
 ---
 
 
+## [1.196.0] — 2026-08-14
+
+**修正 (セキュリティ) — Workday アダプターは `api` エンドポイントを部分文字列ではなくホスト名で検証します。**
+
+### 修正
+- `portals.yml` の Workday `api:` 値は、**ホスト名**が `myworkdayjobs.com`（または `.myworkdayjobs.com` サブドメイン）のときだけ受け入れられます。以前は部分文字列一致だったため、文字列を含むだけの URL — 例: `https://evil.com/?x=myworkdayjobs.com` — も通り、エンドポイントとして使われる可能性がありました。実際の Workday エンドポイントは影響なし。（CodeQL 報告、#443。）
+
+### 備考
+- 新しい `isWorkdayApi()` が URL を解析してホストを確認（`server/lib/portals/adapters/workday.mjs`）。`tests/workday-adapter-endpoint.test.mjs`（+1）。スイート: **2522**。
+
+
 ## [1.195.0] — 2026-08-14
 
 **パフォーマンス (スキャナー) — 大きなスキャン履歴でも再掲載検出が速いままです。**

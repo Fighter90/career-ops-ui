@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.196.0] — 2026-08-14
+
+**Düzeltildi (güvenlik) — Workday adaptörü bir `api` uç noktasını alt dize değil, ana bilgisayar adıyla doğrular.**
+
+### Düzeltildi
+- `portals.yml`'deki bir Workday `api:` değeri artık yalnızca **ana bilgisayar adı** `myworkdayjobs.com` (veya `.myworkdayjobs.com` alt alan adı) olduğunda kabul edilir. Eski kontrol bir alt dize eşleşmesiydi, bu yüzden dizeyi yalnızca içeren herhangi bir URL — örn. `https://evil.com/?x=myworkdayjobs.com` — geçiyor ve uç nokta olarak kullanılabiliyordu. Gerçek Workday uç noktaları etkilenmez. (CodeQL tarafından bildirildi, #443.)
+
+### Notlar
+- Yeni `isWorkdayApi()` URL'yi ayrıştırır ve ana bilgisayarı kontrol eder (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). Takım: **2522**.
+
+
 ## [1.195.0] — 2026-08-14
 
 **Performans (tarayıcı) — yeniden yayın tespiti büyük tarama geçmişlerinde hızlı kalıyor.**
