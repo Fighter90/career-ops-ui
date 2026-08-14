@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.192.0] — 2026-08-14
+
+**Tilføjet (cv-studio) — en "Faktatjek dit CV"-gate, der fanger tal, du aldrig har haft.**
+
+### Tilføjet
+- Et **Faktatjek dit CV**-kort i `#/cv-studio`: indsæt et tilpasset CV eller følgebrev og tjek hver påstået måling og faktum mod dit rigtige CV, profil og two-pager. Du får en **pass / warn / block**-dom plus de præcise opdigtede målinger, ubegrundede fakta og forbudte / rådgivende fraser. Ingen LLM; intet gemmes.
+
+### Noter
+- Ny `POST /api/cv-studio/verify-facts`-rute: skriver teksten til en engangs-temp-fil og kører `verify-cv-facts.mjs`, idet den stoler på JSON-dommen, selvom scriptet afslutter med 1 ved block. `tests/cv-studio-verify-facts-route.test.mjs` (+4). +15 i18n-nøgler ×17. Suite: **2508**.
+
+
 ## [1.191.0] — 2026-08-14
 
 **Tilføjet (statistik) — en "Hvad du skal lære næst"-fane, der rangerer de færdigheder, du bør lære først.**

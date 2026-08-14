@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.192.0] — 2026-08-14
+
+**Eklendi (cv-studio) — hiç sahip olmadığın sayıları yakalayan bir "CV'nizin gerçeklerini denetleyin" kapısı.**
+
+### Eklendi
+- `#/cv-studio` içinde bir **CV'nizin gerçeklerini denetleyin** kartı: uyarlanmış bir CV veya ön yazı yapıştırın ve öne sürülen her metriği ve olguyu gerçek CV, profil ve two-pager'ınızla karşılaştırın. **pass / warn / block** kararının yanı sıra tam olarak uydurma metrikleri, desteksiz olguları ve yasak / uyarı ifadelerini alırsınız. LLM yok; hiçbir şey yazılmaz.
+
+### Notlar
+- Yeni `POST /api/cv-studio/verify-facts` rotası: metni tek kullanımlık geçici bir dosyaya yazar ve `verify-cv-facts.mjs`'yi çalıştırır; betik block'ta 1 ile çıksa bile JSON kararına güvenir. `tests/cv-studio-verify-facts-route.test.mjs` (+4). +15 i18n anahtarı ×17. Takım: **2508**.
+
+
 ## [1.191.0] — 2026-08-14
 
 **Eklendi (istatistikler) — önce öğrenilecek becerileri sıralayan bir "Sırada ne öğrenmeli" sekmesi.**

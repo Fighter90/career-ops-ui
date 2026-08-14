@@ -284,5 +284,70 @@ Router.register('cv-studio', async () => {
     gapOut,
   ]));
 
+  // ── 7. Fact-check (truthfulness gate) ──
+  // Zero-LLM: paste a tailored CV / cover letter and check every asserted metric
+  // and fact against your real cv.md + profile + two-pager. Relayed by
+  // POST /api/cv-studio/verify-facts → { verdict: pass|warn|block, invented,
+  // unsupportedFacts, forbidden, warnings }. Nothing is written; suggestions only.
+  const vfIn = c('textarea', {
+    className: 'input', rows: 8, style: { width: '100%', fontFamily: 'inherit' },
+    'data-i18n-placeholder': 'cvs.vfPlaceholder',
+    placeholder: t('cvs.vfPlaceholder', 'Paste the generated CV or cover letter here to fact-check it against your real CV…'),
+    'aria-label': t('cvs.vfTitle', 'Fact-check your CV'),
+  });
+  const vfBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.vfVerify', 'Verify facts'));
+  const vfOut = c('div', { style: { marginTop: '12px' } });
+
+  vfBtn.addEventListener('click', async () => {
+    const text = vfIn.value.trim();
+    if (!text) { UI.toast(t('cvs.vfEmpty', 'Paste some text to fact-check first.'), 'warn'); return; }
+    vfBtn.disabled = true;
+    vfOut.textContent = '';
+    const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.vfChecking', 'Checking every claim against your CV…'));
+    vfOut.appendChild(pending);
+    try {
+      const res = await API.post('/api/cv-studio/verify-facts', { text });
+      pending.remove();
+      if (!res || res.available === false) {
+        vfOut.appendChild(c('p', { style: { color: 'var(--foggy)' } },
+          t('cvs.vfUnavailable', 'Fact-check needs the parent career-ops project (verify-cv-facts.mjs) next to this app.')));
+        return;
+      }
+      const VERDICT = {
+        pass: [t('cvs.vfPass', 'Grounded — every claim traces to your CV, profile, or two-pager.'), 'badge badge-ok'],
+        warn: [t('cvs.vfWarn', 'Advisory — soft phrases worth a second look.'), 'badge badge-warn'],
+        block: [t('cvs.vfBlock', 'Unsupported claims — fix these before you send it.'), 'badge badge-bad'],
+      };
+      const v = VERDICT[res.verdict] || VERDICT.block;
+      const chips = (label, items, tone) => {
+        const list = Array.isArray(items) ? items : [];
+        if (!list.length) return null;
+        return c('div', { style: { margin: '0 0 10px' } }, [
+          c('strong', { style: { color: tone } }, `${label} (${list.length})`),
+          c('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' } },
+            list.map((s) => c('span', { className: 'chip' },
+              String(s && typeof s === 'object' ? `${s.kind || ''}: ${s.value || ''}` : s)))),
+        ]);
+      };
+      vfOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [
+        c('div', { style: { margin: '0 0 8px' } }, c('span', { className: v[1] }, v[0])),
+        chips(t('cvs.vfInvented', 'Metric-like claims not in your sources'), res.invented, 'var(--danger, #d9534f)'),
+        chips(t('cvs.vfUnsupported', 'Facts not in your sources'), res.unsupportedFacts, 'var(--danger, #d9534f)'),
+        chips(t('cvs.vfForbidden', 'Forbidden phrases'), res.forbidden, 'var(--danger, #d9534f)'),
+        chips(t('cvs.vfWarnings', 'Advisory phrases'), res.warnings, 'var(--foggy)'),
+      ].filter(Boolean)));
+    } catch (err) {
+      pending.remove();
+      UI.toast((err && err.message) || t('cvs.vfFailed', 'Could not fact-check the text'), 'error');
+    } finally { vfBtn.disabled = false; }
+  });
+
+  root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '18px 0 8px' } }, [
+    c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('cvs.vfTitle', 'Fact-check your CV')),
+    c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0 0 10px' } },
+      t('cvs.vfHelp', 'Paste a tailored CV or cover letter and check every asserted metric and fact against your real CV, profile, and two-pager. Catches numbers and claims that were not in your sources. Zero-LLM — nothing is written, suggestions only.')),
+    vfIn, c('div', { style: { marginTop: '8px' } }, vfBtn), vfOut,
+  ]));
+
   return root;
 });

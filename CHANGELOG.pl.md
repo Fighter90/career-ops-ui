@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.192.0] — 2026-08-14
+
+**Dodano (cv-studio) — zabezpieczenie „Sprawdź fakty w swoim CV", które wychwytuje liczby, których nigdy nie miałeś.**
+
+### Dodano
+- Karta **Sprawdź fakty w swoim CV** w `#/cv-studio`: wklej dopasowane CV lub list i sprawdź każdą metrykę i fakt względem prawdziwego CV, profilu i two-pagera. Otrzymujesz werdykt **pass / warn / block** plus dokładne wymyślone metryki, niepoparte fakty oraz zabronione / ostrzegawcze frazy. Bez LLM; nic nie jest zapisywane.
+
+### Uwagi
+- Nowa trasa `POST /api/cv-studio/verify-facts`: zapisuje tekst do jednorazowego pliku tymczasowego i uruchamia `verify-cv-facts.mjs`, ufając werdyktowi JSON, mimo że skrypt kończy się kodem 1 przy block. `tests/cv-studio-verify-facts-route.test.mjs` (+4). +15 kluczy i18n ×17. Zestaw: **2508**.
+
+
 ## [1.191.0] — 2026-08-14
 
 **Dodano (statystyki) — zakładka „Czego się dalej uczyć" porządkująca umiejętności do nauki.**
