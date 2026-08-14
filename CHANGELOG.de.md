@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.186.0] — 2026-08-14
+
+**Hinzugefügt (CV Studio) — ein "Skill-Gap"-Panel: welche der geforderten Fähigkeiten einer Stelle dein CV nennt, andeutet oder fehlt.**
+
+### Hinzugefügt
+- Ein neues **Skill-Gap**-Panel in **CV Studio**. Wähle eine gespeicherte Stellenbeschreibung, und es sortiert jede geforderte Fähigkeit in **im CV genannt**, **im CV angedeutet** oder **fehlend** — Wortvergleich ohne LLM, nichts wird geschrieben. Ein Hinweis auf geringe Zuverlässigkeit erscheint, wenn die Stelle keinen klaren Anforderungsabschnitt hatte.
+
+### Hinweise
+- Neuer `GET /api/jds/:name/skill-gap` (der Stellenname wird pfad-bereinigt und unter `jds/` bestätigt, bevor er ein Argument wird; weicher Fallback auf `{available:false}` ohne das Skript). +13 i18n-Schlüssel ×17. Tests: `tests/jds-skill-gap-route.test.mjs` (+4, inkl. Path-Traversal-Ablehnung). Suite: **2485**.
+
 ## [1.185.0] — 2026-08-14
 
 **Hinzugefügt (Statistik) — ein Tab "Funnel & Tempo": wie sich dein Funnel mit dem Markt vergleicht und wie schnell du zwischen Stufen vorankommst.**

@@ -219,5 +219,70 @@ Router.register('cv-studio', async () => {
     addUrlIn, addTextIn, c('div', { style: { marginTop: '8px' } }, addBtn), addOut,
   ]));
 
+  // ── 6. Skill gap vs a saved JD ──
+  // Zero-LLM: which of a saved job description's required skills your CV already
+  // names, only implies, or is missing. Relayed by GET /api/jds/:name/skill-gap.
+  const gapSel = c('select', { className: 'lang-select', style: { minWidth: '220px' }, 'aria-label': t('cvs.gapPick', 'Job description') });
+  const gapBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.gapAnalyze', 'Analyze skill gap'));
+  const gapOut = c('div', { style: { marginTop: '12px' } });
+  let jdList = [];
+  try { ({ jds: jdList } = await API.get('/api/jds')); } catch { jdList = []; }
+  jdList = Array.isArray(jdList) ? jdList : [];
+  for (const jd of jdList) gapSel.appendChild(c('option', { value: jd.name }, jd.name));
+
+  gapBtn.addEventListener('click', async () => {
+    const name = gapSel.value;
+    if (!name) return;
+    gapBtn.disabled = true;
+    gapOut.textContent = '';
+    const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.gapAnalyzing', 'Comparing the JD to your CV…'));
+    gapOut.appendChild(pending);
+    try {
+      const res = await API.get('/api/jds/' + encodeURIComponent(name) + '/skill-gap');
+      pending.remove();
+      if (!res || res.available === false) {
+        gapOut.appendChild(c('p', { style: { color: 'var(--foggy)' } },
+          t('cvs.gapUnavailable', 'Skill-gap analysis needs the parent career-ops project (jd-skill-gap.mjs) next to this app.')));
+        return;
+      }
+      const bucket = (label, items, tone) => {
+        const list = Array.isArray(items) ? items : [];
+        return c('div', { style: { margin: '0 0 10px' } }, [
+          c('strong', { style: { color: tone } }, `${label} (${list.length})`),
+          list.length
+            ? c('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' } },
+              list.map((s) => c('span', { className: 'chip' }, String(s))))
+            : c('span', { style: { color: 'var(--foggy)', marginLeft: '6px' } }, t('cvs.gapNone', 'none')),
+        ]);
+      };
+      gapOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [
+        bucket(t('cvs.gapExisting', 'Named in your CV'), res.existing, 'var(--ok, #2e7d32)'),
+        bucket(t('cvs.gapSupported', 'Implied in your CV'), res.supportedByResume, 'var(--foggy)'),
+        bucket(t('cvs.gapMissing', 'Missing (gap)'), res.gap, 'var(--danger, #d9534f)'),
+        res.lowConfidence
+          ? c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '8px 0 0' } },
+            t('cvs.gapLowConf', 'Low confidence — this JD had no clear requirements section, so the gap list may be noisy.'))
+          : null,
+      ].filter(Boolean)));
+    } catch (err) {
+      pending.remove();
+      UI.toast((err && err.message) || t('cvs.gapFailed', 'Could not analyze the skill gap'), 'error');
+    } finally { gapBtn.disabled = false; }
+  });
+
+  root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '18px 0 8px' } }, [
+    c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('cvs.gapTitle', 'Skill gap vs a job')),
+    c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0 0 10px' } },
+      t('cvs.gapHelp', 'Pick a saved job description and see which of its required skills your CV already names, which it only implies, and which are missing. Zero-LLM — it just compares words, and nothing is written.')),
+    jdList.length
+      ? c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' } }, [
+        c('label', { style: { fontSize: '12px', color: 'var(--foggy)' } }, t('cvs.gapPick', 'Job description')),
+        gapSel, gapBtn,
+      ])
+      : c('p', { style: { color: 'var(--foggy)' } },
+        t('cvs.gapNoJds', 'No saved job descriptions yet. Save one from a scan result or the tailor above, then come back.')),
+    gapOut,
+  ]));
+
   return root;
 });

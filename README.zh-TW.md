@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2481%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2485%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.185.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.185.0)
+[![release](https://img.shields.io/badge/release-v1.186.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.186.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.185.0** — **「漏斗與速度」統計分頁** — 在市場基準旁查看回覆率與面試率、停滯申請的等待清單,以及每階段中位天數——全部來自你自己的追蹤器,唯讀。 **2481 項測試。**
+> **🆕 最新版本 — v1.186.0** — **CV 工作室的「技能差距」面板** — 選擇一份已儲存的職位描述,查看其要求技能中你的履歷已列出、僅隱含或缺失的部分——無 LLM,不寫入任何內容。 **2485 項測試。**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

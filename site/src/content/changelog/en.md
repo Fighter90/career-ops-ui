@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.186.0] — 2026-08-14
+
+**Added (CV Studio) — a "Skill gap" panel: which of a job's required skills your CV names, implies, or is missing.**
+
+### Added
+- A new **Skill gap** panel in **CV Studio**. Pick a saved job description and it sorts each required skill into **named in your CV**, **implied in your CV**, or **missing** — zero-LLM word matching, nothing written. A low-confidence note appears when the job posting had no clear requirements section.
+
+### Notes
+- New `GET /api/jds/:name/skill-gap` (the JD name is path-sanitized and confirmed under `jds/` before it becomes a script arg; fail-soft `{available:false}` without the script). +13 i18n keys ×17. Tests: `tests/jds-skill-gap-route.test.mjs` (+4, incl. path-traversal rejection). Suite: **2485**.
+
 ## [1.185.0] — 2026-08-14
 
 **Added (stats) — a "Funnel & velocity" tab: how your funnel compares to the market and how fast you move between stages.**

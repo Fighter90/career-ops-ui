@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.186.0] — 2026-08-14
+
+**Ajouté (CV Studio) — un panneau « Écart de compétences » : lesquelles des compétences requises d'un poste votre CV nomme, implique ou manque.**
+
+### Ajouté
+- Un nouveau panneau **Écart de compétences** dans **CV Studio**. Choisissez une description de poste enregistrée et il classe chaque compétence requise en **nommée dans votre CV**, **impliquée dans votre CV** ou **manquante** — comparaison de mots sans IA, rien n'est écrit. Une note de faible confiance apparaît quand l'offre n'avait pas de section d'exigences claire.
+
+### Notes
+- Nouveau `GET /api/jds/:name/skill-gap` (le nom du poste est assaini et confirmé sous `jds/` avant de devenir un argument ; repli doux vers `{available:false}` sans le script). +13 clés i18n ×17. Tests : `tests/jds-skill-gap-route.test.mjs` (+4, dont le rejet du path-traversal). Suite : **2485**.
+
 ## [1.185.0] — 2026-08-14
 
 **Ajouté (stats) — un onglet « Entonnoir et vélocité » : comment votre entonnoir se compare au marché et à quelle vitesse vous avancez entre les étapes.**

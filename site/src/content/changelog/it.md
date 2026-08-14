@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.186.0] — 2026-08-14
+
+**Aggiunto (CV Studio) — un pannello "Divario di competenze": quali competenze richieste da un'offerta il tuo CV nomina, implica o gli mancano.**
+
+### Aggiunto
+- Un nuovo pannello **Divario di competenze** in **CV Studio**. Scegli una descrizione di lavoro salvata e classifica ogni competenza richiesta in **nominata nel tuo CV**, **implicita nel tuo CV** o **mancante** — confronto di parole senza LLM, nulla viene scritto. Una nota di bassa affidabilità appare quando l'offerta non aveva una sezione requisiti chiara.
+
+### Note
+- Nuovo `GET /api/jds/:name/skill-gap` (il nome dell'offerta è sanificato e confermato sotto `jds/` prima di diventare un argomento; fallback morbido a `{available:false}` senza lo script). +13 chiavi i18n ×17. Test: `tests/jds-skill-gap-route.test.mjs` (+4, incl. rifiuto del path-traversal). Suite: **2485**.
+
 ## [1.185.0] — 2026-08-14
 
 **Aggiunto (statistiche) — una scheda "Imbuto e velocità": come il tuo imbuto si confronta col mercato e quanto velocemente avanzi tra le fasi.**

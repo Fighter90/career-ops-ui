@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.186.0] — 2026-08-14
+
+**Tilføjet (CV Studio) — et "Kompetencekløft"-panel: hvilke af et jobs krævede færdigheder dit CV nævner, antyder eller mangler.**
+
+### Tilføjet
+- Et nyt **Kompetencekløft**-panel i **CV Studio**. Vælg en gemt jobbeskrivelse, og det sorterer hver krævet færdighed i **nævnt i dit CV**, **antydet i dit CV** eller **manglende** — ordsammenligning uden LLM, intet gemmes. En note om lav tillid vises, når opslaget ikke havde en tydelig kravsektion.
+
+### Noter
+- Ny `GET /api/jds/:name/skill-gap` (jobnavnet saneres og bekræftes under `jds/`, før det bliver et argument; blød fallback til `{available:false}` uden scriptet). +13 i18n-nøgler ×17. Tests: `tests/jds-skill-gap-route.test.mjs` (+4, inkl. afvisning af path-traversal). Suite: **2485**.
+
 ## [1.185.0] — 2026-08-14
 
 **Tilføjet (statistik) — en "Tragt og hastighed"-fane: hvordan din tragt sammenlignes med markedet, og hvor hurtigt du bevæger dig mellem trin.**

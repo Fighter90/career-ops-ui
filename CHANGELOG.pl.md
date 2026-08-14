@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.186.0] — 2026-08-14
+
+**Dodano (CV Studio) — panel „Luka kompetencji": które z wymaganych umiejętności oferty twoje CV wymienia, sugeruje lub których brakuje.**
+
+### Dodano
+- Nowy panel **Luka kompetencji** w **CV Studio**. Wybierz zapisany opis stanowiska, a on posortuje każdą wymaganą umiejętność na **wymienioną w CV**, **sugerowaną w CV** lub **brakującą** — porównanie słów bez LLM, nic nie jest zapisywane. Gdy oferta nie miała wyraźnej sekcji wymagań, pojawia się notka o niskiej pewności.
+
+### Uwagi
+- Nowy `GET /api/jds/:name/skill-gap` (nazwa oferty jest sanityzowana i potwierdzana pod `jds/`, zanim stanie się argumentem; miękki fallback do `{available:false}` bez skryptu). +13 kluczy i18n ×17. Testy: `tests/jds-skill-gap-route.test.mjs` (+4, w tym odrzucenie path-traversal). Zestaw: **2485**.
+
 ## [1.185.0] — 2026-08-14
 
 **Dodano (statystyki) — zakładka „Lejek i tempo": jak twój lejek wypada na tle rynku i jak szybko przechodzisz między etapami.**

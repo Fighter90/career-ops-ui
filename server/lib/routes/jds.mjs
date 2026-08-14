@@ -12,9 +12,13 @@
  * when slug normalization stripped unsafe characters.
  */
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
-import { PATHS, path as projPath } from '../paths.mjs';
+import { resolve } from 'node:path';
+import { PATHS, path as projPath, PROJECT_ROOT } from '../paths.mjs';
 import { slugify, today } from '../parsers.mjs';
 import { sanitizePathName } from '../security.mjs';
+import { llmRateLimit } from '../rate-limit.mjs';
+import { runNodeScript } from '../runner.mjs';
+import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 
 export function registerJdsRoutes(app) {
   app.get('/api/jds', (_req, res) => {
@@ -69,5 +73,30 @@ export function registerJdsRoutes(app) {
     mkdirSync(PATHS.jdsDir, { recursive: true });
     writeFileSync(projPath('jds', name), text);
     res.json({ ok: true, name, ...(warning ? { warning } : {}) });
+  });
+
+  // Zero-token skill-gap of a SAVED JD vs cv.md — relays jd-skill-gap.mjs
+  // (JSON: { existing, supportedByResume, gap, lowConfidence }). `:name` is
+  // path-sanitized and confirmed to exist before it becomes a script arg (which
+  // runNodeScript passes as an array element — no shell interpolation). Read-only,
+  // fail-soft { available:false } without the script.
+  app.get('/api/jds/:name/skill-gap', llmRateLimit, async (req, res) => {
+    const name = sanitizePathName(req.params.name);
+    if (!name) return res.status(400).json({ error: 'invalid jd name' });
+    if (!existsSync(projPath('jds', name))) return res.status(404).json({ error: 'not found' });
+    const script = 'jd-skill-gap.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      return res.json({ available: false, reason: 'script-not-found' });
+    }
+    const r = await runNodeScript(script, [`jds/${name}`, '--json'], { timeoutMs: 30_000 });
+    const data = parseJsonStdout(r.stdout);
+    if (r.code !== 0 || !data) {
+      return res.json({
+        available: false,
+        reason: r.killed ? 'timeout' : 'script-error',
+        detail: sanitizeDetail(r.stderr),
+      });
+    }
+    res.json({ available: true, ...data });
   });
 }
