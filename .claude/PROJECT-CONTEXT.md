@@ -211,7 +211,7 @@ Some `server/lib` modules are **hand-mirrors of parent `career-ops` modules** an
 | `server/lib/portals/adapters/*.mjs` | provider detection in `providers/*.mjs` |
 | `public/js/lib/{logbuf,bug-report,job-facets,score-tone,company-logo,tracker-stages}.js` | parent `web/src/lib/*` |
 
-When porting a parent change here, frame CHANGELOG/README as a **new feature** (never "ported/parity"); provenance stays only in the commit body + this file. See [`memory`](../../.claude) note *changelog-readme-new-feature-framing*.
+When porting a parent change here, frame CHANGELOG/README as a **new feature** (never "ported/parity"); provenance stays only in the commit body + this file. See the memory note *changelog-readme-new-feature-framing* (centralized here on purpose — the map is engineering context, kept out of product/CHANGELOG surfaces, not concealed).
 
 ## Realizations / hard-won notes (v1.57–v1.97)
 
