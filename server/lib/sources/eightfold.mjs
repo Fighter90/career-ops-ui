@@ -4,7 +4,7 @@
  * (zero-auth GET, no token/cookie). Eightfold hosts branded career sites for
  * large enterprises (Bayer, Vodafone, PepsiCo, Autodesk, Micron, …).
  *
- * Ported from parent career-ops `providers/eightfold.mjs` (#2684) into the
+ * Implements the
  * web-ui source contract (rich job objects + `meta` for auto-discovery).
  *
  * Host pattern (per-tenant, host-pinned):
@@ -83,8 +83,8 @@ export function assertEightfoldUrl(url) {
  * Resolve the tenant host (+ optional domain) from a host-pinned URL — either
  * the entry's careers_url/api or the endpoint the adapter derived from it.
  * Returns null (never throws) for anything off-host, non-https or unparseable,
- * so the adapter can host-pin an override and drop it silently. Mirrors the
- * parent's `resolveTenant`, keyed off a URL string rather than the raw entry.
+ * so the adapter can host-pin an override and drop it silently. Keyed off a URL
+ * string rather than the raw entry.
  *
  * @param {string} rawUrl
  * @returns {{host: string, domain: (string|null)}|null}

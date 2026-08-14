@@ -1,5 +1,5 @@
 /**
- * HigherEdJobs adapter (registry contract). Parent career-ops parity (v1.117.0).
+ * HigherEdJobs adapter (registry contract).
  *
  * A board-wide aggregator, so it matches ONLY on an explicit
  * `provider: higheredjobs` field — never on careers_url. The endpoint is the

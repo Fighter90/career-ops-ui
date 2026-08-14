@@ -1,5 +1,5 @@
 /**
- * Scan-write sanitizers (v1.75.0 — parent career-ops v1.12.0 #1098 parity).
+ * Scan-write sanitizers (v1.75.0).
  *
  * Job postings come from external feeds (Greenhouse, RemoteOK, Glints, …).
  * Their title / company / location strings are attacker-influenced data that
@@ -10,11 +10,10 @@
  *
  * Without sanitization a posting whose company name contains a newline could
  * inject a whole extra TSV row, and a value beginning with `= + - @` becomes a
- * live formula when the TSV is opened in a spreadsheet. These helpers follow
- * the parent's scan.mjs sanitizers; the control-character class is a strict
- * superset of the parent's (`\r\n\t` plus the vertical tab, form feed, and the
- * Unicode line/paragraph separators), so any record/line separator a viewer
- * might honor is collapsed — never weaker than the parent.
+ * live formula when the TSV is opened in a spreadsheet. The control-character
+ * class here is deliberately broad (`\r\n\t` plus the vertical tab, form feed,
+ * and the Unicode line/paragraph separators), so any record/line separator a
+ * viewer might honor is collapsed.
  */
 
 // Record/line/column separators (and their close cousins) that must never

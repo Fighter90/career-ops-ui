@@ -1,5 +1,5 @@
 /**
- * beesite (milch & zucker GJB) adapter (registry contract). Parent parity (v1.117.0).
+ * beesite (milch & zucker GJB) adapter (registry contract).
  *
  * Per-tenant: matches an explicit `provider: beesite` OR a careers_url/api on a
  * *.beesite.de host (the search backend behind branded portals like

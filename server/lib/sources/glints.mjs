@@ -2,7 +2,7 @@
  * Glints source — hits the undocumented public GraphQL endpoint that powers
  * glints.com job search (covers Singapore, Indonesia, Malaysia, Vietnam).
  *
- * Ported from parent career-ops v1.12.0 `providers/glints.mjs` into the web-ui
+ * Implements the web-ui
  * source contract. Glints is an aggregator, not a company ATS, so it is only
  * selected via an explicit `provider: glints` entry — never auto-detected.
  * Config comes from the company entry, read via `opts.company`:
@@ -176,7 +176,7 @@ export async function fetchGlints(apiUrl = DEFAULT_API, opts = {}) {
         headers: {
           'content-type': 'application/json',
           // Glints' firewall blocks generic UAs outright — a browser-like UA
-          // + origin/referer clears it (parent career-ops providers/glints.mjs).
+          // + origin/referer clears it.
           'user-agent': BROWSER_LIKE_USER_AGENT,
           origin: 'https://glints.com',
           referer: 'https://glints.com/id/opportunities/jobs/explore',

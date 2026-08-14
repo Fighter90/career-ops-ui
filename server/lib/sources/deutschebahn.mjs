@@ -17,7 +17,7 @@
  *   </a>
  * data-job-id is the dedup key; the href resolves to the public posting.
  *
- * Ported from parent career-ops `providers/deutschebahn.mjs` into the web-ui
+ * Implements the web-ui
  * source contract (rich job objects + `meta`). The board runs into the
  * thousands, so ITEMS_PER_PAGE + MAX_PAGES + MAX_JOBS bound the walk and the
  * scanner's title_filter does the real narrowing. Host-pinned to db.jobs (or

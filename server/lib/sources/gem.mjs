@@ -3,15 +3,14 @@
  * Gem source — per-tenant career board served by the public jobs.gem.com
  * GraphQL *batch* endpoint behind the `jobs.gem.com/<boardId>` SPA boards.
  *
- * Ported from parent career-ops `providers/gem.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery). The endpoint is a
  * single fixed host (`jobs.gem.com`) — NOT a per-tenant subdomain — and the
  * per-company board id comes from the entry's `careers_url`
  * (`https://jobs.gem.com/<boardId>`), threaded through the endpoint's
  * `?board=<boardId>` query param by the adapter.
  *
- * Two unauthenticated POSTs (no auth headers, no cookies — verified live in the
- * parent):
+ * Two unauthenticated POSTs (no auth headers, no cookies — verified live):
  *   - JobBoardList(boardId): the listing — title, locations, department,
  *     employment/location type, but NO date field.
  *   - ExternalJobPostingQuery(boardId, extId): per-job detail carrying

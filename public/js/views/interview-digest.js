@@ -1,6 +1,6 @@
 /* global Router, API, UI, I18n, HelpHint */
 /**
- * #/interview-digest — Weekly interview digest (v1.133.0, parent parity #2129/#2130).
+ * #/interview-digest — Weekly interview digest (v1.133.0).
  *
  * Read-only view over GET /api/interview/weekly-digest, which shells out to the
  * parent's zero-LLM weekly-digest.mjs — a mechanical roll-up of

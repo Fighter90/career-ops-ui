@@ -3,7 +3,7 @@
  * (the same endpoint ibm.com/careers/search calls). One endpoint serves every
  * locale (lang: "zz"), so results are language-agnostic.
  *
- * Ported from parent career-ops v1.12.0 `providers/ibm.mjs` into the web-ui
+ * Implements the web-ui
  * source contract. Config comes from the company entry's `ibm:` block, read
  * via `opts.company` (the en-scanner passes the resolved company through):
  *

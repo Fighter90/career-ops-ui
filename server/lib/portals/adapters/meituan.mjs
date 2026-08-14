@@ -1,9 +1,9 @@
 /**
- * Meituan adapter (registry contract). Parent career-ops parity (#1818).
+ * Meituan adapter (registry contract).
  *
  * Single-company Chinese tech board. Matches on an explicit
- * `provider: meituan` OR a careers_url/api whose host is zhaopin.meituan.com
- * (mirroring the parent's `detect`). The JSON API endpoint is fixed; per-entry
+ * `provider: meituan` OR a careers_url/api whose host is zhaopin.meituan.com.
+ * The JSON API endpoint is fixed; per-entry
  * search config (`keywords` / `max_pages`) is read by the source from
  * `opts.company`. The source-level assertMeituanUrl is the hard SSRF guard.
  *

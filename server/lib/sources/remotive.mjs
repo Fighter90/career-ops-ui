@@ -2,7 +2,7 @@
  * Remotive source — board-wide remote-jobs aggregator feed.
  *   GET https://remotive.com/api/remote-jobs  → { jobs: [...] }
  *
- * Ported from parent career-ops v1.12.0 `providers/remotive.mjs` into the
+ * Implements the
  * web-ui source contract. The full feed is fetched (no ?search=) so the
  * en-scanner's title_filter can gate on the configured titles — the feed's
  * own ?search= is a narrow substring match that misses e.g. "ML Engineer".

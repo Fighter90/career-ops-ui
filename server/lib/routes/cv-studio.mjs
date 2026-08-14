@@ -235,7 +235,7 @@ export function registerCvStudioRoutes(app) {
     return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage });
   });
 
-  // v1.117.0 (parent parity — modes/add.md, generalized) — "Add to CV".
+  // v1.117.0 (modes/add.md, generalized) — "Add to CV".
   // Turn a source (a GitHub repo / article / portfolio URL, or pasted text)
   // into ATS-ready CV bullet points GROUNDED ONLY in that source. The model is
   // forbidden from inventing metrics, employers, or dates — anything not in

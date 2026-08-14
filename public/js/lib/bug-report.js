@@ -1,8 +1,6 @@
 /* global window, document, navigator, location, fetch, UI, I18n */
 /**
- * bug-report.js — in-app bug reporter. Ported from parent career-ops
- * `web/src/lib/report/report.ts` (web-v0.2.0) into the web-ui contract
- * (vanilla JS, no framework). Gathers a STRUCTURAL diagnostic snapshot
+ * bug-report.js — in-app bug reporter (vanilla JS, no framework). Gathers a STRUCTURAL diagnostic snapshot
  * (versions, route, browser, viewport, recent errors from logbuf.js, a
  * fail-check data-shape), computes a deterministic dedupe fingerprint, and
  * opens a PRE-FILLED GitHub issue — preview-then-confirm, nothing auto-filed.

@@ -2,7 +2,7 @@
  * LLM usage recorder + aggregator (v1.105.0).
  *
  * Every LIVE provider call (from `runActiveProvider` and `routes/llm.mjs`)
- * appends one JSONL line — `{ ts, provider, in, out }` — to the parent user
+ * appends one JSONL line — `{ ts, provider, in, out }` — to the user
  * layer at `data/llm-usage.jsonl`. The Usage page reads it back and rolls it up
  * per provider over time windows, turning token counts into an *estimated* USD
  * cost via the editable `llm-pricing.mjs` table.
@@ -27,7 +27,7 @@ export function normalizeUsage(u) {
 }
 
 /** Append one usage record. `provider` is the mode string; `usage` is raw.
- *  `file` defaults to the parent-layer log; tests pass an isolated temp path. */
+ *  `file` defaults to the user-layer log; tests pass an isolated temp path. */
 export function recordUsage(provider, usage, nowMs, file = PATHS.llmUsage) {
   try {
     const { in: inp, out } = normalizeUsage(usage);

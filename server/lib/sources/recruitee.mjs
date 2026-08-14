@@ -3,7 +3,7 @@
  * Recruitee source — hits the public per-tenant offers API.
  *   GET https://<slug>.recruitee.com/api/offers/
  *
- * Ported from parent career-ops `providers/recruitee.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract. Per-tenant subdomains vary, so the SSRF defence is an anchored host
  * regex plus `redirect:'error'`. The per-offer URL is commonly on the tenant's
  * own custom domain, so it is NOT host-locked (display-only, never server-fetched).

@@ -2,7 +2,7 @@
  * Radancy (TalentBrew) adapter (registry contract). Per-tenant ATS.
  *
  * Branded hosts carry no stable Radancy token in the URL, so there is NO
- * auto-detection (parent parity) — tenants are wired with an explicit
+ * auto-detection — tenants are wired with an explicit
  * `provider: radancy` plus a search-jobs `api:`/careers_url. The endpoint is
  * the tenant's SSR /{lang}/search-jobs list URL; the ?p=N paged HTML walk
  * lives in server/lib/sources/radancy.mjs.

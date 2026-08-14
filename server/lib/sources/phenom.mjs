@@ -12,7 +12,7 @@
  *        "data":{"jobs":[{"jobId":"98098","title":…,"city":…,"state":…,
  *          "country":…,"location":…,"postedDate":"…ISO…"}]}}}
  *
- * Ported from parent career-ops `providers/phenom.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta`). `from` is a 0-based offset; `size` up
  * to 100/page. The public job page is {origin}/{urlPrefix}/job/{jobId}/{slug}
  * — the slug is cosmetic (Phenom keys on jobId), so we slugify the title. The
@@ -26,8 +26,8 @@
  * "phenom" token, so PHENOM_HOST_RE (auto-detect) only claims literal
  * *.phenompeople.com URLs — branded tenants are wired with an explicit
  * `provider: phenom`, and the endpoint is then pinned to the tenant host the
- * adapter derived from the entry (same model as successfactors). Safety caps
- * preserved from the parent: PAGE_SIZE=100, MAX_PAGES=40, MAX_JOBS=1000.
+ * adapter derived from the entry (same model as successfactors). Safety caps:
+ * PAGE_SIZE=100, MAX_PAGES=40, MAX_JOBS=1000.
  *
  * Used by the phenom adapter (server/lib/portals/adapters/phenom.mjs).
  */
@@ -43,7 +43,7 @@ export const meta = {
   region: 'en',
 };
 
-const PAGE_SIZE = 100; // max the widget serves per page (parent-verified)
+const PAGE_SIZE = 100; // max the widget serves per page
 const MAX_PAGES = 40; // safety cap on request count (40*100 = 4000 postings)
 const MAX_JOBS = 1000; // cap total postings pulled per site
 const PAGE_DELAY_MS = 150; // polite pacing between page requests
@@ -62,7 +62,7 @@ export function resolveConfig(company) {
   } catch {
     return null;
   }
-  if (u.protocol !== 'https:') return null; // https only (web-ui hardening; parent also allowed http)
+  if (u.protocol !== 'https:') return null; // https only (web-ui hardening)
   const block = company.phenom && typeof company.phenom === 'object' ? company.phenom : {};
   const urlPrefix = String(block.urlPrefix || 'global/en').replace(/^\/+|\/+$/g, '');
   return {
@@ -170,7 +170,7 @@ function resolveMaxPages(company) {
 }
 
 /**
- * Fetch + normalize a Phenom tenant's postings with the parent's bounded paged
+ * Fetch + normalize a Phenom tenant's postings with a bounded paged
  * walk (from/size offsets until totalHits, dedup across pages). A transient
  * mid-scan failure keeps the jobs collected so far — it never discards
  * earlier pages.

@@ -3,7 +3,7 @@
  * Consider source — VC "talent network" portfolio boards on getconsider.com
  * (Founderful, Creandum, Balderton, Lightspeed, Notion Capital, …).
  *
- * Ported from parent career-ops `providers/consider.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery). The board is a JS
  * app, but its data comes from a same-origin JSON endpoint we hit directly:
  *
@@ -74,8 +74,7 @@ export function toEpochMs(value) {
  * non-HTTPS, IPv4/IPv6 literals, localhost, *.local, *.internal, and
  * single-label (non-public) hosts so a malicious or misconfigured careers_url
  * can't aim the POST at an internal target (127.0.0.1, 169.254.169.254
- * cloud-metadata, ::1, localhost, *.internal). Ported EXACTLY from the parent
- * provider's `resolveOrigin`. Exported for tests.
+ * cloud-metadata, ::1, localhost, *.internal). Exported for tests.
  * @param {{ careers_url?: string }} entry
  * @returns {string|null} the public https origin, or null when unsafe
  */

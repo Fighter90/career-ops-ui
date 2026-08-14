@@ -316,7 +316,7 @@ Router.register('scan', async () => {
   const field = (labelText, el) => c('label', { className: 'field scan-field' }, [c('span', { className: 'scan-field__label' }, labelText), el]);
 
 
-  // v1.83.0 — repost / ghost-posting detector (parent career-ops v1.15.0).
+  // v1.83.0 — repost / ghost-posting detector.
   // A collapsed panel that lazy-loads GET /api/scan/reposts on first open:
   // company+role clusters re-listed under different URLs within a window =
   // likely stale / ghost postings. CSP-safe (addEventListener, no innerHTML).

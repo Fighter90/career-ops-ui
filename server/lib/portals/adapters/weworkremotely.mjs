@@ -1,5 +1,5 @@
 /**
- * We Work Remotely adapter (registry contract). Parent career-ops v1.14.0 parity.
+ * We Work Remotely adapter (registry contract).
  *
  * A board-wide aggregator, so it matches ONLY on an explicit
  * `provider: weworkremotely` field — never on careers_url. The endpoint is the

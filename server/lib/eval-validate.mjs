@@ -1,19 +1,18 @@
 /**
- * Evaluation-report shape validation (v1.75.0 — parent career-ops v1.12.0 #819
- * parity).
+ * Evaluation-report shape validation (v1.75.0).
  *
- * The parent's `gemini-eval.mjs` gained `validateEvaluationShape()` so a
- * malformed Gemini evaluation surfaces as an error instead of saving garbage.
- * web-ui's `/api/evaluate` Gemini branch shells out to that script, so it
- * inherits the guard. But web-ui ALSO runs evaluations IN-PROCESS through
- * Anthropic / OpenAI / Qwen / OpenRouter / GitHub Models — those responses were
- * returned with no shape check at all.
+ * The `/api/evaluate` Gemini branch shells out to a `gemini-eval.mjs` script
+ * whose `validateEvaluationShape()` makes a malformed Gemini evaluation surface
+ * as an error instead of saving garbage, so it inherits that guard. But web-ui
+ * ALSO runs evaluations IN-PROCESS through Anthropic / OpenAI / Qwen /
+ * OpenRouter / GitHub Models — those responses were returned with no shape
+ * check at all.
  *
- * This is the in-process analog. Unlike the parent (which throws to abort the
- * CLI), web-ui returns a list of issues so the route can attach them as a
- * non-fatal `warnings` array — the SPA still receives the artifact, but the
- * caller is told the report looks malformed (e.g. truncated by MAX_TOKENS).
- * Checks mirror the parent's `validateEvaluationShape` exactly.
+ * This is the in-process analog. Rather than throwing to abort a CLI, web-ui
+ * returns a list of issues so the route can attach them as a non-fatal
+ * `warnings` array — the SPA still receives the artifact, but the caller is
+ * told the report looks malformed (e.g. truncated by MAX_TOKENS). The checks
+ * mirror the `validateEvaluationShape` contract exactly.
  *
  * @param {string} text the model's evaluation markdown
  * @returns {string[]} issue messages — empty array means the shape is valid

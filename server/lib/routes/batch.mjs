@@ -8,8 +8,8 @@
  *                                          batch/batch-runner.sh
  *   POST /api/batch/merge              → run merge-tracker.mjs, return result
  *
- * The runner script (`batch/batch-runner.sh`) lives in the parent project.
- * We shell out via `bash` so the parent's script can stay shell — the SPA
+ * The runner script (`batch/batch-runner.sh`) lives in the career-ops project, not this repo.
+ * We shell out via `bash` so that script can stay shell — the SPA
  * is a thin streaming wrapper.
  */
 import { spawn } from 'node:child_process';
@@ -114,7 +114,7 @@ export function registerBatchRoutes(app) {
         args.push('--max-retries', String(n));
       }
     }
-    // v1.31.0 — parent career-ops 1.8.0 batch-runner.sh flags (#504 +
+    // v1.31.0 — batch-runner.sh flags (#504 +
     // --start-from). Same defense-in-depth as --max-retries: UI is the
     // soft contract, the server validates and silently drops bad input.
     // --model: allow only a conservative model-id charset (alnum, dot,

@@ -4,7 +4,7 @@
  * seek.co.nz) share the same SEEK infrastructure and expose a no-auth JSON
  * search endpoint at /api/chalice-search/v4/search.
  *
- * Ported from parent career-ops v1.12.0 `providers/jobstreet.mjs` into the
+ * Implements the
  * web-ui source contract. Aggregator, not an ATS — selected only via explicit
  * `provider: jobstreet`. Config comes from the company entry, read via
  * `opts.company`:

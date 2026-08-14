@@ -1,6 +1,5 @@
 /**
- * Avature adapter (registry contract). Parent career-ops `providers/avature.mjs`
- * parity.
+ * Avature adapter (registry contract).
  *
  * Avature is a per-tenant ATS: each company runs its own `*.avature.net` origin
  * (or a branded custom domain proxying Avature). It matches on either:

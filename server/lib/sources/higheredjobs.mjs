@@ -3,7 +3,7 @@
  * HigherEdJobs source — board-wide RSS category feed.
  *   GET https://www.higheredjobs.com/rss/categoryFeed.cfm?catID={catID}
  *
- * Ported from parent career-ops `providers/higheredjobs.mjs` into the web-ui
+ * Implements the web-ui
  * source contract (rich job objects + `meta` for auto-discovery).
  *
  * The feed is public, no-auth XML, parsed in-process with the same tiny tag

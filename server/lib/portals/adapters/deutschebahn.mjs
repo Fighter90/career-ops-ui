@@ -1,11 +1,10 @@
 /**
- * Deutsche Bahn adapter (registry contract). Parent career-ops parity
- * (parent `providers/deutschebahn.mjs`).
+ * Deutsche Bahn adapter (registry contract).
  *
  * Single-company careers board on db.jobs (like ibm / dassault / tkms). A
  * tracked_companies entry selects it explicitly with `provider: deutschebahn`
- * OR via a careers_url/api whose host is db.jobs (mirroring the parent's
- * detect). The endpoint is host-pinned to db.jobs; the source-level
+ * OR via a careers_url/api whose host is db.jobs. The endpoint is host-pinned
+ * to db.jobs; the source-level
  * resolveConfig is the hard SSRF guard.
  *
  *   tracked_companies:

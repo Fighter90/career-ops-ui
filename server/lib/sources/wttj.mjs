@@ -2,7 +2,7 @@
  * Welcome to the Jungle source — queries WTTJ's public Algolia search index
  * (the same one welcometothejungle.com's jobs UI calls).
  *
- * Ported from parent career-ops `providers/wttj.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract. Two-host flow, both HTTPS-only + host-pinned:
  *   1. GET https://www.welcometothejungle.com/api/env → a `window.env = {…}`
  *      payload carrying the public Algolia application id + client search key.
@@ -98,8 +98,8 @@ export function parseEnvPayload(text) {
 }
 
 /**
- * Format a salary string from a hit's yearly fields, matching the parent's
- * semantics: trust salary_maximum only when salary_period is 'yearly',
+ * Format a salary string from a hit's yearly fields: trust salary_maximum only
+ * when salary_period is 'yearly',
  * otherwise keep just the annualized minimum. Returns '' when no salary is set.
  * @param {any} h
  * @returns {string}

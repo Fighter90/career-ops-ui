@@ -3,7 +3,7 @@
  * Jobspresso source — board-wide remote-jobs RSS/XML feed.
  *   GET https://jobspresso.co/?feed=job_feed
  *
- * Ported into the web-ui source contract (rich job objects + `meta` for
+ * Implements the web-ui source contract (rich job objects + `meta` for
  * auto-discovery). The feed is public, no-auth XML, parsed in-process with a
  * tiny tag extractor — no XML dependency. The host is pinned to jobspresso.co
  * and the fetch uses `redirect:'error'` (SSRF-safe). Every posting is remote,

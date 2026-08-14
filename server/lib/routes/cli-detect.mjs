@@ -18,13 +18,12 @@ import { existsSync, statSync, accessSync, constants } from 'node:fs';
 import { join, delimiter } from 'node:path';
 
 // Fixed allowlist: { id, display name, candidate binary basenames }.
-// Roster mirrors the parent's docs/SUPPORTED_CLIS.md (v1.173.0 sync — 10
+// Roster tracks the supported-CLIs list (v1.173.0 sync — 10
 // first-class CLIs incl. Cursor + Hermes, plus Gemini as a legacy wrapper
-// transitioned into Antigravity; the Antigravity binary is `agy` per the
-// parent matrix).
+// transitioned into Antigravity; the Antigravity binary is `agy`).
 const KNOWN = [
   { id: 'claude', name: 'Claude Code', bins: ['claude'] },
-  // v1.127.0 — parent career-ops v1.23.0 re-added Cursor as a first-class host
+  // v1.127.0 — Cursor is a first-class host
   // (#2115: skill entrypoint at .cursor/skills/career-ops/SKILL.md). Cursor
   // ships a `cursor` PATH launcher.
   { id: 'cursor', name: 'Cursor', bins: ['cursor'] },

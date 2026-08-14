@@ -1,8 +1,7 @@
 // @ts-check
 /**
- * a16z Speedrun talent-network source — board-wide, zero-auth JSON aggregator
- * (parity with parent career-ops `providers/a16z-speedrun-talent.mjs`). Covers
- * the a16z speedrun cohort plus the wider a16z portfolio (~200 startups).
+ * a16z Speedrun talent-network source — board-wide, zero-auth JSON aggregator.
+ * Covers the a16z speedrun cohort plus the wider a16z portfolio (~200 startups).
  *
  *   GET https://speedrun-talent-network.com/api/v1/jobs?page={n}&source=career-ops
  *   → { jobs: [ { id, title, company, url, location, remote, published_at, … } ],
@@ -50,15 +49,15 @@ export const SPEEDRUN_TALENT_HOST_RE = /^speedrun-talent-network\.com$/i;
 /** Canonical API listing URL (adapter default endpoint). */
 export const FEED_URL = `${SITE_ORIGIN}/api/v1/jobs`;
 
-const PER_PAGE = 50; // feed page size — the API caps a page at 50; PER_PAGE=100 made the `rawCount < PER_PAGE` guard stop after page 1, truncating to 50 jobs (parent #2404)
-const DEFAULT_MAX_PAGES = 6; // × PER_PAGE = the 300-job default scan (parent #36d0c44 — sized in 50-job pages)
+const PER_PAGE = 50; // feed page size — the API caps a page at 50; PER_PAGE=100 made the `rawCount < PER_PAGE` guard stop after page 1, truncating to 50 jobs
+const DEFAULT_MAX_PAGES = 6; // × PER_PAGE = the 300-job default scan (sized in 50-job pages)
 // Runaway bound, not a coverage target: iteration already stops at the feed's
 // reported total_pages (or a short page), so on an honest feed the cap costs
 // nothing and full-board sweeps keep working as the board grows. It only bites a
-// misbehaving feed or an absurd max_pages entry (parent #36d0c44: ~353 pages /
-// ~17.6k jobs as of 2026-08), same policy as workday's cap.
+// misbehaving feed or an absurd max_pages entry. (The board itself was ~353
+// pages / ~17.6k jobs as of 2026-08.) Same headroom policy as workday's cap.
 const MAX_PAGES_CAP = 1000; // hard stop on request count regardless of max_pages
-const PAGE_DELAY_MS = 0; // no documented rate limit (parent parity); tunable via opts
+const PAGE_DELAY_MS = 0; // no documented rate limit; tunable via opts
 
 /** Upper bound on jobs returned across all pages — bounds memory defensively. */
 export const MAX_RESULTS = MAX_PAGES_CAP * PER_PAGE;
@@ -248,7 +247,7 @@ export async function fetchSpeedrunTalent(feedUrl = FEED_URL, opts = {}) {
     try {
       // This board paginates into the hundreds of pages, so a single transient
       // upstream blip mid-sweep used to abort the whole provider and return
-      // NOTHING (parent #2506). Retry transient failures (429/5xx/timeout);
+      // NOTHING. Retry transient failures (429/5xx/timeout);
       // a permanent 4xx is not retried. Once retries are exhausted the error
       // propagates here and the page-0-throw / later-page-keep-partials rule
       // below decides the outcome (web-ui dead-board contract).
@@ -287,7 +286,7 @@ export async function fetchSpeedrunTalent(feedUrl = FEED_URL, opts = {}) {
     if (rawCount < PER_PAGE) break;
     if (Number.isInteger(json.total_pages) && page + 1 >= json.total_pages) break;
     // Cap warning: the feed had more pages than we were allowed to read — surface
-    // it with the fix (same pattern as parent jibeapply/workday).
+    // it with the fix (same pattern as jibeapply/workday).
     if (page + 1 >= maxPages && Number.isInteger(json.total_pages) && json.total_pages > maxPages) {
       const name = fallbackCompany || 'a16z speedrun talent network';
       console.error(

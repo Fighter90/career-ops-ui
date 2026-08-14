@@ -2,7 +2,7 @@
  * Working Nomads source — board-wide remote-jobs aggregator feed.
  *   GET https://www.workingnomads.com/api/exposed_jobs/  → JSON array
  *
- * Ported from parent career-ops v1.12.0 `providers/workingnomads.mjs` into the
+ * Implements the
  * web-ui source contract. The en-scanner's title_filter / location_filter gate
  * the returned rows afterwards.
  *

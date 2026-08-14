@@ -2,8 +2,7 @@
 /**
  * logbuf.js — a tiny client-side ring buffer of recent ERRORS (not arbitrary
  * logs → far less PII surface) that feeds the in-app bug reporter
- * (`bug-report.js`). Ported from parent career-ops `web/src/lib/report/logbuf.ts`
- * (web-v0.2.0). Installed once, as early as possible, so it captures failures
+ * (`bug-report.js`). Installed once, as early as possible, so it captures failures
  * from the first paint.
  *
  * Captures: console.error, window 'error', 'unhandledrejection', and FAILED

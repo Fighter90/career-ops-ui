@@ -3,7 +3,7 @@
  * We Work Remotely source — board-wide remote-jobs RSS feed.
  *   GET https://weworkremotely.com/remote-jobs.rss
  *
- * Ported from parent career-ops v1.14.0 `providers/weworkremotely.mjs` into the
+ * Implements the
  * web-ui source contract (rich job objects + `meta` for auto-discovery).
  *
  * The feed is public, no-auth XML, parsed in-process with a tiny tag extractor

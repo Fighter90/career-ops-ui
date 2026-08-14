@@ -1,7 +1,7 @@
 /**
- * Read / write the parent project's .env file in place. Used by the
+ * Read / write the career-ops project's .env file in place. Used by the
  * /api/config endpoint so the user can edit ANTHROPIC_API_KEY, GEMINI_API_KEY,
- * etc. through the UI and have BOTH career-ops scripts (read by node) AND
+ * etc. through the UI and have BOTH the CLI scripts (read by node) AND
  * web-ui (read by dotenv-loader) pick them up.
  *
  * Preserves existing comments and ordering; only the keys we touch are
@@ -157,7 +157,7 @@ export function parseEnv(text) {
  * v1.54.9 — effective value of an env key for runtime LLM routing.
  *
  * The server reads keys from `process.env`, which is a SNAPSHOT taken
- * at boot. If the user later sets `ANTHROPIC_API_KEY` in the parent
+ * at boot. If the user later sets `ANTHROPIC_API_KEY` in the
  * `.env` (or it was added after the server started) the running
  * process never sees it → `hasAnthropicKey()` is false, evaluation
  * silently falls through to whatever stale key IS in process.env
@@ -167,9 +167,9 @@ export function parseEnv(text) {
  * Resolution order, matching user expectation ("use whichever keys
  * are actually set"): a non-empty `process.env` value wins (covers
  * shell exports and the live-apply in POST /api/config), otherwise
- * the current parent `.env` file is consulted. This also removes the
- * asymmetry where the Gemini path (a parent Node subprocess) already
- * read the parent `.env` while the in-process Anthropic path did not.
+ * the current `.env` file is consulted. This also removes the
+ * asymmetry where the Gemini path (a Node subprocess) already
+ * read the `.env` while the in-process Anthropic path did not.
  *
  * Never throws; returns undefined when the key is set nowhere.
  */

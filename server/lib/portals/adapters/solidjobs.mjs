@@ -1,5 +1,5 @@
 /**
- * SolidJobs adapter (registry contract). Parent career-ops parity.
+ * SolidJobs adapter (registry contract).
  *
  * Matches when `careers_url` (or `api:`) is a SolidJobs public-api offers URL, or
  * on an explicit `provider: solidjobs`. The HTTP fetch + normalization lives in

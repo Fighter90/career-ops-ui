@@ -1,5 +1,5 @@
 /**
- * Breezy HR adapter (registry contract). Parent career-ops v1.13.0 parity.
+ * Breezy HR adapter (registry contract).
  *
  * Detects a Breezy tenant from a `careers_url`/`api:` whose host matches
  * `<tenant>.breezy.hr`, or from an explicit `provider: breezy`. The HTTP fetch +

@@ -1,9 +1,8 @@
 // @ts-check
 /**
  * iCIMS source — scrapes the classic public hosted-portal search pages served
- * at `careers-<tenant>.icims.com`. Ported from parent career-ops
- * `providers/icims.mjs` into the web-ui source contract (rich job objects +
- * `meta` for auto-discovery).
+ * at `careers-<tenant>.icims.com`. Implements the web-ui source contract (rich
+ * job objects + `meta` for auto-discovery).
  *
  * DISTINCT from the `jibeapply` source: that one targets JibeApply (iCIMS's
  * apply product); this one targets the classic iCIMS hosted job-search portal.
@@ -12,8 +11,8 @@
  * Canonical URL: `https://careers-<tenant>.icims.com/jobs/search?ss=1`. The
  * `in_iframe=1` variant selects the lighter portal-only markup, and `pr` is the
  * 0-based page index. List pages carry title / location / URL but NO posted
- * date — the parent has an `enrichDate()` hook that fetches each detail page's
- * JSON-LD for `datePosted`, but the web-ui in-process scanner returns jobs
+ * date — reading `datePosted` would require an `enrichDate()` hook that fetches
+ * each detail page's JSON-LD, but the web-ui in-process scanner returns jobs
  * directly and does NOT support a per-job enrich hook, so that hook is OMITTED
  * here: every job is returned undated (`date: ''`), same as other web-ui
  * sources that carry no list-page date.

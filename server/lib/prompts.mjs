@@ -71,7 +71,7 @@ export function buildLocaleDirective(lang) {
 
 /**
  * v1.13.0 — Locale-aware scaffolding strings the prompt builders wrap
- * around the parent's English mode templates. Parent files
+ * around the English mode templates. Those files
  * (`modes/<slug>.md`) are read-only per CLAUDE.md hard rule #1, so the
  * raw body stays English. What CAN be localized is the career-ops-ui
  * scaffolding that wraps the body: the "Read these files first" preamble,
@@ -283,7 +283,7 @@ const MODE_ARTIFACT = {
   batch: 'the result',
 };
 
-// SINGLE-SHOT OUTPUT CONTRACT. The parent `modes/<slug>.md` templates are
+// SINGLE-SHOT OUTPUT CONTRACT. The `modes/<slug>.md` templates are
 // written for interactive Claude Code sessions — several (cover, contacto, …)
 // pause to ask the user clarifying questions before producing the artifact.
 // In the web-ui the runner is single-shot: the model's reply is shown verbatim
@@ -404,7 +404,7 @@ export function buildApplyChecklist(url, jd) {
     '',
     '0. Run /career-ops apply in Claude Code with this URL — it will read the form via Playwright.',
     '1. Verify the posting is still live (check footer/navbar vs JD presence).',
-    // v1.117.0 (parent parity — modes/apply.md step 5b): scan for disqualifying
+    // v1.117.0 (modes/apply.md step 5b): scan for disqualifying
     // ("knock-out") questions BEFORE investing in answers, so a visa/degree/
     // salary-floor mismatch surfaces first, not after 40 minutes of form-filling.
     '2. KNOCK-OUT PRE-SCAN: before drafting anything, scan the form/JD for disqualifying questions — visa/work-authorization or sponsorship requirements, hard degree/certification requirements, salary floors/ceilings, on-site/relocation mandates, security clearances. If any conflicts with your profile, flag it as "⚠️ KNOCK-OUT WARNING: <question> — <why it conflicts>" and decide whether to proceed BEFORE filling the rest.',

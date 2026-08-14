@@ -2,7 +2,7 @@
 Router.register('tracker', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
-  // v1.131.0 — CRM stage-tab board (parent web/ `/pipeline` port). Rows +
+  // v1.131.0 — CRM stage-tab board. Rows +
   // the canonical funnel are fetched together; the stages endpoint fails soft
   // to an empty funnel (the board degrades to an ALL-only view) so the tracker
   // still renders if the parent's states.yml is momentarily unreadable.
@@ -177,7 +177,7 @@ Router.register('tracker', async () => {
     el.addEventListener('input', () => { pager.reset(); applyFilters(); })
   );
   function row(r) {
-    // v1.128.0 (parent web/ port #3) — finer 4-tier tone (>=4.2/3.8/3.0) with a
+    // v1.128.0 — finer 4-tier tone (>=4.2/3.8/3.0) with a
     // letter-grade fallback, via the shared ScoreTone helper. Falls back to the
     // old coarse split only if the helper script somehow didn't load.
     const scoreCls = (window.ScoreTone && window.ScoreTone.scoreClass)

@@ -1,7 +1,6 @@
 // @ts-check
 /**
- * Unicode-aware text key for dedup / matching (parent career-ops
- * `tracker-parse.mjs::normalizeTextKey`, #2569 / #2587 / #2667).
+ * Unicode-aware text key for dedup / matching.
  *
  * The web-ui equivalents used to key company and role titles with an ASCII-only
  * strip (`[^a-z0-9]` / plain `.toLowerCase()`). That silently erased non-Latin

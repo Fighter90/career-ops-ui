@@ -2,9 +2,8 @@
 /**
  * joinup.ch source — Swiss startup job platform (Typesense-backed Next.js).
  *
- * Ported from parent career-ops `providers/joinup.mjs` into the web-ui source
- * contract (rich job objects + `meta` for auto-discovery). Detected from a
- * `careers_url` whose host is joinup.ch.
+ * Implements the web-ui source contract (rich job objects + `meta` for
+ * auto-discovery). Detected from a `careers_url` whose host is joinup.ch.
  *
  * The browse page server-renders the newest page of results into __NEXT_DATA__
  * at props.pageProps.serverState.initialResults.jobs.results[0].hits[]. The full
@@ -18,7 +17,7 @@
  * Public posting URL: https://joinup.ch/job/{slug}
  *
  * SINGLE-request board — no pagination. So the dead-board contract collapses to
- * its simplest form (parity with the parent + manfred): the sole request IS
+ * its simplest form (parity with manfred): the sole request IS
  * "page 1", and because nothing has succeeded before it, a fetch failure OR a
  * missing/unparseable __NEXT_DATA__ THROWS rather than being swallowed into an
  * empty result. A scraper break is not an empty board — failing closed lets

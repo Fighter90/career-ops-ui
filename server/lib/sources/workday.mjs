@@ -57,7 +57,7 @@ export async function fetchWorkday(apiUrl, opts = {}) {
   // Some tenants front their CXS API with Cloudflare bot management (seen
   // live upstream: geico) that 500s requests missing ordinary browser
   // headers. A real Chrome UA + accept-language + matching origin/referer
-  // clears it without per-tenant config (parent career-ops fix #1813).
+  // clears it without per-tenant config.
   // Derive origin + site from the CXS URL itself:
   //   https://<tenant>.wdN.myworkdayjobs.com/wday/cxs/<tenant>/<site>/jobs
   const headers = {

@@ -1,11 +1,10 @@
 /**
- * Heckler & Koch adapter (registry contract). Parent career-ops parity
- * (parent `providers/hecklerkoch.mjs`).
+ * Heckler & Koch adapter (registry contract).
  *
  * Single-company SSR list (like dassault / rheinmetall), so a tracked_companies
  * entry selects it explicitly with `provider: hecklerkoch` OR via a
- * careers_url/api whose host is heckler-koch.com (mirroring the parent's
- * `detect`). The endpoint is host-pinned; the source-level
+ * careers_url/api whose host is heckler-koch.com. The endpoint is host-pinned;
+ * the source-level
  * assertHecklerkochUrl is the hard SSRF guard.
  *
  *   tracked_companies:

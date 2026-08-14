@@ -1,5 +1,5 @@
 /**
- * iCIMS adapter (registry contract). Parent career-ops parity.
+ * iCIMS adapter (registry contract).
  *
  * Targets the classic iCIMS hosted-portal search pages at
  * `careers-<tenant>.icims.com` — DISTINCT from the `jibeapply` adapter, which

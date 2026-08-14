@@ -3,9 +3,9 @@
  * Rheinmetall source — SSR vacancy list at
  *   https://www.rheinmetall.com/{lang}/career/vacancies?page=N
  *
- * Ported from parent career-ops `providers/rheinmetall.mjs` into the web-ui
- * source contract (rich job objects + `meta` for auto-discovery). Single
- * company, zero-token: the Nuxt vacancy list is SERVER-rendered, so plain
+ * Implements the web-ui source contract (rich job objects + `meta` for
+ * auto-discovery). Single company, zero-token: the Nuxt vacancy list is
+ * SERVER-rendered, so plain
  * `?page=N` pagination works over bare HTTP (~10 unique jobs/page, ~1350
  * total). No XHR API is exposed; the underlying Cornerstone TalentLink tenant
  * has no anonymous REST endpoint either, so parsing the SSR list is the path.

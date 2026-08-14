@@ -1,5 +1,5 @@
 /* window.TrackerStages — pure helpers for the #/tracker CRM stage-tab board
- * (v1.131.0, ported from the parent web/ `/pipeline` view).
+ * (v1.131.0).
  *
  * The canonical funnel (stage labels in order) and the alias-fold map both come
  * from the server (GET /api/tracker/stages → server/lib/states.mjs, which reads

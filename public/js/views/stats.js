@@ -132,7 +132,7 @@ Router.register('stats', async () => {
     { id: 'market', label: t('stats.tabMarket', 'Market report'), hint: 'stats.hint.market', render: renderMarket },
     { id: 'pipeline', label: t('stats.tabPipeline', 'My pipeline'), hint: 'stats.hint.pipeline', render: renderPipeline },
     { id: 'trend', label: t('stats.tabTrend', 'Target-role trend'), hint: 'stats.hint.trend', render: renderTrend },
-    // v1.117.0 (parent parity) — rejection patterns + per-ATS-vendor advance
+    // v1.117.0 — rejection patterns + per-ATS-vendor advance
     // rate from the parent's analyze-patterns.mjs (read-only shell-out).
     { id: 'patterns', label: t('stats.tabPatterns', 'Rejection patterns'), hint: 'stats.hint.patterns', render: renderPatterns },
     // v1.118.0 (parent v1.18.0 parity) — lifetime pipeline stats (stats.mjs
@@ -298,7 +298,7 @@ Router.register('stats', async () => {
 
     // Conversion rates — how far applications progress down the funnel.
     // v1.118.0 — 'Hired' (offer accepted) counts as having advanced through
-    // every earlier funnel stage, mirroring the parent's canonical order.
+    // every earlier funnel stage, mirroring the canonical funnel order.
     const advanced = (...statuses) => rows.filter((r) => statuses.includes((r.status || '').trim())).length;
     const applied = advanced('Applied', 'Responded', 'Interview', 'Offer', 'Hired');
     const responded = advanced('Responded', 'Interview', 'Offer', 'Hired');
@@ -541,7 +541,7 @@ Router.register('stats', async () => {
     return wrap;
   }
 
-  // ── tab 4: rejection patterns / ATS channels (v1.117.0, parent parity) ─────
+  // ── tab 4: rejection patterns / ATS channels (v1.117.0) ─────
   // GET /api/stats/patterns shells out to the parent's analyze-patterns.mjs
   // (read-only). Renders outcome mix, actionable recommendations, and the
   // per-ATS-vendor advance rate; honest empty state when the script is absent.
@@ -599,7 +599,7 @@ Router.register('stats', async () => {
     return wrap;
   }
 
-  // ── tab 5: lifetime pipeline stats + salary gap (v1.118.0, parent parity) ──
+  // ── tab 5: lifetime pipeline stats + salary gap (v1.118.0) ──
   // GET /api/stats/lifetime relays the parent's stats.mjs (tracker roll-up,
   // cumulative funnel, lifetime scanner totals, portal coverage); GET
   // /api/stats/salary-gap relays salary-gap.mjs (desired vs advertised vs

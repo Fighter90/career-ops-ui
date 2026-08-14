@@ -1,7 +1,6 @@
 /* global window */
 /**
- * job-facets.js — zero-token job "facet" derivations (ported from the parent
- * career-ops web app's inbox helpers, `web/src/lib/inbox.ts`).
+ * job-facets.js — zero-token job "facet" derivations.
  *
  * window.JobFacets exposes three PURE, client-side functions. Every signal is
  * FREE — parsed from data a raw posting already carries (URL host, title text,

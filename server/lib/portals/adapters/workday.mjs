@@ -12,7 +12,7 @@
  *
  * If the customer's site lives behind a CAPTCHA or non-standard path,
  * the adapter throws — we recommend falling back to `/career-ops scan`
- * (parent CLI, drives a real browser via Playwright).
+ * (drives a real browser via Playwright).
  */
 import { fetchWorkday } from '../../sources/workday.mjs';
 

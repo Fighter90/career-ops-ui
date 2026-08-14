@@ -1,12 +1,11 @@
 /**
- * Canonical application states — parent `templates/states.yml` port (v1.128.0).
+ * Canonical application states — loaded from `templates/states.yml` (v1.128.0).
  *
  * `templates/states.yml` is the SINGLE SOURCE OF TRUTH for the application
  * status vocabulary: career-ops (the writer) and this dashboard (a reader) both
- * consult it. Ported from the parent's `web/src/lib/core/states.ts` so the
- * web-ui reads the list LIVE instead of hardcoding a whitelist that had to be
- * manually re-synced every parent release (e.g. 'Hired' in v1.118.0). Reads are
- * always safe per the parent-project contract; `js-yaml` is already a dep.
+ * consult it. The web-ui reads the list LIVE instead of hardcoding a whitelist
+ * that had to be manually re-synced every release (e.g. 'Hired' in v1.118.0).
+ * Reads are always safe here; `js-yaml` is already a dep.
  *
  * The FALLBACK below is a last resort if the file is unreadable (fresh clone,
  * or a CI-isolated test whose CAREER_OPS_ROOT has no templates/). It is kept
@@ -39,9 +38,9 @@ let cache = null;
 /**
  * Read the canonical states from `templates/states.yml`, falling back to the
  * built-in list if the file is missing or malformed. A SUCCESSFUL read is
- * memoized per process (the parent file does not change under a running
+ * memoized per process (the states file does not change under a running
  * server; matches how PATHS resolves once — see tests/paths-once.test.mjs); a
- * FALLBACK is NOT cached, so a transiently-unavailable parent recovers on the
+ * FALLBACK is NOT cached, so a transiently-unavailable file recovers on the
  * next call instead of being pinned for the process lifetime.
  * @returns {CanonicalState[]}
  */
@@ -51,7 +50,7 @@ export function readCanonicalStates() {
   // read: a check-then-read pair is both a TOCTOU race (js/file-system-race)
   // and a redundant stat. ENOENT = the expected fresh-clone / CI-isolated case
   // (stay quiet); any other read error, or a present-but-empty parse, is drift
-  // worth a one-line warn so ops can see the tracker diverge from the parent.
+  // worth a one-line warn so ops can see the tracker diverge from the canonical list.
   let raw = null;
   try {
     raw = readFileSync(PATHS.statesYml, 'utf8');

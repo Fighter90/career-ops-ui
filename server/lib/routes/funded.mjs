@@ -1,22 +1,22 @@
 /**
- * Funded-company discovery relay (v1.133.0, parent parity #2117).
+ * Funded-company discovery relay (v1.133.0).
  *
- * Shells out to the parent's `company-funded.mjs` — a review-first discovery
+ * Shells out to the `company-funded.mjs` script — a review-first discovery
  * script that reads a FIXED set of public, host-pinned RSS/JSON feeds
  * (TechCrunch / PRNewswire / Guardian / Hacker News), extracts recently
  * funded companies, and returns a ranked candidate list for MANUAL review.
- * The parent script owns the feed list, the host-pinning/SSRF guards, and the
+ * That script owns the feed list, the host-pinning/SSRF guards, and the
  * funding-signal parsing — web-ui relays its JSON so it can't drift.
  *
  *   GET /api/company-funded → { available, generatedAt, sources, candidates[], diagnostics[] }
  *
  * Read-only contract:
- *   • `--dry-run` — the parent writes report/JSON artifacts ONLY when NOT
+ *   • `--dry-run` — the script writes report/JSON artifacts ONLY when NOT
  *     dry-run, so this relay never persists anything.
  *   • `--json`    — machine-readable JSON to stdout.
  *   • We deliberately do NOT thread any request input into `--sources`: the
- *     source set stays the parent's fixed defaults, so no user-supplied value
- *     ever reaches an outbound fetch (no SSRF surface beyond the parent's own
+ *     source set stays the script's fixed defaults, so no user-supplied value
+ *     ever reaches an outbound fetch (no SSRF surface beyond the script's own
  *     host-pinned feeds).
  * Live network fetch (several RSS feeds) → a generous timeout + `llmRateLimit`;
  * the client panel is user-triggered (a Discover button), never on mount.

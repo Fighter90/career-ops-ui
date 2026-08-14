@@ -6,10 +6,10 @@
  * branded custom domain — those are wired with an explicit `api:` on the
  * portals.yml entry.
  *
- * Ported from parent career-ops `providers/jibeapply.mjs` into the web-ui
+ * Implements the web-ui
  * source contract (rich job objects + `meta`). Pagination is sequential (a
  * single tenant's API has no reason to receive a parallel burst, and a mid-run
- * failure keeps the pages already gathered) with the parent's safety cap —
+ * failure keeps the pages already gathered) with a safety cap —
  * DEFAULT_MAX_PAGES=50, hard cap 500 via `max_pages` on the entry — applied
  * regardless of the upstream-reported totalCount, so a misbehaving API can't
  * drive thousands of requests. `redirect:'error'` (SSRF-safe).
@@ -90,7 +90,7 @@ export function parseJibeapplyResponse(json, company = {}) {
 }
 
 /**
- * Fetch + parse a tenant's postings with the parent's sequential paged walk.
+ * Fetch + parse a tenant's postings with a sequential paged walk.
  * `endpoint` is the /api/jobs URL from the adapter's buildEndpoint.
  */
 export async function fetchJibeapply(endpoint, opts = {}) {

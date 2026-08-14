@@ -2,14 +2,14 @@
  * NoFluffJobs source — Poland-focused job board.
  *   POST https://nofluffjobs.com/api/search/posting  → { postings: [...] }
  *
- * Ported from parent career-ops `providers/nofluffjobs.mjs` into the
+ * Implements the
  * web-ui source contract. Uses a single-page POST (no pagination) so the
  * en-scanner's title_filter can gate on configured titles.
  *
  * Used by the nofluffjobs adapter (server/lib/portals/adapters/nofluffjobs.mjs).
  *
- * Content-Type note: the parent sends 'application/infiniteSearch+json' — we
- * replicate that exactly so the API returns a full result set.
+ * Content-Type note: the request sends 'application/infiniteSearch+json' — we
+ * set that exactly so the API returns a full result set.
  */
 const UA = 'career-ops-web-ui/1.0';
 
@@ -106,7 +106,6 @@ function normalize(p) {
 
 /**
  * Build the POST body for an open (no keyword filter) search.
- * Mirrors the parent's criteriaSearch body exactly.
  */
 function buildBody() {
   return {

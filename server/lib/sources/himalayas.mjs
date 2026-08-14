@@ -2,7 +2,7 @@
  * Himalayas source — board-wide remote-jobs public JSON API.
  *   GET https://himalayas.app/jobs/api?limit=50  → { jobs: [...] }
  *
- * Ported from parent career-ops `providers/himalayas.mjs` into the
+ * Implements the
  * web-ui source contract. The full feed is fetched so the en-scanner's
  * title_filter can gate on configured titles consistently with other
  * zero-token board providers. Himalayas is a remote-only board so

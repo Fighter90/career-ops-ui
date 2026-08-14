@@ -1,9 +1,9 @@
 /**
- * Alibaba adapter (registry contract). Parent career-ops parity.
+ * Alibaba adapter (registry contract).
  *
  * Single-company Chinese tech board. Matches on an explicit
- * `provider: alibaba` OR a careers_url/api whose host is talent.alibaba.com
- * (mirroring the parent's `detect`). The JSON API endpoint is fixed; per-entry
+ * `provider: alibaba` OR a careers_url/api whose host is talent.alibaba.com.
+ * The JSON API endpoint is fixed; per-entry
  * search config (`keywords` / `max_pages`) is read by the source from
  * `opts.company`. The source-level assertAlibabaUrl is the hard SSRF guard.
  *

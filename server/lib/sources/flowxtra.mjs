@@ -5,14 +5,14 @@
  *          city_company, state_company, country_company, workplace,
  *          date_share, ... } ], next_page_url, last_page, per_page, total } }
  *
- * Ported from parent career-ops `providers/flowxtra.mjs` into the web-ui
+ * Implements the web-ui
  * source contract. One call lists live postings from every company using
  * Flowxtra as its ATS, so this is a board-wide aggregator like Himalayas /
  * Arbeitnow — the en-scanner's title_filter narrows the result afterwards.
  *
  * The apply URL (`urlJobApplay`) is host-locked to flowxtra.com and the API
  * endpoint is host-pinned to app.flowxtra.com over HTTPS with `redirect:'error'`
- * on every page, closing the SSRF redirect vector the parent guards.
+ * on every page, closing the SSRF redirect vector.
  *
  * Used by the flowxtra adapter (server/lib/portals/adapters/flowxtra.mjs).
  */

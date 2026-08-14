@@ -12,7 +12,7 @@
  * (`runOpenAICompatible`) backs the thin wrappers.
  *
  * Key/model lookups go through effectiveEnv() (v1.54.9 contract): a
- * key set in the parent `.env` after boot is honoured without a
+ * key set in the `.env` after boot is honoured without a
  * restart, and DETECTION (has*Key) matches the key the request SENDS.
  */
 import { effectiveEnv, isUsableKey } from './env-config.mjs';

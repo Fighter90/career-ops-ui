@@ -1,5 +1,5 @@
 /**
- * Shared helpers for routes that shell out to parent career-ops scripts
+ * Shared helpers for routes that shell out to the companion CLI scripts
  * (followup-cadence.mjs, followup-seed.mjs, analyze-patterns.mjs) and relay
  * their JSON stdout. Consolidates the v1.117.1 parse rule and the v1.117.2
  * empty-tracker contract in one place so the two consumers can't drift.
@@ -8,7 +8,7 @@ import { PROJECT_ROOT } from './paths.mjs';
 
 /**
  * Parse a script's stdout as JSON. The whole trimmed stdout is tried FIRST
- * (the parent scripts print a single JSON document), and only on failure do
+ * (these scripts print a single JSON document), and only on failure do
  * we fall back to slicing from the first `{` — so a stray {…}-shaped log
  * line before the payload can't silently win over the real document
  * (v1.117.1 review).
@@ -29,7 +29,7 @@ export function parseJsonStdout(stdout) {
 }
 
 /**
- * The parent scripts exit 1 with a structured {error} on stdout for exactly
+ * These scripts exit 1 with a structured {error} on stdout for exactly
  * two benign "no data yet" cases (followup-cadence.mjs:287,
  * analyze-patterns.mjs:411,445). Only THOSE messages count as a healthy
  * empty state — any other {error} must fall through to the honest

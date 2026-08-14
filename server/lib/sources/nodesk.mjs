@@ -3,7 +3,7 @@
  * NoDesk source — board-wide remote-jobs RSS feed.
  *   GET https://nodesk.co/remote-jobs/index.xml
  *
- * Ported from parent career-ops v1.15.0 `providers/nodesk.mjs` into the web-ui
+ * Implements the web-ui
  * source contract (rich job objects + `meta` for auto-discovery).
  *
  * The feed is public, no-auth XML, parsed in-process with a tiny tag extractor

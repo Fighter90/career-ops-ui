@@ -1,5 +1,5 @@
 /**
- * Cryptocurrency Jobs adapter (registry contract). Parent career-ops parity.
+ * Cryptocurrency Jobs adapter (registry contract).
  *
  * A board-wide aggregator, so it matches ONLY on an explicit
  * `provider: cryptocurrencyjobs` field — never on careers_url. The endpoint is

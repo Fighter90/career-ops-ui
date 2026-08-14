@@ -1,10 +1,9 @@
 /**
- * EchoJobs adapter (registry contract). Parent career-ops parity
- * (parent `providers/echojobs.mjs`).
+ * EchoJobs adapter (registry contract).
  *
  * Board-wide public JSON aggregator — no per-tenant host — so a tracked_companies
- * entry selects it explicitly with `provider: echojobs` (mirroring the parent's
- * detect). The feed is fixed and host-pinned to echojobs.io inside the source.
+ * entry selects it explicitly with `provider: echojobs`. The feed is fixed and
+ * host-pinned to echojobs.io inside the source.
  *
  *   tracked_companies:
  *     - name: EchoJobs

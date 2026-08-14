@@ -5,7 +5,7 @@
  * career sites. Large employers (JPMorgan Chase, Oracle, BNY Mellon, American
  * Express, Honeywell, …) run their careers site on ORC.
  *
- * Ported from parent career-ops `providers/oraclecloud.mjs` into the web-ui
+ * Implements the web-ui
  * source contract (rich job objects + `meta` for auto-discovery).
  *
  * Host patterns (per-tenant, dynamic):
@@ -36,7 +36,7 @@
  * Pagination NOTE: `hasMore` is unreliable on some tenants (JPMC returns
  * hasMore:false on EVERY page even with 7000+ jobs), so it is NOT used to
  * stop — trusting it caps the scan at one page. The authoritative signals are
- * the returned list length and TotalJobsCount (parent career-ops parity).
+ * the returned list length and TotalJobsCount.
  *
  * Known limitation: some tenants front the API with a WAF (e.g. Imperva) that
  * 403s datacenter/cloud egress IPs. That's an environment/IP issue, not a
@@ -56,7 +56,7 @@ import { decodeEntities } from '../html-entities.mjs';
 // `oraclecloud(?:[1-9][0-9]?)?` = the unnumbered apex plus the numbered family
 // oraclecloud1.com … oraclecloud99.com (some tenants live only on a numbered
 // apex, e.g. `<tenant>.fa.ocs.oraclecloud26.com`, whose unnumbered sibling does
-// not resolve — parent career-ops #2683). No leading zero and at most two digits
+// not resolve). No leading zero and at most two digits
 // keeps this a BOUNDED host pin, never a wildcard `oraclecloud<anything>.com`.
 export const ORACLE_HOST_RE = /^[a-z0-9-]+\.fa\.(?:[a-z0-9-]+\.)?(?:ocs\.)?oraclecloud(?:[1-9][0-9]?)?\.com$/i;
 
@@ -95,7 +95,7 @@ function clean(s) {
 }
 
 // NaN-safe Date.parse — `|| undefined` would also coerce a valid epoch 0.
-// (parent career-ops parity, copied from greenhouse.mjs upstream)
+// (shared with greenhouse.mjs)
 function toEpochMs(value) {
   if (!value) return undefined;
   const parsed = Date.parse(value);
@@ -106,7 +106,7 @@ function toEpochMs(value) {
  * Resolve ORC coordinates from a careers/api URL (+ optional company-entry
  * overrides). The URL is the host-pinned endpoint the adapter derived from the
  * entry's `api:`/careers_url. Honors optional `entry.siteNumber` /
- * `entry.locationId` overrides (parent career-ops parity).
+ * `entry.locationId` overrides.
  *
  * @param {string} rawUrl host-pinned ORC careers URL
  * @param {{ siteNumber?: string, locationId?: string|number }} [entry]

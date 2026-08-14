@@ -173,7 +173,7 @@ Router.register('cv-studio', async () => {
     jdIn, headIn, c('div', { style: { marginTop: '8px' } }, tailorBtn), tailorOut,
   ]));
 
-  // ── 5. Add to CV (v1.117.0, parent parity — modes/add.md generalized) ──
+  // ── 5. Add to CV (v1.117.0) ──
   // A project/publication URL or pasted text → grounded ATS bullets to review
   // and paste into the CV editor yourself. Suggestions only — nothing is
   // written to any file (the URL fetch is SSRF-guarded server-side).

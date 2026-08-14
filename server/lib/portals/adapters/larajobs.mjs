@@ -1,6 +1,5 @@
 /**
- * LaraJobs adapter (registry contract). Parent career-ops parity
- * (parent `providers/larajobs.mjs`).
+ * LaraJobs adapter (registry contract).
  *
  * A board-wide aggregator (like nodesk / weworkremotely), so it matches ONLY
  * on an explicit `provider: larajobs` field — never on careers_url. The

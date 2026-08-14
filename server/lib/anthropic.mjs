@@ -8,7 +8,7 @@
  * override via ANTHROPIC_MODEL env var.
  *
  * v1.54.9 — key/model lookups go through effectiveEnv() so a key set
- * in the parent `.env` after boot is honoured without a server
+ * in the `.env` after boot is honoured without a server
  * restart, and key DETECTION (hasAnthropicKey) stays consistent with
  * the key the request actually SENDS. This removes the asymmetry that
  * routed evaluations to a stale/invalid Gemini key when Anthropic was
@@ -76,7 +76,7 @@ export async function runAnthropic(prompt, opts = {}) {
 
 /**
  * "Is the Anthropic key set?" — effective view: live process.env OR
- * the parent `.env` file. v1.54.9: previously process.env-only, which
+ * the `.env` file. v1.54.9: previously process.env-only, which
  * went stale when the key was added after boot and mis-routed
  * evaluations to Gemini.
  */
@@ -86,8 +86,8 @@ export function hasAnthropicKey() {
 
 /**
  * "Is the Gemini key set?" — same effective view as hasAnthropicKey
- * so the two never drift (REVIEW-B2). The Gemini exec path is a parent
- * Node subprocess that already reads the parent `.env`, so detecting
+ * so the two never drift (REVIEW-B2). The Gemini exec path is a
+ * Node subprocess that already reads the `.env`, so detecting
  * the key the same way keeps routing decisions consistent with what
  * actually runs.
  */

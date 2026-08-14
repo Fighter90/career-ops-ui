@@ -1,5 +1,5 @@
 /**
- * softgarden adapter (registry contract). Parent career-ops parity (v1.117.0).
+ * softgarden adapter (registry contract).
  *
  * Per-tenant: matches an explicit `provider: softgarden` OR a careers_url/api
  * on a *.softgarden.io host. The endpoint is the tenant's server-rendered

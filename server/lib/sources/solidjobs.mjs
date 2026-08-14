@@ -3,7 +3,7 @@
  * SolidJobs source — hits the public offers API.
  *   GET https://solid.jobs/public-api/offers/<division>
  *
- * Ported from parent career-ops `providers/solidjobs.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract. Single fixed origin, so the SSRF defence pins hostname to solid.jobs
  * AND requires the /public-api/offers/ path prefix, plus `redirect:'error'`.
  * Divisions: it, engineering, marketing, sales, hr, logistics, finances, other.

@@ -1,11 +1,10 @@
 /**
- * TKMS (thyssenkrupp Marine Systems) adapter (registry contract). Parent
- * career-ops parity (parent `providers/tkms.mjs`).
+ * TKMS (thyssenkrupp Marine Systems) adapter (registry contract).
  *
  * Single-employer careers app on jobs.tkmsgroup.com (like ibm / dassault). A
  * tracked_companies entry selects it explicitly with `provider: tkms` OR via a
- * careers_url/api whose host is jobs.tkmsgroup.com (mirroring the parent's
- * detect). The endpoint is host-pinned; the source-level resolveConfig is the
+ * careers_url/api whose host is jobs.tkmsgroup.com. The endpoint is host-pinned;
+ * the source-level resolveConfig is the
  * hard SSRF guard. buildEndpoint returns the POST query API URL (a string) —
  * the subclient/locale/page POST body lives inside the fetcher, driven by
  * opts.company.

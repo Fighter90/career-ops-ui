@@ -6,7 +6,7 @@
  * provider runners — `{ markdown, usage, error }` — so the llm.mjs router
  * treats every provider identically.
  *
- * Why this exists (v1.73.0): the parent `gemini-eval.mjs` is a purpose-built
+ * Why this exists (v1.73.0): the `gemini-eval.mjs` is a purpose-built
  * *oferta-evaluation* script — it reads cv.md/profile.yml and forces the A–G
  * scoring flow, treating its `--file` arg as a JD. Routing the GENERIC mode
  * and deep-research prompts through it produced an evaluation instead of the
@@ -17,7 +17,7 @@
  * gemini-eval.mjs.
  *
  * Key/model lookups go through effectiveEnv() (v1.54.9 contract): a key set in
- * the parent `.env` after boot is honoured without a restart.
+ * the `.env` after boot is honoured without a restart.
  */
 import { effectiveEnv, isUsableKey } from './env-config.mjs';
 import { PATHS } from './paths.mjs';

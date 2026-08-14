@@ -7,7 +7,7 @@
  * proxies Avature), so there is no single canonical endpoint — the URL comes
  * from the company entry's `api:` / `careers_url` and is host-pinned to it.
  *
- * Ported from parent career-ops `providers/avature.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery). The list page is a
  * server-rendered document of `<article class="article article--result">`
  * blocks; each carries an `<a class="link" href=".../JobDetail/...">` title
@@ -105,7 +105,6 @@ export function parseAvature(html, ctx = /** @type {any} */ ({})) {
   const out = [];
   // Tenants vary the result class: Synopsys uses `article--result`, Siemens
   // appends a position index (`article--result 1`). Accept any suffix.
-  // (parent career-ops parity, #1541)
   const re = /<article class="article article--result[^"]*"[\s\S]*?<\/article>/g;
   let a;
   while ((a = re.exec(html)) !== null) {

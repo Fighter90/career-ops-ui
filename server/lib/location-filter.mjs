@@ -1,12 +1,10 @@
 /**
- * v1.33.0 (WS4) — `location_filter` parity with parent career-ops 1.8.0 (#570).
+ * v1.33.0 (WS4) — `location_filter` support.
  *
- * Parent's `scan.mjs` gained an optional `location_filter` block in
- * `portals.yml`. web-ui runs its OWN in-process scanners
- * (`en-scanner.mjs` / `ru-scanner.mjs`) — they do NOT shell out to the
- * parent's `scan.mjs`, so the parent feature does not flow through
- * automatically. This module mirrors the parent's `buildLocationFilter`
- * semantics EXACTLY so both scanners gain the same behaviour.
+ * `portals.yml` may carry an optional `location_filter` block. web-ui runs its
+ * OWN in-process scanners (`en-scanner.mjs` / `ru-scanner.mjs`), so this module
+ * implements the `buildLocationFilter` semantics directly and both scanners
+ * gain the same behaviour.
  *
  * portals.yml:
  *   location_filter:
@@ -23,7 +21,7 @@
  */
 
 // ── Title filter ────────────────────────────────────────────────────
-// v1.76.0 — parity with parent career-ops v1.13.0 scan.mjs (#1102, #1187).
+// v1.76.0 — title-filter matching robustness.
 // Two robustness fixes over the old `title.includes(keyword)` approach:
 //   1. Short all-letter acronyms (2-3 chars: cfo, coo, sdr, bdr, gsi…) match on
 //      WORD BOUNDARIES, so "COO" no longer matches "Coordinator" and "SDR" no
@@ -48,7 +46,7 @@ export function compileKeyword(kw) {
 /**
  * An AND-group: whitespace-delimited ` + ` between terms in a single
  * `title_filter.positive` entry means EVERY term must appear in the title, in
- * any order (parent career-ops #2552). `title_filter.positive` is otherwise a
+ * any order. `title_filter.positive` is otherwise a
  * hand-maintained list of literal spellings, and real titles vary in word order
  * and separators — an AND-group lets one entry require a conjunction
  * ("staff + platform") without enumerating every ordering. The surrounding
@@ -82,7 +80,7 @@ export function compilePositiveKeyword(kw) {
  * @returns {Array<(lower: string) => boolean>}
  */
 export function compileKeywordList(arr, compiler = compileKeyword) {
-  // v1.79.0 — trim BEFORE the length check (parent career-ops v1.14.0 #1261):
+  // v1.79.0 — trim BEFORE the length check:
   // a whitespace-only keyword ("  ") otherwise survives length>0 and compiles
   // into a substring matcher that matches almost everything.
   return (Array.isArray(arr) ? arr : [])
@@ -130,13 +128,13 @@ export function buildLocationFilter(locationFilter) {
 }
 
 /**
- * v1.75.0 — `content_filter` parity with parent career-ops 1.12.0 (#974).
+ * v1.75.0 — `content_filter` support.
  *
  * Like `location_filter` but matches against a posting's free-text
  * description/snippet rather than its location. Only sources that populate a
  * `description` (or `snippet`) field are affected — every other posting passes,
  * so enabling this never silently drops postings from sources that don't ship a
- * body. Semantics mirror the parent's `buildContentFilter` exactly.
+ * body.
  *
  * portals.yml:
  *   content_filter:

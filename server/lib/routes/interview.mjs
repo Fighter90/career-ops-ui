@@ -224,12 +224,12 @@ export function registerInterviewRoutes(app) {
     res.json({ ok: true, deleted: safe });
   });
 
-  // v1.133.0 (parent parity #2129/#2130) — Weekly Interview Digest.
-  // Shells out to the parent's zero-LLM `weekly-digest.mjs` (JSON stdout:
+  // v1.133.0 — Weekly Interview Digest.
+  // Shells out to the zero-LLM `weekly-digest.mjs` script (JSON stdout:
   // a mechanical roll-up of `interview-prep/sessions/*.md` — which companies
   // you interviewed with this week, rounds, recurring competencies, and
   // best-effort open gaps from question-bank.md) instead of reimplementing
-  // the session-schema parser — the parent stays the source of truth. An
+  // the session-schema parser — that script stays the source of truth. An
   // empty range is a valid `available:true` digest with empty arrays (NOT a
   // failure). Read-only; fail-soft { available:false } when the script is
   // absent (CI, standalone installs) so the panel shows an honest note.
@@ -240,7 +240,7 @@ export function registerInterviewRoutes(app) {
       return;
     }
     // Optional range: pass --from/--to ONLY when BOTH are valid YYYY-MM-DD
-    // (the parent script rejects exactly one of the pair); otherwise fall
+    // (the script rejects exactly one of the pair); otherwise fall
     // through to its default current-week range.
     const from = String(req.query.from || '');
     const to = String(req.query.to || '');
