@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.198.0] — 2026-08-15
+
+**Dodano — ponowne próby skanowania używają teraz wykładniczego wycofywania, jittera i respektują `Retry-After` od ogranicznika tempa.**
+
+### Dodano
+- Gdy tablica ofert na chwilę ogranicza tempo lub zwraca błąd (HTTP 429 / 5xx) w trakcie skanu, ponowna próba czeka teraz z **wykładniczym wycofywaniem + jitterem** zamiast stałego krótkiego opóźnienia — zajęta tablica nie jest młócona w tym samym rytmie, a równoległe próby nie zderzają się znów synchronicznie. `Retry-After` od tablicy jest **respektowany** (ale ograniczony, by wrogi `Retry-After: 86400` nie zablokował całego skanu). Błędy trwałe (404, odrzucone przekierowania) nadal zawodzą natychmiast — bez zmian.
+
+### Uwagi
+- Nowe `parseRetryAfterMs()` i czysta `computeRetryDelayMs()` w `server/lib/http-json.mjs`; `fetchJson` przechwytuje teraz `.retryAfter` na odpowiedzi nie-ok, a `fetchJsonWithRetry` przyjmuje opcjonalny `maxDelayMs` (domyślnie 8000). `tests/http-json.test.mjs` (+9). Zestaw: **2536**.
+
+
 ## [1.197.0] — 2026-08-14
 
 **Dodano — śledź tablicę ofert funduszu Getro wyłącznie po jej `careers_url`; id kolekcji rozwiązuje się samo.**

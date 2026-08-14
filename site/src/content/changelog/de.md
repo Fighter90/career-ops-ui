@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.198.0] — 2026-08-15
+
+**Hinzugefügt — Scan-Wiederholungen nutzen jetzt exponentielles Backoff, Jitter und respektieren das `Retry-After` eines Rate-Limiters.**
+
+### Hinzugefügt
+- Wenn ein Jobboard mitten im Scan kurz drosselt oder fehlschlägt (HTTP 429 / 5xx), wartet die Wiederholung jetzt mit **exponentiellem Backoff + Jitter** statt einer festen kurzen Verzögerung — ein ausgelastetes Board wird nicht im gleichen Takt weiter gehämmert, und gleichzeitige Wiederholungen kollidieren nicht erneut im Gleichschritt. Ein `Retry-After` vom Board wird **respektiert** (aber geklemmt, damit ein feindseliges `Retry-After: 86400` nicht den ganzen Scan blockiert). Permanente Fehler (404, abgelehnte Weiterleitungen) schlagen weiterhin sofort fehl — unverändert.
+
+### Hinweise
+- Neue `parseRetryAfterMs()` und die reine `computeRetryDelayMs()` in `server/lib/http-json.mjs`; `fetchJson` erfasst jetzt `.retryAfter` bei einer nicht-ok-Antwort, und `fetchJsonWithRetry` nimmt ein optionales `maxDelayMs` (Standard 8000). `tests/http-json.test.mjs` (+9). Suite: **2536**.
+
+
 ## [1.197.0] — 2026-08-14
 
 **Hinzugefügt — verfolge ein Getro-VC-Jobboard allein über seine `careers_url`; die Collection-ID löst sich automatisch auf.**

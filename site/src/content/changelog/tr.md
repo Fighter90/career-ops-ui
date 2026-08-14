@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.198.0] — 2026-08-15
+
+**Eklendi — tarama yeniden denemeleri artık üstel geri çekilme, jitter kullanıyor ve hız sınırlayıcının `Retry-After` başlığına uyuyor.**
+
+### Eklendi
+- Bir iş ilanı panosu tarama sırasında kısa süreliğine hız sınırladığında veya hata verdiğinde (HTTP 429 / 5xx), yeniden deneme artık sabit kısa bir gecikme yerine **üstel geri çekilme + jitter** ile bekliyor — meşgul bir pano aynı tempoda tekrar tekrar dövülmüyor ve eşzamanlı yeniden denemeler yeniden aynı anda çarpışmıyor. Panonun gönderdiği `Retry-After` **dikkate alınıyor** (ancak sınırlandırılmış, böylece düşmanca bir `Retry-After: 86400` tüm taramayı durduramıyor). Kalıcı hatalar (404, reddedilen yönlendirmeler) hâlâ hemen başarısız oluyor — değişiklik yok.
+
+### Notlar
+- `server/lib/http-json.mjs` içinde yeni `parseRetryAfterMs()` ve saf `computeRetryDelayMs()`; `fetchJson` artık ok olmayan bir yanıtta `.retryAfter` yakalıyor ve `fetchJsonWithRetry` isteğe bağlı bir `maxDelayMs` (varsayılan 8000) alıyor. `tests/http-json.test.mjs` (+9). Takım: **2536**.
+
+
 ## [1.197.0] — 2026-08-14
 
 **Eklendi — bir Getro VC iş ilan panosunu yalnızca `careers_url` ile takip edin; koleksiyon id'si kendiliğinden çözülür.**

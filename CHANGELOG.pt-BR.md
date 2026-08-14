@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.198.0] — 2026-08-15
+
+**Adicionado — as retentativas de varredura agora usam recuo exponencial, jitter e respeitam o `Retry-After` de um limitador de taxa.**
+
+### Adicionado
+- Quando um quadro de vagas limita a taxa ou falha brevemente (HTTP 429 / 5xx) durante a varredura, a retentativa agora espera com **recuo exponencial + jitter** em vez de um atraso curto fixo — assim um quadro ocupado não é martelado no mesmo ritmo e retentativas concorrentes não colidem em sincronia. Um `Retry-After` do quadro é **respeitado** (mas limitado, para que um `Retry-After: 86400` hostil não trave a varredura inteira). Erros permanentes (404, redirecionamentos recusados) continuam falhando de imediato — sem mudança.
+
+### Notas
+- Novos `parseRetryAfterMs()` e o puro `computeRetryDelayMs()` em `server/lib/http-json.mjs`; `fetchJson` agora captura `.retryAfter` em uma resposta não-ok e `fetchJsonWithRetry` recebe um `maxDelayMs` opcional (padrão 8000). `tests/http-json.test.mjs` (+9). Conjunto: **2536**.
+
+
 ## [1.197.0] — 2026-08-14
 
 **Adicionado — acompanhe um quadro de vagas de fundo Getro apenas pela `careers_url`; o id da coleção se resolve sozinho.**

@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.198.0] — 2026-08-15
+
+**Ajouté — les nouvelles tentatives de scan utilisent désormais un backoff exponentiel, du jitter, et respectent le `Retry-After` d'un limiteur de débit.**
+
+### Ajouté
+- Quand un tableau d'offres limite le débit ou échoue brièvement (HTTP 429 / 5xx) en cours de scan, la nouvelle tentative attend maintenant avec un **backoff exponentiel + jitter** au lieu d'un délai court fixe — un tableau chargé n'est plus martelé au même rythme et les tentatives concurrentes ne se re-percutent plus en cœur. Un `Retry-After` du tableau est **respecté** (mais borné, pour qu'un `Retry-After: 86400` hostile ne bloque pas tout le scan). Les erreurs permanentes (404, redirections refusées) échouent toujours immédiatement — inchangé.
+
+### Notes
+- Nouveaux `parseRetryAfterMs()` et la fonction pure `computeRetryDelayMs()` dans `server/lib/http-json.mjs` ; `fetchJson` capture désormais `.retryAfter` sur une réponse non-ok et `fetchJsonWithRetry` accepte un `maxDelayMs` optionnel (par défaut 8000). `tests/http-json.test.mjs` (+9). Suite : **2536**.
+
+
 ## [1.197.0] — 2026-08-14
 
 **Ajouté — suivez un tableau d'offres d'un fonds Getro rien qu'avec sa `careers_url` ; l'id de collection se résout tout seul.**

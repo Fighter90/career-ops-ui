@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.198.0] — 2026-08-15
+
+**Añadido — los reintentos de escaneo ahora usan retroceso exponencial, jitter y respetan el `Retry-After` de un limitador de tasa.**
+
+### Añadido
+- Cuando un tablero de empleo limita la tasa o falla brevemente (HTTP 429 / 5xx) durante un escaneo, el reintento ahora espera con **retroceso exponencial + jitter** en lugar de un retardo corto fijo — así un tablero ocupado no recibe golpes al mismo ritmo y los reintentos concurrentes no vuelven a colisionar al unísono. Un `Retry-After` del tablero se **respeta** (pero acotado, para que un `Retry-After: 86400` hostil no bloquee todo el escaneo). Los errores permanentes (404, redirecciones rechazadas) siguen fallando de inmediato — sin cambios.
+
+### Notas
+- Nuevos `parseRetryAfterMs()` y el puro `computeRetryDelayMs()` en `server/lib/http-json.mjs`; `fetchJson` ahora captura `.retryAfter` en una respuesta no-ok y `fetchJsonWithRetry` acepta un `maxDelayMs` opcional (por defecto 8000). `tests/http-json.test.mjs` (+9). Conjunto: **2536**.
+
+
 ## [1.197.0] — 2026-08-14
 
 **Añadido — sigue un tablero de empleo de un fondo Getro solo con su `careers_url`; el id de la colección se resuelve solo.**

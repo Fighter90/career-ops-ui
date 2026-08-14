@@ -4,7 +4,10 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchJson, fetchJsonWithRetry, delay, BROWSER_LIKE_USER_AGENT } from '../server/lib/http-json.mjs';
+import {
+  fetchJson, fetchJsonWithRetry, delay, BROWSER_LIKE_USER_AGENT,
+  parseRetryAfterMs, computeRetryDelayMs, JITTER_MS,
+} from '../server/lib/http-json.mjs';
 
 test('BROWSER_LIKE_USER_AGENT is a current Chrome build (parent-parity, v1.178.0)', () => {
   // WAF/bot gates challenge a stale Chrome version; keep it near the parent's
@@ -147,4 +150,68 @@ test('fetchJsonWithRetry: stops retrying once the signal is aborted', async () =
   const fake = async () => { calls += 1; ctrl.abort(); return { ok: false, status: 500 }; };
   await assert.rejects(() => fetchJsonWithRetry(fake, 'https://x/api', { retries: 3, retryDelayMs: 0, signal: ctrl.signal }), /HTTP 500/);
   assert.equal(calls, 1); // aborted after the first attempt — no further tries
+});
+
+// --- Retry-After honouring + exponential backoff + jitter (v1.198.0) ---------
+
+test('fetchJson: attaches .retryAfter from the header on a non-ok response', async () => {
+  const fake = async () => ({ ok: false, status: 429, headers: { get: (h) => (h === 'retry-after' ? '3' : null) } });
+  await assert.rejects(() => fetchJson(fake, 'https://x/api'), (e) => e.status === 429 && e.retryAfter === '3');
+});
+
+test('fetchJson: .retryAfter is null when the header (or the headers stub) is absent', async () => {
+  const fake = async () => ({ ok: false, status: 500 });
+  await assert.rejects(() => fetchJson(fake, 'https://x/api'), (e) => e.retryAfter === null);
+});
+
+test('parseRetryAfterMs: delta-seconds → ms, HTTP-date → ms, junk/empty/negative → null', () => {
+  assert.equal(parseRetryAfterMs('3'), 3000);
+  assert.equal(parseRetryAfterMs('0'), 0);
+  assert.equal(parseRetryAfterMs(''), null);
+  assert.equal(parseRetryAfterMs(null), null);
+  assert.equal(parseRetryAfterMs('not-a-date'), null);
+  const future = new Date(Date.now() + 10_000).toUTCString();
+  const ms = parseRetryAfterMs(future);
+  assert.ok(ms >= 8000 && ms <= 11000, `HTTP-date ~10s ahead should be ~10000ms, got ${ms}`);
+});
+
+test('computeRetryDelayMs: exponential backoff grows per attempt (rand pinned to 0)', () => {
+  const p = { baseDelayMs: 500, maxDelayMs: 8000 };
+  assert.equal(computeRetryDelayMs({ ...p, attempt: 0 }, () => 0), 500);
+  assert.equal(computeRetryDelayMs({ ...p, attempt: 1 }, () => 0), 1000);
+  assert.equal(computeRetryDelayMs({ ...p, attempt: 2 }, () => 0), 2000);
+  assert.equal(computeRetryDelayMs({ ...p, attempt: 3 }, () => 0), 4000);
+});
+
+test('computeRetryDelayMs: backoff caps at maxDelayMs (minus jitter, + jitter at rand=1)', () => {
+  assert.equal(computeRetryDelayMs({ attempt: 6, baseDelayMs: 500, maxDelayMs: 8000 }, () => 0), 7750);
+  assert.equal(computeRetryDelayMs({ attempt: 6, baseDelayMs: 500, maxDelayMs: 8000 }, () => 1), 8000);
+});
+
+test('computeRetryDelayMs: jitter adds 0..JITTER_MS on top of the backoff', () => {
+  assert.equal(computeRetryDelayMs({ attempt: 0, baseDelayMs: 500, maxDelayMs: 8000 }, () => 0), 500);
+  assert.equal(computeRetryDelayMs({ attempt: 0, baseDelayMs: 500, maxDelayMs: 8000 }, () => 1), 500 + JITTER_MS);
+});
+
+test('computeRetryDelayMs: a 0 base stays exactly 0 — no jitter (instant-retry / test mode)', () => {
+  assert.equal(computeRetryDelayMs({ attempt: 0, baseDelayMs: 0, maxDelayMs: 8000 }, () => 1), 0);
+  assert.equal(computeRetryDelayMs({ attempt: 3, baseDelayMs: 0, maxDelayMs: 0 }, () => 1), 0);
+});
+
+test('computeRetryDelayMs: a Retry-After wins but is CLAMPED to maxDelayMs*4', () => {
+  assert.equal(computeRetryDelayMs({ attempt: 0, baseDelayMs: 500, maxDelayMs: 8000, retryAfter: '2' }, () => 0), 2000);
+  assert.equal(computeRetryDelayMs({ attempt: 0, baseDelayMs: 500, maxDelayMs: 8000, retryAfter: '86400' }, () => 0), 32000);
+});
+
+test('fetchJsonWithRetry: a 429 with Retry-After still retries then succeeds (delay clamped by maxDelayMs=0)', async () => {
+  let calls = 0;
+  const fake = async () => {
+    calls += 1;
+    return calls === 1
+      ? { ok: false, status: 429, headers: { get: (h) => (h === 'retry-after' ? '0' : null) } }
+      : { ok: true, json: async () => ({ ok: 1 }) };
+  };
+  // maxDelayMs:0 keeps the test instant; retryAfter '0' → 0ms anyway.
+  assert.deepEqual(await fetchJsonWithRetry(fake, 'https://x/api', { retries: 2, retryDelayMs: 0, maxDelayMs: 0 }), { ok: 1 });
+  assert.equal(calls, 2);
 });
