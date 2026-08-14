@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.191.0] — 2026-08-14
+
+**Eklendi (istatistikler) — önce öğrenilecek becerileri sıralayan bir "Sırada ne öğrenmeli" sekmesi.**
+
+### Eklendi
+- `#/stats` içinde bir **Sırada ne öğrenmeli** sekmesi: tüm takip panosu genelinde beceri boşluğu özeti — düşük uyumu en sık batıran eksik beceriler, ağırlıklı (her raporda 5−uyum puanı) ve **Critical / High / Medium** kademeli — ayrıca CV/profilinin zaten kapsadıkları. Salt okunur, yalnızca öneri, token yok.
+
+### Notlar
+- Yeni `GET /api/stats/upskill` rotası (veri azken `{ error }` alanı; betik yokken `{available:false}`). `tests/stats-upskill-route.test.mjs` (+3). +15 i18n anahtarı ×17. Takım: **2504**.
+
+
 ## [1.190.0] — 2026-08-14
 
 **Eklendi (takip panosu) — hangi şirketlerin sana gerçekten yanıt verdiğini gösteren bir "Şirket geçmişi" paneli.**

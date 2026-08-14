@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.191.0] — 2026-08-14
+
+**Hinzugefügt (Statistik) — ein "Was als Nächstes lernen"-Tab, der die zuerst zu lernenden Fähigkeiten rankt.**
+
+### Hinzugefügt
+- Ein **Was als Nächstes lernen**-Tab in `#/stats`: eine tracker-weite Auswertung — die fehlenden Fähigkeiten, die am häufigsten eine schwache Passung versenkt haben, gewichtet (nach 5−Passungswert je Bericht) und gestuft **Critical / High / Medium** — plus die von deinem CV/Profil bereits abgedeckten. Schreibgeschützt, nur Vorschläge, ohne Token.
+
+### Hinweise
+- Neue Route `GET /api/stats/upskill` (`{ error }`-Feld bei zu wenig Daten; fail-soft `{available:false}`). `tests/stats-upskill-route.test.mjs` (+3). +15 i18n-Schlüssel ×17. Suite: **2504**.
+
+
 ## [1.190.0] — 2026-08-14
 
 **Hinzugefügt (Tracker) — ein "Firmenhistorie"-Panel, das zeigt, welche Firmen dir tatsächlich antworten.**

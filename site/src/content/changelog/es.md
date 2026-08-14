@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.191.0] — 2026-08-14
+
+**Añadido (estadísticas) — una pestaña "Qué aprender a continuación" que ordena las habilidades a aprender primero.**
+
+### Añadido
+- Una pestaña **Qué aprender a continuación** en `#/stats`: un resumen de todo el tracker — las habilidades que más a menudo hundieron una baja compatibilidad, ponderadas y por niveles **Critical / High / Medium** — más las que ya cubre tu CV/perfil. Solo lectura, solo sugerencias; sin tokens.
+
+### Notas
+- Nueva ruta `GET /api/stats/upskill` (con campo `{ error }` si hay pocos datos; fail-soft `{available:false}`). `tests/stats-upskill-route.test.mjs` (+3). +15 claves i18n ×17. Suite: **2504**.
+
+
 ## [1.190.0] — 2026-08-14
 
 **Añadido (tracker) — un panel "Historial de empresa" que te dice qué empresas realmente te responden.**

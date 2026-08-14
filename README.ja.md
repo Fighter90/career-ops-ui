@@ -7,16 +7,16 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2501%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2504%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.190.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.190.0)
+[![release](https://img.shields.io/badge/release-v1.191.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.191.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.190.0** — **どの会社が実際に応答する？** — `#/tracker` の新しい **会社の履歴** パネル：会社を選んで、無応答・混在・以前に応答ありのどれか、同じ求人が再掲載されているかを確認 — トラッカー・フォローアップ・スキャン履歴を結合。 **2501 テスト。**
+> **🆕 最新リリース — v1.191.0** — **次に学ぶこと** — 新しい `#/stats` タブが、低適合を最も頻繁に招く不足スキルを順位付け（重み付け・Critical/High/Medium ティア）— 何から学ぶべきか分かります。 **2504 テスト。**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

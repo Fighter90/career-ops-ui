@@ -142,6 +142,9 @@ Router.register('stats', async () => {
     // funnel calibration vs benchmarks + waiting list + stage velocity,
     // relayed read-only by /api/stats/funnel (funnel-velocity.mjs).
     { id: 'funnel', label: t('stats.tabFunnel', 'Funnel & velocity'), hint: 'stats.hint.funnel', render: renderFunnel },
+    // v1.191.0 — tracker-wide skill-gap roll-up (weighted 5−score across all
+    // evaluated reports, tiered) relayed read-only by /api/stats/upskill.
+    { id: 'upskill', label: t('stats.tabUpskill', 'What to learn next'), hint: 'stats.hint.upskill', render: renderUpskill },
   ];
   const tabBar = c('div', { className: 'tabs', role: 'tablist',
     style: { display: 'flex', gap: '6px', flexWrap: 'wrap', borderBottom: '1px solid var(--line, #e5e7eb)', margin: '4px 0 18px' } });
@@ -798,6 +801,73 @@ Router.register('stats', async () => {
         table,
         foot(t('stats.funnelVelocityNote', '0-day same-day entries are excluded from the medians; "still waiting" rows are right-censored (not yet counted).')),
       ])));
+    }
+    return wrap;
+  }
+
+  // v1.191.0 — "What to learn next": tracker-wide skill-gap roll-up from
+  // /api/stats/upskill (upskill.mjs JSON). Tiered by how often a missing skill
+  // sank a low-fit report; carries an { error } field when there is too little data.
+  async function renderUpskill() {
+    const wrap = c('div');
+    let d = null;
+    try { d = await API.get('/api/stats/upskill'); } catch { d = null; }
+    if (!d || d.available !== true) {
+      wrap.appendChild(emptyState(t('stats.upskillUnavailable',
+        'What to learn next needs the parent career-ops project (upskill.mjs) next to this app.'), null, ''));
+      return wrap;
+    }
+    if (d.error) {
+      wrap.appendChild(emptyState(String(d.error), null, ''));
+      return wrap;
+    }
+    const chip = (label, value) => c('span', { className: 'chip' }, `${label}: ${String(value)}`);
+    const m = d.metadata || {};
+    wrap.appendChild(c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', margin: '0 0 14px' } }, [
+      chip(t('stats.upReportsScored', 'Reports scored'), m.reportsScored ?? 0),
+      chip(t('stats.upLowFit', 'Low-fit reports'), m.lowFitReports ?? 0),
+      chip(t('stats.upKnownSkills', 'Skills already yours'), m.knownSkillCount ?? 0),
+    ]));
+
+    const gaps = Array.isArray(d.gaps) ? d.gaps : [];
+    if (!gaps.length) {
+      wrap.appendChild(emptyState(t('stats.upNoGaps',
+        'No recurring skill gaps across your evaluated reports — nice.'), null, ''));
+      return wrap;
+    }
+    const TIER = { Critical: 'badge badge-bad', High: 'badge badge-warn', Medium: 'badge badge-info', Low: 'badge' };
+    const thL = { textAlign: 'left', padding: '5px 8px', color: 'var(--foggy)', fontWeight: '600', fontSize: '12px', borderBottom: '1px solid var(--line)' };
+    const thR = { ...thL, textAlign: 'right' };
+    const tdL = { padding: '5px 8px', fontSize: '13px', borderBottom: '1px solid var(--line)' };
+    const tdR = { ...tdL, textAlign: 'right', fontVariantNumeric: 'tabular-nums' };
+    const rows = gaps.map((g) => c('tr', null, [
+      c('td', { style: tdL }, c('span', { className: TIER[g.tier] || 'badge' }, String(g.tier || '—'))),
+      c('td', { style: tdL }, String(g.skill || '')),
+      c('td', { style: tdR }, String(g.reports ?? 0)),
+      c('td', { style: tdR }, String(g.lowFitReports ?? 0)),
+      c('td', { style: tdR }, String(g.weightedScore ?? 0)),
+    ]));
+    const table = c('div', { style: { overflowX: 'auto' } },
+      c('table', { style: { borderCollapse: 'collapse', width: '100%' } }, [
+        c('thead', null, c('tr', null, [
+          c('th', { style: thL }, t('stats.upTier', 'Tier')),
+          c('th', { style: thL }, t('stats.upSkill', 'Skill')),
+          c('th', { style: thR }, t('stats.upReports', 'Reports')),
+          c('th', { style: thR }, t('stats.upLowFitCol', 'Low-fit')),
+          c('th', { style: thR }, t('stats.upWeighted', 'Weighted')),
+        ])),
+        c('tbody', null, rows),
+      ]));
+    wrap.appendChild(section(t('stats.upTitle', 'What to learn next'), c('div', null, [
+      table,
+      c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '8px 0 0' } },
+        t('stats.upNote', 'Weighted by 5−fit-score across every evaluated report; tiers reflect how often the gap sank a low-fit match. Suggestions only.')),
+    ])));
+
+    const excluded = Array.isArray(d.excludedAsKnown) ? d.excludedAsKnown : [];
+    if (excluded.length) {
+      wrap.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '10px 0 0' } },
+        t('stats.upExcluded', 'Already in your CV/profile (excluded):') + ' ' + excluded.map((e) => String((e && e.skill) || e)).join(', ')));
     }
     return wrap;
   }

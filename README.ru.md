@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2501%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2504%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.190.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.190.0)
+[![release](https://img.shields.io/badge/release-v1.191.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.191.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.190.0** — **Какие компании реально вам отвечают?** — новая панель **История компании** на `#/tracker`: выберите компанию и увидите, молчит ли она в ответ, смешанно или отвечала раньше — и переоткрывается ли одна и та же вакансия — из трекера, follow-up и истории сканов. **2501 тестов.**
+> **🆕 Последний релиз — v1.191.0** — **Что учить дальше** — новая вкладка `#/stats` ранжирует навыки, что чаще всего топят ваши низкие соответствия (с весами, грейды Critical/High/Medium) — чтобы знать, что учить в первую очередь. **2504 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

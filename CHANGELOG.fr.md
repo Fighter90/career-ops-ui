@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.191.0] — 2026-08-14
+
+**Ajouté (stats) — un onglet « Quoi apprendre ensuite » qui classe les compétences à apprendre en priorité.**
+
+### Ajouté
+- Un onglet **Quoi apprendre ensuite** dans `#/stats` : un récapitulatif sur tout le suivi — les compétences manquantes qui ont le plus souvent coulé une faible compatibilité, pondérées (par 5−score de compatibilité sur chaque rapport) et hiérarchisées **Critical / High / Medium** — plus celles déjà couvertes par votre CV/profil. Lecture seule, suggestions uniquement, sans token.
+
+### Notes
+- Nouvelle route `GET /api/stats/upskill` (champ `{ error }` quand les données manquent ; fail-soft `{available:false}`). `tests/stats-upskill-route.test.mjs` (+3). +15 clés i18n ×17. Suite : **2504**.
+
+
 ## [1.190.0] — 2026-08-14
 
 **Ajouté (suivi) — un panneau « Historique de l'entreprise » qui vous dit quelles entreprises vous répondent vraiment.**

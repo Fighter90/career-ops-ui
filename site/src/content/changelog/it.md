@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.191.0] — 2026-08-14
+
+**Aggiunto (statistiche) — una scheda "Cosa imparare dopo" che ordina le competenze da imparare prima.**
+
+### Aggiunto
+- Una scheda **Cosa imparare dopo** in `#/stats`: un riepilogo su tutto il tracker — le competenze mancanti che più spesso hanno affondato una bassa compatibilità, pesate (per 5−punteggio di compatibilità su ogni report) e in livelli **Critical / High / Medium** — più quelle già coperte dal tuo CV/profilo. Sola lettura, solo suggerimenti, senza token.
+
+### Note
+- Nuova rotta `GET /api/stats/upskill` (campo `{ error }` quando i dati sono pochi; fail-soft `{available:false}`). `tests/stats-upskill-route.test.mjs` (+3). +15 chiavi i18n ×17. Suite: **2504**.
+
+
 ## [1.190.0] — 2026-08-14
 
 **Aggiunto (tracker) — un pannello "Cronologia azienda" che ti dice quali aziende ti rispondono davvero.**
