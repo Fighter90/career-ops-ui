@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.183.0] — 2026-08-14
+
+**Hinzugefügt (Scanner) — schlauere Dublettenerkennung: dieselbe Stelle, mit einem Tracking-Link neu eingestellt, erscheint nicht mehr doppelt.**
+
+### Hinzugefügt
+- Der Scanner erkennt eine Stelle jetzt an einem **kanonischen URL-Schlüssel**, sodass dieselbe Stelle, neu eingestellt mit einem Tracking-Parameter (`?utm_…`, `gclid`, …), über `http` vs `https` oder mit abschließendem Schrägstrich / `#Fragment`, als die eine Stelle behandelt wird, die sie ist — keine doppelte Zeile in Scan-Ergebnissen oder Pipeline und keine verschwendete Bewertung einer bereits gesehenen Stelle. Wirklich unterschiedliche Stellen (eine erhaltene funktionale id wie `gh_jid`) zählen weiterhin getrennt.
+
+### Hinweise
+- Neues `server/lib/url-key.mjs`, eingebunden in die Dedup beider Scanner und den Pipeline-Writer. Normalisiert bewusst zurückhaltend — führt nie zwei verschiedene Stellen zusammen. Tests: `tests/url-key.test.mjs` (+5), `tests/parsers.test.mjs` (+1). Suite: **2477** (+6).
+
 ## [1.182.0] — 2026-08-14
 
 **Behoben (Scanner) — Gehaltsspannen werden jetzt in jeder Sprache gleich angezeigt.**

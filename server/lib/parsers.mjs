@@ -3,6 +3,7 @@
  * Pure functions — no I/O. Input: string. Output: structured object.
  * Heavily tested in tests/parsers.test.mjs.
  */
+import { normalizeUrl } from './url-key.mjs';
 
 /**
  * Split `s` on `delim` but ignore occurrences preceded by a backslash.
@@ -174,8 +175,15 @@ export function addPipelineUrl(text, url, opts = {}) {
       const u = l.split(/\s+\|\s+/)[0].trim();
       return u.startsWith('http') || u.startsWith('local:');
     });
-  // Dedup on the URL token (ignore the comp column).
-  if (existingLines.some((l) => l.split(/\s+\|\s+/)[0].trim() === trimmed)) return text;
+  // Dedup on the CANONICAL URL key (ignore the comp column), so the same
+  // posting re-listed with a tracking param / http↔https / trailing slash is
+  // recognised instead of appended as a second line. Falls back to the raw
+  // token when the URL can't be keyed (e.g. a `local:jds/…` reference).
+  const incomingKey = normalizeUrl(trimmed) || trimmed;
+  if (existingLines.some((l) => {
+    const u = l.split(/\s+\|\s+/)[0].trim();
+    return (normalizeUrl(u) || u) === incomingKey;
+  })) return text;
 
   const comp = sanitizePipelineComp(opts.comp);
   const newLine = comp ? `${trimmed} | ${comp}` : trimmed;

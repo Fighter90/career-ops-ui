@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.183.0] — 2026-08-14
+
+**Tilføjet (scanner) — smartere dublet-registrering: det samme job genopslået med et sporingslink vises ikke længere to gange.**
+
+### Tilføjet
+- Scanneren genkender nu et opslag ud fra en **kanonisk URL-nøgle**, så det samme job genopslået med en sporingsparameter (`?utm_…`, `gclid`, …), over `http` vs `https`, eller med en afsluttende skråstreg / `#fragment` behandles som det ene opslag, det er — ingen dublet-række i dine scanresultater eller pipeline og ingen spildt evaluering af et job, du allerede har set. Reelt forskellige opslag (et bevaret funktionelt id som `gh_jid`) tælles stadig hver for sig.
+
+### Noter
+- Nyt `server/lib/url-key.mjs`, koblet til begge scanneres dedup og pipeline-skriveren. Under-normaliserer med vilje — fletter aldrig to forskellige opslag. Tests: `tests/url-key.test.mjs` (+5), `tests/parsers.test.mjs` (+1). Suite: **2477** (+6).
+
 ## [1.182.0] — 2026-08-14
 
 **Rettet (scanner) — lønintervaller vises nu ens på alle sprog.**

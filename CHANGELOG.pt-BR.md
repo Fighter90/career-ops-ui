@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.183.0] — 2026-08-14
+
+**Adicionado (scanner) — detecção de duplicados mais inteligente: a mesma vaga re-listada com um link de rastreamento não aparece mais duas vezes.**
+
+### Adicionado
+- O scanner agora reconhece uma vaga por uma **chave de URL canônica**, então a mesma vaga re-listada com um parâmetro de rastreamento (`?utm_…`, `gclid`, …), por `http` vs `https`, ou com barra final / `#fragmento` é tratada como a única vaga que é — sem linha duplicada nos resultados ou no pipeline, e sem avaliação desperdiçada numa vaga já vista. Vagas realmente diferentes (um id funcional mantido como `gh_jid`) continuam contando separadamente.
+
+### Notas
+- Novo `server/lib/url-key.mjs`, ligado ao dedup dos dois scanners e ao escritor do pipeline. Sub-normaliza de propósito: nunca funde duas vagas distintas. Testes: `tests/url-key.test.mjs` (+5), `tests/parsers.test.mjs` (+1). Suíte: **2477** (+6).
+
 ## [1.182.0] — 2026-08-14
 
 **Corrigido (scanner) — as faixas salariais agora aparecem iguais em todos os idiomas.**

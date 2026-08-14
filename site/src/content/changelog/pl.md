@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.183.0] — 2026-08-14
+
+**Dodano (skaner) — sprytniejsze wykrywanie duplikatów: ta sama oferta ponownie wystawiona z linkiem śledzącym nie pojawia się już dwa razy.**
+
+### Dodano
+- Skaner rozpoznaje teraz ofertę po **kanonicznym kluczu URL**, więc ta sama oferta ponownie wystawiona z parametrem śledzącym (`?utm_…`, `gclid`, …), przez `http` vs `https`, albo z końcowym ukośnikiem / `#fragmentem` jest traktowana jako jedna oferta — bez zduplikowanego wiersza w wynikach czy pipeline i bez zmarnowanej oceny już widzianej oferty. Naprawdę różne oferty (zachowany funkcjonalny id jak `gh_jid`) nadal liczą się osobno.
+
+### Uwagi
+- Nowy `server/lib/url-key.mjs`, podłączony do deduplikacji obu skanerów i zapisu pipeline. Celowo słabo normalizuje — nigdy nie łączy dwóch różnych ofert. Testy: `tests/url-key.test.mjs` (+5), `tests/parsers.test.mjs` (+1). Zestaw: **2477** (+6).
+
 ## [1.182.0] — 2026-08-14
 
 **Poprawiono (skaner) — przedziały wynagrodzeń wyglądają teraz tak samo w każdym języku.**
