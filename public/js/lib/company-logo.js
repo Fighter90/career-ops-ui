@@ -20,7 +20,7 @@ window.CompanyLogo = (function () {
   var PREF_KEY = 'coShowLogos';
 
   // Curated company NAME → domain overrides for the common cases slug+.com gets
-  // wrong (brand ≠ registrable slug). Ported from the parent web/src/lib/company.ts.
+  // wrong (brand ≠ registrable slug).
   var DOMAIN_OVERRIDES = {
     anthropic: 'anthropic.com',
     openai: 'openai.com',
@@ -153,7 +153,7 @@ window.CompanyLogo = (function () {
   /**
    * Resolve a likely registrable domain from the company NAME alone, or null if
    * the input is empty/unusable. Curated overrides first (raw then suffix-
-   * stripped), then a slug+.com heuristic. Ported from parent companyDomain().
+   * stripped), then a slug+.com heuristic.
    */
   function domainFromName(name) {
     if (!name || typeof name !== 'string') return null;

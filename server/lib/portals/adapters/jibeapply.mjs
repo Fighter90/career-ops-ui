@@ -1,5 +1,5 @@
 /**
- * JibeApply adapter (registry contract). Parent career-ops parity (v1.117.0).
+ * JibeApply adapter (registry contract).
  *
  * Per-tenant: matches an explicit `provider: jibeapply` OR a careers_url on a
  * *.jibeapply.com host. Branded iCIMS-hosted tenants that share the same JSON

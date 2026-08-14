@@ -1,9 +1,8 @@
 /**
  * role-matcher.mjs — shared fuzzy role-title matching.
  *
- * Ported verbatim from parent career-ops `role-matcher.mjs` (v1.23.0). Decides
- * whether two same-company titles describe the same opening — used by the
- * repost detector (server/lib/detect-reposts.mjs). Pure, no I/O, no deps.
+ * Decides whether two same-company titles describe the same opening — used by
+ * the repost detector (server/lib/detect-reposts.mjs). Pure, no I/O, no deps.
  */
 
 export const SENIORITY_TOKENS = new Set([
@@ -201,7 +200,7 @@ export function roleFuzzyMatch(a, b) {
   const discriminating = overlap.filter((w) => !BASELINE_TOKENS.has(w));
   if (discriminating.length === 0) return false;
 
-  // Parent #1922 (v1.21.0): a generic base title carries no suffix of its own
+  // A generic base title carries no suffix of its own
   // to counterbalance a specialized sibling's extra word, so shared tokens
   // alone can cross the Jaccard threshold even though that extra word is
   // exactly the signal that these are two separately-postable openings

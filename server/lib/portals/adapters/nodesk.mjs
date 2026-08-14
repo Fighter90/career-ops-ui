@@ -1,5 +1,5 @@
 /**
- * NoDesk adapter (registry contract). Parent career-ops v1.15.0 parity.
+ * NoDesk adapter (registry contract).
  *
  * A board-wide aggregator, so it matches ONLY on an explicit `provider: nodesk`
  * field — never on careers_url. The endpoint is the fixed public RSS feed,

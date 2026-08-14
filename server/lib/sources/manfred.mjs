@@ -3,12 +3,12 @@
  * getManfred source — board-wide public JSON feed of Spanish/EU tech jobs
  *   GET https://www.getmanfred.com/api/v2/public/offers?lang=EN
  *
- * Ported from parent career-ops `providers/manfred.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery). Public, zero-auth,
  * and returned in ONE call: the endpoint has no pagination parameters and
  * answers with the full catalogue.
  *
- * Two things measured against the live feed shape this source (parent parity):
+ * Two things measured against the live feed shape this source:
  *
  *   1. The feed is a CATALOGUE, NOT A LIVE BOARD. The vast majority of entries
  *      carry `status: "CLOSED"`; only a small slice are ACTIVE. Ingesting it
@@ -46,7 +46,7 @@ export const meta = {
 
 /**
  * Defence-in-depth host check on the endpoint built by the adapter. Throws on
- * failure. Mirrors the parent provider's `assertManfredUrl`.
+ * failure.
  * @param {string} url
  * @returns {string} the same URL if valid
  */
@@ -187,7 +187,7 @@ export function resolveLocation(offer) {
  * NO date: the only timestamp in the payload is `updatedAt`, which is a
  * modification time, not a publication date. Mapping it to `date` would make an
  * edited old posting look freshly published to the recency filters, so the
- * field is left empty (parent parity — the parent omits `postedAt` outright).
+ * field is left empty (no `postedAt` is emitted).
  *
  * @param {any} offer
  * @param {string} [fallbackCompany]

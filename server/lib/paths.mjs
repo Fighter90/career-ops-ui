@@ -9,7 +9,7 @@ export const WEB_UI_ROOT = resolve(__dirname, '..', '..');
 export const PUBLIC_DIR = resolve(WEB_UI_ROOT, 'public');
 
 /**
- * Resolve where the parent career-ops project lives:
+ * Resolve where the project root lives:
  *   1. CAREER_OPS_ROOT env var (absolute or relative to cwd)
  *   2. ../  (when this repo is dropped in as career-ops/web-ui)
  *   3. cwd  (when launched from inside career-ops itself)
@@ -89,10 +89,10 @@ export const PATHS = {
   // layer on explicit Save; never overwritten by system updates.
   careerPlan: path('config', 'career-plan.md'),
   portals: path('portals.yml'),
-  // v1.128.0 — the parent's canonical application-state definitions
+  // v1.128.0 — the canonical application-state definitions
   // (id/label/aliases/dashboard_group). System layer, read-only; the tracker
-  // reads it live instead of hardcoding a status whitelist (parent web/ port
-  // #2 — see server/lib/states.mjs). A hardcoded fallback covers CI isolation.
+  // reads it live instead of hardcoding a status whitelist (see
+  // server/lib/states.mjs). A hardcoded fallback covers CI isolation.
   statesYml: path('templates', 'states.yml'),
   packageJson: path('package.json'),
   version: path('VERSION'),

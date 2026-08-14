@@ -1,13 +1,12 @@
 // Shared HTML-entity decoder for the in-process scraping sources whose feeds
-// return raw HTML (as opposed to a JSON API). Mirrors the parent project's
-// providers/_html-entities.mjs so the numeric-entity guard can't drift between
-// per-source copies.
+// return raw HTML (as opposed to a JSON API). Centralised so the numeric-entity
+// guard can't drift between per-source copies.
 //
 // Background: oraclecloud/gem/dassault each carried a copy that guarded only
 // with `Number.isFinite(code)` before calling `String.fromCodePoint(code)`.
 // That still throws a RangeError for a code point above 0x10FFFF (e.g.
 // `&#99999999;`), crashing the whole parse for a single malformed/adversarial
-// entity (parent #2150). Centralised here so the guard is defined once.
+// entity. Centralised here so the guard is defined once.
 //
 // The hex/decimal alternatives are matched separately (not `#x?[0-9a-fA-F]+`)
 // so a decimal entity can never absorb trailing hex letters — `&#1a2;` no

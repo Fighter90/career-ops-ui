@@ -1,8 +1,8 @@
 /**
  * Workable public jobs API wrapper.
  *
- * PRIMARY endpoint (parent career-ops v1.25.0 parity — commit 5ab8425
- * "use the public widget API so large accounts are scanned"):
+ * PRIMARY endpoint (the public widget API, so large accounts are scanned in
+ * full):
  *
  *   GET https://apply.workable.com/api/v1/widget/accounts/<slug>?details=true
  *   → { name, description, jobs: [{ title, shortcode, shortlink, url,
@@ -25,8 +25,8 @@
  * throw as "board unreachable" and an empty array as "board reachable, no
  * matching roles". We never swallow a network/HTTP error into `[]`.
  *
- * HARDENING (parent career-ops parity — commit feabcd4, "harden workable with
- * retry, headers, and serialization"): the widget request carries browser-like
+ * HARDENING (retry, headers, and serialization): the widget request carries
+ * browser-like
  * headers (the shared BROWSER_LIKE_USER_AGENT + accept-language + origin + a
  * per-account referer), retries transient failures (429 / 5xx / network) via the
  * shared `fetchJsonWithRetry`, and is serialized process-wide against
@@ -34,7 +34,7 @@
  * in-flight request at a time avoids self-inflicted rate-limiting. A permanent
  * 4xx is not retried; once the retry budget is spent the error propagates and the
  * dead-board throw fires. (The web-ui source is single-request — it has no
- * markdown fallback — so the parent's give-up-early-on-long-Retry-After branch,
+ * markdown fallback — so a give-up-early-on-long-Retry-After branch,
  * whose only purpose is to fall through to that feed, does not apply here.)
  */
 import { fetchJsonWithRetry, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
@@ -42,8 +42,7 @@ import { fetchJsonWithRetry, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 // Browser-like request headers. apply.workable.com sits behind Cloudflare, which
 // can block a generic UA outright; the shared BROWSER_LIKE_USER_AGENT keeps every
 // worked-around source pinned to one Chrome version instead of drifting per file.
-// `referer` is per-account, added in fetchWorkable. Mirrors the parent's
-// WORKABLE_HEADERS.
+// `referer` is per-account, added in fetchWorkable.
 const WORKABLE_HEADERS = {
   'user-agent': BROWSER_LIKE_USER_AGENT,
   accept: 'application/json',
@@ -53,8 +52,8 @@ const WORKABLE_HEADERS = {
 
 // Process-wide serialization: apply.workable.com fronts every tenant on the same
 // host, so this process never needs more than one in-flight request to it at a
-// time. Mirrors the parent's `serialized()` — errors are swallowed off the queue
-// tail so one failed fetch can't wedge every later one.
+// time. Errors are swallowed off the queue tail so one failed fetch can't wedge
+// every later one.
 let workableQueue = Promise.resolve();
 function serialized(fn) {
   const result = workableQueue.then(fn, fn);
@@ -165,7 +164,7 @@ export async function fetchWorkable(apiUrl, opts = {}) {
   if (!slug) throw new Error(`Workable: cannot derive account slug from ${apiUrl}`);
 
   // Build on a hard-coded host and re-assert (defence in depth); `redirect:
-  // 'error'` closes the SSRF-via-redirect vector, matching the parent.
+  // 'error'` closes the SSRF-via-redirect vector.
   const url = assertWorkableUrl(widgetUrlForSlug(slug));
   const referer = `https://apply.workable.com/${slug}/`;
 

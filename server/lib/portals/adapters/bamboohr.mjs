@@ -1,5 +1,5 @@
 /**
- * BambooHR adapter (registry contract). Parent career-ops v1.13.0 parity.
+ * BambooHR adapter (registry contract).
  *
  * Detects a BambooHR tenant from a `careers_url`/`api:` whose host matches
  * `<tenant>.bamboohr.com`, or from an explicit `provider: bamboohr`. The HTTP

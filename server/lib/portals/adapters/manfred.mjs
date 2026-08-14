@@ -1,9 +1,9 @@
 /**
- * getManfred adapter (registry contract). Parent career-ops parity.
+ * getManfred adapter (registry contract).
  *
  * A board-wide feed of Spanish/EU tech jobs, so it matches ONLY on an explicit
- * `provider: manfred` field — never on careers_url (the parent provider's
- * `detect` is provider-selection only). The endpoint is the fixed public offers
+ * `provider: manfred` field — never on careers_url (detection is
+ * provider-selection only). The endpoint is the fixed public offers
  * feed, overridable via `manfred:` / `api:` (host-pinned to www.getmanfred.com)
  * for testing or a mirror. The required `lang` query parameter is appended by
  * the source from the portal entry, so the adapter's endpoint stays the bare

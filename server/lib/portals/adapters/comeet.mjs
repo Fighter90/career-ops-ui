@@ -1,5 +1,5 @@
 /**
- * Comeet adapter (registry contract). Parent career-ops v1.13.0 parity.
+ * Comeet adapter (registry contract).
  *
  * Matches when `api:` (or `careers_url`) is a full Comeet careers-api URL, or on
  * an explicit `provider: comeet`. The HTTP fetch + normalization lives in

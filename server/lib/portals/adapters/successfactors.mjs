@@ -1,5 +1,5 @@
 /**
- * SAP SuccessFactors (RMK) adapter (registry contract). Parent career-ops parity.
+ * SAP SuccessFactors (RMK) adapter (registry contract).
  *
  * Matches either an explicit `provider: successfactors` OR a `careers_url`/`api:`
  * whose host is a literal *.successfactors.(eu|com) / jobs2web.com — the branded
@@ -33,7 +33,7 @@ export const successfactorsAdapter = {
     }
   },
   buildEndpoint(company) {
-    // Parent #2099: keep a brand/tenant path prefix (multi-brand RMK
+    // Keep a brand/tenant path prefix (multi-brand RMK
     // holdings) — resolveTenantBase strips only trailing endpoint segments.
     const base = resolveTenantBase(company);
     return base ? `${base}/tile-search-results/` : null;

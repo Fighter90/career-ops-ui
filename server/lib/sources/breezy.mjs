@@ -3,7 +3,7 @@
  * Breezy HR source — hits the public per-tenant board feed.
  *   GET https://<tenant>.breezy.hr/json
  *
- * Ported from parent career-ops v1.13.0 `providers/breezy.mjs` into the web-ui
+ * Implements the web-ui
  * source contract. Per-tenant subdomains vary, so the SSRF defence is an
  * anchored host regex (same approach as bamboohr/personio) plus `redirect:'error'`.
  * Only the public board feed is used; the authenticated REST API is never touched.

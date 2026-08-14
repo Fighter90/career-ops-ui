@@ -11,7 +11,7 @@
  * fetch is host-locked (ECHOJOBS_HOST_RE) + `redirect:'error'`. The per-job url
  * is display-only and never server-fetched here.
  *
- * Ported from parent career-ops `providers/echojobs.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta`). Board-wide, so it is provider-selected
  * (`provider: echojobs`) — there is no per-tenant host.
  *

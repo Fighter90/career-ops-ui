@@ -2,7 +2,7 @@
  * Meituan careers source — posts to the public zhaopin.meituan.com JSON API
  * (no auth, no browser, no special headers).
  *
- * Ported from parent career-ops `providers/meituan.mjs` (#1818) into the
+ * Implements the
  * web-ui source contract. Meituan is a single-company board, so it is
  * selected via an explicit `provider: meituan` entry or auto-detected from a
  * zhaopin.meituan.com careers_url. Config comes from the company entry, read

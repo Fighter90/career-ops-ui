@@ -3,7 +3,7 @@
  * Cryptocurrency Jobs source — curated Web3/crypto job board, board-wide RSS.
  *   GET https://cryptocurrencyjobs.co/index.xml
  *
- * Ported from parent career-ops `providers/cryptocurrencyjobs.mjs` into the
+ * Implements the
  * web-ui source contract (rich job objects + `meta` for auto-discovery).
  *
  * The feed is public, no-auth RSS 2.0, parsed in-process with a tiny tag
@@ -61,16 +61,14 @@ function toIsoDate(value) {
 // This feed's generator double-encodes entities at the source (verified live:
 // the raw XML carries e.g. `Social Media &amp;amp; Growth Lead`), so a single
 // canonical pass leaves a stray `&amp;` in some titles. Exactly TWO passes —
-// NOT a decode-until-stable loop, which is the js/double-escaping bug class the
-// parent explicitly avoids — normalizes this feed's shape and stays
-// deterministic. Ported faithfully from providers/cryptocurrencyjobs.mjs.
+// NOT a decode-until-stable loop, which is the js/double-escaping bug class to
+// avoid — normalizes this feed's shape and stays deterministic.
 const decodeFeedText = (s) => decodeXmlEntities(decodeXmlEntities(s));
 
 /**
  * Extract the raw text of the first <tag>…</tag> in a block, handling both
  * CDATA (<tag><![CDATA[…]]></tag>) and plain text. Returns the value UNDECODED
- * so the caller can apply the exactly-two-pass `decodeFeedText` uniformly
- * (mirrors the parent's extractTag).
+ * so the caller can apply the exactly-two-pass `decodeFeedText` uniformly.
  */
 function extractTag(block, tag) {
   const re = new RegExp(
@@ -102,8 +100,8 @@ function cleanUrl(value) {
 
 /**
  * Split "Role at Company" on the LAST " at " occurrence. Falls back to an empty
- * company when the pattern isn't found (mirrors the parent — no default
- * company). Exported for unit tests.
+ * company when the pattern isn't found (no default company). Exported for unit
+ * tests.
  *
  * @param {string} raw
  * @returns {{ title: string; company: string }}
@@ -139,7 +137,7 @@ export function parseCryptocurrencyJobsRss(xml, maxResults) {
     if (jobs.length >= cap) break;
     try {
       const rawTitle = decodeFeedText(extractTag(item, 'title'));
-      // link is the dedup key; the parent falls back to <guid> when <link> is
+      // link is the dedup key; it falls back to <guid> when <link> is
       // absent, both host-pinned to cryptocurrencyjobs.co for SSRF safety.
       const url = cleanUrl(extractTag(item, 'link')) || cleanUrl(extractTag(item, 'guid'));
       if (!rawTitle || !url) continue;

@@ -3,7 +3,7 @@
  * Comeet (Spark Hire Recruit) source — hits the public, no-auth careers API.
  *   GET https://www.comeet.co/careers-api/2.0/company/<uid>/positions?token=<token>
  *
- * Ported from parent career-ops v1.13.0 `providers/comeet.mjs` into the web-ui
+ * Implements the web-ui
  * source contract. Neither the company-uid nor the per-tenant token is derivable
  * from a branded careers URL, so the full API URL must be supplied via `api:`.
  * The API host is a single fixed origin, so the SSRF defence pins hostname to

@@ -1,7 +1,6 @@
 // @ts-check
 /**
- * Agentic Jobs source — the site's public, documented REST API (parity with
- * parent career-ops `providers/agentic-jobs.mjs`, #2143/#2167).
+ * Agentic Jobs source — the site's public, documented REST API.
  *
  *   GET {API_BASE}/jobs?page={n}   — 1-based paging, PAGE_SIZE per page
  *   → { data: [{ title, companyName|company, slug|url, location,

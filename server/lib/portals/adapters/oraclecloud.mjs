@@ -1,6 +1,5 @@
 /**
- * Oracle Recruiting Cloud (ORC) adapter (registry contract). Parent career-ops
- * `providers/oraclecloud.mjs` parity.
+ * Oracle Recruiting Cloud (ORC) adapter (registry contract).
  *
  * ORC is a per-tenant ATS: each company runs its own Fusion Candidate
  * Experience host (`<tenant>.fa[.<region>][.ocs].oraclecloud.com`). It matches

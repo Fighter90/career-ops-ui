@@ -3,7 +3,7 @@
  * BambooHR source — hits the public per-tenant careers list API.
  *   GET https://<tenant>.bamboohr.com/careers/list
  *
- * Ported from parent career-ops v1.13.0 `providers/bamboohr.mjs` into the web-ui
+ * Implements the web-ui
  * source contract. Per-tenant subdomains are the variable part, so the SSRF
  * defence is an anchored host regex (same approach as breezy/personio) plus
  * `redirect:'error'` — a server-side redirect can't bounce the fetch off-domain.

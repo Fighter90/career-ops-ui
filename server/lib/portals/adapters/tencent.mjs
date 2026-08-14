@@ -1,9 +1,9 @@
 /**
- * Tencent adapter (registry contract). Parent career-ops parity (#230).
+ * Tencent adapter (registry contract).
  *
  * Single-company Chinese tech board. Matches on an explicit
- * `provider: tencent` OR a careers_url/api whose host is careers.tencent.com
- * (mirroring the parent's `detect`). The JSON API endpoint is fixed; per-entry
+ * `provider: tencent` OR a careers_url/api whose host is careers.tencent.com.
+ * The JSON API endpoint is fixed; per-entry
  * search config (`keywords` / `max_pages`) is read by the source from
  * `opts.company`. The source-level assertTencentUrl is the hard SSRF guard.
  *

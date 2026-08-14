@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * cooldown.mjs — re-apply cooldown filter (parent career-ops v1.15.0, #1201).
+ * cooldown.mjs — re-apply cooldown filter.
  *
  * Skips scanned jobs at companies you applied to recently, so the scan stays
  * focused on NEW opportunities instead of re-surfacing roles you already chased.
@@ -32,7 +32,7 @@ export function addDays(dateStr, days) {
 }
 
 /**
- * Normalized company match (parent #1201): exact match on alphanumerics-only,
+ * Normalized company match: exact match on alphanumerics-only,
  * else a word-boundary match on the space-normalized forms. So "Acme Inc"
  * matches "Acme, Inc." and "Acme" matches "Acme Corp".
  */

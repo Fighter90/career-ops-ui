@@ -2,8 +2,7 @@
 /**
  * trust-validator.mjs — lightweight trust validation for scanned job postings.
  *
- * Ported from parent career-ops v1.13.0 `providers/_trust-validator.mjs`. Enriches
- * each job with a trust score (0-100), flags (string[]), and level
+ * Enriches each job with a trust score (0-100), flags (string[]), and level
  * ('high'|'medium'|'low'). It NEVER drops a job — it only annotates, so the SPA
  * can surface a badge and the user decides. Off by default; opt in via
  * `portals.yml::trust_filter`.

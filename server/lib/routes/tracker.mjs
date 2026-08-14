@@ -16,11 +16,11 @@ import { safeReadApps } from '../store.mjs';
 import { withFileLock } from '../file-lock.mjs';
 import { canonicalizeStatus, readCanonicalStates } from '../states.mjs';
 
-// v1.128.0 (parent web/ port #2) — the canonical status vocabulary is no
-// longer hardcoded here. `server/lib/states.mjs` reads the parent's
+// v1.128.0 — the canonical status vocabulary is no
+// longer hardcoded here. `server/lib/states.mjs` reads
 // `templates/states.yml` live (id/label/aliases), so the whitelist — and
-// alias folding (Spanish/legacy labels the parent writer may emit) — stays in
-// sync with the parent automatically instead of needing a manual re-sync every
+// alias folding (Spanish/legacy labels the writer may emit) — stays in
+// sync with the states file automatically instead of needing a manual re-sync every
 // release (the v1.118.0 'Hired' addition was one such sweep).
 
 export function registerTrackerRoutes(app) {
@@ -37,8 +37,8 @@ export function registerTrackerRoutes(app) {
     if (page === undefined && pageSize === undefined && status === undefined) {
       return res.json({ rows: all }); // legacy shape — untouched
     }
-    // Fold each raw status to its canonical bucket (parent web/ port #3) so a
-    // Spanish/legacy label the parent writer may emit (e.g. "contratada",
+    // Fold each raw status to its canonical bucket so a
+    // Spanish/legacy label the writer may emit (e.g. "contratada",
     // "**Applied**") lands in the same bucket as its canonical form instead of
     // spawning a phantom funnel entry. Unknown labels keep their raw value.
     const funnel = {};
@@ -56,7 +56,7 @@ export function registerTrackerRoutes(app) {
     res.json({ rows, total, page: pg, pageSize: ps, funnel });
   });
 
-  // v1.131.0 — the #/tracker CRM stage-tab board (parent web/ `/pipeline` port)
+  // v1.131.0 — the #/tracker CRM stage-tab board
   // needs the FULL canonical funnel — labels in order, including zero-count
   // stages — plus an alias-fold map, so the client can bucket rows without ever
   // hardcoding the whitelist (the v1.128.0 doctrine). Read-only, no writes, no

@@ -1,5 +1,5 @@
 /**
- * Personio adapter (registry contract). Parent career-ops v1.13.0 parity.
+ * Personio adapter (registry contract).
  *
  * Detects a Personio tenant from a `careers_url`/`api:` whose host matches
  * `<slug>.jobs.personio.(de|com)`, or from an explicit `provider: personio`.

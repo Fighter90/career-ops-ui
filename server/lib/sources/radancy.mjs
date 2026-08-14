@@ -14,18 +14,18 @@
  * markup (a second, module-numbered `job-list-NN-list__` prefix rides
  * alongside it and varies per site) — we anchor on the generic one.
  *
- * Ported from parent career-ops `providers/radancy.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta`). The list carries no posting date, so
  * `date` is always ''. Branded hosts carry no stable Radancy token, so there
  * is NO host regex / auto-detection — tenants are wired with an explicit
  * `provider: radancy` and a search-jobs `api:`/careers_url; the endpoint is
  * then pinned to the tenant host the adapter derived from the entry (same
  * model as successfactors), enforced HTTPS + `redirect:'error'` and a
- * /search-jobs path shape via assertRadancyUrl. Safety caps preserved from
- * the parent: MAX_PAGES=200, DEFAULT_MAX_JOBS=2000 (overridable per-entry via
+ * /search-jobs path shape via assertRadancyUrl. Safety caps: MAX_PAGES=200,
+ * DEFAULT_MAX_JOBS=2000 (overridable per-entry via
  * `max_pages` / `max_jobs`).
  *
- * Two markup generations, two transports (parent parity):
+ * Two markup generations, two transports:
  *   (a) MODERN markup — <li class="search-results-list__item"> with a
  *       `search-results-list__job-link` anchor. Parsed by parseModernResults().
  *   (b) LEGACY markup — a bare <li> holding the anchor itself, no list-item
@@ -77,7 +77,7 @@ export function resolveListUrl(company) {
   } catch {
     return null;
   }
-  if (u.protocol !== 'https:') return null; // https only (web-ui hardening; parent also allowed http)
+  if (u.protocol !== 'https:') return null; // https only (web-ui hardening)
   if (/\/search-jobs\/?$/.test(u.pathname)) return `${u.origin}${u.pathname.replace(/\/$/, '')}`;
   const lang = (u.pathname.match(/^\/([a-z]{2})(\/|$)/) || [])[1] || 'en';
   return `${u.origin}/${lang}/search-jobs`;
@@ -305,8 +305,8 @@ function resolveMaxJobs(company) {
  * Preferred transport: the JSON results fragment (buildFragmentUrl) — on the
  * legacy-markup tenants the plain ?p=N HTML page carries a multi-megabyte facet
  * blob per page, so the fragment is dramatically cheaper. It is attempted only
- * when the caller supplies a `fetchJson` capability (mirrors the parent's
- * `ctx.fetchJson` gate); any failure — non-JSON, no results, endpoint absent —
+ * when the caller supplies a `fetchJson` capability; any failure — non-JSON, no
+ * results, endpoint absent —
  * falls through to the ?p=N walk below, so tenants without the fragment endpoint
  * (and callers that pass no fetchJson) are unaffected.
  *

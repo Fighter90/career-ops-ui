@@ -1,19 +1,19 @@
 /**
- * Follow-up cadence routes (v1.117.0) — parent parity.
+ * Follow-up cadence routes (v1.117.0).
  *
- * The parent career-ops ships a full follow-up cadence engine
+ * A companion CLI ships a full follow-up cadence engine
  * (`followup-cadence.mjs` — parses applications.md + follow-ups.md, computes
  * per-application urgency: urgent / overdue / waiting / cold — and
  * `followup-seed.mjs` — pins a first follow-up date when a row turns Applied).
  * web-ui only had the LLM `followup` mode page; the deterministic cadence data
- * was never surfaced. These routes SHELL OUT to the parent scripts (the same
+ * was never surfaced. These routes SHELL OUT to those scripts (the same
  * pattern as the doctor/verify/dedup runners) instead of reimplementing the
- * cadence math — the parent stays the single source of truth and web-ui can't
- * drift from it.
+ * cadence math — those scripts stay the single source of truth and web-ui can't
+ * drift from them.
  *
  *   GET  /api/followup       → run `followup-cadence.mjs` (JSON stdout) and
  *                              relay { available:true, metadata, entries,
- *                              cadenceConfig }. If the parent script is absent
+ *                              cadenceConfig }. If the script is absent
  *                              (CI, standalone installs) → { available:false }.
  *   POST /api/followup/seed  → explicit user action. Body {appNum} seeds one
  *                              application, {backfill:true} seeds the whole
@@ -47,12 +47,12 @@ export function registerFollowupRoutes(app) {
     }
     const r = await runNodeScript(CADENCE_SCRIPT, [], { timeoutMs: RUN_TIMEOUT_MS });
     const data = parseJsonStdout(r.stdout);
-    // The parent exits 1 with a STRUCTURED {error} on stdout for "no data yet"
+    // The script exits 1 with a STRUCTURED {error} on stdout for "no data yet"
     // (e.g. an empty tracker). That is a healthy empty state, not a failure —
     // relay it as available with zero entries so the board shows its honest
-    // empty message instead of "script-error". Keyed to the parent's exact
+    // empty message instead of "script-error". Keyed to the script's exact
     // message (followup-cadence.mjs), NOT to shape — an unrecognized {error}
-    // must fall through to the honest script-error path, or a future parent
+    // must fall through to the honest script-error path, or a future script
     // regression would be silently masked as "nothing yet".
     if (data && isEmptyTrackerError(data.error)) {
       res.json({ available: true, empty: true, note: data.error, metadata: {}, entries: [] });

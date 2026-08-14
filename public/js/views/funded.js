@@ -1,6 +1,6 @@
 /* global Router, API, UI, I18n, HelpHint */
 /**
- * #/funded — Funded-company discovery (v1.133.0, parent parity #2117).
+ * #/funded — Funded-company discovery (v1.133.0).
  *
  * Read-only view over GET /api/company-funded, which shells out to the parent's
  * company-funded.mjs (review-first discovery from public, host-pinned RSS/JSON

@@ -3,7 +3,7 @@
  * Amazon / AWS source — the public amazon.jobs search JSON API
  *   GET https://www.amazon.jobs/en/search.json?base_query=&loc_query=&result_limit=100&offset=0
  *
- * Ported from parent career-ops `providers/amazon.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery). Public, zero-auth
  * JSON. The board is enormous (100k+ postings), so a per-company `amazon:` config
  * block (loc_query / base_query / category …) narrows it; keys pass through as

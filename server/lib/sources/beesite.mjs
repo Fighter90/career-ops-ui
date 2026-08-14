@@ -11,12 +11,12 @@
  *          "PositionLocation":[{"CityName":"Bremen"}],
  *          "PublicationStartDate":"2026-07-04"}}]}}
  *
- * Ported from parent career-ops `providers/beesite.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta`). PositionURI is the BRANDED job page,
  * so listings link straight to the public posting. FirstItem is 1-based;
  * requesting past the end returns an empty list; newest-first sort keeps a
- * bounded walk on the most recent postings. Safety caps preserved from the
- * parent: MAX_PAGES=40 (page size 100), MAX_JOBS=1000. Host-pinned to
+ * bounded walk on the most recent postings. Safety caps: MAX_PAGES=40 (page
+ * size 100), MAX_JOBS=1000. Host-pinned to
  * *.beesite.de + `redirect:'error'` (SSRF-safe).
  *
  * Per-tenant: the endpoint origin comes from the company entry's `api:` /
@@ -138,7 +138,7 @@ function resolveMaxPages(company) {
 }
 
 /**
- * Fetch + parse a tenant's postings with the parent's bounded newest-first
+ * Fetch + parse a tenant's postings with a bounded newest-first
  * walk. `endpoint` is the tenant /search API from the adapter's buildEndpoint;
  * pagination stops on an empty page, a no-fresh-rows page, MAX_JOBS, or total.
  */

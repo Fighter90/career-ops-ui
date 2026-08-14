@@ -1,12 +1,10 @@
 /**
- * Eightfold AI adapter (registry contract). Parent career-ops
- * `providers/eightfold.mjs` parity (#2684).
+ * Eightfold AI adapter (registry contract).
  *
  * Eightfold is a per-tenant ATS: each company runs its own branded board at
  * `<tenant>.eightfold.ai`. It matches on either:
  *   - an explicit `provider: eightfold`, or
- *   - a `careers_url` / `api:` whose host matches the *.eightfold.ai pattern
- *     (mirroring the parent's host-pinned `detect`).
+ *   - a `careers_url` / `api:` whose host matches the *.eightfold.ai pattern.
  *
  * The endpoint is the pinned `https://<tenant>.eightfold.ai/api/apply/v2/jobs`
  * built from the entry's own `api:`/careers_url. The override host is

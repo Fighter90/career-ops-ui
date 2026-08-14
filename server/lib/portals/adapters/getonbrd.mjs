@@ -1,5 +1,5 @@
 /**
- * Get on Board adapter (registry contract). Parent career-ops parity.
+ * Get on Board adapter (registry contract).
  *
  * A board-wide aggregator, so it matches ONLY on an explicit `provider: getonbrd`
  * field — never on careers_url. The endpoint is the fixed public category feed,

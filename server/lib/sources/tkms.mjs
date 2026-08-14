@@ -16,7 +16,7 @@
  * {origin}/{locale}/job/{slug}/{id} — the slug is cosmetic (a stub resolves the
  * same posting), so we slugify the title.
  *
- * Ported from parent career-ops `providers/tkms.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta`). Host-pinned to jobs.tkmsgroup.com via
  * TKMS_HOST_RE, https only (the POST uses `redirect:'error'`, so a plain-HTTP
  * origin would send cleartext and hard-fail on any HTTPS redirect — reject it

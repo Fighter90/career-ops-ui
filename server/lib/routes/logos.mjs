@@ -8,7 +8,7 @@
  * third-party logo aggregator — so no new party learns which employers you
  * look at. The fetch goes through the DNS-pinned, SSRF-safe `safeGet` (binary
  * mode), is size-capped and time-bounded, and results are cached in memory
- * (never written to disk — this is a viewer over the parent project). Off by
+ * (never written to disk — this is a read-only viewer). Off by
  * default; the client only calls this when the user enables company logos.
  */
 import { safeGet } from '../safe-fetch.mjs';

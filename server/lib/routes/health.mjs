@@ -9,7 +9,7 @@
  * exact Node versions are replaced with "hidden" to reduce LAN
  * fingerprinting.
  *
- * /api/dashboard aggregates from the parent's applications + pipeline +
+ * /api/dashboard aggregates from the applications + pipeline +
  * reports trees via the defensive store helpers.
  */
 import { readFileSync, existsSync } from 'node:fs';
@@ -65,7 +65,7 @@ export function registerHealthRoutes(app) {
     checks.push({ name: 'ANTHROPIC_API_KEY', required: false, ok: anthropicSet, value: anthropicSet ? 'set' : 'unset (set to enable live "Run" buttons)' });
     // v1.58.8 — every headless live-eval provider gets a row on `#/health`,
     // mirroring the GEMINI/ANTHROPIC pattern. Same `isUsableKey` gate as
-    // /api/status/providers so a placeholder in the parent `.env` is never
+    // /api/status/providers so a placeholder in the `.env` is never
     // reported "set" here. "manual mode" copy matches GEMINI's wording —
     // any provider unset just falls back to the prompt-generation flow.
     checks.push({ name: 'OPENAI_API_KEY',     required: false, ok: openaiSet,     value: openaiSet     ? 'set' : 'unset (manual mode)' });
@@ -108,7 +108,7 @@ export function registerHealthRoutes(app) {
       version = pkg.version || '?';
     } catch {}
     try {
-      // The parent VERSION file may carry a release-please inline comment
+      // The VERSION file may carry a release-please inline comment
       // ("1.15.0 # x-release-please-version") — surface just the semver.
       const raw = readFileSync(PATHS.version, 'utf8').trim();
       parentVersion = (raw.match(/\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?/) || [raw])[0];

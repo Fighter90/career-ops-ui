@@ -1,5 +1,5 @@
 /**
- * Consider adapter (registry contract). Parent career-ops parity.
+ * Consider adapter (registry contract).
  *
  * getconsider.com VC portfolio "talent network" boards. Matches ONLY on an
  * explicit `provider: consider` field — never on careers_url alone — because

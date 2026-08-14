@@ -1,11 +1,11 @@
 /**
- * Amazon / AWS adapter (registry contract). Parent career-ops parity.
+ * Amazon / AWS adapter (registry contract).
  *
  * The amazon.jobs board is one global endpoint, so a tracked_companies entry
  * narrows it with an `amazon:` config block (loc_query / base_query / category …)
  * whose keys pass straight through as query params. It matches on an explicit
- * `provider: amazon` OR a careers_url/api whose host is amazon.jobs (mirroring the
- * parent's `detect`). The endpoint is host-pinned to www.amazon.jobs; the
+ * `provider: amazon` OR a careers_url/api whose host is amazon.jobs. The endpoint
+ * is host-pinned to www.amazon.jobs; the
  * source-level assertAmazonUrl is the hard SSRF guard.
  *
  *   tracked_companies:

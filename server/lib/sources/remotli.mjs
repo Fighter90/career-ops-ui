@@ -7,10 +7,10 @@
  *   → { jobs: [ { jobs: {...}, companies: {...} }, ... ],
  *       pagination: { page, limit, total, totalPages } }
  *
- * Ported from parent career-ops `providers/remotli.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery).
  *
- * Two shape notes measured on the live feed (parent parity):
+ * Two shape notes measured on the live feed:
  *
  *   1. Doubly-nested rows. Each element of the top-level `jobs` array is a JOIN
  *      row `{ jobs, companies }`, and the posting itself lives under `.jobs`.
@@ -99,7 +99,7 @@ export function toEpochMs(value) {
  * decode once — the house order, and the correct one for this API (it decodes on
  * the way out and always answers with real HTML). A second strip after the
  * decode is deliberately NOT added — it re-introduced two HIGH CodeQL alerts
- * (js/double-escaping, js/bad-tag-filter) on the parent before the API stopped
+ * (js/double-escaping, js/bad-tag-filter) before the API stopped
  * mixing entity-encoded and raw-HTML descriptions row by row. Exported for tests.
  * @param {unknown} html
  * @returns {string}
@@ -267,7 +267,7 @@ function pageUrl(base, page) {
  * (1-based) up to `pagination.totalPages`, capped by `company.max_pages` else
  * DEFAULT_MAX_PAGES, deduping by url. Host-pinned, `redirect:'error'` (SSRF-safe).
  *
- * Dead-board contract (parent v1.25.0): a page-1 failure — or a page-1 body that
+ * Dead-board contract: a page-1 failure — or a page-1 body that
  * is not `{ jobs: [...] }` — means we cannot tell a live board from a broken one,
  * so it THROWS and surfaces as a dead target. Once one page has parsed, the board
  * is provably reachable and a later transient failure keeps the partials already

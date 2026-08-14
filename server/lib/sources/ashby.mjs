@@ -26,7 +26,7 @@ export async function fetchAshby(apiUrl, opts = {}) {
   return (data.jobs || []).map((j) => normalize(j));
 }
 
-// v1.75.0 (parent #1073) — build the full location from primary +
+// v1.75.0 — build the full location from primary +
 // secondaryLocations. Ashby puts extra hiring regions in `secondaryLocations[]`
 // (each with a region label and a postalAddress). Using only `j.location` drops
 // them, so an EU-eligible role whose PRIMARY label is e.g. "Canada" reads as

@@ -2,7 +2,7 @@
  * Lever adapter (v1.13.0 registry contract).
  *
  * Detects Lever boards from `careers_url` like `jobs.lever.co/<slug>` or the
- * EU tenancy `jobs.eu.lever.co/<slug>` (parent v1.18.0 parity, Lever EU) and
+ * EU tenancy `jobs.eu.lever.co/<slug>` (Lever EU) and
  * the explicit `api:` field. The API host mirrors the board host —
  * api.lever.co for the US tenancy, api.eu.lever.co for the EU one. Delegates
  * the fetch to server/lib/sources/lever.mjs (preserved verbatim).

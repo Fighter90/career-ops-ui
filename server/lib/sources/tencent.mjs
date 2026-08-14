@@ -2,7 +2,7 @@
  * Tencent careers source — hits the public careers.tencent.com JSON API.
  * Zero-auth, no browser needed.
  *
- * Ported from parent career-ops `providers/tencent.mjs` (#230) into the
+ * Implements the
  * web-ui source contract. Tencent is a single-company board, so it is
  * selected via an explicit `provider: tencent` entry or auto-detected from a
  * careers.tencent.com careers_url. Config comes from the company entry, read

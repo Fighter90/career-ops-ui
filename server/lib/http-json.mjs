@@ -8,10 +8,10 @@
  * helper there would log a skip-warning on every boot. Keeping it here avoids
  * that noise while staying reusable.
  *
- * Mirrors the parent providers' `ctx.fetchJson(url, opts)` contract:
+ * Provides the `fetchJson(url, opts)` contract:
  *   - GET by default; POST when `method`/`body` are supplied.
  *   - `redirect: 'error'` by default — refuses to follow server-side
- *     redirects, which closes the SSRF redirect vector the parent guards.
+ *     redirects, which closes the SSRF redirect vector.
  *   - Throws an Error with `.status` on a non-2xx response so callers can
  *     branch on outage vs empty-result.
  */
@@ -21,7 +21,7 @@
  * blocking a generic UA outright (seen live upstream: Glints' firewall,
  * Cloudflare-gated Workday tenants). Shared so every source working around
  * such a block bumps one constant instead of drifting Chrome versions
- * independently per file. Mirrors parent career-ops `providers/_http.mjs`.
+ * independently per file.
  */
 export const BROWSER_LIKE_USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36';
@@ -30,8 +30,7 @@ export const BROWSER_LIKE_USER_AGENT =
  * undici's `err.cause.message` for a `fetch(url, { redirect: 'error' })` that
  * meets a 3xx. Undocumented and undici-internal, so it is pinned here (and by a
  * test) — if a Node upgrade changes the wording, `fetchJsonWithRetry` reverts to
- * over-retrying a deterministic failure, which the test catches loudly. Mirrors
- * parent career-ops `providers/_http.mjs` (#2657).
+ * over-retrying a deterministic failure, which the test catches loudly.
  */
 export const REDIRECT_REFUSAL_CAUSE_MESSAGE = 'unexpected redirect';
 
@@ -72,7 +71,7 @@ export async function fetchJson(fetchImpl, url, opts = {}) {
  * redirect it hit (jobvite distinguishes a feed pointing at NoJobs.htm — an
  * empty board — from a retired tenant) WITHOUT ever gaining the ability to
  * follow it. Both fields are null for a plain non-redirect error, so existing
- * `redirect:'error'` callers are unaffected. Mirrors parent `providers/_http.mjs`.
+ * `redirect:'error'` callers are unaffected.
  *
  * @param {typeof fetch} fetchImpl
  * @param {string} url
@@ -102,7 +101,7 @@ const NULL_BODY_STATUSES = new Set([204, 205, 304]);
  * Response-returning sibling of {@link fetchText}/{@link fetchJson} for the rare
  * source that needs the RESPONSE HEADERS. csod (Cornerstone) reads the bootstrap
  * home page's `Set-Cookie` to prime the session its search API demands — some
- * tenants answer `401 CSOD Unauthorized` without those cookies (parent #2769).
+ * tenants answer `401 CSOD Unauthorized` without those cookies.
  * Same SSRF stance (`redirect: 'error'` by default, so a 3xx can't be followed
  * to a private host). Non-2xx throws with `.status`, like the siblings.
  *
@@ -110,7 +109,7 @@ const NULL_BODY_STATUSES = new Set([204, 205, 304]);
  * Response: the body is read once here and handed back via `text()`, and
  * `headers` is passed through untouched so `headers.getSetCookie()` (repeated
  * Set-Cookie) still works on a real fetch — and a hand-rolled test stub can
- * expose whatever `headers` it likes. Mirrors parent `providers/_http.mjs`.
+ * expose whatever `headers` it likes.
  *
  * @param {typeof fetch} fetchImpl
  * @param {string} url
@@ -133,8 +132,7 @@ export async function fetchResponse(fetchImpl, url, opts = {}) {
 /**
  * Retrying sibling of {@link fetchJson} for feeds that paginate into the
  * hundreds of pages, where a single transient upstream blip mid-sweep used to
- * abort the whole provider and return nothing (parent career-ops #2506,
- * `providers/_http.mjs::fetchJsonWithRetry`). Retries ONLY transient failures —
+ * abort the whole provider and return nothing. Retries ONLY transient failures —
  * HTTP 429, HTTP ≥ 500, and network/timeout errors that carry no `.status` —
  * with an abort-aware backoff. A permanent 4xx (e.g. 404) is NOT retried: it is
  * rethrown immediately so the caller's dead-board logic still fires. Once the
@@ -146,7 +144,7 @@ export async function fetchResponse(fetchImpl, url, opts = {}) {
  * as a transient network error — but it is deterministic and will never succeed
  * on retry, so retrying it just burns the whole budget before failing. It is
  * distinguished by `err.cause.message === 'unexpected redirect'` and classified
- * non-retryable (parent career-ops #2657; the wording is undici-internal and
+ * non-retryable (the wording is undici-internal and
  * pinned by a test so a silent revert to over-retrying fails loudly. Node < 18.5
  * reports `cause` as undefined, so the check simply doesn't fire there and the
  * old — retryable — classification stands).
@@ -168,7 +166,7 @@ export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
       lastErr = err;
       const status = err && typeof err.status === 'number' ? err.status : undefined;
       // A refused redirect looks like a no-status network error but is
-      // deterministic — never retry it (parent #2657).
+      // deterministic — never retry it.
       const redirectRefusal = status === undefined
         && err instanceof TypeError
         && err?.cause?.message === REDIRECT_REFUSAL_CAUSE_MESSAGE;

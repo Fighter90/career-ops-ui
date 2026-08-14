@@ -1,10 +1,9 @@
 /**
- * Dassault Systèmes adapter (registry contract). Parent career-ops parity
- * (parent `providers/dassault.mjs`, #1498).
+ * Dassault Systèmes adapter (registry contract).
  *
  * Single global Exalead endpoint (like ibm / amazon), so a tracked_companies
  * entry selects it explicitly with `provider: dassault` OR via a careers_url/api
- * whose host is 3ds.com (mirroring the parent's `detect`). The endpoint is
+ * whose host is 3ds.com. The endpoint is
  * host-pinned to www.3ds.com; the source-level assertDassaultUrl is the hard
  * SSRF guard.
  *

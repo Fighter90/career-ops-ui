@@ -5,7 +5,7 @@
  * industrials run at their own domains (jobs.zf.com, jobs.schaeffler.com,
  * jobs.hensoldt.net, jobs.sap.com, …) — all served by the same SF RMK backend.
  *
- * Ported from parent career-ops `providers/successfactors.mjs` into the web-ui
+ * Implements the web-ui
  * source contract (rich job objects + `meta` for auto-discovery). The RMK
  * backend exposes a public, no-auth job-list fragment endpoint:
  *   GET {origin}/tile-search-results/?startrow={N}
@@ -25,7 +25,7 @@
 import { fetchText } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
 
-// Hosts detect() auto-claims (the parent's trusted SF/jobs2web hosts). Branded
+// Hosts detect() auto-claims (the trusted SF/jobs2web hosts). Branded
 // RMK portals (jobs.zf.com …) are NOT auto-claimed — they carry an explicit
 // `provider: successfactors` in portals.yml, which bypasses host detection.
 export const SF_HOST_RE = /(?:^|\.)(?:successfactors\.(?:eu|com)|jobs2web\.com)$/i;
@@ -59,7 +59,7 @@ export function assertSuccessfactorsUrl(url) {
 }
 
 /**
- * Parent #2099 (post-v1.22.0): resolve the tenant BASE — origin plus any
+ * Resolve the tenant BASE — origin plus any
  * brand/tenant path prefix. Some holding companies run several acquired
  * brands off one shared RMK instance, disambiguated by a path segment
  * instead of a separate domain (careers.nemetschek.com/Bluebeam/ vs
@@ -217,7 +217,7 @@ export function parseSuccessfactors(html, { jobBase, fallbackCompany = '' } = {}
  * "live but empty" (meituan/tencent idiom). The `startrow` fetch is left
  * uncaught precisely so a transport error propagates. This web-ui port carries
  * only the RMK tile scraper (no CSB JSON fallback), so there is no post-RMK CSB
- * `probe` carve-out to preserve. Dead-board contract (parent v1.25.0 #2379): a
+ * `probe` carve-out to preserve. Dead-board contract: a
  * page-0 failure (nothing ever fetched) THROWS so scan/portal-health record a
  * real failure; a mid-pagination failure after ≥1 successful page keeps the
  * partials already collected (a transient page-N 5xx/404 must NOT discard the
@@ -273,6 +273,5 @@ export async function fetchSuccessfactors(endpoint, opts = {}) {
     startrow += tiles.length;
   }
   // The cap is checked between pages, so the last page can overshoot it.
-  // (parent career-ops parity, #1528)
   return out.slice(0, MAX_JOBS);
 }

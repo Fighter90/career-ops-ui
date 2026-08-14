@@ -13,7 +13,7 @@
  * event names are unchanged.
  *
  * NOTE: the buffered `scan.mjs` runner (POST /api/run/scan) lives in the
- * runners table inside index.mjs; it spawns the parent's scan.mjs and is
+ * runners table inside index.mjs; it spawns the standalone scan.mjs and is
  * unrelated to these in-process routes.
  */
 import { runRuScan, loadConfig as loadRuConfig } from '../ru-scanner.mjs';

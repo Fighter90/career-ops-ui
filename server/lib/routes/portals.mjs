@@ -1,7 +1,7 @@
 /**
  * Portals health routes (v1.99.0).
  *
- * The scanner watches a set of companies declared in the parent's `portals.yml`
+ * The scanner watches a set of companies declared in `portals.yml`
  * (`tracked_companies:`). An ATS slug can quietly break — a company renames its
  * board or moves off Greenhouse — and then that employer silently vanishes from
  * every future scan with no error. This surfaces that: list the watched

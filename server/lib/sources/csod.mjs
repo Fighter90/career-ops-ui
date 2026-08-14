@@ -4,7 +4,7 @@
  *   https://{tenant}.csod.com/ux/ats/careersite/{siteId}/home?c={corpName}
  * (e.g. OHB: career-ohb.csod.com/ux/ats/careersite/4/home?c=career-ohb).
  *
- * Ported from parent career-ops `providers/csod.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery). The search API is
  * public but wants a bearer token; the career-site home page is a small
  * (~5 KB) bootstrap document that embeds an ANONYMOUS JWT as `"token":"eyJ…"`
@@ -15,20 +15,20 @@
  *      → {data: {totalCount, requisitions: [{requisitionId, displayJobTitle,
  *          postingEffectiveDate: "M/D/YYYY", locations: [{city,state,country}]}]}}
  *
- * Job detail URL (verified live in the parent):
+ * Job detail URL:
  *   {origin}/ux/ats/careersite/{siteId}/home/requisition/{id}?c={corpName}
  *
  * SSRF defence: host is pinned to `csod.com` / `*.csod.com` via CSOD_HOST_RE
  * (checked in resolveConfig AND re-asserted on the endpoint in the fetcher),
- * HTTPS only, `redirect:'error'` on every request. Safety caps preserved from
- * the parent: PAGE_SIZE=25, MAX_PAGES=40, MAX_JOBS=1000.
+ * HTTPS only, `redirect:'error'` on every request. Safety caps: PAGE_SIZE=25,
+ * MAX_PAGES=40, MAX_JOBS=1000.
  *
  * Used by the csod adapter (server/lib/portals/adapters/csod.mjs).
  */
 import { fetchJson, fetchResponse, delay } from '../http-json.mjs';
 
 /**
- * v1.177.0 (parent #2769) — build a `Cookie` request header from the bootstrap
+ * v1.177.0 — build a `Cookie` request header from the bootstrap
  * response's `Set-Cookie` headers. Only the leading `name=value` pair is
  * meaningful on a request; attributes (Path/HttpOnly/Secure/SameSite/Expires)
  * describe browser-jar storage and are dropped. A repeated name takes its last
@@ -56,7 +56,7 @@ export const meta = {
   region: 'en',
 };
 
-const PAGE_SIZE = 25; // server default; the parent verified OHB serves exactly 25/page
+const PAGE_SIZE = 25; // server default; OHB serves exactly 25/page
 const MAX_PAGES = 40; // safety cap on request count (40*25 = 1000 postings)
 const MAX_JOBS = 1000; // cap total postings pulled per site
 const PAGE_DELAY_MS = 120; // polite pacing between search requests
@@ -77,7 +77,7 @@ export function resolveConfig(company) {
   } catch {
     return null;
   }
-  if (u.protocol !== 'https:') return null; // https only (web-ui hardening; parent also allowed http)
+  if (u.protocol !== 'https:') return null; // https only (web-ui hardening)
   if (!CSOD_HOST_RE.test(u.hostname)) return null;
   const m = u.pathname.match(/\/ux\/ats\/careersite\/(\d+)(?:\/|$)/i);
   if (!m) return null;
@@ -197,7 +197,7 @@ function resolveMaxPages(company) {
 }
 
 /**
- * Fetch + normalize a CSOD tenant's postings with the parent's bounded paged
+ * Fetch + normalize a CSOD tenant's postings with a bounded paged
  * walk: token from the home page, then POST-paginate the search API until
  * totalCount, an empty page, a no-fresh-ids page, or MAX_JOBS. A missing token
  * is a hard error (never a silent empty scan).
@@ -213,7 +213,7 @@ export async function fetchCsod(endpoint, opts = {}) {
 
   // The bootstrap page yields two things, not one: the anonymous bearer token,
   // and — on some tenants — the session cookies the search API demands (it
-  // answers "401 CSOD Unauthorized" until they come back with it; parent #2769).
+  // answers "401 CSOD Unauthorized" until they come back with it).
   // Read the response through fetchResponse to see Set-Cookie, then replay it as
   // a Cookie header on the search POST. Same-origin only (assertCsodUrl pins the
   // host; redirect:'error' keeps a 3xx from moving the cookies to another host),

@@ -1,9 +1,9 @@
 /**
- * joinup.ch adapter (registry contract). Parent career-ops parity.
+ * joinup.ch adapter (registry contract).
  *
  * joinup is a board-wide feed of Swiss startup jobs, auto-detected from a
- * `careers_url` whose host is joinup.ch (mirrors the parent provider's
- * hostname-anchored `detect`). The endpoint is the fixed, host-pinned browse
+ * `careers_url` whose host is joinup.ch. The endpoint is the fixed, host-pinned
+ * browse
  * page (BROWSE_URL); the source fetches that constant regardless, so the
  * adapter simply gates on the host match.
  *

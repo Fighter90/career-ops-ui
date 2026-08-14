@@ -2,7 +2,7 @@
  * Jobicy source — board-wide remote-jobs aggregator JSON API.
  *   GET https://jobicy.com/api/v2/remote-jobs?count=50 → { jobs: [...] }
  *
- * Ported from parent career-ops `providers/jobicy.mjs` into the
+ * Implements the
  * web-ui source contract. The full feed is fetched so the
  * en-scanner's title_filter can gate on configured titles.
  *

@@ -4,7 +4,7 @@
  * `__NEXT_DATA__` JSON blob embedded in the SSR-rendered careers-page HTML.
  * No API key needed — the board is server-rendered into the page.
  *
- * Ported from parent career-ops `providers/join.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery). join.com hosts one
  * board per company at https://join.com/companies/<slug>, so a tracked entry is
  * auto-detected from a join.com careers_url (mirrored by the adapter's
@@ -102,8 +102,8 @@ function extractInitialState(html) {
  * it is not ingestible (no `idParam` — the url/id both depend on it, and url is
  * the dedup key). Exported for tests.
  *
- * Field mapping mirrors the parent provider (title/url/company/location) and
- * fills the remaining web-ui fields the same way manfred.mjs does:
+ * Field mapping (title/url/company/location) fills the remaining web-ui fields
+ * the same way manfred.mjs does:
  *   - date is always '' (the list item carries no reliable publication date).
  *   - relocates is derived from a visa/relocation/sponsorship hit on the title.
  *   - isRemote/workplaceType are derived from the location signal (join's list
@@ -172,7 +172,7 @@ export async function fetchJoin(endpoint, opts = {}) {
   }
 
   // The tenant domain (falls back to the URL slug) pins every emitted job url
-  // and is fixed by the first page for the whole crawl (parent parity).
+  // and is fixed by the first page for the whole crawl.
   const companySlug = firstState.company?.domain || slug;
 
   const out = [];

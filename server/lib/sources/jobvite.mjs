@@ -2,7 +2,7 @@
 /**
  * Jobvite source — per-tenant public jobs feed. Used by ~3,000 companies.
  *
- * Ported from parent career-ops `providers/jobvite.mjs` (#2623 migration) into
+ * Implements
  * the web-ui source contract (rich job objects + `meta` for auto-discovery).
  *
  * ───────────────────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ export function assertJobviteUrl(url) {
   return url;
 }
 
-// NaN-safe Date.parse → epoch ms (parent career-ops parity).
+// NaN-safe Date.parse → epoch ms.
 /** @param {string} value */
 function toEpochMs(value) {
   if (!value) return undefined;
@@ -216,8 +216,7 @@ export function isEmptyBoardRedirect(err, requestUrl) {
 // indexOf cursor scanning rather than `xml.matchAll(/<job>([\s\S]*?)<\/job>/g)`
 // and per-tag regexes. The feed is a remote document that can reach ~1.9 MB;
 // the obvious lazy patterns are polynomial-backtracking on input that never
-// closes a tag (CodeQL js/polynomial-redos, high). indexOf walks it once. This
-// mirrors the parent's fixed provider, which switched to the same technique.
+// closes a tag (CodeQL js/polynomial-redos, high). indexOf walks it once.
 
 /** Read one tag out of a `<job>` block, unwrapping CDATA. Index-based (no regex). */
 function tagText(block, name) {

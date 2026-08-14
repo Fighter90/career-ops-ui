@@ -2,7 +2,7 @@
  * RemoteOK source — board-wide remote-jobs aggregator feed.
  *   GET https://remoteok.com/api
  *
- * Ported from parent career-ops v1.12.0 `providers/remoteok.mjs` into the
+ * Implements the
  * web-ui source contract (rich job objects + `meta` for auto-discovery).
  *
  * The feed is a JSON array whose first element is a `{ legal, … }` metadata
@@ -36,7 +36,7 @@ function djb2(str) {
  */
 export async function fetchRemoteOk(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
-  // redirect:'error' mirrors the parent provider's SSRF guard.
+  // redirect:'error' closes the SSRF-via-redirect vector.
   const res = await fetchImpl(feedUrl, {
     signal,
     redirect: 'error',

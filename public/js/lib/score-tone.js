@@ -1,7 +1,7 @@
 /**
- * score-tone.js — shared fit-score → tone mapping (parent web/ port #3, v1.128.0).
+ * score-tone.js — shared fit-score → tone mapping (v1.128.0).
  *
- * Ports the parent career-ops web app's `format.ts` scoreTone: a four-tier
+ * A four-tier
  * threshold (>=4.2 good / >=3.8 warn / >=3.0 muted / <3.0 bad) with a
  * letter-grade fallback (A/B/C/…), replacing our coarse ">=4 high / >=3 mid /
  * else low" split that mis-colored NaN and letter grades. Pure, CSP-safe.

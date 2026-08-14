@@ -1,6 +1,5 @@
 /**
- * Jobvite adapter (registry contract). Parent career-ops `providers/jobvite.mjs`
- * (#2623 XML-feed migration) parity.
+ * Jobvite adapter (registry contract).
  *
  * Jobvite is a per-tenant ATS across TWO fixed hosts: the board lives on
  * `jobs.jobvite.com` (keyed by a vanity slug) and the public jobs feed on

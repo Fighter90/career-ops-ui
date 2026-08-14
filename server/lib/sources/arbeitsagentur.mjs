@@ -4,7 +4,7 @@
  * keywords (recall-first); the en-scanner applies title_filter + location_filter
  * + dedup afterwards.
  *
- * Ported from parent career-ops `providers/arbeitsagentur.mjs` into the web-ui
+ * Implements the web-ui
  * source contract. Config comes from the company entry's `arbeitsagentur:`
  * block, read via `opts.company`:
  *
@@ -74,7 +74,7 @@ export function parseArbeitsagenturConfig(entry) {
     days: intInRange(cfg.days, 30, 1, 1000),
     size: intInRange(cfg.size, 100, 1, 100),
     remoteNationwide: cfg.remoteNationwide === true,
-    // v1.76.0 — config-driven remote detection (parent career-ops v1.13.0 #1189).
+    // v1.76.0 — config-driven remote detection.
     remoteMatch: ['title', 'filter', 'off'].includes(cfg.remoteMatch) ? cfg.remoteMatch : 'title',
     remoteMaxPages: intInRange(cfg.remoteMaxPages, 1, 1, 20),
   };

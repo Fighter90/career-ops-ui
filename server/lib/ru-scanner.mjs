@@ -102,8 +102,8 @@ export function loadConfig() {
     area: ru.area ?? 113, // Russia
     perPage: ru.per_page ?? 50,
     onlyRemote: ru.only_remote ?? false,
-    // v1.33.0 (WS4 / parent #570) — optional portals.yml location_filter.
-    // Top-level key (same as parent scan.mjs), not under russian_portals.
+    // v1.33.0 (WS4) — optional portals.yml location_filter.
+    // Top-level key, not under russian_portals.
     locationFilter: portals.location_filter || null,
     // v1.75.0 (#974) — optional content_filter (top-level key, like parent).
     contentFilter: portals.content_filter || null,
@@ -251,7 +251,7 @@ export async function runRuScan(opts = {}) {
   for (const j of allFound) uniq.set(j.url, j);
   const flat = [...uniq.values()];
 
-  // Apply negative-filter + location-filter (parent #570 parity),
+  // Apply negative-filter + location-filter,
   // then stamp boost flags. Boost is informational only — it doesn't
   // change which rows are returned, only marks the boosted ones so the
   // SPA can render a "⬆ boosted" badge on them.
@@ -263,7 +263,7 @@ export async function runRuScan(opts = {}) {
     && locOk(j.location)
     && contentOk(j.description ?? j.snippet));
   let filtered = applyBoostStamps(filteredRaw, cfg.boosts);
-  // v1.76.0 — optional trust annotation (parent career-ops v1.13.0). Off unless
+  // v1.76.0 — optional trust annotation. Off unless
   // `trust_filter:` is present and not disabled. Never drops a job.
   if (cfg.trustFilter && cfg.trustFilter.enabled !== false) {
     const trust = buildTrustValidator(cfg.trustFilter);

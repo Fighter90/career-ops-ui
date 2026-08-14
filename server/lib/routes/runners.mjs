@@ -88,7 +88,7 @@ const BUFFERED = [
   { route: '/api/run/dedup',      script: 'dedup-tracker.mjs' },
   { route: '/api/run/merge',      script: 'merge-tracker.mjs' },
   { route: '/api/run/sync-check', script: 'cv-sync-check.mjs' },
-  // v1.117.0 (parent parity) — sync pipeline.md "Pendientes" with batch-state.tsv
+  // v1.117.0 — sync pipeline.md "Pendientes" with batch-state.tsv
   { route: '/api/run/reconcile',  script: 'reconcile-pipeline.mjs' },
 ];
 
@@ -102,7 +102,7 @@ export function registerRunnerRoutes(app) {
 
   // v1.12.0 — renamed from `/api/stream/scan` to `/api/stream/scan-parent`
   // so the namespace is free for the consolidated in-process scanner
-  // (F-018 LITE) registered in `routes/scan.mjs`. The parent-spawned
+  // (F-018 LITE) registered in `routes/scan.mjs`. The spawned
   // scan.mjs runner stays available for the kitchen-sink fallback.
   app.get('/api/stream/scan-parent', (req, res) => {
     const args = [];

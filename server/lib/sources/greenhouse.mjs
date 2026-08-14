@@ -13,7 +13,7 @@ export const meta = {
   region: 'en',
 };
 
-// ── Office enrichment (parent #2104) ────────────────────────────────
+// ── Office enrichment ───────────────────────────────────────────────
 // Some Greenhouse boards put the *work model* ("Hybrid", "In-Office",
 // "Distributed") in location.name and keep the actual city only in the
 // separate /offices endpoint — which the /jobs list does not embed. For those
@@ -98,9 +98,9 @@ export async function fetchGreenhouse(apiUrl, opts = {}) {
 function normalize(j, officeMap = null) {
   let loc = j.location?.name || '';
   const offices = (j.offices || []).map((o) => o.name).filter(Boolean);
-  // Parent #2104: when the job's location is a bare work model and /jobs
+  // When the job's location is a bare work model and /jobs
   // embedded no offices, recover the city from the /offices map and fold it
-  // into the location string (matching the parent's `[loc, ...offices]` join)
+  // into the location string (a `[loc, ...offices]` join)
   // so the returned `location` field — and downstream filtering — sees it.
   if (officeMap && isWorkModelOnly(loc) && !offices.length) {
     const fromMap = officeMap.get(j.id);

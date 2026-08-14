@@ -1,11 +1,10 @@
 /**
- * Rheinmetall adapter (registry contract). Parent career-ops parity
- * (parent `providers/rheinmetall.mjs`).
+ * Rheinmetall adapter (registry contract).
  *
  * Single-company SSR list (like dassault / hecklerkoch), so a tracked_companies
  * entry selects it explicitly with `provider: rheinmetall` OR via a
- * careers_url/api whose host is rheinmetall.com (mirroring the parent's
- * `detect`). The endpoint is a plain list URL — the `?page=N` pagination lives
+ * careers_url/api whose host is rheinmetall.com. The endpoint is a plain list
+ * URL — the `?page=N` pagination lives
  * inside the fetcher, driven by opts.company (established repo rule). The
  * source-level assertRheinmetallUrl is the hard SSRF guard.
  *

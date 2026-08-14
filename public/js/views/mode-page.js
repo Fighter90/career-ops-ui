@@ -380,7 +380,7 @@
         ])
       : null;
 
-    // v1.117.0 (parent parity) — the followup mode page gains a deterministic
+    // v1.117.0 — the followup mode page gains a deterministic
     // CADENCE BOARD above the LLM form: GET /api/followup shells out to the
     // parent's followup-cadence.mjs and reports per-application urgency
     // (urgent / overdue / waiting / cold). Fail-soft: without the parent

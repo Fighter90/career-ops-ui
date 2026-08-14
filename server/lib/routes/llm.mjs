@@ -169,7 +169,7 @@ export function registerLlmRoutes(app) {
 
     if (_provGate().wantGemini && hasGeminiKey()) {
       // Use the existing gemini-eval.mjs pipe interface — it reads the
-      // CV from disk itself (it's a Node script in the parent), so no
+      // CV from disk itself (it's a standalone Node script), so no
       // bundleProjectContext needed here.
       const tmpFile = projPath('output', `web-jd-${Date.now()}.txt`);
       mkdirSync(PATHS.outputDir, { recursive: true });

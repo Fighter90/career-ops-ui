@@ -250,7 +250,7 @@ window.ScanResults = (function () {
       // server-side scanner matched a `seniority_boost` keyword on the
       // title. Title attribute reveals WHICH keyword matched, so the
       // user can trace it back to portals.yml.
-      // v1.76.0 — trust badge (parent career-ops v1.13.0). Only shown when
+      // v1.76.0 — trust badge. Only shown when
       // trust_filter is enabled AND the posting is below "high" trust. The badge
       // is language-neutral (⚠ + score/100); the tooltip lists the flag codes,
       // so it renders identically across all 12 locales with no i18n keys.

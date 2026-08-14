@@ -260,7 +260,7 @@ export function scoreStringToNum(s) {
 
 /**
  * FIX-1 — the language-invariant `## Machine Summary` block body, or '' when
- * the report has none. The heading itself is emitted in English by the parent
+ * the report has none. The heading itself is emitted in English by the
  * oferta template regardless of the report's prose locale, so its `score:` /
  * `legitimacy:` / `date:` YAML keys are the reliable, locale-free source.
  */

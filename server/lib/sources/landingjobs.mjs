@@ -2,7 +2,7 @@
  * Landing.jobs source — board-wide tech/Europe-focused aggregator feed.
  *   GET https://landing.jobs/api/v1/jobs  → JSON array of postings
  *
- * Ported from parent career-ops `providers/landingjobs.mjs` into the
+ * Implements the
  * web-ui source contract.
  *
  * NOTE: the v1 feed carries no company-name field — the employer slug only

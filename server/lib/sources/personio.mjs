@@ -4,7 +4,7 @@
  *   GET https://<slug>.jobs.personio.(de|com)/xml
  * (common across DACH/EU companies).
  *
- * Ported from parent career-ops v1.13.0 `providers/personio.mjs` into the web-ui
+ * Implements the web-ui
  * source contract. Per-tenant subdomains vary, so the SSRF defence is an anchored
  * host regex (same approach as bamboohr/breezy) plus `redirect:'error'`. The feed
  * is a flat, well-defined XML document parsed in-process with a tiny tag extractor

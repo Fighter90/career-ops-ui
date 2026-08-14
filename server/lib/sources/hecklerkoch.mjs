@@ -3,7 +3,7 @@
  * Heckler & Koch source — SSR vacancy list at
  *   https://www.heckler-koch.com/de/Karriere/Stellenangebote
  *
- * Ported from parent career-ops `providers/hecklerkoch.mjs` into the web-ui
+ * Implements the web-ui
  * source contract (rich job objects + `meta` for auto-discovery). Single
  * company, zero-token: the Nuxt listing page is SERVER-rendered, so one bare
  * HTTP GET returns every posting (small board, ~32 roles). The apply backend
@@ -61,8 +61,8 @@ export function assertHecklerkochUrl(url) {
 
 /**
  * Resolve the vacancy-list URL from a company's api:/careers_url; any other
- * path on the trusted host defaults to the DE Stellenangebote list (same
- * behaviour as the parent's resolveListUrl, https-only per web-ui policy).
+ * path on the trusted host defaults to the DE Stellenangebote list
+ * (https-only per web-ui policy).
  * Returns null for foreign/spoofed hosts. Exported for the adapter + tests.
  * @param {{ api?: string, careers_url?: string }} company
  */

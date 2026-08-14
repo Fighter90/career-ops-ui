@@ -118,7 +118,7 @@ export async function runEnScan(opts = {}) {
   // "⬆ boosted" badge on those rows so the user can see WHY they're
   // ranked higher.
   const boosts = (tf.seniority_boost || []).map((s) => String(s).toLowerCase());
-  // v1.76.0 — optional trust validation (parent career-ops v1.13.0). Off unless
+  // v1.76.0 — optional trust validation. Off unless
   // `trust_filter:` is present and not disabled. Annotates each job with
   // _trustScore/_trustLevel/_trustFlags so the #/scan table can badge low-trust
   // postings — it NEVER drops a job.
@@ -193,8 +193,7 @@ export async function runEnScan(opts = {}) {
   }
 
   const allRaw = fetchedPerCo.flat();
-  // v1.33.0 (WS4 / parent #570) — optional portals.yml location_filter.
-  // Mirrors the parent scan.mjs semantics exactly. No key → pass-all.
+  // v1.33.0 (WS4) — optional portals.yml location_filter. No key → pass-all.
   const locOk = buildLocationFilter(portals.location_filter);
   // v1.75.0 (#974) — optional content_filter on a posting's description/snippet.
   // No key → pass-all; only sources that ship a description are affected.
@@ -222,7 +221,7 @@ export async function runEnScan(opts = {}) {
       return out;
     });
   const removedTitle = allRaw.length - filtered.length;
-  // v1.84.0 — re-apply cooldown (parent career-ops v1.15.0 / #1201). Drop roles
+  // v1.84.0 — re-apply cooldown. Drop roles
   // at companies you applied to recently, so the scan stays focused on NEW
   // openings. Config: config/profile.yml::re_apply_windows. Off when unset.
   const cooldownToday = new Date().toISOString().slice(0, 10);

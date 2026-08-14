@@ -3,7 +3,7 @@
  *   GET https://www.themuse.com/api/public/jobs?page={n}
  *   Response: { results: [...], page: n, page_count: N }
  *
- * Ported from parent career-ops `providers/themuse.mjs` into the
+ * Implements the
  * web-ui source contract. Fetches up to maxPages pages sequentially.
  *
  * Used by the themuse adapter (server/lib/portals/adapters/themuse.mjs).

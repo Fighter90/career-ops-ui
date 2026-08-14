@@ -1,5 +1,5 @@
 /**
- * Recruitee adapter (registry contract). Parent career-ops parity.
+ * Recruitee adapter (registry contract).
  *
  * Detects a Recruitee tenant from a `careers_url`/`api:` whose host matches
  * `<slug>.recruitee.com`, or from an explicit `provider: recruitee`. The HTTP

@@ -2,7 +2,7 @@
  * Arbeitnow source — board-wide aggregator feed (EU/DACH-heavy, international).
  *   GET https://www.arbeitnow.com/api/job-board-api  → { data: [...], links, meta }
  *
- * Ported from parent career-ops `providers/arbeitnow.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery).
  *
  * The full board is fetched (single page of the public feed) so the en-scanner's

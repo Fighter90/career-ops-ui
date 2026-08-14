@@ -1,8 +1,8 @@
 /**
- * Read-side helpers for parent-project files plus a one-time bootstrap.
+ * Read-side helpers for project files plus a one-time bootstrap.
  *
  * Defensive readers — return empty results on missing / unreadable files
- * instead of crashing the server. Keeps the SPA usable when the parent
+ * instead of crashing the server. Keeps the SPA usable when the project
  * is half-set-up (Health page surfaces the gaps).
  */
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';

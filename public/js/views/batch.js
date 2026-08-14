@@ -94,7 +94,7 @@ Router.register('batch', async () => {
     maxRetriesIn.disabled = !retry.checked;
     if (!retry.checked) maxRetriesIn.value = '';
   });
-  // v1.31.0 — parent career-ops 1.8.0 added batch-runner.sh --model
+  // v1.31.0 — batch-runner.sh gained a --model
   // (#504) + --start-from. Surface both for parity (same defensive
   // server-side validation as --max-retries).
   const modelIn = c('input', {

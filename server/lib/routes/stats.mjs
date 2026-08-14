@@ -89,11 +89,11 @@ export function registerStatsRoutes(app) {
     res.json({ snapshots });
   });
 
-  // v1.117.0 (parent parity) — rejection-pattern / ATS-channel analytics.
-  // Shells out to the parent's `analyze-patterns.mjs` (JSON stdout: outcome
+  // v1.117.0 — rejection-pattern / ATS-channel analytics.
+  // Shells out to the `analyze-patterns.mjs` script (JSON stdout: outcome
   // classification per archetype / seniority / remote / score band, plus the
   // per-ATS-vendor advance rate motivated by Bommasani et al., FAccT 2026)
-  // instead of reimplementing it — the parent stays the source of truth and
+  // instead of reimplementing it — that script stays the source of truth and
   // web-ui cannot drift. Read-only; fail-soft { available:false } when the
   // script is absent (CI, standalone installs) so the tab shows an honest note.
   app.get('/api/stats/patterns', llmRateLimit, async (_req, res) => {
@@ -106,7 +106,7 @@ export function registerStatsRoutes(app) {
     const data = parseJsonStdout(r.stdout);
     // Structured {error} on stdout = a healthy "no data yet" answer (empty
     // tracker), not a failure — relay as available with empty sections so the
-    // tab renders its honest empty state. Keyed to the parent's exact
+    // tab renders its honest empty state. Keyed to the script's exact
     // messages (analyze-patterns.mjs) via isEmptyTrackerError; any OTHER
     // {error} falls through to the honest script-error path below.
     if (data && isEmptyTrackerError(data.error)) {
@@ -124,13 +124,13 @@ export function registerStatsRoutes(app) {
     res.json({ available: true, ...data });
   });
 
-  // v1.118.0 (parent v1.18.0 parity) — lifetime pipeline stats (#1605).
-  // Shells out to the parent's `stats.mjs` (zero-token aggregator: tracker
+  // v1.118.0 — lifetime pipeline stats (#1605).
+  // Shells out to the `stats.mjs` script (zero-token aggregator: tracker
   // roll-up, cumulative funnel, lifetime scanner totals, portal coverage,
   // follow-up compliance). The script degrades sections to null itself when a
   // source file is missing and reports what it found in `metadata.sources`,
   // so a fresh install still relays a full contract shape. Read-only;
-  // fail-soft { available:false } without the parent script.
+  // fail-soft { available:false } without the script.
   app.get('/api/stats/lifetime', llmRateLimit, async (_req, res) => {
     const script = 'stats.mjs';
     if (!existsSync(resolve(PROJECT_ROOT, script))) {
@@ -150,10 +150,10 @@ export function registerStatsRoutes(app) {
     res.json({ available: true, ...data });
   });
 
-  // v1.118.0 (parent v1.18.0 parity) — compensation observations (salary-gap.mjs).
+  // v1.118.0 — compensation observations (salary-gap.mjs).
   // Desired vs advertised vs actual comp, folded from reports' Machine Summary,
   // data/salary-observations.tsv and profile target range. Same relay contract
-  // as /api/stats/lifetime: read-only, fail-soft without the parent script.
+  // as /api/stats/lifetime: read-only, fail-soft without the script.
   app.get('/api/stats/salary-gap', llmRateLimit, async (_req, res) => {
     const script = 'salary-gap.mjs';
     if (!existsSync(resolve(PROJECT_ROOT, script))) {

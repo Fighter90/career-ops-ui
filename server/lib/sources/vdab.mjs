@@ -5,7 +5,7 @@
  * title_filter + location_filter + dedup afterwards, so this source
  * over-fetches (recall-first) — same philosophy as arbeitsagentur.mjs.
  *
- * Ported from parent career-ops `providers/vdab.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (no code lifted). Config comes from the company entry's `vdab:`
  * block, read via `opts.company`:
  *

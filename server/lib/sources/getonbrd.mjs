@@ -3,7 +3,7 @@
  * Get on Board source — board-wide feed for the tech "programming" category
  *   GET https://www.getonbrd.com/api/v0/categories/programming/jobs
  *
- * Ported from parent career-ops `providers/getonbrd.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery). Public, zero-auth
  * JSON:API; `expand[]=company` embeds the company name at the list level. The
  * broad category feed is fetched (not the server-side ?query= search) so the
@@ -52,7 +52,7 @@ function resolveMaxPages(entry) {
 
 function toIsoDate(epochSeconds) {
   // Guard 0/negative epochs — a `published_at` of 0 would otherwise render a
-  // bogus 1970-01-01 date. (parent career-ops parity, #1528)
+  // bogus 1970-01-01 date.
   if (!Number.isFinite(epochSeconds) || epochSeconds <= 0) return '';
   const d = new Date(epochSeconds * 1000);
   return Number.isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);

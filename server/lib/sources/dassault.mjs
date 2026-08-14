@@ -9,7 +9,7 @@
  *       &r=f/card_content_categories_facet/cards language/en   # only the English copy
  *       &start={offset}                                        # 0-based, 10 hits/page
  *
- * Ported from parent career-ops `providers/dassault.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery). Single-company,
  * zero-token; the endpoint is global to 3ds.com so it is provider-selected
  * (`provider: dassault`) like ibm / amazon — there is no per-tenant config.

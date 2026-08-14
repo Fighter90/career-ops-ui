@@ -2,7 +2,7 @@
  * Alibaba Group careers source — posts to the public talent.alibaba.com JSON
  * API (no auth, no login, no browser).
  *
- * Ported from parent career-ops `providers/alibaba.mjs` into the web-ui source
+ * Implements the web-ui source
  * contract. Alibaba is a single-company board, so it is selected via an
  * explicit `provider: alibaba` entry or auto-detected from a talent.alibaba.com
  * careers_url. Config comes from the company entry, read via `opts.company`:

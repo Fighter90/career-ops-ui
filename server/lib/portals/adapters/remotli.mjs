@@ -1,9 +1,9 @@
 /**
- * Remotli adapter (registry contract). Parent career-ops parity.
+ * Remotli adapter (registry contract).
  *
  * remotli.ch is a board-wide curated feed of remote roles at Swiss companies, so
- * a single tracked entry claims the whole board. Detection mirrors the parent's
- * host-based `detect`: a careers_url on remotli.ch, or an explicit
+ * a single tracked entry claims the whole board. Detection is host-based: a
+ * careers_url on remotli.ch, or an explicit
  * `provider: remotli`. The endpoint is the fixed, host-pinned first-page base
  * (`https://remotli.ch/api/jobs`); the source appends `?page=N&limit=50&remote=all`
  * itself, so the adapter's endpoint stays the bare base. assertRemotliUrl in the

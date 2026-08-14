@@ -4,7 +4,7 @@
  * Two-step fetch via Algolia HN API:
  *   1. GET SEARCH_URL → find the latest monthly hiring thread objectID, filtered
  *      to stories posted by the "whoishiring" account (tags=story,author_whoishiring)
- *      rather than a free-text query (parent #3aa5e15). A free-text
+ *      rather than a free-text query. A free-text
  *      "Ask HN Who is hiring" query against search_by_date can, once enough time
  *      passes since the monthly thread posted, rank an unrelated recent story
  *      above it in the top date-sorted hits — every one fails the title regex

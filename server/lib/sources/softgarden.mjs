@@ -7,7 +7,7 @@
  * server-rendered document listing EVERY posting — no auth, no JS, no
  * pagination (filtering happens client-side via AJAX we don't need).
  *
- * Ported from parent career-ops `providers/softgarden.mjs` into the web-ui
+ * Implements the web-ui
  * source contract (rich job objects + `meta`). One posting renders as a
  * `<div class="matchElement" id="job_id_{id}">` block whose `<a href>` is
  * relative to the /{lang}/widgets/ path — resolved against the widget URL so

@@ -1,5 +1,5 @@
 /**
- * Getro adapter (registry contract). Parent career-ops parity.
+ * Getro adapter (registry contract).
  *
  * VC "talent network" portfolio boards (b2venture, Earlybird, Point Nine …),
  * each addressed by a numeric `getro_collection`. Board-wide / per-collection,

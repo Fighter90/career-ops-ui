@@ -2,7 +2,7 @@
  * The Hub source — board-wide public JSON API (Nordic / EU startups).
  *   GET https://thehub.io/api/v2/jobsandfeatured?page=N&countryCode=EU
  *
- * v2 migration (parent career-ops 6b33fc4 + ae905db): the old `/api/jobs`
+ * v2 migration: the old `/api/jobs`
  * endpoint moved to `/api/v2/jobsandfeatured`, which wraps the list in a
  * `jobs` envelope and no longer carries a per-posting URL or posting date.
  *
@@ -24,8 +24,7 @@
  * Paginated 15/page via `?page=N` (1-indexed); the `jobs.pages` field bounds
  * the loop. Default cap is 3 pages; override via opts.maxPages (clamped to [1, 50]).
  *
- * Ported from parent career-ops `providers/thehub.mjs` — reimplemented to the
- * web-ui source contract (no code lifted).
+ * Reimplemented to the web-ui source contract (no code lifted).
  *
  * Used by the thehub adapter (server/lib/portals/adapters/thehub.mjs).
  */
