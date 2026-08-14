@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2510%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2519%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.193.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.193.0)
+[![release](https://img.shields.io/badge/release-v1.194.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.194.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.193.0** — **साक्षात्कार के बाद चुप्पी** — एक नया `#/stats` टैब उन साक्षात्कारों को सूचीबद्ध करता है जो एक शिष्टाचार अवधि (डिफ़ॉल्ट 30 दिन) के बाद चुप हो गए — प्रत्येक कितने समय से चुप है और अंतिम साक्षात्कार की तिथि के साथ। **2510 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.194.0** — **Workday एकल-सेगमेंट URL ठीक** — `https://parsons.wd5.myworkdayjobs.com/Search` जैसे एकल-सेगमेंट पेज अब `External` पर गिरने के बजाय सही जॉब फ़ीड पर पहुँचते हैं। #255 में रिपोर्ट किया गया। **2517 परीक्षण।**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

@@ -8,6 +8,17 @@
 
 ---
 
+## [1.194.0] — 2026-08-14
+
+**修復 (掃描器) — 單段 URL 的 Workday 招聘頁面現在能正確掃描。**
+
+### 修復
+- Workday 轉接器現在能解析路徑為單一段的招聘 URL——例如 `https://parsons.wd5.myworkdayjobs.com/Search`、`.../KBR_Careers`、`.../Careers`。此前站點會退回 `External`，轉接器打到錯誤的 CXS 端點，探測看似正常卻什麼都不回傳。現在取路徑第一個非空段作為站點（丟棄 `en-US` 之類的語言前綴）；文件中的 `/en-US/External` 情形不變。（見 #255。）
+
+### 說明
+- `server/lib/portals/adapters/workday.mjs` 中的結構化路徑解析。`tests/workday-adapter-endpoint.test.mjs`（+5）。測試套件：**2519**。
+
+
 ## [1.193.0] — 2026-08-14
 
 **新增 (統計) — 一個顯示值得提醒的面試的「面試後無回應」分頁。**

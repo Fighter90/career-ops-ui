@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.194.0] — 2026-08-14
+
+**Rettet (scanner) — Workday-karrieresider med en enkelt-segment-URL scannes nu korrekt.**
+
+### Rettet
+- Workday-adapteren parser nu karriere-URL'er hvis sti er ét segment — f.eks. `https://parsons.wd5.myworkdayjobs.com/Search`, `.../KBR_Careers`, `.../Careers`. Før faldt sitet tilbage til `External`, så adapteren ramte det forkerte CXS-endpoint, og en probe kunne se sund ud uden at returnere noget. Den tager nu det første ikke-tomme sti-segment som site (og dropper et sprogpræfiks som `en-US`); det dokumenterede `/en-US/External` er uændret. (Rapporteret i #255.)
+
+### Noter
+- Strukturel sti-parsing i `server/lib/portals/adapters/workday.mjs`. `tests/workday-adapter-endpoint.test.mjs` (+7). Suite: **2519**.
+
+
 ## [1.193.0] — 2026-08-14
 
 **Tilføjet (statistik) — en "Stille efter samtalen"-fane, der fremhæver samtaler værd at følge op på.**

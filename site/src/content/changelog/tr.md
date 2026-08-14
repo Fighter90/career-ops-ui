@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.194.0] — 2026-08-14
+
+**Düzeltildi (tarayıcı) — tek segmentli URL'ye sahip Workday kariyer sayfaları artık doğru taranıyor.**
+
+### Düzeltildi
+- Workday adaptörü artık yolu tek segment olan kariyer URL'lerini ayrıştırıyor — örn. `https://parsons.wd5.myworkdayjobs.com/Search`, `.../KBR_Careers`, `.../Careers`. Önceden site `External`'e düşüyor, adaptör yanlış CXS uç noktasına gidiyor ve bir sonda sağlıklı görünüp hiçbir şey döndürmeyebiliyordu. Artık yolun ilk boş olmayan segmentini site olarak alıyor (`en-US` gibi bir dil önekini atarak); belgelenen `/en-US/External` durumu değişmedi. (#255'te bildirildi.)
+
+### Notlar
+- `server/lib/portals/adapters/workday.mjs` içinde yapısal yol ayrıştırma. `tests/workday-adapter-endpoint.test.mjs` (+7). Takım: **2519**.
+
+
 ## [1.193.0] — 2026-08-14
 
 **Eklendi (istatistikler) — hatırlatmaya değer mülakatları öne çıkaran bir "Mülakat sonrası sessizlik" sekmesi.**

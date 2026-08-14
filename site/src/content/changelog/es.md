@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.194.0] — 2026-08-14
+
+**Corregido (escáner) — las páginas de empleo de Workday con una URL de un solo segmento ahora se escanean correctamente.**
+
+### Corregido
+- El adaptador de Workday ahora analiza las URLs de empleo cuyo path es un solo segmento — p. ej. `https://parsons.wd5.myworkdayjobs.com/Search`, `.../KBR_Careers`, `.../Careers`. Antes, el sitio caía a `External`, así que el adaptador golpeaba el endpoint CXS equivocado y una prueba podía parecer sana sin devolver nada. Ahora toma el primer segmento no vacío del path como sitio (descartando un prefijo de idioma como `en-US`); el caso documentado `/en-US/External` no cambia. (Reportado en #255.)
+
+### Notas
+- Análisis estructural del path en `server/lib/portals/adapters/workday.mjs`. `tests/workday-adapter-endpoint.test.mjs` (+7). Suite: **2519**.
+
+
 ## [1.193.0] — 2026-08-14
 
 **Añadido (estadísticas) — una pestaña "Silencio tras la entrevista" que muestra entrevistas que merecen un recordatorio.**

@@ -9,6 +9,17 @@
 ---
 
 
+## [1.194.0] — 2026-08-14
+
+**수정 (스캐너) — 단일 세그먼트 URL의 Workday 채용 페이지가 이제 올바르게 스캔됩니다.**
+
+### 수정
+- Workday 어댑터가 이제 경로가 단일 세그먼트인 채용 URL을 파싱합니다 — 예: `https://parsons.wd5.myworkdayjobs.com/Search`, `.../KBR_Careers`, `.../Careers`. 이전에는 사이트가 `External`로 떨어져 잘못된 CXS 엔드포인트를 호출했고, 프로브가 정상처럼 보이지만 아무것도 반환하지 않을 수 있었습니다. 이제 경로의 첫 번째 비어 있지 않은 세그먼트를 사이트로 사용합니다(`en-US` 같은 로케일 접두사 제외); 문서화된 `/en-US/External` 케이스는 변하지 않습니다. (#255 보고.)
+
+### 참고
+- `server/lib/portals/adapters/workday.mjs`의 구조적 경로 파싱. `tests/workday-adapter-endpoint.test.mjs` (+7). 스위트: **2519**.
+
+
 ## [1.193.0] — 2026-08-14
 
 **추가 (통계) — 챙길 만한 면접을 보여주는 "면접 후 무응답" 탭.**

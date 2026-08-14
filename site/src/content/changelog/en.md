@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.194.0] — 2026-08-14
+
+**Fixed (scanner) — Workday career pages with a single-segment URL now scan correctly.**
+
+### Fixed
+- The Workday adapter now parses careers URLs whose path is a single segment — e.g. `https://parsons.wd5.myworkdayjobs.com/Search`, `.../KBR_Careers`, `.../Careers`. Before, the site fell back to `External`, so the adapter hit the wrong CXS endpoint (`/wday/cxs/<tenant>/External/jobs`) and a probe could look healthy while returning nothing. It now takes the first non-empty path segment (after an optional locale) as the site (dropping a locale prefix like `en-US`); the documented `/en-US/External` case is unchanged. (Reported in #255.)
+
+### Notes
+- Structural path parse in `server/lib/portals/adapters/workday.mjs` (replaces the two-segment regex). `tests/workday-adapter-endpoint.test.mjs` (+7: single-segment, two-segment, deep-link, locale-only default, uppercase host, api pass-through, matches). Suite: **2519**.
+
+
 ## [1.193.0] — 2026-08-14
 
 **Added (stats) — a "Silent after interview" tab that surfaces interviews worth a nudge.**
