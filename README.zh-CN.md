@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2508%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2510%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.192.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.192.0)
+[![release](https://img.shields.io/badge/release-v1.193.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.193.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.192.0** — **核对你的简历事实** — `#/cv-studio` 新增关卡，将适配的简历或求职信与你真实的简历/档案/two-pager 核对，标出每个编造指标或无据主张（pass/warn/block）。 **2508 项测试。**
+> **🆕 最新版本 — v1.193.0** — **面试后无回应** — 新的 `#/stats` 标签列出超过礼貌等待期（默认 30 天）后陷入沉默的面试——附上每个已沉默多久和最近一次面试日期——让值得提醒的都不遗漏。 **2510 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

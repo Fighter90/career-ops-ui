@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.193.0] — 2026-08-14
+
+**Ajouté (stats) — un onglet « Silence après l'entretien » qui fait remonter les entretiens à relancer.**
+
+### Ajouté
+- Un onglet **Silence après l'entretien** dans `#/stats` : les entretiens devenus silencieux au-delà d'une fenêtre de courtoisie (30 jours par défaut), croisant vos entretiens actifs et votre suivi — avec depuis combien de temps chacun est silencieux, la date du dernier entretien et la raison. Une liste douce de relance/clôture ; suggestions uniquement, jamais une affirmation de refus. Sans token.
+
+### Notes
+- Nouvelle route `GET /api/stats/rejection-latency` (fail-soft `{available:false}`). `tests/stats-rejection-latency-route.test.mjs` (+2). +10 clés i18n ×17 ; help-hint de `#/stats` de 7→8 onglets. Suite : **2510**.
+
+
 ## [1.192.0] — 2026-08-14
 
 **Ajouté (cv-studio) — un garde-fou « Vérifiez les faits de votre CV » qui attrape les chiffres que vous n'avez jamais eus.**

@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.193.0] — 2026-08-14
+
+**Añadido (estadísticas) — una pestaña "Silencio tras la entrevista" que muestra entrevistas que merecen un recordatorio.**
+
+### Añadido
+- Una pestaña **Silencio tras la entrevista** en `#/stats`: entrevistas que quedaron en silencio más allá de una ventana de cortesía (30 días por defecto), uniendo tus entrevistas activas y tu tracker — con cuánto lleva cada una en silencio, la fecha de la última entrevista y el motivo. Una lista suave de recordatorio/cierre; solo sugerencias, nunca afirma un rechazo. Sin tokens.
+
+### Notas
+- Nueva ruta `GET /api/stats/rejection-latency` (fail-soft `{available:false}`). `tests/stats-rejection-latency-route.test.mjs` (+2). +10 claves i18n ×17; help-hint de `#/stats` de 7→8 pestañas. Suite: **2510**.
+
+
 ## [1.192.0] — 2026-08-14
 
 **Añadido (cv-studio) — un control "Verifica los datos de tu CV" que caza números que nunca tuviste.**

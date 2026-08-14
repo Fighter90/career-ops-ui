@@ -145,6 +145,9 @@ Router.register('stats', async () => {
     // v1.191.0 — tracker-wide skill-gap roll-up (weighted 5−score across all
     // evaluated reports, tiered) relayed read-only by /api/stats/upskill.
     { id: 'upskill', label: t('stats.tabUpskill', 'What to learn next'), hint: 'stats.hint.upskill', render: renderUpskill },
+    // v1.193.0 — interviews silent past a courtesy window (default 30d),
+    // relayed read-only by /api/stats/rejection-latency. Suggestion-only.
+    { id: 'rejection', label: t('stats.tabRejection', 'Silent after interview'), hint: 'stats.hint.rejection', render: renderRejection },
   ];
   const tabBar = c('div', { className: 'tabs', role: 'tablist',
     style: { display: 'flex', gap: '6px', flexWrap: 'wrap', borderBottom: '1px solid var(--line, #e5e7eb)', margin: '4px 0 18px' } });
@@ -868,6 +871,58 @@ Router.register('stats', async () => {
     if (excluded.length) {
       wrap.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '10px 0 0' } },
         t('stats.upExcluded', 'Already in your CV/profile (excluded):') + ' ' + excluded.map((e) => String((e && e.skill) || e)).join(', ')));
+    }
+    return wrap;
+  }
+
+  // v1.193.0 — "Silent after interview": interviews that have gone quiet past a
+  // courtesy window, from /api/stats/rejection-latency (rejection-latency.mjs).
+  // A gentle nudge/closure list — suggestion-only, never a rejection claim.
+  async function renderRejection() {
+    const wrap = c('div');
+    let d = null;
+    try { d = await API.get('/api/stats/rejection-latency'); } catch { d = null; }
+    if (!d || d.available !== true) {
+      wrap.appendChild(emptyState(t('stats.rejUnavailable',
+        'This needs the parent career-ops project (rejection-latency.mjs) next to this app.'), null, ''));
+      return wrap;
+    }
+    const chip = (label, value) => c('span', { className: 'chip' }, `${label}: ${String(value)}`);
+    const m = d.metadata || {};
+    wrap.appendChild(c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', margin: '0 0 14px' } }, [
+      chip(t('stats.rejWindow', 'Courtesy window (days)'), m.courtesyDays ?? 30),
+      chip(t('stats.rejCompanies', 'Companies checked'), m.companiesChecked ?? 0),
+      chip(t('stats.rejFlagged', 'Silent past the window'), m.flagged ?? 0),
+    ]));
+
+    const flags = Array.isArray(d.flags) ? d.flags : [];
+    if (!flags.length) {
+      wrap.appendChild(emptyState(t('stats.rejNone',
+        'No interviews are silent past your courtesy window — nothing to chase.'), null, ''));
+    } else {
+      const list = c('div', { className: 'card', style: { padding: '12px' } });
+      for (const f of flags) {
+        if (!f) continue;
+        const line = c('div', { style: { margin: '0 0 10px' } });
+        line.appendChild(c('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' } }, [
+          c('strong', null, String(f.company || '—')),
+          f.role ? c('span', { style: { color: 'var(--foggy)' } }, String(f.role)) : null,
+          c('span', { className: 'badge badge-warn' },
+            `${String(f.daysSinceLastInterview ?? 0)}${t('stats.rejDaysSuffix', 'd silent')}`),
+        ].filter(Boolean)));
+        line.appendChild(c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '4px 0 0' } },
+          `${t('stats.rejLast', 'Last interview')}: ${String(f.lastInterviewDate || '—')}${f.reason ? ' · ' + String(f.reason) : ''}`));
+        list.appendChild(line);
+      }
+      wrap.appendChild(section(t('stats.rejTitle', 'Interviews worth a nudge'), list));
+    }
+
+    if (m.disclaimer) {
+      wrap.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '10px 0 0' } }, String(m.disclaimer)));
+    }
+    const warnings = Array.isArray(d.warnings) ? d.warnings : [];
+    for (const w of warnings) {
+      wrap.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '11px', margin: '4px 0 0' } }, String(w)));
     }
     return wrap;
   }

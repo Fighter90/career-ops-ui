@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.193.0] — 2026-08-14
+
+**Tilføjet (statistik) — en "Stille efter samtalen"-fane, der fremhæver samtaler værd at følge op på.**
+
+### Tilføjet
+- En **Stille efter samtalen**-fane i `#/stats`: samtaler, der er blevet stille ud over et høflighedsvindue (30 dage som standard), der samler dine aktive samtaler og trackeren — med hvor længe hver har været stille, datoen for sidste samtale og årsagen. En blid påmindelses-/afslutningsliste; kun forslag, aldrig en påstand om afslag. Ingen tokens.
+
+### Noter
+- Ny `GET /api/stats/rejection-latency`-rute (fail-soft `{available:false}`). `tests/stats-rejection-latency-route.test.mjs` (+2). +10 i18n-nøgler ×17; `#/stats` help-hint fra 7→8 faner. Suite: **2510**.
+
+
 ## [1.192.0] — 2026-08-14
 
 **Tilføjet (cv-studio) — en "Faktatjek dit CV"-gate, der fanger tal, du aldrig har haft.**

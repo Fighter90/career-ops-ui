@@ -244,4 +244,27 @@ export function registerStatsRoutes(app) {
     }
     res.json({ available: true, ...data });
   });
+
+  // GET /api/stats/rejection-latency — interviews that have gone silent past a
+  // courtesy window (default 30d): a gentle "these deserve a nudge or closure"
+  // list joining data/active-interviews.md + the tracker. Suggestion-only, zero-
+  // token, read-only relay of rejection-latency.mjs (JSON stdout by default).
+  app.get('/api/stats/rejection-latency', llmRateLimit, async (_req, res) => {
+    const script = 'rejection-latency.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      res.json({ available: false, reason: 'script-not-found' });
+      return;
+    }
+    const r = await runNodeScript(script, [], { timeoutMs: 60_000 });
+    const data = parseJsonStdout(r.stdout);
+    if (r.code !== 0 || !data) {
+      res.json({
+        available: false,
+        reason: r.killed ? 'timeout' : (isEmptyTrackerError(r.stderr) ? 'empty-tracker' : 'script-error'),
+        detail: sanitizeDetail(r.stderr),
+      });
+      return;
+    }
+    res.json({ available: true, ...data });
+  });
 }

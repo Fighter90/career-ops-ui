@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.193.0] — 2026-08-14
+
+**Hinzugefügt (Statistik) — ein "Stille nach dem Gespräch"-Tab, der Gespräche zum Nachfassen zeigt.**
+
+### Hinzugefügt
+- Ein **Stille nach dem Gespräch**-Tab in `#/stats`: Gespräche, die nach einem Kulanzfenster (Standard 30 Tage) verstummt sind, verbindet deine aktiven Gespräche und den Tracker — mit der Stille-Dauer, dem letzten Gesprächsdatum und dem Grund. Eine sanfte Erinnerungs-/Abschlussliste; nur Vorschläge, nie eine Absage-Behauptung. Ohne Token.
+
+### Hinweise
+- Neue Route `GET /api/stats/rejection-latency` (fail-soft `{available:false}`). `tests/stats-rejection-latency-route.test.mjs` (+2). +10 i18n-Schlüssel ×17; `#/stats` help-hint von 7→8 Tabs. Suite: **2510**.
+
+
 ## [1.192.0] — 2026-08-14
 
 **Hinzugefügt (cv-studio) — ein "Fakten im Lebenslauf prüfen"-Wächter, der Zahlen findet, die du nie hattest.**
