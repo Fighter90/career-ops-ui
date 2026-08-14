@@ -63,8 +63,8 @@ Every row below corresponds to a documented HTTP action initiated by a UI contro
 | `config/two-pager.yml` | "Save" on `#/two-pager` | `PUT /api/two-pager` (v1.89.0) | Candidate two-pager (bounded YAML). Inlined into eval prompts + `◎` fit badge on scan. |
 | `config/memory.md` | "Save" on `#/memory` | `PUT /api/memory` (v1.93.0) | About-me note; inlined into every AI request via `bundleProjectContext`. |
 | `config/career-plan.md` | "Save" on `#/career-plan` | `PUT /api/career-plan` (v1.95.0) | AI or manual development plan (horizon + focus). |
-| `networking/*.md` | "Save plan" on `#/networking` | `POST /api/networking` (v1.91.0) | One file per saved networking plan. |
-| `interview-prep/mock-*.md` | "Save session" on `#/mock-interview` | `POST /api/interview` (v1.90.0) | Saved mock-interview sessions. |
+| `networking/net-*.md` | "Save plan" on `#/networking` | `POST /api/networking/save` (v1.91.0) | One `net-<slug>-<date>.md` file per saved networking plan. |
+| `interview-prep/mock-*.md` | "Save session" on `#/mock-interview` | `POST /api/mock-interview/save` (v1.90.0) | Saved mock-interview transcripts. |
 | `data/llm-usage.jsonl` | Any user-initiated live LLM call | `recordUsage` via `runActiveProvider` + `routes/llm.mjs` (v1.105.0) | Append-only token/cost log; read back by `GET /api/usage`. An append side-effect of a live eval, not a background job. |
 | `output/web-jd-*.txt`, `web-deep-*.txt`, `gemini-smoke-*.txt` | Live runs (Gemini path) | `POST /api/evaluate`, `POST /api/deep`, `POST /api/evaluate/test-gemini` | Tmp files for `gemini-eval.mjs --file`. Not user-facing; never cleaned up automatically (acceptable — small text files). |
 | `portals.yml` | First boot only | `ensureRussianPortalsDefaults()` at startup | Append `russian_portals:` block if missing. Idempotent — second boot is a no-op. **The single auto-write the UI performs.** |
