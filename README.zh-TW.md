@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2492%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2497%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.187.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.187.0)
+[![release](https://img.shields.io/badge/release-v1.188.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.188.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.187.0** — **`skip_tiers` 重新生效** — `portals.yml` 中的 `skip_tiers: [intern, entry]` 清單現在會在掃描時按資歷層級剔除職位(此前被默默忽略)。 **2492 項測試。**
+> **🆕 最新版本 — v1.188.0** — **按鈕又能「呼吸」了** — 主要操作頁面（每週面試摘要、已募資公司、入口、職涯規劃、職涯定位）的主要操作按鈕不再緊貼頁面副標題，現在有了適當的上邊距。 **2497 項測試。**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

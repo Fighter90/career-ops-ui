@@ -18,7 +18,7 @@ Router.register('interview-digest', async () => {
     t('digest.subtitle', 'A mechanical roll-up of your interview sessions this week — which companies and rounds, recurring competencies, and open gaps. Zero-LLM; reads your interview-prep session notes.')));
 
   const btn = c('button', { className: 'btn btn-primary', type: 'button' }, t('digest.load', 'Load this week'));
-  root.appendChild(c('div', { style: { margin: '0 0 16px' } }, btn));
+  root.appendChild(c('div', { style: { margin: '16px 0' } }, btn));
 
   const out = c('div');
   root.appendChild(out);

@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.188.0] — 2026-08-14
+
+**Behoben (UI) — die primären Aktionsschaltflächen kleben nicht mehr am Seitentitel-Untertitel.**
+
+### Behoben
+- Die primäre Aktions-/Steuerzeile auf **Wöchentliches Interview-Digest**, **Finanzierte Unternehmen**, **Portale**, **Karriereplan** und **Berufsorientierung** hat jetzt einen passenden oberen Abstand, sodass die Schaltfläche unter dem Untertitel Luft bekommt, statt daran zu stoßen.
+
+### Hinweise
+- Regressions-Guard `tests/lead-row-top-margin.test.mjs` (+5). Suite: **2497**.
+
 ## [1.187.0] — 2026-08-14
 
 **Behoben (Scanner) — die `skip_tiers`-Einstellung greift wieder: Stellen, die du nach Seniorität überspringen wolltest, werden verworfen.**

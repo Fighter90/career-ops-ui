@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.188.0] — 2026-08-14
+
+**Rettet (UI) — de primære handlingsknapper sidder ikke længere klods op ad sideundertitlen.**
+
+### Rettet
+- Den primære handlings-/kontrolrække på **Ugentligt interviewresumé**, **Finansierede virksomheder**, **Portaler**, **Karriereplan** og **Karriereorientering** har nu en passende topmargin, så knappen får luft under undertitlen i stedet for at støde op mod den.
+
+### Noter
+- Regressionsvagt `tests/lead-row-top-margin.test.mjs` (+5). Suite: **2497**.
+
 ## [1.187.0] — 2026-08-14
 
 **Rettet (scanner) — `skip_tiers`-indstillingen virker igen: opslag, du bad om at springe over efter senioritet, frasorteres.**

@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.188.0] — 2026-08-14
+
+**Fixed (UI) — lead action buttons no longer sit flush against the page subtitle.**
+
+### Fixed
+- The primary action / control row on **Weekly interview digest**, **Funded companies**, **Portals**, **Career plan**, and **Career orientation** now has a proper top margin, so the button breathes below the page subtitle instead of butting against it.
+
+### Notes
+- Regression guard `tests/lead-row-top-margin.test.mjs` (+5). Suite: **2497**.
+
 ## [1.187.0] — 2026-08-14
 
 **Fixed (scanner) — the `skip_tiers` setting works again: postings you asked to skip by seniority are dropped.**
