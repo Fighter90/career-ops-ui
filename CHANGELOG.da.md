@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.196.0] — 2026-08-14
+
+**Rettet (sikkerhed) — Workday-adapteren validerer et `api`-endpoint på dets hostnavn, ikke en delstreng.**
+
+### Rettet
+- En Workday `api:`-værdi i `portals.yml` accepteres nu kun, når dens **hostnavn** er `myworkdayjobs.com` (eller et `.myworkdayjobs.com`-subdomæne). Det gamle tjek var en delstreng-match, så enhver URL, der blot indeholdt strengen — f.eks. `https://evil.com/?x=myworkdayjobs.com` — kom igennem og ville være blevet brugt som endpoint. Rigtige Workday-endpoints er upåvirkede. (Rapporteret af CodeQL, #443.)
+
+### Noter
+- Ny `isWorkdayApi()` parser URL'en og tjekker hosten (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). Suite: **2522**.
+
+
 ## [1.195.0] — 2026-08-14
 
 **Ydelse (scanner) — repost-detektion forbliver hurtig på store scan-historikker.**

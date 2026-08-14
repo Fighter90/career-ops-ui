@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.196.0] — 2026-08-14
+
+**Corrigido (segurança) — o adaptador do Workday valida um endpoint `api` pelo hostname, não por substring.**
+
+### Corrigido
+- Um valor `api:` do Workday no `portals.yml` agora só é aceito quando seu **hostname** é `myworkdayjobs.com` (ou um subdomínio `.myworkdayjobs.com`). A verificação antiga era uma correspondência de substring, então qualquer URL que apenas contivesse a string — ex. `https://evil.com/?x=myworkdayjobs.com` — passava e seria usada como endpoint. Endpoints reais do Workday não são afetados. (Reportado pelo CodeQL, #443.)
+
+### Notas
+- Novo `isWorkdayApi()` analisa a URL e verifica o host em `server/lib/portals/adapters/workday.mjs`. `tests/workday-adapter-endpoint.test.mjs` (+1). Suíte: **2522**.
+
+
 ## [1.195.0] — 2026-08-14
 
 **Desempenho (scanner) — a detecção de reposts continua rápida em históricos de scan grandes.**

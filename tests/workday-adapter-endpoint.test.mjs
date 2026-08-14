@@ -58,6 +58,28 @@ test('an explicit api endpoint is passed through unchanged', () => {
   assert.equal(workdayAdapter.buildEndpoint({ api, careers_url: 'https://ignored.wd5.myworkdayjobs.com/Search' }), api);
 });
 
+test('an api URL is validated by HOSTNAME, not substring (#443)', () => {
+  // A real Workday api host is accepted and passed through…
+  const real = 'https://acme.wd5.myworkdayjobs.com/wday/cxs/acme/External/jobs';
+  assert.equal(workdayAdapter.matches({ api: real }), true);
+  assert.equal(workdayAdapter.buildEndpoint({ api: real, careers_url: '' }), real);
+  // …but a URL that merely CONTAINS the string is rejected — no SSRF via a
+  // crafted portals.yml `api`. matches → false, buildEndpoint → null.
+  for (const evil of [
+    'https://evil.com/?x=myworkdayjobs.com',
+    'https://myworkdayjobs.com.evil.com/wday/cxs/x/y/jobs',
+    'https://notmyworkdayjobs.com/wday/cxs/x/y/jobs',
+    'not a url at all myworkdayjobs.com',
+    'ftp://acme.wd5.myworkdayjobs.com/x',                                  // non-http scheme
+    'https://user:pass@acme.wd5.myworkdayjobs.com/wday/cxs/x/y/jobs',      // embedded credentials
+  ]) {
+    assert.equal(workdayAdapter.matches({ api: evil }), false, `must reject api: ${evil}`);
+    assert.equal(workdayAdapter.buildEndpoint({ api: evil, careers_url: '' }), null, `must not build from api: ${evil}`);
+  }
+  // The bare apex domain is a valid Workday host.
+  assert.equal(workdayAdapter.matches({ api: 'https://myworkdayjobs.com/x' }), true);
+});
+
 test('matches() recognises Workday careers hosts (single- and two-segment)', () => {
   assert.equal(workdayAdapter.matches({ careers_url: 'https://parsons.wd5.myworkdayjobs.com/Search' }), true);
   assert.equal(workdayAdapter.matches({ careers_url: 'https://acme.wd5.myworkdayjobs.com/en-US/External' }), true);

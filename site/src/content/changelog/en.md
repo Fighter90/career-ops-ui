@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.196.0] — 2026-08-14
+
+**Fixed (security) — the Workday adapter validates an `api` endpoint by its hostname, not a substring.**
+
+### Fixed
+- A `portals.yml` Workday `api:` value is now accepted only when its **hostname** is `myworkdayjobs.com` (or a `.myworkdayjobs.com` subdomain). The old check was a substring match, so any URL that merely contained the string — e.g. `https://evil.com/?x=myworkdayjobs.com` or `https://myworkdayjobs.com.evil.com/…` — passed and would have been handed back as the fetchable endpoint. Real Workday endpoints are unaffected. (Reported by CodeQL, #443.)
+
+### Notes
+- New `isWorkdayApi()` parses the URL and checks the host in `server/lib/portals/adapters/workday.mjs`; used by both `matches()` and `buildEndpoint()`. `tests/workday-adapter-endpoint.test.mjs` (+1). Suite: **2522**.
+
+
 ## [1.195.0] — 2026-08-14
 
 **Performance (scanner) — repost detection stays fast on large scan histories.**
