@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.184.0] — 2026-08-14
+
+**Corrigido (UI) — os blocos de ação rápida do Painel agora se alinham em uma grade uniforme.**
+
+### Corrigido
+- No Painel (Centro de comando), um grupo de 3 blocos ficava mais largo que um de 4, deixando as seções com a borda direita irregular. Agora cada grupo usa colunas de largura igual (4 em tela larga, caindo para 3 / 2 / 1 conforme a janela estreita), então todos os blocos têm o mesmo tamanho e suas bordas direitas se alinham.
+
+### Notas
+- Apenas CSS (`.qa-grid`: `repeat(N, minmax(0,1fr))` fixo em vez de `auto-fill`). Protegido por `tests/dashboard-grid-align.test.mjs` (+2). Suíte: **2479**.
+
 ## [1.183.0] — 2026-08-14
 
 **Adicionado (scanner) — detecção de duplicados mais inteligente: a mesma vaga re-listada com um link de rastreamento não aparece mais duas vezes.**

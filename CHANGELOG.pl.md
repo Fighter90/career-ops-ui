@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.184.0] — 2026-08-14
+
+**Poprawiono (UI) — kafelki szybkich akcji na Pulpicie układają się teraz w równą siatkę.**
+
+### Poprawiono
+- Na Pulpicie (Centrum dowodzenia) grupa 3 kafelków renderowała się szerzej niż grupa 4, przez co sekcje miały nierówną prawą krawędź. Każda grupa używa teraz kolumn o równej szerokości (4 na szerokim ekranie, schodząc do 3 / 2 / 1 przy zwężaniu okna), więc wszystkie kafelki są tej samej wielkości, a ich prawe krawędzie się wyrównują.
+
+### Uwagi
+- Tylko CSS (`.qa-grid`: stałe `repeat(N, minmax(0,1fr))` zamiast `auto-fill`). Chronione przez `tests/dashboard-grid-align.test.mjs` (+2). Zestaw: **2479**.
+
 ## [1.183.0] — 2026-08-14
 
 **Dodano (skaner) — sprytniejsze wykrywanie duplikatów: ta sama oferta ponownie wystawiona z linkiem śledzącym nie pojawia się już dwa razy.**

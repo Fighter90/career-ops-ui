@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.184.0] — 2026-08-14
+
+**Düzeltildi (arayüz) — Panodaki hızlı işlem kutucukları artık düzgün bir ızgarada hizalanıyor.**
+
+### Düzeltildi
+- Panoda (Komuta Merkezi) 3 kutucukluk bir grup 4 kutucukluktan daha geniş görünüyor, bu da bölümlerin sağ kenarını düzensiz bırakıyordu. Artık her grup eşit genişlikte sütunlar kullanıyor (geniş ekranda 4, pencere daraldıkça 3 / 2 / 1'e iniyor), böylece tüm kutucuklar aynı boyutta ve sağ kenarları hizalı.
+
+### Notlar
+- Yalnızca CSS (`.qa-grid`: `auto-fill` yerine sabit `repeat(N, minmax(0,1fr))`). `tests/dashboard-grid-align.test.mjs` ile korunuyor (+2). Takım: **2479**.
+
 ## [1.183.0] — 2026-08-14
 
 **Eklendi (tarayıcı) — daha akıllı yinelenen tespiti: takip bağlantısıyla yeniden yayımlanan aynı ilan artık iki kez görünmüyor.**

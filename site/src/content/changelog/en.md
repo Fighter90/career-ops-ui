@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.184.0] — 2026-08-14
+
+**Fixed (UI) — the Dashboard quick-action tiles now line up in an even grid.**
+
+### Fixed
+- On the Dashboard (Command Center), a group of 3 action tiles used to render wider than a group of 4, so the sections stacked with a ragged right edge. Every group now uses equal-width columns (4 on a wide screen, stepping down to 3 / 2 / 1 as the window narrows), so all tiles are the same size and their right edges align.
+
+### Notes
+- CSS only (`.qa-grid`: fixed `repeat(N, minmax(0,1fr))` instead of `auto-fill`). Guarded by `tests/dashboard-grid-align.test.mjs` (+2). Suite: **2479**.
+
 ## [1.183.0] — 2026-08-14
 
 **Added (scanner) — smarter duplicate detection: the same job re-listed with a tracking link no longer shows up twice.**

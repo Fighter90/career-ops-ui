@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.184.0] — 2026-08-14
+
+**Behoben (UI) — die Schnellaktions-Kacheln im Dashboard richten sich jetzt in einem gleichmäßigen Raster aus.**
+
+### Behoben
+- Im Dashboard (Kommandozentrale) wurde eine Gruppe aus 3 Kacheln breiter dargestellt als eine aus 4, sodass die Abschnitte eine unregelmäßige rechte Kante hatten. Jede Gruppe verwendet jetzt gleich breite Spalten (4 auf breitem Bildschirm, herunter auf 3 / 2 / 1, wenn das Fenster schmaler wird), sodass alle Kacheln gleich groß sind und ihre rechten Kanten fluchten.
+
+### Hinweise
+- Nur CSS (`.qa-grid`: festes `repeat(N, minmax(0,1fr))` statt `auto-fill`). Abgesichert durch `tests/dashboard-grid-align.test.mjs` (+2). Suite: **2479**.
+
 ## [1.183.0] — 2026-08-14
 
 **Hinzugefügt (Scanner) — schlauere Dublettenerkennung: dieselbe Stelle, mit einem Tracking-Link neu eingestellt, erscheint nicht mehr doppelt.**
