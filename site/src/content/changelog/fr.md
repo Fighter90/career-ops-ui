@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.195.0] — 2026-08-14
+
+**Performance (scanner) — la détection de reposts reste rapide sur les gros historiques de scan.**
+
+### Performance
+- La détection de doublons ne dégénère plus en O(N²) sur un gros `scan-history.tsv`. Le regroupement de titres par entreprise était une boucle imbriquée payant un `roleFuzzyMatch` complet à chaque paire ; c'est désormais un index inversé — regrouper les lignes par titre exact en une passe, puis n'effectuer la correspondance floue qu'entre buckets DISTINCTS partageant un token discriminant (non basique). **La sortie est identique** — les mêmes clusters de repost — prouvé par un test différentiel contre l'ancien algorithme sur 200+ historiques aléatoires.
+
+### Notes
+- `groupRowsByTitle` dans `server/lib/detect-reposts.mjs` (exporté pour le test différentiel). `tests/detect-reposts-grouping.test.mjs` (+2). Suite : **2521**.
+
+
 ## [1.194.0] — 2026-08-14
 
 **Corrigé (scanner) — les pages carrières Workday avec une URL à un seul segment se scannent désormais correctement.**

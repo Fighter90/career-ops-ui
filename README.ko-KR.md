@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2519%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2521%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.194.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.194.0)
+[![release](https://img.shields.io/badge/release-v1.195.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.195.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.194.0** — **Workday 단일 세그먼트 URL 수정** — `https://parsons.wd5.myworkdayjobs.com/Search` 같은 단일 세그먼트 페이지가 이제 `External`로 떨어지지 않고 올바른 채용 피드로 연결됩니다. #255 보고. **2517개 테스트.**
+> **🆕 최신 릴리스 — v1.195.0** — **더 빠른 재게시 감지** — 큰 스캔 이력에서 중복 감지가 더 이상 O(N²)가 아닙니다; 회사별 제목 그룹화가 이제 역색인입니다. 출력은 동일(차분 테스트로 증명), 훨씬 빠릅니다. **2521개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

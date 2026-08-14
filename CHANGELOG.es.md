@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.195.0] — 2026-08-14
+
+**Rendimiento (escáner) — la detección de reposts sigue siendo rápida en historiales de escaneo grandes.**
+
+### Rendimiento
+- La detección de publicaciones duplicadas ya no degrada a O(N²) en un `scan-history.tsv` grande. El agrupamiento de títulos por empresa era un bucle anidado que pagaba un `roleFuzzyMatch` completo en cada par; ahora es un índice invertido — agrupa filas por título exacto en una pasada, luego hace coincidencia difusa solo sobre buckets DISTINTOS que comparten un token discriminante (no base). **La salida es idéntica** — los mismos clústeres de repost — probado con un test diferencial contra el algoritmo anterior en 200+ historiales aleatorios.
+
+### Notas
+- `groupRowsByTitle` en `server/lib/detect-reposts.mjs` (exportado para el test diferencial). `tests/detect-reposts-grouping.test.mjs` (+2). Suite: **2521**.
+
+
 ## [1.194.0] — 2026-08-14
 
 **Corregido (escáner) — las páginas de empleo de Workday con una URL de un solo segmento ahora se escanean correctamente.**

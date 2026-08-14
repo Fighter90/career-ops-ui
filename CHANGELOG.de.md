@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.195.0] — 2026-08-14
+
+**Performance (Scanner) — die Repost-Erkennung bleibt bei großen Scan-Historien schnell.**
+
+### Performance
+- Die Duplikat-Erkennung entartet auf einer großen `scan-history.tsv` nicht mehr zu O(N²). Die Titel-Gruppierung pro Firma war eine verschachtelte Schleife, die pro Paar ein volles `roleFuzzyMatch` zahlte; jetzt ist es ein invertierter Index — Zeilen in einem Durchgang nach exaktem Titel bucketen, dann Fuzzy-Match nur zwischen VERSCHIEDENEN Buckets, die einen unterscheidenden (Nicht-Baseline-)Token teilen. **Die Ausgabe ist identisch** — dieselben Repost-Cluster — bewiesen durch einen Differenztest gegen den alten Algorithmus über 200+ zufällige Historien.
+
+### Hinweise
+- `groupRowsByTitle` in `server/lib/detect-reposts.mjs` (für den Differenztest exportiert). `tests/detect-reposts-grouping.test.mjs` (+2). Suite: **2521**.
+
+
 ## [1.194.0] — 2026-08-14
 
 **Behoben (Scanner) — Workday-Karriereseiten mit einer Ein-Segment-URL werden jetzt korrekt gescannt.**

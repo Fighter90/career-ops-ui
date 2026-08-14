@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.195.0] — 2026-08-14
+
+**Performance (scanner) — repost detection stays fast on large scan histories.**
+
+### Performance
+- Duplicate-posting detection no longer degrades to O(N²) on a big `scan-history.tsv`. The per-company title grouping was a nested loop that paid a full `roleFuzzyMatch` (re-tokenizing both titles) on every pair; it is now an inverted index — bucket rows by exact title in one pass, then fuzzy-match only over DISTINCT buckets that share a discriminating (non-baseline) token. **Output is identical** — the exact same repost clusters — proven by a differential test against the old algorithm across 200+ randomised histories.
+
+### Notes
+- `groupRowsByTitle` in `server/lib/detect-reposts.mjs` (exported for the differential test). `tests/detect-reposts-grouping.test.mjs` (+2). Suite: **2521**.
+
+
 ## [1.194.0] — 2026-08-14
 
 **Fixed (scanner) — Workday career pages with a single-segment URL now scan correctly.**
