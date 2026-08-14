@@ -119,7 +119,7 @@ env:
 jobs:
   # Push→main path: reviews HEAD's diff and posts a COMMIT comment.
   push-review:
-    name: Openrouter review (push → main)
+    name: OpenRouter review (push → main)
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
@@ -163,7 +163,7 @@ jobs:
           fi
           echo "subject=$(git log -1 --pretty=%s "$SHA" | head -c 200)" >> "$GITHUB_OUTPUT"
 
-      - name: Openrouter review → commit comment (fail-soft)
+      - name: OpenRouter review → commit comment (fail-soft)
         if: steps.diff.outputs.empty == 'false'
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -214,7 +214,7 @@ jobs:
   # Pull-request path: reviews the PR diff (base..head) and posts a PR
   # comment. Same rubric + same fail-soft curl/jq call as push-review.
   pr-review:
-    name: Openrouter review (pull request)
+    name: OpenRouter review (pull request)
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -247,7 +247,7 @@ jobs:
           # never interpolated into a shell `run:` body) to avoid GitHub
           # Actions script injection from an attacker-controlled title.
 
-      - name: Openrouter review → PR comment (fail-soft)
+      - name: OpenRouter review → PR comment (fail-soft)
         if: steps.diff.outputs.empty == 'false'
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
