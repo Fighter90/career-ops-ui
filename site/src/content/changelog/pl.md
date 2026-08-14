@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.188.0] — 2026-08-14
+
+**Naprawiono (UI) — główne przyciski akcji nie przylegają już do podtytułu strony.**
+
+### Naprawiono
+- Wiersz głównej akcji / sterowania na stronach **Tygodniowy przegląd rozmów**, **Finansowane firmy**, **Portale**, **Plan kariery** i **Orientacja zawodowa** ma teraz odpowiedni górny margines, więc przycisk oddycha pod podtytułem zamiast się o niego opierać.
+
+### Uwagi
+- Zabezpieczenie regresji `tests/lead-row-top-margin.test.mjs` (+5). Zestaw: **2497**.
+
 ## [1.187.0] — 2026-08-14
 
 **Poprawiono (skaner) — ustawienie `skip_tiers` znów działa: oferty, które kazałeś pominąć według stażu, są odrzucane.**

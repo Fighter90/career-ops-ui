@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.188.0] — 2026-08-14
+
+**Corrigé (UI) — les boutons d'action principaux ne collent plus au sous-titre de la page.**
+
+### Corrigé
+- La rangée d'action / de contrôle principale sur **Digest hebdomadaire des entretiens**, **Entreprises financées**, **Portails**, **Plan de carrière** et **Orientation de carrière** a maintenant une marge supérieure adéquate, de sorte que le bouton respire sous le sous-titre au lieu de s'y coller.
+
+### Notes
+- Garde de régression `tests/lead-row-top-margin.test.mjs` (+5). Suite : **2497**.
+
 ## [1.187.0] — 2026-08-14
 
 **Corrigé (scanner) — le réglage `skip_tiers` fonctionne à nouveau : les offres que vous demandiez d'ignorer par niveau sont écartées.**

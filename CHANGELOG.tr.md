@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.188.0] — 2026-08-14
+
+**Düzeltildi (UI) — birincil eylem düğmeleri artık sayfa alt başlığına yapışık durmuyor.**
+
+### Düzeltildi
+- **Haftalık mülakat özeti**, **Yatırım alan şirketler**, **Portallar**, **Kariyer planı** ve **Kariyer yönlendirmesi** sayfalarındaki birincil eylem/kontrol satırı artık uygun bir üst kenar boşluğuna sahip; böylece düğme alt başlığa yaslanmak yerine altında nefes alıyor.
+
+### Notlar
+- Regresyon koruması `tests/lead-row-top-margin.test.mjs` (+5). Takım: **2497**.
+
 ## [1.187.0] — 2026-08-14
 
 **Düzeltildi (tarayıcı) — `skip_tiers` ayarı yeniden çalışıyor: kıdeme göre atlamak istediğiniz ilanlar eleniyor.**

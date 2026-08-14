@@ -36,7 +36,7 @@ Router.register('funded', async () => {
     t('funded.subtitle', 'Recently funded companies to review as fresh targets — discovered from public funding news (TechCrunch, PR Newswire, The Guardian, Hacker News). A starting list for manual review, never an endorsement.')));
 
   const btn = c('button', { className: 'btn btn-primary', type: 'button' }, t('funded.discover', 'Discover'));
-  root.appendChild(c('div', { style: { margin: '0 0 16px' } }, btn));
+  root.appendChild(c('div', { style: { margin: '16px 0' } }, btn));
 
   const out = c('div');
   root.appendChild(out);

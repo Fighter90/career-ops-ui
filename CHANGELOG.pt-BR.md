@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.188.0] — 2026-08-14
+
+**Corrigido (UI) — os botões de ação principais não ficam mais colados no subtítulo da página.**
+
+### Corrigido
+- A linha de ação / controle principal em **Resumo semanal de entrevistas**, **Empresas financiadas**, **Portais**, **Plano de carreira** e **Orientação de carreira** agora tem uma margem superior adequada, então o botão respira abaixo do subtítulo em vez de encostar nele.
+
+### Notas
+- Guarda de regressão `tests/lead-row-top-margin.test.mjs` (+5). Suíte: **2497**.
+
 ## [1.187.0] — 2026-08-14
 
 **Corrigido (scanner) — a opção `skip_tiers` voltou a funcionar: as vagas que você pediu para pular por senioridade são descartadas.**

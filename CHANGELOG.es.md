@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.188.0] — 2026-08-14
+
+**Corregido (UI) — los botones de acción principales ya no quedan pegados al subtítulo de la página.**
+
+### Corregido
+- La fila de acción / control principal en **Resumen semanal de entrevistas**, **Empresas financiadas**, **Portales**, **Plan de carrera** y **Orientación profesional** ahora tiene un margen superior adecuado, así el botón respira bajo el subtítulo en lugar de pegarse a él.
+
+### Notas
+- Guardia de regresión `tests/lead-row-top-margin.test.mjs` (+5). Suite: **2497**.
+
 ## [1.187.0] — 2026-08-14
 
 **Corregido (escáner) — la opción `skip_tiers` vuelve a funcionar: se descartan las publicaciones que pediste omitir por antigüedad.**

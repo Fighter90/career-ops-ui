@@ -35,7 +35,7 @@ Router.register('career-plan', async () => {
   focus.placeholder = t('plan.focusPh', 'Optional emphasis — e.g. move into management, go remote, switch to Go…');
   const genBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('plan.generate', 'Generate plan'));
 
-  root.appendChild(c('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-end', margin: '0 0 16px' } }, [
+  root.appendChild(c('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-end', margin: '16px 0' } }, [
     c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [t('plan.horizon', 'Horizon'), horizon]),
     c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)', flex: '1 1 260px' } }, [t('plan.focus', 'Focus (optional)'), focus]),
     genBtn,

@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.188.0] — 2026-08-14
+
+**Corretto (UI) — i pulsanti d'azione principali non sono più attaccati al sottotitolo della pagina.**
+
+### Corretto
+- La riga di azione / controllo principale in **Riepilogo settimanale dei colloqui**, **Aziende finanziate**, **Portali**, **Piano di carriera** e **Orientamento professionale** ora ha un margine superiore adeguato, così il pulsante respira sotto il sottotitolo invece di appoggiarvisi.
+
+### Note
+- Guardia di regressione `tests/lead-row-top-margin.test.mjs` (+5). Suite: **2497**.
+
 ## [1.187.0] — 2026-08-14
 
 **Corretto (scanner) — l'impostazione `skip_tiers` funziona di nuovo: le offerte che hai chiesto di saltare per seniority vengono scartate.**

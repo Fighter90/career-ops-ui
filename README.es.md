@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2492%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2497%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.187.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.187.0)
+[![release](https://img.shields.io/badge/release-v1.188.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.188.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.187.0** — **`skip_tiers` vuelve a funcionar** — una lista `skip_tiers: [intern, entry]` en `portals.yml` ahora descarta publicaciones por nivel de antigüedad durante el escaneo (antes se ignoraba en silencio). **2492 pruebas.**
+> **🆕 Última versión — v1.188.0** — **Los botones respiran de nuevo** — el botón de acción principal en las páginas de acción principales (resumen de entrevistas, empresas financiadas, portales, plan de carrera, orientación profesional) ya no queda pegado al subtítulo; ahora tiene el margen superior adecuado. **2497 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 
