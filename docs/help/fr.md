@@ -1980,7 +1980,7 @@ Chaque entrée du tiroir affiche :
 
 ## 19. Localizing the app into your language
 
-L'interface est livrée en 9 langues (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Chaque libellé à l'écran provient d'un dictionnaire de traduction, et vous pouvez ajouter ou corriger une langue sans toucher à la logique de l'application.
+L'interface est livrée en 17 langues (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Chaque libellé à l'écran provient d'un dictionnaire de traduction, et vous pouvez ajouter ou corriger une langue sans toucher à la logique de l'application.
 
 **Où vivent les traductions.** Depuis la v1.60.0, chaque langue est son propre fichier sous `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.fr.js`, `i18n-dict.ru.js`, et ainsi de suite — une simple liste de paires `'key': 'text'`. Un `i18n-dict.aliases.js` partagé permet aux clés qui doivent toujours se lire à l'identique (un libellé de barre latérale et son titre de page) de pointer vers une seule traduction. `i18n-dict.js` les fusionne toutes au chargement de la page ; vous ne l'éditez jamais.
 

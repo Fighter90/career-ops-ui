@@ -4,7 +4,7 @@
 
 ## `server/index.mjs` (~130 LOC — pure orchestrator after P-2 phase 2)
 
-The Express app factory `createApp()`. **P-2 phase 2** (v1.9.0, May 2026) finished the split — every route topic now lives in `server/lib/routes/<topic>.mjs`. `index.mjs` is now: middleware (security headers + activity log + static), 12 `register<Topic>Routes(app)` calls, and the SPA catch-all. No inline route handlers remain.
+The Express app factory `createApp()`. **P-2 phase 2** (v1.9.0, May 2026) finished the split — every route topic now lives in `server/lib/routes/<topic>.mjs`. `index.mjs` is now: middleware (security headers + activity log + static), 32 `register<Topic>Routes(app)` calls, and the SPA catch-all. No inline route handlers remain.
 
 Route module manifest (alphabetical):
 

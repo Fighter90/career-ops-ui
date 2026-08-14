@@ -124,7 +124,7 @@ Parses `data/applications.md` into rows.
 
 ### `POST /api/tracker`
 
-Body: `{ company, role, score?, status?, url?, reportSlug?, notes?, date? }`. Required: `company`, `role`. Status whitelist: `Evaluated, Applied, Responded, Interview, Offer, Rejected, Discarded, SKIP`. Dedup by `(company, role)` case-insensitive — returns `{ deduped: true, existingNum }` instead of creating a duplicate. Auto-numbers (zero-padded), bootstraps the table header if missing.
+Body: `{ company, role, score?, status?, url?, reportSlug?, notes?, date? }`. Required: `company`, `role`. Status whitelist: `Evaluated, Applied, Responded, Interview, Offer, Hired, Rejected, Discarded, SKIP`. Dedup by `(company, role)` case-insensitive — returns `{ deduped: true, existingNum }` instead of creating a duplicate. Auto-numbers (zero-padded), bootstraps the table header if missing.
 
 ---
 

@@ -167,7 +167,7 @@
   "faq.q7": "Quais portais de vagas ele consegue varrer?",
   "faq.a7": "~{adapters} adaptadores: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, portais de trabalho remoto e fontes russas (hh.ru, Habr Career, GetMatch e mais). Portais novos são arquivos adaptadores drop-in.",
   "faq.q8": "Quais idiomas ele suporta?",
-  "faq.a8": "{n}: inglês, espanhol, francês, português (BR), coreano, japonês, russo, chinês (simplificado e tradicional), polonês, ucraniano, dinamarquês, árabe (RTL), alemão, italiano e turco — incluindo o guia do usuário completo.",
+  "faq.a8": "{n}: inglês, espanhol, francês, português (BR), coreano, japonês, russo, chinês (simplificado e tradicional), polonês, ucraniano, dinamarquês, árabe (RTL), alemão, italiano, turco e hindi — incluindo o guia do usuário completo.",
   "faq.q9": "Posso contribuir?",
   "faq.a9": "Sim — issues, pull requests e traduções são bem-vindos. Comece pelo guia de contribuição no GitHub.",
   "faq.q10": "É afiliado ao career-ops?",

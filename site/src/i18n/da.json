@@ -167,7 +167,7 @@
   "faq.q7": "Hvilke jobportaler kan den scanne?",
   "faq.a7": "~{adapters} adaptere: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, portaler for fjernarbejde og russiske kilder (hh.ru, Habr Career, GetMatch m.fl.). Nye portaler er simple drop-in-adapterfiler.",
   "faq.q8": "Hvilke sprog understøttes?",
-  "faq.a8": "{n}: engelsk, spansk, fransk, portugisisk (BR), koreansk, japansk, russisk, kinesisk (forenklet og traditionelt), polsk, ukrainsk, dansk, arabisk (RTL), tysk, italiensk og tyrkisk — inklusive den fulde brugervejledning.",
+  "faq.a8": "{n}: engelsk, spansk, fransk, portugisisk (BR), koreansk, japansk, russisk, kinesisk (forenklet og traditionelt), polsk, ukrainsk, dansk, arabisk (RTL), tysk, italiensk, tyrkisk og hindi — inklusive den fulde brugervejledning.",
   "faq.q9": "Kan jeg bidrage?",
   "faq.a9": "Ja — issues, pull requests og oversættelser er velkomne. Start med bidragsguiden på GitHub.",
   "faq.q10": "Er det tilknyttet career-ops?",

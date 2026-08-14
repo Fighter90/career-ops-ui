@@ -40,7 +40,7 @@ This document explains how the test suite is structured, what each tier guarante
    └──────────────────────────────────────────────────────────────────┘  CLI / hook layer
 ```
 
-> **Totals (v1.58.35):** **928** `node --test` cases across **117** files (Tier 1–3),
+> **Totals (v1.197.0):** **2527** `node --test` cases across **296** files (Tier 1–3),
 > plus 4 Playwright/E2E surfaces. (v1.55.1→v1.56.0 added 12 CI-isolated
 > suites for the consolidated UX fix-prompt: auto-stepper-prerender,
 > cv-editor-a11y, onboarding-key-banner, auto-eta-stop, dashboard-hero,
@@ -69,7 +69,7 @@ This document explains how the test suite is structured, what each tier guarante
 |---|---|
 | `parsers.test.mjs` | `parseApplications`, `parsePipeline`, `parseReportHeader`, `slugify`, GFM pipe-escape round-trip |
 | `security.test.mjs` (implicit via `url-validation`, `cv-xss`, `jd-sanitize`) | `isValidJobUrl` SSRF sweep, `stripDangerousMarkdown` HTML-entity bypass sweep, `sanitizeJobDescription` control-char strip, `sanitizePathName` traversal sweep |
-| `i18n-coverage.test.mjs` | Every `t('key', '…')` call in `public/js/**` resolves to a DICT entry with all 8 locales |
+| `i18n-coverage.test.mjs` | Every `t('key', '…')` call in `public/js/**` resolves to a DICT entry with all 17 locales |
 | `file-lock.test.mjs` (inside `concurrent-tracker-write.test.mjs`) | `withFileLock` serializes per-path, releases on throw, different paths run in parallel |
 | `rate-limit.test.mjs` | `llmRateLimit` is no-op on loopback, 429s on public bind at the configured limit, distinct IPs get distinct buckets, window expiry resets bucket |
 | `ssrf-redirect-rebind.test.mjs` | `safeGet` rejects DNS rebind, fails closed on lookup error, caps body size, follows ≤ 3 hops, pins IP via custom transport injection |
@@ -132,7 +132,7 @@ This document explains how the test suite is structured, what each tier guarante
 
 - Dashboard render + footer version
 - Sidebar navigation (every route from CV → Help)
-- Language switcher (8 locales rotate, persist across reload, `<html lang>` updates)
+- Language switcher (17 locales rotate, persist across reload, `<html lang>` updates)
 - Connection banner shows on server kill, auto-hides on recovery (v1.23.0 cadence fix)
 - CV save round-trip + XSS strip in preview
 - Pipeline add + dedup + invalid URL reject

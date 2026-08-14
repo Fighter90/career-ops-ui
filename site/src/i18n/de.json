@@ -167,7 +167,7 @@
   "faq.q7": "Welche Jobbörsen kann es scannen?",
   "faq.a7": "~{adapters} Adapter: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, Remote-Work-Börsen und russische Quellen (hh.ru, Habr Career, GetMatch und mehr). Neue Börsen sind einfache Drop-in-Adapterdateien.",
   "faq.q8": "Welche Sprachen werden unterstützt?",
-  "faq.a8": "{n}: Englisch, Spanisch, Französisch, Portugiesisch (BR), Koreanisch, Japanisch, Russisch, Chinesisch (vereinfacht und traditionell), Polnisch, Ukrainisch, Dänisch, Arabisch (RTL), Deutsch, Italienisch und Türkisch — inklusive vollständigem Handbuch.",
+  "faq.a8": "{n}: Englisch, Spanisch, Französisch, Portugiesisch (BR), Koreanisch, Japanisch, Russisch, Chinesisch (vereinfacht und traditionell), Polnisch, Ukrainisch, Dänisch, Arabisch (RTL), Deutsch, Italienisch, Türkisch und Hindi — inklusive vollständigem Handbuch.",
   "faq.q9": "Kann ich beitragen?",
   "faq.a9": "Ja — Issues, Pull Requests und Übersetzungen sind willkommen. Starte mit dem Contributing-Guide auf GitHub.",
   "faq.q10": "Ist das Projekt mit career-ops verbunden?",

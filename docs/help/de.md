@@ -2076,7 +2076,7 @@ Jeder Schubladeneintrag zeigt:
 
 ## 19. Die App in Ihre Sprache lokalisieren
 
-Die Oberfläche wird in 9 Sprachen ausgeliefert (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Jede Bildschirmbeschriftung stammt aus einem Übersetzungswörterbuch, und Sie können eine Sprache hinzufügen oder korrigieren, ohne die App-Logik zu berühren.
+Die Oberfläche wird in 17 Sprachen ausgeliefert (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Jede Bildschirmbeschriftung stammt aus einem Übersetzungswörterbuch, und Sie können eine Sprache hinzufügen oder korrigieren, ohne die App-Logik zu berühren.
 
 **Wo die Übersetzungen leben.** Seit v1.60.0 ist jede Sprache ihre eigene Datei unter `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js` und so weiter — eine einfache Liste von `'key': 'text'`-Paaren. Ein gemeinsames `i18n-dict.aliases.js` lässt Schlüssel, die immer identisch lauten müssen (eine Seitenleistenbeschriftung und ihr Seitentitel), auf eine Übersetzung zeigen. `i18n-dict.js` führt sie alle beim Laden der Seite zusammen; Sie bearbeiten es nie.
 

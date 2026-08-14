@@ -167,7 +167,7 @@
   "faq.q7": "Quali job board può scansionare?",
   "faq.a7": "~{adapters} adattatori: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, board di lavoro remoto e fonti russe (hh.ru, Habr Career, GetMatch e altre). Le board nuove sono semplici file adattatore drop-in.",
   "faq.q8": "Quali lingue supporta?",
-  "faq.a8": "{n}: inglese, spagnolo, francese, portoghese (BR), coreano, giapponese, russo, cinese (semplificato e tradizionale), polacco, ucraino, danese, arabo (RTL), tedesco, italiano e turco — inclusa la guida utente completa.",
+  "faq.a8": "{n}: inglese, spagnolo, francese, portoghese (BR), coreano, giapponese, russo, cinese (semplificato e tradizionale), polacco, ucraino, danese, arabo (RTL), tedesco, italiano, turco e hindi — inclusa la guida utente completa.",
   "faq.q9": "Posso contribuire?",
   "faq.a9": "Sì — issue, pull request e traduzioni sono benvenute. Parti dalla guida per contribuire su GitHub.",
   "faq.q10": "È affiliato a career-ops?",

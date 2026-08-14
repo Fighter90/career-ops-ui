@@ -1934,7 +1934,7 @@ Hver skuffe-post viser:
 
 ## 19. Lokalisering af appen til dit sprog
 
-Grænsefladen leveres på 9 sprog (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Hver skærm-label kommer fra en oversættelsesordbog, og du kan tilføje eller rette et sprog uden at røre app-logikken.
+Grænsefladen leveres på 17 sprog (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Hver skærm-label kommer fra en oversættelsesordbog, og du kan tilføje eller rette et sprog uden at røre app-logikken.
 
 **Hvor oversættelserne lever.** Siden v1.60.0 er hvert sprog sin egen fil under `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js` osv. — en simpel liste af `'key': 'text'`-par. En delt `i18n-dict.aliases.js` lader nøgler, der altid skal læse identisk (en sidebjælke-label og dens sidetitel), pege på én oversættelse. `i18n-dict.js` fletter dem alle ved sideindlæsning; du redigerer den aldrig.
 

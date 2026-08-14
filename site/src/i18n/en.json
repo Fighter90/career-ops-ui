@@ -165,7 +165,7 @@
   "faq.q7": "Which job boards can it scan?",
   "faq.a7": "~{adapters} adapters: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, remote-work boards and Russian sources (hh.ru, Habr Career, GetMatch and more). New boards are drop-in adapter files.",
   "faq.q8": "Which languages does it support?",
-  "faq.a8": "{n}: English, Spanish, French, Portuguese (BR), Korean, Japanese, Russian, Chinese (Simplified and Traditional), Polish, Ukrainian, Danish, Arabic (RTL), German, Italian and Turkish — including the full user guide.",
+  "faq.a8": "{n}: English, Spanish, French, Portuguese (BR), Korean, Japanese, Russian, Chinese (Simplified and Traditional), Polish, Ukrainian, Danish, Arabic (RTL), German, Italian, Turkish and Hindi — including the full user guide.",
   "faq.q9": "Can I contribute?",
   "faq.a9": "Yes — issues, pull requests and translations are all welcome. Start with the contributing guide on GitHub.",
   "faq.q10": "Is this affiliated with career-ops?",

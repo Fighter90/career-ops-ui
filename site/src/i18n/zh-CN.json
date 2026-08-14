@@ -167,7 +167,7 @@
   "faq.q7": "它能搜索哪些招聘平台?",
   "faq.a7": "约 {adapters} 个适配器:Greenhouse、Ashby、Lever、Workable、SmartRecruiters、Workday、Recruitee、Teamtailor、远程工作平台,以及俄罗斯来源(hh.ru、Habr Career、GetMatch 等)。新平台只需放入一个适配器文件。",
   "faq.q8": "支持哪些语言?",
-  "faq.a8": "{n} 种:英语、西班牙语、法语、葡萄牙语(巴西)、韩语、日语、俄语、中文(简体和繁体)、波兰语、乌克兰语、丹麦语、阿拉伯语(RTL)、德语、意大利语和土耳其语 — 包括完整用户指南。",
+  "faq.a8": "{n} 种:英语、西班牙语、法语、葡萄牙语(巴西)、韩语、日语、俄语、中文(简体和繁体)、波兰语、乌克兰语、丹麦语、阿拉伯语(RTL)、德语、意大利语、土耳其语和印地语 — 包括完整用户指南。",
   "faq.q9": "我可以参与贡献吗?",
   "faq.a9": "可以 — 欢迎 issue、pull request 和翻译。从 GitHub 上的贡献指南开始。",
   "faq.q10": "它和 career-ops 是官方关联吗?",

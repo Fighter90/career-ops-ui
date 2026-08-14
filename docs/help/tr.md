@@ -2016,7 +2016,7 @@ Her çekmece girdisi şunları gösterir:
 
 ## 19. Uygulamayı kendi dilinize yerelleştirme
 
-Arayüz 9 dilde gönderilir (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Ekrandaki her etiket bir çeviri sözlüğünden gelir ve uygulama mantığına dokunmadan bir dili ekleyebilir veya düzeltebilirsiniz.
+Arayüz 17 dilde gönderilir (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Ekrandaki her etiket bir çeviri sözlüğünden gelir ve uygulama mantığına dokunmadan bir dili ekleyebilir veya düzeltebilirsiniz.
 
 **Çevirilerin bulunduğu yer.** v1.60.0'dan beri her dil, `public/js/lib/locales/` altında kendi dosyasıdır — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js` ve benzeri — basit bir `'key': 'text'` çiftleri listesi. Paylaşılan bir `i18n-dict.aliases.js`, her zaman aynı okunması gereken anahtarların (bir kenar çubuğu etiketi ve onun sayfa başlığı) tek bir çeviriye işaret etmesini sağlar. `i18n-dict.js` bunların hepsini sayfa yüklemede birleştirir; onu asla düzenlemezsiniz.
 

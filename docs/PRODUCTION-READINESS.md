@@ -1,23 +1,23 @@
-# Production Readiness — career-ops-ui v1.54.0
+# Production Readiness — career-ops-ui v1.197.0
 
 > Honest assessment, dated 2026-05-18. Updated each minor / patch release. Use this as the gate before deploying.
 
 ## TL;DR
 
-`career-ops-ui` v1.54.0 is **ready for single-tenant production use** on a trusted machine (developer's laptop / personal VPS bound to loopback). Multi-tenant deployments and LAN-exposed instances require the v2.0.x P-12 auth gate first.
+`career-ops-ui` v1.197.0 is **ready for single-tenant production use** on a trusted machine (developer's laptop / personal VPS bound to loopback). Multi-tenant deployments and LAN-exposed instances require the v2.0.x P-12 auth gate first.
 
-Since v1.9.1 (the original baseline of this doc) the codebase shipped through the **P-31 program** (WS0–WS11, v1.31→v1.54): parent-sync, `#/config` field-forms, a complete 40-finding **senior UX/a11y audit** (one fix per release v1.41→v1.52, every screen Playwright-verified), the WS9 test pyramid (shell-surface coverage), and WS10 canonical re-validation (help-bundle H2/H3 parity locked). See `qa/REGRESSION-v1.54.md` for the single authoritative end-to-end spec, `docs/sdd/CONVENTIONS.md` for the codified a11y conventions, and `CHANGELOG.md` (×8 locales) for per-release detail.
+Since v1.9.1 (the original baseline of this doc) the codebase shipped through the **P-31 program** (WS0–WS11, v1.31→v1.54): parent-sync, `#/config` field-forms, a complete 40-finding **senior UX/a11y audit** (one fix per release v1.41→v1.52, every screen Playwright-verified), the WS9 test pyramid (shell-surface coverage), and WS10 canonical re-validation (help-bundle H2/H3 parity locked). See `qa/REGRESSION-v1.54.md` for the single authoritative end-to-end spec, `docs/sdd/CONVENTIONS.md` for the codified a11y conventions, and `CHANGELOG.md` (×17 locales) for per-release detail.
 
 | Dimension | Status | Notes |
 |---|---|---|
-| Architecture | ✅ ready | Orchestrator-only `index.mjs` (~174 LOC); 14 focused route modules under `lib/routes/`. `server/lib/sources/registry.mjs` is the single source of truth for 12 adapters (7 EN-region incl. RSS + 5 RU), auto-discovered at boot since v1.69.0 (P-14). |
-| Tests | ✅ ready | **717** `node --test` cases (unit + functional + acceptance) + 4 E2E surfaces + the shell-surface tier (`bin/*.sh` + `.githooks`, WS9) as of v1.54.0. ~93 % line / ~83 % branch. `npm run test:ci` gates: tests + `check-no-also-leftovers` + 8-locale CHANGELOG parity; `help-ru-config-section.test.mjs` additionally locks H2+H3 help-bundle parity. |
+| Architecture | ✅ ready | Orchestrator-only `index.mjs` (~174 LOC); 32 focused route modules under `lib/routes/`. `server/lib/sources/registry.mjs` is the single source of truth for 79 adapters (74 EN-region incl. RSS + 5 RU), auto-discovered at boot since v1.69.0 (P-14). |
+| Tests | ✅ ready | **2527** `node --test` cases (unit + functional + acceptance) + 4 E2E surfaces + the shell-surface tier (`bin/*.sh` + `.githooks`, WS9) as of v1.197.0. ~93 % line / ~83 % branch. `npm run test:ci` gates: tests + `check-no-also-leftovers` + 17-locale CHANGELOG parity; `help-ru-config-section.test.mjs` additionally locks H2+H3 help-bundle parity. |
 | Accessibility | ✅ ready | WS2 UX-audit (40 findings) shipped: SPA route-focus, focus-trapped `UI.confirm`, WAI-ARIA tabs, SSE live-regions, bound form labels, sortable-table `aria-sort` — codified in `docs/sdd/CONVENTIONS.md`. |
 | Security (single-tenant loopback) | ✅ ready | CSP, SSRF guard, XSS strip, secret masking, log redaction. |
 | Security (LAN exposure) | ⚠️ partial | No auth gate. **Do not** bind `HOST=0.0.0.0` on untrusted networks until P-12. |
 | Operational | ⚠️ partial | Log rotation deferred to P-13; activity.jsonl + scan-history.tsv grow without bound. |
 | CI/CD | ✅ ready | Node 18/20/22 matrix + Playwright e2e + browser smoke. Auto-release via release-please. |
-| Documentation | ✅ ready | Full `docs/` tree, 8 locale CHANGELOGs, multi-CLI shims. |
+| Documentation | ✅ ready | Full `docs/` tree, 17 locale CHANGELOGs, multi-CLI shims. |
 | Observability | ⚠️ partial | Activity log + Health page only. No metrics / traces. Acceptable for single-tenant. |
 
 ## What's safe
@@ -79,10 +79,10 @@ Currently fine — disk usage grows ~slowly, kilobytes per scan. P-13 (Persisten
 
 ## Deployment checklist
 
-Before deploying v1.9.1:
+Before deploying v1.197.0:
 
-1. ✅ `npm test` passes (284 / 284).
-2. ✅ `npm run test:e2e:browser` passes (12 / 12).
+1. ✅ `npm test` passes (2527 / 2527).
+2. ✅ `npm run test:e2e:browser` passes (90 / 90).
 3. ✅ `/api/health` returns `ok: true` for all required checks.
 4. ✅ Parent career-ops project is set up (`cv.md`, `config/profile.yml`, `portals.yml` exist and are personalized).
 5. ✅ `.env` in the parent project root contains the keys you intend to use (`ANTHROPIC_API_KEY` / `GEMINI_API_KEY`).
@@ -102,4 +102,4 @@ P-12 is the only blocker for "production-grade for any deployment." The rest are
 
 ## Sign-off
 
-This document is authoritative as of v1.9.1 (2026-05-08). It will be revisited at every minor release. If you find a gap not listed here, file an issue under `docs/reviews/REVIEW-<date>-<version>.md`.
+This document is authoritative as of v1.197.0 (2026-08-15). It will be revisited at every minor release. If you find a gap not listed here, file an issue under `docs/reviews/REVIEW-<date>-<version>.md`.

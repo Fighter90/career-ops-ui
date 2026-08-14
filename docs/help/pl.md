@@ -1866,7 +1866,7 @@ Każdy wpis szuflady pokazuje:
 
 ## 19. Lokalizacja aplikacji
 
-Interfejs jest dostępny w 9 językach (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文). Każda etykieta na ekranie pochodzi ze słownika tłumaczeń i możesz dodać lub poprawić język bez dotykania logiki aplikacji.
+Interfejs jest dostępny w 17 językach (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Każda etykieta na ekranie pochodzi ze słownika tłumaczeń i możesz dodać lub poprawić język bez dotykania logiki aplikacji.
 
 **Gdzie mieszkają tłumaczenia.** Od v1.60.0 każdy język to własny plik w `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js` itd. — prosta lista par `'klucz': 'tekst'`. Wspólny `i18n-dict.aliases.js` pozwala kluczom, które muszą zawsze brzmieć identycznie (etykieta paska bocznego i tytuł jej strony), wskazywać na jedno tłumaczenie. `i18n-dict.js` scala je wszystkie przy ładowaniu strony; nigdy go nie edytujesz.
 

@@ -359,9 +359,9 @@ career-ops-ui/
 │  ├─ agents/                # 3 project-specific subagents (route, view, test isolation)
 │  └─ commands/               # slash-command stubs
 ├─ bin/start.sh              # one-shot launcher (Node check → npm install → server → open browser)
-├─ package.json              # 2 runtime deps: express, js-yaml
+├─ package.json              # 3 runtime deps: express, js-yaml, multer
 ├─ server/
-│  ├─ index.mjs              # ~130 LOC orchestrator: middleware + 12 register<Topic>Routes(app) calls + SPA catch-all
+│  ├─ index.mjs              # ~130 LOC orchestrator: middleware + 32 register<Topic>Routes(app) calls + SPA catch-all
 │  └─ lib/
 │     ├─ paths.mjs           # absolute paths to career-ops files (CAREER_OPS_ROOT aware)
 │     ├─ parsers.mjs         # markdown / pipeline / report parsers (GFM-compliant pipe escapes)
@@ -381,7 +381,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co client
 │     │  ├─ hh.mjs           # hh.ru/search/vacancy HTML scraper (paginated, UA-aware)
 │     │  └─ habr.mjs         # career.habr.com HTML parser (no cheerio, regex only)
-│     └─ routes/             # 31 route modules — one per topic (P-2)
+│     └─ routes/             # 32 route modules — one per topic (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (parent .env round-trip)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -410,7 +410,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1945 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 2527 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.197.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -541,7 +541,7 @@ When `run: true` is set on `/api/deep` or `/api/mode/:slug`, the server prefers 
 ## Tests
 
 ```bash
-npm test                       # 1945 unit/integration tests
+npm test                       # 2527 unit/integration tests
 npm run test:e2e               # 20 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
@@ -550,11 +550,11 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | What                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1856** | Every endpoint, ephemeral server, no network. 218 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
+| `node --test tests/*.test.mjs` (unit + integration) | **2527** | Every endpoint, ephemeral server, no network. 218 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
 | `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: every route renders, basic flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23    | Full Playwright walkthrough: 11 routes + 12 functional flows.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Browser-driven: dashboard render, navigation, language switch, 404, health, tracker round-trip, pipeline add + invalid-URL sweep, reports, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400, auto-pipeline SSE. |
-| **Total**                   | **1955** | **0 fails, 0 flakes**                                                                                    |
+| **Total**                   | **2527** | **0 fails, 0 flakes**                                                                                    |
 
 Coverage: ~93% line / ~83% branch via `--experimental-test-coverage`.
 
@@ -669,7 +669,7 @@ Then use it via `data-i18n="scan.newButton"` in markup or `t('scan.newButton')` 
 
 Issues and PRs welcome. House rules:
 
-- Run `npm test` before pushing — **284 checks green** is the bar (plus 12 Playwright if you touch UI).
+- Run `npm test` before pushing — **2527 checks green** is the bar (plus 90 Playwright if you touch UI).
 - Non-trivial changes go through the GSD pipeline. See [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Don't modify anything in the parent `career-ops/` project from inside this repo. The whole point is that this is a non-invasive overlay. Hard rules in [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Optional scope: `feat(scan):`. Breaking change: `feat!:`.
