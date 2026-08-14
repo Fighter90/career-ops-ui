@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.184.0] — 2026-08-14
+
+**Corretto (UI) — le tessere di azione rapida della Dashboard ora si allineano in una griglia uniforme.**
+
+### Corretto
+- Nella Dashboard (Centro di comando) un gruppo di 3 tessere veniva reso più largo di uno da 4, lasciando le sezioni con un bordo destro irregolare. Ogni gruppo usa ora colonne di uguale larghezza (4 su schermo ampio, fino a 3 / 2 / 1 al restringersi della finestra), così tutte le tessere hanno la stessa dimensione e i loro bordi destri si allineano.
+
+### Note
+- Solo CSS (`.qa-grid`: `repeat(N, minmax(0,1fr))` fisso invece di `auto-fill`). Protetto da `tests/dashboard-grid-align.test.mjs` (+2). Suite: **2479**.
+
 ## [1.183.0] — 2026-08-14
 
 **Aggiunto (scanner) — rilevamento duplicati più intelligente: la stessa offerta ripubblicata con un link di tracciamento non compare più due volte.**

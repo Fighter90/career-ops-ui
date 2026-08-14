@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.184.0] — 2026-08-14
+
+**Corregido (UI) — los mosaicos de acción rápida del Panel ahora se alinean en una cuadrícula pareja.**
+
+### Corregido
+- En el Panel (Centro de mando), un grupo de 3 mosaicos se veía más ancho que uno de 4, dejando las secciones con un borde derecho irregular. Ahora cada grupo usa columnas de igual ancho (4 en pantalla amplia, bajando a 3 / 2 / 1 al estrecharse la ventana), así todos los mosaicos son del mismo tamaño y sus bordes derechos se alinean.
+
+### Notas
+- Solo CSS (`.qa-grid`: `repeat(N, minmax(0,1fr))` fijo en vez de `auto-fill`). Protegido por `tests/dashboard-grid-align.test.mjs` (+2). Suite: **2479**.
+
 ## [1.183.0] — 2026-08-14
 
 **Añadido (escáner) — detección de duplicados más inteligente: el mismo empleo re-publicado con un enlace de seguimiento ya no aparece dos veces.**

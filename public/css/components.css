@@ -213,9 +213,16 @@
 }
 .qa-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  /* Fixed column count (not auto-fill) so a 3-tile group and a 4-tile group
+     render tiles of the SAME width and share a flush right edge — an auto-fill
+     grid let shorter groups stretch their tiles wider, leaving the sections
+     visually ragged. minmax(0,1fr) keeps a long label from blowing out a track. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-3);
 }
+@media (max-width: 1180px) { .qa-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 820px)  { .qa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px)  { .qa-grid { grid-template-columns: 1fr; } }
 .qa-tile {
   display: flex;
   align-items: center;

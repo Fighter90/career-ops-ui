@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.184.0] — 2026-08-14
+
+**Rettet (UI) — Dashboardets hurtighandlingsfliser flugter nu i et jævnt gitter.**
+
+### Rettet
+- På Dashboardet (Kommandocentralen) blev en gruppe på 3 fliser bredere end en på 4, så sektionerne stod med en ujævn højrekant. Hver gruppe bruger nu lige brede kolonner (4 på en bred skærm, ned til 3 / 2 / 1 når vinduet bliver smallere), så alle fliser har samme størrelse og deres højrekanter flugter.
+
+### Noter
+- Kun CSS (`.qa-grid`: fast `repeat(N, minmax(0,1fr))` i stedet for `auto-fill`). Beskyttet af `tests/dashboard-grid-align.test.mjs` (+2). Suite: **2479**.
+
 ## [1.183.0] — 2026-08-14
 
 **Tilføjet (scanner) — smartere dublet-registrering: det samme job genopslået med et sporingslink vises ikke længere to gange.**

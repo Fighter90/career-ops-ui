@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.184.0] — 2026-08-14
+
+**Corrigé (UI) — les tuiles d'action rapide du Tableau de bord s'alignent désormais sur une grille régulière.**
+
+### Corrigé
+- Sur le Tableau de bord (Centre de commande), un groupe de 3 tuiles s'affichait plus large qu'un groupe de 4, laissant les sections avec un bord droit irrégulier. Chaque groupe utilise maintenant des colonnes de largeur égale (4 sur grand écran, réduites à 3 / 2 / 1 quand la fenêtre se rétrécit), si bien que toutes les tuiles ont la même taille et que leurs bords droits s'alignent.
+
+### Notes
+- CSS uniquement (`.qa-grid` : `repeat(N, minmax(0,1fr))` fixe au lieu de `auto-fill`). Protégé par `tests/dashboard-grid-align.test.mjs` (+2). Suite : **2479**.
+
 ## [1.183.0] — 2026-08-14
 
 **Ajouté (scanner) — détection des doublons plus intelligente : la même offre re-publiée avec un lien de suivi n'apparaît plus deux fois.**
