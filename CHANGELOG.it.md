@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.198.0] — 2026-08-15
+
+**Aggiunto — i ritentativi di scansione ora usano backoff esponenziale, jitter e rispettano il `Retry-After` di un limitatore di frequenza.**
+
+### Aggiunto
+- Quando una bacheca di annunci limita la frequenza o fallisce brevemente (HTTP 429 / 5xx) durante una scansione, il ritentativo ora attende con **backoff esponenziale + jitter** invece di un ritardo breve fisso — una bacheca occupata non viene martellata alla stessa cadenza e i ritentativi concorrenti non si ri-scontrano all'unisono. Un `Retry-After` della bacheca viene **rispettato** (ma limitato, così un `Retry-After: 86400` ostile non può bloccare l'intera scansione). Gli errori permanenti (404, redirect rifiutati) falliscono ancora subito — invariato.
+
+### Note
+- Nuove `parseRetryAfterMs()` e la pura `computeRetryDelayMs()` in `server/lib/http-json.mjs`; `fetchJson` ora cattura `.retryAfter` su una risposta non-ok e `fetchJsonWithRetry` accetta un `maxDelayMs` opzionale (predefinito 8000). `tests/http-json.test.mjs` (+9). Suite: **2536**.
+
+
 ## [1.197.0] — 2026-08-14
 
 **Aggiunto — segui una bacheca di annunci di un fondo Getro con la sola `careers_url`; l'id della collezione si risolve da solo.**

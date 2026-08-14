@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.198.0] — 2026-08-15
+
+**Tilføjet — scan-genforsøg bruger nu eksponentiel backoff, jitter og respekterer en rate-limiters `Retry-After`.**
+
+### Tilføjet
+- Når et jobboard kortvarigt rate-limiter eller fejler (HTTP 429 / 5xx) midt i en scanning, venter genforsøget nu med **eksponentiel backoff + jitter** i stedet for en fast kort forsinkelse — et travlt board hamres ikke i samme kadence, og samtidige genforsøg kolliderer ikke igen i lockstep. Et `Retry-After` fra boardet **respekteres** (men klemmes, så et fjendtligt `Retry-After: 86400` ikke kan stoppe hele scanningen). Permanente fejl (404, afviste omdirigeringer) fejler stadig med det samme — uændret.
+
+### Noter
+- Nye `parseRetryAfterMs()` og den rene `computeRetryDelayMs()` i `server/lib/http-json.mjs`; `fetchJson` fanger nu `.retryAfter` på et ikke-ok-svar, og `fetchJsonWithRetry` tager et valgfrit `maxDelayMs` (standard 8000). `tests/http-json.test.mjs` (+9). Suite: **2536**.
+
+
 ## [1.197.0] — 2026-08-14
 
 **Tilføjet — følg et Getro VC-jobboard alene ud fra dets `careers_url`; collection-id'et løses automatisk.**

@@ -9,6 +9,17 @@
 ---
 
 
+## [1.198.0] — 2026-08-15
+
+**新增 —— 扫描重试现在采用指数退避、抖动，并尊重限流方的 `Retry-After`。**
+
+### 新增
+- 当招聘板在扫描途中短暂限流或出错（HTTP 429 / 5xx）时，重试现在以**指数退避 + 抖动**等待，而非固定的短延迟 —— 这样繁忙的招聘板不会被以相同节奏反复敲打，并发重试也不会同步再次冲撞。招聘板发来的 `Retry-After` 会被**尊重**（但有上限，使恶意的 `Retry-After: 86400` 无法拖住整次扫描）。永久性错误（404、被拒绝的重定向）仍然立即失败 —— 无变化。
+
+### 说明
+- 在 `server/lib/http-json.mjs` 中新增 `parseRetryAfterMs()` 与纯函数 `computeRetryDelayMs()`；`fetchJson` 现在在非 ok 响应上捕获 `.retryAfter`，`fetchJsonWithRetry` 接受可选的 `maxDelayMs`（默认 8000）。`tests/http-json.test.mjs` (+9)。测试套件：**2536**。
+
+
 ## [1.197.0] — 2026-08-14
 
 **新增 — 仅凭 `careers_url` 即可追踪 Getro 的 VC 招聘板，集合 id 会自动解析。**

@@ -47,6 +47,10 @@ export async function fetchJson(fetchImpl, url, opts = {}) {
   if (!res.ok) {
     const err = new Error(`HTTP ${res.status} (${url})`);
     err.status = res.status;
+    // Captured so fetchJsonWithRetry can honour a 429/503 `Retry-After` (null
+    // when absent → the caller falls back to exponential backoff). res.headers
+    // may be absent on a hand-rolled test stub.
+    err.retryAfter = res.headers?.get?.('retry-after') ?? null;
     throw err;
   }
   try {
@@ -129,6 +133,49 @@ export async function fetchResponse(fetchImpl, url, opts = {}) {
   return { status: res.status, headers: res.headers, text: async () => text };
 }
 
+/** Jitter added to a backoff so concurrent retries don't re-collide in lockstep. */
+export const JITTER_MS = 250;
+
+/**
+ * Milliseconds from a `Retry-After` header, in either permitted form (delta
+ * seconds, or an HTTP-date). Null when absent or unparseable. Exported for tests.
+ * @param {unknown} value
+ * @returns {number|null}
+ */
+export function parseRetryAfterMs(value) {
+  if (value == null || value === '') return null;
+  const secs = Number(value);
+  if (Number.isFinite(secs) && secs >= 0) return secs * 1000;
+  const dateMs = Date.parse(String(value));
+  return Number.isFinite(dateMs) ? Math.max(0, dateMs - Date.now()) : null;
+}
+
+/**
+ * How long to wait before the next retry. A `Retry-After` (when the failed
+ * response carried one) wins but is CLAMPED to `maxDelayMs * 4`, so a hostile or
+ * misconfigured `Retry-After: 86400` can't stall a whole sweep. Otherwise an
+ * exponential backoff (`baseDelayMs * 2**attempt`, capped at `maxDelayMs` minus
+ * the jitter) plus a random jitter so concurrent retries de-synchronise instead
+ * of re-colliding in lockstep. `rand` is injectable for deterministic tests.
+ * Exported for tests.
+ * @param {{ attempt: number, baseDelayMs: number, maxDelayMs: number, retryAfter?: unknown }} p
+ * @param {() => number} [rand]
+ * @returns {number} milliseconds
+ */
+export function computeRetryDelayMs({ attempt, baseDelayMs, maxDelayMs, retryAfter }, rand = Math.random) {
+  const retryAfterMs = parseRetryAfterMs(retryAfter);
+  if (retryAfterMs !== null) return Math.min(retryAfterMs, maxDelayMs * 4);
+  // Clamp the jitter to maxDelayMs first (a maxDelayMs below JITTER_MS would
+  // otherwise drive the ceiling — and the backoff — negative); cap the backoff
+  // at maxDelayMs MINUS the jitter so the jittered total still honours the limit.
+  const jitterCap = Math.min(JITTER_MS, Math.max(0, maxDelayMs));
+  const ceiling = Math.max(0, maxDelayMs - jitterCap);
+  const backoff = Math.min(baseDelayMs * 2 ** attempt, ceiling);
+  // Jitter only when there's an actual backoff to de-synchronise, so a 0 base
+  // (instant-retry / test mode) stays exactly 0.
+  return backoff + (backoff > 0 ? rand() * jitterCap : 0);
+}
+
 /**
  * Retrying sibling of {@link fetchJson} for feeds that paginate into the
  * hundreds of pages, where a single transient upstream blip mid-sweep used to
@@ -153,11 +200,11 @@ export async function fetchResponse(fetchImpl, url, opts = {}) {
  * @param {string} url
  * @param {{ method?: string, headers?: Record<string,string>, body?: string,
  *           signal?: AbortSignal, redirect?: 'error'|'follow'|'manual',
- *           retries?: number, retryDelayMs?: number }} [opts]
+ *           retries?: number, retryDelayMs?: number, maxDelayMs?: number }} [opts]
  * @returns {Promise<any>}
  */
 export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
-  const { retries = 2, retryDelayMs = 500, signal, ...rest } = opts;
+  const { retries = 2, retryDelayMs = 500, maxDelayMs = 8000, signal, ...rest } = opts;
   let lastErr;
   for (let attempt = 0; attempt <= retries; attempt += 1) {
     try {
@@ -175,7 +222,10 @@ export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
       const transient = !redirectRefusal
         && (status === undefined || status === 429 || status >= 500);
       if (!transient || attempt === retries || signal?.aborted) throw err;
-      await delay(retryDelayMs, signal);
+      // Exponential backoff + jitter, honouring a (clamped) Retry-After when the
+      // 429/503 carried one — instead of a flat delay that keeps re-hammering a
+      // rate-limited board at a fixed cadence.
+      await delay(computeRetryDelayMs({ attempt, baseDelayMs: retryDelayMs, maxDelayMs, retryAfter: err?.retryAfter }), signal);
     }
   }
   throw lastErr;

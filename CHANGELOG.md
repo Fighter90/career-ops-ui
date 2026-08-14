@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.198.0] — 2026-08-15
+
+**Added — scan retries now use exponential backoff, jitter, and honour a rate-limiter's `Retry-After`.**
+
+### Added
+- When a job board briefly rate-limits or errors (HTTP 429 / 5xx) mid-scan, the retry now waits with **exponential backoff + jitter** instead of a fixed short delay — so a busy board isn't re-hammered at a fixed cadence and concurrent retries don't re-collide in lockstep. A `Retry-After` from the board is **honoured** (but clamped, so a hostile `Retry-After: 86400` can't stall a whole sweep). Permanent errors (404, refused redirects) still fail fast — unchanged.
+
+### Notes
+- New `parseRetryAfterMs()` + the pure `computeRetryDelayMs()` in `server/lib/http-json.mjs`; `fetchJson` now captures `.retryAfter` on a non-ok response and `fetchJsonWithRetry` takes an optional `maxDelayMs` (default 8000). `tests/http-json.test.mjs` (+9). Suite: **2536**.
+
+
 ## [1.197.0] — 2026-08-14
 
 **Added — track a Getro VC job board by its `careers_url` alone; the collection id auto-resolves.**
