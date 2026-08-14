@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.190.0] — 2026-08-14
+
+**Aggiunto (tracker) — un pannello "Cronologia azienda" che ti dice quali aziende ti rispondono davvero.**
+
+### Aggiunto
+- Una scheda **Cronologia azienda** su `#/tracker`: scegli un'azienda e ottieni prove in sola lettura — quanto è stata reattiva con te (**in silenzio con te** / **misto** / **ha già risposto**) e se lo stesso ruolo viene **ripubblicato** — unendo tracker, follow-up e cronologia di scansione. Nessun token; lo scanner non viene mai chiamato.
+
+### Note
+- Nuova rotta `GET /api/stats/company-history[?company=]` (fail-soft `{available:false}`). `tests/stats-company-history-route.test.mjs` (+3). +18 chiavi i18n ×17. Suite: **2501**.
+
+
 ## [1.189.0] — 2026-08-14
 
 **Corretto (scanner) — i livelli di anzianità scritti in numeri romani ora contano anche nei titoli non latini.**

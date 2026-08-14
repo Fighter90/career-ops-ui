@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.190.0] — 2026-08-14
+
+**Hinzugefügt (Tracker) — ein "Firmenhistorie"-Panel, das zeigt, welche Firmen dir tatsächlich antworten.**
+
+### Hinzugefügt
+- Eine **Firmenhistorie**-Karte auf `#/tracker`: wähle eine Firma und erhalte schreibgeschützte Belege — wie sehr sie dir geantwortet hat (**schweigt dir gegenüber** / **gemischt** / **hat schon geantwortet**) und ob dieselbe Stelle immer wieder **neu ausgeschrieben** wird — verbunden aus Tracker, Follow-ups und Scan-Historie. Ohne Token; der Scanner wird nie aufgerufen.
+
+### Hinweise
+- Neue Route `GET /api/stats/company-history[?company=]` (fail-soft `{available:false}`). `tests/stats-company-history-route.test.mjs` (+3). +18 i18n-Schlüssel ×17. Suite: **2501**.
+
+
 ## [1.189.0] — 2026-08-14
 
 **Behoben (Scanner) — als römische Ziffern geschriebene Senioritätsstufen zählen jetzt auch bei nicht-lateinischen Titeln.**

@@ -195,4 +195,30 @@ export function registerStatsRoutes(app) {
     }
     res.json({ available: true, ...data });
   });
+
+  // GET /api/stats/company-history[?company=X] — per-company evidence cards
+  // (responsiveness + posting churn) joining tracker + follow-ups + scan-history.
+  // Zero-token, read-only relay of company-history.mjs (JSON stdout by default;
+  // `--company X` returns a single card, bare returns the full result). `company`
+  // is a runNodeScript array arg — never shell-interpolated, length-capped.
+  app.get('/api/stats/company-history', llmRateLimit, async (req, res) => {
+    const script = 'company-history.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      res.json({ available: false, reason: 'script-not-found' });
+      return;
+    }
+    const company = typeof req.query.company === 'string' ? req.query.company.trim().slice(0, 200) : '';
+    const argv = company ? ['--company', company] : [];
+    const r = await runNodeScript(script, argv, { timeoutMs: 60_000 });
+    const data = parseJsonStdout(r.stdout);
+    if (r.code !== 0 || !data) {
+      res.json({
+        available: false,
+        reason: r.killed ? 'timeout' : (isEmptyTrackerError(r.stderr) ? 'empty-tracker' : 'script-error'),
+        detail: sanitizeDetail(r.stderr),
+      });
+      return;
+    }
+    res.json({ available: true, ...data });
+  });
 }

@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2498%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2501%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.189.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.189.0)
+[![release](https://img.shields.io/badge/release-v1.190.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.190.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.189.0** — **`skip_tiers` ahora habla todos los idiomas** — el clasificador de niveles lee números romanos (I/II/III/IV/V) tras la palabra del puesto en cualquier alfabeto ("Инженер III", "エンジニア I", "Ingénieur IV"), no solo tras palabras ASCII; antes caían a "mid" y se colaban por `skip_tiers`. **2498 pruebas.**
+> **🆕 Última versión — v1.190.0** — **¿Qué empresas te responden de verdad?** — nuevo panel **Historial de empresa** en `#/tracker`: elige una empresa y ve si ha estado en silencio contigo, mixto o si respondió antes — y si el mismo puesto se republica — combinando tu tracker, seguimientos e historial de escaneo. **2501 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2498%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2501%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.189.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.189.0)
+[![release](https://img.shields.io/badge/release-v1.190.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.190.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.189.0** — **`skip_tiers` now speaks every language** — the seniority-tier classifier reads roman-numeral levels (I/II/III/IV/V) after a role word in any script ("Инженер III", "エンジニア I", "Ingénieur IV"), not just after ASCII words; before, those fell back to "mid" and slipped past `skip_tiers`. **2498 tests.**
+> **🆕 Latest release — v1.190.0** — **Which companies actually answer you?** — a new **Company history** panel on `#/tracker`: pick a company and see whether it has been silent on you, mixed, or responded before — and whether the same role keeps getting reposted — joined from your tracker, follow-ups, and scan history. **2501 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 
