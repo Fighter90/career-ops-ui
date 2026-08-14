@@ -9,12 +9,23 @@
 ---
 
 
+## [1.197.0] — 2026-08-14
+
+**追加 — Getro の VC 求人ボードを `careers_url` だけで追跡でき、コレクション id は自動解決されます。**
+
+### 追加
+- 追跡中の Getro ボード（b2venture、Earlybird、Point Nine …）に、手作業で調べた数値の `getro_collection` はもう不要です。ボード自身の `careers_url` を渡せば、初回スキャン時にそのページから id が**自動解決**されます — SSRF 安全な GET 一回で、ページに埋め込まれたデータから数値の `network.id` を直接読み取ります。明示的な `getro_collection` は依然として優先され、取得を完全にスキップします。
+
+### 備考
+- `server/lib/sources/getro.mjs` に新しい `httpsCareersUrl()`、`extractCollectionId()`、非同期の `resolveCollectionId()` を追加。ボードページは DNS ピン留め・サイズ上限付きの `safeGet` で取得し、解決された id は引き続き `assertGetroUrl` によりホストが `api.getro.com` に固定されます。アダプターは id がなくても https の `careers_url` を持つ `provider: getro` エントリにマッチするようになりました。`tests/sources-getro.test.mjs` (+8)。スイート: **2527**。
+
+
 ## [1.196.0] — 2026-08-14
 
 **修正 (セキュリティ) — Workday アダプターは `api` エンドポイントを部分文字列ではなくホスト名で検証します。**
 
 ### 修正
-- `portals.yml` の Workday `api:` 値は、**ホスト名**が `myworkdayjobs.com`（または `.myworkdayjobs.com` サブドメイン）のときだけ受け入れられます。以前は部分文字列一致だったため、文字列を含むだけの URL — 例: `https://evil.com/?x=myworkdayjobs.com` — も通り、エンドポイントとして使われる可能性がありました。実際の Workday エンドポイントは影響なし。（CodeQL 報告、#443。）
+- `portals.yml` の Workday `api:` 値は、**ホスト名**が `myworkdayjobs.com`（または `.myworkdayjobs.com` サブドメイン）のときだけ受け入れられます。以前は部分文字列一致だったため、文字列を含むだけの URL — 例: `https://example.com/?x=myworkdayjobs.com` — も通り、エンドポイントとして使われる可能性がありました。実際の Workday エンドポイントは影響なし。（CodeQL 報告、#443。）
 
 ### 備考
 - 新しい `isWorkdayApi()` が URL を解析してホストを確認（`server/lib/portals/adapters/workday.mjs`）。`tests/workday-adapter-endpoint.test.mjs`（+1）。スイート: **2522**。

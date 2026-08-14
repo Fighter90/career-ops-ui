@@ -9,12 +9,23 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.197.0] — 2026-08-14
+
+**Dodano — śledź tablicę ofert funduszu Getro wyłącznie po jej `careers_url`; id kolekcji rozwiązuje się samo.**
+
+### Dodano
+- Śledzona tablica Getro (b2venture, Earlybird, Point Nine, …) nie potrzebuje już ręcznie wyszukanego liczbowego `getro_collection`. Podaj własny `careers_url` tablicy, a id **rozwiąże się automatycznie** z tej strony przy pierwszym skanowaniu — pojedynczy bezpieczny wobec SSRF GET czyta liczbowy `network.id` prosto z osadzonych danych strony. Jawny `getro_collection` nadal ma pierwszeństwo i całkowicie pomija pobieranie.
+
+### Uwagi
+- Nowe `httpsCareersUrl()`, `extractCollectionId()` oraz asynchroniczny `resolveCollectionId()` w `server/lib/sources/getro.mjs`; strona tablicy jest pobierana przez `safeGet` (przypięty DNS, ograniczony rozmiar), a rozwiązany id nadal jest przypięty do hosta `api.getro.com` przez `assertGetroUrl`. Adapter dopasowuje teraz wpis `provider: getro` z `careers_url` https nawet bez id. `tests/sources-getro.test.mjs` (+8). Zestaw: **2527**.
+
+
 ## [1.196.0] — 2026-08-14
 
 **Naprawiono (bezpieczeństwo) — adapter Workday waliduje endpoint `api` po nazwie hosta, nie po podciągu.**
 
 ### Naprawiono
-- Wartość `api:` Workday w `portals.yml` jest teraz akceptowana tylko, gdy jej **nazwa hosta** to `myworkdayjobs.com` (lub subdomena `.myworkdayjobs.com`). Stare sprawdzenie było dopasowaniem podciągu, więc dowolny URL, który jedynie zawierał ten ciąg — np. `https://evil.com/?x=myworkdayjobs.com` — przechodził i mógł zostać użyty jako endpoint. Prawdziwe endpointy Workday bez zmian. (Zgłoszone przez CodeQL, #443.)
+- Wartość `api:` Workday w `portals.yml` jest teraz akceptowana tylko, gdy jej **nazwa hosta** to `myworkdayjobs.com` (lub subdomena `.myworkdayjobs.com`). Stare sprawdzenie było dopasowaniem podciągu, więc dowolny URL, który jedynie zawierał ten ciąg — np. `https://example.com/?x=myworkdayjobs.com` — przechodził i mógł zostać użyty jako endpoint. Prawdziwe endpointy Workday bez zmian. (Zgłoszone przez CodeQL, #443.)
 
 ### Uwagi
 - Nowy `isWorkdayApi()` parsuje URL i sprawdza host (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). Zestaw: **2522**.

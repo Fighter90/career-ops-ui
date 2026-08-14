@@ -2,12 +2,23 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.197.0] — 2026-08-14
+
+**Aggiunto — segui una bacheca di annunci di un fondo Getro con la sola `careers_url`; l'id della collezione si risolve da solo.**
+
+### Aggiunto
+- Una bacheca Getro seguita (b2venture, Earlybird, Point Nine, …) non ha più bisogno di un `getro_collection` numerico cercato a mano. Fornisci la `careers_url` della bacheca stessa e l'id **si risolve automaticamente** da quella pagina alla prima scansione — un'unica GET sicura contro l'SSRF legge il `network.id` numerico direttamente dai dati incorporati nella pagina. Un `getro_collection` esplicito ha ancora la precedenza e salta del tutto il recupero.
+
+### Note
+- Nuove `httpsCareersUrl()`, `extractCollectionId()` e la `resolveCollectionId()` asincrona in `server/lib/sources/getro.mjs`; la pagina della bacheca viene recuperata tramite `safeGet` (DNS fissato, dimensione limitata), e l'id risolto resta ancorato all'host `api.getro.com` da `assertGetroUrl`. L'adattatore ora corrisponde a una voce `provider: getro` che porta una `careers_url` https anche senza id. `tests/sources-getro.test.mjs` (+8). Suite: **2527**.
+
+
 ## [1.196.0] — 2026-08-14
 
 **Corretto (sicurezza) — l'adapter Workday valida un endpoint `api` in base al suo hostname, non a una sottostringa.**
 
 ### Corretto
-- Un valore `api:` Workday in `portals.yml` ora è accettato solo quando il suo **hostname** è `myworkdayjobs.com` (o un sottodominio `.myworkdayjobs.com`). Il vecchio controllo era una corrispondenza di sottostringa, quindi qualsiasi URL che contenesse soltanto la stringa — es. `https://evil.com/?x=myworkdayjobs.com` — passava e sarebbe stato usato come endpoint. Gli endpoint Workday reali non sono interessati. (Segnalato da CodeQL, #443.)
+- Un valore `api:` Workday in `portals.yml` ora è accettato solo quando il suo **hostname** è `myworkdayjobs.com` (o un sottodominio `.myworkdayjobs.com`). Il vecchio controllo era una corrispondenza di sottostringa, quindi qualsiasi URL che contenesse soltanto la stringa — es. `https://example.com/?x=myworkdayjobs.com` — passava e sarebbe stato usato come endpoint. Gli endpoint Workday reali non sono interessati. (Segnalato da CodeQL, #443.)
 
 ### Note
 - Il nuovo `isWorkdayApi()` analizza l'URL e verifica l'host (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). Suite: **2522**.

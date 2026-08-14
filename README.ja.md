@@ -7,16 +7,16 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2522%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2527%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.196.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.196.0)
+[![release](https://img.shields.io/badge/release-v1.197.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.197.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.196.0** — **Workday エンドポイントの強化** — `portals.yml` の Workday `api:` が部分文字列ではなく**ホスト名**で検証されるようになり、`https://evil.com/?x=myworkdayjobs.com` のような細工した URL は fetch 先として通らなくなりました。CodeQL 報告 (#443)。 **2522 テスト。**
+> **🆕 最新リリース — v1.197.0** — **Getro ボードを URL だけで追跡** — 追跡中の Getro ボードに自身の `careers_url` を渡すだけで、数値のコレクション id がボードページから**自動解決**されます（SSRF 安全な取得一回）、手作業の調査は不要。 **2527 テスト。**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

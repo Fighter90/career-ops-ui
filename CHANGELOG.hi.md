@@ -2,12 +2,23 @@
 
 > यह परिवर्तन-सूची v1.122.0 से शुरू होती है — वह संस्करण जिसमें हिन्दी स्थानीयकरण जोड़ा गया। पिछले संस्करणों के लिए [🇬🇧 CHANGELOG.md](CHANGELOG.md) देखें।
 
+## [1.197.0] — 2026-08-14
+
+**जोड़ा गया — किसी Getro VC जॉब बोर्ड को केवल उसके `careers_url` से ट्रैक करें; कलेक्शन id अपने-आप हल हो जाता है।**
+
+### जोड़ा गया
+- ट्रैक किए जा रहे Getro बोर्ड (b2venture, Earlybird, Point Nine, …) को अब हाथ से खोजे गए संख्यात्मक `getro_collection` की ज़रूरत नहीं। बोर्ड का अपना `careers_url` दें और पहली स्कैन पर id उस पेज से **अपने-आप हल** हो जाता है — एक SSRF-सुरक्षित GET पेज के एम्बेडेड डेटा से संख्यात्मक `network.id` सीधे पढ़ लेता है। स्पष्ट `getro_collection` अब भी प्राथमिकता रखता है और फ़ेच को पूरी तरह छोड़ देता है।
+
+### टिप्पणियाँ
+- `server/lib/sources/getro.mjs` में नए `httpsCareersUrl()`, `extractCollectionId()` और अतुल्यकालिक `resolveCollectionId()`; बोर्ड पेज को DNS-पिन किए हुए, आकार-सीमित `safeGet` से फ़ेच किया जाता है, और हल किया गया id अब भी `assertGetroUrl` द्वारा होस्ट `api.getro.com` पर पिन रहता है। अडैप्टर अब बिना id के भी https `careers_url` वाले `provider: getro` एंट्री से मैच करता है। `tests/sources-getro.test.mjs` (+8)। सूट: **2527**।
+
+
 ## [1.196.0] — 2026-08-14
 
 **ठीक किया (सुरक्षा) — Workday अडैप्टर `api` एंडपॉइंट को सबस्ट्रिंग नहीं, बल्कि होस्टनेम से सत्यापित करता है।**
 
 ### ठीक किया
-- `portals.yml` में एक Workday `api:` मान अब केवल तभी स्वीकार होता है जब उसका **होस्टनेम** `myworkdayjobs.com` (या `.myworkdayjobs.com` सबडोमेन) हो। पुरानी जाँच एक सबस्ट्रिंग मिलान थी, इसलिए कोई भी URL जो केवल स्ट्रिंग रखता हो — जैसे `https://evil.com/?x=myworkdayjobs.com` — पास हो जाता और एंडपॉइंट के रूप में इस्तेमाल हो सकता था। असली Workday एंडपॉइंट अप्रभावित। (CodeQL द्वारा रिपोर्ट, #443।)
+- `portals.yml` में एक Workday `api:` मान अब केवल तभी स्वीकार होता है जब उसका **होस्टनेम** `myworkdayjobs.com` (या `.myworkdayjobs.com` सबडोमेन) हो। पुरानी जाँच एक सबस्ट्रिंग मिलान थी, इसलिए कोई भी URL जो केवल स्ट्रिंग रखता हो — जैसे `https://example.com/?x=myworkdayjobs.com` — पास हो जाता और एंडपॉइंट के रूप में इस्तेमाल हो सकता था। असली Workday एंडपॉइंट अप्रभावित। (CodeQL द्वारा रिपोर्ट, #443।)
 
 ### टिप्पणियाँ
 - नया `isWorkdayApi()` URL पार्स कर होस्ट जाँचता है (`server/lib/portals/adapters/workday.mjs`)। `tests/workday-adapter-endpoint.test.mjs` (+1)। सुइट: **2522**।

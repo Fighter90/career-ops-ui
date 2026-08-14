@@ -2,12 +2,23 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.197.0] — 2026-08-14
+
+**Hinzugefügt — verfolge ein Getro-VC-Jobboard allein über seine `careers_url`; die Collection-ID löst sich automatisch auf.**
+
+### Hinzugefügt
+- Ein verfolgtes Getro-Board (b2venture, Earlybird, Point Nine, …) braucht keine von Hand herausgesuchte numerische `getro_collection` mehr. Gib die eigene `careers_url` des Boards an, und die ID **löst sich** beim ersten Scan **automatisch** aus dieser Seite auf — ein einziges SSRF-sicheres GET liest die numerische `network.id` direkt aus den eingebetteten Seitendaten. Eine explizite `getro_collection` gewinnt weiterhin und überspringt den Abruf vollständig.
+
+### Hinweise
+- Neue `httpsCareersUrl()`, `extractCollectionId()` und das asynchrone `resolveCollectionId()` in `server/lib/sources/getro.mjs`; die Board-Seite wird über `safeGet` (DNS-fixiert, größenbegrenzt) abgerufen, und die aufgelöste ID bleibt per `assertGetroUrl` an den Host `api.getro.com` gebunden. Der Adapter passt jetzt auf einen `provider: getro`-Eintrag mit einer https-`careers_url`, auch ohne ID. `tests/sources-getro.test.mjs` (+8). Suite: **2527**.
+
+
 ## [1.196.0] — 2026-08-14
 
 **Behoben (Sicherheit) — der Workday-Adapter validiert einen `api`-Endpunkt über seinen Hostnamen, nicht über eine Teilzeichenfolge.**
 
 ### Behoben
-- Ein Workday-`api:`-Wert in `portals.yml` wird jetzt nur akzeptiert, wenn sein **Hostname** `myworkdayjobs.com` (oder eine `.myworkdayjobs.com`-Subdomain) ist. Die alte Prüfung war ein Teilzeichenfolgen-Match, sodass jede URL, die die Zeichenfolge nur enthielt — z. B. `https://evil.com/?x=myworkdayjobs.com` — durchkam und als Endpunkt verwendet worden wäre. Echte Workday-Endpunkte sind nicht betroffen. (Von CodeQL gemeldet, #443.)
+- Ein Workday-`api:`-Wert in `portals.yml` wird jetzt nur akzeptiert, wenn sein **Hostname** `myworkdayjobs.com` (oder eine `.myworkdayjobs.com`-Subdomain) ist. Die alte Prüfung war ein Teilzeichenfolgen-Match, sodass jede URL, die die Zeichenfolge nur enthielt — z. B. `https://example.com/?x=myworkdayjobs.com` — durchkam und als Endpunkt verwendet worden wäre. Echte Workday-Endpunkte sind nicht betroffen. (Von CodeQL gemeldet, #443.)
 
 ### Hinweise
 - Neues `isWorkdayApi()` parst die URL und prüft den Host (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). Suite: **2522**.
