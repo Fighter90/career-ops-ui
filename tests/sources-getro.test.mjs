@@ -275,8 +275,8 @@ test('getroSalary: annual comp cents → display string the client can re-parse'
     getroSalary({ compensation_amount_min_cents: 10_000_000, compensation_amount_max_cents: 15_000_000, compensation_currency: 'usd' }),
     '100000–150000 USD',
   );
-  assert.equal(getroSalary({ compensation_amount_min_cents: 12_000_000, compensation_currency: 'EUR' }), 'from 120000 EUR');
-  assert.equal(getroSalary({ compensation_amount_max_cents: 9_000_000 }), 'up to 90000');
+  assert.equal(getroSalary({ compensation_amount_min_cents: 12_000_000, compensation_currency: 'EUR' }), '≥ 120000 EUR');
+  assert.equal(getroSalary({ compensation_amount_max_cents: 9_000_000 }), '≤ 90000');
   // min > max is normalised low→high.
   assert.equal(getroSalary({ compensation_amount_min_cents: 15_000_000, compensation_amount_max_cents: 10_000_000, compensation_currency: 'USD' }), '100000–150000 USD');
 });
@@ -288,7 +288,7 @@ test('getroSalary: a non-annual period or absent figure yields "" (missing = pas
   assert.equal(getroSalary({ compensation_amount_min_cents: 0, compensation_amount_max_cents: -1 }), '', 'zero/negative are unusable');
   assert.equal(getroSalary(null), '');
   // period 'year' (explicit) is accepted.
-  assert.equal(getroSalary({ compensation_period: 'year', compensation_amount_min_cents: 8_000_000, compensation_currency: 'gbp' }), 'from 80000 GBP');
+  assert.equal(getroSalary({ compensation_period: 'year', compensation_amount_min_cents: 8_000_000, compensation_currency: 'gbp' }), '≥ 80000 GBP');
 });
 
 test('getroLocation: joins ALL locations, falls back to searchable_locations', () => {

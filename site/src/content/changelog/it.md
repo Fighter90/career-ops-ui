@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.182.0] — 2026-08-14
+
+**Corretto (scanner) — le fasce salariali ora si leggono uguali in ogni lingua.**
+
+### Corretto
+- Gli importi salariali nelle righe di scan e tracker usano i simboli neutri **≥** e **≤** (es. `≥ 120000 EUR`, `≤ 90000`) invece delle parole inglesi "from" / "up to", che trapelavano non tradotte nelle interfacce non inglesi. Vale per ogni bacheca con fascia a un solo lato (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); le fasce a due lati (`100000–150000 USD`) erano già neutre.
+
+### Note
+- Solo visualizzazione — il filtro salari del client analizza i numeri a prescindere dal prefisso, quindi il filtraggio non cambia. Suite: **2470**.
+
 ## [1.181.0] — 2026-08-14
 
 **Aggiunto (scanner) — le bacheche Getro ora mostrano stipendio, tutte le località e posizioni da remoto.**

@@ -175,8 +175,8 @@ export function resolveSalary(job) {
   if (min != null && max != null) {
     return `${Math.min(min, max)}–${Math.max(min, max)}${cur}`;
   }
-  if (min != null) return `from ${min}${cur}`;
-  return `up to ${max}${cur}`;
+  if (min != null) return `≥ ${min}${cur}`;
+  return `≤ ${max}${cur}`;
 }
 
 /** Stable non-crypto hash (djb2) for the id fallback when no safe slug exists. */

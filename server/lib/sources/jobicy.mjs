@@ -91,7 +91,7 @@ function normalize(j) {
   } else if (min != null && min !== 0) {
     salary = `$${Number(min).toLocaleString('en-US')}+`;
   } else if (max != null && max !== 0) {
-    salary = `up to $${Number(max).toLocaleString('en-US')}`;
+    salary = `≤ ${Number(max).toLocaleString('en-US')}`;
   }
 
   // Parse pubDate → 'YYYY-MM-DD' or ''

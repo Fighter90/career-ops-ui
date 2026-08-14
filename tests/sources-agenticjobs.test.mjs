@@ -81,8 +81,8 @@ test('normalizeAgenticSalary: maps flat bounds, uppercases currency, omits null 
 
 test('salaryToString: renders the STRING salary field, "" when no comp data', () => {
   assert.equal(salaryToString({ min: 120000, max: 160000, currency: 'USD' }), '120000–160000 USD');
-  assert.equal(salaryToString({ min: 100000, currency: 'USD' }), 'from 100000 USD');
-  assert.equal(salaryToString({ max: 160000 }), 'up to 160000');
+  assert.equal(salaryToString({ min: 100000, currency: 'USD' }), '≥ 100000 USD');
+  assert.equal(salaryToString({ max: 160000 }), '≤ 160000');
   assert.equal(salaryToString(null), '');
 });
 

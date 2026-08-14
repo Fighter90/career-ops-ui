@@ -88,8 +88,8 @@ function formatSalary(o) {
       const from = s.from != null ? String(s.from) : '';
       const to = s.to != null ? String(s.to) : '';
       if (from && to) return `${from}–${to} ${currency}`.trim();
-      if (from) return `from ${from} ${currency}`.trim();
-      if (to) return `up to ${to} ${currency}`.trim();
+      if (from) return `≥ ${from} ${currency}`.trim();
+      if (to) return `≤ ${to} ${currency}`.trim();
     }
   }
   return '';

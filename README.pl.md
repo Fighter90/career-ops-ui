@@ -12,11 +12,11 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.181.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.181.0)
+[![release](https://img.shields.io/badge/release-v1.182.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.182.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.181.0** — **Getro: wynagrodzenie i wszystkie lokalizacje** — skaner Getro pokazuje teraz wynagrodzenie przy każdej ofercie, wypisuje wszystkie lokalizacje (nie tylko pierwszą) i oznacza oferty zdalne. **2470 testów.**
+> **🆕 Najnowsze wydanie — v1.182.0** — **Neutralne przedziały wynagrodzeń** — jednostronne kwoty w skanie i śledzeniu pokazują się jako `≥` / `≤` (np. `≥ 120000 EUR`) zamiast angielskich „from" / „up to", więc czyta się je tak samo w każdym języku. **2470 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

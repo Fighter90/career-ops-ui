@@ -146,8 +146,8 @@ export function salaryToString(salary) {
   const hasMin = typeof salary.min === 'number';
   const hasMax = typeof salary.max === 'number';
   if (hasMin && hasMax) return `${salary.min}–${salary.max}${cur}`;
-  if (hasMin) return `from ${salary.min}${cur}`;
-  if (hasMax) return `up to ${salary.max}${cur}`;
+  if (hasMin) return `≥ ${salary.min}${cur}`;
+  if (hasMax) return `≤ ${salary.max}${cur}`;
   return '';
 }
 

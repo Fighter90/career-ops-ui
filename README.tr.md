@@ -12,11 +12,11 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.181.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.181.0)
+[![release](https://img.shields.io/badge/release-v1.182.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.182.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.181.0** — **Getro: maaş ve tüm konumlar** — Getro tarayıcısı artık her ilanda maaş gösteriyor, tüm konumları (yalnızca ilkini değil) listeliyor ve uzaktan ilanları etiketliyor. **2470 test.**
+> **🆕 Son sürüm — v1.182.0** — **Yerelden bağımsız maaş aralıkları** — tarama ve takipçideki tek yönlü tutarlar artık İngilizce "from" / "up to" yerine `≥` / `≤` (ör. `≥ 120000 EUR`) olarak görünüyor, her dilde aynı okunuyor. **2470 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

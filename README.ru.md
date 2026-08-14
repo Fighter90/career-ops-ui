@@ -12,11 +12,11 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.181.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.181.0)
+[![release](https://img.shields.io/badge/release-v1.182.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.182.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.181.0** — **Getro: зарплата и все локации** — сканер Getro теперь показывает зарплату по каждой вакансии, перечисляет все локации (а не только первую) и отмечает удалённые вакансии. **2470 тестов.**
+> **🆕 Последний релиз — v1.182.0** — **Локале-нейтральные диапазоны зарплат** — односторонние суммы в скане и трекере показываются как `≥` / `≤` (напр. `≥ 120000 EUR`) вместо английских "from" / "up to" — одинаково на всех языках. **2470 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

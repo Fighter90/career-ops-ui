@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.182.0] — 2026-08-14
+
+**Düzeltildi (tarayıcı) — maaş aralıkları artık her dilde aynı görünüyor.**
+
+### Düzeltildi
+- Tarama ve takipçi satırlarındaki maaş rakamları, İngilizce olmayan arayüzlere çevrilmeden sızan İngilizce "from" / "up to" sözcükleri yerine yerelden bağımsız **≥** ve **≤** sembollerini kullanıyor (ör. `≥ 120000 EUR`, `≤ 90000`). Tek yönlü aralık bildiren tüm panolara uygulanır (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); çift yönlü aralıklar (`100000–150000 USD`) zaten nötrdü.
+
+### Notlar
+- Yalnızca görüntüleme — istemci maaş filtresi ön eke bakmadan sayıları ayrıştırır, filtreleme değişmez. Takım: **2470**.
+
 ## [1.181.0] — 2026-08-14
 
 **Eklendi (tarayıcı) — Getro iş panoları artık maaş, tüm konumları ve uzaktan ilanları gösteriyor.**

@@ -113,7 +113,7 @@ test('fetchJustJoin: salary formatted from employment_types', async () => {
   const jobs = await fetchJustJoin(API_URL, { fetchImpl: fakeFetch });
   assert.equal(jobs[0].salary, '18000–24000 PLN');
   assert.equal(jobs[1].salary, '');          // no employment_types
-  assert.equal(jobs[2].salary, 'from 8000 PLN');
+  assert.equal(jobs[2].salary, '≥ 8000 PLN');
 });
 
 test('fetchJustJoin: date formatted as YYYY-MM-DD', async () => {

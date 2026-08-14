@@ -12,11 +12,11 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.181.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.181.0)
+[![release](https://img.shields.io/badge/release-v1.182.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.182.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.181.0** — **Getro:薪資與全部地點** — Getro 掃描器現在為每個職位顯示薪資、列出全部地點(而非僅第一個)並標記遠端職位。 **2470 項測試。**
+> **🆕 最新版本 — v1.182.0** — **地區中立薪資區間** — 掃描與追蹤器中的單邊薪資現以 `≥` / `≤`(如 `≥ 120000 EUR`)顯示,取代英文 "from" / "up to",在所有語言下一致。 **2470 項測試。**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

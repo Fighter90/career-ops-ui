@@ -194,8 +194,8 @@ test('parseCompensation: mirrors a one-sided range; zero/absent salary yields nu
 
 test('salaryToString: renders the STRING salary field, "" when no comp data', () => {
   assert.equal(salaryToString({ min: 32000, max: 35000, currency: 'EUR' }), '32000–35000 EUR');
-  assert.equal(salaryToString({ min: 40000, currency: 'EUR' }), 'from 40000 EUR');
-  assert.equal(salaryToString({ max: 50000 }), 'up to 50000');
+  assert.equal(salaryToString({ min: 40000, currency: 'EUR' }), '≥ 40000 EUR');
+  assert.equal(salaryToString({ max: 50000 }), '≤ 50000');
   assert.equal(salaryToString({ min: 40000, max: 60000 }), '40000–60000'); // no currency
   assert.equal(salaryToString(null), '');
 });

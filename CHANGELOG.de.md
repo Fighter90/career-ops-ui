@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.182.0] — 2026-08-14
+
+**Behoben (Scanner) — Gehaltsspannen werden jetzt in jeder Sprache gleich angezeigt.**
+
+### Behoben
+- Gehaltsangaben in Scan- und Tracker-Zeilen verwenden die sprachneutralen Symbole **≥** und **≤** (z. B. `≥ 120000 EUR`, `≤ 90000`) statt der englischen Wörter „from" / „up to", die unübersetzt in nicht-englische Oberflächen durchsickerten. Gilt für jedes Board mit einseitiger Spanne (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); zweiseitige Spannen (`100000–150000 USD`) waren schon neutral.
+
+### Hinweise
+- Nur Anzeige — der Gehaltsfilter des Clients parst die Zahlen unabhängig vom Präfix, das Filtern bleibt unverändert. Suite: **2470**.
+
 ## [1.181.0] — 2026-08-14
 
 **Hinzugefügt (Scanner) — Getro-Jobboards zeigen jetzt Gehalt, alle Standorte und Remote-Stellen.**

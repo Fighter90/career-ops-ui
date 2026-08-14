@@ -181,8 +181,8 @@ test('normalizeRemotliJob: applyUrl is the canonical URL, board page is the fall
 test('resolveSalary: renders a display string, orders inverted bounds, "" when none', () => {
   assert.equal(resolveSalary({ salaryMin: 180000, salaryMax: 220000, salaryCurrency: 'chf' }), '180000–220000 CHF');
   assert.equal(resolveSalary({ salaryMin: 200, salaryMax: 100, salaryCurrency: 'CHF' }), '100–200 CHF'); // ordered
-  assert.equal(resolveSalary({ salaryMin: 90000, salaryCurrency: 'CHF' }), 'from 90000 CHF'); // one-sided
-  assert.equal(resolveSalary({ salaryMax: 120000 }), 'up to 120000'); // no currency
+  assert.equal(resolveSalary({ salaryMin: 90000, salaryCurrency: 'CHF' }), '≥ 90000 CHF'); // one-sided
+  assert.equal(resolveSalary({ salaryMax: 120000 }), '≤ 120000'); // no currency
   assert.equal(resolveSalary({}), '');
 });
 
