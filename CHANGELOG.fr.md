@@ -11,12 +11,23 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.197.0] — 2026-08-14
+
+**Ajouté — suivez un tableau d'offres d'un fonds Getro rien qu'avec sa `careers_url` ; l'id de collection se résout tout seul.**
+
+### Ajouté
+- Un tableau Getro suivi (b2venture, Earlybird, Point Nine, …) n'a plus besoin d'un `getro_collection` numérique cherché à la main. Donnez la propre `careers_url` du tableau et l'id **se résout automatiquement** depuis cette page au premier scan — un unique GET protégé contre le SSRF lit le `network.id` numérique directement dans les données embarquées de la page. Un `getro_collection` explicite reste prioritaire et évite entièrement la récupération.
+
+### Notes
+- Nouveaux `httpsCareersUrl()`, `extractCollectionId()` et le `resolveCollectionId()` asynchrone dans `server/lib/sources/getro.mjs` ; la page du tableau est récupérée via `safeGet` (DNS épinglé, taille bornée), et l'id résolu reste épinglé à l'hôte `api.getro.com` par `assertGetroUrl`. L'adaptateur correspond désormais à une entrée `provider: getro` portant une `careers_url` https même sans id. `tests/sources-getro.test.mjs` (+8). Suite : **2527**.
+
+
 ## [1.196.0] — 2026-08-14
 
 **Corrigé (sécurité) — l'adaptateur Workday valide un endpoint `api` par son nom d'hôte, pas par une sous-chaîne.**
 
 ### Corrigé
-- Une valeur `api:` Workday dans `portals.yml` n'est désormais acceptée que si son **nom d'hôte** est `myworkdayjobs.com` (ou un sous-domaine `.myworkdayjobs.com`). L'ancien test était une correspondance de sous-chaîne, donc toute URL contenant simplement la chaîne — p. ex. `https://evil.com/?x=myworkdayjobs.com` — passait et aurait été utilisée comme endpoint. Les vrais endpoints Workday ne sont pas affectés. (Signalé par CodeQL, #443.)
+- Une valeur `api:` Workday dans `portals.yml` n'est désormais acceptée que si son **nom d'hôte** est `myworkdayjobs.com` (ou un sous-domaine `.myworkdayjobs.com`). L'ancien test était une correspondance de sous-chaîne, donc toute URL contenant simplement la chaîne — p. ex. `https://example.com/?x=myworkdayjobs.com` — passait et aurait été utilisée comme endpoint. Les vrais endpoints Workday ne sont pas affectés. (Signalé par CodeQL, #443.)
 
 ### Notes
 - Le nouveau `isWorkdayApi()` analyse l'URL et vérifie l'hôte (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). Suite : **2522**.

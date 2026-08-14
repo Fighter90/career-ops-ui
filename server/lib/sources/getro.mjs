@@ -11,14 +11,20 @@
  *   -> { results: { jobs: [ {title,url,organization:{name},locations[],created_at} ], count } }
  *
  * A board's numeric collection_id is the `network.id` embedded in the board
- * page's __NEXT_DATA__. We don't derive it from the URL — it is set explicitly
- * on the portal entry (read here via `opts.company`, like tencent.mjs):
+ * page's __NEXT_DATA__. Set it explicitly on the portal entry, OR leave it out
+ * and give the board's own `careers_url` — the id then auto-resolves from a
+ * single SSRF-safe GET of that page, so a board can be tracked by URL alone
+ * with no manual id lookup (read here via `opts.company`, like tencent.mjs):
  *
  *   tracked_companies:
  *     - name: b2venture (portfolio)
  *       provider: getro
- *       getro_collection: 4283
- *       careers_url: https://jobs.b2venture.vc   # reference only
+ *       getro_collection: 4283                    # explicit id (skips the GET)
+ *       careers_url: https://jobs.b2venture.vc
+ *       enabled: true
+ *     - name: earlybird (portfolio)
+ *       provider: getro
+ *       careers_url: https://jobs.earlybird.com   # id auto-resolves from here
  *       enabled: true
  *
  * These boards are large (1000-2000 jobs) but the API returns them
@@ -33,6 +39,7 @@
  * the getro adapter (server/lib/portals/adapters/getro.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { safeGet } from '../safe-fetch.mjs';
 
 export const API_BASE = 'https://api.getro.com/api/v2/collections';
 const TRUSTED_HOST = 'api.getro.com';
@@ -84,6 +91,92 @@ export function resolveCollection(entry) {
   const s = String(id).trim();
   if (!/^\d+$/.test(s)) return null;
   return s;
+}
+
+/**
+ * The board's own careers page URL from the portal entry, validated to be
+ * HTTPS. This is the page auto-resolution GETs to read the embedded collection
+ * id. HTTP / other schemes and unparseable values return null (HTTPS is
+ * required so the fetch can't be downgraded and can't reach a bare-scheme
+ * target). Exported for tests.
+ * @param {{ careers_url?: unknown }} [entry]
+ * @returns {string|null} the normalized https URL, or null
+ */
+export function httpsCareersUrl(entry) {
+  const raw = entry?.careers_url;
+  if (typeof raw !== 'string' || !raw.trim()) return null;
+  let u;
+  try { u = new URL(raw.trim()); } catch { return null; }
+  return u.protocol === 'https:' ? u.href : null;
+}
+
+/**
+ * Extract a board's numeric collection id (`network.id`) from the `__NEXT_DATA__`
+ * blob embedded in a Getro board page. Getro boards are Next.js apps that
+ * serialize the board's network — including its numeric id — into a
+ * `<script id="__NEXT_DATA__" type="application/json">…</script>` tag. Returns
+ * an all-digit string, or null when the page doesn't carry the expected shape
+ * (a truncated/blocked page, a redesign, or a non-Getro page). Exported for tests.
+ * @param {unknown} html
+ * @returns {string|null}
+ */
+export function extractCollectionId(html) {
+  if (typeof html !== 'string') return null;
+  // Match on the id attribute alone — tolerant of attribute reordering, extra
+  // attributes (e.g. a CSP nonce), whitespace around '=', and either quote
+  // style. A literal space before `id` stops a `data-id="__NEXT_DATA__"`
+  // attribute from false-matching (a bare \b also fires on the `-`→`i` seam).
+  const m = html.match(/<script\b[^>]*\sid\s*=\s*["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/);
+  if (!m) return null;
+  let data;
+  try { data = JSON.parse(m[1]); } catch { return null; }
+  const id = data?.props?.pageProps?.network?.id;
+  if (typeof id === 'string' && /^\d+$/.test(id) && /[1-9]/.test(id)) return id;
+  if (typeof id === 'number' && Number.isInteger(id) && id > 0) return String(id);
+  return null;
+}
+
+// Bounds on the careers-page HTML read to auto-resolve a collection id. Getro
+// board HTML embeds every listing in __NEXT_DATA__, so a big board's page can
+// run to a few MB; 6 MB comfortably covers real boards while keeping the read
+// bounded (safeGet also caps memory this way). 15s bounds the whole GET.
+const CAREERS_HTML_MAX_BYTES = 6_000_000;
+const CAREERS_FETCH_TIMEOUT_MS = 15_000;
+
+/**
+ * Resolve the numeric collection id for a Getro entry. An explicit numeric
+ * `getro_collection` always wins with no network call. Otherwise, when the
+ * entry carries an HTTPS `careers_url`, the board page is fetched through the
+ * SSRF-safe `safeGet` (DNS-pinned, redirect-validated, size-capped) and its
+ * embedded `network.id` is used — so a board can be tracked by URL alone. Any
+ * failure (non-https url, non-200, blocked/absent __NEXT_DATA__, network error)
+ * resolves to null; the caller turns null into a helpful, actionable error.
+ * Exported for tests; `opts.safeGetImpl` is injectable (defaults to safeGet).
+ * @param {any} entry
+ * @param {{ safeGetImpl?: Function, signal?: AbortSignal }} [opts]
+ * @returns {Promise<string|null>}
+ */
+export async function resolveCollectionId(entry, opts = {}) {
+  const explicit = resolveCollection(entry);
+  if (explicit) return explicit;
+
+  const careersUrl = httpsCareersUrl(entry);
+  if (!careersUrl) return null;
+
+  const get = opts.safeGetImpl || safeGet;
+  let res;
+  try {
+    res = await get(careersUrl, {
+      signal: opts.signal,
+      timeoutMs: CAREERS_FETCH_TIMEOUT_MS,
+      maxBytes: CAREERS_HTML_MAX_BYTES,
+      headers: { accept: 'text/html' },
+    });
+  } catch {
+    return null; // fail-soft: unreachable/blocked board → caller decides it's fatal
+  }
+  if (!res || res.status !== 200 || typeof res.text !== 'string') return null;
+  return extractCollectionId(res.text);
 }
 
 /**
@@ -239,9 +332,10 @@ export function normalizeGetroJob(job, fallbackCompany = '', createdMs) {
 /**
  * Fetch + normalize a Getro collection's jobs, paginating newest-first.
  *
- * Config is read from `opts.company`: `getro_collection`
- * (required numeric id), `getro_max_pages` (default 40, hard cap 200),
- * `getro_max_age_days` (default 90, pagination bound; 0 disables the cutoff).
+ * Config is read from `opts.company`: `getro_collection` (numeric id) OR an
+ * https `careers_url` the id auto-resolves from (one of the two is required),
+ * `getro_max_pages` (default 40, hard cap 200), `getro_max_age_days`
+ * (default 90, pagination bound; 0 disables the cutoff).
  *
  * Dead-board contract: the first (page 0) request failing THROWS — an
  * unreachable board is unreachable, not empty, so scan/portal-health record a
@@ -257,10 +351,12 @@ export function normalizeGetroJob(job, fallbackCompany = '', createdMs) {
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: any }} [opts]
  */
 export async function fetchGetro(endpoint, opts = {}) {
-  const { fetchImpl = fetch, signal, company = {} } = opts;
-  const id = resolveCollection(company);
+  const { fetchImpl = fetch, signal, company = {}, safeGetImpl } = opts;
+  const id = await resolveCollectionId(company, { safeGetImpl, signal });
   if (!id) {
-    throw new Error(`getro: ${company?.name || 'entry'} needs a numeric 'getro_collection' to scan a Getro board`);
+    throw new Error(
+      `getro: ${company?.name || 'entry'} needs a numeric 'getro_collection' or a resolvable https 'careers_url' to scan a Getro board`,
+    );
   }
   const apiUrl = assertGetroUrl(`${API_BASE}/${id}/search/jobs`);
 

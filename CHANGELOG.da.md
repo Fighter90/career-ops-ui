@@ -8,12 +8,23 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.197.0] — 2026-08-14
+
+**Tilføjet — følg et Getro VC-jobboard alene ud fra dets `careers_url`; collection-id'et løses automatisk.**
+
+### Tilføjet
+- Et fulgt Getro-board (b2venture, Earlybird, Point Nine, …) behøver ikke længere et håndslået numerisk `getro_collection`. Giv boardets egen `careers_url`, og id'et **løses automatisk** fra den side ved første scanning — et enkelt SSRF-sikkert GET læser det numeriske `network.id` direkte fra sidens indlejrede data. Et eksplicit `getro_collection` vinder stadig og springer hentningen helt over.
+
+### Noter
+- Nye `httpsCareersUrl()`, `extractCollectionId()` og den asynkrone `resolveCollectionId()` i `server/lib/sources/getro.mjs`; boardsiden hentes via `safeGet` (DNS-fastgjort, størrelsesbegrænset), og det løste id er stadig host-fastgjort til `api.getro.com` af `assertGetroUrl`. Adapteren matcher nu en `provider: getro`-post med en https `careers_url`, selv uden id. `tests/sources-getro.test.mjs` (+8). Suite: **2527**.
+
+
 ## [1.196.0] — 2026-08-14
 
 **Rettet (sikkerhed) — Workday-adapteren validerer et `api`-endpoint på dets hostnavn, ikke en delstreng.**
 
 ### Rettet
-- En Workday `api:`-værdi i `portals.yml` accepteres nu kun, når dens **hostnavn** er `myworkdayjobs.com` (eller et `.myworkdayjobs.com`-subdomæne). Det gamle tjek var en delstreng-match, så enhver URL, der blot indeholdt strengen — f.eks. `https://evil.com/?x=myworkdayjobs.com` — kom igennem og ville være blevet brugt som endpoint. Rigtige Workday-endpoints er upåvirkede. (Rapporteret af CodeQL, #443.)
+- En Workday `api:`-værdi i `portals.yml` accepteres nu kun, når dens **hostnavn** er `myworkdayjobs.com` (eller et `.myworkdayjobs.com`-subdomæne). Det gamle tjek var en delstreng-match, så enhver URL, der blot indeholdt strengen — f.eks. `https://example.com/?x=myworkdayjobs.com` — kom igennem og ville være blevet brugt som endpoint. Rigtige Workday-endpoints er upåvirkede. (Rapporteret af CodeQL, #443.)
 
 ### Noter
 - Ny `isWorkdayApi()` parser URL'en og tjekker hosten (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). Suite: **2522**.

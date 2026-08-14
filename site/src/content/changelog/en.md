@@ -8,12 +8,23 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.197.0] — 2026-08-14
+
+**Added — track a Getro VC job board by its `careers_url` alone; the collection id auto-resolves.**
+
+### Added
+- A tracked Getro board (b2venture, Earlybird, Point Nine, …) no longer needs a hand-looked-up numeric `getro_collection`. Give it the board's own `careers_url` and the id **auto-resolves** from that page on the first scan — a single SSRF-safe GET reads the numeric `network.id` straight out of the board's embedded page data. An explicit `getro_collection` still wins and skips the fetch entirely.
+
+### Notes
+- New `httpsCareersUrl()`, `extractCollectionId()`, and async `resolveCollectionId()` in `server/lib/sources/getro.mjs`; the board page is fetched through the DNS-pinned, size-capped `safeGet`, and the resolved id is still host-pinned to `api.getro.com` by `assertGetroUrl`. The adapter now matches a `provider: getro` entry carrying an https `careers_url` even without an id. `tests/sources-getro.test.mjs` (+8). Suite: **2527**.
+
+
 ## [1.196.0] — 2026-08-14
 
 **Fixed (security) — the Workday adapter validates an `api` endpoint by its hostname, not a substring.**
 
 ### Fixed
-- A `portals.yml` Workday `api:` value is now accepted only when its **hostname** is `myworkdayjobs.com` (or a `.myworkdayjobs.com` subdomain). The old check was a substring match, so any URL that merely contained the string — e.g. `https://evil.com/?x=myworkdayjobs.com` or `https://myworkdayjobs.com.evil.com/…` — passed and would have been handed back as the fetchable endpoint. Real Workday endpoints are unaffected. (Reported by CodeQL, #443.)
+- A `portals.yml` Workday `api:` value is now accepted only when its **hostname** is `myworkdayjobs.com` (or a `.myworkdayjobs.com` subdomain). The old check was a substring match, so any URL that merely contained the string — e.g. `https://example.com/?x=myworkdayjobs.com` or `https://myworkdayjobs.com.example.com/…` — passed and would have been handed back as the fetchable endpoint. Real Workday endpoints are unaffected. (Reported by CodeQL, #443.)
 
 ### Notes
 - New `isWorkdayApi()` parses the URL and checks the host in `server/lib/portals/adapters/workday.mjs`; used by both `matches()` and `buildEndpoint()`. `tests/workday-adapter-endpoint.test.mjs` (+1). Suite: **2522**.

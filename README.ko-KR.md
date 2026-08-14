@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2522%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2527%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.196.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.196.0)
+[![release](https://img.shields.io/badge/release-v1.197.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.197.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.196.0** — **Workday 엔드포인트 강화** — `portals.yml`의 Workday `api:`가 이제 부분 문자열이 아닌 **호스트명**으로 검증됩니다. `https://evil.com/?x=myworkdayjobs.com` 같은 조작된 URL은 더 이상 fetch 대상으로 통과하지 못합니다. CodeQL 보고 (#443). **2522개 테스트.**
+> **🆕 최신 릴리스 — v1.197.0** — **Getro 보드를 URL만으로 추적** — 추적 중인 Getro 보드에 자체 `careers_url`만 주면 숫자 컬렉션 id가 보드 페이지에서 **자동 해석**됩니다(SSRF 안전 요청 한 번), 수동 조회 불필요. **2527개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

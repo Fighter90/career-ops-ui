@@ -1,6 +1,6 @@
 # QA REGRESSION PROMPT — career-ops-ui **v1.196.0** (Workday `api` host validation, #443)
 
-**Fixed (security).** The Workday adapter validated a `portals.yml` `api:` endpoint with `company.api.includes('myworkdayjobs.com')` — a substring check (CodeQL `js/incomplete-url-substring-sanitization`, HIGH). A crafted URL like `https://evil.com/?x=myworkdayjobs.com` or `https://myworkdayjobs.com.evil.com/…` passed and `buildEndpoint()` returned it as the fetchable endpoint. It now parses the URL and checks the hostname.
+**Fixed (security).** The Workday adapter validated a `portals.yml` `api:` endpoint with `company.api.includes('myworkdayjobs.com')` — a substring check (CodeQL `js/incomplete-url-substring-sanitization`, HIGH). A crafted URL like `https://example.com/?x=myworkdayjobs.com` or `https://myworkdayjobs.com.example.com/…` passed and `buildEndpoint()` returned it as the fetchable endpoint. It now parses the URL and checks the hostname.
 
 - **Under test:** `package.json` **1.196.0**. **Server:** `npm start` → `http://127.0.0.1:4317`.
 
@@ -22,8 +22,8 @@ node scripts/check-changelog-parity.mjs     # 16 non-EN at v1.196.0
 |---|---|---|
 | `https://acme.wd5.myworkdayjobs.com/wday/cxs/acme/External/jobs` | true | (passed through) |
 | `https://myworkdayjobs.com/x` (apex) | true | passed through |
-| `https://evil.com/?x=myworkdayjobs.com` | **false** | **null** |
-| `https://myworkdayjobs.com.evil.com/…` | **false** | **null** |
+| `https://example.com/?x=myworkdayjobs.com` | **false** | **null** |
+| `https://myworkdayjobs.com.example.com/…` | **false** | **null** |
 | `https://notmyworkdayjobs.com/…` | **false** | **null** |
 | `not a url … myworkdayjobs.com` | **false** | **null** |
 

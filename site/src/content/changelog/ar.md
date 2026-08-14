@@ -8,12 +8,23 @@
 
 ---
 
+## [1.197.0] — 2026-08-14
+
+**أُضيف — تابِع لوحة وظائف صندوق Getro عبر `careers_url` وحدها؛ ويُحَلّ مُعرّف المجموعة تلقائيًا.**
+
+### أُضيف
+- لم تعد لوحة Getro المُتابَعة (b2venture، Earlybird، Point Nine، …) بحاجة إلى `getro_collection` رقمي يُبحث عنه يدويًا. أعطِها `careers_url` الخاص باللوحة، فيُحَلّ المُعرّف **تلقائيًا** من تلك الصفحة عند أول فحص — طلب GET واحد آمن ضد SSRF يقرأ `network.id` الرقمي مباشرةً من بيانات الصفحة المُضمّنة. ولا يزال `getro_collection` الصريح له الأولوية ويتخطّى الجلب بالكامل.
+
+### ملاحظات
+- دوال جديدة `httpsCareersUrl()` و`extractCollectionId()` و`resolveCollectionId()` غير المتزامنة في `server/lib/sources/getro.mjs`؛ تُجلَب صفحة اللوحة عبر `safeGet` (DNS مُثبَّت، حجم مُقيَّد)، ويظل المُعرّف المُحَلّ مُثبَّتًا على المضيف `api.getro.com` بواسطة `assertGetroUrl`. صار المُحوِّل الآن يطابق مُدخل `provider: getro` يحمل `careers_url` بروتوكول https حتى بدون مُعرّف. `tests/sources-getro.test.mjs` (+8). المجموعة: **2527**.
+
+
 ## [1.196.0] — 2026-08-14
 
 **تم الإصلاح (الأمان) — محوّل Workday يتحقق من نقطة `api` عبر اسم المضيف لا عبر سلسلة فرعية.**
 
 ### تم الإصلاح
-- قيمة `api:` الخاصة بـ Workday في `portals.yml` تُقبل الآن فقط عندما يكون **اسم مضيفها** هو `myworkdayjobs.com` (أو نطاق فرعي `.myworkdayjobs.com`). كان الفحص القديم مطابقة سلسلة فرعية، لذا أي رابط يحتوي على السلسلة فحسب — مثل `https://evil.com/?x=myworkdayjobs.com` — كان يمر ويُستخدم كنقطة نهاية. نقاط Workday الحقيقية غير متأثرة. (أبلغ عنه CodeQL، #443.)
+- قيمة `api:` الخاصة بـ Workday في `portals.yml` تُقبل الآن فقط عندما يكون **اسم مضيفها** هو `myworkdayjobs.com` (أو نطاق فرعي `.myworkdayjobs.com`). كان الفحص القديم مطابقة سلسلة فرعية، لذا أي رابط يحتوي على السلسلة فحسب — مثل `https://example.com/?x=myworkdayjobs.com` — كان يمر ويُستخدم كنقطة نهاية. نقاط Workday الحقيقية غير متأثرة. (أبلغ عنه CodeQL، #443.)
 
 ### ملاحظات
 - `isWorkdayApi()` الجديد يحلّل الرابط ويتحقق من المضيف (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). المجموعة: **2522**.

@@ -9,12 +9,23 @@
 ---
 
 
+## [1.197.0] — 2026-08-14
+
+**추가 — Getro VC 채용 보드를 `careers_url` 하나만으로 추적하고, 컬렉션 id는 자동으로 해석됩니다.**
+
+### 추가
+- 추적 중인 Getro 보드(b2venture, Earlybird, Point Nine, …)에 더 이상 손으로 찾은 숫자 `getro_collection`이 필요하지 않습니다. 보드 자체의 `careers_url`만 주면 첫 스캔 때 그 페이지에서 id가 **자동으로 해석**됩니다 — SSRF 안전 GET 한 번으로 페이지에 내장된 데이터에서 숫자 `network.id`를 바로 읽습니다. 명시적 `getro_collection`은 여전히 우선이며 가져오기를 통째로 건너뜁니다.
+
+### 참고
+- `server/lib/sources/getro.mjs`에 새 `httpsCareersUrl()`, `extractCollectionId()`, 비동기 `resolveCollectionId()` 추가. 보드 페이지는 DNS 고정·크기 제한된 `safeGet`으로 가져오고, 해석된 id는 여전히 `assertGetroUrl`에 의해 호스트가 `api.getro.com`으로 고정됩니다. 이제 어댑터는 id가 없어도 https `careers_url`을 지닌 `provider: getro` 항목에 매칭됩니다. `tests/sources-getro.test.mjs` (+8). 스위트: **2527**.
+
+
 ## [1.196.0] — 2026-08-14
 
 **수정 (보안) — Workday 어댑터가 `api` 엔드포인트를 부분 문자열이 아닌 호스트명으로 검증합니다.**
 
 ### 수정
-- `portals.yml`의 Workday `api:` 값은 이제 **호스트명**이 `myworkdayjobs.com`(또는 `.myworkdayjobs.com` 하위 도메인)일 때만 허용됩니다. 이전 검사는 부분 문자열 일치라서, 문자열을 포함하기만 한 URL — 예: `https://evil.com/?x=myworkdayjobs.com` — 도 통과해 엔드포인트로 사용될 수 있었습니다. 실제 Workday 엔드포인트는 영향 없음. (CodeQL 보고, #443.)
+- `portals.yml`의 Workday `api:` 값은 이제 **호스트명**이 `myworkdayjobs.com`(또는 `.myworkdayjobs.com` 하위 도메인)일 때만 허용됩니다. 이전 검사는 부분 문자열 일치라서, 문자열을 포함하기만 한 URL — 예: `https://example.com/?x=myworkdayjobs.com` — 도 통과해 엔드포인트로 사용될 수 있었습니다. 실제 Workday 엔드포인트는 영향 없음. (CodeQL 보고, #443.)
 
 ### 참고
 - 새 `isWorkdayApi()`가 URL을 파싱해 호스트를 확인 (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). 스위트: **2522**.

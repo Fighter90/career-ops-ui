@@ -8,12 +8,23 @@
 
 ---
 
+## [1.197.0] — 2026-08-14
+
+**新增 — 僅憑 `careers_url` 即可追蹤 Getro 的 VC 徵才看板，集合 id 會自動解析。**
+
+### 新增
+- 被追蹤的 Getro 看板（b2venture、Earlybird、Point Nine …）不再需要手動查找的數字 `getro_collection`。只需提供看板自己的 `careers_url`，首次掃描時 id 便會從該頁面**自動解析** —— 一次防 SSRF 的安全 GET 直接從頁面內嵌資料中讀取數字 `network.id`。明確的 `getro_collection` 仍然優先，並會完全跳過該抓取。
+
+### 說明
+- 在 `server/lib/sources/getro.mjs` 中新增 `httpsCareersUrl()`、`extractCollectionId()` 與非同步的 `resolveCollectionId()`；看板頁面透過 DNS 固定、大小受限的 `safeGet` 抓取，解析出的 id 仍由 `assertGetroUrl` 將主機鎖定為 `api.getro.com`。轉接器現在即使沒有 id，也能比對帶有 https `careers_url` 的 `provider: getro` 項目。`tests/sources-getro.test.mjs` (+8)。測試套件：**2527**。
+
+
 ## [1.196.0] — 2026-08-14
 
 **修復 (安全) — Workday 轉接器以主機名而非子字串驗證 `api` 端點。**
 
 ### 修復
-- `portals.yml` 中的 Workday `api:` 值現在只有在其**主機名**為 `myworkdayjobs.com`（或 `.myworkdayjobs.com` 子網域）時才被接受。舊檢查是子字串比對，因此任何僅包含該字串的 URL——例如 `https://evil.com/?x=myworkdayjobs.com`——都會通過並被當作端點使用。真實的 Workday 端點不受影響。（由 CodeQL 回報，#443。）
+- `portals.yml` 中的 Workday `api:` 值現在只有在其**主機名**為 `myworkdayjobs.com`（或 `.myworkdayjobs.com` 子網域）時才被接受。舊檢查是子字串比對，因此任何僅包含該字串的 URL——例如 `https://example.com/?x=myworkdayjobs.com`——都會通過並被當作端點使用。真實的 Workday 端點不受影響。（由 CodeQL 回報，#443。）
 
 ### 說明
 - 新增 `isWorkdayApi()` 解析 URL 並檢查主機（`server/lib/portals/adapters/workday.mjs`）。`tests/workday-adapter-endpoint.test.mjs`（+1）。測試套件：**2522**。

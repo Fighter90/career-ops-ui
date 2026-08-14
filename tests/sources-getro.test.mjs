@@ -16,6 +16,9 @@ import assert from 'node:assert/strict';
 import {
   toEpochMs,
   resolveCollection,
+  httpsCareersUrl,
+  extractCollectionId,
+  resolveCollectionId,
   assertGetroUrl,
   normalizeGetroJob,
   getroSalary,
@@ -29,6 +32,12 @@ import { getroAdapter } from '../server/lib/portals/adapters/getro.mjs';
 
 // Response-like helper: fetchJson expects `res.ok` + `res.json()`.
 const ok = (payload) => ({ ok: true, json: async () => payload });
+// A minimal Getro board page carrying the id in __NEXT_DATA__ (Next.js shape).
+const nextDataHtml = (id) =>
+  '<!doctype html><html><head></head><body>'
+  + '<script id="__NEXT_DATA__" type="application/json">'
+  + JSON.stringify({ props: { pageProps: { network: { id } } } })
+  + '</script></body></html>';
 // Build a canned jobs page.
 const job = (i, extra = {}) => ({
   title: `Role ${i}`,
@@ -51,25 +60,37 @@ test('meta: id/label/region + API_BASE + adapter.id', () => {
   assert.equal(getroAdapter.label, 'Getro');
 });
 
-test('adapter: matches only provider=getro WITH a numeric collection; never careers_url', () => {
+test('adapter: matches provider=getro with a numeric collection OR an https careers_url', () => {
+  // explicit numeric collection
   assert.ok(getroAdapter.matches({ provider: 'getro', getro_collection: 4283 }));
-  // provider set but no / non-numeric collection → cannot be scanned → no match
+  // https careers_url alone now matches — the id auto-resolves at scan time
+  assert.ok(getroAdapter.matches({ provider: 'getro', careers_url: 'https://jobs.b2venture.vc' }));
+  // provider set but neither a usable id nor an https careers_url → no match
   assert.equal(getroAdapter.matches({ provider: 'getro' }), false);
   assert.equal(getroAdapter.matches({ provider: 'getro', getro_collection: 'abc' }), false);
-  // careers_url alone never claims a getro board
+  // an http (non-https) careers_url is not a usable auto-resolve source
+  assert.equal(getroAdapter.matches({ provider: 'getro', careers_url: 'http://jobs.b2venture.vc' }), false);
+  // careers_url WITHOUT provider:getro never claims a getro board
   assert.equal(getroAdapter.matches({ careers_url: 'https://jobs.b2venture.vc' }), false);
   assert.equal(getroAdapter.matches({ getro_collection: 4283 }), false);
   assert.equal(getroAdapter.matches({}), false);
   assert.equal(getroAdapter.matches(null), false);
 });
 
-test('adapter: buildEndpoint interpolates a numeric collection, else null', () => {
+test('adapter: buildEndpoint = the collection API for an explicit id, else the https careers_url', () => {
   assert.equal(
     getroAdapter.buildEndpoint({ provider: 'getro', getro_collection: 4283 }),
     'https://api.getro.com/api/v2/collections/4283/search/jobs',
   );
+  // auto-resolve entry: the board page URL is the informational probe endpoint
+  assert.equal(
+    getroAdapter.buildEndpoint({ provider: 'getro', careers_url: 'https://jobs.b2venture.vc/' }),
+    'https://jobs.b2venture.vc/',
+  );
+  // nothing usable → null
   assert.equal(getroAdapter.buildEndpoint({ provider: 'getro' }), null);
   assert.equal(getroAdapter.buildEndpoint({ provider: 'getro', getro_collection: 'x; DROP' }), null);
+  assert.equal(getroAdapter.buildEndpoint({ provider: 'getro', careers_url: 'http://jobs.b2venture.vc' }), null);
 });
 
 // ---------------------------------------------------------------------------
@@ -83,6 +104,91 @@ test('resolveCollection: accepts a numeric id (string or number), rejects the re
     assert.equal(resolveCollection({ getro_collection: bad }), null, `should reject ${JSON.stringify(bad)}`);
   }
   assert.equal(resolveCollection({}), null);
+});
+
+// ---------------------------------------------------------------------------
+// httpsCareersUrl — the board page auto-resolution reads from (https only)
+// ---------------------------------------------------------------------------
+
+test('httpsCareersUrl: https only, normalized; other schemes/junk → null', () => {
+  assert.equal(httpsCareersUrl({ careers_url: 'https://jobs.b2venture.vc' }), 'https://jobs.b2venture.vc/');
+  assert.equal(httpsCareersUrl({ careers_url: '  https://jobs.b2venture.vc/jobs  ' }), 'https://jobs.b2venture.vc/jobs');
+  assert.equal(httpsCareersUrl({ careers_url: 'http://jobs.b2venture.vc' }), null);
+  assert.equal(httpsCareersUrl({ careers_url: 'ftp://x' }), null);
+  assert.equal(httpsCareersUrl({ careers_url: 'not a url' }), null);
+  assert.equal(httpsCareersUrl({ careers_url: '   ' }), null);
+  assert.equal(httpsCareersUrl({}), null);
+  assert.equal(httpsCareersUrl(null), null);
+});
+
+// ---------------------------------------------------------------------------
+// extractCollectionId — parse network.id out of __NEXT_DATA__
+// ---------------------------------------------------------------------------
+
+test('extractCollectionId: reads network.id (number or string) from __NEXT_DATA__, else null', () => {
+  assert.equal(extractCollectionId(nextDataHtml(4283)), '4283');
+  assert.equal(extractCollectionId(nextDataHtml('4283')), '4283');
+  // extra attributes + a CSP nonce + reordered attrs + single quotes tolerated
+  assert.equal(
+    extractCollectionId(
+      '<script type="application/json" nonce="abc123" id=\'__NEXT_DATA__\'>'
+      + JSON.stringify({ props: { pageProps: { network: { id: 77 } } } })
+      + '</script>',
+    ),
+    '77',
+  );
+  // a data-id attribute must NOT false-match
+  assert.equal(extractCollectionId('<div data-id="__NEXT_DATA__">x</div>'), null);
+  assert.equal(extractCollectionId('<script id="__NEXT_DATA__">not json</script>'), null);
+  assert.equal(extractCollectionId('<html>no next data</html>'), null);
+  assert.equal(extractCollectionId(nextDataHtml(0)), null);   // non-positive id
+  assert.equal(extractCollectionId(nextDataHtml(-5)), null);
+  assert.equal(extractCollectionId(nextDataHtml('0')), null);
+  assert.equal(extractCollectionId(42), null);                // non-string input
+  assert.equal(extractCollectionId(null), null);
+});
+
+// ---------------------------------------------------------------------------
+// resolveCollectionId — explicit id wins; else auto-resolve from careers_url
+// ---------------------------------------------------------------------------
+
+test('resolveCollectionId: an explicit numeric id wins with no network call', async () => {
+  let called = false;
+  const id = await resolveCollectionId(
+    { getro_collection: 4283, careers_url: 'https://jobs.b2venture.vc' },
+    { safeGetImpl: async () => { called = true; return { status: 200, text: nextDataHtml(999) }; } },
+  );
+  assert.equal(id, '4283');
+  assert.equal(called, false, 'explicit id must short-circuit the fetch');
+});
+
+test('resolveCollectionId: auto-resolves from an https careers_url via safeGet', async () => {
+  let seenUrl = null;
+  let seenOpts = null;
+  const id = await resolveCollectionId(
+    { name: 'b2v', careers_url: 'https://jobs.b2venture.vc/jobs' },
+    { safeGetImpl: async (url, o) => { seenUrl = url; seenOpts = o; return { status: 200, text: nextDataHtml(4283) }; } },
+  );
+  assert.equal(id, '4283');
+  assert.equal(seenUrl, 'https://jobs.b2venture.vc/jobs');
+  assert.ok(seenOpts && Number.isFinite(seenOpts.maxBytes) && seenOpts.maxBytes > 0, 'a byte cap is passed to safeGet');
+  assert.ok(seenOpts && Number.isFinite(seenOpts.timeoutMs) && seenOpts.timeoutMs > 0, 'a timeout is passed to safeGet');
+});
+
+test('resolveCollectionId: fail-soft null on non-https / non-200 / bad html / fetch error / nothing', async () => {
+  // http:// is never fetched at all
+  assert.equal(
+    await resolveCollectionId({ careers_url: 'http://x' }, { safeGetImpl: async () => { throw new Error('must not be called'); } }),
+    null,
+  );
+  // non-200 response
+  assert.equal(await resolveCollectionId({ careers_url: 'https://x' }, { safeGetImpl: async () => ({ status: 403, text: '' }) }), null);
+  // 200 but no __NEXT_DATA__
+  assert.equal(await resolveCollectionId({ careers_url: 'https://x' }, { safeGetImpl: async () => ({ status: 200, text: '<html>nope</html>' }) }), null);
+  // the fetch throws → null (caller turns that into a helpful error)
+  assert.equal(await resolveCollectionId({ careers_url: 'https://x' }, { safeGetImpl: async () => { throw new Error('DNS'); } }), null);
+  // neither an id nor a careers_url
+  assert.equal(await resolveCollectionId({ name: 'x' }, {}), null);
 });
 
 // ---------------------------------------------------------------------------
@@ -152,11 +258,44 @@ test('normalizeGetroJob: employer falls back organization.name → organization_
 // dead-board contract, age cutoff
 // ---------------------------------------------------------------------------
 
-test('fetchGetro: throws when the entry has no numeric getro_collection', async () => {
+test('fetchGetro: throws when neither a numeric getro_collection nor a resolvable careers_url is present', async () => {
   await assert.rejects(
     () => fetchGetro(null, { fetchImpl: async () => ok({}), company: { name: 'b2v' } }),
     /getro_collection/,
   );
+  // a careers_url is present but the page carries no network.id → still throws
+  await assert.rejects(
+    () => fetchGetro(null, {
+      company: { name: 'b2v', careers_url: 'https://jobs.b2venture.vc' },
+      safeGetImpl: async () => ({ status: 200, text: '<html>no next data</html>' }),
+      fetchImpl: async () => ok({}),
+    }),
+    /getro_collection|careers_url/,
+  );
+});
+
+test('fetchGetro: auto-resolves the collection id from careers_url, then scans that collection', async () => {
+  let apiUrl = null;
+  let safeGetCalls = 0;
+  const jobs = await fetchGetro(null, {
+    company: { name: 'b2v', careers_url: 'https://jobs.b2venture.vc/jobs', getro_max_age_days: 0 },
+    safeGetImpl: async () => { safeGetCalls += 1; return { status: 200, text: nextDataHtml(4283) }; },
+    fetchImpl: async (url) => { apiUrl = url; return ok({ results: { count: 1, jobs: [job(1)] } }); },
+  });
+  assert.equal(safeGetCalls, 1, 'the board page is fetched exactly once to resolve the id');
+  assert.equal(apiUrl, 'https://api.getro.com/api/v2/collections/4283/search/jobs');
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].company, 'Acme');
+});
+
+test('fetchGetro: an explicit getro_collection skips the careers_url fetch entirely', async () => {
+  let safeGetCalls = 0;
+  await fetchGetro(null, {
+    company: { name: 'b2v', getro_collection: 4283, careers_url: 'https://jobs.b2venture.vc', getro_max_age_days: 0 },
+    safeGetImpl: async () => { safeGetCalls += 1; return { status: 200, text: nextDataHtml(999) }; },
+    fetchImpl: async () => ok({ results: { count: 1, jobs: [job(1)] } }),
+  });
+  assert.equal(safeGetCalls, 0, 'explicit id must not trigger a board-page fetch');
 });
 
 test('fetchGetro: host-pins the URL and passes POST + redirect:"error"', async () => {

@@ -2,12 +2,23 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.197.0] — 2026-08-14
+
+**Eklendi — bir Getro VC iş ilan panosunu yalnızca `careers_url` ile takip edin; koleksiyon id'si kendiliğinden çözülür.**
+
+### Eklendi
+- Takip edilen bir Getro panosu (b2venture, Earlybird, Point Nine, …) artık elle bulunan sayısal bir `getro_collection` gerektirmiyor. Panonun kendi `careers_url` değerini verin; id, ilk taramada o sayfadan **kendiliğinden çözülür** — SSRF'ye karşı güvenli tek bir GET, sayısal `network.id` değerini sayfanın gömülü verisinden doğrudan okur. Açık bir `getro_collection` yine önceliklidir ve getirmeyi tümüyle atlar.
+
+### Notlar
+- `server/lib/sources/getro.mjs` içinde yeni `httpsCareersUrl()`, `extractCollectionId()` ve asenkron `resolveCollectionId()`; pano sayfası DNS'e sabitlenmiş, boyutu sınırlı `safeGet` ile getirilir ve çözülen id, `assertGetroUrl` tarafından hâlâ `api.getro.com` ana bilgisayarına sabitlenir. Adaptör artık id olmadan bile https `careers_url` taşıyan bir `provider: getro` girdisiyle eşleşir. `tests/sources-getro.test.mjs` (+8). Takım: **2527**.
+
+
 ## [1.196.0] — 2026-08-14
 
 **Düzeltildi (güvenlik) — Workday adaptörü bir `api` uç noktasını alt dize değil, ana bilgisayar adıyla doğrular.**
 
 ### Düzeltildi
-- `portals.yml`'deki bir Workday `api:` değeri artık yalnızca **ana bilgisayar adı** `myworkdayjobs.com` (veya `.myworkdayjobs.com` alt alan adı) olduğunda kabul edilir. Eski kontrol bir alt dize eşleşmesiydi, bu yüzden dizeyi yalnızca içeren herhangi bir URL — örn. `https://evil.com/?x=myworkdayjobs.com` — geçiyor ve uç nokta olarak kullanılabiliyordu. Gerçek Workday uç noktaları etkilenmez. (CodeQL tarafından bildirildi, #443.)
+- `portals.yml`'deki bir Workday `api:` değeri artık yalnızca **ana bilgisayar adı** `myworkdayjobs.com` (veya `.myworkdayjobs.com` alt alan adı) olduğunda kabul edilir. Eski kontrol bir alt dize eşleşmesiydi, bu yüzden dizeyi yalnızca içeren herhangi bir URL — örn. `https://example.com/?x=myworkdayjobs.com` — geçiyor ve uç nokta olarak kullanılabiliyordu. Gerçek Workday uç noktaları etkilenmez. (CodeQL tarafından bildirildi, #443.)
 
 ### Notlar
 - Yeni `isWorkdayApi()` URL'yi ayrıştırır ve ana bilgisayarı kontrol eder (`server/lib/portals/adapters/workday.mjs`). `tests/workday-adapter-endpoint.test.mjs` (+1). Takım: **2522**.
