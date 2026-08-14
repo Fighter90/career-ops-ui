@@ -22,7 +22,7 @@ name: AI Review (Claude Code)
 # REVIEW PROVIDER  (one repo secret; OpenRouter is PREFERRED when both are set)
 #   OPENROUTER_API_KEY  — openrouter.ai → Keys. Cheap + fast. The model is the
 #                         OPENROUTER_REVIEW_MODEL repo VARIABLE, or a cheap
-#                         default (google/gemini-2.0-flash-001).
+#                         default (qwen/qwen3-coder).
 #     gh secret set OPENROUTER_API_KEY --repo Fighter90/career-ops-ui
 #     gh variable set OPENROUTER_REVIEW_MODEL --body "deepseek/deepseek-chat"  # optional
 #   ANTHROPIC_API_KEY   — console.anthropic.com → API keys. Fallback when no
