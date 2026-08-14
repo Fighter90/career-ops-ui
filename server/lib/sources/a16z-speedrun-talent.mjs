@@ -54,8 +54,8 @@ const DEFAULT_MAX_PAGES = 6; // × PER_PAGE = the 300-job default scan (sized in
 // Runaway bound, not a coverage target: iteration already stops at the feed's
 // reported total_pages (or a short page), so on an honest feed the cap costs
 // nothing and full-board sweeps keep working as the board grows. It only bites a
-// misbehaving feed or an absurd max_pages entry (~353 pages /
-// ~17.6k jobs as of 2026-08), same policy as workday's cap.
+// misbehaving feed or an absurd max_pages entry; the board was ~353 pages /
+// ~17.6k jobs as of 2026-08, same policy as workday's cap.
 const MAX_PAGES_CAP = 1000; // hard stop on request count regardless of max_pages
 const PAGE_DELAY_MS = 0; // no documented rate limit; tunable via opts
 

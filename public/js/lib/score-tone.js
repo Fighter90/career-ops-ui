@@ -1,8 +1,7 @@
 /**
  * score-tone.js — shared fit-score → tone mapping (v1.128.0).
  *
- * A four-tier
- * threshold (>=4.2 good / >=3.8 warn / >=3.0 muted / <3.0 bad) with a
+ * A four-tier threshold (>=4.2 good / >=3.8 warn / >=3.0 muted / <3.0 bad) with a
  * letter-grade fallback (A/B/C/…), replacing our coarse ">=4 high / >=3 mid /
  * else low" split that mis-colored NaN and letter grades. Pure, CSP-safe.
  *

@@ -2,8 +2,7 @@
 /**
  * joinup.ch source — Swiss startup job platform (Typesense-backed Next.js).
  *
- * Implements the web-ui source
- * contract (rich job objects + `meta` for auto-discovery). Detected from a
+ * Implements the web-ui source contract (rich job objects + `meta` for auto-discovery). Detected from a
  * `careers_url` whose host is joinup.ch.
  *
  * The browse page server-renders the newest page of results into __NEXT_DATA__

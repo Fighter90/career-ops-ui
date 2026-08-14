@@ -1,5 +1,5 @@
 /**
- * Content routes — read/write of the project's text artifacts:
+ * Content routes — read/write of the career-ops project's text artifacts:
  *   GET  /api/cv          → { markdown }
  *   PUT  /api/cv          → save (sanitized) markdown
  *   POST /api/cv/import   → convert uploaded docx/pdf/html/… to markdown

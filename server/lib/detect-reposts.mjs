@@ -2,8 +2,7 @@
 /**
  * detect-reposts.mjs — repost / ghost-posting detector.
  *
- * Operates on the web-ui scan-history.tsv format. Groups scan-history rows by
- * company,
+ * Operates on the web-ui scan-history.tsv format. Groups scan-history rows by company,
  * fuzzy-matches role titles via roleFuzzyMatch, and flags any company+role that
  * appears 2+ times with DIFFERENT URLs inside a rolling window (default 90d).
  * Such clusters are almost certainly the same opening being re-listed by the

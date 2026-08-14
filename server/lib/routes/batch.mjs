@@ -8,7 +8,7 @@
  *                                          batch/batch-runner.sh
  *   POST /api/batch/merge              → run merge-tracker.mjs, return result
  *
- * The runner script (`batch/batch-runner.sh`) lives in the project.
+ * The runner script (`batch/batch-runner.sh`) lives in the career-ops project, not this repo.
  * We shell out via `bash` so that script can stay shell — the SPA
  * is a thin streaming wrapper.
  */

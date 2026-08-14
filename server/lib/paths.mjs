@@ -9,7 +9,7 @@ export const WEB_UI_ROOT = resolve(__dirname, '..', '..');
 export const PUBLIC_DIR = resolve(WEB_UI_ROOT, 'public');
 
 /**
- * Resolve where the project root lives:
+ * Resolve where the career-ops project root lives:
  *   1. CAREER_OPS_ROOT env var (absolute or relative to cwd)
  *   2. ../  (when this repo is dropped in as career-ops/web-ui)
  *   3. cwd  (when launched from inside career-ops itself)

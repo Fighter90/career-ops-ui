@@ -1,5 +1,5 @@
 /**
- * Read / write the project's .env file in place. Used by the
+ * Read / write the career-ops project's .env file in place. Used by the
  * /api/config endpoint so the user can edit ANTHROPIC_API_KEY, GEMINI_API_KEY,
  * etc. through the UI and have BOTH the CLI scripts (read by node) AND
  * web-ui (read by dotenv-loader) pick them up.
