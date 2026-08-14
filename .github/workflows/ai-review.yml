@@ -19,12 +19,22 @@ name: AI Review (Claude Code)
 #   ADVISORY second opinion (fail-soft — never blocks a push;
 #   maintainers retain all authority).
 #
-# REQUIRED REPO SECRET
-#   ANTHROPIC_API_KEY   — console.anthropic.com → API keys.
-#   Without it the job logs a clear skip notice and exits 0 (so the
-#   pipeline stays green; the local pre-commit AI layer + ci.yml still
-#   protect every commit). Add it via:
+# REVIEW PROVIDER  (one repo secret; OpenRouter is PREFERRED when both are set)
+#   OPENROUTER_API_KEY  — openrouter.ai → Keys. Cheap + fast. The model is the
+#                         OPENROUTER_REVIEW_MODEL repo VARIABLE, or a cheap
+#                         default (google/gemini-2.0-flash-001).
+#     gh secret set OPENROUTER_API_KEY --repo Fighter90/career-ops-ui
+#     gh variable set OPENROUTER_REVIEW_MODEL --body "deepseek/deepseek-chat"  # optional
+#   ANTHROPIC_API_KEY   — console.anthropic.com → API keys. Fallback when no
+#                         OpenRouter key is present.
 #     gh secret set ANTHROPIC_API_KEY --repo Fighter90/career-ops-ui
+#   With NEITHER set the job logs a clear skip notice and exits 0 (so the
+#   pipeline stays green; the local pre-commit AI layer + ci.yml still protect
+#   every commit). The provider call lives in .github/scripts/ai-review-call.sh.
+#
+#   DATA FLOW: whichever provider is used, the (200 KB-capped) commit/PR diff is
+#   sent to that vendor and their chosen upstream for review. A conscious choice
+#   for a private repo — this repo is public, so the diff is public already.
 #
 # DESIGN NOTES
 #   • Zero extra runtime deps: the review is a direct HTTPS call to
@@ -156,6 +166,8 @@ jobs:
       - name: Claude review → commit comment (fail-soft)
         if: steps.diff.outputs.empty == 'false'
         env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_REVIEW_MODEL: ${{ vars.OPENROUTER_REVIEW_MODEL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SHA: ${{ github.sha }}
@@ -163,53 +175,26 @@ jobs:
           SUBJECT: ${{ steps.diff.outputs.subject }}
         run: |
           set -uo pipefail
-          if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
-            echo "::warning::ANTHROPIC_API_KEY not set — skipping AI review (advisory; ci.yml + pre-commit still gate main). Add it: gh secret set ANTHROPIC_API_KEY"
+          if [ -z "${OPENROUTER_API_KEY:-}" ] && [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+            echo "::warning::no OPENROUTER_API_KEY or ANTHROPIC_API_KEY — skipping AI review (advisory; ci.yml + pre-commit still gate main). Add one: gh secret set OPENROUTER_API_KEY"
             exit 0
           fi
 
-          # Build the Messages API request with jq (preinstalled on
-          # ubuntu-latest). jq -Rs slurps the whole prompt file as one
-          # JSON string, escaping arbitrary diff content correctly.
-          # NOTE: the pre-fix code used an inline `python3 - <<'PY'`
-          # heredoc under this YAML block scalar AND redirected its
-          # stdout to the same /tmp/req.json that json.dump opened —
-          # the collision (plus heredoc indentation) produced an empty
-          # body and Anthropic returned HTTP 400 "not valid JSON". jq
-          # has none of those hazards.
+          # Build the review prompt: rubric + commit subject + code-first diff.
           {
             printf '%s\n\nCommit subject: %s\n\n=== DIFF ===\n' \
               "${REVIEW_RUBRIC:-Review this diff for bugs and security.}" \
               "${SUBJECT:-(no subject)}"
             cat /tmp/pr.diff
           } > /tmp/prompt.txt
-          jq -Rs '{model:"claude-opus-4-7",max_tokens:1500,messages:[{role:"user",content:.}]}' \
-            /tmp/prompt.txt > /tmp/req.json
-          # Guard: a non-empty, parseable JSON body or fail-soft now.
-          if ! jq -e . /tmp/req.json >/dev/null 2>&1; then
-            echo "::warning::could not build request JSON — fail-soft, not blocking."
-            exit 0
-          fi
 
-          # Direct HTTPS to the Anthropic API (mirrors anthropic.mjs).
-          HTTP=$(curl -sS -o /tmp/resp.json -w '%{http_code}' \
-            --max-time 120 \
-            https://api.anthropic.com/v1/messages \
-            -H "x-api-key: ${ANTHROPIC_API_KEY}" \
-            -H "anthropic-version: 2023-06-01" \
-            -H "content-type: application/json" \
-            --data-binary @/tmp/req.json || echo "000")
-
-          if [ "$HTTP" != "200" ]; then
-            echo "::warning::AI review API call failed (HTTP $HTTP) — fail-soft, not blocking. Body:"
-            head -c 800 /tmp/resp.json || true
-            exit 0
-          fi
-
-          REVIEW=$(jq -r '[.content[]? | select(.type=="text") | .text] | join("")' \
-            /tmp/resp.json 2>/dev/null)
+          # Shared caller: prefers a cheap OpenRouter model (OPENROUTER_API_KEY),
+          # falls back to the Anthropic API, and is fail-soft (prints a notice,
+          # never a non-zero exit).
+          REVIEW="$(bash .github/scripts/ai-review-call.sh /tmp/prompt.txt)"
           if [ -z "$REVIEW" ]; then
-            REVIEW="(model returned no text — raw: $(head -c 300 /tmp/resp.json))"
+            echo "AI review empty (provider failed or skipped) — not posting a comment."
+            exit 0
           fi
 
           # Post as a commit comment (advisory). Fail-soft on any error.
@@ -265,6 +250,8 @@ jobs:
       - name: Claude review → PR comment (fail-soft)
         if: steps.diff.outputs.empty == 'false'
         env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_REVIEW_MODEL: ${{ vars.OPENROUTER_REVIEW_MODEL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -274,8 +261,8 @@ jobs:
           SUBJECT: ${{ github.event.pull_request.title }}
         run: |
           set -uo pipefail
-          if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
-            echo "::warning::ANTHROPIC_API_KEY not set — skipping AI review (advisory; ci.yml + pre-commit still gate). Add it: gh secret set ANTHROPIC_API_KEY"
+          if [ -z "${OPENROUTER_API_KEY:-}" ] && [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+            echo "::warning::no OPENROUTER_API_KEY or ANTHROPIC_API_KEY — skipping AI review (advisory; ci.yml + pre-commit still gate). Add one: gh secret set OPENROUTER_API_KEY"
             exit 0
           fi
           {
@@ -284,25 +271,8 @@ jobs:
               "${SUBJECT:-(no title)}"
             cat /tmp/pr.diff
           } > /tmp/prompt.txt
-          jq -Rs '{model:"claude-opus-4-7",max_tokens:1500,messages:[{role:"user",content:.}]}' \
-            /tmp/prompt.txt > /tmp/req.json
-          if ! jq -e . /tmp/req.json >/dev/null 2>&1; then
-            echo "::warning::could not build request JSON — fail-soft, not blocking."
-            exit 0
-          fi
-          HTTP=$(curl -sS -o /tmp/resp.json -w '%{http_code}' --max-time 120 \
-            https://api.anthropic.com/v1/messages \
-            -H "x-api-key: ${ANTHROPIC_API_KEY}" \
-            -H "anthropic-version: 2023-06-01" \
-            -H "content-type: application/json" \
-            --data-binary @/tmp/req.json || echo "000")
-          if [ "$HTTP" != "200" ]; then
-            echo "::warning::AI review API call failed (HTTP $HTTP) — fail-soft, not blocking. Body:"
-            head -c 800 /tmp/resp.json || true
-            exit 0
-          fi
-          REVIEW=$(jq -r '[.content[]? | select(.type=="text") | .text] | join("")' /tmp/resp.json 2>/dev/null)
-          if [ -z "$REVIEW" ]; then REVIEW="(model returned no text — raw: $(head -c 300 /tmp/resp.json))"; fi
+          REVIEW="$(bash .github/scripts/ai-review-call.sh /tmp/prompt.txt)"
+          if [ -z "$REVIEW" ]; then echo "AI review empty (provider failed or skipped) — not posting."; exit 0; fi
           BODY=$(printf '🤖 **AI review — advisory** (CLAUDE.md bar; ci.yml is the hard gate)\n\n%s\n\n_Posted by the AI Review workflow. Maintainers retain merge authority._' "$REVIEW")
           if gh api -X POST "repos/${REPO}/issues/${PR_NUMBER}/comments" -f body="$BODY" >/dev/null 2>&1; then
             echo "✓ AI review posted to PR #${PR_NUMBER}"
