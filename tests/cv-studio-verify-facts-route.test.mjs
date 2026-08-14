@@ -68,6 +68,27 @@ test('empty text is a 400', async () => {
   assert.equal(r.status, 400);
 });
 
+// These two rewrite the fake via writeFake, so they must stay ABOVE the
+// script-absent test below (which rmSync's it). node:test runs a file's
+// top-level tests sequentially, so the order holds.
+test('unparseable stdout fails soft to {available:false, script-error}', async () => {
+  writeFake(`console.log('this is not json at all');`);
+  const r = await post('anything');
+  const d = await r.json();
+  assert.equal(r.status, 200);
+  assert.equal(d.available, false);
+  assert.equal(d.reason, 'script-error');
+});
+
+test('JSON without a verdict field fails soft to {available:false, script-error}', async () => {
+  writeFake(`console.log(JSON.stringify({ notAVerdict: true }));`);
+  const r = await post('anything');
+  const d = await r.json();
+  assert.equal(r.status, 200); // fails soft, never a 5xx
+  assert.equal(d.available, false);
+  assert.equal(d.reason, 'script-error');
+});
+
 test('fails soft to {available:false} when the script is absent', async () => {
   rmSync(join(root, 'verify-cv-facts.mjs'), { force: true });
   const r = await post('anything');
