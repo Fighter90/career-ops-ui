@@ -353,9 +353,10 @@ function companyHistoryCard(rows, c, t) {
 }
 
 // Render one company card ({ company, responsiveness:{label,facts}, postingChurn:{label,clusters}, explanations }).
+// Called only with a truthy card (the caller already returned on !res / available:false), so no card-null guard.
 function companyHistoryEvidence(card, c, t) {
-  const resp = (card && card.responsiveness) || {};
-  const churn = (card && card.postingChurn) || {};
+  const resp = card.responsiveness || {};
+  const churn = card.postingChurn || {};
   const RESP = {
     'silent-on-you': [t('track.histSilent', 'Silent on you'), 'badge badge-warn'],
     mixed: [t('track.histMixed', 'Mixed'), 'badge badge-info'],
@@ -375,7 +376,7 @@ function companyHistoryEvidence(card, c, t) {
 
   const kids = [
     c('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', margin: '0 0 8px' } }, [
-      c('strong', null, String((card && card.company) || '—')),
+      c('strong', null, String(card.company || '—')),
       c('span', { className: r[1] }, r[0]),
       c('span', { className: ch[1] }, ch[0]),
     ]),
@@ -400,7 +401,7 @@ function companyHistoryEvidence(card, c, t) {
     }
     kids.push(ul);
   }
-  for (const e of (Array.isArray(card && card.explanations) ? card.explanations : [])) {
+  for (const e of (Array.isArray(card.explanations) ? card.explanations : [])) {
     kids.push(c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0' } }, String(e)));
   }
   return c('div', { className: 'card', style: { padding: '12px', marginTop: '4px' } }, kids);
