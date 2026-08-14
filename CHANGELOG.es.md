@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.186.0] — 2026-08-14
+
+**Añadido (CV Studio) — un panel "Brecha de habilidades": cuáles de las habilidades requeridas de un empleo nombra tu CV, insinúa o le faltan.**
+
+### Añadido
+- Un nuevo panel **Brecha de habilidades** en **CV Studio**. Elige una descripción de empleo guardada y clasifica cada habilidad requerida en **nombrada en tu CV**, **insinuada en tu CV** o **faltante** — comparación de palabras sin IA, sin escribir nada. Aparece una nota de baja confianza cuando la oferta no tenía una sección clara de requisitos.
+
+### Notas
+- Nuevo `GET /api/jds/:name/skill-gap` (el nombre de la oferta se sanea y se confirma bajo `jds/` antes de ser un argumento; degradación suave a `{available:false}` sin el script). +13 claves i18n ×17. Pruebas: `tests/jds-skill-gap-route.test.mjs` (+4, incl. rechazo de path-traversal). Suite: **2485**.
+
 ## [1.185.0] — 2026-08-14
 
 **Añadido (estadísticas) — una pestaña "Embudo y velocidad": cómo se compara tu embudo con el mercado y con qué rapidez avanzas entre etapas.**

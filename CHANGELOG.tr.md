@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.186.0] — 2026-08-14
+
+**Eklendi (CV Studio) — bir "Beceri açığı" paneli: bir işin gerekli becerilerinden hangilerini CV'niz adlandırıyor, ima ediyor veya eksik.**
+
+### Eklendi
+- **CV Studio**'da yeni bir **Beceri açığı** paneli. Kayıtlı bir iş tanımı seçin; her gerekli beceriyi **CV'nizde adlandırılan**, **CV'nizde ima edilen** veya **eksik** olarak ayırır — LLM'siz kelime karşılaştırması, hiçbir şey yazılmaz. İlanda net bir gereksinim bölümü yoksa düşük güven notu görünür.
+
+### Notlar
+- Yeni `GET /api/jds/:name/skill-gap` (iş adı, argüman olmadan önce yol-temizlemesinden geçirilir ve `jds/` altında doğrulanır; betik yoksa `{available:false}`'e yumuşak geri dönüş). +13 i18n anahtarı ×17. Testler: `tests/jds-skill-gap-route.test.mjs` (+4, yol geçişi reddi dahil). Takım: **2485**.
+
 ## [1.185.0] — 2026-08-14
 
 **Eklendi (istatistik) — "Huni ve hız" sekmesi: huniniz piyasayla nasıl kıyaslanıyor ve aşamalar arasında ne kadar hızlı ilerliyorsunuz.**

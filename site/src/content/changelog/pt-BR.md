@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.186.0] — 2026-08-14
+
+**Adicionado (CV Studio) — um painel "Lacuna de habilidades": quais das habilidades exigidas de uma vaga seu CV cita, insinua ou está faltando.**
+
+### Adicionado
+- Um novo painel **Lacuna de habilidades** no **CV Studio**. Escolha uma descrição de vaga salva e ele classifica cada habilidade exigida em **citada no seu CV**, **insinuada no seu CV** ou **faltando** — comparação de palavras sem IA, nada é gravado. Uma nota de baixa confiança aparece quando a vaga não tinha uma seção clara de requisitos.
+
+### Notas
+- Novo `GET /api/jds/:name/skill-gap` (o nome da vaga é saneado e confirmado sob `jds/` antes de virar argumento; degrada suave para `{available:false}` sem o script). +13 chaves i18n ×17. Testes: `tests/jds-skill-gap-route.test.mjs` (+4, incl. rejeição de path-traversal). Suíte: **2485**.
+
 ## [1.185.0] — 2026-08-14
 
 **Adicionado (estatísticas) — uma aba "Funil e velocidade": como seu funil se compara ao mercado e com que rapidez você avança entre etapas.**
