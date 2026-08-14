@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.189.0] — 2026-08-14
+
+**Naprawiono (skaner) — poziomy stażu zapisane cyframi rzymskimi liczą się teraz także w tytułach niełacińskich.**
+
+### Naprawiono
+- Klasyfikator poziomu za `skip_tiers` czyta teraz przyrostek poziomu cyframi rzymskimi (I / II / III / IV / V) po słowie stanowiska w **dowolnym piśmie** — „Инженер III", „エンジニア I", „Ingénieur IV" — nie tylko po słowach ASCII. Wcześniej cyfra poziomu po słowie niełacińskim była ignorowana, a oferta spadała do **mid**, więc `skip_tiers: [senior]` lub `[entry]` je pomijał.
+
+### Uwagi
+- Niezależny od pisma lookbehind w `server/lib/classify-tier.mjs`; usunięto martwy zdublowany matcher `Sr.`. `tests/classify-tier.test.mjs` (+1). Zestaw: **2498**.
+
+
 ## [1.188.0] — 2026-08-14
 
 **Naprawiono (UI) — główne przyciski akcji nie przylegają już do podtytułu strony.**

@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.189.0] — 2026-08-14
+
+**Behoben (Scanner) — als römische Ziffern geschriebene Senioritätsstufen zählen jetzt auch bei nicht-lateinischen Titeln.**
+
+### Behoben
+- Der Tier-Klassifikator hinter `skip_tiers` liest jetzt ein Stufensuffix in römischen Ziffern (I / II / III / IV / V) nach dem Berufswort in **jeder Schrift** — „Инженер III", „エンジニア I", „Ingénieur IV" — nicht nur nach ASCII-Wörtern. Zuvor wurde eine Stufenzahl nach einem nicht-lateinischen Wort ignoriert und die Stelle fiel auf **mid**, sodass `skip_tiers: [senior]` oder `[entry]` sie verpasste.
+
+### Hinweise
+- Schriftunabhängiges Lookbehind in `server/lib/classify-tier.mjs`; toter doppelter `Sr.`-Matcher entfernt. `tests/classify-tier.test.mjs` (+1). Suite: **2498**.
+
+
 ## [1.188.0] — 2026-08-14
 
 **Behoben (UI) — die primären Aktionsschaltflächen kleben nicht mehr am Seitentitel-Untertitel.**

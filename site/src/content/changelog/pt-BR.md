@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.189.0] — 2026-08-14
+
+**Corrigido (scanner) — níveis de senioridade em algarismos romanos agora contam também em títulos não latinos.**
+
+### Corrigido
+- O classificador de nível por trás de `skip_tiers` agora lê um sufixo de nível em algarismos romanos (I / II / III / IV / V) após a palavra do cargo em **qualquer alfabeto** — "Инженер III", "エンジニア I", "Ingénieur IV" — não apenas após palavras ASCII. Antes, um número de nível após uma palavra não latina era ignorado e a vaga caía para **mid**, então `skip_tiers: [senior]` ou `[entry]` não as filtrava.
+
+### Notas
+- Lookbehind independente de alfabeto em `server/lib/classify-tier.mjs`; removido um matcher `Sr.` duplicado morto. `tests/classify-tier.test.mjs` (+1). Suíte: **2498**.
+
+
 ## [1.188.0] — 2026-08-14
 
 **Corrigido (UI) — os botões de ação principais não ficam mais colados no subtítulo da página.**

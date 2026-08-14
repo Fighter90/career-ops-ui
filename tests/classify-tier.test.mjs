@@ -24,11 +24,26 @@ test('classifyTier: unrecognised / plain titles fall back to mid', () => {
 });
 
 test('classifyTier: LEFTMOST marker wins (position, not rank)', () => {
-  // "Summer Intern, Director of Product" is an internship, not a directorship —
-  // the senior word names the person the intern sits beside.
+  // Leftmost is the LOWER rank → position beats the higher word that trails:
+  // "Summer Intern, Director of Product" is an internship, not a directorship.
   assert.equal(classifyTier('Summer Intern, Director of Product'), 'intern');
-  // A senior word that genuinely leads still wins.
-  assert.equal(classifyTier('Senior Intern Coordinator'), 'senior');
+  // Leftmost is the HIGHER rank → same rule, other direction: the director who
+  // heads the junior-analyst team is senior, not junior.
+  assert.equal(classifyTier('Director, Junior Analyst Team'), 'senior');
+});
+
+test('classifyTier: roman-numeral levels are script-agnostic (non-Latin titles)', () => {
+  // Before the fix the numeral matchers required an ASCII word before the token,
+  // so a non-Latin title with a level numeral silently fell back to 'mid'. These
+  // would have been wrong (mid) before; the level after any-script role word now
+  // classifies honestly.
+  assert.equal(classifyTier('Инженер III'), 'senior'); // ru
+  assert.equal(classifyTier('エンジニア I'), 'entry'); // ja
+  assert.equal(classifyTier('Ingénieur IV'), 'senior'); // fr
+  assert.equal(classifyTier('Ingeniero V'), 'senior'); // es
+  // ASCII regression + a hyphen separator both still work.
+  assert.equal(classifyTier('Engineer II'), 'mid');
+  assert.equal(classifyTier('Grade-IV Specialist'), 'senior');
 });
 
 test('classifyTier: guard (a) — "Associate <senior noun>" is senior, not entry', () => {
