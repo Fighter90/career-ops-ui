@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.195.0] — 2026-08-14
+
+**Ydelse (scanner) — repost-detektion forbliver hurtig på store scan-historikker.**
+
+### Ydelse
+- Detektion af dublet-opslag degraderer ikke længere til O(N²) på en stor `scan-history.tsv`. Titelgrupperingen pr. virksomhed var en indlejret løkke, der betalte et fuldt `roleFuzzyMatch` på hvert par; nu er det et inverteret indeks — buckets efter nøjagtig titel i én gennemgang, derefter fuzzy-match kun mellem FORSKELLIGE buckets, der deler et diskriminerende (ikke-baseline) token. **Outputtet er identisk** — de samme repost-klynger — bevist med en differentiel test mod den gamle algoritme på 200+ tilfældige historikker.
+
+### Noter
+- `groupRowsByTitle` i `server/lib/detect-reposts.mjs` (eksporteret til den differentielle test). `tests/detect-reposts-grouping.test.mjs` (+2). Suite: **2521**.
+
+
 ## [1.194.0] — 2026-08-14
 
 **Rettet (scanner) — Workday-karrieresider med en enkelt-segment-URL scannes nu korrekt.**

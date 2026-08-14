@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.195.0] — 2026-08-14
+
+**Prestazioni (scanner) — il rilevamento dei repost resta veloce su cronologie di scansione grandi.**
+
+### Prestazioni
+- Il rilevamento di annunci duplicati non degrada più a O(N²) su un grande `scan-history.tsv`. Il raggruppamento dei titoli per azienda era un ciclo annidato che pagava un `roleFuzzyMatch` completo per ogni coppia; ora è un indice invertito — raggruppa le righe per titolo esatto in una passata, poi fa il match fuzzy solo tra bucket DISTINTI che condividono un token discriminante (non di base). **L'output è identico** — gli stessi cluster di repost — dimostrato da un test differenziale contro il vecchio algoritmo su 200+ cronologie casuali.
+
+### Note
+- `groupRowsByTitle` in `server/lib/detect-reposts.mjs` (esportato per il test differenziale). `tests/detect-reposts-grouping.test.mjs` (+2). Suite: **2521**.
+
+
 ## [1.194.0] — 2026-08-14
 
 **Corretto (scanner) — le pagine carriere Workday con URL a segmento singolo ora vengono scansionate correttamente.**

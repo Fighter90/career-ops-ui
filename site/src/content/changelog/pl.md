@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.195.0] — 2026-08-14
+
+**Wydajność (skaner) — wykrywanie repostów pozostaje szybkie przy dużych historiach skanów.**
+
+### Wydajność
+- Wykrywanie duplikatów ofert nie degraduje się już do O(N²) na dużym `scan-history.tsv`. Grupowanie tytułów per firma było zagnieżdżoną pętlą płacącą pełny `roleFuzzyMatch` na każdą parę; teraz to indeks odwrócony — grupowanie wierszy po dokładnym tytule w jednym przebiegu, a potem dopasowanie rozmyte tylko między RÓŻNYMI kubełkami dzielącymi token dyskryminujący (niebazowy). **Wyjście jest identyczne** — te same klastry repostów — udowodnione testem różnicowym wobec starego algorytmu na 200+ losowych historiach.
+
+### Uwagi
+- `groupRowsByTitle` w `server/lib/detect-reposts.mjs` (wyeksportowane dla testu różnicowego). `tests/detect-reposts-grouping.test.mjs` (+2). Zestaw: **2521**.
+
+
 ## [1.194.0] — 2026-08-14
 
 **Naprawiono (skaner) — strony karier Workday z URL o jednym segmencie są teraz poprawnie skanowane.**

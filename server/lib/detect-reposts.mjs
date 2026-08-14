@@ -15,7 +15,7 @@
  * Pure logic + a thin file reader; consumed by GET /api/scan/reposts.
  */
 import { readFileSync, existsSync } from 'node:fs';
-import { roleFuzzyMatch } from './role-matcher.mjs';
+import { roleFuzzyMatch, roleTokens, BASELINE_TOKENS } from './role-matcher.mjs';
 import { normalizeTextKey } from './text-key.mjs';
 
 export const DEFAULT_WINDOW_DAYS = 90;
@@ -101,21 +101,7 @@ export function detectReposts(rows, windowDays = DEFAULT_WINDOW_DAYS) {
 // Cluster rows in a single company group: group by title (exact or fuzzy),
 // then a sliding window over dates finds sub-clusters within windowDays.
 function detectRepostsInGroup(rows, windowDays) {
-  const titleGroups = [];
-  const used = new Set();
-  for (const row of rows) {
-    if (used.has(row)) continue;
-    const group = [row];
-    used.add(row);
-    for (const other of rows) {
-      if (used.has(other)) continue;
-      if (row.title.toLowerCase() === other.title.toLowerCase() || roleFuzzyMatch(row.title, other.title)) {
-        group.push(other);
-        used.add(other);
-      }
-    }
-    titleGroups.push(group);
-  }
+  const titleGroups = groupRowsByTitle(rows);
 
   const results = [];
   for (const group of titleGroups) {
@@ -142,6 +128,141 @@ function detectRepostsInGroup(rows, windowDays) {
     }
   }
   return results;
+}
+
+// Group one company's rows into title groups: a seed row plus every other row
+// whose title matches it (exact, case-insensitively, or via roleFuzzyMatch) —
+// the SAME groups a nested loop over roleFuzzyMatch would build, without the
+// quadratic cost. scan-history.tsv is append-only (one row per scanned
+// posting), so a large employer accumulates thousands of DISTINCT titles;
+// nothing collapses, every pair pays a full roleFuzzyMatch (which re-tokenizes
+// both strings), and the naive loop goes quadratic with an expensive constant.
+//
+// Two structures replace the nested loop without changing what it computes:
+//   1. Rows are bucketed by their lowercased title in one pass. Every row in a
+//      bucket matches every other by the exact-title arm, so a bucket is atomic
+//      (a seed takes the whole bucket or none). Exact reposts — the vast
+//      majority of real ones — collapse in O(N) with no fuzzy calls, and
+//      toLowerCase() runs once per row instead of once per comparison.
+//   2. Fuzzy matching then runs over DISTINCT buckets only, gated by an inverted
+//      index over non-baseline tokens. roleFuzzyMatch can only return true for
+//      two non-identical titles when their deduped token sets share ≥2 tokens
+//      (≥1 of them non-baseline) and their Jaccard ratio is ≥ 0.6 — all
+//      necessary conditions, checked exactly here, so any bucket pair the gate
+//      drops is one roleFuzzyMatch would have rejected anyway. The gate filters
+//      CALLS, never verdicts: every surviving pair is still decided by
+//      roleFuzzyMatch itself.
+//
+// Ordering is preserved exactly (it is load-bearing downstream — the date sort
+// returns 1 for equal dates, so same-date rows keep input order only if the
+// group arrives in input order). Groups are emitted in seed order and their
+// rows re-sorted by original array position, which is what the nested loop
+// produced: the seed is always the first not-yet-used row and the inner loop
+// appended the rest in array order.
+//
+// Exported so a differential test can prove it groups identically to the naive
+// O(N²) nested loop it replaced.
+export function groupRowsByTitle(rows) {
+  // Pass 1 — bucket by lowercased title, remembering each row's original index.
+  const buckets = [];
+  const bucketOfKey = new Map();
+  for (let i = 0; i < rows.length; i++) {
+    const key = rows[i].title.toLowerCase();
+    let idx = bucketOfKey.get(key);
+    if (idx === undefined) {
+      idx = buckets.length;
+      bucketOfKey.set(key, idx);
+      // The representative title is the FIRST row's raw title — the row the
+      // nested loop would have seeded with. Others in the bucket differ only in
+      // case, and roleFuzzyMatch decides on lowercased text, so it cannot
+      // change a verdict.
+      buckets.push({ title: rows[i].title, rowIdx: [], tokens: null, tokenSet: null });
+    }
+    buckets[idx].rowIdx.push(i);
+  }
+
+  // One distinct title → the loop would have made a single group of everything.
+  if (buckets.length === 1) return [buckets[0].rowIdx.map((i) => rows[i])];
+
+  // Pass 2 — tokenize each distinct title once, then index DISCRIMINATING
+  // (non-baseline) token → buckets. Baseline words (engineer, platform, …)
+  // appear in most titles at a company; indexing them builds one enormous
+  // posting list that has to be walked for every seed and can never, on its
+  // own, justify a match.
+  const postings = new Map();
+  for (let b = 0; b < buckets.length; b++) {
+    const tokens = [...new Set(roleTokens(buckets[b].title))];
+    buckets[b].tokens = tokens;
+    buckets[b].tokenSet = new Set(tokens);
+    for (const token of tokens) {
+      if (BASELINE_TOKENS.has(token)) continue;
+      let list = postings.get(token);
+      if (!list) { list = []; postings.set(token, list); }
+      list.push(b);
+    }
+  }
+
+  // Pass 3 — seed buckets in first-appearance order, gathering matches.
+  const used = new Uint8Array(buckets.length);
+  const seen = new Uint8Array(buckets.length);
+  const candidates = [];
+  const groups = [];
+
+  for (let seed = 0; seed < buckets.length; seed++) {
+    if (used[seed]) continue;
+    used[seed] = 1;
+    const members = [seed];
+    const seedTokens = buckets[seed].tokens;
+
+    // Collect every bucket sharing a discriminating token with the seed. One
+    // sharing none cannot match — roleFuzzyMatch requires a non-baseline word
+    // in the overlap, so it would return false without ever being asked.
+    for (const token of seedTokens) {
+      const list = postings.get(token);
+      if (!list) continue;
+      for (const b of list) {
+        if (b === seed || used[b] || seen[b]) continue;
+        seen[b] = 1;
+        candidates.push(b);
+      }
+    }
+
+    // Ascending bucket order keeps the candidate walk deterministic run to run.
+    // It cannot change the outcome — each candidate is tested against the seed
+    // alone.
+    candidates.sort((a, b) => a - b);
+    for (const b of candidates) {
+      seen[b] = 0;
+      // Exact overlap over deduped token sets, then the exact Jaccard ratio
+      // |A∩B| / |A∪B| with |A∪B| = |A| + |B| − |A∩B|. Both are the same numbers
+      // roleFuzzyMatch computes; failing either is a verdict it would reach.
+      const candSet = buckets[b].tokenSet;
+      let overlap = 0;
+      for (const token of seedTokens) if (candSet.has(token)) overlap += 1;
+      if (overlap < 2) continue;
+      const union = seedTokens.length + buckets[b].tokens.length - overlap;
+      if (overlap / union < 0.6) continue;
+      if (roleFuzzyMatch(buckets[seed].title, buckets[b].title)) {
+        used[b] = 1;
+        members.push(b);
+      }
+    }
+    candidates.length = 0;
+
+    if (members.length === 1) {
+      groups.push(buckets[seed].rowIdx.map((i) => rows[i]));
+      continue;
+    }
+    // Append one index at a time (not spread): a pathological history can put a
+    // very large number of rows into a single bucket, and a spread that wide
+    // overflows the argument stack.
+    const merged = [];
+    for (const b of members) for (const i of buckets[b].rowIdx) merged.push(i);
+    merged.sort((a, b) => a - b);
+    groups.push(merged.map((i) => rows[i]));
+  }
+
+  return groups;
 }
 
 // A cluster becomes a repost only when ≥2 DISTINCT urls remain (same url = a

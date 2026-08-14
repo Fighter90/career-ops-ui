@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.195.0] — 2026-08-14
+
+**Performans (tarayıcı) — yeniden yayın tespiti büyük tarama geçmişlerinde hızlı kalıyor.**
+
+### Performans
+- Yinelenen ilan tespiti büyük bir `scan-history.tsv`'de artık O(N²)'ye düşmüyor. Şirket bazında başlık gruplaması, her çift için tam bir `roleFuzzyMatch` ödeyen iç içe bir döngüydü; artık bir ters dizin — satırları tek geçişte tam başlığa göre kovalara ayır, sonra yalnızca ayırt edici (temel olmayan) bir belirteci paylaşan FARKLI kovalar arasında bulanık eşleştirme yap. **Çıktı aynı** — aynı yeniden yayın kümeleri — eski algoritmaya karşı 200+ rastgele geçmişte diferansiyel testle kanıtlandı.
+
+### Notlar
+- `server/lib/detect-reposts.mjs` içinde `groupRowsByTitle` (diferansiyel test için dışa aktarıldı). `tests/detect-reposts-grouping.test.mjs` (+2). Takım: **2521**.
+
+
 ## [1.194.0] — 2026-08-14
 
 **Düzeltildi (tarayıcı) — tek segmentli URL'ye sahip Workday kariyer sayfaları artık doğru taranıyor.**

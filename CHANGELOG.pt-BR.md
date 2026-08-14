@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.195.0] — 2026-08-14
+
+**Desempenho (scanner) — a detecção de reposts continua rápida em históricos de scan grandes.**
+
+### Desempenho
+- A detecção de vagas duplicadas não degrada mais para O(N²) num `scan-history.tsv` grande. O agrupamento de títulos por empresa era um laço aninhado que pagava um `roleFuzzyMatch` completo em cada par; agora é um índice invertido — agrupa linhas por título exato numa passada, depois faz correspondência difusa só sobre buckets DISTINTOS que compartilham um token discriminante (não base). **A saída é idêntica** — os mesmos clusters de repost — comprovado por um teste diferencial contra o algoritmo antigo em 200+ históricos aleatórios.
+
+### Notas
+- `groupRowsByTitle` em `server/lib/detect-reposts.mjs` (exportado para o teste diferencial). `tests/detect-reposts-grouping.test.mjs` (+2). Suíte: **2521**.
+
+
 ## [1.194.0] — 2026-08-14
 
 **Corrigido (scanner) — páginas de vagas do Workday com URL de segmento único agora são escaneadas corretamente.**
