@@ -221,4 +221,27 @@ export function registerStatsRoutes(app) {
     }
     res.json({ available: true, ...data });
   });
+
+  // GET /api/stats/upskill — a tracker-wide skill-gap roll-up (weighted 5−score
+  // across all evaluated reports, tiered Critical/High/Medium), so you can see
+  // what to learn next. Zero-token, read-only relay of upskill.mjs (JSON stdout
+  // by default; carries an { error } field when there is not enough data yet).
+  app.get('/api/stats/upskill', llmRateLimit, async (_req, res) => {
+    const script = 'upskill.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      res.json({ available: false, reason: 'script-not-found' });
+      return;
+    }
+    const r = await runNodeScript(script, [], { timeoutMs: 60_000 });
+    const data = parseJsonStdout(r.stdout);
+    if (r.code !== 0 || !data) {
+      res.json({
+        available: false,
+        reason: r.killed ? 'timeout' : (isEmptyTrackerError(r.stderr) ? 'empty-tracker' : 'script-error'),
+        detail: sanitizeDetail(r.stderr),
+      });
+      return;
+    }
+    res.json({ available: true, ...data });
+  });
 }

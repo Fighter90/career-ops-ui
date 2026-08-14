@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.191.0] — 2026-08-14
+
+**Tilføjet (statistik) — en "Hvad du skal lære næst"-fane, der rangerer de færdigheder, du bør lære først.**
+
+### Tilføjet
+- En **Hvad du skal lære næst**-fane i `#/stats`: en opsummering på tværs af hele trackeren — de manglende færdigheder, der oftest sænkede en lav match, vægtet (efter 5−match-score på hver rapport) og opdelt i **Critical / High / Medium** — plus dem, dit CV/profil allerede dækker. Skrivebeskyttet, kun forslag, ingen tokens.
+
+### Noter
+- Ny `GET /api/stats/upskill`-rute (`{ error }`-felt ved for lidt data; fail-soft `{available:false}`). `tests/stats-upskill-route.test.mjs` (+3). +15 i18n-nøgler ×17. Suite: **2504**.
+
+
 ## [1.190.0] — 2026-08-14
 
 **Tilføjet (tracker) — et "Virksomhedshistorik"-panel, der viser hvilke virksomheder der faktisk svarer dig.**

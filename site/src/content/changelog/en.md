@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.191.0] — 2026-08-14
+
+**Added (stats) — a "What to learn next" tab that ranks the skills worth learning first.**
+
+### Added
+- A **What to learn next** tab in `#/stats`: a tracker-wide skill-gap roll-up — the missing skills that most often sank a low-fit match, weighted (by 5−fit-score across every evaluated report) and tiered **Critical / High / Medium** — plus the skills already covered by your CV/profile. Read-only, suggestions only; zero-token.
+
+### Notes
+- New `GET /api/stats/upskill` relay (carries an `{ error }` field when there is too little data; fail-soft `{available:false}` when the parent script is absent). `tests/stats-upskill-route.test.mjs` (+3). +15 i18n keys ×17. Suite: **2504**.
+
+
 ## [1.190.0] — 2026-08-14
 
 **Added (tracker) — a "Company history" panel that tells you which companies actually answer you.**

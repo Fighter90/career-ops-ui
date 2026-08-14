@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.191.0] — 2026-08-14
+
+**Dodano (statystyki) — zakładka „Czego się dalej uczyć" porządkująca umiejętności do nauki.**
+
+### Dodano
+- Zakładka **Czego się dalej uczyć** w `#/stats`: zestawienie z całego trackera — brakujące umiejętności, które najczęściej topiły niskie dopasowanie, ważone (przez 5−wynik dopasowania w każdym raporcie) i w poziomach **Critical / High / Medium** — plus te już pokryte przez Twoje CV/profil. Tylko do odczytu, tylko sugestie, bez tokenów.
+
+### Uwagi
+- Nowa trasa `GET /api/stats/upskill` (pole `{ error }` przy zbyt małej ilości danych; fail-soft `{available:false}`). `tests/stats-upskill-route.test.mjs` (+3). +15 kluczy i18n ×17. Zestaw: **2504**.
+
+
 ## [1.190.0] — 2026-08-14
 
 **Dodano (tracker) — panel „Historia firmy", który pokazuje, które firmy naprawdę Ci odpowiadają.**

@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2501%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2504%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.190.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.190.0)
+[![release](https://img.shields.io/badge/release-v1.191.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.191.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.190.0** — **哪些公司真的会回应你？** — `#/tracker` 上新增**公司历史**面板：选择一家公司，查看它是对你无回应、混合还是此前有回应——以及同一职位是否反复重新发布——汇总跟踪表、跟进与扫描历史。 **2501 项测试。**
+> **🆕 最新版本 — v1.191.0** — **接下来学什么** — 新的 `#/stats` 标签为最常拖垮你低匹配的缺失技能排序（加权，Critical/High/Medium 层级）——让你知道先学什么。 **2504 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 
