@@ -139,6 +139,9 @@ Router.register('stats', async () => {
     // #1605) + compensation observations (salary-gap.mjs), both read-only
     // shell-outs relayed by /api/stats/lifetime and /api/stats/salary-gap.
     { id: 'lifetime', label: t('stats.tabLifetime', 'Lifetime'), hint: 'stats.hint.lifetime', render: renderLifetime },
+    // funnel calibration vs benchmarks + waiting list + stage velocity,
+    // relayed read-only by /api/stats/funnel (funnel-velocity.mjs).
+    { id: 'funnel', label: t('stats.tabFunnel', 'Funnel & velocity'), hint: 'stats.hint.funnel', render: renderFunnel },
   ];
   const tabBar = c('div', { className: 'tabs', role: 'tablist',
     style: { display: 'flex', gap: '6px', flexWrap: 'wrap', borderBottom: '1px solid var(--line, #e5e7eb)', margin: '4px 0 18px' } });
@@ -694,6 +697,107 @@ Router.register('stats', async () => {
           c('p', { style: { color: 'var(--foggy)' } }, t('stats.sgEmpty',
             'No compensation observations yet — they accumulate from report Machine Summaries and data/salary-observations.tsv in the parent project.'))));
       }
+    }
+    return wrap;
+  }
+
+  // ── tab 6: funnel calibration + waiting + stage velocity ──────────────────
+  // Zero-token read-only relay of /api/stats/funnel (funnel-velocity.mjs):
+  // own funnel rates vs candidate-side market benchmarks, the in-flight
+  // waiting list, and median/p75 days per stage hop — with the script's
+  // statistical-honesty caveats passed through verbatim.
+  async function renderFunnel() {
+    const wrap = c('div');
+    let d = null;
+    try { d = await API.get('/api/stats/funnel'); } catch { d = null; }
+    if (!d || d.available !== true) {
+      wrap.appendChild(emptyState(t('stats.funnelUnavailable',
+        'Funnel & velocity needs the parent career-ops project (funnel-velocity.mjs) next to this app.'), null, ''));
+      return wrap;
+    }
+    const chip = (label, value) => c('span', { className: 'chip' }, `${label}: ${value}`);
+    const pct = (v) => (v == null ? '—' : `${v}%`);
+    const foot = (txt) => c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '8px 0 0' } }, txt);
+
+    // Calibration — own response/interview rate vs the benchmark band.
+    const cal = d.calibration || null;
+    if (cal) {
+      const bandLabel = (b) => ({
+        'below-range': t('stats.funnelBelow', 'below range'),
+        'in-range': t('stats.funnelInRange', 'in range'),
+        'above-range': t('stats.funnelAbove', 'above range'),
+      })[b] || b || '';
+      const rateBlock = (label, r) => {
+        if (!r) return null;
+        const range = Array.isArray(r.rangePct) ? `${r.rangePct[0]}–${r.rangePct[1]}%` : '—';
+        return c('div', { style: { margin: '0 0 12px' } }, [
+          c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' } }, [
+            c('strong', null, label),
+            chip(t('stats.funnelYours', 'yours'), pct(r.ownPct)),
+            chip(t('stats.funnelTypical', 'typical'), `${pct(r.typicalPct)} (${range})`),
+            c('span', { className: 'chip' }, bandLabel(r.band)),
+          ]),
+          r.caveat ? foot(r.caveat) : null,
+        ].filter(Boolean));
+      };
+      const body = c('div', null, [
+        rateBlock(t('stats.lifeResponseRate', 'Response rate'), cal.responseRate),
+        rateBlock(t('stats.lifeInterviewRate', 'Interview rate'), cal.interviewRate),
+        cal.smallSample ? foot(t('stats.lifeSmallSample', 'Small sample — rates are indicative, not statistics.')) : null,
+      ].filter(Boolean));
+      wrap.appendChild(section(t('stats.funnelCalibration', 'Funnel calibration vs market'), body));
+    }
+
+    // Waiting — in-flight applications and how long they have been silent.
+    const w = d.waiting || null;
+    if (w) {
+      const win = Array.isArray(w.windowDays) ? `${w.windowDays[0]}–${w.windowDays[1]}` : '—';
+      const beyond = (Array.isArray(w.items) ? w.items : []).filter((it) => it.beyondTypicalWindow);
+      const body = c('div', null, [
+        c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap' } }, [
+          chip(t('stats.funnelInFlight', 'In flight'), w.inFlight ?? 0),
+          chip(t('stats.funnelWindow', 'Typical reply window (days)'), win),
+          chip(t('stats.funnelBeyond', 'Beyond the window'), beyond.length),
+        ]),
+        beyond.length ? c('ul', { style: { margin: '10px 0 0', paddingLeft: '18px', fontSize: '13px' } },
+          beyond.slice(0, 15).map((it) => c('li', null,
+            `#${it.num} ${it.company || ''} — ${it.elapsedDays != null ? it.elapsedDays + 'd' : '—'}`))) : null,
+      ].filter(Boolean));
+      wrap.appendChild(section(t('stats.funnelWaiting', 'Waiting on a reply'), body));
+    }
+
+    // Velocity — median/p75 days per forward stage hop.
+    const v = d.velocity || null;
+    if (v) {
+      const thL = { textAlign: 'left', padding: '5px 8px', color: 'var(--foggy)', fontWeight: '600', fontSize: '12px', borderBottom: '1px solid var(--line)' };
+      const thR = { ...thL, textAlign: 'right' };
+      const tdL = { padding: '5px 8px', fontSize: '13px', borderBottom: '1px solid var(--line)' };
+      const tdR = { ...tdL, textAlign: 'right', fontVariantNumeric: 'tabular-nums' };
+      const hops = ['appliedToResponded', 'respondedToInterview', 'interviewToOffer', 'appliedToRejected']
+        .map((k) => v[k]).filter(Boolean);
+      // UI.el does not coerce numbers → always hand it a string child.
+      const rows = hops.map((h) => c('tr', null, [
+        c('td', { style: tdL }, `${h.from} → ${h.to}`),
+        c('td', { style: tdR }, h.median != null ? String(h.median) : '—'),
+        c('td', { style: tdR }, h.p75 != null ? String(h.p75) : '—'),
+        c('td', { style: tdR }, String(h.n ?? 0)),
+        c('td', { style: tdR }, String(h.censored ?? 0)),
+      ]));
+      const table = c('div', { style: { overflowX: 'auto' } },
+        c('table', { style: { borderCollapse: 'collapse', width: '100%' } }, [
+          c('thead', null, c('tr', null, [
+            c('th', { style: thL }, t('stats.funnelHop', 'Stage hop')),
+            c('th', { style: thR }, t('stats.funnelMedian', 'Median days')),
+            c('th', { style: thR }, 'p75'),
+            c('th', { style: thR }, 'n'),
+            c('th', { style: thR }, t('stats.funnelCensored', 'Still waiting')),
+          ])),
+          c('tbody', null, rows),
+        ]));
+      wrap.appendChild(section(t('stats.funnelVelocity', 'Stage velocity (days per hop)'), c('div', null, [
+        table,
+        foot(t('stats.funnelVelocityNote', '0-day same-day entries are excluded from the medians; "still waiting" rows are right-censored (not yet counted).')),
+      ])));
     }
     return wrap;
   }

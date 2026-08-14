@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.185.0] — 2026-08-14
+
+**Added (stats) — a "Funnel & velocity" tab: how your funnel compares to the market and how fast you move between stages.**
+
+### Added
+- A new **Funnel & velocity** tab in **Statistics** shows your **response** and **interview** rates next to candidate-side market benchmark ranges (with the small-sample and selection-bias caveats kept intact), a **waiting list** of in-flight applications past the typical first-response window, and **median days per stage** (Applied → Responded → Interview → Offer) — with slow-moving rows right-censored so they don't bias the medians. Read-only and zero-token; it reads only your own tracker.
+
+### Notes
+- New `GET /api/stats/funnel` (fail-soft `{available:false}` when the script isn't present). +18 i18n keys ×17. Tests: `tests/stats-funnel-route.test.mjs` (+2). Suite: **2481**.
+
 ## [1.184.0] — 2026-08-14
 
 **Fixed (UI) — the Dashboard quick-action tiles now line up in an even grid.**

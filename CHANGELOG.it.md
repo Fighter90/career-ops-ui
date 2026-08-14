@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.185.0] — 2026-08-14
+
+**Aggiunto (statistiche) — una scheda "Imbuto e velocità": come il tuo imbuto si confronta col mercato e quanto velocemente avanzi tra le fasi.**
+
+### Aggiunto
+- Una nuova scheda **Imbuto e velocità** in **Statistiche** mostra i tuoi tassi di **risposta** e **colloquio** accanto agli intervalli di riferimento di mercato (con le avvertenze su campione piccolo e bias di selezione), una **lista d'attesa** delle candidature in corso oltre la finestra tipica di prima risposta, e i **giorni mediani per fase** (Candidato → Risposto → Colloquio → Offerta) — le righe lente sono censurate a destra per non distorcere le mediane. Sola lettura e zero token; legge solo il tuo tracker.
+
+### Note
+- Nuovo `GET /api/stats/funnel` (fallback morbido a `{available:false}` senza lo script). +18 chiavi i18n ×17. Test: `tests/stats-funnel-route.test.mjs` (+2). Suite: **2481**.
+
 ## [1.184.0] — 2026-08-14
 
 **Corretto (UI) — le tessere di azione rapida della Dashboard ora si allineano in una griglia uniforme.**

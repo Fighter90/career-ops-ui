@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.185.0] — 2026-08-14
+
+**Adicionado (estatísticas) — uma aba "Funil e velocidade": como seu funil se compara ao mercado e com que rapidez você avança entre etapas.**
+
+### Adicionado
+- Uma nova aba **Funil e velocidade** em **Estatísticas** mostra suas taxas de **resposta** e **entrevista** ao lado de faixas de referência do mercado (com as ressalvas de amostra pequena e viés de seleção mantidas), uma **lista de espera** de candidaturas em andamento além da janela típica de primeira resposta, e **dias medianos por etapa** (Candidatado → Respondido → Entrevista → Oferta), com linhas lentas censuradas à direita para não enviesar as medianas. Somente leitura e sem tokens; lê apenas o seu próprio rastreador.
+
+### Notas
+- Novo `GET /api/stats/funnel` (degrada suave para `{available:false}` sem o script). +18 chaves i18n ×17. Testes: `tests/stats-funnel-route.test.mjs` (+2). Suíte: **2481**.
+
 ## [1.184.0] — 2026-08-14
 
 **Corrigido (UI) — os blocos de ação rápida do Painel agora se alinham em uma grade uniforme.**
