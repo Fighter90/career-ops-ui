@@ -7,7 +7,7 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2470%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2471%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
@@ -16,7 +16,7 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.182.0** — **Neutralne przedziały wynagrodzeń** — jednostronne kwoty w skanie i śledzeniu pokazują się jako `≥` / `≤` (np. `≥ 120000 EUR`) zamiast angielskich „from" / „up to", więc czyta się je tak samo w każdym języku. **2470 testów.**
+> **🆕 Najnowsze wydanie — v1.182.0** — **Neutralne przedziały wynagrodzeń** — jednostronne kwoty w skanie i śledzeniu pokazują się jako `≥` / `≤` (np. `≥ 120000 EUR`) zamiast angielskich „from" / „up to", więc czyta się je tak samo w każdym języku. **2471 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

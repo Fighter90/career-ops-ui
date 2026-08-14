@@ -17,7 +17,7 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 - Kwoty wynagrodzeń w wierszach skanu i śledzenia używają neutralnych symboli **≥** i **≤** (np. `≥ 120000 EUR`, `≤ 90000`) zamiast angielskich słów „from" / „up to", które przenikały nieprzetłumaczone do nieangielskich interfejsów. Dotyczy każdej tablicy z jednostronnym przedziałem (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); przedziały dwustronne (`100000–150000 USD`) już były neutralne.
 
 ### Uwagi
-- Tylko wyświetlanie — filtr wynagrodzeń klienta parsuje liczby niezależnie od prefiksu, więc filtrowanie się nie zmienia. Zestaw: **2470**.
+- Tylko wyświetlanie — filtr wynagrodzeń klienta parsuje liczby niezależnie od prefiksu, więc filtrowanie się nie zmienia. Zestaw: **2471**.
 
 ## [1.181.0] — 2026-08-14
 

@@ -7,7 +7,7 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2470%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2471%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -16,7 +16,7 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.182.0** — **로케일 중립 급여 범위** — 스캔·트래커의 한쪽 급여 수치가 영어 "from" / "up to" 대신 `≥` / `≤`(예: `≥ 120000 EUR`)로 표시되어 모든 언어에서 동일하게 읽힙니다. **2470개 테스트.**
+> **🆕 최신 릴리스 — v1.182.0** — **로케일 중립 급여 범위** — 스캔·트래커의 한쪽 급여 수치가 영어 "from" / "up to" 대신 `≥` / `≤`(예: `≥ 120000 EUR`)로 표시되어 모든 언어에서 동일하게 읽힙니다. **2471개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

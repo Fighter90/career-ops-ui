@@ -16,7 +16,7 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 - Salary figures in scan and tracker rows use the locale-neutral symbols **≥** and **≤** (e.g. `≥ 120000 EUR`, `≤ 90000`) instead of the English words "from" / "up to", which leaked untranslated into non-English UIs. Applies to every board that reports a one-sided pay range (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); two-sided ranges (`100000–150000 USD`) were already language-neutral.
 
 ### Notes
-- Display only — the client salary filter parses the numbers regardless of prefix, so filtering is unchanged. Suite: **2470**.
+- Display only — the client salary filter parses the numbers regardless of prefix, so filtering is unchanged. Suite: **2471**.
 
 ## [1.181.0] — 2026-08-14
 

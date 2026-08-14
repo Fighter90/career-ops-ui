@@ -10,7 +10,7 @@
 - Gli importi salariali nelle righe di scan e tracker usano i simboli neutri **≥** e **≤** (es. `≥ 120000 EUR`, `≤ 90000`) invece delle parole inglesi "from" / "up to", che trapelavano non tradotte nelle interfacce non inglesi. Vale per ogni bacheca con fascia a un solo lato (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); le fasce a due lati (`100000–150000 USD`) erano già neutre.
 
 ### Note
-- Solo visualizzazione — il filtro salari del client analizza i numeri a prescindere dal prefisso, quindi il filtraggio non cambia. Suite: **2470**.
+- Solo visualizzazione — il filtro salari del client analizza i numeri a prescindere dal prefisso, quindi il filtraggio non cambia. Suite: **2471**.
 
 ## [1.181.0] — 2026-08-14
 

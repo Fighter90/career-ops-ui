@@ -10,7 +10,7 @@
 - Gehaltsangaben in Scan- und Tracker-Zeilen verwenden die sprachneutralen Symbole **≥** und **≤** (z. B. `≥ 120000 EUR`, `≤ 90000`) statt der englischen Wörter „from" / „up to", die unübersetzt in nicht-englische Oberflächen durchsickerten. Gilt für jedes Board mit einseitiger Spanne (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); zweiseitige Spannen (`100000–150000 USD`) waren schon neutral.
 
 ### Hinweise
-- Nur Anzeige — der Gehaltsfilter des Clients parst die Zahlen unabhängig vom Präfix, das Filtern bleibt unverändert. Suite: **2470**.
+- Nur Anzeige — der Gehaltsfilter des Clients parst die Zahlen unabhängig vom Präfix, das Filtern bleibt unverändert. Suite: **2471**.
 
 ## [1.181.0] — 2026-08-14
 

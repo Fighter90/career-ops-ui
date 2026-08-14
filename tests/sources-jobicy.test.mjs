@@ -117,6 +117,16 @@ test('fetchJobicy: annualSalaryMin only produces "+" format', async () => {
   assert.match(j.salary, /\+/);
 });
 
+test('fetchJobicy: annualSalaryMax only produces a "≤ $" figure (keeps the currency marker)', async () => {
+  const MAX_ONLY = { jobs: [{
+    id: 107, jobTitle: 'Capped Role', companyName: 'Ceiling Co',
+    url: 'https://jobicy.com/jobs/107-capped', jobGeo: 'Remote', annualSalaryMax: 90000,
+  }] };
+  const fetchImpl = async () => ({ ok: true, json: async () => MAX_ONLY });
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl });
+  assert.equal(jobs[0].salary, '≤ $90,000'); // locale-neutral operator, en-US grouped, $ retained
+});
+
 test('fetchJobicy: drops rows with empty title', async () => {
   const fetchImpl = async () => ({ ok: true, json: async () => FAKE_RESPONSE });
   const jobs = await fetchJobicy(FEED_URL, { fetchImpl });

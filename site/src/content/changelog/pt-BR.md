@@ -16,7 +16,7 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 - Os valores de salário nas linhas de scan e rastreador usam os símbolos neutros **≥** e **≤** (ex.: `≥ 120000 EUR`, `≤ 90000`) em vez das palavras inglesas "from" / "up to", que vazavam sem tradução para interfaces não inglesas. Vale para todo quadro com faixa de um lado só (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); faixas de dois lados (`100000–150000 USD`) já eram neutras.
 
 ### Notas
-- Apenas exibição — o filtro de salário do cliente analisa os números independentemente do prefixo, então a filtragem não muda. Suíte: **2470**.
+- Apenas exibição — o filtro de salário do cliente analisa os números independentemente do prefixo, então a filtragem não muda. Suíte: **2471**.
 
 ## [1.181.0] — 2026-08-14
 

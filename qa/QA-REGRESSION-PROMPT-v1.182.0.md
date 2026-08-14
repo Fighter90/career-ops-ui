@@ -7,7 +7,7 @@
 ## §0 — Gates
 
 ```bash
-npm test                                    # 2470, exit 0 (capture $? directly, never | grep)
+npm test                                    # 2471, exit 0 (capture $? directly, never | grep)
 node --test tests/sources-getro.test.mjs tests/sources-remotli.test.mjs tests/sources-manfred.test.mjs tests/sources-agenticjobs.test.mjs tests/sources-justjoin.test.mjs
 node scripts/check-changelog-parity.mjs     # 16 non-EN at v1.182.0
 ```
@@ -24,4 +24,4 @@ node scripts/check-changelog-parity.mjs     # 16 non-EN at v1.182.0
 
 ## §3 — Sign-off
 
-Suite **2470** green · the five updated source suites pass with `≥`/`≤` · CHANGELOG parity ×17 at v1.182.0 · README badge + banner ×17 at v1.182.0 · a `≥`/`≤` salary still filters correctly on `#/scan`.
+Suite **2471** green · the five updated source suites pass with `≥`/`≤` · CHANGELOG parity ×17 at v1.182.0 · README badge + banner ×17 at v1.182.0 · a `≥`/`≤` salary still filters correctly on `#/scan`.

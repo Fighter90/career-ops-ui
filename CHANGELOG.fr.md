@@ -19,7 +19,7 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - Les montants de salaire dans les lignes de scan et de suivi utilisent les symboles neutres **≥** et **≤** (p. ex. `≥ 120000 EUR`, `≤ 90000`) au lieu des mots anglais « from » / « up to », qui fuyaient non traduits dans les interfaces non anglophones. Vaut pour tout tableau à fourchette d'un seul côté (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy) ; les fourchettes à deux bornes (`100000–150000 USD`) étaient déjà neutres.
 
 ### Notes
-- Affichage seulement — le filtre de salaire du client analyse les nombres quel que soit le préfixe, donc le filtrage est inchangé. Suite : **2470**.
+- Affichage seulement — le filtre de salaire du client analyse les nombres quel que soit le préfixe, donc le filtrage est inchangé. Suite : **2471**.
 
 ## [1.181.0] — 2026-08-14
 

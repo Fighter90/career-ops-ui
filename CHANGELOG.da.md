@@ -16,7 +16,7 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 - Lønbeløb i scan- og tracker-rækker bruger de sprogneutrale symboler **≥** og **≤** (fx `≥ 120000 EUR`, `≤ 90000`) i stedet for de engelske ord "from" / "up to", der sivede uoversat ind i ikke-engelske UI'er. Gælder alle tavler med et ensidet interval (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); tosidede intervaller (`100000–150000 USD`) var allerede neutrale.
 
 ### Noter
-- Kun visning — klientens lønfilter parser tallene uanset præfiks, så filtrering er uændret. Suite: **2470**.
+- Kun visning — klientens lønfilter parser tallene uanset præfiks, så filtrering er uændret. Suite: **2471**.
 
 ## [1.181.0] — 2026-08-14
 

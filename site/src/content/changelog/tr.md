@@ -10,7 +10,7 @@
 - Tarama ve takipçi satırlarındaki maaş rakamları, İngilizce olmayan arayüzlere çevrilmeden sızan İngilizce "from" / "up to" sözcükleri yerine yerelden bağımsız **≥** ve **≤** sembollerini kullanıyor (ör. `≥ 120000 EUR`, `≤ 90000`). Tek yönlü aralık bildiren tüm panolara uygulanır (Getro, Remotli, Manfred, Agentic Jobs, JustJoin, Jobicy); çift yönlü aralıklar (`100000–150000 USD`) zaten nötrdü.
 
 ### Notlar
-- Yalnızca görüntüleme — istemci maaş filtresi ön eke bakmadan sayıları ayrıştırır, filtreleme değişmez. Takım: **2470**.
+- Yalnızca görüntüleme — istemci maaş filtresi ön eke bakmadan sayıları ayrıştırır, filtreleme değişmez. Takım: **2471**.
 
 ## [1.181.0] — 2026-08-14
 

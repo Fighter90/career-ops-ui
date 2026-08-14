@@ -7,7 +7,7 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2470%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2471%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
@@ -16,7 +16,7 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.182.0** — **Faixas salariais neutras** — os valores de um lado só em scan e rastreador agora aparecem como `≥` / `≤` (ex.: `≥ 120000 EUR`) em vez de "from" / "up to" em inglês, para lerem igual em todos os idiomas. **2470 testes.**
+> **🆕 Última versão — v1.182.0** — **Faixas salariais neutras** — os valores de um lado só em scan e rastreador agora aparecem como `≥` / `≤` (ex.: `≥ 120000 EUR`) em vez de "from" / "up to" em inglês, para lerem igual em todos os idiomas. **2471 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 
