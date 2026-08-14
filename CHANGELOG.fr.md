@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.187.0] — 2026-08-14
+
+**Corrigé (scanner) — le réglage `skip_tiers` fonctionne à nouveau : les offres que vous demandiez d'ignorer par niveau sont écartées.**
+
+### Corrigé
+- Une liste `skip_tiers:` dans `portals.yml` (p. ex. `skip_tiers: [intern, entry]`) est désormais respectée par le scan. Le titre de chaque offre est classé dans un niveau (intern / entry / mid / senior) et écarté si son niveau est dans votre liste. Auparavant le scan appliquait les filtres titre / lieu / contenu / confiance mais sans filtre de niveau, donc `skip_tiers` était ignoré en silence. Les titres sans mot de niveau retombent sur **mid** (donc `skip_tiers: [mid]` écarte aussi la plupart des offres ordinaires), et le classifieur lit le mot de niveau LE PLUS À GAUCHE.
+
+### Notes
+- Nouveau module pur `server/lib/classify-tier.mjs` (`classifyTier` + `buildTierFilter`), branché sur les chaînes de filtres des scanners EN et RU. `tests/classify-tier.test.mjs` (+7). Suite : **2492**.
+
 ## [1.186.0] — 2026-08-14
 
 **Ajouté (CV Studio) — un panneau « Écart de compétences » : lesquelles des compétences requises d'un poste votre CV nomme, implique ou manque.**

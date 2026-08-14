@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.187.0] — 2026-08-14
+
+**Rettet (scanner) — `skip_tiers`-indstillingen virker igen: opslag, du bad om at springe over efter senioritet, frasorteres.**
+
+### Rettet
+- En `skip_tiers:`-liste i `portals.yml` (fx `skip_tiers: [intern, entry]`) respekteres nu af scanningen. Hvert opslags titel klassificeres i et niveau (intern / entry / mid / senior) og frasorteres, hvis niveauet er på din liste. Før kørte scanningen titel- / lokations- / indholds- / tillidsfiltrene, men uden niveaufilter, så `skip_tiers` blev stiltiende ignoreret. Titler uden niveauord falder til **mid** (så `skip_tiers: [mid]` frasorterer også de fleste almindelige opslag), og klassifikatoren læser det VENSTRESTE niveauord.
+
+### Noter
+- Nyt rent modul `server/lib/classify-tier.mjs` (`classifyTier` + `buildTierFilter`), koblet til EN- og RU-scannernes filterkæder. `tests/classify-tier.test.mjs` (+7). Suite: **2492**.
+
 ## [1.186.0] — 2026-08-14
 
 **Tilføjet (CV Studio) — et "Kompetencekløft"-panel: hvilke af et jobs krævede færdigheder dit CV nævner, antyder eller mangler.**

@@ -18,6 +18,7 @@ import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
 import { buildLocationFilter, buildContentFilter, buildTitleFilter } from './location-filter.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
+import { buildTierFilter } from './classify-tier.mjs';
 import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { loadReApplyWindows, buildCooldownFilter } from './cooldown.mjs';
@@ -199,14 +200,18 @@ export async function runEnScan(opts = {}) {
   // v1.75.0 (#974) — optional content_filter on a posting's description/snippet.
   // No key → pass-all; only sources that ship a description are affected.
   const contentOk = buildContentFilter(portals.content_filter);
+  // Optional portals.yml `skip_tiers` (top-level list): drop postings whose
+  // seniority tier is in the list. No key → pass-all.
+  const tierOk = buildTierFilter(portals.skip_tiers);
   // Apply title filter (positive must match, negative must NOT match)
-  // + location filter, and stamp `_boosted` for any title containing a
+  // + location + tier filters, and stamp `_boosted` for any title containing a
   // seniority_boost keyword. The boost stamp is INFORMATIONAL — it
   // doesn't filter; the SPA uses it to surface a badge so users see why
   // a row is ranked higher.
   const filtered = allRaw
     .filter((j) => titleOk(j.title)
       && locOk(j.location)
+      && tierOk(j.title)
       && contentOk(j.description ?? j.snippet))
     .map((j) => {
       let out = j;

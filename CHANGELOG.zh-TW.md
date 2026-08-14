@@ -8,6 +8,16 @@
 
 ---
 
+## [1.187.0] — 2026-08-14
+
+**修復(掃描器)——`skip_tiers` 設定重新生效:你要求按資歷跳過的職位會被剔除。**
+
+### 修復
+- `portals.yml` 中的 `skip_tiers:` 清單(如 `skip_tiers: [intern, entry]`)現在會被掃描採納。每個職位標題被分類為資歷層級(intern / entry / mid / senior),若其層級在清單中則被剔除。此前掃描執行標題 / 地點 / 內容 / 可信度過濾,但沒有層級過濾,因此 `skip_tiers` 被默默忽略。沒有明確級別詞的標題歸入 **mid**(所以 `skip_tiers: [mid]` 也會剔除大多數普通職位),分類器讀取最左側的級別詞。
+
+### 說明
+- 新增純模組 `server/lib/classify-tier.mjs`(`classifyTier` + `buildTierFilter`),接入 EN 與 RU 掃描器的過濾鏈。`tests/classify-tier.test.mjs`(+7)。套件:**2492**。
+
 ## [1.186.0] — 2026-08-14
 
 **新增(CV 工作室)——「技能差距」面板:職位要求的技能中,你的履歷已列出、隱含或缺失的部分。**

@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.187.0] — 2026-08-14
+
+**Corregido (escáner) — la opción `skip_tiers` vuelve a funcionar: se descartan las publicaciones que pediste omitir por antigüedad.**
+
+### Corregido
+- Una lista `skip_tiers:` en `portals.yml` (p. ej. `skip_tiers: [intern, entry]`) ahora se respeta en el escaneo. El título de cada publicación se clasifica en un nivel de antigüedad (intern / entry / mid / senior) y se descarta si su nivel está en tu lista. Antes el escaneo aplicaba los filtros de título / ubicación / contenido / confianza pero sin filtro de nivel, así que `skip_tiers` se ignoraba en silencio. Los títulos sin palabra de nivel caen en **mid** (así `skip_tiers: [mid]` también descarta la mayoría de publicaciones normales), y el clasificador lee la palabra de nivel MÁS A LA IZQUIERDA.
+
+### Notas
+- Nuevo `server/lib/classify-tier.mjs` puro (`classifyTier` + `buildTierFilter`), conectado a las cadenas de filtros de los escáneres EN y RU. `tests/classify-tier.test.mjs` (+7). Suite: **2492**.
+
 ## [1.186.0] — 2026-08-14
 
 **Añadido (CV Studio) — un panel "Brecha de habilidades": cuáles de las habilidades requeridas de un empleo nombra tu CV, insinúa o le faltan.**

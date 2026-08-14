@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.187.0] — 2026-08-14
+
+**Behoben (Scanner) — die `skip_tiers`-Einstellung greift wieder: Stellen, die du nach Seniorität überspringen wolltest, werden verworfen.**
+
+### Behoben
+- Eine `skip_tiers:`-Liste in `portals.yml` (z. B. `skip_tiers: [intern, entry]`) wird jetzt beim Scan beachtet. Der Titel jeder Stelle wird in eine Senioritätsstufe (intern / entry / mid / senior) eingeordnet und verworfen, wenn die Stufe auf deiner Liste steht. Zuvor liefen die Titel- / Standort- / Inhalts- / Trust-Filter, aber kein Stufenfilter, sodass `skip_tiers` still ignoriert wurde. Titel ohne Level-Wort fallen auf **mid** (also verwirft `skip_tiers: [mid]` auch die meisten gewöhnlichen Stellen), und der Klassifizierer liest das LINKESTE Level-Wort.
+
+### Hinweise
+- Neues reines Modul `server/lib/classify-tier.mjs` (`classifyTier` + `buildTierFilter`), eingebunden in die Filterketten des EN- und RU-Scanners. `tests/classify-tier.test.mjs` (+7). Suite: **2492**.
+
 ## [1.186.0] — 2026-08-14
 
 **Hinzugefügt (CV Studio) — ein "Skill-Gap"-Panel: welche der geforderten Fähigkeiten einer Stelle dein CV nennt, andeutet oder fehlt.**
