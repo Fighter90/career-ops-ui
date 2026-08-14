@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.187.0] — 2026-08-14
+
+**Düzeltildi (tarayıcı) — `skip_tiers` ayarı yeniden çalışıyor: kıdeme göre atlamak istediğiniz ilanlar eleniyor.**
+
+### Düzeltildi
+- `portals.yml`'deki bir `skip_tiers:` listesi (ör. `skip_tiers: [intern, entry]`) artık taramada dikkate alınıyor. Her ilanın başlığı bir kıdem düzeyine (intern / entry / mid / senior) sınıflandırılır ve düzeyi listenizdeyse elenir. Önceden tarama başlık / konum / içerik / güven filtrelerini çalıştırıyor ama düzey filtresi yoktu, bu yüzden `skip_tiers` sessizce yok sayılıyordu. Düzey sözcüğü olmayan başlıklar **mid**'e düşer (böylece `skip_tiers: [mid]` sıradan ilanların çoğunu da eler) ve sınıflandırıcı EN SOLDAKİ düzey sözcüğünü okur.
+
+### Notlar
+- Yeni saf modül `server/lib/classify-tier.mjs` (`classifyTier` + `buildTierFilter`), EN ve RU tarayıcılarının filtre zincirlerine bağlandı. `tests/classify-tier.test.mjs` (+7). Takım: **2492**.
+
 ## [1.186.0] — 2026-08-14
 
 **Eklendi (CV Studio) — bir "Beceri açığı" paneli: bir işin gerekli becerilerinden hangilerini CV'niz adlandırıyor, ima ediyor veya eksik.**

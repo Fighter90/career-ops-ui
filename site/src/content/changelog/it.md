@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.187.0] — 2026-08-14
+
+**Corretto (scanner) — l'impostazione `skip_tiers` funziona di nuovo: le offerte che hai chiesto di saltare per seniority vengono scartate.**
+
+### Corretto
+- Un elenco `skip_tiers:` in `portals.yml` (es. `skip_tiers: [intern, entry]`) è ora rispettato dalla scansione. Il titolo di ogni offerta è classificato in un livello (intern / entry / mid / senior) e scartato se il livello è nel tuo elenco. Prima la scansione applicava i filtri titolo / località / contenuto / affidabilità ma senza filtro di livello, quindi `skip_tiers` veniva ignorato in silenzio. I titoli senza parola di livello ricadono su **mid** (quindi `skip_tiers: [mid]` scarta anche la maggior parte delle offerte comuni), e il classificatore legge la parola di livello PIÙ A SINISTRA.
+
+### Note
+- Nuovo modulo puro `server/lib/classify-tier.mjs` (`classifyTier` + `buildTierFilter`), collegato alle catene di filtri degli scanner EN e RU. `tests/classify-tier.test.mjs` (+7). Suite: **2492**.
+
 ## [1.186.0] — 2026-08-14
 
 **Aggiunto (CV Studio) — un pannello "Divario di competenze": quali competenze richieste da un'offerta il tuo CV nomina, implica o gli mancano.**

@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2485%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2492%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.186.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.186.0)
+[![release](https://img.shields.io/badge/release-v1.187.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.187.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.186.0** — **CV 工作室的"技能差距"面板** — 选择一份已保存的职位描述,查看其要求技能中你的简历已列出、仅隐含或缺失的部分——无 LLM,不写入任何内容。 **2485 项测试。**
+> **🆕 最新版本 — v1.187.0** — **`skip_tiers` 重新生效** — `portals.yml` 中的 `skip_tiers: [intern, entry]` 列表现在会在扫描时按资历层级剔除职位(此前被默默忽略)。 **2492 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

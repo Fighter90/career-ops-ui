@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.187.0] — 2026-08-14
+
+**Poprawiono (skaner) — ustawienie `skip_tiers` znów działa: oferty, które kazałeś pominąć według stażu, są odrzucane.**
+
+### Poprawiono
+- Lista `skip_tiers:` w `portals.yml` (np. `skip_tiers: [intern, entry]`) jest teraz uwzględniana przez skan. Tytuł każdej oferty jest klasyfikowany do poziomu (intern / entry / mid / senior) i odrzucany, jeśli jego poziom jest na liście. Wcześniej skan stosował filtry tytułu / lokalizacji / treści / zaufania, ale bez filtra poziomu, więc `skip_tiers` był po cichu ignorowany. Tytuły bez słowa poziomu trafiają do **mid** (więc `skip_tiers: [mid]` odrzuca też większość zwykłych ofert), a klasyfikator czyta słowo poziomu NAJBARDZIEJ NA LEWO.
+
+### Uwagi
+- Nowy czysty moduł `server/lib/classify-tier.mjs` (`classifyTier` + `buildTierFilter`), podłączony do łańcuchów filtrów skanerów EN i RU. `tests/classify-tier.test.mjs` (+7). Zestaw: **2492**.
+
 ## [1.186.0] — 2026-08-14
 
 **Dodano (CV Studio) — panel „Luka kompetencji": które z wymaganych umiejętności oferty twoje CV wymienia, sugeruje lub których brakuje.**

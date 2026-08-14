@@ -32,6 +32,7 @@ import { normalizeUrl } from './url-key.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { saveLastScan } from './en-scanner.mjs';
 import { buildLocationFilter, buildContentFilter, compileKeywordList } from './location-filter.mjs';
+import { buildTierFilter } from './classify-tier.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
 
 /**
@@ -110,6 +111,8 @@ export function loadConfig() {
     contentFilter: portals.content_filter || null,
     // v1.76.0 — optional trust_filter (top-level key, like parent v1.13.0).
     trustFilter: portals.trust_filter || null,
+    // optional skip_tiers (top-level list): drop postings by seniority tier.
+    skipTiers: portals.skip_tiers || null,
     warnings,
   };
 }
@@ -258,10 +261,12 @@ export async function runRuScan(opts = {}) {
   // SPA can render a "⬆ boosted" badge on them.
   const locOk = buildLocationFilter(cfg.locationFilter);
   const contentOk = buildContentFilter(cfg.contentFilter);
+  const tierOk = buildTierFilter(cfg.skipTiers);
   // v1.76.0 — compile negatives once (word-boundary acronyms + guard).
   const negativeMatchers = compileKeywordList(cfg.negative);
   const filteredRaw = flat.filter((j) => passesNegative(j.title, negativeMatchers)
     && locOk(j.location)
+    && tierOk(j.title)
     && contentOk(j.description ?? j.snippet));
   let filtered = applyBoostStamps(filteredRaw, cfg.boosts);
   // v1.76.0 — optional trust annotation. Off unless

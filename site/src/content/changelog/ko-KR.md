@@ -9,6 +9,16 @@
 ---
 
 
+## [1.187.0] — 2026-08-14
+
+**수정됨 (스캐너) — `skip_tiers` 설정이 다시 작동합니다: 연차로 건너뛰라고 한 공고가 제거됩니다.**
+
+### 수정됨
+- `portals.yml`의 `skip_tiers:` 목록(예: `skip_tiers: [intern, entry]`)이 이제 스캔에서 반영됩니다. 각 공고의 제목이 연차 티어(intern / entry / mid / senior)로 분류되어 목록에 있으면 제거됩니다. 이전에는 스캔이 제목 / 위치 / 콘텐츠 / 신뢰 필터는 실행했지만 티어 필터가 없어 `skip_tiers`가 조용히 무시되었습니다. 레벨 단어가 없는 제목은 **mid**로 분류되며(따라서 `skip_tiers: [mid]`는 평범한 공고도 대부분 제거), 분류기는 가장 왼쪽 레벨 단어를 읽습니다.
+
+### 참고
+- 새 순수 모듈 `server/lib/classify-tier.mjs`(`classifyTier` + `buildTierFilter`)를 EN·RU 스캐너 필터 체인에 연결. `tests/classify-tier.test.mjs` (+7). 전체: **2492**.
+
 ## [1.186.0] — 2026-08-14
 
 **추가됨 (CV 스튜디오) — "스킬 갭" 패널: 직무의 요구 스킬 중 CV가 명시/암시/누락한 것.**

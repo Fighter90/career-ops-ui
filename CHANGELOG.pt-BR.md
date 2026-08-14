@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.187.0] — 2026-08-14
+
+**Corrigido (scanner) — a opção `skip_tiers` voltou a funcionar: as vagas que você pediu para pular por senioridade são descartadas.**
+
+### Corrigido
+- Uma lista `skip_tiers:` em `portals.yml` (ex.: `skip_tiers: [intern, entry]`) agora é respeitada no scan. O título de cada vaga é classificado em um nível (intern / entry / mid / senior) e descartado se o nível estiver na sua lista. Antes o scan aplicava os filtros de título / localização / conteúdo / confiança mas sem filtro de nível, então `skip_tiers` era ignorado silenciosamente. Títulos sem palavra de nível caem em **mid** (então `skip_tiers: [mid]` também descarta a maioria das vagas comuns), e o classificador lê a palavra de nível MAIS À ESQUERDA.
+
+### Notas
+- Novo `server/lib/classify-tier.mjs` puro (`classifyTier` + `buildTierFilter`), ligado às cadeias de filtros dos scanners EN e RU. `tests/classify-tier.test.mjs` (+7). Suíte: **2492**.
+
 ## [1.186.0] — 2026-08-14
 
 **Adicionado (CV Studio) — um painel "Lacuna de habilidades": quais das habilidades exigidas de uma vaga seu CV cita, insinua ou está faltando.**

@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.187.0] — 2026-08-14
+
+**Fixed (scanner) — the `skip_tiers` setting works again: postings you asked to skip by seniority are dropped.**
+
+### Fixed
+- A `skip_tiers:` list in `portals.yml` (e.g. `skip_tiers: [intern, entry]`) is now honoured by the scan. Each posting's title is classified into a seniority tier (intern / entry / mid / senior) and dropped if its tier is in your list. Previously the scan ran the title / location / content / trust filters but had no tier filter, so `skip_tiers` was silently ignored. Titles with no explicit level word fall back to **mid** (so `skip_tiers: [mid]` also drops most plain listings), and the classifier reads the LEFTMOST level word — "Summer Intern, Director of Product" is correctly an internship, not a directorship.
+
+### Notes
+- New pure `server/lib/classify-tier.mjs` (`classifyTier` + `buildTierFilter`), wired into both the EN and RU scanner filter chains. `tests/classify-tier.test.mjs` (+7). Suite: **2492**.
+
 ## [1.186.0] — 2026-08-14
 
 **Added (CV Studio) — a "Skill gap" panel: which of a job's required skills your CV names, implies, or is missing.**
