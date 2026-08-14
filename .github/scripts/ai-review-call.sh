@@ -23,7 +23,7 @@ REQ="$(mktemp)"; RESP="$(mktemp)"
 trap 'rm -f "$REQ" "$RESP"' EXIT
 
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
-  MODEL="${OPENROUTER_REVIEW_MODEL:-google/gemini-2.0-flash-001}"
+  MODEL="${OPENROUTER_REVIEW_MODEL:-qwen/qwen3-coder}"
   # jq -Rs slurps the whole prompt file as one JSON string, escaping the diff.
   jq -Rs --arg m "$MODEL" '{model:$m,max_tokens:1500,messages:[{role:"user",content:.}]}' \
     "$PROMPT_FILE" > "$REQ"
