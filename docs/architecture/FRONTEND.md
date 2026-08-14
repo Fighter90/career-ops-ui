@@ -65,9 +65,9 @@ Each view file:
 
 `public/js/lib/i18n.js`:
 
-- Locales: `en, es, pt-BR, ko-KR, ja, ru, zh-CN, zh-TW`.
+- Locales: 17 — `en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr, pl, uk, da, ar, de, it, tr, hi` (Arabic is RTL).
 - Persistent: language choice stored in `localStorage`.
-- Keys ship inline in the file as a single nested object per locale.
+- Keys live one-file-per-locale under `public/js/lib/locales/i18n-dict.<lang>.js` (I18N-SPLIT v1.60.0); `i18n-dict.js` is a small assembler that merges them into `window.__I18N_DICT`.
 - `I18n.onChange(handler)` re-renders on switch — `app.js` re-applies `data-i18n` attrs and re-renders the active route.
 
 `tests/i18n-coverage.test.mjs` enforces parity: every key present in `en` must exist in every other locale.
@@ -112,7 +112,7 @@ Mobile-first. `@media (max-width: 900px)` toggles the sidebar drawer (off-canvas
 1. Pick a route name. Update `index.html` sidebar `<a data-route="...">` if the route deserves nav placement.
 2. Add `public/js/views/<name>.js` with a single `Router.register(...)` call.
 3. Add the script tag to `index.html` (after `router.js`, before `app.js`).
-4. Add i18n keys to **every** locale block in `lib/i18n.js`.
+4. Add i18n keys to **all 17** per-locale files under `public/js/lib/locales/i18n-dict.<lang>.js`, then regenerate `tests/fixtures/i18n-dict.snapshot.json` (parity is gated by CI).
 5. Add an E2E step in `tests/e2e-comprehensive.mjs` covering the happy path.
 6. If the view fetches a new endpoint, document it in `API.md` and (if it writes parent files) `DATA-FLOWS.md`.
 

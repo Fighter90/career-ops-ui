@@ -281,6 +281,18 @@ Open http://127.0.0.1:4317. Pipeline counter should now read `0 pending`. The Ma
 | **Reports**      | Browse and read every report under `reports/` with parsed header (Score / Legitimacy / URL).                       |
 | **CV**           | Live markdown editor for `cv.md` with side-by-side preview + one-click `cv-sync-check.mjs` + 📁 Upload CV. Server-side XSS strip on save (`<script>`, `javascript:`, `on*=` handlers). |
 | **Profile**      | Read-only view of `config/profile.yml` + archetypes — UI-friendly summary.                                         |
+| **Statistics**   | Multi-tab `#/stats`: AI salary/market report, own-pipeline analytics, target-role trends, rejection patterns, lifetime roll-up + salary-gap, **funnel & velocity**, **"what to learn next" (upskill)**, and **rejection-latency**. Markdown / PDF / DOCX export. |
+| **CV Studio**    | `#/cv-studio` — humanize (voice-match), tailor CV + cover letter through a recruiter-checklist gate, add-entry from a URL/text, a **skill-gap** panel, a deterministic résumé score, in-browser PII masking, and a **fact-verification** truthfulness gate on generated output. |
+| **Two-pager**    | `#/two-pager` — a candidate two-pager (`config/two-pager.yml`) inlined into eval prompts; AI draft + a `◎` fit badge on scan. |
+| **Mock interview** | `#/mock-interview` — turn-by-turn practice with save / sessions; a zero-LLM weekly digest at `#/interview-digest`. |
+| **Networking**   | `#/networking` — AI networking-plan writer (saves to `networking/`).                                                |
+| **About-me**     | `#/memory` — an about-me note (`config/memory.md`) inlined into every AI request for grounding.                     |
+| **Career plan**  | `#/career-plan` — an AI development plan (`config/career-plan.md`) by horizon + focus.                              |
+| **Orientation**  | `#/orientation` — an AI career-orientation profile (archetype vectors, roles, strengths, working style).            |
+| **Usage**        | `#/usage` — per-provider token + estimated-USD rollup over 24h / 7d / 30d / all; a live sidebar cost HUD.           |
+| **Portals**      | `#/portals` — enable / disable tracked boards + SSRF-safe health probes of each `careers_url`.                      |
+| **Funded**       | `#/funded` — funded-company discovery from public RSS (logos, funding-amount chart, score / action cards).          |
+| **Ask the docs** | `#/docs-assistant` + a floating chat launcher — how-to answers grounded ONLY in the in-app help guide.              |
 | **App settings** | In-UI editor for parent `.env` keys: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, model overrides, port / host. Secrets masked on read. |
 | **Health**       | All setup checks in OK / OPTIONAL / FAIL badges + buttons to run `doctor.mjs` and `verify-pipeline.mjs`.           |
 | **Help**         | In-app Markdown user guide (`/#/help`), localized for all 17 supported languages (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |

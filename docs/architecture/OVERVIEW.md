@@ -119,7 +119,7 @@
 
 ## Integrations
 
-- **Hermes agent + Telegram** — running career-ops-ui on a cloud server and bridging its events to Telegram through a Nous Research Hermes agent. The integration design, the cloud-deploy guide, and the threat model live in [`../integrations/HERMES.md`](../integrations/HERMES.md); the `hermes-bridge` skill (`.claude/skills/hermes-bridge/`) operationalizes it. **Status: planned / not-yet-wired** — the Hermes *LLM-provider* path is blocked on the Phase 5 API-contract spike ([`../UX-ROADMAP.md`](../UX-ROADMAP.md)); no server code calls Hermes today.
+- **Hermes agent + Telegram** — running career-ops-ui on a cloud server and bridging its events to Telegram through a Nous Research Hermes agent. The integration design, the cloud-deploy guide, and the threat model live in [`../integrations/HERMES.md`](../integrations/HERMES.md); the `hermes-bridge` skill (`.claude/skills/hermes-bridge/`) operationalizes it. **Status: LLM-provider path wired (v1.151.0).** Hermes is the 7th live-eval provider (`HERMES_API_KEY` / `HERMES_BASE_URL`, `runHermes` in the `server/lib/llm-dispatch.mjs` auto cascade, `hermes` in `LLM_PROVIDERS`); it targets a local Nous Research `hermes gateway` exposing an OpenAI-compatible `/v1/chat/completions`. The Telegram event-bridge (the `hermes-bridge` skill) is the cloud-deploy operational layer built on top.
 
 ## Where to look first when…
 
