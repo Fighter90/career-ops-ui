@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.194.0] — 2026-08-14
+
+**Corrigido (scanner) — páginas de vagas do Workday com URL de segmento único agora são escaneadas corretamente.**
+
+### Corrigido
+- O adaptador do Workday agora analisa URLs de vagas cujo path é um único segmento — ex. `https://parsons.wd5.myworkdayjobs.com/Search`, `.../KBR_Careers`, `.../Careers`. Antes, o site caía para `External`, então o adaptador batia no endpoint CXS errado e uma sondagem podia parecer saudável sem retornar nada. Agora usa o primeiro segmento não vazio do path como site (descartando um prefixo de idioma como `en-US`); o caso documentado `/en-US/External` não muda. (Reportado em #255.)
+
+### Notas
+- Análise estrutural do path em `server/lib/portals/adapters/workday.mjs`. `tests/workday-adapter-endpoint.test.mjs` (+7). Suíte: **2519**.
+
+
 ## [1.193.0] — 2026-08-14
 
 **Adicionado (estatísticas) — uma aba "Silêncio após a entrevista" que revela entrevistas que merecem um lembrete.**

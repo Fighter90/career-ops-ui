@@ -9,6 +9,17 @@
 ---
 
 
+## [1.194.0] — 2026-08-14
+
+**修复 (扫描器) — 单段 URL 的 Workday 招聘页面现在能正确扫描。**
+
+### 修复
+- Workday 适配器现在能解析路径为单个段的招聘 URL——例如 `https://parsons.wd5.myworkdayjobs.com/Search`、`.../KBR_Careers`、`.../Careers`。此前站点会退回 `External`，适配器打到错误的 CXS 端点，探测看似正常却什么都不返回。现在取路径第一个非空段作为站点（丢弃 `en-US` 之类的语言前缀）；文档中的 `/en-US/External` 情形不变。（见 #255。）
+
+### 说明
+- `server/lib/portals/adapters/workday.mjs` 中的结构化路径解析。`tests/workday-adapter-endpoint.test.mjs`（+5）。测试套件：**2519**。
+
+
 ## [1.193.0] — 2026-08-14
 
 **新增 (统计) — 一个显示值得提醒的面试的“面试后无回应”标签。**

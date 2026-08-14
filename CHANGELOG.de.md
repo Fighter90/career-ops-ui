@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.194.0] — 2026-08-14
+
+**Behoben (Scanner) — Workday-Karriereseiten mit einer Ein-Segment-URL werden jetzt korrekt gescannt.**
+
+### Behoben
+- Der Workday-Adapter parst nun Karriere-URLs, deren Pfad ein einzelnes Segment ist — z. B. `https://parsons.wd5.myworkdayjobs.com/Search`, `.../KBR_Careers`, `.../Careers`. Zuvor fiel die Site auf `External` zurück, der Adapter traf den falschen CXS-Endpunkt, und eine Probe konnte gesund aussehen, ohne etwas zurückzugeben. Er nimmt jetzt das erste nicht-leere Pfadsegment als Site (und lässt ein Sprachpräfix wie `en-US` weg); der dokumentierte Fall `/en-US/External` bleibt unverändert. (Gemeldet in #255.)
+
+### Hinweise
+- Strukturelles Pfad-Parsing in `server/lib/portals/adapters/workday.mjs`. `tests/workday-adapter-endpoint.test.mjs` (+7). Suite: **2519**.
+
+
 ## [1.193.0] — 2026-08-14
 
 **Hinzugefügt (Statistik) — ein "Stille nach dem Gespräch"-Tab, der Gespräche zum Nachfassen zeigt.**

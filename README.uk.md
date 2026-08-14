@@ -7,16 +7,16 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2510%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2519%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.193.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.193.0)
+[![release](https://img.shields.io/badge/release-v1.194.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.194.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.193.0** — **Тиша після співбесіди** — нова вкладка `#/stats` показує співбесіди, що замовкли після «ввічливого» вікна (типово 30 днів) — із тривалістю тиші й датою останньої співбесіди. **2510 тестів.**
+> **🆕 Останній реліз — v1.194.0** — **Виправлено односегментні URL Workday** — сторінки на кшталт `https://parsons.wd5.myworkdayjobs.com/Search` (один сегмент) тепер ведуть на правильний фід вакансій, а не падають у `External`. Повідомлено в #255. **2517 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

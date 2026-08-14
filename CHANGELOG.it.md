@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.194.0] — 2026-08-14
+
+**Corretto (scanner) — le pagine carriere Workday con URL a segmento singolo ora vengono scansionate correttamente.**
+
+### Corretto
+- L'adapter Workday ora analizza gli URL carriere il cui percorso è un singolo segmento — es. `https://parsons.wd5.myworkdayjobs.com/Search`, `.../KBR_Careers`, `.../Careers`. Prima il sito ripiegava su `External`, l'adapter colpiva l'endpoint CXS sbagliato e una sonda poteva sembrare sana senza restituire nulla. Ora prende il primo segmento non vuoto del percorso come sito (scartando un prefisso di lingua come `en-US`); il caso documentato `/en-US/External` è invariato. (Segnalato in #255.)
+
+### Note
+- Analisi strutturale del percorso in `server/lib/portals/adapters/workday.mjs`. `tests/workday-adapter-endpoint.test.mjs` (+7). Suite: **2519**.
+
+
 ## [1.193.0] — 2026-08-14
 
 **Aggiunto (statistiche) — una scheda "Silenzio dopo il colloquio" che fa emergere i colloqui da sollecitare.**

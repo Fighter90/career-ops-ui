@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.194.0] — 2026-08-14
+
+**Naprawiono (skaner) — strony karier Workday z URL o jednym segmencie są teraz poprawnie skanowane.**
+
+### Naprawiono
+- Adapter Workday analizuje teraz URL-e karier, których ścieżka to jeden segment — np. `https://parsons.wd5.myworkdayjobs.com/Search`, `.../KBR_Careers`, `.../Careers`. Wcześniej witryna spadała do `External`, adapter trafiał w zły endpoint CXS, a sonda mogła wyglądać zdrowo, nic nie zwracając. Teraz bierze pierwszy niepusty segment ścieżki jako witrynę (odrzucając prefiks języka jak `en-US`); udokumentowany przypadek `/en-US/External` bez zmian. (Zgłoszone w #255.)
+
+### Uwagi
+- Strukturalne parsowanie ścieżki w `server/lib/portals/adapters/workday.mjs`. `tests/workday-adapter-endpoint.test.mjs` (+7). Zestaw: **2519**.
+
+
 ## [1.193.0] — 2026-08-14
 
 **Dodano (statystyki) — zakładka „Cisza po rozmowie", która pokazuje rozmowy warte przypomnienia.**
