@@ -15,6 +15,7 @@ import yaml from 'js-yaml';
 import { PATHS } from './paths.mjs';
 import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
+import { normalizeUrl } from './url-key.mjs';
 import { buildLocationFilter, buildContentFilter, buildTitleFilter } from './location-filter.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
 import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
@@ -65,7 +66,7 @@ function loadSeenUrls() {
   for (const p of [PATHS.scanHistory, PATHS.pipeline, PATHS.applications]) {
     try {
       const text = readFileSync(p, 'utf8');
-      for (const m of text.matchAll(/https?:\/\/\S+/g)) seen.add(m[0]);
+      for (const m of text.matchAll(/https?:\/\/\S+/g)) seen.add(normalizeUrl(m[0]) || m[0]);
     } catch {}
   }
   return seen;
@@ -228,7 +229,7 @@ export async function runEnScan(opts = {}) {
   const cooldownFilter = buildCooldownFilter(loadReApplyWindows(PATHS.profile), cooldownToday);
   const afterCooldown = filtered.filter((j) => !cooldownFilter(j).skip);
   const cooldownSkipped = filtered.length - afterCooldown.length;
-  const fresh = afterCooldown.filter((j) => !seen.has(j.url));
+  const fresh = afterCooldown.filter((j) => !seen.has(normalizeUrl(j.url) || j.url));
   const dup = afterCooldown.length - fresh.length;
 
   log('stdout', '');

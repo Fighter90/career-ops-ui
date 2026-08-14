@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.183.0] — 2026-08-14
+
+**Aggiunto (scanner) — rilevamento duplicati più intelligente: la stessa offerta ripubblicata con un link di tracciamento non compare più due volte.**
+
+### Aggiunto
+- Lo scanner ora riconosce un'offerta tramite una **chiave URL canonica**, così la stessa offerta ripubblicata con un parametro di tracciamento (`?utm_…`, `gclid`, …), su `http` vs `https`, o con una barra finale / `#frammento` è trattata come l'unica offerta che è — nessuna riga duplicata nei risultati o nel pipeline e nessuna valutazione sprecata su un'offerta già vista. Offerte davvero diverse (un id funzionale mantenuto come `gh_jid`) contano ancora separatamente.
+
+### Note
+- Nuovo `server/lib/url-key.mjs`, collegato al dedup di entrambi gli scanner e allo scrittore del pipeline. Normalizza volutamente poco — non fonde mai due offerte distinte. Test: `tests/url-key.test.mjs` (+5), `tests/parsers.test.mjs` (+1). Suite: **2477** (+6).
+
 ## [1.182.0] — 2026-08-14
 
 **Corretto (scanner) — le fasce salariali ora si leggono uguali in ogni lingua.**

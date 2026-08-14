@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.183.0] — 2026-08-14
+
+**Ajouté (scanner) — détection des doublons plus intelligente : la même offre re-publiée avec un lien de suivi n'apparaît plus deux fois.**
+
+### Ajouté
+- Le scanner reconnaît désormais une offre par une **clé d'URL canonique**, si bien que la même offre re-publiée avec un paramètre de suivi (`?utm_…`, `gclid`, …), en `http` vs `https`, ou avec une barre oblique finale / `#fragment` est traitée comme l'unique offre qu'elle est — pas de ligne en double dans vos résultats ou votre pipeline, ni d'évaluation gaspillée sur une offre déjà vue. Les offres vraiment différentes (un id fonctionnel conservé comme `gh_jid`) comptent toujours séparément.
+
+### Notes
+- Nouveau `server/lib/url-key.mjs`, branché sur le dédoublonnage des deux scanners et sur l'écriture du pipeline. Sous-normalise à dessein : il ne fusionne jamais deux offres distinctes. Tests : `tests/url-key.test.mjs` (+5), `tests/parsers.test.mjs` (+1). Suite : **2477** (+6).
+
 ## [1.182.0] — 2026-08-14
 
 **Corrigé (scanner) — les fourchettes de salaire s'affichent désormais pareil dans toutes les langues.**

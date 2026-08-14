@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.183.0] — 2026-08-14
+
+**Añadido (escáner) — detección de duplicados más inteligente: el mismo empleo re-publicado con un enlace de seguimiento ya no aparece dos veces.**
+
+### Añadido
+- El escáner ahora reconoce un puesto por una **clave de URL canónica**, así que el mismo empleo re-publicado con un parámetro de seguimiento (`?utm_…`, `gclid`, …), por `http` vs `https`, o con una barra final / `#fragmento` se trata como el único puesto que es — sin fila duplicada en tus resultados o pipeline, y sin evaluación desperdiciada en un empleo ya visto. Los puestos realmente distintos (un id funcional conservado como `gh_jid`) siguen contando por separado.
+
+### Notas
+- Nuevo `server/lib/url-key.mjs`, conectado al dedup de ambos escáneres y al escritor de pipeline. Sub-normaliza a propósito: nunca fusiona dos puestos distintos. Pruebas: `tests/url-key.test.mjs` (+5), `tests/parsers.test.mjs` (+1). Suite: **2477** (+6).
+
 ## [1.182.0] — 2026-08-14
 
 **Corregido (escáner) — los rangos salariales ahora se leen igual en todos los idiomas.**

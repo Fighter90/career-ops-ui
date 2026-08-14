@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.183.0] — 2026-08-14
+
+**Added (scanner) — smarter duplicate detection: the same job re-listed with a tracking link no longer shows up twice.**
+
+### Added
+- The scanner now recognises a posting by a **canonical URL key**, so the same role re-listed with a tracking parameter (`?utm_…`, `gclid`, …), over `http` vs `https`, or with a trailing slash / `#fragment` is treated as the one posting it is — no duplicate row in your scan results or pipeline, and no wasted evaluation on a job you have already seen. Genuinely different postings (a kept functional id like `gh_jid`) still count separately.
+
+### Notes
+- New `server/lib/url-key.mjs`, wired into both scanners' dedup and the pipeline writer. It deliberately under-strips — it never merges two distinct postings. Tests: `tests/url-key.test.mjs` (+5), `tests/parsers.test.mjs` (+1). Suite: **2477** (+6).
+
 ## [1.182.0] — 2026-08-14
 
 **Fixed (scanner) — salary ranges now read the same in every language.**

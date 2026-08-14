@@ -121,6 +121,17 @@ test('addPipelineUrl: dedup', () => {
   assert.equal(after, before);
 });
 
+test('addPipelineUrl: canonical dedup — a tracking-param / http / trailing-slash variant is the same posting', () => {
+  const before = '```\nhttps://a.com/1\n```';
+  // http↔https, a utm param, and a trailing slash all collapse to the same key.
+  assert.equal(addPipelineUrl(before, 'http://a.com/1?utm_source=nl'), before, 'utm + http variant deduped');
+  assert.equal(addPipelineUrl(before, 'https://a.com/1/'), before, 'trailing-slash variant deduped');
+  assert.equal(addPipelineUrl(before, 'https://a.com/1#apply'), before, 'fragment variant deduped');
+  // A genuinely different posting (different functional query) is still added.
+  const grown = addPipelineUrl(before, 'https://a.com/1?ref=partner');
+  assert.notEqual(grown, before, 'a kept functional param is a different posting');
+});
+
 test('addPipelineUrl: creates fence when missing', () => {
   const after = addPipelineUrl('', 'https://x.com/1');
   assert.deepEqual(parsePipeline(after), ['https://x.com/1']);

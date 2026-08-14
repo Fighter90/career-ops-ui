@@ -28,6 +28,7 @@ import { searchGeekJob } from './sources/geekjob.mjs';
 import { RU_CONFIG_KEYS } from './sources/registry.mjs';
 import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
+import { normalizeUrl } from './url-key.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { saveLastScan } from './en-scanner.mjs';
 import { buildLocationFilter, buildContentFilter, compileKeywordList } from './location-filter.mjs';
@@ -159,13 +160,13 @@ export function loadSeenUrls() {
   };
   // scan-history.tsv: columns include the URL — match http(s)
   const scanHist = tryRead(PATHS.scanHistory);
-  for (const m of scanHist.matchAll(/https?:\/\/\S+/g)) seen.add(m[0]);
+  for (const m of scanHist.matchAll(/https?:\/\/\S+/g)) seen.add(normalizeUrl(m[0]) || m[0]);
   // pipeline.md
   const pipeline = tryRead(PATHS.pipeline);
-  for (const m of pipeline.matchAll(/https?:\/\/\S+/g)) seen.add(m[0]);
+  for (const m of pipeline.matchAll(/https?:\/\/\S+/g)) seen.add(normalizeUrl(m[0]) || m[0]);
   // applications.md (already-tracked offers)
   const apps = tryRead(PATHS.applications);
-  for (const m of apps.matchAll(/https?:\/\/\S+/g)) seen.add(m[0]);
+  for (const m of apps.matchAll(/https?:\/\/\S+/g)) seen.add(normalizeUrl(m[0]) || m[0]);
   return seen;
 }
 
@@ -273,7 +274,7 @@ export async function runRuScan(opts = {}) {
     });
   }
   const removedNeg = flat.length - filtered.length;
-  const fresh = filtered.filter((j) => !seen.has(j.url));
+  const fresh = filtered.filter((j) => !seen.has(normalizeUrl(j.url) || j.url));
   const dup = filtered.length - fresh.length;
 
   log('stdout', '');

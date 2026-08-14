@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.183.0] — 2026-08-14
+
+**Eklendi (tarayıcı) — daha akıllı yinelenen tespiti: takip bağlantısıyla yeniden yayımlanan aynı ilan artık iki kez görünmüyor.**
+
+### Eklendi
+- Tarayıcı artık bir ilanı **kanonik URL anahtarıyla** tanıyor; böylece takip parametresiyle (`?utm_…`, `gclid`, …), `http` yerine `https`, ya da sondaki eğik çizgi / `#parça` ile yeniden yayımlanan aynı ilan, olduğu tek ilan olarak ele alınır — tarama sonuçlarında veya pipeline'da yinelenen satır yok ve zaten gördüğünüz bir ilana boşa değerlendirme yok. Gerçekten farklı ilanlar (`gh_jid` gibi korunan işlevsel bir id) hâlâ ayrı sayılır.
+
+### Notlar
+- Yeni `server/lib/url-key.mjs`, her iki tarayıcının dedup'ına ve pipeline yazıcısına bağlandı. Bilerek az normalleştirir — iki farklı ilanı asla birleştirmez. Testler: `tests/url-key.test.mjs` (+5), `tests/parsers.test.mjs` (+1). Takım: **2477** (+6).
+
 ## [1.182.0] — 2026-08-14
 
 **Düzeltildi (tarayıcı) — maaş aralıkları artık her dilde aynı görünüyor.**
