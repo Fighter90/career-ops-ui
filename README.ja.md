@@ -12,11 +12,11 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.206.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.206.0)
+[![release](https://img.shields.io/badge/release-v1.207.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.206.0** — **アプリ内ヘルプを更新** — ヘルプガイド（および「ヘルプに質問」アシスタント）が最新の 5 機能 — セットアップドクター、ATS ボードを探す、「まだ募集中?」チェック、「過去の CV を再利用?」ヒント、スキルログ — を 17 言語すべてでカバーします。 **2610 テスト.**
+> **🆕 最新リリース — v1.207.0** — **トラッカーから結果を記録** — すべての行に **結果** アクション: 何が起きたか（不採用／オファー／採用／辞退／返信なし／面接）を選び、結果ステータスをプレビューしてから記録します。提出した成果物を保管しトラッカーの状態を同期します。 **2618 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

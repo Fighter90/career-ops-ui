@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.207.0] — 2026-08-15
+
+**Ajouté — consignez le résultat d'une candidature directement depuis le suivi.**
+
+### Ajouté
+- Chaque ligne du suivi reçoit une action **Résultat** : choisissez ce qui s'est passé (refusé, offre reçue, embauché, offre déclinée, sans réponse, passé en entretien), ajoutez une note facultative, **prévisualisez** le statut obtenu, puis consignez-le. Consigner archive les artefacts du CV et de la lettre envoyés et synchronise le suivi vers l'état canonique — une action déterministe au lieu d'éditer le suivi à la main.
+
+### Notes
+- Nouvelle `POST /api/outcome` qui relaie la CLI de résultats : `dryRun:true` est un aperçu en lecture seule (localise la ligne, indique l'état obtenu, n'écrit rien) ; un appel réel le consigne. Sécurité d'écriture : le type de résultat est limité à l'ensemble connu et tout champ texte est rejeté s'il contient un caractère de contrôle avant l'appel (arguments en tableau, spawn — pas de shell). `tests/outcome-route.test.mjs`. Suite : **2618**.
+
+
+
 ## [1.206.0] — 2026-08-15
 
 **Documentation — le guide d'aide intégré couvre désormais les cinq fonctionnalités les plus récentes, dans les 17 langues.**

@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.207.0] — 2026-08-15
+
+**Añadido — registra el resultado de una candidatura directamente desde el seguimiento.**
+
+### Añadido
+- Cada fila del seguimiento tiene una acción **Resultado**: elige qué pasó (rechazado, oferta recibida, contratado, oferta rechazada, sin respuesta, avanzó a entrevista), añade una nota opcional, **previsualiza** el estado resultante y regístralo. Registrar archiva los artefactos del CV y la carta enviados y sincroniza el seguimiento al estado canónico — una acción determinista en vez de editar el seguimiento a mano.
+
+### Notas
+- Nueva `POST /api/outcome` retransmite la CLI de resultados: `dryRun:true` es una vista previa de solo lectura (localiza la fila, informa del estado resultante, no escribe nada); una llamada real lo registra. Seguridad de escritura: el tipo de resultado se limita al conjunto conocido y todo campo de texto se rechaza si tiene caracteres de control antes del shell-out (argumentos como array, spawn — sin shell). `tests/outcome-route.test.mjs`. Conjunto: **2618**.
+
+
+
 ## [1.206.0] — 2026-08-15
 
 **Documentación — la guía de ayuda integrada ahora cubre las cinco funciones más recientes, en los 17 idiomas.**

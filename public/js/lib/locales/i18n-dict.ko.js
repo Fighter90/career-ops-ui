@@ -9,6 +9,19 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_KO = {
+  'track.outcome.btn': "결과",
+  'track.outcome.record': "결과 기록",
+  'track.outcome.rejected': "불합격",
+  'track.outcome.offer': "오퍼 수신",
+  'track.outcome.hired': "입사 / 수락",
+  'track.outcome.declined': "오퍼 거절",
+  'track.outcome.ghosted': "무응답 / 잠수",
+  'track.outcome.interview': "면접 진행",
+  'track.outcome.notePh': "메모(선택)",
+  'track.outcome.preview': "미리보기",
+  'track.outcome.previewResult': "#{num} {company} → {state}로 설정됩니다",
+  'track.outcome.recorded': "결과가 기록됨",
+  'track.outcome.failed': "결과를 기록할 수 없습니다",
   'config.tabDoctor': "설정 진단",
   'cvsync.title': "CV 및 프로필 설정 진단",
   'cvsync.subtitle': "cv.md와 config/profile.yml이 채워졌는지 읽기 전용으로 확인하고, 예시 데이터나 하드코딩된 수치가 프롬프트 파일에 남아 있으면 알려줍니다. 아무것도 저장하거나 전송하지 않습니다.",

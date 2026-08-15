@@ -8,6 +8,19 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_AR = {
+  'track.outcome.btn': "النتيجة",
+  'track.outcome.record': "تسجيل النتيجة",
+  'track.outcome.rejected': "مرفوض",
+  'track.outcome.offer': "تلقّي عرض",
+  'track.outcome.hired': "تم التوظيف / قُبل",
+  'track.outcome.declined': "رُفض العرض",
+  'track.outcome.ghosted': "بلا رد / تجاهل",
+  'track.outcome.interview': "تقدّم إلى المقابلة",
+  'track.outcome.notePh': "ملاحظة (اختياري)",
+  'track.outcome.preview': "معاينة",
+  'track.outcome.previewResult': "سيضبط #{num} {company} ← {state}",
+  'track.outcome.recorded': "تم تسجيل النتيجة",
+  'track.outcome.failed': "تعذّر تسجيل النتيجة",
   'config.tabDoctor': "فحص الإعداد",
   'cvsync.title': "فحص إعداد السيرة الذاتية والملف الشخصي",
   'cvsync.subtitle': "فحص للقراءة فقط للتأكد من أن ملفَّي cv.md و config/profile.yml مكتملان، وتنبيه عند بقاء بيانات نموذجية أو أرقام مثبّتة في ملفات المطالبات. لا يُكتب ولا يُرسَل أي شيء.",

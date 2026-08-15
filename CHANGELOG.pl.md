@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.207.0] — 2026-08-15
+
+**Dodano — zapisuj wynik aplikacji bezpośrednio ze śledzenia.**
+
+### Dodano
+- Każdy wiersz śledzenia zyskuje akcję **Wynik**: wybierz, co się stało (odrzucono, otrzymano ofertę, zatrudniony, oferta odrzucona, brak odpowiedzi, przeszedł do rozmowy), dodaj opcjonalną notatkę, **podejrzyj** wynikowy status i zapisz. Zapis archiwizuje wysłane pliki CV i listu motywacyjnego oraz synchronizuje śledzenie do stanu kanonicznego — jedna deterministyczna akcja zamiast ręcznej edycji.
+
+### Uwagi
+- Nowa `POST /api/outcome` pośredniczy w CLI wyników: `dryRun:true` to podgląd tylko do odczytu (dopasowuje wiersz, zgłasza stan wynikowy, nic nie zapisuje); prawdziwe wywołanie zapisuje. Bezpieczeństwo zapisu: typ wyniku jest ograniczony do znanego zbioru, a każde pole tekstowe jest odrzucane przy znakach kontrolnych przed wywołaniem (argumenty jako tablica, spawn — bez powłoki). `tests/outcome-route.test.mjs`. Zestaw: **2618**.
+
+
+
 ## [1.206.0] — 2026-08-15
 
 **Dokumentacja — wbudowany przewodnik pomocy obejmuje teraz pięć najnowszych funkcji we wszystkich 17 językach.**

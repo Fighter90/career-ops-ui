@@ -9,6 +9,19 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_HI = {
+  'track.outcome.btn': "परिणाम",
+  'track.outcome.record': "परिणाम दर्ज करें",
+  'track.outcome.rejected': "अस्वीकृत",
+  'track.outcome.offer': "ऑफ़र मिला",
+  'track.outcome.hired': "नियुक्त / स्वीकृत",
+  'track.outcome.declined': "ऑफ़र अस्वीकार",
+  'track.outcome.ghosted': "कोई जवाब नहीं / अनदेखा",
+  'track.outcome.interview': "साक्षात्कार तक पहुँचा",
+  'track.outcome.notePh': "नोट (वैकल्पिक)",
+  'track.outcome.preview': "पूर्वावलोकन",
+  'track.outcome.previewResult': "#{num} {company} → {state} सेट करेगा",
+  'track.outcome.recorded': "परिणाम दर्ज किया गया",
+  'track.outcome.failed': "परिणाम दर्ज नहीं किया जा सका",
   'config.tabDoctor': "सेटअप जाँच",
   'cvsync.title': "CV और प्रोफ़ाइल सेटअप जाँच",
   'cvsync.subtitle': "यह केवल-पढ़ने वाली जाँच है कि आपके cv.md और config/profile.yml भरे हुए हैं — और यदि आपकी प्रॉम्प्ट फ़ाइलों में उदाहरण डेटा या हार्डकोडेड मीट्रिक रह गए हों तो सचेत करती है। कुछ भी लिखा या भेजा नहीं जाता।",

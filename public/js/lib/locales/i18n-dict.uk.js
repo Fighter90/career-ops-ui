@@ -8,6 +8,19 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_UK = {
+  'track.outcome.btn': "Підсумок",
+  'track.outcome.record': "Записати підсумок",
+  'track.outcome.rejected': "Відмова",
+  'track.outcome.offer': "Офер отримано",
+  'track.outcome.hired': "Найнятий / прийнято",
+  'track.outcome.declined': "Офер відхилено",
+  'track.outcome.ghosted': "Немає відповіді / ігнор",
+  'track.outcome.interview': "Пройшов на співбесіду",
+  'track.outcome.notePh': "Примітка (необовʼязково)",
+  'track.outcome.preview': "Перегляд",
+  'track.outcome.previewResult': "Встановить #{num} {company} → {state}",
+  'track.outcome.recorded': "Підсумок записано",
+  'track.outcome.failed': "Не вдалося записати підсумок",
   'config.tabDoctor': "Діагностика налаштування",
   'cvsync.title': "Діагностика налаштування CV і профілю",
   'cvsync.subtitle': "Перевірка лише для читання того, що ваші cv.md і config/profile.yml заповнені, і підказка, якщо у файлах промптів залишилися приклади даних чи жорстко задані метрики. Нічого не записується й нікуди не надсилається.",

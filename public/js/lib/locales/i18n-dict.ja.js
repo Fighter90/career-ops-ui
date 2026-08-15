@@ -9,6 +9,19 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_JA = {
+  'track.outcome.btn': "結果",
+  'track.outcome.record': "結果を記録",
+  'track.outcome.rejected': "不採用",
+  'track.outcome.offer': "オファー受領",
+  'track.outcome.hired': "採用 / 承諾",
+  'track.outcome.declined': "オファー辞退",
+  'track.outcome.ghosted': "返信なし / 音信不通",
+  'track.outcome.interview': "面接に進んだ",
+  'track.outcome.notePh': "メモ（任意）",
+  'track.outcome.preview': "プレビュー",
+  'track.outcome.previewResult': "#{num} {company} → {state} に設定します",
+  'track.outcome.recorded': "結果を記録しました",
+  'track.outcome.failed': "結果を記録できませんでした",
   'config.tabDoctor': "セットアップ診断",
   'cvsync.title': "CV・プロフィールのセットアップ診断",
   'cvsync.subtitle': "cv.md と config/profile.yml が記入済みかを読み取り専用で確認し、サンプルデータやハードコードされた数値がプロンプトファイルに残っていれば知らせます。書き込みも送信も行いません。",

@@ -14,11 +14,11 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.206.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.206.0)
+[![release](https://img.shields.io/badge/release-v1.207.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.206.0** — **इन-ऐप हेल्प अद्यतन** — हेल्प गाइड (और «हेल्प से पूछें» सहायक) अब पाँच नवीनतम सुविधाओं — सेटअप डॉक्टर, ATS बोर्ड खोजें, «अब भी खुली है?» जाँच, «पुराना CV दोबारा उपयोग करें?» संकेत और स्किल लॉग — को सभी 17 भाषाओं में कवर करती है। **2610 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.207.0** — **ट्रैकर से परिणाम दर्ज करें** — हर पंक्ति को एक **परिणाम** क्रिया: चुनें कि क्या हुआ (अस्वीकृत / ऑफ़र / नियुक्त / अस्वीकार / कोई जवाब नहीं / साक्षात्कार), परिणामी स्थिति का पूर्वावलोकन करें, फिर दर्ज करें। यह भेजे गए आर्टिफ़ैक्ट संग्रहीत करता है और ट्रैकर स्थिति सिंक करता है। **2618 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

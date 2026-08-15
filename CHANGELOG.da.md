@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.207.0] — 2026-08-15
+
+**Tilføjet — registrér udfaldet af en ansøgning direkte fra trackeren.**
+
+### Tilføjet
+- Hver trackerrække får en **Resultat**-handling: vælg hvad der skete (afvist, tilbud modtaget, ansat, tilbud afvist, intet svar, gik videre til samtale), tilføj en valgfri note, **forhåndsvis** den resulterende status, og registrér den. Registrering arkiverer de indsendte CV- og ansøgningsartefakter og synkroniserer trackeren til den kanoniske tilstand — én deterministisk handling i stedet for manuel redigering.
+
+### Noter
+- Ny `POST /api/outcome` videresender resultat-CLI'en: `dryRun:true` er en skrivebeskyttet forhåndsvisning (matcher rækken, rapporterer den resulterende tilstand, skriver intet); et rigtigt kald registrerer det. Skrivesikkerhed: resultattypen er begrænset til det kendte sæt, og hvert tekstfelt afvises ved kontroltegn før kaldet (array-argumenter, spawn — ingen shell). `tests/outcome-route.test.mjs`. Suite: **2618**.
+
+
+
 ## [1.206.0] — 2026-08-15
 
 **Dokumentation — den indbyggede hjælpeguide dækker nu de fem nyeste funktioner på alle 17 sprog.**

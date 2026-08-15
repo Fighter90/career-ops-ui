@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.207.0] — 2026-08-15
+
+**Added — record an application's outcome straight from the tracker.**
+
+### Added
+- Every tracker row gets an **Outcome** action: pick what happened (rejected, offer received, hired, offer declined, no response, advanced to interview), add an optional note, **preview** the resulting status, then record it. Recording archives the submitted CV & cover-letter artifacts and syncs the tracker to the canonical state — one deterministic action instead of hand-editing the tracker.
+
+### Notes
+- New `POST /api/outcome` relays the outcome CLI: `dryRun:true` is a read-only preview (matches the row, reports the resulting state, writes nothing); a real call records it. Write-safety: the outcome type is whitelisted to the known set and every text field is control-char-rejected before the shell-out (array args, spawn — no shell). `tests/outcome-route.test.mjs`. Suite: **2618**.
+
+
+
 ## [1.206.0] — 2026-08-15
 
 **Documentation — the in-app help guide now covers the five newest features, in all 17 languages.**

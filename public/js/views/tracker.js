@@ -210,11 +210,22 @@ Router.register('tracker', async () => {
         ? c('span', { className: 'badge ' + legitimacyClass(r.legitimacy) }, r.legitimacy)
         : c('span', { style: { color: 'var(--foggy)' } }, '—')),
       c('td', null, r.pdfReady ? '✓' : '—'),
-      c('td', null, r.reportPath ? c('button', {
-        className: 'btn btn-ghost btn-sm',
-        'aria-label': t('track.report') + ((r.company || r.role) ? ' — ' + (r.company || r.role) : ''),
-        onClick: () => Router.go('/reports/' + r.reportPath.replace(/^reports\//, '').replace(/\.md$/, '')),
-      }, t('track.report')) : ''),
+      c('td', null, [
+        r.reportPath ? c('button', {
+          className: 'btn btn-ghost btn-sm',
+          'aria-label': t('track.report') + ((r.company || r.role) ? ' — ' + (r.company || r.role) : ''),
+          onClick: () => Router.go('/reports/' + r.reportPath.replace(/^reports\//, '').replace(/\.md$/, '')),
+        }, t('track.report')) : '',
+        // Record an application outcome (rejected / offer / hired / …): opens a
+        // preview-then-confirm modal that shells the parent outcome.mjs to
+        // archive artifacts + sync the tracker. Every row gets it.
+        c('button', {
+          className: 'btn btn-ghost btn-sm',
+          type: 'button',
+          'aria-label': t('track.outcome.record', 'Record outcome') + (r.company ? ' — ' + r.company : ''),
+          onClick: () => openOutcomeModal(r, c, t),
+        }, t('track.outcome.btn', 'Outcome')),
+      ]),
     ]);
   }
 
@@ -523,4 +534,82 @@ function legitimacyClass(s) {
   if (s.includes('low') || s.includes('suspicious') || s.includes('fake') || s.includes('proceed')) return 'badge-bad';
   if (s.includes('medium') || s.includes('caution') || s.includes('partial')) return 'badge-warn';
   return 'badge-info';
+}
+
+// --- Record-outcome modal (#/tracker) --------------------------------------
+// A preview-then-confirm form that records an application's final outcome via
+// the parent outcome.mjs (archives the submitted artifacts + syncs the canonical
+// tracker state). Two POSTs to /api/outcome: a dry-run PREVIEW that shows the
+// resulting state without writing, then — only after the user sees it — the real
+// write. CSP-safe: UI.el + addEventListener + textContent, no innerHTML.
+const OUTCOME_OPTIONS = [
+  { value: 'rejected', key: 'track.outcome.rejected', fb: 'Rejected' },
+  { value: 'offer_received', key: 'track.outcome.offer', fb: 'Offer received' },
+  { value: 'hired', key: 'track.outcome.hired', fb: 'Hired / accepted' },
+  { value: 'offer_declined', key: 'track.outcome.declined', fb: 'Offer declined' },
+  { value: 'no_response', key: 'track.outcome.ghosted', fb: 'No response / ghosted' },
+  { value: 'interview_progress', key: 'track.outcome.interview', fb: 'Advanced to interview' },
+];
+
+function openOutcomeModal(r, c, t) {
+  // Match by report # (unambiguous) when present, else the company name.
+  const selector = r.num ? String(r.num) : (r.company || '');
+
+  const select = c('select', { className: 'input', 'aria-label': t('track.outcome.record', 'Record outcome') },
+    OUTCOME_OPTIONS.map((o) => c('option', { value: o.value }, t(o.key, o.fb))));
+  const note = c('input', { className: 'input', type: 'text', maxLength: 500, placeholder: t('track.outcome.notePh', 'Note (optional)') });
+  const result = c('div', { role: 'status', style: { fontSize: '13px', minHeight: '18px', color: 'var(--foggy)' } }, '');
+
+  const previewBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('track.outcome.preview', 'Preview'));
+  const recordBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('track.outcome.record', 'Record outcome'));
+  // Hidden until a preview succeeds. Inline style.display (not the [hidden]
+  // attribute) so an author `.btn { display:inline-flex }` cannot un-hide it.
+  recordBtn.style.display = 'none';
+
+  const resetPreview = () => { recordBtn.style.display = 'none'; result.textContent = ''; };
+  select.addEventListener('change', resetPreview);
+  note.addEventListener('input', resetPreview);
+
+  previewBtn.addEventListener('click', async () => {
+    if (!selector) { result.textContent = t('track.outcome.failed', 'Could not record the outcome'); return; }
+    previewBtn.disabled = true;
+    try {
+      const p = await API.post('/api/outcome', { selector, type: select.value, note: note.value.trim(), role: r.role || '', dryRun: true });
+      if (!p || p.available === false) {
+        result.textContent = t('track.outcome.failed', 'Could not record the outcome');
+        recordBtn.style.display = 'none';
+        return;
+      }
+      result.textContent = t('track.outcome.previewResult', 'Will set #{num} {company} → {state}')
+        .replace('{num}', p.num).replace('{company}', p.company).replace('{state}', p.canonicalState);
+      recordBtn.style.display = '';
+    } catch (e) {
+      result.textContent = (e && e.message) || t('track.outcome.failed', 'Could not record the outcome');
+      recordBtn.style.display = 'none';
+    } finally {
+      previewBtn.disabled = false;
+    }
+  });
+
+  recordBtn.addEventListener('click', async () => {
+    recordBtn.disabled = true;
+    try {
+      const res = await API.post('/api/outcome', { selector, type: select.value, note: note.value.trim(), role: r.role || '' });
+      UI.toast(t('track.outcome.recorded', 'Outcome recorded') + ' → ' + (res.canonicalState || ''), 'success');
+      UI.closeModal();
+      Router.render();
+    } catch (e) {
+      UI.toast((e && e.message) || t('track.outcome.failed', 'Could not record the outcome'), 'error');
+    } finally {
+      recordBtn.disabled = false;
+    }
+  });
+
+  const body = c('div', { style: { display: 'grid', gap: '10px', minWidth: '280px' } }, [
+    c('div', { style: { color: 'var(--foggy)', fontSize: '13px' } },
+      `#${r.num || '?'} ${r.company || ''}${r.role ? ' · ' + r.role : ''}`),
+    select, note, result,
+    c('div', { style: { display: 'flex', gap: '8px' } }, [previewBtn, recordBtn]),
+  ]);
+  UI.modal(t('track.outcome.record', 'Record outcome'), body);
 }
