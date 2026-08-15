@@ -230,6 +230,31 @@ Router.register('cv-studio', async () => {
   jdList = Array.isArray(jdList) ? jdList : [];
   for (const jd of jdList) gapSel.appendChild(c('option', { value: jd.name }, jd.name));
 
+  // "Reuse a past CV?" hint — a muted, zero-token line telling you whether a
+  // PREVIOUSLY saved JD is similar enough to reuse its tailored CV, reuse it
+  // with edits, or start fresh. Relayed by GET /api/jds/:name/reuse; it stays
+  // silent (never a toast) when the parent script or a prior JD is absent.
+  const reuseHint = c('div', { style: { fontSize: '12px', color: 'var(--foggy)', marginTop: '8px', minHeight: '1em' } });
+  async function refreshReuseHint() {
+    const name = gapSel.value;
+    reuseHint.textContent = '';
+    if (!name) return;
+    let res;
+    try { res = await API.get('/api/jds/' + encodeURIComponent(name) + '/reuse'); }
+    catch { return; }
+    if (!res || res.available === false || !res.best) return;
+    const b = res.best;
+    const pct = Math.round((Number(b.score) || 0) * 100);
+    if (b.decision === 'reuse') {
+      reuseHint.textContent = t('cvs.reuseHigh', 'Very similar to a saved job description — you can likely reuse that CV:') + ' ' + b.name + ' (' + pct + '%)';
+    } else if (b.decision === 'reuse-with-edits') {
+      reuseHint.textContent = t('cvs.reuseEdits', 'Similar to a saved job description — you could reuse that CV with edits:') + ' ' + b.name + ' (' + pct + '%)';
+    } else {
+      reuseHint.textContent = t('cvs.reuseRegen', 'No closely similar saved job description — best to tailor a fresh CV.');
+    }
+  }
+  gapSel.addEventListener('change', refreshReuseHint);
+
   gapBtn.addEventListener('click', async () => {
     const name = gapSel.value;
     if (!name) return;
@@ -281,8 +306,12 @@ Router.register('cv-studio', async () => {
       ])
       : c('p', { style: { color: 'var(--foggy)' } },
         t('cvs.gapNoJds', 'No saved job descriptions yet. Save one from a scan result or the tailor above, then come back.')),
+    reuseHint,
     gapOut,
   ]));
+  // Auto-surface the reuse hint for the default-selected JD (needs ≥2 saved
+  // JDs — one to compare against). Fire-and-forget so it never blocks render.
+  if (jdList.length >= 2) refreshReuseHint();
 
   // ── 7. Fact-check (truthfulness gate) ──
   // Zero-LLM: paste a tailored CV / cover letter and check every asserted metric

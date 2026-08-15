@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.203.0] — 2026-08-15
+
+**Tilføjet — et "genbrug et tidligere CV?"-hint i CV Studio.**
+
+### Tilføjet
+- Når du åbner et gemt jobopslag i **CV Studio**, sammenligner appen det nu med dine andre gemte opslag (deterministisk ordoverlap, **nul tokens**) og fortæller, om det nærmeste er nok til at **genbruge** det tilpassede CV, genbruge det **med rettelser** eller **tilpasse et nyt** — så du ikke genskaber fra bunden til en rolle, du allerede har målrettet.
+
+### Noter
+- Ny skrivebeskyttet `GET /api/jds/:name/reuse` relæer forældreprojektets `jd-similarity.mjs` (Jaccard-overlap + et senioritetsvagt; JSON `{decision, score, reason}`) én gang per tidligere opslag (fan-out begrænset til 25, bedste match vinder); fejler blødt med `{available:false}`, hvis scriptet eller tidligere opslag mangler. `tests/jd-similarity-reuse-route.test.mjs`. Suite: **2594**.
+
+
 ## [1.202.0] — 2026-08-15
 
 **Tilføjet — find en virksomheds ATS-jobboard fra #/portals og begynd at følge det.**

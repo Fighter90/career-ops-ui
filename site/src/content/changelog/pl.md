@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.203.0] — 2026-08-15
+
+**Dodano — podpowiedź „użyć ponownie wcześniejszego CV?" w CV Studio.**
+
+### Dodano
+- Po otwarciu zapisanej oferty w **CV Studio** aplikacja porównuje ją teraz z innymi zapisanymi ofertami (deterministyczne nakładanie słów, **zero tokenów**) i mówi, czy najbliższa jest na tyle podobna, by **użyć ponownie** tego dopasowanego CV, użyć go **z poprawkami** albo **przygotować nowe** — byś nie tworzył od zera dla roli, którą już celowałeś.
+
+### Uwagi
+- Nowa tylko-do-odczytu `GET /api/jds/:name/reuse` przekazuje `jd-similarity.mjs` z projektu nadrzędnego (nakładanie Jaccarda + strażnik seniority; JSON `{decision, score, reason}`) raz na każdą wcześniejszą ofertę (fan-out ograniczony do 25, wygrywa najlepsze); miękka awaria `{available:false}`, gdy brak skryptu lub wcześniejszych ofert. `tests/jd-similarity-reuse-route.test.mjs`. Zestaw: **2594**.
+
+
 ## [1.202.0] — 2026-08-15
 
 **Dodano — znajdź tablicę ATS firmy z poziomu #/portals i zacznij ją śledzić.**

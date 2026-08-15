@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.203.0] — 2026-08-15
+
+**Eklendi — CV Studio'da "önceki bir CV'yi yeniden kullan?" ipucu.**
+
+### Eklendi
+- **CV Studio**'da kayıtlı bir ilanı açtığınızda, uygulama artık onu diğer kayıtlı ilanlarınızla karşılaştırır (belirlenimci sözcük örtüşmesi, **sıfır token**) ve en yakınının o uyarlanmış CV'yi **yeniden kullanmaya**, **düzeltmelerle** yeniden kullanmaya yetip yetmediğini ya da **yeni bir tane uyarlamanız** gerektiğini söyler — böylece zaten hedeflediğiniz bir rol için sıfırdan başlamazsınız.
+
+### Notlar
+- Yeni salt okunur `GET /api/jds/:name/reuse`, üst projenin `jd-similarity.mjs`'sini (Jaccard örtüşmesi + kıdem koruması; JSON `{decision, score, reason}`) her önceki ilan için bir kez aktarır (fan-out 25 ile sınırlı, en iyisi kazanır); betik veya önceki ilanlar yoksa `{available:false}` ile yumuşak başarısızlık. `tests/jd-similarity-reuse-route.test.mjs`. Takım: **2594**.
+
+
 ## [1.202.0] — 2026-08-15
 
 **Eklendi — bir şirketin ATS iş panosunu #/portals'tan keşfedin ve izlemeye başlayın.**

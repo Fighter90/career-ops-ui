@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.203.0] — 2026-08-15
+
+**Adicionado — uma dica "reutilizar um CV anterior?" no CV Studio.**
+
+### Adicionado
+- Ao abrir uma vaga salva no **CV Studio**, o app agora a compara com suas outras vagas salvas (sobreposição de palavras determinística, **zero tokens**) e diz se a mais parecida basta para **reutilizar** aquele CV adaptado, reutilizá-lo **com ajustes** ou **adaptar um novo** — para você não regerar do zero uma vaga que já trabalhou.
+
+### Notas
+- Nova rota somente leitura `GET /api/jds/:name/reuse` que faz relay de `jd-similarity.mjs` do projeto pai (sobreposição Jaccard + guarda de senioridade; JSON `{decision, score, reason}`) uma vez por vaga anterior (fan-out limitado a 25, a melhor vence); à prova de falhas `{available:false}` se faltar o script ou vagas anteriores. `tests/jd-similarity-reuse-route.test.mjs`. Conjunto: **2594**.
+
+
 ## [1.202.0] — 2026-08-15
 
 **Adicionado — descubra o quadro ATS de uma empresa em #/portals e comece a rastreá-lo.**

@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.203.0] — 2026-08-15
+
+**Aggiunto — un suggerimento "riutilizzare un CV precedente?" in CV Studio.**
+
+### Aggiunto
+- Quando apri un annuncio salvato in **CV Studio**, l'app ora lo confronta con i tuoi altri annunci salvati (sovrapposizione di parole deterministica, **zero token**) e ti dice se il più simile basta per **riutilizzare** quel CV su misura, riutilizzarlo **con modifiche** o **prepararne uno nuovo** — così non riparti da zero per un ruolo già mirato.
+
+### Note
+- Nuova rotta di sola lettura `GET /api/jds/:name/reuse` che inoltra `jd-similarity.mjs` del progetto padre (sovrapposizione Jaccard + guardia di seniority; JSON `{decision, score, reason}`) una volta per annuncio precedente (fan-out limitato a 25, vince il migliore); fallimento morbido `{available:false}` se mancano lo script o gli annunci precedenti. `tests/jd-similarity-reuse-route.test.mjs`. Suite: **2594**.
+
+
 ## [1.202.0] — 2026-08-15
 
 **Aggiunto — scopri la bacheca ATS di un'azienda da #/portals e inizia a seguirla.**
