@@ -461,6 +461,10 @@ wykonują mały prompt (≤256 tokenów wyjściowych), więc wydajesz zasadniczo
 nic, potwierdzając, że klucz jest poprawnie podłączony. Zwraca
 ~200-znakową próbkę po sukcesie.
 
+### Doktor konfiguracji — wykryj niekompletne CV lub profil
+
+Zakładka **Doktor konfiguracji** na `#/config` uruchamia kontrolę tylko do odczytu, czy Twoje `cv.md` i `config/profile.yml` są faktycznie wypełnione, oraz ostrzega, gdy pozostały dane przykładowe lub placeholdery, albo zaszyte na sztywno metryki w plikach promptów (`modes/_shared.md`, `modes/_writing.md`, `batch/batch-prompt.md`). Rozdziela **błędy** (brakuje czegoś, czego potrzebuje potok, np. brak `cv.md`) od **ostrzeżeń** (nadal są dane przykładowe, zbyt krótkie CV, podejrzana metryka). Nic nie zapisuje i niczego nigdzie nie wysyła — tylko czyta i raportuje. Naciśnij **Sprawdź ponownie** po edycji tych plików. W samodzielnej instalacji bez projektu nadrzędnego zakładka pokazuje zamiast tego wyszarzony wiersz „niedostępne”.
+
 ---
 
 ## 3. Profil (`#/profile` — dostępny też jako `#/settings`)
@@ -817,6 +821,10 @@ bo literalna linia `russian_portals:` jest już tam). Angielskie
 sekcje NIE są automatycznie wstrzykiwane; pochodzą z
 `templates/portals.example.yml`, który skopiowałeś zgodnie z kanonicznym bootstrapem
 powyżej.
+
+### Odkryj tablicę ATS firmy
+
+Na górze `#/portals` jest pole **Odkryj tablicę ATS**. Wpisz nazwę firmy (na przykład „Stripe”), a aplikacja sonduje Greenhouse, Ashby i Lever w poszukiwaniu publicznej tablicy ofert pod tą nazwą — tylko do odczytu, bez AI, bez przeglądarki. Dla każdego dostawcy, który ma tablicę *i* wystawia teraz co najmniej jedną otwartą ofertę, dostajesz dopasowanie z dostawcą, adresem URL kariery i liczbą otwartych ofert. Naciśnij **Dodaj do śledzonych**, a ta tablica zostanie dopisana do `tracked_companies:` w Twoim `portals.yml`, więc od następnego skanu skaner zacznie ją obserwować. Duplikaty są wykrywane (zobaczysz „Już śledzona”), a dodać można tylko znane hosty ATS — dowolne adresy URL są odrzucane. Sondowane są tylko Greenhouse, Ashby i Lever; firma na innym portalu lub bez ofert wystawionych właśnie teraz nie pokaże dopasowania.
 
 ---
 
@@ -1184,6 +1192,17 @@ Każdy filtr resetuje paginator do strony 1. 25 wierszy na stronę.
 reportSlug?, notes?, date? }`. Dedup według `(company, role)`
 bez rozróżnienia wielkości liter. Z interfejsu, strona Evaluate oferuje przycisk „Add to
 tracker" po pomyślnym ocenieniu.
+
+### „Wciąż aktywna?” — sprawdź, czy oferta ATS jest nadal otwarta
+
+Każdy śledzony wiersz odsyłający do oferty hostowanej w ATS (Greenhouse, Lever, Ashby, Workday lub SmartRecruiters) dostaje mały przycisk **Wciąż aktywna?**. Kliknij, a aplikacja zapyta własny publiczny endpoint JSON tego ATS, czy oferta nadal istnieje — bez przeglądarki, bez tokenów AI, nic nie jest zapisywane. Otrzymasz jedną z trzech odznak:
+
+- **Aktywna** — oferta wciąż jest na liście.
+- **Wygasła** — ATS zwrócił jednoznaczne „usunięto” (HTTP 404/410), więc ofertę zdjęto.
+- **Nieznane** — kontrola nie była rozstrzygająca (URL nie jest rozpoznaną ofertą ATS albo API było ograniczane, przekroczyło limit czasu lub odpowiedziało niejednoznacznie).
+
+Kontrola jest celowo zachowawcza: mówi **Wygasła** tylko przy wyraźnym 404/410, nigdy na domysł, więc nigdy nie odstraszy Cię od stanowiska, które w rzeczywistości jest wciąż otwarte. Publiczne API Lever traktowane jest jako nieautorytatywne (ukrywa część ofert poufnych), więc takie przypadki dają **Nieznane**, a nie Wygasła.
+
 ---
 
 ## 12. Pogłębiony research (`#/deep`)
@@ -2015,6 +2034,16 @@ Zanim udostępnisz swoje CV jako próbkę pisma lub zrzut ekranu, **Maska prywat
 
 Wklej sztywne zdanie lub akapit — ten rodzaj generycznego sformułowania AI, które brzmi jak gotowiec — a **Uczłowiecz to** przepisze je twoim *własnym* głosem. Przepisanie jest osadzone po stronie serwera w twoim `voice-dna.md` (jak czyta się twoje pisanie) i twoich `writing-samples/` (twoja prawdziwa proza). Twarda zasada: może zmieniać kolejność, zwięźlej ujmować i przestrajać głos, ale **nigdy** nie wprowadzi faktu, metryki ani osiągnięcia, którego nie ma już we wklejonym tekście. Z kluczem LLM przepisuje na żywo; bez klucza wręcza ci gotowy prompt do wklejenia w dowolny asystent. Następnie edytuj swoje CV na stronie `#/cv` jak zwykle — CV Studio sugeruje, ty decydujesz.
 
+### Podpowiedź „Użyć ponownie dawnego CV?”
+
+Gdy wybierzesz zapisany opis stanowiska w CV Studio, wyszarzona jednoliniowa podpowiedź mówi, czy dopasowałeś już CV do podobnej roli. Aplikacja porównuje wybrany opis z Twoimi innymi zapisanymi opisami (deterministyczny wynik nakładania się słów plus kontrola poziomu stanowiska — bez AI, nic nie zapisywane) i pokazuje jedno najlepsze dopasowanie jako jeden z trzech werdyktów:
+
+- **użyj ponownie** — bardzo podobne do zapisanego opisu; prawdopodobnie użyjesz tamtego CV bez zmian.
+- **użyj ponownie z poprawkami** — podobne; użyj tamtego CV, ale je dopracuj.
+- **wygeneruj od nowa** — brak zbliżonego zapisanego opisu, więc dopasuj świeże CV.
+
+Podpowiedź pojawia się automatycznie, gdy masz co najmniej dwa zapisane opisy, i odświeża się, gdy zmienisz wybrany opis. To tylko zachęta — nigdy nie zmienia Twojego CV ani opisów.
+
 ## 25. Pamięć (`#/memory`)
 
 Każda inna strona za każdym razem zaczyna od zera. **Pamięć** (otwórz ją z **Konfiguracja → Pamięć 🧠** na pasku bocznym) to jedyne miejsce, w którym mówisz asystentowi coś *raz* i to zostaje. Przechowuje krótką, edytowalną notatkę w stylu „zapamiętaj to o mnie", która jest wstawiana do **każdego** zapytania do AI.
@@ -2058,6 +2087,10 @@ Karta **Trend ról docelowych** to pierwotny widok: liczba ofert i mediana wynag
 ### Łącznie i wynagrodzenia
 
 Zakładka **Łącznie** (v1.118.0) przekazuje w trybie tylko do odczytu dwa skrypty rodzica o zerowym koszcie tokenów: `stats.mjs` — łączne zestawienie trackera, skumulowane wskaźniki lejka (odpowiedzi / rozmowy / oferty), wyniki skanera i pokrycie portali — oraz `salary-gap.mjs` — wynagrodzenie oczekiwane vs ogłoszone vs rzeczywiste per aplikacja, scalone z Machine Summary raportów i `data/salary-observations.tsv`. Małe próby są oznaczane jako orientacyjne; bez projektu nadrzędnego zakładka pokazuje uczciwą notkę.
+
+### Dziennik samooceny umiejętności (`#/assessments`)
+
+`#/assessments` to prosty dziennik ocen umiejętności, które przechodzisz — test kodowania na platformie firmy, zadanie domowe, quiz certyfikacyjny. Zapisz jedno zdarzenie — **firma**, **platforma**, **umiejętność**, opcjonalny **próg %** zaliczenia i Twój **wynik %**, plus notatka tekstowa — a zostanie dopisane, po jednym wierszu na zdarzenie, do `data/assessments.tsv` w projekcie nadrzędnym. Strona wypisuje też wszystko, co zapisałeś, i zbiera to według platformy, byś widział postępy w czasie. To jawny zapis, który sam uruchamiasz; gdy projektu nadrzędnego nie ma, strona pokazuje wyszarzony wiersz „niedostępne”.
 
 ## 27. Plan kariery (`#/career-plan`)
 

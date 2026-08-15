@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.206.0] — 2026-08-15
+
+**Dokumentacja — wbudowany przewodnik pomocy obejmuje teraz pięć najnowszych funkcji we wszystkich 17 językach.**
+
+### Dodano
+- Wbudowany przewodnik pomocy — oraz asystent „Zapytaj pomoc", który odpowiada na jego podstawie — dokumentuje teraz pięć niedawno dodanych funkcji: **Doktor konfiguracji** (Ustawienia — sprawdza CV i profil pod kątem braków i pozostawionych danych przykładowych), **Znajdź tablice ATS** (Portale — automatycznie znajduje tablicę ofert firmy), sprawdzenie **„nadal aktualne?"** (Śledzenie — czy oferta jest wciąż otwarta), podpowiedź **„użyć ponownie starego CV?"** (CV Studio — sygnalizuje, gdy dopasowane wcześniej CV pasuje do nowej oferty) oraz **Dziennik umiejętności** (Analityka — zapis wyników samooceny). Pięć nowych podsekcji, przetłumaczonych na wszystkie 17 języków.
+
+### Uwagi
+- Struktura przewodnika rośnie do 31 H2 / 118 H3, z gwarancją parytetu w każdym języku. Zaktualizowano dokumentację referencyjną: `docs/architecture/API.md` opisuje pięć tras tych funkcji, a liczniki tras/wersji w `CLAUDE.md` i `docs/sdd/CONVENTIONS.md` są aktualne (36 modułów tras). Zestaw: **2610**.
+
+
+
 ## [1.205.0] — 2026-08-15
 
 **Dodano — dziennik umiejętności do zapisu wyników testów/ocen.**

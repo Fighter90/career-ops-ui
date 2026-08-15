@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.206.0] — 2026-08-15
+
+**Documentation — the in-app help guide now covers the five newest features, in all 17 languages.**
+
+### Added
+- The built-in help guide — and the "Ask the docs" assistant that answers from it — now documents five recently shipped features: **Setup doctor** (Settings — checks your CV & profile for gaps and leftover example data), **Discover ATS boards** (Portals — find a company's careers board automatically), the **"still live?" check** (Tracker — whether a posting is still open), the **"reuse a past CV?" hint** (CV Studio — flags when a previously tailored CV already fits a new job), and the **Skills log** (Analytics — record self-assessment scores). Five new subsections, translated across all 17 languages.
+
+### Notes
+- Help-guide structure grows to 31 H2 / 118 H3, parity-gated across every locale. Reference docs refreshed: `docs/architecture/API.md` documents the five routes behind these features, and the route/version counters in `CLAUDE.md` and `docs/sdd/CONVENTIONS.md` are current (36 route modules). Suite: **2610**.
+
+
+
 ## [1.205.0] — 2026-08-15
 
 **Added — a Skills log to record practice-test / assessment results.**

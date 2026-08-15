@@ -471,6 +471,10 @@ nothing while confirming the key is wired up correctly. Returns a
 
 **Appearance — company logos.** The **Appearance** card has one toggle: **Show company logos in the scan table**. Off by default. When on, each scan row shows the company's logo — its **favicon fetched from its own domain** and proxied through the server (`/api/logo`), so no third-party logo service ever learns which employers you're viewing. Postings hosted on a shared job board (Greenhouse, Lever, Ashby, …) show a coloured **letter badge** instead of the board's icon, and any logo that fails to load falls back to the same badge. It's purely cosmetic — nothing is written and no CV/profile data is involved.
 
+### Setup doctor — spot an incomplete CV or profile
+
+The **Setup doctor** tab on `#/config` runs a read-only check that your `cv.md` and `config/profile.yml` are actually filled in — and warns when leftover example or placeholder data, or hardcoded metrics in your prompt files (`modes/_shared.md`, `modes/_writing.md`, `batch/batch-prompt.md`), slip through. It separates **errors** (something the pipeline needs is missing, such as no `cv.md`) from **warnings** (example data still present, a CV that looks too short, a suspicious metric). Nothing is written and nothing is sent anywhere — it only reads and reports. Press **Re-run check** after you edit those files. On a standalone install without the parent project, the tab shows a muted "not available" line instead.
+
 ---
 
 ## 3. Profile (`#/profile` — also reachable as `#/settings`)
@@ -887,6 +891,10 @@ column is stripped when the pipeline is read back), the cell is sanitized so it
 can't inject a row or a spreadsheet formula, and existing bare-URL pipelines
 keep working unchanged.
 
+### Discover a company's ATS board
+
+At the top of `#/portals` there is a **Discover ATS board** box. Type a company name (for example "Stripe") and the app probes Greenhouse, Ashby, and Lever for a public job board under that name — read-only, no AI, no browser. For every vendor that has a board *and* currently lists at least one open role you get a match showing the vendor, the careers URL, and the open-role count. Press **Add to tracked** and that board is appended to `tracked_companies:` in your `portals.yml`, so the scanner starts watching it from the next scan. Duplicates are detected (you will see "Already tracked") and only known ATS hosts can be added — arbitrary URLs are refused. Only Greenhouse, Ashby, and Lever are probed; a company on another portal, or one with no jobs posted right now, will not show a match.
+
 ---
 
 ## 6. Health (`#/health`)
@@ -1274,6 +1282,16 @@ Every filter resets the paginator to page 1. 25 rows per page.
 reportSlug?, notes?, date? }`. Dedup by `(company, role)`
 case-insensitive. From the UI, the Evaluate page offers an "Add to
 tracker" button after a successful score.
+
+### "Still live?" — check whether an ATS posting is still open
+
+Every tracked row that links to an ATS-hosted posting (Greenhouse, Lever, Ashby, Workday, or SmartRecruiters) gets a small **Still live?** button. Click it and the app asks that ATS's own public JSON endpoint whether the posting is still up — no browser, no AI tokens, nothing is saved. You get one of three badges:
+
+- **Live** — the posting is still listed.
+- **Expired** — the ATS returned a definitive "gone" (HTTP 404/410), so the role was pulled.
+- **Unknown** — the check was inconclusive (the URL is not a recognized ATS posting, or the API was rate-limited, timed out, or answered ambiguously).
+
+The check is deliberately conservative: it only says **Expired** on a hard 404/410, never on a guess, so it will never scare you off a role that is actually still open. Lever's public API is treated as non-authoritative (it hides some confidential postings), so those resolve to **Unknown** rather than Expired.
 
 ---
 
@@ -2111,6 +2129,16 @@ Paste a stiff line or paragraph — the kind of generic AI phrasing that reads a
 
 **Tailor to a job.** Paste a job description into the **Tailor to a job** card and CV Studio produces a **résumé tailored to that posting plus a matching cover letter**, then runs both through a **recruiter-grade checklist gate** before it hands them over. The mechanic is distilled from career-coaching practice into generic rules — a recruiter reads in seconds, so relevant experience goes to the top, the headline matches the vacancy's role, results carry specific numbers, and the cover letter stays a short teaser with a single "requirement ↔ your matching fact" bridge. The checklist reports each item as PASS/FAIL: **errors block** (they're fixed before you see the result), **warnings advise**. Everything is grounded only in your own CV, profile, and two-pager — it reorders and reframes what you already have but **never fabricates** an employer, metric, or claim. With an LLM key it runs live; with no key you get the ready-to-run prompt. Optionally type a target role/headline to steer it. Export the result as Markdown, PDF, or DOCX with the buttons on the result card.
 
+### "Reuse a past CV?" hint
+
+When you pick a saved job description in CV Studio, a muted one-line hint tells you whether you have already tailored a CV for a similar role. The app compares the selected JD against your other saved JDs (a deterministic word-overlap score plus a seniority guard — no AI, nothing saved) and surfaces the single best match as one of three verdicts:
+
+- **reuse** — very similar to a saved JD; you can likely reuse that CV as-is.
+- **reuse with edits** — similar; reuse that CV but touch it up.
+- **regenerate** — no closely similar saved JD, so tailor a fresh CV.
+
+The hint appears automatically once you have at least two saved JDs, and refreshes when you switch the selected JD. It is a nudge only — it never changes your CV or your JDs.
+
 ## 25. Memory (`#/memory`)
 
 Every other page starts fresh each time. **Memory** (open it from **Setup → Memory 🧠** in the sidebar) is the one place you tell the assistant something *once* and have it stick. It holds a short, editable "remember this about me" note that is fed into **every** AI request.
@@ -2154,6 +2182,10 @@ The **Target-role trend** tab is the original view: vacancy counts and median sa
 ### Lifetime & compensation
 
 The **Lifetime** tab (v1.118.0) relays two zero-token parent scripts, read-only: `stats.mjs` — your lifetime tracker roll-up, cumulative funnel rates (response / interview / offer), scanner totals, and portal coverage — and `salary-gap.mjs` — desired vs advertised vs actual compensation per application, folded from report Machine Summaries and `data/salary-observations.tsv`. Small samples are labelled as indicative; without the parent project the tab shows an honest note.
+
+### Skills self-assessment log (`#/assessments`)
+
+`#/assessments` is a simple log for skills assessments you take — a coding test on a company's platform, a take-home, a certification quiz. Record one event — the **company**, the **platform**, the **skill**, an optional pass **threshold %** and your **score %**, plus a free-text note — and it is appended, one row per event, to `data/assessments.tsv` in the parent project. The page also lists everything you have logged and rolls it up by platform so you can see how you are doing over time. It is an explicit write that you trigger; when the parent project is not present the page shows a muted "not available" line.
 
 ## 27. Career plan (`#/career-plan`)
 

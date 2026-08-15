@@ -12,11 +12,11 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.205.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.205.0)
+[![release](https://img.shields.io/badge/release-v1.206.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.206.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.205.0** — **Journal de compétences** — consignez une auto-évaluation (entreprise, plateforme, compétence, score %, note) dans Analytique → Journal de compétences ; ajouté à `data/assessments.tsv` avec la liste des entrées précédentes. Sans token ; écriture protégée contre les caractères de contrôle (pas d'injection TSV). **2610 tests.**
+> **🆕 Dernière version — v1.206.0** — **Aide intégrée mise à jour** — le guide d'aide (et l'assistant « Demander à l'aide ») couvre désormais les cinq fonctionnalités les plus récentes — Docteur de configuration, Découvrir les tableaux ATS, la vérification « toujours en ligne ? », l'astuce « réutiliser un ancien CV ? » et le Journal de compétences — dans les 17 langues. **2610 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

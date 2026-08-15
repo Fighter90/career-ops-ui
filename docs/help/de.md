@@ -502,6 +502,10 @@ Ausgabe), sodass Sie praktisch nichts ausgeben, während Sie bestätigen,
 dass der Schlüssel korrekt verdrahtet ist. Gibt bei Erfolg eine
 Stichprobe von ~200 Zeichen zurück.
 
+### Setup-Doktor — ein unvollständiges CV oder Profil erkennen
+
+Der Tab **Setup-Doktor** auf `#/config` führt eine reine Lesekontrolle durch, ob deine `cv.md` und `config/profile.yml` tatsächlich ausgefüllt sind, und warnt, wenn übrig gebliebene Beispiel- oder Platzhalterdaten oder fest verdrahtete Kennzahlen in deinen Prompt-Dateien (`modes/_shared.md`, `modes/_writing.md`, `batch/batch-prompt.md`) durchrutschen. Er trennt **Fehler** (etwas, das die Pipeline braucht, fehlt, z. B. keine `cv.md`) von **Warnungen** (Beispieldaten noch vorhanden, ein zu kurz wirkendes CV, eine verdächtige Kennzahl). Nichts wird geschrieben und nichts irgendwohin gesendet — er liest und berichtet nur. Drücke **Erneut prüfen**, nachdem du diese Dateien bearbeitet hast. Bei einer eigenständigen Installation ohne das Elternprojekt zeigt der Tab stattdessen eine gedämpfte Zeile „nicht verfügbar“.
+
 ---
 
 ## 3. Profil (`#/profile` — auch erreichbar als `#/settings`)
@@ -940,6 +944,10 @@ Zelle wird bereinigt, sodass sie keine Zeile oder Tabellenkalkulationsformel
 einschleusen kann, und bestehende Nur-URL-Pipelines funktionieren unverändert
 weiter.
 
+### Das ATS-Board eines Unternehmens entdecken
+
+Oben auf `#/portals` gibt es ein Feld **ATS-Board entdecken**. Gib einen Firmennamen ein (zum Beispiel „Stripe“), und die App sondiert Greenhouse, Ashby und Lever nach einem öffentlichen Jobboard unter diesem Namen — schreibgeschützt, ohne KI, ohne Browser. Für jeden Anbieter, der ein Board hat *und* aktuell mindestens eine offene Stelle listet, erhältst du einen Treffer mit Anbieter, Karriere-URL und der Zahl offener Stellen. Drücke **Zu verfolgten hinzufügen**, und dieses Board wird an `tracked_companies:` in deiner `portals.yml` angehängt, sodass der Scanner es ab dem nächsten Scan beobachtet. Duplikate werden erkannt (du siehst „Bereits verfolgt“), und nur bekannte ATS-Hosts lassen sich hinzufügen — beliebige URLs werden abgelehnt. Es werden nur Greenhouse, Ashby und Lever sondiert; ein Unternehmen auf einem anderen Portal oder ohne aktuell ausgeschriebene Stellen zeigt keinen Treffer.
+
 ---
 
 ## 6. Health (`#/health`)
@@ -1354,6 +1362,16 @@ Jeder Filter setzt den Paginator auf Seite 1 zurück. 25 Zeilen pro Seite.
 reportSlug?, notes?, date? }`. Dedup nach `(company, role)`
 Groß-/Kleinschreibungs-unabhängig. Aus der UI bietet die Evaluate-Seite
 nach einer erfolgreichen Bewertung eine „Add to tracker"-Schaltfläche.
+
+### „Noch aktiv?“ — prüfen, ob eine ATS-Anzeige noch offen ist
+
+Jede verfolgte Zeile, die auf eine ATS-gehostete Anzeige verlinkt (Greenhouse, Lever, Ashby, Workday oder SmartRecruiters), erhält einen kleinen Button **Noch aktiv?**. Klick darauf, und die App fragt den eigenen öffentlichen JSON-Endpunkt dieses ATS, ob die Anzeige noch steht — ohne Browser, ohne KI-Tokens, nichts wird gespeichert. Du bekommst eines von drei Abzeichen:
+
+- **Aktiv** — die Anzeige ist noch gelistet.
+- **Abgelaufen** — das ATS meldete ein definitives „weg“ (HTTP 404/410), die Stelle wurde also zurückgezogen.
+- **Unbekannt** — die Prüfung war nicht eindeutig (die URL ist keine erkannte ATS-Anzeige, oder das API war rate-begrenzt, lief in ein Timeout oder antwortete mehrdeutig).
+
+Die Prüfung ist bewusst konservativ: Sie sagt **Abgelaufen** nur bei einem klaren 404/410, nie auf Verdacht, sodass sie dich nie von einer Stelle abschreckt, die in Wahrheit noch offen ist. Levers öffentliches API gilt als nicht maßgeblich (es verbirgt manche vertraulichen Anzeigen), daher landen solche Fälle bei **Unbekannt** statt Abgelaufen.
 
 ---
 
@@ -2213,6 +2231,16 @@ Bevor du deinen Lebenslauf als Schreibprobe oder Screenshot teilst, schwärzt di
 
 Füge einen steifen Satz oder Absatz ein — die Art generischer KI-Formulierung, die wie Standardtext klingt — und **Menschlich machen** schreibt ihn in *deiner* Stimme um. Das Umschreiben ist serverseitig in deiner `voice-dna.md` (wie sich dein Schreiben liest) und deinen `writing-samples/` (deine echte Prosa) verankert. Die harte Regel: Es darf umsortieren, straffen und die Stimme anpassen, aber es wird **niemals** einen Fakt, eine Kennzahl oder eine Leistung einführen, die nicht bereits im eingefügten Text steht. Mit einem LLM-Schlüssel schreibt es live um; ohne Schlüssel gibt es dir einen fertigen Prompt zum Einfügen in einen beliebigen Assistenten. Bearbeite deinen Lebenslauf danach wie gewohnt auf der Seite `#/cv` — das CV Studio schlägt vor, du entscheidest.
 
+### Hinweis „Ein früheres CV wiederverwenden?“
+
+Wenn du im CV Studio eine gespeicherte Stellenbeschreibung auswählst, sagt dir ein gedämpfter Einzeiler-Hinweis, ob du bereits ein CV für eine ähnliche Rolle zugeschnitten hast. Die App vergleicht die ausgewählte Beschreibung mit deinen anderen gespeicherten Beschreibungen (ein deterministischer Wort-Überlappungswert plus eine Senioritätsprüfung — ohne KI, nichts gespeichert) und hebt den einen besten Treffer als eines von drei Urteilen hervor:
+
+- **wiederverwenden** — sehr ähnlich zu einer gespeicherten Beschreibung; du kannst jenes CV wahrscheinlich unverändert wiederverwenden.
+- **mit Änderungen wiederverwenden** — ähnlich; verwende jenes CV wieder, aber feile daran.
+- **neu erzeugen** — keine eng ähnliche gespeicherte Beschreibung, also schneide ein frisches CV zu.
+
+Der Hinweis erscheint automatisch, sobald du mindestens zwei gespeicherte Beschreibungen hast, und aktualisiert sich, wenn du die ausgewählte Beschreibung wechselst. Er ist nur ein Anstoß — er ändert nie dein CV oder deine Beschreibungen.
+
 ## 25. Gedächtnis (`#/memory`)
 
 Jede andere Seite beginnt jedes Mal von vorn. Das **Gedächtnis** (öffne es über **Einrichtung → Gedächtnis 🧠** in der Seitenleiste) ist der einzige Ort, an dem du dem Assistenten etwas *einmal* sagst und es haften bleibt. Es enthält eine kurze, bearbeitbare Notiz nach dem Motto „merke dir das über mich", die in **jede** KI-Anfrage eingespeist wird.
@@ -2256,6 +2284,10 @@ Der Reiter **Zielrollen-Trend** ist die ursprüngliche Ansicht: Stellenzahlen un
 ### Gesamt & Vergütung
 
 Der **Gesamt**-Tab (v1.118.0) reicht zwei Zero-Token-Skripte des Parents read-only weiter: `stats.mjs` — die Gesamtübersicht deines Trackers, kumulierte Funnel-Quoten (Antwort / Interview / Angebot), Scanner-Gesamtzahlen und Portalabdeckung — und `salary-gap.mjs` — gewünschte vs. ausgeschriebene vs. tatsächliche Vergütung pro Bewerbung, zusammengeführt aus den Machine Summaries der Berichte und `data/salary-observations.tsv`. Kleine Stichproben werden als Richtwerte gekennzeichnet; ohne das übergeordnete Projekt zeigt der Tab einen ehrlichen Hinweis.
+
+### Skill-Selbsteinschätzungs-Log (`#/assessments`)
+
+`#/assessments` ist ein einfaches Log für die Skill-Assessments, die du ablegst — ein Coding-Test auf der Plattform eines Unternehmens, eine Hausaufgabe, ein Zertifizierungsquiz. Erfasse ein Ereignis — das **Unternehmen**, die **Plattform**, den **Skill**, einen optionalen Bestehens-**Schwellenwert %** und deine **Punktzahl %**, dazu eine Freitext-Notiz — und es wird, eine Zeile pro Ereignis, an `data/assessments.tsv` im Elternprojekt angehängt. Die Seite listet außerdem alles Erfasste auf und aggregiert es nach Plattform, damit du deine Entwicklung über die Zeit siehst. Es ist ein expliziter Schreibvorgang, den du auslöst; wenn das Elternprojekt fehlt, zeigt die Seite eine gedämpfte Zeile „nicht verfügbar“.
 
 ## 27. Karriereplan (`#/career-plan`)
 

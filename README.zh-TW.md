@@ -12,11 +12,11 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.205.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.205.0)
+[![release](https://img.shields.io/badge/release-v1.206.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.206.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.205.0** — **技能日誌** — 在分析 → 技能日誌中記錄一次自評（公司、平台、技能、分數 %、備註）；附加到 `data/assessments.tsv` 並列出歷史記錄。零 token；寫入有控制字元防護（無 TSV 注入）。 **2610 項測試。**
+> **🆕 最新版本 — v1.206.0** — **應用程式內說明已更新** — 說明指南（及「問說明」助手）現已用全部 17 種語言涵蓋最新的五項功能 — 設定體檢、探索 ATS 招募板、「還在招嗎?」檢查、「重用舊履歷?」提示和技能日誌。 **2610 項測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

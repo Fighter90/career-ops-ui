@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.206.0] — 2026-08-15
+
+**Belgeler — uygulama içi yardım kılavuzu artık en yeni beş özelliği 17 dilin tamamında kapsıyor.**
+
+### Eklendi
+- Yerleşik yardım kılavuzu — ve ona dayanarak yanıt veren «Yardıma sor» asistanı — artık yakın zamanda eklenen beş özelliği belgeliyor: **Kurulum doktoru** (Ayarlar — CV ve profilinizi eksikler ve kalan örnek veriler için denetler), **ATS panolarını keşfet** (Portallar — bir şirketin kariyer panosunu otomatik bulur), **«hâlâ açık mı?» denetimi** (Takip — ilanın hâlâ açık olup olmadığı), **«önceki CV'yi yeniden kullan?» ipucu** (CV Stüdyo — daha önce uyarlanmış bir CV yeni ilana uyduğunda bildirir) ve **Beceri günlüğü** (Analitik — öz değerlendirme puanlarını kaydet). Beş yeni alt bölüm, 17 dilin tamamına çevrildi.
+
+### Notlar
+- Kılavuz yapısı 31 H2 / 118 H3'e büyür, her dilde parite güvence altında. Başvuru belgeleri güncellendi: `docs/architecture/API.md` bu özelliklerin beş rotasını belgeliyor ve `CLAUDE.md` ile `docs/sdd/CONVENTIONS.md` içindeki rota/sürüm sayaçları güncel (36 rota modülü). Takım: **2610**.
+
+
+
 ## [1.205.0] — 2026-08-15
 
 **Eklendi — sınav/değerlendirme sonuçlarını kaydeden bir Beceri günlüğü.**
