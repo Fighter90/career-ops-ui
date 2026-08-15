@@ -12,11 +12,11 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.205.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.205.0)
+[![release](https://img.shields.io/badge/release-v1.206.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.206.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.205.0** — **Skill-Log** — halte eine Selbsteinschätzung (Firma, Plattform, Skill, Score %, Notiz) unter Analyse → Skill-Log fest; wird an `data/assessments.tsv` angehängt und listet frühere Einträge. Tokenfrei; Schreiben ist steuerzeichen-geschützt (keine TSV-Injektion). **2610 Tests.**
+> **🆕 Neueste Version — v1.206.0** — **Integrierte Hilfe aktualisiert** — der Hilfe-Guide (und der «Hilfe fragen»-Assistent) deckt jetzt die fünf neuesten Funktionen ab — Setup-Doktor, ATS-Boards finden, die «noch offen?»-Prüfung, den «früheres CV wiederverwenden?»-Hinweis und das Skill-Log — in allen 17 Sprachen. **2610 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

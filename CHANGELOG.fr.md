@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.206.0] — 2026-08-15
+
+**Documentation — le guide d'aide intégré couvre désormais les cinq fonctionnalités les plus récentes, dans les 17 langues.**
+
+### Ajouté
+- Le guide d'aide intégré — et l'assistant « Demander à l'aide » qui répond à partir de lui — documente désormais cinq fonctionnalités récentes : **Docteur de configuration** (Réglages — vérifie votre CV et profil pour repérer les manques et les données d'exemple oubliées), **Découvrir les tableaux ATS** (Portails — trouve automatiquement le portail carrières d'une entreprise), la vérification **« toujours en ligne ? »** (Suivi — si une offre est encore ouverte), l'astuce **« réutiliser un ancien CV ? »** (CV Studio — signale quand un CV déjà adapté convient à une nouvelle offre) et le **Journal de compétences** (Analytique — consigner des scores d'auto-évaluation). Cinq nouvelles sous-sections, traduites dans les 17 langues.
+
+### Notes
+- La structure du guide passe à 31 H2 / 118 H3, avec parité garantie dans chaque langue. Documentation de référence actualisée : `docs/architecture/API.md` documente les cinq routes de ces fonctionnalités, et les compteurs de routes/version dans `CLAUDE.md` et `docs/sdd/CONVENTIONS.md` sont à jour (36 modules de route). Suite : **2610**.
+
+
+
 ## [1.205.0] — 2026-08-15
 
 **Ajouté — un Journal de compétences pour consigner les résultats de tests/évaluations.**

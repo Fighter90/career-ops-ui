@@ -469,6 +469,10 @@ affyrer en lille prompt (≤256 tokens output), så du bruger stort set
 intet, mens du bekræfter, at nøglen er korrekt forbundet. Returnerer en
 ~200-tegns prøve ved succes.
 
+### Opsætningslæge — find et ufuldstændigt CV eller profil
+
+Fanen **Opsætningslæge** på `#/config` kører et skrivebeskyttet tjek af, om dine `cv.md` og `config/profile.yml` faktisk er udfyldt, og advarer, når der er efterladt eksempel- eller pladsholderdata, eller hardkodede måletal i dine promptfiler (`modes/_shared.md`, `modes/_writing.md`, `batch/batch-prompt.md`). Den adskiller **fejl** (noget, pipelinen har brug for, mangler, f.eks. intet `cv.md`) fra **advarsler** (eksempeldata er der stadig, et CV der ser for kort ud, et mistænkeligt måletal). Intet skrives, og intet sendes nogen steder hen — den læser og rapporterer kun. Tryk på **Tjek igen**, når du har redigeret de filer. På en selvstændig installation uden forældreprojektet viser fanen i stedet en dæmpet linje med "ikke tilgængelig".
+
 ---
 
 ## 3. Profile (`#/profile` — også tilgængelig som `#/settings`)
@@ -866,6 +870,10 @@ sektioner auto-injiceres IKKE; de kommer fra den
 `templates/portals.example.yml`, du kopierede per den kanoniske bootstrap
 ovenfor.
 
+### Find en virksomheds ATS-opslagstavle
+
+Øverst på `#/portals` er der en **Find ATS-tavle**-boks. Skriv et virksomhedsnavn (for eksempel "Stripe"), og appen prober Greenhouse, Ashby og Lever for en offentlig jobtavle under det navn — skrivebeskyttet, ingen AI, ingen browser. For hver leverandør, der har en tavle *og* i øjeblikket viser mindst ét åbent job, får du et match, der viser leverandøren, karriere-URL'en og antallet af åbne job. Tryk på **Føj til sporede**, og den tavle føjes til `tracked_companies:` i din `portals.yml`, så scanneren begynder at holde øje med den fra næste scanning. Dubletter opdages (du ser "Allerede sporet"), og kun kendte ATS-værter kan tilføjes — vilkårlige URL'er afvises. Kun Greenhouse, Ashby og Lever probes; en virksomhed på en anden portal eller uden opslåede job lige nu vil ikke vise et match.
+
 ---
 
 ## 6. Health (`#/health`)
@@ -1246,6 +1254,16 @@ Hvert filter nulstiller paginatoren til side 1. 25 rækker per side.
 reportSlug?, notes?, date? }`. Dedup efter `(company, role)`
 case-insensitive. Fra UI'en tilbyder Evaluate-siden en "Add to
 tracker"-knap efter en vellykket score.
+
+### "Stadig aktiv?" — tjek, om et ATS-opslag stadig er åbent
+
+Hver sporet række, der linker til et ATS-hostet opslag (Greenhouse, Lever, Ashby, Workday eller SmartRecruiters), får en lille **Stadig aktiv?**-knap. Klik, og appen spørger det pågældende ATS' eget offentlige JSON-endpoint, om opslaget stadig står — ingen browser, ingen AI-tokens, intet gemmes. Du får et af tre badges:
+
+- **Aktiv** — opslaget er stadig på listen.
+- **Udløbet** — ATS'et returnerede et definitivt "væk" (HTTP 404/410), så jobbet blev trukket.
+- **Ukendt** — tjekket var ikke entydigt (URL'en er ikke et genkendt ATS-opslag, eller API'et var rate-begrænset, fik timeout eller svarede tvetydigt).
+
+Tjekket er bevidst konservativt: det siger kun **Udløbet** ved et klart 404/410, aldrig på et gæt, så det vil aldrig skræmme dig væk fra et job, der reelt stadig er åbent. Levers offentlige API behandles som ikke-autoritativt (det skjuler nogle fortrolige opslag), så de tilfælde ender som **Ukendt** i stedet for Udløbet.
 
 ---
 
@@ -2071,6 +2089,16 @@ Før du deler dit CV som en skriveprøve eller et skærmbillede, skjuler **Priva
 
 Indsæt en stiv linje eller et afsnit — den slags generiske AI-formulering, der læses som standardtekst — og **Gør det menneskeligt** omskriver det i *din* stemme. Omskrivningen er forankret på serversiden i din `voice-dna.md` (hvordan din skrift læses) og dine `writing-samples/` (din faktiske prosa). Den hårde regel: den må omordne, stramme op og justere stemmen, men den vil **aldrig** indføre et faktum, en metrik eller en præstation, der ikke allerede står i den tekst, du indsatte. Med en LLM-nøgle omskriver den live; uden nøgle giver den dig en klar prompt til at indsætte i en hvilken som helst assistent. Rediger derefter dit CV på siden `#/cv` som sædvanligt — CV Studio foreslår, du bestemmer.
 
+### "Genbrug et tidligere CV?"-tip
+
+Når du vælger en gemt jobbeskrivelse i CV Studio, fortæller et dæmpet tip på én linje, om du allerede har skræddersyet et CV til en lignende rolle. Appen sammenligner den valgte beskrivelse med dine andre gemte beskrivelser (en deterministisk ord-overlaps-score plus et senioritetstjek — ingen AI, intet gemmes) og fremhæver det ene bedste match som en af tre domme:
+
+- **genbrug** — meget lig en gemt beskrivelse; du kan sandsynligvis genbruge det CV, som det er.
+- **genbrug med rettelser** — lignende; genbrug det CV, men pynt på det.
+- **regenerér** — ingen tæt lignende gemt beskrivelse, så skræddersy et friskt CV.
+
+Tippet vises automatisk, når du har mindst to gemte beskrivelser, og opdateres, når du skifter den valgte beskrivelse. Det er kun et puf — det ændrer aldrig dit CV eller dine beskrivelser.
+
 ## 25. Hukommelse (`#/memory`)
 
 Alle andre sider starter forfra hver gang. **Hukommelse** (åbn den fra **Opsætning → Hukommelse 🧠** i sidebjælken) er det ene sted, hvor du fortæller assistenten noget *én gang* og får det til at blive hængende. Den rummer en kort, redigerbar "husk dette om mig"-note, som fødes ind i **hver** AI-forespørgsel.
@@ -2114,6 +2142,10 @@ Fanen **Tendens for målroller** er den oprindelige visning: antal ledige stilli
 ### Samlet og løn
 
 Fanen **Samlet** (v1.118.0) relæer skrivebeskyttet to forældre-scripts uden token-omkostning: `stats.mjs` — din samlede tracker-oversigt, akkumulerede tragtrater (svar / samtale / tilbud), scannertal og portaldækning — og `salary-gap.mjs` — ønsket vs annonceret vs faktisk løn pr. ansøgning, samlet fra rapporternes Machine Summary og `data/salary-observations.tsv`. Små stikprøver markeres som vejledende; uden forældre-projektet viser fanen en ærlig note.
+
+### Log for selv-vurdering af færdigheder (`#/assessments`)
+
+`#/assessments` er en simpel log over de færdighedsvurderinger, du tager — en kodetest på en virksomheds platform, en hjemmeopgave, en certificeringsquiz. Registrér én hændelse — **virksomheden**, **platformen**, **færdigheden**, en valgfri **tærskel %** for bestået og din **score %**, plus en fritekstnote — og den føjes, én række pr. hændelse, til `data/assessments.tsv` i forældreprojektet. Siden viser også alt, hvad du har logget, og opsummerer det pr. platform, så du kan se, hvordan det går over tid. Det er en eksplicit skrivning, du udløser; når forældreprojektet ikke er til stede, viser siden en dæmpet linje med "ikke tilgængelig".
 
 ## 27. Karriereplan (`#/career-plan`)
 

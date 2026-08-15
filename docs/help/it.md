@@ -474,6 +474,10 @@ lanciano un minuscolo prompt (≤256 token in output) così spendi essenzialment
 nulla mentre confermi che la chiave è collegata correttamente. Restituisce un
 campione di ~200 caratteri in caso di successo.
 
+### Dottore di configurazione — individua un CV o profilo incompleto
+
+La scheda **Dottore di configurazione** su `#/config` esegue un controllo in sola lettura che i tuoi `cv.md` e `config/profile.yml` siano davvero compilati, e avvisa quando restano dati di esempio o segnaposto, oppure metriche scritte a mano nei tuoi file di prompt (`modes/_shared.md`, `modes/_writing.md`, `batch/batch-prompt.md`). Separa gli **errori** (manca qualcosa di cui la pipeline ha bisogno, ad esempio nessun `cv.md`) dagli **avvisi** (dati di esempio ancora presenti, un CV che sembra troppo corto, una metrica sospetta). Non scrive nulla e non invia nulla da nessuna parte — legge e riferisce soltanto. Premi **Ricontrolla** dopo aver modificato quei file. In un'installazione autonoma senza il progetto padre, la scheda mostra invece una riga attenuata "non disponibile".
+
 ---
 
 ## 3. Profile (`#/profile` — raggiungibile anche come `#/settings`)
@@ -890,6 +894,10 @@ viene rimossa quando la pipeline viene riletta), la cella è sanificata così no
 può iniettare una riga o una formula di foglio di calcolo, e le pipeline esistenti con solo URL
 continuano a funzionare invariate.
 
+### Scopri la bacheca ATS di un'azienda
+
+In cima a `#/portals` c'è un riquadro **Scopri bacheca ATS**. Digita il nome di un'azienda (per esempio "Stripe") e l'app sonda Greenhouse, Ashby e Lever alla ricerca di una bacheca di offerte pubblica con quel nome — sola lettura, senza IA, senza browser. Per ogni fornitore che ha una bacheca *e* al momento elenca almeno un'offerta aperta ottieni una corrispondenza con il fornitore, l'URL delle carriere e il numero di offerte aperte. Premi **Aggiungi ai monitorati** e quella bacheca viene aggiunta a `tracked_companies:` nel tuo `portals.yml`, così lo scanner inizia a sorvegliarla dalla prossima scansione. I duplicati vengono rilevati (vedrai "Già monitorata") e si possono aggiungere solo host ATS noti — gli URL arbitrari vengono rifiutati. Vengono sondati solo Greenhouse, Ashby e Lever; un'azienda su un altro portale, o senza offerte pubblicate proprio ora, non mostrerà corrispondenze.
+
 ---
 
 ## 6. Health (`#/health`)
@@ -1275,6 +1283,16 @@ Ogni filtro azzera il paginatore a pagina 1. 25 righe per pagina.
 reportSlug?, notes?, date? }`. Dedup per `(company, role)`
 case-insensitive. Dalla UI, la pagina Evaluate offre un pulsante "Add to
 tracker" dopo un punteggio riuscito.
+
+### "Ancora attiva?" — verifica se un annuncio ATS è ancora aperto
+
+Ogni riga monitorata che rimanda a un annuncio ospitato su un ATS (Greenhouse, Lever, Ashby, Workday o SmartRecruiters) riceve un piccolo pulsante **Ancora attiva?**. Cliccalo e l'app chiede all'endpoint JSON pubblico di quell'ATS se l'annuncio è ancora in piedi — senza browser, senza token di IA, senza salvare nulla. Ottieni uno di tre badge:
+
+- **Attiva** — l'annuncio è ancora elencato.
+- **Scaduta** — l'ATS ha restituito un "rimosso" definitivo (HTTP 404/410), quindi la posizione è stata ritirata.
+- **Sconosciuto** — il controllo non è stato concludente (l'URL non è un annuncio ATS riconosciuto, oppure l'API era a limite di frequenza, è andata in timeout o ha risposto in modo ambiguo).
+
+Il controllo è volutamente prudente: dice **Scaduta** solo su un 404/410 netto, mai per congettura, così non ti allontanerà mai da una posizione che in realtà è ancora aperta. L'API pubblica di Lever è trattata come non autorevole (nasconde alcuni annunci riservati), perciò quei casi risultano **Sconosciuto** anziché Scaduta.
 
 ---
 
@@ -2097,6 +2115,16 @@ Prima di condividere il tuo CV come campione di scrittura o screenshot, la **Mas
 
 Incolla una frase o un paragrafo rigido — quel tipo di formulazione generica da IA che suona come testo preconfezionato — e **Rendilo umano** lo riscrive nella *tua* voce. La riscrittura è ancorata lato server al tuo `voice-dna.md` (come si legge la tua scrittura) e ai tuoi `writing-samples/` (la tua prosa reale). La regola ferrea: può riordinare, snellire e riadattare la voce, ma **non** introdurrà mai un fatto, una metrica o un risultato che non sia già nel testo che hai incollato. Con una chiave LLM riscrive in tempo reale; senza chiave ti consegna un prompt pronto da incollare in qualsiasi assistente. Poi modifica il tuo CV nella pagina `#/cv` come al solito — il CV Studio suggerisce, tu decidi.
 
+### Suggerimento "Riutilizzare un CV precedente?"
+
+Quando scegli una descrizione di lavoro salvata in CV Studio, un suggerimento attenuato di una riga ti dice se hai già adattato un CV per un ruolo simile. L'app confronta la descrizione selezionata con le tue altre descrizioni salvate (un punteggio deterministico di sovrapposizione di parole più un controllo di seniority — senza IA, senza salvare nulla) e fa emergere la singola miglior corrispondenza come uno di tre verdetti:
+
+- **riutilizza** — molto simile a una descrizione salvata; puoi probabilmente riutilizzare quel CV così com'è.
+- **riutilizza con modifiche** — simile; riutilizza quel CV ma ritoccalo.
+- **rigenera** — nessuna descrizione salvata davvero simile, quindi adatta un CV nuovo.
+
+Il suggerimento appare automaticamente quando hai almeno due descrizioni salvate, e si aggiorna quando cambi la descrizione selezionata. È solo una spinta — non cambia mai il tuo CV né le tue descrizioni.
+
 ## 25. Memoria (`#/memory`)
 
 Ogni altra pagina riparte da zero ogni volta. La **Memoria** (aprila da **Configurazione → Memoria 🧠** nella barra laterale) è l'unico posto in cui dici all'assistente qualcosa *una volta sola* e rimane. Contiene una nota breve e modificabile del tipo "ricorda questo su di me" che viene inserita in **ogni** richiesta all'IA.
@@ -2140,6 +2168,10 @@ La scheda **Tendenza dei ruoli target** è la vista originale: numero di annunci
 ### Totale e retribuzione
 
 La scheda **Totale** (v1.118.0) fa da relay in sola lettura a due script del padre a zero token: `stats.mjs` — il riepilogo complessivo del tracker, i tassi cumulati del funnel (risposta / colloquio / offerta), i totali dello scanner e la copertura dei portali — e `salary-gap.mjs` — retribuzione desiderata vs pubblicizzata vs effettiva per candidatura, consolidata dai Machine Summary dei report e da `data/salary-observations.tsv`. I campioni ridotti sono etichettati come indicativi; senza il progetto padre la scheda mostra una nota onesta.
+
+### Registro di autovalutazione delle skill (`#/assessments`)
+
+`#/assessments` è un semplice registro delle valutazioni di skill che affronti — un test di coding sulla piattaforma di un'azienda, un esercizio da casa, un quiz di certificazione. Registra un evento — l'**azienda**, la **piattaforma**, la **skill**, una **soglia %** di superamento opzionale e il tuo **punteggio %**, più una nota in testo libero — e viene aggiunto, una riga per evento, a `data/assessments.tsv` nel progetto padre. La pagina elenca anche tutto ciò che hai registrato e lo aggrega per piattaforma così vedi come procedi nel tempo. È una scrittura esplicita che avvii tu; quando il progetto padre non è presente, la pagina mostra una riga attenuata "non disponibile".
 
 ## 27. Piano di carriera (`#/career-plan`)
 

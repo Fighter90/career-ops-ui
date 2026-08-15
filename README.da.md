@@ -12,11 +12,11 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.205.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.205.0)
+[![release](https://img.shields.io/badge/release-v1.206.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.206.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.205.0** — **Færdighedslog** — notér en selvvurdering (virksomhed, platform, færdighed, score %, note) i Analyse → Færdighedslog; tilføjes til `data/assessments.tsv` og viser tidligere poster. Token-fri; skrivning er kontroltegn-beskyttet (ingen TSV-injektion). **2610 tests.**
+> **🆕 Seneste udgivelse — v1.206.0** — **Indbygget hjælp opdateret** — hjælpeguiden (og «Spørg hjælpen»-assistenten) dækker nu de fem nyeste funktioner — Opsætningslæge, Find ATS-tavler, «stadig åben?»-tjekket, «genbrug et tidligere CV?»-hintet og Færdighedslog — på alle 17 sprog. **2610 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

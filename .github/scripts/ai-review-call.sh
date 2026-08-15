@@ -23,6 +23,10 @@ REQ="$(mktemp)"; RESP="$(mktemp)"
 trap 'rm -f "$REQ" "$RESP"' EXIT
 
 if [ -n "${OPENROUTER_API_KEY:-}" ]; then
+  # The active model is the OPENROUTER_REVIEW_MODEL repo variable. The hardcoded
+  # fallback is deliberately a DIFFERENT known-good model than whatever the
+  # variable points at, so if the variable is ever cleared CI review still
+  # resolves instead of inheriting a single point of failure that 404s on a delist.
   MODEL="${OPENROUTER_REVIEW_MODEL:-qwen/qwen3-coder}"
   # jq -Rs slurps the whole prompt file as one JSON string, escaping the diff.
   jq -Rs --arg m "$MODEL" '{model:$m,max_tokens:1500,messages:[{role:"user",content:.}]}' \

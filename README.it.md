@@ -12,11 +12,11 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.205.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.205.0)
+[![release](https://img.shields.io/badge/release-v1.206.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.206.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.205.0** — **Registro competenze** — annota un'autovalutazione (azienda, piattaforma, competenza, punteggio %, nota) in Analisi → Registro competenze; si aggiunge a `data/assessments.tsv` ed elenca le voci precedenti. Zero token; scrittura protetta dai caratteri di controllo (nessuna iniezione TSV). **2610 test.**
+> **🆕 Ultima release — v1.206.0** — **Aiuto in-app aggiornato** — la guida (e l'assistente «Chiedi alla guida») ora copre le cinque funzionalità più recenti — Doctor di configurazione, Scopri board ATS, il controllo «ancora aperta?», il suggerimento «riusare un CV precedente?» e il Registro competenze — in tutte e 17 le lingue. **2610 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

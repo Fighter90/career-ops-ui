@@ -126,6 +126,10 @@ Parses `data/applications.md` into rows.
 
 Body: `{ company, role, score?, status?, url?, reportSlug?, notes?, date? }`. Required: `company`, `role`. Status whitelist: `Evaluated, Applied, Responded, Interview, Offer, Hired, Rejected, Discarded, SKIP`. Dedup by `(company, role)` case-insensitive — returns `{ deduped: true, existingNum }` instead of creating a duplicate. Auto-numbers (zero-padded), bootstraps the table header if missing.
 
+### `GET /api/liveness?url=<URL>`
+
+Zero-token, zero-browser "still live?" check for an ATS-hosted posting (Greenhouse / Lever / Ashby / Workday / SmartRecruiters public JSON). SSRF-safe: `isValidJobUrl` gate + fixed known hosts + `safeGet` + a cross-origin-redirect guard. Returns `{ result: 'live'|'expired'|'uncertain', code, reason, provider }`. An unrecognized ATS host or an inconclusive probe still returns **200** with `result: 'uncertain'`, `code: 'inconclusive'`, `provider: null` (no Playwright fallback at this rung). A loopback / `file:` / private / template URL → **400** `{ error }`. Drives the "still live?" badge on `#/tracker` and scan results.
+
 ---
 
 ## Pipeline
@@ -168,6 +172,14 @@ Requires `.txt` suffix and sanitized name.
 
 Body: `{ text, slug? }`. If `slug` supplied, normalised via `slugify`; non-empty result required. Returns `{ ok, name, warning? }`.
 
+### `GET /api/jds/:name/skill-gap`
+
+Classifies a stored JD's required skills against `cv.md` → `{ existing, supportedByResume, gap, lowConfidence }`. Zero-token relay of the parent `jd-skill-gap.mjs` (`--json`); fail-soft `{ available:false }` when the parent script is absent. Feeds the "Skill gap" panel in `#/cv-studio`.
+
+### `GET /api/jds/:name/reuse`
+
+Deterministic "reuse a past CV?" hint — Jaccard similarity + seniority guard vs. previously tailored JDs. Returns `{ available: true, best: { name?, decision: 'reuse'|'reuse-with-edits'|'regenerate', score, reason }, comparedCount }`; fail-soft `{ available: false, reason }` when the parent `jd-similarity.mjs` is absent (`script-not-found`), there are no prior JDs (`no-prior-jds`), or every comparison errored (`script-error`, with `detail`). Zero-token relay. Surfaced in `#/cv-studio`.
+
 ---
 
 ## CV
@@ -177,6 +189,10 @@ Body: `{ text, slug? }`. If `slug` supplied, normalised via `slugify`; non-empty
 ### `PUT /api/cv`
 
 Body: `{ markdown }` or raw `text/markdown`. Max 1 MB. Sanitised via `stripDangerousMarkdown` before write. Response includes `sanitized: boolean` indicating whether anything was stripped.
+
+### `GET /api/cv-sync-check`
+
+Setup doctor: relays the parent `cv-sync-check.mjs` (no `--json` — the route parses its `ERROR:` / `WARN:` lines and lets the banner, not the exit code, decide success) → `{ ok, errors, warnings }` scanning `cv.md` / `profile.yml` completeness plus example-data and hardcoded-metric leftovers. Read-only; fail-soft `{ available:false }`. Surfaced as the "Setup doctor" panel in `#/config`.
 
 ---
 
@@ -193,6 +209,14 @@ Reads `config/profile.yml`. `profile` is parsed YAML; `raw` is the source string
 ### `GET /api/portals` → `{ portals, raw }`
 
 Reads `portals.yml`.
+
+### `POST /api/portals/discover`
+
+Body: `{ company }` (required, length-bounded). Probes a company's public ATS boards (Greenhouse / Ashby / Lever) via the SSRF-safe `safeGet` → `{ company, results: [{ vendor, label, slug, careers_url, jobCount }] }` (note `vendor`, not `provider`). Read-only preview, zero-LLM; no write. Powers the "Discover ATS board" flow in `#/portals`.
+
+### `POST /api/portals/track`
+
+Body: `{ name, careers_url, provider? }` — `name` and `careers_url` are required (`careers_url` must be an https URL on a known ATS host — Greenhouse/Ashby/Lever — that a scanner adapter actually claims), `provider` is optional. Explicit user write that appends the chosen board to `portals.yml`. Every field passes a `hasControlChar` guard (rejects TAB/newline/control bytes → **400** before any write) and `provider` is YAML-escaped via `yamlScalar`.
 
 ---
 
@@ -330,6 +354,18 @@ Reads `modes/<slug>.md`, prepends the request body as a JSON context block via `
 ### `GET /api/help/:lang` → `{ lang, markdown }`
 
 Reads `web-ui/docs/help/<lang>.md`. Falls back to `en.md` if requested locale missing. `:lang` sanitized to `[a-zA-Z0-9_-]+`.
+
+---
+
+## Skills log
+
+### `GET /api/assessments` → `{ assessments, aggregates, quality }`
+
+Relays the parent `assessment-log.mjs` (its **bare/default output IS the JSON list** — there is no `--json` flag). Each entry is `{ date, company, reportNum, platform, subject, threshold, score, staleNote }` (numeric fields `null` when unset). Read-only; fail-soft `{ available:false }`.
+
+### `POST /api/assessments`
+
+Explicit append. Body: `{ company, platform, subject, report?, threshold?, score?, stale? }` — required `company`/`platform`/`subject`; `stale` is the free-text "stale note" (mapped to `--stale`). Shells `assessment-log.mjs add …` with fields passed as **array args** (spawn, no shell). Every text field passes a `hasControlChar` guard (a TAB would break a TSV column, a newline would inject a row → **400** before any write); `threshold`/`score` are whitelisted to numeric **0–100**. Appends an 8-column row to the parent `data/assessments.tsv`. Surfaced as the "Skills log" view at `#/assessments`.
 
 ---
 

@@ -483,6 +483,10 @@ tıklayın — her ikisi de küçük bir prompt gönderir (≤256 token çıktı
 böylece anahtarın doğru bağlandığını onaylarken neredeyse hiçbir şey
 harcamazsınız. Başarıda ~200 karakterlik bir örnek döndürür.
 
+### Kurulum doktoru — eksik bir CV veya profili yakala
+
+`#/config` üzerindeki **Kurulum doktoru** sekmesi, `cv.md` ve `config/profile.yml` dosyalarının gerçekten doldurulmuş olup olmadığını salt okunur olarak denetler ve komut istemi dosyalarınızda (`modes/_shared.md`, `modes/_writing.md`, `batch/batch-prompt.md`) kalan örnek/yer tutucu verileri ya da sabit kodlanmış metrikleri saptayınca uyarır. Sonuçları **hatalar** (işlem hattının ihtiyaç duyduğu bir şey eksik, örneğin `cv.md` yok) ve **uyarılar** (hâlâ örnek veri var, çok kısa görünen bir CV, şüpheli bir metrik) olarak ayırır. Hiçbir şey yazmaz ve hiçbir yere göndermez — yalnızca okur ve raporlar. Bu dosyaları düzenledikten sonra **Yeniden denetle**'ye basın. Üst proje olmadan bağımsız bir kurulumda sekme, bunun yerine soluk bir "kullanılamıyor" satırı gösterir.
+
 ---
 
 ## 3. Profile (`#/profile` — `#/settings` olarak da erişilebilir)
@@ -914,6 +918,10 @@ hücre bir satır veya bir elektronik tablo formülü enjekte edemeyeceği
 şekilde temizlenir ve mevcut yalın-URL pipeline'ları değişmeden çalışmaya
 devam eder.
 
+### Bir şirketin ATS panosunu keşfet
+
+`#/portals` üstünde bir **ATS panosu keşfet** kutusu var. Bir şirket adı yazın (örneğin "Stripe"), uygulama o ad altında herkese açık bir iş panosu için Greenhouse, Ashby ve Lever'ı yoklar — salt okunur, yapay zeka yok, tarayıcı yok. Panosu olan *ve* şu anda en az bir açık ilan listeleyen her sağlayıcı için; sağlayıcıyı, kariyer URL'sini ve açık ilan sayısını gösteren bir eşleşme alırsınız. **İzlenenlere ekle**'ye basın; o pano `portals.yml` dosyanızdaki `tracked_companies:` listesine eklenir, böylece tarayıcı bir sonraki taramadan itibaren bu şirketi izlemeye başlar. Yinelenenler saptanır ("Zaten izleniyor" görürsünüz) ve yalnızca bilinen ATS ana bilgisayarları eklenebilir — rastgele URL'ler reddedilir. Yalnızca Greenhouse, Ashby ve Lever yoklanır; başka bir portaldaki ya da şu an ilanı olmayan bir şirket eşleşme göstermez.
+
 ---
 
 ## 6. Health (`#/health`)
@@ -1314,6 +1322,16 @@ Her filtre sayfalayıcıyı 1. sayfaya sıfırlar. Sayfa başına 25 satır.
 reportSlug?, notes?, date? }`. `(company, role)`'ye göre büyük/küçük
 harfe duyarlı olmayan çiftleme-önleme. Arayüzden, Evaluate sayfası
 başarılı bir puanlamadan sonra bir "Add to tracker" düğmesi sunar.
+
+### "Hâlâ açık mı?" — bir ATS ilanının hâlâ açık olup olmadığını denetle
+
+Bir ATS'te barındırılan ilana (Greenhouse, Lever, Ashby, Workday veya SmartRecruiters) bağlanan her izlenen satır, küçük bir **Hâlâ açık mı?** düğmesi alır. Tıklayın; uygulama o ATS'in kendi herkese açık JSON uç noktasına ilanın hâlâ ayakta olup olmadığını sorar — tarayıcı yok, yapay zeka jetonu yok, hiçbir şey kaydedilmez. Üç rozetten birini alırsınız:
+
+- **Açık** — ilan hâlâ listede.
+- **Süresi dolmuş** — ATS kesin bir "kaldırıldı" (HTTP 404/410) döndürdü, yani pozisyon geri çekildi.
+- **Bilinmiyor** — denetim kesin değildi (URL tanınan bir ATS ilanı değil ya da API hız sınırlıydı, zaman aşımına uğradı veya belirsiz yanıt verdi).
+
+Denetim bilinçli olarak temkinlidir: yalnızca net bir 404/410'da **Süresi dolmuş** der, asla tahminle demez; böylece aslında hâlâ açık olan bir pozisyondan sizi asla caydırmaz. Lever'in herkese açık API'si yetkili sayılmaz (bazı gizli ilanları saklar), bu yüzden bu durumlar Süresi dolmuş yerine **Bilinmiyor** olur.
 
 ---
 
@@ -2153,6 +2171,16 @@ CV'nizi bir yazı örneği ya da ekran görüntüsü olarak paylaşmadan önce, 
 
 Katı bir cümleyi ya da paragrafı yapıştırın — kalıp metin gibi okunan o tür genel yapay zekâ ifadelerini — ve **İnsanlaştır** onu *sizin* sesinizle yeniden yazsın. Yeniden yazma, sunucu tarafında `voice-dna.md` dosyanıza (yazınızın nasıl okunduğu) ve `writing-samples/` (gerçek düzyazınız) dayandırılır. Katı kural: sıralamayı değiştirebilir, sıkılaştırabilir ve sesi yeniden ayarlayabilir, ancak yapıştırdığınız metinde zaten bulunmayan bir olguyu, metriği ya da başarıyı **asla** eklemez. Bir LLM anahtarıyla canlı olarak yeniden yazar; anahtar yoksa, herhangi bir asistana yapıştırmanız için hazır bir istem verir. Ardından CV'nizi her zamanki gibi `#/cv` sayfasında düzenleyin — CV Studio önerir, siz karar verirsiniz.
 
+### "Eski bir CV yeniden kullanılsın mı?" ipucu
+
+CV Studio'da kayıtlı bir iş tanımı seçtiğinizde, soluk tek satırlık bir ipucu benzer bir rol için zaten bir CV uyarlayıp uyarlamadığınızı söyler. Uygulama, seçili tanımı diğer kayıtlı tanımlarınızla karşılaştırır (deterministik bir sözcük örtüşme puanı artı bir kıdem denetimi — yapay zeka yok, hiçbir şey kaydedilmez) ve tek en iyi eşleşmeyi üç karardan biri olarak öne çıkarır:
+
+- **yeniden kullan** — kayıtlı bir tanıma çok benzer; o CV'yi büyük olasılıkla olduğu gibi yeniden kullanabilirsiniz.
+- **düzenleyerek yeniden kullan** — benzer; o CV'yi yeniden kullanın ama üzerinde rötuş yapın.
+- **yeniden üret** — yakın benzer bir kayıtlı tanım yok, o yüzden taze bir CV uyarlayın.
+
+İpucu, en az iki kayıtlı tanımınız olduğunda otomatik görünür ve seçili tanımı değiştirdiğinizde yenilenir. Yalnızca bir dürtmedir — CV'nizi veya tanımlarınızı asla değiştirmez.
+
 ## 25. Bellek (`#/memory`)
 
 Diğer her sayfa her seferinde sıfırdan başlar. **Bellek** (kenar çubuğunda **Kurulum → Bellek 🧠** üzerinden açın), asistana bir şeyi *bir kez* söyleyip kalıcı hale getirdiğiniz tek yerdir. **Her** yapay zekâ isteğine beslenen, kısa ve düzenlenebilir bir "benimle ilgili bunu hatırla" notu tutar.
@@ -2196,6 +2224,10 @@ Ne yazacağınızdan emin değil misiniz? **✨ Verilerimden öner**, başvuru i
 ### Toplam ve ücret
 
 **Toplam** sekmesi (v1.118.0) üst projenin sıfır token maliyetli iki betiğini salt okunur aktarır: `stats.mjs` — toplam takipçi özetiniz, kümülatif huni oranları (yanıt / mülakat / teklif), tarayıcı toplamları ve portal kapsamı — ve `salary-gap.mjs` — başvuru başına istenen vs ilan edilen vs gerçek ücret, raporların Machine Summary bölümlerinden ve `data/salary-observations.tsv` dosyasından birleştirilir. Küçük örneklemler yol gösterici olarak işaretlenir; üst proje yoksa sekme dürüst bir not gösterir.
+
+### Beceri öz değerlendirme günlüğü (`#/assessments`)
+
+`#/assessments`, girdiğiniz beceri değerlendirmeleri için basit bir günlüktür — bir şirketin platformundaki kodlama testi, eve ödev, sertifika sınavı. Bir olay kaydedin — **şirket**, **platform**, **beceri**, isteğe bağlı bir geçme **eşiği %** ve **puanınız %**, artı serbest metin bir not — ve üst projedeki `data/assessments.tsv` dosyasına olay başına bir satır olarak eklenir. Sayfa ayrıca kaydettiğiniz her şeyi listeler ve platforma göre toplar; böylece zaman içinde nasıl gittiğinizi görürsünüz. Bu, sizin tetiklediğiniz açık bir yazma işlemidir; üst proje yoksa sayfa soluk bir "kullanılamıyor" satırı gösterir.
 
 ## 27. Kariyer planı (`#/career-plan`)
 

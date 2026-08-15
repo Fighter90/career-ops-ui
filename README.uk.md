@@ -12,11 +12,11 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.205.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.205.0)
+[![release](https://img.shields.io/badge/release-v1.206.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.206.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.205.0** — **Журнал навичок** — запишіть самооцінку (компанія, платформа, навичка, оцінка %, примітка) в Аналітика → Журнал навичок; додається до `data/assessments.tsv` і показує минулі записи. Без токенів; запис захищено від керуючих символів (без TSV-інʼєкцій). **2610 тестів.**
+> **🆕 Останній реліз — v1.206.0** — **Вбудовану довідку оновлено** — довідник (і асистент «Запитати довідку») тепер описує п'ять найновіших функцій — Доктор налаштування, Пошук ATS-дощок, перевірка «ще відкрита?», підказка «повторно використати попереднє CV?» і Журнал навичок — усіма 17 мовами. **2610 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 
