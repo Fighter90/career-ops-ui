@@ -1327,4 +1327,11 @@ window.__I18N_DICT_ZH_TW = {
   'digest.competencies': "反覆出現的能力項目",
   'digest.gaps': "尚待補強的缺口",
   'digest.failed': "無法載入摘要",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "還在招?",
+  'track.liveChecking': "檢查中…",
+  'track.liveLive': "在招",
+  'track.liveExpired': "已過期",
+  'track.liveUncertain': "未知",
+  'track.liveCheckAria': "檢查該職缺是否仍在招募",
 };

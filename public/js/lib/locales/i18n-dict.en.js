@@ -1332,4 +1332,11 @@ window.__I18N_DICT_EN = {
   'digest.competencies': "Recurring competencies",
   'digest.gaps': "Open gaps",
   'digest.failed': "Could not load the digest",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "Still live?",
+  'track.liveChecking': "Checking…",
+  'track.liveLive': "Live",
+  'track.liveExpired': "Expired",
+  'track.liveUncertain': "Unknown",
+  'track.liveCheckAria': "Check whether this job posting is still live",
 };

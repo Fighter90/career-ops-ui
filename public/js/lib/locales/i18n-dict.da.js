@@ -1325,4 +1325,11 @@ window.__I18N_DICT_DA = {
   'digest.competencies': "Tilbagevendende kompetencer",
   'digest.gaps': "Åbne huller",
   'digest.failed': "Kunne ikke indlæse digesten",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "Stadig aktiv?",
+  'track.liveChecking': "Tjekker…",
+  'track.liveLive': "Aktiv",
+  'track.liveExpired': "Udløbet",
+  'track.liveUncertain': "Ukendt",
+  'track.liveCheckAria': "Tjek om dette jobopslag stadig er aktivt",
 };

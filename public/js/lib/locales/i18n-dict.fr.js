@@ -1325,4 +1325,11 @@ window.__I18N_DICT_FR = {
   'digest.competencies': "Compétences récurrentes",
   'digest.gaps': "Lacunes ouvertes",
   'digest.failed': "Impossible de charger le digest",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "Toujours en ligne ?",
+  'track.liveChecking': "Vérification…",
+  'track.liveLive': "En ligne",
+  'track.liveExpired': "Expirée",
+  'track.liveUncertain': "Incertain",
+  'track.liveCheckAria': "Vérifier si cette offre est toujours en ligne",
 };

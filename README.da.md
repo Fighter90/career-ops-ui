@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2540%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2557%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.199.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.199.0)
+[![release](https://img.shields.io/badge/release-v1.200.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.200.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.199.0** — **Brede tabeller ruller vandret** — tabeller bredere end vinduet (Scan, Tracker, Statistik…) blev skåret af uden rullebjælke; de viser nu en **vandret rullebjælke** efter behov, så hver kolonne er tilgængelig. **2540 tests.**
+> **🆕 Seneste udgivelse — v1.200.0** — **"Stadig ledig?"-tjek for ATS-job** — på #/tracker spørger ét klik det offentlige JSON for et Greenhouse/Lever/Ashby/Workday/SmartRecruiters-opslag (nul tokens, ingen browser) og viser **Ledig / Udløbet / Ukendt**. **2557 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

@@ -8,6 +8,17 @@
 
 ---
 
+## [1.200.0] — 2026-08-15
+
+**新增 — 在追蹤器中一鍵查看 ATS 職缺「是否仍在招」。**
+
+### 新增
+- 在 **#/tracker** 中，URL 為 Greenhouse / Lever / Ashby / Workday / SmartRecruiters 職缺的應徵現在會顯示 **「是否仍在招？」** 按鈕。點一下即查詢該 ATS 自己的公開 JSON——**零 token、無瀏覽器**——並顯示 **在招 / 已下架 / 未知**，讓你無需逐一開啟就能發現失效職缺。保守設計：僅明確的 404/410 判為*已下架*，含糊情況保持*未知*（絕不誤報*已下架*）。
+
+### 說明
+- 新增 `server/lib/liveness-core.mjs` + `liveness-api.mjs`，以及唯讀的 `GET /api/liveness?url=`（不寫入、無 LLM）。防 SSRF：URL 先經 `isValidJobUrl` 驗證，ATS API 僅透過 DNS 固定的 `safeGet` 以固定主機 + 字元集驗證的路徑段存取。`tests/liveness-core.test.mjs` + `tests/liveness-route.test.mjs`。測試套件：**2557**。
+
+
 ## [1.199.0] — 2026-08-15
 
 **修復 — 過寬的表格現在可橫向捲動，而不再被截斷。**

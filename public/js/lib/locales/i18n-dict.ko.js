@@ -1326,4 +1326,11 @@ window.__I18N_DICT_KO = {
   'digest.competencies': "반복되는 역량",
   'digest.gaps': "남은 갭",
   'digest.failed': "다이제스트를 불러올 수 없습니다",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "아직 유효?",
+  'track.liveChecking': "확인 중…",
+  'track.liveLive': "유효",
+  'track.liveExpired': "마감",
+  'track.liveUncertain': "불확실",
+  'track.liveCheckAria': "이 채용 공고가 아직 유효한지 확인",
 };

@@ -1337,4 +1337,11 @@ window.__I18N_DICT_HI = {
   'digest.competencies': "बार-बार आने वाली दक्षताएं",
   'digest.gaps': "खुले अंतराल",
   'digest.failed': "डाइजेस्ट लोड नहीं किया जा सका",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "अभी भी सक्रिय?",
+  'track.liveChecking': "जाँच हो रही है…",
+  'track.liveLive': "सक्रिय",
+  'track.liveExpired': "समाप्त",
+  'track.liveUncertain': "अज्ञात",
+  'track.liveCheckAria': "जाँचें कि यह नौकरी अभी भी सक्रिय है या नहीं",
 };

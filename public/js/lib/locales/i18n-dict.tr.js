@@ -1327,4 +1327,11 @@ window.__I18N_DICT_TR = {
   'digest.competencies': "Tekrarlayan yetkinlikler",
   'digest.gaps': "Açık boşluklar",
   'digest.failed': "Özet yüklenemedi",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "Hâlâ açık mı?",
+  'track.liveChecking': "Kontrol ediliyor…",
+  'track.liveLive': "Açık",
+  'track.liveExpired': "Süresi doldu",
+  'track.liveUncertain': "Bilinmiyor",
+  'track.liveCheckAria': "Bu iş ilanının hâlâ açık olup olmadığını kontrol et",
 };

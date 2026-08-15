@@ -1326,4 +1326,11 @@ window.__I18N_DICT_ZH_CN = {
   'digest.competencies': "反复出现的能力项",
   'digest.gaps': "尚存差距",
   'digest.failed': "无法加载摘要",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "还在招?",
+  'track.liveChecking': "检查中…",
+  'track.liveLive': "在招",
+  'track.liveExpired': "已过期",
+  'track.liveUncertain': "未知",
+  'track.liveCheckAria': "检查该职位是否仍在招聘",
 };

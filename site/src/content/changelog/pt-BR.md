@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.200.0] — 2026-08-15
+
+**Adicionado — verificação com um clique "ainda ativa?" para vagas em ATS no seu rastreador.**
+
+### Adicionado
+- Em **#/tracker**, uma candidatura cuja URL seja uma publicação de Greenhouse / Lever / Ashby / Workday / SmartRecruiters agora mostra um botão **"Ainda ativa?"**. Um clique consulta o JSON público do próprio ATS — **zero tokens, sem navegador** — e mostra **Ativa / Expirada / Desconhecida**, para você identificar vagas mortas sem abrir cada uma. Conservador por design: só um 404/410 definitivo vira *Expirada*; o ambíguo fica *Desconhecida* (nunca uma falsa *Expirada*).
+
+### Notas
+- Novos `server/lib/liveness-core.mjs` + `liveness-api.mjs` e uma rota somente leitura `GET /api/liveness?url=` (sem gravações, sem LLM). Seguro contra SSRF: a URL passa por `isValidJobUrl` e a API do ATS é acessada só via `safeGet` (DNS fixado) com host fixo e segmentos validados. `tests/liveness-core.test.mjs` + `tests/liveness-route.test.mjs`. Conjunto: **2557**.
+
+
 ## [1.199.0] — 2026-08-15
 
 **Corrigido — tabelas largas agora rolam lateralmente em vez de serem cortadas.**

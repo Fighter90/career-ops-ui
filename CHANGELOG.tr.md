@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.200.0] — 2026-08-15
+
+**Eklendi — takip listenizde ATS barındırmalı ilanlar için tek tıkla "hâlâ açık mı?" kontrolü.**
+
+### Eklendi
+- **#/tracker** üzerinde, URL'si Greenhouse / Lever / Ashby / Workday / SmartRecruiters ilanı olan bir başvuru artık **"Hâlâ açık mı?"** düğmesi gösteriyor. Tek tık, ATS'nin kendi genel JSON'unu sorgular — **sıfır token, tarayıcı yok** — ve **Açık / Süresi dolmuş / Bilinmiyor** gösterir; böylece her birini açmadan ölü ilanları fark edersiniz. Tasarımı gereği ihtiyatlı: yalnızca kesin 404/410 *Süresi dolmuş* sayılır; belirsiz olan *Bilinmiyor* kalır (asla yanlış *Süresi dolmuş*).
+
+### Notlar
+- Yeni `server/lib/liveness-core.mjs` + `liveness-api.mjs` ve salt okunur `GET /api/liveness?url=` (yazma yok, LLM yok). SSRF güvenli: URL `isValidJobUrl`'den geçer, ardından ATS API'sine yalnızca DNS sabitli `safeGet` ile sabit host ve karakter kümesi doğrulanmış yol parçalarıyla erişilir. `tests/liveness-core.test.mjs` + `tests/liveness-route.test.mjs`. Takım: **2557**.
+
+
 ## [1.199.0] — 2026-08-15
 
 **Düzeltildi — geniş tablolar artık kırpılmak yerine yatay kayıyor.**

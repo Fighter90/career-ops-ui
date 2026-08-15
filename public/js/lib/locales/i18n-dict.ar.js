@@ -1325,4 +1325,11 @@ window.__I18N_DICT_AR = {
   'digest.competencies': "الكفاءات المتكررة",
   'digest.gaps': "الثغرات المفتوحة",
   'digest.failed': "تعذّر تحميل الموجز",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "لا تزال متاحة؟",
+  'track.liveChecking': "جارٍ التحقق…",
+  'track.liveLive': "متاحة",
+  'track.liveExpired': "منتهية",
+  'track.liveUncertain': "غير معروف",
+  'track.liveCheckAria': "تحقق مما إذا كانت هذه الوظيفة لا تزال متاحة",
 };
