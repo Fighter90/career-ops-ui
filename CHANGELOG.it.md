@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.205.0] — 2026-08-15
+
+**Aggiunto — un Registro competenze per annotare i risultati di test/valutazioni.**
+
+### Aggiunto
+- Un nuovo **Registro competenze** (Analisi → Registro competenze) permette di annotare un'autovalutazione — azienda, piattaforma, competenza, punteggio % e una nota facoltativa — aggiunta a `data/assessments.tsv`, con un elenco delle voci precedenti (più recenti prima). Zero token, deterministico; il formato del file è gestito dalla CLI del progetto padre.
+
+### Note
+- Nuova `GET /api/assessments` (inoltra la lista JSON predefinita di `assessment-log.mjs`; fallimento morbido `{available:false}`) + `POST /api/assessments` (scrittura esplicita: campi passati come **argomenti array** a `assessment-log.mjs add`). Sicurezza in scrittura: ogni campo testo con un carattere di controllo viene rifiutato (un TAB romperebbe una colonna, un a-capo inietterebbe una riga) → 400 prima di scrivere; punteggio/soglia limitati a 0–100, lunghezze limitate. `tests/assessments-route.test.mjs`. Suite: **2610**.
+
+
 ## [1.204.0] — 2026-08-15
 
 **Aggiunto — un pannello "Dottore di configurazione" nelle Impostazioni che segnala un CV/profilo incompleto o con dati di esempio.**

@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.205.0] — 2026-08-15
+
+**Adicionado — um Registro de habilidades para anotar resultados de testes/avaliações.**
+
+### Adicionado
+- Um novo **Registro de habilidades** (Análises → Registro de habilidades) permite anotar uma autoavaliação — empresa, plataforma, habilidade, pontuação % e uma nota opcional — anexada a `data/assessments.tsv`, com uma lista das entradas anteriores (mais recentes primeiro). Sem tokens, determinístico; o formato é do CLI do projeto pai.
+
+### Notas
+- Nova `GET /api/assessments` (faz relay da lista JSON padrão de `assessment-log.mjs`; à prova de falhas `{available:false}`) + `POST /api/assessments` (gravação explícita: campos passados como **args de array** para `assessment-log.mjs add`). Segurança de escrita: qualquer campo com caracteres de controle é rejeitado (um TAB quebraria uma coluna, uma quebra de linha injetaria uma linha) → 400 antes de gravar; pontuação/limiar de 0–100; comprimentos limitados. `tests/assessments-route.test.mjs`. Conjunto: **2610**.
+
+
 ## [1.204.0] — 2026-08-15
 
 **Adicionado — um painel "Doutor de configuração" em Ajustes que sinaliza um CV/perfil incompleto ou com dados de exemplo.**

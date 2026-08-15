@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.205.0] — 2026-08-15
+
+**Añadido — un Registro de habilidades para anotar resultados de pruebas/evaluaciones.**
+
+### Añadido
+- Un nuevo **Registro de habilidades** (Analítica → Registro de habilidades) te permite anotar una autoevaluación — empresa, plataforma, habilidad, puntuación % y una nota opcional — que se añade a `data/assessments.tsv`, con una lista de entradas anteriores (más recientes primero). Sin tokens, determinista; el formato lo gestiona la CLI del proyecto padre.
+
+### Notas
+- Nueva `GET /api/assessments` (relaya la lista JSON por defecto de `assessment-log.mjs`; tolerante `{available:false}`) + `POST /api/assessments` (escritura explícita: campos pasados como **args de array** a `assessment-log.mjs add`). Seguridad de escritura: se rechaza cualquier campo con caracteres de control (un TAB rompería una columna, un salto de línea inyectaría una fila) → 400 antes de escribir; puntuación/umbral limitados a 0–100; longitudes acotadas. `tests/assessments-route.test.mjs`. Conjunto: **2610**.
+
+
 ## [1.204.0] — 2026-08-15
 
 **Añadido — un panel "Doctor de configuración" en Ajustes que detecta un CV/perfil incompleto o con datos de ejemplo.**

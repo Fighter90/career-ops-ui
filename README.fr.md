@@ -7,16 +7,16 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2602%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2610%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.204.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.204.0)
+[![release](https://img.shields.io/badge/release-v1.205.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.205.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.204.0** — **« Docteur de configuration » dans les Réglages** — un contrôle sans token de vos `cv.md` + `config/profile.yml` qui liste les problèmes bloquants et les avertissements (données d'exemple, métriques codées en dur), pour corriger une config incomplète avant qu'elle n'affaiblisse scans et adaptations. **2602 tests.**
+> **🆕 Dernière version — v1.205.0** — **Journal de compétences** — consignez une auto-évaluation (entreprise, plateforme, compétence, score %, note) dans Analytique → Journal de compétences ; ajouté à `data/assessments.tsv` avec la liste des entrées précédentes. Sans token ; écriture protégée contre les caractères de contrôle (pas d'injection TSV). **2610 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

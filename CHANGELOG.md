@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.205.0] — 2026-08-15
+
+**Added — a Skills log to record practice-test / assessment results.**
+
+### Added
+- A new **Skills log** (Analytics → Skills log) lets you record a skills self-assessment — company, platform, skill, score %, and an optional note — appended to `data/assessments.tsv`, with a newest-first list of past entries. Zero-token, deterministic; the parent CLI owns the file format.
+
+### Notes
+- New `GET /api/assessments` (relays `assessment-log.mjs`'s default JSON list; fail-soft `{available:false}`) + `POST /api/assessments` (explicit write: fields passed as **array args** to `assessment-log.mjs add`, so the parent owns the TSV). Write-safety: every text field is rejected if it contains a control character (a TAB would break a column, a newline would inject a row) → 400 before any write; score/threshold whitelisted to 0–100; lengths bounded. `tests/assessments-route.test.mjs`. Suite: **2610**.
+
+
 ## [1.204.0] — 2026-08-15
 
 **Added — a "Setup doctor" panel in Settings that flags an incomplete or example-data CV/profile.**

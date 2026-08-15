@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2602%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2610%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.204.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.204.0)
+[![release](https://img.shields.io/badge/release-v1.205.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.205.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.204.0** — **设置中的"配置体检"** — 零 token 检查 `cv.md` + `config/profile.yml`，列出阻断问题（缺失文件/字段）与警告（残留示例数据、硬编码指标），让你在不完整配置削弱扫描与定制前修复。 **2602 项测试。**
+> **🆕 最新版本 — v1.205.0** — **技能日志** — 在分析 → 技能日志中记录一次自评（公司、平台、技能、分数 %、备注）；追加到 `data/assessments.tsv` 并列出历史记录。零 token；写入有控制字符防护（无 TSV 注入）。 **2610 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 
