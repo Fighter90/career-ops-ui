@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.204.0] — 2026-08-15
+
+**Adicionado — um painel "Doutor de configuração" em Ajustes que sinaliza um CV/perfil incompleto ou com dados de exemplo.**
+
+### Adicionado
+- **Ajustes → Doutor de configuração** agora faz uma checagem sem tokens do seu `cv.md` e `config/profile.yml` e lista **problemas bloqueantes** (arquivos/campos faltando) e **avisos** (dados de exemplo remanescentes, métricas fixas) — para você pegar uma configuração incompleta antes que ela enfraqueça suas varreduras e adaptações. Somente leitura; re-execução com um clique.
+
+### Notas
+- Nova rota somente leitura `GET /api/cv-sync-check` que faz relay de `cv-sync-check.mjs` do projeto pai, que imprime texto + código de saída (sem `--json`); a rota faz parsing leve das linhas estáveis `ERROR:` / `WARN:` em `{ok, errors[], warnings[]}` — quem decide é o banner, não o código de saída. À prova de falhas `{available:false}` em instalações independentes. `tests/cv-sync-check-route.test.mjs`. Conjunto: **2602**.
+
+
 ## [1.203.0] — 2026-08-15
 
 **Adicionado — uma dica "reutilizar um CV anterior?" no CV Studio.**

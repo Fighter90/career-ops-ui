@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.204.0] — 2026-08-15
+
+**Added — a "Setup doctor" panel in Settings that flags an incomplete or example-data CV/profile.**
+
+### Added
+- **Settings → Setup doctor** now runs a zero-token check of your `cv.md` and `config/profile.yml` and lists any **blocking issues** (missing files/fields) and **warnings** (leftover example/placeholder data, hardcoded metrics) — so you catch an incomplete setup before it weakens your scans and tailoring. Read-only; re-run with one click.
+
+### Notes
+- New read-only `GET /api/cv-sync-check` relays the parent's `cv-sync-check.mjs`, which prints human text + an exit code (no `--json`); the route does light structured parsing of its stable `ERROR:` / `WARN:` lines into `{ok, errors[], warnings[]}` — the banner, not the exit code, decides success. Fail-soft `{available:false}` on standalone installs. `tests/cv-sync-check-route.test.mjs`. Suite: **2602**.
+
+
 ## [1.203.0] — 2026-08-15
 
 **Added — a "reuse a past CV?" hint in CV Studio.**

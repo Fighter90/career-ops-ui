@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2594%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2602%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.203.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.203.0)
+[![release](https://img.shields.io/badge/release-v1.204.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.204.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.203.0** — **CV Studio 的"复用过往简历？"提示** — 将已保存岗位与你其他已保存岗位对比（确定性、零 token），告诉你能否复用定制简历、改一改再用还是重新定制。 **2594 项测试。**
+> **🆕 最新版本 — v1.204.0** — **设置中的"配置体检"** — 零 token 检查 `cv.md` + `config/profile.yml`，列出阻断问题（缺失文件/字段）与警告（残留示例数据、硬编码指标），让你在不完整配置削弱扫描与定制前修复。 **2602 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

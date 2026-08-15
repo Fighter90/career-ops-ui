@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.204.0] — 2026-08-15
+
+**Aggiunto — un pannello "Dottore di configurazione" nelle Impostazioni che segnala un CV/profilo incompleto o con dati di esempio.**
+
+### Aggiunto
+- **Impostazioni → Dottore di configurazione** ora esegue un controllo a zero token del tuo `cv.md` e `config/profile.yml` ed elenca i **problemi bloccanti** (file/campi mancanti) e gli **avvisi** (dati di esempio residui, metriche fisse) — così cogli una configurazione incompleta prima che indebolisca scansioni e adattamenti. Sola lettura; ri-esegui con un clic.
+
+### Note
+- Nuova rotta di sola lettura `GET /api/cv-sync-check` che inoltra `cv-sync-check.mjs` del progetto padre, che stampa testo + un codice di uscita (nessun `--json`); la rotta effettua un parsing leggero delle sue righe stabili `ERROR:` / `WARN:` in `{ok, errors[], warnings[]}` — a decidere il successo è il banner, non il codice di uscita. Fallimento morbido `{available:false}` sulle installazioni autonome. `tests/cv-sync-check-route.test.mjs`. Suite: **2602**.
+
+
 ## [1.203.0] — 2026-08-15
 
 **Aggiunto — un suggerimento "riutilizzare un CV precedente?" in CV Studio.**

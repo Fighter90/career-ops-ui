@@ -9,6 +9,16 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_ZH_CN = {
+  'config.tabDoctor': "设置体检",
+  'cvsync.title': "CV 与档案设置体检",
+  'cvsync.subtitle': "只读检查你的 cv.md 和 config/profile.yml 是否已填写，并在示例数据或硬编码指标残留在提示文件中时提醒你。不写入也不发送任何内容。",
+  'cvsync.recheck': "重新检查",
+  'cvsync.checking': "正在检查…",
+  'cvsync.allPassed': "所有检查均已通过 — 你的 CV 和档案看起来已完整。",
+  'cvsync.errorsTitle': "阻断性问题",
+  'cvsync.warningsTitle': "警告",
+  'cvsync.unavailable': "此处无法使用设置体检 — 未找到上层 career-ops 的 cv-sync-check.mjs 脚本。",
+  'cvsync.failed': "无法运行设置检查。",
   'nav.dashboard': "仪表盘",
   'nav.logoHome': "career-ops-ui — 仪表盘",
   'nav.scan': "搜索",

@@ -55,6 +55,7 @@ import { registerScanRoutes } from './lib/routes/scan.mjs';
 import { registerStatsRoutes } from './lib/routes/stats.mjs';
 import { registerMarketRoutes } from './lib/routes/market.mjs';
 import { registerTrackerRoutes } from './lib/routes/tracker.mjs';
+import { registerCvSyncRoutes } from './lib/routes/cv-sync.mjs';
 
 // Re-exports preserved for backward compatibility — earlier tests
 // (and any external consumers) imported these from server/index.mjs.
@@ -183,6 +184,7 @@ export function createApp() {
   registerExportRoutes(app);          // v1.100.0 — POST /api/export/docx (dependency-free .docx from markdown)
   registerDocsAssistantRoutes(app);   // v1.102.0 — POST /api/docs-assistant/ask (grounded help-guide chat)
   registerCliDetectRoutes(app);       // v1.103.0 — GET /api/cli-detect (which AI CLIs are installed; PATH scan, no exec)
+  registerCvSyncRoutes(app);          // GET /api/cv-sync-check (read-only setup doctor: cv.md/profile completeness + leftover example/metric warnings)
   registerLogoRoutes(app);            // v1.104.0 — GET /api/logo?domain= (company favicon proxy; SSRF-safe, in-mem cache)
   registerUsageRoutes(app);           // v1.105.0 — GET /api/usage (LLM token/cost rollups from data/llm-usage.jsonl)
   registerFollowupRoutes(app);        // v1.117.0 — GET /api/followup (cadence shell-out) + POST /api/followup/seed

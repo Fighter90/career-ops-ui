@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2594%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2602%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.203.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.203.0)
+[![release](https://img.shields.io/badge/release-v1.204.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.204.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.203.0** — **Pista "¿reutilizar un CV anterior?" en CV Studio** — una oferta guardada se compara con tus otras ofertas (determinista, cero tokens) para decirte si conviene reutilizar un CV adaptado, reutilizarlo con retoques o adaptar uno nuevo. **2594 pruebas.**
+> **🆕 Última versión — v1.204.0** — **"Doctor de configuración" en Ajustes** — comprobación sin tokens de tu `cv.md` + `config/profile.yml` que lista problemas bloqueantes y avisos (datos de ejemplo, métricas fijas), para arreglar una configuración incompleta antes de que debilite escaneos y adaptaciones. **2602 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 
