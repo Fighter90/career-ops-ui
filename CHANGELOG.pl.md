@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.201.0] — 2026-08-15
+
+**Naprawiono — śledzenie z zlokalizowanymi lub wariantowymi nagłówkami kolumn nie jest już puste.**
+
+### Naprawiono
+- Jeśli Twój `data/applications.md` używa nieangielskich lub wariantowych nagłówków — hiszpańskie `empresa` / `puesto` / `estado` / `fecha` / `enlace` albo `position` / `stage` / `link` — śledzenie czytało je pod złymi kluczami i pokazywało **puste kolumny Firma / Stanowisko / Status / Data / Link**. Teraz te nagłówki są mapowane na kanoniczne nazwy pól i śledzenie wyświetla się poprawnie. Śledzenie w pełni angielskie jest przetwarzane jak wcześniej.
+
+### Uwagi
+- Nowa mapa `HEADER_ALIASES` i złożenie normalizujące w `parseApplications` (`server/lib/parsers.mjs`); nieznane lub już kanoniczne nagłówki przechodzą bez zmian. `tests/tracker-header-aliases.test.mjs`. Zestaw: **2563**.
+
+
 ## [1.200.0] — 2026-08-15
 
 **Dodano — sprawdzenie jednym kliknięciem „czy nadal aktualna?" dla ofert w ATS w Twoim śledzeniu.**

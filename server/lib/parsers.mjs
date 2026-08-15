@@ -79,13 +79,65 @@ export function parseMarkdownTable(text) {
 }
 
 /**
- * Parse applications.md → array of objects keyed by lowercased headers.
+ * Header text (already lowercased + trimmed) → canonical field name.
+ *
+ * A tracker written in another language or with variant column labels — e.g.
+ * Spanish `Empresa`/`Puesto`/`Estado`, or English `Position`/`Stage`/`Link` —
+ * would otherwise land its values under the wrong keys, so the SPA (which reads
+ * `.company`/`.status`/…) renders blanks. This map folds well-known localized /
+ * variant headers back onto the canonical field name before the row object is
+ * built, so every downstream consumer sees the same field names.
+ *
+ * Mirrors the parent career-ops shared alias table (`tracker-aliases.json`):
+ * identity entries for the canonical labels plus the ES `empresa`→company /
+ * `puesto`→role pairs, extended conservatively with the remaining well-known,
+ * unambiguous Spanish translations and English variants. Kept deliberately
+ * small — an already-canonical English header is unaffected (each maps to
+ * itself, or is absent and falls through unchanged), and no risky guess that
+ * could shadow a legitimately different column is included.
+ */
+export const HEADER_ALIASES = {
+  // Canonical labels (identity) — mirrors tracker-aliases.json.
+  '#': 'num',
+  num: 'num',
+  date: 'date',
+  company: 'company',
+  via: 'via',
+  role: 'role',
+  location: 'location',
+  score: 'score',
+  status: 'status',
+  pdf: 'pdf',
+  report: 'report',
+  notes: 'notes',
+  url: 'url',
+  // Spanish localized headers.
+  empresa: 'company', // from the parent shared alias table
+  puesto: 'role', // from the parent shared alias table
+  estado: 'status',
+  fecha: 'date',
+  enlace: 'url',
+  // English variant headers.
+  position: 'role',
+  stage: 'status',
+  link: 'url',
+};
+
+/**
+ * Parse applications.md → array of objects keyed by canonical field names.
  * Adds .reportPath if a `[\d+](reports/...)` link is present in the Report cell.
  */
 export function parseApplications(text) {
   const { headers, rows } = parseMarkdownTable(text);
   if (!headers.length) return [];
-  const keys = headers.map((h) => h.replace(/^#/, 'num').toLowerCase().trim());
+  // Normalize each header cell exactly as before (leading `#` → `num`,
+  // lowercase, trim), then fold known localized/variant labels onto their
+  // canonical field name. Unknown or already-canonical headers pass through
+  // unchanged, so an all-English tracker parses byte-identically to before.
+  const keys = headers.map((h) => {
+    const norm = h.replace(/^#/, 'num').toLowerCase().trim();
+    return HEADER_ALIASES[norm] ?? norm;
+  });
 
   return rows.map((cells) => {
     const obj = {};

@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.201.0] — 2026-08-15
+
+**Corregido — un seguimiento con encabezados de columna localizados o variantes ya no se muestra en blanco.**
+
+### Corregido
+- Si tu `data/applications.md` usa encabezados no ingleses o variantes — `empresa` / `puesto` / `estado` / `fecha` / `enlace`, o `position` / `stage` / `link` — el seguimiento los leía con las claves equivocadas y mostraba **columnas Empresa / Puesto / Estado / Fecha / Enlace en blanco**. Ahora esos encabezados se pliegan a los nombres de campo canónicos y el seguimiento se muestra bien. Un seguimiento en inglés se procesa igual que antes.
+
+### Notas
+- Nuevo mapa `HEADER_ALIASES` y un plegado de normalización en `parseApplications` (`server/lib/parsers.mjs`); los encabezados desconocidos o ya canónicos pasan sin cambios. `tests/tracker-header-aliases.test.mjs`. Conjunto: **2563**.
+
+
 ## [1.200.0] — 2026-08-15
 
 **Añadido — comprobación de un clic "¿sigue activa?" para empleos en ATS desde tu seguimiento.**

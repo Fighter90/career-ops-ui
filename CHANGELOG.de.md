@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.201.0] — 2026-08-15
+
+**Behoben — ein Tracker mit lokalisierten oder abweichenden Spaltenüberschriften wird nicht mehr leer angezeigt.**
+
+### Behoben
+- Wenn deine `data/applications.md` nicht-englische oder abweichende Überschriften nutzt — spanisch `empresa` / `puesto` / `estado` / `fecha` / `enlace` oder `position` / `stage` / `link` — las der Tracker sie unter den falschen Schlüsseln und zeigte **leere Spalten Firma / Rolle / Status / Datum / Link**. Diese Überschriften werden nun auf die kanonischen Feldnamen gefaltet, sodass der Tracker korrekt anzeigt. Ein rein englischer Tracker wird wie zuvor geparst.
+
+### Hinweise
+- Neue `HEADER_ALIASES`-Tabelle + eine Normalisierungsfaltung in `parseApplications` (`server/lib/parsers.mjs`); unbekannte oder bereits kanonische Überschriften passieren unverändert. `tests/tracker-header-aliases.test.mjs`. Suite: **2563**.
+
+
 ## [1.200.0] — 2026-08-15
 
 **Hinzugefügt — ein "Noch aktiv?"-Check mit einem Klick für ATS-gehostete Jobs in deinem Tracker.**

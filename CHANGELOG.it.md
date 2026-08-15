@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.201.0] — 2026-08-15
+
+**Corretto — un tracker con intestazioni di colonna localizzate o varianti non appare più vuoto.**
+
+### Corretto
+- Se il tuo `data/applications.md` usa intestazioni non inglesi o varianti — spagnolo `empresa` / `puesto` / `estado` / `fecha` / `enlace`, o `position` / `stage` / `link` — il tracker le leggeva con le chiavi sbagliate e mostrava **colonne Azienda / Ruolo / Stato / Data / Link vuote**. Ora queste intestazioni vengono ripiegate sui nomi di campo canonici e il tracker si visualizza correttamente. Un tracker tutto in inglese viene elaborato come prima.
+
+### Note
+- Nuova mappa `HEADER_ALIASES` + una piegatura di normalizzazione in `parseApplications` (`server/lib/parsers.mjs`); intestazioni sconosciute o già canoniche passano invariate. `tests/tracker-header-aliases.test.mjs`. Suite: **2563**.
+
+
 ## [1.200.0] — 2026-08-15
 
 **Aggiunto — un controllo "ancora attiva?" con un clic per gli annunci su ATS nel tuo tracker.**

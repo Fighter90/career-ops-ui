@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.201.0] — 2026-08-15
+
+**Düzeltildi — yerelleştirilmiş veya değişken sütun başlıkları olan bir izleyici artık boş görünmüyor.**
+
+### Düzeltildi
+- `data/applications.md` dosyanız İngilizce olmayan veya değişken başlıklar kullanıyorsa — İspanyolca `empresa` / `puesto` / `estado` / `fecha` / `enlace` ya da `position` / `stage` / `link` — izleyici bunları yanlış anahtarlarla okuyup **Şirket / Rol / Durum / Tarih / Bağlantı sütunlarını boş** gösteriyordu. Artık bu başlıklar kanonik alan adlarına katlanıyor ve izleyici doğru görünüyor. Tamamen İngilizce bir izleyici eskisi gibi işlenir.
+
+### Notlar
+- `parseApplications` (`server/lib/parsers.mjs`) içinde yeni `HEADER_ALIASES` tablosu + bir normalleştirme katlaması; bilinmeyen veya zaten kanonik başlıklar değişmeden geçer. `tests/tracker-header-aliases.test.mjs`. Takım: **2563**.
+
+
 ## [1.200.0] — 2026-08-15
 
 **Eklendi — takip listenizde ATS barındırmalı ilanlar için tek tıkla "hâlâ açık mı?" kontrolü.**
