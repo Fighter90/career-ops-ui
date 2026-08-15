@@ -19,6 +19,13 @@ import { fileURLToPath } from 'node:url';
 const LOG = join(dirname(fileURLToPath(import.meta.url)), 'data', 'assessments.tsv');
 const args = process.argv.slice(2);
 
+// Read a file or return null when (and only when) it does not exist. A missing
+// file is the normal "no log yet" case; any OTHER error (EACCES, EISDIR, …) is a
+// real problem and must surface, not be masked as an empty log.
+const readOrNull = (p) => {
+  try { return readFileSync(p, 'utf8'); } catch (e) { if (e.code !== 'ENOENT') throw e; return null; }
+};
+
 const pct = (v) => {
   const s = String(v || '').replace(/%\s*$/, '').trim();
   if (!s || s === '-') return null;
@@ -38,18 +45,15 @@ if (args[0] === 'add') {
     f.subject || '', f.threshold || '-', f.score || '-', f.stale || '',
   ];
   mkdirSync(dirname(LOG), { recursive: true });
-  // Read defensively (try/catch on ENOENT) instead of existsSync-then-read, so
-  // there's no check-then-act file-system race.
-  let existing = null;
-  try { existing = readFileSync(LOG, 'utf8'); } catch { existing = null; }
+  // readOrNull (not existsSync-then-read) → no check-then-act file-system race.
+  const existing = readOrNull(LOG);
   const prefix = existing === null ? '# assessments\n' : (existing.endsWith('\n') ? '' : '\n');
   appendFileSync(LOG, prefix + row.join('\t') + '\n');
   console.log(JSON.stringify({ added: true, row }, null, 2));
   process.exit(0);
 }
 
-let content = '';
-try { content = readFileSync(LOG, 'utf8'); } catch { content = ''; }
+const content = readOrNull(LOG) ?? '';
 const assessments = [];
 for (const line of content.split('\n')) {
   const t = line.trim();
