@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.203.0] — 2026-08-15
+
+**Añadido — una pista "¿reutilizar un CV anterior?" en CV Studio.**
+
+### Añadido
+- Al abrir una oferta guardada en **CV Studio**, la app ahora la compara con tus otras ofertas guardadas (solapamiento de palabras determinista, **cero tokens**) y te dice si la más parecida es suficiente para **reutilizar** ese CV adaptado, reutilizarlo **con retoques** o **adaptar uno nuevo** — para no regenerar desde cero un puesto que ya trabajaste.
+
+### Notas
+- Nueva ruta de solo lectura `GET /api/jds/:name/reuse` que relaya `jd-similarity.mjs` del proyecto padre (solapamiento Jaccard + guarda de seniority; JSON `{decision, score, reason}`) una vez por oferta previa (fan-out limitado a 25, gana la mejor); tolerante a fallos `{available:false}` si falta el script o las ofertas previas. `tests/jd-similarity-reuse-route.test.mjs`. Conjunto: **2594**.
+
+
 ## [1.202.0] — 2026-08-15
 
 **Añadido — descubre el tablero ATS de una empresa desde #/portals y empieza a seguirlo.**

@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.203.0] — 2026-08-15
+
+**Added — a "reuse a past CV?" hint in CV Studio.**
+
+### Added
+- When you open a saved job description in **CV Studio**, the app now compares it against your other saved JDs (deterministic word overlap, **zero tokens**) and tells you whether the closest match is similar enough to **reuse** that tailored CV, reuse it **with edits**, or **tailor a fresh one** — so you don't regenerate from scratch for a role you've already targeted.
+
+### Notes
+- New read-only `GET /api/jds/:name/reuse` relays the parent's `jd-similarity.mjs` (Jaccard overlap + a seniority guard; JSON `{decision, score, reason}`) once per prior JD (fan-out capped at 25, best match wins); fail-soft `{available:false}` when the script or prior JDs are absent. `tests/jd-similarity-reuse-route.test.mjs`. Suite: **2594**.
+
+
 ## [1.202.0] — 2026-08-15
 
 **Added — discover a company's ATS job board from #/portals and start tracking it.**

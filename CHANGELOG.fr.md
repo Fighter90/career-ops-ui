@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.203.0] — 2026-08-15
+
+**Ajouté — un indice « réutiliser un CV précédent ? » dans CV Studio.**
+
+### Ajouté
+- À l'ouverture d'une offre enregistrée dans **CV Studio**, l'app la compare désormais à vos autres offres enregistrées (chevauchement de mots déterministe, **zéro token**) et vous dit si la plus proche suffit pour **réutiliser** ce CV adapté, le réutiliser **avec des retouches** ou **en adapter un nouveau** — pour ne pas repartir de zéro sur un poste déjà ciblé.
+
+### Notes
+- Nouvelle route en lecture seule `GET /api/jds/:name/reuse` qui relaie `jd-similarity.mjs` du projet parent (chevauchement Jaccard + garde de séniorité ; JSON `{decision, score, reason}`) une fois par offre antérieure (fan-out plafonné à 25, la meilleure gagne) ; échec doux `{available:false}` si le script ou les offres antérieures manquent. `tests/jd-similarity-reuse-route.test.mjs`. Suite : **2594**.
+
+
 ## [1.202.0] — 2026-08-15
 
 **Ajouté — trouvez le tableau ATS d'une entreprise depuis #/portals et suivez-le.**

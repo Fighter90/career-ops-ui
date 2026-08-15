@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.203.0] — 2026-08-15
+
+**Hinzugefügt — ein "früheren Lebenslauf wiederverwenden?"-Hinweis im CV Studio.**
+
+### Hinzugefügt
+- Wenn du im **CV Studio** eine gespeicherte Stellenanzeige öffnest, vergleicht die App sie jetzt mit deinen anderen gespeicherten Anzeigen (deterministische Wortüberlappung, **null Tokens**) und sagt dir, ob die nächste ähnlich genug ist, um den zugeschnittenen Lebenslauf **wiederzuverwenden**, ihn **mit Änderungen** wiederzuverwenden oder **einen neuen zuzuschneiden** — damit du für eine bereits anvisierte Rolle nicht von vorn beginnst.
+
+### Hinweise
+- Neue nur lesende `GET /api/jds/:name/reuse` leitet das `jd-similarity.mjs` des Elternprojekts weiter (Jaccard-Überlappung + Senioritäts-Guard; JSON `{decision, score, reason}`) einmal pro früherer Anzeige (Fan-out auf 25 begrenzt, bester Treffer gewinnt); weiches Scheitern `{available:false}`, wenn Skript oder frühere Anzeigen fehlen. `tests/jd-similarity-reuse-route.test.mjs`. Suite: **2594**.
+
+
 ## [1.202.0] — 2026-08-15
 
 **Hinzugefügt — finde das ATS-Jobboard eines Unternehmens von #/portals aus und verfolge es.**
