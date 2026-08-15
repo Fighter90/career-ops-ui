@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.205.0] — 2026-08-15
+
+**Hinzugefügt — ein Skill-Log zum Festhalten von Test-/Assessment-Ergebnissen.**
+
+### Hinzugefügt
+- Ein neues **Skill-Log** (Analyse → Skill-Log) lässt dich eine Selbsteinschätzung festhalten — Firma, Plattform, Skill, Score % und eine optionale Notiz — angehängt an `data/assessments.tsv`, mit einer Liste früherer Einträge (neueste zuerst). Tokenfrei, deterministisch; das Dateiformat verwaltet die CLI des Elternprojekts.
+
+### Hinweise
+- Neue `GET /api/assessments` (leitet die Standard-JSON-Liste von `assessment-log.mjs` weiter; weiches Scheitern `{available:false}`) + `POST /api/assessments` (explizites Schreiben: Felder als **Array-Argumente** an `assessment-log.mjs add`). Schreibsicherheit: jedes Textfeld mit einem Steuerzeichen wird abgewiesen (ein TAB würde eine Spalte zerstören, ein Zeilenumbruch eine Zeile einschleusen) → 400 vor dem Schreiben; Score/Schwelle auf 0–100 begrenzt, Längen beschränkt. `tests/assessments-route.test.mjs`. Suite: **2610**.
+
+
 ## [1.204.0] — 2026-08-15
 
 **Hinzugefügt — ein "Einrichtungs-Doktor"-Panel in den Einstellungen, das einen unvollständigen oder Beispieldaten-CV/Profil meldet.**

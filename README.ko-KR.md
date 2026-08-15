@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2602%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2610%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.204.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.204.0)
+[![release](https://img.shields.io/badge/release-v1.205.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.205.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.204.0** — **설정의 "설정 닥터"** — `cv.md` + `config/profile.yml`을 토큰 없이 점검해 차단 문제(누락 파일/필드)와 경고(남은 예시 데이터, 하드코딩 수치)를 나열하여, 불완전한 설정이 스캔·맞춤을 약화시키기 전에 고칩니다. **2602개 테스트.**
+> **🆕 최신 릴리스 — v1.205.0** — **스킬 로그** — 분석 → 스킬 로그에서 자가 평가(회사, 플랫폼, 스킬, 점수 %, 메모)를 기록합니다. `data/assessments.tsv`에 추가되고 과거 기록을 나열합니다. 토큰 없음; 쓰기는 제어 문자 방어(TSV 주입 불가). **2610개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

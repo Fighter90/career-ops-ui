@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.205.0] — 2026-08-15
+
+**Eklendi — sınav/değerlendirme sonuçlarını kaydeden bir Beceri günlüğü.**
+
+### Eklendi
+- Yeni bir **Beceri günlüğü** (Analitik → Beceri günlüğü) bir öz değerlendirmeyi kaydetmenizi sağlar — şirket, platform, beceri, puan % ve isteğe bağlı bir not — `data/assessments.tsv`'ye eklenir; geçmiş kayıtlar (en yeni önce) listelenir. Sıfır token, belirlenimci; dosya biçimini üst projenin CLI'si yönetir.
+
+### Notlar
+- Yeni `GET /api/assessments` (`assessment-log.mjs`'nin varsayılan JSON listesini aktarır; yumuşak başarısızlık `{available:false}`) + `POST /api/assessments` (açık yazma: alanlar `assessment-log.mjs add`'e **dizi argümanları** olarak geçirilir). Yazma güvenliği: kontrol karakteri içeren her metin alanı reddedilir (TAB bir sütunu bozar, yeni satır bir satır enjekte eder) → yazmadan önce 400; puan/eşik 0–100 ile sınırlı, uzunluklar sınırlı. `tests/assessments-route.test.mjs`. Takım: **2610**.
+
+
 ## [1.204.0] — 2026-08-15
 
 **Eklendi — Ayarlar'da eksik ya da örnek veri kalıntılı CV/profili işaretleyen bir "Kurulum doktoru" paneli.**

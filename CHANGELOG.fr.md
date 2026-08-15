@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.205.0] — 2026-08-15
+
+**Ajouté — un Journal de compétences pour consigner les résultats de tests/évaluations.**
+
+### Ajouté
+- Un nouveau **Journal de compétences** (Analytique → Journal de compétences) permet de consigner une auto-évaluation — entreprise, plateforme, compétence, score % et une note facultative — ajoutée à `data/assessments.tsv`, avec une liste des entrées précédentes (plus récentes d'abord). Sans token, déterministe ; le format du fichier est géré par la CLI du projet parent.
+
+### Notes
+- Nouvelle `GET /api/assessments` (relaie la liste JSON par défaut d'`assessment-log.mjs` ; échec doux `{available:false}`) + `POST /api/assessments` (écriture explicite : champs passés en **arguments de tableau** à `assessment-log.mjs add`). Sûreté d'écriture : tout champ texte contenant un caractère de contrôle est rejeté (une TAB casserait une colonne, un saut de ligne injecterait une ligne) → 400 avant écriture ; score/seuil bornés à 0–100, longueurs limitées. `tests/assessments-route.test.mjs`. Suite : **2610**.
+
+
 ## [1.204.0] — 2026-08-15
 
 **Ajouté — un panneau « Docteur de configuration » dans les Réglages qui signale un CV/profil incomplet ou avec des données d'exemple.**

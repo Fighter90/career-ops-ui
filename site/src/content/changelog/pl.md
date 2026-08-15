@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.205.0] — 2026-08-15
+
+**Dodano — dziennik umiejętności do zapisu wyników testów/ocen.**
+
+### Dodano
+- Nowy **Dziennik umiejętności** (Analityka → Dziennik umiejętności) pozwala zapisać samoocenę — firma, platforma, umiejętność, wynik % i opcjonalna notatka — dopisywaną do `data/assessments.tsv`, z listą wcześniejszych wpisów (najnowsze na górze). Bez tokenów, deterministycznie; formatem pliku zarządza CLI projektu nadrzędnego.
+
+### Uwagi
+- Nowa `GET /api/assessments` (przekazuje domyślną listę JSON `assessment-log.mjs`; miękka awaria `{available:false}`) + `POST /api/assessments` (jawny zapis: pola przekazane jako **argumenty tablicy** do `assessment-log.mjs add`). Bezpieczeństwo zapisu: każde pole tekstowe ze znakiem kontrolnym jest odrzucane (TAB zepsułby kolumnę, nowa linia wstrzyknęłaby wiersz) → 400 przed zapisem; wynik/próg 0–100, długości ograniczone. `tests/assessments-route.test.mjs`. Zestaw: **2610**.
+
+
 ## [1.204.0] — 2026-08-15
 
 **Dodano — panel „Doktor konfiguracji" w Ustawieniach, który sygnalizuje niekompletne lub przykładowe dane CV/profilu.**

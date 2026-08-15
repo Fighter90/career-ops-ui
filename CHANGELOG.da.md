@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.205.0] — 2026-08-15
+
+**Tilføjet — en færdighedslog til at notere test-/vurderingsresultater.**
+
+### Tilføjet
+- En ny **Færdighedslog** (Analyse → Færdighedslog) lader dig notere en selvvurdering — virksomhed, platform, færdighed, score % og en valgfri note — tilføjet til `data/assessments.tsv`, med en liste over tidligere poster (nyeste først). Token-fri, deterministisk; filformatet styres af forældreprojektets CLI.
+
+### Noter
+- Ny `GET /api/assessments` (relæer `assessment-log.mjs`'s standard JSON-liste; blød fejl `{available:false}`) + `POST /api/assessments` (eksplicit skrivning: felter sendt som **array-argumenter** til `assessment-log.mjs add`). Skrivesikkerhed: ethvert tekstfelt med et kontroltegn afvises (en TAB ville bryde en kolonne, et linjeskift injicere en række) → 400 før skrivning; score/tærskel begrænset til 0–100, længder afgrænset. `tests/assessments-route.test.mjs`. Suite: **2610**.
+
+
 ## [1.204.0] — 2026-08-15
 
 **Tilføjet — et "Opsætnings-doktor"-panel i Indstillinger, der markerer et ufuldstændigt CV/profil eller eksempeldata.**
