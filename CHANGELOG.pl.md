@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.204.0] — 2026-08-15
+
+**Dodano — panel „Doktor konfiguracji" w Ustawieniach, który sygnalizuje niekompletne lub przykładowe dane CV/profilu.**
+
+### Dodano
+- **Ustawienia → Doktor konfiguracji** teraz bez tokenów sprawdza `cv.md` i `config/profile.yml` i wypisuje **problemy blokujące** (brakujące pliki/pola) oraz **ostrzeżenia** (pozostałe dane przykładowe/zastępcze, zaszyte metryki) — byś wychwycił niekompletną konfigurację, zanim osłabi skany i dopasowania. Tylko do odczytu; ponowne uruchomienie jednym kliknięciem.
+
+### Uwagi
+- Nowa tylko-do-odczytu `GET /api/cv-sync-check` przekazuje `cv-sync-check.mjs` z projektu nadrzędnego, który wypisuje tekst + kod wyjścia (bez `--json`); trasa lekko parsuje jego stabilne linie `ERROR:` / `WARN:` do `{ok, errors[], warnings[]}` — o sukcesie decyduje baner, nie kod wyjścia. Miękka awaria `{available:false}` w instalacjach samodzielnych. `tests/cv-sync-check-route.test.mjs`. Zestaw: **2602**.
+
+
 ## [1.203.0] — 2026-08-15
 
 **Dodano — podpowiedź „użyć ponownie wcześniejszego CV?" w CV Studio.**

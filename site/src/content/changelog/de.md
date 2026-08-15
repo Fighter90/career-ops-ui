@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.204.0] — 2026-08-15
+
+**Hinzugefügt — ein "Einrichtungs-Doktor"-Panel in den Einstellungen, das einen unvollständigen oder Beispieldaten-CV/Profil meldet.**
+
+### Hinzugefügt
+- **Einstellungen → Einrichtungs-Doktor** prüft jetzt tokenfrei dein `cv.md` und `config/profile.yml` und listet **blockierende Probleme** (fehlende Dateien/Felder) und **Warnungen** (übrig gebliebene Beispiel-/Platzhalterdaten, hartkodierte Kennzahlen) — damit du eine unvollständige Einrichtung erkennst, bevor sie deine Scans und Zuschnitte schwächt. Nur lesend; per Klick neu ausführbar.
+
+### Hinweise
+- Neue nur lesende `GET /api/cv-sync-check` leitet das `cv-sync-check.mjs` des Elternprojekts weiter, das Text + einen Exit-Code ausgibt (kein `--json`); die Route parst dessen stabile `ERROR:` / `WARN:`-Zeilen leicht zu `{ok, errors[], warnings[]}` — das Banner, nicht der Exit-Code, entscheidet über den Erfolg. Weiches Scheitern `{available:false}` bei eigenständigen Installationen. `tests/cv-sync-check-route.test.mjs`. Suite: **2602**.
+
+
 ## [1.203.0] — 2026-08-15
 
 **Hinzugefügt — ein "früheren Lebenslauf wiederverwenden?"-Hinweis im CV Studio.**

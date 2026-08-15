@@ -9,6 +9,16 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_TR = {
+  'config.tabDoctor': "Kurulum doktoru",
+  'cvsync.title': "CV ve profil kurulum doktoru",
+  'cvsync.subtitle': "cv.md ve config/profile.yml dosyalarınızın doldurulduğunu salt okunur olarak denetler ve komut dosyalarınızda örnek veriler ya da sabit kodlanmış metrikler kaldıysa uyarır. Hiçbir şey yazılmaz veya gönderilmez.",
+  'cvsync.recheck': "Denetimi yeniden çalıştır",
+  'cvsync.checking': "Denetleniyor…",
+  'cvsync.allPassed': "Tüm denetimler geçti — CV'niz ve profiliniz eksiksiz görünüyor.",
+  'cvsync.errorsTitle': "Engelleyici sorunlar",
+  'cvsync.warningsTitle': "Uyarılar",
+  'cvsync.unavailable': "Kurulum doktoru burada kullanılamıyor — üst career-ops projesinin cv-sync-check.mjs betiği bulunamadı.",
+  'cvsync.failed': "Kurulum denetimi çalıştırılamadı.",
   'nav.dashboard': "Panel",
   'nav.logoHome': "career-ops-ui — Panel",
   'nav.scan': "Tara",

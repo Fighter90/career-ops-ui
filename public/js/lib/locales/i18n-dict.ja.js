@@ -9,6 +9,16 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_JA = {
+  'config.tabDoctor': "セットアップ診断",
+  'cvsync.title': "CV・プロフィールのセットアップ診断",
+  'cvsync.subtitle': "cv.md と config/profile.yml が記入済みかを読み取り専用で確認し、サンプルデータやハードコードされた数値がプロンプトファイルに残っていれば知らせます。書き込みも送信も行いません。",
+  'cvsync.recheck': "再チェック",
+  'cvsync.checking': "確認中…",
+  'cvsync.allPassed': "すべてのチェックに合格しました — CV とプロフィールは揃っているようです。",
+  'cvsync.errorsTitle': "重大な問題",
+  'cvsync.warningsTitle': "警告",
+  'cvsync.unavailable': "ここではセットアップ診断を利用できません — 親プロジェクト career-ops の cv-sync-check.mjs スクリプトが見つかりませんでした。",
+  'cvsync.failed': "セットアップチェックを実行できませんでした。",
   'nav.dashboard': "ダッシュボード",
   'nav.logoHome': "career-ops-ui — ダッシュボード",
   'nav.scan': "検索",

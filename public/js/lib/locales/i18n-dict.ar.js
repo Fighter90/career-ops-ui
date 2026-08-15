@@ -8,6 +8,16 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_AR = {
+  'config.tabDoctor': "فحص الإعداد",
+  'cvsync.title': "فحص إعداد السيرة الذاتية والملف الشخصي",
+  'cvsync.subtitle': "فحص للقراءة فقط للتأكد من أن ملفَّي cv.md و config/profile.yml مكتملان، وتنبيه عند بقاء بيانات نموذجية أو أرقام مثبّتة في ملفات المطالبات. لا يُكتب ولا يُرسَل أي شيء.",
+  'cvsync.recheck': "إعادة الفحص",
+  'cvsync.checking': "جارٍ الفحص…",
+  'cvsync.allPassed': "اجتازت جميع الفحوصات — تبدو سيرتك الذاتية وملفك الشخصي مكتملين.",
+  'cvsync.errorsTitle': "مشكلات حاجبة",
+  'cvsync.warningsTitle': "تحذيرات",
+  'cvsync.unavailable': "فحص الإعداد غير متاح هنا — لم يُعثر على سكربت cv-sync-check.mjs الخاص بمشروع career-ops الأصل.",
+  'cvsync.failed': "تعذّر تشغيل فحص الإعداد.",
   'nav.dashboard': "لوحة التحكم",
   'nav.logoHome': "career-ops-ui — لوحة التحكم",
   'nav.scan': "البحث",

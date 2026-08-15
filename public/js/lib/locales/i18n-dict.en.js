@@ -9,6 +9,16 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_EN = {
+  'config.tabDoctor': "Setup doctor",
+  'cvsync.title': "CV & profile setup doctor",
+  'cvsync.subtitle': "A read-only check that your cv.md and config/profile.yml are filled in — and a nudge when leftover example data or hardcoded metrics slip into your prompt files. Nothing is written or sent anywhere.",
+  'cvsync.recheck': "Re-run check",
+  'cvsync.checking': "Checking…",
+  'cvsync.allPassed': "All checks passed — your CV and profile look complete.",
+  'cvsync.errorsTitle': "Blocking issues",
+  'cvsync.warningsTitle': "Warnings",
+  'cvsync.unavailable': "Setup doctor is unavailable here — the parent career-ops cv-sync-check.mjs script was not found.",
+  'cvsync.failed': "Could not run the setup check.",
   'nav.dashboard': "Dashboard",
   'nav.logoHome': "career-ops-ui — Dashboard",
   'nav.scan': "Scan",

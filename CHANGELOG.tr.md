@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.204.0] — 2026-08-15
+
+**Eklendi — Ayarlar'da eksik ya da örnek veri kalıntılı CV/profili işaretleyen bir "Kurulum doktoru" paneli.**
+
+### Eklendi
+- **Ayarlar → Kurulum doktoru** artık `cv.md` ve `config/profile.yml` dosyanızı sıfır token ile denetler ve **engelleyici sorunları** (eksik dosya/alan) ve **uyarıları** (kalan örnek/yer tutucu veriler, sabit kodlanmış metrikler) listeler — böylece eksik bir kurulumu, taramalarınızı ve uyarlamalarınızı zayıflatmadan yakalarsınız. Salt okunur; tek tıkla yeniden çalıştırılır.
+
+### Notlar
+- Yeni salt okunur `GET /api/cv-sync-check`, üst projenin `cv-sync-check.mjs`'sini aktarır; bu betik metin + bir çıkış kodu yazar (`--json` yok); rota, kararlı `ERROR:` / `WARN:` satırlarını hafifçe `{ok, errors[], warnings[]}` olarak ayrıştırır — başarıyı çıkış kodu değil, başlık belirler. Bağımsız kurulumlarda `{available:false}` ile yumuşak başarısızlık. `tests/cv-sync-check-route.test.mjs`. Takım: **2602**.
+
+
 ## [1.203.0] — 2026-08-15
 
 **Eklendi — CV Studio'da "önceki bir CV'yi yeniden kullan?" ipucu.**

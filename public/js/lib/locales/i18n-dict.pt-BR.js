@@ -9,6 +9,16 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_PT_BR = {
+  'config.tabDoctor': "Diagnóstico de configuração",
+  'cvsync.title': "Diagnóstico de CV e perfil",
+  'cvsync.subtitle': "Uma verificação somente leitura de que seu cv.md e config/profile.yml estão preenchidos — e um alerta quando sobram dados de exemplo ou métricas fixas nos seus arquivos de prompt. Nada é gravado nem enviado.",
+  'cvsync.recheck': "Verificar novamente",
+  'cvsync.checking': "Verificando…",
+  'cvsync.allPassed': "Todas as verificações passaram — seu CV e perfil parecem completos.",
+  'cvsync.errorsTitle': "Problemas bloqueadores",
+  'cvsync.warningsTitle': "Avisos",
+  'cvsync.unavailable': "O diagnóstico de configuração não está disponível aqui — o script cv-sync-check.mjs do projeto career-ops não foi encontrado.",
+  'cvsync.failed': "Não foi possível executar a verificação de configuração.",
   'nav.dashboard': "Painel",
   'nav.logoHome': "career-ops-ui — Painel",
   'nav.scan': "Busca",

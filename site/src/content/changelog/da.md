@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.204.0] — 2026-08-15
+
+**Tilføjet — et "Opsætnings-doktor"-panel i Indstillinger, der markerer et ufuldstændigt CV/profil eller eksempeldata.**
+
+### Tilføjet
+- **Indstillinger → Opsætnings-doktor** kører nu et token-frit tjek af dit `cv.md` og `config/profile.yml` og viser **blokerende problemer** (manglende filer/felter) og **advarsler** (efterladt eksempel-/pladsholderdata, hardkodede tal) — så du fanger en ufuldstændig opsætning, før den svækker dine scanninger og tilpasninger. Skrivebeskyttet; gentag med ét klik.
+
+### Noter
+- Ny skrivebeskyttet `GET /api/cv-sync-check` relæer forældreprojektets `cv-sync-check.mjs`, som skriver tekst + en exit-kode (ingen `--json`); ruten parser let dens stabile `ERROR:` / `WARN:`-linjer til `{ok, errors[], warnings[]}` — banneret, ikke exit-koden, afgør succes. Fejler blødt `{available:false}` på selvstændige installationer. `tests/cv-sync-check-route.test.mjs`. Suite: **2602**.
+
+
 ## [1.203.0] — 2026-08-15
 
 **Tilføjet — et "genbrug et tidligere CV?"-hint i CV Studio.**

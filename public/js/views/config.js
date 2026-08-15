@@ -683,6 +683,74 @@ Router.register('config', async () => {
     }
   }
 
+  // ── Setup doctor panel — read-only cv.md / profile.yml completeness ──
+  // Relays the parent's cv-sync-check.mjs via GET /api/cv-sync-check: flags
+  // missing/short CV, leftover example profile data, and hardcoded metrics in
+  // the prompt files. Fail-soft: a muted "not available" line when the parent
+  // script is absent (CI / standalone installs), never an error toast.
+  const doctorHost = c('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } });
+  const doctorRerun = c('button', {
+    className: 'btn btn-ghost btn-sm', type: 'button', style: { alignSelf: 'flex-start' },
+    onClick: (e) => { doctorLoaded = false; loadDoctorTab(e.currentTarget); },
+  }, '↻ ' + t('cvsync.recheck', 'Re-run check'));
+  const doctorPanel = c('div', { className: 'card' }, [
+    c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('cvsync.title', 'CV & profile setup doctor')),
+    c('p', { style: { fontSize: '13px', color: 'var(--foggy)', margin: '0 0 12px' } },
+      t('cvsync.subtitle', 'A read-only check that your cv.md and config/profile.yml are filled in — and a nudge when leftover example data or hardcoded metrics slip into your prompt files. Nothing is written or sent anywhere.')),
+    doctorRerun,
+    doctorHost,
+  ]);
+
+  function doctorSection(title, items, color) {
+    return c('div', null, [
+      c('h3', { style: { fontSize: '13px', fontWeight: '700', margin: '4px 0 6px', color } },
+        title + ' (' + items.length + ')'),
+      c('ul', { style: { margin: '0', paddingLeft: '18px' } },
+        items.map((m) => c('li', { style: { fontSize: '13px', margin: '3px 0', lineHeight: '1.45' } }, String(m)))),
+    ]);
+  }
+
+  let doctorLoaded = false;
+  async function loadDoctorTab(btn) {
+    if (doctorLoaded) return;
+    doctorLoaded = true;
+    doctorHost.textContent = '';
+    doctorHost.appendChild(c('div', { className: 'loading', style: { color: 'var(--foggy)', fontSize: '13px' } },
+      t('cvsync.checking', 'Checking…')));
+    let data;
+    try {
+      data = btn
+        ? await UI.withSpinner(btn, () => API.get('/api/cv-sync-check'))
+        : await API.get('/api/cv-sync-check');
+    } catch (err) {
+      doctorLoaded = false; // allow a retry
+      doctorHost.textContent = '';
+      doctorHost.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '13px' } },
+        t('cvsync.failed', 'Could not run the setup check.')));
+      return;
+    }
+    doctorHost.textContent = '';
+    if (!data || data.available === false) {
+      // Muted note — a fresh/standalone install has no parent script; that is
+      // expected, not an error.
+      const isScriptError = data && data.reason && data.reason !== 'script-not-found';
+      doctorHost.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '13px' } },
+        isScriptError
+          ? t('cvsync.failed', 'Could not run the setup check.')
+          : t('cvsync.unavailable', 'Setup doctor is unavailable here — the parent career-ops cv-sync-check.mjs script was not found.')));
+      return;
+    }
+    const errors = Array.isArray(data.errors) ? data.errors : [];
+    const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+    if (data.ok && !warnings.length) {
+      doctorHost.appendChild(c('p', { style: { color: 'var(--ok, #2e7d32)', fontSize: '14px', fontWeight: '600' } },
+        '✓ ' + t('cvsync.allPassed', 'All checks passed — your CV and profile look complete.')));
+      return;
+    }
+    if (errors.length) doctorHost.appendChild(doctorSection(t('cvsync.errorsTitle', 'Blocking issues'), errors, 'var(--danger, #d9534f)'));
+    if (warnings.length) doctorHost.appendChild(doctorSection(t('cvsync.warningsTitle', 'Warnings'), warnings, 'var(--warn, #b8860b)'));
+  }
+
   const tabsHost = c('div', { className: 'card', style: { padding: '8px', marginBottom: '16px' } });
   const panelHost = c('div', { id: 'cfg-tabpanel', role: 'tabpanel', tabindex: '0' });
   const { tabBtn, activate } = window.createConfigTabController(c, panelHost);
@@ -691,6 +759,7 @@ Router.register('config', async () => {
   const profileLabel = t('config.tabProfile', 'Profile');
   const modesLabel = t('config.tabModes', 'Modes');
   const cliLabel = t('config.tabCli', 'AI CLI tools');
+  const doctorLabel = t('config.tabDoctor', 'Setup doctor');
   tabsHost.appendChild(c('div', {
     className: 'flex gap-3',
     role: 'tablist',
@@ -700,6 +769,7 @@ Router.register('config', async () => {
     tabBtn(profileLabel, profilePanel, 'profile', loadProfileTab),
     tabBtn(modesLabel, modesPanel, 'modes', loadModesTab),
     tabBtn(cliLabel, cliPanel, 'cli', loadCliTab),
+    tabBtn(doctorLabel, doctorPanel, 'doctor', () => loadDoctorTab()),
   ]));
 
   // G-008: support deep-linking via /#/config?tab=modes — when the SPA
@@ -710,6 +780,7 @@ Router.register('config', async () => {
     if (hash.includes('tab=modes')) return modesLabel;
     if (hash.includes('tab=profile')) return profileLabel;
     if (hash.includes('tab=cli')) return cliLabel;
+    if (hash.includes('tab=doctor')) return doctorLabel;
     return apiLabel;
   }
 

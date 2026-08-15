@@ -9,6 +9,16 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_KO = {
+  'config.tabDoctor': "설정 진단",
+  'cvsync.title': "CV 및 프로필 설정 진단",
+  'cvsync.subtitle': "cv.md와 config/profile.yml이 채워졌는지 읽기 전용으로 확인하고, 예시 데이터나 하드코딩된 수치가 프롬프트 파일에 남아 있으면 알려줍니다. 아무것도 저장하거나 전송하지 않습니다.",
+  'cvsync.recheck': "다시 검사",
+  'cvsync.checking': "확인 중…",
+  'cvsync.allPassed': "모든 검사를 통과했습니다 — CV와 프로필이 완성된 것 같습니다.",
+  'cvsync.errorsTitle': "차단 문제",
+  'cvsync.warningsTitle': "경고",
+  'cvsync.unavailable': "여기서는 설정 진단을 사용할 수 없습니다 — 상위 career-ops의 cv-sync-check.mjs 스크립트를 찾을 수 없습니다.",
+  'cvsync.failed': "설정 검사를 실행할 수 없습니다.",
   'nav.dashboard': "대시보드",
   'nav.logoHome': "career-ops-ui — 대시보드",
   'nav.scan': "검색",
