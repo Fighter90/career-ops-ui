@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.201.0] — 2026-08-15
+
+**Corrigé — un suivi avec des en-têtes de colonne localisés ou variantes ne s'affiche plus vide.**
+
+### Corrigé
+- Si votre `data/applications.md` utilise des en-têtes non anglais ou variantes — espagnol `empresa` / `puesto` / `estado` / `fecha` / `enlace`, ou `position` / `stage` / `link` — le suivi les lisait sous les mauvaises clés et affichait des **colonnes Entreprise / Poste / Statut / Date / Lien vides**. Ces en-têtes se replient désormais sur les noms de champ canoniques, et le suivi s'affiche correctement. Un suivi tout en anglais est traité comme avant.
+
+### Notes
+- Nouvelle table `HEADER_ALIASES` + un repli de normalisation dans `parseApplications` (`server/lib/parsers.mjs`) ; les en-têtes inconnus ou déjà canoniques passent inchangés. `tests/tracker-header-aliases.test.mjs`. Suite : **2563**.
+
+
 ## [1.200.0] — 2026-08-15
 
 **Ajouté — une vérification en un clic « toujours ouverte ? » pour les offres hébergées sur ATS dans votre suivi.**

@@ -8,6 +8,17 @@
 
 ---
 
+## [1.201.0] — 2026-08-15
+
+**修復 — 使用在地化或變體欄標題的追蹤器不再顯示為空白。**
+
+### 修復
+- 如果你的 `data/applications.md` 使用非英文或變體標題——西班牙文 `empresa` / `puesto` / `estado` / `fecha` / `enlace`，或 `position` / `stage` / `link`——追蹤器會用錯誤的鍵讀取，導致 **公司 / 職位 / 狀態 / 日期 / 連結欄為空**。現在這些標題會摺疊到規範欄位名，追蹤器正常顯示。全英文追蹤器的解析與先前完全一致。
+
+### 說明
+- 在 `parseApplications`（`server/lib/parsers.mjs`）中新增 `HEADER_ALIASES` 對應與正規化摺疊；未知或已規範的標題原樣通過。`tests/tracker-header-aliases.test.mjs`。測試套件：**2563**。
+
+
 ## [1.200.0] — 2026-08-15
 
 **新增 — 在追蹤器中一鍵查看 ATS 職缺「是否仍在招」。**

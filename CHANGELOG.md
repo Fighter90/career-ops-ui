@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.201.0] — 2026-08-15
+
+**Fixed — a tracker with localized or variant column headers no longer renders blank.**
+
+### Fixed
+- If your `data/applications.md` uses non-English or variant column headers — Spanish `empresa` / `puesto` / `estado` / `fecha` / `enlace`, or `position` / `stage` / `link` — the tracker read them under the wrong keys and showed **blank Company / Role / Status / Date / Link columns**. Those headers now fold onto the canonical field names, so the tracker renders correctly. An all-English tracker parses exactly as before.
+
+### Notes
+- New `HEADER_ALIASES` map + a normalization fold in `parseApplications` (`server/lib/parsers.mjs`); unknown or already-canonical headers pass through unchanged. `tests/tracker-header-aliases.test.mjs`. Suite: **2563**.
+
+
 ## [1.200.0] — 2026-08-15
 
 **Added — a one-click "still live?" check for ATS-hosted jobs in your tracker.**

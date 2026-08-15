@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.201.0] — 2026-08-15
+
+**Corrigido — um rastreador com cabeçalhos de coluna localizados ou variantes não fica mais em branco.**
+
+### Corrigido
+- Se o seu `data/applications.md` usa cabeçalhos não ingleses ou variantes — `empresa` / `puesto` / `estado` / `fecha` / `enlace`, ou `position` / `stage` / `link` — o rastreador os lia com as chaves erradas e mostrava **colunas Empresa / Cargo / Status / Data / Link em branco**. Agora esses cabeçalhos são mapeados para os nomes de campo canônicos e o rastreador exibe corretamente. Um rastreador em inglês é processado igual a antes.
+
+### Notas
+- Novo mapa `HEADER_ALIASES` e uma dobra de normalização em `parseApplications` (`server/lib/parsers.mjs`); cabeçalhos desconhecidos ou já canônicos passam sem alteração. `tests/tracker-header-aliases.test.mjs`. Conjunto: **2563**.
+
+
 ## [1.200.0] — 2026-08-15
 
 **Adicionado — verificação com um clique "ainda ativa?" para vagas em ATS no seu rastreador.**

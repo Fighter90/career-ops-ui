@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.201.0] — 2026-08-15
+
+**Rettet — en tracker med lokaliserede eller variant-kolonneoverskrifter vises ikke længere tom.**
+
+### Rettet
+- Hvis din `data/applications.md` bruger ikke-engelske eller variant-overskrifter — spansk `empresa` / `puesto` / `estado` / `fecha` / `enlace`, eller `position` / `stage` / `link` — læste trackeren dem under de forkerte nøgler og viste **tomme Virksomhed / Rolle / Status / Dato / Link-kolonner**. Nu foldes disse overskrifter til de kanoniske feltnavne, og trackeren vises korrekt. En helt engelsk tracker parses som før.
+
+### Noter
+- Ny `HEADER_ALIASES`-tabel + en normaliseringsfoldning i `parseApplications` (`server/lib/parsers.mjs`); ukendte eller allerede kanoniske overskrifter passerer uændret. `tests/tracker-header-aliases.test.mjs`. Suite: **2563**.
+
+
 ## [1.200.0] — 2026-08-15
 
 **Tilføjet — et "stadig ledig?"-tjek med ét klik for ATS-hostede job i din tracker.**

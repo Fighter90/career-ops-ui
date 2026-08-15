@@ -9,6 +9,17 @@
 ---
 
 
+## [1.201.0] — 2026-08-15
+
+**修复 — 使用本地化或变体列标题的跟踪器不再显示为空白。**
+
+### 修复
+- 如果你的 `data/applications.md` 使用非英文或变体标题——西班牙语 `empresa` / `puesto` / `estado` / `fecha` / `enlace`，或 `position` / `stage` / `link`——跟踪器会用错误的键读取，导致 **公司 / 职位 / 状态 / 日期 / 链接列为空**。现在这些标题会折叠到规范字段名，跟踪器正常显示。全英文跟踪器的解析与之前完全一致。
+
+### 说明
+- 在 `parseApplications`（`server/lib/parsers.mjs`）中新增 `HEADER_ALIASES` 映射与规范化折叠；未知或已规范的标题原样通过。`tests/tracker-header-aliases.test.mjs`。测试套件：**2563**。
+
+
 ## [1.200.0] — 2026-08-15
 
 **新增 — 在跟踪器中一键查看 ATS 招聘岗位"是否仍在招"。**
