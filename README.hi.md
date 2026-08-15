@@ -9,7 +9,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2586%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2588%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -18,7 +18,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.202.0** — **#/portals से ATS बोर्ड खोजें** — कंपनी का नाम लिखें और ऐप Greenhouse/Ashby/Lever पर उसके सार्वजनिक बोर्ड की जाँच करता है (शून्य LLM, कोई ब्राउज़र नहीं, SSRF-सुरक्षित); एक क्लिक में ट्रैक की गई कंपनियों में जुड़ जाता है। **2586 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.202.0** — **#/portals से ATS बोर्ड खोजें** — कंपनी का नाम लिखें और ऐप Greenhouse/Ashby/Lever पर उसके सार्वजनिक बोर्ड की जाँच करता है (शून्य LLM, कोई ब्राउज़र नहीं, SSRF-सुरक्षित); एक क्लिक में ट्रैक की गई कंपनियों में जुड़ जाता है। **2588 परीक्षण।**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

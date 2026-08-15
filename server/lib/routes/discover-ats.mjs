@@ -68,6 +68,18 @@ export function registerDiscoverAtsRoutes(app) {
     const careersUrl = typeof body.careers_url === 'string' ? body.careers_url.trim() : '';
     const provider = typeof body.provider === 'string' ? body.provider.trim().slice(0, MAX_PROVIDER_LEN) : '';
 
+    // Reject control characters (especially newlines) in every written field. A
+    // newline could splice an arbitrary EXTRA line into portals.yml that still
+    // PARSES — a valid-YAML injection that sails straight past the `yaml.load`
+    // re-parse guard below (which only rejects syntactically BROKEN YAML).
+    const hasCtrl = (s) => {
+      for (let i = 0; i < s.length; i += 1) { const c = s.charCodeAt(i); if (c < 0x20 || c === 0x7f) return true; }
+      return false;
+    };
+    if (hasCtrl(name) || hasCtrl(careersUrl) || hasCtrl(provider)) {
+      return res.status(400).json({ error: 'control characters are not allowed' });
+    }
+
     if (!name) return res.status(400).json({ error: 'name is required' });
     if (name.length > MAX_NAME_LEN) return res.status(400).json({ error: `name too long (max ${MAX_NAME_LEN} chars)` });
     if (!isAllowedCareersUrl(careersUrl)) {

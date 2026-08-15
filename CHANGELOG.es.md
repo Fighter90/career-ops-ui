@@ -19,7 +19,7 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 - En **#/portals**, escribe el nombre de una empresa y la app sondea **Greenhouse, Ashby y Lever** por su tablero público — **cero LLM, sin navegador** — y muestra los tableros que existen y listan ≥1 empleo. Un clic añade el tablero elegido a las empresas que vigila tu escáner. El sondeo es de solo lectura; la escritura en `portals.yml` ocurre solo al pulsar **Añadir**.
 
 ### Notas
-- Nuevo `server/lib/discover-ats.mjs` (sondeo de slug con host fijo y charset validado vía `safeGet` con DNS fijado, ≤12 sondeos/petición) + `POST /api/portals/discover` (solo lectura) y `POST /api/portals/track` (escritura explícita: `withFileLock` + empalme de texto + reverificación + renombrado atómico; solo hosts ATS conocidos, idempotente). Reutiliza el registro de adaptadores del escáner. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Conjunto: **2586**.
+- Nuevo `server/lib/discover-ats.mjs` (sondeo de slug con host fijo y charset validado vía `safeGet` con DNS fijado, ≤12 sondeos/petición) + `POST /api/portals/discover` (solo lectura) y `POST /api/portals/track` (escritura explícita: `withFileLock` + empalme de texto + reverificación + renombrado atómico; solo hosts ATS conocidos, idempotente). Reutiliza el registro de adaptadores del escáner. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Conjunto: **2588**.
 
 
 ## [1.201.0] — 2026-08-15

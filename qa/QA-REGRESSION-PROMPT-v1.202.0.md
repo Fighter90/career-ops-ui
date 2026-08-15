@@ -7,7 +7,7 @@
 ## §0 — Gates
 
 ```bash
-npm test                                          # 2586, exit 0 (capture $? directly, never | grep)
+npm test                                          # 2588, exit 0 (capture $? directly, never | grep)
 node --test tests/discover-ats-resolver.test.mjs  # resolver + slug + budget
 node --test tests/discover-ats-route.test.mjs     # /discover preview + /track write
 node scripts/check-changelog-parity.mjs           # 16 non-EN at v1.202.0
@@ -34,4 +34,8 @@ node scripts/check-changelog-parity.mjs           # 16 non-EN at v1.202.0
 
 ## §4 — Sign-off
 
-Suite **2586** green (+23) · CHANGELOG parity ×17 at v1.202.0 · README badge+banner ×17 · site changelog ×17 · two new routes (one read-only, one explicit write), no new dependency, no parent edits. NOTE: `/api/portals/track` is a new FS-writing route — CodeQL may raise the usual missing-rate-limiting false positive (dismiss post-merge, per the project's standing note).
+Suite **2588** green (+25) · CHANGELOG parity ×17 at v1.202.0 · README badge+banner ×17 · site changelog ×17 · two new routes (one read-only, one explicit write), no new dependency, no parent edits.
+
+**Write-injection hardening (added after the first CodeQL run):** `/track` now rejects any of `name` / `careers_url` / `provider` that contains a **control character** — a newline could otherwise splice an arbitrary EXTRA line into `portals.yml` that still PARSES as valid YAML, sailing past the `yaml.load` re-parse guard (which only catches *broken* YAML). `provider` is additionally `yamlScalar`-quoted. `tests/discover-ats-route.test.mjs` asserts a newline in `provider` and in `careers_url` each → **400, no write, no injected key**.
+
+**CodeQL** raises two alerts on `routes/discover-ats.mjs`, both handled: (1) *Missing rate limiting* on `/track` — the standing FS-write false positive (loopback/basicauth-gated; custom middleware isn't credited) → dismiss post-merge. (2) *Network data written to file* — request-body data reaches the file write; **mitigated** by the control-char guard + `yamlScalar` + the https-on-known-host + `resolveAdapter` validation, but the taint tracker still flags the flow (it doesn't credit the guard) → dismiss post-merge with that justification.

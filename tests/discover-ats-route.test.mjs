@@ -127,6 +127,32 @@ test('POST /api/portals/track: careers_url on an unknown host → 400 (no write)
   assert.equal(readFileSync(resolve(root, 'portals.yml'), 'utf8'), before, 'must not write on rejection');
 });
 
+test('POST /api/portals/track: a newline in a field (YAML-injection attempt) → 400 (no write)', async () => {
+  const before = readFileSync(resolve(root, 'portals.yml'), 'utf8');
+  // A newline in `provider` would splice an arbitrary EXTRA key that still PARSES
+  // as valid YAML — sailing straight past the `yaml.load` re-parse guard. The
+  // control-char guard must reject it before any write.
+  const r = await post('/api/portals/track', {
+    name: 'Inject',
+    careers_url: 'https://jobs.lever.co/inject',
+    provider: 'lever\n    evil_injected: pwned',
+  });
+  assert.equal(r.status, 400);
+  const after = readFileSync(resolve(root, 'portals.yml'), 'utf8');
+  assert.equal(after, before, 'must not write when a field carries control characters');
+  assert.ok(!after.includes('evil_injected'), 'no injected key may reach portals.yml');
+});
+
+test('POST /api/portals/track: a newline in careers_url → 400 (no write)', async () => {
+  const before = readFileSync(resolve(root, 'portals.yml'), 'utf8');
+  const r = await post('/api/portals/track', {
+    name: 'Inject2',
+    careers_url: 'https://job-boards.greenhouse.io/x\n    evil2: pwned',
+  });
+  assert.equal(r.status, 400);
+  assert.equal(readFileSync(resolve(root, 'portals.yml'), 'utf8'), before, 'must not write on a control-char careers_url');
+});
+
 test('POST /api/portals/track: missing name → 400', async () => {
   const r = await post('/api/portals/track', { careers_url: 'https://job-boards.greenhouse.io/foo' });
   assert.equal(r.status, 400);

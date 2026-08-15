@@ -16,7 +16,7 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 - Em **#/portals**, digite o nome de uma empresa e o app sonda **Greenhouse, Ashby e Lever** pelo quadro público — **zero LLM, sem navegador** — e mostra os quadros que existem e listam ≥1 vaga. Um clique adiciona o quadro escolhido às empresas que seu scanner monitora. A sondagem é somente leitura; a gravação em `portals.yml` só ocorre ao clicar em **Adicionar**.
 
 ### Notas
-- Novo `server/lib/discover-ats.mjs` (sondagem de slug com host fixo e charset validado via `safeGet` com DNS fixado, ≤12 sondagens/requisição) + `POST /api/portals/discover` (somente leitura) e `POST /api/portals/track` (gravação explícita: `withFileLock` + emenda de texto + reverificação + renomeação atômica; só hosts ATS conhecidos, idempotente). Reutiliza o registro de adaptadores do scanner. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Conjunto: **2586**.
+- Novo `server/lib/discover-ats.mjs` (sondagem de slug com host fixo e charset validado via `safeGet` com DNS fixado, ≤12 sondagens/requisição) + `POST /api/portals/discover` (somente leitura) e `POST /api/portals/track` (gravação explícita: `withFileLock` + emenda de texto + reverificação + renomeação atômica; só hosts ATS conhecidos, idempotente). Reutiliza o registro de adaptadores do scanner. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Conjunto: **2588**.
 
 
 ## [1.201.0] — 2026-08-15

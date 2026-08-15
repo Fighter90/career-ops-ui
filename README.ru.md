@@ -7,7 +7,7 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2586%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2588%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
@@ -16,7 +16,7 @@ _Неофициальный интерфейс — не аффилирован �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.202.0** — **Поиск ATS-досок на #/portals** — введите компанию, приложение проверит Greenhouse/Ashby/Lever на её публичную доску (без LLM, без браузера, SSRF-безопасно), и одним кликом добавит её в отслеживаемые. **2586 тестов.**
+> **🆕 Последний релиз — v1.202.0** — **Поиск ATS-досок на #/portals** — введите компанию, приложение проверит Greenhouse/Ashby/Lever на её публичную доску (без LLM, без браузера, SSRF-безопасно), и одним кликом добавит её в отслеживаемые. **2588 тестов.**
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

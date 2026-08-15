@@ -17,7 +17,7 @@
 - 在 **#/portals** 输入公司名，应用会在 **Greenhouse、Ashby、Lever** 探测其公开招聘板——**零 LLM、无浏览器**——并显示存在且当前列有 ≥1 个职位的招聘板。点击一次即可把所选招聘板加入扫描器监视的公司。探测为只读；仅当点击**添加**时才写入 `portals.yml`。
 
 ### 说明
-- 新增 `server/lib/discover-ats.mjs`（固定主机、字符集校验的 slug 经 DNS 固定的 `safeGet` 探测，每次请求 ≤12 次）+ `POST /api/portals/discover`（只读）与 `POST /api/portals/track`（显式写入：`withFileLock` + 文本拼接 + 重新解析保护 + 原子重命名；仅已知 ATS 主机、幂等）。复用扫描器的适配器注册表确认招聘板并统计职位。i18n ×17。`tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`。测试套件：**2586**。
+- 新增 `server/lib/discover-ats.mjs`（固定主机、字符集校验的 slug 经 DNS 固定的 `safeGet` 探测，每次请求 ≤12 次）+ `POST /api/portals/discover`（只读）与 `POST /api/portals/track`（显式写入：`withFileLock` + 文本拼接 + 重新解析保护 + 原子重命名；仅已知 ATS 主机、幂等）。复用扫描器的适配器注册表确认招聘板并统计职位。i18n ×17。`tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`。测试套件：**2588**。
 
 
 ## [1.201.0] — 2026-08-15

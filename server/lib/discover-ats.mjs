@@ -164,7 +164,7 @@ export function yamlScalar(value) {
 export function renderPortalEntry(match) {
   const lines = [`  - name: ${yamlScalar(match.name)}`];
   lines.push(`    careers_url: ${match.careers_url}`);
-  if (match.provider) lines.push(`    provider: ${match.provider}`);
+  if (match.provider) lines.push(`    provider: ${yamlScalar(match.provider)}`);
   lines.push('    enabled: true');
   return '\n' + lines.join('\n') + '\n';
 }

@@ -7,7 +7,7 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2586%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2588%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -16,7 +16,7 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.202.0** — **在 #/portals 发现 ATS 招聘板** — 输入公司名，应用会探测 Greenhouse/Ashby/Lever 的公开招聘板（零 LLM、无浏览器、防 SSRF），一键加入你追踪的公司。 **2586 项测试。**
+> **🆕 最新版本 — v1.202.0** — **在 #/portals 发现 ATS 招聘板** — 输入公司名，应用会探测 Greenhouse/Ashby/Lever 的公开招聘板（零 LLM、无浏览器、防 SSRF），一键加入你追踪的公司。 **2588 项测试。**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 
