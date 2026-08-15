@@ -7,16 +7,16 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2563%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2586%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.201.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.201.0)
+[![release](https://img.shields.io/badge/release-v1.202.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.202.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.201.0** — **Zlokalizowane nagłówki śledzenia nie są już puste** — `data/applications.md` z nieangielskimi lub wariantowymi nagłówkami (`empresa`/`estado`, `position`/`stage`/`link`…) jest teraz mapowany na kanoniczne pola. **2563 testów.**
+> **🆕 Najnowsze wydanie — v1.202.0** — **Znajduj tablice ATS z #/portals** — wpisz firmę, a aplikacja sprawdzi Greenhouse/Ashby/Lever pod kątem publicznej tablicy (zero LLM, bez przeglądarki, bezpiecznie wobec SSRF); jedno kliknięcie dodaje ją do śledzonych firm. **2586 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

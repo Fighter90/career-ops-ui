@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.202.0] — 2026-08-15
+
+**Aggiunto — scopri la bacheca ATS di un'azienda da #/portals e inizia a seguirla.**
+
+### Aggiunto
+- Su **#/portals**, digita il nome di un'azienda e l'app sonda **Greenhouse, Ashby e Lever** per la sua bacheca pubblica — **zero LLM, nessun browser** — e mostra le bacheche che esistono e listano ≥1 offerta. Un clic aggiunge la bacheca scelta alle aziende monitorate dallo scanner. Il sondaggio è di sola lettura; la scrittura su `portals.yml` avviene solo al clic su **Aggiungi**.
+
+### Note
+- Nuovo `server/lib/discover-ats.mjs` (sonda di slug con host fisso e charset validato tramite `safeGet` con DNS fissato, ≤12 sonde/richiesta) + `POST /api/portals/discover` (sola lettura) e `POST /api/portals/track` (scrittura esplicita: `withFileLock` + innesto testuale + guardia di ri-parsing + rinomina atomica; solo host ATS noti, idempotente). Riusa il registro di adattatori dello scanner. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Suite: **2586**.
+
+
 ## [1.201.0] — 2026-08-15
 
 **Corretto — un tracker con intestazioni di colonna localizzate o varianti non appare più vuoto.**

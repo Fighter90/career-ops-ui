@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.202.0] — 2026-08-15
+
+**Added — discover a company's ATS job board from #/portals and start tracking it.**
+
+### Added
+- On **#/portals**, type a company name and the app probes **Greenhouse, Ashby, and Lever** for its public job board — **zero LLM, zero browser** — and shows the boards that exist and currently list ≥1 job. One click adds a chosen board to the companies your scanner watches. All probing is read-only; the write to `portals.yml` happens only when you click **Add**.
+
+### Notes
+- New `server/lib/discover-ats.mjs` (fixed-host, charset-validated slug probe through the DNS-pinned `safeGet`, ≤12 probes/request, cross-origin redirect → not resolved) + `POST /api/portals/discover` (read-only) and `POST /api/portals/track` (explicit write: `withFileLock` + surgical text splice + re-parse guard + atomic rename; only known ATS hosts, idempotent). Reuses the scanner's own adapter registry to confirm each board and count jobs. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Suite: **2586**.
+
+
 ## [1.201.0] — 2026-08-15
 
 **Fixed — a tracker with localized or variant column headers no longer renders blank.**

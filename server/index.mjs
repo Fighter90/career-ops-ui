@@ -39,6 +39,7 @@ import { registerLlmRoutes } from './lib/routes/llm.mjs';
 import { registerOpenrouterRoutes } from './lib/routes/openrouter.mjs';
 import { registerAutoPipelineRoutes } from './lib/routes/auto-pipeline.mjs';
 import { registerPortalsRoutes } from './lib/routes/portals.mjs';
+import { registerDiscoverAtsRoutes } from './lib/routes/discover-ats.mjs';
 import { registerExportRoutes } from './lib/routes/export.mjs';
 import { registerDocsAssistantRoutes } from './lib/routes/docs-assistant.mjs';
 import { registerCliDetectRoutes } from './lib/routes/cli-detect.mjs';
@@ -178,6 +179,7 @@ export function createApp() {
   registerOpenrouterRoutes(app);      // v1.57.0 — GET /api/openrouter/models (model catalogue proxy)
   registerAutoPipelineRoutes(app);    // v1.16.0 — server-side SSE auto-pipeline (G-007 follow-up)
   registerPortalsRoutes(app);         // v1.99.0 — GET /api/portals + POST /api/portals/health (watched companies + liveness)
+  registerDiscoverAtsRoutes(app);     // POST /api/portals/discover (name → ATS board, read-only) + POST /api/portals/track (explicit add)
   registerExportRoutes(app);          // v1.100.0 — POST /api/export/docx (dependency-free .docx from markdown)
   registerDocsAssistantRoutes(app);   // v1.102.0 — POST /api/docs-assistant/ask (grounded help-guide chat)
   registerCliDetectRoutes(app);       // v1.103.0 — GET /api/cli-detect (which AI CLIs are installed; PATH scan, no exec)

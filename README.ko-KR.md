@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2563%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2586%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.201.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.201.0)
+[![release](https://img.shields.io/badge/release-v1.202.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.202.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.201.0** — **지역화된 트래커 머리글이 더 이상 빈칸으로 표시되지 않음** — 비영어/변형 머리글(`empresa`/`estado`, `position`/`stage`/`link`…)을 쓰는 `data/applications.md`가 이제 표준 필드로 접혀 올바르게 채워집니다. **2563개 테스트.**
+> **🆕 최신 릴리스 — v1.202.0** — **#/portals에서 ATS 보드 찾기** — 회사 이름을 입력하면 Greenhouse/Ashby/Lever의 공개 보드를 탐색하고(LLM 0, 브라우저 없음, SSRF 안전), 한 번 클릭으로 추적 회사에 추가합니다. **2586개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

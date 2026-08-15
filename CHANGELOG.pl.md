@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.202.0] — 2026-08-15
+
+**Dodano — znajdź tablicę ATS firmy z poziomu #/portals i zacznij ją śledzić.**
+
+### Dodano
+- Na **#/portals** wpisz nazwę firmy, a aplikacja sprawdzi **Greenhouse, Ashby i Lever** pod kątem jej publicznej tablicy — **zero LLM, bez przeglądarki** — i pokaże tablice, które istnieją i mają ≥1 ofertę. Jedno kliknięcie dodaje wybraną tablicę do firm śledzonych przez skaner. Sondowanie jest tylko do odczytu; zapis do `portals.yml` następuje tylko po kliknięciu **Dodaj**.
+
+### Uwagi
+- Nowy `server/lib/discover-ats.mjs` (sondowanie sluga o stałym hoście i zweryfikowanym charset przez `safeGet` z przypiętym DNS, ≤12 sond/żądanie) + `POST /api/portals/discover` (tylko odczyt) i `POST /api/portals/track` (jawny zapis: `withFileLock` + wstawka tekstowa + strażnik ponownego parsowania + atomowa zmiana nazwy; tylko znane hosty ATS, idempotentnie). Ponownie używa rejestru adapterów skanera. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Zestaw: **2586**.
+
+
 ## [1.201.0] — 2026-08-15
 
 **Naprawiono — śledzenie z zlokalizowanymi lub wariantowymi nagłówkami kolumn nie jest już puste.**

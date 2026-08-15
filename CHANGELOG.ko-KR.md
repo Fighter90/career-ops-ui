@@ -9,6 +9,17 @@
 ---
 
 
+## [1.202.0] — 2026-08-15
+
+**추가 — #/portals에서 회사의 ATS 채용 보드를 찾아 바로 추적을 시작하세요.**
+
+### 추가됨
+- **#/portals**에서 회사 이름을 입력하면 앱이 **Greenhouse, Ashby, Lever**에서 공개 채용 보드를 탐색하여 — **LLM 0, 브라우저 없음** — 존재하고 현재 채용 ≥1건인 보드를 보여줍니다. 한 번 클릭하면 선택한 보드를 스캐너가 감시하는 회사에 추가합니다. 탐색은 읽기 전용이며, `portals.yml` 쓰기는 **추가**를 눌렀을 때만 일어납니다.
+
+### 참고
+- 새 `server/lib/discover-ats.mjs`(고정 호스트·문자셋 검증 슬러그를 DNS 고정 `safeGet`으로 탐색, 요청당 ≤12회) + `POST /api/portals/discover`(읽기 전용) 및 `POST /api/portals/track`(명시적 쓰기: `withFileLock` + 텍스트 스플라이스 + 재파싱 가드 + 원자적 교체; 알려진 ATS 호스트만, 멱등). 스캐너의 어댑터 레지스트리를 재사용해 보드 확인·채용 수 계산. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. 스위트: **2586**.
+
+
 ## [1.201.0] — 2026-08-15
 
 **수정 — 지역화되거나 변형된 열 머리글을 쓰는 트래커가 더 이상 빈칸으로 표시되지 않습니다.**

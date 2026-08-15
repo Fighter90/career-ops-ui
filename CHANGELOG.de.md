@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.202.0] — 2026-08-15
+
+**Hinzugefügt — finde das ATS-Jobboard eines Unternehmens von #/portals aus und verfolge es.**
+
+### Hinzugefügt
+- Auf **#/portals** gibst du einen Firmennamen ein, und die App prüft **Greenhouse, Ashby und Lever** auf dessen öffentliches Board — **null LLM, kein Browser** — und zeigt die Boards, die existieren und aktuell ≥1 Job listen. Ein Klick fügt das gewählte Board den Firmen hinzu, die dein Scanner beobachtet. Das Prüfen ist schreibgeschützt; die Schreibaktion in `portals.yml` erfolgt nur beim Klick auf **Hinzufügen**.
+
+### Hinweise
+- Neue `server/lib/discover-ats.mjs` (Slug-Probe mit festem Host und charset-validiert über das DNS-gepinnte `safeGet`, ≤12 Proben/Anfrage) + `POST /api/portals/discover` (nur lesen) und `POST /api/portals/track` (explizites Schreiben: `withFileLock` + chirurgisches Text-Splicing + Re-Parse-Guard + atomares Umbenennen; nur bekannte ATS-Hosts, idempotent). Verwendet die Adapter-Registry des Scanners wieder. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Suite: **2586**.
+
+
 ## [1.201.0] — 2026-08-15
 
 **Behoben — ein Tracker mit lokalisierten oder abweichenden Spaltenüberschriften wird nicht mehr leer angezeigt.**
