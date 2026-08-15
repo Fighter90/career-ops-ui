@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.199.0] — 2026-08-15
+
+**Behoben — breite Tabellen scrollen jetzt seitwärts, statt abgeschnitten zu werden.**
+
+### Behoben
+- Auf der **Scan**-Seite (und in allen anderen Tabellen — Tracker, Statistik, Nutzung, Dashboard) wurde eine Tabelle, die breiter als das Fenster war, **ohne Bildlaufleiste abgeschnitten**, sodass die rechten Spalten unerreichbar waren. Breite Tabellen zeigen jetzt bei Bedarf eine **horizontale Bildlaufleiste**, sodass jede Spalte in jeder Breite erreichbar bleibt.
+
+### Hinweise
+- `.table-wrap` in `public/css/components.css` wechselte von `overflow: hidden` zu `overflow-x: auto` (wie der bestehende `.reports-scroll`-Container); der abgerundete Rahmen bleibt erhalten. `tests/table-wrap-scroll.test.mjs`. Suite: **2540**.
+
+
 ## [1.198.0] — 2026-08-15
 
 **Hinzugefügt — Scan-Wiederholungen nutzen jetzt exponentielles Backoff, Jitter und respektieren das `Retry-After` eines Rate-Limiters.**

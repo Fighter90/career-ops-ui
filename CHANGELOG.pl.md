@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.199.0] — 2026-08-15
+
+**Naprawiono — szerokie tabele przewijają się teraz w poziomie zamiast być ucinane.**
+
+### Naprawiono
+- Na stronie **Scan** (oraz we wszystkich innych tabelach — Śledzenie, Statystyki, Użycie, Pulpit) tabela szersza od okna była **ucinana bez paska przewijania**, przez co ostatnie kolumny były nieosiągalne. Szerokie tabele pokazują teraz w razie potrzeby **poziomy pasek przewijania**, więc każda kolumna pozostaje dostępna przy każdej szerokości.
+
+### Uwagi
+- `.table-wrap` w `public/css/components.css` zmieniono z `overflow: hidden` na `overflow-x: auto` (jak istniejący kontener `.reports-scroll`); zaokrąglona ramka jest zachowana. `tests/table-wrap-scroll.test.mjs`. Zestaw: **2540**.
+
+
 ## [1.198.0] — 2026-08-15
 
 **Dodano — ponowne próby skanowania używają teraz wykładniczego wycofywania, jittera i respektują `Retry-After` od ogranicznika tempa.**

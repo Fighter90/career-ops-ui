@@ -347,10 +347,14 @@
 .score-low::before  { content: '○'; }
 
 /* ───────────────────────── tables ───────────────────────── */
+/* v1.199.0 — wide tables (scan/tracker/stats/usage/…) scroll horizontally
+   instead of clipping. Was `overflow: hidden`, which cut off nowrap columns on
+   a narrow viewport with no scrollbar (the scan-table "не вмещается" bug). Any
+   non-visible overflow still clips to the rounded border, so the corners stay. */
 .table-wrap {
   border: 1px solid var(--slate);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow-x: auto;
 }
 table.tbl {
   width: 100%;

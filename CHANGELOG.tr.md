@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.199.0] — 2026-08-15
+
+**Düzeltildi — geniş tablolar artık kırpılmak yerine yatay kayıyor.**
+
+### Düzeltildi
+- **Scan** sayfasında (ve diğer tüm tablolarda — İzleyici, İstatistikler, Kullanım, Panel) pencereden geniş bir tablo **kaydırma çubuğu olmadan kırpılıyor** ve en sağdaki sütunlara erişilemiyordu. Geniş tablolar artık gerektiğinde **yatay kaydırma çubuğu** gösteriyor, böylece her sütun her genişlikte erişilebilir kalıyor.
+
+### Notlar
+- `public/css/components.css` içindeki `.table-wrap`, `overflow: hidden` yerine `overflow-x: auto` oldu (mevcut `.reports-scroll` kabıyla aynı); yuvarlatılmış kenarlık korunur. `tests/table-wrap-scroll.test.mjs`. Takım: **2540**.
+
+
 ## [1.198.0] — 2026-08-15
 
 **Eklendi — tarama yeniden denemeleri artık üstel geri çekilme, jitter kullanıyor ve hız sınırlayıcının `Retry-After` başlığına uyuyor.**

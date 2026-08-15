@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.199.0] — 2026-08-15
+
+**Rettet — brede tabeller ruller nu vandret i stedet for at blive skåret af.**
+
+### Rettet
+- På **Scan**-siden (og i alle andre tabeller — Tracker, Statistik, Forbrug, Dashboard) blev en tabel bredere end vinduet **klippet af uden rullebjælke**, så de yderste kolonner var uden for rækkevidde. Brede tabeller viser nu en **vandret rullebjælke** efter behov, så hver kolonne er tilgængelig i enhver bredde.
+
+### Noter
+- `.table-wrap` i `public/css/components.css` skiftede fra `overflow: hidden` til `overflow-x: auto` (som den eksisterende `.reports-scroll`-container); den afrundede kant bevares. `tests/table-wrap-scroll.test.mjs`. Suite: **2540**.
+
+
 ## [1.198.0] — 2026-08-15
 
 **Tilføjet — scan-genforsøg bruger nu eksponentiel backoff, jitter og respekterer en rate-limiters `Retry-After`.**

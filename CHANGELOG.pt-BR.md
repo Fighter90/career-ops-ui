@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.199.0] — 2026-08-15
+
+**Corrigido — tabelas largas agora rolam lateralmente em vez de serem cortadas.**
+
+### Corrigido
+- Na página **Scan** (e em todas as outras tabelas — Rastreador, Estatísticas, Uso, Painel) uma tabela mais larga que a janela ficava **cortada sem barra de rolagem**, deixando as últimas colunas inacessíveis. Agora tabelas largas exibem uma **barra de rolagem horizontal** quando necessário, então toda coluna permanece acessível em qualquer largura.
+
+### Notas
+- `.table-wrap` em `public/css/components.css` passou de `overflow: hidden` para `overflow-x: auto` (espelha o contêiner `.reports-scroll`); a borda arredondada é preservada. `tests/table-wrap-scroll.test.mjs`. Conjunto: **2540**.
+
+
 ## [1.198.0] — 2026-08-15
 
 **Adicionado — as retentativas de varredura agora usam recuo exponencial, jitter e respeitam o `Retry-After` de um limitador de taxa.**

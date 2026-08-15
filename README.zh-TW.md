@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2536%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2540%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.198.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.198.0)
+[![release](https://img.shields.io/badge/release-v1.199.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.199.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.198.0** — **更智慧的掃描重試** — 當看板在掃描途中短暫限流（HTTP 429/5xx）時，重試現在採用**指數退避 + 抖動**並尊重（有上限的）`Retry-After`，而非固定短延遲。 **2536 項測試。**
+> **🆕 最新版本 — v1.199.0** — **過寬的表格可橫向捲動** — 比視窗更寬的表格（Scan、追蹤器、統計…）會被截斷且沒有捲軸；現在依需要顯示**橫向捲軸**，每一欄都可存取。 **2540 項測試。**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 
