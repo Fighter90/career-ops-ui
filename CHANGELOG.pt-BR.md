@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.207.0] — 2026-08-15
+
+**Adicionado — registre o resultado de uma candidatura direto do rastreamento.**
+
+### Adicionado
+- Cada linha do rastreamento ganha uma ação **Resultado**: escolha o que aconteceu (rejeitado, oferta recebida, contratado, oferta recusada, sem resposta, avançou para entrevista), adicione uma nota opcional, **pré-visualize** o status resultante e registre. Registrar arquiva os artefatos do CV e da carta enviados e sincroniza o rastreamento ao estado canônico — uma ação determinística em vez de editar o rastreamento à mão.
+
+### Notas
+- Nova `POST /api/outcome` retransmite a CLI de resultados: `dryRun:true` é uma prévia somente leitura (localiza a linha, informa o estado resultante, não escreve nada); uma chamada real registra. Segurança de escrita: o tipo de resultado é restrito ao conjunto conhecido e todo campo de texto é rejeitado se tiver caracteres de controle antes do shell-out (argumentos como array, spawn — sem shell). `tests/outcome-route.test.mjs`. Conjunto: **2618**.
+
+
+
 ## [1.206.0] — 2026-08-15
 
 **Documentação — o guia de ajuda integrado agora cobre os cinco recursos mais recentes, em todos os 17 idiomas.**

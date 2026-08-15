@@ -9,6 +9,19 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_TR = {
+  'track.outcome.btn': "Sonuç",
+  'track.outcome.record': "Sonucu kaydet",
+  'track.outcome.rejected': "Reddedildi",
+  'track.outcome.offer': "Teklif alındı",
+  'track.outcome.hired': "İşe alındı / kabul",
+  'track.outcome.declined': "Teklif reddedildi",
+  'track.outcome.ghosted': "Yanıt yok / görmezden",
+  'track.outcome.interview': "Mülakata geçti",
+  'track.outcome.notePh': "Not (isteğe bağlı)",
+  'track.outcome.preview': "Önizleme",
+  'track.outcome.previewResult': "#{num} {company} → {state} olarak ayarlar",
+  'track.outcome.recorded': "Sonuç kaydedildi",
+  'track.outcome.failed': "Sonuç kaydedilemedi",
   'config.tabDoctor': "Kurulum doktoru",
   'cvsync.title': "CV ve profil kurulum doktoru",
   'cvsync.subtitle': "cv.md ve config/profile.yml dosyalarınızın doldurulduğunu salt okunur olarak denetler ve komut dosyalarınızda örnek veriler ya da sabit kodlanmış metrikler kaldıysa uyarır. Hiçbir şey yazılmaz veya gönderilmez.",

@@ -12,11 +12,11 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.206.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.206.0)
+[![release](https://img.shields.io/badge/release-v1.207.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.206.0** — **Uygulama içi yardım güncellendi** — yardım kılavuzu (ve «Yardıma sor» asistanı) artık en yeni beş özelliği — Kurulum doktoru, ATS panolarını keşfet, «hâlâ açık mı?» denetimi, «önceki CV'yi yeniden kullan?» ipucu ve Beceri günlüğü — 17 dilin tamamında kapsıyor. **2610 test.**
+> **🆕 Son sürüm — v1.207.0** — **Takip tablosundan sonuç kaydedin** — her satırda bir **Sonuç** işlemi: ne olduğunu seçin (reddedildi / teklif / işe alındı / reddedildi / yanıt yok / mülakat), ortaya çıkan durumu önizleyin ve kaydedin. Gönderilen dosyaları arşivler ve takip durumunu senkronlar. **2618 test.**
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
 

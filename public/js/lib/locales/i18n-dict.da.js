@@ -8,6 +8,19 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_DA = {
+  'track.outcome.btn': "Resultat",
+  'track.outcome.record': "Registrér resultat",
+  'track.outcome.rejected': "Afvist",
+  'track.outcome.offer': "Tilbud modtaget",
+  'track.outcome.hired': "Ansat / accepteret",
+  'track.outcome.declined': "Tilbud afvist",
+  'track.outcome.ghosted': "Intet svar / ghostet",
+  'track.outcome.interview': "Gik videre til samtale",
+  'track.outcome.notePh': "Note (valgfri)",
+  'track.outcome.preview': "Forhåndsvis",
+  'track.outcome.previewResult': "Sætter #{num} {company} → {state}",
+  'track.outcome.recorded': "Resultat registreret",
+  'track.outcome.failed': "Kunne ikke registrere resultatet",
   'config.tabDoctor': "Opsætningstjek",
   'cvsync.title': "CV- og profiltjek",
   'cvsync.subtitle': "Et skrivebeskyttet tjek af, at din cv.md og config/profile.yml er udfyldt — og et vink, når eksempeldata eller hardkodede tal bliver tilbage i dine prompt-filer. Intet skrives eller sendes.",

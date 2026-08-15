@@ -9,6 +9,19 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_EN = {
+  'track.outcome.btn': "Outcome",
+  'track.outcome.record': "Record outcome",
+  'track.outcome.rejected': "Rejected",
+  'track.outcome.offer': "Offer received",
+  'track.outcome.hired': "Hired / accepted",
+  'track.outcome.declined': "Offer declined",
+  'track.outcome.ghosted': "No response / ghosted",
+  'track.outcome.interview': "Advanced to interview",
+  'track.outcome.notePh': "Note (optional)",
+  'track.outcome.preview': "Preview",
+  'track.outcome.previewResult': "Will set #{num} {company} → {state}",
+  'track.outcome.recorded': "Outcome recorded",
+  'track.outcome.failed': "Could not record the outcome",
   'config.tabDoctor': "Setup doctor",
   'cvsync.title': "CV & profile setup doctor",
   'cvsync.subtitle': "A read-only check that your cv.md and config/profile.yml are filled in — and a nudge when leftover example data or hardcoded metrics slip into your prompt files. Nothing is written or sent anywhere.",

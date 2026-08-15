@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.207.0] — 2026-08-15
+
+**Eklendi — bir başvurunun sonucunu doğrudan takip tablosundan kaydedin.**
+
+### Eklendi
+- Her takip satırına bir **Sonuç** işlemi geldi: ne olduğunu seçin (reddedildi, teklif alındı, işe alındı, teklif reddedildi, yanıt yok, mülakata geçti), isteğe bağlı bir not ekleyin, ortaya çıkan durumu **önizleyin** ve kaydedin. Kaydetmek gönderilen CV ve ön yazı dosyalarını arşivler ve takip tablosunu kanonik duruma senkronlar — elle düzenleme yerine tek, belirlenimci bir işlem.
+
+### Notlar
+- Yeni `POST /api/outcome`, sonuç CLI’sini aktarır: `dryRun:true` salt-okunur bir önizlemedir (satırı eşler, ortaya çıkan durumu bildirir, hiçbir şey yazmaz); gerçek çağrı kaydeder. Yazma güvenliği: sonuç türü bilinen kümeyle sınırlanır ve her metin alanı çağrıdan önce kontrol karakteri içerirse reddedilir (dizi argümanları, spawn — kabuk yok). `tests/outcome-route.test.mjs`. Takım: **2618**.
+
+
+
 ## [1.206.0] — 2026-08-15
 
 **Belgeler — uygulama içi yardım kılavuzu artık en yeni beş özelliği 17 dilin tamamında kapsıyor.**

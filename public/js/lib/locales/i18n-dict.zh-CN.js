@@ -9,6 +9,19 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_ZH_CN = {
+  'track.outcome.btn': "结果",
+  'track.outcome.record': "记录结果",
+  'track.outcome.rejected': "被拒",
+  'track.outcome.offer': "收到 Offer",
+  'track.outcome.hired': "录用 / 已接受",
+  'track.outcome.declined': "拒绝 Offer",
+  'track.outcome.ghosted': "无回复 / 被无视",
+  'track.outcome.interview': "进入面试",
+  'track.outcome.notePh': "备注（可选）",
+  'track.outcome.preview': "预览",
+  'track.outcome.previewResult': "将设为 #{num} {company} → {state}",
+  'track.outcome.recorded': "结果已记录",
+  'track.outcome.failed': "无法记录结果",
   'config.tabDoctor': "设置体检",
   'cvsync.title': "CV 与档案设置体检",
   'cvsync.subtitle': "只读检查你的 cv.md 和 config/profile.yml 是否已填写，并在示例数据或硬编码指标残留在提示文件中时提醒你。不写入也不发送任何内容。",

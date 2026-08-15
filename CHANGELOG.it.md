@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.207.0] — 2026-08-15
+
+**Aggiunto — registra l'esito di una candidatura direttamente dal tracker.**
+
+### Aggiunto
+- Ogni riga del tracker ottiene un'azione **Esito**: scegli cosa è successo (rifiutato, offerta ricevuta, assunto, offerta rifiutata, nessuna risposta, passato al colloquio), aggiungi una nota facoltativa, **visualizza in anteprima** lo stato risultante e registralo. La registrazione archivia gli artefatti del CV e della lettera inviati e sincronizza il tracker allo stato canonico — un'azione deterministica invece della modifica manuale.
+
+### Note
+- Nuova `POST /api/outcome` che inoltra la CLI degli esiti: `dryRun:true` è un'anteprima in sola lettura (individua la riga, riporta lo stato risultante, non scrive nulla); una chiamata reale lo registra. Sicurezza in scrittura: il tipo di esito è limitato all'insieme noto e ogni campo di testo viene rifiutato se contiene caratteri di controllo prima della chiamata (argomenti come array, spawn — nessuna shell). `tests/outcome-route.test.mjs`. Suite: **2618**.
+
+
+
 ## [1.206.0] — 2026-08-15
 
 **Documentazione — la guida in-app ora copre le cinque funzionalità più recenti, in tutte e 17 le lingue.**

@@ -9,6 +9,19 @@
  * Structured-data fixture: exempt from the 400-LOC file-size rule.
  */
 window.__I18N_DICT_IT = {
+  'track.outcome.btn': "Esito",
+  'track.outcome.record': "Registra esito",
+  'track.outcome.rejected': "Rifiutato",
+  'track.outcome.offer': "Offerta ricevuta",
+  'track.outcome.hired': "Assunto / accettato",
+  'track.outcome.declined': "Offerta rifiutata",
+  'track.outcome.ghosted': "Nessuna risposta / ignorato",
+  'track.outcome.interview': "Passato al colloquio",
+  'track.outcome.notePh': "Nota (facoltativo)",
+  'track.outcome.preview': "Anteprima",
+  'track.outcome.previewResult': "Imposterà #{num} {company} → {state}",
+  'track.outcome.recorded': "Esito registrato",
+  'track.outcome.failed': "Impossibile registrare l’esito",
   'config.tabDoctor': "Diagnostica configurazione",
   'cvsync.title': "Diagnostica di CV e profilo",
   'cvsync.subtitle': "Un controllo di sola lettura che il tuo cv.md e config/profile.yml siano compilati — e un avviso quando restano dati di esempio o metriche fisse nei file dei prompt. Non viene scritto né inviato nulla.",
