@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.199.0] — 2026-08-15
+
+**Fixed — wide tables now scroll sideways instead of being cut off.**
+
+### Fixed
+- On the **Scan** page (and every other table — Tracker, Statistics, Usage, Dashboard) a table wider than the window was **clipped with no scrollbar**, leaving the rightmost columns unreachable. Wide tables now show a **horizontal scrollbar** on demand, so every column stays reachable at any width.
+
+### Notes
+- `.table-wrap` in `public/css/components.css` switched from `overflow: hidden` to `overflow-x: auto` (mirrors the existing `.reports-scroll` container); the rounded border is preserved. `tests/table-wrap-scroll.test.mjs`. Suite: **2540**.
+
+
 ## [1.198.0] — 2026-08-15
 
 **Added — scan retries now use exponential backoff, jitter, and honour a rate-limiter's `Retry-After`.**

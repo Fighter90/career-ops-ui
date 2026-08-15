@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.199.0] — 2026-08-15
+
+**Corregido — las tablas anchas ahora se desplazan lateralmente en vez de cortarse.**
+
+### Corregido
+- En la página **Scan** (y en el resto de tablas — Seguimiento, Estadísticas, Uso, Panel) una tabla más ancha que la ventana quedaba **recortada sin barra de desplazamiento**, dejando inaccesibles las últimas columnas. Ahora las tablas anchas muestran una **barra de desplazamiento horizontal** cuando hace falta, así toda columna sigue siendo accesible en cualquier ancho.
+
+### Notas
+- `.table-wrap` en `public/css/components.css` pasó de `overflow: hidden` a `overflow-x: auto` (replica el contenedor `.reports-scroll`); se conserva el borde redondeado. `tests/table-wrap-scroll.test.mjs`. Conjunto: **2540**.
+
+
 ## [1.198.0] — 2026-08-15
 
 **Añadido — los reintentos de escaneo ahora usan retroceso exponencial, jitter y respetan el `Retry-After` de un limitador de tasa.**

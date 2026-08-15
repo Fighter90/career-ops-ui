@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.199.0] — 2026-08-15
+
+**Corrigé — les tableaux larges défilent désormais horizontalement au lieu d'être coupés.**
+
+### Corrigé
+- Sur la page **Scan** (et dans tous les autres tableaux — Suivi, Statistiques, Utilisation, Tableau de bord), un tableau plus large que la fenêtre était **tronqué sans barre de défilement**, rendant les dernières colonnes inaccessibles. Les tableaux larges affichent maintenant une **barre de défilement horizontale** au besoin, donc chaque colonne reste accessible à toute largeur.
+
+### Notes
+- `.table-wrap` dans `public/css/components.css` passe de `overflow: hidden` à `overflow-x: auto` (comme le conteneur `.reports-scroll` existant) ; la bordure arrondie est préservée. `tests/table-wrap-scroll.test.mjs`. Suite : **2540**.
+
+
 ## [1.198.0] — 2026-08-15
 
 **Ajouté — les nouvelles tentatives de scan utilisent désormais un backoff exponentiel, du jitter, et respectent le `Retry-After` d'un limiteur de débit.**

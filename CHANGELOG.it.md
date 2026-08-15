@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.199.0] — 2026-08-15
+
+**Corretto — le tabelle larghe ora scorrono lateralmente invece di essere tagliate.**
+
+### Corretto
+- Nella pagina **Scan** (e in tutte le altre tabelle — Tracker, Statistiche, Utilizzo, Dashboard) una tabella più larga della finestra veniva **tagliata senza barra di scorrimento**, lasciando irraggiungibili le ultime colonne. Ora le tabelle larghe mostrano una **barra di scorrimento orizzontale** quando serve, così ogni colonna resta raggiungibile a qualsiasi larghezza.
+
+### Note
+- `.table-wrap` in `public/css/components.css` è passato da `overflow: hidden` a `overflow-x: auto` (come il contenitore `.reports-scroll` esistente); il bordo arrotondato è preservato. `tests/table-wrap-scroll.test.mjs`. Suite: **2540**.
+
+
 ## [1.198.0] — 2026-08-15
 
 **Aggiunto — i ritentativi di scansione ora usano backoff esponenziale, jitter e rispettano il `Retry-After` di un limitatore di frequenza.**
