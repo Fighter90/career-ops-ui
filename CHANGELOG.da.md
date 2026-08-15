@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.202.0] — 2026-08-15
+
+**Tilføjet — find en virksomheds ATS-jobboard fra #/portals og begynd at følge det.**
+
+### Tilføjet
+- På **#/portals** skriver du et virksomhedsnavn, og appen prober **Greenhouse, Ashby og Lever** for dens offentlige board — **nul tokens, ingen browser** — og viser de boards, der findes og aktuelt har ≥1 job. Ét klik føjer det valgte board til de virksomheder, din scanner overvåger. Probing er skrivebeskyttet; skrivning til `portals.yml` sker kun, når du klikker **Tilføj**.
+
+### Noter
+- Ny `server/lib/discover-ats.mjs` (fast-host, charset-valideret slug-probe via DNS-fastgjort `safeGet`, ≤12 prober/forespørgsel) + `POST /api/portals/discover` (skrivebeskyttet) og `POST /api/portals/track` (eksplicit skrivning: `withFileLock` + kirurgisk tekst-splejsning + genparse-vagt + atomar omdøbning; kun kendte ATS-hosts, idempotent). Genbruger scannerens adapter-register. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Suite: **2588**.
+
+
 ## [1.201.0] — 2026-08-15
 
 **Rettet — en tracker med lokaliserede eller variant-kolonneoverskrifter vises ikke længere tom.**

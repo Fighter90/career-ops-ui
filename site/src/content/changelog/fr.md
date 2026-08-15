@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.202.0] — 2026-08-15
+
+**Ajouté — trouvez le tableau ATS d'une entreprise depuis #/portals et suivez-le.**
+
+### Ajouté
+- Sur **#/portals**, saisissez un nom d'entreprise et l'app sonde **Greenhouse, Ashby et Lever** pour son tableau public — **zéro LLM, sans navigateur** — et affiche les tableaux qui existent et listent ≥1 offre. Un clic ajoute le tableau choisi aux entreprises que votre scanner surveille. Le sondage est en lecture seule ; l'écriture dans `portals.yml` n'a lieu qu'au clic sur **Ajouter**.
+
+### Notes
+- Nouveau `server/lib/discover-ats.mjs` (sondage de slug à hôte fixe et charset validé via `safeGet` à DNS épinglé, ≤12 sondes/requête) + `POST /api/portals/discover` (lecture seule) et `POST /api/portals/track` (écriture explicite : `withFileLock` + épissure de texte + garde de re-parsing + renommage atomique ; hôtes ATS connus uniquement, idempotent). Réutilise le registre d'adaptateurs du scanner. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Suite : **2588**.
+
+
 ## [1.201.0] — 2026-08-15
 
 **Corrigé — un suivi avec des en-têtes de colonne localisés ou variantes ne s'affiche plus vide.**

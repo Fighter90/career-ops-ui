@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.202.0] — 2026-08-15
+
+**Eklendi — bir şirketin ATS iş panosunu #/portals'tan keşfedin ve izlemeye başlayın.**
+
+### Eklendi
+- **#/portals**'ta bir şirket adı yazın; uygulama **Greenhouse, Ashby ve Lever**'i genel panosu için yoklar — **sıfır LLM, tarayıcı yok** — ve mevcut olup şu anda ≥1 ilan listeleyen panoları gösterir. Tek tık, seçilen panoyu tarayıcınızın izlediği şirketlere ekler. Yoklama salt okunurdur; `portals.yml`'ye yazma yalnızca **Ekle**'ye tıklayınca olur.
+
+### Notlar
+- Yeni `server/lib/discover-ats.mjs` (sabit ana makine, karakter kümesi doğrulanmış slug'ı DNS sabitli `safeGet` ile yoklar, istek başına ≤12 yoklama) + `POST /api/portals/discover` (salt okunur) ve `POST /api/portals/track` (açık yazma: `withFileLock` + metin ekleme + yeniden ayrıştırma koruması + atomik yeniden adlandırma; yalnızca bilinen ATS ana makineleri, idempotent). Tarayıcının adaptör kaydını yeniden kullanır. i18n ×17. `tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`. Takım: **2588**.
+
+
 ## [1.201.0] — 2026-08-15
 
 **Düzeltildi — yerelleştirilmiş veya değişken sütun başlıkları olan bir izleyici artık boş görünmüyor.**

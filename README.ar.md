@@ -7,16 +7,16 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2563%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2588%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.201.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.201.0)
+[![release](https://img.shields.io/badge/release-v1.202.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.202.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.201.0** — **ترويسات المتتبِّع المُترجَمة لم تعد فارغة** — ملف `data/applications.md` بترويسات غير إنجليزية أو بديلة (`empresa`/`estado`، `position`/`stage`/`link`…) يُطوى الآن إلى الحقول القانونية. **2563 اختبارًا.**
+> **🆕 أحدث إصدار — v1.202.0** — **اكتشف لوحات ATS من #/portals** — اكتب اسم شركة فيفحص التطبيق Greenhouse/Ashby/Lever بحثًا عن لوحتها العامة (بلا LLM، بلا متصفح، آمن ضد SSRF)، ونقرة واحدة تضيفها إلى شركاتك المتتبَّعة. **2588 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

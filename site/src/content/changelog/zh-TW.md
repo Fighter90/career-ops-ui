@@ -8,6 +8,17 @@
 
 ---
 
+## [1.202.0] — 2026-08-15
+
+**新增 — 在 #/portals 中發現公司的 ATS 招聘板並開始追蹤。**
+
+### 新增
+- 在 **#/portals** 輸入公司名，應用會在 **Greenhouse、Ashby、Lever** 探測其公開招聘板——**零 LLM、無瀏覽器**——並顯示存在且目前列有 ≥1 個職缺的招聘板。點一下即可把所選招聘板加入掃描器監視的公司。探測為唯讀；僅當點擊**新增**時才寫入 `portals.yml`。
+
+### 說明
+- 新增 `server/lib/discover-ats.mjs`（固定主機、字元集驗證的 slug 經 DNS 固定的 `safeGet` 探測，每次請求 ≤12 次）+ `POST /api/portals/discover`（唯讀）與 `POST /api/portals/track`（顯式寫入：`withFileLock` + 文字拼接 + 重新解析保護 + 原子重新命名；僅已知 ATS 主機、冪等）。複用掃描器的配接器註冊表確認招聘板並統計職缺。i18n ×17。`tests/discover-ats-resolver.test.mjs` + `tests/discover-ats-route.test.mjs`。測試套件：**2588**。
+
+
 ## [1.201.0] — 2026-08-15
 
 **修復 — 使用在地化或變體欄標題的追蹤器不再顯示為空白。**
