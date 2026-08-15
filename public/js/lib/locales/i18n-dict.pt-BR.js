@@ -1325,4 +1325,11 @@ window.__I18N_DICT_PT_BR = {
   'digest.competencies': "Competências recorrentes",
   'digest.gaps': "Lacunas em aberto",
   'digest.failed': "Não foi possível carregar o resumo",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "Ainda ativa?",
+  'track.liveChecking': "Verificando…",
+  'track.liveLive': "Ativa",
+  'track.liveExpired': "Expirada",
+  'track.liveUncertain': "Desconhecido",
+  'track.liveCheckAria': "Verificar se esta vaga ainda está ativa",
 };

@@ -9,6 +9,17 @@
 ---
 
 
+## [1.200.0] — 2026-08-15
+
+**追加 — トラッカーで ATS 掲載求人の「まだ募集中？」をワンクリック確認。**
+
+### 追加
+- **#/tracker** で、URL が Greenhouse / Lever / Ashby / Workday / SmartRecruiters の掲載である応募に **「まだ募集中？」** ボタンが表示されます。1 クリックで ATS 自身の公開 JSON を照会し — **トークン 0・ブラウザなし** — **募集中 / 終了 / 不明** を表示するので、1 件ずつ開かずに消えた求人を見つけられます。保守的設計：明確な 404/410 のみ *終了* と判定し、曖昧なものは *不明* のまま（誤った *終了* を出しません）。
+
+### 備考
+- 新規 `server/lib/liveness-core.mjs` + `liveness-api.mjs` と読み取り専用 `GET /api/liveness?url=`（書き込みなし・LLM なし）。SSRF 安全：URL を `isValidJobUrl` で検査し、ATS API は固定ホスト＋文字種検証済みパスで DNS ピン留めの `safeGet` 経由でのみ取得します。`tests/liveness-core.test.mjs` + `tests/liveness-route.test.mjs`。スイート: **2557**。
+
+
 ## [1.199.0] — 2026-08-15
 
 **修正 — 幅の広い表が切れずに横スクロールするようになりました。**

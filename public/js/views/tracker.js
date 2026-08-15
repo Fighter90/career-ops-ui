@@ -197,7 +197,12 @@ Router.register('tracker', async () => {
       c('td', null, companyCell),
       c('td', null, r.role || ''),
       c('td', null, c('span', { className: 'score-pill ' + scoreCls }, r.score || '—')),
-      c('td', null, c('span', { className: 'badge ' + statusClass(r.status) }, r.status || '')),
+      // Status badge + (for ATS postings) a lazy "still live?" check. The
+      // affordance is null for non-ATS rows, so most rows are unchanged.
+      c('td', null, [
+        c('span', { className: 'badge ' + statusClass(r.status) }, r.status || ''),
+        livenessAffordance(r.url),
+      ]),
       // G-006 (v1.15.0) — Legitimacy column. Mirrors the badge tint used on
       // /#/reports cards. Empty string when the source row had no Legitimacy
       // column (graceful degrade for pre-v1.15 trackers).
@@ -426,6 +431,76 @@ async function runFix(btn, path, t) {
   } catch (e) {
     UI.toast((e && e.message) || 'tracker error', 'error');
   }
+}
+
+// --- Liveness badge (#/tracker) --------------------------------------------
+// A zero-token "still live?" check for ATS-hosted postings. The client mirrors
+// the server's ATS host/path recognition (server/lib/liveness-api.mjs) so the
+// affordance only appears for URLs the GET /api/liveness endpoint can actually
+// resolve — Greenhouse / Lever / Ashby / Workday / SmartRecruiters posting URLs.
+
+function isAtsPostingUrl(raw) {
+  let u;
+  try { u = new URL(raw); } catch { return false; }
+  if (u.protocol !== 'https:') return false;
+  const h = u.hostname;
+  const p = u.pathname;
+  // Greenhouse: boards[.eu].greenhouse.io/{board}/jobs/{numericId}
+  if (/(^|\.)greenhouse\.io$/.test(h) && /^\/[^/]+\/jobs\/\d+\/?$/.test(p)) return true;
+  // Lever: jobs[.eu].lever.co/{slug}/{id}
+  if (/^jobs\.(?:eu\.)?lever\.co$/.test(h) && /^\/[^/]+\/[^/?#]+\/?$/.test(p)) return true;
+  // Ashby: jobs.ashbyhq.com/{org}/{jobId}[/application]
+  if (h === 'jobs.ashbyhq.com' && /^\/[^/]+\/[^/]+(?:\/application)?\/?$/.test(p)) return true;
+  // Workday: {tenant}.{wd?}.myworkdayjobs.com[/xx-XX]/{site}/job/{jobPath}
+  if (/\.myworkdayjobs\.com$/.test(h) && /\/job\//.test(p)) return true;
+  // SmartRecruiters: jobs.smartrecruiters.com/{company}/{numericId}[-slug]
+  if (h === 'jobs.smartrecruiters.com' && /^\/[^/]+\/\d+/.test(p)) return true;
+  return false;
+}
+
+// Returns a small lazy "still live?" control for an ATS posting URL, or null
+// for any row whose URL is not a recognizable ATS posting. CSP-safe DOM only.
+function livenessAffordance(url) {
+  const c = UI.el;
+  const t = (k, f) => I18n.t(k, f);
+  if (!url || !isAtsPostingUrl(url)) return null;
+
+  const wrap = c('span', { className: 'liveness-wrap', style: { marginLeft: '6px' } });
+  const pill = (labelKey, fallback, cls, reason) => c('span', {
+    className: 'badge ' + cls,
+    title: reason || '',
+  }, t(labelKey, fallback));
+
+  const btn = c('button', {
+    className: 'btn btn-ghost btn-sm',
+    type: 'button',
+    style: { padding: '0 8px', fontSize: '11px' },
+    'aria-label': t('track.liveCheckAria', 'Check whether this job posting is still live'),
+    title: t('track.liveCheckAria', 'Check whether this job posting is still live'),
+  }, t('track.liveCheck', 'Still live?'));
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    btn.textContent = t('track.liveChecking', 'Checking…');
+    try {
+      const res = await API.get('/api/liveness?url=' + encodeURIComponent(url));
+      const status = (res && res.result) || 'uncertain';
+      wrap.textContent = '';
+      if (status === 'live') {
+        wrap.appendChild(pill('track.liveLive', 'Live', 'badge-ok', res && res.reason));
+      } else if (status === 'expired') {
+        wrap.appendChild(pill('track.liveExpired', 'Expired', 'badge-bad', res && res.reason));
+      } else {
+        wrap.appendChild(pill('track.liveUncertain', 'Unknown', 'badge-warn', res && res.reason));
+      }
+    } catch (e) {
+      wrap.textContent = '';
+      wrap.appendChild(pill('track.liveUncertain', 'Unknown', 'badge-warn', (e && e.message) || ''));
+    }
+  });
+
+  wrap.appendChild(btn);
+  return wrap;
 }
 
 function statusClass(s) {

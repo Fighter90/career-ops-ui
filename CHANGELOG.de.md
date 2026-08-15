@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.200.0] — 2026-08-15
+
+**Hinzugefügt — ein "Noch aktiv?"-Check mit einem Klick für ATS-gehostete Jobs in deinem Tracker.**
+
+### Hinzugefügt
+- Auf **#/tracker** zeigt eine Bewerbung, deren URL ein Greenhouse- / Lever- / Ashby- / Workday- / SmartRecruiters-Posting ist, jetzt einen **"Noch aktiv?"**-Button. Ein Klick fragt das öffentliche JSON des ATS selbst ab — **null Tokens, kein Browser** — und zeigt **Aktiv / Abgelaufen / Unbekannt**, damit du tote Ausschreibungen findest, ohne jede zu öffnen. Konservativ ausgelegt: nur ein eindeutiges 404/410 gilt als *Abgelaufen*; alles Mehrdeutige bleibt *Unbekannt* (nie ein falsches *Abgelaufen*).
+
+### Hinweise
+- Neue `server/lib/liveness-core.mjs` + `liveness-api.mjs` und eine nur lesende `GET /api/liveness?url=` (keine Schreibvorgänge, kein LLM). SSRF-sicher: Die URL läuft durch `isValidJobUrl`, dann wird die ATS-API nur über das DNS-gepinnte `safeGet` mit festem Host und charset-validierten Pfadsegmenten erreicht. `tests/liveness-core.test.mjs` + `tests/liveness-route.test.mjs`. Suite: **2557**.
+
+
 ## [1.199.0] — 2026-08-15
 
 **Behoben — breite Tabellen scrollen jetzt seitwärts, statt abgeschnitten zu werden.**

@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.200.0] — 2026-08-15
+
+**Added — a one-click "still live?" check for ATS-hosted jobs in your tracker.**
+
+### Added
+- On **#/tracker**, an application whose URL is a Greenhouse / Lever / Ashby / Workday / SmartRecruiters posting now shows a **"Still live?"** button. One click asks the ATS's own public JSON — **zero tokens, no browser** — and shows **Live / Expired / Unknown**, so you can spot dead postings without opening each one. Conservative by design: only a definitive 404/410 reads as *Expired*; anything ambiguous stays *Unknown* (never a false *Expired*).
+
+### Notes
+- New `server/lib/liveness-core.mjs` + `liveness-api.mjs` and a read-only `GET /api/liveness?url=` (no writes, no LLM). SSRF-safe: the URL is `isValidJobUrl`-gated, then the ATS API is reached only through the DNS-pinned `safeGet` with a fixed host + charset-validated path segments. `tests/liveness-core.test.mjs` + `tests/liveness-route.test.mjs`. Suite: **2557**.
+
+
 ## [1.199.0] — 2026-08-15
 
 **Fixed — wide tables now scroll sideways instead of being cut off.**

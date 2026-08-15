@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.200.0] — 2026-08-15
+
+**Dodano — sprawdzenie jednym kliknięciem „czy nadal aktualna?" dla ofert w ATS w Twoim śledzeniu.**
+
+### Dodano
+- Na **#/tracker** aplikacja, której URL to oferta Greenhouse / Lever / Ashby / Workday / SmartRecruiters, ma teraz przycisk **„Czy nadal aktualna?"**. Jedno kliknięcie odpytuje publiczny JSON samego ATS — **zero tokenów, bez przeglądarki** — i pokazuje **Aktualna / Wygasła / Nieznana**, byś wykrył martwe oferty bez otwierania każdej. Zachowawczo z założenia: tylko jednoznaczne 404/410 to *Wygasła*; niejednoznaczne zostaje *Nieznana* (nigdy fałszywe *Wygasła*).
+
+### Uwagi
+- Nowe `server/lib/liveness-core.mjs` + `liveness-api.mjs` oraz tylko do odczytu `GET /api/liveness?url=` (bez zapisu, bez LLM). Bezpieczne wobec SSRF: URL przechodzi przez `isValidJobUrl`, a API ATS jest osiągane tylko przez `safeGet` (przypięty DNS), ze stałym hostem i zweryfikowanymi segmentami. `tests/liveness-core.test.mjs` + `tests/liveness-route.test.mjs`. Zestaw: **2557**.
+
+
 ## [1.199.0] — 2026-08-15
 
 **Naprawiono — szerokie tabele przewijają się teraz w poziomie zamiast być ucinane.**

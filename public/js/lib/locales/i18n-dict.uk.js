@@ -1325,4 +1325,11 @@ window.__I18N_DICT_UK = {
   'digest.competencies': "Повторювані компетенції",
   'digest.gaps': "Відкриті прогалини",
   'digest.failed': "Не вдалося завантажити дайджест",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "Ще активна?",
+  'track.liveChecking': "Перевірка…",
+  'track.liveLive': "Активна",
+  'track.liveExpired': "Завершена",
+  'track.liveUncertain': "Невідомо",
+  'track.liveCheckAria': "Перевірити, чи ця вакансія ще активна",
 };

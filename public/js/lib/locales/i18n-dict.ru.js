@@ -1326,4 +1326,11 @@ window.__I18N_DICT_RU = {
   'digest.competencies': "Повторяющиеся компетенции",
   'digest.gaps': "Открытые пробелы",
   'digest.failed': "Не удалось загрузить дайджест",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "Ещё активна?",
+  'track.liveChecking': "Проверка…",
+  'track.liveLive': "Активна",
+  'track.liveExpired': "Истекла",
+  'track.liveUncertain': "Неизвестно",
+  'track.liveCheckAria': "Проверить, активна ли ещё эта вакансия",
 };

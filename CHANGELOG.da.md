@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.200.0] — 2026-08-15
+
+**Tilføjet — et "stadig ledig?"-tjek med ét klik for ATS-hostede job i din tracker.**
+
+### Tilføjet
+- På **#/tracker** viser en ansøgning, hvis URL er et Greenhouse / Lever / Ashby / Workday / SmartRecruiters-opslag, nu en **"Stadig ledig?"**-knap. Ét klik spørger ATS'ets eget offentlige JSON — **nul tokens, ingen browser** — og viser **Ledig / Udløbet / Ukendt**, så du kan opdage døde opslag uden at åbne hvert enkelt. Konservativ af design: kun et klart 404/410 læses som *Udløbet*; alt tvetydigt forbliver *Ukendt* (aldrig et falsk *Udløbet*).
+
+### Noter
+- Nye `server/lib/liveness-core.mjs` + `liveness-api.mjs` og en skrivebeskyttet `GET /api/liveness?url=` (ingen skrivning, ingen LLM). SSRF-sikker: URL'en gates gennem `isValidJobUrl`, og ATS-API'et nås kun via DNS-fastgjort `safeGet` med fast host og charset-validerede stisegmenter. `tests/liveness-core.test.mjs` + `tests/liveness-route.test.mjs`. Suite: **2557**.
+
+
 ## [1.199.0] — 2026-08-15
 
 **Rettet — brede tabeller ruller nu vandret i stedet for at blive skåret af.**

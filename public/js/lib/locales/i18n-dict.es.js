@@ -1326,4 +1326,11 @@ window.__I18N_DICT_ES = {
   'digest.competencies': "Competencias recurrentes",
   'digest.gaps': "Brechas abiertas",
   'digest.failed': "No se pudo cargar el resumen",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "¿Sigue activa?",
+  'track.liveChecking': "Comprobando…",
+  'track.liveLive': "Activa",
+  'track.liveExpired': "Caducada",
+  'track.liveUncertain': "Desconocido",
+  'track.liveCheckAria': "Comprobar si esta oferta sigue activa",
 };

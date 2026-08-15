@@ -9,6 +9,17 @@
 ---
 
 
+## [1.200.0] — 2026-08-15
+
+**추가 — 트래커에서 ATS 채용공고의 "아직 열려 있나요?"를 한 번에 확인.**
+
+### 추가됨
+- **#/tracker**에서 URL이 Greenhouse / Lever / Ashby / Workday / SmartRecruiters 공고인 지원 항목에 이제 **"아직 열려 있나요?"** 버튼이 표시됩니다. 한 번 누르면 ATS 자체의 공개 JSON을 조회하여 — **토큰 0, 브라우저 없음** — **열림 / 마감 / 알 수 없음**을 보여주므로, 하나씩 열지 않고도 사라진 공고를 찾을 수 있습니다. 보수적 설계: 확실한 404/410만 *마감*으로 보고, 애매하면 *알 수 없음*으로 둡니다(잘못된 *마감* 없음).
+
+### 참고
+- 새 `server/lib/liveness-core.mjs` + `liveness-api.mjs`와 읽기 전용 `GET /api/liveness?url=`(쓰기 없음, LLM 없음). SSRF 안전: URL은 `isValidJobUrl`로 검사한 뒤 ATS API는 고정 호스트와 문자셋 검증 경로로 DNS 고정 `safeGet`을 통해서만 접근합니다. `tests/liveness-core.test.mjs` + `tests/liveness-route.test.mjs`. 스위트: **2557**.
+
+
 ## [1.199.0] — 2026-08-15
 
 **수정 — 넓은 표가 잘리지 않고 가로로 스크롤됩니다.**

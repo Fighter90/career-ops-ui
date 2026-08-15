@@ -46,6 +46,7 @@ import { registerLogoRoutes } from './lib/routes/logos.mjs';
 import { registerUsageRoutes } from './lib/routes/usage.mjs';
 import { registerFollowupRoutes } from './lib/routes/followup.mjs';
 import { registerFundedRoutes } from './lib/routes/funded.mjs';
+import { registerLivenessRoutes } from './lib/routes/liveness.mjs';
 import { registerPipelineRoutes } from './lib/routes/pipeline.mjs';
 import { registerReportsRoutes } from './lib/routes/reports.mjs';
 import { registerRunnerRoutes } from './lib/routes/runners.mjs';
@@ -184,6 +185,7 @@ export function createApp() {
   registerUsageRoutes(app);           // v1.105.0 — GET /api/usage (LLM token/cost rollups from data/llm-usage.jsonl)
   registerFollowupRoutes(app);        // v1.117.0 — GET /api/followup (cadence shell-out) + POST /api/followup/seed
   registerFundedRoutes(app);          // v1.133.0 — GET /api/company-funded (funded-company discovery relay; read-only, --dry-run)
+  registerLivenessRoutes(app);        // GET /api/liveness?url= (ATS "still live?" check; zero-token/zero-browser, SSRF-safe)
   // ───────────────────────────── Catch-all → SPA ─────────────────────────────
 
   // NEW-F1 (v1.59.5) — the previous `app.get('/api/*', …)` was GET-only,

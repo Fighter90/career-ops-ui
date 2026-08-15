@@ -1325,4 +1325,11 @@ window.__I18N_DICT_IT = {
   'digest.competencies': "Competenze ricorrenti",
   'digest.gaps': "Lacune aperte",
   'digest.failed': "Impossibile caricare il riepilogo",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "Ancora attiva?",
+  'track.liveChecking': "Verifica…",
+  'track.liveLive': "Attiva",
+  'track.liveExpired': "Scaduta",
+  'track.liveUncertain': "Sconosciuto",
+  'track.liveCheckAria': "Verifica se questo annuncio è ancora attivo",
 };

@@ -1325,4 +1325,11 @@ window.__I18N_DICT_DE = {
   'digest.competencies': "Wiederkehrende Kompetenzen",
   'digest.gaps': "Offene Lücken",
   'digest.failed': "Digest konnte nicht geladen werden",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "Noch aktiv?",
+  'track.liveChecking': "Wird geprüft…",
+  'track.liveLive': "Aktiv",
+  'track.liveExpired': "Abgelaufen",
+  'track.liveUncertain': "Unbekannt",
+  'track.liveCheckAria': "Prüfen, ob diese Stellenanzeige noch aktiv ist",
 };

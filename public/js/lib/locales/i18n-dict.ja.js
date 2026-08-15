@@ -1326,4 +1326,11 @@ window.__I18N_DICT_JA = {
   'digest.competencies': "繰り返し現れるコンピテンシー",
   'digest.gaps': "未解決のギャップ",
   'digest.failed': "ダイジェストを読み込めませんでした",
+  // Liveness badge (#/tracker) — ATS "still live?" check
+  'track.liveCheck': "まだ有効?",
+  'track.liveChecking': "確認中…",
+  'track.liveLive': "有効",
+  'track.liveExpired': "終了",
+  'track.liveUncertain': "不明",
+  'track.liveCheckAria': "この求人がまだ有効か確認する",
 };

@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2540%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2557%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.199.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.199.0)
+[![release](https://img.shields.io/badge/release-v1.200.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.200.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.199.0** — **넓은 표가 가로로 스크롤됩니다** — 창보다 넓은 표(Scan, 트래커, 통계…)가 스크롤바 없이 잘렸는데, 이제 필요할 때 **가로 스크롤바**를 표시해 모든 열에 접근할 수 있습니다. **2540개 테스트.**
+> **🆕 최신 릴리스 — v1.200.0** — **ATS 채용공고 "아직 열려 있나요?" 확인** — #/tracker에서 한 번 클릭하면 Greenhouse/Lever/Ashby/Workday/SmartRecruiters 공고의 공개 JSON을 조회해(토큰 0, 브라우저 없음) **열림 / 마감 / 알 수 없음**을 보여줍니다. **2557개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 
