@@ -12,7 +12,7 @@
  *      { assessments:[{date,company,reportNum,platform,subject,threshold,score,
  *        staleNote}], aggregates:{byPlatform:{}}, quality:{total} }.
  */
-import { readFileSync, existsSync, appendFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, appendFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -38,15 +38,18 @@ if (args[0] === 'add') {
     f.subject || '', f.threshold || '-', f.score || '-', f.stale || '',
   ];
   mkdirSync(dirname(LOG), { recursive: true });
-  const prefix = existsSync(LOG)
-    ? (readFileSync(LOG, 'utf8').endsWith('\n') ? '' : '\n')
-    : '# assessments\n';
+  // Read defensively (try/catch on ENOENT) instead of existsSync-then-read, so
+  // there's no check-then-act file-system race.
+  let existing = null;
+  try { existing = readFileSync(LOG, 'utf8'); } catch { existing = null; }
+  const prefix = existing === null ? '# assessments\n' : (existing.endsWith('\n') ? '' : '\n');
   appendFileSync(LOG, prefix + row.join('\t') + '\n');
   console.log(JSON.stringify({ added: true, row }, null, 2));
   process.exit(0);
 }
 
-const content = existsSync(LOG) ? readFileSync(LOG, 'utf8') : '';
+let content = '';
+try { content = readFileSync(LOG, 'utf8'); } catch { content = ''; }
 const assessments = [];
 for (const line of content.split('\n')) {
   const t = line.trim();
