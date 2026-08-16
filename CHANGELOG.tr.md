@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.208.1] — 2026-08-16
+
+**Düzeltildi — telefonda üst çubuğun düğmeleri artık sayfayla çakışmıyor.**
+
+### Düzeltildi
+- v1.208.0, dar ekranlarda üst çubuğun işlem düğmelerini (Tanılama, Scan Aç, bildirimler, tema) ikinci satıra kaydırıyordu ama çubuk sabit yükseklikte kaldığından, kaydırılan satır taşıp sayfa başlığının üstüne biniyordu. Çubuk artık satırlarını almak için **büyüyor** ve içerik altından akıyor.
+
+### Notlar
+- Çubuğun sabit `height` değeri `min-height` oldu; böylece her genişlikte içerikle birlikte büyüyor (masaüstü değişmedi). Bir Playwright bekçisi artık çubuğun sayfaya taşmadığını da denetliyor. Takım: **2621**.
+
+
+
 ## [1.208.0] — 2026-08-16
 
 **Düzeltildi — uygulama artık bir telefon ekranına sığıyor: yana kaydırma bitti.**

@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.208.1] — 2026-08-16
+
+**Behoben — auf dem Handy überlappen die Buttons der oberen Leiste die Seite nicht mehr.**
+
+### Behoben
+- v1.208.0 brach die Buttons der oberen Leiste (Diagnose, Scan öffnen, Benachrichtigungen, Design) auf schmalen Bildschirmen in eine zweite Zeile um, aber die Leiste behielt eine feste Höhe, sodass die umgebrochene Zeile herausquoll und über der Seitenüberschrift lag. Die Leiste **wächst** nun, um ihre Zeilen aufzunehmen, und der Inhalt fließt darunter.
+
+### Hinweise
+- Die feste `height` der Leiste wurde zu `min-height`, sodass sie bei jeder Breite mit ihrem Inhalt wächst (Desktop unverändert). Ein Playwright-Wächter prüft nun auch, dass die Leiste nicht über die Seite quillt. Suite: **2621**.
+
+
+
 ## [1.208.0] — 2026-08-16
 
 **Behoben — die App passt jetzt auf einen Handy-Bildschirm: kein seitliches Scrollen mehr.**

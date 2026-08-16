@@ -14,11 +14,11 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.208.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.0)
+[![release](https://img.shields.io/badge/release-v1.208.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.208.0** — **ऐप आपके फ़ोन में समाता है** — कोई पेज अब बगल में स्क्रॉल नहीं होता: टॉप बार रैप होता है, चौड़ी टेबल/कोड अपने बॉक्स में स्क्रॉल होते हैं, हेल्प खड़ी होती है, और लंबे पथ लेआउट खींचने के बजाय टूटते हैं। **2621 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.208.1** — **मोबाइल टॉप-बार फिक्स** — दूसरी पंक्ति में लपेटने पर इसके बटन अब पेज शीर्षक पर नहीं चढ़ते; बार उन्हें समाने के लिए बढ़ता है। **2621 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

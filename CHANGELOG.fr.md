@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.208.1] — 2026-08-16
+
+**Corrigé — sur mobile, les boutons de la barre du haut ne chevauchent plus la page.**
+
+### Corrigé
+- La v1.208.0 faisait passer les boutons de la barre du haut (Diagnostic, Ouvrir Scan, notifications, thème) sur une deuxième ligne sur les écrans étroits, mais la barre gardait une hauteur fixe : la ligne enroulée débordait et se posait sur le titre de la page. La barre **s'agrandit** désormais pour accueillir ses lignes et le contenu passe en dessous.
+
+### Notes
+- La `height` fixe de la barre est devenue une `min-height`, donc elle grandit avec son contenu à toute largeur (le bureau est inchangé). Un garde Playwright vérifie aussi que la barre ne déborde pas sur la page. Suite : **2621**.
+
+
+
 ## [1.208.0] — 2026-08-16
 
 **Corrigé — l'app tient maintenant sur un écran de téléphone : plus de défilement latéral.**
