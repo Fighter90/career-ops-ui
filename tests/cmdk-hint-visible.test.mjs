@@ -58,9 +58,14 @@ test('app.js: the existing Cmd/Ctrl+K keybinding is intact (no regression)', () 
   assert.match(APP, /search\.focus\(\)/, 'Cmd/Ctrl+K must still focus the search input');
 });
 
-test('app.css: .kbd-shortcut is styled and NOT display:none (visible)', () => {
-  const m = CSS_FLAT.match(/\.kbd-shortcut \{[^}]*\}/);
-  assert.ok(m, '.kbd-shortcut rule must exist');
+test('app.css: the base .kbd-shortcut rule is styled and NOT display:none (visible)', () => {
+  // Anchor on the BASE rule (the one that actually styles the badge, `flex:0 0
+  // auto`), not the first `.kbd-shortcut` occurrence: v1.208.0 added a mobile
+  // `@media (max-width:900px) { .kbd-shortcut { display:none } }` override —
+  // which sits earlier in the file — so the hint can't nudge a phone layout
+  // past the viewport. The badge stays visible at desktop widths (UX-N2).
+  const m = CSS_FLAT.match(/\.kbd-shortcut \{[^}]*flex: 0 0 auto[^}]*\}/);
+  assert.ok(m, '.kbd-shortcut base rule (with flex: 0 0 auto) must exist');
   assert.doesNotMatch(m[0], /display:\s*none/,
-    'the badge must be visible (the whole point of UX-N2)');
+    'the badge must stay visible at desktop widths (the whole point of UX-N2)');
 });
