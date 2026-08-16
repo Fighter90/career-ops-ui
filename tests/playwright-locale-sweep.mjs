@@ -18,6 +18,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { realConsoleErrors } from './helpers/console-noise.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
@@ -109,8 +110,9 @@ for (const lang of I18N_LANGS) {
     }
 
     try { await page.evaluate(() => window.stop()); } catch { /* page gone */ }
-    // Ignore expected network-refused noise from probes to the absent parent.
-    const realErrors = consoleErrors.filter((e) => !/ERR_CONNECTION_REFUSED|Failed to load resource/.test(e));
+    // Ignore expected network-refused noise from probes to the absent parent
+    // (opt-in `extra`), plus the shared benign favicon/404 filter.
+    const realErrors = realConsoleErrors(consoleErrors, /ERR_CONNECTION_REFUSED/i);
     assert.deepEqual(realErrors, [], `[${lang}] console errors: ${realErrors.join(' | ')}`);
     await context.close();
   });

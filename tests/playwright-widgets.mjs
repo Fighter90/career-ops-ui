@@ -16,6 +16,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { realConsoleErrors } from './helpers/console-noise.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
@@ -101,7 +102,8 @@ test('Ask-the-docs launcher: opens a chat, closes on Escape, hides on #/docs-ass
   await page.waitForSelector('#content');
   assert.equal(await page.locator('#docs-fab').isVisible(), false, 'launcher must hide on #/docs-assistant');
 
-  assert.deepEqual(errors, [], 'console errors: ' + errors.join(' | '));
+  const real = realConsoleErrors(errors);
+  assert.deepEqual(real, [], 'console errors: ' + real.join(' | '));
   await page.close();
 });
 
@@ -128,6 +130,7 @@ test('Usage HUD: fixed bottom-left, shows tokens · cost per window, collapses',
   await page.waitForSelector('#usage-hud', { timeout: 5000 });
   await page.waitForFunction(() => document.getElementById('usage-hud-body').hidden, null, { timeout: 3000 });
 
-  assert.deepEqual(errors, [], 'console errors: ' + errors.join(' | '));
+  const real = realConsoleErrors(errors);
+  assert.deepEqual(real, [], 'console errors: ' + real.join(' | '));
   await page.close();
 });

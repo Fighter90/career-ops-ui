@@ -21,6 +21,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { realConsoleErrors } from './helpers/console-noise.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
@@ -47,12 +48,6 @@ function resolvePlaywright() {
 const playwright = resolvePlaywright();
 const SKIP = !playwright;
 
-// Benign network noise a console-error assertion must NOT flake on: a favicon
-// or optional-widget resource that transiently 404s while racing SPA boot is
-// not a JS/render error. Mirrors the filter in playwright-forms.mjs; real JS
-// errors (uncaught exceptions, thrown console.error) still surface.
-const BENIGN_CONSOLE = /favicon|net::ERR|Failed to load resource/i;
-const realConsoleErrors = (errors) => errors.filter((e) => !BENIGN_CONSOLE.test(e));
 
 let server, baseUrl, browser, context;
 
