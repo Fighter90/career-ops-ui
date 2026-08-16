@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.208.2] — 2026-08-16
+
+**Fixed — on a phone the notification and theme buttons no longer sit on top of the search box.**
+
+### Fixed
+- v1.208.1 stopped the top-bar buttons from overlapping the page heading, but on a narrow-but-not-narrowest phone — especially in languages with longer button labels — the whole bar still crammed onto one row, so the 🔔 and 🌙 buttons could land on top of the search box. The action buttons (notifications, theme, Diagnostics, Open Scan) now always drop onto their own full-width second row on a phone, so the search box stays fully readable and nothing overlaps.
+
+### Notes
+- On a phone the top-bar action buttons move to a full-width second row, removing the fragile "almost-full row" band where the layout distributed leftover negative space as overlap. A Playwright guard now reproduces the exact trigger — a long-label locale across the 565–640px band — and asserts the top-bar controls never share pixels. Suite: **2621**.
+
+
+
 ## [1.208.1] — 2026-08-16
 
 **Fixed — on a phone the top-bar buttons no longer overlap the page.**

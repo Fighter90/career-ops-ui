@@ -807,6 +807,50 @@ test('Playwright smoke: no horizontal overflow at a phone width (375px)', { skip
   await page.close();
 });
 
+// v1.208.2 — the topbar controls must never OVERLAP each other. The 375px guard
+// above catches page-overflow + vertical spill, but it runs in English and so
+// missed a horizontal collision that only appears with long-label locales: the
+// base `.topbar` is `justify-content: space-between`, and when the single row is
+// *almost* full (RU «Открыть Scan»/«Диагностика» at ~565-640px) flexbox keeps one
+// line and distributes the NEGATIVE free space as overlap — the 🔔/🌙 land on top
+// of the search pill (user-reported twice). The fix drops the actions onto their
+// own full-width second row on mobile; this guard reproduces the exact trigger
+// (Russian × the 565-640px band) and asserts no two topbar controls share pixels.
+test('Playwright smoke: topbar controls never overlap (long-label locale, 565-640px)', { skip: SKIP }, async () => {
+  const page = await context.newPage();
+  // Force a long-label locale BEFORE any script runs — English labels are short
+  // enough to never trigger the space-between overlap, so the default-locale
+  // guard above is blind to it.
+  await page.addInitScript(() => { try { localStorage.setItem('career-ops-ui:lang', 'ru'); } catch {} });
+  const bad = [];
+  for (const width of [580, 590, 640]) {
+    await page.setViewportSize({ width, height: 780 });
+    await page.goto(baseUrl + '/#/scan');
+    await page.waitForSelector('.topbar', { timeout: 5000 });
+    await page.waitForTimeout(150);
+    const overlaps = await page.evaluate(() => {
+      const ids = ['sidebar-toggle', 'global-search', 'notif-bell', 'theme-toggle', 'btn-doctor', 'btn-quick-scan'];
+      const rc = ids.map((id) => document.getElementById(id)).filter(Boolean).map((el) => {
+        const b = el.getBoundingClientRect();
+        return { id: el.id, x: b.x, r: b.right, y: b.y, b: b.bottom };
+      });
+      const out = [];
+      for (let i = 0; i < rc.length; i++) {
+        for (let j = i + 1; j < rc.length; j++) {
+          const a = rc[i], c = rc[j];
+          const yov = Math.min(a.b, c.b) - Math.max(a.y, c.y);
+          const xov = Math.min(a.r, c.r) - Math.max(a.x, c.x);
+          if (yov > 2 && xov > 2) out.push(`${a.id}∩${c.id}`);
+        }
+      }
+      return out;
+    });
+    if (overlaps.length) bad.push(`${width}px: ${overlaps.join(', ')}`);
+  }
+  assert.deepEqual(bad, [], 'topbar controls overlap (RU): ' + bad.join(' · '));
+  await page.close();
+});
+
 if (SKIP) {
   test('Playwright smoke: skipped (playwright not resolvable)', () => {
     console.log('SKIP — install playwright in parent project: cd $CAREER_OPS_ROOT && npm i && npx playwright install chromium');

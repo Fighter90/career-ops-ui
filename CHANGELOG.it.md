@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.208.2] — 2026-08-16
+
+**Corretto — su un telefono i pulsanti di notifiche e tema non stanno più sopra il campo di ricerca.**
+
+### Corretto
+- La v1.208.1 ha impedito ai pulsanti della barra superiore di sovrapporsi al titolo della pagina, ma su un telefono stretto — pur non essendo il più stretto — e soprattutto nelle lingue con etichette più lunghe, l'intera barra si stipava ancora in una sola riga, così i pulsanti 🔔 e 🌙 potevano finire sopra il campo di ricerca. Ora i pulsanti d'azione (notifiche, tema, Diagnostica, Apri Scan) scendono sempre su una loro seconda riga a tutta larghezza sul telefono, così il campo di ricerca resta pienamente leggibile e niente si sovrappone.
+
+### Note
+- Sul telefono i pulsanti d'azione della barra passano a una seconda riga a tutta larghezza, eliminando la fragile fascia di "riga quasi piena" in cui il layout distribuiva lo spazio negativo residuo come sovrapposizione. Un guard di Playwright riproduce ora il trigger esatto — una lingua con etichette lunghe nella fascia 565–640px — e verifica che i controlli della barra non condividano mai pixel. Suite: **2621**.
+
+
+
 ## [1.208.1] — 2026-08-16
 
 **Corretto — su un telefono i pulsanti della barra superiore non si sovrappongono più alla pagina.**

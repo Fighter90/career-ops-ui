@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.208.2] — 2026-08-16
+
+**Rettet — på en telefon ligger notifikations- og temaknapperne ikke længere oven på søgefeltet.**
+
+### Rettet
+- v1.208.1 stoppede topbjælkens knapper i at overlappe sideoverskriften, men på en smal — dog ikke smalleste — telefon, især på sprog med længere knaptekster, klemte hele bjælken sig stadig ned på én række, så 🔔- og 🌙-knapperne kunne lande oven på søgefeltet. Handlingsknapperne (notifikationer, tema, Diagnose, Åbn Scan) rykker nu altid ned på deres egen anden række i fuld bredde på en telefon, så søgefeltet er fuldt læsbart og intet overlapper.
+
+### Noter
+- På en telefon flytter topbjælkens handlingsknapper til en anden række i fuld bredde og fjerner det skrøbelige "næsten fulde række"-bånd, hvor layoutet fordelte den resterende negative plads som overlap. En Playwright-vagt gengiver nu den præcise udløser — et sprog med lange tekster på tværs af 565–640px-båndet — og bekræfter, at bjælkens knapper aldrig deler pixels. Suite: **2621**.
+
+
+
 ## [1.208.1] — 2026-08-16
 
 **Rettet — på en telefon overlapper topbjælkens knapper ikke længere siden.**

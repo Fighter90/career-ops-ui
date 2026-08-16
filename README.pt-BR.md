@@ -12,11 +12,11 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.208.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.1)
+[![release](https://img.shields.io/badge/release-v1.208.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.208.1** — **Correção da barra superior no celular** — seus botões não sobrepõem mais o título da página ao quebrar para uma segunda linha; a barra cresce para acomodá-los. **2621 testes.**
+> **🆕 Última versão — v1.208.2** — **Correção da barra superior no celular** — os botões de notificações e tema não ficam mais sobre a caixa de busca no celular; os botões de ação agora ocupam a própria segunda linha e a busca aparece inteira. **2621 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

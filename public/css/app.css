@@ -324,11 +324,20 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   }
   .sidebar-toggle { display: inline-flex; align-items: center; justify-content: center; }
   .main { margin-left: 0 !important; padding-left: 12px; padding-right: 12px; }
-  /* The topbar keeps ALL its controls but wraps the action buttons onto a
-     second row instead of overflowing the page sideways when the row can no
-     longer hold [☰ · search · 🔔 · 🌙 · Doctor · Open Scan]. Height grows to
+  /* The topbar keeps ALL its controls but drops the action buttons onto their
+     own full-width second row so row one is just [☰ · search]. Height grows to
      fit; the sticky offset follows automatically. `min-width:0` releases the
-     searchbar from the flex-item content floor so it can shrink in row one. */
+     searchbar from the flex-item content floor so it can shrink in row one.
+
+     Why a forced second row (flex-basis:100%) and not "wrap only when it no
+     longer fits": the base `.topbar` is `justify-content: space-between`, and
+     when the single row is *almost* full (long-label locales like RU — «Открыть
+     Scan» / «Диагностика» — around 565–640px) flexbox keeps everything on one
+     line and distributes the NEGATIVE free space as overlap, so the 🔔/🌙 sit on
+     top of the search pill (user-reported, v1.208.2). Forcing the actions to a
+     100%-basis second row removes that fragile band entirely and is locale-
+     independent — the search box stays fully readable on row one at every
+     mobile width. */
   .topbar {
     gap: 8px;
     flex-wrap: wrap;
@@ -339,12 +348,15 @@ body.sidebar-open .sidebar-backdrop { display: block; }
     row-gap: 8px;
   }
   .searchbar { min-width: 0; }
+  /* Let the input itself shrink too (its default intrinsic width would otherwise
+     keep the searchbar from collapsing and could push row one past the viewport). */
+  .searchbar input { min-width: 0; }
   /* The decorative ⌘K/Enter hint (flex:0 0 auto, white-space:nowrap) would
      stick out of the now-shrinkable searchbar and nudge the page ~a scrollbar
      past the viewport; it has no room on a phone, so hide it and let the input
      keep the space. */
   .kbd-shortcut { display: none; }
-  .topbar-actions { flex-wrap: wrap; justify-content: flex-end; }
+  .topbar-actions { flex-basis: 100%; flex-wrap: wrap; justify-content: flex-end; }
 }
 
 .logo {

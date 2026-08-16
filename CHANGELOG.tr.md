@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.208.2] — 2026-08-16
+
+**Düzeltildi — telefonda bildirim ve tema düğmeleri artık arama kutusunun üstünde durmuyor.**
+
+### Düzeltildi
+- v1.208.1, üst çubuğun düğmelerinin sayfa başlığıyla çakışmasını önledi ama dar — en dar olmasa da — bir telefonda, özellikle düğme etiketleri uzun olan dillerde, çubuğun tamamı yine tek satıra sıkışıyor, böylece 🔔 ve 🌙 düğmeleri arama kutusunun üstüne binebiliyordu. İşlem düğmeleri (bildirimler, tema, Tanılama, Scan Aç) artık telefonda her zaman tam genişlikte kendi ikinci satırına iniyor; böylece arama kutusu tümüyle okunabilir kalıyor ve hiçbir şey çakışmıyor.
+
+### Notlar
+- Telefonda çubuğun işlem düğmeleri tam genişlikte ikinci bir satıra taşınarak, düzenin artan negatif alanı çakışma olarak dağıttığı kırılgan "neredeyse dolu satır" bandını ortadan kaldırıyor. Bir Playwright bekçisi artık tam tetikleyiciyi — 565–640px bandında uzun etiketli bir dil — yeniden üretiyor ve çubuğun denetimlerinin asla piksel paylaşmadığını doğruluyor. Takım: **2621**.
+
+
+
 ## [1.208.1] — 2026-08-16
 
 **Düzeltildi — telefonda üst çubuğun düğmeleri artık sayfayla çakışmıyor.**

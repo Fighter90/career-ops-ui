@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.208.2] — 2026-08-16
+
+**Behoben — auf dem Handy liegen die Benachrichtigungs- und Design-Buttons nicht mehr über dem Suchfeld.**
+
+### Behoben
+- v1.208.1 sorgte dafür, dass die Buttons der oberen Leiste die Seitenüberschrift nicht mehr überlappen, aber auf einem schmalen — wenn auch nicht schmalsten — Handy, besonders in Sprachen mit längeren Button-Texten, quetschte sich die ganze Leiste weiter in eine Zeile, sodass die Buttons 🔔 und 🌙 über dem Suchfeld landen konnten. Die Aktions-Buttons (Benachrichtigungen, Design, Diagnose, Scan öffnen) rücken auf dem Handy nun stets in ihre eigene, volle Breite einnehmende zweite Zeile, sodass das Suchfeld voll lesbar bleibt und nichts überlappt.
+
+### Hinweise
+- Auf dem Handy wandern die Aktions-Buttons der Leiste in eine zweite Zeile über die volle Breite und beseitigen das fragile Band der „fast vollen Zeile“, in dem das Layout den übrigen negativen Raum als Überlappung verteilte. Ein Playwright-Wächter reproduziert nun den genauen Auslöser — eine Sprache mit langen Texten über das Band 565–640px — und stellt sicher, dass sich die Bedienelemente der Leiste nie Pixel teilen. Suite: **2621**.
+
+
+
 ## [1.208.1] — 2026-08-16
 
 **Behoben — auf dem Handy überlappen die Buttons der oberen Leiste die Seite nicht mehr.**
