@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.208.2] — 2026-08-16
+
+**Corrigido — no celular os botões de notificações e tema não ficam mais sobre a caixa de busca.**
+
+### Corrigido
+- A v1.208.1 impediu que os botões da barra superior sobrepusessem o título da página, mas num celular estreito — embora não o mais estreito — e principalmente em idiomas com rótulos longos, a barra inteira ainda se espremia numa única linha, então os botões 🔔 e 🌙 podiam ficar sobre a caixa de busca. Agora os botões de ação (notificações, tema, Diagnóstico, Abrir Scan) sempre passam para a própria segunda linha de largura total no celular, então a caixa de busca aparece inteira e nada se sobrepõe.
+
+### Notas
+- No celular os botões de ação da barra vão para uma segunda linha de largura total, removendo a frágil faixa de "linha quase cheia" onde o layout distribuía o espaço negativo restante como sobreposição. Um guard do Playwright agora reproduz o gatilho exato — um idioma de rótulos longos na faixa 565–640px — e verifica que os controles da barra nunca compartilham pixels. Conjunto: **2621**.
+
+
+
 ## [1.208.1] — 2026-08-16
 
 **Corrigido — no celular os botões da barra superior não sobrepõem mais a página.**

@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.208.2] — 2026-08-16
+
+**Corrigé — sur mobile, les boutons de notifications et de thème ne se posent plus sur le champ de recherche.**
+
+### Corrigé
+- La v1.208.1 a empêché les boutons de la barre du haut de chevaucher le titre de la page, mais sur un mobile étroit — sans être le plus étroit — et surtout dans les langues aux libellés longs, toute la barre se tassait encore sur une seule ligne, si bien que les boutons 🔔 et 🌙 pouvaient se poser sur le champ de recherche. Les boutons d'action (notifications, thème, Diagnostic, Ouvrir Scan) passent désormais toujours sur leur propre deuxième ligne pleine largeur sur mobile, le champ de recherche reste donc entièrement lisible et rien ne se chevauche.
+
+### Notes
+- Sur mobile, les boutons d'action de la barre passent sur une deuxième ligne pleine largeur, supprimant la fragile bande de « ligne presque pleine » où la mise en page répartissait l'espace négatif restant en chevauchement. Un garde Playwright reproduit maintenant le déclencheur exact — une langue aux libellés longs sur la bande 565–640px — et vérifie que les commandes de la barre ne partagent jamais de pixels. Suite : **2621**.
+
+
+
 ## [1.208.1] — 2026-08-16
 
 **Corrigé — sur mobile, les boutons de la barre du haut ne chevauchent plus la page.**

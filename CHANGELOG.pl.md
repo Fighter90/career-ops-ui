@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.208.2] — 2026-08-16
+
+**Naprawiono — na telefonie przyciski powiadomień i motywu nie leżą już na polu wyszukiwania.**
+
+### Naprawiono
+- v1.208.1 sprawiła, że przyciski górnego paska nie nachodzą już na nagłówek strony, ale na wąskim — choć nie najwęższym — ekranie, zwłaszcza w językach z dłuższymi etykietami, cały pasek nadal ściskał się w jeden wiersz, więc przyciski 🔔 i 🌙 mogły znaleźć się na polu wyszukiwania. Przyciski akcji (powiadomienia, motyw, Diagnostyka, Otwórz Scan) na telefonie zawsze schodzą teraz do własnego, pełnej szerokości drugiego wiersza, więc pole wyszukiwania jest w pełni widoczne i nic się nie nakłada.
+
+### Uwagi
+- Na telefonie przyciski akcji paska przechodzą do drugiego wiersza pełnej szerokości, usuwając kruchy pas „niemal pełnego wiersza”, gdzie układ rozdzielał pozostałą ujemną przestrzeń jako nakładanie. Strażnik Playwright odtwarza teraz dokładny wyzwalacz — język z długimi etykietami w pasie 565–640px — i sprawdza, że kontrolki paska nigdy nie dzielą pikseli. Zestaw: **2621**.
+
+
+
 ## [1.208.1] — 2026-08-16
 
 **Naprawiono — na telefonie przyciski górnego paska nie nachodzą już na stronę.**

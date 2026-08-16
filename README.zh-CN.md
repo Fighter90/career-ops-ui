@@ -12,11 +12,11 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.208.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.1)
+[![release](https://img.shields.io/badge/release-v1.208.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.208.1** — **移动端顶栏修复** — 按钮换到第二行时不再遮住页面标题；顶栏会长高以容纳它们。 **2621 项测试.**
+> **🆕 最新版本 — v1.208.2** — **移动端顶栏修复** — 手机上通知和主题按钮不再压在搜索框上；操作按钮现在占据自己的第二行，搜索框完整可见。 **2621 项测试.**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

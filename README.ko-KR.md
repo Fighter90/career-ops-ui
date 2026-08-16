@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.208.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.1)
+[![release](https://img.shields.io/badge/release-v1.208.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.208.1** — **모바일 상단 바 수정** — 버튼이 둘째 줄로 넘어가도 더 이상 페이지 제목을 가리지 않습니다. 바가 버튼에 맞춰 늘어납니다. **2621 개 테스트.**
+> **🆕 최신 릴리스 — v1.208.2** — **모바일 상단 바 수정** — 휴대폰에서 알림·테마 버튼이 더 이상 검색창 위에 겹치지 않습니다. 동작 버튼이 이제 둘째 줄을 차지해 검색창이 온전히 보입니다. **2621 개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

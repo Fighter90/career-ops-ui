@@ -12,11 +12,11 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.208.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.1)
+[![release](https://img.shields.io/badge/release-v1.208.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.208.1** — **Correctif barre du haut mobile** — ses boutons ne chevauchent plus le titre de la page quand ils passent sur une deuxième ligne ; la barre s'agrandit pour les accueillir. **2621 tests.**
+> **🆕 Dernière version — v1.208.2** — **Correctif barre du haut mobile** — les boutons de notifications et de thème ne se posent plus sur le champ de recherche sur mobile ; les boutons d'action occupent désormais leur propre deuxième ligne et la recherche reste entièrement lisible. **2621 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

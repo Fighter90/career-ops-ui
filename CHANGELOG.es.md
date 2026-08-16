@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.208.2] — 2026-08-16
+
+**Corregido — en el móvil los botones de notificaciones y tema ya no quedan sobre el cuadro de búsqueda.**
+
+### Corregido
+- La v1.208.1 evitó que los botones de la barra superior se solaparan con el título de la página, pero en un móvil estrecho —aunque no el más estrecho— y sobre todo en idiomas con etiquetas largas, toda la barra seguía apretándose en una sola fila, así que los botones 🔔 y 🌙 podían quedar sobre el cuadro de búsqueda. Ahora los botones de acción (notificaciones, tema, Diagnóstico, Abrir Scan) siempre pasan a su propia segunda fila a lo ancho en el móvil, así el cuadro de búsqueda se ve completo y nada se solapa.
+
+### Notas
+- En el móvil los botones de acción de la barra pasan a una segunda fila a todo el ancho, eliminando la frágil franja de "fila casi llena" donde el diseño repartía el espacio negativo sobrante como solape. Un guard de Playwright reproduce ahora el detonante exacto —un idioma de etiquetas largas en la franja 565–640px— y comprueba que los controles de la barra nunca compartan píxeles. Conjunto: **2621**.
+
+
+
 ## [1.208.1] — 2026-08-16
 
 **Corregido — en el móvil los botones de la barra superior ya no se solapan con la página.**
