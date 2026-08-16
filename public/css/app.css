@@ -339,6 +339,11 @@ body.sidebar-open .sidebar-backdrop { display: block; }
     row-gap: 8px;
   }
   .searchbar { min-width: 0; }
+  /* The decorative ⌘K/Enter hint (flex:0 0 auto, white-space:nowrap) would
+     stick out of the now-shrinkable searchbar and nudge the page ~a scrollbar
+     past the viewport; it has no room on a phone, so hide it and let the input
+     keep the space. */
+  .kbd-shortcut { display: none; }
   .topbar-actions { flex-wrap: wrap; justify-content: flex-end; }
 }
 
