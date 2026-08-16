@@ -754,8 +754,10 @@ test('Playwright smoke: notifications drawer is hidden at boot, opens only via b
 
 // v1.208.0 — the SPA must not overflow sideways on a phone. Regression guard
 // for the responsive pass (topbar wraps, grid items shrink, tables/code scroll
-// inside their own box, help stacks). scrollWidth === clientWidth ⇒ no
-// horizontal page scroll.
+// inside their own box, help stacks). Content wider than `innerWidth` ⇒ the
+// page scrolls sideways. The tolerance is exactly one vertical-scrollbar gutter
+// (0 on overlay-scrollbar macOS, ~6-17px on classic-scrollbar CI Linux); a real
+// sideways-overflow bug is tens/hundreds of px, well past any gutter.
 test('Playwright smoke: no horizontal overflow at a phone width (375px)', { skip: SKIP }, async () => {
   const page = await context.newPage();
   await page.setViewportSize({ width: 375, height: 780 });

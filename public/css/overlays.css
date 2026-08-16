@@ -569,7 +569,7 @@
 
 .docs-fab__panel {
   position: fixed; right: 24px; bottom: 96px; z-index: var(--z-fab);
-  width: 380px; max-width: calc(100vw - 40px);
+  width: 380px; max-width: calc(100% - 40px);
   height: 560px; max-height: calc(100vh - 130px);
   display: flex; flex-direction: column;
   background: var(--fab-panel-bg); color: var(--hof, #222);
@@ -680,7 +680,7 @@
 .sidebar { padding-bottom: calc(var(--space-5) + var(--usage-hud-pad, 0px)); }
 .usage-hud {
   position: fixed; left: 0; bottom: 0; z-index: var(--z-hud);
-  width: var(--sidebar-w); max-width: 100vw;
+  width: var(--sidebar-w); max-width: 100%;
   background: var(--paper); color: var(--hof, #222);
   border-top: 1px solid var(--slate); border-right: 1px solid var(--slate);
   padding: 10px var(--space-3, 12px); font-size: var(--font-size-md);
