@@ -15,6 +15,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { realConsoleErrors } from './helpers/console-noise.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
@@ -172,8 +173,7 @@ for (const route of FORM_ROUTES) {
     assert.ok(html.length > 20, `#/${route} rendered empty`);
     // Ignore benign favicon/network noise from unconfigured optional
     // endpoints; fail only on real JS/render errors.
-    const real = errors.filter((e) =>
-      !/favicon|net::ERR|Failed to load resource/i.test(e));
+    const real = realConsoleErrors(errors);
     assert.deepEqual(real, [], `#/${route} console errors: ${real.join(' | ')}`);
     await closePage(page);
   });

@@ -8,6 +8,7 @@
  *     node web-ui/tests/e2e-comprehensive.mjs
  */
 import { chromium } from 'playwright';
+import { realConsoleErrors } from './helpers/console-noise.mjs';
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -371,13 +372,15 @@ async function run() {
     console.log('  page errors:');
     pageErrors.forEach((e) => console.log(`    · ${e}`));
   }
-  // Filter out the deliberately-killed connection-banner test errors.
-  const realConsoleErrors = consoleErrors.filter(
-    (l) => !/ERR_CONNECTION_REFUSED|Failed to fetch|connection lost/i.test(l)
+  // Drop benign favicon/asset 404 noise (shared filter) plus this suite's own
+  // deliberately-killed connection errors (passed as `extra`); real errors survive.
+  const realErrors = realConsoleErrors(
+    consoleErrors,
+    /ERR_CONNECTION_REFUSED|Failed to fetch|connection lost/i,
   );
-  if (realConsoleErrors.length) {
+  if (realErrors.length) {
     console.log('  unexpected console errors:');
-    realConsoleErrors.forEach((e) => console.log(`    · ${e}`));
+    realErrors.forEach((e) => console.log(`    · ${e}`));
   }
   process.exit(failures.length === 0 && pageErrors.length === 0 ? 0 : 1);
 }

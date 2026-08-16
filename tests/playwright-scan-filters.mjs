@@ -16,6 +16,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { BENIGN_CONSOLE } from './helpers/console-noise.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
@@ -75,12 +76,6 @@ after(async () => {
   if (server) { server.closeAllConnections?.(); await new Promise((r) => server.close(r)); }
   delete process.env.CAREER_OPS_ROOT;
 });
-
-// Benign network noise a console-error assertion must NOT flake on: a favicon
-// or lazy asset that 404s / fails to load is not a real client error. Same
-// filter the sibling smoke/forms suites use (v1.207.1) — this file had missed it
-// and flaked on a transient `404 Failed to load resource` on a main-push run.
-const BENIGN_CONSOLE = /favicon|net::ERR|Failed to load resource/i;
 
 // Open #/scan and wait for the canned corpus to render.
 async function openScan() {
