@@ -765,9 +765,14 @@ test('Playwright smoke: no horizontal overflow at a phone width (375px)', { skip
     await page.goto(baseUrl + '/#/' + r);
     await page.waitForSelector('#content', { timeout: 5000 });
     await page.waitForTimeout(120);
+    // Compare content width against innerWidth (which INCLUDES the vertical
+    // scrollbar), not clientWidth (which excludes it): a classic scrollbar on a
+    // scrolling page otherwise reads as ~6-17px of phantom horizontal overflow
+    // on non-overlay-scrollbar platforms (CI's headless Linux; macOS is 0). A
+    // genuine sideways-overflow bug is tens/hundreds of px, so >1 is the signal.
     const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    if (overflow > 0) bad.push(`${r}: +${overflow}px`);
+      () => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) bad.push(`${r}: +${overflow}px`);
   }
   assert.deepEqual(bad, [], 'routes overflow horizontally at 375px: ' + bad.join(' · '));
   await page.close();
