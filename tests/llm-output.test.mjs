@@ -92,3 +92,36 @@ test('R-2: still idempotent on lopsided traces; never eats real autolinks', () =
   const real = '# T\n\nSee <https://example.com> and `<not_a_tag>` in prose.';
   assert.equal(cleanLlmMarkdown(real), real.trim(), 'real <https://> autolink + code span preserved');
 });
+
+// ── v1.207.2 — unwrap a WHOLE-DOCUMENT ```markdown fence some models emit ──
+// (career-plan / orientation returned their entire brief wrapped, so UI.md
+// rendered a monospace code dump instead of a formatted plan).
+
+test('unwraps a whole-document ```markdown / ```md fence', () => {
+  assert.equal(
+    cleanLlmMarkdown('```markdown\n# Career plan\n\n## Q1\n- **learn** Go\n```'),
+    '# Career plan\n\n## Q1\n- **learn** Go');
+  // ```md alias + trailing whitespace after the closing fence
+  assert.equal(cleanLlmMarkdown('```md\n# H\n\ntext\n```   '), '# H\n\ntext');
+  // idempotent — a second pass finds no wrapping fence
+  const out = cleanLlmMarkdown('```markdown\n# H\n\ntext\n```');
+  assert.equal(cleanLlmMarkdown(out), out, 'idempotent');
+});
+
+test('preserves INNER code blocks when unwrapping the outer markdown fence', () => {
+  const out = cleanLlmMarkdown('```markdown\n# Doc\n\nRun:\n```js\nfoo()\n```\n\nDone.\n```');
+  assert.ok(out.startsWith('# Doc'), 'outer fence gone, heading first');
+  assert.ok(out.includes('```js\nfoo()\n```'), 'inner code block preserved');
+  assert.ok(out.includes('Done.'));
+  assert.ok(!out.endsWith('```markdown') && !/^```markdown/.test(out), 'outer wrapper removed');
+});
+
+test('does NOT unwrap a real ```python / ```js / bare-``` code answer', () => {
+  const py = '```python\nprint("hi")\n```';
+  assert.equal(cleanLlmMarkdown(py), py, 'a real code-language fence is left intact');
+  const bare = '```\nsome raw output\n```';
+  assert.equal(cleanLlmMarkdown(bare), bare, 'a bare full-doc fence is left (could be real output)');
+  // a ```markdown block that is NOT the whole doc (prose follows) is left alone
+  const partial = '```markdown\n# Snippet\n```\n\nMore prose after.';
+  assert.equal(cleanLlmMarkdown(partial), partial, 'only a WHOLE-document wrap is unwrapped');
+});

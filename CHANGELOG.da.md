@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.207.2] — 2026-08-16
+
+**Rettet — AI-planer og karriereorienteringsprofiler vises ikke længere som et råt kode-dump.**
+
+### Rettet
+- Nogle modeller pakker hele svaret ind i et ```markdown … ``` kodehegn. Når det skete, dukkede **udviklingsplanen** og **orienteringsprofilen** op som en monospaced kodeblok i stedet for et dokument med overskrifter og lister. Det omsluttende hegn fjernes nu — kun når det omslutter hele svaret og sproget udtrykkeligt er `markdown`/`md`, så et ægte `python`/`js`/``` uden sprog kode-svar er urørt.
+
+### Noter
+- Håndteret ét sted i det fælles LLM-oprydningstrin (`cleanLlmMarkdown`), så alle AI-ruter nyder godt af det, og indre kodeblokke i det indpakkede svar overlever. `tests/llm-output.test.mjs` (+3). Suite: **2621**.
+
+
+
 ## [1.207.1] — 2026-08-16
 
 **Rettet — landingssiden løber ikke længere ud til siden på små telefoner.**

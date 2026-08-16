@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.207.2] — 2026-08-16
+
+**Corrigé — les plans IA et les profils d'orientation ne s'affichent plus comme un vidage de code brut.**
+
+### Corrigé
+- Certains modèles enveloppent toute leur réponse dans une clôture de code ```markdown … ```. Quand cela arrivait, le **plan de développement** et le **profil d'orientation** apparaissaient en bloc de code à chasse fixe au lieu d'un document avec titres et listes. La clôture enveloppante est désormais retirée — uniquement quand elle englobe toute la réponse et que le langage est explicitement `markdown`/`md`, donc une vraie réponse en `python`/`js`/``` sans langage reste intacte.
+
+### Notes
+- Traité une seule fois dans l'étape partagée de nettoyage LLM (`cleanLlmMarkdown`), donc toutes les routes IA en profitent, et les blocs de code internes à la réponse enveloppée survivent. `tests/llm-output.test.mjs` (+3). Suite : **2621**.
+
+
+
 ## [1.207.1] — 2026-08-16
 
 **Corrigé — la page d'accueil ne déborde plus sur les côtés sur les petits téléphones.**

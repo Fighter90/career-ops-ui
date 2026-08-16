@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.207.2] — 2026-08-16
+
+**Naprawiono — plany AI i profile orientacji zawodowej nie wyświetlają się już jako surowy zrzut kodu.**
+
+### Naprawiono
+- Niektóre modele zawijają całą odpowiedź w ogrodzenie kodu ```markdown … ```. Gdy tak się działo, **plan rozwoju** i **profil orientacji** pokazywały się jako blok o stałej szerokości zamiast dokumentu z nagłówkami i listami. Teraz zawijające ogrodzenie jest usuwane — tylko gdy obejmuje całą odpowiedź i język to jawnie `markdown`/`md`, więc prawdziwa odpowiedź w `python`/`js`/``` bez języka pozostaje nietknięta.
+
+### Uwagi
+- Obsłużone raz we wspólnym kroku czyszczenia LLM (`cleanLlmMarkdown`), więc korzystają wszystkie trasy AI, a wewnętrzne bloki kodu w zawiniętej odpowiedzi przetrwają. `tests/llm-output.test.mjs` (+3). Zestaw: **2621**.
+
+
+
 ## [1.207.1] — 2026-08-16
 
 **Naprawiono — strona startowa nie wychodzi już na boki na małych telefonach.**

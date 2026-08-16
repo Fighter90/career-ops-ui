@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.207.2] — 2026-08-16
+
+**Düzeltildi — yapay zekâ planları ve kariyer yönlendirme profilleri artık ham kod dökümü olarak görünmüyor.**
+
+### Düzeltildi
+- Bazı modeller tüm yanıtı bir ```markdown … ``` kod çitine sarar. Bu olduğunda **gelişim planı** ve **yönlendirme profili**, başlıklı ve listeli bir belge yerine tek aralıklı kod bloğu olarak görünüyordu. Saran çit artık kaldırılıyor — yalnızca tüm yanıtı sardığında ve dil açıkça `markdown`/`md` olduğunda, böylece gerçek bir `python`/`js`/dilsiz ``` kod yanıtı olduğu gibi kalır.
+
+### Notlar
+- Ortak LLM temizleme adımında (`cleanLlmMarkdown`) tek seferde ele alındı, böylece tüm yapay zekâ rotaları yararlanır ve sarılmış yanıtın içindeki kod blokları korunur. `tests/llm-output.test.mjs` (+3). Takım: **2621**.
+
+
+
 ## [1.207.1] — 2026-08-16
 
 **Düzeltildi — açılış sayfası küçük telefonlarda artık yana taşmıyor.**

@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.207.2] — 2026-08-16
+
+**Behoben — KI-Pläne und Karriere-Orientierungsprofile werden nicht mehr als roher Code-Dump dargestellt.**
+
+### Behoben
+- Manche Modelle packen ihre ganze Antwort in einen ```markdown … ``` Code-Zaun. Wenn das passierte, erschienen der **Entwicklungsplan** und das **Orientierungsprofil** als Monospace-Codeblock statt als Dokument mit Überschriften und Listen. Der umschließende Zaun wird jetzt entfernt — nur wenn er die gesamte Antwort umschließt und die Sprache ausdrücklich `markdown`/`md` ist, sodass eine echte `python`/`js`/``` -ohne-Sprache-Codeantwort unangetastet bleibt.
+
+### Hinweise
+- Einmalig im gemeinsamen LLM-Aufräumschritt (`cleanLlmMarkdown`) behandelt, sodass alle KI-Routen profitieren und innere Codeblöcke in der umschlossenen Antwort erhalten bleiben. `tests/llm-output.test.mjs` (+3). Suite: **2621**.
+
+
+
 ## [1.207.1] — 2026-08-16
 
 **Behoben — die Landingpage läuft auf kleinen Handys nicht mehr seitlich über.**
