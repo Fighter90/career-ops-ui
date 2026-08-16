@@ -771,20 +771,29 @@ test('Playwright smoke: no horizontal overflow at a phone width (375px)', { skip
     await page.waitForTimeout(120);
     const worst = await page.evaluate(() => {
       const vw = window.innerWidth;
-      let max = vw;
+      let max = vw, who = '';
       for (const el of document.querySelectorAll('body *')) {
         const rect = el.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) continue;
+        // Out-of-flow elements (fixed/absolute) align to the viewport edge and
+        // never scroll the page — under a classic scrollbar their rect.right is
+        // the full viewport width (a scrollbar-gutter past clientWidth), which is
+        // expected, not overflow. Only IN-FLOW content scrolls the page sideways.
+        const pos = getComputedStyle(el).position;
+        if (pos === 'fixed' || pos === 'absolute') continue;
         let clipped = false;
         for (let a = el.parentElement; a; a = a.parentElement) {
           const ov = getComputedStyle(a).overflowX;
           if (ov === 'auto' || ov === 'scroll' || ov === 'hidden') { clipped = true; break; }
         }
-        if (!clipped && rect.right > max) max = rect.right;
+        if (!clipped && rect.right > max) {
+          max = rect.right;
+          who = el.tagName.toLowerCase() + '.' + (el.className || '').toString().trim().split(/\s+/).slice(0, 2).join('.');
+        }
       }
-      return Math.round(max - vw);
+      return { over: Math.round(max - vw), who };
     });
-    if (worst > 1) bad.push(`${r}: +${worst}px`);
+    if (worst.over > 1) bad.push(`${r}: +${worst.over}px (${worst.who})`);
   }
   assert.deepEqual(bad, [], 'an element sticks past the viewport at 375px: ' + bad.join(' · '));
   await page.close();
