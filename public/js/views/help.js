@@ -256,8 +256,11 @@ Router.register('help', async () => {
       ]),
     ]),
     c('div', {
+      // grid-template-columns lives in CSS (.help-grid) so the media query can
+      // stack the TOC + article to one column on a phone — an inline
+      // grid-template-columns would win over the breakpoint and overflow.
       className: 'help-grid',
-      style: { display: 'grid', gridTemplateColumns: '240px 1fr', gap: '24px', alignItems: 'start' },
+      style: { display: 'grid', gap: '24px', alignItems: 'start' },
     }, [
       headings.length ? toc : c('div'),
       article,

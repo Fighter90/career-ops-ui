@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.208.0] — 2026-08-16
+
+**Corretto — l'app ora sta nello schermo di un telefono: niente più scorrimento laterale.**
+
+### Corretto
+- Su uno schermo stretto l'intera app scivolava di lato — la barra superiore, le tabelle, gli articoli di aiuto e le schede delle impostazioni sforavano il bordo destro. Ora ogni pagina sta in qualsiasi larghezza: i pulsanti della barra superiore vanno a capo su una seconda riga, tabelle e blocchi di codice larghi scorrono nel proprio riquadro, l'aiuto impila l'indice sopra l'articolo, le righe di pulsanti/schede vanno a capo, e percorsi o URL lunghi si spezzano invece di allungare la pagina.
+
+### Note
+- La causa era la classica trappola **min-width: auto** di flex/grid più un paio di elementi larghi non incapsulati; risolto con `min-width: 0` sugli elementi della griglia, `overflow-wrap` su markdown/titoli, una tabella markdown scorrevole e l'impilamento della griglia di aiuto al breakpoint mobile. Un guard Playwright verifica **0 overflow orizzontale a 375 px** sulle rotte principali. `tests/playwright-smoke.mjs`. Suite: **2621**.
+
+
+
 ## [1.207.2] — 2026-08-16
 
 **Corretto — i piani IA e i profili di orientamento non vengono più mostrati come un dump di codice grezzo.**

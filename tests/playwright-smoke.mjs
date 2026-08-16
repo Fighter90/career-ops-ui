@@ -752,6 +752,27 @@ test('Playwright smoke: notifications drawer is hidden at boot, opens only via b
   await closePage(page);
 });
 
+// v1.208.0 — the SPA must not overflow sideways on a phone. Regression guard
+// for the responsive pass (topbar wraps, grid items shrink, tables/code scroll
+// inside their own box, help stacks). scrollWidth === clientWidth ⇒ no
+// horizontal page scroll.
+test('Playwright smoke: no horizontal overflow at a phone width (375px)', { skip: SKIP }, async () => {
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 375, height: 780 });
+  const routes = ['dashboard', 'scan', 'tracker', 'config', 'help', 'cv', 'stats', 'reports'];
+  const bad = [];
+  for (const r of routes) {
+    await page.goto(baseUrl + '/#/' + r);
+    await page.waitForSelector('#content', { timeout: 5000 });
+    await page.waitForTimeout(120);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (overflow > 0) bad.push(`${r}: +${overflow}px`);
+  }
+  assert.deepEqual(bad, [], 'routes overflow horizontally at 375px: ' + bad.join(' · '));
+  await page.close();
+});
+
 if (SKIP) {
   test('Playwright smoke: skipped (playwright not resolvable)', () => {
     console.log('SKIP — install playwright in parent project: cd $CAREER_OPS_ROOT && npm i && npx playwright install chromium');

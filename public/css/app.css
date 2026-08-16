@@ -324,7 +324,22 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   }
   .sidebar-toggle { display: inline-flex; align-items: center; justify-content: center; }
   .main { margin-left: 0 !important; padding-left: 12px; padding-right: 12px; }
-  .topbar { gap: 8px; }
+  /* The topbar keeps ALL its controls but wraps the action buttons onto a
+     second row instead of overflowing the page sideways when the row can no
+     longer hold [☰ · search · 🔔 · 🌙 · Doctor · Open Scan]. Height grows to
+     fit; the sticky offset follows automatically. `min-width:0` releases the
+     searchbar from the flex-item content floor so it can shrink in row one. */
+  .topbar {
+    gap: 8px;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: var(--topbar-h);
+    padding-top: 8px;
+    padding-bottom: 8px;
+    row-gap: 8px;
+  }
+  .searchbar { min-width: 0; }
+  .topbar-actions { flex-wrap: wrap; justify-content: flex-end; }
 }
 
 .logo {
@@ -727,12 +742,18 @@ label:has(> input[type="radio"]) {
   font-weight: 700;
   letter-spacing: -0.4px;
   margin: 0;
+  /* A long unbreakable token in a title/subtitle (e.g. the resolved project
+     PATH shown on #/config) must wrap instead of overflowing the header — and
+     the page — sideways on a phone. */
+  overflow-wrap: anywhere;
 }
 .page-subtitle {
   color: var(--foggy);
   margin: var(--space-2) 0 0;
   font-size: var(--font-size-base);
+  overflow-wrap: anywhere;
 }
+.page-header h1 + p { overflow-wrap: anywhere; }
 /* U-14 (v1.58.33) — safety-net rule for any page that uses raw <h1>+<p>
    without the .page-subtitle class. Mirrors the canonical spacing so
    future page-header authors don't have to remember the class name. */

@@ -364,6 +364,12 @@
 
 .flex { display: flex; align-items: center; gap: var(--space-3); }
 .flex-between { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); }
+/* On a phone, a `.flex`/`.flex-between` row of buttons/tabs (config's settings
+   tablist, CV's action toolbars, …) wraps onto the next line instead of pushing
+   the page sideways. Desktop is unchanged — the row has room and never wraps. */
+@media (max-width: 900px) {
+  .flex, .flex-between { flex-wrap: wrap; }
+}
 
 /* v1.69.1 — #/health check cards. A long check name/value (e.g. "PROFILE
    CUSTOMIZED · still on template …", "PLAYWRIGHT (PARENT NODE_MODULES)")

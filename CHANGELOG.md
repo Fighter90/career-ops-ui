@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.208.0] — 2026-08-16
+
+**Fixed — the app fits a phone screen now: no more sideways scrolling.**
+
+### Fixed
+- On a narrow screen the whole app used to slide sideways — the top bar, tables, help articles and settings tabs all pushed past the right edge. Now every page fits any width: the top-bar buttons wrap onto a second row, wide tables and code blocks scroll inside their own box, help stacks its table-of-contents above the article, button/tab rows wrap, and long paths or URLs break instead of stretching the page.
+
+### Notes
+- Root cause was the classic flex/grid **min-width: auto** trap plus a couple of unwrapped wide elements; fixed with `min-width: 0` on grid items, `overflow-wrap` on markdown/titles, a scrollable markdown table, and the help grid stacking at the mobile breakpoint. A Playwright guard asserts **0 horizontal overflow at 375 px** across the main routes. `tests/playwright-smoke.mjs`. Suite: **2621**.
+
+
+
 ## [1.207.2] — 2026-08-16
 
 **Fixed — AI plans and career-orientation profiles no longer render as a raw code dump.**

@@ -12,11 +12,11 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.207.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.2)
+[![release](https://img.shields.io/badge/release-v1.208.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.207.2** — **I piani IA tornano a rendersi bene** — il piano di sviluppo e il profilo di orientamento non appaiono più come un dump di codice a spaziatura fissa quando il modello avvolge l'intera risposta in un recinto ```markdown. **2621 test.**
+> **🆕 Ultima release — v1.208.0** — **L'app sta nel tuo telefono** — nessuna pagina scorre più di lato: la barra superiore va a capo, tabelle/codice larghi scorrono nel loro riquadro, l'aiuto si impila, e i percorsi lunghi si spezzano invece di allungare il layout. **2621 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

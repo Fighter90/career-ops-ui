@@ -157,8 +157,19 @@
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
 @media (max-width: 900px) {
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-2, .grid-3 { grid-template-columns: minmax(0, 1fr); }
 }
+/* v1.208.0 — grid items must be allowed to shrink below their content's
+   intrinsic width (min-width:auto is the grid min-content trap). Without this a
+   wide child — a table, a ```code block, a long help URL — forces its grid
+   track, the content column, and the whole page wider than a phone screen; each
+   item's own overflow strategy (`.table-wrap`/`.md pre` scroll, `.md` wraps)
+   then contains that width INSIDE the item. Harmless on desktop (rooms to spare). */
+.grid-2 > *, .grid-3 > *, .qa-grid > *, .card-row > *, .help-grid > * { min-width: 0; }
+/* Help = a 240px table-of-contents + a 1fr article. On a phone it stacks to a
+   single column (the TOC card sits above the article) so neither is squeezed. */
+.help-grid { grid-template-columns: 240px 1fr; }
+@media (max-width: 900px) { .help-grid { grid-template-columns: 1fr; } }
 
 /* UX-A14 (v1.59.0) — Mobile (≤ 420 px) pass. Targets phone-sized
    viewports that the desktop-first layout otherwise pushes to a
@@ -355,6 +366,11 @@
   border: 1px solid var(--slate);
   border-radius: var(--radius-lg);
   overflow-x: auto;
+  /* Release the flex/grid-item content floor so a wide table scrolls INSIDE
+     the wrap instead of forcing the wrap (and the page) wider than the
+     viewport on a phone. */
+  min-width: 0;
+  max-width: 100%;
 }
 table.tbl {
   width: 100%;
@@ -491,11 +507,20 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .md {
   line-height: 1.7;
   font-size: var(--font-size-base);
+  /* Long unbreakable tokens (URLs, file paths, inline code) in help/AI
+     markdown wrap instead of forcing the card wider than a phone screen.
+     Inherited, so paragraphs, list items and blockquotes wrap too; ```code
+     fences still scroll via `.md pre { overflow-x: auto }`. */
+  overflow-wrap: break-word;
 }
 .md h1 { font-size: 26px; margin-top: 0; }
 .md h2 { font-size: 20px; margin-top: var(--space-6); padding-top: var(--space-3); border-top: 1px solid var(--slate); }
 .md h3 { font-size: 17px; margin-top: var(--space-5); }
-.md table { width: 100%; border-collapse: collapse; margin: var(--space-3) 0; }
+/* A markdown table (help/AI output) is not wrapped in a `.table-wrap`, so make
+   the table itself the scroll container: `display:block` + `overflow-x:auto`
+   lets a wide table scroll horizontally on a phone instead of forcing the
+   article — and the page — sideways. Desktop is unchanged (fits, no scroll). */
+.md table { display: block; width: 100%; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: var(--space-3) 0; }
 .md th, .md td { padding: 8px 12px; border: 1px solid var(--slate); font-size: 13.5px; text-align: left; }
 .md th { background: var(--beach); }
 .md code { background: var(--beach); padding: 2px 6px; border-radius: 6px; font-size: var(--font-size-md); }

@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.208.0] — 2026-08-16
+
+**Corrigido — o app agora cabe na tela de um celular: acabou a rolagem lateral.**
+
+### Corrigido
+- Em telas estreitas o app todo deslizava para o lado — a barra superior, as tabelas, os artigos de ajuda e as abas de configurações passavam da borda direita. Agora cada página cabe em qualquer largura: os botões da barra superior vão para uma segunda linha, tabelas e blocos de código largos rolam dentro da própria caixa, a ajuda empilha o índice acima do artigo, as linhas de botões/abas quebram, e caminhos ou URLs longos quebram em vez de esticar a página.
+
+### Notas
+- A causa foi a clássica armadilha **min-width: auto** de flex/grid mais alguns elementos largos sem envoltório; resolvido com `min-width: 0` nos itens de grid, `overflow-wrap` no markdown/títulos, uma tabela de markdown rolável e o empilhamento da grade de ajuda no ponto móvel. Um guard do Playwright verifica **0 estouro horizontal a 375 px** nas rotas principais. `tests/playwright-smoke.mjs`. Conjunto: **2621**.
+
+
+
 ## [1.207.2] — 2026-08-16
 
 **Corrigido — planos de IA e perfis de orientação não aparecem mais como um despejo de código.**
