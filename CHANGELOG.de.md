@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.208.0] — 2026-08-16
+
+**Behoben — die App passt jetzt auf einen Handy-Bildschirm: kein seitliches Scrollen mehr.**
+
+### Behoben
+- Auf einem schmalen Bildschirm rutschte die ganze App zur Seite — die obere Leiste, Tabellen, Hilfeartikel und Einstellungs-Tabs liefen über den rechten Rand hinaus. Jetzt passt jede Seite in jede Breite: die Buttons der oberen Leiste brechen in eine zweite Zeile um, breite Tabellen und Codeblöcke scrollen in ihrer eigenen Box, die Hilfe stapelt das Inhaltsverzeichnis über dem Artikel, Button-/Tab-Reihen brechen um, und lange Pfade oder URLs brechen um, statt die Seite zu strecken.
+
+### Hinweise
+- Ursache war die klassische Flex/Grid-**min-width: auto**-Falle plus ein paar nicht umschlossene breite Elemente; behoben mit `min-width: 0` auf Grid-Items, `overflow-wrap` auf Markdown/Titeln, einer scrollbaren Markdown-Tabelle und dem Stapeln des Hilfe-Grids am Mobile-Breakpoint. Ein Playwright-Wächter prüft **0 horizontalen Überlauf bei 375 px** auf den Hauptrouten. `tests/playwright-smoke.mjs`. Suite: **2621**.
+
+
+
 ## [1.207.2] — 2026-08-16
 
 **Behoben — KI-Pläne und Karriere-Orientierungsprofile werden nicht mehr als roher Code-Dump dargestellt.**

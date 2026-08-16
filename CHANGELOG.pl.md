@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.208.0] — 2026-08-16
+
+**Naprawiono — aplikacja mieści się teraz na ekranie telefonu: koniec przewijania w bok.**
+
+### Naprawiono
+- Na wąskim ekranie cała aplikacja uciekała w bok — górny pasek, tabele, artykuły pomocy i karty ustawień wychodziły poza prawą krawędź. Teraz każda strona mieści się przy dowolnej szerokości: przyciski górnego paska przechodzą do drugiego wiersza, szerokie tabele i bloki kodu przewijają się we własnej ramce, pomoc układa spis treści nad artykułem, rzędy przycisków/kart zawijają się, a długie ścieżki lub adresy URL łamią się zamiast rozciągać stronę.
+
+### Uwagi
+- Przyczyną była klasyczna pułapka flex/grid **min-width: auto** oraz kilka nieopakowanych szerokich elementów; naprawiono przez `min-width: 0` na elementach siatki, `overflow-wrap` na markdownie/nagłówkach, przewijalną tabelę markdown i układanie siatki pomocy w punkcie mobilnym. Strażnik Playwright sprawdza **0 poziomego przepełnienia przy 375 px** na głównych trasach. `tests/playwright-smoke.mjs`. Zestaw: **2621**.
+
+
+
 ## [1.207.2] — 2026-08-16
 
 **Naprawiono — plany AI i profile orientacji zawodowej nie wyświetlają się już jako surowy zrzut kodu.**

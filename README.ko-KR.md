@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.207.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.2)
+[![release](https://img.shields.io/badge/release-v1.208.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.207.2** — **AI 계획이 다시 제대로 표시됨** — 모델이 답변 전체를 ```markdown 펜스로 감싸도 개발 계획과 오리엔테이션 프로필이 더 이상 고정폭 코드 덤프로 나오지 않습니다. **2621 개 테스트.**
+> **🆕 최신 릴리스 — v1.208.0** — **앱이 휴대폰에 맞습니다** — 어떤 페이지도 옆으로 스크롤되지 않습니다: 상단 바가 줄바꿈되고, 넓은 표·코드는 자체 박스에서 스크롤되며, 도움말이 쌓이고, 긴 경로는 레이아웃을 늘리지 않고 줄바꿈됩니다. **2621 개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

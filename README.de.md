@@ -12,11 +12,11 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.207.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.2)
+[![release](https://img.shields.io/badge/release-v1.208.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.207.2** — **KI-Pläne werden wieder korrekt dargestellt** — Entwicklungsplan und Orientierungsprofil erscheinen nicht mehr als Monospace-Code-Dump, wenn das Modell seine ganze Antwort in einen ```markdown-Zaun packt. **2621 Tests.**
+> **🆕 Neueste Version — v1.208.0** — **Die App passt auf dein Handy** — keine Seite scrollt mehr seitwärts: die obere Leiste bricht um, breite Tabellen/Code scrollen in ihrer Box, die Hilfe stapelt, und lange Pfade brechen um, statt das Layout zu strecken. **2621 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

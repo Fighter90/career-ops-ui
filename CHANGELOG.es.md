@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.208.0] — 2026-08-16
+
+**Corregido — la app ya cabe en la pantalla de un móvil: se acabó el desplazamiento lateral.**
+
+### Corregido
+- En pantallas estrechas toda la app se desplazaba de lado —la barra superior, las tablas, los artículos de ayuda y las pestañas de ajustes se salían por el borde derecho. Ahora cada página cabe en cualquier ancho: los botones de la barra superior pasan a una segunda fila, las tablas y bloques de código anchos se desplazan dentro de su propia caja, la ayuda apila su índice sobre el artículo, las filas de botones/pestañas se ajustan, y las rutas o URL largas se parten en lugar de estirar la página.
+
+### Notas
+- La causa era la clásica trampa **min-width: auto** de flex/grid más algún elemento ancho sin envolver; resuelto con `min-width: 0` en los ítems de grid, `overflow-wrap` en el markdown/títulos, una tabla de markdown desplazable y el apilado de la cuadrícula de ayuda en el punto móvil. Un guard de Playwright verifica **0 desbordamiento horizontal a 375 px** en las rutas principales. `tests/playwright-smoke.mjs`. Conjunto: **2621**.
+
+
+
 ## [1.207.2] — 2026-08-16
 
 **Corregido — los planes de IA y los perfiles de orientación ya no se muestran como un volcado de código.**

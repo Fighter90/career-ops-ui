@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.208.0] — 2026-08-16
+
+**Rettet — appen passer nu på en telefonskærm: ingen sidelæns scrolling mere.**
+
+### Rettet
+- På en smal skærm skred hele appen ud til siden — topbjælken, tabeller, hjælpeartikler og indstillingsfaner gik ud over højre kant. Nu passer hver side i enhver bredde: topbjælkens knapper ombrydes til en anden række, brede tabeller og kodeblokke ruller inde i deres egen boks, hjælpen stabler indholdsfortegnelsen over artiklen, rækker af knapper/faner ombrydes, og lange stier eller URL'er brydes i stedet for at strække siden.
+
+### Noter
+- Årsagen var den klassiske flex/grid **min-width: auto**-fælde plus et par uindpakkede brede elementer; rettet med `min-width: 0` på grid-elementer, `overflow-wrap` på markdown/titler, en scrollbar markdown-tabel og stabling af hjælpe-griddet ved mobilbrudpunktet. En Playwright-vagt tjekker **0 vandret overløb ved 375 px** på hovedruterne. `tests/playwright-smoke.mjs`. Suite: **2621**.
+
+
+
 ## [1.207.2] — 2026-08-16
 
 **Rettet — AI-planer og karriereorienteringsprofiler vises ikke længere som et råt kode-dump.**

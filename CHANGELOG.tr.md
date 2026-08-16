@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.208.0] — 2026-08-16
+
+**Düzeltildi — uygulama artık bir telefon ekranına sığıyor: yana kaydırma bitti.**
+
+### Düzeltildi
+- Dar ekranda uygulamanın tamamı yana kayıyordu — üst çubuk, tablolar, yardım makaleleri ve ayar sekmeleri sağ kenarı aşıyordu. Artık her sayfa her genişliğe sığıyor: üst çubuk düğmeleri ikinci satıra kayar, geniş tablolar ve kod blokları kendi kutusunda kayar, yardım içindekiler tablosunu makalenin üstüne yığar, düğme/sekme satırları alt satıra geçer ve uzun yollar veya URL'ler sayfayı germek yerine satır kırar.
+
+### Notlar
+- Kök neden klasik flex/grid **min-width: auto** tuzağı ve birkaç sarmalanmamış geniş öğeydi; ızgara öğelerine `min-width: 0`, markdown/başlıklara `overflow-wrap`, kaydırılabilir bir markdown tablosu ve mobil kırılma noktasında yardım ızgarasının dikey yığılmasıyla düzeltildi. Bir Playwright bekçisi ana rotalarda **375 px'te 0 yatay taşma** doğrular. `tests/playwright-smoke.mjs`. Takım: **2621**.
+
+
+
 ## [1.207.2] — 2026-08-16
 
 **Düzeltildi — yapay zekâ planları ve kariyer yönlendirme profilleri artık ham kod dökümü olarak görünmüyor.**

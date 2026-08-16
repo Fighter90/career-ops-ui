@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.208.0] — 2026-08-16
+
+**Corrigé — l'app tient maintenant sur un écran de téléphone : plus de défilement latéral.**
+
+### Corrigé
+- Sur un écran étroit toute l'app partait sur le côté — la barre du haut, les tableaux, les articles d'aide et les onglets de réglages débordaient à droite. Désormais chaque page tient à toute largeur : les boutons de la barre du haut passent à une deuxième ligne, les tableaux et blocs de code larges défilent dans leur propre cadre, l'aide empile son sommaire au-dessus de l'article, les rangées de boutons/onglets s'enroulent, et les longs chemins ou URL se coupent au lieu d'étirer la page.
+
+### Notes
+- La cause était le classique piège **min-width: auto** de flex/grid plus quelques éléments larges non encapsulés ; corrigé avec `min-width: 0` sur les éléments de grille, `overflow-wrap` sur le markdown/les titres, un tableau markdown défilable et l'empilement de la grille d'aide au point de rupture mobile. Un garde Playwright vérifie **0 débordement horizontal à 375 px** sur les routes principales. `tests/playwright-smoke.mjs`. Suite : **2621**.
+
+
+
 ## [1.207.2] — 2026-08-16
 
 **Corrigé — les plans IA et les profils d'orientation ne s'affichent plus comme un vidage de code brut.**

@@ -752,6 +752,53 @@ test('Playwright smoke: notifications drawer is hidden at boot, opens only via b
   await closePage(page);
 });
 
+// v1.208.0 — the SPA must not overflow sideways on a phone. Regression guard
+// for the responsive pass (topbar wraps, grid items shrink, tables/code scroll
+// inside their own box, help stacks). We assert no VISIBLE element's right edge
+// sticks past the viewport — NOT `documentElement.scrollWidth`, which counts the
+// vertical-scrollbar gutter as ~6-17px of phantom overflow on classic-scrollbar
+// platforms (CI headless Linux; macOS overlay-scrollbars read 0). Elements that
+// legitimately scroll inside an `overflow-x:auto/scroll/hidden` box (wide tables,
+// ```code fences, off-canvas drawers) are excluded — they don't scroll the page.
+test('Playwright smoke: no horizontal overflow at a phone width (375px)', { skip: SKIP }, async () => {
+  const page = await context.newPage();
+  await page.setViewportSize({ width: 375, height: 780 });
+  const routes = ['dashboard', 'scan', 'tracker', 'config', 'help', 'cv', 'stats', 'reports'];
+  const bad = [];
+  for (const r of routes) {
+    await page.goto(baseUrl + '/#/' + r);
+    await page.waitForSelector('#content', { timeout: 5000 });
+    await page.waitForTimeout(120);
+    const worst = await page.evaluate(() => {
+      const vw = window.innerWidth;
+      let max = vw, who = '';
+      for (const el of document.querySelectorAll('body *')) {
+        const rect = el.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) continue;
+        // Out-of-flow elements (fixed/absolute) align to the viewport edge and
+        // never scroll the page — under a classic scrollbar their rect.right is
+        // the full viewport width (a scrollbar-gutter past clientWidth), which is
+        // expected, not overflow. Only IN-FLOW content scrolls the page sideways.
+        const pos = getComputedStyle(el).position;
+        if (pos === 'fixed' || pos === 'absolute') continue;
+        let clipped = false;
+        for (let a = el.parentElement; a; a = a.parentElement) {
+          const ov = getComputedStyle(a).overflowX;
+          if (ov === 'auto' || ov === 'scroll' || ov === 'hidden') { clipped = true; break; }
+        }
+        if (!clipped && rect.right > max) {
+          max = rect.right;
+          who = el.tagName.toLowerCase() + '.' + (el.className || '').toString().trim().split(/\s+/).slice(0, 2).join('.');
+        }
+      }
+      return { over: Math.round(max - vw), who };
+    });
+    if (worst.over > 1) bad.push(`${r}: +${worst.over}px (${worst.who})`);
+  }
+  assert.deepEqual(bad, [], 'an element sticks past the viewport at 375px: ' + bad.join(' · '));
+  await page.close();
+});
+
 if (SKIP) {
   test('Playwright smoke: skipped (playwright not resolvable)', () => {
     console.log('SKIP — install playwright in parent project: cd $CAREER_OPS_ROOT && npm i && npx playwright install chromium');
