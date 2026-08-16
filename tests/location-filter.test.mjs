@@ -1,9 +1,8 @@
 /**
- * v1.33.0 (WS4) — `buildLocationFilter` parity with parent
- * career-ops 1.8.0 scan.mjs (#570).
+ * v1.33.0 (WS4) — `buildLocationFilter` location semantics (#570).
  *
  * Locks the exact semantics so a future refactor can't drift from the
- * parent's `portals.yml::location_filter` behaviour. web-ui's
+ * the `portals.yml::location_filter` behaviour. web-ui's
  * en-scanner / ru-scanner run in-process (don't shell out to the
  * parent's scan.mjs), so this shared module IS the contract.
  */

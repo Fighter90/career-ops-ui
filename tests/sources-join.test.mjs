@@ -1,7 +1,6 @@
 /**
  * JOIN (join.com) source + adapter — CI-isolated tests (fake fetchImpl, no
- * network, no parent-project dependency). Ported from parent career-ops
- * `tests/providers/join.test.mjs`, adapted to the web-ui source contract:
+ * network, no parent-project dependency), adapted to the web-ui source contract:
  * rich normalized job objects, host-pinned `fetchText` fetches with
  * `redirect:'error'`, and the successfactors-style dead-board contract (throw
  * on a page-0 failure, keep partials on a later-page failure).

@@ -88,7 +88,7 @@ export function parseMarkdownTable(text) {
  * variant headers back onto the canonical field name before the row object is
  * built, so every downstream consumer sees the same field names.
  *
- * Mirrors the parent career-ops shared alias table (`tracker-aliases.json`):
+ * The header-alias table covers:
  * identity entries for the canonical labels plus the ES `empresa`→company /
  * `puesto`→role pairs, extended conservatively with the remaining well-known,
  * unambiguous Spanish translations and English variants. Kept deliberately
@@ -112,8 +112,8 @@ export const HEADER_ALIASES = {
   notes: 'notes',
   url: 'url',
   // Spanish localized headers.
-  empresa: 'company', // from the parent shared alias table
-  puesto: 'role', // from the parent shared alias table
+  empresa: 'company', // ES header alias
+  puesto: 'role', // ES header alias
   estado: 'status',
   fecha: 'date',
   enlace: 'url',

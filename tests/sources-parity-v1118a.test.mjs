@@ -2,7 +2,7 @@
  * v1.118 parent-parity sources (batch A) — csod / phenom / radancy.
  * Fetch/parse with a stubbed transport (no network), host-pinning, meta shape
  * for the scan dropdown, and adapter matches()/buildEndpoint(). Fixtures
- * adapted from the parent career-ops provider tests.
+ * adapted to the web-ui provider contract.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

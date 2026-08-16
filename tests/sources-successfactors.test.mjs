@@ -1,6 +1,5 @@
 /**
- * SAP SuccessFactors (RMK) source + adapter — ported from parent career-ops
- * `providers/successfactors.mjs`. Public, zero-auth HTML tile fragment,
+ * SAP SuccessFactors (RMK) source + adapter. Public, zero-auth HTML tile fragment,
  * host-pinned per tenant. CI-isolated: fetchImpl is faked, no network.
  */
 import { test } from 'node:test';

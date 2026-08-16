@@ -5,7 +5,7 @@
  * the two-markup-generations fix, adapted to the web-ui source contract: the
  * parsers emit rich job objects (not raw {id,title,url,location} records) and
  * the fragment transport is reached via an injected `opts.fetchJson` capability
- * (mirroring the parent's `ctx.fetchJson` gate) rather than a `ctx` object.
+ * (an injected-capability gate) rather than a `ctx` object.
  *
  * Fixtures are trimmed from real responses. Both legacy fixtures keep the
  * sibling <button class="js-save-job-btn" data-job-id="…"> that repeats the job

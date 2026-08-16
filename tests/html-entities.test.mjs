@@ -1,4 +1,4 @@
-// Shared HTML-entity decoder — parity with the parent's providers/_html-entities.mjs.
+// Shared HTML-entity decoder.
 //
 // Regression for the crash class the parent fixed (#2150): the bare
 // `Number.isFinite(code) ? String.fromCodePoint(code) : m` guard in

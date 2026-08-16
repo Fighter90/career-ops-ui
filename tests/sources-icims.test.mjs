@@ -1,5 +1,5 @@
 /**
- * iCIMS source + adapter — ported from parent career-ops `providers/icims.mjs`.
+ * iCIMS source + adapter.
  * Targets the classic iCIMS hosted-portal search pages at
  * `careers-<tenant>.icims.com` (DISTINCT from the jibeapply source). Public,
  * zero-auth HTML search fragment, host-pinned per tenant. CI-isolated:
@@ -18,8 +18,7 @@ import { icimsAdapter } from '../server/lib/portals/adapters/icims.mjs';
 const ORIGIN = 'https://careers-acmefreight.icims.com';
 const ENDPOINT = icimsSearchUrl(ORIGIN); // https://careers-acmefreight.icims.com/jobs/search?ss=1&in_iframe=1
 
-// Search-results fixture (snippets ported from the parent's
-// tests/fixtures/icims-search-page.html): a card with a rendered location and
+// Search-results fixture: a card with a rendered location and
 // an entity-bearing title, a themed second card, and a foreign-host card that
 // must be dropped by the origin pin.
 const FIXTURE = `<div class="iCIMS_MainWrapper iCIMS_ListingsPage">

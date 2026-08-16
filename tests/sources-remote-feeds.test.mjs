@@ -1,6 +1,6 @@
 /**
- * Tests for the board-wide remote-aggregator sources ported from parent
- * career-ops v1.12.0: RemoteOK, Remotive, Working Nomads.
+ * Tests for the board-wide remote-aggregator sources:
+ * RemoteOK, Remotive, Working Nomads.
  *
  * CI-isolated: HTTP is never hit; a fake fetchImpl is injected.
  */

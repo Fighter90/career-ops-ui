@@ -2,8 +2,8 @@
  * Welcome to the Jungle source + adapter tests (CI-isolated, fake fetchImpl).
  * No live network, no parent-project files, no port binding.
  *
- * Ports the meaningful cases from parent career-ops `tests/providers/wttj.test.mjs`,
- * adapted to the 12-field web-ui job shape (salary is a string; isRemote /
+ * Covers the meaningful cases for the 12-field web-ui job shape (salary is a
+ * string; isRemote /
  * workplaceType / id / source added).
  */
 import { test } from 'node:test';
