@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.207.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.0)
+[![release](https://img.shields.io/badge/release-v1.207.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.207.0** — **트래커에서 결과 기록** — 모든 행에 **결과** 동작: 무슨 일이 있었는지 고르고(불합격 / 오퍼 / 입사 / 거절 / 무응답 / 면접), 결과 상태를 미리보기한 뒤 기록합니다. 제출한 아티팩트를 보관하고 트래커 상태를 동기화합니다. **2618 개 테스트.**
+> **🆕 최신 릴리스 — v1.207.1** — **랜딩이 어떤 화면에도 맞음** — 작은 휴대폰에서 히어로 제목, 소개, 설치 터미널이 더 이상 오른쪽 가장자리에서 잘리지 않으며, 긴 설치 명령은 터미널 상자 안에서 스크롤됩니다. **2618 개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

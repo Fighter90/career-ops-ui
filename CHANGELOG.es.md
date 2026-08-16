@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.207.1] — 2026-08-16
+
+**Corregido — la página de inicio ya no se desborda de lado en móviles pequeños.**
+
+### Corregido
+- En un móvil estrecho el hero —el titular, la línea de introducción y la terminal de instalación— podía quedar recortado por el borde derecho porque un comando de instalación largo y las columnas del diseño no se encogían a la pantalla. Ahora caben en cualquier ancho; el comando de instalación se desplaza dentro de su propia terminal.
+
+### Notas
+- También se reforzó una comprobación E2E inestable que podía fallar por un 404 transitorio de un recurso: ahora ignora el ruido de red benigno (favicon / conexión / recurso fallido) como las comprobaciones hermanas, sin dejar de detectar errores reales de script. Sin cambios en el comportamiento de la aplicación. Conjunto: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Añadido — registra el resultado de una candidatura directamente desde el seguimiento.**

@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.207.1] — 2026-08-16
+
+**Rettet — landingssiden løber ikke længere ud til siden på små telefoner.**
+
+### Rettet
+- På en smal telefon kunne hero-området — overskriften, introlinjen og installationsterminalen — blive klippet af i højre kant, fordi en lang installationskommando og layoutkolonnerne ikke krympede til skærmen. De passer nu i enhver bredde; installationskommandoen ruller inde i sin egen terminalboks.
+
+### Noter
+- Et ustabilt E2E-smoke-tjek, der kunne fejle på en forbigående ressource-404, er også gjort robust: det ignorerer nu godartet netværksstøj (favicon / forbindelse / mislykket ressource) som nabotjekkene, men fanger stadig ægte scriptfejl. Ingen ændring i appens adfærd. Suite: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Tilføjet — registrér udfaldet af en ansøgning direkte fra trackeren.**

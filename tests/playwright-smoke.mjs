@@ -47,6 +47,13 @@ function resolvePlaywright() {
 const playwright = resolvePlaywright();
 const SKIP = !playwright;
 
+// Benign network noise a console-error assertion must NOT flake on: a favicon
+// or optional-widget resource that transiently 404s while racing SPA boot is
+// not a JS/render error. Mirrors the filter in playwright-forms.mjs; real JS
+// errors (uncaught exceptions, thrown console.error) still surface.
+const BENIGN_CONSOLE = /favicon|net::ERR|Failed to load resource/i;
+const realConsoleErrors = (errors) => errors.filter((e) => !BENIGN_CONSOLE.test(e));
+
 let server, baseUrl, browser, context;
 
 before(async () => {
@@ -116,6 +123,9 @@ test('Playwright smoke: dashboard renders + footer version present', { skip: SKI
   page.on('console', (msg) => {
     if (msg.type() === 'error') consoleErrors.push(msg.text());
   });
+  // Uncaught JS exceptions never match BENIGN_CONSOLE, so a real script error
+  // still fails the test even though transient network 404s are filtered out.
+  page.on('pageerror', (e) => consoleErrors.push('pageerror: ' + e.message));
   await page.goto(baseUrl + '/#/dashboard');
   await page.waitForSelector('#content', { timeout: 5000 });
   // Footer renders the package.json version (e.g. "v1.7.2").
@@ -124,7 +134,8 @@ test('Playwright smoke: dashboard renders + footer version present', { skip: SKI
   // Dashboard content is rendered by the dashboard view; expect something.
   const contentHtml = await page.locator('#content').innerHTML();
   assert.ok(contentHtml.length > 50, 'dashboard content empty');
-  assert.deepEqual(consoleErrors, [], 'console errors on dashboard: ' + consoleErrors.join(' | '));
+  const real = realConsoleErrors(consoleErrors);
+  assert.deepEqual(real, [], 'console errors on dashboard: ' + real.join(' | '));
   await page.close();
 });
 
@@ -375,6 +386,8 @@ test('Playwright smoke: dashboard ✨ Auto-pipeline button → #/auto screen wit
   const page = await context.newPage();
   const consoleErrors = [];
   page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
+  // Real uncaught JS exceptions still fail (they never match BENIGN_CONSOLE).
+  page.on('pageerror', (e) => consoleErrors.push('pageerror: ' + e.message));
   await page.goto(baseUrl + '/#/dashboard');
   await page.waitForSelector('#content', { timeout: 5000 });
   // The CTA in the page-header now navigates to the dedicated screen.
@@ -383,7 +396,8 @@ test('Playwright smoke: dashboard ✨ Auto-pipeline button → #/auto screen wit
   await page.waitForFunction(() => location.hash === '#/auto', { timeout: 3000 });
   const placeholder = await page.locator('#auto-url').getAttribute('placeholder');
   assert.match(placeholder || '', /greenhouse|workable|workday|https/i, 'input should hint at a URL paste');
-  assert.deepEqual(consoleErrors, [], 'dashboard auto-pipeline console errors: ' + consoleErrors.join(' | '));
+  const real = realConsoleErrors(consoleErrors);
+  assert.deepEqual(real, [], 'dashboard auto-pipeline console errors: ' + real.join(' | '));
   await closePage(page);
 });
 

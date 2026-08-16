@@ -11,6 +11,30 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.207.0] — 2026-08-15
+
+**Ajouté — consignez le résultat d'une candidature directement depuis le suivi.**
+
+### Ajouté
+- Chaque ligne du suivi reçoit une action **Résultat** : choisissez ce qui s'est passé (refusé, offre reçue, embauché, offre déclinée, sans réponse, passé en entretien), ajoutez une note facultative, **prévisualisez** le statut obtenu, puis consignez-le. Consigner archive les artefacts du CV et de la lettre envoyés et synchronise le suivi vers l'état canonique — une action déterministe au lieu d'éditer le suivi à la main.
+
+### Notes
+- Nouvelle `POST /api/outcome` qui relaie la CLI de résultats : `dryRun:true` est un aperçu en lecture seule (localise la ligne, indique l'état obtenu, n'écrit rien) ; un appel réel le consigne. Sécurité d'écriture : le type de résultat est limité à l'ensemble connu et tout champ texte est rejeté s'il contient un caractère de contrôle avant l'appel (arguments en tableau, spawn — pas de shell). `tests/outcome-route.test.mjs`. Suite : **2618**.
+
+
+
+## [1.206.0] — 2026-08-15
+
+**Documentation — le guide d'aide intégré couvre désormais les cinq fonctionnalités les plus récentes, dans les 17 langues.**
+
+### Ajouté
+- Le guide d'aide intégré — et l'assistant « Demander à l'aide » qui répond à partir de lui — documente désormais cinq fonctionnalités récentes : **Docteur de configuration** (Réglages — vérifie votre CV et profil pour repérer les manques et les données d'exemple oubliées), **Découvrir les tableaux ATS** (Portails — trouve automatiquement le portail carrières d'une entreprise), la vérification **« toujours en ligne ? »** (Suivi — si une offre est encore ouverte), l'astuce **« réutiliser un ancien CV ? »** (CV Studio — signale quand un CV déjà adapté convient à une nouvelle offre) et le **Journal de compétences** (Analytique — consigner des scores d'auto-évaluation). Cinq nouvelles sous-sections, traduites dans les 17 langues.
+
+### Notes
+- La structure du guide passe à 31 H2 / 118 H3, avec parité garantie dans chaque langue. Documentation de référence actualisée : `docs/architecture/API.md` documente les cinq routes de ces fonctionnalités, et les compteurs de routes/version dans `CLAUDE.md` et `docs/sdd/CONVENTIONS.md` sont à jour (36 modules de route). Suite : **2610**.
+
+
+
 ## [1.205.0] — 2026-08-15
 
 **Ajouté — un Journal de compétences pour consigner les résultats de tests/évaluations.**

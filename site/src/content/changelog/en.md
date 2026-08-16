@@ -8,6 +8,30 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.207.0] — 2026-08-15
+
+**Added — record an application's outcome straight from the tracker.**
+
+### Added
+- Every tracker row gets an **Outcome** action: pick what happened (rejected, offer received, hired, offer declined, no response, advanced to interview), add an optional note, **preview** the resulting status, then record it. Recording archives the submitted CV & cover-letter artifacts and syncs the tracker to the canonical state — one deterministic action instead of hand-editing the tracker.
+
+### Notes
+- New `POST /api/outcome` relays the outcome CLI: `dryRun:true` is a read-only preview (matches the row, reports the resulting state, writes nothing); a real call records it. Write-safety: the outcome type is whitelisted to the known set and every text field is control-char-rejected before the shell-out (array args, spawn — no shell). `tests/outcome-route.test.mjs`. Suite: **2618**.
+
+
+
+## [1.206.0] — 2026-08-15
+
+**Documentation — the in-app help guide now covers the five newest features, in all 17 languages.**
+
+### Added
+- The built-in help guide — and the "Ask the docs" assistant that answers from it — now documents five recently shipped features: **Setup doctor** (Settings — checks your CV & profile for gaps and leftover example data), **Discover ATS boards** (Portals — find a company's careers board automatically), the **"still live?" check** (Tracker — whether a posting is still open), the **"reuse a past CV?" hint** (CV Studio — flags when a previously tailored CV already fits a new job), and the **Skills log** (Analytics — record self-assessment scores). Five new subsections, translated across all 17 languages.
+
+### Notes
+- Help-guide structure grows to 31 H2 / 118 H3, parity-gated across every locale. Reference docs refreshed: `docs/architecture/API.md` documents the five routes behind these features, and the route/version counters in `CLAUDE.md` and `docs/sdd/CONVENTIONS.md` are current (36 route modules). Suite: **2610**.
+
+
+
 ## [1.205.0] — 2026-08-15
 
 **Added — a Skills log to record practice-test / assessment results.**

@@ -9,6 +9,30 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.207.0] — 2026-08-15
+
+**Dodano — zapisuj wynik aplikacji bezpośrednio ze śledzenia.**
+
+### Dodano
+- Każdy wiersz śledzenia zyskuje akcję **Wynik**: wybierz, co się stało (odrzucono, otrzymano ofertę, zatrudniony, oferta odrzucona, brak odpowiedzi, przeszedł do rozmowy), dodaj opcjonalną notatkę, **podejrzyj** wynikowy status i zapisz. Zapis archiwizuje wysłane pliki CV i listu motywacyjnego oraz synchronizuje śledzenie do stanu kanonicznego — jedna deterministyczna akcja zamiast ręcznej edycji.
+
+### Uwagi
+- Nowa `POST /api/outcome` pośredniczy w CLI wyników: `dryRun:true` to podgląd tylko do odczytu (dopasowuje wiersz, zgłasza stan wynikowy, nic nie zapisuje); prawdziwe wywołanie zapisuje. Bezpieczeństwo zapisu: typ wyniku jest ograniczony do znanego zbioru, a każde pole tekstowe jest odrzucane przy znakach kontrolnych przed wywołaniem (argumenty jako tablica, spawn — bez powłoki). `tests/outcome-route.test.mjs`. Zestaw: **2618**.
+
+
+
+## [1.206.0] — 2026-08-15
+
+**Dokumentacja — wbudowany przewodnik pomocy obejmuje teraz pięć najnowszych funkcji we wszystkich 17 językach.**
+
+### Dodano
+- Wbudowany przewodnik pomocy — oraz asystent „Zapytaj pomoc", który odpowiada na jego podstawie — dokumentuje teraz pięć niedawno dodanych funkcji: **Doktor konfiguracji** (Ustawienia — sprawdza CV i profil pod kątem braków i pozostawionych danych przykładowych), **Znajdź tablice ATS** (Portale — automatycznie znajduje tablicę ofert firmy), sprawdzenie **„nadal aktualne?"** (Śledzenie — czy oferta jest wciąż otwarta), podpowiedź **„użyć ponownie starego CV?"** (CV Studio — sygnalizuje, gdy dopasowane wcześniej CV pasuje do nowej oferty) oraz **Dziennik umiejętności** (Analityka — zapis wyników samooceny). Pięć nowych podsekcji, przetłumaczonych na wszystkie 17 języków.
+
+### Uwagi
+- Struktura przewodnika rośnie do 31 H2 / 118 H3, z gwarancją parytetu w każdym języku. Zaktualizowano dokumentację referencyjną: `docs/architecture/API.md` opisuje pięć tras tych funkcji, a liczniki tras/wersji w `CLAUDE.md` i `docs/sdd/CONVENTIONS.md` są aktualne (36 modułów tras). Zestaw: **2610**.
+
+
+
 ## [1.205.0] — 2026-08-15
 
 **Dodano — dziennik umiejętności do zapisu wyników testów/ocen.**
