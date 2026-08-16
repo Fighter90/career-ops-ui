@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.208.1] — 2026-08-16
+
+**Naprawiono — na telefonie przyciski górnego paska nie nachodzą już na stronę.**
+
+### Naprawiono
+- v1.208.0 zawijała przyciski górnego paska (Diagnostyka, Otwórz Scan, powiadomienia, motyw) do drugiego wiersza na wąskich ekranach, ale pasek zachowywał stałą wysokość, więc zawinięty wiersz wychodził poza pasek i nakładał się na nagłówek strony. Teraz pasek **rośnie** pod swoje wiersze, a treść płynie pod nim.
+
+### Uwagi
+- Stała `height` paska stała się `min-height`, więc rośnie z treścią przy każdej szerokości (pulpit bez zmian). Strażnik Playwright sprawdza teraz również, że pasek nie wychodzi na stronę. Zestaw: **2621**.
+
+
+
 ## [1.208.0] — 2026-08-16
 
 **Naprawiono — aplikacja mieści się teraz na ekranie telefonu: koniec przewijania w bok.**

@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.208.1] — 2026-08-16
+
+**Rettet — på en telefon overlapper topbjælkens knapper ikke længere siden.**
+
+### Rettet
+- v1.208.0 ombrød topbjælkens handlingsknapper (Diagnose, Åbn Scan, notifikationer, tema) til en anden række på smalle skærme, men bjælken beholdt en fast højde, så den ombrudte række flød ud og lå oven på sideoverskriften. Bjælken **vokser** nu til at rumme sine rækker, og indholdet flyder nedenunder.
+
+### Noter
+- Bjælkens faste `height` blev til `min-height`, så den vokser med sit indhold i enhver bredde (desktop er uændret). En Playwright-vagt tjekker nu også, at bjælken ikke flyder ud over siden. Suite: **2621**.
+
+
+
 ## [1.208.0] — 2026-08-16
 
 **Rettet — appen passer nu på en telefonskærm: ingen sidelæns scrolling mere.**

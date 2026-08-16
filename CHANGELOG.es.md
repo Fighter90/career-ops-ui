@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.208.1] — 2026-08-16
+
+**Corregido — en el móvil los botones de la barra superior ya no se solapan con la página.**
+
+### Corregido
+- La v1.208.0 pasaba los botones de la barra superior (Diagnóstico, Abrir Scan, notificaciones, tema) a una segunda fila en pantallas estrechas, pero la barra mantenía una altura fija, así que la fila envuelta se salía y quedaba sobre el título de la página. Ahora la barra **crece** para acoger sus filas y el contenido fluye debajo.
+
+### Notas
+- La `height` fija de la barra pasó a `min-height`, así crece con su contenido en cualquier ancho (el escritorio no cambia). Un guard de Playwright ahora también comprueba que la barra no se salga sobre la página. Conjunto: **2621**.
+
+
+
 ## [1.208.0] — 2026-08-16
 
 **Corregido — la app ya cabe en la pantalla de un móvil: se acabó el desplazamiento lateral.**

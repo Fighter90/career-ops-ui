@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.208.1] — 2026-08-16
+
+**Corretto — su un telefono i pulsanti della barra superiore non si sovrappongono più alla pagina.**
+
+### Corretto
+- La v1.208.0 mandava i pulsanti della barra superiore (Diagnostica, Apri Scan, notifiche, tema) su una seconda riga sugli schermi stretti, ma la barra manteneva un'altezza fissa, così la riga a capo debordava e si posava sul titolo della pagina. Ora la barra **cresce** per accogliere le sue righe e il contenuto scorre sotto.
+
+### Note
+- L'`height` fissa della barra è diventata una `min-height`, così cresce con il contenuto a qualsiasi larghezza (il desktop è invariato). Un guard di Playwright verifica ora anche che la barra non debordi sulla pagina. Suite: **2621**.
+
+
+
 ## [1.208.0] — 2026-08-16
 
 **Corretto — l'app ora sta nello schermo di un telefono: niente più scorrimento laterale.**

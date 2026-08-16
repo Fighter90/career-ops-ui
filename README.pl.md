@@ -12,11 +12,11 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.208.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.0)
+[![release](https://img.shields.io/badge/release-v1.208.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.208.0** — **Aplikacja mieści się na telefonie** — żadna strona nie przewija się w bok: górny pasek się zawija, szerokie tabele/kod przewijają się w ramce, pomoc się układa, a długie ścieżki łamią się zamiast rozciągać układ. **2621 testów.**
+> **🆕 Najnowsze wydanie — v1.208.1** — **Poprawka górnego paska na telefonie** — jego przyciski nie nakładają się już na nagłówek strony przy zawijaniu do drugiego wiersza; pasek rośnie, by je pomieścić. **2621 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

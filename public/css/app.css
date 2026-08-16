@@ -446,7 +446,11 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .topbar {
   position: sticky;
   top: 0;
-  height: var(--topbar-h);
+  /* min-height (not a fixed height) so the bar GROWS to fit its content when
+     the action buttons wrap to a second row on a phone — a fixed height let the
+     wrapped row spill out and overlap the page header (v1.208.1). Desktop is
+     unchanged: one row always fits within --topbar-h. */
+  min-height: var(--topbar-h);
   background: var(--paper);
   border-bottom: 1px solid var(--slate);
   display: flex;

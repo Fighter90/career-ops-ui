@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.208.1] — 2026-08-16
+
+**Fixed — on a phone the top-bar buttons no longer overlap the page.**
+
+### Fixed
+- v1.208.0 wrapped the top-bar action buttons (Diagnostics, Open Scan, notifications, theme) onto a second row on narrow screens, but the bar kept a fixed height — so the wrapped row spilled out and sat on top of the page heading. The bar now **grows** to fit its rows and the content flows below it.
+
+### Notes
+- The top bar's fixed `height` became a `min-height`, so it expands with its content on any width (desktop is unchanged — one row always fits). A Playwright guard now also checks the top bar does not spill over the page. Suite: **2621**.
+
+
+
 ## [1.208.0] — 2026-08-16
 
 **Fixed — the app fits a phone screen now: no more sideways scrolling.**

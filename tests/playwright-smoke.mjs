@@ -794,8 +794,16 @@ test('Playwright smoke: no horizontal overflow at a phone width (375px)', { skip
       return { over: Math.round(max - vw), who };
     });
     if (worst.over > 1) bad.push(`${r}: +${worst.over}px (${worst.who})`);
+    // The sticky top bar must GROW to fit its action buttons when they wrap to a
+    // second row on a phone — a fixed height let the wrapped row spill out and
+    // overlap the page header (v1.208.1). scrollHeight > clientHeight ⇒ spill.
+    const spill = await page.evaluate(() => {
+      const tb = document.querySelector('.topbar');
+      return tb ? Math.round(tb.scrollHeight - tb.clientHeight) : 0;
+    });
+    if (spill > 1) bad.push(`${r}: topbar content spills ${spill}px (overlaps page)`);
   }
-  assert.deepEqual(bad, [], 'an element sticks past the viewport at 375px: ' + bad.join(' · '));
+  assert.deepEqual(bad, [], 'phone-width layout broke at 375px: ' + bad.join(' · '));
   await page.close();
 });
 

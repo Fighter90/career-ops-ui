@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.208.1] — 2026-08-16
+
+**Corrigido — no celular os botões da barra superior não sobrepõem mais a página.**
+
+### Corrigido
+- A v1.208.0 quebrava os botões da barra superior (Diagnóstico, Abrir Scan, notificações, tema) para uma segunda linha em telas estreitas, mas a barra mantinha altura fixa, então a linha quebrada transbordava e ficava sobre o título da página. Agora a barra **cresce** para acomodar suas linhas e o conteúdo flui abaixo.
+
+### Notas
+- A `height` fixa da barra virou `min-height`, então ela cresce com o conteúdo em qualquer largura (o desktop não muda). Um guard do Playwright agora também verifica que a barra não transborde sobre a página. Conjunto: **2621**.
+
+
+
 ## [1.208.0] — 2026-08-16
 
 **Corrigido — o app agora cabe na tela de um celular: acabou a rolagem lateral.**
