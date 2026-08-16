@@ -12,11 +12,11 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.207.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.0)
+[![release](https://img.shields.io/badge/release-v1.207.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.207.0** — **Registra un resultado desde el seguimiento** — cada fila tiene una acción **Resultado**: elige qué pasó (rechazado / oferta / contratado / rechazada / sin respuesta / entrevista), previsualiza el estado resultante y regístralo. Archiva los artefactos enviados y sincroniza el estado del seguimiento. **2618 pruebas.**
+> **🆕 Última versión — v1.207.1** — **El inicio cabe en cualquier móvil** — el titular, la introducción y la terminal de instalación ya no se recortan por el borde derecho en móviles pequeños; el comando de instalación se desplaza dentro de su terminal. **2618 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

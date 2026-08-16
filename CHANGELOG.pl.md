@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.207.1] — 2026-08-16
+
+**Naprawiono — strona startowa nie wychodzi już na boki na małych telefonach.**
+
+### Naprawiono
+- Na wąskim telefonie sekcja hero — nagłówek, wiersz wprowadzenia i terminal instalacji — mogła być ucięta przy prawej krawędzi, bo długie polecenie instalacji i kolumny układu nie kurczyły się do ekranu. Teraz mieszczą się przy każdej szerokości; polecenie instalacji przewija się w obrębie własnego terminala.
+
+### Uwagi
+- Wzmocniono też niestabilny test E2E, który mógł zawieść przez przejściowy 404 zasobu: teraz ignoruje nieszkodliwy szum sieciowy (favicon / połączenie / nieudany zasób) jak sąsiednie testy, wciąż wykrywając prawdziwe błędy skryptów. Zachowanie aplikacji bez zmian. Zestaw: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Dodano — zapisuj wynik aplikacji bezpośrednio ze śledzenia.**

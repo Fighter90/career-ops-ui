@@ -2,6 +2,30 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.207.0] — 2026-08-15
+
+**Hinzugefügt — halte das Ergebnis einer Bewerbung direkt im Tracker fest.**
+
+### Hinzugefügt
+- Jede Tracker-Zeile erhält eine **Ergebnis**-Aktion: wähle, was passiert ist (abgelehnt, Angebot erhalten, eingestellt, Angebot abgelehnt, keine Antwort, ins Interview vorgerückt), füge eine optionale Notiz hinzu, **sieh dir den resultierenden Status als Vorschau an** und erfasse ihn. Das Erfassen archiviert die eingereichten CV- und Anschreiben-Artefakte und synchronisiert den Tracker auf den kanonischen Status — eine deterministische Aktion statt manuellem Bearbeiten.
+
+### Hinweise
+- Neue `POST /api/outcome` leitet die Ergebnis-CLI weiter: `dryRun:true` ist eine schreibgeschützte Vorschau (findet die Zeile, meldet den resultierenden Status, schreibt nichts); ein echter Aufruf erfasst ihn. Schreibsicherheit: der Ergebnistyp ist auf die bekannte Menge beschränkt und jedes Textfeld wird bei Steuerzeichen vor dem Aufruf abgelehnt (Array-Argumente, spawn — keine Shell). `tests/outcome-route.test.mjs`. Suite: **2618**.
+
+
+
+## [1.206.0] — 2026-08-15
+
+**Dokumentation — der integrierte Hilfe-Guide deckt jetzt die fünf neuesten Funktionen in allen 17 Sprachen ab.**
+
+### Hinzugefügt
+- Der integrierte Hilfe-Guide — und der «Hilfe fragen»-Assistent, der daraus antwortet — dokumentiert jetzt fünf kürzlich ergänzte Funktionen: **Setup-Doktor** (Einstellungen — prüft dein CV und Profil auf Lücken und übrig gebliebene Beispieldaten), **ATS-Boards finden** (Portale — findet automatisch das Karriere-Board eines Unternehmens), die **«noch offen?»-Prüfung** (Tracker — ob eine Stelle noch offen ist), den **«früheres CV wiederverwenden?»-Hinweis** (CV Studio — meldet, wenn ein bereits angepasstes CV zu einer neuen Stelle passt) und das **Skill-Log** (Analyse — Selbsteinschätzungs-Scores erfassen). Fünf neue Unterabschnitte, übersetzt in alle 17 Sprachen.
+
+### Hinweise
+- Die Guide-Struktur wächst auf 31 H2 / 118 H3, Parität in jeder Sprache garantiert. Referenzdokumentation aktualisiert: `docs/architecture/API.md` dokumentiert die fünf Routen dieser Funktionen, und die Routen-/Versionszähler in `CLAUDE.md` und `docs/sdd/CONVENTIONS.md` sind aktuell (36 Routenmodule). Suite: **2610**.
+
+
+
 ## [1.205.0] — 2026-08-15
 
 **Hinzugefügt — ein Skill-Log zum Festhalten von Test-/Assessment-Ergebnissen.**

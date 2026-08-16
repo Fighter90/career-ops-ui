@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.207.1] — 2026-08-16
+
+**Corrigido — a página inicial não transborda mais para o lado em celulares pequenos.**
+
+### Corrigido
+- Num celular estreito o hero — o título, a linha de introdução e o terminal de instalação — podia ser cortado pela borda direita porque um comando de instalação longo e as colunas do layout não encolhiam para a tela. Agora cabem em qualquer largura; o comando de instalação rola dentro do próprio terminal.
+
+### Notas
+- Também reforçamos uma verificação E2E instável que podia falhar por um 404 transitório de um recurso: agora ignora o ruído de rede benigno (favicon / conexão / recurso falho) como as verificações irmãs, sem deixar de detectar erros reais de script. Sem mudança no comportamento da aplicação. Conjunto: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Adicionado — registre o resultado de uma candidatura direto do rastreamento.**

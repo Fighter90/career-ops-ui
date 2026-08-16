@@ -8,6 +8,30 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.207.0] — 2026-08-15
+
+**Tilføjet — registrér udfaldet af en ansøgning direkte fra trackeren.**
+
+### Tilføjet
+- Hver trackerrække får en **Resultat**-handling: vælg hvad der skete (afvist, tilbud modtaget, ansat, tilbud afvist, intet svar, gik videre til samtale), tilføj en valgfri note, **forhåndsvis** den resulterende status, og registrér den. Registrering arkiverer de indsendte CV- og ansøgningsartefakter og synkroniserer trackeren til den kanoniske tilstand — én deterministisk handling i stedet for manuel redigering.
+
+### Noter
+- Ny `POST /api/outcome` videresender resultat-CLI'en: `dryRun:true` er en skrivebeskyttet forhåndsvisning (matcher rækken, rapporterer den resulterende tilstand, skriver intet); et rigtigt kald registrerer det. Skrivesikkerhed: resultattypen er begrænset til det kendte sæt, og hvert tekstfelt afvises ved kontroltegn før kaldet (array-argumenter, spawn — ingen shell). `tests/outcome-route.test.mjs`. Suite: **2618**.
+
+
+
+## [1.206.0] — 2026-08-15
+
+**Dokumentation — den indbyggede hjælpeguide dækker nu de fem nyeste funktioner på alle 17 sprog.**
+
+### Tilføjet
+- Den indbyggede hjælpeguide — og «Spørg hjælpen»-assistenten, der svarer ud fra den — dokumenterer nu fem nyligt tilføjede funktioner: **Opsætningslæge** (Indstillinger — tjekker dit CV og din profil for huller og efterladte eksempeldata), **Find ATS-tavler** (Portaler — finder automatisk en virksomheds karrieretavle), **«stadig åben?»-tjekket** (Tracker — om et opslag stadig er åbent), **«genbrug et tidligere CV?»-hintet** (CV Studio — markerer, når et allerede tilpasset CV passer til et nyt opslag) og **Færdighedslog** (Analyse — registrér selvvurderingsscorer). Fem nye underafsnit, oversat til alle 17 sprog.
+
+### Noter
+- Guidens struktur vokser til 31 H2 / 118 H3 med paritet garanteret på hvert sprog. Referencedokumentation opdateret: `docs/architecture/API.md` dokumenterer de fem ruter bag disse funktioner, og rute-/versionstællerne i `CLAUDE.md` og `docs/sdd/CONVENTIONS.md` er ajour (36 rutemoduler). Suite: **2610**.
+
+
+
 ## [1.205.0] — 2026-08-15
 
 **Tilføjet — en færdighedslog til at notere test-/vurderingsresultater.**

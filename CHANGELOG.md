@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.207.1] — 2026-08-16
+
+**Fixed — the landing page no longer overflows sideways on small phones.**
+
+### Fixed
+- On a narrow phone the hero — the headline, the intro line, and the install terminal — could be clipped off the right edge because a long install command and the layout columns would not shrink to the screen. They now fit any width; the install command scrolls inside its own terminal box.
+
+### Notes
+- Also hardened a flaky end-to-end smoke check that could fail on a transient resource 404 — it now ignores benign network noise (favicon / connection / failed-resource) like the sibling checks, while still catching real script errors. No application behavior changed. Suite: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Added — record an application's outcome straight from the tracker.**

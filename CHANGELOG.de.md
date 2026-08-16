@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.207.1] — 2026-08-16
+
+**Behoben — die Landingpage läuft auf kleinen Handys nicht mehr seitlich über.**
+
+### Behoben
+- Auf einem schmalen Handy konnte der Hero-Bereich — die Überschrift, die Einleitungszeile und das Installations-Terminal — am rechten Rand abgeschnitten werden, weil ein langer Installationsbefehl und die Layout-Spalten nicht auf den Bildschirm schrumpften. Sie passen jetzt in jede Breite; der Installationsbefehl scrollt in seinem eigenen Terminal-Kasten.
+
+### Hinweise
+- Außerdem wurde ein instabiler E2E-Smoke-Check gehärtet, der an einem vorübergehenden Ressourcen-404 scheitern konnte: er ignoriert nun harmloses Netzwerkrauschen (Favicon / Verbindung / fehlgeschlagene Ressource) wie die Nachbar-Checks, fängt aber weiterhin echte Skriptfehler. Kein geändertes App-Verhalten. Suite: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Hinzugefügt — halte das Ergebnis einer Bewerbung direkt im Tracker fest.**

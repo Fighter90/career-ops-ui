@@ -2,6 +2,30 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.207.0] — 2026-08-15
+
+**Aggiunto — registra l'esito di una candidatura direttamente dal tracker.**
+
+### Aggiunto
+- Ogni riga del tracker ottiene un'azione **Esito**: scegli cosa è successo (rifiutato, offerta ricevuta, assunto, offerta rifiutata, nessuna risposta, passato al colloquio), aggiungi una nota facoltativa, **visualizza in anteprima** lo stato risultante e registralo. La registrazione archivia gli artefatti del CV e della lettera inviati e sincronizza il tracker allo stato canonico — un'azione deterministica invece della modifica manuale.
+
+### Note
+- Nuova `POST /api/outcome` che inoltra la CLI degli esiti: `dryRun:true` è un'anteprima in sola lettura (individua la riga, riporta lo stato risultante, non scrive nulla); una chiamata reale lo registra. Sicurezza in scrittura: il tipo di esito è limitato all'insieme noto e ogni campo di testo viene rifiutato se contiene caratteri di controllo prima della chiamata (argomenti come array, spawn — nessuna shell). `tests/outcome-route.test.mjs`. Suite: **2618**.
+
+
+
+## [1.206.0] — 2026-08-15
+
+**Documentazione — la guida in-app ora copre le cinque funzionalità più recenti, in tutte e 17 le lingue.**
+
+### Aggiunto
+- La guida in-app — e l'assistente «Chiedi alla guida» che risponde basandosi su di essa — ora documenta cinque funzionalità aggiunte di recente: **Doctor di configurazione** (Impostazioni — controlla CV e profilo per lacune e dati di esempio rimasti), **Scopri board ATS** (Portali — trova automaticamente il portale carriere di un'azienda), il controllo **«ancora aperta?»** (Tracciamento — se un annuncio è ancora aperto), il suggerimento **«riusare un CV precedente?»** (CV Studio — segnala quando un CV già adattato va bene per un nuovo annuncio) e il **Registro competenze** (Analisi — registrare punteggi di autovalutazione). Cinque nuove sottosezioni, tradotte in tutte e 17 le lingue.
+
+### Note
+- La struttura della guida cresce a 31 H2 / 118 H3, con parità garantita in ogni lingua. Documentazione di riferimento aggiornata: `docs/architecture/API.md` documenta le cinque route di queste funzionalità, e i contatori di route/versione in `CLAUDE.md` e `docs/sdd/CONVENTIONS.md` sono aggiornati (36 moduli di route). Suite: **2610**.
+
+
+
 ## [1.205.0] — 2026-08-15
 
 **Aggiunto — un Registro competenze per annotare i risultati di test/valutazioni.**

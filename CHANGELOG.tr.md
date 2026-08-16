@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.207.1] — 2026-08-16
+
+**Düzeltildi — açılış sayfası küçük telefonlarda artık yana taşmıyor.**
+
+### Düzeltildi
+- Dar bir telefonda hero bölümü — başlık, giriş satırı ve kurulum terminali — sağ kenardan kırpılabiliyordu; çünkü uzun bir kurulum komutu ve düzen sütunları ekrana göre küçülmüyordu. Artık her genişliğe sığıyorlar; kurulum komutu kendi terminal kutusunun içinde kayıyor.
+
+### Notlar
+- Ayrıca, bir kaynağın geçici 404’ü yüzünden başarısız olabilen kararsız bir E2E duman testi sağlamlaştırıldı: artık komşu testler gibi zararsız ağ gürültüsünü (favicon / bağlantı / başarısız kaynak) yok sayıyor, gerçek betik hatalarını yakalamayı sürdürüyor. Uygulama davranışı değişmedi. Takım: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Eklendi — bir başvurunun sonucunu doğrudan takip tablosundan kaydedin.**

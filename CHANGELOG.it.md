@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.207.1] — 2026-08-16
+
+**Corretto — la landing page non deborda più di lato sui telefoni piccoli.**
+
+### Corretto
+- Su un telefono stretto l'hero — il titolo, la riga introduttiva e il terminale di installazione — poteva essere tagliato sul bordo destro perché un comando di installazione lungo e le colonne del layout non si restringevano allo schermo. Ora stanno in qualsiasi larghezza; il comando di installazione scorre dentro il proprio terminale.
+
+### Note
+- È stato inoltre irrobustito un controllo E2E instabile che poteva fallire per un 404 transitorio di una risorsa: ora ignora il rumore di rete benigno (favicon / connessione / risorsa fallita) come i controlli vicini, pur continuando a rilevare veri errori di script. Nessun cambiamento nel comportamento dell’app. Suite: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Aggiunto — registra l'esito di una candidatura direttamente dal tracker.**
