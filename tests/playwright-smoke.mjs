@@ -754,10 +754,12 @@ test('Playwright smoke: notifications drawer is hidden at boot, opens only via b
 
 // v1.208.0 — the SPA must not overflow sideways on a phone. Regression guard
 // for the responsive pass (topbar wraps, grid items shrink, tables/code scroll
-// inside their own box, help stacks). Content wider than `innerWidth` ⇒ the
-// page scrolls sideways. The tolerance is exactly one vertical-scrollbar gutter
-// (0 on overlay-scrollbar macOS, ~6-17px on classic-scrollbar CI Linux); a real
-// sideways-overflow bug is tens/hundreds of px, well past any gutter.
+// inside their own box, help stacks). We assert no VISIBLE element's right edge
+// sticks past the viewport — NOT `documentElement.scrollWidth`, which counts the
+// vertical-scrollbar gutter as ~6-17px of phantom overflow on classic-scrollbar
+// platforms (CI headless Linux; macOS overlay-scrollbars read 0). Elements that
+// legitimately scroll inside an `overflow-x:auto/scroll/hidden` box (wide tables,
+// ```code fences, off-canvas drawers) are excluded — they don't scroll the page.
 test('Playwright smoke: no horizontal overflow at a phone width (375px)', { skip: SKIP }, async () => {
   const page = await context.newPage();
   await page.setViewportSize({ width: 375, height: 780 });
@@ -767,16 +769,24 @@ test('Playwright smoke: no horizontal overflow at a phone width (375px)', { skip
     await page.goto(baseUrl + '/#/' + r);
     await page.waitForSelector('#content', { timeout: 5000 });
     await page.waitForTimeout(120);
-    // Compare content width against innerWidth (which INCLUDES the vertical
-    // scrollbar), not clientWidth (which excludes it): a classic scrollbar on a
-    // scrolling page otherwise reads as ~6-17px of phantom horizontal overflow
-    // on non-overlay-scrollbar platforms (CI's headless Linux; macOS is 0). A
-    // genuine sideways-overflow bug is tens/hundreds of px, so >1 is the signal.
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - window.innerWidth);
-    if (overflow > 1) bad.push(`${r}: +${overflow}px`);
+    const worst = await page.evaluate(() => {
+      const vw = window.innerWidth;
+      let max = vw;
+      for (const el of document.querySelectorAll('body *')) {
+        const rect = el.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) continue;
+        let clipped = false;
+        for (let a = el.parentElement; a; a = a.parentElement) {
+          const ov = getComputedStyle(a).overflowX;
+          if (ov === 'auto' || ov === 'scroll' || ov === 'hidden') { clipped = true; break; }
+        }
+        if (!clipped && rect.right > max) max = rect.right;
+      }
+      return Math.round(max - vw);
+    });
+    if (worst > 1) bad.push(`${r}: +${worst}px`);
   }
-  assert.deepEqual(bad, [], 'routes overflow horizontally at 375px: ' + bad.join(' · '));
+  assert.deepEqual(bad, [], 'an element sticks past the viewport at 375px: ' + bad.join(' · '));
   await page.close();
 });
 
