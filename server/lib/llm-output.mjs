@@ -58,5 +58,15 @@ export function cleanLlmMarkdown(md) {
   s = s.replace(SCAFFOLD_ANY_TAG, '');
   // Collapse the blank-line craters the removed blocks leave behind.
   s = s.replace(/\n{3,}/g, '\n\n').trim();
+  // v1.207.2 — some models wrap their ENTIRE markdown answer in a
+  // ```markdown … ``` fence (career-plan / orientation returned the whole
+  // brief fenced, so UI.md rendered a monospace code dump instead of a
+  // formatted plan). Unwrap it — but ONLY when the language is explicitly
+  // `markdown`/`md` AND the closing fence sits at EOF (a whole-document wrap),
+  // so a real ```python / ```js / bare-``` code answer is left intact. The
+  // non-greedy middle still reaches the FINAL fence, so inner code blocks
+  // survive. Idempotent: the unwrapped result no longer starts with a fence.
+  const whole = s.match(/^```(?:markdown|md)[ \t]*\r?\n([\s\S]*?)\r?\n```[ \t]*$/i);
+  if (whole) s = whole[1].trim();
   return s;
 }

@@ -12,11 +12,11 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.207.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.1)
+[![release](https://img.shields.io/badge/release-v1.207.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.207.1** — **صفحة الهبوط تتّسع لأي شاشة** — على الهواتف الصغيرة لم يعد العنوان والمقدمة وطرفية التثبيت تُقتطع عند الحافة اليمنى؛ ويتمرّر أمر التثبيت الطويل داخل طرفيته. **2618 اختبارًا.**
+> **🆕 أحدث إصدار — v1.207.2** — **خطط الذكاء الاصطناعي تُعرض بشكل صحيح مجددًا** — لم تعد خطة التطوير وملف التوجيه تظهران كتفريغ شيفرة أحادي التباعد حين يُغلِّف النموذج إجابته كلها داخل سياج ```markdown. **2621 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

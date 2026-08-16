@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.207.2] — 2026-08-16
+
+**Corretto — i piani IA e i profili di orientamento non vengono più mostrati come un dump di codice grezzo.**
+
+### Corretto
+- Alcuni modelli avvolgono l'intera risposta in un recinto di codice ```markdown … ```. Quando accadeva, il **piano di sviluppo** e il **profilo di orientamento** apparivano come un blocco di codice a spaziatura fissa invece di un documento con titoli ed elenchi. Ora il recinto avvolgente viene rimosso — solo quando avvolge l'intera risposta e il linguaggio è esplicitamente `markdown`/`md`, così una vera risposta in `python`/`js`/``` senza linguaggio resta intatta.
+
+### Note
+- Gestito una volta sola nel passo condiviso di pulizia LLM (`cleanLlmMarkdown`), così ne beneficiano tutte le route IA e i blocchi di codice interni alla risposta avvolta sopravvivono. `tests/llm-output.test.mjs` (+3). Suite: **2621**.
+
+
+
 ## [1.207.1] — 2026-08-16
 
 **Corretto — la landing page non deborda più di lato sui telefoni piccoli.**

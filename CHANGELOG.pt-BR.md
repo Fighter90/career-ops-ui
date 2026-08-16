@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.207.2] — 2026-08-16
+
+**Corrigido — planos de IA e perfis de orientação não aparecem mais como um despejo de código.**
+
+### Corrigido
+- Alguns modelos envolvem toda a resposta em uma cerca de código ```markdown … ```. Quando isso acontecia, o **plano de desenvolvimento** e o **perfil de orientação** apareciam como um bloco monoespaçado em vez de um documento com títulos e listas. Agora a cerca envolvente é removida — só quando envolve toda a resposta e é explicitamente `markdown`/`md`, então uma resposta real de `python`/`js`/``` sem linguagem é preservada.
+
+### Notas
+- Resolvido uma única vez na etapa compartilhada de limpeza de LLM (`cleanLlmMarkdown`), então todas as rotas de IA se beneficiam, e blocos de código internos sobrevivem. `tests/llm-output.test.mjs` (+3). Conjunto: **2621**.
+
+
+
 ## [1.207.1] — 2026-08-16
 
 **Corrigido — a página inicial não transborda mais para o lado em celulares pequenos.**

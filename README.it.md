@@ -12,11 +12,11 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.207.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.1)
+[![release](https://img.shields.io/badge/release-v1.207.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.207.1** — **La landing sta in ogni schermo** — sui telefoni piccoli titolo, introduzione e terminale di installazione non vengono più tagliati sul bordo destro; il lungo comando di installazione scorre dentro il terminale. **2618 test.**
+> **🆕 Ultima release — v1.207.2** — **I piani IA tornano a rendersi bene** — il piano di sviluppo e il profilo di orientamento non appaiono più come un dump di codice a spaziatura fissa quando il modello avvolge l'intera risposta in un recinto ```markdown. **2621 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

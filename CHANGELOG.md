@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.207.2] — 2026-08-16
+
+**Fixed — AI plans and career-orientation profiles no longer render as a raw code dump.**
+
+### Fixed
+- Some models wrap their whole answer in a ```markdown … ``` code fence. When that happened, the **development plan** and the **career-orientation profile** showed up as a monospace code block instead of a formatted document with headings and lists. The wrapping fence is now removed — only when it wraps the entire answer and is explicitly `markdown`/`md`, so a genuine `python`/`js`/bare-``` code answer is left untouched.
+
+### Notes
+- Handled once in the shared LLM-declutter step (`cleanLlmMarkdown`), so every AI route benefits, and inner code blocks inside the wrapped answer survive. `tests/llm-output.test.mjs` (+3). Suite: **2621**.
+
+
+
 ## [1.207.1] — 2026-08-16
 
 **Fixed — the landing page no longer overflows sideways on small phones.**

@@ -12,11 +12,11 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.207.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.1)
+[![release](https://img.shields.io/badge/release-v1.207.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.207.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.207.1** — **Лендинг вміщається на будь-якому екрані** — на маленьких телефонах заголовок, вступ і термінал встановлення більше не обрізаються по правому краю; довга команда встановлення прокручується всередині термінала. **2618 тестів.**
+> **🆕 Останній реліз — v1.207.2** — **AI-плани знову відображаються нормально** — план розвитку та профіль орієнтації більше не виглядають як моноширинний дамп коду, коли модель загортає всю відповідь в огорожу ```markdown. **2621 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

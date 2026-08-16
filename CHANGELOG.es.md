@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.207.2] — 2026-08-16
+
+**Corregido — los planes de IA y los perfiles de orientación ya no se muestran como un volcado de código.**
+
+### Corregido
+- Algunos modelos envuelven toda su respuesta en una valla de código ```markdown … ```. Cuando pasaba, el **plan de desarrollo** y el **perfil de orientación** aparecían como un bloque monoespaciado en vez de un documento con encabezados y listas. Ahora se quita esa valla envolvente —solo cuando envuelve toda la respuesta y es explícitamente `markdown`/`md`, así que una respuesta real de `python`/`js`/``` sin lenguaje se deja intacta.
+
+### Notas
+- Resuelto una sola vez en el paso compartido de limpieza de LLM (`cleanLlmMarkdown`), así todas las rutas de IA se benefician, y los bloques de código internos sobreviven. `tests/llm-output.test.mjs` (+3). Conjunto: **2621**.
+
+
+
 ## [1.207.1] — 2026-08-16
 
 **Corregido — la página de inicio ya no se desborda de lado en móviles pequeños.**
