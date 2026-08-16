@@ -6,8 +6,8 @@
  * roles indistinguishable from remote ones: a `location_filter.block:["Hybrid"]`
  * rule became unmatchable and hybrid roles slipped through a remote-only filter.
  *
- * Ported from the parent career-ops fix (`providers/echojobs.mjs` #2258),
- * adapted to the web-ui rich job shape (`location` + `isRemote` + `workplaceType`):
+ * Covers hybrid-role location handling for the web-ui rich job shape
+ * (`location` + `isRemote` + `workplaceType`):
  *   - a hybrid role with a city keeps the city and gains " · Hybrid"
  *   - a placeless hybrid role becomes a bare "Hybrid"
  *   - a placeless remote role stays "Remote"

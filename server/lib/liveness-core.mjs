@@ -1,6 +1,5 @@
 /**
- * liveness-core.mjs — PURE liveness classifier (ported from the parent
- * career-ops liveness-core.mjs). Zero-dep, no I/O, deterministic.
+ * liveness-core.mjs — PURE liveness classifier. Zero-dep, no I/O, deterministic.
  *
  * Given a fetched page's { status, requestedUrl, finalUrl, bodyText,
  * applyControls }, decide whether the posting is still `active`, `expired`,

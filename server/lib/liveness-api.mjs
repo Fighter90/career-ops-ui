@@ -1,7 +1,7 @@
 // @ts-check
 /**
  * liveness-api.mjs — zero-token, zero-browser liveness check for ATS-hosted
- * job postings (ported from the parent career-ops liveness-api.mjs).
+ * job postings.
  *
  * Many postings live on ATS platforms (Greenhouse, Lever, Ashby, Workday,
  * SmartRecruiters) that expose a public JSON endpoint. We confirm whether a

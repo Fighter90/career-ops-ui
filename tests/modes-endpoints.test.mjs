@@ -60,8 +60,8 @@ async function postMode(slug, body = {}) {
   return { status: res.status, body: await res.json() };
 }
 
-// v1.70.0 — `cover` (cover-letter mode) ported from the parent; the
-// parametrized loop below asserts it is allowlisted and assembles like the rest.
+// v1.70.0 — `cover` (cover-letter mode); the parametrized loop below asserts
+// it is allowlisted and assembles like the rest.
 const ALL_SLUGS = ['project', 'training', 'followup', 'batch', 'contacto', 'interview-prep', 'patterns', 'cover'];
 
 for (const slug of ALL_SLUGS) {

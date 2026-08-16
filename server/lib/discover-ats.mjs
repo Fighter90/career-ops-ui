@@ -10,8 +10,7 @@
  * fixed-host API endpoint, and each adapter's `fetch()` normalizes the board's
  * jobs — we just count them.
  *
- * Ported from the parent CLI (career-ops/discover-ats.mjs) — the CORE resolve
- * logic only (slug generation, per-vendor probe-URL shape, and the "board exists
+ * The CORE resolve logic only (slug generation, per-vendor probe-URL shape, and the "board exists
  * AND lists ≥1 job" decision). The CLI shell (arg parsing, YAML batch I/O,
  * concurrency tuning, portals.yml write) is intentionally left out; the write
  * lives in the route via a small text splice, and the parent's `providers/*`
@@ -142,7 +141,7 @@ export function isDuplicateCompany(existing, name, careersUrl) {
 }
 
 /**
- * Quote a YAML scalar only when it needs it (ported from the parent). Bare
+ * Quote a YAML scalar only when it needs it. Bare
  * values stay bare to match the hand-written portals.yml style.
  * @param {string} value
  */
@@ -154,8 +153,8 @@ export function yamlScalar(value) {
 }
 
 /**
- * Render one board as a portals.yml `tracked_companies` entry snippet (ported
- * from the parent, trimmed to the web-ui adapter contract). Leads with a newline
+ * Render one board as a portals.yml `tracked_companies` entry snippet (trimmed
+ * to the web-ui adapter contract). Leads with a newline
  * so it slots cleanly against surrounding entries. careers_url alone is enough
  * for the web-ui scanner to detect the vendor, so no `api:` line is emitted;
  * `provider:` is written when known for readability.

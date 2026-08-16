@@ -2,7 +2,7 @@
  * v1.118 parent-parity sources — hecklerkoch / rheinmetall / larajobs.
  * Fetch/parse with a stubbed transport (no network), host-pinning, meta shape
  * for the scan dropdown, and adapter matches()/buildEndpoint(). Fixtures are
- * adapted from the parent's tests/providers/{hecklerkoch,rheinmetall,larajobs}.test.mjs.
+ * adapted to the web-ui provider contract for hecklerkoch, rheinmetall, larajobs.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

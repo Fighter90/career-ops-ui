@@ -1,5 +1,5 @@
 /**
- * job-facets.js — zero-token job facet derivations (ported from parent inbox.ts).
+ * job-facets.js — zero-token job facet derivations.
  * Loaded in a synthetic window (same pattern as cv-diagnostics.test.mjs).
  */
 import { test } from 'node:test';
@@ -35,7 +35,7 @@ test('seniorityFromTitle: an explicit modifier wins over a management word (prec
 test('seniorityFromTitle: generic IC role → mid, no keyword at all → null (parent default)', () => {
   // A plain IC role with no ladder word sits in the broad middle.
   assert.equal(JF.seniorityFromTitle('Software Engineer'), 'mid');
-  // A title with none of the recognised words → null (untagged), mirroring parent.
+  // A title with none of the recognised words → null (untagged).
   assert.equal(JF.seniorityFromTitle('Chef de Cuisine'), null);
 });
 

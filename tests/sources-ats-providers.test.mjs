@@ -1,7 +1,7 @@
 /**
- * Tests for the per-tenant ATS sources ported from parent career-ops v1.13.0:
- * BambooHR, Breezy HR, Comeet, Personio, plus the long-standing parent providers
- * Recruitee and SolidJobs (added to web-ui in v1.76.0 for full source parity).
+ * Tests for the per-tenant ATS sources:
+ * BambooHR, Breezy HR, Comeet, Personio, plus the long-standing
+ * Recruitee and SolidJobs sources (added to web-ui in v1.76.0).
  *
  * CI-isolated: HTTP is never hit; a fake fetchImpl is injected and `opts.company`
  * is passed explicitly the same way en-scanner does. Each block covers parse +

@@ -1,6 +1,6 @@
 /**
- * Tests for the config-driven scanner sources ported from parent career-ops
- * v1.12.0: IBM, Arbeitsagentur, Glints, Jobstreet.
+ * Tests for the config-driven scanner sources:
+ * IBM, Arbeitsagentur, Glints, Jobstreet.
  *
  * These read per-entry config from `opts.company.<provider>` and POST / paginate
  * against public JSON APIs. CI-isolated: HTTP is never hit; a fake fetchImpl is

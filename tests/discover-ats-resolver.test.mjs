@@ -116,7 +116,7 @@ test('discoverAts: blank name → no probing, empty results', async () => {
   assert.equal(calls, 0, 'must not fetch for a blank company name');
 });
 
-// ── portals.yml write helpers (ported from the parent CLI) ──────────────
+// ── portals.yml write helpers ────────────────────────────────────────
 test('renderPortalEntry: name + careers_url + provider + enabled, no api line', () => {
   const s = renderPortalEntry({ name: 'Adyen', careers_url: 'https://job-boards.greenhouse.io/adyen', provider: 'greenhouse' });
   assert.match(s, /^\n {2}- name: Adyen\n/);
