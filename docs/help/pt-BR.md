@@ -1206,6 +1206,17 @@ Cada linha rastreada que aponta para uma vaga hospedada em um ATS (Greenhouse, L
 
 A checagem é deliberadamente conservadora: só diz **Expirada** diante de um 404/410 categórico, nunca por palpite, então nunca vai te afastar de uma vaga que na verdade continua aberta. A API pública do Lever é tratada como não autoritativa (ela oculta algumas vagas confidenciais), então essas resolvem como **Desconhecido** em vez de Expirada.
 
+### Registrar um resultado
+
+Quando uma candidatura chega ao fim — você recebeu a oferta, aceitou a vaga, foi recusado ou simplesmente nunca teve resposta — clique no botão **Resultado** naquela linha do rastreador para registrá-lo. Abre-se um pequeno modal de pré-visualização e confirmação:
+
+- **Escolha o que aconteceu** — Recusado, Oferta recebida, Contratado / aceito, Oferta recusada, Sem resposta / ignorado, ou Avançou para entrevista.
+- **Nota (opcional)** — uma linha curta para você.
+- **Pré-visualizar** — o app mostra exatamente o que fará (ex.: *"Vai definir #12 Acme → Recusado"*) e ainda não grava nada.
+- **Registrar resultado** — confirma.
+
+Registrar faz três coisas de uma vez: acrescenta o resultado a um diário de resultados somente-anexação, arquiva o CV e a carta de apresentação que você enviou na pasta de resultados daquela candidatura, e sincroniza o **Status** canônico da linha — assim um **Contratado** ou **Recusado** aparece no rastreador e nas estatísticas sem você editar a tabela à mão. Como as outras ferramentas do rastreador, fica somente-leitura até você pressionar **Registrar resultado**, e precisa do projeto pai career-ops ao lado do app (o botão fica oculto quando esse projeto não está presente).
+
 ---
 
 ## 12. Pesquisa (`#/deep`)

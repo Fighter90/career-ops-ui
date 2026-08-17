@@ -1203,6 +1203,17 @@ Każdy śledzony wiersz odsyłający do oferty hostowanej w ATS (Greenhouse, Lev
 
 Kontrola jest celowo zachowawcza: mówi **Wygasła** tylko przy wyraźnym 404/410, nigdy na domysł, więc nigdy nie odstraszy Cię od stanowiska, które w rzeczywistości jest wciąż otwarte. Publiczne API Lever traktowane jest jako nieautorytatywne (ukrywa część ofert poufnych), więc takie przypadki dają **Nieznane**, a nie Wygasła.
 
+### Zapisz wynik
+
+Gdy aplikacja dobiega końca — dostałeś ofertę, podjąłeś pracę, odrzucono cię albo po prostu nie było odpowiedzi — kliknij przycisk **Wynik** w tym wierszu trackera, aby go zapisać. Otwiera się małe okno z podglądem i potwierdzeniem:
+
+- **Wybierz, co się stało** — Odrzucono, Otrzymano ofertę, Zatrudniony / zaakceptowano, Oferta odrzucona, Brak odpowiedzi / zignorowano, lub Awans do rozmowy.
+- **Notatka (opcjonalna)** — krótka linijka dla siebie.
+- **Podgląd** — aplikacja pokazuje dokładnie, co zrobi (np. *„Ustawi #12 Acme → Odrzucono"*), i jeszcze nic nie zapisuje.
+- **Zapisz wynik** — potwierdza.
+
+Zapis robi trzy rzeczy naraz: dopisuje wynik do dziennika wyników (tylko-dopisywanie), archiwizuje wysłane CV i list motywacyjny w folderze wyników tej aplikacji oraz synchronizuje kanoniczny **Status** wiersza — dzięki czemu **Zatrudniony** lub **Odrzucono** pojawia się w trackerze i statystykach bez ręcznej edycji tabeli. Jak inne narzędzia trackera pozostaje tylko do odczytu, dopóki nie naciśniesz **Zapisz wynik**, i potrzebuje projektu nadrzędnego career-ops obok aplikacji (przycisk jest ukryty, gdy tego projektu nie ma).
+
 ---
 
 ## 12. Pogłębiony research (`#/deep`)

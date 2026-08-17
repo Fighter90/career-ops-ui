@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.209.0] — 2026-08-17
+
+**Tilføjet — hjælpen i appen dækker nu, hvordan man registrerer udfaldet af en ansøgning, og "Spørg dokumentationen" kan føre dig derhen.**
+
+### Tilføjet
+- Trackerens hjælp (§11) fik et afsnit "Registrér et udfald" på alle 17 sprog, der gennemgår knappen **Udfald**: vælg, hvad der skete (afvist / tilbud / ansat / afslået / ghostet / gik videre til samtale), forhåndsvis, hvad den vil gøre, og registrér — hvilket noterer resultatet, arkiverer det CV og den ansøgning, du sendte, og synkroniserer rækkens Status for dig. Den flydende "Spørg dokumentationen"-assistent læser guiden, så den fører dig nu til den knap i stedet for kun at foreslå, at du redigerer Status i hånden.
+
+### Noter
+- Hver hjælpepakke er nu 31 H2 / 119 H3 (var 118); paritetsvagterne blev hævet. Kun dokumentation — ingen kode- eller adfærdsændring. Suite: **2625**.
+
+
+
 ## [1.208.2] — 2026-08-16
 
 **Rettet — på en telefon ligger notifikations- og temaknapperne ikke længere oven på søgefeltet.**

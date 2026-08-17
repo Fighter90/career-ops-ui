@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.209.0] — 2026-08-17
+
+**Added — the in-app help now covers recording an application outcome, and "Ask the docs" can point you to it.**
+
+### Added
+- The Tracker help (§11) gained a "Record an outcome" section in all 17 languages, walking through the **Outcome** button: pick what happened (rejected / offer / hired / declined / ghosted / advanced to interview), preview what it will do, then record — which logs the result, archives the CV and cover letter you submitted, and syncs the row's Status for you. The floating "Ask the docs" assistant reads the help guide, so it now guides you to that button instead of only suggesting you edit the Status by hand.
+
+### Notes
+- Each help bundle is now 31 H2 / 119 H3 (was 118); the parity gates were bumped to match. Docs-only — no code or behaviour change. Suite: **2625**.
+
+
+
 ## [1.208.2] — 2026-08-16
 
 **Fixed — on a phone the notification and theme buttons no longer sit on top of the search box.**

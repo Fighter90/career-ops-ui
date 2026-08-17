@@ -1265,6 +1265,17 @@ Hver sporet række, der linker til et ATS-hostet opslag (Greenhouse, Lever, Ashb
 
 Tjekket er bevidst konservativt: det siger kun **Udløbet** ved et klart 404/410, aldrig på et gæt, så det vil aldrig skræmme dig væk fra et job, der reelt stadig er åbent. Levers offentlige API behandles som ikke-autoritativt (det skjuler nogle fortrolige opslag), så de tilfælde ender som **Ukendt** i stedet for Udløbet.
 
+### Registrér et udfald
+
+Når en ansøgning når sin ende — du fik tilbuddet, tog jobbet, blev afvist eller hørte simpelthen aldrig noget — klik på knappen **Udfald** i den række i trackeren for at logge det. Et lille vindue med forhåndsvisning og bekræftelse åbnes:
+
+- **Vælg, hvad der skete** — Afvist, Tilbud modtaget, Ansat / accepteret, Tilbud afslået, Intet svar / ghostet, eller Gik videre til samtale.
+- **Note (valgfri)** — en kort linje til dig selv.
+- **Forhåndsvis** — appen viser præcis, hvad den vil gøre (f.eks. *„Sætter #12 Acme → Afvist"*), og skriver endnu ikke noget.
+- **Registrér udfald** — bekræfter det.
+
+Registrering gør tre ting på én gang: tilføjer resultatet til en append-only udfaldsjournal, arkiverer det CV og den ansøgning, du sendte, i den ansøgnings udfaldsmappe, og synkroniserer rækkens kanoniske **Status** — så et **Ansat** eller **Afvist** dukker op i trackeren og statistikken, uden at du redigerer tabellen i hånden. Som de andre trackerværktøjer forbliver den skrivebeskyttet, indtil du trykker **Registrér udfald**, og den kræver det overordnede career-ops-projekt ved siden af appen (knappen skjules, når det projekt ikke er til stede).
+
 ---
 
 ## 12. Deep research (`#/deep`)

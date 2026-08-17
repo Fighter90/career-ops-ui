@@ -12,11 +12,11 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.208.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.2)
+[![release](https://img.shields.io/badge/release-v1.209.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.209.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.208.2** — **Fix della barra superiore su mobile** — i pulsanti di notifiche e tema non stanno più sopra il campo di ricerca sul telefono; i pulsanti d'azione occupano ora la loro seconda riga e la ricerca resta pienamente leggibile. **2621 test.**
+> **🆕 Ultima release — v1.209.0** — **La guida copre la registrazione di un esito** — la guida del Tracker ora documenta il pulsante Esito in tutte le 17 lingue, e «Chiedi alla guida» ti ci porta. **2625 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

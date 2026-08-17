@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.209.0] — 2026-08-17
+
+**Ajouté — l'aide intégrée couvre désormais l'enregistrement de l'issue d'une candidature, et « Demander à l'aide » peut vous y mener.**
+
+### Ajouté
+- L'aide du Suivi (§11) a gagné une section « Enregistrer une issue » dans les 17 langues, qui parcourt le bouton **Issue** : choisissez ce qui s'est passé (refusé / offre / embauché / décliné / ghosté / passé en entretien), prévisualisez ce qu'il va faire, puis enregistrez — ce qui consigne le résultat, archive le CV et la lettre que vous avez envoyés, et synchronise le Statut de la ligne pour vous. L'assistant flottant « Demander à l'aide » lit le guide, il vous oriente donc maintenant vers ce bouton au lieu de seulement suggérer de modifier le Statut à la main.
+
+### Notes
+- Chaque bundle d'aide est désormais 31 H2 / 119 H3 (au lieu de 118) ; les gardes de parité ont été ajustés. Documentation seule — aucun changement de code ni de comportement. Suite : **2625**.
+
+
+
 ## [1.208.2] — 2026-08-16
 
 **Corrigé — sur mobile, les boutons de notifications et de thème ne se posent plus sur le champ de recherche.**

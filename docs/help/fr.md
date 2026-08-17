@@ -1296,6 +1296,17 @@ Chaque ligne suivie qui pointe vers une offre hébergée sur un ATS (Greenhouse,
 
 La vérification est volontairement prudente : elle ne dit **Expirée** que sur un 404/410 franc, jamais sur une supposition, donc elle ne vous éloignera jamais d'un poste qui est en réalité toujours ouvert. L'API publique de Lever est traitée comme non autoritative (elle masque certaines offres confidentielles), de sorte que ces cas donnent **Inconnu** plutôt qu'Expirée.
 
+### Enregistrer une issue
+
+Quand une candidature arrive à son terme — vous avez décroché l'offre, pris le poste, été refusé, ou simplement jamais eu de réponse — cliquez sur le bouton **Issue** sur cette ligne du suivi pour la consigner. Une petite fenêtre d'aperçu puis confirmation s'ouvre :
+
+- **Choisissez ce qui s'est passé** — Refusé, Offre reçue, Embauché / accepté, Offre déclinée, Sans réponse / ghosté, ou Passé en entretien.
+- **Note (facultative)** — une courte ligne pour vous.
+- **Aperçu** — l'app montre exactement ce qu'elle va faire (p. ex. *« Va mettre #12 Acme → Refusé »*) et n'écrit encore rien.
+- **Enregistrer l'issue** — la confirme.
+
+Enregistrer fait trois choses à la fois : ajoute le résultat à un journal d'issues en ajout-seul, archive le CV et la lettre de motivation que vous avez envoyés dans le dossier d'issue de cette candidature, et synchronise le **Statut** canonique de la ligne — ainsi un **Embauché** ou **Refusé** apparaît dans le suivi et les statistiques sans que vous éditiez le tableau à la main. Comme les autres outils du suivi, il reste en lecture seule jusqu'à ce que vous pressiez **Enregistrer l'issue**, et il lui faut le projet parent career-ops à côté de l'app (le bouton est masqué si ce projet est absent).
+
 ---
 
 ## 12. Deep research (`#/deep`)

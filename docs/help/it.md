@@ -1294,6 +1294,17 @@ Ogni riga monitorata che rimanda a un annuncio ospitato su un ATS (Greenhouse, L
 
 Il controllo è volutamente prudente: dice **Scaduta** solo su un 404/410 netto, mai per congettura, così non ti allontanerà mai da una posizione che in realtà è ancora aperta. L'API pubblica di Lever è trattata come non autorevole (nasconde alcuni annunci riservati), perciò quei casi risultano **Sconosciuto** anziché Scaduta.
 
+### Registrare un esito
+
+Quando una candidatura arriva alla fine — hai ottenuto l'offerta, hai preso il lavoro, sei stato rifiutato o semplicemente non hai avuto risposta — clicca il pulsante **Esito** su quella riga del tracker per registrarlo. Si apre una piccola finestra di anteprima e conferma:
+
+- **Scegli cos'è successo** — Rifiutato, Offerta ricevuta, Assunto / accettato, Offerta rifiutata, Nessuna risposta / ghostato, oppure Passato al colloquio.
+- **Nota (facoltativa)** — una riga breve per te.
+- **Anteprima** — l'app mostra esattamente cosa farà (es. *«Imposterà #12 Acme → Rifiutato»*) e non scrive ancora nulla.
+- **Registra esito** — lo conferma.
+
+Registrare fa tre cose insieme: aggiunge il risultato a un diario degli esiti in sola-aggiunta, archivia il CV e la lettera di presentazione che hai inviato nella cartella esiti di quella candidatura e sincronizza lo **Stato** canonico della riga — così un **Assunto** o **Rifiutato** compare nel tracker e nelle statistiche senza che tu modifichi la tabella a mano. Come gli altri strumenti del tracker resta in sola lettura finché non premi **Registra esito**, e richiede il progetto padre career-ops accanto all'app (il pulsante è nascosto quando quel progetto non c'è).
+
 ---
 
 ## 12. Deep research (`#/deep`)

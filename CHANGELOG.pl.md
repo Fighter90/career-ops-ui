@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.209.0] — 2026-08-17
+
+**Dodano — pomoc w aplikacji obejmuje teraz zapisywanie wyniku aplikacji, a „Zapytaj dokumentację" może cię tam poprowadzić.**
+
+### Dodano
+- Pomoc Trackera (§11) zyskała sekcję „Zapisz wynik" we wszystkich 17 językach, prowadzącą przez przycisk **Wynik**: wybierz, co się stało (odrzucono / oferta / zatrudniony / odrzucona / zignorowano / awans do rozmowy), podejrzyj, co zrobi, i zapisz — co odnotowuje wynik, archiwizuje wysłane CV i list motywacyjny oraz synchronizuje Status wiersza za ciebie. Pływający asystent „Zapytaj dokumentację" czyta ten przewodnik, więc teraz kieruje cię do tego przycisku, zamiast tylko sugerować ręczną edycję Statusu.
+
+### Uwagi
+- Każdy pakiet pomocy to teraz 31 H2 / 119 H3 (było 118); strażniki parzystości podniesiono. Tylko dokumentacja — bez zmian kodu i zachowania. Zestaw: **2625**.
+
+
+
 ## [1.208.2] — 2026-08-16
 
 **Naprawiono — na telefonie przyciski powiadomień i motywu nie leżą już na polu wyszukiwania.**
