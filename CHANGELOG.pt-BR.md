@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.209.0] — 2026-08-17
+
+**Adicionado — a ajuda no app agora cobre como registrar o resultado de uma candidatura, e o "Pergunte aos docs" pode te levar até lá.**
+
+### Adicionado
+- A ajuda do Rastreador (§11) ganhou uma seção "Registrar um resultado" nos 17 idiomas, percorrendo o botão **Resultado**: escolha o que aconteceu (recusado / oferta / contratado / recusada / ignorado / avançou para entrevista), pré-visualize o que fará e registre — o que anota o resultado, arquiva o CV e a carta que você enviou, e sincroniza o Status da linha para você. O assistente flutuante "Pergunte aos docs" lê o guia, então agora te leva a esse botão em vez de só sugerir editar o Status à mão.
+
+### Notas
+- Cada pacote de ajuda agora é 31 H2 / 119 H3 (era 118); os guards de paridade foram ajustados. Somente documentação — sem mudança de código ou comportamento. Conjunto: **2625**.
+
+
+
 ## [1.208.2] — 2026-08-16
 
 **Corrigido — no celular os botões de notificações e tema não ficam mais sobre a caixa de busca.**

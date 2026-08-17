@@ -1373,6 +1373,17 @@ Jede verfolgte Zeile, die auf eine ATS-gehostete Anzeige verlinkt (Greenhouse, L
 
 Die Prüfung ist bewusst konservativ: Sie sagt **Abgelaufen** nur bei einem klaren 404/410, nie auf Verdacht, sodass sie dich nie von einer Stelle abschreckt, die in Wahrheit noch offen ist. Levers öffentliches API gilt als nicht maßgeblich (es verbirgt manche vertraulichen Anzeigen), daher landen solche Fälle bei **Unbekannt** statt Abgelaufen.
 
+### Ein Ergebnis festhalten
+
+Wenn eine Bewerbung ihr Ende erreicht — du hast das Angebot bekommen, den Job angenommen, wurdest abgelehnt oder hast schlicht nie etwas gehört — klicke auf die Schaltfläche **Ergebnis** in dieser Tracker-Zeile, um es festzuhalten. Ein kleines Vorschau-und-Bestätigen-Fenster öffnet sich:
+
+- **Wähle, was passiert ist** — Abgelehnt, Angebot erhalten, Eingestellt / angenommen, Angebot abgelehnt, Keine Antwort / geghostet, oder Zum Interview vorgerückt.
+- **Notiz (optional)** — eine kurze Zeile für dich.
+- **Vorschau** — die App zeigt genau, was sie tun wird (z. B. *„Setzt #12 Acme → Abgelehnt"*), und schreibt noch nichts.
+- **Ergebnis festhalten** — bestätigt es.
+
+Das Festhalten erledigt drei Dinge auf einmal: Es hängt das Ergebnis an ein Nur-Anhängen-Ergebnisjournal an, archiviert den eingereichten Lebenslauf und das Anschreiben im Ergebnisordner dieser Bewerbung und synchronisiert den kanonischen **Status** der Zeile — so taucht ein **Eingestellt** oder **Abgelehnt** im Tracker und in der Statistik auf, ohne dass du die Tabelle von Hand bearbeitest. Wie die anderen Tracker-Werkzeuge bleibt es nur lesend, bis du **Ergebnis festhalten** drückst, und es braucht das übergeordnete career-ops-Projekt neben der App (die Schaltfläche ist verborgen, wenn dieses Projekt fehlt).
+
 ---
 
 ## 12. Deep research (`#/deep`)

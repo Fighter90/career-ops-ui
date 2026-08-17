@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.209.0] — 2026-08-17
+
+**Hinzugefügt — die In-App-Hilfe deckt jetzt das Festhalten des Ergebnisses einer Bewerbung ab, und „Frag die Doku" kann dich dorthin führen.**
+
+### Hinzugefügt
+- Die Tracker-Hilfe (§11) erhielt in allen 17 Sprachen einen Abschnitt „Ein Ergebnis festhalten", der die Schaltfläche **Ergebnis** durchgeht: Wähle, was passiert ist (abgelehnt / Angebot / eingestellt / abgelehnt / geghostet / zum Interview vorgerückt), sieh in der Vorschau, was sie tun wird, und halte es fest — das notiert das Ergebnis, archiviert den eingereichten Lebenslauf und das Anschreiben und synchronisiert den Status der Zeile für dich. Der schwebende „Frag die Doku"-Assistent liest den Leitfaden, also führt er dich jetzt zu dieser Schaltfläche, statt nur vorzuschlagen, den Status von Hand zu bearbeiten.
+
+### Hinweise
+- Jedes Hilfe-Bundle ist jetzt 31 H2 / 119 H3 (vorher 118); die Paritäts-Wächter wurden angehoben. Nur Dokumentation — keine Code- oder Verhaltensänderung. Suite: **2625**.
+
+
+
 ## [1.208.2] — 2026-08-16
 
 **Behoben — auf dem Handy liegen die Benachrichtigungs- und Design-Buttons nicht mehr über dem Suchfeld.**

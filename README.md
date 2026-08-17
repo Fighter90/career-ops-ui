@@ -14,11 +14,11 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.208.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.208.2)
+[![release](https://img.shields.io/badge/release-v1.209.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.209.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.208.2** — **Mobile top-bar fix** — the notification and theme buttons no longer sit on top of the search box on a phone; the action buttons now take their own second row so the search stays fully readable. **2621 tests.**
+> **🆕 Latest release — v1.209.0** — **Help covers recording an outcome** — the Tracker guide now documents the Outcome button in all 17 languages, and "Ask the docs" points you to it. **2625 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 

@@ -1199,6 +1199,17 @@ Cada fila del seguimiento que enlaza a una oferta alojada en un ATS (Greenhouse,
 
 La comprobación es deliberadamente conservadora: solo dice **Caducada** ante un 404/410 rotundo, nunca por conjetura, así que nunca te apartará de un puesto que en realidad sigue abierto. La API pública de Lever se trata como no autoritativa (oculta algunas ofertas confidenciales), por lo que esas se resuelven como **Desconocido** en vez de Caducada.
 
+### Registrar un resultado
+
+Cuando una candidatura llega a su fin —conseguiste la oferta, aceptaste el puesto, te rechazaron o simplemente nunca respondieron— pulsa el botón **Resultado** en esa fila del seguimiento para registrarlo. Se abre un pequeño diálogo de vista previa y confirmación:
+
+- **Elige qué pasó** — Rechazado, Oferta recibida, Contratado / aceptado, Oferta rechazada, Sin respuesta / ignorado, o Pasó a entrevista.
+- **Nota (opcional)** — una línea breve para ti.
+- **Vista previa** — la app muestra exactamente lo que hará (p. ej. *«Pondrá #12 Acme → Rechazado»*) y no escribe nada todavía.
+- **Registrar resultado** — lo confirma.
+
+Registrar hace tres cosas a la vez: añade el resultado a un diario de resultados de solo-anexado, archiva el CV y la carta de presentación que enviaste en la carpeta de resultados de esa candidatura, y sincroniza el **Estado** canónico de la fila — así un **Contratado** o **Rechazado** aparece en el seguimiento y en las estadísticas sin que edites la tabla a mano. Como las demás herramientas del seguimiento, permanece de solo lectura hasta que pulsas **Registrar resultado**, y necesita el proyecto padre career-ops junto a la app (el botón se oculta si ese proyecto no está).
+
 ---
 
 ## 12. Investigación (`#/deep`)

@@ -1333,6 +1333,17 @@ Bir ATS'te barındırılan ilana (Greenhouse, Lever, Ashby, Workday veya SmartRe
 
 Denetim bilinçli olarak temkinlidir: yalnızca net bir 404/410'da **Süresi dolmuş** der, asla tahminle demez; böylece aslında hâlâ açık olan bir pozisyondan sizi asla caydırmaz. Lever'in herkese açık API'si yetkili sayılmaz (bazı gizli ilanları saklar), bu yüzden bu durumlar Süresi dolmuş yerine **Bilinmiyor** olur.
 
+### Bir sonucu kaydet
+
+Bir başvuru sonuna geldiğinde — teklifi aldın, işe başladın, reddedildin ya da hiç yanıt gelmedi — kaydetmek için o izleyici satırındaki **Sonuç** düğmesine tıkla. Önce önizleyip sonra onaylatan küçük bir pencere açılır:
+
+- **Ne olduğunu seç** — Reddedildi, Teklif alındı, İşe alındı / kabul edildi, Teklif geri çevrildi, Yanıt yok / görmezden gelindi, veya Mülakata geçti.
+- **Not (isteğe bağlı)** — kendine kısa bir satır.
+- **Önizle** — uygulama tam olarak ne yapacağını gösterir (örn. *"#12 Acme → Reddedildi olarak ayarlayacak"*) ve henüz hiçbir şey yazmaz.
+- **Sonucu kaydet** — onaylar.
+
+Kaydetmek üç şeyi birden yapar: sonucu yalnızca-ekleme yapılan bir sonuç günlüğüne ekler, gönderdiğin CV ve ön yazıyı o başvurunun sonuç klasörüne arşivler ve satırın kanonik **Durum**unu eşitler — böylece bir **İşe alındı** ya da **Reddedildi**, tabloyu elle düzenlemeden izleyicide ve istatistiklerde belirir. Diğer izleyici araçları gibi, **Sonucu kaydet**'e basana kadar salt-okunur kalır ve uygulamanın yanında üst career-ops projesine ihtiyaç duyar (o proje yoksa düğme gizlenir).
+
 ---
 
 ## 12. Deep research (`#/deep`)

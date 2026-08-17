@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.209.0] — 2026-08-17
+
+**Aggiunto — la guida nell'app ora copre come registrare l'esito di una candidatura, e «Chiedi alla guida» può portarti lì.**
+
+### Aggiunto
+- La guida del Tracker (§11) ha guadagnato una sezione «Registrare un esito» in tutte le 17 lingue, che illustra il pulsante **Esito**: scegli cos'è successo (rifiutato / offerta / assunto / rifiutata / ghostato / passato al colloquio), visualizza l'anteprima di cosa farà, poi registra — il che annota il risultato, archivia il CV e la lettera che hai inviato e sincronizza lo Stato della riga per te. L'assistente fluttuante «Chiedi alla guida» legge la guida, quindi ora ti indirizza a quel pulsante invece di suggerirti solo di modificare lo Stato a mano.
+
+### Note
+- Ogni bundle della guida ora è 31 H2 / 119 H3 (era 118); le guardie di parità sono state alzate. Solo documentazione — nessuna modifica al codice o al comportamento. Suite: **2625**.
+
+
+
 ## [1.208.2] — 2026-08-16
 
 **Corretto — su un telefono i pulsanti di notifiche e tema non stanno più sopra il campo di ricerca.**

@@ -1293,6 +1293,17 @@ Every tracked row that links to an ATS-hosted posting (Greenhouse, Lever, Ashby,
 
 The check is deliberately conservative: it only says **Expired** on a hard 404/410, never on a guess, so it will never scare you off a role that is actually still open. Lever's public API is treated as non-authoritative (it hides some confidential postings), so those resolve to **Unknown** rather than Expired.
 
+### Record an outcome
+
+When an application reaches its end — you got the offer, took the job, were turned down, or simply never heard back — click the **Outcome** button on that tracker row to log it. A small preview-then-confirm modal opens:
+
+- **Pick what happened** — Rejected, Offer received, Hired / accepted, Offer declined, No response / ghosted, or Advanced to interview.
+- **Note (optional)** — a short line for yourself.
+- **Preview** — the app shows exactly what it will do (e.g. *"Will set #12 Acme → Rejected"*) and writes nothing yet.
+- **Record outcome** — confirms it.
+
+Recording does three things at once: it appends the result to an append-only outcome journal, archives the CV and cover letter you submitted into that application's outcome folder, and syncs the row's canonical **Status** — so a **Hired** or **Rejected** shows up in the tracker and the statistics without you editing the table by hand. Like the other tracker tools it stays read-only until you press **Record outcome**, and it needs the parent career-ops project alongside the app (the button is hidden when that project isn't present).
+
 ---
 
 ## 12. Deep research (`#/deep`)

@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.209.0] — 2026-08-17
+
+**Añadido — la ayuda integrada ahora cubre cómo registrar el resultado de una candidatura, y «Pregunta a la ayuda» puede guiarte hasta ahí.**
+
+### Añadido
+- La ayuda del Seguimiento (§11) ganó una sección «Registrar un resultado» en los 17 idiomas, que recorre el botón **Resultado**: elige qué pasó (rechazado / oferta / contratado / rechazada / ignorado / pasó a entrevista), previsualiza lo que hará y regístralo — lo que anota el resultado, archiva el CV y la carta que enviaste, y sincroniza el Estado de la fila por ti. El asistente flotante «Pregunta a la ayuda» lee la guía, así que ahora te lleva a ese botón en lugar de solo sugerirte editar el Estado a mano.
+
+### Notas
+- Cada paquete de ayuda es ahora 31 H2 / 119 H3 (antes 118); los guards de paridad se ajustaron. Solo documentación — sin cambios de código ni de comportamiento. Conjunto: **2625**.
+
+
+
 ## [1.208.2] — 2026-08-16
 
 **Corregido — en el móvil los botones de notificaciones y tema ya no quedan sobre el cuadro de búsqueda.**

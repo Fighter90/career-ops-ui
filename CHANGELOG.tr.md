@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.209.0] — 2026-08-17
+
+**Eklendi — uygulama içi yardım artık bir başvurunun sonucunu kaydetmeyi kapsıyor ve "Dokümana sor" seni oraya yönlendirebiliyor.**
+
+### Eklendi
+- İzleyici yardımı (§11) 17 dilin tümünde bir "Bir sonucu kaydet" bölümü kazandı; **Sonuç** düğmesini anlatıyor: ne olduğunu seç (reddedildi / teklif / işe alındı / geri çevrildi / görmezden gelindi / mülakata geçti), ne yapacağını önizle, sonra kaydet — bu, sonucu not eder, gönderdiğin CV ve ön yazıyı arşivler ve satırın Durumunu senin yerine eşitler. Yüzen "Dokümana sor" yardımcısı bu kılavuzu okur, bu yüzden artık yalnızca Durumu elle düzenlemeni önermek yerine seni o düğmeye yönlendirir.
+
+### Notlar
+- Her yardım paketi artık 31 H2 / 119 H3 (önceden 118); eşlik bekçileri buna göre yükseltildi. Yalnızca belge — kod veya davranış değişikliği yok. Takım: **2625**.
+
+
+
 ## [1.208.2] — 2026-08-16
 
 **Düzeltildi — telefonda bildirim ve tema düğmeleri artık arama kutusunun üstünde durmuyor.**
