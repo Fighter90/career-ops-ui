@@ -21,6 +21,8 @@
  *
  * Used by the hackernews adapter (server/lib/portals/adapters/hackernews.mjs).
  */
+import { decodeEntities } from '../html-entities.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 export const SEARCH_URL =
@@ -65,18 +67,6 @@ export function assertHnUrl(url) {
   return url;
 }
 
-/** Named HTML entities we decode in comment bodies. */
-const ENTITY_MAP = {
-  '&amp;': '&',
-  '&lt;': '<',
-  '&gt;': '>',
-  '&quot;': '"',
-  '&#x27;': "'",
-  '&#39;': "'",
-  '&nbsp;': ' ',
-};
-const ENTITY_RE = /&amp;|&lt;|&gt;|&quot;|&#x27;|&#39;|&nbsp;/g;
-
 /**
  * Find the objectID of the latest "Ask HN: Who is hiring?" story from Algolia search hits.
  * Picks the first hit whose title matches /who is hiring/i (Algolia returns newest first).
@@ -115,12 +105,13 @@ export function extractPost(child) {
   const raw = typeof child.text === 'string' ? child.text : '';
   if (!raw.trim()) return null;
 
-  // Anchors: replace with href so the URL survives tag stripping.
-  const plain = raw
+  // Anchors: replace with href so the URL survives tag stripping. Shared
+  // decoder (not a 7-form local map) so numeric and other named entities —
+  // &#8211;, &#232;, &uuml; — decode too instead of surviving into the title.
+  const plain = decodeEntities(raw
     .replace(/<a\s[^>]*href="([^"]+)"[^>]*>.*?<\/a>/gi, (_, href) => href)
     .replace(/<\/?(?:p|br|div|li|h[1-6])\b[^>]*>/gi, '\n')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(ENTITY_RE, (m) => ENTITY_MAP[m])
+    .replace(/<[^>]+>/g, ' '))
     .replace(/\r\n/g, '\n')
     .replace(/\r/g, '\n');
 

@@ -2,6 +2,93 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.210.0] — 2026-08-19
+
+**Aggiunto — Senjob, la prima job board africana dello scanner (Senegal); corrispondenza dei titoli più precisa su altre cinque board.**
+
+### Aggiunto
+- **Senjob** (senjob.com) — una nuova fonte di scansione senza token per il Senegal, la prima board africana dello scanner. Selezionala nel filtro **Fonte** in `#/scan`, o aggiungi un'azienda con `provider: senjob`. Legge l'elenco pubblico via HTTP semplice (nessuna chiave, nessun browser), fissa ogni richiesta a senjob.com e — analizzando HTML — tratta un elenco che di colpo non restituisce nulla come una board rotta (un errore visibile) anziché un paese senza offerte.
+
+### Corretto
+- **I titoli con "&" non fanno più cadere offerte su cinque board** — su beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom e TKMS i titoli arrivano con entità HTML, quindi una "&" con escape in un ruolo come "R&D Engineer" falliva la tua stessa parola chiave "r&d" e l'offerta spariva in silenzio (nemmeno un veto "sales & marketing" scattava). Ora i titoli — e le località di Phenom — vengono decodificati prima del filtro.
+
+### Note
+- Fonti di scansione: **80** (75 inglesi + 5 russe). Suite di test: **2643**.
+
+
+
+## [1.209.0] — 2026-08-17
+
+**Aggiunto — la guida nell'app ora copre come registrare l'esito di una candidatura, e «Chiedi alla guida» può portarti lì.**
+
+### Aggiunto
+- La guida del Tracker (§11) ha guadagnato una sezione «Registrare un esito» in tutte le 17 lingue, che illustra il pulsante **Esito**: scegli cos'è successo (rifiutato / offerta / assunto / rifiutata / ghostato / passato al colloquio), visualizza l'anteprima di cosa farà, poi registra — il che annota il risultato, archivia il CV e la lettera che hai inviato e sincronizza lo Stato della riga per te. L'assistente fluttuante «Chiedi alla guida» legge la guida, quindi ora ti indirizza a quel pulsante invece di suggerirti solo di modificare lo Stato a mano.
+
+### Note
+- Ogni bundle della guida ora è 31 H2 / 119 H3 (era 118); le guardie di parità sono state alzate. Solo documentazione — nessuna modifica al codice o al comportamento. Suite: **2625**.
+
+
+
+## [1.208.2] — 2026-08-16
+
+**Corretto — su un telefono i pulsanti di notifiche e tema non stanno più sopra il campo di ricerca.**
+
+### Corretto
+- La v1.208.1 ha impedito ai pulsanti della barra superiore di sovrapporsi al titolo della pagina, ma su un telefono stretto — pur non essendo il più stretto — e soprattutto nelle lingue con etichette più lunghe, l'intera barra si stipava ancora in una sola riga, così i pulsanti 🔔 e 🌙 potevano finire sopra il campo di ricerca. Ora i pulsanti d'azione (notifiche, tema, Diagnostica, Apri Scan) scendono sempre su una loro seconda riga a tutta larghezza sul telefono, così il campo di ricerca resta pienamente leggibile e niente si sovrappone.
+
+### Note
+- Sul telefono i pulsanti d'azione della barra passano a una seconda riga a tutta larghezza, eliminando la fragile fascia di "riga quasi piena" in cui il layout distribuiva lo spazio negativo residuo come sovrapposizione. Un guard di Playwright riproduce ora il trigger esatto — una lingua con etichette lunghe nella fascia 565–640px — e verifica che i controlli della barra non condividano mai pixel. Suite: **2621**.
+
+
+
+## [1.208.1] — 2026-08-16
+
+**Corretto — su un telefono i pulsanti della barra superiore non si sovrappongono più alla pagina.**
+
+### Corretto
+- La v1.208.0 mandava i pulsanti della barra superiore (Diagnostica, Apri Scan, notifiche, tema) su una seconda riga sugli schermi stretti, ma la barra manteneva un'altezza fissa, così la riga a capo debordava e si posava sul titolo della pagina. Ora la barra **cresce** per accogliere le sue righe e il contenuto scorre sotto.
+
+### Note
+- L'`height` fissa della barra è diventata una `min-height`, così cresce con il contenuto a qualsiasi larghezza (il desktop è invariato). Un guard di Playwright verifica ora anche che la barra non debordi sulla pagina. Suite: **2621**.
+
+
+
+## [1.208.0] — 2026-08-16
+
+**Corretto — l'app ora sta nello schermo di un telefono: niente più scorrimento laterale.**
+
+### Corretto
+- Su uno schermo stretto l'intera app scivolava di lato — la barra superiore, le tabelle, gli articoli di aiuto e le schede delle impostazioni sforavano il bordo destro. Ora ogni pagina sta in qualsiasi larghezza: i pulsanti della barra superiore vanno a capo su una seconda riga, tabelle e blocchi di codice larghi scorrono nel proprio riquadro, l'aiuto impila l'indice sopra l'articolo, le righe di pulsanti/schede vanno a capo, e percorsi o URL lunghi si spezzano invece di allungare la pagina.
+
+### Note
+- La causa era la classica trappola **min-width: auto** di flex/grid più un paio di elementi larghi non incapsulati; risolto con `min-width: 0` sugli elementi della griglia, `overflow-wrap` su markdown/titoli, una tabella markdown scorrevole e l'impilamento della griglia di aiuto al breakpoint mobile. Un guard Playwright verifica **0 overflow orizzontale a 375 px** sulle rotte principali. `tests/playwright-smoke.mjs`. Suite: **2621**.
+
+
+
+## [1.207.2] — 2026-08-16
+
+**Corretto — i piani IA e i profili di orientamento non vengono più mostrati come un dump di codice grezzo.**
+
+### Corretto
+- Alcuni modelli avvolgono l'intera risposta in un recinto di codice ```markdown … ```. Quando accadeva, il **piano di sviluppo** e il **profilo di orientamento** apparivano come un blocco di codice a spaziatura fissa invece di un documento con titoli ed elenchi. Ora il recinto avvolgente viene rimosso — solo quando avvolge l'intera risposta e il linguaggio è esplicitamente `markdown`/`md`, così una vera risposta in `python`/`js`/``` senza linguaggio resta intatta.
+
+### Note
+- Gestito una volta sola nel passo condiviso di pulizia LLM (`cleanLlmMarkdown`), così ne beneficiano tutte le route IA e i blocchi di codice interni alla risposta avvolta sopravvivono. `tests/llm-output.test.mjs` (+3). Suite: **2621**.
+
+
+
+## [1.207.1] — 2026-08-16
+
+**Corretto — la landing page non deborda più di lato sui telefoni piccoli.**
+
+### Corretto
+- Su un telefono stretto l'hero — il titolo, la riga introduttiva e il terminale di installazione — poteva essere tagliato sul bordo destro perché un comando di installazione lungo e le colonne del layout non si restringevano allo schermo. Ora stanno in qualsiasi larghezza; il comando di installazione scorre dentro il proprio terminale.
+
+### Note
+- È stato inoltre irrobustito un controllo E2E instabile che poteva fallire per un 404 transitorio di una risorsa: ora ignora il rumore di rete benigno (favicon / connessione / risorsa fallita) come i controlli vicini, pur continuando a rilevare veri errori di script. Nessun cambiamento nel comportamento dell’app. Suite: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Aggiunto — registra l'esito di una candidatura direttamente dal tracker.**

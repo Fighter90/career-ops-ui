@@ -8,6 +8,21 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.210.0] — 2026-08-19
+
+**Added — Senjob, the scanner's first African job board (Senegal); sharper title matching on five more boards.**
+
+### Added
+- **Senjob** (senjob.com) — a new zero-token scan source for Senegal, the scanner's first African board. Select it in the `#/scan` **Source** filter, or add a company with `provider: senjob`. It reads the public listing over plain HTTP (no key, no browser), pins every request to senjob.com, and — parsing HTML — treats a listing that suddenly yields nothing as a broken board (a surfaced error) rather than a silently empty country.
+
+### Fixed
+- **Titles with an ampersand no longer drop jobs on five boards** — on beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom and TKMS, titles arrive HTML-escaped, so an escaped "&" in a role like "R&D Engineer" failed your own "r&d" keyword and the posting vanished silently (a "sales & marketing" veto never fired either). Titles — and Phenom locations — are now decoded before filtering.
+
+### Notes
+- Scan sources: **80** (75 English + 5 Russian). Test suite: **2643**.
+
+
+
 ## [1.209.0] — 2026-08-17
 
 **Added — the in-app help now covers recording an application outcome, and "Ask the docs" can point you to it.**

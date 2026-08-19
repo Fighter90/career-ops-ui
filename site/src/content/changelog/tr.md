@@ -2,6 +2,93 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.210.0] — 2026-08-19
+
+**Eklendi — Senjob, tarayıcının ilk Afrika iş ilan panosu (Senegal); beş panoda daha isabetli başlık eşleştirme.**
+
+### Eklendi
+- **Senjob** (senjob.com) — Senegal için yeni, token gerektirmeyen bir tarama kaynağı ve tarayıcının ilk Afrika panosu. `#/scan` sayfasındaki **Kaynak** filtresinden seçin ya da `provider: senjob` olan bir şirket ekleyin. Genel listeyi düz HTTP ile okur (anahtar yok, tarayıcı yok), her isteği senjob.com'a sabitler ve — HTML ayrıştırdığı için — birden hiçbir şey döndürmeyen bir listeyi işsiz bir ülke değil, bozuk bir pano (görünür bir hata) olarak ele alır.
+
+### Düzeltildi
+- **İçinde "&" olan başlıklar artık beş panoda ilan düşürmüyor** — beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom ve TKMS'te başlıklar HTML kaçışlı gelir; bu yüzden "R&D Engineer" gibi bir roldeki kaçışlı "&", kendi "r&d" anahtar kelimenizde başarısız olur ve ilan sessizce kaybolurdu ("sales & marketing" vetosu da hiç tetiklenmezdi). Artık başlıklar — ve Phenom konumları — filtrelemeden önce çözülür.
+
+### Notlar
+- Tarama kaynakları: **80** (75 İngilizce + 5 Rusça). Test takımı: **2643**.
+
+
+
+## [1.209.0] — 2026-08-17
+
+**Eklendi — uygulama içi yardım artık bir başvurunun sonucunu kaydetmeyi kapsıyor ve "Dokümana sor" seni oraya yönlendirebiliyor.**
+
+### Eklendi
+- İzleyici yardımı (§11) 17 dilin tümünde bir "Bir sonucu kaydet" bölümü kazandı; **Sonuç** düğmesini anlatıyor: ne olduğunu seç (reddedildi / teklif / işe alındı / geri çevrildi / görmezden gelindi / mülakata geçti), ne yapacağını önizle, sonra kaydet — bu, sonucu not eder, gönderdiğin CV ve ön yazıyı arşivler ve satırın Durumunu senin yerine eşitler. Yüzen "Dokümana sor" yardımcısı bu kılavuzu okur, bu yüzden artık yalnızca Durumu elle düzenlemeni önermek yerine seni o düğmeye yönlendirir.
+
+### Notlar
+- Her yardım paketi artık 31 H2 / 119 H3 (önceden 118); eşlik bekçileri buna göre yükseltildi. Yalnızca belge — kod veya davranış değişikliği yok. Takım: **2625**.
+
+
+
+## [1.208.2] — 2026-08-16
+
+**Düzeltildi — telefonda bildirim ve tema düğmeleri artık arama kutusunun üstünde durmuyor.**
+
+### Düzeltildi
+- v1.208.1, üst çubuğun düğmelerinin sayfa başlığıyla çakışmasını önledi ama dar — en dar olmasa da — bir telefonda, özellikle düğme etiketleri uzun olan dillerde, çubuğun tamamı yine tek satıra sıkışıyor, böylece 🔔 ve 🌙 düğmeleri arama kutusunun üstüne binebiliyordu. İşlem düğmeleri (bildirimler, tema, Tanılama, Scan Aç) artık telefonda her zaman tam genişlikte kendi ikinci satırına iniyor; böylece arama kutusu tümüyle okunabilir kalıyor ve hiçbir şey çakışmıyor.
+
+### Notlar
+- Telefonda çubuğun işlem düğmeleri tam genişlikte ikinci bir satıra taşınarak, düzenin artan negatif alanı çakışma olarak dağıttığı kırılgan "neredeyse dolu satır" bandını ortadan kaldırıyor. Bir Playwright bekçisi artık tam tetikleyiciyi — 565–640px bandında uzun etiketli bir dil — yeniden üretiyor ve çubuğun denetimlerinin asla piksel paylaşmadığını doğruluyor. Takım: **2621**.
+
+
+
+## [1.208.1] — 2026-08-16
+
+**Düzeltildi — telefonda üst çubuğun düğmeleri artık sayfayla çakışmıyor.**
+
+### Düzeltildi
+- v1.208.0, dar ekranlarda üst çubuğun işlem düğmelerini (Tanılama, Scan Aç, bildirimler, tema) ikinci satıra kaydırıyordu ama çubuk sabit yükseklikte kaldığından, kaydırılan satır taşıp sayfa başlığının üstüne biniyordu. Çubuk artık satırlarını almak için **büyüyor** ve içerik altından akıyor.
+
+### Notlar
+- Çubuğun sabit `height` değeri `min-height` oldu; böylece her genişlikte içerikle birlikte büyüyor (masaüstü değişmedi). Bir Playwright bekçisi artık çubuğun sayfaya taşmadığını da denetliyor. Takım: **2621**.
+
+
+
+## [1.208.0] — 2026-08-16
+
+**Düzeltildi — uygulama artık bir telefon ekranına sığıyor: yana kaydırma bitti.**
+
+### Düzeltildi
+- Dar ekranda uygulamanın tamamı yana kayıyordu — üst çubuk, tablolar, yardım makaleleri ve ayar sekmeleri sağ kenarı aşıyordu. Artık her sayfa her genişliğe sığıyor: üst çubuk düğmeleri ikinci satıra kayar, geniş tablolar ve kod blokları kendi kutusunda kayar, yardım içindekiler tablosunu makalenin üstüne yığar, düğme/sekme satırları alt satıra geçer ve uzun yollar veya URL'ler sayfayı germek yerine satır kırar.
+
+### Notlar
+- Kök neden klasik flex/grid **min-width: auto** tuzağı ve birkaç sarmalanmamış geniş öğeydi; ızgara öğelerine `min-width: 0`, markdown/başlıklara `overflow-wrap`, kaydırılabilir bir markdown tablosu ve mobil kırılma noktasında yardım ızgarasının dikey yığılmasıyla düzeltildi. Bir Playwright bekçisi ana rotalarda **375 px'te 0 yatay taşma** doğrular. `tests/playwright-smoke.mjs`. Takım: **2621**.
+
+
+
+## [1.207.2] — 2026-08-16
+
+**Düzeltildi — yapay zekâ planları ve kariyer yönlendirme profilleri artık ham kod dökümü olarak görünmüyor.**
+
+### Düzeltildi
+- Bazı modeller tüm yanıtı bir ```markdown … ``` kod çitine sarar. Bu olduğunda **gelişim planı** ve **yönlendirme profili**, başlıklı ve listeli bir belge yerine tek aralıklı kod bloğu olarak görünüyordu. Saran çit artık kaldırılıyor — yalnızca tüm yanıtı sardığında ve dil açıkça `markdown`/`md` olduğunda, böylece gerçek bir `python`/`js`/dilsiz ``` kod yanıtı olduğu gibi kalır.
+
+### Notlar
+- Ortak LLM temizleme adımında (`cleanLlmMarkdown`) tek seferde ele alındı, böylece tüm yapay zekâ rotaları yararlanır ve sarılmış yanıtın içindeki kod blokları korunur. `tests/llm-output.test.mjs` (+3). Takım: **2621**.
+
+
+
+## [1.207.1] — 2026-08-16
+
+**Düzeltildi — açılış sayfası küçük telefonlarda artık yana taşmıyor.**
+
+### Düzeltildi
+- Dar bir telefonda hero bölümü — başlık, giriş satırı ve kurulum terminali — sağ kenardan kırpılabiliyordu; çünkü uzun bir kurulum komutu ve düzen sütunları ekrana göre küçülmüyordu. Artık her genişliğe sığıyorlar; kurulum komutu kendi terminal kutusunun içinde kayıyor.
+
+### Notlar
+- Ayrıca, bir kaynağın geçici 404’ü yüzünden başarısız olabilen kararsız bir E2E duman testi sağlamlaştırıldı: artık komşu testler gibi zararsız ağ gürültüsünü (favicon / bağlantı / başarısız kaynak) yok sayıyor, gerçek betik hatalarını yakalamayı sürdürüyor. Uygulama davranışı değişmedi. Takım: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Eklendi — bir başvurunun sonucunu doğrudan takip tablosundan kaydedin.**

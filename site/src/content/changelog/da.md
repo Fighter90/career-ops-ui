@@ -8,6 +8,93 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.210.0] — 2026-08-19
+
+**Tilføjet — Senjob, scannerens første afrikanske jobboard (Senegal); skarpere titelmatch på fem boards mere.**
+
+### Tilføjet
+- **Senjob** (senjob.com) — en ny token-fri scanningskilde for Senegal, scannerens første afrikanske board. Vælg den i **Kilde**-filteret på `#/scan`, eller tilføj en virksomhed med `provider: senjob`. Den læser den offentlige liste over almindelig HTTP (ingen nøgle, ingen browser), fastlåser hver forespørgsel til senjob.com og — da den parser HTML — behandler en liste, der pludselig intet giver, som et ødelagt board (en synlig fejl) frem for et land uden job.
+
+### Rettet
+- **Titler med "&" taber ikke længere job på fem boards** — på beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom og TKMS ankommer titler HTML-escaped, så et escaped "&" i en rolle som "R&D Engineer" faldt igennem dit eget "r&d"-nøgleord, og opslaget forsvandt lydløst (et "sales & marketing"-veto udløstes heller ikke). Titler — og Phenom-lokationer — afkodes nu før filtrering.
+
+### Noter
+- Scanningskilder: **80** (75 engelske + 5 russiske). Testsuite: **2643**.
+
+
+
+## [1.209.0] — 2026-08-17
+
+**Tilføjet — hjælpen i appen dækker nu, hvordan man registrerer udfaldet af en ansøgning, og "Spørg dokumentationen" kan føre dig derhen.**
+
+### Tilføjet
+- Trackerens hjælp (§11) fik et afsnit "Registrér et udfald" på alle 17 sprog, der gennemgår knappen **Udfald**: vælg, hvad der skete (afvist / tilbud / ansat / afslået / ghostet / gik videre til samtale), forhåndsvis, hvad den vil gøre, og registrér — hvilket noterer resultatet, arkiverer det CV og den ansøgning, du sendte, og synkroniserer rækkens Status for dig. Den flydende "Spørg dokumentationen"-assistent læser guiden, så den fører dig nu til den knap i stedet for kun at foreslå, at du redigerer Status i hånden.
+
+### Noter
+- Hver hjælpepakke er nu 31 H2 / 119 H3 (var 118); paritetsvagterne blev hævet. Kun dokumentation — ingen kode- eller adfærdsændring. Suite: **2625**.
+
+
+
+## [1.208.2] — 2026-08-16
+
+**Rettet — på en telefon ligger notifikations- og temaknapperne ikke længere oven på søgefeltet.**
+
+### Rettet
+- v1.208.1 stoppede topbjælkens knapper i at overlappe sideoverskriften, men på en smal — dog ikke smalleste — telefon, især på sprog med længere knaptekster, klemte hele bjælken sig stadig ned på én række, så 🔔- og 🌙-knapperne kunne lande oven på søgefeltet. Handlingsknapperne (notifikationer, tema, Diagnose, Åbn Scan) rykker nu altid ned på deres egen anden række i fuld bredde på en telefon, så søgefeltet er fuldt læsbart og intet overlapper.
+
+### Noter
+- På en telefon flytter topbjælkens handlingsknapper til en anden række i fuld bredde og fjerner det skrøbelige "næsten fulde række"-bånd, hvor layoutet fordelte den resterende negative plads som overlap. En Playwright-vagt gengiver nu den præcise udløser — et sprog med lange tekster på tværs af 565–640px-båndet — og bekræfter, at bjælkens knapper aldrig deler pixels. Suite: **2621**.
+
+
+
+## [1.208.1] — 2026-08-16
+
+**Rettet — på en telefon overlapper topbjælkens knapper ikke længere siden.**
+
+### Rettet
+- v1.208.0 ombrød topbjælkens handlingsknapper (Diagnose, Åbn Scan, notifikationer, tema) til en anden række på smalle skærme, men bjælken beholdt en fast højde, så den ombrudte række flød ud og lå oven på sideoverskriften. Bjælken **vokser** nu til at rumme sine rækker, og indholdet flyder nedenunder.
+
+### Noter
+- Bjælkens faste `height` blev til `min-height`, så den vokser med sit indhold i enhver bredde (desktop er uændret). En Playwright-vagt tjekker nu også, at bjælken ikke flyder ud over siden. Suite: **2621**.
+
+
+
+## [1.208.0] — 2026-08-16
+
+**Rettet — appen passer nu på en telefonskærm: ingen sidelæns scrolling mere.**
+
+### Rettet
+- På en smal skærm skred hele appen ud til siden — topbjælken, tabeller, hjælpeartikler og indstillingsfaner gik ud over højre kant. Nu passer hver side i enhver bredde: topbjælkens knapper ombrydes til en anden række, brede tabeller og kodeblokke ruller inde i deres egen boks, hjælpen stabler indholdsfortegnelsen over artiklen, rækker af knapper/faner ombrydes, og lange stier eller URL'er brydes i stedet for at strække siden.
+
+### Noter
+- Årsagen var den klassiske flex/grid **min-width: auto**-fælde plus et par uindpakkede brede elementer; rettet med `min-width: 0` på grid-elementer, `overflow-wrap` på markdown/titler, en scrollbar markdown-tabel og stabling af hjælpe-griddet ved mobilbrudpunktet. En Playwright-vagt tjekker **0 vandret overløb ved 375 px** på hovedruterne. `tests/playwright-smoke.mjs`. Suite: **2621**.
+
+
+
+## [1.207.2] — 2026-08-16
+
+**Rettet — AI-planer og karriereorienteringsprofiler vises ikke længere som et råt kode-dump.**
+
+### Rettet
+- Nogle modeller pakker hele svaret ind i et ```markdown … ``` kodehegn. Når det skete, dukkede **udviklingsplanen** og **orienteringsprofilen** op som en monospaced kodeblok i stedet for et dokument med overskrifter og lister. Det omsluttende hegn fjernes nu — kun når det omslutter hele svaret og sproget udtrykkeligt er `markdown`/`md`, så et ægte `python`/`js`/``` uden sprog kode-svar er urørt.
+
+### Noter
+- Håndteret ét sted i det fælles LLM-oprydningstrin (`cleanLlmMarkdown`), så alle AI-ruter nyder godt af det, og indre kodeblokke i det indpakkede svar overlever. `tests/llm-output.test.mjs` (+3). Suite: **2621**.
+
+
+
+## [1.207.1] — 2026-08-16
+
+**Rettet — landingssiden løber ikke længere ud til siden på små telefoner.**
+
+### Rettet
+- På en smal telefon kunne hero-området — overskriften, introlinjen og installationsterminalen — blive klippet af i højre kant, fordi en lang installationskommando og layoutkolonnerne ikke krympede til skærmen. De passer nu i enhver bredde; installationskommandoen ruller inde i sin egen terminalboks.
+
+### Noter
+- Et ustabilt E2E-smoke-tjek, der kunne fejle på en forbigående ressource-404, er også gjort robust: det ignorerer nu godartet netværksstøj (favicon / forbindelse / mislykket ressource) som nabotjekkene, men fanger stadig ægte scriptfejl. Ingen ændring i appens adfærd. Suite: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Tilføjet — registrér udfaldet af en ansøgning direkte fra trackeren.**

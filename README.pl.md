@@ -7,16 +7,16 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2610%20passed-brightgreen)](#testy)
-[![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2020%2F20-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2643%20passed-brightgreen)](#testy)
+[![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.209.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.209.0)
+[![release](https://img.shields.io/badge/release-v1.210.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.210.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.209.0** — **Pomoc obejmuje zapisywanie wyniku** — przewodnik Trackera dokumentuje teraz przycisk Wynik we wszystkich 17 językach, a „Zapytaj dokumentację" cię do niego prowadzi. **2625 testów.**
+> **🆕 Najnowsze wydanie — v1.210.0** — **Senjob — skaner dociera do Afryki** — nowe beztokenowe źródło dla Senegalu (senjob.com), a kolejne pięć portali rozpoznaje teraz tytuły zawierające „&". **2643 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

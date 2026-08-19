@@ -2,6 +2,21 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.210.0] — 2026-08-19
+
+**Eklendi — Senjob, tarayıcının ilk Afrika iş ilan panosu (Senegal); beş panoda daha isabetli başlık eşleştirme.**
+
+### Eklendi
+- **Senjob** (senjob.com) — Senegal için yeni, token gerektirmeyen bir tarama kaynağı ve tarayıcının ilk Afrika panosu. `#/scan` sayfasındaki **Kaynak** filtresinden seçin ya da `provider: senjob` olan bir şirket ekleyin. Genel listeyi düz HTTP ile okur (anahtar yok, tarayıcı yok), her isteği senjob.com'a sabitler ve — HTML ayrıştırdığı için — birden hiçbir şey döndürmeyen bir listeyi işsiz bir ülke değil, bozuk bir pano (görünür bir hata) olarak ele alır.
+
+### Düzeltildi
+- **İçinde "&" olan başlıklar artık beş panoda ilan düşürmüyor** — beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom ve TKMS'te başlıklar HTML kaçışlı gelir; bu yüzden "R&D Engineer" gibi bir roldeki kaçışlı "&", kendi "r&d" anahtar kelimenizde başarısız olur ve ilan sessizce kaybolurdu ("sales & marketing" vetosu da hiç tetiklenmezdi). Artık başlıklar — ve Phenom konumları — filtrelemeden önce çözülür.
+
+### Notlar
+- Tarama kaynakları: **80** (75 İngilizce + 5 Rusça). Test takımı: **2643**.
+
+
+
 ## [1.209.0] — 2026-08-17
 
 **Eklendi — uygulama içi yardım artık bir başvurunun sonucunu kaydetmeyi kapsıyor ve "Dokümana sor" seni oraya yönlendirebiliyor.**

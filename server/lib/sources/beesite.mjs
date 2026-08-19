@@ -26,6 +26,11 @@
  * Used by the beesite adapter (server/lib/portals/adapters/beesite.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+// Titles arrive HTML-escaped, so the tag-strip below is not enough on its own:
+// an undecoded "R&amp;D Engineer" fails a user's own title_filter positive "r&d"
+// and is silently dropped, and a negative like "sales & marketing" never vetoes
+// "Sales &amp; Marketing Lead". Shared decoder, same as radancy/softgarden.
+import { decodeEntities } from '../html-entities.mjs';
 
 export const meta = {
   value: 'beesite',
@@ -104,7 +109,7 @@ export function parseSearchResult(json, companyName) {
     const d = item && item.MatchedObjectDescriptor;
     if (!d) continue;
     const id = item.MatchedObjectId != null ? String(item.MatchedObjectId) : String(d.PositionID || '');
-    const title = String(d.PositionTitle || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const title = decodeEntities(String(d.PositionTitle || '').replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
     const url = String(d.PositionURI || '').trim();
     if (!id || !title || !/^https:\/\//i.test(url)) continue;
     const locs = Array.isArray(d.PositionLocation) ? d.PositionLocation : [];

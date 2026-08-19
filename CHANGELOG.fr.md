@@ -11,6 +11,21 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.210.0] — 2026-08-19
+
+**Ajouté — Senjob, le premier site d'emploi africain du scanner (Sénégal) ; correspondance de titres plus fine sur cinq sites de plus.**
+
+### Ajouté
+- **Senjob** (senjob.com) — une nouvelle source de scan sans jeton pour le Sénégal, le premier site africain du scanner. Sélectionnez-la dans le filtre **Source** de `#/scan`, ou ajoutez une entreprise avec `provider: senjob`. Elle lit la liste publique en HTTP simple (sans clé, sans navigateur), épingle chaque requête à senjob.com et — analysant du HTML — traite une liste qui ne renvoie soudain plus rien comme un site cassé (une erreur visible) plutôt qu'un pays sans emplois.
+
+### Corrigé
+- **Les titres contenant « & » ne font plus disparaître d'offres sur cinq sites** — sur beesite, Cornerstone (csod), Hacker News « Who is hiring », Phenom et TKMS, les titres arrivent échappés en HTML : un « & » échappé dans un poste comme "R&D Engineer" échouait à votre propre mot-clé "r&d" et l'offre disparaissait en silence (un veto "sales & marketing" ne se déclenchait pas non plus). Les titres — et les lieux Phenom — sont désormais décodés avant le filtrage.
+
+### Notes
+- Sources de scan : **80** (75 anglaises + 5 russes). Suite de tests : **2643**.
+
+
+
 ## [1.209.0] — 2026-08-17
 
 **Ajouté — l'aide intégrée couvre désormais l'enregistrement de l'issue d'une candidature, et « Demander à l'aide » peut vous y mener.**

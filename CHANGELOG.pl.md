@@ -9,6 +9,21 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.210.0] — 2026-08-19
+
+**Dodano — Senjob, pierwszy afrykański portal pracy skanera (Senegal); dokładniejsze dopasowanie tytułów na kolejnych pięciu portalach.**
+
+### Dodano
+- **Senjob** (senjob.com) — nowe beztokenowe źródło skanowania dla Senegalu, pierwszy afrykański portal skanera. Wybierz je w filtrze **Źródło** na `#/scan` lub dodaj firmę z `provider: senjob`. Czyta publiczną listę zwykłym HTTP (bez klucza, bez przeglądarki), przypina każde żądanie do senjob.com i — parsując HTML — traktuje listę, która nagle nic nie zwraca, jako zepsuty portal (widoczny błąd), a nie kraj bez ofert.
+
+### Naprawiono
+- **Tytuły z „&" nie gubią już ofert na pięciu portalach** — na beesite, Cornerstone (csod), Hacker News „Who is hiring", Phenom i TKMS tytuły przychodzą z encjami HTML, więc zaescape'owany „&" w stanowisku typu "R&D Engineer" nie przechodził twojego własnego słowa kluczowego "r&d" i oferta znikała po cichu (weto "sales & marketing" też nigdy się nie uruchamiało). Teraz tytuły — i lokalizacje Phenom — są dekodowane przed filtrowaniem.
+
+### Uwagi
+- Źródła skanowania: **80** (75 angielskich + 5 rosyjskich). Zestaw testów: **2643**.
+
+
+
 ## [1.209.0] — 2026-08-17
 
 **Dodano — pomoc w aplikacji obejmuje teraz zapisywanie wyniku aplikacji, a „Zapytaj dokumentację" może cię tam poprowadzić.**

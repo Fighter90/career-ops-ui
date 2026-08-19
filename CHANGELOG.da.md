@@ -8,6 +8,21 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.210.0] — 2026-08-19
+
+**Tilføjet — Senjob, scannerens første afrikanske jobboard (Senegal); skarpere titelmatch på fem boards mere.**
+
+### Tilføjet
+- **Senjob** (senjob.com) — en ny token-fri scanningskilde for Senegal, scannerens første afrikanske board. Vælg den i **Kilde**-filteret på `#/scan`, eller tilføj en virksomhed med `provider: senjob`. Den læser den offentlige liste over almindelig HTTP (ingen nøgle, ingen browser), fastlåser hver forespørgsel til senjob.com og — da den parser HTML — behandler en liste, der pludselig intet giver, som et ødelagt board (en synlig fejl) frem for et land uden job.
+
+### Rettet
+- **Titler med "&" taber ikke længere job på fem boards** — på beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom og TKMS ankommer titler HTML-escaped, så et escaped "&" i en rolle som "R&D Engineer" faldt igennem dit eget "r&d"-nøgleord, og opslaget forsvandt lydløst (et "sales & marketing"-veto udløstes heller ikke). Titler — og Phenom-lokationer — afkodes nu før filtrering.
+
+### Noter
+- Scanningskilder: **80** (75 engelske + 5 russiske). Testsuite: **2643**.
+
+
+
 ## [1.209.0] — 2026-08-17
 
 **Tilføjet — hjælpen i appen dækker nu, hvordan man registrerer udfaldet af en ansøgning, og "Spørg dokumentationen" kan føre dig derhen.**

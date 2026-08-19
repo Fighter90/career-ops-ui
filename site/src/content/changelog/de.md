@@ -2,6 +2,93 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.210.0] — 2026-08-19
+
+**Hinzugefügt — Senjob, das erste afrikanische Job-Board des Scanners (Senegal); präziserer Titelabgleich auf fünf weiteren Boards.**
+
+### Hinzugefügt
+- **Senjob** (senjob.com) — eine neue token-freie Scan-Quelle für den Senegal, das erste afrikanische Board des Scanners. Wähle sie im **Quelle**-Filter auf `#/scan`, oder füge ein Unternehmen mit `provider: senjob` hinzu. Sie liest die öffentliche Liste über einfaches HTTP (kein Schlüssel, kein Browser), pinnt jede Anfrage an senjob.com und behandelt — da sie HTML parst — eine Liste, die plötzlich nichts mehr liefert, als kaputtes Board (ein sichtbarer Fehler) statt als Land ohne Jobs.
+
+### Behoben
+- **Titel mit „&" lassen auf fünf Boards keine Jobs mehr fallen** — auf beesite, Cornerstone (csod), Hacker News „Who is hiring", Phenom und TKMS kommen Titel HTML-escaped an, sodass ein escaptes „&" in einer Rolle wie "R&D Engineer" an deinem eigenen Stichwort "r&d" scheiterte und die Anzeige still verschwand (ein "sales & marketing"-Veto löste ebenfalls nie aus). Titel — und Phenom-Standorte — werden nun vor dem Filtern dekodiert.
+
+### Hinweise
+- Scan-Quellen: **80** (75 englische + 5 russische). Test-Suite: **2643**.
+
+
+
+## [1.209.0] — 2026-08-17
+
+**Hinzugefügt — die In-App-Hilfe deckt jetzt das Festhalten des Ergebnisses einer Bewerbung ab, und „Frag die Doku" kann dich dorthin führen.**
+
+### Hinzugefügt
+- Die Tracker-Hilfe (§11) erhielt in allen 17 Sprachen einen Abschnitt „Ein Ergebnis festhalten", der die Schaltfläche **Ergebnis** durchgeht: Wähle, was passiert ist (abgelehnt / Angebot / eingestellt / abgelehnt / geghostet / zum Interview vorgerückt), sieh in der Vorschau, was sie tun wird, und halte es fest — das notiert das Ergebnis, archiviert den eingereichten Lebenslauf und das Anschreiben und synchronisiert den Status der Zeile für dich. Der schwebende „Frag die Doku"-Assistent liest den Leitfaden, also führt er dich jetzt zu dieser Schaltfläche, statt nur vorzuschlagen, den Status von Hand zu bearbeiten.
+
+### Hinweise
+- Jedes Hilfe-Bundle ist jetzt 31 H2 / 119 H3 (vorher 118); die Paritäts-Wächter wurden angehoben. Nur Dokumentation — keine Code- oder Verhaltensänderung. Suite: **2625**.
+
+
+
+## [1.208.2] — 2026-08-16
+
+**Behoben — auf dem Handy liegen die Benachrichtigungs- und Design-Buttons nicht mehr über dem Suchfeld.**
+
+### Behoben
+- v1.208.1 sorgte dafür, dass die Buttons der oberen Leiste die Seitenüberschrift nicht mehr überlappen, aber auf einem schmalen — wenn auch nicht schmalsten — Handy, besonders in Sprachen mit längeren Button-Texten, quetschte sich die ganze Leiste weiter in eine Zeile, sodass die Buttons 🔔 und 🌙 über dem Suchfeld landen konnten. Die Aktions-Buttons (Benachrichtigungen, Design, Diagnose, Scan öffnen) rücken auf dem Handy nun stets in ihre eigene, volle Breite einnehmende zweite Zeile, sodass das Suchfeld voll lesbar bleibt und nichts überlappt.
+
+### Hinweise
+- Auf dem Handy wandern die Aktions-Buttons der Leiste in eine zweite Zeile über die volle Breite und beseitigen das fragile Band der „fast vollen Zeile“, in dem das Layout den übrigen negativen Raum als Überlappung verteilte. Ein Playwright-Wächter reproduziert nun den genauen Auslöser — eine Sprache mit langen Texten über das Band 565–640px — und stellt sicher, dass sich die Bedienelemente der Leiste nie Pixel teilen. Suite: **2621**.
+
+
+
+## [1.208.1] — 2026-08-16
+
+**Behoben — auf dem Handy überlappen die Buttons der oberen Leiste die Seite nicht mehr.**
+
+### Behoben
+- v1.208.0 brach die Buttons der oberen Leiste (Diagnose, Scan öffnen, Benachrichtigungen, Design) auf schmalen Bildschirmen in eine zweite Zeile um, aber die Leiste behielt eine feste Höhe, sodass die umgebrochene Zeile herausquoll und über der Seitenüberschrift lag. Die Leiste **wächst** nun, um ihre Zeilen aufzunehmen, und der Inhalt fließt darunter.
+
+### Hinweise
+- Die feste `height` der Leiste wurde zu `min-height`, sodass sie bei jeder Breite mit ihrem Inhalt wächst (Desktop unverändert). Ein Playwright-Wächter prüft nun auch, dass die Leiste nicht über die Seite quillt. Suite: **2621**.
+
+
+
+## [1.208.0] — 2026-08-16
+
+**Behoben — die App passt jetzt auf einen Handy-Bildschirm: kein seitliches Scrollen mehr.**
+
+### Behoben
+- Auf einem schmalen Bildschirm rutschte die ganze App zur Seite — die obere Leiste, Tabellen, Hilfeartikel und Einstellungs-Tabs liefen über den rechten Rand hinaus. Jetzt passt jede Seite in jede Breite: die Buttons der oberen Leiste brechen in eine zweite Zeile um, breite Tabellen und Codeblöcke scrollen in ihrer eigenen Box, die Hilfe stapelt das Inhaltsverzeichnis über dem Artikel, Button-/Tab-Reihen brechen um, und lange Pfade oder URLs brechen um, statt die Seite zu strecken.
+
+### Hinweise
+- Ursache war die klassische Flex/Grid-**min-width: auto**-Falle plus ein paar nicht umschlossene breite Elemente; behoben mit `min-width: 0` auf Grid-Items, `overflow-wrap` auf Markdown/Titeln, einer scrollbaren Markdown-Tabelle und dem Stapeln des Hilfe-Grids am Mobile-Breakpoint. Ein Playwright-Wächter prüft **0 horizontalen Überlauf bei 375 px** auf den Hauptrouten. `tests/playwright-smoke.mjs`. Suite: **2621**.
+
+
+
+## [1.207.2] — 2026-08-16
+
+**Behoben — KI-Pläne und Karriere-Orientierungsprofile werden nicht mehr als roher Code-Dump dargestellt.**
+
+### Behoben
+- Manche Modelle packen ihre ganze Antwort in einen ```markdown … ``` Code-Zaun. Wenn das passierte, erschienen der **Entwicklungsplan** und das **Orientierungsprofil** als Monospace-Codeblock statt als Dokument mit Überschriften und Listen. Der umschließende Zaun wird jetzt entfernt — nur wenn er die gesamte Antwort umschließt und die Sprache ausdrücklich `markdown`/`md` ist, sodass eine echte `python`/`js`/``` -ohne-Sprache-Codeantwort unangetastet bleibt.
+
+### Hinweise
+- Einmalig im gemeinsamen LLM-Aufräumschritt (`cleanLlmMarkdown`) behandelt, sodass alle KI-Routen profitieren und innere Codeblöcke in der umschlossenen Antwort erhalten bleiben. `tests/llm-output.test.mjs` (+3). Suite: **2621**.
+
+
+
+## [1.207.1] — 2026-08-16
+
+**Behoben — die Landingpage läuft auf kleinen Handys nicht mehr seitlich über.**
+
+### Behoben
+- Auf einem schmalen Handy konnte der Hero-Bereich — die Überschrift, die Einleitungszeile und das Installations-Terminal — am rechten Rand abgeschnitten werden, weil ein langer Installationsbefehl und die Layout-Spalten nicht auf den Bildschirm schrumpften. Sie passen jetzt in jede Breite; der Installationsbefehl scrollt in seinem eigenen Terminal-Kasten.
+
+### Hinweise
+- Außerdem wurde ein instabiler E2E-Smoke-Check gehärtet, der an einem vorübergehenden Ressourcen-404 scheitern konnte: er ignoriert nun harmloses Netzwerkrauschen (Favicon / Verbindung / fehlgeschlagene Ressource) wie die Nachbar-Checks, fängt aber weiterhin echte Skriptfehler. Kein geändertes App-Verhalten. Suite: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Hinzugefügt — halte das Ergebnis einer Bewerbung direkt im Tracker fest.**

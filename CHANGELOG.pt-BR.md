@@ -8,6 +8,21 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.210.0] — 2026-08-19
+
+**Adicionado — Senjob, o primeiro job board africano do scanner (Senegal); correspondência de títulos mais precisa em mais cinco portais.**
+
+### Adicionado
+- **Senjob** (senjob.com) — uma nova fonte de varredura sem tokens para o Senegal, o primeiro board africano do scanner. Selecione-a no filtro **Fonte** em `#/scan`, ou adicione uma empresa com `provider: senjob`. Lê a listagem pública por HTTP simples (sem chave, sem navegador), fixa cada requisição em senjob.com e — ao analisar HTML — trata uma listagem que de repente não retorna nada como um board quebrado (um erro visível) em vez de um país sem vagas.
+
+### Corrigido
+- **Títulos com "&" não descartam mais vagas em cinco portais** — em beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom e TKMS os títulos chegam com entidades HTML, então um "&" escapado num cargo como "R&D Engineer" falhava a sua própria palavra-chave "r&d" e a vaga sumia em silêncio (um veto "sales & marketing" também nunca disparava). Agora os títulos — e as localizações do Phenom — são decodificados antes de filtrar.
+
+### Notas
+- Fontes de varredura: **80** (75 em inglês + 5 russas). Conjunto de testes: **2643**.
+
+
+
 ## [1.209.0] — 2026-08-17
 
 **Adicionado — a ajuda no app agora cobre como registrar o resultado de uma candidatura, e o "Pergunte aos docs" pode te levar até lá.**
