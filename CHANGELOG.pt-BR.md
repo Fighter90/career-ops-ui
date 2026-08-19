@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.210.1] — 2026-08-19
+
+**Corrigido — títulos de vagas e nomes de empresa do Habr Career com "&" ou aspas não chegam mais corrompidos.**
+
+### Corrigido
+- A fonte Habr Career agora decodifica entidades HTML no **título** e no **nome da empresa** antes de seguir adiante. Os cartões renderizados no servidor chegam com entidades ("Changellenge &gt;&gt;", "Demand Forecasting &amp; Inventory Optimization", "ООО &quot;М-ТЕХ&quot;"), então um "&" não decodificado falhava em silêncio o seu próprio filtro de título com "&" — o mesmo sintoma que a versão anterior fechou em outros cinco portais — e nomes de empresa chegavam corrompidos ao tracker e aos relatórios. A decodificação de entidades está completa nas seis fontes afetadas.
+
+### Notas
+- Conjunto de testes: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Adicionado — Senjob, o primeiro job board africano do scanner (Senegal); correspondência de títulos mais precisa em mais cinco portais.**

@@ -8,6 +8,8 @@
  * (intentionally not pulling in cheerio/JSDOM to keep deps minimal).
  */
 
+import { decodeEntities } from '../html-entities.mjs';
+
 const HABR_BASE = 'https://career.habr.com';
 
 const UA =
@@ -108,8 +110,12 @@ export function parseHabrCards(html) {
     const hasRelocation = chips.some((ch) => /релок|reloc/i.test(ch));
     out.push({
       id: id ? `habr-${id}` : `habr-${out.length}`,
-      title: titleMatch[2].trim(),
-      company: company?.trim() || '',
+      // Decode HTML entities BEFORE the title reaches title_filter and before
+      // the company name flows on to the tracker/reports — the SSR cards arrive
+      // escaped ("Changellenge &gt;&gt;", "ООО &quot;М-ТЕХ&quot;"), so an undecoded
+      // "&" in a role silently failed a user's own "&" keyword (v1.210.1).
+      title: decodeEntities(titleMatch[2].trim()),
+      company: decodeEntities(company?.trim() || ''),
       url: HABR_BASE + titleMatch[1],
       salary: (salary || '').trim(),
       location: isRemote ? 'Remote' : 'Russia',

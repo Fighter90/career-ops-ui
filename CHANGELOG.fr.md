@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.210.1] — 2026-08-19
+
+**Corrigé — les intitulés de postes et noms d'entreprise Habr Career contenant « & » ou des guillemets n'arrivent plus déformés.**
+
+### Corrigé
+- La source Habr Career décode désormais les entités HTML de l'**intitulé** et du **nom d'entreprise** avant qu'ils ne poursuivent leur route. Les cartes rendues côté serveur arrivent échappées (« Changellenge &gt;&gt; », « Demand Forecasting &amp; Inventory Optimization », « ООО &quot;М-ТЕХ&quot; »), donc un « & » non décodé échouait en silence à votre propre filtre d'intitulé « & » — le symptôme exact que la version précédente a clos sur cinq autres sites — et les noms d'entreprise arrivaient déformés dans le tracker et les rapports. Le décodage des entités est désormais complet sur les six sources concernées.
+
+### Notes
+- Suite de tests : **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Ajouté — Senjob, le premier site d'emploi africain du scanner (Sénégal) ; correspondance de titres plus fine sur cinq sites de plus.**

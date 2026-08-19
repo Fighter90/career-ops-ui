@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2643%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2644%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.210.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.210.0)
+[![release](https://img.shields.io/badge/release-v1.210.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.210.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.210.0** — **Senjob — 扫描器抵达非洲** — 面向塞内加尔的新零 token 来源（senjob.com），另有五个招聘板现在能识别含「&」的标题。 **2643 项测试.**
+> **🆕 最新版本 — v1.210.1** — **Habr 标题修复** — 含「&」或引号的职位标题与公司名现在会被解码，不再从筛选中丢失或以乱码进入跟踪器。 **2644 项测试.**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.210.1] — 2026-08-19
+
+**Corretto — i titoli degli annunci e i nomi azienda di Habr Career con "&" o virgolette non arrivano più corrotti.**
+
+### Corretto
+- La fonte Habr Career ora decodifica le entità HTML nel **titolo** e nel **nome azienda** prima che proseguano. Le card renderizzate lato server arrivano con entità ("Changellenge &gt;&gt;", "Demand Forecasting &amp; Inventory Optimization", "ООО &quot;М-ТЕХ&quot;"), quindi una "&" non decodificata falliva in silenzio il tuo stesso filtro del titolo con "&" — lo stesso sintomo che la release precedente ha chiuso su altre cinque board — e i nomi azienda arrivavano corrotti al tracker e ai report. La decodifica delle entità è ora completa su tutte e sei le fonti interessate.
+
+### Note
+- Suite di test: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Aggiunto — Senjob, la prima job board africana dello scanner (Senegal); corrispondenza dei titoli più precisa su altre cinque board.**

@@ -7,16 +7,16 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2643%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2644%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.210.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.210.0)
+[![release](https://img.shields.io/badge/release-v1.210.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.210.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.210.0** — **Senjob — le scanner atteint l'Afrique** — une nouvelle source sans jeton pour le Sénégal (senjob.com), et cinq sites de plus reconnaissent désormais les titres contenant « & ». **2643 tests.**
+> **🆕 Dernière version — v1.210.1** — **Intitulés Habr corrigés** — les intitulés de postes et noms d'entreprise contenant « & » ou des guillemets sont maintenant décodés : ils ne disparaissent plus de votre filtre et n'arrivent plus déformés dans le tracker. **2644 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 
