@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.210.1] — 2026-08-19
+
+**Fixed — Habr Career vacancy titles and company names with "&" or quotes no longer arrive garbled.**
+
+### Fixed
+- The Habr Career source now decodes HTML entities in the **title** and **company name** before they flow on. The server-rendered cards arrive escaped ("Changellenge &gt;&gt;", "Demand Forecasting &amp; Inventory Optimization", "ООО &quot;М-ТЕХ&quot;"), so an undecoded "&" silently failed a user's own "&" title filter — the exact symptom the previous release closed on five other boards — and company names reached the tracker and reports mangled. Entity-decoding is now complete across all six affected sources.
+
+### Notes
+- Test suite: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Added — Senjob, the scanner's first African job board (Senegal); sharper title matching on five more boards.**

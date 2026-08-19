@@ -9,9 +9,11 @@
  * mangled title. Numeric entities matter as much as &amp;: beesite/tkms point at
  * DACH boards where "Syst&#232;mes" and "&#8211;" are routine.
  *
- * Covers the five sources that gained the shared decoder: beesite, csod, tkms,
- * phenom (title + location) and hackernews (whose 7-form local map missed every
- * other numeric/named entity).
+ * Covers the six sources that gained the shared decoder: beesite, csod, tkms,
+ * phenom (title + location), hackernews (whose 7-form local map missed every
+ * other numeric/named entity), and habr (title + company — the SSR cards arrive
+ * escaped, e.g. "Changellenge &gt;&gt;" / "ООО &quot;М-ТЕХ&quot;", and the raw
+ * entities were reaching both the title filter AND the tracker/reports).
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -20,6 +22,7 @@ import { parseRequisitions } from '../server/lib/sources/csod.mjs';
 import { parseQuery } from '../server/lib/sources/tkms.mjs';
 import { parseRefineSearch, jobLocation } from '../server/lib/sources/phenom.mjs';
 import { extractPost } from '../server/lib/sources/hackernews.mjs';
+import { parseHabrCards } from '../server/lib/sources/habr.mjs';
 
 test('beesite: decodes &amp; in the title', () => {
   const json = { SearchResult: { SearchResultCount: 1, SearchResultCountAll: 1, SearchResultItems: [{
@@ -66,4 +69,20 @@ test('hackernews: decodes numeric entities its old 7-form map missed', () => {
   assert.ok(out, 'expected a parsed post');
   assert.ok(out.title.includes('–'), `en-dash should decode: ${JSON.stringify(out.title)}`);
   assert.ok(out.title.includes('R&D'), `&amp; should decode: ${JSON.stringify(out.title)}`);
+});
+
+test('habr: decodes entities in BOTH the title and the company name', () => {
+  // A single vacancy-card block shaped exactly like the SSR search HTML the
+  // regex parser walks — with an escaped ampersand in the title and escaped
+  // quotes in the company, the two fields that arrived raw in a live 1.210.0 scan.
+  const html =
+    '<section>' +
+    '<div class="vacancy-card">' +
+    '<a class="vacancy-card__title-link" href="/vacancies/12345">Demand Forecasting &amp; Inventory Optimization</a>' +
+    '<div class="vacancy-card__company"><a href="/companies/mtech">ООО &quot;М-ТЕХ&quot;</a></div>' +
+    '</div></section>';
+  const jobs = parseHabrCards(html);
+  assert.equal(jobs.length, 1, 'expected one parsed card');
+  assert.equal(jobs[0].title, 'Demand Forecasting & Inventory Optimization');
+  assert.equal(jobs[0].company, 'ООО "М-ТЕХ"');
 });

@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.210.1] — 2026-08-19
+
+**Naprawiono — tytuły ofert i nazwy firm z Habr Career zawierające „&" lub cudzysłowy nie przychodzą już zniekształcone.**
+
+### Naprawiono
+- Źródło Habr Career dekoduje teraz encje HTML w **tytule** i **nazwie firmy**, zanim powędrują dalej. Renderowane po stronie serwera karty przychodzą z encjami („Changellenge &gt;&gt;", „Demand Forecasting &amp; Inventory Optimization", „ООО &quot;М-ТЕХ&quot;"), więc niezdekodowane „&" po cichu nie przechodziło twojego własnego filtra tytułu z „&" — dokładnie ten objaw, który poprzednie wydanie zamknęło na pięciu innych portalach — a nazwy firm docierały zniekształcone do trackera i raportów. Dekodowanie encji jest teraz kompletne we wszystkich sześciu dotkniętych źródłach.
+
+### Uwagi
+- Zestaw testów: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Dodano — Senjob, pierwszy afrykański portal pracy skanera (Senegal); dokładniejsze dopasowanie tytułów na kolejnych pięciu portalach.**

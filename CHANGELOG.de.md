@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.210.1] — 2026-08-19
+
+**Behoben — Habr-Career-Stellentitel und Firmennamen mit „&" oder Anführungszeichen kommen nicht mehr verstümmelt an.**
+
+### Behoben
+- Die Habr-Career-Quelle dekodiert nun HTML-Entities im **Titel** und im **Firmennamen**, bevor sie weiterlaufen. Die serverseitig gerenderten Karten kommen escaped an („Changellenge &gt;&gt;", „Demand Forecasting &amp; Inventory Optimization", „ООО &quot;М-ТЕХ&quot;"), sodass ein nicht dekodiertes „&" still an deinem eigenen „&"-Titelfilter scheiterte — genau das Symptom, das die vorige Version auf fünf anderen Boards geschlossen hat — und Firmennamen verstümmelt im Tracker und in Berichten ankamen. Die Entity-Dekodierung ist nun über alle sechs betroffenen Quellen vollständig.
+
+### Hinweise
+- Test-Suite: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Hinzugefügt — Senjob, das erste afrikanische Job-Board des Scanners (Senegal); präziserer Titelabgleich auf fünf weiteren Boards.**

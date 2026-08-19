@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.210.1] — 2026-08-19
+
+**Düzeltildi — "&" ya da tırnak içeren Habr Career ilan başlıkları ve şirket adları artık bozuk gelmiyor.**
+
+### Düzeltildi
+- Habr Career kaynağı artık **başlık** ve **şirket adı** içindeki HTML varlıklarını ileri akmadan önce çözüyor. Sunucuda işlenen kartlar kaçışlı geliyor ("Changellenge &gt;&gt;", "Demand Forecasting &amp; Inventory Optimization", "ООО &quot;М-ТЕХ&quot;"); bu yüzden çözülmemiş bir "&", kendi "&" başlık filtrenizde sessizce başarısız oluyordu — önceki sürümün diğer beş panoda kapattığı belirtinin aynısı — ve şirket adları izleyiciye ve raporlara bozuk ulaşıyordu. Varlık çözme artık etkilenen altı kaynağın tamamında tamamlandı.
+
+### Notlar
+- Test takımı: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Eklendi — Senjob, tarayıcının ilk Afrika iş ilan panosu (Senegal); beş panoda daha isabetli başlık eşleştirme.**

@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.210.1] — 2026-08-19
+
+**Rettet — Habr Career-stillingstitler og firmanavne med "&" eller anførselstegn ankommer ikke længere forvansket.**
+
+### Rettet
+- Habr Career-kilden afkoder nu HTML-entiteter i **titlen** og **firmanavnet**, før de sendes videre. De server-renderede kort ankommer escaped ("Changellenge &gt;&gt;", "Demand Forecasting &amp; Inventory Optimization", "ООО &quot;М-ТЕХ&quot;"), så et uafkodet "&" faldt lydløst igennem dit eget "&"-titelfilter — præcis det symptom, den forrige udgivelse lukkede på fem andre boards — og firmanavne nåede forvansket frem til trackeren og rapporterne. Entitetsafkodning er nu komplet på alle seks berørte kilder.
+
+### Noter
+- Testsuite: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Tilføjet — Senjob, scannerens første afrikanske jobboard (Senegal); skarpere titelmatch på fem boards mere.**

@@ -7,16 +7,16 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2643%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2644%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.210.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.210.0)
+[![release](https://img.shields.io/badge/release-v1.210.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.210.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.210.0** — **Senjob — сканер дістався Африки** — нове джерело без токенів для Сенегалу (senjob.com), і ще п'ять дощок тепер розпізнають заголовки з «&». **2643 тестів.**
+> **🆕 Останній реліз — v1.210.1** — **Заголовки Habr виправлено** — заголовки вакансій і назви компаній з «&» чи лапками тепер декодуються й більше не випадають із фільтра та не потрапляють у трекер спотвореними. **2644 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

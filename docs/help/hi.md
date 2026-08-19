@@ -1880,7 +1880,7 @@ key वैल्यू दिखाई नहीं देगी।
 
 career-ops-ui हर job board को एक **adapter** के रूप में मानता है — एक अकेली फ़ाइल
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) के अंतर्गत जो
-एक बोर्ड के परिणामों को fetch + normalize करना जानती है। v1.119.0 तक
+एक बोर्ड के परिणामों को fetch + normalize करना जानती है। v1.210.1 तक
 `server/lib/sources/` रजिस्ट्री **80** adapters शिप करती है — **75 अंग्रेज़ी + 5 रूसी**
 बोर्ड। अंग्रेज़ी सेट प्रमुख ATS-ों (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday) को कवर करता है, बोर्ड-वाइड aggregators
