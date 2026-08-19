@@ -2,6 +2,34 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.211.0] — 2026-08-19
+
+**Aggiunto — Yourator, job board tech taiwanese. Corretto — le entità accentate di titolo/azienda ora si decodificano ovunque, e un'azienda con un accento nel nome non viene più segnalata per errore.**
+
+### Aggiunto
+- **Yourator** (yourator.co) — una nuova fonte di scansione senza token per il mercato del lavoro tech e digitale di Taiwan. Selezionala nel filtro **Fonte** in `#/scan`, o aggiungi un'azienda con `provider: yourator`. Legge l'API JSON pubblica (nessuna chiave, nessun browser), percorre ogni pagina della board ed emette il vero link del datore di lavoro di ogni annuncio (il suo ATS) con i parametri di tracciamento rimossi.
+
+### Corretto
+- **Le entità con nome accentato ora si decodificano ovunque.** Il decoder HTML condiviso ha acquisito le lettere Latin-1 (`&eacute;` → é, `&ccedil;` → ç, …), quindi una board europea che scrive `D&eacute;veloppeur` o `Fran&ccedil;ais` non lascia più quel letterale in un titolo, nel tracker o in un documento generato. (Le maiuscole restano maiuscole — `&Eacute;` è É, non é — e una ricerca come `&constructor;` ora si risolve in se stessa.)
+- **Un'azienda con un accento nel nome non viene più segnalata per errore** per essere sul proprio dominio. "Işık" ora si ripiega in "isik" e corrisponde a isik.com.tr; "Société Générale" corrisponde a societegenerale.com. Il vecchio controllo cancellava le lettere accentate invece di ripiegarle sulla loro base ASCII.
+
+### Note
+- Fonti di scansione: **81** (76 inglesi + 5 russe). Suite di test: **2667**.
+
+
+
+## [1.210.1] — 2026-08-19
+
+**Corretto — i titoli degli annunci e i nomi azienda di Habr Career con "&" o virgolette non arrivano più corrotti.**
+
+### Corretto
+- La fonte Habr Career ora decodifica le entità HTML nel **titolo** e nel **nome azienda** prima che proseguano. Le card renderizzate lato server arrivano con entità ("Changellenge &gt;&gt;", "Demand Forecasting &amp; Inventory Optimization", "ООО &quot;М-ТЕХ&quot;"), quindi una "&" non decodificata falliva in silenzio il tuo stesso filtro del titolo con "&" — lo stesso sintomo che la release precedente ha chiuso su altre cinque board — e i nomi azienda arrivavano corrotti al tracker e ai report. La decodifica delle entità è ora completa su tutte e sei le fonti interessate.
+
+### Note
+- Suite di test: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Aggiunto — Senjob, la prima job board africana dello scanner (Senegal); corrispondenza dei titoli più precisa su altre cinque board.**

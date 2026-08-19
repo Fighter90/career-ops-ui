@@ -93,6 +93,7 @@ import { hecklerkochAdapter } from './adapters/hecklerkoch.mjs';
 import { rheinmetallAdapter } from './adapters/rheinmetall.mjs';
 import { larajobsAdapter } from './adapters/larajobs.mjs';
 import { senjobAdapter } from './adapters/senjob.mjs';
+import { youratorAdapter } from './adapters/yourator.mjs';
 // v1.119.0 — Chinese tech boards, zero-auth
 // public JSON APIs, host-detected or explicit `provider:`.
 import { meituanAdapter } from './adapters/meituan.mjs';
@@ -209,6 +210,7 @@ export const ALL_ADAPTERS = [
   rheinmetallAdapter,
   larajobsAdapter,
   senjobAdapter,
+  youratorAdapter,
   // v1.119.0 — meituan (zhaopin.meituan.com)
   // and tencent (careers.tencent.com) are single-company Chinese tech boards
   // with public JSON APIs — host-detected or explicit `provider:`, zero-auth,

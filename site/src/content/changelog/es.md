@@ -11,6 +11,34 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.211.0] — 2026-08-19
+
+**Añadido — Yourator, bolsa de empleo tech de Taiwán. Corregido — las entidades acentuadas de título/empresa ahora se decodifican, y una empresa con acento en su nombre ya no se marca por error.**
+
+### Añadido
+- **Yourator** (yourator.co) — una nueva fuente de escaneo sin tokens para el mercado tech y digital de Taiwán. Selecciónala en el filtro **Fuente** de `#/scan`, o añade una empresa con `provider: yourator`. Lee la API JSON pública (sin clave, sin navegador), recorre todas las páginas del portal y emite el enlace real del empleador (su propio ATS) con los parámetros de seguimiento eliminados.
+
+### Corregido
+- **Las entidades con acento ahora se decodifican en todas partes.** El decodificador HTML compartido incorporó las letras Latin-1 (`&eacute;` → é, `&ccedil;` → ç, …), así que un portal europeo que escribe `D&eacute;veloppeur` o `Fran&ccedil;ais` ya no deja ese literal en un título, el tracker o un documento generado. (Las mayúsculas siguen en mayúsculas —`&Eacute;` es É, no é— y una búsqueda como `&constructor;` ahora se resuelve a sí misma.)
+- **Una empresa con un acento en su nombre ya no se marca por error** por estar en su propio dominio. «Işık» ahora se pliega a «isik» y coincide con isik.com.tr; «Société Générale» coincide con societegenerale.com. La comprobación anterior borraba las letras acentuadas en lugar de plegarlas a su base ASCII.
+
+### Notas
+- Fuentes de escaneo: **81** (76 en inglés + 5 rusas). Conjunto de pruebas: **2667**.
+
+
+
+## [1.210.1] — 2026-08-19
+
+**Corregido — los títulos y nombres de empresa de Habr Career con «&» o comillas ya no llegan corruptos.**
+
+### Corregido
+- La fuente Habr Career ahora decodifica las entidades HTML del **título** y del **nombre de la empresa** antes de continuar. Las tarjetas renderizadas en el servidor llegan con entidades ("Changellenge &gt;&gt;", "Demand Forecasting &amp; Inventory Optimization", "ООО &quot;М-ТЕХ&quot;"), así que un «&» sin decodificar fallaba en silencio tu propio filtro de título con «&» —el mismo síntoma que la versión anterior cerró en otros cinco portales— y los nombres de empresa llegaban corruptos al tracker y a los informes. La decodificación de entidades queda completa en las seis fuentes afectadas.
+
+### Notas
+- Conjunto de pruebas: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Añadido — Senjob, la primera bolsa de empleo africana del escáner (Senegal); coincidencia de títulos más precisa en cinco portales más.**

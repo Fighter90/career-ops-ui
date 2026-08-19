@@ -85,6 +85,7 @@ window.ScanResults = (function () {
     { value: 'workday',         label: 'Workday' },
     { value: 'workingnomads',   label: 'Working Nomads' },
     { value: 'wttj',            label: 'Welcome to the Jungle' },
+    { value: 'yourator',        label: 'Yourator' },
     { value: 'geekjob',         label: 'GeekJob' },
     { value: 'getmatch',        label: 'GetMatch' },
     { value: 'habr-career',     label: 'Habr Career' },

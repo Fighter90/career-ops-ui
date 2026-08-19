@@ -8,6 +8,34 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.211.0] — 2026-08-19
+
+**Added — Yourator, a Taiwan tech job board. Fixed — accented company/title entities now decode everywhere, and a company with an accent in its name is no longer wrongly flagged.**
+
+### Added
+- **Yourator** (yourator.co) — a new zero-token scan source for the Taiwan tech & digital job market. Pick it in the `#/scan` **Source** filter, or add a company with `provider: yourator`. It reads the public JSON API (no key, no browser), walks every page of the board, and emits each posting's real employer link (its own ATS) with tracking params stripped.
+
+### Fixed
+- **Accented named entities now decode everywhere.** The shared HTML decoder gained the Latin-1 letters (`&eacute;` → é, `&ccedil;` → ç, …), so a European board that writes `D&eacute;veloppeur` or `Fran&ccedil;ais` no longer lands that literal in a job title, the tracker, or a generated document. (Uppercase names stay uppercase — `&Eacute;` is É, not é — and a lookup like `&constructor;` now resolves to itself.)
+- **A company with an accent in its name is no longer wrongly flagged** for being on its own domain. "Işık" now folds to "isik" and matches isik.com.tr; "Société Générale" matches societegenerale.com. The old check deleted accented letters instead of folding them to their ASCII base.
+
+### Notes
+- Scan sources: **81** (76 English + 5 Russian). Test suite: **2667**.
+
+
+
+## [1.210.1] — 2026-08-19
+
+**Fixed — Habr Career vacancy titles and company names with "&" or quotes no longer arrive garbled.**
+
+### Fixed
+- The Habr Career source now decodes HTML entities in the **title** and **company name** before they flow on. The server-rendered cards arrive escaped ("Changellenge &gt;&gt;", "Demand Forecasting &amp; Inventory Optimization", "ООО &quot;М-ТЕХ&quot;"), so an undecoded "&" silently failed a user's own "&" title filter — the exact symptom the previous release closed on five other boards — and company names reached the tracker and reports mangled. Entity-decoding is now complete across all six affected sources.
+
+### Notes
+- Test suite: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Added — Senjob, the scanner's first African job board (Senegal); sharper title matching on five more boards.**

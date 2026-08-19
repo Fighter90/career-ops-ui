@@ -8,6 +8,22 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.211.0] — 2026-08-19
+
+**Tilføjet — Yourator, et taiwansk tech-jobboard. Rettet — accenttegns-entiteter i titler/firmanavne afkodes nu overalt, og en virksomhed med en accent i navnet flagges ikke længere fejlagtigt.**
+
+### Tilføjet
+- **Yourator** (yourator.co) — en ny token-fri scanningskilde for det taiwanske tech- og digital-jobmarked. Vælg den i **Kilde**-filteret på `#/scan`, eller tilføj en virksomhed med `provider: yourator`. Den læser det offentlige JSON-API (ingen nøgle, ingen browser), gennemgår hver side af boardet og udsender hvert opslags rigtige arbejdsgiverlink (dets eget ATS) med sporingsparametre fjernet.
+
+### Rettet
+- **Accenttegns-navneentiteter afkodes nu overalt.** Den delte HTML-afkoder fik Latin-1-bogstaverne (`&eacute;` → é, `&ccedil;` → ç, …), så et europæisk board der skriver `D&eacute;veloppeur` eller `Fran&ccedil;ais` ikke længere efterlader den literal i en titel, trackeren eller et genereret dokument. (Store bogstaver forbliver store — `&Eacute;` er É, ikke é — og et opslag som `&constructor;` resolver nu til sig selv.)
+- **En virksomhed med en accent i navnet flagges ikke længere fejlagtigt** for at være på sit eget domæne. "Işık" foldes nu til "isik" og matcher isik.com.tr; "Société Générale" matcher societegenerale.com. Det gamle tjek slettede accenttegns-bogstaver i stedet for at folde dem til deres ASCII-basis.
+
+### Noter
+- Scanningskilder: **81** (76 engelske + 5 russiske). Testsuite: **2667**.
+
+
+
 ## [1.210.1] — 2026-08-19
 
 **Rettet — Habr Career-stillingstitler og firmanavne med "&" eller anførselstegn ankommer ikke længere forvansket.**

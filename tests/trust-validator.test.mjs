@@ -6,6 +6,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   buildTrustValidator, classifyTrustLevel, validateUrl, matchesDomainList, companyMatchesHostname,
+  asciiFoldForHostname,
 } from '../server/lib/trust-validator.mjs';
 
 test('classifyTrustLevel thresholds', () => {
@@ -25,6 +26,20 @@ test('validateUrl + matchesDomainList + companyMatchesHostname', () => {
   assert.equal(matchesDomainList('safe.com', ['bit.ly']), false);
   assert.equal(companyMatchesHostname('Acme Corp', 'careers.acme.com'), true);
   assert.equal(companyMatchesHostname('Acme', 'jobs.zzz.io'), false);
+});
+
+test('company↔hostname fold: accented / non-decomposing letters match their ASCII domain', () => {
+  // The previous `[^a-z0-9 ]` strip DELETED these letters instead of folding them,
+  // so an accented company on its own domain was wrongly flagged for a mismatch.
+  assert.equal(asciiFoldForHostname('Işık'), 'isik');              // Turkish dotless ı — the reported bug
+  assert.equal(companyMatchesHostname('Işık', 'isik.com.tr'), true);
+  assert.equal(companyMatchesHostname('Société Générale', 'societegenerale.com'), true);
+  assert.equal(companyMatchesHostname('Æther', 'aether.io'), true); // non-decomposing æ → ae
+  // A fully non-Latin name folds to '' → not evaluable → no flag (returns true).
+  assert.equal(asciiFoldForHostname('株式会社'), '');
+  assert.equal(companyMatchesHostname('株式会社', 'anyhost.com'), true);
+  // A genuine mismatch still flags.
+  assert.equal(companyMatchesHostname('Şirket', 'unrelated-domain.io'), false);
 });
 
 test('disabled/absent config → no-op (100/high, no flags)', () => {

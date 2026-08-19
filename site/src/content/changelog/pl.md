@@ -9,6 +9,34 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.211.0] — 2026-08-19
+
+**Dodano — Yourator, tajwański tech-portal pracy. Naprawiono — akcentowane encje w tytułach/nazwach firm dekodują się teraz wszędzie, a firma z akcentem w nazwie nie jest już błędnie oznaczana.**
+
+### Dodano
+- **Yourator** (yourator.co) — nowe beztokenowe źródło skanowania dla tajwańskiego rynku pracy tech i digital. Wybierz je w filtrze **Źródło** na `#/scan` lub dodaj firmę z `provider: yourator`. Czyta publiczne API JSON (bez klucza, bez przeglądarki), przechodzi każdą stronę portalu i emituje prawdziwy link pracodawcy (jego własny ATS) z usuniętymi parametrami śledzenia.
+
+### Naprawiono
+- **Akcentowane encje nazwane dekodują się teraz wszędzie.** Wspólny dekoder HTML zyskał litery Latin-1 (`&eacute;` → é, `&ccedil;` → ç, …), więc europejski portal piszący `D&eacute;veloppeur` lub `Fran&ccedil;ais` nie zostawia już tego literału w tytule, trackerze ani wygenerowanym dokumencie. (Wielkie litery pozostają wielkie — `&Eacute;` to É, nie é — a wyszukiwanie typu `&constructor;` rozwiązuje się teraz do samego siebie.)
+- **Firma z akcentem w nazwie nie jest już błędnie oznaczana** za bycie na własnej domenie. „Işık" składa się teraz do „isik" i pasuje do isik.com.tr; „Société Générale" pasuje do societegenerale.com. Stare sprawdzenie usuwało litery akcentowane zamiast składać je do bazy ASCII.
+
+### Uwagi
+- Źródła skanowania: **81** (76 angielskich + 5 rosyjskich). Zestaw testów: **2667**.
+
+
+
+## [1.210.1] — 2026-08-19
+
+**Naprawiono — tytuły ofert i nazwy firm z Habr Career zawierające „&" lub cudzysłowy nie przychodzą już zniekształcone.**
+
+### Naprawiono
+- Źródło Habr Career dekoduje teraz encje HTML w **tytule** i **nazwie firmy**, zanim powędrują dalej. Renderowane po stronie serwera karty przychodzą z encjami („Changellenge &gt;&gt;", „Demand Forecasting &amp; Inventory Optimization", „ООО &quot;М-ТЕХ&quot;"), więc niezdekodowane „&" po cichu nie przechodziło twojego własnego filtra tytułu z „&" — dokładnie ten objaw, który poprzednie wydanie zamknęło na pięciu innych portalach — a nazwy firm docierały zniekształcone do trackera i raportów. Dekodowanie encji jest teraz kompletne we wszystkich sześciu dotkniętych źródłach.
+
+### Uwagi
+- Zestaw testów: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Dodano — Senjob, pierwszy afrykański portal pracy skanera (Senegal); dokładniejsze dopasowanie tytułów na kolejnych pięciu portalach.**
