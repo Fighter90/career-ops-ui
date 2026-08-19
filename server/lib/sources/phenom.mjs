@@ -32,6 +32,9 @@
  * Used by the phenom adapter (server/lib/portals/adapters/phenom.mjs).
  */
 import { fetchJson, delay } from '../http-json.mjs';
+// Titles and locations arrive HTML-escaped; decode before the tag-strip so an
+// undecoded "R&amp;D" can't fail a user's title_filter and drop the posting.
+import { decodeEntities } from '../html-entities.mjs';
 
 // Hosts detect() may auto-claim. Branded tenants (careers.allianz.com, …) are
 // NOT auto-claimed — they carry an explicit `provider: phenom` in portals.yml.
@@ -118,7 +121,7 @@ export function parsePhenomDate(raw) {
 // markup and collapses whitespace.
 /** @param {any} job @returns {string} */
 export function jobLocation(job) {
-  const direct = String(job?.location || job?.cityStateCountry || job?.cityState || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  const direct = decodeEntities(String(job?.location || job?.cityStateCountry || job?.cityState || '').replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
   if (direct) return direct;
   const parts = [job?.city, job?.state, job?.country].map((p) => String(p || '').trim()).filter(Boolean);
   return [...new Set(parts)].join(', ');
@@ -140,7 +143,7 @@ export function parseRefineSearch(json, cfg, companyName = '') {
   for (const job of list) {
     if (!job || typeof job !== 'object') continue;
     const id = job.jobId != null ? String(job.jobId) : '';
-    const title = String(job.title || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const title = decodeEntities(String(job.title || '').replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
     if (!id || !title) continue;
     const location = jobLocation(job);
     const isRemote = REMOTE_RE.test(title) || REMOTE_RE.test(location);

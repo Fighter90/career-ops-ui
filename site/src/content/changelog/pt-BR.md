@@ -8,6 +8,93 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.210.0] — 2026-08-19
+
+**Adicionado — Senjob, o primeiro job board africano do scanner (Senegal); correspondência de títulos mais precisa em mais cinco portais.**
+
+### Adicionado
+- **Senjob** (senjob.com) — uma nova fonte de varredura sem tokens para o Senegal, o primeiro board africano do scanner. Selecione-a no filtro **Fonte** em `#/scan`, ou adicione uma empresa com `provider: senjob`. Lê a listagem pública por HTTP simples (sem chave, sem navegador), fixa cada requisição em senjob.com e — ao analisar HTML — trata uma listagem que de repente não retorna nada como um board quebrado (um erro visível) em vez de um país sem vagas.
+
+### Corrigido
+- **Títulos com "&" não descartam mais vagas em cinco portais** — em beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom e TKMS os títulos chegam com entidades HTML, então um "&" escapado num cargo como "R&D Engineer" falhava a sua própria palavra-chave "r&d" e a vaga sumia em silêncio (um veto "sales & marketing" também nunca disparava). Agora os títulos — e as localizações do Phenom — são decodificados antes de filtrar.
+
+### Notas
+- Fontes de varredura: **80** (75 em inglês + 5 russas). Conjunto de testes: **2643**.
+
+
+
+## [1.209.0] — 2026-08-17
+
+**Adicionado — a ajuda no app agora cobre como registrar o resultado de uma candidatura, e o "Pergunte aos docs" pode te levar até lá.**
+
+### Adicionado
+- A ajuda do Rastreador (§11) ganhou uma seção "Registrar um resultado" nos 17 idiomas, percorrendo o botão **Resultado**: escolha o que aconteceu (recusado / oferta / contratado / recusada / ignorado / avançou para entrevista), pré-visualize o que fará e registre — o que anota o resultado, arquiva o CV e a carta que você enviou, e sincroniza o Status da linha para você. O assistente flutuante "Pergunte aos docs" lê o guia, então agora te leva a esse botão em vez de só sugerir editar o Status à mão.
+
+### Notas
+- Cada pacote de ajuda agora é 31 H2 / 119 H3 (era 118); os guards de paridade foram ajustados. Somente documentação — sem mudança de código ou comportamento. Conjunto: **2625**.
+
+
+
+## [1.208.2] — 2026-08-16
+
+**Corrigido — no celular os botões de notificações e tema não ficam mais sobre a caixa de busca.**
+
+### Corrigido
+- A v1.208.1 impediu que os botões da barra superior sobrepusessem o título da página, mas num celular estreito — embora não o mais estreito — e principalmente em idiomas com rótulos longos, a barra inteira ainda se espremia numa única linha, então os botões 🔔 e 🌙 podiam ficar sobre a caixa de busca. Agora os botões de ação (notificações, tema, Diagnóstico, Abrir Scan) sempre passam para a própria segunda linha de largura total no celular, então a caixa de busca aparece inteira e nada se sobrepõe.
+
+### Notas
+- No celular os botões de ação da barra vão para uma segunda linha de largura total, removendo a frágil faixa de "linha quase cheia" onde o layout distribuía o espaço negativo restante como sobreposição. Um guard do Playwright agora reproduz o gatilho exato — um idioma de rótulos longos na faixa 565–640px — e verifica que os controles da barra nunca compartilham pixels. Conjunto: **2621**.
+
+
+
+## [1.208.1] — 2026-08-16
+
+**Corrigido — no celular os botões da barra superior não sobrepõem mais a página.**
+
+### Corrigido
+- A v1.208.0 quebrava os botões da barra superior (Diagnóstico, Abrir Scan, notificações, tema) para uma segunda linha em telas estreitas, mas a barra mantinha altura fixa, então a linha quebrada transbordava e ficava sobre o título da página. Agora a barra **cresce** para acomodar suas linhas e o conteúdo flui abaixo.
+
+### Notas
+- A `height` fixa da barra virou `min-height`, então ela cresce com o conteúdo em qualquer largura (o desktop não muda). Um guard do Playwright agora também verifica que a barra não transborde sobre a página. Conjunto: **2621**.
+
+
+
+## [1.208.0] — 2026-08-16
+
+**Corrigido — o app agora cabe na tela de um celular: acabou a rolagem lateral.**
+
+### Corrigido
+- Em telas estreitas o app todo deslizava para o lado — a barra superior, as tabelas, os artigos de ajuda e as abas de configurações passavam da borda direita. Agora cada página cabe em qualquer largura: os botões da barra superior vão para uma segunda linha, tabelas e blocos de código largos rolam dentro da própria caixa, a ajuda empilha o índice acima do artigo, as linhas de botões/abas quebram, e caminhos ou URLs longos quebram em vez de esticar a página.
+
+### Notas
+- A causa foi a clássica armadilha **min-width: auto** de flex/grid mais alguns elementos largos sem envoltório; resolvido com `min-width: 0` nos itens de grid, `overflow-wrap` no markdown/títulos, uma tabela de markdown rolável e o empilhamento da grade de ajuda no ponto móvel. Um guard do Playwright verifica **0 estouro horizontal a 375 px** nas rotas principais. `tests/playwright-smoke.mjs`. Conjunto: **2621**.
+
+
+
+## [1.207.2] — 2026-08-16
+
+**Corrigido — planos de IA e perfis de orientação não aparecem mais como um despejo de código.**
+
+### Corrigido
+- Alguns modelos envolvem toda a resposta em uma cerca de código ```markdown … ```. Quando isso acontecia, o **plano de desenvolvimento** e o **perfil de orientação** apareciam como um bloco monoespaçado em vez de um documento com títulos e listas. Agora a cerca envolvente é removida — só quando envolve toda a resposta e é explicitamente `markdown`/`md`, então uma resposta real de `python`/`js`/``` sem linguagem é preservada.
+
+### Notas
+- Resolvido uma única vez na etapa compartilhada de limpeza de LLM (`cleanLlmMarkdown`), então todas as rotas de IA se beneficiam, e blocos de código internos sobrevivem. `tests/llm-output.test.mjs` (+3). Conjunto: **2621**.
+
+
+
+## [1.207.1] — 2026-08-16
+
+**Corrigido — a página inicial não transborda mais para o lado em celulares pequenos.**
+
+### Corrigido
+- Num celular estreito o hero — o título, a linha de introdução e o terminal de instalação — podia ser cortado pela borda direita porque um comando de instalação longo e as colunas do layout não encolhiam para a tela. Agora cabem em qualquer largura; o comando de instalação rola dentro do próprio terminal.
+
+### Notas
+- Também reforçamos uma verificação E2E instável que podia falhar por um 404 transitório de um recurso: agora ignora o ruído de rede benigno (favicon / conexão / recurso falho) como as verificações irmãs, sem deixar de detectar erros reais de script. Sem mudança no comportamento da aplicação. Conjunto: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Adicionado — registre o resultado de uma candidatura direto do rastreamento.**

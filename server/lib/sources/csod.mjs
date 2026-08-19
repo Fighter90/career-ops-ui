@@ -26,6 +26,9 @@
  * Used by the csod adapter (server/lib/portals/adapters/csod.mjs).
  */
 import { fetchJson, fetchResponse, delay } from '../http-json.mjs';
+// Titles arrive HTML-escaped; decode before the tag-strip so an undecoded
+// "R&amp;D" can't fail a user's title_filter and drop the posting silently.
+import { decodeEntities } from '../html-entities.mjs';
 
 /**
  * v1.177.0 — build a `Cookie` request header from the bootstrap
@@ -167,7 +170,7 @@ export function parseRequisitions(json, cfg, companyName = '') {
   for (const r of list) {
     if (!r || typeof r !== 'object') continue;
     const id = r.requisitionId != null ? String(r.requisitionId) : '';
-    const title = String(r.displayJobTitle || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const title = decodeEntities(String(r.displayJobTitle || '').replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
     if (!id || !title) continue;
     const location = cleanLocations(r.locations);
     const isRemote = REMOTE_RE.test(title) || REMOTE_RE.test(location);

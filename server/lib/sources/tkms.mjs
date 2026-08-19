@@ -25,6 +25,9 @@
  * Used by the tkms adapter (server/lib/portals/adapters/tkms.mjs).
  */
 import { fetchJson, delay } from '../http-json.mjs';
+// Titles arrive HTML-escaped; decode before the tag-strip so an undecoded
+// "R&amp;D" can't fail a user's title_filter and drop the posting silently.
+import { decodeEntities } from '../html-entities.mjs';
 
 export const meta = {
   value: 'tkms',
@@ -127,7 +130,7 @@ export function parseQuery(json, cfg) {
     const d = item && item.data;
     if (!d) continue;
     const id = d.id != null ? String(d.id) : '';
-    const title = String(d.title || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const title = decodeEntities(String(d.title || '').replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
     if (!id || !title) continue;
     rows.push({
       id: `tkms-${id}`,

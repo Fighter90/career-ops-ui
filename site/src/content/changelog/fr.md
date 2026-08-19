@@ -11,6 +11,93 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.210.0] — 2026-08-19
+
+**Ajouté — Senjob, le premier site d'emploi africain du scanner (Sénégal) ; correspondance de titres plus fine sur cinq sites de plus.**
+
+### Ajouté
+- **Senjob** (senjob.com) — une nouvelle source de scan sans jeton pour le Sénégal, le premier site africain du scanner. Sélectionnez-la dans le filtre **Source** de `#/scan`, ou ajoutez une entreprise avec `provider: senjob`. Elle lit la liste publique en HTTP simple (sans clé, sans navigateur), épingle chaque requête à senjob.com et — analysant du HTML — traite une liste qui ne renvoie soudain plus rien comme un site cassé (une erreur visible) plutôt qu'un pays sans emplois.
+
+### Corrigé
+- **Les titres contenant « & » ne font plus disparaître d'offres sur cinq sites** — sur beesite, Cornerstone (csod), Hacker News « Who is hiring », Phenom et TKMS, les titres arrivent échappés en HTML : un « & » échappé dans un poste comme "R&D Engineer" échouait à votre propre mot-clé "r&d" et l'offre disparaissait en silence (un veto "sales & marketing" ne se déclenchait pas non plus). Les titres — et les lieux Phenom — sont désormais décodés avant le filtrage.
+
+### Notes
+- Sources de scan : **80** (75 anglaises + 5 russes). Suite de tests : **2643**.
+
+
+
+## [1.209.0] — 2026-08-17
+
+**Ajouté — l'aide intégrée couvre désormais l'enregistrement de l'issue d'une candidature, et « Demander à l'aide » peut vous y mener.**
+
+### Ajouté
+- L'aide du Suivi (§11) a gagné une section « Enregistrer une issue » dans les 17 langues, qui parcourt le bouton **Issue** : choisissez ce qui s'est passé (refusé / offre / embauché / décliné / ghosté / passé en entretien), prévisualisez ce qu'il va faire, puis enregistrez — ce qui consigne le résultat, archive le CV et la lettre que vous avez envoyés, et synchronise le Statut de la ligne pour vous. L'assistant flottant « Demander à l'aide » lit le guide, il vous oriente donc maintenant vers ce bouton au lieu de seulement suggérer de modifier le Statut à la main.
+
+### Notes
+- Chaque bundle d'aide est désormais 31 H2 / 119 H3 (au lieu de 118) ; les gardes de parité ont été ajustés. Documentation seule — aucun changement de code ni de comportement. Suite : **2625**.
+
+
+
+## [1.208.2] — 2026-08-16
+
+**Corrigé — sur mobile, les boutons de notifications et de thème ne se posent plus sur le champ de recherche.**
+
+### Corrigé
+- La v1.208.1 a empêché les boutons de la barre du haut de chevaucher le titre de la page, mais sur un mobile étroit — sans être le plus étroit — et surtout dans les langues aux libellés longs, toute la barre se tassait encore sur une seule ligne, si bien que les boutons 🔔 et 🌙 pouvaient se poser sur le champ de recherche. Les boutons d'action (notifications, thème, Diagnostic, Ouvrir Scan) passent désormais toujours sur leur propre deuxième ligne pleine largeur sur mobile, le champ de recherche reste donc entièrement lisible et rien ne se chevauche.
+
+### Notes
+- Sur mobile, les boutons d'action de la barre passent sur une deuxième ligne pleine largeur, supprimant la fragile bande de « ligne presque pleine » où la mise en page répartissait l'espace négatif restant en chevauchement. Un garde Playwright reproduit maintenant le déclencheur exact — une langue aux libellés longs sur la bande 565–640px — et vérifie que les commandes de la barre ne partagent jamais de pixels. Suite : **2621**.
+
+
+
+## [1.208.1] — 2026-08-16
+
+**Corrigé — sur mobile, les boutons de la barre du haut ne chevauchent plus la page.**
+
+### Corrigé
+- La v1.208.0 faisait passer les boutons de la barre du haut (Diagnostic, Ouvrir Scan, notifications, thème) sur une deuxième ligne sur les écrans étroits, mais la barre gardait une hauteur fixe : la ligne enroulée débordait et se posait sur le titre de la page. La barre **s'agrandit** désormais pour accueillir ses lignes et le contenu passe en dessous.
+
+### Notes
+- La `height` fixe de la barre est devenue une `min-height`, donc elle grandit avec son contenu à toute largeur (le bureau est inchangé). Un garde Playwright vérifie aussi que la barre ne déborde pas sur la page. Suite : **2621**.
+
+
+
+## [1.208.0] — 2026-08-16
+
+**Corrigé — l'app tient maintenant sur un écran de téléphone : plus de défilement latéral.**
+
+### Corrigé
+- Sur un écran étroit toute l'app partait sur le côté — la barre du haut, les tableaux, les articles d'aide et les onglets de réglages débordaient à droite. Désormais chaque page tient à toute largeur : les boutons de la barre du haut passent à une deuxième ligne, les tableaux et blocs de code larges défilent dans leur propre cadre, l'aide empile son sommaire au-dessus de l'article, les rangées de boutons/onglets s'enroulent, et les longs chemins ou URL se coupent au lieu d'étirer la page.
+
+### Notes
+- La cause était le classique piège **min-width: auto** de flex/grid plus quelques éléments larges non encapsulés ; corrigé avec `min-width: 0` sur les éléments de grille, `overflow-wrap` sur le markdown/les titres, un tableau markdown défilable et l'empilement de la grille d'aide au point de rupture mobile. Un garde Playwright vérifie **0 débordement horizontal à 375 px** sur les routes principales. `tests/playwright-smoke.mjs`. Suite : **2621**.
+
+
+
+## [1.207.2] — 2026-08-16
+
+**Corrigé — les plans IA et les profils d'orientation ne s'affichent plus comme un vidage de code brut.**
+
+### Corrigé
+- Certains modèles enveloppent toute leur réponse dans une clôture de code ```markdown … ```. Quand cela arrivait, le **plan de développement** et le **profil d'orientation** apparaissaient en bloc de code à chasse fixe au lieu d'un document avec titres et listes. La clôture enveloppante est désormais retirée — uniquement quand elle englobe toute la réponse et que le langage est explicitement `markdown`/`md`, donc une vraie réponse en `python`/`js`/``` sans langage reste intacte.
+
+### Notes
+- Traité une seule fois dans l'étape partagée de nettoyage LLM (`cleanLlmMarkdown`), donc toutes les routes IA en profitent, et les blocs de code internes à la réponse enveloppée survivent. `tests/llm-output.test.mjs` (+3). Suite : **2621**.
+
+
+
+## [1.207.1] — 2026-08-16
+
+**Corrigé — la page d'accueil ne déborde plus sur les côtés sur les petits téléphones.**
+
+### Corrigé
+- Sur un téléphone étroit, le hero — le titre, la ligne d'intro et le terminal d'installation — pouvait être rogné sur le bord droit car une longue commande d'installation et les colonnes de la mise en page ne rétrécissaient pas à l'écran. Ils tiennent désormais à toute largeur ; la commande d'installation défile dans son propre terminal.
+
+### Notes
+- Un test E2E instable qui pouvait échouer sur un 404 de ressource transitoire a aussi été fiabilisé : il ignore désormais le bruit réseau bénin (favicon / connexion / ressource échouée) comme les tests voisins, tout en détectant les vraies erreurs de script. Aucun changement de comportement de l'application. Suite : **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Ajouté — consignez le résultat d'une candidature directement depuis le suivi.**

@@ -70,6 +70,7 @@ window.ScanResults = (function () {
     { value: 'rippling',        label: 'Rippling' },
     { value: 'rss',             label: 'RSS' },
     { value: 'successfactors',  label: 'SAP SuccessFactors' },
+    { value: 'senjob',          label: 'Senjob' },
     { value: 'smartrecruiters', label: 'SmartRecruiters' },
     { value: 'softgarden',      label: 'softgarden' },
     { value: 'solidjobs',       label: 'SolidJobs' },

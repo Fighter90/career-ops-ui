@@ -11,6 +11,21 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.210.0] — 2026-08-19
+
+**Añadido — Senjob, la primera bolsa de empleo africana del escáner (Senegal); coincidencia de títulos más precisa en cinco portales más.**
+
+### Añadido
+- **Senjob** (senjob.com) — una nueva fuente de escaneo sin tokens para Senegal, la primera bolsa africana del escáner. Selecciónala en el filtro **Fuente** de `#/scan`, o añade una empresa con `provider: senjob`. Lee el listado público por HTTP simple (sin clave, sin navegador), fija cada solicitud a senjob.com y —al analizar HTML— trata un listado que de repente no arroja nada como un portal roto (un error visible) en lugar de un país sin empleos.
+
+### Corregido
+- **Los títulos con «&» ya no descartan ofertas en cinco portales** — en beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom y TKMS los títulos llegan con entidades HTML, así que un «&» escapado en un puesto como "R&D Engineer" fallaba tu propia palabra clave "r&d" y la oferta desaparecía en silencio (un veto "sales & marketing" tampoco se activaba). Ahora los títulos —y las ubicaciones de Phenom— se decodifican antes de filtrar.
+
+### Notas
+- Fuentes de escaneo: **80** (75 en inglés + 5 rusas). Conjunto de pruebas: **2643**.
+
+
+
 ## [1.209.0] — 2026-08-17
 
 **Añadido — la ayuda integrada ahora cubre cómo registrar el resultado de una candidatura, y «Pregunta a la ayuda» puede guiarte hasta ahí.**

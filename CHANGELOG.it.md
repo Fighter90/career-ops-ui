@@ -2,6 +2,21 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.210.0] — 2026-08-19
+
+**Aggiunto — Senjob, la prima job board africana dello scanner (Senegal); corrispondenza dei titoli più precisa su altre cinque board.**
+
+### Aggiunto
+- **Senjob** (senjob.com) — una nuova fonte di scansione senza token per il Senegal, la prima board africana dello scanner. Selezionala nel filtro **Fonte** in `#/scan`, o aggiungi un'azienda con `provider: senjob`. Legge l'elenco pubblico via HTTP semplice (nessuna chiave, nessun browser), fissa ogni richiesta a senjob.com e — analizzando HTML — tratta un elenco che di colpo non restituisce nulla come una board rotta (un errore visibile) anziché un paese senza offerte.
+
+### Corretto
+- **I titoli con "&" non fanno più cadere offerte su cinque board** — su beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom e TKMS i titoli arrivano con entità HTML, quindi una "&" con escape in un ruolo come "R&D Engineer" falliva la tua stessa parola chiave "r&d" e l'offerta spariva in silenzio (nemmeno un veto "sales & marketing" scattava). Ora i titoli — e le località di Phenom — vengono decodificati prima del filtro.
+
+### Note
+- Fonti di scansione: **80** (75 inglesi + 5 russe). Suite di test: **2643**.
+
+
+
 ## [1.209.0] — 2026-08-17
 
 **Aggiunto — la guida nell'app ora copre come registrare l'esito di una candidatura, e «Chiedi alla guida» può portarti lì.**

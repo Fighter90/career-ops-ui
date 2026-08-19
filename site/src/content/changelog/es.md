@@ -11,6 +11,93 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.210.0] — 2026-08-19
+
+**Añadido — Senjob, la primera bolsa de empleo africana del escáner (Senegal); coincidencia de títulos más precisa en cinco portales más.**
+
+### Añadido
+- **Senjob** (senjob.com) — una nueva fuente de escaneo sin tokens para Senegal, la primera bolsa africana del escáner. Selecciónala en el filtro **Fuente** de `#/scan`, o añade una empresa con `provider: senjob`. Lee el listado público por HTTP simple (sin clave, sin navegador), fija cada solicitud a senjob.com y —al analizar HTML— trata un listado que de repente no arroja nada como un portal roto (un error visible) en lugar de un país sin empleos.
+
+### Corregido
+- **Los títulos con «&» ya no descartan ofertas en cinco portales** — en beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom y TKMS los títulos llegan con entidades HTML, así que un «&» escapado en un puesto como "R&D Engineer" fallaba tu propia palabra clave "r&d" y la oferta desaparecía en silencio (un veto "sales & marketing" tampoco se activaba). Ahora los títulos —y las ubicaciones de Phenom— se decodifican antes de filtrar.
+
+### Notas
+- Fuentes de escaneo: **80** (75 en inglés + 5 rusas). Conjunto de pruebas: **2643**.
+
+
+
+## [1.209.0] — 2026-08-17
+
+**Añadido — la ayuda integrada ahora cubre cómo registrar el resultado de una candidatura, y «Pregunta a la ayuda» puede guiarte hasta ahí.**
+
+### Añadido
+- La ayuda del Seguimiento (§11) ganó una sección «Registrar un resultado» en los 17 idiomas, que recorre el botón **Resultado**: elige qué pasó (rechazado / oferta / contratado / rechazada / ignorado / pasó a entrevista), previsualiza lo que hará y regístralo — lo que anota el resultado, archiva el CV y la carta que enviaste, y sincroniza el Estado de la fila por ti. El asistente flotante «Pregunta a la ayuda» lee la guía, así que ahora te lleva a ese botón en lugar de solo sugerirte editar el Estado a mano.
+
+### Notas
+- Cada paquete de ayuda es ahora 31 H2 / 119 H3 (antes 118); los guards de paridad se ajustaron. Solo documentación — sin cambios de código ni de comportamiento. Conjunto: **2625**.
+
+
+
+## [1.208.2] — 2026-08-16
+
+**Corregido — en el móvil los botones de notificaciones y tema ya no quedan sobre el cuadro de búsqueda.**
+
+### Corregido
+- La v1.208.1 evitó que los botones de la barra superior se solaparan con el título de la página, pero en un móvil estrecho —aunque no el más estrecho— y sobre todo en idiomas con etiquetas largas, toda la barra seguía apretándose en una sola fila, así que los botones 🔔 y 🌙 podían quedar sobre el cuadro de búsqueda. Ahora los botones de acción (notificaciones, tema, Diagnóstico, Abrir Scan) siempre pasan a su propia segunda fila a lo ancho en el móvil, así el cuadro de búsqueda se ve completo y nada se solapa.
+
+### Notas
+- En el móvil los botones de acción de la barra pasan a una segunda fila a todo el ancho, eliminando la frágil franja de "fila casi llena" donde el diseño repartía el espacio negativo sobrante como solape. Un guard de Playwright reproduce ahora el detonante exacto —un idioma de etiquetas largas en la franja 565–640px— y comprueba que los controles de la barra nunca compartan píxeles. Conjunto: **2621**.
+
+
+
+## [1.208.1] — 2026-08-16
+
+**Corregido — en el móvil los botones de la barra superior ya no se solapan con la página.**
+
+### Corregido
+- La v1.208.0 pasaba los botones de la barra superior (Diagnóstico, Abrir Scan, notificaciones, tema) a una segunda fila en pantallas estrechas, pero la barra mantenía una altura fija, así que la fila envuelta se salía y quedaba sobre el título de la página. Ahora la barra **crece** para acoger sus filas y el contenido fluye debajo.
+
+### Notas
+- La `height` fija de la barra pasó a `min-height`, así crece con su contenido en cualquier ancho (el escritorio no cambia). Un guard de Playwright ahora también comprueba que la barra no se salga sobre la página. Conjunto: **2621**.
+
+
+
+## [1.208.0] — 2026-08-16
+
+**Corregido — la app ya cabe en la pantalla de un móvil: se acabó el desplazamiento lateral.**
+
+### Corregido
+- En pantallas estrechas toda la app se desplazaba de lado —la barra superior, las tablas, los artículos de ayuda y las pestañas de ajustes se salían por el borde derecho. Ahora cada página cabe en cualquier ancho: los botones de la barra superior pasan a una segunda fila, las tablas y bloques de código anchos se desplazan dentro de su propia caja, la ayuda apila su índice sobre el artículo, las filas de botones/pestañas se ajustan, y las rutas o URL largas se parten en lugar de estirar la página.
+
+### Notas
+- La causa era la clásica trampa **min-width: auto** de flex/grid más algún elemento ancho sin envolver; resuelto con `min-width: 0` en los ítems de grid, `overflow-wrap` en el markdown/títulos, una tabla de markdown desplazable y el apilado de la cuadrícula de ayuda en el punto móvil. Un guard de Playwright verifica **0 desbordamiento horizontal a 375 px** en las rutas principales. `tests/playwright-smoke.mjs`. Conjunto: **2621**.
+
+
+
+## [1.207.2] — 2026-08-16
+
+**Corregido — los planes de IA y los perfiles de orientación ya no se muestran como un volcado de código.**
+
+### Corregido
+- Algunos modelos envuelven toda su respuesta en una valla de código ```markdown … ```. Cuando pasaba, el **plan de desarrollo** y el **perfil de orientación** aparecían como un bloque monoespaciado en vez de un documento con encabezados y listas. Ahora se quita esa valla envolvente —solo cuando envuelve toda la respuesta y es explícitamente `markdown`/`md`, así que una respuesta real de `python`/`js`/``` sin lenguaje se deja intacta.
+
+### Notas
+- Resuelto una sola vez en el paso compartido de limpieza de LLM (`cleanLlmMarkdown`), así todas las rutas de IA se benefician, y los bloques de código internos sobreviven. `tests/llm-output.test.mjs` (+3). Conjunto: **2621**.
+
+
+
+## [1.207.1] — 2026-08-16
+
+**Corregido — la página de inicio ya no se desborda de lado en móviles pequeños.**
+
+### Corregido
+- En un móvil estrecho el hero —el titular, la línea de introducción y la terminal de instalación— podía quedar recortado por el borde derecho porque un comando de instalación largo y las columnas del diseño no se encogían a la pantalla. Ahora caben en cualquier ancho; el comando de instalación se desplaza dentro de su propia terminal.
+
+### Notas
+- También se reforzó una comprobación E2E inestable que podía fallar por un 404 transitorio de un recurso: ahora ignora el ruido de red benigno (favicon / conexión / recurso fallido) como las comprobaciones hermanas, sin dejar de detectar errores reales de script. Sin cambios en el comportamiento de la aplicación. Conjunto: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Añadido — registra el resultado de una candidatura directamente desde el seguimiento.**

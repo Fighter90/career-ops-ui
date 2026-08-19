@@ -9,6 +9,93 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.210.0] — 2026-08-19
+
+**Dodano — Senjob, pierwszy afrykański portal pracy skanera (Senegal); dokładniejsze dopasowanie tytułów na kolejnych pięciu portalach.**
+
+### Dodano
+- **Senjob** (senjob.com) — nowe beztokenowe źródło skanowania dla Senegalu, pierwszy afrykański portal skanera. Wybierz je w filtrze **Źródło** na `#/scan` lub dodaj firmę z `provider: senjob`. Czyta publiczną listę zwykłym HTTP (bez klucza, bez przeglądarki), przypina każde żądanie do senjob.com i — parsując HTML — traktuje listę, która nagle nic nie zwraca, jako zepsuty portal (widoczny błąd), a nie kraj bez ofert.
+
+### Naprawiono
+- **Tytuły z „&" nie gubią już ofert na pięciu portalach** — na beesite, Cornerstone (csod), Hacker News „Who is hiring", Phenom i TKMS tytuły przychodzą z encjami HTML, więc zaescape'owany „&" w stanowisku typu "R&D Engineer" nie przechodził twojego własnego słowa kluczowego "r&d" i oferta znikała po cichu (weto "sales & marketing" też nigdy się nie uruchamiało). Teraz tytuły — i lokalizacje Phenom — są dekodowane przed filtrowaniem.
+
+### Uwagi
+- Źródła skanowania: **80** (75 angielskich + 5 rosyjskich). Zestaw testów: **2643**.
+
+
+
+## [1.209.0] — 2026-08-17
+
+**Dodano — pomoc w aplikacji obejmuje teraz zapisywanie wyniku aplikacji, a „Zapytaj dokumentację" może cię tam poprowadzić.**
+
+### Dodano
+- Pomoc Trackera (§11) zyskała sekcję „Zapisz wynik" we wszystkich 17 językach, prowadzącą przez przycisk **Wynik**: wybierz, co się stało (odrzucono / oferta / zatrudniony / odrzucona / zignorowano / awans do rozmowy), podejrzyj, co zrobi, i zapisz — co odnotowuje wynik, archiwizuje wysłane CV i list motywacyjny oraz synchronizuje Status wiersza za ciebie. Pływający asystent „Zapytaj dokumentację" czyta ten przewodnik, więc teraz kieruje cię do tego przycisku, zamiast tylko sugerować ręczną edycję Statusu.
+
+### Uwagi
+- Każdy pakiet pomocy to teraz 31 H2 / 119 H3 (było 118); strażniki parzystości podniesiono. Tylko dokumentacja — bez zmian kodu i zachowania. Zestaw: **2625**.
+
+
+
+## [1.208.2] — 2026-08-16
+
+**Naprawiono — na telefonie przyciski powiadomień i motywu nie leżą już na polu wyszukiwania.**
+
+### Naprawiono
+- v1.208.1 sprawiła, że przyciski górnego paska nie nachodzą już na nagłówek strony, ale na wąskim — choć nie najwęższym — ekranie, zwłaszcza w językach z dłuższymi etykietami, cały pasek nadal ściskał się w jeden wiersz, więc przyciski 🔔 i 🌙 mogły znaleźć się na polu wyszukiwania. Przyciski akcji (powiadomienia, motyw, Diagnostyka, Otwórz Scan) na telefonie zawsze schodzą teraz do własnego, pełnej szerokości drugiego wiersza, więc pole wyszukiwania jest w pełni widoczne i nic się nie nakłada.
+
+### Uwagi
+- Na telefonie przyciski akcji paska przechodzą do drugiego wiersza pełnej szerokości, usuwając kruchy pas „niemal pełnego wiersza”, gdzie układ rozdzielał pozostałą ujemną przestrzeń jako nakładanie. Strażnik Playwright odtwarza teraz dokładny wyzwalacz — język z długimi etykietami w pasie 565–640px — i sprawdza, że kontrolki paska nigdy nie dzielą pikseli. Zestaw: **2621**.
+
+
+
+## [1.208.1] — 2026-08-16
+
+**Naprawiono — na telefonie przyciski górnego paska nie nachodzą już na stronę.**
+
+### Naprawiono
+- v1.208.0 zawijała przyciski górnego paska (Diagnostyka, Otwórz Scan, powiadomienia, motyw) do drugiego wiersza na wąskich ekranach, ale pasek zachowywał stałą wysokość, więc zawinięty wiersz wychodził poza pasek i nakładał się na nagłówek strony. Teraz pasek **rośnie** pod swoje wiersze, a treść płynie pod nim.
+
+### Uwagi
+- Stała `height` paska stała się `min-height`, więc rośnie z treścią przy każdej szerokości (pulpit bez zmian). Strażnik Playwright sprawdza teraz również, że pasek nie wychodzi na stronę. Zestaw: **2621**.
+
+
+
+## [1.208.0] — 2026-08-16
+
+**Naprawiono — aplikacja mieści się teraz na ekranie telefonu: koniec przewijania w bok.**
+
+### Naprawiono
+- Na wąskim ekranie cała aplikacja uciekała w bok — górny pasek, tabele, artykuły pomocy i karty ustawień wychodziły poza prawą krawędź. Teraz każda strona mieści się przy dowolnej szerokości: przyciski górnego paska przechodzą do drugiego wiersza, szerokie tabele i bloki kodu przewijają się we własnej ramce, pomoc układa spis treści nad artykułem, rzędy przycisków/kart zawijają się, a długie ścieżki lub adresy URL łamią się zamiast rozciągać stronę.
+
+### Uwagi
+- Przyczyną była klasyczna pułapka flex/grid **min-width: auto** oraz kilka nieopakowanych szerokich elementów; naprawiono przez `min-width: 0` na elementach siatki, `overflow-wrap` na markdownie/nagłówkach, przewijalną tabelę markdown i układanie siatki pomocy w punkcie mobilnym. Strażnik Playwright sprawdza **0 poziomego przepełnienia przy 375 px** na głównych trasach. `tests/playwright-smoke.mjs`. Zestaw: **2621**.
+
+
+
+## [1.207.2] — 2026-08-16
+
+**Naprawiono — plany AI i profile orientacji zawodowej nie wyświetlają się już jako surowy zrzut kodu.**
+
+### Naprawiono
+- Niektóre modele zawijają całą odpowiedź w ogrodzenie kodu ```markdown … ```. Gdy tak się działo, **plan rozwoju** i **profil orientacji** pokazywały się jako blok o stałej szerokości zamiast dokumentu z nagłówkami i listami. Teraz zawijające ogrodzenie jest usuwane — tylko gdy obejmuje całą odpowiedź i język to jawnie `markdown`/`md`, więc prawdziwa odpowiedź w `python`/`js`/``` bez języka pozostaje nietknięta.
+
+### Uwagi
+- Obsłużone raz we wspólnym kroku czyszczenia LLM (`cleanLlmMarkdown`), więc korzystają wszystkie trasy AI, a wewnętrzne bloki kodu w zawiniętej odpowiedzi przetrwają. `tests/llm-output.test.mjs` (+3). Zestaw: **2621**.
+
+
+
+## [1.207.1] — 2026-08-16
+
+**Naprawiono — strona startowa nie wychodzi już na boki na małych telefonach.**
+
+### Naprawiono
+- Na wąskim telefonie sekcja hero — nagłówek, wiersz wprowadzenia i terminal instalacji — mogła być ucięta przy prawej krawędzi, bo długie polecenie instalacji i kolumny układu nie kurczyły się do ekranu. Teraz mieszczą się przy każdej szerokości; polecenie instalacji przewija się w obrębie własnego terminala.
+
+### Uwagi
+- Wzmocniono też niestabilny test E2E, który mógł zawieść przez przejściowy 404 zasobu: teraz ignoruje nieszkodliwy szum sieciowy (favicon / połączenie / nieudany zasób) jak sąsiednie testy, wciąż wykrywając prawdziwe błędy skryptów. Zachowanie aplikacji bez zmian. Zestaw: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Dodano — zapisuj wynik aplikacji bezpośrednio ze śledzenia.**

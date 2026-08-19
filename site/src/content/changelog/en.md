@@ -8,6 +8,93 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.210.0] — 2026-08-19
+
+**Added — Senjob, the scanner's first African job board (Senegal); sharper title matching on five more boards.**
+
+### Added
+- **Senjob** (senjob.com) — a new zero-token scan source for Senegal, the scanner's first African board. Select it in the `#/scan` **Source** filter, or add a company with `provider: senjob`. It reads the public listing over plain HTTP (no key, no browser), pins every request to senjob.com, and — parsing HTML — treats a listing that suddenly yields nothing as a broken board (a surfaced error) rather than a silently empty country.
+
+### Fixed
+- **Titles with an ampersand no longer drop jobs on five boards** — on beesite, Cornerstone (csod), Hacker News "Who is hiring", Phenom and TKMS, titles arrive HTML-escaped, so an escaped "&" in a role like "R&D Engineer" failed your own "r&d" keyword and the posting vanished silently (a "sales & marketing" veto never fired either). Titles — and Phenom locations — are now decoded before filtering.
+
+### Notes
+- Scan sources: **80** (75 English + 5 Russian). Test suite: **2643**.
+
+
+
+## [1.209.0] — 2026-08-17
+
+**Added — the in-app help now covers recording an application outcome, and "Ask the docs" can point you to it.**
+
+### Added
+- The Tracker help (§11) gained a "Record an outcome" section in all 17 languages, walking through the **Outcome** button: pick what happened (rejected / offer / hired / declined / ghosted / advanced to interview), preview what it will do, then record — which logs the result, archives the CV and cover letter you submitted, and syncs the row's Status for you. The floating "Ask the docs" assistant reads the help guide, so it now guides you to that button instead of only suggesting you edit the Status by hand.
+
+### Notes
+- Each help bundle is now 31 H2 / 119 H3 (was 118); the parity gates were bumped to match. Docs-only — no code or behaviour change. Suite: **2625**.
+
+
+
+## [1.208.2] — 2026-08-16
+
+**Fixed — on a phone the notification and theme buttons no longer sit on top of the search box.**
+
+### Fixed
+- v1.208.1 stopped the top-bar buttons from overlapping the page heading, but on a narrow-but-not-narrowest phone — especially in languages with longer button labels — the whole bar still crammed onto one row, so the 🔔 and 🌙 buttons could land on top of the search box. The action buttons (notifications, theme, Diagnostics, Open Scan) now always drop onto their own full-width second row on a phone, so the search box stays fully readable and nothing overlaps.
+
+### Notes
+- On a phone the top-bar action buttons move to a full-width second row, removing the fragile "almost-full row" band where the layout distributed leftover negative space as overlap. A Playwright guard now reproduces the exact trigger — a long-label locale across the 565–640px band — and asserts the top-bar controls never share pixels. Suite: **2621**.
+
+
+
+## [1.208.1] — 2026-08-16
+
+**Fixed — on a phone the top-bar buttons no longer overlap the page.**
+
+### Fixed
+- v1.208.0 wrapped the top-bar action buttons (Diagnostics, Open Scan, notifications, theme) onto a second row on narrow screens, but the bar kept a fixed height — so the wrapped row spilled out and sat on top of the page heading. The bar now **grows** to fit its rows and the content flows below it.
+
+### Notes
+- The top bar's fixed `height` became a `min-height`, so it expands with its content on any width (desktop is unchanged — one row always fits). A Playwright guard now also checks the top bar does not spill over the page. Suite: **2621**.
+
+
+
+## [1.208.0] — 2026-08-16
+
+**Fixed — the app fits a phone screen now: no more sideways scrolling.**
+
+### Fixed
+- On a narrow screen the whole app used to slide sideways — the top bar, tables, help articles and settings tabs all pushed past the right edge. Now every page fits any width: the top-bar buttons wrap onto a second row, wide tables and code blocks scroll inside their own box, help stacks its table-of-contents above the article, button/tab rows wrap, and long paths or URLs break instead of stretching the page.
+
+### Notes
+- Root cause was the classic flex/grid **min-width: auto** trap plus a couple of unwrapped wide elements; fixed with `min-width: 0` on grid items, `overflow-wrap` on markdown/titles, a scrollable markdown table, and the help grid stacking at the mobile breakpoint. A Playwright guard asserts **0 horizontal overflow at 375 px** across the main routes. `tests/playwright-smoke.mjs`. Suite: **2621**.
+
+
+
+## [1.207.2] — 2026-08-16
+
+**Fixed — AI plans and career-orientation profiles no longer render as a raw code dump.**
+
+### Fixed
+- Some models wrap their whole answer in a ```markdown … ``` code fence. When that happened, the **development plan** and the **career-orientation profile** showed up as a monospace code block instead of a formatted document with headings and lists. The wrapping fence is now removed — only when it wraps the entire answer and is explicitly `markdown`/`md`, so a genuine `python`/`js`/bare-``` code answer is left untouched.
+
+### Notes
+- Handled once in the shared LLM-declutter step (`cleanLlmMarkdown`), so every AI route benefits, and inner code blocks inside the wrapped answer survive. `tests/llm-output.test.mjs` (+3). Suite: **2621**.
+
+
+
+## [1.207.1] — 2026-08-16
+
+**Fixed — the landing page no longer overflows sideways on small phones.**
+
+### Fixed
+- On a narrow phone the hero — the headline, the intro line, and the install terminal — could be clipped off the right edge because a long install command and the layout columns would not shrink to the screen. They now fit any width; the install command scrolls inside its own terminal box.
+
+### Notes
+- Also hardened a flaky end-to-end smoke check that could fail on a transient resource 404 — it now ignores benign network noise (favicon / connection / failed-resource) like the sibling checks, while still catching real script errors. No application behavior changed. Suite: **2618**.
+
+
+
 ## [1.207.0] — 2026-08-15
 
 **Added — record an application's outcome straight from the tracker.**
