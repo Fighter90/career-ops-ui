@@ -9,6 +9,22 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.211.0] — 2026-08-19
+
+**Dodano — Yourator, tajwański tech-portal pracy. Naprawiono — akcentowane encje w tytułach/nazwach firm dekodują się teraz wszędzie, a firma z akcentem w nazwie nie jest już błędnie oznaczana.**
+
+### Dodano
+- **Yourator** (yourator.co) — nowe beztokenowe źródło skanowania dla tajwańskiego rynku pracy tech i digital. Wybierz je w filtrze **Źródło** na `#/scan` lub dodaj firmę z `provider: yourator`. Czyta publiczne API JSON (bez klucza, bez przeglądarki), przechodzi każdą stronę portalu i emituje prawdziwy link pracodawcy (jego własny ATS) z usuniętymi parametrami śledzenia.
+
+### Naprawiono
+- **Akcentowane encje nazwane dekodują się teraz wszędzie.** Wspólny dekoder HTML zyskał litery Latin-1 (`&eacute;` → é, `&ccedil;` → ç, …), więc europejski portal piszący `D&eacute;veloppeur` lub `Fran&ccedil;ais` nie zostawia już tego literału w tytule, trackerze ani wygenerowanym dokumencie. (Wielkie litery pozostają wielkie — `&Eacute;` to É, nie é — a wyszukiwanie typu `&constructor;` rozwiązuje się teraz do samego siebie.)
+- **Firma z akcentem w nazwie nie jest już błędnie oznaczana** za bycie na własnej domenie. „Işık" składa się teraz do „isik" i pasuje do isik.com.tr; „Société Générale" pasuje do societegenerale.com. Stare sprawdzenie usuwało litery akcentowane zamiast składać je do bazy ASCII.
+
+### Uwagi
+- Źródła skanowania: **81** (76 angielskich + 5 rosyjskich). Zestaw testów: **2667**.
+
+
+
 ## [1.210.1] — 2026-08-19
 
 **Naprawiono — tytuły ofert i nazwy firm z Habr Career zawierające „&" lub cudzysłowy nie przychodzą już zniekształcone.**

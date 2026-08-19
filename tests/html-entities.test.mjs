@@ -41,6 +41,34 @@ test('decodes the named entities', () => {
   assert.equal(decodeEntities('a&nbsp;b'), 'a' + String.fromCharCode(32) + 'b');
 });
 
+test('decodes Latin-1 letter entities, CASE-SENSITIVELY', () => {
+  assert.equal(decodeEntities('D&eacute;veloppeur'), 'Développeur');
+  assert.equal(decodeEntities('Fran&ccedil;ais'), 'Français');
+  assert.equal(decodeEntities('&szlig; &ntilde; &oslash;'), 'ß ñ ø');
+  // Uppercase name → uppercase letter, not the lowercase one (a blanket
+  // lowercased lookup would make every uppercase entry unreachable).
+  assert.equal(decodeEntities('&Eacute;quipe'), 'Équipe');
+  assert.equal(decodeEntities('&eacute; vs &Eacute;'), 'é vs É');
+  // Only the XML five + nbsp fall back case-insensitively.
+  assert.equal(decodeEntities('R&AMP;D'), 'R&D');
+  // A letter name in a case that is not a real entity passes through.
+  assert.equal(decodeEntities('&EACUTE;'), '&EACUTE;');
+});
+
+test('decodes the punctuation entities European boards emit around titles', () => {
+  assert.equal(decodeEntities('Dev &ndash; Remote'), 'Dev – Remote');
+  assert.equal(decodeEntities('&laquo;Role&raquo; &hellip; &euro;'), '«Role» … €');
+  assert.equal(decodeEntities('it&rsquo;s a &deg; day'), 'it’s a ° day');
+});
+
+test('a named lookup never resolves to an inherited Object.prototype member', () => {
+  // `Object.hasOwn` (not `NAMED_ENTITIES[body]`) — a plain-object lookup would
+  // return the Object constructor for `&constructor;`, coerced into the title.
+  assert.equal(decodeEntities('&constructor;'), '&constructor;');
+  assert.equal(decodeEntities('&toString;'), '&toString;');
+  assert.equal(decodeEntities('&hasOwnProperty;'), '&hasOwnProperty;');
+});
+
 test('a decimal entity never absorbs trailing hex letters (&#1a2; passes through)', () => {
   // Split hex/decimal alternatives: `&#1a2;` fails to match rather than
   // parsing as codepoint 1 and dropping "a2".

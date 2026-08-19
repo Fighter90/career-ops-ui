@@ -113,11 +113,10 @@ test('visibleText strips comments before tags and decodes entities in one C0-saf
   // Single-pass decode: &amp;quot; must NOT double-unescape into a literal quote.
   assert.equal(visibleText('&amp;quot;'), '&quot;');
   assert.equal(visibleText('&amp;amp;'), '&amp;');
-  // The shared decoder's named table is small (amp/lt/gt/quot/apos/nbsp); named
-  // accented entities are left literal, but decimal + hex NUMERIC references —
-  // the accented form a French board also emits — decode.
+  // The shared decoder covers the XML five + the Latin-1 letters (v1.211.0), so a
+  // French board's named accents decode as well as the decimal/hex numeric forms.
   assert.equal(visibleText('R&amp;D'), 'R&D');
-  assert.equal(visibleText('Charg&eacute; de projet'), 'Charg&eacute; de projet'); // named accent stays literal
+  assert.equal(visibleText('Charg&eacute; de projet'), 'Chargé de projet'); // named accent now decodes
   assert.equal(visibleText('D&#233;veloppeur'), 'Développeur'); // decimal
   assert.equal(visibleText('D&#xE9;veloppeur'), 'Développeur'); // hex
   assert.equal(visibleText("L&#39;agent"), "L'agent");

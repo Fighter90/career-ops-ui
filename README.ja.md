@@ -7,16 +7,16 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2644%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2667%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.210.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.210.1)
+[![release](https://img.shields.io/badge/release-v1.211.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.211.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.210.1** — **Habr のタイトル修正** — 「&」や引用符を含む求人タイトル・会社名がデコードされ、フィルターから漏れたりトラッカーに文字化けして入ったりしなくなりました。 **2644 テスト.**
+> **🆕 最新リリース — v1.211.0** — **Yourator ＋ より正確なデコード** — 新しい台湾テックボード。さらにタイトル・会社名のアクセント付きエンティティ（`D&eacute;veloppeur`）がどこでもデコードされ、アクセント会社名が自社ドメインに一致します。 **2667 テスト.**
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
 

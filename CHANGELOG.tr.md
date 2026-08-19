@@ -2,6 +2,22 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.211.0] — 2026-08-19
+
+**Eklendi — Yourator, Tayvanlı bir teknoloji iş panosu. Düzeltildi — başlık/şirket adındaki aksanlı varlıklar artık her yerde çözülüyor ve adında aksan olan bir şirket artık yanlışlıkla işaretlenmiyor.**
+
+### Eklendi
+- **Yourator** (yourator.co) — Tayvan teknoloji ve dijital iş pazarı için yeni, token gerektirmeyen bir tarama kaynağı. `#/scan` sayfasındaki **Kaynak** filtresinden seçin ya da `provider: yourator` olan bir şirket ekleyin. Genel JSON API'sini okur (anahtar yok, tarayıcı yok), panonun her sayfasını gezer ve her ilanın gerçek işveren bağlantısını (kendi ATS'i) izleme parametreleri temizlenmiş olarak verir.
+
+### Düzeltildi
+- **Aksanlı adlandırılmış varlıklar artık her yerde çözülüyor.** Paylaşılan HTML çözücü Latin-1 harflerini kazandı (`&eacute;` → é, `&ccedil;` → ç, …); böylece `D&eacute;veloppeur` ya da `Fran&ccedil;ais` yazan bir Avrupa panosu bu düz metni artık bir başlıkta, izleyicide veya üretilen bir belgede bırakmıyor. (Büyük harfler büyük kalır — `&Eacute;` É'dir, é değil — ve `&constructor;` gibi bir arama artık kendisine çözülür.)
+- **Adında aksan olan bir şirket, kendi alan adında olduğu için artık yanlışlıkla işaretlenmiyor.** "Işık" artık "isik" olarak katlanıp isik.com.tr ile eşleşiyor; "Société Générale" societegenerale.com ile eşleşiyor. Eski denetim aksanlı harfleri ASCII tabanına katlamak yerine siliyordu.
+
+### Notlar
+- Tarama kaynakları: **81** (76 İngilizce + 5 Rusça). Test takımı: **2667**.
+
+
+
 ## [1.210.1] — 2026-08-19
 
 **Düzeltildi — "&" ya da tırnak içeren Habr Career ilan başlıkları ve şirket adları artık bozuk gelmiyor.**

@@ -11,6 +11,22 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.211.0] — 2026-08-19
+
+**Ajouté — Yourator, un site d'emploi tech taïwanais. Corrigé — les entités accentuées d'intitulé/entreprise se décodent désormais partout, et une entreprise dont le nom porte un accent n'est plus signalée à tort.**
+
+### Ajouté
+- **Yourator** (yourator.co) — une nouvelle source de scan sans jeton pour le marché de l'emploi tech et numérique taïwanais. Sélectionnez-la dans le filtre **Source** de `#/scan`, ou ajoutez une entreprise avec `provider: yourator`. Elle lit l'API JSON publique (sans clé, sans navigateur), parcourt toutes les pages du site et émet le vrai lien employeur (son propre ATS) débarrassé des paramètres de suivi.
+
+### Corrigé
+- **Les entités nommées accentuées se décodent désormais partout.** Le décodeur HTML partagé a gagné les lettres Latin-1 (`&eacute;` → é, `&ccedil;` → ç, …), donc un site européen qui écrit `D&eacute;veloppeur` ou `Fran&ccedil;ais` ne laisse plus ce littéral dans un intitulé, le tracker ou un document généré. (Les majuscules restent en majuscules — `&Eacute;` est É, pas é — et une recherche comme `&constructor;` se résout à elle-même.)
+- **Une entreprise dont le nom porte un accent n'est plus signalée à tort** pour être sur son propre domaine. « Işık » se replie désormais en « isik » et correspond à isik.com.tr ; « Société Générale » correspond à societegenerale.com. L'ancien contrôle supprimait les lettres accentuées au lieu de les replier vers leur base ASCII.
+
+### Notes
+- Sources de scan : **81** (76 anglaises + 5 russes). Suite de tests : **2667**.
+
+
+
 ## [1.210.1] — 2026-08-19
 
 **Corrigé — les intitulés de postes et noms d'entreprise Habr Career contenant « & » ou des guillemets n'arrivent plus déformés.**

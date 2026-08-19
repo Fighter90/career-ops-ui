@@ -2,6 +2,22 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.211.0] — 2026-08-19
+
+**Hinzugefügt — Yourator, ein taiwanisches Tech-Job-Board. Behoben — akzentuierte Titel-/Firmennamen-Entities werden nun überall dekodiert, und ein Unternehmen mit einem Akzent im Namen wird nicht mehr fälschlich markiert.**
+
+### Hinzugefügt
+- **Yourator** (yourator.co) — eine neue token-freie Scan-Quelle für den taiwanischen Tech- und Digital-Arbeitsmarkt. Wähle sie im **Quelle**-Filter auf `#/scan`, oder füge ein Unternehmen mit `provider: yourator` hinzu. Sie liest die öffentliche JSON-API (kein Schlüssel, kein Browser), durchläuft jede Seite des Boards und gibt den echten Arbeitgeber-Link jeder Anzeige (dessen eigenes ATS) mit entfernten Tracking-Parametern aus.
+
+### Behoben
+- **Akzentuierte benannte Entities werden nun überall dekodiert.** Der geteilte HTML-Decoder erhielt die Latin-1-Buchstaben (`&eacute;` → é, `&ccedil;` → ç, …), sodass ein europäisches Board, das `D&eacute;veloppeur` oder `Fran&ccedil;ais` schreibt, diesen Literal nicht mehr in einem Titel, dem Tracker oder einem generierten Dokument hinterlässt. (Großbuchstaben bleiben groß — `&Eacute;` ist É, nicht é — und eine Suche wie `&constructor;` löst sich nun auf sich selbst auf.)
+- **Ein Unternehmen mit einem Akzent im Namen wird nicht mehr fälschlich markiert**, weil es auf seiner eigenen Domain liegt. „Işık" faltet sich nun zu „isik" und passt zu isik.com.tr; „Société Générale" passt zu societegenerale.com. Die alte Prüfung löschte akzentuierte Buchstaben, statt sie auf ihre ASCII-Basis zu falten.
+
+### Hinweise
+- Scan-Quellen: **81** (76 englische + 5 russische). Test-Suite: **2667**.
+
+
+
 ## [1.210.1] — 2026-08-19
 
 **Behoben — Habr-Career-Stellentitel und Firmennamen mit „&" oder Anführungszeichen kommen nicht mehr verstümmelt an.**

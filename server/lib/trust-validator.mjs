@@ -62,10 +62,39 @@ export function matchesDomainList(hostname, domainList) {
   return false;
 }
 
+// Latin letters that do NOT decompose under NFD, so stripping combining marks
+// alone still deletes them. Lowercase only — the caller lowercases first. A
+// stroke/bar through a letter is part of the glyph, not a combining mark, so NFD
+// leaves these untouched and a bare `[^a-z0-9]` strip then DELETES them — the
+// failure this fold exists to stop. The Turkish dotless ı is the one that bites:
+// "Işık" scored no match against isik.com.tr and was flagged for being on its
+// own domain.
+const NON_DECOMPOSING_LATIN = [
+  [/ø/g, 'o'], [/æ/g, 'ae'], [/œ/g, 'oe'], [/ß/g, 'ss'],
+  [/đ/g, 'd'], [/ł/g, 'l'], [/þ/g, 'th'], [/ð/g, 'd'],
+  [/ħ/g, 'h'], [/ı/g, 'i'], [/ŋ/g, 'ng'], [/ŧ/g, 't'],
+  [/ĸ/g, 'k'], [/ſ/g, 's'],
+];
+
+/**
+ * ASCII-fold a company name for comparison against a hostname. NFD is the right
+ * tool HERE (we compare against an ASCII hostname, so folding to the base letter
+ * is the point: "societegenerale.com" IS the fold of "Société Générale") — the
+ * previous `[^a-z0-9 ]` strip DELETED accented letters instead, so "Société
+ * Générale" became "socit gnrale" and matched neither its slug nor any word.
+ * @param {string} company
+ * @returns {string} Lowercased, space-separated ASCII, or '' when nothing Latin remains.
+ */
+export function asciiFoldForHostname(company) {
+  let out = String(company ?? '').toLowerCase().normalize('NFD').replace(/\p{M}+/gu, '');
+  for (const [re, to] of NON_DECOMPOSING_LATIN) out = out.replace(re, to);
+  return out.replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+}
+
 /** Heuristic: does the company name plausibly appear in the URL hostname? */
 export function companyMatchesHostname(company, hostname) {
   if (!company || !hostname) return true; // can't evaluate → no flag
-  const normalized = company.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+  const normalized = asciiFoldForHostname(company);
   if (!normalized) return true;
   const slug = normalized.replace(/\s+/g, '');
   if (hostname.includes(slug)) return true;

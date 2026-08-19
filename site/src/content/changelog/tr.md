@@ -2,6 +2,34 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.211.0] — 2026-08-19
+
+**Eklendi — Yourator, Tayvanlı bir teknoloji iş panosu. Düzeltildi — başlık/şirket adındaki aksanlı varlıklar artık her yerde çözülüyor ve adında aksan olan bir şirket artık yanlışlıkla işaretlenmiyor.**
+
+### Eklendi
+- **Yourator** (yourator.co) — Tayvan teknoloji ve dijital iş pazarı için yeni, token gerektirmeyen bir tarama kaynağı. `#/scan` sayfasındaki **Kaynak** filtresinden seçin ya da `provider: yourator` olan bir şirket ekleyin. Genel JSON API'sini okur (anahtar yok, tarayıcı yok), panonun her sayfasını gezer ve her ilanın gerçek işveren bağlantısını (kendi ATS'i) izleme parametreleri temizlenmiş olarak verir.
+
+### Düzeltildi
+- **Aksanlı adlandırılmış varlıklar artık her yerde çözülüyor.** Paylaşılan HTML çözücü Latin-1 harflerini kazandı (`&eacute;` → é, `&ccedil;` → ç, …); böylece `D&eacute;veloppeur` ya da `Fran&ccedil;ais` yazan bir Avrupa panosu bu düz metni artık bir başlıkta, izleyicide veya üretilen bir belgede bırakmıyor. (Büyük harfler büyük kalır — `&Eacute;` É'dir, é değil — ve `&constructor;` gibi bir arama artık kendisine çözülür.)
+- **Adında aksan olan bir şirket, kendi alan adında olduğu için artık yanlışlıkla işaretlenmiyor.** "Işık" artık "isik" olarak katlanıp isik.com.tr ile eşleşiyor; "Société Générale" societegenerale.com ile eşleşiyor. Eski denetim aksanlı harfleri ASCII tabanına katlamak yerine siliyordu.
+
+### Notlar
+- Tarama kaynakları: **81** (76 İngilizce + 5 Rusça). Test takımı: **2667**.
+
+
+
+## [1.210.1] — 2026-08-19
+
+**Düzeltildi — "&" ya da tırnak içeren Habr Career ilan başlıkları ve şirket adları artık bozuk gelmiyor.**
+
+### Düzeltildi
+- Habr Career kaynağı artık **başlık** ve **şirket adı** içindeki HTML varlıklarını ileri akmadan önce çözüyor. Sunucuda işlenen kartlar kaçışlı geliyor ("Changellenge &gt;&gt;", "Demand Forecasting &amp; Inventory Optimization", "ООО &quot;М-ТЕХ&quot;"); bu yüzden çözülmemiş bir "&", kendi "&" başlık filtrenizde sessizce başarısız oluyordu — önceki sürümün diğer beş panoda kapattığı belirtinin aynısı — ve şirket adları izleyiciye ve raporlara bozuk ulaşıyordu. Varlık çözme artık etkilenen altı kaynağın tamamında tamamlandı.
+
+### Notlar
+- Test takımı: **2644**.
+
+
+
 ## [1.210.0] — 2026-08-19
 
 **Eklendi — Senjob, tarayıcının ilk Afrika iş ilan panosu (Senegal); beş panoda daha isabetli başlık eşleştirme.**

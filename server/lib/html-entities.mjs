@@ -12,7 +12,39 @@
 // so a decimal entity can never absorb trailing hex letters — `&#1a2;` no
 // longer parses as codepoint 1 and drops `a2`; it fails to match and passes
 // through untouched, like any other malformed entity.
-const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+// The XML five plus nbsp, then the Latin-1 letter entities. The letters are not
+// decoration: a European board writes `D&eacute;veloppeur` and `Fran&ccedil;ais`
+// in its HTML, and leaving those literal puts `D&eacute;veloppeur` in a job
+// title, the tracker, and every document generated from it. Sources that needed
+// them grew private tables instead; centralising them here ends that drift.
+const NAMED_ENTITIES = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+  // French / Portuguese / Spanish / German / Nordic letters, lower and upper.
+  agrave: 'à', aacute: 'á', acirc: 'â', atilde: 'ã', auml: 'ä', aring: 'å', aelig: 'æ',
+  ccedil: 'ç',
+  egrave: 'è', eacute: 'é', ecirc: 'ê', euml: 'ë',
+  igrave: 'ì', iacute: 'í', icirc: 'î', iuml: 'ï',
+  ntilde: 'ñ',
+  ograve: 'ò', oacute: 'ó', ocirc: 'ô', otilde: 'õ', ouml: 'ö', oslash: 'ø',
+  ugrave: 'ù', uacute: 'ú', ucirc: 'û', uuml: 'ü',
+  yacute: 'ý', yuml: 'ÿ', szlig: 'ß',
+  Agrave: 'À', Aacute: 'Á', Acirc: 'Â', Atilde: 'Ã', Auml: 'Ä', Aring: 'Å', AElig: 'Æ',
+  Ccedil: 'Ç',
+  Egrave: 'È', Eacute: 'É', Ecirc: 'Ê', Euml: 'Ë',
+  Igrave: 'Ì', Iacute: 'Í', Icirc: 'Î', Iuml: 'Ï',
+  Ntilde: 'Ñ',
+  Ograve: 'Ò', Oacute: 'Ó', Ocirc: 'Ô', Otilde: 'Õ', Ouml: 'Ö', Oslash: 'Ø',
+  Ugrave: 'Ù', Uacute: 'Ú', Ucirc: 'Û', Uuml: 'Ü',
+  Yacute: 'Ý',
+  // Punctuation these same pages emit around titles.
+  deg: '°', hellip: '…', laquo: '«', raquo: '»', ndash: '–', mdash: '—',
+  lsquo: '‘', rsquo: '’', ldquo: '“', rdquo: '”', middot: '·', euro: '€',
+};
+
+// Only these are matched case-insensitively (legacy pages do write `&AMP;`).
+// The letter entities are CASE-SENSITIVE — `&Eacute;` is É, not é — so a blanket
+// lowercased lookup would make every uppercase entry unreachable.
+const CASE_INSENSITIVE_NAMES = new Set(['amp', 'lt', 'gt', 'quot', 'apos', 'nbsp']);
 
 /**
  * Whether a numeric reference names a code point this decoder will emit.
@@ -52,6 +84,12 @@ export function decodeEntities(s) {
       const code = parseInt(body.slice(isHex ? 2 : 1), isHex ? 16 : 10);
       return isEmittableCodePoint(code) ? String.fromCodePoint(code) : m;
     }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? m;
+    // Letter entities are CASE-SENSITIVE (`&Eacute;` → É). Exact-case lookup
+    // first; only the XML-five + nbsp fall back case-insensitively. `Object.hasOwn`
+    // (not `NAMED_ENTITIES[body]`) so `&constructor;` / `&toString;` resolve to
+    // themselves, never an inherited Object.prototype member.
+    if (Object.hasOwn(NAMED_ENTITIES, body)) return NAMED_ENTITIES[body];
+    const lower = body.toLowerCase();
+    return CASE_INSENSITIVE_NAMES.has(lower) ? NAMED_ENTITIES[lower] : m;
   });
 }
