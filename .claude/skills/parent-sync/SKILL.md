@@ -17,9 +17,20 @@ count that moves on a fix-only release is usually just the **test count**.
 
 ## Phase 1 — Pull & scope
 
-1. `cd .. && git rev-parse HEAD` (save OLD), `git pull`, `cat VERSION`.
-   Diff by **commit range**, never by VERSION (release-please lags main).
-2. Read the new CHANGELOG entries + `git diff OLD..HEAD --name-status`.
+1. `cd .. && git rev-parse HEAD` (save OLD), `git pull` (confirm `origin` is the fork
+   and you're on `main` first: `git remote get-url origin` / `git branch --show-current`),
+   `cat VERSION`.
+   Diff by **commit range** to `origin/main` HEAD — never by VERSION and **never to
+   the `career-ops-vX.Y.Z` tag**. On this fork BOTH lag main: release-please cuts the
+   tag/VERSION behind `main`, so the fork's HEAD carries post-tag providers/fixes.
+   A pasted release-URL tempts you to `OLD..<tag>` — that under-scopes (v1.210.0 did
+   exactly this against `career-ops-v1.27.0` and missed **yourator** + the
+   `_html-entities`/`_trust-validator` fixes already on HEAD, forcing an extra
+   v1.211.0). Use `OLD..origin/main`, the HEAD you actually reset/deploy to.
+2. Read the new CHANGELOG entries + `git diff OLD..origin/main --name-status`.
+   Before porting a MIRROR fix, grep web-ui for the shared idiom first — web-ui is
+   sometimes already AHEAD (its senjob used the shared C0-safe decoder from day one;
+   jobvite already imported it), so the parent's fix is a no-port.
 3. Classify every change:
    - `providers/*.mjs` **added** → PORT as a web-ui source+adapter (Phase 2).
    - Changes to code web-ui MIRRORS (`role-matcher`, `detect-reposts`,
