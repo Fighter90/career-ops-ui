@@ -9,6 +9,22 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.213.0] — 2026-08-22
+
+**Dodano — MyCareersFuture, krajowy bank ofert pracy Singapuru, jako źródło skanowania. Naprawiono — oferty Greenhouse niosą teraz pełny tekst, aby filtry treści działały, a zdalne oferty Ashby nie są już ukrywane za lokalizacją tylko-miasto.**
+
+### Dodano
+- **MyCareersFuture (Singapur)** (mycareersfuture.gov.sg) — nowe beztokenowe źródło skanowania dla krajowego publicznego banku ofert pracy Singapuru (Workforce Singapore). Wybierz je w filtrze **Źródło** na `#/scan` lub dodaj firmę z `provider: mycareersfuture` i opcjonalną listą `keywords` (w razie braku sięga po docelowe role z Twojego profilu, jak Job Bank). Czyta publiczne API wyszukiwania, przypięte do hosta, bez klucza.
+
+### Naprawiono
+- **Oferty Greenhouse można teraz filtrować po treści.** Boardy Greenhouse pobierane są z pełnym ciałem oferty, dekodowanym do zwykłego tekstu jako opis — więc `content_filter` (lub filtr słów kraju/wizy) czytający opis rzeczywiście dopasowuje teraz oferty Greenhouse zamiast przepuszczać je na ślepo.
+- **Zdalne oferty Ashby nie są już odrzucane przez filtr miasta.** Ashby trzyma model pracy (Remote/Hybrid/Onsite) osobno od miasta biura, więc w pełni zdalna oferta wciąż czytała się jako np. „San Francisco” — a filtr lokalizacji blokujący to miasto ukrywał ofertę, którą mógłbyś przyjąć. „Remote” jest teraz dodawane do lokalizacji, gdy rola jest zdalna, a `workplaceType` wygrywa z nieaktualną flagą `isRemote`, by nie oznaczyć błędnie hybrydowej oferty zakotwiczonej w biurze.
+
+### Uwagi
+- Źródła skanowania: **82** (77 angielskich + 5 rosyjskich). Zestaw testów: **2724**. Utwardzenie przeciw DNS-rebinding (walidacja rozwiązanego adresu hosta przed połączeniem) czeka na dedykowane wydanie — potrzebuje projektu specyficznego dla web-ui, nie bezpośredniego portu.
+
+
+
 ## [1.212.1] — 2026-08-21
 
 **Naprawiono — landing cvstart.org zaniżał liczbę źródeł ofert skanera (pokazywał 80 i pomijał Job Bank (Kanada)); znów zgadza się z 81 w aplikacji, a build strony głośno się wywala, jeśli te liczby się rozjadą.**

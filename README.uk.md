@@ -7,16 +7,16 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2687%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2724%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.212.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.212.1)
+[![release](https://img.shields.io/badge/release-v1.213.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.213.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.212.1** — **Фікс лічильника джерел на лендингу** — після v1.212.0 cvstart.org перелічував 80 джерел і губив Job Bank (Канада); знову 81 у синхроні із застосунком, а збірка сайту тепер жорстко падає за будь-якого розходження лічильника. **2687 тестів.**
+> **🆕 Останній реліз — v1.213.0** — **MyCareersFuture (Сінгапур) + фікси якості сканування** — національний банк вакансій Сінгапуру тепер сканується; вакансії Greenhouse можна фільтрувати за контентом; а віддалені вакансії Ashby більше не зникають за локацією «лише місто». **2724 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

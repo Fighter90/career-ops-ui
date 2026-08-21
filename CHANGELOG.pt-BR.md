@@ -8,6 +8,22 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.213.0] — 2026-08-22
+
+**Adicionado — MyCareersFuture, o banco de vagas nacional de Singapura, como fonte de varredura. Corrigido — vagas do Greenhouse agora carregam seu texto completo para os filtros de conteúdo funcionarem, e vagas remotas do Ashby não ficam mais escondidas atrás de uma localização só-cidade.**
+
+### Adicionado
+- **MyCareersFuture (Singapura)** (mycareersfuture.gov.sg) — uma nova fonte de varredura sem tokens para o banco de vagas público nacional de Singapura, mantido pela Workforce Singapore. Selecione-a no filtro **Fonte** em `#/scan`, ou adicione uma empresa com `provider: mycareersfuture` e uma lista opcional de `keywords` (recorre aos cargos-alvo do seu perfil, como o Job Bank). Lê a API de busca pública, com host fixado, sem chave.
+
+### Corrigido
+- **Vagas do Greenhouse agora podem ser filtradas por conteúdo.** Os boards do Greenhouse são buscados com o corpo completo da vaga, decodificado para texto puro como a descrição — então um `content_filter` (ou um filtro por palavras de país/visto) que lê a descrição agora casa de fato com as vagas do Greenhouse em vez de deixá-las passar às cegas.
+- **Vagas remotas do Ashby não são mais descartadas por um filtro de cidade.** O Ashby mantém o modelo de trabalho (Remote/Hybrid/Onsite) separado da cidade do escritório, então uma vaga totalmente remota ainda aparecia como p. ex. "San Francisco" — e um filtro de localização bloqueando essa cidade escondia uma vaga que você poderia aceitar. Agora "Remote" é anexado à localização quando a vaga é remota, e `workplaceType` vence um `isRemote` desatualizado para não rotular errado uma vaga híbrida ancorada no escritório.
+
+### Notas
+- Fontes de varredura: **82** (77 em inglês + 5 russas). Conjunto de testes: **2724**. Um endurecimento contra DNS-rebinding (validar o endereço resolvido de um host antes de conectar) está na fila para uma versão dedicada — precisa de um design próprio de web-ui, não de um port direto.
+
+
+
 ## [1.212.1] — 2026-08-21
 
 **Corrigido — a landing do cvstart.org contava a menos as fontes de vagas do scanner (mostrava 80 e omitia o Job Bank (Canadá)); agora volta a bater com as 81 do app, e o build do site falha ruidosamente se as duas divergirem.**

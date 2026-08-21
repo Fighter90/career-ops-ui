@@ -1,9 +1,15 @@
 /**
  * Greenhouse public boards-api wrapper.
- *   GET https://boards-api.greenhouse.io/v1/boards/<slug>/jobs
+ *   GET https://boards-api.greenhouse.io/v1/boards/<slug>/jobs?content=true
  *
- * Each job has location.name (often "Hybrid - SF, NYC") + offices[].
+ * Each job has location.name (often "Hybrid - SF, NYC") + offices[]. With
+ * `content=true` each posting also carries its full body, which we decode to
+ * plain text as `description` — the scanner's content_filter reads
+ * `j.description ?? j.snippet` (en-scanner.mjs), so without it every Greenhouse
+ * board passed that filter blind.
  */
+import { decodeEntities } from '../html-entities.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 // v1.69.0 (P-14) — self-describing adapter metadata; see ashby.mjs for the rationale.
@@ -64,9 +70,38 @@ export function buildOfficeMap(json) {
   return map;
 }
 
+// ── Posting body → plain text ────────────────────────────────────────
+// With content=true the list response embeds each posting's body as
+// DOUBLE-encoded HTML: the JSON string carries entity-escaped markup
+// (`&lt;p&gt;`), so the first decode pass reveals the real tags, and
+// text-level entities (`&amp;`, `&#39;`) only become decodable once the tags
+// are stripped. Plain text is what the content_filter matches against —
+// substring matching over raw HTML misses keywords split by a tag. Capped to
+// keep scan payloads sane (a 10 KB/posting body is normal for Greenhouse).
+const DESCRIPTION_CAP = 4000;
+
+/** Entity-decoded markup → stripped plain text. Exported for tests. */
+export function contentToText(content) {
+  if (typeof content !== 'string' || !content) return '';
+  const html = decodeEntities(content);
+  const noMedia = html.replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, ' ');
+  return decodeEntities(noMedia.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim().slice(0, DESCRIPTION_CAP);
+}
+
+/** Append `content=true` to a boards-api /jobs URL, preserving any existing query. */
+export function withContent(apiUrl) {
+  try {
+    const u = new URL(apiUrl);
+    u.searchParams.set('content', 'true');
+    return u.href;
+  } catch {
+    return apiUrl;
+  }
+}
+
 export async function fetchGreenhouse(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts; // REVIEW-B3
-  const res = await fetchImpl(apiUrl, { signal, headers: { 'User-Agent': UA, Accept: 'application/json' } });
+  const res = await fetchImpl(withContent(apiUrl), { signal, headers: { 'User-Agent': UA, Accept: 'application/json' } });
   if (!res.ok) {
     const err = new Error(`Greenhouse: HTTP ${res.status} (${apiUrl})`);
     err.status = res.status;
@@ -123,6 +158,7 @@ function normalize(j, officeMap = null) {
     relocates,
     date: j.first_published || j.updated_at || '',
     snippet: '',
+    description: contentToText(j.content),
     source: 'greenhouse',
   };
 }

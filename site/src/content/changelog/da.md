@@ -8,6 +8,22 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.213.0] — 2026-08-22
+
+**Tilføjet — MyCareersFuture, Singapores nationale jobbank, som scanningskilde. Rettet — Greenhouse-opslag bærer nu deres fulde tekst, så indholdsfiltre virker, og fjern-Ashby-roller skjules ikke længere bag en by-kun lokation.**
+
+### Tilføjet
+- **MyCareersFuture (Singapore)** (mycareersfuture.gov.sg) — en ny token-fri scanningskilde for Singapores nationale offentlige jobbank, drevet af Workforce Singapore. Vælg den i **Kilde**-filteret på `#/scan`, eller tilføj en virksomhed med `provider: mycareersfuture` og en valgfri `keywords`-liste (falder tilbage til din profils målroller, som Job Bank). Læser det offentlige søge-API, host-fastlåst, uden nøgle.
+
+### Rettet
+- **Greenhouse-opslag kan nu indholdsfiltreres.** Greenhouse-boards hentes med opslagets fulde brødtekst, afkodet til ren tekst som opslagets beskrivelse — så et `content_filter` (eller et lande-/visum-ordfilter), der læser beskrivelsen, matcher nu faktisk Greenhouse-roller i stedet for at lade dem passere blindt.
+- **Fjern-Ashby-roller droppes ikke længere af et byfilter.** Ashby holder arbejdsmodellen (Remote/Hybrid/Onsite) adskilt fra kontorbyen, så en fuldt fjernrolle læstes stadig som f.eks. "San Francisco" — og et lokationsfilter, der blokerer den by, skjulte en rolle, du kunne tage. "Remote" tilføjes nu lokationen, når rollen er fjern, og `workplaceType` vinder over et forældet `isRemote`-flag, så en kontor-forankret hybridrolle ikke fejlmærkes.
+
+### Noter
+- Scanningskilder: **82** (77 engelske + 5 russiske). Testsuite: **2724**. En DNS-rebinding-hærdning (validér en værts opløste adresse før forbindelse) er sat i kø til en dedikeret udgivelse — den kræver et web-ui-specifikt design frem for et direkte port.
+
+
+
 ## [1.212.1] — 2026-08-21
 
 **Rettet — cvstart.org-landingssiden undertalte scannerens jobkilder (den viste 80 og udelod Job Bank (Canada)); den matcher nu appens 81 igen, og site-buildet fejler højlydt, hvis de to nogensinde er uenige.**

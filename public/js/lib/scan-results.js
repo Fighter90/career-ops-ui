@@ -55,6 +55,7 @@ window.ScanResults = (function () {
     { value: 'lever',           label: 'Lever' },
     { value: 'manfred',         label: 'getManfred' },
     { value: 'meituan',         label: 'Meituan' },
+    { value: 'mycareersfuture', label: 'MyCareersFuture' },
     { value: 'nodesk',          label: 'NoDesk' },
     { value: 'nofluffjobs',     label: 'NoFluffJobs' },
     { value: 'oraclecloud',     label: 'Oracle Cloud (ORC)' },

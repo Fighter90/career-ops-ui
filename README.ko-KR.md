@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2687%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2724%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.212.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.212.1)
+[![release](https://img.shields.io/badge/release-v1.213.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.213.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.212.1** — **랜딩 소스 수 수정** — v1.212.0 이후 cvstart.org가 채용 소스를 80개로 나열하며 Job Bank (캐나다)를 누락했습니다. 앱과 동기화된 81로 돌아왔고, 사이트 빌드가 이제 소스 수 어긋남에 대해 강하게 실패합니다. **2687 개 테스트.**
+> **🆕 최신 릴리스 — v1.213.0** — **MyCareersFuture (싱가포르) + 스캔 품질 수정** — 싱가포르 국가 채용 은행을 이제 스캔할 수 있고, Greenhouse 공고를 콘텐츠로 필터링할 수 있으며, 원격 Ashby 공고가 도시만 표시된 위치 뒤로 더는 사라지지 않습니다. **2724 개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

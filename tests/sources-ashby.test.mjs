@@ -38,3 +38,30 @@ test('ashby: missing location + secondaries yields empty string, not a crash', a
   const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
   assert.equal(jobs[0].location, '');
 });
+
+test('ashby: workplaceType Remote appends "Remote" to the city location', async () => {
+  const data = { jobs: [{ id: 'r1', title: 'X', jobUrl: 'https://jobs.ashbyhq.com/foo/r1', location: 'San Francisco', workplaceType: 'Remote' }] };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
+  assert.equal(jobs[0].location, 'San Francisco · Remote');
+  assert.equal(jobs[0].isRemote, true);
+});
+
+test('ashby: workplaceType wins over isRemote — Hybrid+isRemote is NOT labeled remote', async () => {
+  const data = { jobs: [{ id: 'r2', title: 'X', jobUrl: 'https://jobs.ashbyhq.com/foo/r2', location: 'Berlin', workplaceType: 'Hybrid', isRemote: true }] };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
+  assert.equal(jobs[0].location, 'Berlin'); // no "Remote" appended
+  assert.equal(jobs[0].isRemote, false);
+});
+
+test('ashby: isRemote true with no workplaceType falls back to remote', async () => {
+  const data = { jobs: [{ id: 'r3', title: 'X', jobUrl: 'https://jobs.ashbyhq.com/foo/r3', location: 'Tokyo', isRemote: true }] };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
+  assert.equal(jobs[0].location, 'Tokyo · Remote');
+  assert.equal(jobs[0].isRemote, true);
+});
+
+test('ashby: no duplicate "Remote" when the location already carries it', async () => {
+  const data = { jobs: [{ id: 'r4', title: 'X', jobUrl: 'https://jobs.ashbyhq.com/foo/r4', location: 'Remote (US)', workplaceType: 'Remote' }] };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
+  assert.equal(jobs[0].location, 'Remote (US)');
+});

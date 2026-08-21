@@ -1487,7 +1487,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 
 ## 17. 如何添加新的招聘门户来源
 
-career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。截至 v1.211.0,`server/lib/sources/` 注册表自带 **81** 个 adapter —— **76 个英文 + 5 个俄文**板块。英文集合涵盖主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由显式 `provider:` 选择的全板块聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及从 `careers_url` 主机或显式 `api:` URL 自动检测的按租户 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整列表永远无需在此手工统计 —— 它会从 `server/lib/sources/` 自动发现,并在 `#/scan` 的 Source 下拉框中实时显示。** YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
+career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。截至 v1.213.0,`server/lib/sources/` 注册表自带 **82** 个 adapter —— **77 个英文 + 5 个俄文**板块。英文集合涵盖主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由显式 `provider:` 选择的全板块聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及从 `careers_url` 主机或显式 `api:` URL 自动检测的按租户 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整列表永远无需在此手工统计 —— 它会从 `server/lib/sources/` 自动发现,并在 `#/scan` 的 Source 下拉框中实时显示。** YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 即插即用自动发现。** 添加第 12 个来源现在是**纯粹的文件投放**。注册表
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))
