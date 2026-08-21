@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.212.1] — 2026-08-21
+
+**Corrigido — a landing do cvstart.org contava a menos as fontes de vagas do scanner (mostrava 80 e omitia o Job Bank (Canadá)); agora volta a bater com as 81 do app, e o build do site falha ruidosamente se as duas divergirem.**
+
+### Corrigido
+- **A contagem de "Fontes de vagas" da landing voltou a ficar em sincronia com o app.** Após v1.212.0, o cvstart.org mostrava **80** boards e faltava o novo chip do **Job Bank (Canadá)**, enquanto o app, o dropdown de varredura e o guia de ajuda listavam **81**. A landing monta sua lista carregando o registro ao vivo do scanner, e uma fonte falhou ao carregar nesse build pela forma como importava uma dependência YAML, então foi descartada em silêncio. Agora o Job Bank carrega essa dependência de forma preguiçosa, igual ao resto do app no momento da varredura, então sempre aparece.
+- **O build do site agora se recusa a publicar uma contagem de fontes divergente.** Se o registro enumerar menos fontes do que existem em disco (a assinatura de uma fonte que falhou ao carregar), o build falha com uma mensagem clara em vez de publicar o número errado.
+
+### Notas
+- O comportamento do app não muda — o scanner sempre teve as 81 fontes; só a landing foi afetada. Fontes de varredura: **81** (76 em inglês + 5 russas) — inalterado. Conjunto de testes: **2687**.
+
+
+
 ## [1.212.0] — 2026-08-21
 
 **Adicionado — Job Bank (Canadá), o board de empregos nacional federal. Removido — EchoJobs (o feed agora está bloqueado por anti-bot). Corrigido — boards com Consider voltam a retornar resultados e vagas Lever multi-localização não escondem mais metade das localizações.**

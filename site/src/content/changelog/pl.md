@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.212.1] — 2026-08-21
+
+**Naprawiono — landing cvstart.org zaniżał liczbę źródeł ofert skanera (pokazywał 80 i pomijał Job Bank (Kanada)); znów zgadza się z 81 w aplikacji, a build strony głośno się wywala, jeśli te liczby się rozjadą.**
+
+### Naprawiono
+- **Licznik „Źródła ofert" na landingu znów jest zsynchronizowany z aplikacją.** Po v1.212.0 cvstart.org pokazywał **80** tablic i brakowało nowego chipa **Job Bank (Kanada)**, podczas gdy aplikacja, lista rozwijana skanowania i przewodnik pomocy wymieniały **81**. Landing buduje listę, ładując żywy rejestr skanera, a jedno źródło nie załadowało się w tym buildzie z powodu sposobu, w jaki wciągało zależność YAML — więc zostało po cichu odrzucone. Job Bank ładuje teraz tę zależność leniwie, tak jak reszta aplikacji podczas skanowania, więc zawsze się pojawia.
+- **Build strony odmawia teraz opublikowania niezgodnej liczby źródeł.** Jeśli rejestr wyliczy mniej źródeł niż istnieje na dysku (sygnatura źródła, które się nie załadowało), build wywala się z czytelnym komunikatem zamiast po cichu opublikować złą liczbę.
+
+### Uwagi
+- Zachowanie aplikacji bez zmian — skaner zawsze miał wszystkie 81 źródeł; dotknięty był tylko landing. Źródła skanowania: **81** (76 angielskich + 5 rosyjskich) — bez zmian. Zestaw testów: **2687**.
+
+
+
 ## [1.212.0] — 2026-08-21
 
 **Dodano — Job Bank (Kanada), federalny krajowy portal pracy. Usunięto — EchoJobs (jego feed jest teraz blokowany przez anty-bota). Naprawiono — portale oparte na Consider znów zwracają wyniki, a wielolokalizacyjne oferty Lever nie ukrywają już połowy lokalizacji.**

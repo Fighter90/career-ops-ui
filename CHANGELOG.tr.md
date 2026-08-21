@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.212.1] — 2026-08-21
+
+**Düzeltildi — cvstart.org açılış sayfası tarayıcının iş kaynaklarını eksik sayıyordu (80 gösteriyor ve Job Bank (Kanada)'yı atlıyordu); artık uygulamanın 81'iyle yeniden eşleşiyor ve ikisi ayrışırsa site derlemesi yüksek sesle başarısız oluyor.**
+
+### Düzeltildi
+- **Açılış sayfasının "İş kaynakları" sayımı uygulamayla yeniden senkron.** v1.212.0 sonrasında cvstart.org **80** pano gösteriyor ve yeni **Job Bank (Kanada)** çipi eksikti; oysa uygulama, tarama açılır menüsü ve yardım kılavuzu hepsi **81** listeliyordu. Açılış sayfası listesini canlı tarayıcı kaydını yükleyerek kurar ve bir kaynak, bir YAML bağımlılığını içeri alma biçimi yüzünden o derlemede yüklenemedi — böylece sessizce düştü. Job Bank artık bu bağımlılığı, uygulamanın geri kalanının tarama sırasında yaptığı gibi tembel yükler, dolayısıyla her zaman görünür.
+- **Site derlemesi artık uyuşmayan bir kaynak sayısını yayımlamayı reddediyor.** Kayıt, diskte var olandan daha az kaynak sayarsa (yüklenemeyen bir kaynağın izi), derleme yanlış sayıyı sessizce yayımlamak yerine açık bir mesajla başarısız olur.
+
+### Notlar
+- Uygulama davranışı değişmedi — tarayıcıda her zaman 81 kaynağın tümü vardı; yalnızca açılış sayfası etkilendi. Tarama kaynakları: **81** (76 İngilizce + 5 Rusça) — değişmedi. Test takımı: **2687**.
+
+
+
 ## [1.212.0] — 2026-08-21
 
 **Eklendi — Job Bank (Kanada), federal ulusal iş panosu. Kaldırıldı — EchoJobs (beslemesi artık bot korumasının arkasında). Düzeltildi — Consider tabanlı panolar yeniden sonuç döndürüyor ve çok konumlu Lever ilanları artık konumlarının yarısını gizlemiyor.**

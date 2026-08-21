@@ -11,6 +11,19 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.212.1] — 2026-08-21
+
+**Corregido — la landing de cvstart.org contaba de menos las fuentes de empleo del escáner (mostraba 80 y omitía Job Bank (Canadá)); ahora vuelve a coincidir con las 81 de la app, y la compilación del sitio falla de forma ruidosa si ambas difieren.**
+
+### Corregido
+- **El recuento de "Fuentes de empleo" de la landing vuelve a estar sincronizado con la app.** Tras v1.212.0, cvstart.org mostraba **80** bolsas y le faltaba el nuevo chip de **Job Bank (Canadá)**, mientras que la app, el desplegable de escaneo y la guía de ayuda listaban **81**. La landing construye su lista cargando el registro en vivo del escáner, y una fuente no se cargó en esa compilación por cómo importaba una dependencia YAML, así que se descartó en silencio. Ahora Job Bank carga esa dependencia de forma diferida, igual que el resto de la app en el momento del escaneo, así que siempre aparece.
+- **La compilación del sitio ahora se niega a publicar un recuento de fuentes desajustado.** Si el registro enumera menos fuentes de las que existen en disco (la firma de una fuente que no cargó), la compilación falla con un mensaje claro en vez de publicar el número equivocado.
+
+### Notas
+- El comportamiento de la app no cambia — el escáner siempre tuvo las 81 fuentes; solo la landing se vio afectada. Fuentes de escaneo: **81** (76 en inglés + 5 rusas) — sin cambios. Conjunto de pruebas: **2687**.
+
+
+
 ## [1.212.0] — 2026-08-21
 
 **Añadido — Job Bank (Canadá), la bolsa de empleo nacional federal. Eliminado — EchoJobs (su feed ahora está bloqueado por anti-bots). Corregido — las bolsas con Consider vuelven a dar resultados y las vacantes de Lever multi-ubicación ya no ocultan la mitad de sus ubicaciones.**

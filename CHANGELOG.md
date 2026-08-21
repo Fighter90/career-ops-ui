@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.212.1] — 2026-08-21
+
+**Fixed — the cvstart.org landing under-counted the scanner's job sources (it showed 80 and omitted Job Bank (Canada)); it now matches the app's 81 again, and the site build fails loudly if the two ever disagree.**
+
+### Fixed
+- **The landing's "Job sources" count is back in sync with the app.** After v1.212.0, cvstart.org showed **80** boards and was missing the new **Job Bank (Canada)** chip, while the app, the scan dropdown, and the help guide all listed **81**. The landing builds its list by loading the live scanner registry, and one source failed to load in that build because of how it pulled in a YAML dependency — so it was silently dropped. Job Bank now loads that dependency lazily, the same way the rest of the app does at scan time, so it always appears.
+- **The site build now refuses to ship a mismatched source count.** If the registry ever enumerates fewer sources than exist on disk (the signature of a source that failed to load), the build fails with a clear message instead of quietly publishing the wrong number.
+
+### Notes
+- App behaviour is unchanged — the scanner always had all 81 sources; only the landing page was affected. Scan sources: **81** (76 English + 5 Russian) — unchanged. Test suite: **2687**.
+
+
+
 ## [1.212.0] — 2026-08-21
 
 **Added — Job Bank (Canada), the federal national job board. Removed — EchoJobs (its feed is now bot-blocked). Fixed — Consider boards return results again, and multi-location Lever roles no longer hide half their locations.**

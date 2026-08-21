@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.212.1] — 2026-08-21
+
+**Behoben — die cvstart.org-Landingpage zählte die Job-Quellen des Scanners zu niedrig (sie zeigte 80 und ließ Job Bank (Kanada) aus); sie stimmt nun wieder mit den 81 der App überein, und der Site-Build schlägt laut fehl, falls beide je auseinanderlaufen.**
+
+### Behoben
+- **Der „Job-Quellen"-Zähler der Landingpage ist wieder mit der App synchron.** Nach v1.212.0 zeigte cvstart.org **80** Boards und der neue **Job Bank (Kanada)**-Chip fehlte, während App, Scan-Dropdown und Hilfe-Guide alle **81** auflisteten. Die Landingpage baut ihre Liste, indem sie das Live-Scanner-Register lädt, und eine Quelle ließ sich in diesem Build nicht laden — wegen der Art, wie sie eine YAML-Abhängigkeit einband — und wurde still verworfen. Job Bank lädt diese Abhängigkeit nun verzögert, genau wie der Rest der App zur Scan-Zeit, sodass sie immer erscheint.
+- **Der Site-Build weigert sich nun, eine nicht übereinstimmende Quellenzahl auszuliefern.** Zählt das Register je weniger Quellen auf, als auf der Platte existieren (die Signatur einer nicht geladenen Quelle), schlägt der Build mit einer klaren Meldung fehl, statt still die falsche Zahl zu veröffentlichen.
+
+### Hinweise
+- Das App-Verhalten ist unverändert — der Scanner hatte stets alle 81 Quellen; nur die Landingpage war betroffen. Scan-Quellen: **81** (76 englische + 5 russische) — unverändert. Test-Suite: **2687**.
+
+
+
 ## [1.212.0] — 2026-08-21
 
 **Hinzugefügt — Job Bank (Kanada), das föderale nationale Job-Board. Entfernt — EchoJobs (sein Feed ist nun bot-blockiert). Behoben — Consider-Boards liefern wieder Ergebnisse, und Lever-Stellen mit mehreren Standorten verbergen nicht mehr die Hälfte ihrer Standorte.**
