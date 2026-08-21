@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2685%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2687%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.212.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.212.0)
+[![release](https://img.shields.io/badge/release-v1.212.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.212.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.212.0** — **Job Bank (Canadá) + correcciones** — la bolsa federal de Canadá ya es escaneable, las bolsas con Consider vuelven a dar resultados y las vacantes de Lever multi-ubicación muestran todas sus ubicaciones. (EchoJobs retirada — su feed está bloqueado por anti-bots.) **2685 pruebas.**
+> **🆕 Última versión — v1.212.1** — **Corrección del recuento de fuentes de la landing** — cvstart.org listaba 80 fuentes y descartaba Job Bank (Canadá) tras v1.212.0; vuelve a 81 en sincronía con la app, y la compilación del sitio ahora falla ante cualquier desajuste de recuento. **2687 pruebas.**
 >
 > 📜 Historial completo de versiones: **[CHANGELOG.es.md](CHANGELOG.es.md)**.
 

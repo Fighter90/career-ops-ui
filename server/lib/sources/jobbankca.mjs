@@ -44,7 +44,16 @@ import { fetchText, BROWSER_LIKE_USER_AGENT, delay } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
 import { PATHS } from '../paths.mjs';
 import { existsSync, readFileSync } from 'node:fs';
-import * as yaml from 'js-yaml';
+// NOTE: `js-yaml` is loaded lazily inside resolveProfileKeywords (below), NOT at
+// module top level. The registry enumerates every source with a bare `import()`
+// to read its `meta` — that runs in environments without the repo-root
+// node_modules (the cvstart.org Pages build only `npm ci`s in site/). A
+// top-level `import 'js-yaml'` there throws, the registry silently drops this
+// source, and the landing's source count falls out of sync with the app
+// (v1.212.0 shipped 80 on the site vs 81 everywhere else). Keep source modules
+// import-safe with only node: builtins + relative modules; defer third-party
+// deps to call time. Guarded by tests/site-sources.test.mjs + the sync-assets
+// file-count-vs-registry assertion.
 
 const FEED_URL = 'https://www.jobbank.gc.ca/jobsearch/feed/jobSearchRSSfeed';
 export { FEED_URL };
@@ -115,13 +124,16 @@ export function profileTargetKeywords(profile) {
 /**
  * Read config/profile.yml (if present) and return its target-role keywords.
  * Fails open (empty array) on a missing/unparseable file — a convenience
- * fallback, never a hard requirement, so it must never throw.
+ * fallback, never a hard requirement, so it must never throw. Async because
+ * js-yaml is imported lazily (see the top-of-file note) — it loads at scan time
+ * on the server, where the dep is installed, not at module-import time.
  * @param {string} [profilePath]
- * @returns {string[]}
+ * @returns {Promise<string[]>}
  */
-export function resolveProfileKeywords(profilePath = PATHS.profile) {
+export async function resolveProfileKeywords(profilePath = PATHS.profile) {
   if (!profilePath || !existsSync(profilePath)) return [];
   try {
+    const yaml = await import('js-yaml');
     const profile = yaml.load(readFileSync(profilePath, 'utf8')) || {};
     return profileTargetKeywords(profile);
   } catch {
@@ -314,7 +326,7 @@ export async function fetchJobBankCa(feedUrl = FEED_URL, opts = {}) {
   // jobbankca.keywords[] of its own — same convention vdab.mjs's parent uses.
   // `opts.profileKeywords` is an injectable override (tests avoid the FS).
   if (!keywords.length) {
-    keywords = Array.isArray(opts.profileKeywords) ? opts.profileKeywords : resolveProfileKeywords();
+    keywords = Array.isArray(opts.profileKeywords) ? opts.profileKeywords : await resolveProfileKeywords();
   }
   if (!keywords.length) {
     throw new Error(`jobbankca: entry "${company.name || '(unnamed)'}" has no jobbankca.keywords[] and no config/profile.yml target_roles to fall back to`);

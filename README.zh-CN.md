@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2685%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2687%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.212.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.212.0)
+[![release](https://img.shields.io/badge/release-v1.212.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.212.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.212.0** — **Job Bank（加拿大）+ 修复** — 加拿大联邦招聘板现在可扫描，基于 Consider 的招聘板重新返回结果，多地点 Lever 职位显示全部地点。（EchoJobs 已退役 —— 其源被反爬拦截。） **2685 项测试.**
+> **🆕 最新版本 — v1.212.1** — **落地页来源计数修复** — v1.212.0 之后 cvstart.org 将招聘来源列为 80 并丢失 Job Bank（加拿大）；现已回到与应用同步的 81，站点构建现在对任何来源计数偏差都会硬失败。 **2687 项测试.**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

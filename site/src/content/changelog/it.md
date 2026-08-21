@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.212.1] — 2026-08-21
+
+**Corretto — la landing di cvstart.org contava per difetto le fonti di lavoro dello scanner (mostrava 80 e ometteva Job Bank (Canada)); ora torna a combaciare con le 81 dell'app, e la build del sito fallisce rumorosamente se le due divergono.**
+
+### Corretto
+- **Il conteggio "Fonti di lavoro" della landing è di nuovo sincronizzato con l'app.** Dopo la v1.212.0, cvstart.org mostrava **80** board e mancava il nuovo chip **Job Bank (Canada)**, mentre app, menu a tendina di scansione e guida elencavano tutti **81**. La landing costruisce l'elenco caricando il registro live dello scanner, e una fonte non si è caricata in quella build per come importava una dipendenza YAML — quindi è stata scartata in silenzio. Ora Job Bank carica quella dipendenza in modo pigro, come fa il resto dell'app al momento della scansione, così compare sempre.
+- **La build del sito ora rifiuta di pubblicare un conteggio di fonti incoerente.** Se il registro enumera meno fonti di quante esistano su disco (la firma di una fonte non caricata), la build fallisce con un messaggio chiaro invece di pubblicare in silenzio il numero sbagliato.
+
+### Note
+- Il comportamento dell'app è invariato — lo scanner ha sempre avuto tutte le 81 fonti; solo la landing era interessata. Fonti di scansione: **81** (76 inglesi + 5 russe) — invariato. Suite di test: **2687**.
+
+
+
 ## [1.212.0] — 2026-08-21
 
 **Aggiunto — Job Bank (Canada), la job board nazionale federale. Rimosso — EchoJobs (il suo feed è ora bloccato da anti-bot). Corretto — le board Consider restituiscono di nuovo risultati e le offerte Lever multi-sede non nascondono più metà delle loro sedi.**

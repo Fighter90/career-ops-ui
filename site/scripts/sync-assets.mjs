@@ -131,6 +131,23 @@ for (const f of adapterFiles) {
 }
 const adapters = adapterFiles.length;
 
+// Guard: the registry enumeration (scanSources, via dynamic import) must match
+// the number of adapter files on disk. A mismatch means a source file failed to
+// import — almost always a third-party dep it top-level-imports that the Pages
+// build's `npm ci` (site/ only) never installed (v1.212.0: jobbankca imported
+// js-yaml at module top level, the registry silently dropped it, and the
+// landing shipped 80 sources vs 81 everywhere else). Fail the build loudly here
+// rather than ship a source count that disagrees with the app.
+if (scanSources.length !== adapters) {
+  fail(
+    `source count mismatch: ${adapters} adapter files on disk but the registry ` +
+      `enumerated only ${scanSources.length} — a source failed to import ` +
+      `(check the [sources/registry] warnings above for a missing dependency). ` +
+      `Source modules must import only node: builtins + relative modules at top ` +
+      `level; lazy-load third-party deps inside functions.`,
+  );
+}
+
 // Test count: parse the README badge (kept current by the release process).
 const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
 const testsMatch = readme.match(/badge\/tests-(\d+)%20passed/);

@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.212.1] — 2026-08-21
+
+**Rettet — cvstart.org-landingssiden undertalte scannerens jobkilder (den viste 80 og udelod Job Bank (Canada)); den matcher nu appens 81 igen, og site-buildet fejler højlydt, hvis de to nogensinde er uenige.**
+
+### Rettet
+- **Landingssidens "Jobkilder"-tal er igen synkroniseret med appen.** Efter v1.212.0 viste cvstart.org **80** boards og manglede den nye **Job Bank (Canada)**-chip, mens appen, scan-dropdownen og hjælpeguiden alle listede **81**. Landingssiden bygger sin liste ved at indlæse det levende scanner-register, og én kilde kunne ikke indlæses i det build på grund af måden, den hentede en YAML-afhængighed på — så den blev stille droppet. Job Bank indlæser nu den afhængighed dovent, ligesom resten af appen gør ved scanningstid, så den vises altid.
+- **Site-buildet nægter nu at udgive et uoverensstemmende kildeantal.** Hvis registret nogensinde opremser færre kilder, end der findes på disken (signaturen på en kilde, der ikke kunne indlæses), fejler buildet med en klar besked i stedet for stille at udgive det forkerte tal.
+
+### Noter
+- Appens adfærd er uændret — scanneren havde altid alle 81 kilder; kun landingssiden var påvirket. Scanningskilder: **81** (76 engelske + 5 russiske) — uændret. Testsuite: **2687**.
+
+
+
 ## [1.212.0] — 2026-08-21
 
 **Tilføjet — Job Bank (Canada), det føderale nationale jobboard. Fjernet — EchoJobs (dets feed er nu bot-blokeret). Rettet — Consider-boards giver resultater igen, og Lever-opslag med flere lokationer skjuler ikke længere halvdelen af deres lokationer.**

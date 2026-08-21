@@ -9,7 +9,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SOURCES } from '../server/lib/sources/registry.mjs';
@@ -42,6 +42,42 @@ test('SOURCE_URLS covers every registry source value', () => {
     const u = urls.get(s.value) || '';
     assert.ok(u.startsWith('https://'), `SOURCE_URLS['${s.value}'] must be a non-empty https URL, got '${u}'`);
   }
+});
+
+test('no source module top-level-imports a third-party package (registry enumeration must be dep-free for the Pages build)', () => {
+  // The cvstart.org Pages build imports the live registry to render the "Job
+  // sources" section, but it only `npm ci`s in site/ — the repo-root
+  // node_modules is absent. Any source that top-level-imports a third-party
+  // package throws there, the registry silently drops it, and the landing's
+  // count drifts from the app (v1.212.0: jobbankca imported js-yaml at top
+  // level → site showed 80 vs 81). Enforce: sources import only `node:`
+  // builtins or relative modules at top level; lazy-load third-party deps
+  // (e.g. `const yaml = await import('js-yaml')`) inside functions instead.
+  const dir = resolve(ROOT, 'server', 'lib', 'sources');
+  const files = readdirSync(dir).filter((f) => f.endsWith('.mjs') && f !== 'registry.mjs');
+  const offenders = [];
+  for (const f of files) {
+    const src = readFileSync(resolve(dir, f), 'utf8');
+    for (const m of src.matchAll(/^import\s+(?:[^'";]*\bfrom\s+)?['"]([^'"]+)['"]/gm)) {
+      const spec = m[1];
+      if (spec.startsWith('node:') || spec.startsWith('.')) continue;
+      offenders.push(`${f} → '${spec}'`);
+    }
+  }
+  assert.deepEqual(
+    offenders,
+    [],
+    `sources must import only node: builtins or relative modules at top level; ` +
+      `lazy-load third-party deps inside functions. Offenders: ${offenders.join(', ')}`,
+  );
+});
+
+test('sync-assets guards the registry enumeration against a silent source drop', () => {
+  const sync = readFileSync(resolve(SITE, 'scripts', 'sync-assets.mjs'), 'utf8');
+  assert.ok(
+    /scanSources\.length\s*!==\s*adapters/.test(sync),
+    'sync-assets must fail the build when the registry enumeration count ≠ the adapter file count',
+  );
 });
 
 test('sync-assets exports the sources into facts', () => {
