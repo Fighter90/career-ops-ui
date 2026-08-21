@@ -2,6 +2,22 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.213.0] — 2026-08-22
+
+**Hinzugefügt — MyCareersFuture, Singapurs nationale Jobbank, als Scan-Quelle. Behoben — Greenhouse-Stellen tragen nun ihren vollen Text, damit Inhaltsfilter greifen, und Remote-Ashby-Stellen verstecken sich nicht mehr hinter einem reinen Stadt-Standort.**
+
+### Hinzugefügt
+- **MyCareersFuture (Singapur)** (mycareersfuture.gov.sg) — eine neue token-freie Scan-Quelle für Singapurs nationale öffentliche Jobbank, betrieben von Workforce Singapore. Wähle sie im **Quelle**-Filter auf `#/scan`, oder füge ein Unternehmen mit `provider: mycareersfuture` und einer optionalen `keywords`-Liste hinzu (fällt sonst auf die Zielrollen deines Profils zurück, wie Job Bank). Liest die öffentliche Such-API, host-gepinnt, ohne Schlüssel.
+
+### Behoben
+- **Greenhouse-Stellen sind jetzt inhaltsfilterbar.** Greenhouse-Boards werden mit dem vollen Stellentext geholt, als Beschreibung in Klartext dekodiert — so trifft ein `content_filter` (oder ein Land-/Visum-Wortfilter), der die Beschreibung liest, jetzt tatsächlich Greenhouse-Stellen, statt sie blind durchzulassen.
+- **Remote-Ashby-Stellen werden nicht mehr von einem Stadtfilter verworfen.** Ashby hält das Arbeitsmodell (Remote/Hybrid/Onsite) getrennt von der Bürostadt, sodass eine voll remote Stelle weiterhin z. B. „San Francisco“ las — und ein Standortfilter, der diese Stadt blockt, verbarg eine annehmbare Stelle. „Remote“ wird nun an den Standort angehängt, wenn die Stelle remote ist, und `workplaceType` gewinnt über ein veraltetes `isRemote`-Flag, damit eine büro-verankerte Hybrid-Stelle nicht falsch etikettiert wird.
+
+### Hinweise
+- Scan-Quellen: **82** (77 englische + 5 russische). Test-Suite: **2724**. Eine DNS-Rebinding-Härtung (die aufgelöste Adresse eines Hosts vor dem Verbinden prüfen) ist für eine eigene Version eingeplant — sie braucht ein web-ui-spezifisches Design statt eines direkten Ports.
+
+
+
 ## [1.212.1] — 2026-08-21
 
 **Behoben — die cvstart.org-Landingpage zählte die Job-Quellen des Scanners zu niedrig (sie zeigte 80 und ließ Job Bank (Kanada) aus); sie stimmt nun wieder mit den 81 der App überein, und der Site-Build schlägt laut fehl, falls beide je auseinanderlaufen.**

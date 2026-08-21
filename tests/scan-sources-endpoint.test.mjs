@@ -76,7 +76,7 @@ test('GET /api/scan/sources includes the EN ATS + aggregator sources', async () 
     'bamboohr', 'beesite', 'breezy', 'comeet', 'consider', 'cryptocurrencyjobs', 'csod', 'dassault', 'deutschebahn',
     'eightfold', 'flowxtra', 'gem', 'getonbrd', 'getro', 'glints', 'greenhouse', 'hackernews', 'hecklerkoch',
     'higheredjobs', 'himalayas', 'ibm', 'icims', 'jibeapply', 'jobbankca', 'jobicy', 'jobspresso', 'jobstreet', 'jobvite',
-    'join', 'joinup', 'justjoin', 'landingjobs', 'larajobs', 'lever', 'manfred', 'meituan', 'nodesk',
+    'join', 'joinup', 'justjoin', 'landingjobs', 'larajobs', 'lever', 'manfred', 'meituan', 'mycareersfuture', 'nodesk',
     'nofluffjobs', 'oraclecloud', 'personio', 'phenom', 'pinpoint', 'radancy', 'recruitee', 'remoteok', 'remotive',
     'remotli', 'rheinmetall', 'rippling', 'rss', 'senjob', 'smartrecruiters', 'softgarden', 'solidjobs', 'successfactors', 'teamtailor',
     'tencent', 'thehub', 'themuse', 'tkms', 'vdab', 'weworkremotely', 'workable', 'workday', 'workingnomads',

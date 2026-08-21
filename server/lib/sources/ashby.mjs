@@ -49,11 +49,28 @@ function formatLocation(j) {
       }
     }
   }
+  // Remote work model lives in `workplaceType` ("Remote"|"Hybrid"|"Onsite") and
+  // `isRemote`, SEPARATE from `location` — which keeps naming the office/HQ city
+  // even for a fully remote role. Folding only the location strings renders a
+  // remote posting as e.g. "San Francisco", so a location_filter blocking that
+  // city drops a role the candidate could actually take. Append "Remote" so the
+  // work model is visible to the scanner's string matching without discarding
+  // the city (both `allow: ["Remote"]` and city filters keep working).
+  // `workplaceType` wins when present: a board can carry `isRemote: true` with
+  // `workplaceType: "Hybrid"` for an office-anchored role, and trusting isRemote
+  // alone would mislabel those "Remote"; isRemote is the fallback when
+  // workplaceType is absent.
+  const wt = typeof j.workplaceType === 'string' ? j.workplaceType.trim().toLowerCase() : '';
+  const remote = wt ? wt === 'remote' : j.isRemote === true;
+  if (remote && !parts.some((p) => /remote/i.test(p))) parts.push('Remote');
   return [...new Set(parts)].join(' · ');
 }
 
 function normalize(j) {
-  const isRemote = j.isRemote === true || /remote/i.test(j.workplaceType || '');
+  // workplaceType wins over the isRemote boolean (see formatLocation) so the
+  // exported flag matches the location string.
+  const wtLower = typeof j.workplaceType === 'string' ? j.workplaceType.trim().toLowerCase() : '';
+  const isRemote = wtLower ? wtLower === 'remote' : j.isRemote === true;
   const wt = j.workplaceType || (isRemote ? 'Remote' : 'Onsite');
 
   // Compensation summary

@@ -11,6 +11,22 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.213.0] — 2026-08-22
+
+**Ajouté — MyCareersFuture, la banque d'emploi nationale de Singapour, comme source de scan. Corrigé — les offres Greenhouse portent désormais leur texte complet pour que les filtres de contenu fonctionnent, et les offres Ashby en télétravail ne sont plus masquées derrière un lieu réduit à la ville.**
+
+### Ajouté
+- **MyCareersFuture (Singapour)** (mycareersfuture.gov.sg) — une nouvelle source de scan sans jeton pour la banque d'emploi publique nationale de Singapour, gérée par Workforce Singapore. Sélectionnez-la dans le filtre **Source** de `#/scan`, ou ajoutez une entreprise avec `provider: mycareersfuture` et une liste `keywords` facultative (à défaut, elle utilise les rôles cibles de votre profil, comme Job Bank). Lit l'API de recherche publique, épinglée à l'hôte, sans clé.
+
+### Corrigé
+- **Les offres Greenhouse peuvent désormais être filtrées par contenu.** Les boards Greenhouse sont récupérés avec le corps complet de l'annonce, décodé en texte brut comme description — ainsi un `content_filter` (ou un filtre par mots pays/visa) qui lit la description correspond désormais réellement aux offres Greenhouse au lieu de les laisser passer à l'aveugle.
+- **Les offres Ashby en télétravail ne sont plus écartées par un filtre de ville.** Ashby garde le modèle de travail (Remote/Hybrid/Onsite) séparé de la ville du bureau, donc une offre entièrement à distance se lisait encore « San Francisco » — et un filtre de lieu bloquant cette ville masquait un poste que vous pouviez prendre. « Remote » est désormais ajouté au lieu quand le poste est distant, et `workplaceType` l'emporte sur un `isRemote` périmé pour ne pas mal étiqueter une offre hybride ancrée au bureau.
+
+### Notes
+- Sources de scan : **82** (77 anglaises + 5 russes). Suite de tests : **2724**. Un durcissement anti-DNS-rebinding (valider l'adresse résolue d'un hôte avant de se connecter) est mis en file pour une version dédiée — il lui faut une conception propre à web-ui, pas un port direct.
+
+
+
 ## [1.212.1] — 2026-08-21
 
 **Corrigé — la landing de cvstart.org sous-comptait les sources d'emploi du scanner (elle affichait 80 et omettait Job Bank (Canada)) ; elle correspond de nouveau aux 81 de l'app, et la build du site échoue bruyamment si les deux divergent.**

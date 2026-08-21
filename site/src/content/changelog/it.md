@@ -2,6 +2,22 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.213.0] — 2026-08-22
+
+**Aggiunto — MyCareersFuture, la banca del lavoro nazionale di Singapore, come fonte di scansione. Corretto — le offerte Greenhouse ora portano il testo completo perché i filtri di contenuto funzionino, e le offerte Ashby da remoto non restano più nascoste dietro una sede solo-città.**
+
+### Aggiunto
+- **MyCareersFuture (Singapore)** (mycareersfuture.gov.sg) — una nuova fonte di scansione senza token per la banca del lavoro pubblica nazionale di Singapore, gestita da Workforce Singapore. Selezionala nel filtro **Fonte** in `#/scan`, o aggiungi un'azienda con `provider: mycareersfuture` e una lista `keywords` facoltativa (altrimenti usa i ruoli target del tuo profilo, come Job Bank). Legge l'API di ricerca pubblica, con host fissato, senza chiave.
+
+### Corretto
+- **Le offerte Greenhouse ora sono filtrabili per contenuto.** Le board Greenhouse vengono recuperate con il corpo completo dell'annuncio, decodificato in testo semplice come descrizione — così un `content_filter` (o un filtro per parole paese/visto) che legge la descrizione ora corrisponde davvero alle offerte Greenhouse invece di lasciarle passare alla cieca.
+- **Le offerte Ashby da remoto non vengono più scartate da un filtro città.** Ashby tiene il modello di lavoro (Remote/Hybrid/Onsite) separato dalla città dell'ufficio, quindi un ruolo totalmente da remoto si leggeva ancora come es. "San Francisco" — e un filtro sede che blocca quella città nascondeva un ruolo accettabile. Ora "Remote" viene aggiunto alla sede quando il ruolo è da remoto, e `workplaceType` vince su un `isRemote` obsoleto per non etichettare male un ruolo ibrido ancorato all'ufficio.
+
+### Note
+- Fonti di scansione: **82** (77 inglesi + 5 russe). Suite di test: **2724**. Un irrobustimento anti-DNS-rebinding (validare l'indirizzo risolto di un host prima di connettersi) è in coda per una release dedicata — richiede un design proprio di web-ui, non un port diretto.
+
+
+
 ## [1.212.1] — 2026-08-21
 
 **Corretto — la landing di cvstart.org contava per difetto le fonti di lavoro dello scanner (mostrava 80 e ometteva Job Bank (Canada)); ora torna a combaciare con le 81 dell'app, e la build del sito fallisce rumorosamente se le due divergono.**

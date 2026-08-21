@@ -7,16 +7,16 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2687%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2724%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.212.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.212.1)
+[![release](https://img.shields.io/badge/release-v1.213.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.213.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.212.1** — **Poprawka licznika źródeł na landingu** — po v1.212.0 cvstart.org wymieniał 80 źródeł i gubił Job Bank (Kanada); wraca do 81 w zgodzie z aplikacją, a build strony teraz twardo się wywala przy każdej rozbieżności licznika. **2687 testów.**
+> **🆕 Najnowsze wydanie — v1.213.0** — **MyCareersFuture (Singapur) + poprawki jakości skanowania** — krajowy bank ofert Singapuru jest teraz skanowalny; oferty Greenhouse można filtrować po treści; a zdalne oferty Ashby nie znikają już za lokalizacją tylko-miasto. **2724 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

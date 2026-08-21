@@ -2,6 +2,22 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.213.0] — 2026-08-22
+
+**Eklendi — Singapur'un ulusal iş bankası MyCareersFuture bir tarama kaynağı olarak. Düzeltildi — Greenhouse ilanları artık içerik filtrelerinin çalışması için tam metnini taşıyor ve uzaktan Ashby rolleri yalnızca-şehir bir konumun arkasında gizlenmiyor.**
+
+### Eklendi
+- **MyCareersFuture (Singapur)** (mycareersfuture.gov.sg) — Workforce Singapore tarafından işletilen Singapur ulusal kamu iş bankası için yeni, token gerektirmeyen bir tarama kaynağı. `#/scan` sayfasındaki **Kaynak** filtresinden seçin ya da isteğe bağlı bir `keywords` listesiyle `provider: mycareersfuture` olan bir şirket ekleyin (yoksa Job Bank gibi profilinizin hedef rollerine düşer). Genel arama API'sini okur, ana bilgisayara sabitli, anahtarsız.
+
+### Düzeltildi
+- **Greenhouse ilanları artık içeriğe göre filtrelenebiliyor.** Greenhouse panoları ilanın tam gövdesiyle çekilir, ilanın açıklaması olarak düz metne çözülür — böylece açıklamayı okuyan bir `content_filter` (ya da ülke/vize kelime filtresi) artık Greenhouse ilanlarını körlemesine geçirmek yerine gerçekten eşleştirir.
+- **Uzaktan Ashby rolleri artık bir şehir filtresiyle elenmiyor.** Ashby çalışma modelini (Remote/Hybrid/Onsite) ofis şehrinden ayrı tutar, bu yüzden tamamen uzaktan bir rol hâlâ örn. "San Francisco" olarak okunuyordu — ve o şehri engelleyen bir konum filtresi kabul edebileceğiniz bir rolü gizliyordu. Rol uzaktansa artık konuma "Remote" eklenir ve ofise bağlı bir hibrit rolün yanlış etiketlenmemesi için `workplaceType`, eskimiş bir `isRemote` bayrağına üstün gelir.
+
+### Notlar
+- Tarama kaynakları: **82** (77 İngilizce + 5 Rusça). Test takımı: **2724**. Bir DNS-rebinding sıkılaştırması (bir ana bilgisayarın çözümlenen adresini bağlanmadan önce doğrulamak) özel bir sürüm için sıraya alındı — doğrudan bir port yerine web-ui'ye özgü bir tasarım gerektiriyor.
+
+
+
 ## [1.212.1] — 2026-08-21
 
 **Düzeltildi — cvstart.org açılış sayfası tarayıcının iş kaynaklarını eksik sayıyordu (80 gösteriyor ve Job Bank (Kanada)'yı atlıyordu); artık uygulamanın 81'iyle yeniden eşleşiyor ve ikisi ayrışırsa site derlemesi yüksek sesle başarısız oluyor.**

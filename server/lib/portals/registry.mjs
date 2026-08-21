@@ -94,6 +94,7 @@ import { larajobsAdapter } from './adapters/larajobs.mjs';
 import { senjobAdapter } from './adapters/senjob.mjs';
 import { youratorAdapter } from './adapters/yourator.mjs';
 import { jobbankcaAdapter } from './adapters/jobbankca.mjs';
+import { mycareersfutureAdapter } from './adapters/mycareersfuture.mjs';
 // v1.119.0 — Chinese tech boards, zero-auth
 // public JSON APIs, host-detected or explicit `provider:`.
 import { meituanAdapter } from './adapters/meituan.mjs';
@@ -211,6 +212,7 @@ export const ALL_ADAPTERS = [
   senjobAdapter,
   youratorAdapter,
   jobbankcaAdapter,
+  mycareersfutureAdapter,
   // v1.119.0 — meituan (zhaopin.meituan.com)
   // and tencent (careers.tencent.com) are single-company Chinese tech boards
   // with public JSON APIs — host-detected or explicit `provider:`, zero-auth,

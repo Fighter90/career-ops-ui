@@ -8,6 +8,22 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.213.0] — 2026-08-22
+
+**Added — MyCareersFuture, Singapore's national job bank, as a scan source. Fixed — Greenhouse postings now carry their full text so content filters work, and remote Ashby roles are no longer hidden behind a city-only location.**
+
+### Added
+- **MyCareersFuture (Singapore)** (mycareersfuture.gov.sg) — a new zero-token scan source for Singapore's national public job bank, run by Workforce Singapore. Pick it in the `#/scan` **Source** filter, or add a `provider: mycareersfuture` company with an optional `keywords` list (it falls back to your profile's target roles, like Job Bank). Reads the public search API, host-pinned, no key.
+
+### Fixed
+- **Greenhouse postings can now be content-filtered.** Greenhouse boards are fetched with their full posting body, decoded to plain text as the posting's description — so a `content_filter` (or a country/visa keyword filter) that reads the description now actually matches Greenhouse roles instead of passing them through blind.
+- **Remote Ashby roles are no longer dropped by a city filter.** Ashby keeps the work model (Remote/Hybrid/Onsite) separate from the office city, so a fully-remote role still read as e.g. "San Francisco" — and a location filter blocking that city hid a role you could take. "Remote" is now appended to the location when the role is remote, and `workplaceType` wins over a stale `isRemote` flag so an office-anchored Hybrid role isn't mislabeled.
+
+### Notes
+- Scan sources: **82** (77 English + 5 Russian). Test suite: **2724**. A DNS-rebinding hardening (validating a hostname's resolved address before connecting) is queued for a dedicated release — it needs a web-ui-specific design rather than a direct port.
+
+
+
 ## [1.212.1] — 2026-08-21
 
 **Fixed — the cvstart.org landing under-counted the scanner's job sources (it showed 80 and omitted Job Bank (Canada)); it now matches the app's 81 again, and the site build fails loudly if the two ever disagree.**

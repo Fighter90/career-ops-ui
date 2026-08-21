@@ -99,14 +99,14 @@ test('registry: Workday defaults site=External when careers_url omits site', () 
 
 test('registry: ALL_ADAPTERS has the expected entries', async () => {
   const { ALL_ADAPTERS } = await import('../server/lib/portals/registry.mjs');
-  assert.equal(ALL_ADAPTERS.length, 76);
+  assert.equal(ALL_ADAPTERS.length, 77);
   const ids = ALL_ADAPTERS.map((a) => a.id).sort();
   assert.deepEqual(ids, [
     '4dayweek', 'a16z-speedrun-talent', 'agenticjobs', 'alibaba', 'amazon', 'arbeitnow', 'arbeitsagentur', 'ashby', 'avature',
     'bamboohr', 'beesite', 'breezy', 'comeet', 'consider', 'cryptocurrencyjobs', 'csod', 'dassault', 'deutschebahn',
     'eightfold', 'flowxtra', 'gem', 'getonbrd', 'getro', 'glints', 'greenhouse', 'hackernews', 'hecklerkoch',
     'higheredjobs', 'himalayas', 'ibm', 'icims', 'jibeapply', 'jobbankca', 'jobicy', 'jobspresso', 'jobstreet', 'jobvite',
-    'join', 'joinup', 'justjoin', 'landingjobs', 'larajobs', 'lever', 'manfred', 'meituan', 'nodesk',
+    'join', 'joinup', 'justjoin', 'landingjobs', 'larajobs', 'lever', 'manfred', 'meituan', 'mycareersfuture', 'nodesk',
     'nofluffjobs', 'oraclecloud', 'personio', 'phenom', 'pinpoint', 'radancy', 'recruitee', 'remoteok', 'remotive',
     'remotli', 'rheinmetall', 'rippling', 'rss', 'senjob', 'smartrecruiters', 'softgarden', 'solidjobs', 'successfactors', 'teamtailor',
     'tencent', 'thehub', 'themuse', 'tkms', 'vdab', 'weworkremotely', 'workable', 'workday', 'workingnomads',

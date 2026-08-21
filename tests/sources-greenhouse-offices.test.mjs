@@ -13,7 +13,41 @@ import {
   isWorkModelOnly,
   officesUrlFor,
   buildOfficeMap,
+  contentToText,
+  withContent,
 } from '../server/lib/sources/greenhouse.mjs';
+
+test('withContent: appends content=true, preserving any existing query', () => {
+  assert.equal(
+    withContent('https://boards-api.greenhouse.io/v1/boards/acme/jobs'),
+    'https://boards-api.greenhouse.io/v1/boards/acme/jobs?content=true',
+  );
+  assert.equal(
+    withContent('https://boards-api.greenhouse.io/v1/boards/acme/jobs?foo=1'),
+    'https://boards-api.greenhouse.io/v1/boards/acme/jobs?foo=1&content=true',
+  );
+});
+
+test('contentToText: decodes double-encoded HTML to plain text, strips script/style, caps', () => {
+  // Greenhouse embeds the body as entity-escaped markup: &lt;p&gt;… .
+  const body = '&lt;p&gt;Build &amp; ship backend services.&lt;/p&gt;&lt;script&gt;evil()&lt;/script&gt;';
+  const text = contentToText(body);
+  assert.equal(text, 'Build & ship backend services.');
+  assert.equal(contentToText(''), '');
+  assert.equal(contentToText(null), '');
+  assert.equal(contentToText('&lt;p&gt;' + 'x'.repeat(5000) + '&lt;/p&gt;').length, 4000); // DESCRIPTION_CAP
+});
+
+test('fetchGreenhouse: requests content=true and populates description', async () => {
+  let requested = '';
+  const fetchImpl = async (url) => {
+    requested = String(url);
+    return { ok: true, json: async () => ({ jobs: [{ id: 1, title: 'Backend Engineer', absolute_url: 'https://boards.greenhouse.io/acme/jobs/1', location: { name: 'Berlin' }, content: '&lt;p&gt;Work with &amp; on Go.&lt;/p&gt;' }] }) };
+  };
+  const out = await fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/acme/jobs', { fetchImpl });
+  assert.ok(requested.includes('content=true'), 'request must carry content=true');
+  assert.equal(out[0].description, 'Work with & on Go.');
+});
 
 test('isWorkModelOnly: bare work models are enrichable, geographies are not', () => {
   assert.equal(isWorkModelOnly('Hybrid'), true);
