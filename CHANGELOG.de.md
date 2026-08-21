@@ -2,6 +2,25 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.212.0] — 2026-08-21
+
+**Hinzugefügt — Job Bank (Kanada), das föderale nationale Job-Board. Entfernt — EchoJobs (sein Feed ist nun bot-blockiert). Behoben — Consider-Boards liefern wieder Ergebnisse, und Lever-Stellen mit mehreren Standorten verbergen nicht mehr die Hälfte ihrer Standorte.**
+
+### Hinzugefügt
+- **Job Bank (Kanada)** (jobbank.gc.ca) — eine neue token-freie Scan-Quelle für Kanadas föderalen nationalen Arbeitsvermittlungsdienst, ein Board mit hohem Volumen, das kein Aggregator gut abdeckt. Wähle sie im **Quelle**-Filter auf `#/scan`, oder füge ein Unternehmen mit `provider: jobbankca` und einer optionalen `keywords`-Liste hinzu (fällt sonst auf die Zielrollen deines Profils zurück). Liest den öffentlichen ATOM-Feed, host-gepinnt, ohne Schlüssel.
+
+### Entfernt
+- **EchoJobs** — stillgelegt. Sein öffentlicher Feed liegt nun hinter Bot-Schutz und liefert nichts, sodass ihn zu behalten nur einen Scan-Slot verschwendete.
+
+### Behoben
+- **Consider-Boards liefern wieder Ergebnisse.** Consider verlangt jetzt einen anonymen Handshake (ein GET, der ein Session-Cookie + CSRF-Token setzt), bevor es die Suche annimmt; ohne ihn wurde die Anfrage still abgelehnt und das Board wirkte leer.
+- **Lever-Stellen mit mehreren Standorten verbergen nicht mehr die Hälfte ihrer Standorte.** Lever legt eine primäre Stadt in `location` und den Rest in `allLocations`; nur die primäre zu lesen ließ eine in Barcelona UND Montevideo offene Stelle Barcelona-only erscheinen (und wurde von einem Standortfilter fälschlich verworfen). Beide werden nun zusammengeführt.
+
+### Hinweise
+- Sanfteres Tempo zwischen Seiten (250 ms statt 150) auf den paginierten Boards, aus Höflichkeit gegenüber Single-Host-Karriereseiten. Scan-Quellen: **81** (76 englische + 5 russische) — unverändert (Job Bank rein, EchoJobs raus). Test-Suite: **2685**.
+
+
+
 ## [1.211.0] — 2026-08-19
 
 **Hinzugefügt — Yourator, ein taiwanisches Tech-Job-Board. Behoben — akzentuierte Titel-/Firmennamen-Entities werden nun überall dekodiert, und ein Unternehmen mit einem Akzent im Namen wird nicht mehr fälschlich markiert.**

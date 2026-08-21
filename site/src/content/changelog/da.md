@@ -8,6 +8,25 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.212.0] — 2026-08-21
+
+**Tilføjet — Job Bank (Canada), det føderale nationale jobboard. Fjernet — EchoJobs (dets feed er nu bot-blokeret). Rettet — Consider-boards giver resultater igen, og Lever-opslag med flere lokationer skjuler ikke længere halvdelen af deres lokationer.**
+
+### Tilføjet
+- **Job Bank (Canada)** (jobbank.gc.ca) — en ny token-fri scanningskilde for Canadas føderale nationale beskæftigelsestjeneste, et board med stort volumen som ingen aggregator dækker godt. Vælg den i **Kilde**-filteret på `#/scan`, eller tilføj en virksomhed med `provider: jobbankca` og en valgfri `keywords`-liste (falder tilbage til din profils målroller). Læser det offentlige ATOM-feed, host-fastlåst, uden nøgle.
+
+### Fjernet
+- **EchoJobs** — pensioneret. Dets offentlige feed er nu bag bot-beskyttelse og returnerer intet, så at beholde den spildte blot en scanningsplads.
+
+### Rettet
+- **Consider-boards giver resultater igen.** Consider kræver nu et anonymt håndtryk (et GET der sår en session-cookie + CSRF-token) før det accepterer søgningen; uden det blev anmodningen lydløst afvist, og boardet så tomt ud.
+- **Lever-opslag med flere lokationer skjuler ikke længere halvdelen af deres lokationer.** Lever lægger én primær by i `location` og resten i `allLocations`; kun at læse den primære fik et opslag åbent i Barcelona OG Montevideo til at se ud som kun-Barcelona (og blev fejlagtigt droppet af et lokationsfilter). Begge flettes nu.
+
+### Noter
+- Blidere tempo mellem sider (250 ms, op fra 150) på de paginerede boards, af høflighed over for single-host karrieresider. Scanningskilder: **81** (76 engelske + 5 russiske) — uændret (Job Bank ind, EchoJobs ud). Testsuite: **2685**.
+
+
+
 ## [1.211.0] — 2026-08-19
 
 **Tilføjet — Yourator, et taiwansk tech-jobboard. Rettet — accenttegns-entiteter i titler/firmanavne afkodes nu overalt, og en virksomhed med en accent i navnet flagges ikke længere fejlagtigt.**

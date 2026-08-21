@@ -8,6 +8,25 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.212.0] — 2026-08-21
+
+**Added — Job Bank (Canada), the federal national job board. Removed — EchoJobs (its feed is now bot-blocked). Fixed — Consider boards return results again, and multi-location Lever roles no longer hide half their locations.**
+
+### Added
+- **Job Bank (Canada)** (jobbank.gc.ca) — a new zero-token scan source for Canada's federal national employment service, a high-volume board no aggregator covers well. Pick it in the `#/scan` **Source** filter, or add a `provider: jobbankca` company with an optional `keywords` list (it falls back to your profile's target roles). Reads the public ATOM feed, host-pinned, no key.
+
+### Removed
+- **EchoJobs** — retired. Its public feed is now behind bot protection and returns nothing, so keeping it only wasted a scan slot.
+
+### Fixed
+- **Consider-powered boards return results again.** Consider now requires an anonymous handshake (a GET that seeds a session cookie + CSRF token) before it accepts the search request; without it the request was silently rejected and the board looked empty.
+- **Multi-location Lever roles no longer hide half their locations.** Lever puts one primary city in `location` and the rest in `allLocations`; reading only the primary made a role open in Barcelona AND Montevideo look Barcelona-only (and wrongly dropped by a location filter). Both are now merged.
+
+### Notes
+- Gentler 250 ms inter-page pacing (up from 150) on the paginated boards, to stay polite to single-host careers sites. Scan sources: **81** (76 English + 5 Russian) — unchanged (Job Bank in, EchoJobs out). Test suite: **2685**.
+
+
+
 ## [1.211.0] — 2026-08-19
 
 **Added — Yourator, a Taiwan tech job board. Fixed — accented company/title entities now decode everywhere, and a company with an accent in its name is no longer wrongly flagged.**

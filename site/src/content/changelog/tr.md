@@ -2,6 +2,25 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.212.0] — 2026-08-21
+
+**Eklendi — Job Bank (Kanada), federal ulusal iş panosu. Kaldırıldı — EchoJobs (beslemesi artık bot korumasının arkasında). Düzeltildi — Consider tabanlı panolar yeniden sonuç döndürüyor ve çok konumlu Lever ilanları artık konumlarının yarısını gizlemiyor.**
+
+### Eklendi
+- **Job Bank (Kanada)** (jobbank.gc.ca) — hiçbir toplayıcının iyi kapsamadığı yüksek hacimli bir pano olan Kanada federal ulusal istihdam hizmeti için yeni, token gerektirmeyen bir tarama kaynağı. `#/scan` sayfasındaki **Kaynak** filtresinden seçin ya da isteğe bağlı bir `keywords` listesiyle `provider: jobbankca` olan bir şirket ekleyin (yoksa profilinizin hedef rollerine düşer). Genel ATOM beslemesini okur, ana bilgisayara sabitli, anahtarsız.
+
+### Kaldırıldı
+- **EchoJobs** — emekliye ayrıldı. Genel beslemesi artık bot korumasının arkasında ve hiçbir şey döndürmüyor; onu tutmak yalnızca bir tarama yuvası harcıyordu.
+
+### Düzeltildi
+- **Consider tabanlı panolar yeniden sonuç döndürüyor.** Consider artık aramayı kabul etmeden önce anonim bir el sıkışma (oturum çerezi + CSRF belirteci eken bir GET) istiyor; onsuz istek sessizce reddediliyor ve pano boş görünüyordu.
+- **Çok konumlu Lever ilanları artık konumlarının yarısını gizlemiyor.** Lever bir birincil şehri `location`'a, geri kalanını `allLocations`'a koyar; yalnızca birincili okumak, Barselona VE Montevideo'da açık bir ilanı yalnızca-Barselona gibi gösteriyordu (ve bir konum filtresince yanlışlıkla eleniyordu). Artık ikisi birleştiriliyor.
+
+### Notlar
+- Sayfalanmış panolarda sayfalar arası tempo daha yumuşak (150 yerine 250 ms), tek ana bilgisayarlı kariyer sitelerine nezaketen. Tarama kaynakları: **81** (76 İngilizce + 5 Rusça) — değişmedi (Job Bank girdi, EchoJobs çıktı). Test takımı: **2685**.
+
+
+
 ## [1.211.0] — 2026-08-19
 
 **Eklendi — Yourator, Tayvanlı bir teknoloji iş panosu. Düzeltildi — başlık/şirket adındaki aksanlı varlıklar artık her yerde çözülüyor ve adında aksan olan bir şirket artık yanlışlıkla işaretlenmiyor.**

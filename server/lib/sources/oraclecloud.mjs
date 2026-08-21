@@ -62,7 +62,7 @@ export const ORACLE_HOST_RE = /^[a-z0-9-]+\.fa\.(?:[a-z0-9-]+\.)?(?:ocs\.)?oracl
 
 export const PAGE_SIZE = 200;
 export const MAX_PAGES = 25; // safety cap (~5000 jobs); hard ceiling like workday
-const INTER_PAGE_DELAY_MS = 150; // WAF-aware spacing between same-host pages
+const INTER_PAGE_DELAY_MS = 250; // WAF-aware spacing between same-host pages
 const SNIPPET_CAP = 500;
 
 // facetsList is a fixed constant on the finder; %3B is the encoded ';' separator.

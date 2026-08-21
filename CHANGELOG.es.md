@@ -11,6 +11,25 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.212.0] — 2026-08-21
+
+**Añadido — Job Bank (Canadá), la bolsa de empleo nacional federal. Eliminado — EchoJobs (su feed ahora está bloqueado por anti-bots). Corregido — las bolsas con Consider vuelven a dar resultados y las vacantes de Lever multi-ubicación ya no ocultan la mitad de sus ubicaciones.**
+
+### Añadido
+- **Job Bank (Canadá)** (jobbank.gc.ca) — una nueva fuente de escaneo sin tokens para el servicio nacional de empleo federal de Canadá, una bolsa de alto volumen que ningún agregador cubre bien. Selecciónala en el filtro **Fuente** de `#/scan`, o añade una empresa con `provider: jobbankca` y una lista opcional de `keywords` (recurre a los roles objetivo de tu perfil). Lee el feed ATOM público, con host fijado, sin clave.
+
+### Eliminado
+- **EchoJobs** — retirada. Su feed público ahora está tras protección anti-bots y no devuelve nada, así que mantenerla solo malgastaba un espacio de escaneo.
+
+### Corregido
+- **Las bolsas con Consider vuelven a dar resultados.** Consider ahora exige un handshake anónimo (un GET que siembra una cookie de sesión + token CSRF) antes de aceptar la búsqueda; sin él la petición se rechazaba en silencio y la bolsa parecía vacía.
+- **Las vacantes de Lever multi-ubicación ya no ocultan la mitad de sus ubicaciones.** Lever pone una ciudad principal en `location` y el resto en `allLocations`; leer solo la principal hacía que una vacante abierta en Barcelona Y Montevideo pareciera solo-Barcelona (y se descartara por error con un filtro de ubicación). Ahora se fusionan ambas.
+
+### Notas
+- Ritmo entre páginas más suave (250 ms, antes 150) en las bolsas paginadas, para ser corteses con los sitios de empleo de un solo host. Fuentes de escaneo: **81** (76 en inglés + 5 rusas) — sin cambios (entra Job Bank, sale EchoJobs). Conjunto de pruebas: **2685**.
+
+
+
 ## [1.211.0] — 2026-08-19
 
 **Añadido — Yourator, bolsa de empleo tech de Taiwán. Corregido — las entidades acentuadas de título/empresa ahora se decodifican, y una empresa con acento en su nombre ya no se marca por error.**

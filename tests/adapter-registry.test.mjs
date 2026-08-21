@@ -104,8 +104,8 @@ test('registry: ALL_ADAPTERS has the expected entries', async () => {
   assert.deepEqual(ids, [
     '4dayweek', 'a16z-speedrun-talent', 'agenticjobs', 'alibaba', 'amazon', 'arbeitnow', 'arbeitsagentur', 'ashby', 'avature',
     'bamboohr', 'beesite', 'breezy', 'comeet', 'consider', 'cryptocurrencyjobs', 'csod', 'dassault', 'deutschebahn',
-    'echojobs', 'eightfold', 'flowxtra', 'gem', 'getonbrd', 'getro', 'glints', 'greenhouse', 'hackernews', 'hecklerkoch',
-    'higheredjobs', 'himalayas', 'ibm', 'icims', 'jibeapply', 'jobicy', 'jobspresso', 'jobstreet', 'jobvite',
+    'eightfold', 'flowxtra', 'gem', 'getonbrd', 'getro', 'glints', 'greenhouse', 'hackernews', 'hecklerkoch',
+    'higheredjobs', 'himalayas', 'ibm', 'icims', 'jibeapply', 'jobbankca', 'jobicy', 'jobspresso', 'jobstreet', 'jobvite',
     'join', 'joinup', 'justjoin', 'landingjobs', 'larajobs', 'lever', 'manfred', 'meituan', 'nodesk',
     'nofluffjobs', 'oraclecloud', 'personio', 'phenom', 'pinpoint', 'radancy', 'recruitee', 'remoteok', 'remotive',
     'remotli', 'rheinmetall', 'rippling', 'rss', 'senjob', 'smartrecruiters', 'softgarden', 'solidjobs', 'successfactors', 'teamtailor',

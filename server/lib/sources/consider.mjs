@@ -37,7 +37,58 @@
  * Used by the consider adapter (server/lib/portals/adapters/consider.mjs).
  */
 import { createHash } from 'node:crypto';
-import { fetchJson } from '../http-json.mjs';
+import { fetchJson, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+
+// Budget for the anonymous GET that seeds the session cookie and csrfToken.
+// Shorter than the POST budget so a slow board page can't eat the full timeout.
+const HANDSHAKE_TIMEOUT_MS = 8_000;
+
+/**
+ * Consider requires an anonymous `GET /jobs` handshake before it accepts the
+ * search POST (#2764): the board landing page sets a session cookie and embeds
+ * a `"csrfToken":"…"` inside a <script> JSON payload. Returns `{ cookie,
+ * csrfToken }` (either null if absent). On ANY failure both are null so the
+ * caller still attempts the POST — a 412 is a cleaner signal than a silent skip,
+ * and it preserves the pre-fix behaviour for boards that don't enforce CSRF.
+ * Uses the injected `fetchImpl` so tests never hit the network.
+ * @param {string} origin
+ * @param {typeof fetch} fetchImpl
+ * @param {AbortSignal} [signal]
+ */
+async function acquireCsrfHandshake(origin, fetchImpl, signal) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), HANDSHAKE_TIMEOUT_MS);
+  const onAbort = () => controller.abort();
+  if (signal) {
+    if (signal.aborted) controller.abort();
+    else signal.addEventListener('abort', onAbort, { once: true });
+  }
+  try {
+    // redirect:'error' blocks every redirect — a redirect to a private/metadata
+    // IP would otherwise slip past the resolveOrigin() host pin.
+    const res = await fetchImpl(`${origin}/jobs`, {
+      headers: { 'user-agent': BROWSER_LIKE_USER_AGENT, accept: 'text/html,*/*' },
+      redirect: 'error',
+      signal: controller.signal,
+    });
+    if (!res.ok) return { cookie: null, csrfToken: null };
+    const html = await res.text();
+    // getSetCookie() keeps each Set-Cookie as its own string (Node ≥18.14).
+    const setCookies = typeof res.headers.getSetCookie === 'function'
+      ? res.headers.getSetCookie()
+      : (res.headers.get?.('set-cookie') ?? '').split(/,(?=\s*\w+=)/).filter(Boolean);
+    const cookie = setCookies.map((c) => c.split(';')[0].trim()).filter(Boolean).join('; ') || null;
+    // 8-char lower bound rules out placeholder/error tokens.
+    const m = html.match(/"csrfToken"\s*:\s*"([^"]{8,})"/);
+    const csrfToken = m ? m[1] : null;
+    return { cookie, csrfToken };
+  } catch {
+    return { cookie: null, csrfToken: null };
+  } finally {
+    clearTimeout(timer);
+    if (signal) signal.removeEventListener?.('abort', onAbort);
+  }
+}
 
 export const ENDPOINT_PATH = '/api-boards/search-jobs';
 export const DEFAULT_SIZE = 500;
@@ -196,6 +247,13 @@ export async function fetchConsider(_endpoint, opts = {}) {
   const rawSize = company && company.consider_size;
   const size = Number.isInteger(rawSize) && rawSize > 0 ? rawSize : DEFAULT_SIZE;
 
+  // Consider rejects the POST without a session cookie + csrfToken from the
+  // anonymous GET /jobs handshake (#2764). Degrades to null/null on failure.
+  const { cookie, csrfToken } = await acquireCsrfHandshake(origin, fetchImpl, signal);
+  const csrfHeaders = {};
+  if (cookie) csrfHeaders.cookie = cookie;
+  if (csrfToken) csrfHeaders['x-csrf-token'] = csrfToken;
+
   const json = await fetchJson(fetchImpl, origin + ENDPOINT_PATH, {
     signal,
     method: 'POST',
@@ -206,6 +264,7 @@ export async function fetchConsider(_endpoint, opts = {}) {
       'content-type': 'application/json',
       accept: 'application/json',
       referer: origin + '/jobs',
+      ...csrfHeaders,
     },
     body: JSON.stringify({
       meta: { size },

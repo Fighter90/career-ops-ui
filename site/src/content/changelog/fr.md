@@ -11,6 +11,25 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.212.0] — 2026-08-21
+
+**Ajouté — Job Bank (Canada), le site d'emploi national fédéral. Supprimé — EchoJobs (son flux est désormais bloqué par un anti-bot). Corrigé — les boards Consider renvoient à nouveau des résultats et les offres Lever multi-lieux ne cachent plus la moitié de leurs lieux.**
+
+### Ajouté
+- **Job Bank (Canada)** (jobbank.gc.ca) — une nouvelle source de scan sans jeton pour le service national fédéral de l'emploi du Canada, un board à fort volume qu'aucun agrégateur ne couvre bien. Sélectionnez-la dans le filtre **Source** de `#/scan`, ou ajoutez une entreprise avec `provider: jobbankca` et une liste `keywords` facultative (à défaut, elle utilise les rôles cibles de votre profil). Lit le flux ATOM public, épinglé à l'hôte, sans clé.
+
+### Supprimé
+- **EchoJobs** — retirée. Son flux public est désormais derrière une protection anti-bot et ne renvoie rien ; la garder ne faisait que gaspiller un créneau de scan.
+
+### Corrigé
+- **Les boards Consider renvoient à nouveau des résultats.** Consider exige désormais une poignée de main anonyme (un GET qui sème un cookie de session + un jeton CSRF) avant d'accepter la recherche ; sans elle, la requête était rejetée en silence et le board semblait vide.
+- **Les offres Lever multi-lieux ne cachent plus la moitié de leurs lieux.** Lever met une ville principale dans `location` et le reste dans `allLocations` ; ne lire que la principale faisait paraître une offre ouverte à Barcelone ET Montevideo comme Barcelone-uniquement (et la faisait écarter à tort par un filtre de lieu). Les deux sont désormais fusionnés.
+
+### Notes
+- Rythme entre pages plus doux (250 ms, contre 150) sur les boards paginés, par politesse envers les sites carrière mono-hôte. Sources de scan : **81** (76 anglaises + 5 russes) — inchangé (Job Bank entre, EchoJobs sort). Suite de tests : **2685**.
+
+
+
 ## [1.211.0] — 2026-08-19
 
 **Ajouté — Yourator, un site d'emploi tech taïwanais. Corrigé — les entités accentuées d'intitulé/entreprise se décodent désormais partout, et une entreprise dont le nom porte un accent n'est plus signalée à tort.**
