@@ -1,8 +1,8 @@
 /**
- * v1.18.0 parent-parity sources — deutschebahn / echojobs / tkms. Fetch/parse
- * with a stubbed transport (no network), host-pinning, meta shape for the scan
- * dropdown, and adapter matches()/buildEndpoint(). Fixtures adapted from the
- * parent provider tests (tests/providers/{deutschebahn,echojobs,tkms}.test.mjs).
+ * v1.18.0 parent-parity sources — deutschebahn / tkms. Fetch/parse with a
+ * stubbed transport (no network), host-pinning, meta shape for the scan
+ * dropdown, and adapter matches()/buildEndpoint(). (echojobs retired in v1.212.0
+ * — the feed went behind bot protection.)
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -15,16 +15,6 @@ import {
   fetchDeutschebahn,
 } from '../server/lib/sources/deutschebahn.mjs';
 import { deutschebahnAdapter } from '../server/lib/portals/adapters/deutschebahn.mjs';
-
-import {
-  meta as ejMeta,
-  ECHOJOBS_HOST_RE,
-  FEED_BASE as EJ_FEED,
-  assertEchojobsUrl,
-  normalizeEchojobsJob,
-  fetchEchojobs,
-} from '../server/lib/sources/echojobs.mjs';
-import { echojobsAdapter } from '../server/lib/portals/adapters/echojobs.mjs';
 
 import {
   meta as tkMeta,
@@ -45,14 +35,13 @@ const textResponse = (s) => ({ ok: true, status: 200, text: async () => s, json:
 // meta
 // ---------------------------------------------------------------------------
 test('all three sources export a valid meta (scan dropdown auto-discovery)', () => {
-  for (const m of [dbMeta, ejMeta, tkMeta]) {
+  for (const m of [dbMeta, tkMeta]) {
     assert.equal(typeof m.value, 'string');
     assert.equal(typeof m.label, 'string');
     assert.equal(m.region, 'en');
   }
-  assert.deepEqual([dbMeta.value, ejMeta.value, tkMeta.value].sort(), ['deutschebahn', 'echojobs', 'tkms']);
+  assert.deepEqual([dbMeta.value, tkMeta.value].sort(), ['deutschebahn', 'tkms']);
   assert.equal(dbMeta.label, 'Deutsche Bahn');
-  assert.equal(ejMeta.label, 'EchoJobs');
   assert.equal(tkMeta.label, 'TKMS');
 });
 
@@ -121,67 +110,6 @@ test('deutschebahn: fetch honors max_pages', async () => {
   const jobs = await fetchDeutschebahn('https://db.jobs/service/search/de-de/5441588', { fetchImpl, company: { name: 'DB', max_pages: 3 } });
   assert.equal(calls, 3);
   assert.equal(jobs.length, 3);
-});
-
-// ---------------------------------------------------------------------------
-// EchoJobs
-// ---------------------------------------------------------------------------
-test('echojobs: feed URL is host-pinned to echojobs.io (https only)', () => {
-  assert.throws(() => assertEchojobsUrl('https://evil.example.com/api/jobs'), /untrusted hostname/);
-  assert.throws(() => assertEchojobsUrl('http://echojobs.io/api/jobs'), /HTTPS/);
-  assert.equal(assertEchojobsUrl(`${EJ_FEED}?page=1`), `${EJ_FEED}?page=1`);
-  assert.equal(ECHOJOBS_HOST_RE.test('echojobs.io'), true);
-  assert.equal(ECHOJOBS_HOST_RE.test('echojobs.io.evil.com'), false);
-});
-
-test('echojobs: normalize maps fields, keeps external ATS url, handles remote/company fallbacks', () => {
-  const n = normalizeEchojobsJob({
-    title: '  Senior Go Engineer  ',
-    url: 'https://jobs.ashbyhq.com/acme/abc-123',
-    company_name: 'Acme',
-    locations: ['San Francisco, CA', 'New York, NY'],
-    remote_type: 'on_site',
-    posted_at: 1783380913765,
-  }, 'Fallback');
-  assert.equal(n.title, 'Senior Go Engineer');
-  assert.equal(n.company, 'Acme');
-  assert.equal(n.url, 'https://jobs.ashbyhq.com/acme/abc-123'); // external host kept
-  assert.equal(n.location, 'San Francisco, CA, New York, NY');
-  assert.equal(n.source, 'echojobs');
-  assert.match(n.date, /^\d{4}-\d{2}-\d{2}$/);
-
-  // remote/hybrid fallback location
-  assert.equal(normalizeEchojobsJob({ title: 'X', url: 'https://jobs.lever.co/x/1', locations: [], remote_type: 'remote' }).location, 'Remote');
-  assert.equal(normalizeEchojobsJob({ title: 'X', url: 'https://jobs.lever.co/x/2', remote_type: 'hybrid' }).isRemote, true);
-  // company fallback to entry name
-  assert.equal(normalizeEchojobsJob({ title: 'X', url: 'https://jobs.lever.co/x/1' }, 'EntryName').company, 'EntryName');
-  // drops: no title, non-https url, missing url
-  assert.equal(normalizeEchojobsJob({ url: 'https://x/1' }), null);
-  assert.equal(normalizeEchojobsJob({ title: 'X', url: 'http://insecure/1' }), null);
-  assert.equal(normalizeEchojobsJob({ title: 'X' }), null);
-});
-
-test('echojobs: fetch accumulates across pages, stops on a short page, host-locks with redirect:error', async () => {
-  const page1 = { jobs: Array.from({ length: 100 }, (_, i) => ({ title: `Job ${i}`, url: `https://jobs.ashbyhq.com/acme/${i}`, company_name: 'Acme' })) };
-  const page2 = { jobs: [{ title: 'Last', url: 'https://jobs.ashbyhq.com/acme/last', company_name: 'Acme' }] };
-  const calls = [];
-  const fetchImpl = async (url, options) => {
-    calls.push(url);
-    assert.equal(options.redirect, 'error');
-    assert.equal(new URL(url).hostname, 'echojobs.io');
-    return jsonResponse(new URL(url).searchParams.get('page') === '1' ? page1 : page2);
-  };
-  const jobs = await fetchEchojobs(EJ_FEED, { fetchImpl, company: { name: 'EchoJobs' } });
-  assert.equal(jobs.length, 101);
-  assert.equal(calls.length, 2);
-
-  // max_pages caps pagination
-  const capped = [];
-  await fetchEchojobs(EJ_FEED, { fetchImpl: async (u) => { capped.push(u); return jsonResponse(page1); }, company: { name: 'EchoJobs', max_pages: 1 } });
-  assert.equal(capped.length, 1);
-
-  // unexpected shape throws
-  await assert.rejects(() => fetchEchojobs(EJ_FEED, { fetchImpl: async () => jsonResponse({ oops: true }) }), /unexpected API response/);
 });
 
 // ---------------------------------------------------------------------------
@@ -258,12 +186,6 @@ test('adapters: matches() + buildEndpoint() contracts (endpoint is a string or n
   assert.equal(deutschebahnAdapter.buildEndpoint({ careers_url: 'https://db.jobs/service/search/de-de/999999' }), 'https://db.jobs/service/search/de-de/999999');
   assert.equal(deutschebahnAdapter.buildEndpoint({ careers_url: 'https://example.com' }), null);
 
-  // EchoJobs — board-wide, explicit provider only
-  assert.equal(echojobsAdapter.matches({ provider: 'echojobs' }), true);
-  assert.equal(echojobsAdapter.matches({ careers_url: 'https://echojobs.io/x' }), false);
-  assert.equal(echojobsAdapter.buildEndpoint({ provider: 'echojobs' }), EJ_FEED);
-  assert.equal(echojobsAdapter.buildEndpoint({ name: 'X' }), null);
-
   // TKMS — provider OR host, endpoint is the POST query API string
   assert.equal(tkmsAdapter.matches({ provider: 'tkms' }), true);
   assert.equal(tkmsAdapter.matches({ careers_url: 'https://jobs.tkmsgroup.com/en' }), true);
@@ -272,8 +194,8 @@ test('adapters: matches() + buildEndpoint() contracts (endpoint is a string or n
   assert.equal(tkmsAdapter.buildEndpoint({ careers_url: 'https://jobs.tkmsgroup.com/en' }), 'https://jobs.tkmsgroup.com/api/filter/query');
   assert.equal(tkmsAdapter.buildEndpoint({ careers_url: 'https://example.com' }), null);
 
-  // all three expose id/label/fetch
-  for (const a of [deutschebahnAdapter, echojobsAdapter, tkmsAdapter]) {
+  // both expose id/label/fetch
+  for (const a of [deutschebahnAdapter, tkmsAdapter]) {
     assert.equal(typeof a.id, 'string');
     assert.equal(typeof a.label, 'string');
     assert.equal(typeof a.fetch, 'function');

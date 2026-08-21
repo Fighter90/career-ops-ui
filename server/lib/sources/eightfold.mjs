@@ -51,7 +51,7 @@ const DEFAULT_MAX_PAGES = 200;
 const MAX_PAGES_CAP = 1000;
 // Same-host pacing between pages inside one tenant's own pagination loop —
 // Eightfold's edge rate-limits bursts. WAF-aware spacing, same idiom as oracle.
-const INTER_PAGE_DELAY_MS = 150;
+const INTER_PAGE_DELAY_MS = 250;
 const RETRY_DELAY_MS = 500;
 const SNIPPET_CAP = 500;
 

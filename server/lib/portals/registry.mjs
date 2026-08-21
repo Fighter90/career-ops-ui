@@ -87,13 +87,13 @@ import { csodAdapter } from './adapters/csod.mjs';
 import { phenomAdapter } from './adapters/phenom.mjs';
 import { radancyAdapter } from './adapters/radancy.mjs';
 import { deutschebahnAdapter } from './adapters/deutschebahn.mjs';
-import { echojobsAdapter } from './adapters/echojobs.mjs';
 import { tkmsAdapter } from './adapters/tkms.mjs';
 import { hecklerkochAdapter } from './adapters/hecklerkoch.mjs';
 import { rheinmetallAdapter } from './adapters/rheinmetall.mjs';
 import { larajobsAdapter } from './adapters/larajobs.mjs';
 import { senjobAdapter } from './adapters/senjob.mjs';
 import { youratorAdapter } from './adapters/yourator.mjs';
+import { jobbankcaAdapter } from './adapters/jobbankca.mjs';
 // v1.119.0 — Chinese tech boards, zero-auth
 // public JSON APIs, host-detected or explicit `provider:`.
 import { meituanAdapter } from './adapters/meituan.mjs';
@@ -197,20 +197,20 @@ export const ALL_ADAPTERS = [
   // are per-tenant ATS (host-detected or explicit `provider:`); radancy is
   // provider-selected only (branded hosts carry no vendor token); deutschebahn /
   // tkms / hecklerkoch / rheinmetall are single-company careers sites
-  // (host-detected or provider-selected); larajobs (+ echojobs) + senjob (the
+  // (host-detected or provider-selected); larajobs + senjob (the
   // first African board, Senegal) are board-wide feeds, provider-selected. All
   // zero-auth.
   csodAdapter,
   phenomAdapter,
   radancyAdapter,
   deutschebahnAdapter,
-  echojobsAdapter,
   tkmsAdapter,
   hecklerkochAdapter,
   rheinmetallAdapter,
   larajobsAdapter,
   senjobAdapter,
   youratorAdapter,
+  jobbankcaAdapter,
   // v1.119.0 — meituan (zhaopin.meituan.com)
   // and tencent (careers.tencent.com) are single-company Chinese tech boards
   // with public JSON APIs — host-detected or explicit `provider:`, zero-auth,

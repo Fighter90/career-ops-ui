@@ -188,34 +188,68 @@ test('normalizeConsiderJob: an epoch-ms timeStamp maps to an ISO date; a 0 stamp
 // fetchConsider — single POST, body/headers/redirect, normalize, dedupe, throws
 // ---------------------------------------------------------------------------
 
-test('fetchConsider: one POST to {origin}/api-boards/search-jobs with the right body/headers', async () => {
+// A fetchImpl that answers the anonymous GET /jobs handshake with an HTML page
+// carrying a csrfToken + Set-Cookie, then the search POST with `jobs`.
+function considerFetch(jobs, { cookie = 'sid=xyz', csrf = 'tok-abcd1234' } = {}) {
   const calls = [];
-  const fetchImpl = async (url, opts) => {
+  const impl = async (url, opts = {}) => {
     calls.push({ url, opts });
-    return { ok: true, status: 200, json: async () => ({ jobs: [
-      { title: 'AI Eng', url: 'https://acme.com/x', companyName: 'Acme', locations: ['Remote'], timeStamp: '2026-01-02' },
-    ] }) };
+    if ((opts.method || 'GET') === 'GET') {
+      return {
+        ok: true, status: 200,
+        text: async () => `<script>{"csrfToken":"${csrf}","x":1}</script>`,
+        headers: { getSetCookie: () => [`${cookie}; Path=/; HttpOnly`] },
+      };
+    }
+    return { ok: true, status: 200, json: async () => ({ jobs }) };
   };
-  const jobs = await fetchConsider(considerAdapter.buildEndpoint(OK_ENTRY), { fetchImpl, company: OK_ENTRY });
+  return { impl, calls };
+}
 
-  assert.equal(calls.length, 1); // single request, no pagination
-  assert.equal(calls[0].url, 'https://jobs.founderful.com/api-boards/search-jobs');
-  assert.equal(calls[0].opts.method, 'POST');
+test('fetchConsider: GET /jobs handshake then a POST carrying the cookie + x-csrf-token', async () => {
+  const { impl, calls } = considerFetch([
+    { title: 'AI Eng', url: 'https://acme.com/x', companyName: 'Acme', locations: ['Remote'], timeStamp: '2026-01-02' },
+  ]);
+  const jobs = await fetchConsider(considerAdapter.buildEndpoint(OK_ENTRY), { fetchImpl: impl, company: OK_ENTRY });
+
+  assert.equal(calls.length, 2); // handshake GET + search POST
+  assert.equal(calls[0].url, 'https://jobs.founderful.com/jobs'); // handshake
+  assert.equal((calls[0].opts.method || 'GET'), 'GET');
   assert.equal(calls[0].opts.redirect, 'error');
-  assert.equal(calls[0].opts.headers.referer, 'https://jobs.founderful.com/jobs');
-  const body = JSON.parse(calls[0].opts.body);
-  assert.deepEqual(body, { meta: { size: 500 }, board: { id: 'wingman', isParent: true }, query: { promoteFeatured: true } });
+
+  const post = calls[1];
+  assert.equal(post.url, 'https://jobs.founderful.com/api-boards/search-jobs');
+  assert.equal(post.opts.method, 'POST');
+  assert.equal(post.opts.redirect, 'error');
+  assert.equal(post.opts.headers.referer, 'https://jobs.founderful.com/jobs');
+  assert.equal(post.opts.headers.cookie, 'sid=xyz'); // from the handshake Set-Cookie
+  assert.equal(post.opts.headers['x-csrf-token'], 'tok-abcd1234'); // from the HTML
+  assert.deepEqual(JSON.parse(post.opts.body), { meta: { size: 500 }, board: { id: 'wingman', isParent: true }, query: { promoteFeatured: true } });
 
   assert.equal(jobs.length, 1);
   assert.equal(jobs[0].company, 'Acme');
   assert.equal(jobs[0].source, 'consider');
 });
 
-test('fetchConsider: consider_size overrides the default meta.size', async () => {
+test('fetchConsider: degrades to a POST with no CSRF headers when the handshake fails', async () => {
   const calls = [];
-  const fetchImpl = async (url, opts) => { calls.push(opts); return { ok: true, status: 200, json: async () => ({ jobs: [] }) }; };
-  await fetchConsider(null, { fetchImpl, company: { ...OK_ENTRY, consider_size: 42 } });
-  assert.equal(JSON.parse(calls[0].body).meta.size, 42);
+  const impl = async (url, opts = {}) => {
+    calls.push({ url, opts });
+    if ((opts.method || 'GET') === 'GET') throw new Error('handshake network fail');
+    return { ok: true, status: 200, json: async () => ({ jobs: [] }) };
+  };
+  await fetchConsider(null, { fetchImpl: impl, company: OK_ENTRY });
+  const post = calls.find((c) => c.opts.method === 'POST');
+  assert.ok(post, 'POST still attempted after a failed handshake');
+  assert.equal(post.opts.headers.cookie, undefined);
+  assert.equal(post.opts.headers['x-csrf-token'], undefined);
+});
+
+test('fetchConsider: consider_size overrides the default meta.size', async () => {
+  const { impl, calls } = considerFetch([]);
+  await fetchConsider(null, { fetchImpl: impl, company: { ...OK_ENTRY, consider_size: 42 } });
+  const post = calls.find((c) => c.opts.method === 'POST');
+  assert.equal(JSON.parse(post.opts.body).meta.size, 42);
 });
 
 test('fetchConsider: attributes companyless rows to the entry name and dedupes by url', async () => {

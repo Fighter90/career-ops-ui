@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2667%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2685%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.211.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.211.0)
+[![release](https://img.shields.io/badge/release-v1.212.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.212.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.211.0** — **Yourator + 더 정확한 디코딩** — 새 대만 테크 보드, 그리고 제목·회사명의 악센트 엔티티(`D&eacute;veloppeur`)가 이제 어디서나 디코딩되고 악센트 회사명이 자체 도메인과 일치합니다. **2667 개 테스트.**
+> **🆕 최신 릴리스 — v1.212.0** — **Job Bank (캐나다) + 수정** — 캐나다 연방 채용 보드를 이제 스캔할 수 있고, Consider 보드가 다시 결과를 반환하며, 다중 지역 Lever 공고가 모든 지역을 보여줍니다. (EchoJobs 폐기 — 피드가 봇 차단됨.) **2685 개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

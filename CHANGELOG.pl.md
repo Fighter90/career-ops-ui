@@ -9,6 +9,25 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.212.0] — 2026-08-21
+
+**Dodano — Job Bank (Kanada), federalny krajowy portal pracy. Usunięto — EchoJobs (jego feed jest teraz blokowany przez anty-bota). Naprawiono — portale oparte na Consider znów zwracają wyniki, a wielolokalizacyjne oferty Lever nie ukrywają już połowy lokalizacji.**
+
+### Dodano
+- **Job Bank (Kanada)** (jobbank.gc.ca) — nowe beztokenowe źródło skanowania dla federalnej krajowej służby zatrudnienia Kanady, portalu o dużym wolumenie, którego żaden agregator dobrze nie pokrywa. Wybierz je w filtrze **Źródło** na `#/scan` lub dodaj firmę z `provider: jobbankca` i opcjonalną listą `keywords` (w razie braku sięga po docelowe role z Twojego profilu). Czyta publiczny feed ATOM, przypięty do hosta, bez klucza.
+
+### Usunięto
+- **EchoJobs** — wycofany. Jego publiczny feed jest teraz za ochroną anty-botową i nic nie zwraca, więc trzymanie go tylko marnowało slot skanowania.
+
+### Naprawiono
+- **Portale oparte na Consider znów zwracają wyniki.** Consider wymaga teraz anonimowego uścisku dłoni (GET, który zasiewa ciasteczko sesji + token CSRF) przed przyjęciem zapytania; bez tego żądanie było po cichu odrzucane, a portal wyglądał na pusty.
+- **Wielolokalizacyjne oferty Lever nie ukrywają już połowy lokalizacji.** Lever wstawia jedno główne miasto do `location`, a resztę do `allLocations`; czytanie tylko głównego sprawiało, że oferta otwarta w Barcelonie I Montevideo wyglądała jak tylko-Barcelona (i była błędnie odrzucana przez filtr lokalizacji). Teraz oba są scalane.
+
+### Uwagi
+- Łagodniejsze tempo między stronami (250 ms zamiast 150) na portalach stronicowanych, przez grzeczność wobec jednohostowych stron karier. Źródła skanowania: **81** (76 angielskich + 5 rosyjskich) — bez zmian (Job Bank wchodzi, EchoJobs wychodzi). Zestaw testów: **2685**.
+
+
+
 ## [1.211.0] — 2026-08-19
 
 **Dodano — Yourator, tajwański tech-portal pracy. Naprawiono — akcentowane encje w tytułach/nazwach firm dekodują się teraz wszędzie, a firma z akcentem w nazwie nie jest już błędnie oznaczana.**

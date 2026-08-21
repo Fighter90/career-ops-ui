@@ -8,6 +8,25 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.212.0] — 2026-08-21
+
+**Adicionado — Job Bank (Canadá), o board de empregos nacional federal. Removido — EchoJobs (o feed agora está bloqueado por anti-bot). Corrigido — boards com Consider voltam a retornar resultados e vagas Lever multi-localização não escondem mais metade das localizações.**
+
+### Adicionado
+- **Job Bank (Canadá)** (jobbank.gc.ca) — uma nova fonte de varredura sem tokens para o serviço nacional de emprego federal do Canadá, um board de alto volume que nenhum agregador cobre bem. Selecione-a no filtro **Fonte** em `#/scan`, ou adicione uma empresa com `provider: jobbankca` e uma lista opcional de `keywords` (recorre aos cargos-alvo do seu perfil). Lê o feed ATOM público, com host fixado, sem chave.
+
+### Removido
+- **EchoJobs** — aposentada. Seu feed público agora está atrás de proteção anti-bot e não retorna nada, então mantê-la só desperdiçava um slot de varredura.
+
+### Corrigido
+- **Boards com Consider voltam a retornar resultados.** O Consider agora exige um handshake anônimo (um GET que semeia um cookie de sessão + token CSRF) antes de aceitar a busca; sem ele a requisição era rejeitada em silêncio e o board parecia vazio.
+- **Vagas Lever multi-localização não escondem mais metade das localizações.** O Lever põe uma cidade primária em `location` e o resto em `allLocations`; ler só a primária fazia uma vaga aberta em Barcelona E Montevidéu parecer só-Barcelona (e ser descartada por engano por um filtro de localização). Agora as duas são mescladas.
+
+### Notas
+- Ritmo entre páginas mais suave (250 ms, antes 150) nos boards paginados, para ser cortês com sites de carreira de host único. Fontes de varredura: **81** (76 em inglês + 5 russas) — inalterado (entra Job Bank, sai EchoJobs). Conjunto de testes: **2685**.
+
+
+
 ## [1.211.0] — 2026-08-19
 
 **Adicionado — Yourator, job board tech de Taiwan. Corrigido — entidades acentuadas de título/empresa agora decodificam, e uma empresa com acento no nome não é mais sinalizada por engano.**

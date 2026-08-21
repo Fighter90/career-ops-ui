@@ -27,17 +27,28 @@ export async function fetchLever(apiUrl, opts = {}) {
 
 function normalize(j) {
   const cats = j.categories || {};
-  const loc = cats.location || '';
-  const allLocs = (cats.allLocations || []).join(' · ');
-  const isRemote = /remote|anywhere/i.test(loc + ' ' + allLocs);
-  const isHybrid = /hybrid/i.test(loc);
+  // Lever puts a SINGLE primary city in `location` and exposes the full set on
+  // multi-location postings in `allLocations`; reading only the primary silently
+  // hides every other eligible location from location_filter (a req open in
+  // Barcelona AND Montevideo would look Barcelona-only). Merge, deduped.
+  const primary = typeof cats.location === 'string' ? cats.location.trim() : '';
+  const allLocs = Array.isArray(cats.allLocations)
+    ? cats.allLocations.filter((l) => typeof l === 'string' && l.trim()).map((l) => l.trim())
+    : [];
+  const merged = [];
+  for (const l of [primary, ...allLocs]) {
+    if (l && !merged.some((m) => m.toLowerCase() === l.toLowerCase())) merged.push(l);
+  }
+  const location = merged.join(' · ');
+  const isRemote = /remote|anywhere/i.test(location);
+  const isHybrid = /hybrid/i.test(primary);
   return {
     id: `lever-${j.id}`,
     title: j.text || '',
     company: '',
     url: j.hostedUrl || j.applyUrl || '',
     salary: j.salaryRange?.min ? `${j.salaryRange.min}-${j.salaryRange.max} ${j.salaryRange.currency}` : '',
-    location: loc || allLocs,
+    location,
     isRemote,
     workplaceType: isRemote ? 'Remote' : (isHybrid ? 'Hybrid' : (cats.commitment || 'Onsite')),
     relocates: false,
