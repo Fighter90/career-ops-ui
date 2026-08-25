@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.214.1] — 2026-08-25
+
+**Corrigido — as descrições do Ashby agora têm o mesmo limite de tamanho que Greenhouse e Recruitee, então um filtro de conteúdo se comporta igual nos três boards e um board não pode inchar o cache de varredura.**
+
+### Corrigido
+- **As descrições do Ashby agora respeitam o mesmo limite de tamanho dos outros boards.** A v1.214.0 alimentava o corpo do Ashby no filtro de conteúdo, mas — ao contrário de Greenhouse e Recruitee, que limitam a 4000 caracteres — o do Ashby era mapeado direto sem limite (alguns 4× mais longos). Então a mesma palavra do `content_filter` podia casar no Ashby mas não no Greenhouse só dependendo de onde caísse no texto, e um board podia adicionar centenas de KB ao cache de varredura que a `#/scan` carrega. O Ashby agora é limitado aos mesmos 4000 caracteres (seu texto já é plano, então é truncado, nunca tem tags removidas).
+
+### Notas
+- Conjunto de testes: **2738**. Fontes de varredura inalteradas em **82**.
+
+
+
 ## [1.214.0] — 2026-08-25
 
 **Corrigido — as descrições de Greenhouse, Ashby e Recruitee agora alimentam o filtro de conteúdo, então filtros de palavras / país / visto realmente casam com esses boards; e "Associate <título sênior>" (incluindo cargos acadêmicos) não é mais classificado como entry-level.**

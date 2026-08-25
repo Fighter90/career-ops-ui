@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.214.1] — 2026-08-25
+
+**Behoben — Ashby-Beschreibungen werden nun auf dieselbe Länge wie Greenhouse und Recruitee begrenzt, sodass ein Inhaltsfilter auf allen drei Boards gleich wirkt und ein Board den Scan-Cache nicht aufblähen kann.**
+
+### Behoben
+- **Ashby-Beschreibungen halten nun dieselbe Längengrenze wie die anderen Boards ein.** v1.214.0 speiste Ashbys Stellentext in den Inhaltsfilter, aber — anders als Greenhouse und Recruitee, die auf 4000 Zeichen kappen — wurde Ashbys direkt ohne Grenze durchgereicht (manche 4× länger). So konnte dasselbe `content_filter`-Wort auf Ashby treffen, auf Greenhouse aber nicht — allein je nach Position im Text, und ein Board konnte dem Scan-Cache, den `#/scan` lädt, hunderte KB hinzufügen. Ashby wird nun auf dieselben 4000 Zeichen gekappt (sein Text ist bereits Klartext, wird also abgeschnitten, nie von Tags befreit).
+
+### Hinweise
+- Test-Suite: **2738**. Scan-Quellen unverändert bei **82**.
+
+
+
 ## [1.214.0] — 2026-08-25
 
 **Behoben — Stellenbeschreibungen von Greenhouse, Ashby und Recruitee speisen jetzt den Inhaltsfilter, sodass Wort- / Land- / Visum-Filter diese Boards tatsächlich treffen; und "Associate <Senior-Titel>" (inkl. akademischer Ränge) wird nicht mehr als Entry-Level fehleinsortiert.**

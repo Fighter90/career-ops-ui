@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.214.1] — 2026-08-25
+
+**Düzeltildi — Ashby iş açıklamaları artık Greenhouse ve Recruitee ile aynı uzunlukta kırpılıyor, böylece bir içerik filtresi üç panoda da aynı davranıyor ve tek bir pano tarama önbelleğini şişiremiyor.**
+
+### Düzeltildi
+- **Ashby açıklamaları artık diğer panolarla aynı uzunluk sınırına uyuyor.** v1.214.0 Ashby'nin ilan gövdesini içerik filtresine veriyordu, ama — 4000 karakterde kırpan Greenhouse ve Recruitee'nin aksine — Ashby'ninki sınırsız doğrudan eşleniyordu (bazıları 4 kat uzun). Böylece aynı `content_filter` kelimesi, yalnızca metinde nereye düştüğüne göre Ashby'de eşleşip Greenhouse'da eşleşmeyebiliyordu ve tek bir pano, `#/scan`'in yüklediği tarama önbelleğine yüzlerce KB ekleyebiliyordu. Ashby artık aynı 4000 karaktere kırpılıyor (metni zaten düz olduğundan kesiliyor, asla etiketten arındırılmıyor).
+
+### Notlar
+- Test takımı: **2738**. Tarama kaynakları **82**'de değişmedi.
+
+
+
 ## [1.214.0] — 2026-08-25
 
 **Düzeltildi — Greenhouse, Ashby ve Recruitee iş açıklamaları artık içerik filtresini besliyor, böylece kelime / ülke / vize filtreleri bu panolarla gerçekten eşleşiyor; ve "Associate <kıdemli unvan>" (akademik rütbeler dâhil) artık başlangıç seviyesi olarak yanlış sınıflandırılmıyor.**

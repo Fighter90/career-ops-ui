@@ -75,3 +75,15 @@ test('ashby: description comes from descriptionPlain (empty when absent)', async
   assert.equal(jobs[0].description, 'Build backend services in Go.');
   assert.equal(jobs[1].description, '');
 });
+
+test('ashby: descriptionPlain is capped at DESCRIPTION_CAP (same ceiling as greenhouse/recruitee)', async () => {
+  const data = { jobs: [{ id: 'cap', title: 'X', jobUrl: 'https://jobs.ashbyhq.com/foo/cap', descriptionPlain: 'y'.repeat(16000) }] };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
+  assert.equal(jobs[0].description.length, 4000);
+});
+
+test('ashby: plain-text `<…>` in the description survives (not tag-stripped)', async () => {
+  const data = { jobs: [{ id: 'lt', title: 'X', jobUrl: 'https://jobs.ashbyhq.com/foo/lt', descriptionPlain: 'C++ templates <T> and salary < 100k' }] };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
+  assert.equal(jobs[0].description, 'C++ templates <T> and salary < 100k');
+});

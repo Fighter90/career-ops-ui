@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.214.1] — 2026-08-25
+
+**Corregido — las descripciones de Ashby ahora se limitan a la misma longitud que Greenhouse y Recruitee, así que un filtro de contenido se comporta igual en las tres bolsas y una bolsa no puede inflar la caché de escaneo.**
+
+### Corregido
+- **Las descripciones de Ashby ahora respetan el mismo límite de longitud que las demás bolsas.** v1.214.0 pasaba el cuerpo de Ashby al filtro de contenido, pero — a diferencia de Greenhouse y Recruitee, que limitan a 4000 caracteres — el de Ashby se mapeaba directo sin límite (algunos eran 4× más largos). Así, la misma palabra de `content_filter` podía coincidir en Ashby pero no en Greenhouse solo según dónde cayera en el texto, y una bolsa podía añadir cientos de KB a la caché de escaneo que carga `#/scan`. Ashby ahora se limita a los mismos 4000 caracteres (su texto ya es plano, así que se trunca, nunca se le quitan etiquetas).
+
+### Notas
+- Conjunto de pruebas: **2738**. Fuentes de escaneo sin cambios en **82**.
+
+
+
 ## [1.214.0] — 2026-08-25
 
 **Corregido — las descripciones de Greenhouse, Ashby y Recruitee ahora alimentan el filtro de contenido, así que los filtros de palabras / país / visado sí coinciden con esas bolsas; y "Associate <título senior>" (incluidos rangos académicos) ya no se clasifica como entry-level.**
