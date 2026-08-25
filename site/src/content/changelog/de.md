@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.214.2] — 2026-08-25
+
+**Behoben — die geteilte HTML→Text-Pipeline (Greenhouse- / Recruitee-Beschreibungen) leckt keine Tag-Attribute mehr in die Beschreibung, wenn ein Attributwert ein `>`-Zeichen enthält.**
+
+### Behoben
+- **HTML-Beschreibungen mit `>` in einem Attribut werden sauber entfernt.** Der Tag-Entferner hinter den Greenhouse- und Recruitee-Beschreibungen nutzte ein naives Match, das beim ersten `>` stoppte, sodass ein Tag wie `<a title="salary > 100k">` den nachfolgenden Attributtext (`100k">`) in der Beschreibung ließ. Er respektiert nun in Anführungszeichen gesetzte Attributwerte (einfach oder doppelt), entfernt Markup *vor* dem Dekodieren von Entities (damit ein kodiertes Anführungszeichen in einem Attribut kein falscher Trenner wird) und bewahrt weiterhin ein literales `<>` in Klartext.
+
+### Hinweise
+- Test-Suite: **2742**. Scan-Quellen unverändert bei **82**. Sonst nichts Neues vom Eltern-Repo diese Runde: die übrigen Änderungen werden schreibgeschützt weitergereicht (follow-up / weekly-digest / rejection-latency / salary-gap-Fixes brauchen keine web-ui-Änderung) oder sind keine web-ui-Flächen (ein externes X/Xquik-BYO-Key-Plugin, CLI/verify-Fixes). Die optionalen Punkte — SmartRecruiters-Detailbeschreibungen, detect-reposts-Aggregator-Überspringen, `stem:` / `word:`-Titelpräfixe, DNS-Rebinding-Härtung — bleiben eingereiht.
+
+
+
 ## [1.214.1] — 2026-08-25
 
 **Behoben — Ashby-Beschreibungen werden nun auf dieselbe Länge wie Greenhouse und Recruitee begrenzt, sodass ein Inhaltsfilter auf allen drei Boards gleich wirkt und ein Board den Scan-Cache nicht aufblähen kann.**

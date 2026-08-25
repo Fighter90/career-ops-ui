@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.214.2] — 2026-08-25
+
+**Corrigido — o pipeline HTML→texto compartilhado (descrições de Greenhouse / Recruitee) não vaza mais atributos de tag na descrição quando um valor de atributo contém um caractere `>`.**
+
+### Corrigido
+- **Descrições HTML com `>` dentro de um atributo são limpas corretamente.** O removedor de tags por trás das descrições de Greenhouse e Recruitee usava um casamento ingênuo que parava no primeiro `>`, então uma tag como `<a title="salary > 100k">` deixava o texto de atributo final (`100k">`) na descrição. Agora ele respeita valores de atributo entre aspas (simples ou duplas), remove a marcação *antes* de decodificar entidades (para que uma aspa codificada dentro de um atributo não vire um delimitador falso), e ainda preserva um `<>` literal em texto puro.
+
+### Notas
+- Conjunto de testes: **2742**. Fontes de varredura inalteradas em **82**. Nada mais novo do pai nesta rodada: as demais mudanças são retransmitidas em somente leitura (correções de follow-up / weekly-digest / rejection-latency / salary-gap não exigem mudança no web-ui) ou não são superfícies do web-ui (um plugin externo X/Xquik BYO-key, correções de CLI/verify). Os itens opcionais — descrições de detalhe do SmartRecruiters, pulo de agregadores no detect-reposts, prefixos de título `stem:` / `word:`, proteção anti-DNS-rebinding — seguem na fila.
+
+
+
 ## [1.214.1] — 2026-08-25
 
 **Corrigido — as descrições do Ashby agora têm o mesmo limite de tamanho que Greenhouse e Recruitee, então um filtro de conteúdo se comporta igual nos três boards e um board não pode inchar o cache de varredura.**

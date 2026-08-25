@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.214.2] — 2026-08-25
+
+**Naprawiono — wspólny potok HTML→tekst (opisy Greenhouse / Recruitee) nie przecieka już atrybutów znacznika do opisu, gdy wartość atrybutu zawiera znak `>`.**
+
+### Naprawiono
+- **Opisy HTML z `>` wewnątrz atrybutu są czyszczone poprawnie.** Usuwacz znaczników za opisami Greenhouse i Recruitee używał naiwnego dopasowania, które zatrzymywało się na pierwszym `>`, więc znacznik jak `<a title="salary > 100k">` zostawiał końcowy tekst atrybutu (`100k">`) w opisie. Teraz respektuje wartości atrybutów w cudzysłowach (pojedynczych lub podwójnych), usuwa znaczniki *przed* dekodowaniem encji (żeby zakodowany cudzysłów w atrybucie nie stał się fałszywym separatorem) i nadal zachowuje dosłowne `<>` w zwykłym tekście.
+
+### Uwagi
+- Zestaw testów: **2742**. Źródła skanowania bez zmian — **82**. W tej rundzie nic nowego od rodzica: pozostałe zmiany są przekazywane tylko do odczytu (poprawki follow-up / weekly-digest / rejection-latency / salary-gap nie wymagają zmian w web-ui) lub nie są powierzchniami web-ui (zewnętrzna wtyczka X/Xquik BYO-key, poprawki CLI/verify). Pozycje opcjonalne — opisy szczegółowe SmartRecruiters, pomijanie agregatorów w detect-reposts, prefiksy tytułu `stem:` / `word:`, utwardzenie anty-DNS-rebinding — pozostają w kolejce.
+
+
+
 ## [1.214.1] — 2026-08-25
 
 **Naprawiono — opisy Ashby są teraz ograniczane do tej samej długości co Greenhouse i Recruitee, więc filtr treści zachowuje się identycznie na trzech boardach, a jeden board nie może rozdąć pamięci podręcznej skanowania.**

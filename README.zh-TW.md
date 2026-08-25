@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2738%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2742%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.214.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.1)
+[![release](https://img.shields.io/badge/release-v1.214.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.214.1** — **Ashby 描述上限** — Ashby 職缺描述現在像 Greenhouse、Recruitee 一樣截斷到 4000 字元,因此內容篩選在每個板塊上表現一致,沒有板塊會撐大掃描快取。 **2738 項測試.**
+> **🆕 最新版本 — v1.214.2** — **HTML 剝離修復** — HTML 屬性內含 `>` 的描述(如 `title="salary > 100k"`)不再把尾部屬性文字洩漏進內容篩選讀取的 Greenhouse / Recruitee 描述。 **2742 項測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 
