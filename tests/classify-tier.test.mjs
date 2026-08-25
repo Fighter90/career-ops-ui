@@ -16,6 +16,22 @@ test('classifyTier: obvious level words map to their tier', () => {
   assert.equal(classifyTier('Software Engineering Intern'), 'intern');
 });
 
+test('classifyTier: Associate + a senior noun resolves to senior (#3178)', () => {
+  assert.equal(classifyTier('Associate Director'), 'senior');
+  assert.equal(classifyTier('Associate Creative Director'), 'senior'); // two-word gap
+  assert.equal(classifyTier('Associate Professor'), 'senior');         // academic rank
+  assert.equal(classifyTier('Associate Dean of Students'), 'senior');
+});
+
+test('classifyTier: Associate as a junior variant stays entry (closed noun list)', () => {
+  assert.equal(classifyTier('Associate Attorney'), 'entry');
+  assert.equal(classifyTier('Associate Editor'), 'entry');
+  // A comma/dash after `associate` means it is the role, not a prefix.
+  assert.equal(classifyTier('Administrative Associate, Office of the Dean'), 'entry');
+  // A junior marker that LEADS the title still decides it.
+  assert.equal(classifyTier('Intern, Associate Dean of Student Life'), 'intern');
+});
+
 test('classifyTier: unrecognised / plain titles fall back to mid', () => {
   assert.equal(classifyTier('Software Engineer'), 'mid');
   assert.equal(classifyTier(''), 'mid');

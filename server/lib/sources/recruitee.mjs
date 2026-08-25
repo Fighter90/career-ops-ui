@@ -11,6 +11,7 @@
  * Used by the recruitee adapter (server/lib/portals/adapters/recruitee.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { htmlToText } from '../html-to-text.mjs';
 
 export const RECRUITEE_HOST_RE = /^[a-z0-9][a-z0-9-]*\.recruitee\.com$/;
 
@@ -62,6 +63,10 @@ export function parseRecruiteeResponse(json, companyName) {
         } catch { /* malformed → drop */ }
       }
       const isRemote = !!j.remote || /remote/i.test(location);
+      // Recruitee's list payload embeds each offer's full HTML body for free
+      // (same request), so it's stripped to plain text here for the
+      // content_filter. Empty string when the offer carries no usable body.
+      const description = htmlToText(j.description);
 
       return {
         id: `recruitee-${url}`,
@@ -75,6 +80,7 @@ export function parseRecruiteeResponse(json, companyName) {
         relocates: false,
         date: '',
         snippet: '',
+        description,
         source: 'recruitee',
       };
     })

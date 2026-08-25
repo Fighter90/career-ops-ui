@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.214.0] — 2026-08-25
+
+**Corrigido — as descrições de Greenhouse, Ashby e Recruitee agora alimentam o filtro de conteúdo, então filtros de palavras / país / visto realmente casam com esses boards; e "Associate <título sênior>" (incluindo cargos acadêmicos) não é mais classificado como entry-level.**
+
+### Corrigido
+- **Os filtros de conteúdo agora funcionam em Greenhouse, Ashby e Recruitee.** Esses boards agora carregam o texto completo de cada vaga como sua descrição, então um `content_filter` (ou um filtro de palavras de país / visto) casa com o corpo da vaga em vez de deixar o board passar às cegas. Ashby e Recruitee trazem o corpo no payload da lista de graça; o Greenhouse já fazia. Os três passam por um único pipeline HTML→texto compartilhado.
+- **"Associate Director" / "Associate Professor" é sênior, não entry-level.** O classificador de senioridade (usado pelo `skip_tiers:`) tratava a palavra "associate" como marca de entry-level mesmo quando prefixa um título sênior. Agora lê "Associate <substantivo sênior>" — incluindo cargos acadêmicos (Associate Professor, Associate Dean) — como sênior, mantendo as variantes júnior reais (Associate Attorney, Associate Editor) como entry-level, e ainda classifica um "Intern, Associate Dean" inicial como estágio.
+
+### Notas
+- Conjunto de testes: **2736**. Fontes de varredura inalteradas em **82**. Na fila para depois: enriquecimento opcional de descrições do SmartRecruiters (um fetch de detalhe por vaga), o pulo de boards `aggregator: true` do detect-reposts, e os prefixos de título de palavra ancorada `stem:` / `word:` — cada um uma configuração opcional, não uma mudança de comportamento padrão. O endurecimento anti-DNS-rebinding continua na fila para sua própria versão de segurança.
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **Adicionado — MyCareersFuture, o banco de vagas nacional de Singapura, como fonte de varredura. Corrigido — vagas do Greenhouse agora carregam seu texto completo para os filtros de conteúdo funcionarem, e vagas remotas do Ashby não ficam mais escondidas atrás de uma localização só-cidade.**

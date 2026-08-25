@@ -67,14 +67,30 @@ export function classifyTier(title) {
     },
   ];
 
-  // Guard (a): "Associate [*] Director/VP/Chief/…" is senior — the `associate`
-  // prefix qualifies a senior band, it does not demote it. Checked before the
-  // position loop because `associate` leads, so leftmost-marker would return entry.
+  // Guard (a): "Associate <senior noun>" is senior — the `associate` prefix
+  // qualifies a senior band, it does not demote it. Checked before the position
+  // loop because `associate` leads, so leftmost-marker would return entry.
+  // The noun list is CLOSED: in many fields `associate` genuinely marks the
+  // junior variant (Associate Attorney/Editor/Producer/Manager/Consultant), so
+  // a generic "never demotes" rule would break them. Academic ranks are on the
+  // list because `associate` names a RANK there (Associate Professor is above
+  // Assistant Professor; Dean/Provost/Chancellor/Superintendent head an
+  // institution) — the criterion is institution-level head, not office deputy.
   const associateAt = cleanTitle.search(/\bassociate\b/i);
   if (associateAt >= 0) {
-    const afterAssociate = cleanTitle.slice(associateAt + 'associate'.length);
-    if (/\b(director|vice\s+president|vp|principal|partner|chief|head\s+of)\b/i.test(afterAssociate)) {
-      return 'senior';
+    // A junior marker that LEADS the title still decides it ("Intern, Associate
+    // Dean" is an internship in a dean's office, not a deanship).
+    const juniorAt = cleanTitle.search(/\b(?:intern(?:ship)?|trainee|co-op|graduate|junior|entry(?:-level)?)\b/i);
+    if (juniorAt < 0 || juniorAt > associateAt) {
+      const afterAssociate = cleanTitle.slice(associateAt + 'associate'.length);
+      // WHITESPACE only, at most two words of gap. A comma/dash after
+      // `associate` means it's the role and what follows is a separate clause
+      // ("Administrative Associate, Office of the Dean" is junior). The two-word
+      // cap also stops employers named for a noun on the list (Dean & Company's
+      // "Associate Consultant", Provost Umphrey) and keeps the legal pair honest.
+      if (/^\s+(?:[a-z]+\s+){0,2}(director|vice\s+president|vp|principal|partner|chief|head\s+of|professor|dean|provost|chancellor|superintendent|general\s+counsel)\b/i.test(afterAssociate)) {
+        return 'senior';
+      }
     }
   }
 

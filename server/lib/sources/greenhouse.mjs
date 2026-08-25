@@ -8,7 +8,7 @@
  * `j.description ?? j.snippet` (en-scanner.mjs), so without it every Greenhouse
  * board passed that filter blind.
  */
-import { decodeEntities } from '../html-entities.mjs';
+import { htmlToText } from '../html-to-text.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
 
@@ -72,20 +72,12 @@ export function buildOfficeMap(json) {
 
 // ── Posting body → plain text ────────────────────────────────────────
 // With content=true the list response embeds each posting's body as
-// DOUBLE-encoded HTML: the JSON string carries entity-escaped markup
-// (`&lt;p&gt;`), so the first decode pass reveals the real tags, and
-// text-level entities (`&amp;`, `&#39;`) only become decodable once the tags
-// are stripped. Plain text is what the content_filter matches against —
-// substring matching over raw HTML misses keywords split by a tag. Capped to
-// keep scan payloads sane (a 10 KB/posting body is normal for Greenhouse).
-const DESCRIPTION_CAP = 4000;
-
+// DOUBLE-encoded HTML. That pipeline (and its rationale) now lives in
+// html-to-text.mjs, shared with the sources given descriptions in the same
+// batch; this wrapper keeps greenhouse's tested export name.
 /** Entity-decoded markup → stripped plain text. Exported for tests. */
 export function contentToText(content) {
-  if (typeof content !== 'string' || !content) return '';
-  const html = decodeEntities(content);
-  const noMedia = html.replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, ' ');
-  return decodeEntities(noMedia.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim().slice(0, DESCRIPTION_CAP);
+  return htmlToText(content);
 }
 
 /** Append `content=true` to a boards-api /jobs URL, preserving any existing query. */

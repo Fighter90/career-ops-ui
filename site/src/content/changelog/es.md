@@ -11,6 +11,19 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.214.0] — 2026-08-25
+
+**Corregido — las descripciones de Greenhouse, Ashby y Recruitee ahora alimentan el filtro de contenido, así que los filtros de palabras / país / visado sí coinciden con esas bolsas; y "Associate <título senior>" (incluidos rangos académicos) ya no se clasifica como entry-level.**
+
+### Corregido
+- **Los filtros de contenido ya funcionan en Greenhouse, Ashby y Recruitee.** Estas bolsas ahora llevan el texto completo de cada publicación como su descripción, así que un `content_filter` (o un filtro de palabras de país / visado) coincide con el cuerpo del puesto en vez de dejar pasar la bolsa a ciegas. Ashby y Recruitee traen el cuerpo en su payload de lista gratis; Greenhouse ya lo hacía. Los tres se depuran por una única canalización HTML→texto compartida.
+- **"Associate Director" / "Associate Professor" es senior, no entry-level.** El clasificador de seniority (usado por `skip_tiers:`) tomaba la palabra "associate" como marca de entry-level aun cuando prefija un título senior. Ahora lee "Associate <sustantivo senior>" — incluidos rangos académicos (Associate Professor, Associate Dean) — como senior, manteniendo las variantes junior reales (Associate Attorney, Associate Editor) como entry-level, y aún clasifica un "Intern, Associate Dean" inicial como prácticas.
+
+### Notas
+- Conjunto de pruebas: **2736**. Fuentes de escaneo sin cambios en **82**. En cola para más adelante: enriquecimiento opcional de descripciones de SmartRecruiters (una petición de detalle por publicación), el salto de tableros `aggregator: true` de detect-reposts, y los prefijos de título de palabra anclada `stem:` / `word:` — cada uno una configuración opcional, no un cambio de comportamiento por defecto. El endurecimiento anti-DNS-rebinding sigue en cola para su propia versión de seguridad.
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **Añadido — MyCareersFuture, la bolsa de empleo nacional de Singapur, como fuente de escaneo. Corregido — las vacantes de Greenhouse ahora llevan su texto completo para que los filtros de contenido funcionen, y las vacantes remotas de Ashby ya no quedan ocultas tras una ubicación de solo-ciudad.**

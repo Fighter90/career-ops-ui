@@ -95,6 +95,9 @@ function normalize(j) {
     relocates: false,
     date: j.publishedAt || '',
     snippet: '',
+    // Ashby's posting-api list ships `descriptionPlain` for free (same payload,
+    // no per-job request), so the content_filter can match on the JD body.
+    description: typeof j.descriptionPlain === 'string' ? j.descriptionPlain : '',
     source: 'ashby',
   };
 }

@@ -9,6 +9,19 @@
 ---
 
 
+## [1.214.0] — 2026-08-25
+
+**修复 — Greenhouse、Ashby 和 Recruitee 的职位描述现在会进入内容筛选,因此关键词 / 国家 / 签证筛选能真正匹配这些板块;并且“Associate <高级职称>”(含学术职级)不再被误判为初级。**
+
+### 修复
+- **内容筛选现在在 Greenhouse、Ashby 和 Recruitee 上生效。** 这些板块现在把每条职位的完整正文作为其描述,因此读取描述的 `content_filter`(或国家 / 签证关键词筛选)会匹配职位正文,而不是让板块盲目通过。Ashby 和 Recruitee 在列表载荷里免费带上正文;Greenhouse 早已如此。三者都经由同一个共享的 HTML→文本 管道处理。
+- **“Associate Director” / “Associate Professor” 是高级,不是初级。** 资历分类器(供 `skip_tiers:` 使用)即便 “associate” 修饰的是高级职称,也把它当作初级标记。现在它把 “Associate <高级名词>”——含学术职级(Associate Professor、Associate Dean)——读作高级,同时把真正的初级变体(Associate Attorney、Associate Editor)保留为初级,并且仍把开头的 “Intern, Associate Dean” 归为实习。
+
+### 说明
+- 测试套件:**2736**。扫描来源保持 **82** 不变。排队待办:可选的 SmartRecruiters 描述增强(逐条职位的详情请求)、detect-reposts 的 `aggregator: true` 板块跳过,以及锚定关键词的 `stem:` / `word:` 标题前缀 —— 各为可选配置项,而非默认行为变更。DNS 重绑定加固仍排队等待其专门的安全版本。
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **新增 — 将新加坡国家招聘银行 MyCareersFuture 作为扫描来源。修复 — Greenhouse 职位现在携带完整正文以便内容筛选生效,远程 Ashby 职位不再被仅城市的地点隐藏。**
