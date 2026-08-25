@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.214.1] — 2026-08-25
+
+**Corrigé — les descriptions Ashby sont désormais plafonnées à la même longueur que Greenhouse et Recruitee, si bien qu'un filtre de contenu se comporte à l'identique sur les trois boards et qu'un board ne peut pas gonfler le cache de scan.**
+
+### Corrigé
+- **Les descriptions Ashby respectent désormais le même plafond de longueur que les autres boards.** La v1.214.0 envoyait le corps Ashby au filtre de contenu, mais — contrairement à Greenhouse et Recruitee qui plafonnent à 4000 caractères — celui d'Ashby était mappé directement sans plafond (certains 4× plus longs). Le même mot-clé de `content_filter` pouvait donc correspondre sur Ashby mais pas sur Greenhouse selon sa seule position dans le texte, et un board pouvait ajouter des centaines de Ko au cache de scan que charge `#/scan`. Ashby est maintenant plafonné aux mêmes 4000 caractères (son texte est déjà brut, il est donc tronqué, jamais dé-balisé).
+
+### Notes
+- Suite de tests : **2738**. Sources de scan inchangées à **82**.
+
+
+
 ## [1.214.0] — 2026-08-25
 
 **Corrigé — les descriptions de Greenhouse, Ashby et Recruitee alimentent désormais le filtre de contenu, si bien que les filtres mots-clés / pays / visa correspondent vraiment à ces boards ; et « Associate <titre senior> » (rangs académiques compris) n'est plus mal classé en entry-level.**

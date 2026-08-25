@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.214.1] — 2026-08-25
+
+**Fixed — Ashby job descriptions are now capped at the same length as Greenhouse and Recruitee, so a content filter behaves identically across all three boards and one board can't bloat the scan cache.**
+
+### Fixed
+- **Ashby descriptions now honour the same length cap as the other boards.** v1.214.0 fed Ashby's posting body to the content filter, but — unlike Greenhouse and Recruitee, which cap at 4000 characters — Ashby's was mapped straight through uncapped (some ran 4× longer). So the same `content_filter` keyword could match on Ashby but not Greenhouse depending only on where it fell in the text, and one board could add hundreds of KB to the scan cache the `#/scan` page loads. Ashby is now capped to the same 4000 characters (its text is already plain, so it's truncated, never tag-stripped).
+
+### Notes
+- Test suite: **2738**. Scan sources unchanged at **82**.
+
+
+
 ## [1.214.0] — 2026-08-25
 
 **Fixed — job descriptions from Greenhouse, Ashby, and Recruitee now feed the content filter, so keyword / country / visa filters actually match those boards; and "Associate <senior title>" (including academic ranks) is no longer misfiled as entry-level.**

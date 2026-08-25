@@ -7,16 +7,16 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2736%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2738%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.214.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.0)
+[![release](https://img.shields.io/badge/release-v1.214.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.214.0** — **Opisy zasilają filtr treści + mądrzejsze rozpoznawanie stażu** — oferty Greenhouse / Ashby / Recruitee można teraz filtrować po treści, a "Associate <starszy tytuł>" (w tym rangi akademickie) jest klasyfikowane jako starsze, nie entry-level. **2736 testów.**
+> **🆕 Najnowsze wydanie — v1.214.1** — **Limit opisu Ashby** — opisy Ashby są teraz przycinane do 4000 znaków jak Greenhouse i Recruitee, więc filtr treści zachowuje się tak samo na każdym boardzie i żaden nie rozdyma pamięci podręcznej skanowania. **2738 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

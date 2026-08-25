@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.214.1] — 2026-08-25
+
+**Rettet — Ashby-beskrivelser er nu begrænset til samme længde som Greenhouse og Recruitee, så et indholdsfilter opfører sig ens på alle tre boards, og ét board kan ikke oppuste scan-cachen.**
+
+### Rettet
+- **Ashby-beskrivelser overholder nu samme længdegrænse som de andre boards.** v1.214.0 fodrede Ashbys opslagstekst til indholdsfilteret, men — i modsætning til Greenhouse og Recruitee, der begrænser til 4000 tegn — blev Ashbys mappet direkte uden grænse (nogle 4× længere). Så det samme `content_filter`-ord kunne matche på Ashby men ikke Greenhouse alene afhængigt af, hvor det faldt i teksten, og ét board kunne tilføje hundredvis af KB til scan-cachen, som `#/scan` indlæser. Ashby begrænses nu til de samme 4000 tegn (dens tekst er allerede ren, så den afkortes, aldrig tag-strippet).
+
+### Noter
+- Testsuite: **2738**. Scanningskilder uændret på **82**.
+
+
+
 ## [1.214.0] — 2026-08-25
 
 **Rettet — jobbeskrivelser fra Greenhouse, Ashby og Recruitee føder nu indholdsfilteret, så ord- / lande- / visumfiltre faktisk matcher de boards; og "Associate <senior titel>" (inkl. akademiske rangeringer) fejlklassificeres ikke længere som entry-level.**

@@ -2,6 +2,8 @@
  * Ashby public posting-api wrapper.
  *   GET https://api.ashbyhq.com/posting-api/job-board/<slug>?includeCompensation=true
  */
+import { DESCRIPTION_CAP } from '../html-to-text.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 // v1.69.0 (P-14) — self-describing adapter metadata. The registry
@@ -96,8 +98,13 @@ function normalize(j) {
     date: j.publishedAt || '',
     snippet: '',
     // Ashby's posting-api list ships `descriptionPlain` for free (same payload,
-    // no per-job request), so the content_filter can match on the JD body.
-    description: typeof j.descriptionPlain === 'string' ? j.descriptionPlain : '',
+    // no per-job request), so the content_filter can match on the JD body. It's
+    // already plain text (no HTML to strip — running it through htmlToText would
+    // eat legitimate `<…>` like "C++ templates <T>"), but it IS uncapped and
+    // runs 4× longer than greenhouse's, so apply the SAME DESCRIPTION_CAP the
+    // shared pipeline uses — one filter behaves the same across boards, and
+    // scan-results stays sane.
+    description: (typeof j.descriptionPlain === 'string' ? j.descriptionPlain : '').slice(0, DESCRIPTION_CAP),
     source: 'ashby',
   };
 }
