@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.214.0] — 2026-08-25
+
+**Corretto — le descrizioni di Greenhouse, Ashby e Recruitee ora alimentano il filtro di contenuto, così i filtri parole / paese / visto corrispondono davvero a quelle board; e "Associate <titolo senior>" (inclusi i ranghi accademici) non è più classificato erroneamente come entry-level.**
+
+### Corretto
+- **I filtri di contenuto ora funzionano su Greenhouse, Ashby e Recruitee.** Queste board portano ora il testo completo di ogni annuncio come sua descrizione, così un `content_filter` (o un filtro parole paese / visto) corrisponde al corpo dell'offerta invece di lasciar passare la board alla cieca. Ashby e Recruitee forniscono il corpo nel payload di lista gratis; Greenhouse lo faceva già. Tutte e tre passano per un'unica pipeline HTML→testo condivisa.
+- **"Associate Director" / "Associate Professor" è senior, non entry-level.** Il classificatore di seniority (usato da `skip_tiers:`) trattava la parola "associate" come marcatore entry-level anche quando prefissa un titolo senior. Ora legge "Associate <sostantivo senior>" — inclusi i ranghi accademici (Associate Professor, Associate Dean) — come senior, mantenendo le vere varianti junior (Associate Attorney, Associate Editor) come entry-level, e classifica ancora un "Intern, Associate Dean" iniziale come tirocinio.
+
+### Note
+- Suite di test: **2736**. Fonti di scansione invariate a **82**. In coda per dopo: arricchimento opzionale delle descrizioni SmartRecruiters (una richiesta di dettaglio per annuncio), il salto delle board `aggregator: true` di detect-reposts e i prefissi di titolo a parola ancorata `stem:` / `word:` — ciascuno una configurazione opzionale, non un cambio di comportamento predefinito. L'irrobustimento anti-DNS-rebinding resta in coda per la sua release di sicurezza dedicata.
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **Aggiunto — MyCareersFuture, la banca del lavoro nazionale di Singapore, come fonte di scansione. Corretto — le offerte Greenhouse ora portano il testo completo perché i filtri di contenuto funzionino, e le offerte Ashby da remoto non restano più nascoste dietro una sede solo-città.**

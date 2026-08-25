@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.214.0] — 2026-08-25
+
+**Rettet — jobbeskrivelser fra Greenhouse, Ashby og Recruitee føder nu indholdsfilteret, så ord- / lande- / visumfiltre faktisk matcher de boards; og "Associate <senior titel>" (inkl. akademiske rangeringer) fejlklassificeres ikke længere som entry-level.**
+
+### Rettet
+- **Indholdsfiltre virker nu på Greenhouse, Ashby og Recruitee.** Disse boards bærer nu hvert opslags fulde tekst som dets beskrivelse, så et `content_filter` (eller et lande- / visum-ordfilter) matcher jobbets brødtekst i stedet for at lade boardet passere blindt. Ashby og Recruitee leverer brødteksten i deres liste-payload gratis; Greenhouse gjorde det allerede. Alle tre renses gennem én delt HTML→tekst-pipeline.
+- **"Associate Director" / "Associate Professor" er senior, ikke entry-level.** Senioritetsklassifikatoren (brugt af `skip_tiers:`) behandlede ordet "associate" som et entry-level-mærke, selv når det står foran en seniortitel. Den læser nu "Associate <seniornavneord>" — inkl. akademiske rangeringer (Associate Professor, Associate Dean) — som senior, mens den holder ægte juniorvarianter (Associate Attorney, Associate Editor) som entry-level, og klassificerer stadig et ledende "Intern, Associate Dean" som en praktikplads.
+
+### Noter
+- Testsuite: **2736**. Scanningskilder uændret på **82**. Sat i kø til senere: valgfri SmartRecruiters-beskrivelsesberigelse (et detalje-kald pr. opslag), detect-reposts' `aggregator: true`-board-spring, og de forankrede nøgleords-titelpræfikser `stem:` / `word:` — hver en valgfri konfiguration, ikke en ændring af standardadfærd. DNS-rebinding-hærdningen er stadig i kø til sin egen sikkerhedsudgivelse.
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **Tilføjet — MyCareersFuture, Singapores nationale jobbank, som scanningskilde. Rettet — Greenhouse-opslag bærer nu deres fulde tekst, så indholdsfiltre virker, og fjern-Ashby-roller skjules ikke længere bag en by-kun lokation.**

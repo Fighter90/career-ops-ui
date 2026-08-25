@@ -11,6 +11,19 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.214.0] — 2026-08-25
+
+**Corrigé — les descriptions de Greenhouse, Ashby et Recruitee alimentent désormais le filtre de contenu, si bien que les filtres mots-clés / pays / visa correspondent vraiment à ces boards ; et « Associate <titre senior> » (rangs académiques compris) n'est plus mal classé en entry-level.**
+
+### Corrigé
+- **Les filtres de contenu marchent désormais sur Greenhouse, Ashby et Recruitee.** Ces boards portent maintenant le texte complet de chaque annonce comme description, donc un `content_filter` (ou un filtre par mots pays / visa) correspond au corps de l'offre au lieu de laisser passer le board à l'aveugle. Ashby et Recruitee livrent le corps dans leur payload de liste gratuitement ; Greenhouse le faisait déjà. Les trois passent par un unique pipeline HTML→texte partagé.
+- **« Associate Director » / « Associate Professor » est senior, pas entry-level.** Le classifieur de séniorité (utilisé par `skip_tiers:`) traitait le mot « associate » comme une marque d'entry-level même en préfixe d'un titre senior. Il lit désormais « Associate <nom senior> » — rangs académiques compris (Associate Professor, Associate Dean) — comme senior, tout en gardant les vraies variantes junior (Associate Attorney, Associate Editor) en entry-level, et classe toujours un « Intern, Associate Dean » en tête comme un stage.
+
+### Notes
+- Suite de tests : **2736**. Sources de scan inchangées à **82**. Mis en file pour plus tard : l'enrichissement optionnel des descriptions SmartRecruiters (une requête de détail par annonce), le saut des boards `aggregator: true` de detect-reposts, et les préfixes de titre à mot ancré `stem:` / `word:` — chacun une configuration optionnelle, pas un changement de comportement par défaut. Le durcissement anti-DNS-rebinding reste en file pour sa propre version de sécurité.
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **Ajouté — MyCareersFuture, la banque d'emploi nationale de Singapour, comme source de scan. Corrigé — les offres Greenhouse portent désormais leur texte complet pour que les filtres de contenu fonctionnent, et les offres Ashby en télétravail ne sont plus masquées derrière un lieu réduit à la ville.**

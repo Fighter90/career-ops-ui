@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.214.0] — 2026-08-25
+
+**Düzeltildi — Greenhouse, Ashby ve Recruitee iş açıklamaları artık içerik filtresini besliyor, böylece kelime / ülke / vize filtreleri bu panolarla gerçekten eşleşiyor; ve "Associate <kıdemli unvan>" (akademik rütbeler dâhil) artık başlangıç seviyesi olarak yanlış sınıflandırılmıyor.**
+
+### Düzeltildi
+- **İçerik filtreleri artık Greenhouse, Ashby ve Recruitee'de çalışıyor.** Bu panolar artık her ilanın tam metnini açıklaması olarak taşıyor, böylece açıklamayı okuyan bir `content_filter` (ya da ülke / vize kelime filtresi) panoyu körlemesine geçirmek yerine ilan gövdesiyle eşleşiyor. Ashby ve Recruitee gövdeyi liste yükünde bedavaya veriyor; Greenhouse zaten veriyordu. Üçü de tek bir paylaşılan HTML→metin hattından geçiriliyor.
+- **"Associate Director" / "Associate Professor" başlangıç değil, kıdemlidir.** Kıdem sınıflandırıcısı (`skip_tiers:` tarafından kullanılır) "associate" kelimesini kıdemli bir unvanı önlese bile başlangıç seviyesi işareti sayıyordu. Artık "Associate <kıdemli isim>"—akademik rütbeler dâhil (Associate Professor, Associate Dean)—kıdemli okuyor, gerçek başlangıç varyantlarını (Associate Attorney, Associate Editor) başlangıç seviyesinde tutuyor ve baştaki "Intern, Associate Dean"i hâlâ staj olarak sınıflandırıyor.
+
+### Notlar
+- Test takımı: **2736**. Tarama kaynakları **82**'de değişmedi. Sonraya sıraya alındı: isteğe bağlı SmartRecruiters açıklama zenginleştirmesi (ilan başına bir detay isteği), detect-reposts'un `aggregator: true` pano atlaması ve sabitlenmiş kelime `stem:` / `word:` başlık önekleri — her biri varsayılan davranış değişikliği değil, isteğe bağlı bir yapılandırma. DNS-rebinding sıkılaştırması kendi güvenlik sürümü için hâlâ sırada.
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **Eklendi — Singapur'un ulusal iş bankası MyCareersFuture bir tarama kaynağı olarak. Düzeltildi — Greenhouse ilanları artık içerik filtrelerinin çalışması için tam metnini taşıyor ve uzaktan Ashby rolleri yalnızca-şehir bir konumun arkasında gizlenmiyor.**

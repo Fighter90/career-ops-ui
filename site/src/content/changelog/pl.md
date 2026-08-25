@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.214.0] — 2026-08-25
+
+**Naprawiono — opisy z Greenhouse, Ashby i Recruitee trafiają teraz do filtra treści, więc filtry słów / kraju / wizy naprawdę dopasowują te boardy; a "Associate <starszy tytuł>" (w tym rangi akademickie) nie jest już błędnie klasyfikowane jako entry-level.**
+
+### Naprawiono
+- **Filtry treści działają teraz na Greenhouse, Ashby i Recruitee.** Te boardy niosą teraz pełny tekst każdej oferty jako jej opis, więc `content_filter` (lub filtr słów kraju / wizy) dopasowuje treść oferty zamiast przepuszczać board na ślepo. Ashby i Recruitee dostarczają treść w payloadzie listy za darmo; Greenhouse już to robił. Wszystkie trzy przechodzą przez jeden wspólny potok HTML→tekst.
+- **"Associate Director" / "Associate Professor" jest starszy, nie entry-level.** Klasyfikator stażu (używany przez `skip_tiers:`) traktował słowo "associate" jako znacznik entry-level nawet wtedy, gdy poprzedza starszy tytuł. Teraz czyta "Associate <starszy rzeczownik>" — w tym rangi akademickie (Associate Professor, Associate Dean) — jako starszy, zachowując prawdziwe warianty juniorskie (Associate Attorney, Associate Editor) jako entry-level, i wciąż klasyfikuje wiodące "Intern, Associate Dean" jako staż.
+
+### Uwagi
+- Zestaw testów: **2736**. Źródła skanowania bez zmian — **82**. W kolejce na później: opcjonalne wzbogacanie opisów SmartRecruiters (żądanie szczegółów na ofertę), pomijanie boardów `aggregator: true` w detect-reposts oraz prefiksy tytułu z zakotwiczonym słowem `stem:` / `word:` — każde to opcjonalna konfiguracja, a nie zmiana domyślnego zachowania. Utwardzenie przeciw DNS-rebinding wciąż czeka na własne wydanie bezpieczeństwa.
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **Dodano — MyCareersFuture, krajowy bank ofert pracy Singapuru, jako źródło skanowania. Naprawiono — oferty Greenhouse niosą teraz pełny tekst, aby filtry treści działały, a zdalne oferty Ashby nie są już ukrywane za lokalizacją tylko-miasto.**

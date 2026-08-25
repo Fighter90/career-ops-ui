@@ -8,6 +8,19 @@
 
 ---
 
+## [1.214.0] — 2026-08-25
+
+**修復 — Greenhouse、Ashby 與 Recruitee 的職缺描述現在會進入內容篩選,因此關鍵字 / 國家 / 簽證篩選能真正比對這些板塊;並且「Associate <資深職稱>」(含學術職級)不再被誤判為初階。**
+
+### 修復
+- **內容篩選現在在 Greenhouse、Ashby 與 Recruitee 上生效。** 這些板塊現在把每則職缺的完整內文作為其描述,因此讀取描述的 `content_filter`(或國家 / 簽證關鍵字篩選)會比對職缺內文,而非讓板塊盲目通過。Ashby 與 Recruitee 在清單負載裡免費帶上內文;Greenhouse 早已如此。三者都經由同一個共享的 HTML→文字 管線處理。
+- **「Associate Director」/「Associate Professor」是資深,不是初階。** 資歷分類器(供 `skip_tiers:` 使用)即便 「associate」 修飾的是資深職稱,也把它當作初階標記。現在它把 「Associate <資深名詞>」——含學術職級(Associate Professor、Associate Dean)——讀作資深,同時把真正的初階變體(Associate Attorney、Associate Editor)保留為初階,並且仍把開頭的 「Intern, Associate Dean」 歸為實習。
+
+### 說明
+- 測試套件:**2736**。掃描來源維持 **82** 不變。排隊待辦:選用的 SmartRecruiters 描述增強(逐則職缺的詳情請求)、detect-reposts 的 `aggregator: true` 板塊跳過,以及錨定關鍵字的 `stem:` / `word:` 標題前綴 —— 各為選用設定項,而非預設行為變更。DNS 重繫結加固仍排隊等待其專門的安全版本。
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **新增 — 將新加坡國家招聘銀行 MyCareersFuture 作為掃描來源。修復 — Greenhouse 職缺現在攜帶完整內文以便內容篩選生效,遠端 Ashby 職缺不再被僅城市的地點隱藏。**

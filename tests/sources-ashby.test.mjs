@@ -65,3 +65,13 @@ test('ashby: no duplicate "Remote" when the location already carries it', async 
   const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
   assert.equal(jobs[0].location, 'Remote (US)');
 });
+
+test('ashby: description comes from descriptionPlain (empty when absent)', async () => {
+  const data = { jobs: [
+    { id: 'd1', title: 'X', jobUrl: 'https://jobs.ashbyhq.com/foo/d1', descriptionPlain: 'Build backend services in Go.' },
+    { id: 'd2', title: 'Y', jobUrl: 'https://jobs.ashbyhq.com/foo/d2' },
+  ] };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
+  assert.equal(jobs[0].description, 'Build backend services in Go.');
+  assert.equal(jobs[1].description, '');
+});

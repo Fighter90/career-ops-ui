@@ -9,6 +9,19 @@
 ---
 
 
+## [1.214.0] — 2026-08-25
+
+**수정 — Greenhouse·Ashby·Recruitee의 공고 설명이 이제 콘텐츠 필터로 들어가 키워드 / 국가 / 비자 필터가 이 보드들에 실제로 매칭되고, "Associate <시니어 직함>"(학술 직급 포함)이 더는 엔트리급으로 잘못 분류되지 않습니다.**
+
+### 수정
+- **콘텐츠 필터가 이제 Greenhouse·Ashby·Recruitee에서 작동합니다.** 이 보드들은 이제 각 공고의 전체 본문을 설명으로 담으므로, 설명을 읽는 `content_filter`(또는 국가 / 비자 키워드 필터)가 보드를 그냥 통과시키지 않고 공고 본문에 매칭합니다. Ashby와 Recruitee는 목록 페이로드에 본문을 무료로 실어 주고, Greenhouse는 이미 그랬습니다. 셋 다 하나의 공유 HTML→텍스트 파이프라인으로 정리됩니다.
+- **"Associate Director" / "Associate Professor"는 엔트리급이 아니라 시니어입니다.** 시니어리티 분류기(`skip_tiers:`가 사용)는 "associate"가 시니어 직함을 수식할 때도 이를 엔트리급 표시로 취급했습니다. 이제 "Associate <시니어 명사>"—학술 직급(Associate Professor, Associate Dean) 포함—를 시니어로 읽고, 진짜 주니어 변형(Associate Attorney, Associate Editor)은 엔트리급으로 유지하며, 앞에 오는 "Intern, Associate Dean"은 여전히 인턴십으로 분류합니다.
+
+### 참고
+- 테스트 스위트: **2736**. 스캔 소스는 **82**개로 변동 없음. 후속으로 대기: 선택형 SmartRecruiters 설명 보강(공고별 상세 조회), detect-reposts의 `aggregator: true` 보드 건너뛰기, 앵커드 키워드 `stem:` / `word:` 제목 접두사 — 각각 기본 동작 변경이 아니라 선택형 설정입니다. DNS 리바인딩 강화는 별도 보안 릴리스로 여전히 대기 중입니다.
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **추가 — 싱가포르 국가 채용 은행 MyCareersFuture를 스캔 소스로 추가. 수정 — Greenhouse 공고가 이제 전체 본문을 담아 콘텐츠 필터가 작동하고, 원격 Ashby 공고가 도시만 표시된 위치 뒤에 더는 가려지지 않습니다.**

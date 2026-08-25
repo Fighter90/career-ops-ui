@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.214.0] — 2026-08-25
+
+**Fixed — job descriptions from Greenhouse, Ashby, and Recruitee now feed the content filter, so keyword / country / visa filters actually match those boards; and "Associate <senior title>" (including academic ranks) is no longer misfiled as entry-level.**
+
+### Fixed
+- **Content filters now work on Greenhouse, Ashby, and Recruitee.** These boards now carry each posting's full text as its description, so a `content_filter` (or a country / visa keyword filter) matches the job body instead of passing the board through blind. Ashby and Recruitee ship the body in their list payload for free; Greenhouse already did. All three strip through one shared HTML→text pipeline.
+- **"Associate Director" / "Associate Professor" is senior, not entry-level.** The seniority classifier (used by `skip_tiers:`) treated the word "associate" as an entry-level marker even when it prefixes a senior title. It now reads "Associate <senior noun>" — including academic ranks (Associate Professor, Associate Dean) — as senior, while keeping genuine junior variants (Associate Attorney, Associate Editor) as entry-level, and still filing a leading "Intern, Associate Dean" as an internship.
+
+### Notes
+- Test suite: **2736**. Scan sources unchanged at **82**. Queued for a follow-up: opt-in SmartRecruiters description enrichment (a per-posting detail fetch), detect-reposts' `aggregator: true` board skip, and the anchored-keyword `stem:` / `word:` title prefixes — each an opt-in config surface rather than a default-behaviour change. The DNS-rebinding hardening remains queued for its own security release.
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **Added — MyCareersFuture, Singapore's national job bank, as a scan source. Fixed — Greenhouse postings now carry their full text so content filters work, and remote Ashby roles are no longer hidden behind a city-only location.**

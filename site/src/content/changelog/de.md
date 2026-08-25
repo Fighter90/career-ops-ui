@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.214.0] — 2026-08-25
+
+**Behoben — Stellenbeschreibungen von Greenhouse, Ashby und Recruitee speisen jetzt den Inhaltsfilter, sodass Wort- / Land- / Visum-Filter diese Boards tatsächlich treffen; und "Associate <Senior-Titel>" (inkl. akademischer Ränge) wird nicht mehr als Entry-Level fehleinsortiert.**
+
+### Behoben
+- **Inhaltsfilter greifen jetzt bei Greenhouse, Ashby und Recruitee.** Diese Boards tragen nun den vollen Text jeder Stelle als Beschreibung, sodass ein `content_filter` (oder ein Land- / Visum-Wortfilter) den Stellentext trifft, statt das Board blind durchzulassen. Ashby und Recruitee liefern den Text in ihrer Listen-Payload kostenlos; Greenhouse tat es bereits. Alle drei laufen durch eine gemeinsame HTML→Text-Pipeline.
+- **"Associate Director" / "Associate Professor" ist senior, nicht Entry-Level.** Der Senioritäts-Klassifizierer (von `skip_tiers:` genutzt) behandelte das Wort "associate" als Entry-Level-Marker, selbst als Präfix eines Senior-Titels. Er liest nun "Associate <Senior-Nomen>" — inkl. akademischer Ränge (Associate Professor, Associate Dean) — als senior, behält echte Junior-Varianten (Associate Attorney, Associate Editor) als Entry-Level und ordnet ein führendes "Intern, Associate Dean" weiterhin als Praktikum ein.
+
+### Hinweise
+- Test-Suite: **2736**. Scan-Quellen unverändert bei **82**. Für später eingereiht: optionale SmartRecruiters-Beschreibungsanreicherung (ein Detail-Abruf pro Stelle), das Überspringen von `aggregator: true`-Boards in detect-reposts und die verankerten Schlüsselwort-Titelpräfixe `stem:` / `word:` — je eine optionale Konfiguration, keine Änderung des Standardverhaltens. Die DNS-Rebinding-Härtung bleibt für ihre eigene Sicherheitsversion eingeplant.
+
+
+
 ## [1.213.0] — 2026-08-22
 
 **Hinzugefügt — MyCareersFuture, Singapurs nationale Jobbank, als Scan-Quelle. Behoben — Greenhouse-Stellen tragen nun ihren vollen Text, damit Inhaltsfilter greifen, und Remote-Ashby-Stellen verstecken sich nicht mehr hinter einem reinen Stadt-Standort.**
