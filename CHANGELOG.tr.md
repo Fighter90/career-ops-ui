@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.214.2] — 2026-08-25
+
+**Düzeltildi — paylaşılan HTML→metin hattı (Greenhouse / Recruitee açıklamaları) bir öznitelik değeri `>` karakteri içerdiğinde artık etiket özniteliklerini açıklamaya sızdırmıyor.**
+
+### Düzeltildi
+- **Öznitelik içinde `>` bulunan HTML açıklamaları temiz biçimde ayıklanıyor.** Greenhouse ve Recruitee açıklamalarının arkasındaki etiket ayıklayıcı ilk `>`'de duran naif bir eşleşme kullanıyordu, bu yüzden `<a title="salary > 100k">` gibi bir etiket sondaki öznitelik metnini (`100k">`) açıklamada bırakıyordu. Artık tırnaklı öznitelik değerlerine (tek veya çift) saygı gösteriyor, varlıkları çözmeden *önce* işaretlemeyi ayıklıyor (bir öznitelik içindeki kodlanmış tırnak sahte bir sınırlayıcı olmasın diye) ve düz metinde sabit bir `<>`'i hâlâ koruyor.
+
+### Notlar
+- Test takımı: **2742**. Tarama kaynakları **82**'de değişmedi. Bu turda üst projeden başka yeni bir şey yok: kalan değişiklikler salt-okunur olarak aktarılıyor (follow-up / weekly-digest / rejection-latency / salary-gap düzeltmeleri web-ui değişikliği gerektirmiyor) ya da web-ui yüzeyi değil (harici bir X/Xquik BYO-key eklentisi, CLI/verify düzeltmeleri). İsteğe bağlı öğeler — SmartRecruiters ayrıntı açıklamaları, detect-reposts toplayıcı atlaması, `stem:` / `word:` başlık önekleri, DNS-rebinding sıkılaştırması — sırada bekliyor.
+
+
+
 ## [1.214.1] — 2026-08-25
 
 **Düzeltildi — Ashby iş açıklamaları artık Greenhouse ve Recruitee ile aynı uzunlukta kırpılıyor, böylece bir içerik filtresi üç panoda da aynı davranıyor ve tek bir pano tarama önbelleğini şişiremiyor.**

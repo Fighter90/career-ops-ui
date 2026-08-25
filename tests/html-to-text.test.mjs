@@ -27,6 +27,31 @@ test('htmlToText: strips tags', () => {
   assert.equal(htmlToText('<p>Hello <b>world</b></p>'), 'Hello world');
 });
 
+test('htmlToText: keeps quoted angle brackets inside tag attributes', () => {
+  assert.equal(
+    htmlToText(`<p>Requires 5&amp;gt;3 years <a title="x > y" data-note='a > b' href="z">apply here</a> today</p>`),
+    'Requires 5>3 years apply here today',
+  );
+});
+
+test('htmlToText: keeps encoded quotes from becoming attribute delimiters', () => {
+  assert.equal(
+    htmlToText(`<a title="say &quot;hello &#34;there > world&#x22;&quot;" data-note='it&apos;s &#39;still > safe&#x27;&apos;'>apply</a>`),
+    'apply',
+  );
+});
+
+test('htmlToText: preserves empty angle brackets in plain text', () => {
+  assert.equal(htmlToText('a <> b'), 'a <> b');
+});
+
+test('htmlToText: strips media with quoted angle brackets in attributes', () => {
+  assert.equal(
+    htmlToText(`<script data-note="x > </script>">evil()</script><style data-note='x > </style>'>bad{}</style><p>Body</p>`),
+    'Body',
+  );
+});
+
 test('htmlToText: drops <script>/<style> WITH their contents', () => {
   assert.equal(htmlToText('<style>.x{color:red}</style><script>evil()</script><p>Body</p>'), 'Body');
 });

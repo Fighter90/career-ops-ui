@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.214.2] — 2026-08-25
+
+**Rettet — den delte HTML→tekst-pipeline (Greenhouse / Recruitee-beskrivelser) lækker ikke længere tag-attributter ind i beskrivelsen, når en attributværdi indeholder et `>`-tegn.**
+
+### Rettet
+- **HTML-beskrivelser med `>` inde i en attribut strippes rent.** Tag-strippen bag Greenhouse- og Recruitee-beskrivelserne brugte et naivt match, der stoppede ved det første `>`, så et tag som `<a title="salary > 100k">` efterlod den efterfølgende attributtekst (`100k">`) i beskrivelsen. Den respekterer nu citerede attributværdier (enkelte eller dobbelte), stripper markup *før* afkodning af entiteter (så et kodet citationstegn i en attribut ikke bliver en falsk afgrænser), og bevarer stadig et bogstaveligt `<>` i ren tekst.
+
+### Noter
+- Testsuite: **2742**. Scanningskilder uændret på **82**. Intet andet nyt fra forælderen denne runde: de øvrige ændringer relayes skrivebeskyttet (follow-up / weekly-digest / rejection-latency / salary-gap-rettelser kræver ingen web-ui-ændring) eller er ikke web-ui-flader (et eksternt X/Xquik BYO-key-plugin, CLI/verify-rettelser). De valgfrie punkter — SmartRecruiters-detaljebeskrivelser, detect-reposts-aggregator-spring, `stem:` / `word:`-titelpræfikser, DNS-rebinding-hærdning — er stadig i kø.
+
+
+
 ## [1.214.1] — 2026-08-25
 
 **Rettet — Ashby-beskrivelser er nu begrænset til samme længde som Greenhouse og Recruitee, så et indholdsfilter opfører sig ens på alle tre boards, og ét board kan ikke oppuste scan-cachen.**

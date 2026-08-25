@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.214.2] — 2026-08-25
+
+**Corrigé — le pipeline HTML→texte partagé (descriptions Greenhouse / Recruitee) ne laisse plus fuiter des attributs de balise dans la description quand une valeur d'attribut contient un caractère `>`.**
+
+### Corrigé
+- **Les descriptions HTML avec `>` dans un attribut sont nettoyées proprement.** Le nettoyeur de balises derrière les descriptions Greenhouse et Recruitee utilisait une correspondance naïve qui s'arrêtait au premier `>`, donc une balise comme `<a title="salary > 100k">` laissait le texte d'attribut final (`100k">`) dans la description. Il respecte désormais les valeurs d'attribut entre guillemets (simples ou doubles), retire le balisage *avant* de décoder les entités (pour qu'un guillemet encodé dans un attribut ne devienne pas un faux délimiteur), et préserve toujours un `<>` littéral en texte brut.
+
+### Notes
+- Suite de tests : **2742**. Sources de scan inchangées à **82**. Rien d'autre de neuf côté parent ce tour-ci : les autres changements sont relayés en lecture seule (les correctifs follow-up / weekly-digest / rejection-latency / salary-gap n'exigent aucun changement web-ui) ou ne sont pas des surfaces web-ui (un plugin externe X/Xquik BYO-key, des correctifs CLI/verify). Les éléments optionnels — descriptions de détail SmartRecruiters, saut d'agrégateurs dans detect-reposts, préfixes de titre `stem:` / `word:`, durcissement anti-DNS-rebinding — restent en file.
+
+
+
 ## [1.214.1] — 2026-08-25
 
 **Corrigé — les descriptions Ashby sont désormais plafonnées à la même longueur que Greenhouse et Recruitee, si bien qu'un filtre de contenu se comporte à l'identique sur les trois boards et qu'un board ne peut pas gonfler le cache de scan.**

@@ -7,16 +7,16 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2738%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2742%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.214.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.1)
+[![release](https://img.shields.io/badge/release-v1.214.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.214.1** — **Ліміт опису Ashby** — описи Ashby тепер ріжуться до 4000 символів, як у Greenhouse і Recruitee, тож контент-фільтр поводиться однаково на кожній дошці, і жодна не роздуває кеш сканування. **2738 тестів.**
+> **🆕 Останній реліз — v1.214.2** — **Фікс очищення HTML** — опис із `>` усередині HTML-атрибута (напр. `title="salary > 100k"`) більше не протягує хвіст атрибута в опис Greenhouse / Recruitee, який читає контент-фільтр. **2742 тестів.**
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

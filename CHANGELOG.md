@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.214.2] — 2026-08-25
+
+**Fixed — the shared HTML→text pipeline (Greenhouse / Recruitee descriptions) no longer leaks tag attributes into the description when an attribute value contains a `>` character.**
+
+### Fixed
+- **HTML descriptions with `>` inside an attribute are stripped cleanly.** The tag stripper behind the Greenhouse and Recruitee descriptions used a naive match that stopped at the first `>`, so a tag like `<a title="salary > 100k">` left the trailing attribute text (`100k">`) in the description. It now respects quoted attribute values (single or double), strips markup *before* decoding entities (so an encoded quote inside an attribute can't become a false delimiter), and still preserves a literal `<>` in plain text.
+
+### Notes
+- Test suite: **2742**. Scan sources unchanged at **82**. Nothing else new from the parent this round: the remaining changes are relayed read-only (follow-up / weekly-digest / rejection-latency / salary-gap fixes need no web-ui change) or aren't web-ui surfaces (an external X/Xquik BYO-key plugin, CLI/verify fixes). The opt-in items — SmartRecruiters detail descriptions, detect-reposts aggregator skip, `stem:` / `word:` title prefixes, DNS-rebinding guard — stay queued.
+
+
+
 ## [1.214.1] — 2026-08-25
 
 **Fixed — Ashby job descriptions are now capped at the same length as Greenhouse and Recruitee, so a content filter behaves identically across all three boards and one board can't bloat the scan cache.**

@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.214.2] — 2026-08-25
+
+**Corregido — la canalización HTML→texto compartida (descripciones de Greenhouse / Recruitee) ya no filtra atributos de etiqueta en la descripción cuando un valor de atributo contiene un carácter `>`.**
+
+### Corregido
+- **Las descripciones HTML con `>` dentro de un atributo se limpian correctamente.** El removedor de etiquetas tras las descripciones de Greenhouse y Recruitee usaba una coincidencia ingenua que se detenía en el primer `>`, así que una etiqueta como `<a title="salary > 100k">` dejaba el texto de atributo final (`100k">`) en la descripción. Ahora respeta los valores de atributo entre comillas (simples o dobles), quita el marcado *antes* de decodificar entidades (para que una comilla codificada dentro de un atributo no se vuelva un delimitador falso), y sigue preservando un `<>` literal en texto plano.
+
+### Notas
+- Conjunto de pruebas: **2742**. Fuentes de escaneo sin cambios en **82**. Nada más nuevo del padre esta ronda: los demás cambios se retransmiten en solo lectura (arreglos de follow-up / weekly-digest / rejection-latency / salary-gap no requieren cambios en web-ui) o no son superficies de web-ui (un plugin externo X/Xquik BYO-key, arreglos de CLI/verify). Los elementos opcionales — descripciones de detalle de SmartRecruiters, salto de agregadores en detect-reposts, prefijos de título `stem:` / `word:`, protección anti-DNS-rebinding — siguen en cola.
+
+
+
 ## [1.214.1] — 2026-08-25
 
 **Corregido — las descripciones de Ashby ahora se limitan a la misma longitud que Greenhouse y Recruitee, así que un filtro de contenido se comporta igual en las tres bolsas y una bolsa no puede inflar la caché de escaneo.**
