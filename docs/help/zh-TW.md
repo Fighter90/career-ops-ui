@@ -322,7 +322,7 @@ JD。輔助器會生成逐步的投遞檢查清單:
 
 任一分頁儲存後皆立即生效 — 無需重啟伺服器。
 
-**設定你的 LLM 供應方(逐步)。** web UI 的 ⚡ 即時評估以*無頭*方式執行,使用一個 API 金鑰。它透過 "OR" 運作 —— 設定其中**任意一個**即可正常運作;設定多個時,`auto` 按此順序優先:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama。(career-ops 本身是 CLI 無關的 —— 你也可以在 Claude Code、Cursor、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot 或 Kimi 內執行它;那與此無頭金鑰無關。)
+**設定你的 LLM 供應方(逐步)。** web UI 的 ⚡ 即時評估以*無頭*方式執行,使用一個 API 金鑰。它透過 "OR" 運作 —— 設定其中**任意一個**即可正常運作;設定多個時,`auto` 按此順序優先:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark。(career-ops 本身是 CLI 無關的 —— 你也可以在 Claude Code、Cursor、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot 或 Kimi 內執行它;那與此無頭金鑰無關。)
 
 1. 開啟 `#/config` → **API keys & runtime** 分頁。
 2. 在 **`LLM_PROVIDER`** 中選擇你的供應方:`auto`(使用已設定的金鑰),或用 `claude` / `gemini` / `openai` / `qwen` 強制指定一個。
@@ -343,7 +343,7 @@ JD。輔助器會生成逐步的投遞檢查清單:
 > **v1.54.3 —— Modes 分頁結構化表單。** `modes/_profile.md` 不再是按區塊的原始 markdown 編輯器,而是從已文件化的 schema 衍生的欄位表單。清單型區塊 —— **Target Roles / Adaptive Framing / Comp Targets** —— 渲染為可重複的逐列輸入(增刪列);散文區塊 —— **Exit Narrative / Location Policy** —— 渲染為帶標籤的 textarea;任何未知或非清單區塊回退為帶標籤的逐字 textarea。儲存**仍按區塊合併** —— 前言、未更動區塊與自訂區塊按位元組保留。*Advanced: raw markdown* 折疊區保留,用於整檔編輯:增刪區塊或編輯前言。
 > **供應方(v1.39.0)。** API-keys 分頁新增 `LLM_PROVIDER` 選擇(`auto`=Anthropic→Gemini · `claude` · `gemini`)與 `OPENAI_API_KEY` 欄位(Codex/OpenCode CLI 端)。`career-ops-ui init` 為互動精靈。
 >
-> **供應方(v1.57.0）。** 無頭即時評估現涵蓋 **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama**（`auto` 順序；`LLM_PROVIDER` 固定其一）。**OpenRouter** —— 一個 `OPENROUTER_API_KEY` 即接入 300+ 模型；`OPENROUTER_MODEL` 下拉從 OpenRouter 即時目錄載入（伺服器端代理，離線時精選回退）。另修復：帶換行/空白貼上的 key 在驗證前被修剪，`/#/config` 不再對任何供應方顯示「validation failed」。
+> **供應方(v1.57.0）。** 無頭即時評估現涵蓋 **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark**（`auto` 順序；`LLM_PROVIDER` 固定其一）。**OpenRouter** —— 一個 `OPENROUTER_API_KEY` 即接入 300+ 模型；`OPENROUTER_MODEL` 下拉從 OpenRouter 即時目錄載入（伺服器端代理，離線時精選回退）。另修復：帶換行/空白貼上的 key 在驗證前被修剪，`/#/config` 不再對任何供應方顯示「validation failed」。
 
 
 
@@ -2022,7 +2022,7 @@ career-ops-ui 預設繫結 `127.0.0.1`。要存取位於伺服器上的 Hermes �
 
 ### 選擇你的引擎
 
-career-ops 不繫結任何特定 CLI，所以在 AI 上你有三個可靠的選擇。**你的 Claude 訂閱** —— 在伺服器上安裝 **Claude Code** CLI，用你的 Pro/Max 方案執行 `claude login`;之後父專案的代理就會使用你的訂閱，不會產生按 token 計費的 API 帳單。**Hermes** —— 在同一台伺服器上執行 `hermes gateway`(它會在 `http://127.0.0.1:8642/v1` 暴露一個相容 OpenAI 的 API)，並在**應用設定**中設定 `HERMES_API_KEY`;career-ops-ui 的即時評估會經由它進行(在自動服務商順序中排在最後)。**API 金鑰** —— 在父專案的 `.env` 中設定 `ANTHROPIC_API_KEY`(或七個服務商中的任意一個:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama)，⚡ 即時操作就能在無人值守的情況下運作。你也可以混搭使用:用 Claude 訂閱承擔父專案繁重的代理工作，再用一個便宜或本機的服務商來做檢視器裡的快速評估。
+career-ops 不繫結任何特定 CLI，所以在 AI 上你有三個可靠的選擇。**你的 Claude 訂閱** —— 在伺服器上安裝 **Claude Code** CLI，用你的 Pro/Max 方案執行 `claude login`;之後父專案的代理就會使用你的訂閱，不會產生按 token 計費的 API 帳單。**Hermes** —— 在同一台伺服器上執行 `hermes gateway`(它會在 `http://127.0.0.1:8642/v1` 暴露一個相容 OpenAI 的 API)，並在**應用設定**中設定 `HERMES_API_KEY`;career-ops-ui 的即時評估會經由它進行(在自動服務商順序中排在最後)。**API 金鑰** —— 在父專案的 `.env` 中設定 `ANTHROPIC_API_KEY`(或七個服務商中的任意一個:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark)，⚡ 即時操作就能在無人值守的情況下運作。你也可以混搭使用:用 Claude 訂閱承擔父專案繁重的代理工作，再用一個便宜或本機的服務商來做檢視器裡的快速評估。
 
 ### 安全地對外暴露
 

@@ -185,7 +185,7 @@ window.__I18N_DICT_KO = {
   'config.viewProfile': "읽기 전용 요약 보기 →",
   'config.gotoHealth': "Health 에서 확인",
   'config.llmProvider': "LLM 공급자",
-  'config.llmProviderHint': "auto = 설정된 키를 사용하며 Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama 순으로 우선합니다. claude / gemini / openai / qwen / openrouter / github / hermes / deepseek / zai / kimi / minimax / mistral / grok / together / fireworks / ollama = 해당 제공자를 우선하되, 그 키가 없으면 설정된 다른 제공자로 대체합니다. 제공자 키가 전혀 없을 때만 → 수동 프롬프트로 대체.",
+  'config.llmProviderHint': "auto = 설정된 키를 사용하며 Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark 순으로 우선합니다. claude / gemini / openai / qwen / openrouter / github / hermes / deepseek / zai / kimi / minimax / mistral / grok / together / fireworks / ollama = 해당 제공자를 우선하되, 그 키가 없으면 설정된 다른 제공자로 대체합니다. 제공자 키가 전혀 없을 때만 → 수동 프롬프트로 대체.",
   'config.providerModelNote': "career-ops는 CLI에 구애받지 않습니다 — 아무 AI 코딩 CLI(Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi) 안에서 실행하며 각기 자체 로그인을 씁니다. 이 웹 UI는 별개입니다: ⚡ 라이브 평가는 아래의 일곱 제공자 키 중 아무거나로 헤드리스 실행됩니다 — Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes — 자동 정렬되며, 고정된 제공자에 키가 없으면 폴백합니다.",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys. v1.55.0: web-ui 라이브 평가도 실행(auto 순서에서 Anthropic·Gemini 다음 3번째); 상위 Codex/OpenAI CLI 흐름에서도 계속 사용.",

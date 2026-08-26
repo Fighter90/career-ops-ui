@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.217.0] — 2026-08-26
+
+**Dodano — Ark dołącza do listy LLM (18 dostawców).** BytePlus Ark i Volcengine Ark — modele Doubao od ByteDance — to teraz dostawcy ⚡ na żywo, przez ten sam rdzeń zgodny z OpenAI i bazowy URL zależny od regionu.
+
+### Dodano
+- **BytePlus Ark** (`ARK_API_KEY`, międzynarodowy) i **Volcengine Ark** (`ARK_CN_API_KEY`, Chiny) — Chat Completions zgodny z OpenAI przez `runOpenAICompatible()`. Ustaw `ARK_MODEL` / `ARK_CN_MODEL` (nazwę modelu Doubao lub id endpointu `ep-…`); `ARK_BASE_URL` / `ARK_CN_BASE_URL` przełączają region. Oba dołączają do kolejności `auto` (na końcu), z monogramem w Ustawieniach i Użyciu. Interfejs webowy obejmuje teraz **18 dostawców** na żywo.
+
+### Uwagi
+- Ta sama ścieżka zaufanej konfiguracji + kontroli schematu http(s) co reszta (nigdy walidator SSRF adresu oferty). Źródła skanowania bez zmian: **82**. Testy: **2755**.
+
 ## [1.216.0] — 2026-08-26
 
 **Dodano — dziewięciu kolejnych dostawców LLM, każdy z własnym kafelkiem marki.** Twoje ⚡ oceny na żywo mogą teraz działać przez DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks lub w pełni lokalny Ollama — o jeden klucz, każdy oznaczony monogramem obok swojego pola w Ustawieniach.

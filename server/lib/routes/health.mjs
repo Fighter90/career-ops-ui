@@ -27,6 +27,8 @@ import { hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey } from '../openai.mjs';
 // v1.216.0 — the extended OpenAI-compatible roster.
 import { hasDeepSeekKey, hasZaiKey, hasKimiKey, hasMiniMaxKey, hasMistralKey, hasGrokKey, hasTogetherKey, hasFireworksKey, hasOllamaKey } from '../openai.mjs';
+// v1.217.0 — Ark pair.
+import { hasArkKey, hasArkCnKey } from '../openai.mjs';
 
 export function registerHealthRoutes(app) {
   app.get('/api/health', async (_req, res) => {
@@ -92,6 +94,8 @@ export function registerHealthRoutes(app) {
       ['TOGETHER_API_KEY', hasTogetherKey()],
       ['FIREWORKS_API_KEY', hasFireworksKey()],
       ['OLLAMA_BASE_URL', hasOllamaKey()],
+      ['ARK_API_KEY', hasArkKey()],
+      ['ARK_CN_API_KEY', hasArkCnKey()],
     ]) {
       checks.push({ name, required: false, ok: set, value: set ? 'set' : 'unset (manual mode)' });
     }
@@ -162,6 +166,8 @@ export function registerHealthRoutes(app) {
       ['together', hasTogetherKey()],
       ['fireworks', hasFireworksKey()],
       ['ollama', hasOllamaKey()],
+      ['ark', hasArkKey()],
+      ['arkcn', hasArkCnKey()],
     ].filter(([, set]) => set).map(([p]) => p);
     const activeProvider = selectActiveProvider(keysConfigured);
     const MODEL_KEY = {
@@ -172,6 +178,7 @@ export function registerHealthRoutes(app) {
       deepseek: 'DEEPSEEK_MODEL', zai: 'ZAI_MODEL', kimi: 'MOONSHOT_MODEL',
       minimax: 'MINIMAX_MODEL', mistral: 'MISTRAL_MODEL', grok: 'XAI_MODEL',
       together: 'TOGETHER_MODEL', fireworks: 'FIREWORKS_MODEL', ollama: 'OLLAMA_MODEL',
+      ark: 'ARK_MODEL', arkcn: 'ARK_CN_MODEL',
     };
     const activeModel = activeProvider
       ? (effectiveEnv(MODEL_KEY[activeProvider], PATHS.envFile) || null)

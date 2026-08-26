@@ -7,16 +7,16 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2752%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2755%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.216.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.216.0)
+[![release](https://img.shields.io/badge/release-v1.217.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.217.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.216.0** — **Dziewięciu kolejnych dostawców LLM** — DeepSeek, GLM (Z.ai), Kimi, MiniMax, Mistral, Grok (xAI), Together, Fireworks i lokalny Ollama dołączają do ⚡ oceny na żywo (teraz **16 dostawców**), każdy z monogramem marki w Ustawieniach. **2752 testów.**
+> **🆕 Najnowsze wydanie — v1.217.0** — **Ark dołącza** — BytePlus Ark + Volcengine Ark (Doubao od ByteDance) to teraz dostawcy ⚡ oceny na żywo (**18 łącznie**), każdy z monogramem marki w Ustawieniach. **2755 testów.**
 >
 > 📜 Pełna historia wydań: **[CHANGELOG.pl.md](CHANGELOG.pl.md)**.
 

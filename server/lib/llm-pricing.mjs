@@ -31,6 +31,9 @@ export const PRICES = {
   together:   { in: 0.88,    out: 0.88 },  // varies by open-weight model routed
   fireworks:  { in: 0.90,    out: 0.90 },  // varies by open-weight model routed
   ollama:     { in: 0.00,    out: 0.00 },  // local — no per-token cost
+  // v1.217.0 — Ark (ByteDance Doubao); rough list prices, edit to match your plan.
+  ark:        { in: 0.30,    out: 0.60 },  // BytePlus Ark (Doubao-class)
+  arkcn:      { in: 0.30,    out: 0.60 },  // Volcengine Ark (Doubao-class)
 };
 
 /** Estimated USD for a call. `inTok`/`outTok` are token counts. */

@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.217.0] — 2026-08-26
+
+**Added — Ark joins the LLM roster (18 providers).** BytePlus Ark and Volcengine Ark — ByteDance's Doubao models — are now ⚡ live-eval providers, wired through the same OpenAI-compatible core with a region base-URL override and their own brand tiles.
+
+### Added
+- **BytePlus Ark** (`ARK_API_KEY`, international) and **Volcengine Ark** (`ARK_CN_API_KEY`, China) — OpenAI-compatible Chat Completions via the shared `runOpenAICompatible()` core. Set `ARK_MODEL` / `ARK_CN_MODEL` (a Doubao model name or your `ep-…` endpoint id); `ARK_BASE_URL` / `ARK_CN_BASE_URL` switch region. Both join the `auto` order (last) and each shows its monogram in Settings + Usage. The web UI now spans **18 live-eval providers**.
+
+### Notes
+- Same trusted-config + http(s) scheme-guard path as the rest of the roster (never the SSRF job-URL validator). Scan sources unchanged at **82**. Test suite: **2755**.
+
 ## [1.216.0] — 2026-08-26
 
 **Added — nine more LLM providers, each with its own brand tile.** Your ⚡ live evaluations can now run through DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks, or a fully local Ollama — one key away, each marked by a monogram beside its field in Settings.

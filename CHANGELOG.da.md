@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.217.0] — 2026-08-26
+
+**Tilføjet — Ark slutter sig til LLM-listen (18 udbydere).** BytePlus Ark og Volcengine Ark — ByteDances Doubao-modeller — er nu ⚡ live-udbydere via samme OpenAI-kompatible kerne og en basis-URL pr. region.
+
+### Tilføjet
+- **BytePlus Ark** (`ARK_API_KEY`, international) og **Volcengine Ark** (`ARK_CN_API_KEY`, Kina) — OpenAI-kompatibel Chat Completions via `runOpenAICompatible()`. Angiv `ARK_MODEL` / `ARK_CN_MODEL` (et Doubao-modelnavn eller dit `ep-…` endpoint-id); `ARK_BASE_URL` / `ARK_CN_BASE_URL` skifter region. Begge føjes til `auto`-rækkefølgen (til sidst), med deres monogram i Indstillinger og Forbrug. Web-UI’et dækker nu **18 udbydere** live.
+
+### Noter
+- Samme betroede konfiguration + http(s)-skematjek som resten (aldrig SSRF-validatoren for job-URL’er). Scanningskilder uændret: **82**. Tests: **2755**.
+
 ## [1.216.0] — 2026-08-26
 
 **Tilføjet — ni LLM-udbydere mere, hver med sit eget brand-felt.** Dine ⚡ live-evalueringer kan nu køre via DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks eller en helt lokal Ollama — én nøgle væk, hver markeret med et monogram ved siden af sit felt i Indstillinger.

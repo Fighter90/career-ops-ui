@@ -36,6 +36,8 @@ window.ProviderLogo = (function () {
     together:   { bg: '#0f6fff', tx: 'T' },   // Together blue
     fireworks:  { bg: '#7c3aed', tx: 'FW' },  // Fireworks violet
     ollama:     { bg: '#0b0b0b', tx: 'OL' },  // Ollama black (local)
+    ark:        { bg: '#1664ff', tx: 'ARK' }, // BytePlus Ark (Volcano blue)
+    arkcn:      { bg: '#0d5bd1', tx: 'ARK' }, // Volcengine Ark (China)
   };
   var DEFAULT_BG = '#64748b';
 
@@ -46,7 +48,7 @@ window.ProviderLogo = (function () {
     HERMES_API_KEY: 'hermes', DEEPSEEK_API_KEY: 'deepseek', ZAI_API_KEY: 'zai',
     MOONSHOT_API_KEY: 'kimi', MINIMAX_API_KEY: 'minimax', MISTRAL_API_KEY: 'mistral',
     XAI_API_KEY: 'grok', TOGETHER_API_KEY: 'together', FIREWORKS_API_KEY: 'fireworks',
-    OLLAMA_BASE_URL: 'ollama',
+    OLLAMA_BASE_URL: 'ollama', ARK_API_KEY: 'ark', ARK_CN_API_KEY: 'arkcn',
   };
 
   function mark(slug) {
