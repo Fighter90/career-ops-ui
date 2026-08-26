@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.218.0] — 2026-08-26
+
+**Tilføjet — udbyder-badges (og korrekte navne) overalt, hvor en udbyder vises.**
+
+### Tilføjet
+- Udbyder-monogrammer på dashboard-chippen, "Aktiv"-oversigten i Indstillinger og ⚡ evalueringsresultatets overskrift.
+
+### Rettet
+- Forældede etiketter: tre skærme udledte navnet fra et 5-punkts-kort (evalueringsresultatet mærkede enhver ikke-Anthropic-udbyder som "Gemini"); de bruger nu `ProviderStatus.label` (18). Nøgletællingen viste "/ 7" → 18. `LLM_PROVIDER`-tippets slug-liste fik `ark` / `arkcn` på alle 17 sprog.
+
+### Noter
+- Kun klient, CSP-sikker. Ingen serverændring. Scanningskilder: **82**. Tests: **2758**.
+
 ## [1.217.1] — 2026-08-26
 
 **Teststyrkelse — endpoint-dækning for hele udbyderkataloget.**

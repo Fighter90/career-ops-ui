@@ -185,7 +185,7 @@ window.__I18N_DICT_ZH_CN = {
   'config.viewProfile': "查看只读摘要 →",
   'config.gotoHealth': "在 Health 验证",
   'config.llmProvider': "LLM 提供方",
-  'config.llmProviderHint': "auto = 使用已设置的任意密钥,按 Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark 优先。claude / gemini / openai / qwen / openrouter / github / hermes / deepseek / zai / kimi / minimax / mistral / grok / together / fireworks / ollama = 优先该提供方 —— 但若其密钥未设置,则回退到你已配置的任意其他提供方。仅当完全没有提供方密钥时 → 回退到手动提示词。",
+  'config.llmProviderHint': "auto = 使用已设置的任意密钥,按 Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark 优先。claude / gemini / openai / qwen / openrouter / github / hermes / deepseek / zai / kimi / minimax / mistral / grok / together / fireworks / ollama / ark / arkcn = 优先该提供方 —— 但若其密钥未设置,则回退到你已配置的任意其他提供方。仅当完全没有提供方密钥时 → 回退到手动提示词。",
   'config.providerModelNote': "career-ops 与 CLI 无关 — 你在任意 AI 编码 CLI(Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi)中运行它,各自有自己的登录。此 Web UI 是独立的:其 ⚡ 实时评估以无头方式运行,使用下方七个提供方密钥中的任意一个 — Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes — 自动排序,当固定的提供方没有密钥时回退。",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys。v1.55.0：也运行 web-ui 实时评估（auto 顺序中第 3 位，在 Anthropic 和 Gemini 之后）；父项目 Codex/OpenAI CLI 流程仍会读取。",

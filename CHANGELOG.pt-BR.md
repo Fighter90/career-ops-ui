@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.218.0] — 2026-08-26
+
+**Adicionado — emblemas de provedor (e nomes corretos) onde quer que um provedor apareça.**
+
+### Adicionado
+- Monogramas de provedor no chip do painel, no resumo "Ativo" das Configurações e no cabeçalho do resultado da ⚡ avaliação.
+
+### Corrigido
+- Rótulos obsoletos: três telas resolviam o nome a partir de um mapa de 5 entradas (o resultado da avaliação rotulava como "Gemini" qualquer provedor não-Anthropic); agora usam `ProviderStatus.label` (18). A contagem de chaves mostrava "/ 7" → 18. A lista de slugs do hint `LLM_PROVIDER` ganhou `ark` / `arkcn` nos 17 idiomas.
+
+### Notas
+- Apenas cliente, seguro para CSP. Sem mudança de servidor. Fontes de varredura: **82**. Testes: **2758**.
+
 ## [1.217.1] — 2026-08-26
 
 **Reforço de testes — cobertura de endpoint para todo o catálogo de provedores.**

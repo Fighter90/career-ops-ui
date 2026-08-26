@@ -11,6 +11,19 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.218.0] — 2026-08-26
+
+**Añadido — insignias de proveedor (y nombres correctos) allí donde se muestra un proveedor.**
+
+### Añadido
+- Monogramas de proveedor en el chip del panel, el resumen "Activo" de Ajustes y la cabecera del resultado de la ⚡ evaluación.
+
+### Corregido
+- Etiquetas obsoletas: tres superficies resolvían el nombre desde un mapa de 5 entradas (el resultado de evaluación etiquetaba como "Gemini" a cualquier proveedor no-Anthropic); ahora usan `ProviderStatus.label` (18). El recuento de claves mostraba "/ 7" → 18. La lista de slugs del hint `LLM_PROVIDER` ganó `ark` / `arkcn` en los 17 idiomas.
+
+### Notas
+- Solo cliente, seguro para CSP. Sin cambios de servidor. Fuentes de escaneo: **82**. Pruebas: **2758**.
+
 ## [1.217.1] — 2026-08-26
 
 **Endurecimiento de pruebas — cobertura de endpoint para todo el catálogo de proveedores.**

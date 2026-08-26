@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.218.0] — 2026-08-26
+
+**Hinzugefügt — Anbieter-Badges (und korrekte Namen) überall, wo ein Anbieter angezeigt wird.**
+
+### Hinzugefügt
+- Anbieter-Monogramme auf dem Dashboard-Chip, der „Aktiv"-Übersicht in den Einstellungen und der Kopfzeile des ⚡ Bewertungsergebnisses.
+
+### Behoben
+- Veraltete Labels: Drei Ansichten lösten den Namen aus einer 5-Einträge-Map auf (das Bewertungsergebnis kennzeichnete jeden Nicht-Anthropic-Anbieter als „Gemini"); sie nutzen nun `ProviderStatus.label` (18). Die Schlüsselanzahl zeigte „/ 7" → 18. Die Slug-Liste des `LLM_PROVIDER`-Hinweises erhielt `ark` / `arkcn` in allen 17 Sprachen.
+
+### Hinweise
+- Nur clientseitig, CSP-sicher. Keine Serveränderung. Scan-Quellen: **82**. Tests: **2758**.
+
 ## [1.217.1] — 2026-08-26
 
 **Test-Härtung — Endpunkt-Abdeckung für das gesamte Anbieterverzeichnis.**

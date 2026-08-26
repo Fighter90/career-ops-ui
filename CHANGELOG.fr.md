@@ -11,6 +11,19 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.218.0] — 2026-08-26
+
+**Ajouté — badges de fournisseur (et noms corrects) partout où un fournisseur est affiché.**
+
+### Ajouté
+- Monogrammes de fournisseur sur la puce du tableau de bord, le résumé « Actif » des Réglages et l’en-tête du résultat de l’⚡ évaluation.
+
+### Corrigé
+- Étiquettes obsolètes : trois écrans résolvaient le nom depuis une table de 5 entrées (le résultat d’évaluation étiquetait tout fournisseur non-Anthropic comme « Gemini ») ; ils utilisent désormais `ProviderStatus.label` (18). Le compteur de clés affichait « / 7 » → 18. La liste de slugs de l’indice `LLM_PROVIDER` a gagné `ark` / `arkcn` dans les 17 langues.
+
+### Notes
+- Côté client uniquement, compatible CSP. Aucun changement serveur. Sources de scan : **82**. Tests : **2758**.
+
 ## [1.217.1] — 2026-08-26
 
 **Renforcement des tests — couverture des endpoints pour tout le catalogue de fournisseurs.**

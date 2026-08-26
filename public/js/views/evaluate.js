@@ -78,15 +78,22 @@ Router.register('evaluate', async () => {
       ]));
     } else {
       const cls = r.code === 0 ? 'badge-ok' : 'badge-bad';
-      const engineName = r.mode === 'anthropic' ? 'Anthropic' : 'Gemini';
-      // For live runs the markdown lives in either `markdown` (Anthropic)
-      // or `stdout` (Gemini). PDF button uses whichever is non-empty.
+      // v1.218.0 — name whichever of the 18 providers actually ran (was a stale
+      // anthropic-or-else-Gemini guess) + its brand monogram.
+      const engineName = (window.ProviderStatus && window.ProviderStatus.label(r.mode)) || r.mode || 'LLM';
+      const engineTile = (r.mode && r.mode !== 'manual' && window.ProviderLogo && typeof window.ProviderLogo.el === 'function')
+        ? window.ProviderLogo.el(r.mode, 14) : null;
+      // For live runs the markdown lives in either `markdown` (in-process
+      // providers) or `stdout` (the Gemini subprocess). PDF button uses whichever
+      // is non-empty.
       const liveMd = r.markdown || r.stdout || '';
       out.appendChild(c('div', { className: 'card' }, [
         c('div', { className: 'flex-between mb-3' }, [
           c('div', { className: 'flex gap-3' }, [
-            c('div', { className: 'badge ' + cls },
-              engineName + ' · ' + t('eval.exit', 'exit') + ' ' + (r.code ?? 0)),
+            c('div', { className: 'badge ' + cls, style: { display: 'inline-flex', alignItems: 'center', gap: '5px' } }, [
+              engineTile,
+              engineName + ' · ' + t('eval.exit', 'exit') + ' ' + (r.code ?? 0),
+            ]),
             r.saved && c('div', { className: 'badge badge-info' },
               t('eval.savedAs', 'Saved') + ': ' + r.saved),
           ]),

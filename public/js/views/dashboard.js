@@ -67,11 +67,14 @@ Router.register('dashboard', async () => {
       while (chip.firstChild) chip.removeChild(chip.firstChild);
       if (!st) { chip.hidden = true; return; }
       chip.hidden = false;
-      // v1.59.2 — server returns `anthropic` lowercase, not `claude`
-      // (the LLM_PROVIDER env value is `claude` but the resolved name
-      // is `anthropic`). Pre-fix the NAME lookup missed and the chip
-      // showed `Live evals: anthropic` instead of `Anthropic`.
-      const NAME = { anthropic: 'Anthropic', gemini: 'Gemini', openai: 'OpenAI', qwen: 'Qwen', openrouter: 'OpenRouter' };
+      // v1.59.2 — the server returns `anthropic` lowercase, not `claude`.
+      // v1.218.0 — the friendly label now comes from ProviderStatus (all 18
+      // providers), not a stale 5-entry map, and the chip carries the
+      // provider's brand monogram.
+      const label = (id) => (window.ProviderStatus && typeof window.ProviderStatus.label === 'function')
+        ? window.ProviderStatus.label(id) : id;
+      const tile = (id) => (window.ProviderLogo && typeof window.ProviderLogo.el === 'function')
+        ? window.ProviderLogo.el(id, 15) : null;
       if (!st.activeProvider) {
         chip.classList.add('dash-chip--manual');
         chip.appendChild(c('span', { className: 'dash-chip__icon', 'aria-hidden': 'true' }, '📋'));
@@ -79,10 +82,11 @@ Router.register('dashboard', async () => {
           t('dash.provider.manual', 'Manual prompt mode (no API key set)')));
       } else {
         chip.classList.remove('dash-chip--manual');
-        const name = NAME[st.activeProvider] || st.activeProvider;
-        const lbl = t('dash.provider.live', 'Live evals') + ': ' + name +
+        const lbl = t('dash.provider.live', 'Live evals') + ': ' + label(st.activeProvider) +
           (st.activeModel ? ' ' + st.activeModel : '');
         chip.appendChild(c('span', { className: 'dash-chip__icon', 'aria-hidden': 'true' }, '⚡'));
+        const t0 = tile(st.activeProvider);
+        if (t0) chip.appendChild(t0);
         chip.appendChild(c('span', { className: 'dash-chip__label' }, lbl));
       }
     }

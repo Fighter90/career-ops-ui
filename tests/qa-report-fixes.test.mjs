@@ -154,10 +154,16 @@ test('UX-A9 (v1.58.62 + v1.59.2): #/config API-keys panel has an Active/Keys sum
   // v1.59.2 — count comes from Array.length, not typeof === 'number'.
   assert.match(cfg, /Array\.isArray\(st\.keysConfigured\)\s*\?\s*st\.keysConfigured\.length/,
     'count must read keysConfigured.length (server returns an array)');
-  // v1.59.2 — NAME map keyed by 'anthropic' (server returns lowercase
-  // resolved provider name), NOT 'claude'.
-  assert.match(cfg, /\{\s*anthropic:\s*'Anthropic'/,
-    'NAME map must key on "anthropic" (server contract — not "claude")');
+  // v1.218.0 — the friendly name now resolves via the shared
+  // window.ProviderStatus.label (all 18 providers, keyed on the lowercase
+  // resolved name like 'anthropic', per the server contract — not 'claude'),
+  // replacing the old local 5-entry NAME map. ProviderStatus.LABELS still
+  // maps 'anthropic' → 'Anthropic'.
+  assert.match(cfg, /window\.ProviderStatus\.label\(st\.activeProvider\)/,
+    'active provider name must resolve via ProviderStatus.label (shared 18-provider map)');
+  const ps = read('public', 'js', 'lib', 'provider-status.js');
+  assert.match(ps, /anthropic:\s*'Anthropic'/,
+    'ProviderStatus.LABELS must map lowercase "anthropic" → "Anthropic"');
   // i18n keys present in 8 locales.
   const dict = legacyDictText();
   for (const key of ['config.activeProvider', 'config.keysConfiguredPrefix']) {

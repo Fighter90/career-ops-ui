@@ -8,6 +8,21 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.218.0] — 2026-08-26
+
+**Added — provider brand tiles (and correct names) everywhere a provider is shown.** The dashboard "live evals" chip, the Settings active-provider summary, and the ⚡ evaluation result now each carry the provider's monogram and name it correctly across all 18.
+
+### Added
+- **Provider monograms on the dashboard chip, the Settings "Active" summary, and the ⚡ evaluation result header** — matching the tiles already in the Settings key fields and the Usage page.
+
+### Fixed
+- **Stale provider labels.** Three surfaces resolved the name from a 5-entry map (Anthropic/Gemini/OpenAI/Qwen/OpenRouter) and fell back to the raw slug — the ⚡ evaluation result even mislabeled *every* non-Anthropic provider as "Gemini". All three now use the shared `ProviderStatus.label` (18 providers).
+- **Settings key count** showed "/ 7"; it now reflects the real provider total (18).
+- The `LLM_PROVIDER` hint's slug list (`… / ollama`) gained `ark` / `arkcn` in all 17 locales, matching the auto-order arrow list.
+
+### Notes
+- Client-only, CSP-safe (the same inline-SVG monograms). No server change. Scan sources unchanged at **82**. Test suite: **2758**.
+
 ## [1.217.1] — 2026-08-26
 
 **Test hardening — endpoint coverage for the full provider roster.**
