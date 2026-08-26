@@ -9,6 +9,13 @@
 ---
 
 
+## [1.217.1] — 2026-08-26
+
+**테스트 강화 — 전체 제공자 목록의 엔드포인트 커버리지.**
+
+### 추가
+- **Kimi, MiniMax, Mistral, Fireworks**의 엔드포인트·기본 모델·Bearer 인증을 검증하는 매개변수화된 `run<Provider>` 테스트.
+
 ## [1.217.0] — 2026-08-26
 
 **추가 — Ark가 LLM 목록에 합류(18개 제공자).** ByteDance의 Doubao 모델인 BytePlus Ark와 Volcengine Ark가 이제 ⚡ 라이브 제공자입니다 — 동일한 OpenAI 호환 코어와 지역별 기본 URL을 사용합니다.

@@ -2,6 +2,13 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.217.1] — 2026-08-26
+
+**Test sağlamlaştırma — tüm sağlayıcı listesi için uç nokta kapsamı.**
+
+### Eklendi
+- **Kimi, MiniMax, Mistral ve Fireworks** için uç noktayı, varsayılan modeli ve Bearer kimlik doğrulamasını doğrulayan parametreli bir `run<Provider>` testi.
+
 ## [1.217.0] — 2026-08-26
 
 **Eklendi — Ark, LLM listesine katılıyor (18 sağlayıcı).** ByteDance’in Doubao modelleri BytePlus Ark ve Volcengine Ark artık ⚡ canlı sağlayıcılar — aynı OpenAI uyumlu çekirdek ve bölgeye göre temel URL ile.

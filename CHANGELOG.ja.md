@@ -9,6 +9,13 @@
 ---
 
 
+## [1.217.1] — 2026-08-26
+
+**テスト強化 — 全プロバイダーのエンドポイントカバレッジ。**
+
+### 追加
+- **Kimi・MiniMax・Mistral・Fireworks** のエンドポイント、既定モデル、Bearer 認証を検証するパラメータ化 `run<Provider>` テスト。
+
 ## [1.217.0] — 2026-08-26
 
 **追加 — Ark が LLM の一覧に加わりました（18 プロバイダー）。** ByteDance の Doubao モデルである BytePlus Ark と Volcengine Ark が ⚡ ライブプロバイダーになりました。同じ OpenAI 互換コアと地域別ベース URL を使います。

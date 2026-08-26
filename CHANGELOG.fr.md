@@ -11,6 +11,13 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.217.1] — 2026-08-26
+
+**Renforcement des tests — couverture des endpoints pour tout le catalogue de fournisseurs.**
+
+### Ajouté
+- Un test `run<Provider>` paramétré vérifiant l’endpoint, le modèle par défaut et l’authentification Bearer pour **Kimi, MiniMax, Mistral et Fireworks**.
+
 ## [1.217.0] — 2026-08-26
 
 **Ajouté — Ark rejoint la liste des LLM (18 fournisseurs).** BytePlus Ark et Volcengine Ark — les modèles Doubao de ByteDance — sont désormais des fournisseurs ⚡ en direct, via le même cœur compatible OpenAI et une URL de base par région.

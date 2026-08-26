@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.217.1] — 2026-08-26
+
+**Test hardening — endpoint coverage for the full provider roster.**
+
+### Added
+- A parametrized `run<Provider>` test asserting the endpoint, default model, and Bearer auth for **Kimi, MiniMax, Mistral, and Fireworks**, so every OpenAI-compatible wrapper now has a direct endpoint check (not just structural coverage).
+
+### Notes
+- No behavior change. Scan sources unchanged at **82**. Test suite: **2756**.
+
 ## [1.217.0] — 2026-08-26
 
 **Added — Ark joins the LLM roster (18 providers).** BytePlus Ark and Volcengine Ark — ByteDance's Doubao models — are now ⚡ live-eval providers, wired through the same OpenAI-compatible core with a region base-URL override and their own brand tiles.

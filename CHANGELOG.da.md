@@ -8,6 +8,13 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.217.1] — 2026-08-26
+
+**Teststyrkelse — endpoint-dækning for hele udbyderkataloget.**
+
+### Tilføjet
+- En parametriseret `run<Provider>`-test, der tjekker endpoint, standardmodel og Bearer-godkendelse for **Kimi, MiniMax, Mistral og Fireworks**.
+
 ## [1.217.0] — 2026-08-26
 
 **Tilføjet — Ark slutter sig til LLM-listen (18 udbydere).** BytePlus Ark og Volcengine Ark — ByteDances Doubao-modeller — er nu ⚡ live-udbydere via samme OpenAI-kompatible kerne og en basis-URL pr. region.
