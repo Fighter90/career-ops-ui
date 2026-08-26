@@ -8,6 +8,16 @@
 
 ---
 
+## [1.224.0] — 2026-08-26
+
+**變更 —— LLM 供應方磚貼現在顯示真實的品牌標誌。**
+
+### 變更
+- **真實的供應方標誌。** 供應方磚貼 —— 設定中的 API 金鑰欄位、用量列、儀表板晶片、設定的「使用中」摘要、⚡ 評估結果與歡迎橫幅 —— 現在為發布了開源圖示的 11 個供應方(Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama;來自 [simple-icons](https://simpleicons.org) 的單路徑 SVG,CC0)呈現**真實的品牌標誌**。沒有發布圖示的 7 個(Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark)保留品牌配色的字母標。仍然**在建構上對 CSP 安全**:標誌路徑是內嵌的靜態常數 —— 無遠端資源,無 `innerHTML`。
+
+### 備註
+- 無路由或行為變化;相同的 `ProviderLogo.el(slug)` API。`provider-logo.js` 變大了(內嵌的標誌路徑)。掃描來源不變:**83**。測試套件:**2784**。
+
 ## [1.223.0] — 2026-08-26
 
 **修復 —— 成功的 ⚡ 即時評估被標為錯誤；另外可從 GitHub URL 或 .zip 直接安裝 OpenWorker coworker。**

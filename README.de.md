@@ -7,16 +7,16 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2783%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2784%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.223.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.223.0)
+[![release](https://img.shields.io/badge/release-v1.224.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.224.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.223.0** — **Eval-Badge-Fix + Coworker-Installation** — eine erfolgreiche ⚡ Live-Bewertung wird nicht mehr rot eingefärbt, und der OpenWorker-Coworker installiert direkt aus seiner GitHub-URL / .zip / einem Befehl. **2783 Tests.**
+> **🆕 Neueste Version — v1.224.0** — **Echte Anbieterlogos** — die LLM-Anbieterkacheln zeigen jetzt das echte Markenlogo (Anthropic, OpenAI, Gemini, DeepSeek, Mistral, Ollama, …), wo der Anbieter ein Open-Source-Icon veröffentlicht — weiterhin vollständig CSP-sicher (Inline-SVG, keine Remote-Ressourcen). **2784 Tests.**
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
 

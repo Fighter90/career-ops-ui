@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.224.0] — 2026-08-26
+
+**Alterado — os blocos de provedores LLM agora mostram os logotipos reais da marca.**
+
+### Alterado
+- **Logotipos reais dos provedores.** Os blocos de provedor — campos de chave API nas Configurações, as linhas de Uso, o chip do painel, o resumo "Ativo" das Configurações, o resultado da ⚡ eval e o banner de boas-vindas — agora mostram o **logotipo real da marca** dos 11 provedores que publicam um ícone de código aberto (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; SVGs de caminho único do [simple-icons](https://simpleicons.org), CC0). Os 7 sem ícone publicado (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) mantêm o monograma com a cor da marca. Continua **seguro para a CSP por construção**: o caminho do logo é uma constante estática embutida — sem recurso remoto, sem `innerHTML`.
+
+### Notas
+- Sem mudança de rota ou comportamento; a mesma API `ProviderLogo.el(slug)`. `provider-logo.js` cresceu (os caminhos de logo embutidos). Fontes de varredura sem mudança: **83**. Conjunto de testes: **2784**.
+
 ## [1.223.0] — 2026-08-26
 
 **Corrigido — uma avaliação ⚡ ao vivo bem-sucedida era pintada como erro; além disso, instale o coworker do OpenWorker direto da URL do GitHub ou .zip.**

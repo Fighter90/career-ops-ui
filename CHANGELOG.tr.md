@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.224.0] — 2026-08-26
+
+**Değiştirildi — LLM sağlayıcı kutucukları artık gerçek marka logolarını gösteriyor.**
+
+### Değiştirildi
+- **Gerçek sağlayıcı logoları.** Sağlayıcı kutucukları — Ayarlardaki API anahtarı alanları, Kullanım satırları, pano çipi, Ayarların "Etkin" özeti, ⚡ değerlendirme sonucu ve karşılama afişi — artık açık kaynak simge yayımlayan 11 sağlayıcı için **gerçek marka logosunu** işliyor (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; [simple-icons](https://simpleicons.org)'ten tek yollu SVG'ler, CC0). Yayımlanmış simgesi olmayan 7'si (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) marka renkli monogramı korur. Hâlâ **yapısı gereği CSP-güvenli**: logo yolu gömülü statik bir sabit — uzak kaynak yok, `innerHTML` yok.
+
+### Notlar
+- Rota veya davranış değişikliği yok; aynı `ProviderLogo.el(slug)` API'si. `provider-logo.js` büyüdü (gömülü logo yolları). Tarama kaynakları değişmedi: **83**. Test paketi: **2784**.
+
 ## [1.223.0] — 2026-08-26
 
 **Düzeltildi — başarılı bir ⚡ canlı değerlendirme hata olarak boyanıyordu; ayrıca OpenWorker coworker'ını doğrudan GitHub URL'sinden veya .zip'ten kurun.**

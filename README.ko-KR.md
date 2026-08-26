@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2783%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2784%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.223.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.223.0)
+[![release](https://img.shields.io/badge/release-v1.224.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.224.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.223.0** — **평가 배지 수정 + coworker 설치** — 성공한 ⚡ 라이브 평가가 더 이상 빨갛게 표시되지 않고, OpenWorker coworker를 GitHub URL / .zip / 한 줄 명령으로 바로 설치합니다. **2783 개 테스트.**
+> **🆕 최신 릴리스 — v1.224.0** — **실제 제공자 로고** — LLM 제공자 타일이 이제 제공자가 오픈소스 아이콘을 게시한 경우 실제 브랜드 로고(Anthropic, OpenAI, Gemini, DeepSeek, Mistral, Ollama, …)를 표시합니다 — 여전히 완전히 CSP 안전(인라인 SVG, 원격 자원 없음). **2784 개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

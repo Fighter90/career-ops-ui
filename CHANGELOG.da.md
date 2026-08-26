@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.224.0] — 2026-08-26
+
+**Ændret — LLM-udbyderfliserne viser nu rigtige mærkelogoer.**
+
+### Ændret
+- **Rigtige udbyderlogoer.** Udbyderfliserne — API-nøglefelter i Indstillinger, Forbrugs-rækkerne, dashboard-chippen, "Aktiv"-oversigten i Indstillinger, ⚡ eval-resultatet og velkomstbanneret — viser nu det **rigtige mærkelogo** for de 11 udbydere, der udgiver et open source-ikon (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; enkelt-sti-SVG'er fra [simple-icons](https://simpleicons.org), CC0). De 7 uden et udgivet ikon (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) beholder monogrammet i mærkefarven. Stadig **CSP-sikkert af konstruktion**: logo-stien er en indlejret statisk konstant — ingen fjernressource, ingen `innerHTML`.
+
+### Noter
+- Ingen rute- eller adfærdsændring; samme `ProviderLogo.el(slug)`-API. `provider-logo.js` voksede (de indlejrede logo-stier). Scanningskilder uændret: **83**. Testsuite: **2784**.
+
 ## [1.223.0] — 2026-08-26
 
 **Rettet — en vellykket ⚡ live-vurdering blev malet som en fejl; installer desuden OpenWorker-coworkeren direkte fra dens GitHub-URL eller .zip.**

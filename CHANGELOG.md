@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.224.0] — 2026-08-26
+
+**Changed — the LLM provider tiles now show real brand logos.**
+
+### Changed
+- **Real provider logos.** The provider tiles — Settings API-key fields, the Usage rows, the dashboard chip, the Settings "Active" summary, the ⚡ eval result, and the onboarding banner — now render the **real brand logo** for the 11 providers that publish an open-source icon (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; single-path SVGs from [simple-icons](https://simpleicons.org), CC0). The 7 without a published icon (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) keep the brand-colored monogram. Still **CSP-safe by construction**: the logo path is an inlined static constant — no remote asset, no `innerHTML` — exactly like the monogram.
+
+### Notes
+- No route or behaviour change; the same `ProviderLogo.el(slug)` API. `provider-logo.js` grew (the inlined logo paths). Scan sources unchanged at **83**. Test suite: **2784**.
+
 ## [1.223.0] — 2026-08-26
 
 **Fixed — a successful ⚡ live eval was painted as an error; plus install the OpenWorker coworker straight from its GitHub URL or .zip.**

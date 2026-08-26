@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.224.0] — 2026-08-26
+
+**Modifié — les tuiles des fournisseurs LLM affichent désormais les vrais logos de marque.**
+
+### Modifié
+- **Vrais logos des fournisseurs.** Les tuiles de fournisseur — champs de clé API dans les Paramètres, les lignes d'Usage, la puce du tableau de bord, le résumé « Actif » des Paramètres, le résultat de l'⚡ éval et la bannière d'accueil — affichent maintenant le **vrai logo de marque** pour les 11 fournisseurs qui publient une icône open-source (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama ; SVG à chemin unique de [simple-icons](https://simpleicons.org), CC0). Les 7 sans icône publiée (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) conservent le monogramme aux couleurs de la marque. Toujours **sûr pour la CSP par construction** : le chemin du logo est une constante statique intégrée — pas de ressource distante, pas d'`innerHTML`.
+
+### Notes
+- Aucun changement de route ni de comportement ; la même API `ProviderLogo.el(slug)`. `provider-logo.js` a grossi (les chemins de logos intégrés). Sources de scan inchangées : **83**. Suite de tests : **2784**.
+
 ## [1.223.0] — 2026-08-26
 
 **Corrigé — une évaluation ⚡ en direct réussie était peinte comme une erreur ; installez aussi le coworker OpenWorker directement depuis son URL GitHub ou .zip.**
