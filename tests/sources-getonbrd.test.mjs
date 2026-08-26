@@ -5,7 +5,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  normalizeGetonbrdJob, fetchGetonbrd, assertGetonbrdUrl, FEED_BASE, meta,
+  normalizeGetonbrdJob, fetchGetonbrd, assertGetonbrdUrl, FEED_BASE, meta, resolveCategories,
 } from '../server/lib/sources/getonbrd.mjs';
 import { getonbrdAdapter } from '../server/lib/portals/adapters/getonbrd.mjs';
 
@@ -82,4 +82,43 @@ test('fetchGetonbrd: paginates until a short page, CI-isolated', async () => {
 test('fetchGetonbrd: throws on a non-{data:[]} payload', async () => {
   const fetchImpl = async () => ({ ok: true, status: 200, json: async () => ({ oops: true }) });
   await assert.rejects(() => fetchGetonbrd(FEED_BASE, { fetchImpl }), /unexpected API response/);
+});
+
+// v1.219.0 — multiple categories per entry.
+test('resolveCategories: default / string / array + dedup / validation + cap', () => {
+  assert.deepEqual(resolveCategories({}), ['programming']);
+  assert.deepEqual(resolveCategories({ category: 'machine-learning-ai' }), ['machine-learning-ai']);
+  assert.deepEqual(
+    resolveCategories({ categories: ['programming', 'operations-management', 'programming'] }),
+    ['programming', 'operations-management'], 'array wins, order preserved, deduped');
+  assert.throws(() => resolveCategories({ category: 'bad/slug' }), /invalid category/);
+  assert.throws(() => resolveCategories({ categories: [] }), /empty/);
+  assert.throws(() => resolveCategories({ categories: Array.from({ length: 13 }, (_, i) => `cat-${i}`) }), /cap is 12/);
+});
+
+test('fetchGetonbrd: scans multiple categories per entry, deduping a shared URL', async () => {
+  const dupUrl = 'https://www.getonbrd.com/jobs/shared-role';
+  const byCat = {
+    programming: [resource({ title: 'A' }, 'https://www.getonbrd.com/jobs/a'), resource({ title: 'Dup' }, dupUrl)],
+    'operations-management': [resource({ title: 'B' }, 'https://www.getonbrd.com/jobs/b'), resource({ title: 'Dup2' }, dupUrl)],
+  };
+  const seen = [];
+  const fetchImpl = async (url, opts) => {
+    assert.equal(opts.redirect, 'error');
+    const cat = (url.match(/categories\/([^/]+)\/jobs/) || [])[1];
+    const page = Number((url.match(/[?&]page=(\d+)/) || [])[1] || 1);
+    seen.push(`${cat}:${page}`);
+    return { ok: true, status: 200, json: async () => ({ data: page === 1 ? (byCat[cat] || []) : [] }) };
+  };
+  const jobs = await fetchGetonbrd(FEED_BASE, { fetchImpl, company: { categories: ['programming', 'operations-management'] } });
+  assert.ok(seen.includes('programming:1') && seen.includes('operations-management:1'), 'both categories fetched');
+  assert.equal(jobs.map((j) => j.url).filter((u) => u === dupUrl).length, 1, 'shared URL deduped across categories');
+  assert.equal(jobs.length, 3, 'A + Dup + B (Dup2 deduped)');
+});
+
+test('fetchGetonbrd: with no category config, honors the single override feedUrl (backward-compat)', async () => {
+  const seen = [];
+  const fetchImpl = async (url) => { seen.push(url); return { ok: true, status: 200, json: async () => ({ data: [] }) }; };
+  await fetchGetonbrd(FEED_BASE, { fetchImpl, company: {} });
+  assert.ok(seen[0].startsWith('https://www.getonbrd.com/api/v0/categories/programming/jobs'), 'default single feed');
 });

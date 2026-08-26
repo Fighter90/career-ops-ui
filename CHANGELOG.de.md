@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.220.0] — 2026-08-26
+
+**Hinzugefügt — mehrere Get-on-Board-Kategorien aus einem Eintrag scannen.**
+
+### Hinzugefügt
+- Ein `getonbrd`-Eintrag kann nun `categories: [programming, operations-management, machine-learning-ai]` (oder ein einzelnes `category:`) statt nur des `programming`-Feeds setzen; Stellen werden über Kategorien hinweg nach URL dedupliziert, begrenzt auf 12. Bestehende Einträge bleiben identisch (Standard weiterhin `programming`).
+
+### Hinweise
+- Nur serverseitig; das SSRF-Host-Pinning (www.getonbrd.com) und `redirect:'error'` sind unverändert, und ein ungültiger Kategorie-Slug wird vor jeder Anfrage abgelehnt. Scan-Quellen unverändert: **83**. Tests: **2771**.
+
 ## [1.219.0] — 2026-08-26
 
 **Hinzugefügt — Torre kommt zum Scanner, und jedes Anbieter-Label ist jetzt korrekt.**

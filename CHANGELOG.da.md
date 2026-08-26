@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.220.0] — 2026-08-26
+
+**Tilføjet — scan flere Get on Board-kategorier fra én post.**
+
+### Tilføjet
+- En `getonbrd`-post kan nu angive `categories: [programming, operations-management, machine-learning-ai]` (eller en enkelt `category:`) i stedet for kun `programming`-feedet; opslag dedupликeres pr. URL på tværs af kategorier, med et loft på 12. Eksisterende poster er identiske (standard er stadig `programming`).
+
+### Noter
+- Kun server; SSRF-host-pinningen (www.getonbrd.com) og `redirect:'error'` er uændrede, og en ugyldig kategori-slug afvises før nogen forespørgsel. Scanningskilder uændret: **83**. Tests: **2771**.
+
 ## [1.219.0] — 2026-08-26
 
 **Tilføjet — Torre slutter sig til scanneren, og nu er hver udbyder-etiket korrekt.**

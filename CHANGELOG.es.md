@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.220.0] — 2026-08-26
+
+**Añadido — escanea varias categorías de Get on Board desde una sola entrada.**
+
+### Añadido
+- Una entrada `getonbrd` puede definir `categories: [programming, operations-management, machine-learning-ai]` (o un único `category:`) en vez de solo el feed `programming`; los avisos se deduplican por URL entre categorías, con un tope de 12. Las entradas existentes quedan idénticas (el valor por defecto sigue siendo `programming`).
+
+### Notas
+- Solo servidor; el anclaje de host SSRF (www.getonbrd.com) y `redirect:'error'` no cambian; un slug de categoría inválido se rechaza antes de cualquier petición. Fuentes de escaneo sin cambios: **83**. Pruebas: **2771**.
+
 ## [1.219.0] — 2026-08-26
 
 **Añadido — Torre se une al escáner, y ahora toda etiqueta de proveedor es correcta.**

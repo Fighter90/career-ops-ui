@@ -7,16 +7,16 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2768%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2771%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.219.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.219.0)
+[![release](https://img.shields.io/badge/release-v1.220.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.220.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.219.0** — **Torre entra no scanner** — o marketplace de talentos da América Latina (torre.ai) é uma nova fonte de varredura (**83** no total), além de uma correção de paginação do a16z e rótulos + monogramas de provedor corretos em todo lugar. **2768 testes.**
+> **🆕 Última versão — v1.220.0** — **Get on Board, várias categorias** — uma entrada agora pode varrer `programming`, `operations-management`, `machine-learning-ai`, … (sem duplicatas, limite de 12) para que buscas de EM/dados não percam vagas que o board separa. **2771 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.220.0] — 2026-08-26
+
+**Aggiunto — scansiona più categorie di Get on Board da una sola voce.**
+
+### Aggiunto
+- Una voce `getonbrd` può ora impostare `categories: [programming, operations-management, machine-learning-ai]` (o un singolo `category:`) invece del solo feed `programming`; gli annunci sono deduplicati per URL tra le categorie, con un limite di 12. Le voci esistenti restano identiche (il default resta `programming`).
+
+### Note
+- Solo server; l’host-pin SSRF (www.getonbrd.com) e `redirect:'error'` sono invariati, e uno slug di categoria non valido viene rifiutato prima di qualsiasi richiesta. Fonti di scansione invariate: **83**. Test: **2771**.
+
 ## [1.219.0] — 2026-08-26
 
 **Aggiunto — Torre entra nello scanner e ora ogni etichetta di provider è corretta.**

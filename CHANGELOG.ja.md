@@ -9,6 +9,16 @@
 ---
 
 
+## [1.220.0] — 2026-08-26
+
+**追加 — 1 つのエントリーで複数の Get on Board カテゴリーをスキャン。**
+
+### 追加
+- `getonbrd` エントリーで `programming` フィードだけでなく `categories: [programming, operations-management, machine-learning-ai]`（または単一の `category:`）を指定できます。求人はカテゴリー間で URL により重複排除され、上限は 12 件。既存エントリーはそのまま（既定は `programming`）。
+
+### 備考
+- サーバーのみ。SSRF ホストピン（www.getonbrd.com）と `redirect:'error'` は不変で、不正なカテゴリースラッグはリクエスト前に拒否されます。スキャンソースは **83** で変更なし。テスト: **2771**。
+
 ## [1.219.0] — 2026-08-26
 
 **追加 — Torre がスキャナーに加わり、すべてのプロバイダーラベルが正しくなりました。**
