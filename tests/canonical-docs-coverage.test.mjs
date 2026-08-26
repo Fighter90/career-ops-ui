@@ -67,7 +67,7 @@ test('every help bundle keeps the 31-H2 parity contract', () => {
   // v1.120.0 — 28 → 29: §29 "The CareerOps Manifesto" (parent v1.20.0 parity).
   // v1.147.0 — 29 → 30: §30 "Hermes & Telegram" (Phase 5b, part 2).
   // v1.154.0 — 30 → 31: §31 "Running the whole stack in the cloud".
-  assert.equal(baseline, 31, `expected 31 H2 sections in every bundle, got ${baseline}`);
+  assert.equal(baseline, 32, `expected 32 H2 sections in every bundle, got ${baseline}`);
 });
 
 test('every README references the canonical front page + ≥3 sub-guides', () => {

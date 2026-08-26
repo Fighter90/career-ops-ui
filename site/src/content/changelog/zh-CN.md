@@ -9,6 +9,19 @@
 ---
 
 
+## [1.215.0] — 2026-08-26
+
+**新增 —— 从 OpenWorker 运行你的整个求职流程。** 一个新的 coworker 从 Andrew Ng 的开源 AI coworker 应用驱动本流水线,应用内帮助现已涵盖它,因此“向文档提问”助手可以带你完成。
+
+### 新增
+- **OpenWorker coworker。** 一个无需代码的 [OpenWorker](https://github.com/andrewyng/openworker) coworker —— [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) —— 运行整个求职流程(扫描、打分、定制、跟踪、跟进),并可**启动本仪表板**,全部在你的桌面完成。它是一个以 17 种语言提供的单文件 persona,已用 OpenWorker 自带加载器验证可安装。
+- **帮助 §32 “Run it from OpenWorker”**(全部 17 种语言)对其进行说明,以便应用内的**向文档提问**助手和悬浮帮助按钮回答相关问题。落地页页脚、README、wiki 以及 `docs/integrations/openworker.md` 也均已链接。
+
+### 说明
+- 仅文档 + 站点 —— 无应用代码改动。扫描来源保持 **82** 不变。测试套件:**2742**。
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **修复 — 共享的 HTML→文本 管道(Greenhouse / Recruitee 描述)在属性值含 `>` 字符时不再把标签属性泄漏进描述。**

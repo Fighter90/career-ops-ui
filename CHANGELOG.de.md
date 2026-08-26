@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.215.0] — 2026-08-26
+
+**Hinzugefügt — führe deine ganze Jobsuche aus OpenWorker aus.** Ein neuer Coworker steuert diese Pipeline aus Andrew Ngs quelloffener KI-Coworker-App, und die In-App-Hilfe deckt ihn nun ab, sodass der Frag-die-Docs-Assistent dich durchführen kann.
+
+### Hinzugefügt
+- **OpenWorker-Coworker.** Ein code-freier [OpenWorker](https://github.com/andrewyng/openworker)-Coworker — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — führt die gesamte Jobsuche aus (Scan, Bewertung, Zuschnitt, Tracking, Follow-up) und kann **dieses Dashboard starten**, alles auf deinem Desktop. Es ist eine Ein-Datei-Persona in 17 Sprachen, deren Installierbarkeit mit OpenWorkers eigenem Loader verifiziert ist.
+- **Hilfe §32 „Run it from OpenWorker"** (alle 17 Sprachen) dokumentiert ihn, damit der In-App-Assistent **Frag die Docs** und die schwebende Hilfe-Schaltfläche Fragen dazu beantworten. Auch verlinkt aus der Landing-Fußzeile, dem README, dem Wiki und `docs/integrations/openworker.md`.
+
+### Hinweise
+- Nur Docs + Site — keine App-Code-Änderung. Scan-Quellen unverändert bei **82**. Test-Suite: **2742**.
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **Behoben — die geteilte HTML→Text-Pipeline (Greenhouse- / Recruitee-Beschreibungen) leckt keine Tag-Attribute mehr in die Beschreibung, wenn ein Attributwert ein `>`-Zeichen enthält.**

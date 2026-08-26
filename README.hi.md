@@ -14,11 +14,11 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.214.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.2)
+[![release](https://img.shields.io/badge/release-v1.215.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.215.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.214.2** — **HTML स्ट्रिप फिक्स** — HTML विशेषता के भीतर `>` वाला विवरण (जैसे `title="salary > 100k"`) अब अंतिम विशेषता पाठ को कंटेंट फ़िल्टर द्वारा पढ़े जाने वाले Greenhouse / Recruitee विवरण में नहीं रिसाता। **2742 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.215.0** — **OpenWorker से चलाएँ** — एक नया कोड-रहित AI coworker आपकी पूरी नौकरी खोज Andrew Ng के OpenWorker ऐप से चलाता है (और इस डैशबोर्ड को लॉन्च करता है); इन-ऐप हेल्प और डॉक्स से पूछें सहायक अब इसे सभी 17 भाषाओं में कवर करते हैं। **2742 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

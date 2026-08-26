@@ -12,11 +12,11 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.214.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.2)
+[![release](https://img.shields.io/badge/release-v1.215.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.215.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.214.2** — **HTML 剝離修復** — HTML 屬性內含 `>` 的描述(如 `title="salary > 100k"`)不再把尾部屬性文字洩漏進內容篩選讀取的 Greenhouse / Recruitee 描述。 **2742 項測試.**
+> **🆕 最新版本 — v1.215.0** — **從 OpenWorker 執行** —— 一個新的免程式碼 AI coworker 從 Andrew Ng 的 OpenWorker 應用執行你的整個求職流程(並啟動本儀表板);應用內說明與「向文件提問」助手現已用全部 17 種語言涵蓋它。 **2742 項測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

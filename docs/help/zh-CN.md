@@ -2011,3 +2011,15 @@ career-ops 不绑定任何特定 CLI,所以在 AI 上你有三个靠得住的选
 ### 安全地对外暴露
 
 离开 `127.0.0.1` 意味着 loopback 曾免费提供的那份安全性,现在必须显式地搭建出来 —— **代码是相同的,变化的只是暴露方式。** 让应用继续绑定在 loopback 上,在前面放一个反向代理(**nginx** 或 **Caddy**)来终结 **HTTPS**(Let's Encrypt / 自动 TLS),再转发到 `127.0.0.1:4317`;用 **systemd** 或 `pm2` 以一个专用的**非 root** 用户运行它,并配上 `Restart=on-failure`。把**身份验证**也放在前面 —— 应用本身没有登录功能,所以真正挡住陌生人的是反向代理(basic-auth、SSO 的 forward-auth,或者一个私有网络 / VPN)。当你设置 `HOST=0.0.0.0` 让代理能够访问到它时,那些在 loopback 上原本是空操作的内置加固措施就会启用,并真正发挥作用:LLM 速率限制、`safeGet` 的 DNS 重绑定防护,以及路径名清洗。有四条不变量必须在这次迁移中保留下来,绝不能放宽:**CSP**(不含内联脚本,`frame-ancestors 'none'` —— 代理不得去掉这些响应头)、对每一次用户提供 URL 的抓取都生效的 **SSRF 防护**、**markdown/XSS 边界**(服务端的 `stripDangerousMarkdown()` + 客户端先转义的 `UI.md()`),以及**日志中不留任何密钥**。父项目的只读约定在这台无头服务器上依然成立 —— 服务端只读取你的 `cv.md` / `config/` / `reports/`,只有在明确操作时才写入。
+
+## 32. 从 OpenWorker(AI 同事)运行
+
+比起浏览器,更想要一位桌面端的 AI 同事?**[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** 是一位 **[OpenWorker](https://github.com/andrewyng/openworker)** 同事(Andrew Ng 出品的开源、本地优先的 AI 同事应用),它能替你驱动整套流水线 —— 扫描招聘板、对照你的简历为匹配度打分、量身定制一份有据可依的简历 + 求职信、追踪申请、起草跟进邮件 —— 并且能在你需要时**启动这个仪表盘**。它只是一个不含任何代码的 Markdown“人设”;OpenWorker 并不会把它当作程序来运行,这些指令只是在引导智能体。它的指南以全部 17 种语言提供。
+
+### 这位同事能做什么
+
+这位同事在你的 `career-ops` 项目文件夹内工作,执行的正是流水线所做的那些步骤:扫描你 `portals.yml` 里的招聘板(零 token),对照你的 `cv.md` + `config/profile.yml` 给每条招聘信息打 0–5 分,并在你需要时量身定制一份针对具体职位的简历 + 求职信 —— **仅**以你简历中已有的事实为依据(它绝不会凭空捏造雇主、日期或数据)。它会更新 `data/applications.md`、起草跟进邮件,还能安排面试时段 —— 而每一次发送或写入都**需要经过批准**,这和 career-ops 自身的准则完全一致。要打开这个查看器,它会运行 `bash web-ui/bin/start.sh`(或 `npm start`),再把 `http://127.0.0.1:4317` 交给你。
+
+### 安装与启动
+
+安装 OpenWorker 应用,并添加一个模型密钥(Anthropic / OpenAI / Google,或通过 Ollama 使用本地模型)。准备好一个已配置的 `career-ops` 项目文件夹(`cv.md`、`config/profile.yml`、`portals.yml`)。在 OpenWorker 中选择 **New coworker → Import**,挑选这位同事的 `career-ops.md`;开启一个 **Job-Search Coworker** 会话,选中你的 `career-ops` 文件夹,然后向它提一个真实的请求 —— *“扫描我的招聘板,给出本周匹配度最高的 5 个职位”* 或 *“打开仪表盘”*。完整的说明、连接器(Gmail、Google Calendar、GitHub)以及安全模型,都在这位同事仓库的[帮助指南](https://github.com/Fighter90/career-ops-coworker/tree/main/help)里。它已通过 OpenWorker 自带的加载器验证可安装。

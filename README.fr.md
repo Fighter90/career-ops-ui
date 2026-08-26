@@ -12,11 +12,11 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.214.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.2)
+[![release](https://img.shields.io/badge/release-v1.215.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.215.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.214.2** — **Correctif de nettoyage HTML** — une description avec `>` dans un attribut HTML (p. ex. `title="salary > 100k"`) ne laisse plus fuiter le texte d'attribut final dans la description Greenhouse / Recruitee que lit un filtre de contenu. **2742 tests.**
+> **🆕 Dernière version — v1.215.0** — **Lancez-le depuis OpenWorker** — un nouveau coworker IA sans code exécute toute votre recherche d'emploi (et lance ce tableau de bord) depuis l'app OpenWorker d'Andrew Ng ; l'aide intégrée et l'assistant Demander à la doc le couvrent désormais, dans les 17 langues. **2742 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

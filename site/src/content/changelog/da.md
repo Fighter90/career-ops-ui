@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.215.0] — 2026-08-26
+
+**Tilføjet — kør hele din jobsøgning fra OpenWorker.** En ny coworker driver denne pipeline fra Andrew Ngs open source AI-coworker-app, og hjælpen i appen dækker den nu, så Spørg dokumentationen-assistenten kan guide dig.
+
+### Tilføjet
+- **OpenWorker-coworker.** En kodefri [OpenWorker](https://github.com/andrewyng/openworker)-coworker — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — kører hele jobsøgningen (scan, scoring, tilpasning, sporing, opfølgning) og kan **starte dette dashboard**, alt fra dit skrivebord. Det er en enkeltfils-persona leveret på 17 sprog, verificeret som installerbar med OpenWorkers egen loader.
+- **Hjælp §32 "Run it from OpenWorker"** (alle 17 sprog) dokumenterer den, så den indbyggede **Spørg dokumentationen**-assistent og den flydende hjælpeknap kan besvare spørgsmål om den. Også linket fra landingssidens footer, README, wikien og `docs/integrations/openworker.md`.
+
+### Noter
+- Kun dokumentation + site — ingen ændring af app-kode. Scanningskilder uændret på **82**. Testsuite: **2742**.
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **Rettet — den delte HTML→tekst-pipeline (Greenhouse / Recruitee-beskrivelser) lækker ikke længere tag-attributter ind i beskrivelsen, når en attributværdi indeholder et `>`-tegn.**

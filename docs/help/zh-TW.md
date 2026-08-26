@@ -2027,3 +2027,15 @@ career-ops 不繫結任何特定 CLI，所以在 AI 上你有三個可靠的選�
 ### 安全地對外暴露
 
 離開 `127.0.0.1` 意味著 loopback 曾免費提供的那份安全性，現在必須明確地建構出來 —— **程式碼是相同的，改變的只是暴露方式。** 讓應用繼續繫結在 loopback 上，在前面放一個反向代理(**nginx** 或 **Caddy**)來終結 **HTTPS**(Let's Encrypt / 自動 TLS)，再轉發到 `127.0.0.1:4317`;用 **systemd** 或 `pm2` 以一個專用的**非 root** 使用者執行它，並配上 `Restart=on-failure`。把**身分驗證**也放在前面 —— 應用本身沒有登入功能，所以真正擋住陌生人的是反向代理(basic-auth、SSO 的 forward-auth，或是一個私有網路 / VPN)。當你設定 `HOST=0.0.0.0` 讓代理能夠存取到它時，那些在 loopback 上原本毫無作用的內建強化措施就會啟用，並真正發揮作用:LLM 速率限制、`safeGet` 的 DNS 重新繫結防護，以及路徑名稱清理。有四項不變量必須在這次遷移中保留下來，絕不能放寬:**CSP**(不含行內指令碼，`frame-ancestors 'none'` —— 代理不得移除這些回應標頭)、對每一次使用者提供 URL 的抓取都生效的 **SSRF 防護**、**markdown/XSS 邊界**(伺服端的 `stripDangerousMarkdown()` + 客戶端先轉義的 `UI.md()`)，以及**日誌中不留任何金鑰**。父專案的唯讀約定在這台無頭伺服器上依然成立 —— 伺服端只讀取你的 `cv.md` / `config/` / `reports/`，只有在明確操作時才寫入。
+
+## 32. 從 OpenWorker(AI 同事)執行
+
+比起瀏覽器，你更偏好桌面版的 AI 同事嗎?**[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** 是一個 **[OpenWorker](https://github.com/andrewyng/openworker)** 同事(Andrew Ng 開源、以本機為優先的 AI 同事應用),它會替你驅動整套流程 —— 掃描職缺板、依你的履歷為契合度評分、產出有事實依據的客製化履歷 + 求職信、追蹤應徵、草擬追蹤信件 —— 而且能在你要求時**啟動這個儀表板**。它只是單一、不含程式碼的 Markdown「人格設定」;OpenWorker 不會把其中任何內容當成程式來執行,那些指示只是用來引導代理。它的指南提供全部 17 種語言的版本。
+
+### 這個同事會做什麼
+
+這個同事在你的 `career-ops` 專案資料夾內運作，執行的步驟與流程本身相同:它掃描你 `portals.yml` 中的職缺板(零 token),依你的 `cv.md` + `config/profile.yml` 為每則職缺以 0–5 評分，並在你要求時，產出針對特定職位的客製化履歷 + 求職信，而且**只**以你履歷中既有的事實為依據(它絕不會捏造雇主、日期或數據)。它會更新 `data/applications.md`、草擬追蹤信件，也能安排面試時段 —— 每一次寄送或寫入都經過**核准把關**，完全遵循 career-ops 本身的準則。要開啟這個檢視器，它會執行 `bash web-ui/bin/start.sh`(或 `npm start`),並把 `http://127.0.0.1:4317` 交給你。
+
+### 安裝與啟動
+
+安裝 OpenWorker 應用，並加入一把模型金鑰(Anthropic / OpenAI / Google，或透過 Ollama 使用本機模型)。準備好一個已設定完成的 `career-ops` 專案資料夾(`cv.md`、`config/profile.yml`、`portals.yml`)。在 OpenWorker 中選擇 **New coworker → Import**，挑選這個同事的 `career-ops.md`;開啟一個 **Job-Search Coworker** 工作階段，選擇你的 `career-ops` 資料夾，然後提出一個真實的請求 —— *「掃描我的職缺板，給我本週最契合的前 5 個職缺」*或*「開啟儀表板」*。完整的說明、連接器(Gmail、Google Calendar、GitHub)以及安全模型，都在這個同事儲存庫的 [說明指南](https://github.com/Fighter90/career-ops-coworker/tree/main/help) 中。它已通過 OpenWorker 自身載入器的可安裝性驗證。

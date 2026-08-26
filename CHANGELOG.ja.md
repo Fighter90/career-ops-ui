@@ -9,6 +9,19 @@
 ---
 
 
+## [1.215.0] — 2026-08-26
+
+**追加 — 求職活動のすべてを OpenWorker から実行。** 新しい coworker が Andrew Ng のオープンソース AI coworker アプリからこのパイプラインを動かし、アプリ内ヘルプがそれをカバーするようになったので、Ask-the-docs アシスタントが案内できます。
+
+### 追加
+- **OpenWorker coworker。** コード不要の [OpenWorker](https://github.com/andrewyng/openworker) coworker — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — が求職活動のすべて（スキャン・スコアリング・テーラリング・トラッキング・フォローアップ）を実行し、**このダッシュボードを起動**でき、すべてデスクトップで完結します。17 言語で提供される 1 ファイルのペルソナで、OpenWorker 自身のローダーでインストール可能と検証済みです。
+- **ヘルプ §32「Run it from OpenWorker」**（17 ロケール全部）がこれを説明するので、アプリ内の **Ask the docs** アシスタントとフローティングのヘルプボタンが質問に答えられます。ランディングのフッター、README、Wiki、`docs/integrations/openworker.md` からもリンクしています。
+
+### 備考
+- ドキュメント＋サイトのみ — アプリのコード変更なし。スキャンソースは **82** で変更なし。テストスイート: **2742**。
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **修正 — 共有の HTML→テキスト パイプライン（Greenhouse / Recruitee の説明）が、属性値に `>` を含む場合にタグ属性を説明へ漏らさなくなりました。**

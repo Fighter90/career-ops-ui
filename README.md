@@ -14,11 +14,11 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.214.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.2)
+[![release](https://img.shields.io/badge/release-v1.215.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.215.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.214.2** — **HTML strip fix** — a job description with a `>` inside an HTML attribute (e.g. `title="salary > 100k"`) no longer leaks the trailing attribute text into the Greenhouse / Recruitee description a content filter reads. **2742 tests.**
+> **🆕 Latest release — v1.215.0** — **Run it from OpenWorker** — a new code-free AI coworker runs your whole job search (and launches this dashboard) from Andrew Ng's OpenWorker app; the in-app help + Ask-the-docs assistant now cover it, in all 17 languages. **2742 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 
@@ -30,6 +30,12 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 ## About career-ops
 
 [career-ops](https://career-ops.org) is an open-source job-search system that runs as slash commands inside any AI coding CLI (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — other Claude-compatible CLIs work too via the same slash-command surface). Model-agnostic. It evaluates each posting against your CV with a 0.0–5.0 rubric of five dimensions plus a holistic global score, generates tailored PDF résumés, and tracks every application locally — no cloud accounts, no telemetry, no auto-submit.
+
+## Run it from OpenWorker (AI coworker)
+
+Prefer a desktop AI coworker over the browser? There's an **[OpenWorker](https://github.com/andrewyng/openworker) coworker** that drives this whole pipeline for you — scan boards, score fits against your CV, tailor a grounded CV + cover letter, track applications, draft follow-ups, and even **launch this dashboard** — all from Andrew Ng's open-source OpenWorker app.
+
+→ **[Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** — a one-file, code-free coworker (verified installable against OpenWorker's own loader). Full guide in [17 languages](https://github.com/Fighter90/career-ops-coworker/tree/main/help). See also [`docs/integrations/openworker.md`](docs/integrations/openworker.md).
 
 **This repository (career-ops-ui)** is a polished web interface on top. The CLI keeps owning form-fill (via Playwright MCP) and slash-command modes; the SPA gives you a CRM-style browser surface over the same `cv.md` / `data/applications.md` / `reports/` files. Both share the same data.
 

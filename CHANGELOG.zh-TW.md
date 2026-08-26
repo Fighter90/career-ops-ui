@@ -8,6 +8,19 @@
 
 ---
 
+## [1.215.0] — 2026-08-26
+
+**新增 —— 從 OpenWorker 執行你的整個求職流程。** 一個新的 coworker 從 Andrew Ng 的開源 AI coworker 應用驅動本流水線,應用內說明現已涵蓋它,因此「向文件提問」助手可以帶你完成。
+
+### 新增
+- **OpenWorker coworker。** 一個免程式碼的 [OpenWorker](https://github.com/andrewyng/openworker) coworker —— [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) —— 執行整個求職流程(掃描、評分、客製、追蹤、追進),並可**啟動本儀表板**,全部在你的桌面完成。它是一個以 17 種語言提供的單檔 persona,已用 OpenWorker 自帶載入器驗證可安裝。
+- **說明 §32 “Run it from OpenWorker”**(全部 17 種語言)對其進行說明,以便應用內的**向文件提問**助手與浮動說明按鈕回答相關問題。到達頁頁尾、README、wiki 以及 `docs/integrations/openworker.md` 也均已連結。
+
+### 說明
+- 僅文件 + 網站 —— 無應用程式碼改動。掃描來源維持 **82** 不變。測試套件:**2742**。
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **修復 — 共享的 HTML→文字 管線(Greenhouse / Recruitee 描述)在屬性值含 `>` 字元時不再把標籤屬性洩漏進描述。**

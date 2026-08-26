@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.215.0] — 2026-08-26
+
+**Adicionado — rode toda a sua busca de vagas a partir do OpenWorker.** Um novo coworker conduz este pipeline pelo app de coworker de IA open source do Andrew Ng, e a ajuda no app agora o cobre para que o assistente Pergunte aos docs te guie.
+
+### Adicionado
+- **Coworker do OpenWorker.** Um coworker sem código do [OpenWorker](https://github.com/andrewyng/openworker) — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — roda toda a busca de vagas (varrer, pontuar, adaptar, rastrear, dar retorno) e pode **abrir este painel**, tudo do seu desktop. É uma persona de um único arquivo em 17 idiomas, verificada como instalável no próprio loader do OpenWorker.
+- **Ajuda §32 "Run it from OpenWorker"** (todos os 17 idiomas) documenta isso, para que o assistente **Pergunte aos docs** do app e o botão flutuante de ajuda respondam sobre ele. Também linkado no rodapé do landing, no README, na wiki e em `docs/integrations/openworker.md`.
+
+### Notas
+- Apenas docs + site — sem mudança de código do app. Fontes de varredura inalteradas em **82**. Conjunto de testes: **2742**.
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **Corrigido — o pipeline HTML→texto compartilhado (descrições de Greenhouse / Recruitee) não vaza mais atributos de tag na descrição quando um valor de atributo contém um caractere `>`.**
