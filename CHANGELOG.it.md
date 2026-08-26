@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.221.0] — 2026-08-26
+
+**Sicurezza — difesa in profondità contro il DNS-rebinding sul percorso di fetch dello scanner.**
+
+### Sicurezza
+- Il core HTTP dello scanner (`fetchJson` / `fetchText` in `server/lib/http-json.mjs`) ora risolve l’host di ogni sorgente sul percorso di rete reale e **rifiuta di connettersi se si risolve a un indirizzo privato, loopback, link-local, CGNAT o di metadati cloud** — chiudendo un vettore di DNS-rebinding. Gli host dello scanner sono già ancorati a domini pubblici, quindi è difesa in profondità; il percorso degli URL utente aveva già un ancoraggio di connessione più forte (`safe-fetch.mjs`). La guardia gira **solo** sul trasporto `fetch` reale — un `fetchImpl` di test iniettato non viene mai risolto.
+
+### Note
+- Nessun cambio di comportamento per una scansione sana. Fonti di scansione invariate: **83**. Test: **2775**.
+
 ## [1.220.0] — 2026-08-26
 
 **Aggiunto — scansiona più categorie di Get on Board da una sola voce.**

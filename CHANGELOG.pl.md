@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.221.0] — 2026-08-26
+
+**Bezpieczeństwo — obrona w głąb przeciw DNS-rebinding na ścieżce fetch skanera.**
+
+### Bezpieczeństwo
+- Rdzeń HTTP skanera (`fetchJson` / `fetchText` w `server/lib/http-json.mjs`) rozwiązuje teraz host każdego źródła na prawdziwej ścieżce sieciowej i **odmawia połączenia, jeśli rozwiązuje się na adres prywatny, loopback, link-local, CGNAT lub metadanych chmury** — zamykając wektor DNS-rebinding. Hosty skanera są już przypięte do domen publicznych, więc to obrona w głąb; ścieżka URL użytkownika miała już silniejsze przypięcie połączenia (`safe-fetch.mjs`). Strażnik działa **tylko** na prawdziwym transporcie `fetch` — wstrzyknięty testowy `fetchImpl` nigdy nie jest rozwiązywany.
+
+### Uwagi
+- Brak zmiany zachowania dla zdrowego skanu. Źródła skanowania bez zmian: **83**. Testy: **2775**.
+
 ## [1.220.0] — 2026-08-26
 
 **Dodano — skanuj wiele kategorii Get on Board z jednego wpisu.**

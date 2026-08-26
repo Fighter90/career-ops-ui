@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.221.0] — 2026-08-26
+
+**Security — DNS-rebinding defence-in-depth on the scanner fetch path.**
+
+### Security
+- The scanner HTTP core (`fetchJson` / `fetchText` in `server/lib/http-json.mjs`) now resolves each source's hostname on the real network path and **refuses to connect if it resolves to a private, loopback, link-local, CGNAT, or cloud-metadata address** (e.g. `169.254.169.254`) — closing a DNS-rebinding vector where a public hostname is served a private A record. Scanner hosts are already pinned to public registrable domains, so this is defence-in-depth; the user-supplied-URL path already had stronger connection-pinning (`safe-fetch.mjs`, since v1.20.1). The guard runs **only** on the real `fetch` transport — an injected test `fetchImpl` is never resolved, so the mocked source suites are unaffected.
+
+### Notes
+- No behaviour change for a healthy scan (public boards resolve to public IPs). Scan sources unchanged at **83**. Test suite: **2775**.
+
 ## [1.220.0] — 2026-08-26
 
 **Added — scan several Get on Board categories from one entry.** The board splits leadership and ML/data roles out of `programming`, so an EM or data search now covers them without a second portal entry.

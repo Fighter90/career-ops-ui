@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.221.0] — 2026-08-26
+
+**Güvenlik — tarayıcı fetch yolunda DNS-rebinding’e karşı derinlemesine savunma.**
+
+### Güvenlik
+- Tarayıcının HTTP çekirdeği (`server/lib/http-json.mjs` içindeki `fetchJson`/`fetchText`) artık her kaynağın ana bilgisayarını gerçek ağ yolunda çözüyor ve **özel, loopback, link-local, CGNAT veya bulut meta veri adresine çözülürse bağlanmayı reddediyor** — bir DNS-rebinding vektörünü kapatıyor. Tarayıcı ana bilgisayarları zaten genel alan adlarına sabitlenmiş, dolayısıyla bu derinlemesine savunmadır; kullanıcı URL yolunda zaten daha güçlü bağlantı sabitleme (`safe-fetch.mjs`) vardı. Koruma **yalnızca** gerçek `fetch` taşımasında çalışır — enjekte edilen test `fetchImpl`’i asla çözülmez.
+
+### Notlar
+- Sağlıklı bir taramada davranış değişmez. Tarama kaynakları değişmedi: **83**. Testler: **2775**.
+
 ## [1.220.0] — 2026-08-26
 
 **Eklendi — tek girişten birden çok Get on Board kategorisi tarayın.**

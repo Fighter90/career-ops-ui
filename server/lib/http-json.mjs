@@ -14,7 +14,46 @@
  *     redirects, which closes the SSRF redirect vector.
  *   - Throws an Error with `.status` on a non-2xx response so callers can
  *     branch on outage vs empty-result.
+ *   - DNS-rebinding defence-in-depth (v1.221.0): on the REAL network path only,
+ *     the URL's hostname is resolved and rejected if it points at a
+ *     private/loopback/cloud-metadata address before the fetch. Scanner hosts
+ *     are already pinned to public registrable domains, so this only bites a
+ *     misconfigured source or a hostile record; the user-URL path has stronger
+ *     connection-pinning in `safe-fetch.mjs`.
  */
+import { promises as dns } from 'node:dns';
+import { isPrivateOrLoopbackHost } from './security.mjs';
+
+/**
+ * DNS-rebinding guard for the scanner fetch path. Runs ONLY when the real
+ * global `fetch` is the transport — a test's injected `fetchImpl` supplies the
+ * response itself, and its URL is often a stub host that would not resolve, so
+ * validating there would break the mocked suites for no security gain.
+ *
+ * Fail-open on a resolver error: a hostname that will not resolve cannot be
+ * connected to either, so the subsequent `fetch` surfaces the real failure —
+ * blocking here would only turn a connect error into a confusing one.
+ *
+ * @param {typeof fetch} fetchImpl
+ * @param {string} url
+ */
+async function guardResolvedHost(fetchImpl, url) {
+  if (fetchImpl !== globalThis.fetch) return;
+  let hostname;
+  try { hostname = new URL(url).hostname; } catch { return; }
+  if (!hostname) return;
+  let address;
+  try {
+    ({ address } = await dns.lookup(hostname, { verbatim: true }));
+  } catch { return; }
+  if (isPrivateOrLoopbackHost(address)) {
+    const err = new Error(`Refusing to fetch ${hostname}: resolves to non-public address ${address}`);
+    err.code = 'ECAREEROPS_BLOCKED_ADDRESS';
+    err.hostname = hostname;
+    err.address = address;
+    throw err;
+  }
+}
 
 /**
  * Browser-like User-Agent for sources that must clear WAF/CDN bot management
@@ -43,6 +82,7 @@ export const REDIRECT_REFUSAL_CAUSE_MESSAGE = 'unexpected redirect';
  */
 export async function fetchJson(fetchImpl, url, opts = {}) {
   const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
+  await guardResolvedHost(fetchImpl, url);
   const res = await fetchImpl(url, { method, headers, body, signal, redirect });
   if (!res.ok) {
     const err = new Error(`HTTP ${res.status} (${url})`);
@@ -85,6 +125,7 @@ export async function fetchJson(fetchImpl, url, opts = {}) {
  */
 export async function fetchText(fetchImpl, url, opts = {}) {
   const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
+  await guardResolvedHost(fetchImpl, url);
   const res = await fetchImpl(url, { method, headers, body, signal, redirect });
   if (!res.ok) {
     const err = new Error(`HTTP ${res.status} (${url})`);

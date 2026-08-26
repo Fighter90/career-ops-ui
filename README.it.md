@@ -7,16 +7,16 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2771%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2775%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.220.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.220.0)
+[![release](https://img.shields.io/badge/release-v1.221.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.221.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.220.0** — **Get on Board, più categorie** — una voce può ora scansionare `programming`, `operations-management`, `machine-learning-ai`, … (deduplicato per URL, limite 12) così le ricerche EM/dati non perdono ruoli che la board separa. **2771 test.**
+> **🆕 Ultima release — v1.221.0** — **Irrobustimento anti-DNS-rebinding** — lo scanner ora rifiuta qualsiasi sorgente il cui host si risolve a un indirizzo privato/loopback/di metadati cloud (es. `169.254.169.254`) — difesa in profondità oltre le protezioni SSRF esistenti. **2775 test.**
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

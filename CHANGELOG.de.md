@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.221.0] — 2026-08-26
+
+**Sicherheit — Verteidigung in der Tiefe gegen DNS-Rebinding auf dem Scanner-Fetch-Pfad.**
+
+### Sicherheit
+- Der HTTP-Kern des Scanners (`fetchJson` / `fetchText` in `server/lib/http-json.mjs`) löst nun den Host jeder Quelle auf dem realen Netzwerkpfad auf und **verweigert die Verbindung, wenn er auf eine private, Loopback-, Link-Local-, CGNAT- oder Cloud-Metadaten-Adresse auflöst** — und schließt einen DNS-Rebinding-Vektor. Scanner-Hosts sind bereits an öffentliche Domains gepinnt, also Verteidigung in der Tiefe; der Benutzer-URL-Pfad hatte bereits stärkeres Verbindungs-Pinning (`safe-fetch.mjs`). Der Guard läuft **nur** auf dem echten `fetch`-Transport — ein injizierter Test-`fetchImpl` wird nie aufgelöst.
+
+### Hinweise
+- Keine Verhaltensänderung bei einem gesunden Scan. Scan-Quellen unverändert: **83**. Tests: **2775**.
+
 ## [1.220.0] — 2026-08-26
 
 **Hinzugefügt — mehrere Get-on-Board-Kategorien aus einem Eintrag scannen.**
