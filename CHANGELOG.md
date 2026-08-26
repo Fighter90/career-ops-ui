@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.220.0] — 2026-08-26
+
+**Added — scan several Get on Board categories from one entry.** The board splits leadership and ML/data roles out of `programming`, so an EM or data search now covers them without a second portal entry.
+
+### Added
+- **Get on Board: multiple categories per entry.** A `getonbrd` portal entry can now set `categories: [programming, operations-management, machine-learning-ai]` (or a single `category:`) instead of only the default `programming` feed — postings are deduped by URL across categories, and the list is capped at 12. Existing entries are byte-identical (the default is still `programming`).
+
+### Notes
+- Server-only; the SSRF host-pin (www.getonbrd.com) + `redirect:'error'` are unchanged, and a bad category slug is rejected before any fetch. Scan sources unchanged at **83**. Test suite: **2771**.
+
 ## [1.219.0] — 2026-08-26
 
 **Added — Torre joins the scanner, and every provider label is now correct.** A new LatAm-heavy remote board, a fix that stopped the a16z sweep short, and the last places that named providers from a stale short list now use the full 18-provider roster.

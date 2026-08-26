@@ -8,6 +8,16 @@
 
 ---
 
+## [1.220.0] — 2026-08-26
+
+**新增 —— 用一個項目掃描多個 Get on Board 分類。**
+
+### 新增
+- `getonbrd` 項目現在可設定 `categories: [programming, operations-management, machine-learning-ai]`(或單一 `category:`),不再只是預設的 `programming` 來源;職缺在各分類間依 URL 去重,上限 12 個。現有項目保持不變(預設仍為 `programming`)。
+
+### 備註
+- 僅伺服端;SSRF 主機鎖定(www.getonbrd.com)與 `redirect:'error'` 不變,無效分類 slug 在請求前即被拒。掃描來源不變:**83**。測試:**2771**。
+
 ## [1.219.0] — 2026-08-26
 
 **新增 —— Torre 加入掃描器,現在每個供應方標籤都正確。**

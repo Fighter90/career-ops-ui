@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.220.0] — 2026-08-26
+
+**Eklendi — tek girişten birden çok Get on Board kategorisi tarayın.**
+
+### Eklendi
+- Bir `getonbrd` girişi artık yalnızca `programming` akışı yerine `categories: [programming, operations-management, machine-learning-ai]` (ya da tek bir `category:`) ayarlayabilir; ilanlar kategoriler arasında URL’ye göre yinelenenlerden arındırılır, en fazla 12. Mevcut girişler aynı kalır (varsayılan hâlâ `programming`).
+
+### Notlar
+- Yalnızca sunucu; SSRF ana bilgisayar sabitlemesi (www.getonbrd.com) ve `redirect:'error'` değişmez, geçersiz bir kategori slug’ı herhangi bir istekten önce reddedilir. Tarama kaynakları değişmedi: **83**. Testler: **2771**.
+
 ## [1.219.0] — 2026-08-26
 
 **Eklendi — Torre tarayıcıya katıldı ve artık her sağlayıcı etiketi doğru.**

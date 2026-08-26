@@ -9,6 +9,16 @@
 ---
 
 
+## [1.220.0] — 2026-08-26
+
+**추가 — 하나의 항목으로 여러 Get on Board 카테고리를 스캔합니다.**
+
+### 추가
+- `getonbrd` 항목에서 `programming` 피드만이 아니라 `categories: [programming, operations-management, machine-learning-ai]`(또는 단일 `category:`)를 지정할 수 있습니다. 게시물은 카테고리 간 URL로 중복 제거되며 최대 12개로 제한됩니다. 기존 항목은 동일합니다(기본값은 여전히 `programming`).
+
+### 참고
+- 서버 전용; SSRF 호스트 고정(www.getonbrd.com)과 `redirect:'error'`는 그대로이고, 잘못된 카테고리 슬러그는 요청 전에 거부됩니다. 스캔 소스 변동 없음: **83**. 테스트: **2771**.
+
 ## [1.219.0] — 2026-08-26
 
 **추가 — Torre가 스캐너에 합류했고, 이제 모든 제공자 라벨이 올바릅니다.**

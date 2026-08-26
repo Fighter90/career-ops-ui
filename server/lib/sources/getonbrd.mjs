@@ -1,7 +1,11 @@
 // @ts-check
 /**
- * Get on Board source — board-wide feed for the tech "programming" category
- *   GET https://www.getonbrd.com/api/v0/categories/programming/jobs
+ * Get on Board source — board-wide category feeds
+ *   GET https://www.getonbrd.com/api/v0/categories/{category}/jobs
+ *
+ * Category defaults to `programming`; override with `category: <slug>` or scan
+ * several in one entry with `categories: [<slug>, …]` (deduped by URL, capped
+ * at 12 categories). See resolveCategories().
  *
  * Implements the web-ui source
  * contract (rich job objects + `meta` for auto-discovery). Public, zero-auth
@@ -16,11 +20,58 @@
  */
 import { fetchJson } from '../http-json.mjs';
 
-export const FEED_BASE = 'https://www.getonbrd.com/api/v0/categories/programming/jobs';
+const FEED_HOST = 'https://www.getonbrd.com';
 const TRUSTED_HOST = 'www.getonbrd.com';
+const DEFAULT_CATEGORY = 'programming';
+export const FEED_BASE = `${FEED_HOST}/api/v0/categories/${DEFAULT_CATEGORY}/jobs`;
 const PER_PAGE = 100;
 const DEFAULT_MAX_PAGES = 3;
 const MAX_PAGES_CAP = 50;
+// Category slugs are lowercase alphanumeric words joined by single hyphens.
+// Anchored so a config typo can never inject a path segment or query into the
+// feed URL (`../`, `?`, `//host`); assertGetonbrdUrl is the second gate.
+const CATEGORY_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const MAX_CATEGORIES = 12;
+
+/** Build the feed base URL for one category slug. */
+function feedBase(category) {
+  return `${FEED_HOST}/api/v0/categories/${category}/jobs`;
+}
+
+/**
+ * Resolve the categories to scan, in config order, deduped. `categories:`
+ * (array) wins over `category:` (string); neither → the `programming` default
+ * (keeps pre-existing entries byte-identical). The board splits leadership and
+ * ML/data roles out of `programming`, so an EM/Tech-Lead search misses most of
+ * its matches without `operations-management` and `machine-learning-ai`.
+ * Exported for tests.
+ * @param {any} entry
+ * @returns {string[]}
+ */
+export function resolveCategories(entry) {
+  const raw = entry?.categories !== undefined ? entry.categories : entry?.category;
+  if (raw === undefined || raw === null) return [DEFAULT_CATEGORY];
+  const list = Array.isArray(raw) ? raw : [raw];
+  const out = [];
+  for (const c of list) {
+    if (typeof c !== 'string' || !CATEGORY_SLUG_RE.test(c.trim())) {
+      throw new Error(
+        `getonbrd: invalid category ${JSON.stringify(c)} — expected a slug like "programming" or "machine-learning-ai"`,
+      );
+    }
+    const slug = c.trim();
+    if (!out.includes(slug)) out.push(slug);
+  }
+  if (!out.length) {
+    throw new Error('getonbrd: `categories` is empty — omit it to use the "programming" default');
+  }
+  if (out.length > MAX_CATEGORIES) {
+    throw new Error(
+      `getonbrd: ${out.length} categories configured — cap is ${MAX_CATEGORIES} (each one costs up to max_pages requests)`,
+    );
+  }
+  return out;
+}
 
 export const meta = {
   value: 'getonbrd',
@@ -119,23 +170,38 @@ export function normalizeGetonbrdJob(j, fallbackCompany = 'Get on Board') {
  * @param {string} feedBase base feed URL (host-pinned to www.getonbrd.com)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
  */
-export async function fetchGetonbrd(feedBase = FEED_BASE, opts = {}) {
+export async function fetchGetonbrd(feedUrl = FEED_BASE, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
-  assertGetonbrdUrl(feedBase);
   const maxPages = resolveMaxPages(company);
   const fallbackCompany = (company && typeof company.name === 'string') ? company.name : 'Get on Board';
+  // Multiple categories per entry (v1.219.0): the board splits EM/leadership and
+  // ML/data roles out of `programming`. When the entry names `categories:` /
+  // `category:` we build a feed URL per category from the canonical host; with
+  // no category config we honor the single `feedUrl` the adapter passed (the
+  // `programming` default OR a test/mirror override), so existing entries and
+  // the `getonbrd:`/`api:` override path are byte-identical.
+  const explicitCategories = company && (company.categories !== undefined || company.category !== undefined);
+  const bases = explicitCategories ? resolveCategories(company).map(feedBase) : [feedUrl];
   const out = [];
-  for (let page = 1; page <= maxPages; page += 1) {
-    const url = `${feedBase}?per_page=${PER_PAGE}&expand[]=company&page=${page}`;
-    const json = await fetchJson(fetchImpl, url, { signal, redirect: 'error' });
-    if (!json || !Array.isArray(json.data)) {
-      throw new Error(`getonbrd: unexpected API response on page ${page} — expected { data: [...] }`);
+  // A posting can appear under several categories; first sighting wins so the
+  // scanner never sees the same URL twice from one entry.
+  const seen = new Set();
+  for (const base of bases) {
+    assertGetonbrdUrl(base);
+    for (let page = 1; page <= maxPages; page += 1) {
+      const url = `${base}?per_page=${PER_PAGE}&expand[]=company&page=${page}`;
+      const json = await fetchJson(fetchImpl, url, { signal, redirect: 'error' });
+      if (!json || !Array.isArray(json.data)) {
+        throw new Error(`getonbrd: unexpected API response on page ${page} — expected { data: [...] }`);
+      }
+      for (const j of json.data) {
+        const normalized = normalizeGetonbrdJob(j, fallbackCompany);
+        if (!normalized || seen.has(normalized.url)) continue;
+        seen.add(normalized.url);
+        out.push(normalized);
+      }
+      if (json.data.length < PER_PAGE) break; // short page → last page
     }
-    for (const j of json.data) {
-      const normalized = normalizeGetonbrdJob(j, fallbackCompany);
-      if (normalized) out.push(normalized);
-    }
-    if (json.data.length < PER_PAGE) break; // short page → last page
   }
   return out;
 }

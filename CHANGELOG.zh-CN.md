@@ -9,6 +9,16 @@
 ---
 
 
+## [1.220.0] — 2026-08-26
+
+**新增 —— 用一个条目扫描多个 Get on Board 分类。**
+
+### 新增
+- `getonbrd` 条目现在可设置 `categories: [programming, operations-management, machine-learning-ai]`(或单个 `category:`),不再只是默认的 `programming` 源;岗位在各分类间按 URL 去重,上限 12 个。现有条目保持不变(默认仍为 `programming`)。
+
+### 说明
+- 仅服务端;SSRF 主机锁定(www.getonbrd.com)与 `redirect:'error'` 不变,无效分类 slug 在请求前即被拒。扫描来源不变:**83**。测试:**2771**。
+
 ## [1.219.0] — 2026-08-26
 
 **新增 —— Torre 加入扫描器,现在每个提供方标签都正确。**

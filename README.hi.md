@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2768%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2771%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.219.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.219.0)
+[![release](https://img.shields.io/badge/release-v1.220.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.220.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.219.0** — **Torre स्कैनर में शामिल** — लैटिन अमेरिकी टैलेंट मार्केटप्लेस (torre.ai) एक नया स्कैन स्रोत है (कुल **83**), साथ ही a16z पेजिनेशन फिक्स और हर जगह सही प्रदाता लेबल + मोनोग्राम। **2768 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.220.0** — **Get on Board, कई श्रेणियाँ** — अब एक ही प्रविष्टि `programming`, `operations-management`, `machine-learning-ai`, … स्कैन कर सकती है (URL से डिडुप, अधिकतम 12), ताकि EM/डेटा खोजें बोर्ड द्वारा अलग की गई भूमिकाएँ न चूकें। **2771 परीक्षण.**
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

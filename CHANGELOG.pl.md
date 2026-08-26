@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.220.0] — 2026-08-26
+
+**Dodano — skanuj wiele kategorii Get on Board z jednego wpisu.**
+
+### Dodano
+- Wpis `getonbrd` może teraz ustawić `categories: [programming, operations-management, machine-learning-ai]` (lub pojedyncze `category:`) zamiast tylko kanału `programming`; oferty są deduplikowane po URL między kategoriami, z limitem 12. Istniejące wpisy pozostają identyczne (domyślnie nadal `programming`).
+
+### Uwagi
+- Tylko serwer; przypięcie hosta SSRF (www.getonbrd.com) i `redirect:'error'` bez zmian, a nieprawidłowy slug kategorii jest odrzucany przed jakimkolwiek żądaniem. Źródła skanowania bez zmian: **83**. Testy: **2771**.
+
 ## [1.219.0] — 2026-08-26
 
 **Dodano — Torre dołącza do skanera, a każda etykieta dostawcy jest teraz poprawna.**
