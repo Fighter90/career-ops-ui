@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.218.0] — 2026-08-26
+
+**Dodano — odznaki dostawców (i poprawne nazwy) wszędzie, gdzie pokazywany jest dostawca.**
+
+### Dodano
+- Monogramy dostawców na plakietce pulpitu, w podsumowaniu „Aktywny" Ustawień i w nagłówku wyniku ⚡ oceny.
+
+### Naprawiono
+- Przestarzałe etykiety: trzy widoki ustalały nazwę z 5-elementowej mapy (wynik oceny oznaczał każdego dostawcę spoza Anthropic jako „Gemini"); teraz używają `ProviderStatus.label` (18). Licznik kluczy pokazywał „/ 7" → 18. Lista slugów podpowiedzi `LLM_PROVIDER` zyskała `ark` / `arkcn` we wszystkich 17 językach.
+
+### Uwagi
+- Tylko klient, bezpieczne dla CSP. Bez zmian serwera. Źródła skanowania: **82**. Testy: **2758**.
+
 ## [1.217.1] — 2026-08-26
 
 **Wzmocnienie testów — pokrycie endpointów dla całej listy dostawców.**

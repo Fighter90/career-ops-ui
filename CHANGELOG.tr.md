@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.218.0] — 2026-08-26
+
+**Eklendi — sağlayıcının gösterildiği her yerde sağlayıcı rozetleri (ve doğru adlar).**
+
+### Eklendi
+- Pano çipinde, Ayarlar’daki "Etkin" özetinde ve ⚡ değerlendirme sonucu başlığında sağlayıcı monogramları.
+
+### Düzeltildi
+- Eski etiketler: üç ekran adı 5 girişli bir haritadan çözüyordu (değerlendirme sonucu Anthropic olmayan her sağlayıcıyı "Gemini" olarak yanlış etiketliyordu); artık paylaşılan `ProviderStatus.label` (18) kullanıyor. Anahtar sayısı "/ 7" gösteriyordu → 18. `LLM_PROVIDER` ipucunun slug listesi 17 dilin tümünde `ark` / `arkcn` kazandı.
+
+### Notlar
+- Yalnızca istemci, CSP güvenli. Sunucu değişikliği yok. Tarama kaynakları: **82**. Testler: **2758**.
+
 ## [1.217.1] — 2026-08-26
 
 **Test sağlamlaştırma — tüm sağlayıcı listesi için uç nokta kapsamı.**

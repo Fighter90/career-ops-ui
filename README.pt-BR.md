@@ -7,16 +7,16 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2756%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2758%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.217.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.217.1)
+[![release](https://img.shields.io/badge/release-v1.218.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.218.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.217.1** — **Ark entra na lista** — BytePlus Ark + Volcengine Ark (Doubao da ByteDance) agora são provedores de avaliação ⚡ ao vivo (**18 no total**), cada um com seu emblema de marca em Configurações. **2756 testes.**
+> **🆕 Última versão — v1.218.0** — **Emblemas de provedor em todo lugar** — o chip do painel, o resumo "Ativo" das Configurações e o resultado da ⚡ avaliação agora mostram o monograma de cada provedor e seu nome correto entre os 18 (corrige três rótulos obsoletos de 5 provedores). **2758 testes.**
 >
 > 📜 Histórico completo de versões: **[CHANGELOG.pt-BR.md](CHANGELOG.pt-BR.md)**.
 

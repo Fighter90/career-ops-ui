@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.218.0] — 2026-08-26
+
+**Aggiunto — badge dei provider (e nomi corretti) ovunque venga mostrato un provider.**
+
+### Aggiunto
+- Monogrammi dei provider sul chip della dashboard, nel riepilogo "Attivo" delle Impostazioni e nell’intestazione del risultato della ⚡ valutazione.
+
+### Corretto
+- Etichette obsolete: tre schermate risolvevano il nome da una mappa di 5 voci (il risultato della valutazione etichettava come "Gemini" ogni provider non-Anthropic); ora usano `ProviderStatus.label` (18). Il conteggio delle chiavi mostrava "/ 7" → 18. L’elenco di slug del suggerimento `LLM_PROVIDER` ha aggiunto `ark` / `arkcn` in tutte le 17 lingue.
+
+### Note
+- Solo client, sicuro per la CSP. Nessuna modifica al server. Fonti di scansione: **82**. Test: **2758**.
+
 ## [1.217.1] — 2026-08-26
 
 **Rafforzamento dei test — copertura degli endpoint per l’intero catalogo di provider.**

@@ -54,3 +54,30 @@ test('index.html loads provider-logo.js after provider-status.js', () => {
   const iLogo = html.indexOf('/js/lib/provider-logo.js');
   assert.ok(iStatus > 0 && iLogo > iStatus, 'provider-logo.js must load after provider-status.js');
 });
+
+test('v1.218.0 — active/result provider surfaces render a ProviderLogo tile', () => {
+  for (const f of ['dashboard.js', 'config.js', 'evaluate.js']) {
+    const src = R('public', 'js', 'views', f);
+    assert.match(src, /window\.ProviderLogo(?:\s*&&\s*[^\n]*)?\.el\(/,
+      `${f} must render the active/result provider's monogram via ProviderLogo.el`);
+  }
+});
+
+test('v1.218.0 — no stale ≤5-entry provider NAME map or hardcoded "/ 7" in the chrome', () => {
+  // The dashboard chip + config summary + eval result must resolve the friendly
+  // name via the shared ProviderStatus.label (18 providers), not a local map
+  // that silently mislabels the newer providers.
+  for (const f of ['dashboard.js', 'config.js', 'evaluate.js']) {
+    const src = R('public', 'js', 'views', f);
+    assert.ok(!/const NAME = \{ anthropic: 'Anthropic', gemini: 'Gemini', openai: 'OpenAI', qwen: 'Qwen', openrouter: 'OpenRouter' \}/.test(src),
+      `${f} still has the stale 5-entry provider NAME map`);
+    assert.match(src, /ProviderStatus(?:\s*&&\s*window\.ProviderStatus)?\.label\(/,
+      `${f} must resolve the provider name via ProviderStatus.label`);
+  }
+  // config summary denominator is derived (18), not the hardcoded "/ 7".
+  const cfg = R('public', 'js', 'views', 'config.js');
+  assert.ok(!/keysConfiguredPrefix[^\n]*'\s*\+\s*count\s*\+\s*' \/ 7'/.test(cfg),
+    'config.js still hardcodes "/ 7" for the provider count');
+  assert.ok(!/r\.mode === 'anthropic' \? 'Anthropic' : 'Gemini'/.test(R('public', 'js', 'views', 'evaluate.js')),
+    'evaluate.js still mislabels every non-Anthropic provider as Gemini');
+});
