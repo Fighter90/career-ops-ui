@@ -80,6 +80,7 @@ window.ScanResults = (function () {
     { value: 'thehub',          label: 'The Hub' },
     { value: 'themuse',         label: 'The Muse' },
     { value: 'tkms',            label: 'TKMS' },
+    { value: 'torre',           label: 'Torre' },
     { value: 'vdab',            label: 'VDAB' },
     { value: 'weworkremotely',  label: 'We Work Remotely' },
     { value: 'workable',        label: 'Workable' },

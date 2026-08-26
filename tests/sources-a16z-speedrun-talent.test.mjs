@@ -301,3 +301,34 @@ test('adapter: buildEndpoint re-validates the override host — off-host/non-htt
   assert.equal(be({ api: 'http://speedrun-talent-network.com/api/v1/jobs' }), FEED_URL, 'non-https → feed');
   assert.equal(be({ api: 'not a url' }), FEED_URL, 'garbage → feed');
 });
+
+// #2547 — total_pages outranks the short-page break. A board that rotates a
+// listing out mid-sweep can return a 49/50 page that is NOT the last page; the
+// feed's own total_pages says so, so iteration must continue.
+test('fetchSpeedrunTalent: keeps paginating past a short-but-nonempty page while total_pages says there is more (#2547)', async () => {
+  const pages = Array.from({ length: 6 }, (_, p) => ({
+    jobs: Array.from({ length: p === 2 ? 49 : 50 }, (_, i) => mkRec(p * 50 + i, p)),
+    total: 300, page: p, page_size: 50, total_pages: 6,
+  }));
+  const { calls, fetchImpl } = mkFetch(pages);
+  const jobs = await fetchSpeedrunTalent(FEED_URL, { fetchImpl, company: { max_pages: 6 } });
+  const seen = calls.map((c) => Number(new URL(c.url).searchParams.get('page')));
+  assert.deepEqual(seen, [0, 1, 2, 3, 4, 5], 'must fetch all 6 pages, not stop at the short page 2');
+  assert.equal(jobs.length, 299, '50*5 + 49 = 299 jobs');
+});
+
+// #2547 — trusting total_pages is only safe because an empty page ends
+// iteration unconditionally: an over-reporting feed stops at the first empty
+// response instead of burning the whole page budget.
+test('fetchSpeedrunTalent: stops at the first empty page when total_pages over-reports (#2547)', async () => {
+  const pages = [
+    { jobs: Array.from({ length: 50 }, (_, i) => mkRec(i, 0)), page: 0, page_size: 50, total_pages: 50 },
+    { jobs: Array.from({ length: 50 }, (_, i) => mkRec(50 + i, 1)), page: 1, page_size: 50, total_pages: 50 },
+    { jobs: Array.from({ length: 50 }, (_, i) => mkRec(100 + i, 2)), page: 2, page_size: 50, total_pages: 50 },
+    { jobs: [], page: 3, page_size: 50, total_pages: 50 },
+  ];
+  const { calls, fetchImpl } = mkFetch(pages);
+  const jobs = await fetchSpeedrunTalent(FEED_URL, { fetchImpl, company: { max_pages: 20 } });
+  assert.equal(calls.length, 4, 'stops at the first empty page (0,1,2,3), not up to max_pages=20');
+  assert.equal(jobs.length, 150, '3 full pages of 50');
+});

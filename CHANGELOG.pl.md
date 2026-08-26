@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.219.0] — 2026-08-26
+
+**Dodano — Torre dołącza do skanera, a każda etykieta dostawcy jest teraz poprawna.**
+
+### Dodano
+- **Torre** (`provider: torre`) — panlatynoamerykański rynek talentów torre.ai, publiczne wyszukiwanie bez uwierzytelniania ze zdalnymi ofertami, których nie ma na Greenhouse/Lever/Ashby; jedno ograniczone żądanie na wpis. Rejestr ma teraz **83** źródła (78 angielskich + 5 rosyjskich). Ponadto monogram aktywnego dostawcy na banerze powitalnym.
+
+### Naprawiono
+- Skan a16z Speedrun kończył się za wcześnie na tablicy z rotacją (krótką stronę w środku przebiegu traktowano jako ostatnią, skracając do 149 z ~300); teraz ufa `total_pages` z kanału. A baner powitalny ustalał dostawcę z 4-elementowej mapy (pokazując surowy slug dla pozostałych 14) — teraz używa etykiety+monogramu z 18; notka o dostawcach w Ustawieniach zmienia się z 7 na 18.
+
+### Uwagi
+- Opcja wielu kategorii na wpis w Get on Board nie jest jeszcze podłączona (wymaga refaktoryzacji na poziomie źródła). Testy: **2768**.
+
 ## [1.218.0] — 2026-08-26
 
 **Dodano — odznaki dostawców (i poprawne nazwy) wszędzie, gdzie pokazywany jest dostawca.**

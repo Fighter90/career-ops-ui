@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.219.0] — 2026-08-26
+
+**Aggiunto — Torre entra nello scanner e ora ogni etichetta di provider è corretta.**
+
+### Aggiunto
+- **Torre** (`provider: torre`) — il marketplace di talenti pan-latinoamericano di torre.ai, una ricerca pubblica senza autenticazione con ruoli remoti che non arrivano a Greenhouse/Lever/Ashby; una richiesta limitata per voce. Il registro conta ora **83** sorgenti (78 inglesi + 5 russe). Inoltre, monogramma del provider attivo nel banner di benvenuto.
+
+### Corretto
+- La scansione a16z Speedrun si fermava troppo presto su una board che ruota (una pagina corta a metà passata veniva presa per l’ultima, troncando a 149 di ~300); ora si fida del `total_pages` del feed. E il banner di benvenuto risolveva il provider da una mappa di 4 voci (mostrando lo slug grezzo per gli altri 14) — ora usa etichetta+monogramma dei 18; la nota provider nelle Impostazioni passa da 7 a 18.
+
+### Note
+- La nuova opzione multi-categoria per voce di Get on Board non è ancora collegata qui (richiede un refactor a livello di sorgente). Test: **2768**.
+
 ## [1.218.0] — 2026-08-26
 
 **Aggiunto — badge dei provider (e nomi corretti) ovunque venga mostrato un provider.**

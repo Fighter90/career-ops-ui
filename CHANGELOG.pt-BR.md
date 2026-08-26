@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.219.0] — 2026-08-26
+
+**Adicionado — Torre entra no scanner, e agora todo rótulo de provedor está correto.**
+
+### Adicionado
+- **Torre** (`provider: torre`) — o marketplace de talentos pan-LatAm do torre.ai, busca pública sem autenticação com vagas remotas que não chegam ao Greenhouse/Lever/Ashby; uma requisição limitada por entrada. O registro traz agora **83** fontes (78 inglesas + 5 russas). Também: monograma do provedor ativo no banner de boas-vindas.
+
+### Corrigido
+- A varredura do a16z Speedrun parava cedo em um board que rotaciona (uma página curta no meio da varredura era tratada como a última, truncando para 149 de ~300); agora confia no `total_pages` do feed. E o banner de boas-vindas resolvia o provedor a partir de um mapa de 4 entradas (mostrando o slug cru para os outros 14) — agora usa o rótulo+monograma dos 18; a nota de provedores das Configurações vai de 7 a 18.
+
+### Notas
+- A opção de várias categorias por entrada do Get on Board ainda não está aqui (requer um refactor no nível da fonte). Testes: **2768**.
+
 ## [1.218.0] — 2026-08-26
 
 **Adicionado — emblemas de provedor (e nomes corretos) onde quer que um provedor apareça.**

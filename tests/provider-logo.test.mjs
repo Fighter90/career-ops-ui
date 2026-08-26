@@ -61,6 +61,14 @@ test('v1.218.0 — active/result provider surfaces render a ProviderLogo tile', 
     assert.match(src, /window\.ProviderLogo(?:\s*&&\s*[^\n]*)?\.el\(/,
       `${f} must render the active/result provider's monogram via ProviderLogo.el`);
   }
+  // v1.219.0 — the global onboarding banner (app.js) too.
+  const app = R('public', 'js', 'app.js');
+  assert.match(app, /window\.ProviderLogo(?:\s*&&\s*[^\n]*)?\.el\(/,
+    'app.js onboarding banner must render the active provider monogram');
+  assert.match(app, /window\.ProviderStatus\.label\(st\.activeProvider\)/,
+    'app.js onboarding banner must resolve the name via ProviderStatus.label (not a stale 4-entry map)');
+  assert.ok(!/PROVIDER_NAME\s*=\s*\{\s*anthropic:/.test(app),
+    'app.js still has the stale 4-entry PROVIDER_NAME map');
 });
 
 test('v1.218.0 — no stale ≤5-entry provider NAME map or hardcoded "/ 7" in the chrome', () => {

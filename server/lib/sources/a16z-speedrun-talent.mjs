@@ -282,9 +282,21 @@ export async function fetchSpeedrunTalent(feedUrl = FEED_URL, opts = {}) {
     }
 
     if (jobs.length >= MAX_RESULTS) break;
-    // Stop at the last page: a short page, or past the reported total_pages.
-    if (rawCount < PER_PAGE) break;
-    if (Number.isInteger(json.total_pages) && page + 1 >= json.total_pages) break;
+    // Stop at the last page. Termination priority (#2547):
+    //   1. An empty page always ends iteration — nothing left, and it bounds a
+    //      feed that over-reports total_pages instead of burning requests.
+    //   2. The feed's own total_pages when present and positive. A 49/50 page
+    //      from a board that rotated a listing mid-sweep is NOT the last page;
+    //      treating a short page as terminal ended the sweep silently. A
+    //      non-positive total_pages counts as absent (a feed reporting 0
+    //      alongside real rows contradicts itself; the rows win).
+    //   3. A short page, only as the fallback when total_pages is absent/≤0.
+    if (rawCount === 0) break;
+    if (Number.isInteger(json.total_pages) && json.total_pages > 0) {
+      if (page + 1 >= json.total_pages) break;
+    } else if (rawCount < PER_PAGE) {
+      break;
+    }
     // Cap warning: the feed had more pages than we were allowed to read — surface
     // it with the fix (same pattern as jibeapply/workday).
     if (page + 1 >= maxPages && Number.isInteger(json.total_pages) && json.total_pages > maxPages) {

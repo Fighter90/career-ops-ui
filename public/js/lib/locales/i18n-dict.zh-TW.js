@@ -186,7 +186,7 @@ window.__I18N_DICT_ZH_TW = {
   'config.gotoHealth': "在 Health 驗證",
   'config.llmProvider': "LLM 供應方",
   'config.llmProviderHint': "auto = 使用已設定的任一金鑰,按 Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark 優先。claude / gemini / openai / qwen / openrouter / github / hermes / deepseek / zai / kimi / minimax / mistral / grok / together / fireworks / ollama / ark / arkcn = 優先該供應方 —— 但若其金鑰未設定,則回退到你已設定的任一其他供應方。僅當完全沒有供應方金鑰時 → 回退到手動提示詞。",
-  'config.providerModelNote': "career-ops 與 CLI 無關 — 你在任意 AI 編碼 CLI(Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi)中執行它,各自有自己的登入。此 Web UI 是獨立的:其 ⚡ 即時評估以無頭方式執行,使用下方七個供應方金鑰中的任意一個 — Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes — 自動排序,當固定的供應方沒有金鑰時回退。",
+  'config.providerModelNote': "career-ops 與 CLI 無關 — 你在任意 AI 編碼 CLI(Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi)中執行它,各自有自己的登入。此 Web UI 是獨立的:其 ⚡ 即時評估以無頭方式執行,使用下方18 個供應方金鑰中的任意一個 — Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes · DeepSeek · GLM (Z.ai) · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark — 自動排序,當固定的供應方沒有金鑰時回退。",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys。v1.55.0：也執行 web-ui 即時評估（auto 順序中第 3 位，在 Anthropic 與 Gemini 之後）；父專案 Codex/OpenAI CLI 流程仍會讀取。",
   'config.anthropicKey': "Anthropic API 金鑰 (Claude)",

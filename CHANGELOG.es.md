@@ -11,6 +11,19 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.219.0] — 2026-08-26
+
+**Añadido — Torre se une al escáner, y ahora toda etiqueta de proveedor es correcta.**
+
+### Añadido
+- **Torre** (`provider: torre`) — el marketplace de talento pan-LatAm de torre.ai, búsqueda pública sin autenticación con roles remotos que no llegan a Greenhouse/Lever/Ashby; una petición acotada por entrada. El registro trae ahora **83** fuentes (78 inglesas + 5 rusas). Además, monograma del proveedor activo en el banner de bienvenida.
+
+### Corregido
+- El escaneo de a16z Speedrun se detenía antes de tiempo en un tablero que rota (una página corta a mitad de barrido se tomaba como la última, truncando a 149 de ~300); ahora confía en el `total_pages` del feed. Y el banner de bienvenida resolvía el proveedor desde un mapa de 4 entradas (mostrando el slug crudo para los otros 14) — ahora usa la etiqueta+monograma de los 18; la nota de proveedores de Ajustes pasa de 7 a 18.
+
+### Notas
+- La opción de varias categorías por entrada de Get on Board aún no está aquí (requiere un refactor a nivel de fuente). Pruebas: **2768**.
+
 ## [1.218.0] — 2026-08-26
 
 **Añadido — insignias de proveedor (y nombres correctos) allí donde se muestra un proveedor.**

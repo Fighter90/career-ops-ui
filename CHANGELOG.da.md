@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.219.0] — 2026-08-26
+
+**Tilføjet — Torre slutter sig til scanneren, og nu er hver udbyder-etiket korrekt.**
+
+### Tilføjet
+- **Torre** (`provider: torre`) — torre.ai’s pan-latinamerikanske talentmarked, en offentlig søgning uden godkendelse med fjernstillinger, der ikke når Greenhouse/Lever/Ashby; én afgrænset forespørgsel pr. post. Registret har nu **83** kilder (78 engelske + 5 russiske). Desuden monogram for den aktive udbyder på velkomstbanneret.
+
+### Rettet
+- a16z Speedrun-scanningen stoppede for tidligt på et board, der roterer (en kort side midt i gennemløbet blev opfattet som den sidste og afkortede til 149 af ~300); den stoler nu på feedets `total_pages`. Og velkomstbanneret udledte udbyderen fra et kort med 4 poster (viste den rå slug for de øvrige 14) — det bruger nu etiket+monogram fra de 18; udbyder-noten i Indstillinger går fra 7 til 18.
+
+### Noter
+- Get on Boards nye valgmulighed med flere kategorier pr. post er ikke koblet på her endnu (kræver en refaktor på kildeniveau). Tests: **2768**.
+
 ## [1.218.0] — 2026-08-26
 
 **Tilføjet — udbyder-badges (og korrekte navne) overalt, hvor en udbyder vises.**
