@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.221.0] — 2026-08-26
+
+**Seguridad — defensa en profundidad contra DNS-rebinding en la ruta de fetch del escáner.**
+
+### Seguridad
+- El núcleo HTTP del escáner (`fetchJson` / `fetchText` en `server/lib/http-json.mjs`) ahora resuelve el host de cada fuente en la ruta de red real y **se niega a conectar si resuelve a una dirección privada, loopback, link-local, CGNAT o de metadatos de nube** — cerrando un vector de DNS-rebinding. Los hosts del escáner ya están fijados a dominios públicos, así que es defensa en profundidad; la ruta de URL del usuario ya tenía fijación de conexión más fuerte (`safe-fetch.mjs`). El guard corre **solo** en el transporte `fetch` real — un `fetchImpl` de prueba inyectado nunca se resuelve.
+
+### Notas
+- Sin cambio de comportamiento para un escaneo sano. Fuentes de escaneo sin cambios: **83**. Pruebas: **2775**.
+
 ## [1.220.0] — 2026-08-26
 
 **Añadido — escanea varias categorías de Get on Board desde una sola entrada.**

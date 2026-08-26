@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.221.0] — 2026-08-26
+
+**Segurança — defesa em profundidade contra DNS-rebinding no caminho de fetch do scanner.**
+
+### Segurança
+- O núcleo HTTP do scanner (`fetchJson` / `fetchText` em `server/lib/http-json.mjs`) agora resolve o host de cada fonte no caminho de rede real e **recusa conectar se resolver para um endereço privado, loopback, link-local, CGNAT ou de metadados de nuvem** — fechando um vetor de DNS-rebinding. Os hosts do scanner já são fixados a domínios públicos, então é defesa em profundidade; o caminho de URL do usuário já tinha fixação de conexão mais forte (`safe-fetch.mjs`). O guard roda **apenas** no transporte `fetch` real — um `fetchImpl` de teste injetado nunca é resolvido.
+
+### Notas
+- Sem mudança de comportamento em uma varredura saudável. Fontes de varredura inalteradas: **83**. Testes: **2775**.
+
 ## [1.220.0] — 2026-08-26
 
 **Adicionado — varra várias categorias do Get on Board a partir de uma única entrada.**

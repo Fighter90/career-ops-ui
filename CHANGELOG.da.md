@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.221.0] — 2026-08-26
+
+**Sikkerhed — forsvar i dybden mod DNS-rebinding på scannerens fetch-sti.**
+
+### Sikkerhed
+- Scannerens HTTP-kerne (`fetchJson` / `fetchText` i `server/lib/http-json.mjs`) slår nu hver kildes host op på den rigtige netværkssti og **nægter at forbinde, hvis den slår op til en privat, loopback, link-local, CGNAT eller cloud-metadata-adresse** — og lukker en DNS-rebinding-vektor. Scannerens hosts er allerede pinnet til offentlige domæner, så det er forsvar i dybden; bruger-URL-stien havde allerede stærkere forbindelses-pinning (`safe-fetch.mjs`). Vagten kører **kun** på den rigtige `fetch`-transport — en injiceret test-`fetchImpl` slås aldrig op.
+
+### Noter
+- Ingen adfærdsændring for en sund scanning. Scanningskilder uændret: **83**. Tests: **2775**.
+
 ## [1.220.0] — 2026-08-26
 
 **Tilføjet — scan flere Get on Board-kategorier fra én post.**
