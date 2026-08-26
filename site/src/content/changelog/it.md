@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.215.0] — 2026-08-26
+
+**Aggiunto — esegui tutta la tua ricerca di lavoro da OpenWorker.** Un nuovo coworker guida questa pipeline dall'app di coworker IA open source di Andrew Ng, e la guida in-app ora lo copre così l'assistente Chiedi ai docs può accompagnarti.
+
+### Aggiunto
+- **Coworker OpenWorker.** Un coworker senza codice di [OpenWorker](https://github.com/andrewyng/openworker) — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — esegue tutta la ricerca di lavoro (scansione, punteggio, adattamento, tracciamento, follow-up) e può **avviare questa dashboard**, tutto dal tuo desktop. È una persona in un solo file distribuita in 17 lingue, verificata installabile con il loader di OpenWorker stesso.
+- **Guida §32 "Run it from OpenWorker"** (tutte le 17 lingue) lo documenta, così l'assistente in-app **Chiedi ai docs** e il pulsante di aiuto fluttuante possono rispondere. Collegato anche dal footer della landing, dal README, dalla wiki e da `docs/integrations/openworker.md`.
+
+### Note
+- Solo docs + sito — nessuna modifica al codice dell'app. Fonti di scansione invariate a **82**. Suite di test: **2742**.
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **Corretto — la pipeline HTML→testo condivisa (descrizioni Greenhouse / Recruitee) non fa più trapelare attributi di tag nella descrizione quando un valore di attributo contiene un carattere `>`.**

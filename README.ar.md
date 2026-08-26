@@ -12,11 +12,11 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.214.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.214.2)
+[![release](https://img.shields.io/badge/release-v1.215.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.215.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.214.2** — **إصلاح تنظيف HTML** — وصفٌ به `>` داخل سمة HTML (مثل `title="salary > 100k"`) لم يعد يُسرّب نص السمة اللاحق إلى وصف Greenhouse / Recruitee الذي يقرأه مُرشِّح المحتوى. **2742 اختبارًا.**
+> **🆕 أحدث إصدار — v1.215.0** — **شغِّله من OpenWorker** — coworker ذكي جديد بلا كود يُجري بحثك عن العمل بالكامل (ويشغّل هذه اللوحة) من تطبيق OpenWorker لأندرو نغ؛ وصارت المساعدة داخل التطبيق ومساعد «اسأل الوثائق» يغطّيانه بكل اللغات الـ17. **2742 اختبارًا.**
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
 

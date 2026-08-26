@@ -9,6 +9,19 @@
 ---
 
 
+## [1.215.0] — 2026-08-26
+
+**추가 — OpenWorker에서 구직 전체를 실행하세요.** 새 coworker가 Andrew Ng의 오픈소스 AI coworker 앱에서 이 파이프라인을 구동하며, 이제 인앱 도움말이 이를 다뤄 "문서에 묻기" 어시스턴트가 안내할 수 있습니다.
+
+### 추가
+- **OpenWorker coworker.** 코드 없는 [OpenWorker](https://github.com/andrewyng/openworker) coworker — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — 가 구직 전체(스캔·평가·맞춤·추적·팔로업)를 실행하고 **이 대시보드를 실행**할 수 있으며, 모두 데스크톱에서 이뤄집니다. 17개 언어로 제공되는 한 파일짜리 페르소나로, OpenWorker 자체 로더로 설치 가능함이 검증됐습니다.
+- **도움말 §32 "Run it from OpenWorker"**(17개 로케일)가 이를 문서화하여, 인앱 **문서에 묻기** 어시스턴트와 떠 있는 도움말 버튼이 이에 답할 수 있습니다. 랜딩 푸터, README, 위키, `docs/integrations/openworker.md`에도 링크됩니다.
+
+### 참고
+- 문서 + 사이트만 — 앱 코드 변경 없음. 스캔 소스는 **82**개로 변동 없음. 테스트 스위트: **2742**.
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **수정 — 공유 HTML→텍스트 파이프라인(Greenhouse / Recruitee 설명)이 속성 값에 `>` 문자가 있을 때 태그 속성을 설명에 흘리지 않습니다.**

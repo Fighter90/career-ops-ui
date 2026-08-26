@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.215.0] — 2026-08-26
+
+**Dodano — prowadź całe poszukiwanie pracy z OpenWorker.** Nowy coworker napędza ten pipeline z open-source'owej aplikacji AI-coworker Andrew Ng, a pomoc w aplikacji teraz go obejmuje, więc asystent Zapytaj dokumentację może cię przeprowadzić.
+
+### Dodano
+- **Coworker OpenWorker.** Beztokenowy, bezkodowy coworker [OpenWorker](https://github.com/andrewyng/openworker) — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — prowadzi całe poszukiwanie pracy (skan, ocena, dopasowanie, śledzenie, follow-up) i może **uruchomić ten pulpit**, wszystko na twoim komputerze. To jednoplikowa persona dostarczana w 17 językach, zweryfikowana jako instalowalna własnym loaderem OpenWorker.
+- **Pomoc §32 „Run it from OpenWorker"** (wszystkie 17 języków) to dokumentuje, aby wbudowany asystent **Zapytaj dokumentację** i pływający przycisk pomocy odpowiadały na pytania o niego. Podlinkowane też ze stopki landingu, README, wiki i `docs/integrations/openworker.md`.
+
+### Uwagi
+- Tylko dokumentacja + strona — bez zmian kodu aplikacji. Źródła skanowania bez zmian — **82**. Zestaw testów: **2742**.
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **Naprawiono — wspólny potok HTML→tekst (opisy Greenhouse / Recruitee) nie przecieka już atrybutów znacznika do opisu, gdy wartość atrybutu zawiera znak `>`.**

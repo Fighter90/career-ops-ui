@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.215.0] — 2026-08-26
+
+**Eklendi — tüm iş aramanı OpenWorker'dan yürüt.** Yeni bir coworker bu hattı Andrew Ng'nin açık kaynak yapay zekâ coworker uygulamasından yürütür ve uygulama içi yardım artık bunu kapsar, böylece Belgelere Sor asistanı sana yol gösterebilir.
+
+### Eklendi
+- **OpenWorker coworker.** Kodsuz bir [OpenWorker](https://github.com/andrewyng/openworker) coworker'ı — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — tüm iş aramayı (tara, puanla, uyarla, izle, takip et) yürütür ve **bu panoyu başlatabilir**, hepsi masaüstünde. 17 dilde sunulan tek dosyalık bir persona olup OpenWorker'ın kendi yükleyicisiyle kurulabilir olduğu doğrulanmıştır.
+- **Yardım §32 "Run it from OpenWorker"** (17 dilin tümü) bunu belgeler; böylece uygulama içi **Belgelere Sor** asistanı ve yüzen yardım düğmesi hakkında soruları yanıtlayabilir. Ayrıca açılış sayfası altbilgisinden, README'den, wiki'den ve `docs/integrations/openworker.md`'den bağlanmıştır.
+
+### Notlar
+- Yalnızca belgeler + site — uygulama kodu değişikliği yok. Tarama kaynakları **82**'de değişmedi. Test takımı: **2742**.
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **Düzeltildi — paylaşılan HTML→metin hattı (Greenhouse / Recruitee açıklamaları) bir öznitelik değeri `>` karakteri içerdiğinde artık etiket özniteliklerini açıklamaya sızdırmıyor.**

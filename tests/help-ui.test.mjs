@@ -93,7 +93,7 @@ test('every help doc covers the same 31 sections (all 17 gated locales — §31 
   // v1.120.0 — 28 → 29 (§29 "The CareerOps Manifesto"); v1.147.0 — 29 → 30 (§30 "Hermes & Telegram").
   // v1.154.0 — 30 → 31 (§31 "Running the whole stack in the cloud").
   const helpDir = resolve(ROOT, 'docs', 'help');
-  const SECTION_COUNT = 31;
+  const SECTION_COUNT = 32;
   const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
   for (const lang of ALL_LOCALES) {
     const fname = `${lang}.md`;

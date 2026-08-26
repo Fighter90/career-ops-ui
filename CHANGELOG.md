@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.215.0] — 2026-08-26
+
+**Added — run your whole job search from OpenWorker.** A new coworker drives this pipeline from Andrew Ng's open-source AI coworker app, and the in-app help now covers it so the Ask-the-docs assistant can walk you through it.
+
+### Added
+- **OpenWorker coworker.** A code-free [OpenWorker](https://github.com/andrewyng/openworker) coworker — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — runs the full job search (scan, score, tailor, track, follow up) and can **launch this dashboard**, all from your desktop. It's a one-file persona shipped in 17 languages, verified installable against OpenWorker's own loader.
+- **Help §32 "Run it from OpenWorker"** (all 17 locales) documents it, so the in-app **Ask the docs** assistant and the floating docs button can answer questions about it. Also linked from the landing footer, the README, the wiki, and `docs/integrations/openworker.md`.
+
+### Notes
+- Docs + site only — no app-code change. Scan sources unchanged at **82**. Test suite: **2742**.
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **Fixed — the shared HTML→text pipeline (Greenhouse / Recruitee descriptions) no longer leaks tag attributes into the description when an attribute value contains a `>` character.**

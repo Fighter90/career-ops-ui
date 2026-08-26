@@ -11,6 +11,19 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.215.0] — 2026-08-26
+
+**Añadido — ejecuta toda tu búsqueda de empleo desde OpenWorker.** Un nuevo coworker mueve este pipeline desde la app de coworker de IA open source de Andrew Ng, y la ayuda en la app ahora lo cubre para que el asistente Pregúntale a los docs te guíe.
+
+### Añadido
+- **Coworker de OpenWorker.** Un coworker sin código de [OpenWorker](https://github.com/andrewyng/openworker) — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — ejecuta toda la búsqueda de empleo (escanear, puntuar, adaptar, rastrear, seguir) y puede **abrir este panel**, todo desde tu escritorio. Es una persona de un solo archivo en 17 idiomas, verificada como instalable con el propio cargador de OpenWorker.
+- **Ayuda §32 "Run it from OpenWorker"** (los 17 idiomas) lo documenta, para que el asistente **Pregúntale a los docs** de la app y el botón flotante de ayuda respondan sobre él. También enlazado desde el pie del landing, el README, la wiki y `docs/integrations/openworker.md`.
+
+### Notas
+- Solo docs + sitio — sin cambios de código de la app. Fuentes de escaneo sin cambios en **82**. Conjunto de pruebas: **2742**.
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **Corregido — la canalización HTML→texto compartida (descripciones de Greenhouse / Recruitee) ya no filtra atributos de etiqueta en la descripción cuando un valor de atributo contiene un carácter `>`.**

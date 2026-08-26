@@ -11,6 +11,19 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.215.0] — 2026-08-26
+
+**Ajouté — pilotez toute votre recherche d'emploi depuis OpenWorker.** Un nouveau coworker pilote ce pipeline depuis l'app de coworker IA open source d'Andrew Ng, et l'aide intégrée le couvre désormais pour que l'assistant Demander à la doc vous guide.
+
+### Ajouté
+- **Coworker OpenWorker.** Un coworker sans code d'[OpenWorker](https://github.com/andrewyng/openworker) — [Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker) — exécute toute la recherche d'emploi (scan, notation, adaptation, suivi, relances) et peut **lancer ce tableau de bord**, le tout depuis votre bureau. C'est une persona d'un seul fichier livrée en 17 langues, dont l'installation est vérifiée avec le propre chargeur d'OpenWorker.
+- **Aide §32 « Run it from OpenWorker »** (les 17 langues) la documente, pour que l'assistant **Demander à la doc** intégré et le bouton d'aide flottant répondent aux questions à son sujet. Également lié depuis le pied de page du site, le README, le wiki et `docs/integrations/openworker.md`.
+
+### Notes
+- Docs + site uniquement — aucun changement de code de l'app. Sources de scan inchangées à **82**. Suite de tests : **2742**.
+
+
+
 ## [1.214.2] — 2026-08-25
 
 **Corrigé — le pipeline HTML→texte partagé (descriptions Greenhouse / Recruitee) ne laisse plus fuiter des attributs de balise dans la description quand une valeur d'attribut contient un caractère `>`.**

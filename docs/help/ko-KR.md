@@ -2119,3 +2119,15 @@ career-ops는 CLI에 종속되지 않으므로 AI에 대해 세 가지 정직한
 ### 안전하게 노출하기
 
 `127.0.0.1`을 벗어난다는 것은 loopback이 공짜로 제공하던 안전성을 이제 명시적으로 구축해야 한다는 뜻입니다 — **코드는 동일하며, 노출 방식만 달라집니다.** 앱은 loopback에 바인딩된 상태로 유지하고, 앞단에 **HTTPS**(Let's Encrypt / 자동 TLS)를 종료하고 `127.0.0.1:4317`로 전달하는 reverse proxy(**nginx** 또는 **Caddy**)를 두세요; 이를 **systemd** 또는 `pm2` 아래에서 `Restart=on-failure`와 함께 전용 **non-root** 사용자로 실행하세요. **인증**도 앞단에 두세요 — 앱 자체에는 로그인이 없으므로, 낯선 사람을 막아주는 것은 프록시(basic-auth, SSO forward-auth, 또는 사설 네트워크 / VPN)입니다. 프록시가 접근할 수 있도록 `HOST=0.0.0.0`을 설정하면, loopback에서는 아무 효과가 없던 내장 하드닝이 켜지면서 실질적으로 작동하기 시작합니다: LLM 속도 제한, `safeGet`의 DNS-rebind 방어, 그리고 경로명 새니타이징입니다. 이전 과정에서 반드시 살아남아야 하며 절대 완화해서는 안 되는 네 가지 불변 조건이 있습니다: **CSP**(인라인 스크립트 없음, `frame-ancestors 'none'` — 프록시가 이 헤더들을 제거해서는 안 됩니다), 사용자가 제공한 모든 URL 페치에 대한 **SSRF 가드**, **markdown/XSS 경계**(서버 측 `stripDangerousMarkdown()` + 클라이언트 측 escape-first `UI.md()`), 그리고 **로그에 비밀 정보 없음**입니다. 헤드리스 서버에서도 부모의 읽기 전용 계약은 여전히 유효합니다 — 서버는 여러분의 `cv.md` / `config/` / `reports/`를 읽기만 하고, 명시적인 동작이 있을 때만 씁니다.
+
+## 32. OpenWorker에서 실행하기 (AI 동료)
+
+브라우저보다 데스크톱 AI 동료를 선호하나요? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)**는 이 전체 파이프라인을 대신 구동해 주는 **[OpenWorker](https://github.com/andrewyng/openworker)** 동료(Andrew Ng의 오픈소스, 로컬 우선 AI 동료 앱)입니다 — 포털을 스캔하고, 여러분의 CV에 대비해 적합도를 점수화하고, 근거에 기반한 CV + 커버 레터를 맞춤 작성하고, 지원 상황을 추적하고, 후속 조치를 초안 작성합니다 — 그리고 요청하면 **이 대시보드를 실행**할 수 있습니다. 이는 코드가 없는 단일 Markdown 「페르소나」입니다; OpenWorker는 그중 무엇도 프로그램으로 실행하지 않으며, 그 지시문은 단지 에이전트를 조종할 뿐입니다. 이 가이드는 17개 언어 모두로 제공됩니다.
+
+### 동료가 하는 일
+
+여러분의 `career-ops` 프로젝트 폴더 안에서 작업하며, 동료는 파이프라인과 동일한 단계를 실행합니다: `portals.yml`의 포털을 스캔하고(제로 토큰), 각 공고를 여러분의 `cv.md` + `config/profile.yml`에 대비해 0–5로 평가하며, 요청하면 이미 여러분의 CV에 있는 사실**에만** 근거해 직무별 CV + 커버 레터를 맞춤 작성합니다(고용주, 날짜, 수치를 결코 지어내지 않습니다). `data/applications.md`를 업데이트하고, 후속 이메일을 초안 작성하며, 면접 슬롯을 잡을 수 있습니다 — 모든 전송이나 쓰기는 career-ops 자체의 원칙과 정확히 동일하게 **승인 게이트**를 거칩니다. 이 뷰어를 열려면 `bash web-ui/bin/start.sh`(또는 `npm start`)를 실행하고 여러분에게 `http://127.0.0.1:4317`을 건네줍니다.
+
+### 설치와 실행
+
+OpenWorker 앱을 설치하고 모델 키(Anthropic / OpenAI / Google, 또는 Ollama를 통한 로컬 모델)를 추가하세요. `career-ops` 프로젝트 폴더(`cv.md`, `config/profile.yml`, `portals.yml`)를 준비해 두세요. OpenWorker에서 **New coworker → Import**를 선택하고 동료의 `career-ops.md`를 고르세요; **Job-Search Coworker** 세션을 열고, 여러분의 `career-ops` 폴더를 선택한 뒤, 실제적인 것을 요청하세요 — *"내 포털을 스캔해서 이번 주 상위 5개 적합 공고를 알려줘"* 또는 *"대시보드를 열어줘."* 전체 지침, 커넥터(Gmail, Google Calendar, GitHub), 그리고 안전 모델은 동료 저장소의 [help guide](https://github.com/Fighter90/career-ops-coworker/tree/main/help)에 있습니다. 이는 OpenWorker 자체 로더에 대해 설치 가능함이 검증되었습니다.
