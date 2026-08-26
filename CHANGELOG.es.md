@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.216.0] — 2026-08-26
+
+**Añadido — nueve proveedores LLM más, cada uno con su insignia de marca.** Tus evaluaciones ⚡ en vivo ya pueden ejecutarse con DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks o un Ollama totalmente local — a una clave de distancia, cada uno marcado por un monograma junto a su campo en Ajustes.
+
+### Añadido
+- **Nueve proveedores compatibles con OpenAI.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI y **Ollama** (totalmente local, sin clave). Configura una clave — o `OLLAMA_BASE_URL` para Ollama — en **Ajustes** y se une al orden `auto` después de Hermes; fija cualquiera con `LLM_PROVIDER`. Together también aloja **Inkling** de Thinking Machines (`thinkingmachines/Inkling`). La interfaz web abarca ya **16 proveedores** en vivo.
+- **Insignias de proveedor.** Un mosaico con la inicial y el color de marca, seguro para CSP, marca cada proveedor junto a su campo de clave en Ajustes y en su fila de la página de Uso — SVG en línea, sin logos externos, nada sale de tu equipo.
+
+### Notas
+- Las URL base de los proveedores son configuración de confianza que pasa por `runOpenAICompatible()` con comprobación de esquema http(s) (se permite el loopback de Ollama), nunca el validador SSRF de URL de empleo. Fuentes de escaneo sin cambios: **82**. Pruebas: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Añadido — ejecuta toda tu búsqueda de empleo desde OpenWorker.** Un nuevo coworker mueve este pipeline desde la app de coworker de IA open source de Andrew Ng, y la ayuda en la app ahora lo cubre para que el asistente Pregúntale a los docs te guíe.

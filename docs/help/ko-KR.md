@@ -328,7 +328,7 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 > **CLI (v1.38.0).** 한 명령이 전체 체인: `career-ops-ui setup`. 동사: `career-ops-ui doctor`(env/키/툴링 점검 — Health와 동일 엔진; 필수 실패 시 exit 1), `career-ops-ui run`, `career-ops-ui init`(공급자+키 마법사, v1.39.0).
 > **공급자 (v1.39.0).** API-keys 탭에 `LLM_PROVIDER` select(`auto`=Anthropic→Gemini · `claude` · `gemini`) 및 `OPENAI_API_KEY` 필드(Codex/OpenCode CLI 측) 추가. `career-ops-ui init`이 대화형 마법사.
 >
-> **공급자 (v1.57.0).** 헤드리스 라이브 평가가 **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes**(`auto` 순서; `LLM_PROVIDER`로 고정)로 확장. **OpenRouter** — `OPENROUTER_API_KEY` 하나로 300+ 모델 접근; `OPENROUTER_MODEL` 드롭다운은 OpenRouter 라이브 카탈로그를 로드(서버 측 프록시, 오프라인 선별 폴백). 또한 수정: 줄바꿈/공백이 붙어 붙여넣은 키를 검증 전에 트림하므로 `/#/config`에서 더 이상 어떤 공급자에도 「validation failed」가 표시되지 않음.
+> **공급자 (v1.57.0).** 헤드리스 라이브 평가가 **Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama**(`auto` 순서; `LLM_PROVIDER`로 고정)로 확장. **OpenRouter** — `OPENROUTER_API_KEY` 하나로 300+ 모델 접근; `OPENROUTER_MODEL` 드롭다운은 OpenRouter 라이브 카탈로그를 로드(서버 측 프록시, 오프라인 선별 폴백). 또한 수정: 줄바꿈/공백이 붙어 붙여넣은 키를 검증 전에 트림하므로 `/#/config`에서 더 이상 어떤 공급자에도 「validation failed」가 표시되지 않음.
 
 
 
@@ -351,7 +351,7 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 
 어느 탭에서 저장하든 즉시 반영됩니다 — 서버 재시작 불필요.
 
-**LLM 공급자 설정 (단계별).** web UI 의 ⚡ 라이브 평가는 *헤드리스*로 실행되며 하나의 API 키를 사용합니다. "OR" 로 동작합니다 — 이 중 **아무거나 하나만** 설정하면 바로 동작하며, 여러 개를 설정하면 `auto` 가 다음 순서로 선호합니다: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. (career-ops 자체는 CLI 비종속입니다 — Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot 또는 Kimi 안에서도 실행하며, 그것은 이 헤드리스 키와는 별개입니다.)
+**LLM 공급자 설정 (단계별).** web UI 의 ⚡ 라이브 평가는 *헤드리스*로 실행되며 하나의 API 키를 사용합니다. "OR" 로 동작합니다 — 이 중 **아무거나 하나만** 설정하면 바로 동작하며, 여러 개를 설정하면 `auto` 가 다음 순서로 선호합니다: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama. (career-ops 자체는 CLI 비종속입니다 — Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot 또는 Kimi 안에서도 실행하며, 그것은 이 헤드리스 키와는 별개입니다.)
 
 1. `#/config` → **API keys & runtime** 탭을 엽니다.
 2. **`LLM_PROVIDER`**에서 공급자를 선택합니다: `auto`(설정된 키를 사용), 또는 `claude` / `gemini` / `openai` / `qwen` 로 강제 지정.
@@ -2114,7 +2114,7 @@ career-ops-ui는 기본적으로 `127.0.0.1`에 바인딩됩니다. 서버에 �
 
 ### 엔진 선택하기
 
-career-ops는 CLI에 종속되지 않으므로 AI에 대해 세 가지 정직한 선택지가 있습니다. **Claude 구독** — 서버에 **Claude Code** CLI를 설치하고 Pro/Max 플랜으로 `claude login`하세요; 그러면 부모의 에이전트가 토큰당 API 비용 없이 여러분의 구독을 사용합니다. **Hermes** — 같은 서버에서 `hermes gateway`를 실행하고(`http://127.0.0.1:8642/v1`에서 OpenAI 호환 API를 노출합니다) **앱 설정**에 `HERMES_API_KEY`를 설정하세요; career-ops-ui의 실시간 평가는 이를 경유합니다(자동 공급자 순서에서 마지막). **API 키** — 부모 `.env`에 `ANTHROPIC_API_KEY`(또는 일곱 공급자 중 하나: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes)를 설정하면 ⚡ 실시간 작업이 헤드리스로 동작합니다. 이를 조합할 수도 있습니다: 부모의 무거운 에이전트 작업에는 Claude 구독을, 뷰어의 빠른 평가에는 저렴하거나 로컬인 공급자를 사용하세요.
+career-ops는 CLI에 종속되지 않으므로 AI에 대해 세 가지 정직한 선택지가 있습니다. **Claude 구독** — 서버에 **Claude Code** CLI를 설치하고 Pro/Max 플랜으로 `claude login`하세요; 그러면 부모의 에이전트가 토큰당 API 비용 없이 여러분의 구독을 사용합니다. **Hermes** — 같은 서버에서 `hermes gateway`를 실행하고(`http://127.0.0.1:8642/v1`에서 OpenAI 호환 API를 노출합니다) **앱 설정**에 `HERMES_API_KEY`를 설정하세요; career-ops-ui의 실시간 평가는 이를 경유합니다(자동 공급자 순서에서 마지막). **API 키** — 부모 `.env`에 `ANTHROPIC_API_KEY`(또는 일곱 공급자 중 하나: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama)를 설정하면 ⚡ 실시간 작업이 헤드리스로 동작합니다. 이를 조합할 수도 있습니다: 부모의 무거운 에이전트 작업에는 Claude 구독을, 뷰어의 빠른 평가에는 저렴하거나 로컬인 공급자를 사용하세요.
 
 ### 안전하게 노출하기
 

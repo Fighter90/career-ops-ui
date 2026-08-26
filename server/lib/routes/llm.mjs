@@ -24,7 +24,10 @@ import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { runGemini } from '../gemini.mjs';
 import { validateEvaluationReport } from '../eval-validate.mjs';
 import { runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey } from '../openai.mjs';
-import { providerOrder } from '../env-config.mjs';
+// v1.216.0 — 9 more OpenAI-compatible providers. Kept as a SECOND import from the
+// same module so the v1.55.0 line above stays byte-stable for provider-selector.test.mjs.
+import { runDeepSeek, runZai, runKimi, runMiniMax, runMistral, runGrok, runTogether, runFireworks, runOllama, hasDeepSeekKey, hasZaiKey, hasKimiKey, hasMiniMaxKey, hasMistralKey, hasGrokKey, hasTogetherKey, hasFireworksKey, hasOllamaKey } from '../openai.mjs';
+import { providerOrder, AUTO_ORDER } from '../env-config.mjs';
 import { recordUsage } from '../llm-usage.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
@@ -54,18 +57,34 @@ function _hasKeyFor(p) {
     || (p === 'qwen' && hasQwenKey())
     || (p === 'openrouter' && hasOpenRouterKey())
     || (p === 'github' && hasGitHubModelsKey())
-    || (p === 'hermes' && hasHermesKey());
+    || (p === 'hermes' && hasHermesKey())
+    || (p === 'deepseek' && hasDeepSeekKey())
+    || (p === 'zai' && hasZaiKey())
+    || (p === 'kimi' && hasKimiKey())
+    || (p === 'minimax' && hasMiniMaxKey())
+    || (p === 'mistral' && hasMistralKey())
+    || (p === 'grok' && hasGrokKey())
+    || (p === 'together' && hasTogetherKey())
+    || (p === 'fireworks' && hasFireworksKey())
+    || (p === 'ollama' && hasOllamaKey());
+}
+// True when ANY configured provider key is present (drives the manual-fallback copy).
+function _anyProviderKey() {
+  return AUTO_ORDER.some((p) => _hasKeyFor(p));
 }
 function _provGate() {
   let o = providerOrder();
   if (o.length === 1 && !_hasKeyFor(o[0])) {
-    o = ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'];
+    o = AUTO_ORDER;
   }
   return {
     wantAnthropic: o.includes('anthropic'), wantGemini: o.includes('gemini'),
     wantOpenAI: o.includes('openai'), wantQwen: o.includes('qwen'),
     wantOpenRouter: o.includes('openrouter'), wantGitHub: o.includes('github'),
     wantHermes: o.includes('hermes'),
+    wantDeepSeek: o.includes('deepseek'), wantZai: o.includes('zai'), wantKimi: o.includes('kimi'),
+    wantMiniMax: o.includes('minimax'), wantMistral: o.includes('mistral'), wantGrok: o.includes('grok'),
+    wantTogether: o.includes('together'), wantFireworks: o.includes('fireworks'), wantOllama: o.includes('ollama'),
   };
 }
 
@@ -89,6 +108,17 @@ function _tailProvider() {
   // v1.151.0 — Hermes (local OpenAI-compatible API Server) is last: you opt in
   // by running `hermes gateway`, so it never silently re-routes an existing setup.
   if (g.wantHermes && hasHermesKey()) return { mode: 'hermes', run: runHermes };
+  // v1.216.0 — the extended OpenAI-compatible roster. Each is opt-in via its own
+  // key (ollama via OLLAMA_BASE_URL), so an existing setup is never re-routed.
+  if (g.wantDeepSeek && hasDeepSeekKey()) return { mode: 'deepseek', run: runDeepSeek };
+  if (g.wantZai && hasZaiKey()) return { mode: 'zai', run: runZai };
+  if (g.wantKimi && hasKimiKey()) return { mode: 'kimi', run: runKimi };
+  if (g.wantMiniMax && hasMiniMaxKey()) return { mode: 'minimax', run: runMiniMax };
+  if (g.wantMistral && hasMistralKey()) return { mode: 'mistral', run: runMistral };
+  if (g.wantGrok && hasGrokKey()) return { mode: 'grok', run: runGrok };
+  if (g.wantTogether && hasTogetherKey()) return { mode: 'together', run: runTogether };
+  if (g.wantFireworks && hasFireworksKey()) return { mode: 'fireworks', run: runFireworks };
+  if (g.wantOllama && hasOllamaKey()) return { mode: 'ollama', run: runOllama };
   return null;
 }
 
@@ -324,8 +354,8 @@ export function registerLlmRoutes(app) {
     res.json({
       mode: 'manual',
       prompt: manualPrompt,
-      message: (hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey() || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey() || hasHermesKey())
-        ? 'Set { run: true } to execute via Anthropic/Gemini/OpenAI/Qwen/OpenRouter/GitHub Models/Hermes, or copy the prompt into Claude Code.'
+      message: _anyProviderKey()
+        ? 'Set { run: true } to execute via your configured provider, or copy the prompt into Claude Code.'
         : 'No API key set. Paste this into Claude Code for full deep research with WebFetch.',
     });
   });
@@ -439,8 +469,8 @@ export function registerLlmRoutes(app) {
       mode: 'manual',
       slug,
       prompt,
-      message: (hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey() || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey() || hasHermesKey())
-        ? 'Set { run: true } to execute via Anthropic/Gemini/OpenAI/Qwen/OpenRouter/GitHub Models/Hermes, or copy this prompt into Claude Code.'
+      message: _anyProviderKey()
+        ? 'Set { run: true } to execute via your configured provider, or copy this prompt into Claude Code.'
         : 'No API key set. Copy this prompt into Claude Code (it has WebFetch/WebSearch).',
     });
   });

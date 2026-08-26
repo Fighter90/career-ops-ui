@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.216.0] — 2026-08-26
+
+**Hinzugefügt — neun weitere LLM-Anbieter, jeder mit eigener Markenkachel.** Deine ⚡ Live-Bewertungen können jetzt über DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks oder ein vollständig lokales Ollama laufen — nur einen Schlüssel entfernt, jeder mit einem Monogramm neben seinem Feld in den Einstellungen.
+
+### Hinzugefügt
+- **Neun OpenAI-kompatible Anbieter.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI und **Ollama** (vollständig lokal, kein Schlüssel). Setze einen Schlüssel — oder `OLLAMA_BASE_URL` für Ollama — in den **Einstellungen**, und er reiht sich nach Hermes in die `auto`-Reihenfolge ein; einen beliebigen mit `LLM_PROVIDER` festpinnen. Together hostet auch Thinking Machines’ **Inkling** (`thinkingmachines/Inkling`). Die Web-Oberfläche umfasst nun **16 Anbieter** live.
+- **Anbieter-Monogramme.** Eine CSP-sichere Initial-Kachel in der Markenfarbe kennzeichnet jeden Anbieter neben seinem Schlüsselfeld in den Einstellungen und in seiner Zeile auf der Nutzungsseite — Inline-SVG, keine externen Logos, nichts verlässt deinen Rechner.
+
+### Hinweise
+- Die Basis-URLs der Anbieter sind vertrauenswürdige Konfiguration, die über `runOpenAICompatible()` mit einer http(s)-Schema-Prüfung läuft (Ollamas Loopback ist erlaubt), nie über den SSRF-Validator für Job-URLs. Scan-Quellen unverändert: **82**. Tests: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Hinzugefügt — führe deine ganze Jobsuche aus OpenWorker aus.** Ein neuer Coworker steuert diese Pipeline aus Andrew Ngs quelloffener KI-Coworker-App, und die In-App-Hilfe deckt ihn nun ab, sodass der Frag-die-Docs-Assistent dich durchführen kann.

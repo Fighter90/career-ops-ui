@@ -25,6 +25,8 @@ import {
 import { effectiveEnv, selectActiveProvider } from '../env-config.mjs';
 import { hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey } from '../openai.mjs';
+// v1.216.0 — the extended OpenAI-compatible roster.
+import { hasDeepSeekKey, hasZaiKey, hasKimiKey, hasMiniMaxKey, hasMistralKey, hasGrokKey, hasTogetherKey, hasFireworksKey, hasOllamaKey } from '../openai.mjs';
 
 export function registerHealthRoutes(app) {
   app.get('/api/health', async (_req, res) => {
@@ -77,6 +79,22 @@ export function registerHealthRoutes(app) {
     // v1.151.0 — Hermes (Nous Research's local OpenAI-compatible API Server) is
     // the 7th live-eval provider; same isUsableKey gate + "manual mode" wording.
     checks.push({ name: 'HERMES_API_KEY', required: false, ok: hermesSet, value: hermesSet ? 'set' : 'unset (manual mode)' });
+    // v1.216.0 — the extended OpenAI-compatible roster gets one optional row
+    // each, same isUsableKey gate + "manual mode" wording. Ollama is opt-in via
+    // OLLAMA_BASE_URL (local, keyless), so its row names that var.
+    for (const [name, set] of [
+      ['DEEPSEEK_API_KEY', hasDeepSeekKey()],
+      ['ZAI_API_KEY', hasZaiKey()],
+      ['MOONSHOT_API_KEY', hasKimiKey()],
+      ['MINIMAX_API_KEY', hasMiniMaxKey()],
+      ['MISTRAL_API_KEY', hasMistralKey()],
+      ['XAI_API_KEY', hasGrokKey()],
+      ['TOGETHER_API_KEY', hasTogetherKey()],
+      ['FIREWORKS_API_KEY', hasFireworksKey()],
+      ['OLLAMA_BASE_URL', hasOllamaKey()],
+    ]) {
+      checks.push({ name, required: false, ok: set, value: set ? 'set' : 'unset (manual mode)' });
+    }
     // v1.28.1 — HH_USER_AGENT health row removed. The hh.ru adapter falls
     // back to a baked-in UA when the env var is unset; the 403-from-non-RU
     // gate is documented in help-bundle §16 troubleshooting and the
@@ -134,6 +152,16 @@ export function registerHealthRoutes(app) {
       ['openrouter', hasOpenRouterKey()],
       ['github', hasGitHubModelsKey()],
       ['hermes', hasHermesKey()],
+      // v1.216.0 — extended OpenAI-compatible roster.
+      ['deepseek', hasDeepSeekKey()],
+      ['zai', hasZaiKey()],
+      ['kimi', hasKimiKey()],
+      ['minimax', hasMiniMaxKey()],
+      ['mistral', hasMistralKey()],
+      ['grok', hasGrokKey()],
+      ['together', hasTogetherKey()],
+      ['fireworks', hasFireworksKey()],
+      ['ollama', hasOllamaKey()],
     ].filter(([, set]) => set).map(([p]) => p);
     const activeProvider = selectActiveProvider(keysConfigured);
     const MODEL_KEY = {
@@ -141,6 +169,9 @@ export function registerHealthRoutes(app) {
       openai: 'OPENAI_MODEL', qwen: 'QWEN_MODEL',
       openrouter: 'OPENROUTER_MODEL', github: 'GITHUB_MODELS_MODEL',
       hermes: 'HERMES_MODEL',
+      deepseek: 'DEEPSEEK_MODEL', zai: 'ZAI_MODEL', kimi: 'MOONSHOT_MODEL',
+      minimax: 'MINIMAX_MODEL', mistral: 'MISTRAL_MODEL', grok: 'XAI_MODEL',
+      together: 'TOGETHER_MODEL', fireworks: 'FIREWORKS_MODEL', ollama: 'OLLAMA_MODEL',
     };
     const activeModel = activeProvider
       ? (effectiveEnv(MODEL_KEY[activeProvider], PATHS.envFile) || null)

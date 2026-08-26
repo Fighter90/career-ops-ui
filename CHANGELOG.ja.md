@@ -9,6 +9,17 @@
 ---
 
 
+## [1.216.0] — 2026-08-26
+
+**追加 — LLM プロバイダーを 9 つ追加、それぞれにブランドタイル。** ⚡ ライブ評価を DeepSeek、GLM (Z.ai)、Kimi (Moonshot)、MiniMax、Mistral、Grok (xAI)、Together、Fireworks、または完全ローカルの Ollama で実行できるようになりました。キー 1 つで使え、設定の各フィールド横にモノグラムが表示されます。
+
+### 追加
+- **OpenAI 互換プロバイダー 9 種。** DeepSeek、GLM (Z.ai)、Kimi (Moonshot)、MiniMax、Mistral、Grok (xAI)、Together AI、Fireworks AI、**Ollama**（完全ローカル、キー不要）。**設定**でキー（Ollama は `OLLAMA_BASE_URL`）を設定すると Hermes の後の `auto` 順に加わります。`LLM_PROVIDER` で任意の 1 つに固定できます。Together は Thinking Machines の **Inkling**（`thinkingmachines/Inkling`）もホストします。Web UI は **16 プロバイダー**に対応しました。
+- **プロバイダーのモノグラムタイル。** CSP セーフなブランド色のイニシャルタイルが、設定のキー欄横と使用状況ページの行に各プロバイダーを表示します。インライン SVG で、外部ロゴなし、何も端末から出ません。
+
+### 備考
+- プロバイダーのベース URL は信頼された設定で、`runOpenAICompatible()` により http(s) スキームチェック（Ollama のループバックは許可）を通り、求人 URL 用の SSRF バリデーターは経由しません。スキャンソースは **82** で変更なし。テスト: **2752**。
+
 ## [1.215.0] — 2026-08-26
 
 **追加 — 求職活動のすべてを OpenWorker から実行。** 新しい coworker が Andrew Ng のオープンソース AI coworker アプリからこのパイプラインを動かし、アプリ内ヘルプがそれをカバーするようになったので、Ask-the-docs アシスタントが案内できます。

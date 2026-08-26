@@ -398,6 +398,16 @@
   margin-right: 4px;
 }
 
+/* v1.216.0 — brand-colored provider monogram tiles (provider-logo.js). The
+   colors are self-contained in the SVG; this only handles layout + a subtle
+   ring so light tiles read on any theme background. */
+.provider-logo {
+  flex: 0 0 auto;
+  border-radius: 6px;
+  vertical-align: middle;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
 @media (max-width: 768px) {
   .sidebar { transform: translateX(-100%); transition: transform var(--transition); }
   .main { margin-left: 0; }

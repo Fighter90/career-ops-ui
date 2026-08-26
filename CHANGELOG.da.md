@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.216.0] — 2026-08-26
+
+**Tilføjet — ni LLM-udbydere mere, hver med sit eget brand-felt.** Dine ⚡ live-evalueringer kan nu køre via DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks eller en helt lokal Ollama — én nøgle væk, hver markeret med et monogram ved siden af sit felt i Indstillinger.
+
+### Tilføjet
+- **Ni OpenAI-kompatible udbydere.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI og **Ollama** (helt lokal, ingen nøgle). Angiv en nøgle — eller `OLLAMA_BASE_URL` for Ollama — i **Indstillinger**, så føjes den til `auto`-rækkefølgen efter Hermes; fastgør en hvilken som helst med `LLM_PROVIDER`. Together hoster også Thinking Machines’ **Inkling** (`thinkingmachines/Inkling`). Web-UI’et dækker nu **16 udbydere** live.
+- **Udbyder-monogrammer.** Et CSP-sikkert initial-felt i brandets farve markerer hver udbyder ved siden af dens nøglefelt i Indstillinger og i dens række på Forbrug-siden — inline SVG, ingen eksterne logoer, intet forlader din maskine.
+
+### Noter
+- Udbydernes basis-URL’er er betroet konfiguration, der går gennem `runOpenAICompatible()` med et http(s)-skematjek (Ollamas loopback er tilladt), aldrig SSRF-validatoren for job-URL’er. Scanningskilder uændret: **82**. Tests: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Tilføjet — kør hele din jobsøgning fra OpenWorker.** En ny coworker driver denne pipeline fra Andrew Ngs open source AI-coworker-app, og hjælpen i appen dækker den nu, så Spørg dokumentationen-assistenten kan guide dig.

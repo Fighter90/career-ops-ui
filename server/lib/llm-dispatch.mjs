@@ -17,8 +17,10 @@ import { runGemini } from './gemini.mjs';
 import {
   runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes,
   hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey,
+  runDeepSeek, runZai, runKimi, runMiniMax, runMistral, runGrok, runTogether, runFireworks, runOllama,
+  hasDeepSeekKey, hasZaiKey, hasKimiKey, hasMiniMaxKey, hasMistralKey, hasGrokKey, hasTogetherKey, hasFireworksKey, hasOllamaKey,
 } from './openai.mjs';
-import { providerOrder } from './env-config.mjs';
+import { providerOrder, AUTO_ORDER } from './env-config.mjs';
 import { recordUsage } from './llm-usage.mjs';
 
 // Mirror llm.mjs BF-3 soft cap: 200 KB ≈ ~50K tokens.
@@ -29,42 +31,47 @@ export const PROMPT_SIZE_SOFT_CAP = 200 * 1024;
 // routes/llm.mjs::_provGate), so a stale `LLM_PROVIDER=claude` never dead-ends a
 // user whose only key is e.g. OpenRouter. A forced provider that DOES have a key
 // stays forced.
+// slug → key-presence probe. One table, reused by _hasKeyFor / tailProvider /
+// providerAvailable so a new provider is added in exactly one place here.
+const HAS_KEY = {
+  anthropic: hasAnthropicKey, gemini: hasGeminiKey,
+  openai: hasOpenAIKey, qwen: hasQwenKey, openrouter: hasOpenRouterKey,
+  github: hasGitHubModelsKey, hermes: hasHermesKey,
+  deepseek: hasDeepSeekKey, zai: hasZaiKey, kimi: hasKimiKey, minimax: hasMiniMaxKey,
+  mistral: hasMistralKey, grok: hasGrokKey, together: hasTogetherKey,
+  fireworks: hasFireworksKey, ollama: hasOllamaKey,
+};
+// The auto tail (everything after Anthropic/Gemini get their own dedicated
+// branches in runActiveProvider). Order mirrors AUTO_ORDER.
+const TAIL_RUN = {
+  openai: runOpenAI, qwen: runQwen, openrouter: runOpenRouter, github: runGitHubModels, hermes: runHermes,
+  deepseek: runDeepSeek, zai: runZai, kimi: runKimi, minimax: runMiniMax,
+  mistral: runMistral, grok: runGrok, together: runTogether, fireworks: runFireworks, ollama: runOllama,
+};
 function _hasKeyFor(p) {
-  return (p === 'anthropic' && hasAnthropicKey())
-    || (p === 'gemini' && hasGeminiKey())
-    || (p === 'openai' && hasOpenAIKey())
-    || (p === 'qwen' && hasQwenKey())
-    || (p === 'openrouter' && hasOpenRouterKey())
-    || (p === 'github' && hasGitHubModelsKey())
-    || (p === 'hermes' && hasHermesKey());
+  return typeof HAS_KEY[p] === 'function' && HAS_KEY[p]();
 }
 function gate() {
   let o = providerOrder();
   if (o.length === 1 && !_hasKeyFor(o[0])) {
-    o = ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'];
+    o = AUTO_ORDER;
   }
-  return {
-    wantAnthropic: o.includes('anthropic'), wantGemini: o.includes('gemini'),
-    wantOpenAI: o.includes('openai'), wantQwen: o.includes('qwen'),
-    wantOpenRouter: o.includes('openrouter'), wantGitHub: o.includes('github'),
-    wantHermes: o.includes('hermes'),
-  };
+  const g = { wantAnthropic: o.includes('anthropic'), wantGemini: o.includes('gemini') };
+  for (const slug of Object.keys(TAIL_RUN)) g[slug] = o.includes(slug);
+  return g;
 }
 
-/** First keyed provider in the auto tail (OpenAI → Qwen → OpenRouter → GitHub → Hermes), or null. */
+/** First keyed provider in the auto tail (OpenAI → Qwen → … → Ollama), or null. */
 function tailProvider(g) {
-  if (g.wantOpenAI && hasOpenAIKey()) return { mode: 'openai', run: runOpenAI };
-  if (g.wantQwen && hasQwenKey()) return { mode: 'qwen', run: runQwen };
-  if (g.wantOpenRouter && hasOpenRouterKey()) return { mode: 'openrouter', run: runOpenRouter };
-  if (g.wantGitHub && hasGitHubModelsKey()) return { mode: 'github', run: runGitHubModels };
-  if (g.wantHermes && hasHermesKey()) return { mode: 'hermes', run: runHermes };
+  for (const slug of Object.keys(TAIL_RUN)) {
+    if (g[slug] && _hasKeyFor(slug)) return { mode: slug, run: TAIL_RUN[slug] };
+  }
   return null;
 }
 
 /** True when at least one provider key is configured (any provider). */
 export function providerAvailable() {
-  return hasAnthropicKey() || hasGeminiKey() || hasOpenAIKey()
-    || hasQwenKey() || hasOpenRouterKey() || hasGitHubModelsKey() || hasHermesKey();
+  return Object.values(HAS_KEY).some((fn) => fn());
 }
 
 /**
