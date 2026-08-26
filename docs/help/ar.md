@@ -1680,4 +1680,10 @@ career-ops مستقل عن واجهة سطر الأوامر، فلديك ثلا�
 
 ### التثبيت والتشغيل
 
-ثبّت تطبيق OpenWorker وأضف مفتاح نموذج (Anthropic / OpenAI / Google، أو نموذجاً محلياً عبر Ollama). واحرص على وجود مجلد مشروع `career-ops` جاهز (`cv.md`، `config/profile.yml`، `portals.yml`). في OpenWorker اختر **New coworker → Import** وحدّد ملف `career-ops.md` الخاص بالزميل؛ ثم افتح جلسة **Job-Search Coworker**، واختر مجلد `career-ops` الخاص بك، واطلب شيئاً حقيقياً — *«افحص لوحاتي وأعطني أفضل 5 وظائف ملائمة هذا الأسبوع»* أو *«افتح اللوحة».* التعليمات الكاملة، والموصِّلات (Gmail، Google Calendar، GitHub)، ونموذج الأمان موجودة في [دليل المساعدة](https://github.com/Fighter90/career-ops-coworker/tree/main/help) في مستودع الزميل. وقد جرى التحقق من قابلية تثبيته مقابل مُحمِّل OpenWorker نفسه.
+ثبّت OpenWorker وأضِف مفتاح نموذج (Anthropic / OpenAI / Google، أو Ollama محلي). الأسرع هو **أمر واحد** — يجهّز مسار `career-ops` الذي يقوده الـ coworker وهو خامل التكرار: يعيد استخدام `career-ops` / `web-ui` الموجودَين دون الكتابة فوق بياناتك:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+ثم أضِف الـ coworker من لوحة **Install a coworker** في OpenWorker — عبر **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`) أو **.zip** (من [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) أو **باستيراد** `career-ops.md`. افتح جلسة **Job-Search Coworker**، اختر مجلد `career-ops`، واطلب شيئًا حقيقيًا — *«افحص لوحاتي وأعطني أفضل 5 تطابقات لهذا الأسبوع»* أو *«افتح لوحة التحكم.»* الموصّلات (Gmail، Google Calendar، GitHub) والدليل الكامل في [دليل المساعدة](https://github.com/Fighter90/career-ops-coworker/tree/main/help) بالمستودع. تم التحقق من قابلية التثبيت مقابل مُحمّل OpenWorker ومُثبّت المستودع.

@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.223.0] — 2026-08-26
+
+**Corrigido — uma avaliação ⚡ ao vivo bem-sucedida era pintada como erro; além disso, instale o coworker do OpenWorker direto da URL do GitHub ou .zip.**
+
+### Corrigido
+- **Tom do badge de resultado da ⚡ eval.** Uma avaliação ao vivo bem-sucedida não é mais colorida como falha. Os provedores em processo (OpenRouter, DeepSeek, …) não retornam `code` de subprocesso, então o estrito `code === 0` era falso e todo sucesso saía **vermelho** (mesmo mostrando "exit 0"). O tom agora segue o resultado — só um subprocesso que sai com código diferente de 0 fica vermelho; um resultado ao vivo sem código é `badge-ok`, e o sufixo "· exit N" só aparece quando há um código real.
+
+### Alterado
+- **Instale o [coworker do OpenWorker](https://github.com/Fighter90/career-ops-coworker) da URL do GitHub / .zip.** A documentação do coworker agora descreve o instalador de um comando (`curl … | bash`, idempotente — reutiliza um career-ops / web-ui existente) e as três vias de instalação no OpenWorker (URL do GitHub · `.zip` · importação de arquivo único) em `docs/integrations/openworker.md`, na ajuda §32 (×17) e no README.
+
+### Notas
+- Fechada uma lacuna de cobertura antiga: a fonte Recruitee agora tem um teste ponta a ponta da correção de ângulo entre aspas da v1.214.2 (um `>` dentro de um atributo de tag não deve vazar para a descrição). Fontes de varredura sem mudança: **83**. Conjunto de testes: **2783**.
+
 ## [1.222.0] — 2026-08-26
 
 **Alterado — as dicas de campo dos provedores estendidos (DeepSeek … Volcengine Ark) agora estão localizadas nos 17 idiomas.**

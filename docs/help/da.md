@@ -2248,4 +2248,10 @@ Kollegaen arbejder inde i din `career-ops`-projektmappe og kører de samme trin 
 
 ### Installér og start
 
-Installér OpenWorker-appen og tilføj en model-nøgle (Anthropic / OpenAI / Google, eller en lokal model via Ollama). Sørg for at have en `career-ops`-projektmappe sat op (`cv.md`, `config/profile.yml`, `portals.yml`). Vælg i OpenWorker **New coworker → Import** og vælg kollegaens `career-ops.md`; åbn en **Job-Search Coworker**-session, vælg din `career-ops`-mappe, og bed om noget konkret — *"scan mine jobopslag og giv mig de 5 bedste match i denne uge"* eller *"åbn dashboardet."* Fulde instruktioner, connectorer (Gmail, Google Calendar, GitHub) og sikkerhedsmodellen findes i kollega-repoets [hjælpeguide](https://github.com/Fighter90/career-ops-coworker/tree/main/help). Den er verificeret som installerbar mod OpenWorkers egen loader.
+Installer OpenWorker og tilføj en modelnøgle (Anthropic / OpenAI / Google, eller en lokal Ollama). Hurtigst er **én kommando** — den sætter `career-ops`-pipelinen op, som coworkeren driver, og er idempotent: den genbruger et eksisterende `career-ops` / `web-ui` uden at overskrive dine data:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+Tilføj derefter coworkeren i OpenWorkers **Install a coworker**-panel — via **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), via **.zip** (fra [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) eller ved at **importere** `career-ops.md`. Åbn en **Job-Search Coworker**-session, vælg din `career-ops`-mappe, og bed om noget konkret — *"scan mine boards og giv mig ugens top 5 match"* eller *"åbn dashboardet."* Connectors (Gmail, Google Calendar, GitHub) og den fulde guide er i repoets [hjælpeguide](https://github.com/Fighter90/career-ops-coworker/tree/main/help). Verificeret installerbar mod OpenWorkers loader og dens repo-installer.

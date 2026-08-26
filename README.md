@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2779%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2783%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.222.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.222.0)
+[![release](https://img.shields.io/badge/release-v1.223.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.223.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.222.0** — **Localized provider hints** — the extended-provider (DeepSeek … Volcengine Ark) key, model, and base-URL hints under Settings → API keys are now translated in all 17 languages instead of English-only. **2779 tests.**
+> **🆕 Latest release — v1.223.0** — **Eval badge fix + coworker install** — a successful ⚡ live eval is no longer painted red, and the OpenWorker coworker installs straight from its GitHub URL / .zip / one command. **2783 tests.**
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
 
@@ -35,7 +35,9 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 Prefer a desktop AI coworker over the browser? There's an **[OpenWorker](https://github.com/andrewyng/openworker) coworker** that drives this whole pipeline for you — scan boards, score fits against your CV, tailor a grounded CV + cover letter, track applications, draft follow-ups, and even **launch this dashboard** — all from Andrew Ng's open-source OpenWorker app.
 
-→ **[Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** — a one-file, code-free coworker (verified installable against OpenWorker's own loader). Full guide in [17 languages](https://github.com/Fighter90/career-ops-coworker/tree/main/help). See also [`docs/integrations/openworker.md`](docs/integrations/openworker.md).
+→ **[Fighter90/career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** — a one-file, code-free coworker (verified installable against OpenWorker's own loader **and its repo installer**). Full guide in [17 languages](https://github.com/Fighter90/career-ops-coworker/tree/main/help). See also [`docs/integrations/openworker.md`](docs/integrations/openworker.md).
+
+**Install** — one command sets up the pipeline the coworker drives (idempotent — it reuses an existing `career-ops` / `web-ui`): `curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash`. Then add the coworker in OpenWorker's **Install a coworker** panel — by **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), by **.zip** (from Releases), or by **importing** `career-ops.md` — all three work.
 
 **This repository (career-ops-ui)** is a polished web interface on top. The CLI keeps owning form-fill (via Playwright MCP) and slash-command modes; the SPA gives you a CRM-style browser surface over the same `cv.md` / `data/applications.md` / `reports/` files. Both share the same data.
 

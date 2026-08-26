@@ -2294,4 +2294,10 @@ En travaillant à l'intérieur du dossier de votre projet `career-ops`, le coll�
 
 ### Installer et lancer
 
-Installez l'application OpenWorker et ajoutez une clé de modèle (Anthropic / OpenAI / Google, ou un modèle local via Ollama). Ayez un dossier de projet `career-ops` déjà configuré (`cv.md`, `config/profile.yml`, `portals.yml`). Dans OpenWorker, choisissez **New coworker → Import** et sélectionnez le `career-ops.md` du collègue ; ouvrez une session **Job-Search Coworker**, sélectionnez votre dossier `career-ops`, et demandez quelque chose de concret — *« scanne mes portails et donne-moi les 5 meilleures adéquations de cette semaine »* ou *« ouvre le tableau de bord »*. Les instructions complètes, les connecteurs (Gmail, Google Calendar, GitHub) et le modèle de sécurité se trouvent dans le [guide d'aide](https://github.com/Fighter90/career-ops-coworker/tree/main/help) du dépôt du collègue. Son caractère installable est vérifié par rapport au propre chargeur d'OpenWorker.
+Installez OpenWorker et ajoutez une clé de modèle (Anthropic / OpenAI / Google, ou un Ollama local). Le plus rapide est **une commande** — elle prépare le pipeline `career-ops` que le coworker pilote et est idempotente : elle réutilise un `career-ops` / `web-ui` existant sans écraser vos données :
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+Ajoutez ensuite le coworker dans le panneau **Install a coworker** d'OpenWorker — par **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), par **.zip** (depuis les [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) ou en **important** `career-ops.md`. Ouvrez une session **Job-Search Coworker**, choisissez votre dossier `career-ops` et demandez quelque chose de concret — *« scanne mes tableaux et donne-moi les 5 meilleures correspondances de la semaine »* ou *« ouvre le tableau de bord. »* Les connecteurs (Gmail, Google Calendar, GitHub) et le guide complet sont dans le [guide d'aide](https://github.com/Fighter90/career-ops-coworker/tree/main/help) du dépôt. Vérifié installable face au loader d'OpenWorker et à son installateur de dépôt.

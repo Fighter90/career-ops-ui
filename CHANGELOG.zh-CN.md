@@ -9,6 +9,19 @@
 ---
 
 
+## [1.223.0] — 2026-08-26
+
+**修复 —— 成功的 ⚡ 实时评估被标为错误；另外可从 GitHub URL 或 .zip 直接安装 OpenWorker coworker。**
+
+### 修复
+- **⚡ 评估结果徽章配色。** 成功的实时评估不再被着色为失败。进程内提供方(OpenRouter、DeepSeek、…)不返回子进程退出 `code`,因此严格的 `code === 0` 为假,所有成功都显示为**红色**(却仍写着 "exit 0")。配色现在跟随结果 —— 仅非零退出的子进程标红;无退出码的实时结果为 `badge-ok`,"· exit N" 后缀仅在有真实退出码时显示。
+
+### 变更
+- **从 GitHub URL / .zip 安装 [OpenWorker coworker](https://github.com/Fighter90/career-ops-coworker)。** coworker 文档现已在 `docs/integrations/openworker.md`、应用内帮助 §32(×17)与 README 中说明一条命令安装器(`curl … | bash`,幂等 —— 复用已有的 career-ops / web-ui)和 OpenWorker 的三种安装途径(GitHub URL · `.zip` · 单文件导入)。
+
+### 说明
+- 补上一个长期的覆盖缺口:Recruitee 源现在有针对 v1.214.2 引号内尖括号修复的端到端测试(标签属性中的 `>` 不得泄漏到描述)。扫描来源不变:**83**。测试套件:**2783**。
+
 ## [1.222.0] — 2026-08-26
 
 **变更 —— 扩展提供方（DeepSeek … Volcengine Ark）的字段提示现已本地化为全部 17 种语言。**

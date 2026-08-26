@@ -24,3 +24,16 @@ test('recruitee: no body → empty description, not a crash', () => {
   const jobs = parseRecruiteeResponse(json, 'Acme');
   assert.equal(jobs[0].description, '');
 });
+
+// v1.223.0 — close the coverage gap: the v1.214.2 quoted-angle fix (a `>` inside a
+// tag attribute must not leak its tail into the text) had no test THROUGH the
+// recruitee path, only in html-to-text itself. This exercises it end-to-end.
+test('recruitee: a quoted ">" inside a tag attribute does not leak into the description (v1.214.2 path)', () => {
+  const json = { offers: [{
+    title: 'Engineer',
+    careers_url: 'https://careers.acme.com/o/engineer',
+    description: '<p>Pay <a title="salary > 100k" href="/x">details</a> here &amp; now.</p>',
+  }] };
+  const jobs = parseRecruiteeResponse(json, 'Acme');
+  assert.equal(jobs[0].description, 'Pay details here & now.');
+});

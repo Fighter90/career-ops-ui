@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.223.0] — 2026-08-26
+
+**Behoben — eine erfolgreiche ⚡ Live-Bewertung wurde als Fehler eingefärbt; außerdem den OpenWorker-Coworker direkt aus seiner GitHub-URL oder .zip installieren.**
+
+### Behoben
+- **Farbton des ⚡ Bewertungs-Badges.** Eine erfolgreiche Live-Bewertung wird nicht mehr als Fehlschlag eingefärbt. Die In-Process-Anbieter (OpenRouter, DeepSeek, …) liefern keinen Subprozess-`code`, also war das strikte `code === 0` falsch und jeder Erfolg erschien **rot** (bei gleichzeitig "exit 0"). Der Farbton folgt jetzt dem Ergebnis — nur ein Subprozess, der ungleich 0 endet, färbt rot; ein Live-Ergebnis ohne Code ist `badge-ok`, und das "· exit N"-Suffix erscheint nur bei einem echten Exit-Code.
+
+### Geändert
+- **Installiere den [OpenWorker-Coworker](https://github.com/Fighter90/career-ops-coworker) aus seiner GitHub-URL / .zip.** Die Coworker-Doku beschreibt jetzt den Ein-Befehl-Installer (`curl … | bash`, idempotent — nutzt ein vorhandenes career-ops / web-ui weiter) und die drei OpenWorker-Installationswege (GitHub-URL · `.zip` · Einzeldatei-Import) in `docs/integrations/openworker.md`, der In-App-Hilfe §32 (×17) und der README.
+
+### Hinweise
+- Eine langjährige Abdeckungslücke geschlossen: die Recruitee-Quelle hat jetzt einen End-to-End-Test für den Quoted-Angle-Fix aus v1.214.2 (ein `>` in einem Tag-Attribut darf nicht in die Beschreibung lecken). Scan-Quellen unverändert: **83**. Testsuite: **2783**.
+
 ## [1.222.0] — 2026-08-26
 
 **Geändert — die Feldhinweise der erweiterten Anbieter (DeepSeek … Volcengine Ark) sind jetzt in allen 17 Sprachen lokalisiert.**

@@ -8,6 +8,19 @@
 
 ---
 
+## [1.223.0] — 2026-08-26
+
+**修復 —— 成功的 ⚡ 即時評估被標為錯誤；另外可從 GitHub URL 或 .zip 直接安裝 OpenWorker coworker。**
+
+### 修復
+- **⚡ 評估結果徽章配色。** 成功的即時評估不再被著色為失敗。行程內供應方(OpenRouter、DeepSeek、…)不回傳子行程結束 `code`,因此嚴格的 `code === 0` 為假,所有成功都顯示為**紅色**(卻仍寫著 "exit 0")。配色現在跟隨結果 —— 僅非零結束的子行程標紅;無結束碼的即時結果為 `badge-ok`,"· exit N" 後綴僅在有真實結束碼時顯示。
+
+### 變更
+- **從 GitHub URL / .zip 安裝 [OpenWorker coworker](https://github.com/Fighter90/career-ops-coworker)。** coworker 文件現已在 `docs/integrations/openworker.md`、應用內說明 §32(×17)與 README 中說明一條命令安裝器(`curl … | bash`,冪等 —— 重用既有的 career-ops / web-ui)和 OpenWorker 的三種安裝途徑(GitHub URL · `.zip` · 單一檔案匯入)。
+
+### 備註
+- 補上一個長期的涵蓋缺口:Recruitee 來源現在有針對 v1.214.2 引號內角括號修復的端對端測試(標籤屬性中的 `>` 不得洩漏到描述)。掃描來源不變:**83**。測試套件:**2783**。
+
 ## [1.222.0] — 2026-08-26
 
 **變更 —— 擴充供應方（DeepSeek … Volcengine Ark）的欄位提示現已本地化為全部 17 種語言。**

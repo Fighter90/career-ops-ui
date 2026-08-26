@@ -77,7 +77,13 @@ Router.register('evaluate', async () => {
         ]),
       ]));
     } else {
-      const cls = r.code === 0 ? 'badge-ok' : 'badge-bad';
+      // v1.223.0 — tone follows the OUTCOME, not a strict `code === 0`. The
+      // in-process live providers (OpenRouter, DeepSeek, …) return NO `code`
+      // (there is no subprocess), so `code === 0` was false and every successful
+      // live eval was painted red. renderResult only runs on a 200 (failures throw
+      // to the catch), so paint bad only when a subprocess actually exits non-zero.
+      const failed = typeof r.code === 'number' && r.code !== 0;
+      const cls = failed ? 'badge-bad' : 'badge-ok';
       // v1.218.0 — name whichever of the 18 providers actually ran (was a stale
       // anthropic-or-else-Gemini guess) + its brand monogram.
       const engineName = (window.ProviderStatus && window.ProviderStatus.label(r.mode)) || r.mode || 'LLM';
@@ -92,7 +98,7 @@ Router.register('evaluate', async () => {
           c('div', { className: 'flex gap-3' }, [
             c('div', { className: 'badge ' + cls, style: { display: 'inline-flex', alignItems: 'center', gap: '5px' } }, [
               engineTile,
-              engineName + ' · ' + t('eval.exit', 'exit') + ' ' + (r.code ?? 0),
+              engineName + (typeof r.code === 'number' ? ' · ' + t('eval.exit', 'exit') + ' ' + r.code : ''),
             ]),
             r.saved && c('div', { className: 'badge badge-info' },
               t('eval.savedAs', 'Saved') + ': ' + r.saved),

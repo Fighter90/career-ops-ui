@@ -2038,4 +2038,10 @@ career-ops 不繫結任何特定 CLI，所以在 AI 上你有三個可靠的選�
 
 ### 安裝與啟動
 
-安裝 OpenWorker 應用，並加入一把模型金鑰(Anthropic / OpenAI / Google，或透過 Ollama 使用本機模型)。準備好一個已設定完成的 `career-ops` 專案資料夾(`cv.md`、`config/profile.yml`、`portals.yml`)。在 OpenWorker 中選擇 **New coworker → Import**，挑選這個同事的 `career-ops.md`;開啟一個 **Job-Search Coworker** 工作階段，選擇你的 `career-ops` 資料夾，然後提出一個真實的請求 —— *「掃描我的職缺板，給我本週最契合的前 5 個職缺」*或*「開啟儀表板」*。完整的說明、連接器(Gmail、Google Calendar、GitHub)以及安全模型，都在這個同事儲存庫的 [說明指南](https://github.com/Fighter90/career-ops-coworker/tree/main/help) 中。它已通過 OpenWorker 自身載入器的可安裝性驗證。
+安裝 OpenWorker 並新增模型金鑰（Anthropic / OpenAI / Google，或本機 Ollama）。最快是**一條命令** —— 它準備好 coworker 驅動的 `career-ops` 流水線，且是冪等的：重用既有的 `career-ops` / `web-ui`，不會覆寫你的資料:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+然後在 OpenWorker 的 **Install a coworker** 面板中新增 coworker —— 透過 **GitHub URL**(`https://github.com/Fighter90/career-ops-coworker`)、**.zip**(來自 [Releases](https://github.com/Fighter90/career-ops-coworker/releases))或**匯入** `career-ops.md`。開啟 **Job-Search Coworker** 工作階段，選擇你的 `career-ops` 資料夾，然後提出真實需求 —— *「掃描我的看板，給我本週前 5 個匹配」* 或 *「開啟儀表板。」* 連接器(Gmail、Google Calendar、GitHub)與完整指南在儲存庫的[說明指南](https://github.com/Fighter90/career-ops-coworker/tree/main/help)中。已針對 OpenWorker 的載入器與儲存庫安裝器驗證可安裝。

@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.223.0] — 2026-08-26
+
+**Düzeltildi — başarılı bir ⚡ canlı değerlendirme hata olarak boyanıyordu; ayrıca OpenWorker coworker'ını doğrudan GitHub URL'sinden veya .zip'ten kurun.**
+
+### Düzeltildi
+- **⚡ değerlendirme sonuç rozetinin tonu.** Başarılı bir canlı değerlendirme artık başarısızlık gibi boyanmıyor. Süreç içi sağlayıcılar (OpenRouter, DeepSeek, …) alt süreç çıkış `code`'u döndürmez, bu yüzden katı `code === 0` yanlıştı ve her başarı **kırmızı** görünüyordu ("exit 0" yazarken). Ton artık sonucu izliyor — yalnızca sıfırdan farklı kodla çıkan bir alt süreç kırmızı boyar; kodsuz bir canlı sonuç `badge-ok`'tur ve "· exit N" son eki yalnızca gerçek bir çıkış kodu varken görünür.
+
+### Değiştirildi
+- **[OpenWorker coworker](https://github.com/Fighter90/career-ops-coworker)'ını GitHub URL / .zip'ten kurun.** Coworker'ın dokümantasyonu artık tek komutluk kurucuyu (`curl … | bash`, idempotent — mevcut career-ops / web-ui'yi yeniden kullanır) ve OpenWorker'daki üç kurulum yolunu (GitHub URL · `.zip` · tek dosya içe aktarma) `docs/integrations/openworker.md`, uygulama içi yardım §32 (×17) ve README'de açıklar.
+
+### Notlar
+- Uzun süredir açık olan bir kapsam boşluğu kapatıldı: Recruitee kaynağının artık v1.214.2 tırnaklı-açı düzeltmesi için uçtan uca bir testi var (bir etiket özniteliğindeki `>` açıklamaya sızmamalı). Tarama kaynakları değişmedi: **83**. Test paketi: **2783**.
+
 ## [1.222.0] — 2026-08-26
 
 **Değiştirildi — genişletilmiş sağlayıcıların (DeepSeek … Volcengine Ark) alan ipuçları artık 17 dilin tamamında yerelleştirildi.**

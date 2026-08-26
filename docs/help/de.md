@@ -2390,4 +2390,10 @@ Innerhalb Ihres `career-ops`-Projektordners führt der Kollege dieselben Schritt
 
 ### Installieren und starten
 
-Installieren Sie die OpenWorker-App und fügen Sie einen Modell-Key hinzu (Anthropic / OpenAI / Google, oder ein lokales Modell via Ollama). Richten Sie einen `career-ops`-Projektordner ein (`cv.md`, `config/profile.yml`, `portals.yml`). Wählen Sie in OpenWorker **New coworker → Import** und wählen Sie die `career-ops.md` des Kollegen; öffnen Sie eine **Job-Search Coworker**-Sitzung, wählen Sie Ihren `career-ops`-Ordner, und bitten Sie um etwas Konkretes — *„scanne meine Boards und gib mir die Top 5 Treffer diese Woche"* oder *„öffne das Dashboard."* Vollständige Anweisungen, Konnektoren (Gmail, Google Calendar, GitHub) und das Sicherheitsmodell finden Sie im [Hilfe-Leitfaden](https://github.com/Fighter90/career-ops-coworker/tree/main/help) des Kollegen-Repos. Die Installierbarkeit gegen OpenWorkers eigenen Loader ist verifiziert.
+Installiere OpenWorker und füge einen Modellschlüssel hinzu (Anthropic / OpenAI / Google oder ein lokales Ollama). Am schnellsten ist **ein Befehl** — er richtet die `career-ops`-Pipeline ein, die der Coworker steuert, und ist idempotent: er nutzt ein vorhandenes `career-ops` / `web-ui` weiter, ohne deine Daten zu überschreiben:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+Füge den Coworker dann in OpenWorkers **Install a coworker**-Panel hinzu — per **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), per **.zip** (aus den [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) oder durch **Importieren** von `career-ops.md`. Öffne eine **Job-Search Coworker**-Sitzung, wähle deinen `career-ops`-Ordner und bitte um etwas Konkretes — *„scanne meine Boards und gib mir die Top 5 Treffer dieser Woche"* oder *„öffne das Dashboard."* Connectors (Gmail, Google Calendar, GitHub) und die vollständige Anleitung stehen im [Hilfe-Guide](https://github.com/Fighter90/career-ops-coworker/tree/main/help) des Repos. Installierbarkeit gegen OpenWorkers Loader und Repo-Installer verifiziert.

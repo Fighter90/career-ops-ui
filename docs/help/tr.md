@@ -2330,4 +2330,10 @@ Tarayıcı yerine bir masaüstü yapay zeka iş arkadaşını mı tercih edersin
 
 ### Kurulum ve başlatma
 
-OpenWorker uygulamasını kurun ve bir model anahtarı ekleyin (Anthropic / OpenAI / Google ya da Ollama üzerinden yerel bir model). Kurulu bir `career-ops` proje klasörünüz olsun (`cv.md`, `config/profile.yml`, `portals.yml`). OpenWorker'da **New coworker → Import**'u seçin ve iş arkadaşının `career-ops.md` dosyasını seçin; bir **Job-Search Coworker** oturumu açın, `career-ops` klasörünüzü seçin ve gerçek bir şey isteyin — *"panolarımı tara ve bu hafta en iyi 5 uygunluğu ver"* ya da *"paneli aç."* Tam talimatlar, bağlayıcılar (Gmail, Google Calendar, GitHub) ve güvenlik modeli, iş arkadaşı deposunun [yardım kılavuzunda](https://github.com/Fighter90/career-ops-coworker/tree/main/help) bulunur. OpenWorker'ın kendi yükleyicisine karşı kurulabilirliği doğrulanmıştır.
+OpenWorker'ı kurun ve bir model anahtarı ekleyin (Anthropic / OpenAI / Google veya yerel Ollama). En hızlısı **tek komut** — coworker'ın sürdüğü `career-ops` hattını hazırlar ve idempotenttir: mevcut `career-ops` / `web-ui`'yi verilerinizin üzerine yazmadan yeniden kullanır:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+Ardından coworker'ı OpenWorker'ın **Install a coworker** panelinden ekleyin — **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), **.zip** ([Releases](https://github.com/Fighter90/career-ops-coworker/releases)'ten) veya `career-ops.md`'yi **içe aktararak**. Bir **Job-Search Coworker** oturumu açın, `career-ops` klasörünüzü seçin ve gerçek bir şey isteyin — *"panolarımı tara ve bu haftanın en iyi 5 eşleşmesini ver"* ya da *"panoyu aç."* Bağlayıcılar (Gmail, Google Calendar, GitHub) ve tam kılavuz deponun [yardım kılavuzunda](https://github.com/Fighter90/career-ops-coworker/tree/main/help). OpenWorker'ın yükleyicisine ve depo yükleyicisine karşı kurulabilirliği doğrulandı.

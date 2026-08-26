@@ -2130,4 +2130,10 @@ career-ops는 CLI에 종속되지 않으므로 AI에 대해 세 가지 정직한
 
 ### 설치와 실행
 
-OpenWorker 앱을 설치하고 모델 키(Anthropic / OpenAI / Google, 또는 Ollama를 통한 로컬 모델)를 추가하세요. `career-ops` 프로젝트 폴더(`cv.md`, `config/profile.yml`, `portals.yml`)를 준비해 두세요. OpenWorker에서 **New coworker → Import**를 선택하고 동료의 `career-ops.md`를 고르세요; **Job-Search Coworker** 세션을 열고, 여러분의 `career-ops` 폴더를 선택한 뒤, 실제적인 것을 요청하세요 — *"내 포털을 스캔해서 이번 주 상위 5개 적합 공고를 알려줘"* 또는 *"대시보드를 열어줘."* 전체 지침, 커넥터(Gmail, Google Calendar, GitHub), 그리고 안전 모델은 동료 저장소의 [help guide](https://github.com/Fighter90/career-ops-coworker/tree/main/help)에 있습니다. 이는 OpenWorker 자체 로더에 대해 설치 가능함이 검증되었습니다.
+OpenWorker를 설치하고 모델 키를 추가하세요(Anthropic / OpenAI / Google, 또는 로컬 Ollama). 가장 빠른 방법은 **명령 한 줄** — coworker가 구동하는 `career-ops` 파이프라인을 준비하며 멱등적입니다: 기존 `career-ops` / `web-ui`를 데이터 덮어쓰기 없이 재사용합니다:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+그런 다음 OpenWorker의 **Install a coworker** 패널에서 coworker를 추가하세요 — **GitHub URL**(`https://github.com/Fighter90/career-ops-coworker`), **.zip**([Releases](https://github.com/Fighter90/career-ops-coworker/releases)에서), 또는 `career-ops.md` **가져오기**. **Job-Search Coworker** 세션을 열고 `career-ops` 폴더를 선택한 뒤 실제 요청을 하세요 — *"내 보드를 스캔해서 이번 주 상위 5개 적합 공고를 줘"* 또는 *"대시보드 열어줘."* 커넥터(Gmail, Google Calendar, GitHub)와 전체 가이드는 저장소의 [도움말 가이드](https://github.com/Fighter90/career-ops-coworker/tree/main/help)에 있습니다. OpenWorker의 로더와 저장소 설치기로 설치 가능이 검증되었습니다.
