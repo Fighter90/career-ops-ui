@@ -2453,4 +2453,10 @@ career-ops CLI के प्रति agnostic है, इसलिए AI के
 
 ### इंस्टॉल करें और लॉन्च करें
 
-OpenWorker ऐप इंस्टॉल करें और एक मॉडल की जोड़ें (Anthropic / OpenAI / Google, या Ollama के ज़रिए एक लोकल मॉडल)। एक `career-ops` प्रोजेक्ट फ़ोल्डर सेटअप रखें (`cv.md`, `config/profile.yml`, `portals.yml`)। OpenWorker में **New coworker → Import** चुनें और कोवर्कर की `career-ops.md` फ़ाइल चुनें; एक **Job-Search Coworker** सेशन खोलें, अपना `career-ops` फ़ोल्डर चुनें, और कुछ असली माँगें — *"इस हफ़्ते मेरे बोर्ड्स स्कैन करो और टॉप 5 फ़िट दो"* या *"डैशबोर्ड खोलो।"* पूरे निर्देश, कनेक्टर (Gmail, Google Calendar, GitHub), और सुरक्षा मॉडल कोवर्कर रिपॉज़िटरी की [help guide](https://github.com/Fighter90/career-ops-coworker/tree/main/help) में हैं। यह OpenWorker के अपने लोडर के मुक़ाबले इंस्टॉल-योग्य होने के लिए सत्यापित है।
+OpenWorker इंस्टॉल करें और एक मॉडल की जोड़ें (Anthropic / OpenAI / Google, या लोकल Ollama)। सबसे तेज़ है **एक कमांड** — यह coworker द्वारा चलाई जाने वाली `career-ops` पाइपलाइन तैयार करता है और idempotent है: मौजूदा `career-ops` / `web-ui` को आपके डेटा को अधिलेखित किए बिना फिर से उपयोग करता है:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+फिर OpenWorker के **Install a coworker** पैनल में coworker जोड़ें — **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`) से, **.zip** ([Releases](https://github.com/Fighter90/career-ops-coworker/releases) से), या `career-ops.md` को **इम्पोर्ट** करके। एक **Job-Search Coworker** सेशन खोलें, अपना `career-ops` फ़ोल्डर चुनें, और कुछ वास्तविक माँगें — *"मेरे बोर्ड स्कैन करो और इस हफ़्ते के टॉप 5 मैच दो"* या *"डैशबोर्ड खोलो।"* कनेक्टर (Gmail, Google Calendar, GitHub) और पूरी गाइड रिपॉज़िटरी की [हेल्प गाइड](https://github.com/Fighter90/career-ops-coworker/tree/main/help) में हैं। OpenWorker के लोडर और रिपॉज़िटरी इंस्टॉलर के विरुद्ध इंस्टॉल-योग्यता सत्यापित।

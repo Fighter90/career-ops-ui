@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.223.0] — 2026-08-26
+
+**Rettet — en vellykket ⚡ live-vurdering blev malet som en fejl; installer desuden OpenWorker-coworkeren direkte fra dens GitHub-URL eller .zip.**
+
+### Rettet
+- **Farve på ⚡ vurderings-badge.** En vellykket live-vurdering farves ikke længere som en fejl. In-process-udbyderne (OpenRouter, DeepSeek, …) returnerer ingen subproces-`code`, så den strikte `code === 0` var falsk, og enhver succes blev **rød** (mens der stod "exit 0"). Farven følger nu resultatet — kun en subproces, der afslutter med en kode forskellig fra 0, farves rød; et kodeløst live-resultat er `badge-ok`, og "· exit N"-suffikset vises kun ved en rigtig exit-kode.
+
+### Ændret
+- **Installer [OpenWorker-coworkeren](https://github.com/Fighter90/career-ops-coworker) fra dens GitHub-URL / .zip.** Coworkerens dokumentation beskriver nu én-kommandos-installeren (`curl … | bash`, idempotent — genbruger et eksisterende career-ops / web-ui) og de tre installationsveje i OpenWorker (GitHub-URL · `.zip` · enkeltfil-import) i `docs/integrations/openworker.md`, in-app-hjælp §32 (×17) og README.
+
+### Noter
+- Lukkede et gammelt dækningshul: Recruitee-kilden har nu en ende-til-ende-test af v1.214.2's citerede vinkel-rettelse (et `>` i en tag-attribut må ikke lække ind i beskrivelsen). Scanningskilder uændret: **83**. Testsuite: **2783**.
+
 ## [1.222.0] — 2026-08-26
 
 **Ændret — feltteksterne for de udvidede udbydere (DeepSeek … Volcengine Ark) er nu lokaliseret på alle 17 sprog.**

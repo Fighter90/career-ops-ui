@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.223.0] — 2026-08-26
+
+**Fixed — a successful ⚡ live eval was painted as an error; plus install the OpenWorker coworker straight from its GitHub URL or .zip.**
+
+### Fixed
+- **⚡ eval result badge tone.** A successful live evaluation is no longer coloured as a failure. The in-process live providers (OpenRouter, DeepSeek, …) return no subprocess exit `code`, so the badge's strict `code === 0` test was false and every success rendered **red** (while still reading "exit 0"). The tone now follows the outcome — only a subprocess that exits non-zero paints it red; a code-less live result is `badge-ok`, and the "· exit N" suffix shows only when there is a real exit code.
+
+### Changed
+- **Install the [OpenWorker coworker](https://github.com/Fighter90/career-ops-coworker) from its GitHub URL / .zip.** The coworker's docs now describe the one-command installer (`curl … | bash`, idempotent — it reuses an existing career-ops / web-ui) and the three OpenWorker install paths (GitHub URL · `.zip` · single-file import) across `docs/integrations/openworker.md`, in-app help §32 (×17), and the README.
+
+### Notes
+- Closed a long-standing coverage gap: the Recruitee source now has an end-to-end test for the v1.214.2 quoted-angle fix (a `>` inside a tag attribute must not leak into the description). Scan sources unchanged at **83**. Test suite: **2783**.
+
 ## [1.222.0] — 2026-08-26
 
 **Changed — the extended-provider field hints (DeepSeek … Volcengine Ark) are now localized in all 17 languages.**

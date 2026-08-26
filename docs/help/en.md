@@ -2289,4 +2289,10 @@ Working inside your `career-ops` project folder, the coworker runs the same step
 
 ### Install and launch
 
-Install the OpenWorker app and add a model key (Anthropic / OpenAI / Google, or a local model via Ollama). Have a `career-ops` project folder set up (`cv.md`, `config/profile.yml`, `portals.yml`). In OpenWorker choose **New coworker → Import** and pick the coworker's `career-ops.md`; open a **Job-Search Coworker** session, select your `career-ops` folder, and ask for something real — *"scan my boards and give me the top 5 fits this week"* or *"open the dashboard."* Full instructions, connectors (Gmail, Google Calendar, GitHub), and the safety model are in the coworker repo's [help guide](https://github.com/Fighter90/career-ops-coworker/tree/main/help). It's verified installable against OpenWorker's own loader.
+Install OpenWorker and add a model key (Anthropic / OpenAI / Google, or a local Ollama). Fastest is **one command** — it sets up the `career-ops` pipeline the coworker drives and is idempotent, reusing an existing `career-ops` / `web-ui` without overwriting your data:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+Then add the coworker in OpenWorker's **Install a coworker** panel — by **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), by **.zip** (from [Releases](https://github.com/Fighter90/career-ops-coworker/releases)), or by **importing** `career-ops.md`. Open a **Job-Search Coworker** session, pick your `career-ops` folder, and ask *"scan my boards and give me the top 5 fits this week"* or *"open the dashboard."* Connectors (Gmail, Google Calendar, GitHub) and the full guide are in the coworker repo's [help guide](https://github.com/Fighter90/career-ops-coworker/tree/main/help). Verified installable against OpenWorker's own loader and its repo installer.

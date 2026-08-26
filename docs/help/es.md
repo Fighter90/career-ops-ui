@@ -2191,4 +2191,10 @@ Trabajando dentro de la carpeta de tu proyecto `career-ops`, el compañero de tr
 
 ### Instala y ejecuta
 
-Instala la app de OpenWorker y añade una clave de modelo (Anthropic / OpenAI / Google, o un modelo local mediante Ollama). Ten preparada una carpeta de proyecto `career-ops` (`cv.md`, `config/profile.yml`, `portals.yml`). En OpenWorker elige **New coworker → Import** y selecciona el `career-ops.md` del compañero de trabajo; abre una sesión de **Job-Search Coworker**, selecciona tu carpeta `career-ops` y pídele algo real — *«escanea mis portales y dame los 5 mejores encajes de esta semana»* o *«abre el panel».* Las instrucciones completas, los conectores (Gmail, Google Calendar, GitHub) y el modelo de seguridad están en la [guía de ayuda](https://github.com/Fighter90/career-ops-coworker/tree/main/help) del repositorio del compañero de trabajo. Está verificado como instalable con el propio cargador de OpenWorker.
+Instala OpenWorker y añade una clave de modelo (Anthropic / OpenAI / Google, o un Ollama local). Lo más rápido es **un comando** — prepara el pipeline `career-ops` que maneja el coworker y es idempotente: reutiliza un `career-ops` / `web-ui` existente sin sobrescribir tus datos:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+Luego añade el coworker en el panel **Install a coworker** de OpenWorker — por **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), por **.zip** (desde [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) o **importando** `career-ops.md`. Abre una sesión **Job-Search Coworker**, elige tu carpeta `career-ops` y pide algo real — *"escanea mis portales y dame los 5 mejores encajes de la semana"* o *"abre el panel."* Los conectores (Gmail, Google Calendar, GitHub) y la guía completa están en la [guía de ayuda](https://github.com/Fighter90/career-ops-coworker/tree/main/help) del repo. Verificado como instalable contra el loader de OpenWorker y su instalador de repo.

@@ -9,6 +9,19 @@
 ---
 
 
+## [1.223.0] — 2026-08-26
+
+**수정 — 성공한 ⚡ 라이브 평가가 오류로 표시되던 문제; 또한 OpenWorker coworker를 GitHub URL 또는 .zip에서 바로 설치.**
+
+### 수정
+- **⚡ 평가 결과 배지 색상.** 성공한 라이브 평가가 더 이상 실패로 표시되지 않습니다. 인프로세스 제공자(OpenRouter, DeepSeek, …)는 서브프로세스 종료 `code`를 반환하지 않으므로 엄격한 `code === 0`이 거짓이 되어 모든 성공이 **빨갛게**("exit 0"으로 표시되면서도) 나왔습니다. 이제 색상은 결과를 따릅니다 — 0이 아닌 코드로 종료된 서브프로세스만 빨갛게, 코드 없는 라이브 결과는 `badge-ok`, "· exit N" 접미사는 실제 종료 코드가 있을 때만 표시됩니다.
+
+### 변경됨
+- **[OpenWorker coworker](https://github.com/Fighter90/career-ops-coworker)를 GitHub URL / .zip에서 설치.** coworker 문서에 이제 한 줄 명령 설치기(`curl … | bash`, 멱등 — 기존 career-ops / web-ui 재사용)와 OpenWorker의 세 가지 설치 경로(GitHub URL · `.zip` · 단일 파일 가져오기)가 `docs/integrations/openworker.md`, 인앱 도움말 §32(×17), README에 설명됩니다.
+
+### 참고
+- 오래된 커버리지 공백을 닫았습니다: Recruitee 소스에 v1.214.2 인용부호-각괄호 수정(태그 속성 안의 `>`가 설명으로 새면 안 됨)에 대한 종단 간 테스트가 추가되었습니다. 스캔 소스 변경 없음: **83**. 테스트 스위트: **2783**.
+
 ## [1.222.0] — 2026-08-26
 
 **변경됨 — 확장 제공자(DeepSeek … Volcengine Ark) 필드 힌트가 이제 17개 언어로 현지화되었습니다.**

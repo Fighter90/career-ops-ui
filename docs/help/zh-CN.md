@@ -2022,4 +2022,10 @@ career-ops 不绑定任何特定 CLI,所以在 AI 上你有三个靠得住的选
 
 ### 安装与启动
 
-安装 OpenWorker 应用,并添加一个模型密钥(Anthropic / OpenAI / Google,或通过 Ollama 使用本地模型)。准备好一个已配置的 `career-ops` 项目文件夹(`cv.md`、`config/profile.yml`、`portals.yml`)。在 OpenWorker 中选择 **New coworker → Import**,挑选这位同事的 `career-ops.md`;开启一个 **Job-Search Coworker** 会话,选中你的 `career-ops` 文件夹,然后向它提一个真实的请求 —— *“扫描我的招聘板,给出本周匹配度最高的 5 个职位”* 或 *“打开仪表盘”*。完整的说明、连接器(Gmail、Google Calendar、GitHub)以及安全模型,都在这位同事仓库的[帮助指南](https://github.com/Fighter90/career-ops-coworker/tree/main/help)里。它已通过 OpenWorker 自带的加载器验证可安装。
+安装 OpenWorker 并添加模型密钥（Anthropic / OpenAI / Google，或本地 Ollama）。最快是**一条命令** —— 它准备好 coworker 驱动的 `career-ops` 流水线，且是幂等的：复用已有的 `career-ops` / `web-ui`，不会覆盖你的数据:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+然后在 OpenWorker 的 **Install a coworker** 面板中添加 coworker —— 通过 **GitHub URL**(`https://github.com/Fighter90/career-ops-coworker`)、**.zip**(来自 [Releases](https://github.com/Fighter90/career-ops-coworker/releases))或**导入** `career-ops.md`。打开 **Job-Search Coworker** 会话，选择你的 `career-ops` 文件夹，然后提出真实需求 —— *"扫描我的看板，给我本周前 5 个匹配"* 或 *"打开仪表盘。"* 连接器(Gmail、Google Calendar、GitHub)与完整指南在仓库的[帮助指南](https://github.com/Fighter90/career-ops-coworker/tree/main/help)中。已针对 OpenWorker 的加载器与仓库安装器验证可安装。

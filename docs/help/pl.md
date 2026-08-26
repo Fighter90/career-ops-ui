@@ -2193,4 +2193,10 @@ Działając w folderze twojego projektu `career-ops`, współpracownik wykonuje 
 
 ### Instalacja i uruchomienie
 
-Zainstaluj aplikację OpenWorker i dodaj klucz modelu (Anthropic / OpenAI / Google albo model lokalny przez Ollama). Miej przygotowany folder projektu `career-ops` (`cv.md`, `config/profile.yml`, `portals.yml`). W OpenWorker wybierz **New coworker → Import** i wskaż plik `career-ops.md` współpracownika; otwórz sesję **Job-Search Coworker**, wybierz swój folder `career-ops` i poproś o coś konkretnego — *„przeskanuj moje portale i podaj 5 najlepszych dopasowań w tym tygodniu”* albo *„otwórz dashboard”*. Pełne instrukcje, konektory (Gmail, Google Calendar, GitHub) oraz model bezpieczeństwa znajdują się w [przewodniku pomocy](https://github.com/Fighter90/career-ops-coworker/tree/main/help) repozytorium współpracownika. Zweryfikowano, że instaluje się poprawnie za pomocą loadera samego OpenWorker.
+Zainstaluj OpenWorker i dodaj klucz modelu (Anthropic / OpenAI / Google lub lokalny Ollama). Najszybciej — **jedna komenda** — przygotowuje potok `career-ops`, którym steruje coworker, i jest idempotentna: używa istniejących `career-ops` / `web-ui` bez nadpisywania Twoich danych:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+```
+
+Następnie dodaj coworkera w panelu **Install a coworker** w OpenWorker — przez **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), przez **.zip** (z [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) lub **importując** `career-ops.md`. Otwórz sesję **Job-Search Coworker**, wybierz folder `career-ops` i poproś o coś konkretnego — *„przeskanuj moje tablice i daj 5 najlepszych dopasowań w tym tygodniu”* lub *„otwórz pulpit.”* Konektory (Gmail, Google Calendar, GitHub) i pełny przewodnik są w [przewodniku pomocy](https://github.com/Fighter90/career-ops-coworker/tree/main/help) repozytorium. Zweryfikowano instalowalność wobec loadera OpenWorker i jego instalatora repo.
