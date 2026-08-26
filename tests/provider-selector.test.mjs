@@ -10,7 +10,7 @@ import { parseArgs, buildUpdates, askSecret } from '../scripts/init.mjs';
 
 test('providerOrder: auto/unset/unknown → full OR order (v1.57.0 + openrouter tail; v1.216.0 roster)', () => {
   const ALL = ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes',
-    'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama'];
+    'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama', 'ark', 'arkcn'];
   assert.deepEqual(providerOrder({}), ALL);
   assert.deepEqual(providerOrder({ LLM_PROVIDER: 'auto' }), ALL);
   assert.deepEqual(providerOrder({ LLM_PROVIDER: 'banana' }), ALL);
@@ -40,7 +40,7 @@ test('env-config exposes the full v1.57.0 provider surface', () => {
     assert.ok(!SECRET_KEYS.has(k), `${k} must NOT be secret`);
   }
   assert.deepEqual(LLM_PROVIDERS, ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes',
-    'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama']);
+    'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama', 'ark', 'arkcn']);
 });
 
 test('env-config exposes the v1.216.0 extended roster keys', () => {
@@ -57,7 +57,7 @@ test('env-config exposes the v1.216.0 extended roster keys', () => {
     assert.ok(!SECRET_KEYS.has(k), `${k} must NOT be secret`);
   }
   // each explicit roster value pins exactly itself
-  for (const p of ['deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama']) {
+  for (const p of ['deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama', 'ark', 'arkcn']) {
     assert.deepEqual(providerOrder({ LLM_PROVIDER: p }), [p]);
   }
 });

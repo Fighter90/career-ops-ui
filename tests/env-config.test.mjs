@@ -156,7 +156,7 @@ test('providerOrder: explicit openrouter pin → [openrouter]', () => {
 test('providerOrder: auto appends openrouter/github/hermes + the v1.216.0 roster at the tail (never overrides existing setups)', () => {
   assert.deepEqual(providerOrder({ LLM_PROVIDER: 'auto' }),
     ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes',
-      'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama']);
+      'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama', 'ark', 'arkcn']);
   // v1.151.0 — Hermes is a valid explicit pin; v1.216.0 — so is every roster slug.
   assert.deepEqual(providerOrder({ LLM_PROVIDER: 'hermes' }), ['hermes']);
   assert.deepEqual(providerOrder({ LLM_PROVIDER: 'grok' }), ['grok']);

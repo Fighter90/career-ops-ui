@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.217.0] — 2026-08-26
+
+**Eklendi — Ark, LLM listesine katılıyor (18 sağlayıcı).** ByteDance’in Doubao modelleri BytePlus Ark ve Volcengine Ark artık ⚡ canlı sağlayıcılar — aynı OpenAI uyumlu çekirdek ve bölgeye göre temel URL ile.
+
+### Eklendi
+- **BytePlus Ark** (`ARK_API_KEY`, uluslararası) ve **Volcengine Ark** (`ARK_CN_API_KEY`, Çin) — `runOpenAICompatible()` üzerinden OpenAI uyumlu Chat Completions. `ARK_MODEL` / `ARK_CN_MODEL` (bir Doubao model adı ya da `ep-…` uç nokta id’niz) ayarlayın; `ARK_BASE_URL` / `ARK_CN_BASE_URL` bölgeyi değiştirir. İkisi de `auto` sırasına (en sona) katılır; Ayarlar ve Kullanım’da monogramlarıyla görünür. Web arayüzü artık **18 sağlayıcıyı** canlı kapsıyor.
+
+### Notlar
+- Geri kalanla aynı güvenilir yapılandırma + http(s) şema denetimi yolu (asla iş ilanı URL’si için SSRF doğrulayıcısı değil). Tarama kaynakları değişmedi: **82**. Testler: **2755**.
+
 ## [1.216.0] — 2026-08-26
 
 **Eklendi — dokuz LLM sağlayıcısı daha, her birinin kendi marka karosu.** ⚡ Canlı değerlendirmelerin artık DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks veya tamamen yerel Ollama üzerinden çalışabilir — bir anahtar kadar uzakta, her biri Ayarlar’daki alanının yanında bir monogramla işaretli.

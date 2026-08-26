@@ -20,6 +20,7 @@ let runOpenAI, runQwen, hasOpenAIKey, hasQwenKey, runOpenAICompatible;
 let runOpenRouter, hasOpenRouterKey, fetchOpenRouterModels, OPENROUTER_FALLBACK_MODELS;
 // v1.216.0 — extended OpenAI-compatible roster.
 let compatChatUrl, runDeepSeek, runZai, runKimi, runGrok, runTogether, runOllama, hasOllamaKey, hasGrokKey;
+let runArk, runArkCn, hasArkKey, hasArkCnKey;
 let ROOT, ENV_FILE;
 const savedRoot = process.env.CAREER_OPS_ROOT;
 
@@ -33,7 +34,8 @@ before(async () => {
      runOpenRouter, hasOpenRouterKey, fetchOpenRouterModels,
      OPENROUTER_FALLBACK_MODELS,
      compatChatUrl, runDeepSeek, runZai, runKimi, runGrok, runTogether, runOllama,
-     hasOllamaKey, hasGrokKey } =
+     hasOllamaKey, hasGrokKey,
+     runArk, runArkCn, hasArkKey, hasArkCnKey } =
     await import('../server/lib/openai.mjs'));
 });
 
@@ -432,5 +434,38 @@ test('hasGrokKey / hasOllamaKey: gate on their own env (XAI_API_KEY / OLLAMA_BAS
   writeFileSync(ENV_FILE, 'OLLAMA_BASE_URL=http://localhost:11434/v1\nXAI_API_KEY=xai-secret-canary-00001\n');
   assert.equal(hasOllamaKey(), true);
   assert.equal(hasGrokKey(), true);
+  clearParentEnv();
+});
+
+// ─── v1.217.0 — Ark pair (BytePlus + Volcengine), OpenAI-compatible ────────
+
+test('runArk: default BytePlus endpoint + Bearer + doubao default model', async () => {
+  let sentUrl, sentAuth, sentModel;
+  const fakeFetch = async (url, opts) => {
+    sentUrl = url; sentAuth = opts.headers.Authorization; sentModel = JSON.parse(opts.body).model;
+    return okChat('ark ok');
+  };
+  const r = await runArk('hi', { apiKey: 'ark-canary-000000001', fetchImpl: fakeFetch });
+  assert.equal(r.error, null);
+  assert.equal(r.markdown, 'ark ok');
+  assert.equal(sentUrl, 'https://ark.ap-southeast.bytepluses.com/api/v3/chat/completions');
+  assert.equal(sentAuth, 'Bearer ark-canary-000000001');
+  assert.equal(sentModel, 'doubao-pro-32k');
+});
+
+test('runArkCn: default Volcengine (China) endpoint', async () => {
+  let sentUrl;
+  const fakeFetch = async (url) => { sentUrl = url; return okChat('ok'); };
+  await runArkCn('hi', { apiKey: 'arkcn-canary-00000001', fetchImpl: fakeFetch });
+  assert.equal(sentUrl, 'https://ark.cn-beijing.volces.com/api/v3/chat/completions');
+});
+
+test('hasArkKey / hasArkCnKey gate on their own env (ARK_API_KEY / ARK_CN_API_KEY)', () => {
+  clearParentEnv();
+  assert.equal(hasArkKey(), false);
+  assert.equal(hasArkCnKey(), false);
+  writeFileSync(ENV_FILE, 'ARK_API_KEY=ark-canary-000000001\nARK_CN_API_KEY=arkcn-canary-00000001\n');
+  assert.equal(hasArkKey(), true);
+  assert.equal(hasArkCnKey(), true);
   clearParentEnv();
 });

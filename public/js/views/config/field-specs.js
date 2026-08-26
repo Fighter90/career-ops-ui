@@ -96,14 +96,18 @@
     'accounts/fireworks/models/mixtral-8x22b-instruct-hf',
   ];
   const OLLAMA_MODELS = ['llama3.2', 'llama3.3', 'llama3.1', 'qwen2.5', 'deepseek-r1', 'mistral', 'gemma3'];
+  // v1.217.0 — Ark (ByteDance Doubao). Model ids are the vendor's model names or
+  // an endpoint id (`ep-…`); the defaults are common Doubao names — override with yours.
+  const ARK_MODELS = ['doubao-pro-32k', 'doubao-pro-4k', 'doubao-1.5-pro-32k', 'doubao-lite-32k'];
+  const ARK_CN_MODELS = ['doubao-pro-32k', 'doubao-pro-4k', 'doubao-1.5-pro-32k', 'doubao-lite-32k'];
   const FIELDS = [
     {
       // v1.39.0 (WS8.2) — explicit provider preference.
       key: 'LLM_PROVIDER', secret: false, kind: 'select',
-      options: ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes', 'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama'], defaultValue: 'auto',
+      options: ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes', 'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama', 'ark', 'arkcn'], defaultValue: 'auto',
       labelKey: 'config.llmProvider', label: 'LLM_PROVIDER',
       hintKey: 'config.llmProviderHint',
-      hintFallback: "auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi → MiniMax → Mistral → Grok → Together → Fireworks → Ollama. Pinning one prefers it — but if its key isn't set it falls back to any other provider you have configured. Only with no provider key at all → manual-prompt fallback.",
+      hintFallback: "auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi → MiniMax → Mistral → Grok → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. Pinning one prefers it — but if its key isn't set it falls back to any other provider you have configured. Only with no provider key at all → manual-prompt fallback.",
     },
     {
       key: 'ANTHROPIC_API_KEY', secret: true,
@@ -353,6 +357,45 @@
       labelKey: 'config.ollamaModel', label: 'OLLAMA_MODEL',
       hintKey: 'config.ollamaModelHint',
       hintFallback: 'Default: llama3.2. Any model you have pulled locally (`ollama pull …`) works — deepseek-r1, qwen2.5, mistral, gemma3, …',
+    },
+    // ─── v1.217.0 — Ark (ByteDance Volcano Engine), two regional deployments ──
+    {
+      key: 'ARK_API_KEY', secret: true,
+      labelKey: 'config.arkKey', label: 'ARK_API_KEY',
+      hintKey: 'config.arkHint',
+      hintFallback: 'BytePlus Ark (international). Get a key at console.byteplus.com → Ark. OpenAI-compatible; when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'ARK_MODEL', secret: false, kind: 'select',
+      options: ARK_MODELS, defaultValue: 'doubao-pro-32k',
+      labelKey: 'config.arkModel', label: 'ARK_MODEL',
+      hintKey: 'config.arkModelHint',
+      hintFallback: 'Default: doubao-pro-32k. A Doubao model name or your Ark endpoint id (`ep-…`).',
+    },
+    {
+      key: 'ARK_BASE_URL', secret: false,
+      labelKey: 'config.arkBaseUrl', label: 'ARK_BASE_URL',
+      hintKey: 'config.arkBaseUrlHint',
+      hintFallback: 'Default: https://ark.ap-southeast.bytepluses.com/api/v3 (BytePlus, international).',
+    },
+    {
+      key: 'ARK_CN_API_KEY', secret: true,
+      labelKey: 'config.arkcnKey', label: 'ARK_CN_API_KEY',
+      hintKey: 'config.arkcnHint',
+      hintFallback: 'Volcengine Ark (China). Get a key at console.volcengine.com → Ark (方舟). OpenAI-compatible; when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'ARK_CN_MODEL', secret: false, kind: 'select',
+      options: ARK_CN_MODELS, defaultValue: 'doubao-pro-32k',
+      labelKey: 'config.arkcnModel', label: 'ARK_CN_MODEL',
+      hintKey: 'config.arkcnModelHint',
+      hintFallback: 'Default: doubao-pro-32k. A Doubao model name or your Ark endpoint id (`ep-…`).',
+    },
+    {
+      key: 'ARK_CN_BASE_URL', secret: false,
+      labelKey: 'config.arkcnBaseUrl', label: 'ARK_CN_BASE_URL',
+      hintKey: 'config.arkcnBaseUrlHint',
+      hintFallback: 'Default: https://ark.cn-beijing.volces.com/api/v3 (Volcengine, China).',
     },
     // v1.19.0 — HH_USER_AGENT removed from the UI per user direction.
     // The server still honors the env var if a power user sets it via

@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.217.0] — 2026-08-26
+
+**Aggiunto — Ark si aggiunge all’elenco LLM (18 provider).** BytePlus Ark e Volcengine Ark — i modelli Doubao di ByteDance — sono ora provider ⚡ dal vivo, con lo stesso core compatibile con OpenAI e un URL di base per regione.
+
+### Aggiunto
+- **BytePlus Ark** (`ARK_API_KEY`, internazionale) e **Volcengine Ark** (`ARK_CN_API_KEY`, Cina) — Chat Completions compatibile con OpenAI via `runOpenAICompatible()`. Imposta `ARK_MODEL` / `ARK_CN_MODEL` (un nome di modello Doubao o il tuo id endpoint `ep-…`); `ARK_BASE_URL` / `ARK_CN_BASE_URL` cambiano regione. Entrambi si uniscono all’ordine `auto` (per ultimi), con il monogramma nelle Impostazioni e in Utilizzo. L’interfaccia web copre ora **18 provider** dal vivo.
+
+### Note
+- Stesso percorso di configurazione attendibile + controllo schema http(s) del resto (mai il validatore SSRF degli URL di lavoro). Fonti di scansione invariate: **82**. Test: **2755**.
+
 ## [1.216.0] — 2026-08-26
 
 **Aggiunto — altri nove provider LLM, ciascuno con la propria targhetta di marca.** Le tue valutazioni ⚡ dal vivo possono ora usare DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks o un Ollama completamente locale — a una chiave di distanza, ciascuno segnato da un monogramma accanto al suo campo nelle Impostazioni.

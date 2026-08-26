@@ -9,6 +9,16 @@
 ---
 
 
+## [1.217.0] — 2026-08-26
+
+**新增 —— Ark 加入 LLM 名单（18 个提供方）。** 字节跳动的 Doubao 模型 BytePlus Ark 与 Volcengine Ark 现为 ⚡ 实时提供方——采用同一 OpenAI 兼容内核与按区域的基础 URL。
+
+### 新增
+- **BytePlus Ark**（`ARK_API_KEY`，国际）与 **Volcengine Ark**（`ARK_CN_API_KEY`,中国）—— 通过 `runOpenAICompatible()` 的 OpenAI 兼容 Chat Completions。设置 `ARK_MODEL` / `ARK_CN_MODEL`（Doubao 模型名或你的 `ep-…` 端点 id）;`ARK_BASE_URL` / `ARK_CN_BASE_URL` 切换区域。两者均加入 `auto` 顺序(末位),并在设置与用量中显示字母标。Web UI 现已涵盖 **18 个**实时提供方。
+
+### 说明
+- 与其余相同的受信任配置 + http(s) 协议校验路径(绝不经过职位 URL 的 SSRF 校验器)。扫描来源不变:**82**。测试:**2755**。
+
 ## [1.216.0] — 2026-08-26
 
 **新增 —— 再增九个 LLM 提供方，每个都有自己的品牌标。** ⚡ 实时评估现可通过 DeepSeek、GLM (Z.ai)、Kimi (Moonshot)、MiniMax、Mistral、Grok (xAI)、Together、Fireworks 或完全本地的 Ollama 运行——只需一个密钥，设置中每个字段旁都带有字母标。

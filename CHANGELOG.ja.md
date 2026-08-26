@@ -9,6 +9,16 @@
 ---
 
 
+## [1.217.0] — 2026-08-26
+
+**追加 — Ark が LLM の一覧に加わりました（18 プロバイダー）。** ByteDance の Doubao モデルである BytePlus Ark と Volcengine Ark が ⚡ ライブプロバイダーになりました。同じ OpenAI 互換コアと地域別ベース URL を使います。
+
+### 追加
+- **BytePlus Ark**（`ARK_API_KEY`、国際）と **Volcengine Ark**（`ARK_CN_API_KEY`、中国）— `runOpenAICompatible()` 経由の OpenAI 互換 Chat Completions。`ARK_MODEL` / `ARK_CN_MODEL`（Doubao のモデル名または `ep-…` エンドポイント id）を設定し、`ARK_BASE_URL` / `ARK_CN_BASE_URL` で地域を切り替えます。どちらも `auto` 順（最後）に加わり、設定と使用状況にモノグラムが表示されます。Web UI は **18 プロバイダー**に対応しました。
+
+### 備考
+- 他と同じ信頼された設定 + http(s) スキームチェックの経路（求人 URL 用 SSRF バリデーターは通りません）。スキャンソースは **82** で変更なし。テスト: **2755**。
+
 ## [1.216.0] — 2026-08-26
 
 **追加 — LLM プロバイダーを 9 つ追加、それぞれにブランドタイル。** ⚡ ライブ評価を DeepSeek、GLM (Z.ai)、Kimi (Moonshot)、MiniMax、Mistral、Grok (xAI)、Together、Fireworks、または完全ローカルの Ollama で実行できるようになりました。キー 1 つで使え、設定の各フィールド横にモノグラムが表示されます。

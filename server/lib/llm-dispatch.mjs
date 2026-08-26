@@ -19,6 +19,7 @@ import {
   hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey,
   runDeepSeek, runZai, runKimi, runMiniMax, runMistral, runGrok, runTogether, runFireworks, runOllama,
   hasDeepSeekKey, hasZaiKey, hasKimiKey, hasMiniMaxKey, hasMistralKey, hasGrokKey, hasTogetherKey, hasFireworksKey, hasOllamaKey,
+  runArk, runArkCn, hasArkKey, hasArkCnKey,
 } from './openai.mjs';
 import { providerOrder, AUTO_ORDER } from './env-config.mjs';
 import { recordUsage } from './llm-usage.mjs';
@@ -40,6 +41,7 @@ const HAS_KEY = {
   deepseek: hasDeepSeekKey, zai: hasZaiKey, kimi: hasKimiKey, minimax: hasMiniMaxKey,
   mistral: hasMistralKey, grok: hasGrokKey, together: hasTogetherKey,
   fireworks: hasFireworksKey, ollama: hasOllamaKey,
+  ark: hasArkKey, arkcn: hasArkCnKey,
 };
 // The auto tail (everything after Anthropic/Gemini get their own dedicated
 // branches in runActiveProvider). Order mirrors AUTO_ORDER.
@@ -47,6 +49,7 @@ const TAIL_RUN = {
   openai: runOpenAI, qwen: runQwen, openrouter: runOpenRouter, github: runGitHubModels, hermes: runHermes,
   deepseek: runDeepSeek, zai: runZai, kimi: runKimi, minimax: runMiniMax,
   mistral: runMistral, grok: runGrok, together: runTogether, fireworks: runFireworks, ollama: runOllama,
+  ark: runArk, arkcn: runArkCn,
 };
 function _hasKeyFor(p) {
   return typeof HAS_KEY[p] === 'function' && HAS_KEY[p]();

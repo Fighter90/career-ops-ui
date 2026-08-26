@@ -44,6 +44,8 @@ export const KNOWN_KEYS = [
   'TOGETHER_API_KEY', 'TOGETHER_MODEL',                      // Together AI (open-weight, incl. Inkling)
   'FIREWORKS_API_KEY', 'FIREWORKS_MODEL',                    // Fireworks AI (open-weight)
   'OLLAMA_BASE_URL', 'OLLAMA_MODEL', 'OLLAMA_API_KEY',       // fully local; OLLAMA_BASE_URL is the opt-in signal (no key)
+  'ARK_API_KEY', 'ARK_MODEL', 'ARK_BASE_URL',                // v1.217.0 — BytePlus Ark (intl)
+  'ARK_CN_API_KEY', 'ARK_CN_MODEL', 'ARK_CN_BASE_URL',       // v1.217.0 — Volcengine Ark (China)
   // ── Server runtime ──
   'PORT',
   'HOST',
@@ -55,12 +57,14 @@ export const KNOWN_KEYS = [
 export const AUTO_ORDER = [
   'anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes',
   'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama',
+  'ark', 'arkcn',
 ];
 // Slugs whose LLM_PROVIDER pin value equals the internal provider name
 // (unlike `claude`→`anthropic`). Pinning any of these returns just itself.
 const SELF_NAMED_PINS = new Set([
   'openai', 'qwen', 'openrouter', 'github', 'hermes',
   'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama',
+  'ark', 'arkcn',
 ]);
 
 /**
@@ -69,7 +73,7 @@ const SELF_NAMED_PINS = new Set([
  * one provider; with no key it falls through to the manual-prompt
  * path exactly like the pre-v1.39 no-key behaviour.
  */
-export const LLM_PROVIDERS = ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes', 'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama'];
+export const LLM_PROVIDERS = ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes', 'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama', 'ark', 'arkcn'];
 
 /**
  * Effective provider preference order from LLM_PROVIDER:
@@ -163,6 +167,8 @@ export const SECRET_KEYS = new Set([
   'DEEPSEEK_API_KEY', 'ZAI_API_KEY', 'MOONSHOT_API_KEY', 'MINIMAX_API_KEY',
   'MISTRAL_API_KEY', 'XAI_API_KEY', 'TOGETHER_API_KEY', 'FIREWORKS_API_KEY',
   'OLLAMA_API_KEY',
+  'ARK_API_KEY',
+  'ARK_CN_API_KEY',
 ]);
 
 /**

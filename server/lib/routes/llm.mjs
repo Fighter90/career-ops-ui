@@ -27,6 +27,8 @@ import { runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes, hasOpenA
 // v1.216.0 — 9 more OpenAI-compatible providers. Kept as a SECOND import from the
 // same module so the v1.55.0 line above stays byte-stable for provider-selector.test.mjs.
 import { runDeepSeek, runZai, runKimi, runMiniMax, runMistral, runGrok, runTogether, runFireworks, runOllama, hasDeepSeekKey, hasZaiKey, hasKimiKey, hasMiniMaxKey, hasMistralKey, hasGrokKey, hasTogetherKey, hasFireworksKey, hasOllamaKey } from '../openai.mjs';
+// v1.217.0 — Ark pair (BytePlus + Volcengine), OpenAI-compatible Chat Completions.
+import { runArk, runArkCn, hasArkKey, hasArkCnKey } from '../openai.mjs';
 import { providerOrder, AUTO_ORDER } from '../env-config.mjs';
 import { recordUsage } from '../llm-usage.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
@@ -66,7 +68,9 @@ function _hasKeyFor(p) {
     || (p === 'grok' && hasGrokKey())
     || (p === 'together' && hasTogetherKey())
     || (p === 'fireworks' && hasFireworksKey())
-    || (p === 'ollama' && hasOllamaKey());
+    || (p === 'ollama' && hasOllamaKey())
+    || (p === 'ark' && hasArkKey())
+    || (p === 'arkcn' && hasArkCnKey());
 }
 // True when ANY configured provider key is present (drives the manual-fallback copy).
 function _anyProviderKey() {
@@ -85,6 +89,7 @@ function _provGate() {
     wantDeepSeek: o.includes('deepseek'), wantZai: o.includes('zai'), wantKimi: o.includes('kimi'),
     wantMiniMax: o.includes('minimax'), wantMistral: o.includes('mistral'), wantGrok: o.includes('grok'),
     wantTogether: o.includes('together'), wantFireworks: o.includes('fireworks'), wantOllama: o.includes('ollama'),
+    wantArk: o.includes('ark'), wantArkCn: o.includes('arkcn'),
   };
 }
 
@@ -119,6 +124,9 @@ function _tailProvider() {
   if (g.wantTogether && hasTogetherKey()) return { mode: 'together', run: runTogether };
   if (g.wantFireworks && hasFireworksKey()) return { mode: 'fireworks', run: runFireworks };
   if (g.wantOllama && hasOllamaKey()) return { mode: 'ollama', run: runOllama };
+  // v1.217.0 — Ark pair, last (regional/opt-in).
+  if (g.wantArk && hasArkKey()) return { mode: 'ark', run: runArk };
+  if (g.wantArkCn && hasArkCnKey()) return { mode: 'arkcn', run: runArkCn };
   return null;
 }
 

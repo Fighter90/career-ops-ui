@@ -22,7 +22,7 @@ test('provider-status.js reads /api/status/providers and labels all 16 providers
   assert.match(src, /\/api\/status\/providers/, 'must query /api/status/providers');
   assert.match(src, /window\.ProviderStatus\s*=/, 'must expose window.ProviderStatus');
   for (const p of ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes',
-    'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama']) {
+    'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama', 'ark', 'arkcn']) {
     assert.match(src, new RegExp(`${p}:\\s*'`), `LABELS missing ${p}`);
   }
 });

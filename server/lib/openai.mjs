@@ -351,6 +351,36 @@ export async function runOllama(prompt, opts = {}) {
 }
 export function hasOllamaKey() { return isUsableKey(envKey('OLLAMA_BASE_URL'), 3); }
 
+// ─── v1.217.0 — Ark (ByteDance Volcano Engine), two regional deployments ──────
+// Both expose an OpenAI-compatible Chat Completions surface at `<base>/chat/
+// completions`, so they ride the same runOpenAICompatible() core with a
+// region base-URL override. The `model` is the vendor's model name or an
+// endpoint id (`ep-…`); users override via ARK_MODEL / ARK_CN_MODEL.
+const ARK_BASE_DEFAULT = 'https://ark.ap-southeast.bytepluses.com/api/v3';  // BytePlus Ark (international)
+const ARK_CN_BASE_DEFAULT = 'https://ark.cn-beijing.volces.com/api/v3';     // Volcengine Ark (China)
+
+/** BytePlus Ark — OpenAI-compatible; ARK_BASE_URL switches region. */
+export async function runArk(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || compatChatUrl(envKey('ARK_BASE_URL'), ARK_BASE_DEFAULT),
+    apiKey: opts.apiKey || envKey('ARK_API_KEY'),
+    model: opts.model || envKey('ARK_MODEL') || 'doubao-pro-32k',
+    label: 'BytePlus Ark', ...opts,
+  });
+}
+export function hasArkKey() { return isUsableKey(envKey('ARK_API_KEY')); }
+
+/** Volcengine Ark (China) — OpenAI-compatible; ARK_CN_BASE_URL overrides. */
+export async function runArkCn(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || compatChatUrl(envKey('ARK_CN_BASE_URL'), ARK_CN_BASE_DEFAULT),
+    apiKey: opts.apiKey || envKey('ARK_CN_API_KEY'),
+    model: opts.model || envKey('ARK_CN_MODEL') || 'doubao-pro-32k',
+    label: 'Volcengine Ark', ...opts,
+  });
+}
+export function hasArkCnKey() { return isUsableKey(envKey('ARK_CN_API_KEY')); }
+
 /**
  * Curated fallback model list (v1.57.0) — used when the live
  * OpenRouter catalogue can't be fetched (offline, rate-limited, 5xx)

@@ -9,6 +9,16 @@
 ---
 
 
+## [1.217.0] — 2026-08-26
+
+**추가 — Ark가 LLM 목록에 합류(18개 제공자).** ByteDance의 Doubao 모델인 BytePlus Ark와 Volcengine Ark가 이제 ⚡ 라이브 제공자입니다 — 동일한 OpenAI 호환 코어와 지역별 기본 URL을 사용합니다.
+
+### 추가
+- **BytePlus Ark**(`ARK_API_KEY`, 국제)와 **Volcengine Ark**(`ARK_CN_API_KEY`, 중국) — `runOpenAICompatible()`을 통한 OpenAI 호환 Chat Completions. `ARK_MODEL` / `ARK_CN_MODEL`(Doubao 모델명 또는 `ep-…` 엔드포인트 id)을 설정하고, `ARK_BASE_URL` / `ARK_CN_BASE_URL`로 지역을 전환합니다. 둘 다 `auto` 순서(마지막)에 합류하며 설정과 사용량에 모노그램이 표시됩니다. 웹 UI는 이제 **18개** 라이브 제공자를 지원합니다.
+
+### 참고
+- 나머지와 동일한 신뢰된 설정 + http(s) 스킴 검사 경로(채용 URL용 SSRF 검증기는 사용 안 함). 스캔 소스 변동 없음: **82**. 테스트: **2755**.
+
 ## [1.216.0] — 2026-08-26
 
 **추가 — LLM 제공자 9개가 더해졌고, 각각 브랜드 타일이 붙습니다.** 이제 ⚡ 라이브 평가를 DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks 또는 완전 로컬 Ollama로 실행할 수 있습니다 — 키 하나면 되고, 설정의 각 필드 옆에 모노그램이 표시됩니다.
