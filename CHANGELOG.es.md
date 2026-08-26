@@ -11,6 +11,13 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.217.1] — 2026-08-26
+
+**Endurecimiento de pruebas — cobertura de endpoint para todo el catálogo de proveedores.**
+
+### Añadido
+- Una prueba parametrizada de `run<Provider>` que verifica endpoint, modelo por defecto y autenticación Bearer para **Kimi, MiniMax, Mistral y Fireworks**.
+
 ## [1.217.0] — 2026-08-26
 
 **Añadido — Ark se une a la lista de LLM (18 proveedores).** BytePlus Ark y Volcengine Ark —los modelos Doubao de ByteDance— ya son proveedores ⚡ en vivo, con el mismo núcleo compatible con OpenAI y una URL base por región.

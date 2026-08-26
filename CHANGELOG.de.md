@@ -2,6 +2,13 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.217.1] — 2026-08-26
+
+**Test-Härtung — Endpunkt-Abdeckung für das gesamte Anbieterverzeichnis.**
+
+### Hinzugefügt
+- Ein parametrisierter `run<Provider>`-Test, der Endpunkt, Standardmodell und Bearer-Authentifizierung für **Kimi, MiniMax, Mistral und Fireworks** prüft.
+
 ## [1.217.0] — 2026-08-26
 
 **Hinzugefügt — Ark kommt zur LLM-Liste dazu (18 Anbieter).** BytePlus Ark und Volcengine Ark — ByteDances Doubao-Modelle — sind jetzt ⚡ Live-Anbieter über denselben OpenAI-kompatiblen Kern und eine Basis-URL pro Region.

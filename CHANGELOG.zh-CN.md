@@ -9,6 +9,13 @@
 ---
 
 
+## [1.217.1] — 2026-08-26
+
+**测试加固 —— 覆盖全部提供方的端点。**
+
+### 新增
+- 一个参数化的 `run<Provider>` 测试,校验 **Kimi、MiniMax、Mistral 与 Fireworks** 的端点、默认模型与 Bearer 认证。
+
 ## [1.217.0] — 2026-08-26
 
 **新增 —— Ark 加入 LLM 名单（18 个提供方）。** 字节跳动的 Doubao 模型 BytePlus Ark 与 Volcengine Ark 现为 ⚡ 实时提供方——采用同一 OpenAI 兼容内核与按区域的基础 URL。

@@ -21,6 +21,7 @@ let runOpenRouter, hasOpenRouterKey, fetchOpenRouterModels, OPENROUTER_FALLBACK_
 // v1.216.0 — extended OpenAI-compatible roster.
 let compatChatUrl, runDeepSeek, runZai, runKimi, runGrok, runTogether, runOllama, hasOllamaKey, hasGrokKey;
 let runArk, runArkCn, hasArkKey, hasArkCnKey;
+let runMiniMax, runMistral, runFireworks;
 let ROOT, ENV_FILE;
 const savedRoot = process.env.CAREER_OPS_ROOT;
 
@@ -35,7 +36,8 @@ before(async () => {
      OPENROUTER_FALLBACK_MODELS,
      compatChatUrl, runDeepSeek, runZai, runKimi, runGrok, runTogether, runOllama,
      hasOllamaKey, hasGrokKey,
-     runArk, runArkCn, hasArkKey, hasArkCnKey } =
+     runArk, runArkCn, hasArkKey, hasArkCnKey,
+     runMiniMax, runMistral, runFireworks } =
     await import('../server/lib/openai.mjs'));
 });
 
@@ -468,4 +470,27 @@ test('hasArkKey / hasArkCnKey gate on their own env (ARK_API_KEY / ARK_CN_API_KE
   assert.equal(hasArkKey(), true);
   assert.equal(hasArkCnKey(), true);
   clearParentEnv();
+});
+
+// v1.217.0 — parametrized coverage for the remaining wrappers, so every
+// provider run<X> has an endpoint+default-model+Bearer assertion.
+test('run<Provider> wrappers post to the expected endpoint with their default model', async () => {
+  const CASES = [
+    { fn: () => runKimi,      url: 'https://api.moonshot.ai/v1/chat/completions',      model: 'kimi-k2-0711-preview' },
+    { fn: () => runMiniMax,   url: 'https://api.minimax.io/v1/chat/completions',       model: 'MiniMax-Text-01' },
+    { fn: () => runMistral,   url: 'https://api.mistral.ai/v1/chat/completions',       model: 'mistral-large-latest' },
+    { fn: () => runFireworks, url: 'https://api.fireworks.ai/inference/v1/chat/completions', model: 'accounts/fireworks/models/llama-v3p3-70b-instruct' },
+  ];
+  for (const c of CASES) {
+    let sentUrl, sentModel, sentAuth;
+    const fakeFetch = async (url, opts) => {
+      sentUrl = url; sentModel = JSON.parse(opts.body).model; sentAuth = opts.headers.Authorization;
+      return okChat('ok');
+    };
+    const r = await c.fn()('hi', { apiKey: 'provider-canary-000001', fetchImpl: fakeFetch });
+    assert.equal(r.error, null, `${c.url} errored`);
+    assert.equal(sentUrl, c.url);
+    assert.equal(sentModel, c.model, `default model for ${c.url}`);
+    assert.equal(sentAuth, 'Bearer provider-canary-000001');
+  }
 });
