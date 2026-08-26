@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2775%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2779%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.221.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.221.0)
+[![release](https://img.shields.io/badge/release-v1.222.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.222.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.221.0** — **DNS 重绑定加固** —— 扫描器现在会拒绝任何主机解析到私有/回环/云元数据地址(如 `169.254.169.254`)的来源 —— 在现有 SSRF 防护之上的纵深防御。 **2775 项测试.**
+> **🆕 最新版本 — v1.222.0** — **提供方提示本地化** — 设置 → API 密钥下扩展提供方(DeepSeek … Volcengine Ark)的密钥、模型与基础 URL 提示现已翻译为全部 17 种语言,而非仅英文。 **2779 项测试.**
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

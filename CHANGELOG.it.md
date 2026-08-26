@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.222.0] — 2026-08-26
+
+**Modificato — i suggerimenti dei campi dei provider estesi (DeepSeek … Volcengine Ark) sono ora localizzati in tutte le 17 lingue.**
+
+### Modificato
+- **Suggerimenti dei campi dei provider localizzati.** Ogni `config.<slug>Hint` degli 11 provider compatibili con OpenAI aggiunti in v1.216.0–v1.217.0 (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) — i suggerimenti di chiave API, modello e URL base in **Impostazioni → Chiavi API** — è ora tradotto in tutte le 17 lingue anziché ripiegare sull'inglese. URL di registrazione, id dei modelli e il marcatore ⚡ della valutazione live sono conservati alla lettera.
+
+### Note
+- Nessun cambiamento di comportamento — il `hintFallback` inglese in `field-specs.js` protegge ancora una chiave mancante, e un nuovo test di contratto verifica che ogni `hintKey` dei descrittori di campo si risolva in tutte le 17 lingue. Fonti di scansione invariate: **83**. Suite di test: **2779**.
+
 ## [1.221.0] — 2026-08-26
 
 **Sicurezza — difesa in profondità contro il DNS-rebinding sul percorso di fetch dello scanner.**

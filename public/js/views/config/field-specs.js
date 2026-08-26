@@ -224,9 +224,10 @@
     // ─── v1.216.0 — extended OpenAI-compatible provider roster ───────────
     // Each is an OpenAI-compatible /v1/chat/completions endpoint reached
     // through the shared runOpenAICompatible() core. Setting the key opts the
-    // provider into the ⚡ live-eval auto order (after Hermes). Signup URLs
-    // are language-neutral, so the hints fall back to English until a locale
-    // supplies config.<slug>Hint.
+    // provider into the ⚡ live-eval auto order (after Hermes). The hintFallback
+    // strings below are the English source; every config.<slug>Hint is now
+    // localized across all 17 locales (v1.222.0) — the fallback only fires if a
+    // key is ever missing. Signup URLs / model ids stay language-neutral.
     {
       key: 'DEEPSEEK_API_KEY', secret: true,
       labelKey: 'config.deepseekKey', label: 'DEEPSEEK_API_KEY',

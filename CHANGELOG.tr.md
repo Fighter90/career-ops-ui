@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.222.0] — 2026-08-26
+
+**Değiştirildi — genişletilmiş sağlayıcıların (DeepSeek … Volcengine Ark) alan ipuçları artık 17 dilin tamamında yerelleştirildi.**
+
+### Değiştirildi
+- **Sağlayıcı alan ipuçları yerelleştirildi.** v1.216.0–v1.217.0'te eklenen 11 OpenAI uyumlu sağlayıcının (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) her `config.<slug>Hint` değeri — **Ayarlar → API anahtarları** altındaki API anahtarı, model ve temel URL ipuçları — artık İngilizceye geri düşmek yerine 17 dilin tamamına çevrildi. Kayıt URL'leri, model id'leri ve ⚡ canlı değerlendirme işareti aynen korunur.
+
+### Notlar
+- Davranış değişikliği yok — `field-specs.js` içindeki İngilizce `hintFallback` eksik bir anahtarı hâlâ korur ve yeni bir sözleşme testi, alan tanımlayıcılarının her `hintKey` değerinin 17 dilde çözümlendiğini doğrular. Tarama kaynakları değişmedi: **83**. Test paketi: **2779**.
+
 ## [1.221.0] — 2026-08-26
 
 **Güvenlik — tarayıcı fetch yolunda DNS-rebinding’e karşı derinlemesine savunma.**

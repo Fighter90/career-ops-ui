@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2775%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2779%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.221.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.221.0)
+[![release](https://img.shields.io/badge/release-v1.222.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.222.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.221.0** — **DNS-rebinding 하드닝** — 스캐너가 이제 호스트가 사설/루프백/클라우드 메타데이터 주소(예: `169.254.169.254`)로 해석되는 모든 소스를 거부합니다 — 기존 SSRF 방어에 더한 심층 방어. **2775 개 테스트.**
+> **🆕 최신 릴리스 — v1.222.0** — **제공자 힌트 현지화** — 설정 → API 키의 확장 제공자(DeepSeek … Volcengine Ark) 키·모델·기본 URL 힌트가 이제 영어 전용이 아니라 17개 언어로 번역됩니다. **2779 개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

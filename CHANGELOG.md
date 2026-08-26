@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.222.0] — 2026-08-26
+
+**Changed — the extended-provider field hints (DeepSeek … Volcengine Ark) are now localized in all 17 languages.**
+
+### Changed
+- **Localized provider field hints.** Every `config.<slug>Hint` for the 11 OpenAI-compatible providers added in v1.216.0–v1.217.0 (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) — the API-key, model, and base-URL hints under **Settings → API keys** — is now translated across all 17 locales instead of falling back to English. Signup URLs, model ids, and the ⚡ live-eval marker are preserved verbatim.
+
+### Notes
+- No behaviour change — the English `hintFallback` in `field-specs.js` still guards a missing key, and a new contract test asserts every field-descriptor `hintKey` resolves in all 17 locales. Scan sources unchanged at **83**. Test suite: **2779**.
+
 ## [1.221.0] — 2026-08-26
 
 **Security — DNS-rebinding defence-in-depth on the scanner fetch path.**
