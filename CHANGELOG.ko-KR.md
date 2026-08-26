@@ -9,6 +9,16 @@
 ---
 
 
+## [1.222.0] — 2026-08-26
+
+**변경됨 — 확장 제공자(DeepSeek … Volcengine Ark) 필드 힌트가 이제 17개 언어로 현지화되었습니다.**
+
+### 변경됨
+- **제공자 필드 힌트 현지화.** v1.216.0–v1.217.0에서 추가된 11개 OpenAI 호환 제공자(DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark)의 모든 `config.<slug>Hint` — **설정 → API 키**의 API 키·모델·기본 URL 힌트 — 가 이제 영어로 폴백하지 않고 17개 언어 전체로 번역됩니다. 가입 URL, 모델 id, ⚡ 라이브 평가 마커는 그대로 유지됩니다.
+
+### 참고
+- 동작 변경 없음 — `field-specs.js`의 영어 `hintFallback`은 키 누락 시 여전히 보호하며, 새 계약 테스트가 모든 필드 서술자 `hintKey`가 17개 언어에서 해석됨을 검증합니다. 스캔 소스 변경 없음: **83**. 테스트 스위트: **2779**.
+
 ## [1.221.0] — 2026-08-26
 
 **보안 — 스캐너 fetch 경로의 DNS-rebinding 심층 방어.**

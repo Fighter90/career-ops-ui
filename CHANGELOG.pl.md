@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.222.0] — 2026-08-26
+
+**Zmieniono — podpowiedzi pól rozszerzonych dostawców (DeepSeek … Volcengine Ark) są teraz zlokalizowane we wszystkich 17 językach.**
+
+### Zmieniono
+- **Lokalizacja podpowiedzi pól dostawców.** Każdy `config.<slug>Hint` dla 11 zgodnych z OpenAI dostawców dodanych w v1.216.0–v1.217.0 (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) — podpowiedzi klucza API, modelu i bazowego URL w **Ustawienia → Klucze API** — jest teraz przetłumaczony na wszystkie 17 języków zamiast wracać do angielskiego. URL-e rejestracji, id modeli i znacznik ⚡ oceny na żywo są zachowane dosłownie.
+
+### Uwagi
+- Bez zmiany zachowania — angielski `hintFallback` w `field-specs.js` nadal chroni brakujący klucz, a nowy test kontraktu sprawdza, że każdy `hintKey` deskryptorów pól rozwiązuje się we wszystkich 17 językach. Źródła skanowania bez zmian: **83**. Zestaw testów: **2779**.
+
 ## [1.221.0] — 2026-08-26
 
 **Bezpieczeństwo — obrona w głąb przeciw DNS-rebinding na ścieżce fetch skanera.**

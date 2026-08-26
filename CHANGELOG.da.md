@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.222.0] — 2026-08-26
+
+**Ændret — feltteksterne for de udvidede udbydere (DeepSeek … Volcengine Ark) er nu lokaliseret på alle 17 sprog.**
+
+### Ændret
+- **Lokaliserede udbyder-felttekster.** Hver `config.<slug>Hint` for de 11 OpenAI-kompatible udbydere tilføjet i v1.216.0–v1.217.0 (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) — API-nøgle-, model- og base-URL-teksterne under **Indstillinger → API-nøgler** — er nu oversat på alle 17 sprog i stedet for at falde tilbage til engelsk. Tilmeldings-URL'er, model-id'er og ⚡ live-eval-markøren bevares ordret.
+
+### Noter
+- Ingen adfærdsændring — den engelske `hintFallback` i `field-specs.js` beskytter stadig en manglende nøgle, og en ny kontrakttest bekræfter, at hver `hintKey` i feltbeskrivelserne kan slås op på alle 17 sprog. Scanningskilder uændret: **83**. Testsuite: **2779**.
+
 ## [1.221.0] — 2026-08-26
 
 **Sikkerhed — forsvar i dybden mod DNS-rebinding på scannerens fetch-sti.**

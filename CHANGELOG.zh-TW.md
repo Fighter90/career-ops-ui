@@ -8,6 +8,16 @@
 
 ---
 
+## [1.222.0] — 2026-08-26
+
+**變更 —— 擴充供應方（DeepSeek … Volcengine Ark）的欄位提示現已本地化為全部 17 種語言。**
+
+### 變更
+- **供應方欄位提示本地化。** v1.216.0–v1.217.0 新增的 11 個 OpenAI 相容供應方（DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark）的每個 `config.<slug>Hint` —— **設定 → API 金鑰**下的 API 金鑰、模型與基礎 URL 提示 —— 現已翻譯為全部 17 種語言,不再回退到英文。註冊 URL、模型 id 與 ⚡ 即時評估標記皆原樣保留。
+
+### 備註
+- 行為無變化 —— `field-specs.js` 中的英文 `hintFallback` 仍在金鑰缺失時兜底,新增的契約測試斷言每個欄位描述子 `hintKey` 都能在全部 17 種語言中解析。掃描來源不變:**83**。測試套件:**2779**。
+
 ## [1.221.0] — 2026-08-26
 
 **安全 —— 掃描器 fetch 路徑的 DNS 重新繫結縱深防禦。**

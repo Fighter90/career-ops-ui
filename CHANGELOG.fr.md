@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.222.0] — 2026-08-26
+
+**Modifié — les aides de champ des fournisseurs étendus (DeepSeek … Volcengine Ark) sont désormais localisées dans les 17 langues.**
+
+### Modifié
+- **Aides de champ des fournisseurs localisées.** Chaque `config.<slug>Hint` des 11 fournisseurs compatibles OpenAI ajoutés en v1.216.0–v1.217.0 (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) — les aides de clé API, de modèle et d'URL de base sous **Paramètres → Clés API** — est désormais traduit dans les 17 langues au lieu de revenir à l'anglais. Les URLs d'inscription, les ids de modèle et le marqueur ⚡ d'éval en direct sont conservés tels quels.
+
+### Notes
+- Aucun changement de comportement — le `hintFallback` anglais dans `field-specs.js` protège toujours une clé manquante, et un nouveau test de contrat vérifie que chaque `hintKey` des descripteurs de champ se résout dans les 17 langues. Sources de scan inchangées : **83**. Suite de tests : **2779**.
+
 ## [1.221.0] — 2026-08-26
 
 **Sécurité — défense en profondeur contre le DNS-rebinding sur le chemin de fetch du scanner.**
