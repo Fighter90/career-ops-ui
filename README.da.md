@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2758%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2768%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.218.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.218.0)
+[![release](https://img.shields.io/badge/release-v1.219.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.219.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.218.0** — **Udbyder-badges overalt** — dashboard-chippen, "Aktiv"-oversigten i Indstillinger og ⚡ evalueringsresultatet viser nu hver udbyders monogram og dens korrekte navn blandt alle 18 (retter tre forældede 5-udbyder-etiketter). **2758 tests.**
+> **🆕 Seneste udgivelse — v1.219.0** — **Torre slutter sig til scanneren** — det latinamerikanske talentmarked (torre.ai) er en ny scanningskilde (**83** i alt), plus en a16z-pagineringsrettelse og korrekte udbyder-etiketter + monogrammer overalt. **2768 tests.**
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
 

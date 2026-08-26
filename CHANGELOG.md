@@ -8,6 +8,21 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.219.0] — 2026-08-26
+
+**Added — Torre joins the scanner, and every provider label is now correct.** A new LatAm-heavy remote board, a fix that stopped the a16z sweep short, and the last places that named providers from a stale short list now use the full 18-provider roster.
+
+### Added
+- **Torre** (`provider: torre`) — the pan-LatAm talent marketplace behind torre.ai, a public zero-auth opportunity search carrying remote roles that never reach Greenhouse/Lever/Ashby. Configure `search` (+ `experience`) and optional `remote_only`; one capped request per entry. The scanner registry now ships **83** sources (78 English + 5 Russian).
+- **Provider monogram on the onboarding banner** — the top-of-page "Live eval" chip now shows the active provider's brand tile (joining Settings, Usage, the dashboard chip, and the ⚡ result).
+
+### Fixed
+- **The a16z Speedrun scan stopped early on a rotating board.** When a listing was deleted between page requests, the feed returned a 49/50 page mid-sweep; that short page was treated as the last one, silently truncating the scan (149 of ~300 jobs). It now trusts the feed's own `total_pages` and only falls back to a short page when the feed doesn't report one — an empty page always ends iteration, so an over-reporting feed can't run away.
+- **Stale provider names.** The global onboarding banner resolved the active provider from a 4-entry map (Anthropic/Gemini/OpenAI/Qwen) and showed a raw slug for the other 14; it now uses the shared 18-provider label + monogram. The Settings "which providers" note ("seven providers …") now lists the full 18.
+
+### Notes
+- Get on Board's new multiple-categories-per-entry option isn't wired here yet — the web-ui adapter builds the category into the endpoint URL, so it needs a source-level refactor; queued. Test suite: **2768**.
+
 ## [1.218.0] — 2026-08-26
 
 **Added — provider brand tiles (and correct names) everywhere a provider is shown.** The dashboard "live evals" chip, the Settings active-provider summary, and the ⚡ evaluation result now each carry the provider's monogram and name it correctly across all 18.

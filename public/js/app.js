@@ -86,9 +86,6 @@ I18n.onChange(() => {
   // mode + a deep link to the API-keys tab. ≥1 key → a subtle chip
   // naming the provider the OR-router will use. CSP-safe: DOM nodes +
   // addEventListener only, never innerHTML with response data.
-  const PROVIDER_NAME = {
-    anthropic: 'Anthropic', gemini: 'Gemini', openai: 'OpenAI', qwen: 'Qwen',
-  };
   async function renderOnboardingBanner() {
     const host = document.getElementById('onboarding-banner');
     if (!host) return;
@@ -115,11 +112,20 @@ I18n.onChange(() => {
       host.hidden = false;
     } else {
       host.classList.add('onboarding-ok');
-      const name = PROVIDER_NAME[st.activeProvider] || st.activeProvider || '';
+      // v1.219.0 — the friendly name resolves via the shared ProviderStatus
+      // (all 18 providers), not a stale 4-entry map that showed a raw slug for
+      // the newer ones; the chip carries the provider's brand monogram.
+      const name = (window.ProviderStatus && window.ProviderStatus.label(st.activeProvider)) || st.activeProvider || '';
       const label = I18n.t('onboarding.activeProvider', 'Live eval');
       const chip = document.createElement('span');
-      chip.textContent = label + ': ' + name +
-        (st.activeModel ? ' (' + st.activeModel + ')' : '');
+      chip.style.display = 'inline-flex';
+      chip.style.alignItems = 'center';
+      chip.style.gap = '6px';
+      const tile = (st.activeProvider && window.ProviderLogo && typeof window.ProviderLogo.el === 'function')
+        ? window.ProviderLogo.el(st.activeProvider, 15) : null;
+      if (tile) chip.appendChild(tile);
+      chip.appendChild(document.createTextNode(label + ': ' + name +
+        (st.activeModel ? ' (' + st.activeModel + ')' : '')));
       host.append(chip);
       host.hidden = false;
     }

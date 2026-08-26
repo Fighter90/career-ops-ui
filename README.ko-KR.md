@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2758%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2768%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.218.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.218.0)
+[![release](https://img.shields.io/badge/release-v1.219.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.219.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.218.0** — **어디서나 제공자 배지** — 대시보드 칩, 설정의 "활성" 요약, ⚡ 평가 결과가 이제 각 제공자의 모노그램과 18개 전체에서 올바른 이름을 표시합니다(오래된 5개 제공자 라벨 3건 수정). **2758 개 테스트.**
+> **🆕 최신 릴리스 — v1.219.0** — **Torre가 스캐너에 합류** — 라틴아메리카 인재 마켓플레이스(torre.ai)가 새 스캔 소스로 추가되어(총 **83개**), a16z 페이지네이션 수정과 어디서나 올바른 제공자 라벨+모노그램이 함께 제공됩니다. **2768 개 테스트.**
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
 

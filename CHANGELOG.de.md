@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.219.0] — 2026-08-26
+
+**Hinzugefügt — Torre kommt zum Scanner, und jedes Anbieter-Label ist jetzt korrekt.**
+
+### Hinzugefügt
+- **Torre** (`provider: torre`) — der pan-lateinamerikanische Talentmarktplatz von torre.ai, eine öffentliche Suche ohne Authentifizierung mit Remote-Stellen, die es nicht bis Greenhouse/Lever/Ashby schaffen; eine begrenzte Anfrage pro Eintrag. Das Registry umfasst nun **83** Quellen (78 englische + 5 russische). Außerdem ein Monogramm des aktiven Anbieters im Onboarding-Banner.
+
+### Behoben
+- Der a16z-Speedrun-Scan brach auf einem rotierenden Board zu früh ab (eine kurze Seite mitten im Durchlauf galt als letzte und kürzte auf 149 von ~300); er vertraut jetzt dem `total_pages` des Feeds. Und das Onboarding-Banner löste den Anbieter aus einer 4-Einträge-Map auf (und zeigte den rohen Slug für die übrigen 14) — es nutzt jetzt Label+Monogramm der 18; der Anbieter-Hinweis in den Einstellungen geht von 7 auf 18.
+
+### Hinweise
+- Die neue Mehr-Kategorien-pro-Eintrag-Option von Get on Board ist hier noch nicht verdrahtet (erfordert einen Refactor auf Quellebene). Tests: **2768**.
+
 ## [1.218.0] — 2026-08-26
 
 **Hinzugefügt — Anbieter-Badges (und korrekte Namen) überall, wo ein Anbieter angezeigt wird.**

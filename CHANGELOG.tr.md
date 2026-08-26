@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.219.0] — 2026-08-26
+
+**Eklendi — Torre tarayıcıya katıldı ve artık her sağlayıcı etiketi doğru.**
+
+### Eklendi
+- **Torre** (`provider: torre`) — torre.ai’nin pan-Latin Amerika yetenek pazarı; Greenhouse/Lever/Ashby’ye ulaşmayan uzaktan roller taşıyan, kimlik doğrulaması gerektirmeyen açık bir arama; giriş başına tek sınırlı istek. Kayıt artık **83** kaynak içeriyor (78 İngilizce + 5 Rusça). Ayrıca karşılama afişinde aktif sağlayıcının monogramı.
+
+### Düzeltildi
+- a16z Speedrun taraması, dönen bir panoda erken duruyordu (tarama ortasındaki kısa bir sayfa sonuncusu sanılıp ~300’de 149’a kırpılıyordu); artık akışın kendi `total_pages` değerine güveniyor. Karşılama afişi ise sağlayıcıyı 4 girişli bir haritadan çözüyordu (kalan 14 için ham slug gösteriyordu) — şimdi 18’in etiket+monogramını kullanıyor; Ayarlar’daki sağlayıcı notu 7’den 18’e çıkıyor.
+
+### Notlar
+- Get on Board’un giriş başına çoklu kategori seçeneği burada henüz bağlı değil (kaynak düzeyinde bir refactor gerekiyor). Testler: **2768**.
+
 ## [1.218.0] — 2026-08-26
 
 **Eklendi — sağlayıcının gösterildiği her yerde sağlayıcı rozetleri (ve doğru adlar).**

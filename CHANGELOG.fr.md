@@ -11,6 +11,19 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.219.0] — 2026-08-26
+
+**Ajouté — Torre rejoint le scanner, et chaque libellé de fournisseur est désormais correct.**
+
+### Ajouté
+- **Torre** (`provider: torre`) — la marketplace de talents pan-latino-américaine de torre.ai, une recherche publique sans authentification portant des postes distants absents de Greenhouse/Lever/Ashby ; une requête bornée par entrée. Le registre compte maintenant **83** sources (78 anglaises + 5 russes). Aussi : monogramme du fournisseur actif sur la bannière d’accueil.
+
+### Corrigé
+- Le scan a16z Speedrun s’arrêtait trop tôt sur un tableau qui tourne (une page courte en milieu de balayage était prise pour la dernière, tronquant à 149 sur ~300) ; il fait désormais confiance au `total_pages` du flux. Et la bannière d’accueil résolvait le fournisseur depuis une table de 4 entrées (affichant le slug brut pour les 14 autres) — elle utilise maintenant le libellé+monogramme des 18 ; la note fournisseurs des Réglages passe de 7 à 18.
+
+### Notes
+- L’option multi-catégories par entrée de Get on Board n’est pas encore câblée ici (refactor au niveau de la source requis). Tests : **2768**.
+
 ## [1.218.0] — 2026-08-26
 
 **Ajouté — badges de fournisseur (et noms corrects) partout où un fournisseur est affiché.**

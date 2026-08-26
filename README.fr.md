@@ -7,16 +7,16 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2758%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2768%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.218.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.218.0)
+[![release](https://img.shields.io/badge/release-v1.219.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.219.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.218.0** — **Badges de fournisseur partout** — la puce du tableau de bord, le résumé « Actif » des Réglages et le résultat de l’⚡ évaluation affichent désormais le monogramme de chaque fournisseur et son nom correct parmi les 18 (corrige trois étiquettes obsolètes de 5 fournisseurs). **2758 tests.**
+> **🆕 Dernière version — v1.219.0** — **Torre rejoint le scanner** — la marketplace de talents latino-américaine (torre.ai) est une nouvelle source de scan (**83** au total), plus un correctif de pagination a16z et des libellés + monogrammes de fournisseur corrects partout. **2768 tests.**
 >
 > 📜 Historique complet des versions : **[CHANGELOG.fr.md](CHANGELOG.fr.md)**.
 

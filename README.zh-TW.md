@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2758%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2768%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.218.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.218.0)
+[![release](https://img.shields.io/badge/release-v1.219.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.219.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.218.0** — **處處可見供應方標誌** —— 儀表板小標籤、設定的「目前」摘要與 ⚡ 評估結果現在都顯示每個供應方的字母標及其在全部 18 個中的正確名稱(修復三處過時的 5 供應方標籤)。 **2758 項測試.**
+> **🆕 最新版本 — v1.219.0** — **Torre 加入掃描器** —— 拉美人才市集(torre.ai)成為新的掃描來源(共 **83** 個),外加 a16z 分頁修復以及處處正確的供應方標籤+字母標。 **2768 項測試.**
 >
 > 📜 完整發佈歷史: **[CHANGELOG.zh-TW.md](CHANGELOG.zh-TW.md)**.
 

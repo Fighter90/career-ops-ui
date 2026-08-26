@@ -128,6 +128,8 @@ import { considerAdapter } from './adapters/consider.mjs';
 import { remotliAdapter } from './adapters/remotli.mjs';
 // v1.136.0 — Eightfold AI boards.
 import { eightfoldAdapter } from './adapters/eightfold.mjs';
+// v1.219.0 — Torre (search.torre.co opportunity search — LatAm-heavy remote board).
+import { torreAdapter } from './adapters/torre.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -213,6 +215,7 @@ export const ALL_ADAPTERS = [
   youratorAdapter,
   jobbankcaAdapter,
   mycareersfutureAdapter,
+  torreAdapter,
   // v1.119.0 — meituan (zhaopin.meituan.com)
   // and tencent (careers.tencent.com) are single-company Chinese tech boards
   // with public JSON APIs — host-detected or explicit `provider:`, zero-auth,

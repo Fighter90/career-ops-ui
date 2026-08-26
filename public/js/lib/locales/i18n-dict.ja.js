@@ -186,7 +186,7 @@ window.__I18N_DICT_JA = {
   'config.gotoHealth': "Health で確認",
   'config.llmProvider': "LLM プロバイダ",
   'config.llmProviderHint': "auto = 設定済みのキーを使用し、Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark の順で優先します。claude / gemini / openai / qwen / openrouter / github / hermes / deepseek / zai / kimi / minimax / mistral / grok / together / fireworks / ollama / ark / arkcn = そのプロバイダーを優先しますが、キー未設定なら設定済みの他のプロバイダーにフォールバックします。プロバイダーキーが一つも無い場合のみ → 手動プロンプトにフォールバック。",
-  'config.providerModelNote': "career-ops は CLI 非依存です — 任意の AI コーディング CLI(Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi)の中で実行し、それぞれ独自のログインを使います。この Web UI は別物です: ⚡ ライブ評価は、下記の 7 つのプロバイダーキーのいずれかでヘッドレス実行されます — Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes — 自動的に順序付けされ、固定したプロバイダーにキーが無ければフォールバックします。",
+  'config.providerModelNote': "career-ops は CLI 非依存です — 任意の AI コーディング CLI(Claude Code · Cursor · Codex · Gemini · OpenCode · Antigravity · Grok Build · Qwen · Copilot · Kimi)の中で実行し、それぞれ独自のログインを使います。この Web UI は別物です: ⚡ ライブ評価は、下記の 18 個のプロバイダーキーのいずれかでヘッドレス実行されます — Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub Models · Hermes · DeepSeek · GLM (Z.ai) · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark — 自動的に順序付けされ、固定したプロバイダーにキーが無ければフォールバックします。",
   'config.openaiKey': "OPENAI_API_KEY",
   'config.openaiHint': "platform.openai.com → API keys。v1.55.0: web-ui ライブ評価も実行（auto 順で Anthropic・Gemini の次、3番目）。親の Codex/OpenAI CLI フローでも引き続き使用。",
   'config.anthropicKey': "Anthropic API キー (Claude)",
