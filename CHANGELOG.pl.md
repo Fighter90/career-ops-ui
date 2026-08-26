@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.224.0] — 2026-08-26
+
+**Zmieniono — kafelki dostawców LLM pokazują teraz prawdziwe logotypy marek.**
+
+### Zmieniono
+- **Prawdziwe logotypy dostawców.** Kafelki dostawcy — pola klucza API w Ustawieniach, wiersze Użycia, chip pulpitu, podsumowanie „Aktywny" w Ustawieniach, wynik ⚡ oceny i baner powitalny — renderują teraz **prawdziwe logo marki** dla 11 dostawców publikujących ikonę open-source (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; jednościeżkowe SVG z [simple-icons](https://simpleicons.org), CC0). Siedmiu bez opublikowanej ikony (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) zachowuje monogram w kolorze marki. Nadal **bezpieczne dla CSP z założenia**: ścieżka logo to wbudowana stała statyczna — bez zasobu zdalnego, bez `innerHTML`.
+
+### Uwagi
+- Bez zmian tras ani zachowania; to samo API `ProviderLogo.el(slug)`. `provider-logo.js` urósł (wbudowane ścieżki logo). Źródła skanowania bez zmian: **83**. Zestaw testów: **2784**.
+
 ## [1.223.0] — 2026-08-26
 
 **Naprawiono — udana ocena ⚡ na żywo była malowana jako błąd; ponadto instalacja coworkera OpenWorker prosto z jego URL GitHub lub .zip.**

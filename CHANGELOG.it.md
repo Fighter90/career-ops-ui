@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.224.0] — 2026-08-26
+
+**Modificato — i riquadri dei provider LLM ora mostrano i loghi reali dei brand.**
+
+### Modificato
+- **Loghi reali dei provider.** I riquadri del provider — campi chiave API nelle Impostazioni, le righe di Utilizzo, il chip della dashboard, il riepilogo "Attivo" delle Impostazioni, il risultato della ⚡ eval e il banner di benvenuto — ora mostrano il **logo reale del brand** per gli 11 provider che pubblicano un'icona open source (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; SVG a percorso singolo da [simple-icons](https://simpleicons.org), CC0). I 7 senza icona pubblicata (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) mantengono il monogramma con il colore del brand. Sempre **sicuro per la CSP per costruzione**: il percorso del logo è una costante statica incorporata — nessuna risorsa remota, nessun `innerHTML`.
+
+### Note
+- Nessun cambiamento di rotta o comportamento; la stessa API `ProviderLogo.el(slug)`. `provider-logo.js` è cresciuto (i percorsi dei loghi incorporati). Sorgenti di scansione invariate: **83**. Suite di test: **2784**.
+
 ## [1.223.0] — 2026-08-26
 
 **Corretto — una valutazione ⚡ live riuscita veniva colorata come errore; inoltre installa il coworker OpenWorker direttamente dal suo URL GitHub o .zip.**

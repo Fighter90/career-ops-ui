@@ -9,6 +9,16 @@
 ---
 
 
+## [1.224.0] — 2026-08-26
+
+**変更 — LLM プロバイダーのタイルが実際のブランドロゴを表示するようになりました。**
+
+### 変更
+- **実際のプロバイダーロゴ。** プロバイダータイル —— 設定の API キー欄、使用状況の行、ダッシュボードのチップ、設定の「アクティブ」サマリー、⚡ 評価結果、オンボーディングバナー —— が、オープンソースのアイコンを公開している11のプロバイダー（Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; [simple-icons](https://simpleicons.org) の単一パス SVG、CC0）について**実際のブランドロゴ**を表示します。公開アイコンのない7つ（Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark）はブランドカラーのモノグラムのままです。依然として**構造的に CSP 安全**: ロゴパスはインラインの静的定数 —— リモートアセットなし、`innerHTML` なし。
+
+### 備考
+- ルートや動作の変更なし; 同じ `ProviderLogo.el(slug)` API。`provider-logo.js` は大きくなりました（インラインのロゴパス）。スキャンソースは変更なし: **83**。テストスイート: **2784**。
+
 ## [1.223.0] — 2026-08-26
 
 **修正 — 成功した ⚡ ライブ評価がエラーとして着色されていた問題。さらに OpenWorker コワーカーを GitHub URL または .zip から直接インストール。**

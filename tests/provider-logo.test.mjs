@@ -48,6 +48,24 @@ test('provider-logo.js is CSP-safe: DOM via createElementNS/textContent, no inne
   assert.match(code, /window\.ProviderLogo\s*=/, 'must expose window.ProviderLogo');
 });
 
+test('v1.224.0 — real brand logos (simple-icons, CC0) for the 11 providers that publish one; monogram fallback for the rest', () => {
+  const WITH_LOGO = ['anthropic', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'deepseek', 'kimi', 'minimax', 'mistral', 'ollama'];
+  const NO_LOGO = ['hermes', 'zai', 'grok', 'together', 'fireworks', 'ark', 'arkcn'];
+  const logos = (SRC.match(/var LOGOS = \{([\s\S]*?)\n {2}\};/) || [])[1] || '';
+  assert.ok(logos.length > 200, 'LOGOS block not found');
+  for (const slug of WITH_LOGO) {
+    assert.match(logos, new RegExp(`\\b${slug}:\\s*["']`), `LOGOS missing a real path for '${slug}'`);
+  }
+  for (const slug of NO_LOGO) {
+    assert.ok(!new RegExp(`\\b${slug}:\\s*["']`).test(logos), `'${slug}' has no public brand icon → stays a monogram, must not be in LOGOS`);
+  }
+  // el() renders the real logo through a <path> whose d is set via setAttribute (CSP-safe).
+  assert.match(SRC, /createElementNS\(NS, 'path'\)/, 'el() must render the real logo via a <path>');
+  assert.match(SRC, /var d = LOGOS\[slug\];/, 'el() must branch on LOGOS[slug]');
+  assert.match(SRC, /path\.setAttribute\('d', d\)/, 'the logo path d must be set via setAttribute — no innerHTML');
+  assert.match(SRC, /function hasLogo/, 'must expose hasLogo()');
+});
+
 test('index.html loads provider-logo.js after provider-status.js', () => {
   const html = R('public', 'index.html');
   const iStatus = html.indexOf('/js/lib/provider-status.js');

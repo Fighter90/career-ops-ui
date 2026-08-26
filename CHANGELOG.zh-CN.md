@@ -9,6 +9,16 @@
 ---
 
 
+## [1.224.0] — 2026-08-26
+
+**变更 —— LLM 提供方磁贴现在显示真实的品牌徽标。**
+
+### 变更
+- **真实的提供方徽标。** 提供方磁贴 —— 设置中的 API 密钥字段、用量行、仪表盘芯片、设置的"活跃"摘要、⚡ 评估结果与欢迎横幅 —— 现在为发布了开源图标的 11 个提供方(Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama;来自 [simple-icons](https://simpleicons.org) 的单路径 SVG,CC0)渲染**真实的品牌徽标**。没有发布图标的 7 个(Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark)保留品牌配色的字母标。仍然**在构造上对 CSP 安全**:徽标路径是内联的静态常量 —— 无远程资源,无 `innerHTML`。
+
+### 说明
+- 无路由或行为变化;相同的 `ProviderLogo.el(slug)` API。`provider-logo.js` 变大了(内联的徽标路径)。扫描来源不变:**83**。测试套件:**2784**。
+
 ## [1.223.0] — 2026-08-26
 
 **修复 —— 成功的 ⚡ 实时评估被标为错误；另外可从 GitHub URL 或 .zip 直接安装 OpenWorker coworker。**

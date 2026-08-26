@@ -9,6 +9,16 @@
 ---
 
 
+## [1.224.0] — 2026-08-26
+
+**변경됨 — LLM 제공자 타일이 이제 실제 브랜드 로고를 표시합니다.**
+
+### 변경됨
+- **실제 제공자 로고.** 제공자 타일 — 설정의 API 키 필드, 사용량 행, 대시보드 칩, 설정 "활성" 요약, ⚡ 평가 결과, 온보딩 배너 — 이 이제 오픈소스 아이콘을 게시하는 11개 제공자(Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; [simple-icons](https://simpleicons.org)의 단일 경로 SVG, CC0)에 대해 **실제 브랜드 로고**를 렌더링합니다. 게시된 아이콘이 없는 7개(Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark)는 브랜드 색상 모노그램을 유지합니다. 여전히 **구성상 CSP 안전**: 로고 경로는 인라인 정적 상수 — 원격 자원 없음, `innerHTML` 없음.
+
+### 참고
+- 라우트/동작 변경 없음; 동일한 `ProviderLogo.el(slug)` API. `provider-logo.js`가 커졌습니다(인라인 로고 경로). 스캔 소스 변경 없음: **83**. 테스트 스위트: **2784**.
+
 ## [1.223.0] — 2026-08-26
 
 **수정 — 성공한 ⚡ 라이브 평가가 오류로 표시되던 문제; 또한 OpenWorker coworker를 GitHub URL 또는 .zip에서 바로 설치.**
