@@ -218,6 +218,139 @@ export function hasHermesKey() {
   return isUsableKey(envKey('HERMES_API_KEY'), 8);
 }
 
+// ── Extended provider roster (v1.216.0) — OpenAI-compatible vendors ──────────
+// Each speaks the OpenAI Chat Completions schema, so they reuse
+// runOpenAICompatible. Base URLs are the vendors' documented OpenAI-compatible
+// endpoints (international where a region split exists; CN users override via
+// `<PROVIDER>_BASE_URL`). Like OpenRouter/Qwen/Hermes these are CONFIGURED
+// provider endpoints (trusted config), not scanned job URLs — the scheme guard
+// in compatChatUrl is defense-in-depth, NOT the isValidJobUrl SSRF gate.
+
+/** Generalized `hermesChatUrl`: resolve a `<base>` → full `/chat/completions`
+ *  URL, honouring only `http(s):` (else the provider's default), and appending
+ *  `/v1` for a bare host. Shared by the base-URL-configurable OpenAI-compatible
+ *  providers (GLM/Kimi region split, local Ollama). */
+export function compatChatUrl(base, fallback) {
+  const raw = String(base || fallback).trim();
+  const safe = /^https?:\/\//i.test(raw) ? raw : fallback;
+  const b = safe.replace(/\/+$/, '');
+  if (b.endsWith('/chat/completions')) return b;
+  if (/^https?:\/\/[^/]+$/i.test(b)) return `${b}/v1/chat/completions`;
+  return `${b}/chat/completions`;
+}
+
+const DEEPSEEK_URL = 'https://api.deepseek.com/v1/chat/completions';
+const ZAI_BASE_DEFAULT = 'https://api.z.ai/api/paas/v4';       // GLM (Z.ai); CN: https://open.bigmodel.cn/api/paas/v4
+const MOONSHOT_BASE_DEFAULT = 'https://api.moonshot.ai/v1';    // Kimi (Moonshot); CN: https://api.moonshot.cn/v1
+const MINIMAX_URL = 'https://api.minimax.io/v1/chat/completions';
+const MISTRAL_URL = 'https://api.mistral.ai/v1/chat/completions';
+const XAI_URL = 'https://api.x.ai/v1/chat/completions';        // Grok (xAI)
+const TOGETHER_URL = 'https://api.together.xyz/v1/chat/completions';
+const FIREWORKS_URL = 'https://api.fireworks.ai/inference/v1/chat/completions';
+const OLLAMA_BASE_DEFAULT = 'http://localhost:11434/v1';       // fully local, no key
+
+/** DeepSeek — OpenAI-compatible. */
+export async function runDeepSeek(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || DEEPSEEK_URL,
+    apiKey: opts.apiKey || envKey('DEEPSEEK_API_KEY'),
+    model: opts.model || envKey('DEEPSEEK_MODEL') || 'deepseek-chat',
+    label: 'DeepSeek', ...opts,
+  });
+}
+export function hasDeepSeekKey() { return isUsableKey(envKey('DEEPSEEK_API_KEY')); }
+
+/** GLM (Z.ai) — OpenAI-compatible; base override for the CN endpoint. */
+export async function runZai(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || compatChatUrl(envKey('ZAI_BASE_URL'), ZAI_BASE_DEFAULT),
+    apiKey: opts.apiKey || envKey('ZAI_API_KEY'),
+    model: opts.model || envKey('ZAI_MODEL') || 'glm-4.6',
+    label: 'GLM (Z.ai)', ...opts,
+  });
+}
+export function hasZaiKey() { return isUsableKey(envKey('ZAI_API_KEY')); }
+
+/** Kimi (Moonshot) — OpenAI-compatible; base override for the CN endpoint. */
+export async function runKimi(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || compatChatUrl(envKey('MOONSHOT_BASE_URL'), MOONSHOT_BASE_DEFAULT),
+    apiKey: opts.apiKey || envKey('MOONSHOT_API_KEY'),
+    model: opts.model || envKey('MOONSHOT_MODEL') || 'kimi-k2-0711-preview',
+    label: 'Kimi (Moonshot)', ...opts,
+  });
+}
+export function hasKimiKey() { return isUsableKey(envKey('MOONSHOT_API_KEY')); }
+
+/** MiniMax — OpenAI-compatible. */
+export async function runMiniMax(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || MINIMAX_URL,
+    apiKey: opts.apiKey || envKey('MINIMAX_API_KEY'),
+    model: opts.model || envKey('MINIMAX_MODEL') || 'MiniMax-Text-01',
+    label: 'MiniMax', ...opts,
+  });
+}
+export function hasMiniMaxKey() { return isUsableKey(envKey('MINIMAX_API_KEY')); }
+
+/** Mistral — OpenAI-compatible. */
+export async function runMistral(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || MISTRAL_URL,
+    apiKey: opts.apiKey || envKey('MISTRAL_API_KEY'),
+    model: opts.model || envKey('MISTRAL_MODEL') || 'mistral-large-latest',
+    label: 'Mistral', ...opts,
+  });
+}
+export function hasMistralKey() { return isUsableKey(envKey('MISTRAL_API_KEY')); }
+
+/** Grok (xAI) — OpenAI-compatible. */
+export async function runGrok(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || XAI_URL,
+    apiKey: opts.apiKey || envKey('XAI_API_KEY'),
+    model: opts.model || envKey('XAI_MODEL') || 'grok-4',
+    label: 'Grok (xAI)', ...opts,
+  });
+}
+export function hasGrokKey() { return isUsableKey(envKey('XAI_API_KEY')); }
+
+/** Together AI — OpenAI-compatible reseller (open-weight models, incl. Inkling). */
+export async function runTogether(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || TOGETHER_URL,
+    apiKey: opts.apiKey || envKey('TOGETHER_API_KEY'),
+    model: opts.model || envKey('TOGETHER_MODEL') || 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
+    label: 'Together', ...opts,
+  });
+}
+export function hasTogetherKey() { return isUsableKey(envKey('TOGETHER_API_KEY')); }
+
+/** Fireworks AI — OpenAI-compatible reseller (open-weight models). */
+export async function runFireworks(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || FIREWORKS_URL,
+    apiKey: opts.apiKey || envKey('FIREWORKS_API_KEY'),
+    model: opts.model || envKey('FIREWORKS_MODEL') || 'accounts/fireworks/models/llama-v3p3-70b-instruct',
+    label: 'Fireworks', ...opts,
+  });
+}
+export function hasFireworksKey() { return isUsableKey(envKey('FIREWORKS_API_KEY')); }
+
+/** Ollama — fully local, OpenAI-compatible at `<base>/v1`. No API key (auth is
+ *  ignored; a placeholder Bearer keeps runOpenAICompatible happy). Opt-in: only
+ *  "available" when OLLAMA_BASE_URL is set, so the auto-cascade never blindly
+ *  dials localhost:11434 on a box without Ollama. */
+export async function runOllama(prompt, opts = {}) {
+  return runOpenAICompatible(prompt, {
+    url: opts.url || compatChatUrl(envKey('OLLAMA_BASE_URL'), OLLAMA_BASE_DEFAULT),
+    apiKey: opts.apiKey || envKey('OLLAMA_API_KEY') || 'ollama',
+    model: opts.model || envKey('OLLAMA_MODEL') || 'llama3.2',
+    label: 'Ollama', ...opts,
+  });
+}
+export function hasOllamaKey() { return isUsableKey(envKey('OLLAMA_BASE_URL'), 3); }
+
 /**
  * Curated fallback model list (v1.57.0) — used when the live
  * OpenRouter catalogue can't be fetched (offline, rate-limited, 5xx)

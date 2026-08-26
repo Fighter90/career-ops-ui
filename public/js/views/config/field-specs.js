@@ -73,14 +73,37 @@
     'mistral-ai/Mistral-Large-2411',
     'deepseek/DeepSeek-V3',
   ];
+  // v1.216.0 — extended OpenAI-compatible roster. First entry per provider =
+  // default when the <SLUG>_MODEL env var is unset (matches server/lib/openai.mjs).
+  const DEEPSEEK_MODELS = ['deepseek-chat', 'deepseek-reasoner'];
+  const ZAI_MODELS = ['glm-4.6', 'glm-4.5', 'glm-4.5-air', 'glm-4-plus'];
+  const KIMI_MODELS = ['kimi-k2-0711-preview', 'moonshot-v1-128k', 'moonshot-v1-32k', 'moonshot-v1-8k'];
+  const MINIMAX_MODELS = ['MiniMax-Text-01', 'abab6.5s-chat'];
+  const MISTRAL_MODELS = ['mistral-large-latest', 'mistral-small-latest', 'open-mistral-nemo', 'codestral-latest'];
+  const GROK_MODELS = ['grok-4', 'grok-3', 'grok-3-mini', 'grok-2-latest'];
+  // Inkling (Thinking Machines) is a Together-hosted model, not its own provider.
+  const TOGETHER_MODELS = [
+    'meta-llama/Llama-3.3-70B-Instruct-Turbo',
+    'deepseek-ai/DeepSeek-V3',
+    'Qwen/Qwen2.5-72B-Instruct-Turbo',
+    'mistralai/Mixtral-8x7B-Instruct-v0.1',
+    'thinkingmachines/Inkling',
+  ];
+  const FIREWORKS_MODELS = [
+    'accounts/fireworks/models/llama-v3p3-70b-instruct',
+    'accounts/fireworks/models/deepseek-v3',
+    'accounts/fireworks/models/qwen2p5-72b-instruct',
+    'accounts/fireworks/models/mixtral-8x22b-instruct-hf',
+  ];
+  const OLLAMA_MODELS = ['llama3.2', 'llama3.3', 'llama3.1', 'qwen2.5', 'deepseek-r1', 'mistral', 'gemma3'];
   const FIELDS = [
     {
       // v1.39.0 (WS8.2) — explicit provider preference.
       key: 'LLM_PROVIDER', secret: false, kind: 'select',
-      options: ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'], defaultValue: 'auto',
+      options: ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes', 'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama'], defaultValue: 'auto',
       labelKey: 'config.llmProvider', label: 'LLM_PROVIDER',
       hintKey: 'config.llmProviderHint',
-      hintFallback: "auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes. claude / gemini / openai / qwen / openrouter / github / hermes = prefer that one — but if its key isn't set it falls back to any other provider you have configured. Only with no provider key at all → manual-prompt fallback.",
+      hintFallback: "auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi → MiniMax → Mistral → Grok → Together → Fireworks → Ollama. Pinning one prefers it — but if its key isn't set it falls back to any other provider you have configured. Only with no provider key at all → manual-prompt fallback.",
     },
     {
       key: 'ANTHROPIC_API_KEY', secret: true,
@@ -193,6 +216,143 @@
       labelKey: 'config.hermesModel', label: 'HERMES_MODEL',
       hintKey: 'config.hermesModelHint',
       hintFallback: 'Default: hermes-agent. The Hermes profile / model id to send (Hermes routes it to whatever provider you configured inside it).',
+    },
+    // ─── v1.216.0 — extended OpenAI-compatible provider roster ───────────
+    // Each is an OpenAI-compatible /v1/chat/completions endpoint reached
+    // through the shared runOpenAICompatible() core. Setting the key opts the
+    // provider into the ⚡ live-eval auto order (after Hermes). Signup URLs
+    // are language-neutral, so the hints fall back to English until a locale
+    // supplies config.<slug>Hint.
+    {
+      key: 'DEEPSEEK_API_KEY', secret: true,
+      labelKey: 'config.deepseekKey', label: 'DEEPSEEK_API_KEY',
+      hintKey: 'config.deepseekHint',
+      hintFallback: 'Get a key at platform.deepseek.com. OpenAI-compatible (api.deepseek.com/v1); when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'DEEPSEEK_MODEL', secret: false, kind: 'select',
+      options: DEEPSEEK_MODELS, defaultValue: 'deepseek-chat',
+      labelKey: 'config.deepseekModel', label: 'DEEPSEEK_MODEL',
+      hintKey: 'config.deepseekModelHint',
+      hintFallback: 'Default: deepseek-chat (V3). deepseek-reasoner is the R1 reasoning model.',
+    },
+    {
+      key: 'ZAI_API_KEY', secret: true,
+      labelKey: 'config.zaiKey', label: 'ZAI_API_KEY',
+      hintKey: 'config.zaiHint',
+      hintFallback: 'GLM by Z.ai. Get a key at z.ai (or open.bigmodel.cn in China). OpenAI-compatible; when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'ZAI_MODEL', secret: false, kind: 'select',
+      options: ZAI_MODELS, defaultValue: 'glm-4.6',
+      labelKey: 'config.zaiModel', label: 'ZAI_MODEL',
+      hintKey: 'config.zaiModelHint',
+      hintFallback: 'Default: glm-4.6. glm-4.5-air is smaller/cheaper.',
+    },
+    {
+      key: 'ZAI_BASE_URL', secret: false,
+      labelKey: 'config.zaiBaseUrl', label: 'ZAI_BASE_URL',
+      hintKey: 'config.zaiBaseUrlHint',
+      hintFallback: 'Default: https://api.z.ai/api/paas/v4. Use https://open.bigmodel.cn/api/paas/v4 for the China endpoint.',
+    },
+    {
+      key: 'MOONSHOT_API_KEY', secret: true,
+      labelKey: 'config.kimiKey', label: 'MOONSHOT_API_KEY',
+      hintKey: 'config.kimiHint',
+      hintFallback: 'Kimi by Moonshot AI. Get a key at platform.moonshot.ai (or platform.moonshot.cn in China). OpenAI-compatible; when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'MOONSHOT_MODEL', secret: false, kind: 'select',
+      options: KIMI_MODELS, defaultValue: 'kimi-k2-0711-preview',
+      labelKey: 'config.kimiModel', label: 'MOONSHOT_MODEL',
+      hintKey: 'config.kimiModelHint',
+      hintFallback: 'Default: kimi-k2-0711-preview. moonshot-v1-128k has the largest context.',
+    },
+    {
+      key: 'MOONSHOT_BASE_URL', secret: false,
+      labelKey: 'config.kimiBaseUrl', label: 'MOONSHOT_BASE_URL',
+      hintKey: 'config.kimiBaseUrlHint',
+      hintFallback: 'Default: https://api.moonshot.ai/v1. Use https://api.moonshot.cn/v1 for the China endpoint.',
+    },
+    {
+      key: 'MINIMAX_API_KEY', secret: true,
+      labelKey: 'config.minimaxKey', label: 'MINIMAX_API_KEY',
+      hintKey: 'config.minimaxHint',
+      hintFallback: 'Get a key at platform.minimax.io. OpenAI-compatible (api.minimax.io/v1); when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'MINIMAX_MODEL', secret: false, kind: 'select',
+      options: MINIMAX_MODELS, defaultValue: 'MiniMax-Text-01',
+      labelKey: 'config.minimaxModel', label: 'MINIMAX_MODEL',
+      hintKey: 'config.minimaxModelHint',
+      hintFallback: 'Default: MiniMax-Text-01.',
+    },
+    {
+      key: 'MISTRAL_API_KEY', secret: true,
+      labelKey: 'config.mistralKey', label: 'MISTRAL_API_KEY',
+      hintKey: 'config.mistralHint',
+      hintFallback: 'Get a key at console.mistral.ai. OpenAI-compatible (api.mistral.ai/v1); when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'MISTRAL_MODEL', secret: false, kind: 'select',
+      options: MISTRAL_MODELS, defaultValue: 'mistral-large-latest',
+      labelKey: 'config.mistralModel', label: 'MISTRAL_MODEL',
+      hintKey: 'config.mistralModelHint',
+      hintFallback: 'Default: mistral-large-latest. codestral-latest is code-tuned.',
+    },
+    {
+      key: 'XAI_API_KEY', secret: true,
+      labelKey: 'config.grokKey', label: 'XAI_API_KEY',
+      hintKey: 'config.grokHint',
+      hintFallback: 'Grok by xAI. Get a key at console.x.ai. OpenAI-compatible (api.x.ai/v1); when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'XAI_MODEL', secret: false, kind: 'select',
+      options: GROK_MODELS, defaultValue: 'grok-4',
+      labelKey: 'config.grokModel', label: 'XAI_MODEL',
+      hintKey: 'config.grokModelHint',
+      hintFallback: 'Default: grok-4. grok-3-mini is smaller/cheaper.',
+    },
+    {
+      key: 'TOGETHER_API_KEY', secret: true,
+      labelKey: 'config.togetherKey', label: 'TOGETHER_API_KEY',
+      hintKey: 'config.togetherHint',
+      hintFallback: 'Together AI — open-weight models (Llama, Qwen, DeepSeek, Inkling). Get a key at together.ai. OpenAI-compatible; when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'TOGETHER_MODEL', secret: false, kind: 'select',
+      options: TOGETHER_MODELS, defaultValue: 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
+      labelKey: 'config.togetherModel', label: 'TOGETHER_MODEL',
+      hintKey: 'config.togetherModelHint',
+      hintFallback: 'Default: Llama-3.3-70B-Instruct-Turbo. thinkingmachines/Inkling is Thinking Machines\' model, hosted here.',
+    },
+    {
+      key: 'FIREWORKS_API_KEY', secret: true,
+      labelKey: 'config.fireworksKey', label: 'FIREWORKS_API_KEY',
+      hintKey: 'config.fireworksHint',
+      hintFallback: 'Fireworks AI — fast open-weight inference. Get a key at fireworks.ai. OpenAI-compatible; when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'FIREWORKS_MODEL', secret: false, kind: 'select',
+      options: FIREWORKS_MODELS, defaultValue: 'accounts/fireworks/models/llama-v3p3-70b-instruct',
+      labelKey: 'config.fireworksModel', label: 'FIREWORKS_MODEL',
+      hintKey: 'config.fireworksModelHint',
+      hintFallback: 'Default: llama-v3p3-70b-instruct. Model ids are account-namespaced (accounts/fireworks/models/…).',
+    },
+    {
+      // Ollama (local, keyless). Setting OLLAMA_BASE_URL opts it into the auto
+      // order — no API key needed. http:// loopback is allowed here on purpose.
+      key: 'OLLAMA_BASE_URL', secret: false,
+      labelKey: 'config.ollamaBaseUrl', label: 'OLLAMA_BASE_URL',
+      hintKey: 'config.ollamaHint',
+      hintFallback: 'Local models via Ollama. Set this to enable it — default http://localhost:11434/v1 (run `ollama serve`). No API key needed; when set, runs the ⚡ live eval.',
+    },
+    {
+      key: 'OLLAMA_MODEL', secret: false, kind: 'select',
+      options: OLLAMA_MODELS, defaultValue: 'llama3.2',
+      labelKey: 'config.ollamaModel', label: 'OLLAMA_MODEL',
+      hintKey: 'config.ollamaModelHint',
+      hintFallback: 'Default: llama3.2. Any model you have pulled locally (`ollama pull …`) works — deepseek-r1, qwen2.5, mistral, gemma3, …',
     },
     // v1.19.0 — HH_USER_AGENT removed from the UI per user direction.
     // The server still honors the env var if a power user sets it via

@@ -90,8 +90,15 @@ Router.register('config', async () => {
       if (!spec.secret) input.value = value || spec.defaultValue || '';
     }
     fields[spec.key] = input;
+    // v1.216.0 — a brand-colored monogram tile beside provider fields so the
+    // Settings list reads at a glance which vendor each key belongs to. Guarded:
+    // ProviderLogo is a decoration and may be absent (e.g. in a stripped test DOM).
+    const providerTile = (window.ProviderLogo && typeof window.ProviderLogo.forKey === 'function')
+      ? window.ProviderLogo.forKey(spec.key, 18)
+      : null;
     return c('div', { className: 'field', style: { marginBottom: '20px' } }, [
-      c('label', { htmlFor: inputId, style: { fontWeight: 600, fontSize: '14px' } }, [
+      c('label', { htmlFor: inputId, style: { fontWeight: 600, fontSize: '14px', display: 'inline-flex', alignItems: 'center', gap: '7px' } }, [
+        providerTile,
         spec.label,
         spec.secret && value
           ? c('span', { style: { marginLeft: '10px', fontSize: '12px', color: 'var(--ok, #008a05)', fontWeight: 'normal' } }, '✓ set')

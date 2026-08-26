@@ -446,7 +446,7 @@ LLM कॉल नहीं, कोई खर्च नहीं।
 मूल्यांकन *हेडलेस* चलता है और एक API कुंजी उपयोग करता है। यह "OR"
 के ज़रिए काम करता है — इनमें से **कोई भी एक** सेट करें और यह बस काम
 करता है; कई सेट होने पर, `auto` इस क्रम में उन्हें प्राथमिकता देता
-है: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes। (career-ops खुद CLI-अज्ञेय
+है: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama। (career-ops खुद CLI-अज्ञेय
 है — आप इसे Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot या
 Kimi के अंदर भी चला सकते हैं; वह इस हेडलेस कुंजी से अलग है।)
 
@@ -2437,7 +2437,7 @@ career-ops-ui डिफ़ॉल्ट रूप से `127.0.0.1` पर ब�
 
 ### अपना इंजन चुनें
 
-career-ops CLI के प्रति agnostic है, इसलिए AI के लिए आपके पास तीन सीधे-सच्चे विकल्प हैं। **आपकी Claude सब्सक्रिप्शन** — मशीन पर **Claude Code** CLI इंस्टॉल करें और अपने Pro/Max प्लान से `claude login` करें; इसके बाद पैरेंट का एजेंट आपकी सब्सक्रिप्शन का उपयोग करता है, बिना प्रति-टोकन API बिल के। **Hermes** — उसी मशीन पर `hermes gateway` चलाएँ (यह `http://127.0.0.1:8642/v1` पर एक OpenAI-कम्पैटिबल API एक्सपोज़ करता है) और **App settings** में `HERMES_API_KEY` सेट करें; career-ops-ui के लाइव इवैल्यूएशन इसी से होकर गुज़रते हैं (ऑटो प्रोवाइडर ऑर्डर में सबसे आख़िर में)। **API कीज़** — पैरेंट के `.env` में `ANTHROPIC_API_KEY` (या सात प्रोवाइडरों में से कोई भी: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes) सेट करें, और ⚡ लाइव एक्शन बिना किसी निगरानी के काम करते हैं। आप इन्हें मिला भी सकते हैं: पैरेंट के भारी एजेंट काम के लिए एक Claude सब्सक्रिप्शन, और व्यूअर के तेज़ इवैल्यूएशन के लिए एक सस्ता या लोकल प्रोवाइडर।
+career-ops CLI के प्रति agnostic है, इसलिए AI के लिए आपके पास तीन सीधे-सच्चे विकल्प हैं। **आपकी Claude सब्सक्रिप्शन** — मशीन पर **Claude Code** CLI इंस्टॉल करें और अपने Pro/Max प्लान से `claude login` करें; इसके बाद पैरेंट का एजेंट आपकी सब्सक्रिप्शन का उपयोग करता है, बिना प्रति-टोकन API बिल के। **Hermes** — उसी मशीन पर `hermes gateway` चलाएँ (यह `http://127.0.0.1:8642/v1` पर एक OpenAI-कम्पैटिबल API एक्सपोज़ करता है) और **App settings** में `HERMES_API_KEY` सेट करें; career-ops-ui के लाइव इवैल्यूएशन इसी से होकर गुज़रते हैं (ऑटो प्रोवाइडर ऑर्डर में सबसे आख़िर में)। **API कीज़** — पैरेंट के `.env` में `ANTHROPIC_API_KEY` (या सात प्रोवाइडरों में से कोई भी: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama) सेट करें, और ⚡ लाइव एक्शन बिना किसी निगरानी के काम करते हैं। आप इन्हें मिला भी सकते हैं: पैरेंट के भारी एजेंट काम के लिए एक Claude सब्सक्रिप्शन, और व्यूअर के तेज़ इवैल्यूएशन के लिए एक सस्ता या लोकल प्रोवाइडर।
 
 ### इसे सुरक्षित रूप से एक्सपोज़ करें
 

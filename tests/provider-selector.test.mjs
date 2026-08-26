@@ -8,8 +8,9 @@ import assert from 'node:assert/strict';
 import { providerOrder, LLM_PROVIDERS, KNOWN_KEYS, SECRET_KEYS } from '../server/lib/env-config.mjs';
 import { parseArgs, buildUpdates, askSecret } from '../scripts/init.mjs';
 
-test('providerOrder: auto/unset/unknown → full OR order (v1.57.0 + openrouter tail)', () => {
-  const ALL = ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'];
+test('providerOrder: auto/unset/unknown → full OR order (v1.57.0 + openrouter tail; v1.216.0 roster)', () => {
+  const ALL = ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes',
+    'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama'];
   assert.deepEqual(providerOrder({}), ALL);
   assert.deepEqual(providerOrder({ LLM_PROVIDER: 'auto' }), ALL);
   assert.deepEqual(providerOrder({ LLM_PROVIDER: 'banana' }), ALL);
@@ -38,7 +39,27 @@ test('env-config exposes the full v1.57.0 provider surface', () => {
   for (const k of ['OPENAI_MODEL', 'QWEN_MODEL', 'OPENROUTER_MODEL', 'GITHUB_MODELS_MODEL', 'LLM_PROVIDER']) {
     assert.ok(!SECRET_KEYS.has(k), `${k} must NOT be secret`);
   }
-  assert.deepEqual(LLM_PROVIDERS, ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes']);
+  assert.deepEqual(LLM_PROVIDERS, ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes',
+    'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama']);
+});
+
+test('env-config exposes the v1.216.0 extended roster keys', () => {
+  for (const k of ['DEEPSEEK_API_KEY', 'ZAI_API_KEY', 'MOONSHOT_API_KEY', 'MINIMAX_API_KEY',
+    'MISTRAL_API_KEY', 'XAI_API_KEY', 'TOGETHER_API_KEY', 'FIREWORKS_API_KEY', 'OLLAMA_BASE_URL']) {
+    assert.ok(KNOWN_KEYS.includes(k), `KNOWN_KEYS missing ${k}`);
+  }
+  // The extended-roster API keys are secrets; base URLs and model ids are not.
+  for (const k of ['DEEPSEEK_API_KEY', 'ZAI_API_KEY', 'MOONSHOT_API_KEY', 'MINIMAX_API_KEY',
+    'MISTRAL_API_KEY', 'XAI_API_KEY', 'TOGETHER_API_KEY', 'FIREWORKS_API_KEY']) {
+    assert.ok(SECRET_KEYS.has(k), `${k} must be secret`);
+  }
+  for (const k of ['OLLAMA_BASE_URL', 'ZAI_BASE_URL', 'MOONSHOT_BASE_URL', 'DEEPSEEK_MODEL', 'XAI_MODEL']) {
+    assert.ok(!SECRET_KEYS.has(k), `${k} must NOT be secret`);
+  }
+  // each explicit roster value pins exactly itself
+  for (const p of ['deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama']) {
+    assert.deepEqual(providerOrder({ LLM_PROVIDER: p }), [p]);
+  }
 });
 
 test('config.js LLM_PROVIDER dropdown tracks LLM_PROVIDERS (no drift)', () => {

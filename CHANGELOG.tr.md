@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.216.0] — 2026-08-26
+
+**Eklendi — dokuz LLM sağlayıcısı daha, her birinin kendi marka karosu.** ⚡ Canlı değerlendirmelerin artık DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks veya tamamen yerel Ollama üzerinden çalışabilir — bir anahtar kadar uzakta, her biri Ayarlar’daki alanının yanında bir monogramla işaretli.
+
+### Eklendi
+- **Dokuz OpenAI uyumlu sağlayıcı.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI ve **Ollama** (tamamen yerel, anahtarsız). **Ayarlar**’da bir anahtar — Ollama için `OLLAMA_BASE_URL` — girin; Hermes’ten sonra `auto` sırasına katılır; herhangi birini `LLM_PROVIDER` ile sabitleyin. Together, Thinking Machines’in **Inkling** modelini de (`thinkingmachines/Inkling`) barındırır. Web arayüzü artık **16 sağlayıcıyı** canlı kapsıyor.
+- **Sağlayıcı monogramları.** CSP güvenli, marka renginde bir baş harf karosu her sağlayıcıyı Ayarlar’daki anahtar alanının yanında ve Kullanım sayfasındaki satırında işaretler — satır içi SVG, harici logo yok, hiçbir şey cihazından çıkmaz.
+
+### Notlar
+- Sağlayıcıların temel URL’leri, `runOpenAICompatible()` üzerinden http(s) şema denetimiyle (Ollama’nın loopback’ine izin verilir) geçen güvenilir yapılandırmadır; asla iş ilanı URL’si için SSRF doğrulayıcısından geçmez. Tarama kaynakları değişmedi: **82**. Testler: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Eklendi — tüm iş aramanı OpenWorker'dan yürüt.** Yeni bir coworker bu hattı Andrew Ng'nin açık kaynak yapay zekâ coworker uygulamasından yürütür ve uygulama içi yardım artık bunu kapsar, böylece Belgelere Sor asistanı sana yol gösterebilir.

@@ -153,9 +153,14 @@ const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
 const testsMatch = readme.match(/badge\/tests-(\d+)%20passed/);
 const tests = testsMatch ? Number(testsMatch[1]) : null;
 
-// LLM providers: distinct want<Provider> gates in the shared dispatch cascade.
-const dispatch = readFileSync(join(ROOT, 'server', 'lib', 'llm-dispatch.mjs'), 'utf8');
-const providerSet = new Set([...dispatch.matchAll(/want([A-Z][A-Za-z]+)/g)].map((m) => m[1]));
+// LLM providers: the canonical auto-order roster in env-config.mjs (v1.216.0 —
+// the dispatch gate became map-driven, so we count the authoritative AUTO_ORDER
+// list instead of grepping want<Provider> literals).
+const envCfg = readFileSync(join(ROOT, 'server', 'lib', 'env-config.mjs'), 'utf8');
+const autoOrderMatch = envCfg.match(/export const AUTO_ORDER = \[([\s\S]*?)\]/);
+const providerSet = new Set(
+  autoOrderMatch ? [...autoOrderMatch[1].matchAll(/'([a-z0-9-]+)'/g)].map((m) => m[1]) : [],
+);
 const providers = providerSet.size;
 
 // GitHub facts — best effort at build time; the star count is additionally

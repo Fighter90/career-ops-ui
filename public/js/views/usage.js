@@ -52,7 +52,11 @@ Router.register('usage', async () => {
     const head = c('tr', null, [t('usage.colProvider', 'Provider'), t('usage.colCalls', 'Calls'), t('usage.colIn', 'Input tokens'), t('usage.colOut', 'Output tokens'), t('usage.colCost', 'Est. cost')]
       .map((h, i) => c('th', { style: i ? { textAlign: 'right' } : null }, h)));
     const rows = w.providers.map((p) => c('tr', null, [
-      c('td', null, c('span', { className: 'tag' }, p.provider)),
+      // v1.216.0 — brand monogram + friendly label beside each provider.
+      c('td', null, c('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '7px' } }, [
+        (window.ProviderLogo && typeof window.ProviderLogo.el === 'function') ? window.ProviderLogo.el(p.provider, 16) : null,
+        c('span', { className: 'tag' }, (window.ProviderLogo && typeof window.ProviderLogo.label === 'function') ? window.ProviderLogo.label(p.provider) : p.provider),
+      ])),
       c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.calls)),
       c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.in)),
       c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.out)),

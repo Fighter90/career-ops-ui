@@ -17,11 +17,12 @@ import { dirname, resolve } from 'node:path';
 
 const R = (...p) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '..', ...p), 'utf8');
 
-test('provider-status.js reads /api/status/providers and labels all 7 providers', () => {
+test('provider-status.js reads /api/status/providers and labels all 16 providers', () => {
   const src = R('public', 'js', 'lib', 'provider-status.js');
   assert.match(src, /\/api\/status\/providers/, 'must query /api/status/providers');
   assert.match(src, /window\.ProviderStatus\s*=/, 'must expose window.ProviderStatus');
-  for (const p of ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes']) {
+  for (const p of ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes',
+    'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama']) {
     assert.match(src, new RegExp(`${p}:\\s*'`), `LABELS missing ${p}`);
   }
 });

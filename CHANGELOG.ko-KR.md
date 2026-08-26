@@ -9,6 +9,17 @@
 ---
 
 
+## [1.216.0] — 2026-08-26
+
+**추가 — LLM 제공자 9개가 더해졌고, 각각 브랜드 타일이 붙습니다.** 이제 ⚡ 라이브 평가를 DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks 또는 완전 로컬 Ollama로 실행할 수 있습니다 — 키 하나면 되고, 설정의 각 필드 옆에 모노그램이 표시됩니다.
+
+### 추가
+- **OpenAI 호환 제공자 9개.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI, **Ollama**(완전 로컬, 키 불필요). **설정**에서 키(또는 Ollama의 경우 `OLLAMA_BASE_URL`)를 지정하면 Hermes 다음의 `auto` 순서에 합류합니다. `LLM_PROVIDER`로 특정 제공자를 고정할 수 있습니다. Together는 Thinking Machines의 **Inkling**(`thinkingmachines/Inkling`)도 호스팅합니다. 웹 UI는 이제 **16개** 라이브 제공자를 지원합니다.
+- **제공자 모노그램 타일.** CSP 안전한 브랜드 색상 이니셜 타일이 설정의 키 필드 옆과 사용량 페이지 행에 각 제공자를 표시합니다 — 인라인 SVG, 외부 로고 없음, 어떤 것도 기기를 떠나지 않습니다.
+
+### 참고
+- 제공자 기본 URL은 `runOpenAICompatible()`을 통해 http(s) 스킴 검사(Ollama 루프백 허용)로 처리되는 신뢰된 설정이며, 채용 URL용 SSRF 검증기를 거치지 않습니다. 스캔 소스 변동 없음: **82**. 테스트: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **추가 — OpenWorker에서 구직 전체를 실행하세요.** 새 coworker가 Andrew Ng의 오픈소스 AI coworker 앱에서 이 파이프라인을 구동하며, 이제 인앱 도움말이 이를 다뤄 "문서에 묻기" 어시스턴트가 안내할 수 있습니다.

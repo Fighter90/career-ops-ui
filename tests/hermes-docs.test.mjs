@@ -68,7 +68,9 @@ test('the Hermes provider is now wired into the dispatch cascade (v1.151.0)', ()
   // client (not a bespoke agent-runtime relay). If someone rips it out, this
   // fails and the docs/roadmap must be reconciled in the same change.
   const dispatch = read('server/lib/llm-dispatch.mjs');
-  assert.match(dispatch, /wantHermes/, 'llm-dispatch gates a Hermes provider');
-  assert.match(dispatch, /mode: 'hermes', run: runHermes/, 'llm-dispatch runs Hermes via the shared client');
+  // v1.216.0 — the per-provider gate/tail became map-driven (HAS_KEY / TAIL_RUN)
+  // so a new provider is added in one place; Hermes must still be in both maps.
+  assert.match(dispatch, /hermes: hasHermesKey/, 'llm-dispatch gates a Hermes provider');
+  assert.match(dispatch, /hermes: runHermes/, 'llm-dispatch runs Hermes via the shared client tail');
   assert.match(read('server/lib/openai.mjs'), /export async function runHermes/, 'Hermes rides runOpenAICompatible');
 });

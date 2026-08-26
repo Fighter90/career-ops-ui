@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.216.0] — 2026-08-26
+
+**Added — nine more LLM providers, each with its own brand tile.** Your ⚡ live evaluations can now run through DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks, or a fully local Ollama — one key away, each marked by a monogram beside its field in Settings.
+
+### Added
+- **Nine OpenAI-compatible providers.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI, and **Ollama** (fully local, no key). Set a key — or `OLLAMA_BASE_URL` for Ollama — in **App settings** and it joins the `auto` order after Hermes; pin any one with `LLM_PROVIDER`. Together also hosts Thinking Machines' **Inkling** (`thinkingmachines/Inkling`). The web UI now spans **16 live-eval providers**.
+- **Provider monogram tiles.** A CSP-safe, brand-colored initial tile marks every provider beside its key field in Settings and its row on the Usage page — built with inline SVG, no external logos, nothing leaves your machine.
+- Each provider surfaces on `#/config` (key + model dropdown; China-endpoint base-URL fields for GLM and Kimi), `/api/status/providers`, `/api/health`, and the Usage cost roll-up (editable list prices in `server/lib/llm-pricing.mjs`).
+
+### Notes
+- Provider base URLs are trusted config reached through `runOpenAICompatible()` with an http(s) scheme guard (Ollama's loopback is allowed) — never the SSRF job-URL validator. Scan sources unchanged at **82**. Test suite: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Added — run your whole job search from OpenWorker.** A new coworker drives this pipeline from Andrew Ng's open-source AI coworker app, and the in-app help now covers it so the Ask-the-docs assistant can walk you through it.

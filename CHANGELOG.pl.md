@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.216.0] — 2026-08-26
+
+**Dodano — dziewięciu kolejnych dostawców LLM, każdy z własnym kafelkiem marki.** Twoje ⚡ oceny na żywo mogą teraz działać przez DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks lub w pełni lokalny Ollama — o jeden klucz, każdy oznaczony monogramem obok swojego pola w Ustawieniach.
+
+### Dodano
+- **Dziewięciu dostawców zgodnych z OpenAI.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI oraz **Ollama** (w pełni lokalny, bez klucza). Ustaw klucz — lub `OLLAMA_BASE_URL` dla Ollamy — w **Ustawieniach**, a dołączy do kolejności `auto` po Hermesie; przypnij dowolnego przez `LLM_PROVIDER`. Together hostuje też **Inkling** od Thinking Machines (`thinkingmachines/Inkling`). Interfejs webowy obejmuje teraz **16 dostawców** na żywo.
+- **Monogramy dostawców.** Bezpieczny dla CSP kafelek z inicjałem w kolorze marki oznacza każdego dostawcę obok jego pola klucza w Ustawieniach i w jego wierszu na stronie Użycie — SVG inline, bez zewnętrznych logo, nic nie opuszcza Twojego urządzenia.
+
+### Uwagi
+- Bazowe adresy URL dostawców to zaufana konfiguracja przechodząca przez `runOpenAICompatible()` z kontrolą schematu http(s) (pętla zwrotna Ollamy jest dozwolona), nigdy przez walidator SSRF adresu oferty. Źródła skanowania bez zmian: **82**. Testy: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Dodano — prowadź całe poszukiwanie pracy z OpenWorker.** Nowy coworker napędza ten pipeline z open-source'owej aplikacji AI-coworker Andrew Ng, a pomoc w aplikacji teraz go obejmuje, więc asystent Zapytaj dokumentację może cię przeprowadzić.

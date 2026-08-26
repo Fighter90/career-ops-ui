@@ -18,6 +18,8 @@ import { resolve } from 'node:path';
 
 let runOpenAI, runQwen, hasOpenAIKey, hasQwenKey, runOpenAICompatible;
 let runOpenRouter, hasOpenRouterKey, fetchOpenRouterModels, OPENROUTER_FALLBACK_MODELS;
+// v1.216.0 — extended OpenAI-compatible roster.
+let compatChatUrl, runDeepSeek, runZai, runKimi, runGrok, runTogether, runOllama, hasOllamaKey, hasGrokKey;
 let ROOT, ENV_FILE;
 const savedRoot = process.env.CAREER_OPS_ROOT;
 
@@ -29,7 +31,9 @@ before(async () => {
   process.env.CAREER_OPS_ROOT = ROOT;
   ({ runOpenAI, runQwen, hasOpenAIKey, hasQwenKey, runOpenAICompatible,
      runOpenRouter, hasOpenRouterKey, fetchOpenRouterModels,
-     OPENROUTER_FALLBACK_MODELS } =
+     OPENROUTER_FALLBACK_MODELS,
+     compatChatUrl, runDeepSeek, runZai, runKimi, runGrok, runTogether, runOllama,
+     hasOllamaKey, hasGrokKey } =
     await import('../server/lib/openai.mjs'));
 });
 
@@ -346,4 +350,87 @@ test('never logs the API key (canary)', async () => {
   } finally {
     for (const m of ['log', 'info', 'warn', 'error', 'debug']) console[m] = orig[m];
   }
+});
+
+// ─── v1.216.0 — extended OpenAI-compatible roster ──────────────────────────
+
+test('compatChatUrl: normalizes bare host, trailing slash, full path, and non-http fallback', () => {
+  const FB = 'https://api.z.ai/api/paas/v4';
+  // bare host → append /v1/chat/completions
+  assert.equal(compatChatUrl('https://api.moonshot.cn', FB), 'https://api.moonshot.cn/v1/chat/completions');
+  // a base path (not a bare host) → append /chat/completions
+  assert.equal(compatChatUrl('https://api.z.ai/api/paas/v4', FB), 'https://api.z.ai/api/paas/v4/chat/completions');
+  // trailing slashes are stripped before appending
+  assert.equal(compatChatUrl('https://api.z.ai/api/paas/v4///', FB), 'https://api.z.ai/api/paas/v4/chat/completions');
+  // an already-complete endpoint is returned as-is
+  assert.equal(compatChatUrl('https://x.example/v1/chat/completions', FB), 'https://x.example/v1/chat/completions');
+  // non-http (or empty) input falls back to the provided default (SSRF scheme guard)
+  assert.equal(compatChatUrl('file:///etc/passwd', FB), 'https://api.z.ai/api/paas/v4/chat/completions');
+  assert.equal(compatChatUrl('', FB), 'https://api.z.ai/api/paas/v4/chat/completions');
+  // loopback http is allowed (Ollama)
+  assert.equal(compatChatUrl('http://localhost:11434/v1', 'http://localhost:11434/v1'),
+    'http://localhost:11434/v1/chat/completions');
+});
+
+test('runDeepSeek: default endpoint + Bearer + model, returns markdown', async () => {
+  let sentUrl, sentAuth, sentModel;
+  const fakeFetch = async (url, opts) => {
+    sentUrl = url; sentAuth = opts.headers.Authorization; sentModel = JSON.parse(opts.body).model;
+    return okChat('# DS\nok.');
+  };
+  const r = await runDeepSeek('hi', { apiKey: 'sk-deepseek-canary-0001', fetchImpl: fakeFetch });
+  assert.equal(r.error, null);
+  assert.equal(r.markdown, '# DS\nok.');
+  assert.equal(sentUrl, 'https://api.deepseek.com/v1/chat/completions');
+  assert.equal(sentAuth, 'Bearer sk-deepseek-canary-0001');
+  assert.equal(sentModel, 'deepseek-chat');
+});
+
+test('runGrok: default xAI endpoint + grok-4 default model', async () => {
+  let sentUrl, sentModel;
+  const fakeFetch = async (url, opts) => { sentUrl = url; sentModel = JSON.parse(opts.body).model; return okChat('ok'); };
+  const r = await runGrok('hi', { apiKey: 'xai-secret-canary-00001', fetchImpl: fakeFetch });
+  assert.equal(r.error, null);
+  assert.equal(sentUrl, 'https://api.x.ai/v1/chat/completions');
+  assert.equal(sentModel, 'grok-4');
+});
+
+test('runTogether: default endpoint + can select the Together-hosted Inkling model', async () => {
+  let sentModel;
+  const fakeFetch = async (_url, opts) => { sentModel = JSON.parse(opts.body).model; return okChat('ok'); };
+  await runTogether('hi', { apiKey: 'together-canary-000001', model: 'thinkingmachines/Inkling', fetchImpl: fakeFetch });
+  assert.equal(sentModel, 'thinkingmachines/Inkling');
+});
+
+test('runZai: honors ZAI_BASE_URL override (CN endpoint)', async () => {
+  clearParentEnv();
+  let sentUrl;
+  const fakeFetch = async (url) => { sentUrl = url; return okChat('ok'); };
+  await runZai('hi', {
+    apiKey: 'zai-secret-canary-00001',
+    url: compatChatUrl('https://open.bigmodel.cn/api/paas/v4', 'https://api.z.ai/api/paas/v4'),
+    fetchImpl: fakeFetch,
+  });
+  assert.equal(sentUrl, 'https://open.bigmodel.cn/api/paas/v4/chat/completions');
+});
+
+test('runOllama: local, keyless — sends a placeholder Bearer to its base URL', async () => {
+  let sentUrl, sentAuth;
+  const fakeFetch = async (url, opts) => { sentUrl = url; sentAuth = opts.headers.Authorization; return okChat('ok'); };
+  const r = await runOllama('hi', { url: 'http://localhost:11434/v1/chat/completions', fetchImpl: fakeFetch });
+  assert.equal(r.error, null);
+  assert.equal(sentUrl, 'http://localhost:11434/v1/chat/completions');
+  assert.equal(sentAuth, 'Bearer ollama'); // placeholder — Ollama ignores auth
+});
+
+test('hasGrokKey / hasOllamaKey: gate on their own env (XAI_API_KEY / OLLAMA_BASE_URL)', () => {
+  clearParentEnv();
+  // No env set → both false (isUsableKey floor; Ollama gates on the base URL).
+  assert.equal(hasGrokKey(), false);
+  assert.equal(hasOllamaKey(), false);
+  // OLLAMA_BASE_URL uses a relaxed 3-char floor so a short local URL still enables it.
+  writeFileSync(ENV_FILE, 'OLLAMA_BASE_URL=http://localhost:11434/v1\nXAI_API_KEY=xai-secret-canary-00001\n');
+  assert.equal(hasOllamaKey(), true);
+  assert.equal(hasGrokKey(), true);
+  clearParentEnv();
 });

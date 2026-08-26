@@ -8,6 +8,17 @@
 
 ---
 
+## [1.216.0] — 2026-08-26
+
+**新增 —— 再增九個 LLM 供應方，每個都有自己的品牌標。** ⚡ 即時評估現可透過 DeepSeek、GLM (Z.ai)、Kimi (Moonshot)、MiniMax、Mistral、Grok (xAI)、Together、Fireworks 或完全本機的 Ollama 執行——只需一個金鑰,設定中每個欄位旁都帶有字母標。
+
+### 新增
+- **九個 OpenAI 相容供應方。** DeepSeek、GLM (Z.ai)、Kimi (Moonshot)、MiniMax、Mistral、Grok (xAI)、Together AI、Fireworks AI 與 **Ollama**（完全本機、免金鑰）。在**設定**中填入金鑰（Ollama 則填 `OLLAMA_BASE_URL`）,即會加入 Hermes 之後的 `auto` 順序;用 `LLM_PROVIDER` 可固定任一個。Together 亦託管 Thinking Machines 的 **Inkling**（`thinkingmachines/Inkling`）。Web UI 現已涵蓋 **16 個**即時供應方。
+- **供應方字母標。** 一個 CSP 安全、品牌配色的首字母方塊在設定的金鑰欄位旁及用量頁面的列內標記每個供應方——內聯 SVG,無外部標誌,任何資料都不離開你的裝置。
+
+### 備註
+- 供應方的基礎 URL 屬受信任設定,經由 `runOpenAICompatible()` 的 http(s) 協定檢查(允許 Ollama 回送),絕不經過職缺 URL 的 SSRF 驗證器。掃描來源不變:**82**。測試:**2752**。
+
 ## [1.215.0] — 2026-08-26
 
 **新增 —— 從 OpenWorker 執行你的整個求職流程。** 一個新的 coworker 從 Andrew Ng 的開源 AI coworker 應用驅動本流水線,應用內說明現已涵蓋它,因此「向文件提問」助手可以帶你完成。

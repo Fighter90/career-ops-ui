@@ -33,10 +33,35 @@ export const KNOWN_KEYS = [
   'HERMES_API_KEY',        // headless live-eval via a local Hermes API Server (v1.151.0) — Nous Research's `hermes gateway` exposes an OpenAI-compatible /v1/chat/completions (Bearer API_SERVER_KEY)
   'HERMES_BASE_URL',       // Hermes API Server base (default http://127.0.0.1:8642/v1); change if you set API_SERVER_PORT
   'HERMES_MODEL',          // Hermes profile / model id (default `hermes-agent`)
+  // ── Extended provider roster (v1.216.0) — OpenAI-compatible vendors, one
+  //    key each; all reach the shared runOpenAICompatible core. ──
+  'DEEPSEEK_API_KEY', 'DEEPSEEK_MODEL',
+  'ZAI_API_KEY', 'ZAI_MODEL', 'ZAI_BASE_URL',               // GLM (Z.ai); BASE_URL for the CN endpoint
+  'MOONSHOT_API_KEY', 'MOONSHOT_MODEL', 'MOONSHOT_BASE_URL', // Kimi (Moonshot); BASE_URL for the CN endpoint
+  'MINIMAX_API_KEY', 'MINIMAX_MODEL',
+  'MISTRAL_API_KEY', 'MISTRAL_MODEL',
+  'XAI_API_KEY', 'XAI_MODEL',                                // Grok (xAI)
+  'TOGETHER_API_KEY', 'TOGETHER_MODEL',                      // Together AI (open-weight, incl. Inkling)
+  'FIREWORKS_API_KEY', 'FIREWORKS_MODEL',                    // Fireworks AI (open-weight)
+  'OLLAMA_BASE_URL', 'OLLAMA_MODEL', 'OLLAMA_API_KEY',       // fully local; OLLAMA_BASE_URL is the opt-in signal (no key)
   // ── Server runtime ──
   'PORT',
   'HOST',
 ];
+
+// The auto-cascade tail after the built-in seven (v1.216.0). A pinned
+// LLM_PROVIDER returns just `[slug]`; `auto` walks the whole order and uses the
+// first provider whose key is set. Ollama is last — it's local/opt-in.
+export const AUTO_ORDER = [
+  'anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes',
+  'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama',
+];
+// Slugs whose LLM_PROVIDER pin value equals the internal provider name
+// (unlike `claude`→`anthropic`). Pinning any of these returns just itself.
+const SELF_NAMED_PINS = new Set([
+  'openai', 'qwen', 'openrouter', 'github', 'hermes',
+  'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama',
+]);
 
 /**
  * Valid LLM_PROVIDER values. `auto` = first provider whose key is set,
@@ -44,7 +69,7 @@ export const KNOWN_KEYS = [
  * one provider; with no key it falls through to the manual-prompt
  * path exactly like the pre-v1.39 no-key behaviour.
  */
-export const LLM_PROVIDERS = ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'];
+export const LLM_PROVIDERS = ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes', 'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama'];
 
 /**
  * Effective provider preference order from LLM_PROVIDER:
@@ -59,18 +84,14 @@ export const LLM_PROVIDERS = ['auto', 'claude', 'gemini', 'openai', 'qwen', 'ope
  */
 export function providerOrder(env = process.env) {
   const v = String(env.LLM_PROVIDER || 'auto').trim().toLowerCase();
-  if (v === 'claude') return ['anthropic'];
+  if (v === 'claude') return ['anthropic'];       // pin value ≠ internal name
   if (v === 'gemini') return ['gemini'];
-  if (v === 'openai') return ['openai'];
-  if (v === 'qwen') return ['qwen'];
-  if (v === 'openrouter') return ['openrouter'];
-  if (v === 'github') return ['github'];
-  if (v === 'hermes') return ['hermes'];
-  // OpenRouter + GitHub Models + Hermes sit at the TAIL of the auto order: a
-  // user who already had Anthropic/Gemini/OpenAI/Qwen working keeps that exact
-  // routing; they only kick in when one is the sole configured key. Hermes is
-  // last (it's a local gateway you opt into by running `hermes gateway`).
-  return ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'];
+  if (SELF_NAMED_PINS.has(v)) return [v];         // openai/qwen/…/ollama pin to themselves
+  // Everything after Anthropic/Gemini/OpenAI/Qwen sits at the TAIL of the auto
+  // order: a user who already had one of those working keeps that exact routing;
+  // the rest only kick in when one is the sole configured key. Ollama is last
+  // (a local gateway you opt into by setting OLLAMA_BASE_URL).
+  return AUTO_ORDER;
 }
 
 /**
@@ -93,7 +114,7 @@ export function selectActiveProvider(keysConfigured, env = process.env) {
   // the stale pin used to force manual mode. Fall back to the auto order among
   // the configured keys so "set any provider key and it works" holds.
   if (order.length === 1) {
-    return ['anthropic', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes'].find((p) => set.has(p)) || null;
+    return AUTO_ORDER.find((p) => set.has(p)) || null;
   }
   return null;
 }
@@ -125,9 +146,24 @@ export const KEY_GROUPS = {
   PORT: 'runtime',
   HOST: 'runtime',
 };
+// v1.216.0 — every provider key added above is a `core` (LLM) key. Assign them
+// here so the roster stays maintainable (PORT/HOST keep their explicit
+// 'runtime' group; anything already classified is left untouched).
+for (const k of KNOWN_KEYS) {
+  if (!(k in KEY_GROUPS)) KEY_GROUPS[k] = 'core';
+}
 
-/** Keys whose values are secret and must never be returned in plain text. */
-export const SECRET_KEYS = new Set(['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY', 'GITHUB_MODELS_API_KEY', 'HERMES_API_KEY']);
+/** Keys whose values are secret and must never be returned in plain text.
+ *  Ollama has no key (OLLAMA_BASE_URL is a shown URL, not a secret); its
+ *  optional OLLAMA_API_KEY is still treated as secret in case a proxied Ollama
+ *  needs one. */
+export const SECRET_KEYS = new Set([
+  'ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY',
+  'OPENROUTER_API_KEY', 'GITHUB_MODELS_API_KEY', 'HERMES_API_KEY',
+  'DEEPSEEK_API_KEY', 'ZAI_API_KEY', 'MOONSHOT_API_KEY', 'MINIMAX_API_KEY',
+  'MISTRAL_API_KEY', 'XAI_API_KEY', 'TOGETHER_API_KEY', 'FIREWORKS_API_KEY',
+  'OLLAMA_API_KEY',
+]);
 
 /**
  * Parse an .env file body into a plain object. Preserves the raw text
