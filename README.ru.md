@@ -12,13 +12,14 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.225.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.225.0)
+[![release](https://img.shields.io/badge/release-v1.225.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.225.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.225.0** — **Баннер логотипов провайдеров** — баннер всех 18 LLM-провайдеров — реальные логотипы для 11, монограмма для 7 — теперь возглавляет README и руководство. **2784 тестов.**
+> **🆕 Последний релиз — v1.225.1** — **Исправление баннера провайдеров** — баннер логотипов теперь корректно отображается в README и руководстве (отрендеренный PNG по абсолютному URL; SVG с невалидным XML исправлен). **2784 тестов.**
 
-<p align="center"><img src="images/providers.svg" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+
 >
 > 📜 Полная история релизов: **[CHANGELOG.ru.md](CHANGELOG.ru.md)**.
 

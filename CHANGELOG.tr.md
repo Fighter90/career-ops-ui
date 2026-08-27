@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.225.1] — 2026-08-27
+
+**Düzeltildi — sağlayıcı logo afişi artık README ve yardımda görünüyor.**
+
+### Düzeltildi
+- v1.225.0 afişi GitHub'da görünmüyordu: bağımsız `images/providers.svg` dosyasında GitHub'ın reddettiği geçersiz bir `font-family` (iç içe çift tırnak) vardı, `<img>` depo-göreli bir `src` kullanıyordu (ham HTML `<img>` GitHub'da göreli yolları çözmez) ve `<p>` bloğunda sondaki boş satır yoktu. Artık mutlak bir URL üzerinden işlenmiş bir `images/providers.png` gösteriyor, boş satırlarla ayrılmış olarak; SVG de geçerli XML'e düzeltildi.
+
+### Notlar
+- Yalnızca dokümanlar; kod veya test değişikliği yok. cvstart.org vitrini ve uygulamanın kutucukları zaten doğruydu (satır içi SVG, bu dosya değil).  **2784**
+
 ## [1.225.0] — 2026-08-27
 
 **Eklendi — README ve yardım kılavuzunda bir sağlayıcı logo afişi.**

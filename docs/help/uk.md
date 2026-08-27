@@ -1,6 +1,6 @@
 # Довідка — career-ops-ui
 
-<p align="center"><img src="../../images/providers.svg" alt="18 LLM providers — Anthropic, OpenAI, Gemini, DeepSeek, Mistral, Ollama and more" width="720"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 Повний огляд кожної сторінки: від запуску застосунку до отримання запрошення на співбесіду. Кожен заголовок `##` нижче відповідає пункту бічної панелі або фазі робочого процесу. При першому запуску читайте зверху донизу; пізніше переходьте до потрібного розділу через зміст у бічній панелі довідки.
 

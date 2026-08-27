@@ -12,13 +12,14 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.225.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.225.0)
+[![release](https://img.shields.io/badge/release-v1.225.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.225.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.225.0** — **Banner dei loghi dei provider** — un banner di tutti i 18 provider LLM — loghi reali per 11, monogramma per 7 — apre ora il README e la guida. **2784 test.**
+> **🆕 Ultima release — v1.225.1** — **Correzione banner provider** — il banner dei loghi ora compare correttamente nel README e nella guida (PNG renderizzato tramite URL assoluto; l'SVG con XML non valido è corretto). **2784 test.**
 
-<p align="center"><img src="images/providers.svg" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+
 >
 > 📜 Cronologia completa delle versioni: **[CHANGELOG.it.md](CHANGELOG.it.md)**.
 

@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.225.1] — 2026-08-27
+
+**Naprawiono — baner logotypów dostawców teraz wyświetla się w README i pomocy.**
+
+### Naprawiono
+- Baner z v1.225.0 nie wyświetlał się na GitHub: samodzielny `images/providers.svg` miał nieprawidłowy `font-family` (zagnieżdżone cudzysłowy) odrzucany przez GitHub, `<img>` używał względnego `src` (HTML `<img>` nie rozwiązuje ścieżek względnych na GitHub), a blok `<p>` nie miał końcowej pustej linii. Teraz wskazuje na wyrenderowany `images/providers.png` przez bezwzględny URL, z separacją pustymi liniami; SVG także poprawiono do prawidłowego XML.
+
+### Uwagi
+- Tylko dokumentacja; bez zmian kodu ani testów. Witryna cvstart.org i kafelki w aplikacji były już poprawne (wbudowany SVG, nie ten plik).  **2784**
+
 ## [1.225.0] — 2026-08-27
 
 **Dodano — baner logotypów dostawców w README i przewodniku pomocy.**

@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.225.1] — 2026-08-27
+
+**Corrigé — la bannière de logos de fournisseurs s'affiche désormais dans le README et l'aide.**
+
+### Corrigé
+- La bannière de v1.225.0 ne s'affichait pas sur GitHub : le `images/providers.svg` autonome avait un `font-family` invalide (guillemets doubles imbriqués) que GitHub rejette, le `<img>` utilisait un `src` relatif (le HTML `<img>` ne résout pas les chemins relatifs sur GitHub) et le bloc `<p>` n'avait pas de ligne vide finale. Il pointe maintenant vers un `images/providers.png` rendu via une URL absolue, avec séparation par lignes vides ; le SVG est aussi corrigé en XML valide.
+
+### Notes
+- Docs uniquement ; aucun changement de code ni de tests. La vitrine cvstart.org et les tuiles de l'app étaient déjà correctes (SVG en ligne, pas ce fichier).  **2784**
+
 ## [1.225.0] — 2026-08-27
 
 **Ajouté — une bannière de logos de fournisseurs dans le README et le guide d'aide.**

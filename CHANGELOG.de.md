@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.225.1] — 2026-08-27
+
+**Behoben — das Anbieterlogo-Banner wird jetzt im README und in der Hilfe angezeigt.**
+
+### Behoben
+- Das Banner aus v1.225.0 wurde auf GitHub nicht angezeigt: die eigenständige `images/providers.svg` hatte ein ungültiges `font-family` (verschachtelte doppelte Anführungszeichen), das GitHub ablehnt, das `<img>` nutzte einen repo-relativen `src` (rohes HTML `<img>` löst relative Pfade auf GitHub nicht auf), und dem `<p>`-Block fehlte eine abschließende Leerzeile. Es verweist jetzt über eine absolute URL auf ein gerendertes `images/providers.png`, mit Leerzeilen-Trennung; das SVG ist zudem auf gültiges XML korrigiert.
+
+### Hinweise
+- Nur Docs; keine Code- oder Teständerung. Die cvstart.org-Showcase und die Kacheln der App waren bereits korrekt (Inline-SVG, nicht diese Datei).  **2784**
+
 ## [1.225.0] — 2026-08-27
 
 **Hinzugefügt — ein Anbieterlogo-Banner in README und Hilfe-Guide.**
