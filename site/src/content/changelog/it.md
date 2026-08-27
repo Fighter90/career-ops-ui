@@ -2,6 +2,36 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.226.0] — 2026-08-27
+
+**Aggiunto — due sorgenti di lavoro vietnamite: ITviec e CareerViet.**
+
+### Aggiunto
+- **ITviec + CareerViet (Vietnam).** Due board vietnamite con host fissato si uniscono allo scanner tramite voci `provider: itviec` / `provider: careerviet`: **ITviec** (itviec.com, tech) e **CareerViet** (careerviet.vn, ampia copertura). Entrambi sono scraper HTML senza token, con host-pin anti-SSRF, solo-HTTPS, fail-soft per azienda e limiti di pagina. Il registro ora conta **85 sorgenti** (80 EN + 5 RU), `ALL_ADAPTERS` **80** — entrambi compaiono nel filtro Sorgente di `#/scan`.
+
+### Note
+- Parità con career-ops 1.30.0 (parentVersion 1.29.0 → 1.30.0). Non portato (solo CLI/community o già coperto): la Hired Wall, `/calibrate`, clean-markers, pacchetti di template, doctor, pdf/LaTeX e le CLI eval/tracker/scan che web-ui non invoca; il fix `_html-to-text` e `roleFuzzyMatch` c'erano già; il prefisso `title-filter stem:` è rimandato. Suite di test: **2818**.
+
+## [1.225.1] — 2026-08-27
+
+**Corretto — il banner dei loghi dei provider ora compare nel README e nella guida.**
+
+### Corretto
+- Il banner della v1.225.0 non compariva su GitHub: il file `images/providers.svg` autonomo aveva un `font-family` non valido (virgolette doppie annidate) che GitHub rifiuta, l'`<img>` usava un `src` relativo (l'HTML `<img>` non risolve percorsi relativi su GitHub) e al blocco `<p>` mancava una riga vuota finale. Ora punta a un `images/providers.png` renderizzato tramite URL assoluto, con separazione a righe vuote; anche l'SVG è corretto in XML valido.
+
+### Note
+- Solo docs; nessun cambiamento di codice o test. La vetrina di cvstart.org e i riquadri dell'app erano già corretti (SVG inline, non questo file).  **2784**
+
+## [1.225.0] — 2026-08-27
+
+**Aggiunto — un banner dei loghi dei provider nel README e nella guida.**
+
+### Aggiunto
+- **Banner dei loghi dei provider.** Un unico `images/providers.svg` autonomo — i **18 provider LLM**, con il **logo reale del brand** ([simple-icons](https://simpleicons.org), CC0) per gli 11 che ne pubblicano uno e un monogramma con il colore del brand per i 7 restanti — apre ora il README (×17) e la guida in-app. (L'app disegna da sé i riquadri con il logo reale; il banner è reso su GitHub e rimosso nell'app dal renderer sicuro per l'XSS.)
+
+### Note
+- Solo docs — nessun cambiamento di codice o test; l'SVG è inline (nessuna risorsa remota). Sorgenti di scansione invariate: **83**. Suite di test: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Modificato — i riquadri dei provider LLM ora mostrano i loghi reali dei brand.**

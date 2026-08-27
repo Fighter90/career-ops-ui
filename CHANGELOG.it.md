@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.226.0] — 2026-08-27
+
+**Aggiunto — due sorgenti di lavoro vietnamite: ITviec e CareerViet.**
+
+### Aggiunto
+- **ITviec + CareerViet (Vietnam).** Due board vietnamite con host fissato si uniscono allo scanner tramite voci `provider: itviec` / `provider: careerviet`: **ITviec** (itviec.com, tech) e **CareerViet** (careerviet.vn, ampia copertura). Entrambi sono scraper HTML senza token, con host-pin anti-SSRF, solo-HTTPS, fail-soft per azienda e limiti di pagina. Il registro ora conta **85 sorgenti** (80 EN + 5 RU), `ALL_ADAPTERS` **80** — entrambi compaiono nel filtro Sorgente di `#/scan`.
+
+### Note
+- Parità con career-ops 1.30.0 (parentVersion 1.29.0 → 1.30.0). Non portato (solo CLI/community o già coperto): la Hired Wall, `/calibrate`, clean-markers, pacchetti di template, doctor, pdf/LaTeX e le CLI eval/tracker/scan che web-ui non invoca; il fix `_html-to-text` e `roleFuzzyMatch` c'erano già; il prefisso `title-filter stem:` è rimandato. Suite di test: **2818**.
+
 ## [1.225.1] — 2026-08-27
 
 **Corretto — il banner dei loghi dei provider ora compare nel README e nella guida.**

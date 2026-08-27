@@ -11,6 +11,36 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.226.0] — 2026-08-27
+
+**Añadido — dos fuentes de empleo vietnamitas: ITviec y CareerViet.**
+
+### Añadido
+- **ITviec + CareerViet (Vietnam).** Dos portales vietnamitas con host fijado se unen al escáner vía entradas `provider: itviec` / `provider: careerviet`: **ITviec** (itviec.com, tecnología) y **CareerViet** (careerviet.vn, amplia cobertura). Ambos son scrapers HTML sin tokens, con host-pin anti-SSRF, solo-HTTPS, fail-soft por empresa y topes de página. El registro ya trae **85 fuentes** (80 EN + 5 RU), `ALL_ADAPTERS` **80** — ambos aparecen en el filtro Fuente de `#/scan`.
+
+### Notas
+- Paridad con career-ops 1.30.0 (parentVersion 1.29.0 → 1.30.0). No portado (solo CLI/comunidad o ya cubierto): el Hired Wall, `/calibrate`, clean-markers, packs de plantillas, doctor, pdf/LaTeX y las CLIs de eval/tracker/scan que web-ui no invoca; el arreglo de `_html-to-text` y `roleFuzzyMatch` ya estaban; el prefijo `title-filter stem:` se difiere. Conjunto de pruebas: **2818**.
+
+## [1.225.1] — 2026-08-27
+
+**Corregido — el banner de logotipos de proveedores ahora se muestra en el README y la ayuda.**
+
+### Corregido
+- El banner de v1.225.0 no se veía en GitHub: el `images/providers.svg` tenía un `font-family` inválido (comillas dobles anidadas) que GitHub rechaza, el `<img>` usaba un `src` relativo (el HTML `<img>` no resuelve rutas relativas en GitHub) y al bloque `<p>` le faltaba una línea en blanco final. Ahora apunta a un `images/providers.png` renderizado con URL absoluta y separación por líneas en blanco; el SVG también se corrigió a XML válido.
+
+### Notas
+- Solo docs; sin cambios de código ni pruebas. La vitrina de cvstart.org y las fichas de la app ya eran correctas (SVG en línea, no este archivo).  **2784**
+
+## [1.225.0] — 2026-08-27
+
+**Añadido — un banner de logotipos de proveedores en el README y la guía de ayuda.**
+
+### Añadido
+- **Banner de logotipos de proveedores.** Un único `images/providers.svg` autónomo — los **18 proveedores de LLM** con el **logotipo real de marca** ([simple-icons](https://simpleicons.org), CC0) para los 11 que publican uno y un monograma con color de marca para los 7 que no — encabeza ahora el README (×17) y la guía de ayuda integrada. (La app renderiza las fichas con el logotipo real; el banner se muestra en GitHub y el renderizador seguro para XSS lo elimina en la app.)
+
+### Notas
+- Solo docs — sin cambios de código ni pruebas; el SVG está incrustado (sin recurso remoto). Fuentes de escaneo sin cambios: **83**. Conjunto de pruebas: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Cambiado — las fichas de proveedores LLM ahora muestran los logotipos reales de marca.**

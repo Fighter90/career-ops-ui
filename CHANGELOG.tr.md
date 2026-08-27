@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.226.0] — 2026-08-27
+
+**Eklendi — iki Vietnam iş kaynağı: ITviec ve CareerViet.**
+
+### Eklendi
+- **ITviec + CareerViet (Vietnam).** Host-sabitlemeli iki Vietnam panosu `provider: itviec` / `provider: careerviet` girdileriyle tarayıcıya katılır: **ITviec** (itviec.com, teknoloji) ve **CareerViet** (careerviet.vn, geniş kapsam). İkisi de token gerektirmeyen HTML kazıyıcılardır; SSRF host-pin, yalnızca-HTTPS, şirket bazında fail-soft ve sayfa üst sınırları içerir. Kayıt artık **85 kaynak** (80 EN + 5 RU), `ALL_ADAPTERS` **80** taşır — ikisi de `#/scan` Kaynak filtresinde görünür.
+
+### Notlar
+- career-ops 1.30.0 paritesi (parentVersion 1.29.0 → 1.30.0). Taşınmadı (yalnızca CLI/topluluk veya zaten kapsanmış): Hired Wall, `/calibrate`, clean-markers, şablon paketleri, doctor, pdf/LaTeX ve web-ui'nin çağırmadığı eval/tracker/scan CLI'leri; `_html-to-text` düzeltmesi ve `roleFuzzyMatch` zaten vardı; `title-filter stem:` öneki ertelendi. Test paketi: **2818**.
+
 ## [1.225.1] — 2026-08-27
 
 **Düzeltildi — sağlayıcı logo afişi artık README ve yardımda görünüyor.**

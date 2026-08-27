@@ -8,6 +8,16 @@
 
 ---
 
+## [1.226.0] — 2026-08-27
+
+**أُضيف — مصدرا وظائف فيتناميان: ITviec و CareerViet.**
+
+### أُضيف
+- **ITviec + CareerViet (فيتنام).** لوحتان فيتناميتان مثبَّتتا المضيف تنضمّان إلى الماسح عبر إدخالات `provider: itviec` / `provider: careerviet`: **ITviec** (itviec.com، تقني) و**CareerViet** (careerviet.vn، تغطية واسعة). كلاهما كاشطا HTML بلا رموز، مع تثبيت المضيف ضد SSRF، وHTTPS فقط، وتحمّل الأخطاء لكل شركة، وحدود صفحات. صار السجل يحوي **85 مصدرًا** (80 EN + 5 RU)، و`ALL_ADAPTERS` **80** — ويظهر كلاهما في مرشّح المصدر بـ `#/scan`.
+
+### ملاحظات
+- مطابقة career-ops 1.30.0 (parentVersion 1.29.0 → 1.30.0). غير مَنقول (CLI/مجتمع فقط أو مغطّى): Hired Wall و`/calibrate` وclean-markers وحزم القوالب وdoctor وpdf/LaTeX وأدوات eval/tracker/scan التي لا يستدعيها web-ui؛ إصلاح `_html-to-text` و`roleFuzzyMatch` كانا موجودين؛ بادئة `title-filter stem:` مؤجَّلة. مجموعة الاختبارات: **2818**.
+
 ## [1.225.1] — 2026-08-27
 
 **إصلاح — لافتة شعارات المزوّدين تظهر الآن في README ودليل المساعدة.**

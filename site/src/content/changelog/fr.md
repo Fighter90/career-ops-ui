@@ -11,6 +11,36 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.226.0] — 2026-08-27
+
+**Ajouté — deux sources d'emploi vietnamiennes : ITviec et CareerViet.**
+
+### Ajouté
+- **ITviec + CareerViet (Vietnam).** Deux sites vietnamiens à hôte épinglé rejoignent le scanner via des entrées `provider: itviec` / `provider: careerviet` : **ITviec** (itviec.com, tech) et **CareerViet** (careerviet.vn, large couverture). Tous deux sont des scrapers HTML sans token, avec épinglage d'hôte anti-SSRF, HTTPS uniquement, tolérance par entreprise et plafonds de pages. Le registre compte désormais **85 sources** (80 EN + 5 RU), `ALL_ADAPTERS` **80** — les deux apparaissent dans le filtre Source de `#/scan`.
+
+### Notes
+- Parité avec career-ops 1.30.0 (parentVersion 1.29.0 → 1.30.0). Non porté (CLI/communauté seulement ou déjà couvert) : le Hired Wall, `/calibrate`, clean-markers, packs de modèles, doctor, pdf/LaTeX, et les CLI eval/tracker/scan que web-ui n'invoque pas ; le correctif `_html-to-text` et `roleFuzzyMatch` étaient déjà présents ; le préfixe `title-filter stem:` est reporté. Suite de tests : **2818**.
+
+## [1.225.1] — 2026-08-27
+
+**Corrigé — la bannière de logos de fournisseurs s'affiche désormais dans le README et l'aide.**
+
+### Corrigé
+- La bannière de v1.225.0 ne s'affichait pas sur GitHub : le `images/providers.svg` autonome avait un `font-family` invalide (guillemets doubles imbriqués) que GitHub rejette, le `<img>` utilisait un `src` relatif (le HTML `<img>` ne résout pas les chemins relatifs sur GitHub) et le bloc `<p>` n'avait pas de ligne vide finale. Il pointe maintenant vers un `images/providers.png` rendu via une URL absolue, avec séparation par lignes vides ; le SVG est aussi corrigé en XML valide.
+
+### Notes
+- Docs uniquement ; aucun changement de code ni de tests. La vitrine cvstart.org et les tuiles de l'app étaient déjà correctes (SVG en ligne, pas ce fichier).  **2784**
+
+## [1.225.0] — 2026-08-27
+
+**Ajouté — une bannière de logos de fournisseurs dans le README et le guide d'aide.**
+
+### Ajouté
+- **Bannière de logos de fournisseurs.** Un unique `images/providers.svg` autonome — les **18 fournisseurs de LLM**, avec le **vrai logo de marque** ([simple-icons](https://simpleicons.org), CC0) pour les 11 qui en publient un et un monogramme aux couleurs de la marque pour les 7 autres — coiffe désormais le README (×17) et le guide d'aide intégré. (L'app affiche elle-même les tuiles avec le vrai logo ; la bannière est rendue sur GitHub et retirée dans l'app par le moteur de rendu sûr pour le XSS.)
+
+### Notes
+- Docs uniquement — aucun changement de code ni de tests ; le SVG est intégré (aucune ressource distante). Sources de scan inchangées : **83**. Suite de tests : **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Modifié — les tuiles des fournisseurs LLM affichent désormais les vrais logos de marque.**

@@ -9,6 +9,36 @@
 ---
 
 
+## [1.226.0] — 2026-08-27
+
+**新增 —— 两个越南招聘来源: ITviec 与 CareerViet。**
+
+### 新增
+- **ITviec + CareerViet(越南)。** 两个主机锁定的越南看板经 `provider: itviec` / `provider: careerviet` 条目加入扫描器:**ITviec**(itviec.com,技术向)与 **CareerViet**(careerviet.vn,广覆盖)。两者均为零 token 的 HTML 抓取器,带 SSRF 主机锁定、仅 HTTPS、按公司容错与页数上限。注册表现有 **85 个来源**(80 EN + 5 RU),`ALL_ADAPTERS` **80** —— 二者均出现在 `#/scan` 的来源筛选中。
+
+### 说明
+- career-ops 1.30.0 对齐(parentVersion 1.29.0 → 1.30.0)。未移植(仅 CLI/社区或已覆盖):Hired Wall、`/calibrate`、clean-markers、模板包、doctor、pdf/LaTeX,以及 web-ui 不调用的 eval/tracker/scan CLI;`_html-to-text` 修复与 detect-reposts `roleFuzzyMatch` 已存在;`title-filter stem:` 前缀推迟。测试套件:**2818**。
+
+## [1.225.1] — 2026-08-27
+
+**修复 —— 提供方徽标横幅现在能在 README 与帮助中显示。**
+
+### 修复
+- v1.225.0 的横幅在 GitHub 上不显示:独立的 `images/providers.svg` 有一个无效的 `font-family`(嵌套的双引号),被 GitHub 拒绝;`<img>` 使用了仓库相对 `src`(GitHub 不解析 raw HTML `<img>` 的相对路径);`<p>` 块缺少结尾空行,导致与下一行合并。现在它通过绝对 raw URL 指向已渲染的 `images/providers.png`,并以空行分隔;SVG 也已修正为有效 XML。
+
+### 说明
+- 仅文档;无代码/测试改动。cvstart.org 展示区与应用内磁贴此前已正确(内联 SVG,非此文件)。  **2784**
+
+## [1.225.0] — 2026-08-27
+
+**新增 —— README 与帮助指南顶部的提供方徽标横幅。**
+
+### 新增
+- **提供方徽标横幅。** 一个自包含的 `images/providers.svg` —— **18 个 LLM 提供方**,发布图标的 11 个用**真实品牌徽标**([simple-icons](https://simpleicons.org),CC0),其余 7 个用品牌配色字母标 —— 现位于 README(×17)与应用内帮助指南顶部。(应用自身渲染真实徽标磁贴;横幅在 GitHub 渲染,应用的 XSS 安全渲染器会将其移除。)
+
+### 说明
+- 仅文档 —— 无代码/测试改动;SVG 为内联(无远程资源)。扫描来源不变:**83**。测试套件:**2784**。
+
 ## [1.224.0] — 2026-08-26
 
 **变更 —— LLM 提供方磁贴现在显示真实的品牌徽标。**

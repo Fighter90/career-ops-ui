@@ -8,6 +8,36 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.226.0] — 2026-08-27
+
+**Added — two Vietnamese job sources: ITviec and CareerViet.**
+
+### Added
+- **ITviec + CareerViet (Vietnam).** Two host-pinned Vietnamese boards join the scanner via `provider: itviec` / `provider: careerviet` entries: **ITviec** (itviec.com, tech-focused) and **CareerViet** (careerviet.vn, broad coverage). Both are zero-token HTML scrapers with SSRF host-pinning, HTTPS-only, per-company fail-soft, and page caps. Registry now ships **85 sources** (80 EN + 5 RU), `ALL_ADAPTERS` **80** — both appear in the `#/scan` Source filter.
+
+### Notes
+- career-ops 1.30.0 parity (parentVersion 1.29.0 → 1.30.0). Not ported — CLI/community-only or already covered: the Hired Wall, `/calibrate`, clean-markers, template packs, doctor, pdf/LaTeX, and the eval/tracker/scan CLIs web-ui does not shell into; the `_html-to-text` quoted-angle fix and detect-reposts `roleFuzzyMatch` were already in web-ui; the `title-filter stem:` prefix is deferred (web-ui filtering lives in `en-scanner`). Test suite: **2818**.
+
+## [1.225.1] — 2026-08-27
+
+**Fixed — the provider-logo banner now renders in the README and help.**
+
+### Fixed
+- The v1.225.0 banner did not display on GitHub: the standalone `images/providers.svg` had an invalid `font-family` (nested double-quotes) that GitHub rejects, the `<img>` used a repo-relative `src` (raw HTML `<img>` does not resolve relative paths on GitHub), and the `<p>` block had no trailing blank line so it merged with the next line. It now points at a rendered `images/providers.png` via an absolute raw URL, with blank-line separation; the SVG is also corrected to valid XML.
+
+### Notes
+- Docs-only; no code or test change. The cvstart.org showcase and the app's own provider tiles were already correct (inline SVG, not this file). Test suite: **2784**.
+
+## [1.225.0] — 2026-08-27
+
+**Added — a provider-logo banner in the README and help guide.**
+
+### Added
+- **Provider-logo banner.** A single self-contained `images/providers.svg` — the **18 LLM providers** with the **real brand logo** ([simple-icons](https://simpleicons.org), CC0) for the 11 that publish one and a brand-colored monogram for the 7 that don't — now heads the README (×17) and the in-app help guide. (The app renders the real logo tiles itself; the banner is GitHub-rendered and stripped in-app by the XSS-safe markdown renderer.)
+
+### Notes
+- Docs-only — no code or test change; the SVG is inline (no remote asset). Scan sources unchanged at **83**. Test suite: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Changed — the LLM provider tiles now show real brand logos.**

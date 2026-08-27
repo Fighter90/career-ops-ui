@@ -8,6 +8,16 @@
 
 ---
 
+## [1.226.0] — 2026-08-27
+
+**新增 —— 兩個越南招聘來源: ITviec 與 CareerViet。**
+
+### 新增
+- **ITviec + CareerViet(越南)。** 兩個主機鎖定的越南看板經 `provider: itviec` / `provider: careerviet` 項目加入掃描器:**ITviec**(itviec.com,技術向)與 **CareerViet**(careerviet.vn,廣覆蓋)。兩者皆為零 token 的 HTML 抓取器,帶 SSRF 主機鎖定、僅 HTTPS、依公司容錯與頁數上限。註冊表現有 **85 個來源**(80 EN + 5 RU),`ALL_ADAPTERS` **80** —— 兩者皆出現在 `#/scan` 的來源篩選中。
+
+### 備註
+- career-ops 1.30.0 對齊(parentVersion 1.29.0 → 1.30.0)。未移植(僅 CLI/社群或已涵蓋):Hired Wall、`/calibrate`、clean-markers、範本包、doctor、pdf/LaTeX,以及 web-ui 不呼叫的 eval/tracker/scan CLI;`_html-to-text` 修復與 detect-reposts `roleFuzzyMatch` 已存在;`title-filter stem:` 前綴延後。測試套件:**2818**。
+
 ## [1.225.1] — 2026-08-27
 
 **修復 —— 供應方標誌橫幅現在能在 README 與說明中顯示。**

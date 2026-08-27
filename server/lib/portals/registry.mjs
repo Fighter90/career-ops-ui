@@ -130,6 +130,9 @@ import { remotliAdapter } from './adapters/remotli.mjs';
 import { eightfoldAdapter } from './adapters/eightfold.mjs';
 // v1.219.0 — Torre (search.torre.co opportunity search — LatAm-heavy remote board).
 import { torreAdapter } from './adapters/torre.mjs';
+// v1.226.0 — Vietnamese sources (ITviec + CareerViet).
+import { itviecAdapter } from './adapters/itviec.mjs';
+import { careervietAdapter } from './adapters/careerviet.mjs';
 
 export const ALL_ADAPTERS = [
   greenhouseAdapter,
@@ -244,6 +247,8 @@ export const ALL_ADAPTERS = [
   considerAdapter,
   remotliAdapter,
   eightfoldAdapter,
+  itviecAdapter,
+  careervietAdapter,
 ];
 
 /**
