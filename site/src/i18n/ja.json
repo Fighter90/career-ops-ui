@@ -192,6 +192,8 @@
   "src.title": "求人ソース",
   "src.lead": "トークン不要の直接コネクター — スキャナーが LLM なしで読み取る {n} のジョブボード／ATS プラットフォーム。各チップはソースにリンクします。",
   "src.ru": "ロシアのジョブボード",
+  "prov.title": "あなたのモデルで動く",
+  "prov.lead": "信頼するモデルですべての求人を採点 — {n} の LLM プロバイダー、あなたのキー、または Ollama で完全ローカル。Anthropic、OpenAI、Gemini、DeepSeek、Mistral など。",
   "nav.methodology": "メソドロジー",
   "footer.parentMethodology": "career-ops メソドロジー",
   "meta.methodologyTitle": "メソドロジー — career-opsによる求人スコアリングの仕組み · career-ops-ui",

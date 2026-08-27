@@ -2,6 +2,113 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.224.0] — 2026-08-26
+
+**Değiştirildi — LLM sağlayıcı kutucukları artık gerçek marka logolarını gösteriyor.**
+
+### Değiştirildi
+- **Gerçek sağlayıcı logoları.** Sağlayıcı kutucukları — Ayarlardaki API anahtarı alanları, Kullanım satırları, pano çipi, Ayarların "Etkin" özeti, ⚡ değerlendirme sonucu ve karşılama afişi — artık açık kaynak simge yayımlayan 11 sağlayıcı için **gerçek marka logosunu** işliyor (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; [simple-icons](https://simpleicons.org)'ten tek yollu SVG'ler, CC0). Yayımlanmış simgesi olmayan 7'si (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) marka renkli monogramı korur. Hâlâ **yapısı gereği CSP-güvenli**: logo yolu gömülü statik bir sabit — uzak kaynak yok, `innerHTML` yok.
+
+### Notlar
+- Rota veya davranış değişikliği yok; aynı `ProviderLogo.el(slug)` API'si. `provider-logo.js` büyüdü (gömülü logo yolları). Tarama kaynakları değişmedi: **83**. Test paketi: **2784**.
+
+## [1.223.0] — 2026-08-26
+
+**Düzeltildi — başarılı bir ⚡ canlı değerlendirme hata olarak boyanıyordu; ayrıca OpenWorker coworker'ını doğrudan GitHub URL'sinden veya .zip'ten kurun.**
+
+### Düzeltildi
+- **⚡ değerlendirme sonuç rozetinin tonu.** Başarılı bir canlı değerlendirme artık başarısızlık gibi boyanmıyor. Süreç içi sağlayıcılar (OpenRouter, DeepSeek, …) alt süreç çıkış `code`'u döndürmez, bu yüzden katı `code === 0` yanlıştı ve her başarı **kırmızı** görünüyordu ("exit 0" yazarken). Ton artık sonucu izliyor — yalnızca sıfırdan farklı kodla çıkan bir alt süreç kırmızı boyar; kodsuz bir canlı sonuç `badge-ok`'tur ve "· exit N" son eki yalnızca gerçek bir çıkış kodu varken görünür.
+
+### Değiştirildi
+- **[OpenWorker coworker](https://github.com/Fighter90/career-ops-coworker)'ını GitHub URL / .zip'ten kurun.** Coworker'ın dokümantasyonu artık tek komutluk kurucuyu (`curl … | bash`, idempotent — mevcut career-ops / web-ui'yi yeniden kullanır) ve OpenWorker'daki üç kurulum yolunu (GitHub URL · `.zip` · tek dosya içe aktarma) `docs/integrations/openworker.md`, uygulama içi yardım §32 (×17) ve README'de açıklar.
+
+### Notlar
+- Uzun süredir açık olan bir kapsam boşluğu kapatıldı: Recruitee kaynağının artık v1.214.2 tırnaklı-açı düzeltmesi için uçtan uca bir testi var (bir etiket özniteliğindeki `>` açıklamaya sızmamalı). Tarama kaynakları değişmedi: **83**. Test paketi: **2783**.
+
+## [1.222.0] — 2026-08-26
+
+**Değiştirildi — genişletilmiş sağlayıcıların (DeepSeek … Volcengine Ark) alan ipuçları artık 17 dilin tamamında yerelleştirildi.**
+
+### Değiştirildi
+- **Sağlayıcı alan ipuçları yerelleştirildi.** v1.216.0–v1.217.0'te eklenen 11 OpenAI uyumlu sağlayıcının (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) her `config.<slug>Hint` değeri — **Ayarlar → API anahtarları** altındaki API anahtarı, model ve temel URL ipuçları — artık İngilizceye geri düşmek yerine 17 dilin tamamına çevrildi. Kayıt URL'leri, model id'leri ve ⚡ canlı değerlendirme işareti aynen korunur.
+
+### Notlar
+- Davranış değişikliği yok — `field-specs.js` içindeki İngilizce `hintFallback` eksik bir anahtarı hâlâ korur ve yeni bir sözleşme testi, alan tanımlayıcılarının her `hintKey` değerinin 17 dilde çözümlendiğini doğrular. Tarama kaynakları değişmedi: **83**. Test paketi: **2779**.
+
+## [1.221.0] — 2026-08-26
+
+**Güvenlik — tarayıcı fetch yolunda DNS-rebinding’e karşı derinlemesine savunma.**
+
+### Güvenlik
+- Tarayıcının HTTP çekirdeği (`server/lib/http-json.mjs` içindeki `fetchJson`/`fetchText`) artık her kaynağın ana bilgisayarını gerçek ağ yolunda çözüyor ve **özel, loopback, link-local, CGNAT veya bulut meta veri adresine çözülürse bağlanmayı reddediyor** — bir DNS-rebinding vektörünü kapatıyor. Tarayıcı ana bilgisayarları zaten genel alan adlarına sabitlenmiş, dolayısıyla bu derinlemesine savunmadır; kullanıcı URL yolunda zaten daha güçlü bağlantı sabitleme (`safe-fetch.mjs`) vardı. Koruma **yalnızca** gerçek `fetch` taşımasında çalışır — enjekte edilen test `fetchImpl`’i asla çözülmez.
+
+### Notlar
+- Sağlıklı bir taramada davranış değişmez. Tarama kaynakları değişmedi: **83**. Testler: **2775**.
+
+## [1.220.0] — 2026-08-26
+
+**Eklendi — tek girişten birden çok Get on Board kategorisi tarayın.**
+
+### Eklendi
+- Bir `getonbrd` girişi artık yalnızca `programming` akışı yerine `categories: [programming, operations-management, machine-learning-ai]` (ya da tek bir `category:`) ayarlayabilir; ilanlar kategoriler arasında URL’ye göre yinelenenlerden arındırılır, en fazla 12. Mevcut girişler aynı kalır (varsayılan hâlâ `programming`).
+
+### Notlar
+- Yalnızca sunucu; SSRF ana bilgisayar sabitlemesi (www.getonbrd.com) ve `redirect:'error'` değişmez, geçersiz bir kategori slug’ı herhangi bir istekten önce reddedilir. Tarama kaynakları değişmedi: **83**. Testler: **2771**.
+
+## [1.219.0] — 2026-08-26
+
+**Eklendi — Torre tarayıcıya katıldı ve artık her sağlayıcı etiketi doğru.**
+
+### Eklendi
+- **Torre** (`provider: torre`) — torre.ai’nin pan-Latin Amerika yetenek pazarı; Greenhouse/Lever/Ashby’ye ulaşmayan uzaktan roller taşıyan, kimlik doğrulaması gerektirmeyen açık bir arama; giriş başına tek sınırlı istek. Kayıt artık **83** kaynak içeriyor (78 İngilizce + 5 Rusça). Ayrıca karşılama afişinde aktif sağlayıcının monogramı.
+
+### Düzeltildi
+- a16z Speedrun taraması, dönen bir panoda erken duruyordu (tarama ortasındaki kısa bir sayfa sonuncusu sanılıp ~300’de 149’a kırpılıyordu); artık akışın kendi `total_pages` değerine güveniyor. Karşılama afişi ise sağlayıcıyı 4 girişli bir haritadan çözüyordu (kalan 14 için ham slug gösteriyordu) — şimdi 18’in etiket+monogramını kullanıyor; Ayarlar’daki sağlayıcı notu 7’den 18’e çıkıyor.
+
+### Notlar
+- Get on Board’un giriş başına çoklu kategori seçeneği burada henüz bağlı değil (kaynak düzeyinde bir refactor gerekiyor). Testler: **2768**.
+
+## [1.218.0] — 2026-08-26
+
+**Eklendi — sağlayıcının gösterildiği her yerde sağlayıcı rozetleri (ve doğru adlar).**
+
+### Eklendi
+- Pano çipinde, Ayarlar’daki "Etkin" özetinde ve ⚡ değerlendirme sonucu başlığında sağlayıcı monogramları.
+
+### Düzeltildi
+- Eski etiketler: üç ekran adı 5 girişli bir haritadan çözüyordu (değerlendirme sonucu Anthropic olmayan her sağlayıcıyı "Gemini" olarak yanlış etiketliyordu); artık paylaşılan `ProviderStatus.label` (18) kullanıyor. Anahtar sayısı "/ 7" gösteriyordu → 18. `LLM_PROVIDER` ipucunun slug listesi 17 dilin tümünde `ark` / `arkcn` kazandı.
+
+### Notlar
+- Yalnızca istemci, CSP güvenli. Sunucu değişikliği yok. Tarama kaynakları: **82**. Testler: **2758**.
+
+## [1.217.1] — 2026-08-26
+
+**Test sağlamlaştırma — tüm sağlayıcı listesi için uç nokta kapsamı.**
+
+### Eklendi
+- **Kimi, MiniMax, Mistral ve Fireworks** için uç noktayı, varsayılan modeli ve Bearer kimlik doğrulamasını doğrulayan parametreli bir `run<Provider>` testi.
+
+## [1.217.0] — 2026-08-26
+
+**Eklendi — Ark, LLM listesine katılıyor (18 sağlayıcı).** ByteDance’in Doubao modelleri BytePlus Ark ve Volcengine Ark artık ⚡ canlı sağlayıcılar — aynı OpenAI uyumlu çekirdek ve bölgeye göre temel URL ile.
+
+### Eklendi
+- **BytePlus Ark** (`ARK_API_KEY`, uluslararası) ve **Volcengine Ark** (`ARK_CN_API_KEY`, Çin) — `runOpenAICompatible()` üzerinden OpenAI uyumlu Chat Completions. `ARK_MODEL` / `ARK_CN_MODEL` (bir Doubao model adı ya da `ep-…` uç nokta id’niz) ayarlayın; `ARK_BASE_URL` / `ARK_CN_BASE_URL` bölgeyi değiştirir. İkisi de `auto` sırasına (en sona) katılır; Ayarlar ve Kullanım’da monogramlarıyla görünür. Web arayüzü artık **18 sağlayıcıyı** canlı kapsıyor.
+
+### Notlar
+- Geri kalanla aynı güvenilir yapılandırma + http(s) şema denetimi yolu (asla iş ilanı URL’si için SSRF doğrulayıcısı değil). Tarama kaynakları değişmedi: **82**. Testler: **2755**.
+
+## [1.216.0] — 2026-08-26
+
+**Eklendi — dokuz LLM sağlayıcısı daha, her birinin kendi marka karosu.** ⚡ Canlı değerlendirmelerin artık DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks veya tamamen yerel Ollama üzerinden çalışabilir — bir anahtar kadar uzakta, her biri Ayarlar’daki alanının yanında bir monogramla işaretli.
+
+### Eklendi
+- **Dokuz OpenAI uyumlu sağlayıcı.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI ve **Ollama** (tamamen yerel, anahtarsız). **Ayarlar**’da bir anahtar — Ollama için `OLLAMA_BASE_URL` — girin; Hermes’ten sonra `auto` sırasına katılır; herhangi birini `LLM_PROVIDER` ile sabitleyin. Together, Thinking Machines’in **Inkling** modelini de (`thinkingmachines/Inkling`) barındırır. Web arayüzü artık **16 sağlayıcıyı** canlı kapsıyor.
+- **Sağlayıcı monogramları.** CSP güvenli, marka renginde bir baş harf karosu her sağlayıcıyı Ayarlar’daki anahtar alanının yanında ve Kullanım sayfasındaki satırında işaretler — satır içi SVG, harici logo yok, hiçbir şey cihazından çıkmaz.
+
+### Notlar
+- Sağlayıcıların temel URL’leri, `runOpenAICompatible()` üzerinden http(s) şema denetimiyle (Ollama’nın loopback’ine izin verilir) geçen güvenilir yapılandırmadır; asla iş ilanı URL’si için SSRF doğrulayıcısından geçmez. Tarama kaynakları değişmedi: **82**. Testler: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Eklendi — tüm iş aramanı OpenWorker'dan yürüt.** Yeni bir coworker bu hattı Andrew Ng'nin açık kaynak yapay zekâ coworker uygulamasından yürütür ve uygulama içi yardım artık bunu kapsar, böylece Belgelere Sor asistanı sana yol gösterebilir.

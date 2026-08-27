@@ -192,6 +192,8 @@
   "src.title": "職缺來源",
   "src.lead": "零 token 直連 — 掃描器無需 LLM 即可讀取的 {n} 個求職網站與 ATS 平台。每個標籤均連結到來源。",
   "src.ru": "俄羅斯求職網站",
+  "prov.title": "自帶你的模型",
+  "prov.lead": "用你信任的模型為每個職缺評分 —— {n} 家 LLM 供應方,自帶金鑰,或透過 Ollama 完全本機執行。Anthropic、OpenAI、Gemini、DeepSeek、Mistral 等。",
   "nav.methodology": "方法論",
   "footer.parentMethodology": "career-ops 方法論",
   "meta.methodologyTitle": "方法論 — career-ops 如何為職缺評分 · career-ops-ui",

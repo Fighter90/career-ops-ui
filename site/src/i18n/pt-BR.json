@@ -192,6 +192,8 @@
   "src.title": "Fontes de vagas",
   "src.lead": "Conectores diretos sem tokens — {n} job boards e plataformas ATS que o scanner lê sem LLM. Cada chip leva à fonte.",
   "src.ru": "Portais russos",
+  "prov.title": "Use seu próprio modelo",
+  "prov.lead": "Pontue cada vaga com o modelo em que você confia — {n} provedores de LLM, sua própria chave ou totalmente local com Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral e mais.",
   "nav.methodology": "Metodologia",
   "footer.parentMethodology": "metodologia do career-ops",
   "meta.methodologyTitle": "Metodologia — como o career-ops pontua vagas · career-ops-ui",

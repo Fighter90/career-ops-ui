@@ -9,6 +9,113 @@
 ---
 
 
+## [1.224.0] — 2026-08-26
+
+**변경됨 — LLM 제공자 타일이 이제 실제 브랜드 로고를 표시합니다.**
+
+### 변경됨
+- **실제 제공자 로고.** 제공자 타일 — 설정의 API 키 필드, 사용량 행, 대시보드 칩, 설정 "활성" 요약, ⚡ 평가 결과, 온보딩 배너 — 이 이제 오픈소스 아이콘을 게시하는 11개 제공자(Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; [simple-icons](https://simpleicons.org)의 단일 경로 SVG, CC0)에 대해 **실제 브랜드 로고**를 렌더링합니다. 게시된 아이콘이 없는 7개(Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark)는 브랜드 색상 모노그램을 유지합니다. 여전히 **구성상 CSP 안전**: 로고 경로는 인라인 정적 상수 — 원격 자원 없음, `innerHTML` 없음.
+
+### 참고
+- 라우트/동작 변경 없음; 동일한 `ProviderLogo.el(slug)` API. `provider-logo.js`가 커졌습니다(인라인 로고 경로). 스캔 소스 변경 없음: **83**. 테스트 스위트: **2784**.
+
+## [1.223.0] — 2026-08-26
+
+**수정 — 성공한 ⚡ 라이브 평가가 오류로 표시되던 문제; 또한 OpenWorker coworker를 GitHub URL 또는 .zip에서 바로 설치.**
+
+### 수정
+- **⚡ 평가 결과 배지 색상.** 성공한 라이브 평가가 더 이상 실패로 표시되지 않습니다. 인프로세스 제공자(OpenRouter, DeepSeek, …)는 서브프로세스 종료 `code`를 반환하지 않으므로 엄격한 `code === 0`이 거짓이 되어 모든 성공이 **빨갛게**("exit 0"으로 표시되면서도) 나왔습니다. 이제 색상은 결과를 따릅니다 — 0이 아닌 코드로 종료된 서브프로세스만 빨갛게, 코드 없는 라이브 결과는 `badge-ok`, "· exit N" 접미사는 실제 종료 코드가 있을 때만 표시됩니다.
+
+### 변경됨
+- **[OpenWorker coworker](https://github.com/Fighter90/career-ops-coworker)를 GitHub URL / .zip에서 설치.** coworker 문서에 이제 한 줄 명령 설치기(`curl … | bash`, 멱등 — 기존 career-ops / web-ui 재사용)와 OpenWorker의 세 가지 설치 경로(GitHub URL · `.zip` · 단일 파일 가져오기)가 `docs/integrations/openworker.md`, 인앱 도움말 §32(×17), README에 설명됩니다.
+
+### 참고
+- 오래된 커버리지 공백을 닫았습니다: Recruitee 소스에 v1.214.2 인용부호-각괄호 수정(태그 속성 안의 `>`가 설명으로 새면 안 됨)에 대한 종단 간 테스트가 추가되었습니다. 스캔 소스 변경 없음: **83**. 테스트 스위트: **2783**.
+
+## [1.222.0] — 2026-08-26
+
+**변경됨 — 확장 제공자(DeepSeek … Volcengine Ark) 필드 힌트가 이제 17개 언어로 현지화되었습니다.**
+
+### 변경됨
+- **제공자 필드 힌트 현지화.** v1.216.0–v1.217.0에서 추가된 11개 OpenAI 호환 제공자(DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark)의 모든 `config.<slug>Hint` — **설정 → API 키**의 API 키·모델·기본 URL 힌트 — 가 이제 영어로 폴백하지 않고 17개 언어 전체로 번역됩니다. 가입 URL, 모델 id, ⚡ 라이브 평가 마커는 그대로 유지됩니다.
+
+### 참고
+- 동작 변경 없음 — `field-specs.js`의 영어 `hintFallback`은 키 누락 시 여전히 보호하며, 새 계약 테스트가 모든 필드 서술자 `hintKey`가 17개 언어에서 해석됨을 검증합니다. 스캔 소스 변경 없음: **83**. 테스트 스위트: **2779**.
+
+## [1.221.0] — 2026-08-26
+
+**보안 — 스캐너 fetch 경로의 DNS-rebinding 심층 방어.**
+
+### 보안
+- 스캐너 HTTP 코어(`server/lib/http-json.mjs`의 `fetchJson`/`fetchText`)가 이제 실제 네트워크 경로에서 각 소스의 호스트를 해석하고 **사설/루프백/링크로컬/CGNAT/클라우드 메타데이터 주소로 해석되면 연결을 거부**합니다 — DNS-rebinding 벡터를 차단합니다. 스캐너 호스트는 이미 공개 도메인에 고정되어 있어 심층 방어이며, 사용자 URL 경로는 이미 더 강한 연결 고정(`safe-fetch.mjs`)이 있었습니다. 가드는 실제 `fetch` 전송에서만 실행되며, 주입된 테스트 `fetchImpl`은 절대 해석되지 않습니다.
+
+### 참고
+- 정상 스캔에는 동작 변화 없음. 스캔 소스 변동 없음: **83**. 테스트: **2775**.
+
+## [1.220.0] — 2026-08-26
+
+**추가 — 하나의 항목으로 여러 Get on Board 카테고리를 스캔합니다.**
+
+### 추가
+- `getonbrd` 항목에서 `programming` 피드만이 아니라 `categories: [programming, operations-management, machine-learning-ai]`(또는 단일 `category:`)를 지정할 수 있습니다. 게시물은 카테고리 간 URL로 중복 제거되며 최대 12개로 제한됩니다. 기존 항목은 동일합니다(기본값은 여전히 `programming`).
+
+### 참고
+- 서버 전용; SSRF 호스트 고정(www.getonbrd.com)과 `redirect:'error'`는 그대로이고, 잘못된 카테고리 슬러그는 요청 전에 거부됩니다. 스캔 소스 변동 없음: **83**. 테스트: **2771**.
+
+## [1.219.0] — 2026-08-26
+
+**추가 — Torre가 스캐너에 합류했고, 이제 모든 제공자 라벨이 올바릅니다.**
+
+### 추가
+- **Torre**(`provider: torre`) — torre.ai의 범-라틴아메리카 인재 마켓플레이스, Greenhouse/Lever/Ashby에 없는 원격 채용을 담은 무인증 공개 검색; 항목당 한 번의 제한된 요청. 레지스트리는 이제 **83개** 소스(영어 78 + 러시아어 5)를 제공합니다. 또한 온보딩 배너에 활성 제공자 모노그램.
+
+### 수정
+- a16z Speedrun 스캔이 순환하는 보드에서 조기에 멈췄습니다(스윕 도중 짧은 페이지를 마지막으로 간주해 ~300개 중 149개로 잘림). 이제 피드의 `total_pages`를 신뢰합니다. 또 온보딩 배너가 4개 항목 맵에서 제공자를 해석해 나머지 14개는 원시 슬러그를 보였는데, 이제 18개 라벨+모노그램을 사용합니다. 설정의 제공자 안내가 7→18로 바뀝니다.
+
+### 참고
+- Get on Board의 항목당 다중 카테고리 옵션은 아직 여기 없습니다(소스 수준 리팩터 필요). 테스트: **2768**.
+
+## [1.218.0] — 2026-08-26
+
+**추가 — 제공자가 표시되는 모든 곳에 제공자 배지(와 올바른 이름).**
+
+### 추가
+- 대시보드 칩, 설정 "활성" 요약, ⚡ 평가 결과 헤더의 제공자 모노그램.
+
+### 수정
+- 오래된 라벨: 세 화면이 5개 항목 맵에서 이름을 해석했고(평가 결과는 Anthropic이 아닌 모든 제공자를 "Gemini"로 잘못 표시), 이제 공유 `ProviderStatus.label`(18개)을 사용합니다. 키 개수가 "/ 7"로 표시되던 것을 18로 수정. `LLM_PROVIDER` 힌트 슬러그 목록에 17개 언어 모두 `ark` / `arkcn` 추가.
+
+### 참고
+- 클라이언트 전용, CSP 안전. 서버 변경 없음. 스캔 소스: **82**. 테스트: **2758**.
+
+## [1.217.1] — 2026-08-26
+
+**테스트 강화 — 전체 제공자 목록의 엔드포인트 커버리지.**
+
+### 추가
+- **Kimi, MiniMax, Mistral, Fireworks**의 엔드포인트·기본 모델·Bearer 인증을 검증하는 매개변수화된 `run<Provider>` 테스트.
+
+## [1.217.0] — 2026-08-26
+
+**추가 — Ark가 LLM 목록에 합류(18개 제공자).** ByteDance의 Doubao 모델인 BytePlus Ark와 Volcengine Ark가 이제 ⚡ 라이브 제공자입니다 — 동일한 OpenAI 호환 코어와 지역별 기본 URL을 사용합니다.
+
+### 추가
+- **BytePlus Ark**(`ARK_API_KEY`, 국제)와 **Volcengine Ark**(`ARK_CN_API_KEY`, 중국) — `runOpenAICompatible()`을 통한 OpenAI 호환 Chat Completions. `ARK_MODEL` / `ARK_CN_MODEL`(Doubao 모델명 또는 `ep-…` 엔드포인트 id)을 설정하고, `ARK_BASE_URL` / `ARK_CN_BASE_URL`로 지역을 전환합니다. 둘 다 `auto` 순서(마지막)에 합류하며 설정과 사용량에 모노그램이 표시됩니다. 웹 UI는 이제 **18개** 라이브 제공자를 지원합니다.
+
+### 참고
+- 나머지와 동일한 신뢰된 설정 + http(s) 스킴 검사 경로(채용 URL용 SSRF 검증기는 사용 안 함). 스캔 소스 변동 없음: **82**. 테스트: **2755**.
+
+## [1.216.0] — 2026-08-26
+
+**추가 — LLM 제공자 9개가 더해졌고, 각각 브랜드 타일이 붙습니다.** 이제 ⚡ 라이브 평가를 DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks 또는 완전 로컬 Ollama로 실행할 수 있습니다 — 키 하나면 되고, 설정의 각 필드 옆에 모노그램이 표시됩니다.
+
+### 추가
+- **OpenAI 호환 제공자 9개.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI, **Ollama**(완전 로컬, 키 불필요). **설정**에서 키(또는 Ollama의 경우 `OLLAMA_BASE_URL`)를 지정하면 Hermes 다음의 `auto` 순서에 합류합니다. `LLM_PROVIDER`로 특정 제공자를 고정할 수 있습니다. Together는 Thinking Machines의 **Inkling**(`thinkingmachines/Inkling`)도 호스팅합니다. 웹 UI는 이제 **16개** 라이브 제공자를 지원합니다.
+- **제공자 모노그램 타일.** CSP 안전한 브랜드 색상 이니셜 타일이 설정의 키 필드 옆과 사용량 페이지 행에 각 제공자를 표시합니다 — 인라인 SVG, 외부 로고 없음, 어떤 것도 기기를 떠나지 않습니다.
+
+### 참고
+- 제공자 기본 URL은 `runOpenAICompatible()`을 통해 http(s) 스킴 검사(Ollama 루프백 허용)로 처리되는 신뢰된 설정이며, 채용 URL용 SSRF 검증기를 거치지 않습니다. 스캔 소스 변동 없음: **82**. 테스트: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **추가 — OpenWorker에서 구직 전체를 실행하세요.** 새 coworker가 Andrew Ng의 오픈소스 AI coworker 앱에서 이 파이프라인을 구동하며, 이제 인앱 도움말이 이를 다뤄 "문서에 묻기" 어시스턴트가 안내할 수 있습니다.

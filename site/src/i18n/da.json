@@ -192,6 +192,8 @@
   "src.title": "Jobkilder",
   "src.lead": "Direkte forbindelser uden tokens — {n} jobboards og ATS-platforme, som scanneren læser uden LLM. Hver chip linker til kilden.",
   "src.ru": "Russiske jobboards",
+  "prov.title": "Brug din egen model",
+  "prov.lead": "Vurder hvert opslag med den model, du stoler på — {n} LLM-udbydere, din egen nøgle eller helt lokalt via Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral og flere.",
   "nav.methodology": "Metodologi",
   "footer.parentMethodology": "career-ops-metodologi",
   "meta.methodologyTitle": "Metodologi — sådan scorer career-ops jobopslag · career-ops-ui",

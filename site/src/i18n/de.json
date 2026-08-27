@@ -192,6 +192,8 @@
   "src.title": "Job-Quellen",
   "src.lead": "Direkte Konnektoren ohne Tokens — {n} Jobbörsen und ATS-Plattformen, die der Scanner ohne LLM liest. Jeder Chip verlinkt zur Quelle.",
   "src.ru": "Russische Jobbörsen",
+  "prov.title": "Dein eigenes Modell",
+  "prov.lead": "Bewerte jede Ausschreibung mit dem Modell, dem du vertraust — {n} LLM-Anbieter, dein eigener Schlüssel oder vollständig lokal via Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral und mehr.",
   "nav.methodology": "Methodik",
   "footer.parentMethodology": "career-ops-Methodik",
   "meta.methodologyTitle": "Methodik — wie career-ops Stellenanzeigen bewertet · career-ops-ui",

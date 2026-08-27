@@ -192,6 +192,8 @@
   "src.title": "İş kaynakları",
   "src.lead": "Token gerektirmeyen doğrudan bağlayıcılar — tarayıcının LLM olmadan okuduğu {n} iş panosu ve ATS platformu. Her etiket kaynağa bağlanır.",
   "src.ru": "Rus iş panoları",
+  "prov.title": "Kendi modelini kullan",
+  "prov.lead": "Her ilanı güvendiğin modelle puanla — {n} LLM sağlayıcı, kendi anahtarın ya da Ollama ile tamamen yerel. Anthropic, OpenAI, Gemini, DeepSeek, Mistral ve daha fazlası.",
   "nav.methodology": "Metodoloji",
   "footer.parentMethodology": "career-ops metodolojisi",
   "meta.methodologyTitle": "Metodoloji — career-ops iş ilanlarını nasıl puanlar · career-ops-ui",

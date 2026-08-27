@@ -192,6 +192,8 @@
   "src.title": "Источники вакансий",
   "src.lead": "Прямые коннекторы без токенов — {n} джоб-бордов и ATS-платформ, которые сканер читает без LLM. Каждый чип ведёт на сайт источника.",
   "src.ru": "Российские площадки",
+  "prov.title": "Ваша модель, ваш ключ",
+  "prov.lead": "Оценивайте каждую вакансию моделью, которой доверяете — {n} LLM-провайдеров, свой ключ или полностью локально через Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral и другие.",
   "nav.methodology": "Методология",
   "footer.parentMethodology": "Методология career-ops",
   "meta.methodologyTitle": "Методология — как career-ops оценивает вакансии · career-ops-ui",

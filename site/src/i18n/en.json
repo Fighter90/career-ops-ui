@@ -190,6 +190,8 @@
   "src.title": "Job sources",
   "src.lead": "Direct, zero-token connectors — {n} job boards and ATS platforms the scanner reads without an LLM in the loop. Every chip links to the source.",
   "src.ru": "Russian boards",
+  "prov.title": "Bring your own model",
+  "prov.lead": "Score every posting with the model you trust — {n} LLM providers, your own key, or fully local via Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral and more.",
   "nav.methodology": "Methodology",
   "footer.parentMethodology": "career-ops methodology",
   "meta.methodologyTitle": "Methodology — how career-ops scores job listings · career-ops-ui",
