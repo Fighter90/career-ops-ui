@@ -12,13 +12,14 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.225.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.225.0)
+[![release](https://img.shields.io/badge/release-v1.225.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.225.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.225.0** — **提供方徽标横幅** — 全部 18 个 LLM 提供方的横幅 —— 11 个真实徽标、7 个字母标 —— 现位于 README 与帮助指南顶部。 **2784 项测试.**
+> **🆕 最新版本 — v1.225.1** — **提供方横幅修复** — 提供方徽标横幅现在能在 README 与帮助中正确显示(绝对 URL 的已渲染 PNG;无效 XML 的 SVG 已修正)。 **2784 项测试.**
 
-<p align="center"><img src="images/providers.svg" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
 

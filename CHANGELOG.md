@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.225.1] — 2026-08-27
+
+**Fixed — the provider-logo banner now renders in the README and help.**
+
+### Fixed
+- The v1.225.0 banner did not display on GitHub: the standalone `images/providers.svg` had an invalid `font-family` (nested double-quotes) that GitHub rejects, the `<img>` used a repo-relative `src` (raw HTML `<img>` does not resolve relative paths on GitHub), and the `<p>` block had no trailing blank line so it merged with the next line. It now points at a rendered `images/providers.png` via an absolute raw URL, with blank-line separation; the SVG is also corrected to valid XML.
+
+### Notes
+- Docs-only; no code or test change. The cvstart.org showcase and the app's own provider tiles were already correct (inline SVG, not this file). Test suite: **2784**.
+
 ## [1.225.0] — 2026-08-27
 
 **Added — a provider-logo banner in the README and help guide.**

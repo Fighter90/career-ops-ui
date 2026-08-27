@@ -1,6 +1,6 @@
 # 說明 — career-ops-ui
 
-<p align="center"><img src="../../images/providers.svg" alt="18 LLM providers — Anthropic, OpenAI, Gemini, DeepSeek, Mistral, Ollama and more" width="720"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 從首次啟動應用程式到拿到面試機會的每個頁面的完整指南。下方每個
 `##` 標題對應側邊欄項目或工作流程的一個階段。首次執行請從上到下

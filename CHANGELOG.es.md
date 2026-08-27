@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.225.1] — 2026-08-27
+
+**Corregido — el banner de logotipos de proveedores ahora se muestra en el README y la ayuda.**
+
+### Corregido
+- El banner de v1.225.0 no se veía en GitHub: el `images/providers.svg` tenía un `font-family` inválido (comillas dobles anidadas) que GitHub rechaza, el `<img>` usaba un `src` relativo (el HTML `<img>` no resuelve rutas relativas en GitHub) y al bloque `<p>` le faltaba una línea en blanco final. Ahora apunta a un `images/providers.png` renderizado con URL absoluta y separación por líneas en blanco; el SVG también se corrigió a XML válido.
+
+### Notas
+- Solo docs; sin cambios de código ni pruebas. La vitrina de cvstart.org y las fichas de la app ya eran correctas (SVG en línea, no este archivo).  **2784**
+
 ## [1.225.0] — 2026-08-27
 
 **Añadido — un banner de logotipos de proveedores en el README y la guía de ayuda.**

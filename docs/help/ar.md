@@ -1,6 +1,6 @@
 # المساعدة — career-ops-ui
 
-<p align="center"><img src="../../images/providers.svg" alt="18 LLM providers — Anthropic, OpenAI, Gemini, DeepSeek, Mistral, Ollama and more" width="720"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 دليل شامل لكل صفحة في التطبيق، من لحظة تشغيله حتى الحصول على مقابلة عمل. كل عنوان `##` أدناه يقابل إدخالاً في الشريط الجانبي أو مرحلة من مراحل سير العمل. اقرأه من البداية إلى النهاية عند أول استخدام؛ وانتقل لاحقاً إلى أي قسم تريده عبر جدول المحتويات في الشريط الجانبي للمساعدة.
 

@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.225.1] — 2026-08-27
+
+**Corretto — il banner dei loghi dei provider ora compare nel README e nella guida.**
+
+### Corretto
+- Il banner della v1.225.0 non compariva su GitHub: il file `images/providers.svg` autonomo aveva un `font-family` non valido (virgolette doppie annidate) che GitHub rifiuta, l'`<img>` usava un `src` relativo (l'HTML `<img>` non risolve percorsi relativi su GitHub) e al blocco `<p>` mancava una riga vuota finale. Ora punta a un `images/providers.png` renderizzato tramite URL assoluto, con separazione a righe vuote; anche l'SVG è corretto in XML valido.
+
+### Note
+- Solo docs; nessun cambiamento di codice o test. La vetrina di cvstart.org e i riquadri dell'app erano già corretti (SVG inline, non questo file).  **2784**
+
 ## [1.225.0] — 2026-08-27
 
 **Aggiunto — un banner dei loghi dei provider nel README e nella guida.**

@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.225.1] — 2026-08-27
+
+**Rettet — udbyderlogo-banneret vises nu i README og hjælpen.**
+
+### Rettet
+- Banneret fra v1.225.0 blev ikke vist på GitHub: den selvstændige `images/providers.svg` havde en ugyldig `font-family` (indlejrede dobbelte anførselstegn), som GitHub afviser, `<img>` brugte en repo-relativ `src` (rå HTML `<img>` opløser ikke relative stier på GitHub), og `<p>`-blokken manglede en afsluttende tom linje. Den peger nu på en gengivet `images/providers.png` via en absolut URL, med tom-linje-adskillelse; SVG'en er også rettet til gyldig XML.
+
+### Noter
+- Kun docs; ingen kode- eller testændring. cvstart.org-udstillingen og appens felter var allerede korrekte (indlejret SVG, ikke denne fil).  **2784**
+
 ## [1.225.0] — 2026-08-27
 
 **Tilføjet — et udbyderlogo-banner i README og hjælpeguiden.**
