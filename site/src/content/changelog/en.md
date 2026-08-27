@@ -8,6 +8,121 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.224.0] — 2026-08-26
+
+**Changed — the LLM provider tiles now show real brand logos.**
+
+### Changed
+- **Real provider logos.** The provider tiles — Settings API-key fields, the Usage rows, the dashboard chip, the Settings "Active" summary, the ⚡ eval result, and the onboarding banner — now render the **real brand logo** for the 11 providers that publish an open-source icon (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; single-path SVGs from [simple-icons](https://simpleicons.org), CC0). The 7 without a published icon (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) keep the brand-colored monogram. Still **CSP-safe by construction**: the logo path is an inlined static constant — no remote asset, no `innerHTML` — exactly like the monogram.
+
+### Notes
+- No route or behaviour change; the same `ProviderLogo.el(slug)` API. `provider-logo.js` grew (the inlined logo paths). Scan sources unchanged at **83**. Test suite: **2784**.
+
+## [1.223.0] — 2026-08-26
+
+**Fixed — a successful ⚡ live eval was painted as an error; plus install the OpenWorker coworker straight from its GitHub URL or .zip.**
+
+### Fixed
+- **⚡ eval result badge tone.** A successful live evaluation is no longer coloured as a failure. The in-process live providers (OpenRouter, DeepSeek, …) return no subprocess exit `code`, so the badge's strict `code === 0` test was false and every success rendered **red** (while still reading "exit 0"). The tone now follows the outcome — only a subprocess that exits non-zero paints it red; a code-less live result is `badge-ok`, and the "· exit N" suffix shows only when there is a real exit code.
+
+### Changed
+- **Install the [OpenWorker coworker](https://github.com/Fighter90/career-ops-coworker) from its GitHub URL / .zip.** The coworker's docs now describe the one-command installer (`curl … | bash`, idempotent — it reuses an existing career-ops / web-ui) and the three OpenWorker install paths (GitHub URL · `.zip` · single-file import) across `docs/integrations/openworker.md`, in-app help §32 (×17), and the README.
+
+### Notes
+- Closed a long-standing coverage gap: the Recruitee source now has an end-to-end test for the v1.214.2 quoted-angle fix (a `>` inside a tag attribute must not leak into the description). Scan sources unchanged at **83**. Test suite: **2783**.
+
+## [1.222.0] — 2026-08-26
+
+**Changed — the extended-provider field hints (DeepSeek … Volcengine Ark) are now localized in all 17 languages.**
+
+### Changed
+- **Localized provider field hints.** Every `config.<slug>Hint` for the 11 OpenAI-compatible providers added in v1.216.0–v1.217.0 (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) — the API-key, model, and base-URL hints under **Settings → API keys** — is now translated across all 17 locales instead of falling back to English. Signup URLs, model ids, and the ⚡ live-eval marker are preserved verbatim.
+
+### Notes
+- No behaviour change — the English `hintFallback` in `field-specs.js` still guards a missing key, and a new contract test asserts every field-descriptor `hintKey` resolves in all 17 locales. Scan sources unchanged at **83**. Test suite: **2779**.
+
+## [1.221.0] — 2026-08-26
+
+**Security — DNS-rebinding defence-in-depth on the scanner fetch path.**
+
+### Security
+- The scanner HTTP core (`fetchJson` / `fetchText` in `server/lib/http-json.mjs`) now resolves each source's hostname on the real network path and **refuses to connect if it resolves to a private, loopback, link-local, CGNAT, or cloud-metadata address** (e.g. `169.254.169.254`) — closing a DNS-rebinding vector where a public hostname is served a private A record. Scanner hosts are already pinned to public registrable domains, so this is defence-in-depth; the user-supplied-URL path already had stronger connection-pinning (`safe-fetch.mjs`, since v1.20.1). The guard runs **only** on the real `fetch` transport — an injected test `fetchImpl` is never resolved, so the mocked source suites are unaffected.
+
+### Notes
+- No behaviour change for a healthy scan (public boards resolve to public IPs). Scan sources unchanged at **83**. Test suite: **2775**.
+
+## [1.220.0] — 2026-08-26
+
+**Added — scan several Get on Board categories from one entry.** The board splits leadership and ML/data roles out of `programming`, so an EM or data search now covers them without a second portal entry.
+
+### Added
+- **Get on Board: multiple categories per entry.** A `getonbrd` portal entry can now set `categories: [programming, operations-management, machine-learning-ai]` (or a single `category:`) instead of only the default `programming` feed — postings are deduped by URL across categories, and the list is capped at 12. Existing entries are byte-identical (the default is still `programming`).
+
+### Notes
+- Server-only; the SSRF host-pin (www.getonbrd.com) + `redirect:'error'` are unchanged, and a bad category slug is rejected before any fetch. Scan sources unchanged at **83**. Test suite: **2771**.
+
+## [1.219.0] — 2026-08-26
+
+**Added — Torre joins the scanner, and every provider label is now correct.** A new LatAm-heavy remote board, a fix that stopped the a16z sweep short, and the last places that named providers from a stale short list now use the full 18-provider roster.
+
+### Added
+- **Torre** (`provider: torre`) — the pan-LatAm talent marketplace behind torre.ai, a public zero-auth opportunity search carrying remote roles that never reach Greenhouse/Lever/Ashby. Configure `search` (+ `experience`) and optional `remote_only`; one capped request per entry. The scanner registry now ships **83** sources (78 English + 5 Russian).
+- **Provider monogram on the onboarding banner** — the top-of-page "Live eval" chip now shows the active provider's brand tile (joining Settings, Usage, the dashboard chip, and the ⚡ result).
+
+### Fixed
+- **The a16z Speedrun scan stopped early on a rotating board.** When a listing was deleted between page requests, the feed returned a 49/50 page mid-sweep; that short page was treated as the last one, silently truncating the scan (149 of ~300 jobs). It now trusts the feed's own `total_pages` and only falls back to a short page when the feed doesn't report one — an empty page always ends iteration, so an over-reporting feed can't run away.
+- **Stale provider names.** The global onboarding banner resolved the active provider from a 4-entry map (Anthropic/Gemini/OpenAI/Qwen) and showed a raw slug for the other 14; it now uses the shared 18-provider label + monogram. The Settings "which providers" note ("seven providers …") now lists the full 18.
+
+### Notes
+- Get on Board's new multiple-categories-per-entry option isn't wired here yet — the web-ui adapter builds the category into the endpoint URL, so it needs a source-level refactor; queued. Test suite: **2768**.
+
+## [1.218.0] — 2026-08-26
+
+**Added — provider brand tiles (and correct names) everywhere a provider is shown.** The dashboard "live evals" chip, the Settings active-provider summary, and the ⚡ evaluation result now each carry the provider's monogram and name it correctly across all 18.
+
+### Added
+- **Provider monograms on the dashboard chip, the Settings "Active" summary, and the ⚡ evaluation result header** — matching the tiles already in the Settings key fields and the Usage page.
+
+### Fixed
+- **Stale provider labels.** Three surfaces resolved the name from a 5-entry map (Anthropic/Gemini/OpenAI/Qwen/OpenRouter) and fell back to the raw slug — the ⚡ evaluation result even mislabeled *every* non-Anthropic provider as "Gemini". All three now use the shared `ProviderStatus.label` (18 providers).
+- **Settings key count** showed "/ 7"; it now reflects the real provider total (18).
+- The `LLM_PROVIDER` hint's slug list (`… / ollama`) gained `ark` / `arkcn` in all 17 locales, matching the auto-order arrow list.
+
+### Notes
+- Client-only, CSP-safe (the same inline-SVG monograms). No server change. Scan sources unchanged at **82**. Test suite: **2758**.
+
+## [1.217.1] — 2026-08-26
+
+**Test hardening — endpoint coverage for the full provider roster.**
+
+### Added
+- A parametrized `run<Provider>` test asserting the endpoint, default model, and Bearer auth for **Kimi, MiniMax, Mistral, and Fireworks**, so every OpenAI-compatible wrapper now has a direct endpoint check (not just structural coverage).
+
+### Notes
+- No behavior change. Scan sources unchanged at **82**. Test suite: **2756**.
+
+## [1.217.0] — 2026-08-26
+
+**Added — Ark joins the LLM roster (18 providers).** BytePlus Ark and Volcengine Ark — ByteDance's Doubao models — are now ⚡ live-eval providers, wired through the same OpenAI-compatible core with a region base-URL override and their own brand tiles.
+
+### Added
+- **BytePlus Ark** (`ARK_API_KEY`, international) and **Volcengine Ark** (`ARK_CN_API_KEY`, China) — OpenAI-compatible Chat Completions via the shared `runOpenAICompatible()` core. Set `ARK_MODEL` / `ARK_CN_MODEL` (a Doubao model name or your `ep-…` endpoint id); `ARK_BASE_URL` / `ARK_CN_BASE_URL` switch region. Both join the `auto` order (last) and each shows its monogram in Settings + Usage. The web UI now spans **18 live-eval providers**.
+
+### Notes
+- Same trusted-config + http(s) scheme-guard path as the rest of the roster (never the SSRF job-URL validator). Scan sources unchanged at **82**. Test suite: **2755**.
+
+## [1.216.0] — 2026-08-26
+
+**Added — nine more LLM providers, each with its own brand tile.** Your ⚡ live evaluations can now run through DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks, or a fully local Ollama — one key away, each marked by a monogram beside its field in Settings.
+
+### Added
+- **Nine OpenAI-compatible providers.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI, and **Ollama** (fully local, no key). Set a key — or `OLLAMA_BASE_URL` for Ollama — in **App settings** and it joins the `auto` order after Hermes; pin any one with `LLM_PROVIDER`. Together also hosts Thinking Machines' **Inkling** (`thinkingmachines/Inkling`). The web UI now spans **16 live-eval providers**.
+- **Provider monogram tiles.** A CSP-safe, brand-colored initial tile marks every provider beside its key field in Settings and its row on the Usage page — built with inline SVG, no external logos, nothing leaves your machine.
+- Each provider surfaces on `#/config` (key + model dropdown; China-endpoint base-URL fields for GLM and Kimi), `/api/status/providers`, `/api/health`, and the Usage cost roll-up (editable list prices in `server/lib/llm-pricing.mjs`).
+
+### Notes
+- Provider base URLs are trusted config reached through `runOpenAICompatible()` with an http(s) scheme guard (Ollama's loopback is allowed) — never the SSRF job-URL validator. Scan sources unchanged at **82**. Test suite: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Added — run your whole job search from OpenWorker.** A new coworker drives this pipeline from Andrew Ng's open-source AI coworker app, and the in-app help now covers it so the Ask-the-docs assistant can walk you through it.

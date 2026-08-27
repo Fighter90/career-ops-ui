@@ -192,6 +192,8 @@
   "src.title": "مصادر الوظائف",
   "src.lead": "موصلات مباشرة دون رموز — {n} من لوحات الوظائف ومنصات ATS يقرأها الماسح دون LLM. كل شارة تربط بالمصدر.",
   "src.ru": "لوحات الوظائف الروسية",
+  "prov.title": "استخدم نموذجك الخاص",
+  "prov.lead": "قيّم كل إعلان بالنموذج الذي تثق به — {n} مزوّد LLM، بمفتاحك الخاص أو محليًا بالكامل عبر Ollama. Anthropic وOpenAI وGemini وDeepSeek وMistral وغيرها.",
   "nav.methodology": "المنهجية",
   "footer.parentMethodology": "منهجية career-ops",
   "meta.methodologyTitle": "المنهجية — كيف يقيّم career-ops الوظائف المُدرجة · career-ops-ui",

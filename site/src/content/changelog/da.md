@@ -8,6 +8,113 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.224.0] — 2026-08-26
+
+**Ændret — LLM-udbyderfliserne viser nu rigtige mærkelogoer.**
+
+### Ændret
+- **Rigtige udbyderlogoer.** Udbyderfliserne — API-nøglefelter i Indstillinger, Forbrugs-rækkerne, dashboard-chippen, "Aktiv"-oversigten i Indstillinger, ⚡ eval-resultatet og velkomstbanneret — viser nu det **rigtige mærkelogo** for de 11 udbydere, der udgiver et open source-ikon (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; enkelt-sti-SVG'er fra [simple-icons](https://simpleicons.org), CC0). De 7 uden et udgivet ikon (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) beholder monogrammet i mærkefarven. Stadig **CSP-sikkert af konstruktion**: logo-stien er en indlejret statisk konstant — ingen fjernressource, ingen `innerHTML`.
+
+### Noter
+- Ingen rute- eller adfærdsændring; samme `ProviderLogo.el(slug)`-API. `provider-logo.js` voksede (de indlejrede logo-stier). Scanningskilder uændret: **83**. Testsuite: **2784**.
+
+## [1.223.0] — 2026-08-26
+
+**Rettet — en vellykket ⚡ live-vurdering blev malet som en fejl; installer desuden OpenWorker-coworkeren direkte fra dens GitHub-URL eller .zip.**
+
+### Rettet
+- **Farve på ⚡ vurderings-badge.** En vellykket live-vurdering farves ikke længere som en fejl. In-process-udbyderne (OpenRouter, DeepSeek, …) returnerer ingen subproces-`code`, så den strikte `code === 0` var falsk, og enhver succes blev **rød** (mens der stod "exit 0"). Farven følger nu resultatet — kun en subproces, der afslutter med en kode forskellig fra 0, farves rød; et kodeløst live-resultat er `badge-ok`, og "· exit N"-suffikset vises kun ved en rigtig exit-kode.
+
+### Ændret
+- **Installer [OpenWorker-coworkeren](https://github.com/Fighter90/career-ops-coworker) fra dens GitHub-URL / .zip.** Coworkerens dokumentation beskriver nu én-kommandos-installeren (`curl … | bash`, idempotent — genbruger et eksisterende career-ops / web-ui) og de tre installationsveje i OpenWorker (GitHub-URL · `.zip` · enkeltfil-import) i `docs/integrations/openworker.md`, in-app-hjælp §32 (×17) og README.
+
+### Noter
+- Lukkede et gammelt dækningshul: Recruitee-kilden har nu en ende-til-ende-test af v1.214.2's citerede vinkel-rettelse (et `>` i en tag-attribut må ikke lække ind i beskrivelsen). Scanningskilder uændret: **83**. Testsuite: **2783**.
+
+## [1.222.0] — 2026-08-26
+
+**Ændret — feltteksterne for de udvidede udbydere (DeepSeek … Volcengine Ark) er nu lokaliseret på alle 17 sprog.**
+
+### Ændret
+- **Lokaliserede udbyder-felttekster.** Hver `config.<slug>Hint` for de 11 OpenAI-kompatible udbydere tilføjet i v1.216.0–v1.217.0 (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) — API-nøgle-, model- og base-URL-teksterne under **Indstillinger → API-nøgler** — er nu oversat på alle 17 sprog i stedet for at falde tilbage til engelsk. Tilmeldings-URL'er, model-id'er og ⚡ live-eval-markøren bevares ordret.
+
+### Noter
+- Ingen adfærdsændring — den engelske `hintFallback` i `field-specs.js` beskytter stadig en manglende nøgle, og en ny kontrakttest bekræfter, at hver `hintKey` i feltbeskrivelserne kan slås op på alle 17 sprog. Scanningskilder uændret: **83**. Testsuite: **2779**.
+
+## [1.221.0] — 2026-08-26
+
+**Sikkerhed — forsvar i dybden mod DNS-rebinding på scannerens fetch-sti.**
+
+### Sikkerhed
+- Scannerens HTTP-kerne (`fetchJson` / `fetchText` i `server/lib/http-json.mjs`) slår nu hver kildes host op på den rigtige netværkssti og **nægter at forbinde, hvis den slår op til en privat, loopback, link-local, CGNAT eller cloud-metadata-adresse** — og lukker en DNS-rebinding-vektor. Scannerens hosts er allerede pinnet til offentlige domæner, så det er forsvar i dybden; bruger-URL-stien havde allerede stærkere forbindelses-pinning (`safe-fetch.mjs`). Vagten kører **kun** på den rigtige `fetch`-transport — en injiceret test-`fetchImpl` slås aldrig op.
+
+### Noter
+- Ingen adfærdsændring for en sund scanning. Scanningskilder uændret: **83**. Tests: **2775**.
+
+## [1.220.0] — 2026-08-26
+
+**Tilføjet — scan flere Get on Board-kategorier fra én post.**
+
+### Tilføjet
+- En `getonbrd`-post kan nu angive `categories: [programming, operations-management, machine-learning-ai]` (eller en enkelt `category:`) i stedet for kun `programming`-feedet; opslag dedupликeres pr. URL på tværs af kategorier, med et loft på 12. Eksisterende poster er identiske (standard er stadig `programming`).
+
+### Noter
+- Kun server; SSRF-host-pinningen (www.getonbrd.com) og `redirect:'error'` er uændrede, og en ugyldig kategori-slug afvises før nogen forespørgsel. Scanningskilder uændret: **83**. Tests: **2771**.
+
+## [1.219.0] — 2026-08-26
+
+**Tilføjet — Torre slutter sig til scanneren, og nu er hver udbyder-etiket korrekt.**
+
+### Tilføjet
+- **Torre** (`provider: torre`) — torre.ai’s pan-latinamerikanske talentmarked, en offentlig søgning uden godkendelse med fjernstillinger, der ikke når Greenhouse/Lever/Ashby; én afgrænset forespørgsel pr. post. Registret har nu **83** kilder (78 engelske + 5 russiske). Desuden monogram for den aktive udbyder på velkomstbanneret.
+
+### Rettet
+- a16z Speedrun-scanningen stoppede for tidligt på et board, der roterer (en kort side midt i gennemløbet blev opfattet som den sidste og afkortede til 149 af ~300); den stoler nu på feedets `total_pages`. Og velkomstbanneret udledte udbyderen fra et kort med 4 poster (viste den rå slug for de øvrige 14) — det bruger nu etiket+monogram fra de 18; udbyder-noten i Indstillinger går fra 7 til 18.
+
+### Noter
+- Get on Boards nye valgmulighed med flere kategorier pr. post er ikke koblet på her endnu (kræver en refaktor på kildeniveau). Tests: **2768**.
+
+## [1.218.0] — 2026-08-26
+
+**Tilføjet — udbyder-badges (og korrekte navne) overalt, hvor en udbyder vises.**
+
+### Tilføjet
+- Udbyder-monogrammer på dashboard-chippen, "Aktiv"-oversigten i Indstillinger og ⚡ evalueringsresultatets overskrift.
+
+### Rettet
+- Forældede etiketter: tre skærme udledte navnet fra et 5-punkts-kort (evalueringsresultatet mærkede enhver ikke-Anthropic-udbyder som "Gemini"); de bruger nu `ProviderStatus.label` (18). Nøgletællingen viste "/ 7" → 18. `LLM_PROVIDER`-tippets slug-liste fik `ark` / `arkcn` på alle 17 sprog.
+
+### Noter
+- Kun klient, CSP-sikker. Ingen serverændring. Scanningskilder: **82**. Tests: **2758**.
+
+## [1.217.1] — 2026-08-26
+
+**Teststyrkelse — endpoint-dækning for hele udbyderkataloget.**
+
+### Tilføjet
+- En parametriseret `run<Provider>`-test, der tjekker endpoint, standardmodel og Bearer-godkendelse for **Kimi, MiniMax, Mistral og Fireworks**.
+
+## [1.217.0] — 2026-08-26
+
+**Tilføjet — Ark slutter sig til LLM-listen (18 udbydere).** BytePlus Ark og Volcengine Ark — ByteDances Doubao-modeller — er nu ⚡ live-udbydere via samme OpenAI-kompatible kerne og en basis-URL pr. region.
+
+### Tilføjet
+- **BytePlus Ark** (`ARK_API_KEY`, international) og **Volcengine Ark** (`ARK_CN_API_KEY`, Kina) — OpenAI-kompatibel Chat Completions via `runOpenAICompatible()`. Angiv `ARK_MODEL` / `ARK_CN_MODEL` (et Doubao-modelnavn eller dit `ep-…` endpoint-id); `ARK_BASE_URL` / `ARK_CN_BASE_URL` skifter region. Begge føjes til `auto`-rækkefølgen (til sidst), med deres monogram i Indstillinger og Forbrug. Web-UI’et dækker nu **18 udbydere** live.
+
+### Noter
+- Samme betroede konfiguration + http(s)-skematjek som resten (aldrig SSRF-validatoren for job-URL’er). Scanningskilder uændret: **82**. Tests: **2755**.
+
+## [1.216.0] — 2026-08-26
+
+**Tilføjet — ni LLM-udbydere mere, hver med sit eget brand-felt.** Dine ⚡ live-evalueringer kan nu køre via DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks eller en helt lokal Ollama — én nøgle væk, hver markeret med et monogram ved siden af sit felt i Indstillinger.
+
+### Tilføjet
+- **Ni OpenAI-kompatible udbydere.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI og **Ollama** (helt lokal, ingen nøgle). Angiv en nøgle — eller `OLLAMA_BASE_URL` for Ollama — i **Indstillinger**, så føjes den til `auto`-rækkefølgen efter Hermes; fastgør en hvilken som helst med `LLM_PROVIDER`. Together hoster også Thinking Machines’ **Inkling** (`thinkingmachines/Inkling`). Web-UI’et dækker nu **16 udbydere** live.
+- **Udbyder-monogrammer.** Et CSP-sikkert initial-felt i brandets farve markerer hver udbyder ved siden af dens nøglefelt i Indstillinger og i dens række på Forbrug-siden — inline SVG, ingen eksterne logoer, intet forlader din maskine.
+
+### Noter
+- Udbydernes basis-URL’er er betroet konfiguration, der går gennem `runOpenAICompatible()` med et http(s)-skematjek (Ollamas loopback er tilladt), aldrig SSRF-validatoren for job-URL’er. Scanningskilder uændret: **82**. Tests: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Tilføjet — kør hele din jobsøgning fra OpenWorker.** En ny coworker driver denne pipeline fra Andrew Ngs open source AI-coworker-app, og hjælpen i appen dækker den nu, så Spørg dokumentationen-assistenten kan guide dig.

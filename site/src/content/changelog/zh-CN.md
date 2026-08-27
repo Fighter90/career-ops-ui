@@ -9,6 +9,113 @@
 ---
 
 
+## [1.224.0] — 2026-08-26
+
+**变更 —— LLM 提供方磁贴现在显示真实的品牌徽标。**
+
+### 变更
+- **真实的提供方徽标。** 提供方磁贴 —— 设置中的 API 密钥字段、用量行、仪表盘芯片、设置的"活跃"摘要、⚡ 评估结果与欢迎横幅 —— 现在为发布了开源图标的 11 个提供方(Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama;来自 [simple-icons](https://simpleicons.org) 的单路径 SVG,CC0)渲染**真实的品牌徽标**。没有发布图标的 7 个(Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark)保留品牌配色的字母标。仍然**在构造上对 CSP 安全**:徽标路径是内联的静态常量 —— 无远程资源,无 `innerHTML`。
+
+### 说明
+- 无路由或行为变化;相同的 `ProviderLogo.el(slug)` API。`provider-logo.js` 变大了(内联的徽标路径)。扫描来源不变:**83**。测试套件:**2784**。
+
+## [1.223.0] — 2026-08-26
+
+**修复 —— 成功的 ⚡ 实时评估被标为错误；另外可从 GitHub URL 或 .zip 直接安装 OpenWorker coworker。**
+
+### 修复
+- **⚡ 评估结果徽章配色。** 成功的实时评估不再被着色为失败。进程内提供方(OpenRouter、DeepSeek、…)不返回子进程退出 `code`,因此严格的 `code === 0` 为假,所有成功都显示为**红色**(却仍写着 "exit 0")。配色现在跟随结果 —— 仅非零退出的子进程标红;无退出码的实时结果为 `badge-ok`,"· exit N" 后缀仅在有真实退出码时显示。
+
+### 变更
+- **从 GitHub URL / .zip 安装 [OpenWorker coworker](https://github.com/Fighter90/career-ops-coworker)。** coworker 文档现已在 `docs/integrations/openworker.md`、应用内帮助 §32(×17)与 README 中说明一条命令安装器(`curl … | bash`,幂等 —— 复用已有的 career-ops / web-ui)和 OpenWorker 的三种安装途径(GitHub URL · `.zip` · 单文件导入)。
+
+### 说明
+- 补上一个长期的覆盖缺口:Recruitee 源现在有针对 v1.214.2 引号内尖括号修复的端到端测试(标签属性中的 `>` 不得泄漏到描述)。扫描来源不变:**83**。测试套件:**2783**。
+
+## [1.222.0] — 2026-08-26
+
+**变更 —— 扩展提供方（DeepSeek … Volcengine Ark）的字段提示现已本地化为全部 17 种语言。**
+
+### 变更
+- **提供方字段提示本地化。** v1.216.0–v1.217.0 新增的 11 个 OpenAI 兼容提供方（DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark）的每个 `config.<slug>Hint` —— **设置 → API 密钥**下的 API 密钥、模型与基础 URL 提示 —— 现已翻译为全部 17 种语言,不再回退到英文。注册 URL、模型 id 与 ⚡ 实时评估标记均原样保留。
+
+### 说明
+- 行为无变化 —— `field-specs.js` 中的英文 `hintFallback` 仍在密钥缺失时兜底,新增的契约测试断言每个字段描述符 `hintKey` 都能在全部 17 种语言中解析。扫描来源不变:**83**。测试套件:**2779**。
+
+## [1.221.0] — 2026-08-26
+
+**安全 —— 扫描器 fetch 路径的 DNS 重绑定纵深防御。**
+
+### 安全
+- 扫描器 HTTP 内核(`server/lib/http-json.mjs` 中的 `fetchJson`/`fetchText`)现在会在真实网络路径上解析每个来源的主机,并**在其解析到私有/回环/链路本地/CGNAT/云元数据地址时拒绝连接** —— 封堵 DNS 重绑定向量。扫描器主机本已锁定到公共域名,故为纵深防御;用户 URL 路径已有更强的连接锁定(`safe-fetch.mjs`)。守卫**仅**在真实 `fetch` 传输上运行 —— 测试注入的 `fetchImpl` 从不被解析。
+
+### 说明
+- 正常扫描行为不变。扫描来源不变:**83**。测试:**2775**。
+
+## [1.220.0] — 2026-08-26
+
+**新增 —— 用一个条目扫描多个 Get on Board 分类。**
+
+### 新增
+- `getonbrd` 条目现在可设置 `categories: [programming, operations-management, machine-learning-ai]`(或单个 `category:`),不再只是默认的 `programming` 源;岗位在各分类间按 URL 去重,上限 12 个。现有条目保持不变(默认仍为 `programming`)。
+
+### 说明
+- 仅服务端;SSRF 主机锁定(www.getonbrd.com)与 `redirect:'error'` 不变,无效分类 slug 在请求前即被拒。扫描来源不变:**83**。测试:**2771**。
+
+## [1.219.0] — 2026-08-26
+
+**新增 —— Torre 加入扫描器,现在每个提供方标签都正确。**
+
+### 新增
+- **Torre**(`provider: torre`)—— torre.ai 的泛拉美人才市场,一个无需认证的公开职位搜索,包含 Greenhouse/Lever/Ashby 上没有的远程岗位;每个条目一次受限请求。注册表现在提供 **83** 个来源(英文 78 + 俄文 5)。此外,欢迎横幅上显示当前提供方的字母标。
+
+### 修复
+- a16z Speedrun 扫描在会轮换的看板上过早停止(把扫描中途的短页当成最后一页,截断为约 300 中的 149);现在信任数据源自身的 `total_pages`。欢迎横幅原先从 4 条映射解析提供方(其余 14 个显示原始 slug),现改用 18 个的标签+字母标;设置里的提供方说明从 7 改为 18。
+
+### 说明
+- Get on Board 每条目多分类的新选项尚未接入(需要来源层重构)。测试:**2768**。
+
+## [1.218.0] — 2026-08-26
+
+**新增 —— 在显示提供方的每个位置都加上徽标(与正确名称)。**
+
+### 新增
+- 仪表板小标签、设置"当前"摘要、⚡ 评估结果标题处的提供方字母标。
+
+### 修复
+- 过时标签:三处界面从 5 条映射解析名称(评估结果把所有非 Anthropic 提供方误标为"Gemini");现改用共享的 `ProviderStatus.label`(18)。密钥计数显示"/ 7"→18。`LLM_PROVIDER` 提示的 slug 列表在全部 17 种语言中新增 `ark` / `arkcn`。
+
+### 说明
+- 仅客户端,CSP 安全。无服务器改动。扫描来源:**82**。测试:**2758**。
+
+## [1.217.1] — 2026-08-26
+
+**测试加固 —— 覆盖全部提供方的端点。**
+
+### 新增
+- 一个参数化的 `run<Provider>` 测试,校验 **Kimi、MiniMax、Mistral 与 Fireworks** 的端点、默认模型与 Bearer 认证。
+
+## [1.217.0] — 2026-08-26
+
+**新增 —— Ark 加入 LLM 名单（18 个提供方）。** 字节跳动的 Doubao 模型 BytePlus Ark 与 Volcengine Ark 现为 ⚡ 实时提供方——采用同一 OpenAI 兼容内核与按区域的基础 URL。
+
+### 新增
+- **BytePlus Ark**（`ARK_API_KEY`，国际）与 **Volcengine Ark**（`ARK_CN_API_KEY`,中国）—— 通过 `runOpenAICompatible()` 的 OpenAI 兼容 Chat Completions。设置 `ARK_MODEL` / `ARK_CN_MODEL`（Doubao 模型名或你的 `ep-…` 端点 id）;`ARK_BASE_URL` / `ARK_CN_BASE_URL` 切换区域。两者均加入 `auto` 顺序(末位),并在设置与用量中显示字母标。Web UI 现已涵盖 **18 个**实时提供方。
+
+### 说明
+- 与其余相同的受信任配置 + http(s) 协议校验路径(绝不经过职位 URL 的 SSRF 校验器)。扫描来源不变:**82**。测试:**2755**。
+
+## [1.216.0] — 2026-08-26
+
+**新增 —— 再增九个 LLM 提供方，每个都有自己的品牌标。** ⚡ 实时评估现可通过 DeepSeek、GLM (Z.ai)、Kimi (Moonshot)、MiniMax、Mistral、Grok (xAI)、Together、Fireworks 或完全本地的 Ollama 运行——只需一个密钥，设置中每个字段旁都带有字母标。
+
+### 新增
+- **九个 OpenAI 兼容提供方。** DeepSeek、GLM (Z.ai)、Kimi (Moonshot)、MiniMax、Mistral、Grok (xAI)、Together AI、Fireworks AI 与 **Ollama**（完全本地、无需密钥）。在**设置**中填入密钥（Ollama 则填 `OLLAMA_BASE_URL`），即会加入 Hermes 之后的 `auto` 顺序;用 `LLM_PROVIDER` 可固定任意一个。Together 亦托管 Thinking Machines 的 **Inkling**（`thinkingmachines/Inkling`）。Web UI 现已涵盖 **16 个**实时提供方。
+- **提供方字母标。** 一个 CSP 安全、品牌配色的首字母方块在设置的密钥字段旁及用量页面的行内标记每个提供方——内联 SVG,无外部徽标,任何数据都不离开你的设备。
+
+### 说明
+- 提供方的基础 URL 属受信任配置,经由 `runOpenAICompatible()` 的 http(s) 协议校验(允许 Ollama 回环),绝不经过职位 URL 的 SSRF 校验器。扫描来源不变:**82**。测试:**2752**。
+
 ## [1.215.0] — 2026-08-26
 
 **新增 —— 从 OpenWorker 运行你的整个求职流程。** 一个新的 coworker 从 Andrew Ng 的开源 AI coworker 应用驱动本流水线,应用内帮助现已涵盖它,因此“向文档提问”助手可以带你完成。

@@ -192,6 +192,8 @@
   "src.title": "채용 소스",
   "src.lead": "토큰 없이 직접 연결 — 스캐너가 LLM 없이 읽는 {n}개의 잡보드·ATS 플랫폼입니다. 각 칩은 해당 소스로 연결됩니다.",
   "src.ru": "러시아 잡보드",
+  "prov.title": "당신의 모델을 사용하세요",
+  "prov.lead": "신뢰하는 모델로 모든 공고를 채점하세요 — {n}개 LLM 제공자, 당신의 키, 또는 Ollama로 완전 로컬. Anthropic, OpenAI, Gemini, DeepSeek, Mistral 등.",
   "nav.methodology": "방법론",
   "footer.parentMethodology": "career-ops 방법론",
   "meta.methodologyTitle": "방법론 — career-ops가 채용 공고를 평가하는 방식 · career-ops-ui",

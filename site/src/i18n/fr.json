@@ -192,6 +192,8 @@
   "src.title": "Sources d’offres",
   "src.lead": "Connecteurs directs sans jetons — {n} job boards et plateformes ATS que le scanner lit sans LLM. Chaque pastille renvoie vers la source.",
   "src.ru": "Portails russes",
+  "prov.title": "Votre propre modèle",
+  "prov.lead": "Notez chaque offre avec le modèle en qui vous avez confiance — {n} fournisseurs de LLM, votre propre clé ou entièrement en local via Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral et plus.",
   "nav.methodology": "Méthodologie",
   "footer.parentMethodology": "méthodologie career-ops",
   "meta.methodologyTitle": "Méthodologie — comment career-ops note les offres d'emploi · career-ops-ui",

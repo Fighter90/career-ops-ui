@@ -192,6 +192,8 @@
   "src.title": "职位来源",
   "src.lead": "零 token 直连 — 扫描器无需 LLM 即可读取的 {n} 个招聘网站与 ATS 平台。每个标签均链接到来源。",
   "src.ru": "俄罗斯招聘网站",
+  "prov.title": "自带你的模型",
+  "prov.lead": "用你信任的模型为每个职位打分 —— {n} 家 LLM 提供方,自带密钥,或通过 Ollama 完全本地运行。Anthropic、OpenAI、Gemini、DeepSeek、Mistral 等。",
   "nav.methodology": "方法论",
   "footer.parentMethodology": "career-ops 方法论",
   "meta.methodologyTitle": "方法论 — career-ops 如何为职位评分 · career-ops-ui",

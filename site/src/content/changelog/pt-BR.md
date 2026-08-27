@@ -8,6 +8,113 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.224.0] — 2026-08-26
+
+**Alterado — os blocos de provedores LLM agora mostram os logotipos reais da marca.**
+
+### Alterado
+- **Logotipos reais dos provedores.** Os blocos de provedor — campos de chave API nas Configurações, as linhas de Uso, o chip do painel, o resumo "Ativo" das Configurações, o resultado da ⚡ eval e o banner de boas-vindas — agora mostram o **logotipo real da marca** dos 11 provedores que publicam um ícone de código aberto (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; SVGs de caminho único do [simple-icons](https://simpleicons.org), CC0). Os 7 sem ícone publicado (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) mantêm o monograma com a cor da marca. Continua **seguro para a CSP por construção**: o caminho do logo é uma constante estática embutida — sem recurso remoto, sem `innerHTML`.
+
+### Notas
+- Sem mudança de rota ou comportamento; a mesma API `ProviderLogo.el(slug)`. `provider-logo.js` cresceu (os caminhos de logo embutidos). Fontes de varredura sem mudança: **83**. Conjunto de testes: **2784**.
+
+## [1.223.0] — 2026-08-26
+
+**Corrigido — uma avaliação ⚡ ao vivo bem-sucedida era pintada como erro; além disso, instale o coworker do OpenWorker direto da URL do GitHub ou .zip.**
+
+### Corrigido
+- **Tom do badge de resultado da ⚡ eval.** Uma avaliação ao vivo bem-sucedida não é mais colorida como falha. Os provedores em processo (OpenRouter, DeepSeek, …) não retornam `code` de subprocesso, então o estrito `code === 0` era falso e todo sucesso saía **vermelho** (mesmo mostrando "exit 0"). O tom agora segue o resultado — só um subprocesso que sai com código diferente de 0 fica vermelho; um resultado ao vivo sem código é `badge-ok`, e o sufixo "· exit N" só aparece quando há um código real.
+
+### Alterado
+- **Instale o [coworker do OpenWorker](https://github.com/Fighter90/career-ops-coworker) da URL do GitHub / .zip.** A documentação do coworker agora descreve o instalador de um comando (`curl … | bash`, idempotente — reutiliza um career-ops / web-ui existente) e as três vias de instalação no OpenWorker (URL do GitHub · `.zip` · importação de arquivo único) em `docs/integrations/openworker.md`, na ajuda §32 (×17) e no README.
+
+### Notas
+- Fechada uma lacuna de cobertura antiga: a fonte Recruitee agora tem um teste ponta a ponta da correção de ângulo entre aspas da v1.214.2 (um `>` dentro de um atributo de tag não deve vazar para a descrição). Fontes de varredura sem mudança: **83**. Conjunto de testes: **2783**.
+
+## [1.222.0] — 2026-08-26
+
+**Alterado — as dicas de campo dos provedores estendidos (DeepSeek … Volcengine Ark) agora estão localizadas nos 17 idiomas.**
+
+### Alterado
+- **Dicas de campo de provedores localizadas.** Cada `config.<slug>Hint` dos 11 provedores compatíveis com OpenAI adicionados em v1.216.0–v1.217.0 (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) — as dicas de chave API, modelo e URL base em **Configurações → Chaves API** — agora é traduzida nos 17 idiomas em vez de recorrer ao inglês. URLs de cadastro, ids de modelo e o marcador ⚡ de eval ao vivo são preservados na íntegra.
+
+### Notas
+- Sem mudança de comportamento — o `hintFallback` em inglês em `field-specs.js` ainda protege uma chave ausente, e um novo teste de contrato garante que cada `hintKey` dos descritores de campo resolve nos 17 idiomas. Fontes de varredura sem mudança: **83**. Conjunto de testes: **2779**.
+
+## [1.221.0] — 2026-08-26
+
+**Segurança — defesa em profundidade contra DNS-rebinding no caminho de fetch do scanner.**
+
+### Segurança
+- O núcleo HTTP do scanner (`fetchJson` / `fetchText` em `server/lib/http-json.mjs`) agora resolve o host de cada fonte no caminho de rede real e **recusa conectar se resolver para um endereço privado, loopback, link-local, CGNAT ou de metadados de nuvem** — fechando um vetor de DNS-rebinding. Os hosts do scanner já são fixados a domínios públicos, então é defesa em profundidade; o caminho de URL do usuário já tinha fixação de conexão mais forte (`safe-fetch.mjs`). O guard roda **apenas** no transporte `fetch` real — um `fetchImpl` de teste injetado nunca é resolvido.
+
+### Notas
+- Sem mudança de comportamento em uma varredura saudável. Fontes de varredura inalteradas: **83**. Testes: **2775**.
+
+## [1.220.0] — 2026-08-26
+
+**Adicionado — varra várias categorias do Get on Board a partir de uma única entrada.**
+
+### Adicionado
+- Uma entrada `getonbrd` pode definir `categories: [programming, operations-management, machine-learning-ai]` (ou um único `category:`) em vez de apenas o feed `programming`; as vagas são deduplicadas por URL entre categorias, com limite de 12. Entradas existentes ficam idênticas (o padrão continua `programming`).
+
+### Notas
+- Apenas servidor; o host-pin SSRF (www.getonbrd.com) e `redirect:'error'` não mudam; um slug de categoria inválido é rejeitado antes de qualquer requisição. Fontes de varredura inalteradas: **83**. Testes: **2771**.
+
+## [1.219.0] — 2026-08-26
+
+**Adicionado — Torre entra no scanner, e agora todo rótulo de provedor está correto.**
+
+### Adicionado
+- **Torre** (`provider: torre`) — o marketplace de talentos pan-LatAm do torre.ai, busca pública sem autenticação com vagas remotas que não chegam ao Greenhouse/Lever/Ashby; uma requisição limitada por entrada. O registro traz agora **83** fontes (78 inglesas + 5 russas). Também: monograma do provedor ativo no banner de boas-vindas.
+
+### Corrigido
+- A varredura do a16z Speedrun parava cedo em um board que rotaciona (uma página curta no meio da varredura era tratada como a última, truncando para 149 de ~300); agora confia no `total_pages` do feed. E o banner de boas-vindas resolvia o provedor a partir de um mapa de 4 entradas (mostrando o slug cru para os outros 14) — agora usa o rótulo+monograma dos 18; a nota de provedores das Configurações vai de 7 a 18.
+
+### Notas
+- A opção de várias categorias por entrada do Get on Board ainda não está aqui (requer um refactor no nível da fonte). Testes: **2768**.
+
+## [1.218.0] — 2026-08-26
+
+**Adicionado — emblemas de provedor (e nomes corretos) onde quer que um provedor apareça.**
+
+### Adicionado
+- Monogramas de provedor no chip do painel, no resumo "Ativo" das Configurações e no cabeçalho do resultado da ⚡ avaliação.
+
+### Corrigido
+- Rótulos obsoletos: três telas resolviam o nome a partir de um mapa de 5 entradas (o resultado da avaliação rotulava como "Gemini" qualquer provedor não-Anthropic); agora usam `ProviderStatus.label` (18). A contagem de chaves mostrava "/ 7" → 18. A lista de slugs do hint `LLM_PROVIDER` ganhou `ark` / `arkcn` nos 17 idiomas.
+
+### Notas
+- Apenas cliente, seguro para CSP. Sem mudança de servidor. Fontes de varredura: **82**. Testes: **2758**.
+
+## [1.217.1] — 2026-08-26
+
+**Reforço de testes — cobertura de endpoint para todo o catálogo de provedores.**
+
+### Adicionado
+- Um teste parametrizado de `run<Provider>` que verifica endpoint, modelo padrão e autenticação Bearer para **Kimi, MiniMax, Mistral e Fireworks**.
+
+## [1.217.0] — 2026-08-26
+
+**Adicionado — Ark entra na lista de LLM (18 provedores).** BytePlus Ark e Volcengine Ark — os modelos Doubao da ByteDance — agora são provedores ⚡ ao vivo, pelo mesmo núcleo compatível com OpenAI e uma URL base por região.
+
+### Adicionado
+- **BytePlus Ark** (`ARK_API_KEY`, internacional) e **Volcengine Ark** (`ARK_CN_API_KEY`, China) — Chat Completions compatível com OpenAI via `runOpenAICompatible()`. Defina `ARK_MODEL` / `ARK_CN_MODEL` (um modelo Doubao ou seu id de endpoint `ep-…`); `ARK_BASE_URL` / `ARK_CN_BASE_URL` trocam de região. Ambos entram na ordem `auto` (por último), com seu monograma em Configurações e Uso. A interface web abrange agora **18 provedores** ao vivo.
+
+### Notas
+- Mesmo caminho de configuração confiável + verificação de esquema http(s) do restante (nunca o validador SSRF de URL de vaga). Fontes de varredura inalteradas: **82**. Testes: **2755**.
+
+## [1.216.0] — 2026-08-26
+
+**Adicionado — mais nove provedores de LLM, cada um com seu próprio emblema de marca.** Suas avaliações ⚡ ao vivo agora podem rodar via DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks ou um Ollama totalmente local — a uma chave de distância, cada um marcado por um monograma ao lado do seu campo em Configurações.
+
+### Adicionado
+- **Nove provedores compatíveis com OpenAI.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI e **Ollama** (totalmente local, sem chave). Defina uma chave — ou `OLLAMA_BASE_URL` para o Ollama — em **Configurações** e ele entra na ordem `auto` após o Hermes; fixe qualquer um com `LLM_PROVIDER`. O Together também hospeda o **Inkling** da Thinking Machines (`thinkingmachines/Inkling`). A interface web já abrange **16 provedores** ao vivo.
+- **Emblemas de provedor.** Um mosaico de inicial na cor da marca, seguro para CSP, marca cada provedor ao lado do seu campo de chave em Configurações e na sua linha da página de Uso — SVG inline, sem logos externos, nada sai da sua máquina.
+
+### Notas
+- As URLs base dos provedores são configuração confiável que passa por `runOpenAICompatible()` com verificação de esquema http(s) (o loopback do Ollama é permitido), nunca o validador SSRF de URL de vaga. Fontes de varredura inalteradas: **82**. Testes: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Adicionado — rode toda a sua busca de vagas a partir do OpenWorker.** Um novo coworker conduz este pipeline pelo app de coworker de IA open source do Andrew Ng, e a ajuda no app agora o cobre para que o assistente Pergunte aos docs te guie.

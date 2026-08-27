@@ -192,6 +192,8 @@
   "src.title": "Fonti di lavoro",
   "src.lead": "Connettori diretti senza token — {n} job board e piattaforme ATS che lo scanner legge senza LLM. Ogni chip rimanda alla fonte.",
   "src.ru": "Portali russi",
+  "prov.title": "Usa il tuo modello",
+  "prov.lead": "Valuta ogni annuncio con il modello di cui ti fidi — {n} provider LLM, la tua chiave o totalmente in locale con Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral e altri.",
   "nav.methodology": "Metodologia",
   "footer.parentMethodology": "Metodologia career-ops",
   "meta.methodologyTitle": "Metodologia — come career-ops valuta gli annunci di lavoro · career-ops-ui",

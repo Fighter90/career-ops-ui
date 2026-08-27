@@ -2,6 +2,113 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.224.0] — 2026-08-26
+
+**Geändert — die LLM-Anbieterkacheln zeigen jetzt echte Markenlogos.**
+
+### Geändert
+- **Echte Anbieterlogos.** Die Anbieterkacheln — API-Schlüssel-Felder in den Einstellungen, die Nutzungs-Zeilen, der Dashboard-Chip, die „Aktiv"-Zusammenfassung der Einstellungen, das ⚡ Eval-Ergebnis und das Onboarding-Banner — zeigen jetzt das **echte Markenlogo** für die 11 Anbieter, die ein Open-Source-Icon veröffentlichen (Anthropic · Gemini · OpenAI · Qwen · OpenRouter · GitHub · DeepSeek · Kimi · MiniMax · Mistral · Ollama; Ein-Pfad-SVGs von [simple-icons](https://simpleicons.org), CC0). Die 7 ohne veröffentlichtes Icon (Hermes · GLM/Z.ai · Grok · Together · Fireworks · BytePlus Ark · Volcengine Ark) behalten das Monogramm in der Markenfarbe. Weiterhin **CSP-sicher per Konstruktion**: der Logo-Pfad ist eine eingebettete statische Konstante — keine Remote-Ressource, kein `innerHTML`.
+
+### Hinweise
+- Keine Routen- oder Verhaltensänderung; dieselbe `ProviderLogo.el(slug)`-API. `provider-logo.js` ist gewachsen (die eingebetteten Logo-Pfade). Scan-Quellen unverändert: **83**. Testsuite: **2784**.
+
+## [1.223.0] — 2026-08-26
+
+**Behoben — eine erfolgreiche ⚡ Live-Bewertung wurde als Fehler eingefärbt; außerdem den OpenWorker-Coworker direkt aus seiner GitHub-URL oder .zip installieren.**
+
+### Behoben
+- **Farbton des ⚡ Bewertungs-Badges.** Eine erfolgreiche Live-Bewertung wird nicht mehr als Fehlschlag eingefärbt. Die In-Process-Anbieter (OpenRouter, DeepSeek, …) liefern keinen Subprozess-`code`, also war das strikte `code === 0` falsch und jeder Erfolg erschien **rot** (bei gleichzeitig "exit 0"). Der Farbton folgt jetzt dem Ergebnis — nur ein Subprozess, der ungleich 0 endet, färbt rot; ein Live-Ergebnis ohne Code ist `badge-ok`, und das "· exit N"-Suffix erscheint nur bei einem echten Exit-Code.
+
+### Geändert
+- **Installiere den [OpenWorker-Coworker](https://github.com/Fighter90/career-ops-coworker) aus seiner GitHub-URL / .zip.** Die Coworker-Doku beschreibt jetzt den Ein-Befehl-Installer (`curl … | bash`, idempotent — nutzt ein vorhandenes career-ops / web-ui weiter) und die drei OpenWorker-Installationswege (GitHub-URL · `.zip` · Einzeldatei-Import) in `docs/integrations/openworker.md`, der In-App-Hilfe §32 (×17) und der README.
+
+### Hinweise
+- Eine langjährige Abdeckungslücke geschlossen: die Recruitee-Quelle hat jetzt einen End-to-End-Test für den Quoted-Angle-Fix aus v1.214.2 (ein `>` in einem Tag-Attribut darf nicht in die Beschreibung lecken). Scan-Quellen unverändert: **83**. Testsuite: **2783**.
+
+## [1.222.0] — 2026-08-26
+
+**Geändert — die Feldhinweise der erweiterten Anbieter (DeepSeek … Volcengine Ark) sind jetzt in allen 17 Sprachen lokalisiert.**
+
+### Geändert
+- **Lokalisierte Anbieter-Feldhinweise.** Jeder `config.<slug>Hint` der 11 in v1.216.0–v1.217.0 hinzugefügten OpenAI-kompatiblen Anbieter (DeepSeek · GLM/Z.ai · Kimi · MiniMax · Mistral · Grok · Together · Fireworks · Ollama · BytePlus Ark · Volcengine Ark) — die API-Schlüssel-, Modell- und Basis-URL-Hinweise unter **Einstellungen → API-Schlüssel** — ist jetzt in alle 17 Sprachen übersetzt, statt auf Englisch zurückzufallen. Anmelde-URLs, Modell-ids und der ⚡ Live-Eval-Marker bleiben wortgetreu erhalten.
+
+### Hinweise
+- Keine Verhaltensänderung — der englische `hintFallback` in `field-specs.js` schützt weiterhin einen fehlenden Schlüssel, und ein neuer Vertragstest prüft, dass jeder `hintKey` der Feldbeschreibungen in allen 17 Sprachen auflösbar ist. Scan-Quellen unverändert: **83**. Testsuite: **2779**.
+
+## [1.221.0] — 2026-08-26
+
+**Sicherheit — Verteidigung in der Tiefe gegen DNS-Rebinding auf dem Scanner-Fetch-Pfad.**
+
+### Sicherheit
+- Der HTTP-Kern des Scanners (`fetchJson` / `fetchText` in `server/lib/http-json.mjs`) löst nun den Host jeder Quelle auf dem realen Netzwerkpfad auf und **verweigert die Verbindung, wenn er auf eine private, Loopback-, Link-Local-, CGNAT- oder Cloud-Metadaten-Adresse auflöst** — und schließt einen DNS-Rebinding-Vektor. Scanner-Hosts sind bereits an öffentliche Domains gepinnt, also Verteidigung in der Tiefe; der Benutzer-URL-Pfad hatte bereits stärkeres Verbindungs-Pinning (`safe-fetch.mjs`). Der Guard läuft **nur** auf dem echten `fetch`-Transport — ein injizierter Test-`fetchImpl` wird nie aufgelöst.
+
+### Hinweise
+- Keine Verhaltensänderung bei einem gesunden Scan. Scan-Quellen unverändert: **83**. Tests: **2775**.
+
+## [1.220.0] — 2026-08-26
+
+**Hinzugefügt — mehrere Get-on-Board-Kategorien aus einem Eintrag scannen.**
+
+### Hinzugefügt
+- Ein `getonbrd`-Eintrag kann nun `categories: [programming, operations-management, machine-learning-ai]` (oder ein einzelnes `category:`) statt nur des `programming`-Feeds setzen; Stellen werden über Kategorien hinweg nach URL dedupliziert, begrenzt auf 12. Bestehende Einträge bleiben identisch (Standard weiterhin `programming`).
+
+### Hinweise
+- Nur serverseitig; das SSRF-Host-Pinning (www.getonbrd.com) und `redirect:'error'` sind unverändert, und ein ungültiger Kategorie-Slug wird vor jeder Anfrage abgelehnt. Scan-Quellen unverändert: **83**. Tests: **2771**.
+
+## [1.219.0] — 2026-08-26
+
+**Hinzugefügt — Torre kommt zum Scanner, und jedes Anbieter-Label ist jetzt korrekt.**
+
+### Hinzugefügt
+- **Torre** (`provider: torre`) — der pan-lateinamerikanische Talentmarktplatz von torre.ai, eine öffentliche Suche ohne Authentifizierung mit Remote-Stellen, die es nicht bis Greenhouse/Lever/Ashby schaffen; eine begrenzte Anfrage pro Eintrag. Das Registry umfasst nun **83** Quellen (78 englische + 5 russische). Außerdem ein Monogramm des aktiven Anbieters im Onboarding-Banner.
+
+### Behoben
+- Der a16z-Speedrun-Scan brach auf einem rotierenden Board zu früh ab (eine kurze Seite mitten im Durchlauf galt als letzte und kürzte auf 149 von ~300); er vertraut jetzt dem `total_pages` des Feeds. Und das Onboarding-Banner löste den Anbieter aus einer 4-Einträge-Map auf (und zeigte den rohen Slug für die übrigen 14) — es nutzt jetzt Label+Monogramm der 18; der Anbieter-Hinweis in den Einstellungen geht von 7 auf 18.
+
+### Hinweise
+- Die neue Mehr-Kategorien-pro-Eintrag-Option von Get on Board ist hier noch nicht verdrahtet (erfordert einen Refactor auf Quellebene). Tests: **2768**.
+
+## [1.218.0] — 2026-08-26
+
+**Hinzugefügt — Anbieter-Badges (und korrekte Namen) überall, wo ein Anbieter angezeigt wird.**
+
+### Hinzugefügt
+- Anbieter-Monogramme auf dem Dashboard-Chip, der „Aktiv"-Übersicht in den Einstellungen und der Kopfzeile des ⚡ Bewertungsergebnisses.
+
+### Behoben
+- Veraltete Labels: Drei Ansichten lösten den Namen aus einer 5-Einträge-Map auf (das Bewertungsergebnis kennzeichnete jeden Nicht-Anthropic-Anbieter als „Gemini"); sie nutzen nun `ProviderStatus.label` (18). Die Schlüsselanzahl zeigte „/ 7" → 18. Die Slug-Liste des `LLM_PROVIDER`-Hinweises erhielt `ark` / `arkcn` in allen 17 Sprachen.
+
+### Hinweise
+- Nur clientseitig, CSP-sicher. Keine Serveränderung. Scan-Quellen: **82**. Tests: **2758**.
+
+## [1.217.1] — 2026-08-26
+
+**Test-Härtung — Endpunkt-Abdeckung für das gesamte Anbieterverzeichnis.**
+
+### Hinzugefügt
+- Ein parametrisierter `run<Provider>`-Test, der Endpunkt, Standardmodell und Bearer-Authentifizierung für **Kimi, MiniMax, Mistral und Fireworks** prüft.
+
+## [1.217.0] — 2026-08-26
+
+**Hinzugefügt — Ark kommt zur LLM-Liste dazu (18 Anbieter).** BytePlus Ark und Volcengine Ark — ByteDances Doubao-Modelle — sind jetzt ⚡ Live-Anbieter über denselben OpenAI-kompatiblen Kern und eine Basis-URL pro Region.
+
+### Hinzugefügt
+- **BytePlus Ark** (`ARK_API_KEY`, international) und **Volcengine Ark** (`ARK_CN_API_KEY`, China) — OpenAI-kompatible Chat Completions über `runOpenAICompatible()`. Setze `ARK_MODEL` / `ARK_CN_MODEL` (ein Doubao-Modellname oder deine `ep-…`-Endpunkt-id); `ARK_BASE_URL` / `ARK_CN_BASE_URL` wechseln die Region. Beide reihen sich in die `auto`-Reihenfolge (zuletzt) ein, mit ihrem Monogramm in Einstellungen und Nutzung. Die Web-Oberfläche umfasst nun **18 Anbieter** live.
+
+### Hinweise
+- Gleicher Pfad aus vertrauenswürdiger Konfiguration + http(s)-Schema-Prüfung wie beim Rest (nie der SSRF-Validator für Job-URLs). Scan-Quellen unverändert: **82**. Tests: **2755**.
+
+## [1.216.0] — 2026-08-26
+
+**Hinzugefügt — neun weitere LLM-Anbieter, jeder mit eigener Markenkachel.** Deine ⚡ Live-Bewertungen können jetzt über DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together, Fireworks oder ein vollständig lokales Ollama laufen — nur einen Schlüssel entfernt, jeder mit einem Monogramm neben seinem Feld in den Einstellungen.
+
+### Hinzugefügt
+- **Neun OpenAI-kompatible Anbieter.** DeepSeek, GLM (Z.ai), Kimi (Moonshot), MiniMax, Mistral, Grok (xAI), Together AI, Fireworks AI und **Ollama** (vollständig lokal, kein Schlüssel). Setze einen Schlüssel — oder `OLLAMA_BASE_URL` für Ollama — in den **Einstellungen**, und er reiht sich nach Hermes in die `auto`-Reihenfolge ein; einen beliebigen mit `LLM_PROVIDER` festpinnen. Together hostet auch Thinking Machines’ **Inkling** (`thinkingmachines/Inkling`). Die Web-Oberfläche umfasst nun **16 Anbieter** live.
+- **Anbieter-Monogramme.** Eine CSP-sichere Initial-Kachel in der Markenfarbe kennzeichnet jeden Anbieter neben seinem Schlüsselfeld in den Einstellungen und in seiner Zeile auf der Nutzungsseite — Inline-SVG, keine externen Logos, nichts verlässt deinen Rechner.
+
+### Hinweise
+- Die Basis-URLs der Anbieter sind vertrauenswürdige Konfiguration, die über `runOpenAICompatible()` mit einer http(s)-Schema-Prüfung läuft (Ollamas Loopback ist erlaubt), nie über den SSRF-Validator für Job-URLs. Scan-Quellen unverändert: **82**. Tests: **2752**.
+
 ## [1.215.0] — 2026-08-26
 
 **Hinzugefügt — führe deine ganze Jobsuche aus OpenWorker aus.** Ein neuer Coworker steuert diese Pipeline aus Andrew Ngs quelloffener KI-Coworker-App, und die In-App-Hilfe deckt ihn nun ab, sodass der Frag-die-Docs-Assistent dich durchführen kann.

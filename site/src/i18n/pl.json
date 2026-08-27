@@ -192,6 +192,8 @@
   "src.title": "Źródła ofert",
   "src.lead": "Bezpośrednie konektory bez tokenów — {n} portali pracy i platform ATS, które skaner czyta bez LLM. Każdy znacznik prowadzi do źródła.",
   "src.ru": "Rosyjskie portale",
+  "prov.title": "Użyj własnego modelu",
+  "prov.lead": "Oceniaj każde ogłoszenie modelem, któremu ufasz — {n} dostawców LLM, własny klucz lub w pełni lokalnie przez Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral i więcej.",
   "nav.methodology": "Metodologia",
   "footer.parentMethodology": "Metodologia career-ops",
   "meta.methodologyTitle": "Metodologia — jak career-ops ocenia oferty pracy · career-ops-ui",
