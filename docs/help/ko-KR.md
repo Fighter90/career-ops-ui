@@ -1,5 +1,7 @@
 # 도움말 — career-ops-ui
 
+<p align="center"><img src="../../images/providers.svg" alt="18 LLM providers — Anthropic, OpenAI, Gemini, DeepSeek, Mistral, Ollama and more" width="720"></p>
+
 앱을 실행한 순간부터 인터뷰를 따낼 때까지, 모든 페이지를 단계별로
 안내합니다. 아래 각 `##` 헤딩은 사이드바 항목 또는 워크플로의 한
 단계에 대응합니다. 처음 실행 시에는 위에서 아래로 읽고, 이후에는

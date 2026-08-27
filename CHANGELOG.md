@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.225.0] — 2026-08-27
+
+**Added — a provider-logo banner in the README and help guide.**
+
+### Added
+- **Provider-logo banner.** A single self-contained `images/providers.svg` — the **18 LLM providers** with the **real brand logo** ([simple-icons](https://simpleicons.org), CC0) for the 11 that publish one and a brand-colored monogram for the 7 that don't — now heads the README (×17) and the in-app help guide. (The app renders the real logo tiles itself; the banner is GitHub-rendered and stripped in-app by the XSS-safe markdown renderer.)
+
+### Notes
+- Docs-only — no code or test change; the SVG is inline (no remote asset). Scan sources unchanged at **83**. Test suite: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Changed — the LLM provider tiles now show real brand logos.**

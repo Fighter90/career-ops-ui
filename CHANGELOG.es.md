@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.225.0] — 2026-08-27
+
+**Añadido — un banner de logotipos de proveedores en el README y la guía de ayuda.**
+
+### Añadido
+- **Banner de logotipos de proveedores.** Un único `images/providers.svg` autónomo — los **18 proveedores de LLM** con el **logotipo real de marca** ([simple-icons](https://simpleicons.org), CC0) para los 11 que publican uno y un monograma con color de marca para los 7 que no — encabeza ahora el README (×17) y la guía de ayuda integrada. (La app renderiza las fichas con el logotipo real; el banner se muestra en GitHub y el renderizador seguro para XSS lo elimina en la app.)
+
+### Notas
+- Solo docs — sin cambios de código ni pruebas; el SVG está incrustado (sin recurso remoto). Fuentes de escaneo sin cambios: **83**. Conjunto de pruebas: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Cambiado — las fichas de proveedores LLM ahora muestran los logotipos reales de marca.**

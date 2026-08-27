@@ -1,5 +1,7 @@
 # Aide — career-ops-ui
 
+<p align="center"><img src="../../images/providers.svg" alt="18 LLM providers — Anthropic, OpenAI, Gemini, DeepSeek, Mistral, Ollama and more" width="720"></p>
+
 Une présentation complète de chaque page, du moment où vous lancez
 l'application jusqu'à l'obtention d'un entretien. Chaque titre `##`
 ci-dessous correspond à une entrée de la barre latérale ou à une phase

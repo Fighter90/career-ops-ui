@@ -12,11 +12,13 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.224.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.224.0)
+[![release](https://img.shields.io/badge/release-v1.225.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.225.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.224.0** — **Справжні логотипи провайдерів** — плитки LLM-провайдерів тепер показують справжній логотип бренду (Anthropic, OpenAI, Gemini, DeepSeek, Mistral, Ollama, …) там, де провайдер публікує open-source-іконку — досі повністю безпечно для CSP (вбудований SVG, без віддалених ресурсів). **2784 тестів.**
+> **🆕 Останній реліз — v1.225.0** — **Банер логотипів провайдерів** — банер усіх 18 LLM-провайдерів — справжні логотипи для 11, монограма для 7 — тепер очолює README та довідник. **2784 тестів.**
+
+<p align="center"><img src="images/providers.svg" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
 

@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.225.0] — 2026-08-27
+
+**Hinzugefügt — ein Anbieterlogo-Banner in README und Hilfe-Guide.**
+
+### Hinzugefügt
+- **Anbieterlogo-Banner.** Ein einzelnes, in sich geschlossenes `images/providers.svg` — die **18 LLM-Anbieter**, mit dem **echten Markenlogo** ([simple-icons](https://simpleicons.org), CC0) für die 11, die eins veröffentlichen, und einem Monogramm in der Markenfarbe für die 7 übrigen — steht jetzt am Kopf des README (×17) und des In-App-Hilfe-Guides. (Die App zeichnet die Kacheln mit dem echten Logo selbst; das Banner wird auf GitHub gerendert und in der App vom XSS-sicheren Renderer entfernt.)
+
+### Hinweise
+- Nur Docs — keine Code- oder Teständerung; das SVG ist inline (keine Remote-Ressource). Scan-Quellen unverändert: **83**. Testsuite: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Geändert — die LLM-Anbieterkacheln zeigen jetzt echte Markenlogos.**

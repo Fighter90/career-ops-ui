@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.225.0] — 2026-08-27
+
+**Tilføjet — et udbyderlogo-banner i README og hjælpeguiden.**
+
+### Tilføjet
+- **Udbyderlogo-banner.** En enkelt selvstændig `images/providers.svg` — de **18 LLM-udbydere**, med det **rigtige mærkelogo** ([simple-icons](https://simpleicons.org), CC0) for de 11, der udgiver et, og et monogram i mærkefarven for de 7 øvrige — står nu øverst i README (×17) og den indbyggede hjælpeguide. (Appen tegner selv felterne med det rigtige logo; banneret vises på GitHub og fjernes i appen af den XSS-sikre renderer.)
+
+### Noter
+- Kun docs — ingen kode- eller testændring; SVG'en er indlejret (ingen fjernressource). Scanningskilder uændret: **83**. Testsuite: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Ændret — LLM-udbyderfliserne viser nu rigtige mærkelogoer.**
