@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.225.0] — 2026-08-27
+
+**Dodano — baner logotypów dostawców w README i przewodniku pomocy.**
+
+### Dodano
+- **Baner logotypów dostawców.** Pojedynczy samodzielny `images/providers.svg` — **18 dostawców LLM**, z **prawdziwym logo marki** ([simple-icons](https://simpleicons.org), CC0) dla 11 publikujących ikonę i monogramem w kolorze marki dla 7 pozostałych — wieńczy teraz README (×17) i wbudowany przewodnik pomocy. (Aplikacja sama renderuje kafelki z prawdziwym logo; baner renderuje się na GitHub, a bezpieczny dla XSS renderer aplikacji go usuwa.)
+
+### Uwagi
+- Tylko dokumentacja — bez zmian kodu ani testów; SVG jest wbudowany (bez zasobu zdalnego). Źródła skanowania bez zmian: **83**. Zestaw testów: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Zmieniono — kafelki dostawców LLM pokazują teraz prawdziwe logotypy marek.**

@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.225.0] — 2026-08-27
+
+**Ajouté — une bannière de logos de fournisseurs dans le README et le guide d'aide.**
+
+### Ajouté
+- **Bannière de logos de fournisseurs.** Un unique `images/providers.svg` autonome — les **18 fournisseurs de LLM**, avec le **vrai logo de marque** ([simple-icons](https://simpleicons.org), CC0) pour les 11 qui en publient un et un monogramme aux couleurs de la marque pour les 7 autres — coiffe désormais le README (×17) et le guide d'aide intégré. (L'app affiche elle-même les tuiles avec le vrai logo ; la bannière est rendue sur GitHub et retirée dans l'app par le moteur de rendu sûr pour le XSS.)
+
+### Notes
+- Docs uniquement — aucun changement de code ni de tests ; le SVG est intégré (aucune ressource distante). Sources de scan inchangées : **83**. Suite de tests : **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Modifié — les tuiles des fournisseurs LLM affichent désormais les vrais logos de marque.**

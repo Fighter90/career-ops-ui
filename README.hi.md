@@ -14,11 +14,13 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.224.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.224.0)
+[![release](https://img.shields.io/badge/release-v1.225.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.225.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.224.0** — **असली प्रदाता लोगो** — LLM प्रदाता टाइलें अब वहाँ असली ब्रांड लोगो (Anthropic, OpenAI, Gemini, DeepSeek, Mistral, Ollama, …) दिखाती हैं जहाँ प्रदाता ओपन-सोर्स आइकन प्रकाशित करता है — अब भी पूरी तरह CSP-सुरक्षित (इनलाइन SVG, कोई रिमोट संसाधन नहीं)। **2784 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.225.0** — **प्रदाता-लोगो बैनर** — सभी 18 LLM प्रदाताओं का बैनर — 11 के लिए असली लोगो, 7 के लिए मोनोग्राम — अब README और हेल्प गाइड के शीर्ष पर है। **2784 परीक्षण.**
+
+<p align="center"><img src="images/providers.svg" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
 

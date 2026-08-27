@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.225.0] — 2026-08-27
+
+**Eklendi — README ve yardım kılavuzunda bir sağlayıcı logo afişi.**
+
+### Eklendi
+- **Sağlayıcı logo afişi.** Tek ve kendi kendine yeten bir `images/providers.svg` — **18 LLM sağlayıcısı**, simge yayımlayan 11'i için **gerçek marka logosu** ([simple-icons](https://simpleicons.org), CC0) ve kalan 7'si için marka renkli monogram ile — artık README'nin (×17) ve uygulama içi yardım kılavuzunun başında. (Uygulama gerçek logo kutucuklarını kendisi çizer; afiş GitHub'da işlenir ve uygulamada XSS-güvenli işleyici tarafından kaldırılır.)
+
+### Notlar
+- Yalnızca dokümanlar — kod veya test değişikliği yok; SVG satır içidir (uzak kaynak yok). Tarama kaynakları değişmedi: **83**. Test paketi: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Değiştirildi — LLM sağlayıcı kutucukları artık gerçek marka logolarını gösteriyor.**

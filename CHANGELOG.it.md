@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.225.0] — 2026-08-27
+
+**Aggiunto — un banner dei loghi dei provider nel README e nella guida.**
+
+### Aggiunto
+- **Banner dei loghi dei provider.** Un unico `images/providers.svg` autonomo — i **18 provider LLM**, con il **logo reale del brand** ([simple-icons](https://simpleicons.org), CC0) per gli 11 che ne pubblicano uno e un monogramma con il colore del brand per i 7 restanti — apre ora il README (×17) e la guida in-app. (L'app disegna da sé i riquadri con il logo reale; il banner è reso su GitHub e rimosso nell'app dal renderer sicuro per l'XSS.)
+
+### Note
+- Solo docs — nessun cambiamento di codice o test; l'SVG è inline (nessuna risorsa remota). Sorgenti di scansione invariate: **83**. Suite di test: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Modificato — i riquadri dei provider LLM ora mostrano i loghi reali dei brand.**
