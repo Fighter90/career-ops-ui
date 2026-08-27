@@ -8,6 +8,36 @@
 
 ---
 
+## [1.226.0] — 2026-08-27
+
+**新增 —— 兩個越南招聘來源: ITviec 與 CareerViet。**
+
+### 新增
+- **ITviec + CareerViet(越南)。** 兩個主機鎖定的越南看板經 `provider: itviec` / `provider: careerviet` 項目加入掃描器:**ITviec**(itviec.com,技術向)與 **CareerViet**(careerviet.vn,廣覆蓋)。兩者皆為零 token 的 HTML 抓取器,帶 SSRF 主機鎖定、僅 HTTPS、依公司容錯與頁數上限。註冊表現有 **85 個來源**(80 EN + 5 RU),`ALL_ADAPTERS` **80** —— 兩者皆出現在 `#/scan` 的來源篩選中。
+
+### 備註
+- career-ops 1.30.0 對齊(parentVersion 1.29.0 → 1.30.0)。未移植(僅 CLI/社群或已涵蓋):Hired Wall、`/calibrate`、clean-markers、範本包、doctor、pdf/LaTeX,以及 web-ui 不呼叫的 eval/tracker/scan CLI;`_html-to-text` 修復與 detect-reposts `roleFuzzyMatch` 已存在;`title-filter stem:` 前綴延後。測試套件:**2818**。
+
+## [1.225.1] — 2026-08-27
+
+**修復 —— 供應方標誌橫幅現在能在 README 與說明中顯示。**
+
+### 修復
+- v1.225.0 的橫幅在 GitHub 上不顯示:獨立的 `images/providers.svg` 有一個無效的 `font-family`(巢狀的雙引號),被 GitHub 拒絕;`<img>` 使用了儲存庫相對 `src`(GitHub 不解析 raw HTML `<img>` 的相對路徑);`<p>` 區塊缺少結尾空行,導致與下一行合併。現在它透過絕對 raw URL 指向已算繪的 `images/providers.png`,並以空行分隔;SVG 也已修正為有效 XML。
+
+### 備註
+- 僅文件;無程式碼/測試改動。cvstart.org 展示區與應用內磚貼先前已正確(內嵌 SVG,非此檔案)。  **2784**
+
+## [1.225.0] — 2026-08-27
+
+**新增 —— README 與說明指南頂部的供應方標誌橫幅。**
+
+### 新增
+- **供應方標誌橫幅。** 一個自包含的 `images/providers.svg` —— **18 個 LLM 供應方**,發布圖示的 11 個用**真實品牌標誌**([simple-icons](https://simpleicons.org),CC0),其餘 7 個用品牌配色字母標 —— 現位於 README(×17)與應用內說明指南頂部。(應用自身渲染真實標誌磚貼;橫幅在 GitHub 渲染,應用的 XSS 安全渲染器會將其移除。)
+
+### 備註
+- 僅文件 —— 無程式碼/測試改動;SVG 為內嵌(無遠端資源)。掃描來源不變:**83**。測試套件:**2784**。
+
 ## [1.224.0] — 2026-08-26
 
 **變更 —— LLM 供應方磚貼現在顯示真實的品牌標誌。**

@@ -9,6 +9,16 @@
 ---
 
 
+## [1.226.0] — 2026-08-27
+
+**추가 — 베트남 채용 소스 2종: ITviec와 CareerViet.**
+
+### 추가
+- **ITviec + CareerViet(베트남).** 호스트 고정된 베트남 보드 2종이 `provider: itviec` / `provider: careerviet` 항목으로 스캐너에 합류합니다: **ITviec**(itviec.com, 기술 중심)와 **CareerViet**(careerviet.vn, 광범위). 둘 다 토큰 없는 HTML 스크레이퍼로 SSRF 호스트 고정·HTTPS 전용·회사별 fail-soft·페이지 상한을 갖춥니다. 레지스트리는 이제 **85개 소스**(80 EN + 5 RU), `ALL_ADAPTERS` **80** — 둘 다 `#/scan` 소스 필터에 표시됩니다.
+
+### 참고
+- career-ops 1.30.0 패리티(parentVersion 1.29.0 → 1.30.0). 미포팅(CLI/커뮤니티 전용 또는 이미 반영): Hired Wall, `/calibrate`, clean-markers, 템플릿 팩, doctor, pdf/LaTeX, web-ui가 호출하지 않는 eval/tracker/scan CLI들; `_html-to-text` 수정과 detect-reposts `roleFuzzyMatch`는 이미 있었음; `title-filter stem:` 접두사는 보류. 테스트 스위트: **2818**.
+
 ## [1.225.1] — 2026-08-27
 
 **수정 — 제공자 로고 배너가 이제 README와 도움말에 표시됩니다.**

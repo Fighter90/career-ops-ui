@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.226.0] — 2026-08-27
+
+**Ajouté — deux sources d'emploi vietnamiennes : ITviec et CareerViet.**
+
+### Ajouté
+- **ITviec + CareerViet (Vietnam).** Deux sites vietnamiens à hôte épinglé rejoignent le scanner via des entrées `provider: itviec` / `provider: careerviet` : **ITviec** (itviec.com, tech) et **CareerViet** (careerviet.vn, large couverture). Tous deux sont des scrapers HTML sans token, avec épinglage d'hôte anti-SSRF, HTTPS uniquement, tolérance par entreprise et plafonds de pages. Le registre compte désormais **85 sources** (80 EN + 5 RU), `ALL_ADAPTERS` **80** — les deux apparaissent dans le filtre Source de `#/scan`.
+
+### Notes
+- Parité avec career-ops 1.30.0 (parentVersion 1.29.0 → 1.30.0). Non porté (CLI/communauté seulement ou déjà couvert) : le Hired Wall, `/calibrate`, clean-markers, packs de modèles, doctor, pdf/LaTeX, et les CLI eval/tracker/scan que web-ui n'invoque pas ; le correctif `_html-to-text` et `roleFuzzyMatch` étaient déjà présents ; le préfixe `title-filter stem:` est reporté. Suite de tests : **2818**.
+
 ## [1.225.1] — 2026-08-27
 
 **Corrigé — la bannière de logos de fournisseurs s'affiche désormais dans le README et l'aide.**

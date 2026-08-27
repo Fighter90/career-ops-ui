@@ -9,6 +9,36 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.226.0] — 2026-08-27
+
+**Dodano — dwa wietnamskie źródła ofert: ITviec i CareerViet.**
+
+### Dodano
+- **ITviec + CareerViet (Wietnam).** Dwie wietnamskie tablice z przypiętym hostem dołączają do skanera przez wpisy `provider: itviec` / `provider: careerviet`: **ITviec** (itviec.com, tech) i **CareerViet** (careerviet.vn, szeroki zasięg). Oba to scrapery HTML bez tokenów, z przypięciem hosta (anty-SSRF), tylko-HTTPS, fail-soft per firma i limitami stron. Rejestr ma teraz **85 źródeł** (80 EN + 5 RU), `ALL_ADAPTERS` **80** — oba pojawiają się w filtrze Źródło w `#/scan`.
+
+### Uwagi
+- Zgodność z career-ops 1.30.0 (parentVersion 1.29.0 → 1.30.0). Nieportowane (tylko CLI/społeczność lub już pokryte): Hired Wall, `/calibrate`, clean-markers, paczki szablonów, doctor, pdf/LaTeX oraz CLI eval/tracker/scan, których web-ui nie wywołuje; poprawka `_html-to-text` i `roleFuzzyMatch` już były; prefiks `title-filter stem:` odroczony. Zestaw testów: **2818**.
+
+## [1.225.1] — 2026-08-27
+
+**Naprawiono — baner logotypów dostawców teraz wyświetla się w README i pomocy.**
+
+### Naprawiono
+- Baner z v1.225.0 nie wyświetlał się na GitHub: samodzielny `images/providers.svg` miał nieprawidłowy `font-family` (zagnieżdżone cudzysłowy) odrzucany przez GitHub, `<img>` używał względnego `src` (HTML `<img>` nie rozwiązuje ścieżek względnych na GitHub), a blok `<p>` nie miał końcowej pustej linii. Teraz wskazuje na wyrenderowany `images/providers.png` przez bezwzględny URL, z separacją pustymi liniami; SVG także poprawiono do prawidłowego XML.
+
+### Uwagi
+- Tylko dokumentacja; bez zmian kodu ani testów. Witryna cvstart.org i kafelki w aplikacji były już poprawne (wbudowany SVG, nie ten plik).  **2784**
+
+## [1.225.0] — 2026-08-27
+
+**Dodano — baner logotypów dostawców w README i przewodniku pomocy.**
+
+### Dodano
+- **Baner logotypów dostawców.** Pojedynczy samodzielny `images/providers.svg` — **18 dostawców LLM**, z **prawdziwym logo marki** ([simple-icons](https://simpleicons.org), CC0) dla 11 publikujących ikonę i monogramem w kolorze marki dla 7 pozostałych — wieńczy teraz README (×17) i wbudowany przewodnik pomocy. (Aplikacja sama renderuje kafelki z prawdziwym logo; baner renderuje się na GitHub, a bezpieczny dla XSS renderer aplikacji go usuwa.)
+
+### Uwagi
+- Tylko dokumentacja — bez zmian kodu ani testów; SVG jest wbudowany (bez zasobu zdalnego). Źródła skanowania bez zmian: **83**. Zestaw testów: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **Zmieniono — kafelki dostawców LLM pokazują teraz prawdziwe logotypy marek.**

@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.226.0] — 2026-08-27
+
+**Tilføjet — to vietnamesiske jobkilder: ITviec og CareerViet.**
+
+### Tilføjet
+- **ITviec + CareerViet (Vietnam).** To host-fastlåste vietnamesiske boards tilslutter sig scanneren via `provider: itviec` / `provider: careerviet`-poster: **ITviec** (itviec.com, tech) og **CareerViet** (careerviet.vn, bred dækning). Begge er token-fri HTML-scrapere med SSRF-host-pin, kun-HTTPS, fail-soft pr. virksomhed og sideloft. Registret rummer nu **85 kilder** (80 EN + 5 RU), `ALL_ADAPTERS` **80** — begge vises i `#/scan`-kildefilteret.
+
+### Noter
+- Paritet med career-ops 1.30.0 (parentVersion 1.29.0 → 1.30.0). Ikke porteret (kun CLI/community eller allerede dækket): Hired Wall, `/calibrate`, clean-markers, skabelonpakker, doctor, pdf/LaTeX og eval/tracker/scan-CLI'erne som web-ui ikke kalder; `_html-to-text`-rettelsen og `roleFuzzyMatch` fandtes allerede; `title-filter stem:`-præfikset er udskudt. Testsuite: **2818**.
+
 ## [1.225.1] — 2026-08-27
 
 **Rettet — udbyderlogo-banneret vises nu i README og hjælpen.**

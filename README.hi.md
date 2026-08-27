@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2784%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2818%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.225.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.225.1)
+[![release](https://img.shields.io/badge/release-v1.226.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.226.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.225.1** — **प्रदाता बैनर ठीक** — प्रदाता-लोगो बैनर अब README और हेल्प में सही दिखता है (निरपेक्ष URL के ज़रिए रेंडर किया गया PNG; अमान्य-XML SVG ठीक किया गया)। **2784 परीक्षण.**
+> **🆕 नवीनतम रिलीज़ — v1.226.0** — **दो वियतनामी नौकरी स्रोत** — ITviec + CareerViet स्कैनर में जुड़े (85 स्रोत · 80 अडैप्टर) — मूल प्रोजेक्ट 1.30.0 समता। **2818 परीक्षण.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

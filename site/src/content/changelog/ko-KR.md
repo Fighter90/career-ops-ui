@@ -9,6 +9,36 @@
 ---
 
 
+## [1.226.0] — 2026-08-27
+
+**추가 — 베트남 채용 소스 2종: ITviec와 CareerViet.**
+
+### 추가
+- **ITviec + CareerViet(베트남).** 호스트 고정된 베트남 보드 2종이 `provider: itviec` / `provider: careerviet` 항목으로 스캐너에 합류합니다: **ITviec**(itviec.com, 기술 중심)와 **CareerViet**(careerviet.vn, 광범위). 둘 다 토큰 없는 HTML 스크레이퍼로 SSRF 호스트 고정·HTTPS 전용·회사별 fail-soft·페이지 상한을 갖춥니다. 레지스트리는 이제 **85개 소스**(80 EN + 5 RU), `ALL_ADAPTERS` **80** — 둘 다 `#/scan` 소스 필터에 표시됩니다.
+
+### 참고
+- career-ops 1.30.0 패리티(parentVersion 1.29.0 → 1.30.0). 미포팅(CLI/커뮤니티 전용 또는 이미 반영): Hired Wall, `/calibrate`, clean-markers, 템플릿 팩, doctor, pdf/LaTeX, web-ui가 호출하지 않는 eval/tracker/scan CLI들; `_html-to-text` 수정과 detect-reposts `roleFuzzyMatch`는 이미 있었음; `title-filter stem:` 접두사는 보류. 테스트 스위트: **2818**.
+
+## [1.225.1] — 2026-08-27
+
+**수정 — 제공자 로고 배너가 이제 README와 도움말에 표시됩니다.**
+
+### 수정
+- v1.225.0 배너가 GitHub에서 표시되지 않았습니다: 독립형 `images/providers.svg`의 `font-family`에 중첩된 큰따옴표(GitHub가 거부)가 있었고, `<img>`가 저장소 상대 `src`를 사용했으며(GitHub는 raw HTML `<img>`의 상대 경로를 해석하지 않음), `<p>` 블록에 끝 빈 줄이 없어 다음 줄과 합쳐졌습니다. 이제 렌더링된 `images/providers.png`를 절대 raw URL로 가리키며 빈 줄로 분리됩니다. SVG도 유효한 XML로 수정했습니다.
+
+### 참고
+- 문서만; 코드/테스트 변경 없음. cvstart.org 쇼케이스와 앱의 제공자 타일은 이미 정상이었습니다(인라인 SVG, 이 파일 아님).  **2784**
+
+## [1.225.0] — 2026-08-27
+
+**추가 — README와 도움말 가이드에 제공자 로고 배너.**
+
+### 추가
+- **제공자 로고 배너.** 하나의 자립형 `images/providers.svg` — **18개 LLM 제공자**를 담아, 아이콘을 게시하는 11개는 **실제 브랜드 로고**([simple-icons](https://simpleicons.org), CC0), 나머지 7개는 브랜드 색상 모노그램 — 가 이제 README(×17)와 인앱 도움말 가이드 상단에 표시됩니다. (앱은 실제 로고 타일을 직접 렌더링하며, 배너는 GitHub에서 렌더링되고 앱의 XSS-안전 렌더러가 제거합니다.)
+
+### 참고
+- 문서만 — 코드/테스트 변경 없음; SVG는 인라인(원격 자원 없음). 스캔 소스 변경 없음: **83**. 테스트 스위트: **2784**.
+
 ## [1.224.0] — 2026-08-26
 
 **변경됨 — LLM 제공자 타일이 이제 실제 브랜드 로고를 표시합니다.**
