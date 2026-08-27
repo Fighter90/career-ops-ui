@@ -10,7 +10,7 @@
 >
 > **Current baseline — v1.158.0 (update on each release):**
 >
-> - **16 locales** (`en es pt-BR ko ja ru zh-CN zh-TW fr pl uk da ar de
+> - **17 locales** (`en es pt-BR ko ja ru zh-CN zh-TW fr pl uk da ar de it tr hi
 >   it tr`; ar = RTL). Everywhere the *body* below says "9 locales" read
 >   **16**; CHANGELOG/README parity and help bundles are **16 files**.
 >   The "×9" inside historical closed-finding rows records what shipped
@@ -110,7 +110,7 @@ reader / the accessibility tree:
 while the web-ui ⚡ eval is headless and key-driven.
 
 - `LLM_PROVIDER` select MUST offer `auto · claude · gemini · openai ·
-  qwen · openrouter · github · hermes` (8 options — all **7 providers** +
+  qwen · openrouter · github · hermes` (8 options — all **18 providers** +
   auto). `auto` = first provider whose key is set, preferring **Anthropic →
   Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes**
   (`providerOrder()`); an explicit value prefers that one — **but as of
@@ -197,7 +197,7 @@ keys/model as: non-empty `process.env` wins, else current parent
 `.env`; detection (`hasAnthropicKey`/`hasGeminiKey`/`hasOpenAIKey`/
 `hasQwenKey`/`hasOpenRouterKey`/`hasGitHubModelsKey`/`hasHermesKey`) matches
 the key actually sent; no restart needed after a `.env` / `POST /api/config`
-change. Walk the OR matrix: for each of the **7 providers**, set ONLY its key
+change. Walk the OR matrix: for each of the **18 providers**, set ONLY its key
 in `.env` and confirm a live eval runs via exactly that provider
 (`anthropic`/`gemini`/`openai`/`qwen`/`openrouter`/`github`/`hermes`
 in the response). Keys are never logged or echoed — the no-leak

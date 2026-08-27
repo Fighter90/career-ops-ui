@@ -1,8 +1,8 @@
-# QA REGRESSION PROMPT — career-ops-ui **v1.128.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
+# QA REGRESSION PROMPT — career-ops-ui **v1.226.0** (DEFINITIVE · WHOLE PROJECT · ALL LANGUAGES)
 
 Single standalone hand-off for a QA tester (human or agent) to verify the **entire** career-ops-ui build end-to-end, in **all 17 languages**, covering every feature shipped from **v1.76.0 through v1.119.4**. Walking this top-to-bottom signs off that surface without needing the rest of the `qa/` tree. §§ below cover the v1.76→v1.97 surface; **§14 (at the end) covers everything added v1.98→v1.119.4**. **Deltas after v1.119.4 (v1.120 → v1.128) live in the per-release sibling prompts** `qa/QA-REGRESSION-PROMPT-v1.1XX.X.md` — headline changes since: Hindi as the 17th locale (v1.122.0), the CareerOps Manifesto + cvstart.org Methodology/License/Changelog pages (v1.120–v1.121), the external-contributor pack (v1.125.2), the da/hi prompt-locale fix (v1.125.3), the CLI-roster resync + Cursor re-add (v1.126.0/v1.127.0), **parent v1.23.0 parity — Flowxtra/VDAB/iCIMS sources (v1.127.0)**, and **four ports from the parent web app — states.yml live read / name→domain logos / 4-tier score tone / job-facets (v1.128.0)**.
 
-- **Version under test:** `package.json` **1.128.0** · **31 route modules** · **70 adapters (65 EN + 5 RU)**.
+- **Version under test:** `package.json` **1.226.0** · **37 route modules** · **85 sources (80 EN + 5 RU)** · **18 LLM live-eval providers** · **17 locales**. This is the whole-project BASE snapshot; per-release deltas after it live in the sibling `QA-REGRESSION-PROMPT-v1.1XX.X` / `v1.2XX.X` prompts (current tip: **v1.226.0**).
 - **Baseline:** **2066** `node --test` cases · Playwright (smoke + full-cycle + forms + **locale-sweep ×17** + theme-toggle) · 20 smoke E2E · 23 comprehensive E2E · CI matrix green on Node 18/20/22 + Playwright + CodeQL.
 - **Server:** `npm start` → `http://127.0.0.1:4317`.
 - **Sibling docs:** `qa/QA-REGRESSION-PROMPT-v1.1XX.0.md` (per-release delta drivers, v1.90–v1.119.0 incl. the v1.110 milestone snapshot + per-version v1.111/v1.112/v1.113/v1.117/v1.118.0/v1.118.2/v1.119.0/v1.119.2) · `qa/UX-AUDIT-PROMPT.md` (UX audit) · `qa/FUNCTIONALITY-CHECK.md` (functional correctness) · `qa/DESIGNER-EXPORT-PROMPT.md` (design export) · `REGRESSION-FINAL.md` (invariant ledger).
@@ -15,7 +15,7 @@ Single standalone hand-off for a QA tester (human or agent) to verify the **enti
 npm test                                    # full suite (≥1845 cases)
 npm run test:ci                             # unit + check-no-also + check-changelog-parity + i18n-audit
 node tools/i18n-audit.mjs                   # "no hard failures — dictionary is clean"
-node scripts/check-changelog-parity.mjs     # "all 16 locales at v1.128.0" (EN + 16 = 17 files)
+node scripts/check-changelog-parity.mjs     # "all 16 locales at v1.226.0" (EN + 16 = 17 files)
 npm run test:coverage                       # ≥80% line / ≥75% branch (baseline ~96/~86)
 npm run test:e2e:browser                    # playwright smoke + full-cycle + forms + locale-sweep(16) + theme-toggle
 npm run test:e2e && npm run test:e2e:full   # smoke (20) + comprehensive (23) E2E

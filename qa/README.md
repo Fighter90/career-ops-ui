@@ -12,11 +12,11 @@ Tracks regressions, fix-prompts, and live evidence across releases.
 > reports go under [`reports/`](./reports/). The active design roadmap is
 > [`../docs/UX-ROADMAP.md`](../docs/UX-ROADMAP.md).
 
-## LATEST — whole-project regression driver — v1.78.2
+## LATEST — whole-project regression driver — v1.226.0
 
 > **[`QA-REGRESSION-PROMPT.md`](./QA-REGRESSION-PROMPT.md)** is the canonical,
-> standalone whole-project / all-13-languages regression hand-off (as of
-> `package.json` **1.78.2**). Walk it top-to-bottom to sign off a build.
+> standalone whole-project / all-17-languages regression hand-off (as of
+> `package.json` **1.226.0**). Walk it top-to-bottom to sign off a build.
 > Companions: the exhaustive per-button × per-page × per-language UI driver
 > [`../key/E2E-REGRESSION-EVERY-BUTTON-EVERY-LANGUAGE-v1.78.0.md`](../key/E2E-REGRESSION-EVERY-BUTTON-EVERY-LANGUAGE-v1.78.0.md),
 > and the parent-parity CI gate driver
