@@ -390,8 +390,16 @@
       const box = c('div', { className: 'card', style: { marginBottom: 'var(--space-4)' } });
       const seedBtn = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, t('fu.seedBackfill', 'Seed follow-up dates'));
       const refreshBtn = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, '↻ ' + t('fu.refresh', 'Refresh'));
+      // v1.227.0 — a due-only lens over the same relayed data. followup-cadence.mjs
+      // already ranks urgency; showing all of it buried the rows that need a nudge
+      // today. Off by default so the full board stays the landing view.
+      const dueOnlyBox = c('input', { type: 'checkbox', id: 'fu-due-only' });
+      const dueOnly = c('label', {
+        htmlFor: 'fu-due-only',
+        style: { display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'pointer' },
+      }, [dueOnlyBox, c('span', null, t('fu.dueOnly', 'Due only'))]);
       const head = c('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', margin: '0 0 10px' } }, [
-        c('strong', null, t('fu.boardTitle', 'Cadence board')), refreshBtn, seedBtn,
+        c('strong', null, t('fu.boardTitle', 'Cadence board')), refreshBtn, seedBtn, dueOnly,
       ]);
       const body = c('div', null, c('p', { style: { color: 'var(--foggy)' } }, t('fu.loading', 'Loading cadence…')));
       box.appendChild(head);
@@ -415,10 +423,25 @@
           c('span', { className: 'chip' }, `🟡 ${t('fu.waiting', 'waiting')}: ${m.waiting || 0}`),
           c('span', { className: 'chip' }, `🔵 ${t('fu.cold', 'cold')}: ${m.cold || 0}`),
         ]));
-        const entries = Array.isArray(d.entries) ? d.entries.slice(0, 100) : [];
+        const all = Array.isArray(d.entries) ? d.entries : [];
+        const FV = window.FollowupView;
+        // 'Due' is the urgency followup-cadence.mjs computed (urgent/overdue) —
+        // never the tracker status, which is applied/responded/interview and so
+        // would match nothing.
+        const entries = (dueOnlyBox.checked && FV ? FV.selectDueFollowups(all, 100) : all).slice(0, 100);
         if (!entries.length) {
           body.appendChild(c('p', { style: { color: 'var(--foggy)', margin: '0' } },
             t('fu.empty', 'Nothing actionable — no applications need a follow-up right now.')));
+          // Nothing is due, but something may be scheduled — name the nearest one
+          // rather than leaving the user to re-read the full board for it.
+          const next = FV ? FV.pickNextUpcoming(all) : null;
+          if (next) {
+            body.appendChild(c('p', { style: { color: 'var(--foggy)', margin: '6px 0 0' } },
+              t('fu.nextUpcoming', 'Next up: #{num} {company} on {date}.')
+                .replace('{num}', String(next.appNum ?? ''))
+                .replace('{company}', String(next.company || ''))
+                .replace('{date}', String(next.nextFollowupDate || ''))));
+          }
           return;
         }
         const headRow = c('tr', null,
@@ -435,6 +458,7 @@
         body.appendChild(c('div', { className: 'table-wrap' }, c('table', { className: 'tbl' }, [c('thead', null, headRow), c('tbody', null, rows)])));
       }
       refreshBtn.addEventListener('click', load);
+      dueOnlyBox.addEventListener('change', load);
       seedBtn.addEventListener('click', async () => {
         seedBtn.disabled = true;
         try {

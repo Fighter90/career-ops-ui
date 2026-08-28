@@ -13,7 +13,7 @@ import {
   fetchArbeitsagentur, parseArbeitsagenturConfig, buildLocation, normalizeJob,
 } from '../server/lib/sources/arbeitsagentur.mjs';
 import { fetchGlints, assertGlintsUrl, parseGlintsItem } from '../server/lib/sources/glints.mjs';
-import { fetchJobstreet, assertJobstreetUrl, parseJobstreetItem } from '../server/lib/sources/jobstreet.mjs';
+import { fetchJobstreet, assertJobstreetUrl, parseJobstreetItem, DEFAULT_API } from '../server/lib/sources/jobstreet.mjs';
 import { ibmAdapter } from '../server/lib/portals/adapters/ibm.mjs';
 import { arbeitsagenturAdapter } from '../server/lib/portals/adapters/arbeitsagentur.mjs';
 import { glintsAdapter } from '../server/lib/portals/adapters/glints.mjs';
@@ -141,9 +141,68 @@ test('glints: fetchGlints throws on bad first-page shape', async () => {
 test('jobstreet: assertJobstreetUrl host allowlist', () => {
   assert.throws(() => assertJobstreetUrl('https://evil.com/api'), /untrusted hostname/);
   assert.equal(
-    assertJobstreetUrl('https://id.jobstreet.com/api/chalice-search/v4/search'),
-    'https://id.jobstreet.com/api/chalice-search/v4/search',
+    assertJobstreetUrl('https://id.jobstreet.com/api/jobsearch/v5/search'),
+    'https://id.jobstreet.com/api/jobsearch/v5/search',
   );
+  // http:// is rejected even on an allowlisted host.
+  assert.throws(() => assertJobstreetUrl('http://id.jobstreet.com/api/jobsearch/v5/search'), /must use HTTPS/);
+});
+
+test('jobstreet: SEEK Hong Kong (hk.jobsdb.com / HK-Main) is an allowed market', () => {
+  assert.equal(
+    assertJobstreetUrl('https://hk.jobsdb.com/api/jobsearch/v5/search'),
+    'https://hk.jobsdb.com/api/jobsearch/v5/search',
+  );
+  // A near-miss on the JobsDB brand must NOT open the allowlist up.
+  assert.throws(() => assertJobstreetUrl('https://jobsdb.com/api/jobsearch/v5/search'), /untrusted hostname/);
+  assert.throws(() => assertJobstreetUrl('https://hk.jobsdb.com.evil.test/x'), /untrusted hostname/);
+});
+
+test('jobstreet: DEFAULT_API is the v5 endpoint, not the dead chalice v4', () => {
+  assert.equal(DEFAULT_API, 'https://id.jobstreet.com/api/jobsearch/v5/search');
+  assert.equal(jobstreetAdapter.buildEndpoint({ provider: 'jobstreet' }), DEFAULT_API);
+});
+
+test('jobstreet: an entry still pinning the dead v4 path is queried on v5', async () => {
+  const seen = [];
+  const fetchImpl = async (url) => { seen.push(String(url)); return { ok: true, json: async () => ({ data: [] }) }; };
+  await fetchJobstreet('https://hk.jobsdb.com/api/chalice-search/v4/search', {
+    fetchImpl, company: { jobstreet: { siteKey: 'HK-Main', searchKeywords: 'business intelligence' } },
+  });
+  assert.equal(seen.length, 1);
+  const u = new URL(seen[0]);
+  assert.equal(u.hostname, 'hk.jobsdb.com');           // market preserved
+  assert.equal(u.pathname, '/api/jobsearch/v5/search'); // path upgraded
+  assert.equal(u.searchParams.get('siteKey'), 'HK-Main');
+  assert.equal(u.searchParams.get('keywords'), 'business intelligence');
+  assert.equal(u.searchParams.get('solrFields'), null); // v4-only projection param is gone
+});
+
+test('jobstreet: parseJobstreetItem reads the v5 item shape', () => {
+  const j = parseJobstreetItem(
+    {
+      id: '92996157',
+      title: 'Facility Engineer',
+      advertiser: { description: 'PT YOFC International Indonesia' },
+      companyName: 'YOFC International',
+      locations: [{ label: 'Karawang, West Java', countryCode: 'ID' }],
+      listingDate: '2026-06-29T02:53:00Z',
+      salaryLabel: 'IDR 10,000,000',
+    },
+    'https://hk.jobsdb.com', 'Fallback',
+  );
+  // URL is derived from the id — v5 ships no absolute job URL.
+  assert.equal(j.url, 'https://hk.jobsdb.com/id/job/92996157');
+  // advertiser.description wins over the shorter companyName.
+  assert.equal(j.company, 'PT YOFC International Indonesia');
+  assert.equal(j.location, 'Karawang, West Java');
+  assert.equal(j.salary, 'IDR 10,000,000');
+  assert.equal(j.date, '2026-06-29T02:53:00.000Z');
+  assert.equal(j.source, 'jobstreet');
+});
+
+test('jobstreet: a v5 item with no id yields no job (no URL to link to)', () => {
+  assert.equal(parseJobstreetItem({ title: 'Ghost' }, 'https://id.jobstreet.com', 'Acme'), null);
 });
 
 test('jobstreet: parseJobstreetItem resolves relative url + company fallback chain', () => {

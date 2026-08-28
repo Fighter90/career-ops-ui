@@ -2,6 +2,21 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.0] — 2026-08-28
+
+**Hinzugefügt — SEEK Hongkong (JobsDB), ein Nur-fällige-Filter für Follow-ups, und vertrauliche Arbeitgeber zeigen jetzt die vermittelnde Agentur.**
+
+### Hinzugefügt
+- **JobsDB Hongkong über die bestehende Jobstreet/SEEK-Quelle.** Hongkong läuft unter der Marke JobsDB, steht aber auf derselben SEEK-Plattform hinter demselben v5-Endpunkt und braucht daher keine eigene Quelle — nur `hk.jobsdb.com` in der Host-Allowlist und `siteKey: HK-Main`. Die Registry bleibt unverändert: **85 Quellen** (80 EN + 5 RU) und `ALL_ADAPTERS` **80** — das ist ein neuer MARKT auf einem bestehenden Adapter, kein neuer Adapter.
+- **Nur-fällige-Filter auf dem Kadenz-Board** (`#/modes/followup`). Eine neue Checkbox verengt das Board auf das, was *jetzt* zu tun ist. Die Fälligkeit wird aus der `urgency` gelesen, die das `followup-cadence.mjs` des übergeordneten Projekts bereits berechnet hat (`urgent` / `overdue`) — nie aus dem Tracker-`status`, der `applied`/`responded`/`interview` lautet und auf nichts passen würde. Ist nichts fällig, benennt das Board das nächste geplante Follow-up statt einen leeren Zustand zu zeigen. Die Logik liegt im reinen Modul `public/js/lib/followup-view.js`, Spiegel des übergeordneten `followup-view.mjs`.
+- **Vertrauliche Arbeitgeber werden der vermittelnden Agentur zugeschrieben.** Eine Ausschreibung mit zurückgehaltenem Arbeitgeber wird im Tracker als `?` erfasst, der Recruiter steht in der Spalte `Via`. `#/tracker` zeigte ein blankes `?`, sodass mehrere vertrauliche Zeilen ununterscheidbar waren und der Logo-Resolver nichts zum Abgleichen hatte. Eine solche Zeile liest sich nun **„Vertraulich · über \<Agentur\>“**, löst ihr Logo über den Agenturnamen auf und ist über diesen Namen im Suchfeld auffindbar. Nur Darstellung — das kanonische Feld `company` wird nie mit dem Recruiter überschrieben. Neues reines Modul `public/js/lib/company-presentation.js`, Spiegel des übergeordneten `company-presentation.mjs`.
+
+### Behoben
+- **Jobstreet/SEEK rief einen abgekündigten Endpunkt auf.** Die Quelle zeigte weiterhin auf chalice-search v4 (`/api/chalice-search/v4/search`), das SEEK abgeschaltet hat; das übergeordnete Projekt migrierte auf `/api/jobsearch/v5/search`, web-ui folgte nie. Jetzt fragt jeder Jobstreet/SEEK-Eintrag v5 ab. Die v5-Item-Form wird nativ gelesen (Job-URL aus `id` gebaut, `locations[0].label`, `advertiser.description`, `salaryLabel`), der v4-eigene Projektionsparameter `solrFields` entfällt, und ein Eintrag, dessen `portals.yml` noch den toten v4-Pfad festnagelt, behält seinen Markt-Hostnamen, während der Pfad auf v5 neu gebaut wird — ohne Zutun der Nutzenden.
+
+### Hinweise
+- career-ops-1.30.0-Parität (HEAD des übergeordneten Projekts `8d64f65` → `6cc46a4`; dessen `VERSION` steht noch auf 1.30.0 — release-please hinkt seiner `main` hinterher). Nicht portiert, mit Gründen: **iCIMS-JSON-LD-Ortsergänzung** — die iCIMS-Quelle von web-ui hat überhaupt keinen `enrichDate()`-Hook (nur Listenseiten), es gibt also keinen Codepfad zu reparieren; **nicht-fataler CLI-stderr (#1974)** — der Runner von web-ui entscheidet den Fehlschlag allein am Exit-Code und hatte diese Heuristik nie; **Turbopack-Pfad-Tracing** — web-ui hat keinen Bundler; **`cv-sync-check`-Fixes** — schreibgeschützt und fail-soft weitergereicht; **Playwright-Sequenzierung in `scan.mjs`, Block-H-Antworten, updater/doctor/`update-system`-Guards, die rekursive Syntaxprüfung, das Go-Dashboard und die ergänzten `jd-skill-gap`/`verify-cv-facts`-Selbsttests** — reine CLI-Flächen, die web-ui nicht aufruft, oder Selbsttests ohne Verhaltensänderung. Testsuite: **2818 → 2837**.
+
 ## [1.226.0] — 2026-08-27
 
 **Hinzugefügt — zwei vietnamesische Jobquellen: ITviec und CareerViet.**

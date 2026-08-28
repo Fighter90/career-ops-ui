@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2818%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2837%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.226.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.226.0)
+[![release](https://img.shields.io/badge/release-v1.227.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.226.0** — **Два вьетнамских источника вакансий** — ITviec + CareerViet подключены к сканеру (85 источников · 80 адаптеров) — паритет с родителем 1.30.0. **2818 тестов.**
+> **🆕 Последний релиз — v1.227.0** — **Гонконг и точнее фоллоу-апы** — JobsDB Гонконг присоединяется к Jobstreet/SEEK (теперь на API v5), на доске каденции появился фильтр «только срочные», а нераскрытые работодатели показывают агентство-посредника — паритет с 1.30.0 родительского проекта. **2837 тестов.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

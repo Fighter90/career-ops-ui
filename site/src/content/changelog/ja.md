@@ -9,6 +9,21 @@
 ---
 
 
+## [1.227.0] — 2026-08-28
+
+**追加 — SEEK 香港(JobsDB)、フォローアップの要対応のみ絞り込み、そして非公開の雇用主が仲介エージェンシーを表示。**
+
+### 追加
+- **既存の Jobstreet/SEEK ソース経由の JobsDB 香港。** 香港は JobsDB ブランドで運営されていますが、同じ v5 エンドポイントの背後にある同一の SEEK プラットフォーム上にあるため、別ソースは不要です —— ホスト許可リストへの `hk.jobsdb.com` と `siteKey: HK-Main` だけで足ります。レジストリは据え置きで **85 ソース**(EN 80 + RU 5)、`ALL_ADAPTERS` **80** —— 既存アダプターに加わった新しい市場であり、新規アダプターではありません。
+- **ケイデンスボードの要対応のみ絞り込み**(`#/modes/followup`)。新しいチェックボックスで、*いま*対応が必要なものだけに絞れます。要対応かどうかは親プロジェクトの `followup-cadence.mjs` が算出済みの `urgency`(`urgent` / `overdue`)から読み取り、トラッカーの `status` は決して使いません —— そちらは `applied`/`responded`/`interview` であり、何にも一致しないためです。要対応が無いときは、空表示のかわりに直近の予定フォローアップを提示します。ロジックは親の `followup-view.mjs` を写した純粋モジュール `public/js/lib/followup-view.js` にあります。
+- **非公開の雇用主は、仲介したエージェンシーとして表示されます。** 雇用主が伏せられた求人はトラッカーに `?` として記録され、リクルーターは `Via` 列に入ります。`#/tracker` は素の `?` を出すだけだったため、複数の非公開行を区別できず、ロゴ解決も手がかりを持てませんでした。今後そうした行は **「非公開 · \<エージェンシー\> 経由」** と表示され、ロゴはエージェンシー名から解決され、検索欄でもその名前で見つかります。表示のみの変更です —— 正本の `company` フィールドをリクルーターで上書きすることはありません。親の `company-presentation.mjs` を写した新しい純粋モジュール `public/js/lib/company-presentation.js`。
+
+### 修正
+- **Jobstreet/SEEK が廃止済みエンドポイントを呼んでいました。** ソースは SEEK が終了した chalice-search v4(`/api/chalice-search/v4/search`)を指したままでした。親は `/api/jobsearch/v5/search` へ移行済みでしたが、web-ui は追随していませんでした。今後すべての Jobstreet/SEEK エントリが v5 を照会します。v5 のアイテム形状をそのまま読み(`id` から URL を生成、`locations[0].label`、`advertiser.description`、`salaryLabel`)、v4 専用の射影パラメータ `solrFields` は削除、`portals.yml` が死んだ v4 パスを指したままのエントリも、市場のホスト名は保持しつつパスだけ v5 に組み直されます —— 利用者の編集は不要です。
+
+### 備考
+- career-ops 1.30.0 パリティ(親 HEAD `8d64f65` → `6cc46a4`; 親の `VERSION` はまだ 1.30.0 —— release-please が `main` より遅れています)。未移植とその理由: **iCIMS の JSON-LD 位置補完** —— web-ui の iCIMS ソースには `enrichDate()` 詳細ページフックが存在せず(一覧ページのみ)、直すべき経路が無い; **非致命的な CLI stderr(#1974)** —— web-ui のランナーは終了コードのみで失敗を判定し、そのヒューリスティックを持たない; **Turbopack のパストレース** —— web-ui にバンドラーは無い; **`cv-sync-check` の修正** —— 読み取り専用のフェイルソフト中継; **`scan.mjs` の Playwright 逐次化、Block H 回答、updater/doctor/`update-system` のガード、再帰的な構文チェック、Go 製ダッシュボード、`jd-skill-gap`/`verify-cv-facts` の自己テスト追加** —— web-ui が呼ばない CLI 専用の面、または挙動を変えない自己テスト。テストスイート: **2818 → 2837**。
+
 ## [1.226.0] — 2026-08-27
 
 **追加 — ベトナムの求人ソース2つ: ITviec と CareerViet。**

@@ -8,6 +8,21 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.227.0] — 2026-08-28
+
+**Tilføjet — SEEK Hongkong (JobsDB), et kun-forfaldne-filter på opfølgninger, og fortrolige arbejdsgivere viser nu det bureau, der formidlede dem.**
+
+### Tilføjet
+- **JobsDB Hongkong via den eksisterende Jobstreet/SEEK-kilde.** Hongkong kører under JobsDB-brandet, men står på den samme SEEK-platform bag det samme v5-endpoint, så den behøver ingen selvstændig kilde — kun `hk.jobsdb.com` på værtslisten og `siteKey: HK-Main`. Registret er uændret: **85 kilder** (80 EN + 5 RU) og `ALL_ADAPTERS` **80** — dette er et nyt MARKED på en eksisterende adapter, ikke en ny adapter.
+- **Kun-forfaldne-filter på kadencetavlen** (`#/modes/followup`). Et nyt afkrydsningsfelt indsnævrer tavlen til det, der kan handles på *lige nu*. Forfald læses fra den `urgency`, moderprojektets `followup-cadence.mjs` allerede har beregnet (`urgent` / `overdue`) — aldrig fra trackerens `status`, som er `applied`/`responded`/`interview` og ikke ville matche noget. Når intet er forfaldent, navngiver tavlen den nærmeste planlagte opfølgning i stedet for at vise en tom tilstand. Logikken bor i det rene modul `public/js/lib/followup-view.js`, spejl af moderprojektets `followup-view.mjs`.
+- **Fortrolige arbejdsgivere tilskrives det bureau, der formidlede dem.** Et opslag med tilbageholdt arbejdsgiver registreres som `?` i trackeren, og rekruttereren står i `Via`-kolonnen. `#/tracker` viste et bart `?`, så flere fortrolige rækker var umulige at skelne, og logo-resolveren havde intet at matche på. En sådan række læses nu **“Fortrolig · via \<bureau\>”**, henter sit logo fra bureaunavnet og kan findes på det navn i søgefeltet. Kun præsentation — det kanoniske `company`-felt overskrives aldrig med rekruttereren. Nyt rent modul `public/js/lib/company-presentation.js`, spejl af moderprojektets `company-presentation.mjs`.
+
+### Rettet
+- **Jobstreet/SEEK kaldte et udgået endpoint.** Kilden pegede stadig på chalice-search v4 (`/api/chalice-search/v4/search`), som SEEK har pensioneret; moderprojektet migrerede til `/api/jobsearch/v5/search`, og web-ui fulgte aldrig med. Nu forespørger enhver Jobstreet/SEEK-post v5. v5-elementets form læses indfødt (job-URL bygget ud fra `id`, `locations[0].label`, `advertiser.description`, `salaryLabel`), den v4-specifikke projektionsparameter `solrFields` er væk, og en post, hvis `portals.yml` stadig fastholder den døde v4-sti, beholder sit markedsværtsnavn, mens stien genopbygges på v5 — uden brugerredigering.
+
+### Noter
+- career-ops 1.30.0-paritet (moderprojektets HEAD `8d64f65` → `6cc46a4`; dets `VERSION` viser stadig 1.30.0 — release-please halter efter `main`). Ikke porteret, med begrundelser: **iCIMS JSON-LD-stedudfyldning** — web-ui's iCIMS-kilde har slet ingen `enrichDate()`-hook (kun listesider), så der er ingen kodesti at rette; **ikke-fatal CLI-stderr (#1974)** — web-ui's runner afgør fejl alene ud fra exit-koden og har aldrig haft den heuristik; **Turbopack-stisporing** — web-ui har ingen bundler; **`cv-sync-check`-rettelser** — videresendes skrivebeskyttet og fail-soft; **Playwright-sekvensering i `scan.mjs`, Block H-svar, updater/doctor/`update-system`-værn, den rekursive syntakskontrol, Go-dashboardet og de tilføjede `jd-skill-gap`/`verify-cv-facts`-selvtests** — rene CLI-flader, som web-ui ikke kalder, eller selvtests uden adfærdsændring. Testsuite: **2818 → 2837**.
+
 ## [1.226.0] — 2026-08-27
 
 **Tilføjet — to vietnamesiske jobkilder: ITviec og CareerViet.**
