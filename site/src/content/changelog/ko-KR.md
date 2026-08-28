@@ -9,6 +9,21 @@
 ---
 
 
+## [1.227.0] — 2026-08-28
+
+**추가 — SEEK 홍콩(JobsDB), 팔로업 기한 도래만 보기, 그리고 비공개 고용주가 이를 중개한 에이전시를 표시합니다.**
+
+### 추가
+- **기존 Jobstreet/SEEK 소스를 통한 JobsDB 홍콩.** 홍콩은 JobsDB 브랜드로 운영되지만 같은 v5 엔드포인트 뒤의 동일한 SEEK 플랫폼 위에 있어 별도 소스가 필요 없습니다 — 호스트 허용 목록의 `hk.jobsdb.com`과 `siteKey: HK-Main`이면 충분합니다. 레지스트리는 그대로 **85개 소스**(EN 80 + RU 5), `ALL_ADAPTERS` **80** — 기존 어댑터에 추가된 새 시장이지 새 어댑터가 아닙니다.
+- **케이던스 보드의 기한 도래만 보기**(`#/modes/followup`). 새 체크박스가 보드를 *지금* 조치가 필요한 항목으로 좁힙니다. 기한 도래 여부는 상위 프로젝트의 `followup-cadence.mjs`가 이미 계산한 `urgency`(`urgent` / `overdue`)에서 읽으며, 트래커의 `status`는 절대 쓰지 않습니다 — 그것은 `applied`/`responded`/`interview`라 아무것도 일치하지 않습니다. 기한 도래 항목이 없으면 보드는 빈 화면 대신 가장 가까운 예정 팔로업을 알려 줍니다. 로직은 상위의 `followup-view.mjs`를 옮긴 순수 모듈 `public/js/lib/followup-view.js`에 있습니다.
+- **비공개 고용주는 이를 중개한 에이전시로 표시됩니다.** 고용주가 비공개인 공고는 트래커에 `?`로 기록되고 리크루터는 `Via` 열에 들어갑니다. `#/tracker`는 맨 `?`만 보여 주어 여러 비공개 행을 구분할 수 없었고 로고 리졸버도 맞출 대상이 없었습니다. 이제 그런 행은 **“비공개 · \<에이전시\> 경유”**로 표시되고, 로고를 에이전시 이름으로 해석하며, 검색창에서 그 이름으로 찾을 수 있습니다. 표시 전용입니다 — 정본 `company` 필드는 리크루터로 덮어쓰지 않습니다. 상위의 `company-presentation.mjs`를 옮긴 새 순수 모듈 `public/js/lib/company-presentation.js`.
+
+### 수정
+- **Jobstreet/SEEK가 폐기된 엔드포인트를 호출하고 있었습니다.** 소스가 여전히 SEEK가 중단한 chalice-search v4(`/api/chalice-search/v4/search`)를 가리키고 있었습니다. 상위 프로젝트는 `/api/jobsearch/v5/search`로 이전했지만 web-ui는 따라가지 않았습니다. 이제 모든 Jobstreet/SEEK 항목이 v5를 조회합니다. v5 항목 구조를 기본으로 읽고(`id`로 URL 생성, `locations[0].label`, `advertiser.description`, `salaryLabel`), v4 전용 `solrFields` 프로젝션 매개변수는 사라졌으며, `portals.yml`이 아직 죽은 v4 경로를 고정한 항목도 시장 호스트명은 유지한 채 경로만 v5로 재구성됩니다 — 사용자가 손댈 필요 없습니다.
+
+### 참고
+- career-ops 1.30.0 동등성(상위 HEAD `8d64f65` → `6cc46a4`; 상위의 `VERSION`은 아직 1.30.0 — release-please가 `main`보다 뒤처집니다). 미이식 및 사유: **iCIMS JSON-LD 위치 채우기** — web-ui의 iCIMS 소스에는 `enrichDate()` 상세 페이지 훅이 아예 없어(목록 페이지 전용) 고칠 경로가 없음; **비치명적 CLI stderr(#1974)** — web-ui 러너는 종료 코드만으로 실패를 판정하며 그 휴리스틱이 없었음; **Turbopack 경로 추적** — web-ui에는 번들러가 없음; **`cv-sync-check` 수정** — 읽기 전용 fail-soft 중계; **`scan.mjs`의 Playwright 순차 실행, Block H 답변, updater/doctor/`update-system` 가드, 재귀 문법 검사, Go 대시보드, `jd-skill-gap`/`verify-cv-facts` 자체 테스트 추가** — web-ui가 호출하지 않는 CLI 전용 표면이거나 동작 변화가 없는 자체 테스트. 테스트: **2818 → 2837**.
+
 ## [1.226.0] — 2026-08-27
 
 **추가 — 베트남 채용 소스 2종: ITviec와 CareerViet.**

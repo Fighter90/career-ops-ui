@@ -97,7 +97,12 @@ Router.register('tracker', async () => {
       if (filterScore.value === '3' && (r.scoreNum ?? -1) < 3) continue;
       if (filterScore.value === '0' && (r.scoreNum ?? 0) >= 3) continue;
       const q = filterText.value.toLowerCase().trim();
-      if (q && !((r.company + ' ' + r.role).toLowerCase().includes(q))) continue;
+      // Search the PRESENTED identity too, so a confidential row is findable by
+      // the agency in its Via column and not only by the literal '?'.
+      const hay = window.CompanyPresentation
+        ? window.CompanyPresentation.companySearchText(r)
+        : (r.company + ' ' + r.role);
+      if (q && !hay.toLowerCase().includes(q)) continue;
       out.push(r);
     }
     return out;
@@ -187,10 +192,22 @@ Router.register('tracker', async () => {
     // domain, derived from the name) when the user has enabled logos; otherwise
     // just the name. CompanyLogo.badge returns null when the pref is off, so
     // this is zero extra requests by default (same contract as #/scan).
-    const logo = window.CompanyLogo ? window.CompanyLogo.badge(r.url, r.company) : null;
+    // v1.227.0 — a confidential posting stores '?' as the employer and names the
+    // agency in Via. Show that attribution instead of a bare '?', and resolve the
+    // logo from the agency name (no domain heuristic can match '?'). Presentation
+    // only — r.company itself is never rewritten.
+    const pres = window.CompanyPresentation
+      ? window.CompanyPresentation.companyPresentation(r)
+      : { label: r.company || '', logoName: r.company || '', confidential: false, via: '' };
+    const companyLabel = !pres.confidential
+      ? (pres.label || '—')
+      : (pres.via
+        ? t('track.confidentialVia', 'Confidential · via {via}').replace('{via}', pres.via)
+        : t('track.confidential', 'Confidential employer'));
+    const logo = window.CompanyLogo ? window.CompanyLogo.badge(r.url, pres.logoName) : null;
     const companyCell = logo
-      ? c('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } }, [logo, c('span', null, r.company || '—')])
-      : (r.company || '');
+      ? c('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } }, [logo, c('span', null, companyLabel)])
+      : companyLabel;
     return c('tr', null, [
       c('td', null, r.num || ''),
       c('td', null, r.date || ''),

@@ -2,6 +2,21 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.0] — 2026-08-28
+
+**Eklendi — SEEK Hong Kong (JobsDB), takipler için yalnızca-zamanı-gelenler süzgeci ve gizli işverenlerin kendilerini sunan ajansı göstermesi.**
+
+### Eklendi
+- **Mevcut Jobstreet/SEEK kaynağı üzerinden JobsDB Hong Kong.** Hong Kong JobsDB markasıyla işliyor ama aynı v5 uç noktasının arkasındaki aynı SEEK platformunda duruyor; bu yüzden ayrı bir kaynağa gerek yok — host beyaz listesine `hk.jobsdb.com` ve `siteKey: HK-Main` yeterli. Kayıt defteri değişmiyor: **85 kaynak** (80 EN + 5 RU) ve `ALL_ADAPTERS` **80** — bu, mevcut bir adaptör üzerindeki yeni bir PAZAR, yeni bir adaptör değil.
+- **Kadans panosunda yalnızca-zamanı-gelenler süzgeci** (`#/modes/followup`). Yeni bir onay kutusu panoyu *şu anda* aksiyon alınabilir olanlarla sınırlıyor. Zamanın gelip gelmediği, üst projenin `followup-cadence.mjs` dosyasının zaten hesapladığı `urgency` alanından okunuyor (`urgent` / `overdue`) — asla izleyicinin `status` alanından değil; o alan `applied`/`responded`/`interview` değerlerini taşır ve hiçbir şeyle eşleşmezdi. Zamanı gelen bir şey yoksa pano, boş bir ekran göstermek yerine en yakın planlanmış takibi bildiriyor. Mantık, üst projedeki `followup-view.mjs` dosyasının aynası olan saf `public/js/lib/followup-view.js` modülünde yaşıyor.
+- **Gizli işverenler, kendilerini sunan ajansa atfediliyor.** İşvereni saklanan bir ilan izleyicide `?` olarak kaydedilir ve işe alım uzmanı `Via` sütununa yazılır. `#/tracker` çıplak bir `?` gösteriyordu; bu yüzden birden çok gizli satır birbirinden ayırt edilemiyor, logo çözücü de eşleştirecek bir şey bulamıyordu. Böyle bir satır artık **“Gizli · \<ajans\> aracılığıyla”** biçiminde okunuyor, logosunu ajans adından çözüyor ve arama kutusunda o adla bulunabiliyor. Yalnızca sunum — kanonik `company` alanının üzerine asla işe alım uzmanı yazılmıyor. Üst projedeki `company-presentation.mjs` dosyasının aynası olan yeni saf `public/js/lib/company-presentation.js` modülü.
+
+### Düzeltildi
+- **Jobstreet/SEEK kullanımdan kaldırılmış bir uç noktayı çağırıyordu.** Kaynak hâlâ SEEK'in emekliye ayırdığı chalice-search v4'e (`/api/chalice-search/v4/search`) işaret ediyordu; üst proje `/api/jobsearch/v5/search` adresine geçmiş, web-ui ise hiç takip etmemişti. Artık her Jobstreet/SEEK girdisi v5'i sorguluyor. v5 öğe biçimi doğal olarak okunuyor (iş URL'si `id` üzerinden kuruluyor, `locations[0].label`, `advertiser.description`, `salaryLabel`), v4'e özgü `solrFields` izdüşüm parametresi kalktı ve `portals.yml` dosyasında hâlâ ölü v4 yolunu sabitleyen bir girdi, pazar ana makine adını korurken yolu v5 üzerinde yeniden kuruluyor — kullanıcının düzenleme yapmasına gerek yok.
+
+### Notlar
+- career-ops 1.30.0 eşitliği (üst projenin HEAD'i `8d64f65` → `6cc46a4`; `VERSION` dosyası hâlâ 1.30.0 diyor — release-please `main`'in gerisinde). Aktarılmayanlar ve gerekçeleri: **iCIMS JSON-LD konum doldurma** — web-ui'nin iCIMS kaynağında hiç `enrichDate()` kancası yok (yalnızca liste sayfaları), dolayısıyla düzeltilecek bir kod yolu da yok; **ölümcül olmayan CLI stderr (#1974)** — web-ui'nin çalıştırıcısı başarısızlığa yalnızca çıkış koduna bakarak karar verir ve o buluşsal yönteme hiç sahip olmadı; **Turbopack yol izleme** — web-ui'de paketleyici yok; **`cv-sync-check` düzeltmeleri** — salt okunur ve fail-soft biçimde aktarılıyor; **`scan.mjs` içinde Playwright sıralaması, Block H yanıtları, updater/doctor/`update-system` korumaları, özyinelemeli sözdizimi denetimi, Go panosu ve `jd-skill-gap`/`verify-cv-facts` öz-testlerine yapılan eklemeler** — web-ui'nin çağırmadığı yalnızca-CLI yüzeyleri veya davranış değiştirmeyen öz-testler. Test paketi: **2818 → 2837**.
+
 ## [1.226.0] — 2026-08-27
 
 **Eklendi — iki Vietnam iş kaynağı: ITviec ve CareerViet.**

@@ -2,6 +2,21 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.0] — 2026-08-28
+
+**Aggiunto — SEEK Hong Kong (JobsDB), un filtro solo-in-scadenza sui follow-up e i datori di lavoro riservati mostrano l'agenzia che li ha presentati.**
+
+### Aggiunto
+- **JobsDB Hong Kong tramite la sorgente Jobstreet/SEEK esistente.** Hong Kong opera con il marchio JobsDB ma poggia sulla stessa piattaforma SEEK dietro lo stesso endpoint v5, quindi non serve una sorgente separata — bastano `hk.jobsdb.com` nella allowlist degli host e `siteKey: HK-Main`. Il registro resta invariato: **85 sorgenti** (80 EN + 5 RU) e `ALL_ADAPTERS` **80** — è un nuovo MERCATO su un adapter esistente, non un adapter nuovo.
+- **Filtro solo-in-scadenza sulla bacheca della cadenza** (`#/modes/followup`). Una nuova casella restringe la bacheca a ciò su cui agire *adesso*. La scadenza si legge dall'`urgency` già calcolata dal `followup-cadence.mjs` del progetto padre (`urgent` / `overdue`), mai dallo `status` del tracker, che vale `applied`/`responded`/`interview` e non combacerebbe con nulla. Quando non c'è nulla in scadenza, la bacheca indica il follow-up programmato più vicino invece di mostrare un vuoto. La logica vive nel modulo puro `public/js/lib/followup-view.js`, specchio del `followup-view.mjs` del padre.
+- **I datori di lavoro riservati vengono attribuiti all'agenzia che li ha presentati.** Un annuncio con datore di lavoro celato viene registrato come `?` nel tracker, con il recruiter nella colonna `Via`. `#/tracker` mostrava un `?` nudo, così più righe riservate erano indistinguibili e il risolutore dei loghi non aveva nulla su cui agganciarsi. Ora una riga simile si legge **«Riservato · tramite \<agenzia\>»**, risolve il logo dal nome dell'agenzia ed è rintracciabile con quel nome nella ricerca. Solo presentazione — il campo canonico `company` non viene mai sovrascritto con il recruiter. Nuovo modulo puro `public/js/lib/company-presentation.js`, specchio del `company-presentation.mjs` del padre.
+
+### Corretto
+- **Jobstreet/SEEK chiamava un endpoint deprecato.** La sorgente puntava ancora a chalice-search v4 (`/api/chalice-search/v4/search`), che SEEK ha ritirato; il padre è migrato a `/api/jobsearch/v5/search` e web-ui non ha mai seguito. Ora ogni voce Jobstreet/SEEK interroga v5. La forma dell'item v5 è letta nativamente (URL costruita da `id`, `locations[0].label`, `advertiser.description`, `salaryLabel`), il parametro di proiezione `solrFields` proprio della v4 sparisce, e una voce il cui `portals.yml` fissi ancora il percorso v4 morto conserva l'hostname del suo mercato mentre il percorso viene ricostruito su v5 — senza modifiche da parte dell'utente.
+
+### Note
+- Parità con career-ops 1.30.0 (HEAD del padre `8d64f65` → `6cc46a4`; il suo `VERSION` segna ancora 1.30.0 — release-please è indietro rispetto a `main`). Non portato, con motivazioni: **riempimento della località da JSON-LD in iCIMS** — la sorgente iCIMS di web-ui non ha alcun hook `enrichDate()` (solo pagine di elenco), quindi non c'è alcun percorso da correggere; **stderr CLI non fatale (#1974)** — il runner di web-ui decide il fallimento solo dal codice di uscita e non ha mai avuto quell'euristica; **tracciamento dei percorsi Turbopack** — web-ui non ha bundler; **correzioni `cv-sync-check`** — rilanciate in sola lettura e fail-soft; **sequenzializzazione di Playwright in `scan.mjs`, risposte Block H, guardie updater/doctor/`update-system`, il controllo di sintassi ricorsivo, la dashboard in Go e le auto-verifiche aggiunte a `jd-skill-gap`/`verify-cv-facts`** — superfici solo-CLI che web-ui non invoca, o auto-test senza cambi di comportamento. Suite di test: **2818 → 2837**.
+
 ## [1.226.0] — 2026-08-27
 
 **Aggiunto — due sorgenti di lavoro vietnamite: ITviec e CareerViet.**

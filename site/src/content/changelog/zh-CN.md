@@ -9,6 +9,21 @@
 ---
 
 
+## [1.227.0] — 2026-08-28
+
+**新增 —— SEEK 香港（JobsDB）、跟进的仅待办筛选，以及保密雇主显示代为投递的中介机构。**
+
+### 新增
+- **通过既有 Jobstreet/SEEK 源接入 JobsDB 香港。** 香港以 JobsDB 品牌运营，但运行在同一 v5 端点背后的同一 SEEK 平台上，因此无需单独的源——只需在主机白名单中加入 `hk.jobsdb.com` 并设置 `siteKey: HK-Main`。注册表保持不变：**85 个源**（80 EN + 5 RU），`ALL_ADAPTERS` **80**——这是既有适配器上的新市场，而非新适配器。
+- **节奏看板的仅待办筛选**（`#/modes/followup`）。新增复选框把看板收窄到*此刻*需要行动的条目。是否待办取自上游 `followup-cadence.mjs` 已算出的 `urgency`（`urgent` / `overdue`），绝不取自追踪表的 `status`——后者是 `applied`/`responded`/`interview`，不会匹配到任何内容。当没有待办时，看板会指出最近的一条已排期跟进，而不是显示空白。逻辑位于纯模块 `public/js/lib/followup-view.js`，对应上游的 `followup-view.mjs`。
+- **保密雇主归因到代为投递的中介机构。** 隐去雇主的职位在追踪表中记为 `?`，招聘方则写入 `Via` 列。`#/tracker` 此前只显示一个孤零零的 `?`，多条保密记录因此无法区分，徽标解析也无从匹配。现在这类记录显示为 **“保密 · 经由 \<中介机构\>”**，徽标按中介机构名称解析，并可在搜索框中用该名称找到。这只是呈现层改动——规范字段 `company` 绝不会被招聘方覆盖。新增纯模块 `public/js/lib/company-presentation.js`，对应上游的 `company-presentation.mjs`。
+
+### 修复
+- **Jobstreet/SEEK 此前在调用已废弃的端点。** 该源仍指向 SEEK 已下线的 chalice-search v4（`/api/chalice-search/v4/search`）；上游已迁移到 `/api/jobsearch/v5/search`，而 web-ui 未跟进。现在所有 Jobstreet/SEEK 条目都查询 v5。v5 的条目结构被原生读取（由 `id` 构建职位 URL、`locations[0].label`、`advertiser.description`、`salaryLabel`），v4 专有的投影参数 `solrFields` 已移除；若某条目的 `portals.yml` 仍固定着失效的 v4 路径，其市场主机名会保留，路径则在 v5 上重建——无需用户改动。
+
+### 说明
+- 与 career-ops 1.30.0 对齐（上游 HEAD `8d64f65` → `6cc46a4`；其 `VERSION` 仍为 1.30.0——release-please 落后于 `main`）。未移植及理由：**iCIMS 的 JSON-LD 地点回填**——web-ui 的 iCIMS 源根本没有 `enrichDate()` 详情页钩子（仅列表页），无处可改；**非致命 CLI stderr（#1974）**——web-ui 的执行器仅凭退出码判定失败，从未使用该启发式；**Turbopack 路径追踪**——web-ui 没有打包器；**`cv-sync-check` 修复**——以只读、fail-soft 方式中继；**`scan.mjs` 中 Playwright 串行化、Block H 答案、updater/doctor/`update-system` 守卫、递归语法检查、Go 版仪表盘，以及 `jd-skill-gap`/`verify-cv-facts` 的自测新增**——web-ui 不会调用的纯 CLI 面，或不改变行为的自测。测试套件：**2818 → 2837**。
+
 ## [1.226.0] — 2026-08-27
 
 **新增 —— 两个越南招聘来源: ITviec 与 CareerViet。**

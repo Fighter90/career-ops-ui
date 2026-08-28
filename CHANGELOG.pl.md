@@ -9,6 +9,21 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.227.0] — 2026-08-28
+
+**Dodano — SEEK Hongkong (JobsDB), filtr tylko wymagających dla follow-upów oraz poufni pracodawcy pokazujący agencję, która ich reprezentowała.**
+
+### Dodano
+- **JobsDB Hongkong przez istniejące źródło Jobstreet/SEEK.** Hongkong działa pod marką JobsDB, ale stoi na tej samej platformie SEEK za tym samym punktem końcowym v5, więc nie potrzebuje osobnego źródła — wystarczy `hk.jobsdb.com` na liście dozwolonych hostów i `siteKey: HK-Main`. Rejestr bez zmian: **85 źródeł** (80 EN + 5 RU), `ALL_ADAPTERS` **80** — to nowy RYNEK na istniejącym adapterze, a nie nowy adapter.
+- **Filtr tylko wymagających na tablicy kadencji** (`#/modes/followup`). Nowy checkbox zawęża tablicę do tego, co wymaga działania *teraz*. Termin czyta się z `urgency` wyliczonej już przez rodzicielski `followup-cadence.mjs` (`urgent` / `overdue`), nigdy z `status` trackera — tam są `applied`/`responded`/`interview`, co nie dopasowałoby się do niczego. Gdy nic nie jest wymagalne, tablica wskazuje najbliższy zaplanowany follow-up zamiast pustego ekranu. Logika mieszka w czystym module `public/js/lib/followup-view.js`, lustrze rodzicielskiego `followup-view.mjs`.
+- **Poufni pracodawcy są przypisywani agencji, która ich reprezentowała.** Ogłoszenie z ukrytym pracodawcą zapisuje się w trackerze jako `?`, a rekruter trafia do kolumny `Via`. `#/tracker` pokazywał gołe `?`, więc kilka poufnych wierszy było nie do odróżnienia, a resolver logo nie miał czego szukać. Taki wiersz czyta się teraz **„Poufny · przez \<agencja\>”**, logo rozwiązuje się po nazwie agencji, a wiersz da się znaleźć po tej nazwie w wyszukiwarce. Wyłącznie prezentacja — kanoniczne pole `company` nigdy nie jest nadpisywane rekruterem. Nowy czysty moduł `public/js/lib/company-presentation.js`, lustro rodzicielskiego `company-presentation.mjs`.
+
+### Naprawiono
+- **Jobstreet/SEEK wołał wycofany punkt końcowy.** Źródło wciąż wskazywało chalice-search v4 (`/api/chalice-search/v4/search`), wyłączony przez SEEK; rodzic przeszedł na `/api/jobsearch/v5/search`, a web-ui nigdy za nim nie poszedł. Teraz każdy wpis Jobstreet/SEEK odpytuje v5. Kształt elementu v5 czytany jest natywnie (URL budowany z `id`, `locations[0].label`, `advertiser.description`, `salaryLabel`), parametr projekcji `solrFields` z v4 znika, a wpis, którego `portals.yml` wciąż przypina martwą ścieżkę v4, zachowuje hosta swojego rynku, podczas gdy ścieżka jest przebudowywana na v5 — bez edycji ze strony użytkownika.
+
+### Uwagi
+- Parytet z career-ops 1.30.0 (HEAD rodzica `8d64f65` → `6cc46a4`; jego `VERSION` wciąż wskazuje 1.30.0 — release-please jest w tyle za `main`). Nieprzeniesione, z uzasadnieniem: **uzupełnianie lokalizacji z JSON-LD w iCIMS** — źródło iCIMS w web-ui nie ma żadnego haka `enrichDate()` (tylko strony listy), więc nie ma czego naprawiać; **niekrytyczny stderr CLI (#1974)** — runner web-ui rozstrzyga porażkę wyłącznie kodem wyjścia i nigdy nie miał tej heurystyki; **śledzenie ścieżek Turbopack** — web-ui nie ma bundlera; **poprawki `cv-sync-check`** — przekazywane tylko do odczytu i fail-soft; **sekwencyjny Playwright w `scan.mjs`, odpowiedzi Block H, zabezpieczenia updater/doctor/`update-system`, rekurencyjna kontrola składni, dashboard w Go oraz dodane autotesty `jd-skill-gap`/`verify-cv-facts`** — powierzchnie wyłącznie CLI, w które web-ui nie wchodzi, albo autotesty bez zmiany zachowania. Testy: **2818 → 2837**.
+
 ## [1.226.0] — 2026-08-27
 
 **Dodano — dwa wietnamskie źródła ofert: ITviec i CareerViet.**

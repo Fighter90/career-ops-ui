@@ -11,6 +11,21 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.227.0] — 2026-08-28
+
+**Ajouté — SEEK Hong Kong (JobsDB), un filtre « à traiter uniquement » sur les relances, et les employeurs confidentiels affichent l'agence qui les a présentés.**
+
+### Ajouté
+- **JobsDB Hong Kong via la source Jobstreet/SEEK existante.** Hong Kong opère sous la marque JobsDB mais repose sur la même plateforme SEEK derrière le même point d'accès v5 : aucune source distincte n'est nécessaire — il suffit de `hk.jobsdb.com` dans la liste d'hôtes autorisés et de `siteKey: HK-Main`. Le registre est inchangé : **85 sources** (80 EN + 5 RU) et `ALL_ADAPTERS` **80** — il s'agit d'un nouveau MARCHÉ sur un adaptateur existant, pas d'un nouvel adaptateur.
+- **Filtre « à traiter uniquement » sur le tableau de cadence** (`#/modes/followup`). Une nouvelle case réduit le tableau à ce qui est actionnable *maintenant*. L'échéance est lue depuis l'`urgency` déjà calculée par le `followup-cadence.mjs` du projet parent (`urgent` / `overdue`), jamais depuis le `status` du suivi, qui vaut `applied`/`responded`/`interview` et ne correspondrait à rien. Quand rien n'est dû, le tableau nomme la relance planifiée la plus proche au lieu d'afficher un vide. La logique vit dans le module pur `public/js/lib/followup-view.js`, miroir du `followup-view.mjs` parent.
+- **Les employeurs confidentiels sont attribués à l'agence qui les a présentés.** Une offre dont l'employeur est masqué est enregistrée `?` dans le suivi, le recruteur allant dans la colonne `Via`. `#/tracker` affichait un `?` nu : plusieurs lignes confidentielles devenaient indiscernables et le résolveur de logos n'avait rien à chercher. Une telle ligne se lit désormais **« Confidentiel · via \<agence\> »**, résout son logo depuis le nom de l'agence, et se retrouve par ce nom dans la recherche. Présentation uniquement — le champ canonique `company` n'est jamais écrasé par le recruteur. Nouveau module pur `public/js/lib/company-presentation.js`, miroir du `company-presentation.mjs` parent.
+
+### Corrigé
+- **Jobstreet/SEEK appelait un point d'accès obsolète.** La source pointait encore vers chalice-search v4 (`/api/chalice-search/v4/search`), retiré par SEEK ; le parent a migré vers `/api/jobsearch/v5/search` et web-ui n'a jamais suivi. Toute entrée Jobstreet/SEEK interroge désormais v5. La forme des éléments v5 est lue nativement (URL construite depuis `id`, `locations[0].label`, `advertiser.description`, `salaryLabel`), le paramètre de projection `solrFields` propre à v4 disparaît, et une entrée dont le `portals.yml` fixe encore le chemin v4 mort conserve son hôte de marché tandis que le chemin est reconstruit sur v5 — sans intervention de l'utilisateur.
+
+### Notes
+- Parité career-ops 1.30.0 (HEAD parent `8d64f65` → `6cc46a4` ; son `VERSION` indique encore 1.30.0 — release-please est en retard sur `main`). Non porté, avec raisons : **remplissage de lieu JSON-LD iCIMS** — la source iCIMS de web-ui n'a aucun hook `enrichDate()` (pages de liste uniquement), il n'y a donc rien à corriger ; **stderr CLI non fatal (#1974)** — le runner de web-ui décide de l'échec au seul code de sortie et n'a jamais eu cette heuristique ; **traçage de chemins Turbopack** — web-ui n'a pas de bundler ; **correctifs `cv-sync-check`** — relayés en lecture seule et fail-soft ; **séquencement Playwright dans `scan.mjs`, réponses Block H, garde-fous updater/doctor/`update-system`, contrôle de syntaxe récursif, tableau de bord Go et ajouts d'auto-tests `jd-skill-gap`/`verify-cv-facts`** — surfaces CLI que web-ui n'invoque pas, ou auto-tests sans changement de comportement. Tests : **2818 → 2837**.
+
 ## [1.226.0] — 2026-08-27
 
 **Ajouté — deux sources d'emploi vietnamiennes : ITviec et CareerViet.**
