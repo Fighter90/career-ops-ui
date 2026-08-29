@@ -269,6 +269,7 @@ npm start
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** —— 对 `portals.yml::tracked_companies` 中所有匹配 ATS 模式的公司调用公开 boards-api。预设清单覆盖 Stripe、GitLab、Vercel、Cloudflare、Datadog、Discord、Elastic、Grafana Labs、CockroachDB、Fastly、Twilio、Coinbase、Reddit、Robinhood、Affirm、Lyft、Linear、Supabase、PostHog、Ramp、Modal Labs、Railway、Browserbase、JetBrains —— 可自由增减。
 - **RSS 招聘板** —— 支持任意提供 RSS/Atom Feed 的招聘板(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 等)。只需在 `portals.yml` 中添加 `provider: rss` 与 feed URL,无需修改代码。
 - **聚合招聘板(v1.75.0)** —— 在按公司的 ATS 之外,新增七个全板块 / 配置驱动来源:**RemoteOK / Remotive / Working Nomads**(全板块远程订阅源,用 `provider: remoteok|remotive|workingnomads` 选择)以及 **IBM / Arbeitsagentur / Glints / Jobstreet · SEEK**(配置驱动,各自读取每条目的 `<provider>:` 块)。可复制粘贴的 `tracked_companies` 条目见 `docs/portals-examples.md`。它们与其他所有来源一样,执行相同的 `title_filter` / `location_filter` / `content_filter` + 去重 + 追加到 pipeline 的流程。
+- **Telegram 频道（v1.228.0）** —— 任何**公开**频道：在顶层 `telegram_channels:` 区块中列出，即从 `t.me/s/<频道>` 网页预览读取，无需机器人令牌，也无需 API 密钥。Telegram 不提供 RSS，Bot API 也读不了你的机器人未管理的频道，预览是唯一路径。**帖子是散文，不是职位记录**：标题取自第一行实质内容，公司与地点只从显式标签读取，把真实职位与广告区分开是你的 `title_filter` 的活儿。
 - **hh.ru** —— 抓取 `hh.ru/search/vacancy` 的 HTML。任何 IP 都可用,无需密钥或代理。(不再使用 JSON API `api.hh.ru`:它现在无论 IP/User-Agent 都对所有程序化客户端返回 403;网站则像 Habr Career 一样向任何类浏览器客户端返回完整结果。)
 - **Habr Career** —— 对 `career.habr.com/vacancies` 进行 HTML 抓取。不限 IP、无需鉴权。
 
