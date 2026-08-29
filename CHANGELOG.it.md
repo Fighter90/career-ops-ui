@@ -2,6 +2,20 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.227.1] — 2026-08-29
+
+**Corretto — la ripartizione delle fonti nella guida non tornava con sé stessa e il banner GitHub veniva stampato come markup grezzo nell'app.**
+
+### Corretto
+- **§17 dava un totale e una ripartizione che non sommavano.** Tutti i bundle della guida dicevano «il registro `server/lib/sources/` include **85** adapter — **78 inglesi + 5 russi**». 78 + 5 = 83, non 85; in ja/ko la deriva arrivava a 77 (= 82). Ogni nuova fonte alzava il totale lasciando intatto l'addendo, e i due numeri divergevano da diverse release. Ora la ripartizione è **80 EN + 5 RU** in tutte e 17 le lingue. Conta più dell'estetica: `docs/help/<lang>.md` è l'UNICO corpus su cui si fonda «Ask the docs», quindi chi chiedeva quante fonti fossero supportate riceveva due numeri contraddittori dalla stessa frase.
+- **La stessa frase fissava un'ancora di versione obsoleta.** «A partire da **v1.213.0** il registro …» è sopravvissuta in 16 lingue mentre il contatore si muoveva due volte (83 in v1.219.0, 85 in v1.226.0). L'ancora era già stata riparata a mano in v1.210.1 ed è semplicemente derivata di nuovo. Viene rimossa a favore di una formulazione senza versione: il contatore è verificato contro il registro vivo, che non può invecchiare.
+- **Il banner dei provider veniva stampato come markup escapato in cima a `#/help`.** v1.225.0/v1.225.1 lo davano per «rimosso nell'app da `UI.md()` (nessun supporto immagini)». Questo confonde due cose: `UI.md()` fa escape per primo — esegue l'escape di ogni byte della sorgente prima di qualsiasi trasformazione markdown, che è il confine XSS corretto ma l'opposto della rimozione. Nessuno rimuoveva il banner perché nessuno ci provava, e tutte e 17 le lingue aprivano `#/help` con 268 caratteri di `<p align="center"><img src="https://…` letterale. Un nuovo ingresso condiviso (`server/lib/help-markdown.mjs::stripGithubOnlyBlocks`) scarta in lettura i blocchi HTML immagine isolati, sia per `GET /api/help/:lang` sia per il corpus del docs-assistant. I file mantengono il banner, quindi GitHub continua a mostrare la vetrina.
+- **La colonna «#» della bacheca della cadenza era vuota dalla v1.117.0.** Leggeva `entry.appNum`, mentre `followup-cadence.mjs` emette `num` — `appNum` non è mai esistito nel payload. Ora vengono letti entrambi. La riga «Next up» della v1.227.0 aveva ereditato lo stesso errore ed è corretta insieme.
+
+### Note
+- **Tutti e quattro sono passati inosservati perché nulla li presidiava.** I gate della guida (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`) contano le INTESTAZIONI — 32 H2 / 121 H3 — e nessun test aveva mai letto un numero dentro un paragrafo né guardato cosa serve davvero l'ingresso della guida. Due nuove suite chiudono la falla: `tests/help-source-counts.test.mjs` (il totale dichiarato è pari a `SOURCES.length`; gli addendi corrispondono alla divisione EN/RU viva e sommano al totale; il paragrafo non fissa versioni) e `tests/help-banner-strip.test.mjs` (il banner resta su disco per GitHub, non sopravvive mai allo strip, la prima riga renderizzata di ogni bundle è la sua intestazione, lo strip resta stretto ed entrambi i consumatori vi passano). Entrambe verificate in rosso contro esattamente questi bug prima del commit. Suite di test: **2837 → 2845**.
+- Nessuna modifica a registro, scanner o contratti di route; le fonti restano **85** (80 EN + 5 RU) e `ALL_ADAPTERS` **80**.
+
 ## [1.227.0] — 2026-08-28
 
 **Aggiunto — SEEK Hong Kong (JobsDB), un filtro solo-in-scadenza sui follow-up e i datori di lavoro riservati mostrano l'agenzia che li ha presentati.**

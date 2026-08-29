@@ -15,6 +15,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { WEB_UI_ROOT } from '../paths.mjs';
+import { stripGithubOnlyBlocks } from '../help-markdown.mjs';
 
 // SPA-code → on-disk filename when they don't match. Add new entries here
 // rather than renaming bundles; tests/help-ui.test.mjs pins file names.
@@ -36,7 +37,10 @@ export function registerHelpRoutes(app) {
     for (const fname of candidates) {
       const full = resolve(helpDir, fname);
       if (existsSync(full)) {
-        res.json({ lang: fname.replace(/\.md$/, ''), markdown: readFileSync(full, 'utf8') });
+        // The provider-logo banner is a GitHub-only HTML block. UI.md() is
+        // escape-first, so leaving it in PRINTS it as the page's first line
+        // rather than dropping it — strip it at the ingress instead.
+        res.json({ lang: fname.replace(/\.md$/, ''), markdown: stripGithubOnlyBlocks(readFileSync(full, 'utf8')) });
         return;
       }
     }

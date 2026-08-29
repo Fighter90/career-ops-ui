@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.227.1] — 2026-08-29
+
+**Fixed — the help guide's source count contradicted itself, and its GitHub banner was printed as raw markup in the app.**
+
+### Fixed
+- **§17 stated a total and a breakdown that did not add up.** Every help bundle read “the `server/lib/sources/` registry ships **85** adapters — **78 English + 5 Russian**”. 78 + 5 = 83, not 85; ja/ko had drifted further, to 77 (= 82). Each new source bumped the total and left the breakdown alone, and the two numbers had been diverging for several releases. The breakdown is now **80 EN + 5 RU** in all 17 locales. This mattered beyond cosmetics: `docs/help/<lang>.md` is the ONLY grounding corpus for the “Ask the docs” assistant, so a user asking how many sources are supported got two contradictory numbers out of one sentence.
+- **The same sentence pinned a stale version anchor.** “As of **v1.213.0** the registry ships …” survived in 16 locales while the count moved twice (83 in v1.219.0, 85 in v1.226.0). The anchor was already repaired once by hand in v1.210.1 and simply drifted again. It is now removed in favour of version-free wording — the count itself is asserted against the live registry, which cannot go stale.
+- **The provider-logo banner printed as escaped markup at the top of `#/help`.** v1.225.0/v1.225.1 recorded it as “stripped in-app by `UI.md()` (no image support)”. That conflated two things: `UI.md()` is escape-first — it HTML-escapes every source byte before any markdown transform, which is the correct XSS boundary but the opposite of removal. Nothing removed the banner, because no code ever tried, so all 17 locales opened `#/help` with 268 characters of literal `<p align="center"><img src="https://…`. A new shared ingress (`server/lib/help-markdown.mjs::stripGithubOnlyBlocks`) now drops standalone HTML image blocks on read, for both `GET /api/help/:lang` and the docs-assistant retrieval corpus. The bundles keep the banner on disk, so GitHub still renders the showcase.
+- **The cadence board's “#” column had been blank since v1.117.0.** It read `entry.appNum`, but `followup-cadence.mjs` emits `num` — a field name that never existed in the payload. Both are now read. The v1.227.0 “Next up” line inherited the same mistake and is fixed with it.
+
+### Notes
+- **These four went undetected because nothing gated them.** The help gates (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`) count HEADINGS — 32 H2 / 121 H3 — and no test had ever read a number inside a paragraph or looked at what the help ingress actually serves. Two new suites close that: `tests/help-source-counts.test.mjs` (the stated total equals `SOURCES.length`; the breakdown parts equal the live EN/RU split and sum to the total; the paragraph pins no version) and `tests/help-banner-strip.test.mjs` (the banner stays on disk for GitHub, never survives the strip, every bundle's first rendered line is its heading, the strip stays narrow, and both consumers route through it). Both were verified to fail against the exact bugs before being committed. Test suite: **2837 → 2845**.
+- No registry, scanner or route-contract change; source count remains **85** (80 EN + 5 RU), `ALL_ADAPTERS` **80**.
+
 ## [1.227.0] — 2026-08-28
 
 **Added — SEEK Hong Kong (JobsDB), a due-only follow-up lens, and confidential employers now show who fronted them.**

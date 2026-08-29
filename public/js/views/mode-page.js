@@ -438,7 +438,7 @@
           if (next) {
             body.appendChild(c('p', { style: { color: 'var(--foggy)', margin: '6px 0 0' } },
               t('fu.nextUpcoming', 'Next up: #{num} {company} on {date}.')
-                .replace('{num}', String(next.appNum ?? ''))
+                .replace('{num}', String(next.num ?? next.appNum ?? ''))
                 .replace('{company}', String(next.company || ''))
                 .replace('{date}', String(next.nextFollowupDate || ''))));
           }
@@ -448,7 +448,10 @@
           ['#', t('fu.colCompany', 'Company'), t('fu.colRole', 'Role'), t('fu.colStatus', 'Status'), t('fu.colUrgency', 'Urgency'), t('fu.colNext', 'Days to next')]
             .map((h) => c('th', { style: { textAlign: 'left' } }, h)));
         const rows = entries.map((e) => c('tr', null, [
-          c('td', null, String(e.appNum ?? '')),
+          // followup-cadence.mjs emits `num` (the tracker row number); `appNum`
+          // was never in its payload, so this cell rendered blank from v1.117.0
+          // until v1.228.0. Both are read so either shape works.
+          c('td', null, String(e.num ?? e.appNum ?? '')),
           c('td', null, String(e.company || '')),
           c('td', null, String(e.role || '')),
           c('td', null, String(e.status || '')),

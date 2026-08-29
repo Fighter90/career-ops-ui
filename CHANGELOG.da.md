@@ -8,6 +8,20 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.227.1] — 2026-08-29
+
+**Rettet — kildeopdelingen i hjælpen stemte ikke med sig selv, og GitHub-banneret blev printet som rå markup i appen.**
+
+### Rettet
+- **§17 angav en total og en opdeling, der ikke gik op.** Alle hjælpebundter sagde „`server/lib/sources/`-registret leverer **85** adaptere — **78 engelske + 5 russiske**“. 78 + 5 = 83, ikke 85; i ja/ko var afvigelsen nået til 77 (= 82). Hver ny kilde hævede totalen og lod leddet stå, så de to tal havde ligget og glidt fra hinanden gennem flere udgivelser. Opdelingen er nu **80 EN + 5 RU** i alle 17 sprog. Det betyder mere end kosmetik: `docs/help/<lang>.md` er det ENESTE korpus, „Ask the docs“ bygger på, så den der spurgte om antallet af kilder, fik to modstridende tal ud af én sætning.
+- **Samme sætning fastholdt et forældet versionsanker.** „Pr. **v1.213.0** leverer registret …“ overlevede i 16 sprog, mens tælleren flyttede sig to gange (83 i v1.219.0, 85 i v1.226.0). Ankeret var allerede repareret i hånden i v1.210.1 og gled simpelthen igen. Det er fjernet til fordel for en versionsfri formulering — selve tællingen holdes op mod det levende register, som ikke kan blive forældet.
+- **Udbyder-banneret blev printet som escapet markup øverst i `#/help`.** v1.225.0/v1.225.1 noterede, at det blev „fjernet i appen af `UI.md()` (ingen billedunderstøttelse)“. Det blander to ting sammen: `UI.md()` escaper først — den escaper hver byte af kilden før enhver markdown-transformation, hvilket er den rigtige XSS-grænse, men det modsatte af at fjerne. Ingen fjernede banneret, fordi ingen forsøgte, og alle 17 sprog åbnede `#/help` med 268 tegn ordret `<p align="center"><img src="https://…`. En ny fælles indgang (`server/lib/help-markdown.mjs::stripGithubOnlyBlocks`) kasserer ved læsning fritstående HTML-billedblokke — både for `GET /api/help/:lang` og for docs-assistantens korpus. Filerne beholder banneret, så GitHub viser stadig udstillingen.
+- **Kolonnen „#“ på kadencetavlen har været tom siden v1.117.0.** Den læste `entry.appNum`, men `followup-cadence.mjs` udsender `num` — `appNum` har aldrig eksisteret i payloaden. Nu læses begge. „Next up“-linjen fra v1.227.0 arvede samme fejl og rettes med.
+
+### Noter
+- **Alle fire slap forbi, fordi intet vogtede dem.** Hjælpens gates (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`) tæller OVERSKRIFTER — 32 H2 / 121 H3 — og ingen test havde nogensinde læst et tal inde i et afsnit eller set på, hvad hjælpe-indgangen faktisk serverer. To nye suiter lukker det: `tests/help-source-counts.test.mjs` (den angivne total er lig `SOURCES.length`; leddene svarer til den levende EN/RU-fordeling og summer til totalen; afsnittet fastlåser ingen version) og `tests/help-banner-strip.test.mjs` (banneret bliver på disken til GitHub, overlever aldrig filtreringen, første renderede linje i hvert bundt er dets overskrift, filtreringen forbliver smal, og begge forbrugere går igennem den). Begge blev verificeret røde mod netop disse fejl før commit. Testsuite: **2837 → 2845**.
+- Ingen ændring i register, scanner eller rute-kontrakter; kilder er fortsat **85** (80 EN + 5 RU), `ALL_ADAPTERS` **80**.
+
 ## [1.227.0] — 2026-08-28
 
 **Tilføjet — SEEK Hongkong (JobsDB), et kun-forfaldne-filter på opfølgninger, og fortrolige arbejdsgivere viser nu det bureau, der formidlede dem.**

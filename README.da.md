@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2837%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2845%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.0)
+[![release](https://img.shields.io/badge/release-v1.227.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.227.0** — **Hongkong og skarpere opfølgninger** — JobsDB Hongkong slutter sig til Jobstreet/SEEK (nu på v5-API'et), et kun-forfaldne-filter på kadencetavlen, og fortrolige arbejdsgivere viser det bureau, der formidlede dem — paritet med moderprojektets 1.30.0. **2837 tests.**
+> **🆕 Seneste udgivelse — v1.227.1** — **Hjælpe-rettelser** — kildeopdelingen i §17 går nu op (80 EN + 5 RU, før 78+5=83), det forældede versionsanker er væk, og GitHub-banneret printes ikke længere som rå markup øverst i `#/help` — alle tre er nu testdækket. **2845 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
