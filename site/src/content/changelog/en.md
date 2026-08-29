@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.228.2] — 2026-08-30
+
+**Fixed — a two-word search in `/api/scan-results` matched the phrase, not the words, and under-reported badly.**
+
+### Fixed
+- **`?q=` now matches every term independently instead of the literal phrase.** The query was a single `includes(q)` over title + company + location, so `продакт менеджер` found only rows carrying those two words in that exact adjacency — **32 of the 162** that carry both. `Менеджер продукта` and `Менеджер по развитию продукта` were invisible to it: the same words, reordered or with filler between them.
+
+  This is how a narrow match becomes a **wrong answer**. The Telegram assistant asked for all Продуктовый менеджер reported 9 — faithfully, because 9 was what the endpoint said. The count it quoted was honest; the endpoint's was not. Word order and the words between are not something a person typing two words intended to pin.
+
+  Matching is AND across terms, so widening precision costs nothing: a row must still carry every term. `менеджер разработчик` returns zero rather than the union.
+
 ## [1.228.1] — 2026-08-29
 
 **Fixed — a dangling symlink in the repo that silently truncated deploys.**

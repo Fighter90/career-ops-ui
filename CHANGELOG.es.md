@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.228.2] — 2026-08-30
+
+**Corregido — una búsqueda de dos palabras en `/api/scan-results` buscaba la frase, no las palabras, y contaba de menos.**
+
+### Corregido
+- **`?q=` ahora compara cada término por separado en lugar de la frase literal.** La consulta era un único `includes(q)` sobre título, empresa y ubicación, así que `продакт менеджер` solo encontraba filas con esas dos palabras exactamente contiguas: **32 de las 162** que contienen ambas.
+
+  Así una coincidencia estrecha se convierte en una **respuesta equivocada**. El asistente de Telegram informó 9 — con honestidad, porque 9 fue lo que dijo el endpoint. Su recuento era veraz; el del endpoint no.
+
+  La comparación es Y entre términos: una fila debe contener todos. `менеджер разработчик` devuelve cero, no la unión.
+
 ## [1.228.1] — 2026-08-29
 
 **Corregido — un enlace simbólico roto en el repositorio que truncaba despliegues en silencio.**

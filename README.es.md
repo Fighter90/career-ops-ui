@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2895%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2899%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.1)
+[![release](https://img.shields.io/badge/release-v1.228.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.228.1** — **Un enlace simbólico roto en el repositorio truncaba despliegues en silencio.** `.claude/skills/refero-design` apuntaba a una ruta que nunca ha existido aquí; rsync aborta al llegar a él, así que un despliegue informó éxito mientras el servidor seguía con la versión anterior. Eliminado. La fuente de canales de Telegram está en v1.228.0.
+> **🆕 Última versión — v1.228.2** — **Una búsqueda de dos palabras buscaba la frase, no las palabras.** `/api/scan-results?q=` hacía un solo `includes(q)`: `продакт менеджер` encontraba 32 filas donde 162 contienen ambas palabras. Así una coincidencia estrecha se vuelve una respuesta equivocada. Ahora los términos se comparan por separado (Y). **2899 pruebas.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -381,7 +381,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2895 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 2899 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # parsers markdown / pipeline / report (funciones puras)
    ├─ api.test.mjs           # cada endpoint, servidor efímero, sin red
    ├─ {ru,en}-scanner.test.mjs   # fetch mockeado
@@ -515,7 +515,7 @@ Cuando se establece `run: true` en `/api/deep` o `/api/mode/:slug`, el servidor 
 ## Tests
 
 ```bash
-npm test                       # 2895 tests unit/integración
+npm test                       # 2899 tests unit/integración
 npm run test:e2e               # 21 smoke e2e (arranca su propio servidor)
 npm run test:e2e:full          # 23 e2e completos
 npm run test:e2e:browser       # 101 smoke Playwright en navegador
@@ -524,7 +524,7 @@ npm run test:coverage          # igual que `npm test` más cobertura V8
 
 | Suite                       | Tests | Qué cubre                                                                                                  |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integración) | **2895** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
+| `node --test tests/*.test.mjs` (unit + integración) | **2899** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: cada ruta renderiza, flujos básicos.                                                  |
 | `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rutas + 12 flujos funcionales.                                         |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Smoke con navegador: render del dashboard, navegación, cambio de idioma, 404, health, tracker round-trip (BF-1), añadir a pipeline + barrido de URL inválida, reports vacío, evaluate manual fallback, claves de config enmascaradas, CV PUT XSS strip, pipeline preview 400. |
@@ -643,7 +643,7 @@ La interfaz incluye **17 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `z
 
 Issues y PRs bienvenidos. Reglas de la casa:
 
-- Ejecuta `npm test` antes de hacer push — **2895 checks en verde** es el mínimo (más 101 Playwright si tocas la UI).
+- Ejecuta `npm test` antes de hacer push — **2899 checks en verde** es el mínimo (más 101 Playwright si tocas la UI).
 - Los cambios no triviales pasan por la pipeline GSD. Ver [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - No modifiques nada del proyecto padre `career-ops/` desde dentro de este repositorio. Todo el sentido es que sea una capa no invasiva. Reglas duras en [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Scope opcional: `feat(scan):`. Breaking change: `feat!:`.

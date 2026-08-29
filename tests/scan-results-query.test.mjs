@@ -49,6 +49,10 @@ before(async () => {
       filtered: [
         job('Продуктовый менеджер', 'Ромашка', 'Москва'),
         job('Senior Product Manager', 'IBS', 'Москва'),
+        // The two shapes a whole-phrase match silently loses: the words in the
+        // other order, and the words with filler between them.
+        job('Менеджер продукта', 'Вектор', 'Москва'),
+        job('Менеджер по развитию продукта', 'Куб', 'Казань'),
         job('Go разработчик', 'Дельта', 'СПб'),
       ],
     },
@@ -73,7 +77,7 @@ test('no params returns the bare snapshot, exactly as before', async () => {
   // The SPA depends on this shape; a `rows`/`total` envelope here would break it.
   assert.ok(b.en && b.ru, 'must still be keyed by region');
   assert.equal(b.en.filtered.length, 2);
-  assert.equal(b.ru.filtered.length, 3);
+  assert.equal(b.ru.filtered.length, 5);
   assert.equal(b.rows, undefined, 'must not gain a paged envelope');
   assert.ok('workdayFallback' in b);
 });
@@ -93,7 +97,38 @@ test('search is case-insensitive and matches Cyrillic titles', async () => {
 
 test('search also covers company and location, not just the title', async () => {
   assert.equal((await get('?q=ромашка')).total, 1, 'company');
-  assert.equal((await get('?q=Москва')).total, 2, 'location');
+  assert.equal((await get('?q=Москва')).total, 3, 'location');
+});
+
+test('a multi-word query matches all terms, not the literal phrase', async () => {
+  // The original whole-phrase `.includes(q)` found only the exact adjacency.
+  // On real data that turned "продакт менеджер" into 32 hits where 162 rows
+  // carry both words — and an agent asked "find all X" quoted the 32.
+  const r = await get('?q=' + encodeURIComponent('менеджер продукта') + '&limit=50');
+  const titles = r.rows.map((x) => x.title).sort();
+  assert.deepEqual(titles, ['Менеджер по развитию продукта', 'Менеджер продукта']);
+  assert.equal(r.total, 2);
+});
+
+test('term order does not matter, and filler between the terms is allowed', async () => {
+  const a = await get('?q=' + encodeURIComponent('продукта менеджер') + '&limit=50');
+  const b = await get('?q=' + encodeURIComponent('менеджер продукта') + '&limit=50');
+  assert.equal(a.total, b.total, 'reversing the words must not change the answer');
+  // "Менеджер ПО РАЗВИТИЮ продукта" is only reachable when the terms are
+  // matched independently.
+  assert.ok(a.rows.some((x) => x.title === 'Менеджер по развитию продукта'));
+});
+
+test('every term must be present — it is AND, not OR', async () => {
+  // 'Go разработчик' carries neither term; 'Продуктовый менеджер' carries only
+  // one of them. Requiring both is what keeps the widened match honest.
+  const r = await get('?q=' + encodeURIComponent('менеджер разработчик') + '&limit=50');
+  assert.equal(r.total, 0, 'a row must carry every term, not just one');
+});
+
+test('repeated whitespace between terms is not a term', async () => {
+  const r = await get('?q=' + encodeURIComponent('  менеджер   продукта  ') + '&limit=50');
+  assert.equal(r.total, 2, 'padding and doubled spaces must not change the result');
 });
 
 test('?set=fresh narrows to the last run — the distinction that caused the bug', async () => {
@@ -105,25 +140,25 @@ test('?set=fresh narrows to the last run — the distinction that caused the bug
 });
 
 test('?region= restricts to one side', async () => {
-  assert.deepEqual((await get('?region=ru')).rows.map((r) => r.region), ['ru', 'ru', 'ru']);
+  assert.deepEqual((await get('?region=ru')).rows.map((r) => r.region), ['ru', 'ru', 'ru', 'ru', 'ru']);
   assert.equal((await get('?region=en')).total, 2);
-  assert.equal((await get('?region=nonsense')).total, 5, 'an unknown region falls back to both');
+  assert.equal((await get('?region=nonsense')).total, 7, 'an unknown region falls back to both');
 });
 
 test('total counts BEFORE paging so an agent can answer "how many"', async () => {
   const b = await get('?limit=1');
-  assert.equal(b.total, 5, 'all filtered rows across both regions');
+  assert.equal(b.total, 7, 'all filtered rows across both regions');
   assert.equal(b.returned, 1);
   assert.equal(b.rows.length, 1);
 });
 
 test('offset walks the result set without repeating or dropping a row', async () => {
   const seen = [];
-  for (let off = 0; off < 5; off += 2) {
+  for (let off = 0; off < 7; off += 2) {
     const b = await get(`?limit=2&offset=${off}`);
     seen.push(...b.rows.map((r) => r.url));
   }
-  assert.equal(new Set(seen).size, 5, 'every row seen exactly once');
+  assert.equal(new Set(seen).size, 7, 'every row seen exactly once');
 });
 
 test('limit is clamped and junk paging params never throw', async () => {
@@ -133,7 +168,7 @@ test('limit is clamped and junk paging params never throw', async () => {
   assert.equal((await get('?offset=-5')).offset, 0);
   const past = await get('?offset=9999');
   assert.deepEqual(past.rows, [], 'past the end is empty, not an error');
-  assert.equal(past.total, 5, 'but total still reports the truth');
+  assert.equal(past.total, 7, 'but total still reports the truth');
 });
 
 test('a query matching nothing reports zero rather than falling back to everything', async () => {
