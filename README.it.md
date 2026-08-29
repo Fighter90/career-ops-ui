@@ -12,11 +12,11 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
+[![release](https://img.shields.io/badge/release-v1.228.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.228.0** — **I canali Telegram sono ora una fonte di scansione.** Elencali in un blocco `telegram_channels:` e ognuno viene letto dall'anteprima pubblica `t.me/s/<canale>`: 15 canali, **299 post** in una esecuzione reale. Registro: **86 fonti** (81 EN + 5 RU). Inoltre: l'assistente Telegram rispondeva da una frazione dei dati — riportava **9** corrispondenze dove lo snapshot ne aveva centinaia, perché `/api/scan-results` sapeva restituire solo lo snapshot intero da ~2 MB; ora accetta una query paginata. **2895 test.**
+> **🆕 Ultima release — v1.228.1** — **Un symlink rotto nel repository troncava silenziosamente i deploy.** `.claude/skills/refero-design` puntava a un percorso mai esistito qui; rsync si interrompe su di esso, così un deploy ha riportato successo mentre il server restava alla versione precedente. Rimosso. La fonte dei canali Telegram è nella v1.228.0.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

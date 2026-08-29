@@ -12,11 +12,11 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
+[![release](https://img.shields.io/badge/release-v1.228.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.228.0** — **Telegram 频道现在是扫描来源。** 在 `telegram_channels:` 区块中列出，每个频道从其公开网页预览 `t.me/s/<频道>` 读取 —— 15 个频道，一次实跑 **299 条帖子**。注册表：**86 个来源**（EN 81 + RU 5）。此外：Telegram 助手只凭一小部分数据作答 —— 快照里有数百条，它却报出 **9** 条，因为 `/api/scan-results` 只会返回约 2 MB 的整份快照；现在它接受分页查询。**2895 个测试。**
+> **🆕 最新版本 — v1.228.1** — **仓库里一个失效的软链接在悄悄截断部署。** `.claude/skills/refero-design` 指向一个这里从未存在过的路径；rsync 会在它那里中断传输，于是部署报告成功，服务器却仍跑着上一个版本。已移除。Telegram 频道来源见 v1.228.0。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

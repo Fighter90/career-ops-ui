@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
+[![release](https://img.shields.io/badge/release-v1.228.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.228.0** — **Telegram 채널이 스캔 소스가 되었습니다.** `telegram_channels:` 블록에 나열하면 각 채널은 공개 웹 미리보기 `t.me/s/<채널>`에서 읽힙니다 — 15개 채널, 실제 실행 한 번에 **299개 게시물**. 레지스트리: **86개 소스**(EN 81 + RU 5). 여기에: Telegram 어시스턴트는 데이터의 일부만 보고 답했습니다 — 스냅샷에 수백 건이 있는데도 **9**건이라 보고했는데, `/api/scan-results`가 약 2MB짜리 스냅샷 전체만 돌려줄 수 있었기 때문입니다. 이제 페이지네이션 질의를 받습니다. **테스트 2895개.**
+> **🆕 최신 릴리스 — v1.228.1** — **저장소의 깨진 심볼릭 링크가 배포를 조용히 잘라내고 있었습니다.** `.claude/skills/refero-design`은 여기에 한 번도 존재한 적 없는 경로를 가리켰고, rsync는 그 지점에서 전송을 중단합니다. 그래서 배포는 성공이라 보고했지만 서버는 이전 버전 그대로였습니다. 제거했습니다. Telegram 채널 소스는 v1.228.0에 있습니다.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
