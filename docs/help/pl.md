@@ -693,6 +693,22 @@ tracked_companies:
 Skieruj skaner na dowolny portal pracy publikujący kanał RSS/Atom (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …) dodając wpis z `provider: rss` plus kluczem `rss:` (lub `feed_url:`) — **bez zmian kodu**. Adapter RSS parsuje każdy `<item>` (CDATA + encje HTML, tytuły/firmy z usuniętymi tagami), normalizuje go do oferty pracy i uruchamia ten sam przepływ `title_filter` / `location_filter` + dedup + pipeline-append co źródła ATS. **RSS** pojawia się wtedy jako wybieralne źródło w menu rozwijanym filtrów `#/scan`. (web-ui v1.62.x)
 
 
+### `telegram_channels` (publiczne kanały Telegrama z ofertami)
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+Skanuj dowolny **publiczny** kanał Telegrama, wymieniając go tutaj — bez tokenu bota i bez klucza API. Każdy kanał czytany jest z publicznego podglądu `https://t.me/s/<kanał>`, czyli zwykłego HTML-a renderowanego po stronie serwera. `channel:` przyjmuje każdy zapis (`rabotaphp`, `@rabotaphp` albo pełny link `t.me/…`); `max_posts:` ogranicza liczbę czytanych najnowszych postów (domyślnie 100, twardy limit 300). Kanały mieszkają we własnym bloku najwyższego poziomu, a nie w `tracked_companies`, bo kanał nie jest pracodawcą i nie ma adresu kariery do wykrycia.
+
+**Post kanału to proza, nie rekord oferty** — nie ma pól strukturalnych. Źródło bierze tytuł z pierwszej treściwej linii, firmę / lokalizację / widełki czyta wyłącznie z jawnych etykiet (`Компания:`, `Локация:`), a cały tekst zostawia w opisie. Oddzielanie prawdziwych ofert od reklam i przeglądów to zadanie Twojego `title_filter`. Kanał prywatny lub nieistniejący zgłaszany jest jako **błąd**, nigdy jako „brak ofert”. **Telegram** pojawia się następnie jako wybieralne źródło w filtrze `#/scan`. (web-ui v1.228.0)
+
+
 ### `russian_portals`
 
 ```yaml
@@ -1621,7 +1637,7 @@ wynik i przeszukaj tracker problemów na
 
 ## 17. Jak dodać nowe źródło ofert pracy
 
-career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie jak pobrać i znormalizować wyniki jednego portalu. Obecnie rejestr `server/lib/sources/` dostarcza **85** adapterów — **80 angielskich + 5 rosyjskich** portali. Zestaw angielski obejmuje główne ATS-y (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregatory ogólnoportalowe wybierane przez jawny `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) oraz ATS-y na tenant automatycznie wykrywane z hosta `careers_url` lub jawnego adresu `api:` (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Pełnej listy nigdy nie trzeba liczyć tu ręcznie — jest automatycznie wykrywana z `server/lib/sources/` i pokazywana na żywo w rozwijanym menu Source na `#/scan`.** Patrz §5 po YAML oraz `docs/portals-examples.md` po gotowe wpisy do skopiowania.
+career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie jak pobrać i znormalizować wyniki jednego portalu. Obecnie rejestr `server/lib/sources/` dostarcza **86** adapterów — **81 angielskich + 5 rosyjskich** portali. Zestaw angielski obejmuje główne ATS-y (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregatory ogólnoportalowe wybierane przez jawny `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) oraz ATS-y na tenant automatycznie wykrywane z hosta `careers_url` lub jawnego adresu `api:` (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Pełnej listy nigdy nie trzeba liczyć tu ręcznie — jest automatycznie wykrywana z `server/lib/sources/` i pokazywana na żywo w rozwijanym menu Source na `#/scan`.** Patrz §5 po YAML oraz `docs/portals-examples.md` po gotowe wpisy do skopiowania.
 
 > **v1.69.0 (P-14) — plug-in z auto-odkrywaniem.** Dodanie 12. źródła to teraz
 > **czyste wrzucenie pliku**. Rejestr

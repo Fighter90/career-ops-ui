@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
+[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.227.5** — **Региональный скан больше не выедает память сервера** — он держал все сырые хиты по 21 запросу до конца (742 МБ кучи против потолка машины в 490 МБ, 4 падения сервиса за сутки); теперь дедуп и фильтрация идут по каждому запросу → **177 МБ**. Плюс починен флейк Playwright. **2865 тестов.**
+> **🆕 Последний релиз — v1.228.0** — **Telegram-каналы стали источником сканирования.** Перечислите их в блоке `telegram_channels:` — каждый читается из публичного веб-превью `t.me/s/<канал>`: 15 каналов, **299 постов** за один живой прогон. Реестр: **86 источников** (81 EN + 5 RU). Плюс: Telegram-ассистент отвечал по доле данных — сообщал **9** совпадений там, где в снимке их были сотни, потому что `/api/scan-results` умел отдавать только весь снимок на ~2 МБ; теперь у него есть постраничный запрос. **2893 теста.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -351,7 +351,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # клиент api.lever.co
 │     │  ├─ hh.mjs           # клиент api.hh.ru (учитывает UA)
 │     │  └─ habr.mjs         # парсер HTML career.habr.com (без cheerio, только regex)
-│     └─ routes/             # 12 модулей маршрутов — по одному на тему (P-2)
+│     └─ routes/             # 37 модулей маршрутов — по одному на тему (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (round-trip родительского .env)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -380,7 +380,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1945 unit + 90 Playwright + 23 e2e:full + 20 e2e:smoke
+└─ tests/                    # 2893 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # парсеры markdown / pipeline / отчётов (чистые функции)
    ├─ api.test.mjs           # каждая точка входа, эфемерный сервер, без сети
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -394,7 +394,7 @@ career-ops-ui/
    ├─ cv-xss.test.mjs        # round-trip stripDangerousMarkdown (включая entity-aware кейсы)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
    ├─ help.test.mjs / help-ui.test.mjs    # паритет i18n по всем 17 локалям
-   ├─ playwright-smoke.mjs   # 32 browser-сценария (CV save, tracker, pipeline, evaluate, config и т. д.)
+   ├─ playwright-smoke.mjs   # 22 browser-сценария (CV save, tracker, pipeline, evaluate, config и т. д.)
    └─ e2e{,-comprehensive}.mjs   # полный Playwright-walkthrough
 ```
 
@@ -516,20 +516,20 @@ event: error    data: { message }
 ## Тесты
 
 ```bash
-npm test                       # 1945 unit/integration-теста
-npm run test:e2e               # 20 smoke e2e (поднимает собственный сервер)
+npm test                       # 2893 unit/integration-теста
+npm run test:e2e               # 21 smoke e2e (поднимает собственный сервер)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 70 Playwright browser-smoke
+npm run test:e2e:browser       # 101 Playwright browser-smoke
 npm run test:coverage          # то же, что `npm test`, плюс V8-покрытие
 ```
 
 | Сьют                       | Тестов | Что покрывает                                                                                              |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1856** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
-| `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: каждый маршрут рендерится, базовые сценарии работают.                                 |
-| `tests/e2e-comprehensive.mjs` | 23    | Полный Playwright-walkthrough: 11 маршрутов + 12 функциональных сценариев.                                 |
+| `node --test tests/*.test.mjs` (unit + integration) | **2893** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
+| `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: каждый маршрут рендерится, базовые сценарии работают.                                 |
+| `tests/e2e-comprehensive.mjs` | 23 | Полный Playwright-walkthrough: 11 маршрутов + 12 функциональных сценариев.                                 |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Browser-driven smoke: рендер дашборда, навигация, переключение языка, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL sweep, пустые reports, evaluate manual fallback, маскирование ключей в config, XSS-strip на PUT CV, pipeline preview 400. |
-| **Итого**                   | **549** | **0 fails, 0 flakes**                                                                                   |
+| **Итого**                   | **2893** | **0 fails, 0 flakes**                                                                                   |
 
 Покрытие: ~93 % строк / ~83 % веток через `--experimental-test-coverage`.
 
@@ -643,7 +643,7 @@ career-ops лучше всего работает **постоянно вклю�
 
 Issues и PR приветствуются. Правила:
 
-- Перед push выполняйте `npm test` — **1856 проверок green** — это минимальная планка (плюс 90 Playwright, если изменения касаются UI).
+- Перед push выполняйте `npm test` — **2893 проверок green** — это минимальная планка (плюс 101 Playwright, если изменения касаются UI).
 - Нетривиальные изменения проходят через GSD-конвейер. См. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Не модифицируйте ничего в родительском `career-ops/` из этого репозитория. Смысл проекта именно в том, что это неинвазивный overlay. Жёсткие правила — в [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Опциональный scope: `feat(scan):`. Breaking change: `feat!:`.

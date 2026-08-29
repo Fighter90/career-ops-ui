@@ -741,6 +741,22 @@ tracked_companies:
 Peg scanneren mod et hvilket som helst jobboard, der publicerer et RSS/Atom-feed (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …) ved at tilføje en post med `provider: rss` plus en `rss:` (eller `feed_url:`)-nøgle — **ingen kodeændringer**. RSS-adapteren parser hvert `<item>` (CDATA + HTML-entiteter, titler/virksomheder tag-strippet), normaliserer det til et job og kører samme `title_filter` / `location_filter` + dedup + pipeline-append-flow som ATS-kilder. **RSS** vises derefter som en valgbar kilde i `#/scan`-filter-dropdownen. (web-ui v1.62.x)
 
 
+### `telegram_channels` (offentlige Telegram-jobkanaler)
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+Scan enhver **offentlig** Telegram-kanal ved at angive den her — uden bot-token og uden API-nøgle. Hver kanal læses fra sin offentlige forhåndsvisning `https://t.me/s/<kanal>`, almindelig serverrenderet HTML. `channel:` accepterer enhver skrivemåde (`rabotaphp`, `@rabotaphp` eller et fuldt `t.me/…`-link); `max_posts:` begrænser, hvor mange nye opslag der læses (standard 100, hårdt loft 300). Kanaler bor i deres egen blok på øverste niveau frem for i `tracked_companies`, fordi en kanal ikke er en arbejdsgiver og ikke har en karriere-URL at genkende.
+
+**Et kanalopslag er prosa, ikke en jobpost** — der er ingen strukturerede felter. Kilden tager titlen fra første indholdsmæssige linje, læser firma / sted / løn kun fra udtrykkelige etiketter (`Компания:`, `Локация:`) og lader hele teksten stå i beskrivelsen. At skille rigtige opslag fra reklamer og digests er dit `title_filter`s opgave. En privat eller ikke-eksisterende kanal meldes som en **fejl**, aldrig som „ingen stillinger“. **Telegram** optræder derefter som valgbar kilde i `#/scan`-filteret. (web-ui v1.228.0)
+
+
 ### `russian_portals`
 
 ```yaml
@@ -1687,7 +1703,7 @@ outputtet, og søg i issue-trackeren på
 
 ## 17. Sådan tilføjer du en ny jobportal-kilde
 
-career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. I dag leverer `server/lib/sources/`-registreringen **85** adaptere — **80 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
+career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. I dag leverer `server/lib/sources/`-registreringen **86** adaptere — **81 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** At tilføje en 12. kilde er nu
 > et **rent fil-drop**. Registreringen

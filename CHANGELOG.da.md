@@ -8,6 +8,24 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.228.0] — 2026-08-29
+
+**Tilføjet — Telegram-kanaler som scanningskilde og en pagineret forespørgselstilstand på `/api/scan-results`.**
+
+### Tilføjet
+- **Telegram-kanaler er nu en skanbar kilde.** En `telegram_channels:`-blok i `portals.yml` lister dem; hver læses fra den offentlige forhåndsvisning `https://t.me/s/<kanal>`. Register: **85 → 86 kilder** (81 EN + 5 RU), `ALL_ADAPTERS` **80 → 81**. Telegram udgiver ingen RSS, og Bot-API'et kan ikke læse en kanal, botten ikke administrerer — begge oplagte veje er lukkede. `/s/`-visningen er almindelig serverrenderet HTML: uden login, uden JS, uden cookie. Efterprøvet på 16 kanaler: 15 gav 20 opslag hver på et bart GET.
+- **`GET /api/scan-results` har fået en pagineret forespørgselstilstand.** `?q=<tekst>&limit=50[&region=ru|en][&set=filtered|fresh][&offset=N]` returnerer `{ total, returned, offset, limit, set, rows }`, hvor **`total` er antallet FØR paginering**. Uden parametre returnerer ruten stadig hele snapshottet — `#/scan`-tabellen afhænger af den form.
+
+### Rettet
+- **Telegram-assistenten svarede ud fra en brøkdel af data.** Dens skill pegede allerede på `/api/scan-results`, men ruten kunne kun returnere hele snapshottet — omkring 2 MB — hvilket ikke er i en agents kontekst. På „find alle Product Managers“ meldte den **9** træffere, hvor snapshottet havde hundredvis, og sagde, at den „arbejdede med et begrænset lokalt indeks“. Det var sandt: den kunne se endpointet, men ikke fordøje det. Med paginering koster samme spørgsmål 2 KB og giver et ærligt `total`. Skillen blev også skrevet om: den bad om at opsummere de *nye* opslag, altså `fresh` frem for `filtered`.
+
+### Noter
+- **Et kanalopslag er prosa, ikke en jobpost.** Ingen strukturerede felter: titlen tages fra første indholdsmæssige linje, firma/sted/løn fra udtrykkelige etiketter. **At skille rigtige opslag fra reklamer og digests overlades til det eksisterende `title_filter`** — det samme, der allerede er indstillet for andre kilder. Det er spor, ikke en liste.
+- **Firmaet gættes aldrig.** Uden etiket tilskrives rækken kanalen (`@rabotaphp`): en forkert arbejdsgiver ender i trackeren som en kendsgerning.
+- **En tom parsning er en fejl, ikke „ingen stillinger“.** t.me svarer med en omdirigering for en privat eller manglende kanal; nul rækker ville læses som en stille dag og skjule en tastefejl i konfigurationen for altid. `jobGeeks` gør præcis dette (HTTP 302) og er bevidst **ikke** konfigureret.
+- Fjernarbejdsdetektion bruger en Unicode-ordgrænse i stedet for `\b`, der kun kender ASCII — samme fælde som titelfilteret i v1.227.3, her fanget af en test før udgivelse.
+- 15 kanaler konfigureret og verificeret live: **299 opslag, 15/15 kanaler**. 28 nye tests. Tests: **2865 → 2893**.
+
 ## [1.227.5] — 2026-08-29
 
 **Rettet — den regionale scanning brugte serverens hukommelse op, og en Playwright-suite fejlede på sin egen nedtagning.**

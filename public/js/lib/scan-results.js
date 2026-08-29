@@ -78,6 +78,7 @@ window.ScanResults = (function () {
     { value: 'softgarden',      label: 'softgarden' },
     { value: 'solidjobs',       label: 'SolidJobs' },
     { value: 'teamtailor',      label: 'Teamtailor' },
+    { value: 'telegram',        label: 'Telegram' },
     { value: 'tencent',         label: 'Tencent' },
     { value: 'thehub',          label: 'The Hub' },
     { value: 'themuse',         label: 'The Muse' },

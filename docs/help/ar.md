@@ -454,6 +454,22 @@ tracked_companies:
 
 وجّه الماسح إلى أي لوحة وظائف تنشر تغذية RSS/Atom (LaraJobs وWeWorkRemotely وRemoteOK وgolangprojects وغيرها) بإضافة إدخال مع `provider: rss` بالإضافة إلى مفتاح `rss:` (أو `feed_url:`) — **دون تغييرات برمجية**. مُكيّف RSS يُحلّل كل `<item>` (CDATA + كيانات HTML، العناوين/شعارات الشركات مُجرَّدة من علامات HTML)، يُوحّده إلى وظيفة، ويُشغّل نفس تدفق `title_filter` / `location_filter` + إزالة التكرار + إلحاق الخط الوظيفي كمصادر ATS. **RSS** يظهر بعدها كمصدر قابل للاختيار في القائمة المنسدلة للتصفية في `#/scan`. (web-ui v1.62.x)
 
+### `telegram_channels` (قنوات تيليجرام العامة للوظائف)
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+امسح أي قناة تيليجرام **عامة** بمجرد إدراجها هنا — بلا رمز بوت وبلا مفتاح API. تُقرأ كل قناة من معاينتها العامة `https://t.me/s/<القناة>`، وهي HTML عادي مولَّد على الخادم. ويقبل `channel:` أي صياغة (`rabotaphp` أو `@rabotaphp` أو رابط `t.me/…` كاملًا)، بينما يحدّ `max_posts:` عدد المنشورات الحديثة المقروءة (الافتراضي 100 والسقف الصارم 300). وتسكن القنوات في بلوك مستقل على المستوى الأعلى بدل `tracked_companies`، لأن القناة ليست صاحب عمل ولا رابط وظائف لديها يمكن كشفه.
+
+**منشور القناة نثرٌ لا سجلُّ وظيفة**، فلا حقول مبنينة فيه. يأخذ المصدر العنوان من أول سطر ذي مضمون، ولا يقرأ الشركة والموقع والأجر إلا من وسوم صريحة (`Компания:`، `Локация:`)، ويترك النص كاملًا في الوصف. أما فصل الوظائف الحقيقية عن الإعلانات والملخّصات فهو عمل `title_filter` عندك. وتُبلَّغ القناة الخاصة أو غير الموجودة بوصفها **خطأ**، لا بوصفها «لا وظائف». ثم يظهر **Telegram** مصدرًا قابلًا للاختيار في مرشِّح `#/scan`. (web-ui v1.228.0)
+
+
 ### `russian_portals`
 
 ```yaml
@@ -1168,7 +1184,7 @@ npm run doctor
 
 ## 17. كيفية إضافة مصدر بوابة وظائف جديد
 
-يُعامِل career-ops-ui كل بوابة وظائف بوصفها **محوّلاً** — ملف واحد ضمن [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. يشحن حالياً سجل `server/lib/sources/` مع **85** محوّلاً — **80 إنجليزية + 5 روسية** بوابات. تشمل المجموعة الإنجليزية أنظمة ATS الرئيسية (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)، والمُجمّعات على مستوى اللوحة المُختارة عبر `provider:` صريح (RemoteOK، Remotive، We Work Remotely، NoDesk، Get on Board، Amazon، …)، وأنظمة ATS لكل مستأجر التي يُكتشف تلقائياً من مضيف `careers_url` أو من عنوان `api:` صريح (BambooHR، Personio، Recruitee، Teamtailor، Avature، SAP SuccessFactors، …). **لا حاجة أبداً لعدّ القائمة الكاملة يدوياً هنا — إذ تُكتشف تلقائياً من `server/lib/sources/` وتُعرض حيّةً في القائمة المنسدلة Source على `#/scan`.** انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
+يُعامِل career-ops-ui كل بوابة وظائف بوصفها **محوّلاً** — ملف واحد ضمن [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. يشحن حالياً سجل `server/lib/sources/` مع **86** محوّلاً — **81 إنجليزية + 5 روسية** بوابات. تشمل المجموعة الإنجليزية أنظمة ATS الرئيسية (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)، والمُجمّعات على مستوى اللوحة المُختارة عبر `provider:` صريح (RemoteOK، Remotive، We Work Remotely، NoDesk، Get on Board، Amazon، …)، وأنظمة ATS لكل مستأجر التي يُكتشف تلقائياً من مضيف `careers_url` أو من عنوان `api:` صريح (BambooHR، Personio، Recruitee، Teamtailor، Avature، SAP SuccessFactors، …). **لا حاجة أبداً لعدّ القائمة الكاملة يدوياً هنا — إذ تُكتشف تلقائياً من `server/lib/sources/` وتُعرض حيّةً في القائمة المنسدلة Source على `#/scan`.** انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
 
 > **v1.69.0 (P-14) — اكتشاف تلقائي عند الإضافة.** إضافة مصدر ثاني عشر الآن **مجرد إسقاط ملف**. لم يعد السجل
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

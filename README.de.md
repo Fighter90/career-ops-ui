@@ -7,16 +7,16 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
+[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.227.5** — **Der regionale Scan sprengt den Speicher nicht mehr** — er hielt alle Rohtreffer aus 21 Abfragen bis zum Schluss (742 MB gegen die 490-MB-Obergrenze der Maschine, 4 Abstürze an einem Tag); Dedup und Filterung laufen jetzt pro Abfrage → **177 MB**. Dazu ein Playwright-Flackern behoben. **2865 Tests.**
+> **🆕 Neueste Version — v1.228.0** — **Telegram-Kanäle sind jetzt eine Scan-Quelle.** Listen Sie sie in einem `telegram_channels:`-Block; jeder wird aus seiner öffentlichen Vorschau `t.me/s/<Kanal>` gelesen — 15 Kanäle, **299 Beiträge** in einem echten Lauf. Registry: **86 Quellen** (81 EN + 5 RU). Außerdem: Der Telegram-Assistent antwortete aus einem Bruchteil der Daten — er meldete **9** Treffer, wo der Snapshot Hunderte hielt, weil `/api/scan-results` nur den ganzen ~2-MB-Snapshot liefern konnte; jetzt nimmt er eine paginierte Abfrage. **2893 Tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -361,7 +361,7 @@ career-ops-ui/
 ├─ bin/start.sh              # one-shot launcher (Node check → npm install → server → open browser)
 ├─ package.json              # 2 runtime deps: express, js-yaml
 ├─ server/
-│  ├─ index.mjs              # ~130 LOC orchestrator: middleware + 12 register<Topic>Routes(app) calls + SPA catch-all
+│  ├─ index.mjs              # ~130 LOC orchestrator: middleware + 37 register<Topic>Routes(app) calls + SPA catch-all
 │  └─ lib/
 │     ├─ paths.mjs           # absolute paths to career-ops files (CAREER_OPS_ROOT aware)
 │     ├─ parsers.mjs         # markdown / pipeline / report parsers (GFM-compliant pipe escapes)
@@ -381,7 +381,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co client
 │     │  ├─ hh.mjs           # hh.ru/search/vacancy HTML scraper (paginated, UA-aware)
 │     │  └─ habr.mjs         # career.habr.com HTML parser (no cheerio, regex only)
-│     └─ routes/             # 24 route modules — one per topic (P-2)
+│     └─ routes/             # 37 route modules — one per topic (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (parent .env round-trip)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -410,7 +410,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1945 unit + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 2893 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -420,7 +420,7 @@ career-ops-ui/
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
    ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 17 locales
-   ├─ playwright-smoke.mjs   # 12 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
+   ├─ playwright-smoke.mjs   # 22 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # full Playwright walkthrough
 ```
 
@@ -541,20 +541,20 @@ Wenn `run: true` bei `/api/deep` oder `/api/mode/:slug` gesetzt ist, bevorzugt d
 ## Tests
 
 ```bash
-npm test                       # 1945 unit/integration tests
-npm run test:e2e               # 20 smoke e2e (boots own server)
+npm test                       # 2893 unit/integration tests
+npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 90 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
+npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
 | Suite                       | Tests | Was                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1856** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 218 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
-| `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: jede Route rendert, grundlegende Flows.                                                     |
-| `tests/e2e-comprehensive.mjs` | 23    | Vollständiger Playwright-Durchlauf: 11 Routen + 12 funktionale Flows.                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |
-| **Gesamt**                   | **1955** | **0 Fehler, 0 Flakes**                                                                                    |
+| `node --test tests/*.test.mjs` (unit + integration) | **2893** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 218 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
+| `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: jede Route rendert, grundlegende Flows.                                                     |
+| `tests/e2e-comprehensive.mjs` | 23 | Vollständiger Playwright-Durchlauf: 11 Routen + 12 funktionale Flows.                                              |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |
+| **Gesamt**                   | **2893** | **0 Fehler, 0 Flakes**                                                                                    |
 
 Abdeckung: ~93 % Zeilen / ~83 % Zweige über `--experimental-test-coverage`.
 
@@ -670,7 +670,7 @@ Verwenden Sie sie dann über `data-i18n="scan.newButton"` im Markup oder `t('sca
 
 Issues und PRs willkommen. Hausregeln:
 
-- Führen Sie `npm test` vor dem Pushen aus — **284 checks green** ist die Messlatte (plus 12 Playwright, wenn Sie die UI berühren).
+- Führen Sie `npm test` vor dem Pushen aus — **2893 checks green** ist die Messlatte (plus 101 Playwright, wenn Sie die UI berühren).
 - Nicht-triviale Änderungen durchlaufen die GSD-Pipeline. Siehe [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Ändern Sie nichts im übergeordneten `career-ops/`-Projekt von innerhalb dieses Repos. Der ganze Sinn ist, dass dies ein nicht-invasives Overlay ist. Harte Regeln in [`CLAUDE.md`](CLAUDE.md).
 - Conventional Commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Optionaler Scope: `feat(scan):`. Breaking Change: `feat!:`.

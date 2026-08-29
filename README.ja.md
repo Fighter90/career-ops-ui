@@ -7,16 +7,16 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
+[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.227.5** — **地域スキャンがサーバーを落とさなくなりました** — 21 クエリの生ヒットを最後まで保持していました（ヒープ 742MB に対しマシン上限 490MB、1 日 4 回サービス停止）。現在はクエリごとに重複排除とフィルタ → **177MB**。Playwright の不安定テストも修正。**テスト 2865 件。**
+> **🆕 最新リリース — v1.228.0** — **Telegram チャンネルがスキャンソースになりました。** `telegram_channels:` ブロックに列挙すれば、各チャンネルは公開ウェブプレビュー `t.me/s/<チャンネル>` から読まれます —— 15 チャンネル、実走 1 回で **299 投稿**。レジストリ: **86 ソース**(EN 81 + RU 5)。さらに: Telegram アシスタントはデータの一部だけで答えていました —— スナップショットに数百件ある中で **9** 件と報告していたのは、`/api/scan-results` が約 2 MB のスナップショット全体しか返せなかったためです。現在はページング付きクエリを受け付けます。**テスト 2893 件。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -353,7 +353,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co クライアント
 │     │  ├─ hh.mjs           # api.hh.ru クライアント(UA 対応)
 │     │  └─ habr.mjs         # career.habr.com HTML パーサー(cheerio 不使用、regex のみ)
-│     └─ routes/             # 12 ルートモジュール — トピックごとに 1 つ (P-2)
+│     └─ routes/             # 37 ルートモジュール — トピックごとに 1 つ (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config(親 .env ラウンドトリップ)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -382,7 +382,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1945 unit + 90 Playwright + e2e:full + e2e:smoke
+└─ tests/                    # 2893 unit + 101 Playwright + e2e:full + e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report パーサー(純粋関数)
    ├─ api.test.mjs           # 全エンドポイント、ephemeral server、ネットワークなし
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -396,7 +396,7 @@ career-ops-ui/
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown ラウンドトリップ(エンティティ対応)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
    ├─ help.test.mjs / help-ui.test.mjs    # 全 16 ロケールの i18n parity
-   ├─ playwright-smoke.mjs   # 12 ブラウザフロー(CV 保存、tracker、pipeline、evaluate、config など)
+   ├─ playwright-smoke.mjs   # 22 ブラウザフロー(CV 保存、tracker、pipeline、evaluate、config など)
    └─ e2e{,-comprehensive}.mjs   # Playwright による完全な walkthrough
 ```
 
@@ -518,18 +518,18 @@ LLM エンドポイントはレート制限の対象です(`server/lib/rate-limi
 ## テスト
 
 ```bash
-npm test                       # 1945 unit/integration テスト
-npm run test:e2e               # 20 smoke e2e(独自サーバーを起動)
+npm test                       # 2893 unit/integration テスト
+npm run test:e2e               # 21 smoke e2e(独自サーバーを起動)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 70 Playwright browser-smoke
+npm run test:e2e:browser       # 101 Playwright browser-smoke
 npm run test:coverage          # `npm test` 相当 + V8 coverage
 ```
 
 | スイート                       | テスト数 | 内容                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs`(unit + integration) | **1856** | 全エンドポイント、ephemeral server、ネットワーク非依存。parser、scanner(モック)、runner、anthropic、security headers、XSS、JD サニタイズ、URL バリデーション、i18n parity、レート制限、ファイルロック、safe-fetch、path-traversal、DNS リバインドリダイレクトを含みます。 |
-| `tests/e2e.mjs`(smoke)     | 20    | Playwright ヘッドレス: 各 route のレンダリングと基本フロー。                                                |
-| `tests/e2e-comprehensive.mjs` | 23    | Playwright による完全な walkthrough: 11 routes + 12 機能フロー。                                          |
+| `node --test tests/*.test.mjs`(unit + integration) | **2893** | 全エンドポイント、ephemeral server、ネットワーク非依存。parser、scanner(モック)、runner、anthropic、security headers、XSS、JD サニタイズ、URL バリデーション、i18n parity、レート制限、ファイルロック、safe-fetch、path-traversal、DNS リバインドリダイレクトを含みます。 |
+| `tests/e2e.mjs`(smoke)     | 21 | Playwright ヘッドレス: 各 route のレンダリングと基本フロー。                                                |
+| `tests/e2e-comprehensive.mjs` | 23 | Playwright による完全な walkthrough: 11 routes + 12 機能フロー。                                          |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **32** | ブラウザ駆動 smoke: dashboard レンダリング、ナビゲーション、言語切替、404、health、tracker ラウンドトリップ (BF-1)、pipeline 追加と無効 URL sweep、reports 空、evaluate 手動フォールバック、config キーマスク、CV PUT XSS ストリップ、pipeline preview 400、レート制限、競合書き込み、エンティティ対応 XSS。 |
 | **合計**                   | **500+** | **0 失敗、0 フレーク**                                                                                    |
 
@@ -645,7 +645,7 @@ UI は **17 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru
 
 Issue と PR を歓迎します。ハウスルール:
 
-- プッシュ前に `npm test` を実行してください。**1856 checks green** がバーラインです(UI に手を入れる場合は加えて 90 Playwright)。
+- プッシュ前に `npm test` を実行してください。**2893 checks green** がバーラインです(UI に手を入れる場合は加えて 101 Playwright)。
 - 非自明な変更は GSD パイプラインを経由します。[`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md) を参照してください。
 - 本リポジトリから親 `career-ops/` プロジェクト内のファイルを変更してはなりません。本プロジェクトの本質は、非侵襲的なオーバーレイであることです。ハードルールは [`CLAUDE.md`](CLAUDE.md) にあります。
 - Conventional commits: `feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`。オプショナルスコープ: `feat(scan):`。Breaking change は `feat!:`。

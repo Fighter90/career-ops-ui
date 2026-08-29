@@ -2,6 +2,24 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.228.0] — 2026-08-29
+
+**Eklendi — tarama kaynağı olarak Telegram kanalları ve `/api/scan-results` için sayfalı sorgu kipi.**
+
+### Eklendi
+- **Telegram kanalları artık taranabilir bir kaynak.** `portals.yml` içindeki `telegram_channels:` bloğu onları listeler; her biri herkese açık `https://t.me/s/<kanal>` önizlemesinden okunur. Kayıt defteri: **85 → 86 kaynak** (81 EN + 5 RU), `ALL_ADAPTERS` **80 → 81**. Telegram RSS yayımlamaz ve Bot API, botun yönetmediği bir kanalı okuyamaz — iki bariz yol da kapalı. `/s/` önizlemesi sunucuda üretilmiş düz HTML'dir: oturum yok, JS yok, çerez yok. 16 kanalda doğrulandı: 15'i çıplak bir GET'te 20'şer gönderi döndürdü.
+- **`GET /api/scan-results` sayfalı sorgu kipi kazandı.** `?q=<metin>&limit=50[&region=ru|en][&set=filtered|fresh][&offset=N]` `{ total, returned, offset, limit, set, rows }` döndürür; **`total` sayfalamadan ÖNCEKİ sayıdır**. Parametresiz haliyle rota yine tüm anlık görüntüyü döndürür — `#/scan` tablosu o biçime bağlıdır.
+
+### Düzeltildi
+- **Telegram asistanı verinin bir kısmıyla yanıt veriyordu.** Becerisi zaten `/api/scan-results`'ı gösteriyordu, ama rota yalnızca tüm anlık görüntüyü döndürebiliyordu — gerçek makinede yaklaşık 2 MB — ki bu bir ajanın bağlamına sığmaz. «Tüm Product Manager'ları bul» isteğine, anlık görüntüde yüzlercesi varken **9** eşleşme bildirdi ve «sınırlı bir yerel dizinle çalıştığını» söyledi. Doğruydu: uç noktayı görüyor ama sindiremiyordu. Sayfalı kiple aynı soru 2 KB tutuyor ve dürüst bir `total` döndürüyor. Beceri de yeniden yazıldı: *yeni* gönderileri özetlemeyi istiyordu, yani `filtered` yerine `fresh`'i işaret ediyordu.
+
+### Notlar
+- **Kanal gönderisi düzyazıdır, iş kaydı değil.** Yapılandırılmış alan yok: başlık ilk anlamlı satırdan, şirket/konum/ücret açık etiketlerden alınır. **Gerçek ilanları reklam ve derlemelerden ayırmak mevcut `title_filter`'a bırakılmıştır** — diğer kaynaklar için zaten ayarlanmış olana. Bunlar ipucudur, liste değil.
+- **Şirket asla tahmin edilmez.** Etiket yoksa satır kanala atfedilir (`@rabotaphp`): yanlış bir işveren izleyiciye gerçek olarak girer.
+- **Boş ayrıştırma bir hatadır, «ilan yok» değil.** t.me gizli veya var olmayan bir kanala yönlendirmeyle yanıt verir; sıfır satır döndürmek sakin bir gün gibi okunur ve yapılandırmadaki yazım hatasını sonsuza dek gizler. `jobGeeks` tam da bunu yapar (HTTP 302) ve bilinçli olarak **yapılandırılmadı**.
+- Uzaktan çalışma tespiti `\b` yerine Unicode sözcük sınırı kullanır; `\b` yalnızca ASCII bilir — v1.227.3'te başlık filtresinin düştüğü tuzağın aynısı, burada yayından önce bir testle yakalandı.
+- 15 kanal yapılandırıldı ve canlı doğrulandı: **299 gönderi, 15/15 kanal**. 28 yeni test. Testler: **2865 → 2893**.
+
 ## [1.227.5] — 2026-08-29
 
 **Düzeltildi — bölgesel tarama sunucunun belleğini tüketiyordu ve bir Playwright takımı kendi sökümünde kararsız biçimde düşüyordu.**

@@ -8,6 +8,29 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.228.0] — 2026-08-29
+
+**Added — Telegram channels as a scan source, and a paged query mode on `/api/scan-results`.**
+
+### Added
+- **Telegram channels are now a scannable source.** A `telegram_channels:` block in `portals.yml` lists them; each is read from its public web preview at `https://t.me/s/<channel>`. They live in their own block rather than in `tracked_companies` because they are not employers — the scanner filters that list through `detectApi()`, and a channel has no careers URL to detect. Registry: **85 → 86 sources** (81 EN + 5 RU), `ALL_ADAPTERS` **80 → 81**.
+
+  Telegram publishes no RSS and the Bot API cannot read a channel a bot does not administer, so neither obvious route works for someone else's job channel. The `/s/` preview is plain server-rendered HTML — no auth, no JS, no cookie. Verified across 16 channels: 15 returned 20 posts each on a bare GET.
+
+  `channel:` accepts every way a person writes it — `rabotaphp`, `@rabotaphp`, `https://t.me/rabotaphp`, even a link to a specific post. The parser anchors on the three things a Telegram redesign is least likely to move: `data-post="<channel>/<id>"` (which both splits the page into post windows and carries the only stable URL a post has), the message-text container, and the ISO `<time datetime>`.
+
+- **`GET /api/scan-results` gained a paged query mode.** `?q=<text>&limit=50[&region=ru|en][&set=filtered|fresh][&offset=N]` returns `{ total, returned, offset, limit, set, rows }`, where **`total` is the count before paging**. No parameters still returns the bare snapshot unchanged — the `#/scan` table depends on that shape.
+
+### Fixed
+- **The Telegram assistant was answering from a fraction of the data.** Its skill already pointed at `/api/scan-results`, but that route only ever returned the whole snapshot — ~2 MB on a real box — which does not fit in an agent's context. Asked to "find all Продуктовый менеджер" it reported **9** matches where the snapshot held hundreds, and told the user it was "working with a limited local index". That was true, and the cause was that it could see the endpoint but not consume it. With the paged mode the same question now costs 2 KB and returns an honest `total`. The skill was also rewritten: it had said to summarize the *new* postings, which points at `fresh` (last run only) rather than `filtered` (everything kept).
+
+### Notes
+- **A channel post is prose, not a job record.** Unlike every other source here, there are no structured fields to read: the source lifts a title from the first substantive line, best-effort company/location/salary from explicit labels (`Компания:`, `Локация:`, a currency amount), and leaves the full text in the description. **Separating real postings from ads and digests is left to the existing `title_filter`** — the same one already tuned for other sources. Treat these as leads, not listings.
+- **A company is never guessed.** With no `Компания:` label the row is attributed to the channel (`@rabotaphp`), because a wrong employer enters the tracker as fact.
+- **An empty parse is an error, not "no vacancies".** t.me answers a private or missing channel with a redirect; returning zero rows there would read as a quiet day and hide a typo in the config forever. `jobGeeks` from the original list does exactly this (HTTP 302) and is deliberately **not** configured.
+- Remote detection uses a Unicode word boundary rather than `\b`: `\b` is ASCII-only, so a space before a Cyrillic word is not a boundary and `\bудал` never matched "удалёнка" — the same trap the title filter hit in v1.227.3, caught here by a test before it shipped.
+- 15 channels configured and verified live: **299 posts across 15/15 channels**, `salary_pm` yielding 13 salary figures out of 20. 28 new tests. Test suite: **2865 → 2893**.
+
 ## [1.227.5] — 2026-08-29
 
 **Fixed — the regional scan ran the server out of memory, and a Playwright suite flaked on its own teardown.**

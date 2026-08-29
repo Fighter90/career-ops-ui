@@ -7,16 +7,16 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
+[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.227.5** — **Bölgesel tarama artık belleği tüketmiyor** — 21 sorgunun tüm ham sonuçlarını sona kadar tutuyordu (742 MB'a karşı makinenin 490 MB tavanı, bir günde 4 servis çöküşü); artık ayıklama ve süzme her sorguda → **177 MB**. Ayrıca bir Playwright kararsızlığı giderildi. **2865 test.**
+> **🆕 Son sürüm — v1.228.0** — **Telegram kanalları artık bir tarama kaynağı.** Onları bir `telegram_channels:` bloğunda listeleyin; her biri herkese açık `t.me/s/<kanal>` önizlemesinden okunur — 15 kanal, tek bir gerçek çalıştırmada **299 gönderi**. Kayıt defteri: **86 kaynak** (81 EN + 5 RU). Ayrıca: Telegram asistanı verinin bir kısmıyla yanıt veriyordu — anlık görüntüde yüzlercesi varken **9** eşleşme bildiriyordu, çünkü `/api/scan-results` yalnızca ~2 MB'lık anlık görüntünün tamamını döndürebiliyordu; artık sayfalı sorgu alıyor. **2893 test.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -361,7 +361,7 @@ career-ops-ui/
 ├─ bin/start.sh              # tek seferlik başlatıcı (Node kontrolü → npm install → sunucu → tarayıcı aç)
 ├─ package.json              # 2 çalışma zamanı bağımlılığı: express, js-yaml
 ├─ server/
-│  ├─ index.mjs              # ~130 LOC orkestratör: middleware + 12 register<Topic>Routes(app) çağrısı + SPA catch-all
+│  ├─ index.mjs              # ~130 LOC orkestratör: middleware + 37 register<Topic>Routes(app) çağrısı + SPA catch-all
 │  └─ lib/
 │     ├─ paths.mjs           # career-ops dosyalarına mutlak yollar (CAREER_OPS_ROOT bilinçli)
 │     ├─ parsers.mjs         # markdown / pipeline / rapor ayrıştırıcıları (GFM uyumlu dikey çubuk kaçışları)
@@ -381,7 +381,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co istemcisi
 │     │  ├─ hh.mjs           # hh.ru/search/vacancy HTML kazıyıcı (sayfalı, UA bilinçli)
 │     │  └─ habr.mjs         # career.habr.com HTML ayrıştırıcı (cheerio yok, yalnızca regex)
-│     └─ routes/             # 12 route modülü — konu başına bir tane (P-2)
+│     └─ routes/             # 37 route modülü — konu başına bir tane (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (üst .env gidiş-dönüşü)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -410,7 +410,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1945 birim + 90 Playwright + 23/23 e2e:full + 20 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 2893 birim + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch
@@ -420,7 +420,7 @@ career-ops-ui/
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown gidiş-dönüşü
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
    ├─ help.test.mjs / help-ui.test.mjs    # 17 yerel dilin tamamında i18n eşitliği
-   ├─ playwright-smoke.mjs   # 12 tarayıcı akışı (CV kaydetme, tracker, pipeline, evaluate, config, vb.)
+   ├─ playwright-smoke.mjs   # 22 tarayıcı akışı (CV kaydetme, tracker, pipeline, evaluate, config, vb.)
    └─ e2e{,-comprehensive}.mjs   # tam Playwright gezintisi
 ```
 
@@ -541,20 +541,20 @@ event: error    data: { message }
 ## Testler
 
 ```bash
-npm test                       # 1945 birim/entegrasyon testi
-npm run test:e2e               # 20 smoke e2e (kendi sunucusunu başlatır)
+npm test                       # 2893 birim/entegrasyon testi
+npm run test:e2e               # 21 smoke e2e (kendi sunucusunu başlatır)
 npm run test:e2e:full          # 23 kapsamlı e2e
-npm run test:e2e:browser       # 70 Playwright tarayıcı (smoke + full-cycle + forms + locale-sweep)
+npm run test:e2e:browser       # 101 Playwright tarayıcı (smoke + full-cycle + forms + locale-sweep)
 npm run test:coverage          # `npm test` ile aynı, artı V8 kapsamı
 ```
 
 | Paket                       | Test | Ne                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (birim + entegrasyon) | **1856** | Her uç nokta, geçici sunucu, ağ yok. 218 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
-| `tests/e2e.mjs` (smoke)      | 20    | Playwright başsız: her rota render edilir, temel akışlar.                                                     |
-| `tests/e2e-comprehensive.mjs` | 23    | Tam Playwright gezintisi: 11 rota + 12 işlevsel akış.                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **90** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |
-| **Toplam**                   | **1955** | **0 başarısızlık, 0 kararsızlık**                                                                                    |
+| `node --test tests/*.test.mjs` (birim + entegrasyon) | **2893** | Her uç nokta, geçici sunucu, ağ yok. 218 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
+| `tests/e2e.mjs` (smoke)      | 21 | Playwright başsız: her rota render edilir, temel akışlar.                                                     |
+| `tests/e2e-comprehensive.mjs` | 23 | Tam Playwright gezintisi: 11 rota + 12 işlevsel akış.                                              |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |
+| **Toplam**                   | **2893** | **0 başarısızlık, 0 kararsızlık**                                                                                    |
 
 Kapsam: `--experimental-test-coverage` aracılığıyla ~%93 satır / ~%83 dal.
 
@@ -670,7 +670,7 @@ Ardından bunu işaretlemede `data-i18n="scan.newButton"` ya da JS'de `t('scan.n
 
 Issue'lar ve PR'lar memnuniyetle karşılanır. Ev kuralları:
 
-- Push'tan önce `npm test` çalıştırın — **284 kontrol yeşil** çıtadır (arayüze dokunursanız artı 12 Playwright).
+- Push'tan önce `npm test` çalıştırın — **2893 kontrol yeşil** çıtadır (arayüze dokunursanız artı 101 Playwright).
 - Önemsiz olmayan değişiklikler GSD pipeline'ından geçer. Bkz. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Bu depo içinden üst `career-ops/` projesindeki hiçbir şeyi değiştirmeyin. Bütün mesele, bunun invaziv olmayan bir örtü olmasıdır. Katı kurallar [`CLAUDE.md`](CLAUDE.md) içinde.
 - Konvansiyonel commit'ler: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. İsteğe bağlı kapsam: `feat(scan):`. Kırıcı değişiklik: `feat!:`.

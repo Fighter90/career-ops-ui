@@ -744,6 +744,22 @@ tracked_companies:
 Point the scanner at any job board that publishes an RSS/Atom feed (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …) by adding an entry with `provider: rss` plus an `rss:` (or `feed_url:`) key — **no code changes**. The RSS adapter parses each `<item>` (CDATA + HTML entities, titles/companies tag-stripped), normalizes it to a job, and runs the same `title_filter` / `location_filter` + dedup + pipeline-append flow as ATS sources. **RSS** then appears as a selectable source in the `#/scan` filter dropdown. (web-ui v1.62.x)
 
 
+### `telegram_channels` (public Telegram job channels)
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+Scan any **public** Telegram channel by listing it here — no bot token, no API key. Each channel is read from its public web preview at `https://t.me/s/<channel>`, which is plain server-rendered HTML. `channel:` accepts any form (`rabotaphp`, `@rabotaphp`, or a full `t.me/…` link); `max_posts:` caps how many recent posts are read (default 100, hard cap 300). Channels live in their own top-level block rather than in `tracked_companies` because a channel is not an employer and has no careers URL to detect.
+
+**A channel post is prose, not a job record** — there are no structured fields. The source lifts a title from the first substantive line, reads company / location / salary only from explicit labels (`Компания:`, `Локация:`), and leaves the full text in the description. Separating real postings from ads and digests is your `title_filter`'s job. A private or non-existent channel is reported as an **error**, never as "no vacancies". **Telegram** then appears as a selectable source in the `#/scan` filter dropdown. (web-ui v1.228.0)
+
+
 ### `russian_portals`
 
 ```yaml
@@ -1719,7 +1735,7 @@ output, and search the issue tracker on
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
 how to fetch + normalize one board's results. Currently the
-`server/lib/sources/` registry ships **85** adapters — **80 English + 5 Russian**
+`server/lib/sources/` registry ships **86** adapters — **81 English + 5 Russian**
 boards. The English set spans the major ATSes (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), board-wide aggregators selected by an
 explicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,

@@ -639,6 +639,22 @@ tracked_companies:
 RSS/Atom 피드를 게시하는 모든 채용 보드(LaraJobs, WeWorkRemotely, RemoteOK, golangprojects 등)에 `provider: rss` 와 `rss:`(또는 `feed_url:`) 키를 가진 항목을 추가하기만 하면 스캐너를 연결할 수 있습니다 — **코드 변경 불필요**. RSS 어댑터는 각 `<item>` 을 파싱하고(CDATA + HTML 엔티티, 제목/회사명 태그 제거) 채용 공고로 정규화한 뒤, ATS 소스와 동일한 `title_filter` / `location_filter` + 중복 제거 + 파이프라인 추가 흐름을 실행합니다. 이후 **RSS** 가 `#/scan` 필터 드롭다운에 선택 가능한 소스로 표시됩니다. (web-ui v1.62.x)
 
 
+### `telegram_channels`(공개 Telegram 채용 채널)
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+**공개** Telegram 채널은 여기에 나열하기만 하면 스캔됩니다 — 봇 토큰도, API 키도 필요 없습니다. 각 채널은 공개 웹 미리보기 `https://t.me/s/<채널>`에서 읽으며, 이는 서버가 렌더링한 순수 HTML입니다. `channel:`은 어떤 표기든 받습니다(`rabotaphp`, `@rabotaphp`, 또는 전체 `t.me/…` 링크). `max_posts:`는 읽어올 최근 게시물 수를 제한합니다(기본 100, 하드 상한 300). 채널은 `tracked_companies`가 아니라 별도의 최상위 블록에 둡니다 — 채널은 고용주가 아니고, 탐지할 채용 URL도 없기 때문입니다.
+
+**채널 게시물은 산문이지 채용 레코드가 아닙니다** — 구조화된 필드가 없습니다. 소스는 첫 실질적 줄에서 제목을 취하고, 회사 / 근무지 / 연봉은 명시적 라벨(`Компания:`, `Локация:`)에서만 읽으며, 본문 전체는 설명에 남깁니다. 진짜 공고를 광고·다이제스트와 가르는 일은 여러분의 `title_filter` 몫입니다. 비공개이거나 존재하지 않는 채널은 “공고 없음”이 아니라 **오류**로 보고됩니다. 이후 **Telegram**이 `#/scan` 필터에서 선택 가능한 소스로 나타납니다. (web-ui v1.228.0)
+
+
 ### `russian_portals`
 
 ```yaml
@@ -1584,7 +1600,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 
 ## 17. 새 채용 포털 소스를 추가하는 방법
 
-career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. 현재 `server/lib/sources/` 레지스트리는 **85**개의 어댑터를 포함합니다 — **영문 80개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
+career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. 현재 `server/lib/sources/` 레지스트리는 **86**개의 어댑터를 포함합니다 — **영문 81개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
 
 > **v1.69.0 (P-14) — 드롭인 자동 검색.** 12번째 소스 추가는 이제
 > **순수 파일 드롭**입니다. 레지스트리

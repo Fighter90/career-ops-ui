@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
+[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.227.5** — **지역 스캔이 더 이상 서버를 죽이지 않습니다** — 21개 쿼리의 모든 결과를 끝까지 들고 있었습니다(힙 742MB, 머신 상한 490MB, 하루 4회 서비스 다운). 이제 쿼리마다 중복 제거·필터링 → **177MB**. Playwright 플레이크도 수정. **테스트 2865개.**
+> **🆕 최신 릴리스 — v1.228.0** — **Telegram 채널이 스캔 소스가 되었습니다.** `telegram_channels:` 블록에 나열하면 각 채널은 공개 웹 미리보기 `t.me/s/<채널>`에서 읽힙니다 — 15개 채널, 실제 실행 한 번에 **299개 게시물**. 레지스트리: **86개 소스**(EN 81 + RU 5). 여기에: Telegram 어시스턴트는 데이터의 일부만 보고 답했습니다 — 스냅샷에 수백 건이 있는데도 **9**건이라 보고했는데, `/api/scan-results`가 약 2MB짜리 스냅샷 전체만 돌려줄 수 있었기 때문입니다. 이제 페이지네이션 질의를 받습니다. **테스트 2893개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -328,7 +328,7 @@ career-ops-ui/
 ├─ bin/start.sh              # 원샷 런처 (Node 체크 → npm install → 서버 → 브라우저 열기)
 ├─ package.json              # 2개의 런타임 의존성: express, js-yaml
 ├─ server/
-│  ├─ index.mjs              # ~130 LOC 오케스트레이터: 미들웨어 + 12개 register<Topic>Routes(app) 호출 + SPA catch-all
+│  ├─ index.mjs              # ~130 LOC 오케스트레이터: 미들웨어 + 37 register<Topic>Routes(app) 호출 + SPA catch-all
 │  └─ lib/
 │     ├─ paths.mjs           # career-ops 파일의 절대 경로 (CAREER_OPS_ROOT 인식)
 │     ├─ parsers.mjs         # markdown / pipeline / report 파서 (GFM 호환 파이프 이스케이프)
@@ -351,7 +351,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co 클라이언트
 │     │  ├─ hh.mjs           # api.hh.ru 클라이언트 (UA 인식)
 │     │  └─ habr.mjs         # career.habr.com HTML 파서 (cheerio 없음, 정규식만)
-│     └─ routes/             # 12개 라우트 모듈 — 토픽당 하나 (P-2)
+│     └─ routes/             # 37 라우트 모듈 — 토픽당 하나 (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (부모 .env 라운드트립)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -380,7 +380,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1945 unit + 90 Playwright + 23 e2e:full + 20 e2e:smoke
+└─ tests/                    # 2893 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -394,7 +394,7 @@ career-ops-ui/
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown 라운드트립 (entity-aware, v1.22.0)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
    ├─ help.test.mjs / help-ui.test.mjs    # 17개 로케일 i18n 패리티
-   ├─ playwright-smoke.mjs   # 12개 브라우저 플로우
+   ├─ playwright-smoke.mjs   # 22개 브라우저 플로우
    └─ e2e{,-comprehensive}.mjs   # 전체 Playwright 워크스루
 ```
 
@@ -514,20 +514,20 @@ event: error    data: { message }
 ## 테스트
 
 ```bash
-npm test                       # 1945 unit/integration 테스트
-npm run test:e2e               # 20 smoke e2e (자체 서버 부팅)
+npm test                       # 2893 unit/integration 테스트
+npm run test:e2e               # 21 smoke e2e (자체 서버 부팅)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 70 Playwright browser-smoke
+npm run test:e2e:browser       # 101 Playwright browser-smoke
 npm run test:coverage          # `npm test`와 동일 + V8 coverage
 ```
 
 | Suite                       | Tests | 내용                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1856** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
-| `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: 모든 라우트 렌더링, 기본 플로우.                                                     |
-| `tests/e2e-comprehensive.mjs` | 23    | 전체 Playwright 워크스루: 11개 라우트 + 12개 기능 플로우.                                              |
+| `node --test tests/*.test.mjs` (unit + integration) | **2893** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
+| `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: 모든 라우트 렌더링, 기본 플로우.                                                     |
+| `tests/e2e-comprehensive.mjs` | 23 | 전체 Playwright 워크스루: 11개 라우트 + 12개 기능 플로우.                                              |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | 브라우저 주도 smoke: dashboard render, navigation, language switch, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL 스윕, reports empty, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400. |
-| **합계**                   | **1856** | **0 fails, 0 flakes**                                                                                    |
+| **합계**                   | **2893** | **0 fails, 0 flakes**                                                                                    |
 
 Coverage: `--experimental-test-coverage` 기준 약 93% 라인 / 약 83% 브랜치.
 
@@ -643,7 +643,7 @@ UI는 **17개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `
 
 이슈와 PR을 환영합니다. 하우스 룰은 다음과 같습니다.
 
-- 푸시 전에 `npm test`를 실행합니다 — **1856 checks green**이 기준입니다(UI를 건드리는 경우 90개의 Playwright 테스트도 포함).
+- 푸시 전에 `npm test`를 실행합니다 — **2893 checks green**이 기준입니다(UI를 건드리는 경우 101개의 Playwright 테스트도 포함).
 - 비자명한 변경은 GSD 파이프라인을 거칩니다. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)를 참고하십시오.
 - 이 저장소 내부에서 부모 `career-ops/` 프로젝트의 어떤 파일도 수정하지 마십시오. 핵심 가치는 이것이 비침습적 오버레이라는 점에 있습니다. [`CLAUDE.md`](CLAUDE.md)의 hard rule을 확인하십시오.
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. 선택적 스코프: `feat(scan):`. Breaking change: `feat!:`.

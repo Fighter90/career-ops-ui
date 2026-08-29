@@ -9,6 +9,24 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.228.0] — 2026-08-29
+
+**Dodano — kanały Telegrama jako źródło skanowania oraz stronicowany tryb zapytań w `/api/scan-results`.**
+
+### Dodano
+- **Kanały Telegrama są teraz skanowalnym źródłem.** Blok `telegram_channels:` w `portals.yml` je wymienia; każdy czytany jest z publicznego podglądu `https://t.me/s/<kanał>`. Rejestr: **85 → 86 źródeł** (81 EN + 5 RU), `ALL_ADAPTERS` **80 → 81**. Telegram nie publikuje RSS, a Bot API nie odczyta kanału, którym bot nie administruje — obie oczywiste drogi są zamknięte. Podgląd `/s/` to zwykły HTML renderowany po stronie serwera: bez logowania, bez JS, bez ciasteczek. Sprawdzone na 16 kanałach: 15 zwróciło po 20 postów na gołym GET.
+- **`GET /api/scan-results` zyskał stronicowany tryb zapytań.** `?q=<tekst>&limit=50[&region=ru|en][&set=filtered|fresh][&offset=N]` zwraca `{ total, returned, offset, limit, set, rows }`, gdzie **`total` to liczba PRZED stronicowaniem**. Bez parametrów trasa nadal zwraca cały snapshot — tabela `#/scan` zależy od tego kształtu.
+
+### Naprawiono
+- **Asystent Telegrama odpowiadał z ułamka danych.** Jego skill wskazywał już `/api/scan-results`, ale trasa umiała zwrócić wyłącznie cały snapshot — około 2 MB — co nie mieści się w kontekście agenta. Na „znajdź wszystkich Product Managerów” podał **9** trafień tam, gdzie snapshot miał setki, i powiedział, że „pracuje na ograniczonym lokalnym indeksie”. To była prawda: widział endpoint, lecz nie mógł go przetworzyć. Ze stronicowaniem to samo pytanie kosztuje 2 KB i zwraca uczciwy `total`. Skill też przepisano: kazał streszczać *nowe* posty, czyli wskazywał `fresh` zamiast `filtered`.
+
+### Uwagi
+- **Post kanału to proza, nie rekord oferty.** Brak pól strukturalnych: tytuł z pierwszej treściwej linii, firma/lokalizacja/widełki z jawnych etykiet. **Oddzielanie prawdziwych ofert od reklam i przeglądów zostaje przy istniejącym `title_filter`** — tym samym, dostrojonym już dla innych źródeł. To tropy, nie lista.
+- **Firmy nigdy się nie zgaduje.** Bez etykiety wiersz przypisywany jest kanałowi (`@rabotaphp`): błędny pracodawca trafia do trackera jako fakt.
+- **Puste parsowanie to błąd, nie „brak ofert”.** t.me odpowiada przekierowaniem na kanał prywatny lub nieistniejący; zwrócenie zera wierszy czytałoby się jako spokojny dzień i na zawsze ukryło literówkę w konfiguracji. `jobGeeks` robi dokładnie to (HTTP 302) i celowo **nie** jest skonfigurowany.
+- Wykrywanie pracy zdalnej używa uniksowej granicy słowa Unicode zamiast `\b`, które obsługuje tylko ASCII — ta sama pułapka, w którą wpadł filtr tytułów w v1.227.3, tu złapana przez test przed wydaniem.
+- 15 kanałów skonfigurowanych i sprawdzonych na żywo: **299 postów, 15/15 kanałów**. 28 nowych testów. Testy: **2865 → 2893**.
+
 ## [1.227.5] — 2026-08-29
 
 **Naprawiono — skan regionalny wyczerpywał pamięć serwera, a jeden zestaw Playwright zawodził na własnym demontażu.**

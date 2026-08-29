@@ -597,6 +597,22 @@ tracked_companies:
 只需在 `portals.yml` 中加入一筆帶 `provider: rss` 與 `rss:`(或 `feed_url:`)鍵的項目,即可讓掃描器對接任何發佈 RSS/Atom 來源的徵才看板(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 等)—— **無需改動程式碼**。RSS 轉接器解析每個 `<item>`(CDATA + HTML 實體,標題/公司名去除標籤),將其正規化為職缺,並執行與 ATS 來源相同的 `title_filter` / `location_filter` + 去重 + 附加到 pipeline 的流程。隨後 **RSS** 會作為可選來源出現在 `#/scan` 的篩選下拉選單中。(web-ui v1.62.x)
 
 
+### `telegram_channels`（公開 Telegram 招聘頻道）
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+只要在這裡列出，任何**公開**的 Telegram 頻道都可被掃描 —— 無需機器人權杖，也無需 API 金鑰。每個頻道從其公開網頁預覽 `https://t.me/s/<頻道>` 讀取，那是伺服器渲染的純 HTML。`channel:` 接受任意寫法（`rabotaphp`、`@rabotaphp`，或完整的 `t.me/…` 連結）；`max_posts:` 限制讀取多少則最近貼文（預設 100，硬上限 300）。頻道放在自己的頂層區塊而不是 `tracked_companies` 裡，因為頻道不是雇主，也沒有可供偵測的招聘頁 URL。
+
+**頻道貼文是散文，不是職缺記錄** —— 沒有結構化欄位。來源從第一行實質內容取標題，公司／地點／薪資只從明確標籤（`Компания:`、`Локация:`）讀取，內文全文留在描述裡。把真實職缺與廣告、摘要區分開，是你的 `title_filter` 的工作。私有或不存在的頻道會報為**錯誤**，而不是「沒有職缺」。此後 **Telegram** 會作為可選來源出現在 `#/scan` 的篩選器中。（web-ui v1.228.0）
+
+
 ### `russian_portals`
 
 ```yaml
@@ -1504,7 +1520,7 @@ scan 執行、設定變更、mode 執行。
 
 ## 17. 如何新增職位入口網站來源
 
-career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。目前,`server/lib/sources/` 註冊表內建 **85** 個 adapter —— **80 個英文 + 5 個俄文**板塊。英文集合涵蓋主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由明確 `provider:` 選擇的全板塊聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及從 `careers_url` 主機或明確 `api:` URL 自動偵測的按租戶 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整清單永遠無需在此手動統計 —— 它會從 `server/lib/sources/` 自動探索,並在 `#/scan` 的 Source 下拉選單中即時顯示。** YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
+career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。目前,`server/lib/sources/` 註冊表內建 **86** 個 adapter —— **81 個英文 + 5 個俄文**板塊。英文集合涵蓋主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由明確 `provider:` 選擇的全板塊聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及從 `careers_url` 主機或明確 `api:` URL 自動偵測的按租戶 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整清單永遠無需在此手動統計 —— 它會從 `server/lib/sources/` 自動探索,並在 `#/scan` 的 Source 下拉選單中即時顯示。** YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 直接放入即自動探索。** 新增第 12 個來源現在只需**純粹的檔案放入**。registry
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

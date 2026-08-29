@@ -482,3 +482,52 @@ entry's `jobstreet:` block:
       maxPages: 3
     enabled: true
 ```
+
+---
+
+## Telegram channels (v1.228.0)
+
+Public Telegram channels are configured in their own top-level block, not in
+`tracked_companies` — a channel is not an employer and has no `careers_url` for
+the scanner's `detectApi()` to recognize.
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    # PHP
+    - { name: "PHP jobs",        channel: rabotaphp }
+    - { name: "PHP dev job",     channel: phpdevjob }
+    # Go
+    - { name: "Go jobs",         channel: rabota_golang }
+    - { name: "Golang Jobs IT",  channel: GolangJobsit }
+    # Product
+    - { name: "For Products",    channel: forproducts }
+    - { name: "Salary PM",       channel: salary_pm, max_posts: 50 }
+```
+
+Each channel is read from its public web preview at `https://t.me/s/<channel>` —
+plain server-rendered HTML, no bot token and no API key. (Telegram publishes no
+RSS, and the Bot API cannot read a channel your bot does not administer, so
+neither of the obvious routes works for someone else's job channel.)
+
+| Key | Required | Notes |
+| --- | --- | --- |
+| `channel` | yes | `rabotaphp`, `@rabotaphp`, `https://t.me/rabotaphp` and a link to a single post are all accepted. |
+| `name` | no | Display name in the results table. Defaults to the handle. |
+| `enabled` | no | Defaults to `true`. |
+| `max_posts` | no | Per-channel override of the block-level cap. Default 100, hard cap 300. |
+
+Two behaviours worth knowing before you tune your filters:
+
+- **A channel post is prose, not a job record.** There are no structured fields.
+  The title is the first substantive line; company / location / salary are read
+  only from explicit labels (`Компания:`, `Локация:`, a currency amount). With no
+  label, the row is attributed to the channel (`@rabotaphp`) rather than guessed —
+  a wrong employer would enter the tracker as fact. Separating real postings from
+  ads and digests is your `title_filter`'s job, the same one you already tune for
+  other sources.
+- **An empty parse is an error, not "no vacancies".** `t.me` answers a private or
+  missing channel with a redirect; returning zero rows there would read as a quiet
+  day and hide a typo in this file forever.

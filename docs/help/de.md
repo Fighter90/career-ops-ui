@@ -790,6 +790,22 @@ tracked_companies:
 Richten Sie den Scanner auf jedes Job-Board, das einen RSS-/Atom-Feed veröffentlicht (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …), indem Sie einen Eintrag mit `provider: rss` plus einem `rss:`- (oder `feed_url:`-)Schlüssel hinzufügen — **keine Code-Änderungen**. Der RSS-Adapter parst jedes `<item>` (CDATA + HTML-Entities, Titel/Unternehmen tag-bereinigt), normalisiert es zu einer Stelle und durchläuft denselben `title_filter` / `location_filter` + Dedup + Pipeline-Anhängen-Ablauf wie ATS-Quellen. **RSS** erscheint dann als auswählbare Quelle im `#/scan`-Filter-Dropdown. (web-ui v1.62.x)
 
 
+### `telegram_channels` (öffentliche Telegram-Jobkanäle)
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+Scannen Sie jeden **öffentlichen** Telegram-Kanal, indem Sie ihn hier auflisten — ohne Bot-Token, ohne API-Schlüssel. Jeder Kanal wird aus seiner öffentlichen Vorschau `https://t.me/s/<Kanal>` gelesen, schlichtes servergerendertes HTML. `channel:` akzeptiert jede Schreibweise (`rabotaphp`, `@rabotaphp` oder einen vollen `t.me/…`-Link); `max_posts:` begrenzt, wie viele neue Beiträge gelesen werden (Standard 100, harte Grenze 300). Kanäle stehen in einem eigenen Top-Level-Block statt in `tracked_companies`, weil ein Kanal kein Arbeitgeber ist und keine Karriere-URL hat, die sich erkennen ließe.
+
+**Ein Kanalbeitrag ist Prosa, kein Stellendatensatz** — es gibt keine strukturierten Felder. Die Quelle nimmt den Titel aus der ersten inhaltlichen Zeile, liest Firma / Ort / Gehalt nur aus ausdrücklichen Labels (`Компания:`, `Локация:`) und lässt den ganzen Text in der Beschreibung. Echte Stellen von Werbung und Digests zu trennen ist Aufgabe Ihres `title_filter`. Ein privater oder nicht existierender Kanal wird als **Fehler** gemeldet, nie als „keine Stellen“. **Telegram** erscheint danach als wählbare Quelle im `#/scan`-Filter. (web-ui v1.228.0)
+
+
 ### `russian_portals`
 
 ```yaml
@@ -1820,7 +1836,7 @@ kopieren Sie die Ausgabe und durchsuchen Sie den Issue-Tracker unter
 
 ## 17. So fügen Sie eine neue Jobportal-Quelle hinzu
 
-career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß, wie man die Ergebnisse eines Boards abruft + normalisiert. Aktuell liefert die `server/lib/sources/`-Registry **85** Adapter — **80 englische + 5 russische** Boards. Das englische Set umfasst die großen ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-weite Aggregatoren, die per explizitem `provider:` ausgewählt werden (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), sowie Per-Mandant-ATSes, die automatisch aus einem `careers_url`-Host oder einer expliziten `api:`-URL erkannt werden (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Die vollständige Liste muss hier niemals von Hand gezählt werden — sie wird automatisch aus `server/lib/sources/` ermittelt und live im Source-Dropdown von `#/scan` angezeigt.** Siehe §5 für das YAML und `docs/portals-examples.md` für Kopier-Einfüge-Einträge.
+career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß, wie man die Ergebnisse eines Boards abruft + normalisiert. Aktuell liefert die `server/lib/sources/`-Registry **86** Adapter — **81 englische + 5 russische** Boards. Das englische Set umfasst die großen ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-weite Aggregatoren, die per explizitem `provider:` ausgewählt werden (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), sowie Per-Mandant-ATSes, die automatisch aus einem `careers_url`-Host oder einer expliziten `api:`-URL erkannt werden (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Die vollständige Liste muss hier niemals von Hand gezählt werden — sie wird automatisch aus `server/lib/sources/` ermittelt und live im Source-Dropdown von `#/scan` angezeigt.** Siehe §5 für das YAML und `docs/portals-examples.md` für Kopier-Einfüge-Einträge.
 
 > **v1.69.0 (P-14) — Drop-in-Auto-Discovery.** Das Hinzufügen einer 12. Quelle ist
 > jetzt ein **reines Datei-Ablegen**. Die Registry
