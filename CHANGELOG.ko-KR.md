@@ -29,7 +29,8 @@
 - **회사는 절대 추측하지 않습니다.** 라벨이 없으면 행은 채널(`@rabotaphp`)에 귀속됩니다. 잘못된 고용주는 트래커에 사실로 들어가기 때문입니다.
 - **파싱 결과 0은 오류이지 “공고 없음”이 아닙니다.** 비공개·부재 채널에 t.me는 리디렉션으로 답합니다. 여기서 0건을 반환하면 조용한 하루로 읽히고 설정의 오타를 영원히 감춥니다. 원래 목록의 `jobGeeks`가 정확히 그러하며(HTTP 302) 의도적으로 **설정하지 않았습니다**.
 - 원격 판정은 `\b` 대신 유니코드 단어 경계를 씁니다. `\b`는 ASCII 전용이라 키릴 문자 앞의 공백은 경계가 되지 않습니다 — v1.227.3에서 제목 필터가 밟은 바로 그 함정이며, 이번엔 출시 전에 테스트가 잡았습니다.
-- 채널 15개 설정 및 실데이터 검증: **299개 게시물, 15/15 채널**. 신규 테스트 28개. 테스트: **2865 → 2893**.
+- 채널 15개 설정 및 실데이터 검증: **299개 게시물, 15/15 채널**. 신규 테스트 28개. 테스트: **2865 → 2895**.
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 

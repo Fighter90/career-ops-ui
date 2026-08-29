@@ -31,7 +31,8 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 - **La empresa nunca se adivina.** Sin etiqueta, la fila se atribuye al canal (`@rabotaphp`): un empleador equivocado entra en el tracker como un hecho.
 - **Un análisis vacío es un error, no «no hay vacantes».** t.me responde con una redirección a un canal privado o inexistente; devolver cero filas se leería como un día tranquilo y ocultaría una errata en la configuración para siempre. `jobGeeks` hace exactamente eso (HTTP 302) y deliberadamente **no** está configurado.
 - La detección de remoto usa una frontera de palabra Unicode en lugar de `\b`, que es solo ASCII: la misma trampa que el filtro de títulos sufrió en v1.227.3, aquí detectada por un test antes de publicar.
-- 15 canales configurados y verificados en vivo: **299 publicaciones, 15/15 canales**. 28 tests nuevos. Pruebas: **2865 → 2893**.
+- 15 canales configurados y verificados en vivo: **299 publicaciones, 15/15 canales**. 30 tests nuevos. Pruebas: **2865 → 2895**.
+- **Los recuentos de tests del README saltaron cientos — y no, esta versión no los añadió.** Los README localizados llevaban totales congelados: 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527, cada uno obsoleto desde una versión distinta, y varios contradiciendo la insignia de su propia página. Ahora todos dicen **2895**, verificado ejecutando la suite y no copiando una insignia. Igual de obsoletos estaban Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), módulos de rutas (12 / 32 → **37**), flujos smoke (12 → **22**) y el número de archivos de test (218 → **329**). La fila `Total` repetía el recuento unitario y por eso no sumaba las tres suites de debajo; ahora muestra la suma real (**3040**).
 
 ## [1.227.5] — 2026-08-29
 

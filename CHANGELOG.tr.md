@@ -18,7 +18,8 @@
 - **Şirket asla tahmin edilmez.** Etiket yoksa satır kanala atfedilir (`@rabotaphp`): yanlış bir işveren izleyiciye gerçek olarak girer.
 - **Boş ayrıştırma bir hatadır, «ilan yok» değil.** t.me gizli veya var olmayan bir kanala yönlendirmeyle yanıt verir; sıfır satır döndürmek sakin bir gün gibi okunur ve yapılandırmadaki yazım hatasını sonsuza dek gizler. `jobGeeks` tam da bunu yapar (HTTP 302) ve bilinçli olarak **yapılandırılmadı**.
 - Uzaktan çalışma tespiti `\b` yerine Unicode sözcük sınırı kullanır; `\b` yalnızca ASCII bilir — v1.227.3'te başlık filtresinin düştüğü tuzağın aynısı, burada yayından önce bir testle yakalandı.
-- 15 kanal yapılandırıldı ve canlı doğrulandı: **299 gönderi, 15/15 kanal**. 28 yeni test. Testler: **2865 → 2893**.
+- 15 kanal yapılandırıldı ve canlı doğrulandı: **299 gönderi, 15/15 kanal**. 30 yeni test. Testler: **2865 → 2895**.
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 

@@ -7,7 +7,7 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2895%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -16,7 +16,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.228.0** — **Telegram 頻道現在是掃描來源。** 在 `telegram_channels:` 區塊中列出，每個頻道從其公開網頁預覽 `t.me/s/<頻道>` 讀取 —— 15 個頻道，一次實跑 **299 則貼文**。註冊表：**86 個來源**（EN 81 + RU 5）。此外：Telegram 助理只憑一小部分資料作答 —— 快照裡有數百筆，它卻回報 **9** 筆，因為 `/api/scan-results` 只會回傳約 2 MB 的整份快照；現在它接受分頁查詢。**2893 個測試。**
+> **🆕 最新版本 — v1.228.0** — **Telegram 頻道現在是掃描來源。** 在 `telegram_channels:` 區塊中列出，每個頻道從其公開網頁預覽 `t.me/s/<頻道>` 讀取 —— 15 個頻道，一次實跑 **299 則貼文**。註冊表：**86 個來源**（EN 81 + RU 5）。此外：Telegram 助理只憑一小部分資料作答 —— 快照裡有數百筆，它卻回報 **9** 筆，因為 `/api/scan-results` 只會回傳約 2 MB 的整份快照；現在它接受分頁查詢。**2895 個測試。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -380,7 +380,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2893 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 2895 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch
@@ -517,7 +517,7 @@ event: error    data: { message }
 ## 測試
 
 ```bash
-npm test                       # 2893 個 unit/integration 測試
+npm test                       # 2895 個 unit/integration 測試
 npm run test:e2e               # 21 個 smoke e2e(自行啟動伺服器)
 npm run test:e2e:full          # 23 個 comprehensive e2e
 npm run test:e2e:browser       # 101 個 Playwright 瀏覽器 smoke
@@ -526,11 +526,11 @@ npm run test:coverage          # 同 `npm test`,加上 V8 coverage
 
 | Suite                       | 測試數 | 內容                                                                                                         |
 | --------------------------- | ----- | ------------------------------------------------------------------------------------------------------------ |
-| `node --test tests/*.test.mjs`(unit + integration) | **2893** | 每個端點、暫時性伺服器、無網路。涵蓋解析器、scanner(已 mock)、runner、anthropic、CSP / 安全 header、實體感知 XSS、JD sanitize、URL 驗證、SSRF redirect rebind、檔案互斥下的並行 tracker 寫入、`llmRateLimit`、路徑統一 sanitization、i18n parity。 |
+| `node --test tests/*.test.mjs`(unit + integration) | **2895** | 每個端點、暫時性伺服器、無網路。涵蓋解析器、scanner(已 mock)、runner、anthropic、CSP / 安全 header、實體感知 XSS、JD sanitize、URL 驗證、SSRF redirect rebind、檔案互斥下的並行 tracker 寫入、`llmRateLimit`、路徑統一 sanitization、i18n parity。 |
 | `tests/e2e.mjs`(smoke)      | 21 | Playwright headless:每條路由可渲染、基本流程。                                                              |
 | `tests/e2e-comprehensive.mjs` | 23 | 完整 Playwright walkthrough:11 條路由 + 12 條功能流程。                                                      |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **32** | 瀏覽器驅動 smoke:dashboard render、navigation、語言切換、404、health、tracker round-trip(BF-1)、pipeline add + 無效 URL 掃描、reports empty、evaluate 手動 fallback、config 金鑰遮罩、CV PUT XSS strip、pipeline preview 400、WCAG 1.4.1 視覺冗餘線索回歸。 |
-| **總計**                   | **2893** | **0 fails、0 flakes**                                                                                       |
+| **總計** (四個套件合計)                   | **3040** | **0 fails、0 flakes**                                                                                       |
 
 Coverage:透過 `--experimental-test-coverage` ~93% 列 / ~83% 分支。
 
@@ -645,7 +645,7 @@ career-ops **常開** 時最佳 —— 在你睡覺時掃描,可從任何瀏覽�
 
 歡迎 Issues 與 PRs。House rules:
 
-- 推送前執行 `npm test` — **2893 項檢查綠燈**為門檻(若觸碰 UI 則加上 90 個 Playwright)。
+- 推送前執行 `npm test` — **2895 項檢查綠燈**為門檻(若觸碰 UI 則加上 90 個 Playwright)。
 - 非微不足道的變更請走 GSD pipeline。詳見 [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)。
 - 不要從本儲存庫內修改父專案 `career-ops/` 內的任何東西。重點在於這是一個非侵入式 overlay。Hard rules 位於 [`CLAUDE.md`](CLAUDE.md)。
 - Conventional commits:`feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`。選填 scope:`feat(scan):`。Breaking change:`feat!:`。

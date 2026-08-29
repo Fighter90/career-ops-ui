@@ -29,7 +29,8 @@
 - **会社名は決して推測しません。** ラベルが無ければ行はチャンネル(`@rabotaphp`)に帰属させます。誤った雇用主はトラッカーに事実として入ってしまうからです。
 - **解析結果ゼロはエラーであり、「求人なし」ではありません。** 非公開・存在しないチャンネルに t.me はリダイレクトを返します。ここでゼロ件を返せば静かな一日と読め、設定のタイプミスを永久に隠します。元の一覧の `jobGeeks` がまさにこれ(HTTP 302)で、意図的に**設定していません**。
 - リモート判定は `\b` ではなく Unicode の単語境界を使います。`\b` は ASCII 専用で、キリル文字の前の空白は境界にならないためです —— v1.227.3 でタイトルフィルターが踏んだのと同じ罠で、今回はリリース前にテストが捕まえました。
-- 15 チャンネルを設定し実データで検証: **299 投稿、15/15 チャンネル**。新規テスト 28 件。テスト: **2865 → 2893**。
+- 15 チャンネルを設定し実データで検証: **299 投稿、15/15 チャンネル**。新規テスト 28 件。テスト: **2865 → 2895**。
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 

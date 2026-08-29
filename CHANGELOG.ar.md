@@ -24,7 +24,8 @@
 - **لا تُخمَّن الشركة أبدًا.** فبغياب الوسم يُنسب الصف إلى القناة (`@rabotaphp`)، لأن صاحب عمل خاطئًا يدخل المتتبّع بوصفه حقيقة.
 - **التحليل الفارغ خطأ لا «لا وظائف».** إذ يردّ t.me بإعادة توجيه على قناة خاصة أو غير موجودة؛ وإعادة صفر صفوف هناك تُقرأ كيوم هادئ وتخفي خطأً مطبعيًا في التهيئة إلى الأبد. و`jobGeeks` يفعل هذا بالضبط (HTTP 302) ولم يُهيَّأ عمدًا.
 - يستعمل كشفُ العمل عن بُعد حدَّ كلمة بمعيار يونيكود بدل `\b` الذي لا يعرف سوى ASCII — وهو الفخ نفسه الذي وقع فيه مرشّح العناوين في v1.227.3، وقد التقطه هنا اختبارٌ قبل الإصدار.
-- هُيِّئت 15 قناة وتُحُقِّق منها حيًّا: **299 منشورًا، 15/15 قناة**. و28 اختبارًا جديدًا. الاختبارات: **2865 ← 2893**.
+- هُيِّئت 15 قناة وتُحُقِّق منها حيًّا: **299 منشورًا، 15/15 قناة**. و30 اختبارًا جديدًا. الاختبارات: **2865 ← 2895**.
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 

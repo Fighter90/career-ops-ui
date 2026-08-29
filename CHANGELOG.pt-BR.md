@@ -28,7 +28,8 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 - **A empresa nunca é adivinhada.** Sem rótulo, a linha é atribuída ao canal (`@rabotaphp`): um empregador errado entra no tracker como fato.
 - **Uma análise vazia é um erro, não «sem vagas».** O t.me responde com redirecionamento a um canal privado ou inexistente; devolver zero linhas leria como um dia calmo e esconderia um erro de digitação na configuração para sempre. `jobGeeks` faz exatamente isso (HTTP 302) e deliberadamente **não** está configurado.
 - A detecção de remoto usa uma fronteira de palavra Unicode em vez de `\b`, que é só ASCII — a mesma armadilha que o filtro de títulos sofreu na v1.227.3, aqui pega por um teste antes de publicar.
-- 15 canais configurados e verificados ao vivo: **299 posts, 15/15 canais**. 28 testes novos. Testes: **2865 → 2893**.
+- 15 canais configurados e verificados ao vivo: **299 posts, 15/15 canais**. 30 testes novos. Testes: **2865 → 2895**.
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 

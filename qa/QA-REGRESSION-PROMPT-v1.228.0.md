@@ -4,7 +4,7 @@
 
 ## §0 — Gates
 ```bash
-npm test                                          # 2893 (was 2865), exit 0
+npm test                                          # 2895 (was 2865), exit 0
 node --test tests/sources-telegram.test.mjs       # 18 — new
 node --test tests/scan-results-query.test.mjs     # 10 — new
 node --test tests/adapter-registry.test.mjs       # ALL_ADAPTERS === 81, ids include 'telegram'
@@ -60,4 +60,4 @@ Remote detection uses `(?<![\p{L}\p{M}\p{N}_])` rather than `\b`. `\b` is ASCII-
 ## §5 — Docs
 - `docs/help/<lang>.md` §5 gained a `telegram_channels` subsection in **all 17 locales** (H3 parity gate bumped 121 → 122). This corpus is the ONLY grounding for the "Ask the docs" assistant, so a user asking how to add a channel now gets a real answer.
 - `docs/portals-examples.md` gained a copy-paste Telegram section with the key table.
-- Stale doc counts swept across all 17 READMEs while here: test totals (1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 → **2893**), Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), playwright-smoke flows (12 → **22**). Verified by running each suite, not by copying a badge.
+- Stale doc counts swept across all 17 READMEs while here: test totals (1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 → **2895**), test files (218 → **329**), and the `Total` row, which repeated the unit count and so under-summed the three suites below it (→ **3040**), Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), playwright-smoke flows (12 → **22**). Verified by running each suite, not by copying a badge.

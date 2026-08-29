@@ -7,7 +7,7 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2895%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
@@ -16,7 +16,7 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.228.0** — **Telegram-kanaler er nu en scanningskilde.** Angiv dem i en `telegram_channels:`-blok; hver læses fra sin offentlige forhåndsvisning `t.me/s/<kanal>` — 15 kanaler, **299 opslag** i én rigtig kørsel. Register: **86 kilder** (81 EN + 5 RU). Desuden: Telegram-assistenten svarede ud fra en brøkdel af data — den meldte **9** træffere, hvor snapshottet havde hundredvis, fordi `/api/scan-results` kun kunne returnere hele snapshottet på ~2 MB; nu tager den en pagineret forespørgsel. **2893 tests.**
+> **🆕 Seneste udgivelse — v1.228.0** — **Telegram-kanaler er nu en scanningskilde.** Angiv dem i en `telegram_channels:`-blok; hver læses fra sin offentlige forhåndsvisning `t.me/s/<kanal>` — 15 kanaler, **299 opslag** i én rigtig kørsel. Register: **86 kilder** (81 EN + 5 RU). Desuden: Telegram-assistenten svarede ud fra en brøkdel af data — den meldte **9** træffere, hvor snapshottet havde hundredvis, fordi `/api/scan-results` kun kunne returnere hele snapshottet på ~2 MB; nu tager den en pagineret forespørgsel. **2895 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -410,7 +410,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2893 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 2895 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -541,7 +541,7 @@ Når `run: true` er sat på `/api/deep` eller `/api/mode/:slug`, foretrækker se
 ## Tests
 
 ```bash
-npm test                       # 2893 unit/integration tests
+npm test                       # 2895 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
@@ -550,11 +550,11 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | What                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2893** | Every endpoint, ephemeral server, no network. 218 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
+| `node --test tests/*.test.mjs` (unit + integration) | **2895** | Every endpoint, ephemeral server, no network. 329 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: every route renders, basic flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Full Playwright walkthrough: 11 routes + 12 functional flows.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Browser-driven: dashboard render, navigation, language switch, 404, health, tracker round-trip, pipeline add + invalid-URL sweep, reports, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400, auto-pipeline SSE. |
-| **Total**                   | **2893** | **0 fails, 0 flakes**                                                                                    |
+| **Total** (all four suites)                   | **3040** | **0 fails, 0 flakes**                                                                                    |
 
 Dækning: ~93 % linjer / ~83 % grene via `--experimental-test-coverage`.
 
@@ -670,7 +670,7 @@ Brug den derefter via `data-i18n="scan.newButton"` i markup eller `t('scan.newBu
 
 Issues og PR'er er velkomne. Husregler:
 
-- Kør `npm test` før push — **2893 checks green** er barren (plus 101 Playwright, hvis du rører UI).
+- Kør `npm test` før push — **2895 checks green** er barren (plus 101 Playwright, hvis du rører UI).
 - Ikke-trivielle ændringer går gennem GSD-konveyeren. Se [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Modificér ikke noget i det overordnede `career-ops/`-projekt fra dette repo. Hele pointen er, at dette er et ikke-invasivt overlay. Hårde regler i [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Valgfrit scope: `feat(scan):`. Breaking change: `feat!:`.

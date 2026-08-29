@@ -24,7 +24,8 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 - **Firmaet gættes aldrig.** Uden etiket tilskrives rækken kanalen (`@rabotaphp`): en forkert arbejdsgiver ender i trackeren som en kendsgerning.
 - **En tom parsning er en fejl, ikke „ingen stillinger“.** t.me svarer med en omdirigering for en privat eller manglende kanal; nul rækker ville læses som en stille dag og skjule en tastefejl i konfigurationen for altid. `jobGeeks` gør præcis dette (HTTP 302) og er bevidst **ikke** konfigureret.
 - Fjernarbejdsdetektion bruger en Unicode-ordgrænse i stedet for `\b`, der kun kender ASCII — samme fælde som titelfilteret i v1.227.3, her fanget af en test før udgivelse.
-- 15 kanaler konfigureret og verificeret live: **299 opslag, 15/15 kanaler**. 28 nye tests. Tests: **2865 → 2893**.
+- 15 kanaler konfigureret og verificeret live: **299 opslag, 15/15 kanaler**. 30 nye tests. Tests: **2865 → 2895**.
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 
