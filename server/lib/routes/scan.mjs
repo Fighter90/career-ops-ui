@@ -191,12 +191,23 @@ export function registerScanRoutes(app) {
       for (const job of (snapshot?.[r]?.[wanted] || [])) rows.push({ ...job, region: r });
     }
 
-    // Case- and diacritic-insensitive substring over the fields a person would
-    // search by. Deliberately NOT the scanner's title_filter: this is a lookup
-    // over results already kept, not a second round of exclusion.
-    const needle = q.toLowerCase();
-    const matched = needle
-      ? rows.filter((j) => `${j.title || ''} ${j.company || ''} ${j.location || ''}`.toLowerCase().includes(needle))
+    // Case-insensitive substring over the fields a person would search by,
+    // matched TERM BY TERM rather than as one phrase. Deliberately NOT the
+    // scanner's title_filter: this is a lookup over results already kept, not a
+    // second round of exclusion.
+    //
+    // Whole-phrase `.includes(q)` was the original shape and it under-reported
+    // badly: "продакт менеджер" found 32 rows where 162 carry both words, and
+    // an agent asked "find all X" quoted the 32 as the answer. A person typing
+    // two words means both words, not that exact adjacency — word order and the
+    // filler between them ("менеджер по продукту") are not something they
+    // intended to pin.
+    const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+    const matched = terms.length
+      ? rows.filter((j) => {
+          const hay = `${j.title || ''} ${j.company || ''} ${j.location || ''}`.toLowerCase();
+          return terms.every((t) => hay.includes(t));
+        })
       : rows;
 
     // `|| default` is wrong here: parseInt('0') is 0, which is falsy, so
