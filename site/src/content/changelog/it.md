@@ -2,6 +2,28 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.228.0] — 2026-08-29
+
+**Aggiunto — i canali Telegram come fonte di scansione e una modalità di query paginata su `/api/scan-results`.**
+
+### Aggiunto
+- **I canali Telegram sono ora una fonte scansionabile.** Un blocco `telegram_channels:` in `portals.yml` li elenca; ognuno viene letto dall'anteprima pubblica `https://t.me/s/<canale>`. Registro: **85 → 86 fonti** (81 EN + 5 RU), `ALL_ADAPTERS` **80 → 81**.
+
+  Telegram non pubblica RSS e la Bot API non può leggere un canale che il bot non amministra: nessuna delle due vie ovvie funziona. L'anteprima `/s/` è semplice HTML reso dal server: senza autenticazione, senza JS, senza cookie. Verificato su 16 canali: 15 hanno restituito 20 post ciascuno con una GET nuda.
+
+  `channel:` accetta qualsiasi forma di scrittura. Il parser si ancora alle tre cose che un redesign di Telegram sposterebbe per ultime: `data-post`, il contenitore del testo e la data ISO `<time datetime>`.
+- **`GET /api/scan-results` guadagna una modalità di query paginata.** `?q=<testo>&limit=50[&region=ru|en][&set=filtered|fresh][&offset=N]` restituisce `{ total, returned, offset, limit, set, rows }`, dove **`total` è il conteggio PRIMA della paginazione**. Senza parametri la rotta restituisce ancora lo snapshot intero: la tabella `#/scan` dipende da quella forma.
+
+### Corretto
+- **L'assistente Telegram rispondeva da una frazione dei dati.** Il suo skill puntava già a `/api/scan-results`, ma la rotta sapeva restituire solo lo snapshot intero — circa 2 MB — che non entra nel contesto di un agente. Alla richiesta «trova tutti i Product Manager» ha riportato **9** corrispondenze dove lo snapshot ne aveva centinaia, dicendo di «lavorare con un indice locale limitato». Era vero: vedeva l'endpoint ma non poteva consumarlo. Con la modalità paginata la stessa domanda costa 2 KB e restituisce un `total` onesto. Anche lo skill è stato riscritto: chiedeva di riassumere i post *nuovi*, cioè puntava a `fresh` invece che a `filtered`.
+
+### Note
+- **Un post di canale è prosa, non una scheda di lavoro.** Non ci sono campi strutturati: il titolo viene dalla prima riga sostanziale, azienda/luogo/retribuzione da etichette esplicite. **Separare le offerte vere da pubblicità e digest resta al `title_filter` esistente**, lo stesso già tarato per le altre fonti. Sono spunti, non un elenco.
+- **L'azienda non viene mai indovinata.** Senza etichetta la riga è attribuita al canale (`@rabotaphp`): un datore di lavoro sbagliato entra nel tracker come un fatto.
+- **Un parse vuoto è un errore, non «nessuna offerta».** t.me risponde con un redirect per un canale privato o inesistente; restituire zero righe si leggerebbe come una giornata tranquilla e nasconderebbe per sempre un refuso nella configurazione. `jobGeeks` fa esattamente questo (HTTP 302) e deliberatamente **non** è configurato.
+- Il rilevamento del remoto usa una frontiera di parola Unicode anziché `\b`, che è solo ASCII — la stessa trappola del filtro sui titoli in v1.227.3, qui colta da un test prima del rilascio.
+- 15 canali configurati e verificati dal vivo: **299 post, 15/15 canali**. 28 nuovi test. Test: **2865 → 2893**.
+
 ## [1.227.5] — 2026-08-29
 
 **Corretto — la scansione regionale esauriva la memoria del server e una suite Playwright falliva sul proprio smontaggio.**

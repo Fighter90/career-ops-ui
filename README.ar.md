@@ -7,16 +7,16 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
+[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.227.5** — **لم يعد المسح الإقليمي يستنزف ذاكرة الخادم** — إذ كان يحتفظ بكل النتائج الخام من 21 استعلاماً حتى النهاية (742 ميغابايت مقابل سقف الجهاز البالغ 490)، فأسقط الخدمة أربع مرات في يوم؛ وصارت إزالة التكرار والترشيح لكل استعلام ← **177 ميغابايت**. مع إصلاح تذبذب في Playwright. **2865 اختبارًا.**
+> **🆕 أحدث إصدار — v1.228.0** — **صارت قنوات تيليجرام مصدرًا للمسح.** اسردها في بلوك `telegram_channels:` وتُقرأ كل قناة من معاينتها العامة `t.me/s/<القناة>`: 15 قناة و**299 منشورًا** في تشغيل حقيقي واحد. السجل: **86 مصدرًا** (81 EN + 5 RU). وفوق ذلك: كان مساعد تيليجرام يجيب من جزء يسير من البيانات، إذ يبلّغ عن **9** نتائج بينما في اللقطة مئات، لأن `/api/scan-results` لم يكن يعرف سوى إعادة اللقطة كاملة بنحو 2 ميغابايت؛ وقد صار يقبل استعلامًا مُصفَّحًا. **2893 اختبارًا.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -153,7 +153,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 1945 unit + 90 Playwright + 43 e2e
+   └─ tests/        # 2893 unit + 101 Playwright + 43 e2e
 ```
 
 <div dir="rtl">
@@ -186,10 +186,10 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 1856 اختبار وحدة وتكامل
-npm run test:e2e            # 20 اختبار e2e دخاني
+npm test                    # 2893 اختبار وحدة وتكامل
+npm run test:e2e            # 21 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
-npm run test:e2e:browser    # 70 اختبار Playwright
+npm run test:e2e:browser    # 101 اختبار Playwright
 npm run test:coverage       # مثل npm test + تغطية V8
 ```
 

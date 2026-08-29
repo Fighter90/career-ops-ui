@@ -83,9 +83,9 @@ test('de/it/tr ship help, README and CHANGELOG bundles', () => {
     assert.ok(existsSync(resolve(ROOT, 'docs', 'help', `${l}.md`)), `docs/help/${l}.md must exist`);
     assert.ok(existsSync(resolve(ROOT, `README.${l}.md`)), `README.${l}.md must exist`);
     assert.ok(existsSync(resolve(ROOT, `CHANGELOG.${l}.md`)), `CHANGELOG.${l}.md must exist`);
-    // help bundle holds the gated 32 H2 / 121 H3 structure (v1.215.0 §32 OpenWorker coworker) (v1.209.0 §11 Tracker "Record an outcome"; §29 manifesto v1.120.0; §30 Hermes & Telegram v1.147.0; §31 "Running the whole stack in the cloud" v1.154.0; §10 Reports "Export a report to PDF" v1.163.0/FIX-5; +5 H3: Setup doctor / Discover ATS board / "Still live?" / "Reuse a past CV?" / Skills self-assessment log)
+    // help bundle holds the gated 32 H2 / 122 H3 structure (v1.228.0 §5 `telegram_channels`) (v1.215.0 §32 OpenWorker coworker) (v1.209.0 §11 Tracker "Record an outcome"; §29 manifesto v1.120.0; §30 Hermes & Telegram v1.147.0; §31 "Running the whole stack in the cloud" v1.154.0; §10 Reports "Export a report to PDF" v1.163.0/FIX-5; +5 H3: Setup doctor / Discover ATS board / "Still live?" / "Reuse a past CV?" / Skills self-assessment log)
     const help = readFileSync(resolve(ROOT, 'docs', 'help', `${l}.md`), 'utf8');
     assert.equal((help.match(/^## /gm) || []).length, 32, `docs/help/${l}.md must have 32 H2`);
-    assert.equal((help.match(/^### /gm) || []).length, 121, `docs/help/${l}.md must have 121 H3`);
+    assert.equal((help.match(/^### /gm) || []).length, 122, `docs/help/${l}.md must have 122 H3`);
   }
 });

@@ -649,6 +649,22 @@ tracked_companies:
 Нацельте сканер на любой джоб-борд с RSS/Atom-фидом (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …), добавив запись с `provider: rss` и ключом `rss:` (или `feed_url:`) — **без правок кода**. RSS-адаптер парсит каждый `<item>` (CDATA + HTML-сущности, заголовки/компании очищаются от тегов), нормализует в вакансию и прогоняет тот же `title_filter` / `location_filter` + дедуп + добавление в pipeline, что и ATS-источники. После этого **RSS** появляется как выбираемый источник в выпадающем фильтре на `#/scan`. (web-ui v1.62.x)
 
 
+### `telegram_channels` (публичные Telegram-каналы с вакансиями)
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+Сканируйте любой **публичный** Telegram-канал, просто перечислив его здесь — без токена бота и API-ключа. Каждый канал читается из публичного веб-превью `https://t.me/s/<канал>` — это обычный HTML, отрендеренный на сервере. `channel:` принимает любую запись (`rabotaphp`, `@rabotaphp` или полную ссылку `t.me/…`); `max_posts:` ограничивает число прочитанных свежих постов (по умолчанию 100, жёсткий потолок 300). Каналы живут в отдельном блоке верхнего уровня, а не в `tracked_companies`, потому что канал — не работодатель, и у него нет careers-URL, который можно определить.
+
+**Пост канала — это проза, а не запись о вакансии**: структурированных полей нет. Источник берёт заголовок из первой содержательной строки, компанию / локацию / вилку — только из явных меток (`Компания:`, `Локация:`), а весь текст оставляет в описании. Отделять настоящие вакансии от рекламы и дайджестов — работа вашего `title_filter`. Закрытый или несуществующий канал сообщается как **ошибка**, а не как «вакансий нет». После этого **Telegram** появляется как выбираемый источник в фильтре `#/scan`. (web-ui v1.228.0)
+
+
 ### `russian_portals`
 
 ```yaml
@@ -1621,7 +1637,7 @@ Health, скопируйте вывод и поищите проблему в is
 
 ## 17. Как добавить новый источник для скана
 
-career-ops-ui рассматривает каждый job-сайт как **adapter** — единый файл в [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), который умеет fetch'ить и нормализовать результаты одного сайта. На текущий момент registry `server/lib/sources/` поставляется с **85** адаптерами — **80 английских + 5 русских** досок. Английский набор охватывает основные ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), агрегаторы уровня всей доски, выбираемые через явный `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), и ATSes на тенант, автоматически определяемые по хосту `careers_url` или явному `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Полный список никогда не нужно пересчитывать здесь вручную — он автоматически обнаруживается из `server/lib/sources/` и показывается вживую в выпадающем списке Source на `#/scan`.** См. §5 для YAML и `docs/portals-examples.md` для готовых copy-paste-записей.
+career-ops-ui рассматривает каждый job-сайт как **adapter** — единый файл в [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), который умеет fetch'ить и нормализовать результаты одного сайта. На текущий момент registry `server/lib/sources/` поставляется с **86** адаптерами — **81 английских + 5 русских** досок. Английский набор охватывает основные ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), агрегаторы уровня всей доски, выбираемые через явный `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), и ATSes на тенант, автоматически определяемые по хосту `careers_url` или явному `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Полный список никогда не нужно пересчитывать здесь вручную — он автоматически обнаруживается из `server/lib/sources/` и показывается вживую в выпадающем списке Source на `#/scan`.** См. §5 для YAML и `docs/portals-examples.md` для готовых copy-paste-записей.
 
 > **v1.69.0 (P-14) — авторегистрация по принципу drop-in.** Добавление 12-го источника теперь — это **просто одни файл**. Реестр
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

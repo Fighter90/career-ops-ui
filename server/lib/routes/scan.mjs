@@ -148,14 +148,74 @@ export function registerScanRoutes(app) {
   });
 
   // ─── Latest scan results (for table view in UI) ───
-  app.get('/api/scan-results', (_req, res) => {
+  //
+  // Two modes on one route:
+  //
+  //   no query params  → the full snapshot, unchanged. The SPA's #/scan table
+  //                      reads this and does its own client-side filtering.
+  //   ?q= / ?region= / → a filtered, paged slice with a TOTAL count.
+  //   ?limit= ?offset=
+  //
+  // The paged mode exists for API consumers that cannot hold the snapshot in
+  // memory. The full response is ~2 MB (2837 regional + 278 EN rows), which
+  // overflows an LLM agent's context — so the Telegram assistant, told to
+  // "summarize the new on-target postings", was answering from a handful of
+  // rows it had gathered elsewhere and reporting 9 matches where the snapshot
+  // held 403. It could see the endpoint; it could not consume it.
+  //
+  // `total` is the count BEFORE paging, so an agent can answer "how many are
+  // there?" honestly from one request even when it only renders `limit` rows.
+  app.get('/api/scan-results', (req, res) => {
     // v1.17.0 — surface lastWorkdayFallback so the SPA's Active
     // Companies card can render 🔒 chips for CAPTCHA-gated tenants.
     // Only the snapshot, not history — the scanner resets it on each
     // successful Workday fetch.
+    const snapshot = loadLastScan();
+    const q = String(req.query.q || '').trim();
+    const region = String(req.query.region || '').trim().toLowerCase();
+    const setName = String(req.query.set || 'filtered').trim().toLowerCase();
+    const hasQuery = q || region || req.query.limit || req.query.offset || req.query.set;
+
+    if (!hasQuery) {
+      res.json({ ...snapshot, workdayFallback: getLastWorkdayFallback() });
+      return;
+    }
+
+    // `filtered` is everything that survived the scan's own filters; `fresh` is
+    // only what was new on the last run. An agent asked "find all X" wants the
+    // former — defaulting to `fresh` is what made the answer look empty.
+    const wanted = setName === 'fresh' ? 'fresh' : 'filtered';
+    const regions = region === 'ru' || region === 'en' ? [region] : ['en', 'ru'];
+    const rows = [];
+    for (const r of regions) {
+      for (const job of (snapshot?.[r]?.[wanted] || [])) rows.push({ ...job, region: r });
+    }
+
+    // Case- and diacritic-insensitive substring over the fields a person would
+    // search by. Deliberately NOT the scanner's title_filter: this is a lookup
+    // over results already kept, not a second round of exclusion.
+    const needle = q.toLowerCase();
+    const matched = needle
+      ? rows.filter((j) => `${j.title || ''} ${j.company || ''} ${j.location || ''}`.toLowerCase().includes(needle))
+      : rows;
+
+    // `|| default` is wrong here: parseInt('0') is 0, which is falsy, so
+    // ?limit=0 would silently become 50 instead of clamping to 1. Test for a
+    // finite number, then clamp — the two are different questions.
+    const rawLimit = parseInt(String(req.query.limit ?? ''), 10);
+    const limit = Number.isFinite(rawLimit) ? Math.min(200, Math.max(1, rawLimit)) : 50;
+    const rawOffset = parseInt(String(req.query.offset ?? ''), 10);
+    const offset = Number.isFinite(rawOffset) ? Math.max(0, rawOffset) : 0;
+
     res.json({
-      ...loadLastScan(),
-      workdayFallback: getLastWorkdayFallback(),
+      total: matched.length,
+      returned: Math.min(limit, Math.max(0, matched.length - offset)),
+      offset,
+      limit,
+      set: wanted,
+      region: regions.join(','),
+      query: q,
+      rows: matched.slice(offset, offset + limit),
     });
   });
 }

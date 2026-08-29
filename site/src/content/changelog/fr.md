@@ -11,6 +11,28 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.228.0] — 2026-08-29
+
+**Ajouté — les canaux Telegram comme source de scan, et un mode de requête paginé sur `/api/scan-results`.**
+
+### Ajouté
+- **Les canaux Telegram sont désormais une source scannable.** Un bloc `telegram_channels:` dans `portals.yml` les liste ; chacun est lu depuis l'aperçu public `https://t.me/s/<canal>`. Registre : **85 → 86 sources** (81 EN + 5 RU), `ALL_ADAPTERS` **80 → 81**.
+
+  Telegram ne publie pas de RSS et la Bot API ne peut lire un canal que le bot n'administre pas — aucune des deux voies évidentes ne fonctionne. L'aperçu `/s/` est du HTML simple rendu côté serveur : sans authentification, sans JS, sans cookie. Vérifié sur 16 canaux : 15 ont renvoyé 20 publications chacun sur un GET nu.
+
+  `channel:` accepte toutes les écritures possibles. Le parseur s'ancre sur les trois choses qu'une refonte de Telegram déplacerait en dernier : `data-post`, le conteneur du texte et la date ISO `<time datetime>`.
+- **`GET /api/scan-results` gagne un mode de requête paginé.** `?q=<texte>&limit=50[&region=ru|en][&set=filtered|fresh][&offset=N]` renvoie `{ total, returned, offset, limit, set, rows }`, où **`total` est le compte AVANT pagination**. Sans paramètre, la route renvoie toujours l'instantané complet : le tableau `#/scan` en dépend.
+
+### Corrigé
+- **L'assistant Telegram répondait à partir d'une fraction des données.** Son skill pointait déjà vers `/api/scan-results`, mais la route ne savait renvoyer que l'instantané complet — environ 2 Mo — qui n'entre pas dans le contexte d'un agent. Sur « trouve tous les Product Manager » il a annoncé **9** correspondances là où l'instantané en contenait des centaines, en disant qu'il « travaillait avec un index local limité ». C'était vrai : il voyait le point d'accès sans pouvoir le consommer. Avec le mode paginé, la même question coûte 2 Ko et renvoie un `total` honnête. Le skill a aussi été réécrit : il demandait de résumer les publications *nouvelles*, c'est-à-dire `fresh` plutôt que `filtered`.
+
+### Notes
+- **Une publication de canal est de la prose, pas une fiche de poste.** Aucun champ structuré : le titre vient de la première ligne substantielle, l'entreprise/le lieu/le salaire d'étiquettes explicites. **Séparer les vraies offres des publicités et des digests revient au `title_filter` existant**, celui déjà réglé pour les autres sources. Ce sont des pistes, pas une liste.
+- **L'entreprise n'est jamais devinée.** Sans étiquette, la ligne est attribuée au canal (`@rabotaphp`) : un mauvais employeur entre dans le suivi comme un fait.
+- **Une analyse vide est une erreur, pas « aucune offre ».** t.me répond par une redirection pour un canal privé ou absent ; renvoyer zéro ligne se lirait comme une journée calme et masquerait une faute de frappe dans la configuration pour toujours. `jobGeeks` fait exactement cela (HTTP 302) et n'est délibérément **pas** configuré.
+- La détection du télétravail utilise une frontière de mot Unicode plutôt que `\b`, qui est ASCII seulement — le même piège que le filtre de titres en v1.227.3, attrapé ici par un test avant publication.
+- 15 canaux configurés et vérifiés en direct : **299 publications, 15/15 canaux**. 28 nouveaux tests. Tests : **2865 → 2893**.
+
 ## [1.227.5] — 2026-08-29
 
 **Corrigé — le scan régional épuisait la mémoire du serveur, et une suite Playwright échouait sur son propre démontage.**

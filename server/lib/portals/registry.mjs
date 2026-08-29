@@ -132,6 +132,7 @@ import { eightfoldAdapter } from './adapters/eightfold.mjs';
 import { torreAdapter } from './adapters/torre.mjs';
 // v1.226.0 — Vietnamese sources (ITviec + CareerViet).
 import { itviecAdapter } from './adapters/itviec.mjs';
+import { telegramAdapter } from './adapters/telegram.mjs';
 import { careervietAdapter } from './adapters/careerviet.mjs';
 
 export const ALL_ADAPTERS = [
@@ -248,6 +249,7 @@ export const ALL_ADAPTERS = [
   remotliAdapter,
   eightfoldAdapter,
   itviecAdapter,
+  telegramAdapter,
   careervietAdapter,
 ];
 

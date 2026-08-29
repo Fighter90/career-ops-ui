@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
+[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.227.5** — **El escaneo regional ya no agota la memoria** — retenía todos los resultados de las 21 consultas hasta el final (742 MB frente al tope de 490 MB de la máquina, tumbando el servicio 4× en un día); ahora deduplica y filtra por consulta → **177 MB**. Más un flake de Playwright corregido. **2865 pruebas.**
+> **🆕 Última versión — v1.228.0** — **Los canales de Telegram ya son una fuente de escaneo.** Enumérelos en un bloque `telegram_channels:` y cada uno se lee desde su vista previa pública `t.me/s/<canal>`: 15 canales, **299 publicaciones** en una ejecución real. Registro: **86 fuentes** (81 EN + 5 RU). Además: el asistente de Telegram respondía con una fracción de los datos — informaba **9** coincidencias donde la instantánea tenía cientos, porque `/api/scan-results` solo sabía devolver la instantánea entera de ~2 MB; ahora acepta una consulta paginada. **2893 pruebas.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -351,7 +351,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # cliente api.lever.co
 │     │  ├─ hh.mjs           # cliente api.hh.ru (consciente de UA)
 │     │  └─ habr.mjs         # parser HTML de career.habr.com (sin cheerio, solo regex)
-│     └─ routes/             # 12 módulos de rutas — uno por tema (P-2)
+│     └─ routes/             # 37 módulos de rutas — uno por tema (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (round-trip al .env padre)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -380,7 +380,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1945 unit + 90 Playwright + 23 e2e:full + 20 e2e:smoke
+└─ tests/                    # 2893 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # parsers markdown / pipeline / report (funciones puras)
    ├─ api.test.mjs           # cada endpoint, servidor efímero, sin red
    ├─ {ru,en}-scanner.test.mjs   # fetch mockeado
@@ -394,7 +394,7 @@ career-ops-ui/
    ├─ cv-xss.test.mjs        # round-trip de stripDangerousMarkdown con decodificación de entidades (v1.22.0 M-4)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
    ├─ help.test.mjs / help-ui.test.mjs    # paridad i18n en los 17 locales
-   ├─ playwright-smoke.mjs   # 32 flujos de navegador (CV save, tracker, pipeline, evaluate, config, etc.)
+   ├─ playwright-smoke.mjs   # 22 flujos de navegador (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # walkthrough Playwright completo
 ```
 
@@ -514,18 +514,18 @@ Cuando se establece `run: true` en `/api/deep` o `/api/mode/:slug`, el servidor 
 ## Tests
 
 ```bash
-npm test                       # 1856 tests unit/integración
-npm run test:e2e               # 20 smoke e2e (arranca su propio servidor)
+npm test                       # 2893 tests unit/integración
+npm run test:e2e               # 21 smoke e2e (arranca su propio servidor)
 npm run test:e2e:full          # 23 e2e completos
-npm run test:e2e:browser       # 32 smoke Playwright en navegador
+npm run test:e2e:browser       # 101 smoke Playwright en navegador
 npm run test:coverage          # igual que `npm test` más cobertura V8
 ```
 
 | Suite                       | Tests | Qué cubre                                                                                                  |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integración) | **1856** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
-| `tests/e2e.mjs` (smoke)      | 20    | Playwright headless: cada ruta renderiza, flujos básicos.                                                  |
-| `tests/e2e-comprehensive.mjs` | 23   | Walkthrough Playwright completo: 11 rutas + 12 flujos funcionales.                                         |
+| `node --test tests/*.test.mjs` (unit + integración) | **2893** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
+| `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: cada ruta renderiza, flujos básicos.                                                  |
+| `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rutas + 12 flujos funcionales.                                         |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Smoke con navegador: render del dashboard, navegación, cambio de idioma, 404, health, tracker round-trip (BF-1), añadir a pipeline + barrido de URL inválida, reports vacío, evaluate manual fallback, claves de config enmascaradas, CV PUT XSS strip, pipeline preview 400. |
 | **Total**                   | **~530** | **0 fallos, 0 flakes**                                                                                  |
 
@@ -642,7 +642,7 @@ La interfaz incluye **17 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `z
 
 Issues y PRs bienvenidos. Reglas de la casa:
 
-- Ejecuta `npm test` antes de hacer push — **1856 checks en verde** es el mínimo (más 90 Playwright si tocas la UI).
+- Ejecuta `npm test` antes de hacer push — **2893 checks en verde** es el mínimo (más 101 Playwright si tocas la UI).
 - Los cambios no triviales pasan por la pipeline GSD. Ver [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - No modifiques nada del proyecto padre `career-ops/` desde dentro de este repositorio. Todo el sentido es que sea una capa no invasiva. Reglas duras en [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Scope opcional: `feat(scan):`. Breaking change: `feat!:`.

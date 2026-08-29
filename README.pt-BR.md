@@ -7,16 +7,16 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
+[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.227.5** — **A varredura regional não derruba mais o servidor** — retinha todos os resultados das 21 consultas até o fim (742 MB contra o teto de 490 MB da máquina, derrubando o serviço 4× num dia); agora deduplica e filtra por consulta → **177 MB**. E um flake do Playwright corrigido. **2865 testes.**
+> **🆕 Última versão — v1.228.0** — **Os canais do Telegram agora são uma fonte de varredura.** Liste-os num bloco `telegram_channels:` e cada um é lido da prévia pública `t.me/s/<canal>`: 15 canais, **299 posts** numa execução real. Registro: **86 fontes** (81 EN + 5 RU). Além disso: o assistente do Telegram respondia com uma fração dos dados — relatava **9** correspondências onde o snapshot tinha centenas, porque `/api/scan-results` só sabia devolver o snapshot inteiro de ~2 MB; agora aceita uma consulta paginada. **2893 testes.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -351,7 +351,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # cliente api.lever.co
 │     │  ├─ hh.mjs           # cliente api.hh.ru (com awareness de UA)
 │     │  └─ habr.mjs         # parser HTML de career.habr.com (sem cheerio, só regex)
-│     └─ routes/             # 12 módulos de rota — um por tópico (P-2)
+│     └─ routes/             # 37 módulos de rota — um por tópico (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (round-trip do .env do pai)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -380,7 +380,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 1945 unit/integration + 90 Playwright e2e
+└─ tests/                    # 2893 unit/integration + 101 Playwright e2e
    ├─ parsers.test.mjs       # parsers de markdown / pipeline / report (funções puras)
    ├─ api.test.mjs           # cada endpoint, servidor efêmero, sem rede
    ├─ {ru,en}-scanner.test.mjs   # fetch mockado
@@ -394,7 +394,7 @@ career-ops-ui/
    ├─ cv-xss.test.mjs        # round-trip de stripDangerousMarkdown (entity-aware)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
    ├─ help.test.mjs / help-ui.test.mjs    # paridade i18n nos 16 locales
-   ├─ playwright-smoke.mjs   # 12 fluxos de navegador (CV save, tracker, pipeline, evaluate, config, etc.)
+   ├─ playwright-smoke.mjs   # 22 fluxos de navegador (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # walkthrough Playwright completo
 ```
 
@@ -515,18 +515,18 @@ Quando `run: true` é definido em `/api/deep` ou `/api/mode/:slug`, o servidor p
 ## Testes
 
 ```bash
-npm test                       # 1856 testes unit/integration
-npm run test:e2e               # 20 smoke e2e (sobe o próprio server)
+npm test                       # 2893 testes unit/integration
+npm run test:e2e               # 21 smoke e2e (sobe o próprio server)
 npm run test:e2e:full          # 23 e2e comprehensive
-npm run test:e2e:browser       # 70 Playwright browser-smoke
+npm run test:e2e:browser       # 101 Playwright browser-smoke
 npm run test:coverage          # idêntico a `npm test` mais V8 coverage
 ```
 
 | Suíte                       | Testes  | O que cobre                                                                                                |
 | --------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **1856** | Cada endpoint, servidor efêmero, sem rede. Inclui parser, scanner (mockado), runner, anthropic, security headers, XSS entity-aware, JD sanitize, validação de URL, paridade i18n, mutex de tracker, rate-limit, path-traversal e DNS rebind. |
-| `tests/e2e.mjs` (smoke)      | 20     | Playwright headless: cada rota renderiza, fluxos básicos.                                                  |
-| `tests/e2e-comprehensive.mjs` | 23    | Walkthrough Playwright completo: 11 rotas + 12 fluxos funcionais.                                          |
+| `node --test tests/*.test.mjs` (unit + integration) | **2893** | Cada endpoint, servidor efêmero, sem rede. Inclui parser, scanner (mockado), runner, anthropic, security headers, XSS entity-aware, JD sanitize, validação de URL, paridade i18n, mutex de tracker, rate-limit, path-traversal e DNS rebind. |
+| `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: cada rota renderiza, fluxos básicos.                                                  |
+| `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rotas + 12 fluxos funcionais.                                          |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Browser-driven smoke: render do dashboard, navegação, troca de idioma, 404, health, round-trip do tracker (BF-1), pipeline add + varredura de URL inválida, reports vazio, evaluate fallback manual, config com chaves mascaradas, CV PUT XSS strip, pipeline preview 400 + cobertura WCAG 1.4.1. |
 | **Total**                   | **529+** | **0 falhas, 0 flakes**                                                                                  |
 
@@ -643,7 +643,7 @@ A interface inclui **17 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh
 
 Issues e PRs são bem-vindos. Regras da casa:
 
-- Rode `npm test` antes do push — **1856 checks verdes** é a barra (mais 90 Playwright se você mexer na UI).
+- Rode `npm test` antes do push — **2893 checks verdes** é a barra (mais 101 Playwright se você mexer na UI).
 - Mudanças não-triviais passam pelo pipeline GSD. Veja [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Não modifique nada no projeto pai `career-ops/` a partir deste repositório. O ponto principal é exatamente que este é um overlay não-invasivo. As hard rules estão em [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Escopo opcional: `feat(scan):`. Breaking change: `feat!:`.

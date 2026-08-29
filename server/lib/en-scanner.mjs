@@ -47,6 +47,49 @@ const CONCURRENCY = 8;
  * shape `{ type, url }` is preserved so any external code that imports
  * `detectApi` keeps working.
  */
+/**
+ * Expand the `telegram_channels:` config block into scanner entries.
+ *
+ *   telegram_channels:
+ *     enabled: true          # optional master switch (default on)
+ *     max_posts: 100         # optional cap applied to every channel
+ *     channels:
+ *       - rabotaphp                          # bare handle
+ *       - "@salary_pm"                       # or @handle, or a full t.me link
+ *       - { name: "Go работа", channel: rabota_golang }   # or named
+ *       - { channel: hr_itwork, enabled: false }          # or switched off
+ *
+ * Returns [] for a missing or disabled block, so an absent section costs
+ * nothing and `enabled: false` silences every channel at once without editing
+ * fifteen lines.
+ * @param {unknown} block
+ * @returns {Array<object>}
+ */
+export function expandTelegramChannels(block) {
+  if (!block || typeof block !== 'object') return [];
+  if (block.enabled === false) return [];
+  const list = Array.isArray(block.channels) ? block.channels : [];
+  const defaultCap = Number(block.max_posts) || undefined;
+  const out = [];
+  for (const item of list) {
+    const isObj = item && typeof item === 'object';
+    const channel = isObj ? item.channel : item;
+    if (!channel) continue;
+    const entry = {
+      // The handle doubles as the display name when none is given: it is what
+      // the user typed and what they will recognise in the results table.
+      name: (isObj && item.name) || String(channel),
+      provider: 'telegram',
+      channel,
+      enabled: isObj && item.enabled !== undefined ? item.enabled : true,
+    };
+    const cap = (isObj && Number(item.max_posts)) || defaultCap;
+    if (cap) entry.max_posts = cap;
+    out.push(entry);
+  }
+  return out;
+}
+
 export function detectApi(company) {
   const m = resolveAdapter(company);
   if (!m) return null;
@@ -129,6 +172,12 @@ export async function runEnScan(opts = {}) {
   const seen = loadSeenUrls();
 
   let companies = portals.tracked_companies || portals.companies || [];
+  // v1.228.0 — `telegram_channels:` is its own top-level block. A channel is
+  // not a company, and listing fifteen of them under `tracked_companies` buried
+  // the actual employers. Expanding them here keeps ONE scan path: the entries
+  // become ordinary adapter-selected companies the moment they are read, so
+  // quarantine, filters, dedup and the per-source cap all apply unchanged.
+  companies = companies.concat(expandTelegramChannels(portals.telegram_channels));
   companies = companies.filter((c) => c.enabled !== false);
   if (companyName) {
     companies = companies.filter((c) => c.name?.toLowerCase().includes(companyName.toLowerCase()));

@@ -746,6 +746,22 @@ tracked_companies:
 Punta lo scanner a qualsiasi job board che pubblica un feed RSS/Atom (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …) aggiungendo una voce con `provider: rss` più una chiave `rss:` (o `feed_url:`) — **nessuna modifica al codice**. L'adattatore RSS analizza ogni `<item>` (CDATA + entità HTML, titoli/aziende con i tag rimossi), lo normalizza in un lavoro, ed esegue lo stesso flusso `title_filter` / `location_filter` + dedup + accodamento-pipeline delle sorgenti ATS. **RSS** appare poi come sorgente selezionabile nel menu a tendina dei filtri di `#/scan`. (web-ui v1.62.x)
 
 
+### `telegram_channels` (canali Telegram pubblici con offerte)
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+Scansiona qualsiasi canale Telegram **pubblico** elencandolo qui — senza token di bot né chiave API. Ogni canale viene letto dalla sua anteprima pubblica `https://t.me/s/<canale>`, semplice HTML reso dal server. `channel:` accetta qualsiasi forma (`rabotaphp`, `@rabotaphp` o un link `t.me/…` completo); `max_posts:` limita quanti post recenti vengono letti (100 di default, tetto rigido 300). I canali stanno in un blocco di primo livello dedicato invece che in `tracked_companies`, perché un canale non è un datore di lavoro e non ha un URL carriere da rilevare.
+
+**Un post di canale è prosa, non una scheda di lavoro**: non ci sono campi strutturati. La fonte prende il titolo dalla prima riga sostanziale, legge azienda / luogo / retribuzione solo da etichette esplicite (`Компания:`, `Локация:`) e lascia il testo completo nella descrizione. Separare le offerte vere da pubblicità e digest è compito del tuo `title_filter`. Un canale privato o inesistente viene segnalato come **errore**, mai come «nessuna offerta». **Telegram** compare poi come fonte selezionabile nel filtro di `#/scan`. (web-ui v1.228.0)
+
+
 ### `russian_portals`
 
 ```yaml
@@ -985,7 +1001,7 @@ Sotto il log, la tabella dei risultati rende le righe da `data/last-scan.json`.
 > mentre una scansione gira e ancora una volta subito dopo che termina — nessun ricaricamento manuale o
 > cambio pagina necessario. La cache viene azzerata all'inizio di ogni scansione e riempita.
 
-> **v1.80.0 — Max per sorgente & quarantena sorgente.** Il campo **Max per source**
+> **v1.81.0 — Max per sorgente & quarantena sorgente.** Il campo **Max per source**
 > accanto al pulsante Scan limita quanti lavori ogni board contribuisce (vuoto/0 =
 > illimitato, il default) — utile quando un board enorme dominerebbe altrimenti.
 > Separatamente, qualsiasi sorgente che restituisce un **404 / 410** permanente viene scritta in
@@ -1715,7 +1731,7 @@ output, e cerca la issue nel tracker su
 
 ## 17. Come aggiungere una nuova sorgente di portale di lavoro
 
-career-ops-ui tratta ogni job board come un **adattatore** — un singolo file sotto [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) che sa come recuperare + normalizzare i risultati di un board. Attualmente il registro `server/lib/sources/` include **85** adattatori — **80 inglesi + 5 russi**. L'insieme inglese copre i principali ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), gli aggregatori a livello di board selezionati da un `provider:` esplicito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) e gli ATS per-tenant auto-rilevati da un host `careers_url` o da un URL `api:` esplicito (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **L'elenco completo non va mai contato a mano qui — viene auto-rilevato da `server/lib/sources/` e mostrato in tempo reale nel menu a tendina Source di `#/scan`.** Vedi §5 per lo YAML e `docs/portals-examples.md` per le voci da copia-incolla.
+career-ops-ui tratta ogni job board come un **adattatore** — un singolo file sotto [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) che sa come recuperare + normalizzare i risultati di un board. Attualmente il registro `server/lib/sources/` include **86** adattatori — **81 inglesi + 5 russi**. L'insieme inglese copre i principali ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), gli aggregatori a livello di board selezionati da un `provider:` esplicito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) e gli ATS per-tenant auto-rilevati da un host `careers_url` o da un URL `api:` esplicito (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **L'elenco completo non va mai contato a mano qui — viene auto-rilevato da `server/lib/sources/` e mostrato in tempo reale nel menu a tendina Source di `#/scan`.** Vedi §5 per lo YAML e `docs/portals-examples.md` per le voci da copia-incolla.
 
 > **v1.69.0 (P-14) — auto-discovery drop-in.** Aggiungere una 12ª sorgente è ora
 > un **puro drop di file**. Il registro

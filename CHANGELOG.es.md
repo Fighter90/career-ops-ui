@@ -11,6 +11,28 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.228.0] — 2026-08-29
+
+**Añadido — canales de Telegram como fuente de escaneo y un modo de consulta paginado en `/api/scan-results`.**
+
+### Añadido
+- **Los canales de Telegram son ahora una fuente escaneable.** Un bloque `telegram_channels:` en `portals.yml` los lista; cada uno se lee desde la vista previa pública `https://t.me/s/<canal>`. Registro: **85 → 86 fuentes** (81 EN + 5 RU), `ALL_ADAPTERS` **80 → 81**.
+
+  Telegram no publica RSS y la Bot API no puede leer un canal que el bot no administra, así que ninguna de las dos vías obvias sirve. La vista `/s/` es HTML plano renderizado en servidor: sin autenticación, sin JS, sin cookies. Verificado en 16 canales: 15 devolvieron 20 publicaciones cada uno con un GET simple.
+
+  `channel:` acepta cualquier forma de escribirlo. El analizador se ancla en las tres cosas que un rediseño de Telegram moverá al final: `data-post`, el contenedor del texto y la fecha ISO `<time datetime>`.
+- **`GET /api/scan-results` incorpora un modo de consulta paginado.** `?q=<texto>&limit=50[&region=ru|en][&set=filtered|fresh][&offset=N]` devuelve `{ total, returned, offset, limit, set, rows }`, donde **`total` es el recuento ANTES de paginar**. Sin parámetros la ruta sigue devolviendo el snapshot íntegro: la tabla `#/scan` depende de esa forma.
+
+### Corregido
+- **El asistente de Telegram respondía con una fracción de los datos.** Su skill ya apuntaba a `/api/scan-results`, pero la ruta solo sabía devolver el snapshot completo —unos 2 MB— que no cabe en el contexto de un agente. Ante «encuentra todos los Product Manager» informó **9** coincidencias donde el snapshot tenía cientos, y dijo que «trabajaba con un índice local limitado». Era cierto: veía el endpoint pero no podía consumirlo. Con el modo paginado la misma pregunta cuesta 2 KB y devuelve un `total` honesto. El skill también se reescribió: pedía resumir las publicaciones *nuevas*, es decir apuntaba a `fresh` en lugar de `filtered`.
+
+### Notas
+- **Una publicación de canal es prosa, no un registro de empleo.** No hay campos estructurados: se toma el título de la primera línea sustantiva, y empresa/ubicación/salario de etiquetas explícitas. **Separar ofertas reales de anuncios y resúmenes queda en manos del `title_filter` existente**, el mismo ya afinado para otras fuentes. Son pistas, no un listado.
+- **La empresa nunca se adivina.** Sin etiqueta, la fila se atribuye al canal (`@rabotaphp`): un empleador equivocado entra en el tracker como un hecho.
+- **Un análisis vacío es un error, no «no hay vacantes».** t.me responde con una redirección a un canal privado o inexistente; devolver cero filas se leería como un día tranquilo y ocultaría una errata en la configuración para siempre. `jobGeeks` hace exactamente eso (HTTP 302) y deliberadamente **no** está configurado.
+- La detección de remoto usa una frontera de palabra Unicode en lugar de `\b`, que es solo ASCII: la misma trampa que el filtro de títulos sufrió en v1.227.3, aquí detectada por un test antes de publicar.
+- 15 canales configurados y verificados en vivo: **299 publicaciones, 15/15 canales**. 28 tests nuevos. Pruebas: **2865 → 2893**.
+
 ## [1.227.5] — 2026-08-29
 
 **Corregido — el escaneo regional agotaba la memoria del servidor y una suite de Playwright fallaba por su propio desmontaje.**

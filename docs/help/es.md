@@ -651,6 +651,22 @@ tracked_companies:
 Apunta el escáner a cualquier portal de empleo que publique un feed RSS/Atom (LaraJobs, WeWorkRemotely, RemoteOK, golangprojects, …) añadiendo una entrada con `provider: rss` y una clave `rss:` (o `feed_url:`) — **sin cambios de código**. El adaptador RSS analiza cada `<item>` (CDATA + entidades HTML, títulos/empresas sin etiquetas), lo normaliza a una oferta y aplica el mismo flujo `title_filter` / `location_filter` + dedup + añadir a pipeline que las fuentes ATS. Luego **RSS** aparece como fuente seleccionable en el desplegable de filtro de `#/scan`. (web-ui v1.62.x)
 
 
+### `telegram_channels` (canales públicos de Telegram con vacantes)
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+Escanee cualquier canal **público** de Telegram con solo enumerarlo aquí: sin token de bot ni clave de API. Cada canal se lee desde su vista previa pública `https://t.me/s/<canal>`, que es HTML renderizado en el servidor. `channel:` acepta cualquier forma (`rabotaphp`, `@rabotaphp` o un enlace `t.me/…` completo); `max_posts:` limita cuántas publicaciones recientes se leen (100 por defecto, tope duro 300). Los canales viven en su propio bloque de nivel superior y no en `tracked_companies`, porque un canal no es un empleador y no tiene una URL de empleo que detectar.
+
+**Una publicación de canal es prosa, no una ficha de empleo**: no hay campos estructurados. La fuente toma el título de la primera línea sustancial, lee empresa / ubicación / salario solo de etiquetas explícitas (`Компания:`, `Локация:`) y deja el texto completo en la descripción. Separar las ofertas reales de anuncios y resúmenes es tarea de su `title_filter`. Un canal privado o inexistente se reporta como **error**, nunca como «sin vacantes». Después **Telegram** aparece como fuente seleccionable en el filtro de `#/scan`. (web-ui v1.228.0)
+
+
 ### `russian_portals`
 
 ```yaml
@@ -876,7 +892,7 @@ Debajo del log, la tabla de resultados renderiza filas de
 > actualiza automáticamente mientras corre un escaneo y una vez más justo al
 > terminar — sin recargar a mano ni cambiar de página.
 
-> **v1.80.0 — Máximo por fuente y cuarentena de fuentes.** El campo **Máximo por fuente** junto al botón Escanear limita cuántos empleos aporta cada bolsa (vacío/0 = sin límite, el valor por defecto) — útil cuando una bolsa enorme dominaría de otro modo. Por separado, cualquier fuente que devuelva un **404 / 410** permanente se escribe en `data/scan-quarantine.json` y se omite en escaneos posteriores (autorreparación: se reintenta tras 14 días), de modo que los slugs muertos dejan de inundar el log. Desactívalo con `scan_quarantine: false` en `portals.yml`.
+> **v1.81.0 — Máximo por fuente y cuarentena de fuentes.** El campo **Máximo por fuente** junto al botón Escanear limita cuántos empleos aporta cada bolsa (vacío/0 = sin límite, el valor por defecto) — útil cuando una bolsa enorme dominaría de otro modo. Por separado, cualquier fuente que devuelva un **404 / 410** permanente se escribe en `data/scan-quarantine.json` y se omite en escaneos posteriores (autorreparación: se reintenta tras 14 días), de modo que los slugs muertos dejan de inundar el log. Desactívalo con `scan_quarantine: false` en `portals.yml`.
 
 Filtros:
 
@@ -1641,7 +1657,7 @@ Health, copia el output, y busca el issue en el tracker en
 
 ## 17. Cómo añadir una nueva fuente de portal de empleo
 
-career-ops-ui trata cada bolsa de empleo como un **adapter** — un único archivo bajo [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe cómo obtener y normalizar los resultados de una bolsa concreta. Actualmente el registro `server/lib/sources/` incluye **85** adapters — **80 en inglés + 5 rusos**. El conjunto en inglés abarca los principales ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo el board seleccionados por un `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), y ATS por tenant autodetectados desde un host `careers_url` o una URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **La lista completa nunca hace falta contarla a mano aquí — se autodescubre desde `server/lib/sources/` y se muestra en vivo en el desplegable Source de `#/scan`.** Consulta §5 para el YAML y `docs/portals-examples.md` para entradas listas para copiar y pegar.
+career-ops-ui trata cada bolsa de empleo como un **adapter** — un único archivo bajo [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe cómo obtener y normalizar los resultados de una bolsa concreta. Actualmente el registro `server/lib/sources/` incluye **86** adapters — **81 en inglés + 5 rusos**. El conjunto en inglés abarca los principales ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo el board seleccionados por un `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), y ATS por tenant autodetectados desde un host `careers_url` o una URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **La lista completa nunca hace falta contarla a mano aquí — se autodescubre desde `server/lib/sources/` y se muestra en vivo en el desplegable Source de `#/scan`.** Consulta §5 para el YAML y `docs/portals-examples.md` para entradas listas para copiar y pegar.
 
 > **v1.69.0 (P-14) — auto-descubrimiento drop-in.** Añadir una 12.ª fuente es ahora
 > una **operación de soltar el archivo**. El registro

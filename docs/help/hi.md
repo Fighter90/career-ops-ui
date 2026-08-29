@@ -864,6 +864,22 @@ golangprojects, …), `provider: rss` वाली एक एंट्री ज
 चयन-योग्य स्रोत के रूप में दिखाई देता है। (web-ui v1.62.x)
 
 
+### `telegram_channels` (सार्वजनिक Telegram जॉब चैनल)
+
+```yaml
+telegram_channels:
+  enabled: true
+  max_posts: 100          # default cap per channel (hard cap 300)
+  channels:
+    - { name: "PHP jobs", channel: rabotaphp }
+    - { name: "Salary PM", channel: salary_pm, max_posts: 50 }
+```
+
+किसी भी **सार्वजनिक** Telegram चैनल को यहाँ सूचीबद्ध करके स्कैन करें — न बॉट टोकन, न API कुंजी। हर चैनल अपने सार्वजनिक पूर्वावलोकन `https://t.me/s/<चैनल>` से पढ़ा जाता है, जो सर्वर पर रेंडर किया सादा HTML है। `channel:` कोई भी रूप स्वीकार करता है (`rabotaphp`, `@rabotaphp`, या पूरा `t.me/…` लिंक); `max_posts:` सीमित करता है कि कितनी हालिया पोस्ट पढ़ी जाएँ (डिफ़ॉल्ट 100, कठोर सीमा 300)। चैनल `tracked_companies` के बजाय अपने अलग शीर्ष-स्तरीय ब्लॉक में रहते हैं, क्योंकि चैनल नियोक्ता नहीं है और उसके पास पहचानने योग्य कोई careers URL नहीं होता।
+
+**चैनल की पोस्ट गद्य है, नौकरी का रिकॉर्ड नहीं** — कोई संरचित फ़ील्ड नहीं होते। स्रोत शीर्षक पहली सारवान पंक्ति से लेता है, कंपनी / स्थान / वेतन केवल स्पष्ट लेबल (`Компания:`, `Локация:`) से पढ़ता है, और पूरा पाठ विवरण में छोड़ देता है। असली रिक्तियों को विज्ञापन और डाइजेस्ट से अलग करना आपके `title_filter` का काम है। निजी या अनुपस्थित चैनल को «कोई रिक्ति नहीं» नहीं, बल्कि **त्रुटि** के रूप में बताया जाता है। इसके बाद **Telegram** `#/scan` फ़िल्टर में चुनने योग्य स्रोत के रूप में दिखता है। (web-ui v1.228.0)
+
+
 ### `russian_portals`
 
 ```yaml
@@ -1883,7 +1899,7 @@ key वैल्यू दिखाई नहीं देगी।
 career-ops-ui हर job board को एक **adapter** के रूप में मानता है — एक अकेली फ़ाइल
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) के अंतर्गत जो
 एक बोर्ड के परिणामों को fetch + normalize करना जानती है। फ़िलहाल
-`server/lib/sources/` रजिस्ट्री **85** adapters शिप करती है — **80 अंग्रेज़ी + 5 रूसी**
+`server/lib/sources/` रजिस्ट्री **86** adapters शिप करती है — **81 अंग्रेज़ी + 5 रूसी**
 बोर्ड। अंग्रेज़ी सेट प्रमुख ATS-ों (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday) को कवर करता है, बोर्ड-वाइड aggregators
 जिन्हें स्पष्ट `provider:` से चुना जाता है (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
