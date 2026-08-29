@@ -89,14 +89,41 @@ export function buildChannelUrl(entry) {
   return `https://t.me/s/${handle}`;
 }
 
-/** Strip tags, decode entities, collapse whitespace — the body is prose. */
+/**
+ * Strip tags, decode entities, collapse whitespace — the body is prose.
+ *
+ * Two things a one-line `replace(/<[^>]+>/g, '')` gets wrong here:
+ *
+ *   1. it eats real text. A post reading "зарплата < 300k, опыт > 3 лет" has
+ *      `< 300k, опыт >` matched as a tag and deleted. Requiring a letter after
+ *      the `<` keeps prose intact and still catches every real tag;
+ *   2. it is an incomplete sanitizer — removing `<b>` from `<scr<b>ipt>`
+ *      re-forms `<script>` out of the text on either side. Nothing here reaches
+ *      an HTML sink today (`UI.md()` escapes every byte before rendering), but
+ *      a stripper that can be talked into emitting a tag is one refactor away
+ *      from mattering, so the strip runs to a fixed point.
+ *
+ * The loop is bounded: each pass strictly shortens the string, but an
+ * adversarial `<<<<<a>>>>>` could cost a pass per character. Eight clear any
+ * nesting real markup produces.
+ */
 export function visibleText(fragment) {
-  return decodeEntities(
-    String(fragment || '')
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/<\/(p|div)>/gi, '\n')
-      .replace(/<[^>]+>/g, ''),
-  ).replace(/[ \t ]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+  const finish = (s) => decodeEntities(s)
+    .replace(/[ \t ]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
+  let s = String(fragment || '')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(p|div)>/gi, '\n');
+
+  for (let i = 0; i < 8; i++) {
+    const next = s.replace(/<\/?[a-zA-Z][^>]*>/g, '');
+    if (next === s) return finish(s);
+    s = next;
+  }
+  return finish(s.replace(/<\/?[a-zA-Z][^>]*>/g, ''));
 }
 
 /**

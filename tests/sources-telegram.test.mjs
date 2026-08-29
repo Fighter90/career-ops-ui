@@ -11,7 +11,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   meta, assertTelegramUrl, normalizeChannel, buildChannelUrl,
-  titleFromText, parseChannelPage, fetchTelegram,
+  titleFromText, parseChannelPage, fetchTelegram, visibleText,
 } from '../server/lib/sources/telegram.mjs';
 import { telegramAdapter } from '../server/lib/portals/adapters/telegram.mjs';
 
@@ -54,6 +54,26 @@ test('normalizeChannel rejects what Telegram itself would reject', () => {
 test('buildChannelUrl targets the /s/ preview and refuses a junk handle', () => {
   assert.equal(buildChannelUrl({ channel: '@rabota_golang' }), 'https://t.me/s/rabota_golang');
   assert.throws(() => buildChannelUrl({ channel: '!!' }), /no usable channel handle/);
+});
+
+test('visibleText keeps prose that looks like markup but is not', () => {
+  // The one-pass `/<[^>]+>/g` this replaced ate the whole span between the two
+  // angle brackets, so a salary range vanished from the post body.
+  assert.equal(visibleText('\u0437\u0430\u0440\u043f\u043b\u0430\u0442\u0430 < 300k, \u043e\u043f\u044b\u0442 > 3 \u043b\u0435\u0442'),
+    '\u0437\u0430\u0440\u043f\u043b\u0430\u0442\u0430 < 300k, \u043e\u043f\u044b\u0442 > 3 \u043b\u0435\u0442');
+  assert.equal(visibleText('Role <b>Dev</b><br/>Next'), 'Role Dev\nNext');
+  assert.equal(visibleText('Senior <!-- ad --> Dev'), 'Senior Dev');
+});
+
+test('visibleText strips to a fixed point — a tag cannot be reassembled', () => {
+  // Removing the inner <b> from `<<b>script>` re-forms `<script>`; one pass
+  // would emit it. Nothing renders this unescaped today, but a stripper that
+  // can be talked into emitting a tag is one refactor from mattering.
+  assert.equal(visibleText('<<b>script>alert(1)<<b>/script>'), 'alert(1)');
+  assert.equal(visibleText('a<<b>img src=x onerror=1>b'), 'ab');
+  // Whatever survives the bounded loop must carry no tag: text, not markup.
+  const pathological = visibleText('<'.repeat(40) + 'a' + '>'.repeat(40));
+  assert.equal(/<\/?[a-zA-Z]/.test(pathological), false);
 });
 
 test('titleFromText takes the first substantive line, not an emoji divider', () => {
