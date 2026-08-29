@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.227.4] — 2026-08-29
+
+**Fixed — `word:` / `stem:` were still ignored by `content_filter`; v1.227.3 only fixed the title filter.**
+
+### Fixed
+- **`content_filter` did not honour the keyword prefixes.** v1.227.3 taught `title_filter` the parent's `word:` / `stem:` prefixes but left `content_filter` on its own raw `lower.includes(k)`, so a prefixed entry there was still matched as the literal text `"word:java"` — the same silent no-op, one filter over. `content_filter` reads the job DESCRIPTION and its default has always been a plain substring, which is why a bare negative `java` rejects every posting that merely mentions "JavaScript"; the prefix is how you opt one entry out of that. Ported the parent's `compileContentKeyword`, which shares the prefix machinery but deliberately does **not** auto-anchor short keywords: the title filter anchors 2–3 letter acronyms because "COO" inside "Coordinator" is always wrong, whereas a short run inside a paragraph of prose is routinely intended (`aws`, `gcp`, `sql`, `go`).
+
+### Notes
+- **Caught in AI review of the v1.227.3 PR**, which noticed the code did not cover what its own comment claimed — the comment said "`title_filter` / `content_filter`" while only the title path was wired. The comment is now explicit about what each filter does: both honour the prefixes, only the title filter auto-anchors acronyms.
+- **Also verified from that review, and unchanged:** switching the 2–3 letter acronym rule from `\b` to the Unicode boundary is behaviourally identical for ASCII and stricter only where it should be — `COO_lead` and `coo1` are still kept (underscore and digit are word characters under both), `Coordinator` kept, `Директор COO` and `VP «Продукт»` correctly dropped. 14 edge cases checked.
+- Unprefixed `content_filter` entries keep their previous matching byte-for-byte, a blank/absent description still passes untouched, and a bare `word:` / `stem:` matches nothing rather than everything. 6 new cases in `tests/content-filter.test.mjs`. Test suite: **2852 → 2858**.
+
 ## [1.227.3] — 2026-08-29
 
 **Fixed — `word:` / `stem:` title-filter prefixes were silently ignored, turning those filter lines into no-ops.**

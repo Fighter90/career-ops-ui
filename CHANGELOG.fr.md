@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.227.4] — 2026-08-29
+
+**Corrigé — `word:` / `stem:` étaient toujours ignorés par `content_filter` ; la v1.227.3 n'avait corrigé que le filtre de titres.**
+
+### Corrigé
+- **`content_filter` ne respectait pas les préfixes.** La v1.227.3 a appris à `title_filter` les préfixes `word:` / `stem:` du parent mais a laissé `content_filter` sur son propre `lower.includes(k)` brut : une entrée préfixée y était donc toujours comparée au texte littéral `"word:java"` — le même no-op silencieux, un filtre plus loin. `content_filter` lit la DESCRIPTION de l'offre et son défaut a toujours été une simple sous-chaîne, d'où le fait qu'un négatif nu `java` rejette tout ce qui mentionne seulement « JavaScript » ; le préfixe est le moyen d'y déroger pour une entrée. Le `compileContentKeyword` du parent est porté : il partage la machinerie de préfixes mais n'ancre délibérément **pas** les mots courts — le filtre de titres ancre les sigles de 2–3 lettres parce que « COO » dans « Coordinator » est toujours faux, alors qu'une courte séquence au milieu d'un paragraphe est souvent intentionnelle (`aws`, `gcp`, `sql`, `go`).
+
+### Notes
+- **Repéré lors de la revue IA de la PR v1.227.3**, qui a remarqué que le code ne couvrait pas ce que son propre commentaire affirmait : il disait « `title_filter` / `content_filter` » alors que seul le chemin des titres était câblé. Le commentaire distingue désormais explicitement : les deux filtres honorent les préfixes, seul celui des titres ancre les sigles.
+- **Également vérifié à partir de cette revue, et inchangé :** passer la règle des sigles de 2–3 lettres de `\b` à la frontière Unicode est identique pour l'ASCII et plus strict uniquement là où il le faut — `COO_lead` et `coo1` restent conservés (le tiret bas et le chiffre sont des caractères de mot dans les deux cas), `Coordinator` conservé, « Директор COO » et « VP «Продукт» » correctement écartés. 14 cas limites vérifiés.
+- Les entrées non préfixées de `content_filter` gardent leur correspondance antérieure au octet près, une description vide ou absente passe toujours, et un `word:` / `stem:` vide ne correspond à rien plutôt qu'à tout. 6 nouveaux cas dans `tests/content-filter.test.mjs`. Tests : **2852 → 2858**.
+
 ## [1.227.3] — 2026-08-29
 
 **Corrigé — les préfixes `word:` / `stem:` du filtre de titres étaient ignorés en silence, rendant ces lignes de filtre inopérantes.**

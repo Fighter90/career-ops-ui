@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.227.4] — 2026-08-29
+
+**Corrigido — `word:` / `stem:` ainda eram ignorados pelo `content_filter`; a v1.227.3 corrigiu apenas o filtro de títulos.**
+
+### Corrigido
+- **O `content_filter` não respeitava os prefixos.** A v1.227.3 ensinou os prefixos `word:` / `stem:` ao `title_filter`, mas deixou o `content_filter` com seu próprio `lower.includes(k)` cru, então ali uma entrada com prefixo continuava sendo comparada como o texto literal `"word:java"` — o mesmo no-op silencioso, um filtro adiante. O `content_filter` lê a DESCRIÇÃO da vaga e seu padrão sempre foi substring simples: por isso um negativo simples `java` rejeita tudo que apenas mencione «JavaScript»; o prefixo é como se opta por sair disso em uma entrada. Portado o `compileContentKeyword` do pai, que compartilha a maquinaria de prefixos mas deliberadamente **não** ancora palavras curtas: o filtro de títulos ancora siglas de 2–3 letras porque «COO» dentro de «Coordinator» é sempre errado, ao passo que uma sequência curta dentro de um parágrafo em prosa costuma ser intencional (`aws`, `gcp`, `sql`, `go`).
+
+### Notas
+- **Encontrado na revisão por IA do PR da v1.227.3**, que notou que o código não cobria o que o próprio comentário afirmava — dizia «`title_filter` / `content_filter`» com apenas o caminho de títulos ligado. O comentário agora separa explicitamente: ambos honram os prefixos, só o de títulos ancora siglas.
+- **Também verificado a partir dessa revisão, e inalterado:** trocar a regra de siglas de 2–3 letras de `\b` pela fronteira Unicode é idêntico em comportamento para ASCII e mais estrito só onde deve ser — `COO_lead` e `coo1` continuam mantidos (sublinhado e dígito são caracteres de palavra em ambos), `Coordinator` mantido, «Директор COO» e «VP «Продукт»» corretamente descartados. 14 casos-limite conferidos.
+- Entradas sem prefixo do `content_filter` mantêm sua correspondência anterior byte a byte, uma descrição vazia ou ausente ainda passa, e um `word:` / `stem:` vazio não casa com nada em vez de tudo. 6 casos novos em `tests/content-filter.test.mjs`. Testes: **2852 → 2858**.
+
 ## [1.227.3] — 2026-08-29
 
 **Corrigido — os prefixos `word:` / `stem:` do filtro de títulos eram ignorados em silêncio, deixando essas linhas de filtro sem efeito.**

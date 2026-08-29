@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.227.4] — 2026-08-29
+
+**Naprawiono — `word:` / `stem:` nadal były ignorowane przez `content_filter`; v1.227.3 naprawiła tylko filtr tytułów.**
+
+### Naprawiono
+- **`content_filter` nie honorował prefiksów.** v1.227.3 nauczyła `title_filter` prefiksów `word:` / `stem:` z projektu nadrzędnego, ale zostawiła `content_filter` przy jego własnym surowym `lower.includes(k)`, więc wpis z prefiksem był tam wciąż dopasowywany jako dosłowny tekst `"word:java"` — ten sam cichy no-op, jeden filtr dalej. `content_filter` czyta OPIS oferty, a jego domyślnym trybem zawsze był zwykły podciąg: dlatego goły negatyw `java` odrzuca wszystko, co jedynie wspomina „JavaScript”; prefiks jest sposobem na wyłączenie jednego wpisu z tej reguły. Przeniesiono `compileContentKeyword` z projektu nadrzędnego: dzieli tę samą maszynerię prefiksów, ale celowo **nie** kotwiczy krótkich słów kluczowych — filtr tytułów kotwiczy 2–3-literowe skróty, bo „COO” w „Coordinator” zawsze jest błędem, podczas gdy krótki ciąg w akapicie prozy bywa zamierzony (`aws`, `gcp`, `sql`, `go`).
+
+### Uwagi
+- **Wykryte w przeglądzie AI PR-a v1.227.3**, który zauważył, że kod nie pokrywa tego, co twierdzi jego własny komentarz — pisał „`title_filter` / `content_filter`”, a podłączona była tylko ścieżka tytułów. Komentarz rozróżnia to teraz wprost: oba filtry honorują prefiksy, tylko tytułowy kotwiczy skróty.
+- **Również zweryfikowane na podstawie tego przeglądu i niezmienione:** przejście reguły 2–3-literowych skrótów z `\b` na granicę Unicode zachowuje się identycznie dla ASCII i jest surowsze tylko tam, gdzie powinno — `COO_lead` i `coo1` nadal zachowane (podkreślnik i cyfra są znakami słowa w obu wariantach), `Coordinator` zachowany, „Директор COO” i „VP «Продукт»” poprawnie odrzucone. Sprawdzono 14 przypadków brzegowych.
+- Wpisy `content_filter` bez prefiksu zachowują dotychczasowe dopasowanie co do bajta, pusty lub brakujący opis nadal przechodzi, a pusty `word:` / `stem:` nie dopasowuje niczego zamiast wszystkiego. 6 nowych przypadków w `tests/content-filter.test.mjs`. Testy: **2852 → 2858**.
+
 ## [1.227.3] — 2026-08-29
 
 **Naprawiono — prefiksy `word:` / `stem:` w filtrze tytułów były po cichu ignorowane, przez co te linie filtra nic nie robiły.**

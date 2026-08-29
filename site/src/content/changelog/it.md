@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.4] — 2026-08-29
+
+**Corretto — `word:` / `stem:` erano ancora ignorati da `content_filter`; la v1.227.3 aveva sistemato solo il filtro sui titoli.**
+
+### Corretto
+- **`content_filter` non rispettava i prefissi.** La v1.227.3 ha insegnato a `title_filter` i prefissi `word:` / `stem:` del progetto padre, ma ha lasciato `content_filter` al suo `lower.includes(k)` grezzo: lì una voce con prefisso veniva ancora confrontata con il testo letterale `"word:java"` — lo stesso no-op silenzioso, un filtro più in là. `content_filter` legge la DESCRIZIONE dell'offerta e il suo default è sempre stata una semplice sottostringa: per questo un negativo nudo `java` scarta tutto ciò che si limita a menzionare «JavaScript»; il prefisso è il modo di sottrarre una singola voce a quella regola. Portato il `compileContentKeyword` del padre, che condivide la macchina dei prefissi ma deliberatamente **non** ancora le parole corte: il filtro sui titoli ancora le sigle di 2–3 lettere perché «COO» dentro «Coordinator» è sempre sbagliato, mentre una sequenza breve dentro un paragrafo di prosa è spesso voluta (`aws`, `gcp`, `sql`, `go`).
+
+### Note
+- **Individuato nella revisione IA della PR v1.227.3**, che ha notato come il codice non coprisse ciò che il suo stesso commento affermava: diceva «`title_filter` / `content_filter`» mentre era collegato solo il percorso dei titoli. Ora il commento distingue esplicitamente: entrambi i filtri rispettano i prefissi, solo quello sui titoli ancora le sigle.
+- **Verificato anch'esso da quella revisione e invariato:** passare la regola delle sigle di 2–3 lettere da `\b` alla frontiera Unicode è identico per l'ASCII e più severo solo dove serve — `COO_lead` e `coo1` restano mantenuti (trattino basso e cifra sono caratteri di parola in entrambi), `Coordinator` mantenuto, «Директор COO» e «VP «Продукт»» correttamente scartati. Verificati 14 casi limite.
+- Le voci di `content_filter` senza prefisso mantengono la corrispondenza precedente byte per byte, una descrizione vuota o assente passa ancora, e un `word:` / `stem:` vuoto non corrisponde a nulla anziché a tutto. 6 nuovi casi in `tests/content-filter.test.mjs`. Test: **2852 → 2858**.
+
 ## [1.227.3] — 2026-08-29
 
 **Corretto — i prefissi `word:` / `stem:` del filtro sui titoli venivano ignorati in silenzio, rendendo quelle righe di filtro inefficaci.**

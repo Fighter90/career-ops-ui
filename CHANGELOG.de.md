@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.227.4] — 2026-08-29
+
+**Behoben — `word:` / `stem:` wurden von `content_filter` weiterhin ignoriert; v1.227.3 hatte nur den Titelfilter behoben.**
+
+### Behoben
+- **`content_filter` beachtete die Präfixe nicht.** v1.227.3 brachte `title_filter` die `word:` / `stem:`-Präfixe des übergeordneten Projekts bei, ließ `content_filter` aber bei seinem eigenen rohen `lower.includes(k)` — ein präfigierter Eintrag wurde dort weiterhin mit dem wörtlichen Text `"word:java"` verglichen: derselbe stille No-op, einen Filter weiter. `content_filter` liest die BESCHREIBUNG, und sein Standard war immer ein einfacher Teilstring; deshalb verwirft ein blankes negatives `java` alles, was „JavaScript“ auch nur erwähnt. Das Präfix ist der Ausstieg für einen einzelnen Eintrag. Portiert wurde `compileContentKeyword` des übergeordneten Projekts: dieselbe Präfix-Maschinerie, aber bewusst **ohne** automatische Verankerung kurzer Schlüsselwörter — der Titelfilter verankert 2–3-Buchstaben-Abkürzungen, weil „COO“ in „Coordinator“ immer falsch ist, während eine kurze Folge in einem Fließtext regelmäßig gemeint ist (`aws`, `gcp`, `sql`, `go`).
+
+### Hinweise
+- **Im KI-Review der v1.227.3-PR gefunden**, das bemerkte, dass der Code nicht abdeckte, was sein eigener Kommentar behauptete: dort stand „`title_filter` / `content_filter`“, verdrahtet war nur der Titelpfad. Der Kommentar trennt das jetzt ausdrücklich: beide Filter beachten die Präfixe, nur der Titelfilter verankert Abkürzungen.
+- **Ebenfalls aus jenem Review geprüft und unverändert:** der Wechsel der 2–3-Buchstaben-Regel von `\b` zur Unicode-Grenze verhält sich für ASCII identisch und ist nur dort strenger, wo er es sein soll — `COO_lead` und `coo1` bleiben erhalten (Unterstrich und Ziffer sind in beiden Fällen Wortzeichen), `Coordinator` bleibt, „Директор COO“ und „VP «Продукт»“ werden korrekt verworfen. 14 Grenzfälle geprüft.
+- Unpräfigierte `content_filter`-Einträge behalten ihr bisheriges Matching Byte für Byte, eine leere oder fehlende Beschreibung passiert weiterhin, und ein leeres `word:` / `stem:` trifft nichts statt alles. 6 neue Fälle in `tests/content-filter.test.mjs`. Tests: **2852 → 2858**.
+
 ## [1.227.3] — 2026-08-29
 
 **Behoben — die Titelfilter-Präfixe `word:` / `stem:` wurden stillschweigend ignoriert, wodurch diese Filterzeilen wirkungslos blieben.**
