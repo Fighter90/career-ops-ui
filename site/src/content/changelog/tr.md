@@ -2,6 +2,20 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.1] — 2026-08-29
+
+**Düzeltildi — yardımdaki kaynak dökümü kendisiyle tutmuyordu ve GitHub afişi uygulamada ham işaretleme olarak basılıyordu.**
+
+### Düzeltildi
+- **§17 toplamı ve dökümü birbirini tutmuyordu.** Tüm yardım paketleri „`server/lib/sources/` kaydı **85** adaptör içerir — **78 İngilizce + 5 Rusça**“ diyordu. 78 + 5 = 83, 85 değil; ja/ko'da sapma 77'ye (= 82) kadar gitmişti. Her yeni kaynak toplamı yükseltip terimi olduğu gibi bıraktığı için iki sayı birkaç sürümdür ayrışıyordu. Döküm artık 17 dilin tamamında **80 EN + 5 RU**. Bu görsellikten fazlası: `docs/help/<lang>.md`, „Ask the docs“un dayandığı TEK derlem; dolayısıyla kaç kaynak desteklendiğini soran kullanıcı tek bir cümleden birbiriyle çelişen iki sayı alıyordu.
+- **Aynı cümle eskimiş bir sürüm çıpası tutuyordu.** „**v1.213.0** itibarıyla kayıt …“ 16 dilde hayatta kalırken sayaç iki kez değişti (v1.219.0'da 83, v1.226.0'da 85). Çıpa v1.210.1'de elle bir kez onarılmış ve yeniden kaymıştı. Sürümsüz bir ifade lehine kaldırıldı — sayacın kendisi canlı kayda karşı doğrulanıyor ve eskiyemez.
+- **Sağlayıcı afişi `#/help` başında kaçışlanmış işaretleme olarak basılıyordu.** v1.225.0/v1.225.1, onun „`UI.md()` tarafından uygulamada kaldırıldığını (görsel desteği yok)“ kaydetmişti. Bu iki farklı şeyi karıştırıyor: `UI.md()` önce kaçışlar — herhangi bir markdown dönüşümünden önce kaynağın her baytını kaçışlar; bu doğru XSS sınırıdır ama kaldırmanın tam tersidir. Kimse afişi kaldırmıyordu çünkü kimse denemiyordu ve 17 dilin tamamı `#/help`i 268 karakterlik düz `<p align="center"><img src="https://…` ile açıyordu. Yeni ortak giriş (`server/lib/help-markdown.mjs::stripGithubOnlyBlocks`) okuma sırasında tek başına duran HTML görsel bloklarını atıyor — hem `GET /api/help/:lang` hem de docs-assistant derlemi için. Dosyalarda afiş kalıyor, dolayısıyla GitHub vitrini yine görünüyor.
+- **Kadans panosundaki „#“ sütunu v1.117.0'dan beri boştu.** `entry.appNum` okuyordu; oysa `followup-cadence.mjs` `num` yayıyor — `appNum` yükte hiç var olmadı. Artık ikisi de okunuyor. v1.227.0'daki „Next up“ satırı aynı hatayı devralmıştı, birlikte düzeltildi.
+
+### Notlar
+- **Dördü de kendilerini kollayan bir şey olmadığı için gözden kaçtı.** Yardım kapıları (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`) BAŞLIK sayar — 32 H2 / 121 H3 — ve hiçbir test bir paragrafın içindeki sayıyı okumamış, yardım girişinin gerçekte ne sunduğuna bakmamıştı. İki yeni takım bunu kapatıyor: `tests/help-source-counts.test.mjs` (belirtilen toplam `SOURCES.length`e eşit; terimler canlı EN/RU bölünmesine eşit ve toplamı veriyor; paragraf sürüm sabitlemiyor) ve `tests/help-banner-strip.test.mjs` (afiş GitHub için diskte kalır, süzmeden asla sağ çıkmaz, her paketin ilk render satırı başlığıdır, süzme dar kalır ve iki tüketici de oradan geçer). İkisinin de commit öncesi tam bu hatalara karşı kırmızı düştüğü doğrulandı. Test paketi: **2837 → 2846**.
+- Kayıt, tarayıcı veya rota sözleşmelerinde değişiklik yok; kaynaklar **85** (80 EN + 5 RU), `ALL_ADAPTERS` **80** olarak kalıyor.
+
 ## [1.227.0] — 2026-08-28
 
 **Eklendi — SEEK Hong Kong (JobsDB), takipler için yalnızca-zamanı-gelenler süzgeci ve gizli işverenlerin kendilerini sunan ajansı göstermesi.**

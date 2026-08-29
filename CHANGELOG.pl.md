@@ -9,6 +9,20 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.227.1] — 2026-08-29
+
+**Naprawiono — rozbicie źródeł w pomocy nie zgadzało się samo ze sobą, a baner GitHuba był drukowany w aplikacji jako surowy znacznik.**
+
+### Naprawiono
+- **§17 podawał sumę i rozbicie, które się nie sumowały.** Wszystkie pakiety pomocy głosiły „rejestr `server/lib/sources/` dostarcza **85** adapterów — **78 angielskich + 5 rosyjskich**”. 78 + 5 = 83, a nie 85; w ja/ko dryf sięgał 77 (= 82). Każde nowe źródło podnosiło sumę i zostawiało składnik, więc obie liczby rozjeżdżały się od kilku wydań. Rozbicie to teraz **80 EN + 5 RU** we wszystkich 17 lokalizacjach. To więcej niż kosmetyka: `docs/help/<lang>.md` to JEDYNY korpus, na którym opiera się „Ask the docs”, więc pytający o liczbę źródeł dostawał dwie sprzeczne liczby z jednego zdania.
+- **To samo zdanie przypinało nieaktualną kotwicę wersji.** „Od **v1.213.0** rejestr …” przetrwało w 16 lokalizacjach, podczas gdy licznik zmieniał się dwukrotnie (83 w v1.219.0, 85 w v1.226.0). Kotwicę naprawiano już ręcznie w v1.210.1 i po prostu znów odjechała. Została usunięta na rzecz sformułowania bez wersji — sam licznik jest weryfikowany względem żywego rejestru, który nie może się zdezaktualizować.
+- **Baner dostawców był drukowany jako zescapowany znacznik na górze `#/help`.** v1.225.0/v1.225.1 zapisały, że jest „usuwany w aplikacji przez `UI.md()` (brak obsługi obrazów)”. To myli dwie rzeczy: `UI.md()` escapuje najpierw — escapuje każdy bajt źródła przed jakąkolwiek transformacją markdown, co jest właściwą granicą XSS, ale przeciwieństwem usuwania. Nikt nie usuwał banera, bo nikt nie próbował, i wszystkie 17 lokalizacji otwierało `#/help` 268 znakami dosłownego `<p align="center"><img src="https://…`. Nowe wspólne wejście (`server/lib/help-markdown.mjs::stripGithubOnlyBlocks`) odrzuca przy odczycie samodzielne bloki HTML z obrazem — zarówno dla `GET /api/help/:lang`, jak i dla korpusu docs-assistant. Pliki zachowują baner, więc GitHub nadal renderuje witrynę.
+- **Kolumna „#” na tablicy kadencji była pusta od v1.117.0.** Czytała `entry.appNum`, podczas gdy `followup-cadence.mjs` zwraca `num` — `appNum` nigdy nie istniało w ładunku. Teraz czytane są oba. Wiersz „Next up” z v1.227.0 odziedziczył ten sam błąd i jest poprawiony razem z nim.
+
+### Uwagi
+- **Wszystkie cztery przeszły niezauważone, bo nic ich nie pilnowało.** Bramki pomocy (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`) liczą NAGŁÓWKI — 32 H2 / 121 H3 — i żaden test nigdy nie czytał liczby wewnątrz akapitu ani nie sprawdzał, co naprawdę serwuje wejście pomocy. Zamykają to dwa nowe zestawy: `tests/help-source-counts.test.mjs` (deklarowana suma równa `SOURCES.length`; składniki równe żywemu podziałowi EN/RU i sumujące się do sumy; akapit nie przypina wersji) oraz `tests/help-banner-strip.test.mjs` (baner zostaje na dysku dla GitHuba, nigdy nie przeżywa filtrowania, pierwsza renderowana linia każdego pakietu to jego nagłówek, filtrowanie pozostaje wąskie, a obaj konsumenci przez nie przechodzą). Oba sprawdzono na czerwono względem dokładnie tych błędów przed commitem. Testy: **2837 → 2846**.
+- Bez zmian w rejestrze, skanerze i kontraktach tras; źródeł nadal **85** (80 EN + 5 RU), `ALL_ADAPTERS` **80**.
+
 ## [1.227.0] — 2026-08-28
 
 **Dodano — SEEK Hongkong (JobsDB), filtr tylko wymagających dla follow-upów oraz poufni pracodawcy pokazujący agencję, która ich reprezentowała.**

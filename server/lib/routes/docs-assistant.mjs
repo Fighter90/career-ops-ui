@@ -14,6 +14,7 @@
  * cascade; no key → the honest copy-paste prompt. No file writes.
  */
 import { readFileSync, existsSync } from 'node:fs';
+import { stripGithubOnlyBlocks } from '../help-markdown.mjs';
 import { resolve } from 'node:path';
 import { WEB_UI_ROOT } from '../paths.mjs';
 import { resolveLocale } from '../prompts.mjs';
@@ -114,7 +115,9 @@ export function registerDocsAssistantRoutes(app) {
     const file = resolveHelpFile(lang);
     if (!file) return res.status(500).json({ error: 'help guide not found' });
 
-    const picked = topSections(splitSections(readFileSync(file, 'utf8')), question);
+    // Same ingress rule as the Help page: the GitHub-only banner is markup
+    // noise in a keyword-retrieval corpus, so it never enters the sections.
+    const picked = topSections(splitSections(stripGithubOnlyBlocks(readFileSync(file, 'utf8'))), question);
     const prompt = buildAskPrompt(picked, question, lang);
     const sections = picked.map((s) => s.title);
 

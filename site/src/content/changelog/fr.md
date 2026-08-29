@@ -11,6 +11,20 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.227.1] — 2026-08-29
+
+**Corrigé — la répartition des sources dans l'aide ne tombait pas juste, et la bannière GitHub s'affichait en balisage brut dans l'application.**
+
+### Corrigé
+- **§17 donnait un total et une répartition qui ne s'additionnaient pas.** Tous les bundles d'aide indiquaient « le registre `server/lib/sources/` embarque **85** adaptateurs — **78 anglais + 5 russes** ». 78 + 5 = 83, pas 85 ; en ja/ko la dérive allait jusqu'à 77 (= 82). Chaque nouvelle source relevait le total sans toucher au terme, et les deux nombres divergeaient depuis plusieurs versions. La répartition est désormais **80 EN + 5 RU** dans les 17 locales. Cela dépasse le cosmétique : `docs/help/<lang>.md` est l'UNIQUE corpus sur lequel « Ask the docs » s'appuie, donc demander combien de sources sont prises en charge renvoyait deux nombres contradictoires issus d'une seule phrase.
+- **La même phrase figeait une ancre de version périmée.** « Depuis la **v1.213.0**, le registre … » a survécu dans 16 locales pendant que le compteur bougeait deux fois (83 en v1.219.0, 85 en v1.226.0). L'ancre avait déjà été réparée à la main en v1.210.1 et a simplement redérivé. Elle est supprimée au profit d'une formulation sans version : le compteur est vérifié contre le registre vivant, qui ne peut pas se périmer.
+- **La bannière des fournisseurs s'imprimait en balisage échappé en tête de `#/help`.** v1.225.0/v1.225.1 la donnaient pour « supprimée dans l'app par `UI.md()` (pas de support des images) ». Cela confond deux choses : `UI.md()` échappe d'abord — il échappe chaque octet de la source avant toute transformation markdown, ce qui est la bonne frontière XSS mais l'inverse d'une suppression. Personne ne retirait la bannière parce que personne n'essayait, et les 17 locales ouvraient `#/help` sur 268 caractères de `<p align="center"><img src="https://…` littéral. Un nouveau point d'entrée partagé (`server/lib/help-markdown.mjs::stripGithubOnlyBlocks`) élimine à la lecture les blocs HTML d'image isolés, pour `GET /api/help/:lang` comme pour le corpus du docs-assistant. Les fichiers gardent la bannière, GitHub affiche donc toujours la vitrine.
+- **La colonne « # » du tableau de cadence était vide depuis la v1.117.0.** Elle lisait `entry.appNum`, alors que `followup-cadence.mjs` émet `num` — `appNum` n'a jamais existé dans la charge utile. Les deux sont désormais lus. La ligne « Next up » de la v1.227.0 avait hérité de la même erreur et est corrigée avec elle.
+
+### Notes
+- **Les quatre sont passés inaperçus faute de garde-fou.** Les gates d'aide (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`) comptent des TITRES — 32 H2 / 121 H3 — et aucun test n'avait jamais lu un nombre dans un paragraphe ni regardé ce que sert réellement l'entrée de l'aide. Deux suites nouvelles ferment cela : `tests/help-source-counts.test.mjs` (le total annoncé égale `SOURCES.length` ; les termes correspondent à la répartition EN/RU vivante et somment au total ; le paragraphe ne fige aucune version) et `tests/help-banner-strip.test.mjs` (la bannière reste sur disque pour GitHub, ne survit jamais au filtrage, la première ligne rendue de chaque bundle est son titre, le filtrage reste étroit, et les deux consommateurs y passent). Les deux ont été vérifiées en échec contre ces bugs précis avant commit. Tests : **2837 → 2846**.
+- Aucun changement de registre, de scanner ni de contrat de route ; les sources restent à **85** (80 EN + 5 RU) et `ALL_ADAPTERS` **80**.
+
 ## [1.227.0] — 2026-08-28
 
 **Ajouté — SEEK Hong Kong (JobsDB), un filtre « à traiter uniquement » sur les relances, et les employeurs confidentiels affichent l'agence qui les a présentés.**

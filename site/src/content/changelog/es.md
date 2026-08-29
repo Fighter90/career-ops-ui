@@ -11,6 +11,20 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.227.1] — 2026-08-29
+
+**Corregido — el desglose de fuentes de la ayuda no cuadraba consigo mismo y el banner de GitHub se imprimía como marcado en bruto en la app.**
+
+### Corregido
+- **§17 daba un total y un desglose que no sumaban.** Todos los paquetes de ayuda decían «el registro `server/lib/sources/` incluye **85** adapters — **78 en inglés + 5 rusos**». 78 + 5 = 83, no 85; en ja/ko la deriva llegaba a 77 (= 82). Cada fuente nueva subía el total y dejaba el sumando intacto, y ambos números llevaban varias versiones divergiendo. Ahora el desglose es **80 EN + 5 RU** en las 17 locales. Importa más que la estética: `docs/help/<lang>.md` es el ÚNICO corpus que fundamenta «Ask the docs», así que quien preguntara cuántas fuentes hay recibía dos números contradictorios de una misma frase.
+- **La misma frase fijaba un ancla de versión obsoleta.** «A partir de **v1.213.0** el registro …» sobrevivió en 16 locales mientras el contador se movía dos veces (83 en v1.219.0, 85 en v1.226.0). El ancla ya se había arreglado a mano en v1.210.1 y simplemente volvió a derivar. Se elimina en favor de una redacción sin versión: el contador se comprueba contra el registro vivo, que no puede quedarse obsoleto.
+- **El banner de proveedores se imprimía como marcado escapado al inicio de `#/help`.** v1.225.0/v1.225.1 lo daban por «eliminado en la app por `UI.md()` (sin soporte de imágenes)». Eso mezcla dos cosas: `UI.md()` escapa primero — escapa cada byte del origen antes de cualquier transformación markdown, que es la frontera XSS correcta pero lo contrario de eliminar. Nadie quitaba el banner porque nadie lo intentaba, y las 17 locales abrían `#/help` con 268 caracteres de `<p align="center"><img src="https://…` literal. Un nuevo punto de entrada compartido (`server/lib/help-markdown.mjs::stripGithubOnlyBlocks`) descarta bloques HTML de imagen aislados al leer, tanto para `GET /api/help/:lang` como para el corpus del docs-assistant. Los archivos conservan el banner, así que GitHub sigue mostrando el escaparate.
+- **La columna «#» del tablero de cadencia estaba vacía desde v1.117.0.** Leía `entry.appNum`, pero `followup-cadence.mjs` emite `num`; `appNum` nunca existió en el payload. Ahora se leen ambos. La línea «Next up» de v1.227.0 heredó el mismo fallo y se corrige con ella.
+
+### Notas
+- **Los cuatro pasaron desapercibidos porque nada los vigilaba.** Los gates de ayuda (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`) cuentan ENCABEZADOS — 32 H2 / 121 H3 — y ningún test había leído nunca un número dentro de un párrafo ni mirado qué sirve realmente la entrada de ayuda. Dos suites nuevas lo cierran: `tests/help-source-counts.test.mjs` (el total declarado es igual a `SOURCES.length`; los sumandos son el reparto EN/RU vivo y suman el total; el párrafo no fija versión) y `tests/help-banner-strip.test.mjs` (el banner permanece en disco para GitHub, nunca sobrevive al filtrado, la primera línea renderizada de cada paquete es su encabezado, el filtrado sigue siendo estrecho y ambos consumidores pasan por él). Se verificó que ambas fallaran contra estos mismos errores antes de confirmarlas. Pruebas: **2837 → 2846**.
+- Sin cambios en registro, escáner ni contratos de rutas; las fuentes siguen en **85** (80 EN + 5 RU) y `ALL_ADAPTERS` **80**.
+
 ## [1.227.0] — 2026-08-28
 
 **Añadido — SEEK Hong Kong (JobsDB), un filtro de solo pendientes en los seguimientos y los empleadores confidenciales muestran quién los presentó.**

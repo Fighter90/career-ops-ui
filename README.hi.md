@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2837%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2846%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.0)
+[![release](https://img.shields.io/badge/release-v1.227.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.227.0** — **हांगकांग और अधिक सटीक फ़ॉलो-अप** — JobsDB हांगकांग Jobstreet/SEEK में शामिल (अब v5 API पर), कैडेंस बोर्ड पर केवल-देय फ़िल्टर, और गोपनीय नियोक्ता उस एजेंसी को दिखाते हैं जिसने उन्हें प्रस्तुत किया — मूल प्रोजेक्ट 1.30.0 के समतुल्य। **2837 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.227.1** — **सहायता के सुधार** — §17 का स्रोत विभाजन अब जुड़ता है (80 EN + 5 RU, पहले 78+5=83), पुराना संस्करण-लंगर हटा, और GitHub बैनर अब `#/help` के शीर्ष पर कच्चे मार्कअप के रूप में नहीं छपता — तीनों अब गेट के अधीन। **2846 परीक्षण।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

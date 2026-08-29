@@ -2,6 +2,20 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.1] — 2026-08-29
+
+**Behoben — die Quellen-Aufschlüsselung in der Hilfe ging nicht auf, und das GitHub-Banner wurde in der App als rohes Markup ausgegeben.**
+
+### Behoben
+- **§17 nannte eine Summe und eine Aufschlüsselung, die nicht zusammenpassten.** Alle Hilfe-Bundles sagten „die `server/lib/sources/`-Registry liefert **85** Adapter — **78 englische + 5 russische**“. 78 + 5 = 83, nicht 85; in ja/ko war die Abweichung schon bei 77 (= 82). Jede neue Quelle erhöhte die Summe und ließ den Summanden stehen, sodass beide Zahlen seit mehreren Releases auseinanderliefen. Die Aufschlüsselung lautet jetzt **80 EN + 5 RU** in allen 17 Locales. Das ist mehr als Kosmetik: `docs/help/<lang>.md` ist der EINZIGE Korpus, auf dem „Ask the docs“ gründet — wer nach der Zahl der Quellen fragte, bekam zwei widersprüchliche Zahlen aus einem Satz.
+- **Derselbe Satz nagelte einen veralteten Versionsanker fest.** „Seit **v1.213.0** liefert die Registry …“ überlebte in 16 Locales, während der Zähler zweimal wanderte (83 in v1.219.0, 85 in v1.226.0). Der Anker war in v1.210.1 schon einmal von Hand repariert worden und driftete einfach erneut. Er entfällt zugunsten versionsfreier Formulierung: Der Zähler wird gegen die lebende Registry geprüft, die nicht veralten kann.
+- **Das Provider-Banner erschien als escapetes Markup am Kopf von `#/help`.** v1.225.0/v1.225.1 hielten fest, es werde „in der App von `UI.md()` entfernt (keine Bildunterstützung)“. Das vermengt zwei Dinge: `UI.md()` escapet zuerst — jedes Quellbyte wird vor jeder Markdown-Transformation escapet, was die richtige XSS-Grenze ist, aber das Gegenteil von Entfernen. Niemand entfernte das Banner, weil es niemand versuchte, und alle 17 Locales öffneten `#/help` mit 268 Zeichen wörtlichem `<p align="center"><img src="https://…`. Ein neuer gemeinsamer Eingang (`server/lib/help-markdown.mjs::stripGithubOnlyBlocks`) verwirft beim Lesen alleinstehende HTML-Bildblöcke — für `GET /api/help/:lang` wie für den Korpus des docs-assistant. Die Dateien behalten das Banner, GitHub zeigt die Vitrine also weiterhin.
+- **Die Spalte „#“ des Kadenz-Boards war seit v1.117.0 leer.** Sie las `entry.appNum`, während `followup-cadence.mjs` `num` liefert — `appNum` gab es nie im Payload. Beide werden nun gelesen. Die „Next up“-Zeile aus v1.227.0 hatte denselben Fehler geerbt und wird mit behoben.
+
+### Hinweise
+- **Alle vier blieben unentdeckt, weil nichts sie absicherte.** Die Hilfe-Gates (`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`) zählen ÜBERSCHRIFTEN — 32 H2 / 121 H3 — und kein Test hatte je eine Zahl innerhalb eines Absatzes gelesen oder geprüft, was der Hilfe-Eingang tatsächlich ausliefert. Zwei neue Suites schließen das: `tests/help-source-counts.test.mjs` (die genannte Summe entspricht `SOURCES.length`; die Summanden entsprechen der lebenden EN/RU-Aufteilung und ergeben die Summe; der Absatz nagelt keine Version fest) und `tests/help-banner-strip.test.mjs` (das Banner bleibt für GitHub auf der Platte, übersteht das Strippen nie, die erste gerenderte Zeile jedes Bundles ist seine Überschrift, das Strippen bleibt eng, und beide Konsumenten laufen darüber). Beide wurden vor dem Commit gegen genau diese Fehler auf Rot geprüft. Testsuite: **2837 → 2846**.
+- Keine Änderung an Registry, Scanner oder Route-Verträgen; Quellen bleiben bei **85** (80 EN + 5 RU), `ALL_ADAPTERS` **80**.
+
 ## [1.227.0] — 2026-08-28
 
 **Hinzugefügt — SEEK Hongkong (JobsDB), ein Nur-fällige-Filter für Follow-ups, und vertrauliche Arbeitgeber zeigen jetzt die vermittelnde Agentur.**
