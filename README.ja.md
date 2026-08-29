@@ -12,11 +12,11 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
+[![release](https://img.shields.io/badge/release-v1.228.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.228.0** — **Telegram チャンネルがスキャンソースになりました。** `telegram_channels:` ブロックに列挙すれば、各チャンネルは公開ウェブプレビュー `t.me/s/<チャンネル>` から読まれます —— 15 チャンネル、実走 1 回で **299 投稿**。レジストリ: **86 ソース**(EN 81 + RU 5)。さらに: Telegram アシスタントはデータの一部だけで答えていました —— スナップショットに数百件ある中で **9** 件と報告していたのは、`/api/scan-results` が約 2 MB のスナップショット全体しか返せなかったためです。現在はページング付きクエリを受け付けます。**テスト 2895 件。**
+> **🆕 最新リリース — v1.228.1** — **リポジトリ内の壊れたシンボリックリンクが、デプロイを黙って途中で打ち切っていました。** `.claude/skills/refero-design` はここに一度も存在したことのないパスを指しており、rsync は転送の途中で中断します。そのためデプロイは成功と報告しながら、サーバーは以前のバージョンのままでした。削除しました。Telegram チャンネルのソースは v1.228.0 にあります。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

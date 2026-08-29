@@ -14,11 +14,11 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
+[![release](https://img.shields.io/badge/release-v1.228.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.228.0** — **Telegram चैनल अब स्कैन स्रोत हैं।** उन्हें `telegram_channels:` ब्लॉक में सूचीबद्ध करें; हर चैनल अपने सार्वजनिक `t.me/s/<चैनल>` पूर्वावलोकन से पढ़ा जाता है — 15 चैनल, एक वास्तविक रन में **299 पोस्ट**। रजिस्ट्री: **86 स्रोत** (81 EN + 5 RU)। साथ ही: Telegram सहायक आँकड़ों के एक अंश से उत्तर देता था — स्नैपशॉट में सैकड़ों होने पर **9** मिलान बताता था, क्योंकि `/api/scan-results` केवल ~2 MB का पूरा स्नैपशॉट लौटा सकता था; अब वह पृष्ठ-दर-पृष्ठ क्वेरी लेता है। **2895 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.228.1** — **रिपॉज़िटरी में एक टूटा सिमलिंक चुपचाप डिप्लॉय को अधूरा छोड़ रहा था।** `.claude/skills/refero-design` ऐसे पथ की ओर इशारा करता था जो यहाँ कभी था ही नहीं; rsync उस पर रुक जाता है, इसलिए एक डिप्लॉय ने सफलता बताई जबकि सर्वर पिछले संस्करण पर ही चलता रहा। हटा दिया गया। Telegram चैनल स्रोत v1.228.0 में है।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

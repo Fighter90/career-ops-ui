@@ -12,11 +12,11 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
+[![release](https://img.shields.io/badge/release-v1.228.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.228.0** — **Les canaux Telegram sont désormais une source de scan.** Listez-les dans un bloc `telegram_channels:` et chacun est lu depuis son aperçu public `t.me/s/<canal>` : 15 canaux, **299 publications** en une exécution réelle. Registre : **86 sources** (81 EN + 5 RU). En prime : l'assistant Telegram répondait à partir d'une fraction des données — il annonçait **9** correspondances là où l'instantané en contenait des centaines, car `/api/scan-results` ne savait renvoyer que l'instantané entier d'environ 2 Mo ; il accepte maintenant une requête paginée. **2895 tests.**
+> **🆕 Dernière version — v1.228.1** — **Un lien symbolique cassé tronquait silencieusement les déploiements.** `.claude/skills/refero-design` pointait vers un chemin qui n'a jamais existé ici ; rsync s'interrompt dessus, si bien qu'un déploiement a signalé un succès pendant que le serveur restait sur la version précédente. Supprimé. La source des canaux Telegram est en v1.228.0.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

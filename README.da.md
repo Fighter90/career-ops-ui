@@ -12,11 +12,11 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
+[![release](https://img.shields.io/badge/release-v1.228.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.228.0** — **Telegram-kanaler er nu en scanningskilde.** Angiv dem i en `telegram_channels:`-blok; hver læses fra sin offentlige forhåndsvisning `t.me/s/<kanal>` — 15 kanaler, **299 opslag** i én rigtig kørsel. Register: **86 kilder** (81 EN + 5 RU). Desuden: Telegram-assistenten svarede ud fra en brøkdel af data — den meldte **9** træffere, hvor snapshottet havde hundredvis, fordi `/api/scan-results` kun kunne returnere hele snapshottet på ~2 MB; nu tager den en pagineret forespørgsel. **2895 tests.**
+> **🆕 Seneste udgivelse — v1.228.1** — **Et dødt symlink i repoet afkortede udrulninger i stilhed.** `.claude/skills/refero-design` pegede på en sti, der aldrig har eksisteret her; rsync afbryder på det, så en udrulning meldte succes, mens serveren blev på den forrige version. Fjernet. Telegram-kanalkilden er i v1.228.0.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

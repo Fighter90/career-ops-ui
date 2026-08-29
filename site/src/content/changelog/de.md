@@ -2,6 +2,15 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.228.1] — 2026-08-29
+
+**Fixed — a dangling symlink in the repo that silently truncated deploys.**
+
+### Fixed
+- **`.claude/skills/refero-design` was a tracked symlink to a path that has never existed here.** It pointed at `../../.agents/skills/refero-design`, which resolves to `.agents/` at the repo root; there is no such directory, and the link arrived in the v1.118.0 parity pack from a machine where the surrounding folders nested differently. Anyone cloning the repo has been getting a broken link ever since.
+
+  It was not inert. **rsync aborts on it mid-transfer** — a deploy today reported success while the server kept running the previous version, and the mismatch only surfaced because the version was checked afterwards. The parent project's `node test-all.mjs` also crashes outright when a web-ui checkout sits inside its tree, because its fixture copy walks the working directory and cannot stat the link. Nothing referenced it: the only `refero` matches in the repo are the Polish word *preferowany*.
+
 ## [1.228.0] — 2026-08-29
 
 **Hinzugefügt — Telegram-Kanäle als Scan-Quelle und ein paginierter Abfragemodus für `/api/scan-results`.**

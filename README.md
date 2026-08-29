@@ -14,11 +14,11 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.0)
+[![release](https://img.shields.io/badge/release-v1.228.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.228.0** — **Telegram channels are now a scan source.** List them in a `telegram_channels:` block and each is read from its public `t.me/s/<channel>` web preview — 15 channels, **299 posts** in one live run. Registry: **86 sources** (81 EN + 5 RU). Plus: the Telegram assistant answered from a fraction of the data — it reported **9** matches where the snapshot held hundreds, because `/api/scan-results` could only return the whole ~2 MB snapshot; it now takes a paged query. **2895 tests.**
+> **🆕 Latest release — v1.228.1** — **A dangling symlink in this repo was silently truncating deploys.** `.claude/skills/refero-design` pointed at a path that has never existed here; rsync aborts on it mid-transfer, so a deploy reported success while the server kept running the previous version. Removed. See [v1.228.0](#) for the Telegram channel source.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

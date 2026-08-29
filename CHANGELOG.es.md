@@ -11,6 +11,15 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.228.1] — 2026-08-29
+
+**Corregido — un enlace simbólico roto en el repositorio que truncaba despliegues en silencio.**
+
+### Corregido
+- **`.claude/skills/refero-design` era un enlace simbólico versionado a una ruta que nunca ha existido aquí.** Apuntaba a `../../.agents/skills/refero-design`, es decir a `.agents/` en la raíz del repositorio; ese directorio no existe, y el enlace llegó en el paquete de paridad v1.118.0 desde una máquina con otra anidación de carpetas. Desde entonces, quien clonara el repositorio obtenía un enlace roto.
+
+  No era inofensivo. **rsync aborta al llegar a él** — un despliegue de hoy informó éxito mientras el servidor seguía con la versión anterior, y la discrepancia solo salió a la luz porque después se comprobó la versión. El `node test-all.mjs` del proyecto padre también falla cuando hay un checkout de web-ui dentro de su árbol. Nada lo referenciaba: las únicas coincidencias de `refero` son la palabra polaca *preferowany*.
+
 ## [1.228.0] — 2026-08-29
 
 **Añadido — canales de Telegram como fuente de escaneo y un modo de consulta paginado en `/api/scan-results`.**
