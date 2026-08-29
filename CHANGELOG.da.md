@@ -8,6 +8,20 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.227.5] — 2026-08-29
+
+**Rettet — den regionale scanning brugte serverens hukommelse op, og en Playwright-suite fejlede på sin egen nedtagning.**
+
+### Rettet
+- **Den regionale scanning slog serveren ihjel med OOM.** `ru-scanner` samlede **alle rå hits fra alle forespørgsler** og deduplikerede og filtrerede først til sidst. Forespørgselslisten består bevidst af nærsynonymer (`Golang`, `Go разработчик`, `Golang разработчик`, `Senior Go`…), så det samme opslag kommer igen én gang pr. forespørgsel, og arrayet holdt et multiplum af det unikke antal — inklusive beskrivelserne, som udgør hovedparten af et jobobjekt og som filtrene alligevel kasserer næsten alle. Målt: **742 MB** heap på en rigtig kørsel med 21 forespørgsler. Serveren begrænser Nodes heap til **490 MB** (V8 udmåler den efter maskinens 956 MB RAM), så scanningen væltede tjenesten med `FATAL ERROR: Reached heap limit` — **fire gange på én dag**. Deduplikering og filtrering sker nu pr. forespørgsel, hvilket bragte samme kørsel ned på **177 MB**, 76% mindre. De rapporterede tal er uændrede: det unikke total bæres af et `Set` af URL-strenge.
+- **`net::ERR_SOCKET_NOT_CONNECTED` fik CI til at fejle tilfældigt.** Tre Playwright-suiter kalder `window.stop()` for at standse igangværende requests, før de hævder, at ingen konsolfejl opstod. Chromium rapporterer den ene bevidste handling under **tre** navne afhængigt af socketens tilstand: `ERR_ABORTED` ved annullering, `ERR_EMPTY_RESPONSE` undervejs og `ERR_SOCKET_NOT_CONNECTED`, når socketen allerede var væk. Det fælles filter kendte kun de to første. Det dukkede op i locale-gennemgangen i `tr`, mens `playwright-forms` og `playwright-smoke` var én uheldig kørsel fra det samme.
+
+### Noter
+- **Hvorfor først nu.** Listen voksede fra 14 til 21 forespørgsler, da product manager-søgninger kom til. Den gamle implementerings hukommelse skalerede med det samlede antal hits, så +50% forespørgsler sprængte maskinens loft.
+- **Dedup-ændringen bevarer adfærden, og det er testet, ikke påstået.** `tests/ru-scanner-dedup-order.test.mjs` fastholder den akavede retning — et senere dublet, der IKKE består filtrene, skal fortrænge et tidligere, der bestod — og kører 200 randomiserede ækvivalenstjek mod den gamle implementering.
+- **Konsolfilteret forbliver smalt.** Kun familien af annullerede requests er benign; afvist forbindelse, DNS-fejl, reset, enhver 5xx og ufangede JS-undtagelser vælter fortsat assertionen.
+- To hypoteser blev afprøvet og forkastet i stedet for sendt: en Caddy-timeout (konfigurationen er ren, `flush_interval -1` er korrekt til SSE) og Nodes 5-minutters standard-`requestTimeout` (en nedskaleret reproduktion viste, at den ikke afbryder et langt streaming-svar). Det egentlige bevis var `Reached heap limit` i journalen. Tests: **2860 → 2865**.
+
 ## [1.227.4] — 2026-08-29
 
 **Rettet — `word:` / `stem:` blev stadig ignoreret af `content_filter`; v1.227.3 rettede kun titelfilteret.**

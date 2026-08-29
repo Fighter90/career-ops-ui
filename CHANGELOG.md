@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.227.5] — 2026-08-29
+
+**Fixed — the regional scan ran the server out of memory, and a Playwright suite flaked on its own teardown.**
+
+### Fixed
+- **The regional scan OOM-killed the server.** `ru-scanner` accumulated **every raw hit from every query** and only deduplicated and filtered at the very end. The query list is deliberately full of near-synonyms (`Golang`, `Go разработчик`, `Golang разработчик`, `Senior Go`…), so the same vacancy comes back once per query and the array held several times the unique count — with descriptions attached, which are the bulk of a job object and are almost all discarded by the filters anyway. Measured at **742 MB** of heap on a real 21-query run. The server caps Node's heap at **490 MB** (V8 sizes it from the box's 956 MB of RAM), so the scan crashed the service with `FATAL ERROR: Reached heap limit` — **four times in one day**. Dedup and filtering now happen per query, which took the same run to **177 MB**, a 76% reduction. Reported counts are unchanged: the unique total is carried by a `Set` of URL strings, so `Total found` still means what it always did.
+- **`net::ERR_SOCKET_NOT_CONNECTED` failed CI at random.** Three Playwright suites call `window.stop()` to halt in-flight requests before asserting no console errors fired. Chromium reports that single deliberate act under **three** names depending on where the socket was: `ERR_ABORTED` when it cancels the request, `ERR_EMPTY_RESPONSE` mid-flight, and `ERR_SOCKET_NOT_CONNECTED` when the socket was already gone. The shared benign-console filter listed only the first two, so the same teardown failed a run at random. It surfaced on the locale sweep in `tr` — the suite with the most navigations, hence the most chances to lose the race — while `playwright-forms` and `playwright-smoke`, which also call `window.stop()`, were one unlucky run away from the identical failure.
+
+### Notes
+- **Why the scan only started failing now.** The query list grew from 14 to 21 when product-manager searches were added. The old implementation's memory scaled with total hits, so +50% queries pushed it past the box's ceiling. Nothing was wrong with the new queries — they exposed an allocation pattern that had been one config change away from failing for a long time.
+- **The dedup change is behaviour-preserving, and that is tested rather than asserted.** `tests/ru-scanner-dedup-order.test.mjs` pins the awkward direction — a later duplicate that FAILS the filters must evict an earlier one that passed, because the old end-of-run pass kept only the last copy and then filtered it — and runs a 200-trial randomised equivalence check against the legacy accumulate-then-filter implementation.
+- **The console filter stays narrow.** Only the cancelled-request family is benign. A refused connection, DNS failure, connection reset, any 5xx and every uncaught JS exception still fail the assertion, pinned by new tests so the widening cannot creep.
+- Two earlier hypotheses were tested and discarded rather than shipped: a Caddy timeout (its config is clean, `flush_interval -1` is correct for SSE) and Node's 5-minute default `requestTimeout` (a scaled-down reproduction showed it does not terminate a long streaming response). The journal's `Reached heap limit` was the actual evidence. Test suite: **2860 → 2865**.
+
 ## [1.227.4] — 2026-08-29
 
 **Fixed — `word:` / `stem:` were still ignored by `content_filter`; v1.227.3 only fixed the title filter.**

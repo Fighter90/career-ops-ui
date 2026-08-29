@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2858%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.4)
+[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.227.4** — **उपसर्ग सुधार, भाग 2** — `content_filter` अब भी `word:` / `stem:` को अनदेखा कर रहा था; v1.227.3 ने केवल शीर्षक फ़िल्टर जोड़ा था। AI समीक्षा में पकड़ा गया। **2858 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.227.5** — **क्षेत्रीय स्कैन अब सर्वर की मेमोरी नहीं खाता** — यह 21 क्वेरी के सारे कच्चे परिणाम अंत तक रखता था (742 MB बनाम मशीन की 490 MB सीमा, एक दिन में 4 बार सेवा गिरी); अब हर क्वेरी पर डुप्लिकेट हटाना व फ़िल्टर → **177 MB**। साथ ही एक Playwright फ्लेक ठीक। **2865 परीक्षण।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

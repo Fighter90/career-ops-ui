@@ -11,6 +11,20 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.227.5] — 2026-08-29
+
+**Corrigé — le scan régional épuisait la mémoire du serveur, et une suite Playwright échouait sur son propre démontage.**
+
+### Corrigé
+- **Le scan régional tuait le serveur par OOM.** `ru-scanner` accumulait **tous les résultats bruts de toutes les requêtes** et ne dédupliquait et filtrait qu'à la fin. La liste de requêtes est volontairement pleine de quasi-synonymes (`Golang`, `Go разработчик`, `Golang разработчик`, `Senior Go`…), donc la même offre revient une fois par requête et le tableau retenait plusieurs fois le compte unique — descriptions comprises, qui font l'essentiel de l'objet et que les filtres écartent presque toutes. Mesuré : **742 Mo** de tas sur une exécution réelle de 21 requêtes. Le serveur plafonne le tas de Node à **490 Mo** (V8 le dimensionne d'après les 956 Mo de RAM de la machine), donc le scan faisait tomber le service avec `FATAL ERROR: Reached heap limit` — **quatre fois en un jour**. Déduplication et filtrage se font désormais par requête, ramenant la même exécution à **177 Mo**, soit −76 %. Les compteurs affichés sont inchangés : le total unique est porté par un `Set` de chaînes URL.
+- **`net::ERR_SOCKET_NOT_CONNECTED` faisait échouer la CI au hasard.** Trois suites Playwright appellent `window.stop()` pour interrompre les requêtes en vol avant d'affirmer qu'aucune erreur console n'est survenue. Chromium rapporte cet unique acte sous **trois** noms selon l'état du socket : `ERR_ABORTED` à l'annulation, `ERR_EMPTY_RESPONSE` en vol, `ERR_SOCKET_NOT_CONNECTED` quand le socket avait déjà disparu. Le filtre partagé n'en listait que deux. Cela est apparu sur le balayage de locales en `tr`, tandis que `playwright-forms` et `playwright-smoke` étaient à une exécution du même échec.
+
+### Notes
+- **Pourquoi seulement maintenant.** La liste est passée de 14 à 21 requêtes avec l'ajout des recherches product manager. La mémoire de l'ancienne implémentation croissait avec le total des résultats : +50 % de requêtes a dépassé le plafond de la machine.
+- **Le changement de déduplication préserve le comportement, et c'est testé.** `tests/ru-scanner-dedup-order.test.mjs` verrouille la direction délicate — un doublon ultérieur qui ÉCHOUE aux filtres doit évincer un précédent qui passait — et lance 200 vérifications aléatoires d'équivalence contre l'ancienne implémentation.
+- **Le filtre console reste étroit.** Seule la famille des requêtes annulées est bénigne ; connexion refusée, échec DNS, réinitialisation, 5xx et exceptions JS font toujours échouer l'assertion.
+- Deux hypothèses ont été testées puis écartées plutôt qu'expédiées : un timeout Caddy (config propre, `flush_interval -1` correct pour SSE) et le `requestTimeout` par défaut de 5 minutes de Node (une reproduction réduite a montré qu'il n'interrompt pas une longue réponse en streaming). La vraie preuve était `Reached heap limit` dans le journal. Tests : **2860 → 2865**.
+
 ## [1.227.4] — 2026-08-29
 
 **Corrigé — `word:` / `stem:` étaient toujours ignorés par `content_filter` ; la v1.227.3 n'avait corrigé que le filtre de titres.**

@@ -214,11 +214,41 @@ export async function runRuScan(opts = {}) {
   log('stdout', `Already seen: ${seen.size} URLs`);
   log('stdout', '');
 
-  const allFound = [];
+  // v1.227.5 — dedup by URL AS WE GO rather than accumulating every raw hit
+  // and deduping at the end. Behaviourally identical (same iteration order,
+  // same last-wins Map, so every reported count is unchanged),
+  // but peak memory becomes the number of UNIQUE urls instead of the total
+  // number of hits across all queries.
+  //
+  // That distinction is the whole bug: the query list is deliberately full of
+  // near-synonyms ("Golang", "Go разработчик", "Golang разработчик",
+  // "Senior Go"…), so the same vacancy comes back once per query and the raw
+  // total is several times the unique count. At 21 queries the accumulated
+  // array reached ~742MB locally; the server caps Node's heap at 490MB on its
+  // 956MB of RAM, so the scan OOM-killed the process four times in one day.
+  // It only started failing when the list grew 14 -> 21 queries.
+  // Every URL ever seen this run — strings only, so the "Total found" count
+  // survives without holding the objects behind it.
+  const allUrls = new Set();
+  // Only jobs that PASS the filters are retained. Descriptions are the bulk of
+  // a job object and nearly all of them are filtered out at the end anyway, so
+  // keeping the rejects until then is what actually blew the heap.
+  const uniq = new Map();
   const errors = [];
   // Track repeated source-level failures (e.g., 10x hh.ru 403) — show once.
   const sourceFailures = {};
   let hhDisabled = false;
+
+  // Compiled once, then applied per query. Previously this ran after the loop,
+  // which meant every raw hit had to be held until then.
+  const locOk = buildLocationFilter(cfg.locationFilter);
+  const contentOk = buildContentFilter(cfg.contentFilter);
+  const tierOk = buildTierFilter(cfg.skipTiers);
+  const negativeMatchers = compileKeywordList(cfg.negative);
+  const passesAll = (j) => passesNegative(j.title, negativeMatchers)
+    && locOk(j.location)
+    && tierOk(j.title)
+    && contentOk(j.description ?? j.snippet);
 
   let qDone = 0;                    // v1.63.2 — determinate % progress
   for (const q of cfg.queries) {
@@ -230,7 +260,14 @@ export async function runRuScan(opts = {}) {
     const results = await runQuery(q, cfg, fetchImpl, errors, sourceFailures, hhDisabled, log, signal);
     log('stdout', `  → ${results.length} hits`);
     onProgress(++qDone, cfg.queries.length);
-    allFound.push(...results);
+    for (const job of results) {
+      allUrls.add(job.url);
+      // Last-wins per URL, exactly as the old end-of-run dedup did: a later
+      // duplicate that fails the filters must REMOVE an earlier one that passed,
+      // or this would keep a row the previous implementation dropped.
+      if (passesAll(job)) uniq.set(job.url, job);
+      else uniq.delete(job.url);
+    }
     // First hh.ru 403/451 → disable for rest of run + log once. hh.ru is
     // scraped from its public website now; a 403 means an anti-bot challenge
     // (rare), a 451 means the regional legal block hh.ru serves to
@@ -250,25 +287,13 @@ export async function runRuScan(opts = {}) {
     }
   }
 
-  // Dedup within this batch
-  const uniq = new Map();
-  for (const j of allFound) uniq.set(j.url, j);
-  const flat = [...uniq.values()];
-
-  // Apply negative-filter + location-filter,
-  // then stamp boost flags. Boost is informational only — it doesn't
-  // change which rows are returned, only marks the boosted ones so the
-  // SPA can render a "⬆ boosted" badge on them.
-  const locOk = buildLocationFilter(cfg.locationFilter);
-  const contentOk = buildContentFilter(cfg.contentFilter);
-  const tierOk = buildTierFilter(cfg.skipTiers);
-  // v1.76.0 — compile negatives once (word-boundary acronyms + guard).
-  const negativeMatchers = compileKeywordList(cfg.negative);
-  const filteredRaw = flat.filter((j) => passesNegative(j.title, negativeMatchers)
-    && locOk(j.location)
-    && tierOk(j.title)
-    && contentOk(j.description ?? j.snippet));
-  let filtered = applyBoostStamps(filteredRaw, cfg.boosts);
+  // Dedup and filtering both happened per-query above. `uniq` holds exactly the
+  // survivors the old end-of-run pass produced; `allUrls.size` is the unique
+  // total it used to report as `flat.length`. Boost stamps are informational
+  // only — they don't change which rows are returned, just mark the boosted
+  // ones so the SPA can render a "⬆ boosted" badge.
+  const totalUnique = allUrls.size;
+  let filtered = applyBoostStamps([...uniq.values()], cfg.boosts);
   // v1.76.0 — optional trust annotation. Off unless
   // `trust_filter:` is present and not disabled. Never drops a job.
   if (cfg.trustFilter && cfg.trustFilter.enabled !== false) {
@@ -278,13 +303,13 @@ export async function runRuScan(opts = {}) {
       return { ...j, _trustScore: v.score, _trustLevel: v.level, _trustFlags: v.flags };
     });
   }
-  const removedNeg = flat.length - filtered.length;
+  const removedNeg = totalUnique - filtered.length;
   const fresh = filtered.filter((j) => !seen.has(normalizeUrl(j.url) || j.url));
   const dup = filtered.length - fresh.length;
 
   log('stdout', '');
   log('stdout', '━'.repeat(60));
-  log('stdout', `Total found:           ${flat.length}`);
+  log('stdout', `Total found:           ${totalUnique}`);
   log('stdout', `Filtered by negative:  ${removedNeg} removed`);
   log('stdout', `Already-seen dedup:    ${dup} skipped`);
   log('stdout', `New offers added:      ${fresh.length}`);
@@ -315,7 +340,7 @@ export async function runRuScan(opts = {}) {
 
   return {
     cfg,
-    counts: { raw: flat.length, removedNeg, dup, fresh: fresh.length },
+    counts: { raw: totalUnique, removedNeg, dup, fresh: fresh.length },
     fresh,
     errors,
   };

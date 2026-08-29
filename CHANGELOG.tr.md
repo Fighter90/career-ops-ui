@@ -2,6 +2,20 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.227.5] — 2026-08-29
+
+**Düzeltildi — bölgesel tarama sunucunun belleğini tüketiyordu ve bir Playwright takımı kendi sökümünde kararsız biçimde düşüyordu.**
+
+### Düzeltildi
+- **Bölgesel tarama sunucuyu OOM ile öldürüyordu.** `ru-scanner`, **tüm sorguların tüm ham sonuçlarını** biriktirip yinelenenleri ayıklamayı ve süzmeyi ancak en sonda yapıyordu. Sorgu listesi bilerek yakın eşanlamlılarla dolu (`Golang`, `Go разработчик`, `Golang разработчик`, `Senior Go`…), yani aynı ilan her sorguda bir kez dönüyor ve dizi benzersiz sayının katlarını tutuyordu — üstelik ilan nesnesinin büyük kısmını oluşturan ve süzgeçlerin neredeyse tümünü attığı açıklamalarla birlikte. Ölçüm: 21 sorgulu gerçek bir koşuda **742 MB** yığın. Sunucu Node yığınını **490 MB** ile sınırlıyor (V8 bunu makinenin 956 MB RAM'ine göre belirliyor), bu yüzden tarama servisi `FATAL ERROR: Reached heap limit` ile deviriyordu — **bir günde dört kez**. Artık ayıklama ve süzme her sorguda yapılıyor; aynı koşu **177 MB**'a indi, %76 azalma. Raporlanan sayılar değişmedi: benzersiz toplamı URL dizgilerinden oluşan bir `Set` taşıyor.
+- **`net::ERR_SOCKET_NOT_CONNECTED` CI'ı rastgele düşürüyordu.** Üç Playwright takımı, konsol hatası olmadığını doğrulamadan önce süren istekleri durdurmak için `window.stop()` çağırır. Chromium bu tek kasıtlı eylemi soketin durumuna göre **üç** farklı adla bildirir: iptalde `ERR_ABORTED`, yoldayken `ERR_EMPTY_RESPONSE`, soket çoktan gitmişse `ERR_SOCKET_NOT_CONNECTED`. Ortak filtre yalnızca ilk ikisini biliyordu. `tr` yerel taramasında ortaya çıktı; aynı çağrıyı yapan `playwright-forms` ve `playwright-smoke` da tek şanssız koşum uzaktaydı.
+
+### Notlar
+- **Neden ancak şimdi bozuldu.** Ürün müdürü aramaları eklenince liste 14'ten 21 sorguya çıktı. Eski uygulamanın belleği toplam sonuç sayısıyla ölçekleniyordu, dolayısıyla %50 daha fazla sorgu makinenin tavanını aştı.
+- **Ayıklama değişikliği davranışı korur ve bu iddia değil, test edilmiştir.** `tests/ru-scanner-dedup-order.test.mjs` zor yönü sabitler — süzgeçlerden **geçemeyen** sonraki bir yineleme, geçmiş olan öncekini dışarı atmalıdır — ve eski uygulamaya karşı 200 rastgele denklik denetimi koşar.
+- **Konsol süzgeci dar kalıyor.** Yalnızca iptal edilmiş istek ailesi zararsızdır; reddedilen bağlantı, DNS hatası, sıfırlama, her 5xx ve yakalanmamış JS istisnaları hâlâ savı düşürür.
+- İki hipotez gönderilmek yerine sınandı ve elendi: Caddy zaman aşımı (yapılandırma temiz, SSE için `flush_interval -1` doğru) ve Node'un varsayılan 5 dakikalık `requestTimeout` değeri (küçültülmüş bir yeniden üretim, uzun bir akış yanıtını kesmediğini gösterdi). Asıl kanıt, günlükteki `Reached heap limit` idi. Testler: **2860 → 2865**.
+
 ## [1.227.4] — 2026-08-29
 
 **Düzeltildi — `word:` / `stem:` `content_filter` tarafından hâlâ yok sayılıyordu; v1.227.3 yalnızca başlık filtresini düzeltmişti.**
