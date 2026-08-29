@@ -60,7 +60,7 @@ career-ops to pierwsza referencyjna implementacja [Manifestu CareerOps](https://
 | Strona | Opis |
 |---|---|
 | **Panel główny** | Liczniki zbiorcze, średni wynik, ostatnie aplikacje i raporty |
-| **Skanowanie** | Przycisk 🌐 Scan uruchamia wszystkie skonfigurowane źródła (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday + hh.ru / Habr Career) jednym kliknięciem; wyniki w czasie rzeczywistym przez SSE |
+| **Skanowanie** | Przycisk 🌐 Scan uruchamia wszystkie skonfigurowane źródła (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday + hh.ru / Habr Career + publiczne kanały Telegrama) jednym kliknięciem; wyniki w czasie rzeczywistym przez SSE |
 | **Pipeline** | Zarządzanie `data/pipeline.md`; bezpieczny podgląd URL (ochrona przed SSRF) |
 | **Ocena** | Wklej opis stanowiska → wynik 0–5 przez Anthropic lub Gemini; fallback na gotowy prompt |
 | **Głęboka analiza** | Badanie firmy przez Anthropic SDK; wyniki zapisywane w `interview-prep/` |

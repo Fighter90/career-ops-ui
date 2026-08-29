@@ -269,6 +269,7 @@ npm start
 - **Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday** — 對 `portals.yml::tracked_companies` 中所有具備可辨識 ATS 樣式的公司呼叫公開 boards-api。內建清單涵蓋 Stripe、GitLab、Vercel、Cloudflare、Datadog、Discord、Elastic、Grafana Labs、CockroachDB、Fastly、Twilio、Coinbase、Reddit、Robinhood、Affirm、Lyft、Linear、Supabase、PostHog、Ramp、Modal Labs、Railway、Browserbase、JetBrains — 可自由擴充或精簡。
 - **RSS 招募看板** — 支援任何提供 RSS/Atom feed 的招募看板(LaraJobs、WeWorkRemotely、RemoteOK、golangprojects 等)。只需在 `portals.yml` 中加入 `provider: rss` 與 feed URL 即可,無需修改程式碼。
 - **聚合招募看板(v1.75.0)** — 在按公司的 ATS 之外,新增七個全板塊 / 設定驅動來源:**RemoteOK / Remotive / Working Nomads**(全板塊遠端訂閱源,用 `provider: remoteok|remotive|workingnomads` 選擇)以及 **IBM / Arbeitsagentur / Glints / Jobstreet · SEEK**(設定驅動,各自讀取每條目的 `<provider>:` 區塊)。可複製貼上的 `tracked_companies` 條目見 `docs/portals-examples.md`。它們與其他所有來源一樣,執行相同的 `title_filter` / `location_filter` / `content_filter` + 去重 + 附加到 pipeline 的流程。
+- **Telegram 頻道（v1.228.0）** —— 任何**公開**頻道：在頂層 `telegram_channels:` 區塊中列出，即從 `t.me/s/<頻道>` 網頁預覽讀取，無需機器人權杖，也無需 API 金鑰。Telegram 不提供 RSS，Bot API 也讀不了你的機器人未管理的頻道，預覽是唯一路徑。**貼文是散文，不是職缺記錄**：標題取自第一行實質內容，公司與地點只從明確標籤讀取，把真實職缺與廣告區分開是你的 `title_filter` 的工作。
 - **hh.ru** — 抓取 `hh.ru/search/vacancy` 的 HTML。任何 IP 皆可用,無需金鑰或代理。(不再使用 JSON API `api.hh.ru`:它現在無論 IP/User-Agent 都對所有程式化用戶端回傳 403;網站則像 Habr Career 一樣向任何類瀏覽器用戶端回傳完整結果。)
 - **Habr Career** — 對 `career.habr.com/vacancies` 進行 HTML 抓取。不受 IP 限制,無需認證。
 
