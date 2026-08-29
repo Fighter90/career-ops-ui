@@ -7,7 +7,7 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2845%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2846%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -16,7 +16,7 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.227.1** — **Correcciones de la ayuda** — el desglose de fuentes de §17 ya cuadra (80 EN + 5 RU, antes 78+5=83), el ancla de versión obsoleta desaparece y el banner de GitHub deja de imprimirse como marcado en `#/help` — los tres con test. **2845 pruebas.**
+> **🆕 Última versión — v1.227.1** — **Correcciones de la ayuda** — el desglose de fuentes de §17 ya cuadra (80 EN + 5 RU, antes 78+5=83), el ancla de versión obsoleta desaparece y el banner de GitHub deja de imprimirse como marcado en `#/help` — los tres con test. **2846 pruebas.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

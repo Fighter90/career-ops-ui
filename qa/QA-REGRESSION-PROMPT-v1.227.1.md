@@ -4,7 +4,7 @@
 
 ## §0 — Gates
 ```bash
-npm test                                          # 2845 (was 2837), exit 0 — capture $? directly, never pipe to grep
+npm test                                          # 2846 (was 2837), exit 0 — capture $? directly, never pipe to grep
 node --test tests/help-source-counts.test.mjs     # 3 — BUG-A
 node --test tests/help-banner-strip.test.mjs      # 5 — BUG-B
 node scripts/check-changelog-parity.mjs           # 16 non-EN at v1.227.1
@@ -39,4 +39,4 @@ npm run test:e2e:browser                          # 99/99
 No registry, scanner, route-contract, i18n-dict or locale-file change. `docs/help/*.md` heading structure untouched (32 H2 / 121 H3) — only the §17 sentence body.
 
 ## §6 — Sign-off
-Suite **2845** green (was 2837, +8) · E2E 21/21 + 23/23 · Playwright 99/99 · parity ×17 at v1.227.1 · README banner+badges ×17 · help ×17 corrected · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · site changelog mirrors ×17 rebuilt. Both new gates were verified to FAIL against the exact bugs before being committed — a gate never seen red is not a gate. Deploy: Pages (cvstart.org), local + resumecraft, wiki.
+Suite **2846** green (was 2837, +8) · E2E 21/21 + 23/23 · Playwright 99/99 · parity ×17 at v1.227.1 · README banner+badges ×17 · help ×17 corrected · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · site changelog mirrors ×17 rebuilt. Both new gates were verified to FAIL against the exact bugs before being committed — a gate never seen red is not a gate. Deploy: Pages (cvstart.org), local + resumecraft, wiki.

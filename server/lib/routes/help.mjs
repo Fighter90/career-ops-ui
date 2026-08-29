@@ -13,7 +13,7 @@
  * the help directory.
  */
 import { readFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { resolve, sep } from 'node:path';
 import { WEB_UI_ROOT } from '../paths.mjs';
 import { stripGithubOnlyBlocks } from '../help-markdown.mjs';
 
@@ -36,6 +36,14 @@ export function registerHelpRoutes(app) {
     ].filter(Boolean);
     for (const fname of candidates) {
       const full = resolve(helpDir, fname);
+      // Containment check. `safeLang` already strips everything outside
+      // [a-zA-Z0-9_-], so no '.', '/' or '\' can reach a candidate and
+      // traversal is impossible — but that guarantee lives three lines up and
+      // in one regex. Re-asserting it on the RESOLVED path makes it local and
+      // checked rather than argued: if that character class is ever relaxed,
+      // this still holds. It is also what makes the safety legible to CodeQL,
+      // which reads the strip as a transformation, not a barrier (js/path-injection).
+      if (!full.startsWith(helpDir + sep)) continue;
       if (existsSync(full)) {
         // The provider-logo banner is a GitHub-only HTML block. UI.md() is
         // escape-first, so leaving it in PRINTS it as the page's first line

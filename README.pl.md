@@ -7,7 +7,7 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2845%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2846%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
@@ -16,7 +16,7 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.227.1** — **Poprawki pomocy** — rozbicie źródeł w §17 wreszcie się zgadza (80 EN + 5 RU, było 78+5=83), nieaktualna kotwica wersji znika, a baner GitHuba nie jest już drukowany jako surowy znacznik na górze `#/help` — wszystkie trzy pod bramką. **2845 testów.**
+> **🆕 Najnowsze wydanie — v1.227.1** — **Poprawki pomocy** — rozbicie źródeł w §17 wreszcie się zgadza (80 EN + 5 RU, było 78+5=83), nieaktualna kotwica wersji znika, a baner GitHuba nie jest już drukowany jako surowy znacznik na górze `#/help` — wszystkie trzy pod bramką. **2846 testów.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

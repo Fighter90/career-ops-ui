@@ -19,7 +19,7 @@
 - **節奏看板的「#」欄自 v1.117.0 起一直是空的。** 它讀取 `entry.appNum`，而 `followup-cadence.mjs` 輸出的是 `num` —— `appNum` 從未出現在酬載中。現在兩者都會讀取。v1.227.0 的「Next up」行繼承了同一處錯誤，一併修復。
 
 ### 備註
-- **四處問題都因為無人把關而長期未被發現。** 說明的門檻（`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`）統計的是**標題** —— 32 H2 / 121 H3 —— 從來沒有測試讀過段落內部的數字，也沒有測試看過說明入口實際回傳什麼。兩個新測試套件補上這一環：`tests/help-source-counts.test.mjs`（所宣告的總數等於 `SOURCES.length`；加數等於活的 EN/RU 劃分且相加等於總數；段落不釘死版本）與 `tests/help-banner-strip.test.mjs`（橫幅為 GitHub 保留在磁碟上、絕不在剝離後存活、每個說明包的首個渲染行是其標題、剝離範圍保持狹窄、兩個消費方都經過它）。兩者在提交前都已驗證會針對這些具體缺陷失敗。測試套件：**2837 → 2845**。
+- **四處問題都因為無人把關而長期未被發現。** 說明的門檻（`canonical-docs-coverage`, `help-ui`, `help-ru-config-section`）統計的是**標題** —— 32 H2 / 121 H3 —— 從來沒有測試讀過段落內部的數字，也沒有測試看過說明入口實際回傳什麼。兩個新測試套件補上這一環：`tests/help-source-counts.test.mjs`（所宣告的總數等於 `SOURCES.length`；加數等於活的 EN/RU 劃分且相加等於總數；段落不釘死版本）與 `tests/help-banner-strip.test.mjs`（橫幅為 GitHub 保留在磁碟上、絕不在剝離後存活、每個說明包的首個渲染行是其標題、剝離範圍保持狹窄、兩個消費方都經過它）。兩者在提交前都已驗證會針對這些具體缺陷失敗。測試套件：**2837 → 2846**。
 - 註冊表、掃描器與路由契約均未變動；來源仍為 **85** 個（80 EN + 5 RU），`ALL_ADAPTERS` 仍為 **80**。
 
 ## [1.227.0] — 2026-08-28
