@@ -74,6 +74,15 @@ test('visibleText strips to a fixed point — a tag cannot be reassembled', () =
   // Whatever survives the bounded loop must carry no tag: text, not markup.
   const pathological = visibleText('<'.repeat(40) + 'a' + '>'.repeat(40));
   assert.equal(/<\/?[a-zA-Z]/.test(pathological), false);
+
+  // Deep nesting needs more passes than the loop allows — each pass strips only
+  // the innermost tag. The fallback must not leave a reassembled tag behind, so
+  // it drops the angle brackets outright rather than stripping one more time.
+  let deep = 'script>alert(1)';
+  for (let i = 0; i < 12; i++) deep = '<a' + deep;
+  const exhausted = visibleText(deep);
+  assert.equal(exhausted.includes('<'), false, 'the bounded fallback must emit no `<` at all');
+  assert.equal(exhausted, 'alert(1)');
 });
 
 test('titleFromText takes the first substantive line, not an emoji divider', () => {

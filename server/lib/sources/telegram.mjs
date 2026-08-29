@@ -123,7 +123,10 @@ export function visibleText(fragment) {
     if (next === s) return finish(s);
     s = next;
   }
-  return finish(s.replace(/<\/?[a-zA-Z][^>]*>/g, ''));
+  // Not converged in eight passes: this is not prose, it is a nesting attack.
+  // One more strip could still leave a reassembled tag, so drop the angle
+  // brackets outright — the result provably carries no `<` at all.
+  return finish(s.replace(/[<>]/g, ''));
 }
 
 /**
