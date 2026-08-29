@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2846%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2852%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.2)
+[![release](https://img.shields.io/badge/release-v1.227.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.227.2** — **Narrow-phone fix** — `#/config` no longer scrolls sideways at ≤ 352 px: 18 provider selects carried an inline `min-width: 300px` that could not shrink. Now gated by a 320 px Playwright sweep. **2846 tests · 101 Playwright.**
+> **🆕 Latest release — v1.227.3** — **Title-filter prefixes now work** — `word:` / `stem:` were matched as literal text, silently turning those filter lines into no-ops (a `word:intern` rule filtered nothing here while working in the CLI). Ported from the parent, Unicode boundaries included. **2852 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

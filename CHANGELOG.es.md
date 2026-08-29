@@ -11,6 +11,19 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.227.3] — 2026-08-29
+
+**Corregido — los prefijos `word:` / `stem:` del filtro de títulos se ignoraban en silencio, dejando esas líneas de filtro sin efecto.**
+
+### Corregido
+- **web-ui no implementaba los prefijos `word:` / `stem:` del proyecto padre.** `title_filter` (y `content_filter`) usan por defecto coincidencia de **subcadena** sin distinguir mayúsculas, y por eso un negativo simple `intern` también rechaza «International Product Manager» e «Internal Tools Engineer». En vez de cambiar ese valor por defecto —un cambio rompedor para toda instalación configurada— el padre hizo la precisión opcional por entrada: `word:intern` solo coincide con la palabra completa y `stem:agent` debe iniciar una palabra pudiendo continuar (separando «Agentforce» de «Reagents»). web-ui no tenía ninguno, así que hacía coincidir la entrada con el **texto literal** `"word:intern"`, que no aparece en ningún título de empleo. La línea quedaba en nada: el mismo `portals.yml` filtraba bien por CLI y nada aquí, de modo que cada oferta de prácticas excluida seguía llegando a la tabla `#/scan`. Portado del `title-keywords.mjs` del padre, incluida la frontera de palabra compatible con Unicode (`\p{L}\p{M}\p{N}_`) en lugar de `\b`, que es solo ASCII y coincidía dentro de palabras en títulos acentuados o cirílicos.
+
+### Notas
+- **Detectado al revisar un `portals.yml` real** que acababa de adoptar `word:intern` **precisamente** para que un `intern` simple dejara de descartar «International Product Manager». El prefijo funcionaba en la CLI; web-ui se quedaba con todas las prácticas en silencio. Ahora el comportamiento es idéntico.
+- **Los valores por defecto no cambian.** Una palabra clave sin prefijo mantiene su coincidencia previa: subcadena para frases y para todo lo que contenga caracteres no alfabéticos (`.NET`, `SAP `, `L&D`), y anclaje a límites de palabra para siglas de 2–3 letras. Un `word:` / `stem:` vacío se trata como errata y no coincide con **nada**: como negativo, un patrón vacío coincidiría con todos los títulos y anularía un escaneo entero por un solo dos puntos suelto.
+- La regla de siglas de 2–3 letras pasa a usar esa misma frontera Unicode: antes usaba `\b`, así que `coo` y `word:coo` discrepaban en títulos no ASCII — dos formas de escribir una misma regla.
+- 6 casos nuevos en `tests/title-filter.test.mjs`. Pruebas: **2846 → 2852**.
+
 ## [1.227.2] — 2026-08-29
 
 **Corregido — `#/config` se desplazaba lateralmente en móviles estrechos.**

@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.227.3] — 2026-08-29
+
+**Rettet — titelfilterets `word:` / `stem:`-præfikser blev ignoreret i stilhed, så de filterlinjer intet gjorde.**
+
+### Rettet
+- **web-ui implementerede ikke moderprojektets `word:` / `stem:`-præfikser.** `title_filter` (og `content_filter`) matcher som standard **delstrenge** uden hensyn til store/små bogstaver — derfor afviser et bart negativt `intern` også „International Product Manager“ og „Internal Tools Engineer“. I stedet for at vende den standard — et brud for enhver konfigureret installation — gjorde moderprojektet præcision valgfri pr. post: `word:intern` matcher kun hele ordet, og `stem:agent` skal starte et ord og må fortsætte (og adskiller „Agentforce“ fra „Reagents“). web-ui havde ingen af delene og matchede posten som den **bogstavelige tekst** `"word:intern"`, som ikke findes i nogen jobtitel. Linjen blev en tavs no-op: den samme `portals.yml` filtrerede korrekt via CLI'en og slet ikke her, så hvert ekskluderet praktikopslag nåede alligevel `#/scan`-tabellen. Porteret fra moderprojektets `title-keywords.mjs`, inklusive den Unicode-bevidste ordgrænse (`\p{L}\p{M}\p{N}_`) i stedet for `\b`, der kun kender ASCII og ramte midt i ord i titler med accenter eller kyrillisk.
+
+### Noter
+- **Fundet under gennemgang af en rigtig `portals.yml`**, som netop havde taget `word:intern` i brug **netop for** at et bart `intern` holdt op med at kassere „International Product Manager“. Præfikset virkede i CLI'en; web-ui beholdt stiltiende alle praktikopslag. Adfærden er nu identisk.
+- **Standarderne er uændrede.** Et nøgleord uden præfiks beholder sin hidtidige matchning: delstreng for fraser og alt med ikke-bogstaver (`.NET`, `SAP `, `L&D`), ordgrænse-forankring for 2–3-bogstavsforkortelser. Et tomt `word:` / `stem:` betragtes som en tastefejl og matcher **intet** — som negativ ville et tomt mønster matche enhver titel og vælte en hel scanning på grund af et forvildet kolon.
+- Reglen for 2–3-bogstavsforkortelser bruger nu samme Unicode-grænse: før `\b`, hvorfor `coo` og `word:coo` var uenige om ikke-ASCII-titler — to stavemåder af én regel.
+- 6 nye tilfælde i `tests/title-filter.test.mjs`. Tests: **2846 → 2852**.
+
 ## [1.227.2] — 2026-08-29
 
 **Rettet — `#/config` scrollede sidelæns på smalle telefoner.**

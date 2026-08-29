@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.227.3] — 2026-08-29
+
+**Behoben — die Titelfilter-Präfixe `word:` / `stem:` wurden stillschweigend ignoriert, wodurch diese Filterzeilen wirkungslos blieben.**
+
+### Behoben
+- **web-ui implementierte die `word:` / `stem:`-Präfixe des übergeordneten Projekts nicht.** `title_filter` (und `content_filter`) vergleichen standardmäßig **Teilstrings** ohne Groß-/Kleinschreibung — deshalb verwirft ein blankes negatives `intern` auch „International Product Manager“ und „Internal Tools Engineer“. Statt diesen Standard umzudrehen — ein Bruch für jede konfigurierte Installation — machte das übergeordnete Projekt Genauigkeit pro Eintrag optional: `word:intern` trifft nur das ganze Wort, `stem:agent` muss ein Wort beginnen und darf weiterlaufen (trennt „Agentforce“ von „Reagents“). web-ui hatte keines von beiden und verglich den Eintrag mit dem **wörtlichen Text** `"word:intern"`, der in keinem Stellentitel vorkommt. Die Zeile wurde zum stillen No-op: dieselbe `portals.yml` filterte über die CLI korrekt und hier gar nicht, sodass jede ausgeschlossene Praktikumsanzeige weiterhin in der `#/scan`-Tabelle landete. Aus dem `title-keywords.mjs` des übergeordneten Projekts portiert, samt der Unicode-fähigen Wortgrenze (`\p{L}\p{M}\p{N}_`) statt `\b`, das nur ASCII kennt und in akzentuierten oder kyrillischen Titeln mitten im Wort traf.
+
+### Hinweise
+- **Gefunden beim Prüfen einer echten `portals.yml`**, die `word:intern` gerade **genau deshalb** übernommen hatte, damit ein blankes `intern` „International Product Manager“ nicht mehr verwirft. In der CLI wirkte das Präfix; web-ui behielt still jede Praktikumsanzeige. Das Verhalten ist jetzt identisch.
+- **Die Standards bleiben unverändert.** Ein Schlüsselwort ohne Präfix behält sein bisheriges Matching: Teilstring für Phrasen und alles mit Nicht-Buchstaben (`.NET`, `SAP `, `L&D`), Wortgrenzen-Anker für 2–3-Buchstaben-Abkürzungen. Ein leeres `word:` / `stem:` gilt als Tippfehler und trifft **nichts** — als Negativ träfe ein leeres Muster jeden Titel und würde einen ganzen Scan wegen eines verirrten Doppelpunkts kippen.
+- Die Abkürzungsregel nutzt nun dieselbe Unicode-Grenze: zuvor `\b`, weshalb `coo` und `word:coo` bei Nicht-ASCII-Titeln auseinanderliefen — zwei Schreibweisen einer Regel.
+- 6 neue Fälle in `tests/title-filter.test.mjs`. Tests: **2846 → 2852**.
+
 ## [1.227.2] — 2026-08-29
 
 **Behoben — `#/config` scrollte auf schmalen Telefonen seitwärts.**

@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.227.3] — 2026-08-29
+
+**Corrigido — os prefixos `word:` / `stem:` do filtro de títulos eram ignorados em silêncio, deixando essas linhas de filtro sem efeito.**
+
+### Corrigido
+- **O web-ui não implementava os prefixos `word:` / `stem:` do projeto pai.** `title_filter` (e `content_filter`) usam por padrão correspondência de **substring** sem diferenciar maiúsculas, e é por isso que um negativo simples `intern` também rejeita «International Product Manager» e «Internal Tools Engineer». Em vez de mudar esse padrão — uma quebra para toda instalação já configurada — o pai tornou a precisão opcional por entrada: `word:intern` casa apenas a palavra inteira e `stem:agent` precisa iniciar uma palavra, podendo continuar (separando «Agentforce» de «Reagents»). O web-ui não tinha nenhum dos dois, então casava a entrada com o **texto literal** `"word:intern"`, que não aparece em nenhum título de vaga. A linha virava um no-op silencioso: o mesmo `portals.yml` filtrava corretamente pela CLI e não filtrava nada aqui, de modo que toda vaga de estágio excluída ainda chegava à tabela `#/scan`. Portado do `title-keywords.mjs` do pai, incluindo a fronteira de palavra ciente de Unicode (`\p{L}\p{M}\p{N}_`) em vez de `\b`, que é só ASCII e casava no meio de palavras em títulos acentuados ou cirílicos.
+
+### Notas
+- **Encontrado ao revisar um `portals.yml` real** que acabara de adotar `word:intern` **justamente** para que um `intern` simples parasse de descartar «International Product Manager». O prefixo funcionava na CLI; o web-ui silenciosamente mantinha todos os estágios. Agora o comportamento é idêntico.
+- **Os padrões não mudaram.** Uma palavra-chave sem prefixo mantém a correspondência anterior: substring para frases e para tudo que contenha caracteres não alfabéticos (`.NET`, `SAP `, `L&D`), e ancoragem em limites de palavra para siglas de 2–3 letras. Um `word:` / `stem:` vazio é tratado como erro de digitação e não casa com **nada** — como negativo, um padrão vazio casaria com todos os títulos e vetaria uma varredura inteira por causa de um dois-pontos perdido.
+- A regra de siglas de 2–3 letras passa a usar essa mesma fronteira Unicode: antes usava `\b`, então `coo` e `word:coo` divergiam em títulos não ASCII — duas grafias de uma mesma regra.
+- 6 casos novos em `tests/title-filter.test.mjs`. Testes: **2846 → 2852**.
+
 ## [1.227.2] — 2026-08-29
 
 **Corrigido — `#/config` rolava lateralmente em celulares estreitos.**

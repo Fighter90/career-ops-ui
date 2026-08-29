@@ -30,7 +30,12 @@ The Galaxy Fold cover screen still overflows by ~5 px, from an **unrelated** cau
 ## §4 — Manual browser pass
 1. Device emulation at **320×720** (not a window resize) → `#/config`: no horizontal scrollbar, `document.documentElement.scrollWidth === clientWidth`, every provider select fits.
 2. Same at **375×812** — unchanged from before; selects still render at a comfortable width.
-3. `#/config` on a desktop width: selects are still 300 px wide (the `min()` must not shrink them where there is room).
+3. `#/config` at a desktop width: selects fill their container — **~910 px at 1280 px**, not 300 px. Measured identical
+   before and after the fix (910 px both ways), because `min-width` was only a FLOOR; the element's width came from its
+   container all along. The `min()` binds only once the container is narrower than 300 px, which is exactly the ≤ 352 px
+   case. So the desktop check is a no-regression check, not a "still 300 px" check.
+   *(DOC-1: the v1.227.2 prompt originally asserted "still 300 px wide" here — behaviour the code never had. Corrected
+   after measuring: 1280 px → 910/910 fixed/pre-fix; 320 px → 214 fixed vs 300 pre-fix with scrollWidth 353/320.)*
 4. Sweep `#/dashboard`, `#/scan`, `#/tracker`, `#/cv`, `#/help` at 320 px — no horizontal overflow.
 5. Spot-check RTL (`ar`) at 320 px.
 

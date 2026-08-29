@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2846%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2852%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.2)
+[![release](https://img.shields.io/badge/release-v1.227.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.227.2** — **Arreglo en móviles estrechos** — `#/config` ya no se desplaza lateralmente a ≤ 352 px: 18 selects llevaban un `min-width: 300px` en línea que no encogía. Ahora con gate de barrido Playwright a 320 px. **2846 pruebas · 101 Playwright.**
+> **🆕 Última versión — v1.227.3** — **Los prefijos del filtro de títulos ya funcionan** — `word:` / `stem:` se comparaban como texto literal, dejando esas líneas sin efecto (una regla `word:intern` no filtraba nada aquí y sí en la CLI). Portado del padre, con fronteras Unicode. **2852 pruebas.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

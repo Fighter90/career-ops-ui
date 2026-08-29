@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.227.3] — 2026-08-29
+
+**Fixed — `word:` / `stem:` title-filter prefixes were silently ignored, turning those filter lines into no-ops.**
+
+### Fixed
+- **web-ui did not implement the parent's `word:` / `stem:` keyword prefixes.** `title_filter` (and `content_filter`) default to case-insensitive **substring** matching, which is why a bare negative `intern` also rejects "International Product Manager" and "Internal Tools Engineer". Rather than flip that default — a breaking change for every configured install — the parent made precision opt-in per entry: `word:intern` matches the whole word only, `stem:agent` must start a word and may continue (separating "Agentforce" from "Reagents"). web-ui had neither, so it matched a prefixed entry as the **literal text** `"word:intern"` — which appears in no job title. The line became a silent no-op: the same `portals.yml` filtered correctly through the CLI and not at all here, so every intern posting the user had excluded still reached the `#/scan` table. Ported from the parent's `title-keywords.mjs`, including the Unicode-aware boundary (`\p{L}\p{M}\p{N}_`) rather than `\b`, which is ASCII-only and matched mid-word in accented or Cyrillic titles.
+- **The 2–3 letter acronym rule now uses that same Unicode boundary.** It previously used `\b`, so `coo` and `word:coo` disagreed on non-ASCII titles — two spellings of one rule.
+
+### Notes
+- Found while checking a live `portals.yml` that had just adopted `word:intern` **specifically** to stop "International Product Manager" being dropped by a bare `intern`. The prefix worked in the CLI; web-ui quietly kept every intern posting. Behaviour is now identical in both.
+- **Defaults are unchanged.** An unprefixed keyword keeps exactly its previous matching: substring for phrases and anything containing non-letters (`.NET`, `SAP `, `L&D`), boundary-anchored for 2–3 letter acronyms. A bare `word:` / `stem:` with nothing after it is treated as a typo and matches **nothing** — as a negative, an empty pattern would match every title and veto an entire scan from one stray colon.
+- 6 new cases in `tests/title-filter.test.mjs` covering both prefixes, the Unicode boundary, the bare-prefix typo, positive-side use, and that unprefixed defaults are untouched. Test suite: **2846 → 2852**.
+
 ## [1.227.2] — 2026-08-29
 
 **Fixed — `#/config` scrolled sideways on narrow phones.**

@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.3] — 2026-08-29
+
+**Düzeltildi — başlık filtresindeki `word:` / `stem:` önekleri sessizce yok sayılıyor, o filtre satırlarını etkisiz bırakıyordu.**
+
+### Düzeltildi
+- **web-ui, üst projenin `word:` / `stem:` öneklerini uygulamıyordu.** `title_filter` (ve `content_filter`) varsayılan olarak büyük/küçük harf duyarsız **alt dize** eşleşmesi yapar; bu yüzden çıplak bir olumsuz `intern` girdisi „International Product Manager“ ve „Internal Tools Engineer“ başlıklarını da eler. Bu varsayılanı tersine çevirmek yapılandırılmış her kurulumu bozacağından, üst proje kesinliği girdi başına isteğe bağlı yaptı: `word:intern` yalnızca tam sözcüğü, `stem:agent` ise bir sözcüğün başını eşler ve devam edebilir („Agentforce“ ile „Reagents“ı ayırır). web-ui'de ikisi de yoktu; girdiyi **birebir metin** olan `"word:intern"` şeklinde eşliyordu — böyle bir dizi hiçbir ilan başlığında geçmez. Satır sessiz bir no-op'a dönüştü: aynı `portals.yml` CLI'da doğru süzerken burada hiç süzmüyordu, dolayısıyla dışlanan her staj ilanı yine `#/scan` tablosuna ulaşıyordu. Üst projenin `title-keywords.mjs` dosyasından aktarıldı; yalnızca ASCII bilen ve aksanlı ya da Kiril başlıklarda sözcük ortasında eşleşen `\b` yerine Unicode farkında sözcük sınırı (`\p{L}\p{M}\p{N}_`) dahil.
+
+### Notlar
+- **Gerçek bir `portals.yml` incelenirken bulundu**; oraya `word:intern` **tam da** çıplak `intern` girdisi „International Product Manager“ı elemesin diye yeni eklenmişti. Önek CLI'da çalışıyordu; web-ui sessizce tüm staj ilanlarını tutuyordu. Artık davranış aynı.
+- **Varsayılanlar değişmedi.** Öneksiz bir anahtar kelime önceki eşleşmesini korur: öbekler ve harf dışı karakter içeren her şey (`.NET`, `SAP `, `L&D`) alt dize, 2–3 harfli kısaltmalar sözcük sınırına bağlı. İçi boş `word:` / `stem:` yazım hatası sayılır ve **hiçbir şeyle** eşleşmez — olumsuz olarak boş bir desen her başlıkla eşleşir ve tek bir başıboş iki nokta yüzünden tüm taramayı geçersiz kılardı.
+- 2–3 harfli kısaltma kuralı da aynı Unicode sınırını kullanıyor: önceden `\b` kullanıyordu, bu yüzden ASCII dışı başlıklarda `coo` ile `word:coo` ayrışıyordu — tek kuralın iki yazımı.
+- `tests/title-filter.test.mjs` içinde 6 yeni durum. Testler: **2846 → 2852**.
+
 ## [1.227.2] — 2026-08-29
 
 **Düzeltildi — dar telefonlarda `#/config` yana kayıyordu.**

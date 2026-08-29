@@ -20,6 +20,58 @@
  *   - All matches: case-insensitive substring.
  */
 
+// ── Keyword prefixes (parity with the parent's title-keywords.mjs) ──
+// `title_filter` / `content_filter` default to case-insensitive SUBSTRING
+// matching, which is why a bare negative `intern` also rejects "International
+// Product Manager" and "Internal Tools". Flipping that default would be a
+// breaking change for every configured install, so the parent made precision
+// opt-in per entry:
+//
+//   word:intern  → whole word. Rejects "Operations Intern", leaves
+//                  "International …" and "Internal …" alone.
+//   stem:agent   → must START a word, may continue. Separates "Agentforce"
+//                  from "Reagents".
+//
+// web-ui had neither, so a `word:`-prefixed entry was matched as the literal
+// text "word:intern" — which appears in no job title, silently turning that
+// filter line into a no-op. A live portals.yml using the prefix therefore
+// filtered correctly through the CLI and not at all here.
+const WORD_PREFIX = 'word:';
+const STEM_PREFIX = 'stem:';
+
+// Unicode-aware word character: \b is ASCII-only and would treat an accented
+// letter as a boundary, matching mid-word in non-English titles.
+const WORD_CHAR = String.raw`[\p{L}\p{M}\p{N}_]`;
+const anchoredPattern = (body) => new RegExp(`(?<!${WORD_CHAR})${body}(?!${WORD_CHAR})`, 'u');
+// Same left boundary, no right one: the keyword must start a word, and the
+// word may continue past it.
+const stemPattern = (body) => new RegExp(`(?<!${WORD_CHAR})${body}`, 'u');
+
+function escapeForRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Compile a `word:` / `stem:` prefixed keyword, or return null when the entry
+ * carries no prefix and should fall through to the default matcher.
+ * @param {string} kw already trimmed and lowercased
+ * @returns {((lower: string) => boolean) | null}
+ */
+function compilePrefixedKeyword(kw) {
+  for (const [prefix, pattern] of [[WORD_PREFIX, anchoredPattern], [STEM_PREFIX, stemPattern]]) {
+    if (!kw.startsWith(prefix)) continue;
+    const bare = kw.slice(prefix.length).trim();
+    // A bare `word:` is a config typo. Matching NOTHING is the safe reading:
+    // as a positive it contributes no match, whereas an empty pattern would
+    // match everything and, as a negative, veto an entire scan from one stray
+    // colon. Prefer silently dropping one entry over a silent flood.
+    if (!bare) return () => false;
+    const re = pattern(escapeForRegExp(bare));
+    return (lower) => re.test(lower);
+  }
+  return null;
+}
+
 // ── Title filter ────────────────────────────────────────────────────
 // v1.76.0 — title-filter matching robustness.
 // Two robustness fixes over the old `title.includes(keyword)` approach:
@@ -36,8 +88,13 @@
  * @param {string} kw already-lowercased keyword
  */
 export function compileKeyword(kw) {
+  const prefixed = compilePrefixedKeyword(kw);
+  if (prefixed) return prefixed;
   if (/^[a-z]{2,3}$/.test(kw)) {
-    const re = new RegExp(`\\b${kw}\\b`);
+    // The same Unicode boundary as `word:`, NOT \b: \b is ASCII-only, so a
+    // two-letter acronym matched inside an accented word while `word:` did not.
+    // One spelling of the rule keeps the two from drifting apart.
+    const re = anchoredPattern(escapeForRegExp(kw));
     return (lower) => re.test(lower);
   }
   return (lower) => lower.includes(kw);

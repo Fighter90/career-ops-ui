@@ -83,3 +83,76 @@ test('compileKeywordList: trims BEFORE the length check (v1.79.0 / parent #1261)
   assert.equal(matchers[0]('senior php developer'), true);
   assert.equal(matchers[0]('senior developer'), false);
 });
+
+// ── word: / stem: prefixes (v1.227.3) ────────────────────────────────
+//
+// `title_filter` defaults to case-insensitive SUBSTRING matching, so a bare
+// negative `intern` also rejects "International Product Manager" and "Internal
+// Tools". The parent made precision opt-in per entry (`word:` / `stem:`) rather
+// than flip that default, which would break every configured install.
+//
+// web-ui implemented neither, so a `word:`-prefixed entry was matched as the
+// literal text "word:intern" — which appears in no job title. The filter line
+// became a silent no-op: the same portals.yml filtered correctly through the
+// CLI and not at all here. Found against a live config that had just adopted
+// `word:intern` specifically to stop "International Product Manager" being
+// dropped; the prefix worked in the CLI while web-ui quietly kept every intern
+// posting.
+
+test('word: matches a whole word, not a substring', () => {
+  const keep = buildTitleFilter({ positive: [], negative: ['word:intern'] });
+  // Rejected — "intern" is its own word.
+  for (const t of ['Intern', 'Software Intern', 'intern', 'Operations Intern (f/m/d)']) {
+    assert.equal(keep(t), false, `${t} should be dropped by word:intern`);
+  }
+  // Kept — "intern" only appears inside a longer word. This is the whole point.
+  for (const t of ['International Product Manager', 'Internal Tools Engineer', 'Internship Coordinator'.replace('Internship', 'Internally')]) {
+    assert.equal(keep(t), true, `${t} should survive word:intern`);
+  }
+});
+
+test('word: boundaries are Unicode-aware, not ASCII \\b', () => {
+  const keep = buildTitleFilter({ positive: [], negative: ['word:lead'] });
+  // A Cyrillic or accented neighbour is a word character, so these are NOT
+  // boundaries — \b would have treated them as such and matched mid-word.
+  assert.equal(keep('Lead Engineer'), false);
+  assert.equal(keep('Team Lead'), false);
+  assert.equal(keep('Leadership Program'), true, 'leadership must survive word:lead');
+});
+
+test('stem: anchors the start of a word and lets it continue', () => {
+  const keep = buildTitleFilter({ positive: [], negative: ['stem:agent'] });
+  assert.equal(keep('Agentforce Developer'), false, 'agentforce starts with agent');
+  assert.equal(keep('Agent Manager'), false);
+  assert.equal(keep('Reagents Chemist'), true, 'reagents does not START with agent');
+});
+
+test('a bare prefix is a typo and matches nothing (never everything)', () => {
+  // As a negative, an empty pattern would match every title and veto the whole
+  // scan from one stray colon. Dropping the single entry is the safe half.
+  for (const bad of ['word:', 'stem:', 'word:   ']) {
+    const keep = buildTitleFilter({ positive: [], negative: [bad] });
+    assert.equal(keep('Anything At All'), true, `${JSON.stringify(bad)} must not veto everything`);
+  }
+  // As a positive it contributes no match, so nothing passes on its own.
+  assert.equal(buildTitleFilter({ positive: ['word:'], negative: [] })('Product Manager'), false);
+});
+
+test('prefixes work on the positive side too', () => {
+  const keep = buildTitleFilter({ positive: ['word:pm'], negative: [] });
+  assert.equal(keep('PM, Growth'), true);
+  assert.equal(keep('PMO Analyst'), false, 'pmo must not satisfy word:pm');
+});
+
+test('unprefixed keywords keep their existing matching rules', () => {
+  // 2-3 letter acronyms stay boundary-anchored...
+  const acr = buildTitleFilter({ positive: [], negative: ['coo'] });
+  assert.equal(acr('COO'), false);
+  assert.equal(acr('Coordinator'), true);
+  // ...and everything else stays permissive substring.
+  const sub = buildTitleFilter({ positive: [], negative: ['.net'] });
+  assert.equal(sub('.NET Developer'), false);
+  const plain = buildTitleFilter({ positive: [], negative: ['intern'] });
+  assert.equal(plain('International Product Manager'), false,
+    'a BARE intern still matches as a substring — that is the default word: exists to opt out of');
+});
