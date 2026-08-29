@@ -2,6 +2,20 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.227.5] — 2026-08-29
+
+**Behoben — der regionale Scan trieb den Server in den Speicherüberlauf, und eine Playwright-Suite flackerte an ihrem eigenen Abbau.**
+
+### Behoben
+- **Der regionale Scan riss den Server per OOM um.** `ru-scanner` sammelte **jeden Rohtreffer aus jeder Abfrage** und dedupliziert und filterte erst ganz am Ende. Die Abfrageliste besteht bewusst aus Beinahe-Synonymen (`Golang`, `Go разработчик`, `Golang разработчик`, `Senior Go`…), also kommt dieselbe Stelle einmal pro Abfrage zurück und das Array hielt ein Vielfaches der eindeutigen Zahl — samt Beschreibungen, die den Großteil eines Job-Objekts ausmachen und von den Filtern ohnehin fast vollständig verworfen werden. Gemessen: **742 MB** Heap bei einem echten Lauf mit 21 Abfragen. Der Server deckelt Nodes Heap bei **490 MB** (V8 bemisst ihn an den 956 MB RAM der Maschine), also riss der Scan den Dienst mit `FATAL ERROR: Reached heap limit` um — **viermal an einem Tag**. Deduplizierung und Filterung laufen jetzt pro Abfrage, was denselben Lauf auf **177 MB** brachte, minus 76 %. Die ausgewiesenen Zahlen bleiben gleich: die eindeutige Gesamtzahl trägt ein `Set` aus URL-Strings.
+- **`net::ERR_SOCKET_NOT_CONNECTED` ließ die CI zufällig scheitern.** Drei Playwright-Suites rufen `window.stop()` auf, um laufende Requests abzubrechen, bevor sie prüfen, dass keine Konsolenfehler auftraten. Chromium meldet diesen einen Vorgang unter **drei** Namen, je nach Zustand des Sockets: `ERR_ABORTED` beim Abbruch, `ERR_EMPTY_RESPONSE` unterwegs, `ERR_SOCKET_NOT_CONNECTED`, wenn der Socket schon weg war. Der gemeinsame Filter kannte nur die ersten beiden. Aufgetaucht im Locale-Durchlauf bei `tr`, während `playwright-forms` und `playwright-smoke` einen unglücklichen Lauf vom selben Fehler entfernt waren.
+
+### Hinweise
+- **Warum erst jetzt.** Die Abfrageliste wuchs von 14 auf 21, als Product-Manager-Suchen hinzukamen. Der Speicherbedarf der alten Implementierung skalierte mit der Gesamttrefferzahl, also sprengten +50 % Abfragen die Obergrenze der Maschine.
+- **Die Dedup-Änderung erhält das Verhalten, und das ist getestet.** `tests/ru-scanner-dedup-order.test.mjs` nagelt die heikle Richtung fest — ein späteres Duplikat, das die Filter NICHT besteht, muss ein früheres verdrängen, das bestanden hatte — und fährt 200 randomisierte Äquivalenzprüfungen gegen die alte Implementierung.
+- **Der Konsolenfilter bleibt eng.** Nur die Familie abgebrochener Requests ist harmlos; abgelehnte Verbindung, DNS-Fehler, Reset, 5xx und JS-Ausnahmen lassen die Zusicherung weiterhin scheitern.
+- Zwei Hypothesen wurden geprüft und verworfen statt ausgeliefert: ein Caddy-Timeout (Konfiguration sauber, `flush_interval -1` für SSE korrekt) und Nodes voreingestelltes 5-Minuten-`requestTimeout` (eine verkleinerte Reproduktion zeigte, dass es eine lange Streaming-Antwort nicht abbricht). Der eigentliche Beleg war `Reached heap limit` im Journal. Tests: **2860 → 2865**.
+
 ## [1.227.4] — 2026-08-29
 
 **Behoben — `word:` / `stem:` wurden von `content_filter` weiterhin ignoriert; v1.227.3 hatte nur den Titelfilter behoben.**

@@ -7,16 +7,16 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2858%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.4)
+[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.227.4** — **Poprawka prefiksów, część 2** — `word:` / `stem:` wciąż były ignorowane przez `content_filter`; v1.227.3 podłączyła tylko filtr tytułów. Wykryte w przeglądzie AI. **2858 testów.**
+> **🆕 Najnowsze wydanie — v1.227.5** — **Skan regionalny nie wyczerpuje już pamięci** — trzymał wszystkie surowe trafienia z 21 zapytań do końca (742 MB wobec pułapu 490 MB maszyny, 4 upadki usługi w ciągu dnia); teraz deduplikacja i filtrowanie per zapytanie → **177 MB**. Plus poprawiony flake Playwright. **2865 testów.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

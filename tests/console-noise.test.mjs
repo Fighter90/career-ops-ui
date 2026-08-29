@@ -44,3 +44,35 @@ test('tolerates an empty / missing list', () => {
   assert.deepEqual(realConsoleErrors([]), []);
   assert.deepEqual(realConsoleErrors(undefined), []);
 });
+
+test('window.stop() teardown is benign in all three of its Chromium spellings', () => {
+  // A suite that calls window.stop() to halt in-flight requests gets a
+  // different error string depending on where the socket was at that instant:
+  // ERR_ABORTED when Chromium cancels the request, ERR_SOCKET_NOT_CONNECTED
+  // when the socket was already gone by the time the request reached it, and
+  // ERR_EMPTY_RESPONSE when it was mid-flight. One event, three spellings.
+  //
+  // Only the first two were listed, so the same deliberate teardown failed a
+  // run at random. It surfaced as a flake in the locale sweep on `tr` — the
+  // suite with the most navigations, hence the most chances to lose the race —
+  // while playwright-forms and playwright-smoke, which also call window.stop(),
+  // were one unlucky run away from the same failure.
+  const teardown = [
+    'Failed to load resource: net::ERR_ABORTED',
+    'Failed to load resource: net::ERR_EMPTY_RESPONSE',
+    'Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED',
+  ];
+  assert.deepEqual(realConsoleErrors(teardown), []);
+});
+
+test('a genuine socket-level failure is NOT swallowed with it', () => {
+  // Only the cancelled-request family is benign. A refused connection, a DNS
+  // failure, a reset and a 5xx all still mean something is actually broken.
+  const real = [
+    'Failed to load resource: net::ERR_CONNECTION_REFUSED',
+    'Failed to load resource: net::ERR_NAME_NOT_RESOLVED',
+    'Failed to load resource: net::ERR_CONNECTION_RESET',
+    'Failed to load resource: the server responded with a status of 500 ()',
+  ];
+  assert.deepEqual(realConsoleErrors(real), real);
+});

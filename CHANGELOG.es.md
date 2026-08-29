@@ -11,6 +11,20 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.227.5] — 2026-08-29
+
+**Corregido — el escaneo regional agotaba la memoria del servidor y una suite de Playwright fallaba por su propio desmontaje.**
+
+### Corregido
+- **El escaneo regional mataba el servidor por OOM.** `ru-scanner` acumulaba **todos los resultados en bruto de todas las consultas** y solo deduplicaba y filtraba al final. La lista de consultas está deliberadamente llena de casi sinónimos (`Golang`, `Go разработчик`, `Golang разработчик`, `Senior Go`…), así que la misma vacante vuelve una vez por consulta y el array retenía varias veces el recuento único — con las descripciones, que son el grueso del objeto y que los filtros descartan casi por completo. Medido: **742 MB** de heap en una ejecución real de 21 consultas. El servidor limita el heap de Node a **490 MB** (V8 lo dimensiona a partir de los 956 MB de RAM de la máquina), así que el escaneo tumbaba el servicio con `FATAL ERROR: Reached heap limit` — **cuatro veces en un día**. Ahora la deduplicación y el filtrado ocurren por consulta, y la misma ejecución bajó a **177 MB**, un 76% menos. Los recuentos informados no cambian: el total único lo lleva un `Set` de cadenas URL, así que «Total found» significa exactamente lo mismo que antes.
+- **`net::ERR_SOCKET_NOT_CONNECTED` hacía fallar CI al azar.** Tres suites de Playwright llaman a `window.stop()` para detener las peticiones en vuelo antes de afirmar que no hubo errores de consola. Chromium informa de ese único acto deliberado con **tres** nombres según dónde estuviera el socket: `ERR_ABORTED` al cancelar, `ERR_EMPTY_RESPONSE` en vuelo y `ERR_SOCKET_NOT_CONNECTED` cuando el socket ya no estaba. El filtro compartido solo listaba los dos primeros, así que el mismo desmontaje tumbaba una ejecución al azar. Apareció en el barrido de locales en `tr` — la suite con más navegaciones — mientras que `playwright-forms` y `playwright-smoke`, que también llaman a `window.stop()`, estaban a una ejecución del mismo fallo.
+
+### Notas
+- **Por qué el escaneo empezó a fallar ahora.** La lista de consultas pasó de 14 a 21 al añadir búsquedas de product manager. La memoria de la implementación anterior escalaba con el total de resultados, así que un 50% más de consultas superó el techo de la máquina. Las consultas nuevas no tienen nada de malo: solo expusieron un patrón de asignación que llevaba mucho tiempo a un cambio de configuración de fallar.
+- **El cambio de deduplicación preserva el comportamiento, y eso está probado, no afirmado.** `tests/ru-scanner-dedup-order.test.mjs` fija la dirección incómoda —un duplicado posterior que NO pasa los filtros debe expulsar a uno anterior que sí pasó, porque la pasada final antigua conservaba solo la última copia y luego la filtraba— y ejecuta 200 comprobaciones aleatorias de equivalencia contra la implementación anterior.
+- **El filtro de consola sigue estrecho.** Solo la familia de peticiones canceladas es benigna. Conexión rechazada, fallo de DNS, reinicio, cualquier 5xx y toda excepción JS no capturada siguen haciendo fallar la aserción, fijado por tests nuevos.
+- Dos hipótesis se probaron y descartaron en vez de enviarse: un timeout de Caddy (su configuración está limpia, `flush_interval -1` es correcto para SSE) y el `requestTimeout` por defecto de 5 minutos de Node (una reproducción a escala mostró que no corta una respuesta larga en streaming). La evidencia real fue `Reached heap limit` en el journal. Pruebas: **2860 → 2865**.
+
 ## [1.227.4] — 2026-08-29
 
 **Corregido — `word:` / `stem:` seguían ignorándose en `content_filter`; la v1.227.3 solo arregló el filtro de títulos.**

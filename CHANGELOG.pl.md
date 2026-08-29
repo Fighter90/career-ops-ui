@@ -9,6 +9,20 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.227.5] — 2026-08-29
+
+**Naprawiono — skan regionalny wyczerpywał pamięć serwera, a jeden zestaw Playwright zawodził na własnym demontażu.**
+
+### Naprawiono
+- **Skan regionalny zabijał serwer przez OOM.** `ru-scanner` gromadził **wszystkie surowe trafienia ze wszystkich zapytań** i deduplikował oraz filtrował dopiero na końcu. Lista zapytań celowo składa się z bliskich synonimów (`Golang`, `Go разработчик`, `Golang разработчик`, `Senior Go`…), więc ta sama oferta wraca raz na zapytanie, a tablica trzymała wielokrotność liczby unikatów — wraz z opisami, które stanowią większość obiektu i które filtry i tak niemal w całości odrzucają. Zmierzone: **742 MB** sterty przy rzeczywistym przebiegu 21 zapytań. Serwer ogranicza stertę Node do **490 MB** (V8 wylicza limit z 956 MB RAM maszyny), więc skan kładł usługę z `FATAL ERROR: Reached heap limit` — **cztery razy w ciągu dnia**. Teraz deduplikacja i filtrowanie odbywają się per zapytanie, co sprowadziło ten sam przebieg do **177 MB**, czyli o 76% mniej. Raportowane liczby są niezmienione: sumę unikatów niesie `Set` łańcuchów URL.
+- **`net::ERR_SOCKET_NOT_CONNECTED` losowo psuł CI.** Trzy zestawy Playwright wywołują `window.stop()`, by przerwać trwające żądania przed sprawdzeniem, że nie było błędów konsoli. Chromium raportuje ten jeden zamierzony akt pod **trzema** nazwami zależnie od stanu gniazda: `ERR_ABORTED` przy anulowaniu, `ERR_EMPTY_RESPONSE` w locie i `ERR_SOCKET_NOT_CONNECTED`, gdy gniazdo już zniknęło. Wspólny filtr znał tylko dwie pierwsze. Ujawniło się to na przeglądzie lokalizacji w `tr`, a `playwright-forms` i `playwright-smoke` były o jedno pechowe uruchomienie od tego samego.
+
+### Uwagi
+- **Dlaczego dopiero teraz.** Lista urosła z 14 do 21 zapytań po dodaniu wyszukiwań product managera. Pamięć starej implementacji skalowała się z łączną liczbą trafień, więc +50% zapytań przebiło pułap maszyny.
+- **Zmiana deduplikacji zachowuje zachowanie i jest to przetestowane, a nie deklarowane.** `tests/ru-scanner-dedup-order.test.mjs` przypina niewygodny kierunek — późniejszy duplikat, który NIE przechodzi filtrów, musi wyprzeć wcześniejszy, który przeszedł — i wykonuje 200 losowych sprawdzeń równoważności ze starą implementacją.
+- **Filtr konsoli pozostaje wąski.** Benignatywna jest tylko rodzina anulowanych żądań; odmowa połączenia, błąd DNS, reset, każde 5xx i nieprzechwycone wyjątki JS nadal wywracają asercję.
+- Dwie hipotezy sprawdzono i odrzucono, zamiast je wysyłać: timeout Caddy (konfiguracja czysta, `flush_interval -1` poprawny dla SSE) i domyślny 5-minutowy `requestTimeout` Node (pomniejszona reprodukcja pokazała, że nie przerywa on długiej odpowiedzi strumieniowej). Prawdziwym dowodem był `Reached heap limit` w dzienniku. Testy: **2860 → 2865**.
+
 ## [1.227.4] — 2026-08-29
 
 **Naprawiono — `word:` / `stem:` nadal były ignorowane przez `content_filter`; v1.227.3 naprawiła tylko filtr tytułów.**

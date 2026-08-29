@@ -8,6 +8,20 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.227.5] — 2026-08-29
+
+**Corrigido — a varredura regional esgotava a memória do servidor, e uma suíte do Playwright falhava por seu próprio desmonte.**
+
+### Corrigido
+- **A varredura regional derrubava o servidor por OOM.** O `ru-scanner` acumulava **todos os resultados brutos de todas as consultas** e só deduplicava e filtrava no fim. A lista de consultas é deliberadamente cheia de quase-sinônimos (`Golang`, `Go разработчик`, `Golang разработчик`, `Senior Go`…), então a mesma vaga volta uma vez por consulta e o array retinha várias vezes a contagem única — com as descrições, que são o grosso do objeto e que os filtros descartam quase inteiramente. Medido: **742 MB** de heap numa execução real de 21 consultas. O servidor limita o heap do Node a **490 MB** (o V8 dimensiona a partir dos 956 MB de RAM da máquina), então a varredura derrubava o serviço com `FATAL ERROR: Reached heap limit` — **quatro vezes num dia**. Agora deduplicação e filtragem acontecem por consulta, e a mesma execução caiu para **177 MB**, menos 76%. As contagens relatadas não mudam: o total único é carregado por um `Set` de strings de URL.
+- **`net::ERR_SOCKET_NOT_CONNECTED` derrubava o CI aleatoriamente.** Três suítes do Playwright chamam `window.stop()` para interromper requisições em voo antes de afirmar que não houve erros de console. O Chromium relata esse único ato com **três** nomes conforme o estado do socket: `ERR_ABORTED` ao cancelar, `ERR_EMPTY_RESPONSE` em voo e `ERR_SOCKET_NOT_CONNECTED` quando o socket já sumira. O filtro compartilhado listava só os dois primeiros. Apareceu na varredura de locales em `tr`, enquanto `playwright-forms` e `playwright-smoke` estavam a uma execução azarada do mesmo.
+
+### Notas
+- **Por que só começou a falhar agora.** A lista de consultas foi de 14 para 21 ao incluir buscas de product manager. A memória da implementação antiga escalava com o total de resultados, então +50% de consultas passou do teto da máquina.
+- **A mudança de deduplicação preserva o comportamento, e isso é testado.** `tests/ru-scanner-dedup-order.test.mjs` fixa a direção difícil — um duplicado posterior que FALHA nos filtros precisa expulsar um anterior que passou — e roda 200 verificações aleatórias de equivalência contra a implementação antiga.
+- **O filtro de console segue estreito.** Só a família de requisições canceladas é benigna; conexão recusada, falha de DNS, reset, 5xx e exceções JS ainda derrubam a asserção.
+- Duas hipóteses foram testadas e descartadas em vez de enviadas: timeout do Caddy (config limpa, `flush_interval -1` correto para SSE) e o `requestTimeout` padrão de 5 minutos do Node (uma reprodução em escala mostrou que ele não corta uma resposta longa em streaming). A evidência real foi `Reached heap limit` no journal. Testes: **2860 → 2865**.
+
 ## [1.227.4] — 2026-08-29
 
 **Corrigido — `word:` / `stem:` ainda eram ignorados pelo `content_filter`; a v1.227.3 corrigiu apenas o filtro de títulos.**

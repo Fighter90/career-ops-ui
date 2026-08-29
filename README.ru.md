@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2858%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2865%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.4)
+[![release](https://img.shields.io/badge/release-v1.227.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.227.4** — **Фикс префиксов, часть 2** — `word:` / `stem:` всё ещё игнорировались в `content_filter`; v1.227.3 подключил только фильтр заголовков. Найдено AI-ревью. **2858 тестов.**
+> **🆕 Последний релиз — v1.227.5** — **Региональный скан больше не выедает память сервера** — он держал все сырые хиты по 21 запросу до конца (742 МБ кучи против потолка машины в 490 МБ, 4 падения сервиса за сутки); теперь дедуп и фильтрация идут по каждому запросу → **177 МБ**. Плюс починен флейк Playwright. **2865 тестов.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
