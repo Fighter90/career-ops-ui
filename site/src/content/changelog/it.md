@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.2] — 2026-08-29
+
+**Corretto — `#/config` scorreva lateralmente sui telefoni stretti.**
+
+### Corretto
+- **MOBILE-1: `#/config` andava in overflow orizzontale su viewport ≤ 352 px.** Ogni campo di tipo select portava un `min-width: 300px` **inline**. Uno stile inline batte il foglio di stile, quindi il controllo non poteva restringersi insieme al contenitore: con un viewport da 320 px il bordo destro del select finiva a 353 px, la pagina otteneva una barra di scorrimento orizzontale e i controlli uscivano a destra. Interessati tutti e 18 i select di provider/modello (`cfg-llm-provider` e ogni `cfg-*-model`). Ora `min-width: min(300px, 100%)` + `max-width: 100%`, così i comodi 300 px valgono solo quando c'è spazio. Dispositivi alla soglia o sotto: iPhone SE (1ª gen., 320 px), Android datati, schermo esterno del Galaxy Fold.
+
+### Note
+- **Perché tutte le passate mobili precedenti l'hanno mancato.** 360 px e 375 px hanno giusto il margine per nascondere l'overflow, e le suite Playwright girano in una finestra da 1280 px. Nulla in CI aveva mai misurato un viewport più stretto di 375 px. Il nuovo `tests/playwright-narrow-viewport.mjs` percorre le rotte con form a **320 px** e fallisce su qualsiasi overflow orizzontale, nominando nel messaggio l'elemento più largo; un secondo caso fissa che nessun select di `#/config` supera il viewport. È stato prima verificato che riproducesse il bug (`scrollWidth 353 > clientWidth 320`, 18 select con bordo destro 353). Playwright: **99 → 101**.
+- **Noto e volutamente non ancora sotto gate: 280 px** (schermo esterno del Galaxy Fold) va ancora in overflow di ~5 px, per una causa diversa — contenuto lungo dentro i blocchi `<details>` della card di configurazione e la sidebar da 256 px contro un viewport da 280 px, non il `min-width` inline che questa release corregge. Rifluire a una larghezza che nessun telefono diffuso dichiara è lavoro a parte; la lista `WIDTHS` della suite è già pronta.
+- Corretto anche il prompt QA della v1.227.1, che chiamava la rotta di follow-up `#/modes/followup`. Le mode-page registrano lo slug nudo (`Router.register(cfg.slug)`), quindi la rotta è `#/followup` e `#/modes/followup` restituisce correttamente 404. Solo documentazione.
+- Suite unitaria invariata a **2846** (la nuova copertura è a livello browser).
+
 ## [1.227.1] — 2026-08-29
 
 **Corretto — la ripartizione delle fonti nella guida non tornava con sé stessa e il banner GitHub veniva stampato come markup grezzo nell'app.**

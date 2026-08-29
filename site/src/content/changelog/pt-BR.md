@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.227.2] — 2026-08-29
+
+**Corrigido — `#/config` rolava lateralmente em celulares estreitos.**
+
+### Corrigido
+- **MOBILE-1: `#/config` transbordava horizontalmente em viewports ≤ 352 px.** Cada campo do tipo select carregava um `min-width: 300px` **inline**. Um estilo inline vence a folha de estilos, então o controle não conseguia encolher junto com seu contêiner: num viewport de 320 px a borda direita do select caía em 353 px, a página ganhava rolagem horizontal e os controles saíam pela direita. Afetava os 18 selects de provedor/modelo (`cfg-llm-provider` e todos os `cfg-*-model`). Agora `min-width: min(300px, 100%)` + `max-width: 100%`, então os confortáveis 300 px valem só quando há espaço. Aparelhos no limiar ou abaixo: iPhone SE (1ª ger., 320 px), Androids antigos, tela externa do Galaxy Fold.
+
+### Notas
+- **Por que as passagens móveis anteriores não pegaram.** 360 px e 375 px têm folga suficiente para esconder o transbordo, e as suítes Playwright rodam numa janela de 1280 px. Nada no CI jamais mediu um viewport mais estreito que 375 px. O novo `tests/playwright-narrow-viewport.mjs` percorre as rotas com formulários a **320 px** e falha diante de qualquer transbordo horizontal, nomeando na mensagem o elemento mais largo; um segundo caso fixa que nenhum select do `#/config` ultrapassa o viewport. Verificou-se primeiro que ele reproduzia o bug (`scrollWidth 353 > clientWidth 320`, 18 selects com borda direita 353). Playwright: **99 → 101**.
+- **Conhecido e propositalmente ainda sem gate: 280 px** (tela externa do Galaxy Fold) ainda transborda ~5 px, por causa diferente — conteúdo longo dentro dos blocos `<details>` do cartão de configuração e a barra lateral de 256 px contra um viewport de 280 px, não o `min-width` inline que esta versão corrige. Refluir numa largura que nenhum celular de massa declara é trabalho à parte; a lista `WIDTHS` da suíte já está pronta.
+- Também foi corrigido o prompt de QA da v1.227.1, que chamava a rota de follow-up de `#/modes/followup`. As mode-pages registram o slug puro (`Router.register(cfg.slug)`), então a rota é `#/followup` e `#/modes/followup` dá 404 corretamente. Apenas documentação.
+- Suíte unitária inalterada em **2846** (a cobertura nova é de navegador).
+
 ## [1.227.1] — 2026-08-29
 
 **Corrigido — a divisão de fontes na ajuda não fechava com ela mesma, e o banner do GitHub era impresso como marcação bruta no app.**

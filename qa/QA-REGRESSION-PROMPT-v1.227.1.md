@@ -32,7 +32,7 @@ npm run test:e2e:browser                          # 99/99
 1. `#/help` in **en / ru / ja / ar** — the first visible line is the `# Help — …` heading. No `<p align=…>` text anywhere. Hard-reload (cache-bust) to be sure.
 2. `#/help` §17 — the sentence reads «**85** adapters — **80 English + 5 Russian**» (localized), and carries **no** `vX.Y.Z`.
 3. `#/docs-assistant` (and the floating robot FAB) — ask “how many sources are supported?”; the answer cites 85 / 80+5 and no markup leaks into the reply.
-4. `#/modes/followup` — the cadence board's **#** column now shows tracker row numbers, not blanks. **Due only** still filters; with everything overdue it is a no-op by construction, which is correct.
+4. `#/followup` (the mode-page slug is registered bare via `Router.register(cfg.slug)`; `#/modes/followup` is a 404) — the cadence board's **#** column now shows tracker row numbers, not blanks. **Due only** still filters; with everything overdue it is a no-op by construction, which is correct.
 5. GitHub — open `docs/help/en.md` in the repo: the provider banner still renders there.
 
 ## §5 — Not changed

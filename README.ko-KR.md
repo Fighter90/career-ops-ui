@@ -9,14 +9,14 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 [![tests](https://img.shields.io/badge/tests-2846%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.1)
+[![release](https://img.shields.io/badge/release-v1.227.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.227.1** — **도움말 수정** — §17 소스 내역이 이제 맞고(EN 80 + RU 5, 이전 78+5=83), 오래된 버전 앵커가 사라졌으며, GitHub 배너가 `#/help` 상단에 원시 마크업으로 출력되지 않습니다 — 셋 다 테스트로 고정. **테스트 2846개.**
+> **🆕 최신 릴리스 — v1.227.2** — **좁은 화면 수정** — ≤ 352 px에서 `#/config`가 더 이상 가로로 밀리지 않습니다: 18개 select에 줄어들 수 없는 인라인 `min-width: 300px`가 있었습니다. 이제 320 px Playwright 스윕으로 게이트. **테스트 2846개 · Playwright 101개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

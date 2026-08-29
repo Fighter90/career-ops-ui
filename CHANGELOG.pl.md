@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.227.2] — 2026-08-29
+
+**Naprawiono — `#/config` przewijał się w bok na wąskich telefonach.**
+
+### Naprawiono
+- **MOBILE-1: `#/config` wychodził poza ekran w poziomie przy viewportach ≤ 352 px.** Każde pole typu select niosło **inline'owy** `min-width: 300px`. Styl inline wygrywa z arkuszem stylów, więc kontrolka nie mogła skurczyć się razem z kontenerem: przy viewporcie 320 px prawa krawędź selecta lądowała na 353 px, strona dostawała poziomy pasek przewijania, a kontrolki wypychało poza prawą krawędź. Dotyczyło wszystkich 18 selectów dostawcy/modelu (`cfg-llm-provider` i każdy `cfg-*-model`). Teraz `min-width: min(300px, 100%)` + `max-width: 100%`, więc wygodne 300 px obowiązuje tylko, gdy jest miejsce. Urządzenia na progu i poniżej: iPhone SE (1. gen., 320 px), starsze Androidy, zewnętrzny ekran Galaxy Fold.
+
+### Uwagi
+- **Dlaczego wszystkie wcześniejsze przebiegi mobilne to przeoczyły.** 360 px i 375 px mają dokładnie tyle luzu, by ukryć przepełnienie, a zestawy Playwright działają w oknie 1280 px. Nic w CI nigdy nie zmierzyło viewportu węższego niż 375 px. Nowy `tests/playwright-narrow-viewport.mjs` przechodzi trasy z formularzami przy **320 px** i failuje przy każdym poziomym przepełnieniu, wskazując w komunikacie najszerszy element; drugi przypadek przypina, że żaden select `#/config` nie wychodzi poza viewport. Najpierw sprawdzono, że odtwarza błąd (`scrollWidth 353 > clientWidth 320`, 18 selectów z prawą krawędzią 353). Playwright: **99 → 101**.
+- **Znane i celowo jeszcze bez bramki: 280 px** (zewnętrzny ekran Galaxy Fold) nadal przepełnia się o ~5 px, ale z innej przyczyny — długa treść w blokach `<details>` karty konfiguracji oraz 256-pikselowy sidebar wobec viewportu 280 px, a nie inline'owy `min-width`, który naprawia to wydanie. Przelewanie treści przy szerokości, której nie zgłasza żaden popularny telefon, to osobna praca; lista `WIDTHS` w zestawie jest na to gotowa.
+- Poprawiono też prompt QA z v1.227.1, który nazywał trasę follow-upu `#/modes/followup`. Strony mode rejestrują goły slug (`Router.register(cfg.slug)`), więc trasa to `#/followup`, a `#/modes/followup` poprawnie zwraca 404. Tylko dokumentacja.
+- Zestaw jednostkowy bez zmian — **2846** (nowe pokrycie jest na poziomie przeglądarki).
+
 ## [1.227.1] — 2026-08-29
 
 **Naprawiono — rozbicie źródeł w pomocy nie zgadzało się samo ze sobą, a baner GitHuba był drukowany w aplikacji jako surowy znacznik.**

@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.2] — 2026-08-29
+
+**Behoben — `#/config` scrollte auf schmalen Telefonen seitwärts.**
+
+### Behoben
+- **MOBILE-1: `#/config` lief auf Viewports ≤ 352 px horizontal über.** Jedes Select-Feld trug ein **Inline**-`min-width: 300px`. Ein Inline-Stil schlägt das Stylesheet, also konnte das Control nicht mit seinem Container schrumpfen: Bei 320 px Viewport lag die rechte Kante des Selects bei 353 px, die Seite bekam eine horizontale Scrollleiste und Controls wanderten über den rechten Rand hinaus. Betroffen waren alle 18 Provider-/Modell-Selects (`cfg-llm-provider` und sämtliche `cfg-*-model`). Jetzt `min-width: min(300px, 100%)` + `max-width: 100%`, sodass die komfortablen 300 px nur greifen, wenn Platz ist. Geräte an oder unter der Schwelle: iPhone SE (1. Gen., 320 px), ältere Android-Geräte, Außendisplay des Galaxy Fold.
+
+### Hinweise
+- **Warum alle früheren Mobil-Durchläufe das übersahen.** 360 px und 375 px haben gerade genug Spielraum, den Überlauf zu verbergen, und die Playwright-Suites laufen in einem 1280 px breiten Fenster. Nichts in der CI hatte je einen Viewport schmaler als 375 px vermessen. Das neue `tests/playwright-narrow-viewport.mjs` läuft die formulartragenden Routen bei **320 px** ab und schlägt bei jedem horizontalen Überlauf fehl — mit dem breitesten Störenfried in der Meldung; ein zweiter Fall pinnt fest, dass kein `#/config`-Select über den Viewport hinausragt. Zuerst wurde verifiziert, dass er den Fehler reproduziert (`scrollWidth 353 > clientWidth 320`, 18 Selects mit rechter Kante 353). Playwright: **99 → 101**.
+- **Bekannt und bewusst noch nicht abgesichert: 280 px** (Außendisplay des Galaxy Fold) läuft weiterhin um ~5 px über, aus anderer Ursache — langer Inhalt in den `<details>`-Blöcken der Konfigurationskarte und die 256 px breite Sidebar gegen einen 280-px-Viewport, nicht das Inline-`min-width`, das dieses Release behebt. Ein Umbruch auf eine Breite, die kein verbreitetes Telefon meldet, ist eigene Arbeit; die `WIDTHS`-Liste der Suite ist dafür vorbereitet.
+- Ebenfalls korrigiert: der QA-Prompt von v1.227.1 nannte die Follow-up-Route `#/modes/followup`. Mode-Seiten registrieren den nackten Slug (`Router.register(cfg.slug)`), die Route heißt also `#/followup`; `#/modes/followup` liefert korrekt 404. Nur Dokumentation.
+- Unit-Suite unverändert bei **2846** (die neue Abdeckung liegt auf Browser-Ebene).
+
 ## [1.227.1] — 2026-08-29
 
 **Behoben — die Quellen-Aufschlüsselung in der Hilfe ging nicht auf, und das GitHub-Banner wurde in der App als rohes Markup ausgegeben.**

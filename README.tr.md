@@ -9,14 +9,14 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 [![tests](https://img.shields.io/badge/tests-2846%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.1)
+[![release](https://img.shields.io/badge/release-v1.227.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.227.1** — **Yardım düzeltmeleri** — §17'deki kaynak dökümü artık tutuyor (80 EN + 5 RU, önceden 78+5=83), eskimiş sürüm çıpası kalktı ve GitHub afişi `#/help` başında ham işaretleme olarak basılmıyor — üçü de artık test altında. **2846 test.**
+> **🆕 Son sürüm — v1.227.2** — **Dar ekran düzeltmesi** — `#/config` artık ≤ 352 px'te yana kaymıyor: 18 select küçülemeyen satır içi `min-width: 300px` taşıyordu. Artık 320 px'lik Playwright taramasıyla korunuyor. **2846 test · 101 Playwright.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
