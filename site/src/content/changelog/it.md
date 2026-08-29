@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.3] — 2026-08-29
+
+**Corretto — i prefissi `word:` / `stem:` del filtro sui titoli venivano ignorati in silenzio, rendendo quelle righe di filtro inefficaci.**
+
+### Corretto
+- **web-ui non implementava i prefissi `word:` / `stem:` del progetto padre.** `title_filter` (e `content_filter`) confrontano per impostazione predefinita **sottostringhe** senza distinzione di maiuscole: per questo un negativo nudo `intern` scarta anche «International Product Manager» e «Internal Tools Engineer». Anziché ribaltare quel default — una rottura per ogni installazione già configurata — il padre ha reso la precisione opzionale per singola voce: `word:intern` corrisponde solo alla parola intera e `stem:agent` deve iniziare una parola potendo proseguire (separando «Agentforce» da «Reagents»). web-ui non aveva né l'uno né l'altro, quindi confrontava la voce con il **testo letterale** `"word:intern"`, che non compare in nessun titolo di offerta. La riga diventava un no-op silenzioso: lo stesso `portals.yml` filtrava correttamente dalla CLI e per niente qui, così ogni annuncio di stage escluso raggiungeva comunque la tabella `#/scan`. Portato dal `title-keywords.mjs` del padre, inclusa la frontiera di parola compatibile con Unicode (`\p{L}\p{M}\p{N}_`) al posto di `\b`, che è solo ASCII e corrispondeva a metà parola nei titoli accentati o cirillici.
+
+### Note
+- **Trovato controllando un `portals.yml` reale** che aveva appena adottato `word:intern` **proprio** perché un `intern` nudo smettesse di scartare «International Product Manager». Il prefisso funzionava nella CLI; web-ui teneva silenziosamente tutti gli stage. Ora il comportamento è identico.
+- **I default non cambiano.** Una parola chiave senza prefisso mantiene il confronto precedente: sottostringa per le frasi e per tutto ciò che contiene caratteri non alfabetici (`.NET`, `SAP `, `L&D`), ancoraggio ai confini di parola per le sigle di 2–3 lettere. Un `word:` / `stem:` vuoto è considerato un refuso e non corrisponde a **nulla**: come negativo, uno schema vuoto corrisponderebbe a ogni titolo e annullerebbe un'intera scansione per via di due punti sfuggiti.
+- La regola delle sigle di 2–3 lettere usa ora la stessa frontiera Unicode: prima usava `\b`, quindi `coo` e `word:coo` divergevano sui titoli non ASCII — due grafie della stessa regola.
+- 6 nuovi casi in `tests/title-filter.test.mjs`. Test: **2846 → 2852**.
+
 ## [1.227.2] — 2026-08-29
 
 **Corretto — `#/config` scorreva lateralmente sui telefoni stretti.**

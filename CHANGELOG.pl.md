@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.227.3] — 2026-08-29
+
+**Naprawiono — prefiksy `word:` / `stem:` w filtrze tytułów były po cichu ignorowane, przez co te linie filtra nic nie robiły.**
+
+### Naprawiono
+- **web-ui nie implementował prefiksów `word:` / `stem:` z projektu nadrzędnego.** `title_filter` (i `content_filter`) domyślnie dopasowują **podciąg** bez rozróżniania wielkości liter — dlatego goły negatyw `intern` odrzuca też „International Product Manager” i „Internal Tools Engineer”. Zamiast odwracać ten domyślny tryb — co zepsułoby każdą skonfigurowaną instalację — projekt nadrzędny uczynił precyzję opcjonalną dla pojedynczego wpisu: `word:intern` dopasowuje tylko całe słowo, a `stem:agent` musi rozpoczynać słowo i może je kontynuować (oddzielając „Agentforce” od „Reagents”). web-ui nie miał żadnego z nich, więc dopasowywał wpis jako **dosłowny tekst** `"word:intern"`, którego nie ma w żadnym tytule oferty. Linia stawała się cichym no-opem: ten sam `portals.yml` filtrował poprawnie przez CLI i wcale tutaj, więc każda wykluczona oferta stażowa i tak trafiała do tabeli `#/scan`. Przeniesione z `title-keywords.mjs` projektu nadrzędnego, wraz z granicą słowa świadomą Unicode (`\p{L}\p{M}\p{N}_`) zamiast `\b`, które obsługuje tylko ASCII i trafiało w środek słowa w tytułach z diakrytyką lub cyrylicą.
+
+### Uwagi
+- **Znalezione podczas sprawdzania prawdziwego `portals.yml`**, w którym `word:intern` dodano **właśnie po to**, by goły `intern` przestał odrzucać „International Product Manager”. W CLI prefiks działał; web-ui po cichu zostawiał wszystkie staże. Teraz zachowanie jest identyczne.
+- **Domyślne zachowanie bez zmian.** Słowo kluczowe bez prefiksu zachowuje dotychczasowe dopasowanie: podciąg dla fraz i wszystkiego, co zawiera znaki niebędące literami (`.NET`, `SAP `, `L&D`), oraz zakotwiczenie na granicach słowa dla 2–3-literowych skrótów. Pusty `word:` / `stem:` traktowany jest jak literówka i nie dopasowuje **niczego** — jako negatyw pusty wzorzec pasowałby do każdego tytułu i unieważnił cały skan przez jeden zbłąkany dwukropek.
+- Reguła 2–3-literowych skrótów używa teraz tej samej granicy Unicode: wcześniej `\b`, przez co `coo` i `word:coo` rozjeżdżały się na tytułach spoza ASCII — dwa zapisy jednej reguły.
+- 6 nowych przypadków w `tests/title-filter.test.mjs`. Testy: **2846 → 2852**.
+
 ## [1.227.2] — 2026-08-29
 
 **Naprawiono — `#/config` przewijał się w bok na wąskich telefonach.**

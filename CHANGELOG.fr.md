@@ -11,6 +11,19 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.227.3] — 2026-08-29
+
+**Corrigé — les préfixes `word:` / `stem:` du filtre de titres étaient ignorés en silence, rendant ces lignes de filtre inopérantes.**
+
+### Corrigé
+- **web-ui n'implémentait pas les préfixes `word:` / `stem:` du projet parent.** `title_filter` (et `content_filter`) font par défaut une correspondance de **sous-chaîne** insensible à la casse — c'est pourquoi un négatif nu `intern` rejette aussi « International Product Manager » et « Internal Tools Engineer ». Plutôt que d'inverser ce défaut — un changement cassant pour toute installation configurée — le parent a rendu la précision optionnelle par entrée : `word:intern` ne correspond qu'au mot entier, et `stem:agent` doit commencer un mot tout en pouvant continuer (séparant « Agentforce » de « Reagents »). web-ui n'avait ni l'un ni l'autre : il faisait correspondre l'entrée au **texte littéral** `"word:intern"`, qui n'apparaît dans aucun intitulé. La ligne devenait un no-op silencieux : le même `portals.yml` filtrait correctement via la CLI et pas du tout ici, si bien que chaque offre de stage exclue atteignait quand même le tableau `#/scan`. Porté depuis le `title-keywords.mjs` du parent, y compris la frontière de mot compatible Unicode (`\p{L}\p{M}\p{N}_`) au lieu de `\b`, qui est ASCII seulement et correspondait en plein mot dans les intitulés accentués ou cyrilliques.
+
+### Notes
+- **Découvert en vérifiant un `portals.yml` réel** qui venait d'adopter `word:intern` **précisément** pour qu'un `intern` nu cesse d'écarter « International Product Manager ». Le préfixe fonctionnait en CLI ; web-ui conservait silencieusement tous les stages. Le comportement est désormais identique.
+- **Les défauts sont inchangés.** Un mot-clé sans préfixe garde sa correspondance antérieure : sous-chaîne pour les expressions et tout ce qui contient des caractères non alphabétiques (`.NET`, `SAP `, `L&D`), et ancrage aux limites de mot pour les sigles de 2–3 lettres. Un `word:` / `stem:` vide est traité comme une coquille et ne correspond à **rien** — en négatif, un motif vide correspondrait à tous les titres et annulerait un scan entier à cause d'un deux-points égaré.
+- La règle des sigles de 2–3 lettres utilise désormais cette même frontière Unicode : elle employait `\b`, si bien que `coo` et `word:coo` divergeaient sur les titres non ASCII — deux écritures d'une même règle.
+- 6 nouveaux cas dans `tests/title-filter.test.mjs`. Tests : **2846 → 2852**.
+
 ## [1.227.2] — 2026-08-29
 
 **Corrigé — `#/config` défilait latéralement sur les téléphones étroits.**
