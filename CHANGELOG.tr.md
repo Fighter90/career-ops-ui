@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.227.2] — 2026-08-29
+
+**Düzeltildi — dar telefonlarda `#/config` yana kayıyordu.**
+
+### Düzeltildi
+- **MOBILE-1: `#/config` ≤ 352 px görünüm alanlarında yatay taşıyordu.** Her select alanı **satır içi** bir `min-width: 300px` taşıyordu. Satır içi stil stil sayfasını yener, dolayısıyla denetim kabıyla birlikte küçülemiyordu: 320 px görünüm alanında select'in sağ kenarı 353 px'e düşüyor, sayfada yatay kaydırma oluşuyor ve denetimler sağ kenarın dışına itiliyordu. 18 sağlayıcı/model select'inin tamamı etkileniyordu (`cfg-llm-provider` ve tüm `cfg-*-model`). Artık `min-width: min(300px, 100%)` + `max-width: 100%`; rahat 300 px yalnızca yer varsa uygulanıyor. Eşikteki ve altındaki cihazlar: iPhone SE (1. nesil, 320 px), eski Android'ler, Galaxy Fold dış ekranı.
+
+### Notlar
+- **Önceki tüm mobil geçişlerin bunu neden kaçırdığı.** 360 px ve 375 px taşmayı gizlemeye tam yetecek paya sahip ve Playwright takımları 1280 px genişliğinde bir pencerede koşuyor. CI'da 375 px'ten dar bir görünüm alanı hiç ölçülmemişti. Yeni `tests/playwright-narrow-viewport.mjs` form taşıyan rotaları **320 px**'te tarıyor ve herhangi bir yatay taşmada başarısız oluyor; mesajda en geniş öğeyi adlandırıyor. İkinci durum, hiçbir `#/config` select'inin görünüm alanını aşmadığını sabitliyor. Önce hatayı yeniden ürettiği doğrulandı (`scrollWidth 353 > clientWidth 320`, sağ kenarı 353 olan 18 select). Playwright: **99 → 101**.
+- **Bilinen ve bilinçli olarak henüz kapı altında değil: 280 px** (Galaxy Fold dış ekranı) hâlâ ~5 px taşıyor, ama nedeni farklı — yapılandırma kartının `<details>` bloklarındaki uzun içerik ve 280 px görünüm alanına karşı 256 px'lik kenar çubuğu; bu sürümün düzelttiği satır içi `min-width` değil. Yaygın hiçbir telefonun bildirmediği bir genişliğe göre yeniden akıtmak ayrı bir iş; takımın `WIDTHS` listesi buna hazır.
+- v1.227.1 QA istemi de düzeltildi: takip rotasını `#/modes/followup` olarak adlandırıyordu. Mode sayfaları çıplak slug ile kaydolur (`Router.register(cfg.slug)`), dolayısıyla rota `#/followup`'tır ve `#/modes/followup` doğru şekilde 404 verir. Yalnızca belge.
+- Birim takımı **2846**'da değişmedi (yeni kapsam tarayıcı düzeyinde).
+
 ## [1.227.1] — 2026-08-29
 
 **Düzeltildi — yardımdaki kaynak dökümü kendisiyle tutmuyordu ve GitHub afişi uygulamada ham işaretleme olarak basılıyordu.**

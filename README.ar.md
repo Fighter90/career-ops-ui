@@ -9,14 +9,14 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 [![tests](https://img.shields.io/badge/tests-2846%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
-[![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#الاختبارات)
+[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.1)
+[![release](https://img.shields.io/badge/release-v1.227.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.227.1** — **إصلاحات الدليل** — صار تفصيل المصادر في §17 متسقاً (80 EN + 5 RU، بعد أن كان 78+5=83)، وأُزيلت مرساة الإصدار القديمة، ولم يعد بانر GitHub يُطبع كوسم خام أعلى `#/help` — والثلاثة تحت اختبار الآن. **2846 اختبارًا.**
+> **🆕 أحدث إصدار — v1.227.2** — **إصلاح للشاشات الضيقة** — لم تعد `#/config` تنزلق أفقياً عند ≤ 352 بكسل: كانت 18 قائمة تحمل `min-width: 300px` مضمَّناً لا ينكمش. صارت الآن تحت بوابة مسح Playwright عند 320 بكسل. **2846 اختبارًا · 101 Playwright.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

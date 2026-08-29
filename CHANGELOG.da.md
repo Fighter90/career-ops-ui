@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.227.2] — 2026-08-29
+
+**Rettet — `#/config` scrollede sidelæns på smalle telefoner.**
+
+### Rettet
+- **MOBILE-1: `#/config` flød vandret over på viewports ≤ 352 px.** Hvert select-felt bar et **inline** `min-width: 300px`. En inline-stil slår stylesheetet, så kontrollen kunne ikke krympe med sin container: ved 320 px viewport landede selectens højre kant på 353 px, siden fik en vandret scrollbar, og kontroller blev skubbet ud over højre kant. Ramte alle 18 udbyder-/modelselects (`cfg-llm-provider` og hver `cfg-*-model`). Nu `min-width: min(300px, 100%)` + `max-width: 100%`, så de behagelige 300 px kun gælder, når der er plads. Enheder på eller under tærsklen: iPhone SE (1. gen., 320 px), ældre Android, Galaxy Folds ydre skærm.
+
+### Noter
+- **Hvorfor alle tidligere mobilgennemgange missede det.** 360 px og 375 px har lige akkurat slæk nok til at skjule overløbet, og Playwright-suiterne kører i et 1280 px bredt vindue. Intet i CI havde nogensinde målt et viewport smallere end 375 px. Den nye `tests/playwright-narrow-viewport.mjs` gennemgår de formularbærende ruter ved **320 px** og fejler ved ethvert vandret overløb med det bredeste element nævnt i beskeden; et andet tilfælde fastholder, at ingen `#/config`-select rækker ud over viewportet. Det blev først verificeret, at den reproducerede fejlen (`scrollWidth 353 > clientWidth 320`, 18 selects med højre kant 353). Playwright: **99 → 101**.
+- **Kendt og bevidst endnu ikke afskærmet: 280 px** (Galaxy Folds ydre skærm) flyder stadig over med ~5 px, men af en anden årsag — langt indhold i konfigurationskortets `<details>`-blokke og den 256 px brede sidebar mod et 280 px viewport, ikke det inline `min-width`, denne udgivelse retter. At ombryde ved en bredde, ingen udbredt telefon melder, er separat arbejde; suitens `WIDTHS`-liste er klar til det.
+- Også rettet: QA-prompten fra v1.227.1 kaldte opfølgningsruten `#/modes/followup`. Mode-sider registrerer det bare slug (`Router.register(cfg.slug)`), så ruten er `#/followup`, og `#/modes/followup` giver korrekt 404. Kun dokumentation.
+- Unit-suiten uændret på **2846** (den nye dækning er på browserniveau).
+
 ## [1.227.1] — 2026-08-29
 
 **Rettet — kildeopdelingen i hjælpen stemte ikke med sig selv, og GitHub-banneret blev printet som rå markup i appen.**

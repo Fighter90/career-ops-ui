@@ -11,6 +11,19 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.227.2] — 2026-08-29
+
+**Corregido — `#/config` se desplazaba lateralmente en móviles estrechos.**
+
+### Corregido
+- **MOBILE-1: `#/config` desbordaba horizontalmente en viewports ≤ 352 px.** Cada campo de tipo select llevaba un `min-width: 300px` **en línea**. Un estilo en línea gana a la hoja de estilos, así que el control no podía encogerse con su contenedor: en un viewport de 320 px el borde derecho del select caía en 353 px, la página ganaba scroll horizontal y los controles se salían por la derecha. Afectaba a los 18 selects de proveedor/modelo (`cfg-llm-provider` y todos los `cfg-*-model`). Ahora `min-width: min(300px, 100%)` + `max-width: 100%`, de modo que los 300 px cómodos se aplican solo cuando hay espacio. Dispositivos en el umbral o por debajo: iPhone SE (1.ª gen, 320 px), Android antiguos, pantalla exterior del Galaxy Fold.
+
+### Notas
+- **Por qué las pasadas móviles anteriores no lo vieron.** 360 px y 375 px tienen justo el margen suficiente para ocultar el desbordamiento, y las suites de Playwright corren en una ventana de 1280 px. Nada en CI había medido nunca un viewport más estrecho que 375 px. El nuevo `tests/playwright-narrow-viewport.mjs` recorre las rutas con formularios a **320 px** y falla ante cualquier desbordamiento horizontal, nombrando en el mensaje el elemento más ancho; un segundo caso fija que ningún select de `#/config` sobrepasa el viewport. Se verificó primero que reprodujera el fallo (`scrollWidth 353 > clientWidth 320`, 18 selects con borde derecho 353). Playwright: **99 → 101**.
+- **Conocido y deliberadamente aún sin gate: 280 px** (pantalla exterior del Galaxy Fold) sigue desbordando ~5 px, por una causa distinta — contenido largo dentro de los bloques `<details>` de la tarjeta de configuración y la barra lateral de 256 px frente a un viewport de 280 px, no el `min-width` en línea que corrige esta versión. Reflujar a un ancho que ningún móvil mayoritario declara es trabajo aparte; la lista `WIDTHS` de la suite ya está preparada.
+- También se corrigió el prompt de QA de v1.227.1, que llamaba a la ruta de seguimiento `#/modes/followup`. Las mode-pages se registran con el slug desnudo (`Router.register(cfg.slug)`), así que la ruta es `#/followup` y `#/modes/followup` da 404 correctamente. Solo documentación.
+- Suite unitaria sin cambios en **2846** (la cobertura nueva es de navegador).
+
 ## [1.227.1] — 2026-08-29
 
 **Corregido — el desglose de fuentes de la ayuda no cuadraba consigo mismo y el banner de GitHub se imprimía como marcado en bruto en la app.**

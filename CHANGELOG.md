@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.227.2] — 2026-08-29
+
+**Fixed — `#/config` scrolled sideways on narrow phones.**
+
+### Fixed
+- **MOBILE-1: `#/config` overflowed horizontally on viewports ≤ 352 px.** Every select-kind field carried an **inline** `min-width: 300px`. An inline style beats the stylesheet, so the control could not shrink with its container: at a 320 px viewport the select's right edge landed at 353 px, the page grew a horizontal scrollbar, and controls were pushed off the right edge. Affected all 18 provider/model selects (`cfg-llm-provider` and every `cfg-*-model`). Now `min-width: min(300px, 100%)` + `max-width: 100%`, so the 300 px comfort width applies only when there is room. Devices at or below the threshold: iPhone SE (1st gen, 320 px), older Android, Galaxy Fold cover screen.
+
+### Notes
+- **Why every earlier mobile pass missed it.** 360 px and 375 px have just enough slack to hide the overflow, and the Playwright suites drive a 1280-wide window. Nothing in CI had ever measured a viewport narrower than 375 px. New `tests/playwright-narrow-viewport.mjs` sweeps the form-bearing routes at **320 px** and fails on any horizontal overflow, naming the widest offending element in the assertion message; a second case pins that no `#/config` select extends past the viewport. It was verified to reproduce the bug first (`scrollWidth 353 > clientWidth 320`, 18 selects at right edge 353). Playwright: **99 → 101**.
+- **Known, deliberately not gated yet: 280 px** (Galaxy Fold cover screen) still overflows by ~5 px, from an unrelated cause — long content inside the config card's `<details>` blocks and the 256 px sidebar against a 280 px viewport, not the inline `min-width` this release fixes. Reflowing at a width no mainstream phone reports is separate work; the suite's `WIDTHS` list is ready for it.
+- Also corrected the v1.227.1 QA prompt, which named the follow-up route as `#/modes/followup`. Mode pages register bare (`Router.register(cfg.slug)`), so the route is `#/followup`; `#/modes/followup` correctly 404s. Documentation only.
+- Unit suite unchanged at **2846** (the new coverage is browser-level).
+
 ## [1.227.1] — 2026-08-29
 
 **Fixed — the help guide's source count contradicted itself, and its GitHub banner was printed as raw markup in the app.**

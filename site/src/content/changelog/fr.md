@@ -11,6 +11,19 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.227.2] — 2026-08-29
+
+**Corrigé — `#/config` défilait latéralement sur les téléphones étroits.**
+
+### Corrigé
+- **MOBILE-1 : `#/config` débordait horizontalement sur les viewports ≤ 352 px.** Chaque champ de type select portait un `min-width: 300px` **en ligne**. Un style en ligne l'emporte sur la feuille de styles, donc le contrôle ne pouvait pas rétrécir avec son conteneur : sur un viewport de 320 px, le bord droit du select tombait à 353 px, la page gagnait une barre de défilement horizontale et les contrôles sortaient par la droite. Les 18 selects de fournisseur/modèle étaient touchés (`cfg-llm-provider` et tous les `cfg-*-model`). Désormais `min-width: min(300px, 100%)` + `max-width: 100%` : les 300 px confortables ne s'appliquent que s'il y a la place. Appareils au seuil ou en dessous : iPhone SE (1re gén., 320 px), anciens Android, écran externe du Galaxy Fold.
+
+### Notes
+- **Pourquoi les passes mobiles précédentes l'ont manqué.** 360 px et 375 px ont juste assez de marge pour masquer le débordement, et les suites Playwright tournent dans une fenêtre de 1280 px. Rien dans la CI n'avait jamais mesuré un viewport plus étroit que 375 px. Le nouveau `tests/playwright-narrow-viewport.mjs` parcourt les routes à formulaires à **320 px** et échoue sur tout débordement horizontal, en nommant dans le message l'élément le plus large ; un second cas verrouille qu'aucun select de `#/config` ne dépasse le viewport. Il a d'abord été vérifié qu'il reproduisait le bug (`scrollWidth 353 > clientWidth 320`, 18 selects à 353). Playwright : **99 → 101**.
+- **Connu et volontairement pas encore sous garde : 280 px** (écran externe du Galaxy Fold) déborde encore d'environ 5 px, pour une cause différente — du contenu long dans les blocs `<details>` de la carte de configuration et la barre latérale de 256 px face à un viewport de 280 px, pas le `min-width` en ligne que corrige cette version. Refondre à une largeur qu'aucun téléphone grand public ne déclare est un travail distinct ; la liste `WIDTHS` de la suite est prête.
+- Le prompt QA de la v1.227.1 est également corrigé : il nommait la route de relance `#/modes/followup`. Les mode-pages s'enregistrent avec le slug nu (`Router.register(cfg.slug)`), donc la route est `#/followup`, et `#/modes/followup` renvoie bien un 404. Documentation seulement.
+- Suite unitaire inchangée à **2846** (la nouvelle couverture est au niveau navigateur).
+
 ## [1.227.1] — 2026-08-29
 
 **Corrigé — la répartition des sources dans l'aide ne tombait pas juste, et la bannière GitHub s'affichait en balisage brut dans l'application.**

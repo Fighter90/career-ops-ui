@@ -9,14 +9,14 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 [![tests](https://img.shields.io/badge/tests-2846%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-CI%20green-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.227.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.1)
+[![release](https://img.shields.io/badge/release-v1.227.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.227.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.227.1** — **帮助修复** —— §17 的来源拆分终于对得上（80 EN + 5 RU，此前 78+5=83），过期版本锚点已移除，GitHub 横幅不再以原始标记出现在 `#/help` 顶部 —— 三者均已加测试。**2846 项测试。**
+> **🆕 最新版本 — v1.227.2** — **窄屏修复** —— ≤ 352 px 下 `#/config` 不再横向滚动：18 个下拉框带着无法收缩的内联 `min-width: 300px`。现由 320 px 的 Playwright 巡检把关。**2846 项测试 · 101 项 Playwright。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

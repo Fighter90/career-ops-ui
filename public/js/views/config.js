@@ -52,7 +52,13 @@ Router.register('config', async () => {
         id: inputId,
         'aria-describedby': hintId,
         className: 'select',
-        style: { minWidth: '300px', fontSize: '13px' },
+        // min() so the 300px comfort width applies only when there is room.
+        // A bare `min-width: 300px` is an INLINE style, so it beats the
+        // stylesheet and the control cannot shrink with its container: at a
+        // 320px viewport the select's right edge landed at 353px and the whole
+        // page grew a horizontal scrollbar (MOBILE-1). 360/375px had just enough
+        // slack to hide it, which is why earlier mobile passes read clean.
+        style: { minWidth: 'min(300px, 100%)', maxWidth: '100%', fontSize: '13px' },
         onChange: () => dirty.add(spec.key),
       }, seed.map((opt) => c('option', { value: opt }, opt)));
       input.value = current;
