@@ -18,7 +18,8 @@
 - **कंपनी का अनुमान कभी नहीं लगाया जाता।** लेबल न हो तो पंक्ति चैनल (`@rabotaphp`) को दी जाती है: ग़लत नियोक्ता ट्रैकर में तथ्य बनकर घुस जाता है।
 - **खाली पार्सिंग त्रुटि है, «कोई रिक्ति नहीं» नहीं।** निजी या अनुपस्थित चैनल पर t.me पुनर्निर्देशन देता है; वहाँ शून्य पंक्तियाँ लौटाना शांत दिन जैसा पढ़ा जाता और कॉन्फ़िग की टाइपो को हमेशा के लिए छिपा देता। `jobGeeks` ठीक यही करता है (HTTP 302) और जानबूझकर **कॉन्फ़िगर नहीं** किया गया।
 - रिमोट पहचान `\b` के बजाय Unicode शब्द-सीमा उपयोग करती है; `\b` केवल ASCII जानता है — वही जाल जिसमें v1.227.3 में शीर्षक फ़िल्टर फँसा था, यहाँ रिलीज़ से पहले परीक्षण ने पकड़ लिया।
-- 15 चैनल कॉन्फ़िगर और लाइव सत्यापित: **299 पोस्ट, 15/15 चैनल**। 28 नए परीक्षण। परीक्षण: **2865 → 2893**।
+- 15 चैनल कॉन्फ़िगर और लाइव सत्यापित: **299 पोस्ट, 15/15 चैनल**। 30 नए परीक्षण। परीक्षण: **2865 → 2895**।
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 

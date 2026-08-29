@@ -28,7 +28,8 @@
 - **公司名絕不猜測。** 沒有標籤時該列歸屬於頻道（`@rabotaphp`）：錯誤的雇主會作為事實進入追蹤表。
 - **解析為空是錯誤，而不是「沒有職缺」。** 對於私有或不存在的頻道，t.me 以重新導向作答；此時回傳零列會被讀成風平浪靜的一天，並永久掩蓋設定裡的拼字錯誤。原清單中的 `jobGeeks` 正是如此（HTTP 302），因此刻意**未**設定。
 - 遠端判定使用 Unicode 詞邊界而非 `\b`：`\b` 僅支援 ASCII，西里爾詞前的空格並不構成邊界 —— 與 v1.227.3 標題過濾器踩中的是同一個陷阱，這次在發布前被測試逮住。
-- 已設定並實測 15 個頻道：**299 則貼文，15/15 頻道**。新增 28 個測試。測試：**2865 → 2893**。
+- 已設定並實測 15 個頻道：**299 則貼文，15/15 頻道**。新增 28 個測試。測試：**2865 → 2895**。
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 

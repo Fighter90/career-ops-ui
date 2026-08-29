@@ -29,7 +29,8 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 - **A company is never guessed.** With no `Компания:` label the row is attributed to the channel (`@rabotaphp`), because a wrong employer enters the tracker as fact.
 - **An empty parse is an error, not "no vacancies".** t.me answers a private or missing channel with a redirect; returning zero rows there would read as a quiet day and hide a typo in the config forever. `jobGeeks` from the original list does exactly this (HTTP 302) and is deliberately **not** configured.
 - Remote detection uses a Unicode word boundary rather than `\b`: `\b` is ASCII-only, so a space before a Cyrillic word is not a boundary and `\bудал` never matched "удалёнка" — the same trap the title filter hit in v1.227.3, caught here by a test before it shipped.
-- 15 channels configured and verified live: **299 posts across 15/15 channels**, `salary_pm` yielding 13 salary figures out of 20. 28 new tests. Test suite: **2865 → 2893**.
+- 15 channels configured and verified live: **299 posts across 15/15 channels**, `salary_pm` yielding 13 salary figures out of 20. 30 new tests. Test suite: **2865 → 2895**.
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 

@@ -25,7 +25,8 @@
 - **Компанію ніколи не вгадують.** Без мітки рядок приписується каналу (`@rabotaphp`): хибний роботодавець потрапляє до трекера як факт.
 - **Порожній розбір — це помилка, а не «вакансій немає».** На закритий чи неіснуючий канал t.me відповідає перенаправленням; повернути нуль рядків читалося б як спокійний день і назавжди сховало б одрук у конфігу. `jobGeeks` робить саме це (HTTP 302) і навмисно **не** налаштований.
 - Визначення віддаленої роботи використовує межу слова Unicode замість `\b`, який працює лише з ASCII — та сама пастка, що й у фільтрі заголовків у v1.227.3, тут спіймана тестом до релізу.
-- 15 каналів налаштовано та перевірено наживо: **299 дописів, 15/15 каналів**. 28 нових тестів. Тести: **2865 → 2893**.
+- 15 каналів налаштовано та перевірено наживо: **299 дописів, 15/15 каналів**. 30 нових тестів. Тести: **2865 → 2895**.
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 

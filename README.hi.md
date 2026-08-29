@@ -9,7 +9,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2893%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2895%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -18,7 +18,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.228.0** — **Telegram चैनल अब स्कैन स्रोत हैं।** उन्हें `telegram_channels:` ब्लॉक में सूचीबद्ध करें; हर चैनल अपने सार्वजनिक `t.me/s/<चैनल>` पूर्वावलोकन से पढ़ा जाता है — 15 चैनल, एक वास्तविक रन में **299 पोस्ट**। रजिस्ट्री: **86 स्रोत** (81 EN + 5 RU)। साथ ही: Telegram सहायक आँकड़ों के एक अंश से उत्तर देता था — स्नैपशॉट में सैकड़ों होने पर **9** मिलान बताता था, क्योंकि `/api/scan-results` केवल ~2 MB का पूरा स्नैपशॉट लौटा सकता था; अब वह पृष्ठ-दर-पृष्ठ क्वेरी लेता है। **2893 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.228.0** — **Telegram चैनल अब स्कैन स्रोत हैं।** उन्हें `telegram_channels:` ब्लॉक में सूचीबद्ध करें; हर चैनल अपने सार्वजनिक `t.me/s/<चैनल>` पूर्वावलोकन से पढ़ा जाता है — 15 चैनल, एक वास्तविक रन में **299 पोस्ट**। रजिस्ट्री: **86 स्रोत** (81 EN + 5 RU)। साथ ही: Telegram सहायक आँकड़ों के एक अंश से उत्तर देता था — स्नैपशॉट में सैकड़ों होने पर **9** मिलान बताता था, क्योंकि `/api/scan-results` केवल ~2 MB का पूरा स्नैपशॉट लौटा सकता था; अब वह पृष्ठ-दर-पृष्ठ क्वेरी लेता है। **2895 परीक्षण।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -413,7 +413,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2893 यूनिट + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.121.0)
+└─ tests/                    # 2895 यूनिट + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch
@@ -544,7 +544,7 @@ event: error    data: { message }
 ## टेस्ट
 
 ```bash
-npm test                       # 2893 यूनिट/इंटीग्रेशन टेस्ट
+npm test                       # 2895 यूनिट/इंटीग्रेशन टेस्ट
 npm run test:e2e               # 21 स्मोक e2e (अपना सर्वर खुद बूट करता है)
 npm run test:e2e:full          # 23 व्यापक e2e
 npm run test:e2e:browser       # 101 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×17 + theme)
@@ -553,11 +553,11 @@ npm run test:coverage          # `npm test` जैसा ही, साथ म�
 
 | सूट                       | टेस्ट | क्या                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) | **2893** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 218 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
+| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) | **2895** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 218 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
 | `tests/e2e.mjs` (स्मोक)      | 21 | Playwright हेडलेस: हर राउट रेंडर होता है, बुनियादी फ़्लो।                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | पूर्ण Playwright वॉकथ्रू: 11 राउट + 12 फ़ंक्शनल फ़्लो।                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | ब्राउज़र-ड्रिवन: डैशबोर्ड रेंडर, नेविगेशन, भाषा स्विच, 404, health, tracker राउंड-ट्रिप, pipeline जोड़ना + अमान्य-URL स्वीप, reports, evaluate मैनुअल फ़ॉलबैक, config कीज़ मास्क्ड, CV PUT XSS स्ट्रिप, pipeline preview 400, auto-pipeline SSE। |
-| **कुल**                   | **2893** | **0 विफलताएँ, 0 फ़्लेक**                                                                                    |
+| **कुल** (चारों सुइट)                   | **3040** | **0 विफलताएँ, 0 फ़्लेक**                                                                                    |
 
 कवरेज: `--experimental-test-coverage` के माध्यम से ~93% लाइन / ~83% ब्रांच।
 
@@ -673,7 +673,7 @@ career-ops **हमेशा चालू** रहने पर सर्वो�
 
 Issues और PRs का स्वागत है। घर के नियम:
 
-- पुश करने से पहले `npm test` चलाएँ — **2893 चेक ग्रीन** बार है (यदि आप UI छूते हैं तो साथ में 101 Playwright भी)।
+- पुश करने से पहले `npm test` चलाएँ — **2895 चेक ग्रीन** बार है (यदि आप UI छूते हैं तो साथ में 101 Playwright भी)।
 - गैर-तुच्छ बदलाव GSD पाइपलाइन से होकर गुज़रते हैं। [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md) देखें।
 - इस रेपो के अंदर से पैरेंट `career-ops/` प्रोजेक्ट में कुछ भी संशोधित न करें। पूरा उद्देश्य यही है कि यह एक गैर-आक्रामक ओवरले है। कठोर नियम [`CLAUDE.md`](CLAUDE.md) में हैं।
 - कन्वेंशनल कमिट्स: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`। वैकल्पिक स्कोप: `feat(scan):`। ब्रेकिंग चेंज: `feat!:`।

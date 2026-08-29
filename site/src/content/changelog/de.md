@@ -22,7 +22,8 @@
 - **Die Firma wird nie geraten.** Ohne Label wird die Zeile dem Kanal zugeschrieben (`@rabotaphp`): Ein falscher Arbeitgeber landet im Tracker als Tatsache.
 - **Ein leeres Parse-Ergebnis ist ein Fehler, kein „keine Stellen“.** t.me antwortet bei einem privaten oder fehlenden Kanal mit einer Weiterleitung; null Zeilen zurückzugeben läse sich als ruhiger Tag und verstecke einen Tippfehler in der Konfiguration für immer. `jobGeeks` tut genau das (HTTP 302) und ist bewusst **nicht** konfiguriert.
 - Die Remote-Erkennung nutzt eine Unicode-Wortgrenze statt `\b`, das nur ASCII kennt — dieselbe Falle wie beim Titelfilter in v1.227.3, hier vor der Auslieferung von einem Test gefangen.
-- 15 Kanäle konfiguriert und live geprüft: **299 Beiträge, 15/15 Kanäle**. 28 neue Tests. Tests: **2865 → 2893**.
+- 15 Kanäle konfiguriert und live geprüft: **299 Beiträge, 15/15 Kanäle**. 30 neue Tests. Tests: **2865 → 2895**.
+- **The README test counts jumped by hundreds, and no, this release did not add them.** The localized READMEs carried unit-test totals frozen at 1856 / 1945 / 1955 / 549 / 419 / 284 / 2527 depending on the file — each stale since a different release, and several contradicting the badge at the top of the same page. They now all read **2895**, verified by running the suite rather than by copying a badge. Playwright (70 / 90 / 12 → **101**), e2e smoke (20 → **21**), route modules (12 / 32 → **37**), smoke flows (12 → **22**) and the test-file count (218 → **329**) were stale in the same way. The `Total` row also repeated the unit count, so it under-summed the three suites below it; it now reads the real sum (**3040**).
 
 ## [1.227.5] — 2026-08-29
 
