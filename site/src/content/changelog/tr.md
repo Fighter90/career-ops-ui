@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.227.4] — 2026-08-29
+
+**Düzeltildi — `word:` / `stem:` `content_filter` tarafından hâlâ yok sayılıyordu; v1.227.3 yalnızca başlık filtresini düzeltmişti.**
+
+### Düzeltildi
+- **`content_filter` önekleri dikkate almıyordu.** v1.227.3, `title_filter`'a üst projenin `word:` / `stem:` öneklerini öğretti ama `content_filter`'ı kendi ham `lower.includes(k)` çağrısıyla bıraktı; dolayısıyla orada önekli bir girdi hâlâ birebir metin olan `"word:java"` ile eşleniyordu — aynı sessiz no-op, bir filtre ötede. `content_filter` ilanın AÇIKLAMASINI okur ve varsayılanı hep düz alt dize olmuştur: bu yüzden çıplak bir olumsuz `java`, yalnızca „JavaScript“ten söz eden her ilanı eler; önek ise tek bir girdiyi bu varsayılandan çıkarma yoludur. Üst projenin `compileContentKeyword` işlevi aktarıldı: aynı önek düzeneğini paylaşır ama kısa anahtar kelimeleri bilinçli olarak **sabitlemez** — başlık filtresi 2–3 harfli kısaltmaları sabitler çünkü „Coordinator“ içindeki „COO“ her zaman yanlıştır; oysa bir düzyazı paragrafındaki kısa dizi çoğu kez kasıtlıdır (`aws`, `gcp`, `sql`, `go`).
+
+### Notlar
+- **v1.227.3 PR'sinin yapay zekâ incelemesinde bulundu**; inceleme, kodun kendi yorumunun iddia ettiğini karşılamadığını fark etti — yorumda „`title_filter` / `content_filter`“ yazıyordu ama yalnızca başlık yolu bağlıydı. Yorum artık açıkça ayırıyor: önekleri iki filtre de tanır, kısaltmaları yalnızca başlık filtresi sabitler.
+- **Yine o incelemeden doğrulandı ve değişmedi:** 2–3 harfli kısaltma kuralını `\b` yerine Unicode sınırına taşımak ASCII'de birebir aynı davranır ve yalnızca olması gereken yerde daha katıdır — `COO_lead` ve `coo1` korunmaya devam eder (alt çizgi ve rakam her ikisinde de sözcük karakteridir), `Coordinator` korunur, „Директор COO“ ve „VP «Продукт»“ doğru biçimde elenir. 14 sınır durumu denetlendi.
+- Öneksiz `content_filter` girdileri önceki eşleşmesini bayt bayt korur, boş veya eksik bir açıklama yine geçer ve içi boş bir `word:` / `stem:` her şeyle değil hiçbir şeyle eşleşir. `tests/content-filter.test.mjs` içinde 6 yeni durum. Testler: **2852 → 2858**.
+
 ## [1.227.3] — 2026-08-29
 
 **Düzeltildi — başlık filtresindeki `word:` / `stem:` önekleri sessizce yok sayılıyor, o filtre satırlarını etkisiz bırakıyordu.**

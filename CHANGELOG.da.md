@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.227.4] — 2026-08-29
+
+**Rettet — `word:` / `stem:` blev stadig ignoreret af `content_filter`; v1.227.3 rettede kun titelfilteret.**
+
+### Rettet
+- **`content_filter` respekterede ikke præfikserne.** v1.227.3 lærte `title_filter` moderprojektets `word:` / `stem:`-præfikser, men lod `content_filter` blive ved sit eget rå `lower.includes(k)`, så en præfikset post dér stadig blev matchet som den bogstavelige tekst `"word:java"` — den samme tavse no-op, ét filter længere fremme. `content_filter` læser jobbets BESKRIVELSE, og standarden har altid været en simpel delstreng: derfor afviser et bart negativt `java` alt, der blot nævner „JavaScript“; præfikset er måden at undtage én post fra det. Moderprojektets `compileContentKeyword` er porteret: samme præfiks-maskineri, men bevidst **uden** automatisk forankring af korte nøgleord — titelfilteret forankrer 2–3-bogstavsforkortelser, fordi „COO“ inde i „Coordinator“ altid er forkert, mens en kort sekvens midt i et afsnit prosa rutinemæssigt er tilsigtet (`aws`, `gcp`, `sql`, `go`).
+
+### Noter
+- **Fundet i AI-gennemgangen af v1.227.3-PR'en**, som bemærkede, at koden ikke dækkede det, dens egen kommentar påstod — der stod „`title_filter` / `content_filter`“, mens kun titelstien var koblet på. Kommentaren skelner nu udtrykkeligt: begge filtre respekterer præfikserne, kun titelfilteret forankrer forkortelser.
+- **Ligeledes verificeret ud fra den gennemgang og uændret:** at flytte 2–3-bogstavsreglen fra `\b` til Unicode-grænsen opfører sig identisk for ASCII og er kun strengere, hvor det skal være — `COO_lead` og `coo1` bevares fortsat (understreg og ciffer er ordtegn i begge), `Coordinator` bevares, „Директор COO“ og „VP «Продукт»“ kasseres korrekt. 14 grænsetilfælde kontrolleret.
+- Upræfiksede `content_filter`-poster beholder deres hidtidige matchning byte for byte, en tom eller manglende beskrivelse passerer stadig, og et tomt `word:` / `stem:` matcher intet i stedet for alt. 6 nye tilfælde i `tests/content-filter.test.mjs`. Tests: **2852 → 2858**.
+
 ## [1.227.3] — 2026-08-29
 
 **Rettet — titelfilterets `word:` / `stem:`-præfikser blev ignoreret i stilhed, så de filterlinjer intet gjorde.**

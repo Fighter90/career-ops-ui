@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.227.4] — 2026-08-29
+
+**Corregido — `word:` / `stem:` seguían ignorándose en `content_filter`; la v1.227.3 solo arregló el filtro de títulos.**
+
+### Corregido
+- **`content_filter` no respetaba los prefijos.** La v1.227.3 enseñó a `title_filter` los prefijos `word:` / `stem:` del padre, pero dejó a `content_filter` con su propio `lower.includes(k)` en crudo, así que allí una entrada con prefijo seguía comparándose como el texto literal `"word:java"` — el mismo no-op silencioso, un filtro más allá. `content_filter` lee la DESCRIPCIÓN de la oferta y su valor por defecto siempre fue subcadena simple: por eso un negativo simple `java` rechaza todo lo que apenas mencione «JavaScript»; el prefijo es la forma de excluir una entrada de esa regla. Portado el `compileContentKeyword` del padre, que comparte la maquinaria de prefijos pero deliberadamente **no** ancla palabras cortas: el filtro de títulos ancla siglas de 2–3 letras porque «COO» dentro de «Coordinator» siempre es un error, mientras que una secuencia corta dentro de un párrafo de prosa suele ser intencionada (`aws`, `gcp`, `sql`, `go`).
+
+### Notas
+- **Detectado en la revisión por IA del PR de la v1.227.3**, que notó que el código no cubría lo que afirmaba su propio comentario: decía «`title_filter` / `content_filter`» cuando solo estaba conectada la ruta de títulos. Ahora el comentario distingue explícitamente: ambos filtros respetan los prefijos, solo el de títulos ancla siglas.
+- **También verificado a partir de esa revisión, y sin cambios:** pasar la regla de siglas de 2–3 letras de `\b` a la frontera Unicode es idéntico en comportamiento para ASCII y más estricto solo donde debe serlo — `COO_lead` y `coo1` se conservan (guion bajo y dígito son caracteres de palabra en ambos), `Coordinator` se conserva, y «Директор COO» y «VP «Продукт»» se descartan correctamente. 14 casos límite comprobados.
+- Las entradas sin prefijo de `content_filter` mantienen su coincidencia previa byte a byte, una descripción vacía o ausente sigue pasando, y un `word:` / `stem:` vacío no coincide con nada en vez de con todo. 6 casos nuevos en `tests/content-filter.test.mjs`. Pruebas: **2852 → 2858**.
+
 ## [1.227.3] — 2026-08-29
 
 **Corregido — los prefijos `word:` / `stem:` del filtro de títulos se ignoraban en silencio, dejando esas líneas de filtro sin efecto.**

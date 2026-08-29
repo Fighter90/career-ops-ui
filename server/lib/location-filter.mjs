@@ -21,11 +21,13 @@
  */
 
 // ── Keyword prefixes (parity with the parent's title-keywords.mjs) ──
-// `title_filter` / `content_filter` default to case-insensitive SUBSTRING
-// matching, which is why a bare negative `intern` also rejects "International
-// Product Manager" and "Internal Tools". Flipping that default would be a
-// breaking change for every configured install, so the parent made precision
-// opt-in per entry:
+// `title_filter` and `content_filter` both default to case-insensitive
+// SUBSTRING matching, which is why a bare negative `intern` also rejects
+// "International Product Manager" and a bare `java` rejects everything that
+// merely mentions "JavaScript". Flipping that default would be a breaking
+// change for every configured install, so the parent made precision opt-in per
+// entry. Both filters honour the prefixes (see compileContentKeyword), but only
+// the TITLE filter also auto-anchors 2-3 letter acronyms:
 //
 //   word:intern  → whole word. Rejects "Operations Intern", leaves
 //                  "International …" and "Internal …" alone.
@@ -148,6 +150,26 @@ export function compileKeywordList(arr, compiler = compileKeyword) {
 }
 
 /**
+ * Compile a lowercased `content_filter` keyword into a matcher.
+ *
+ * `content_filter` matches the job DESCRIPTION, and its default has always been
+ * a plain substring — which is why a bare negative `java` rejects every posting
+ * that merely mentions "JavaScript". A `word:` / `stem:` prefix opts one entry
+ * out of that, with identical semantics to the title filter; every other entry
+ * keeps the substring behaviour byte-for-byte.
+ *
+ * Unlike {@link compileKeyword} there is NO automatic anchoring of short
+ * keywords. The title filter anchors 2-3 letter acronyms because "COO" inside
+ * "Coordinator" is always wrong; a 2-3 letter run inside a paragraph of prose
+ * is routinely intended ("aws", "gcp", "sql", "go").
+ *
+ * @param {string} kw already trimmed and lowercased
+ */
+export function compileContentKeyword(kw) {
+  return compilePrefixedKeyword(kw) ?? ((lower) => lower.includes(kw));
+}
+
+/**
  * Build a title predicate from `portals.yml::title_filter`. A job passes when it
  * matches at least one positive keyword (or there are none) AND no negative one.
  * @param {{positive?: unknown, negative?: unknown}|null|undefined} titleFilter
@@ -211,16 +233,17 @@ export function buildLocationFilter(locationFilter) {
  */
 export function buildContentFilter(contentFilter) {
   if (!contentFilter || typeof contentFilter !== 'object') return () => true;
-  const positive = (Array.isArray(contentFilter.positive) ? contentFilter.positive : [])
-    .map((k) => String(k).toLowerCase());
-  const negative = (Array.isArray(contentFilter.negative) ? contentFilter.negative : [])
-    .map((k) => String(k).toLowerCase());
+  // Compiled through compileContentKeyword so a `word:` / `stem:` entry is
+  // honoured here too. Without it a prefixed entry matched the literal text
+  // "word:java", i.e. nothing — the same silent no-op the title filter had.
+  const positive = compileKeywordList(contentFilter.positive, compileContentKeyword);
+  const negative = compileKeywordList(contentFilter.negative, compileContentKeyword);
 
   return (description) => {
     if (typeof description !== 'string' || description.trim() === '') return true;
     const lower = description.toLowerCase();
-    if (negative.length > 0 && negative.some((k) => lower.includes(k))) return false;
+    if (negative.length > 0 && negative.some((m) => m(lower))) return false;
     if (positive.length === 0) return true;
-    return positive.some((k) => lower.includes(k));
+    return positive.some((m) => m(lower));
   };
 }
