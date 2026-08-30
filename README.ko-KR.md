@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2907%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2908%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.3)
+[![release](https://img.shields.io/badge/release-v1.228.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.228.3** — **문서 어시스턴트가 영어로 답하지 못했습니다.** 검색이 아니라 컨텍스트 구성이 문제였습니다: 들어가지 않는 첫 섹션에서 `break` 하여 컨텍스트를 비운 채 남겼습니다. 영어 §5는 14 336바이트 예산에 대해 16 081바이트까지 커져 있었습니다. 6KB를 넘는 섹션은 이제 `###` 경계에서 나뉩니다(32 → 75조각). 여기에: Telegram 회사 라벨이 이름 대신 문장을 주던 문제와, 아무것도 노출하지 않는 `GET /api/ping`. **테스트 2907개.**
+> **🆕 Latest release — v1.228.4** — **The unauthenticated liveness probe did filesystem work on every request.** `GET /api/ping` read and parsed `package.json` per hit — the only endpoint reachable without credentials, so that is a denial-of-service lever handed to anyone (CodeQL: missing rate limiting). The version is now read once at registration and the handler does no I/O. Rate limiting would have capped the damage; removing the work removes the lever. Plus: the masking of the profile owner's name off loopback is now pinned by a test. **2908 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -381,7 +381,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2907 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 2908 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -515,7 +515,7 @@ event: error    data: { message }
 ## 테스트
 
 ```bash
-npm test                       # 2907 unit/integration 테스트
+npm test                       # 2908 unit/integration 테스트
 npm run test:e2e               # 21 smoke e2e (자체 서버 부팅)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser-smoke
@@ -524,7 +524,7 @@ npm run test:coverage          # `npm test`와 동일 + V8 coverage
 
 | Suite                       | Tests | 내용                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2907** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
+| `node --test tests/*.test.mjs` (unit + integration) | **2908** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: 모든 라우트 렌더링, 기본 플로우.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | 전체 Playwright 워크스루: 11개 라우트 + 12개 기능 플로우.                                              |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | 브라우저 주도 smoke: dashboard render, navigation, language switch, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL 스윕, reports empty, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400. |
@@ -644,7 +644,7 @@ UI는 **17개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `
 
 이슈와 PR을 환영합니다. 하우스 룰은 다음과 같습니다.
 
-- 푸시 전에 `npm test`를 실행합니다 — **2907 checks green**이 기준입니다(UI를 건드리는 경우 101개의 Playwright 테스트도 포함).
+- 푸시 전에 `npm test`를 실행합니다 — **2908 checks green**이 기준입니다(UI를 건드리는 경우 101개의 Playwright 테스트도 포함).
 - 비자명한 변경은 GSD 파이프라인을 거칩니다. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)를 참고하십시오.
 - 이 저장소 내부에서 부모 `career-ops/` 프로젝트의 어떤 파일도 수정하지 마십시오. 핵심 가치는 이것이 비침습적 오버레이라는 점에 있습니다. [`CLAUDE.md`](CLAUDE.md)의 hard rule을 확인하십시오.
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. 선택적 스코프: `feat(scan):`. Breaking change: `feat!:`.

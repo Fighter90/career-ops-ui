@@ -7,16 +7,16 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2907%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-2908%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.3)
+[![release](https://img.shields.io/badge/release-v1.228.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.228.3** — **O assistente de documentação não respondia em inglês.** Não era a recuperação: o construtor de contexto fazia `break` na primeira seção grande demais, deixando o contexto vazio. O §5 inglês chegou a 16 081 bytes contra um orçamento de 14 336. Seções acima de 6 KB agora se dividem pelos `###` (32 → 75 blocos). Além disso: rótulos de empresa do Telegram davam a frase, não o nome, e `GET /api/ping` é uma sonda que não vaza nada. **2907 testes.**
+> **🆕 Latest release — v1.228.4** — **The unauthenticated liveness probe did filesystem work on every request.** `GET /api/ping` read and parsed `package.json` per hit — the only endpoint reachable without credentials, so that is a denial-of-service lever handed to anyone (CodeQL: missing rate limiting). The version is now read once at registration and the handler does no I/O. Rate limiting would have capped the damage; removing the work removes the lever. Plus: the masking of the profile owner's name off loopback is now pinned by a test. **2908 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -381,7 +381,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2907 unit/integration + 101 Playwright e2e
+└─ tests/                    # 2908 unit/integration + 101 Playwright e2e
    ├─ parsers.test.mjs       # parsers de markdown / pipeline / report (funções puras)
    ├─ api.test.mjs           # cada endpoint, servidor efêmero, sem rede
    ├─ {ru,en}-scanner.test.mjs   # fetch mockado
@@ -516,7 +516,7 @@ Quando `run: true` é definido em `/api/deep` ou `/api/mode/:slug`, o servidor p
 ## Testes
 
 ```bash
-npm test                       # 2907 testes unit/integration
+npm test                       # 2908 testes unit/integration
 npm run test:e2e               # 21 smoke e2e (sobe o próprio server)
 npm run test:e2e:full          # 23 e2e comprehensive
 npm run test:e2e:browser       # 101 Playwright browser-smoke
@@ -525,7 +525,7 @@ npm run test:coverage          # idêntico a `npm test` mais V8 coverage
 
 | Suíte                       | Testes  | O que cobre                                                                                                |
 | --------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2907** | Cada endpoint, servidor efêmero, sem rede. Inclui parser, scanner (mockado), runner, anthropic, security headers, XSS entity-aware, JD sanitize, validação de URL, paridade i18n, mutex de tracker, rate-limit, path-traversal e DNS rebind. |
+| `node --test tests/*.test.mjs` (unit + integration) | **2908** | Cada endpoint, servidor efêmero, sem rede. Inclui parser, scanner (mockado), runner, anthropic, security headers, XSS entity-aware, JD sanitize, validação de URL, paridade i18n, mutex de tracker, rate-limit, path-traversal e DNS rebind. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: cada rota renderiza, fluxos básicos.                                                  |
 | `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rotas + 12 fluxos funcionais.                                          |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Browser-driven smoke: render do dashboard, navegação, troca de idioma, 404, health, round-trip do tracker (BF-1), pipeline add + varredura de URL inválida, reports vazio, evaluate fallback manual, config com chaves mascaradas, CV PUT XSS strip, pipeline preview 400 + cobertura WCAG 1.4.1. |
@@ -644,7 +644,7 @@ A interface inclui **17 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh
 
 Issues e PRs são bem-vindos. Regras da casa:
 
-- Rode `npm test` antes do push — **2907 checks verdes** é a barra (mais 101 Playwright se você mexer na UI).
+- Rode `npm test` antes do push — **2908 checks verdes** é a barra (mais 101 Playwright se você mexer na UI).
 - Mudanças não-triviais passam pelo pipeline GSD. Veja [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Não modifique nada no projeto pai `career-ops/` a partir deste repositório. O ponto principal é exatamente que este é um overlay não-invasivo. As hard rules estão em [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Escopo opcional: `feat(scan):`. Breaking change: `feat!:`.
