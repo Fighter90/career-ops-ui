@@ -30,6 +30,25 @@ import { hasDeepSeekKey, hasZaiKey, hasKimiKey, hasMiniMaxKey, hasMistralKey, ha
 // v1.217.0 — Ark pair.
 import { hasArkKey, hasArkCnKey } from '../openai.mjs';
 
+/**
+ * The version of the code THIS PROCESS IS RUNNING, read once at module load.
+ *
+ * Reading `package.json` per request answers a different question — what the
+ * file says now — and the two diverge exactly when it matters most: a process
+ * still serving pre-deploy code reports the post-deploy version, so a deploy
+ * that copied files but never restarted looks like a success. Captured here,
+ * a stale process reports the old version, which is the truth and is visible
+ * immediately.
+ *
+ * Also keeps `/api/ping` free of per-request filesystem work: it is the only
+ * endpoint reachable without credentials, and a read plus a parse on every hit
+ * is a denial-of-service lever (CodeQL: missing rate limiting).
+ */
+let LOADED_VERSION = '?';
+try {
+  LOADED_VERSION = JSON.parse(readFileSync(resolve(WEB_UI_ROOT, 'package.json'), 'utf8')).version || '?';
+} catch { /* a missing package.json must not stop the server from booting */ }
+
 export function registerHealthRoutes(app) {
   /**
    * Liveness probe, safe to expose without authentication.
@@ -41,17 +60,8 @@ export function registerHealthRoutes(app) {
    * gets this instead, which says only that, plus the version a deploy check
    * needs. Nothing here is derived from user data.
    */
-  // Read once at registration, not per request. This endpoint is the only one
-  // reachable without credentials, so a filesystem read plus a JSON parse on
-  // every hit is a denial-of-service lever handed to anyone (CodeQL: missing
-  // rate limiting). The version cannot change without a restart anyway.
-  let pingVersion = '?';
-  try {
-    pingVersion = JSON.parse(readFileSync(resolve(WEB_UI_ROOT, 'package.json'), 'utf8')).version || '?';
-  } catch { /* a missing package.json must not stop the server from booting */ }
-
   app.get('/api/ping', (_req, res) => {
-    res.json({ ok: true, version: pingVersion });
+    res.json({ ok: true, version: LOADED_VERSION });
   });
 
   app.get('/api/health', async (_req, res) => {
@@ -146,12 +156,19 @@ export function registerHealthRoutes(app) {
 
     // The footer shows the WEB-UI version (this repo's package.json);
     // parent's VERSION is reported separately as `parentVersion`.
-    let version = '?';
+    //
+    // `version` comes from the value captured when this module was LOADED, not
+    // from the file as it is right now. Reading per request made the string
+    // lie: a process started before a deploy kept serving the old code while
+    // reporting the new file's version, which is precisely how a truncated
+    // deploy looks healthy. Reported by QA as FIND-4 — a local instance
+    // answered `1.228.4` while 404ing a route added in 1.228.3.
+    //
+    // parentVersion stays per-request: it describes the parent checkout, which
+    // this process does not load and which can legitimately change underneath
+    // a running server.
+    const version = LOADED_VERSION;
     let parentVersion = null;
-    try {
-      const pkg = JSON.parse(readFileSync(resolve(WEB_UI_ROOT, 'package.json'), 'utf8'));
-      version = pkg.version || '?';
-    } catch {}
     try {
       // The VERSION file may carry a release-please inline comment
       // ("1.15.0 # x-release-please-version") — surface just the semver.

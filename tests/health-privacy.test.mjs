@@ -6,7 +6,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
@@ -48,6 +48,45 @@ async function bootAndGet(host, path = '/api/health') {
 }
 
 const bootAndGetHealth = (host) => bootAndGet(host);
+
+test('the reported version describes the RUNNING code, not the file on disk', async () => {
+  // FIND-4: a local instance answered `version: 1.228.4` while 404ing /api/ping,
+  // a route added in 1.228.3 — started before the deploy, serving the old code,
+  // and reporting the new FILE's version because /api/health re-read
+  // package.json per request. That is how a deploy that copies files and never
+  // restarts looks like a success: the one string an operator checks is the one
+  // that cannot see the problem.
+  //
+  // Pinned two ways, neither of which touches the repository's own
+  // package.json. Rewriting the real file to prove it — which is how this was
+  // verified once by hand — leaves the repo broken if the run is killed between
+  // the write and the restore, and an empty package.json is a hole this project
+  // has already fallen into once.
+  process.env.HOST = '127.0.0.1';
+  const app = createApp();
+  const server = await new Promise((r) => { const s = app.listen(0, '127.0.0.1', () => r(s)); });
+  try {
+    const base = `http://127.0.0.1:${server.address().port}`;
+    const health = (await (await fetch(`${base}/api/health`)).json()).version;
+    const ping = (await (await fetch(`${base}/api/ping`)).json()).version;
+    assert.equal(health, ping, 'both endpoints must report the same loaded version');
+    assert.match(health, /^\d+\.\d+\.\d+/);
+  } finally {
+    await new Promise((r) => server.close(r));
+  }
+
+  // The structural half: the read must happen at module scope, not inside a
+  // handler. A runtime check cannot tell the two apart without moving the file
+  // underneath a live server, so this pins the shape directly — it is the exact
+  // line that regressed.
+  const src = readFileSync(resolve(process.cwd(), 'server/lib/routes/health.mjs'), 'utf-8');
+  const body = src.slice(src.indexOf('export function registerHealthRoutes'));
+  assert.equal(/readFileSync\([^)]*package\.json/.test(body), false,
+    'package.json must not be read inside registerHealthRoutes — capture it once at module load');
+  assert.match(src.slice(0, src.indexOf('export function registerHealthRoutes')),
+    /LOADED_VERSION[\s\S]*readFileSync\([^)]*package\.json/,
+    'the module-scope capture must still be there');
+});
 
 test('/api/ping is a liveness probe that leaks nothing', async () => {
   // It exists so a monitor can reach the service WITHOUT the credentials that
