@@ -10,20 +10,20 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**Rettet — den rapporterede version beskrev filen på disken, ikke den kørende kode.**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### Rettet
+- **`/api/health` genlæste `package.json` ved hver forespørgsel, så en forældet proces rapporterede en version, den ikke kørte.** QA fandt en lokal instans, der svarede `version: 1.228.4` og samtidig gav 404 for `/api/ping` — en rute tilføjet i 1.228.3: startet før udrulningen, serverede den gamle kode og rapporterede den nye fils version. Sådan ser en udrulning ud, der kopierer filer og aldrig genstarter: den ene streng, en operatør tjekker, er den, der ikke kan se problemet. Samme klasse som symlinket fra v1.228.1, hvor rsync afbrød midt i overførslen og alligevel meldte succes.
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  Versionen fanges nu ved modulets indlæsning og beskriver dermed den kørende kode. En forældet proces rapporterer den **gamle** version — sandheden, synlig med det samme. `parentVersion` læses fortsat per forespørgsel: den beskriver forældreprojektets checkout, som denne proces ikke indlæser, og som legitimt kan ændre sig under en kørende server.
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**Rettet — den uautentificerede livstegnssonde lavede diskarbejde ved hver forespørgsel.**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### Rettet
+- **`GET /api/ping` læste og parsede `package.json` ved hvert kald.** Det er det eneste endpoint, der kan nås uden legitimationsoplysninger, så en disklæsning plus en JSON-parsning per forespørgsel er en denial-of-service-håndtag rakt til hvem som helst — CodeQL markerede det som manglende ratebegrænsning. Versionen læses nu én gang ved ruteregistreringen; den kan alligevel ikke ændre sig uden en genstart, så handleren laver slet ingen I/O. Ratebegrænsning ville have sat loft over skaden; at fjerne arbejdet fjerner håndtaget.
+- **Maskeringen af profilejerens rigtige navn uden for loopback er nu fastholdt af en test.** `/api/health` erstattede det allerede med `hidden` — men kun fordi den række deler `hidden ?? value`-vagten med projektroden. Intet testede det, så en ændring, der gav rækken sin egen værdi, ville have lækket et rigtigt menneskes navn til LAN'et uden at noget opdagede det.
 
 ## [1.228.3] — 2026-08-30
 

@@ -11,20 +11,20 @@
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**수정 — 보고되는 버전은 실행 중인 코드가 아니라 디스크의 파일을 가리켰습니다.**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### 수정
+- **`/api/health`가 매 요청마다 `package.json`을 다시 읽어, 오래된 프로세스가 자신이 실행하지 않는 버전을 보고했습니다.** QA는 `version: 1.228.4`라고 답하면서 1.228.3에서 추가된 `/api/ping`에는 404를 반환하는 로컬 인스턴스를 찾았습니다. 배포 전에 시작되어 옛 코드를 서비스하면서 새 파일의 버전을 보고하고 있었던 것입니다. 파일만 복사하고 재시작하지 않은 배포는 바로 이렇게 성공처럼 보입니다 — 운영자가 확인하는 유일한 문자열이 그 문제를 볼 수 없는 문자열입니다. v1.228.1의 심볼릭 링크와 같은 부류로, 그때도 rsync는 전송 도중 중단하고서 성공을 보고했습니다.
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  버전은 이제 모듈 로드 시점에 포착되어 실행 중인 코드를 가리킵니다. 오래된 프로세스는 **옛** 버전을 보고합니다 — 그것이 진실이며 첫 요청에서 바로 보입니다. `parentVersion`은 의도적으로 요청마다 읽습니다. 이 프로세스가 로드하지 않고 실행 중인 서버 아래에서 정당하게 바뀔 수 있는 상위 체크아웃을 가리키기 때문입니다.
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**수정 — 인증 없는 활성 상태 프로브가 매 요청마다 디스크 작업을 했습니다.**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### 수정
+- **`GET /api/ping`이 매 요청마다 `package.json`을 읽고 파싱했습니다.** 자격 증명 없이 도달할 수 있는 유일한 엔드포인트이므로, 요청당 디스크 읽기와 JSON 파싱은 누구에게나 건네진 서비스 거부 지렛대입니다 — CodeQL은 이를 속도 제한 누락으로 표시했습니다. 버전은 이제 라우트 등록 시 한 번만 읽습니다. 재시작 없이는 바뀔 수 없으므로 핸들러는 I/O를 전혀 하지 않습니다. 속도 제한은 피해에 상한을 두지만, 작업을 없애면 지렛대 자체가 사라집니다.
+- **루프백 외부에서 프로필 소유자의 실명을 가리는 동작이 이제 테스트로 고정되었습니다.** `/api/health`는 이미 `hidden`으로 대체하고 있었지만, 그 행이 프로젝트 루트와 `hidden ?? value` 가드를 공유하기 때문일 뿐이었습니다. 아무것도 이를 검증하지 않았으므로, 그 행에 자체 값을 주는 수정이 있었다면 실존 인물의 이름이 아무도 모르게 LAN으로 새어 나갔을 것입니다.
 
 ## [1.228.3] — 2026-08-30
 

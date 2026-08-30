@@ -11,20 +11,20 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**Naprawiono — zgłaszana wersja opisywała plik na dysku, a nie uruchomiony kod.**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### Naprawiono
+- **`/api/health` odczytywał `package.json` przy każdym żądaniu, więc przestarzały proces zgłaszał wersję, której nie uruchamiał.** QA znalazł lokalną instancję odpowiadającą `version: 1.228.4` i jednocześnie zwracającą 404 dla `/api/ping` — trasy dodanej w 1.228.3: uruchomiona przed wdrożeniem, serwowała stary kod i zgłaszała wersję nowego pliku. Dokładnie tak wygląda wdrożenie, które skopiowało pliki i nigdy nie zrestartowało procesu: jedyny ciąg, który sprawdza operator, to ten, który nie może zobaczyć problemu. Ta sama klasa co dowiązanie z v1.228.1, gdzie rsync przerywał transfer i mimo to zgłaszał sukces.
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  Wersja jest teraz przechwytywana przy ładowaniu modułu, więc opisuje uruchomiony kod. Przestarzały proces zgłasza **starą** wersję — prawdę, widoczną natychmiast. `parentVersion` pozostaje odczytywany na żądanie: opisuje checkout projektu nadrzędnego, którego ten proces nie ładuje i który może legalnie zmienić się pod działającym serwerem.
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**Naprawiono — nieuwierzytelniona sonda żywotności wykonywała pracę dyskową przy każdym żądaniu.**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### Naprawiono
+- **`GET /api/ping` czytał i parsował `package.json` przy każdym trafieniu.** To jedyny punkt osiągalny bez poświadczeń, więc odczyt z dysku plus parsowanie JSON na żądanie to dźwignia odmowy usługi wręczona każdemu — CodeQL oznaczył to jako brak ograniczania częstości. Wersja jest teraz czytana raz przy rejestracji trasy; bez restartu i tak nie może się zmienić, więc handler nie wykonuje żadnego I/O. Ograniczanie częstości ograniczyłoby szkody; usunięcie pracy usuwa dźwignię.
+- **Maskowanie prawdziwego nazwiska właściciela profilu poza loopbackiem jest teraz przypięte testem.** `/api/health` już zastępował je przez `hidden`, ale tylko dlatego, że ten wiersz dzieli strażnika `hidden ?? value` z korzeniem projektu. Nic tego nie sprawdzało — edycja nadająca wierszowi własną wartość wyciekłaby nazwisko realnej osoby do sieci lokalnej niezauważona.
 
 ## [1.228.3] — 2026-08-30
 

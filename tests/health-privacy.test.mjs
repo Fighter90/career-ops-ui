@@ -43,6 +43,10 @@ async function bootAndGet(host, path = '/api/health') {
     const res = await fetch(`http://127.0.0.1:${port}${path}`);
     return await res.json();
   } finally {
+    // close() stops new connections but leaves keep-alive sockets open, and
+    // fetch leaves them open — without this the runner can wedge until it is
+    // force-killed. Same pattern the rest of the suite uses.
+    server.closeAllConnections?.();
     await new Promise((r) => server.close(r));
   }
 }
@@ -72,6 +76,10 @@ test('the reported version describes the RUNNING code, not the file on disk', as
     assert.equal(health, ping, 'both endpoints must report the same loaded version');
     assert.match(health, /^\d+\.\d+\.\d+/);
   } finally {
+    // close() stops new connections but leaves keep-alive sockets open, and
+    // fetch leaves them open — without this the runner can wedge until it is
+    // force-killed. Same pattern the rest of the suite uses.
+    server.closeAllConnections?.();
     await new Promise((r) => server.close(r));
   }
 

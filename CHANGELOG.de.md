@@ -4,20 +4,20 @@
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**Behoben — die gemeldete Version beschrieb die Datei auf der Festplatte, nicht den laufenden Code.**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### Behoben
+- **`/api/health` las `package.json` bei jeder Anfrage neu, sodass ein veralteter Prozess eine Version meldete, die er nicht ausführte.** Die QA fand eine lokale Instanz, die `version: 1.228.4` antwortete und zugleich 404 für `/api/ping` lieferte — eine in 1.228.3 hinzugefügte Route: vor dem Deployment gestartet, den alten Code ausliefernd und die Version der neuen Datei meldend. Genau so sieht ein Deployment aus, das Dateien kopiert und nie neu startet: die eine Zeichenkette, die eine Betreiberin prüft, ist die, die das Problem nicht sehen kann. Dieselbe Klasse wie der Symlink aus v1.228.1, bei dem rsync mitten im Transfer abbrach und dennoch Erfolg meldete.
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  Die Version wird jetzt beim Laden des Moduls erfasst und beschreibt damit den laufenden Code. Ein veralteter Prozess meldet die **alte** Version — die Wahrheit, sofort sichtbar. `parentVersion` bleibt pro Anfrage: Es beschreibt den Checkout des Elternprojekts, den dieser Prozess nicht lädt und der sich unter einem laufenden Server legitim ändern kann.
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**Behoben — die nicht authentifizierte Lebendigkeitssonde arbeitete bei jeder Anfrage auf der Festplatte.**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### Behoben
+- **`GET /api/ping` las und parste `package.json` bei jedem Aufruf.** Es ist der einzige ohne Anmeldedaten erreichbare Endpunkt, also ist ein Festplattenzugriff plus JSON-Parsing pro Anfrage ein Denial-of-Service-Hebel, den man jedem in die Hand gibt — CodeQL meldete fehlende Ratenbegrenzung. Die Version wird jetzt einmal bei der Routenregistrierung gelesen; sie kann sich ohne Neustart ohnehin nicht ändern, also macht der Handler gar keine E/A. Ratenbegrenzung hätte den Schaden gedeckelt; die Arbeit zu entfernen entfernt den Hebel.
+- **Die Maskierung des echten Namens der Profilinhaberin oder des Profilinhabers außerhalb von Loopback ist jetzt durch einen Test festgehalten.** `/api/health` ersetzte ihn bereits durch `hidden` — aber nur, weil diese Zeile die `hidden ?? value`-Wache mit dem Projektstamm teilt. Nichts prüfte das, also hätte eine Änderung mit eigenem Wert den Namen einer realen Person unbemerkt ins LAN gegeben.
 
 ## [1.228.3] — 2026-08-30
 

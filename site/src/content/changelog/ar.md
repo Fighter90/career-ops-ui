@@ -10,20 +10,20 @@
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**إصلاح — كانت النسخة المُبلَّغة تصف الملف على القرص لا الشيفرة المُنفَّذة.**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### إصلاح
+- **كان `/api/health` يعيد قراءة `package.json` عند كل طلب، فيبلّغ عمليةٌ قديمة عن نسخة لا تنفّذها.** وجد فريق الفحص نسخة محلية تجيب `version: 1.228.4` بينما تردّ 404 على `/api/ping`، وهو مسار أُضيف في 1.228.3: بدأت قبل النشر، وتخدم الشيفرة القديمة، وتبلّغ عن نسخة الملف الجديد. وهكذا بالضبط يبدو ناجحًا نشرٌ نسخ الملفات ولم يُعِد التشغيل قط: السلسلة الوحيدة التي يفحصها المشغّل هي عينها التي لا تقدر أن ترى العطل. وهو الصنف نفسه الذي كان عليه الرابط الرمزي في v1.228.1، حيث توقّف rsync في منتصف النقل وأبلغ رغم ذلك عن نجاح.
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  صارت النسخة تُلتقط عند تحميل الوحدة، فتصف الشيفرة المُنفَّذة. والعملية القديمة تبلّغ عن النسخة **القديمة** — وهي الحقيقة، ظاهرةً من أول طلب. أما `parentVersion` فيبقى مقروءًا عند كل طلب: فهو يصف نسخة المشروع الأب التي لا تحمّلها هذه العملية والتي قد تتغير بحق تحت خادم يعمل.
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**إصلاح — كان مِجَسُّ الحياة غير المُوثَّق يقوم بعمل قرصي عند كل طلب.**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### إصلاح
+- **كان `GET /api/ping` يقرأ `package.json` ويحلّله عند كل نداء.** وهي نقطة النهاية الوحيدة التي تُبلَغ بلا اعتمادات، فقراءةٌ من القرص وتحليلُ JSON لكل طلب رافعةُ حجبِ خدمةٍ تُسلَّم لأي أحد — وقد وسمها CodeQL بانعدام تحديد المعدّل. صارت النسخة تُقرأ مرة واحدة عند تسجيل المسار؛ فهي لا تتغير أصلًا دون إعادة تشغيل، ومن ثمّ لا يقوم المعالج بأي إدخال أو إخراج. كان تحديد المعدّل ليحدَّ من الضرر؛ أما إزالة العمل فتزيل الرافعة نفسها.
+- **صار إخفاءُ الاسم الحقيقي لصاحب الملف خارج loopback مثبَّتًا باختبار.** فقد كان `/api/health` يستبدله بـ`hidden` أصلًا، لكن لأن ذلك الصف يشارك حارس `hidden ?? value` مع جذر المشروع فحسب. ولم يكن شيء يختبر ذلك، فتعديلٌ يمنح الصف قيمته الخاصة كان ليسرّب اسم شخص حقيقي إلى الشبكة المحلية دون أن ينتبه أحد.
 
 ## [1.228.3] — 2026-08-30
 
