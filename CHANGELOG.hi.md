@@ -2,6 +2,14 @@
 
 > यह परिवर्तन-सूची v1.122.0 से शुरू होती है — वह संस्करण जिसमें हिन्दी स्थानीयकरण जोड़ा गया। पिछले संस्करणों के लिए [🇬🇧 CHANGELOG.md](CHANGELOG.md) देखें।
 
+## [1.228.4] — 2026-08-30
+
+**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+
+### Fixed
+- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
+- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+
 ## [1.228.3] — 2026-08-30
 
 **Fixed — the docs assistant could not answer in English, Telegram company names arrived truncated, and a monitor had no way to see the service was up.**

@@ -41,12 +41,17 @@ export function registerHealthRoutes(app) {
    * gets this instead, which says only that, plus the version a deploy check
    * needs. Nothing here is derived from user data.
    */
+  // Read once at registration, not per request. This endpoint is the only one
+  // reachable without credentials, so a filesystem read plus a JSON parse on
+  // every hit is a denial-of-service lever handed to anyone (CodeQL: missing
+  // rate limiting). The version cannot change without a restart anyway.
+  let pingVersion = '?';
+  try {
+    pingVersion = JSON.parse(readFileSync(resolve(WEB_UI_ROOT, 'package.json'), 'utf8')).version || '?';
+  } catch { /* a missing package.json must not stop the server from booting */ }
+
   app.get('/api/ping', (_req, res) => {
-    let version = '?';
-    try {
-      version = JSON.parse(readFileSync(resolve(WEB_UI_ROOT, 'package.json'), 'utf8')).version || '?';
-    } catch { /* a missing package.json must not make the probe fail */ }
-    res.json({ ok: true, version });
+    res.json({ ok: true, version: pingVersion });
   });
 
   app.get('/api/health', async (_req, res) => {

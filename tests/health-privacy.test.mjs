@@ -87,6 +87,21 @@ test('masking applies to any non-loopback HOST', async () => {
   assert.equal(h.checks.find((c) => c.name === 'Project root').value, 'hidden');
 });
 
+test('the profile owner\u2019s name is masked off loopback, like paths and versions', async () => {
+  // The guarantee exists only because `Profile customized` shares the same
+  // `hidden ?? value` guard as the project root — nothing pinned it, so an edit
+  // that gave this row its own value would leak a real person's name to the LAN
+  // with no test to notice.
+  const local = await bootAndGetHealth('127.0.0.1');
+  const lan = await bootAndGetHealth('0.0.0.0');
+  const row = (h) => h.checks.find((c) => c.name === 'Profile customized');
+  // The row's value embeds the name in a status string rather than being the
+  // bare name, which is exactly why masking must cover the whole value.
+  assert.match(row(local).value, /Test/, 'on loopback the operator sees their own profile');
+  assert.equal(row(lan).value, 'hidden', 'off loopback the name must not be reported');
+  assert.equal(JSON.stringify(lan).includes('Test'), false, 'and it must not survive anywhere else in the payload');
+});
+
 test('the ok/required flags are unaffected by masking', async () => {
   const h = await bootAndGetHealth('0.0.0.0');
   // The Node check should still be "ok: true" since we ARE on Node ≥ 18 here.
