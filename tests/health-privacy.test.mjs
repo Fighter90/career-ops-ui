@@ -32,7 +32,7 @@ after(() => {
   delete process.env.HOST;
 });
 
-async function bootAndGetHealth(host) {
+async function bootAndGet(host, path = '/api/health') {
   process.env.HOST = host;
   const app = createApp();
   const server = await new Promise((r) => {
@@ -40,12 +40,30 @@ async function bootAndGetHealth(host) {
   });
   try {
     const port = server.address().port;
-    const res = await fetch(`http://127.0.0.1:${port}/api/health`);
+    const res = await fetch(`http://127.0.0.1:${port}${path}`);
     return await res.json();
   } finally {
     await new Promise((r) => server.close(r));
   }
 }
+
+const bootAndGetHealth = (host) => bootAndGet(host);
+
+test('/api/ping is a liveness probe that leaks nothing', async () => {
+  // It exists so a monitor can reach the service WITHOUT the credentials that
+  // guard /api/health — which reports absolute paths, the profile owner's real
+  // name and which API keys are set. Those are fine for an authenticated
+  // operator and must never be public, so this endpoint may never grow them.
+  const ping = await bootAndGet('127.0.0.1', '/api/ping');
+  assert.deepEqual(Object.keys(ping).sort(), ['ok', 'version'], 'exactly two fields — adding one needs a second look');
+  assert.equal(ping.ok, true);
+  assert.match(ping.version, /^\d+\.\d+\.\d+/);
+
+  const body = JSON.stringify(ping);
+  assert.equal(body.includes('/'), false, 'no filesystem path');
+  assert.equal(/test/i.test(body), false, 'no profile owner name');
+  assert.equal(/key|node|v\d+\.\d+\.\d+-/i.test(body.replace(ping.version, '')), false, 'no key inventory, no Node version');
+});
 
 test('on loopback, Node version + project root are visible', async () => {
   const h = await bootAndGetHealth('127.0.0.1');

@@ -42,7 +42,51 @@ export function resolveHelpFile(lang) {
   return null;
 }
 
-/** Split a help markdown doc into `##`-delimited sections { title, body }. */
+/**
+ * A section bigger than this is split further at its `###` boundaries.
+ *
+ * `MAX_CONTEXT` budgets the WHOLE prompt, so a single section approaching it
+ * crowds out every other excerpt — and one that exceeds it cannot be inlined at
+ * all. The English §5 reached 16 KB against a 14 KB budget, which is how a
+ * question about `telegram_channels` (an H3 living inside §5) came back "no
+ * matching help sections were found" in English while the same question worked
+ * in Russian, whose §5 was still 13 KB. Ranking was identical in both; only the
+ * size differed.
+ */
+const MAX_SECTION = 6 * 1024;
+
+/**
+ * Split one oversized `##` section into its `###` sub-sections.
+ *
+ * The text before the first `###` stays under the parent's own title — it is
+ * the section's preamble and often carries the framing the sub-sections assume.
+ * Each sub-section is titled `Parent › Sub` so the model still sees where the
+ * excerpt came from, and so a reader of the `sections` list can tell.
+ */
+function splitAtSubheadings(section) {
+  const lines = section.body.split('\n');
+  const out = [];
+  let cur = { title: section.title, body: '' };
+  for (const line of lines) {
+    if (/^###\s+/.test(line) && !/^####/.test(line)) {
+      if (cur.body.trim()) out.push(cur);
+      cur = { title: `${section.title} › ${line.replace(/^###\s+/, '').trim()}`, body: '' };
+    }
+    cur.body += line + '\n';
+  }
+  if (cur.body.trim()) out.push(cur);
+  // No `###` inside: nothing to split on, keep the section as it is.
+  return out.length > 1 ? out : [section];
+}
+
+/**
+ * Split a help markdown doc into `##`-delimited sections { title, body }.
+ *
+ * Sections that fit are left whole — a `###` belongs with its parent, and
+ * splitting a small section would scatter context for no gain. Only a section
+ * past `MAX_SECTION` is broken up, because past that it cannot be inlined
+ * whole anyway.
+ */
 export function splitSections(md) {
   const lines = String(md || '').split('\n');
   const sections = [];
@@ -56,7 +100,7 @@ export function splitSections(md) {
     }
   }
   if (cur) sections.push(cur);
-  return sections;
+  return sections.flatMap((sec) => (sec.body.length > MAX_SECTION ? splitAtSubheadings(sec) : [sec]));
 }
 
 function tokenize(s) {
@@ -84,7 +128,18 @@ export function topSections(sections, question, n = TOP_SECTIONS) {
 export function buildAskPrompt(picked, question, lang) {
   let ctx = '';
   for (const sec of picked) {
-    if (ctx.length + sec.body.length > MAX_CONTEXT) break;
+    const room = MAX_CONTEXT - ctx.length;
+    if (room <= 0) break;
+    // `break` here was the whole failure: one oversized section — even the
+    // TOP-ranked one — ended the loop and left the context empty, so the
+    // assistant reported that nothing matched while the answer sat in the
+    // section it had just refused to inline. Skip what does not fit and keep
+    // going; truncate only when a chunk would otherwise be dropped entirely.
+    if (sec.body.length > room) {
+      if (ctx) continue;
+      ctx += `\n<<< HELP SECTION: ${sec.title} (truncated) >>>\n${sec.body.slice(0, room - 120)}\n`;
+      continue;
+    }
     ctx += `\n<<< HELP SECTION: ${sec.title} >>>\n${sec.body}\n`;
   }
   return [

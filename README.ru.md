@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2899%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2907%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.2)
+[![release](https://img.shields.io/badge/release-v1.228.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.228.2** — **Поиск из двух слов искал фразу, а не слова.** `/api/scan-results?q=` делал один `includes(q)`, поэтому `продакт менеджер` находил только точное соседство — 32 строки там, где оба слова есть у 162, а «Менеджер продукта» был невидим. Так узкое совпадение превращается в неверный ответ: Telegram-ассистент назвал 9, потому что 9 ему ответил эндпоинт. Теперь слова сопоставляются по отдельности (И). **2899 тестов.**
+> **🆕 Последний релиз — v1.228.3** — **Ассистент по документации не отвечал по-английски.** Дело не в поиске: сборщик контекста делал `break` на первом разделе, который не влезал целиком, — и один переросший раздел оставлял контекст пустым, а ассистент честно сообщал, что у него ничего нет. Английский §5 дорос до 16 081 байта при бюджете 14 336, русский влезал с 13 009. Разделы свыше 6 КБ теперь делятся по границам `###` (32 чанка → 75). Плюс: метки компаний в Telegram давали предложение вместо названия, а `GET /api/ping` даёт мониторингу пробу живости, не раскрывающую ничего. **2907 тестов.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -381,7 +381,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2899 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 2907 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # парсеры markdown / pipeline / отчётов (чистые функции)
    ├─ api.test.mjs           # каждая точка входа, эфемерный сервер, без сети
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -517,7 +517,7 @@ event: error    data: { message }
 ## Тесты
 
 ```bash
-npm test                       # 2899 unit/integration-теста
+npm test                       # 2907 unit/integration-теста
 npm run test:e2e               # 21 smoke e2e (поднимает собственный сервер)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser-smoke
@@ -526,7 +526,7 @@ npm run test:coverage          # то же, что `npm test`, плюс V8-по�
 
 | Сьют                       | Тестов | Что покрывает                                                                                              |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2899** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
+| `node --test tests/*.test.mjs` (unit + integration) | **2907** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: каждый маршрут рендерится, базовые сценарии работают.                                 |
 | `tests/e2e-comprehensive.mjs` | 23 | Полный Playwright-walkthrough: 11 маршрутов + 12 функциональных сценариев.                                 |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Browser-driven smoke: рендер дашборда, навигация, переключение языка, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL sweep, пустые reports, evaluate manual fallback, маскирование ключей в config, XSS-strip на PUT CV, pipeline preview 400. |
@@ -644,7 +644,7 @@ career-ops лучше всего работает **постоянно вклю�
 
 Issues и PR приветствуются. Правила:
 
-- Перед push выполняйте `npm test` — **2899 проверок green** — это минимальная планка (плюс 101 Playwright, если изменения касаются UI).
+- Перед push выполняйте `npm test` — **2907 проверок green** — это минимальная планка (плюс 101 Playwright, если изменения касаются UI).
 - Нетривиальные изменения проходят через GSD-конвейер. См. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Не модифицируйте ничего в родительском `career-ops/` из этого репозитория. Смысл проекта именно в том, что это неинвазивный overlay. Жёсткие правила — в [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Опциональный scope: `feat(scan):`. Breaking change: `feat!:`.

@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.228.3] — 2026-08-30
+
+**Fixed — the docs assistant could not answer in English, Telegram company names arrived truncated, and a monitor had no way to see the service was up.**
+
+### Fixed
+- **The docs assistant answered "no matching help sections were found" in English while the same question worked in Russian.** Retrieval was fine; the context builder was not. `buildAskPrompt` did `if (ctx.length + sec.body.length > MAX_CONTEXT) break` — a `break`, so one oversized section ended the loop and left the context **empty**, and the assistant truthfully reported it had nothing. The English §5 had grown to **16 081 bytes against a 14 336-byte budget** (partly because v1.228.0 added `telegram_channels` to it); the Russian §5 was 13 009 and fit. Same ranking in both languages — §5 was first — only the size differed.
+
+  Two changes: a section past 6 KB is now split at its `###` boundaries, so `telegram_channels` is its own retrievable chunk (1 340 bytes) that ranks **first** in both languages; and an oversized section is skipped or truncated rather than ending the loop. The guide went from 32 chunks to 75.
+- **A Telegram company label yielded the sentence after it, not the name.** `Компания: FinCore Technology (продуктовая разработка, высоконагруженные системы)` became `FinCore Technology (продуктовая разработка, высоконагруженны` — capped at 60 characters, cut mid-word. Three of 141 rows. The name now ends at the first separator that introduces a description — a **spaced** dash (so `Coca-Cola` survives), a comma, semicolon, pipe or opening parenthesis — and any remaining cap falls on a word boundary. This source attributes a company as fact; a truncated sentence is as wrong as a guessed name, only less obviously so.
+
+### Added
+- **`GET /api/ping` — a liveness probe that leaks nothing.** `{ ok, version }` and no more. `/api/health` reports absolute paths, the profile owner's real name and which API keys are set: legitimate for an authenticated operator, never for the public internet. A monitor behind a Basic-auth gate previously had no way to see the service was up at all.
+
 ## [1.228.2] — 2026-08-30
 
 **Fixed — a two-word search in `/api/scan-results` matched the phrase, not the words, and under-reported badly.**
