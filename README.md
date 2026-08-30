@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-2899%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2907%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.2)
+[![release](https://img.shields.io/badge/release-v1.228.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.228.2** — **A two-word search matched the phrase, not the words.** `/api/scan-results?q=` ran one `includes(q)`, so `продакт менеджер` found only the exact adjacency — 32 rows where 162 carry both words, with `Менеджер продукта` invisible to it. That is how a narrow match becomes a wrong answer: the Telegram assistant quoted 9 because 9 was what the endpoint said. Terms now match independently (AND). **2899 tests.**
+> **🆕 Latest release — v1.228.3** — **The docs assistant could not answer in English.** Not retrieval — the context builder did `break` on the first section too big to inline, so one oversized section left the context empty and the assistant truthfully said it had nothing. The English §5 had reached 16 081 bytes against a 14 336 budget; the Russian one fit at 13 009. Sections past 6 KB now split at their `###` boundaries (32 chunks → 75). Plus: Telegram company labels yielded the sentence, not the name, and `GET /api/ping` gives a monitor a liveness probe that leaks nothing. **2907 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -434,7 +434,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2899 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.197.0)
+└─ tests/                    # 2907 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.197.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -565,7 +565,7 @@ When `run: true` is set on `/api/deep` or `/api/mode/:slug`, the server prefers 
 ## Tests
 
 ```bash
-npm test                       # 2899 unit/integration tests
+npm test                       # 2907 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
@@ -574,7 +574,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | What                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2899** | Every endpoint, ephemeral server, no network. 329 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
+| `node --test tests/*.test.mjs` (unit + integration) | **2907** | Every endpoint, ephemeral server, no network. 329 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: every route renders, basic flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Full Playwright walkthrough: 11 routes + 12 functional flows.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Browser-driven: dashboard render, navigation, language switch, 404, health, tracker round-trip, pipeline add + invalid-URL sweep, reports, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400, auto-pipeline SSE. |
@@ -693,7 +693,7 @@ Then use it via `data-i18n="scan.newButton"` in markup or `t('scan.newButton')` 
 
 Issues and PRs welcome. House rules:
 
-- Run `npm test` before pushing — **2899 checks green** is the bar (plus 101 Playwright if you touch UI).
+- Run `npm test` before pushing — **2907 checks green** is the bar (plus 101 Playwright if you touch UI).
 - Non-trivial changes go through the GSD pipeline. See [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Don't modify anything in the parent `career-ops/` project from inside this repo. The whole point is that this is a non-invasive overlay. Hard rules in [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Optional scope: `feat(scan):`. Breaking change: `feat!:`.

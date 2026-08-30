@@ -7,16 +7,16 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2899%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2907%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.2)
+[![release](https://img.shields.io/badge/release-v1.228.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.228.2** — **بحثٌ من كلمتين كان يطلب العبارة لا الكلمتين.** إذ كان `/api/scan-results?q=` ينفّذ `includes(q)` واحدًا، فيجد 32 صفًّا بينما تحمل الكلمتين 162. وهكذا يصير التطابق الضيّق جوابًا خاطئًا. صارت الكلمات تُطابَق كلٌّ على حدة (و). **2899 اختبارًا.**
+> **🆕 أحدث إصدار — v1.228.3** — **لم يكن مساعد التوثيق يجيب بالإنجليزية.** والعلة ليست في الاسترجاع، بل في بناء السياق: كان يفعل `break` عند أول قسم لا يتسع، فيترك السياق فارغًا. وقد بلغ §5 الإنجليزي 16 081 بايت مقابل ميزانية 14 336. صارت الأقسام فوق 6 كيلوبايت تُقسَّم عند حدود `###` (32 ← 75 مقطعًا). وإلى ذلك: كانت وسوم الشركات في تيليجرام تعطي الجملة لا الاسم، وصار `GET /api/ping` مِجسًّا لا يكشف شيئًا. **2907 اختبارًا.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -153,7 +153,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 2899 unit + 101 Playwright + 43 e2e
+   └─ tests/        # 2907 unit + 101 Playwright + 43 e2e
 ```
 
 <div dir="rtl">
@@ -186,7 +186,7 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 2899 اختبار وحدة وتكامل
+npm test                    # 2907 اختبار وحدة وتكامل
 npm run test:e2e            # 21 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
 npm run test:e2e:browser    # 101 اختبار Playwright

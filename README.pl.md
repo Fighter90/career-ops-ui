@@ -7,16 +7,16 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-2899%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-2907%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.2)
+[![release](https://img.shields.io/badge/release-v1.228.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.228.2** — **Wyszukiwanie dwóch słów szukało frazy, nie słów.** `/api/scan-results?q=` robił jedno `includes(q)`: znajdował 32 wiersze tam, gdzie oba słowa ma 162. Tak wąskie dopasowanie staje się błędną odpowiedzią. Terminy są teraz porównywane osobno (I). **2899 testów.**
+> **🆕 Najnowsze wydanie — v1.228.3** — **Asystent dokumentacji nie odpowiadał po angielsku.** Nie chodziło o wyszukiwanie: budowniczy kontekstu robił `break` na pierwszej zbyt dużej sekcji, zostawiając pusty kontekst. Angielski §5 urósł do 16 081 bajtów przy budżecie 14 336. Sekcje powyżej 6 KB dzielą się teraz na `###` (32 → 75 fragmentów). Do tego: etykiety firm z Telegrama dawały zdanie zamiast nazwy, a `GET /api/ping` to sonda, która nic nie ujawnia. **2907 testów.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -133,7 +133,7 @@ career-ops/
 └─ web-ui/          ← to repozytorium
    ├─ server/       # Express + 15 modułów tras
    ├─ public/       # vanilla JS SPA, bez bundlera
-   └─ tests/        # 2899 testów jednostkowych + 101 Playwright + 44 e2e
+   └─ tests/        # 2907 testów jednostkowych + 101 Playwright + 44 e2e
 ```
 
 Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacji, brak bundlera — cały interfejs to mniej niż 30 KB zminifikowanego kodu.
@@ -162,7 +162,7 @@ Oficjalna strona: [career-ops.org](https://career-ops.org) · Dokumentacja: [car
 ## Testy
 
 ```bash
-npm test                    # 2899 testów jednostkowych/integracyjnych
+npm test                    # 2907 testów jednostkowych/integracyjnych
 npm run test:e2e            # 21 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 101 testów Playwright

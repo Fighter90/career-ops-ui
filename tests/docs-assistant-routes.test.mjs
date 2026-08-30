@@ -5,6 +5,8 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -41,6 +43,48 @@ test('splitSections splits on ## and keeps ### inside their parent', () => {
   assert.equal(secs[0].title, 'One');
   assert.match(secs[0].body, /Sub A/);      // ### stays inside its ## parent
   assert.equal(secs[1].title, 'Two');
+});
+
+test('an oversized section is split at its ### boundaries, a small one is not', () => {
+  // Small: ### belongs with its parent (the case above). Large: the ### is the
+  // only way in, because a section past the context budget cannot be inlined.
+  const big = 'x'.repeat(7000);
+  const secs = splitSections(`## Big\npreamble\n### Sub A\n${big}\n### Sub B\nbody b\n`);
+  const titles = secs.map((x) => x.title);
+  assert.ok(titles.includes('Big'), 'the preamble keeps the parent title');
+  assert.ok(titles.includes('Big › Sub A'), 'sub-sections are titled Parent › Sub');
+  assert.ok(titles.includes('Big › Sub B'));
+});
+
+test('a section with no ### is left whole even when oversized', () => {
+  const secs = splitSections(`## Solid\n${'y'.repeat(7000)}\n`);
+  assert.equal(secs.length, 1, 'nothing to split on — do not mangle it');
+  assert.equal(secs[0].title, 'Solid');
+});
+
+test('an oversized top-ranked section no longer empties the context', () => {
+  // The regression: `break` on the first section that did not fit ended the
+  // loop, so the assistant answered "no matching help sections" while the
+  // answer sat in the section it had just refused to inline.
+  const huge = { title: 'Huge', body: '## Huge\n' + 'z'.repeat(20000) };
+  const small = { title: 'Small', body: '## Small\nthe answer is here\n' };
+  const p = buildAskPrompt([huge, small], 'where is the answer?', 'en');
+  assert.match(p, /HELP SECTION: Huge \(truncated\)/, 'the top section is truncated, never silently dropped');
+  assert.ok(p.length > 500, 'the context must not come back empty');
+});
+
+test('the real EN guide can answer a telegram_channels question', () => {
+  // FIND-1: this returned "no matching help sections were found" in English
+  // while working in Russian — the EN §5 had grown to 16 KB against a 14 KB
+  // budget. A corpus-level guard, because the unit tests above pass on
+  // synthetic input regardless of what the shipped guide looks like.
+  const md = readFileSync(resolve(process.cwd(), 'docs/help/en.md'), 'utf-8');
+  const secs = splitSections(md);
+  for (const q of ['telegram_channels', 'how do I scan a public telegram channel?']) {
+    const prompt = buildAskPrompt(topSections(secs, q), q, 'en');
+    assert.ok(prompt.includes('telegram_channels'),
+      `EN help must ground "${q}" in the telegram_channels section`);
+  }
 });
 
 test('topSections ranks the section whose title/body matches the question', () => {

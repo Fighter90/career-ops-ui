@@ -148,8 +148,33 @@ export function titleFromText(text) {
 
 // Deliberately conservative: a wrong company is worse than none, because it
 // shows up in the tracker as fact. Only patterns that name the field outright.
-const COMPANY_RE = /(?:^|\n)\s*(?:компания|company|работодатель|employer)\s*[:\-–—]\s*([^\n]{2,60})/iu;
-const LOCATION_RE = /(?:^|\n)\s*(?:локация|город|location|office|формат)\s*[:\-–—]\s*([^\n]{2,60})/iu;
+const COMPANY_RE = /(?:^|\n)\s*(?:компания|company|работодатель|employer)\s*[:\-–—]\s*([^\n]{2,200})/iu;
+const LOCATION_RE = /(?:^|\n)\s*(?:локация|город|location|office|формат)\s*[:\-–—]\s*([^\n]{2,200})/iu;
+
+/**
+ * A labelled line gives a NAME followed, more often than not, by what the
+ * company does: "Birmarket - крупнейший маркетплейс Азербайджана, работает
+ * с 2019" or "FinCore Technology (продуктовая разработка, высоконагруженные
+ * системы)". Keeping the whole line and capping it produced tracker rows like
+ * `FinCore Technology (продуктовая разработка, высоконагруженны` — cut
+ * mid-word, and no longer a company name at all.
+ *
+ * That matters because this source attributes a company as FACT. A truncated
+ * sentence is as wrong as a guessed name, just less obviously so.
+ *
+ * The name ends at the first separator that introduces a description: a SPACED
+ * dash (so `Coca-Cola` survives — the hyphen there has no spaces), a comma, a
+ * semicolon, a pipe, or an opening parenthesis. What remains is capped on a
+ * word boundary, never inside a word.
+ * @param {string} raw
+ * @returns {string}
+ */
+export function companyName(raw) {
+  let name = String(raw ?? '').trim().split(/\s[—–-]\s|[,;|(]/)[0].trim();
+  if (name.length > 60) name = name.slice(0, 60).replace(/\s+\S*$/, '').trim();
+  // Punctuation the split can leave hanging on the end of a name.
+  return name.replace(/[\s.,;:–—-]+$/, '').trim();
+}
 // Unicode-aware left boundary, NOT \b: \b is ASCII-only, so a space before a
 // Cyrillic word is not a boundary at all and `\bудал` never matched
 // "Go dev, удалёнка". Same trap the title filter hit in v1.227.3.
@@ -185,8 +210,8 @@ export function parseChannelPage(html, channel) {
 
     const timeMatch = win.match(/<time[^>]+datetime="([^"]+)"/);
     const posted = timeMatch ? Date.parse(timeMatch[1]) : NaN;
-    const company = (text.match(COMPANY_RE)?.[1] || '').trim();
-    const location = (text.match(LOCATION_RE)?.[1] || '').trim();
+    const company = companyName(text.match(COMPANY_RE)?.[1] || '');
+    const location = companyName(text.match(LOCATION_RE)?.[1] || '');
     const isRemote = REMOTE_RE.test(text);
     const salary = (text.match(SALARY_RE)?.[0] || '').trim();
 

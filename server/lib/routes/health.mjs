@@ -31,6 +31,24 @@ import { hasDeepSeekKey, hasZaiKey, hasKimiKey, hasMiniMaxKey, hasMistralKey, ha
 import { hasArkKey, hasArkCnKey } from '../openai.mjs';
 
 export function registerHealthRoutes(app) {
+  /**
+   * Liveness probe, safe to expose without authentication.
+   *
+   * `/api/health` is the operator's view: it reports absolute paths, the
+   * profile owner's real name and which API keys are set. All three are
+   * legitimate for an authenticated operator and none of them may be said to
+   * the public internet — so a monitor that needs to know the service is up
+   * gets this instead, which says only that, plus the version a deploy check
+   * needs. Nothing here is derived from user data.
+   */
+  app.get('/api/ping', (_req, res) => {
+    let version = '?';
+    try {
+      version = JSON.parse(readFileSync(resolve(WEB_UI_ROOT, 'package.json'), 'utf8')).version || '?';
+    } catch { /* a missing package.json must not make the probe fail */ }
+    res.json({ ok: true, version });
+  });
+
   app.get('/api/health', async (_req, res) => {
     const checks = [];
     const hidden = isPubliclyExposed() ? 'hidden' : null;

@@ -11,7 +11,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   meta, assertTelegramUrl, normalizeChannel, buildChannelUrl,
-  titleFromText, parseChannelPage, fetchTelegram, visibleText,
+  titleFromText, parseChannelPage, fetchTelegram, visibleText, companyName,
 } from '../server/lib/sources/telegram.mjs';
 import { telegramAdapter } from '../server/lib/portals/adapters/telegram.mjs';
 
@@ -105,6 +105,31 @@ test('parseChannelPage lifts title, permalink, date and salary from a real-shape
   assert.equal(job.date, '2026-07-31T16:00:14.000Z');
   assert.equal(job.source, 'telegram');
   assert.match(job.id, /^telegram-salary_pm-331$/);
+});
+
+test('a labelled company yields the NAME, not the sentence after it', () => {
+  // Capping the whole line at 60 chars put rows like
+  // `FinCore Technology (продуктовая разработка, высоконагруженны` into the
+  // tracker — cut mid-word, and no longer a company name. This source
+  // attributes a company as fact, so a truncated sentence is as wrong as a
+  // guessed name, only less obviously so.
+  assert.equal(companyName('Fora Soft (Фора Софт) (Санкт-Петербург, Россия), мы делаем видео'), 'Fora Soft');
+  assert.equal(companyName('FinCore Technology (продуктовая разработка, высоконагруженные системы)'), 'FinCore Technology');
+  assert.equal(companyName('Birmarket - крупнейший маркетплейс Азербайджана, работает с 2019'), 'Birmarket');
+});
+
+test('a hyphen inside a name is not a separator — only a spaced dash is', () => {
+  assert.equal(companyName('Coca-Cola'), 'Coca-Cola');
+  assert.equal(companyName('Hewlett-Packard — enterprise hardware'), 'Hewlett-Packard');
+  assert.equal(companyName('ООО «Ромашка»'), 'ООО «Ромашка»');
+});
+
+test('a name with no separator is capped on a word boundary, never mid-word', () => {
+  const long = companyName('Международная производственная корпорация специального машиностроения имени Кого-то');
+  assert.ok(long.length <= 60);
+  assert.equal(/\s$/.test(long), false, 'no trailing space');
+  assert.ok(!long.endsWith('специальн'), 'must not cut inside a word');
+  assert.ok('Международная производственная корпорация специального машиностроения имени Кого-то'.startsWith(long));
 });
 
 test('an unnamed company falls back to the channel, never to a guess', () => {
