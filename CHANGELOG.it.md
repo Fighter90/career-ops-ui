@@ -4,20 +4,20 @@
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**Corretto — la versione riportata descriveva il file su disco, non il codice in esecuzione.**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### Corretto
+- **`/api/health` rileggeva `package.json` a ogni richiesta, quindi un processo obsoleto riportava una versione che non stava eseguendo.** Il QA ha trovato un'istanza locale che rispondeva `version: 1.228.4` mentre restituiva 404 per `/api/ping`, una rotta aggiunta in 1.228.3: avviata prima del deploy, serviva il codice vecchio e riportava la versione del file nuovo. È esattamente così che un deploy che copia i file senza mai riavviare sembra riuscito: l'unica stringa che un operatore controlla è quella che non può vedere il problema. Stessa classe del symlink di v1.228.1, dove rsync si interrompeva a metà trasferimento e riportava comunque successo.
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  La versione ora viene catturata al caricamento del modulo, quindi descrive il codice in esecuzione. Un processo obsoleto riporta la versione **vecchia** — la verità, visibile subito. `parentVersion` resta per richiesta: descrive il checkout del progetto padre, che questo processo non carica e che può legittimamente cambiare sotto un server in esecuzione.
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**Corretto — la sonda di liveness non autenticata faceva lavoro su disco a ogni richiesta.**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### Corretto
+- **`GET /api/ping` leggeva e analizzava `package.json` a ogni chiamata.** È l'unico endpoint raggiungibile senza credenziali, quindi una lettura da disco più un parsing JSON per richiesta è una leva di denial of service consegnata a chiunque — CodeQL l'ha segnalata come mancanza di limitazione di frequenza. La versione ora si legge una sola volta alla registrazione della rotta; non può cambiare senza riavvio, quindi il gestore non fa alcun I/O. Limitare la frequenza avrebbe contenuto il danno; togliere il lavoro toglie la leva.
+- **Il mascheramento del nome reale del titolare del profilo fuori dal loopback è ora fissato da un test.** `/api/health` lo sostituiva già con `hidden`, ma solo perché quella riga condivide la guardia `hidden ?? value` con la radice del progetto. Nulla lo verificava: una modifica che le desse un valore proprio avrebbe fatto trapelare il nome di una persona reale sulla LAN senza che nulla se ne accorgesse.
 
 ## [1.228.3] — 2026-08-30
 

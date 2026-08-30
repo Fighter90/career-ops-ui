@@ -16,7 +16,7 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.228.5** — **The reported version described the file on disk, not the code being run.** `/api/health` re-read `package.json` per request, so a process started before a deploy reported the new file's version while serving the old code — QA caught a local instance answering `1.228.4` and 404ing a route added in 1.228.3. That is how a deploy that copies files but never restarts looks like a success. The version is now captured at module load: a stale process reports the OLD version, which is the truth. **2909 tests.**
+> **🆕 最新リリース — v1.228.5** — **報告されるバージョンは、実行中のコードではなくディスク上のファイルを表していました。** `/api/health` が毎リクエストで `package.json` を読み直すため、デプロイ前に起動したプロセスが古いコードを提供しながら新しいファイルのバージョンを報告していました —— QA は `1.228.4` と答えつつ 1.228.3 で追加されたルートに 404 を返すインスタンスを発見。ファイルをコピーして再起動しないデプロイは、こうして成功に見えます。バージョンはモジュール読み込み時に取得されるようになり、古いプロセスは**古い**バージョン、つまり真実を報告します。**テスト 2909 件。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

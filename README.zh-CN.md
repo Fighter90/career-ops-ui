@@ -16,7 +16,7 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.228.5** — **The reported version described the file on disk, not the code being run.** `/api/health` re-read `package.json` per request, so a process started before a deploy reported the new file's version while serving the old code — QA caught a local instance answering `1.228.4` and 404ing a route added in 1.228.3. That is how a deploy that copies files but never restarts looks like a success. The version is now captured at module load: a stale process reports the OLD version, which is the truth. **2909 tests.**
+> **🆕 最新版本 — v1.228.5** — **上报的版本描述的是磁盘上的文件，而不是正在运行的代码。** `/api/health` 在每个请求上重新读取 `package.json`：部署前启动的进程一边提供旧代码，一边上报新文件的版本 —— QA 发现一个实例回答 `1.228.4`，却对 1.228.3 新增的路由返回 404。只复制文件、不重启的部署正是这样看起来像成功的。版本现在在模块加载时捕获：陈旧的进程会上报**旧**版本，也就是真相。**2909 个测试。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

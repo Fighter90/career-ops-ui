@@ -11,20 +11,20 @@
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**修复 —— 上报的版本描述的是磁盘上的文件，而不是正在运行的代码。**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### 修复
+- **`/api/health` 在每个请求上重新读取 `package.json`，因此陈旧的进程会上报一个它并未运行的版本。** QA 发现一个本地实例回答 `version: 1.228.4`，同时对 1.228.3 新增的 `/api/ping` 返回 404：它在部署之前启动，提供着旧代码，却上报新文件的版本。一次只复制文件、从未重启的部署，正是这样看起来像成功的 —— 运维唯一会检查的那个字符串，恰恰是看不见问题的那个。这与 v1.228.1 的软链接同属一类，当时 rsync 在传输中途中断，却依然报告成功。
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  版本现在在模块加载时捕获，因而描述正在运行的代码。陈旧的进程会上报**旧**版本 —— 那是真相，第一个请求就能看见。`parentVersion` 有意保留每请求读取：它描述的是父项目检出，本进程并不加载，且在运行中的服务器下合法地发生变化。
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**修复 —— 无需认证的存活探针在每个请求上都做磁盘工作。**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### 修复
+- **`GET /api/ping` 每次命中都读取并解析 `package.json`。** 它是唯一无需凭据即可到达的端点，因此每请求一次磁盘读取加一次 JSON 解析，等于把拒绝服务的杠杆递给任何人 —— CodeQL 将其标记为缺少速率限制。版本现在只在注册路由时读取一次；不重启本就无法改变，因此处理函数完全不做 I/O。速率限制能给伤害封顶；移除这项工作则移除了杠杆本身。
+- **回环之外对资料所有者真实姓名的掩码现在由测试固定。** `/api/health` 早已将其替换为 `hidden`——但只是因为那一行与项目根目录共用 `hidden ?? value` 这道防线。没有任何测试验证它，因此一次给该行赋予自身值的改动，会把真实人名悄无声息地泄漏到局域网。
 
 ## [1.228.3] — 2026-08-30
 

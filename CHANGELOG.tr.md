@@ -4,20 +4,20 @@
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**Düzeltildi — bildirilen sürüm diskteki dosyayı tarif ediyordu, çalışan kodu değil.**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### Düzeltildi
+- **`/api/health` her istekte `package.json`'ı yeniden okuyordu, dolayısıyla eskimiş bir süreç çalıştırmadığı bir sürümü bildiriyordu.** QA, `version: 1.228.4` yanıtı verirken 1.228.3'te eklenen `/api/ping` için 404 döndüren yerel bir örnek buldu: dağıtımdan önce başlatılmış, eski kodu sunuyor ve yeni dosyanın sürümünü bildiriyordu. Dosyaları kopyalayıp asla yeniden başlatmayan bir dağıtım tam olarak böyle başarılı görünür: bir operatörün baktığı tek dizge, sorunu göremeyen dizgedir. v1.228.1'deki sembolik bağla aynı sınıf — rsync aktarımın ortasında durup yine de başarı bildiriyordu.
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  Sürüm artık modül yüklenirken yakalanıyor ve çalışan kodu tarif ediyor. Eskimiş bir süreç **eski** sürümü bildirir — gerçeği, ilk istekte görünür biçimde. `parentVersion` istek başına kalmaya devam ediyor: üst projenin checkout'unu tarif eder; bu süreç onu yüklemez ve çalışan bir sunucunun altında meşru olarak değişebilir.
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**Düzeltildi — kimlik doğrulaması olmayan canlılık probu her istekte disk işi yapıyordu.**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### Düzeltildi
+- **`GET /api/ping` her vuruşta `package.json` okuyup ayrıştırıyordu.** Kimlik bilgisi olmadan erişilebilen tek uç nokta olduğundan, istek başına bir disk okuması artı JSON ayrıştırması herkese uzatılmış bir hizmet reddi kaldıracıdır — CodeQL bunu hız sınırlaması eksikliği olarak işaretledi. Sürüm artık rota kaydında bir kez okunuyor; yeniden başlatmadan zaten değişemez, dolayısıyla işleyici hiç G/Ç yapmıyor. Hız sınırlaması hasarı sınırlardı; işi kaldırmak kaldıracı kaldırır.
+- **Profil sahibinin gerçek adının loopback dışında maskelenmesi artık bir testle sabitlendi.** `/api/health` bunu zaten `hidden` ile değiştiriyordu — ama yalnızca o satır `hidden ?? value` koruyucusunu proje köküyle paylaştığı için. Bunu hiçbir şey sınamıyordu; satıra kendi değerini veren bir düzenleme, gerçek bir kişinin adını fark edilmeden yerel ağa sızdırırdı.
 
 ## [1.228.3] — 2026-08-30
 

@@ -11,20 +11,20 @@
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**Виправлено — повідомлена версія описувала файл на диску, а не виконуваний код.**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### Виправлено
+- **`/api/health` перечитував `package.json` на кожен запит, тож застарілий процес повідомляв версію, якої не виконував.** QA знайшов локальний інстанс, що відповідав `version: 1.228.4` і водночас давав 404 на `/api/ping` — маршрут, доданий у 1.228.3: запущений до розгортання, обслуговував старий код і повідомляв версію нового файлу. Саме так виглядає успішним розгортання, яке скопіювало файли й ніколи не перезапустило процес: єдиний рядок, що його перевіряє оператор, — той, який не здатен побачити проблему. Той самий клас, що й символьне посилання з v1.228.1, де rsync уривався посеред передачі й усе одно звітував про успіх.
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  Версія тепер фіксується під час завантаження модуля й описує виконуваний код. Застарілий процес повідомить **стару** версію — правду, видну одразу. `parentVersion` лишається почитаним на запит: він описує чекаут батьківського проєкту, який цей процес не завантажує і який законно змінюється під працюючим сервером.
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**Виправлено — неавтентифікована проба живості робила дискову роботу на кожен запит.**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### Виправлено
+- **`GET /api/ping` читав і розбирав `package.json` на кожне звернення.** Це єдина точка, досяжна без облікових даних, тож читання з диска плюс розбір JSON на запит — це важіль відмови в обслуговуванні, вручений будь-кому; CodeQL позначив це як брак обмеження частоти. Версія тепер читається один раз під час реєстрації маршруту; без перезапуску вона й так не зміниться, тож обробник не робить введення-виведення взагалі. Обмеження частоти вкоротило б шкоду; прибирання роботи прибирає важіль.
+- **Маскування справжнього імені власника профілю поза loopback тепер закріплено тестом.** `/api/health` уже замінював його на `hidden` — але лише тому, що цей рядок ділить охоронця `hidden ?? value` з коренем проєкту. Ніщо цього не перевіряло: правка, яка дала б рядку власне значення, злила б ім'я реальної людини в локальну мережу непоміченою.
 
 ## [1.228.3] — 2026-08-30
 

@@ -4,20 +4,20 @@
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**ठीक किया गया — बताई गई संस्करण संख्या डिस्क पर पड़ी फ़ाइल का वर्णन करती थी, चल रहे कोड का नहीं।**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### ठीक किया गया
+- **`/api/health` हर अनुरोध पर `package.json` दोबारा पढ़ता था, इसलिए पुरानी प्रक्रिया ऐसा संस्करण बताती थी जिसे वह चला ही नहीं रही थी।** QA को एक स्थानीय इंस्टेंस मिला जो `version: 1.228.4` उत्तर देता था और साथ ही 1.228.3 में जोड़े गए `/api/ping` पर 404 लौटाता था: वह परिनियोजन से पहले शुरू हुआ था, पुराना कोड परोस रहा था और नई फ़ाइल का संस्करण बता रहा था। फ़ाइलें कॉपी करके कभी पुनरारंभ न करने वाला परिनियोजन ठीक ऐसा ही सफल दिखता है: ऑपरेटर जिस एकमात्र स्ट्रिंग को देखता है, वही समस्या नहीं देख सकती। यह v1.228.1 वाले सिमलिंक जैसा ही वर्ग है, जहाँ rsync बीच ट्रांसफ़र में रुककर भी सफलता बताता था।
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  संस्करण अब मॉड्यूल लोड होते समय दर्ज होता है, इसलिए वह चल रहे कोड का वर्णन करता है। पुरानी प्रक्रिया **पुराना** संस्करण बताएगी — यही सच है, और पहले ही अनुरोध पर दिखता है। `parentVersion` प्रति-अनुरोध ही रहता है: वह पैरेंट चेकआउट का वर्णन करता है, जिसे यह प्रक्रिया लोड नहीं करती और जो चालू सर्वर के नीचे वैध रूप से बदल सकता है।
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**ठीक किया गया — बिना प्रमाणीकरण वाली जीवंतता जाँच हर अनुरोध पर डिस्क का काम करती थी।**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### ठीक किया गया
+- **`GET /api/ping` हर बार `package.json` पढ़कर पार्स करता था।** यह बिना क्रेडेंशियल पहुँच योग्य एकमात्र एंडपॉइंट है, इसलिए प्रति अनुरोध एक डिस्क पठन और JSON पार्स किसी को भी थमाया गया सेवा-अवरोध का लीवर है — CodeQL ने इसे दर-सीमा की कमी बताया। संस्करण अब रूट पंजीकरण के समय एक ही बार पढ़ा जाता है; पुनरारंभ के बिना वह बदल भी नहीं सकता, इसलिए हैंडलर कोई I/O नहीं करता। दर-सीमा नुकसान को सीमित करती; काम हटाना लीवर ही हटा देता है।
+- **लूपबैक के बाहर प्रोफ़ाइल स्वामी के असली नाम का मास्किंग अब परीक्षण से बँधा है।** `/api/health` उसे पहले ही `hidden` से बदलता था — पर केवल इसलिए कि वह पंक्ति `hidden ?? value` रक्षक को प्रोजेक्ट रूट के साथ साझा करती है। इसकी कोई जाँच नहीं थी, तो पंक्ति को अपना मान देने वाला संपादन किसी वास्तविक व्यक्ति का नाम बिना किसी के ध्यान दिए लोकल नेटवर्क में लीक कर देता।
 
 ## [1.228.3] — 2026-08-30
 

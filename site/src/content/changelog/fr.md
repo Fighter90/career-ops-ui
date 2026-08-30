@@ -13,20 +13,20 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**Corrigé — la version rapportée décrivait le fichier sur disque, pas le code exécuté.**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### Corrigé
+- **`/api/health` relisait `package.json` à chaque requête, si bien qu'un processus obsolète rapportait une version qu'il n'exécutait pas.** La QA a trouvé une instance locale répondant `version: 1.228.4` tout en renvoyant 404 pour `/api/ping`, une route ajoutée en 1.228.3 : démarrée avant le déploiement, servant l'ancien code et rapportant la version du nouveau fichier. C'est exactement ainsi qu'un déploiement qui copie des fichiers sans jamais redémarrer ressemble à un succès : la seule chaîne que vérifie un opérateur est celle qui ne peut pas voir le problème. Même catégorie que le lien symbolique de v1.228.1, où rsync s'interrompait en pleine transmission et signalait tout de même un succès.
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  La version est désormais capturée au chargement du module, donc elle décrit le code exécuté. Un processus obsolète rapporte l'**ancienne** version — la vérité, visible immédiatement. `parentVersion` reste lu à chaque requête : il décrit le checkout du projet parent, que ce processus ne charge pas et qui peut légitimement changer sous un serveur en marche.
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**Corrigé — la sonde de vivacité non authentifiée effectuait un travail disque à chaque requête.**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### Corrigé
+- **`GET /api/ping` lisait et analysait `package.json` à chaque appel.** C'est le seul point d'accès joignable sans identifiants : une lecture disque plus une analyse JSON par requête est un levier de déni de service offert à quiconque — CodeQL l'a signalé comme absence de limitation de débit. La version est désormais lue une seule fois à l'enregistrement de la route ; elle ne peut changer sans redémarrage, donc le gestionnaire ne fait aucune E/S. Limiter le débit aurait plafonné les dégâts ; supprimer le travail supprime le levier.
+- **Le masquage du vrai nom du titulaire du profil hors loopback est désormais épinglé par un test.** `/api/health` le remplaçait déjà par `hidden`, mais uniquement parce que cette ligne partage la garde `hidden ?? value` avec la racine du projet. Rien ne le vérifiait : une modification lui donnant sa propre valeur aurait divulgué le nom d'une personne réelle au réseau local sans que rien ne le remarque.
 
 ## [1.228.3] — 2026-08-30
 

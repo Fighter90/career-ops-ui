@@ -11,20 +11,20 @@
 
 ## [1.228.5] — 2026-08-30
 
-**Fixed — the reported version described the file on disk, not the code being run.**
+**修正 — 報告されるバージョンは、実行中のコードではなくディスク上のファイルを表していました。**
 
-### Fixed
-- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+### 修正
+- **`/api/health` が毎リクエストで `package.json` を読み直していたため、古いプロセスが自分では実行していないバージョンを報告していました。** QA は、`version: 1.228.4` と答えながら 1.228.3 で追加された `/api/ping` に 404 を返すローカルインスタンスを見つけました。デプロイ前に起動し、古いコードを提供しつつ、新しいファイルのバージョンを報告していたのです。ファイルをコピーしても再起動しないデプロイは、まさにこうして成功に見えます —— 運用者が確認する唯一の文字列が、その問題を見られない文字列なのです。v1.228.1 のシンボリックリンクと同じ種類で、あのときも rsync は転送の途中で中断しながら成功を報告していました。
 
-  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+  バージョンはモジュール読み込み時に取得され、実行中のコードを表します。古いプロセスは**古い**バージョンを報告します —— それが真実であり、最初のリクエストで見えます。`parentVersion` は意図的にリクエストごとのままです。親チェックアウトを表すもので、このプロセスは読み込まず、稼働中のサーバーの下で正当に変わりうるからです。
 
 ## [1.228.4] — 2026-08-30
 
-**Fixed — the unauthenticated liveness probe did filesystem work on every request.**
+**修正 — 認証なしの死活監視が毎リクエストでディスク処理をしていました。**
 
-### Fixed
-- **`GET /api/ping` read and parsed `package.json` per request.** It is the only endpoint reachable without credentials, so a read plus a JSON parse on every hit is a denial-of-service lever handed to anyone — CodeQL flagged it as missing rate limiting. The version is now read once when the route is registered; it cannot change without a restart anyway, so the handler does no I/O at all. Rate limiting would have capped the damage; removing the work removes the lever.
-- **The profile owner's name being masked off loopback is now pinned by a test.** `/api/health` already replaced it with `hidden` on a non-loopback bind — but only because that row shares the `hidden ?? value` guard with the project root. Nothing tested it, so an edit giving the row its own value would have leaked a real person's name to the LAN with nothing to notice. Raised in review of v1.228.3.
+### 修正
+- **`GET /api/ping` が毎回 `package.json` を読み込んで解析していました。** 認証なしで到達できる唯一のエンドポイントであり、リクエストごとのディスク読み取りと JSON 解析は誰にでも手渡されたサービス拒否のレバーです —— CodeQL はレート制限の欠如として指摘しました。バージョンはルート登録時に一度だけ読み込みます。再起動なしに変わることはないので、ハンドラーは I/O を一切行いません。レート制限は被害に上限をかけますが、処理を取り除けばレバーそのものが消えます。
+- **ループバック外でのプロフィール所有者の実名マスクがテストで固定されました。** `/api/health` はすでに `hidden` に置き換えていましたが、それはその行がプロジェクトルートと `hidden ?? value` のガードを共有しているからにすぎません。何もそれを検証しておらず、その行に独自の値を与える変更があれば、実在する人物の名前が誰にも気づかれずに LAN へ漏れていたはずです。
 
 ## [1.228.3] — 2026-08-30
 

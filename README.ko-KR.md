@@ -16,7 +16,7 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.228.5** — **The reported version described the file on disk, not the code being run.** `/api/health` re-read `package.json` per request, so a process started before a deploy reported the new file's version while serving the old code — QA caught a local instance answering `1.228.4` and 404ing a route added in 1.228.3. That is how a deploy that copies files but never restarts looks like a success. The version is now captured at module load: a stale process reports the OLD version, which is the truth. **2909 tests.**
+> **🆕 최신 릴리스 — v1.228.5** — **보고되는 버전은 실행 중인 코드가 아니라 디스크의 파일을 가리켰습니다.** `/api/health`가 매 요청마다 `package.json`을 다시 읽어, 배포 전에 시작된 프로세스가 옛 코드를 서비스하면서 새 파일의 버전을 보고했습니다 — QA는 `1.228.4`라고 답하면서 1.228.3에 추가된 경로에 404를 반환하는 인스턴스를 찾았습니다. 파일만 복사하고 재시작하지 않은 배포는 이렇게 성공처럼 보입니다. 버전은 이제 모듈 로드 시점에 포착되어, 오래된 프로세스는 **옛** 버전 — 곧 진실을 보고합니다. **테스트 2909개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
