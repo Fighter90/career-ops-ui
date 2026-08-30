@@ -11,6 +11,15 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.228.5] — 2026-08-30
+
+**Fixed — the reported version described the file on disk, not the code being run.**
+
+### Fixed
+- **`/api/health` re-read `package.json` on every request, so a stale process reported a version it was not running.** QA found a local instance answering `version: 1.228.4` while returning 404 for `/api/ping`, a route added in 1.228.3 — started before the deploy, serving the old code, and reporting the new file's version. That is exactly how a deploy that copies files but never restarts looks like a success: the one string an operator checks is the one that cannot see the problem. It is the same class as the v1.228.1 symlink, where rsync aborted mid-transfer and still reported success.
+
+  The version is now captured when the module loads, so it describes the running code. A stale process reports the OLD version — the truth, and visible immediately. `parentVersion` stays per-request: it describes the parent checkout, which this process does not load and which can legitimately change underneath a running server.
+
 ## [1.228.4] — 2026-08-30
 
 **Fixed — the unauthenticated liveness probe did filesystem work on every request.**

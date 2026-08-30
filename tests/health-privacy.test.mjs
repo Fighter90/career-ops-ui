@@ -6,7 +6,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
@@ -48,6 +48,36 @@ async function bootAndGet(host, path = '/api/health') {
 }
 
 const bootAndGetHealth = (host) => bootAndGet(host);
+
+test('the reported version describes the RUNNING code, not the file on disk', async () => {
+  // FIND-4: a local instance answered `version: 1.228.4` while 404ing a route
+  // added in 1.228.3 — it had been started before the deploy and was serving
+  // the old code, but /api/health re-read package.json on every request and so
+  // reported the new file's version. That is how a deploy that copied files
+  // and never restarted looks like a success: the one string an operator
+  // checks is the one that cannot see the problem.
+  process.env.HOST = '127.0.0.1';
+  const app = createApp();
+  const server = await new Promise((r) => { const s = app.listen(0, '127.0.0.1', () => r(s)); });
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const pkgPath = resolve(process.cwd(), 'package.json');
+  const original = readFileSync(pkgPath, 'utf-8');
+  try {
+    const before = (await (await fetch(`${base}/api/health`)).json()).version;
+
+    // Move the file underneath the running process.
+    writeFileSync(pkgPath, JSON.stringify({ ...JSON.parse(original), version: '9.9.9' }, null, 2) + '\n');
+    const health = (await (await fetch(`${base}/api/health`)).json()).version;
+    const ping = (await (await fetch(`${base}/api/ping`)).json()).version;
+
+    assert.equal(health, before, '/api/health must not follow the file');
+    assert.equal(ping, before, '/api/ping must not follow the file either');
+    assert.notEqual(health, '9.9.9');
+  } finally {
+    writeFileSync(pkgPath, original);
+    await new Promise((r) => server.close(r));
+  }
+});
 
 test('/api/ping is a liveness probe that leaks nothing', async () => {
   // It exists so a monitor can reach the service WITHOUT the credentials that

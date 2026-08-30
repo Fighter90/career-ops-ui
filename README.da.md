@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2908%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2909%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.4)
+[![release](https://img.shields.io/badge/release-v1.228.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.228.4** — **The unauthenticated liveness probe did filesystem work on every request.** `GET /api/ping` read and parsed `package.json` per hit — the only endpoint reachable without credentials, so that is a denial-of-service lever handed to anyone (CodeQL: missing rate limiting). The version is now read once at registration and the handler does no I/O. Rate limiting would have capped the damage; removing the work removes the lever. Plus: the masking of the profile owner's name off loopback is now pinned by a test. **2908 tests.**
+> **🆕 Latest release — v1.228.5** — **The reported version described the file on disk, not the code being run.** `/api/health` re-read `package.json` per request, so a process started before a deploy reported the new file's version while serving the old code — QA caught a local instance answering `1.228.4` and 404ing a route added in 1.228.3. That is how a deploy that copies files but never restarts looks like a success. The version is now captured at module load: a stale process reports the OLD version, which is the truth. **2909 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -411,7 +411,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2908 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 2909 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -542,7 +542,7 @@ Når `run: true` er sat på `/api/deep` eller `/api/mode/:slug`, foretrækker se
 ## Tests
 
 ```bash
-npm test                       # 2908 unit/integration tests
+npm test                       # 2909 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
@@ -551,7 +551,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | What                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2908** | Every endpoint, ephemeral server, no network. 329 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
+| `node --test tests/*.test.mjs` (unit + integration) | **2909** | Every endpoint, ephemeral server, no network. 329 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: every route renders, basic flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Full Playwright walkthrough: 11 routes + 12 functional flows.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Browser-driven: dashboard render, navigation, language switch, 404, health, tracker round-trip, pipeline add + invalid-URL sweep, reports, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400, auto-pipeline SSE. |
@@ -671,7 +671,7 @@ Brug den derefter via `data-i18n="scan.newButton"` i markup eller `t('scan.newBu
 
 Issues og PR'er er velkomne. Husregler:
 
-- Kør `npm test` før push — **2908 checks green** er barren (plus 101 Playwright, hvis du rører UI).
+- Kør `npm test` før push — **2909 checks green** er barren (plus 101 Playwright, hvis du rører UI).
 - Ikke-trivielle ændringer går gennem GSD-konveyeren. Se [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Modificér ikke noget i det overordnede `career-ops/`-projekt fra dette repo. Hele pointen er, at dette er et ikke-invasivt overlay. Hårde regler i [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Valgfrit scope: `feat(scan):`. Breaking change: `feat!:`.

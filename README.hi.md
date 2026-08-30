@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-2908%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2909%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.4)
+[![release](https://img.shields.io/badge/release-v1.228.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.228.4** — **The unauthenticated liveness probe did filesystem work on every request.** `GET /api/ping` read and parsed `package.json` per hit — the only endpoint reachable without credentials, so that is a denial-of-service lever handed to anyone (CodeQL: missing rate limiting). The version is now read once at registration and the handler does no I/O. Rate limiting would have capped the damage; removing the work removes the lever. Plus: the masking of the profile owner's name off loopback is now pinned by a test. **2908 tests.**
+> **🆕 Latest release — v1.228.5** — **The reported version described the file on disk, not the code being run.** `/api/health` re-read `package.json` per request, so a process started before a deploy reported the new file's version while serving the old code — QA caught a local instance answering `1.228.4` and 404ing a route added in 1.228.3. That is how a deploy that copies files but never restarts looks like a success. The version is now captured at module load: a stale process reports the OLD version, which is the truth. **2909 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -414,7 +414,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2908 यूनिट + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.121.0)
+└─ tests/                    # 2909 यूनिट + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch
@@ -545,7 +545,7 @@ event: error    data: { message }
 ## टेस्ट
 
 ```bash
-npm test                       # 2908 यूनिट/इंटीग्रेशन टेस्ट
+npm test                       # 2909 यूनिट/इंटीग्रेशन टेस्ट
 npm run test:e2e               # 21 स्मोक e2e (अपना सर्वर खुद बूट करता है)
 npm run test:e2e:full          # 23 व्यापक e2e
 npm run test:e2e:browser       # 101 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×17 + theme)
@@ -554,7 +554,7 @@ npm run test:coverage          # `npm test` जैसा ही, साथ म�
 
 | सूट                       | टेस्ट | क्या                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) | **2908** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 218 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
+| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) | **2909** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 218 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
 | `tests/e2e.mjs` (स्मोक)      | 21 | Playwright हेडलेस: हर राउट रेंडर होता है, बुनियादी फ़्लो।                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | पूर्ण Playwright वॉकथ्रू: 11 राउट + 12 फ़ंक्शनल फ़्लो।                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | ब्राउज़र-ड्रिवन: डैशबोर्ड रेंडर, नेविगेशन, भाषा स्विच, 404, health, tracker राउंड-ट्रिप, pipeline जोड़ना + अमान्य-URL स्वीप, reports, evaluate मैनुअल फ़ॉलबैक, config कीज़ मास्क्ड, CV PUT XSS स्ट्रिप, pipeline preview 400, auto-pipeline SSE। |
@@ -674,7 +674,7 @@ career-ops **हमेशा चालू** रहने पर सर्वो�
 
 Issues और PRs का स्वागत है। घर के नियम:
 
-- पुश करने से पहले `npm test` चलाएँ — **2908 चेक ग्रीन** बार है (यदि आप UI छूते हैं तो साथ में 101 Playwright भी)।
+- पुश करने से पहले `npm test` चलाएँ — **2909 चेक ग्रीन** बार है (यदि आप UI छूते हैं तो साथ में 101 Playwright भी)।
 - गैर-तुच्छ बदलाव GSD पाइपलाइन से होकर गुज़रते हैं। [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md) देखें।
 - इस रेपो के अंदर से पैरेंट `career-ops/` प्रोजेक्ट में कुछ भी संशोधित न करें। पूरा उद्देश्य यही है कि यह एक गैर-आक्रामक ओवरले है। कठोर नियम [`CLAUDE.md`](CLAUDE.md) में हैं।
 - कन्वेंशनल कमिट्स: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`। वैकल्पिक स्कोप: `feat(scan):`। ब्रेकिंग चेंज: `feat!:`।

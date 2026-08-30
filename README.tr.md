@@ -7,16 +7,16 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2908%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2909%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.4)
+[![release](https://img.shields.io/badge/release-v1.228.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.228.4** — **The unauthenticated liveness probe did filesystem work on every request.** `GET /api/ping` read and parsed `package.json` per hit — the only endpoint reachable without credentials, so that is a denial-of-service lever handed to anyone (CodeQL: missing rate limiting). The version is now read once at registration and the handler does no I/O. Rate limiting would have capped the damage; removing the work removes the lever. Plus: the masking of the profile owner's name off loopback is now pinned by a test. **2908 tests.**
+> **🆕 Latest release — v1.228.5** — **The reported version described the file on disk, not the code being run.** `/api/health` re-read `package.json` per request, so a process started before a deploy reported the new file's version while serving the old code — QA caught a local instance answering `1.228.4` and 404ing a route added in 1.228.3. That is how a deploy that copies files but never restarts looks like a success. The version is now captured at module load: a stale process reports the OLD version, which is the truth. **2909 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -411,7 +411,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2908 birim + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 2909 birim + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch
@@ -542,7 +542,7 @@ event: error    data: { message }
 ## Testler
 
 ```bash
-npm test                       # 2908 birim/entegrasyon testi
+npm test                       # 2909 birim/entegrasyon testi
 npm run test:e2e               # 21 smoke e2e (kendi sunucusunu başlatır)
 npm run test:e2e:full          # 23 kapsamlı e2e
 npm run test:e2e:browser       # 101 Playwright tarayıcı (smoke + full-cycle + forms + locale-sweep)
@@ -551,7 +551,7 @@ npm run test:coverage          # `npm test` ile aynı, artı V8 kapsamı
 
 | Paket                       | Test | Ne                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (birim + entegrasyon) | **2908** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
+| `node --test tests/*.test.mjs` (birim + entegrasyon) | **2909** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright başsız: her rota render edilir, temel akışlar.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Tam Playwright gezintisi: 11 rota + 12 işlevsel akış.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |
@@ -671,7 +671,7 @@ Ardından bunu işaretlemede `data-i18n="scan.newButton"` ya da JS'de `t('scan.n
 
 Issue'lar ve PR'lar memnuniyetle karşılanır. Ev kuralları:
 
-- Push'tan önce `npm test` çalıştırın — **2908 kontrol yeşil** çıtadır (arayüze dokunursanız artı 101 Playwright).
+- Push'tan önce `npm test` çalıştırın — **2909 kontrol yeşil** çıtadır (arayüze dokunursanız artı 101 Playwright).
 - Önemsiz olmayan değişiklikler GSD pipeline'ından geçer. Bkz. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Bu depo içinden üst `career-ops/` projesindeki hiçbir şeyi değiştirmeyin. Bütün mesele, bunun invaziv olmayan bir örtü olmasıdır. Katı kurallar [`CLAUDE.md`](CLAUDE.md) içinde.
 - Konvansiyonel commit'ler: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. İsteğe bağlı kapsam: `feat(scan):`. Kırıcı değişiklik: `feat!:`.
