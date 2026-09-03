@@ -9,6 +9,13 @@
  * in-browser by tests/playwright-scan-filters.mjs.
  */
 window.ScanResults = (function () {
+  // NOT i18n keys, and deliberately so: every label here is the job board's own
+  // brand name — "Built In", "hh.ru", "4 Day Week", "a16z Speedrun". A brand
+  // reads the same in all 17 locales, and routing it through I18n.t() would
+  // invite 17 translations of a proper noun. These mirror `meta.label` from the
+  // server registry, which is English for the same reason; the drift between
+  // the two is what tests/scan-fallback-sources.test.mjs gates. Surrounding UI
+  // copy — the dropdown's own label, placeholder and empty state — IS localized.
   const FALLBACK_SOURCES = [
     { value: 'builtin',      label: 'Built In' },
     { value: 'feishu-jobs',  label: 'Feishu Jobs' },
