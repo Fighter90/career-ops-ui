@@ -41,5 +41,16 @@ export function htmlToText(content) {
   // delimiters. The second strip handles entity-escaped tags revealed by the
   // first decode; the final decode retains the double-decode behavior.
   const decoded = decodeEntities(stripMarkup(content));
-  return decodeEntities(stripMarkup(decoded)).replace(/\s+/g, ' ').trim().slice(0, DESCRIPTION_CAP);
+  // Each decode is followed by a strip, so double-encoded active markup cannot
+  // become the final plain-text output. A trailing incomplete opener has no
+  // closing `>` for stripMarkup() to consume — `safe &lt;img src=x onerror=1`
+  // used to survive as `safe <img src=x onerror=1` — so drop just its leading
+  // angle bracket: the text stays readable and is inert. Ported from parent
+  // career-ops v1.31.0 (#3491).
+  const decodedTwice = decodeEntities(stripMarkup(decoded));
+  return stripMarkup(decodedTwice)
+    .replace(/<(?=\/?[a-z!?])/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, DESCRIPTION_CAP);
 }

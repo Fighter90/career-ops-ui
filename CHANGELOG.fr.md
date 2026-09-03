@@ -11,6 +11,22 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.229.0] — 2026-08-31
+
+**Ajouté — quatre sources de scan issues du career-ops parent v1.31.0 : Built In, Feishu Jobs, Garena et MokaHR.**
+
+### Ajouté
+- **Quatre nouvelles sources, 86 → 90** (85 EN + 5 RU), `ALL_ADAPTERS` **81 → 85**, toutes sans jeton. **Built In** couvre les neuf marchés du tableau tech américain et **n'embarque aucune requête par défaut** : une entrée sans `queries:` ni `categories:` ne scanne rien et le dit, car une source partagée ne doit pas porter les mots-clés de quelqu'un ; un marché hors liste est **refusé**, jamais remplacé en silence par le tableau national. **Feishu Jobs** n'accepte que deux formes d'hôte, qui utilisent des **chemins différents** pour la page de l'offre. **Garena** est mono-entreprise : `office` façonne le **lien**, pas la liste. **MokaHR** renvoie une **réponse chiffrée** (enveloppe AES-128-CBC dont la clé voyage à côté) — de l'obfuscation, pas de la sécurité, mais sans déchiffrement on ne lit rien.
+
+### Corrigé
+- **`htmlToText` pouvait laisser passer une ouverture de balise incomplète dans le texte.** `safe &lt;img src=x onerror=1` ressortait en `safe <img src=x onerror=1`. Chaque décodage est désormais suivi d'un nettoyage, et l'ouverture finale perd son chevron. Porté du parent (#3491).
+
+### Notes
+- **Rien n'a été porté du correctif Workday du parent.** Il récupère les tenants dont le backend plafonne la pagination à l'offset 2000 — web-ui ne pagine pas Workday (un POST à `offset: 0`, 100 lignes).
+- **Les correctifs `verify-cv-facts` et `merge-tracker` n'ont demandé aucun port** : web-ui exécute ces scripts depuis le checkout du parent.
+- Tests : **2909 → 2956** (+47).
+
+
 ## [1.228.5] — 2026-08-30
 
 **Corrigé — la version rapportée décrivait le fichier sur disque, pas le code exécuté.**

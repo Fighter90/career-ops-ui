@@ -8,6 +8,22 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.229.0] — 2026-08-31
+
+**Tilføjet — fire scanningskilder fra forældreprojektet career-ops v1.31.0: Built In, Feishu Jobs, Garena og MokaHR.**
+
+### Tilføjet
+- **Fire nye kilder, 86 → 90** (85 EN + 5 RU), `ALL_ADAPTERS` **81 → 85**, alle uden tokens. **Built In** dækker de ni markeder på den amerikanske tech-tavle og har **ingen standardforespørgsel**: en post uden `queries:` og `categories:` scanner intet og siger det — en delt kilde må ikke bære nogens søgeord; et marked uden for listen **afvises**, aldrig stille erstattet af den nationale tavle. **Feishu Jobs** accepterer præcis to værtsformer, som bruger **forskellige stier** til jobsiden. **Garena** er ét firma: `office` former **linket**, ikke listen. **MokaHR** returnerer et **krypteret svar** (AES-128-CBC-konvolut med nøglen ved siden af) — sløring, ikke sikkerhed, men uden dekryptering læses intet.
+
+### Rettet
+- **`htmlToText` kunne lade en ufuldstændig tag-åbner slippe ud i teksten.** `safe &lt;img src=x onerror=1` kom ud som `safe <img src=x onerror=1`. Nu følges hver afkodning af en oprydning, og den afsluttende åbner mister sin vinkelparentes. Porteret fra forældreprojektet (#3491).
+
+### Noter
+- **Intet blev porteret fra forældreprojektets Workday-rettelse.** Den redder tenants, hvis backend låser pagineringen ved offset 2000 — web-ui paginerer slet ikke Workday (ét POST på `offset: 0`, 100 rækker).
+- **Rettelserne i `verify-cv-facts` og `merge-tracker` krævede ingen portering**: web-ui kører de scripts fra forældreprojektets checkout.
+- Tests: **2909 → 2956** (+47).
+
+
 ## [1.228.5] — 2026-08-30
 
 **Rettet — den rapporterede version beskrev filen på disken, ikke den kørende kode.**

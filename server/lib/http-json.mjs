@@ -66,6 +66,14 @@ export const BROWSER_LIKE_USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36';
 
 /**
+ * macOS-flavoured browser UA. Some tenants' WAFs treat the Windows string
+ * above as automation and 403 it while serving this one — Feishu Jobs is the
+ * live case. Ported from parent career-ops v1.31.0.
+ */
+export const MACOS_BROWSER_LIKE_USER_AGENT =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36';
+
+/**
  * undici's `err.cause.message` for a `fetch(url, { redirect: 'error' })` that
  * meets a 3xx. Undocumented and undici-internal, so it is pinned here (and by a
  * test) — if a Node upgrade changes the wording, `fetchJsonWithRetry` reverts to

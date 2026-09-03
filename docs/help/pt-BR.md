@@ -893,7 +893,7 @@ Abaixo do log, a tabela de resultados renderiza linhas de
 > atualiza automaticamente enquanto uma varredura roda e mais uma vez logo após
 > terminar — sem recarregar manualmente nem trocar de página.
 
-> **v1.81.0 — Máx. por fonte & quarentena de fontes.** O campo **Máx. por fonte**
+> **v1.85.0 — Máx. por fonte & quarentena de fontes.** O campo **Máx. por fonte**
 > ao lado do botão Varrer limita quantas vagas cada board contribui (vazio/0 =
 > sem limite, o padrão) — útil quando um board enorme dominaria os resultados.
 > Separadamente, qualquer fonte que retorne um **404 / 410** permanente é gravada
@@ -1667,7 +1667,7 @@ copie a saída, e busque a issue no rastreador em
 
 ## 17. Como adicionar uma nova fonte de portal de vagas
 
-O career-ops-ui trata cada job board como um **adapter** — um único arquivo em [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe como buscar e normalizar os resultados de um portal. Atualmente o registry `server/lib/sources/` inclui **86** adapters — **81 em inglês + 5 russos**. O conjunto em inglês abrange os principais ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo o board selecionados por um `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), e ATSes por tenant autodetectados a partir de um host `careers_url` ou de uma URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **A lista completa nunca precisa ser contada à mão aqui — ela é autodescoberta a partir de `server/lib/sources/` e exibida ao vivo no dropdown Source de `#/scan`.** Veja a §5 para o YAML e `docs/portals-examples.md` para entradas prontas para copiar e colar.
+O career-ops-ui trata cada job board como um **adapter** — um único arquivo em [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe como buscar e normalizar os resultados de um portal. Atualmente o registry `server/lib/sources/` inclui **90** adapters — **85 em inglês + 5 russos**. O conjunto em inglês abrange os principais ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo o board selecionados por um `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), e ATSes por tenant autodetectados a partir de um host `careers_url` ou de uma URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **A lista completa nunca precisa ser contada à mão aqui — ela é autodescoberta a partir de `server/lib/sources/` e exibida ao vivo no dropdown Source de `#/scan`.** Veja a §5 para o YAML e `docs/portals-examples.md` para entradas prontas para copiar e colar.
 
 > **v1.69.0 (P-14) — auto-descoberta drop-in.** Adicionar uma 12.ª fonte é agora
 > um **drop puro de arquivo**. O registry

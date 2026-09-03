@@ -8,6 +8,22 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.229.0] — 2026-08-31
+
+**Adicionado — quatro fontes de varredura do career-ops pai v1.31.0: Built In, Feishu Jobs, Garena e MokaHR.**
+
+### Adicionado
+- **Quatro fontes novas, 86 → 90** (85 EN + 5 RU), `ALL_ADAPTERS` **81 → 85**, todas sem token. **Built In** é um agregador dos nove mercados do quadro de tecnologia dos EUA e **não traz consulta padrão** — uma entrada sem `queries:` nem `categories:` não varre nada e avisa, porque uma fonte compartilhada não deve carregar os termos de busca de uma pessoa; um mercado fora da lista permitida é **recusado**, nunca trocado em silêncio pelo quadro nacional. **Feishu Jobs** aceita duas formas de host e mais nenhuma, e elas usam **caminhos diferentes** para a página da vaga. **Garena** é de empresa única: `office` molda o **link**, não a listagem. **MokaHR** devolve a **resposta cifrada** (envelope AES-128-CBC com a chave ao lado) — ofuscação, não segurança, mas sem decifrar não se lê nada.
+
+### Corrigido
+- **`htmlToText` podia deixar um abridor de tag incompleto vazar para o texto.** `safe &lt;img src=x onerror=1` saía como `safe <img src=x onerror=1`. Agora cada decodificação é seguida de uma limpeza e o abridor final perde o sinal de menor. Portado do pai (#3491).
+
+### Notas
+- **Nada foi portado do conserto de Workday do pai.** Ele recupera inquilinos cujo backend limita a paginação no offset 2000 — o web-ui não pagina Workday (um POST em `offset: 0`, 100 linhas), então não há limite a contornar.
+- **Os consertos de `verify-cv-facts` e `merge-tracker` não exigiram port**: o web-ui executa esses scripts do checkout do pai.
+- Testes: **2909 → 2956** (+47).
+
+
 ## [1.228.5] — 2026-08-30
 
 **Corrigido — a versão informada descrevia o arquivo em disco, não o código em execução.**

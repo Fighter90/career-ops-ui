@@ -2,6 +2,22 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.229.0] — 2026-08-31
+
+**Eklendi — üst proje career-ops v1.31.0'dan dört tarama kaynağı: Built In, Feishu Jobs, Garena ve MokaHR.**
+
+### Eklendi
+- **Dört yeni kaynak, 86 → 90** (85 EN + 5 RU), `ALL_ADAPTERS` **81 → 85**, dördü de jetonsuz. **Built In** ABD teknoloji panosunun dokuz pazarını kapsar ve **varsayılan sorgu taşımaz**: `queries:` ve `categories:` olmayan bir kayıt hiçbir şey taramaz ve bunu söyler — paylaşılan bir kaynak kimsenin arama sözcüklerini taşımamalı; listede olmayan bir pazar **reddedilir**, sessizce ulusal panoyla değiştirilmez. **Feishu Jobs** tam olarak iki ana bilgisayar biçimi kabul eder ve bunlar ilan sayfasına **farklı yollar** kullanır. **Garena** tek şirkettir: `office` **bağlantıyı** biçimlendirir, listeyi değil. **MokaHR** **şifreli yanıt** döndürür (anahtarı yanında gelen AES-128-CBC zarfı) — güvenlik değil gizleme, ama çözmeden hiçbir şey okunmaz.
+
+### Düzeltildi
+- **`htmlToText` metne yarım bir etiket açıcısını sızdırabiliyordu.** `safe &lt;img src=x onerror=1` şöyle çıkıyordu: `safe <img src=x onerror=1`. Artık her çözümlemeyi bir temizleme izliyor ve sondaki açıcı köşeli işaretini yitiriyor. Üst projeden portlandı (#3491).
+
+### Notlar
+- **Üst projenin Workday düzeltmesinden hiçbir şey portlanmadı.** O düzeltme, arka ucu sayfalamayı 2000. konumda kilitleyen kiracıları kurtarır — web-ui Workday'i hiç sayfalamıyor (`offset: 0`'da tek POST, 100 satır).
+- **`verify-cv-facts` ve `merge-tracker` düzeltmeleri port gerektirmedi**: web-ui bu betikleri üst projenin checkout'undan çalıştırır.
+- Testler: **2909 → 2956** (+47).
+
+
 ## [1.228.5] — 2026-08-30
 
 **Düzeltildi — bildirilen sürüm diskteki dosyayı tarif ediyordu, çalışan kodu değil.**

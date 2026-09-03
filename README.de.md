@@ -7,16 +7,16 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2909%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2956%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.5)
+[![release](https://img.shields.io/badge/release-v1.229.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.229.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.228.5** — **Die gemeldete Version beschrieb die Datei auf der Festplatte, nicht den laufenden Code.** `/api/health` las `package.json` bei jeder Anfrage neu: ein vor einem Deployment gestarteter Prozess meldete die Version der neuen Datei, während er den alten Code auslieferte — die QA fand eine Instanz, die `1.228.4` antwortete und auf einer in 1.228.3 ergänzten Route 404 lieferte. So sieht ein Deployment aus, das Dateien kopiert und nicht neu startet. Die Version wird jetzt beim Laden des Moduls erfasst: ein veralteter Prozess meldet die **alte** Version — die Wahrheit. **2909 Tests.**
+> **🆕 Neueste Version — v1.229.0** — **Vier neue Quellen aus dem Elternprojekt v1.31.0: Built In, Feishu Jobs, Garena und MokaHR** — 86 → **90 Quellen** (85 EN + 5 RU), alle ohne Token. Built In bringt **keine Standardabfrage** mit und lehnt einen nicht gelisteten Markt ab, statt still das nationale Board zu scannen; MokaHR liefert eine **verschlüsselte Antwort**, deren Schlüssel mitreist. Ebenfalls behoben: `htmlToText` konnte einen unvollständigen Tag-Öffner durchlassen. **2956 Tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -411,7 +411,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2909 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 2956 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -542,7 +542,7 @@ Wenn `run: true` bei `/api/deep` oder `/api/mode/:slug` gesetzt ist, bevorzugt d
 ## Tests
 
 ```bash
-npm test                       # 2909 unit/integration tests
+npm test                       # 2956 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
@@ -551,11 +551,11 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | Was                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2909** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 329 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) | **2956** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 329 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: jede Route rendert, grundlegende Flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Vollständiger Playwright-Durchlauf: 11 Routen + 12 funktionale Flows.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |
-| **Gesamt** (alle vier Suites)                   | **3040** | **0 Fehler, 0 Flakes**                                                                                    |
+| **Gesamt** (alle vier Suites)                   | **3101** | **0 Fehler, 0 Flakes**                                                                                    |
 
 Abdeckung: ~93 % Zeilen / ~83 % Zweige über `--experimental-test-coverage`.
 
@@ -671,7 +671,7 @@ Verwenden Sie sie dann über `data-i18n="scan.newButton"` im Markup oder `t('sca
 
 Issues und PRs willkommen. Hausregeln:
 
-- Führen Sie `npm test` vor dem Pushen aus — **2909 checks green** ist die Messlatte (plus 101 Playwright, wenn Sie die UI berühren).
+- Führen Sie `npm test` vor dem Pushen aus — **2956 checks green** ist die Messlatte (plus 101 Playwright, wenn Sie die UI berühren).
 - Nicht-triviale Änderungen durchlaufen die GSD-Pipeline. Siehe [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Ändern Sie nichts im übergeordneten `career-ops/`-Projekt von innerhalb dieses Repos. Der ganze Sinn ist, dass dies ein nicht-invasives Overlay ist. Harte Regeln in [`CLAUDE.md`](CLAUDE.md).
 - Conventional Commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Optionaler Scope: `feat(scan):`. Breaking Change: `feat!:`.

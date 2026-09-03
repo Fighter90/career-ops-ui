@@ -9,6 +9,22 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.229.0] — 2026-08-31
+
+**Dodano — cztery źródła skanowania z nadrzędnego career-ops v1.31.0: Built In, Feishu Jobs, Garena i MokaHR.**
+
+### Dodano
+- **Cztery nowe źródła, 86 → 90** (85 EN + 5 RU), `ALL_ADAPTERS` **81 → 85**, wszystkie bez tokenów. **Built In** obejmuje dziewięć rynków amerykańskiej tablicy technologicznej i **nie niesie domyślnego zapytania**: wpis bez `queries:` i `categories:` nic nie skanuje i mówi o tym wprost, bo wspólne źródło nie może nieść czyichś słów kluczowych; rynek spoza listy jest **odrzucany**, nigdy po cichu zastępowany tablicą krajową. **Feishu Jobs** przyjmuje dokładnie dwie formy hosta, a używają one **różnych ścieżek** do strony oferty. **Garena** to jedna firma: `office` kształtuje **link**, nie listę. **MokaHR** zwraca **zaszyfrowaną odpowiedź** (koperta AES-128-CBC z kluczem obok) — to zaciemnienie, nie zabezpieczenie, ale bez odszyfrowania nic się nie odczyta.
+
+### Naprawiono
+- **`htmlToText` mógł przepuścić do tekstu niedomknięty znacznik otwierający.** `safe &lt;img src=x onerror=1` wychodziło jako `safe <img src=x onerror=1`. Teraz po każdym dekodowaniu następuje czyszczenie, a końcowy znacznik traci nawias. Przeniesione z projektu nadrzędnego (#3491).
+
+### Uwagi
+- **Z poprawki Workday nie przeniesiono nic.** Ratuje ona dzierżawców, u których backend blokuje paginację na offsecie 2000 — web-ui w ogóle nie paginuje Workday (jeden POST na `offset: 0`, 100 wierszy).
+- **Poprawki `verify-cv-facts` i `merge-tracker` nie wymagały przeniesienia**: web-ui uruchamia te skrypty z checkoutu projektu nadrzędnego.
+- Testy: **2909 → 2956** (+47).
+
+
 ## [1.228.5] — 2026-08-30
 
 **Naprawiono — zgłaszana wersja opisywała plik na dysku, a nie uruchomiony kod.**

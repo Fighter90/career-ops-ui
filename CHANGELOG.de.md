@@ -2,6 +2,22 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.229.0] — 2026-08-31
+
+**Hinzugefügt — vier Scan-Quellen aus dem Eltern-career-ops v1.31.0: Built In, Feishu Jobs, Garena und MokaHR.**
+
+### Hinzugefügt
+- **Vier neue Quellen, 86 → 90** (85 EN + 5 RU), `ALL_ADAPTERS` **81 → 85**, alle ohne Token. **Built In** deckt alle neun Märkte des US-Tech-Boards ab und bringt **keine Standardabfrage** mit: ein Eintrag ohne `queries:` und `categories:` scannt nichts und sagt es — eine geteilte Quelle darf niemandes Suchbegriffe tragen; ein nicht gelisteter Markt wird **abgelehnt**, nie stillschweigend durch das nationale Board ersetzt. **Feishu Jobs** akzeptiert genau zwei Hostformen, die **unterschiedliche Pfade** zur Stellenseite verwenden. **Garena** ist Einzelunternehmen: `office` formt den **Link**, nicht die Liste. **MokaHR** liefert eine **verschlüsselte Antwort** (AES-128-CBC-Umschlag, Schlüssel reist mit) — Obfuskation, keine Sicherheit, aber ohne Entschlüsselung liest man nichts.
+
+### Behoben
+- **`htmlToText` konnte einen unvollständigen Tag-Öffner in den Text durchlassen.** `safe &lt;img src=x onerror=1` kam als `safe <img src=x onerror=1` heraus. Jetzt folgt auf jede Dekodierung ein Strip, und der abschließende Öffner verliert seine spitze Klammer. Vom Elternprojekt portiert (#3491).
+
+### Hinweise
+- **Aus dem Workday-Fix des Elternprojekts wurde nichts portiert.** Er rettet Tenants, deren CXS-Backend die Paginierung bei Offset 2000 deckelt — web-ui paginiert Workday gar nicht (ein POST bei `offset: 0`, 100 Zeilen).
+- **Die Fixes an `verify-cv-facts` und `merge-tracker` brauchten keinen Port**: web-ui führt diese Skripte aus dem Eltern-Checkout aus.
+- Tests: **2909 → 2956** (+47).
+
+
 ## [1.228.5] — 2026-08-30
 
 **Behoben — die gemeldete Version beschrieb die Datei auf der Festplatte, nicht den laufenden Code.**
