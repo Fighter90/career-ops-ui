@@ -2,7 +2,7 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
-## [1.229.0] — 2026-08-31
+## [1.229.0] — 2026-09-03
 
 **Hinzugefügt — vier Scan-Quellen aus dem Eltern-career-ops v1.31.0: Built In, Feishu Jobs, Garena und MokaHR.**
 

@@ -2,7 +2,7 @@
 
 > यह परिवर्तन-सूची v1.122.0 से शुरू होती है — वह संस्करण जिसमें हिन्दी स्थानीयकरण जोड़ा गया। पिछले संस्करणों के लिए [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) देखें।
 
-## [1.229.0] — 2026-08-31
+## [1.229.0] — 2026-09-03
 
 **जोड़ा गया — पैरेंट career-ops v1.31.0 से चार स्कैन स्रोत: Built In, Feishu Jobs, Garena और MokaHR।**
 

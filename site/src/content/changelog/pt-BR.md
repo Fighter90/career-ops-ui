@@ -8,7 +8,7 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
-## [1.229.0] — 2026-08-31
+## [1.229.0] — 2026-09-03
 
 **Adicionado — quatro fontes de varredura do career-ops pai v1.31.0: Built In, Feishu Jobs, Garena e MokaHR.**
 
