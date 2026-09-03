@@ -2,7 +2,7 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
-## [1.229.0] — 2026-08-31
+## [1.229.0] — 2026-09-03
 
 **Aggiunto — quattro fonti di scansione dal career-ops padre v1.31.0: Built In, Feishu Jobs, Garena e MokaHR.**
 

@@ -9,7 +9,7 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
-## [1.229.0] — 2026-08-31
+## [1.229.0] — 2026-09-03
 
 **Dodano — cztery źródła skanowania z nadrzędnego career-ops v1.31.0: Built In, Feishu Jobs, Garena i MokaHR.**
 

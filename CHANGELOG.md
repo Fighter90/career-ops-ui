@@ -8,7 +8,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
-## [1.229.0] — 2026-08-31
+## [1.229.0] — 2026-09-03
 
 **Added — four scanner sources from parent career-ops v1.31.0: Built In, Feishu Jobs, Garena and MokaHR.**
 

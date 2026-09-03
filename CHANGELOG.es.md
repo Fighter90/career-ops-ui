@@ -11,7 +11,7 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
-## [1.229.0] — 2026-08-31
+## [1.229.0] — 2026-09-03
 
 **Añadido — cuatro fuentes de escaneo del career-ops padre v1.31.0: Built In, Feishu Jobs, Garena y MokaHR.**
 

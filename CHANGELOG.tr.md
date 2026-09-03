@@ -2,7 +2,7 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
-## [1.229.0] — 2026-08-31
+## [1.229.0] — 2026-09-03
 
 **Eklendi — üst proje career-ops v1.31.0'dan dört tarama kaynağı: Built In, Feishu Jobs, Garena ve MokaHR.**
 

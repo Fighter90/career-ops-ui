@@ -8,7 +8,7 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
-## [1.229.0] — 2026-08-31
+## [1.229.0] — 2026-09-03
 
 **Tilføjet — fire scanningskilder fra forældreprojektet career-ops v1.31.0: Built In, Feishu Jobs, Garena og MokaHR.**
 
