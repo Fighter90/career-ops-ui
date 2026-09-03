@@ -2,6 +2,22 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.229.0] — 2026-09-03
+
+**Aggiunto — quattro fonti di scansione dal career-ops padre v1.31.0: Built In, Feishu Jobs, Garena e MokaHR.**
+
+### Aggiunto
+- **Quattro nuove fonti, 86 → 90** (85 EN + 5 RU), `ALL_ADAPTERS` **81 → 85**, tutte senza token. **Built In** copre i nove mercati della bacheca tech statunitense e **non porta query predefinite**: una voce senza `queries:` né `categories:` non scansiona nulla e lo dice, perché una fonte condivisa non deve portare i termini di ricerca di qualcuno; un mercato fuori elenco viene **rifiutato**, mai sostituito in silenzio dalla bacheca nazionale. **Feishu Jobs** accetta due sole forme di host, che usano **percorsi diversi** per la pagina dell'offerta. **Garena** è mono-azienda: `office` modella il **link**, non l'elenco. **MokaHR** restituisce una **risposta cifrata** (busta AES-128-CBC con la chiave accanto) — offuscamento, non sicurezza, ma senza decifrare non si legge nulla.
+
+### Corretto
+- **`htmlToText` poteva lasciar passare nel testo un apri-tag incompleto.** `safe &lt;img src=x onerror=1` usciva come `safe <img src=x onerror=1`. Ora ogni decodifica è seguita da una ripulitura e l'apri-tag finale perde la parentesi angolare. Portato dal padre (#3491).
+
+### Note
+- **Dal fix Workday del padre non è stato portato nulla.** Recupera i tenant il cui backend blocca la paginazione all'offset 2000 — web-ui non pagina Workday (un POST a `offset: 0`, 100 righe).
+- **I fix a `verify-cv-facts` e `merge-tracker` non hanno richiesto port**: web-ui esegue quegli script dal checkout del padre.
+- Test: **2909 → 2956** (+47).
+
+
 ## [1.228.5] — 2026-08-30
 
 **Corretto — la versione riportata descriveva il file su disco, non il codice in esecuzione.**

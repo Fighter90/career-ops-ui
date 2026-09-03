@@ -11,6 +11,27 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.229.0] — 2026-09-03
+
+**Añadido — cuatro fuentes de escaneo del career-ops padre v1.31.0: Built In, Feishu Jobs, Garena y MokaHR.**
+
+### Añadido
+- **Cuatro fuentes nuevas, 86 → 90** (85 EN + 5 RU), `ALL_ADAPTERS` **81 → 85**. Las cuatro sin tokens: ni clave de API ni inicio de sesión.
+  - **Built In** (`provider: builtin`) — el tablón tecnológico estadounidense, en sus nueve mercados. Los empleadores publican allí directamente, así que es un agregador como RemoteOK. **No trae consulta por defecto**: una entrada sin `queries:` ni `categories:` no escanea nada y lo dice, porque una fuente compartida no debe llevar los términos de búsqueda de una persona. Un mercado fuera de la lista permitida se **rechaza**, nunca se sustituye en silencio por el tablón nacional.
+  - **Feishu Jobs** (`provider: feishu-jobs`) — 飞书招聘, el endpoint que llama la propia página de empleo del inquilino. Dos formas de host y ninguna más. Usan **rutas distintas** para la página de la vacante, así que una sola plantilla habría generado enlaces muertos para la mitad.
+  - **Garena** (`provider: garena`) — una sola empresa, un host fijo. `office` da forma al **enlace**, no al listado.
+  - **MokaHR** (`provider: mokahr`) — SaaS de RR. HH. china. **La respuesta viene cifrada**: un sobre AES-128-CBC cuya clave viaja junto al texto cifrado. Es ofuscación, no seguridad, pero un análisis JSON normal no ve nada, así que descifrar es parte de leer el tablón.
+
+### Corregido
+- **`htmlToText` podía dejar pasar un abridor de etiqueta incompleto al texto plano.** `safe &lt;img src=x onerror=1` salía como `safe <img src=x onerror=1`. Ahora cada decodificación va seguida de un barrido de marcado y el abridor final pierde su ángulo: el texto sigue legible y queda inerte. Portado del padre (#3491).
+
+### Notas
+- **Del arreglo de Workday del padre no se portó nada.** Recupera inquilinos cuyo backend limita la paginación en el offset 2000 — web-ui no pagina Workday en absoluto (un POST en `offset: 0`, 100 filas), así que no hay límite que sortear.
+- **Los arreglos de `verify-cv-facts` y `merge-tracker` no necesitaron port**: web-ui ejecuta esos scripts desde el checkout del padre en vez de replicar su lógica.
+- El salario de Built In se formatea aquí como texto: el `parseSalary` del padre devuelve `{ min, max }` y el contrato de web-ui guarda `salary` como cadena.
+- Pruebas: **2909 → 2956** (+47).
+
+
 ## [1.228.5] — 2026-08-30
 
 **Corregido — la versión informada describía el archivo en disco, no el código en ejecución.**

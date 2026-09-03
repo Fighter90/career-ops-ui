@@ -7,8 +7,9 @@
  * behind. Releases v1.23 and v1.24 had landed in `CHANGELOG.md` but
  * never propagated to the locale files. No CI gate noticed.
  *
- * This script reads the newest `## [X.Y.Z]` heading from each
- * CHANGELOG file and fails the build if any locale lags behind EN.
+ * This script reads the newest `## [X.Y.Z] — YYYY-MM-DD` heading from each
+ * CHANGELOG file and fails the build if any locale lags behind EN in either
+ * the version or the date.
  *
  * Wired into `npm run test:ci` so the next release can't ship with
  * silent locale drift.
@@ -22,27 +23,39 @@ const REPO = join(__dirname, '..');
 
 const LOCALES = ['es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
 
+// The date is captured as well as the version. v1.229.0 shipped with the
+// EN heading corrected to the release date while all 16 locales kept the
+// drafting date — this gate passed clean, because it only ever compared
+// versions. A date that differs per locale is the same drift class as a
+// version that does: it tells two readers two different things about when a
+// release became available.
 function newestEntry(path) {
   const src = readFileSync(path, 'utf8');
-  const m = src.match(/^## \[(\d+\.\d+\.\d+)\]/m);
-  return m ? m[1] : null;
+  const m = src.match(/^## \[(\d+\.\d+\.\d+)\][^\S\n]*(?:[-\u2013\u2014][^\S\n]*(\d{4}-\d{2}-\d{2}))?/m);
+  return m ? { version: m[1], date: m[2] || null } : null;
 }
 
-const enVersion = newestEntry(join(REPO, 'CHANGELOG.md'));
-if (!enVersion) {
+const en = newestEntry(join(REPO, 'CHANGELOG.md'));
+if (!en) {
   console.error('::error::CHANGELOG.md has no `## [X.Y.Z]` heading — schema regression');
   process.exit(1);
 }
 
 const lagging = [];
 for (const lang of LOCALES) {
-  const v = newestEntry(join(REPO, `CHANGELOG.${lang}.md`));
-  if (!v) {
+  const entry = newestEntry(join(REPO, `CHANGELOG.${lang}.md`));
+  if (!entry) {
     lagging.push(`CHANGELOG.${lang}.md — no version heading found`);
     continue;
   }
-  if (v !== enVersion) {
-    lagging.push(`CHANGELOG.${lang}.md — newest is ${v}, EN is ${enVersion}`);
+  if (entry.version !== en.version) {
+    lagging.push(`CHANGELOG.${lang}.md — newest is ${entry.version}, EN is ${en.version}`);
+    continue;
+  }
+  // Only compared once the versions agree: on a lagging locale the dates
+  // SHOULD differ, and reporting that too would bury the real fault.
+  if (en.date && entry.date !== en.date) {
+    lagging.push(`CHANGELOG.${lang}.md — v${entry.version} dated ${entry.date ?? '(none)'}, EN dated ${en.date}`);
   }
 }
 
@@ -54,4 +67,4 @@ if (lagging.length) {
   console.error('master is the source of truth.');
   process.exit(1);
 }
-console.log(`✓ CHANGELOG parity: all ${LOCALES.length} locales at v${enVersion}`);
+console.log(`✓ CHANGELOG parity: all ${LOCALES.length} locales at v${en.version}${en.date ? ` (${en.date})` : ''}`);

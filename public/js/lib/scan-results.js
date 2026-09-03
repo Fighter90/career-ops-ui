@@ -10,6 +10,10 @@
  */
 window.ScanResults = (function () {
   const FALLBACK_SOURCES = [
+    { value: 'builtin',      label: 'Built In' },
+    { value: 'feishu-jobs',  label: 'Feishu Jobs' },
+    { value: 'garena',       label: 'Garena' },
+    { value: 'mokahr',       label: 'MokaHR' },
     { value: '4dayweek',        label: '4 Day Week' },
     { value: 'a16z-speedrun-talent', label: 'a16z Speedrun' },
     { value: 'agenticjobs',     label: 'Agentic Jobs' },

@@ -7,16 +7,16 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2909%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2956%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.228.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.228.5)
+[![release](https://img.shields.io/badge/release-v1.229.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.229.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.228.5** — **La version rapportée décrivait le fichier sur disque, pas le code exécuté.** `/api/health` relisait `package.json` à chaque requête : un processus démarré avant un déploiement rapportait la version du nouveau fichier tout en servant l'ancien code — la QA a trouvé une instance répondant `1.228.4` et renvoyant 404 sur une route ajoutée en 1.228.3. C'est ainsi qu'un déploiement qui copie des fichiers sans redémarrer ressemble à un succès. La version est désormais capturée au chargement du module : un processus obsolète rapporte l'**ancienne** version, la vérité. **2909 tests.**
+> **🆕 Dernière version — v1.229.0** — **Quatre nouvelles sources du parent v1.31.0 : Built In, Feishu Jobs, Garena et MokaHR** — 86 → **90 sources** (85 EN + 5 RU), toutes sans jeton. Built In **n'embarque aucune requête par défaut** et refuse un marché hors liste plutôt que de scanner en silence le tableau national ; MokaHR renvoie une **réponse chiffrée** dont la clé voyage à côté. Également corrigé : `htmlToText` pouvait laisser passer une ouverture de balise incomplète. **2956 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -377,7 +377,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2909 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 2956 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -508,7 +508,7 @@ Quand `run: true` est défini sur `/api/deep` ou `/api/mode/:slug`, le serveur p
 ## Tests
 
 ```bash
-npm test                       # 2909 unit/integration tests
+npm test                       # 2956 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
@@ -517,11 +517,11 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | Quoi                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + intégration) | **2909** | Chaque endpoint, serveur éphémère, sans réseau. 329 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + intégration) | **2956** | Chaque endpoint, serveur éphémère, sans réseau. 329 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless : chaque route s'affiche, flux de base.                                                |
 | `tests/e2e-comprehensive.mjs` | 23 | Parcours Playwright complet : 11 routes + 12 flux fonctionnels.                                            |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Piloté par navigateur : rendu du dashboard, navigation, changement de langue, 404, health, aller-retour tracker, ajout pipeline + balayage URL-invalide, rapports, repli manuel d'évaluation, clés de config masquées, retrait XSS au PUT du CV, aperçu pipeline 400, SSE auto-pipeline. |
-| **Total** (all four suites)                   | **3040** | **0 échec, 0 flake**                                                                                    |
+| **Total** (all four suites)                   | **3101** | **0 échec, 0 flake**                                                                                    |
 
 Couverture : ~93 % ligne / ~83 % branche via `--experimental-test-coverage`.
 

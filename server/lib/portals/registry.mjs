@@ -134,8 +134,16 @@ import { torreAdapter } from './adapters/torre.mjs';
 import { itviecAdapter } from './adapters/itviec.mjs';
 import { telegramAdapter } from './adapters/telegram.mjs';
 import { careervietAdapter } from './adapters/careerviet.mjs';
+import { builtinAdapter } from './adapters/builtin.mjs';
+import { feishuJobsAdapter } from './adapters/feishu-jobs.mjs';
+import { garenaAdapter } from './adapters/garena.mjs';
+import { mokahrAdapter } from './adapters/mokahr.mjs';
 
 export const ALL_ADAPTERS = [
+  builtinAdapter,
+  feishuJobsAdapter,
+  garenaAdapter,
+  mokahrAdapter,
   greenhouseAdapter,
   ashbyAdapter,
   leverAdapter,

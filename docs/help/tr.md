@@ -1028,7 +1028,7 @@ Günlüğün altında, sonuç tablosu `data/last-scan.json`'dan satırları işl
 > — elle yeniden yükleme veya sayfa değişimi gerekmez. Önbellek her taramanın
 > başında sıfırlanır ve yeniden doldurulur.
 
-> **v1.81.0 — Kaynak başına maks. ve kaynak karantinası.** Scan düğmesinin
+> **v1.85.0 — Kaynak başına maks. ve kaynak karantinası.** Scan düğmesinin
 > yanındaki **Max per source** alanı, her kartın kaç iş katkısını sınırlar
 > (boş/0 = sınırsız, varsayılan) — devasa bir kart aksi halde baskın olacağında
 > kullanışlıdır. Ayrıca, kalıcı bir **404 / 410** döndüren herhangi bir kaynak
@@ -1781,7 +1781,7 @@ takipçisinde sorunu arayın.
 
 ## 17. Yeni bir iş-portalı kaynağı nasıl eklenir
 
-career-ops-ui, her iş kartını bir **adaptör** olarak ele alır — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) altında, bir kartın sonuçlarını nasıl getirip normalleştireceğini bilen tek bir dosya. Şu anda `server/lib/sources/` kaydı **86** adaptör gönderir — **81 İngilizce + 5 Rusça** kart. İngilizce set, başlıca ATS'leri (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), açık bir `provider:` ile seçilen kart-geneli toplayıcıları (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) ve bir `careers_url` sunucusundan veya açık bir `api:` URL'sinden otomatik tespit edilen kiracı-başına ATS'leri (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …) kapsar. **Tam listenin burada asla elle sayılması gerekmez — `server/lib/sources/`'tan otomatik keşfedilir ve `#/scan`'in Source açılır menüsünde canlı olarak gösterilir.** YAML için §5'e ve kopyala-yapıştır girdileri için `docs/portals-examples.md`'ye bakın.
+career-ops-ui, her iş kartını bir **adaptör** olarak ele alır — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) altında, bir kartın sonuçlarını nasıl getirip normalleştireceğini bilen tek bir dosya. Şu anda `server/lib/sources/` kaydı **90** adaptör gönderir — **85 İngilizce + 5 Rusça** kart. İngilizce set, başlıca ATS'leri (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), açık bir `provider:` ile seçilen kart-geneli toplayıcıları (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) ve bir `careers_url` sunucusundan veya açık bir `api:` URL'sinden otomatik tespit edilen kiracı-başına ATS'leri (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …) kapsar. **Tam listenin burada asla elle sayılması gerekmez — `server/lib/sources/`'tan otomatik keşfedilir ve `#/scan`'in Source açılır menüsünde canlı olarak gösterilir.** YAML için §5'e ve kopyala-yapıştır girdileri için `docs/portals-examples.md`'ye bakın.
 
 > **v1.69.0 (P-14) — sürükle-bırak otomatik keşif.** 12. bir kaynak
 > eklemek artık **saf bir dosya bırakma**. Kayıt

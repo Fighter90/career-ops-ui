@@ -8,6 +8,26 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.229.0] — 2026-09-03
+
+**Added — four scanner sources from parent career-ops v1.31.0: Built In, Feishu Jobs, Garena and MokaHR.**
+
+### Added
+- **Four new sources, 86 → 90** (85 EN + 5 RU), `ALL_ADAPTERS` **81 → 85**. All four are zero-token: no API key, no login.
+  - **Built In** (`provider: builtin`) — the US tech board, board-wide across its nine markets. Employers post there directly, so it is an aggregator like RemoteOK, not a per-company source. It ships **no default query**: an entry with neither `queries:` nor `categories:` scans nothing and says so, because a shared source must never carry one user's search terms. A market host that is not on the allowlist is **refused**, never quietly replaced by the national board — a typo must not silently widen the scan.
+  - **Feishu Jobs** (`provider: feishu-jobs`) — 飞书招聘, the endpoint every tenant's own careers page calls. Two host shapes and nothing else: `jobs.bytedance.com` exactly, or a `*.jobs.feishu.cn` tenant. They use **different job-page paths**, so one URL template would have produced dead links for half of them.
+  - **Garena** (`provider: garena`) — single-company, one fixed host. `office` shapes the job LINK, never the listing: upstream verified live that every office code, invented ones included, returns the same board.
+  - **MokaHR** (`provider: mokahr`) — 国内 HR SaaS. **The response is encrypted**: an AES-128-CBC envelope whose key ships alongside the ciphertext. That is obfuscation rather than security, but it means a plain JSON parse sees nothing, so decryption is part of reading the board at all. Two tenants are refused at config time because their robots.txt excludes the careers path.
+
+### Fixed
+- **`htmlToText` could leak an incomplete tag opener into plain text.** `safe &lt;img src=x onerror=1` came out as `safe <img src=x onerror=1` — the opener has no closing `>` for the tag strip to consume, so it survived. Each decode is now followed by a strip, and a trailing opener loses its angle bracket: the text stays readable and is inert. Ported from the parent (#3491).
+
+### Notes
+- **Nothing was ported from the parent's Workday facet-split.** It recovers tenants whose CXS backend clamps pagination at offset 2000 — web-ui does not paginate Workday at all (one POST at `offset: 0`, 100 rows), so there is no clamp to work around. web-ui's own 100-row ceiling is a separate, blunter limitation and not this release's subject.
+- **The parent's `verify-cv-facts` and `merge-tracker` fixes needed no port**: web-ui runs those scripts from the parent checkout rather than mirroring their logic, so they arrive with the parent.
+- Salary from Built In is formatted to a display string here. The parent's `parseSalary` returns `{ min, max }` for its own filters; web-ui's job contract carries `salary` as text, and letting the object through would have put `[object Object]` in the tracker.
+- Tests: **2909 → 2956** (+47).
+
 ## [1.228.5] — 2026-08-30
 
 **Fixed — the reported version described the file on disk, not the code being run.**
