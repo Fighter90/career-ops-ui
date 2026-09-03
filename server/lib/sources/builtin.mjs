@@ -89,12 +89,14 @@ export const meta = {
 const DEFAULT_HOST = 'builtin.com';
 const DEFAULT_MAX_PAGES = 3;  // builtin orders newest-first; a few pages = recent roles
 const HARD_MAX_PAGES = 25;    // backstop against a misconfigured entry
-const RETRY_POLICY = { retries: 2, baseDelayMs: 500, maxDelayMs: 8_000 };
 
 // SSRF allowlist. Keys are the accepted spellings, values the CANONICAL host to
-// request. The bare (www-less) market hosts 301 to www and we fetch with
-// redirect:'error', so a bare spelling must be rewritten here rather than
-// failing the fetch. builtinchicago is .org, not .com — not a typo.
+// request. Which spelling is canonical DIFFERS PER BOARD, which is why this is
+// a map and not a "prepend www" rule: the bare market hosts 301 to www
+// (builtinseattle.com -> www.builtinseattle.com) but the national board goes the
+// other way (www.builtin.com -> builtin.com). We fetch with redirect:'error', so
+// the non-canonical spelling must be rewritten here rather than failing the
+// fetch. builtinchicago is .org, not .com — not a typo.
 const HOSTS = new Map([
   ['builtin.com', 'builtin.com'],
   ['www.builtin.com', 'builtin.com'],
@@ -438,19 +440,6 @@ export function readConfig(entry) {
 }
 
 /**
- * Narrow the per-base page cap by ctx.maxPages when the caller is only probing
- * (verify-portals.mjs's health check passes 1).
- *
- * @param {number} entryMax
- * @param {any} ctx
- * @returns {number}
- */
-function effectiveMaxPages(entryMax, ctx) {
-  const hint = Number(ctx?.maxPages);
-  return Number.isFinite(hint) && hint > 0 ? Math.min(entryMax, Math.floor(hint)) : entryMax;
-}
-
-/**
  * `parseSalary` yields `{ min, max }` in whole dollars (the shape the parent's
  * own filters consume); web-ui's job contract carries `salary` as a DISPLAY
  * STRING, so it is formatted here rather than leaking an object into the
@@ -471,8 +460,16 @@ function formatSalary(band) {
  *
  * web-ui contract: the adapter hands us the resolved endpoint and the company
  * entry; everything the parent read off `entry` is read off `company` here, and
- * the parent's retrying `ctx.fetchText` becomes web-ui's `fetchText` with an
- * injectable `fetchImpl` so the suite runs with no network.
+ * the parent's `ctx.fetchText` becomes web-ui's `fetchText` with an injectable
+ * `fetchImpl` so the suite runs with no network.
+ *
+ * The parent's RETRIES are deliberately NOT carried over. web-ui's `fetchText`
+ * makes exactly one attempt, and no other source here retries either — the
+ * `fetchJsonWithRetry` helper in http-json.mjs has zero callers among the 90.
+ * Built In retrying alone would make one source behave unlike every other, and
+ * a scan that silently takes three times as long to fail is worse than one that
+ * reports the failure. If retries are ever wanted, they belong in the shared
+ * fetch layer for all sources, not smuggled in per-source.
  *
  * @param {string} _url unused — the page URLs are built per query/category below
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
