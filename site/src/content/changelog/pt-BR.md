@@ -8,6 +8,24 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.230.0] — 2026-09-05
+
+**Alterado — três correções de provedores vindas do career-ops pai v1.32.0, e um defeito que o próprio port revelou.**
+
+### Adicionado
+- **O Welcome to the Jungle aceita uma expressão `filters` do Algolia aplicada no servidor** (`wttj: { filters: "offices.country_code:FR AND contract_type:full_time" }`). Uma palavra-chave sozinha não estreita um quadro global: quem decide quais `max_hits` resultados chegam é o ranking de relevância do Algolia, não os filtros do scanner — os nossos rodam depois, sobre o que já chegou, então tudo além do teto é invisível por melhor que combine. Um filtro reduz o **conjunto** em vez de reordená-lo, e por isso o teto por consulta sobe de 200 para 1000. Com um filtro, `queries` vira opcional: a consulta vazia significa “tudo o que passar pelo filtro”. Portado do pai #3757.
+
+### Corrigido
+- **O Radancy não avisa mais “truncated” quando um inquilino simplesmente serve menos vagas do que o próprio banner anuncia.** O projeto pai conferiu `data-total-results` contra nove inquilinos reais: cinco bateram, mas quatro — um pequeno e um enorme — entregaram de 10% a 56% menos vagas únicas do que o anunciado, sem nenhuma linha duplicada. O banner exagera o que o índice de busca do inquilino realmente serve, então comparar a contagem acumulada com ele dava falso positivo na maioria dos quadros. O aviso agora só aparece quando a caminhada foi interrompida pelo **nosso próprio** `max_jobs`/`max_pages`, o único caso sobre o qual quem chama pode agir; `totalResults` fica na mensagem como contexto e nunca decide. Portado do pai #3839.
+- **O Radancy contorna o cache em toda requisição de fragmento JSON.** Uma camada de cache diante dessa rota repete respostas obsoletas em alguns inquilinos: a mesma vaga reaparece páginas depois enquanto outra nunca é servida — reproduzido nove vezes em nove rio acima. Os cabeçalhos `Cache-Control`/`Pragma` não mudaram nada; um parâmetro aleatório por requisição resolveu. Ele precisa ser único por **chamada**, nunca derivado do número da página: um parâmetro determinístico ainda dá ao cache uma chave estável e, com ela, o mesmo mapeamento estável e errado. Portado do pai #3839.
+- **As listas de escritórios do Greenhouse têm ordem determinística.** O Greenhouse não promete a ordem de `offices[]` entre respostas, e o conjunto recuperado da árvore `/offices` vem na ordem do percurso. Ambos chegam ao campo `location` da vaga, então um quadro que reordenasse seus escritórios reescrevia essa string — e uma vaga inalterada era lida como nova. O pai corrigiu o conjunto (#3839); **o web-ui tinha uma segunda instância do mesmo defeito que o pai não tem** — o fallback `offices[0]`, usado quando a vaga não traz localização própria — e ambos agora são ordenados.
+
+### Notas
+- **A correção do iCIMS no pai (#3728) não precisou de port.** Ela lê todas as entradas `jobLocation` do JSON-LD da página de detalhe, porque alguns inquilinos emitem uma entrada inteiramente `UNAVAILABLE` antes do endereço real. O iCIMS do web-ui pega a localização do HTML da **página de listagem** e nunca abre uma página de detalhe.
+- **A mudança em `_http.mjs` não precisou de port.** Ela extrai `isRefusedRedirectError` para um segundo consumidor que o web-ui não tem; o comportamento de `isRetryableError` não muda.
+- **A deduplicação por localização (#3751) não é espelhada** — vive no pipeline `scan.mjs` da CLI do pai.
+- Registro sem alterações: **90 fontes** (85 EN + 5 RU). Testes: **2956 → 2962** (+6).
+
 ## [1.229.0] — 2026-09-03
 
 **Adicionado — quatro fontes de varredura do career-ops pai v1.31.0: Built In, Feishu Jobs, Garena e MokaHR.**

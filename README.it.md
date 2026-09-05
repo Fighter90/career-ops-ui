@@ -7,16 +7,16 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-2956%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2962%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.229.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.229.0)
+[![release](https://img.shields.io/badge/release-v1.230.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.230.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.229.0** — **Quattro nuove fonti dal padre v1.31.0: Built In, Feishu Jobs, Garena e MokaHR** — 86 → **90 fonti** (85 EN + 5 RU), tutte senza token. Built In **non porta query predefinite** e rifiuta un mercato fuori elenco invece di scansionare in silenzio la bacheca nazionale; MokaHR restituisce una **risposta cifrata** con la chiave accanto. Corretto anche: `htmlToText` poteva lasciar passare un apri-tag incompleto. **2956 test.**
+> **🆕 Ultima release — v1.230.0** — **Tre correzioni ai provider dalla v1.32.0 del progetto padre.** Welcome to the Jungle accetta ora un’espressione `filters` di Algolia applicata lato server: riduce l’**insieme** dei risultati invece di riordinarlo, l’unico modo perché la scansione di una bacheca globale sia esaustiva e non un campione. Radancy smette di avvisare «truncated» quando un tenant serve semplicemente meno annunci di quanti ne dichiari il suo stesso banner (quattro tenant reali su nove esagerano del 10–56%), e aggira la cache di una rotta JSON che ripeteva pagine obsolete. Gli elenchi di uffici di Greenhouse sono ordinati in modo deterministico, così una bacheca che li riordina non fa più leggere come nuovo un annuncio immutato. **2962 test.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -411,7 +411,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2956 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 2962 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -542,7 +542,7 @@ Quando `run: true` è impostato su `/api/deep` o `/api/mode/:slug`, il server pr
 ## Test
 
 ```bash
-npm test                       # 2956 unit/integration tests
+npm test                       # 2962 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
@@ -551,7 +551,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Test | Cosa                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2956** | Ogni endpoint, server effimero, nessuna rete. 329 file: parser, scanner (mockati), runner, anthropic/openai, header di sicurezza, XSS, sanitizzazione JD, validazione URL, parità i18n, + le suite di correzioni UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) | **2962** | Ogni endpoint, server effimero, nessuna rete. 329 file: parser, scanner (mockati), runner, anthropic/openai, header di sicurezza, XSS, sanitizzazione JD, validazione URL, parità i18n, + le suite di correzioni UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: ogni rotta viene renderizzata, flussi di base.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rotte + 12 flussi funzionali.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Guidati da browser: render della dashboard, navigazione, cambio lingua, 404, health, round-trip del tracker, aggiunta alla pipeline + sweep di URL non validi, report, fallback manuale di evaluate, chiavi di config mascherate, rimozione XSS su CV PUT, anteprima pipeline 400, SSE auto-pipeline. |
@@ -671,7 +671,7 @@ Poi usala tramite `data-i18n="scan.newButton"` nel markup o `t('scan.newButton')
 
 Issue e PR benvenuti. Regole della casa:
 
-- Esegui `npm test` prima del push — **2956 checks green** è il minimo (più 101 Playwright se tocchi la UI).
+- Esegui `npm test` prima del push — **2962 checks green** è il minimo (più 101 Playwright se tocchi la UI).
 - Le modifiche non banali passano attraverso la pipeline GSD. Vedi [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Non modificare nulla nel progetto principale `career-ops/` da dentro questo repository. Il punto è proprio che questo è un overlay non invasivo. Regole ferree in [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Scope opzionale: `feat(scan):`. Breaking change: `feat!:`.

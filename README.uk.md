@@ -7,16 +7,16 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-2956%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-2962%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.229.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.229.0)
+[![release](https://img.shields.io/badge/release-v1.230.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.230.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.229.0** — **Чотири нові джерела з батьківського проєкту v1.31.0: Built In, Feishu Jobs, Garena і MokaHR** — 86 → **90 джерел** (85 EN + 5 RU), усі без токенів. Built In **не несе типового запиту** й відхиляє ринок поза списком, замість тихо сканувати національну дошку; MokaHR повертає **зашифровану відповідь** із ключем поруч. Також виправлено: `htmlToText` міг пропустити незакритий відкривальний тег. **2956 тестів.**
+> **🆕 Останній реліз — v1.230.0** — **Три виправлення провайдерів із v1.32.0 батьківського проєкту.** Welcome to the Jungle тепер приймає серверний вираз `filters` для Algolia: він зменшує сам **набір** результатів, а не переупорядковує його — тільки так скан глобальної дошки стає вичерпним, а не вибіркою. Radancy більше не попереджає «truncated», коли орендар просто віддає менше вакансій, ніж заявляє його ж банер (чотири з дев’яти перевірених завищують на 10–56 %), і обходить кеш JSON-маршруту, який повертав застарілі сторінки. Списки офісів Greenhouse впорядковано детерміновано, тож перестановка офісів на боці дошки більше не змушує незмінену вакансію читатися як нова. **2962 тести.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -133,7 +133,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 2956 unit + 101 Playwright + 43 e2e
+   └─ tests/        # 2962 unit + 101 Playwright + 43 e2e
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.
@@ -162,7 +162,7 @@ career-ops найкраще працює **завжди увімкненим** �
 ## Тести
 
 ```bash
-npm test                    # 2956 unit/integration-тестів
+npm test                    # 2962 unit/integration-тестів
 npm run test:e2e            # 21 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 101 тестів Playwright

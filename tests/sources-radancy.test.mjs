@@ -278,3 +278,57 @@ test('radancy truncation warning reports the returned count, not the pre-slice b
   const warned = (warnings.join(' ').match(/truncated at (\d+) of (\d+)/) || [])[1];
   assert.equal(warned, '4'); // the RETURNED count (4), not the pre-slice buffer (6)
 });
+
+test('radancy does not warn when the tenant simply serves fewer postings than its banner claims', async () => {
+  // The whole point of parent career-ops #3839: `data-total-results` overstates
+  // on a majority of tenants (4 of 9 measured live, by 10-56%). A walk that ends
+  // naturally — the tenant ran out of rows — is COMPLETE, and warning "truncated
+  // at 3 of 99" there tells the user to raise a cap that was never reached.
+  const rowFor = (id) => `<li><a href="/job/c/s/1/${id}" data-job-id="${id}"><h2>T${id}</h2><span class="job-location">X</span></a></li>`;
+  let page = 0;
+  const warnings = [];
+  const real = console.error;
+  console.error = (m) => warnings.push(String(m));
+  let jobs;
+  try {
+    jobs = await fetchRadancy('https://x.example/en/search-jobs', {
+      fetchJson: async () => {
+        page++;
+        // Page 1 serves 3 rows; page 2 serves none — the board is exhausted —
+        // while the banner keeps claiming 99 results across 9 pages.
+        const ids = page === 1 ? [11, 12, 13] : [];
+        return { results: `<section data-total-results="99" data-total-pages="9">${ids.map(rowFor).join('')}</section>`, hasJobs: true };
+      },
+      fetchImpl: async () => { throw new Error('unused'); },
+      company: { name: 'Overstating', max_jobs: 500, max_pages: 20 },
+    });
+  } finally {
+    console.error = real;
+  }
+  assert.equal(jobs.length, 3, 'every posting the tenant actually served is kept');
+  assert.deepEqual(
+    warnings.filter((w) => /truncated/.test(w)),
+    [],
+    'no truncation warning: our caps (500 jobs / 20 pages) were never reached',
+  );
+});
+
+test('radancy cache-busts every JSON fragment request with a fresh value', () => {
+  // A caching layer in front of the JSON route replays stale responses on some
+  // tenants. A deterministic extra parameter would still give the cache a stable
+  // key — and therefore the same stable, wrong mapping — so the buster must
+  // differ per CALL, not per page.
+  const a = new URL(buildFragmentUrl('https://x.example/en/search-jobs', 2));
+  const b = new URL(buildFragmentUrl('https://x.example/en/search-jobs', 2));
+  assert.ok(a.searchParams.get('_'), 'the cache-buster is present');
+  assert.notEqual(
+    a.searchParams.get('_'),
+    b.searchParams.get('_'),
+    'two calls for the SAME page must not produce the same URL',
+  );
+  // Everything else is unchanged — the buster must not disturb the real query.
+  a.searchParams.delete('_');
+  b.searchParams.delete('_');
+  assert.equal(a.toString(), b.toString());
+  assert.equal(a.searchParams.get('CurrentPage'), '2');
+});

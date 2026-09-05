@@ -2,6 +2,24 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.230.0] — 2026-09-05
+
+**Geändert — drei Provider-Korrekturen aus dem Eltern-career-ops v1.32.0 sowie ein Defekt, den die Portierung selbst zutage gefördert hat.**
+
+### Hinzugefügt
+- **Welcome to the Jungle nimmt einen serverseitigen Algolia-`filters`-Ausdruck entgegen** (`wttj: { filters: "offices.country_code:FR AND contract_type:full_time" }`). Ein Stichwort allein grenzt ein globales Board nicht ein: Welche `max_hits` Treffer zurückkommen, entscheidet Algolias Relevanzranking und nicht die Filter des Scanners — unsere greifen erst danach, auf dem bereits Eingetroffenen, sodass alles jenseits der Obergrenze unsichtbar bleibt, wie gut es auch passt. Ein Filter verkleinert die **Menge**, statt sie neu zu sortieren, und die Obergrenze je Abfrage steigt deshalb von 200 auf 1000. Mit einem Filter wird `queries` optional: Die leere Abfrage bedeutet „alles, was den Filter passiert“. Portiert aus dem Elternprojekt #3757.
+
+### Behoben
+- **Radancy warnt nicht mehr „truncated“, wenn ein Mandant schlicht weniger Stellen ausliefert, als sein eigenes Banner behauptet.** Das Elternprojekt hat `data-total-results` gegen neun reale Mandanten geprüft: Fünf stimmten überein, doch vier — ein kleiner und ein sehr großer — lieferten 10 bis 56 % weniger eindeutige Stellen als angekündigt, ohne eine einzige doppelte Zeile. Das Banner überzeichnet, was der Suchindex des Mandanten tatsächlich ausliefert; der Abgleich mit dem gesammelten Zähler war deshalb bei der Mehrzahl der Boards ein Fehlalarm. Die Warnung erscheint nur noch, wenn **unser eigenes** `max_jobs`/`max_pages` den Durchlauf gestoppt hat — der einzige Fall, auf den der Aufrufer reagieren kann; `totalResults` bleibt als Kontext in der Meldung und entscheidet nie. Portiert aus #3839.
+- **Radancy umgeht den Cache bei jeder JSON-Fragment-Anfrage.** Eine Cache-Schicht vor dieser Route wiederholt bei manchen Mandanten veraltete Antworten: Dieselbe Stelle taucht Seiten später erneut auf, während eine andere nie ausgeliefert wird — stromaufwärts neun von neun Läufen reproduziert. `Cache-Control`/`Pragma`-Header änderten nichts; ein zufälliger Parameter je Anfrage behob es. Er muss je **Aufruf** eindeutig sein, niemals aus der Seitenzahl abgeleitet: Ein deterministischer Parameter gäbe dem Cache weiterhin einen stabilen Schlüssel und damit dieselbe stabile, falsche Zuordnung. Portiert aus #3839.
+- **Greenhouse-Bürolisten sind deterministisch sortiert.** Greenhouse sichert die Reihenfolge von `offices[]` zwischen Antworten nicht zu, und die aus dem `/offices`-Baum gewonnene Menge folgt ihrer Durchlaufreihenfolge. Beide landen im Feld `location` der Stelle, sodass ein Board, das seine Büros umordnet, diese Zeichenkette neu schrieb — und eine unveränderte Stelle als neu gelesen wurde. Das Elternprojekt korrigierte die Menge (#3839); **web-ui hatte eine zweite Ausprägung desselben Defekts, die es dort nicht gibt** — den `offices[0]`-Rückfall, der greift, wenn eine Stelle keine eigene Ortsangabe trägt — und beide sind nun sortiert.
+
+### Hinweise
+- **Die iCIMS-Korrektur des Elternprojekts (#3728) brauchte keine Portierung.** Sie liest alle `jobLocation`-Einträge aus dem JSON-LD einer Detailseite, weil manche Mandanten einen komplett `UNAVAILABLE`-Eintrag vor die echte Adresse setzen. web-uis iCIMS nimmt den Ort aus dem HTML der **Listenseite** und öffnet nie eine Detailseite.
+- **Die Änderung an `_http.mjs` brauchte keine Portierung.** Sie zieht `isRefusedRedirectError` für einen zweiten Konsumenten heraus, den web-ui nicht hat; das Verhalten von `isRetryableError` bleibt gleich.
+- **Die ortsbewusste Deduplizierung (#3751) wird nicht gespiegelt** — sie liegt in der `scan.mjs`-Pipeline der Eltern-CLI.
+- Registry unverändert: **90 Quellen** (85 EN + 5 RU). Tests: **2956 → 2962** (+6).
+
 ## [1.229.0] — 2026-09-03
 
 **Hinzugefügt — vier Scan-Quellen aus dem Eltern-career-ops v1.31.0: Built In, Feishu Jobs, Garena und MokaHR.**

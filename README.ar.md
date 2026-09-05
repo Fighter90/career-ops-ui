@@ -7,16 +7,16 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2956%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-2962%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.229.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.229.0)
+[![release](https://img.shields.io/badge/release-v1.230.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.230.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.229.0** — **أربعة مصادر جديدة من المشروع الأب v1.31.0: Built In وFeishu Jobs وGarena وMokaHR** — من 86 إلى **90 مصدرًا** (85 EN + 5 RU)، وكلّها بلا رموز. لا يحمل Built In **استعلامًا افتراضيًا**، ويرفض سوقًا خارج القائمة بدل أن يمسح اللوحة الوطنية خِلسةً؛ ويعيد MokaHR **استجابةً مشفَّرة** يصل مفتاحها بجوارها. وأُصلح كذلك: كان `htmlToText` قد يُمرّر فاتحةَ وسمٍ ناقصة. **2956 اختبارًا.**
+> **🆕 أحدث إصدار — v1.230.0** — **ثلاثة إصلاحات للمزوّدين من الإصدار v1.32.0 للمشروع الأصل.** صار Welcome to the Jungle يقبل تعبير `filters` من Algolia مطبَّقًا على الخادم: فهو يقلّص **مجموعة** النتائج نفسها بدل إعادة ترتيبها، وهذه هي الطريقة الوحيدة ليصبح مسح لوحة عالمية شاملًا لا عيّنة. ولم يعد Radancy ينبّه بـ«truncated» حين يقدّم المستأجر ببساطة وظائف أقل مما تعلنه لافتته نفسها (أربعة من تسعة مستأجرين مقيسين يبالغون بنسبة 10–56 %)، وصار يتجاوز ذاكرة التخزين المؤقت لمسار JSON كان يعيد صفحات قديمة. وقوائم مكاتب Greenhouse مرتَّبة ترتيبًا حتميًا، فإعادة ترتيب المكاتب من جانب اللوحة لم تعد تجعل وظيفة لم تتغيّر تُقرأ كأنها جديدة. **2962 اختبارًا.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -153,7 +153,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 2956 unit + 101 Playwright + 43 e2e
+   └─ tests/        # 2962 unit + 101 Playwright + 43 e2e
 ```
 
 <div dir="rtl">
@@ -186,7 +186,7 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 2956 اختبار وحدة وتكامل
+npm test                    # 2962 اختبار وحدة وتكامل
 npm run test:e2e            # 21 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
 npm run test:e2e:browser    # 101 اختبار Playwright

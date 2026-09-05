@@ -11,6 +11,24 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.230.0] — 2026-09-05
+
+**Modifié — trois correctifs de fournisseurs venus du career-ops parent v1.32.0, et un défaut que le portage lui-même a mis au jour.**
+
+### Ajouté
+- **Welcome to the Jungle accepte une expression `filters` Algolia appliquée côté serveur** (`wttj: { filters: "offices.country_code:FR AND contract_type:full_time" }`). Un mot-clé seul ne restreint pas un tableau mondial : c’est le classement de pertinence d’Algolia, et non les filtres du scanner, qui décide quels `max_hits` résultats reviennent — les nôtres s’appliquent ensuite, sur ce qui est déjà arrivé, donc tout ce qui dépasse le plafond est invisible, si bien corresponde-t-il. Un filtre réduit l’**ensemble** au lieu de le reclasser, et le plafond par requête passe donc de 200 à 1000. Avec un filtre, `queries` devient facultatif : la requête vide signifie « tout ce qui passe le filtre ». Porté du parent #3757.
+
+### Corrigé
+- **Radancy n’avertit plus « truncated » quand un locataire sert simplement moins d’offres que sa propre bannière annonce.** Le parent a confronté `data-total-results` à neuf locataires réels : cinq concordaient, mais quatre — un petit et un très gros — ont livré 10 à 56 % d’offres uniques de moins qu’annoncé, sans une seule ligne dupliquée. La bannière surestime ce que l’index de recherche du locataire sert réellement ; comparer le compteur accumulé avec elle produisait donc un faux positif sur la majorité des tableaux. L’avertissement ne se déclenche plus que lorsque le parcours a été arrêté par **notre propre** `max_jobs`/`max_pages`, le seul cas sur lequel l’appelant puisse agir ; `totalResults` reste dans le message à titre de contexte et ne décide jamais. Porté du parent #3839.
+- **Radancy contourne le cache à chaque requête de fragment JSON.** Une couche de cache devant cette route rejoue des réponses périmées chez certains locataires : la même offre réapparaît des pages plus loin tandis qu’une autre n’est jamais servie — reproduit neuf fois sur neuf en amont. Les en-têtes `Cache-Control`/`Pragma` n’ont rien changé ; un paramètre aléatoire par requête a corrigé le problème. Il doit être unique par **appel**, jamais dérivé du numéro de page : un paramètre déterministe donne encore au cache une clé stable, donc la même correspondance stable et fausse. Porté du parent #3839.
+- **Les listes de bureaux Greenhouse sont ordonnées de façon déterministe.** Greenhouse ne promet pas l’ordre de `offices[]` entre deux réponses, et l’ensemble reconstitué depuis l’arbre `/offices` suit son ordre de parcours. Les deux aboutissent au champ `location` de l’offre : un tableau qui réordonnait ses bureaux réécrivait donc cette chaîne, et une offre inchangée se lisait comme nouvelle. Le parent a corrigé l’ensemble (#3839) ; **web-ui possédait une seconde occurrence du même défaut, absente chez le parent** — le repli `offices[0]`, utilisé quand l’offre n’a pas de localisation propre — et les deux sont désormais triés.
+
+### Notes
+- **Le correctif iCIMS du parent (#3728) n’a rien à porter.** Il lit toutes les entrées `jobLocation` du JSON-LD d’une page de détail, car certains locataires émettent une entrée entièrement `UNAVAILABLE` avant l’adresse réelle. L’iCIMS de web-ui prend la localisation dans le HTML de la **page de liste** et n’ouvre jamais de page de détail.
+- **Le changement de `_http.mjs` n’a rien à porter.** Il extrait `isRefusedRedirectError` pour un second consommateur que web-ui n’a pas ; le comportement de `isRetryableError` est inchangé.
+- **La déduplication par localisation (#3751) n’est pas répliquée** — elle vit dans le pipeline `scan.mjs` de la CLI parente.
+- Registre inchangé : **90 sources** (85 EN + 5 RU). Tests : **2956 → 2962** (+6).
+
 ## [1.229.0] — 2026-09-03
 
 **Ajouté — quatre sources de scan issues du career-ops parent v1.31.0 : Built In, Feishu Jobs, Garena et MokaHR.**

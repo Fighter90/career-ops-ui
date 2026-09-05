@@ -8,6 +8,24 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.230.0] — 2026-09-05
+
+**Ændret — tre udbyderrettelser fra forældreprojektets career-ops v1.32.0 samt én defekt, som selve porteringen bragte frem.**
+
+### Tilføjet
+- **Welcome to the Jungle tager et Algolia-`filters`-udtryk, der anvendes på serveren** (`wttj: { filters: "offices.country_code:FR AND contract_type:full_time" }`). Et nøgleord alene indsnævrer ikke et globalt board: Det er Algolias relevansrangering og ikke scannerens filtre, der afgør, hvilke `max_hits` resultater der kommer tilbage — vores kører først bagefter, på det allerede modtagne, så alt ud over loftet er usynligt, uanset hvor godt det passer. Et filter formindsker selve **mængden** i stedet for at omrangere den, og loftet pr. forespørgsel stiger derfor fra 200 til 1000. Med et filter bliver `queries` valgfrit: Den tomme forespørgsel betyder “alt, der passerer filteret”. Porteret fra forældreprojektet #3757.
+
+### Rettet
+- **Radancy advarer ikke længere “truncated”, når en lejer blot leverer færre opslag, end dens eget banner påstår.** Forældreprojektet holdt `data-total-results` op mod ni rigtige lejere: Fem passede, men fire — en lille og en meget stor — leverede 10-56 % færre unikke opslag end annonceret, uden en eneste dubletrække. Banneret overdriver, hvad lejerens eget søgeindeks faktisk serverer, så en sammenligning med den akkumulerede optælling gav falsk alarm på flertallet af boards. Advarslen udløses nu kun, når **vores eget** `max_jobs`/`max_pages` stoppede gennemløbet — det eneste tilfælde, kalderen kan handle på; `totalResults` bliver i beskeden som kontekst og afgør aldrig noget. Porteret fra #3839.
+- **Radancy omgår cachen ved hver JSON-fragmentforespørgsel.** Et cachelag foran den rute gentager forældede svar hos nogle lejere: Det samme opslag dukker op igen flere sider senere, mens et andet aldrig serveres — reproduceret ni ud af ni gange opstrøms. `Cache-Control`/`Pragma`-headere ændrede intet; en tilfældig parameter pr. forespørgsel løste det. Den skal være unik pr. **kald**, aldrig afledt af sidetallet: En deterministisk parameter ville stadig give cachen en stabil nøgle og dermed den samme stabile, forkerte afbildning. Porteret fra #3839.
+- **Greenhouses kontorlister har deterministisk orden.** Greenhouse lover ikke rækkefølgen af `offices[]` mellem svar, og mængden hentet fra `/offices`-træet følger sin gennemløbsorden. Begge ender i opslagets `location`-felt, så et board, der omrokerede sine kontorer, omskrev den streng — og et uændret opslag blev læst som nyt. Forældreprojektet rettede mængden (#3839); **web-ui havde en anden forekomst af samme defekt, som ikke findes der** — `offices[0]`-tilbagefaldet, der bruges, når et opslag ikke selv bærer en placering — og begge sorteres nu.
+
+### Noter
+- **Forældreprojektets iCIMS-rettelse (#3728) krævede ingen portering.** Den læser hver `jobLocation`-post fra en detaljesides JSON-LD, fordi nogle lejere udsender en helt `UNAVAILABLE` post før den rigtige adresse. web-uis iCIMS tager placeringen fra **listesidens** HTML og åbner aldrig en detaljeside.
+- **Ændringen i `_http.mjs` krævede ingen portering.** Den udtrækker `isRefusedRedirectError` til en anden forbruger, som web-ui ikke har; adfærden i `isRetryableError` er uændret.
+- **Den placeringsbevidste deduplikering (#3751) spejles ikke** — den bor i `scan.mjs`-pipelinen i forælderens CLI.
+- Registret uændret: **90 kilder** (85 EN + 5 RU). Tests: **2956 → 2962** (+6).
+
 ## [1.229.0] — 2026-09-03
 
 **Tilføjet — fire scanningskilder fra forældreprojektet career-ops v1.31.0: Built In, Feishu Jobs, Garena og MokaHR.**

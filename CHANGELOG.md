@@ -8,6 +8,24 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.230.0] — 2026-09-05
+
+**Changed — three provider fixes from parent career-ops v1.32.0, and one defect the port surfaced here.**
+
+### Added
+- **Welcome to the Jungle takes a server-side Algolia `filters` expression** (`wttj: { filters: "offices.country_code:FR AND contract_type:full_time" }`). A keyword alone cannot narrow a global board: Algolia's relevance ranking, not the scanner's own title/location filters, decides which `max_hits` results come back, so anything past the cap is invisible no matter how well it matches — the scanner's filters run afterwards, on what already arrived. A filter shrinks the result **set** instead of re-ranking it, which is what makes a scan exhaustive rather than a sample, so with one the per-query cap rises from 200 to 1000. With a filter, `queries` becomes optional — the empty query means "everything that passes the filter". Ported from parent #3757.
+
+### Fixed
+- **Radancy no longer warns "truncated" when a tenant simply has fewer postings than its own banner claims.** The parent checked `data-total-results` against nine live tenants: five matched, but four — a small one and a huge one both — served 10–56% fewer unique postings than advertised, with no duplicate rows anywhere. The banner overstates what the tenant's search index actually serves, so comparing the accumulated count against it false-positived on a majority of boards. The warning now fires only when **our own** `max_jobs`/`max_pages` stopped the walk, which is the only case the caller can act on; `totalResults` stays in the message as context and never decides. Ported from parent #3839.
+- **Radancy cache-busts every JSON fragment request.** A caching layer in front of that route replays stale responses on some tenants — the same posting reappears pages later while another is never served at all, reproduced nine runs out of nine upstream. `Cache-Control`/`Pragma` request headers changed nothing; a random per-request parameter fixed it. It must be unique per call, never derived from the page number: a deterministic parameter still gives the cache a stable key, and therefore the same stable, wrong mapping. Ported from parent #3839.
+- **Greenhouse office lists are ordered deterministically.** Greenhouse does not promise the order of a job's `offices[]` between responses, and the set recovered from the `/offices` tree is in its traversal order. Both reach the posting's `location`, so a board that re-orders its offices rewrote that string — and a posting nothing had changed about read as new. The parent fixed the set (#3839); **web-ui had a second instance of the same defect the parent does not have** — the `offices[0]` fallback used when a job carries no location of its own — and both are now sorted.
+
+### Notes
+- **The parent's iCIMS fix (#3728) needed no port.** It reads every `jobLocation` entry from a detail page's JSON-LD, because some tenants emit an all-`UNAVAILABLE` entry ahead of the real address. web-ui's iCIMS takes the location from the **list page's** HTML instead and never opens a detail page, so that code path does not exist here.
+- **The parent's `_http.mjs` change needed no port.** It extracts `isRefusedRedirectError` so `discover-ats.mjs` and the retry layer stop disagreeing about the same error object. `isRetryableError`'s behaviour is unchanged, and web-ui has no second consumer to share the verdict with — extracting a helper for one caller would be noise.
+- **The parent's location-aware dedupe (#3751) is not mirrored.** It lives in the CLI's `scan.mjs` scan-history pipeline; web-ui's scan route keeps its own.
+- Registry unchanged at **90 sources** (85 EN + 5 RU). Tests: **2956 → 2962** (+6).
+
 ## [1.229.0] — 2026-09-03
 
 **Added — four scanner sources from parent career-ops v1.31.0: Built In, Feishu Jobs, Garena and MokaHR.**

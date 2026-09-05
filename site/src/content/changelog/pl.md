@@ -9,6 +9,24 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.230.0] — 2026-09-05
+
+**Zmieniono — trzy poprawki dostawców z nadrzędnego career-ops v1.32.0 oraz jedna wada, którą sam port wydobył na wierzch.**
+
+### Dodano
+- **Welcome to the Jungle przyjmuje serwerowe wyrażenie `filters` Algolii** (`wttj: { filters: "offices.country_code:FR AND contract_type:full_time" }`). Samo słowo kluczowe nie zawęża globalnej tablicy: o tym, które `max_hits` wyników wróci, decyduje ranking trafności Algolii, a nie filtry skanera — nasze działają dopiero potem, na tym, co już przyszło, więc wszystko poza limitem jest niewidoczne, choćby pasowało doskonale. Filtr zmniejsza sam **zbiór**, zamiast go przestawiać, dlatego limit na zapytanie rośnie z 200 do 1000. Przy filtrze `queries` staje się opcjonalne: puste zapytanie znaczy „wszystko, co przejdzie filtr”. Przeniesione z projektu nadrzędnego #3757.
+
+### Naprawiono
+- **Radancy nie ostrzega już „truncated”, gdy najemca po prostu udostępnia mniej ofert, niż głosi jego własny baner.** Projekt nadrzędny zestawił `data-total-results` z dziewięcioma rzeczywistymi najemcami: pięciu się zgadzało, ale czterej — jeden mały i jeden ogromny — wydali o 10–56% mniej unikalnych ofert, niż ogłaszali, bez ani jednego duplikatu. Baner zawyża to, co indeks wyszukiwania najemcy naprawdę serwuje, więc porównywanie z nim narastającego licznika dawało fałszywy alarm na większości tablic. Ostrzeżenie pojawia się teraz wyłącznie wtedy, gdy przejście zatrzymał **nasz własny** `max_jobs`/`max_pages` — jedyny przypadek, na który wywołujący może zareagować; `totalResults` zostaje w komunikacie jako kontekst i nigdy nie decyduje. Przeniesione z #3839.
+- **Radancy omija pamięć podręczną przy każdym żądaniu fragmentu JSON.** Warstwa cache przed tą trasą u części najemców odtwarza nieaktualne odpowiedzi: ta sama oferta wraca kilka stron później, a inna nie pojawia się wcale — odtworzone dziewięć razy na dziewięć w górę strumienia. Nagłówki `Cache-Control`/`Pragma` nic nie zmieniły; losowy parametr na żądanie naprawił problem. Musi być unikalny na **wywołanie**, nigdy wyprowadzony z numeru strony: parametr deterministyczny wciąż dałby pamięci podręcznej stabilny klucz, a więc to samo stabilne, błędne odwzorowanie. Przeniesione z #3839.
+- **Listy biur Greenhouse mają porządek deterministyczny.** Greenhouse nie obiecuje kolejności `offices[]` między odpowiedziami, a zbiór odtworzony z drzewa `/offices` idzie w kolejności obchodu. Oba trafiają do pola `location` oferty, więc tablica przestawiająca swoje biura przepisywała ten łańcuch — i niezmieniona oferta czytała się jak nowa. Projekt nadrzędny poprawił zbiór (#3839); **web-ui miał drugie wystąpienie tej samej wady, którego tam nie ma** — awaryjne `offices[0]`, używane gdy oferta nie niesie własnej lokalizacji — i oba są teraz posortowane.
+
+### Uwagi
+- **Poprawka iCIMS (#3728) nie wymagała portu.** Czyta wszystkie wpisy `jobLocation` z JSON-LD strony szczegółów, bo część najemców umieszcza wpis w całości `UNAVAILABLE` przed prawdziwym adresem. iCIMS w web-ui bierze lokalizację z HTML **strony listy** i nigdy nie otwiera strony szczegółów.
+- **Zmiana w `_http.mjs` nie wymagała portu.** Wydziela `isRefusedRedirectError` dla drugiego konsumenta, którego web-ui nie ma; zachowanie `isRetryableError` bez zmian.
+- **Deduplikacja uwzględniająca lokalizację (#3751) nie jest odzwierciedlana** — mieszka w potoku `scan.mjs` nadrzędnego CLI.
+- Rejestr bez zmian: **90 źródeł** (85 EN + 5 RU). Testy: **2956 → 2962** (+6).
+
 ## [1.229.0] — 2026-09-03
 
 **Dodano — cztery źródła skanowania z nadrzędnego career-ops v1.31.0: Built In, Feishu Jobs, Garena i MokaHR.**

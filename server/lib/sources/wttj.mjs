@@ -32,6 +32,14 @@ const SITE_ORIGIN = 'https://www.welcometothejungle.com';
 const INDEX = 'wttj_jobs_production_en';
 const DEFAULT_MAX_HITS = 100;
 const MAX_HITS_CAP = 200;
+// A server-side `filters` expression shrinks the result SET rather than
+// re-ranking it, so a much higher cap is actually exhaustible. Without one, a
+// keyword alone cannot narrow a global board — Algolia's relevance ranking, not
+// our own title/location filters, decides which hits come back, and everything
+// past the cap is invisible no matter how well it matches (our filters run
+// afterwards, on what already arrived). Ported from parent career-ops #3757.
+const FILTERED_MAX_HITS_CAP = 1000;
+const FILTERS_MAX_LEN = 1000;
 const ATTRS =
   'name,slug,organization,offices,remote,published_at_timestamp,salary_yearly_minimum,salary_maximum,salary_period,salary_currency';
 
@@ -171,24 +179,43 @@ export function normalizeWttjHit(h) {
 }
 
 /**
- * Resolve the required queries list + optional per-query hit cap from the
- * company entry's `wttj:` block.
+ * Resolve the narrowing config from the company entry's `wttj:` block.
+ *
+ * The board is global and enormous, so it MUST be narrowed — by an Algolia
+ * `filters` expression (preferred: it shrinks the result set server-side), by
+ * explicit `queries`, or by both. Neither one present is an error rather than a
+ * silent scan of an arbitrary slice.
+ *
+ * Useful faceted attributes on this index: offices.country_code, offices.state,
+ * offices.city, contract_type, remote, experience_level_minimum,
+ * salary_yearly_minimum, organization.name, and WTTJ's own taxonomy
+ * new_profession.sub_category_reference.
+ *
  * @param {any} company
- * @returns {{ queries: string[], maxHits: number }}
+ * @returns {{ queries: string[], filters: string, maxHits: number }}
  */
 export function resolveWttjConfig(company) {
   const cfg = company?.wttj && typeof company.wttj === 'object' ? company.wttj : {};
   const queries = Array.isArray(cfg.queries)
     ? cfg.queries.filter((q) => typeof q === 'string' && q.trim()).map((q) => q.trim())
     : [];
-  if (queries.length === 0) {
+  const filters = typeof cfg.filters === 'string' && cfg.filters.trim() ? cfg.filters.trim() : '';
+  if (filters.length > FILTERS_MAX_LEN) {
+    throw new Error(`wttj: \`filters\` is too long (${filters.length} > ${FILTERS_MAX_LEN} chars)`);
+  }
+  if (queries.length === 0 && !filters) {
     throw new Error(
-      'wttj: the WTTJ board is global — configure explicit searches via `wttj: { queries: ["…"] }`',
+      'wttj: the WTTJ board is global — narrow it with `wttj: { filters: "…" }` and/or `wttj: { queries: ["…"] }`',
     );
   }
+  // A filter already narrows the board server-side, so the empty query ("match
+  // everything that passes the filter") is the useful default. With no filter
+  // there is nothing narrowing the board, so a query list stays mandatory.
+  const effectiveQueries = queries.length > 0 ? queries : [''];
+  const cap = filters ? FILTERED_MAX_HITS_CAP : MAX_HITS_CAP;
   const maxHits =
-    Number.isInteger(cfg.max_hits) && cfg.max_hits > 0 ? Math.min(cfg.max_hits, MAX_HITS_CAP) : DEFAULT_MAX_HITS;
-  return { queries, maxHits };
+    Number.isInteger(cfg.max_hits) && cfg.max_hits > 0 ? Math.min(cfg.max_hits, cap) : DEFAULT_MAX_HITS;
+  return { queries: effectiveQueries, filters, maxHits };
 }
 
 /**
@@ -202,7 +229,7 @@ export function resolveWttjConfig(company) {
  */
 export async function fetchWttj(envUrl = ENV_URL, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
-  const { queries, maxHits } = resolveWttjConfig(company);
+  const { queries, filters, maxHits } = resolveWttjConfig(company);
 
   // 1. Fresh Algolia credentials from the site's public env endpoint.
   assertHost(envUrl, ENV_HOST, 'env');
@@ -219,6 +246,7 @@ export async function fetchWttj(envUrl = ENV_URL, opts = {}) {
       hitsPerPage: String(maxHits),
       attributesToRetrieve: ATTRS,
     });
+    if (filters) params.set('filters', filters);
     const json = await fetchJson(fetchImpl, url, {
       method: 'POST',
       redirect: 'error',
