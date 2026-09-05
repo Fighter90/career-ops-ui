@@ -2,6 +2,24 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.230.0] — 2026-09-05
+
+**Değişti — üst career-ops v1.32.0’dan üç sağlayıcı düzeltmesi ve taşımanın kendisinin ortaya çıkardığı bir kusur.**
+
+### Eklendi
+- **Welcome to the Jungle sunucu tarafında bir Algolia `filters` ifadesi kabul ediyor** (`wttj: { filters: "offices.country_code:FR AND contract_type:full_time" }`). Tek başına bir anahtar sözcük küresel bir panoyu daraltmaz: hangi `max_hits` sonucun geleceğine tarayıcının filtreleri değil, Algolia’nın alaka sıralaması karar verir — bizimkiler sonradan, gelmiş olanın üzerinde çalışır; dolayısıyla üst sınırın ötesindeki her şey, ne kadar iyi eşleşirse eşleşsin görünmezdir. Bir filtre sonuçları yeniden sıralamak yerine **kümeyi** küçültür, bu yüzden sorgu başına sınır 200’den 1000’e çıkar. Filtre varken `queries` isteğe bağlı hale gelir: boş sorgu “filtreden geçen her şey” demektir. Üst projeden #3757 taşındı.
+
+### Düzeltildi
+- **Radancy, bir kiracı yalnızca kendi başlığının iddia ettiğinden daha az ilan sunduğunda artık “truncated” uyarısı vermiyor.** Üst proje `data-total-results` değerini dokuz gerçek kiracıyla karşılaştırdı: beşi tuttu, ancak dördü — biri küçük, biri devasa — ilan edilenden %10–56 daha az benzersiz ilan verdi, hem de tek bir yinelenen satır olmadan. Başlık, kiracının kendi arama dizininin gerçekte sunduğunu abartıyor; bu yüzden biriken sayımı onunla karşılaştırmak panoların çoğunda yanlış alarm üretiyordu. Uyarı artık yalnızca yürüyüşü **bizim kendi** `max_jobs`/`max_pages` değerimiz durdurduğunda çıkıyor — çağıranın üzerinde işlem yapabileceği tek durum; `totalResults` bağlam olarak iletide kalıyor ve asla karar vermiyor. #3839’dan taşındı.
+- **Radancy her JSON parça isteğinde önbelleği atlıyor.** Bu yolun önündeki bir önbellek katmanı bazı kiracılarda eski yanıtları tekrarlıyor: aynı ilan sayfalar sonra yeniden çıkarken bir başkası hiç sunulmuyor — yukarı akışta dokuzda dokuz kez yeniden üretildi. `Cache-Control`/`Pragma` başlıkları hiçbir şeyi değiştirmedi; istek başına rastgele bir parametre sorunu çözdü. Bu parametre **çağrı** başına benzersiz olmalı, asla sayfa numarasından türetilmemeli: belirlenimci bir parametre önbelleğe yine kararlı bir anahtar, dolayısıyla aynı kararlı ve yanlış eşlemeyi verir. #3839’dan taşındı.
+- **Greenhouse ofis listeleri belirlenimci sıradadır.** Greenhouse yanıtlar arasında `offices[]` sırasını garanti etmez ve `/offices` ağacından toplanan küme kendi gezinme sırasını izler. İkisi de ilanın `location` alanına ulaşır; bu yüzden ofislerini yeniden sıralayan bir pano o dizgiyi yeniden yazıyor ve değişmemiş bir ilan yeni gibi okunuyordu. Üst proje kümeyi düzeltti (#3839); **web-ui’de aynı kusurun üst projede bulunmayan ikinci bir örneği vardı** — ilanın kendi konumu yokken devreye giren `offices[0]` yedeği — ve artık ikisi de sıralanıyor.
+
+### Notlar
+- **Üst projedeki iCIMS düzeltmesi (#3728) taşıma gerektirmedi.** O, ayrıntı sayfasının JSON-LD’sindeki her `jobLocation` girdisini okur; çünkü bazı kiracılar gerçek adresten önce tamamen `UNAVAILABLE` bir girdi yayınlar. web-ui’nin iCIMS’i konumu **liste sayfasının** HTML’inden alır ve hiçbir zaman ayrıntı sayfası açmaz.
+- **`_http.mjs` değişikliği taşıma gerektirmedi.** `isRefusedRedirectError`’ı web-ui’de bulunmayan ikinci bir tüketici için ayırır; `isRetryableError`’ın davranışı değişmez.
+- **Konum duyarlı yinelenen ayıklama (#3751) yansıtılmaz** — üst CLI’nin `scan.mjs` hattında yaşar.
+- Kayıt defteri değişmedi: **90 kaynak** (85 EN + 5 RU). Testler: **2956 → 2962** (+6).
+
 ## [1.229.0] — 2026-09-03
 
 **Eklendi — üst proje career-ops v1.31.0'dan dört tarama kaynağı: Built In, Feishu Jobs, Garena ve MokaHR.**

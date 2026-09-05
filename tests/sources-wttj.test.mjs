@@ -10,6 +10,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   fetchWttj,
+  resolveWttjConfig,
   parseEnvPayload,
   normalizeWttjHit,
   assertHost,
@@ -226,4 +227,40 @@ test('adapter: id/label, matches only provider=wttj, buildEndpoint + fetch wirin
   });
   assert.equal(jobs.length, 1);
   assert.equal(jobs[0].source, 'wttj');
+});
+
+test('wttj accepts a filters expression alone — the empty query is the useful default', () => {
+  // A server-side filter already narrows the board, so requiring a keyword on
+  // top of it would force the caller to invent one. The empty query means
+  // "everything that passes the filter", which is the exhaustive scan the
+  // filter was configured to make possible.
+  const cfg = resolveWttjConfig({ wttj: { filters: 'offices.country_code:FR AND contract_type:full_time' } });
+  assert.deepEqual(cfg.queries, ['']);
+  assert.equal(cfg.filters, 'offices.country_code:FR AND contract_type:full_time');
+});
+
+test('wttj raises the hit cap only when a filter narrows the board', () => {
+  // Without a filter a high cap buys nothing: Algolia's relevance ranking picks
+  // which hits come back, so asking for 1000 of a 14k-hit query still returns a
+  // ranked sample. With a filter the result SET is smaller, so one request can
+  // actually exhaust it.
+  const filtered = resolveWttjConfig({ wttj: { filters: 'remote:true', max_hits: 1000 } });
+  assert.equal(filtered.maxHits, 1000);
+  const unfiltered = resolveWttjConfig({ wttj: { queries: ['product manager'], max_hits: 1000 } });
+  assert.equal(unfiltered.maxHits, 200, 'clamped to the unfiltered cap');
+});
+
+test('wttj still refuses an entry that narrows the board by neither means', () => {
+  assert.throws(
+    () => resolveWttjConfig({ wttj: {} }),
+    /narrow it with/,
+    'a global board with no filter and no query must not be scanned by accident',
+  );
+});
+
+test('wttj rejects an over-long filters expression rather than sending it', () => {
+  assert.throws(
+    () => resolveWttjConfig({ wttj: { filters: 'a'.repeat(1001) } }),
+    /too long/,
+  );
 });

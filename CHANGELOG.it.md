@@ -2,6 +2,24 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.230.0] — 2026-09-05
+
+**Modificato — tre correzioni ai provider dal career-ops padre v1.32.0, e un difetto che il port stesso ha portato alla luce.**
+
+### Aggiunto
+- **Welcome to the Jungle accetta un’espressione `filters` di Algolia applicata lato server** (`wttj: { filters: "offices.country_code:FR AND contract_type:full_time" }`). Una parola chiave da sola non restringe una bacheca globale: a decidere quali `max_hits` risultati arrivano è il ranking di pertinenza di Algolia, non i filtri dello scanner — i nostri agiscono dopo, su ciò che è già arrivato, quindi tutto oltre il tetto è invisibile per quanto bene corrisponda. Un filtro riduce l’**insieme** invece di riordinarlo, perciò il tetto per query sale da 200 a 1000. Con un filtro, `queries` diventa facoltativo: la query vuota significa «tutto ciò che passa il filtro». Portato dal padre #3757.
+
+### Corretto
+- **Radancy non avvisa più «truncated» quando un tenant serve semplicemente meno annunci di quanti ne dichiari il suo stesso banner.** Il padre ha confrontato `data-total-results` con nove tenant reali: cinque coincidevano, ma quattro — uno piccolo e uno enorme — hanno consegnato dal 10% al 56% di annunci unici in meno del dichiarato, senza una sola riga duplicata. Il banner sovrastima ciò che l’indice di ricerca del tenant serve davvero, quindi confrontarci il conteggio accumulato dava falsi positivi sulla maggioranza delle bacheche. L’avviso ora compare solo quando il percorso è stato fermato dal **nostro** `max_jobs`/`max_pages`, l’unico caso su cui il chiamante possa agire; `totalResults` resta nel messaggio come contesto e non decide mai. Portato dal padre #3839.
+- **Radancy aggira la cache a ogni richiesta di frammento JSON.** Uno strato di cache davanti a quella rotta ripete risposte obsolete su alcuni tenant: lo stesso annuncio ricompare pagine dopo mentre un altro non viene mai servito — riprodotto nove volte su nove a monte. Le intestazioni `Cache-Control`/`Pragma` non hanno cambiato nulla; un parametro casuale per richiesta sì. Deve essere unico per **chiamata**, mai derivato dal numero di pagina: un parametro deterministico darebbe comunque alla cache una chiave stabile, e con essa la stessa corrispondenza stabile e sbagliata. Portato dal padre #3839.
+- **Gli elenchi di uffici di Greenhouse hanno ordine deterministico.** Greenhouse non promette l’ordine di `offices[]` tra una risposta e l’altra, e l’insieme ricostruito dall’albero `/offices` segue il suo ordine di visita. Entrambi finiscono nel campo `location` dell’annuncio, quindi una bacheca che riordinasse i propri uffici riscriveva quella stringa — e un annuncio immutato veniva letto come nuovo. Il padre ha corretto l’insieme (#3839); **web-ui aveva una seconda istanza dello stesso difetto, assente nel padre** — il ripiego `offices[0]`, usato quando l’annuncio non porta una localizzazione propria — e ora sono ordinati entrambi.
+
+### Note
+- **La correzione iCIMS del padre (#3728) non richiede port.** Legge tutte le voci `jobLocation` dal JSON-LD della pagina di dettaglio, perché alcuni tenant emettono una voce interamente `UNAVAILABLE` prima dell’indirizzo reale. L’iCIMS di web-ui prende la localizzazione dall’HTML della **pagina di elenco** e non apre mai una pagina di dettaglio.
+- **La modifica a `_http.mjs` non richiede port.** Estrae `isRefusedRedirectError` per un secondo consumatore che web-ui non ha; il comportamento di `isRetryableError` è invariato.
+- **La deduplicazione per localizzazione (#3751) non è rispecchiata** — vive nella pipeline `scan.mjs` della CLI del padre.
+- Registro invariato: **90 fonti** (85 EN + 5 RU). Test: **2956 → 2962** (+6).
+
 ## [1.229.0] — 2026-09-03
 
 **Aggiunto — quattro fonti di scansione dal career-ops padre v1.31.0: Built In, Feishu Jobs, Garena e MokaHR.**

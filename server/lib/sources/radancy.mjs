@@ -38,6 +38,7 @@
  *
  * Used by the radancy adapter (server/lib/portals/adapters/radancy.mjs).
  */
+import { randomUUID } from 'node:crypto';
 import { fetchText, delay } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
 
@@ -238,6 +239,16 @@ export function parseLegacyResults(html, origin, companyName = '') {
  * SearchResultsModuleName MUST be sent — without it the server returns an empty
  * result set (silent, not an error). SearchFiltersModuleName is deliberately
  * ABSENT — sending it re-attaches a multi-megabyte facet blob to every page.
+ *
+ * `_` is a random cache-buster, not a documented TalentBrew parameter. A caching
+ * layer in front of the JSON route replays stale responses on some tenants: the
+ * same posting comes back several pages later while another is never served at
+ * all. The parent reproduced it 9 runs out of 9 on careers.munichre.com, found
+ * `Cache-Control`/`Pragma` request headers made no difference, and a random
+ * per-request parameter — forcing a cache-key miss — fixed it. It must be unique
+ * per CALL, never derived from `page`: a deterministic extra parameter still
+ * gives the cache a stable key and therefore a stable, wrong mapping.
+ * Ported from parent career-ops #3839.
  * @param {string} listUrl Base search-jobs URL (no trailing slash).
  * @param {number} page 1-based page number.
  * @param {number} [recordsPerPage]
@@ -260,6 +271,7 @@ export function buildFragmentUrl(listUrl, page, recordsPerPage = FRAGMENT_RECORD
     SortCriteria: '0',
     SortDirection: '0',
     SearchType: '5',
+    _: randomUUID(),
   });
   return `${listUrl}/results?${q.toString()}`;
 }
@@ -371,6 +383,11 @@ export async function fetchRadancy(endpoint, opts = {}) {
         const lastPage = Math.min(totalPages ?? maxPages, maxPages);
         push(firstRows);
 
+        // Why the walk stopped, so the truncation warning can be honest about
+        // whose limit was reached. 'end' means the tenant ran out of postings;
+        // 'cap' means OUR max_jobs/max_pages did. Only 'cap' is the caller's to
+        // act on.
+        let stopReason = jobs.length >= maxJobs ? 'cap' : 'end';
         for (let page = 2; page <= lastPage && jobs.length < maxJobs; page++) {
           await delay(PAGE_DELAY_MS, signal);
           let rows;
@@ -381,18 +398,33 @@ export async function fetchRadancy(endpoint, opts = {}) {
           } catch {
             break; // a mid-walk blip shouldn't discard earlier pages
           }
-          if (rows.length === 0) break;
-          if (push(rows) === 0) break; // server clamped the page — stop
+          if (rows.length === 0) { stopReason = 'end'; break; }
+          if (push(rows) === 0) { stopReason = 'end'; break; } // server clamped the page — stop
+          if (jobs.length >= maxJobs) { stopReason = 'cap'; break; }
         }
+        // Bounded by our own max_pages rather than the tenant's page count:
+        // also our limit, so also worth reporting.
+        if (stopReason === 'end' && totalPages && lastPage < totalPages) stopReason = 'cap';
 
-        // Never truncate silently: report the count actually RETURNED. jobs.length
-        // is the pre-slice buffer — the page loop only checks `jobs.length < maxJobs`
-        // BEFORE fetching, so the final page can push it past the cap.
+        // Never truncate silently on OUR OWN limit — report the count actually
+        // RETURNED. `jobs.length` is the pre-slice buffer: the page loop only
+        // checks `jobs.length < maxJobs` BEFORE fetching, so the final page can
+        // push it past the cap; logging the pre-slice length would overstate
+        // delivery in the one message whose whole job is to be accurate about
+        // what the caller did not get.
+        //
+        // `totalResults` is CONTEXT ONLY and never decides whether to warn.
+        // The parent checked `data-total-results` against 9 live tenants: 5
+        // matched, but 4 — a small one and a huge one both — fell short of the
+        // banner by 10-56% with no duplicate rows anywhere. The banner
+        // overstates what the tenant's own search index serves, so comparing
+        // the accumulated count against it false-positived on a majority of
+        // tenants. Ported from parent career-ops #3839.
         const returned = Math.min(jobs.length, maxJobs);
-        if (totalResults && returned < totalResults) {
+        if (stopReason === 'cap') {
           console.error(
-            `⚠️  radancy: ${name} truncated at ${returned} of ${totalResults} postings`
-            + ' — raise max_jobs/max_pages on this entry for more',
+            `⚠️  radancy: ${name} truncated at ${returned}${totalResults ? ` of ${totalResults}` : ''} postings`
+            + ' (max_jobs/max_pages reached) — raise max_jobs/max_pages on this entry for more',
           );
         }
         return jobs.slice(0, maxJobs);

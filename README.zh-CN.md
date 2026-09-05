@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-2956%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-2962%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.229.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.229.0)
+[![release](https://img.shields.io/badge/release-v1.230.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.230.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.229.0** — **来自父项目 v1.31.0 的四个新来源：Built In、Feishu Jobs、Garena 和 MokaHR** —— 86 → **90 个来源**（EN 85 + RU 5），皆无需令牌。Built In **不携带默认查询**，遇到白名单之外的市场会拒绝，而不是悄悄去扫全国板；MokaHR 返回密钥随行的**加密响应**。同时修复：`htmlToText` 可能放行不完整的标签开头。**2956 个测试。**
+> **🆕 最新版本 — v1.230.0** — **来自上游 v1.32.0 的三项提供方修复。** Welcome to the Jungle 现在接受服务端 Algolia `filters` 表达式：它缩小的是结果**集合**本身，而不是重新排序，这也是全局招聘板扫描能够穷尽而非抽样的唯一方式。当租户只是提供的职位比其自家横幅所声称的更少时（实测九个租户中有四个夸大 10%–56%），Radancy 不再警告“truncated”，并为一条会重放过期页面的 JSON 路由加上缓存绕过。Greenhouse 的办公地点列表现在按确定顺序排列，招聘板重排办公地点不会再让未变动的职位被读成新职位。**2962 项测试。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -381,7 +381,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2956 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 2962 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(纯函数)
    ├─ api.test.mjs           # 每个端点,临时端口,无外网
    ├─ {ru,en}-scanner.test.mjs   # mock 后的 fetch
@@ -515,7 +515,7 @@ event: error    data: { message }
 ## 测试
 
 ```bash
-npm test                       # 2956 个单元 / 集成测试
+npm test                       # 2962 个单元 / 集成测试
 npm run test:e2e               # 21 个烟雾 e2e(启动自带服务器)
 npm run test:e2e:full          # 23 个综合 e2e
 npm run test:e2e:browser       # 101 个 Playwright 浏览器烟雾
@@ -524,7 +524,7 @@ npm run test:coverage          # 同 `npm test`,附加 V8 覆盖率
 
 | 套件                       | 测试数 | 内容                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs`(unit + integration) | **2956** | 每个端点,临时端口,无外网。覆盖 parser、scanner(已 mock)、runner、anthropic、安全 header、XSS(含实体解码)、JD sanitize、URL 校验、SSRF 重定向 / rebind、并发互斥、路径遍历、速率限制、i18n 对等。 |
+| `node --test tests/*.test.mjs`(unit + integration) | **2962** | 每个端点,临时端口,无外网。覆盖 parser、scanner(已 mock)、runner、anthropic、安全 header、XSS(含实体解码)、JD sanitize、URL 校验、SSRF 重定向 / rebind、并发互斥、路径遍历、速率限制、i18n 对等。 |
 | `tests/e2e.mjs`(smoke)      | 21 | Playwright headless:每个路由可渲染,基础流程。                                                            |
 | `tests/e2e-comprehensive.mjs` | 23 | 完整 Playwright walkthrough:11 个路由 + 12 个功能流程。                                                   |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **12** | 浏览器驱动的烟雾:dashboard 渲染、导航、语言切换、404、health、tracker 往返(BF-1)、pipeline 添加 + 无效 URL 扫描、reports 空、evaluate 手动回退、config keys 遮蔽、CV PUT XSS 清理、pipeline preview 400。 |
@@ -643,7 +643,7 @@ career-ops **常开** 时最佳 —— 在你睡觉时扫描,可从任何浏览�
 
 欢迎 issues 与 PR。家规如下:
 
-- 推送前先跑 `npm test` —— **2956 项全绿** 是底线(触碰 UI 时再加上 90 个 Playwright)。
+- 推送前先跑 `npm test` —— **2962 项全绿** 是底线(触碰 UI 时再加上 90 个 Playwright)。
 - 非平凡变更走 GSD 流水线。见 [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)。
 - 不要从本仓库内修改父 `career-ops/` 项目的任何文件。这是一个非侵入式叠加层 —— 这是整件事的意义所在。硬性规则见 [`CLAUDE.md`](CLAUDE.md)。
 - 约定式提交:`feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`。可选 scope:`feat(scan):`。破坏性变更:`feat!:`。

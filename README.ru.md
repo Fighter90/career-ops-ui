@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-2956%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-2962%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.229.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.229.0)
+[![release](https://img.shields.io/badge/release-v1.230.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.230.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.229.0** — **Четыре новых источника из родителя v1.31.0: Built In, Feishu Jobs, Garena и MokaHR** — 86 → **90 источников** (85 EN + 5 RU), все без токенов. У Built In **нет дефолтного запроса** (общий источник не должен нести чьи-то поисковые слова), и рынок вне списка он отклоняет, а не сканирует тихо национальную доску; MokaHR отдаёт **зашифрованный ответ**, ключ к которому приезжает рядом, — расшифровка часть чтения доски. Ещё исправлено: `htmlToText` мог пропустить в текст незакрытый открывающий тег. **2956 тестов.**
+> **🆕 Последний релиз — v1.230.0** — **Три исправления провайдеров из родительского v1.32.0.** Welcome to the Jungle теперь принимает серверное выражение `filters` для Algolia: оно сокращает сам **набор** результатов, а не переупорядочивает его — только так скан глобальной доски становится исчерпывающим, а не выборкой. Radancy больше не пишет «truncated», когда у арендатора просто меньше вакансий, чем заявляет его же баннер (четыре из девяти проверенных завышают на 10–56 %), и обходит кеш JSON-маршрута, который отдавал устаревшие страницы. Списки офисов Greenhouse упорядочены детерминированно, поэтому перестановка офисов на стороне доски больше не заставляет неизменившуюся вакансию читаться как новая. **2962 теста.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -381,7 +381,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2956 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 2962 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # парсеры markdown / pipeline / отчётов (чистые функции)
    ├─ api.test.mjs           # каждая точка входа, эфемерный сервер, без сети
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -517,7 +517,7 @@ event: error    data: { message }
 ## Тесты
 
 ```bash
-npm test                       # 2956 unit/integration-теста
+npm test                       # 2962 unit/integration-теста
 npm run test:e2e               # 21 smoke e2e (поднимает собственный сервер)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser-smoke
@@ -526,7 +526,7 @@ npm run test:coverage          # то же, что `npm test`, плюс V8-по�
 
 | Сьют                       | Тестов | Что покрывает                                                                                              |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2956** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
+| `node --test tests/*.test.mjs` (unit + integration) | **2962** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: каждый маршрут рендерится, базовые сценарии работают.                                 |
 | `tests/e2e-comprehensive.mjs` | 23 | Полный Playwright-walkthrough: 11 маршрутов + 12 функциональных сценариев.                                 |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Browser-driven smoke: рендер дашборда, навигация, переключение языка, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL sweep, пустые reports, evaluate manual fallback, маскирование ключей в config, XSS-strip на PUT CV, pipeline preview 400. |
@@ -644,7 +644,7 @@ career-ops лучше всего работает **постоянно вклю�
 
 Issues и PR приветствуются. Правила:
 
-- Перед push выполняйте `npm test` — **2956 проверок green** — это минимальная планка (плюс 101 Playwright, если изменения касаются UI).
+- Перед push выполняйте `npm test` — **2962 проверок green** — это минимальная планка (плюс 101 Playwright, если изменения касаются UI).
 - Нетривиальные изменения проходят через GSD-конвейер. См. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Не модифицируйте ничего в родительском `career-ops/` из этого репозитория. Смысл проекта именно в том, что это неинвазивный overlay. Жёсткие правила — в [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Опциональный scope: `feat(scan):`. Breaking change: `feat!:`.

@@ -124,14 +124,22 @@ export async function fetchGreenhouse(apiUrl, opts = {}) {
 
 function normalize(j, officeMap = null) {
   let loc = j.location?.name || '';
-  const offices = (j.offices || []).map((o) => o.name).filter(Boolean);
+  // Sorted, because both uses below reach the posting's `location` field and
+  // Greenhouse does not promise this array's order between responses. A board
+  // that re-orders its offices would otherwise rewrite `location`, and a
+  // posting nothing changed about reads as new. (Parent career-ops #3839 fixed
+  // the same class on its office-tree Set; the `offices[0]` fallback is
+  // web-ui's own second instance of it.)
+  const offices = (j.offices || []).map((o) => o.name).filter(Boolean).sort();
   // When the job's location is a bare work model and /jobs
   // embedded no offices, recover the city from the /offices map and fold it
   // into the location string (a `[loc, ...offices]` join)
   // so the returned `location` field — and downstream filtering — sees it.
   if (officeMap && isWorkModelOnly(loc) && !offices.length) {
     const fromMap = officeMap.get(j.id);
-    if (fromMap && fromMap.size > 0) loc = [loc, ...fromMap].join(' · ');
+    // Sorted for the same reason: the set is built by walking the office
+    // tree, so its iteration order is Greenhouse's, not ours.
+    if (fromMap && fromMap.size > 0) loc = [loc, ...[...fromMap].sort()].join(' · ');
   }
   const allLocs = [loc, ...offices].filter(Boolean).join(' · ');
   const isRemote = /remote|anywhere|fully\s*distributed/i.test(allLocs) ||
