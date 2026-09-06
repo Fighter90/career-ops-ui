@@ -135,14 +135,18 @@ import { itviecAdapter } from './adapters/itviec.mjs';
 import { telegramAdapter } from './adapters/telegram.mjs';
 import { careervietAdapter } from './adapters/careerviet.mjs';
 import { builtinAdapter } from './adapters/builtin.mjs';
+import { collageAdapter } from './adapters/collage.mjs';
 import { feishuJobsAdapter } from './adapters/feishu-jobs.mjs';
 import { garenaAdapter } from './adapters/garena.mjs';
+import { telegramChannelAdapter } from './adapters/telegram-channel.mjs';
 import { mokahrAdapter } from './adapters/mokahr.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
+  collageAdapter,
   feishuJobsAdapter,
   garenaAdapter,
+  telegramChannelAdapter,
   mokahrAdapter,
   greenhouseAdapter,
   ashbyAdapter,

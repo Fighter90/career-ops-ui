@@ -2,6 +2,24 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.231.0] — 2026-09-05
+
+**Eklendi — üst career-ops v1.32.0'dan iki tarama kaynağı (Collage, Telegram katı), Gem'in REST kipi ve taşımanın üst projenin kendi kodunda ortaya çıkardığı bir kusur.**
+
+### Eklendi
+- **İki yeni kaynak, 90 → 92** (87 EN + 5 RU), `ALL_ADAPTERS` **85 → 87**. İkisi de belirteçsiz.
+  - **Collage** (`provider: collage`) — Collage HR'ın açık iş sitesi API'si. Yol parçası, **kiracının kendi seçtiği site adresidir**, şirket adından türetilmiş bir slug değil: `api:`'den ya da bir `secure.collage.co/jobs/<adres>` URL'sinden okunur ve **asla tahmin edilmez** — tahmin edilen bir adres başkasının panosunu tarardı.
+  - **Telegram (katı)** (`provider: telegram-channel`) — mevcut `telegram` kaynağının okuduğu aynı `t.me/s/<kanal>` önizlemelerini okur, ama **ters takası** yapar: bir gönderi **ancak bir işveren adı verip bir ilan sayfasına bağlanıyorsa** satır olur. Derlemeler, işvereni gizli gönderiler ve yalnızca iletişim içeren gönderiler elenir. Kapsam bilinçli olarak düşük — yukarı akışta gönderilerin %32-77'sinin geçtiği ölçüldü — ama her satır gerçek bir işveren ve gerçek bir bağlantı taşır. İkisi de üst projedeki gibi birlikte sunulur.
+- **Gem'e isteğe bağlı bir REST kipi eklendi**, GraphQL yolunun yanına (`api: https://api.gem.com/job_board/v0/<board>/job_posts`). Asla bir pano kimliğinden türetilmez ve GraphQL yolu varsayılan kalır. #3783'ten taşındı.
+
+### Düzeltildi
+- **`telegram-channel`'ın konum süzgeci Kiril harflerini göremiyor ve şehirleri işveren diye adlandırıyordu.** Üst projedeki `LOCATIONISH_RE`, yalnızca ASCII için çalışan ve Kiril harflerinin yanında hiç tetiklenmeyen `\b` sınırını kullanıyordu: içindeki tüm Rusça seçenekler erişilemezdi ve `Senior Engineer | Москва` **“Москва”yı işveren olarak** döndürüyordu. Bu, tüm atıf politikasının önlemek için var olduğu yanlış-alan-gerçek-yerine ikamesinin ta kendisi ve sağlayıcının asıl kitlesini vuruyordu. web-ui taşıması Unicode denetimleri kullanıyor; üst projenin bir sabit aşağıda `ROLE_WORD_RE` içinde zaten yaptığı şey. ASCII biçiminde başarısız olan bir testle sabitlendi. **Yukarı akışta henüz düzeltilmedi.**
+
+### Notlar
+- **Üst projenin Workday faset kurtarma çalışması (#3851, #3874) taşıma gerektirmedi** — web-ui Workday'i hiç sayfalamıyor, `offset: 0` ile tek bir POST.
+- **`providers/_types.js`** yalnızca belgelerde değişti.
+- Testler: **2962 → 3009** (+47).
+
 ## [1.230.0] — 2026-09-05
 
 **Değişti — üst career-ops v1.32.0’dan üç sağlayıcı düzeltmesi ve taşımanın kendisinin ortaya çıkardığı bir kusur.**

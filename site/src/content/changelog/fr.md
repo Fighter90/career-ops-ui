@@ -11,6 +11,24 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.0] — 2026-09-05
+
+**Ajouté — deux sources de balayage du career-ops parent v1.32.0 (Collage, Telegram strict), le mode REST de Gem et un défaut que le portage a mis au jour dans le code du parent lui-même.**
+
+### Ajouté
+- **Deux nouvelles sources, 90 → 92** (87 EN + 5 RU), `ALL_ADAPTERS` **85 → 87**. Toutes deux sans jeton.
+  - **Collage** (`provider: collage`) — l’API publique des sites d’emploi de Collage HR. Le segment de chemin est **l’adresse du site que le locataire a choisie**, pas un slug tiré du nom de l’entreprise : elle est donc lue depuis `api:` ou depuis une URL `secure.collage.co/jobs/<adresse>` et **jamais devinée** — une adresse devinée balaierait le tableau de quelqu’un d’autre.
+  - **Telegram (strict)** (`provider: telegram-channel`) — lit les mêmes aperçus `t.me/s/<canal>` que la source `telegram` existante, avec l’**échange inverse** : un message ne devient une ligne **que s’il nomme un employeur ET pointe vers une page d’offre**. Les digests, les messages à employeur caché et ceux qui ne donnent qu’un contact sont écartés. Faible couverture par conception — 32 à 77 % des messages passent selon les mesures amont — mais chaque ligne porte un employeur réel et un lien réel. Les deux sont livrées, comme chez le parent.
+- **Gem gagne un mode REST optionnel** à côté de sa voie GraphQL (`api: https://api.gem.com/job_board/v0/<board>/job_posts`). Il n’est jamais déduit d’un identifiant de tableau, et la voie GraphQL reste la valeur par défaut. Porté du parent #3783.
+
+### Corrigé
+- **Le filtre de lieu de `telegram-channel` ne voyait pas le cyrillique et nommait des villes comme employeurs.** Le `LOCATIONISH_RE` du parent utilisait `\b`, une frontière ASCII seulement, qui ne se déclenche jamais à côté du cyrillique : toutes ses variantes russes étaient inatteignables et `Senior Engineer | Москва` renvoyait **« Москва » comme employeur**. C’est exactement la substitution de champ que toute la politique d’attribution existe pour empêcher, et elle frappait le public principal du fournisseur. Le portage web-ui utilise des vérifications Unicode, ce que le parent fait déjà une constante plus bas dans `ROLE_WORD_RE`. Verrouillé par un test qui échoue sur la forme ASCII. **Pas encore corrigé en amont.**
+
+### Notes
+- **La récupération par facettes de Workday chez le parent (#3851, #3874) n’avait rien à porter** — web-ui ne pagine pas Workday du tout, un seul POST à `offset: 0`.
+- **`providers/_types.js`** n’a changé que dans la documentation.
+- Tests : **2962 → 3009** (+47).
+
 ## [1.230.0] — 2026-09-05
 
 **Modifié — trois correctifs de fournisseurs venus du career-ops parent v1.32.0, et un défaut que le portage lui-même a mis au jour.**

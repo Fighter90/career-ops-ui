@@ -8,6 +8,24 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.231.0] — 2026-09-05
+
+**Tilføjet — to scanningskilder fra forældreprojektets career-ops v1.32.0 (Collage, Telegram streng), Gems REST-tilstand og en defekt, som porteringen bragte frem i forælderens egen kode.**
+
+### Tilføjet
+- **To nye kilder, 90 → 92** (87 EN + 5 RU), `ALL_ADAPTERS` **85 → 87**. Begge uden token.
+  - **Collage** (`provider: collage`) — Collage HR's offentlige jobside-API. Stisegmentet er **den adresse, lejeren selv valgte**, ikke et slug fra firmanavnet: den læses fra `api:` eller fra en `secure.collage.co/jobs/<adresse>`-URL og **gættes aldrig** — en gættet adresse ville scanne en andens board.
+  - **Telegram (streng)** (`provider: telegram-channel`) — læser de samme `t.me/s/<kanal>`-forhåndsvisninger som den eksisterende kilde `telegram`, men laver den **modsatte byttehandel**: Et opslag bliver **kun en række, når det nævner en arbejdsgiver OG linker til en opslagsside**. Digests, opslag med skjult arbejdsgiver og rene kontaktopslag frasorteres. Lav dækning med vilje — opstrøms måltes 32-77 % af opslagene som beståede — men hver række bærer en rigtig arbejdsgiver og et rigtigt link. Begge leveres, som hos forælderen.
+- **Gem fik en valgfri REST-tilstand** ved siden af GraphQL-vejen (`api: https://api.gem.com/job_board/v0/<board>/job_posts`). Den udledes aldrig af et board-id, og GraphQL-vejen forbliver standarden. Porteret fra #3783.
+
+### Rettet
+- **Stedfilteret i `telegram-channel` kunne ikke se kyrillisk og udnævnte byer til arbejdsgivere.** Forælderens `LOCATIONISH_RE` brugte `\b`, en ren ASCII-ordgrænse, der aldrig udløses ved siden af kyrillisk: alle de russiske alternativer var uopnåelige, og `Senior Engineer | Москва` returnerede **“Москва” som arbejdsgiver**. Præcis den feltforveksling, hele tilskrivningspolitikken findes for at forhindre, og den ramte udbyderens primære publikum. web-ui-porteringen bruger Unicode-tjek, det samme som forælderen allerede gør en konstant længere nede i `ROLE_WORD_RE`. Fastholdt af en test, der fejler på ASCII-formen. **Endnu ikke rettet opstrøms.**
+
+### Noter
+- **Forælderens Workday-facetgendannelse (#3851, #3874) krævede ingen portering** — web-ui paginerer slet ikke Workday, én POST ved `offset: 0`.
+- **`providers/_types.js`** ændrede sig kun i dokumentationen.
+- Tests: **2962 → 3009** (+47).
+
 ## [1.230.0] — 2026-09-05
 
 **Ændret — tre udbyderrettelser fra forældreprojektets career-ops v1.32.0 samt én defekt, som selve porteringen bragte frem.**

@@ -1,6 +1,6 @@
 # सहायता — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 ऐप लॉन्च करने के क्षण से लेकर इंटरव्यू पाने तक, हर पेज का पूरा
 वॉकथ्रू। नीचे दिया गया हर `##` हेडिंग साइडबार की किसी एंट्री या
@@ -1889,7 +1889,7 @@ key वैल्यू दिखाई नहीं देगी।
 
 गहरे निदान के लिए: Health पेज पर **▶ Doctor** चलाएँ, आउटपुट कॉपी
 करें, और इश्यू ट्रैकर पर खोजें
-<https://github.com/Fighter90/career-ops-ui/issues>।
+<https://github.com/Fighter92/career-ops-ui/issues>।
 
 
 ---
@@ -1899,7 +1899,7 @@ key वैल्यू दिखाई नहीं देगी।
 career-ops-ui हर job board को एक **adapter** के रूप में मानता है — एक अकेली फ़ाइल
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) के अंतर्गत जो
 एक बोर्ड के परिणामों को fetch + normalize करना जानती है। फ़िलहाल
-`server/lib/sources/` रजिस्ट्री **90** adapters शिप करती है — **85 अंग्रेज़ी + 5 रूसी**
+`server/lib/sources/` रजिस्ट्री **92** adapters शिप करती है — **87 अंग्रेज़ी + 5 रूसी**
 बोर्ड। अंग्रेज़ी सेट प्रमुख ATS-ों (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday) को कवर करता है, बोर्ड-वाइड aggregators
 जिन्हें स्पष्ट `provider:` से चुना जाता है (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
@@ -2363,7 +2363,7 @@ career-ops-ui का ज़्यादातर हिस्सा यह प�
 
 ### मार्केट रिपोर्ट
 
-**मार्केट रिपोर्ट** टैब मॉडल से *आपकी* लक्षित भूमिकाओं के वेतन और श्रम-बाज़ार विश्लेषण के लिए पूछता है — यह जानने के लिए कि किन भूमिकाओं और वरिष्ठता स्तरों को कवर करना है, यह आपका CV और प्रोफ़ाइल पढ़ता है। एक **क्षेत्र / बाज़ार** टाइप करें (उदाहरण के लिए `Russia`, `EU-remote`, `US`, या `Germany`), एक **मुद्रा (Currency)** चुनें, और **मार्केट रिपोर्ट जनरेट करें** पर क्लिक करें। आपको एक कार्यकारी सारांश, ग्रेड अनुसार वेतन (माध्य (median) के साथ P10/P25/P75/P90), शीर्ष नियोक्ता, मांग वाले कौशलों की तालिका, लाभों की आवृत्ति, ऑफिस/हाइब्रिड/रिमोट विभाजन, AI प्रभाव सहित 12–24 महीनों के रुझान, और बातचीत (negotiation) संबंधी मार्गदर्शन के साथ एक संरचित रिपोर्ट मिलती है। हर आँकड़ा मॉडल के प्रशिक्षण ज्ञान से **एक दिशात्मक अनुमान** है — स्क्रैप किया गया या लाइव डेटा नहीं — और रिपोर्ट यह स्पष्ट रूप से कहती है; संख्याओं को उद्धरण नहीं, बल्कि सीमाएँ मानें। बिना API कुंजी सेट किए आपको एक मनगढ़ंत रिपोर्ट के बजाय कॉपी-पेस्ट प्रॉम्प्ट मिलता है। रिपोर्ट को ऐप से बाहर ले जाने के लिए **Download .md**, **Save as PDF**, या **Copy** का उपयोग करें।
+**मार्केट रिपोर्ट** टैब मॉडल से *आपकी* लक्षित भूमिकाओं के वेतन और श्रम-बाज़ार विश्लेषण के लिए पूछता है — यह जानने के लिए कि किन भूमिकाओं और वरिष्ठता स्तरों को कवर करना है, यह आपका CV और प्रोफ़ाइल पढ़ता है। एक **क्षेत्र / बाज़ार** टाइप करें (उदाहरण के लिए `Russia`, `EU-remote`, `US`, या `Germany`), एक **मुद्रा (Currency)** चुनें, और **मार्केट रिपोर्ट जनरेट करें** पर क्लिक करें। आपको एक कार्यकारी सारांश, ग्रेड अनुसार वेतन (माध्य (median) के साथ P10/P25/P75/P92), शीर्ष नियोक्ता, मांग वाले कौशलों की तालिका, लाभों की आवृत्ति, ऑफिस/हाइब्रिड/रिमोट विभाजन, AI प्रभाव सहित 12–24 महीनों के रुझान, और बातचीत (negotiation) संबंधी मार्गदर्शन के साथ एक संरचित रिपोर्ट मिलती है। हर आँकड़ा मॉडल के प्रशिक्षण ज्ञान से **एक दिशात्मक अनुमान** है — स्क्रैप किया गया या लाइव डेटा नहीं — और रिपोर्ट यह स्पष्ट रूप से कहती है; संख्याओं को उद्धरण नहीं, बल्कि सीमाएँ मानें। बिना API कुंजी सेट किए आपको एक मनगढ़ंत रिपोर्ट के बजाय कॉपी-पेस्ट प्रॉम्प्ट मिलता है। रिपोर्ट को ऐप से बाहर ले जाने के लिए **Download .md**, **Save as PDF**, या **Copy** का उपयोग करें।
 
 ### मेरी पाइपलाइन
 
@@ -2463,7 +2463,7 @@ career-ops CLI के प्रति agnostic है, इसलिए AI के
 
 ## 32. इसे OpenWorker (AI सहकर्मी) से चलाएँ
 
-ब्राउज़र के बजाय एक डेस्कटॉप AI सहकर्मी पसंद है? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** एक **[OpenWorker](https://github.com/andrewyng/openworker)** कोवर्कर है (Andrew Ng का ओपन-सोर्स, लोकल-फ़र्स्ट AI सहकर्मी ऐप) जो आपके लिए इस पूरी पाइपलाइन को चलाता है — बोर्ड्स स्कैन करता है, आपके CV के मुक़ाबले फ़िट स्कोर करता है, एक ग्राउंडेड CV + कवर लेटर तैयार करता है, आवेदनों को ट्रैक करता है, फ़ॉलो-अप ड्राफ़्ट करता है — और अनुरोध पर यह **इस डैशबोर्ड को लॉन्च** कर सकता है। यह एक अकेली, कोड-रहित Markdown "पर्सोना" है; OpenWorker इसमें से कुछ भी एक प्रोग्राम की तरह नहीं चलाता, ये निर्देश बस एजेंट को दिशा देते हैं। इसकी गाइड सभी 17 भाषाओं में उपलब्ध है।
+ब्राउज़र के बजाय एक डेस्कटॉप AI सहकर्मी पसंद है? **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** एक **[OpenWorker](https://github.com/andrewyng/openworker)** कोवर्कर है (Andrew Ng का ओपन-सोर्स, लोकल-फ़र्स्ट AI सहकर्मी ऐप) जो आपके लिए इस पूरी पाइपलाइन को चलाता है — बोर्ड्स स्कैन करता है, आपके CV के मुक़ाबले फ़िट स्कोर करता है, एक ग्राउंडेड CV + कवर लेटर तैयार करता है, आवेदनों को ट्रैक करता है, फ़ॉलो-अप ड्राफ़्ट करता है — और अनुरोध पर यह **इस डैशबोर्ड को लॉन्च** कर सकता है। यह एक अकेली, कोड-रहित Markdown "पर्सोना" है; OpenWorker इसमें से कुछ भी एक प्रोग्राम की तरह नहीं चलाता, ये निर्देश बस एजेंट को दिशा देते हैं। इसकी गाइड सभी 17 भाषाओं में उपलब्ध है।
 
 ### कोवर्कर क्या करता है
 
@@ -2474,7 +2474,7 @@ career-ops CLI के प्रति agnostic है, इसलिए AI के
 OpenWorker इंस्टॉल करें और एक मॉडल की जोड़ें (Anthropic / OpenAI / Google, या लोकल Ollama)। सबसे तेज़ है **एक कमांड** — यह coworker द्वारा चलाई जाने वाली `career-ops` पाइपलाइन तैयार करता है और idempotent है: मौजूदा `career-ops` / `web-ui` को आपके डेटा को अधिलेखित किए बिना फिर से उपयोग करता है:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
 ```
 
-फिर OpenWorker के **Install a coworker** पैनल में coworker जोड़ें — **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`) से, **.zip** ([Releases](https://github.com/Fighter90/career-ops-coworker/releases) से), या `career-ops.md` को **इम्पोर्ट** करके। एक **Job-Search Coworker** सेशन खोलें, अपना `career-ops` फ़ोल्डर चुनें, और कुछ वास्तविक माँगें — *"मेरे बोर्ड स्कैन करो और इस हफ़्ते के टॉप 5 मैच दो"* या *"डैशबोर्ड खोलो।"* कनेक्टर (Gmail, Google Calendar, GitHub) और पूरी गाइड रिपॉज़िटरी की [हेल्प गाइड](https://github.com/Fighter90/career-ops-coworker/tree/main/help) में हैं। OpenWorker के लोडर और रिपॉज़िटरी इंस्टॉलर के विरुद्ध इंस्टॉल-योग्यता सत्यापित।
+फिर OpenWorker के **Install a coworker** पैनल में coworker जोड़ें — **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`) से, **.zip** ([Releases](https://github.com/Fighter92/career-ops-coworker/releases) से), या `career-ops.md` को **इम्पोर्ट** करके। एक **Job-Search Coworker** सेशन खोलें, अपना `career-ops` फ़ोल्डर चुनें, और कुछ वास्तविक माँगें — *"मेरे बोर्ड स्कैन करो और इस हफ़्ते के टॉप 5 मैच दो"* या *"डैशबोर्ड खोलो।"* कनेक्टर (Gmail, Google Calendar, GitHub) और पूरी गाइड रिपॉज़िटरी की [हेल्प गाइड](https://github.com/Fighter92/career-ops-coworker/tree/main/help) में हैं। OpenWorker के लोडर और रिपॉज़िटरी इंस्टॉलर के विरुद्ध इंस्टॉल-योग्यता सत्यापित।

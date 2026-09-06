@@ -9,6 +9,24 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.0] — 2026-09-05
+
+**Dodano — dwa źródła skanowania z nadrzędnego career-ops v1.32.0 (Collage, Telegram ścisły), tryb REST w Gem oraz wadę, którą port wydobył w kodzie samego projektu nadrzędnego.**
+
+### Dodano
+- **Dwa nowe źródła, 90 → 92** (87 EN + 5 RU), `ALL_ADAPTERS` **85 → 87**. Oba bez tokenu.
+  - **Collage** (`provider: collage`) — publiczne API stron ofert Collage HR. Segment ścieżki to **adres strony, który najemca sam wybrał**, a nie slug z nazwy firmy: czytany jest z `api:` albo z adresu `secure.collage.co/jobs/<adres>` i **nigdy nie zgadywany** — zgadnięty adres oznaczałby skanowanie cudzej tablicy.
+  - **Telegram (ścisły)** (`provider: telegram-channel`) — czyta te same podglądy `t.me/s/<kanał>` co istniejące źródło `telegram`, ale robi **odwrotny kompromis**: post staje się wierszem **tylko wtedy, gdy nazywa pracodawcę I linkuje do strony oferty**. Zbiorcze posty, posty z ukrytym pracodawcą i posty wyłącznie kontaktowe są odrzucane. Niskie pokrycie z założenia — powyżej zmierzono 32-77% przechodzących postów — ale każdy wiersz niesie prawdziwego pracodawcę i prawdziwy link. Oba są dostarczane, tak jak w projekcie nadrzędnym.
+- **Gem zyskał opcjonalny tryb REST** obok ścieżki GraphQL (`api: https://api.gem.com/job_board/v0/<board>/job_posts`). Nigdy nie jest wyprowadzany z identyfikatora tablicy, a ścieżka GraphQL pozostaje domyślna. Przeniesione z #3783.
+
+### Naprawiono
+- **Filtr lokalizacji w `telegram-channel` nie widział cyrylicy i nazywał miasta pracodawcami.** `LOCATIONISH_RE` w projekcie nadrzędnym używał `\b`, granicy wyłącznie ASCII, która nigdy nie zadziała obok cyrylicy: wszystkie rosyjskie warianty były nieosiągalne, a `Senior Engineer | Москва` zwracał **„Москва” jako pracodawcę**. To dokładnie ta podmiana pola, której cała polityka atrybucji ma zapobiegać, i uderzała w główną grupę odbiorców dostawcy. Port web-ui używa sprawdzeń Unicode, tych samych, które projekt nadrzędny stosuje stałą niżej w `ROLE_WORD_RE`. Utrwalone testem, który przy formie ASCII zawodzi. **Powyżej jeszcze nie poprawione.**
+
+### Uwagi
+- **Odzyskiwanie Workday przez fasety w projekcie nadrzędnym (#3851, #3874) nie wymagało portu** — web-ui w ogóle nie stronicuje Workday, jeden POST przy `offset: 0`.
+- **`providers/_types.js`** zmienił się wyłącznie w dokumentacji.
+- Testy: **2962 → 3009** (+47).
+
 ## [1.230.0] — 2026-09-05
 
 **Zmieniono — trzy poprawki dostawców z nadrzędnego career-ops v1.32.0 oraz jedna wada, którą sam port wydobył na wierzch.**

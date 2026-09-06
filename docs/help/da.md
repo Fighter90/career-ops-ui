@@ -1,6 +1,6 @@
 # Hjælp — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 En komplet gennemgang af hver side, fra det øjeblik du starter
 appen til du lander en jobsamtale. Hver `##`-overskrift nedenfor svarer til en
@@ -1696,14 +1696,14 @@ events.
 
 For dybere diagnostik: kør **▶ Doctor** på Health-siden, kopier
 outputtet, og søg i issue-trackeren på
-<https://github.com/Fighter90/career-ops-ui/issues>.
+<https://github.com/Fighter92/career-ops-ui/issues>.
 
 
 ---
 
 ## 17. Sådan tilføjer du en ny jobportal-kilde
 
-career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. I dag leverer `server/lib/sources/`-registreringen **90** adaptere — **85 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
+career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. I dag leverer `server/lib/sources/`-registreringen **92** adaptere — **87 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** At tilføje en 12. kilde er nu
 > et **rent fil-drop**. Registreringen
@@ -2158,7 +2158,7 @@ Siden **Statistik** samler tre visninger under én sektion: en AI-genereret mark
 
 ### Markedsrapport
 
-Fanen **Markedsrapport** beder modellen om en løn- og arbejdsmarkedsanalyse af *dine* målroller — den læser dit CV og din profil for at vide, hvilke roller og hvilket senioritetsniveau der skal dækkes. Skriv en **Region / marked** (for eksempel `Russia`, `EU-remote`, `US` eller `Germany`), vælg en **Valuta**, og klik på **Generér markedsrapport**. Du får en struktureret rapport med et ledelsesresumé, løn efter niveau (median plus P10/P25/P75/P90), de største arbejdsgivere, en tabel over efterspurgte kompetencer, hyppigheden af goder, fordelingen mellem kontor/hybrid/remote, tendenser over 12-24 måneder inklusive AI's indvirkning og vejledning til forhandling. Hvert tal er et **retningsangivende skøn ud fra modellens træningsviden** — ikke skrabet eller live data — og det siger rapporten selv; behandl tallene som intervaller, ikke som citater. Uden en API-nøgle sat får du i stedet en kopier-og-indsæt-prompt frem for en opdigtet rapport. Brug **Download .md**, **Gem som PDF** eller **Kopiér** for at få rapporten ud af appen.
+Fanen **Markedsrapport** beder modellen om en løn- og arbejdsmarkedsanalyse af *dine* målroller — den læser dit CV og din profil for at vide, hvilke roller og hvilket senioritetsniveau der skal dækkes. Skriv en **Region / marked** (for eksempel `Russia`, `EU-remote`, `US` eller `Germany`), vælg en **Valuta**, og klik på **Generér markedsrapport**. Du får en struktureret rapport med et ledelsesresumé, løn efter niveau (median plus P10/P25/P75/P92), de største arbejdsgivere, en tabel over efterspurgte kompetencer, hyppigheden af goder, fordelingen mellem kontor/hybrid/remote, tendenser over 12-24 måneder inklusive AI's indvirkning og vejledning til forhandling. Hvert tal er et **retningsangivende skøn ud fra modellens træningsviden** — ikke skrabet eller live data — og det siger rapporten selv; behandl tallene som intervaller, ikke som citater. Uden en API-nøgle sat får du i stedet en kopier-og-indsæt-prompt frem for en opdigtet rapport. Brug **Download .md**, **Gem som PDF** eller **Kopiér** for at få rapporten ud af appen.
 
 ### Min pipeline
 
@@ -2258,7 +2258,7 @@ At flytte væk fra `127.0.0.1` betyder, at den sikkerhed, loopback gav gratis, n
 
 ## 32. Kør den fra OpenWorker (AI-kollega)
 
-Foretrækker du en AI-kollega på skrivebordet frem for browseren? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** er en **[OpenWorker](https://github.com/andrewyng/openworker)**-kollega (Andrew Ngs open source, local-first AI-kollega-app), der driver hele denne pipeline for dig — scanner jobopslag, scorer match mod dit CV, skræddersyr et velfunderet CV + følgebrev, holder styr på ansøgninger, udarbejder opfølgninger — og den kan **starte dette dashboard** på anmodning. Det er en enkelt, kodefri Markdown-"persona"; OpenWorker kører intet af det som et program — instruktionerne styrer blot agenten. Dens guide leveres på alle 17 sprog.
+Foretrækker du en AI-kollega på skrivebordet frem for browseren? **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** er en **[OpenWorker](https://github.com/andrewyng/openworker)**-kollega (Andrew Ngs open source, local-first AI-kollega-app), der driver hele denne pipeline for dig — scanner jobopslag, scorer match mod dit CV, skræddersyr et velfunderet CV + følgebrev, holder styr på ansøgninger, udarbejder opfølgninger — og den kan **starte dette dashboard** på anmodning. Det er en enkelt, kodefri Markdown-"persona"; OpenWorker kører intet af det som et program — instruktionerne styrer blot agenten. Dens guide leveres på alle 17 sprog.
 
 ### Hvad kollegaen gør
 
@@ -2269,7 +2269,7 @@ Kollegaen arbejder inde i din `career-ops`-projektmappe og kører de samme trin 
 Installer OpenWorker og tilføj en modelnøgle (Anthropic / OpenAI / Google, eller en lokal Ollama). Hurtigst er **én kommando** — den sætter `career-ops`-pipelinen op, som coworkeren driver, og er idempotent: den genbruger et eksisterende `career-ops` / `web-ui` uden at overskrive dine data:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
 ```
 
-Tilføj derefter coworkeren i OpenWorkers **Install a coworker**-panel — via **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), via **.zip** (fra [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) eller ved at **importere** `career-ops.md`. Åbn en **Job-Search Coworker**-session, vælg din `career-ops`-mappe, og bed om noget konkret — *"scan mine boards og giv mig ugens top 5 match"* eller *"åbn dashboardet."* Connectors (Gmail, Google Calendar, GitHub) og den fulde guide er i repoets [hjælpeguide](https://github.com/Fighter90/career-ops-coworker/tree/main/help). Verificeret installerbar mod OpenWorkers loader og dens repo-installer.
+Tilføj derefter coworkeren i OpenWorkers **Install a coworker**-panel — via **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`), via **.zip** (fra [Releases](https://github.com/Fighter92/career-ops-coworker/releases)) eller ved at **importere** `career-ops.md`. Åbn en **Job-Search Coworker**-session, vælg din `career-ops`-mappe, og bed om noget konkret — *"scan mine boards og giv mig ugens top 5 match"* eller *"åbn dashboardet."* Connectors (Gmail, Google Calendar, GitHub) og den fulde guide er i repoets [hjælpeguide](https://github.com/Fighter92/career-ops-coworker/tree/main/help). Verificeret installerbar mod OpenWorkers loader og dens repo-installer.

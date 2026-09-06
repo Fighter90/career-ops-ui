@@ -1,6 +1,6 @@
 # Help — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 A complete walkthrough of every page, from the moment you launch the
 app to landing an interview. Each `##` heading below corresponds to a
@@ -1725,7 +1725,7 @@ events.
 
 For deeper diagnostics: run **▶ Doctor** on the Health page, copy the
 output, and search the issue tracker on
-<https://github.com/Fighter90/career-ops-ui/issues>.
+<https://github.com/Fighter92/career-ops-ui/issues>.
 
 
 ---
@@ -1735,7 +1735,7 @@ output, and search the issue tracker on
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
 how to fetch + normalize one board's results. Currently the
-`server/lib/sources/` registry ships **90** adapters — **85 English + 5 Russian**
+`server/lib/sources/` registry ships **92** adapters — **87 English + 5 Russian**
 boards. The English set spans the major ATSes (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), board-wide aggregators selected by an
 explicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
@@ -2199,7 +2199,7 @@ The **Statistics** page brings three views together under one section: an AI-gen
 
 ### Market report
 
-The **Market report** tab asks the model for a salary and labour-market analysis of *your* target roles — it reads your CV and profile to know which roles and seniority to cover. Type a **Region / market** (for example `Russia`, `EU-remote`, `US`, or `Germany`), pick a **Currency**, and click **Generate market report**. You get a structured report with an executive summary, salary by grade (median plus P10/P25/P75/P90), top employers, an in-demand skills table, benefits frequency, the office/hybrid/remote split, 12–24 month trends including AI impact, and negotiation guidance. Every figure is a **directional estimate from the model's training knowledge** — not scraped or live data — and the report says so; treat the numbers as ranges, not quotes. With no API key set you get a copy-paste prompt instead of a fabricated report. Use **Download .md**, **Save as PDF**, or **Copy** to take the report out of the app.
+The **Market report** tab asks the model for a salary and labour-market analysis of *your* target roles — it reads your CV and profile to know which roles and seniority to cover. Type a **Region / market** (for example `Russia`, `EU-remote`, `US`, or `Germany`), pick a **Currency**, and click **Generate market report**. You get a structured report with an executive summary, salary by grade (median plus P10/P25/P75/P92), top employers, an in-demand skills table, benefits frequency, the office/hybrid/remote split, 12–24 month trends including AI impact, and negotiation guidance. Every figure is a **directional estimate from the model's training knowledge** — not scraped or live data — and the report says so; treat the numbers as ranges, not quotes. With no API key set you get a copy-paste prompt instead of a fabricated report. Use **Download .md**, **Save as PDF**, or **Copy** to take the report out of the app.
 
 ### My pipeline
 
@@ -2299,7 +2299,7 @@ Moving off `127.0.0.1` means the safety the loopback gave you for free must now 
 
 ## 32. Run it from OpenWorker (AI coworker)
 
-Prefer a desktop AI coworker over the browser? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** is an **[OpenWorker](https://github.com/andrewyng/openworker)** coworker (Andrew Ng's open-source, local-first AI coworker app) that drives this whole pipeline for you — scan boards, score fits against your CV, tailor a grounded CV + cover letter, track applications, draft follow-ups — and it can **launch this dashboard** on request. It's a single, code-free Markdown "persona"; OpenWorker runs none of it as a program, the instructions just steer the agent. Its guide ships in all 17 languages.
+Prefer a desktop AI coworker over the browser? **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** is an **[OpenWorker](https://github.com/andrewyng/openworker)** coworker (Andrew Ng's open-source, local-first AI coworker app) that drives this whole pipeline for you — scan boards, score fits against your CV, tailor a grounded CV + cover letter, track applications, draft follow-ups — and it can **launch this dashboard** on request. It's a single, code-free Markdown "persona"; OpenWorker runs none of it as a program, the instructions just steer the agent. Its guide ships in all 17 languages.
 
 ### What the coworker does
 
@@ -2310,7 +2310,7 @@ Working inside your `career-ops` project folder, the coworker runs the same step
 Install OpenWorker and add a model key (Anthropic / OpenAI / Google, or a local Ollama). Fastest is **one command** — it sets up the `career-ops` pipeline the coworker drives and is idempotent, reusing an existing `career-ops` / `web-ui` without overwriting your data:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
 ```
 
-Then add the coworker in OpenWorker's **Install a coworker** panel — by **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), by **.zip** (from [Releases](https://github.com/Fighter90/career-ops-coworker/releases)), or by **importing** `career-ops.md`. Open a **Job-Search Coworker** session, pick your `career-ops` folder, and ask *"scan my boards and give me the top 5 fits this week"* or *"open the dashboard."* Connectors (Gmail, Google Calendar, GitHub) and the full guide are in the coworker repo's [help guide](https://github.com/Fighter90/career-ops-coworker/tree/main/help). Verified installable against OpenWorker's own loader and its repo installer.
+Then add the coworker in OpenWorker's **Install a coworker** panel — by **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`), by **.zip** (from [Releases](https://github.com/Fighter92/career-ops-coworker/releases)), or by **importing** `career-ops.md`. Open a **Job-Search Coworker** session, pick your `career-ops` folder, and ask *"scan my boards and give me the top 5 fits this week"* or *"open the dashboard."* Connectors (Gmail, Google Calendar, GitHub) and the full guide are in the coworker repo's [help guide](https://github.com/Fighter92/career-ops-coworker/tree/main/help). Verified installable against OpenWorker's own loader and its repo installer.

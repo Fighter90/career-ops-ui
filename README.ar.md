@@ -1,24 +1,24 @@
 # career-ops-ui
 
-> واجهة ويب أنيقة بأسلوب التوثيق التقني لخط أنابيب البحث عن عمل بالذكاء الاصطناعي — [career-ops](https://github.com/Fighter90/career-ops).
+> واجهة ويب أنيقة بأسلوب التوثيق التقني لخط أنابيب البحث عن عمل بالذكاء الاصطناعي — [career-ops](https://github.com/Fighter92/career-ops).
 > ابحث عن الوظائف وقيّمها واستكشفها وقدّم طلباتك وتتبّع كل عرض من تبويب واحد في المتصفح — بدلاً من التنقل بين Claude Code والطرفية وملفات markdown.
 
 [🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | **🇸🇦 العربية** | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-2962%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.230.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.230.0)
+[![release](https://img.shields.io/badge/release-v1.231.0-blue)](https://github.com/Fighter92/career-ops-ui/releases/tag/v1.231.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.230.0** — **ثلاثة إصلاحات للمزوّدين من الإصدار v1.32.0 للمشروع الأصل.** صار Welcome to the Jungle يقبل تعبير `filters` من Algolia مطبَّقًا على الخادم: فهو يقلّص **مجموعة** النتائج نفسها بدل إعادة ترتيبها، وهذه هي الطريقة الوحيدة ليصبح مسح لوحة عالمية شاملًا لا عيّنة. ولم يعد Radancy ينبّه بـ«truncated» حين يقدّم المستأجر ببساطة وظائف أقل مما تعلنه لافتته نفسها (أربعة من تسعة مستأجرين مقيسين يبالغون بنسبة 10–56 %)، وصار يتجاوز ذاكرة التخزين المؤقت لمسار JSON كان يعيد صفحات قديمة. وقوائم مكاتب Greenhouse مرتَّبة ترتيبًا حتميًا، فإعادة ترتيب المكاتب من جانب اللوحة لم تعد تجعل وظيفة لم تتغيّر تُقرأ كأنها جديدة. **2962 اختبارًا.**
+> **🆕 أحدث إصدار — v1.231.0** — **مصدرا مسح جديدان من الإصدار v1.32.0 للمشروع الأصل** — 90 ← **92 مصدرًا** (87 EN + 5 RU)، وكلاهما بلا رمز وصول. لا يخمّن **Collage** أبدًا عنوان موقع الوظائف للمستأجر: فهو معرّف اختاره بنفسه، والتخمين يعني مسح لوحة شخص آخر. ويقرأ **Telegram (الصارم)** المعاينات نفسها التي يقرأها مصدر `telegram` القائم، لكنه يعقد الصفقة المعاكسة — فلا يصير المنشور صفًّا إلا إذا **سمّى صاحب عمل وأحال إلى صفحة وظيفة**؛ وكلاهما يُشحن، كما في المشروع الأصل. وأضيف إلى Gem وضع REST اختياري. وأُصلح كذلك عيب في شيفرة الأصل نفسه: كان مرشّح الموقع في القارئ الصارم يستخدم حدّ كلمة ASCII فلا يرى الحروف السيريلية — فكان `Senior Engineer | Москва` يعيد **«Москва» بوصفها صاحب العمل**. **3009 اختبارات.**
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 >
 > 📜 سجل الإصدارات الكامل: **[CHANGELOG.ar.md](CHANGELOG.ar.md)**.
@@ -73,14 +73,14 @@ career-ops هو أول تطبيق مرجعي [لبيان CareerOps](https://care
 
 ## البداية السريعة
 
-> **مهم — career-ops-ui لوحة تحكم *فوق* [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** يعمل **داخل** مشروع career-ops بوصفه `career-ops/web-ui/` ويقرأ ملفات `cv.md` و`config/` و`data/` من المجلد الأصلي عبر `../`. **لا يعمل بشكل مستقل** — تحتاج أيضاً إلى مستودع career-ops الأصلي.
+> **مهم — career-ops-ui لوحة تحكم *فوق* [`Fighter92/career-ops`](https://github.com/Fighter92/career-ops).** يعمل **داخل** مشروع career-ops بوصفه `career-ops/web-ui/` ويقرأ ملفات `cv.md` و`config/` و`data/` من المجلد الأصلي عبر `../`. **لا يعمل بشكل مستقل** — تحتاج أيضاً إلى مستودع career-ops الأصلي.
 
 ### الخيار 1 — أمر curl واحد (موصى به)
 
 </div>
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/setup.sh | bash
 ```
 
 <div dir="rtl">
@@ -93,7 +93,7 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/se
 
 ```bash
 cd career-ops
-git clone https://github.com/Fighter90/career-ops-ui.git web-ui
+git clone https://github.com/Fighter92/career-ops-ui.git web-ui
 cd web-ui
 npm install
 npm start
@@ -153,7 +153,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 2962 unit + 101 Playwright + 43 e2e
+   └─ tests/        # 3009 unit + 101 Playwright + 43 e2e
 ```
 
 <div dir="rtl">
@@ -164,7 +164,7 @@ career-ops/
 
 يعمل career-ops على أفضل نحو حين يكون **دائم التشغيل** — يمسح بينما تنام، ويمكن الوصول إليه من أي متصفح. لوضع المنظومة كاملةً على خادم صغير — خط الأنابيب الأصل **career-ops**، وهذا العارض **career-ops-ui**، و**المحرّك** الذي يشغّل الذكاء الاصطناعي (**اشتراك Claude** عبر واجهة Claude Code، أو بوابة **Hermes** محلية، أو مفاتيح API) — جهّز خادمًا افتراضيًا (Node ≥ 18)، وثبّت الأصل + هذا المستودع، واختر محرّكك، واعرض العارض خلف **بروكسي عكسي HTTPS مع مصادقة** مع بقاء ثوابت الأمان (CSP، حارس SSRF، حدّ XSS، لا أسرار في السجلات) سليمة.
 
-📖 تشرح **المساعدة §31** داخل التطبيق («تشغيل المنظومة كاملةً في السحابة») الخطوات بالتفصيل بجميع اللغات الـ17؛ قائمة المشغّل هي [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)، وتحتوي [صفحة ويكي النشر السحابي](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) على جداول مرجعية.
+📖 تشرح **المساعدة §31** داخل التطبيق («تشغيل المنظومة كاملةً في السحابة») الخطوات بالتفصيل بجميع اللغات الـ17؛ قائمة المشغّل هي [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)، وتحتوي [صفحة ويكي النشر السحابي](https://github.com/Fighter92/career-ops-ui/wiki/Cloud-Deployment) على جداول مرجعية.
 
 ---
 
@@ -186,7 +186,7 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 2962 اختبار وحدة وتكامل
+npm test                    # 3009 اختبار وحدة وتكامل
 npm run test:e2e            # 21 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
 npm run test:e2e:browser    # 101 اختبار Playwright
@@ -199,16 +199,16 @@ npm run test:coverage       # مثل npm test + تغطية V8
 
 MIT. التفاصيل: [LICENSE](LICENSE).
 
-مبني على [career-ops](https://github.com/Fighter90/career-ops) بقلم [santifer](https://santifer.io).
+مبني على [career-ops](https://github.com/Fighter92/career-ops) بقلم [santifer](https://santifer.io).
 
 <p>
-  <a href="https://github.com/Fighter90" title="Fighter90"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter90"/></a>
+  <a href="https://github.com/Fighter92" title="Fighter92"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter92"/></a>
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
 </p>
 
-**[كل المساهمين ←](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**
+**[كل المساهمين ←](https://github.com/Fighter92/career-ops-ui/graphs/contributors)**
 
 </div>
 

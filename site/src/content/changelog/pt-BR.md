@@ -8,6 +8,24 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.231.0] — 2026-09-05
+
+**Adicionado — duas fontes de varredura do career-ops pai v1.32.0 (Collage, Telegram estrito), o modo REST do Gem e um defeito que o port revelou no código do próprio pai.**
+
+### Adicionado
+- **Duas fontes novas, 90 → 92** (87 EN + 5 RU), `ALL_ADAPTERS` **85 → 87**. Ambas sem token.
+  - **Collage** (`provider: collage`) — a API pública de sites de vagas do Collage HR. O segmento de caminho é **o endereço do site que o inquilino escolheu**, não um slug do nome da empresa, então é lido de `api:` ou de uma URL `secure.collage.co/jobs/<endereço>` e **nunca é adivinhado**: um endereço adivinhado varreria o quadro de outra pessoa.
+  - **Telegram (estrito)** (`provider: telegram-channel`) — lê as mesmas prévias `t.me/s/<canal>` que a fonte `telegram` existente, com a **troca oposta**: um post vira uma linha **só se nomear um empregador E apontar para uma página de vaga**. Digests, posts de empregador oculto e posts de só contato são descartados. Baixa cobertura por design — a montante mediu-se 32-77% dos posts passando — mas cada linha carrega um empregador real e um link real. Ambas são publicadas, como no pai.
+- **O Gem ganhou um modo REST opcional** ao lado da rota GraphQL (`api: https://api.gem.com/job_board/v0/<board>/job_posts`). Nunca é derivado de um id de quadro, e a rota GraphQL continua sendo o padrão. Portado do pai #3783.
+
+### Corrigido
+- **O filtro de localização do `telegram-channel` não enxergava cirílico e nomeava cidades como empregadores.** O `LOCATIONISH_RE` do pai usava `\b`, um limite só ASCII que nunca dispara junto ao cirílico, então todas as alternativas russas nele eram inalcançáveis e `Senior Engineer | Москва` retornava **“Москва” como empregador**. É exatamente a substituição de campo errado que toda a política de atribuição existe para impedir, e atingia o público principal do provedor. O port do web-ui usa verificações Unicode, o mesmo que o pai já faz uma constante abaixo em `ROLE_WORD_RE`. Fixado por um teste que falha na forma ASCII. **Ainda não corrigido a montante.**
+
+### Notas
+- **O trabalho de recuperação por facetas do Workday no pai (#3851, #3874) não precisou de port** — o web-ui não pagina o Workday de forma alguma, um único POST com `offset: 0`.
+- **`providers/_types.js`** mudou apenas na documentação.
+- Testes: **2962 → 3009** (+47).
+
 ## [1.230.0] — 2026-09-05
 
 **Alterado — três correções de provedores vindas do career-ops pai v1.32.0, e um defeito que o próprio port revelou.**

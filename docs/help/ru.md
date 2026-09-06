@@ -1,6 +1,6 @@
 # Справка — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 Полный разбор каждой страницы — от запуска приложения до приглашения
 на интервью. Каждый `##` заголовок ниже соответствует пункту бокового
@@ -1630,14 +1630,14 @@ CV, save'ы JD, запуски evaluate, запуски deep-research, запу�
 
 Для более глубокой диагностики: запустите **▶ Doctor** на странице
 Health, скопируйте вывод и поищите проблему в issue-трекере на
-<https://github.com/Fighter90/career-ops-ui/issues>.
+<https://github.com/Fighter92/career-ops-ui/issues>.
 
 
 ---
 
 ## 17. Как добавить новый источник для скана
 
-career-ops-ui рассматривает каждый job-сайт как **adapter** — единый файл в [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), который умеет fetch'ить и нормализовать результаты одного сайта. На текущий момент registry `server/lib/sources/` поставляется с **90** адаптерами — **85 английских + 5 русских** досок. Английский набор охватывает основные ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), агрегаторы уровня всей доски, выбираемые через явный `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), и ATSes на тенант, автоматически определяемые по хосту `careers_url` или явному `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Полный список никогда не нужно пересчитывать здесь вручную — он автоматически обнаруживается из `server/lib/sources/` и показывается вживую в выпадающем списке Source на `#/scan`.** См. §5 для YAML и `docs/portals-examples.md` для готовых copy-paste-записей.
+career-ops-ui рассматривает каждый job-сайт как **adapter** — единый файл в [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), который умеет fetch'ить и нормализовать результаты одного сайта. На текущий момент registry `server/lib/sources/` поставляется с **92** адаптерами — **87 английских + 5 русских** досок. Английский набор охватывает основные ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), агрегаторы уровня всей доски, выбираемые через явный `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), и ATSes на тенант, автоматически определяемые по хосту `careers_url` или явному `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Полный список никогда не нужно пересчитывать здесь вручную — он автоматически обнаруживается из `server/lib/sources/` и показывается вживую в выпадающем списке Source на `#/scan`.** См. §5 для YAML и `docs/portals-examples.md` для готовых copy-paste-записей.
 
 > **v1.69.0 (P-14) — авторегистрация по принципу drop-in.** Добавление 12-го источника теперь — это **просто одни файл**. Реестр
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))
@@ -2081,7 +2081,7 @@ Drawer **открывается только по клику на колокол
 
 ### Отчёт по рынку
 
-Вкладка **Отчёт по рынку** запрашивает у модели анализ зарплат и рынка труда по *вашим* целевым ролям — она читает ваш CV и профиль, чтобы понять, какие роли и уровень охватить. Введите **Регион / рынок** (например, `Russia`, `EU-remote`, `US` или `Germany`), выберите **Валюту** и нажмите **Сгенерировать отчёт по рынку**. Вы получаете структурированный отчёт с executive-резюме, зарплатой по грейдам (медиана плюс P10/P25/P75/P90), топ-работодателями, таблицей востребованных навыков, частотой бенефитов, разбивкой офис/гибрид/удалёнка, трендами на 12–24 месяца, включая влияние ИИ, и рекомендациями по переговорам. Каждая цифра — это **ориентировочная оценка из обучающих знаний модели**, а не спарсенные или живые данные, и отчёт прямо это указывает; относитесь к числам как к диапазонам, а не к котировкам. Без заданного API-ключа вы получаете промпт для копирования и вставки вместо сфабрикованного отчёта. Используйте **Скачать .md**, **Сохранить как PDF** или **Копировать**, чтобы вынести отчёт из приложения.
+Вкладка **Отчёт по рынку** запрашивает у модели анализ зарплат и рынка труда по *вашим* целевым ролям — она читает ваш CV и профиль, чтобы понять, какие роли и уровень охватить. Введите **Регион / рынок** (например, `Russia`, `EU-remote`, `US` или `Germany`), выберите **Валюту** и нажмите **Сгенерировать отчёт по рынку**. Вы получаете структурированный отчёт с executive-резюме, зарплатой по грейдам (медиана плюс P10/P25/P75/P92), топ-работодателями, таблицей востребованных навыков, частотой бенефитов, разбивкой офис/гибрид/удалёнка, трендами на 12–24 месяца, включая влияние ИИ, и рекомендациями по переговорам. Каждая цифра — это **ориентировочная оценка из обучающих знаний модели**, а не спарсенные или живые данные, и отчёт прямо это указывает; относитесь к числам как к диапазонам, а не к котировкам. Без заданного API-ключа вы получаете промпт для копирования и вставки вместо сфабрикованного отчёта. Используйте **Скачать .md**, **Сохранить как PDF** или **Копировать**, чтобы вынести отчёт из приложения.
 
 ### Мой pipeline
 
@@ -2181,7 +2181,7 @@ career-ops не привязан к конкретной CLI, поэтому у 
 
 ## 32. Запуск из OpenWorker (ИИ-коллега)
 
-Предпочитаете десктопного ИИ-коллегу браузеру? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** — это коллега для **[OpenWorker](https://github.com/andrewyng/openworker)** (открытого, локального по умолчанию приложения ИИ-коллеги от Эндрю Ына), который ведёт весь этот пайплайн за вас — сканирует площадки, оценивает соответствие вашему резюме, готовит выверенное резюме + сопроводительное письмо, ведёт учёт откликов, набрасывает фоллоу-апы — и по запросу может **запустить этот дашборд**. Это одна «персона» в Markdown без кода; OpenWorker не выполняет ничего из неё как программу — инструкции лишь направляют агента. Его руководство поставляется на всех 17 языках.
+Предпочитаете десктопного ИИ-коллегу браузеру? **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** — это коллега для **[OpenWorker](https://github.com/andrewyng/openworker)** (открытого, локального по умолчанию приложения ИИ-коллеги от Эндрю Ына), который ведёт весь этот пайплайн за вас — сканирует площадки, оценивает соответствие вашему резюме, готовит выверенное резюме + сопроводительное письмо, ведёт учёт откликов, набрасывает фоллоу-апы — и по запросу может **запустить этот дашборд**. Это одна «персона» в Markdown без кода; OpenWorker не выполняет ничего из неё как программу — инструкции лишь направляют агента. Его руководство поставляется на всех 17 языках.
 
 ### Что делает коллега
 
@@ -2192,7 +2192,7 @@ career-ops не привязан к конкретной CLI, поэтому у 
 Установите OpenWorker и добавьте ключ модели (Anthropic / OpenAI / Google или локальная Ollama). Быстрее всего — **одна команда**: она готовит конвейер `career-ops`, которым управляет coworker, и идемпотентна (переиспользует существующие `career-ops` / `web-ui`, не перезаписывая ваши данные):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
 ```
 
-Затем добавьте coworker в панели **Install a coworker** OpenWorker — по **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), из **.zip** (со страницы [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) или **импортом** `career-ops.md`. Откройте сессию **Job-Search Coworker**, выберите папку `career-ops` и попросите что-то реальное — *«просканируй мои доски и дай топ-5 совпадений за неделю»* или *«открой дашборд»*. Коннекторы (Gmail, Google Calendar, GitHub) и полное руководство — в [руководстве](https://github.com/Fighter90/career-ops-coworker/tree/main/help) репозитория. Установка проверена против загрузчика OpenWorker и его репозиторного установщика.
+Затем добавьте coworker в панели **Install a coworker** OpenWorker — по **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`), из **.zip** (со страницы [Releases](https://github.com/Fighter92/career-ops-coworker/releases)) или **импортом** `career-ops.md`. Откройте сессию **Job-Search Coworker**, выберите папку `career-ops` и попросите что-то реальное — *«просканируй мои доски и дай топ-5 совпадений за неделю»* или *«открой дашборд»*. Коннекторы (Gmail, Google Calendar, GitHub) и полное руководство — в [руководстве](https://github.com/Fighter92/career-ops-coworker/tree/main/help) репозитория. Установка проверена против загрузчика OpenWorker и его репозиторного установщика.

@@ -1,24 +1,24 @@
 # career-ops-ui
 
-> [career-ops](https://github.com/Fighter90/career-ops) yapay zeka destekli iş arama hattı için temiz, dokümantasyon tarzı bir web arayüzü.
+> [career-ops](https://github.com/Fighter92/career-ops) yapay zeka destekli iş arama hattı için temiz, dokümantasyon tarzı bir web arayüzü.
 > Claude Code, terminaller ve markdown dosyaları arasında gidip gelmek yerine her teklifi tek bir tarayıcı sekmesinden arayın, değerlendirin, derinlemesine inceleyin, başvurun ve takip edin.
 
 [🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | **🇹🇷 Türkçe** | [🇮🇳 हिन्दी](README.hi.md)
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-2962%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.230.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.230.0)
+[![release](https://img.shields.io/badge/release-v1.231.0-blue)](https://github.com/Fighter92/career-ops-ui/releases/tag/v1.231.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.230.0** — **Üst projenin v1.32.0 sürümünden üç sağlayıcı düzeltmesi.** Welcome to the Jungle artık sunucu tarafında bir Algolia `filters` ifadesi kabul ediyor: sonuçları yeniden sıralamak yerine sonuç **kümesini** küçültüyor; küresel bir ilan panosunun taranmasının örneklem değil eksiksiz olmasının tek yolu bu. Radancy, bir kiracı yalnızca kendi başlığının iddia ettiğinden daha az ilan sunduğunda artık “truncated” uyarısı vermiyor (ölçülen dokuz kiracıdan dördü %10–56 abartıyor) ve eski sayfaları tekrarlayan bir JSON yolunun önbelleğini atlıyor. Greenhouse ofis listeleri belirlenimci biçimde sıralanıyor; böylece panonun ofisleri yeniden sıralaması, değişmemiş bir ilanı yeni gibi göstermiyor. **2962 test.**
+> **🆕 Son sürüm — v1.231.0** — **Üst projenin v1.32.0 sürümünden iki yeni tarama kaynağı** — 90 → **92 kaynak** (87 EN + 5 RU), ikisi de belirteçsiz. **Collage** bir kiracının iş sitesi adresini asla tahmin etmez: bu, kiracının kendi seçtiği bir tanımlayıcıdır ve tahmin etmek başkasının panosunu taramak olurdu. **Telegram (katı)** mevcut `telegram` kaynağıyla aynı kanal önizlemelerini okur, ama ters bir takas yapar — bir gönderi ancak **bir işveren adı verip bir ilana bağlantı verdiğinde** satır olur; ikisi de üst projedeki gibi birlikte sunulur. Gem'e isteğe bağlı bir REST kipi eklendi. Üst projenin kendi kodundaki bir kusur da düzeltildi: katı okuyucunun konum süzgeci ASCII sözcük sınırı kullandığı için Kiril harflerini göremiyordu — `Senior Engineer | Москва` **“Москва”yı işveren olarak** döndürüyordu. **3009 test.**
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 >
 > 📜 Tam sürüm geçmişi: **[CHANGELOG.tr.md](CHANGELOG.tr.md)**.
@@ -91,12 +91,12 @@ career-ops, bir yapay zeka kodlama asistanının **içinde** eğik çizgi komutl
 
 ## Tek komutla başlatın ve ilklendirin
 
-> **Önemli — career-ops-ui, [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) *üzerine* oturan bir gösterge panelidir.** Bir career-ops projesinin **içinde** `career-ops/web-ui/` olarak çalışır ve `cv.md`, `config/`, `data/` dosyalarınızı üst klasörden `../` yoluyla okur. **Bağımsız çalışmaz** — üst `career-ops` deposuna da ihtiyacınız vardır. Tek başına klonlayıp `init` çalıştırmayın; aşağıdaki iki seçenekten birini kullanın.
+> **Önemli — career-ops-ui, [`Fighter92/career-ops`](https://github.com/Fighter92/career-ops) *üzerine* oturan bir gösterge panelidir.** Bir career-ops projesinin **içinde** `career-ops/web-ui/` olarak çalışır ve `cv.md`, `config/`, `data/` dosyalarınızı üst klasörden `../` yoluyla okur. **Bağımsız çalışmaz** — üst `career-ops` deposuna da ihtiyacınız vardır. Tek başına klonlayıp `init` çalıştırmayın; aşağıdaki iki seçenekten birini kullanın.
 
 ### Seçenek 1 — tek curl (önerilen: her şeyi kurar)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/setup.sh | bash
 ```
 
 **Her iki** depoyu klonlar, `career-ops/web-ui/` düzenini oluşturur, bağımlılıkları kurar, doctor'ı çalıştırır ve sunucuyu http://127.0.0.1:4317 adresinde başlatır — ardından gösterge panelini açar.
@@ -107,7 +107,7 @@ career-ops zaten yapılandırılmışsa ve yalnızca gösterge panelini istiyors
 
 ```bash
 cd career-ops                                                   # ← mevcut career-ops projeniz
-git clone https://github.com/Fighter90/career-ops-ui.git web-ui
+git clone https://github.com/Fighter92/career-ops-ui.git web-ui
 cd web-ui
 npm install
 npx career-ops-ui init        # etkileşimli: LLM sağlayıcısını seç + anahtarını yapıştır → üst career-ops/.env
@@ -160,7 +160,7 @@ npx career-ops-ui init        # npx, `npm link` olmadan bile yerel bin'i çalı�
 
 ## Neden?
 
-[career-ops](https://github.com/Fighter90/career-ops), güçlü, Claude-Code destekli bir iş arama sistemidir: bir iş tanımı (JD) yapıştırın → 0-5 uyum puanı, ATS için optimize edilmiş bir PDF ve bir takip kaydı alın. Claude Code içinde harika çalışır, ancak veriler `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml`, `config/profile.yml` arasında dağılmıştır — kolayca kaybedilir, göz gezdirmesi zordur.
+[career-ops](https://github.com/Fighter92/career-ops), güçlü, Claude-Code destekli bir iş arama sistemidir: bir iş tanımı (JD) yapıştırın → 0-5 uyum puanı, ATS için optimize edilmiş bir PDF ve bir takip kaydı alın. Claude Code içinde harika çalışır, ancak veriler `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml`, `config/profile.yml` arasında dağılmıştır — kolayca kaybedilir, göz gezdirmesi zordur.
 
 `career-ops-ui`, bunun üzerine cilalı bir arayüz oturtur:
 
@@ -182,16 +182,16 @@ Tamamen eklemelerden ibarettir: `career-ops/` içinde hiçbir şey değişmez. T
 ### 1. Önce career-ops kurun
 
 ```bash
-git clone https://github.com/Fighter90/career-ops.git
+git clone https://github.com/Fighter92/career-ops.git
 cd career-ops
 ```
 
-`cv.md`, `config/profile.yml` ve `portals.yml` dosyalarının var olması için [career-ops başlangıç kurulumunu](https://github.com/Fighter90/career-ops#first-run--onboarding) izleyin.
+`cv.md`, `config/profile.yml` ve `portals.yml` dosyalarının var olması için [career-ops başlangıç kurulumunu](https://github.com/Fighter92/career-ops#first-run--onboarding) izleyin.
 
 ### 2. career-ops-ui'yi onun içine yerleştirin
 
 ```bash
-git clone https://github.com/Fighter90/career-ops-ui.git web-ui
+git clone https://github.com/Fighter92/career-ops-ui.git web-ui
 ```
 
 Ağaç yapınız şimdi şöyle görünüyor:
@@ -411,7 +411,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2962 birim + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 3009 birim + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch
@@ -542,7 +542,7 @@ event: error    data: { message }
 ## Testler
 
 ```bash
-npm test                       # 2962 birim/entegrasyon testi
+npm test                       # 3009 birim/entegrasyon testi
 npm run test:e2e               # 21 smoke e2e (kendi sunucusunu başlatır)
 npm run test:e2e:full          # 23 kapsamlı e2e
 npm run test:e2e:browser       # 101 Playwright tarayıcı (smoke + full-cycle + forms + locale-sweep)
@@ -551,7 +551,7 @@ npm run test:coverage          # `npm test` ile aynı, artı V8 kapsamı
 
 | Paket                       | Test | Ne                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (birim + entegrasyon) | **2962** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
+| `node --test tests/*.test.mjs` (birim + entegrasyon) | **3009** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright başsız: her rota render edilir, temel akışlar.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Tam Playwright gezintisi: 11 rota + 12 işlevsel akış.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |
@@ -634,7 +634,7 @@ Claude Code içindeki mevcut `/career-ops apply` Playwright form doldurma akış
 
 career-ops **her zaman açık** olduğunda en iyisidir — siz uyurken tarar, herhangi bir tarayıcıdan erişilebilir. Tüm yığını küçük bir sunucuya koymak için — üst **career-ops** hattı, bu **career-ops-ui** görüntüleyici ve yapay zekâyı çalıştıran **motor** (Claude Code CLI üzerinden **Claude aboneliğiniz**, yerel bir **Hermes** ağ geçidi veya sağlayıcı API anahtarları) — bir VPS hazırlayın (Node ≥ 18), üst projeyi + bu depoyu kurun, motorunuzu seçin ve görüntüleyiciyi güvenlik değişmezlerini (CSP, SSRF koruması, XSS sınırı, günlüklerde sır yok) bozmadan **kimlik doğrulamalı HTTPS ters proxy** arkasında yayınlayın.
 
-📖 Uygulama içi **Yardım §31** ("Tüm yığını bulutta çalıştır") tüm 17 dilde adım adım anlatır; operatör kontrol listesi [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), ve [bulut dağıtımı wiki sayfası](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) referans tablolarını içerir.
+📖 Uygulama içi **Yardım §31** ("Tüm yığını bulutta çalıştır") tüm 17 dilde adım adım anlatır; operatör kontrol listesi [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), ve [bulut dağıtımı wiki sayfası](https://github.com/Fighter92/career-ops-ui/wiki/Cloud-Deployment) referans tablolarını içerir.
 
 ---
 
@@ -671,7 +671,7 @@ Ardından bunu işaretlemede `data-i18n="scan.newButton"` ya da JS'de `t('scan.n
 
 Issue'lar ve PR'lar memnuniyetle karşılanır. Ev kuralları:
 
-- Push'tan önce `npm test` çalıştırın — **2962 kontrol yeşil** çıtadır (arayüze dokunursanız artı 101 Playwright).
+- Push'tan önce `npm test` çalıştırın — **3009 kontrol yeşil** çıtadır (arayüze dokunursanız artı 101 Playwright).
 - Önemsiz olmayan değişiklikler GSD pipeline'ından geçer. Bkz. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Bu depo içinden üst `career-ops/` projesindeki hiçbir şeyi değiştirmeyin. Bütün mesele, bunun invaziv olmayan bir örtü olmasıdır. Katı kurallar [`CLAUDE.md`](CLAUDE.md) içinde.
 - Konvansiyonel commit'ler: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. İsteğe bağlı kapsam: `feat(scan):`. Kırıcı değişiklik: `feat!:`.
@@ -776,20 +776,20 @@ Health sayfasını yenileyin — gerekli her kontrol yeşil olmalıdır. Ardınd
 
 MIT. Bkz. [LICENSE](LICENSE).
 
-[santifer](https://santifer.io) tarafından geliştirilen [career-ops](https://github.com/Fighter90/career-ops) üzerine inşa edilmiştir. Muhteşem hat için teşekkürler.
+[santifer](https://santifer.io) tarafından geliştirilen [career-ops](https://github.com/Fighter92/career-ops) üzerine inşa edilmiştir. Muhteşem hat için teşekkürler.
 
 ## Katkıda bulunanlar
 
-career-ops-ui'yi inşa etmeye yardım eden herkese teşekkürler. Proje [Fighter90](https://github.com/Fighter90) tarafından sürdürülür ve topluluk katkılarıyla geliştirilir — tam liste için [katkıda bulunanlar grafiğine](https://github.com/Fighter90/career-ops-ui/graphs/contributors) bakın.
+career-ops-ui'yi inşa etmeye yardım eden herkese teşekkürler. Proje [Fighter92](https://github.com/Fighter92) tarafından sürdürülür ve topluluk katkılarıyla geliştirilir — tam liste için [katkıda bulunanlar grafiğine](https://github.com/Fighter92/career-ops-ui/graphs/contributors) bakın.
 
 <p>
-  <a href="https://github.com/Fighter90" title="Fighter90"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter90"/></a>
+  <a href="https://github.com/Fighter92" title="Fighter92"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter92"/></a>
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
 </p>
 
-**[Tüm katkıda bulunanlar →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**
+**[Tüm katkıda bulunanlar →](https://github.com/Fighter92/career-ops-ui/graphs/contributors)**
 
 <div align="center">
 

@@ -1,24 +1,24 @@
 # career-ops-ui
 
-> [career-ops](https://github.com/Fighter90/career-ops) AI 구직 파이프라인을 위한 깔끔한 docs-style 웹 인터페이스입니다.
+> [career-ops](https://github.com/Fighter92/career-ops) AI 구직 파이프라인을 위한 깔끔한 docs-style 웹 인터페이스입니다.
 > Claude Code, 터미널, 마크다운 파일 사이를 오갈 필요 없이 — 단일 브라우저 탭에서 모든 채용 공고를 검색하고, 평가하고, 심층 조사하고, 지원하고, 추적할 수 있습니다.
 
 [🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | **🇰🇷 한국어** | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-2962%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.230.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.230.0)
+[![release](https://img.shields.io/badge/release-v1.231.0-blue)](https://github.com/Fighter92/career-ops-ui/releases/tag/v1.231.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.230.0** — **상위 프로젝트 v1.32.0에서 가져온 프로바이더 수정 3건.** Welcome to the Jungle이 이제 서버 측 Algolia `filters` 식을 받습니다. 결과를 재정렬하는 대신 결과 **집합** 자체를 줄이며, 전역 게시판 스캔이 표본이 아니라 완전한 스캔이 되는 유일한 방법입니다. Radancy는 테넌트가 자체 배너에 적힌 것보다 실제로 적은 공고를 제공할 뿐인 경우 “truncated” 경고를 더 이상 내지 않고(실측한 9개 테넌트 중 4개가 10~56% 과대 표시), 오래된 페이지를 되돌려주던 JSON 경로의 캐시를 우회합니다. Greenhouse 오피스 목록은 결정적으로 정렬되어, 게시판이 오피스 순서를 바꿔도 변경되지 않은 공고가 새 공고로 읽히지 않습니다. **테스트 2962개.**
+> **🆕 최신 릴리스 — v1.231.0** — **상위 v1.32.0에서 온 새 스캔 소스 두 개** — 90 → **92개 소스**(EN 87 + RU 5), 둘 다 토큰 불필요. **Collage**는 테넌트의 채용 사이트 주소를 결코 추측하지 않습니다. 그것은 테넌트가 직접 고른 식별자이며, 추측하면 남의 게시판을 스캔하게 됩니다. **Telegram(엄격)**은 기존 `telegram` 소스와 같은 채널 미리보기를 읽지만 반대의 교환을 합니다 — 게시물이 **고용주를 명시하고 채용 공고로 연결될 때만** 한 행이 됩니다. 상위와 마찬가지로 둘 다 함께 제공됩니다. Gem에는 선택형 REST 모드가 추가됐습니다. 상위 자체 코드의 결함도 수정: 엄격한 리더의 위치 필터가 ASCII 단어 경계를 써서 키릴 문자를 보지 못했고, `Senior Engineer | Москва`가 **“Москва”를 고용주로** 반환했습니다. **테스트 3009개.**
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 >
 > 📜 전체 릴리스 이력: **[CHANGELOG.ko-KR.md](CHANGELOG.ko-KR.md)**.
@@ -58,12 +58,12 @@ career-ops는 [CareerOps 선언문](https://career-ops.org/manifesto) — 증거
 
 ## 한 줄 명령으로 실행 및 초기화
 
-> **중요 — career-ops-ui는 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) *위에* 올라가는 대시보드입니다.** `career-ops/web-ui/`로서 career-ops 프로젝트 **내부**에서 실행되며, `../`를 통해 부모 폴더의 `cv.md`, `config/`, `data/`를 읽습니다. **단독으로 작동하지 않습니다** — 부모 `career-ops` 저장소도 필요합니다. 단독으로 클론하여 `init`을 실행하지 마세요; 아래의 두 옵션 중 하나를 사용하세요.
+> **중요 — career-ops-ui는 [`Fighter92/career-ops`](https://github.com/Fighter92/career-ops) *위에* 올라가는 대시보드입니다.** `career-ops/web-ui/`로서 career-ops 프로젝트 **내부**에서 실행되며, `../`를 통해 부모 폴더의 `cv.md`, `config/`, `data/`를 읽습니다. **단독으로 작동하지 않습니다** — 부모 `career-ops` 저장소도 필요합니다. 단독으로 클론하여 `init`을 실행하지 마세요; 아래의 두 옵션 중 하나를 사용하세요.
 
 ### 옵션 1 — 단일 curl (권장: 모두 설정)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/setup.sh | bash
 ```
 
 **두** 저장소를 클론하고, `career-ops/web-ui/` 구조를 구성하고, 의존성을 설치하고, doctor를 실행한 뒤, http://127.0.0.1:4317 에서 서버를 시작합니다 — 그런 다음 대시보드를 엽니다.
@@ -74,7 +74,7 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/se
 
 ```bash
 cd career-ops                                                   # ← 기존 career-ops 프로젝트
-git clone https://github.com/Fighter90/career-ops-ui.git web-ui
+git clone https://github.com/Fighter92/career-ops-ui.git web-ui
 cd web-ui
 npm install
 npx career-ops-ui init        # interactive: pick LLM provider + paste its key → parent career-ops/.env
@@ -127,7 +127,7 @@ npx career-ops-ui init        # npx runs the local bin even without `npm link`
 
 ## 왜 필요한가?
 
-[career-ops](https://github.com/Fighter90/career-ops)는 강력한 Claude Code 기반 구직 시스템입니다. JD를 붙여 넣으면 0–5의 적합도 점수, ATS 최적화 PDF, 트래커 항목이 곧바로 생성됩니다. Claude Code 안에서는 훌륭하게 동작하지만, 실제 데이터는 `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml`, `config/profile.yml` 등 여러 파일에 흩어져 있어 잃어버리기 쉽고 한눈에 훑어보기도 어렵습니다.
+[career-ops](https://github.com/Fighter92/career-ops)는 강력한 Claude Code 기반 구직 시스템입니다. JD를 붙여 넣으면 0–5의 적합도 점수, ATS 최적화 PDF, 트래커 항목이 곧바로 생성됩니다. Claude Code 안에서는 훌륭하게 동작하지만, 실제 데이터는 `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml`, `config/profile.yml` 등 여러 파일에 흩어져 있어 잃어버리기 쉽고 한눈에 훑어보기도 어렵습니다.
 
 `career-ops-ui`는 그 위에 다듬어진 UI 한 겹을 더합니다.
 
@@ -149,16 +149,16 @@ npx career-ops-ui init        # npx runs the local bin even without `npm link`
 ### 1. career-ops 먼저 설치
 
 ```bash
-git clone https://github.com/Fighter90/career-ops.git
+git clone https://github.com/Fighter92/career-ops.git
 cd career-ops
 ```
 
-[career-ops 온보딩](https://github.com/Fighter90/career-ops#first-run--onboarding) 절차를 따라 `cv.md`, `config/profile.yml`, `portals.yml`이 존재하도록 준비합니다.
+[career-ops 온보딩](https://github.com/Fighter92/career-ops#first-run--onboarding) 절차를 따라 `cv.md`, `config/profile.yml`, `portals.yml`이 존재하도록 준비합니다.
 
 ### 2. 그 안에 career-ops-ui 배치
 
 ```bash
-git clone https://github.com/Fighter90/career-ops-ui.git web-ui
+git clone https://github.com/Fighter92/career-ops-ui.git web-ui
 ```
 
 디렉터리 구조는 다음과 같이 됩니다.
@@ -381,7 +381,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2962 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 3009 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -515,7 +515,7 @@ event: error    data: { message }
 ## 테스트
 
 ```bash
-npm test                       # 2962 unit/integration 테스트
+npm test                       # 3009 unit/integration 테스트
 npm run test:e2e               # 21 smoke e2e (자체 서버 부팅)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser-smoke
@@ -524,7 +524,7 @@ npm run test:coverage          # `npm test`와 동일 + V8 coverage
 
 | Suite                       | Tests | 내용                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2962** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
+| `node --test tests/*.test.mjs` (unit + integration) | **3009** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: 모든 라우트 렌더링, 기본 플로우.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | 전체 Playwright 워크스루: 11개 라우트 + 12개 기능 플로우.                                              |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | 브라우저 주도 smoke: dashboard render, navigation, language switch, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL 스윕, reports empty, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400. |
@@ -610,7 +610,7 @@ production-readiness 평가(배포 게이트, 리스크 등록부, 보류된 작
 
 career-ops는 **항상 켜져 있을 때** 가장 좋습니다 — 자는 동안 스캔하고, 어느 브라우저에서든 접근 가능합니다. 전체 스택을 작은 서버에 올리려면 — 부모 **career-ops** 파이프라인, 이 **career-ops-ui** 뷰어, 그리고 AI를 실행하는 **엔진**(Claude Code CLI를 통한 **Claude 구독**, 로컬 **Hermes** 게이트웨이, 또는 제공자 API 키) — VPS(Node ≥ 18)를 프로비저닝하고, 부모 + 이 저장소를 설치하고, 엔진을 고르고, **인증이 있는 HTTPS 리버스 프록시** 뒤에 뷰어를 노출하되 보안 불변식(CSP, SSRF 가드, XSS 경계, 로그에 비밀 없음)을 그대로 유지합니다.
 
-📖 인앱 **도움말 §31**("클라우드에서 전체 스택 실행")이 17개 언어로 단계별로 안내합니다; 운영자 체크리스트는 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), [클라우드 배포 위키 페이지](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment)에 참조 표가 있습니다.
+📖 인앱 **도움말 §31**("클라우드에서 전체 스택 실행")이 17개 언어로 단계별로 안내합니다; 운영자 체크리스트는 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), [클라우드 배포 위키 페이지](https://github.com/Fighter92/career-ops-ui/wiki/Cloud-Deployment)에 참조 표가 있습니다.
 
 ---
 
@@ -644,7 +644,7 @@ UI는 **17개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `
 
 이슈와 PR을 환영합니다. 하우스 룰은 다음과 같습니다.
 
-- 푸시 전에 `npm test`를 실행합니다 — **2962 checks green**이 기준입니다(UI를 건드리는 경우 101개의 Playwright 테스트도 포함).
+- 푸시 전에 `npm test`를 실행합니다 — **3009 checks green**이 기준입니다(UI를 건드리는 경우 101개의 Playwright 테스트도 포함).
 - 비자명한 변경은 GSD 파이프라인을 거칩니다. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)를 참고하십시오.
 - 이 저장소 내부에서 부모 `career-ops/` 프로젝트의 어떤 파일도 수정하지 마십시오. 핵심 가치는 이것이 비침습적 오버레이라는 점에 있습니다. [`CLAUDE.md`](CLAUDE.md)의 hard rule을 확인하십시오.
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. 선택적 스코프: `feat(scan):`. Breaking change: `feat!:`.
@@ -747,20 +747,20 @@ Health 페이지를 새로고침합니다. 필수 체크가 모두 녹색이어�
 
 MIT. [LICENSE](LICENSE) 참조.
 
-[santifer](https://santifer.io)의 [career-ops](https://github.com/Fighter90/career-ops) 위에 구축되었습니다. 훌륭한 파이프라인을 만들어 주셔서 감사합니다.
+[santifer](https://santifer.io)의 [career-ops](https://github.com/Fighter92/career-ops) 위에 구축되었습니다. 훌륭한 파이프라인을 만들어 주셔서 감사합니다.
 
 ## 기여자
 
-career-ops-ui를 함께 만들어 주신 모든 분께 감사드립니다. 이 프로젝트는 [Fighter90](https://github.com/Fighter90)이 관리하며 커뮤니티 기여로 개선되고 있습니다 — 전체 목록은 [기여자 그래프](https://github.com/Fighter90/career-ops-ui/graphs/contributors)에서 확인하세요.
+career-ops-ui를 함께 만들어 주신 모든 분께 감사드립니다. 이 프로젝트는 [Fighter92](https://github.com/Fighter92)이 관리하며 커뮤니티 기여로 개선되고 있습니다 — 전체 목록은 [기여자 그래프](https://github.com/Fighter92/career-ops-ui/graphs/contributors)에서 확인하세요.
 
 <p>
-  <a href="https://github.com/Fighter90" title="Fighter90"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter90"/></a>
+  <a href="https://github.com/Fighter92" title="Fighter92"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter92"/></a>
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
 </p>
 
-**[모든 기여자 →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**
+**[모든 기여자 →](https://github.com/Fighter92/career-ops-ui/graphs/contributors)**
 
 <div align="center">
 

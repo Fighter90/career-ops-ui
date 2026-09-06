@@ -1,6 +1,6 @@
 # المساعدة — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 دليل شامل لكل صفحة في التطبيق، من لحظة تشغيله حتى الحصول على مقابلة عمل. كل عنوان `##` أدناه يقابل إدخالاً في الشريط الجانبي أو مرحلة من مراحل سير العمل. اقرأه من البداية إلى النهاية عند أول استخدام؛ وانتقل لاحقاً إلى أي قسم تريده عبر جدول المحتويات في الشريط الجانبي للمساعدة.
 
@@ -1178,13 +1178,13 @@ npm run doctor
 | `npm test` يفشل على استنساخ جديد | الاختبارات تفترض تخطيط المشروع الأصلي | استخدم `CAREER_OPS_ROOT=$(mktemp -d)` وهيّئ المصادر الوهمية. |
 
 للتشخيص المعمّق: شغّل **▶ Doctor** في صفحة السلامة، انسخ الناتج، وابحث في متتبّع المشكلات على
-<https://github.com/Fighter90/career-ops-ui/issues>.
+<https://github.com/Fighter92/career-ops-ui/issues>.
 
 ---
 
 ## 17. كيفية إضافة مصدر بوابة وظائف جديد
 
-يُعامِل career-ops-ui كل بوابة وظائف بوصفها **محوّلاً** — ملف واحد ضمن [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. يشحن حالياً سجل `server/lib/sources/` مع **90** محوّلاً — **85 إنجليزية + 5 روسية** بوابات. تشمل المجموعة الإنجليزية أنظمة ATS الرئيسية (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)، والمُجمّعات على مستوى اللوحة المُختارة عبر `provider:` صريح (RemoteOK، Remotive، We Work Remotely، NoDesk، Get on Board، Amazon، …)، وأنظمة ATS لكل مستأجر التي يُكتشف تلقائياً من مضيف `careers_url` أو من عنوان `api:` صريح (BambooHR، Personio، Recruitee، Teamtailor، Avature، SAP SuccessFactors، …). **لا حاجة أبداً لعدّ القائمة الكاملة يدوياً هنا — إذ تُكتشف تلقائياً من `server/lib/sources/` وتُعرض حيّةً في القائمة المنسدلة Source على `#/scan`.** انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
+يُعامِل career-ops-ui كل بوابة وظائف بوصفها **محوّلاً** — ملف واحد ضمن [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) يعرف كيفية جلب نتائج هذه البوابة وتوحيد صيغتها. يشحن حالياً سجل `server/lib/sources/` مع **92** محوّلاً — **87 إنجليزية + 5 روسية** بوابات. تشمل المجموعة الإنجليزية أنظمة ATS الرئيسية (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)، والمُجمّعات على مستوى اللوحة المُختارة عبر `provider:` صريح (RemoteOK، Remotive، We Work Remotely، NoDesk، Get on Board، Amazon، …)، وأنظمة ATS لكل مستأجر التي يُكتشف تلقائياً من مضيف `careers_url` أو من عنوان `api:` صريح (BambooHR، Personio، Recruitee، Teamtailor، Avature، SAP SuccessFactors، …). **لا حاجة أبداً لعدّ القائمة الكاملة يدوياً هنا — إذ تُكتشف تلقائياً من `server/lib/sources/` وتُعرض حيّةً في القائمة المنسدلة Source على `#/scan`.** انظر §5 للـ YAML وَ `docs/portals-examples.md` للإدخالات الجاهزة للنسخ.
 
 > **v1.69.0 (P-14) — اكتشاف تلقائي عند الإضافة.** إضافة مصدر ثاني عشر الآن **مجرد إسقاط ملف**. لم يعد السجل
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))
@@ -1590,7 +1590,7 @@ russian_portals:
 
 ### تقرير السوق
 
-تطلب علامة التبويب **تقرير السوق** من النموذج تحليلًا للأجور وسوق العمل لِـ*أدوارك* المستهدفة — فهي تقرأ سيرتك الذاتية وملفك الشخصي لتعرف أي الأدوار وأي مستوى أقدمية يجب تغطيته. اكتب **المنطقة / السوق** (على سبيل المثال `Russia` أو `EU-remote` أو `US` أو `Germany`)، واختر **العملة**، وانقر على **توليد تقرير السوق**. تحصل على تقرير منظّم يتضمّن ملخصًا تنفيذيًا، والأجور حسب الدرجة (الوسيط إضافةً إلى P10/P25/P75/P90)، وكبار أصحاب العمل، وجدولًا بالمهارات المطلوبة، وتكرار المزايا، وتوزيع المكتب/الهجين/عن بُعد، واتجاهات على مدى 12-24 شهرًا بما في ذلك تأثير الذكاء الاصطناعي، وإرشادات التفاوض. كل رقم هو **تقدير توجيهي مستمَد من معرفة تدريب النموذج** — وليس بيانات مستخرجة أو حيّة — والتقرير يذكر ذلك؛ فتعامل مع الأرقام كنطاقات لا كاقتباسات. من دون ضبط مفتاح API تحصل على مطالبة للنسخ واللصق بدلًا من تقرير ملفَّق. استخدم **تنزيل .md** أو **حفظ بصيغة PDF** أو **نسخ** لإخراج التقرير من التطبيق.
+تطلب علامة التبويب **تقرير السوق** من النموذج تحليلًا للأجور وسوق العمل لِـ*أدوارك* المستهدفة — فهي تقرأ سيرتك الذاتية وملفك الشخصي لتعرف أي الأدوار وأي مستوى أقدمية يجب تغطيته. اكتب **المنطقة / السوق** (على سبيل المثال `Russia` أو `EU-remote` أو `US` أو `Germany`)، واختر **العملة**، وانقر على **توليد تقرير السوق**. تحصل على تقرير منظّم يتضمّن ملخصًا تنفيذيًا، والأجور حسب الدرجة (الوسيط إضافةً إلى P10/P25/P75/P92)، وكبار أصحاب العمل، وجدولًا بالمهارات المطلوبة، وتكرار المزايا، وتوزيع المكتب/الهجين/عن بُعد، واتجاهات على مدى 12-24 شهرًا بما في ذلك تأثير الذكاء الاصطناعي، وإرشادات التفاوض. كل رقم هو **تقدير توجيهي مستمَد من معرفة تدريب النموذج** — وليس بيانات مستخرجة أو حيّة — والتقرير يذكر ذلك؛ فتعامل مع الأرقام كنطاقات لا كاقتباسات. من دون ضبط مفتاح API تحصل على مطالبة للنسخ واللصق بدلًا من تقرير ملفَّق. استخدم **تنزيل .md** أو **حفظ بصيغة PDF** أو **نسخ** لإخراج التقرير من التطبيق.
 
 ### مساري
 
@@ -1690,7 +1690,7 @@ career-ops مستقل عن واجهة سطر الأوامر، فلديك ثلا�
 
 ## 32. شغّله من OpenWorker (زميل ذكاء اصطناعي)
 
-تُفضّل زميل ذكاء اصطناعي على سطح المكتب على المتصفح؟ **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** هو زميلٌ لتطبيق **[OpenWorker](https://github.com/andrewyng/openworker)** (تطبيق زميل الذكاء الاصطناعي مفتوح المصدر ذو الأولوية المحلية من Andrew Ng) يقود خط الأنابيب هذا بأكمله نيابةً عنك — يفحص لوحات الوظائف، ويقيّم مدى الملاءمة مقابل سيرتك الذاتية، ويصوغ سيرة ذاتية ورسالة تغطية مُوثَّقتين، ويتتبّع الطلبات، ويصيغ رسائل المتابعة — ويمكنه **تشغيل هذه اللوحة** عند الطلب. إنه «شخصية» Markdown واحدة خالية من الكود؛ لا يشغّل OpenWorker أيًّا منها كبرنامج، بل تُوجِّه التعليماتُ الوكيلَ فحسب. ويصدر دليله بجميع اللغات السبع عشرة.
+تُفضّل زميل ذكاء اصطناعي على سطح المكتب على المتصفح؟ **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** هو زميلٌ لتطبيق **[OpenWorker](https://github.com/andrewyng/openworker)** (تطبيق زميل الذكاء الاصطناعي مفتوح المصدر ذو الأولوية المحلية من Andrew Ng) يقود خط الأنابيب هذا بأكمله نيابةً عنك — يفحص لوحات الوظائف، ويقيّم مدى الملاءمة مقابل سيرتك الذاتية، ويصوغ سيرة ذاتية ورسالة تغطية مُوثَّقتين، ويتتبّع الطلبات، ويصيغ رسائل المتابعة — ويمكنه **تشغيل هذه اللوحة** عند الطلب. إنه «شخصية» Markdown واحدة خالية من الكود؛ لا يشغّل OpenWorker أيًّا منها كبرنامج، بل تُوجِّه التعليماتُ الوكيلَ فحسب. ويصدر دليله بجميع اللغات السبع عشرة.
 
 ### ماذا يفعل الزميل
 
@@ -1701,7 +1701,7 @@ career-ops مستقل عن واجهة سطر الأوامر، فلديك ثلا�
 ثبّت OpenWorker وأضِف مفتاح نموذج (Anthropic / OpenAI / Google، أو Ollama محلي). الأسرع هو **أمر واحد** — يجهّز مسار `career-ops` الذي يقوده الـ coworker وهو خامل التكرار: يعيد استخدام `career-ops` / `web-ui` الموجودَين دون الكتابة فوق بياناتك:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
 ```
 
-ثم أضِف الـ coworker من لوحة **Install a coworker** في OpenWorker — عبر **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`) أو **.zip** (من [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) أو **باستيراد** `career-ops.md`. افتح جلسة **Job-Search Coworker**، اختر مجلد `career-ops`، واطلب شيئًا حقيقيًا — *«افحص لوحاتي وأعطني أفضل 5 تطابقات لهذا الأسبوع»* أو *«افتح لوحة التحكم.»* الموصّلات (Gmail، Google Calendar، GitHub) والدليل الكامل في [دليل المساعدة](https://github.com/Fighter90/career-ops-coworker/tree/main/help) بالمستودع. تم التحقق من قابلية التثبيت مقابل مُحمّل OpenWorker ومُثبّت المستودع.
+ثم أضِف الـ coworker من لوحة **Install a coworker** في OpenWorker — عبر **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`) أو **.zip** (من [Releases](https://github.com/Fighter92/career-ops-coworker/releases)) أو **باستيراد** `career-ops.md`. افتح جلسة **Job-Search Coworker**، اختر مجلد `career-ops`، واطلب شيئًا حقيقيًا — *«افحص لوحاتي وأعطني أفضل 5 تطابقات لهذا الأسبوع»* أو *«افتح لوحة التحكم.»* الموصّلات (Gmail، Google Calendar، GitHub) والدليل الكامل في [دليل المساعدة](https://github.com/Fighter92/career-ops-coworker/tree/main/help) بالمستودع. تم التحقق من قابلية التثبيت مقابل مُحمّل OpenWorker ومُثبّت المستودع.

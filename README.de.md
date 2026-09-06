@@ -1,24 +1,24 @@
 # career-ops-ui
 
-> Eine schlanke, dokumentationsartige Weboberfläche für die KI-Jobsuche-Pipeline [career-ops](https://github.com/Fighter90/career-ops).
+> Eine schlanke, dokumentationsartige Weboberfläche für die KI-Jobsuche-Pipeline [career-ops](https://github.com/Fighter92/career-ops).
 > Durchsuchen, bewerten, tiefgehend recherchieren, bewerben und jedes Angebot verfolgen — alles aus einem einzigen Browser-Tab, statt zwischen Claude Code, Terminals und Markdown-Dateien hin- und herzuspringen.
 
 [🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | **🇩🇪 Deutsch** | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-2962%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.230.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.230.0)
+[![release](https://img.shields.io/badge/release-v1.231.0-blue)](https://github.com/Fighter92/career-ops-ui/releases/tag/v1.231.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.230.0** — **Drei Provider-Korrekturen aus v1.32.0 des Elternprojekts.** Welcome to the Jungle nimmt jetzt einen serverseitigen Algolia-`filters`-Ausdruck entgegen: Er verkleinert die Ergebnis**menge** selbst, statt sie neu zu sortieren — nur so wird der Scan eines globalen Boards vollständig statt einer Stichprobe. Radancy warnt nicht mehr „truncated“, wenn ein Mandant schlicht weniger Stellen ausliefert, als sein eigenes Banner behauptet (vier von neun gemessenen Mandanten übertreiben um 10–56 %), und umgeht den Cache einer JSON-Route, die veraltete Seiten wiederholte. Greenhouse-Bürolisten werden deterministisch sortiert, sodass ein Board, das seine Büros umordnet, eine unveränderte Stelle nicht mehr als neu erscheinen lässt. **2962 Tests.**
+> **🆕 Neueste Version — v1.231.0** — **Zwei neue Scan-Quellen aus v1.32.0 des Elternprojekts** — 90 → **92 Quellen** (87 EN + 5 RU), beide ohne Token. **Collage** rät die Job-Site-Adresse eines Mandanten nie: Sie ist eine Kennung, die er selbst gewählt hat, und ein Rateversuch würde das Board eines anderen scannen. **Telegram (streng)** liest dieselben Kanalvorschauen wie die vorhandene Quelle `telegram`, geht aber den umgekehrten Handel ein — ein Beitrag wird nur dann zur Zeile, wenn er **einen Arbeitgeber nennt und auf eine Stelle verlinkt**; beide werden ausgeliefert, wie beim Elternprojekt. Gem erhielt einen optionalen REST-Modus. Ebenfalls behoben, im Code des Elternprojekts selbst: Der Ortsfilter des strengen Lesers nutzte eine ASCII-Wortgrenze und sah daher kein Kyrillisch — `Senior Engineer | Москва` lieferte **„Москва“ als Arbeitgeber**. **3009 Tests.**
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 >
 > 📜 Vollständige Versionshistorie: **[CHANGELOG.de.md](CHANGELOG.de.md)**.
@@ -91,12 +91,12 @@ career-ops läuft als Slash-Befehle **innerhalb** eines KI-Coding-Assistenten �
 
 ## In einem Befehl starten und initialisieren
 
-> **Wichtig — career-ops-ui ist ein Dashboard *auf* [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** Es läuft **innerhalb** eines career-ops-Projekts als `career-ops/web-ui/` und liest Ihre `cv.md`, `config/`, `data/` aus dem übergeordneten Ordner über `../`. Es funktioniert **nicht** eigenständig — Sie benötigen auch das übergeordnete `career-ops`-Repo. Klonen Sie es nicht allein und führen Sie `init` aus; nutzen Sie eine der beiden Optionen unten.
+> **Wichtig — career-ops-ui ist ein Dashboard *auf* [`Fighter92/career-ops`](https://github.com/Fighter92/career-ops).** Es läuft **innerhalb** eines career-ops-Projekts als `career-ops/web-ui/` und liest Ihre `cv.md`, `config/`, `data/` aus dem übergeordneten Ordner über `../`. Es funktioniert **nicht** eigenständig — Sie benötigen auch das übergeordnete `career-ops`-Repo. Klonen Sie es nicht allein und führen Sie `init` aus; nutzen Sie eine der beiden Optionen unten.
 
 ### Option 1 — ein curl-Befehl (empfohlen: richtet alles ein)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/setup.sh | bash
 ```
 
 Klont **beide** Repos, richtet das Layout `career-ops/web-ui/` ein, installiert Abhängigkeiten, führt den Doctor aus und startet den Server unter http://127.0.0.1:4317 — dann öffnet es das Dashboard.
@@ -107,7 +107,7 @@ Wenn Sie career-ops bereits konfiguriert haben und nur das Dashboard möchten, k
 
 ```bash
 cd career-ops                                                   # ← your existing career-ops project
-git clone https://github.com/Fighter90/career-ops-ui.git web-ui
+git clone https://github.com/Fighter92/career-ops-ui.git web-ui
 cd web-ui
 npm install
 npx career-ops-ui init        # interactive: pick LLM provider + paste its key → parent career-ops/.env
@@ -160,7 +160,7 @@ Stellen Sie sicher:
 
 ## Warum?
 
-[career-ops](https://github.com/Fighter90/career-ops) ist ein leistungsstarkes, von Claude Code gesteuertes Jobsuche-System: JD einfügen → eine Passungsbewertung von 0-5, ein ATS-optimiertes PDF und einen Tracker-Eintrag erhalten. Es funktioniert großartig innerhalb von Claude Code, aber die Daten liegen verteilt über `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml`, `config/profile.yml` — leicht zu verlieren, schwer zu überblicken.
+[career-ops](https://github.com/Fighter92/career-ops) ist ein leistungsstarkes, von Claude Code gesteuertes Jobsuche-System: JD einfügen → eine Passungsbewertung von 0-5, ein ATS-optimiertes PDF und einen Tracker-Eintrag erhalten. Es funktioniert großartig innerhalb von Claude Code, aber die Daten liegen verteilt über `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml`, `config/profile.yml` — leicht zu verlieren, schwer zu überblicken.
 
 `career-ops-ui` setzt eine ausgefeilte UI obendrauf:
 
@@ -182,16 +182,16 @@ Es sind reine Ergänzungen: Nichts innerhalb von `career-ops/` ändert sich. All
 ### 1. Installieren Sie zuerst career-ops
 
 ```bash
-git clone https://github.com/Fighter90/career-ops.git
+git clone https://github.com/Fighter92/career-ops.git
 cd career-ops
 ```
 
-Folgen Sie dem [career-ops onboarding](https://github.com/Fighter90/career-ops#first-run--onboarding), damit `cv.md`, `config/profile.yml` und `portals.yml` existieren.
+Folgen Sie dem [career-ops onboarding](https://github.com/Fighter92/career-ops#first-run--onboarding), damit `cv.md`, `config/profile.yml` und `portals.yml` existieren.
 
 ### 2. Legen Sie career-ops-ui darin ab
 
 ```bash
-git clone https://github.com/Fighter90/career-ops-ui.git web-ui
+git clone https://github.com/Fighter92/career-ops-ui.git web-ui
 ```
 
 Ihr Baum sieht jetzt so aus:
@@ -411,7 +411,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 2962 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 3009 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -542,7 +542,7 @@ Wenn `run: true` bei `/api/deep` oder `/api/mode/:slug` gesetzt ist, bevorzugt d
 ## Tests
 
 ```bash
-npm test                       # 2962 unit/integration tests
+npm test                       # 3009 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
@@ -551,7 +551,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | Was                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **2962** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 329 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) | **3009** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 329 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: jede Route rendert, grundlegende Flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Vollständiger Playwright-Durchlauf: 11 Routen + 12 funktionale Flows.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |
@@ -634,7 +634,7 @@ Für die Bewertung der Produktionsreife (Deployment-Gates, Risikoregister, aufge
 
 career-ops ist am besten **immer an** — scannt, während du schläfst, aus jedem Browser erreichbar. Um den ganzen Stack auf einen kleinen Server zu legen — die übergeordnete **career-ops**-Pipeline, diesen **career-ops-ui**-Viewer und die **Engine**, die die KI ausführt (dein **Claude-Abo** über die Claude-Code-CLI, ein lokales **Hermes**-Gateway oder Provider-API-Schlüssel) — richte einen VPS ein (Node ≥ 18), installiere das Parent + dieses Repo, wähle deine Engine und stelle den Viewer hinter einen **HTTPS-Reverse-Proxy mit Authentifizierung**, während die Sicherheits-Invarianten (CSP, SSRF-Guard, XSS-Grenze, keine Secrets in Logs) intakt bleiben.
 
-📖 Die integrierte **Hilfe §31** („Den ganzen Stack in der Cloud betreiben“) führt Schritt für Schritt in allen 17 Sprachen; die Betreiber-Checkliste ist [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), und die [Cloud-Deployment-Wiki-Seite](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) enthält die Referenztabellen.
+📖 Die integrierte **Hilfe §31** („Den ganzen Stack in der Cloud betreiben“) führt Schritt für Schritt in allen 17 Sprachen; die Betreiber-Checkliste ist [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), und die [Cloud-Deployment-Wiki-Seite](https://github.com/Fighter92/career-ops-ui/wiki/Cloud-Deployment) enthält die Referenztabellen.
 
 ---
 
@@ -671,7 +671,7 @@ Verwenden Sie sie dann über `data-i18n="scan.newButton"` im Markup oder `t('sca
 
 Issues und PRs willkommen. Hausregeln:
 
-- Führen Sie `npm test` vor dem Pushen aus — **2962 checks green** ist die Messlatte (plus 101 Playwright, wenn Sie die UI berühren).
+- Führen Sie `npm test` vor dem Pushen aus — **3009 checks green** ist die Messlatte (plus 101 Playwright, wenn Sie die UI berühren).
 - Nicht-triviale Änderungen durchlaufen die GSD-Pipeline. Siehe [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Ändern Sie nichts im übergeordneten `career-ops/`-Projekt von innerhalb dieses Repos. Der ganze Sinn ist, dass dies ein nicht-invasives Overlay ist. Harte Regeln in [`CLAUDE.md`](CLAUDE.md).
 - Conventional Commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Optionaler Scope: `feat(scan):`. Breaking Change: `feat!:`.
@@ -748,20 +748,20 @@ Aktualisieren Sie die Health-Seite — jede erforderliche Prüfung sollte grün 
 
 MIT. Siehe [LICENSE](LICENSE).
 
-Aufbauend auf [career-ops](https://github.com/Fighter90/career-ops) von [santifer](https://santifer.io). Danke für die brillante Pipeline.
+Aufbauend auf [career-ops](https://github.com/Fighter92/career-ops) von [santifer](https://santifer.io). Danke für die brillante Pipeline.
 
 ## Mitwirkende
 
-Dank an alle, die beim Aufbau von career-ops-ui helfen. Das Projekt wird von [Fighter90](https://github.com/Fighter90) betreut und durch Community-Beiträge verbessert — siehe die vollständige Liste im [Contributors-Graph](https://github.com/Fighter90/career-ops-ui/graphs/contributors).
+Dank an alle, die beim Aufbau von career-ops-ui helfen. Das Projekt wird von [Fighter92](https://github.com/Fighter92) betreut und durch Community-Beiträge verbessert — siehe die vollständige Liste im [Contributors-Graph](https://github.com/Fighter92/career-ops-ui/graphs/contributors).
 
 <p>
-  <a href="https://github.com/Fighter90" title="Fighter90"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter90"/></a>
+  <a href="https://github.com/Fighter92" title="Fighter92"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter92"/></a>
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
 </p>
 
-**[Alle Mitwirkenden →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**
+**[Alle Mitwirkenden →](https://github.com/Fighter92/career-ops-ui/graphs/contributors)**
 
 <div align="center">
 

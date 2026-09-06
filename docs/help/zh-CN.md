@@ -1,6 +1,6 @@
 # 帮助 — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 从启动应用到拿到面试机会,本指南完整覆盖每一个页面。每个 `##` 标题对
 应侧边栏条目或工作流的一个阶段。首次运行请自上而下通读;之后通过帮
@@ -1497,7 +1497,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 | 全新 clone 上 `npm test` 失败 | 测试假设父项目布局 | 使用 `CAREER_OPS_ROOT=$(mktemp -d)` 并 bootstrap fixtures。 |
 
 更深入的诊断:在 Health 页运行 **▶ Doctor**,复制输出,在
-<https://github.com/Fighter90/career-ops-ui/issues> 的 issue tracker
+<https://github.com/Fighter92/career-ops-ui/issues> 的 issue tracker
 中搜索。
 
 
@@ -1505,7 +1505,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 
 ## 17. 如何添加新的招聘门户来源
 
-career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。目前,`server/lib/sources/` 注册表自带 **90** 个 adapter —— **85 个英文 + 5 个俄文**板块。英文集合涵盖主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由显式 `provider:` 选择的全板块聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及从 `careers_url` 主机或显式 `api:` URL 自动检测的按租户 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整列表永远无需在此手工统计 —— 它会从 `server/lib/sources/` 自动发现,并在 `#/scan` 的 Source 下拉框中实时显示。** YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
+career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。目前,`server/lib/sources/` 注册表自带 **92** 个 adapter —— **87 个英文 + 5 个俄文**板块。英文集合涵盖主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由显式 `provider:` 选择的全板块聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及从 `careers_url` 主机或显式 `api:` URL 自动检测的按租户 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整列表永远无需在此手工统计 —— 它会从 `server/lib/sources/` 自动发现,并在 `#/scan` 的 Source 下拉框中实时显示。** YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 即插即用自动发现。** 添加第 12 个来源现在是**纯粹的文件投放**。注册表
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))
@@ -1932,7 +1932,7 @@ career-ops-ui 的大部分功能都在问“这份工作和我的 CV 匹配吗�
 
 ### **市场报告**
 
-**市场报告**选项卡请模型对*你的*目标职位做一份薪资与劳动力市场分析——它会读取你的 CV 和档案,以了解需要覆盖哪些职位和资历层级。输入**地区 / 市场**(例如 `Russia`、`EU-remote`、`US` 或 `Germany`),选择**货币**,然后点击**生成市场报告**。你会得到一份结构化报告,包含执行摘要、按等级划分的薪资(中位数加 P10/P25/P75/P90)、顶尖雇主、热门技能表、福利出现频率、办公室/混合/远程的比例、12–24 个月的趋势(含 AI 影响)以及谈判指引。每个数字都是**来自模型训练知识的方向性估算**——并非抓取或实时数据——报告本身也会如此声明;请把这些数字当作区间,而非精确报价。若未设置 API key,你得到的将是一份可复制粘贴的提示词,而不是一份编造的报告。用**下载 .md**、**保存为 PDF** 或**复制**把报告带出应用。
+**市场报告**选项卡请模型对*你的*目标职位做一份薪资与劳动力市场分析——它会读取你的 CV 和档案,以了解需要覆盖哪些职位和资历层级。输入**地区 / 市场**(例如 `Russia`、`EU-remote`、`US` 或 `Germany`),选择**货币**,然后点击**生成市场报告**。你会得到一份结构化报告,包含执行摘要、按等级划分的薪资(中位数加 P10/P25/P75/P92)、顶尖雇主、热门技能表、福利出现频率、办公室/混合/远程的比例、12–24 个月的趋势(含 AI 影响)以及谈判指引。每个数字都是**来自模型训练知识的方向性估算**——并非抓取或实时数据——报告本身也会如此声明;请把这些数字当作区间,而非精确报价。若未设置 API key,你得到的将是一份可复制粘贴的提示词,而不是一份编造的报告。用**下载 .md**、**保存为 PDF** 或**复制**把报告带出应用。
 
 ### **我的流程**
 
@@ -2032,7 +2032,7 @@ career-ops 不绑定任何特定 CLI,所以在 AI 上你有三个靠得住的选
 
 ## 32. 从 OpenWorker(AI 同事)运行
 
-比起浏览器,更想要一位桌面端的 AI 同事?**[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** 是一位 **[OpenWorker](https://github.com/andrewyng/openworker)** 同事(Andrew Ng 出品的开源、本地优先的 AI 同事应用),它能替你驱动整套流水线 —— 扫描招聘板、对照你的简历为匹配度打分、量身定制一份有据可依的简历 + 求职信、追踪申请、起草跟进邮件 —— 并且能在你需要时**启动这个仪表盘**。它只是一个不含任何代码的 Markdown“人设”;OpenWorker 并不会把它当作程序来运行,这些指令只是在引导智能体。它的指南以全部 17 种语言提供。
+比起浏览器,更想要一位桌面端的 AI 同事?**[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** 是一位 **[OpenWorker](https://github.com/andrewyng/openworker)** 同事(Andrew Ng 出品的开源、本地优先的 AI 同事应用),它能替你驱动整套流水线 —— 扫描招聘板、对照你的简历为匹配度打分、量身定制一份有据可依的简历 + 求职信、追踪申请、起草跟进邮件 —— 并且能在你需要时**启动这个仪表盘**。它只是一个不含任何代码的 Markdown“人设”;OpenWorker 并不会把它当作程序来运行,这些指令只是在引导智能体。它的指南以全部 17 种语言提供。
 
 ### 这位同事能做什么
 
@@ -2043,7 +2043,7 @@ career-ops 不绑定任何特定 CLI,所以在 AI 上你有三个靠得住的选
 安装 OpenWorker 并添加模型密钥（Anthropic / OpenAI / Google，或本地 Ollama）。最快是**一条命令** —— 它准备好 coworker 驱动的 `career-ops` 流水线，且是幂等的：复用已有的 `career-ops` / `web-ui`，不会覆盖你的数据:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
 ```
 
-然后在 OpenWorker 的 **Install a coworker** 面板中添加 coworker —— 通过 **GitHub URL**(`https://github.com/Fighter90/career-ops-coworker`)、**.zip**(来自 [Releases](https://github.com/Fighter90/career-ops-coworker/releases))或**导入** `career-ops.md`。打开 **Job-Search Coworker** 会话，选择你的 `career-ops` 文件夹，然后提出真实需求 —— *"扫描我的看板，给我本周前 5 个匹配"* 或 *"打开仪表盘。"* 连接器(Gmail、Google Calendar、GitHub)与完整指南在仓库的[帮助指南](https://github.com/Fighter90/career-ops-coworker/tree/main/help)中。已针对 OpenWorker 的加载器与仓库安装器验证可安装。
+然后在 OpenWorker 的 **Install a coworker** 面板中添加 coworker —— 通过 **GitHub URL**(`https://github.com/Fighter92/career-ops-coworker`)、**.zip**(来自 [Releases](https://github.com/Fighter92/career-ops-coworker/releases))或**导入** `career-ops.md`。打开 **Job-Search Coworker** 会话，选择你的 `career-ops` 文件夹，然后提出真实需求 —— *"扫描我的看板，给我本周前 5 个匹配"* 或 *"打开仪表盘。"* 连接器(Gmail、Google Calendar、GitHub)与完整指南在仓库的[帮助指南](https://github.com/Fighter92/career-ops-coworker/tree/main/help)中。已针对 OpenWorker 的加载器与仓库安装器验证可安装。
