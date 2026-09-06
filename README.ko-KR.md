@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
+[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.231.3** — **Doctor를 누르면 모바일 상단 바가 무너졌습니다.** v1.231.2가 나간 그날 휴대폰에서 신고되었습니다. `UI.withSpinner`는 작업 중 표시를 `button.textContent` 대입으로 처리했는데, 이는 *모든* 자식을 텍스트 노드 하나로 대체합니다. v1.231.2는 막 각 동작을 `.btn-ico`와 `.btn-label`로 나누고 레이블을 `max-width: 900px` 아래에 숨긴 참이었습니다. 그래서 첫 탭이 두 `<span>`을 영영 없앴고, 레이블은 맨 텍스트로 돌아왔으며, 36 px 정사각형은 테마 전환 위로 올라타는 `🩺Doctor` 알약으로 부풀었습니다. 저절로 낫지 않았고 새로고침만이 마크업을 되돌렸습니다. 이제 `withSpinner`는 자식 **노드**를 스냅샷하고 `replaceChildren`으로 되돌립니다. 지난 릴리스에서 적어 둔 `applyI18n()` 함정과 같은 결함 부류를 다른 호출자로 만난 것입니다. 브라우저 회귀에서 찾은 것도 함께 수정: **검색 필드가 320 px에서 8 px로 찌그러져 있었습니다** — 21자 자리표시자 중 한 글자. 420 px 미만에서는 이제 돋보기 뒤로 숨고, 누르면 바 전체로 펼쳐집니다(**320 px에서 182 px**). **3012개의 테스트.**
+> **🆕 최신 릴리스 — v1.231.4** — **v1.231.3은 Doctor 클릭의 뒷수습을 고쳤을 뿐, 그 순간을 고치지 않았습니다.** `finally`에서 `<span>`을 되돌리기는 했지만, 작업 중 표시는 *요청이 도는 동안* 여전히 버튼에 `'⏳ ' + 레이블`을 써 넣었습니다 — 그래서 `doctor.mjs`가 도는 내내 36 px 정사각형은 줄을 무너뜨리는 넓은 `⏳ 🩺Doctor` 알약이었고, 데스크톱에서는 뭉친 `⏳🩺Doctor`였습니다. 끝 상태만 보는 단언은 이를 통과시켰습니다. **요소 자식을 가진 버튼은 이제 전혀 다시 쓰지 않습니다**: 표시는 `.is-loading` 클래스가 맡아 CSS에서 아이콘을 모래시계로 바꾸므로 형상이 달라질 수 없습니다 — 320 px에서 **대기 36 px, 진행 중 36 px, 이후 36 px**. **3013개의 테스트.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

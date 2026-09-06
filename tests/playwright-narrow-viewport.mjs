@@ -173,6 +173,36 @@ test('BUG-TB-SPIN: the top bar survives a Doctor click at 320 px', { skip: SKIP 
       return { w: Math.round(b.getBoundingClientRect().width), spans: b.querySelectorAll('span').length };
     });
 
+    // v1.231.4 — measure the button WHILE the work is in flight, and hold it
+    // there deliberately rather than racing a real request. v1.231.3 restored
+    // the spans afterwards but still wrote '⏳ ' + label into the button for the
+    // duration of the run, so the square was a wide pill for as long as
+    // doctor.mjs took. An end-state-only assertion passed that, and so would a
+    // sample that the request happened to outrun.
+    const busy = await page.evaluate(async () => {
+      const b = document.getElementById('btn-doctor');
+      let release;
+      const held = window.UI.withSpinner(b, () => new Promise((r) => { release = r; }));
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const seen = {
+        w: Math.round(b.getBoundingClientRect().width),
+        ico: !!b.querySelector('.btn-ico'),
+        label: !!b.querySelector('.btn-label'),
+        busyAttr: b.getAttribute('aria-busy'),
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+      };
+      release();
+      await held;
+      return seen;
+    });
+    assert.equal(busy.busyAttr, 'true', 'the probe must have caught the button mid-flight');
+    assert.equal(busy.w, before.w,
+      `in flight the button widened from ${before.w}px to ${busy.w}px — the busy cue rewrote its content`);
+    assert.ok(busy.ico && busy.label, 'in flight the icon and label spans must still exist');
+    assert.ok(busy.scrollWidth <= busy.clientWidth,
+      `the page overflowed while the request was in flight: ${busy.scrollWidth} > ${busy.clientWidth}`);
+
     await page.click('#btn-doctor');
     // Let the request settle and withSpinner's finally block run.
     await page.waitForFunction(() => !document.getElementById('btn-doctor')?.hasAttribute('aria-busy'),

@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.231.4] — 2026-09-07
+
+**Corregido — v1.231.3 arregló las secuelas del clic en Doctor, no el momento. Reportado de nuevo, desde móvil y desde escritorio.**
+
+### Corregido
+**`withSpinner` seguía reescribiendo el botón mientras la petición estaba en vuelo.** v1.231.3 hizo que capturara los nodos hijos y los restaurara en `finally`, y volvían — pero la señal de ocupado seguía ejecutando `button.replaceChildren(document.createTextNode('⏳ ' + original))`. Así que durante toda la ejecución de `doctor.mjs` el cuadrado de 36 px contenía el texto `⏳ 🩺Doctor` y se convertía en una pastilla ancha que rompía la fila; en escritorio se veía como un `⏳🩺Doctor` apelmazado. Restaurar los hijos arreglaba las secuelas, no el momento. **Un botón con hijos elemento ya no se reescribe en absoluto**: su señal es la clase `.is-loading`, que la hoja de estilos ya atenuaba y que ahora cambia el icono por un reloj de arena en CSS, de modo que la geometría no puede variar: **36 px en reposo, 36 px en vuelo, 36 px después** a 320 px. Los botones de solo texto — 23 de los 24 puntos de llamada — conservan el reloj antepuesto.
+
+### Notas
+La lección es sobre la aserción, no sobre el código. La comprobación de v1.231.3 esperaba a que se limpiara `aria-busy` y solo entonces medía: por construcción únicamente podía ver el estado que el bloque `finally` ya había reparado. La nueva comprobación **mantiene ella misma la promesa abierta** en lugar de competir con una petición real, toma la muestra a mitad de vuelo y exige que el ancho no cambie. **3012 → 3013 pruebas.** Ambas se confirmaron fallando contra el código de v1.231.3.
+
 ## [1.231.3] — 2026-09-07
 
 **Corregido — pulsar Doctor rompía la barra superior en el móvil. Reportado desde un teléfono el mismo día que salió v1.231.2.**

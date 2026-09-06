@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.4] — 2026-09-07
+
+**Corrigé — v1.231.3 a réparé les suites du clic sur Doctor, pas l'instant. Signalé à nouveau, depuis mobile et depuis bureau.**
+
+### Corrigé
+**`withSpinner` réécrivait toujours le bouton pendant la requête.** v1.231.3 lui a fait capturer les nœuds enfants et les restaurer dans `finally`, et ils revenaient bien — mais l'indicateur d'activité exécutait encore `replaceChildren` avec le texte `'⏳ ' + original`. Pendant toute la durée de `doctor.mjs`, le carré de 36 px contenait donc `⏳ 🩺Doctor` et devenait une large pastille qui cassait la ligne ; sur bureau cela donnait un `⏳🩺Doctor` tassé. **Un bouton ayant des enfants éléments n'est plus réécrit du tout** : son indicateur est la classe `.is-loading`, qui échange désormais l'icône contre un sablier en CSS, de sorte que la géométrie ne peut plus changer : **36 px au repos, 36 px en vol, 36 px après**.
+
+### Notes
+La leçon porte sur l'assertion, pas sur le code. Le contrôle de v1.231.3 attendait que `aria-busy` disparaisse avant de mesurer : par construction il ne voyait que l'état déjà réparé par le `finally`. Le nouveau contrôle **tient lui-même la promesse ouverte** et échantillonne en plein vol. **3012 → 3013 tests.**
+
 ## [1.231.3] — 2026-09-07
 
 **Corrigé — cliquer sur Doctor cassait la barre supérieure sur mobile. Signalé depuis un téléphone le jour même de la sortie de v1.231.2.**

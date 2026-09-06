@@ -7,16 +7,16 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
+[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.231.3** — **كان النقر على Doctor يُفسد شريط الأعلى في الجوال**، بلاغٌ من هاتفٍ يوم صدور v1.231.2 نفسه. كان `UI.withSpinner` يُظهر إشارة الانشغال بالإسناد إلى `button.textContent`، وهذا يستبدل **كلّ** الأبناء بعقدة نصّية واحدة. وكانت v1.231.2 قد قسمت للتوّ كلّ إجراء إلى `.btn-ico` و`.btn-label` مع إخفاء التسمية تحت `max-width: 900px` — فأتلفت النقرة الأولى كلا الـ`<span>` إلى الأبد: عادت التسمية نصًّا عاريًا، ونما مربّع 36 بكسل قرصًا يقرأ `🩺Doctor` يركب فوق مبدّل السمة. ولم يكن يُشفى من تلقاء نفسه؛ وحده إعادة التحميل يُعيد الترميز. صار `withSpinner` الآن يلتقط **عُقَد** الأبناء ويُعيدها بـ`replaceChildren`. وهو صنف الخلل نفسه الذي وُثِّق في الإصدار السابق بوصفه فخّ `applyI18n()`، بلغناه من مُستدعٍ آخر. وأُصلح كذلك ما وجده فحصُ انحدارٍ من المتصفّح: **كان حقل البحث قد انهار إلى 8 بكسل** عند 320 — حرفٌ واحد من نائبٍ نصّي طوله واحدٌ وعشرون. وصار دون 420 بكسل يختبئ خلف عدسةٍ مكبّرة وينفتح على الشريط كلّه عند اللمس (**182 بكسل عند 320**). **3012 اختبارًا.**
+> **🆕 أحدث إصدار — v1.231.4** — **أصلحت v1.231.3 ما بعد النقر على Doctor لا لحظتَه.** كانت تُعيد الـ`<span>` في `finally`، لكنّ إشارة الانشغال ظلّت تكتب `'⏳ ' + التسمية` داخل الزرّ *والطلب يجري* — فطوال تشغيل `doctor.mjs` كان مربّع 36 بكسل قرصًا عريضًا يقرأ `⏳ 🩺Doctor` يكسر السطر، وعلى سطح المكتب `⏳🩺Doctor` متلاصقًا. **والزرّ الذي له أبناءٌ عناصر لم يعد يُعاد كتابته البتّة**: إشارته صنف `.is-loading` الذي يستبدل الأيقونة بساعةٍ رمليّة في CSS — **36 بكسل في السكون، و36 في الجوّ، و36 بعدُ**. **3013 اختبارًا.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

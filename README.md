@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
+[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.231.3** — **Clicking Doctor broke the mobile top bar**, reported from a phone the day v1.231.2 shipped. `UI.withSpinner` showed its busy cue by assigning `button.textContent` — which replaces *every* child with one text node. v1.231.2 had just split each top-bar action into `.btn-ico` + `.btn-label` spans and hidden the label under `max-width: 900px`, so the first Doctor tap destroyed both spans for good: the label came back as bare text and the 36 px square grew into a `🩺Doctor` pill that spilled over the theme toggle. It never healed — only a reload restored the markup. `withSpinner` now snapshots the child **nodes** and restores them with `replaceChildren`; text-only buttons, most of the 24 call sites, round-trip exactly as before. Same defect class as the `applyI18n()` trap noted last release, reached through a different caller — **splitting an element's content into child spans makes every existing `textContent` writer on it a latent bug**. Also fixed, found by a browser regression pass: **the search field had collapsed to 8 px** at 320 px — one character of a 21-character placeholder — because the one-row bar left the searchbar as the only flexible item. Below 420 px it now hides behind a magnifier and expands over the whole bar on tap (**182 px at 320 px**); above it, unchanged. **3012 tests.**
+> **🆕 Latest release — v1.231.4** — **v1.231.3 fixed the aftermath of the Doctor click, not the moment.** It restored the button's spans in `finally`, but the busy cue still wrote `'⏳ ' + label` into the button *while the request ran* — so for the whole length of a `doctor.mjs` run the 36 px square was a wide `⏳ 🩺Doctor` pill that broke the row, and on desktop a jammed `⏳🩺Doctor`. An assertion that only looked at the end state passed it. **A button with element children is now never rewritten at all**: its cue is the `.is-loading` class, which swaps the icon for an hourglass in CSS, so the geometry cannot change — **36 px idle, 36 px in flight, 36 px after** at 320 px. The new browser check holds the promise open itself instead of racing a real request, and samples the button mid-flight. **3013 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

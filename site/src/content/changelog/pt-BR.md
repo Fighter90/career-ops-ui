@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.231.4] — 2026-09-07
+
+**Corrigido — a v1.231.3 corrigiu o depois do clique em Doctor, não o momento. Relatado de novo, do celular e do desktop.**
+
+### Corrigido
+**O `withSpinner` ainda reescrevia o botão enquanto a requisição estava em voo.** A v1.231.3 fez com que ele capturasse os nós filhos e os restaurasse no `finally`, e eles voltavam — mas o sinal de ocupado continuava executando `replaceChildren` com o texto `'⏳ ' + original`. Assim, por toda a duração de `doctor.mjs`, o quadrado de 36 px continha `⏳ 🩺Doctor` e virava uma pílula larga que quebrava a linha; no desktop aparecia como um `⏳🩺Doctor` amontoado. **Um botão com filhos elemento não é mais reescrito**: seu sinal é a classe `.is-loading`, que agora troca o ícone por uma ampulheta em CSS, de modo que a geometria não pode mudar: **36 px parado, 36 px em voo, 36 px depois**.
+
+### Notas
+A lição é sobre a asserção, não sobre o código. O portão da v1.231.3 esperava `aria-busy` limpar e só então media — por construção via apenas o estado que o `finally` já havia consertado. A nova verificação **segura a promessa aberta** e amostra no meio do voo. **3012 → 3013 testes.**
+
 ## [1.231.3] — 2026-09-07
 
 **Corrigido — clicar em Doctor quebrava a barra superior no celular. Relatado de um telefone no mesmo dia em que v1.231.2 saiu.**

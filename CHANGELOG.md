@@ -8,6 +8,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.231.4] — 2026-09-07
+
+**Fixed — v1.231.3 fixed the aftermath of the Doctor click, not the moment. Reported again, from mobile and from desktop.**
+
+### Fixed
+**`withSpinner` still rewrote the button while the request was in flight.** v1.231.3 made it snapshot the child nodes and restore them in `finally`, and the spans did come back — but the busy cue still ran `button.replaceChildren(document.createTextNode('⏳ ' + original))`, so for the whole length of a `doctor.mjs` run the 36 px square held the text `⏳ 🩺Doctor` and became a wide pill that broke the row. On desktop it rendered as a jammed `⏳🩺Doctor`. Restoring the children fixed the aftermath, not the moment, and an assertion that only looked at the end state passed it. **A button that has element children is now never rewritten at all.** Its cue is the `.is-loading` class, which the stylesheet already dimmed and which now swaps the icon for an hourglass in CSS, so the geometry cannot change: **36 px idle, 36 px in flight, 36 px after** at 320 px. Text-only buttons — 23 of the 24 call sites — keep the prepended hourglass, unchanged since v1.58. On desktop the button reads `⏳Doctor` while running, widening by the hourglass and returning, which is what every other button in the app has done for years.
+
+### Notes
+The lesson is about the assertion, not the code. The v1.231.3 gate clicked Doctor, waited for `aria-busy` to clear, and then measured — so it could only ever see the state the `finally` block had already repaired. The new browser check **holds the promise open itself** rather than racing a real request, samples the button mid-flight, and asserts the width is unchanged, both spans still exist and nothing overflows. A first draft sampled after a real click and skipped the assertion when the request outran it; that would have been a lock that passes by luck. **3012 → 3013 tests.** Both new checks were confirmed failing against the v1.231.3 code before this shipped.
+
 ## [1.231.3] — 2026-09-07
 
 **Fixed — clicking Doctor broke the mobile top bar. Reported from a phone the day v1.231.2 shipped.**

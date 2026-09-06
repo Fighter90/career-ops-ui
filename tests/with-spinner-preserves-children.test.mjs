@@ -93,20 +93,54 @@ test('BUG-TB-SPIN: withSpinner leaves the icon and label spans intact after a fu
   assert.equal(btn.textContent, '🩺Doctor', 'visible text must be restored unchanged');
 });
 
-test('BUG-TB-SPIN: withSpinner shows a busy cue and restores the button state', async () => {
+test('BUG-TB-SPIN: withSpinner restores the busy-state contract', async () => {
   const withSpinner = loadWithSpinner();
   const btn = fakeButton();
-  let seenDuringFlight = null;
+  let inFlight = null;
 
   await withSpinner(btn, async () => {
-    seenDuringFlight = { text: btn.textContent, disabled: btn.disabled, busy: btn.attrs['aria-busy'] };
+    inFlight = { disabled: btn.disabled, busy: btn.attrs['aria-busy'], loading: btn.classList.list.has('is-loading') };
   });
 
-  assert.match(seenDuringFlight.text, /⏳/, 'an hourglass cue must be visible while the request is in flight');
-  assert.equal(seenDuringFlight.disabled, true, 'the button must be disabled in flight to swallow double-clicks');
-  assert.equal(seenDuringFlight.busy, 'true', 'aria-busy must be set in flight');
+  assert.equal(inFlight.disabled, true, 'the button must be disabled in flight to swallow double-clicks');
+  assert.equal(inFlight.busy, 'true', 'aria-busy must be set in flight');
+  assert.equal(inFlight.loading, true, 'the .is-loading class must carry the visual cue in flight');
   assert.equal(btn.disabled, false, 'the prior disabled state must be restored');
   assert.equal(btn.attrs['aria-busy'], undefined, 'aria-busy must be cleared');
+  assert.equal(btn.classList.list.has('is-loading'), false, '.is-loading must be cleared');
+});
+
+/**
+ * v1.231.4 — the half-fix. v1.231.3 restored the spans in `finally`, but the
+ * IN-FLIGHT state still replaced them with the text '⏳ ' + label, so for the
+ * whole length of a doctor run the 36px square was a wide `⏳ 🩺Doctor` pill and
+ * the row broke exactly as before. Restoring the children fixed the aftermath,
+ * not the moment — the user reported it again with a screenshot of the button
+ * mid-run, on mobile and on desktop.
+ *
+ * A button that has element children must therefore not be rewritten AT ALL:
+ * its cue is the `.is-loading` class, which the stylesheet dims and which swaps
+ * the icon for an hourglass in CSS, so the geometry never changes.
+ */
+test('BUG-TB-SPIN: a button with element children is never rewritten, not even in flight', async () => {
+  const withSpinner = loadWithSpinner();
+  const btn = fakeButton();
+  let inFlight = null;
+
+  await withSpinner(btn, async () => {
+    inFlight = {
+      text: btn.textContent,
+      children: btn.childNodes.length,
+      ico: !!btn.querySelector('.btn-ico'),
+      label: !!btn.querySelector('.btn-label'),
+    };
+  });
+
+  assert.equal(inFlight.ico, true, 'the icon span must survive IN FLIGHT, not merely be restored after');
+  assert.equal(inFlight.label, true, 'the label span must survive in flight');
+  assert.equal(inFlight.children, 2, 'the button must still hold exactly its two element children in flight');
+  assert.equal(inFlight.text, '🩺Doctor',
+    'no hourglass may be written into the content — it would widen the 36px square for the whole run');
 });
 
 test('BUG-TB-SPIN: a button whose child is plain text still round-trips', async () => {
@@ -114,7 +148,10 @@ test('BUG-TB-SPIN: a button whose child is plain text still round-trips', async 
   const btn = fakeButton();
   btn.children = [{ nodeType: 3, textContent: 'Save' }];
 
-  await withSpinner(btn, async () => null);
+  let seen = null;
+  await withSpinner(btn, async () => { seen = btn.textContent; });
 
-  assert.equal(btn.textContent, 'Save', 'text-only buttons — the majority of call sites — must be unaffected');
+  assert.match(seen, /⏳/,
+    'text-only buttons keep the prepended hourglass — 23 of the 24 call sites, unchanged since v1.58');
+  assert.equal(btn.textContent, 'Save', 'and it is restored afterwards');
 });

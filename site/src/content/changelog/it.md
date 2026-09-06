@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.231.4] — 2026-09-07
+
+**Corretto — la v1.231.3 ha sistemato le conseguenze del clic su Doctor, non il momento. Segnalato di nuovo, da mobile e da desktop.**
+
+### Corretto
+**`withSpinner` riscriveva ancora il pulsante mentre la richiesta era in volo.** La v1.231.3 gli ha fatto catturare i nodi figli e ripristinarli nel `finally`, e tornavano davvero — ma il segnale di occupato eseguiva comunque `replaceChildren` con il testo `'⏳ ' + original`. Per tutta la durata di `doctor.mjs` il quadrato da 36 px conteneva quindi `⏳ 🩺Doctor` e diventava una pillola larga che rompeva la riga; su desktop appariva come un `⏳🩺Doctor` ammassato. **Un pulsante con figli elemento non viene più riscritto**: il suo segnale è la classe `.is-loading`, che ora scambia l'icona con una clessidra in CSS, così la geometria non può cambiare: **36 px a riposo, 36 px in volo, 36 px dopo**.
+
+### Note
+La lezione riguarda l'asserzione, non il codice. Il gate della v1.231.3 attendeva che `aria-busy` sparisse e solo allora misurava: per costruzione vedeva solo lo stato già riparato dal `finally`. Il nuovo controllo **tiene aperta la promessa da sé** e campiona a metà volo. **3012 → 3013 test.**
+
 ## [1.231.3] — 2026-09-07
 
 **Corretto — cliccare Doctor rompeva la barra superiore su mobile. Segnalato da un telefono il giorno stesso in cui è uscita la v1.231.2.**

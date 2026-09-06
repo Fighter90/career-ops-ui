@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.231.4] — 2026-09-07
+
+**Rettet — v1.231.3 rettede eftervirkningen af Doctor-klikket, ikke øjeblikket. Meldt igen, fra mobil og fra skrivebord.**
+
+### Rettet
+**`withSpinner` omskrev stadig knappen, mens forespørgslen var undervejs.** v1.231.3 fik den til at gemme barnenoderne og gendanne dem i `finally`, og de kom tilbage — men travlhedssignalet kørte stadig `replaceChildren` med teksten `'⏳ ' + original`. I hele `doctor.mjs`-kørslen indeholdt 36 px-kvadratet derfor `⏳ 🩺Doctor` og blev til en bred pille, der brød rækken; på skrivebordet så det ud som et sammenklemt `⏳🩺Doctor`. **En knap med elementbørn omskrives nu slet ikke**: dens signal er klassen `.is-loading`, som nu bytter ikonet ud med et timeglas i CSS, så geometrien ikke kan ændre sig: **36 px i hvile, 36 px undervejs, 36 px bagefter**.
+
+### Noter
+Lektionen handler om assertionen, ikke om koden. Porten fra v1.231.3 ventede på, at `aria-busy` forsvandt, og målte først derefter — den kunne per konstruktion kun se den tilstand, `finally` allerede havde repareret. Det nye tjek **holder selv løftet åbent** og måler midt i flugten. **3012 → 3013 test.**
+
 ## [1.231.3] — 2026-09-07
 
 **Rettet — et klik på Doctor ødelagde den øverste bjælke på mobil. Meldt fra en telefon samme dag som v1.231.2 udkom.**

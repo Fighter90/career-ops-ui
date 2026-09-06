@@ -7,16 +7,16 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
+[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.231.3** — **Kliknięcie Doctor psuło górny pasek na telefonie**, zgłoszone z telefonu w dniu wydania v1.231.2. `UI.withSpinner` pokazywał sygnał zajętości przez przypisanie do `button.textContent`, a to zastępuje *wszystkie* dzieci jednym węzłem tekstowym. v1.231.2 dopiero co podzieliło każdą akcję na `.btn-ico` i `.btn-label`, chowając etykietę pod `max-width: 900px` — pierwsze dotknięcie niszczyło więc oba `<span>` na dobre: etykieta wracała jako goły tekst, a kwadrat 36 px rozrastał się w pigułkę `🩺Doctor` nachodzącą na przełącznik motywu. Nie goiło się samo — tylko przeładowanie przywracało znaczniki. Teraz `withSpinner` zapisuje **węzły** dzieci i przywraca je przez `replaceChildren`. Ta sama klasa usterki co pułapka `applyI18n()` z poprzedniego wydania, innym wywołującym. Naprawiono też, znalezione przeglądarkowym przebiegiem regresyjnym: **pole wyszukiwania zapadło się do 8 px** przy 320 px — jeden znak z podpowiedzi o długości 21. Poniżej 420 px chowa się teraz za lupą i po dotknięciu rozwija na cały pasek (**182 px przy 320 px**). **3012 testów.**
+> **🆕 Najnowsze wydanie — v1.231.4** — **v1.231.3 naprawiło skutek kliknięcia Doctor, a nie sam moment.** Przywracało `<span>` w `finally`, ale sygnał zajętości nadal wpisywał `'⏳ ' + etykieta` do przycisku *w trakcie żądania* — przez cały czas działania `doctor.mjs` kwadrat 36 px był więc szeroką pigułką `⏳ 🩺Doctor` łamiącą wiersz, a na pulpicie zbitym `⏳🩺Doctor`. **Przycisk mający dzieci-elementy nie jest już w ogóle przepisywany**: jego sygnałem jest klasa `.is-loading`, zamieniająca ikonę na klepsydrę w CSS — **36 px w spoczynku, 36 px w locie, 36 px po**. **3013 testów.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

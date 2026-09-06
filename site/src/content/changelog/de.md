@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.231.4] — 2026-09-07
+
+**Behoben — v1.231.3 hat die Folgen des Doctor-Klicks behoben, nicht den Moment. Erneut gemeldet, vom Handy und vom Desktop.**
+
+### Behoben
+**`withSpinner` schrieb die Schaltfläche während der Anfrage weiterhin um.** v1.231.3 ließ es die Kindknoten sichern und im `finally` wiederherstellen, und sie kamen auch zurück — doch der Beschäftigt-Hinweis führte nach wie vor `replaceChildren` mit dem Text `'⏳ ' + original` aus. Für die gesamte Dauer eines `doctor.mjs`-Laufs enthielt das 36-px-Quadrat also `⏳ 🩺Doctor` und wurde zu einer breiten Pille, die die Zeile sprengte; auf dem Desktop erschien ein zusammengedrängtes `⏳🩺Doctor`. **Eine Schaltfläche mit Kindelementen wird nun gar nicht mehr umgeschrieben**: Ihr Hinweis ist die Klasse `.is-loading`, die das Symbol jetzt per CSS gegen eine Sanduhr tauscht, sodass sich die Geometrie nicht ändern kann: **36 px im Ruhezustand, 36 px im Flug, 36 px danach**.
+
+### Anmerkungen
+Die Lehre betrifft die Zusicherung, nicht den Code. Die Prüfung aus v1.231.3 wartete, bis `aria-busy` verschwand, und maß erst dann — sie konnte also nur den Zustand sehen, den der `finally`-Block bereits repariert hatte. Die neue Prüfung **hält das Promise selbst offen** und misst mitten im Flug. **3012 → 3013 Tests.**
+
 ## [1.231.3] — 2026-09-07
 
 **Behoben — ein Klick auf Doctor zerlegte die obere Leiste auf dem Handy. Am Erscheinungstag von v1.231.2 vom Telefon aus gemeldet.**

@@ -596,8 +596,19 @@ window.UI = (function () {
     // one Doctor tap flattened the button to bare text, the mobile rules had
     // nothing left to match, and the row overflowed. Restoring the nodes keeps
     // every existing text-only call site behaving identically.
+    //
+    // v1.231.4: a button that HAS element children is not rewritten at all.
+    // v1.231.3 restored the spans afterwards, but the in-flight state still
+    // replaced them with the text '⏳ ' + label — so for the whole length of a
+    // doctor run the top-bar square became a wide `⏳ 🩺Doctor` pill and the row
+    // broke exactly as before, just transiently. Restoring the children fixed
+    // the aftermath, not the moment. Those buttons carry their busy cue through
+    // the `.is-loading` class instead, which the stylesheet already dims and
+    // which now swaps the icon for an hourglass in CSS. Text-only buttons —
+    // 23 of the 24 call sites — keep the prepended hourglass and are unchanged.
+    const hasElementChild = Array.from(button.childNodes).some((n) => n.nodeType === 1);
     let savedChildren = null;
-    if (original && !button.dataset.spinnerBusy && !button.querySelector('.spinner')) {
+    if (original && !hasElementChild && !button.dataset.spinnerBusy && !button.querySelector('.spinner')) {
       savedChildren = Array.from(button.childNodes);
       button.dataset.spinnerBusy = '1';
       button.replaceChildren(document.createTextNode('⏳ ' + original));
