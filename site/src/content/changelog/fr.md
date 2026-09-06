@@ -11,6 +11,24 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.2] — 2026-09-06
+
+**Corrigé — la barre supérieure mobile passait sur deux lignes, le serveur exécutait un parent plus ancien, et la redirection cvstart.ru renvoyait 404 sur tout chemin nommant déjà une langue.**
+
+### Corrigé
+- **La barre supérieure mobile tient de nouveau sur une ligne, actions en icônes seules.** Les boutons étaient forcés sur une deuxième ligne pleine largeur : un téléphone affichait `[☰ · recherche]` au-dessus de `[🔔 🌙 Doctor Ouvrir Scan]` — deux pastilles larges sur leur propre ligne. Ce sont maintenant des carrés de 36 px (🩺 / ⚡) à côté de la cloche et du sélecteur de thème, et tout tient sur une ligne à 320 px. Mesuré, pas estimé à l’œil : la largeur du document égale la fenêtre à 320, 360, 390 et 430 px, et sur toute la bande 560–760 px, là où les boutons chevauchaient auparavant la barre de recherche. **La langue n’influence plus la mise en page mobile**, car le libellé est masqué et le bouton est un carré fixe ; au-dessus de 900 px les libellés reviennent inchangés.
+- **Le serveur exécutait le parent 1.31.0 alors que la version était compilée pour 1.32.0.** `/api/health` sur resumecraft.ru renvoyait `parentVersion: 1.31.0`. 95 fichiers d’exécution synchronisés, deux supprimés. Détecté par une QA navigateur sur la surface en production.
+- **`cvstart.ru` préfixait `/ru/` à tout chemin, sans regarder ce qui s’y trouvait déjà.** `/ru/help` devenait `/ru/ru/help` et `/en/help` devenait `/ru/en/help` ; les deux en 404. Le premier est ce qu’on obtient en copiant une URL du site principal ; le second interdisait purement et simplement au visiteur anglophone d’atteindre la version anglaise. Désormais un chemin nommant déjà l’un des 16 préfixes passe tel quel, `en` est retiré (l’anglais est à la racine), et le reste reçoit toujours `/ru/`.
+
+### Modifié
+- **98 prompts QA périmés déplacés vers `qa/archive/superseded-prompts/`.** `qa/README.md` documente depuis la v1.137.0 que seul le prompt de la version courante reste au niveau supérieur — la règle n’a pas été appliquée pendant 95 versions.
+- **Cinq autres prompts ont quitté le premier niveau : ils se disaient à jour sans l'être.** `REGRESSION-FINAL.md` se présentait comme « l'unique prompt de régression faisant autorité, indépendant de la version », mais ses §§11–15 sont cinq registres de cycles clos (v1.55.x → v1.59.7) et sa référence d'aide annoncée était **28 H2 / 103 H3 sur 16 langues** contre 32 / 122 et 17 aujourd'hui : un agent QA le suivant aurait échoué au §9 dès la première étape. `QA-REGRESSION-PROMPT.md` portait un nom sans version et un contenu de v1.226.0. `QA-REGRESSION-PROMPT-v1.76.0-FULL.md` était figé 155 versions plus tôt, `REGRESSION-PROMPT-FINAL.md` clôt le cycle v1.58.52 → v1.59.10, et `QA-FULL-REGRESSION.md` les dupliquait tous sur une base v1.131.1. `PARENT-SYNC-WORKLIST-v1.26.0.md` les a suivis (le projet parent est désormais en 1.32.0) et le daté `UX-AUDIT-2026-07-06.md` est passé dans `reports/`. Restent quatre pilotes, dont les références sont remises aux valeurs réelles de v1.231.2. `qa/README.md` est réécrit pour décrire le dossier qui existe.
+
+### Notes
+- Deux pièges de spécificité désormais commentés dans `app.css` : les règles bureau sont déclarées **plus bas** que le bloc `max-width: 900px`, donc à spécificité égale elles l’emportent.
+- `applyI18n()` affecte `el.textContent` ; la clé i18n a donc migré vers un `<span>` interne, sinon l’icône serait effacée à chaque changement de langue.
+- Le premier rsync du parent **s’est interrompu en cours** sur un fichier absent localement, laissant un déploiement partiel annoncé comme réussi. Les déploiements du parent se vérifient par somme de contrôle, jamais par code de sortie.
+
 ## [1.231.1] — 2026-09-06
 
 **Corrigé — le balayage des compteurs de la v1.231.0 a réécrit le nom du compte dans tous les liens.**

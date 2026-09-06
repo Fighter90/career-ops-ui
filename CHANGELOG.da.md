@@ -8,6 +8,24 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.231.2] — 2026-09-06
+
+**Rettet — den mobile topbjælke brød om på to rækker, serveren kørte et ældre forældreprojekt, og cvstart.ru-omdirigeringen gav 404 for enhver sti, der allerede nævnte et sprog.**
+
+### Rettet
+- **Den mobile topbjælke er igen én række, med handlinger som rene ikoner.** Handlingsknapperne blev tvunget ned på en anden række i fuld bredde: en telefon viste `[☰ · søg]` over `[🔔 🌙 Doctor Åbn Scan]` — to brede piller på deres egen linje. Nu er de 36 px kvadrater (🩺 / ⚡) ved siden af klokken og temaskifteren, og alt er på én række ved 320 px. Målt, ikke skønnet: dokumentbredden svarer til viewporten ved 320, 360, 390 og 430 px og i hele båndet 560–760 px, hvor knapperne før overlappede søgefeltet. **Sproget påvirker ikke længere det mobile layout**, fordi etiketten er skjult og knappen et fast kvadrat; over 900 px vender etiketterne uændret tilbage.
+- **Serveren kørte forældreprojekt 1.31.0, selv om udgivelsen var bygget mod 1.32.0.** `/api/health` på resumecraft.ru meldte `parentVersion: 1.31.0`. 95 kørselsfiler synkroniseret, to fjernet. Fundet af browser-QA på den live flade.
+- **`cvstart.ru` satte `/ru/` foran enhver sti uden at se på, hvad der allerede stod der.** `/ru/help` blev til `/ru/ru/help` og `/en/help` til `/ru/en/help`; begge 404. Det første får man ved at kopiere en URL fra hovedsiden; det andet lukkede engelsktalende besøgende helt ude fra den engelske udgave. En sti, der allerede nævner et af de 16 sprogpræfikser, går nu uændret igennem, `en` fjernes (engelsk ligger i roden), og resten får stadig `/ru/`.
+
+### Ændret
+- **98 forældede QA-prompts flyttet til `qa/archive/superseded-prompts/`.** `qa/README.md` har siden v1.137.0 dokumenteret, at kun den aktuelle udgivelses prompt ligger øverst — reglen blev ikke anvendt i 95 udgivelser.
+- **Yderligere fem prompts forlod øverste niveau — de kaldte sig aktuelle uden at være det.** `REGRESSION-FINAL.md` kaldte sig selv »den ene autoritative, versionsuafhængige regressionsprompt«, men dens §§11–15 er fem lukkede cyklusprotokoller (v1.55.x → v1.59.7), og dens angivne hjælpe-baseline lød **28 H2 / 103 H3 på 16 sprog** mod 32 / 122 og 17 i dag: en QA-agent, der fulgte den, ville være faldet på §9 ved første skridt. `QA-REGRESSION-PROMPT.md` bar et navn uden version og indhold fra v1.226.0. `QA-REGRESSION-PROMPT-v1.76.0-FULL.md` var fastlåst 155 udgivelser tilbage, `REGRESSION-PROMPT-FINAL.md` lukker cyklussen v1.58.52 → v1.59.10, og `QA-FULL-REGRESSION.md` duplikerede dem alle på et v1.131.1-grundlag. Med dem fulgte `PARENT-SYNC-WORKLIST-v1.26.0.md` (forældreprojektet er nu på 1.32.0), og den daterede `UX-AUDIT-2026-07-06.md` flyttede til `reports/`. Fire drivere bliver tilbage, med egne baselines opdateret til de faktiske v1.231.2-tal. `qa/README.md` er skrevet om, så den beskriver den mappe, der findes.
+
+### Noter
+- To specificitetsfælder er nu kommenteret i `app.css`: desktopreglerne er erklæret **længere nede** end `max-width: 900px`-blokken, så ved samme specificitet vinder de — den mobile `gap` blev stille stående på 24 px (hvilket løb 320 px over), og ikonet forblev skjult (tomme firkantede knapper).
+- `applyI18n()` tildeler `el.textContent`, så i18n-nøglen flyttede til et indre `<span>`; på knappen ville den slette ikonet ved hvert sprogskifte.
+- Forældreprojektets første rsync **afbrød midt i overførslen** på en fil, der ikke længere findes lokalt, og meldte alligevel succes. Forælder-deploys verificeres nu med kontrolsum, aldrig med exit-kode.
+
 ## [1.231.1] — 2026-09-06
 
 **Rettet — tællergennemløbet fra v1.231.0 omskrev kontonavnet i alle links.**

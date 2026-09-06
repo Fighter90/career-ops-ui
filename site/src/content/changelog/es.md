@@ -11,6 +11,24 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.2] — 2026-09-06
+
+**Corregido — la barra superior móvil se partía en dos filas, el servidor ejecutaba un padre más antiguo y el redirect de cvstart.ru daba 404 en cualquier ruta que ya nombrara un idioma.**
+
+### Corregido
+- **La barra superior móvil vuelve a una sola fila, con acciones solo de icono.** Los botones de acción se forzaban a una segunda fila a todo el ancho, así que un teléfono mostraba `[☰ · búsqueda]` sobre `[🔔 🌙 Doctor Abrir Scan]` — dos píldoras anchas en una línea propia. Ahora son cuadrados de 36 px (🩺 / ⚡) junto a la campana y el conmutador de tema, y todo cabe en una fila a 320 px. Medido, no estimado a ojo: el ancho del documento iguala al viewport a 320, 360, 390 y 430 px, y en toda la banda 560–760 px, donde antes los botones se superponían a la barra de búsqueda. **El idioma ya no afecta a la disposición móvil**, porque la etiqueta está oculta y el botón es un cuadrado fijo; por encima de 900 px las etiquetas vuelven sin cambios. El nombre accesible viene de `aria-label`, ya que una etiqueta con `display:none` queda fuera del cálculo del nombre.
+- **El servidor ejecutaba el padre 1.31.0 aunque la versión se compiló contra 1.32.0.** `/opt/career-ops/src` tenía archivos de 1.31.0, así que `/api/health` en resumecraft.ru informaba `parentVersion: 1.31.0`. Se sincronizaron 95 archivos de ejecución y se eliminaron dos. Detectado por QA de navegador contra la superficie en producción.
+- **`cvstart.ru` anteponía `/ru/` a cualquier ruta, sin mirar lo que ya había.** `cvstart.ru/ru/help` pasaba a `cvstart.org/ru/ru/help` y `cvstart.ru/en/help` a `cvstart.org/ru/en/help`; ambos 404. Lo primero es lo que se obtiene al copiar una URL del sitio principal; lo segundo dejaba al visitante angloparlante sin acceso alguno a la versión en inglés. Ahora una ruta que ya nombre uno de los 16 prefijos de idioma pasa tal cual, `en` se elimina (cvstart.org sirve el inglés en la raíz y no tiene `/en/`) y el resto sigue recibiendo `/ru/`. La comprobación está anclada, así que `/enterprise/` no se confunde con `en`.
+
+### Cambiado
+- **98 prompts de QA superados movidos a `qa/archive/superseded-prompts/`.** `qa/README.md` documenta desde v1.137.0 que en el nivel superior solo queda el prompt de la versión actual — la regla no se aplicó durante 95 versiones. Ahora el README dice que el archivado ocurre al publicar una versión, y se corrigen sus propias líneas base obsoletas (`≥1238` → `≥3009` pruebas, 13 → 17 idiomas).
+- **Otros cinco prompts salieron del nivel superior: se declaraban vigentes sin serlo.** `REGRESSION-FINAL.md` se llamaba a sí mismo «el único prompt de regresión autorizado e independiente de versión», pero sus §§11–15 son cinco registros de ciclos cerrados (v1.55.x → v1.59.7) y su línea base de ayuda declarada era **28 H2 / 103 H3 en 16 idiomas** frente a 32 / 122 y 17 hoy: un agente de QA que lo siguiera habría fallado en §9 al primer paso. `QA-REGRESSION-PROMPT.md` tenía nombre sin versión y contenido de v1.226.0. `QA-REGRESSION-PROMPT-v1.76.0-FULL.md` estaba fijado 155 versiones atrás, `REGRESSION-PROMPT-FINAL.md` cierra el ciclo v1.58.52 → v1.59.10 y `QA-FULL-REGRESSION.md` los duplicaba a todos con base v1.131.1. Con ellos se fue `PARENT-SYNC-WORKLIST-v1.26.0.md` (el proyecto padre ya va por 1.32.0) y el fechado `UX-AUDIT-2026-07-06.md` pasó a `reports/`. Quedan cuatro drivers, con sus líneas base actualizadas a los valores reales de v1.231.2. `qa/README.md` se reescribió para describir la carpeta que existe.
+
+### Notas
+- Dos trampas de especificidad quedan comentadas en `app.css`: las reglas de escritorio se declaran **más abajo** que el bloque `max-width: 900px`, así que a igual especificidad ganan — el `gap` móvil se quedó en 24 px (lo que desbordaba 320 px) y el icono siguió oculto (botones cuadrados vacíos).
+- `applyI18n()` asigna `el.textContent`, así que la clave i18n pasó del `<button>` a un `<span class="btn-label">` interno; en el botón habría borrado el icono en cada cambio de idioma.
+- El primer rsync del padre **se abortó a mitad** en un archivo que ya no existe localmente, dejando un despliegue parcial que informó éxito. Los despliegues del padre se verifican ahora por suma de comprobación, nunca por código de salida.
+
 ## [1.231.1] — 2026-09-06
 
 **Corregido — el barrido de recuentos de v1.231.0 reescribió el nombre de la cuenta en todos los enlaces.**

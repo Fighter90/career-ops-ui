@@ -1,169 +1,92 @@
 # QA artifacts — career-ops-ui
 
-Tracks regressions, fix-prompts, and live evidence across releases.
+Regression drivers, design/UX prompts, and dated run evidence.
 
-> **Layout (v1.137.0).** The perennial prompts (`REGRESSION-FINAL.md`,
-> `UX-AUDIT-PROMPT.md`, `DESIGNER-EXPORT-PROMPT.md`, `FUNCTIONALITY-CHECK.md`,
-> `REGRESSION-PROMPT-FINAL.md`) + the base `QA-REGRESSION-PROMPT.md` + the
-> **current** per-release delta `QA-REGRESSION-PROMPT-v<latest>.md` + the
-> `-v1.76.0-FULL` parent-parity driver live at the top level. **Superseded
-> per-release delta prompts (≤ v1.136.0) are archived under
-> [`archive/superseded-prompts/`](./archive/superseded-prompts/).** Dated run
-> reports go under [`reports/`](./reports/). The active design roadmap is
-> [`../docs/UX-ROADMAP.md`](../docs/UX-ROADMAP.md).
+**Baselines as of v1.231.2** — **3009** `node --test` · **101** Playwright ·
+**21** smoke E2E · **23** comprehensive E2E · **92** scan sources (87 EN + 5 RU) ·
+**37** route modules · **31** views · **17** locales · help parity
+**32 H2 / 122 H3** · **18** LLM providers.
 
-## LATEST — whole-project regression driver — v1.226.0
-
-> **[`QA-REGRESSION-PROMPT.md`](./QA-REGRESSION-PROMPT.md)** is the canonical,
-> standalone whole-project / all-17-languages regression hand-off (as of
-> `package.json` **1.226.0**). Walk it top-to-bottom to sign off a build.
-> Companions: the exhaustive per-button × per-page × per-language UI driver
-> [`../key/E2E-REGRESSION-EVERY-BUTTON-EVERY-LANGUAGE-v1.78.0.md`](../key/E2E-REGRESSION-EVERY-BUTTON-EVERY-LANGUAGE-v1.78.0.md),
-> and the parent-parity CI gate driver
-> [`QA-REGRESSION-PROMPT-v1.76.0-FULL.md`](./QA-REGRESSION-PROMPT-v1.76.0-FULL.md).
-> Baselines: **≥1238** `node --test` · **≥70** Playwright · **≥20** smoke E2E ·
-> **≥23** comprehensive E2E · help parity **19 H2 / 75 H3** across **13** locales.
-> Superseded version-pinned FULL drivers (v1.61.0 → v1.75.2) + older fix-prompts
-> are archived in [`archive/superseded-prompts/`](./archive/superseded-prompts/).
-
-## CURRENT — four perennial, version-agnostic prompts
-
-> v1.59.8 (2026-05-21) closed the final polish cycle with a doctrine-
-> exception bundle (UX-A5-r3 HIGH + NEW-F1-sub LOW) authorised by the
-> FINAL REGRESSION-v1.59.7 report. The IntersectionObserver-based help
-> TOC scroll-spy is gone — replaced by a scroll listener after 4
-> failed IO cycles. 23 releases total v1.58.52 → v1.59.8. See
-> [`REGRESSION-PROMPT-FINAL.md`](./REGRESSION-PROMPT-FINAL.md) for the
-> post-cycle verification ladder, live-smoke checklist, and the 24
-> regression-locked invariants. The 2026-05-20 FINAL REGRESSION report
-> and the FIX-PROMPT-FINAL-CONSOLIDATED handoff (both closed by
-> v1.59.8) are archived in
-> [`archive/v159-cycle/`](./archive/v159-cycle/).
-
-## CURRENT — perennial, version-agnostic prompts
-
-Run on every release; each reads `package.json::version` and
-validates the current `HEAD`. Save run reports under
-`qa/v54-regression/<date>-{REGRESSION,UX-AUDIT,FUNCTIONALITY}.md`.
-
-1. **[`REGRESSION-FINAL.md`](./REGRESSION-FINAL.md)** — the single
-   authoritative full-project regression prompt (§0 hard-gate → §12:
-   routes, a11y, config/model selectors, the Modes canonical-schema
-   field-form, deploy-hygiene, LLM-key routing, SSE disconnect
-   hygiene, SSRF, i18n/docs parity, the test pyramid, **§11** the
-   consolidated v1.55.x→v1.56.4 UX-fix invariants, **§12** the
-   v1.58.4→v1.58.35 cycle invariants (32 single-fix releases: NEW-1
-   CSP + 13 M/I items + 15 U items + notifications drawer) — all
-   CLOSED-IN with their lock-test).
-2. **[`UX-AUDIT-PROMPT.md`](./UX-AUDIT-PROMPT.md)** — a Senior
-   UX-designer heuristic + task-based audit judged against the
-   canonical product intent at <https://career-ops.org/docs> (12
-   lenses, 2 task scenarios, promise-fidelity ledger, and a baseline
-   ledger of already-closed findings — do not re-file those).
-3. **[`FUNCTIONALITY-CHECK.md`](./FUNCTIONALITY-CHECK.md)** — an
-   exhaustive functional-correctness walkthrough: every route + the
-   7 `#/<mode>` pages, every API contract, the 4-provider OR matrix,
-   SSE/SSRF/sanitizer gates, the parent read-only write-through
-   contract, deploy hygiene, and the pre-commit→CI→push AI-review
-   pipeline. Pass/fail per item; "does the whole app work, correctly
-   and clearly?".
-
-They supersede the version-pinned specs below, which stay for
-historical diff only.
-
-| File | Status | Purpose |
-|---|---|---|
-| **[`REGRESSION-FINAL.md`](./REGRESSION-FINAL.md)** | **CURRENT** | Perennial full-project regression — run on every release. |
-| **[`UX-AUDIT-PROMPT.md`](./UX-AUDIT-PROMPT.md)** | **CURRENT** | Perennial Senior-UX-designer audit vs career-ops.org/docs. |
-| **[`FUNCTIONALITY-CHECK.md`](./FUNCTIONALITY-CHECK.md)** | **CURRENT** | Perennial exhaustive functional-correctness walkthrough. |
-| [`archive/REGRESSION-v1.54.9.md`](./archive/REGRESSION-v1.54.9.md) | Archived | v1.54.1→v1.54.9 cycle spec. Superseded by FINAL; diff-only. |
-| [`archive/REGRESSION-v1.54.md`](./archive/REGRESSION-v1.54.md) | Archived | v1.54.0 FINAL end-to-end spec (P-31 WS0–WS10). Diff-only. |
-| [`archive/REGRESSION-v1.29.2.md`](./archive/REGRESSION-v1.29.2.md) | Archived | Prior bottom-up spec (baseline v1.6.0→v1.29.2). Diff-only. |
-| [`archive/DOCS-COVERAGE-v1.29.md`](./archive/DOCS-COVERAGE-v1.29.md) | Archived | Prior top-down docs-coverage. Diff-only. |
-| `archive/REGRESSION-v1.27.md`, `archive/DOCS-COVERAGE-v1.28.md` | Archived | Older frozen specs. |
-| `archive/v{24,26,27,28,29}-regression/`, `archive/docs-coverage-runs/` | Archived (v1.56.0) | Past-cycle live-run evidence. Read-only. |
-| `v14-regression/`, `v54-regression/` | Historical / current | v14 = old evidence; v54 = the active v1.54→v1.56 run-report dir. |
-
-> Only the three **CURRENT** perennial prompts + `G-005-closure-kit.md`
-> live at `qa/` root; every version-pinned spec and past-cycle
-> run-dir is under `qa/archive/` (consolidated v1.55.0 → v1.56.0).
-
-## P-31 program — shipped (v1.31 → v1.54)
-
-The senior-UX + parent-sync + test-pyramid program ran as one
-fix-per-release loop, every release CI-green, each through pre-commit
-AI-review to LGTM:
-
-| Workstream | Releases | Outcome |
-|---|---|---|
-| WS0 parent-sync | v1.31 | batch `--model`/`--start-from` parity |
-| WS1 #/config field-forms | v1.32 | per-field profile/config editors, merge-not-replace invariant |
-| WS4 parity · WS5 #/auto · WS6 settings-decomposition · WS7 pre-commit AI-review · WS8 CLI (setup/init/doctor/run/open + provider selector) | v1.33–1.40 | feature parity + bootstrap |
-| **WS2 senior UX-audit** | **v1.41–v1.52** | **40 findings (HIGH→LOW) all fixed**, one ship each, every screen Playwright-verified — see `REGRESSION-FINAL.md §2` |
-| Post-final hardening + multi-provider | v1.54.1–v1.55.0 | 3 MEDIUM regression fixes, Modes canonical-schema field-form, deploy-hygiene, SSE disconnect hygiene, LLM-key live-`.env` routing, **headless OR eval (Anthropic\|Gemini\|OpenAI\|Qwen)** |
-| WS9 test pyramid | v1.53 | shell-surface tests (`bin/*.sh` + `.githooks`); 717 `node --test` + 4 E2E + TESTING.md |
-| WS10 canonical re-validation | v1.54 | help-bundle H3-parity closed (all 8 → 17 H2 / 70 H3) + gate; `docs/sdd/` refreshed |
-| **Consolidated UX fix-prompt** | **v1.55.1 → v1.56.0** | **all 12 UX findings + F-V55-E/F-V55-H shipped** one-per-release, each test-locked + CI-green + AI-review-LGTM; AI-reviewer workflow rebuilt to run on push→main; `docs/` + `qa/` actualized. 757 → **813** `node --test` / 110 files. See `REGRESSION-FINAL.md §11`. |
-
-## Open backlog
-
-| ID | Severity | Title | Target |
-|---|---|---|---|
-| G-005 | Minor (cross-repo) | `oferta.md` report blocks A-G vs canonical career-ops.org A-F | [`G-005-closure-kit.md`](./G-005-closure-kit.md) |
-
-**The single open item** across the whole project, unchanged since
-v1.27 and **blocked on a cross-repo parent commit** (CLAUDE.md hard
-rule #1 forbids editing the parent from here). The full
-ready-to-apply plan is in
-**[`G-005-closure-kit.md`](./G-005-closure-kit.md)**: STEP 1 = a
-parent `Fighter90/career-ops` commit rewriting `modes/oferta.md`
-A-G → A-F; STEP 2 = a one-line web-ui `prompts.mjs` follow-up
-(help §9 ×8 already canonical A-F since v1.15.0 — no change);
-STEP 3 = a lock test. STEP 2/3 must land **only after** STEP 1, or
-`prompts.mjs` (which says "A-G per modes/oferta.md") and the parent
-mode file contradict each other — strictly worse drift (kit §
-"Why it isn't shipped pre-emptively"). The renderer is
-schema-tolerant, so this is nomenclature drift, not a functional
-break. Every other finding — 31 from the v1.10 baseline, 40 from
-the WS2 UX-audit, and all 14 from the v1.55.x→v1.56.0 consolidated
-fix-prompt — is shipped and regression-locked by a `tests/*.test.mjs`.
-
-## Folder layout
+## Layout
 
 ```text
 qa/
-├── README.md                 ← you are here
-├── REGRESSION-FINAL.md       ← CURRENT perennial regression (§0→§11)
-├── UX-AUDIT-PROMPT.md        ← CURRENT perennial Senior-UX audit
-├── FUNCTIONALITY-CHECK.md    ← CURRENT perennial functional-correctness
-├── G-005-closure-kit.md      ← the single open backlog item (cross-repo)
-├── v54-regression/           ← live run reports for the current spec
-├── v14-regression/           ← old historical evidence (read-only)
-├── conformance-vs-docs/ · functional-vs-docs/   ← reserved for new runs
-└── archive/                  ← closed; do not act on without checking HEAD
-    ├── REGRESSION-v1.54.9.md · REGRESSION-v1.54.md
-    ├── REGRESSION-v1.29.2.md · REGRESSION-v1.27.md
-    ├── DOCS-COVERAGE-v1.29.md · DOCS-COVERAGE-v1.28.md
-    ├── v{24,26,27,28,29}-regression/ · docs-coverage-runs/  (v1.56.0)
-    └── v1.10-fixes/ · v1.14-reports/ · v1.15-fix-prompts/
-        · v1.25-fix-prompts/ · v1.26-fix-prompts/
+├── README.md                          ← you are here
+├── QA-REGRESSION-PROMPT-v1.231.2.md   ← the CURRENT release's delta driver
+├── FUNCTIONALITY-CHECK.md             ← perennial: does it actually work?
+├── UX-AUDIT-PROMPT.md                 ← perennial: is it good UX?
+├── DESIGNER-EXPORT-PROMPT.md          ← perennial: design-system + key-flow export
+├── reports/                           ← dated run evidence
+└── archive/                           ← closed; historical diff only
+    └── superseded-prompts/            ← every retired prompt
 ```
+
+Exactly one version-pinned prompt lives at the top level: the **current**
+release's delta. **Archiving the previous one is part of shipping a release**,
+not a periodic clean-up — the point of this layout is that "which prompt is
+current" needs no thought.
+
+That rule was written at v1.137.0 and then not applied for 95 releases: by
+v1.231.1 the top level held 98 superseded prompts. They were archived in
+v1.231.2, along with five prompts that had outlived their own claims — see
+below.
+
+## The four drivers
+
+| File | Scope | When |
+|---|---|---|
+| **[`QA-REGRESSION-PROMPT-v1.231.2.md`](./QA-REGRESSION-PROMPT-v1.231.2.md)** | This release's delta: §0 exact `node --test` gates, what changed, the manual browser pass, contract/security invariants, what was deliberately not ported | Every release, before merge |
+| **[`FUNCTIONALITY-CHECK.md`](./FUNCTIONALITY-CHECK.md)** | Every route + the 7 `#/<mode>` pages, every API contract, the OR provider matrix, SSE/SSRF/sanitizer gates, the parent read-only write-through contract, deploy hygiene. Pass/fail per item | Every release, or before a risky refactor |
+| **[`UX-AUDIT-PROMPT.md`](./UX-AUDIT-PROMPT.md)** | Senior-UX heuristic + task-based audit against the product intent at <https://career-ops.org/docs>. Carries a ledger of already-closed findings — do not re-file those | On demand; assumes the app already works |
+| **[`DESIGNER-EXPORT-PROMPT.md`](./DESIGNER-EXPORT-PROMPT.md)** | Design-quality audit + a structured design-system export: every page, component and key flow, all 17 locales | On demand |
+
+The three perennial prompts read `package.json::version` and validate the
+current `HEAD`. Save run reports under
+`qa/reports/<YYYY-MM-DD>-{FUNCTIONALITY,UX-AUDIT,DESIGN-EXPORT}.md`.
+
+## What v1.231.2 retired, and why
+
+Five prompts at the top level described themselves as current and were not:
+
+| File | It claimed | It actually was |
+|---|---|---|
+| `REGRESSION-FINAL.md` | "the single authoritative, version-agnostic regression prompt" | §§11–15 are five closed cycle ledgers (v1.55.x → v1.59.7); its stated help baseline was **28 H2 / 103 H3 across 16 locales** against 32 / 122 and 17 today, so §9 failed on the first step. Its §5a English-by-policy doctrine is still doctrine and is still gated by `tests/qa-report-fixes.test.mjs` (DOC-1), now against the archived copy |
+| `QA-REGRESSION-PROMPT.md` | unversioned name; this README called it "as of `package.json` 1.231.2" | pinned to **v1.226.0** — 2066 tests, 85 sources, 37 route modules |
+| `QA-REGRESSION-PROMPT-v1.76.0-FULL.md` | "parent-parity CI gate driver" | pinned to v1.76.0, 155 releases back |
+| `REGRESSION-PROMPT-FINAL.md` | "canonical post-cycle handoff" | closes the v1.58.52 → v1.59.10 cycle, baseline 1258 unit tests |
+| `QA-FULL-REGRESSION.md` | "standing whole-project checklist" | baseline v1.131.1 / 2135 tests / 72 sources; duplicated the above |
+
+All five are in [`archive/superseded-prompts/`](./archive/superseded-prompts/),
+readable for historical diff. `PARENT-SYNC-WORKLIST-v1.26.0.md` (a one-off for
+parent 1.26.0; the parent is now 1.32.0) went with them, and the dated
+`UX-AUDIT-2026-07-06.md` moved to `reports/` where run evidence belongs.
 
 ## How to use this folder
 
-**Running the next regression cycle:** walk
-[`REGRESSION-FINAL.md`](./REGRESSION-FINAL.md) §0→§11. §0 (`npm run
-test:ci` + e2e + sh-files + doctor) gates everything. §2 is the WS2
-a11y matrix and §11 the consolidated v1.55.x→v1.56.0 UX-fix
-invariants — every row has a static test plus a live spot-check.
-Then run [`UX-AUDIT-PROMPT.md`](./UX-AUDIT-PROMPT.md) and
-[`FUNCTIONALITY-CHECK.md`](./FUNCTIONALITY-CHECK.md). Save reports
-under `qa/v54-regression/<YYYY-MM-DD>-{REGRESSION,UX-AUDIT,FUNCTIONALITY}.md`.
+**Shipping a release.** Walk the release's own
+`QA-REGRESSION-PROMPT-v<version>.md` — §0 gates everything else. Write the next
+release's prompt before merging it, and `git mv` the previous one into
+`archive/superseded-prompts/`.
 
-**Filing a finding:** one finding = one fix-ship (bump + CHANGELOG ×8 +
-test + Playwright-verify + pre-commit AI-review to LGTM). Never batch
-unrelated fixes; never `--no-verify`.
+**Filing a finding.** One finding = one fix-ship: bump + CHANGELOG ×17 + a test
+that locks it + Playwright verification + pre-commit AI-review to LGTM. Never
+batch unrelated fixes; never `--no-verify`.
 
-**Reading history:** everything in `archive/` and the `v{14..29}-`
-dirs is closed/historical. Check the source tree against the v1.54
-implementation before re-filing any old ID.
+**Reading history.** Everything under `archive/` is closed. Check it against the
+current source tree before re-filing any old ID — most were fixed years of
+releases ago and are regression-locked by a `tests/*.test.mjs`.
+
+## Open backlog
+
+| ID | Severity | Title |
+|---|---|---|
+| G-005 | Minor (cross-repo) | `oferta.md` report blocks A–G vs canonical career-ops.org A–F |
+
+The single open item across the project, unchanged since v1.27 and blocked on a
+cross-repo parent commit (CLAUDE.md hard rule #1 forbids editing the parent from
+here). The ready-to-apply plan is in
+[`archive/superseded-prompts/G-005-closure-kit.md`](./archive/superseded-prompts/G-005-closure-kit.md):
+a parent commit rewriting `modes/oferta.md` A–G → A–F must land **first**, or
+`prompts.mjs` and the parent mode file contradict each other — strictly worse
+drift. The renderer is schema-tolerant, so this is nomenclature drift, not a
+functional break.

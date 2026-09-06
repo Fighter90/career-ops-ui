@@ -8,9 +8,9 @@
 >
 > Output **one** file: `qa/reports/<YYYY-MM-DD>-DESIGN-EXPORT.md`.
 >
-> Current baseline **v1.158.0** (32 route modules · 79 scan sources =
-> 74 EN + 5 RU · 17 locales · help 31 H2 / 112 H3 · **7 headless LLM
-> providers** auto-ordered Anthropic → Gemini → OpenAI → Qwen → OpenRouter →
+> Current baseline **v1.231.2** (37 route modules · 92 scan sources =
+> 87 EN + 5 RU · 17 locales · help 32 H2 / 122 H3 · **18 LLM providers**,
+> the headless eval order being Anthropic → Gemini → OpenAI → Qwen → OpenRouter →
 > GitHub Models → Hermes — a keyless forced `LLM_PROVIDER` falls back to any
 > configured provider (v1.157.0), so live evals run on ANY key). The UX
 > roadmap **`docs/UX-ROADMAP.md`** (Phases 1–5) is fully shipped — treat any
@@ -18,7 +18,8 @@
 > Dark-mode contrast is guarded from v1.137.0 (theme-aware alias tokens —
 > see Part 1 §1).
 >
-> Sibling prompts: `REGRESSION-FINAL.md` proves *nothing regressed*,
+> Sibling prompts: the release's `QA-REGRESSION-PROMPT-v<latest>.md` proves
+> *the delta did not regress*,
 > `FUNCTIONALITY-CHECK.md` proves *it works*, `UX-AUDIT-PROMPT.md`
 > critiques *UX heuristically*. **This** one is the **design-system
 > export + key-flow craft review**: it captures the product's actual

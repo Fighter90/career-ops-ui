@@ -12,11 +12,11 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.1)
+[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.231.0** — **来自上游 v1.32.0 的两个新扫描来源** — 90 → **92 个来源**（87 EN + 5 RU），均无需令牌。**Collage** 绝不猜测租户的招聘站点地址：那是租户自己选定的标识符，猜测就会去扫描别人的招聘板。**Telegram（严格）** 读取与现有 `telegram` 来源相同的频道预览，但做的是相反的取舍——只有当帖子**点名雇主并链接到职位页**时才成为一行；两者与上游一样同时提供。Gem 新增了可选的 REST 模式。还修复了上游自身代码中的缺陷：严格读取器的地点过滤使用 ASCII 单词边界，因而看不见西里尔字母，`Senior Engineer | Москва` 会把**“Москва”当作雇主**返回。**3009 项测试。**
+> **🆕 最新版本 — v1.231.2** — **移动端顶栏重新回到一行，操作按钮改为纯图标。** 操作按钮此前被挤到整宽的第二行，手机上呈现为 `[☰ · 搜索]`，其下是 `[🔔 🌙 Doctor 打开 Scan]`——两枚宽胶囊独占一行。现在它们是铃铛和主题开关旁的 36 px 方块（🩺 / ⚡），在 320 px 下全部装进一行。是实测而非目测：在 320/360/390/430 px，以及按钮从前会盖住搜索框的 560–760 px 整个区间内均已验证。**语言不再对移动端布局产生任何影响**，因为标签被隐藏、按钮是固定方块。同时修复：本次发行版按上游 1.32.0 构建，服务器却运行着上游 **1.31.0**；而 `cvstart.ru` 会给任何路径前置 `/ru/`，完全不看里面已经有什么——`/en/help` 变成 `/ru/en/help`，把英文站彻底堵死。**3009 项测试。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -9,6 +9,24 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.231.2] — 2026-09-06
+
+**Naprawiono — mobilny górny pasek łamał się na dwa wiersze, serwer działał na starszym projekcie nadrzędnym, a przekierowanie cvstart.ru dawało 404 dla każdej ścieżki, która już nazywała język.**
+
+### Naprawiono
+- **Mobilny górny pasek znów mieści się w jednym wierszu, akcje tylko ikonami.** Przyciski akcji były wypychane do drugiego wiersza na całą szerokość: telefon pokazywał `[☰ · szukaj]` nad `[🔔 🌙 Doctor Otwórz Scan]` — dwie szerokie pigułki we własnym wierszu. Teraz to kwadraty 36 px (🩺 / ⚡) obok dzwonka i przełącznika motywu, a przy 320 px wszystko mieści się w jednym wierszu. Zmierzone, nie oszacowane na oko: szerokość dokumentu równa się widocznemu obszarowi przy 320, 360, 390 i 430 px oraz w całym paśmie 560–760 px, gdzie wcześniej przyciski nachodziły na pole wyszukiwania. **Język nie wpływa już na układ mobilny**, bo etykieta jest ukryta, a przycisk to stały kwadrat; powyżej 900 px etykiety wracają bez zmian.
+- **Serwer działał na projekcie nadrzędnym 1.31.0, choć wydanie zbudowano pod 1.32.0.** `/api/health` na resumecraft.ru zgłaszał `parentVersion: 1.31.0`. Zsynchronizowano 95 plików wykonawczych, dwa usunięto. Wykryte przez QA w przeglądarce na powierzchni produkcyjnej.
+- **`cvstart.ru` dodawał `/ru/` do każdej ścieżki, nie patrząc, co już tam było.** `/ru/help` stawało się `/ru/ru/help`, a `/en/help` — `/ru/en/help`; oba 404. Pierwsze to efekt skopiowania adresu z głównej witryny; drugie całkowicie odcinało anglojęzycznego odwiedzającego od wersji angielskiej. Teraz ścieżka nazywająca już jeden z 16 prefiksów przechodzi bez zmian, `en` jest usuwane (angielski jest w katalogu głównym), reszta nadal dostaje `/ru/`.
+
+### Zmieniono
+- **98 nieaktualnych promptów QA przeniesiono do `qa/archive/superseded-prompts/`.** `qa/README.md` dokumentuje od v1.137.0, że na górnym poziomie zostaje tylko prompt bieżącego wydania — reguły nie stosowano przez 95 wydań.
+- **Kolejnych pięć promptów opuściło najwyższy poziom — ogłaszały się aktualnymi, nie będąc nimi.** `REGRESSION-FINAL.md` nazywał siebie „jedynym autorytatywnym, niezależnym od wersji promptem regresyjnym”, ale jego §§11–15 to pięć zamkniętych rejestrów cykli (v1.55.x → v1.59.7), a deklarowana podstawa pomocy brzmiała **28 H2 / 103 H3 na 16 języków** wobec 32 / 122 i 17 dzisiaj: agent QA idący za nim poległby na §9 już w pierwszym kroku. `QA-REGRESSION-PROMPT.md` miał nazwę bez wersji i treść z v1.226.0. `QA-REGRESSION-PROMPT-v1.76.0-FULL.md` był przypięty 155 wydań wstecz, `REGRESSION-PROMPT-FINAL.md` zamyka cykl v1.58.52 → v1.59.10, a `QA-FULL-REGRESSION.md` powielał je wszystkie na podstawie v1.131.1. Razem z nimi poszedł `PARENT-SYNC-WORKLIST-v1.26.0.md` (projekt nadrzędny jest już na 1.32.0), a datowany `UX-AUDIT-2026-07-06.md` przeniósł się do `reports/`. Zostały cztery sterowniki, z podstawami odświeżonymi do faktycznych wartości v1.231.2. `qa/README.md` napisano na nowo, tak by opisywał katalog, który istnieje.
+
+### Uwagi
+- Dwie pułapki specyficzności opisano teraz w `app.css`: reguły desktopowe są zadeklarowane **niżej** niż blok `max-width: 900px`, więc przy równej specyficzności wygrywają — mobilny `gap` po cichu został 24 px (co przelewało 320 px), a ikona pozostała ukryta (puste kwadratowe przyciski).
+- `applyI18n()` przypisuje `el.textContent`, więc klucz i18n przeniósł się do wewnętrznego `<span>`; na przycisku kasowałby ikonę przy każdej zmianie języka.
+- Pierwszy rsync projektu nadrzędnego **przerwał się w połowie** na pliku, którego już nie ma lokalnie, i mimo to zgłosił sukces. Wdrożenia nadrzędnego weryfikuje się teraz sumą kontrolną, nigdy kodem wyjścia.
+
 ## [1.231.1] — 2026-09-06
 
 **Poprawiono — przemiatanie liczników z v1.231.0 przepisało nazwę konta we wszystkich odnośnikach.**

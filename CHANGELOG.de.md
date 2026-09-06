@@ -2,6 +2,24 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.231.2] — 2026-09-06
+
+**Behoben — die mobile Kopfleiste brach auf zwei Zeilen um, der Server lief mit einem älteren Elternprojekt, und die cvstart.ru-Weiterleitung lieferte 404 für jeden Pfad, der bereits eine Sprache nannte.**
+
+### Behoben
+- **Die mobile Kopfleiste ist wieder einzeilig, mit reinen Icon-Aktionen.** Die Aktionsbuttons wurden auf eine zweite Zeile über die volle Breite gezwungen: Ein Telefon zeigte `[☰ · Suche]` über `[🔔 🌙 Doctor Scan öffnen]` — zwei breite Pillen auf eigener Zeile. Jetzt sind es 36-px-Quadrate (🩺 / ⚡) neben Glocke und Themenumschalter, und bei 320 px passt alles in eine Zeile. Gemessen, nicht geschätzt: Die Dokumentbreite entspricht dem Viewport bei 320, 360, 390 und 430 px sowie im gesamten Band 560–760 px, wo die Buttons zuvor die Suchleiste überlappten. **Die Sprache beeinflusst das mobile Layout nicht mehr**, weil das Label verborgen und der Button ein festes Quadrat ist; oberhalb von 900 px kehren die Labels unverändert zurück.
+- **Der Server lief mit Elternprojekt 1.31.0, obwohl das Release gegen 1.32.0 gebaut wurde.** `/api/health` auf resumecraft.ru meldete `parentVersion: 1.31.0`. 95 Laufzeitdateien synchronisiert, zwei entfernt. Von Browser-QA auf der Live-Oberfläche gefunden.
+- **`cvstart.ru` stellte jedem Pfad `/ru/` voran, ohne zu prüfen, was schon da war.** `/ru/help` wurde zu `/ru/ru/help`, `/en/help` zu `/ru/en/help`; beide 404. Das Erste bekommt man, wenn man eine URL von der Hauptseite kopiert; das Zweite sperrte englischsprachige Besucher vollständig von der englischen Fassung aus. Ein Pfad, der bereits eines der 16 Sprachpräfixe nennt, geht jetzt unverändert durch, `en` wird entfernt (Englisch liegt in der Wurzel), alles andere bekommt weiterhin `/ru/`.
+
+### Geändert
+- **98 überholte QA-Prompts nach `qa/archive/superseded-prompts/` verschoben.** `qa/README.md` dokumentiert seit v1.137.0, dass nur der Prompt des aktuellen Release oben liegt — die Regel wurde 95 Releases lang nicht angewandt.
+- **Fünf weitere Prompts haben die oberste Ebene verlassen — sie bezeichneten sich als aktuell und waren es nicht.** `REGRESSION-FINAL.md` nannte sich „der einzige maßgebliche, versionsunabhängige Regressions-Prompt“, doch seine §§11–15 sind fünf abgeschlossene Zyklus-Register (v1.55.x → v1.59.7), und seine angegebene Hilfe-Basislinie lautete **28 H2 / 103 H3 über 16 Sprachen** gegenüber 32 / 122 und 17 heute: Ein QA-Agent, der ihm folgt, wäre bei §9 schon im ersten Schritt gescheitert. `QA-REGRESSION-PROMPT.md` trug einen Namen ohne Version und Inhalte von v1.226.0. `QA-REGRESSION-PROMPT-v1.76.0-FULL.md` war 155 Releases zurück fixiert, `REGRESSION-PROMPT-FINAL.md` schließt den Zyklus v1.58.52 → v1.59.10, und `QA-FULL-REGRESSION.md` duplizierte sie alle auf einer v1.131.1-Basis. Mit ihnen ging `PARENT-SYNC-WORKLIST-v1.26.0.md` (das Elternprojekt steht inzwischen bei 1.32.0), und das datierte `UX-AUDIT-2026-07-06.md` wanderte nach `reports/`. Vier Treiber bleiben, deren eigene Basislinien auf die tatsächlichen Werte von v1.231.2 aktualisiert wurden. `qa/README.md` ist neu geschrieben und beschreibt den Ordner, den es gibt.
+
+### Hinweise
+- Zwei Spezifitätsfallen sind jetzt in `app.css` kommentiert: Die Desktop-Regeln stehen **weiter unten** als der `max-width: 900px`-Block, gewinnen also bei gleicher Spezifität — der mobile `gap` blieb stumm bei 24 px (was 320 px überlaufen ließ) und das Icon blieb verborgen (leere quadratische Buttons).
+- `applyI18n()` weist `el.textContent` zu, deshalb wanderte der i18n-Schlüssel auf ein inneres `<span>`; am Button hätte er das Icon bei jedem Sprachwechsel gelöscht.
+- Der erste rsync des Elternprojekts **brach mitten im Transfer ab** an einer lokal nicht mehr vorhandenen Datei und meldete trotzdem Erfolg. Eltern-Deploys werden nun per Prüfsumme verifiziert, nie per Exit-Code.
+
 ## [1.231.1] — 2026-09-06
 
 **Behoben — der Zählerdurchlauf aus v1.231.0 hat den Kontonamen in allen Links überschrieben.**

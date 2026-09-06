@@ -324,28 +324,23 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   }
   .sidebar-toggle { display: inline-flex; align-items: center; justify-content: center; }
   .main { margin-left: 0 !important; padding-left: 12px; padding-right: 12px; }
-  /* The topbar keeps ALL its controls but drops the action buttons onto their
-     own full-width second row so row one is just [☰ · search]. Height grows to
-     fit; the sticky offset follows automatically. `min-width:0` releases the
-     searchbar from the flex-item content floor so it can shrink in row one.
+  /* ONE row: [☰ · search · 🔔 🌙 🩺 ⚡], actions icon-only (labels hidden below).
+     v1.208.2 forced them onto a second row because at ~565-640px with long RU
+     labels `space-between` distributed NEGATIVE free space as overlap — the bell
+     sat on the search pill. That cannot recur: every action is a fixed 36px
+     square (`flex: 0 0 auto`) and the searchbar is the only flexible item and
+     may shrink to nothing, so no negative space exists to distribute.
 
-     Why a forced second row (flex-basis:100%) and not "wrap only when it no
-     longer fits": the base `.topbar` is `justify-content: space-between`, and
-     when the single row is *almost* full (long-label locales like RU — «Открыть
-     Scan» / «Диагностика» — around 565–640px) flexbox keeps everything on one
-     line and distributes the NEGATIVE free space as overlap, so the 🔔/🌙 sit on
-     top of the search pill (user-reported, v1.208.2). Forcing the actions to a
-     100%-basis second row removes that fragile band entirely and is locale-
-     independent — the search box stays fully readable on row one at every
-     mobile width. */
-  .topbar {
+     SPECIFICITY, not a typo: the desktop `.topbar` / `.topbar-actions` rules
+     sit LOWER in this file, so at equal specificity they win — the gaps here
+     silently stayed 24px and 12px, which is what overflowed 320px. */
+  header.topbar {
     gap: 8px;
-    flex-wrap: wrap;
-    height: auto;
+    flex-wrap: nowrap;
+    height: var(--topbar-h);
     min-height: var(--topbar-h);
     padding-top: 8px;
     padding-bottom: 8px;
-    row-gap: 8px;
   }
   .searchbar { min-width: 0; }
   /* Let the input itself shrink too (its default intrinsic width would otherwise
@@ -356,7 +351,27 @@ body.sidebar-open .sidebar-backdrop { display: block; }
      past the viewport; it has no room on a phone, so hide it and let the input
      keep the space. */
   .kbd-shortcut { display: none; }
-  .topbar-actions { flex-basis: 100%; flex-wrap: wrap; justify-content: flex-end; }
+  /* Hiding the label (not the button) keeps the click target, id and handler;
+     aria-label carries the name, since display:none drops it from the name. */
+  .topbar .topbar-actions {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+  /* Same trap: the desktop `.btn-ico { display:none }` sits lower. */
+  .topbar .topbar-actions .btn-label { display: none; }
+  .topbar .topbar-actions .btn-ico { display: inline; line-height: 1; }
+  .topbar .topbar-actions .btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    padding: 0;
+    border-radius: var(--radius-pill);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
 }
 
 .logo {
@@ -516,6 +531,8 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 }
 
 .topbar-actions { display: flex; gap: var(--space-3); align-items: center; }
+/* Glyph is for the mobile icon-only form only; the desktop label carries it. */
+.topbar-actions .btn-ico { display: none; }
 
 /* ───────────────────────── buttons ───────────────────────── */
 /* .btn sets an author display:, which beats the UA's [hidden]{display:none}

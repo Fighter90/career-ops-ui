@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.1)
+[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.231.0** — **상위 v1.32.0에서 온 새 스캔 소스 두 개** — 90 → **92개 소스**(EN 87 + RU 5), 둘 다 토큰 불필요. **Collage**는 테넌트의 채용 사이트 주소를 결코 추측하지 않습니다. 그것은 테넌트가 직접 고른 식별자이며, 추측하면 남의 게시판을 스캔하게 됩니다. **Telegram(엄격)**은 기존 `telegram` 소스와 같은 채널 미리보기를 읽지만 반대의 교환을 합니다 — 게시물이 **고용주를 명시하고 채용 공고로 연결될 때만** 한 행이 됩니다. 상위와 마찬가지로 둘 다 함께 제공됩니다. Gem에는 선택형 REST 모드가 추가됐습니다. 상위 자체 코드의 결함도 수정: 엄격한 리더의 위치 필터가 ASCII 단어 경계를 써서 키릴 문자를 보지 못했고, `Senior Engineer | Москва`가 **“Москва”를 고용주로** 반환했습니다. **테스트 3009개.**
+> **🆕 최신 릴리스 — v1.231.2** — **모바일 상단 바가 다시 한 줄이 되고, 동작 버튼은 아이콘만 남았습니다.** 동작 버튼들이 전체 너비의 두 번째 줄로 밀려나, 휴대폰에서는 `[☰ · 검색]` 아래에 `[🔔 🌙 Doctor Scan 열기]` 라는 넓은 알약 두 개가 별도의 줄을 차지했습니다. 이제는 종과 테마 전환 옆의 36 px 정사각형(🩺 / ⚡)이며, 320 px에서도 전부 한 줄에 들어갑니다. 눈대중이 아니라 실측입니다 — 320/360/390/430 px에서, 그리고 예전에 버튼이 검색창을 덮던 560~760 px 구간 전체에서 확인했습니다. **로케일은 이제 모바일 레이아웃에 전혀 영향을 주지 않습니다.** 레이블이 숨겨지고 버튼이 고정 정사각형이기 때문입니다. 함께 수정: 이 릴리스는 상위 1.32.0을 기준으로 만들었는데 서버는 상위 **1.31.0**으로 돌고 있었고, `cvstart.ru`는 경로에 무엇이 있든 보지 않고 `/ru/`를 앞에 붙여 `/en/help`가 `/ru/en/help`가 되면서 영어판으로 가는 길을 완전히 막고 있었습니다. **3009개의 테스트.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
