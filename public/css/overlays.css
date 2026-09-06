@@ -756,3 +756,14 @@ a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .
   .metric-card, .card, .btn-primary, .btn-dark, .btn-danger { transition: none; }
   .metric-card:hover, .card:hover, .btn-primary:hover, .btn-dark:hover, .btn-danger:hover { transform: none; }
 }
+
+/* v1.231.3 — the four top-bar actions rendered 36x36, 36x36, 36x44, 36x44.
+   The odd pair is not the tall one: `.btn` carries a `min-height: 44px` floor
+   restored for WCAG 2.5.5, so Doctor and Scan are right and the bell and theme
+   toggle sit below it. Raised to match — even row, and two more targets over
+   the floor. Width stays 36px: four 44px squares plus a 40px menu do not fit a
+   320px bar, and 36px still clears the 24px WCAG 2.5.8 AA minimum. */
+@media (max-width: 900px) {
+  header.topbar .topbar-actions .notif-bell,
+  header.topbar .topbar-actions .theme-toggle { min-height: 44px; height: 44px; }
+}

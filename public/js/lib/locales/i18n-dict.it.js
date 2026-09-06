@@ -263,6 +263,7 @@ window.__I18N_DICT_IT = {
   'top.search': "Cerca o incolla una URL",
   'top.search.label': "Cerca aziende, ruoli o URL",
   'top.search.aria': "Ricerca globale — Cmd+K per attivare, incolla un URL e premi Invio per l'auto-pipeline",
+  'top.search.toggle': "Cerca",
   'top.doctor': "Doctor",
   'top.quickscan': "Apri Scansione",
   'top.themeToggle': "Cambia tema",

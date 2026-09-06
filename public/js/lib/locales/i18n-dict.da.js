@@ -262,6 +262,7 @@ window.__I18N_DICT_DA = {
   'top.search': "Søg eller indsæt URL",
   'top.search.label': "Søg i virksomheder, roller eller URL'er",
   'top.search.aria': "Global søgning — Cmd+K for fokus, indsæt en URL og Enter for auto-pipeline",
+  'top.search.toggle': "Søg",
   'top.doctor': "Doctor",
   'top.quickscan': "Åbn Scanning",
   'top.themeToggle': "Skift tema",

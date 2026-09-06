@@ -752,3 +752,48 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   background: var(--bg-subtle, rgba(0,0,0,.05));
 }
 
+
+/* ── FIND-3 (v1.231.3): the search field collapsed to 8px on a 320px phone ──
+   v1.231.2 put the top bar on one row by leaving the searchbar as the only
+   flexible item — "may shrink to nothing, so no negative space exists to
+   distribute". It did: 8px of input at 320px, 28px at 340px, one character of
+   a 21-character placeholder. Clickable and typable, but no longer a field.
+
+   No min-width can fix it — at 320px the bar holds 32px of padding, a 40px
+   menu and 162px of actions, with no 120px left to give. So below 420px (where
+   the input finally clears 100px) it hides behind a magnifier and expands over
+   the whole bar on tap.
+
+   Here, not in app.css: that file is at its 800-line limit AND its mobile block
+   is declared ABOVE the desktop rules it must beat — the trap that cost two
+   rounds in v1.231.2. Here the base rule precedes the media query.
+   SPECIFICITY: app.css sets `.topbar .topbar-actions .btn { display:inline-flex }`
+   (0,3,0) under max-width:900px, so a bare `.search-toggle` (0,1,0) loses and
+   the magnifier ate 42px of the row at every width up to 900px — shrinking the
+   very field it protects, 118px -> 76px at 430px. Both rules below match that
+   specificity and win on source order. */
+header.topbar .topbar-actions .search-toggle { display: none; }
+.search-ico-close { display: none; }
+
+@media (max-width: 420px) {
+  header.topbar .topbar-actions .search-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    padding: 0;
+    font-size: 15px;
+  }
+  /* Closed: the field is gone and the magnifier stands in for it. */
+  header.topbar .searchbar { display: none; }
+  /* Open: the field takes the whole bar; the menu and the other actions step
+     aside so it gets real width instead of the 8px it used to get. The toggle
+     stays put and becomes the ✕ that closes it. */
+  header.topbar.search-open .searchbar { display: flex; flex: 1 1 auto; min-width: 0; }
+  header.topbar.search-open .sidebar-toggle,
+  header.topbar.search-open .topbar-actions > :not(.search-toggle) { display: none; }
+  header.topbar.search-open .search-ico-open { display: none; }
+  header.topbar.search-open .search-ico-close { display: inline; }
+}

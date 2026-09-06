@@ -264,6 +264,7 @@ window.__I18N_DICT_HI = {
   'top.search': "खोजें या URL चिपकाएँ",
   'top.search.label': "कंपनियाँ, भूमिकाएँ या URL खोजें",
   'top.search.aria': "वैश्विक खोज — फ़ोकस के लिए Cmd+K दबाएँ, URL पेस्ट करें और ऑटो-पाइपलाइन के लिए Enter दबाएँ",
+  'top.search.toggle': "खोजें",
   'top.doctor': "डॉक्टर",
   'top.quickscan': "स्कैन खोलें",
   'top.themeToggle': "थीम बदलें",

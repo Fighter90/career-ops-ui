@@ -4806,6 +4806,25 @@
     "tr": "Genel arama — odaklanmak için Cmd+K, otomatik-pipeline için bir URL yapıştırıp Enter'a basın",
     "hi": "वैश्विक खोज — फ़ोकस के लिए Cmd+K दबाएँ, URL पेस्ट करें और ऑटो-पाइपलाइन के लिए Enter दबाएँ"
   },
+  "top.search.toggle": {
+    "en": "Search",
+    "es": "Buscar",
+    "pt-BR": "Buscar",
+    "ko": "검색",
+    "ja": "検索",
+    "ru": "Поиск",
+    "zh-CN": "搜索",
+    "zh-TW": "搜尋",
+    "fr": "Rechercher",
+    "pl": "Szukaj",
+    "uk": "Пошук",
+    "da": "Søg",
+    "ar": "بحث",
+    "de": "Suchen",
+    "it": "Cerca",
+    "tr": "Ara",
+    "hi": "खोजें"
+  },
   "top.doctor": {
     "en": "Doctor",
     "es": "Diagnóstico",

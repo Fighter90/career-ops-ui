@@ -263,6 +263,7 @@ window.__I18N_DICT_RU = {
   'top.search': "Поиск или вставьте URL",
   'top.search.label': "Поиск компаний, ролей или URL",
   'top.search.aria': "Глобальный поиск — Cmd+K для фокуса, вставьте URL и Enter для auto-pipeline",
+  'top.search.toggle': "Поиск",
   'top.doctor': "Диагностика",
   'top.quickscan': "Открыть Scan",
   'top.themeToggle': "Сменить тему",

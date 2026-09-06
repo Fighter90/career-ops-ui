@@ -263,6 +263,7 @@ window.__I18N_DICT_PT_BR = {
   'top.search': "Buscar ou colar URL",
   'top.search.label': "Buscar empresas, vagas ou URLs",
   'top.search.aria': "Busca global — Cmd+K para focar, cole uma URL e Enter para auto-pipeline",
+  'top.search.toggle': "Buscar",
   'top.doctor': "Diagnóstico",
   'top.quickscan': "Abrir Scan",
   'top.themeToggle': "Alternar tema",

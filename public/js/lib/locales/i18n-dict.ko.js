@@ -263,6 +263,7 @@ window.__I18N_DICT_KO = {
   'top.search': "검색 또는 URL 붙여넣기",
   'top.search.label': "회사, 직무 또는 URL 검색",
   'top.search.aria': "전역 검색 — Cmd+K 로 포커스, URL 을 붙여 넣고 Enter 로 auto-pipeline",
+  'top.search.toggle': "검색",
   'top.doctor': "진단",
   'top.quickscan': "Scan 열기",
   'top.themeToggle': "테마 전환",

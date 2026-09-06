@@ -16,7 +16,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.231.3** — **點擊 Doctor 會把行動版頂欄撐壞**，v1.231.2 發布當天由手機端回報。`UI.withSpinner` 透過對 `button.textContent` 賦值來顯示忙碌提示，而這會把*所有*子節點替換成一個文字節點。v1.231.2 剛剛把每個操作拆成 `.btn-ico` 與 `.btn-label`，並在 `max-width: 900px` 下隱藏標籤——於是第一次點擊就永久摧毀了這兩個 `<span>`：標籤以裸文字回歸，36 px 方塊膨脹成壓住主題切換的 `🩺Doctor` 膠囊。它不會自癒，只有重新整理頁面才能恢復標記。現在 `withSpinner` 快照子**節點**並以 `replaceChildren` 還原。與上個版本記下的 `applyI18n()` 陷阱同屬一類缺陷，只是經由另一個呼叫方。**3012 項測試。**
+> **🆕 最新版本 — v1.231.3** — **點擊 Doctor 會把行動版頂欄撐壞**，v1.231.2 發布當天由手機端回報。`UI.withSpinner` 透過對 `button.textContent` 賦值來顯示忙碌提示，而這會把*所有*子節點替換成一個文字節點。v1.231.2 剛剛把每個操作拆成 `.btn-ico` 與 `.btn-label`，並在 `max-width: 900px` 下隱藏標籤——於是第一次點擊就永久摧毀了這兩個 `<span>`：標籤以裸文字回歸，36 px 方塊膨脹成壓住主題切換的 `🩺Doctor` 膠囊。它不會自癒，只有重新整理頁面才能恢復標記。現在 `withSpinner` 快照子**節點**並以 `replaceChildren` 還原。與上個版本記下的 `applyI18n()` 陷阱同屬一類缺陷，只是經由另一個呼叫方。另修復一處，由瀏覽器迴歸發現：**搜尋框在 320 px 下被壓縮到 8 px**——21 個字元的預留文字只露出一個。420 px 以下它現在藏到放大鏡後面，輕點即展開佔滿整條列（**320 px 下 182 px**）。**3012 項測試。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

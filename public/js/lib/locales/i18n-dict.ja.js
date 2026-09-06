@@ -263,6 +263,7 @@ window.__I18N_DICT_JA = {
   'top.search': "検索または URL を貼付",
   'top.search.label': "会社、役割、URL を検索",
   'top.search.aria': "グローバル検索 — Cmd+K でフォーカス、URL を貼り付け Enter で auto-pipeline",
+  'top.search.toggle': "検索",
   'top.doctor': "診断",
   'top.quickscan': "Scan を開く",
   'top.themeToggle': "テーマを切り替え",
