@@ -1,6 +1,6 @@
 # career-ops-ui
 
-> Лаконічний веб-інтерфейс у стилі технічної документації для AI-конвеєра пошуку роботи [career-ops](https://github.com/Fighter92/career-ops).
+> Лаконічний веб-інтерфейс у стилі технічної документації для AI-конвеєра пошуку роботи [career-ops](https://github.com/Fighter90/career-ops).
 > Шукайте вакансії, оцінюйте їх, досліджуйте компанії, подавайте заявки та відстежуйте кожну пропозицію з однієї вкладки браузера — замість перемикання між Claude Code, терміналом і markdown-файлами.
 
 [🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | **🇺🇦 Українська** | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
@@ -12,13 +12,13 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.0-blue)](https://github.com/Fighter92/career-ops-ui/releases/tag/v1.231.0)
+[![release](https://img.shields.io/badge/release-v1.231.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
 > **🆕 Останній реліз — v1.231.0** — **Два нові джерела сканування з v1.32.0 батьківського проєкту** — 90 → **92 джерела** (87 EN + 5 RU), обидва без токенів. **Collage** ніколи не вгадує адресу сайту вакансій орендаря: це ідентифікатор, який той обрав сам, і здогад призвів би до сканування чужої дошки. **Telegram (суворий)** читає ті самі попередні перегляди каналів, що й наявне джерело `telegram`, але робить протилежний розмін — допис стає рядком лише тоді, коли **називає роботодавця й посилається на вакансію**; обидва постачаються, як і в батьківському проєкті. Gem отримав необовʼязковий режим REST. Виправлено й у коді самого батька: фільтр локацій суворого читача використовував ASCII-межу слова й тому не бачив кирилиці — `Senior Engineer | Москва` повертав **«Москва» як роботодавця**. **3009 тестів.**
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 >
 > 📜 Повна історія релізів: **[CHANGELOG.uk.md](CHANGELOG.uk.md)**.
@@ -71,12 +71,12 @@ career-ops — перша еталонна реалізація [Маніфес�
 
 ## Швидкий старт
 
-> **Важливо — career-ops-ui — це дашборд *поверх* [`Fighter92/career-ops`](https://github.com/Fighter92/career-ops).** Він працює **всередині** проєкту career-ops як `career-ops/web-ui/` і зчитує файли `cv.md`, `config/`, `data/` з батьківської папки через `../`. **Не працює автономно** — вам також потрібен батьківський репозиторій career-ops.
+> **Важливо — career-ops-ui — це дашборд *поверх* [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** Він працює **всередині** проєкту career-ops як `career-ops/web-ui/` і зчитує файли `cv.md`, `config/`, `data/` з батьківської папки через `../`. **Не працює автономно** — вам також потрібен батьківський репозиторій career-ops.
 
 ### Варіант 1 — одна команда curl (рекомендовано)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash
 ```
 
 Клонує **обидва** репозиторії, організовує структуру `career-ops/web-ui/`, встановлює залежності, запускає діагностику та стартує сервер на http://127.0.0.1:4317.
@@ -85,7 +85,7 @@ curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/se
 
 ```bash
 cd career-ops
-git clone https://github.com/Fighter92/career-ops-ui.git web-ui
+git clone https://github.com/Fighter90/career-ops-ui.git web-ui
 cd web-ui
 npm install
 npm start
@@ -142,7 +142,7 @@ career-ops/
 
 career-ops найкраще працює **завжди увімкненим** — сканує, поки ви спите, доступний з будь-якого браузера. Щоб розмістити весь стек на невеликому сервері — батьківський пайплайн **career-ops**, цей переглядач **career-ops-ui** та **рушій**, що виконує ШІ (ваша **підписка Claude** через CLI Claude Code, локальний шлюз **Hermes**, або ключі API) — підніміть VPS (Node ≥ 18), встановіть батька + цей репозиторій, оберіть рушій і виставте переглядач за **HTTPS зворотним проксі з автентифікацією**, зберігши інваріанти безпеки (CSP, SSRF-guard, межа XSS, жодних секретів у логах).
 
-📖 Вбудована **Довідка §31** («Запуск усього стеку в хмарі») проводить крок за кроком усіма 17 мовами; чек-лист оператора — [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), а на [вікі-сторінці хмарного розгортання](https://github.com/Fighter92/career-ops-ui/wiki/Cloud-Deployment) є довідкові таблиці.
+📖 Вбудована **Довідка §31** («Запуск усього стеку в хмарі») проводить крок за кроком усіма 17 мовами; чек-лист оператора — [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), а на [вікі-сторінці хмарного розгортання](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) є довідкові таблиці.
 
 ---
 
@@ -173,16 +173,16 @@ npm run test:coverage       # те саме + покриття V8
 
 MIT. Деталі: [LICENSE](LICENSE).
 
-Побудовано на основі [career-ops](https://github.com/Fighter92/career-ops) від [santifer](https://santifer.io).
+Побудовано на основі [career-ops](https://github.com/Fighter90/career-ops) від [santifer](https://santifer.io).
 
 <p>
-  <a href="https://github.com/Fighter92" title="Fighter92"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter92"/></a>
+  <a href="https://github.com/Fighter90" title="Fighter90"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter90"/></a>
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
 </p>
 
-**[Усі контриб'ютори →](https://github.com/Fighter92/career-ops-ui/graphs/contributors)**
+**[Усі контриб'ютори →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**
 
 <div align="center">
 

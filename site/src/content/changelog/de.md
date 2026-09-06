@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.231.1] — 2026-09-06
+
+**Behoben — der Zählerdurchlauf aus v1.231.0 hat den Kontonamen in allen Links überschrieben.**
+
+### Behoben
+- **Jeder `Fighter90`-Link wurde zu `Fighter92`.** Der Quellenzähler-Durchlauf in v1.231.0 ersetzte `90` durch `92` unter einer Ziffern-Grenzprüfung, die `290` und `901` korrekt auslässt, aber die `90` in **`Fighter90`** trifft. **562 Links in allen 17 READMEs, allen 17 Hilfepaketen und den Hilfe-Spiegeln der Website**, dazu **138 im Wiki**, zeigten auf ein nicht existierendes Konto. Von einem Nutzer bemerkt — am fehlenden Bild.
+- **Fünf historische Release-Verweise verrutschten.** Der `85 → 87`-Durchlauf machte aus `v1.85.0` ein `v1.87.0` und erfand damit eine nie veröffentlichte Version.
+
+### Hinweise
+- Eine Ziffern-Grenze genügt nicht: Sie schützt eine Zahl vor benachbarten **Ziffern**, nicht davor, Teil eines **Bezeichners** oder einer **Versionszeichenkette** zu sein. Die Zähler selbst stimmen: 92 Quellen, 87 EN-Adapter, 3009 Tests.
+- Das Elternrepository blieb unberührt.
+
 ## [1.231.0] — 2026-09-05
 
 **Hinzugefügt — zwei Scan-Quellen aus dem Eltern-career-ops v1.32.0 (Collage, Telegram streng), Gems REST-Modus und ein Defekt, den die Portierung im Code des Elternprojekts selbst zutage förderte.**

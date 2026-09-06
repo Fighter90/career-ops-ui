@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.231.1] — 2026-09-06
+
+**Corregido — el barrido de recuentos de v1.231.0 reescribió el nombre de la cuenta en todos los enlaces.**
+
+### Corregido
+- **Cada enlace `Fighter90` pasó a `Fighter92`.** El barrido del recuento de fuentes de v1.231.0 sustituía `90` por `92` con una guarda de límite de dígito, que descarta correctamente `290` y `901` pero coincide con el `90` dentro de **`Fighter90`**: delante hay una letra y detrás el token simplemente termina. **562 enlaces en los 17 README, los 17 paquetes de ayuda y los espejos de ayuda del sitio**, más **138 en el wiki**, apuntaban a una cuenta inexistente; el banner `providers.png` y todos los enlaces «editar en GitHub» daban 404. Lo detectó un usuario, por la imagen que faltaba.
+- **Cinco referencias históricas a versiones se desplazaron.** El barrido `85 → 87` convirtió `v1.85.0` en `v1.87.0`, inventando una versión que nunca se publicó.
+
+### Notas
+- Un límite de dígito no basta: protege un número de los **dígitos** vecinos, no de formar parte de un **identificador** o de una **cadena de versión**. Los recuentos en sí son correctos: 92 fuentes, 87 adaptadores EN, 3009 pruebas.
+- El repositorio padre no se vio afectado.
+
 ## [1.231.0] — 2026-09-05
 
 **Añadido — dos fuentes de escaneo del career-ops padre v1.32.0 (Collage, Telegram estricto), el modo REST de Gem y un defecto que el port sacó a la luz en el código del propio padre.**

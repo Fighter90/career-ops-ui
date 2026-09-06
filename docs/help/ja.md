@@ -1,6 +1,6 @@
 # ヘルプ — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 アプリを起動した瞬間から面接獲得までの、すべてのページの完全ウォークスルー
 です。以下の各 `##` 見出しは、サイドバーの項目またはワークフローのフェーズ
@@ -1637,7 +1637,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 
 より詳細な診断には: Health ページで **▶ Doctor** を実行し、出力を
 コピーし、issue トラッカー
-<https://github.com/Fighter92/career-ops-ui/issues> を検索して
+<https://github.com/Fighter90/career-ops-ui/issues> を検索して
 ください。
 
 
@@ -2166,7 +2166,7 @@ career-opsはCLIに依存しないため、AIについて三つの正直な選�
 
 ## 32. OpenWorker（AIコワーカー）から実行する
 
-ブラウザよりもデスクトップのAIコワーカーの方が好みですか？ **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** は、このパイプライン全体をあなたの代わりに動かす **[OpenWorker](https://github.com/andrewyng/openworker)**（Andrew Ngが手がけるオープンソースでローカルファーストなAIコワーカーアプリ）のコワーカーです — ボードをスキャンし、あなたのCVに対して適合度を採点し、事実に基づいたCV + カバーレターを仕立て、応募を追跡し、フォローアップを下書きします — そして求めればこの **ダッシュボードを起動する** こともできます。これはコード不要の単一のMarkdown「ペルソナ」です。OpenWorkerはそれをプログラムとして実行するわけではなく、その指示はエージェントを導いているだけです。そのガイドは17言語すべてで提供されます。
+ブラウザよりもデスクトップのAIコワーカーの方が好みですか？ **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** は、このパイプライン全体をあなたの代わりに動かす **[OpenWorker](https://github.com/andrewyng/openworker)**（Andrew Ngが手がけるオープンソースでローカルファーストなAIコワーカーアプリ）のコワーカーです — ボードをスキャンし、あなたのCVに対して適合度を採点し、事実に基づいたCV + カバーレターを仕立て、応募を追跡し、フォローアップを下書きします — そして求めればこの **ダッシュボードを起動する** こともできます。これはコード不要の単一のMarkdown「ペルソナ」です。OpenWorkerはそれをプログラムとして実行するわけではなく、その指示はエージェントを導いているだけです。そのガイドは17言語すべてで提供されます。
 
 ### コワーカーがすること
 
@@ -2177,7 +2177,7 @@ career-opsはCLIに依存しないため、AIについて三つの正直な選�
 OpenWorker をインストールし、モデルキーを追加します（Anthropic / OpenAI / Google、またはローカルの Ollama）。最速は**コマンド1つ** — coworker が動かす `career-ops` パイプラインを用意し、冪等です（既存の `career-ops` / `web-ui` を再利用し、データを上書きしません）:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
 ```
 
-その後、OpenWorker の **Install a coworker** パネルで coworker を追加します — **GitHub URL**(`https://github.com/Fighter92/career-ops-coworker`)、**.zip**([Releases](https://github.com/Fighter92/career-ops-coworker/releases) から)、または `career-ops.md` の**インポート**。**Job-Search Coworker** セッションを開き、`career-ops` フォルダーを選び、実際に依頼します — *「ボードをスキャンして今週の上位5件の適合を出して」*、または *「ダッシュボードを開いて」*。コネクター（Gmail、Google Calendar、GitHub）と完全ガイドはリポジトリの[ヘルプガイド](https://github.com/Fighter92/career-ops-coworker/tree/main/help)にあります。OpenWorker のローダーとリポジトリインストーラーに対してインストール可能と検証済みです。
+その後、OpenWorker の **Install a coworker** パネルで coworker を追加します — **GitHub URL**(`https://github.com/Fighter90/career-ops-coworker`)、**.zip**([Releases](https://github.com/Fighter90/career-ops-coworker/releases) から)、または `career-ops.md` の**インポート**。**Job-Search Coworker** セッションを開き、`career-ops` フォルダーを選び、実際に依頼します — *「ボードをスキャンして今週の上位5件の適合を出して」*、または *「ダッシュボードを開いて」*。コネクター（Gmail、Google Calendar、GitHub）と完全ガイドはリポジトリの[ヘルプガイド](https://github.com/Fighter90/career-ops-coworker/tree/main/help)にあります。OpenWorker のローダーとリポジトリインストーラーに対してインストール可能と検証済みです。

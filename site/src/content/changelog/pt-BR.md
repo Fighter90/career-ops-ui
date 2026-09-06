@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.231.1] — 2026-09-06
+
+**Corrigido — a varredura de contagens da v1.231.0 reescreveu o nome da conta em todos os links.**
+
+### Corrigido
+- **Cada link `Fighter90` virou `Fighter92`.** A varredura da contagem de fontes da v1.231.0 trocava `90` por `92` com uma guarda de limite de dígito, que descarta corretamente `290` e `901` mas casa com o `90` dentro de **`Fighter90`**. **562 links nos 17 READMEs, nos 17 pacotes de ajuda e nos espelhos de ajuda do site**, mais **138 no wiki**, apontavam para uma conta inexistente; o banner `providers.png` e todos os links de editar no GitHub davam 404. Detectado por um usuário, pela imagem ausente.
+- **Cinco referências históricas a versões se deslocaram.** A varredura `85 → 87` transformou `v1.85.0` em `v1.87.0`, inventando uma versão nunca lançada.
+
+### Notas
+- Um limite de dígito não basta: protege um número dos **dígitos** vizinhos, não de fazer parte de um **identificador** ou de uma **string de versão**. As contagens estão corretas: 92 fontes, 87 adaptadores EN, 3009 testes.
+- O repositório pai não foi afetado.
+
 ## [1.231.0] — 2026-09-05
 
 **Adicionado — duas fontes de varredura do career-ops pai v1.32.0 (Collage, Telegram estrito), o modo REST do Gem e um defeito que o port revelou no código do próprio pai.**

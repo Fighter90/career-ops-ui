@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.231.1] — 2026-09-06
+
+**Rettet — tællergennemløbet fra v1.231.0 omskrev kontonavnet i alle links.**
+
+### Rettet
+- **Hvert `Fighter90`-link blev til `Fighter92`.** Kildetæller-gennemløbet i v1.231.0 erstattede `90` med `92` under en cifergrænse, der korrekt springer `290` og `901` over, men rammer `90` inde i **`Fighter90`**. **562 links i alle 17 README'er, alle 17 hjælpepakker og sidens hjælpespejle**, plus **138 i wikien**, pegede på en konto, der ikke findes. Opdaget af en bruger — på det manglende billede.
+- **Fem historiske udgivelseshenvisninger forskubbede sig.** `85 → 87`-gennemløbet gjorde `v1.85.0` til `v1.87.0` og opfandt dermed en udgivelse, der aldrig blev skåret.
+
+### Noter
+- En cifergrænse er ikke nok: den beskytter et tal mod nabo**cifre**, ikke mod at være del af en **identifikator** eller en **versionsstreng**. Tællerne selv er rigtige: 92 kilder, 87 EN-adaptere, 3009 tests.
+- Forældrerepositoriet blev ikke berørt.
+
 ## [1.231.0] — 2026-09-05
 
 **Tilføjet — to scanningskilder fra forældreprojektets career-ops v1.32.0 (Collage, Telegram streng), Gems REST-tilstand og en defekt, som porteringen bragte frem i forælderens egen kode.**

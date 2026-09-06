@@ -1,6 +1,6 @@
 # career-ops-ui
 
-> [career-ops](https://github.com/Fighter92/career-ops) — AI 駆動の求職パイプラインに、docs スタイルの洗練された Web インターフェースを与えるプロジェクトです。
+> [career-ops](https://github.com/Fighter90/career-ops) — AI 駆動の求職パイプラインに、docs スタイルの洗練された Web インターフェースを与えるプロジェクトです。
 > Claude Code、ターミナル、Markdown ファイルを行き来する代わりに、検索・評価・ディープリサーチ・応募・トラッキングを 1 つのブラウザタブから完結できます。
 
 [🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | **🇯🇵 日本語** | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
@@ -12,13 +12,13 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.0-blue)](https://github.com/Fighter92/career-ops-ui/releases/tag/v1.231.0)
+[![release](https://img.shields.io/badge/release-v1.231.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
 > **🆕 最新リリース — v1.231.0** — **親 v1.32.0 からの新しいスキャンソース 2 件** — 90 →**92 ソース**（EN 87 + RU 5）、どちらもトークン不要。**Collage** はテナントの求人サイトアドレスを決して推測しません。それはテナント自身が選んだ識別子であり、推測すれば他人のボードを走査することになります。**Telegram（厳格）** は既存の `telegram` ソースと同じチャンネルプレビューを読みますが、取引は正反対です — 投稿が**雇用主を名指しし、求人ページへリンクしているときにのみ**行になります。親と同じく両方を提供します。Gem には任意の REST モードが加わりました。親自身のコードの欠陥も修正: 厳格リーダーの所在地フィルターが ASCII の単語境界を使っていたためキリル文字を認識できず、`Senior Engineer | Москва` が**「Москва」を雇用主として**返していました。**テスト 3009 件。**
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 >
 > 📜 全リリース履歴: **[CHANGELOG.ja.md](CHANGELOG.ja.md)**.
@@ -58,12 +58,12 @@ career-ops は [CareerOps マニフェスト](https://career-ops.org/manifesto) 
 
 ## ワンコマンドで起動・初期化
 
-> **重要 — career-ops-ui は [`Fighter92/career-ops`](https://github.com/Fighter92/career-ops) の*上に乗る*ダッシュボードです。** `career-ops/web-ui/` として career-ops プロジェクトの**内部**で動作し、親フォルダーの `cv.md`、`config/`、`data/` を `../` 経由で読み込みます。**単独では動作しません** — 親リポジトリ `career-ops` も必要です。単独でクローンして `init` を実行しないでください；以下の 2 つのオプションのいずれかを使用してください。
+> **重要 — career-ops-ui は [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) の*上に乗る*ダッシュボードです。** `career-ops/web-ui/` として career-ops プロジェクトの**内部**で動作し、親フォルダーの `cv.md`、`config/`、`data/` を `../` 経由で読み込みます。**単独では動作しません** — 親リポジトリ `career-ops` も必要です。単独でクローンして `init` を実行しないでください；以下の 2 つのオプションのいずれかを使用してください。
 
 ### オプション 1 — 1 つの curl（推奨：すべてをセットアップ）
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash
 ```
 
 **両方**のリポジトリをクローンし、`career-ops/web-ui/` 構造を整え、依存関係をインストールし、doctor を実行したうえで http://127.0.0.1:4317 でサーバーを起動します — その後ダッシュボードを開きます。
@@ -74,7 +74,7 @@ curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/se
 
 ```bash
 cd career-ops                                                   # ← 既存の career-ops プロジェクト
-git clone https://github.com/Fighter92/career-ops-ui.git web-ui
+git clone https://github.com/Fighter90/career-ops-ui.git web-ui
 cd web-ui
 npm install
 npx career-ops-ui init        # interactive: pick LLM provider + paste its key → parent career-ops/.env
@@ -127,7 +127,7 @@ npx career-ops-ui init        # npx runs the local bin even without `npm link`
 
 ## なぜ必要か
 
-[career-ops](https://github.com/Fighter92/career-ops) は強力な Claude Code 駆動の求職システムです。JD を貼り付ければ、0–5 のフィットスコア、ATS に最適化された PDF、トラッカーエントリが得られます。Claude Code 内では快適に動作しますが、データは `cv.md`、`data/applications.md`、`reports/*.md`、`data/pipeline.md`、`portals.yml`、`config/profile.yml` に散在しており、見失いやすく、俯瞰しづらいのが難点です。
+[career-ops](https://github.com/Fighter90/career-ops) は強力な Claude Code 駆動の求職システムです。JD を貼り付ければ、0–5 のフィットスコア、ATS に最適化された PDF、トラッカーエントリが得られます。Claude Code 内では快適に動作しますが、データは `cv.md`、`data/applications.md`、`reports/*.md`、`data/pipeline.md`、`portals.yml`、`config/profile.yml` に散在しており、見失いやすく、俯瞰しづらいのが難点です。
 
 `career-ops-ui` はその上に洗練された UI を被せます。
 
@@ -149,16 +149,16 @@ npx career-ops-ui init        # npx runs the local bin even without `npm link`
 ### 1. 先に career-ops をインストール
 
 ```bash
-git clone https://github.com/Fighter92/career-ops.git
+git clone https://github.com/Fighter90/career-ops.git
 cd career-ops
 ```
 
-[career-ops のオンボーディング](https://github.com/Fighter92/career-ops#first-run--onboarding) に従い、`cv.md`、`config/profile.yml`、`portals.yml` を揃えます。
+[career-ops のオンボーディング](https://github.com/Fighter90/career-ops#first-run--onboarding) に従い、`cv.md`、`config/profile.yml`、`portals.yml` を揃えます。
 
 ### 2. career-ops-ui をその中に配置
 
 ```bash
-git clone https://github.com/Fighter92/career-ops-ui.git web-ui
+git clone https://github.com/Fighter90/career-ops-ui.git web-ui
 ```
 
 ツリーは次のようになります。
@@ -612,7 +612,7 @@ production-readiness アセスメント(デプロイメントゲート、リス�
 
 career-ops は **常時稼働** が最適です — 就寝中もスキャンし、どのブラウザからも到達できます。スタック全体を小さなサーバーに載せるには — 親の **career-ops** パイプライン、この **career-ops-ui** ビューアー、そして AI を動かす **エンジン**(Claude Code CLI 経由の **Claude サブスクリプション**、ローカルの **Hermes** ゲートウェイ、またはプロバイダー API キー)—— VPS(Node ≥ 18)を用意し、親 + このリポジトリを入れ、エンジンを選び、**認証付き HTTPS リバースプロキシ** の背後にビューアーを公開しつつ、セキュリティ不変条件(CSP、SSRF ガード、XSS 境界、ログに秘密を残さない)を保ちます。
 
-📖 アプリ内 **ヘルプ §31**(「スタック全体をクラウドで動かす」)が 17 言語で手順を案内します。運用チェックリストは [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)、[クラウドデプロイの Wiki ページ](https://github.com/Fighter92/career-ops-ui/wiki/Cloud-Deployment) に参照テーブルがあります。
+📖 アプリ内 **ヘルプ §31**(「スタック全体をクラウドで動かす」)が 17 言語で手順を案内します。運用チェックリストは [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)、[クラウドデプロイの Wiki ページ](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) に参照テーブルがあります。
 
 ---
 
@@ -723,20 +723,20 @@ Health ページをリロードして、必須チェックがすべてグリー�
 
 MIT ライセンス。[LICENSE](LICENSE) を参照してください。
 
-[santifer](https://santifer.io) による [career-ops](https://github.com/Fighter92/career-ops) の上に構築しています。優れたパイプラインをありがとうございます。
+[santifer](https://santifer.io) による [career-ops](https://github.com/Fighter90/career-ops) の上に構築しています。優れたパイプラインをありがとうございます。
 
 ## コントリビューター
 
-career-ops-ui の構築に協力してくださっているすべての方に感謝します。本プロジェクトは [Fighter92](https://github.com/Fighter92) がメンテナンスし、コミュニティからの貢献によって改善されています。完全な一覧は [コントリビューターグラフ](https://github.com/Fighter92/career-ops-ui/graphs/contributors) をご覧ください。
+career-ops-ui の構築に協力してくださっているすべての方に感謝します。本プロジェクトは [Fighter90](https://github.com/Fighter90) がメンテナンスし、コミュニティからの貢献によって改善されています。完全な一覧は [コントリビューターグラフ](https://github.com/Fighter90/career-ops-ui/graphs/contributors) をご覧ください。
 
 <p>
-  <a href="https://github.com/Fighter92" title="Fighter92"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter92"/></a>
+  <a href="https://github.com/Fighter90" title="Fighter90"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter90"/></a>
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
 </p>
 
-**[すべてのコントリビューター →](https://github.com/Fighter92/career-ops-ui/graphs/contributors)**
+**[すべてのコントリビューター →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**
 
 <div align="center">
 

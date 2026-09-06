@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.231.1] — 2026-09-06
+
+**Fixed — v1.231.0's count sweep rewrote the account name in every link.**
+
+### Fixed
+- **Every `Fighter90` link became `Fighter92`.** The v1.231.0 source-count sweep replaced `90` with `92` under a digit-boundary guard — `(?<![0-9])90(?![0-9])` — which correctly skips `290` and `901` but matches the `90` inside **`Fighter90`**, where the preceding character is a letter and the token simply ends. **562 links across all 17 READMEs, all 17 help bundles and the site's help mirrors**, plus **138 in the wiki**, pointed at an account that does not exist; the `providers.png` banner and every "edit on GitHub" link 404ed. Reported by a user who noticed the missing image.
+- **Five historical release references shifted.** The same release's `85 → 87` EN-adapter sweep turned `v1.85.0` into `v1.87.0` in the README and help bundles, inventing a release that was never cut.
+
+### Notes
+- A digit boundary is not enough. It guards a number against neighbouring **digits**, not against being part of an **identifier** or a **version string** — and both classes are dense in these files. The counts themselves are unchanged and correct: 92 sources, 87 EN adapters, 3009 tests.
+- The parent repository was untouched: its counts were never swept.
+
 ## [1.231.0] — 2026-09-05
 
 **Added — two scanner sources from parent career-ops v1.32.0 (Collage, Telegram strict), Gem's REST mode, and one defect the port surfaced in the parent's own code.**

@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.1] — 2026-09-06
+
+**Corrigé — le balayage des compteurs de la v1.231.0 a réécrit le nom du compte dans tous les liens.**
+
+### Corrigé
+- **Chaque lien `Fighter90` est devenu `Fighter92`.** Le balayage du compteur de sources en v1.231.0 remplaçait `90` par `92` sous une garde de frontière de chiffre, qui écarte bien `290` et `901` mais correspond au `90` à l’intérieur de **`Fighter90`**. **562 liens dans les 17 README, les 17 paquets d’aide et les miroirs d’aide du site**, plus **138 dans le wiki**, pointaient vers un compte inexistant ; la bannière `providers.png` et tous les liens « modifier sur GitHub » renvoyaient 404. Repéré par un utilisateur, à cause de l’image manquante.
+- **Cinq références historiques à des versions ont glissé.** Le balayage `85 → 87` a transformé `v1.85.0` en `v1.87.0`, inventant une version jamais publiée.
+
+### Notes
+- Une frontière de chiffre ne suffit pas : elle protège un nombre des **chiffres** voisins, pas du fait d’appartenir à un **identifiant** ou à une **chaîne de version**. Les compteurs eux-mêmes sont justes : 92 sources, 87 adaptateurs EN, 3009 tests.
+- Le dépôt parent n’a pas été touché.
+
 ## [1.231.0] — 2026-09-05
 
 **Ajouté — deux sources de balayage du career-ops parent v1.32.0 (Collage, Telegram strict), le mode REST de Gem et un défaut que le portage a mis au jour dans le code du parent lui-même.**

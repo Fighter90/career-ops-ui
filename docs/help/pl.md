@@ -1,6 +1,6 @@
 # Pomoc — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 Kompletny przewodnik po każdej stronie — od momentu uruchomienia
 aplikacji aż do zdobycia zaproszenia na rozmowę kwalifikacyjną. Każdy
@@ -1630,7 +1630,7 @@ zdarzeń.
 
 Dla głębszej diagnostyki: uruchom **▶ Doctor** na stronie Health, skopiuj
 wynik i przeszukaj tracker problemów na
-<https://github.com/Fighter92/career-ops-ui/issues>.
+<https://github.com/Fighter90/career-ops-ui/issues>.
 
 
 ---
@@ -2203,7 +2203,7 @@ Wyjście poza `127.0.0.1` oznacza, że bezpieczeństwo, które loopback dawał z
 
 ## 32. Uruchamianie z OpenWorker (współpracownik AI)
 
-Wolisz desktopowego współpracownika AI od przeglądarki? **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** to współpracownik **[OpenWorker](https://github.com/andrewyng/openworker)** (open-source'owa, działająca lokalnie aplikacja współpracownika AI autorstwa Andrew Ng), który prowadzi za ciebie cały ten pipeline — skanuje portale, ocenia dopasowanie względem twojego CV, dopasowuje ugruntowane CV + list motywacyjny, śledzi aplikacje, przygotowuje wiadomości follow-up — i na życzenie potrafi **uruchomić ten dashboard**. To pojedyncza, wolna od kodu „persona” w Markdown; OpenWorker nie uruchamia żadnej jej części jako programu, instrukcje jedynie kierują agentem. Jego przewodnik dostępny jest we wszystkich 17 językach.
+Wolisz desktopowego współpracownika AI od przeglądarki? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** to współpracownik **[OpenWorker](https://github.com/andrewyng/openworker)** (open-source'owa, działająca lokalnie aplikacja współpracownika AI autorstwa Andrew Ng), który prowadzi za ciebie cały ten pipeline — skanuje portale, ocenia dopasowanie względem twojego CV, dopasowuje ugruntowane CV + list motywacyjny, śledzi aplikacje, przygotowuje wiadomości follow-up — i na życzenie potrafi **uruchomić ten dashboard**. To pojedyncza, wolna od kodu „persona” w Markdown; OpenWorker nie uruchamia żadnej jej części jako programu, instrukcje jedynie kierują agentem. Jego przewodnik dostępny jest we wszystkich 17 językach.
 
 ### Co robi współpracownik
 
@@ -2214,7 +2214,7 @@ Działając w folderze twojego projektu `career-ops`, współpracownik wykonuje 
 Zainstaluj OpenWorker i dodaj klucz modelu (Anthropic / OpenAI / Google lub lokalny Ollama). Najszybciej — **jedna komenda** — przygotowuje potok `career-ops`, którym steruje coworker, i jest idempotentna: używa istniejących `career-ops` / `web-ui` bez nadpisywania Twoich danych:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
 ```
 
-Następnie dodaj coworkera w panelu **Install a coworker** w OpenWorker — przez **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`), przez **.zip** (z [Releases](https://github.com/Fighter92/career-ops-coworker/releases)) lub **importując** `career-ops.md`. Otwórz sesję **Job-Search Coworker**, wybierz folder `career-ops` i poproś o coś konkretnego — *„przeskanuj moje tablice i daj 5 najlepszych dopasowań w tym tygodniu”* lub *„otwórz pulpit.”* Konektory (Gmail, Google Calendar, GitHub) i pełny przewodnik są w [przewodniku pomocy](https://github.com/Fighter92/career-ops-coworker/tree/main/help) repozytorium. Zweryfikowano instalowalność wobec loadera OpenWorker i jego instalatora repo.
+Następnie dodaj coworkera w panelu **Install a coworker** w OpenWorker — przez **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), przez **.zip** (z [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) lub **importując** `career-ops.md`. Otwórz sesję **Job-Search Coworker**, wybierz folder `career-ops` i poproś o coś konkretnego — *„przeskanuj moje tablice i daj 5 najlepszych dopasowań w tym tygodniu”* lub *„otwórz pulpit.”* Konektory (Gmail, Google Calendar, GitHub) i pełny przewodnik są w [przewodniku pomocy](https://github.com/Fighter90/career-ops-coworker/tree/main/help) repozytorium. Zweryfikowano instalowalność wobec loadera OpenWorker i jego instalatora repo.

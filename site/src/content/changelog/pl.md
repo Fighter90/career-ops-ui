@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.1] — 2026-09-06
+
+**Poprawiono — przemiatanie liczników z v1.231.0 przepisało nazwę konta we wszystkich odnośnikach.**
+
+### Naprawiono
+- **Każdy odnośnik `Fighter90` stał się `Fighter92`.** Przemiatanie licznika źródeł w v1.231.0 zamieniało `90` na `92` pod strażą granicy cyfry, która poprawnie pomija `290` i `901`, ale trafia w `90` wewnątrz **`Fighter90`**. **562 odnośniki we wszystkich 17 README, wszystkich 17 pakietach pomocy i lustrach pomocy na stronie**, plus **138 w wiki**, prowadziły do nieistniejącego konta. Zauważył użytkownik — po brakującym obrazku.
+- **Pięć historycznych odwołań do wydań przesunęło się.** Przemiatanie `85 → 87` zmieniło `v1.85.0` w `v1.87.0`, wymyślając wydanie, którego nigdy nie było.
+
+### Uwagi
+- Granica cyfry nie wystarcza: chroni liczbę przed sąsiednimi **cyframi**, a nie przed byciem częścią **identyfikatora** albo **łańcucha wersji**. Same liczniki są poprawne: 92 źródła, 87 adapterów EN, 3009 testów.
+- Repozytorium nadrzędne nie ucierpiało.
+
 ## [1.231.0] — 2026-09-05
 
 **Dodano — dwa źródła skanowania z nadrzędnego career-ops v1.32.0 (Collage, Telegram ścisły), tryb REST w Gem oraz wadę, którą port wydobył w kodzie samego projektu nadrzędnego.**
