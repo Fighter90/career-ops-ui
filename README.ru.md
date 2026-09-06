@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
+[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.231.3** — **Клик по Doctor ломал верхнюю панель на телефоне** — сообщено с телефона в день выхода v1.231.2. `UI.withSpinner` показывал индикатор занятости присваиванием `button.textContent`, а оно заменяет *всех* детей одним текстовым узлом. v1.231.2 как раз разделил кнопки панели на `.btn-ico` и `.btn-label`, скрыв подпись под `max-width: 900px`, — поэтому первый же тап уничтожал оба `<span>` навсегда: подпись возвращалась голым текстом, а квадрат 36 px разрастался в «таблетку» `🩺Doctor`, наезжавшую на переключатель темы. Само не восстанавливалось — только перезагрузка. Теперь `withSpinner` сохраняет **узлы**-детей и возвращает их через `replaceChildren`; кнопки с одним текстом — большинство из 24 мест вызова — работают ровно как прежде. Тот же класс дефекта, что и ловушка с `applyI18n()` из прошлого релиза, но через другого вызывающего: **разделив содержимое элемента на дочерние `<span>`, вы делаете скрытым багом каждого существующего писателя `textContent` по нему**. Ещё исправлено, найдено браузерным регрессом: **поле поиска схлопывалось до 8 px** на 320 px — один символ из двадцати одного в подсказке — потому что однострочная панель оставила searchbar единственным гибким элементом. Ниже 420 px оно теперь прячется за лупу и по тапу разворачивается на всю панель (**182 px на 320 px**); выше — без изменений. **3012 тестов.**
+> **🆕 Последний релиз — v1.231.4** — **v1.231.3 починил последствие клика по Doctor, а не сам момент.** Он возвращал `<span>` кнопки в `finally`, но индикатор занятости по-прежнему писал `'⏳ ' + подпись` внутрь кнопки *на время запроса* — поэтому всё время работы `doctor.mjs` квадрат 36 px был широкой «таблеткой» `⏳ 🩺Doctor`, ломавшей строку, а на десктопе — слипшимся `⏳🩺Doctor`. Проверка, смотревшая только на конечное состояние, это пропускала. **Кнопка с детьми-элементами теперь не переписывается вовсе**: её индикатор — класс `.is-loading`, подменяющий иконку песочными часами средствами CSS, так что геометрия измениться не может — **36 px в покое, 36 px во время, 36 px после** на 320 px. Новая браузерная проверка сама удерживает промис открытым, а не гонится за настоящим запросом, и снимает замер в середине полёта. **3013 тестов.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

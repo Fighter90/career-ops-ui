@@ -7,16 +7,16 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
+[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.231.3** — **Клік по Doctor ламав верхню панель на телефоні** — повідомлено з телефона в день виходу v1.231.2. `UI.withSpinner` показував індикатор зайнятості присвоєнням `button.textContent`, а воно замінює *всіх* дітей одним текстовим вузлом. v1.231.2 якраз розділив кнопки панелі на `.btn-ico` і `.btn-label`, сховавши підпис під `max-width: 900px`, — тому перший же дотик знищував обидва `<span>` назавжди: підпис повертався голим текстом, а квадрат 36 px розростався в «пігулку» `🩺Doctor`. Само не відновлювалося — лише перезавантаження. Тепер `withSpinner` зберігає **вузли**-дітей і повертає їх через `replaceChildren`. Той самий клас дефекту, що й пастка з `applyI18n()` з минулого релізу, але через іншого викликача. Ще виправлено, знайдено браузерним регресом: **поле пошуку схлопувалося до 8 px** на 320 px. Нижче 420 px воно тепер ховається за лупу і по дотику розгортається на всю панель (**182 px на 320 px**). **3012 тестів.**
+> **🆕 Останній реліз — v1.231.4** — **v1.231.3 полагодив наслідок кліку по Doctor, а не сам момент.** Він повертав `<span>` у `finally`, але індикатор зайнятості й далі писав `'⏳ ' + підпис` усередину кнопки *на час запиту* — тому весь час роботи `doctor.mjs` квадрат 36 px був широкою «пігулкою», що ламала рядок. **Кнопка з дітьми-елементами тепер не переписується взагалі**: її індикатор — клас `.is-loading`, який підмінює піктограму пісковим годинником у CSS — **36 px у спокої, 36 px під час, 36 px після**. **3013 тестів.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

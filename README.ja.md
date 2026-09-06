@@ -7,16 +7,16 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
+[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.231.3** — **Doctor をタップするとモバイルの上部バーが崩れていました**（v1.231.2 公開当日に実機から報告）。`UI.withSpinner` は実行中の合図を `button.textContent` への代入で出しており、これは*すべての*子を 1 つのテキストノードで置き換えます。v1.231.2 はまさに各操作を `.btn-ico` と `.btn-label` に分割し、ラベルを `max-width: 900px` で隠したばかりでした。そのため最初のタップが両方の `<span>` を永久に破壊し、ラベルは素のテキストとして戻り、36 px の正方形はテーマ切り替えに覆いかぶさる `🩺Doctor` のピルへ膨らみました。自然には直らず、再読み込みだけがマークアップを戻せました。`withSpinner` は子**ノード**を控え、`replaceChildren` で復元するようになりました。前リリースで書き留めた `applyI18n()` の罠と同じ欠陥種別を、別の呼び出し元から踏んだものです。ブラウザー回帰で見つかったもう 1 件も修正: **検索欄が 320 px で 8 px まで潰れていました**——21 文字のプレースホルダーのうち 1 文字です。420 px 未満では虫眼鏡の後ろに隠れ、タップでバー全体へ展開します（**320 px で 182 px**）。それ以上の幅では従来どおりです。**3012 件のテスト。**
+> **🆕 最新リリース — v1.231.4** — **v1.231.3 は Doctor クリックの「後始末」を直しただけで、その最中は直していませんでした。** `finally` で `<span>` を戻してはいたものの、実行中の合図は依然としてボタンへ `'⏳ ' + ラベル` を書き込んでおり、`doctor.mjs` の実行中ずっと 36 px の正方形は行を崩す幅広の `⏳ 🩺Doctor` ピルに、デスクトップでは詰まった `⏳🩺Doctor` になっていました。終了状態だけを見る検査はこれを通してしまいます。**子要素を持つボタンは、もう一切書き換えません。** 合図は `.is-loading` クラスが担い、CSS でアイコンを砂時計に差し替えるので寸法は変わりようがありません——320 px で**待機 36 px、実行中 36 px、終了後 36 px**。**3013 件のテスト。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

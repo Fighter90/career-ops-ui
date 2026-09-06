@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
+[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.231.3** — **Et klik på Doctor ødelagde den øverste bjælke på mobil**, meldt fra en telefon samme dag som v1.231.2 udkom. `UI.withSpinner` viste sit travlhedssignal ved at tildele `button.textContent`, og det erstatter *alle* børn med ét tekstnode. v1.231.2 havde netop delt hver handling op i `.btn-ico` + `.btn-label` med etiketten skjult under `max-width: 900px` — første tryk ødelagde derfor begge `<span>` for altid: etiketten kom tilbage som bar tekst, og 36 px-kvadratet voksede til en `🩺Doctor`-pille oven på temaskifteren. Det helede ikke af sig selv — kun en genindlæsning gendannede opmærkningen. `withSpinner` gemmer nu barne**noderne** og gendanner dem med `replaceChildren`. Samme fejlklasse som `applyI18n()`-fælden fra forrige udgivelse, via en anden kalder. Også rettet, fundet af et browser-regressionsgennemløb: **søgefeltet var faldet sammen til 8 px** ved 320 px — ét tegn af en pladsholder på 21. Under 420 px gemmer det sig nu bag et forstørrelsesglas og folder sig ud over hele bjælken ved tryk (**182 px ved 320 px**). **3012 test.**
+> **🆕 Seneste udgivelse — v1.231.4** — **v1.231.3 rettede eftervirkningen af Doctor-klikket, ikke øjeblikket.** Den gendannede `<span>` i `finally`, men travlhedssignalet skrev stadig `'⏳ ' + etiket` ind i knappen, *mens forespørgslen kørte* — i hele `doctor.mjs`-kørslen var 36 px-kvadratet derfor en bred `⏳ 🩺Doctor`-pille, der brød rækken, og på skrivebordet et sammenklemt `⏳🩺Doctor`. **En knap med elementbørn omskrives nu slet ikke**: dens signal er klassen `.is-loading`, som bytter ikonet ud med et timeglas i CSS — **36 px i hvile, 36 px undervejs, 36 px bagefter**. **3013 test.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

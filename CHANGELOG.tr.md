@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.231.4] — 2026-09-07
+
+**Düzeltildi — v1.231.3 Doctor tıklamasının sonucunu düzeltti, anını değil. Mobilden ve masaüstünden yeniden bildirildi.**
+
+### Düzeltildi
+**`withSpinner` istek uçuştayken düğmeyi hâlâ yeniden yazıyordu.** v1.231.3 ona çocuk düğümleri saklayıp `finally` içinde geri koymayı öğretti ve gerçekten geri geliyorlardı — ama meşguliyet göstergesi yine `'⏳ ' + original` metniyle `replaceChildren` çalıştırıyordu. Böylece `doctor.mjs` çalıştığı sürece 36 px'lik kare `⏳ 🩺Doctor` metnini taşıyor ve satırı bozan geniş bir hapa dönüşüyordu; masaüstünde sıkışık bir `⏳🩺Doctor` görünüyordu. **Öğe çocukları olan bir düğme artık hiç yeniden yazılmıyor**: göstergesi `.is-loading` sınıfı; bu sınıf simgeyi CSS'te kum saatiyle değiştiriyor, dolayısıyla geometri değişemiyor: **boşta 36 px, uçuşta 36 px, sonrasında 36 px**.
+
+### Notlar
+Ders koda değil, doğrulamaya dair. v1.231.3'ün kapısı `aria-busy` temizlenene kadar bekleyip sonra ölçüyordu — yapısı gereği yalnızca `finally` bloğunun onardığı durumu görebiliyordu. Yeni denetim **sözü kendisi açık tutuyor** ve uçuşun ortasında örnek alıyor. **3012 → 3013 test.**
+
 ## [1.231.3] — 2026-09-07
 
 **Düzeltildi — Doctor'a tıklamak mobilde üst çubuğu bozuyordu. v1.231.2'nin çıktığı gün bir telefondan bildirildi.**

@@ -767,3 +767,14 @@ a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .
   header.topbar .topbar-actions .notif-bell,
   header.topbar .topbar-actions .theme-toggle { min-height: 44px; height: 44px; }
 }
+
+/* v1.231.4 — the busy cue for buttons that carry an icon span.
+   withSpinner used to write '⏳ ' + label into every button it decorated. For a
+   top-bar action that made the 36px square a wide `⏳ 🩺Doctor` pill for the
+   whole length of the run, breaking the row on every phone that tapped Doctor.
+   Those buttons are no longer rewritten; the hourglass comes from here instead,
+   so the geometry never changes. Last file in the cascade, so this beats
+   app.css's `.topbar .topbar-actions .btn-ico { display: inline }` on source
+   order at equal specificity. */
+.btn.is-loading .btn-ico { display: none; }
+.btn.is-loading::before { content: "⏳"; line-height: 1; }

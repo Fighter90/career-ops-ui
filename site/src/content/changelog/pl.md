@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.4] — 2026-09-07
+
+**Naprawiono — v1.231.3 naprawiło skutek kliknięcia Doctor, a nie sam moment. Zgłoszone ponownie, z telefonu i z pulpitu.**
+
+### Naprawiono
+**`withSpinner` wciąż przepisywał przycisk w trakcie żądania.** v1.231.3 kazało mu zapisywać węzły dzieci i przywracać je w `finally` — i wracały, ale sygnał zajętości nadal wykonywał `replaceChildren` z tekstem `'⏳ ' + original`. Przez cały czas działania `doctor.mjs` kwadrat 36 px zawierał więc `⏳ 🩺Doctor` i stawał się szeroką pigułką łamiącą wiersz; na pulpicie wyglądało to jak zbite `⏳🩺Doctor`. **Przycisk mający dzieci-elementy nie jest już w ogóle przepisywany**: jego sygnałem jest klasa `.is-loading`, która teraz zamienia ikonę na klepsydrę w CSS, więc geometria nie może się zmienić: **36 px w spoczynku, 36 px w locie, 36 px po**.
+
+### Uwagi
+Lekcja dotyczy asercji, nie kodu. Bramka z v1.231.3 czekała na zniknięcie `aria-busy` i dopiero wtedy mierzyła — z definicji widziała tylko stan już naprawiony przez `finally`. Nowe sprawdzenie **samo trzyma obietnicę otwartą** i pobiera próbkę w połowie lotu. **3012 → 3013 testów.**
+
 ## [1.231.3] — 2026-09-07
 
 **Naprawiono — kliknięcie Doctor psuło górny pasek na telefonie. Zgłoszone z telefonu w dniu wydania v1.231.2.**

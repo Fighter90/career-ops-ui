@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
+[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.231.3** — **Doctor पर क्लिक करने से मोबाइल का शीर्ष बार टूट जाता था**; v1.231.2 आने के दिन ही फ़ोन से रिपोर्ट किया गया। `UI.withSpinner` अपना व्यस्तता-संकेत `button.textContent` में असाइन करके दिखाता था, और यह *हर* बच्चे को एक ही टेक्स्ट नोड से बदल देता है। v1.231.2 ने अभी-अभी हर क्रिया को `.btn-ico` और `.btn-label` में बाँटा था और लेबल को `max-width: 900px` के नीचे छिपाया था — इसलिए पहला ही स्पर्श दोनों `<span>` को हमेशा के लिए मिटा देता था: लेबल नंगे पाठ के रूप में लौटता और 36 px का वर्ग थीम-स्विच पर चढ़ती `🩺Doctor` गोली बन जाता। यह अपने आप ठीक नहीं होता था; केवल रीलोड ही मार्कअप लौटाता था। अब `withSpinner` बच्चों की **नोड्स** सहेजता है और `replaceChildren` से लौटाता है। यह पिछली रिलीज़ में दर्ज `applyI18n()` फंदे की ही दोष-श्रेणी है, बस दूसरे कॉलर से। ब्राउज़र रिग्रेशन में मिली एक और चीज़ भी ठीक हुई: **320 px पर खोज-फ़ील्ड सिमटकर 8 px रह गया था** — 21 अक्षरों के प्लेसहोल्डर का एक अक्षर। 420 px से नीचे यह अब आवर्धक लेंस के पीछे छिपता है और टैप पर पूरी बार में फैल जाता है (**320 px पर 182 px**)। **3012 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.231.4** — **v1.231.3 ने Doctor क्लिक के बाद का हाल सुधारा था, वह क्षण नहीं।** वह `finally` में `<span>` लौटा देता था, पर व्यस्तता-संकेत *अनुरोध चलने के दौरान* अब भी बटन में `'⏳ ' + लेबल` लिख देता था — इसलिए `doctor.mjs` के पूरे चलने भर 36 px का वर्ग पंक्ति तोड़ने वाली चौड़ी `⏳ 🩺Doctor` गोली बना रहता, और डेस्कटॉप पर सटा हुआ `⏳🩺Doctor`। **जिस बटन के तत्व-बच्चे हैं, उसे अब बिलकुल नहीं लिखा जाता**: संकेत `.is-loading` वर्ग देता है, जो CSS में चिह्न की जगह बालू-घड़ी रखता है — **विश्राम में 36 px, उड़ान में 36 px, बाद में 36 px**। **3013 परीक्षण।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

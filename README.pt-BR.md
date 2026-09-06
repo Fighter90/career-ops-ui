@@ -7,16 +7,16 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
+[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.231.3** — **Clicar em Doctor quebrava a barra superior no celular**, relatado de um telefone no mesmo dia em que v1.231.2 saiu. `UI.withSpinner` mostrava seu sinal de ocupado atribuindo `button.textContent`, e isso substitui *todos* os filhos por um único nó de texto. A v1.231.2 tinha acabado de dividir cada ação da barra em `.btn-ico` + `.btn-label` ocultando o rótulo sob `max-width: 900px`, então o primeiro toque destruía os dois `<span>` de vez: o rótulo voltava como texto puro e o quadrado de 36 px virava uma pílula `🩺Doctor` que montava sobre o alternador de tema. Não se curava — só recarregar restaurava a marcação. Agora `withSpinner` captura os **nós** filhos e os restaura com `replaceChildren`. Mesma classe de defeito da armadilha do `applyI18n()` da versão anterior, por outro caminho. Também corrigido, achado numa passada de regressão em navegador: **o campo de busca encolhia até 8 px** a 320 px — um caractere de um placeholder de 21. Abaixo de 420 px ele agora se esconde atrás de uma lupa e se expande por toda a barra ao toque (**182 px a 320 px**). **3012 testes.**
+> **🆕 Última versão — v1.231.4** — **a v1.231.3 corrigiu o depois do clique em Doctor, não o momento.** Restaurava os `<span>` no `finally`, mas o sinal de ocupado ainda escrevia `'⏳ ' + rótulo` dentro do botão *enquanto a requisição rodava* — então por toda a execução de `doctor.mjs` o quadrado de 36 px era uma pílula larga `⏳ 🩺Doctor` que quebrava a linha, e no desktop um `⏳🩺Doctor` amontoado. **Um botão com filhos elemento não é mais reescrito**: seu sinal é a classe `.is-loading`, que troca o ícone por uma ampulheta em CSS — **36 px parado, 36 px em voo, 36 px depois**. **3013 testes.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
