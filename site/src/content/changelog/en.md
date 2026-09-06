@@ -8,6 +8,23 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.231.2] — 2026-09-06
+
+**Fixed — the mobile top bar wrapped into a second row, the server ran an older parent, and the cvstart.ru redirect 404ed any path that already named a language.**
+
+### Fixed
+- **The mobile top bar is one row again, with icon-only actions.** The action buttons were forced onto a full-width second row, so a phone showed `[☰ · search]` above `[🔔 🌙 Диагностика Открыть Scan]` — two wide pills on a line of their own. Doctor and Open Scan are now 36 px squares (🩺 / ⚡) beside the bell and the theme toggle, and everything fits one row at 320 px. Measured, not eyeballed: document width equals viewport at 320, 360, 390 and 430 px, and across 560–760 px — the band where the buttons used to overlap the search pill. **Locale no longer affects the mobile layout at all**, because the label is hidden and the button is a fixed square; above 900 px the labels return unchanged. The accessible name comes from `aria-label`, since a `display:none` label is dropped from the name computation.
+- **The server ran parent 1.31.0 while the release was built against 1.32.0.** v1.231.0 was a parity release, but `/opt/career-ops/src` held 1.31.0 files, so `/api/health` on resumecraft.ru reported `parentVersion: 1.31.0`. 95 runtime files were synced and two removed (`plugins-registry/theirstack.json`, retired upstream; `lib/context-budget.test.mjs`, moved to `tests/`). Reported by browser QA against the live surface.
+- **`cvstart.ru` prepended `/ru/` to every path, whatever was already there.** `cvstart.ru/ru/help` became `cvstart.org/ru/ru/help` and `cvstart.ru/en/help` became `cvstart.org/ru/en/help` — both 404. The first is what you get by copying a URL from the main site; the second locked English visitors out of the English site entirely, since any language prefix was overwritten. A path already naming one of the 16 locale prefixes now passes through, `en` is stripped (cvstart.org serves English at the root and has no `/en/`), and everything else still gets `/ru/`. The locale test is anchored, so `/enterprise/` is not mistaken for `en`.
+
+### Changed
+- **98 superseded QA prompts moved to `qa/archive/superseded-prompts/`.** `qa/README.md` has documented since v1.137.0 that only the current per-release delta stays at the top level — the rule was then not applied for 95 releases. The README now says archiving happens when a release ships, and its own stale baselines are corrected (`≥1238` → `≥3009` tests, 13 → 17 locales, 19 H2 / 75 H3 → 32 H2 / 122 H3).
+
+### Notes
+- Two specificity traps were walked into while fixing the top bar and are now commented in `app.css`: the desktop `.topbar` / `.topbar-actions` / `.btn-ico` rules are declared **lower in the file** than the `max-width: 900px` block, so at equal specificity they win — the mobile `gap` silently stayed 24 px (which is what overflowed 320 px) and the icon stayed hidden (which rendered the buttons as empty squares). The mobile rules are one class deeper on purpose.
+- `applyI18n()` assigns `el.textContent`, so the i18n key moved from the `<button>` onto an inner `<span class="btn-label">`; left on the button it would wipe the icon span on every language change. `tests/qa-report-fixes.test.mjs` BUG-008-tb now asserts the key appears **inside** `#btn-doctor` rather than as an attribute on it — the same invariant, checked where it now lives.
+- The parent deploy's first rsync **aborted mid-transfer** on a file that no longer exists locally, leaving a partial deploy that reported success — the same failure shape as the dangling-symlink trap recorded in `QA-REGRESSION-PROMPT-v1.228.3.md`. Parent deploys are now verified by checksum, never by exit code.
+
 ## [1.231.1] — 2026-09-06
 
 **Fixed — v1.231.0's count sweep rewrote the account name in every link.**

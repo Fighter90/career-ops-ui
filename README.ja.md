@@ -12,11 +12,11 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.1)
+[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.231.0** — **親 v1.32.0 からの新しいスキャンソース 2 件** — 90 →**92 ソース**（EN 87 + RU 5）、どちらもトークン不要。**Collage** はテナントの求人サイトアドレスを決して推測しません。それはテナント自身が選んだ識別子であり、推測すれば他人のボードを走査することになります。**Telegram（厳格）** は既存の `telegram` ソースと同じチャンネルプレビューを読みますが、取引は正反対です — 投稿が**雇用主を名指しし、求人ページへリンクしているときにのみ**行になります。親と同じく両方を提供します。Gem には任意の REST モードが加わりました。親自身のコードの欠陥も修正: 厳格リーダーの所在地フィルターが ASCII の単語境界を使っていたためキリル文字を認識できず、`Senior Engineer | Москва` が**「Москва」を雇用主として**返していました。**テスト 3009 件。**
+> **🆕 最新リリース — v1.231.2** — **モバイルの上部バーが再び 1 行に収まり、操作はアイコンのみになりました。** 操作ボタンは全幅の 2 行目に押し出されており、スマートフォンでは `[☰ · 検索]` の下に `[🔔 🌙 Doctor Scan を開く]` という幅広のピルが 2 つ、独立した行を占めていました。現在はベルとテーマ切り替えの隣に並ぶ 36 px の正方形（🩺 / ⚡）で、320 px でもすべてが 1 行に収まります。目視ではなく実測です — 320/360/390/430 px、および以前ボタンが検索欄に重なっていた 560〜760 px の帯全体で確認しました。**ロケールはモバイルのレイアウトにもはや一切影響しません。** ラベルは非表示で、ボタンは固定サイズの正方形だからです。あわせて修正: 本リリースは親 1.32.0 を前提に作られたのに、サーバーは親 **1.31.0** で動いていました。また `cvstart.ru` はパスの中身を見ずに `/ru/` を前置しており、`/en/help` は `/ru/en/help` となって英語版への道を完全に塞いでいました。**3009 件のテスト。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

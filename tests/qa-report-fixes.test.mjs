@@ -1472,8 +1472,18 @@ test('BUG-008-tb: top-bar Doctor modal title equals the localized button label (
   }
 
   // And the visible top-bar button declares the same key.
+  //
+  // v1.231.2 moved the key from the <button> onto an inner
+  // <span class="btn-label">: applyI18n() assigns el.textContent, which would
+  // wipe the icon span the mobile icon-only form needs. The invariant is
+  // unchanged and is what this asserts — the key must appear somewhere INSIDE
+  // the #btn-doctor element, so the button's visible label and the modal title
+  // can never come from different keys.
   const html = read('public', 'index.html');
-  assert.match(html, /id="btn-doctor"[^>]*data-i18n="top\.doctor"/);
+  const btn = html.match(/<button[^>]*id="btn-doctor"[\s\S]*?<\/button>/);
+  assert.ok(btn, 'index.html has no #btn-doctor button');
+  assert.match(btn[0], /data-i18n="top\.doctor"/,
+    '#btn-doctor must localize its label through top.doctor');
 });
 
 test('BUG-001: followup lastContact has an ISO-date pattern; validate() enforces spec.pattern', () => {

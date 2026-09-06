@@ -2,6 +2,23 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.231.2] — 2026-09-06
+
+**Düzeltildi — mobil üst çubuk iki satıra bölünüyordu, sunucu daha eski bir üst projeyle çalışıyordu ve cvstart.ru yönlendirmesi zaten bir dil adı taşıyan her yolda 404 veriyordu.**
+
+### Düzeltildi
+- **Mobil üst çubuk yeniden tek satır, eylemler yalnızca simge.** Eylem düğmeleri tam genişlikte ikinci bir satıra zorlanıyordu: telefonda `[☰ · arama]` üstte, `[🔔 🌙 Doctor Scan'i aç]` altta — kendi satırında iki geniş hap. Artık zil ve tema düğmesinin yanında 36 px kare (🩺 / ⚡) ve 320 px'te her şey tek satıra sığıyor. Göz kararı değil, ölçüldü: belge genişliği 320, 360, 390 ve 430 px'te ve düğmelerin eskiden arama alanının üstüne bindiği 560–760 px bandının tamamında görüntü alanına eşit. **Dil artık mobil yerleşimi hiç etkilemiyor**, çünkü etiket gizli ve düğme sabit bir kare; 900 px üstünde etiketler değişmeden geri geliyor.
+- **Sunucu, sürüm 1.32.0'a göre derlenmiş olmasına rağmen üst proje 1.31.0 ile çalışıyordu.** resumecraft.ru üzerinde `/api/health` `parentVersion: 1.31.0` bildiriyordu. 95 çalışma dosyası eşitlendi, iki tanesi kaldırıldı. Canlı yüzeyde tarayıcı QA'sıyla bulundu.
+- **`cvstart.ru` her yolun başına `/ru/` ekliyordu, orada ne olduğuna bakmadan.** `/ru/help` `/ru/ru/help` oluyordu, `/en/help` ise `/ru/en/help`; ikisi de 404. Birincisi ana siteden bir adresi kopyalayınca oluşuyor; ikincisi İngilizce konuşan ziyaretçiyi İngilizce sürümden tamamen dışarıda bırakıyordu. Artık 16 dil önekinden birini zaten taşıyan yol olduğu gibi geçiyor, `en` kaldırılıyor (İngilizce kökte duruyor), gerisi yine `/ru/` alıyor.
+
+### Değiştirildi
+- **98 geçersiz kalmış QA istemi `qa/archive/superseded-prompts/` altına taşındı.** `qa/README.md`, v1.137.0'dan beri üst düzeyde yalnızca güncel sürümün isteminin kaldığını belgeliyor — kural 95 sürüm boyunca uygulanmadı.
+
+### Notlar
+- İki özgüllük tuzağı artık `app.css` içinde açıklanıyor: masaüstü kuralları `max-width: 900px` bloğundan **daha aşağıda** tanımlı, bu yüzden eşit özgüllükte onlar kazanıyordu — mobil `gap` sessizce 24 px kaldı (320 px'i taşıran buydu) ve simge gizli kaldı (boş kare düğmeler).
+- `applyI18n()` `el.textContent` atadığı için i18n anahtarı iç `<span>`'e taşındı; düğmede kalsaydı her dil değişiminde simgeyi silerdi.
+- Üst projenin ilk rsync'i yerelde artık bulunmayan bir dosyada **yarıda kesildi** ve yine de başarı bildirdi. Üst proje dağıtımları artık çıkış koduyla değil, sağlama toplamıyla doğrulanıyor.
+
 ## [1.231.1] — 2026-09-06
 
 **Düzeltildi — v1.231.0'ın sayaç taraması tüm bağlantılardaki hesap adını değiştirdi.**

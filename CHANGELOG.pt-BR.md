@@ -8,6 +8,23 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.231.2] — 2026-09-06
+
+**Corrigido — a barra superior mobile quebrava em duas linhas, o servidor rodava um pai mais antigo e o redirect do cvstart.ru dava 404 em qualquer caminho que já nomeasse um idioma.**
+
+### Corrigido
+- **A barra superior mobile voltou a uma única linha, com ações só de ícone.** Os botões eram forçados para uma segunda linha de largura total, então o telefone mostrava `[☰ · busca]` acima de `[🔔 🌙 Doctor Abrir Scan]` — duas pílulas largas em linha própria. Agora são quadrados de 36 px (🩺 / ⚡) ao lado do sino e do alternador de tema, e tudo cabe em uma linha a 320 px. Medido, não estimado: a largura do documento é igual à viewport a 320, 360, 390 e 430 px, e em toda a faixa 560–760 px, onde antes os botões se sobrepunham à barra de busca. **O idioma não afeta mais o layout mobile**, pois o rótulo está oculto e o botão é um quadrado fixo; acima de 900 px os rótulos voltam inalterados.
+- **O servidor rodava o pai 1.31.0 embora a versão tenha sido compilada contra 1.32.0.** `/api/health` no resumecraft.ru informava `parentVersion: 1.31.0`. Foram sincronizados 95 arquivos de execução e dois removidos. Detectado por QA de navegador na superfície em produção.
+- **O `cvstart.ru` prefixava `/ru/` a qualquer caminho, sem olhar o que já havia.** `/ru/help` virava `/ru/ru/help` e `/en/help` virava `/ru/en/help`; ambos 404. O primeiro é o que se obtém copiando uma URL do site principal; o segundo trancava o visitante de língua inglesa fora da versão em inglês. Agora um caminho que já nomeie um dos 16 prefixos passa como está, `en` é removido (o inglês fica na raiz) e o resto continua recebendo `/ru/`.
+
+### Alterado
+- **98 prompts de QA superados movidos para `qa/archive/superseded-prompts/`.** O `qa/README.md` documenta desde a v1.137.0 que só o prompt da versão atual fica no nível superior — a regra não foi aplicada por 95 versões.
+
+### Notas
+- Duas armadilhas de especificidade agora comentadas em `app.css`: as regras de desktop são declaradas **abaixo** do bloco `max-width: 900px`, então com especificidade igual elas vencem.
+- `applyI18n()` atribui `el.textContent`, então a chave i18n foi para um `<span>` interno; no botão apagaria o ícone a cada troca de idioma.
+- O primeiro rsync do pai **abortou no meio** em um arquivo que não existe mais localmente e mesmo assim informou sucesso. Deploys do pai são verificados por checksum, nunca por código de saída.
+
 ## [1.231.1] — 2026-09-06
 
 **Corrigido — a varredura de contagens da v1.231.0 reescreveu o nome da conta em todos os links.**

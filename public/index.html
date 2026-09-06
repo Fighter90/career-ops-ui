@@ -219,8 +219,19 @@
             data-i18n-aria-label="notif.bellAria"
             aria-label="Notifications">🔔<span class="notif-badge" id="notif-badge" hidden>0</span></button>
           <button class="theme-toggle" id="theme-toggle" type="button" data-i18n-title="top.themeToggle" data-i18n-aria-label="top.themeToggle">🌙</button>
-          <button class="btn btn-ghost" id="btn-doctor" data-i18n="top.doctor">Doctor</button>
-          <button class="btn btn-primary" id="btn-quick-scan" data-i18n="top.quickscan">Open Scan</button>
+          <!-- v1.231.2 — the label carries `data-i18n`, not the button: applyI18n()
+               assigns el.textContent, which would wipe any sibling icon. With the
+               key on an inner span the icon survives every language change, and
+               the mobile rule hides only .btn-label so the button collapses to a
+               36px square like the bell and the theme toggle beside it.
+               aria-label is set unconditionally, because a display:none label is
+               removed from the accessible name computation. -->
+          <button class="btn btn-ghost" id="btn-doctor"
+            data-i18n-aria-label="top.doctor" aria-label="Doctor"
+          ><span class="btn-ico" aria-hidden="true">🩺</span><span class="btn-label" data-i18n="top.doctor">Doctor</span></button>
+          <button class="btn btn-primary" id="btn-quick-scan"
+            data-i18n-aria-label="top.quickscan" aria-label="Open Scan"
+          ><span class="btn-ico" aria-hidden="true">⚡</span><span class="btn-label" data-i18n="top.quickscan">Open Scan</span></button>
         </div>
       </header>
       <div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>

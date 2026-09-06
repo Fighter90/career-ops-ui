@@ -8,6 +8,23 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.231.2] — 2026-09-06
+
+**Rettet — den mobile topbjælke brød om på to rækker, serveren kørte et ældre forældreprojekt, og cvstart.ru-omdirigeringen gav 404 for enhver sti, der allerede nævnte et sprog.**
+
+### Rettet
+- **Den mobile topbjælke er igen én række, med handlinger som rene ikoner.** Handlingsknapperne blev tvunget ned på en anden række i fuld bredde: en telefon viste `[☰ · søg]` over `[🔔 🌙 Doctor Åbn Scan]` — to brede piller på deres egen linje. Nu er de 36 px kvadrater (🩺 / ⚡) ved siden af klokken og temaskifteren, og alt er på én række ved 320 px. Målt, ikke skønnet: dokumentbredden svarer til viewporten ved 320, 360, 390 og 430 px og i hele båndet 560–760 px, hvor knapperne før overlappede søgefeltet. **Sproget påvirker ikke længere det mobile layout**, fordi etiketten er skjult og knappen et fast kvadrat; over 900 px vender etiketterne uændret tilbage.
+- **Serveren kørte forældreprojekt 1.31.0, selv om udgivelsen var bygget mod 1.32.0.** `/api/health` på resumecraft.ru meldte `parentVersion: 1.31.0`. 95 kørselsfiler synkroniseret, to fjernet. Fundet af browser-QA på den live flade.
+- **`cvstart.ru` satte `/ru/` foran enhver sti uden at se på, hvad der allerede stod der.** `/ru/help` blev til `/ru/ru/help` og `/en/help` til `/ru/en/help`; begge 404. Det første får man ved at kopiere en URL fra hovedsiden; det andet lukkede engelsktalende besøgende helt ude fra den engelske udgave. En sti, der allerede nævner et af de 16 sprogpræfikser, går nu uændret igennem, `en` fjernes (engelsk ligger i roden), og resten får stadig `/ru/`.
+
+### Ændret
+- **98 forældede QA-prompts flyttet til `qa/archive/superseded-prompts/`.** `qa/README.md` har siden v1.137.0 dokumenteret, at kun den aktuelle udgivelses prompt ligger øverst — reglen blev ikke anvendt i 95 udgivelser.
+
+### Noter
+- To specificitetsfælder er nu kommenteret i `app.css`: desktopreglerne er erklæret **længere nede** end `max-width: 900px`-blokken, så ved samme specificitet vinder de — den mobile `gap` blev stille stående på 24 px (hvilket løb 320 px over), og ikonet forblev skjult (tomme firkantede knapper).
+- `applyI18n()` tildeler `el.textContent`, så i18n-nøglen flyttede til et indre `<span>`; på knappen ville den slette ikonet ved hvert sprogskifte.
+- Forældreprojektets første rsync **afbrød midt i overførslen** på en fil, der ikke længere findes lokalt, og meldte alligevel succes. Forælder-deploys verificeres nu med kontrolsum, aldrig med exit-kode.
+
 ## [1.231.1] — 2026-09-06
 
 **Rettet — tællergennemløbet fra v1.231.0 omskrev kontonavnet i alle links.**
