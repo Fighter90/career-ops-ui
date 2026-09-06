@@ -163,6 +163,41 @@ I18n.onChange(() => {
     }
   });
   document.getElementById('btn-quick-scan').addEventListener('click', () => Router.go('/scan'));
+
+  // FIND-3 (v1.231.3) — below 420px the search field collapses behind a
+  // magnifier (see components.css). This is the disclosure that opens it.
+  // The button's accessible name never changes; aria-expanded carries the
+  // state, and the 🔍/✕ swap is done entirely in CSS — nothing here writes
+  // into the button, which is exactly what broke #btn-doctor this release.
+  const searchToggle = document.getElementById('search-toggle');
+  const searchInput = document.getElementById('global-search');
+  const topbar = document.querySelector('header.topbar');
+  function setSearchOpen(open) {
+    if (!topbar || !searchToggle) return;
+    topbar.classList.toggle('search-open', open);
+    searchToggle.setAttribute('aria-expanded', String(open));
+    if (open) searchInput?.focus();
+    else searchToggle.focus();
+  }
+  searchToggle?.addEventListener('click', () => {
+    setSearchOpen(!topbar?.classList.contains('search-open'));
+  });
+  // Esc closes it, matching every other dismissible surface in the app. A blur
+  // closes it only when the field is empty: closing on a typed-but-unsubmitted
+  // query would throw the query away, and on a phone the keyboard opening can
+  // itself steal focus.
+  searchInput?.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape' && topbar?.classList.contains('search-open')) {
+      ev.stopPropagation();
+      setSearchOpen(false);
+    }
+  });
+  searchInput?.addEventListener('blur', () => {
+    if (!searchInput.value && topbar?.classList.contains('search-open')) {
+      topbar.classList.remove('search-open');
+      searchToggle?.setAttribute('aria-expanded', 'false');
+    }
+  });
   // M-9 (v1.58.14) — connection-banner Refresh used to call
   // location.reload() silently; v1.58.3 MASTER regression: "click
   // Refresh → silence. User can't tell if anything happened." Now we:

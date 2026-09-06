@@ -262,6 +262,7 @@ window.__I18N_DICT_AR = {
   'top.search': "ابحث أو ألصق رابطًا",
   'top.search.label': "بحث في الشركات والأدوار والروابط",
   'top.search.aria': "بحث شامل — Cmd+K للتركيز، الصق رابطًا واضغط Enter للخط التلقائي",
+  'top.search.toggle': "بحث",
   'top.doctor': "الفحص",
   'top.quickscan': "فتح المسح",
   'top.themeToggle': "تبديل المظهر",

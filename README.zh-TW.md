@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
+[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.231.2** — **行動版頂欄重新回到一列，操作按鈕改為純圖示。** 操作按鈕此前被擠到整寬的第二列，手機上呈現為 `[☰ · 搜尋]`，其下是 `[🔔 🌙 Doctor 開啟 Scan]`——兩枚寬膠囊獨佔一列。現在它們是鈴鐺與主題切換旁的 36 px 方塊（🩺 / ⚡），在 320 px 下全部裝進一列。是實測而非目測：在 320/360/390/430 px，以及按鈕從前會蓋住搜尋框的 560–760 px 整個區間內均已驗證。**語言不再對行動版版面產生任何影響**，因為標籤被隱藏、按鈕是固定方塊。同時修復：本次發行版依上游 1.32.0 建置，伺服器卻執行著上游 **1.31.0**；而 `cvstart.ru` 會為任何路徑前置 `/ru/`，完全不看裡面已經有什麼——`/en/help` 變成 `/ru/en/help`，把英文站徹底堵死。**3009 項測試。**
+> **🆕 最新版本 — v1.231.3** — **點擊 Doctor 會把行動版頂欄撐壞**，v1.231.2 發布當天由手機端回報。`UI.withSpinner` 透過對 `button.textContent` 賦值來顯示忙碌提示，而這會把*所有*子節點替換成一個文字節點。v1.231.2 剛剛把每個操作拆成 `.btn-ico` 與 `.btn-label`，並在 `max-width: 900px` 下隱藏標籤——於是第一次點擊就永久摧毀了這兩個 `<span>`：標籤以裸文字回歸，36 px 方塊膨脹成壓住主題切換的 `🩺Doctor` 膠囊。它不會自癒，只有重新整理頁面才能恢復標記。現在 `withSpinner` 快照子**節點**並以 `replaceChildren` 還原。與上個版本記下的 `applyI18n()` 陷阱同屬一類缺陷，只是經由另一個呼叫方。另修復一處，由瀏覽器迴歸發現：**搜尋框在 320 px 下被壓縮到 8 px**——21 個字元的預留文字只露出一個。420 px 以下它現在藏到放大鏡後面，輕點即展開佔滿整條列（**320 px 下 182 px**）。**3012 項測試。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

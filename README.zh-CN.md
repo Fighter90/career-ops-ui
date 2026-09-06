@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
+[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.231.2** — **移动端顶栏重新回到一行，操作按钮改为纯图标。** 操作按钮此前被挤到整宽的第二行，手机上呈现为 `[☰ · 搜索]`，其下是 `[🔔 🌙 Doctor 打开 Scan]`——两枚宽胶囊独占一行。现在它们是铃铛和主题开关旁的 36 px 方块（🩺 / ⚡），在 320 px 下全部装进一行。是实测而非目测：在 320/360/390/430 px，以及按钮从前会盖住搜索框的 560–760 px 整个区间内均已验证。**语言不再对移动端布局产生任何影响**，因为标签被隐藏、按钮是固定方块。同时修复：本次发行版按上游 1.32.0 构建，服务器却运行着上游 **1.31.0**；而 `cvstart.ru` 会给任何路径前置 `/ru/`，完全不看里面已经有什么——`/en/help` 变成 `/ru/en/help`，把英文站彻底堵死。**3009 项测试。**
+> **🆕 最新版本 — v1.231.3** — **点击 Doctor 会把移动端顶栏撑坏**，v1.231.2 发布当天由手机端报告。`UI.withSpinner` 通过给 `button.textContent` 赋值来显示忙碌提示，而这会把*所有*子节点替换成一个文本节点。v1.231.2 刚刚把每个操作拆成 `.btn-ico` 与 `.btn-label`，并在 `max-width: 900px` 下隐藏标签——于是第一次点击就永久摧毁了这两个 `<span>`：标签以裸文本回归，36 px 方块膨胀成压住主题开关的 `🩺Doctor` 胶囊。它不会自愈，只有刷新页面才能恢复标记。现在 `withSpinner` 快照子**节点**并用 `replaceChildren` 还原；纯文本按钮，也就是 24 处调用中的绝大多数，行为完全一致。与上个版本记下的 `applyI18n()` 陷阱同属一类缺陷，只是经由另一个调用方。另修复一处，由浏览器回归发现：**搜索框在 320 px 下被压缩到 8 px**——21 个字符的占位符只露出一个。420 px 以下它现在藏到放大镜后面，轻点即展开占满整条栏（**320 px 下 182 px**）；以上一切照旧。**3012 项测试。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

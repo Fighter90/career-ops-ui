@@ -210,6 +210,21 @@
           <kbd class="kbd-shortcut" aria-hidden="true" data-mac="Enter" data-other="Enter">Enter</kbd>
         </div>
         <div class="topbar-actions">
+          <!-- v1.231.3 — FIND-3. Making the actions icon-only put everything on
+               one row, but the searchbar was the only flexible item and was left
+               free to shrink to nothing: at 320px the input measured 8px, one
+               character of a 21-character placeholder. Four 36px actions plus the
+               menu simply do not leave a readable field on a 320px screen, so
+               below 420px the field collapses behind this magnifier and expands
+               over the whole bar on tap. A disclosure button keeps ONE accessible
+               name and reports state through aria-expanded, so there is no second
+               i18n key and no name that changes under the user. The icon swap is
+               pure CSS: JS never writes into this button, which is what broke
+               the Doctor button in this same release. -->
+          <button class="btn btn-ghost search-toggle" id="search-toggle" type="button"
+            aria-expanded="false" aria-controls="global-search"
+            data-i18n-aria-label="top.search.toggle" aria-label="Search"
+          ><span class="search-ico-open" aria-hidden="true">🔍</span><span class="search-ico-close" aria-hidden="true">✕</span></button>
           <!-- v1.58.34 — notifications bell. Opens the right-slide
                drawer that re-surfaces the in-memory toast journal
                captured by U-13 (v1.58.33). aria-haspopup=dialog +

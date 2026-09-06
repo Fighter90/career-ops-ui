@@ -262,6 +262,7 @@ window.__I18N_DICT_UK = {
   'top.search': "Пошук або вставте URL",
   'top.search.label': "Пошук компаній, ролей або URL",
   'top.search.aria': "Глобальний пошук — Cmd+K для фокусу, вставте URL і Enter для auto-pipeline",
+  'top.search.toggle': "Пошук",
   'top.doctor': "Doctor",
   'top.quickscan': "Відкрити сканування",
   'top.themeToggle': "Переключити тему",

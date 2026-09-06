@@ -7,16 +7,16 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
+[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.231.2** — **Die obere Leiste auf dem Handy passt wieder in eine Zeile, und ihre Aktionen sind Symbole.** Die Aktionsschaltflächen wurden in eine zweite Zeile über die volle Breite gedrängt, sodass auf dem Telefon `[☰ · Suche]` und darunter `[🔔 🌙 Doctor Scan öffnen]` stand — zwei breite Pillen in einer eigenen Zeile. Jetzt sind es 36-px-Quadrate (🩺 / ⚡) neben der Glocke und dem Themenschalter, und bei 320 px passt alles in eine Zeile — gemessen, nicht geschätzt: bei 320/360/390/430 px und über das gesamte Band von 560–760 px, in dem die Schaltflächen zuvor auf dem Suchfeld saßen. **Die Sprache verändert das mobile Layout überhaupt nicht mehr**, denn die Beschriftung ist ausgeblendet und die Schaltfläche ein festes Quadrat. Ebenfalls behoben: Der Server lief mit dem Elternprojekt **1.31.0**, obwohl diese Version gegen **1.32.0** gebaut wurde, und `cvstart.ru` stellte jedem Pfad `/ru/` voran, ohne zu prüfen, was schon da war — aus `/en/help` wurde `/ru/en/help`, was die englische Seite vollständig verschloss. **3009 Tests.**
+> **🆕 Neueste Version — v1.231.3** — **Ein Klick auf Doctor zerlegte die obere Leiste auf dem Handy**, am Erscheinungstag von v1.231.2 vom Telefon aus gemeldet. `UI.withSpinner` zeigte seinen Beschäftigt-Hinweis durch eine Zuweisung an `button.textContent`, und die ersetzt *alle* Kinder durch einen einzigen Textknoten. v1.231.2 hatte gerade jede Aktion in `.btn-ico` + `.btn-label` aufgeteilt und die Beschriftung unter `max-width: 900px` versteckt — der erste Tipp zerstörte also beide `<span>` endgültig: Die Beschriftung kam als nackter Text zurück und das 36-px-Quadrat wuchs zu einer `🩺Doctor`-Pille, die über den Themenschalter ragte. Es heilte nicht von selbst — nur ein Neuladen stellte das Markup wieder her. `withSpinner` sichert nun die Kind-**Knoten** und stellt sie mit `replaceChildren` wieder her. Dieselbe Fehlerklasse wie die `applyI18n()`-Falle der Vorversion, über einen anderen Aufrufer. Ebenfalls behoben, von einem Browser-Regressionslauf gefunden: **das Suchfeld war auf 8 px zusammengefallen** bei 320 px — ein Zeichen eines 21 Zeichen langen Platzhalters. Unter 420 px versteckt es sich nun hinter einer Lupe und klappt beim Tippen über die ganze Leiste auf (**182 px bei 320 px**). **3012 Tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

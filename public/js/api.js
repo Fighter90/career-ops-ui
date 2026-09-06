@@ -586,10 +586,21 @@ window.UI = (function () {
     button.classList.add('is-loading');
     button.disabled = true;
     button.setAttribute('aria-busy', 'true');
-    // Visual cue without a CSS dependency: prepend an hourglass.
-    if (original && !button.querySelector('.spinner')) {
-      button.dataset.originalText = original;
-      button.textContent = '⏳ ' + original;
+    // Visual cue without a CSS dependency: swap the content for an hourglass.
+    //
+    // BUG-TB-SPIN (v1.231.3): snapshot the child NODES, not `textContent`.
+    // Assigning `textContent` replaces every child with ONE text node, so a
+    // button carrying element children lost them permanently on the first
+    // click. That is exactly what the v1.231.2 top bar does — `.btn-ico` +
+    // `.btn-label` spans, with the label hidden under `max-width: 900px` — so
+    // one Doctor tap flattened the button to bare text, the mobile rules had
+    // nothing left to match, and the row overflowed. Restoring the nodes keeps
+    // every existing text-only call site behaving identically.
+    let savedChildren = null;
+    if (original && !button.dataset.spinnerBusy && !button.querySelector('.spinner')) {
+      savedChildren = Array.from(button.childNodes);
+      button.dataset.spinnerBusy = '1';
+      button.replaceChildren(document.createTextNode('⏳ ' + original));
     }
     try {
       return await fn();
@@ -597,9 +608,9 @@ window.UI = (function () {
       button.classList.remove('is-loading');
       button.removeAttribute('aria-busy');
       button.disabled = wasDisabled;
-      if (button.dataset.originalText) {
-        button.textContent = button.dataset.originalText;
-        delete button.dataset.originalText;
+      if (savedChildren) {
+        button.replaceChildren(...savedChildren);
+        delete button.dataset.spinnerBusy;
       }
     }
   }

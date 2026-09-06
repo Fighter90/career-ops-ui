@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.231.3] — 2026-09-07
+
+**Fixed — clicking Doctor broke the mobile top bar. Reported from a phone the day v1.231.2 shipped.**
+
+### Fixed
+**`UI.withSpinner` flattened the button it was decorating.** Its busy cue went through `textContent`: save `button.textContent`, write `'⏳ ' + original`, write it back. Assigning `textContent` replaces **every** child with one text node — and v1.231.2 had just split each top-bar action into `.btn-ico` + `.btn-label` spans, hiding the label under `max-width: 900px`. So the first Doctor tap destroyed both spans for good: the mobile rules had nothing left to match, the label came back as bare text, and the 36 px square grew into a `🩺Doctor` pill that spilled over the theme toggle. It never healed — only a reload restored the markup. The fix snapshots the child **nodes** and restores them with `replaceChildren`; text-only buttons, which is most of the 24 call sites, round-trip exactly as before. A `dataset.spinnerBusy` flag stops a re-entrant call from snapshotting the hourglass as though it were the original content.
+- **FIND-3 — the search field had collapsed to 8 px on a 320 px phone.** Putting the top bar on one row left the searchbar as the only flexible item, and this changelog said so a release ago: it *"may shrink to nothing, so no negative space exists to distribute"*. It did shrink to nothing — **8 px of input at 320 px, 28 px at 340 px**, one character of a 21-character placeholder. Clickable and typable, but no longer legible as a field. No `min-width` could fix it: at 320 px the bar holds 32 px of padding, a 40 px menu and 162 px of actions, with no 120 px left to give. So below **420 px** — the width at which the field finally clears 100 px on its own — it now hides behind a magnifier and expands across the whole bar on tap: **182 px at 320 px, 222 px at 360 px, 252 px at 390 px**, with the menu and the other actions stepping aside and no overflow at any width. The disclosure keeps one accessible name and reports state through `aria-expanded`, so nothing renames itself under the user, and the 🔍/✕ swap is pure CSS — no JS writes into that button, which is what broke Doctor in this same release. Above 420 px nothing changes: 109 px at 421 px, 447 px at 1280 px, exactly as before. Found by a browser regression pass against the live build.
+
+### Notes
+This is the same defect class as the `applyI18n()` trap noted in v1.231.2 — code assigning `textContent` to an element that now has element children — reached through a different caller. v1.231.2 fixed the caller it knew about and shipped past this one. The lesson generalizes: **splitting an element's content into child spans makes every existing `textContent` writer on that element a latent bug**, and the writers are not always in the file you are editing.
+Locked twice. `tests/with-spinner-preserves-children.test.mjs` runs the real `withSpinner` against a fake button in `node:vm` and asserts the spans survive a full cycle plus the busy-state contract (returns the result, disables in flight, sets and clears `aria-busy`, restores the prior `disabled`). `tests/playwright-narrow-viewport.mjs` clicks Doctor in a real browser at 320 px and asserts the button width is unchanged, the label is still `display:none`, the actions share one row, and nothing scrolls. Both were confirmed to fail against the old code before the fix landed. **3009 → 3012 tests** (the browser case is opt-in and not in `test:ci`).
+
 ## [1.231.2] — 2026-09-06
 
 **Fixed — the mobile top bar wrapped into a second row, the server ran an older parent, and the cvstart.ru redirect 404ed any path that already named a language.**

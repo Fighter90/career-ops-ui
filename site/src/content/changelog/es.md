@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.3] — 2026-09-07
+
+**Corregido — pulsar Doctor rompía la barra superior en el móvil. Reportado desde un teléfono el mismo día que salió v1.231.2.**
+
+### Corregido
+**`UI.withSpinner` aplastaba los hijos del botón que decoraba.** Su señal de ocupado pasaba por `textContent`: guardar `button.textContent`, escribir `'⏳ ' + original`, volver a escribirlo. Asignar `textContent` reemplaza **todos** los hijos por un único nodo de texto — y v1.231.2 acababa de dividir cada acción de la barra superior en `.btn-ico` + `.btn-label`, ocultando la etiqueta bajo `max-width: 900px`. Así que la primera pulsación en Doctor destruía ambos `<span>` para siempre: las reglas móviles se quedaban sin nada que coincidir, la etiqueta volvía como texto desnudo y el cuadrado de 36 px crecía hasta una pastilla `🩺Doctor` que se montaba sobre el conmutador de tema. No se curaba solo — únicamente recargar la página restauraba el marcado. La corrección captura los **nodos** hijos y los restaura con `replaceChildren`; los botones de solo texto, que son la mayoría de los 24 puntos de llamada, van y vuelven exactamente igual que antes.
+- **FIND-3 — el campo de búsqueda se reducía a 8 px en un teléfono de 320 px.** Al poner la barra en una sola fila, el searchbar quedó como el único elemento flexible, y el changelog anterior lo decía: *«puede encogerse hasta nada»*. Y se encogió hasta nada: **8 px de campo a 320 px, 28 px a 340 px**, un carácter de un marcador de 21. Pulsable y escribible, pero ilegible como campo. Ningún `min-width` lo arregla: a 320 px la barra sostiene 32 px de relleno, un menú de 40 px y 162 px de acciones, sin 120 px que dar. Por eso, por debajo de **420 px** — el ancho en que el campo por fin supera los 100 px solo — se oculta tras una lupa y se despliega por toda la barra al tocarla: **182 px a 320 px, 222 px a 360 px, 252 px a 390 px**, sin desbordamiento en ningún ancho. El botón conserva un único nombre accesible y comunica el estado con `aria-expanded`, y el cambio 🔍/✕ es CSS puro — ningún JS escribe en ese botón, que es lo que rompió Doctor en esta misma versión. Por encima de 420 px nada cambia. Detectado por una pasada de regresión en navegador contra la build en vivo.
+
+### Notas
+Es la misma clase de defecto que la trampa de `applyI18n()` señalada en v1.231.2 — código que asigna `textContent` a un elemento que ahora tiene hijos elemento — alcanzada por otra vía. La lección se generaliza: **dividir el contenido de un elemento en `<span>` hijos convierte a cada escritor de `textContent` ya existente sobre ese elemento en un fallo latente**, y esos escritores no siempre están en el archivo que estás editando.
+Asegurado por partida doble: `node:vm` sobre el `withSpinner` real y un clic en un navegador real a 320 px. Ambos se confirmaron fallando contra el código anterior. **3009 → 3012 pruebas** (el caso de navegador es opcional y no entra en `test:ci`).
+
 ## [1.231.2] — 2026-09-06
 
 **Corregido — la barra superior móvil se partía en dos filas, el servidor ejecutaba un padre más antiguo y el redirect de cvstart.ru daba 404 en cualquier ruta que ya nombrara un idioma.**

@@ -263,6 +263,7 @@ window.__I18N_DICT_ZH_TW = {
   'top.search': "搜尋或貼上 URL",
   'top.search.label': "搜尋公司、職位或 URL",
   'top.search.aria': "全域搜尋 — Cmd+K 聚焦,貼上 URL 並按 Enter 觸發 auto-pipeline",
+  'top.search.toggle': "搜尋",
   'top.doctor': "診斷",
   'top.quickscan': "開啟 Scan",
   'top.themeToggle': "切換主題",

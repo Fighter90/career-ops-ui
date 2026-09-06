@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.231.3] — 2026-09-07
+
+**Düzeltildi — Doctor'a tıklamak mobilde üst çubuğu bozuyordu. v1.231.2'nin çıktığı gün bir telefondan bildirildi.**
+
+### Düzeltildi
+**`UI.withSpinner`, süslediği düğmenin çocuklarını düzleştiriyordu.** Meşguliyet göstergesi `textContent` üzerinden işliyordu: `button.textContent`'i sakla, `'⏳ ' + original` yaz, geri yaz. `textContent`'e atama **bütün** çocukları tek bir metin düğümüyle değiştirir — ve v1.231.2 üst çubuktaki her eylemi henüz `.btn-ico` + `.btn-label` olarak ayırmış, etiketi `max-width: 900px` altında gizlemişti. Böylece Doctor'a ilk dokunuş her iki `<span>`'i kalıcı olarak yok ediyordu: mobil kurallarının eşleşecek bir şeyi kalmıyor, etiket çıplak metin olarak geri geliyor ve 36 px'lik kare, tema anahtarının üstüne binen bir `🩺Doctor` hapına dönüşüyordu. Kendiliğinden düzelmiyordu — işaretlemeyi yalnızca sayfa yeniden yüklemesi geri getiriyordu. Düzeltme çocuk **düğümlerini** saklayıp `replaceChildren` ile geri koyuyor; yalnızca metin taşıyan düğmeler, yani 24 çağrı yerinin çoğu, tıpatıp eskisi gibi davranıyor.
+- **FIND-3 — arama alanı 320 px'lik bir telefonda 8 px'e çökmüştü.** Çubuğu tek satıra almak searchbar'ı tek esnek öğe olarak bıraktı; geçen sürümün changelog'u bunu açıkça yazmıştı: *«hiçliğe kadar küçülebilir»*. Küçüldü de: **320 px'te 8 px alan, 340 px'te 28 px** — 21 karakterlik bir yer tutucunun tek karakteri. Tıklanabilir ve yazılabilir, ama artık bir alan olarak okunmuyor. Hiçbir `min-width` bunu çözmez: 320 px'te çubuk 32 px dolgu, 40 px menü ve 162 px eylem taşır; verecek 120 px yoktur. Bu yüzden **420 px** altında alan bir büyütecin arkasına gizlenir ve dokununca tüm çubuğa açılır: **320 px'te 182 px, 360 px'te 222 px, 390 px'te 252 px**, hiçbir genişlikte taşma olmadan. Düğme tek bir erişilebilir ad korur ve durumu `aria-expanded` ile bildirir; 🔍/✕ değişimi saf CSS'tir. 420 px üstünde hiçbir şey değişmez. Canlı yapıya karşı yapılan tarayıcı regresyon geçişinde bulundu.
+
+### Notlar
+Bu, v1.231.2'de not edilen `applyI18n()` tuzağıyla aynı kusur sınıfı — artık öğe çocukları olan bir öğeye `textContent` atayan kod — yalnızca başka bir çağırandan geliniyor. Ders genelleşiyor: **bir öğenin içeriğini çocuk `<span>`'lere bölmek, o öğe üzerindeki mevcut her `textContent` yazıcısını gizli bir hataya dönüştürür.**
+İki kez kilitlendi: gerçek `withSpinner` üzerinde `node:vm` ve 320 px'te gerçek bir tarayıcıda tıklama. İkisinin de eski kodda düştüğü doğrulandı. **3009 → 3012 test.**
+
 ## [1.231.2] — 2026-09-06
 
 **Düzeltildi — mobil üst çubuk iki satıra bölünüyordu, sunucu daha eski bir üst projeyle çalışıyordu ve cvstart.ru yönlendirmesi zaten bir dil adı taşıyan her yolda 404 veriyordu.**

@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.231.3] — 2026-09-07
+
+**Corretto — cliccare Doctor rompeva la barra superiore su mobile. Segnalato da un telefono il giorno stesso in cui è uscita la v1.231.2.**
+
+### Corretto
+**`UI.withSpinner` appiattiva i figli del pulsante che decorava.** Il suo segnale di occupato passava per `textContent`: salvare `button.textContent`, scrivere `'⏳ ' + original`, riscriverlo. Assegnare `textContent` sostituisce **tutti** i figli con un unico nodo di testo — e la v1.231.2 aveva appena diviso ogni azione della barra in `.btn-ico` + `.btn-label`, con l'etichetta nascosta sotto `max-width: 900px`. Così il primo tocco su Doctor distruggeva entrambi gli `<span>` per sempre: le regole mobile non avevano più nulla da agganciare, l'etichetta tornava come testo nudo e il quadrato da 36 px cresceva in una pillola `🩺Doctor` che si sovrapponeva all'interruttore del tema. Non guariva da solo — solo un ricaricamento ripristinava il markup. La correzione cattura i **nodi** figli e li ripristina con `replaceChildren`; i pulsanti di solo testo, cioè la maggior parte dei 24 punti di chiamata, si comportano esattamente come prima.
+- **FIND-3 — il campo di ricerca si era ridotto a 8 px su un telefono da 320 px.** Portando la barra su una riga sola, il searchbar è rimasto l'unico elemento flessibile, e il changelog precedente lo diceva: *«può ridursi a nulla»*. E si è ridotto a nulla: **8 px di campo a 320 px, 28 px a 340 px**, un carattere di un segnaposto da 21. Cliccabile e digitabile, ma illeggibile come campo. Nessun `min-width` lo risolve: a 320 px la barra tiene 32 px di padding, un menu da 40 px e 162 px di azioni, senza 120 px da cedere. Perciò sotto i **420 px** — la larghezza in cui il campo supera finalmente i 100 px da solo — si nasconde dietro una lente e si espande su tutta la barra al tocco: **182 px a 320 px, 222 px a 360 px, 252 px a 390 px**, senza overflow ad alcuna larghezza. Il pulsante conserva un unico nome accessibile e comunica lo stato con `aria-expanded`, e lo scambio 🔍/✕ è CSS puro. Sopra i 420 px non cambia nulla. Trovato da una passata di regressione in browser sulla build live.
+
+### Note
+È la stessa classe di difetto della trappola `applyI18n()` annotata nella v1.231.2 — codice che assegna `textContent` a un elemento che ora ha figli elemento — raggiunta da un chiamante diverso. La lezione si generalizza: **dividere il contenuto di un elemento in `<span>` figli rende ogni scrittore di `textContent` già esistente su quell'elemento un bug latente**.
+Bloccato due volte: `node:vm` sul vero `withSpinner` e un clic in un browser reale a 320 px. Entrambi confermati fallire sul codice precedente. **3009 → 3012 test**.
+
 ## [1.231.2] — 2026-09-06
 
 **Corretto — la barra superiore mobile andava a capo su due righe, il server eseguiva un padre più vecchio e il redirect di cvstart.ru dava 404 su qualsiasi percorso che già nominasse una lingua.**

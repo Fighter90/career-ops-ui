@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.231.3] — 2026-09-07
+
+**Corrigé — cliquer sur Doctor cassait la barre supérieure sur mobile. Signalé depuis un téléphone le jour même de la sortie de v1.231.2.**
+
+### Corrigé
+**`UI.withSpinner` aplatissait les enfants du bouton qu'il décorait.** Son indicateur d'activité passait par `textContent` : sauvegarder `button.textContent`, écrire `'⏳ ' + original`, le réécrire. Affecter `textContent` remplace **tous** les enfants par un seul nœud de texte — et v1.231.2 venait de scinder chaque action de la barre en `.btn-ico` + `.btn-label`, le libellé masqué sous `max-width: 900px`. Le premier appui sur Doctor détruisait donc les deux `<span>` définitivement : les règles mobiles n'avaient plus rien à cibler, le libellé revenait en texte brut, et le carré de 36 px devenait une pastille `🩺Doctor` chevauchant le sélecteur de thème. Aucune guérison — seul un rechargement restaurait le balisage. Le correctif capture les **nœuds** enfants et les restaure via `replaceChildren` ; les boutons purement textuels, soit la majorité des 24 points d'appel, se comportent exactement comme avant.
+- **FIND-3 — le champ de recherche s'était réduit à 8 px sur un téléphone de 320 px.** En mettant la barre sur une seule ligne, j'ai laissé le searchbar comme seul élément flexible, et le changelog précédent le disait : *« peut se réduire à rien »*. Il s'est bien réduit à rien : **8 px de champ à 320 px, 28 px à 340 px**, un caractère d'un libellé de 21. Cliquable et saisissable, mais illisible en tant que champ. Aucun `min-width` n'y peut rien : à 320 px la barre porte 32 px de remplissage, un menu de 40 px et 162 px d'actions, sans 120 px à céder. Donc en dessous de **420 px** — la largeur à laquelle le champ dépasse enfin 100 px seul — il se cache derrière une loupe et se déploie sur toute la barre au toucher : **182 px à 320 px, 222 px à 360 px, 252 px à 390 px**, sans débordement à aucune largeur. Le bouton garde un seul nom accessible et signale l'état via `aria-expanded`, et l'échange 🔍/✕ est du CSS pur. Au-dessus de 420 px rien ne change. Détecté par une passe de régression en navigateur sur la build en ligne.
+
+### Notes
+C'est la même classe de défaut que le piège `applyI18n()` relevé en v1.231.2 — du code affectant `textContent` à un élément qui a désormais des enfants éléments — atteinte par un autre appelant. La leçon se généralise : **scinder le contenu d'un élément en `<span>` enfants transforme chaque écrivain de `textContent` déjà existant sur cet élément en bogue latent**, et ces écrivains ne sont pas toujours dans le fichier que vous modifiez.
+Verrouillé deux fois : `node:vm` sur le vrai `withSpinner`, et un clic dans un vrai navigateur à 320 px. Les deux ont été confirmés en échec sur l'ancien code. **3009 → 3012 tests**.
+
 ## [1.231.2] — 2026-09-06
 
 **Corrigé — la barre supérieure mobile passait sur deux lignes, le serveur exécutait un parent plus ancien, et la redirection cvstart.ru renvoyait 404 sur tout chemin nommant déjà une langue.**

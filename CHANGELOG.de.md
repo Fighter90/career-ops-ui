@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.231.3] — 2026-09-07
+
+**Behoben — ein Klick auf Doctor zerlegte die obere Leiste auf dem Handy. Am Erscheinungstag von v1.231.2 vom Telefon aus gemeldet.**
+
+### Behoben
+**`UI.withSpinner` plättete die Kinder der Schaltfläche, die es gerade dekorierte.** Sein Beschäftigt-Hinweis lief über `textContent`: `button.textContent` sichern, `'⏳ ' + original` schreiben, zurückschreiben. Eine Zuweisung an `textContent` ersetzt **alle** Kinder durch einen einzigen Textknoten — und v1.231.2 hatte gerade jede Aktion der oberen Leiste in `.btn-ico` + `.btn-label` aufgeteilt und die Beschriftung unter `max-width: 900px` versteckt. Der erste Tipp auf Doctor zerstörte damit beide `<span>` endgültig: Den mobilen Regeln blieb nichts mehr zum Greifen, die Beschriftung kam als nackter Text zurück, und das 36-px-Quadrat wuchs zu einer `🩺Doctor`-Pille, die über den Themenschalter ragte. Es heilte nicht von selbst — nur ein Neuladen stellte das Markup wieder her. Die Korrektur sichert die Kind-**Knoten** und stellt sie mit `replaceChildren` wieder her; reine Textschaltflächen, also die Mehrheit der 24 Aufrufstellen, verhalten sich exakt wie zuvor.
+- **FIND-3 — das Suchfeld war auf einem 320-px-Telefon auf 8 px zusammengefallen.** Die einreihige Leiste ließ den Searchbar als einziges flexibles Element übrig, und das stand im letzten Changelog wörtlich: *„darf auf nichts schrumpfen“*. Es schrumpfte auf nichts: **8 px Feld bei 320 px, 28 px bei 340 px** — ein Zeichen eines 21 Zeichen langen Platzhalters. Klickbar und beschreibbar, aber als Feld nicht mehr lesbar. Kein `min-width` hilft: Bei 320 px trägt die Leiste 32 px Polsterung, ein 40-px-Menü und 162 px Aktionen, ohne 120 px zu vergeben. Deshalb versteckt es sich unter **420 px** — der Breite, ab der das Feld von allein 100 px überschreitet — hinter einer Lupe und klappt beim Tippen über die ganze Leiste auf: **182 px bei 320 px, 222 px bei 360 px, 252 px bei 390 px**, ohne Überlauf bei irgendeiner Breite. Die Schaltfläche behält einen einzigen zugänglichen Namen und meldet den Zustand über `aria-expanded`; der 🔍/✕-Tausch ist reines CSS — kein JS schreibt in diese Schaltfläche, genau das hatte Doctor in derselben Version zerlegt. Über 420 px ändert sich nichts. Gefunden von einem Browser-Regressionslauf gegen den Live-Build.
+
+### Anmerkungen
+Dies ist dieselbe Fehlerklasse wie die in v1.231.2 vermerkte `applyI18n()`-Falle — Code, der `textContent` einem Element zuweist, das nun Kindelemente hat — nur über einen anderen Aufrufer erreicht. Die Lehre verallgemeinert sich: **Wer den Inhalt eines Elements in Kind-`<span>` aufteilt, macht jeden bereits vorhandenen `textContent`-Schreiber auf diesem Element zu einem latenten Fehler** — und diese Schreiber stehen nicht immer in der Datei, die man gerade bearbeitet.
+Zweifach abgesichert: `node:vm` über dem echten `withSpinner` und ein Klick in einem echten Browser bei 320 px. Beide fielen nachweislich gegen den alten Code durch. **3009 → 3012 Tests**.
+
 ## [1.231.2] — 2026-09-06
 
 **Behoben — die mobile Kopfleiste brach auf zwei Zeilen um, der Server lief mit einem älteren Elternprojekt, und die cvstart.ru-Weiterleitung lieferte 404 für jeden Pfad, der bereits eine Sprache nannte.**

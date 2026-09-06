@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.231.3] — 2026-09-07
+
+**Rettet — et klik på Doctor ødelagde den øverste bjælke på mobil. Meldt fra en telefon samme dag som v1.231.2 udkom.**
+
+### Rettet
+**`UI.withSpinner` fladede børnene ud i den knap, den var ved at dekorere.** Dens travlhedssignal gik gennem `textContent`: gem `button.textContent`, skriv `'⏳ ' + original`, skriv tilbage. At tildele `textContent` erstatter **alle** børn med ét tekstnode — og v1.231.2 havde netop delt hver handling i den øverste bjælke op i `.btn-ico` + `.btn-label` med etiketten skjult under `max-width: 900px`. Første tryk på Doctor ødelagde derfor begge `<span>` for altid: mobilreglerne havde intet tilbage at ramme, etiketten kom tilbage som bar tekst, og 36 px-kvadratet voksede til en `🩺Doctor`-pille, der lagde sig oven på temaskifteren. Det helede ikke af sig selv — kun en genindlæsning gendannede opmærkningen. Rettelsen gemmer barne**noderne** og gendanner dem med `replaceChildren`; rene tekstknapper, altså de fleste af de 24 kaldsteder, opfører sig præcis som før.
+- **FIND-3 — søgefeltet var faldet sammen til 8 px på en 320 px-telefon.** Da bjælken kom på én række, stod searchbaren tilbage som det eneste fleksible element, og sidste changelog sagde det ligeud: *»må skrumpe til ingenting«*. Den skrumpede til ingenting: **8 px felt ved 320 px, 28 px ved 340 px** — ét tegn af en pladsholder på 21. Klikbar og skrivbar, men ikke længere læselig som felt. Ingen `min-width` klarer det: ved 320 px bærer bjælken 32 px polstring, en 40 px-menu og 162 px handlinger, uden 120 px at give. Derfor gemmer feltet sig under **420 px** bag et forstørrelsesglas og folder sig ud over hele bjælken ved tryk: **182 px ved 320 px, 222 px ved 360 px, 252 px ved 390 px**, uden overløb ved nogen bredde. Knappen beholder ét tilgængeligt navn og melder tilstand via `aria-expanded`, og 🔍/✕-skiftet er ren CSS. Over 420 px ændrer intet sig. Fundet af et browser-regressionsgennemløb mod live-builden.
+
+### Noter
+Det er samme fejlklasse som `applyI18n()`-fælden noteret i v1.231.2 — kode der tildeler `textContent` til et element, som nu har elementbørn — nået via en anden kalder. Lektionen generaliserer: **at dele et elements indhold op i barne-`<span>` gør enhver eksisterende `textContent`-skriver på det element til en latent fejl**.
+Låst to gange: `node:vm` over den ægte `withSpinner` og et klik i en rigtig browser ved 320 px. Begge bekræftet at fejle mod den gamle kode. **3009 → 3012 test**.
+
 ## [1.231.2] — 2026-09-06
 
 **Rettet — den mobile topbjælke brød om på to rækker, serveren kørte et ældre forældreprojekt, og cvstart.ru-omdirigeringen gav 404 for enhver sti, der allerede nævnte et sprog.**

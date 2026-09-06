@@ -263,6 +263,7 @@ window.__I18N_DICT_TR = {
   'top.search': "Ara veya URL yapıştır",
   'top.search.label': "Şirketleri, rolleri veya URL'leri ara",
   'top.search.aria': "Genel arama — odaklanmak için Cmd+K, otomatik-pipeline için bir URL yapıştırıp Enter'a basın",
+  'top.search.toggle': "Ara",
   'top.doctor': "Doctor",
   'top.quickscan': "Taramayı Aç",
   'top.themeToggle': "Temayı değiştir",

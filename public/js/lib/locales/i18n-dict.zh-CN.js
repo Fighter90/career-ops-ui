@@ -263,6 +263,7 @@ window.__I18N_DICT_ZH_CN = {
   'top.search': "搜索或粘贴 URL",
   'top.search.label': "搜索公司、职位或 URL",
   'top.search.aria': "全局搜索 — Cmd+K 聚焦,粘贴 URL 并按 Enter 触发 auto-pipeline",
+  'top.search.toggle': "搜索",
   'top.doctor': "诊断",
   'top.quickscan': "打开 Scan",
   'top.themeToggle': "切换主题",
