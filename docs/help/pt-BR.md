@@ -1,6 +1,6 @@
 # Ajuda — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 Guia completo de cada página, do momento em que você abre o
 aplicativo até conseguir uma entrevista. Cada cabeçalho `##` abaixo
@@ -893,7 +893,7 @@ Abaixo do log, a tabela de resultados renderiza linhas de
 > atualiza automaticamente enquanto uma varredura roda e mais uma vez logo após
 > terminar — sem recarregar manualmente nem trocar de página.
 
-> **v1.87.0 — Máx. por fonte & quarentena de fontes.** O campo **Máx. por fonte**
+> **v1.85.0 — Máx. por fonte & quarentena de fontes.** O campo **Máx. por fonte**
 > ao lado do botão Varrer limita quantas vagas cada board contribui (vazio/0 =
 > sem limite, o padrão) — útil quando um board enorme dominaria os resultados.
 > Separadamente, qualquer fonte que retorne um **404 / 410** permanente é gravada
@@ -1660,7 +1660,7 @@ mais recentes.
 
 Para diagnóstico mais profundo: rode **▶ Doctor** na página Health,
 copie a saída, e busque a issue no rastreador em
-<https://github.com/Fighter92/career-ops-ui/issues>.
+<https://github.com/Fighter90/career-ops-ui/issues>.
 
 
 ---
@@ -2211,7 +2211,7 @@ Sair de `127.0.0.1` significa que a segurança que o loopback dava de graça ago
 
 ## 32. Execute a partir do OpenWorker (colega de trabalho de IA)
 
-Prefere um colega de trabalho de IA no desktop em vez do navegador? O **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** é um colega de trabalho do **[OpenWorker](https://github.com/andrewyng/openworker)** (o app de colega de trabalho de IA local-first e de código aberto de Andrew Ng) que conduz toda essa pipeline para você — escaneia portais, pontua o ajuste em relação ao seu currículo, adapta um CV + carta de apresentação fundamentados, acompanha as candidaturas, redige follow-ups — e pode **abrir este dashboard** quando solicitado. É uma única "persona" em Markdown, sem código; o OpenWorker não executa nada disso como programa, as instruções apenas orientam o agente. Seu guia é distribuído nos 17 idiomas.
+Prefere um colega de trabalho de IA no desktop em vez do navegador? O **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** é um colega de trabalho do **[OpenWorker](https://github.com/andrewyng/openworker)** (o app de colega de trabalho de IA local-first e de código aberto de Andrew Ng) que conduz toda essa pipeline para você — escaneia portais, pontua o ajuste em relação ao seu currículo, adapta um CV + carta de apresentação fundamentados, acompanha as candidaturas, redige follow-ups — e pode **abrir este dashboard** quando solicitado. É uma única "persona" em Markdown, sem código; o OpenWorker não executa nada disso como programa, as instruções apenas orientam o agente. Seu guia é distribuído nos 17 idiomas.
 
 ### O que o colega de trabalho faz
 
@@ -2222,7 +2222,7 @@ Trabalhando dentro da pasta do seu projeto `career-ops`, o colega de trabalho ro
 Instale o OpenWorker e adicione uma chave de modelo (Anthropic / OpenAI / Google, ou um Ollama local). O mais rápido é **um comando** — prepara o pipeline `career-ops` que o coworker conduz e é idempotente: reutiliza um `career-ops` / `web-ui` existente sem sobrescrever seus dados:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
 ```
 
-Depois adicione o coworker no painel **Install a coworker** do OpenWorker — por **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`), por **.zip** (das [Releases](https://github.com/Fighter92/career-ops-coworker/releases)) ou **importando** `career-ops.md`. Abra uma sessão **Job-Search Coworker**, escolha sua pasta `career-ops` e peça algo real — *"escaneie meus portais e me dê os 5 melhores encaixes da semana"* ou *"abra o painel."* Os conectores (Gmail, Google Calendar, GitHub) e o guia completo estão no [guia de ajuda](https://github.com/Fighter92/career-ops-coworker/tree/main/help) do repo. Verificado como instalável contra o loader do OpenWorker e seu instalador de repo.
+Depois adicione o coworker no painel **Install a coworker** do OpenWorker — por **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), por **.zip** (das [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) ou **importando** `career-ops.md`. Abra uma sessão **Job-Search Coworker**, escolha sua pasta `career-ops` e peça algo real — *"escaneie meus portais e me dê os 5 melhores encaixes da semana"* ou *"abra o painel."* Os conectores (Gmail, Google Calendar, GitHub) e o guia completo estão no [guia de ajuda](https://github.com/Fighter90/career-ops-coworker/tree/main/help) do repo. Verificado como instalável contra o loader do OpenWorker e seu instalador de repo.

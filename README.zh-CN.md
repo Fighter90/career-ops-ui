@@ -1,6 +1,6 @@
 # career-ops-ui
 
-> 一套简洁的、文档风格 Web 界面,为 [career-ops](https://github.com/Fighter92/career-ops) AI 求职流水线而生。
+> 一套简洁的、文档风格 Web 界面,为 [career-ops](https://github.com/Fighter90/career-ops) AI 求职流水线而生。
 > 在浏览器的一个标签页里完成搜索、评估、深度调研、投递与跟踪 —— 无需在 Claude Code、终端与 markdown 文件之间反复切换。
 
 [🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | **🇨🇳 简体中文** | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
@@ -12,13 +12,13 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.0-blue)](https://github.com/Fighter92/career-ops-ui/releases/tag/v1.231.0)
+[![release](https://img.shields.io/badge/release-v1.231.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
 > **🆕 最新版本 — v1.231.0** — **来自上游 v1.32.0 的两个新扫描来源** — 90 → **92 个来源**（87 EN + 5 RU），均无需令牌。**Collage** 绝不猜测租户的招聘站点地址：那是租户自己选定的标识符，猜测就会去扫描别人的招聘板。**Telegram（严格）** 读取与现有 `telegram` 来源相同的频道预览，但做的是相反的取舍——只有当帖子**点名雇主并链接到职位页**时才成为一行；两者与上游一样同时提供。Gem 新增了可选的 REST 模式。还修复了上游自身代码中的缺陷：严格读取器的地点过滤使用 ASCII 单词边界，因而看不见西里尔字母，`Senior Engineer | Москва` 会把**“Москва”当作雇主**返回。**3009 项测试。**
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 >
 > 📜 完整变更日志: **[CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md)**。
@@ -58,12 +58,12 @@ career-ops 是 [CareerOps 宣言](https://career-ops.org/manifesto)的首个参�
 
 ## 一条命令启动并初始化
 
-> **重要 —— career-ops-ui 是建构于 [`Fighter92/career-ops`](https://github.com/Fighter92/career-ops) *之上*的仪表盘。** 它作为 `career-ops/web-ui/` **运行在** career-ops 项目内部,并通过 `../` 读取父目录中的 `cv.md`、`config/`、`data/`。它**无法单独运行** —— 你还需要父仓库 `career-ops`。请勿单独克隆后直接运行 `init`;请使用以下两个选项之一。
+> **重要 —— career-ops-ui 是建构于 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) *之上*的仪表盘。** 它作为 `career-ops/web-ui/` **运行在** career-ops 项目内部,并通过 `../` 读取父目录中的 `cv.md`、`config/`、`data/`。它**无法单独运行** —— 你还需要父仓库 `career-ops`。请勿单独克隆后直接运行 `init`;请使用以下两个选项之一。
 
 ### 选项 1 —— 一条 curl（推荐:一键配置一切）
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash
 ```
 
 同时克隆**两个**仓库,整理 `career-ops/web-ui/` 目录结构,安装依赖,运行 doctor,并在 http://127.0.0.1:4317 启动服务器 —— 然后打开仪表盘。
@@ -74,7 +74,7 @@ curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/se
 
 ```bash
 cd career-ops                                                   # ← 你现有的 career-ops 项目
-git clone https://github.com/Fighter92/career-ops-ui.git web-ui
+git clone https://github.com/Fighter90/career-ops-ui.git web-ui
 cd web-ui
 npm install
 npx career-ops-ui init        # interactive: pick LLM provider + paste its key → parent career-ops/.env
@@ -127,7 +127,7 @@ npx career-ops-ui init        # npx runs the local bin even without `npm link`
 
 ## 为什么需要它?
 
-[career-ops](https://github.com/Fighter92/career-ops) 是一套由 Claude Code 驱动的强力求职系统:粘贴 JD,即可得到 0–5 适配评分、ATS 优化后的 PDF,以及一条跟踪记录。它在 Claude Code 中体验良好,但数据散落于 `cv.md`、`data/applications.md`、`reports/*.md`、`data/pipeline.md`、`portals.yml`、`config/profile.yml` —— 容易遗失,难以快速浏览。
+[career-ops](https://github.com/Fighter90/career-ops) 是一套由 Claude Code 驱动的强力求职系统:粘贴 JD,即可得到 0–5 适配评分、ATS 优化后的 PDF,以及一条跟踪记录。它在 Claude Code 中体验良好,但数据散落于 `cv.md`、`data/applications.md`、`reports/*.md`、`data/pipeline.md`、`portals.yml`、`config/profile.yml` —— 容易遗失,难以快速浏览。
 
 `career-ops-ui` 在其之上加上一层精致 UI:
 
@@ -149,16 +149,16 @@ npx career-ops-ui init        # npx runs the local bin even without `npm link`
 ### 1. 先安装 career-ops
 
 ```bash
-git clone https://github.com/Fighter92/career-ops.git
+git clone https://github.com/Fighter90/career-ops.git
 cd career-ops
 ```
 
-按照 [career-ops 入门指南](https://github.com/Fighter92/career-ops#first-run--onboarding) 操作,确保 `cv.md`、`config/profile.yml`、`portals.yml` 已就位。
+按照 [career-ops 入门指南](https://github.com/Fighter90/career-ops#first-run--onboarding) 操作,确保 `cv.md`、`config/profile.yml`、`portals.yml` 已就位。
 
 ### 2. 在其中放入 career-ops-ui
 
 ```bash
-git clone https://github.com/Fighter92/career-ops-ui.git web-ui
+git clone https://github.com/Fighter90/career-ops-ui.git web-ui
 ```
 
 此时目录结构如下:
@@ -609,7 +609,7 @@ Claude Code 中现有的 `/career-ops apply` Playwright 表单填写流程,仍�
 
 career-ops **常开** 时最佳 —— 在你睡觉时扫描,可从任何浏览器访问。要把整个技术栈放到一台小型服务器上 —— 父级 **career-ops** 流水线、此 **career-ops-ui** 查看器,以及运行 AI 的**引擎**(通过 Claude Code CLI 的 **Claude 订阅**、本地 **Hermes** 网关,或提供方 API 密钥)—— 开通一台 VPS(Node ≥ 18),安装父项目 + 本仓库,选择引擎,并将查看器置于**带认证的 HTTPS 反向代理**之后,同时保持安全不变式(CSP、SSRF 防护、XSS 边界、日志不含机密)完好。
 
-📖 应用内**帮助 §31**(“在云端运行整个技术栈”)以 17 种语言逐步讲解;运维清单见 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md),[云部署 wiki 页面](https://github.com/Fighter92/career-ops-ui/wiki/Cloud-Deployment) 提供参考表格。
+📖 应用内**帮助 §31**(“在云端运行整个技术栈”)以 17 种语言逐步讲解;运维清单见 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md),[云部署 wiki 页面](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) 提供参考表格。
 
 ---
 
@@ -719,20 +719,20 @@ echo "GEMINI_API_KEY=AIza..." >> career-ops/.env
 
 MIT。详见 [LICENSE](LICENSE)。
 
-基于 [santifer](https://santifer.io) 的 [career-ops](https://github.com/Fighter92/career-ops) 构建。感谢这条出色的流水线。
+基于 [santifer](https://santifer.io) 的 [career-ops](https://github.com/Fighter90/career-ops) 构建。感谢这条出色的流水线。
 
 ## 贡献者
 
-感谢每一位帮助构建 career-ops-ui 的人。本项目由 [Fighter92](https://github.com/Fighter92) 维护，并在社区贡献下不断改进——完整名单见[贡献者图谱](https://github.com/Fighter92/career-ops-ui/graphs/contributors)。
+感谢每一位帮助构建 career-ops-ui 的人。本项目由 [Fighter90](https://github.com/Fighter90) 维护，并在社区贡献下不断改进——完整名单见[贡献者图谱](https://github.com/Fighter90/career-ops-ui/graphs/contributors)。
 
 <p>
-  <a href="https://github.com/Fighter92" title="Fighter92"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter92"/></a>
+  <a href="https://github.com/Fighter90" title="Fighter90"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter90"/></a>
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
 </p>
 
-**[全部贡献者 →](https://github.com/Fighter92/career-ops-ui/graphs/contributors)**
+**[全部贡献者 →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**
 
 <div align="center">
 

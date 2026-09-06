@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.231.1] — 2026-09-06
+
+**Corretto — la scansione dei contatori della v1.231.0 ha riscritto il nome dell’account in tutti i link.**
+
+### Corretto
+- **Ogni link `Fighter90` è diventato `Fighter92`.** La scansione del contatore di sorgenti in v1.231.0 sostituiva `90` con `92` sotto una guardia di confine numerico, che scarta correttamente `290` e `901` ma corrisponde al `90` dentro **`Fighter90`**. **562 link nei 17 README, nei 17 pacchetti di aiuto e nei mirror di aiuto del sito**, più **138 nel wiki**, puntavano a un account inesistente. Segnalato da un utente, per l’immagine mancante.
+- **Cinque riferimenti storici a versioni sono slittati.** La scansione `85 → 87` ha trasformato `v1.85.0` in `v1.87.0`, inventando una versione mai rilasciata.
+
+### Note
+- Un confine numerico non basta: protegge un numero dalle **cifre** vicine, non dall’essere parte di un **identificatore** o di una **stringa di versione**. I contatori sono corretti: 92 sorgenti, 87 adattatori EN, 3009 test.
+- Il repository padre non è stato toccato.
+
 ## [1.231.0] — 2026-09-05
 
 **Aggiunto — due sorgenti di scansione dal career-ops padre v1.32.0 (Collage, Telegram rigoroso), la modalità REST di Gem e un difetto che il port ha portato alla luce nel codice del padre stesso.**

@@ -1,6 +1,6 @@
 # Справка — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 Полный разбор каждой страницы — от запуска приложения до приглашения
 на интервью. Каждый `##` заголовок ниже соответствует пункту бокового
@@ -1630,7 +1630,7 @@ CV, save'ы JD, запуски evaluate, запуски deep-research, запу�
 
 Для более глубокой диагностики: запустите **▶ Doctor** на странице
 Health, скопируйте вывод и поищите проблему в issue-трекере на
-<https://github.com/Fighter92/career-ops-ui/issues>.
+<https://github.com/Fighter90/career-ops-ui/issues>.
 
 
 ---
@@ -2181,7 +2181,7 @@ career-ops не привязан к конкретной CLI, поэтому у 
 
 ## 32. Запуск из OpenWorker (ИИ-коллега)
 
-Предпочитаете десктопного ИИ-коллегу браузеру? **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** — это коллега для **[OpenWorker](https://github.com/andrewyng/openworker)** (открытого, локального по умолчанию приложения ИИ-коллеги от Эндрю Ына), который ведёт весь этот пайплайн за вас — сканирует площадки, оценивает соответствие вашему резюме, готовит выверенное резюме + сопроводительное письмо, ведёт учёт откликов, набрасывает фоллоу-апы — и по запросу может **запустить этот дашборд**. Это одна «персона» в Markdown без кода; OpenWorker не выполняет ничего из неё как программу — инструкции лишь направляют агента. Его руководство поставляется на всех 17 языках.
+Предпочитаете десктопного ИИ-коллегу браузеру? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** — это коллега для **[OpenWorker](https://github.com/andrewyng/openworker)** (открытого, локального по умолчанию приложения ИИ-коллеги от Эндрю Ына), который ведёт весь этот пайплайн за вас — сканирует площадки, оценивает соответствие вашему резюме, готовит выверенное резюме + сопроводительное письмо, ведёт учёт откликов, набрасывает фоллоу-апы — и по запросу может **запустить этот дашборд**. Это одна «персона» в Markdown без кода; OpenWorker не выполняет ничего из неё как программу — инструкции лишь направляют агента. Его руководство поставляется на всех 17 языках.
 
 ### Что делает коллега
 
@@ -2192,7 +2192,7 @@ career-ops не привязан к конкретной CLI, поэтому у 
 Установите OpenWorker и добавьте ключ модели (Anthropic / OpenAI / Google или локальная Ollama). Быстрее всего — **одна команда**: она готовит конвейер `career-ops`, которым управляет coworker, и идемпотентна (переиспользует существующие `career-ops` / `web-ui`, не перезаписывая ваши данные):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
 ```
 
-Затем добавьте coworker в панели **Install a coworker** OpenWorker — по **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`), из **.zip** (со страницы [Releases](https://github.com/Fighter92/career-ops-coworker/releases)) или **импортом** `career-ops.md`. Откройте сессию **Job-Search Coworker**, выберите папку `career-ops` и попросите что-то реальное — *«просканируй мои доски и дай топ-5 совпадений за неделю»* или *«открой дашборд»*. Коннекторы (Gmail, Google Calendar, GitHub) и полное руководство — в [руководстве](https://github.com/Fighter92/career-ops-coworker/tree/main/help) репозитория. Установка проверена против загрузчика OpenWorker и его репозиторного установщика.
+Затем добавьте coworker в панели **Install a coworker** OpenWorker — по **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), из **.zip** (со страницы [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) или **импортом** `career-ops.md`. Откройте сессию **Job-Search Coworker**, выберите папку `career-ops` и попросите что-то реальное — *«просканируй мои доски и дай топ-5 совпадений за неделю»* или *«открой дашборд»*. Коннекторы (Gmail, Google Calendar, GitHub) и полное руководство — в [руководстве](https://github.com/Fighter90/career-ops-coworker/tree/main/help) репозитория. Установка проверена против загрузчика OpenWorker и его репозиторного установщика.

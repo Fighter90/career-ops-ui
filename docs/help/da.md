@@ -1,6 +1,6 @@
 # Hjælp — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 En komplet gennemgang af hver side, fra det øjeblik du starter
 appen til du lander en jobsamtale. Hver `##`-overskrift nedenfor svarer til en
@@ -1696,7 +1696,7 @@ events.
 
 For dybere diagnostik: kør **▶ Doctor** på Health-siden, kopier
 outputtet, og søg i issue-trackeren på
-<https://github.com/Fighter92/career-ops-ui/issues>.
+<https://github.com/Fighter90/career-ops-ui/issues>.
 
 
 ---
@@ -2258,7 +2258,7 @@ At flytte væk fra `127.0.0.1` betyder, at den sikkerhed, loopback gav gratis, n
 
 ## 32. Kør den fra OpenWorker (AI-kollega)
 
-Foretrækker du en AI-kollega på skrivebordet frem for browseren? **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** er en **[OpenWorker](https://github.com/andrewyng/openworker)**-kollega (Andrew Ngs open source, local-first AI-kollega-app), der driver hele denne pipeline for dig — scanner jobopslag, scorer match mod dit CV, skræddersyr et velfunderet CV + følgebrev, holder styr på ansøgninger, udarbejder opfølgninger — og den kan **starte dette dashboard** på anmodning. Det er en enkelt, kodefri Markdown-"persona"; OpenWorker kører intet af det som et program — instruktionerne styrer blot agenten. Dens guide leveres på alle 17 sprog.
+Foretrækker du en AI-kollega på skrivebordet frem for browseren? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** er en **[OpenWorker](https://github.com/andrewyng/openworker)**-kollega (Andrew Ngs open source, local-first AI-kollega-app), der driver hele denne pipeline for dig — scanner jobopslag, scorer match mod dit CV, skræddersyr et velfunderet CV + følgebrev, holder styr på ansøgninger, udarbejder opfølgninger — og den kan **starte dette dashboard** på anmodning. Det er en enkelt, kodefri Markdown-"persona"; OpenWorker kører intet af det som et program — instruktionerne styrer blot agenten. Dens guide leveres på alle 17 sprog.
 
 ### Hvad kollegaen gør
 
@@ -2269,7 +2269,7 @@ Kollegaen arbejder inde i din `career-ops`-projektmappe og kører de samme trin 
 Installer OpenWorker og tilføj en modelnøgle (Anthropic / OpenAI / Google, eller en lokal Ollama). Hurtigst er **én kommando** — den sætter `career-ops`-pipelinen op, som coworkeren driver, og er idempotent: den genbruger et eksisterende `career-ops` / `web-ui` uden at overskrive dine data:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
 ```
 
-Tilføj derefter coworkeren i OpenWorkers **Install a coworker**-panel — via **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`), via **.zip** (fra [Releases](https://github.com/Fighter92/career-ops-coworker/releases)) eller ved at **importere** `career-ops.md`. Åbn en **Job-Search Coworker**-session, vælg din `career-ops`-mappe, og bed om noget konkret — *"scan mine boards og giv mig ugens top 5 match"* eller *"åbn dashboardet."* Connectors (Gmail, Google Calendar, GitHub) og den fulde guide er i repoets [hjælpeguide](https://github.com/Fighter92/career-ops-coworker/tree/main/help). Verificeret installerbar mod OpenWorkers loader og dens repo-installer.
+Tilføj derefter coworkeren i OpenWorkers **Install a coworker**-panel — via **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), via **.zip** (fra [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) eller ved at **importere** `career-ops.md`. Åbn en **Job-Search Coworker**-session, vælg din `career-ops`-mappe, og bed om noget konkret — *"scan mine boards og giv mig ugens top 5 match"* eller *"åbn dashboardet."* Connectors (Gmail, Google Calendar, GitHub) og den fulde guide er i repoets [hjælpeguide](https://github.com/Fighter90/career-ops-coworker/tree/main/help). Verificeret installerbar mod OpenWorkers loader og dens repo-installer.

@@ -1,6 +1,6 @@
 # career-ops-ui
 
-> [career-ops](https://github.com/Fighter92/career-ops) AI जॉब-सर्च पाइपलाइन के लिए एक साफ़-सुथरा, docs-स्टाइल वेब इंटरफ़ेस।
+> [career-ops](https://github.com/Fighter90/career-ops) AI जॉब-सर्च पाइपलाइन के लिए एक साफ़-सुथरा, docs-स्टाइल वेब इंटरफ़ेस।
 > Claude Code, टर्मिनल और मार्कडाउन फ़ाइलों के बीच उछलने के बजाय — एक ही ब्राउज़र टैब से हर ऑफ़र को खोजें, आँकें, गहराई से जाँचें, आवेदन करें और ट्रैक करें।
 
 [🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | [🇩🇰 Dansk](README.da.md) | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | **🇮🇳 हिन्दी**
@@ -14,13 +14,13 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.0-blue)](https://github.com/Fighter92/career-ops-ui/releases/tag/v1.231.0)
+[![release](https://img.shields.io/badge/release-v1.231.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
 > **🆕 नवीनतम रिलीज़ — v1.231.0** — **मूल परियोजना के v1.32.0 से दो नए स्कैन स्रोत** — 90 → **92 स्रोत** (87 EN + 5 RU), दोनों बिना टोकन। **Collage** किसी टेनेंट के जॉब-साइट पते का अनुमान कभी नहीं लगाता: वह पहचानकर्ता टेनेंट ने स्वयं चुना है, और अनुमान लगाने का अर्थ किसी और का बोर्ड स्कैन करना होगा। **Telegram (कठोर)** उन्हीं चैनल पूर्वावलोकनों को पढ़ता है जिन्हें मौजूदा `telegram` स्रोत पढ़ता है, पर उलटा सौदा करता है — कोई पोस्ट तभी पंक्ति बनती है जब वह **नियोक्ता का नाम ले और किसी रिक्ति से जुड़े**; मूल की तरह दोनों उपलब्ध हैं। Gem को वैकल्पिक REST विधा मिली। मूल के अपने कोड का एक दोष भी ठीक किया गया: कठोर पाठक का स्थान फ़िल्टर ASCII शब्द-सीमा प्रयोग करता था और इसलिए सिरिलिक नहीं देख पाता था — `Senior Engineer | Москва` **“Москва” को नियोक्ता के रूप में** लौटाता था। **3009 परीक्षण।**
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 >
 > 📜 पूरा रिलीज़ इतिहास: **[CHANGELOG.hi.md](CHANGELOG.hi.md)**.
@@ -94,12 +94,12 @@ career-ops एक AI कोडिंग असिस्टेंट के **भ
 
 ## एक ही कमांड में लॉन्च और इनिशियलाइज़ करें
 
-> **महत्वपूर्ण — career-ops-ui [`Fighter92/career-ops`](https://github.com/Fighter92/career-ops) के ऊपर एक डैशबोर्ड है।** यह एक career-ops प्रोजेक्ट के **भीतर** `career-ops/web-ui/` के रूप में चलता है और `../` के ज़रिए पैरेंट फ़ोल्डर से आपकी `cv.md`, `config/`, `data/` पढ़ता है। यह स्टैंडअलोन काम **नहीं** करता — आपको पैरेंट `career-ops` रिपॉज़िटरी भी चाहिए। इसे अकेले क्लोन करके `init` न चलाएँ; नीचे दिए दो विकल्पों में से एक इस्तेमाल करें।
+> **महत्वपूर्ण — career-ops-ui [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) के ऊपर एक डैशबोर्ड है।** यह एक career-ops प्रोजेक्ट के **भीतर** `career-ops/web-ui/` के रूप में चलता है और `../` के ज़रिए पैरेंट फ़ोल्डर से आपकी `cv.md`, `config/`, `data/` पढ़ता है। यह स्टैंडअलोन काम **नहीं** करता — आपको पैरेंट `career-ops` रिपॉज़िटरी भी चाहिए। इसे अकेले क्लोन करके `init` न चलाएँ; नीचे दिए दो विकल्पों में से एक इस्तेमाल करें।
 
 ### विकल्प 1 — एक curl (अनुशंसित: सब कुछ सेट कर देता है)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash
 ```
 
 **दोनों** रिपॉज़िटरी क्लोन करता है, `career-ops/web-ui/` लेआउट व्यवस्थित करता है, dependencies इंस्टॉल करता है, doctor चलाता है, और http://127.0.0.1:4317 पर सर्वर शुरू करता है — फिर डैशबोर्ड खोलता है।
@@ -110,7 +110,7 @@ curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/se
 
 ```bash
 cd career-ops                                                   # ← आपका मौजूदा career-ops प्रोजेक्ट
-git clone https://github.com/Fighter92/career-ops-ui.git web-ui
+git clone https://github.com/Fighter90/career-ops-ui.git web-ui
 cd web-ui
 npm install
 npx career-ops-ui init        # इंटरैक्टिव: LLM प्रोवाइडर चुनें + उसकी key पेस्ट करें → parent career-ops/.env
@@ -163,7 +163,7 @@ npx career-ops-ui init        # npx बिना `npm link` के भी लो
 
 ## क्यों?
 
-[career-ops](https://github.com/Fighter92/career-ops) एक शक्तिशाली Claude-Code-संचालित जॉब-सर्च सिस्टम है: एक JD पेस्ट करें → 0-5 फ़िट स्कोर, एक ATS-ऑप्टिमाइज़्ड PDF, और एक ट्रैकर एंट्री पाएँ। यह Claude Code के भीतर शानदार काम करता है, लेकिन डेटा `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml`, `config/profile.yml` में बिखरा रहता है — खोना आसान, नज़र दौड़ाना मुश्किल।
+[career-ops](https://github.com/Fighter90/career-ops) एक शक्तिशाली Claude-Code-संचालित जॉब-सर्च सिस्टम है: एक JD पेस्ट करें → 0-5 फ़िट स्कोर, एक ATS-ऑप्टिमाइज़्ड PDF, और एक ट्रैकर एंट्री पाएँ। यह Claude Code के भीतर शानदार काम करता है, लेकिन डेटा `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml`, `config/profile.yml` में बिखरा रहता है — खोना आसान, नज़र दौड़ाना मुश्किल।
 
 `career-ops-ui` इसके ऊपर एक पॉलिश्ड UI रखता है:
 
@@ -185,16 +185,16 @@ npx career-ops-ui init        # npx बिना `npm link` के भी लो
 ### 1. पहले career-ops इंस्टॉल करें
 
 ```bash
-git clone https://github.com/Fighter92/career-ops.git
+git clone https://github.com/Fighter90/career-ops.git
 cd career-ops
 ```
 
-[career-ops ऑनबोर्डिंग](https://github.com/Fighter92/career-ops#first-run--onboarding) का पालन करें ताकि `cv.md`, `config/profile.yml`, और `portals.yml` मौजूद हों।
+[career-ops ऑनबोर्डिंग](https://github.com/Fighter90/career-ops#first-run--onboarding) का पालन करें ताकि `cv.md`, `config/profile.yml`, और `portals.yml` मौजूद हों।
 
 ### 2. career-ops-ui को उसके भीतर रखें
 
 ```bash
-git clone https://github.com/Fighter92/career-ops-ui.git web-ui
+git clone https://github.com/Fighter90/career-ops-ui.git web-ui
 ```
 
 अब आपका ट्री ऐसा दिखता है:
@@ -637,7 +637,7 @@ Claude Code के अंदर मौजूदा `/career-ops apply` Playwrigh
 
 career-ops **हमेशा चालू** रहने पर सर्वोत्तम है — जब आप सोते हैं तब स्कैन करता है, किसी भी ब्राउज़र से पहुँच योग्य। पूरे स्टैक को एक छोटे सर्वर पर रखने के लिए — पैरेंट **career-ops** पाइपलाइन, यह **career-ops-ui** व्यूअर, और AI चलाने वाला **इंजन** (Claude Code CLI के माध्यम से आपकी **Claude सदस्यता**, एक स्थानीय **Hermes** गेटवे, या प्रदाता API कुंजियाँ) — एक VPS (Node ≥ 18) तैयार करें, पैरेंट + यह रिपॉज़िटरी इंस्टॉल करें, अपना इंजन चुनें, और सुरक्षा अपरिवर्तनीयताओं (CSP, SSRF गार्ड, XSS सीमा, लॉग में कोई रहस्य नहीं) को बरकरार रखते हुए व्यूअर को **प्रमाणीकरण सहित HTTPS रिवर्स प्रॉक्सी** के पीछे प्रकट करें।
 
-📖 इन-ऐप **सहायता §31** ("पूरे स्टैक को क्लाउड में चलाएँ") सभी 17 भाषाओं में चरण-दर-चरण मार्गदर्शन देती है; ऑपरेटर चेकलिस्ट [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) है, और [क्लाउड परिनियोजन wiki पृष्ठ](https://github.com/Fighter92/career-ops-ui/wiki/Cloud-Deployment) में संदर्भ तालिकाएँ हैं।
+📖 इन-ऐप **सहायता §31** ("पूरे स्टैक को क्लाउड में चलाएँ") सभी 17 भाषाओं में चरण-दर-चरण मार्गदर्शन देती है; ऑपरेटर चेकलिस्ट [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) है, और [क्लाउड परिनियोजन wiki पृष्ठ](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) में संदर्भ तालिकाएँ हैं।
 
 ---
 
@@ -778,20 +778,20 @@ Health पेज रीफ़्रेश करें — हर आवश्�
 
 MIT। [LICENSE](LICENSE) देखें।
 
-[santifer](https://santifer.io) द्वारा [career-ops](https://github.com/Fighter92/career-ops) के ऊपर निर्मित। शानदार पाइपलाइन के लिए धन्यवाद।
+[santifer](https://santifer.io) द्वारा [career-ops](https://github.com/Fighter90/career-ops) के ऊपर निर्मित। शानदार पाइपलाइन के लिए धन्यवाद।
 
 ## योगदानकर्ता
 
-career-ops-ui बनाने में मदद करने वाले सभी का धन्यवाद। यह प्रोजेक्ट [Fighter92](https://github.com/Fighter92) द्वारा मेंटेन किया जाता है और सामुदायिक योगदान से बेहतर होता है — पूरी सूची [contributors graph](https://github.com/Fighter92/career-ops-ui/graphs/contributors) पर देखें।
+career-ops-ui बनाने में मदद करने वाले सभी का धन्यवाद। यह प्रोजेक्ट [Fighter90](https://github.com/Fighter90) द्वारा मेंटेन किया जाता है और सामुदायिक योगदान से बेहतर होता है — पूरी सूची [contributors graph](https://github.com/Fighter90/career-ops-ui/graphs/contributors) पर देखें।
 
 <p>
-  <a href="https://github.com/Fighter92" title="Fighter92"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter92"/></a>
+  <a href="https://github.com/Fighter90" title="Fighter90"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter90"/></a>
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
 </p>
 
-**[सभी योगदानकर्ता →](https://github.com/Fighter92/career-ops-ui/graphs/contributors)**
+**[सभी योगदानकर्ता →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**
 
 <div align="center">
 

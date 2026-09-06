@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.231.1] — 2026-09-06
+
+**Düzeltildi — v1.231.0'ın sayaç taraması tüm bağlantılardaki hesap adını değiştirdi.**
+
+### Düzeltildi
+- **Her `Fighter90` bağlantısı `Fighter92` oldu.** v1.231.0'daki kaynak sayacı taraması, `290` ve `901`'i doğru şekilde atlayan ama **`Fighter90`** içindeki `90` ile eşleşen bir rakam sınırı koruması altında `90`'ı `92` ile değiştirdi. **17 README'nin tamamında, 17 yardım paketinin tamamında ve sitenin yardım aynalarında 562 bağlantı**, artı **wiki'de 138 tanesi**, var olmayan bir hesabı gösteriyordu. Eksik görsel sayesinde bir kullanıcı fark etti.
+- **Beş tarihsel sürüm göndermesi kaydı.** Aynı sürümdeki `85 → 87` taraması `v1.85.0`'ı `v1.87.0` yaptı ve hiç çıkmamış bir sürüm uydurdu.
+
+### Notlar
+- Rakam sınırı yeterli değil: bir sayıyı komşu **rakamlardan** korur, bir **tanımlayıcının** ya da bir **sürüm dizesinin** parçası olmaktan değil. Sayaçların kendisi doğru: 92 kaynak, 87 EN bağdaştırıcı, 3009 test.
+- Üst depo etkilenmedi.
+
 ## [1.231.0] — 2026-09-05
 
 **Eklendi — üst career-ops v1.32.0'dan iki tarama kaynağı (Collage, Telegram katı), Gem'in REST kipi ve taşımanın üst projenin kendi kodunda ortaya çıkardığı bir kusur.**

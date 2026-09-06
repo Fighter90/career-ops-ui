@@ -1,6 +1,6 @@
 # career-ops-ui
 
-> En ren webgrænseflade i dokumentationsstil til AI-jobsøgningskonveyeren [career-ops](https://github.com/Fighter92/career-ops).
+> En ren webgrænseflade i dokumentationsstil til AI-jobsøgningskonveyeren [career-ops](https://github.com/Fighter90/career-ops).
 > Søg, evaluér, gå i dybden, ansøg og hold styr på hvert tilbud fra én browserfane — i stedet for at hoppe mellem Claude Code, terminaler og markdown-filer.
 
 [🇬🇧 English](README.md) | [🇪🇸 Español](README.es.md) | [🇧🇷 Português (Brasil)](README.pt-BR.md) | [🇰🇷 한국어](README.ko-KR.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇫🇷 Français](README.fr.md) | [🇵🇱 Polski](README.pl.md) | [🇺🇦 Українська](README.uk.md) | **🇩🇰 Dansk** | [🇸🇦 العربية](README.ar.md) | [🇩🇪 Deutsch](README.de.md) | [🇮🇹 Italiano](README.it.md) | [🇹🇷 Türkçe](README.tr.md) | [🇮🇳 हिन्दी](README.hi.md)
@@ -12,13 +12,13 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.0-blue)](https://github.com/Fighter92/career-ops-ui/releases/tag/v1.231.0)
+[![release](https://img.shields.io/badge/release-v1.231.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
 > **🆕 Seneste udgivelse — v1.231.0** — **To nye scanningskilder fra forældreprojektets v1.32.0** — 90 → **92 kilder** (87 EN + 5 RU), begge uden token. **Collage** gætter aldrig en lejers jobsideadresse: det er en identifikator lejeren selv valgte, og et gæt ville scanne en andens board. **Telegram (streng)** læser de samme kanalforhåndsvisninger som den eksisterende `telegram`-kilde, men laver den modsatte byttehandel — et opslag bliver kun en række, når det **nævner en arbejdsgiver og linker til et opslag**; begge leveres, som hos forælderen. Gem fik en valgfri REST-tilstand. Også rettet, i forælderens egen kode: den strenge læsers stedfilter brugte en ASCII-ordgrænse og kunne derfor ikke se kyrillisk — `Senior Engineer | Москва` returnerede **“Москва” som arbejdsgiver**. **3009 tests.**
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 >
 > 📜 Fuld udgivelseshistorik: **[CHANGELOG.da.md](CHANGELOG.da.md)**.
@@ -91,12 +91,12 @@ career-ops kører som slash-kommandoer **inde i** en AI-kodningsassistent — in
 
 ## Start og initialisér i én kommando
 
-> **Vigtigt — career-ops-ui er et dashboard *ovenpå* [`Fighter92/career-ops`](https://github.com/Fighter92/career-ops).** Det kører **inde i** et career-ops-projekt som `career-ops/web-ui/` og læser dine `cv.md`, `config/`, `data/` fra den overordnede mappe via `../`. Det virker **ikke** selvstændigt — du har også brug for det overordnede `career-ops`-repo. Klon det ikke alene og kør `init`; brug en af de to muligheder nedenfor.
+> **Vigtigt — career-ops-ui er et dashboard *ovenpå* [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** Det kører **inde i** et career-ops-projekt som `career-ops/web-ui/` og læser dine `cv.md`, `config/`, `data/` fra den overordnede mappe via `../`. Det virker **ikke** selvstændigt — du har også brug for det overordnede `career-ops`-repo. Klon det ikke alene og kør `init`; brug en af de to muligheder nedenfor.
 
 ### Mulighed 1 — én curl (anbefalet: sætter alt op)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/bin/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash
 ```
 
 Kloner **begge** repoer, arrangerer `career-ops/web-ui/`-strukturen, installerer afhængigheder, kører doctor og starter serveren på http://127.0.0.1:4317 — og åbner derefter dashboardet.
@@ -107,7 +107,7 @@ Hvis du allerede har career-ops konfigureret og blot vil have dashboardet, så k
 
 ```bash
 cd career-ops                                                   # ← dit eksisterende career-ops-projekt
-git clone https://github.com/Fighter92/career-ops-ui.git web-ui
+git clone https://github.com/Fighter90/career-ops-ui.git web-ui
 cd web-ui
 npm install
 npx career-ops-ui init        # interactive: pick LLM provider + paste its key → parent career-ops/.env
@@ -160,7 +160,7 @@ Sørg for:
 
 ## Hvorfor?
 
-[career-ops](https://github.com/Fighter92/career-ops) er et kraftfuldt Claude-Code-drevet jobsøgningssystem: indsæt et JD → få en 0-5 match-score, et ATS-optimeret PDF og en tracker-post. Det fungerer fremragende inde i Claude Code, men dataene ligger spredt over `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml`, `config/profile.yml` — let at miste overblikket over, svært at skimme.
+[career-ops](https://github.com/Fighter90/career-ops) er et kraftfuldt Claude-Code-drevet jobsøgningssystem: indsæt et JD → få en 0-5 match-score, et ATS-optimeret PDF og en tracker-post. Det fungerer fremragende inde i Claude Code, men dataene ligger spredt over `cv.md`, `data/applications.md`, `reports/*.md`, `data/pipeline.md`, `portals.yml`, `config/profile.yml` — let at miste overblikket over, svært at skimme.
 
 `career-ops-ui` lægger en poleret UI ovenpå:
 
@@ -182,16 +182,16 @@ Det er rene tilføjelser: intet inde i `career-ops/` ændres. Alle dine tilpasni
 ### 1. Installér career-ops først
 
 ```bash
-git clone https://github.com/Fighter92/career-ops.git
+git clone https://github.com/Fighter90/career-ops.git
 cd career-ops
 ```
 
-Følg [career-ops onboarding](https://github.com/Fighter92/career-ops#first-run--onboarding), så `cv.md`, `config/profile.yml` og `portals.yml` findes.
+Følg [career-ops onboarding](https://github.com/Fighter90/career-ops#first-run--onboarding), så `cv.md`, `config/profile.yml` og `portals.yml` findes.
 
 ### 2. Læg career-ops-ui ind i det
 
 ```bash
-git clone https://github.com/Fighter92/career-ops-ui.git web-ui
+git clone https://github.com/Fighter90/career-ops-ui.git web-ui
 ```
 
 Dit træ ser nu sådan ud:
@@ -634,7 +634,7 @@ For vurderingen af produktionsparathed (deployment-gates, risikoregister, udskud
 
 career-ops er bedst **altid tændt** — scanner mens du sover, tilgængelig fra enhver browser. For at lægge hele stakken på en lille server — det overordnede **career-ops**-pipeline, denne **career-ops-ui**-fremviser, og **motoren** der kører AI’en (dit **Claude-abonnement** via Claude Code-CLI’en, en lokal **Hermes**-gateway, eller provider-API-nøgler) — klargør en VPS (Node ≥ 18), installer forælderen + dette repo, vælg din motor, og eksponer fremviseren bag en **HTTPS reverse proxy med autentificering**, mens sikkerhedsinvarianterne (CSP, SSRF-guard, XSS-grænse, ingen hemmeligheder i logs) forbliver intakte.
 
-📖 Den indbyggede **Hjælp §31** ("Kør hele stakken i skyen") gennemgår det trin for trin på alle 17 sprog; operatør-tjeklisten er [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), og [wiki-siden om sky-deployment](https://github.com/Fighter92/career-ops-ui/wiki/Cloud-Deployment) har opslagstabellerne.
+📖 Den indbyggede **Hjælp §31** ("Kør hele stakken i skyen") gennemgår det trin for trin på alle 17 sprog; operatør-tjeklisten er [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), og [wiki-siden om sky-deployment](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) har opslagstabellerne.
 
 ---
 
@@ -775,20 +775,20 @@ Genindlæs Health-siden — hvert påkrævet tjek bør være grønt. Derefter:
 
 MIT. Se [LICENSE](LICENSE).
 
-Bygget oven på [career-ops](https://github.com/Fighter92/career-ops) af [santifer](https://santifer.io). Tak for den geniale konveyer.
+Bygget oven på [career-ops](https://github.com/Fighter90/career-ops) af [santifer](https://santifer.io). Tak for den geniale konveyer.
 
 ## Bidragydere
 
-Tak til alle, der hjælper med at bygge career-ops-ui. Projektet vedligeholdes af [Fighter92](https://github.com/Fighter92) og forbedres af bidrag fra fællesskabet — se den fulde liste på [bidragyder-grafen](https://github.com/Fighter92/career-ops-ui/graphs/contributors).
+Tak til alle, der hjælper med at bygge career-ops-ui. Projektet vedligeholdes af [Fighter90](https://github.com/Fighter90) og forbedres af bidrag fra fællesskabet — se den fulde liste på [bidragyder-grafen](https://github.com/Fighter90/career-ops-ui/graphs/contributors).
 
 <p>
-  <a href="https://github.com/Fighter92" title="Fighter92"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter92"/></a>
+  <a href="https://github.com/Fighter90" title="Fighter90"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/6834634%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Fighter90"/></a>
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
 </p>
 
-**[Alle bidragydere →](https://github.com/Fighter92/career-ops-ui/graphs/contributors)**
+**[Alle bidragydere →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**
 
 <div align="center">
 

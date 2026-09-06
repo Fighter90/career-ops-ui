@@ -1,6 +1,6 @@
 # 說明 — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 從首次啟動應用程式到拿到面試機會的每個頁面的完整指南。下方每個
 `##` 標題對應側邊欄項目或工作流程的一個階段。首次執行請從上到下
@@ -1512,7 +1512,7 @@ scan 執行、設定變更、mode 執行。
 | `npm test` 在新 clone 上失敗 | 測試假設父專案版面 | 使用 `CAREER_OPS_ROOT=$(mktemp -d)` 並 bootstrap fixtures。 |
 
 更深入的診斷:在 Health 頁面執行 **▶ Doctor**,複製輸出,並到
-<https://github.com/Fighter92/career-ops-ui/issues> 搜尋 issue
+<https://github.com/Fighter90/career-ops-ui/issues> 搜尋 issue
 追蹤。
 
 
@@ -2048,7 +2048,7 @@ career-ops 不繫結任何特定 CLI，所以在 AI 上你有三個可靠的選�
 
 ## 32. 從 OpenWorker(AI 同事)執行
 
-比起瀏覽器，你更偏好桌面版的 AI 同事嗎?**[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** 是一個 **[OpenWorker](https://github.com/andrewyng/openworker)** 同事(Andrew Ng 開源、以本機為優先的 AI 同事應用),它會替你驅動整套流程 —— 掃描職缺板、依你的履歷為契合度評分、產出有事實依據的客製化履歷 + 求職信、追蹤應徵、草擬追蹤信件 —— 而且能在你要求時**啟動這個儀表板**。它只是單一、不含程式碼的 Markdown「人格設定」;OpenWorker 不會把其中任何內容當成程式來執行,那些指示只是用來引導代理。它的指南提供全部 17 種語言的版本。
+比起瀏覽器，你更偏好桌面版的 AI 同事嗎?**[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** 是一個 **[OpenWorker](https://github.com/andrewyng/openworker)** 同事(Andrew Ng 開源、以本機為優先的 AI 同事應用),它會替你驅動整套流程 —— 掃描職缺板、依你的履歷為契合度評分、產出有事實依據的客製化履歷 + 求職信、追蹤應徵、草擬追蹤信件 —— 而且能在你要求時**啟動這個儀表板**。它只是單一、不含程式碼的 Markdown「人格設定」;OpenWorker 不會把其中任何內容當成程式來執行,那些指示只是用來引導代理。它的指南提供全部 17 種語言的版本。
 
 ### 這個同事會做什麼
 
@@ -2059,7 +2059,7 @@ career-ops 不繫結任何特定 CLI，所以在 AI 上你有三個可靠的選�
 安裝 OpenWorker 並新增模型金鑰（Anthropic / OpenAI / Google，或本機 Ollama）。最快是**一條命令** —— 它準備好 coworker 驅動的 `career-ops` 流水線，且是冪等的：重用既有的 `career-ops` / `web-ui`，不會覆寫你的資料:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
 ```
 
-然後在 OpenWorker 的 **Install a coworker** 面板中新增 coworker —— 透過 **GitHub URL**(`https://github.com/Fighter92/career-ops-coworker`)、**.zip**(來自 [Releases](https://github.com/Fighter92/career-ops-coworker/releases))或**匯入** `career-ops.md`。開啟 **Job-Search Coworker** 工作階段，選擇你的 `career-ops` 資料夾，然後提出真實需求 —— *「掃描我的看板，給我本週前 5 個匹配」* 或 *「開啟儀表板。」* 連接器(Gmail、Google Calendar、GitHub)與完整指南在儲存庫的[說明指南](https://github.com/Fighter92/career-ops-coworker/tree/main/help)中。已針對 OpenWorker 的載入器與儲存庫安裝器驗證可安裝。
+然後在 OpenWorker 的 **Install a coworker** 面板中新增 coworker —— 透過 **GitHub URL**(`https://github.com/Fighter90/career-ops-coworker`)、**.zip**(來自 [Releases](https://github.com/Fighter90/career-ops-coworker/releases))或**匯入** `career-ops.md`。開啟 **Job-Search Coworker** 工作階段，選擇你的 `career-ops` 資料夾，然後提出真實需求 —— *「掃描我的看板，給我本週前 5 個匹配」* 或 *「開啟儀表板。」* 連接器(Gmail、Google Calendar、GitHub)與完整指南在儲存庫的[說明指南](https://github.com/Fighter90/career-ops-coworker/tree/main/help)中。已針對 OpenWorker 的載入器與儲存庫安裝器驗證可安裝。
