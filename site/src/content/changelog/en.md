@@ -8,6 +8,24 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.231.0] — 2026-09-05
+
+**Added — two scanner sources from parent career-ops v1.32.0 (Collage, Telegram strict), Gem's REST mode, and one defect the port surfaced in the parent's own code.**
+
+### Added
+- **Two new sources, 90 → 92** (87 EN + 5 RU), `ALL_ADAPTERS` **85 → 87**. Both zero-token.
+  - **Collage** (`provider: collage`) — Collage HR's public job-site API. The path segment is an explicit **job-site address the tenant chose**, not a company-name slug, so it is read from `api:` or from a `secure.collage.co/jobs/<address>` careers URL and **never guessed** — a guessed address would scan somebody else's board. An entry naming neither fails loudly.
+  - **Telegram (strict)** (`provider: telegram-channel`) — reads the same `t.me/s/<channel>` preview pages web-ui's existing `telegram` source reads, with the **opposite trade**. `telegram` keeps every post and attributes an unlabelled one to the channel handle; `telegram-channel` emits a row **only when the post names an employer AND links to a vacancy page**. Digests, hidden-employer posts ("название скрыто", "our client") and contact-only posts are dropped. Low recall by design — upstream measured 32-77% of posts passing on HR-curated channels — but every row carries a real employer and a real link. Both ship, as they do in the parent: they are different products, not duplicates.
+- **Gem gained an opt-in REST mode** alongside its GraphQL path (`api: https://api.gem.com/job_board/v0/<board>/job_posts`). Gem documents this unauthenticated surface for custom career pages. It is never derived from a board id — a derived URL would be a guess about which surface a tenant exposes — and the GraphQL path stays the default, so nothing changes for an entry that does not set `api:`. Ported from parent #3783.
+
+### Fixed
+- **`telegram-channel`'s location filter could not see Cyrillic, and named cities as employers.** The parent's `LOCATIONISH_RE` used `\b`, which is ASCII-only and never fires next to Cyrillic — so every Russian alternative in it (`москва`, `спб`, `офис`, `удалёнк*`) was unreachable, and `Senior Engineer | Москва` returned **"Москва" as the employer**. That is precisely the wrong-field-as-fact the whole attribution policy exists to prevent, and it landed on the provider's primary audience: a Russian-language channel writes its location in Cyrillic. web-ui's port uses Unicode lookarounds (`\p{L}` / `\p{N}`), matching what the parent already does one constant below in `ROLE_WORD_RE`. Pinned by a test that fails against the ASCII form. **Not yet fixed upstream.**
+
+### Notes
+- **The parent's Workday facet-recovery work (#3851, #3874) needed no port.** It prioritizes configured locations when a split is chosen and tags a split whose facet under-covers the board. **web-ui does not paginate or facet-split Workday at all** — one POST at `offset: 0` — so neither code path exists here. Same conclusion as v1.229.0, re-checked rather than assumed.
+- **`providers/_types.js`** changed only in documentation (the optional `Job.salary` field).
+- Tests: **2962 → 3009** (+47).
+
 ## [1.230.0] — 2026-09-05
 
 **Changed — three provider fixes from parent career-ops v1.32.0, and one defect the port surfaced here.**

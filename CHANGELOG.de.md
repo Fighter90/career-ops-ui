@@ -2,6 +2,24 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.231.0] — 2026-09-05
+
+**Hinzugefügt — zwei Scan-Quellen aus dem Eltern-career-ops v1.32.0 (Collage, Telegram streng), Gems REST-Modus und ein Defekt, den die Portierung im Code des Elternprojekts selbst zutage förderte.**
+
+### Hinzugefügt
+- **Zwei neue Quellen, 90 → 92** (87 EN + 5 RU), `ALL_ADAPTERS` **85 → 87**. Beide ohne Token.
+  - **Collage** (`provider: collage`) — die öffentliche Job-Site-API von Collage HR. Das Pfadsegment ist **die Adresse, die der Mandant selbst gewählt hat**, kein Slug aus dem Firmennamen: Sie wird aus `api:` oder aus einer `secure.collage.co/jobs/<Adresse>`-URL gelesen und **nie geraten** — eine geratene Adresse würde das Board eines anderen scannen.
+  - **Telegram (streng)** (`provider: telegram-channel`) — liest dieselben `t.me/s/<Kanal>`-Vorschauen wie die vorhandene Quelle `telegram`, geht aber den **umgekehrten Handel** ein: Ein Beitrag wird **nur dann zur Zeile, wenn er einen Arbeitgeber nennt UND auf eine Stellenseite verlinkt**. Digests, Beiträge mit verborgenem Arbeitgeber und reine Kontaktbeiträge fallen weg. Geringe Abdeckung mit Absicht — stromaufwärts gemessen passieren 32-77% der Beiträge — aber jede Zeile trägt einen echten Arbeitgeber und einen echten Link. Beide werden ausgeliefert, wie beim Elternprojekt.
+- **Gem erhielt einen optionalen REST-Modus** neben dem GraphQL-Pfad (`api: https://api.gem.com/job_board/v0/<board>/job_posts`). Er wird nie aus einer Board-ID abgeleitet, und der GraphQL-Pfad bleibt die Vorgabe. Portiert aus #3783.
+
+### Behoben
+- **Der Ortsfilter von `telegram-channel` sah kein Kyrillisch und nannte Städte als Arbeitgeber.** Das `LOCATIONISH_RE` des Elternprojekts nutzte `\b`, eine reine ASCII-Wortgrenze, die neben Kyrillisch nie greift: Alle russischen Alternativen darin waren unerreichbar, und `Senior Engineer | Москва` lieferte **„Москва“ als Arbeitgeber**. Genau die Feldverwechslung, die die ganze Zuordnungsregel verhindern soll — und sie traf die Hauptzielgruppe des Providers: Ein russischsprachiger Kanal schreibt den Ort kyrillisch. Die web-ui-Portierung nutzt Unicode-Prüfungen (`\p{L}` / `\p{N}`), dasselbe, was das Elternprojekt eine Konstante tiefer in `ROLE_WORD_RE` bereits tut. Durch einen Test festgehalten, der an der ASCII-Form scheitert. **Stromaufwärts noch nicht behoben.**
+
+### Hinweise
+- **Die Workday-Facetten-Wiederherstellung des Elternprojekts (#3851, #3874) brauchte keine Portierung** — web-ui paginiert Workday überhaupt nicht, ein einziger POST bei `offset: 0`.
+- **`providers/_types.js`** änderte sich nur in der Dokumentation.
+- Tests: **2962 → 3009** (+47).
+
 ## [1.230.0] — 2026-09-05
 
 **Geändert — drei Provider-Korrekturen aus dem Eltern-career-ops v1.32.0 sowie ein Defekt, den die Portierung selbst zutage gefördert hat.**

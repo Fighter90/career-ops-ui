@@ -1,6 +1,6 @@
 # 도움말 — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 앱을 실행한 순간부터 인터뷰를 따낼 때까지, 모든 페이지를 단계별로
 안내합니다. 아래 각 `##` 헤딩은 사이드바 항목 또는 워크플로의 한
@@ -1592,7 +1592,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 | 신선한 클론에서 `npm test` 실패 | 테스트가 부모 프로젝트 레이아웃 가정 | `CAREER_OPS_ROOT=$(mktemp -d)` 사용 및 픽스처 부트스트랩. |
 
 더 깊은 진단: Health 페이지에서 **▶ Doctor** 실행, 출력 복사,
-<https://github.com/Fighter90/career-ops-ui/issues>의 이슈
+<https://github.com/Fighter92/career-ops-ui/issues>의 이슈
 트래커에서 검색하십시오.
 
 
@@ -1600,7 +1600,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 
 ## 17. 새 채용 포털 소스를 추가하는 방법
 
-career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. 현재 `server/lib/sources/` 레지스트리는 **90**개의 어댑터를 포함합니다 — **영문 85개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
+career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. 현재 `server/lib/sources/` 레지스트리는 **92**개의 어댑터를 포함합니다 — **영문 87개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
 
 > **v1.69.0 (P-14) — 드롭인 자동 검색.** 12번째 소스 추가는 이제
 > **순수 파일 드롭**입니다. 레지스트리
@@ -2040,7 +2040,7 @@ CV Studio에서 저장된 채용 공고를 고르면, 흐릿한 한 줄 힌트�
 
 ### 시장 리포트
 
-**시장 리포트** 탭은 *여러분의* 목표 역할에 대한 급여 및 노동 시장 분석을 모델에 요청합니다 — 어떤 역할과 시니어리티를 다룰지 알기 위해 여러분의 CV와 프로필을 읽습니다. **지역 / 시장**(예: `Russia`, `EU-remote`, `US`, `Germany`)을 입력하고 **통화**를 선택한 뒤 **시장 리포트 생성**을 클릭하십시오. 요약, 등급별 급여(중앙값과 P10/P25/P75/P90), 주요 고용주, 수요 높은 스킬 표, 복지 빈도, 사무실/하이브리드/원격 비율, AI 영향을 포함한 12–24개월 추세, 협상 가이드가 담긴 구조화된 리포트를 얻습니다. 모든 수치는 **모델의 학습 지식에서 나온 방향성 추정치**이며 — 스크래핑되거나 실시간 데이터가 아닙니다 — 리포트에도 그렇게 명시됩니다. 수치는 인용값이 아니라 범위로 다루십시오. API 키가 설정되지 않은 경우 조작된 리포트 대신 복사·붙여넣기용 프롬프트를 받습니다. 리포트를 앱 밖으로 가져가려면 **.md 다운로드**, **PDF로 저장** 또는 **복사**를 사용하십시오.
+**시장 리포트** 탭은 *여러분의* 목표 역할에 대한 급여 및 노동 시장 분석을 모델에 요청합니다 — 어떤 역할과 시니어리티를 다룰지 알기 위해 여러분의 CV와 프로필을 읽습니다. **지역 / 시장**(예: `Russia`, `EU-remote`, `US`, `Germany`)을 입력하고 **통화**를 선택한 뒤 **시장 리포트 생성**을 클릭하십시오. 요약, 등급별 급여(중앙값과 P10/P25/P75/P92), 주요 고용주, 수요 높은 스킬 표, 복지 빈도, 사무실/하이브리드/원격 비율, AI 영향을 포함한 12–24개월 추세, 협상 가이드가 담긴 구조화된 리포트를 얻습니다. 모든 수치는 **모델의 학습 지식에서 나온 방향성 추정치**이며 — 스크래핑되거나 실시간 데이터가 아닙니다 — 리포트에도 그렇게 명시됩니다. 수치는 인용값이 아니라 범위로 다루십시오. API 키가 설정되지 않은 경우 조작된 리포트 대신 복사·붙여넣기용 프롬프트를 받습니다. 리포트를 앱 밖으로 가져가려면 **.md 다운로드**, **PDF로 저장** 또는 **복사**를 사용하십시오.
 
 ### 내 파이프라인
 
@@ -2140,7 +2140,7 @@ career-ops는 CLI에 종속되지 않으므로 AI에 대해 세 가지 정직한
 
 ## 32. OpenWorker에서 실행하기 (AI 동료)
 
-브라우저보다 데스크톱 AI 동료를 선호하나요? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)**는 이 전체 파이프라인을 대신 구동해 주는 **[OpenWorker](https://github.com/andrewyng/openworker)** 동료(Andrew Ng의 오픈소스, 로컬 우선 AI 동료 앱)입니다 — 포털을 스캔하고, 여러분의 CV에 대비해 적합도를 점수화하고, 근거에 기반한 CV + 커버 레터를 맞춤 작성하고, 지원 상황을 추적하고, 후속 조치를 초안 작성합니다 — 그리고 요청하면 **이 대시보드를 실행**할 수 있습니다. 이는 코드가 없는 단일 Markdown 「페르소나」입니다; OpenWorker는 그중 무엇도 프로그램으로 실행하지 않으며, 그 지시문은 단지 에이전트를 조종할 뿐입니다. 이 가이드는 17개 언어 모두로 제공됩니다.
+브라우저보다 데스크톱 AI 동료를 선호하나요? **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)**는 이 전체 파이프라인을 대신 구동해 주는 **[OpenWorker](https://github.com/andrewyng/openworker)** 동료(Andrew Ng의 오픈소스, 로컬 우선 AI 동료 앱)입니다 — 포털을 스캔하고, 여러분의 CV에 대비해 적합도를 점수화하고, 근거에 기반한 CV + 커버 레터를 맞춤 작성하고, 지원 상황을 추적하고, 후속 조치를 초안 작성합니다 — 그리고 요청하면 **이 대시보드를 실행**할 수 있습니다. 이는 코드가 없는 단일 Markdown 「페르소나」입니다; OpenWorker는 그중 무엇도 프로그램으로 실행하지 않으며, 그 지시문은 단지 에이전트를 조종할 뿐입니다. 이 가이드는 17개 언어 모두로 제공됩니다.
 
 ### 동료가 하는 일
 
@@ -2151,7 +2151,7 @@ career-ops는 CLI에 종속되지 않으므로 AI에 대해 세 가지 정직한
 OpenWorker를 설치하고 모델 키를 추가하세요(Anthropic / OpenAI / Google, 또는 로컬 Ollama). 가장 빠른 방법은 **명령 한 줄** — coworker가 구동하는 `career-ops` 파이프라인을 준비하며 멱등적입니다: 기존 `career-ops` / `web-ui`를 데이터 덮어쓰기 없이 재사용합니다:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
 ```
 
-그런 다음 OpenWorker의 **Install a coworker** 패널에서 coworker를 추가하세요 — **GitHub URL**(`https://github.com/Fighter90/career-ops-coworker`), **.zip**([Releases](https://github.com/Fighter90/career-ops-coworker/releases)에서), 또는 `career-ops.md` **가져오기**. **Job-Search Coworker** 세션을 열고 `career-ops` 폴더를 선택한 뒤 실제 요청을 하세요 — *"내 보드를 스캔해서 이번 주 상위 5개 적합 공고를 줘"* 또는 *"대시보드 열어줘."* 커넥터(Gmail, Google Calendar, GitHub)와 전체 가이드는 저장소의 [도움말 가이드](https://github.com/Fighter90/career-ops-coworker/tree/main/help)에 있습니다. OpenWorker의 로더와 저장소 설치기로 설치 가능이 검증되었습니다.
+그런 다음 OpenWorker의 **Install a coworker** 패널에서 coworker를 추가하세요 — **GitHub URL**(`https://github.com/Fighter92/career-ops-coworker`), **.zip**([Releases](https://github.com/Fighter92/career-ops-coworker/releases)에서), 또는 `career-ops.md` **가져오기**. **Job-Search Coworker** 세션을 열고 `career-ops` 폴더를 선택한 뒤 실제 요청을 하세요 — *"내 보드를 스캔해서 이번 주 상위 5개 적합 공고를 줘"* 또는 *"대시보드 열어줘."* 커넥터(Gmail, Google Calendar, GitHub)와 전체 가이드는 저장소의 [도움말 가이드](https://github.com/Fighter92/career-ops-coworker/tree/main/help)에 있습니다. OpenWorker의 로더와 저장소 설치기로 설치 가능이 검증되었습니다.

@@ -1,6 +1,6 @@
 # Guida — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 Una guida completa a ogni pagina, dal momento in cui avvii
 l'applicazione fino a ottenere un colloquio. Ogni intestazione `##` qui
@@ -1001,7 +1001,7 @@ Sotto il log, la tabella dei risultati rende le righe da `data/last-scan.json`.
 > mentre una scansione gira e ancora una volta subito dopo che termina — nessun ricaricamento manuale o
 > cambio pagina necessario. La cache viene azzerata all'inizio di ogni scansione e riempita.
 
-> **v1.85.0 — Max per sorgente & quarantena sorgente.** Il campo **Max per source**
+> **v1.87.0 — Max per sorgente & quarantena sorgente.** Il campo **Max per source**
 > accanto al pulsante Scan limita quanti lavori ogni board contribuisce (vuoto/0 =
 > illimitato, il default) — utile quando un board enorme dominerebbe altrimenti.
 > Separatamente, qualsiasi sorgente che restituisce un **404 / 410** permanente viene scritta in
@@ -1724,14 +1724,14 @@ recenti.
 
 Per diagnostiche più approfondite: esegui **▶ Doctor** sulla pagina Health, copia l'
 output, e cerca la issue nel tracker su
-<https://github.com/Fighter90/career-ops-ui/issues>.
+<https://github.com/Fighter92/career-ops-ui/issues>.
 
 
 ---
 
 ## 17. Come aggiungere una nuova sorgente di portale di lavoro
 
-career-ops-ui tratta ogni job board come un **adattatore** — un singolo file sotto [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) che sa come recuperare + normalizzare i risultati di un board. Attualmente il registro `server/lib/sources/` include **90** adattatori — **85 inglesi + 5 russi**. L'insieme inglese copre i principali ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), gli aggregatori a livello di board selezionati da un `provider:` esplicito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) e gli ATS per-tenant auto-rilevati da un host `careers_url` o da un URL `api:` esplicito (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **L'elenco completo non va mai contato a mano qui — viene auto-rilevato da `server/lib/sources/` e mostrato in tempo reale nel menu a tendina Source di `#/scan`.** Vedi §5 per lo YAML e `docs/portals-examples.md` per le voci da copia-incolla.
+career-ops-ui tratta ogni job board come un **adattatore** — un singolo file sotto [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) che sa come recuperare + normalizzare i risultati di un board. Attualmente il registro `server/lib/sources/` include **92** adattatori — **87 inglesi + 5 russi**. L'insieme inglese copre i principali ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), gli aggregatori a livello di board selezionati da un `provider:` esplicito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) e gli ATS per-tenant auto-rilevati da un host `careers_url` o da un URL `api:` esplicito (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **L'elenco completo non va mai contato a mano qui — viene auto-rilevato da `server/lib/sources/` e mostrato in tempo reale nel menu a tendina Source di `#/scan`.** Vedi §5 per lo YAML e `docs/portals-examples.md` per le voci da copia-incolla.
 
 > **v1.69.0 (P-14) — auto-discovery drop-in.** Aggiungere una 12ª sorgente è ora
 > un **puro drop di file**. Il registro
@@ -2184,7 +2184,7 @@ La pagina **Statistiche** riunisce tre viste in un'unica sezione: un report di m
 
 ### Report di mercato
 
-La scheda **Report di mercato** chiede al modello un'analisi salariale e del mercato del lavoro dei *tuoi* ruoli target — legge il tuo CV e il tuo profilo per sapere quali ruoli e quale livello di seniority coprire. Digita una **Regione / mercato** (per esempio `Russia`, `EU-remote`, `US` o `Germany`), scegli una **Valuta** e clicca su **Genera report di mercato**. Ottieni un report strutturato con una sintesi esecutiva, retribuzione per livello (mediana più P10/P25/P75/P90), i principali datori di lavoro, una tabella delle competenze più richieste, la frequenza dei benefit, la ripartizione ufficio/ibrido/remoto, tendenze a 12-24 mesi incluso l'impatto dell'IA e indicazioni per la negoziazione. Ogni cifra è una **stima indicativa ricavata dalle conoscenze di addestramento del modello** — non dati raccolti o in tempo reale — e il report lo dichiara; tratta i numeri come intervalli, non come citazioni. Senza una chiave API impostata ottieni un prompt da copiare e incollare invece di un report inventato. Usa **Scarica .md**, **Salva come PDF** o **Copia** per portare il report fuori dall'app.
+La scheda **Report di mercato** chiede al modello un'analisi salariale e del mercato del lavoro dei *tuoi* ruoli target — legge il tuo CV e il tuo profilo per sapere quali ruoli e quale livello di seniority coprire. Digita una **Regione / mercato** (per esempio `Russia`, `EU-remote`, `US` o `Germany`), scegli una **Valuta** e clicca su **Genera report di mercato**. Ottieni un report strutturato con una sintesi esecutiva, retribuzione per livello (mediana più P10/P25/P75/P92), i principali datori di lavoro, una tabella delle competenze più richieste, la frequenza dei benefit, la ripartizione ufficio/ibrido/remoto, tendenze a 12-24 mesi incluso l'impatto dell'IA e indicazioni per la negoziazione. Ogni cifra è una **stima indicativa ricavata dalle conoscenze di addestramento del modello** — non dati raccolti o in tempo reale — e il report lo dichiara; tratta i numeri come intervalli, non come citazioni. Senza una chiave API impostata ottieni un prompt da copiare e incollare invece di un report inventato. Usa **Scarica .md**, **Salva come PDF** o **Copia** per portare il report fuori dall'app.
 
 ### La mia pipeline
 
@@ -2284,7 +2284,7 @@ Lasciare `127.0.0.1` significa che la sicurezza che il loopback offriva gratuita
 
 ## 32. Eseguirlo da OpenWorker (collega IA)
 
-Preferisci un collega IA desktop al browser? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** è un collega **[OpenWorker](https://github.com/andrewyng/openworker)** (l'app di collega IA open-source e local-first di Andrew Ng) che guida al posto tuo l'intera pipeline — scansiona le bacheche, valuta la compatibilità rispetto al tuo CV, adatta un CV + una lettera di presentazione fondati sui fatti, tiene traccia delle candidature, redige i follow-up — e su richiesta può **avviare questa dashboard**. È una singola "persona" Markdown priva di codice; OpenWorker non ne esegue nulla come programma, le istruzioni si limitano a orientare l'agente. La sua guida è disponibile in tutte le 17 lingue.
+Preferisci un collega IA desktop al browser? **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)** è un collega **[OpenWorker](https://github.com/andrewyng/openworker)** (l'app di collega IA open-source e local-first di Andrew Ng) che guida al posto tuo l'intera pipeline — scansiona le bacheche, valuta la compatibilità rispetto al tuo CV, adatta un CV + una lettera di presentazione fondati sui fatti, tiene traccia delle candidature, redige i follow-up — e su richiesta può **avviare questa dashboard**. È una singola "persona" Markdown priva di codice; OpenWorker non ne esegue nulla come programma, le istruzioni si limitano a orientare l'agente. La sua guida è disponibile in tutte le 17 lingue.
 
 ### Cosa fa il collega
 
@@ -2295,7 +2295,7 @@ Lavorando dentro la cartella del tuo progetto `career-ops`, il collega esegue gl
 Installa OpenWorker e aggiungi una chiave di modello (Anthropic / OpenAI / Google, o un Ollama locale). Il più veloce è **un comando** — prepara la pipeline `career-ops` che il coworker guida ed è idempotente: riusa un `career-ops` / `web-ui` esistente senza sovrascrivere i tuoi dati:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
 ```
 
-Poi aggiungi il coworker nel pannello **Install a coworker** di OpenWorker — tramite **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), tramite **.zip** (dalle [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) o **importando** `career-ops.md`. Apri una sessione **Job-Search Coworker**, scegli la tua cartella `career-ops` e chiedi qualcosa di reale — *"scansiona le mie board e dammi i 5 migliori match della settimana"* o *"apri la dashboard."* I connettori (Gmail, Google Calendar, GitHub) e la guida completa sono nella [guida](https://github.com/Fighter90/career-ops-coworker/tree/main/help) del repo. Installabilità verificata contro il loader di OpenWorker e il suo installer di repo.
+Poi aggiungi il coworker nel pannello **Install a coworker** di OpenWorker — tramite **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`), tramite **.zip** (dalle [Releases](https://github.com/Fighter92/career-ops-coworker/releases)) o **importando** `career-ops.md`. Apri una sessione **Job-Search Coworker**, scegli la tua cartella `career-ops` e chiedi qualcosa di reale — *"scansiona le mie board e dammi i 5 migliori match della settimana"* o *"apri la dashboard."* I connettori (Gmail, Google Calendar, GitHub) e la guida completa sono nella [guida](https://github.com/Fighter92/career-ops-coworker/tree/main/help) del repo. Installabilità verificata contro il loader di OpenWorker e il suo installer di repo.

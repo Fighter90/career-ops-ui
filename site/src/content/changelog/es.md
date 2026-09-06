@@ -11,6 +11,24 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.0] — 2026-09-05
+
+**Añadido — dos fuentes de escaneo del career-ops padre v1.32.0 (Collage, Telegram estricto), el modo REST de Gem y un defecto que el port sacó a la luz en el código del propio padre.**
+
+### Añadido
+- **Dos fuentes nuevas, 90 → 92** (87 EN + 5 RU), `ALL_ADAPTERS` **85 → 87**. Ambas sin token.
+  - **Collage** (`provider: collage`) — la API pública de sitios de empleo de Collage HR. El segmento de ruta es **la dirección del sitio que el inquilino eligió**, no un slug del nombre de la empresa, así que se lee de `api:` o de una URL `secure.collage.co/jobs/<dirección>` y **nunca se adivina**: una dirección adivinada escanearía el tablero de otra persona. Una entrada que no nombre ninguna de las dos falla ruidosamente.
+  - **Telegram (estricto)** (`provider: telegram-channel`) — lee las mismas vistas previas `t.me/s/<canal>` que la fuente `telegram` existente, con el **intercambio opuesto**: un mensaje se convierte en fila **solo si nombra a un empleador Y enlaza a una página de vacante**. Se descartan los resúmenes, los mensajes de empleador oculto y los de solo contacto. Poca cobertura por diseño —aguas arriba se midió un 32-77% de mensajes que pasan— pero cada fila lleva un empleador real y un enlace real. Ambas se publican, como en el padre: son productos distintos, no duplicados.
+- **Gem ganó un modo REST opcional** junto a su ruta GraphQL (`api: https://api.gem.com/job_board/v0/<board>/job_posts`). Nunca se deriva de un id de tablero —una URL derivada sería una suposición sobre qué superficie expone un inquilino— y la ruta GraphQL sigue siendo la predeterminada. Portado del padre #3783.
+
+### Corregido
+- **El filtro de ubicación de `telegram-channel` no veía el cirílico y nombraba ciudades como empleadores.** El `LOCATIONISH_RE` del padre usaba `\b`, un límite solo ASCII que nunca se activa junto al cirílico, así que todas sus alternativas rusas (`москва`, `спб`, `офис`, `удалёнк*`) eran inalcanzables y `Senior Engineer | Москва` devolvía **«Москва» como empleador**. Es exactamente la sustitución de campo equivocado que toda la política de atribución existe para impedir, y golpeaba al público principal del proveedor: un canal en ruso escribe la ubicación en cirílico. El port de web-ui usa comprobaciones Unicode (`\p{L}` / `\p{N}`), lo mismo que el padre ya hace una constante más abajo en `ROLE_WORD_RE`. Fijado por una prueba que falla con la forma ASCII. **Aún no corregido aguas arriba.**
+
+### Notas
+- **El trabajo de recuperación por facetas de Workday del padre (#3851, #3874) no necesitó port.** web-ui no pagina ni divide Workday por facetas en absoluto —un solo POST con `offset: 0`—, así que ninguna de esas rutas de código existe aquí. Misma conclusión que en v1.229.0, verificada de nuevo.
+- **`providers/_types.js`** cambió solo en documentación (el campo opcional `Job.salary`).
+- Pruebas: **2962 → 3009** (+47).
+
 ## [1.230.0] — 2026-09-05
 
 **Cambiado — tres correcciones de proveedores desde el career-ops padre v1.32.0, y un defecto que el propio port sacó a la luz.**

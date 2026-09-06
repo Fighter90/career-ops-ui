@@ -15,6 +15,8 @@ import assert from 'node:assert/strict';
 import {
   meta,
   fetchGem,
+  resolveGemRestUrl,
+  parseGemRestResponse,
   parseGemPostings,
   buildJobDescriptionText,
   resolveBoardId,
@@ -280,4 +282,89 @@ test('parseGemPostings: pure normalization — remote inference from title, onsi
   assert.equal(jobs[1].company, 'Acme');
   // non-array → []
   assert.deepEqual(parseGemPostings(null, { boardId: 'acme' }), []);
+});
+
+// ── REST mode (parent career-ops #3783) ────────────────────────────────────
+//
+// Opt-in: only an entry that pins an api.gem.com URL uses it. The GraphQL path
+// stays the default, so these tests also pin that nothing changes without it.
+
+test('gem REST mode is opt-in and never derived from a board id', () => {
+  // A derived URL would be a guess about which surface a tenant exposes.
+  assert.equal(resolveGemRestUrl({}), null);
+  assert.equal(resolveGemRestUrl({ careers_url: 'https://jobs.gem.com/acme' }), null);
+  assert.equal(
+    resolveGemRestUrl({ api: 'https://api.gem.com/job_board/v0/acme/job_posts' })?.href,
+    'https://api.gem.com/job_board/v0/acme/job_posts',
+  );
+});
+
+test('gem REST mode pins host, scheme and path shape', () => {
+  assert.equal(resolveGemRestUrl({ api: 'https://api.gem.com.evil.test/job_board/v0/a/job_posts' }), null);
+  assert.equal(resolveGemRestUrl({ api: 'http://api.gem.com/job_board/v0/a/job_posts' }), null);
+  // Without the path check, /login on the same host would be accepted.
+  assert.equal(resolveGemRestUrl({ api: 'https://api.gem.com/login' }), null);
+  assert.equal(resolveGemRestUrl({ api: 'https://api.gem.com/job_board/v0/a/job_posts/extra' }), null);
+});
+
+test('gem REST accepts both documented envelopes, and empty ones', () => {
+  const row = { title: 'Engineer', absolute_url: 'https://jobs.gem.com/acme/4965519002' };
+  assert.equal(parseGemRestResponse([row], 'Acme').length, 1);
+  assert.equal(parseGemRestResponse({ job_posts: [row] }, 'Acme').length, 1);
+  assert.equal(parseGemRestResponse([], 'Acme').length, 0);
+  assert.equal(parseGemRestResponse({}, 'Acme').length, 0);
+  assert.equal(parseGemRestResponse(null, 'Acme').length, 0);
+});
+
+test('gem REST rejects an undocumented envelope rather than reading it as an empty board', () => {
+  assert.throws(() => parseGemRestResponse({ data: { jobs: [] } }, 'Acme'), /unsupported REST response envelope/);
+});
+
+test('gem REST drops a row whose absolute_url is not a posting page', () => {
+  // Any jobs.gem.com URL the API returns — /login included — would otherwise
+  // be accepted as a job.
+  const rows = [
+    { title: 'Login page', absolute_url: 'https://jobs.gem.com/login' },
+    { title: 'Wrong host', absolute_url: 'https://evil.test/acme/1' },
+    { title: 'Insecure', absolute_url: 'http://jobs.gem.com/acme/1' },
+    { title: 'Good', absolute_url: 'https://jobs.gem.com/acme/4965519002' },
+  ];
+  assert.deepEqual(parseGemRestResponse(rows, 'Acme').map((j) => j.title), ['Good']);
+});
+
+test('gem REST accepts an opaque, nonnumeric posting id', () => {
+  // The public board returns those too, so a digit-only rule would drop them.
+  const [j] = parseGemRestResponse([{ title: 'T', absolute_url: 'https://jobs.gem.com/acme/abc-XYZ_9' }], 'Acme');
+  assert.equal(j.url, 'https://jobs.gem.com/acme/abc-XYZ_9');
+});
+
+test('gem REST keeps an unparseable date empty rather than epoch zero', () => {
+  const [bad] = parseGemRestResponse([{ title: 'T', absolute_url: 'https://jobs.gem.com/a/1', first_published_at: 'nope' }], 'A');
+  assert.equal(bad.date, '', 'a recency filter must not read this as 1970');
+  const [good] = parseGemRestResponse([{ title: 'T', absolute_url: 'https://jobs.gem.com/a/2', first_published_at: '2026-09-01T00:00:00Z' }], 'A');
+  assert.equal(good.date, '2026-09-01T00:00:00.000Z');
+});
+
+test('gem REST prefers content_plain over stripping the HTML content', () => {
+  const [j] = parseGemRestResponse([{
+    title: 'T',
+    absolute_url: 'https://jobs.gem.com/a/1',
+    content_plain: 'Plain body',
+    content: '<p>HTML body</p>',
+  }], 'A');
+  assert.equal(j.description, 'Plain body');
+});
+
+test('gem fetch takes the REST path only when the entry pinned it', async () => {
+  const seen = [];
+  const jobs = await fetchGem(GEM_API_URL + '?board=acme', {
+    fetchImpl: async (url) => {
+      seen.push(String(url));
+      return { ok: true, status: 200, json: async () => [{ title: 'Staff Engineer', absolute_url: 'https://jobs.gem.com/acme/1' }] };
+    },
+    company: { name: 'Acme', api: 'https://api.gem.com/job_board/v0/acme/job_posts' },
+  });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].source, 'gem');
+  assert.deepEqual(seen, ['https://api.gem.com/job_board/v0/acme/job_posts'], 'the GraphQL endpoint is never touched');
 });

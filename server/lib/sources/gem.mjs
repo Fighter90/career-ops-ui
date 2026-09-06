@@ -235,8 +235,125 @@ export function parseGemPostings(postings, ctx) {
  * @param {string} endpoint host-pinned Gem batch URL with `?board=<id>` (from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
  */
+/**
+ * Gem's documented REST job-board API — an alternative to the GraphQL path.
+ *
+ *   GET https://api.gem.com/job_board/v0/<board>/job_posts
+ *
+ * Gem documents this unauthenticated surface for custom career pages. It is
+ * OPT-IN: an entry pins the exact URL in `api:`. The GraphQL path stays the
+ * default for `jobs.gem.com/<boardId>` SPA boards, so nothing changes for an
+ * entry that does not set it.
+ *
+ * The URL is not derived from a board id, because a derived one would be a
+ * guess about which surface a tenant exposes.
+ * @param {object} [company]
+ * @returns {URL|null}
+ */
+export function resolveGemRestUrl(company = {}) {
+  const raw = typeof company.api === 'string' ? company.api : '';
+  if (!raw) return null;
+  let parsed;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    return null;
+  }
+  if (parsed.protocol !== 'https:' || parsed.hostname !== 'api.gem.com') return null;
+  if (!/^\/job_board\/v0\/[^/?#]+\/job_posts\/?$/.test(parsed.pathname)) return null;
+  return parsed;
+}
+
+// A REST posting's canonical shape is exactly `/{vanity_path}/{id}` on
+// jobs.gem.com. Without this, any jobs.gem.com URL the API returned —
+// `/login` included — would be accepted as a job. The id segment is not always
+// numeric: the public board also returns opaque ids, so this requires exactly
+// two nonempty path segments rather than a digit-only tail.
+const GEM_POSTING_PATH_RE = /^\/[^/?#]+\/[^/?#]+\/?$/;
+
+/**
+ * Extract the row array from Gem's REST response.
+ *
+ * The endpoint has appeared both as a bare array and wrapped in `job_posts`;
+ * both are accepted. `[]`, `{}` and null are legitimately contentless. Any
+ * OTHER nonempty object shape is undocumented and is rejected loudly rather
+ * than read as "zero jobs" — a changed response must not look like a board
+ * with no openings.
+ * @param {any} json
+ */
+function extractRestRows(json) {
+  if (Array.isArray(json)) return json;
+  if (json === null || json === undefined) return [];
+  if (typeof json === 'object') {
+    if (Array.isArray(json.job_posts)) return json.job_posts;
+    if (Object.keys(json).length === 0) return [];
+    throw new Error(`gem: unsupported REST response envelope — expected an array or {job_posts: [...]}, got an object with keys: ${Object.keys(json).join(', ')}`);
+  }
+  throw new Error(`gem: unsupported REST response envelope — expected an array or {job_posts: [...]}, got ${typeof json}`);
+}
+
+/**
+ * Normalize a REST response into web-ui job objects.
+ *
+ * REST uses ISO timestamps (`first_published_at`). An invalid or missing date
+ * becomes an empty field rather than epoch zero, so a recency filter does not
+ * read "no date" as 1970 and treat every such row as ancient.
+ * @param {any} json
+ * @param {string} companyName
+ */
+export function parseGemRestResponse(json, companyName) {
+  const rows = extractRestRows(json);
+  const out = [];
+  for (const j of rows) {
+    if (!j || typeof j.title !== 'string' || !j.title.trim()) continue;
+    if (typeof j.absolute_url !== 'string') continue;
+    let url;
+    try {
+      const parsed = new URL(j.absolute_url);
+      if (parsed.protocol !== 'https:' || parsed.hostname !== API_HOST || !GEM_POSTING_PATH_RE.test(parsed.pathname)) continue;
+      url = parsed.href;
+    } catch {
+      continue;
+    }
+    const description = typeof j.content_plain === 'string' && j.content_plain.trim()
+      ? j.content_plain.trim()
+      : htmlToText(j.content);
+    const ms = typeof j.first_published_at === 'string' ? Date.parse(j.first_published_at) : NaN;
+    const location = formatLocation(j.location);
+    const isRemote = /remote|anywhere/i.test(location);
+    out.push({
+      id: `gem-${j.id ?? url}`,
+      title: j.title.trim(),
+      company: companyName,
+      url,
+      salary: '',
+      location,
+      isRemote,
+      workplaceType: isRemote ? 'Remote' : '',
+      relocates: false,
+      date: Number.isFinite(ms) && ms > 0 ? new Date(ms).toISOString() : '',
+      snippet: description.slice(0, 400),
+      description,
+      source: 'gem',
+    });
+  }
+  return out;
+}
+
 export async function fetchGem(endpoint, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
+
+  // Opt-in REST mode: only when the entry pinned an api.gem.com URL itself.
+  const restUrl = resolveGemRestUrl(company);
+  if (restUrl) {
+    const json = await fetchJson(fetchImpl, restUrl.href, {
+      signal,
+      headers: { accept: 'application/json' },
+      redirect: 'error',
+    });
+    return parseGemRestResponse(json, (company && typeof company.name === 'string') ? company.name : '');
+  }
+
   assertGemUrl(endpoint);
   const boardId = new URL(endpoint).searchParams.get('board');
   const companyName = (company && typeof company.name === 'string') ? company.name : '';

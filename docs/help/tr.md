@@ -1,6 +1,6 @@
 # Yardım — career-ops-ui
 
-<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter92/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 Uygulamayı başlattığınız andan mülakata çağrılana kadar her sayfanın
 eksiksiz bir gezintisi. Aşağıdaki her `##` başlığı, kenar çubuğundaki
@@ -1028,7 +1028,7 @@ Günlüğün altında, sonuç tablosu `data/last-scan.json`'dan satırları işl
 > — elle yeniden yükleme veya sayfa değişimi gerekmez. Önbellek her taramanın
 > başında sıfırlanır ve yeniden doldurulur.
 
-> **v1.85.0 — Kaynak başına maks. ve kaynak karantinası.** Scan düğmesinin
+> **v1.87.0 — Kaynak başına maks. ve kaynak karantinası.** Scan düğmesinin
 > yanındaki **Max per source** alanı, her kartın kaç iş katkısını sınırlar
 > (boş/0 = sınırsız, varsayılan) — devasa bir kart aksi halde baskın olacağında
 > kullanışlıdır. Ayrıca, kalıcı bir **404 / 410** döndüren herhangi bir kaynak
@@ -1773,7 +1773,7 @@ vb.). Sayfa başına 25 satır; sunucu en fazla 500 en-son olay döndürür.
 
 Daha derin tanılama için: Health sayfasında **▶ Doctor** çalıştırın,
 çıktıyı kopyalayın ve
-<https://github.com/Fighter90/career-ops-ui/issues> adresindeki sorun
+<https://github.com/Fighter92/career-ops-ui/issues> adresindeki sorun
 takipçisinde sorunu arayın.
 
 
@@ -1781,7 +1781,7 @@ takipçisinde sorunu arayın.
 
 ## 17. Yeni bir iş-portalı kaynağı nasıl eklenir
 
-career-ops-ui, her iş kartını bir **adaptör** olarak ele alır — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) altında, bir kartın sonuçlarını nasıl getirip normalleştireceğini bilen tek bir dosya. Şu anda `server/lib/sources/` kaydı **90** adaptör gönderir — **85 İngilizce + 5 Rusça** kart. İngilizce set, başlıca ATS'leri (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), açık bir `provider:` ile seçilen kart-geneli toplayıcıları (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) ve bir `careers_url` sunucusundan veya açık bir `api:` URL'sinden otomatik tespit edilen kiracı-başına ATS'leri (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …) kapsar. **Tam listenin burada asla elle sayılması gerekmez — `server/lib/sources/`'tan otomatik keşfedilir ve `#/scan`'in Source açılır menüsünde canlı olarak gösterilir.** YAML için §5'e ve kopyala-yapıştır girdileri için `docs/portals-examples.md`'ye bakın.
+career-ops-ui, her iş kartını bir **adaptör** olarak ele alır — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) altında, bir kartın sonuçlarını nasıl getirip normalleştireceğini bilen tek bir dosya. Şu anda `server/lib/sources/` kaydı **92** adaptör gönderir — **87 İngilizce + 5 Rusça** kart. İngilizce set, başlıca ATS'leri (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), açık bir `provider:` ile seçilen kart-geneli toplayıcıları (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) ve bir `careers_url` sunucusundan veya açık bir `api:` URL'sinden otomatik tespit edilen kiracı-başına ATS'leri (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …) kapsar. **Tam listenin burada asla elle sayılması gerekmez — `server/lib/sources/`'tan otomatik keşfedilir ve `#/scan`'in Source açılır menüsünde canlı olarak gösterilir.** YAML için §5'e ve kopyala-yapıştır girdileri için `docs/portals-examples.md`'ye bakın.
 
 > **v1.69.0 (P-14) — sürükle-bırak otomatik keşif.** 12. bir kaynak
 > eklemek artık **saf bir dosya bırakma**. Kayıt
@@ -2240,7 +2240,7 @@ Ne yazacağınızdan emin değil misiniz? **✨ Verilerimden öner**, başvuru i
 
 ### Pazar raporu
 
-**Pazar raporu** sekmesi, modelden *sizin* hedef rolleriniz için bir maaş ve işgücü piyasası analizi ister — hangi rolleri ve hangi kıdem düzeyini kapsayacağını bilmek için CV'nizi ve profilinizi okur. Bir **Bölge / pazar** yazın (örneğin `Russia`, `EU-remote`, `US` veya `Germany`), bir **Para birimi** seçin ve **Pazar raporu oluştur**'a tıklayın. Yönetici özeti, kademeye göre maaş (medyan artı P10/P25/P75/P90), önde gelen işverenler, talep gören beceriler tablosu, yan hakların sıklığı, ofis/hibrit/uzaktan dağılımı, yapay zekâ etkisi dahil 12-24 aylık eğilimler ve müzakere rehberliği içeren yapılandırılmış bir rapor alırsınız. Her rakam, **modelin eğitim bilgisinden çıkan yön gösterici bir tahmindir** — kazınmış veya canlı veri değil — ve rapor bunu belirtir; sayıları alıntı değil, aralık olarak değerlendirin. Ayarlanmış bir API anahtarı yoksa, uydurma bir rapor yerine kopyala-yapıştır bir istem alırsınız. Raporu uygulamadan çıkarmak için **.md indir**, **PDF olarak kaydet** veya **Kopyala**'yı kullanın.
+**Pazar raporu** sekmesi, modelden *sizin* hedef rolleriniz için bir maaş ve işgücü piyasası analizi ister — hangi rolleri ve hangi kıdem düzeyini kapsayacağını bilmek için CV'nizi ve profilinizi okur. Bir **Bölge / pazar** yazın (örneğin `Russia`, `EU-remote`, `US` veya `Germany`), bir **Para birimi** seçin ve **Pazar raporu oluştur**'a tıklayın. Yönetici özeti, kademeye göre maaş (medyan artı P10/P25/P75/P92), önde gelen işverenler, talep gören beceriler tablosu, yan hakların sıklığı, ofis/hibrit/uzaktan dağılımı, yapay zekâ etkisi dahil 12-24 aylık eğilimler ve müzakere rehberliği içeren yapılandırılmış bir rapor alırsınız. Her rakam, **modelin eğitim bilgisinden çıkan yön gösterici bir tahmindir** — kazınmış veya canlı veri değil — ve rapor bunu belirtir; sayıları alıntı değil, aralık olarak değerlendirin. Ayarlanmış bir API anahtarı yoksa, uydurma bir rapor yerine kopyala-yapıştır bir istem alırsınız. Raporu uygulamadan çıkarmak için **.md indir**, **PDF olarak kaydet** veya **Kopyala**'yı kullanın.
 
 ### Pipeline'ım
 
@@ -2340,7 +2340,7 @@ career-ops CLI'dan bağımsızdır, yani yapay zeka için üç dürüst seçene�
 
 ## 32. OpenWorker'dan çalıştırma (yapay zeka iş arkadaşı)
 
-Tarayıcı yerine bir masaüstü yapay zeka iş arkadaşını mı tercih edersiniz? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)**, tüm bu hattı sizin için yürüten bir **[OpenWorker](https://github.com/andrewyng/openworker)** iş arkadaşıdır (Andrew Ng'nin açık kaynaklı, yerel öncelikli yapay zeka iş arkadaşı uygulaması) — panoları tarar, CV'nize karşı uygunlukları puanlar, temellendirilmiş bir CV + ön yazı uyarlar, başvuruları izler, takip mesajı taslakları hazırlar — ve istek üzerine **bu paneli açabilir**. Tek, kod içermeyen bir Markdown "persona"dır; OpenWorker bunun hiçbirini bir program olarak çalıştırmaz, talimatlar yalnızca ajanı yönlendirir. Kılavuzu 17 dilin tamamında sunulur.
+Tarayıcı yerine bir masaüstü yapay zeka iş arkadaşını mı tercih edersiniz? **[career-ops-coworker](https://github.com/Fighter92/career-ops-coworker)**, tüm bu hattı sizin için yürüten bir **[OpenWorker](https://github.com/andrewyng/openworker)** iş arkadaşıdır (Andrew Ng'nin açık kaynaklı, yerel öncelikli yapay zeka iş arkadaşı uygulaması) — panoları tarar, CV'nize karşı uygunlukları puanlar, temellendirilmiş bir CV + ön yazı uyarlar, başvuruları izler, takip mesajı taslakları hazırlar — ve istek üzerine **bu paneli açabilir**. Tek, kod içermeyen bir Markdown "persona"dır; OpenWorker bunun hiçbirini bir program olarak çalıştırmaz, talimatlar yalnızca ajanı yönlendirir. Kılavuzu 17 dilin tamamında sunulur.
 
 ### İş arkadaşı ne yapar
 
@@ -2351,7 +2351,7 @@ Tarayıcı yerine bir masaüstü yapay zeka iş arkadaşını mı tercih edersin
 OpenWorker'ı kurun ve bir model anahtarı ekleyin (Anthropic / OpenAI / Google veya yerel Ollama). En hızlısı **tek komut** — coworker'ın sürdüğü `career-ops` hattını hazırlar ve idempotenttir: mevcut `career-ops` / `web-ui`'yi verilerinizin üzerine yazmadan yeniden kullanır:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Fighter92/career-ops-coworker/main/install.sh | bash
 ```
 
-Ardından coworker'ı OpenWorker'ın **Install a coworker** panelinden ekleyin — **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), **.zip** ([Releases](https://github.com/Fighter90/career-ops-coworker/releases)'ten) veya `career-ops.md`'yi **içe aktararak**. Bir **Job-Search Coworker** oturumu açın, `career-ops` klasörünüzü seçin ve gerçek bir şey isteyin — *"panolarımı tara ve bu haftanın en iyi 5 eşleşmesini ver"* ya da *"panoyu aç."* Bağlayıcılar (Gmail, Google Calendar, GitHub) ve tam kılavuz deponun [yardım kılavuzunda](https://github.com/Fighter90/career-ops-coworker/tree/main/help). OpenWorker'ın yükleyicisine ve depo yükleyicisine karşı kurulabilirliği doğrulandı.
+Ardından coworker'ı OpenWorker'ın **Install a coworker** panelinden ekleyin — **GitHub URL** (`https://github.com/Fighter92/career-ops-coworker`), **.zip** ([Releases](https://github.com/Fighter92/career-ops-coworker/releases)'ten) veya `career-ops.md`'yi **içe aktararak**. Bir **Job-Search Coworker** oturumu açın, `career-ops` klasörünüzü seçin ve gerçek bir şey isteyin — *"panolarımı tara ve bu haftanın en iyi 5 eşleşmesini ver"* ya da *"panoyu aç."* Bağlayıcılar (Gmail, Google Calendar, GitHub) ve tam kılavuz deponun [yardım kılavuzunda](https://github.com/Fighter92/career-ops-coworker/tree/main/help). OpenWorker'ın yükleyicisine ve depo yükleyicisine karşı kurulabilirliği doğrulandı.
