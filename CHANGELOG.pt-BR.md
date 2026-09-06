@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.231.3] — 2026-09-07
+
+**Corrigido — clicar em Doctor quebrava a barra superior no celular. Relatado de um telefone no mesmo dia em que v1.231.2 saiu.**
+
+### Corrigido
+**`UI.withSpinner` achatava os filhos do botão que decorava.** Seu sinal de ocupado passava por `textContent`: guardar `button.textContent`, escrever `'⏳ ' + original`, escrever de volta. Atribuir `textContent` substitui **todos** os filhos por um único nó de texto — e a v1.231.2 tinha acabado de dividir cada ação da barra superior em `.btn-ico` + `.btn-label`, ocultando o rótulo sob `max-width: 900px`. Então o primeiro toque em Doctor destruía os dois `<span>` de vez: as regras móveis ficavam sem nada para casar, o rótulo voltava como texto puro e o quadrado de 36 px crescia até virar uma pílula `🩺Doctor` que montava sobre o alternador de tema. Não se curava — só recarregar a página restaurava a marcação. A correção captura os **nós** filhos e os restaura com `replaceChildren`; botões só de texto, que são a maioria dos 24 pontos de chamada, seguem idênticos.
+
+### Notas
+É a mesma classe de defeito da armadilha do `applyI18n()` apontada na v1.231.2 — código atribuindo `textContent` a um elemento que agora tem filhos elemento — alcançada por outro chamador. A lição se generaliza: **dividir o conteúdo de um elemento em `<span>` filhos transforma cada escritor de `textContent` já existente naquele elemento em um bug latente**.
+Travado duas vezes: `node:vm` sobre o `withSpinner` real e um clique em navegador real a 320 px. Ambos confirmadamente falhavam no código antigo. **3009 → 3012 testes**.
+
 ## [1.231.2] — 2026-09-06
 
 **Corrigido — a barra superior mobile quebrava em duas linhas, o servidor rodava um pai mais antigo e o redirect do cvstart.ru dava 404 em qualquer caminho que já nomeasse um idioma.**

@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
+[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.231.2** — **मोबाइल का शीर्ष बार फिर एक ही पंक्ति में है, और क्रियाएँ केवल चिह्न हैं।** क्रिया-बटन पूरी चौड़ाई की दूसरी पंक्ति में धकेल दिए जाते थे, इसलिए फ़ोन पर `[☰ · खोज]` दिखता और उसके नीचे `[🔔 🌙 Doctor Scan खोलें]` — अपनी ही पंक्ति में दो चौड़ी गोलियाँ। अब ये घंटी और थीम-स्विच के बगल में 36 px के वर्ग (🩺 / ⚡) हैं, और 320 px पर भी सब कुछ एक पंक्ति में समा जाता है। अनुमान नहीं, माप: 320/360/390/430 px पर तथा उस पूरी 560–760 px पट्टी में जहाँ पहले बटन खोज-पट्टी पर चढ़ जाते थे। **भाषा अब मोबाइल लेआउट को बिलकुल प्रभावित नहीं करती**, क्योंकि लेबल छिपा है और बटन एक निश्चित वर्ग है। यह भी ठीक हुआ: यह रिलीज़ मूल 1.32.0 के विरुद्ध बनी थी, पर सर्वर मूल **1.31.0** पर चल रहा था; और `cvstart.ru` हर पथ के आगे `/ru/` जोड़ देता था, यह देखे बिना कि वहाँ पहले से क्या है — `/en/help` `/ru/en/help` बन जाता और अंग्रेज़ी साइट का रास्ता पूरी तरह बंद हो जाता। **3009 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.231.3** — **Doctor पर क्लिक करने से मोबाइल का शीर्ष बार टूट जाता था**; v1.231.2 आने के दिन ही फ़ोन से रिपोर्ट किया गया। `UI.withSpinner` अपना व्यस्तता-संकेत `button.textContent` में असाइन करके दिखाता था, और यह *हर* बच्चे को एक ही टेक्स्ट नोड से बदल देता है। v1.231.2 ने अभी-अभी हर क्रिया को `.btn-ico` और `.btn-label` में बाँटा था और लेबल को `max-width: 900px` के नीचे छिपाया था — इसलिए पहला ही स्पर्श दोनों `<span>` को हमेशा के लिए मिटा देता था: लेबल नंगे पाठ के रूप में लौटता और 36 px का वर्ग थीम-स्विच पर चढ़ती `🩺Doctor` गोली बन जाता। यह अपने आप ठीक नहीं होता था; केवल रीलोड ही मार्कअप लौटाता था। अब `withSpinner` बच्चों की **नोड्स** सहेजता है और `replaceChildren` से लौटाता है। यह पिछली रिलीज़ में दर्ज `applyI18n()` फंदे की ही दोष-श्रेणी है, बस दूसरे कॉलर से। **3012 परीक्षण।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

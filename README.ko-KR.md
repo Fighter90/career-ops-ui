@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
+[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.231.2** — **모바일 상단 바가 다시 한 줄이 되고, 동작 버튼은 아이콘만 남았습니다.** 동작 버튼들이 전체 너비의 두 번째 줄로 밀려나, 휴대폰에서는 `[☰ · 검색]` 아래에 `[🔔 🌙 Doctor Scan 열기]` 라는 넓은 알약 두 개가 별도의 줄을 차지했습니다. 이제는 종과 테마 전환 옆의 36 px 정사각형(🩺 / ⚡)이며, 320 px에서도 전부 한 줄에 들어갑니다. 눈대중이 아니라 실측입니다 — 320/360/390/430 px에서, 그리고 예전에 버튼이 검색창을 덮던 560~760 px 구간 전체에서 확인했습니다. **로케일은 이제 모바일 레이아웃에 전혀 영향을 주지 않습니다.** 레이블이 숨겨지고 버튼이 고정 정사각형이기 때문입니다. 함께 수정: 이 릴리스는 상위 1.32.0을 기준으로 만들었는데 서버는 상위 **1.31.0**으로 돌고 있었고, `cvstart.ru`는 경로에 무엇이 있든 보지 않고 `/ru/`를 앞에 붙여 `/en/help`가 `/ru/en/help`가 되면서 영어판으로 가는 길을 완전히 막고 있었습니다. **3009개의 테스트.**
+> **🆕 최신 릴리스 — v1.231.3** — **Doctor를 누르면 모바일 상단 바가 무너졌습니다.** v1.231.2가 나간 그날 휴대폰에서 신고되었습니다. `UI.withSpinner`는 작업 중 표시를 `button.textContent` 대입으로 처리했는데, 이는 *모든* 자식을 텍스트 노드 하나로 대체합니다. v1.231.2는 막 각 동작을 `.btn-ico`와 `.btn-label`로 나누고 레이블을 `max-width: 900px` 아래에 숨긴 참이었습니다. 그래서 첫 탭이 두 `<span>`을 영영 없앴고, 레이블은 맨 텍스트로 돌아왔으며, 36 px 정사각형은 테마 전환 위로 올라타는 `🩺Doctor` 알약으로 부풀었습니다. 저절로 낫지 않았고 새로고침만이 마크업을 되돌렸습니다. 이제 `withSpinner`는 자식 **노드**를 스냅샷하고 `replaceChildren`으로 되돌립니다. 지난 릴리스에서 적어 둔 `applyI18n()` 함정과 같은 결함 부류를 다른 호출자로 만난 것입니다. **3012개의 테스트.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

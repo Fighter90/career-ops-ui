@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.3] — 2026-09-07
+
+**Naprawiono — kliknięcie Doctor psuło górny pasek na telefonie. Zgłoszone z telefonu w dniu wydania v1.231.2.**
+
+### Naprawiono
+**`UI.withSpinner` spłaszczał dzieci przycisku, który właśnie ozdabiał.** Sygnał zajętości szedł przez `textContent`: zapisz `button.textContent`, wpisz `'⏳ ' + original`, wpisz z powrotem. Przypisanie do `textContent` zastępuje **wszystkie** dzieci jednym węzłem tekstowym — a v1.231.2 dopiero co podzieliło każdą akcję górnego paska na `.btn-ico` i `.btn-label`, chowając etykietę pod `max-width: 900px`. Pierwsze dotknięcie Doctor niszczyło więc oba `<span>` na dobre: reguły mobilne nie miały już czego dopasować, etykieta wracała jako goły tekst, a kwadrat 36 px rozrastał się w pigułkę `🩺Doctor` nachodzącą na przełącznik motywu. Nie goiło się samo — tylko przeładowanie strony przywracało znaczniki. Poprawka zapisuje **węzły** dzieci i przywraca je przez `replaceChildren`; przyciski czysto tekstowe, czyli większość z 24 miejsc wywołania, zachowują się dokładnie jak wcześniej.
+
+### Uwagi
+To ta sama klasa usterki co pułapka `applyI18n()` odnotowana w v1.231.2 — kod przypisujący `textContent` elementowi, który ma już dzieci-elementy — osiągnięta przez innego wywołującego. Wniosek się uogólnia: **podzielenie treści elementu na dzieci `<span>` zamienia każdego istniejącego pisarza `textContent` na tym elemencie w utajony błąd**.
+Zablokowane dwukrotnie: `node:vm` na prawdziwym `withSpinner` i kliknięcie w prawdziwej przeglądarce przy 320 px. Oba potwierdzono jako padające na starym kodzie. **3009 → 3012 testów**.
+
 ## [1.231.2] — 2026-09-06
 
 **Naprawiono — mobilny górny pasek łamał się na dwa wiersze, serwer działał na starszym projekcie nadrzędnym, a przekierowanie cvstart.ru dawało 404 dla każdej ścieżki, która już nazywała język.**

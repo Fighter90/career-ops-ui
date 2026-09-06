@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
+[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.231.2** — **La barra superior del móvil vuelve a ocupar una sola fila y sus acciones son iconos.** Los botones de acción se veían empujados a una segunda fila de ancho completo, así que en el teléfono aparecía `[☰ · Buscar]` y debajo `[🔔 🌙 Doctor Abrir Scan]`: dos pastillas anchas en una línea propia. Ahora son cuadrados de 36 px (🩺 / ⚡) junto a la campana y el conmutador de tema, y todo cabe en una fila a 320 px — medido, no estimado a ojo: a 320/360/390/430 px y en toda la banda de 560–760 px donde antes los botones se montaban sobre el campo de búsqueda. **El idioma ya no altera en absoluto la disposición móvil**, porque la etiqueta se oculta y el botón es un cuadrado fijo. También corregido: el servidor ejecutaba el proyecto padre **1.31.0** mientras esta versión se compiló contra **1.32.0**, y `cvstart.ru` anteponía `/ru/` a cualquier ruta sin mirar lo que ya había — `/en/help` se convertía en `/ru/en/help`, cerrando por completo el sitio en inglés. **3009 pruebas.**
+> **🆕 Última versión — v1.231.3** — **Pulsar Doctor rompía la barra superior en el móvil**, reportado desde un teléfono el mismo día que salió v1.231.2. `UI.withSpinner` mostraba su señal de ocupado asignando `button.textContent`, y eso reemplaza *todos* los hijos por un único nodo de texto. v1.231.2 acababa de dividir cada acción de la barra en `.btn-ico` + `.btn-label` ocultando la etiqueta bajo `max-width: 900px`, así que la primera pulsación destruía ambos `<span>` para siempre: la etiqueta volvía como texto desnudo y el cuadrado de 36 px crecía hasta una pastilla `🩺Doctor` que se montaba sobre el conmutador de tema. No se curaba solo — solo recargar restauraba el marcado. Ahora `withSpinner` captura los **nodos** hijos y los restaura con `replaceChildren`; los botones de solo texto, la mayoría de los 24 puntos de llamada, van y vuelven igual que antes. Misma clase de defecto que la trampa de `applyI18n()` de la versión anterior, por otra vía. **3012 pruebas.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
+[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.231.2** — **Den øverste bjælke på mobil er igen én række, og handlingerne er ikoner.** Handlingsknapperne blev tvunget ned i en anden række i fuld bredde, så telefonen viste `[☰ · Søg]` med `[🔔 🌙 Doctor Åbn Scan]` nedenunder — to brede piller på deres egen linje. Nu er de 36 px-kvadrater (🩺 / ⚡) ved siden af klokken og temaskifteren, og alt er på én række ved 320 px — målt, ikke vurderet på øjemål: ved 320/360/390/430 px og i hele båndet 560–760 px, hvor knapperne før lagde sig oven på søgefeltet. **Sproget påvirker slet ikke længere mobillayoutet**, fordi etiketten er skjult og knappen er et fast kvadrat. Også rettet: serveren kørte forældreprojektet **1.31.0**, mens denne udgivelse blev bygget mod **1.32.0**, og `cvstart.ru` satte `/ru/` foran enhver sti uden at se på, hvad der allerede stod der — `/en/help` blev til `/ru/en/help` og lukkede det engelske site helt. **3009 test.**
+> **🆕 Seneste udgivelse — v1.231.3** — **Et klik på Doctor ødelagde den øverste bjælke på mobil**, meldt fra en telefon samme dag som v1.231.2 udkom. `UI.withSpinner` viste sit travlhedssignal ved at tildele `button.textContent`, og det erstatter *alle* børn med ét tekstnode. v1.231.2 havde netop delt hver handling op i `.btn-ico` + `.btn-label` med etiketten skjult under `max-width: 900px` — første tryk ødelagde derfor begge `<span>` for altid: etiketten kom tilbage som bar tekst, og 36 px-kvadratet voksede til en `🩺Doctor`-pille oven på temaskifteren. Det helede ikke af sig selv — kun en genindlæsning gendannede opmærkningen. `withSpinner` gemmer nu barne**noderne** og gendanner dem med `replaceChildren`. Samme fejlklasse som `applyI18n()`-fælden fra forrige udgivelse, via en anden kalder. **3012 test.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

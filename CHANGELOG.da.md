@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.231.3] — 2026-09-07
+
+**Rettet — et klik på Doctor ødelagde den øverste bjælke på mobil. Meldt fra en telefon samme dag som v1.231.2 udkom.**
+
+### Rettet
+**`UI.withSpinner` fladede børnene ud i den knap, den var ved at dekorere.** Dens travlhedssignal gik gennem `textContent`: gem `button.textContent`, skriv `'⏳ ' + original`, skriv tilbage. At tildele `textContent` erstatter **alle** børn med ét tekstnode — og v1.231.2 havde netop delt hver handling i den øverste bjælke op i `.btn-ico` + `.btn-label` med etiketten skjult under `max-width: 900px`. Første tryk på Doctor ødelagde derfor begge `<span>` for altid: mobilreglerne havde intet tilbage at ramme, etiketten kom tilbage som bar tekst, og 36 px-kvadratet voksede til en `🩺Doctor`-pille, der lagde sig oven på temaskifteren. Det helede ikke af sig selv — kun en genindlæsning gendannede opmærkningen. Rettelsen gemmer barne**noderne** og gendanner dem med `replaceChildren`; rene tekstknapper, altså de fleste af de 24 kaldsteder, opfører sig præcis som før.
+
+### Noter
+Det er samme fejlklasse som `applyI18n()`-fælden noteret i v1.231.2 — kode der tildeler `textContent` til et element, som nu har elementbørn — nået via en anden kalder. Lektionen generaliserer: **at dele et elements indhold op i barne-`<span>` gør enhver eksisterende `textContent`-skriver på det element til en latent fejl**.
+Låst to gange: `node:vm` over den ægte `withSpinner` og et klik i en rigtig browser ved 320 px. Begge bekræftet at fejle mod den gamle kode. **3009 → 3012 test**.
+
 ## [1.231.2] — 2026-09-06
 
 **Rettet — den mobile topbjælke brød om på to rækker, serveren kørte et ældre forældreprojekt, og cvstart.ru-omdirigeringen gav 404 for enhver sti, der allerede nævnte et sprog.**

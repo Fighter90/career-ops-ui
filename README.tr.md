@@ -7,16 +7,16 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
+[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.231.2** — **Mobilde üst çubuk yine tek satır, eylemler artık yalnızca simge.** Eylem düğmeleri tam genişlikte ikinci bir satıra itiliyordu; telefonda `[☰ · Ara]` görünüyor, altında `[🔔 🌙 Doctor Scan'i aç]` yer alıyordu — kendine ait bir satırda iki geniş hap. Artık zilin ve tema anahtarının yanında 36 px'lik kareler (🩺 / ⚡) ve 320 px'te her şey tek satıra sığıyor — göz kararı değil, ölçülmüş: 320/360/390/430 px'te ve düğmelerin eskiden arama alanının üstüne bindiği 560–760 px bandının tamamında. **Dil artık mobil yerleşimi hiç etkilemiyor**, çünkü etiket gizli ve düğme sabit bir kare. Ayrıca düzeltildi: bu sürüm üst proje **1.32.0** ile derlenmişken sunucu **1.31.0** ile çalışıyordu ve `cvstart.ru`, yolda hâlihazırda ne olduğuna bakmadan her yolun önüne `/ru/` ekliyordu — `/en/help`, `/ru/en/help` oluyor ve İngilizce siteyi büsbütün kapatıyordu. **3009 test.**
+> **🆕 Son sürüm — v1.231.3** — **Doctor'a tıklamak mobilde üst çubuğu bozuyordu**; v1.231.2'nin çıktığı gün bir telefondan bildirildi. `UI.withSpinner`, meşguliyet göstergesini `button.textContent`'e atayarak gösteriyordu; bu ise *bütün* çocukları tek bir metin düğümüyle değiştirir. v1.231.2 her eylemi henüz `.btn-ico` + `.btn-label` olarak ayırmış, etiketi `max-width: 900px` altında gizlemişti — bu yüzden ilk dokunuş iki `<span>`'i kalıcı olarak yok ediyordu: etiket çıplak metin olarak geri geliyor, 36 px'lik kare tema anahtarının üstüne binen bir `🩺Doctor` hapına dönüşüyordu. Kendiliğinden düzelmiyordu; yalnızca yeniden yükleme işaretlemeyi geri getiriyordu. Artık `withSpinner` çocuk **düğümlerini** saklayıp `replaceChildren` ile geri koyuyor. Önceki sürümde not edilen `applyI18n()` tuzağıyla aynı kusur sınıfı, başka bir çağırandan. **3012 test.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

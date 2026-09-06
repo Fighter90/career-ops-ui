@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.3] — 2026-09-07
+
+**Corregido — pulsar Doctor rompía la barra superior en el móvil. Reportado desde un teléfono el mismo día que salió v1.231.2.**
+
+### Corregido
+**`UI.withSpinner` aplastaba los hijos del botón que decoraba.** Su señal de ocupado pasaba por `textContent`: guardar `button.textContent`, escribir `'⏳ ' + original`, volver a escribirlo. Asignar `textContent` reemplaza **todos** los hijos por un único nodo de texto — y v1.231.2 acababa de dividir cada acción de la barra superior en `.btn-ico` + `.btn-label`, ocultando la etiqueta bajo `max-width: 900px`. Así que la primera pulsación en Doctor destruía ambos `<span>` para siempre: las reglas móviles se quedaban sin nada que coincidir, la etiqueta volvía como texto desnudo y el cuadrado de 36 px crecía hasta una pastilla `🩺Doctor` que se montaba sobre el conmutador de tema. No se curaba solo — únicamente recargar la página restauraba el marcado. La corrección captura los **nodos** hijos y los restaura con `replaceChildren`; los botones de solo texto, que son la mayoría de los 24 puntos de llamada, van y vuelven exactamente igual que antes.
+
+### Notas
+Es la misma clase de defecto que la trampa de `applyI18n()` señalada en v1.231.2 — código que asigna `textContent` a un elemento que ahora tiene hijos elemento — alcanzada por otra vía. La lección se generaliza: **dividir el contenido de un elemento en `<span>` hijos convierte a cada escritor de `textContent` ya existente sobre ese elemento en un fallo latente**, y esos escritores no siempre están en el archivo que estás editando.
+Asegurado por partida doble: `node:vm` sobre el `withSpinner` real y un clic en un navegador real a 320 px. Ambos se confirmaron fallando contra el código anterior. **3009 → 3012 pruebas** (el caso de navegador es opcional y no entra en `test:ci`).
+
 ## [1.231.2] — 2026-09-06
 
 **Corregido — la barra superior móvil se partía en dos filas, el servidor ejecutaba un padre más antiguo y el redirect de cvstart.ru daba 404 en cualquier ruta que ya nombrara un idioma.**

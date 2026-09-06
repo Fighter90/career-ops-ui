@@ -143,3 +143,67 @@ test('#/config select controls shrink with the viewport (MOBILE-1)', { skip: SKI
     await context.close();
   }
 });
+
+/**
+ * BUG-TB-SPIN (v1.231.3) — clicking a top-bar action must not break the row.
+ *
+ * v1.231.2 made those actions icon-only on mobile by splitting each button into
+ * `.btn-ico` + `.btn-label` spans and hiding the label under `max-width:900px`.
+ * `UI.withSpinner` then did its busy cue via `button.textContent`, which
+ * replaces every child with ONE text node — so the first Doctor tap destroyed
+ * both spans for good. The mobile rules had nothing left to match, the label
+ * came back as bare text, and the 36 px square grew into a wide pill that
+ * pushed the row out of the top bar. Reported from a phone the day v1.231.2
+ * shipped, with a screenshot of "🩺Doctor" spilling over the theme toggle.
+ *
+ * The click here reaches `/api/run/doctor` against a fixture root with no
+ * parent checkout, so the request fails — which is the point: `withSpinner`'s
+ * `finally` restore path runs on both outcomes, so the assertion is
+ * deterministic without depending on a real doctor run.
+ */
+test('BUG-TB-SPIN: the top bar survives a Doctor click at 320 px', { skip: SKIP }, async () => {
+  const context = await browser.newContext({ viewport: { width: 320, height: 720 } });
+  const page = await context.newPage();
+  try {
+    await page.goto(baseUrl + '/#/dashboard');
+    await page.waitForSelector('#btn-doctor', { timeout: 8000 });
+
+    const before = await page.evaluate(() => {
+      const b = document.getElementById('btn-doctor');
+      return { w: Math.round(b.getBoundingClientRect().width), spans: b.querySelectorAll('span').length };
+    });
+
+    await page.click('#btn-doctor');
+    // Let the request settle and withSpinner's finally block run.
+    await page.waitForFunction(() => !document.getElementById('btn-doctor')?.hasAttribute('aria-busy'),
+      null, { timeout: 15000 });
+    await page.waitForTimeout(150);
+
+    const after = await page.evaluate(() => {
+      const b = document.getElementById('btn-doctor');
+      const label = b.querySelector('.btn-label');
+      return {
+        ico: !!b.querySelector('.btn-ico'),
+        label: !!label,
+        labelHidden: label ? getComputedStyle(label).display === 'none' : null,
+        w: Math.round(b.getBoundingClientRect().width),
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+        // Every action must still sit on one row with the bell.
+        rows: new Set([...document.querySelectorAll('.topbar-actions .btn')]
+          .map((el) => Math.round(el.getBoundingClientRect().top))).size,
+      };
+    });
+
+    assert.ok(after.ico, 'after the click .btn-ico is gone — withSpinner flattened the button to a text node');
+    assert.ok(after.label, 'after the click .btn-label is gone — the label can no longer be hidden by CSS');
+    assert.equal(after.labelHidden, true, 'the label must stay hidden at 320 px');
+    assert.equal(after.w, before.w,
+      `the button widened from ${before.w}px to ${after.w}px — the icon-only square became a labelled pill`);
+    assert.equal(after.rows, 1, 'the top-bar actions must stay on a single row');
+    assert.ok(after.scrollWidth <= after.clientWidth,
+      `the page overflowed after the click: scrollWidth ${after.scrollWidth} > clientWidth ${after.clientWidth}`);
+  } finally {
+    await context.close();
+  }
+});

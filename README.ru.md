@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
+[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.231.2** — **Верхняя панель на телефоне снова в одну строку, действия — иконками.** Кнопки действий выдавливались на вторую строку во всю ширину, и на телефоне выходило `[☰ · Поиск]`, а под ним `[🔔 🌙 Doctor Открыть Scan]` — две широкие «таблетки» на отдельной строке. Теперь это квадраты 36 px (🩺 / ⚡) рядом с колокольчиком и переключателем темы, и всё помещается в строку даже на 320 px — это измерено, а не оценено на глаз: на 320/360/390/430 px и по всей полосе 560–760 px, где кнопки раньше наезжали на поле поиска. **Язык больше вообще не влияет на мобильную раскладку** — подпись скрыта, а кнопка фиксированного размера. Ещё исправлено: сервер работал на родителе **1.31.0**, хотя релиз собран против **1.32.0**, а `cvstart.ru` подставлял `/ru/` к любому пути, не глядя, что там уже есть — `/en/help` превращался в `/ru/en/help`, полностью закрывая английскую версию. **3009 тестов.**
+> **🆕 Последний релиз — v1.231.3** — **Клик по Doctor ломал верхнюю панель на телефоне** — сообщено с телефона в день выхода v1.231.2. `UI.withSpinner` показывал индикатор занятости присваиванием `button.textContent`, а оно заменяет *всех* детей одним текстовым узлом. v1.231.2 как раз разделил кнопки панели на `.btn-ico` и `.btn-label`, скрыв подпись под `max-width: 900px`, — поэтому первый же тап уничтожал оба `<span>` навсегда: подпись возвращалась голым текстом, а квадрат 36 px разрастался в «таблетку» `🩺Doctor`, наезжавшую на переключатель темы. Само не восстанавливалось — только перезагрузка. Теперь `withSpinner` сохраняет **узлы**-детей и возвращает их через `replaceChildren`; кнопки с одним текстом — большинство из 24 мест вызова — работают ровно как прежде. Тот же класс дефекта, что и ловушка с `applyI18n()` из прошлого релиза, но через другого вызывающего: **разделив содержимое элемента на дочерние `<span>`, вы делаете скрытым багом каждого существующего писателя `textContent` по нему**. **3012 тестов.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

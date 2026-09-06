@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-3009%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3012%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.2)
+[![release](https://img.shields.io/badge/release-v1.231.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.3)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.231.2** — **The mobile top bar is one row again, and its actions are icons.** They were forced onto a full-width second row, so a phone showed `[☰ · Search]` above `[🔔 🌙 Doctor Open Scan]` — two wide pills on a line of their own. They are now 36 px squares (🩺 / ⚡) beside the bell and the theme switch, and everything fits on one line at 320 px — measured, not eyeballed, at 320/360/390/430 px and across the whole 560–760 px band where the buttons used to sit on top of the search field. **The locale no longer affects the mobile layout at all**, because the label is hidden and the button is a fixed square. Also fixed: the server was running parent **1.31.0** while this release was built against **1.32.0**, and `cvstart.ru` prefixed `/ru/` onto every path without looking at what was already there — `/en/help` became `/ru/en/help`, closing off the English site entirely. **3009 tests.**
+> **🆕 Latest release — v1.231.3** — **Clicking Doctor broke the mobile top bar**, reported from a phone the day v1.231.2 shipped. `UI.withSpinner` showed its busy cue by assigning `button.textContent` — which replaces *every* child with one text node. v1.231.2 had just split each top-bar action into `.btn-ico` + `.btn-label` spans and hidden the label under `max-width: 900px`, so the first Doctor tap destroyed both spans for good: the label came back as bare text and the 36 px square grew into a `🩺Doctor` pill that spilled over the theme toggle. It never healed — only a reload restored the markup. `withSpinner` now snapshots the child **nodes** and restores them with `replaceChildren`; text-only buttons, most of the 24 call sites, round-trip exactly as before. Same defect class as the `applyI18n()` trap noted last release, reached through a different caller — **splitting an element's content into child spans makes every existing `textContent` writer on it a latent bug**. **3012 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
