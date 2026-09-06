@@ -19,6 +19,7 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ### Alterado
 - **98 prompts de QA superados movidos para `qa/archive/superseded-prompts/`.** O `qa/README.md` documenta desde a v1.137.0 que só o prompt da versão atual fica no nível superior — a regra não foi aplicada por 95 versões.
+- **Outros cinco prompts saíram do nível superior: diziam-se atuais sem o ser.** `REGRESSION-FINAL.md` chamava a si mesmo de «o único prompt de regressão autoritativo e independente de versão», mas seus §§11–15 são cinco registros de ciclos encerrados (v1.55.x → v1.59.7) e sua linha de base de ajuda declarada era **28 H2 / 103 H3 em 16 idiomas** contra 32 / 122 e 17 hoje: um agente de QA que o seguisse teria falhado no §9 logo no primeiro passo. `QA-REGRESSION-PROMPT.md` tinha nome sem versão e conteúdo de v1.226.0. `QA-REGRESSION-PROMPT-v1.76.0-FULL.md` estava fixado 155 versões atrás, `REGRESSION-PROMPT-FINAL.md` encerra o ciclo v1.58.52 → v1.59.10 e `QA-FULL-REGRESSION.md` duplicava todos eles com base v1.131.1. Junto foi `PARENT-SYNC-WORKLIST-v1.26.0.md` (o projeto pai já está em 1.32.0), e o datado `UX-AUDIT-2026-07-06.md` mudou para `reports/`. Restam quatro drivers, com as próprias linhas de base atualizadas aos valores reais de v1.231.2. `qa/README.md` foi reescrito para descrever a pasta que existe.
 
 ### Notas
 - Duas armadilhas de especificidade agora comentadas em `app.css`: as regras de desktop são declaradas **abaixo** do bloco `max-width: 900px`, então com especificidade igual elas vencem.

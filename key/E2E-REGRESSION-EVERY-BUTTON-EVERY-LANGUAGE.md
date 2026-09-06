@@ -147,4 +147,4 @@ layout/RTL: <ok | issue>
 - Arabic RTL mirrors correctly; no RTL leak into LTR locales.
 - Every destructive action confirm-gated; every required field validated.
 - The seven v1.75.0 sources visible + selectable in every locale; help deltas present in all 12 bundles.
-- Cross-check against `qa/QA-REGRESSION-PROMPT-v1.75.2-FULL.md` (unit/CI gate) and `qa/REGRESSION-FINAL.md` (invariant ledger) — no contradiction.
+- Cross-check against the release's own `qa/QA-REGRESSION-PROMPT-v<version>.md` (unit/CI gate) and `qa/FUNCTIONALITY-CHECK.md` (contract ledger) — no contradiction. Both files this line used to name were archived in v1.231.2 under `qa/archive/superseded-prompts/`.

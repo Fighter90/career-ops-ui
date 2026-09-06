@@ -1,9 +1,9 @@
 # SENIOR UX-DESIGNER AUDIT — career-ops-ui
 
-> **Baseline: v1.158.0** (32 route modules · 30 views · **17 locales** ·
-> help bundles **31 H2 / 112 H3** — §31 "Running the whole stack in the cloud"
-> added v1.154.0 · **79 scanner sources = 74 EN + 5 RU** ·
-> **7 headless LLM providers**: Anthropic → Gemini → OpenAI → Qwen →
+> **Baseline: v1.231.2** (37 route modules · 31 views · **17 locales** ·
+> help bundles **32 H2 / 122 H3** — §31 "Running the whole stack in the cloud"
+> added v1.154.0 · **92 scanner sources = 87 EN + 5 RU** ·
+> **18 LLM providers**, headless eval order Anthropic → Gemini → OpenAI → Qwen →
 > OpenRouter → GitHub Models → Hermes, auto-ordered — and as of v1.157.0 a
 > forced `LLM_PROVIDER` with no key falls back to any configured provider, so
 > live evals run on ANY key, not just Anthropic/Gemini).
@@ -25,7 +25,7 @@
 > reports home; the older `qa/v54-regression/` path is retired).
 >
 > This is a *design-critique* prompt, not a regression prompt. It
-> assumes the app already works (run `REGRESSION-FINAL.md` first if in
+> assumes the app already works (run `FUNCTIONALITY-CHECK.md` first if in
 > doubt). Your job: judge whether it works *well for the user the docs
 > describe*, and whether it faithfully delivers the docs' promise.
 
@@ -251,7 +251,7 @@ re-open one with concrete live evidence that it regressed:
 | UX-D-C — Top-bar Quick scan → Open Scan (label honesty) | v1.58.47 | `qa-report-fixes.test.mjs` |
 | UX-D-B — Dashboard fixture-profile warning banner | v1.58.48 | `qa-report-fixes.test.mjs` |
 | TOOL-1 — `make clean-test-fixtures` + script + 4 CI-isolated tests | v1.58.49 | `tests/clean-test-fixtures.test.mjs` |
-| DOC-1 — Server English-by-policy doctrine § (REGRESSION-FINAL §5a) | v1.58.50 | `qa-report-fixes.test.mjs` |
+| DOC-1 — Server English-by-policy doctrine § (archived REGRESSION-FINAL §5a) | v1.58.50 | `qa-report-fixes.test.mjs` |
 | DES-1 — toast stack lifted above the docs FAB (no truncation under launcher) | v1.117.x audit | `tests/toast-fab-clearance.test.mjs` |
 | SPA-H1 — `.btn[hidden]{display:none}` (scan Stop no longer visible when idle) | v1.117.x audit | `tests/btn-hidden-override.test.mjs` |
 | SPA-M4 — placeholder-only inputs got aria-labels (memory/networking/career-plan/two-pager) | v1.117.x audit | `tests/a11y-form-wires.test.mjs` |

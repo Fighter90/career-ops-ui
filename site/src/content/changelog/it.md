@@ -13,6 +13,7 @@
 
 ### Modificato
 - **98 prompt QA superati spostati in `qa/archive/superseded-prompts/`.** `qa/README.md` documenta dalla v1.137.0 che al livello superiore resta solo il prompt della versione corrente — la regola non è stata applicata per 95 versioni.
+- **Altri cinque prompt hanno lasciato il livello superiore: si dichiaravano attuali senza esserlo.** `REGRESSION-FINAL.md` si definiva «l'unico prompt di regressione autorevole e indipendente dalla versione», ma i suoi §§11–15 sono cinque registri di cicli chiusi (v1.55.x → v1.59.7) e la baseline dell'aiuto dichiarata era **28 H2 / 103 H3 su 16 lingue** contro 32 / 122 e 17 oggi: un agente QA che lo seguisse sarebbe caduto al §9 al primo passo. `QA-REGRESSION-PROMPT.md` aveva un nome senza versione e contenuti di v1.226.0. `QA-REGRESSION-PROMPT-v1.76.0-FULL.md` era fissato 155 release indietro, `REGRESSION-PROMPT-FINAL.md` chiude il ciclo v1.58.52 → v1.59.10 e `QA-FULL-REGRESSION.md` li duplicava tutti su base v1.131.1. Con loro è andato `PARENT-SYNC-WORKLIST-v1.26.0.md` (il progetto padre è ormai a 1.32.0) e il datato `UX-AUDIT-2026-07-06.md` è passato in `reports/`. Restano quattro driver, con le proprie baseline aggiornate ai valori reali di v1.231.2. `qa/README.md` è riscritto per descrivere la cartella che esiste.
 
 ### Note
 - Due trappole di specificità ora commentate in `app.css`: le regole desktop sono dichiarate **più in basso** del blocco `max-width: 900px`, quindi a parità di specificità vincono.

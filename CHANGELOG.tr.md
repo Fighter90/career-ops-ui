@@ -13,6 +13,7 @@
 
 ### Değiştirildi
 - **98 geçersiz kalmış QA istemi `qa/archive/superseded-prompts/` altına taşındı.** `qa/README.md`, v1.137.0'dan beri üst düzeyde yalnızca güncel sürümün isteminin kaldığını belgeliyor — kural 95 sürüm boyunca uygulanmadı.
+- **Beş prompt daha üst seviyeden ayrıldı — kendilerini güncel ilan ediyorlardı, değillerdi.** `REGRESSION-FINAL.md` kendini «tek yetkili, sürümden bağımsız regresyon promptu» diye adlandırıyordu; oysa §§11–15'i kapanmış beş döngü defteri (v1.55.x → v1.59.7) ve beyan ettiği yardım temeli **16 dilde 28 H2 / 103 H3** iken bugün 32 / 122 ve 17: onu izleyen bir QA aracı §9'da daha ilk adımda düşerdi. `QA-REGRESSION-PROMPT.md` sürümsüz bir ada ve v1.226.0 içeriğine sahipti. `QA-REGRESSION-PROMPT-v1.76.0-FULL.md` 155 sürüm geriye sabitlenmişti, `REGRESSION-PROMPT-FINAL.md` v1.58.52 → v1.59.10 döngüsünü kapatır ve `QA-FULL-REGRESSION.md` hepsini v1.131.1 temelinde yineliyordu. Onlarla birlikte `PARENT-SYNC-WORKLIST-v1.26.0.md` de gitti (üst proje artık 1.32.0) ve tarihli `UX-AUDIT-2026-07-06.md` `reports/` altına taşındı. Geriye, kendi temelleri v1.231.2 gerçek değerlerine güncellenmiş dört sürücü kaldı. `qa/README.md` var olan klasörü anlatacak biçimde yeniden yazıldı.
 
 ### Notlar
 - İki özgüllük tuzağı artık `app.css` içinde açıklanıyor: masaüstü kuralları `max-width: 900px` bloğundan **daha aşağıda** tanımlı, bu yüzden eşit özgüllükte onlar kazanıyordu — mobil `gap` sessizce 24 px kaldı (320 px'i taşıran buydu) ve simge gizli kaldı (boş kare düğmeler).

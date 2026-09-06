@@ -465,10 +465,14 @@ test('UX-A5 residual: pre-v1.58.52 setTimeout(0) + document.querySelectorAll pat
     "pre-v1.58.52 setTimeout(0) + document.querySelectorAll('.help-article h2') wrapper must stay gone");
 });
 
-test('DOC-1 (v1.58.50): qa/REGRESSION-FINAL.md has §5a documenting English-by-policy server error bodies', () => {
-  const final = read('qa', 'REGRESSION-FINAL.md');
+// v1.231.2 archived REGRESSION-FINAL.md: it called itself version-agnostic but
+// §§11-15 are five closed cycle ledgers (v1.55.x-v1.59.7) and its stated help
+// baseline was 28 H2 / 103 H3 across 16 locales, against 32 / 122 and 17 today.
+// The §5a doctrine it records is still the doctrine, so the gate follows the file.
+test('DOC-1 (v1.58.50): the archived REGRESSION-FINAL.md keeps §5a documenting English-by-policy server error bodies', () => {
+  const final = read('qa', 'archive', 'superseded-prompts', 'REGRESSION-FINAL.md');
   assert.match(final, /^## §5a — Server error bodies are English-by-policy/m,
-    "REGRESSION-FINAL.md must declare a §5a English-by-policy section");
+    "the archived REGRESSION-FINAL.md must keep its §5a English-by-policy section");
   assert.match(final, /Accept-Language[\s\S]{0,400}?not[\s\S]{0,40}?read/i,
     "§5a must call out that Accept-Language is not currently read");
   assert.match(final, /v1\.59/,

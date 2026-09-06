@@ -1,7 +1,8 @@
 # FUNCTIONALITY CHECK — career-ops-ui · FINAL (perennial, run on every release)
 
 > **The single authoritative, version-agnostic functional-correctness
-> prompt.** Where `REGRESSION-FINAL.md` proves *nothing regressed* and
+> prompt.** Where the current release's `QA-REGRESSION-PROMPT-v<latest>.md`
+> proves *this release's delta did not regress* and
 > `UX-AUDIT-PROMPT.md` judges *whether it's good UX*, **this** prompt
 > answers one question per item: **does it actually work — correctly,
 > completely, and clearly — for a real user?** Paste it verbatim to a
@@ -117,7 +118,7 @@ Hit each with valid + invalid input; assert status + body shape:
 - `GET /api/dashboard`, `/api/activity`, `/api/reports`, `/api/cv`,
   `/api/config` (secrets masked), `/api/scan/sources` (59 adapters:
   41 EN + 5 RU, incl. Dassault Systèmes),
-  `/api/help/:lang` (16 locales; bad lang → `en` fallback).
+  `/api/help/:lang` (17 locales; bad lang → `en` fallback).
 - The AI/user-layer feature routes must also honour their contract:
   `GET/PUT /api/two-pager` (+ `POST /api/two-pager/draft`),
   `POST /api/interview/{turn,save}` + `GET /api/interview/sessions`,
@@ -162,14 +163,14 @@ Hit each with valid + invalid input; assert status + body shape:
 
 ## §7 — i18n, docs & deploy parity
 
-- Switch all 16 locales (en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr,
+- Switch all 17 locales (en, es, pt-BR, ko, ja, ru, zh-CN, zh-TW, fr,
   pl, uk, da, ar, de, it, tr; Arabic is RTL) on the core flow: no
   untranslated leakage, no truncation, correct RTL mirroring,
   terminology matches career-ops.org/docs. `tests/i18n-coverage` green.
 - `package.json::version` == `/api/health.version` == every
   `CHANGELOG*.md` top entry == README ×16 badge ==
   `docs/architecture/TESTING.md` totals. Help bundles ×16 at the
-  parity gate (28 H2 / 103 H3). API.md documents every live endpoint.
+  parity gate (32 H2 / 122 H3). API.md documents every live endpoint.
 - Pipeline AI-review: a push to `main` triggers
   `.github/workflows/ai-review.yml`; with the `ANTHROPIC_API_KEY`
   repo secret it posts a commit-comment review, without it it logs a
@@ -197,12 +198,12 @@ release is called done.
 
 ---
 
-## §F-A — EXHAUSTIVE FUNCTIONAL MATRIX (every endpoint × every action × 16 locales)
+## §F-A — EXHAUSTIVE FUNCTIONAL MATRIX (every endpoint × every action × 17 locales)
 
 > One row = one verifiable behaviour. Mark **PASS / FAIL / PARTIAL /
 > SKIP** with evidence (request, response body, route, exact copy,
 > server log). PASS only if correct **and** legible to the user. Do
-> every UI action in **all 16 locales** (en · es · pt-BR · ko · ja ·
+> every UI action in **all 17 locales** (en · es · pt-BR · ko · ja ·
 > ru · zh-CN · zh-TW · fr · pl · uk · da · ar · de · it · tr; Arabic
 > is RTL) — a behaviour that's correct in `en` but emits an
 > untranslated/clipped message elsewhere is **PARTIAL**.
@@ -268,7 +269,7 @@ and the effect is exactly as claimed:
 
 ### §F-A.3 — Every UI action produces its correct, legible effect
 
-Per page (all 16 locales) confirm the *functional* result, not just
+Per page (all 17 locales) confirm the *functional* result, not just
 that a control exists: every sidebar link routes; theme toggle
 persists; `⌘K`/`Ctrl K` focuses search and it filters; Doctor/Verify
 show real output then the progress toast is **gone**; Scan streams
