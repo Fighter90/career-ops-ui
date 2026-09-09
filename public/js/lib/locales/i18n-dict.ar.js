@@ -173,6 +173,7 @@ window.__I18N_DICT_AR = {
   'config.bannerTitle': "كلا المشروعين يقرآن هذا",
   'config.bannerBody': "القيم المحفوظة تُكتب في ملف .env الأصلي، لذا تقرأ نصوص career-ops وweb-ui (عبر محمّل dotenv) من المصدر ذاته. لا يلزم إعادة التشغيل.",
   'config.saved': "تم حفظ الإعدادات",
+  'config.useDefault': "استخدام القيمة الافتراضية ({v})",
   'config.groupCore': "مفاتيح API",
   'config.groupRuntime': "وقت التشغيل",
   'config.groupRegional': "المصادر الإقليمية",

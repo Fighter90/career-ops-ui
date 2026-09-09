@@ -127,6 +127,15 @@ export function registerConfigRoutes(app) {
       if (val === '' || val == null) delete process.env[k];
       else process.env[k] = val;
     }
-    res.json({ ok: true, written });
+    // ADJACENT-1 (v1.233.0) — report deletions as well as writes. An empty
+    // value removes a key, but `updateEnvFile` only ever returned what it
+    // wrote, so the UI had nothing to count and a removal surfaced as "· 0".
+    // Computed against the pre-write snapshot, so it names keys that really
+    // were present, not merely those the request asked to clear.
+    const removed = Object.entries(safe)
+      .filter(([k, val]) => (val === '' || val == null)
+        && currentValues[k] !== undefined && currentValues[k] !== '')
+      .map(([k]) => k);
+    res.json({ ok: true, written, removed });
   });
 }

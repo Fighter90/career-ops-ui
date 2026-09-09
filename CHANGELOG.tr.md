@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.233.0] — 2026-09-10
+
+**Düzeltildi — `#/config` kaydetme yolunda üç bulgu; CONFIG-3'e v1.232.1'in kendi düzeltmesi yol açtı.**
+
+### Düzeltildi
+**CONFIG-3** — tohumlanan değerle çakışan bilinçli bir seçim «dokunulmamış» sayılıp atılıyordu. `initial` iki kökeni karıştırır: `.env`'den tohumlama ve `defaultValue`'dan tohumlama; ikincisinde eşitlik **belirsizdir**. `initial` yanına **`seededFromFile`** yazılarak düzeltildi.
+**Bir anahtarı kaldırmak «· 0» bildiriyordu**, çünkü sunucu yalnızca yazılanı döndürüyordu. Artık `removed` da dönüyor ve bildirim ikisini birden sayıyor.
+**Açılır liste ayarlanabiliyor ama temizlenemiyordu**: 18'inin hiçbirinde boş seçenek yoktu. Artık her biri «Varsayılanı kullan (…)» ile başlıyor. Bir yeni i18n anahtarı ×17.
+
+### Notlar
+Birim taban çizgisi değişmedi (**3018**); tarayıcı **111 → 116**.
+
 ## [1.232.1] — 2026-09-10
 
 **Düzeltildi — `#/config` üzerinde Kaydet, kullanıcının hiç dokunmadığı alanları yazıyordu.**

@@ -12,11 +12,11 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
+[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.232.1** — **Enregistrer sur `#/config` écrivait des champs jamais touchés.** La valeur placée là pour l'*affichage* partait comme un choix de l'utilisateur : une liste déroulante modifiée envoyait **28 clés et en figeait 18**. Comparer à `cfg.values` ne suffit pas ; on compare désormais à **ce avec quoi chaque contrôle a été amorcé**. Le nombre de clés écrites réapparaît dans la notification. **3018 tests · 111 navigateur.**
+> **🆕 Dernière version — v1.233.0** — **Trois constats dans le chemin d'enregistrement de `#/config` ; CONFIG-3 découle du correctif de v1.232.1 lui-même.** Un choix délibéré égal à la valeur amorcée était écarté comme « non touché » : là où l'amorce vient de `defaultValue` et non du fichier, l'égalité est ambiguë. On note désormais **`seededFromFile`**. Supprimer une clé annonçait « · 0 » ; le serveur renvoie maintenant aussi `removed`. Une liste déroulante pouvait être fixée mais jamais vidée : chacune commence désormais par **« Utiliser la valeur par défaut (…) »**. **3018 tests · 116 navigateur.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

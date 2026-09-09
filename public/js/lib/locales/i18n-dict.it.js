@@ -174,6 +174,7 @@ window.__I18N_DICT_IT = {
   'config.bannerTitle': "Entrambi i progetti le leggono",
   'config.bannerBody': "I valori salvati finiscono nel .env del progetto padre, così sia gli script Node di career-ops SIA web-ui (tramite il loader dotenv) leggono la stessa fonte. Nessun riavvio necessario.",
   'config.saved': "Impostazioni salvate",
+  'config.useDefault': "Usa il valore predefinito ({v})",
   'config.groupCore': "Chiavi API",
   'config.groupRuntime': "Runtime",
   'config.groupRegional': "Fonti regionali",

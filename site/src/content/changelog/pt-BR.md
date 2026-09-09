@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.233.0] — 2026-09-10
+
+**Corrigido — três achados no caminho de salvar do `#/config`; o CONFIG-3 foi causado pela própria correção da v1.232.1.**
+
+### Corrigido
+**CONFIG-3** — uma escolha deliberada que coincidia com o valor semeado era descartada como «não tocado». `initial` confunde duas origens: semeado do `.env` e semeado do `defaultValue`, e no segundo caso a igualdade é **ambígua**. Corrigido registrando **`seededFromFile`** ao lado de `initial`; onde a semente veio do arquivo nada muda, e onde veio do padrão o `dirty` vira uma *segunda* pista válida.
+**Remover uma chave informava «· 0»** porque o servidor só devolvia o que gravou. Agora responde também com `removed`, e o aviso conta os dois.
+**Um dropdown podia ser definido mas nunca limpo**: nenhum dos 18 tinha opção vazia. Agora cada um começa com «Usar o padrão (…)». Uma nova chave i18n ×17.
+
+### Notas
+Linha de base unitária inalterada (**3018**); navegador **111 → 116**.
+
 ## [1.232.1] — 2026-09-10
 
 **Corrigido — Salvar em `#/config` gravava campos que o usuário nunca tocou.**

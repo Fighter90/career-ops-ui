@@ -174,6 +174,7 @@ window.__I18N_DICT_DE = {
   'config.bannerTitle': "Beide Projekte greifen darauf zu",
   'config.bannerBody': "Gespeicherte Werte landen in der übergeordneten .env, sodass career-ops-Node-Skripte UND web-ui (über den dotenv-Loader) dieselbe Quelle lesen. Kein Neustart nötig.",
   'config.saved': "Einstellungen gespeichert",
+  'config.useDefault': "Standard verwenden ({v})",
   'config.groupCore': "API-Schlüssel",
   'config.groupRuntime': "Laufzeit",
   'config.groupRegional': "Regionale Quellen",

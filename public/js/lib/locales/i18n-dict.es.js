@@ -174,6 +174,7 @@ window.__I18N_DICT_ES = {
   'config.bannerTitle': "Ambos proyectos lo recogen",
   'config.bannerBody': "Los valores guardados van al .env padre, así que tanto los scripts de career-ops como web-ui leen la misma fuente. Sin reinicio.",
   'config.saved': "Configuración guardada",
+  'config.useDefault': "Usar el valor por defecto ({v})",
   'config.groupCore': "Claves API",
   'config.groupRuntime': "Runtime",
   'config.groupRegional': "Fuentes regionales",

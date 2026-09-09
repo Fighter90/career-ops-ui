@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.233.0] — 2026-09-10
+
+**Corrigé — trois constats dans le chemin d'enregistrement de `#/config` ; CONFIG-3 découle du correctif de v1.232.1 lui-même.**
+
+### Corrigé
+**CONFIG-3** — un choix délibéré qui coïncidait avec la valeur amorcée était écarté comme « non touché ». `initial` confond deux origines : amorcé depuis `.env` (l'égalité signifie que le champ n'a pas été modifié — à juste titre ignoré) et amorcé depuis `defaultValue` (l'égalité est **ambiguë** : jamais ouvert, ou ouvert et approuvé). Avec `HOST` absent, le contrôle affiche `127.0.0.1` ; saisir exactement cette valeur puis enregistrer envoyait `{}` et la clé restait absente — le seul chemin était de saisir une valeur fausse, enregistrer, puis remettre la bonne. Corrigé en notant **`seededFromFile`** à côté d'`initial` ; là où l'amorce vient du fichier rien ne change, et là où elle vient de la valeur par défaut, `dirty` devient un *second* signal valable.
+**Supprimer une clé annonçait « · 0 »** car le serveur ne renvoyait que ce qu'il avait écrit. Il renvoie désormais aussi `removed`, et la notification compte les deux.
+**Une liste déroulante pouvait être fixée mais jamais vidée** : aucune des 18 n'offrait d'option vide. Chacune commence maintenant par « Utiliser la valeur par défaut (…) ». Une nouvelle clé i18n ×17.
+
+### Notes
+Base unitaire inchangée (**3018**) ; navigateur **111 → 116**, les cinq nouveaux cas confirmés en échec sur l'ancien code.
+
 ## [1.232.1] — 2026-09-10
 
 **Corrigé — Enregistrer sur `#/config` écrivait des champs que l'utilisateur n'avait jamais touchés.**

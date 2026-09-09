@@ -12,11 +12,11 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
+[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.232.1** — **`#/config` 的保存会写入从未触碰的字段。** v1.57.1 给未设置的控件填入 `defaultValue` 以显示服务器真正使用的值，而 `save()` 只对**机密字段**查询 `dirty`、其余一律照发——于是为*显示*而放的值被当作用户的选择送出。改一个下拉框会发出 **28 个键并钉死 18 个**；什么都不改也发 27 个。当天行为不变——写入的正是默认值——但设置从「未设置，跟随项目默认」变为「钉死在 `.env`」，下次默认值一改便无声地不再送达。**值得细看的是比较基准**：与 `cfg.values` 比较并不够（未设置的 select 显示默认值而存储值为空，请求体只从 27 降到 19）。现在与每个控件**初始化时的值**比较。提示中的键数也恢复了。**3018 项 · 浏览器 111 项。**
+> **🆕 最新版本 — v1.233.0** — **`#/config` 保存路径上的三处发现；CONFIG-3 由 v1.232.1 的修复本身引起。** 与预置值相同的有意选择被当作「未触碰」丢弃——`initial` 混淆两种来源，来自 `defaultValue` 时相同是歧义的。`HOST` 缺失时字段显示 `127.0.0.1`，输入同一个值保存却发出 `{}`，键仍不存在，唯一出路是先填错再改回。现在由 **`seededFromFile`** 记录来源。**删除键显示「· 0」**是因为服务器只返回写入的内容——现在也返回 `removed`。**下拉框能设不能清**：18 个都没有空选项，故每个现在以**「使用默认值（…）」**开头。**3018 项 · 浏览器 116 项。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

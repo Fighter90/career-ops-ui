@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.233.0] — 2026-09-10
+
+**Naprawiono — trzy ustalenia w ścieżce zapisu `#/config`; CONFIG-3 wywołała sama poprawka z v1.232.1.**
+
+### Naprawiono
+**CONFIG-3** — świadomy wybór zgodny z zasianą wartością był odrzucany jako „nietknięty". `initial` miesza dwa pochodzenia: zasiew z `.env` i zasiew z `defaultValue`, a w drugim przypadku równość jest **niejednoznaczna**. Naprawione przez zapisanie **`seededFromFile`** obok `initial`.
+**Usunięcie klucza pokazywało „· 0"**, bo serwer zwracał tylko zapisane. Teraz zwraca także `removed`, a powiadomienie liczy oba.
+**Listę rozwijaną można było ustawić, ale nie wyczyścić**: żadna z 18 nie miała pustej opcji. Każda zaczyna się teraz od „Użyj wartości domyślnej (…)". Jeden nowy klucz i18n ×17.
+
+### Uwagi
+Baza testów jednostkowych bez zmian (**3018**); przeglądarkowe **111 → 116**.
+
 ## [1.232.1] — 2026-09-10
 
 **Naprawiono — Zapis na `#/config` zapisywał pola, których użytkownik nie dotknął.**

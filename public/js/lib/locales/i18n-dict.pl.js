@@ -173,6 +173,7 @@ window.__I18N_DICT_PL = {
   'config.bannerTitle': "Oba projekty korzystają z tych ustawień",
   'config.bannerBody': "Zapisane wartości trafiają do .env nadrzędnego projektu, więc skrypty Node career-ops I web-ui (przez moduł dotenv) czytają to samo źródło. Restart nie jest wymagany.",
   'config.saved': "Ustawienia zapisane",
+  'config.useDefault': "Użyj wartości domyślnej ({v})",
   'config.groupCore': "Klucze API",
   'config.groupRuntime': "Środowisko wykonawcze",
   'config.groupRegional': "Źródła regionalne",

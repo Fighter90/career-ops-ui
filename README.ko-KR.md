@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
+[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.232.1** — **`#/config`의 저장이 건드리지 않은 필드까지 기록했습니다.** v1.57.1은 설정되지 않은 컨트롤에 `defaultValue`를 심어 서버가 실제로 쓰는 값을 보여 주는데, `save()`는 `dirty`를 **비밀 필드에만** 묻고 나머지는 언제나 보냈습니다 — *보여 주려고* 넣은 값이 사용자의 선택으로 간 셈입니다. 드롭다운 하나를 바꾸자 **28개 키가 전송되고 18개가 고정**되었고, 아무것도 바꾸지 않아도 27개가 갔습니다. **눈여겨볼 곳은 비교 기준**입니다: `cfg.values`와 비교하는 것으로는 부족해(본문이 27 → 19로 줄었을 뿐) 이제는 각 컨트롤이 **무엇으로 심어졌는지**와 비교합니다. 토스트의 키 개수도 다시 보입니다. **3018개 · 브라우저 111개.**
+> **🆕 최신 릴리스 — v1.233.0** — **`#/config` 저장 경로에서 세 건. CONFIG-3은 v1.232.1의 수정 자체가 불러왔습니다.** 심어진 값과 같았던 의도적 선택이 '건드리지 않음'으로 버려졌습니다 — `initial`은 두 출처를 뒤섞고, `defaultValue`에서 왔을 때 같음은 모호합니다. `HOST`가 없으면 `127.0.0.1`이 보이는데 그 값을 입력해 저장해도 `{}`가 가고 키는 생기지 않았습니다. 이제 **`seededFromFile`**이 출처를 기록합니다. **키 삭제가 '· 0'으로 보고된** 것은 서버가 쓴 것만 돌려주었기 때문 — 이제 `removed`도 응답합니다. **셀렉트는 설정만 되고 비울 수 없어** 18개 모두 빈 항목이 없었고, 이제 각각 **'기본값 사용 (…)'**으로 시작합니다. **3018개 · 브라우저 116개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
