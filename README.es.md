@@ -12,11 +12,11 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
+[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.232.0** — **Dos defectos de una pasada de QA en navegador; ninguno de v1.231.5.** **`#/profile` desplazaba lateralmente toda la página**: el valor era un `<div>` anónimo sin regla de ajuste, y una URL de LinkedIn no ofrece a CSS puntos de corte — su **ancho min-content era la cadena entera**, y `min-width:auto` impedía encogerla, reventando la tarjeta, la fila y el documento (23 px de desplazamiento real a 1280 px). Corregido con `.card-value` y **`overflow-wrap: anywhere`** — no `break-word`, que ajusta el texto pero deja la pista igual de ancha. **`POST /api/config` aceptaba cualquier valor de un campo select**: devolvía 200, se escribía en `.env` y luego fallaba *en silencio*. `LLM_PROVIDERS` ya se exportaba desde `env-config.mjs`. Solo se valida el proveedor, y un valor ya guardado queda tolerado. **3018 pruebas.**
+> **🆕 Última versión — v1.232.1** — **Guardar en `#/config` escribía campos que el usuario nunca tocó.** El valor puesto ahí para *mostrar* viajaba como si el usuario lo hubiera elegido: cambiar un desplegable enviaba **28 claves y fijaba 18** que nadie había abierto. Comparar con `cfg.values` no basta — un select sin valor muestra su default mientras lo almacenado es `''` —, así que ahora se compara con **aquello con lo que se sembró cada control**. El número de claves escritas vuelve al aviso. **3018 pruebas · 111 de navegador.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

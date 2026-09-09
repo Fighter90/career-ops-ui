@@ -12,11 +12,11 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
+[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.232.0** — **ブラウザー QA で見つかった 2 件。いずれも v1.231.5 由来ではありません。** **`#/profile` がページ全体を横スクロールさせていました**——値は折り返し指定のない無名の `<div>` で、LinkedIn の URL は CSS に改行点を与えないため、**min-content 幅が文字列全体**になり、`min-width:auto` がそれ未満への収縮を拒んでカード・行・文書を押し広げました（1280 px で実測 23 px）。共有クラス `.card-value` の **`overflow-wrap: anywhere`** で解消——`break-word` では折り返しても列幅は変わりません。**`POST /api/config` は select 項目にどんな値でも通していました**——200 を返して `.env` に書かれ、以後は*黙って*フォールバックします。`LLM_PROVIDERS` はずっと `env-config.mjs` から公開されており、検証側が参照していなかっただけです。検証するのはプロバイダーのみ。**3018 件のテスト。**
+> **🆕 最新リリース — v1.232.1** — **`#/config` の保存が、触れていない項目まで書き込んでいました。** v1.57.1 は未設定のコントロールに `defaultValue` を仕込んでサーバーが実際に使う値を見せますが、`save()` は `dirty` を**秘密項目にしか**問い合わせず残りを毎回送っていたため、*表示のため*に置かれた値が利用者の選択として送られていました。ドロップダウンを 1 つ変えるだけで **28 キーが送られ 18 キーが固定**され、何も変えなくても 27 キーです。当日の挙動は変わりません——書かれた値は既定値そのもの——が、設定は「未設定、既定に従う」から「`.env` に固定」へ移り、次に既定を変えたとき一度でも保存した人には黙って届きません。**見どころは比較の基準**で、`cfg.values` との比較では足りません（未設定の select は既定を表示し保存値は空なので、本文は 27 → 19 に減っただけ）。いまは各コントロールが**何で初期化されたか**と比べます。トーストのキー数も復活しました。**3018 件 · ブラウザー 111 件。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

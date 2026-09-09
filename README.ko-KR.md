@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
+[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.232.0** — **브라우저 QA에서 나온 두 건. 둘 다 v1.231.5에서 온 것이 아닙니다.** **`#/profile`이 페이지 전체를 옆으로 스크롤시켰습니다** — 값은 줄바꿈 규칙이 없는 익명 `<div>`였고 LinkedIn URL은 CSS에 줄바꿈 지점을 주지 않아 **min-content 너비가 문자열 전체**가 되었으며, `min-width:auto`가 축소를 거부해 카드·행·문서를 밀어냈습니다(1280 px에서 실측 23 px). 공유 클래스 `.card-value`의 **`overflow-wrap: anywhere`**로 해결 — `break-word`는 줄은 바꾸되 트랙 너비를 그대로 둡니다. **`POST /api/config`는 select 필드에 어떤 값이든 받아들였고** 이후 *조용히* 폴백했습니다. `LLM_PROVIDERS`는 줄곧 `env-config.mjs`에서 내보내지고 있었습니다. 검증 대상은 공급자뿐입니다. **3018개의 테스트.**
+> **🆕 최신 릴리스 — v1.232.1** — **`#/config`의 저장이 건드리지 않은 필드까지 기록했습니다.** v1.57.1은 설정되지 않은 컨트롤에 `defaultValue`를 심어 서버가 실제로 쓰는 값을 보여 주는데, `save()`는 `dirty`를 **비밀 필드에만** 묻고 나머지는 언제나 보냈습니다 — *보여 주려고* 넣은 값이 사용자의 선택으로 간 셈입니다. 드롭다운 하나를 바꾸자 **28개 키가 전송되고 18개가 고정**되었고, 아무것도 바꾸지 않아도 27개가 갔습니다. **눈여겨볼 곳은 비교 기준**입니다: `cfg.values`와 비교하는 것으로는 부족해(본문이 27 → 19로 줄었을 뿐) 이제는 각 컨트롤이 **무엇으로 심어졌는지**와 비교합니다. 토스트의 키 개수도 다시 보입니다. **3018개 · 브라우저 111개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.232.1] — 2026-09-10
+
+**Naprawiono — Zapis na `#/config` zapisywał pola, których użytkownik nie dotknął.**
+
+### Naprawiono
+**CONFIG-2.** v1.57.1 zasiewa nieustawiony kontrolkę jej `defaultValue`, by pole pokazywało to, czego serwer faktycznie używa, natomiast `save()` pytał `dirty` **tylko dla sekretów** i zawsze wysyłał wszystkie pozostałe pola. Wartość wstawiona do POKAZANIA szła więc jako wybór użytkownika: zmiana jednej listy wysyłała **28 kluczy i przypinała 18** nigdy nieotwartych. Zmienia się status ustawienia — z „nieustawione, idź za domyślnym" na „przypięte w `.env`".
+
+### Uwagi
+Porównanie z `cfg.values` nie wystarcza: nieustawiony select pokazuje swój `defaultValue`, a zapisana wartość to `''`. Teraz porównujemy z tym, **czym zasiano każdą kontrolkę**. Liczba zapisanych kluczy wróciła do powiadomienia. **105 → 111** testów przeglądarkowych.
+
 ## [1.232.0] — 2026-09-09
 
 **Naprawiono — dwie usterki z przeglądarkowego przebiegu QA; żadna nie pochodzi z v1.231.5.**

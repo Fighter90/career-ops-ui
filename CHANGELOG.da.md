@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.232.1] — 2026-09-10
+
+**Rettet — Gem på `#/config` skrev felter, brugeren aldrig rørte.**
+
+### Rettet
+**CONFIG-2.** v1.57.1 forudfylder et uindstillet felt med dets `defaultValue`, så feltet viser det, serveren rent faktisk bruger, mens `save()` kun spurgte `dirty` **for hemmeligheder** og altid sendte alle øvrige felter. Værdien lagt der til VISNING rejste dermed som brugerens valg: én ændret rulleliste sendte **28 nøgler og fastlåste 18**, ingen havde åbnet. Det, der ændrer sig, er hver indstillings status — fra »ikke sat, følg projektets standard« til »låst i `.env`«.
+
+### Noter
+At sammenligne med `cfg.values` er ikke nok: et uindstillet select viser sin `defaultValue`, mens den gemte værdi er `''`. Nu sammenlignes der med det, **hvert felt blev fyldt med**. Antallet af skrevne nøgler er tilbage i beskeden. **105 → 111** browsertest.
+
 ## [1.232.0] — 2026-09-09
 
 **Rettet — to defekter fra en browser-QA-gennemgang; ingen af dem stammer fra v1.231.5.**

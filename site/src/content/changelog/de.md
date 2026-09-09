@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.232.1] — 2026-09-10
+
+**Behoben — Speichern auf `#/config` schrieb Felder, die niemand angefasst hatte.**
+
+### Behoben
+**CONFIG-2.** v1.57.1 füllt ein nicht gesetztes Steuerelement mit seinem `defaultValue` vor, damit das Feld zeigt, was der Server tatsächlich verwendet; `save()` fragte `dirty` jedoch **nur für Geheimnisse** ab und schickte alle übrigen Felder immer mit. Der zur ANZEIGE hinterlegte Wert reiste damit als Wahl des Benutzers: Eine geänderte Auswahlliste schickte **28 Schlüssel und pinnte 18** fest, die niemand geöffnet hatte. Was sich ändert, ist der Status jeder Einstellung — von „nicht gesetzt, folge dem Projektstandard" zu „in `.env` festgeschrieben".
+
+### Anmerkungen
+Der Vergleich mit `cfg.values` genügt nicht: Ein nicht gesetztes Select zeigt seinen `defaultValue`, während der gespeicherte Wert `''` ist — der Rumpf sank von 27 Schlüsseln auf 19, nicht auf einen. Verglichen wird nun mit dem, **womit jedes Steuerelement befüllt wurde**. Die Zahl geschriebener Schlüssel steht wieder im Hinweis. **105 → 111** Browsertests.
+
 ## [1.232.0] — 2026-09-09
 
 **Behoben — zwei Defekte aus einem Browser-QA-Durchlauf; keiner stammt aus v1.231.5.**

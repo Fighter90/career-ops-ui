@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.232.1] — 2026-09-10
+
+**Corretto — Salva su `#/config` scriveva campi che l'utente non aveva mai toccato.**
+
+### Corretto
+**CONFIG-2.** La v1.57.1 semina un controllo non impostato con il suo `defaultValue` perché il campo mostri ciò che il server usa davvero, mentre `save()` consultava `dirty` **solo per i segreti** e inviava sempre tutti gli altri campi. Il valore messo lì per la VISUALIZZAZIONE partiva quindi come scelta dell'utente: cambiare un menù a tendina inviava **28 chiavi e ne fissava 18** mai aperte. Ciò che cambia è lo stato di ogni impostazione: da «non impostata, segui il default del progetto» a «fissata nel `.env`».
+
+### Note
+Confrontare con `cfg.values` non basta: un select non impostato mostra il suo `defaultValue` mentre il valore salvato è `''`. Ora si confronta con **ciò con cui ogni controllo è stato seminato**. Il numero di chiavi scritte torna nel messaggio. **105 → 111** test browser.
+
 ## [1.232.0] — 2026-09-09
 
 **Corretto — due difetti da una passata di QA nel browser; nessuno dei due viene dalla v1.231.5.**

@@ -12,11 +12,11 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
+[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.232.0** — **عيبان كشفهما فحصٌ في المتصفّح، وما جاء أيٌّ منهما من v1.231.5.** **كان `#/profile` يُمرّر الصفحة كلَّها أفقيًّا**: فالقيمة `<div>` مغفلٌ بلا قاعدة التفاف، ورابط LinkedIn لا يمنح CSS موضع قطع — فصار **عرض min-content هو السلسلة بأكملها**، وأبى `min-width:auto` الانكماش، فبعج البطاقةَ والصفَّ والمستند (23 بكسل عند 1280). أُصلح بصنفٍ مشترك `.card-value` عليه **`overflow-wrap: anywhere`** — لا `break-word` الذي يلفّ النصّ ويُبقي المسار بالعرض نفسه. و**كان `POST /api/config` يقبل أيّ قيمةٍ لحقل select** ثمّ يفشل *صامتًا*. ولا يُتحقَّق إلّا من المزوّد. **3018 اختبارًا.**
+> **🆕 أحدث إصدار — v1.232.1** — **كان الحفظ في `#/config` يكتب حقولًا لم يمسّها أحد.** فالقيمة الموضوعة *للعرض* كانت تسافر كأنّها اختيار المستخدم: تغييرُ قائمةٍ واحدة يرسل **ثمانيًا وعشرين مفتاحًا ويُثبّت ثمانية عشر**. والمقارنة بـ`cfg.values` لا تكفي؛ فصارت المقارنة بما **بُذر به** كلّ حقل. وعاد عددُ المفاتيح المكتوبة إلى التنبيه. **3018 اختبارًا · 111 في المتصفّح.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

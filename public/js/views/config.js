@@ -24,6 +24,13 @@ Router.register('config', async () => {
   }
 
   const fields = {};
+  // CONFIG-2 — what each control was SEEDED with. "Untouched" means the value
+  // still equals this, which is the only way to tell a display default apart
+  // from a user who deliberately chose that same value. Comparing against
+  // `cfg.values` cannot: an unset select shows its `defaultValue` while the
+  // stored value is '', so the two legitimately differ and every model
+  // dropdown would still be written.
+  const initial = {};
   // Model lists + the FIELDS descriptor table live in config/field-specs.js
   // (P-15 split, v1.155.0) — window.ConfigFieldSpecs, loaded before this view.
   const FIELDS = window.ConfigFieldSpecs.FIELDS;
@@ -96,6 +103,7 @@ Router.register('config', async () => {
       if (!spec.secret) input.value = value || spec.defaultValue || '';
     }
     fields[spec.key] = input;
+    initial[spec.key] = input.value;
     // v1.216.0 — a brand-colored monogram tile beside provider fields so the
     // Settings list reads at a glance which vendor each key belongs to. Guarded:
     // ProviderLogo is a decoration and may be absent (e.g. in a stripped test DOM).
@@ -119,13 +127,36 @@ Router.register('config', async () => {
   async function save(btn) {
     const body = {};
     for (const spec of FIELDS) {
-      // Secrets: only send if user touched the field. Non-secrets: always send.
-      if (spec.secret && !dirty.has(spec.key)) continue;
-      body[spec.key] = fields[spec.key].value;
+      // Secrets: only ever sent when touched. Their control shows a mask, not
+      // the value, so resending an untouched one would write the mask.
+      if (spec.secret) {
+        if (dirty.has(spec.key)) body[spec.key] = fields[spec.key].value;
+        continue;
+      }
+      // CONFIG-2 (v1.232.1) — send only what actually differs from what was
+      // loaded. Every non-secret field used to go on every Save, and an unset
+      // control carries its `defaultValue` for display (v1.57.1), so the value
+      // put there to LOOK right travelled as if the user had chosen it: one
+      // dropdown change wrote 18 keys nobody had opened. Nothing behaved
+      // differently that day — the written values ARE the defaults — but each
+      // setting moved from "unset, follow the project default" to "pinned in
+      // .env", so the next time we change a default it would silently never
+      // reach anyone who had ever pressed Save.
+      //
+      // Compared against what the control was SEEDED with, not against
+      // `cfg.values` and not against `dirty`. Not `cfg.values`, because an
+      // unset select shows its default while the stored value is '' — they
+      // differ honestly, and every model dropdown would still be written. Not
+      // `dirty`, because it also fires when someone types a value and puts the
+      // original back. Emptying a filled field still differs from its seed, so
+      // it is sent and the server unsets the key exactly as before.
+      const now = fields[spec.key].value;
+      if (now === initial[spec.key]) continue;
+      body[spec.key] = now;
     }
     try {
       const r = await UI.withSpinner(btn, () => API.post('/api/config', body));
-      UI.toast(t('config.saved', 'Settings saved · ' + (r.written?.length || 0) + ' key(s)'), 'success');
+      UI.toast(t('config.saved', 'Settings saved') + ' · ' + (r.written?.length || 0), 'success');
       dirty.clear();
       // Re-fetch so masked previews refresh.
       cfg = await API.get('/api/config');
