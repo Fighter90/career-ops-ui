@@ -174,6 +174,7 @@ window.__I18N_DICT_FR = {
   'config.bannerTitle': "Les deux projets récupèrent cela",
   'config.bannerBody': "Les valeurs enregistrées se retrouvent dans le fichier .env parent, donc les scripts Node de career-ops ET l'interface web (via dotenv loader) lisent la même source. Aucun redémarrage n'est nécessaire.",
   'config.saved': "Paramètres enregistrés",
+  'config.useDefault': "Utiliser la valeur par défaut ({v})",
   'config.groupCore': "Clés d'API",
   'config.groupRuntime': "Exécution",
   'config.groupRegional': "Sources régionales",

@@ -31,6 +31,12 @@ Router.register('config', async () => {
   // stored value is '', so the two legitimately differ and every model
   // dropdown would still be written.
   const initial = {};
+  // CONFIG-3 (v1.233.0) — WHERE each seed came from. `initial` alone cannot
+  // tell "never opened" from "opened and agreed with the default", because both
+  // leave the control equal to its seed; v1.232.1's comment claimed otherwise
+  // and was wrong. With this flag, `dirty` becomes a valid SECOND signal
+  // exactly where the ambiguity lives — fields with no entry in the file.
+  const seededFromFile = {};
   // Model lists + the FIELDS descriptor table live in config/field-specs.js
   // (P-15 split, v1.155.0) — window.ConfigFieldSpecs, loaded before this view.
   const FIELDS = window.ConfigFieldSpecs.FIELDS;
@@ -48,8 +54,15 @@ Router.register('config', async () => {
     let input;
     if (spec.kind === 'select' || spec.kind === 'select-remote') {
       // Dropdown for known-enum fields (model selection).
-      // Pre-select the saved value; if unset use the spec's default.
-      const current = value || spec.defaultValue || '';
+      // ADJACENT-2 (v1.233.0) — an unset select now selects an explicit
+      // "use the default" entry instead of the default VALUE. Two things were
+      // wrong with seeding the value directly: a dropdown had no empty option,
+      // so the form could never send '' and a select could be set but never
+      // cleared (text fields can simply be emptied); and "not set" LOOKED
+      // exactly like "chosen", which is what made CONFIG-3 possible. v1.57.1's
+      // intent survives — the entry's label still names the value the server
+      // will use — but it now says so instead of impersonating a choice.
+      const current = value || '';
       // Seed the option set with the curated/fallback list AND the
       // current value (so a previously-saved custom model id is never
       // silently dropped while the live catalogue loads).
@@ -67,7 +80,12 @@ Router.register('config', async () => {
         // slack to hide it, which is why earlier mobile passes read clean.
         style: { minWidth: 'min(300px, 100%)', maxWidth: '100%', fontSize: '13px' },
         onChange: () => dirty.add(spec.key),
-      }, seed.map((opt) => c('option', { value: opt }, opt)));
+      }, [
+        c('option', { value: '' }, spec.defaultValue
+          ? t('config.useDefault', 'Use the default ({v})').replace('{v}', spec.defaultValue)
+          : t('config.useDefault', 'Use the default ({v})').replace(' ({v})', '')),
+        ...seed.map((opt) => c('option', { value: opt }, opt)),
+      ]);
       input.value = current;
       if (spec.kind === 'select-remote') {
         // v1.57.0 — replace the curated seed with the live OpenRouter
@@ -79,7 +97,13 @@ Router.register('config', async () => {
           const keep = input.value || current;
           const ids = models.map((m) => m.id).filter(Boolean);
           if (keep && !ids.includes(keep)) ids.unshift(keep);
+          // ADJACENT-2 — replaceChildren wipes the "use the default" entry
+          // too, so put it back; otherwise the live catalogue silently makes
+          // OPENROUTER_MODEL the one dropdown that cannot be cleared again.
           input.replaceChildren(
+            c('option', { value: '' }, spec.defaultValue
+              ? t('config.useDefault', 'Use the default ({v})').replace('{v}', spec.defaultValue)
+              : t('config.useDefault', 'Use the default ({v})').replace(' ({v})', '')),
             ...ids.map((id) => c('option', { value: id }, id)));
           input.value = keep;
         }).catch(() => { /* keep the curated fallback */ });
@@ -104,6 +128,7 @@ Router.register('config', async () => {
     }
     fields[spec.key] = input;
     initial[spec.key] = input.value;
+    seededFromFile[spec.key] = Boolean(value);
     // v1.216.0 — a brand-colored monogram tile beside provider fields so the
     // Settings list reads at a glance which vendor each key belongs to. Guarded:
     // ProviderLogo is a decoration and may be absent (e.g. in a stripped test DOM).
@@ -151,12 +176,26 @@ Router.register('config', async () => {
       // original back. Emptying a filled field still differs from its seed, so
       // it is sent and the server unsets the key exactly as before.
       const now = fields[spec.key].value;
-      if (now === initial[spec.key]) continue;
-      body[spec.key] = now;
+      if (now !== initial[spec.key]) { body[spec.key] = now; continue; }
+      // CONFIG-3 — equal to the seed. If that seed came from the FILE, the
+      // field genuinely was not edited. If it came from `defaultValue`, the
+      // user may have opened it and deliberately agreed, and dropping that
+      // left a dead end: the only route to pinning the default was to enter a
+      // wrong value, save, then set the right one back. `dirty` is not a
+      // general basis (it fires on type-and-revert), but here it is the only
+      // remaining evidence, and it costs at most the field the user was
+      // actually working in — never the eighteen of CONFIG-2, which nobody
+      // opened and for which `dirty` is empty.
+      if (!seededFromFile[spec.key] && dirty.has(spec.key)) body[spec.key] = now;
     }
     try {
       const r = await UI.withSpinner(btn, () => API.post('/api/config', body));
-      UI.toast(t('config.saved', 'Settings saved') + ' · ' + (r.written?.length || 0), 'success');
+      // ADJACENT-1 — count removals too. The server used to answer with
+      // `written` alone, so clearing a field reported "· 0" and read as
+      // "nothing happened" while the key had in fact been deleted. The toast
+      // was not lying; it answered a different question from the one asked.
+      const changed = (r.written?.length || 0) + (r.removed?.length || 0);
+      UI.toast(t('config.saved', 'Settings saved') + ' · ' + changed, 'success');
       dirty.clear();
       // Re-fetch so masked previews refresh.
       cfg = await API.get('/api/config');

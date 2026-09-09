@@ -174,6 +174,7 @@ window.__I18N_DICT_HI = {
   'config.bannerTitle': "दोनों प्रोजेक्ट इसे अपने आप ले लेते हैं",
   'config.bannerBody': "सहेजे गए मान पैरेंट .env में जाते हैं, इसलिए career-ops Node स्क्रिप्ट और web-ui (dotenv लोडर के ज़रिए) दोनों एक ही स्रोत पढ़ते हैं। रीस्टार्ट की ज़रूरत नहीं।",
   'config.saved': "सेटिंग्स सहेजी गईं",
+  'config.useDefault': "डिफ़ॉल्ट का उपयोग करें ({v})",
   'config.groupCore': "API की",
   'config.groupRuntime': "रनटाइम",
   'config.groupRegional': "क्षेत्रीय स्रोत",

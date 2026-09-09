@@ -173,6 +173,7 @@ window.__I18N_DICT_DA = {
   'config.bannerTitle': "Begge projekter bruger dette",
   'config.bannerBody': "Gemte værdier lander i det overordnede projekts .env, så career-ops Node-scripts OG web-ui (via dotenv-loader) læser den samme kilde. Ingen genstart nødvendig.",
   'config.saved': "Indstillinger gemt",
+  'config.useDefault': "Brug standardværdien ({v})",
   'config.groupCore': "API-nøgler",
   'config.groupRuntime': "Runtime",
   'config.groupRegional': "Regionale kilder",

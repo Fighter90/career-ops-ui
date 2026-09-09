@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.233.0] — 2026-09-10
+
+**Corretto — tre riscontri nel percorso di salvataggio di `#/config`; CONFIG-3 è stato causato dalla correzione stessa della v1.232.1.**
+
+### Corretto
+**CONFIG-3** — una scelta deliberata che coincideva con il valore seminato veniva scartata come «non toccata». `initial` confonde due origini: seminato da `.env` e seminato da `defaultValue`, e nel secondo caso l'uguaglianza è **ambigua**. Corretto registrando **`seededFromFile`** accanto a `initial`; dove il seme viene dal file nulla cambia, dove viene dal default `dirty` diventa un *secondo* segnale valido.
+**Rimuovere una chiave riportava «· 0»** perché il server restituiva solo ciò che aveva scritto. Ora risponde anche con `removed`, e il messaggio conta entrambi.
+**Un menù a tendina poteva essere impostato ma mai svuotato**: nessuno dei 18 aveva un'opzione vuota. Ora ognuno inizia con «Usa il valore predefinito (…)». Una nuova chiave i18n ×17.
+
+### Note
+Base unitaria invariata (**3018**); browser **111 → 116**.
+
 ## [1.232.1] — 2026-09-10
 
 **Corretto — Salva su `#/config` scriveva campi che l'utente non aveva mai toccato.**

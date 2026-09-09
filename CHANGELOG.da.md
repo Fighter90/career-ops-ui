@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.233.0] — 2026-09-10
+
+**Rettet — tre fund i gemmestien for `#/config`; CONFIG-3 blev forårsaget af rettelsen i v1.232.1 selv.**
+
+### Rettet
+**CONFIG-3** — et bevidst valg, der tilfældigvis svarede til den forudfyldte værdi, blev kasseret som »ikke rørt«. `initial` blander to ophav: forudfyldt fra `.env` og forudfyldt fra `defaultValue`, hvor lighed er **flertydig**. Rettet ved at notere **`seededFromFile`** ved siden af `initial`.
+**Fjernelse af en nøgle meldte »· 0«**, fordi serveren kun returnerede det skrevne. Nu svarer den også med `removed`, og beskeden tæller begge.
+**En rulleliste kunne sættes, men aldrig ryddes**: ingen af de 18 havde en tom mulighed. Hver begynder nu med »Brug standardværdien (…)«. Én ny i18n-nøgle ×17.
+
+### Noter
+Unit-baseline uændret (**3018**); browser **111 → 116**.
+
 ## [1.232.1] — 2026-09-10
 
 **Rettet — Gem på `#/config` skrev felter, brugeren aldrig rørte.**

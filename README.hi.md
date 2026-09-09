@@ -14,11 +14,11 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
+[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.232.1** — **`#/config` पर सहेजना उन फ़ील्ड को भी लिखता था जिन्हें छुआ तक नहीं गया।** *दिखाने* के लिए रखा गया मान उपयोगकर्ता के चुनाव जैसा भेजा जाता था: एक ड्रॉपडाउन बदलने पर **28 कुंजियाँ जातीं और 18 जड़ दी जातीं**। `cfg.values` से तुलना पर्याप्त नहीं; अब तुलना उससे होती है **जिससे हर कंट्रोल बोया गया था**। सूचना में कुंजियों की संख्या लौट आई। **3018 परीक्षण · 111 ब्राउज़र।**
+> **🆕 नवीनतम रिलीज़ — v1.233.0** — **`#/config` के सहेजने के रास्ते में तीन बातें; CONFIG-3 v1.232.1 के अपने ही सुधार से पैदा हुआ।** बोए गए मान से मेल खाता सोचा-समझा चुनाव «छुआ नहीं» मानकर छोड़ा जाता था; अब **`seededFromFile`** उद्गम दर्ज करता है। **कुंजी हटाना «· 0» दिखाता था** — अब `removed` भी लौटता है। **सिलेक्ट सेट तो होता, खाली नहीं**: अब हर एक **«डिफ़ॉल्ट का उपयोग करें (…)»** से शुरू होता है। **3018 परीक्षण · 116 ब्राउज़र।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -174,6 +174,7 @@ window.__I18N_DICT_TR = {
   'config.bannerTitle': "Her iki proje de bunu alır",
   'config.bannerBody': "Kaydedilen değerler üst .env dosyasına yazılır, böylece career-ops Node betikleri VE web-ui (dotenv yükleyici aracılığıyla) aynı kaynağı okur. Yeniden başlatma gerekmez.",
   'config.saved': "Ayarlar kaydedildi",
+  'config.useDefault': "Varsayılanı kullan ({v})",
   'config.groupCore': "API anahtarları",
   'config.groupRuntime': "Çalışma zamanı",
   'config.groupRegional': "Bölgesel kaynaklar",

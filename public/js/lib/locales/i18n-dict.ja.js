@@ -174,6 +174,7 @@ window.__I18N_DICT_JA = {
   'config.bannerTitle': "両方のプロジェクトが反映します",
   'config.bannerBody': "保存された値は親の .env に入り、career-ops スクリプトと web-ui の両方が同じソースを読みます。再起動不要。",
   'config.saved': "設定を保存しました",
+  'config.useDefault': "既定値を使う（{v}）",
   'config.groupCore': "API キー",
   'config.groupRuntime': "ランタイム",
   'config.groupRegional': "地域ソース",

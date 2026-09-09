@@ -12,11 +12,11 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
+[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.232.1** — **Salvar em `#/config` gravava campos que o usuário nunca tocou.** O valor posto ali para *exibição* viajava como escolha do usuário: mudar um dropdown enviava **28 chaves e fixava 18**. Comparar com `cfg.values` não basta; agora compara-se com **aquilo que semeou cada controle**. O número de chaves gravadas voltou ao aviso. **3018 testes · 111 de navegador.**
+> **🆕 Última versão — v1.233.0** — **Três achados no caminho de salvar do `#/config`; o CONFIG-3 veio da própria correção da v1.232.1.** Uma escolha deliberada igual ao valor semeado era descartada como «não tocado»; agora há **`seededFromFile`**. Remover uma chave informava «· 0» — o servidor agora também responde com `removed`. Um dropdown podia ser definido mas nunca limpo: cada um começa agora com **«Usar o padrão (…)»**. **3018 testes · 116 de navegador.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -174,6 +174,7 @@ window.__I18N_DICT_RU = {
   'config.bannerTitle': "Подхватывают оба проекта",
   'config.bannerBody': "Сохранённые значения уходят в parent .env — и career-ops скрипты, и web-ui читают один источник. Перезапуск не нужен.",
   'config.saved': "Настройки сохранены",
+  'config.useDefault': "Использовать умолчание ({v})",
   'config.groupCore': "API-ключи",
   'config.groupRuntime': "Runtime",
   'config.groupRegional': "Региональные источники",

@@ -173,6 +173,7 @@ window.__I18N_DICT_UK = {
   'config.bannerTitle': "Обидва проєкти використовують це",
   'config.bannerBody': "Збережені значення потрапляють у батьківський .env, тож скрипти career-ops Node І web-ui (через dotenv loader) читають одне джерело. Перезапуск не потрібен.",
   'config.saved': "Налаштування збережено",
+  'config.useDefault': "Використовувати усталене ({v})",
   'config.groupCore': "API-ключі",
   'config.groupRuntime': "Середовище виконання",
   'config.groupRegional': "Регіональні джерела",

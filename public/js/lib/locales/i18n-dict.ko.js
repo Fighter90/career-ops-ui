@@ -174,6 +174,7 @@ window.__I18N_DICT_KO = {
   'config.bannerTitle': "두 프로젝트가 모두 이 값을 사용합니다",
   'config.bannerBody': "저장된 값은 부모 .env 에 들어가 career-ops 스크립트와 web-ui 모두 동일한 소스를 읽습니다. 재시작 불필요.",
   'config.saved': "설정 저장됨",
+  'config.useDefault': "기본값 사용 ({v})",
   'config.groupCore': "API 키",
   'config.groupRuntime': "런타임",
   'config.groupRegional': "지역 소스",

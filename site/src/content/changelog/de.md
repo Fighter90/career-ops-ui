@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.233.0] — 2026-09-10
+
+**Behoben — drei Funde im Speicherpfad von `#/config`; CONFIG-3 wurde durch den Fix von v1.232.1 selbst verursacht.**
+
+### Behoben
+**CONFIG-3** — eine bewusste Wahl, die zufällig dem vorbelegten Wert entsprach, wurde als „nicht angefasst" verworfen. `initial` vermengt zwei Herkünfte: aus der `.env` vorbelegt (Gleichheit heißt, das Feld wurde nicht bearbeitet — zu Recht übersprungen) und aus `defaultValue` vorbelegt (Gleichheit ist **mehrdeutig**: nie geöffnet, oder geöffnet und zugestimmt). Bei fehlendem `HOST` zeigt das Feld `127.0.0.1`; genau diesen Wert einzutippen und zu speichern schickte `{}`, und der Schlüssel blieb aus — der einzige Weg führte über einen falschen Wert, Speichern, und dann den richtigen zurück. Behoben, indem neben `initial` nun **`seededFromFile`** festgehalten wird; stammt die Vorbelegung aus der Datei, ändert sich nichts, stammt sie vom Standard, wird `dirty` zum gültigen *zweiten* Signal.
+**Das Entfernen eines Schlüssels meldete „· 0"**, weil der Server nur Geschriebenes zurückgab. Er antwortet nun auch mit `removed`, und der Hinweis zählt beides.
+**Ein Auswahlfeld ließ sich setzen, aber nie leeren**: keines der 18 bot eine leere Option. Jedes beginnt jetzt mit „Standard verwenden (…)". Ein neuer i18n-Schlüssel ×17.
+
+### Anmerkungen
+Unit-Basislinie unverändert (**3018**); Browser **111 → 116**, die fünf neuen Fälle fielen nachweislich gegen den alten Code durch.
+
 ## [1.232.1] — 2026-09-10
 
 **Behoben — Speichern auf `#/config` schrieb Felder, die niemand angefasst hatte.**

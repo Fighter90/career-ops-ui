@@ -3134,6 +3134,25 @@
     "tr": "Ayarlar kaydedildi",
     "hi": "सेटिंग्स सहेजी गईं"
   },
+  "config.useDefault": {
+    "en": "Use the default ({v})",
+    "es": "Usar el valor por defecto ({v})",
+    "pt-BR": "Usar o padrão ({v})",
+    "ko": "기본값 사용 ({v})",
+    "ja": "既定値を使う（{v}）",
+    "ru": "Использовать умолчание ({v})",
+    "zh-CN": "使用默认值（{v}）",
+    "zh-TW": "使用預設值（{v}）",
+    "fr": "Utiliser la valeur par défaut ({v})",
+    "pl": "Użyj wartości domyślnej ({v})",
+    "uk": "Використовувати усталене ({v})",
+    "da": "Brug standardværdien ({v})",
+    "ar": "استخدام القيمة الافتراضية ({v})",
+    "de": "Standard verwenden ({v})",
+    "it": "Usa il valore predefinito ({v})",
+    "tr": "Varsayılanı kullan ({v})",
+    "hi": "डिफ़ॉल्ट का उपयोग करें ({v})"
+  },
   "config.groupCore": {
     "en": "API keys",
     "es": "Claves API",

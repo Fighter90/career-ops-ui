@@ -228,3 +228,138 @@ test('CONFIG-2: a stored out-of-domain value neither blocks Save nor gets rewrit
     await context.close();
   }
 });
+
+/**
+ * CONFIG-3 (v1.233.0) — a deliberate choice that happens to equal the seeded
+ * value must not be discarded as "untouched".
+ *
+ * Fallout from v1.232.1's own fix, and its comment claimed the opposite:
+ * "the only way to tell a display default apart from a user who deliberately
+ * chose that same value". It cannot. `initial` conflates two different origins:
+ *
+ *   seeded FROM .env         → equal means the field was not edited  (skip: right)
+ *   seeded from defaultValue → equal is AMBIGUOUS: never opened, or opened
+ *                              and agreed with the default
+ *
+ * With HOST unset the control shows `127.0.0.1`. Typing that exact value and
+ * saving posted `{}` and the key stayed absent — a dead end, because the only
+ * way through was to enter a wrong value, save, then set the right one back.
+ * Nothing misbehaves (an absent key and a key equal to the default resolve the
+ * same), but the UI shows a state the file does not contain, and pressing Save
+ * again never reconciles them.
+ *
+ * The fix adds `seededFromFile`, so `dirty` becomes a valid SECOND signal
+ * exactly where the ambiguity lives — fields with no entry in the file. CONFIG-2
+ * does not come back: nobody opened those eighteen, so `dirty` is empty for them.
+ */
+test('CONFIG-3: agreeing with a seeded default is a choice and must be written', { skip: SKIP }, async () => {
+  writeFileSync(envPath, 'LLM_PROVIDER=auto\nPORT=4317\n');   // HOST deliberately absent
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  try {
+    const posted = await openConfig(page);
+    await page.waitForSelector('#cfg-host', { timeout: 8000 });
+    assert.equal(await page.inputValue('#cfg-host'), '127.0.0.1',
+      'precondition: the unset field is seeded with its default');
+    assert.ok(!envKeys().includes('HOST'), 'precondition: HOST is absent from .env');
+
+    // Type the SAME value the seed already shows — the ambiguous case.
+    await page.fill('#cfg-host', '');
+    await page.fill('#cfg-host', '127.0.0.1');
+    await save(page);
+
+    const sent = Object.keys(posted[0] || {}).filter((k) => k !== 'lang');
+    assert.deepEqual(sent, ['HOST'],
+      'a field the user edited must be sent even when the value equals the seed');
+    assert.ok(envKeys().includes('HOST'), 'HOST must now exist in .env');
+  } finally {
+    await context.close();
+  }
+});
+
+test('CONFIG-3: an untouched seeded default is still not written', { skip: SKIP }, async () => {
+  writeFileSync(envPath, 'LLM_PROVIDER=auto\nPORT=4317\n');
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  try {
+    const before = readFileSync(envPath, 'utf8');
+    const posted = await openConfig(page);
+    await save(page);
+    const sent = Object.keys(posted[0] || {}).filter((k) => k !== 'lang');
+    assert.deepEqual(sent, [], `CONFIG-2 regression: untouched Save posted ${sent.join(', ')}`);
+    assert.equal(readFileSync(envPath, 'utf8'), before, '.env must be byte-identical');
+  } finally {
+    await context.close();
+  }
+});
+
+/**
+ * ADJACENT-1 — removing a key reported "· 0".
+ *
+ * The server answered `{ok, written}` only, so a deletion had nothing to count
+ * and the user read "Settings saved · 0" as "nothing happened" while the key
+ * had in fact been removed. The toast was not lying — it counted writes — it
+ * answered a different question from the one being asked.
+ */
+test('ADJACENT-1: clearing a field reports it as one change, not zero', { skip: SKIP }, async () => {
+  writeFileSync(envPath, 'LLM_PROVIDER=auto\nPORT=4317\nHOST=0.0.0.0\n');
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await openConfig(page);
+    await page.fill('#cfg-host', '');
+    await page.click('#cfg-tabpanel button.btn-primary');
+    await page.waitForFunction(
+      () => /saved|Сохран|Guardad|保存|儲存|저장|Salvo|Salv|gespeichert|enregistr/i
+        .test(document.getElementById('toast')?.textContent || ''),
+      null, { timeout: 8000 });
+    const txt = (await page.locator('#toast').textContent()) || '';
+    assert.match(txt, /\b1\b/, `removing a key must be counted as a change, got: ${txt}`);
+    assert.ok(!envKeys().includes('HOST'), 'and the key must actually be gone');
+  } finally {
+    await context.close();
+  }
+});
+
+/**
+ * ADJACENT-2 — a select could be set but never cleared.
+ *
+ * None of the 18 dropdowns offered an empty option, so the form could not send
+ * `''` for one. Text fields can be emptied; selects could not, which combined
+ * with CONFIG-3 into a closed loop for an unset select: it could not be pinned
+ * (its value equalled the seed) and, if pinned another way, could not be
+ * released. An explicit "use the default" entry also makes "not set" stop
+ * *looking* like "chosen", which is what made CONFIG-3 possible at all.
+ */
+test('ADJACENT-2: every select offers an explicit "use the default" option', { skip: SKIP }, async () => {
+  writeFileSync(envPath, 'LLM_PROVIDER=auto\nPORT=4317\n');
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await openConfig(page);
+    const bad = await page.evaluate(() => [...document.querySelectorAll('#cfg-tabpanel select')]
+      .filter((s) => ![...s.options].some((o) => o.value === ''))
+      .map((s) => s.id));
+    assert.deepEqual(bad, [],
+      `these dropdowns cannot be cleared — no empty option: ${bad.join(', ')}`);
+  } finally {
+    await context.close();
+  }
+});
+
+test('ADJACENT-2: choosing "use the default" removes the key', { skip: SKIP }, async () => {
+  writeFileSync(envPath, 'LLM_PROVIDER=auto\nPORT=4317\nDEEPSEEK_MODEL=deepseek-reasoner\n');
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
+  try {
+    const posted = await openConfig(page);
+    await page.waitForSelector('#cfg-deepseek-model', { timeout: 8000 });
+    await page.selectOption('#cfg-deepseek-model', '');
+    await save(page);
+    const body = posted[0] || {};
+    assert.equal(body.DEEPSEEK_MODEL, '', 'the empty option must send an empty string');
+    assert.ok(!envKeys().includes('DEEPSEEK_MODEL'), 'and the key must be removed from .env');
+  } finally {
+    await context.close();
+  }
+});

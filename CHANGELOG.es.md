@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.233.0] — 2026-09-10
+
+**Corregido — tres hallazgos en la ruta de guardado de `#/config`; CONFIG-3 lo causó la propia corrección de v1.232.1.**
+
+### Corregido
+**CONFIG-3** — una elección deliberada que coincidía con el valor sembrado se descartaba como «sin tocar». `initial` confunde dos orígenes: sembrado desde `.env` (la igualdad significa que el campo no se editó — correcto omitirlo) y sembrado desde `defaultValue` (la igualdad es **ambigua**: nunca se abrió, o se abrió y se estuvo de acuerdo). Con `HOST` ausente el control muestra `127.0.0.1`; escribir ese mismo valor y guardar enviaba `{}` y la clave seguía sin existir — el único camino era escribir un valor erróneo, guardar y volver a poner el correcto. Corregido registrando **`seededFromFile`** junto a `initial`; donde la semilla viene del archivo nada cambia, y donde viene del valor por defecto `dirty` pasa a ser una *segunda* señal válida.
+**Eliminar una clave informaba «· 0»** porque el servidor solo devolvía lo escrito. Ahora responde también con `removed`, calculado contra la instantánea previa, y el aviso cuenta ambos.
+**Un desplegable podía fijarse pero nunca vaciarse**: ninguno de los 18 ofrecía una opción vacía. Ahora cada uno encabeza con «Usar el valor por defecto (…)», y una clave sin definir selecciona esa entrada en lugar del valor. Una nueva clave i18n ×17.
+
+### Notas
+Línea base de pruebas unitarias sin cambios (**3018**); navegador **111 → 116**, y las cinco nuevas se confirmaron fallando contra el código anterior.
+
 ## [1.232.1] — 2026-09-10
 
 **Corregido — Guardar en `#/config` escribía campos que el usuario nunca tocó.**

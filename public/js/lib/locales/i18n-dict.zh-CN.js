@@ -174,6 +174,7 @@ window.__I18N_DICT_ZH_CN = {
   'config.bannerTitle': "两个项目都会读取",
   'config.bannerBody': "保存的值进入父项目 .env,career-ops 脚本和 web-ui 都读取同一来源。无需重启。",
   'config.saved': "设置已保存",
+  'config.useDefault': "使用默认值（{v}）",
   'config.groupCore': "API 密钥",
   'config.groupRuntime': "运行时",
   'config.groupRegional': "区域源",

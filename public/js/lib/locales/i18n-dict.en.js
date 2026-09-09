@@ -174,6 +174,7 @@ window.__I18N_DICT_EN = {
   'config.bannerTitle': "Both projects pick this up",
   'config.bannerBody': "Saved values land in the parent .env, so career-ops Node scripts AND web-ui (via dotenv loader) read the same source. No restart needed.",
   'config.saved': "Settings saved",
+  'config.useDefault': "Use the default ({v})",
   'config.groupCore': "API keys",
   'config.groupRuntime': "Runtime",
   'config.groupRegional': "Regional sources",
