@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.231.5] — 2026-09-09
+
+**Security — seven advisories closed, one of them a critical remote-code-execution.** No source file changed.
+
+### Security
+**Merged from Dependabot:** `multer` 2.2.0 → 2.3.0 (**high** — denial of service via a file-descriptor leak on abort) and `svgo` 4.0.2 → 4.1.0 in the site (**high** + medium — `removeScripts` let executable links through namespace and content handling, and incompletely sanitized executable HTML inside `foreignObject`).
+**Then five more, surfaced by the rescan those merges triggered.** Every affected range was already satisfied by the existing `^` specifier, so each needed an update rather than a manifest edit: **`astro` 7.1.0 → 7.3.2** in the site — **critical**, remote code execution through AVIF image optimization (fixed in 7.2.8), and with it an authorization bypass from a missing path-segment boundary check when stripping the configured base (7.2.4); **`sharp` 0.35.3 → 0.35.4** — **high**, two libheif vulnerabilities; and **`js-yaml` 4.3.1 → 4.3.2** in **both** manifests — **high**, `maxTotalMergeKeys` did not limit CPU use for empty merge sources.
+
+### Notes
+"Dependencies only" is not the same as "risk free" here, so this was not shipped on the audit result alone. `js-yaml` parses every config the app reads and `multer` accepts every upload it takes, and Astro moved a **minor** version. Verified: `npm run test:ci` **3013/3013**, the browser suite 4/4, and a full site rebuild producing the same **86 pages**, all **17** changelog mirrors and a correct `facts.json`. `npm audit` reports **0** vulnerabilities in both manifests. Test baseline is unchanged because no source file changed.
+
 ## [1.231.4] — 2026-09-07
 
 **Fixed — v1.231.3 fixed the aftermath of the Doctor click, not the moment. Reported again, from mobile and from desktop.**

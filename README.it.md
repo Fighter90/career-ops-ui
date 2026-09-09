@@ -12,11 +12,11 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
+[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.231.4** — **la v1.231.3 ha sistemato le conseguenze del clic su Doctor, non il momento.** Ripristinava gli `<span>` nel `finally`, ma il segnale di occupato scriveva ancora `'⏳ ' + etichetta` dentro il pulsante *mentre la richiesta girava* — quindi per tutta la durata di `doctor.mjs` il quadrato da 36 px era una pillola larga `⏳ 🩺Doctor` che rompeva la riga, e su desktop un `⏳🩺Doctor` ammassato. **Un pulsante con figli elemento non viene più riscritto**: il suo segnale è la classe `.is-loading`, che scambia l'icona con una clessidra in CSS — **36 px a riposo, 36 px in volo, 36 px dopo**. **3013 test.**
+> **🆕 Ultima release — v1.231.5** — **Sicurezza: sette avvisi chiusi, uno un'esecuzione di codice remoto critica.** Nessun file sorgente modificato. Prima `multer` 2.2.0→2.3.0 e `svgo` 4.0.2→4.1.0; la riscansione ne ha rivelati altri cinque, tutti già dentro il `^` esistente: **`astro` 7.1.0→7.3.2** (**critica** — RCE tramite ottimizzazione immagini AVIF), **`sharp` 0.35.3→0.35.4** e **`js-yaml` 4.3.1→4.3.2 in entrambi i manifesti**. Pubblicato con **3013/3013** test e una ricostruzione completa del sito. `npm audit`: **0 vulnerabilità**. **3013 test.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.231.5] — 2026-09-09
+
+**Sicherheit — sieben Hinweise geschlossen, darunter eine kritische Remote-Code-Ausführung.** Keine Quelldatei wurde geändert.
+
+### Sicherheit
+**Aus Dependabot übernommen:** `multer` 2.2.0 → 2.3.0 (**hoch** — Denial of Service durch ein Dateideskriptor-Leck beim Abbruch) und `svgo` 4.0.2 → 4.1.0 auf der Website (**hoch** und mittel — `removeScripts` ließ ausführbare Links durch Namensraum- und Inhaltsbehandlung passieren und bereinigte ausführbares HTML in `foreignObject` nur unvollständig).
+**Dann fünf weitere, die der durch diese Merges ausgelöste Rescan zutage förderte.** Jeder betroffene Bereich war bereits vom vorhandenen `^` abgedeckt, es brauchte also ein Update statt einer Manifeständerung: **`astro` 7.1.0 → 7.3.2** — **kritisch**, Remote-Code-Ausführung über die AVIF-Bildoptimierung (behoben in 7.2.8), dazu eine Autorisierungsumgehung wegen fehlender Pfadsegment-Grenzprüfung (7.2.4); **`sharp` 0.35.3 → 0.35.4** — **hoch**, libheif-Schwachstellen; und **`js-yaml` 4.3.1 → 4.3.2** in **beiden** Manifesten — **hoch**.
+
+### Anmerkungen
+„Nur Abhängigkeiten“ heißt hier nicht „risikofrei“. `js-yaml` parst jede Konfiguration, die die Anwendung liest, `multer` nimmt jeden Upload entgegen, und Astro ist eine **Minor**-Version weitergerückt. Geprüft: `npm run test:ci` **3013/3013**, die Browser-Suite 4/4 und ein vollständiger Website-Neubau mit denselben **86 Seiten**, allen **17** Changelog-Spiegeln und korrekter `facts.json`. `npm audit`: **0** Schwachstellen in beiden Manifesten.
+
 ## [1.231.4] — 2026-09-07
 
 **Behoben — v1.231.3 hat die Folgen des Doctor-Klicks behoben, nicht den Moment. Erneut gemeldet, vom Handy und vom Desktop.**

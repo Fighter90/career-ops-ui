@@ -12,11 +12,11 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
+[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.231.4** — **v1.231.3 rettede eftervirkningen af Doctor-klikket, ikke øjeblikket.** Den gendannede `<span>` i `finally`, men travlhedssignalet skrev stadig `'⏳ ' + etiket` ind i knappen, *mens forespørgslen kørte* — i hele `doctor.mjs`-kørslen var 36 px-kvadratet derfor en bred `⏳ 🩺Doctor`-pille, der brød rækken, og på skrivebordet et sammenklemt `⏳🩺Doctor`. **En knap med elementbørn omskrives nu slet ikke**: dens signal er klassen `.is-loading`, som bytter ikonet ud med et timeglas i CSS — **36 px i hvile, 36 px undervejs, 36 px bagefter**. **3013 test.**
+> **🆕 Seneste udgivelse — v1.231.5** — **Sikkerhed: syv rådgivninger lukket, én af dem kritisk fjernkørsel af kode.** Ingen kildefil ændret. Først `multer` 2.2.0→2.3.0 og `svgo` 4.0.2→4.1.0; genskanningen afslørede fem mere, alle allerede i det eksisterende `^`: **`astro` 7.1.0→7.3.2** (**kritisk** — fjernkørsel via AVIF-billedoptimering), **`sharp` 0.35.3→0.35.4** og **`js-yaml` 4.3.1→4.3.2 i begge manifester**. Udgivet med **3013/3013** test og en fuld genopbygning af sitet. `npm audit`: **0 sårbarheder**. **3013 test.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.231.5] — 2026-09-09
+
+**Sikkerhed — syv rådgivninger lukket, én af dem en kritisk fjernkørsel af kode.** Ingen kildefil blev ændret.
+
+### Sikkerhed
+**Flettet fra Dependabot:** `multer` 2.2.0 → 2.3.0 (**høj** — lammelsesangreb via lækkede fildeskriptorer ved afbrydelse) og `svgo` 4.0.2 → 4.1.0 på sitet (**høj** og middel — `removeScripts` slap eksekverbare links igennem).
+**Derefter fem mere, som den genskanning fletningerne udløste, bragte frem.** Hvert berørt interval var allerede dækket af det eksisterende `^`, så der skulle en opdatering til, ikke en manifestændring: **`astro` 7.1.0 → 7.3.2** — **kritisk**, fjernkørsel af kode via AVIF-billedoptimering (rettet i 7.2.8) samt en autorisationsomgåelse (7.2.4); **`sharp` 0.35.3 → 0.35.4** — **høj**, libheif-sårbarheder; og **`js-yaml` 4.3.1 → 4.3.2** i **begge** manifester — **høj**.
+
+### Noter
+»Kun afhængigheder« er ikke det samme som »uden risiko« her. `js-yaml` parser hver konfiguration, appen læser, `multer` modtager hver upload, og Astro rykkede en **minor**-version. Verificeret: `test:ci` **3013/3013**, browser-suiten 4/4, og en fuld genopbygning af sitet med de samme **86 sider** og alle **17** spejle. `npm audit`: **0** sårbarheder.
+
 ## [1.231.4] — 2026-09-07
 
 **Rettet — v1.231.3 rettede eftervirkningen af Doctor-klikket, ikke øjeblikket. Meldt igen, fra mobil og fra skrivebord.**

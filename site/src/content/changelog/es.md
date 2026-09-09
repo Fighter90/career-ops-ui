@@ -11,6 +11,17 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.5] — 2026-09-09
+
+**Seguridad — siete avisos cerrados, uno de ellos una ejecución remota de código crítica.** No cambió ningún archivo de código fuente.
+
+### Seguridad
+**Fusionado desde Dependabot:** `multer` 2.2.0 → 2.3.0 (**alta** — denegación de servicio por fuga de descriptores de fichero al abortar) y `svgo` 4.0.2 → 4.1.0 en el sitio (**alta** y media — `removeScripts` dejaba pasar enlaces ejecutables mediante espacios de nombres y manejo de contenido, y saneaba de forma incompleta el HTML ejecutable dentro de `foreignObject`).
+**Después otros cinco, revelados por el reescaneo que dispararon esas fusiones.** Cada rango afectado ya estaba cubierto por el especificador `^` existente, así que hacía falta una actualización, no una edición del manifiesto: **`astro` 7.1.0 → 7.3.2** — **crítica**, ejecución remota de código por la optimización de imágenes AVIF (corregida en 7.2.8), y con ella un bypass de autorización por falta de comprobación del límite de segmento de ruta (7.2.4); **`sharp` 0.35.3 → 0.35.4** — **alta**, vulnerabilidades de libheif; y **`js-yaml` 4.3.1 → 4.3.2** en **ambos** manifiestos — **alta**.
+
+### Notas
+«Solo dependencias» no equivale aquí a «sin riesgo». `js-yaml` analiza cada configuración que lee la aplicación, `multer` acepta cada subida, y Astro avanzó una versión **menor**. Verificado: `npm run test:ci` **3013/3013**, la suite de navegador 4/4 y una reconstrucción completa del sitio con las mismas **86 páginas**, los **17** espejos del changelog y un `facts.json` correcto. `npm audit`: **0** vulnerabilidades en ambos manifiestos.
+
 ## [1.231.4] — 2026-09-07
 
 **Corregido — v1.231.3 arregló las secuelas del clic en Doctor, no el momento. Reportado de nuevo, desde móvil y desde escritorio.**

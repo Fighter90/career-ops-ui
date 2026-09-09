@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.231.5] — 2026-09-09
+
+**Sicurezza — sette avvisi chiusi, uno dei quali un'esecuzione di codice remoto critica.** Nessun file sorgente è cambiato.
+
+### Sicurezza
+**Unito da Dependabot:** `multer` 2.2.0 → 2.3.0 (**alta** — denial of service per perdita di descrittori di file all'interruzione) e `svgo` 4.0.2 → 4.1.0 nel sito (**alta** e media — `removeScripts` lasciava passare link eseguibili).
+**Poi altri cinque, emersi dalla riscansione innescata da quelle unioni.** Ogni intervallo interessato era già coperto dallo `^` esistente, quindi serviva un aggiornamento, non una modifica al manifesto: **`astro` 7.1.0 → 7.3.2** — **critica**, esecuzione di codice remoto tramite l'ottimizzazione delle immagini AVIF (corretta in 7.2.8), e un bypass di autorizzazione (7.2.4); **`sharp` 0.35.3 → 0.35.4** — **alta**, vulnerabilità di libheif; e **`js-yaml` 4.3.1 → 4.3.2** in **entrambi** i manifesti — **alta**.
+
+### Note
+"Solo dipendenze" qui non equivale a "senza rischio". `js-yaml` analizza ogni configurazione che l'app legge, `multer` accetta ogni caricamento, e Astro è avanzato di una versione **minore**. Verificato: `test:ci` **3013/3013**, suite browser 4/4, e una ricostruzione completa del sito con le stesse **86 pagine** e i **17** mirror. `npm audit`: **0** vulnerabilità.
+
 ## [1.231.4] — 2026-09-07
 
 **Corretto — la v1.231.3 ha sistemato le conseguenze del clic su Doctor, non il momento. Segnalato di nuovo, da mobile e da desktop.**

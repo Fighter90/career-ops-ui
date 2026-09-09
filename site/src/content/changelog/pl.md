@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.231.5] — 2026-09-09
+
+**Bezpieczeństwo — zamknięto siedem zgłoszeń, w tym krytyczne zdalne wykonanie kodu.** Żaden plik źródłowy nie uległ zmianie.
+
+### Bezpieczeństwo
+**Scalone z Dependabota:** `multer` 2.2.0 → 2.3.0 (**wysokie** — odmowa usługi przez wyciek deskryptorów plików przy przerwaniu) oraz `svgo` 4.0.2 → 4.1.0 w witrynie (**wysokie** i średnie — `removeScripts` przepuszczał wykonywalne odnośniki).
+**Następnie pięć kolejnych, ujawnionych przez ponowne skanowanie.** Każdy dotknięty zakres mieścił się już w istniejącym `^`, więc wystarczyła aktualizacja: **`astro` 7.1.0 → 7.3.2** — **krytyczne**, zdalne wykonanie kodu przez optymalizację obrazów AVIF (naprawione w 7.2.8) oraz obejście autoryzacji (7.2.4); **`sharp` 0.35.3 → 0.35.4** — **wysokie**, luki libheif; i **`js-yaml` 4.3.1 → 4.3.2** w **obu** manifestach — **wysokie**.
+
+### Uwagi
+„Tylko zależności” nie znaczy tu „bez ryzyka”. `js-yaml` parsuje każdą konfigurację, `multer` przyjmuje każde przesłanie, a Astro przeskoczyło wersję **pomniejszą**. Zweryfikowano: `test:ci` **3013/3013**, zestaw przeglądarkowy 4/4, pełna przebudowa witryny z tymi samymi **86 stronami** i **17** kopiami. `npm audit`: **0** podatności.
+
 ## [1.231.4] — 2026-09-07
 
 **Naprawiono — v1.231.3 naprawiło skutek kliknięcia Doctor, a nie sam moment. Zgłoszone ponownie, z telefonu i z pulpitu.**
