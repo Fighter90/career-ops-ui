@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
+[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.231.5** — **Security: seven advisories closed, one a critical remote-code-execution.** No source file changed. Dependabot's own two landed first — `multer` 2.2.0→2.3.0 (**high**, DoS via a file-descriptor leak on abort) and site `svgo` 4.0.2→4.1.0 (**high**+medium, `removeScripts` let executable links through). The rescan those merges triggered surfaced five more, every one already inside the existing `^` range so an update sufficed: site **`astro` 7.1.0→7.3.2** (**critical** — RCE through AVIF image optimization, plus an authorization bypass from a missing path-segment boundary check), **`sharp` 0.35.3→0.35.4** (**high**, libheif), and **`js-yaml` 4.3.1→4.3.2 in both manifests** (**high**). "Deps only" is not "risk free" — `js-yaml` parses every config the app reads, `multer` takes every upload, and Astro moved a minor version — so this ships on **3013/3013** tests, 4/4 browser, and a full site rebuild producing the same 86 pages and 17 mirrors. `npm audit`: **0 vulnerabilities** in both manifests. **3013 tests.**
+> **🆕 Latest release — v1.232.0** — **Two defects from a browser QA pass, neither from v1.231.5.** **`#/profile` scrolled the whole page sideways**: each value was an anonymous `<div>` with no wrapping rule, and a LinkedIn URL offers CSS no break point — so its **min-content width was the entire string**, and `min-width:auto` on grid items refused to shrink below it, bursting the card, the row and finally the document (23 px of real scroll at 1280 px). Fixed with a shared `.card-value` carrying **`overflow-wrap: anywhere`** — not `break-word`, which wraps the text but leaves the track just as wide. **`POST /api/config` accepted any value for a select field**: `LLM_PROVIDER=not-a-provider` returned 200, landed in `.env`, and then failed *silently* as the resolver fell back. `LLM_PROVIDERS` had been exported from `env-config.mjs` all along — the validator just never consulted it. Only the provider is enforced: model lists belong to the vendor and move between our releases, and an already-stored value is grandfathered because the form resends every field on every Save. Also: `OLLAMA_API_KEY` finally has a UI field. **3018 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

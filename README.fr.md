@@ -7,16 +7,16 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
+[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.231.5** — **Sécurité : sept avis clos, dont une exécution de code à distance critique.** Aucun fichier source modifié. `multer` 2.2.0→2.3.0 et `svgo` 4.0.2→4.1.0 d'abord ; la réanalyse déclenchée en a révélé cinq autres, toutes déjà dans la plage `^` existante : **`astro` 7.1.0→7.3.2** (**critique** — RCE via l'optimisation d'images AVIF, plus un contournement d'autorisation), **`sharp` 0.35.3→0.35.4** et **`js-yaml` 4.3.1→4.3.2 dans les deux manifestes**. Publié avec **3013/3013** tests et une reconstruction complète du site. `npm audit` : **0 vulnérabilité**. **3013 tests.**
+> **🆕 Dernière version — v1.232.0** — **Deux défauts issus d'une passe de QA en navigateur ; aucun ne vient de v1.231.5.** **`#/profile` faisait défiler toute la page latéralement** : la valeur était un `<div>` anonyme sans règle de coupure, et une URL LinkedIn n'offre au CSS aucun point de coupure — sa **largeur min-content valait la chaîne entière**, et `min-width:auto` refusait de descendre en dessous, faisant éclater la carte, la ligne puis le document (23 px de défilement réel à 1280 px). Corrigé par `.card-value` en **`overflow-wrap: anywhere`** — pas `break-word`, qui coupe le texte mais laisse la piste aussi large. **`POST /api/config` acceptait n'importe quelle valeur pour un champ select** puis échouait *en silence*. Seul le fournisseur est validé ; une valeur déjà enregistrée est tolérée. **3018 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

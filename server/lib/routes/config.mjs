@@ -80,7 +80,15 @@ export function registerConfigRoutes(app) {
     // the attacker-injection guard is unchanged for genuine stray keys.
     const body = { ...(req.body || {}) };
     delete body.lang;
-    const v = validateConfig(body);
+    // CONFIG-1 — the current on-disk values, so validateConfig can grandfather
+    // a closed-domain value the user already has. Without this the form, which
+    // resends every non-secret field on every Save, would be permanently
+    // unsaveable for anyone whose .env predates the domain check.
+    let currentValues = {};
+    if (existsSync(PATHS.envFile)) {
+      try { currentValues = parseEnv(readFileSync(PATHS.envFile, 'utf8')); } catch { /* unreadable → validate strictly */ }
+    }
+    const v = validateConfig(body, currentValues);
     if (!v.ok) return res.status(400).json({ error: 'validation failed', details: v.errors });
     // Filter to known keys only — never write attacker-supplied env
     // vars. Normalize (trim) every value so a key pasted with a

@@ -240,6 +240,8 @@ window.__I18N_DICT_TR = {
   'config.fireworksHint': "Fireworks AI — hızlı açık ağırlıklı çıkarım. Anahtar alın: fireworks.ai. OpenAI uyumlu; ayarlandığında ⚡ canlı değerlendirmeyi çalıştırır.",
   'config.fireworksModelHint': "Varsayılan: llama-v3p3-70b-instruct. Model id'leri hesap ad alanındadır (accounts/fireworks/models/…).",
   'config.ollamaHint': "Ollama ile yerel modeller. Etkinleştirmek için bunu ayarlayın — varsayılan http://localhost:11434/v1 (`ollama serve` çalıştırın). API anahtarı gerekmez; ayarlandığında ⚡ canlı değerlendirmeyi çalıştırır.",
+  'config.ollamaApiKey': "Ollama API anahtarı",
+  'config.ollamaApiKeyHint': "Yalnızca kimlik doğrulayan bir proxy arkasındaki Ollama için — yerel `ollama serve` anahtar istemez. Uç noktanız istemiyorsa boş bırakın.",
   'config.ollamaModelHint': "Varsayılan: llama3.2. Yerel olarak indirdiğiniz herhangi bir model (`ollama pull …`) çalışır — deepseek-r1, qwen2.5, mistral, gemma3, …",
   'config.arkHint': "BytePlus Ark (uluslararası). Anahtar alın: console.byteplus.com → Ark. OpenAI uyumlu; ayarlandığında ⚡ canlı değerlendirmeyi çalıştırır.",
   'config.arkModelHint': "Varsayılan: doubao-pro-32k. Bir Doubao model adı veya Ark uç nokta id'niz (`ep-…`).",

@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
+[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.231.5** — **安全：关闭七项公告，其中一项为严重的远程代码执行。** 未改动任何源码文件。先合入 `multer` 2.2.0→2.3.0 与站点 `svgo` 4.0.2→4.1.0；由此触发的重新扫描又暴露五项，且均已落在现有 `^` 区间内，升级即可：**`astro` 7.1.0→7.3.2**（**严重** — 经 AVIF 图像优化的远程代码执行，另含授权绕过）、**`sharp` 0.35.3→0.35.4**，以及**两份清单中的 `js-yaml` 4.3.1→4.3.2**。「仅依赖」不等于「无风险」，故本次发布经过 **3013/3013** 测试、浏览器 4/4 与完整站点重建（同样 86 页、17 份镜像）。`npm audit`：两份清单均 **0 个漏洞**。**3013 项测试。**
+> **🆕 最新版本 — v1.232.0** — **浏览器 QA 发现的两处缺陷，均非来自 v1.231.5。** **`#/profile` 会让整页横向滚动**：值是没有任何换行规则的匿名 `<div>`，而 LinkedIn 的 URL 不给 CSS 断点——于是**min-content 宽度就是整条字符串**，`min-width:auto` 又拒绝收缩，撑破卡片、行乃至文档（1280 px 下实测 23 px）。已用共享类 `.card-value` 加 **`overflow-wrap: anywhere`** 修复——不是 `break-word`，它换行却仍留下同样宽的轨道。**`POST /api/config` 对 select 字段来者不拒**：返回 200、写入 `.env`，此后*无声*退回备选。`LLM_PROVIDERS` 一直由 `env-config.mjs` 导出，校验器从未查阅。只校验提供方。**3018 项测试。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

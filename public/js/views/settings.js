@@ -37,7 +37,7 @@ Router.register('profile', async () => {
   function info(k, v) {
     return c('div', { className: 'card' }, [
       c('div', { className: 'metric-label' }, k),
-      c('div', { style: { fontSize: '17px', fontWeight: 600, marginTop: '6px' } },
+      c('div', { className: 'card-value' },
         v || c('span', { style: { color: 'var(--foggy)', fontWeight: 400 } },
                        t('profile.missing', '— not set'))),
     ]);

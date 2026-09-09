@@ -239,6 +239,8 @@ window.__I18N_DICT_PL = {
   'config.fireworksHint': "Fireworks AI — szybka inferencja na otwartych wagach. Uzyskaj klucz na fireworks.ai. zgodny z OpenAI; po ustawieniu uruchamia ⚡ ocenę na żywo.",
   'config.fireworksModelHint': "Domyślnie: llama-v3p3-70b-instruct. Identyfikatory modeli są w przestrzeni nazw konta (accounts/fireworks/models/…).",
   'config.ollamaHint': "Lokalne modele przez Ollama. Ustaw to, aby włączyć — domyślnie http://localhost:11434/v1 (uruchom `ollama serve`). Klucz API niepotrzebny; po ustawieniu uruchamia ⚡ ocenę na żywo.",
+  'config.ollamaApiKey': "Klucz API Ollama",
+  'config.ollamaApiKeyHint': "Tylko dla Ollamy za proxy z uwierzytelnianiem — lokalne `ollama serve` nie wymaga klucza. Zostaw puste, chyba że twój endpoint go żąda.",
   'config.ollamaModelHint': "Domyślnie: llama3.2. Dowolny pobrany lokalnie model (`ollama pull …`) działa — deepseek-r1, qwen2.5, mistral, gemma3, …",
   'config.arkHint': "BytePlus Ark (międzynarodowy). Uzyskaj klucz na console.byteplus.com → Ark. zgodny z OpenAI; po ustawieniu uruchamia ⚡ ocenę na żywo.",
   'config.arkModelHint': "Domyślnie: doubao-pro-32k. Nazwa modelu Doubao lub twój id endpointu Ark (`ep-…`).",

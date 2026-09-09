@@ -240,6 +240,8 @@ window.__I18N_DICT_FR = {
   'config.fireworksHint': "Fireworks AI — inférence rapide à poids ouverts. Obtenez une clé sur fireworks.ai. compatible avec OpenAI; quand définie, exécute l'⚡ évaluation en direct.",
   'config.fireworksModelHint': "Par défaut : llama-v3p3-70b-instruct. Les ids de modèle sont dans l'espace de noms du compte (accounts/fireworks/models/…).",
   'config.ollamaHint': "Modèles locaux via Ollama. Définissez ceci pour l'activer — par défaut http://localhost:11434/v1 (lancez `ollama serve`). Aucune clé API requise; quand définie, exécute l'⚡ évaluation en direct.",
+  'config.ollamaApiKey': "Clé API Ollama",
+  'config.ollamaApiKeyHint': "Uniquement pour un Ollama derrière un proxy autorisant — un `ollama serve` local n'a besoin d'aucune clé. Laissez vide sauf si votre point de terminaison en demande une.",
   'config.ollamaModelHint': "Par défaut : llama3.2. Tout modèle téléchargé localement (`ollama pull …`) fonctionne — deepseek-r1, qwen2.5, mistral, gemma3, …",
   'config.arkHint': "BytePlus Ark (international). Obtenez une clé sur console.byteplus.com → Ark. compatible avec OpenAI; quand définie, exécute l'⚡ évaluation en direct.",
   'config.arkModelHint': "Par défaut : doubao-pro-32k. Un nom de modèle Doubao ou votre id de point d'accès Ark (`ep-…`).",

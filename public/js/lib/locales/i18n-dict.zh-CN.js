@@ -240,6 +240,8 @@ window.__I18N_DICT_ZH_CN = {
   'config.fireworksHint': "Fireworks AI — 快速的开放权重推理。获取密钥: fireworks.ai。OpenAI 兼容。设置后运行 ⚡ 实时评估。",
   'config.fireworksModelHint': "默认: llama-v3p3-70b-instruct。模型 id 使用账户命名空间 (accounts/fireworks/models/…)。",
   'config.ollamaHint': "通过 Ollama 的本地模型。设置此项以启用 — 默认 http://localhost:11434/v1 (运行 `ollama serve`)。无需 API 密钥。设置后运行 ⚡ 实时评估。",
+  'config.ollamaApiKey': "Ollama API 密钥",
+  'config.ollamaApiKeyHint': "仅用于位于鉴权代理之后的 Ollama——本地 `ollama serve` 无需密钥。除非你的端点要求，否则留空。",
   'config.ollamaModelHint': "默认: llama3.2。任何本地拉取的模型(`ollama pull …`)均可用 — deepseek-r1, qwen2.5, mistral, gemma3, …",
   'config.arkHint': "BytePlus Ark (国际版)。获取密钥: console.byteplus.com → Ark。OpenAI 兼容。设置后运行 ⚡ 实时评估。",
   'config.arkModelHint': "默认: doubao-pro-32k。Doubao 模型名或你的 Ark 端点 id(`ep-…`)。",

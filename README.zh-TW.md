@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
+[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.231.5** — **安全：關閉七項公告，其中一項為嚴重的遠端程式碼執行。** 未改動任何原始碼檔案。先併入 `multer` 2.2.0→2.3.0 與站台 `svgo` 4.0.2→4.1.0；重新掃描又暴露五項，均已落在現有 `^` 區間：**`astro` 7.1.0→7.3.2**（**嚴重** — 經 AVIF 影像最佳化的遠端程式碼執行）、**`sharp` 0.35.3→0.35.4**，以及**兩份清單中的 `js-yaml` 4.3.1→4.3.2**。經 **3013/3013** 測試與完整站台重建後發布。`npm audit`：**0 個漏洞**。**3013 項測試。**
+> **🆕 最新版本 — v1.232.0** — **瀏覽器 QA 發現的兩處缺陷，均非來自 v1.231.5。** **`#/profile` 會讓整頁橫向捲動**：值是沒有換行規則的匿名 `<div>`，LinkedIn 的 URL 不給 CSS 斷點——**min-content 寬度就是整條字串**，`min-width:auto` 拒絕收縮，撐破卡片、行乃至文件。已用 `.card-value` 加 **`overflow-wrap: anywhere`** 修復。**`POST /api/config` 對 select 欄位來者不拒**，此後*無聲*退回備選。只校驗提供方。**3018 項測試。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

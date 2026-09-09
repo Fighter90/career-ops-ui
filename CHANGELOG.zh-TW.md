@@ -8,6 +8,17 @@
 
 ---
 
+## [1.232.0] — 2026-09-09
+
+**修復 — 瀏覽器 QA 發現的兩處缺陷，均非來自 v1.231.5。**
+
+### 修復
+**PROFILE-1 — `#/profile` 會讓整頁橫向捲動。** 欄位值是僅帶內聯字型樣式的匿名 `<div>`，計算後的 `overflow-wrap` 仍為 `normal`。LinkedIn 的 URL 不給 CSS 任何合法斷點，於是**元素的 min-content 寬度就是整條字串**；格線項目預設 `min-width: auto`，拒絕收縮，卡片便撐破軌道、行、主欄直至文件（1280 px 下**實測 23 px 橫向捲動**）。已用共享類別 `.card-value` 加 `overflow-wrap: anywhere` 修復，並以 `.card-row > * { min-width: 0 }` 兜底。是 `anywhere` 而非 `break-word`：只有 `anywhere` 計入 min-content。
+**CONFIG-1 — `POST /api/config` 對 select 欄位來者不拒。** `{"LLM_PROVIDER":"not-a-provider"}` 回傳 **200** 並寫入 `.env`；此後一切照常，因為解析器悄悄退回備選。持有這 19 個值的 `LLM_PROVIDERS` 一直由 `env-config.mjs` 匯出，只是校驗器從未查閱。
+
+### 說明
+只校驗 `LLM_PROVIDER`：模型清單的真實域屬於廠商，會在我們兩次發布之間變動。已儲存的值予以豁免，因為表單每次儲存都會重送全部非機密欄位。另補上 `OLLAMA_API_KEY` 描述符。**3013 → 3018 項測試。**
+
 ## [1.231.5] — 2026-09-09
 
 **安全 — 關閉七項公告，其中一項為嚴重的遠端程式碼執行。** 未改動任何原始碼檔案。

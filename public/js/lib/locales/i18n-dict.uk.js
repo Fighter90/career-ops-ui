@@ -239,6 +239,8 @@ window.__I18N_DICT_UK = {
   'config.fireworksHint': "Fireworks AI — швидкий інференс на відкритих вагах. Отримайте ключ на fireworks.ai. OpenAI-сумісний; коли встановлено, запускає ⚡ live eval.",
   'config.fireworksModelHint': "За замовчуванням: llama-v3p3-70b-instruct. ID моделей у просторі імен акаунта (accounts/fireworks/models/…).",
   'config.ollamaHint': "Локальні моделі через Ollama. Задайте це, щоб увімкнути — за замовчуванням http://localhost:11434/v1 (запустіть `ollama serve`). API-ключ не потрібен; коли встановлено, запускає ⚡ live eval.",
+  'config.ollamaApiKey': "Ключ API Ollama",
+  'config.ollamaApiKeyHint': "Потрібен лише для Ollama за проксі з автентифікацією — локальному `ollama serve` ключ не потрібен. Залиште порожнім, якщо ваша точка доступу його не вимагає.",
   'config.ollamaModelHint': "За замовчуванням: llama3.2. Будь-яка завантажена локально модель (`ollama pull …`) працює — deepseek-r1, qwen2.5, mistral, gemma3, …",
   'config.arkHint': "BytePlus Ark (міжнародний). Отримайте ключ на console.byteplus.com → Ark. OpenAI-сумісний; коли встановлено, запускає ⚡ live eval.",
   'config.arkModelHint': "За замовчуванням: doubao-pro-32k. Ім'я моделі Doubao або ваш id ендпоінта Ark (`ep-…`).",

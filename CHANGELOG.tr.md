@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.232.0] — 2026-09-09
+
+**Düzeltildi — tarayıcı QA geçişinden iki kusur; ikisi de v1.231.5'ten gelmiyor.**
+
+### Düzeltildi
+**PROFILE-1 — `#/profile` tüm sayfayı yana kaydırıyordu.** Değer, yalnızca satır içi yazı tipi stilleri taşıyan adsız bir `<div>`'di; dolayısıyla hesaplanan `overflow-wrap` `normal` kalıyordu. Bir LinkedIn URL'si CSS'e geçerli bir kırılma noktası sunmaz, bu yüzden **min-content genişliği tüm dizedir**; ızgara öğeleri `min-width: auto` ile bunun altına inmeyi reddeder — kart kendi izini, sonra satırı ve belgeyi patlattı (**1280 px'te 23 px gerçek kaydırma**). Ortak `.card-value` sınıfı ve `overflow-wrap: anywhere`, artı `.card-row > * { min-width: 0 }` ile düzeltildi. `break-word` değil `anywhere`: min-content hesabına yalnızca `anywhere` katılır.
+**CONFIG-1 — `POST /api/config` select alanı için her değeri kabul ediyordu.** `{"LLM_PROVIDER":"not-a-provider"}` **200** döndürüp `.env`'e yazılıyordu; sonrasında hiçbir şey hata vermiyordu, çünkü çözücü sessizce yedeğe düşüyordu. `LLM_PROVIDERS` zaten `env-config.mjs`'ten dışa aktarılıyordu — doğrulayıcı ona hiç bakmıyordu.
+
+### Notlar
+Yalnızca `LLM_PROVIDER` doğrulanır: modellerin gerçek alanı sağlayıcıya aittir ve sürümlerimiz arasında değişir. Zaten kayıtlı bir değere müsamaha gösterilir; form her kaydetmede tüm gizli olmayan alanları yeniden gönderir. Ayrıca `OLLAMA_API_KEY` tanımlayıcısı eklendi. **3013 → 3018 test.**
+
 ## [1.231.5] — 2026-09-09
 
 **Güvenlik — yedi danışma kapatıldı; biri kritik uzaktan kod çalıştırma.** Hiçbir kaynak dosyası değişmedi.

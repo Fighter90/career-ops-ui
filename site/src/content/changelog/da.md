@@ -8,6 +8,17 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.232.0] — 2026-09-09
+
+**Rettet — to defekter fra en browser-QA-gennemgang; ingen af dem stammer fra v1.231.5.**
+
+### Rettet
+**PROFILE-1 — `#/profile` rullede hele siden sidelæns.** Værdien var et anonymt `<div>` med kun inline skriftstile, så dens beregnede `overflow-wrap` forblev `normal`. En LinkedIn-URL giver CSS intet lovligt brudpunkt, så **min-content-bredden er hele strengen**, og `min-width: auto` på gitterelementer nægter at krympe under den — kortet sprængte sit spor, rækken og dokumentet (**23 px reel rulning ved 1280 px**). Rettet med en fælles `.card-value`-klasse med `overflow-wrap: anywhere` plus `.card-row > * { min-width: 0 }`. `anywhere`, ikke `break-word`: kun `anywhere` tælles med i min-content.
+**CONFIG-1 — `POST /api/config` accepterede enhver værdi i et select-felt.** `{"LLM_PROVIDER":"not-a-provider"}` gav **200** og blev skrevet i `.env`; derefter fejlede intet, for resolveren faldt stille tilbage. `LLM_PROVIDERS` blev allerede eksporteret fra `env-config.mjs` — validatoren slog bare aldrig op i den.
+
+### Noter
+Kun `LLM_PROVIDER` valideres: modellernes reelle domæne tilhører leverandøren og ændrer sig mellem vores udgivelser. En allerede gemt værdi tolereres, da formularen sender alle ikke-hemmelige felter ved hver gemning. Deskriptoren for `OLLAMA_API_KEY` er også tilføjet. **3013 → 3018 test.**
+
 ## [1.231.5] — 2026-09-09
 
 **Sikkerhed — syv rådgivninger lukket, én af dem en kritisk fjernkørsel af kode.** Ingen kildefil blev ændret.

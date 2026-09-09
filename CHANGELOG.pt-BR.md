@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.232.0] — 2026-09-09
+
+**Corrigido — dois defeitos de uma passada de QA no navegador; nenhum veio da v1.231.5.**
+
+### Corrigido
+**PROFILE-1 — `#/profile` rolava a página inteira para o lado.** O valor era um `<div>` anônimo só com estilos de fonte inline, então seu `overflow-wrap` continuava `normal`. Uma URL do LinkedIn não oferece ao CSS nenhum ponto de quebra, logo **o min-content é a string inteira**, e `min-width: auto` nos itens de grade impede encolher — a carta estourou a trilha, a linha e o documento (**23 px de rolagem real a 1280 px**). Corrigido com a classe `.card-value` e `overflow-wrap: anywhere`, mais `.card-row > * { min-width: 0 }`. `anywhere`, não `break-word`: só `anywhere` conta no cálculo do min-content.
+**CONFIG-1 — `POST /api/config` aceitava qualquer valor num campo select.** `{"LLM_PROVIDER":"not-a-provider"}` retornava **200** e era escrito no `.env`; depois nada falhava, pois o resolvedor caía silenciosamente no fallback. `LLM_PROVIDERS` já era exportado de `env-config.mjs` — o validador nunca o consultou.
+
+### Notas
+Só `LLM_PROVIDER` é validado: o domínio real dos modelos é do fornecedor e muda entre nossas versões. Um valor já salvo é tolerado, pois o formulário reenvia todos os campos não secretos a cada gravação. Também foi adicionado o descritor de `OLLAMA_API_KEY`. **3013 → 3018 testes.**
+
 ## [1.231.5] — 2026-09-09
 
 **Segurança — sete avisos fechados, um deles uma execução remota de código crítica.** Nenhum arquivo de código-fonte mudou.

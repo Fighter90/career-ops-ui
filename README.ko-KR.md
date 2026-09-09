@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
+[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.231.5** — **보안: 권고 일곱 건을 닫았고, 그중 하나는 치명적인 원격 코드 실행입니다.** 소스 파일은 하나도 바뀌지 않았습니다. 먼저 `multer` 2.2.0→2.3.0과 사이트 `svgo` 4.0.2→4.1.0을 병합했고, 그 재검사가 다섯 건을 더 드러냈습니다. 모두 기존 `^` 범위 안이라 업데이트로 충분했습니다: **`astro` 7.1.0→7.3.2**(**치명적** — AVIF 이미지 최적화를 통한 원격 코드 실행, 인가 우회 포함), **`sharp` 0.35.3→0.35.4**, 그리고 **두 매니페스트 모두의 `js-yaml` 4.3.1→4.3.2**. "의존성뿐"이 "위험 없음"은 아니므로 **3013/3013** 테스트, 브라우저 4/4, 동일한 86페이지를 내는 사이트 전체 재빌드를 거쳐 내보냅니다. `npm audit`: 두 매니페스트 모두 **취약점 0건**. **3013개의 테스트.**
+> **🆕 최신 릴리스 — v1.232.0** — **브라우저 QA에서 나온 두 건. 둘 다 v1.231.5에서 온 것이 아닙니다.** **`#/profile`이 페이지 전체를 옆으로 스크롤시켰습니다** — 값은 줄바꿈 규칙이 없는 익명 `<div>`였고 LinkedIn URL은 CSS에 줄바꿈 지점을 주지 않아 **min-content 너비가 문자열 전체**가 되었으며, `min-width:auto`가 축소를 거부해 카드·행·문서를 밀어냈습니다(1280 px에서 실측 23 px). 공유 클래스 `.card-value`의 **`overflow-wrap: anywhere`**로 해결 — `break-word`는 줄은 바꾸되 트랙 너비를 그대로 둡니다. **`POST /api/config`는 select 필드에 어떤 값이든 받아들였고** 이후 *조용히* 폴백했습니다. `LLM_PROVIDERS`는 줄곧 `env-config.mjs`에서 내보내지고 있었습니다. 검증 대상은 공급자뿐입니다. **3018개의 테스트.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

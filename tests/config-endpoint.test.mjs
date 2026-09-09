@@ -143,7 +143,7 @@ test('POST /api/config rejects malformed ANTHROPIC_API_KEY', async () => {
 // body shape exactly.
 test('POST /api/config tolerates the SPA-injected `lang` field (browser parity)', async () => {
   const r = await postJson('/api/config', {
-    LLM_PROVIDER: 'manual', PORT: '4317', HOST: '127.0.0.1', lang: 'en',
+    LLM_PROVIDER: 'openrouter', PORT: '4317', HOST: '127.0.0.1', lang: 'en',
   });
   assert.equal(r.status, 200, JSON.stringify(r.body));
   assert.ok(r.body.written.includes('PORT'));

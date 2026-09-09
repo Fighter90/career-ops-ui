@@ -130,6 +130,21 @@ export function selectActiveProvider(keysConfigured, env = process.env) {
  * as of v1.65.0 hh.ru is scraped from its public website with a fixed
  * browser User-Agent and needs no env configuration at all.
  */
+/**
+ * CONFIG-1 (v1.232.0) — fields whose value set is CLOSED, i.e. owned by this
+ * codebase rather than by a vendor. Only these are enforced on write.
+ *
+ * `LLM_PROVIDER` is the whole list today, and `LLM_PROVIDERS` above has always
+ * held it — the validator simply never consulted it, which is how
+ * `LLM_PROVIDER=not-a-provider` came to be written to a user's .env and
+ * answered with 200. The model dropdowns are deliberately NOT here: their real
+ * domain is the vendor's catalogue, which moves between our releases, so
+ * enforcing our curated list would block a model the provider already serves.
+ * A wrong model also fails loudly at call time; a wrong provider fails
+ * silently, because the resolver just falls back.
+ */
+const CLOSED_DOMAINS = { LLM_PROVIDER: LLM_PROVIDERS };
+
 export const KEY_GROUPS = {
   LLM_PROVIDER: 'core',
   ANTHROPIC_API_KEY: 'core',
@@ -297,7 +312,7 @@ export function normalizeConfigValue(v) {
  * sentence — see public/js/api.js `api.netError`/`api.netHint`); it
  * surfaces server diagnostics verbatim by design.
  */
-export function validateConfig(body) {
+export function validateConfig(body, current = {}) {
   const errors = [];
   if (typeof body !== 'object' || body === null) {
     return { ok: false, errors: ['body must be an object'] };
@@ -332,6 +347,23 @@ export function validateConfig(body) {
     // KEY=value pair). Leading/trailing newlines were already trimmed.
     if (/[\r\n]/.test(v)) {
       errors.push(`${k}: must not contain newlines — the value spans more than one line. Re-paste it as a single line (a stray line break is the usual cause).`);
+    }
+    // CONFIG-1 (v1.232.0) — a closed-domain field may only carry one of its own
+    // values. Before this the validator knew the key NAMES but not their
+    // domains, so `LLM_PROVIDER=not-a-provider` was written straight to .env
+    // and answered with 200, after which the resolver fell back silently and
+    // the user's chosen provider had no effect while everything looked fine.
+    //
+    // A value that is ALREADY stored is grandfathered. The config form resends
+    // every non-secret field on every Save, touched or not, so rejecting a
+    // pre-existing bad value outright would freeze the whole page: the user
+    // could no longer change anything else until they fixed a field they never
+    // touched. Refusing only CHANGES still blocks the reported defect — a new
+    // bad value cannot get in — while leaving an existing one repairable
+    // through the dropdown, which offers valid options only.
+    const domain = CLOSED_DOMAINS[k];
+    if (domain && !domain.includes(v) && v !== current[k]) {
+      errors.push(`${k}: not an allowed value — ${showVal(k, v)}, which is not one of the options for this setting. Choose one of: ${domain.join(', ')}.`);
     }
     // Anthropic sanity check — prefix + plausible length only. Real
     // keys are `sk-ant-…` with a base64url tail whose exact charset
