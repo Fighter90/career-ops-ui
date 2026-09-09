@@ -12,11 +12,11 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
+[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.231.4** — **v1.231.3 修的是點擊 Doctor 之後的殘局，不是當時。** 它在 `finally` 裡還原了 `<span>`，但忙碌提示*在請求進行期間*仍往按鈕裡寫 `'⏳ ' + 標籤`——於是 `doctor.mjs` 執行的整段時間裡，36 px 的方塊都是壓壞整列的寬膠囊 `⏳ 🩺Doctor`，桌面端則擠成一團 `⏳🩺Doctor`。**擁有元素子節點的按鈕，現在完全不再被改寫**：提示交給 `.is-loading` 類，它在 CSS 裡把圖示換成沙漏——320 px 下**靜止 36 px、進行中 36 px、結束後 36 px**。**3013 項測試。**
+> **🆕 最新版本 — v1.231.5** — **安全：關閉七項公告，其中一項為嚴重的遠端程式碼執行。** 未改動任何原始碼檔案。先併入 `multer` 2.2.0→2.3.0 與站台 `svgo` 4.0.2→4.1.0；重新掃描又暴露五項，均已落在現有 `^` 區間：**`astro` 7.1.0→7.3.2**（**嚴重** — 經 AVIF 影像最佳化的遠端程式碼執行）、**`sharp` 0.35.3→0.35.4**，以及**兩份清單中的 `js-yaml` 4.3.1→4.3.2**。經 **3013/3013** 測試與完整站台重建後發布。`npm audit`：**0 個漏洞**。**3013 項測試。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

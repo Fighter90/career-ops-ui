@@ -12,11 +12,11 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
+[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.231.4** — **v1.231.3 полагодив наслідок кліку по Doctor, а не сам момент.** Він повертав `<span>` у `finally`, але індикатор зайнятості й далі писав `'⏳ ' + підпис` усередину кнопки *на час запиту* — тому весь час роботи `doctor.mjs` квадрат 36 px був широкою «пігулкою», що ламала рядок. **Кнопка з дітьми-елементами тепер не переписується взагалі**: її індикатор — клас `.is-loading`, який підмінює піктограму пісковим годинником у CSS — **36 px у спокої, 36 px під час, 36 px після**. **3013 тестів.**
+> **🆕 Останній реліз — v1.231.5** — **Безпека: закрито сім сповіщень, одне — критичне віддалене виконання коду.** Жоден файл джерел не змінено. `multer` 2.2.0→2.3.0, `svgo` 4.0.2→4.1.0, а далі — **`astro` 7.1.0→7.3.2** (**критично**, RCE через оптимізацію AVIF), **`sharp` 0.35.3→0.35.4** і **`js-yaml` 4.3.1→4.3.2 в обох маніфестах**. Перевірено на **3013/3013** тестах і повній пересборці сайту. `npm audit`: **0 вразливостей**. **3013 тестів.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

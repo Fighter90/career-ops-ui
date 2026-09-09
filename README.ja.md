@@ -12,11 +12,11 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
+[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.231.4** — **v1.231.3 は Doctor クリックの「後始末」を直しただけで、その最中は直していませんでした。** `finally` で `<span>` を戻してはいたものの、実行中の合図は依然としてボタンへ `'⏳ ' + ラベル` を書き込んでおり、`doctor.mjs` の実行中ずっと 36 px の正方形は行を崩す幅広の `⏳ 🩺Doctor` ピルに、デスクトップでは詰まった `⏳🩺Doctor` になっていました。終了状態だけを見る検査はこれを通してしまいます。**子要素を持つボタンは、もう一切書き換えません。** 合図は `.is-loading` クラスが担い、CSS でアイコンを砂時計に差し替えるので寸法は変わりようがありません——320 px で**待機 36 px、実行中 36 px、終了後 36 px**。**3013 件のテスト。**
+> **🆕 最新リリース — v1.231.5** — **セキュリティ: 7 件の勧告を解消、うち 1 件は重大な遠隔コード実行。** ソースファイルの変更はありません。まず `multer` 2.2.0→2.3.0 と サイトの `svgo` 4.0.2→4.1.0 を取り込み、その再スキャンがさらに 5 件を露呈しました。いずれも既存の `^` 範囲内だったため更新のみで足ります: **`astro` 7.1.0→7.3.2**（**重大** — AVIF 画像最適化を経由した遠隔コード実行、加えて認可バイパス）、**`sharp` 0.35.3→0.35.4**、そして**両マニフェストの `js-yaml` 4.3.1→4.3.2**。「依存関係のみ」は「無リスク」ではないため、**3013/3013** のテスト、ブラウザー 4/4、同じ 86 ページを出すサイト完全再ビルドを経て出しています。`npm audit` は両マニフェストで**脆弱性 0 件**。**3013 件のテスト。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

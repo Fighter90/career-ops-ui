@@ -12,11 +12,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
+[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.231.4** — **v1.231.3은 Doctor 클릭의 뒷수습을 고쳤을 뿐, 그 순간을 고치지 않았습니다.** `finally`에서 `<span>`을 되돌리기는 했지만, 작업 중 표시는 *요청이 도는 동안* 여전히 버튼에 `'⏳ ' + 레이블`을 써 넣었습니다 — 그래서 `doctor.mjs`가 도는 내내 36 px 정사각형은 줄을 무너뜨리는 넓은 `⏳ 🩺Doctor` 알약이었고, 데스크톱에서는 뭉친 `⏳🩺Doctor`였습니다. 끝 상태만 보는 단언은 이를 통과시켰습니다. **요소 자식을 가진 버튼은 이제 전혀 다시 쓰지 않습니다**: 표시는 `.is-loading` 클래스가 맡아 CSS에서 아이콘을 모래시계로 바꾸므로 형상이 달라질 수 없습니다 — 320 px에서 **대기 36 px, 진행 중 36 px, 이후 36 px**. **3013개의 테스트.**
+> **🆕 최신 릴리스 — v1.231.5** — **보안: 권고 일곱 건을 닫았고, 그중 하나는 치명적인 원격 코드 실행입니다.** 소스 파일은 하나도 바뀌지 않았습니다. 먼저 `multer` 2.2.0→2.3.0과 사이트 `svgo` 4.0.2→4.1.0을 병합했고, 그 재검사가 다섯 건을 더 드러냈습니다. 모두 기존 `^` 범위 안이라 업데이트로 충분했습니다: **`astro` 7.1.0→7.3.2**(**치명적** — AVIF 이미지 최적화를 통한 원격 코드 실행, 인가 우회 포함), **`sharp` 0.35.3→0.35.4**, 그리고 **두 매니페스트 모두의 `js-yaml` 4.3.1→4.3.2**. "의존성뿐"이 "위험 없음"은 아니므로 **3013/3013** 테스트, 브라우저 4/4, 동일한 86페이지를 내는 사이트 전체 재빌드를 거쳐 내보냅니다. `npm audit`: 두 매니페스트 모두 **취약점 0건**. **3013개의 테스트.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -12,11 +12,11 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.4)
+[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.231.4** — **v1.231.3 naprawiło skutek kliknięcia Doctor, a nie sam moment.** Przywracało `<span>` w `finally`, ale sygnał zajętości nadal wpisywał `'⏳ ' + etykieta` do przycisku *w trakcie żądania* — przez cały czas działania `doctor.mjs` kwadrat 36 px był więc szeroką pigułką `⏳ 🩺Doctor` łamiącą wiersz, a na pulpicie zbitym `⏳🩺Doctor`. **Przycisk mający dzieci-elementy nie jest już w ogóle przepisywany**: jego sygnałem jest klasa `.is-loading`, zamieniająca ikonę na klepsydrę w CSS — **36 px w spoczynku, 36 px w locie, 36 px po**. **3013 testów.**
+> **🆕 Najnowsze wydanie — v1.231.5** — **Bezpieczeństwo: zamknięto siedem zgłoszeń, jedno to krytyczne zdalne wykonanie kodu.** Żaden plik źródłowy nie zmieniony. Najpierw `multer` 2.2.0→2.3.0 i `svgo` 4.0.2→4.1.0; ponowne skanowanie ujawniło pięć kolejnych, wszystkie w istniejącym `^`: **`astro` 7.1.0→7.3.2** (**krytyczne** — RCE przez optymalizację obrazów AVIF), **`sharp` 0.35.3→0.35.4** i **`js-yaml` 4.3.1→4.3.2 w obu manifestach**. Wydane z **3013/3013** testami i pełną przebudową witryny. `npm audit`: **0 podatności**. **3013 testów.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

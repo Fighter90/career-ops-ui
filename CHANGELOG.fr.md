@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.231.5] — 2026-09-09
+
+**Sécurité — sept avis clos, dont une exécution de code à distance critique.** Aucun fichier source n'a changé.
+
+### Sécurité
+**Fusionné depuis Dependabot :** `multer` 2.2.0 → 2.3.0 (**élevée** — déni de service par fuite de descripteurs de fichiers à l'abandon) et `svgo` 4.0.2 → 4.1.0 sur le site (**élevée** et moyenne — `removeScripts` laissait passer des liens exécutables).
+**Puis cinq autres, révélés par la réanalyse déclenchée par ces fusions.** Chaque plage concernée était déjà couverte par le spécificateur `^` existant : une mise à jour suffisait, sans toucher au manifeste. **`astro` 7.1.0 → 7.3.2** — **critique**, exécution de code à distance via l'optimisation d'images AVIF (corrigée en 7.2.8), et un contournement d'autorisation faute de vérification de limite de segment de chemin (7.2.4) ; **`sharp` 0.35.3 → 0.35.4** — **élevée**, failles de libheif ; et **`js-yaml` 4.3.1 → 4.3.2** dans les **deux** manifestes — **élevée**.
+
+### Notes
+« Dépendances seulement » n'équivaut pas ici à « sans risque ». `js-yaml` analyse chaque configuration que l'application lit, `multer` accepte chaque téléversement, et Astro a avancé d'une version **mineure**. Vérifié : `npm run test:ci` **3013/3013**, la suite navigateur 4/4, et une reconstruction complète du site donnant les mêmes **86 pages** et les **17** miroirs. `npm audit` : **0** vulnérabilité dans les deux manifestes.
+
 ## [1.231.4] — 2026-09-07
 
 **Corrigé — v1.231.3 a réparé les suites du clic sur Doctor, pas l'instant. Signalé à nouveau, depuis mobile et depuis bureau.**

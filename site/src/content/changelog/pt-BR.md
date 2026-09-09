@@ -8,6 +8,17 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.231.5] — 2026-09-09
+
+**Segurança — sete avisos fechados, um deles uma execução remota de código crítica.** Nenhum arquivo de código-fonte mudou.
+
+### Segurança
+**Mesclado do Dependabot:** `multer` 2.2.0 → 2.3.0 (**alta** — negação de serviço por vazamento de descritores de arquivo ao abortar) e `svgo` 4.0.2 → 4.1.0 no site (**alta** e média — `removeScripts` deixava passar links executáveis).
+**Depois mais cinco, revelados pelo reescaneamento que essas mesclagens dispararam.** Cada faixa afetada já era atendida pelo `^` existente, então bastava atualizar: **`astro` 7.1.0 → 7.3.2** — **crítica**, execução remota de código pela otimização de imagens AVIF (corrigida em 7.2.8), e um bypass de autorização (7.2.4); **`sharp` 0.35.3 → 0.35.4** — **alta**, vulnerabilidades do libheif; e **`js-yaml` 4.3.1 → 4.3.2** em **ambos** os manifestos — **alta**.
+
+### Notas
+"Só dependências" aqui não é o mesmo que "sem risco". `js-yaml` analisa cada configuração que o app lê, `multer` aceita cada upload, e o Astro avançou uma versão **menor**. Verificado: `test:ci` **3013/3013**, suíte de navegador 4/4, e uma reconstrução completa do site com as mesmas **86 páginas** e todos os **17** espelhos. `npm audit`: **0** vulnerabilidades.
+
 ## [1.231.4] — 2026-09-07
 
 **Corrigido — a v1.231.3 corrigiu o depois do clique em Doctor, não o momento. Relatado de novo, do celular e do desktop.**

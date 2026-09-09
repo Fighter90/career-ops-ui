@@ -2,6 +2,17 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.231.5] — 2026-09-09
+
+**Güvenlik — yedi danışma kapatıldı; biri kritik uzaktan kod çalıştırma.** Hiçbir kaynak dosyası değişmedi.
+
+### Güvenlik
+**Dependabot'tan birleştirildi:** `multer` 2.2.0 → 2.3.0 (**yüksek** — iptal sırasında dosya tanımlayıcı sızıntısıyla hizmet reddi) ve sitede `svgo` 4.0.2 → 4.1.0 (**yüksek** ve orta — `removeScripts` çalıştırılabilir bağlantıları geçiriyordu).
+**Ardından, bu birleştirmelerin tetiklediği yeniden tarama beş tane daha ortaya çıkardı.** Etkilenen her aralık mevcut `^` ile zaten karşılanıyordu; dolayısıyla manifest düzenlemesi değil güncelleme gerekti: **`astro` 7.1.0 → 7.3.2** — **kritik**, AVIF görüntü optimizasyonu üzerinden uzaktan kod çalıştırma (7.2.8'de düzeltildi) ve bir yetkilendirme atlatma (7.2.4); **`sharp` 0.35.3 → 0.35.4** — **yüksek**, libheif açıkları; ve **her iki** manifestte **`js-yaml` 4.3.1 → 4.3.2** — **yüksek**.
+
+### Notlar
+Burada "yalnızca bağımlılıklar", "risksiz" demek değil. `js-yaml` uygulamanın okuduğu her yapılandırmayı ayrıştırır, `multer` her yüklemeyi kabul eder ve Astro bir **minör** sürüm ilerledi. Doğrulandı: `test:ci` **3013/3013**, tarayıcı takımı 4/4 ve aynı **86 sayfayı**, **17** aynayı üreten tam bir site yeniden yapımı. `npm audit`: her iki manifestte **0** açık.
+
 ## [1.231.4] — 2026-09-07
 
 **Düzeltildi — v1.231.3 Doctor tıklamasının sonucunu düzeltti, anını değil. Mobilden ve masaüstünden yeniden bildirildi.**
