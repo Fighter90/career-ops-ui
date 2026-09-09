@@ -64,7 +64,7 @@
   "dependencies": {
     "express": "^4.22.2",
     "js-yaml": "^4.3.0",
-    "multer": "^2.2.0"
+    "multer": "^2.3.0"
   },
   "overrides": {
     "qs": "^6.16.0"
