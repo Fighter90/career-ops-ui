@@ -12,11 +12,11 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
+[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.232.0** — **Due difetti da una passata di QA nel browser; nessuno dalla v1.231.5.** **`#/profile` faceva scorrere lateralmente l'intera pagina**: il valore era un `<div>` anonimo senza regola di a capo, e un URL LinkedIn non offre al CSS punti di interruzione — la **larghezza min-content era l'intera stringa**, e `min-width:auto` impediva di restringere, facendo scoppiare scheda, riga e documento. Corretto con `.card-value` e **`overflow-wrap: anywhere`**. **`POST /api/config` accettava qualunque valore per un campo select** e poi falliva *in silenzio*. Si valida solo il provider; un valore già salvato è tollerato. **3018 test.**
+> **🆕 Ultima release — v1.232.1** — **Salva su `#/config` scriveva campi mai toccati.** Il valore messo lì per la *visualizzazione* partiva come scelta dell'utente: cambiare un menù inviava **28 chiavi e ne fissava 18**. Confrontare con `cfg.values` non basta; ora si confronta con **ciò con cui ogni controllo è stato seminato**. Il numero di chiavi scritte torna nel messaggio. **3018 test · 111 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

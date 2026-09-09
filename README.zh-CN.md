@@ -12,11 +12,11 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
+[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.232.0** — **浏览器 QA 发现的两处缺陷，均非来自 v1.231.5。** **`#/profile` 会让整页横向滚动**：值是没有任何换行规则的匿名 `<div>`，而 LinkedIn 的 URL 不给 CSS 断点——于是**min-content 宽度就是整条字符串**，`min-width:auto` 又拒绝收缩，撑破卡片、行乃至文档（1280 px 下实测 23 px）。已用共享类 `.card-value` 加 **`overflow-wrap: anywhere`** 修复——不是 `break-word`，它换行却仍留下同样宽的轨道。**`POST /api/config` 对 select 字段来者不拒**：返回 200、写入 `.env`，此后*无声*退回备选。`LLM_PROVIDERS` 一直由 `env-config.mjs` 导出，校验器从未查阅。只校验提供方。**3018 项测试。**
+> **🆕 最新版本 — v1.232.1** — **`#/config` 的保存会写入从未触碰的字段。** v1.57.1 给未设置的控件填入 `defaultValue` 以显示服务器真正使用的值，而 `save()` 只对**机密字段**查询 `dirty`、其余一律照发——于是为*显示*而放的值被当作用户的选择送出。改一个下拉框会发出 **28 个键并钉死 18 个**；什么都不改也发 27 个。当天行为不变——写入的正是默认值——但设置从「未设置，跟随项目默认」变为「钉死在 `.env`」，下次默认值一改便无声地不再送达。**值得细看的是比较基准**：与 `cfg.values` 比较并不够（未设置的 select 显示默认值而存储值为空，请求体只从 27 降到 19）。现在与每个控件**初始化时的值**比较。提示中的键数也恢复了。**3018 项 · 浏览器 111 项。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

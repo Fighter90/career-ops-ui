@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.232.1] — 2026-09-10
+
+**Corregido — Guardar en `#/config` escribía campos que el usuario nunca tocó.**
+
+### Corregido
+**CONFIG-2.** v1.57.1 siembra un control sin valor con su `defaultValue` para que el campo muestre lo que el servidor realmente usa, mientras que `save()` consultaba `dirty` **solo para los secretos** y enviaba todos los demás campos siempre. Así, el valor puesto ahí para MOSTRAR viajaba al servidor como si el usuario lo hubiera elegido: cambiar un desplegable enviaba **28 claves y fijaba 18** que nadie había abierto. Nada se comporta distinto ese día, porque lo escrito *son* los valores por defecto; lo que cambia es el estado de cada ajuste, de «sin definir, sigue el valor del proyecto» a «fijado en `.env`». Cuando cambie un valor por defecto, quien haya pulsado Guardar alguna vez se quedará atrás en silencio.
+
+### Notas
+Comparar con `cfg.values` no basta: un select sin valor muestra su `defaultValue` mientras lo almacenado es `''`, y difieren con toda honestidad — el cuerpo bajó de 27 claves a 19, no a una. Ahora se compara con **aquello con lo que se sembró cada control**. Además, el número de claves escritas vuelve a verse en el aviso. **105 → 111** pruebas de navegador.
+
 ## [1.232.0] — 2026-09-09
 
 **Corregido — dos defectos de una pasada de QA en navegador; ninguno proviene de v1.231.5.**

@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.232.1] — 2026-09-10
+
+**Fixed — Save on `#/config` wrote fields the user never touched. Not a v1.232.0 regression; it is older.**
+
+### Fixed
+**CONFIG-2 — Save on `#/config` wrote fields the user never touched.** Two individually sound decisions combined into a write: v1.57.1 seeds an unset control with its `defaultValue` so the field shows the value the server will really use (correct, and unchanged), while `save()` consulted `dirty` **for secrets only** and sent every other field regardless. So the value put there for DISPLAY travelled to the server as if the user had chosen it. Measured on a fixture with two keys set, changing one dropdown posted **28 keys and pinned 18** the user had never opened — each its own default; with nothing changed at all, Save still posted 27. Nothing behaves differently on the day, because the written values *are* the defaults. What changes is the STATUS of each setting: from *unset, follow the project default* to *pinned in `.env`*. These curated lists move between releases — v1.232.0's own notes cite `gemini-2.0-flash` dropping out — so the next time a default changes, every user who ever pressed Save is silently left behind on the old one. It is CONFIG-1's shape again: that wrote nonsense, this writes something plausible, which is exactly what makes it harder to notice.
+
+### Notes
+**The comparison basis is the part worth reviewing.** Comparing against the loaded `cfg.values` — the obvious fix, and the one first tried — is not enough: an unset select shows its `defaultValue` while the stored value is `''`, so the two differ honestly and all seventeen model dropdowns are still written. It cut the posted body from 27 keys to 19, not to one. Save now compares against what each control was **seeded** with, which is the only expression of "untouched" that separates a value placed there for display from a user who deliberately picked that same value. `dirty` is not the basis either — it fires when someone types a value and puts the original back.
+Also fixed: the toast's key count lived inside `t()`'s **fallback** argument, and `config.saved` exists in all 17 dictionaries — so the number never rendered and a Save of twelve keys looked identical to a Save of one. It now reads `Settings saved · 1`.
+Nothing else moved. The v1.57.1 prefill stays, secrets are still sent only when touched, and the server-side grandfathering from v1.232.0 stays as the guard for direct API callers, who never go through the form. Test baseline is unchanged at **3018** because the fix is client-side; its gate is `tests/playwright-config-save-scope.mjs`, six browser cases now registered in `test:e2e:browser` (**105 → 111**), all six confirmed failing against the old code first.
+
 ## [1.232.0] — 2026-09-09
 
 **Fixed — two defects from a browser QA pass, neither of them from v1.231.5.**

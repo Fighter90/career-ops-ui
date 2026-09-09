@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.232.1] — 2026-09-10
+
+**Corrigido — Salvar em `#/config` gravava campos que o usuário nunca tocou.**
+
+### Corrigido
+**CONFIG-2.** A v1.57.1 semeia um controle sem valor com seu `defaultValue` para que o campo mostre o que o servidor de fato usa, enquanto `save()` consultava `dirty` **apenas para segredos** e enviava todos os outros campos sempre. Assim o valor posto ali para EXIBIÇÃO viajava como escolha do usuário: mudar um dropdown enviava **28 chaves e fixava 18** que ninguém abriu. O que muda é o status de cada ajuste — de «não definido, siga o padrão do projeto» para «fixado no `.env`».
+
+### Notas
+Comparar com `cfg.values` não basta: um select sem valor mostra seu `defaultValue` enquanto o armazenado é `''`. Agora compara-se com **aquilo que semeou cada controle**. O número de chaves gravadas voltou ao aviso. **105 → 111** testes de navegador.
+
 ## [1.232.0] — 2026-09-09
 
 **Corrigido — dois defeitos de uma passada de QA no navegador; nenhum veio da v1.231.5.**

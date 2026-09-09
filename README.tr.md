@@ -12,11 +12,11 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
+[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.232.0** — **Tarayıcı QA geçişinden iki kusur; ikisi de v1.231.5'ten değil.** **`#/profile` tüm sayfayı yana kaydırıyordu**: değer, kırılma kuralı olmayan adsız bir `<div>`'di ve LinkedIn URL'si CSS'e kırılma noktası vermez — **min-content genişliği tüm dizeydi** ve `min-width:auto` küçülmeyi reddederek kartı, satırı ve belgeyi patlattı. `.card-value` ve **`overflow-wrap: anywhere`** ile düzeltildi. **`POST /api/config` select alanına her değeri kabul ediyordu** ve sonrasında *sessizce* başarısız oluyordu. Yalnızca sağlayıcı doğrulanır; zaten kayıtlı bir değere müsamaha gösterilir. **3018 test.**
+> **🆕 Son sürüm — v1.232.1** — **`#/config` üzerinde Kaydet, hiç dokunulmamış alanları yazıyordu.** *Gösterim* için konan değer kullanıcının seçimi gibi gidiyordu: bir açılır listeyi değiştirmek **28 anahtar gönderip 18'ini sabitliyordu**. `cfg.values` ile karşılaştırmak yetmez; artık her denetimin **tohumlandığı değerle** karşılaştırılıyor. Yazılan anahtar sayısı bildirime döndü. **3018 test · 111 tarayıcı.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

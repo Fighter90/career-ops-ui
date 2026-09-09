@@ -12,11 +12,11 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
+[![release](https://img.shields.io/badge/release-v1.232.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.232.0** — **瀏覽器 QA 發現的兩處缺陷，均非來自 v1.231.5。** **`#/profile` 會讓整頁橫向捲動**：值是沒有換行規則的匿名 `<div>`，LinkedIn 的 URL 不給 CSS 斷點——**min-content 寬度就是整條字串**，`min-width:auto` 拒絕收縮，撐破卡片、行乃至文件。已用 `.card-value` 加 **`overflow-wrap: anywhere`** 修復。**`POST /api/config` 對 select 欄位來者不拒**，此後*無聲*退回備選。只校驗提供方。**3018 項測試。**
+> **🆕 最新版本 — v1.232.1** — **`#/config` 的儲存會寫入從未碰過的欄位。** 為*顯示*而放的值被當作使用者的選擇送出：改一個下拉選單就送出 **28 個鍵並釘死 18 個**。與 `cfg.values` 比較並不夠；現在與每個控制項**初始化時的值**比較。提示中的鍵數也恢復了。**3018 項 · 瀏覽器 111 項。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -11,6 +11,16 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.232.1] — 2026-09-10
+
+**Corrigé — Enregistrer sur `#/config` écrivait des champs que l'utilisateur n'avait jamais touchés.**
+
+### Corrigé
+**CONFIG-2.** v1.57.1 amorce un contrôle non défini avec son `defaultValue` pour que le champ affiche ce que le serveur utilise réellement, tandis que `save()` ne consultait `dirty` **que pour les secrets** et envoyait tous les autres champs quoi qu'il arrive. La valeur placée là pour l'AFFICHAGE partait donc comme un choix de l'utilisateur : changer une liste déroulante envoyait **28 clés et en figeait 18** que personne n'avait ouvertes. Ce qui change, c'est le statut de chaque réglage : de « non défini, suivre la valeur du projet » à « figé dans `.env` ».
+
+### Notes
+Comparer à `cfg.values` ne suffit pas : un select non défini affiche son `defaultValue` alors que la valeur stockée est `''` — le corps est passé de 27 clés à 19, pas à une. On compare désormais à **ce avec quoi chaque contrôle a été amorcé**. Le nombre de clés écrites réapparaît dans la notification. **105 → 111** tests navigateur.
+
 ## [1.232.0] — 2026-09-09
 
 **Corrigé — deux défauts issus d'une passe de QA en navigateur ; aucun ne vient de v1.231.5.**

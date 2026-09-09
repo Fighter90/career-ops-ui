@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.232.1] — 2026-09-10
+
+**Düzeltildi — `#/config` üzerinde Kaydet, kullanıcının hiç dokunmadığı alanları yazıyordu.**
+
+### Düzeltildi
+**CONFIG-2.** v1.57.1, ayarlanmamış bir denetimi `defaultValue` ile tohumlar ki alan sunucunun gerçekten kullandığı değeri göstersin; `save()` ise `dirty`'yi **yalnızca gizli alanlar için** sorup diğer tüm alanları her defasında gönderiyordu. Böylece GÖSTERİM için konan değer, kullanıcının seçimiymiş gibi sunucuya gidiyordu: tek bir açılır listeyi değiştirmek **28 anahtar gönderiyor ve kimsenin açmadığı 18 tanesini sabitliyordu**. Değişen şey her ayarın durumu: «ayarlanmamış, projenin varsayılanını izle»den «`.env`'e sabitlenmiş»e.
+
+### Notlar
+`cfg.values` ile karşılaştırmak yetmez: ayarlanmamış bir select kendi `defaultValue`'sunu gösterirken saklanan değer `''`'dir. Artık her denetimin **tohumlandığı değerle** karşılaştırılıyor. Yazılan anahtar sayısı bildirime geri döndü. **105 → 111** tarayıcı testi.
+
 ## [1.232.0] — 2026-09-09
 
 **Düzeltildi — tarayıcı QA geçişinden iki kusur; ikisi de v1.231.5'ten gelmiyor.**
