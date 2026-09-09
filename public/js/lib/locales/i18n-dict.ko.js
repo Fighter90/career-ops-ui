@@ -240,6 +240,8 @@ window.__I18N_DICT_KO = {
   'config.fireworksHint': "Fireworks AI — 빠른 오픈 웨이트 추론. 키 발급: fireworks.ai. OpenAI 호환; 설정 시 ⚡ 라이브 평가를 실행.",
   'config.fireworksModelHint': "기본값: llama-v3p3-70b-instruct. 모델 id는 계정 네임스페이스를 사용합니다 (accounts/fireworks/models/…).",
   'config.ollamaHint': "Ollama를 통한 로컬 모델. 이 값을 설정하면 활성화됩니다 — 기본값 http://localhost:11434/v1 (`ollama serve` 실행). API 키 불필요; 설정 시 ⚡ 라이브 평가를 실행.",
+  'config.ollamaApiKey': "Ollama API 키",
+  'config.ollamaApiKeyHint': "인증 프록시 뒤에 있는 Ollama에만 필요합니다 — 로컬 `ollama serve`에는 키가 필요 없습니다. 엔드포인트가 요구하지 않으면 비워 두세요.",
   'config.ollamaModelHint': "기본값: llama3.2. 로컬에 받은 모든 모델(`ollama pull …`)이 동작합니다 — deepseek-r1, qwen2.5, mistral, gemma3, …",
   'config.arkHint': "BytePlus Ark (국제). 키 발급: console.byteplus.com → Ark. OpenAI 호환; 설정 시 ⚡ 라이브 평가를 실행.",
   'config.arkModelHint': "기본값: doubao-pro-32k. Doubao 모델 이름 또는 Ark 엔드포인트 id(`ep-…`).",

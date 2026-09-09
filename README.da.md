@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
+[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.231.5** — **Sikkerhed: syv rådgivninger lukket, én af dem kritisk fjernkørsel af kode.** Ingen kildefil ændret. Først `multer` 2.2.0→2.3.0 og `svgo` 4.0.2→4.1.0; genskanningen afslørede fem mere, alle allerede i det eksisterende `^`: **`astro` 7.1.0→7.3.2** (**kritisk** — fjernkørsel via AVIF-billedoptimering), **`sharp` 0.35.3→0.35.4** og **`js-yaml` 4.3.1→4.3.2 i begge manifester**. Udgivet med **3013/3013** test og en fuld genopbygning af sitet. `npm audit`: **0 sårbarheder**. **3013 test.**
+> **🆕 Seneste udgivelse — v1.232.0** — **To defekter fra en browser-QA-gennemgang; ingen fra v1.231.5.** **`#/profile` rullede hele siden sidelæns**: værdien var et anonymt `<div>` uden ombrydningsregel, og en LinkedIn-URL giver CSS intet brudpunkt — **min-content var hele strengen**, og `min-width:auto` nægtede at krympe, hvilket sprængte kort, række og dokument. Rettet med `.card-value` og **`overflow-wrap: anywhere`**. **`POST /api/config` accepterede enhver værdi i et select-felt** og fejlede derefter *lydløst*. Kun udbyderen valideres; en allerede gemt værdi tolereres. **3018 test.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

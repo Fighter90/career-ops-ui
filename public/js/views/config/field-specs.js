@@ -353,6 +353,17 @@
       hintFallback: 'Local models via Ollama. Set this to enable it — default http://localhost:11434/v1 (run `ollama serve`). No API key needed; when set, runs the ⚡ live eval.',
     },
     {
+      // CONFIG-1 (v1.232.0) — the server has always accepted this key
+      // (openai.mjs reads it for a PROXIED Ollama, defaulting to the literal
+      // "ollama"), but it had no field here, so a user behind an authenticating
+      // proxy could not set it from the app at all. Keyless local Ollama needs
+      // nothing here; leave it empty.
+      key: 'OLLAMA_API_KEY', secret: true,
+      labelKey: 'config.ollamaApiKey', label: 'OLLAMA_API_KEY',
+      hintKey: 'config.ollamaApiKeyHint',
+      hintFallback: 'Only for an Ollama behind an authenticating proxy — a local `ollama serve` needs no key. Leave empty unless your endpoint asks for one.',
+    },
+    {
       key: 'OLLAMA_MODEL', secret: false, kind: 'select',
       options: OLLAMA_MODELS, defaultValue: 'llama3.2',
       labelKey: 'config.ollamaModel', label: 'OLLAMA_MODEL',

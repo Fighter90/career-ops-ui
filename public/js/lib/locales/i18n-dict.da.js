@@ -239,6 +239,8 @@ window.__I18N_DICT_DA = {
   'config.fireworksHint': "Fireworks AI — hurtig open-weight-inferens. Hent en nøgle på fireworks.ai. OpenAI-kompatibel; når den er sat, kører den ⚡ live-vurdering.",
   'config.fireworksModelHint': "Standard: llama-v3p3-70b-instruct. Model-id'er er i kontoens navnerum (accounts/fireworks/models/…).",
   'config.ollamaHint': "Lokale modeller via Ollama. Sæt denne for at aktivere — standard http://localhost:11434/v1 (kør `ollama serve`). Ingen API-nøgle nødvendig; når den er sat, kører den ⚡ live-vurdering.",
+  'config.ollamaApiKey': "Ollama API-nøgle",
+  'config.ollamaApiKeyHint': "Kun til en Ollama bag en godkendende proxy — en lokal `ollama serve` behøver ingen nøgle. Lad feltet stå tomt, medmindre dit endpoint beder om en.",
   'config.ollamaModelHint': "Standard: llama3.2. Enhver model, du har hentet lokalt (`ollama pull …`), virker — deepseek-r1, qwen2.5, mistral, gemma3, …",
   'config.arkHint': "BytePlus Ark (international). Hent en nøgle på console.byteplus.com → Ark. OpenAI-kompatibel; når den er sat, kører den ⚡ live-vurdering.",
   'config.arkModelHint': "Standard: doubao-pro-32k. Et Doubao-modelnavn eller dit Ark-endpoint-id (`ep-…`).",

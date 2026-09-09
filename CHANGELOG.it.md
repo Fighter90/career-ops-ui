@@ -2,6 +2,17 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.232.0] — 2026-09-09
+
+**Corretto — due difetti da una passata di QA nel browser; nessuno dei due viene dalla v1.231.5.**
+
+### Corretto
+**PROFILE-1 — `#/profile` faceva scorrere lateralmente l'intera pagina.** Il valore era un `<div>` anonimo con soli stili di carattere inline, quindi il suo `overflow-wrap` restava `normal`. Un URL LinkedIn non offre al CSS alcun punto di interruzione: la **larghezza min-content è l'intera stringa**, e `min-width: auto` sugli elementi di griglia rifiuta di restringersi oltre — la scheda ha fatto scoppiare la traccia, poi la riga e il documento (**23 px di scorrimento reale a 1280 px**). Corretto con la classe condivisa `.card-value` e `overflow-wrap: anywhere`, più `.card-row > * { min-width: 0 }`. `anywhere`, non `break-word`: solo `anywhere` conta nel calcolo del min-content.
+**CONFIG-1 — `POST /api/config` accettava qualunque valore per un campo select.** `{"LLM_PROVIDER":"not-a-provider"}` restituiva **200** e finiva nel `.env`; poi nulla falliva, perché il resolver ripiegava in silenzio. `LLM_PROVIDERS` era già esportato da `env-config.mjs` — il validatore non lo consultava.
+
+### Note
+Solo `LLM_PROVIDER` è validato: il dominio reale dei modelli appartiene al fornitore e cambia tra le nostre release. Un valore già salvato viene tollerato, perché il form rispedisce ogni campo non segreto a ogni salvataggio. Aggiunto anche il descrittore di `OLLAMA_API_KEY`. **3013 → 3018 test.**
+
 ## [1.231.5] — 2026-09-09
 
 **Sicurezza — sette avvisi chiusi, uno dei quali un'esecuzione di codice remoto critica.** Nessun file sorgente è cambiato.

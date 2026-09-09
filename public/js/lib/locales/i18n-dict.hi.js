@@ -240,6 +240,8 @@ window.__I18N_DICT_HI = {
   'config.fireworksHint': "Fireworks AI — तेज़ ओपन-वेट इनफ़ेरेंस। कुंजी प्राप्त करें: fireworks.ai। OpenAI-संगत। सेट होने पर ⚡ लाइव इवैल चलाता है।",
   'config.fireworksModelHint': "डिफ़ॉल्ट: llama-v3p3-70b-instruct। मॉडल id खाते के नेमस्पेस में हैं (accounts/fireworks/models/…)।",
   'config.ollamaHint': "Ollama के ज़रिए लोकल मॉडल। सक्षम करने के लिए इसे सेट करें — डिफ़ॉल्ट http://localhost:11434/v1 (`ollama serve` चलाएँ)। API कुंजी की ज़रूरत नहीं। सेट होने पर ⚡ लाइव इवैल चलाता है।",
+  'config.ollamaApiKey': "Ollama API कुंजी",
+  'config.ollamaApiKeyHint': "केवल प्रमाणीकरण करने वाले प्रॉक्सी के पीछे चल रहे Ollama के लिए — स्थानीय `ollama serve` को कुंजी नहीं चाहिए। जब तक आपका एंडपॉइंट न माँगे, खाली छोड़ें।",
   'config.ollamaModelHint': "डिफ़ॉल्ट: llama3.2। स्थानीय रूप से खींचा गया कोई भी मॉडल (`ollama pull …`) काम करता है — deepseek-r1, qwen2.5, mistral, gemma3, …",
   'config.arkHint': "BytePlus Ark (अंतरराष्ट्रीय)। कुंजी प्राप्त करें: console.byteplus.com → Ark। OpenAI-संगत। सेट होने पर ⚡ लाइव इवैल चलाता है।",
   'config.arkModelHint': "डिफ़ॉल्ट: doubao-pro-32k। एक Doubao मॉडल नाम या आपका Ark एंडपॉइंट id (`ep-…`)।",

@@ -2,6 +2,17 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.232.0] — 2026-09-09
+
+**Behoben — zwei Defekte aus einem Browser-QA-Durchlauf; keiner stammt aus v1.231.5.**
+
+### Behoben
+**PROFILE-1 — `#/profile` scrollte die ganze Seite seitwärts.** Der Wert war ein anonymes `<div>` mit nur inline gesetzten Schriftstilen, sein berechnetes `overflow-wrap` blieb also `normal`. Eine LinkedIn-URL bietet CSS keine zulässige Trennstelle, folglich ist die **min-content-Breite die gesamte Zeichenkette**; Grid-Elemente haben `min-width: auto` und weigern sich, darunter zu schrumpfen — die Karte sprengte ihre Spur, dann die Zeile, die Hauptspalte und das Dokument (**23 px echtes Scrollen bei 1280 px**). Behoben mit einer gemeinsamen Klasse `.card-value` mit `overflow-wrap: anywhere` sowie `.card-row > * { min-width: 0 }`. **`anywhere`, nicht `break-word`**: nur `anywhere` zählt bei der min-content-Berechnung.
+**CONFIG-1 — `POST /api/config` akzeptierte jeden Wert für ein Select-Feld.** `{"LLM_PROVIDER":"not-a-provider"}` lieferte **200** und landete in der `.env`; danach schlug nichts fehl, weil der Resolver still auf einen Ersatz auswich. `LLM_PROVIDERS` wurde von `env-config.mjs` längst exportiert — der Validator zog es nur nie heran.
+
+### Anmerkungen
+Nur `LLM_PROVIDER` wird geprüft, eine bewusste Verengung des Berichts: Die echte Domäne der Modelle gehört dem Anbieter und ändert sich zwischen unseren Releases. Ein bereits gespeicherter Wert wird geduldet — das Formular sendet bei jedem Speichern alle nicht geheimen Felder mit, die strenge Fassung fror die Seite also ein. Zudem wurde der Deskriptor für `OLLAMA_API_KEY` ergänzt. **3013 → 3018 Tests.**
+
 ## [1.231.5] — 2026-09-09
 
 **Sicherheit — sieben Hinweise geschlossen, darunter eine kritische Remote-Code-Ausführung.** Keine Quelldatei wurde geändert.

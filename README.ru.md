@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
+[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.231.5** — **Безопасность: закрыто семь уведомлений, одно — критическое удалённое выполнение кода.** Ни один файл исходников не изменён. Сперва легли две собственные PR Dependabot — `multer` 2.2.0→2.3.0 (**high**, отказ в обслуживании из-за утечки дескрипторов при обрыве) и `svgo` 4.0.2→4.1.0 в сайте (**high**+medium, `removeScripts` пропускал исполняемые ссылки). Запущенное этими мержами пересканирование вскрыло ещё пять, и каждая уже укладывалась в существующий диапазон `^`, так что хватило обновления: **`astro` 7.1.0→7.3.2** (**критично** — RCE через оптимизацию изображений AVIF плюс обход авторизации из-за отсутствия проверки границы сегмента пути), **`sharp` 0.35.3→0.35.4** (**high**, libheif) и **`js-yaml` 4.3.1→4.3.2 в обоих манифестах** (**high**). «Только зависимости» не равно «без риска» — `js-yaml` разбирает каждый конфиг, `multer` принимает каждую загрузку, Astro сместился на минорную версию — поэтому релиз выходит на **3013/3013** тестов, 4/4 браузерных и полной пересборке сайта с теми же 86 страницами и 17 зеркалами. `npm audit`: **0 уязвимостей** в обоих манифестах. **3013 тестов.**
+> **🆕 Последний релиз — v1.232.0** — **Два дефекта, найденные браузерным прогоном; ни один не из v1.231.5.** **`#/profile` прокручивал вбок всю страницу**: значение было безымянным `<div>` без единого правила переноса, а URL LinkedIn не даёт CSS точек разрыва — поэтому **min-content ширина равнялась всей строке**, а `min-width:auto` у grid-элементов не давал ужаться ниже, распирая карточку, строку и наконец документ (23 px реального скролла на 1280 px). Исправлено общим `.card-value` с **`overflow-wrap: anywhere`** — именно им, а не `break-word`, который перенесёт текст, но оставит колонку такой же распёртой. **`POST /api/config` принимал любое значение select-поля**: `LLM_PROVIDER=not-a-provider` возвращал 200, попадал в `.env` и дальше падал *молча* — резолвер уходил в фолбэк. `LLM_PROVIDERS` всё это время экспортировался из `env-config.mjs`, валидатор просто к нему не обращался. Проверяется только провайдер: списки моделей принадлежат вендору и меняются между релизами, а уже сохранённое значение получает поблажку, потому что форма отправляет все поля при каждом сохранении. Заодно у `OLLAMA_API_KEY` наконец появилось поле в интерфейсе. **3018 тестов.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

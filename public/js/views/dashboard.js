@@ -296,7 +296,7 @@ Router.register('dashboard', async () => {
       c('div', { className: 'card' }, [
         c('div', { className: 'flex-between' }, [
           c('div', null, [
-            c('div', { style: { fontWeight: 700, fontSize: '17px' } }, data.lastReport.title || data.lastReport.slug),
+            c('div', { className: 'card-value', style: { fontWeight: 700, marginTop: 0 } }, data.lastReport.title || data.lastReport.slug),
             c('div', { className: 'flex gap-1', style: { marginTop: '6px' } }, [
               c('span', { className: 'tag' }, data.lastReport.date || ''),
               data.lastReport.legitimacy && c('span', { className: 'tag' }, data.lastReport.legitimacy),

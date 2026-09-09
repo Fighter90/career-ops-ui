@@ -11,6 +11,17 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.232.0] — 2026-09-09
+
+**Corrigé — deux défauts issus d'une passe de QA en navigateur ; aucun ne vient de v1.231.5.**
+
+### Corrigé
+**PROFILE-1 — `#/profile` faisait défiler toute la page latéralement.** La valeur était un `<div>` anonyme portant seulement des styles de police en ligne, donc son `overflow-wrap` calculé restait `normal`. Une URL LinkedIn n'offre au CSS aucun point de coupure légal : la **largeur min-content vaut la chaîne entière**, et `min-width: auto` sur les éléments de grille refuse de descendre en dessous — la carte a fait éclater sa piste, puis la ligne, la colonne principale et le document (**23 px de défilement réel à 1280 px**). Corrigé par une classe partagée `.card-value` en `overflow-wrap: anywhere`, plus `.card-row > * { min-width: 0 }`. **`anywhere`, pas `break-word`** : seul `anywhere` compte dans le calcul du min-content.
+**CONFIG-1 — `POST /api/config` acceptait n'importe quelle valeur pour un champ select.** `{"LLM_PROVIDER":"not-a-provider"}` renvoyait **200** et était écrit dans le `.env` ; ensuite rien n'échouait, le résolveur basculant silencieusement sur sa solution de repli. `LLM_PROVIDERS` était déjà exporté par `env-config.mjs` — le validateur ne le consultait tout simplement pas.
+
+### Notes
+Seul `LLM_PROVIDER` est validé, un rétrécissement délibéré du rapport : le domaine réel des modèles appartient au fournisseur et bouge entre nos versions. Une valeur déjà enregistrée est tolérée — le formulaire renvoie tous les champs non secrets à chaque enregistrement, si bien que la version stricte figeait la page. Le descripteur `OLLAMA_API_KEY` a également été ajouté. **3013 → 3018 tests.**
+
 ## [1.231.5] — 2026-09-09
 
 **Sécurité — sept avis clos, dont une exécution de code à distance critique.** Aucun fichier source n'a changé.

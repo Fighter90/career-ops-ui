@@ -7,16 +7,16 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
+[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.231.5** — **Güvenlik: yedi danışma kapatıldı, biri kritik uzaktan kod çalıştırma.** Hiçbir kaynak dosyası değişmedi. Önce `multer` 2.2.0→2.3.0 ve `svgo` 4.0.2→4.1.0; tetiklenen yeniden tarama beş tane daha ortaya çıkardı, hepsi mevcut `^` aralığında: **`astro` 7.1.0→7.3.2** (**kritik** — AVIF görüntü optimizasyonu üzerinden uzaktan kod çalıştırma), **`sharp` 0.35.3→0.35.4** ve **her iki manifestte `js-yaml` 4.3.1→4.3.2**. **3013/3013** test ve tam site yeniden yapımıyla yayınlandı. `npm audit`: **0 açık**. **3013 test.**
+> **🆕 Son sürüm — v1.232.0** — **Tarayıcı QA geçişinden iki kusur; ikisi de v1.231.5'ten değil.** **`#/profile` tüm sayfayı yana kaydırıyordu**: değer, kırılma kuralı olmayan adsız bir `<div>`'di ve LinkedIn URL'si CSS'e kırılma noktası vermez — **min-content genişliği tüm dizeydi** ve `min-width:auto` küçülmeyi reddederek kartı, satırı ve belgeyi patlattı. `.card-value` ve **`overflow-wrap: anywhere`** ile düzeltildi. **`POST /api/config` select alanına her değeri kabul ediyordu** ve sonrasında *sessizce* başarısız oluyordu. Yalnızca sağlayıcı doğrulanır; zaten kayıtlı bir değere müsamaha gösterilir. **3018 test.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

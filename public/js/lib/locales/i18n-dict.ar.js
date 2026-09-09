@@ -239,6 +239,8 @@ window.__I18N_DICT_AR = {
   'config.fireworksHint': "Fireworks AI — استدلال سريع مفتوح الأوزان. احصل على مفتاح من fireworks.ai. متوافق مع OpenAI; عند الضبط، يشغّل ⚡ التقييم المباشر.",
   'config.fireworksModelHint': "الافتراضي: llama-v3p3-70b-instruct. معرّفات النماذج ضمن مساحة اسم الحساب (accounts/fireworks/models/…).",
   'config.ollamaHint': "نماذج محلية عبر Ollama. اضبط هذا لتفعيله — الافتراضي http://localhost:11434/v1 (شغّل `ollama serve`). لا حاجة لمفتاح API; عند الضبط، يشغّل ⚡ التقييم المباشر.",
+  'config.ollamaApiKey': "مفتاح واجهة Ollama",
+  'config.ollamaApiKeyHint': "لا يلزم إلّا لـOllama خلف وسيطٍ يطلب المصادقة — أمّا `ollama serve` المحليّ فلا يحتاج مفتاحًا. اتركه فارغًا ما لم تطلبه نقطتك.",
   'config.ollamaModelHint': "الافتراضي: llama3.2. أي نموذج نزّلته محليًا (`ollama pull …`) يعمل — deepseek-r1, qwen2.5, mistral, gemma3, …",
   'config.arkHint': "BytePlus Ark (دولي). احصل على مفتاح من console.byteplus.com → Ark. متوافق مع OpenAI; عند الضبط، يشغّل ⚡ التقييم المباشر.",
   'config.arkModelHint': "الافتراضي: doubao-pro-32k. اسم نموذج Doubao أو معرّف نقطة نهاية Ark (`ep-…`).",

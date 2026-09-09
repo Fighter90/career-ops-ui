@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-3013%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.231.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.231.5)
+[![release](https://img.shields.io/badge/release-v1.232.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.232.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.231.5** — **सुरक्षा: सात परामर्श बंद, जिनमें एक गंभीर दूरस्थ कोड निष्पादन।** कोई स्रोत फ़ाइल नहीं बदली। पहले `multer` 2.2.0→2.3.0 और साइट का `svgo` 4.0.2→4.1.0 मर्ज हुए; उनसे चली पुनः-स्कैनिंग ने पाँच और उजागर किए, सभी पहले से मौजूदा `^` परिसर में — इसलिए अद्यतन पर्याप्त था: **`astro` 7.1.0→7.3.2** (**गंभीर** — AVIF छवि-अनुकूलन से दूरस्थ कोड निष्पादन, साथ में प्राधिकरण बायपास), **`sharp` 0.35.3→0.35.4**, और **दोनों मैनिफ़ेस्ट में `js-yaml` 4.3.1→4.3.2**। **3013/3013** परीक्षण और साइट के पूर्ण पुनर्निर्माण के बाद जारी। `npm audit`: **0** कमज़ोरियाँ। **3013 परीक्षण।**
+> **🆕 नवीनतम रिलीज़ — v1.232.0** — **ब्राउज़र QA में मिले दो दोष; दोनों में से कोई v1.231.5 से नहीं।** **`#/profile` पूरी पृष्ठ को बग़ल में स्क्रॉल कराता था**: मान बिना किसी विभाजन-नियम वाला अनाम `<div>` था, और LinkedIn का URL CSS को विभाजन-बिंदु नहीं देता — अतः **min-content चौड़ाई पूरी स्ट्रिंग बन गई**, और `min-width:auto` ने सिकुड़ने से इनकार किया, जिससे कार्ड, पंक्ति और दस्तावेज़ फैल गए। साझा `.card-value` में **`overflow-wrap: anywhere`** से ठीक किया गया। **`POST /api/config` select फ़ील्ड के लिए कोई भी मान स्वीकार करता था** और फिर *चुपचाप* विफल होता था। केवल प्रदाता की जाँच होती है। **3018 परीक्षण।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

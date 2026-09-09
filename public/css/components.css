@@ -20,6 +20,10 @@
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--space-4);
 }
+/* PROFILE-1 — `anywhere`, not `break-word`: only `anywhere` counts toward
+   min-content, which is what bursts the track. tests/playwright-card-overflow.mjs. */
+.card-value { font-size: 17px; font-weight: 600; margin-top: 6px; overflow-wrap: anywhere; }
+.card-row > * { min-width: 0; }
 
 /* v1.55.5 — UX-3: dashboard hero. The two P0 CTAs dominate; a single
    focal recent-activity hint sits under them; status buckets are
@@ -530,9 +534,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .md blockquote { border-left: 3px solid var(--rausch); padding-left: var(--space-4); color: var(--foggy); margin: var(--space-3) 0; }
 
 /* ───────────────────────── language switcher ───────────────────────── */
-.lang-switcher {
-  padding-bottom: 8px;
-}
+.lang-switcher { padding-bottom: 8px; }
 /* I18N-EXPAND (v1.70.0) — native <select> language picker. Replaces the
    old wrapping .lang-btn row (12 locales wrapped to 3 lines). The control
    keeps a ≥ 28 px target height (WCAG 2.5.8, carried over from UX-A4) and
@@ -708,9 +710,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 }
 [dir="rtl"] .help-hint { margin: 0 3px 0 0; }
 .help-hint:hover,
-.help-hint[aria-expanded="true"] {
-  color: #fff;
-}
+.help-hint[aria-expanded="true"] { color: #fff; }
 .help-hint:hover::before,
 .help-hint[aria-expanded="true"]::before {
   background: var(--rausch);
