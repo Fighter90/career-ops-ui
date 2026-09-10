@@ -385,13 +385,14 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 
 ### 인식되는 키
 
+가장 자주 필요한 키들입니다. 이것은 목록 전체가 아니라 선별입니다 — `#/config`가 인식되는 **모든** 키를 그룹으로 묶어 각각의 힌트와 함께 보여 줍니다.
+
 | 키 | 역할 | 발급처 |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Anthropic SDK 실시간 호출 활성화. Anthropic + Gemini 모두 설정 시 선호 — JD 채점과 심층 리서치에서 장문 구조화 출력 품질이 더 우수합니다. | <https://console.anthropic.com/settings/keys> |
 | `ANTHROPIC_MODEL` | 기본 `claude-sonnet-4-6` 재정의. 어려운 추론에는 `claude-opus-4-7`, 저렴·빠르게는 `claude-haiku-4-5-20251001` 시도. | — |
 | `GEMINI_API_KEY` | Anthropic 키가 없을 때의 대안. `gemini-eval.mjs`가 `oferta` 모드에 사용. 저볼륨이면 무료 티어로 충분. | <https://aistudio.google.com/apikey> |
 | `GEMINI_MODEL` | 기본 Gemini 모델 재정의. | — |
-| `(서버가 기본 UA 사용)` | 러시아 외부에서 `hh.ru` 스캔 시 필요 (단순 User-Agent에는 API가 403 반환). <https://dev.hh.ru/admin>에서 앱 등록 후 그 UA 문자열 사용. | dev.hh.ru |
 | `PORT` | Express 바인드 포트. 기본 4317. | — |
 | `HOST` | 바인드 주소. 기본 `127.0.0.1`. `0.0.0.0` 설정 시 LAN에 UI 노출 — **아직 인증 게이트 없음**. Production-readiness 문서 참조. | — |
 
@@ -403,8 +404,10 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 - **Save** (`POST /api/config`)는 각 값을 검증하고
   `<parent>/.env`에 쓴 다음 실행 중인 프로세스에 즉시 적용합니다.
   재시작 불필요.
-- **빈 값은 키 삭제**입니다. 러시아 IP / VPN을 비활성화할 때
-  유용합니다.
+- **빈 값은 키 삭제**입니다 — 설정이 *설정되지 않음*으로 돌아가고 프로젝트 기본값이 다시 적용됩니다.
+- **드롭다운은 '기본값 사용 (…)'으로 시작합니다.** 이 항목을 고르면 해당 키가 `.env`에 **없다**는 뜻입니다: 앱은 프로젝트 기본값을 쓰고, 프로젝트가 기본값을 바꿀 때마다 새 값을 계속 받게 됩니다. 아래 목록에서 같은 값을 고르면 그 값이 **고정**되어 기본값이 움직여도 남습니다.
+- **건드리지 않은 필드는 결코 기록되지 않습니다.** 설정되지 않은 필드는 서버가 무엇을 쓸지 보여 주려고 기본값을 표시할 뿐이며, 실제로 편집하지 않는 한 그 표시값은 저장되지 않습니다.
+- **저장은 무엇이 바뀌었는지 알려 줍니다.** 토스트는 기록된 키와 제거된 키를 모두 세므로, 필드를 비우면 '· 0'이 아니라 '· 1'이 표시됩니다.
 
 ### 스모크 테스트 버튼
 
@@ -812,7 +815,6 @@ OK / OPTIONAL / FAIL 배지로 표시되는 모든 설정 게이트. "동작하�
 - `Profile customized` — `candidate.full_name`이 템플릿
   자리표시자가 아님.
 - `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` — `.env`에 설정됨.
-- `(서버가 기본 UA 사용)` — 러시아 외부에서 hh.ru 스캔 시에만
   중요.
 - `Playwright (parent node_modules)` — PDF 생성과
   `check-liveness.mjs`에 필수. 설치:
@@ -1580,7 +1582,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 |---|---|---|
 | Health 페이지에서 `cv.md`가 빨강 | 최초 실행, 파일 아직 없음 | `touch $CAREER_OPS_ROOT/cv.md` 후 새로고침. |
 | `Profile customized`가 빨강 | `candidate.full_name`이 여전히 `Jane Smith` | `config/profile.yml` 편집. |
-| 스캔 로그에 `hh.ru: HTTP 403` | 러시아 외부 IP, `(서버가 기본 UA 사용)` 미설정 | `dev.hh.ru/admin`에 등록, 러시아 IP / VPN 사용. |
+| 스캔 로그의 `hh.ru: HTTP 451` 또는 `403` | 나가는 IP가 러시아 밖이거나, hh.ru가 VPN/데이터센터로 판정 | 러시아 **가정용** IP에서 실행하세요. 키나 User-Agent 설정은 존재하지 않으며, 스캐너가 스스로 브라우저 UA를 보냅니다. |
 | `gemini-eval.mjs: ERR_MODULE_NOT_FOUND` | 부모 프로젝트 의존성 미설치 | `cd $CAREER_OPS_ROOT && npm install`. |
 | Generate PDF 오류 | 부모에 Playwright 미설치 | `cd $CAREER_OPS_ROOT && npx playwright install chromium`. |
 | `/career-ops apply`가 "no report found"라 함 | Pipeline이 이 JD를 채점한 적 없음 | `/career-ops pipeline` (또는 `#/evaluate`) 먼저 실행. 14절 선결 조건 참조. |

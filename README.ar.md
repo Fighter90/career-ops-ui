@@ -7,16 +7,16 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
+[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.233.0** — **ثلاثة مواضع في مسار الحفظ بـ`#/config`؛ وCONFIG-3 من صنع إصلاح v1.232.1 نفسه.** فاختيارٌ مقصودٌ ساوى القيمة المبذورة كان يُطرح بوصفه «لم يُمَسّ»؛ صار **`seededFromFile`** يسجّل الأصل. **وكان حذف مفتاحٍ يُبلَّغ بـ«· 0»** لأنّ الخادم لا يردّ إلّا بما كُتب — وصار يردّ بـ`removed` أيضًا. **وكانت القائمة تُضبط ولا تُفرَّغ**؛ فصارت كلٌّ تبدأ بـ«استخدام القيمة الافتراضية (…)». **3018 اختبارًا · 116 في المتصفّح.**
+> **🆕 أحدث إصدار — v1.233.1** — **لم يصف الدليل قطّ العنصر الذي أضافته v1.233.0.** فصار كلّ قائمةٍ منسدلة يبدأ بـ«استخدام القيمة الافتراضية (…)»، معبّرًا عن حالٍ لم تكن الواجهة تُظهره: **أنّ المفتاح غير مضبوط**. وأُزيل كذلك صفٌّ من `### Recognized keys` لا يسمّي مفتاحًا ويدعو إلى التسجيل في dev.hh.ru — بلا طائل منذ **v1.65.0** — ومعه إشارتان متقادمتان. و`tests/help-recognized-keys.test.mjs` هو البوّابة التي كانت غائبة. **3021 اختبارًا · 116 في المتصفّح.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

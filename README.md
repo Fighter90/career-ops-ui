@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
+[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.233.0** — **Three findings in the `#/config` save path; CONFIG-3 was caused by v1.232.1's own fix.** **A deliberate choice that equalled the seeded value was discarded as "untouched"** — `initial` conflates two origins, and where the seed came from `defaultValue` rather than the file, equality is ambiguous: never opened, or opened and agreed. With `HOST` absent the field shows `127.0.0.1`; typing that exact value and saving posted `{}` and the key stayed absent, the only way through being to enter a wrong value, save, then set the right one back. Now recorded as **`seededFromFile`**, which makes `dirty` a valid *second* signal exactly where the ambiguity lives. **Removing a key reported "· 0"** because the server only ever returned what it wrote — it answers with `removed` too now. **A select could be set but never cleared**: none of the 18 dropdowns had an empty option, so each now leads with **"Use the default (…)"**, and an unset key selects that instead of impersonating a choice. **3018 tests · 116 browser.**
+> **🆕 Latest release — v1.233.1** — **The guide never described the control v1.233.0 added, and the same section still carried instructions that stopped being true 200 releases ago.** Every dropdown now leads with *Use the default (…)*, expressing a state the UI previously could not show: **the key is not set**. The difference from picking the same value out of the list is invisible and consequential — the entry writes nothing and keeps handing you the project's default as it moves, while an explicit pick writes the key and silently leaves you on the old value next time that default changes. That is the drift CONFIG-2 and CONFIG-3 were about; the mechanism was fixed in code and there was nowhere to read about it. Also gone: a `### Recognized keys` row whose Key cell held `(server uses default UA)` — describing `HH_USER_AGENT`, removed in **v1.19.0** — and told readers to register at dev.hh.ru, useless since **v1.65.0**. Two equally stale mentions went with it; the troubleshooting row was **rewritten, not deleted**, because hh.ru really does need a Russian residential IP (HTTP 451 since July 2026). `tests/help-recognized-keys.test.mjs` is the gate that was missing. **3021 tests · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

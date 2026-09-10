@@ -359,13 +359,14 @@ JD。輔助器會生成逐步的投遞檢查清單:
 
 ### 已知金鑰
 
+最常用到的金鑰。這是一份精選而非完整登記表——`#/config` 會分組列出**所有**可辨識的金鑰，並為每個附上說明。
+
 | Key | 作用 | 取得方式 |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | 啟用 Anthropic SDK 即時呼叫。同時設定 Anthropic 與 Gemini 時為首選 — JD 評分與深度研究的長文結構化輸出更好。 | <https://console.anthropic.com/settings/keys> |
 | `ANTHROPIC_MODEL` | 覆寫預設的 `claude-sonnet-4-6`。需要更強推理可試 `claude-opus-4-7`;追求便宜快用 `claude-haiku-4-5-20251001`。 | — |
 | `GEMINI_API_KEY` | 沒有 Anthropic 金鑰時的備援。`gemini-eval.mjs` 在 `oferta` 模式下會用到。低流量下免費額度即可。 | <https://aistudio.google.com/apikey> |
 | `GEMINI_MODEL` | 覆寫預設的 Gemini 模型。 | — |
-| `(伺服器使用預設 UA)` | 在俄羅斯境外執行 `hh.ru` 掃描時必要(該 API 對普通 User-Agent 會回 403)。在 <https://dev.hh.ru/admin> 註冊一個應用程式並使用其 UA 字串。 | dev.hh.ru |
 | `PORT` | Express 綁定的連接埠。預設 4317。 | — |
 | `HOST` | 綁定位址。預設 `127.0.0.1`。設為 `0.0.0.0` 會把 UI 暴露在區域網路上 — **目前沒有驗證閘**,參閱 Production-readiness 文件。 | — |
 
@@ -376,7 +377,10 @@ JD。輔助器會生成逐步的投遞檢查清單:
   是 `sk-ant•••••••a1b2`,永遠看不到完整值。
 - **儲存**(`POST /api/config`)會驗證每個值,寫入 `<parent>/.env`,
   並立即套用到正在執行的程序。無需重啟。
-- **空值會刪除** 該金鑰。當你想停用某個俄羅斯 IP / VPN 時很有用。
+- **空值會刪除** 該金鑰 —— 該設定回到*未設定*狀態，專案預設值重新生效。
+- **下拉框以「使用預設值（…）」開頭。** 選擇它表示該金鑰**不寫入** `.env`：應用使用專案預設值，且專案每次更改預設值時你都會拿到新的。從下方清單選擇同一個值則會**釘住**它。
+- **你從未碰過的欄位永遠不會被寫入。** 未設定的欄位顯示預設值，好讓你看到伺服器將使用什麼；除非你真的編輯該欄位，否則這個顯示值不會被儲存。
+- **儲存會回報改動了什麼。** 提示同時統計寫入的金鑰*和*刪除的金鑰，因此清空一個欄位顯示「· 1」而非「· 0」。
 
 ### 煙霧測試按鈕
 
@@ -768,7 +772,6 @@ $EDITOR portals.yml
 - `Profile customized` — `candidate.full_name` 不再是模板佔位
   名稱。
 - `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` — 已在 `.env` 中設定。
-- `(伺服器使用預設 UA)` — 只有在俄羅斯境外掃描 hh.ru 才會在意。
 - `Playwright (parent node_modules)` — PDF 生成與
   `check-liveness.mjs` 需要。安裝指令:
   `cd $CAREER_OPS_ROOT && npm install && npx playwright install chromium`。
@@ -1500,7 +1503,7 @@ scan 執行、設定變更、mode 執行。
 |---|---|---|
 | Health 頁面在 `cv.md` 顯示紅色 | 第一次執行,檔案尚未存在 | `touch $CAREER_OPS_ROOT/cv.md` 後重新整理。 |
 | Health 在 `Profile customized` 顯示紅色 | `candidate.full_name` 仍是 `Jane Smith` | 編輯 `config/profile.yml`。 |
-| 掃描日誌出現 `hh.ru: HTTP 403` | 非俄羅斯 IP,沒有 `(伺服器使用預設 UA)` | 在 `dev.hh.ru/admin` 註冊,設定俄羅斯 IP / VPN。 |
+| 掃描日誌中的 `hh.ru: HTTP 451` 或 `403` | 出口 IP 在俄羅斯境外，或被 hh.ru 判定為 VPN／資料中心 | 請從俄羅斯**住宅** IP 執行。不存在任何金鑰或 User-Agent 設定——掃描器會自行送出瀏覽器 UA。 |
 | `gemini-eval.mjs: ERR_MODULE_NOT_FOUND` | 父專案依賴未安裝 | `cd $CAREER_OPS_ROOT && npm install`。 |
 | Generate PDF 出錯 | 父專案未安裝 Playwright | `cd $CAREER_OPS_ROOT && npx playwright install chromium`。 |
 | `/career-ops apply` 顯示「no report found」 | Pipeline 從未為此 JD 評分 | 先執行 `/career-ops pipeline`(或 `#/evaluate`);見第 14 節前置條件。 |

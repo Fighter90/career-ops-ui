@@ -8,6 +8,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.233.1] — 2026-09-10
+
+**Fixed — the guide never described the control v1.233.0 added, and the same section still carried instructions that stopped being true 200 releases ago.**
+
+### Fixed
+**DOC-1 — the control v1.233.0 introduced was not described anywhere in the guide.** Every dropdown now leads with *Use the default (…)*, which expresses a state the UI previously had no way to show: **the key is not set**. The difference from picking the same value out of the list below is invisible and consequential — *Use the default (llama3.2)* writes nothing and keeps handing you the project's default as it moves, while choosing `llama3.2` explicitly writes `OLLAMA_MODEL=llama3.2` and leaves you on the old value, silently, the next time that default changes. That is precisely the drift CONFIG-2 and CONFIG-3 were about: the mechanism was repaired in code, and there was nowhere to read about it. Three bullets now sit in the existing `### Behavior` list across all 17 bundles, covering the entry itself, the rule that a field you never touch is never written, and the toast counting removals as well as writes. The heading gates could not have caught this — they count H2/H3, and coverage is not a count.
+**DOC-2 — a row in the `### Recognized keys` table named no key, and the one concrete instruction it gave was wrong.** The Key cell held `(server uses default UA)` — a parenthesised note where a key name belongs — describing `HH_USER_AGENT`, which **v1.19.0** removed from `KNOWN_KEYS` and from the UI. The row then told the reader to register an application at dev.hh.ru and supply its UA string, which has bought nothing since **v1.65.0**, when the hh.ru adapter switched to scraping the public search site with a browser User-Agent of its own. Two further mentions were equally stale: an *Optional checks* bullet describing a health row deleted in **v1.28.1**, and a troubleshooting row repeating the dev.hh.ru advice. All three are gone from all 17 bundles. The troubleshooting row is **rewritten rather than deleted**, because half of it is still true — since July 2026 hh.ru serves HTTP 451 to non-Russian IPs, so a Russian residential address genuinely is required; what was wrong was the registration step and the reference to a key that does not exist.
+**The keys table now says what it is.** `### Recognized keys` lists 6 of the 45 keys while its heading promises a registry; the provider families are covered in prose elsewhere in the same section. One sentence ×17 now states that it is a selection and points at `#/config` for the complete, grouped list. No keys were added — this closes the ambiguity rather than expanding the table.
+
+### Notes
+`tests/help-recognized-keys.test.mjs` is the gate that was missing. It checks the first column of every help table that actually names config keys against the live `KNOWN_KEYS`, fails on any bundle still mentioning dev.hh.ru, and fails on any bundle that does not document the *Use the default* entry. Scoping matters: several bundles carry other tables whose first column is a backticked uppercase word — `PDF` in the export matrix — so a table qualifies only when at least one of its own rows names a real key. Confirmed on the pre-fix bundles: all three cases red. **3018 → 3021 tests**; help stays **32 H2 / 122 H3** in all 17, because everything landed inside existing headings.
+
 ## [1.233.0] — 2026-09-10
 
 **Fixed — three findings in the `#/config` save path. CONFIG-3 was caused by v1.232.1's own fix.**

@@ -475,13 +475,14 @@ Wie das Speichern sicher ist:
 
 ### Erkannte Schlüssel
 
+Die am häufigsten benötigten Schlüssel. Das ist eine Auswahl, kein Verzeichnis — `#/config` listet **alle** erkannten Schlüssel auf, gruppiert und jeweils mit einem Hinweis.
+
 | Schlüssel | Was er bewirkt | Woher zu bekommen |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Aktiviert Live-Anthropic-SDK-Aufrufe. Bevorzugt, wenn sowohl Anthropic + Gemini gesetzt sind — bessere strukturierte Langtext-Ausgabe für JD-Bewertung und Deep Research. | <https://console.anthropic.com/settings/keys> |
 | `ANTHROPIC_MODEL` | Überschreibt den Standard `claude-sonnet-4-6`. Versuchen Sie `claude-opus-4-7` für schwierigeres Reasoning, `claude-haiku-4-5-20251001` für günstig-und-schnell. | — |
 | `GEMINI_API_KEY` | Fallback, wenn kein Anthropic-Schlüssel. Wird von `gemini-eval.mjs` für den `oferta`-Modus verwendet. Der kostenlose Tarif funktioniert für geringes Volumen. | <https://aistudio.google.com/apikey> |
 | `GEMINI_MODEL` | Überschreibt das Standard-Gemini-Modell. | — |
-| `(server uses default UA)` | Erforderlich beim Ausführen von `hh.ru`-Scans außerhalb Russlands (die API gibt bei einfachen User-Agents 403 zurück). Registrieren Sie eine App unter <https://dev.hh.ru/admin> und verwenden Sie deren UA-Zeichenkette. | dev.hh.ru |
 | `PORT` | Express-Bind-Port. Standard 4317. | — |
 | `HOST` | Bind-Adresse. Standard `127.0.0.1`. Das Setzen von `0.0.0.0` legt die UI im LAN offen — **noch kein Auth-Gate**, siehe Production-readiness-Dokument. | — |
 
@@ -493,8 +494,10 @@ Wie das Speichern sicher ist:
 - **Save** (`POST /api/config`) validiert jeden Wert, schreibt in die
   `<parent>/.env` und wendet ihn sofort auf den laufenden Prozess an.
   Kein Neustart nötig.
-- **Ein leerer Wert löscht** den Schlüssel. Nützlich, wenn Sie eine
-  russische IP / ein VPN nicht mehr verwenden möchten.
+- **Ein leerer Wert löscht** den Schlüssel — die Einstellung kehrt zu *nicht gesetzt* zurück und der Projektstandard gilt wieder.
+- **Auswahlfelder beginnen mit „Standard verwenden (…)“.** Diese Wahl bedeutet, dass der Schlüssel **nicht** in der `.env` steht: Die App nutzt den Projektstandard, und Sie erhalten weiterhin den neuen, sobald das Projekt ihn ändert. Denselben Wert aus der Liste darunter zu wählen **fixiert** ihn — er bleibt auch dann, wenn sich der Standard verschiebt.
+- **Ein Feld, das Sie nie anfassen, wird nie geschrieben.** Ein nicht gesetztes Feld zeigt den Standard, damit Sie sehen, was der Server verwendet; dieser angezeigte Wert wird nicht gespeichert, solange Sie das Feld nicht wirklich bearbeiten.
+- **Speichern meldet, was sich geändert hat.** Der Hinweis zählt geschriebene *und* entfernte Schlüssel, ein geleertes Feld zeigt also „· 1“ statt „· 0“.
 
 ### Smoke-Test-Schaltflächen
 
@@ -989,7 +992,6 @@ dies, bevor Sie ein „funktioniert nicht"-Issue einreichen.
 - `Profile customized` — `candidate.full_name` ist nicht der
   Vorlagen-Platzhalter.
 - `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` — in `.env` gesetzt.
-- `(server uses default UA)` — nur relevant, wenn Sie hh.ru von außerhalb Russlands scannen.
 - `Playwright (parent node_modules)` — erforderlich für PDF-Generierung
   und `check-liveness.mjs`. Installieren mit
   `cd $CAREER_OPS_ROOT && npm install && npx playwright install chromium`.
@@ -1816,7 +1818,7 @@ Ereignisse zurück.
 |---|---|---|
 | Health-Seite rot bei `cv.md` | Erster Start, Datei existiert noch nicht | `touch $CAREER_OPS_ROOT/cv.md`, dann aktualisieren. |
 | Health rot bei `Profile customized` | `candidate.full_name` sagt noch `Jane Smith` | `config/profile.yml` bearbeiten. |
-| `hh.ru: HTTP 403` im Scan-Log | Nicht-russische IP, kein `(server uses default UA)` | Unter `dev.hh.ru/admin` registrieren, eine russische IP / ein VPN setzen. |
+| `hh.ru: HTTP 451` oder `403` im Scan-Log | Die ausgehende IP liegt außerhalb Russlands, oder hh.ru hat sie als VPN/Rechenzentrum eingestuft | Von einer russischen **Privatkunden-IP** ausführen. Es gibt weder einen Schlüssel noch eine User-Agent-Einstellung — der Scanner sendet selbst einen Browser-UA. |
 | `gemini-eval.mjs: ERR_MODULE_NOT_FOUND` | Deps des übergeordneten Projekts nicht installiert | `cd $CAREER_OPS_ROOT && npm install`. |
 | Generate PDF schlägt fehl | Playwright nicht im übergeordneten Projekt installiert | `cd $CAREER_OPS_ROOT && npx playwright install chromium`. |
 | `/career-ops apply` sagt „no report found" | Pipeline hat diese JD nie bewertet | Zuerst `/career-ops pipeline` (oder `#/evaluate`) ausführen; siehe §14-Voraussetzungen. |

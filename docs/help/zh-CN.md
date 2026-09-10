@@ -357,13 +357,14 @@ LinkedIn / 邮件消息。把开场白个性化(嵌入一条来自深度调研�
 
 ### 识别的键
 
+最常用到的键。这是一份精选而非完整登记表——`#/config` 会分组列出**所有**可识别的键，并为每个附上说明。
+
 | Key | 用途 | 获取地址 |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | 启用实时 Anthropic SDK 调用。在 Anthropic + Gemini 同时配置时优先 — 对 JD 评分与深度调研的长文本结构化输出更好。 | <https://console.anthropic.com/settings/keys> |
 | `ANTHROPIC_MODEL` | 覆盖默认的 `claude-sonnet-4-6`。复杂推理可尝试 `claude-opus-4-7`,廉价高速可用 `claude-haiku-4-5-20251001`。 | — |
 | `GEMINI_API_KEY` | 没有 Anthropic key 时的后备。`oferta` 模式由 `gemini-eval.mjs` 调用。免费层适合小批量。 | <https://aistudio.google.com/apikey> |
 | `GEMINI_MODEL` | 覆盖默认 Gemini 模型。 | — |
-| `(server uses default UA)` | 在俄罗斯境外扫描 `hh.ru` 时必需(默认 UA 会返回 403)。在 <https://dev.hh.ru/admin> 注册一个应用并使用其 UA 字符串。 | dev.hh.ru |
 | `PORT` | Express 绑定端口。默认 4317。 | — |
 | `HOST` | 绑定地址。默认 `127.0.0.1`。设为 `0.0.0.0` 会把 UI 暴露到局域网 — **目前没有鉴权门**,参见 Production-readiness 文档。 | — |
 
@@ -374,7 +375,10 @@ LinkedIn / 邮件消息。把开场白个性化(嵌入一条来自深度调研�
   到 `sk-ant•••••••a1b2`,绝不会暴露完整值。
 - **保存**(`POST /api/config`)逐项验证,写入 `<parent>/.env`,并
   立即应用到运行中的进程。无需重启。
-- **空值即删除该键**。在你想不再使用某个配置时很有用。
+- **空值即删除该键** —— 该设置回到*未设置*状态，项目默认值重新生效。
+- **下拉框以「使用默认值（…）」开头。** 选择它表示该键**不写入** `.env`：应用使用项目默认值，且项目每次更改默认值时你都会拿到新的。从下方列表中选择同一个值则会**钉住**它——即便默认值变动它也不动。
+- **你从未触碰的字段永远不会被写入。** 未设置的字段显示默认值，好让你看到服务器将使用什么；除非你真的编辑该字段，否则这个显示值不会被保存。
+- **保存会报告改动了什么。** 提示同时统计写入的键*和*删除的键，因此清空一个字段显示「· 1」而非「· 0」。
 
 ### 烟雾测试按钮
 
@@ -763,7 +767,6 @@ $EDITOR portals.yml
 
 - `Profile customized` — `candidate.full_name` 不是模板占位符。
 - `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` — 已在 `.env` 中设置。
-- `(server uses default UA)` — 只在你从俄罗斯境外扫描 hh.ru 时才有
   意义。
 - `Playwright (parent node_modules)` — PDF 生成与
   `check-liveness.mjs` 必需。安装命令:
@@ -1485,7 +1488,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 |---|---|---|
 | Health 页面 `cv.md` 红色 | 首次运行,文件还不存在 | `touch $CAREER_OPS_ROOT/cv.md` 后刷新。 |
 | Health 上 `Profile customized` 红色 | `candidate.full_name` 仍是 `Jane Smith` | 编辑 `config/profile.yml`。 |
-| scan 日志中 `hh.ru: HTTP 403` | 非俄罗斯 IP,且未配置 `(server uses default UA)` | 到 `dev.hh.ru/admin` 注册,设置俄罗斯 IP / VPN。 |
+| 扫描日志中的 `hh.ru: HTTP 451` 或 `403` | 出口 IP 在俄罗斯境外，或被 hh.ru 判定为 VPN／数据中心 | 请从俄罗斯**住宅** IP 运行。不存在任何密钥或 User-Agent 设置——扫描器会自行发送浏览器 UA。 |
 | `gemini-eval.mjs: ERR_MODULE_NOT_FOUND` | 父项目依赖未安装 | `cd $CAREER_OPS_ROOT && npm install`。 |
 | Generate PDF 报错 | 父项目未安装 Playwright | `cd $CAREER_OPS_ROOT && npx playwright install chromium`。 |
 | `/career-ops apply` 报 "no report found" | 该 JD 还从未被 pipeline 评分 | 先运行 `/career-ops pipeline`(或 `#/evaluate`);见第 14 节前置条件。 |

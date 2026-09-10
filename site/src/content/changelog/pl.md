@@ -9,6 +9,18 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.233.1] — 2026-09-10
+
+**Naprawiono — przewodnik nie opisywał kontrolki dodanej w v1.233.0, a ta sama sekcja wciąż niosła instrukcje nieprawdziwe od 200 wydań.**
+
+### Naprawiono
+**DOC-1** — pozycja „Użyj wartości domyślnej (…)” wyraża stan „klucz nieustawiony”; różnica wobec jawnego wyboru tej samej wartości jest niewidoczna i istotna. Trzy punkty w istniejącej liście `### Behavior` ×17.
+**DOC-2** — wiersz tabeli nie nazywał żadnego klucza: w komórce stało `(server uses default UA)`, opisujące `HH_USER_AGENT` usunięty w **v1.19.0**, i radziło rejestrację na dev.hh.ru — bezużyteczną od **v1.65.0**. Wszystkie trzy przestarzałe wzmianki zniknęły; wiersz rozwiązywania problemów **przepisano**: od lipca 2026 hh.ru zwraca HTTP 451 nierosyjskim IP.
+**Tabela kluczy** wymienia 6 z 45, choć nagłówek obiecuje rejestr. Jedno zdanie ×17 nazywa ją wyborem i wskazuje `#/config`.
+
+### Uwagi
+Nowy `help-recognized-keys.test.mjs` porównuje pierwszą kolumnę tabel kluczy z żywym `KNOWN_KEYS`. **3018 → 3021 testów**; pomoc pozostaje 32 H2 / 122 H3.
+
 ## [1.233.0] — 2026-09-10
 
 **Naprawiono — trzy ustalenia w ścieżce zapisu `#/config`; CONFIG-3 wywołała sama poprawka z v1.232.1.**

@@ -402,13 +402,14 @@ Los secretos se enmascaran tras guardar y nunca se registran. Los campos de id d
 
 ### Claves reconocidas
 
+Las claves que más suelen hacer falta. Es una selección, no el registro: `#/config` lista **todas** las claves reconocidas, agrupadas y con una indicación en cada una.
+
 | Clave | Para qué sirve | Dónde obtenerla |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Habilita llamadas live al SDK de Anthropic. Preferida cuando ambas Anthropic + Gemini están configuradas — mejor output estructurado largo para puntuación de JD y deep research. | <https://console.anthropic.com/settings/keys> |
 | `ANTHROPIC_MODEL` | Sobrescribe el default `claude-sonnet-4-6`. Prueba `claude-opus-4-7` para razonamiento más exigente, `claude-haiku-4-5-20251001` para barato-y-rápido. | — |
 | `GEMINI_API_KEY` | Fallback cuando no hay clave Anthropic. La usa `gemini-eval.mjs` para el modo `oferta`. El free tier funciona para volumen bajo. | <https://aistudio.google.com/apikey> |
 | `GEMINI_MODEL` | Sobrescribe el modelo Gemini por defecto. | — |
-| `(server uses default UA)` | Necesario al ejecutar scans en `hh.ru` desde fuera de Rusia (la API devuelve 403 ante User-Agents planos). Registra una app en <https://dev.hh.ru/admin> y usa su string UA. | dev.hh.ru |
 | `PORT` | Puerto de bind de Express. Default 4317. | — |
 | `HOST` | Dirección de bind. Default `127.0.0.1`. Poner `0.0.0.0` expone el UI en la LAN — **sin auth gate todavía**, ver el doc de Production-readiness. | — |
 
@@ -421,8 +422,10 @@ Los secretos se enmascaran tras guardar y nunca se registran. Los campos de id d
 - **Guardado** (`POST /api/config`) valida cada valor, escribe en
   `<parent>/.env`, e inmediatamente aplica al proceso en ejecución.
   No se requiere reinicio.
-- **Un valor vacío borra** la clave. Útil si quieres dejar de usar
-  una IP rusa / VPN.
+- **Un valor vacío borra** la clave — el ajuste vuelve a *sin definir* y el valor por defecto del proyecto se aplica de nuevo.
+- **Los desplegables encabezan con «Usar el valor por defecto (…)».** Elegirlo significa que la clave **no está** en `.env`: la app usa el valor por defecto del proyecto y seguirás recibiendo el nuevo cada vez que el proyecto lo cambie. Elegir ese mismo valor de la lista de abajo lo **fija**: permanecerá aunque el valor por defecto cambie.
+- **Un campo que no tocas nunca se escribe.** Un campo sin definir muestra el valor por defecto para que veas lo que usará el servidor; ese valor mostrado no se guarda salvo que edites el campo.
+- **Guardar informa de lo que cambió.** El aviso cuenta las claves escritas *y* las eliminadas, así que vaciar un campo muestra `· 1`, no `· 0`.
 
 ### Botones smoke-test
 
@@ -826,7 +829,6 @@ abrir cualquier issue de "no funciona".
 - `Profile customized` — `candidate.full_name` no es el placeholder
   del template.
 - `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` — configuradas en `.env`.
-- `(server uses default UA)` — solo importa si escaneas hh.ru desde
   fuera de Rusia.
 - `Playwright (parent node_modules)` — requerido para generación de
   PDF y `check-liveness.mjs`. Instálalo con
@@ -1637,7 +1639,7 @@ Filtra por prefijo de acción (`pipeline.`, `cv.`, `evaluate`,
 |---|---|---|
 | Página Health roja en `cv.md` | Primer arranque, el archivo aún no existe | `touch $CAREER_OPS_ROOT/cv.md` y después refresca. |
 | Health roja en `Profile customized` | `candidate.full_name` aún dice `Jane Smith` | Edita `config/profile.yml`. |
-| `hh.ru: HTTP 403` en el log del scan | IP no rusa, sin `(server uses default UA)` | Registra una app en `dev.hh.ru/admin`, usa una IP / VPN rusa. |
+| `hh.ru: HTTP 451` o `403` en el registro de escaneo | La IP de salida está fuera de Rusia, o hh.ru la marcó como VPN/centro de datos | Ejecuta desde una IP **residencial** rusa. No existe ninguna clave ni ajuste de User-Agent: el escáner envía un UA de navegador por su cuenta. |
 | `gemini-eval.mjs: ERR_MODULE_NOT_FOUND` | Dependencias del proyecto padre no instaladas | `cd $CAREER_OPS_ROOT && npm install`. |
 | Errores al Generate PDF | Playwright no instalado en el padre | `cd $CAREER_OPS_ROOT && npx playwright install chromium`. |
 | `/career-ops apply` dice "no report found" | El pipeline nunca puntuó este JD | Ejecuta `/career-ops pipeline` (o `#/evaluate`) primero; ver prerrequisitos del §14. |

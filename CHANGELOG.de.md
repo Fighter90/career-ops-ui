@@ -2,6 +2,18 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.233.1] — 2026-09-10
+
+**Behoben — die Anleitung beschrieb das in v1.233.0 hinzugefügte Bedienelement nicht, und derselbe Abschnitt trug noch Anweisungen, die seit 200 Releases falsch sind.**
+
+### Behoben
+**DOC-1** — der Eintrag „Standard verwenden (…)“ drückt den Zustand „Schlüssel nicht gesetzt“ aus; der Unterschied zur ausdrücklichen Wahl desselben Werts ist unsichtbar und folgenreich. Drei Punkte in der bestehenden `### Behavior`-Liste ×17.
+**DOC-2** — eine Tabellenzeile nannte gar keinen Schlüssel: In der Zelle stand `(server uses default UA)` und beschrieb `HH_USER_AGENT`, den **v1.19.0** entfernt hat, und riet zur Registrierung auf dev.hh.ru — nutzlos seit **v1.65.0**. Alle drei veralteten Erwähnungen sind fort; die Fehlerbehebungszeile wurde **umgeschrieben**, nicht gelöscht: Seit Juli 2026 liefert hh.ru HTTP 451 an nicht-russische IPs.
+**Die Schlüsseltabelle** listet 6 von 45, während die Überschrift ein Verzeichnis verspricht. Ein Satz ×17 erklärt sie zur Auswahl und verweist auf `#/config`.
+
+### Anmerkungen
+Das neue `help-recognized-keys.test.mjs` prüft die erste Spalte der Schlüsseltabellen gegen die lebende `KNOWN_KEYS`. **3018 → 3021 Tests**; die Hilfe bleibt bei 32 H2 / 122 H3.
+
 ## [1.233.0] — 2026-09-10
 
 **Behoben — drei Funde im Speicherpfad von `#/config`; CONFIG-3 wurde durch den Fix von v1.232.1 selbst verursacht.**

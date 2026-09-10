@@ -7,16 +7,16 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
+[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.233.0** — **`#/config` の保存経路で 3 件。CONFIG-3 は v1.232.1 の修正そのものが招いたものです。** 仕込まれた値と一致した意図的な選択が「触れていない」として捨てられていました——`initial` は 2 つの由来を混同し、`defaultValue` 由来のときは一致が曖昧です（開いていないのか、開いて同意したのか）。`HOST` が無いと欄は `127.0.0.1` を表示し、その値を打って保存しても `{}` が送られキーは現れず、唯一の道は誤った値を入れて保存し正しい値に戻すことでした。いまは **`seededFromFile`** が由来を記録します。**キー削除が「· 0」と表示されていた**のはサーバーが書いたものしか返さなかったため——`removed` も返します。**セレクトは設定できても解除できず**、18 個に空の選択肢が無かったので、各セレクトは**「既定値を使う（…）」**で始まります。**3018 件 · ブラウザー 116 件。**
+> **🆕 最新リリース — v1.233.1** — **v1.233.0 が追加した操作要素が案内に一度も書かれていませんでした。** 各ドロップダウンは「既定値を使う（…）」で始まり、UI がこれまで表せなかった状態——**キーが未設定**——を表します。一覧から同じ値を選ぶのとの違いは目に見えず重大で、前者は何も書かず既定値の変化を受け取り続け、後者はキーを書いて次の変更時に黙って古い値へ取り残します。あわせて、Key 欄が `(server uses default UA)` で **v1.19.0** が削除した `HH_USER_AGENT` を説明し dev.hh.ru 登録を促していた行——**v1.65.0** 以降は無意味——と、同様に古い 2 か所を削除。トラブルシューティング行は**書き換え**です（2026 年 7 月以降 hh.ru はロシア国外 IP に HTTP 451 を返すため、家庭用ロシア IP は実際に必要）。`tests/help-recognized-keys.test.mjs` が欠けていた門番です。**3021 件 · ブラウザー 116 件。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

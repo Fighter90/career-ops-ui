@@ -8,6 +8,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.233.1] — 2026-09-10
+
+**Rettet — vejledningen beskrev ikke det element, v1.233.0 tilføjede, og samme afsnit bar stadig instruktioner, der har været forkerte i 200 udgivelser.**
+
+### Rettet
+**DOC-1** — posten »Brug standardværdien (…)« udtrykker tilstanden »nøglen er ikke sat«; forskellen fra at vælge samme værdi udtrykkeligt er usynlig og betydningsfuld. Tre punkter i den eksisterende `### Behavior`-liste ×17.
+**DOC-2** — en tabelrække nævnte slet ingen nøgle: cellen indeholdt `(server uses default UA)`, som beskrev `HH_USER_AGENT`, fjernet i **v1.19.0**, og rådede til registrering på dev.hh.ru — nytteløst siden **v1.65.0**. Alle tre forældede omtaler er væk; fejlfindingsrækken er **omskrevet**: siden juli 2026 svarer hh.ru HTTP 451 til ikke-russiske IP'er.
+**Nøgletabellen** viser 6 af 45, mens overskriften lover et register. Én sætning ×17 kalder den et udvalg og henviser til `#/config`.
+
+### Noter
+Den nye `help-recognized-keys.test.mjs` holder første kolonne i nøgletabellerne op mod den levende `KNOWN_KEYS`. **3018 → 3021 test**; hjælpen bliver på 32 H2 / 122 H3.
+
 ## [1.233.0] — 2026-09-10
 
 **Rettet — tre fund i gemmestien for `#/config`; CONFIG-3 blev forårsaget af rettelsen i v1.232.1 selv.**
