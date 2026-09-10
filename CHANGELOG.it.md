@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.233.2] — 2026-09-10
+
+**Corretto — due avvisi CodeQL `js/remote-property-injection` ad alta severità.**
+
+### Corretto
+Il ciclo che copia i valori salvati in `process.env` scorreva `Object.entries(safe)` — un oggetto costruito dal corpo della richiesta — con una guardia esplicita contro le chiavi di prototipo. Il codice era sicuro, perché `safe` viene riempito solo da `KNOWN_KEYS`, ma l'analizzatore non può seguire quel vincolo attraverso due cicli. Ora scorre l'array costante, quindi il nome della proprietà è dimostrabilmente un letterale di modulo. **Il comportamento è identico.**
+
+### Note
+Il test che fissava la guardia era un grep del testo sorgente. È stato sostituito da uno strutturale e uno comportamentale che invia `__proto__` come **JSON grezzo** — un letterale di oggetto avrebbe impostato il prototipo invece di creare la proprietà. **3021 → 3022 test.**
+
 ## [1.233.1] — 2026-09-10
 
 **Corretto — la guida non descriveva il controllo aggiunto dalla v1.233.0, e la stessa sezione portava ancora istruzioni non più vere da 200 release.**

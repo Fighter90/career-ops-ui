@@ -8,6 +8,16 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.233.2] — 2026-09-10
+
+**Corrigido — dois alertas CodeQL `js/remote-property-injection` de alta severidade.**
+
+### Corrigido
+O laço que copia os valores salvos para `process.env` percorria `Object.entries(safe)` — um objeto construído a partir do corpo da requisição — com uma guarda explícita contra chaves de protótipo. O código era seguro, pois `safe` só é preenchido a partir de `KNOWN_KEYS`, mas o analisador não consegue seguir essa restrição entre dois laços. Agora percorre o array constante, então o nome da propriedade é comprovadamente um literal de módulo. **O comportamento é idêntico.**
+
+### Notas
+O teste que fixava a guarda era um grep do texto-fonte. Foi trocado por um estrutural e um comportamental que envia `__proto__` como **JSON cru** — um literal de objeto definiria o protótipo em vez de criar a propriedade. **3021 → 3022 testes.**
+
 ## [1.233.1] — 2026-09-10
 
 **Corrigido — o guia não descrevia o controle que a v1.233.0 acrescentou, e a mesma seção ainda trazia instruções que deixaram de valer há 200 versões.**

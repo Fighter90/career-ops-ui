@@ -245,3 +245,39 @@ function parseEnvFile() {
   }
   return out;
 }
+
+/**
+ * v1.233.2 — the behavioural half of what the old source-grep guard stood for.
+ * A request cannot steer the `process.env` write, and cannot pollute
+ * `Object.prototype`, whatever key names it sends.
+ */
+test('POST /api/config cannot pollute the prototype chain or write an unlisted env var', async () => {
+  const before = { ...process.env };
+  const canary = 'CANARY_' + Date.now();
+
+  // Raw JSON strings, not object literals: `{ __proto__: … }` in source sets the
+  // prototype instead of creating an own property, so JSON.stringify would send
+  // `{}` and the test would prove nothing. On the wire it must be a real key.
+  const raws = [
+    '{"__proto__":{"polluted":"yes"}}',
+    '{"constructor":{"prototype":{"polluted":"yes"}}}',
+    '{"prototype":"x"}',
+    `{"${canary}":"x"}`,
+  ];
+  for (const raw of raws) {
+    const res = await fetch(baseUrl + '/api/config', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: raw,
+    });
+    const json = res.status < 500 ? await res.json() : null;
+    // Every one of these names is outside KNOWN_KEYS, so the validator refuses
+    // the request outright — nothing reaches the writer or process.env.
+    assert.equal(res.status, 400, `${raw} should be refused: ${JSON.stringify(json)}`);
+  }
+
+  assert.equal({}.polluted, undefined, 'Object.prototype must not have gained a property');
+  assert.equal(process.env[canary], undefined, 'an unlisted name must never reach process.env');
+  // Nothing in the allowlist moved either.
+  for (const k of Object.keys(before)) {
+    assert.equal(process.env[k], before[k], `${k} changed during a rejected request`);
+  }
+});

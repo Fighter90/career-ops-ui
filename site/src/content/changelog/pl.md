@@ -9,6 +9,16 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.233.2] — 2026-09-10
+
+**Naprawiono — dwa alerty CodeQL `js/remote-property-injection` o wysokiej wadze.**
+
+### Naprawiono
+Pętla przenosząca zapisane wartości do `process.env` iterowała `Object.entries(safe)` — obiekt zbudowany z ciała żądania — ze strażnikiem przeciw kluczom prototypu w środku. Kod był bezpieczny, bo `safe` wypełniany jest wyłącznie z `KNOWN_KEYS`, ale analizator nie przeniesie tego ograniczenia przez dwie pętle. Teraz iteruje stałą tablicę, więc nazwa właściwości jest dowodliwie literałem modułu. **Zachowanie identyczne.**
+
+### Uwagi
+Test utrwalający starego strażnika był grepem po tekście źródła. Zastąpiony strukturalnym i behawioralnym, który wysyła `__proto__` jako **surowy JSON**. **3021 → 3022 testów.**
+
 ## [1.233.1] — 2026-09-10
 
 **Naprawiono — przewodnik nie opisywał kontrolki dodanej w v1.233.0, a ta sama sekcja wciąż niosła instrukcje nieprawdziwe od 200 wydań.**

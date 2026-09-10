@@ -11,6 +11,16 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.233.2] — 2026-09-10
+
+**Corregido — dos alertas de CodeQL `js/remote-property-injection` de severidad alta.**
+
+### Corregido
+El bucle que copia los valores guardados a `process.env` recorría `Object.entries(safe)` — un objeto construido a partir del cuerpo de la petición — con una guarda explícita contra claves de prototipo dentro. El código era seguro, porque `safe` solo se rellena desde `KNOWN_KEYS` veinte líneas antes, pero leído por sí solo el bucle dice *asigna a una propiedad cuyo nombre salió de un objeto construido con el cuerpo de la petición*, y CodeQL no puede seguir esa restricción entre dos bucles. Ahora recorre el array constante, así que el nombre de la propiedad es demostrablemente un literal de módulo. La guarda sobra y se fue con él. **El comportamiento es idéntico.**
+
+### Notas
+Descartarlas como falsos positivos era la alternativa; corregir era preferible, porque una afirmación en un comentario vale menos que una forma verificable. La prueba que fijaba la guarda era un grep del texto fuente; ahora hay una estructural (confirmada en rojo contra la forma antigua) y una de comportamiento que envía `__proto__` como **JSON en crudo** — un literal de objeto habría fijado el prototipo en vez de crear la propiedad. **3021 → 3022 pruebas.**
+
 ## [1.233.1] — 2026-09-10
 
 **Corregido — la guía no describía el control que añadió v1.233.0, y la misma sección aún traía instrucciones que dejaron de ser ciertas hace 200 versiones.**

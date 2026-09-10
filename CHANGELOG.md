@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.233.2] — 2026-09-10
+
+**Fixed — two high-severity CodeQL alerts on the `#/config` save path. No behaviour changes.**
+
+### Fixed
+**Two high-severity CodeQL `js/remote-property-injection` alerts, closed by making an existing invariant structural rather than asserted.** `POST /api/config` copies saved values into `process.env` so no restart is needed, and that loop iterated `Object.entries(safe)` — a map built from the request body — with an explicit `__proto__` / `constructor` / `prototype` guard inside it. The code was safe: `safe` is populated twenty lines earlier by walking `KNOWN_KEYS` and copying only those, so the property name was never user-controlled. But read on its own the loop says *assign to a property whose name came out of an object built from the request body*, and CodeQL cannot follow the constraint across two loops. It now iterates the constant array directly, looking each key up in `safe`, so the property name is provably a module-level literal. The prototype guard went with it — a hardcoded list of SCREAMING_SNAKE names cannot contain one, and a runtime check against an impossible case is noise. **Behaviour is identical**; the alerts were dated 2026-09-09 only because v1.232/v1.233 shifted the line numbers, not because the loop was new.
+
+### Notes
+Dismissing the two as false positives was the alternative, and the repository has a documented practice for exactly that. Fixing was preferable here: an assertion in a comment is worth less than a shape the analyser — and the next reader — can verify without following a constraint across twenty lines.
+The test that pinned the old guard was a **grep of the source text** for the literal `k === '__proto__' || …` expression, which proves a string is present, not that the endpoint is safe. It is replaced by two stronger checks: a structural one asserting the loop reaches `process.env[k]` by iterating `KNOWN_KEYS` (and that it does *not* iterate the request-derived map), confirmed to fail against the old shape; and a behavioural one in `config-endpoint.test.mjs` that posts `__proto__`, `constructor`, `prototype` and an unlisted name as **raw JSON** — an object literal would not do, since `{ __proto__: … }` in source sets the prototype instead of creating an own property, so `JSON.stringify` would have sent `{}` and the test would have proven nothing. **3021 → 3022 tests.**
+
 ## [1.233.1] — 2026-09-10
 
 **Fixed — the guide never described the control v1.233.0 added, and the same section still carried instructions that stopped being true 200 releases ago.**

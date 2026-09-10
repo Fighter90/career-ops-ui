@@ -7,16 +7,16 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
+[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.233.1** — **O guia nunca descreveu o controle que a v1.233.0 acrescentou.** Cada dropdown agora começa com *«Usar o padrão (…)»*, expressando um estado que a interface não conseguia mostrar: **a chave não está definida**. Some também uma linha de `### Recognized keys` que não nomeava chave alguma e mandava registrar em dev.hh.ru — inútil desde a **v1.65.0** —, junto de outras duas menções obsoletas. `tests/help-recognized-keys.test.mjs` é o portão que faltava. **3021 testes · 116 de navegador.**
+> **🆕 Última versão — v1.233.2** — **Dois alertas CodeQL `js/remote-property-injection` de alta severidade**, fechados tornando estrutural um invariante que antes só era afirmado. O laço que copia valores para `process.env` percorria um objeto construído do corpo da requisição; agora percorre o array constante. **O comportamento é idêntico.** **3022 testes · 116 de navegador.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
+[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.233.1** — **मार्गदर्शिका ने v1.233.0 द्वारा जोड़े गए नियंत्रण का वर्णन कभी नहीं किया।** अब हर ड्रॉपडाउन «डिफ़ॉल्ट का उपयोग करें (…)» से शुरू होता है, जो वह स्थिति व्यक्त करता है जिसे इंटरफ़ेस पहले दिखा नहीं सकता था: **कुंजी अनसेट है**। साथ ही `### Recognized keys` की वह पंक्ति हटी जो किसी कुंजी का नाम नहीं लेती थी और dev.hh.ru पर पंजीकरण की सलाह देती थी — **v1.65.0** के बाद निष्फल — तथा दो अन्य पुराने उल्लेख। `tests/help-recognized-keys.test.mjs` वही अनुपस्थित गेट है। **3021 परीक्षण · 116 ब्राउज़र।**
+> **🆕 नवीनतम रिलीज़ — v1.233.2** — **उच्च गंभीरता की दो CodeQL `js/remote-property-injection` चेतावनियाँ**, मौजूदा अपरिवर्त्य को कथन के बजाय संरचना बनाकर बंद की गईं। `process.env` में मान लिखने वाला लूप अनुरोध-निकाय से बने ऑब्जेक्ट पर चलता था; अब सीधे स्थिरांक सरणी पर चलता है। **व्यवहार अपरिवर्तित।** **3022 परीक्षण · 116 ब्राउज़र।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -116,14 +116,25 @@ export function registerConfigRoutes(app) {
       });
     }
     // Apply to the running process so the change takes effect immediately
-    // (no restart needed). Iterate the SAFE map (not just written) so
-    // empty-string requests delete the corresponding process.env var
-    // even though updateEnvFile reports them as "deleted" rather than
-    // "written".
-    for (const [k, val] of Object.entries(safe)) {
-      // `safe` keys are allowlisted env names, but guard against prototype keys
-      // defensively so a property write can never target the prototype chain.
-      if (k === '__proto__' || k === 'constructor' || k === 'prototype') continue;
+    // (no restart needed). Every key in `safe` came from KNOWN_KEYS, and
+    // empty-string requests are included on purpose so they delete the
+    // corresponding process.env var — updateEnvFile reports those as
+    // "deleted" rather than "written", so iterating `written` would miss them.
+    //
+    // v1.233.2 — iterate KNOWN_KEYS rather than `Object.entries(safe)`. Both
+    // are equally safe at runtime, because `safe` is only ever populated from
+    // KNOWN_KEYS twenty lines above. But taken alone this loop reads as
+    // "assign to a property whose name came out of an object built from the
+    // request body", which is what CodeQL's js/remote-property-injection saw:
+    // it cannot follow the constraint across the two loops. Iterating the
+    // constant array makes the property name provably a module-level literal,
+    // so the invariant is structural instead of asserted — and the explicit
+    // __proto__ / constructor / prototype guard the old form needed is gone
+    // with it, since a hardcoded list of SCREAMING_SNAKE names cannot contain
+    // one.
+    for (const k of KNOWN_KEYS) {
+      if (!Object.prototype.hasOwnProperty.call(safe, k)) continue;
+      const val = safe[k];
       if (val === '' || val == null) delete process.env[k];
       else process.env[k] = val;
     }

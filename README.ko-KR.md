@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
+[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.233.1** — **안내서에 v1.233.0이 더한 컨트롤 설명이 한 번도 없었습니다.** 이제 모든 드롭다운은 '기본값 사용 (…)'으로 시작해, UI가 이전에는 보일 수 없던 상태 — **키가 설정되지 않음** — 을 표현합니다. 목록에서 같은 값을 고르는 것과의 차이는 보이지 않으면서 중대합니다. 또한 Key 칸이 `(server uses default UA)`였고 **v1.19.0**에서 제거된 `HH_USER_AGENT`를 설명하며 dev.hh.ru 등록을 권하던 행 — **v1.65.0** 이후 무용 — 과 똑같이 낡은 두 곳을 지웠습니다. `tests/help-recognized-keys.test.mjs`가 빠져 있던 게이트입니다. **3021개 · 브라우저 116개.**
+> **🆕 최신 릴리스 — v1.233.2** — **심각도 높음 CodeQL `js/remote-property-injection` 두 건**을, 이미 있던 불변식을 주장이 아니라 구조로 만들어 닫았습니다. 저장값을 `process.env`로 옮기는 루프는 요청 본문에서 만들어진 객체를 돌며 안쪽에 프로토타입 방어를 두고 있었습니다. 코드는 안전했지만(스무 줄 위에서 `KNOWN_KEYS`만으로 채워집니다) 루프만 떼어 읽으면 *요청 본문에서 나온 이름의 속성에 대입한다*로 읽히고, 분석기는 두 루프에 걸친 제약을 따라가지 못합니다. 이제 상수 배열을 직접 돌아 속성 이름이 모듈 리터럴임이 증명됩니다. **동작은 동일.** **3022개 · 브라우저 116개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

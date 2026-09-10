@@ -29,7 +29,29 @@ test('content.mjs guards dotted-path writes against prototype pollution', () => 
   assert.ok(guards.length >= 2, `expected setArray + setDotted guarded, found ${guards.length}`);
 });
 
-test('config.mjs skips prototype keys when applying env vars to process.env', () => {
+/**
+ * v1.233.2 — this used to grep for a literal
+ * `k === '__proto__' || k === 'constructor' || k === 'prototype'` guard inside
+ * the loop that copies saved values into `process.env`.
+ *
+ * That guard is gone, and its absence is the improvement. The loop now iterates
+ * `KNOWN_KEYS` — a module-level array of hardcoded SCREAMING_SNAKE names —
+ * instead of `Object.entries(safe)`, so a prototype key cannot reach the
+ * property position at all and a runtime check against one is dead code.
+ * CodeQL raised two high-severity `js/remote-property-injection` alerts on the
+ * old shape: `safe` is built only from KNOWN_KEYS, but that constraint lives in
+ * a different loop and the analyser could not follow it.
+ *
+ * Asserting the source text of a guard was always the weaker test — it proves a
+ * string is present, not that the endpoint is safe. This asserts the structure
+ * that makes the guard unnecessary, and `config-endpoint.test.mjs` covers the
+ * behaviour end to end.
+ */
+test('config.mjs cannot steer a process.env write with a request-supplied name', () => {
   const src = read('server', 'lib', 'routes', 'config.mjs');
-  assert.match(src, /k === '__proto__' \|\| k === 'constructor' \|\| k === 'prototype'/);
+  // The env-apply loop iterates the constant allowlist, not the request-derived map.
+  assert.match(src, /for \(const k of KNOWN_KEYS\) \{[\s\S]{0,400}?process\.env\[k\]/,
+    'the process.env write must be reached by iterating KNOWN_KEYS, so the property name is a module literal');
+  assert.doesNotMatch(src, /for \(const \[k, val\] of Object\.entries\(safe\)\)/,
+    'iterating the request-derived map puts a user-influenced name in the property position');
 });
