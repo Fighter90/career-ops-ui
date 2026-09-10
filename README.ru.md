@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
+[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.233.0** — **Три находки в пути сохранения `#/config`; CONFIG-3 порождён моей же правкой v1.232.1.** **Осознанный выбор, совпавший с засеянным значением, отбрасывался как «не трогали»** — `initial` смешивает два происхождения, и там, где засев пришёл из `defaultValue`, а не из файла, равенство неоднозначно: либо не открывали, либо открыли и согласились. При снятом `HOST` поле показывает `127.0.0.1`; ввод ровно этого значения и Save отправляли `{}`, ключ так и не появлялся, а единственный путь — ввести заведомо неверное, сохранить и вернуть правильное. Теперь это фиксирует **`seededFromFile`**, и `dirty` становится вторым признаком ровно там, где живёт неоднозначность. **Снятие ключа показывалось как «· 0»**, потому что сервер возвращал только записанное, — теперь он отдаёт и `removed`. **Select можно было задать, но нельзя очистить**: ни у одного из 18 не было пустого пункта, поэтому каждый теперь начинается с **«Использовать умолчание (…)»**, и незаданный ключ выбирает его, а не выдаёт себя за выбор. **3018 тестов · 116 браузерных.**
+> **🆕 Последний релиз — v1.233.1** — **Руководство не описывало элемент, добавленный в v1.233.0, а тот же раздел нёс указания, переставшие быть верными 200 релизов назад.** Каждый выпадающий список теперь начинается с *«Использовать умолчание (…)»* — состояния, невыразимого в интерфейсе прежде: **ключ не задан**. Отличие от выбора того же значения из списка невидимо и существенно: пункт не пишет ничего и продолжает отдавать умолчание проекта по мере его изменения, тогда как явный выбор записывает ключ и молча оставляет вас на старом значении при следующей смене умолчания. Это тот самый дрейф, ради которого делались CONFIG-2 и CONFIG-3: механику починили в коде, а прочитать было негде. Убрана и строка `### Recognized keys`, у которой в колонке «Key» стояло `(server uses default UA)` — про `HH_USER_AGENT`, удалённый в **v1.19.0**, — и совет регистрироваться на dev.hh.ru, бесполезный с **v1.65.0**. С ней ушли ещё два столь же устаревших упоминания; troubleshooting-строка **переписана, а не удалена**, потому что российский домашний IP hh.ru действительно нужен (HTTP 451 с июля 2026). `tests/help-recognized-keys.test.mjs` — тот гейт, которого не хватало. **3021 тест · 116 браузерных.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

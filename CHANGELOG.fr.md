@@ -11,6 +11,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.233.1] — 2026-09-10
+
+**Corrigé — le guide ne décrivait pas le contrôle ajouté par v1.233.0, et la même section portait encore des instructions fausses depuis 200 versions.**
+
+### Corrigé
+**DOC-1** — l'entrée « Utiliser la valeur par défaut (…) » exprime l'état « la clé n'est pas définie », et la différence avec le choix explicite de la même valeur est invisible et lourde de conséquences. Trois puces dans le `### Behavior` existant ×17.
+**DOC-2** — une ligne du tableau ne nommait aucune clé : la cellule contenait `(server uses default UA)`, décrivant `HH_USER_AGENT`, supprimé en **v1.19.0**, et invitait à s'inscrire sur dev.hh.ru — inutile depuis **v1.65.0**. Les trois mentions périmées disparaissent ; la ligne de dépannage est **réécrite** et non supprimée, car la moitié reste vraie : depuis juillet 2026 hh.ru renvoie HTTP 451 aux IP non russes.
+**Le tableau des clés** en liste 6 sur 45 alors que son titre promet un registre. Une phrase ×17 le déclare sélection et renvoie à `#/config`.
+
+### Notes
+Le nouveau `help-recognized-keys.test.mjs` confronte la première colonne des tableaux de clés au `KNOWN_KEYS` réel. **3018 → 3021 tests** ; l'aide reste à 32 H2 / 122 H3.
+
 ## [1.233.0] — 2026-09-10
 
 **Corrigé — trois constats dans le chemin d'enregistrement de `#/config` ; CONFIG-3 découle du correctif de v1.232.1 lui-même.**

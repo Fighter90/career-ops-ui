@@ -458,13 +458,14 @@ Kaydetmenin güvenli olma şekli:
 
 ### Tanınan anahtarlar
 
+En sık gereken anahtarlar. Bu bir seçki, kayıt defteri değil — `#/config` tanınan **bütün** anahtarları gruplanmış hâlde ve her biri için bir ipucuyla listeler.
+
 | Anahtar | Ne işe yarar | Nereden alınır |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Canlı Anthropic SDK çağrılarını etkinleştirir. Hem Anthropic hem Gemini ayarlıyken tercih edilir — iş tanımı puanlaması ve derinlemesine araştırma için daha iyi uzun-metin yapılandırılmış çıktı. | <https://console.anthropic.com/settings/keys> |
 | `ANTHROPIC_MODEL` | Varsayılan `claude-sonnet-4-6`'yı geçersiz kılın. Daha zor akıl yürütme için `claude-opus-4-7`, ucuz-ve-hızlı için `claude-haiku-4-5-20251001` deneyin. | — |
 | `GEMINI_API_KEY` | Anthropic anahtarı yokken yedek. `oferta` modu için `gemini-eval.mjs` tarafından kullanılır. Düşük hacim için ücretsiz katman yeterlidir. | <https://aistudio.google.com/apikey> |
 | `GEMINI_MODEL` | Varsayılan Gemini modelini geçersiz kılın. | — |
-| `(server uses default UA)` | `hh.ru` taramalarını Rusya dışından çalıştırırken gereklidir (API, düz User-Agent'lara 403 döndürür). <https://dev.hh.ru/admin> adresinde bir uygulama kaydedin ve onun UA dizesini kullanın. | dev.hh.ru |
 | `PORT` | Express bağlanma portu. Varsayılan 4317. | — |
 | `HOST` | Bağlanma adresi. Varsayılan `127.0.0.1`. `0.0.0.0` ayarlamak arayüzü yerel ağa açar — **henüz kimlik doğrulama kapısı yok**, Production-readiness belgesine bakın. | — |
 
@@ -475,8 +476,10 @@ Kaydetmenin güvenli olma şekli:
   `sk-ant•••••••a1b2` görürsünüz, asla tam değeri değil.
 - **Kaydetme** (`POST /api/config`) her değeri doğrular, `<parent>/.env`'e
   yazar ve çalışan sürece anında uygular. Yeniden başlatma gerekmez.
-- **Boş değer, anahtarı siler.** Bir Rus IP'sini / VPN'ini kullanmayı
-  bırakmak istiyorsanız kullanışlıdır.
+- **Boş değer, anahtarı siler** — ayar yeniden *ayarlanmamış* duruma döner ve projenin varsayılanı tekrar geçerli olur.
+- **Açılır listeler «Varsayılanı kullan (…)» ile başlar.** Bunu seçmek, anahtarın `.env` içinde **bulunmadığı** anlamına gelir: uygulama projenin varsayılanını kullanır ve proje onu her değiştirdiğinde yenisini almaya devam edersiniz. Aynı değeri aşağıdaki listeden seçmek onu **sabitler** — varsayılan değişse bile kalır.
+- **Hiç dokunmadığınız bir alan asla yazılmaz.** Ayarlanmamış bir alan, sunucunun ne kullanacağını görebilmeniz için varsayılanı gösterir; gösterilen bu değer, alanı gerçekten düzenlemediğiniz sürece kaydedilmez.
+- **Kaydetme neyin değiştiğini bildirir.** Bildirim yazılan *ve* kaldırılan anahtarları sayar; bu yüzden bir alanı temizlemek «· 0» değil «· 1» gösterir.
 
 ### Duman-testi düğmeleri
 
@@ -962,7 +965,6 @@ Her kurulum kapısı, OK / OPTIONAL / FAIL rozetleriyle. Herhangi bir
 - `Profile customized` — `candidate.full_name` şablon yer tutucusu
   değil.
 - `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` — `.env`'de ayarlı.
-- `(server uses default UA)` — yalnızca hh.ru'yu Rusya dışından
   tararsanız önemlidir.
 - `Playwright (parent node_modules)` — PDF üretimi ve
   `check-liveness.mjs` için gerekli.
@@ -1760,7 +1762,7 @@ vb.). Sayfa başına 25 satır; sunucu en fazla 500 en-son olay döndürür.
 |---|---|---|
 | `cv.md`'de Health sayfası kırmızı | İlk çalıştırma, dosya henüz yok | `touch $CAREER_OPS_ROOT/cv.md` ardından yenileyin. |
 | `Profile customized`'da Health kırmızı | `candidate.full_name` hâlâ `Jane Smith` diyor | `config/profile.yml`'yi düzenleyin. |
-| Tarama günlüğünde `hh.ru: HTTP 403` | Rus olmayan IP, `(server uses default UA)` yok | `dev.hh.ru/admin`'de kaydolun, bir Rus IP'si / VPN ayarlayın. |
+| Tarama günlüğünde `hh.ru: HTTP 451` veya `403` | Çıkış IP'si Rusya dışında ya da hh.ru onu VPN/veri merkezi olarak işaretledi | Rus bir **ev** IP'sinden çalıştırın. Anahtar veya User-Agent ayarı yoktur — tarayıcı UA'sını tarayıcının kendisi gönderir. |
 | `gemini-eval.mjs: ERR_MODULE_NOT_FOUND` | Üst proje bağımlılıkları kurulu değil | `cd $CAREER_OPS_ROOT && npm install`. |
 | Generate PDF hata veriyor | Playwright üst projede kurulu değil | `cd $CAREER_OPS_ROOT && npx playwright install chromium`. |
 | `/career-ops apply` "no report found" diyor | Pipeline bu iş tanımını hiç puanlamadı | Önce `/career-ops pipeline` (veya `#/evaluate`) çalıştırın; §14 ön koşullarına bakın. |

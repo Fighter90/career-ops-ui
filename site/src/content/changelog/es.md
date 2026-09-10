@@ -11,6 +11,18 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.233.1] — 2026-09-10
+
+**Corregido — la guía no describía el control que añadió v1.233.0, y la misma sección aún traía instrucciones que dejaron de ser ciertas hace 200 versiones.**
+
+### Corregido
+**DOC-1** — la entrada *«Usar el valor por defecto (…)»* expresa el estado «la clave no está definida», y la diferencia con elegir ese mismo valor de la lista es invisible y con consecuencias: la primera no escribe nada y te sigue dando el valor del proyecto según cambia; la segunda lo fija en `.env` y te deja en el viejo, en silencio. Tres viñetas en el `### Behavior` existente ×17.
+**DOC-2** — una fila de la tabla no nombraba clave alguna: la celda contenía `(server uses default UA)`, describiendo `HH_USER_AGENT`, que **v1.19.0** eliminó, y mandaba registrarse en dev.hh.ru — inútil desde **v1.65.0**. Las tres menciones obsoletas desaparecen; la fila de solución de problemas se **reescribe**, no se borra: desde julio de 2026 hh.ru devuelve HTTP 451 a IPs no rusas, así que una IP residencial rusa sí hace falta.
+**La tabla de claves** lista 6 de 45 mientras su título promete un registro. Una frase ×17 la declara una selección y apunta a `#/config`.
+
+### Notas
+El nuevo `help-recognized-keys.test.mjs` compara la primera columna de las tablas de claves con `KNOWN_KEYS` en vivo. **3018 → 3021 pruebas**; la ayuda sigue en 32 H2 / 122 H3.
+
 ## [1.233.0] — 2026-09-10
 
 **Corregido — tres hallazgos en la ruta de guardado de `#/config`; CONFIG-3 lo causó la propia corrección de v1.232.1.**

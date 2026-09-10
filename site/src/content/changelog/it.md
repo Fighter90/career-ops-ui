@@ -2,6 +2,18 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.233.1] — 2026-09-10
+
+**Corretto — la guida non descriveva il controllo aggiunto dalla v1.233.0, e la stessa sezione portava ancora istruzioni non più vere da 200 release.**
+
+### Corretto
+**DOC-1** — la voce «Usa il valore predefinito (…)» esprime lo stato «la chiave non è impostata»; la differenza dallo scegliere lo stesso valore dall'elenco è invisibile e rilevante. Tre punti nel `### Behavior` esistente ×17.
+**DOC-2** — una riga della tabella non nominava alcuna chiave: la cella conteneva `(server uses default UA)`, che descriveva `HH_USER_AGENT`, rimosso nella **v1.19.0**, e invitava a registrarsi su dev.hh.ru — inutile dalla **v1.65.0**. Le tre menzioni obsolete spariscono; la riga di risoluzione problemi è **riscritta**, non cancellata: da luglio 2026 hh.ru restituisce HTTP 451 agli IP non russi.
+**La tabella delle chiavi** ne elenca 6 su 45 mentre il titolo promette un registro. Una frase ×17 la dichiara una selezione e rimanda a `#/config`.
+
+### Note
+Il nuovo `help-recognized-keys.test.mjs` confronta la prima colonna delle tabelle di chiavi con il `KNOWN_KEYS` vivo. **3018 → 3021 test**; la guida resta a 32 H2 / 122 H3.
+
 ## [1.233.0] — 2026-09-10
 
 **Corretto — tre riscontri nel percorso di salvataggio di `#/config`; CONFIG-3 è stato causato dalla correzione stessa della v1.232.1.**

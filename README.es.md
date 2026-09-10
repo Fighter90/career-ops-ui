@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
+[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.233.0** — **Tres hallazgos en la ruta de guardado de `#/config`; CONFIG-3 lo causó la propia corrección de v1.232.1.** Una elección deliberada que coincidía con el valor sembrado se descartaba como «sin tocar»: donde la semilla venía de `defaultValue` y no del archivo, la igualdad es ambigua. Ahora se registra **`seededFromFile`**. Eliminar una clave informaba «· 0» porque el servidor solo devolvía lo escrito; ahora responde también con `removed`. Un desplegable podía fijarse pero nunca vaciarse: cada uno encabeza ahora con **«Usar el valor por defecto (…)»**. **3018 pruebas · 116 de navegador.**
+> **🆕 Última versión — v1.233.1** — **La guía nunca describió el control que añadió v1.233.0.** Cada desplegable encabeza ahora con *«Usar el valor por defecto (…)»*, que expresa un estado que la interfaz no podía mostrar: **la clave no está definida**. También desaparece una fila de `### Recognized keys` que no nombraba clave alguna y mandaba registrarse en dev.hh.ru — inútil desde **v1.65.0** —, junto con otras dos menciones obsoletas; la fila de solución de problemas se **reescribió**, porque hh.ru sí necesita una IP residencial rusa (HTTP 451 desde julio de 2026). `tests/help-recognized-keys.test.mjs` es la comprobación que faltaba. **3021 pruebas · 116 de navegador.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

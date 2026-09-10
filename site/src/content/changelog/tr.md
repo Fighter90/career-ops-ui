@@ -2,6 +2,18 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.233.1] — 2026-09-10
+
+**Düzeltildi — kılavuz v1.233.0'ın eklediği denetimi hiç anlatmıyordu ve aynı bölüm 200 sürümdür doğru olmayan yönergeler taşıyordu.**
+
+### Düzeltildi
+**DOC-1** — «Varsayılanı kullan (…)» girdisi «anahtar ayarlanmadı» durumunu ifade eder; aynı değeri listeden açıkça seçmekle farkı görünmez ve önemlidir. Mevcut `### Behavior` listesine üç madde ×17.
+**DOC-2** — bir tablo satırı hiçbir anahtarı adlandırmıyordu: hücrede `(server uses default UA)` yazıyordu ve **v1.19.0**'da kaldırılan `HH_USER_AGENT`'ı anlatıyor, dev.hh.ru'ya kayıt öneriyordu — **v1.65.0**'dan beri yararsız. Üç eskimiş anma da gitti; sorun giderme satırı silinmedi, **yeniden yazıldı**: Temmuz 2026'dan beri hh.ru Rus olmayan IP'lere HTTP 451 dönüyor.
+**Anahtar tablosu** 45'ten 6'sını listeliyor, oysa başlık bir kayıt defteri vaat ediyor. Bir cümle ×17 onu seçki ilan edip `#/config`'e yönlendiriyor.
+
+### Notlar
+Yeni `help-recognized-keys.test.mjs`, anahtar tablolarının ilk sütununu canlı `KNOWN_KEYS` ile karşılaştırır. **3018 → 3021 test**; yardım 32 H2 / 122 H3 olarak kalıyor.
+
 ## [1.233.0] — 2026-09-10
 
 **Düzeltildi — `#/config` kaydetme yolunda üç bulgu; CONFIG-3'e v1.232.1'in kendi düzeltmesi yol açtı.**

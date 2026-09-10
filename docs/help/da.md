@@ -444,13 +444,14 @@ Sådan er gemningen sikker:
 
 ### Genkendte nøgler
 
+De nøgler, man oftest har brug for. Dette er et udvalg, ikke registret — `#/config` viser **alle** genkendte nøgler, grupperet og med et hint til hver.
+
 | Nøgle | Hvad den gør | Hvor man får den |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Aktiverer live Anthropic SDK-kald. Foretrukket når både Anthropic + Gemini er sat — bedre long-form struktureret output til JD-scoring og dybt research. | <https://console.anthropic.com/settings/keys> |
 | `ANTHROPIC_MODEL` | Tilsidesæt standard `claude-sonnet-4-6`. Prøv `claude-opus-4-7` til hårdere reasoning, `claude-haiku-4-5-20251001` til billigt-og-hurtigt. | — |
 | `GEMINI_API_KEY` | Fallback når ingen Anthropic-nøgle. Bruges af `gemini-eval.mjs` til `oferta`-tilstand. Gratis-niveau virker til lav volumen. | <https://aistudio.google.com/apikey> |
 | `GEMINI_MODEL` | Tilsidesæt standard Gemini-model. | — |
-| `(server uses default UA)` | Påkrævet ved kørsel af `hh.ru`-scanninger fra uden for Rusland (API'en returnerer 403 på almindelige User-Agents). Registrér en app på <https://dev.hh.ru/admin> og brug dens UA-streng. | dev.hh.ru |
 | `PORT` | Express bind-port. Standard 4317. | — |
 | `HOST` | Bind-adresse. Standard `127.0.0.1`. At sætte `0.0.0.0` eksponerer UI'en på LAN'et — **ingen auth-gate endnu**, se Production-readiness-dokumentet. | — |
 
@@ -462,7 +463,10 @@ Sådan er gemningen sikker:
 - **Gem** (`POST /api/config`) validerer hver værdi, skriver til
   `<parent>/.env` og anvender den straks på den kørende proces.
   Ingen genstart nødvendig.
-- **Tom værdi sletter** nøglen. Nyttigt hvis du vil holde op med at bruge en russisk IP / VPN.
+- **Tom værdi sletter** nøglen — indstillingen vender tilbage til *ikke sat*, og projektets standardværdi gælder igen.
+- **Rullelister begynder med »Brug standardværdien (…)«.** At vælge den betyder, at nøglen **ikke** står i `.env`: appen bruger projektets standard, og du får fortsat den nye, hver gang projektet ændrer den. Vælger du den samme værdi fra listen nedenfor, **låses** den — den bliver stående, også når standarden flytter sig.
+- **Et felt, du aldrig rører, bliver aldrig skrevet.** Et uindstillet felt viser standardværdien, så du kan se, hvad serveren bruger; den viste værdi gemmes ikke, medmindre du faktisk redigerer feltet.
+- **Gem melder, hvad der blev ændret.** Beskeden tæller både skrevne *og* fjernede nøgler, så et ryddet felt viser »· 1«, ikke »· 0«.
 
 ### Smoke-test-knapper
 
@@ -915,7 +919,6 @@ du opretter en "virker ikke"-sag.
 - `Profile customized` — `candidate.full_name` er ikke skabelon-
   placeholderen.
 - `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` — sat i `.env`.
-- `(server uses default UA)` — betyder kun noget, hvis du scanner hh.ru fra uden for Rusland.
 - `Playwright (parent node_modules)` — påkrævet til PDF-generering
   og `check-liveness.mjs`. Installér med
   `cd $CAREER_OPS_ROOT && npm install && npx playwright install chromium`.
@@ -1683,7 +1686,7 @@ events.
 |---|---|---|
 | Health-side rød på `cv.md` | Første kørsel, filen findes ikke endnu | `touch $CAREER_OPS_ROOT/cv.md` derefter genindlæs. |
 | Health rød på `Profile customized` | `candidate.full_name` siger stadig `Jane Smith` | Redigér `config/profile.yml`. |
-| `hh.ru: HTTP 403` i scan-log | Ikke-russisk IP, ingen `(server uses default UA)` | Registrér på `dev.hh.ru/admin`, sæt en russisk IP / VPN. |
+| `hh.ru: HTTP 451` eller `403` i scan-loggen | Udgående IP er uden for Rusland, eller hh.ru har markeret den som VPN/datacenter | Kør fra en russisk **privat** IP. Der findes hverken en nøgle eller en User-Agent-indstilling — scanneren sender selv en browser-UA. |
 | `gemini-eval.mjs: ERR_MODULE_NOT_FOUND` | Overordnet projekts deps ikke installeret | `cd $CAREER_OPS_ROOT && npm install`. |
 | Generér PDF fejler | Playwright ikke installeret i den overordnede | `cd $CAREER_OPS_ROOT && npx playwright install chromium`. |
 | `/career-ops apply` siger "no report found" | Pipeline scorede aldrig denne JD | Kør `/career-ops pipeline` (eller `#/evaluate`) først; se §14-forudsætninger. |

@@ -397,13 +397,14 @@ Save 先は `interview-prep/<company>-<role>.md`。
 
 ### 認識されるキー
 
+よく必要になるキーです。これは登録簿ではなく抜粋で、認識されるキーの**全一覧**はグループ分けとヒント付きで `#/config` にあります。
+
 | キー | 動作 | 取得元 |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Anthropic SDK へのライブコールを有効化。Anthropic と Gemini が両方設定されている場合に優先 — JD 採点と深掘りリサーチでの長文構造化出力の品質が高い。 | <https://console.anthropic.com/settings/keys> |
 | `ANTHROPIC_MODEL` | デフォルトの `claude-sonnet-4-6` を上書き。難しい推論には `claude-opus-4-7`、安価で高速な用途には `claude-haiku-4-5-20251001` を試してください。 | — |
 | `GEMINI_API_KEY` | Anthropic キーがない場合のフォールバック。`gemini-eval.mjs` が `oferta` モードで使用。少量なら無料ティアで動作。 | <https://aistudio.google.com/apikey> |
 | `GEMINI_MODEL` | デフォルトの Gemini モデルを上書き。 | — |
-| `(server uses default UA)` | ロシア国外から `hh.ru` をスキャンする際に必須 (API は素の User-Agent に対し 403 を返します)。<https://dev.hh.ru/admin> でアプリを登録し、その UA 文字列を使います。 | dev.hh.ru |
 | `PORT` | Express のバインドポート。デフォルト 4317。 | — |
 | `HOST` | バインドアドレス。デフォルト `127.0.0.1`。`0.0.0.0` を設定すると UI が LAN に公開されます — **まだ認証ゲートはありません**。Production-readiness ドキュメントを参照してください。 | — |
 
@@ -415,8 +416,10 @@ Save 先は `interview-prep/<company>-<role>.md`。
   決して表示されません。
 - **保存** (`POST /api/config`) は各値を検証し、`<parent>/.env` に
   書き込み、実行中のプロセスに即時適用します。再起動不要。
-- **空値で削除** されます。ロシア IP / VPN を使わなくする場合などに
-  便利です。
+- **空値で削除** されます——設定は*未設定*に戻り、プロジェクトの既定値が再び効きます。
+- **ドロップダウンは「既定値を使う（…）」から始まります。** これを選ぶと、そのキーは `.env` に**書かれません**。アプリはプロジェクトの既定値を使い、プロジェクトが既定値を変えれば新しい値が届き続けます。同じ値を下の一覧から選ぶと**固定**され、既定値が動いても残ります。
+- **触れていない欄は書き込まれません。** 未設定の欄はサーバーが使う値を見せるために既定値を表示しますが、実際に編集しない限りその表示値は保存されません。
+- **保存は変更内容を報告します。** トーストは書き込んだキーと削除したキーの両方を数えるので、欄を空にすると「· 0」ではなく「· 1」と出ます。
 
 ### スモークテストボタン
 
@@ -827,7 +830,6 @@ $EDITOR portals.yml
 - `Profile customized` — `candidate.full_name` がテンプレート
   プレースホルダではないこと。
 - `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` — `.env` に設定済み。
-- `(server uses default UA)` — ロシア国外から hh.ru をスキャンする
   場合のみ重要。
 - `Playwright (parent node_modules)` — PDF 生成と
   `check-liveness.mjs` に必要。
@@ -1624,7 +1626,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 |---|---|---|
 | Health ページが `cv.md` で赤 | 初回起動、ファイルがまだ存在しない | `touch $CAREER_OPS_ROOT/cv.md` してリロード。 |
 | Health が `Profile customized` で赤 | `candidate.full_name` がまだ `Jane Smith` | `config/profile.yml` を編集。 |
-| スキャンログで `hh.ru: HTTP 403` | ロシア国外 IP、`(server uses default UA)` 未設定 | `dev.hh.ru/admin` で登録、ロシア IP / VPN を設定。 |
+| スキャンログの `hh.ru: HTTP 451` または `403` | 送信元 IP がロシア国外、または hh.ru が VPN／データセンターと判定 | ロシアの**家庭用** IP から実行してください。キーや User-Agent の設定は存在せず、スキャナーが自らブラウザー UA を送ります。 |
 | `gemini-eval.mjs: ERR_MODULE_NOT_FOUND` | 親プロジェクトの依存が未インストール | `cd $CAREER_OPS_ROOT && npm install`。 |
 | Generate PDF がエラー | 親に Playwright が未インストール | `cd $CAREER_OPS_ROOT && npx playwright install chromium`。 |
 | `/career-ops apply` が "no report found" | この JD で pipeline がまだ採点していない | まず `/career-ops pipeline` (または `#/evaluate`) を実行; 第 14 章の前提条件を参照。 |

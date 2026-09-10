@@ -405,13 +405,14 @@ Os segredos são mascarados após salvar e nunca logados. Campos de id de modelo
 
 ### Chaves reconhecidas
 
+As chaves mais frequentemente necessárias. É uma seleção, não o registro: `#/config` lista **todas** as chaves reconhecidas, agrupadas e com uma dica em cada uma.
+
 | Chave | O que faz | Onde obter |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Habilita chamadas live ao SDK Anthropic. Preferida quando Anthropic + Gemini estão ambas configuradas — melhor saída estruturada long-form para pontuação de JD e deep research. | <https://console.anthropic.com/settings/keys> |
 | `ANTHROPIC_MODEL` | Sobrescreve o default `claude-sonnet-4-6`. Experimente `claude-opus-4-7` para raciocínio mais pesado, `claude-haiku-4-5-20251001` para barato-e-rápido. | — |
 | `GEMINI_API_KEY` | Fallback quando não há chave Anthropic. Usado por `gemini-eval.mjs` no modo `oferta`. Free tier funciona para baixo volume. | <https://aistudio.google.com/apikey> |
 | `GEMINI_MODEL` | Sobrescreve o modelo Gemini default. | — |
-| `(server uses default UA)` | Necessário ao rodar scans do `hh.ru` de fora da Rússia (a API retorna 403 em User-Agents genéricos). Registre um app em <https://dev.hh.ru/admin> e use a string UA dele. | dev.hh.ru |
 | `PORT` | Porta de bind do Express. Default 4317. | — |
 | `HOST` | Endereço de bind. Default `127.0.0.1`. Configurar `0.0.0.0` expõe a UI na LAN — **sem gate de auth ainda**, veja o doc de Production-readiness. | — |
 
@@ -424,8 +425,10 @@ Os segredos são mascarados após salvar e nunca logados. Campos de id de modelo
 - **Save** (`POST /api/config`) valida cada valor, grava em
   `<parent>/.env`, e aplica imediatamente ao processo em execução.
   Sem reinício.
-- **Valor vazio deleta** a chave. Útil se você quiser deixar de usar
-  uma chave hh.ru / VPN russo.
+- **Valor vazio deleta** a chave — a configuração volta a *não definida* e o padrão do projeto passa a valer de novo.
+- **Os dropdowns começam com «Usar o padrão (…)».** Escolhê-lo significa que a chave **não está** no `.env`: o app usa o padrão do projeto e você continuará recebendo o novo sempre que o projeto mudá-lo. Escolher esse mesmo valor na lista abaixo o **fixa** — ele permanece mesmo depois que o padrão mudar.
+- **Um campo que você nunca toca nunca é gravado.** Um campo não definido mostra o padrão para você ver o que o servidor usará; esse valor exibido não é salvo a menos que você edite o campo.
+- **Salvar informa o que mudou.** O aviso conta as chaves gravadas *e* as removidas, então limpar um campo mostra `· 1`, não `· 0`.
 
 ### Botões de smoke-test
 
@@ -828,7 +831,6 @@ de abrir qualquer issue "não funciona".
 - `Profile customized` — `candidate.full_name` não é o placeholder
   do template.
 - `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` — configurada em `.env`.
-- `(server uses default UA)` — só importa se você escanear hh.ru de
   fora da Rússia.
 - `Playwright (parent node_modules)` — necessário para geração de
   PDF e `check-liveness.mjs`. Instale com
@@ -1647,7 +1649,7 @@ mais recentes.
 |---|---|---|
 | Página Health em vermelho no `cv.md` | Primeira execução, arquivo ainda não existe | `touch $CAREER_OPS_ROOT/cv.md` e dê refresh. |
 | Health vermelho em `Profile customized` | `candidate.full_name` ainda é `Jane Smith` | Edite `config/profile.yml`. |
-| `hh.ru: HTTP 403` no log do scan | IP não-russo, sem `(server uses default UA)` | Registre em `dev.hh.ru/admin`, configure um IP russo / VPN. |
+| `hh.ru: HTTP 451` ou `403` no log do scan | O IP de saída está fora da Rússia, ou o hh.ru o marcou como VPN/datacenter | Execute a partir de um IP **residencial** russo. Não existe chave nem configuração de User-Agent — o scanner envia um UA de navegador sozinho. |
 | `gemini-eval.mjs: ERR_MODULE_NOT_FOUND` | Dependências do projeto pai não instaladas | `cd $CAREER_OPS_ROOT && npm install`. |
 | Erros no Generate PDF | Playwright não instalado no pai | `cd $CAREER_OPS_ROOT && npx playwright install chromium`. |
 | `/career-ops apply` diz "no report found" | O pipeline nunca pontuou este JD | Rode `/career-ops pipeline` (ou `#/evaluate`) primeiro; veja os pré-requisitos da §14. |

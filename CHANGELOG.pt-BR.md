@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.233.1] — 2026-09-10
+
+**Corrigido — o guia não descrevia o controle que a v1.233.0 acrescentou, e a mesma seção ainda trazia instruções que deixaram de valer há 200 versões.**
+
+### Corrigido
+**DOC-1** — a entrada *«Usar o padrão (…)»* expressa o estado «a chave não está definida»; a diferença para escolher o mesmo valor na lista é invisível e relevante. Três itens no `### Behavior` existente ×17.
+**DOC-2** — uma linha da tabela não nomeava chave nenhuma: a célula trazia `(server uses default UA)`, descrevendo `HH_USER_AGENT`, removido na **v1.19.0**, e mandava registrar em dev.hh.ru — inútil desde a **v1.65.0**. As três menções obsoletas foram embora; a linha de solução de problemas foi **reescrita**, pois metade continua verdadeira: desde julho de 2026 o hh.ru devolve HTTP 451 a IPs não russos.
+**A tabela de chaves** lista 6 de 45 enquanto o título promete um registro. Uma frase ×17 a declara uma seleção e aponta para `#/config`.
+
+### Notas
+O novo `help-recognized-keys.test.mjs` confere a primeira coluna das tabelas de chaves contra o `KNOWN_KEYS` ao vivo. **3018 → 3021 testes**; a ajuda continua em 32 H2 / 122 H3.
+
 ## [1.233.0] — 2026-09-10
 
 **Corrigido — três achados no caminho de salvar do `#/config`; o CONFIG-3 foi causado pela própria correção da v1.232.1.**

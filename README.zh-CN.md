@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-3018%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.0)
+[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.233.0** — **`#/config` 保存路径上的三处发现；CONFIG-3 由 v1.232.1 的修复本身引起。** 与预置值相同的有意选择被当作「未触碰」丢弃——`initial` 混淆两种来源，来自 `defaultValue` 时相同是歧义的。`HOST` 缺失时字段显示 `127.0.0.1`，输入同一个值保存却发出 `{}`，键仍不存在，唯一出路是先填错再改回。现在由 **`seededFromFile`** 记录来源。**删除键显示「· 0」**是因为服务器只返回写入的内容——现在也返回 `removed`。**下拉框能设不能清**：18 个都没有空选项，故每个现在以**「使用默认值（…）」**开头。**3018 项 · 浏览器 116 项。**
+> **🆕 最新版本 — v1.233.1** — **指南从未描述 v1.233.0 新增的控件。** 每个下拉框现以「使用默认值（…）」开头，表达界面此前无法表示的状态：**该键未设置**。与从列表中选中同一个值的差别既看不见又要紧：前者什么都不写并持续跟随项目默认值，后者写入该键并在下次默认值变动时把你无声留在旧值上。同时清除了 Key 栏为 `(server uses default UA)`、描述 **v1.19.0** 已移除的 `HH_USER_AGENT` 并让人去 dev.hh.ru 注册的表格行——自 **v1.65.0** 起毫无用处——以及另外两处同样陈旧的说明。排障行是**改写**而非删除（自 2026 年 7 月起 hh.ru 对非俄罗斯 IP 返回 HTTP 451）。`tests/help-recognized-keys.test.mjs` 是此前缺席的闸门。**3021 项 · 浏览器 116 项。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
