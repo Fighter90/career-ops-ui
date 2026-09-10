@@ -2,6 +2,16 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.233.2] — 2026-09-10
+
+**Behoben — zwei CodeQL-Warnungen `js/remote-property-injection` hoher Schwere.**
+
+### Behoben
+Die Schleife, die gespeicherte Werte nach `process.env` überträgt, lief über `Object.entries(safe)` — ein aus dem Request-Body gebautes Objekt — mit einer expliziten Wache gegen Prototyp-Schlüssel darin. Der Code war sicher, denn `safe` wird zwanzig Zeilen früher ausschließlich aus `KNOWN_KEYS` befüllt; für sich gelesen sagt die Schleife jedoch *schreibe in eine Eigenschaft, deren Name aus einem aus dem Request gebauten Objekt stammt*, und CodeQL kann diese Einschränkung nicht über zwei Schleifen hinweg verfolgen. Sie läuft nun direkt über das konstante Array, der Eigenschaftsname ist damit nachweislich ein Modul-Literal. **Das Verhalten ist identisch.**
+
+### Anmerkungen
+Der Test, der die alte Wache festschrieb, war ein Grep über den Quelltext. Ersetzt durch einen strukturellen (nachweislich rot gegen die alte Form) und einen Verhaltenstest, der `__proto__` als **rohes JSON** sendet — ein Objektliteral hätte den Prototyp gesetzt statt die Eigenschaft anzulegen. **3021 → 3022 Tests.**
+
 ## [1.233.1] — 2026-09-10
 
 **Behoben — die Anleitung beschrieb das in v1.233.0 hinzugefügte Bedienelement nicht, und derselbe Abschnitt trug noch Anweisungen, die seit 200 Releases falsch sind.**

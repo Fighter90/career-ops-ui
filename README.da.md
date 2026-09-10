@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
+[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.233.1** — **Vejledningen beskrev aldrig det element, v1.233.0 tilføjede.** Hver rulleliste begynder nu med »Brug standardværdien (…)«, som udtrykker en tilstand, grænsefladen ikke kunne vise: **nøglen er ikke sat**. Væk er også en række fra `### Recognized keys`, der slet ingen nøgle nævnte og rådede til registrering på dev.hh.ru — nytteløst siden **v1.65.0** — sammen med to lige så forældede omtaler. `tests/help-recognized-keys.test.mjs` er den manglende kontrol. **3021 test · 116 browser.**
+> **🆕 Seneste udgivelse — v1.233.2** — **To CodeQL-advarsler `js/remote-property-injection` af høj alvorlighed**, lukket ved at gøre en eksisterende invariant strukturel i stedet for påstået. Løkken, der kopierer værdier til `process.env`, gik gennem et objekt bygget af request-body'en; nu går den gennem det konstante array. **Adfærden er identisk.** **3022 test · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

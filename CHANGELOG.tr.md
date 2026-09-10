@@ -2,6 +2,16 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.233.2] — 2026-09-10
+
+**Düzeltildi — yüksek önem dereceli iki CodeQL `js/remote-property-injection` uyarısı.**
+
+### Düzeltildi
+Kaydedilen değerleri `process.env`'e taşıyan döngü, istek gövdesinden kurulan `Object.entries(safe)` üzerinde dönüyor ve içinde prototip anahtarlarına karşı açık bir koruma taşıyordu. Kod güvenliydi, çünkü `safe` yalnızca `KNOWN_KEYS`'ten doldurulur; ama çözümleyici bu kısıtı iki döngü boyunca izleyemez. Artık doğrudan sabit dizi üzerinde dönüyor, dolayısıyla özellik adı kanıtlanabilir biçimde bir modül sabiti. **Davranış aynı.**
+
+### Notlar
+Eski korumayı sabitleyen test, kaynak metninde bir grep'ti. Yerine yapısal bir test ve `__proto__`'yu **ham JSON** olarak gönderen davranışsal bir test geldi. **3021 → 3022 test.**
+
 ## [1.233.1] — 2026-09-10
 
 **Düzeltildi — kılavuz v1.233.0'ın eklediği denetimi hiç anlatmıyordu ve aynı bölüm 200 sürümdür doğru olmayan yönergeler taşıyordu.**

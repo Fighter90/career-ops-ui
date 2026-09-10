@@ -7,16 +7,16 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-3021%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.1)
+[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.233.1** — **Посібник не описував елемент, доданий у v1.233.0.** Кожен випадний список тепер починається з *«Використовувати усталене (…)»* — стану «ключ не задано». Прибрано рядок таблиці, що не називав ключа й радив реєструватися на dev.hh.ru (марно з **v1.65.0**), і ще два застарілі згадування. `tests/help-recognized-keys.test.mjs` — гейт, якого бракувало. **3021 тест · 116 браузерних.**
+> **🆕 Останній реліз — v1.233.2** — **Дві знахідки CodeQL `js/remote-property-injection`.** Цикл, що переносить збережені значення в `process.env`, обходив об'єкт, зібраний із тіла запиту; тепер він іде прямо константним масивом, тож ім'я властивості доказово є літералом модуля. **Поведінка ідентична.** Греп по тексту вихідника замінено структурною та поведінковою перевірками. **3022 тести · 116 браузерних.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

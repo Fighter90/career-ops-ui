@@ -8,6 +8,16 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.233.2] — 2026-09-10
+
+**Rettet — to CodeQL-advarsler `js/remote-property-injection` af høj alvorlighed.**
+
+### Rettet
+Løkken, der kopierer gemte værdier til `process.env`, gik gennem `Object.entries(safe)` — et objekt bygget af request-body'en — med en eksplicit vagt mod prototype-nøgler indeni. Koden var sikker, da `safe` kun fyldes fra `KNOWN_KEYS`, men analysatoren kan ikke følge den begrænsning på tværs af to løkker. Nu går den direkte gennem det konstante array, så egenskabsnavnet beviseligt er et modul-literal. **Adfærden er identisk.**
+
+### Noter
+Testen, der fastholdt den gamle vagt, var et grep i kildeteksten. Erstattet af en strukturel og en adfærdstest, der sender `__proto__` som **rå JSON**. **3021 → 3022 test.**
+
 ## [1.233.1] — 2026-09-10
 
 **Rettet — vejledningen beskrev ikke det element, v1.233.0 tilføjede, og samme afsnit bar stadig instruktioner, der har været forkerte i 200 udgivelser.**
