@@ -118,10 +118,11 @@ console.log(`[sync-assets] ${scanSources.length} scan sources -> facts.sources`)
 // --- 4. repo facts ----------------------------------------------------------
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
 
-// Scanner adapters: every *.mjs in server/lib/sources/ except registry.mjs.
+// Scanner adapters: every *.mjs in server/lib/sources/ except registry.mjs and
+// `_`-prefixed helpers (`_safe-url.mjs`), which the registry itself skips.
 const sourcesDir = join(ROOT, 'server', 'lib', 'sources');
 const adapterFiles = readdirSync(sourcesDir).filter(
-  (f) => f.endsWith('.mjs') && f !== 'registry.mjs'
+  (f) => f.endsWith('.mjs') && f !== 'registry.mjs' && !f.startsWith('_')
 );
 // RU adapters declare region 'ru' in their meta block.
 let adaptersRu = 0;

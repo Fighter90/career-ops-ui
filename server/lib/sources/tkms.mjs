@@ -28,6 +28,7 @@ import { fetchJson, delay } from '../http-json.mjs';
 // Titles arrive HTML-escaped; decode before the tag-strip so an undecoded
 // "R&amp;D" can't fail a user's title_filter and drop the posting silently.
 import { decodeEntities } from '../html-entities.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 export const meta = {
   value: 'tkms',
@@ -132,11 +133,18 @@ export function parseQuery(json, cfg) {
     const id = d.id != null ? String(d.id) : '';
     const title = decodeEntities(String(d.title || '').replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
     if (!id || !title) continue;
+    // A lone surrogate in id throws URIError out of encodeURIComponent and
+    // aborts this loop; id is also the dedup key. Drop this row on a null.
+    // cfg.locale is a config-set code ("en"/"de"), so its null path is
+    // unreachable in practice; it shares the helper for one consistent call.
+    const encodedId = safeEncodeURIComponent(id);
+    const encodedLocale = safeEncodeURIComponent(cfg.locale);
+    if (encodedId === null || encodedLocale === null) continue;
     rows.push({
       id: `tkms-${id}`,
       title,
       company,
-      url: `${cfg.origin}/${encodeURIComponent(cfg.locale)}/job/${slugify(title)}/${encodeURIComponent(id)}`,
+      url: `${cfg.origin}/${encodedLocale}/job/${slugify(title)}/${encodedId}`,
       salary: '',
       location: tkmsLocation(d),
       isRemote: false,

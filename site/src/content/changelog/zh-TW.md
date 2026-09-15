@@ -8,6 +8,19 @@
 
 ---
 
+## [1.234.0] — 2026-09-15
+
+**父專案對齊 — career-ops `main` @ `56cce8f`（`VERSION` 仍為 1.32.0，距 1.32.0 已有 58 個提交）。同一項修復鏡射至 15 個來源，並加上防護以杜絕重演。**
+
+### 修復
+**單一格式錯誤的職缺 id 不再清空整頁。** `encodeURIComponent` 在遇到孤立的 UTF-16 代理項時會拋出 `URIError`，而 JSON 負載就可能攜帶這種代理項——`JSON.parse('"\\uD800"')` 會把它原樣保留。十五個來源都在解析迴圈*內部*，以主機端提供的 id 或 slug 組出每則職缺的 URL，於是一筆錯誤的職缺就會中止整個迴圈，連帶丟失該頁上的所有職缺；由於例外在逐公司的 catch 取得任何回報之前就已經展開，這甚至不會被記錄成一次來源失敗。父專案在 `providers/_safe-url.mjs` 中修復了這個問題（`safeEncodeURIComponent` 在遇到 `URIError` 時回傳 `null`，其餘例外照樣拋出），並讓每個迴圈的 id 都經過它處理，遇到 `null` 只丟棄那一筆職缺。該輔助函式現已成為 `server/lib/sources/_safe-url.mjs`，同樣的修改套用到十三個被鏡射的來源——alibaba、arbeitsagentur、bamboohr、feishu-jobs、garena、jibeapply、manfred、meituan、mokahr、phenom、thehub、tkms、vdab——以及**兩個僅 web-ui 獨有、由新防護在第一次執行時揪出的來源：jobstreet 與 trudvsem**，它們有著相同的迴圈結構與相同的潛伏拋出點。範圍是刻意收窄的：只有來自 API 的 id 才會經過這個輔助函式。由設定衍生的值維持嚴格編碼、出錯就直接拋出——garena 的 `office`（一個 `portals.yml` 欄位片段）仍走會拋出例外的 `urlSegment`，而它的 API `id` 則改用會回傳 null 的 `idUrlSegment`；csod 的 `corpName` 與 4dayweek 經 `SLUG_RE` 驗證過的 slug，則以具名方式列入白名單並附上理由。
+**rheinmetall 的標題備援機制可能因格式錯誤的 href 而拋出例外。** 當卡片沒有標題時，標題會透過 `decodeURIComponent` 從 URL slug 重建而成，而它在抓取到的 `href` 含有錯誤的百分比序列時會拋出例外——這是同一種「一列壞資料拖垮整頁」的結構，只是發生在解碼這一側。現在它會採防禦性解碼，並在失敗時回退到原始 slug。
+**來源註冊表現在會跳過以 `_` 開頭的檔案。** 自動探索機制原本會匯入 `server/lib/sources/` 底下除自身之外的每一個 `.mjs` 檔案，並對任何沒有 `export const meta` 的檔案發出警告——於是這個輔助檔案在啟動時就觸發了警告。現在採用父專案的慣例：開頭底線代表「這不是一個來源」；這類檔案既不會被匯入，也不會被警告。一個沒有宣告、也沒有 `meta` 的檔案仍會觸發警告，而探索測試現在同時斷言這兩種情況（已確認在舊過濾邏輯下會失敗）。 網站建置腳本 `sync-assets.mjs` 以同樣的規則計算磁碟上的配接器檔案，因此該輔助模組不再觸發其靜默遺失防護。
+
+### 說明
+`tests/sources-url-encoding-surrogate.test.mjs` 鏡射父專案測試套件的三個部分：輔助函式的契約（成對的代理項——也就是一般的表情符號——仍會正常編碼；若值自身的 `toString` 拋出例外，那是呼叫方的錯誤，例外會照樣傳播）、全部十五個來源各自的行為（一個錯誤 id 加一個乾淨 id → 不拋出例外、保留乾淨的、丟棄錯誤的，每個都透過該來源匯出的純解析函式驅動，thehub 則透過其擷取器搭配假傳輸層驅動），以及一道**來源層級的防護**：每個已轉換的檔案都必須匯入該輔助函式*並且*呼叫它，任何檔案都不能只引用卻不匯入，未經審查的檔案也不得以裸露的 `encodeURIComponent` 組出職缺 URL——一個沿用舊結構的新來源會讓 CI 失敗，並附上出錯的行號。全部十五個來源層級的案例在移植前都已確認會失敗。
+父專案差異中的其餘部分皆未移植，理由如下：`batch/batch-runner.sh --cli` 是僅供 CLI 使用的旗標（web-ui 不會以 shell 呼叫批次執行器）；`invite-match.mjs` 現在改從程式碼根目錄解析 `set-status.mjs`——web-ui 不會轉送它；`company-funded.mjs` 內部同樣套用了 safe-url 的改動，但 `/api/company-funded` 解析的 `--json` 輸出結構未變；`test-all.mjs` 只是搬動了逾時預算（fork 自身的 `vpFixtureEnv` 差異維持不變）；`web/` 是父專案自己的前端，不在鏡射範圍內；`AGENTS.md`/`SIGNATURES.md` 僅存在於儲存庫層級。拉取之後重新驗證過的 fork 差異：`providers/telegram-channel.mjs` 中的西里爾字母 `\p{L}` 修正、fork 自身的 `providers/telegram.mjs`、`web/src/lib/clis.ts` 中的 `hermes`。來源數維持在 **92** 個不變（87 EN + 5 RU），因此說明文件未受影響。**3022 → 3042 項測試。**
+
 ## [1.233.2] — 2026-09-10
 
 **修復 — 兩條高危 CodeQL `js/remote-property-injection` 告警。**

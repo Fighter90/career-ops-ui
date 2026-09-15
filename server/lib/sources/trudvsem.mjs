@@ -15,6 +15,8 @@
  * Schema docs: https://trudvsem.ru/opendata/api
  */
 
+import { safeEncodeURIComponent } from './_safe-url.mjs';
+
 const TRUDVSEM_API = 'https://opendata.trudvsem.ru/api/v1/vacancies';
 const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 ' +
@@ -106,6 +108,12 @@ export function normalizeTrudvsem(rec) {
   const isRemote = /удал[её]н|remote/i.test(schedule + ' ' + workplaces + ' ' + title);
   const date = v['creation-date'] || v.creationDate || '';
 
+  // A lone surrogate in id throws URIError out of encodeURIComponent and
+  // aborts the caller's .map() over the page. Without a vac_url to fall back
+  // on, drop just this one.
+  const encodedId = safeEncodeURIComponent(id);
+  if (!url && encodedId === null) return null;
+
   const salMin = v.salary_min ?? v.salaryMin;
   const salMax = v.salary_max ?? v.salaryMax;
   const currency = v.currency || 'RUB';
@@ -119,7 +127,7 @@ export function normalizeTrudvsem(rec) {
     id: id ? `trudvsem-${id}` : `trudvsem-${title.slice(0, 20).replace(/\s+/g, '_')}`,
     title: String(title).trim(),
     company: String(company).trim(),
-    url: url || `https://trudvsem.ru/vacancy/${encodeURIComponent(id)}`,
+    url: url || `https://trudvsem.ru/vacancy/${encodedId}`,
     salary,
     location: region || 'Russia',
     isRemote,

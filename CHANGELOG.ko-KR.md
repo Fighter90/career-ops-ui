@@ -9,6 +9,19 @@
 ---
 
 
+## [1.234.0] — 2026-09-15
+
+**상위 동등성 — career-ops `main` @ `56cce8f` (VERSION은 여전히 1.32.0, 1.32.0 이후 커밋 58개). 15개 소스에 이식된 수정 1건과, 재발을 막는 가드.**
+
+### 수정
+**잘못된 공고 id 하나가 더 이상 페이지 전체를 비우지 않습니다.** `encodeURIComponent`는 UTF-16 서로게이트 단독 문자에서 `URIError`를 던지며, JSON 페이로드는 그런 문자를 담을 수 있습니다 — `JSON.parse('"\\uD800"')`가 그것을 그대로 유지합니다. 열다섯 개 소스는 파싱 루프 *안에서* 호스트가 제어하는 id나 슬러그로 각 공고의 URL을 만들었기 때문에, 잘못된 공고 하나가 루프를 중단시켜 그 페이지의 모든 공고를 잃었습니다. 예외가 회사별 catch가 뭔가 보고하기도 전에 풀려나갔으므로 소스 실패로도 기록되지 않았습니다. 부모 저장소는 이를 `providers/_safe-url.mjs`에서 고쳤습니다(`safeEncodeURIComponent` → `URIError`에는 `null`을 반환하고 그 외에는 다시 던짐) 그리고 루프의 각 id를 이 함수에 통과시켜 `null`이 나오면 그 공고 하나만 버립니다. 그 헬퍼는 이제 `server/lib/sources/_safe-url.mjs`이며, 같은 변경이 이식된 열세 개 소스 — alibaba, arbeitsagentur, bamboohr, feishu-jobs, garena, jibeapply, manfred, meituan, mokahr, phenom, thehub, tkms, vdab — 와, 새 가드가 첫 실행에서 찾아낸 **web-ui 전용 소스 두 곳인 jobstreet과 trudvsem**에도 적용되었으며, 이들 역시 같은 루프 형태와 같은 잠재적 throw를 갖고 있었습니다. 범위는 의도적입니다: API에서 온 id만 이 헬퍼를 거칩니다. 설정에서 파생된 값은 엄격한 인코딩을 유지하며 크게 실패합니다 — garena의 `office`(`portals.yml` 세그먼트)는 throw하는 `urlSegment`를 그대로 쓰고, API `id`는 null을 반환하는 `idUrlSegment`를 씁니다. csod의 `corpName`과 4dayweek의 `SLUG_RE`로 검증된 슬러그는 이유와 함께 이름으로 허용목록에 올랐습니다.
+**rheinmetall의 제목 대체 로직이 잘못된 href에서 throw할 수 있었습니다.** 카드에 제목이 없으면 URL 슬러그로부터 `decodeURIComponent`를 통해 제목을 재구성하는데, 스크래핑한 `href`에 잘못된 퍼센트 시퀀스가 있으면 여기서 throw합니다 — 디코딩 쪽에서 벌어지는, 한 개의 잘못된 행이 페이지 전체를 죽이는 같은 형태입니다. 이제 방어적으로 디코딩하며 실패하면 원본 슬러그로 대체합니다.
+**소스 레지스트리가 `_`로 시작하는 파일을 건너뜁니다.** 자동 탐색은 `server/lib/sources/` 안의 모든 `.mjs`를 자기 자신만 제외하고 임포트했고, `export const meta`가 없는 파일에는 경고를 냈습니다 — 그래서 이 헬퍼가 부팅 시 경고를 만들어냈습니다. 이제 부모 저장소의 관례를 그대로 따릅니다: 앞에 밑줄이 붙으면 *소스가 아님*을 뜻하며, 그런 파일은 임포트되지도 경고를 받지도 않습니다. `meta`가 없는, 선언되지 않은 파일은 여전히 경고를 받으며, 탐색 테스트는 이제 양쪽 모두를 검증합니다(옛 필터로 실패함을 확인했습니다). 사이트 빌드의 `sync-assets.mjs`도 같은 규칙으로 디스크의 어댑터 파일을 세므로, 헬퍼가 더 이상 조용한 누락 감지 가드를 건드리지 않습니다.
+
+### 참고
+`tests/sources-url-encoding-surrogate.test.mjs`는 부모 저장소의 테스트 스위트를 세 부분으로 그대로 옮깁니다: 헬퍼의 계약(짝을 이룬 서로게이트 — 평범한 이모지 — 는 여전히 인코딩되며, 값 자신의 `toString`에서 나온 throw는 호출자의 버그이므로 그대로 전파됨), 열다섯 개 전체 소스별 동작(잘못된 id 하나 + 정상 id 하나 → throw 없음, 정상은 유지되고 잘못된 것은 버려짐 — 각 소스가 내보내는 순수 파서를 통해, thehub의 경우 가짜 전송으로 그 fetcher를 통해 구동), 그리고 **소스 수준 가드**: 변환된 모든 파일은 헬퍼를 임포트하고 *그리고* 호출해야 하며, 임포트 없이 이를 참조할 수 없고, 검토되지 않은 파일은 순수 `encodeURIComponent`만으로 채용 URL을 만들 수 없습니다 — 옛 형태를 가진 새 소스는 문제가 된 줄 번호와 함께 CI에서 실패합니다. 이식 전에 열다섯 개 소스별 사례 모두가 실패함을 확인했습니다.
+부모 저장소 델타의 나머지는 이식하지 않았으며, 이유는 다음과 같습니다: `batch/batch-runner.sh --cli`는 CLI 전용 플래그입니다(web-ui는 배치 러너로 셸 아웃하지 않음); `invite-match.mjs`는 이제 코드 루트에서 `set-status.mjs`를 찾는데 — web-ui는 이를 중계하지 않습니다; `company-funded.mjs`는 내부적으로 같은 safe-url 변경을 얻었지만 `/api/company-funded`가 파싱하는 `--json` 출력 형태는 그대로입니다; `test-all.mjs`는 타임아웃 예산만 옮겼습니다(포크의 `vpFixtureEnv` 분기는 그대로 유지됩니다); `web/`은 부모 저장소 자체의 프런트엔드이며 미러링 대상이 아닙니다; `AGENTS.md`/`SIGNATURES.md`는 저장소 전용입니다. pull 이후 포크 분기점을 다시 확인했습니다: `providers/telegram-channel.mjs`의 키릴 문자 `\p{L}` 수정, 포크 고유의 `providers/telegram.mjs`, `web/src/lib/clis.ts`의 `hermes`. 소스 개수는 **92**개(EN 87 + RU 5)로 변함없어 도움말도 그대로입니다. **3022 → 3042개.**
+
 ## [1.233.2] — 2026-09-10
 
 **수정 — 심각도 높음 CodeQL `js/remote-property-injection` 두 건을, 이미 있던 불변식을 주장이 아니라 구조로 만들어 닫았습니다.**

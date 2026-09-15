@@ -31,6 +31,7 @@
  * Used by the meituan adapter (server/lib/portals/adapters/meituan.mjs).
  */
 import { fetchJson, delay } from '../http-json.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 const API_HOST = 'zhaopin.meituan.com';
 export const DEFAULT_API = `https://${API_HOST}/api/official/job/getJobList`;
@@ -108,6 +109,10 @@ export function parseMeituanResponse(json, companyName) {
     const id = p.jobUnionId;
     if (!title || !id) continue;
     const postedAt = toEpochMs(p.refreshTime ?? p.firstPostTime);
+    // A lone surrogate in id throws URIError out of encodeURIComponent and
+    // aborts this loop, losing every job on the page. Drop just this one.
+    const encodedId = safeEncodeURIComponent(id);
+    if (encodedId === null) continue;
     // Meituan posts carry full-text JDs (duty + requirements), much longer
     // than other boards' summaries — cap to keep scan payloads sane.
     const snippet = [
@@ -121,7 +126,7 @@ export function parseMeituanResponse(json, companyName) {
       id: `meituan-${String(id)}`,
       title,
       company: companyName,
-      url: DETAIL + encodeURIComponent(id),
+      url: DETAIL + encodedId,
       salary: '',
       location: names(p.cityList),
       isRemote: false,

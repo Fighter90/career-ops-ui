@@ -35,6 +35,7 @@
  * Used by the jobstreet adapter (server/lib/portals/adapters/jobstreet.mjs).
  */
 import { fetchJson, delay } from '../http-json.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 export const DEFAULT_API = 'https://id.jobstreet.com/api/jobsearch/v5/search';
 // The v5 search path is fixed. An `api:` override selects the MARKET (its
@@ -131,7 +132,14 @@ export function parseJobstreetItem(item, baseUrl, fallbackCompany) {
   // v5 carries no absolute job URL — the detail page is built from the id.
   let url = '';
   const jobId = item.id != null ? String(item.id).trim() : '';
-  if (jobId) url = `${baseUrl}/id/job/${encodeURIComponent(jobId)}`;
+  // A lone surrogate in id throws URIError out of encodeURIComponent and
+  // aborts the caller's loop over the page. Leave `url` empty on a null so the
+  // posting falls through to its own jobUrl, or is dropped below like any
+  // posting without a usable URL.
+  if (jobId) {
+    const encodedId = safeEncodeURIComponent(jobId);
+    if (encodedId !== null) url = `${baseUrl}/id/job/${encodedId}`;
+  }
   const rawUrl = !url ? (item.jobUrl || '') : '';
   if (rawUrl) {
     try {

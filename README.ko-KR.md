@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
+[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.233.2** — **심각도 높음 CodeQL `js/remote-property-injection` 두 건**을, 이미 있던 불변식을 주장이 아니라 구조로 만들어 닫았습니다. 저장값을 `process.env`로 옮기는 루프는 요청 본문에서 만들어진 객체를 돌며 안쪽에 프로토타입 방어를 두고 있었습니다. 코드는 안전했지만(스무 줄 위에서 `KNOWN_KEYS`만으로 채워집니다) 루프만 떼어 읽으면 *요청 본문에서 나온 이름의 속성에 대입한다*로 읽히고, 분석기는 두 루프에 걸친 제약을 따라가지 못합니다. 이제 상수 배열을 직접 돌아 속성 이름이 모듈 리터럴임이 증명됩니다. **동작은 동일.** **3022개 · 브라우저 116개.**
+> **🆕 최신 릴리스 — v1.234.0** — **career-ops `main` @ `56cce8f`와의 상위 동등성: 잘못된 공고 id 하나가 더 이상 페이지 전체를 비우지 않습니다.** `encodeURIComponent`는 UTF-16 서로게이트 단독 문자에서 throw하며, JSON 페이로드는 이런 문자를 담을 수 있습니다. 열다섯 개 소스는 파싱 루프 *안에서* 호스트가 제어하는 id로 각 공고의 URL을 만들었기 때문에, 잘못된 공고 하나가 루프를 중단시켜 그 페이지의 모든 공고를 조용히 잃었습니다. 부모 저장소의 `_safe-url.mjs` 헬퍼를 `server/lib/sources/`에 이식했고, 이제 각 루프는 문제된 공고 하나만 버립니다 — 이식된 열세 개 소스에 더해, 새로운 소스 수준 가드가 첫 실행에서 찾아낸 web-ui 전용 소스 두 곳인 **jobstreet과 trudvsem**까지 포함합니다. 설정에서 파생된 값(garena의 `office`, csod의 `corpName`)은 엄격한 인코딩을 유지하며 크게 실패합니다. rheinmetall의 슬러그 대체 디코딩도 같은 방식으로 방어되며, 레지스트리는 헬퍼용 부모 저장소의 `_` 접두사 관례를 채택했습니다. 58개 커밋 델타의 나머지는 이식하지 않았습니다 — 각 항목은 이유와 함께 기록되어 있습니다. 소스는 **92**개로 변함없습니다. **3042개 · 브라우저 116개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

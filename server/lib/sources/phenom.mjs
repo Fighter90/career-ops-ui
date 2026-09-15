@@ -35,6 +35,7 @@ import { fetchJson, delay } from '../http-json.mjs';
 // Titles and locations arrive HTML-escaped; decode before the tag-strip so an
 // undecoded "R&amp;D" can't fail a user's title_filter and drop the posting.
 import { decodeEntities } from '../html-entities.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 // Hosts detect() may auto-claim. Branded tenants (careers.allianz.com, …) are
 // NOT auto-claimed — they carry an explicit `provider: phenom` in portals.yml.
@@ -147,11 +148,15 @@ export function parseRefineSearch(json, cfg, companyName = '') {
     if (!id || !title) continue;
     const location = jobLocation(job);
     const isRemote = REMOTE_RE.test(title) || REMOTE_RE.test(location);
+    // A lone surrogate in id throws URIError out of encodeURIComponent and
+    // aborts this loop; id is also the dedup key. Drop just this one.
+    const encodedId = safeEncodeURIComponent(id);
+    if (encodedId === null) continue;
     jobs.push({
       id: `phenom-${id}`,
       title,
       company: companyName,
-      url: `${cfg.origin}/${cfg.urlPrefix}/job/${encodeURIComponent(id)}/${slugify(title)}`,
+      url: `${cfg.origin}/${cfg.urlPrefix}/job/${encodedId}/${slugify(title)}`,
       salary: '',
       location,
       isRemote,

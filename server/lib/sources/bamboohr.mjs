@@ -15,6 +15,7 @@
  * Used by the bamboohr adapter (server/lib/portals/adapters/bamboohr.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 export const BAMBOOHR_HOST_RE = /^[a-z0-9][a-z0-9-]*\.bamboohr\.com$/;
 const REMOTE_RE = /remote|anywhere|home\s*office/i;
@@ -66,11 +67,16 @@ export function parseBambooHRResponse(json, companyName, origin) {
       const location = [loc.city, loc.state, remote].filter(Boolean).join(', ');
       const id = String(j.id).trim();
       const isRemote = !!j.isRemote || REMOTE_RE.test(location);
+      // A lone surrogate in id throws URIError out of encodeURIComponent and
+      // aborts this .map(), losing every job on the page. Drop this one on a
+      // null; the trailing .filter(Boolean) removes it.
+      const encodedId = safeEncodeURIComponent(id);
+      if (encodedId === null) return null;
       return {
         id: `bamboohr-${id}`,
         title: String(j.jobOpeningName),
         company: companyName,
-        url: `${origin}/careers/${encodeURIComponent(id)}`,
+        url: `${origin}/careers/${encodedId}`,
         salary: '',
         location,
         isRemote,
@@ -80,7 +86,8 @@ export function parseBambooHRResponse(json, companyName, origin) {
         snippet: '',
         source: 'bamboohr',
       };
-    });
+    })
+    .filter(Boolean);
 }
 
 /**

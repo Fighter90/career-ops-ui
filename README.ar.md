@@ -7,16 +7,16 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
+[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.233.2** — **تنبيهان من CodeQL بدرجةٍ عالية**، أُغلقا بجعل شرطٍ قائمٍ بنيويًّا لا مُدَّعًى. فالحلقة التي تنقل القيم إلى `process.env` كانت تدور على كائنٍ مبنيٍّ من جسم الطلب؛ وصارت تدور على المصفوفة الثابتة، فاسم الخاصّية حرفيٌّ على مستوى الوحدة بالبرهان. **والسلوك نفسه لم يتبدّل.** **3022 اختبارًا · 116 في المتصفّح.**
+> **🆕 أحدث إصدار — v1.234.0** — **تكافؤ مع career-ops عند الفرع `main` عند `56cce8f`: مُعرِّف وظيفةٍ واحدٌ مشوَّه لم يعد يُفرغ الصفحة كلَّها.** فـ`encodeURIComponent` يرمي عند محرف UTF-16 تعويضي منفرد، وحمولة JSON قد تحمل واحدًا. وكانت خمسة عشر مصدرًا تبني عنوان كلّ إعلانٍ من مُعرِّفٍ يتحكّم فيه المضيف *داخل* حلقة التحليل، فيُجهِض إعلانٌ سيّءٌ واحدٌ الحلقةَ ويَخسر بصمتٍ كلَّ وظيفةٍ في تلك الصفحة. صار مساعد `_safe-url.mjs` التابع للمشروع الأب مَنسوخًا إلى `server/lib/sources/`، وكلّ حلقةٍ تُسقِط الآن الإعلانَ الواحد فقط — عبر المصادر الثلاثة عشر المنسوخة إضافةً إلى **jobstreet وtrudvsem**، وهما مصدران خاصّان بـweb-ui فقط كشفهما الحارس الجديد على مستوى المصدر من أوّل تشغيلٍ له. أمّا القيم المُستمدَّة من الإعداد (`office` في garena، و`corpName` في csod) فتُبقي ترميزها الصارم وتفشل بصوتٍ عالٍ. وفكّ الترميز الاحتياطيّ لِـslug في rheinmetall مَحميٌّ بالطريقة نفسها، والسِّجلّ يعتمد عرف المشروع الأب في بادئة `_` للمساعدات. وما عدا ذلك في دلتا الثمانية والخمسين التزامًا غير مَنقول — وكلّ بندٍ مذكورٌ مع سببه. عدد المصادر ثابتٌ عند **92**. **3042 اختبارًا · 116 في المتصفّح.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

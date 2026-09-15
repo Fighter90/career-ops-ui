@@ -23,6 +23,7 @@
  */
 import { fetchJson } from '../http-json.mjs';
 import { htmlToText } from '../html-to-text.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 export const meta = {
   value: 'garena',
@@ -60,10 +61,10 @@ export function resolveOffice(company) {
 }
 
 /**
- * Escape an untrusted value before it is interpolated into a Garena URL.
+ * Escape a config-derived value before it is interpolated into a Garena URL.
  *
- * `office` is user config and `id` is remote API data, so neither may widen the
- * URL we intended: separators are percent-escaped, and `.` / `..` are rejected
+ * `office` is a `portals.yml` segment, so a malformed one is a config bug and
+ * should fail loudly: separators are percent-escaped, and `.` / `..` are rejected
  * outright because escaping leaves them intact as traversal segments.
  * @param {string} name field name, for the error message
  * @param {string} value
@@ -73,6 +74,19 @@ export function urlSegment(name, value) {
     throw new Error(`garena: ${name} is not a usable URL segment: ${JSON.stringify(value)}`);
   }
   return encodeURIComponent(value);
+}
+
+/**
+ * Escape the per-posting `id` from the API response. Unlike `urlSegment`, a
+ * bad value here returns `null` rather than throwing: `id` is host-controlled
+ * and sits inside the parse loop, so a lone surrogate (URIError) or a `.`/`..`
+ * traversal segment must drop only that posting, not unwind the whole page.
+ * @param {string} id
+ * @returns {string | null}
+ */
+function idUrlSegment(id) {
+  if (id === '.' || id === '..') return null;
+  return safeEncodeURIComponent(id);
 }
 
 /** @param {object} [company] */
@@ -110,7 +124,13 @@ export function parseGarenaResponse(json, company = {}) {
       : [];
     const location = locations.join(', ');
     const description = typeof j.description === 'string' ? htmlToText(j.description).trim() : '';
-    const url = `https://${HOST}/${officeSegment}/careers/${urlSegment('id', id)}`;
+    // `id` is remote API data: a lone UTF-16 surrogate makes encodeURIComponent
+    // throw URIError, and a `.`/`..` would be a traversal segment. Either way,
+    // drop just this posting — the same thing the `!id` guard above does —
+    // instead of the throw aborting the whole page's parse loop.
+    const idSegment = idUrlSegment(id);
+    if (idSegment === null) continue;
+    const url = `https://${HOST}/${officeSegment}/careers/${idSegment}`;
 
     out.push({
       id: `garena-${id}`,

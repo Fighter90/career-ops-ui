@@ -7,16 +7,16 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
+[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.233.2** — **Dois alertas CodeQL `js/remote-property-injection` de alta severidade**, fechados tornando estrutural um invariante que antes só era afirmado. O laço que copia valores para `process.env` percorria um objeto construído do corpo da requisição; agora percorre o array constante. **O comportamento é idêntico.** **3022 testes · 116 de navegador.**
+> **🆕 Última versão — v1.234.0** — **Paridade com o pai, career-ops `main` @ `56cce8f`: um único id de vaga malformado não esvazia mais a página inteira.** `encodeURIComponent` lança exceção diante de um substituto UTF-16 solitário, e um payload JSON pode carregar um. Quinze fontes construíam a URL de cada vaga a partir de um id controlado pelo host *dentro* do laço de parse, então uma vaga malformada abortava o laço e perdia silenciosamente todas as vagas daquela página. O helper `_safe-url.mjs` do pai é espelhado em `server/lib/sources/`, e cada laço agora descarta apenas a vaga problemática — nas treze fontes espelhadas mais **jobstreet e trudvsem**, duas fontes exclusivas do web-ui que a nova proteção no nível da fonte capturou logo na primeira execução. Valores derivados de configuração (`office` do garena, `corpName` do csod) mantêm seu encode estrito e falham ruidosamente. A decodificação do fallback de slug do rheinmetall é protegida da mesma forma, e o registro adota a convenção do pai de prefixo `_` para helpers. Nada mais do delta de 58 commits foi portado — cada item está listado com seu motivo. Fontes inalteradas em **92**. **3042 testes · 116 de navegador.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

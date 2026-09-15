@@ -7,16 +7,16 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
+[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.233.2** — **重大度「高」の CodeQL `js/remote-property-injection` 2 件**を、既にあった不変条件を主張ではなく構造にすることで解消しました。保存値を `process.env` へ写すループは要求本文から組み立てた `Object.entries(safe)` を回り、内部にプロトタイプ・ガードを置いていました。コードは安全でしたが（`safe` は 20 行上で `KNOWN_KEYS` からのみ作られます）、ループ単体では*要求本文由来の名前を持つプロパティへ代入する*と読め、解析器は 2 つのループにまたがる制約を追えません。いまは定数配列を直接回すため、プロパティ名はモジュール階層のリテラルであることが証明できます。**挙動は同一。** 旧ガードを固定していた検査はソースの grep でしたが、構造検査（旧形で赤を確認）と、`__proto__` を**生の JSON** で送る挙動検査に置き換えました。**3022 件 · ブラウザー 116 件。**
+> **🆕 最新リリース — v1.234.0** — **career-ops `main` @ `56cce8f` との親パリティ: 不正な求人 ID がひとつあるだけで、ページ全体が空になることはもうありません。** `encodeURIComponent` は独りぼっちの UTF-16 サロゲートに対して throw し、JSON ペイロードはそれを運び得ます。15 個のソースは各求人の URL を、パースループの*内側で*ホスト管理下の id から組み立てていたため、不正な求人ひとつがループを中断させ、そのページの求人を静かにすべて失っていました。親の `_safe-url.mjs` ヘルパーが `server/lib/sources/` にミラーされ、各ループはいまその 1 件だけを落とします —— ミラーされた 13 ソースに加え、新しいソース単位のガードが初回実行で洗い出した web-ui 専用の 2 ソース、**jobstreet と trudvsem** にも適用されます。設定由来の値（garena の `office`、csod の `corpName`）は厳格なエンコードのまま、失敗ははっきりと出ます。rheinmetall のスラッグ・フォールバックのデコードも同様にガードし、レジストリは親の `_` プレフィックス規約をヘルパーに採用しました。58 コミットのデルタの他の部分は移植しておらず、それぞれ理由を添えて記載しています。ソース数は **92** のまま変わりません。**3042 件 · ブラウザー 116 件。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

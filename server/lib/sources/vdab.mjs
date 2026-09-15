@@ -27,6 +27,7 @@
  * Used by the vdab adapter (server/lib/portals/adapters/vdab.mjs).
  */
 import { fetchJson, fetchText } from '../http-json.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 // Host-pinned endpoints (SSRF guard: every request is asserted against
 // TRUSTED_HOST over HTTPS before it goes out — see assertVdabUrl).
@@ -176,13 +177,18 @@ export function normalizeJob(job) {
   const rawId = job && job.id && job.id.id;
   const title = String((job && job.vacaturefunctie && job.vacaturefunctie.naam) || '').trim();
   if (!rawId || !title) return null;
+  // A lone surrogate in id would throw URIError out of encodeURIComponent and
+  // abort the caller's per-job loop; id is also the dedup key (byId / the `id`
+  // field below). Drop this one.
+  const encodedId = safeEncodeURIComponent(rawId);
+  if (encodedId === null) return null;
   const location = String((job && job.tewerkstellingsLocatieRegioOfAdres) || '').trim();
   const isRemote = REMOTE_RE.test(title) || REMOTE_RE.test(location);
   return {
-    id: `vdab-${encodeURIComponent(String(rawId))}`,
+    id: `vdab-${encodedId}`,
     title,
     company: String((job && job.vacatureBedrijfsnaam) || '').trim(),
-    url: DETAIL_BASE + encodeURIComponent(String(rawId)),
+    url: DETAIL_BASE + encodedId,
     salary: '',
     location,
     isRemote,

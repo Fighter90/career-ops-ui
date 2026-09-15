@@ -9,6 +9,19 @@
 ---
 
 
+## [1.234.0] — 2026-09-15
+
+**父项目对齐 — career-ops `main` @ `56cce8f`（`VERSION` 仍为 1.32.0，`main` 已领先该版本 58 个提交）。一处镜像修复覆盖 15 个来源，并附带一道防止其复发的守卫。**
+
+### 修复
+**单个格式错误的职位 id 不再会清空整页。** `encodeURIComponent` 在遇到孤立的 UTF-16 代理项时会抛出 `URIError`，而 JSON 载荷可以携带这样一个代理项——`JSON.parse('"\\uD800"')` 就会将其保留。十五个来源都在解析循环*内部*用宿主可控的 id 或 slug 拼出每条职位发布的 URL，于是一条坏发布就会中止整个循环，丢失该页上的全部职位；这甚至不会被记录为来源失败，因为异常在按公司设置的 catch 块能上报任何内容之前就已经向上抛出。父项目在 `providers/_safe-url.mjs` 中修复了这个问题（`safeEncodeURIComponent` 在 `URIError` 时返回 `null`，其余异常照常重新抛出），并让每个循环里的 id 都经过它，遇到 `null` 时只丢弃那一条发布。该辅助函数现已落地为 `server/lib/sources/_safe-url.mjs`，同样的改动应用到了十三个镜像来源——alibaba、arbeitsagentur、bamboohr、feishu-jobs、garena、jibeapply、manfred、meituan、mokahr、phenom、thehub、tkms、vdab——以及**新守卫首次运行时揪出的两个仅 web-ui 独有的来源 jobstreet 和 trudvsem**，它们有着同样的循环结构与同样潜伏的抛出点。范围划定是刻意的：只有来自 API 的 id 才会经过这个辅助函数。配置派生的值仍保留严格编码并大声失败——garena 的 `office`（一个 `portals.yml` 字段）仍留在会抛出异常的 `urlSegment` 上，而它的 API `id` 则改用返回 `null` 的 `idUrlSegment`；csod 的 `corpName` 以及 4dayweek 经 `SLUG_RE` 校验过的 slug 均按名称逐一列入白名单，并各自附上理由。
+**rheinmetall 的标题回退逻辑可能因格式错误的 href 而抛出异常。** 当卡片没有标题时，标题会通过 `decodeURIComponent` 从 URL slug 重建，而它会在抓取到的 `href` 中出现错误的百分号序列时抛出异常——这是同一种「一行坏数据拖垮整页」的结构，只是出现在解码这一侧。现在改为防御性解码，失败时回退到原始 slug。
+**来源注册表现在会跳过以 `_` 开头的文件。** 自动发现机制此前会导入 `server/lib/sources/` 下除自身之外的每个 `.mjs` 文件，并对任何没有 `export const meta` 的文件发出警告——于是这个辅助函数会触发一条启动时警告。现已采纳父项目的约定：开头的下划线意味着*这不是一个来源*；这类文件既不会被导入，也不会被警告。一个未加下划线声明、又没有 `meta` 的文件仍然会触发警告，发现逻辑的测试现在对这两部分都做了断言（已针对旧过滤逻辑确认为红色）。 站点构建脚本 `sync-assets.mjs` 以同样的规则统计磁盘上的适配器文件，因此该辅助模块不再触发其静默丢失防护。
+
+### 说明
+`tests/sources-url-encoding-surrogate.test.mjs` 分三部分镜像了父项目的测试套件：这个辅助函数自身的约定（一对配对的代理项——即普通表情符号——仍会正常编码；而值自身 `toString` 抛出的异常属于调用方的缺陷，应当继续向上传播）；全部十五个来源各自的行为（一个坏 id + 一个正常 id → 不抛出异常、正常项保留、坏项被丢弃，分别通过各来源导出的纯解析函数驱动，thehub 则通过其抓取器搭配一个伪造的传输层）；以及一道**来源级守卫**：每个已改造的文件都必须既导入该辅助函数、又调用它，任何文件都不得只引用而不导入它，任何未经审查的文件也不得用裸的 `encodeURIComponent` 拼出职位 URL——出现旧结构的新来源会让 CI 失败并报出违规所在的行号。全部十五个按来源的用例在移植之前均已确认为失败。
+父项目本次变更中的其余部分均未移植，理由如下：`batch/batch-runner.sh --cli` 是仅供 CLI 使用的开关（web-ui 从不外壳调用 batch runner）；`invite-match.mjs` 现在从代码根目录解析 `set-status.mjs`——web-ui 并不转发它；`company-funded.mjs` 内部同样应用了这次 safe-url 改动，但其 `--json` 输出结构（`/api/company-funded` 依赖解析）未变；`test-all.mjs` 只是挪动了一个超时预算（fork 自身的 `vpFixtureEnv` 分歧完好无损）；`web/` 是父项目自己的前端，不做镜像；`AGENTS.md`/`SIGNATURES.md` 仅存在于仓库层面。拉取之后重新核实了 fork 的分歧点：`providers/telegram-channel.mjs` 中的西里尔字母 `\p{L}` 修复、fork 自有的 `providers/telegram.mjs`，以及 `web/src/lib/clis.ts` 中的 `hermes`。来源数量维持 **92** 个不变（87 EN + 5 RU），因此帮助未受影响。**3022 → 3042 项测试。**
+
 ## [1.233.2] — 2026-09-10
 
 **修复 — 两条高危 CodeQL `js/remote-property-injection` 告警，通过把既有不变式由「断言」改为「结构」而消除。**

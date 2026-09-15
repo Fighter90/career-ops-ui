@@ -22,6 +22,7 @@
  * Ported from parent career-ops v1.31.0 (`providers/feishu-jobs.mjs`).
  */
 import { fetchJson, MACOS_BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 export const meta = {
   value: 'feishu-jobs',
@@ -77,6 +78,10 @@ export function parseFeishuJobsResponse(json, companyName, origin) {
     const title = p?.title;
     const id = p?.id;
     if (!title || id == null) continue;
+    // A lone surrogate in id throws URIError out of encodeURIComponent and
+    // aborts this loop, losing every job on the page. Drop just this one.
+    const encodedId = safeEncodeURIComponent(id);
+    if (encodedId === null) continue;
 
     const cities = Array.isArray(p.city_list)
       ? p.city_list.map((c) => c?.name).filter(Boolean).join('/')
@@ -90,8 +95,8 @@ export function parseFeishuJobsResponse(json, companyName, origin) {
 
     // The two host shapes use different job-page paths.
     const url = origin === 'https://jobs.bytedance.com'
-      ? `${origin}/experienced/position/${encodeURIComponent(id)}/detail`
-      : `${origin}/index/position/${encodeURIComponent(id)}/detail`;
+      ? `${origin}/experienced/position/${encodedId}/detail`
+      : `${origin}/index/position/${encodedId}/detail`;
 
     jobs.push({
       id: `feishu-jobs-${id}`,
