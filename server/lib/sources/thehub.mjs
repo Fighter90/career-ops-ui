@@ -29,6 +29,8 @@
  * Used by the thehub adapter (server/lib/portals/adapters/thehub.mjs).
  */
 
+import { safeEncodeURIComponent } from './_safe-url.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 const TRUSTED_HOST = 'thehub.io';
 const DEFAULT_COUNTRY_CODE = 'EU';
@@ -103,7 +105,12 @@ function normalize(j) {
   // hardcoded constant and the id is encoded, so the URL is never off-host.
   const id = j.id != null ? String(j.id).trim() : '';
   if (!id) return null;
-  const url = `https://${TRUSTED_HOST}/jobs/${encodeURIComponent(id)}`;
+  // A lone surrogate in id would throw URIError out of encodeURIComponent and
+  // abort the caller's pagination loop; id is also the dedup key. Drop this
+  // one.
+  const encodedId = safeEncodeURIComponent(id);
+  if (encodedId === null) return null;
+  const url = `https://${TRUSTED_HOST}/jobs/${encodedId}`;
 
   const company =
     j.company && typeof j.company === 'object' && cleanText(j.company.name)

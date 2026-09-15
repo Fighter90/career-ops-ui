@@ -7,16 +7,16 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
+[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.233.2** — **Дві знахідки CodeQL `js/remote-property-injection`.** Цикл, що переносить збережені значення в `process.env`, обходив об'єкт, зібраний із тіла запиту; тепер він іде прямо константним масивом, тож ім'я властивості доказово є літералом модуля. **Поведінка ідентична.** Греп по тексту вихідника замінено структурною та поведінковою перевірками. **3022 тести · 116 браузерних.**
+> **🆕 Останній реліз — v1.234.0** — **Паритет із батьківським career-ops `main` @ `56cce8f`: один пошкоджений ідентифікатор вакансії більше не спустошує всю сторінку.** `encodeURIComponent` кидає виняток на самотньому UTF-16-сурогаті, а JSON-payload може його нести. П'ятнадцять джерел формували URL кожного оголошення з контрольованого хостом ідентифікатора *усередині* циклу парсингу, тож одне погане оголошення переривало цикл і мовчки губило всі вакансії на цій сторінці. Хелпер `_safe-url.mjs` батьківського репозиторію продубльовано в `server/lib/sources/`, і тепер кожен цикл відкидає лише одне оголошення — у тринадцяти дзеркальних джерелах, а також у **jobstreet і trudvsem**, двох джерелах, наявних лише у web-ui, які новий запобіжник на рівні джерела виявив за першого ж запуску. Значення, похідні від конфігурації (`office` у garena, `corpName` у csod), зберігають строге кодування й падають гучно. Декодування резервного slug у rheinmetall захищене так само, а реєстр перейняв конвенцію батьківського репозиторію — префікс `_` для хелперів. Більше нічого з дельти в 58 комітів не портовано — кожен пункт зазначено з причиною. Кількість джерел не змінилася — **92**. **3042 тести · 116 браузерних.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

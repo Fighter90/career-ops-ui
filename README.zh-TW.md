@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
+[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.233.2** — **兩條高危 CodeQL `js/remote-property-injection` 告警**，通過把既有不變式由「斷言」改為「結構」而消除。把儲存值寫入 `process.env` 的迴圈原本遍歷由請求體建立的物件；現在直接遍歷常量陣列。**行為完全相同。** **3022 項 · 瀏覽器 116 項。**
+> **🆕 最新版本 — v1.234.0** — **與 career-ops `main` @ `56cce8f` 的父專案對齊：單一格式錯誤的職缺 id 不再清空整頁。** `encodeURIComponent` 在遇到孤立的 UTF-16 代理項時會拋出例外，而 JSON 負載就可能攜帶這種代理項。十五個來源都在解析迴圈*內部*，以主機端提供的 id 組出每則職缺的 URL，於是一筆錯誤的職缺就會中止整個迴圈，悄悄丟失該頁上的所有職缺。父專案的 `_safe-url.mjs` 輔助函式已鏡射進 `server/lib/sources/`，現在每個迴圈只會丟棄那一筆錯誤的職缺——涵蓋十三個被鏡射的來源，再加上**兩個僅 web-ui 獨有、由新的來源層級防護在第一次執行時揪出的來源：jobstreet 與 trudvsem**。由設定衍生的值（garena 的 `office`、csod 的 `corpName`）維持嚴格編碼、出錯就直接拋出。rheinmetall 的 slug 備援解碼也採用同樣的防護，註冊表也採用了父專案「`_` 前綴」的輔助檔案慣例。58 個提交差異中的其餘部分皆未移植——每一項都附上理由。來源數維持 **92** 個不變。**3042 項 · 瀏覽器 116 項。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

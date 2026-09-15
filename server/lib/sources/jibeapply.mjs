@@ -17,6 +17,7 @@
  * Used by the jibeapply adapter (server/lib/portals/adapters/jibeapply.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 export const meta = {
   value: 'jibeapply',
@@ -71,11 +72,15 @@ export function parseJibeapplyResponse(json, company = {}) {
     const title = String(d.title || '').trim();
     const slug = d.slug || d.req_id;
     if (!title || !slug) continue;
+    // A lone surrogate in slug throws URIError out of encodeURIComponent and
+    // aborts this loop, losing every job on the page. Drop just this one.
+    const encodedSlug = safeEncodeURIComponent(slug);
+    if (encodedSlug === null) continue;
     jobs.push({
       id: `jibeapply-${slug}`,
       title,
       company: String(d.hiring_organization || company.name || '').trim(),
-      url: `${origin}/jobs/${encodeURIComponent(slug)}`,
+      url: `${origin}/jobs/${encodedSlug}`,
       salary: '',
       location: d.full_location || [d.city, d.country].filter(Boolean).join(', '),
       isRemote: false,

@@ -39,6 +39,7 @@
  * (server/lib/portals/adapters/arbeitsagentur.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 export const API_URL = 'https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs';
 const API_KEY = 'jobboerse-jobsuche'; // public client key the arbeitsagentur.de UI uses
@@ -116,12 +117,17 @@ export function normalizeJob(job) {
   const refnr = job && job.referenznummer;
   const title = String((job && job.stellenangebotsTitel) || '').trim();
   if (!refnr || !title) return null;
+  // A lone surrogate in refnr would throw URIError out of encodeURIComponent and
+  // abort the per-job loop in fetch(); refnr is also the dedup key (byRef), so a
+  // degraded-but-kept value would collide malformed postings. Drop this one.
+  const encodedRefnr = safeEncodeURIComponent(refnr);
+  if (encodedRefnr === null) return null;
   const isRemote = REMOTE_RE.test(title);
   return {
-    id: `arbeitsagentur-${encodeURIComponent(String(refnr))}`,
+    id: `arbeitsagentur-${encodedRefnr}`,
     title,
     company: String((job && job.firma) || '').trim(),
-    url: DETAIL_BASE + encodeURIComponent(String(refnr)),
+    url: DETAIL_BASE + encodedRefnr,
     salary: '',
     location: buildLocation(job && job.stellenlokationen),
     isRemote,

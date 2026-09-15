@@ -112,7 +112,11 @@ export async function discoverSources(dir = HERE) {
   // Deterministic order before dynamic import so warnings are
   // reproducible across runs and CI logs diff cleanly.
   const files = entries
-    .filter((f) => f.endsWith('.mjs') && f !== 'registry.mjs')
+    // Underscore-prefixed files are shared helpers, not sources — the same
+    // convention the parent's providers/ directory uses (`_safe-url.mjs`,
+    // `_registry.mjs`). Skipping them here keeps a helper from being imported
+    // as a candidate source and logged as "no valid meta" on every boot.
+    .filter((f) => f.endsWith('.mjs') && f !== 'registry.mjs' && !f.startsWith('_'))
     .sort();
   for (const f of files) {
     let mod;

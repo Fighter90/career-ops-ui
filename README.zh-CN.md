@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
+[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.233.2** — **两条高危 CodeQL `js/remote-property-injection` 告警**，通过把既有不变式由「断言」改为「结构」而消除。把保存值写入 `process.env` 的循环原本遍历由请求体构建的对象，内部带原型防护。代码本是安全的（`safe` 在二十行前只从 `KNOWN_KEYS` 拷贝），但孤立地读，它说的是*给名字来自请求体所构建对象的属性赋值*，分析器无法跨两个循环追踪该约束。现在直接遍历常量数组，属性名可证明是模块级字面量。**行为完全相同。** 钉住旧防护的测试是对源码的 grep，已换成结构检查（旧形态下确认变红）与以**原始 JSON** 发送 `__proto__` 的行为检查。**3022 项 · 浏览器 116 项。**
+> **🆕 最新版本 — v1.234.0** — **父项目对齐 career-ops `main` @ `56cce8f`：单个格式错误的职位 id 不再会清空整页。** `encodeURIComponent` 在遇到孤立的 UTF-16 代理项时会抛出异常，而 JSON 载荷可以携带这样一个代理项。十五个来源都在解析循环_内部_用宿主可控的 id 拼出每条职位发布的 URL，于是一条坏发布就会中止整个循环，悄无声息地丢失该页上的全部职位。父项目的 `_safe-url.mjs` 辅助函数已镜像进 `server/lib/sources/`，现在每个循环都只会丢弃那一条发布——覆盖十三个镜像来源，外加**新的来源级守卫首次运行时揪出的两个仅 web-ui 独有的来源 jobstreet 和 trudvsem**。配置派生的值（garena 的 `office`、csod 的 `corpName`）仍保留严格编码并大声失败。rheinmetall 的 slug 回退解码也采用了同样的防护，注册表也为辅助文件采纳了父项目的 `_` 前缀约定。58 个提交的差量中，其余部分均未移植——每一项都附有理由。来源数量维持 **92** 个不变。**3042 项 · 浏览器 116 项。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

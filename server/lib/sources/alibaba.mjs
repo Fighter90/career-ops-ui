@@ -35,6 +35,7 @@
  */
 import { randomUUID } from 'node:crypto';
 import { fetchJson, delay } from '../http-json.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 const API_HOST = 'talent.alibaba.com';
 export const DEFAULT_API = `https://${API_HOST}/position/search`;
@@ -123,6 +124,10 @@ export function parseAlibabaResponse(json, companyName) {
     if (!title || id == null) continue;
     const experience = formatExperience(p.experience);
     const postedAt = toEpochMs(p.publishTime ?? p.modifyTime);
+    // A lone surrogate in id throws URIError out of encodeURIComponent and
+    // aborts this loop, losing every job on the page. Drop just this one.
+    const encodedId = safeEncodeURIComponent(id);
+    if (encodedId === null) continue;
     // Alibaba posts carry full-text JDs (description + requirement), much
     // longer than other boards' summaries — cap to keep scan payloads sane.
     const snippet = [
@@ -135,7 +140,7 @@ export function parseAlibabaResponse(json, companyName) {
       id: `alibaba-${String(id)}`,
       title,
       company: companyName,
-      url: DETAIL + encodeURIComponent(id),
+      url: DETAIL + encodedId,
       salary: '',
       location: Array.isArray(p.workLocations) ? p.workLocations.filter(Boolean).join('/') : '',
       isRemote: false,

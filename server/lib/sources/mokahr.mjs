@@ -24,6 +24,7 @@
 import { createDecipheriv } from 'node:crypto';
 import { fetchJson, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 import { htmlToText } from '../html-to-text.mjs';
+import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 export const meta = {
   value: 'mokahr',
@@ -127,11 +128,15 @@ export function parseMokaHrJobs(decrypted, companyName, tenantBaseUrl) {
       htmlToText(j.jobDescription),
     ].filter(Boolean).join('\n').slice(0, 4000);
 
+    // A lone surrogate in id throws URIError out of encodeURIComponent and
+    // aborts this loop, losing every job on the page. Drop just this one.
+    const encodedId = safeEncodeURIComponent(id);
+    if (encodedId === null) continue;
     jobs.push({
       id: `mokahr-${id}`,
       title,
       company: companyName,
-      url: `${tenantBaseUrl}#/job/${encodeURIComponent(String(id))}`,
+      url: `${tenantBaseUrl}#/job/${encodedId}`,
       salary: '',
       location: cities,
       isRemote: /remote|远程/i.test(cities),

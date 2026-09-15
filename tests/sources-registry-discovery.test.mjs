@@ -135,20 +135,28 @@ test('discoverSources: a drop-in RU adapter carries configKey through', async ()
 test('discoverSources: skips files without a meta export (helper modules)', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'cops-discovery-helper-'));
   const originalWarn = console.warn;
-  let warned = 0;
-  console.warn = () => { warned++; };
+  const warnings = [];
+  console.warn = (...args) => { warnings.push(args.join(' ')); };
   try {
     writeAdapter(dir, 'good.mjs', `
       export const meta = { value: 'good', label: 'Good', region: 'en' };
     `);
+    // Declared helper (parent convention: a leading underscore means "not a
+    // source") — skipped without being imported and without a warning, the
+    // way _safe-url.mjs is.
     writeAdapter(dir, '_helper.mjs', `
-      // Helper file shared between adapters — no meta export on purpose.
       export function tinyHash(s) { return s.length; }
+    `);
+    // An UNDECLARED file with no meta is still a mistake worth a warning: a
+    // source someone forgot to give a meta to would otherwise vanish silently.
+    writeAdapter(dir, 'forgot-meta.mjs', `
+      export function fetchSomething() { return []; }
     `);
     const sources = await discoverSources(dir);
     assert.equal(sources.length, 1);
     assert.equal(sources[0].value, 'good');
-    assert.ok(warned >= 1, 'expected at least one console.warn for the helper');
+    assert.ok(warnings.some((w) => w.includes('forgot-meta.mjs')), 'expected a console.warn for the undeclared file');
+    assert.ok(!warnings.some((w) => w.includes('_helper.mjs')), 'a _-prefixed helper must be skipped silently');
   } finally {
     console.warn = originalWarn;
     rmSync(dir, { recursive: true, force: true });

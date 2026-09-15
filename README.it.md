@@ -7,16 +7,16 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3022%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.233.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.233.2)
+[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.233.2** — **Due avvisi CodeQL `js/remote-property-injection` ad alta severità**, chiusi rendendo strutturale un invariante che prima era solo asserito. Il ciclo che copia i valori in `process.env` scorreva un oggetto costruito dal corpo della richiesta; ora scorre l'array costante. **Il comportamento è identico.** **3022 test · 116 browser.**
+> **🆕 Ultima release — v1.234.0** — **Parità con il padre career-ops `main` @ `56cce8f`: un singolo id di offerta malformato non svuota più l'intera pagina.** `encodeURIComponent` solleva un'eccezione su un singolo surrogato UTF-16 isolato, e un payload JSON può portarne uno. Quindici sorgenti costruivano l'URL di ogni annuncio a partire da un id controllato dall'host *dentro* il ciclo di parsing, quindi un singolo annuncio malformato interrompeva il ciclo e perdeva silenziosamente tutte le offerte di quella pagina. L'helper `_safe-url.mjs` del padre è replicato in `server/lib/sources/`, e ogni ciclo ora scarta solo l'annuncio in questione — nelle tredici sorgenti replicate più **jobstreet e trudvsem**, due sorgenti solo di web-ui che la nuova guardia a livello di sorgente ha colto alla prima esecuzione. I valori derivati dalla configurazione (`office` di garena, `corpName` di csod) mantengono la codifica rigorosa e falliscono rumorosamente. La decodifica del fallback dello slug di rheinmetall è protetta allo stesso modo, e il registro adotta la convenzione del padre del prefisso `_` per gli helper. Nient'altro nel delta di 58 commit è stato portato — ogni voce è elencata con la sua motivazione. Sorgenti invariate a **92**. **3042 test · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
