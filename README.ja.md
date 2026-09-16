@@ -7,16 +7,16 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
+[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.234.0** — **career-ops `main` @ `56cce8f` との親パリティ: 不正な求人 ID がひとつあるだけで、ページ全体が空になることはもうありません。** `encodeURIComponent` は独りぼっちの UTF-16 サロゲートに対して throw し、JSON ペイロードはそれを運び得ます。15 個のソースは各求人の URL を、パースループの*内側で*ホスト管理下の id から組み立てていたため、不正な求人ひとつがループを中断させ、そのページの求人を静かにすべて失っていました。親の `_safe-url.mjs` ヘルパーが `server/lib/sources/` にミラーされ、各ループはいまその 1 件だけを落とします —— ミラーされた 13 ソースに加え、新しいソース単位のガードが初回実行で洗い出した web-ui 専用の 2 ソース、**jobstreet と trudvsem** にも適用されます。設定由来の値（garena の `office`、csod の `corpName`）は厳格なエンコードのまま、失敗ははっきりと出ます。rheinmetall のスラッグ・フォールバックのデコードも同様にガードし、レジストリは親の `_` プレフィックス規約をヘルパーに採用しました。58 コミットのデルタの他の部分は移植しておらず、それぞれ理由を添えて記載しています。ソース数は **92** のまま変わりません。**3042 件 · ブラウザー 116 件。**
+> **🆕 最新リリース — v1.235.0** — **career-ops `main` @ `68e6b94` との親パリティ: 同じ MokaHR ボードの 2 件目の求人が、追加されるはずが消えていました。** 重複排除キーはあらゆる URL フラグメントを切り捨てていました —— `#apply` に対しては正しくても、MokaHR に対しては誤りで、その求人はテナントパスを共有し、求人 ID を `#/job/{id}` の中に**しか**持ちません。異なる 2 件の求人をパイプラインに貼り付けても、エラーなしで**1 行**しか残らず、スキャナーの鮮度フィルターがそのテナントの残り全部を「既知」として捨てていました。認識できる `#/job/{id}` / `#/jobs/{id}` ルートはいま、フラグメントが落とされる前に比較用キーへ昇格されます —— 追加であり、既存の値を上書きすることはありません —— 一方で装飾的なフラグメントは引き続きすべて折り畳まれます。また: `accept-encoding` はすべてのソースリクエストで `gzip, deflate, br` に固定されます(ここでは予防的措置です —— Node 18/20/22 は zstd を提示しないため。大文字小文字を区別しない上書きが挙動を変える部分です)。ソース数は **92** のまま変わりません。**3066 件 · ブラウザー 116 件。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -53,6 +53,42 @@ test('different postings → different keys (never over-merges)', () => {
   assert.notEqual(normalizeUrl('https://a.example.com/j'), normalizeUrl('https://b.example.com/j'));
 });
 
+test('an SPA job route carries the posting identity, so it survives the fragment drop', () => {
+  // Parent parity (career-ops @ 68e6b94). Most fragments are presentation-only
+  // and must collapse, but `#/job/{id}` and `#/jobs/{id}` are the narrow
+  // exception: on these boards every posting shares the tenant path and the id
+  // exists ONLY in the fragment. Dropping it made every job on a tenant compare
+  // equal — a silent over-merge, the failure mode this module exists to avoid.
+  const tenant = 'https://app.mokahr.com/social-recruitment/acme/123456';
+  assert.notEqual(normalizeUrl(`${tenant}#/job/111`), normalizeUrl(`${tenant}#/job/222`));
+  // MokaHR keeps its established board-specific key.
+  assert.equal(normalizeUrl(`${tenant}#/job/111`), `${tenant}?mokahr_job_id=111`);
+
+  // The same route shape on any other host gets the internal comparison key.
+  const careers = 'https://jobs.example.com/careers';
+  assert.notEqual(normalizeUrl(`${careers}#/jobs/123`), normalizeUrl(`${careers}#/jobs/456`));
+  assert.equal(normalizeUrl(`${careers}#/jobs/123`), `${careers}?_career_ops_fragment_job_id=123`);
+  assert.equal(normalizeUrl(`${careers}#/job/123`), `${careers}?_career_ops_fragment_job_id=123`);
+  // Case-insensitive on the route, and a query string after it is ignored.
+  assert.equal(normalizeUrl(`${careers}#/Jobs/123?tab=desc`), `${careers}?_career_ops_fragment_job_id=123`);
+});
+
+test('promotion is limited to job routes — every other fragment still collapses', () => {
+  const base = 'https://jobs.example.com/careers';
+  for (const frag of ['#apply', '#/', '#/about', '#/jobs', '#/job/', '#section-2']) {
+    assert.equal(normalizeUrl(base + frag), normalizeUrl(base), `fragment ${frag} must not be promoted`);
+  }
+});
+
+test('a promoted id is appended, never written over an existing comparison param', () => {
+  // `set` would drop the pre-existing value; the two are different postings and
+  // both halves have to stay in the key.
+  assert.equal(
+    normalizeUrl('https://jobs.example.com/careers?_career_ops_fragment_job_id=query-id#/jobs/hash-id'),
+    'https://jobs.example.com/careers?_career_ops_fragment_job_id=hash-id&_career_ops_fragment_job_id=query-id',
+  );
+});
+
 test('NO KEY IS NOT A KEY — non-http / placeholder / junk → ""', () => {
   for (const junk of ['', '  ', 'N/A', 'TBD', '—', 'not a url', 'mailto:x@y.com', 'ftp://h/f', 'local:jds/foo.md', 'javascript:alert(1)']) {
     assert.equal(normalizeUrl(junk), '', `${JSON.stringify(junk)} must yield no key`);

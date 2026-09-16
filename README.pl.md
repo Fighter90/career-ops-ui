@@ -7,16 +7,16 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
+[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.234.0** — **Parytet z rodzicem career-ops `main` @ `56cce8f`: jeden źle sformowany identyfikator oferty przestaje czyścić całą stronę.** `encodeURIComponent` rzuca wyjątek na osamotnionym surogacie UTF-16, a ładunek JSON może go nieść. Piętnaście źródeł budowało URL każdej oferty z identyfikatora kontrolowanego przez hosta *wewnątrz* pętli parsowania, więc jedna zła oferta przerywała pętlę i po cichu traciła wszystkie oferty z tej strony. Pomocnik rodzica `_safe-url.mjs` jest odzwierciedlony w `server/lib/sources/`, a każda pętla odrzuca teraz tylko jedną ofertę — w trzynastu odzwierciedlonych źródłach plus **jobstreet i trudvsem**, dwóch źródłach istniejących tylko w web-ui, które złapał nowy strażnik na poziomie źródła przy pierwszym uruchomieniu. Wartości pochodzące z konfiguracji (`office` w garenie, `corpName` w csod) zachowują ścisłe kodowanie i głośno zawodzą. Dekodowanie zapasowego sluga w rheinmetall jest zabezpieczone tak samo, a rejestr przyjmuje konwencję rodzica z prefiksem `_` dla pomocników. Nic innego z różnicy 58 commitów nie jest portowane — każda pozycja jest wymieniona z powodem. Źródła bez zmian: **92**. **3042 testy · 116 przeglądarkowych.**
+> **🆕 Najnowsze wydanie — v1.235.0** — **Parytet z rodzicem career-ops `main` @ `68e6b94`: druga oferta z tej samej tablicy MokaHR znikała, zamiast zostać dodana.** Klucz deduplikacji odrzucał każdy fragment URL — słusznie dla `#apply`, błędnie dla MokaHR, której oferty dzielą ścieżkę najemcy i niosą identyfikator oferty **wyłącznie** w `#/job/{id}`. Dwie różne oferty wklejone do pipeline'u zostawiały **jedną linię**, bez błędu, a filtr świeżości skanera odrzucał resztę ofert najemcy jako „już widziane”. Rozpoznana trasa `#/job/{id}` / `#/jobs/{id}` jest teraz promowana na klucz porównawczy, zanim fragment zostanie odrzucony — dopisywana, nigdy nie nadpisując istniejącej — podczas gdy każdy kosmetyczny fragment nadal się zwija. Dodatkowo: `accept-encoding` jest przypięty na `gzip, deflate, br` w każdym żądaniu do źródła (tu prewencyjnie — Node 18/20/22 nigdy nie oferują zstd; nadpisanie bez rozróżniania wielkości liter to część, która zmienia zachowanie). Źródła bez zmian: **92**. **3066 testów · 116 przeglądarkowych.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

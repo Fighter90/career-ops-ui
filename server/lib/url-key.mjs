@@ -12,7 +12,7 @@
  *   - under-normalizing leaves two spellings of the SAME posting as two keys
  *     → a VISIBLE duplicate you can see and clean up.
  * So we only: force https (http vs https is the same posting), lowercase the
- * host, drop the fragment and a single trailing slash, remove a narrow denylist
+ * host, drop NON-IDENTITY fragments and a single trailing slash, remove a narrow denylist
  * of click/campaign params, and sort the rest for order-independence. Every
  * FUNCTIONAL query param is kept (e.g. gh_jid, the canonical posting id on some
  * corporate Greenhouse boards). Generic names (ref/source/src) are deliberately
@@ -35,6 +35,49 @@ const TRACKING_PARAMS = [
 ];
 
 /**
+ * `decodeURIComponent` throws `URIError` on a malformed percent-escape, and the
+ * id here comes straight off a scraped URL. A bad escape means "no usable id",
+ * not "abort the key" — mirrors the null-returning shape of `_safe-url.mjs`.
+ * @param {string} raw
+ * @returns {string|null}
+ */
+function safeDecode(raw) {
+  try { return decodeURIComponent(raw) || null; } catch { return null; }
+}
+
+/**
+ * Promote a known identity-bearing SPA fragment into a functional query key
+ * before generic normalization drops the fragment.
+ *
+ * Most fragments are presentation-only (`#apply`, `#section-2`) and must
+ * collapse. `#/job/{id}` and `#/jobs/{id}` are the narrow exception: on these
+ * boards every posting shares the tenant path and the id exists ONLY in the
+ * fragment, so dropping it made every job on a tenant compare equal — the
+ * silent over-merge this module's header calls the worse failure mode. MokaHR
+ * is the case in our own registry (`…/social-recruitment/{tenant}/{id}#/job/{n}`).
+ *
+ * MokaHR keeps its established board-specific key so previously-written keys
+ * stay comparable; every other host gets the internal `_career_ops_*` name.
+ * `append`, not `set`: a URL that already carries the comparison param holds a
+ * different posting's id, and overwriting it would merge the two.
+ *
+ * The emitted/displayed URL is untouched — this mutates only the URL object
+ * used to build the comparison key.
+ * @param {URL} url
+ */
+export function promoteKnownFragmentIdentity(url) {
+  const match = /^#\/jobs?\/([^/?#]+)(?:\?[^#]*)?$/i.exec(url.hash);
+  if (!match) return;
+  const jobId = safeDecode(match[1]);
+  if (!jobId) return;
+  if (url.hostname.toLowerCase() === 'app.mokahr.com') {
+    url.searchParams.append('mokahr_job_id', jobId);
+    return;
+  }
+  url.searchParams.append('_career_ops_fragment_job_id', jobId);
+}
+
+/**
  * Reduce a posting URL to a stable comparison key.
  * @param {unknown} raw
  * @returns {string} the canonical key, or '' when there is nothing to key on.
@@ -54,7 +97,8 @@ export function normalizeUrl(raw) {
 
   u.protocol = 'https:';
   u.hostname = u.hostname.toLowerCase();
-  u.hash = '';
+  promoteKnownFragmentIdentity(u);
+  u.hash = '';                      // an unrecognized fragment does not identify it
 
   const keep = [];
   for (const [k, v] of u.searchParams.entries()) {

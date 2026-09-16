@@ -7,16 +7,16 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
+[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.234.0** — **career-ops `main` @ `56cce8f` ile üst proje eşdeğerliği: tek bir hatalı biçimli iş ilanı kimliği artık tüm sayfayı boşaltmıyor.** `encodeURIComponent`, tek başına kalan bir UTF-16 vekil karakterinde fırlatır ve bir JSON yükü böyle bir karakter taşıyabilir. On beş kaynak, her ilanın URL'sini ana bilgisayarın denetlediği bir kimlikten, ayrıştırma döngüsünün *içinde* oluşturuyordu; bu yüzden tek bir bozuk ilan döngüyü iptal ediyor ve o sayfadaki tüm işleri sessizce kaybettiriyordu. Üst projenin `_safe-url.mjs` yardımcısı `server/lib/sources/` içine yansıtıldı ve her döngü artık yalnızca o tek ilanı düşürüyor — on üç yansıtılan kaynağın yanı sıra, yeni kaynak düzeyindeki korumanın ilk çalıştırmasında yakaladığı yalnızca web-ui'ye özgü iki kaynak olan **jobstreet ve trudvsem** için de. Yapılandırmadan türetilen değerler (garena `office`, csod `corpName`) sıkı kodlamayı koruyor ve gürültülü biçimde başarısız oluyor. rheinmetall'in slug yedeği decode'u aynı şekilde korunuyor ve kayıt defteri, yardımcılar için üst projenin `_` ön eki kuralını benimsiyor. 58 commit'lik değişikliğin geri kalanı taşınmadı — her madde gerekçesiyle listelendi. Kaynaklar **92**'de değişmedi. **3042 test · 116 tarayıcı.**
+> **🆕 Son sürüm — v1.235.0** — **career-ops `main` @ `68e6b94` ile üst proje eşdeğerliği: aynı MokaHR panosundan ikinci bir iş ilanı eklenmek yerine yok oluyordu.** Yinelenen giderme (dedup) anahtarı her URL fragment'ini düşürüyordu — `#apply` için doğruydu, ama ilanları bir tenant yolunu paylaşan ve ilan kimliğini **yalnızca** `#/job/{id}` içinde taşıyan MokaHR için yanlıştı. Hatta yapıştırılan iki farklı ilan **tek bir satır** bırakıyordu, hiçbir hata olmadan, ve tarayıcının tazelik filtresi tenant'ın geri kalanını "zaten görüldü" olarak eliyordu. Tanınan bir `#/job/{id}` / `#/jobs/{id}` rotası artık fragment düşürülmeden önce bir karşılaştırma anahtarına yükseltiliyor — eklenir, var olanın üzerine asla yazılmaz — kozmetik her fragment ise hâlâ çöküyor. Ayrıca: `accept-encoding`, her kaynak isteğinde `gzip, deflate, br`'ye sabitlendi (burada önleyici bir tedbirdir — Node 18/20/22 asla zstd sunmaz; davranışı değiştiren kısım, büyük/küçük harfe duyarsız geçersiz kılmadır). Kaynaklar **92**'de değişmedi. **3066 test · 116 tarayıcı.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

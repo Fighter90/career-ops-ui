@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
+[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.234.0** — **Forælder-paritet med career-ops `main` @ `56cce8f`: ét enkelt fejlformet job-id tømmer ikke længere hele siden.** `encodeURIComponent` kaster en fejl ved en enlig UTF-16-surrogat, og et JSON-payload kan bære én. Femten kilder byggede hvert opslags URL ud fra et vært-styret id *inde i* parse-løkken, så ét dårligt opslag afbrød løkken og i stilhed mistede alle job på den side. Forælderens `_safe-url.mjs`-hjælpefunktion er spejlet ind i `server/lib/sources/`, og hver løkke dropper nu kun det ene opslag — på tværs af de tretten spejlede kilder plus **jobstreet og trudvsem**, to kilder, der kun findes i web-ui, som den nye kilde-niveau-vagt fangede ved sin første kørsel. Konfigurationsafledte værdier (garena `office`, csod `corpName`) beholder deres strenge encode og fejler højlydt. rheinmetalls slug-fallback-afkodning er sikret på samme måde, og registret overtager forælderens `_`-præfikskonvention for hjælpefunktioner. Intet andet i de 58 commits' delta er porteret — hvert punkt er listet med sin begrundelse. Kilder uændret på **92**. **3042 test · 116 browser.**
+> **🆕 Seneste udgivelse — v1.235.0** — **Forælder-paritet med career-ops `main` @ `68e6b94`: et andet job fra samme MokaHR-board forsvandt i stedet for at blive tilføjet.** Dedup-nøglen droppede hvert URL-fragment — rigtigt for `#apply`, forkert for MokaHR, hvis opslag deler en tenant-sti og kun bærer opslags-id'et i `#/job/{id}`. To forskellige job indsat i pipelinen efterlod **én linje**, uden fejl, og scannerens friskhedsfilter kasserede resten af tenanten som »allerede set«. En genkendt `#/job/{id}` / `#/jobs/{id}`-rute løftes nu op i en sammenligningsnøgle, før fragmentet droppes — tilføjet, aldrig ved at overskrive en eksisterende, mens ethvert kosmetisk fragment stadig kollapser. Desuden: `accept-encoding` er fastlåst til `gzip, deflate, br` på hver kilde-forespørgsel (forebyggende her — Node 18/20/22 tilbyder aldrig zstd; det er tilsidesættelsen uden hensyn til store/små bogstaver, der ændrer adfærden). Kilder uændret på **92**. **3066 test · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
