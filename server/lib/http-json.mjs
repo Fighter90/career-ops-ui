@@ -74,6 +74,45 @@ export const MACOS_BROWSER_LIKE_USER_AGENT =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36';
 
 /**
+ * accept-encoding pinned to the codecs undici decodes correctly.
+ *
+ * Left unset, Node negotiates whatever its undici build offers. On Node ≥ 23
+ * that includes **zstd**, and amazon.jobs' zstd response comes back TRUNCATED
+ * AT 1024 BYTES with a 200 status — so the failure surfaces as "Unterminated
+ * string in JSON at position 1024", reading like a malformed API rather than a
+ * transport bug. Node 18/20/22 (the CI matrix and the server) send
+ * `gzip, deflate`, so this is preventive on today's runtimes; it also adds
+ * `br`, which they do not offer by default but do decode.
+ *
+ * Ported from parent career-ops `providers/_http.mjs`.
+ */
+export const PINNED_ACCEPT_ENCODING = 'gzip, deflate, br';
+
+/**
+ * The caller's headers plus the pinned accept-encoding, unless the caller set
+ * one — under ANY capitalization. Header names are case-insensitive and fetch
+ * JOINS two same-named entries into one comma-separated value, so a naive
+ * `{ 'accept-encoding': …, ...headers }` would send `gzip, deflate, br, identity`
+ * for a caller passing `Accept-Encoding: identity`.
+ *
+ * Returns a plain object, not a `Headers`: `fetchImpl` is injectable and every
+ * source suite reads `opts.headers['User-Agent']` off it. The caller's own
+ * object is copied, never mutated — several sources share one header constant.
+ *
+ * **Plain objects only.** A `Headers` instance or a `[[k, v]]` array spreads to
+ * `{}` and would silently drop every header the caller set; no caller passes
+ * one today, and this contract is why.
+ * @param {Record<string,string>|undefined} headers
+ * @returns {Record<string,string>}
+ */
+export function withPinnedEncoding(headers) {
+  const out = { ...headers };
+  const hasEncoding = Object.keys(out).some((k) => k.toLowerCase() === 'accept-encoding');
+  if (!hasEncoding) out['accept-encoding'] = PINNED_ACCEPT_ENCODING;
+  return out;
+}
+
+/**
  * undici's `err.cause.message` for a `fetch(url, { redirect: 'error' })` that
  * meets a 3xx. Undocumented and undici-internal, so it is pinned here (and by a
  * test) — if a Node upgrade changes the wording, `fetchJsonWithRetry` reverts to
@@ -91,7 +130,7 @@ export const REDIRECT_REFUSAL_CAUSE_MESSAGE = 'unexpected redirect';
 export async function fetchJson(fetchImpl, url, opts = {}) {
   const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
   await guardResolvedHost(fetchImpl, url);
-  const res = await fetchImpl(url, { method, headers, body, signal, redirect });
+  const res = await fetchImpl(url, { method, headers: withPinnedEncoding(headers), body, signal, redirect });
   if (!res.ok) {
     const err = new Error(`HTTP ${res.status} (${url})`);
     err.status = res.status;
@@ -134,7 +173,7 @@ export async function fetchJson(fetchImpl, url, opts = {}) {
 export async function fetchText(fetchImpl, url, opts = {}) {
   const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
   await guardResolvedHost(fetchImpl, url);
-  const res = await fetchImpl(url, { method, headers, body, signal, redirect });
+  const res = await fetchImpl(url, { method, headers: withPinnedEncoding(headers), body, signal, redirect });
   if (!res.ok) {
     const err = new Error(`HTTP ${res.status} (${url})`);
     err.status = res.status;
@@ -172,7 +211,7 @@ const NULL_BODY_STATUSES = new Set([204, 205, 304]);
  */
 export async function fetchResponse(fetchImpl, url, opts = {}) {
   const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
-  const res = await fetchImpl(url, { method, headers, body, signal, redirect });
+  const res = await fetchImpl(url, { method, headers: withPinnedEncoding(headers), body, signal, redirect });
   if (!res.ok) {
     const err = new Error(`HTTP ${res.status} (${url})`);
     err.status = res.status;

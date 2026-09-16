@@ -67,11 +67,19 @@ export function withTimeout(upstream, ms = DEFAULT_SCAN_TIMEOUT_MS) {
  * @param {number} [ms]
  * @returns {typeof fetch}
  */
+import { withPinnedEncoding } from './http-json.mjs';
+
 export function makeTimeoutFetch(baseFetch = fetch, ms = DEFAULT_SCAN_TIMEOUT_MS) {
   return async function timeoutFetch(url, opts = {}) {
     const { signal, clear } = withTimeout(opts.signal, ms);
     try {
-      return await baseFetch(url, { ...opts, signal });
+      // The pin belongs HERE, not only in the http-json helpers: 25 of the 92
+      // sources call the injected `fetchImpl` directly (greenhouse, lever,
+      // ashby, workday, hh, rss, …) and never pass through them. This wrapper
+      // is what both scanners actually inject, so it is the one chokepoint
+      // every source shares — the parent gets the same guarantee for free
+      // because `providers/_http.mjs` IS its only transport.
+      return await baseFetch(url, { ...opts, headers: withPinnedEncoding(opts.headers), signal });
     } finally {
       clear();
     }

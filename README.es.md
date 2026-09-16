@@ -7,16 +7,16 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
+[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.234.0** — **Paridad con el padre — career-ops `main` @ `56cce8f`: un único id de oferta malformado ya no vacía toda la página.** `encodeURIComponent` lanza ante un sustituto UTF-16 suelto, y una carga JSON puede llevar uno. Quince fuentes construían la URL de cada oferta a partir de un id controlado por el host *dentro* del bucle de parseo, así que una oferta defectuosa abortaba el bucle y perdía en silencio todas las ofertas de esa página. El helper `_safe-url.mjs` del padre se refleja en `server/lib/sources/`, y cada bucle ahora descarta solo esa oferta — en las trece fuentes reflejadas más **jobstreet y trudvsem**, dos fuentes exclusivas de web-ui que la nueva guarda a nivel de fuente detectó en su primera ejecución. Los valores derivados de la configuración (`office` de garena, `corpName` de csod) conservan su codificación estricta y fallan de forma ruidosa. El decode del fallback de slug de rheinmetall queda protegido del mismo modo, y el registro adopta la convención del padre del prefijo `_` para los helpers. Nada más del delta de 58 commits se porta — cada elemento aparece listado con su motivo. Fuentes sin cambios, en **92**. **3042 pruebas · 116 de navegador.**
+> **🆕 Última versión — v1.235.0** — **Paridad con el padre — career-ops `main` @ `68e6b94`: una segunda oferta del mismo tablero de MokaHR desaparecía en vez de añadirse.** La clave de deduplicación descartaba todo fragmento de URL — correcto para `#apply`, incorrecto para MokaHR, cuyas ofertas comparten la ruta de un tenant y llevan el id de la oferta **solo** en `#/job/{id}`. Pegar dos ofertas distintas en la pipeline dejaba **una línea**, sin error, y el filtro de novedad del escáner descartaba el resto del tenant como "ya visto". Una ruta reconocida `#/job/{id}` / `#/jobs/{id}` ahora se promueve a una clave de comparación antes de descartar el fragmento — añadida, nunca sobrescribiendo una existente — mientras que todo fragmento cosmético se sigue colapsando. Además: `accept-encoding` queda fijado en `gzip, deflate, br` en cada petición a una fuente (preventivo aquí — Node 18/20/22 nunca ofrecen zstd; la sobrescritura sin distinguir mayúsculas y minúsculas es la parte que cambia el comportamiento). Fuentes sin cambios, en **92**. **3066 pruebas · 116 de navegador.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

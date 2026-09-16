@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
+[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.234.0** — **मूल परियोजना career-ops की `main` शाखा @ `56cce8f` के साथ समानता: एक अकेला विकृत जॉब id अब पूरे पन्ने को खाली नहीं करता।** `encodeURIComponent` एक अकेले UTF-16 सरोगेट पर फेंकता है, और एक JSON पेलोड ऐसा एक ले जा सकता है। पंद्रह स्रोत हर पोस्टिंग का URL किसी होस्ट-नियंत्रित id से पार्स-लूप के *भीतर* बनाते थे, इसलिए एक ख़राब पोस्टिंग पूरे लूप को रोक देती और उस पन्ने की हर नौकरी चुपचाप खो जाती। मूल परियोजना का `_safe-url.mjs` हेल्पर `server/lib/sources/` में मिरर किया गया है, और अब हर लूप सिर्फ़ वही एक पोस्टिंग छोड़ता है — मिरर किए गए तेरह स्रोतों के साथ-साथ **jobstreet और trudvsem** पर भी, दो सिर्फ़-web-ui स्रोत जिन्हें नए स्रोत-स्तरीय पहरे ने अपने पहले ही चलने में पकड़ा। कॉन्फ़िग से निकले मान (garena का `office`, csod का `corpName`) अपना सख़्त एन्कोड बनाए रखते हैं और खुलकर विफल होते हैं। rheinmetall के slug-फ़ॉलबैक decode को उसी तरह पहरा दिया गया है, और रजिस्ट्री हेल्पर्स के लिए मूल परियोजना की `_`-उपसर्ग परिपाटी अपनाती है। 58-कमिट डेल्टा में बाक़ी कुछ भी पोर्ट नहीं किया गया — हर मद अपने कारण सहित सूचीबद्ध है। स्रोत **92** पर अपरिवर्तित। **3042 परीक्षण · 116 ब्राउज़र।**
+> **🆕 नवीनतम रिलीज़ — v1.235.0** — **मूल परियोजना career-ops की `main` शाखा @ `68e6b94` के साथ समानता: एक ही MokaHR बोर्ड की दूसरी नौकरी जोड़े जाने के बजाय गायब हो जाती थी।** डीडुप-कुंजी हर URL फ़्रैगमेंट गिरा देती थी — `#apply` के लिए सही, MokaHR के लिए ग़लत, जिसकी पोस्टिंग्स एक टेनेंट-पथ साझा करती हैं और पोस्टिंग id **केवल** `#/job/{id}` में रखती हैं। पाइपलाइन में चिपकाई गई दो अलग-अलग नौकरियाँ **एक ही पंक्ति** बचती थीं, बिना किसी त्रुटि के, और स्कैनर का फ़्रेशनेस फ़िल्टर बाक़ी पूरे टेनेंट को "पहले से देखा गया" मानकर छोड़ देता था। अब कोई पहचाना गया `#/job/{id}` / `#/jobs/{id}` रूट फ़्रैगमेंट गिराए जाने से पहले एक तुलना-कुंजी में बदल दिया जाता है — जोड़ा जाता है, किसी मौजूदा को कभी अधिलेखित नहीं करता — जबकि हर कॉस्मेटिक फ़्रैगमेंट अब भी सिमट जाता है। साथ ही: `accept-encoding` अब हर स्रोत-अनुरोध पर `gzip, deflate, br` पर स्थिर है (यहाँ निवारक है — Node 18/20/22 डिफ़ॉल्ट रूप से कभी zstd प्रस्तावित नहीं करते; केस-असंवेदनशील ओवरराइड ही वह हिस्सा है जो व्यवहार बदलता है)। स्रोत **92** पर अपरिवर्तित। **3066 परीक्षण · 116 ब्राउज़र।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
+[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.234.0** — **career-ops `main` @ `56cce8f`와의 상위 동등성: 잘못된 공고 id 하나가 더 이상 페이지 전체를 비우지 않습니다.** `encodeURIComponent`는 UTF-16 서로게이트 단독 문자에서 throw하며, JSON 페이로드는 이런 문자를 담을 수 있습니다. 열다섯 개 소스는 파싱 루프 *안에서* 호스트가 제어하는 id로 각 공고의 URL을 만들었기 때문에, 잘못된 공고 하나가 루프를 중단시켜 그 페이지의 모든 공고를 조용히 잃었습니다. 부모 저장소의 `_safe-url.mjs` 헬퍼를 `server/lib/sources/`에 이식했고, 이제 각 루프는 문제된 공고 하나만 버립니다 — 이식된 열세 개 소스에 더해, 새로운 소스 수준 가드가 첫 실행에서 찾아낸 web-ui 전용 소스 두 곳인 **jobstreet과 trudvsem**까지 포함합니다. 설정에서 파생된 값(garena의 `office`, csod의 `corpName`)은 엄격한 인코딩을 유지하며 크게 실패합니다. rheinmetall의 슬러그 대체 디코딩도 같은 방식으로 방어되며, 레지스트리는 헬퍼용 부모 저장소의 `_` 접두사 관례를 채택했습니다. 58개 커밋 델타의 나머지는 이식하지 않았습니다 — 각 항목은 이유와 함께 기록되어 있습니다. 소스는 **92**개로 변함없습니다. **3042개 · 브라우저 116개.**
+> **🆕 최신 릴리스 — v1.235.0** — **career-ops `main` @ `68e6b94`와의 상위 동등성: 같은 MokaHR 게시판의 두 번째 공고가 추가되지 않고 사라졌습니다.** 중복 제거 키가 모든 URL 프래그먼트를 버렸습니다 — `#apply`에는 맞았지만, 테넌트 경로를 공유하고 공고 id를 오직 `#/job/{id}`에만 담는 MokaHR에는 틀렸습니다. 파이프라인에 서로 다른 공고 두 건을 붙여넣으면 **한 줄**만 남았고, 오류도 없었으며, 스캐너의 신선도 필터는 그 테넌트의 나머지를 "이미 본 것"으로 버렸습니다. 이제 인식된 `#/job/{id}` / `#/jobs/{id}` 라우트는 프래그먼트가 버려지기 전에 비교용 키로 승격됩니다 — 기존 값을 덮어쓰지 않고 추가되며, 장식용 프래그먼트는 여전히 모두 붕괴됩니다. 추가로: `accept-encoding`이 모든 소스 요청에서 `gzip, deflate, br`로 고정됩니다(예방 조치입니다 — Node 18/20/22는 애초에 zstd를 제안하지 않으며, 동작이 바뀌는 부분은 대소문자 구분 없는 오버라이드입니다). 소스는 **92**개로 변함없습니다. **3066개 · 브라우저 116개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -7,16 +7,16 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
+[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.234.0** — **Паритет с родителем, career-ops `main` @ `56cce8f`: один-единственный некорректный идентификатор вакансии больше не опустошает всю страницу.** `encodeURIComponent` выбрасывает исключение на одиночном суррогате UTF-16, а JSON-полезная нагрузка может его нести. Пятнадцать источников собирали URL каждой вакансии из id, полученного от хоста, *внутри* цикла разбора, поэтому одна плохая вакансия прерывала весь цикл и молча теряла все вакансии на этой странице. Хелпер `_safe-url.mjs` родителя зеркалирован в `server/lib/sources/`, и теперь каждый цикл отбрасывает только одну вакансию — в тринадцати зеркалированных источниках, а также в **jobstreet и trudvsem**, двух источниках, существующих только в web-ui, которые новая защита на уровне источников поймала при первом же прогоне. Значения, производные от конфигурации (`office` у garena, `corpName` у csod), сохраняют строгое кодирование и падают громко. Декодирование резервного slug у rheinmetall защищено так же, а реестр перенимает конвенцию родителя о префиксе `_` для хелперов. Больше ничего из дельты в 58 коммитов не перенесено — каждый пункт перечислен со своей причиной. Источников по-прежнему **92**. **3042 теста · 116 браузерных.**
+> **🆕 Последний релиз — v1.235.0** — **Паритет с родителем, career-ops `main` @ `68e6b94`: вторая вакансия с той же доски MokaHR исчезала вместо того, чтобы добавиться.** Ключ дедупликации отбрасывал любой фрагмент URL — верно для `#apply`, неверно для MokaHR, чьи вакансии делят путь тенанта и несут идентификатор вакансии **только** в `#/job/{id}`. Две разные вакансии, вставленные в конвейер, оставляли **одну строку**, без единой ошибки, а фильтр свежести сканера отбрасывал остаток тенанта как «уже виденный». Теперь распознанный маршрут `#/job/{id}` / `#/jobs/{id}` продвигается в ключ сравнения до отбрасывания фрагмента — добавлением, никогда не перезаписывая существующий, — тогда как любой оформительский фрагмент по-прежнему схлопывается. Также: `accept-encoding` фиксируется как `gzip, deflate, br` на каждом запросе к источнику (здесь превентивно — Node 18/20/22 никогда не предлагают zstd; меняет поведение именно регистронезависимая перезапись). Источников по-прежнему **92**. **3066 тест · 116 браузерных.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

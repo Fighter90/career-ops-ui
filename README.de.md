@@ -7,16 +7,16 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
+[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.234.0** — **Eltern-Parität mit career-ops `main` @ `56cce8f`: Eine einzige fehlerhafte Job-ID leert nicht mehr die gesamte Seite.** `encodeURIComponent` wirft bei einem einzelnen UTF-16-Surrogat, und ein JSON-Payload kann genau das transportieren. Fünfzehn Quellen bauten die URL jeder Anzeige aus einer host-kontrollierten ID *innerhalb* der Parse-Schleife, sodass eine defekte Anzeige die Schleife abbrach und still jede Stelle auf dieser Seite verlor. Der `_safe-url.mjs`-Helfer des Elternprojekts wird nach `server/lib/sources/` gespiegelt, und jede Schleife verwirft nun nur noch die eine Anzeige — über die dreizehn gespiegelten Quellen hinweg plus **jobstreet und trudvsem**, zwei nur in web-ui vorhandene Quellen, die der neue Wächter auf Quellenebene beim ersten Lauf abfing. Aus der Konfiguration stammende Werte (`office` von garena, `corpName` von csod) behalten ihre strikte Kodierung und scheitern laut. Der Slug-Fallback-Decode von rheinmetall ist auf dieselbe Weise abgesichert, und die Registry übernimmt die `_`-Präfix-Konvention des Elternprojekts für Helfer. Nichts anderes aus dem 58-Commit-Delta wird portiert — jeder Punkt ist mit seiner Begründung aufgeführt. Quellen unverändert bei **92**. **3042 Tests · 116 Browser.**
+> **🆕 Neueste Version — v1.235.0** — **Eltern-Parität mit career-ops `main` @ `68e6b94`: Ein zweiter Job vom selben MokaHR-Board verschwand, statt hinzugefügt zu werden.** Der Dedup-Schlüssel verwarf jedes URL-Fragment — richtig für `#apply`, falsch für MokaHR, dessen Anzeigen sich einen Tenant-Pfad teilen und die Anzeigen-ID **nur** in `#/job/{id}` tragen. Zwei verschiedene Jobs in die Pipeline eingefügt, blieb **eine Zeile** übrig, ganz ohne Fehler, und der Aktualitätsfilter des Scanners verwarf den Rest des Tenants als „schon gesehen“. Eine erkannte `#/job/{id}`- / `#/jobs/{id}`-Route wird jetzt vor dem Verwerfen des Fragments zu einem Vergleichsschlüssel angehoben — angehängt, nie ein bestehender überschrieben —, während jedes kosmetische Fragment weiterhin wegfällt. Außerdem: `accept-encoding` wird bei jeder Quellen-Anfrage auf `gzip, deflate, br` fest vorgegeben (hier vorbeugend — Node 18/20/22 bieten nie zstd an; die groß-/kleinschreibungsunabhängige Überschreibung ist der Teil, der das Verhalten ändert). Quellen unverändert bei **92**. **3066 Tests · 116 Browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

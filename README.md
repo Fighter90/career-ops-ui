@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-3042%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.234.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.234.0)
+[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.234.0** — **Parent parity with career-ops `main` @ `56cce8f`: a single malformed job id no longer empties the whole page.** `encodeURIComponent` throws on a lone UTF-16 surrogate, and a JSON payload can carry one. Fifteen sources built each posting's URL from a host-controlled id *inside* the parse loop, so one bad posting aborted the loop and silently lost every job on that page. The parent's `_safe-url.mjs` helper is mirrored into `server/lib/sources/`, and each loop now drops just the one posting — across the thirteen mirrored sources plus **jobstreet and trudvsem**, two web-ui-only sources the new source-level guard caught on its first run. Config-derived values (garena `office`, csod `corpName`) keep their strict encode and fail loud. rheinmetall's slug-fallback decode is guarded the same way, and the registry adopts the parent's `_`-prefix convention for helpers. Nothing else in the 58-commit delta is ported — each item is listed with its reason. Sources unchanged at **92**. **3042 tests · 116 browser.**
+> **🆕 Latest release — v1.235.0** — **Parent parity with career-ops `main` @ `68e6b94`: a second job from the same MokaHR board vanished instead of being added.** The dedup key dropped every URL fragment — right for `#apply`, wrong for MokaHR, whose postings share a tenant path and carry the posting id **only** in `#/job/{id}`. Two different jobs pasted into the pipeline left **one line**, with no error, and the scanner's freshness filter discarded the rest of the tenant as "already seen". A recognized `#/job/{id}` / `#/jobs/{id}` route is now promoted to a comparison key before the fragment is dropped — appended, never overwriting an existing one — while every cosmetic fragment still collapses. Also: `accept-encoding` is pinned to `gzip, deflate, br` on every source request (preventive here — Node 18/20/22 never offer zstd; the case-insensitive override is the part that changes behaviour). Sources unchanged at **92**. **3066 tests · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
