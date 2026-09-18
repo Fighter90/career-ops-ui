@@ -7,16 +7,16 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
+[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.235.0** — **Parité parent avec career-ops `main` @ `68e6b94` : une deuxième offre du même tableau MokaHR disparaissait au lieu d'être ajoutée.** La clé de déduplication supprimait tout fragment d'URL — correct pour `#apply`, faux pour MokaHR, dont les offres partagent un chemin de tenant et ne portent l'identifiant de l'offre **que** dans `#/job/{id}`. Deux offres différentes collées dans le pipeline laissaient **une seule ligne**, sans erreur, et le filtre de fraîcheur du scanner écartait le reste du tenant comme « déjà vu ». Une route reconnue `#/job/{id}` / `#/jobs/{id}` est désormais promue en clé de comparaison avant que le fragment ne soit supprimé — ajoutée, sans jamais écraser un identifiant existant — tandis que tout fragment cosmétique s'effondre toujours. Par ailleurs : `accept-encoding` est fixé à `gzip, deflate, br` sur chaque requête source (préventif ici — Node 18/20/22 ne proposent jamais zstd ; la surcharge insensible à la casse est la partie qui change le comportement). Nombre de sources inchangé à **92**. **3066 tests · 116 navigateur.**
+> **🆕 Dernière version — v1.236.0** — **Parité parent avec career-ops `main` @ `6a9c84c` : deux nouvelles sources, et deux correctifs qui faisaient perdre des offres, silencieusement.** Un poste **Workday** ouvert dans plusieurs villes renvoie un *décompte* — `"53 Locations"` — là où toute autre offre porte un lieu, si bien qu'il ne correspondait à aucune entrée `allow: [austin]` et était écarté (53 offres sur 291 en amont). Ses vrais lieux proviennent désormais du document de détail CXS, plafonné à 200 requêtes par entrée. **`role-matcher`** n'avait aucune gestion des niveaux, si bien que `"Insurance Specialist"` et `"Insurance Specialist II"` s'effondraient en un seul repost — tout le mécanisme du parent est porté, chiffres romains et arabes repliés sur un seul. Un tableau **Avature** épinglé à un filtre parcourait pourtant tout le tableau global, la chaîne de requête ayant été perdue lors de la reconstruction de l'URL de recherche. Nouvelles sources : **Python.org Jobs** et **Generalist World** — **92 → 94** (89 EN + 5 RU). Plus `devalue` 5.8.1 → 5.9.2, qui referme l'alerte Dependabot ouverte. **3164 tests · 116 navigateur.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

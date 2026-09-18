@@ -134,6 +134,8 @@ import { torreAdapter } from './adapters/torre.mjs';
 import { itviecAdapter } from './adapters/itviec.mjs';
 import { telegramAdapter } from './adapters/telegram.mjs';
 import { careervietAdapter } from './adapters/careerviet.mjs';
+import { pythonorgAdapter } from './adapters/pythonorg.mjs';
+import { generalistWorldAdapter } from './adapters/generalist-world.mjs';
 import { builtinAdapter } from './adapters/builtin.mjs';
 import { collageAdapter } from './adapters/collage.mjs';
 import { feishuJobsAdapter } from './adapters/feishu-jobs.mjs';
@@ -263,6 +265,8 @@ export const ALL_ADAPTERS = [
   itviecAdapter,
   telegramAdapter,
   careervietAdapter,
+  pythonorgAdapter,
+  generalistWorldAdapter,
 ];
 
 /**

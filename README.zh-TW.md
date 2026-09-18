@@ -7,16 +7,16 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
+[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.235.0** — **與 career-ops `main` @ `68e6b94` 的父專案對齊：同一個 MokaHR 職缺看板上的第二筆職缺會憑空消失，而不是被加入。** 去重鍵會捨棄所有網址片段——對 `#apply` 而言沒錯，對 MokaHR 卻是錯的，因為其職缺共用同一租戶路徑，職缺 id **只**存在於 `#/job/{id}` 之中。把兩筆不同的職缺貼進管線，只會留下**一行**，沒有任何錯誤，而掃描器的新鮮度過濾器會把該租戶其餘的職缺都當成「已經看過」而捨棄。現在，可辨識的 `#/job/{id}` / `#/jobs/{id}` 路由會在捨棄片段之前先被提升為比對用的鍵——採附加，絕不覆寫既有的鍵——而每個裝飾性片段仍會照舊摺疊。另外：`accept-encoding` 現在於每次來源請求中都固定為 `gzip, deflate, br`（此處屬預防性措施——Node 18/20/22 從不提供 zstd；真正改變行為的是這個不分大小寫的覆寫）。來源數維持 **92** 個不變。**3066 項 · 瀏覽器 116 項。**
+> **🆕 最新版本 — v1.236.0** — **與 career-ops `main` @ `6a9c84c` 的父專案對齊：兩個新來源，以及兩項曾悄悄讓職缺消失的修復。** 一個在多個城市都有職缺的 **Workday** 職位，回傳的是一個*數量*——`"53 Locations"`——而其他每筆職缺都帶有地點，於是它不符合任何 `allow: [austin]` 項目而遭捨棄（上游 291 筆職缺中有 53 筆屬此情況）。其真實地點現在改由 CXS 明細文件取得，每筆職缺最多查詢 200 次。**`role-matcher`** 原本完全沒有層級處理機制，導致 `"Insurance Specialist"` 與 `"Insurance Specialist II"` 被摺疊成同一則重貼——父專案的整套機制現已移植，羅馬數字與阿拉伯數字會摺疊為同一個數字。一個釘選了篩選條件的 **Avature** 看板，卻仍會走遍整個全域看板，因為搜尋網址重建時遺失了查詢字串。新增來源：**Python.org Jobs** 與 **Generalist World**——**92 → 94**（89 EN + 5 RU）。另外，`devalue` 5.8.1 → 5.9.2，解決了現有的 Dependabot 告警。**3164 項 · 瀏覽器 116 項。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

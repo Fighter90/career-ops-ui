@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
+[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.235.0** — **मूल परियोजना career-ops की `main` शाखा @ `68e6b94` के साथ समानता: एक ही MokaHR बोर्ड की दूसरी नौकरी जोड़े जाने के बजाय गायब हो जाती थी।** डीडुप-कुंजी हर URL फ़्रैगमेंट गिरा देती थी — `#apply` के लिए सही, MokaHR के लिए ग़लत, जिसकी पोस्टिंग्स एक टेनेंट-पथ साझा करती हैं और पोस्टिंग id **केवल** `#/job/{id}` में रखती हैं। पाइपलाइन में चिपकाई गई दो अलग-अलग नौकरियाँ **एक ही पंक्ति** बचती थीं, बिना किसी त्रुटि के, और स्कैनर का फ़्रेशनेस फ़िल्टर बाक़ी पूरे टेनेंट को "पहले से देखा गया" मानकर छोड़ देता था। अब कोई पहचाना गया `#/job/{id}` / `#/jobs/{id}` रूट फ़्रैगमेंट गिराए जाने से पहले एक तुलना-कुंजी में बदल दिया जाता है — जोड़ा जाता है, किसी मौजूदा को कभी अधिलेखित नहीं करता — जबकि हर कॉस्मेटिक फ़्रैगमेंट अब भी सिमट जाता है। साथ ही: `accept-encoding` अब हर स्रोत-अनुरोध पर `gzip, deflate, br` पर स्थिर है (यहाँ निवारक है — Node 18/20/22 डिफ़ॉल्ट रूप से कभी zstd प्रस्तावित नहीं करते; केस-असंवेदनशील ओवरराइड ही वह हिस्सा है जो व्यवहार बदलता है)। स्रोत **92** पर अपरिवर्तित। **3066 परीक्षण · 116 ब्राउज़र।**
+> **🆕 नवीनतम रिलीज़ — v1.236.0** — **मूल परियोजना career-ops की `main` शाखा @ `6a9c84c` के साथ समानता: दो नए स्रोत, और दो सुधार जो यहाँ चुपचाप पोस्टिंग खो रहे थे।** एक **Workday** भूमिका जो कई शहरों में खुली होती है, एक *गिनती* — `"53 Locations"` — बताती है, जहाँ बाक़ी हर पोस्टिंग एक जगह रखती है, इसलिए वह किसी `allow: [austin]` प्रविष्टि से मेल नहीं खाती थी और गिरा दी जाती थी (अपस्ट्रीम **53 of 291** पोस्टिंग)। उसकी असली जगहें अब CXS detail दस्तावेज़ से मिलती हैं, प्रति प्रविष्टि 200 लुकअप पर सीमित। **`role-matcher`** में स्तर-हैंडलिंग बिल्कुल भी नहीं थी, इसलिए `"Insurance Specialist"` और `"Insurance Specialist II"` एक ही रीपोस्ट में सिमट जाते थे — मूल परियोजना का पूरा तंत्र पोर्ट किया गया, रोमन/अरबी अंक मोड़े गए। किसी फ़िल्टर पर पिन किया गया **Avature** बोर्ड पूरा वैश्विक बोर्ड घूम रहा था, क्योंकि सर्च URL फिर से बनाते समय क्वेरी-स्ट्रिंग गिरा दी जाती थी। नए स्रोत: **Python.org Jobs** और **Generalist World** — **92 → 94** (89 EN + 5 RU)। साथ ही `devalue` 5.8.1 → 5.9.2, जिसने खुला Dependabot अलर्ट बंद किया। **3164 परीक्षण · 116 ब्राउज़र।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

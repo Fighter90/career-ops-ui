@@ -7,16 +7,16 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
+[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.235.0** — **career-ops `main` @ `68e6b94` との親パリティ: 同じ MokaHR ボードの 2 件目の求人が、追加されるはずが消えていました。** 重複排除キーはあらゆる URL フラグメントを切り捨てていました —— `#apply` に対しては正しくても、MokaHR に対しては誤りで、その求人はテナントパスを共有し、求人 ID を `#/job/{id}` の中に**しか**持ちません。異なる 2 件の求人をパイプラインに貼り付けても、エラーなしで**1 行**しか残らず、スキャナーの鮮度フィルターがそのテナントの残り全部を「既知」として捨てていました。認識できる `#/job/{id}` / `#/jobs/{id}` ルートはいま、フラグメントが落とされる前に比較用キーへ昇格されます —— 追加であり、既存の値を上書きすることはありません —— 一方で装飾的なフラグメントは引き続きすべて折り畳まれます。また: `accept-encoding` はすべてのソースリクエストで `gzip, deflate, br` に固定されます(ここでは予防的措置です —— Node 18/20/22 は zstd を提示しないため。大文字小文字を区別しない上書きが挙動を変える部分です)。ソース数は **92** のまま変わりません。**3066 件 · ブラウザー 116 件。**
+> **🆕 最新リリース — v1.236.0** — **career-ops `main` @ `6a9c84c` との親パリティ: 新規ソース 2 件、そして求人情報を静かに失わせていた 2 件の修正。** 複数都市で募集する **Workday** の求人は、他のすべての求人が地名を持つ中で_件数_——`"53 Locations"`——を報告するため、`allow: [austin]` のどのエントリにもマッチせず除外されていました(上流で 291 件中 53 件の求人が該当)。その実際の所在地はいま CXS の詳細ドキュメントから取得され、1 エントリあたり 200 件のルックアップに制限されています。**`role-matcher`** はレベルの扱いを一切持っていなかったため、`"Insurance Specialist"` と `"Insurance Specialist II"` が 1 件の再掲載に折り畳まれていました——親のメカニズム全体を移植し、ローマ数字とアラビア数字を畳んでいます。フィルターに固定されていたはずの **Avature** ボードは、検索 URL の再構築時にクエリ文字列が落とされていたため、グローバルボード全体を巡回していました。新規ソース: **Python.org Jobs** と **Generalist World**——**92 → 94**(89 EN + 5 RU)。さらに `devalue` 5.8.1 → 5.9.2 で、開いていた Dependabot アラートを解消。**3164 件 · ブラウザー 116 件。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

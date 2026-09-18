@@ -7,16 +7,16 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
+[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.235.0** — **career-ops `main` @ `68e6b94` ile üst proje eşdeğerliği: aynı MokaHR panosundan ikinci bir iş ilanı eklenmek yerine yok oluyordu.** Yinelenen giderme (dedup) anahtarı her URL fragment'ini düşürüyordu — `#apply` için doğruydu, ama ilanları bir tenant yolunu paylaşan ve ilan kimliğini **yalnızca** `#/job/{id}` içinde taşıyan MokaHR için yanlıştı. Hatta yapıştırılan iki farklı ilan **tek bir satır** bırakıyordu, hiçbir hata olmadan, ve tarayıcının tazelik filtresi tenant'ın geri kalanını "zaten görüldü" olarak eliyordu. Tanınan bir `#/job/{id}` / `#/jobs/{id}` rotası artık fragment düşürülmeden önce bir karşılaştırma anahtarına yükseltiliyor — eklenir, var olanın üzerine asla yazılmaz — kozmetik her fragment ise hâlâ çöküyor. Ayrıca: `accept-encoding`, her kaynak isteğinde `gzip, deflate, br`'ye sabitlendi (burada önleyici bir tedbirdir — Node 18/20/22 asla zstd sunmaz; davranışı değiştiren kısım, büyük/küçük harfe duyarsız geçersiz kılmadır). Kaynaklar **92**'de değişmedi. **3066 test · 116 tarayıcı.**
+> **🆕 Son sürüm — v1.236.0** — **career-ops `main` @ `6a9c84c` ile üst proje eşdeğerliği: iki yeni kaynak ve ilanları sessizce kaybeden iki düzeltme.** Birkaç şehirde açık bir **Workday** pozisyonu, diğer her ilanın bir yer taşıdığı yerde bir *sayı* bildiriyor — `"53 Locations"` — bu yüzden hiçbir `allow: [austin]` girdisiyle eşleşmiyor ve düşürülüyordu (üst projede 291 ilandan 53'ü). Gerçek yerleri artık CXS detay belgesinden geliyor, girdi başına 200 aramayla sınırlı. **`role-matcher`**'da seviye işleme hiç yoktu, bu yüzden `"Insurance Specialist"` ve `"Insurance Specialist II"` tek bir yeniden gönderiye çöküyordu — üst projenin mekanizmasının tamamı, Romen/Arap rakamları katlanarak taşındı. Bir filtreye sabitlenmiş bir **Avature** panosu, arama URL'si yeniden kurulurken sorgu dizesi düşürüldüğü için tüm küresel panoyu geziyordu. Yeni kaynaklar: **Python.org Jobs** ve **Generalist World** — **92 → 94** (89 EN + 5 RU). Ayrıca `devalue` 5.8.1 → 5.9.2, açık Dependabot uyarısını kapatıyor. **3164 test · 116 tarayıcı.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

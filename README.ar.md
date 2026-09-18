@@ -7,16 +7,16 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
+[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.235.0** — **تكافؤ مع career-ops عند الفرع `main` عند `68e6b94`: كانت الوظيفة الثانية من لوحة MokaHR نفسها تختفي بدل أن تُضاف.** كان مفتاح إزالة التكرار يُسقِط كلّ جزءٍ يلي الرمز `#` في الرابط — وهذا صحيحٌ في حالة `#apply`، لكنّه خطأٌ في حالة MokaHR، الذي تشترك إعلاناته في مسار المستأجر ولا تحمل مُعرِّف الإعلان **إلّا** في `#/job/{id}`. وقد ترك لصقُ وظيفتين مختلفتين في خطّ الأنابيب **سطرًا واحدًا**، دون أيّ خطأ، ومرشِّح النَّضارة الخاصّ بالماسح كان يطرح بقيّة إعلانات المستأجر باعتبارها «مَشاهَدةً من قبل». وصار مسار `#/job/{id}` / `#/jobs/{id}` المُتعرَّف عليه يُرقَّى الآن إلى مفتاح مقارنةٍ قبل إسقاط ذلك الجزء — يُلحَق ولا يكتب أبدًا فوق مفتاحٍ موجود — بينما كلّ جزءٍ زخرفيٍّ لا يزال يَنهار كما كان. كذلك: صار `accept-encoding` مثبَّتًا على `gzip, deflate, br` في كلّ طلبٍ من أيّ مصدر (وهذا إجراءٌ وقائيّ هنا — فـNode 18/20/22 لا تعرض zstd أبدًا؛ والجزء الذي يغيّر السلوك هو الكتابة فوق القيمة بصرف النظر عن حالة الأحرف). عدد المصادر ثابتٌ عند **92**. **3066 اختبارًا · 116 في المتصفّح.**
+> **🆕 أحدث إصدار — v1.236.0** — **تكافؤ مع career-ops عند الفرع `main` عند `6a9c84c`: مصدران جديدان، وإصلاحان كانا يُضيّعان الإعلانات صمتًا.** فوظيفةٌ في **Workday** مفتوحةٌ في عدّة مدنٍ كانت تُبلِّغ بـ_عددٍ_ — `"53 Locations"` — حيث يحمل كلّ إعلانٍ آخر مكانًا، فلم تطابق أيّ قيدٍ في `allow: [austin]` وأُسقِطت (53 من 291 إعلانًا أعلى المجرى). وتأتي أماكنها الحقيقيّة الآن من مستند التفصيل لدى CXS، بحدٍّ أقصى 200 طلبٍ لكلّ إدخال. ولم يكن لدى **`role-matcher`** أيّ معالجةٍ للمستوى البتّة، فانهار `"Insurance Specialist"` و`"Insurance Specialist II"` إلى إعادة نشرٍ واحدة — ونُقِلت آليّة المشروع الأب كلَّها، مع طيّ الرومانيّ والعربيّ. وكانت لوحة **Avature** المثبَّتة على مرشِّحٍ تتجوَّل في اللوحة العالميّة كلِّها، لأنّ سلسلة الاستعلام سقطت عند إعادة بناء عنوان البحث. مصدران جديدان: **Python.org Jobs** و**Generalist World** — **92 → 94** (89 EN + 5 RU). مع `devalue` 5.8.1 → 5.9.2، وأُغلق تنبيه Dependabot المفتوح. **3164 اختبارًا · 116 في المتصفّح.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

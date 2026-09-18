@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
+[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.235.0** — **Parent parity with career-ops `main` @ `68e6b94`: a second job from the same MokaHR board vanished instead of being added.** The dedup key dropped every URL fragment — right for `#apply`, wrong for MokaHR, whose postings share a tenant path and carry the posting id **only** in `#/job/{id}`. Two different jobs pasted into the pipeline left **one line**, with no error, and the scanner's freshness filter discarded the rest of the tenant as "already seen". A recognized `#/job/{id}` / `#/jobs/{id}` route is now promoted to a comparison key before the fragment is dropped — appended, never overwriting an existing one — while every cosmetic fragment still collapses. Also: `accept-encoding` is pinned to `gzip, deflate, br` on every source request (preventive here — Node 18/20/22 never offer zstd; the case-insensitive override is the part that changes behaviour). Sources unchanged at **92**. **3066 tests · 116 browser.**
+> **🆕 Latest release — v1.236.0** — **Parent parity with career-ops `main` @ `6a9c84c`: two new sources, and two fixes that were losing postings silently.** A **Workday** role open in several cities reports a *count* — `"53 Locations"` — where every other posting carries a place, so it matched no `allow: [austin]` entry and was dropped (53 of 291 postings upstream). Its real places now come from the CXS detail document, capped at 200 lookups per entry. **`role-matcher`** had no level handling at all, so `"Insurance Specialist"` and `"Insurance Specialist II"` collapsed into one repost — the parent's whole mechanism is ported, roman/arabic folded. An **Avature** board pinned to a filter walked the entire global board, because the query string was dropped when the search URL was rebuilt. New sources: **Python.org Jobs** and **Generalist World** — **92 → 94** (89 EN + 5 RU). Plus `devalue` 5.8.1 → 5.9.2, closing the open Dependabot alert. **3164 tests · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

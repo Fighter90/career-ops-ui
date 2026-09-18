@@ -7,16 +7,16 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
+[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.235.0** — **Паритет із батьківським career-ops `main` @ `68e6b94`: друга вакансія з тієї самої дошки MokaHR зникала замість того, щоб додаватися.** Ключ дедуплікації відкидав кожен фрагмент URL — правильно для `#apply`, неправильно для MokaHR, чиї оголошення поділяють шлях орендаря й несуть ідентифікатор вакансії **лише** у `#/job/{id}`. Дві різні вакансії, вставлені в конвеєр, лишали **один рядок**, без помилки, а фільтр свіжості сканера відкидав решту вакансій орендаря як «вже бачені». Розпізнаний маршрут `#/job/{id}` / `#/jobs/{id}` тепер переноситься в ключ порівняння перед відкиданням фрагмента — додається, ніколи не перезаписуючи наявний, — тоді як кожен косметичний фрагмент і далі згортається. Також: `accept-encoding` зафіксовано як `gzip, deflate, br` у кожному запиті до джерела (тут це запобіжний захід — Node 18/20/22 ніколи не пропонують zstd; частина, що справді змінює поведінку, — регістронезалежне перевизначення). Кількість джерел не змінилася — **92**. **3066 тести · 116 браузерних.**
+> **🆕 Останній реліз — v1.236.0** — **Паритет із батьківським career-ops `main` @ `6a9c84c`: два нові джерела та два виправлення, які тихо губили вакансії.** Вакансія **Workday**, відкрита в кількох містах, повертає *лічильник* — `"53 Locations"` — там, де кожна інша вакансія несе місце, тож вона не збігалася з жодним записом `allow: [austin]` і відкидалася (53 of 291 вакансій на боці батьківського репозиторію). Тепер її справжні місця беруться з детального документа CXS, з обмеженням у 200 пошуків на запис. **`role-matcher`** взагалі не мав обробки рівнів, тож `"Insurance Specialist"` і `"Insurance Specialist II"` згорталися в один повторний допис — портовано весь механізм батьківського репозиторію, зі згортанням римських/арабських цифр. Дошка **Avature**, прив'язана до фільтра, обходила всю глобальну дошку, бо рядок запиту відкидався під час перебудови URL пошуку. Нові джерела: **Python.org Jobs** і **Generalist World** — **92 → 94** (89 EN + 5 RU). Також `devalue` 5.8.1 → 5.9.2, що закриває відкрите сповіщення Dependabot. **3164 тести · 116 браузерних.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
