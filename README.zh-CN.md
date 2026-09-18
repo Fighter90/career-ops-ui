@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
+[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.235.0** — **父项目对齐 career-ops `main` @ `68e6b94`：同一个 MokaHR 职位板上的第二条职位没有被新增，而是消失了。** 去重键此前会无条件丢弃 URL 中的每一个片段——这对 `#apply` 而言没问题，对 MokaHR 却是错的：它的职位发布共享同一个租户路径，职位 id **只**存在于 `#/job/{id}` 之中。把两条不同的职位粘贴进流水线，最终只剩**一行**，没有任何报错，扫描器的新鲜度过滤器还会把该租户下的其余职位当作「已见过」而丢弃。现在，一个可识别的 `#/job/{id}` / `#/jobs/{id}` 路由会在片段被丢弃之前先被提升为一个比较键——采用追加、绝不覆盖已有的键——而每一个装饰性片段依旧照常合并。此外：每个来源请求的 `accept-encoding` 现已固定为 `gzip, deflate, br`（在这里属于预防性修复——Node 18/20/22 从不主动提供 zstd；真正改变行为的是这次大小写不敏感的覆盖）。来源数量维持 **92** 个不变。**3066 项 · 浏览器 116 项。**
+> **🆕 最新版本 — v1.236.0** — **父项目对齐 career-ops `main` @ `6a9c84c`：两个新增来源，以及两处此前会悄无声息丢失职位发布的修复。** 一个 **Workday** 职位在多个城市均有开放，却只报告一个*计数*——`"53 Locations"`——而其他每一条职位发布携带的都是一个地点，于是它匹配不到任何 `allow: [austin]` 条目而被丢弃（上游实测 291 条职位发布中有 53 条如此）。它的真实地点现在来自 CXS 详情文档，上限为每条 200 次查询。**`role-matcher`** 此前完全没有级别处理逻辑，因此 `"Insurance Specialist"` 与 `"Insurance Specialist II"` 被合并为一条重复发布——父项目的整套机制已整体移植，罗马数字与阿拉伯数字折叠为同一数字。一个被固定到某个过滤器的 **Avature** 职位板却遍历了整个全局职位板，因为搜索 URL 重建时查询字符串被丢弃了。新增来源：**Python.org Jobs** 与 **Generalist World**——**92 → 94**（89 EN + 5 RU）。另外 `devalue` 5.8.1 → 5.9.2，关闭了待处理的 Dependabot 告警。**3164 项 · 浏览器 116 项。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

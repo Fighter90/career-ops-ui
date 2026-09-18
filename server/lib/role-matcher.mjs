@@ -7,7 +7,7 @@
 
 export const SENIORITY_TOKENS = new Set([
   'junior', 'mid', 'middle', 'senior', 'staff', 'principal', 'lead', 'head',
-  'chief', 'associate', 'intern', 'entry',
+  'chief', 'associate', 'intern', 'entry', 'level',
 ]);
 
 // Seniority tokens that place a requisition BELOW the bare baseline title.
@@ -112,6 +112,45 @@ function normalizeTitle(value) {
  * @param {string} role
  * @returns {string[]}
  */
+// A stated level — "Insurance Specialist II", "Registered Nurse 3", "Data
+// Engineer Level 2" — is the employer's own statement that this requisition is
+// not its sibling: a different pay band, scope and req number under one base
+// title. The tokenizer cannot see it: `w.length > 3` drops every roman numeral
+// up to VIII and every single digit, so "Insurance Specialist I" and
+// "Insurance Specialist II" tokenize identically and score a perfect Jaccard
+// ratio — and the repost detector then folds two real requisitions into one.
+// Measured upstream on a 316-posting corpus: 1 title in 20 carries a level.
+//
+// Roman and arabic forms fold onto one number so "Nurse II" and "Nurse 2" are
+// the same statement. Bounded at six: beyond that the roman forms start to
+// collide with real words and abbreviations, and no title needs them.
+export const LEVEL_TOKENS = new Map([
+  ['i', 1], ['ii', 2], ['iii', 3], ['iv', 4], ['v', 5], ['vi', 6],
+  ['1', 1], ['2', 2], ['3', 3], ['4', 4], ['5', 5], ['6', 6],
+]);
+
+// A level token standing as its own word, optionally introduced by "level" /
+// "grade" / "tier". The lookahead is what keeps "5G", "3.0" and "Web3" out —
+// a digit glued to a letter or a point is not a level — and the boundary
+// classes are what let "II (Remote)", "II, Days" and "II/III" read as levels
+// despite the suffix. A slash bounds both sides, so a posting hiring at either
+// of two levels states both.
+const LEVEL_RE = /(?:^|[\s,(\/\-\u2013\u2014])(?:level|lvl|grade|tier)?\s*(i{1,3}|iv|vi?|[1-6])(?=$|[\s,)\/\-\u2013\u2014])/giu;
+
+/**
+ * The levels a title states, as numbers, so roman and arabic compare equal.
+ * @param {string} title Raw role title.
+ * @returns {Set<number>} Empty when the title states no level.
+ */
+export function extractLevels(title) {
+  const levels = new Set();
+  for (const m of normalizeTitle(title).matchAll(LEVEL_RE)) {
+    const level = LEVEL_TOKENS.get(m[1]);
+    if (level !== undefined) levels.add(level);
+  }
+  return levels;
+}
+
 export function roleTokens(role) {
   return normalizeTitle(role)
     // Replace with a generic baseline token, not empty space: a bare "Member
@@ -189,6 +228,12 @@ export function roleFuzzyMatch(a, b) {
     if ([...lone].some((s) => SUB_BASELINE_SENIORITY.has(s))) return false;
   }
 
+  // Both sides state a level: they must share one. "Nurse 2" vs "Nurse 3" is
+  // the employer saying these are different requisitions.
+  const lvlA = extractLevels(a);
+  const lvlB = extractLevels(b);
+  if (lvlA.size > 0 && lvlB.size > 0 && ![...lvlA].some((l) => lvlB.has(l))) return false;
+
   const wordsA = [...new Set(roleTokens(a))];
   const wordsB = [...new Set(roleTokens(b))];
   if (wordsA.length === 0 || wordsB.length === 0) return false;
@@ -215,6 +260,22 @@ export function roleFuzzyMatch(a, b) {
     const smallerSet = new Set(smaller);
     const extraTokens = larger.filter((w) => !smallerSet.has(w));
     if (extraTokens.some((w) => !BASELINE_TOKENS.has(w))) return false;
+  }
+
+  // A level on ONE side alone is usually a loose rewrite ("Insurance
+  // Specialist" vs "Insurance Specialist II" tokenize identically, since a
+  // level is not a content token) — UNLESS each title also carries a word the
+  // other lacks. Then the one-sided level compounds a vocabulary difference
+  // instead of decorating an identical title: "Front Desk Assistant (Summer
+  // Housing)" vs "Administrative Assistant II (Housing Front Desk)" differ by
+  // "summer" vs "administrative" AND by the stated level — two disagreements.
+  // Mirrors the subset guard above: baseline-only differences do not split.
+  if ((lvlA.size > 0) !== (lvlB.size > 0)) {
+    const setA = new Set(wordsA);
+    const uniqueA = wordsA.filter((w) => !setB.has(w));
+    const uniqueB = wordsB.filter((w) => !setA.has(w));
+    if (uniqueA.some((w) => !BASELINE_TOKENS.has(w))
+        && uniqueB.some((w) => !BASELINE_TOKENS.has(w))) return false;
   }
 
   const union = new Set([...wordsA, ...wordsB]).size;

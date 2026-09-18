@@ -156,6 +156,11 @@ export function parseAvature(html, ctx = /** @type {any} */ ({})) {
   return out;
 }
 
+// The pagination key we control. Stripped out of any facet query string on the
+// entry, so a stray same-named facet can never collide with (or silently
+// overwrite) our own offset.
+const OFFSET_PARAM = 'jobOffset';
+
 /** Resolve the origin + SearchJobs URL from a host-pinned endpoint. */
 function resolveSearch(endpoint) {
   const u = new URL(endpoint); // already asserted by fetchAvature
@@ -164,7 +169,27 @@ function resolveSearch(endpoint) {
   const searchPath = /\/SearchJobs\b/i.test(u.pathname)
     ? u.pathname.replace(/\/+$/, '')
     : '/careers/SearchJobs';
-  return { origin: u.origin, searchUrl: `${u.origin}${searchPath}` };
+  // Carry over the facet/filter params the entry pinned (Avature's search UI
+  // generates opaque ones — `?42386=[812132]` is a country filter). Dropping
+  // them walked the tenant's entire global board instead of the narrowed one
+  // the operator configured: more pages, more requests, and postings they had
+  // deliberately filtered out.
+  const facets = new URLSearchParams(u.search);
+  for (const key of [...facets.keys()]) {
+    if (key.toLowerCase() === OFFSET_PARAM.toLowerCase()) facets.delete(key);
+  }
+  return { origin: u.origin, searchUrl: `${u.origin}${searchPath}`, facets };
+}
+
+/**
+ * The URL for one page: the entry's facets plus our own offset, which is
+ * applied last so it always wins.
+ * @param {string} searchUrl @param {URLSearchParams} facets @param {number} offset
+ */
+function pageUrl(searchUrl, facets, offset) {
+  const qs = new URLSearchParams(facets);
+  qs.set(OFFSET_PARAM, String(offset));
+  return `${searchUrl}?${qs.toString()}`;
 }
 
 /** Resolve the page cap: a positive integer `max_pages` on the entry, capped. */
@@ -185,14 +210,14 @@ function resolveMaxPages(company) {
 export async function fetchAvature(endpoint, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
   assertAvatureUrl(endpoint);
-  const { origin, searchUrl } = resolveSearch(endpoint);
+  const { origin, searchUrl, facets } = resolveSearch(endpoint);
   const maxPages = resolveMaxPages(company);
   const fallbackCompany = (company && typeof company.name === 'string') ? company.name : '';
 
   const out = [];
   const seen = new Set();
   for (let page = 0; page < maxPages; page += 1) {
-    const html = await fetchText(fetchImpl, `${searchUrl}?jobOffset=${page * PAGE_SIZE}`, {
+    const html = await fetchText(fetchImpl, pageUrl(searchUrl, facets, page * PAGE_SIZE), {
       signal,
       redirect: 'error',
       headers: { accept: 'text/html' },

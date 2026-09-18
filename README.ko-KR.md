@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-3066%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.235.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.235.0)
+[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.235.0** — **career-ops `main` @ `68e6b94`와의 상위 동등성: 같은 MokaHR 게시판의 두 번째 공고가 추가되지 않고 사라졌습니다.** 중복 제거 키가 모든 URL 프래그먼트를 버렸습니다 — `#apply`에는 맞았지만, 테넌트 경로를 공유하고 공고 id를 오직 `#/job/{id}`에만 담는 MokaHR에는 틀렸습니다. 파이프라인에 서로 다른 공고 두 건을 붙여넣으면 **한 줄**만 남았고, 오류도 없었으며, 스캐너의 신선도 필터는 그 테넌트의 나머지를 "이미 본 것"으로 버렸습니다. 이제 인식된 `#/job/{id}` / `#/jobs/{id}` 라우트는 프래그먼트가 버려지기 전에 비교용 키로 승격됩니다 — 기존 값을 덮어쓰지 않고 추가되며, 장식용 프래그먼트는 여전히 모두 붕괴됩니다. 추가로: `accept-encoding`이 모든 소스 요청에서 `gzip, deflate, br`로 고정됩니다(예방 조치입니다 — Node 18/20/22는 애초에 zstd를 제안하지 않으며, 동작이 바뀌는 부분은 대소문자 구분 없는 오버라이드입니다). 소스는 **92**개로 변함없습니다. **3066개 · 브라우저 116개.**
+> **🆕 최신 릴리스 — v1.236.0** — **career-ops `main` @ `6a9c84c`와의 상위 동등성: 새 소스 두 개, 그리고 공고를 소리 없이 잃고 있던 수정 두 건.** 여러 도시에 열려 있는 **Workday** 공고는 다른 모든 공고가 장소를 담는 자리에 **개수** — `"53 Locations"` — 를 보고했고, 그래서 어떤 `allow: [austin]` 항목과도 일치하지 않아 버려졌습니다(상위 저장소 기준 291건 중 53건). 이제 실제 장소는 CXS 상세 문서에서 가져오며, 항목당 조회는 200건으로 제한됩니다. **`role-matcher`**에는 등급 처리가 전혀 없어서 `"Insurance Specialist"`와 `"Insurance Specialist II"`가 하나의 재게시로 뭉개졌습니다 — 부모 저장소의 메커니즘 전체를 로마 숫자/아라비아 숫자를 접어 이식했습니다. 필터로 좁힌 **Avature** 게시판이 전체 글로벌 게시판을 훑고 있었는데, 검색 URL을 재구성할 때 쿼리 문자열이 버려졌기 때문입니다. 신규 소스: **Python.org Jobs**와 **Generalist World** — **92 → 94**개(89 EN + 5 RU). 추가로 `devalue` 5.8.1 → 5.9.2로 열려 있던 Dependabot 경고를 닫았습니다. **3164개 · 브라우저 116개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
