@@ -10,6 +10,8 @@
  *   ID-Main  → id.jobstreet.com (Indonesia)
  *   SG-Main  → sg.jobstreet.com (Singapore)
  *   MY-Main  → my.jobstreet.com (Malaysia)
+ *   AU-Main  → www.seek.com.au  (Australia — set api: https://www.seek.com.au/api/jobsearch/v5/search)
+ *   NZ-Main  → www.seek.co.nz   (New Zealand)
  *   HK-Main  → hk.jobsdb.com    (Hong Kong)
  *
  * Hong Kong runs under the JobsDB brand rather than Jobstreet, but it is the
@@ -30,7 +32,12 @@
  *         searchLocation: "Jakarta"
  *         pageSize: 30
  *         maxPages: 3
+ *         appendWorkType: false
  *       enabled: true
+ *
+ * `appendWorkType` (default false) suffixes the title with the listing's work
+ * type(s) — "Strategy Consultant [Part time]" — so title filters and triage can
+ * see employment type at scan time.
  *
  * Used by the jobstreet adapter (server/lib/portals/adapters/jobstreet.mjs).
  */
@@ -60,6 +67,21 @@ const ALLOWED_JOBSTREET_HOSTS = new Set([
   'www.seek.com.au',
   'www.seek.co.nz',
 ]);
+
+// Job-detail path by market. Only the Indonesian sites carry the `/id/` locale
+// prefix (https://id.jobstreet.com/id/job/<id>). Every other SEEK-platform host
+// — my/sg.jobstreet.com, hk.jobsdb.com, www.seek.com.au, www.seek.co.nz —
+// serves /job/<id> and answers 404 on /id/job/<id> (verified against live ids,
+// 2026-08-28). A global switch either way breaks one market, which is why this
+// is keyed on the host.
+const ID_LOCALE_HOSTS = new Set(['id.jobstreet.com', 'www.jobstreet.co.id', 'jobstreet.co.id']);
+
+/** @param {string} origin — scheme + hostname */
+function jobDetailPath(origin) {
+  let host = '';
+  try { host = new URL(origin).hostname; } catch { /* fall through to the common path */ }
+  return ID_LOCALE_HOSTS.has(host) ? '/id/job/' : '/job/';
+}
 
 export const meta = {
   value: 'jobstreet',
@@ -123,13 +145,23 @@ function toEpochMs(value) {
  * @param {any} item
  * @param {string} baseUrl origin (scheme + hostname) for building detail URLs
  * @param {string} fallbackCompany
+ * @param {{appendWorkType?: boolean}} [options] — appendWorkType: suffix the
+ *   title with the listing's `workTypes` (e.g. "[Part time]"); off by default
  */
-export function parseJobstreetItem(item, baseUrl, fallbackCompany) {
+export function parseJobstreetItem(item, baseUrl, fallbackCompany, options = {}) {
   if (!item || typeof item !== 'object') return null;
-  const title = (item.title || '').trim();
+  let title = (item.title || '').trim();
   if (!title) return null;
 
+  if (options.appendWorkType) {
+    const types = Array.isArray(item.workTypes)
+      ? item.workTypes.map((t) => String(t ?? '').trim()).filter(Boolean)
+      : [];
+    if (types.length) title = `${title} [${types.join(', ')}]`;
+  }
+
   // v5 carries no absolute job URL — the detail page is built from the id.
+  // The path prefix depends on the market host (see jobDetailPath above).
   let url = '';
   const jobId = item.id != null ? String(item.id).trim() : '';
   // A lone surrogate in id throws URIError out of encodeURIComponent and
@@ -138,7 +170,7 @@ export function parseJobstreetItem(item, baseUrl, fallbackCompany) {
   // posting without a usable URL.
   if (jobId) {
     const encodedId = safeEncodeURIComponent(jobId);
-    if (encodedId !== null) url = `${baseUrl}/id/job/${encodedId}`;
+    if (encodedId !== null) url = `${baseUrl}${jobDetailPath(baseUrl)}${encodedId}`;
   }
   const rawUrl = !url ? (item.jobUrl || '') : '';
   if (rawUrl) {
@@ -215,6 +247,7 @@ export async function fetchJobstreet(apiUrl = DEFAULT_API, opts = {}) {
   const pageSize = Number(cfg.pageSize) || DEFAULT_PAGE_SIZE;
   const maxPages = Number(cfg.maxPages) || DEFAULT_MAX_PAGES;
   const fallbackCompany = company.name || '';
+  const appendWorkType = cfg.appendWorkType === true;
 
   const allJobs = [];
 
@@ -233,7 +266,7 @@ export async function fetchJobstreet(apiUrl = DEFAULT_API, opts = {}) {
     if (data.length === 0) break;
 
     for (const item of data) {
-      const job = parseJobstreetItem(item, baseUrl, fallbackCompany);
+      const job = parseJobstreetItem(item, baseUrl, fallbackCompany, { appendWorkType });
       if (job) allJobs.push(job);
     }
 

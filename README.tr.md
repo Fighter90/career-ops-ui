@@ -7,16 +7,16 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3201%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
+[![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.236.0** — **career-ops `main` @ `6a9c84c` ile üst proje eşdeğerliği: iki yeni kaynak ve ilanları sessizce kaybeden iki düzeltme.** Birkaç şehirde açık bir **Workday** pozisyonu, diğer her ilanın bir yer taşıdığı yerde bir *sayı* bildiriyor — `"53 Locations"` — bu yüzden hiçbir `allow: [austin]` girdisiyle eşleşmiyor ve düşürülüyordu (üst projede 291 ilandan 53'ü). Gerçek yerleri artık CXS detay belgesinden geliyor, girdi başına 200 aramayla sınırlı. **`role-matcher`**'da seviye işleme hiç yoktu, bu yüzden `"Insurance Specialist"` ve `"Insurance Specialist II"` tek bir yeniden gönderiye çöküyordu — üst projenin mekanizmasının tamamı, Romen/Arap rakamları katlanarak taşındı. Bir filtreye sabitlenmiş bir **Avature** panosu, arama URL'si yeniden kurulurken sorgu dizesi düşürüldüğü için tüm küresel panoyu geziyordu. Yeni kaynaklar: **Python.org Jobs** ve **Generalist World** — **92 → 94** (89 EN + 5 RU). Ayrıca `devalue` 5.8.1 → 5.9.2, açık Dependabot uyarısını kapatıyor. **3164 test · 116 tarayıcı.**
+> **🆕 Son sürüm — v1.237.0** — **career-ops `main` @ `93c4302b` ile üst proje eşdeğerliği: dört yansıtılmış düzeltme, ikisi burada ilanları sessizce kaybediyordu.** **Jobstreet / SEEK**, her ilan detay URL'sini `/id/job/<id>` olarak kuruyordu — ama `/id/` *Endonezya yerel önekidir* ve diğer her SEEK ana bilgisayarı buna **404** yanıtı veriyor, bu yüzden döndürdüğümüz her Avustralya, Yeni Zelanda, Singapur, Malezya ve Hong Kong ilanı ölü bir sayfayı işaret ediyordu; yol artık ana bilgisayara göre anahtarlanıyor. **Oracle Cloud**, gezintisini kısa bir sayfada bitiriyordu, ama ORC kısa sayfaları *liste ortasında* sunuyor — American Express **454** iş bildiriyor ve 200 / 199 / 54 sunuyor, bu yüzden son **54 ilan, panonun %12'si**, hiç alınmadı. **Liveness**, `"This role is closed"` ifadesini kaçırıyordu (bir panoda belirsiz ilanların **111'inin 111'i**) ve artık `closed-loop` bileşiğine karşı korunuyor; `job expired` artık görünür bir Apply düğmesini geçemeyen yumuşak bir katmana taşındı — yanlış bir süre dolumu tarama geçmişine yazılır ve gerçek bir işi *sonraki her* taramadan düşürür. Ayrıca iframe ile gömülü panolar için isteğe bağlı bir **Personio** `personio: <slug>` kiracı sabitlemesi ve Jobstreet `appendWorkType`. Sayılar **94** kaynakta değişmedi (89 EN + 5 RU). **3201 test · 116 tarayıcı.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

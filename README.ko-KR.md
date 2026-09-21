@@ -7,16 +7,16 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3201%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
+[![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.236.0** — **career-ops `main` @ `6a9c84c`와의 상위 동등성: 새 소스 두 개, 그리고 공고를 소리 없이 잃고 있던 수정 두 건.** 여러 도시에 열려 있는 **Workday** 공고는 다른 모든 공고가 장소를 담는 자리에 **개수** — `"53 Locations"` — 를 보고했고, 그래서 어떤 `allow: [austin]` 항목과도 일치하지 않아 버려졌습니다(상위 저장소 기준 291건 중 53건). 이제 실제 장소는 CXS 상세 문서에서 가져오며, 항목당 조회는 200건으로 제한됩니다. **`role-matcher`**에는 등급 처리가 전혀 없어서 `"Insurance Specialist"`와 `"Insurance Specialist II"`가 하나의 재게시로 뭉개졌습니다 — 부모 저장소의 메커니즘 전체를 로마 숫자/아라비아 숫자를 접어 이식했습니다. 필터로 좁힌 **Avature** 게시판이 전체 글로벌 게시판을 훑고 있었는데, 검색 URL을 재구성할 때 쿼리 문자열이 버려졌기 때문입니다. 신규 소스: **Python.org Jobs**와 **Generalist World** — **92 → 94**개(89 EN + 5 RU). 추가로 `devalue` 5.8.1 → 5.9.2로 열려 있던 Dependabot 경고를 닫았습니다. **3164개 · 브라우저 116개.**
+> **🆕 최신 릴리스 — v1.237.0** — **career-ops `main` @ `93c4302b`와의 상위 동등성: 미러링된 수정 네 건, 그중 두 건은 여기서 공고를 소리 없이 잃고 있었습니다.** **Jobstreet / SEEK**는 모든 상세 URL을 `/id/job/<id>`로 만들었지만 — `/id/`는 *인도네시아 로케일 접두사*이고, 그 밖의 모든 SEEK 호스트는 여기에 **404**로 답합니다. 그래서 우리가 돌려주던 호주, 뉴질랜드, 싱가포르, 말레이시아, 홍콩의 공고는 모두 죽은 페이지를 가리키고 있었으며, 이제 경로는 호스트에 따라 결정됩니다. **Oracle Cloud**는 짧은 페이지에서 순회를 끝냈지만, ORC는 *목록 중간에서도* 짧은 페이지를 내놓습니다 — American Express는 **454**건의 공고를 보고하며 200 / 199 / 54로 나눠 서비스하므로, 마지막 **54건의 공고, 게시판의 12%**가 끝내 가져와지지 않았습니다. **Liveness**는 `"This role is closed"`(한 게시판에서 불확실한 공고 111건 중 111건)를 놓치고 있었고, 이제 `closed-loop` 복합어를 가드합니다. `job expired`는 눈에 보이는 Apply 버튼을 더 이상 이길 수 없는 소프트 등급으로 옮겨졌습니다 — 잘못된 만료 판정은 스캔 이력에 기록되어 *이후의 모든* 스캔에서 실제 공고를 떨어뜨립니다. 추가로 iframe으로 임베드된 게시판을 위한 옵트인 **Personio** `personio: <slug>` 테넌트 고정과, Jobstreet의 `appendWorkType`. 개수는 **94**개 소스(89 EN + 5 RU)로 변함없습니다. **3201개 · 브라우저 116개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

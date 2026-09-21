@@ -7,16 +7,16 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3201%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
+[![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.236.0** — **父项目对齐 career-ops `main` @ `6a9c84c`：两个新增来源，以及两处此前会悄无声息丢失职位发布的修复。** 一个 **Workday** 职位在多个城市均有开放，却只报告一个*计数*——`"53 Locations"`——而其他每一条职位发布携带的都是一个地点，于是它匹配不到任何 `allow: [austin]` 条目而被丢弃（上游实测 291 条职位发布中有 53 条如此）。它的真实地点现在来自 CXS 详情文档，上限为每条 200 次查询。**`role-matcher`** 此前完全没有级别处理逻辑，因此 `"Insurance Specialist"` 与 `"Insurance Specialist II"` 被合并为一条重复发布——父项目的整套机制已整体移植，罗马数字与阿拉伯数字折叠为同一数字。一个被固定到某个过滤器的 **Avature** 职位板却遍历了整个全局职位板，因为搜索 URL 重建时查询字符串被丢弃了。新增来源：**Python.org Jobs** 与 **Generalist World**——**92 → 94**（89 EN + 5 RU）。另外 `devalue` 5.8.1 → 5.9.2，关闭了待处理的 Dependabot 告警。**3164 项 · 浏览器 116 项。**
+> **🆕 最新版本 — v1.237.0** — **父项目对齐 career-ops `main` @ `93c4302b`：四处镜像修复，其中两处此前会悄无声息丢失职位发布。** **Jobstreet / SEEK** 此前把每一条详情 URL 都拼成 `/id/job/<id>`——但 `/id/` 其实是*印尼语区域前缀*，其余每一个 SEEK 主机对此都会返回 **404**，于是我们返回的每一条澳大利亚、新西兰、新加坡、马来西亚与香港职位发布都指向了一个死页面；路径现在按主机来确定。**Oracle Cloud** 此前在遇到短页时就结束遍历，但 ORC 会在*列表中途*返回短页——American Express 报告共有 **454** 个职位，分页为 200 / 199 / 54，于是最后 **54 条职位发布，占整个职位板的 12%**，从未被抓取过。**Liveness** 此前未能识别 `"This role is closed"`（某个职位板上 111 条不确定职位发布中的全部 111 条），现在还对 `closed-loop` 这样的复合词加了守卫；`job expired` 被移入一个较软的层级，不再能压过一个可见的 Apply 按钮——一次错误的过期判定会被写入扫描历史，并让一个真实的职位从此后*每一次*扫描中消失。此外新增了可选的 **Personio** `personio: <slug>` 租户固定，用于 iframe 嵌入的职位板，以及 Jobstreet 的 `appendWorkType`。来源数量维持 **94** 个不变（89 EN + 5 RU）。**3201 项 · 浏览器 116 项。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

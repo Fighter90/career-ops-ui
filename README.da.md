@@ -7,16 +7,16 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3201%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
+[![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.236.0** — **Forælder-paritet med career-ops `main` @ `6a9c84c`: to nye kilder, og to rettelser, der mistede opslag i stilhed.** En **Workday**-stilling åben i flere byer rapporterer et *antal* — `"53 Locations"` — hvor hvert andet opslag bærer et sted, så den matchede ingen `allow: [austin]`-post og blev droppet (53 af 291 opslag opstrøms). Dens reelle steder kommer nu fra CXS-detaljedokumentet, med loft på 200 opslag pr. post. **`role-matcher`** havde slet ingen niveauhåndtering, så `"Insurance Specialist"` og `"Insurance Specialist II"` kollapsede til ét genopslag — forælderens hele mekanisme er nu porteret, med romerske/arabiske tal foldet sammen. Et **Avature**-board fastgjort til et filter gennemgik hele det globale board, fordi forespørgselsstrengen blev droppet, når søge-URL'en blev genopbygget. Nye kilder: **Python.org Jobs** og **Generalist World** — **92 → 94** (89 EN + 5 RU). Desuden `devalue` 5.8.1 → 5.9.2, som lukker den åbne Dependabot-advarsel. **3164 test · 116 browser.**
+> **🆕 Seneste udgivelse — v1.237.0** — **Forælder-paritet med career-ops `main` @ `93c4302b`: fire spejlede rettelser, hvoraf to mistede opslag her, i stilhed.** **Jobstreet / SEEK** byggede hver detalje-URL som `/id/job/<id>` — men `/id/` er det *indonesiske lokale præfiks*, og enhver anden SEEK-vært svarer **404** på det, så hvert australsk, newzealandsk, singaporeansk, malaysisk og Hongkong-opslag, vi returnerede, pegede på en død side; stien er nu nøglet på værten. **Oracle Cloud** afsluttede sin gennemgang på en kort side, men ORC leverer korte sider *midt i listen* — American Express rapporterer **454** job og leverer 200 / 199 / 54, så de sidste **54 opslag, 12% af boardet**, blev aldrig hentet. **Liveness** overså `"This role is closed"` (111 af 111 usikre opslag på ét board) og vagter nu sammensætningen `closed-loop`; `job expired` flyttede til et blødt lag, der ikke længere kan overtrumfe en synlig Apply-knap — en falsk udløbsstatus skrives til scan-historikken og fjerner et ægte job fra *hver* senere scanning. Desuden en tilvalgt **Personio** `personio: <slug>`-tenantfastgørelse til iframe-indlejrede boards, og Jobstreet `appendWorkType`. Antal uændret på **94** kilder (89 EN + 5 RU). **3201 test · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

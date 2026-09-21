@@ -171,7 +171,7 @@ test('jobstreet.parseJobstreetItem drops a bad id without a jobUrl, keeps a good
   await survives('jobstreet',
     () => [parseJobstreetItem({ id: `${LONE}bad`, title: 'Bad' }, 'https://www.jobstreet.com', 'Acme'),
            parseJobstreetItem({ id: 'g-1', title: 'Good' }, 'https://www.jobstreet.com', 'Acme')],
-    ([bad, good]) => bad === null && good !== null && good.url === 'https://www.jobstreet.com/id/job/g-1');
+    ([bad, good]) => bad === null && good !== null && good.url === 'https://www.jobstreet.com/job/g-1');
 });
 
 test('jobstreet.parseJobstreetItem falls back to jobUrl when the id is bad', async () => {

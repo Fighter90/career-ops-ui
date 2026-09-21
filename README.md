@@ -9,16 +9,16 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3201%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
+[![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.236.0** — **Parent parity with career-ops `main` @ `6a9c84c`: two new sources, and two fixes that were losing postings silently.** A **Workday** role open in several cities reports a *count* — `"53 Locations"` — where every other posting carries a place, so it matched no `allow: [austin]` entry and was dropped (53 of 291 postings upstream). Its real places now come from the CXS detail document, capped at 200 lookups per entry. **`role-matcher`** had no level handling at all, so `"Insurance Specialist"` and `"Insurance Specialist II"` collapsed into one repost — the parent's whole mechanism is ported, roman/arabic folded. An **Avature** board pinned to a filter walked the entire global board, because the query string was dropped when the search URL was rebuilt. New sources: **Python.org Jobs** and **Generalist World** — **92 → 94** (89 EN + 5 RU). Plus `devalue` 5.8.1 → 5.9.2, closing the open Dependabot alert. **3164 tests · 116 browser.**
+> **🆕 Latest release — v1.237.0** — **Parent parity with career-ops `main` @ `93c4302b`: four mirrored fixes, two of which were losing postings here silently.** **Jobstreet / SEEK** built every detail URL as `/id/job/<id>` — but `/id/` is the *Indonesian locale prefix*, and every other SEEK host answers **404** on it, so each Australian, NZ, Singapore, Malaysian and Hong Kong posting we returned pointed at a dead page; the path is now keyed on the host. **Oracle Cloud** ended its walk on a short page, but ORC serves short pages *mid-list* — American Express reports **454** jobs and serves 200 / 199 / 54, so the last **54 postings, 12% of the board**, were never fetched. **Liveness** missed `"This role is closed"` (111 of 111 uncertain postings on one board) and now guards the `closed-loop` compound; `job expired` moved to a soft tier that can no longer beat a visible Apply button — a false expiry is written to scan history and drops a real job from *every* later scan. Plus an opt-in **Personio** `personio: <slug>` tenant pin for iframe-embedded boards, and Jobstreet `appendWorkType`. Counts unchanged at **94** sources (89 EN + 5 RU). **3201 tests · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

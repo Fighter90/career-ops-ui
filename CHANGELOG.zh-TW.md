@@ -8,6 +8,27 @@
 
 ---
 
+## [1.237.0] — 2026-09-21
+
+**父專案對齊 — career-ops `main` @ `93c4302b`（`VERSION` 為 1.33.0，取自 `career-ops-hq/main` 的 75 個提交）。這次沒有新增來源：四項鏡射修復，其中兩項曾悄悄讓本專案遺失職缺。**
+
+### 修復
+**Jobstreet / SEEK ——每一則澳洲、紐西蘭、新加坡、馬來西亞與香港的職缺都連到一個死頁面。** `parseJobstreetItem` 無條件把明細網址組成 `${baseUrl}/id/job/${id}`。`/id/` 這個片段並非路徑本身——它是**印尼語系前綴**，只存在於印尼主機上。其餘每一個 SEEK 平台主機在存取 `/id/job/<id>` 時都回傳 **404**。web-ui 先前已把 `www.seek.com.au`、`www.seek.co.nz`、`sg.jobstreet.com`、`my.jobstreet.com` 與 `hk.jobsdb.com` 加進 `ALLOWED_JOBSTREET_HOSTS`，於是掃描順利回傳了這些職缺——每一則都指向一個 404 頁面。路徑現在改依主機決定：`ID_LOCALE_HOSTS`（`id.jobstreet.com`、`www.jobstreet.co.id`、`jobstreet.co.id`）維持 `/id/job/`，其餘一律改用 `/job/`，一個無法解析的來源網址則會落到共用路徑，而不是拋出例外。我們自己的兩個測試先前**把這個錯誤寫進了斷言**——分別斷言 `hk.jobsdb.com/id/job/…` 與 `www.jobstreet.com/id/job/…`——現已修正。
+**Oracle Cloud ——名單中途出現的一個短頁面提前結束了走訪，遺漏了看板尾端的職缺。** 停止條件原為 `listLen === 0 || listLen < PAGE_SIZE`，但 ORC 會在**名單中途**回傳比上限更少的筆數，因為某些資料列會在伺服器端被篩掉。對 American Express 的上游實測：`TotalJobsCount` 為 **454**，分頁為 **200 / 199 / 54**——199 那一頁被判定為結尾，於是最後 **54 筆職缺，佔看板 12%**，從未被抓取。現在只有空白頁面才會結束走訪；只要租戶回報總數，分頁就會持續，直到 `offset + PAGE_SIZE >= total`；唯有沒有總數可供核對的租戶，才會在短頁面上結束。這符合更廣泛的慣例，即 API「即使尚未到達集合結尾，也可能回傳比要求數量更少的結果」（Google AIP-158）。`hasMore` 依然刻意被忽略——有些租戶在一個 7000 筆職缺的看板中，每一頁都回傳 `hasMore:false`。既然短頁面不再結束走訪，`MAX_PAGES` 現在是唯一能防範租戶回報虛假總數的防線，因此它有專屬測試涵蓋。
+**Liveness ——「本職缺已關閉」未被辨識，而一次誤判的到期是永久性的。** 原本的樣式是 `/this job (listing )?is closed/i`，漏掉了同樣常見的 `role` 與 `position` 說法；上游在某個看板上實測，**111 筆中有 111 筆**不確定的職缺使用「role」這個字。現已放寬為 `/this (?:job|role|position)(?: listing)? is closed\b(?!-)/i`。結尾的 `\b(?!-)` 是一個複合形容詞防護：`\b` 單獨使用會排除 `closedown`，但仍會誤判真實文案，例如「This role is closed-loop control of the platform」，而擋下它的正是這個向前否定式。
+**Liveness ——`job expired` 現在歸入一個無法勝過可見「Apply」按鈕的軟性分級。** `HARD_EXPIRED_PATTERNS` 會在申請按鈕檢測*之前*被檢查，因此凡是放在那裡的樣式都會勝過一則仍在刊登中的職缺。`/\bjob expired\b/i` 在四種真實的刊登頁面上會誤判——一個「類似職缺」輪播項目、一個「隱藏已到期職缺」篩選標籤、一個頁尾常見問答，以及上述的 closed-loop 文案——因為分類器接收的是整個頁面的文字。它現在移到 `SOFT_EXPIRED_PATTERNS`，在申請按鈕檢測之後、刊登頁面判斷法之前被檢查，回傳 `expired_body_soft`；一個沒有任何申請按鈕的純「JOB EXPIRED」橫幅仍會判定為到期。這個方向之所以重要，是因為一次誤判的 `expired` 會被寫入掃描歷史，標記為 `skipped_expired`，接著會在往後**每一次**掃描中，把一則真實的職缺從去重結果中永久濾除，除非設定了 `scan_history.recheck_after_days`。
+
+### 新增
+**Personio ——明確指定 `personio: <slug>` 可釘選租戶。** 許多公司會把自己的 Personio 看板以 **iframe** 嵌入品牌化的徵才頁面，因此 `careers_url` 指向公司自己的網域，而動態消息實際位於 `<slug>.jobs.personio.de`；若不釘選，這些看板就什麼都解析不到。slug 受限於一個具錨定的許可清單（`/^[a-z0-9][a-z0-9-]{0,62}$/i`），組出的網址仍會經過既有的 `new URL()` 解析、HTTPS 檢查與 `PERSONIO_HOST_RE` 主機把關——這個釘選機制絕不會變成通往其他主機的途徑。一個帶有 `.`、`/`、`@`、`:`、`..`、空白字元、開頭為 `-`，或超過 63 個字元 DNS 標籤上限的 slug，會回退到今日的 `api`/`careers_url` 行為。與父專案不同，web-ui 的主機正規表示式區分大小寫，因此釘選值會先經過 `new URL()` 正規化——`AcmeGroup` 會解析為 `acmegroup.jobs.personio.de`，而不會組出一個連自家許可清單都會拒絕的主機名稱。
+**Jobstreet ——選擇性加入的 `appendWorkType`** 會在標題後方附加該則職缺的工作型態，例如 `Strategy Consultant [Part time]`，讓標題篩選與初步分類在掃描當下就能看到聘用型態。預設為關閉；`workTypes` 缺漏或為空皆為無動作。
+
+### 說明
+來源與配接器數量維持不變：**94** 個來源（89 EN + 5 RU），89 個 EN 配接器。本次版本異動的只有測試數量，**3164 → 3201**（+13 jobstreet、+7 Oracle Cloud、+9 liveness、+8 Personio）。
+父專案**刪除了 `providers/telegram.mjs`**，整併為 `telegram-channel`。web-ui 把兩者都註冊為使用者可見的來源，因此**不跟進**這項刪除：跟進會讓登記表從 94 降到 93，並悄悄弄壞任何設定了 `telegram` 的使用者。僅在日後成為一項刻意且公告周知的移除措施時，才重新考慮。
+`jd-skill-gap.mjs` 新增了一種未加冠詞的「what we are looking for」標題形式，以及一個粗體標記剝除機制。web-ui 是**轉送**該指令碼，而非鏡射它，因此這項修復會隨已部署的父專案一併送達，本專案不需任何變動。
+未移植項目，並各自附上理由：`lib/latex-escape.mjs`、`browser-extract.mjs`、`openai-eval.mjs`、`update-system.mjs` 與該產生器（web-ui 既不鏡射、也不以 shell 呼叫它們）；Go 語言的儀表板 TUI 與 `web/` 設定表單（屬於另一套介面）；`doctor.mjs` 與 `analyze-patterns.mjs`（唯讀轉送，其容錯失效機制會吸收這項變動）。
+拉取之後重新驗證過的 fork 差異：`providers/telegram-channel.mjs` 中的西里爾字母 `\p{L}` 修正，已對照合併前的副本逐位元組核實無誤。
+
 ## [1.236.0] — 2026-09-18
 
 **父專案對齊 — career-ops `main` @ `6a9c84c`（`VERSION` 為 1.33.0，128 個提交）。兩個新來源，以及三項鏡射修復——其中兩項曾悄悄讓本專案遺失職缺。**
