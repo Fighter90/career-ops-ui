@@ -194,7 +194,7 @@
   "prov.lead": "जिस मॉडल पर आप भरोसा करते हैं उससे हर पोस्टिंग को स्कोर करें — {n} LLM प्रदाता, अपनी कुंजी, या Ollama से पूरी तरह लोकल। Anthropic, OpenAI, Gemini, DeepSeek, Mistral और अधिक।",
   "nav.methodology": "कार्यप्रणाली",
   "footer.parentMethodology": "career-ops कार्यप्रणाली",
-  "footer.patterns": "Agentic Coding Design Patterns",
+  "footer.patterns": "📘 Agentic Coding Design Patterns",
   "meta.methodologyTitle": "कार्यप्रणाली — career-ops नौकरी लिस्टिंग्स को कैसे स्कोर करता है · career-ops-ui",
   "meta.methodologyDesc": "career-ops-ui के पीछे की स्कोरिंग कार्यप्रणाली: एक छह-आयामी 0.0–5.0 रूब्रिक, 4.0 आवेदन सीमा, और वे नियम जिन्हें यह टूल तोड़ने से इनकार करता है।",
   "meta.licenseTitle": "लाइसेंस — MIT · career-ops-ui",

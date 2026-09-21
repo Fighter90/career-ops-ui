@@ -13,6 +13,7 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -668,6 +669,59 @@ Ardından bunu işaretlemede `data-i18n="scan.newButton"` ya da JS'de `t('scan.n
 📖 **Tam kılavuz:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — yerel dil başına düzen, `@alias` mekanizması, adım adım yeni yerel dil ekleme ve her i18n CI kapısı.
 
 ---
+
+## 📘 Bu depo ajanlarla nasıl inşa ediliyor
+
+Bu projenin büyük kısmı kodlama ajanlarıyla yazılıyor. Bu, kendine özgü hata biçimleri olan
+bir uygulama, bu yüzden bilinçli biçimde yürütülüyor — Kirill Mokevnin'in
+[**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+([Rusça baskı](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) adlı kitabını
+izleyerek. Aşağıdaki dosyalar bu uygulamanın somutlaştırılmış hâlidir. Hiçbiri çalışan
+uygulamayı etkilemez — var olma nedenleri, yeni bir oturumun aynı şeyleri yeniden türetmek,
+yeniden karara bağlamak ve yeniden bozmak yerine bir öncekinin bıraktığı yerden devam
+edebilmesidir.
+
+| Dosya | Ne olduğu | Ne zaman okunur |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | Alan sözlüğü: her kavram için kabul edilmiş tek bir ad, reddedilen varyantlar *kullanma* olarak işaretlenmiş. | **Önce bu.** Bu deponun gerçekten bedelini ödediği karışıklıkları çözer — `source` ile `adapter` (94'e karşı 89, ve ikisinin de neden doğru olduğu), `mirror` ile `relay`, `telegram` ile `telegram-channel`. |
+| **[`PROGRESS.md`](PROGRESS.md)** | Çalışma durumu: ne tamamlandı, sıradaki adım, bilinen sorunlar ve **terk edilmiş yaklaşımlar**. | Her oturumun başında. Git neyin değiştiğini gösterir; bu dosya işin nerede durduğunu ve daha önce nelerin denenip reddedildiğini söyler. |
+| **[`docs/adr/`](docs/adr/)** | Numaralandırılmış karar kayıtları — bağlam, karar, sonuçlar ve bizi yeniden gözden geçirmeye ne iter. | Bir kaydın kapsadığı herhangi bir şeyi değiştirmeden önce. Karar veren kayıttır, mevcut sürüm değil. |
+| **[`CLAUDE.md`](CLAUDE.md)** | Yukarıdaki üç dosyaya işaret eden tek ekranlık bir dizin. | Otomatik olarak, ajan tarafından. Bilinçli biçimde bir bilgi tabanı *değildir* — uzun olanı göz gezdirilir ve sonra göz ardı edilir. |
+| **[`evals/workflow/`](evals/workflow/)** | Ürünün değil, *hattın (pipeline)* davranışını kontrol eden değerlendiricilerle sabit bir görev kümesi. | Bir skill'i, bir prompt'u ya da bir aracı değiştirmeden önce ve sonra. |
+| **[`.claude/skills/`](.claude/skills/)** | Paketlenmiş iş akışları. `parent-sync`, tam bir eşdeğerlik sürümünü dokuz kapılı aşamada çalıştırır. | Bir sürümü doğaçlama yapmak yerine. |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | Çalıştırılabilir korkuluklar — sert biçimde başarısız olan belirlenimci bir taban, artı asla engellemeyen tavsiye niteliğinde bir YZ katmanı. | Kendi kendine çalışır. |
+
+### Bunları kullanmak
+
+Belgeler herhangi bir kuruluma ihtiyaç duymaz — düz Markdown'dır, sizin ve ajan tarafından
+okunur. Bilinmesi gereken, birbirine bağlanmış iki şey var:
+
+```bash
+# Korkuluklar: depoya ait hook'lar, böylece kontroller yalnızca sizin makinenize değil herkese uygulanır.
+git config core.hooksPath .githooks
+
+# İş akışı değerlendirmeleri: depo durumunu docs/adr/ ve PROGRESS.md'deki kurallara göre puanlar.
+node evals/workflow/run.mjs              # tüm değerlendiriciler
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+`evals/workflow/tasks.yml` içindeki her değerlendirici, bir kez üretime çıkmış bir hataya
+karşılık gelir — ezilmiş bir tarihsel atıf, fan-out'un ortasında çalıştırılmış bir site
+build'i, kaçırılmış bir no-port. Sonuç ve seyir ayrı ayrı değerlendirilir ve depodan karar
+verilemeyen bir değerlendirici, sessizce geçmek yerine `SKIP` bildirir: çalışamayan bir
+kontrol asla yeşil görünmemelidir.
+
+### Bunları doğru tutmak
+
+Bayat bir sözlük, hiç sözlük olmamasından daha kötüdür, bu yüzden bunları yazma işi sürümün
+kendisinin bir parçasıdır — `parent-sync` Aşama 0 bunları yükler ve Aşama 8 öğrenilenleri
+yeniden bunlara yönlendirir. Kavramı tanıtan commit'in aynısında `CONTEXT.md`'ye bir terim
+ekleyin; bir seçim altı ay içinde keyfi görünecekse bir ADR açın; reddedilen bir yaklaşımı
+reddedildiği anda `PROGRESS.md`'ye kaydedin.
+
+Kitaptaki hangi kalıpların burada gerçekten uygulandığı — ve hangilerinin uygulanmadığı —
+[Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) wiki
+sayfasında denetlenir.
 
 ## Katkıda bulunma
 

@@ -13,6 +13,7 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -668,6 +669,60 @@ Verwenden Sie sie dann über `data-i18n="scan.newButton"` im Markup oder `t('sca
 📖 **Vollständige Anleitung:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — das Layout pro Sprache, der `@alias`-Mechanismus, das schrittweise Hinzufügen einer neuen Sprache und jedes i18n-CI-Gate.
 
 ---
+
+## 📘 Wie dieses Repo mit Agenten gebaut wird
+
+Der Großteil dieses Projekts wird mit Coding-Agenten geschrieben. Das ist eine Praxis mit
+eigenen Fehlermodi, daher wird sie bewusst betrieben — nach den
+[**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+von Kirill Mokevnin ([russische Ausgabe](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)).
+Die unten aufgeführten Dateien sind diese Praxis in konkreter Form. Keine von ihnen beeinflusst
+die laufende App — sie existieren, damit eine neue Sitzung dort weitermacht, wo die letzte
+aufgehört hat, statt dieselben Dinge erneut herzuleiten, erneut zu entscheiden und erneut
+kaputtzumachen.
+
+| Datei | Was sie ist | Wann man sie liest |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | Fachbegriffs-Wörterbuch: ein akzeptierter Name pro Konzept, mit den abgelehnten Varianten als *nicht verwenden* markiert. | **Zuerst.** Sie klärt die Verwechslungen, die dieses Repo tatsächlich kosten — `source` vs. `adapter` (94 vs. 89, und warum beide richtig sind), `mirror` vs. `relay`, `telegram` vs. `telegram-channel`. |
+| **[`PROGRESS.md`](PROGRESS.md)** | Arbeitsstand: was erledigt ist, der nächste Schritt, bekannte Probleme und **verworfene Ansätze**. | Zu Beginn jeder Sitzung. Git zeigt, was sich geändert hat; hier steht, wo die Arbeit steht und was bereits versucht und verworfen wurde. |
+| **[`docs/adr/`](docs/adr/)** | Nummerierte Entscheidungsprotokolle — Kontext, Entscheidung, Konsequenzen und was uns dazu bringen würde, sie zu überdenken. | Bevor etwas geändert wird, das ein Protokoll abdeckt. Das Protokoll entscheidet, nicht das aktuelle Release. |
+| **[`CLAUDE.md`](CLAUDE.md)** | Ein Index auf einem Bildschirm, der auf die drei oben genannten verweist. | Automatisch, durch den Agenten. Bewusst *keine* Wissensdatenbank — eine lange wird überflogen und dann ignoriert. |
+| **[`evals/workflow/`](evals/workflow/)** | Ein fester Aufgabensatz mit Bewertern, die das Verhalten der *Pipeline* prüfen, nicht das des Produkts. | Vor und nach dem Ändern eines Skills, eines Prompts oder eines Tools. |
+| **[`.claude/skills/`](.claude/skills/)** | Verpackte Workflows. `parent-sync` führt ein komplettes Paritäts-Release in neun abgesicherten Phasen aus. | Anstatt ein Release zu improvisieren. |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | Ausführbare Leitplanken — ein deterministischer Boden, der hart fehlschlägt, plus eine beratende KI-Schicht, die nie blockiert. | Sie läuft von selbst. |
+
+### Verwendung
+
+Die Dokumente brauchen kein Setup — sie sind reines Markdown, gelesen von Ihnen und vom Agenten.
+Zwei Dinge sind verdrahtet und wissenswert:
+
+```bash
+# Leitplanken: Repo-eigene Hooks, sodass die Prüfungen für alle gelten, nicht nur für Ihre Maschine.
+git config core.hooksPath .githooks
+
+# Workflow-Evals: bewerten den Repo-Zustand gegen die Regeln in docs/adr/ und PROGRESS.md.
+node evals/workflow/run.mjs              # alle Bewerter
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+Jeder Bewerter in `evals/workflow/tasks.yml` entspricht einem Fehler, der einmal ausgeliefert
+wurde — eine zerstörte historische Zuschreibung, ein Site-Build, der mitten im Fan-out lief,
+ein verpasstes No-Port. Ergebnis und Verlauf werden getrennt bewertet, und ein Bewerter, der
+aus dem Repository heraus nicht entschieden werden kann, meldet `SKIP`, statt stillschweigend
+zu bestehen: eine Prüfung, die nicht laufen kann, darf niemals als grün gelten.
+
+### Sie aktuell halten
+
+Ein veraltetes Wörterbuch ist schlimmer als gar keines, daher ist die Arbeit, diese zu
+schreiben, Teil des Release selbst — `parent-sync` Phase 0 lädt sie, und Phase 8 leitet das
+Gelernte zurück in sie. Fügen Sie `CONTEXT.md` einen Begriff im selben Commit hinzu, der das
+Konzept einführt; eröffnen Sie ein ADR, wenn eine Entscheidung in sechs Monaten willkürlich
+aussehen würde; dokumentieren Sie einen verworfenen Ansatz in `PROGRESS.md` in dem Moment,
+in dem er verworfen wird.
+
+Welche Muster aus dem Buch hier tatsächlich umgesetzt sind — und welche nicht — wird auf der
+Wiki-Seite [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices)
+geprüft.
 
 ## Mitwirken
 

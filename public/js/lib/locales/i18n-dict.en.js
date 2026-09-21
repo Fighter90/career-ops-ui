@@ -273,7 +273,7 @@ window.__I18N_DICT_EN = {
   'top.langhint': "Enter — search",
   'top.langLabel': "Language",
   'footer.manifesto': "The CareerOps Manifesto",
-  'footer.patterns': "Agentic Coding Design Patterns",
+  'footer.patterns': "📘 Agentic Coding Design Patterns",
   'common.loading': "Loading…",
   'common.error': "Error",
   'common.retry': "Retry",

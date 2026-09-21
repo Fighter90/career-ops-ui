@@ -13,6 +13,7 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -170,6 +171,59 @@ npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 101 testów Playwright
 npm run test:coverage       # jak npm test + pokrycie V8
 ```
+
+## 📘 Jak to repozytorium jest budowane przez agentów kodujących
+
+Większość tego projektu jest pisana przez agentów kodujących. To praktyka z własnymi
+trybami awarii, więc jest prowadzona świadomie, zgodnie z katalogiem
+[**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+autorstwa Kirilla Mokevnina ([wydanie rosyjskie](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)).
+Poniższe pliki są tą praktyką sprowadzoną do konkretu. Żaden z nich nie wpływa na działającą
+aplikację — istnieją po to, by nowa sesja podejmowała pracę tam, gdzie skończyła się poprzednia,
+zamiast na nowo wyprowadzać wnioski, podejmować te same decyzje i psuć te same rzeczy.
+
+| Plik | Czym jest | Kiedy go czytać |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | Słownik domenowy: jedna zaakceptowana nazwa na pojęcie, z odrzuconymi wariantami oznaczonymi jako *nie używać*. | **Najpierw.** Rozstrzyga nieporozumienia, za które to repozytorium faktycznie płaci — `source` kontra `adapter` (94 vs 89, i dlaczego oba są poprawne), `mirror` kontra `relay`, `telegram` kontra `telegram-channel`. |
+| **[`PROGRESS.md`](PROGRESS.md)** | Stan prac: co jest zrobione, kolejny krok, znane problemy oraz **porzucone podejścia**. | Na początku każdej sesji. Git pokazuje, co się zmieniło; ten plik mówi, na jakim etapie jest praca i co już wypróbowano i odrzucono. |
+| **[`docs/adr/`](docs/adr/)** | Numerowane rejestry decyzji — kontekst, decyzja, konsekwencje oraz co skłoniłoby nas do ponownego rozważenia. | Przed zmianą czegokolwiek, co obejmuje dany rejestr. To rejestr decyduje, nie bieżące wydanie. |
+| **[`CLAUDE.md`](CLAUDE.md)** | Indeks na jeden ekran, wskazujący na trzy powyższe pliki. | Automatycznie, przez agenta. Celowo *nie* jest bazą wiedzy — długi plik jest tylko przeglądany pobieżnie, a potem ignorowany. |
+| **[`evals/workflow/`](evals/workflow/)** | Stały zestaw zadań z ewaluatorami sprawdzającymi zachowanie *potoku*, a nie produktu. | Przed i po zmianie skilla, prompta lub narzędzia. |
+| **[`.claude/skills/`](.claude/skills/)** | Zapakowane przepływy pracy. `parent-sync` przeprowadza całe wydanie parytetowe w dziewięciu bramkowanych fazach. | Zamiast improwizować wydanie. |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | Wykonywalne zabezpieczenia — deterministyczna podłoga, która twardo kończy się błędem, plus doradcza warstwa AI, która nigdy nie blokuje. | Uruchamia się sama. |
+
+### Jak z nich korzystać
+
+Dokumenty nie wymagają żadnej konfiguracji — to zwykły Markdown, czytany przez Ciebie
+i przez agenta. Dwie rzeczy są spięte i warto je znać:
+
+```bash
+# Zabezpieczenia: hooki należące do repozytorium, więc kontrole obowiązują wszystkich, nie tylko Twoją maszynę.
+git config core.hooksPath .githooks
+
+# Ewaluacje przepływu pracy: oceniają stan repozytorium względem reguł w docs/adr/ i PROGRESS.md.
+node evals/workflow/run.mjs              # wszystkie ewaluatory
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+Każdy ewaluator w `evals/workflow/tasks.yml` odpowiada błędowi, który kiedyś trafił na
+produkcję — nadpisanej historycznej atrybucji, budowie strony uruchomionej w trakcie
+fan-out, pominiętego no-port. Wynik i przebieg są oceniane osobno, a ewaluator, którego
+nie da się rozstrzygnąć na podstawie repozytorium, zgłasza `SKIP` zamiast po cichu
+przechodzić: kontrola, która nie może zostać uruchomiona, nigdy nie powinna wyglądać
+jak zielona.
+
+### Dbanie, by pozostały prawdziwe
+
+Nieaktualny słownik jest gorszy niż jego brak, więc praca nad pisaniem tych dokumentów
+jest częścią samego wydania — Faza 0 `parent-sync` je wczytuje, a Faza 8 kieruje z
+powrotem do nich to, czego się nauczono. Dodaj termin do `CONTEXT.md` w tym samym
+commicie, który wprowadza dane pojęcie; otwórz ADR, gdy decyzja wyglądałaby na dowolną
+za sześć miesięcy; zapisz odrzucone podejście w `PROGRESS.md` w chwili, gdy zostaje
+odrzucone.
+
+Które wzorce z książki są tu faktycznie wdrożone — a które nie — jest audytowane na
+stronie wiki [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices).
 
 ## Licencja
 

@@ -15,6 +15,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -690,6 +691,58 @@ Then use it via `data-i18n="scan.newButton"` in markup or `t('scan.newButton')` 
 📖 **Full guide:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — the per-locale layout, the `@alias` mechanism, adding a new locale step-by-step, and every i18n CI gate.
 
 ---
+
+## 📘 How this repo is built with agents
+
+Most of this project is written with coding agents. That is a practice with its own
+failure modes, so it is run deliberately, following
+[**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+by Kirill Mokevnin ([Russian edition](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)).
+The files below are that practice made concrete. None of them affect the running app —
+they exist so that a fresh session picks up where the last one left off instead of
+re-deriving, re-deciding and re-breaking the same things.
+
+| File | What it is | Read it when |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | Domain dictionary: one accepted name per concept, with the rejected variants marked *do not use*. | **First.** It settles the confusions this repo actually pays for — `source` vs `adapter` (94 vs 89, and why both are right), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| **[`PROGRESS.md`](PROGRESS.md)** | Working state: what is done, the next step, known issues, and **abandoned approaches**. | At the start of any session. Git shows what changed; this says where the work stands and what was already tried and rejected. |
+| **[`docs/adr/`](docs/adr/)** | Numbered decision records — context, decision, consequences, and what would make us revisit. | Before changing anything a record covers. The record decides, not the current release. |
+| **[`CLAUDE.md`](CLAUDE.md)** | A one-screen index pointing at the three above. | Automatically, by the agent. Deliberately *not* a knowledge base — a long one gets skimmed and then ignored. |
+| **[`evals/workflow/`](evals/workflow/)** | A fixed task set with graders that check the *pipeline's* behaviour, not the product's. | Before and after changing a skill, a prompt or a tool. |
+| **[`.claude/skills/`](.claude/skills/)** | Packaged workflows. `parent-sync` runs a whole parity release in nine gated phases. | Instead of improvising a release. |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | Executable guardrails — a deterministic floor that fails hard, plus an advisory AI layer that never blocks. | It runs itself. |
+
+### Using them
+
+The docs need no setup — they are plain Markdown, read by you and by the agent.
+Two things are wired and worth knowing:
+
+```bash
+# Guardrails: repo-owned hooks, so the checks apply to everyone, not just your machine.
+git config core.hooksPath .githooks
+
+# Workflow evals: grade the repo state against the rules in docs/adr/ and PROGRESS.md.
+node evals/workflow/run.mjs              # all graders
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+Each grader in `evals/workflow/tasks.yml` corresponds to a mistake that shipped once —
+a clobbered historical attribution, a site build run mid-fan-out, a missed no-port.
+Outcome and trajectory are graded separately, and a grader that cannot be decided from
+the repository reports `SKIP` rather than passing silently: a check that cannot run must
+never read as green.
+
+### Keeping them true
+
+A stale dictionary is worse than none, so the work of writing these is part of the
+release itself — `parent-sync` Phase 0 loads them and Phase 8 routes what was learned
+back into them. Add a term to `CONTEXT.md` in the same commit that introduces the
+concept; open an ADR when a choice would look arbitrary in six months; record a rejected
+approach in `PROGRESS.md` the moment it is rejected.
+
+Which patterns from the book are actually implemented here — and which are not — is
+audited on the [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices)
+wiki page.
 
 ## Contributing
 

@@ -13,6 +13,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -641,6 +642,43 @@ career-ops **常開** 時最佳 —— 在你睡覺時掃描,可從任何瀏覽�
 ```
 
 📖 **完整指南:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) —— 按語言的佈局、`@alias` 機制、如何新增語言,以及所有 i18n CI 關卡。
+
+---
+
+## 📘 本儲存庫如何用代理建置
+
+這個專案的大部分程式碼是由程式碼代理撰寫的。這是一種有其自身失敗模式的實踐，因此需要被審慎地對待——遵循 Kirill Mokevnin 所著的 [**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/)（[俄文版](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)）。下面這些檔案，就是這種實踐的具體化。它們都不會影響正在執行的應用程式——它們存在的意義，是讓新的一輪工作階段能接續上一輪停下的地方，而不必重新推導、重新決策、重新破壞同樣的東西。
+
+| 檔案 | 是什麼 | 何時讀 |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | 領域詞典：每個概念對應一個被採納的名稱，被否決的變體標為*不要使用*。 | **第一個讀。** 它解決了這個儲存庫真正付出代價的那些混淆——`source` 與 `adapter`（94 對 89，以及為什麼兩者都對）、`mirror` 與 `relay`、`telegram` 與 `telegram-channel`。 |
+| **[`PROGRESS.md`](PROGRESS.md)** | 工作狀態：已完成的、下一步、已知問題，以及**被放棄的方案**。 | 每次工作階段開始時。Git 顯示改動了什麼；這份檔案說明工作現在處於什麼階段，以及哪些方案已經試過又被否決。 |
+| **[`docs/adr/`](docs/adr/)** | 編號的決策紀錄——背景、決策、後果，以及什麼情況會讓人重新考慮它。 | 在修改某條紀錄所涉及的內容之前。做主的是紀錄，不是目前這個發布版本。 |
+| **[`CLAUDE.md`](CLAUDE.md)** | 一螢幕之內的索引，指向上面三份檔案。 | 由代理自動讀取。它刻意*不是*知識庫——太長的檔案只會被草草翻過然後被忽略。 |
+| **[`evals/workflow/`](evals/workflow/)** | 一組固定任務，配有檢查*流水線*行為（而非產品行為）的評分器。 | 在修改某個技能、提示詞或工具之前和之後。 |
+| **[`.claude/skills/`](.claude/skills/)** | 打包好的工作流。`parent-sync` 會以九個受控階段，完成一次完整的對等發布。 | 用它取代臨時拼湊一次發布。 |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | 可執行的護欄——一條會硬性失敗的確定性底線，外加一層從不阻擋的建議性 AI 檢查。 | 它會自己執行。 |
+
+### 如何使用它們
+
+這些文件不需要任何設定——都是普通的 Markdown，由你和代理閱讀。有兩件事已經接好線，值得了解：
+
+```bash
+# 護欄：鉤子歸儲存庫所有，因此檢查對所有人都生效，而不只是你自己的機器。
+git config core.hooksPath .githooks
+
+# 工作流評測：依據 docs/adr/ 與 PROGRESS.md 中的規則，替儲存庫目前的狀態打分。
+node evals/workflow/run.mjs              # 全部評分器
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+`evals/workflow/tasks.yml` 裡的每一個評分器，都對應一次真實發生過的失誤——一次被覆蓋掉的歷史署名、一次在扇出過程中跑起來的網站建置、一次被漏掉的連接埠檢查。結果與過程分開評分；一個無法僅憑儲存庫本身判斷結果的評分器，會回報 `SKIP`，而不是悄悄放行——一項跑不起來的檢查，絕不能看起來是綠色的。
+
+### 讓它們保持真實
+
+過時的詞典比沒有詞典更糟，所以維護這些檔案本身就是發布流程的一部分——`parent-sync` 的第 0 階段會載入它們，第 8 階段則把學到的東西寫回去。在引入某個概念的同一次提交裡，把對應的術語加進 `CONTEXT.md`；當某個決定在六個月後可能顯得隨意時，就開一份 ADR；一個方案被否決的那一刻，就把它記錄進 `PROGRESS.md`。
+
+書中的哪些模式在這裡真正落地了、哪些沒有，記錄在 [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) 維基頁面上。
 
 ---
 

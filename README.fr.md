@@ -13,6 +13,7 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -633,6 +634,43 @@ L'UI est livrée en **17 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `r
 Utilisez-la ensuite via `data-i18n="scan.newButton"` dans le markup ou `t('scan.newButton')` en JS, puis lancez `npm test`. Pour ajouter une langue toute neuve, enregistrez-la dans `i18n.js` (`LANGS` + `detect()`), l'assembleur, `index.html`, et l'outillage qui énumère les locales.
 
 📖 **Guide complet :** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — la disposition par locale, le mécanisme `@alias`, l'ajout d'une nouvelle locale pas à pas, et chaque barrière CI i18n.
+
+---
+
+## 📘 Comment ce dépôt est construit avec des agents
+
+La majeure partie de ce projet est écrite avec des agents de codage. C'est une pratique qui a ses propres modes de défaillance, elle est donc menée délibérément, en suivant [**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/) de Kirill Mokevnin ([édition russe](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)). Les fichiers ci-dessous sont cette pratique rendue concrète. Aucun d'eux n'affecte l'application en fonctionnement — ils existent pour qu'une nouvelle session reprenne là où la précédente s'est arrêtée, au lieu de redériver, redécider et recasser les mêmes choses.
+
+| Fichier | Ce que c'est | À lire quand |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | Dictionnaire du domaine : un nom retenu par concept, les variantes rejetées marquées *à ne pas utiliser*. | **En premier.** Il tranche les confusions que ce dépôt paie réellement — `source` contre `adapter` (94 contre 89, et pourquoi les deux ont raison), `mirror` contre `relay`, `telegram` contre `telegram-channel`. |
+| **[`PROGRESS.md`](PROGRESS.md)** | État des travaux : ce qui est fait, la prochaine étape, les problèmes connus, et les **approches abandonnées**. | Au début de chaque session. Git montre ce qui a changé ; ce fichier dit où en est le travail et ce qui a déjà été essayé puis rejeté. |
+| **[`docs/adr/`](docs/adr/)** | Des fiches de décision numérotées — contexte, décision, conséquences, et ce qui ferait revenir dessus. | Avant de modifier quoi que ce soit qu'une fiche couvre. C'est la fiche qui décide, pas la release en cours. |
+| **[`CLAUDE.md`](CLAUDE.md)** | Un index tenant sur un écran, pointant vers les trois fichiers ci-dessus. | Automatiquement, par l'agent. Délibérément *pas* une base de connaissances — une longue se parcourt en diagonale, puis s'ignore. |
+| **[`evals/workflow/`](evals/workflow/)** | Un ensemble de tâches fixe, avec des évaluateurs qui vérifient le comportement du *pipeline*, pas celui du produit. | Avant et après avoir modifié un skill, un prompt ou un outil. |
+| **[`.claude/skills/`](.claude/skills/)** | Des workflows packagés. `parent-sync` mène une release de parité complète en neuf phases contrôlées. | Au lieu d'improviser une release. |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | Des garde-fous exécutables — un plancher déterministe qui bloque net, plus une couche IA consultative qui ne bloque jamais. | Il s'exécute de lui-même. |
+
+### Comment les utiliser
+
+Les docs ne demandent aucune configuration — c'est du Markdown brut, lu par vous et par l'agent. Deux choses sont câblées et valent la peine d'être connues :
+
+```bash
+# Garde-fous : des hooks détenus par le dépôt, donc les vérifications s'appliquent à tout le monde, pas seulement à votre machine.
+git config core.hooksPath .githooks
+
+# Évaluations de workflow : notent l'état du dépôt par rapport aux règles de docs/adr/ et PROGRESS.md.
+node evals/workflow/run.mjs              # tous les évaluateurs
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+Chaque évaluateur de `evals/workflow/tasks.yml` correspond à une erreur qui a un jour été livrée — une attribution historique écrasée, un build de site lancé en plein fan-out, un no-port manqué. Le résultat et la trajectoire sont notés séparément, et un évaluateur qui ne peut pas être tranché à partir du dépôt renvoie `SKIP` plutôt que de passer silencieusement : une vérification qui ne peut pas s'exécuter ne doit jamais paraître verte.
+
+### Les garder à jour
+
+Un dictionnaire obsolète est pire que son absence, donc écrire ces fichiers fait partie de la release elle-même — la phase 0 de `parent-sync` les charge, et la phase 8 y réinjecte ce qui a été appris. Ajoutez un terme à `CONTEXT.md` dans le même commit qui introduit le concept ; ouvrez une ADR quand un choix paraîtrait arbitraire dans six mois ; consignez une approche rejetée dans `PROGRESS.md` au moment même où elle est rejetée.
+
+Les patterns du livre réellement implémentés ici — et ceux qui ne le sont pas — sont audités sur la page wiki [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices).
 
 ---
 
