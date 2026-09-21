@@ -105,6 +105,15 @@ function gradeNoBlanketSweep() {
   const chained = arrows.length < 2 || arrows.every(([, to], i) => i === 0 || arrows[i - 1][0] === to);
   record(t, 'per-release test-count chain is continuous', chained ? 'PASS' : 'FAIL',
     arrows.slice(0, 4).map((a) => a.join('→')).join(', ') || 'no records');
+
+  // The chain being internally consistent is not enough: it stays consistent even if
+  // the NEWEST record's end count is wrong. Anchor the head of the chain to the
+  // CONVENTIONS baseline, which is the number a release actually has to move.
+  // (Found by injecting `3164 → 9999` and watching the chain grader pass anyway.)
+  const head = arrows.length ? arrows[0][1] : null;
+  const baseline = m ? m[2] : null;
+  record(t, 'newest record ends at the CONVENTIONS baseline', head && baseline && head === baseline ? 'PASS' : 'FAIL',
+    head && baseline ? `PROJECT-CONTEXT head ${head} vs CONVENTIONS ${baseline}` : 'one of the two not found');
 }
 
 function gradeLocaleFanout() {
