@@ -13,6 +13,7 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -638,6 +639,43 @@ career-ops **常开** 时最佳 —— 在你睡觉时扫描,可从任何浏览�
 ```
 
 📖 **完整指南:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) —— 按语言的布局、`@alias` 机制、如何新增语言,以及所有 i18n CI 关卡。
+
+---
+
+## 📘 本仓库如何用智能体构建
+
+这个项目的大部分代码由编程智能体编写。这是一种有其自身失败模式的实践，因此需要被审慎地对待——遵循 Kirill Mokevnin 所著的 [**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/)（[俄文版](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)）。下面这些文件，就是这种实践的具体化。它们都不会影响正在运行的应用——它们存在的意义，是让新的一轮会话能接续上一轮停下的地方，而不必重新推导、重新决策、重新破坏同样的东西。
+
+| 文件 | 是什么 | 何时读 |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | 领域词典：每个概念对应一个被采纳的名称，被否决的变体标为*不要使用*。 | **第一个读。** 它解决了这个仓库真正付出代价的那些混淆——`source` 与 `adapter`（94 对 89，以及为什么两者都对）、`mirror` 与 `relay`、`telegram` 与 `telegram-channel`。 |
+| **[`PROGRESS.md`](PROGRESS.md)** | 工作状态：已完成的、下一步、已知问题，以及**被放弃的方案**。 | 每次会话开始时。Git 显示改动了什么；这份文件说明工作现在处于什么阶段，以及哪些方案已经试过又被否决。 |
+| **[`docs/adr/`](docs/adr/)** | 编号的决策记录——背景、决策、后果，以及什么情况会让人重新考虑它。 | 在修改某条记录所涉及的内容之前。做主的是记录，不是当前这个发布版本。 |
+| **[`CLAUDE.md`](CLAUDE.md)** | 一屏之内的索引，指向上面三份文件。 | 由智能体自动读取。它刻意*不是*知识库——太长的文件只会被草草翻过然后被无视。 |
+| **[`evals/workflow/`](evals/workflow/)** | 一组固定任务，配有检查*流水线*行为（而非产品行为）的评分器。 | 在修改某个技能、提示词或工具之前和之后。 |
+| **[`.claude/skills/`](.claude/skills/)** | 打包好的工作流。`parent-sync` 会以九个受控阶段，完成一次完整的对等发布。 | 用它代替临时拼凑一次发布。 |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | 可执行的护栏——一条会硬性失败的确定性底线，外加一层从不阻断的建议性 AI 检查。 | 它会自己运行。 |
+
+### 如何使用它们
+
+这些文档不需要任何配置——都是普通的 Markdown，由你和智能体阅读。有两件事已经接好了线，值得了解：
+
+```bash
+# 护栏：钩子归仓库所有，因此检查对所有人都生效，而不只是你自己的机器。
+git config core.hooksPath .githooks
+
+# 工作流评测：依据 docs/adr/ 与 PROGRESS.md 中的规则，给仓库当前状态打分。
+node evals/workflow/run.mjs              # 全部评分器
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+`evals/workflow/tasks.yml` 里的每一个评分器，都对应一次真实发生过的失误——一次被覆盖掉的历史署名、一次在扇出过程中跑起来的网站构建、一次被漏掉的端口检查。结果与过程分开评分；一个无法仅凭仓库本身判断结果的评分器，会报告 `SKIP`，而不是悄悄放行——一项跑不起来的检查，绝不能看起来是绿色的。
+
+### 让它们保持真实
+
+过时的词典比没有词典更糟，所以维护这些文件本身就是发布流程的一部分——`parent-sync` 的第 0 阶段会加载它们，第 8 阶段则把学到的东西写回去。在引入某个概念的同一次提交里，把对应的术语加进 `CONTEXT.md`；当某个决定在六个月后可能显得随意时，就开一份 ADR；一个方案被否决的那一刻，就把它记录进 `PROGRESS.md`。
+
+书中的哪些模式在这里真正落地了、哪些没有，记录在 [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) 维基页面上。
 
 ---
 

@@ -196,7 +196,7 @@
   "prov.lead": "Her ilanı güvendiğin modelle puanla — {n} LLM sağlayıcı, kendi anahtarın ya da Ollama ile tamamen yerel. Anthropic, OpenAI, Gemini, DeepSeek, Mistral ve daha fazlası.",
   "nav.methodology": "Metodoloji",
   "footer.parentMethodology": "career-ops metodolojisi",
-  "footer.patterns": "Agentic Coding Design Patterns",
+  "footer.patterns": "📘 Agentic Coding Design Patterns",
   "meta.methodologyTitle": "Metodoloji — career-ops iş ilanlarını nasıl puanlar · career-ops-ui",
   "meta.methodologyDesc": "career-ops-ui'nin arkasındaki puanlama metodolojisi: beş boyut ve bütünsel bir genel puan içeren 0.0–5.0 ölçeği, 4.0 başvuru eşiği ve aracın asla ihlal etmeyeceği kurallar.",
   "meta.licenseTitle": "Lisans — MIT · career-ops-ui",

@@ -273,7 +273,7 @@ window.__I18N_DICT_KO = {
   'top.langhint': "Enter — 검색",
   'top.langLabel': "언어",
   'footer.manifesto': "CareerOps 매니페스토",
-  'footer.patterns': "Agentic Coding Design Patterns",
+  'footer.patterns': "📘 Agentic Coding Design Patterns",
   'common.loading': "로딩 중…",
   'common.error': "오류",
   'common.retry': "다시 시도",

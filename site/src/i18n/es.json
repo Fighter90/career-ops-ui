@@ -196,7 +196,7 @@
   "prov.lead": "Puntúa cada oferta con el modelo en que confías — {n} proveedores de LLM, tu propia clave o totalmente local con Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral y más.",
   "nav.methodology": "Metodología",
   "footer.parentMethodology": "metodología de career-ops",
-  "footer.patterns": "Agentic Coding Design Patterns",
+  "footer.patterns": "📘 Agentic Coding Design Patterns",
   "meta.methodologyTitle": "Metodología — cómo puntúa career-ops las ofertas de empleo · career-ops-ui",
   "meta.methodologyDesc": "La metodología de puntuación de career-ops-ui: una rúbrica de cinco dimensiones más una puntuación global holística de 0,0 a 5,0, el umbral de 4,0 para aplicar, y las reglas que la herramienta se niega a romper.",
   "meta.licenseTitle": "Licencia — MIT · career-ops-ui",

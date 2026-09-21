@@ -13,6 +13,7 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -638,6 +639,43 @@ La interfaz incluye **17 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `z
 ```
 
 📖 **Guía completa:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — el layout por idioma, el mecanismo `@alias`, cómo añadir un idioma nuevo y todas las comprobaciones de CI.
+
+---
+
+## 📘 Cómo se construye este repositorio con agentes
+
+La mayor parte de este proyecto está escrita con agentes de codificación. Es una práctica con sus propios modos de fallo, así que se ejecuta de forma deliberada, siguiendo [**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/) de Kirill Mokevnin ([edición rusa](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)). Los archivos que siguen son esa práctica hecha concreta. Ninguno de ellos afecta a la aplicación en ejecución: existen para que una sesión nueva retome donde la anterior lo dejó, en lugar de volver a deducir, volver a decidir y volver a romper las mismas cosas.
+
+| Archivo | Qué es | Léelo cuando |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | Diccionario de dominio: un nombre aceptado por concepto, con las variantes rechazadas marcadas *no usar*. | **Primero.** Resuelve las confusiones que este repositorio realmente paga — `source` vs `adapter` (94 vs 89, y por qué ambos son correctos), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| **[`PROGRESS.md`](PROGRESS.md)** | Estado de trabajo: qué está hecho, el siguiente paso, problemas conocidos y **enfoques abandonados**. | Al empezar cualquier sesión. Git muestra qué cambió; esto dice en qué punto está el trabajo y qué ya se probó y se rechazó. |
+| **[`docs/adr/`](docs/adr/)** | Registros de decisión numerados — contexto, decisión, consecuencias, y qué nos haría reconsiderarla. | Antes de cambiar algo que un registro cubre. Decide el registro, no la versión actual. |
+| **[`CLAUDE.md`](CLAUDE.md)** | Un índice de una sola pantalla que apunta a los tres anteriores. | Automáticamente, por el agente. Deliberadamente *no* es una base de conocimiento — una larga se hojea y luego se ignora. |
+| **[`evals/workflow/`](evals/workflow/)** | Un conjunto fijo de tareas con evaluadores que comprueban el comportamiento del *pipeline*, no el del producto. | Antes y después de cambiar una skill, un prompt o una herramienta. |
+| **[`.claude/skills/`](.claude/skills/)** | Flujos de trabajo empaquetados. `parent-sync` ejecuta una release de paridad completa en nueve fases con puertas de control. | En lugar de improvisar una release. |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | Barreras ejecutables — un piso determinista que falla sin contemplaciones, más una capa de IA consultiva que nunca bloquea. | Se ejecuta solo. |
+
+### Cómo usarlos
+
+Los documentos no necesitan configuración — son Markdown plano, leído por ti y por el agente. Hay dos cosas conectadas que conviene conocer:
+
+```bash
+# Barreras: hooks propiedad del repositorio, así que las comprobaciones aplican a todos, no solo a tu máquina.
+git config core.hooksPath .githooks
+
+# Evaluaciones de workflow: califican el estado del repo contra las reglas de docs/adr/ y PROGRESS.md.
+node evals/workflow/run.mjs              # todos los evaluadores
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+Cada evaluador en `evals/workflow/tasks.yml` corresponde a un error que llegó a producción una vez — una atribución histórica machacada, una build del sitio ejecutada a mitad del reparto (fan-out), un no-port pasado por alto. El resultado y la trayectoria se califican por separado, y un evaluador que no puede decidirse a partir del repositorio informa `SKIP` en lugar de pasar en silencio: una comprobación que no puede ejecutarse nunca debe leerse como verde.
+
+### Mantenerlos veraces
+
+Un diccionario desactualizado es peor que ninguno, así que el trabajo de escribir estos documentos es parte de la propia release — la Fase 0 de `parent-sync` los carga y la Fase 8 devuelve a ellos lo aprendido. Añade un término a `CONTEXT.md` en el mismo commit que introduce el concepto; abre un ADR cuando una decisión pudiera parecer arbitraria dentro de seis meses; registra un enfoque rechazado en `PROGRESS.md` en el momento en que se rechaza.
+
+Qué patrones del libro están realmente implementados aquí — y cuáles no — se audita en la página wiki [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices).
 
 ---
 

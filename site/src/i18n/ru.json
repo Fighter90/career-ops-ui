@@ -196,7 +196,7 @@
   "prov.lead": "Оценивайте каждую вакансию моделью, которой доверяете — {n} LLM-провайдеров, свой ключ или полностью локально через Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral и другие.",
   "nav.methodology": "Методология",
   "footer.parentMethodology": "Методология career-ops",
-  "footer.patterns": "Паттерны агентного кодинга",
+  "footer.patterns": "📘 Паттерны агентного кодинга",
   "meta.methodologyTitle": "Методология — как career-ops оценивает вакансии · career-ops-ui",
   "meta.methodologyDesc": "Методология оценки в career-ops-ui: шкала из пяти параметров плюс целостная общая оценка от 0.0 до 5.0, порог отклика 4.0 и правила, которые инструмент не нарушает.",
   "meta.licenseTitle": "Лицензия — MIT · career-ops-ui",

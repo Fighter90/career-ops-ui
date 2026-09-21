@@ -13,6 +13,7 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -639,6 +640,43 @@ UI는 **17개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `
 ```
 
 📖 **전체 가이드:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — 언어별 레이아웃, `@alias` 메커니즘, 새 언어 추가 방법, 모든 i18n CI 게이트.
+
+---
+
+## 📘 이 저장소가 에이전트로 만들어지는 방식
+
+이 프로젝트의 대부분은 코딩 에이전트로 작성됩니다。이는 그 자체로 고유한 실패 양상을 가진 관행이므로、[**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/)(키릴 모케브닌(Kirill Mokevnin) 저、[러시아어판](https://mokevnin.github.io/agentic-coding-design-patterns/ru/))을 따라 의도적으로 운영됩니다。아래 파일들은 그 관행을 구체화한 것입니다。이들 중 어느 것도 실행 중인 앱에 영향을 주지 않습니다 — 새 세션이 같은 것을 다시 추론하고、다시 결정하고、다시 망가뜨리는 대신 이전 세션이 멈춘 지점에서 이어받도록 하기 위해 존재합니다。
+
+| 파일 | 무엇인가 | 언제 읽는가 |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | 도메인 사전: 개념당 하나의 승인된 이름과、*사용 금지*로 표시된 기각 변형어。 | **가장 먼저。** 이 저장소가 실제로 대가를 치르는 혼동을 정리합니다 — `source` 대 `adapter`(94 대 89、그리고 왜 둘 다 옳은지)、`mirror` 대 `relay`、`telegram` 대 `telegram-channel`。 |
+| **[`PROGRESS.md`](PROGRESS.md)** | 작업 상태: 무엇이 끝났는지、다음 단계、알려진 이슈、그리고 **포기한 접근법**。 | 모든 세션을 시작할 때。Git은 무엇이 바뀌었는지 보여주지만、이 문서는 작업이 어느 지점에 있고 무엇을 이미 시도했다가 기각했는지 말해줍니다。 |
+| **[`docs/adr/`](docs/adr/)** | 번호가 매겨진 의사결정 기록 — 맥락、결정、결과、그리고 무엇이 재검토를 촉발할지。 | 어떤 기록이 다루는 내용을 바꾸기 전에。현재 릴리스가 아니라 그 기록이 결정합니다。 |
+| **[`CLAUDE.md`](CLAUDE.md)** | 위 세 가지를 가리키는 한 화면짜리 색인。 | 자동으로、에이전트에 의해。의도적으로 지식 베이스가 *아닙니다* — 길어지면 훑어보고 넘어가다가 결국 무시되기 때문입니다。 |
+| **[`evals/workflow/`](evals/workflow/)** | 제품이 아니라 *파이프라인*의 동작을 확인하는 채점기가 딸린 고정된 작업 집합。 | 스킬、프롬프트、도구를 바꾸기 전과 후에。 |
+| **[`.claude/skills/`](.claude/skills/)** | 패키지화된 워크플로。`parent-sync`는 아홉 개의 게이트로 나뉜 단계에서 전체 패리티 릴리스를 실행합니다。 | 릴리스를 즉흥적으로 처리하는 대신。 |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | 실행 가능한 안전장치 — 가차 없이 실패하는 결정론적 최저선에、절대 막지 않는 권고용 AI 레이어를 더한 것。 | 저절로 실행됩니다。 |
+
+### 활용하기
+
+문서는 별도 설정이 필요 없습니다 — 평범한 Markdown이며、사용자와 에이전트 모두가 읽습니다。연결되어 있고 알아둘 가치가 있는 것이 두 가지 있습니다。
+
+```bash
+# 안전장치: 저장소가 소유한 훅이므로、검사가 여러분의 머신뿐 아니라 모두에게 적용됩니다。
+git config core.hooksPath .githooks
+
+# 워크플로 평가: docs/adr/ 및 PROGRESS.md의 규칙에 따라 저장소 상태를 채점합니다。
+node evals/workflow/run.mjs              # 모든 채점기
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+`evals/workflow/tasks.yml`의 각 채점기는 한 번 실제로 발생했던 실수에 대응합니다 — 짓밟힌 과거의 기여 표시、팬아웃 도중 실행된 사이트 빌드、놓친 no-port。결과와 과정은 별도로 채점되며、저장소만으로는 판단할 수 없는 채점기는 조용히 통과하는 대신 `SKIP`을 보고합니다: 실행될 수 없는 검사는 결코 초록불로 읽혀서는 안 됩니다。
+
+### 계속 진실되게 유지하기
+
+낡은 사전은 없는 것보다 나쁘므로、이 문서들을 작성하는 작업 자체가 릴리스의 일부입니다 — `parent-sync`의 0단계가 이들을 불러오고、8단계가 배운 것을 다시 이들에게 되돌려 넣습니다。개념을 도입하는 바로 그 커밋에서 `CONTEXT.md`에 용어를 추가하세요。여섯 달 뒤에 자의적으로 보일 결정이라면 ADR을 여세요。기각된 접근법은 기각되는 그 순간 `PROGRESS.md`에 기록하세요。
+
+책에 나온 패턴 중 실제로 여기에 구현된 것 — 그리고 구현되지 않은 것 — 은 [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) 위키 페이지에서 감사됩니다。
 
 ---
 

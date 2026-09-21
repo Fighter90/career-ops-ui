@@ -274,7 +274,7 @@ window.__I18N_DICT_HI = {
   'top.langhint': "Enter — खोजें",
   'top.langLabel': "भाषा",
   'footer.manifesto': "CareerOps घोषणापत्र",
-  'footer.patterns': "Agentic Coding Design Patterns",
+  'footer.patterns': "📘 Agentic Coding Design Patterns",
   'common.loading': "लोड हो रहा है…",
   'common.error': "त्रुटि",
   'common.retry': "पुनः प्रयास करें",

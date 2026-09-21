@@ -13,6 +13,7 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -668,6 +669,57 @@ Brug den derefter via `data-i18n="scan.newButton"` i markup eller `t('scan.newBu
 📖 **Fuld vejledning:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — opbygningen pr. lokalitet, `@alias`-mekanismen, tilføjelse af en ny lokalitet trin for trin og hver i18n-CI-gate.
 
 ---
+
+## 📘 Sådan er dette repository bygget med kodningsagenter
+
+Det meste af dette projekt er skrevet med kodningsagenter. Det er en praksis med sine
+egne fejltilstande, så den drives bevidst, efter
+[**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+af Kirill Mokevnin ([russisk udgave](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)).
+Filerne nedenfor er den praksis gjort konkret. Ingen af dem påvirker den kørende app —
+de findes, så en frisk session kan fortsætte, hvor den sidste slap, i stedet for at
+genudlede, genbeslutte og genødelægge de samme ting.
+
+| Fil | Hvad det er | Læs den, når |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | Domæneordbog: ét godkendt navn pr. begreb, med de afviste varianter markeret *må ikke bruges*. | **Først.** Den afgør de forvirringer, dette repository rent faktisk betaler for — `source` vs. `adapter` (94 vs. 89, og hvorfor begge har ret), `mirror` vs. `relay`, `telegram` vs. `telegram-channel`. |
+| **[`PROGRESS.md`](PROGRESS.md)** | Arbejdstilstand: hvad der er gjort, næste skridt, kendte problemer og **opgivne tilgange**. | Ved starten af enhver session. Git viser, hvad der er ændret; denne fil siger, hvor arbejdet står, og hvad der allerede er forsøgt og forkastet. |
+| **[`docs/adr/`](docs/adr/)** | Nummererede beslutningsprotokoller — kontekst, beslutning, konsekvenser, og hvad der ville få os til at genoverveje. | Før du ændrer noget, en protokol dækker. Det er protokollen, der bestemmer, ikke den aktuelle udgivelse. |
+| **[`CLAUDE.md`](CLAUDE.md)** | Et ét-skærms-indeks, der peger på de tre ovenfor. | Automatisk, af agenten. Bevidst *ikke* en videnbase — en lang en bliver skimmet og derefter ignoreret. |
+| **[`evals/workflow/`](evals/workflow/)** | Et fast sæt opgaver med bedømmere, der tjekker *pipelinens* adfærd, ikke produktets. | Før og efter du ændrer et skill, en prompt eller et værktøj. |
+| **[`.claude/skills/`](.claude/skills/)** | Pakkede workflows. `parent-sync` kører en hel paritetsudgivelse i ni gatede faser. | I stedet for at improvisere en udgivelse. |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | Eksekverbare autoværn — et deterministisk gulv, der fejler hårdt, plus et rådgivende AI-lag, der aldrig blokerer. | Det kører sig selv. |
+
+### Sådan bruges de
+
+Dokumenterne kræver ingen opsætning — de er almindelig Markdown, læst af dig og af
+agenten. To ting er koblet til og værd at kende:
+
+```bash
+# Autoværn: repo-ejede hooks, så tjekkene gælder alle, ikke kun din maskine.
+git config core.hooksPath .githooks
+
+# Workflow-evalueringer: bedømmer repo-tilstanden mod reglerne i docs/adr/ og PROGRESS.md.
+node evals/workflow/run.mjs              # alle bedømmere
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+Hver bedømmer i `evals/workflow/tasks.yml` svarer til en fejl, der blev udgivet én
+gang — en overskrevet historisk attribution, en sitebuild kørt midt i en fan-out, en
+overset no-port. Resultat og forløb bedømmes separat, og en bedømmer, der ikke kan
+afgøres ud fra repositoryet, rapporterer `SKIP` i stedet for at bestå i stilhed: et
+tjek, der ikke kan køre, må aldrig fremstå grønt.
+
+### At holde dem sande
+
+En forældet ordbog er værre end ingen, så arbejdet med at skrive disse er en del af
+selve udgivelsen — `parent-sync` Fase 0 indlæser dem, og Fase 8 dirigerer det, der
+blev lært, tilbage i dem. Tilføj et begreb til `CONTEXT.md` i det samme commit, der
+introducerer konceptet; åbn en ADR, når et valg ville se vilkårligt ud om seks
+måneder; registrér en forkastet tilgang i `PROGRESS.md` i samme øjeblik, den forkastes.
+
+Hvilke mønstre fra bogen der faktisk er implementeret her — og hvilke der ikke er —
+revideres på wiki-siden [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices).
 
 ## Bidrag
 

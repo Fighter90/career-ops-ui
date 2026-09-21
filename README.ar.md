@@ -13,6 +13,7 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -196,6 +197,60 @@ npm run test:coverage       # مثل npm test + تغطية V8
 ```
 
 <div dir="rtl">
+
+## 📘 كيف بُني هذا المستودع بوكلاء البرمجة
+
+معظم هذا المشروع مكتوبٌ بوكلاء برمجة. وهذه ممارسة لها أنماط فشلها الخاصة، لذا تُدار
+عمداً، اتّباعاً لكتالوج
+[**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+لمؤلّفه كيريل موكيفنين (Kirill Mokevnin)
+([النسخة الروسية](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)).
+والملفات أدناه هي تجسيدٌ لتلك الممارسة. لا يؤثّر أيٌّ منها على التطبيق قيد التشغيل —
+فهي موجودة لكي تلتقط جلسةٌ جديدة العمل من حيث تركته الجلسة السابقة، بدلاً من إعادة
+الاستنتاج وإعادة القرار وإعادة إفساد الأمور ذاتها.
+
+| الملف | ما هو | متى تقرؤه |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | قاموس النطاق: اسمٌ واحد مقبول لكل مفهوم، مع تعليم البدائل المرفوضة بـ*لا تُستخدم*. | **أولاً.** فهو يحسم الالتباسات التي يدفع ثمنها هذا المستودع فعلياً — `source` مقابل `adapter` (94 مقابل 89، ولماذا كلاهما صحيح)، و`mirror` مقابل `relay`، و`telegram` مقابل `telegram-channel`. |
+| **[`PROGRESS.md`](PROGRESS.md)** | حالة العمل: ما أُنجز، والخطوة التالية، والمشكلات المعروفة، و**المقاربات المهجورة**. | في بداية أي جلسة. يُظهر Git ما تغيّر؛ أما هذا الملف فيقول أين وصل العمل وما جُرِّب بالفعل ورُفض. |
+| **[`docs/adr/`](docs/adr/)** | سجلّات قرارات مرقّمة — السياق، والقرار، والعواقب، وما الذي قد يدفعنا لإعادة النظر. | قبل تغيير أي شيء يغطّيه سجلّ. السجلّ هو من يقرّر، لا الإصدار الحالي. |
+| **[`CLAUDE.md`](CLAUDE.md)** | فهرس بشاشة واحدة يشير إلى الملفات الثلاثة أعلاه. | تلقائياً، بواسطة الوكيل. وهو عمداً *ليس* قاعدة معرفة — فالملف الطويل يُتصفَّح سريعاً ثم يُهمَل. |
+| **[`evals/workflow/`](evals/workflow/)** | مجموعة مهام ثابتة بمقيِّمين يتحقّقون من سلوك *خط الأنابيب*، لا سلوك المنتج. | قبل تغيير مهارة (skill) أو موجِّه (prompt) أو أداة، وبعده. |
+| **[`.claude/skills/`](.claude/skills/)** | سير عمل مُعلَّب. يُنفِّذ `parent-sync` إصدار تكافؤ كاملاً على تسع مراحل محروسة. | بدلاً من ارتجال إصدار. |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | ضمانات تنفيذية — أرضيةٌ حتمية تفشل فشلاً صريحاً، مع طبقة ذكاء اصطناعي استشارية لا تحجب أبداً. | تعمل من تلقاء نفسها. |
+
+### استخدامها
+
+لا تحتاج المستندات إلى أي إعداد — فهي Markdown عادي، تقرؤه أنت والوكيل. وثمّة أمران
+موصولان يستحقّان المعرفة:
+
+</div>
+
+```bash
+# الضمانات: خطّافات (hooks) يملكها المستودع، فتنطبق الفحوصات على الجميع، لا على جهازك فقط.
+git config core.hooksPath .githooks
+
+# تقييمات سير العمل: تقيّم حالة المستودع مقابل القواعد في docs/adr/ وPROGRESS.md.
+node evals/workflow/run.mjs              # جميع المقيِّمين
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+<div dir="rtl">
+
+يقابل كل مقيِّم في `evals/workflow/tasks.yml` خطأً صدر مرة واحدة — نسبة تاريخية
+مطموسة، أو بناء موقع نُفِّذ في منتصف عملية fan-out، أو no-port فائت. وتُقيَّم النتيجة
+والمسار كلٌّ على حدة، والمقيِّم الذي يتعذّر البتّ فيه اعتماداً على المستودع يُبلِغ
+بـ`SKIP` بدلاً من أن ينجح بصمت: فالفحص الذي لا يمكنه العمل يجب ألّا يبدو أخضر أبداً.
+
+### الحفاظ على صدقها
+
+القاموس البالي أسوأ من غيابه، لذا فإنّ كتابة هذه المستندات جزءٌ من الإصدار نفسه —
+تُحمِّلها المرحلة 0 من `parent-sync`، وتُعيد المرحلة 8 توجيه ما تعلّمناه إليها. أضِف
+مصطلحاً إلى `CONTEXT.md` في الالتزام ذاته الذي يقدّم المفهوم؛ وافتح ADR حين يبدو خيارٌ
+ما اعتباطياً خلال ستة أشهر؛ وسجِّل مقاربةً مرفوضة في `PROGRESS.md` لحظة رفضها.
+
+وتُراجَع الأنماط المطبَّقة فعلياً من الكتاب هنا — وتلك غير المطبَّقة — على صفحة ويكي
+[Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices).
 
 ## الرخصة
 

@@ -13,6 +13,7 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
@@ -641,6 +642,43 @@ UI は **17 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru
 ```
 
 📖 **完全ガイド:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — 言語別レイアウト、`@alias` の仕組み、新しい言語の追加手順、すべての i18n CI ゲート。
+
+---
+
+## 📘 このリポジトリがエージェントで構築される仕組み
+
+このプロジェクトの大部分はコーディングエージェントによって書かれています。これは固有の失敗モードを持つプラクティスであるため、[**Agentic Coding Design Patterns**](https://mokevnin.github.io/agentic-coding-design-patterns/en/)(キリル・モケヴニン(Kirill Mokevnin)著、[ロシア語版](https://mokevnin.github.io/agentic-coding-design-patterns/ru/))に従い、意図的に運用されています。以下のファイルは、そのプラクティスを具体化したものです。どれもアプリの実行そのものには影響しません——新しいセッションが同じことを再び導き出し、再び決定し、再び壊すのではなく、前のセッションが終えた地点から続けられるようにするために存在します。
+
+| ファイル | 何か | いつ読むか |
+|---|---|---|
+| **[`CONTEXT.md`](CONTEXT.md)** | ドメイン辞書:概念ごとに採用された名称一つと、*使用しない*と明記された却下済みの表記ゆれ。 | **最初に。** このリポジトリが実際に代償を払っている混乱を解消します——`source` と `adapter`(94 対 89、そしてなぜ両方とも正しいのか)、`mirror` と `relay`、`telegram` と `telegram-channel`。 |
+| **[`PROGRESS.md`](PROGRESS.md)** | 作業状態:何が完了しているか、次の一手、既知の課題、そして**放棄したアプローチ**。 | どのセッションを始めるときも。Git は何が変わったかを示しますが、これは作業がどこまで進み、何がすでに試されて却下されたかを語ります。 |
+| **[`docs/adr/`](docs/adr/)** | 番号付きの意思決定記録——背景、決定、帰結、そして何が再検討のきっかけになるか。 | ある記録が扱う対象を変更する前に。決めるのは記録であって、現行リリースではありません。 |
+| **[`CLAUDE.md`](CLAUDE.md)** | 上記三つを指し示す、一画面に収まる索引。 | 自動的に、エージェントによって。あえて知識ベースには*しない*——長くなると流し読みされ、やがて無視されるからです。 |
+| **[`evals/workflow/`](evals/workflow/)** | 製品ではなく*パイプライン*の振る舞いを検証するグレーダーを備えた、固定のタスク集合。 | スキル、プロンプト、ツールを変更する前後に。 |
+| **[`.claude/skills/`](.claude/skills/)** | パッケージ化されたワークフロー。`parent-sync` はゲートで区切られた 9 つのフェーズでパリティリリース全体を実行します。 | リリースをその場しのぎで済ませる代わりに。 |
+| **[`.githooks/pre-commit`](.githooks/pre-commit)** | 実行可能なガードレール——容赦なく失敗する決定論的な最低ラインに、決してブロックしない助言的な AI レイヤーを重ねたもの。 | 自動的に実行されます。 |
+
+### 使いこなす
+
+これらのドキュメントにセットアップは不要です——ただの Markdown であり、あなたとエージェントの双方が読みます。配線済みで知っておく価値のあるものが二つあります。
+
+```bash
+# ガードレール:リポジトリ所有のフックなので、チェックは自分のマシンだけでなく全員に適用されます。
+git config core.hooksPath .githooks
+
+# ワークフローエバル:docs/adr/ と PROGRESS.md のルールに照らしてリポジトリの状態を採点します。
+node evals/workflow/run.mjs              # すべてのグレーダー
+node evals/workflow/run.mjs --task qa-prompt-mandatory
+```
+
+`evals/workflow/tasks.yml` の各グレーダーは、かつて実際に出荷されてしまったミス一つひとつに対応しています——踏みつぶされた過去のクレジット表記、ファンアウトの途中で走ってしまったサイトビルド、見落とされた no-port。結果と過程は別々に採点され、リポジトリだけからは判断できないグレーダーは、黙って合格にするのではなく `SKIP` を報告します:実行できないチェックが緑色に見えることは決してあってはなりません。
+
+### 正しさを保ち続ける
+
+古びた辞書は無いよりも悪いものです。だからこそ、これらを書く作業自体がリリースの一部です——`parent-sync` のフェーズ 0 がそれらを読み込み、フェーズ 8 が学んだことをそこへ書き戻します。概念を導入するのと同じコミットで `CONTEXT.md` に用語を追加してください。6 か月後に恣意的に見えそうな選択があれば ADR を起こしてください。却下したアプローチは、却下したその瞬間に `PROGRESS.md` に記録してください。
+
+この本のパターンのうち実際にここで実装されているもの——そしてされていないもの——は、[Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) の Wiki ページで監査されています。
 
 ---
 

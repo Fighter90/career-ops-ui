@@ -273,7 +273,7 @@ window.__I18N_DICT_TR = {
   'top.langhint': "Enter — ara",
   'top.langLabel': "Dil",
   'footer.manifesto': "CareerOps Manifestosu",
-  'footer.patterns': "Agentic Coding Design Patterns",
+  'footer.patterns': "📘 Agentic Coding Design Patterns",
   'common.loading': "Yükleniyor…",
   'common.error': "Hata",
   'common.retry': "Yeniden dene",
