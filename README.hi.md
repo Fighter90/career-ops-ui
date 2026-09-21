@@ -76,6 +76,8 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 career-ops [the CareerOps Manifesto](https://career-ops.org/manifesto) का पहला संदर्भ कार्यान्वयन (reference implementation) है — यह अभ्यास कि जॉब-सर्च को प्रमाण, अनुशासन, और उम्मीदवार के पक्ष के औज़ारों के साथ चलाया जाए। इसे पढ़ें। अगर यह वही कहता है जिस पर आप विश्वास करते हैं, तो इस पर हस्ताक्षर करें — आपका हस्ताक्षर एक कमिट बन जाता है। ऐप साइडबार फ़ुटर से इससे लिंक करता है।
 
+यह ऐप ख़ुद कोडिंग एजेंट्स से बनाया गया है, [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) ([ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) का अनुसरण करते हुए — executable guardrails, पैकेज्ड वर्कफ़्लो, एक डोमेन डिक्शनरी, ADRs और वर्कफ़्लो evals। [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) विकी पेज ऑडिट करता है कि कौन-से पैटर्न वास्तव में लागू हैं।
+
 ## एक AI कोडिंग असिस्टेंट इंस्टॉल करें (पैरेंट career-ops CLI के लिए)
 
 career-ops एक AI कोडिंग असिस्टेंट के **भीतर** slash-commands के रूप में चलता है — जारी रखने से पहले **एक** इंस्टॉल करें और लॉग इन करें (पैरेंट की [Quick Start](https://career-ops.org/docs)):

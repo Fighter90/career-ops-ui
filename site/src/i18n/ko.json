@@ -196,6 +196,7 @@
   "prov.lead": "신뢰하는 모델로 모든 공고를 채점하세요 — {n}개 LLM 제공자, 당신의 키, 또는 Ollama로 완전 로컬. Anthropic, OpenAI, Gemini, DeepSeek, Mistral 등.",
   "nav.methodology": "방법론",
   "footer.parentMethodology": "career-ops 방법론",
+  "footer.patterns": "Agentic Coding Design Patterns",
   "meta.methodologyTitle": "방법론 — career-ops가 채용 공고를 평가하는 방식 · career-ops-ui",
   "meta.methodologyDesc": "career-ops-ui의 채점 방법론: 6차원 0.0–5.0 루브릭, 4.0 지원 임계값, 그리고 이 도구가 결코 어기지 않는 규칙들.",
   "meta.licenseTitle": "라이선스 — MIT · career-ops-ui",

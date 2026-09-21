@@ -196,6 +196,7 @@
   "prov.lead": "Bewerte jede Ausschreibung mit dem Modell, dem du vertraust — {n} LLM-Anbieter, dein eigener Schlüssel oder vollständig lokal via Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral und mehr.",
   "nav.methodology": "Methodik",
   "footer.parentMethodology": "career-ops-Methodik",
+  "footer.patterns": "Agentic Coding Design Patterns",
   "meta.methodologyTitle": "Methodik — wie career-ops Stellenanzeigen bewertet · career-ops-ui",
   "meta.methodologyDesc": "Die Bewertungsmethodik hinter career-ops-ui: eine Rubrik mit fünf Dimensionen plus eine ganzheitliche Gesamtbewertung von 0.0–5.0, der 4.0-Bewerbungsschwellenwert und die Regeln, die das Tool niemals bricht.",
   "meta.licenseTitle": "Lizenz — MIT · career-ops-ui",

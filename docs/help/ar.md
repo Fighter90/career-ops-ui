@@ -448,6 +448,37 @@ tracked_companies:
 
 الحقول المطلوبة لكل إدخال: `name` و`careers_url`. اختيارية: `api` (نقطة نهاية Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday صريحة)، `enabled: true|false` للتضمين/الإقصاء دون حذف الإدخال. يكتشف الماسح الـ ATS من نمط URL (`job-boards.greenhouse.io/<slug>` → Greenhouse، إلخ) ويجلب boards-api العامة لكل شركة مباشرةً. الشركات بلا ATS قابل للتعرف تُتجاهل (بطاقة **الشركات النشطة** في `/#/scan` تعرضها بالرمادي مع `○`).
 
+**تثبيت مستأجر Personio (v1.237.0).** تُضمّن شركات كثيرة لوحة Personio الخاصة بها كإطار
+**iframe** في صفحة توظيف ذات علامة تجارية خاصة، بحيث يشير `careers_url` إلى نطاق
+الشركة نفسه بينما تقيم التغذية فعلياً على `<slug>.jobs.personio.de`. دون تثبيت، لا
+تُحلّ هذه اللوحات إلى شيء. حدّد slug المستأجر صراحةً، فيتغلّب على `careers_url`:
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+الـ slug مقيَّد بمجموعة أحرف (حروف وأرقام وشرطات، دون أن يبدأ بشرطة، وبحد أقصى 63
+حرفاً)، ولا يزال الرابط الناتج يمر بنفس قائمة السماح للمضيفين وفحص HTTPS — يُرفض أي
+slug يحتوي نقطة أو شرطة مائلة أو `@` أو `:`، ويعود الإدخال إلى `careers_url`.
+
+**إظهار نوع التوظيف في العنوان (Jobstreet / SEEK، v1.237.0).** فعِّله عبر
+`appendWorkType` لتُضاف أنواع العمل الواردة في الإعلان إلى العنوان، بحيث تراها مرشحات
+العنوان والفرز اللحظي عند المسح. معطّل افتراضياً:
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+يختار `siteKey` السوق: `ID-Main` (id.jobstreet.com)، و`SG-Main`، و`MY-Main`،
+و`HK-Main` (hk.jobsdb.com)، و`AU-Main` (www.seek.com.au)، و`NZ-Main` (www.seek.co.nz).
+يُبنى رابط الوظيفة بحسب كل سوق — مضيفو إندونيسيا وحدهم يستخدمون بادئة اللغة `/id/`،
+لذا فإن رابطاً مبنياً لأي سوق آخر بها يُعيد 404 (أُصلح في v1.237.0).
+
 ### `rss` (بوابات RSS / Atom)
 
 ```yaml
@@ -1654,6 +1685,8 @@ career-ops — المشروع الأصل الذي تقف هذه الواجهة �
 ### قراءته والتوقيع عليه
 
 يفتح الرابط في تذييل الشريط الجانبي صفحة البيان. يمكنك أيضاً قراءة `MANIFESTO.md` في المشروع الأصل، أو تشغيل `npm run manifesto` هناك لفتح صفحة التوقيع. التوقيع اختياري ويستغرق عشر ثوانٍ — يصبح توقيعك التزاماً (commit) عاماً في سجل `SIGNATURES.md` الخاص بالمستودع الأصل. لا شيء في التطبيق يعتمد على ما إذا كنت وقّعت أم لا.
+
+**كيف بُني هذا التطبيق نفسه.** يتحدّث البيان عن كيفية إدارة البحث عن عمل؛ أمّا البرمجيات التي تقف خلفه فمبنيّة بوكلاء برمجة، ولهذه الممارسة كتالوجها الخاص: [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) بقلم كيريل موكيفنين ([النسخة الروسية](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)). يتّبعه career-ops-ui عن قصد — ضماناتٌ تنفيذية في pre-commit hook مُثبَّت، وسير عمل مُعلَّب على هيئة مهارات، وتفرّعات متوازية معزولة، وقاموس نطاق، وسجلّات ADR، وسجلّ تقدّم، وتقييمات لسير العمل. أمّا ما نُفِّذ فعلاً وما لم يُنفَّذ فيُراجَع في صفحة *Agentic Practices* على ويكي المشروع.
 
 ## 30. Hermes & Telegram
 

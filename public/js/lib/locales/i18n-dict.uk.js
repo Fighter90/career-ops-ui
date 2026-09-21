@@ -272,6 +272,7 @@ window.__I18N_DICT_UK = {
   'top.langhint': "Enter — пошук",
   'top.langLabel': "Мова",
   'footer.manifesto': "Маніфест CareerOps",
+  'footer.patterns': "Agentic Coding Design Patterns",
   'common.loading': "Завантаження…",
   'common.error': "Помилка",
   'common.retry': "Повторити",

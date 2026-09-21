@@ -48,3 +48,7 @@ See `docs/sdd/SDD-GUIDE.md` for the full workflow + which artifacts to produce a
 | `bash bin/start.sh` | One-shot launcher with browser open |
 
 For deeper architecture: `docs/architecture/OVERVIEW.md`.
+
+## Working practice
+
+This project follows [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) ([ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) — executable guardrails, packaged workflows, a domain dictionary, ADRs, a progress log and workflow evals. Read `CONTEXT.md` for the vocabulary, `PROGRESS.md` for state and abandoned approaches, and `docs/adr/` for standing decisions before changing anything they cover. The wiki's *Agentic Practices* page audits which patterns are actually in place.

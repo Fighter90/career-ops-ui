@@ -737,6 +737,39 @@ tracked_companies:
 Each pins its host with an anchored regex + `redirect:'error'` (SSRF-safe). See
 `docs/portals-examples.md` for fuller copy-paste entries.
 
+**Pinning a Personio tenant (v1.237.0).** Many companies embed their Personio board as
+an **iframe** on a branded careers page, so `careers_url` points at the company's own
+domain while the feed actually lives at `<slug>.jobs.personio.de`. Without a pin those
+boards resolve to nothing. Give the tenant slug explicitly and it wins over
+`careers_url`:
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+The slug is charset-restricted (letters, digits and hyphens, not starting with a
+hyphen, at most 63 characters) and the resulting URL still goes through the same host
+allowlist and HTTPS check — a slug containing a dot, slash, `@` or `:` is refused and
+the entry falls back to `careers_url`.
+
+**Showing employment type in the title (Jobstreet / SEEK, v1.237.0).** Opt in with
+`appendWorkType` and the listing's work types are appended to the title, so title
+filters and triage can see them at scan time. Off by default:
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+`siteKey` selects the market: `ID-Main` (id.jobstreet.com), `SG-Main`, `MY-Main`,
+`HK-Main` (hk.jobsdb.com), `AU-Main` (www.seek.com.au) and `NZ-Main` (www.seek.co.nz).
+The job link is built per market — only the Indonesian hosts use the `/id/` locale
+prefix, so a link built for any other market with it returns 404 (fixed in v1.237.0).
+
 ### `rss` (RSS / Atom boards)
 
 ```yaml
@@ -2263,6 +2296,15 @@ Six principles — "apply better to fewer", "signal over volume", "evidence over
 ### Reading and signing it
 
 The link in the sidebar footer opens the manifesto page. You can also read `MANIFESTO.md` in the parent project, or run `npm run manifesto` there to open the signing page. Signing is optional and takes ten seconds — your signature becomes a public commit in the parent repository's `SIGNATURES.md` ledger. Nothing in the app depends on whether you sign.
+
+**How this app itself is built.** The manifesto is about how to run a job search; the
+software fronting it is built with coding agents, and that practice has its own
+catalogue: [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+by Kirill Mokevnin ([Russian edition](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)).
+career-ops-ui follows it deliberately — executable guardrails in a committed pre-commit
+hook, packaged workflows as skills, isolated parallel fan-outs, a domain dictionary,
+ADRs, a progress log and workflow evals. What is actually implemented, and what is not,
+is audited on the project wiki's *Agentic Practices* page.
 
 ## 30. Hermes & Telegram
 

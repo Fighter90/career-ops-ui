@@ -55,6 +55,8 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 
 career-ops to pierwsza referencyjna implementacja [Manifestu CareerOps](https://career-ops.org/manifesto) — praktyki prowadzenia poszukiwań pracy z dowodami, dyscypliną i narzędziami po stronie kandydata. Przeczytaj go. Jeśli mówi to, w co wierzysz, podpisz go — Twój podpis staje się commitem. Aplikacja linkuje do niego ze stopki paska bocznego.
 
+Sama aplikacja jest budowana przez agentów kodujących, zgodnie z katalogiem [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) ([ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) — egzekwowalne zabezpieczenia, zapakowane przepływy pracy, słownik domenowy, ADR-y i ewaluacje przepływów pracy. Strona wiki [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) audytuje, które wzorce są faktycznie wdrożone.
+
 ## Kluczowe funkcje
 
 | Strona | Opis |

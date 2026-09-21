@@ -2,6 +2,10 @@
 
 > Project-specific coding conventions. Extends `~/.claude/rules/coding-style.md`. When user-global rules and these conflict, the more restrictive wins.
 
+> Code rules live here; the **vocabulary** is in [`CONTEXT.md`](../../CONTEXT.md), standing
+> **decisions** in [`docs/adr/`](../adr/), and the agent **working practice** follows
+> [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/).
+
 ## Module system
 
 - `"type": "module"` everywhere. ESM only.

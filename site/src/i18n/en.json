@@ -194,6 +194,7 @@
   "prov.lead": "Score every posting with the model you trust — {n} LLM providers, your own key, or fully local via Ollama. Anthropic, OpenAI, Gemini, DeepSeek, Mistral and more.",
   "nav.methodology": "Methodology",
   "footer.parentMethodology": "career-ops methodology",
+  "footer.patterns": "Agentic Coding Design Patterns",
   "meta.methodologyTitle": "Methodology — how career-ops scores job listings · career-ops-ui",
   "meta.methodologyDesc": "The scoring methodology behind career-ops-ui: a 0.0–5.0 rubric of five dimensions plus a holistic global score, the 4.0 apply threshold, and the rules the tool refuses to break.",
   "meta.licenseTitle": "License — MIT · career-ops-ui",

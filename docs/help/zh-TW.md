@@ -590,6 +590,39 @@ Workday 端點)、`enabled: true|false` 可在不刪除條目的情況下
 公司公開的 boards-api。無法辨識 ATS 的公司會被略過(`/#/scan`
 上的 **Active Companies** 卡片會以灰色 `○` 顯示它們)。
 
+**釘住 Personio 租戶(v1.237.0)。** 許多公司將自己的 Personio 職缺板以
+**iframe** 形式嵌入品牌化的招募頁面，因此 `careers_url` 指向公司自己的網
+域，而實際的資料來源其實位於 `<slug>.jobs.personio.de`。若不釘住，這些職
+缺板將無法解析出任何內容。明確指定租戶 slug，它會優先於 `careers_url` 生
+效：
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+該 slug 的字元集受限（僅限字母、數字與連字號，不得以連字號開頭，最多 63
+個字元），產生的 URL 仍會經過相同的主機白名單與 HTTPS 檢查——含有點、斜
+線、`@` 或 `:` 的 slug 會被拒絕，該條目會回退到 `careers_url`。
+
+**在標題中顯示雇用類型(Jobstreet / SEEK, v1.237.0)。** 選擇啟用
+`appendWorkType` 後，職缺的雇用類型會附加到標題中，方便標題篩選與初篩在
+掃描時就能看到它們。預設關閉：
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+`siteKey` 用於選擇市場：`ID-Main`(id.jobstreet.com)、`SG-Main`、
+`MY-Main`、`HK-Main`(hk.jobsdb.com)、`AU-Main`(www.seek.com.au) 與
+`NZ-Main`(www.seek.co.nz)。職缺連結會依市場分別建構——只有印尼的主機使用
+`/id/` 語系前綴，因此在其他任何市場建構的連結若帶上該前綴會回傳 404
+(已在 v1.237.0 中修復)。
+
 ### `rss` (RSS / Atom boards)
 
 ```yaml
@@ -2012,6 +2045,9 @@ career-ops——本應用程式所包覆的父專案——是 [CareerOps 宣言]
 ### 閱讀與簽署
 
 側邊欄底部頁尾中的連結會開啟宣言頁面。你也可以閱讀父專案中的 `MANIFESTO.md`，或在那裡執行 `npm run manifesto` 以開啟簽署頁面。簽署是選擇性的，只需十秒——你的簽名會成為父專案儲存庫 `SIGNATURES.md` 名冊中的一筆公開提交。無論你是否簽署，應用程式中的任何功能都不受影響。
+
+**這款應用程式本身是如何建置的。** 宣言講的是如何經營求職；而支撐它的這款軟體本身是用程式碼代理建置的，這種實踐也有自己的一套典籍：[Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+（[ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)），作者基里爾·莫克夫寧（Kirill Mokevnin）。career-ops-ui 刻意遵循這一實踐——已提交的 pre-commit 掛鉤中的可執行護欄、打包成技能的工作流、彼此隔離的並行分支、領域詞典、ADR、進度日誌以及工作流評測。哪些確實已經落實、哪些尚未落實，記錄在專案維基的 *Agentic Practices* 頁面中。
 
 ## 30. Hermes & Telegram
 

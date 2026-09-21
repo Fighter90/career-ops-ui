@@ -273,6 +273,7 @@ window.__I18N_DICT_IT = {
   'top.langhint': "Invio — cerca",
   'top.langLabel': "Lingua",
   'footer.manifesto': "Il Manifesto CareerOps",
+  'footer.patterns': "Agentic Coding Design Patterns",
   'common.loading': "Caricamento…",
   'common.error': "Errore",
   'common.retry': "Riprova",

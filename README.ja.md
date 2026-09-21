@@ -56,6 +56,8 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 career-ops は [CareerOps マニフェスト](https://career-ops.org/manifesto) の最初のリファレンス実装です — 証拠に基づき、規律を持ち、候補者側にツールを備えて求職活動を行うという実践です。読んでみてください。自分の信じることが書かれていれば、署名してください — あなたの署名はコミットになります。アプリはサイドバーのフッターからこのページにリンクしています。
 
+このアプリ自体もコーディングエージェントで作られており、[Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/)（[ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)）に従っています — 実行可能なガードレール、パッケージ化されたワークフロー、ドメイン辞書、ADR、workflow eval を備えています。[Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) の wiki ページが、実際にどのパターンが適用されているかを監査します。
+
 ## ワンコマンドで起動・初期化
 
 > **重要 — career-ops-ui は [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) の*上に乗る*ダッシュボードです。** `career-ops/web-ui/` として career-ops プロジェクトの**内部**で動作し、親フォルダーの `cv.md`、`config/`、`data/` を `../` 経由で読み込みます。**単独では動作しません** — 親リポジトリ `career-ops` も必要です。単独でクローンして `init` を実行しないでください；以下の 2 つのオプションのいずれかを使用してください。

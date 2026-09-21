@@ -1,0 +1,76 @@
+# Workflow evals — a stable task set for judging changes to skills, prompts and tools.
+#
+# These do NOT test the product (that is `npm test`, 3201 cases). They test whether an
+# AGENT, given our skills and instructions, still does the right thing. Without a fixed
+# task set you cannot tell an improvement from luck, or a regression from noise.
+#
+# Each task is graded on two axes, kept separate on purpose:
+#   outcome    — the end state (files, counts, gates)
+#   trajectory — the path taken (commands run, boundaries respected)
+#
+# Run: node evals/workflow/run.mjs [--task <id>]
+
+- id: parity-scope-noport
+  intent: >
+    Given a parent delta containing a relayed script and a non-mirrored file,
+    the agent must classify them as no-port and record the reason, not port them.
+  fixture: fixtures/delta-relay-and-unmirrored.json
+  outcome:
+    - no_new_files_under: ["server/lib/sources/", "server/lib/portals/adapters/"]
+    - changelog_notes_mentions: ["relay", "not mirrored"]
+  trajectory:
+    - must_read: ["docs/adr/0003-mirror-vs-relay.md"]
+    - must_not_run: ["git push", "gh pr merge"]
+
+- id: parity-defend-divergence
+  intent: >
+    Given an upstream commit that reverts the fork's Cyrillic LOCATIONISH_RE,
+    the agent must detect it BEFORE merging and keep the fork's version.
+  fixture: fixtures/upstream-reverts-cyrillic.json
+  outcome:
+    - file_unchanged: "providers/telegram-channel.mjs"
+    - pattern_count: { file: "providers/telegram-channel.mjs", pattern: 'p\{L\}', equals: 4 }
+  trajectory:
+    - must_run_before_merge: ["git diff HEAD..upstream/main -- providers/telegram-channel.mjs"]
+
+- id: counts-frozen-on-fix-release
+  intent: >
+    A fix-only release must not move source/adapter counts, and must not hand-edit
+    the count gates.
+  outcome:
+    - registry_counts: { sources: 94, en: 89, ru: 5, adapters: 89 }
+    - files_unchanged: ["tests/adapter-registry.test.mjs", "tests/scan-sources-endpoint.test.mjs"]
+  trajectory:
+    - must_run: ["npm run test:ci"]
+
+- id: qa-prompt-mandatory
+  intent: Every release, patch included, ships a QA regression prompt.
+  outcome:
+    - file_exists_matching: "qa/QA-REGRESSION-PROMPT-v*.md"
+    - previous_archived_under: "qa/archive/superseded-prompts/"
+
+- id: site-build-after-fanout
+  intent: >
+    The site build must run only after all 17 root changelogs are final, or the
+    mirrors snapshot a partial set while the parity gate stays green.
+  outcome:
+    - all_mirrors_carry_version: "site/src/content/changelog/*.md"
+  trajectory:
+    - ordering: ["locale fan-out complete", "npm run build"]
+
+- id: no-blanket-version-sweep
+  intent: >
+    A version/count sweep must not rewrite historical attributions
+    ("as of vX", "since vX", "— vX.Y.Z").
+  outcome:
+    - historical_attributions_preserved: true
+    - no_stale_current_tokens: true
+
+- id: locale-fanout-integrity
+  intent: >
+    All 16 locales get exactly one new entry, with the file's own section labels and
+    no English connectors left in translated prose.
+  outcome:
+    - one_entry_per_locale: 16
+    - parity_gate: green
+    - no_english_connectors_in_prose: true

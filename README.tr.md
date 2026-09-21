@@ -73,6 +73,8 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 career-ops, [CareerOps Manifestosu](https://career-ops.org/manifesto)'nun ilk referans uygulamasıdır — bir iş aramasını kanıtla, disiplinle ve masanın aday tarafında yer alan araçlarla yürütme pratiği. Okuyun. Söyledikleri inandığınız şeyse imzalayın — imzanız bir commit'e dönüşür. Uygulama kenar çubuğu altbilgisinden ona bağlantı verir.
 
+Uygulamanın kendisi, [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) ([ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) izlenerek kodlama ajanlarıyla inşa edilmiştir — çalıştırılabilir guardrail'ler, paketlenmiş iş akışları, bir alan sözlüğü, ADR'ler ve iş akışı değerlendirmeleri. [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) wiki sayfası hangi desenlerin gerçekten uygulandığını denetler.
+
 ## Bir yapay zeka kodlama asistanı kurun (üst career-ops CLI için)
 
 career-ops, bir yapay zeka kodlama asistanının **içinde** eğik çizgi komutları olarak çalışır — devam etmeden önce **birini** kurun ve giriş yapın (üst projenin [Hızlı Başlangıç](https://career-ops.org/docs) sayfası):

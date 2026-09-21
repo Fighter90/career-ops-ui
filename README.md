@@ -84,6 +84,8 @@ Prefer a desktop AI coworker over the browser? There's an **[OpenWorker](https:/
 
 career-ops is the first reference implementation of [the CareerOps Manifesto](https://career-ops.org/manifesto) — the practice of running a job search with evidence, discipline, and tools on the candidate's side of the table. Read it. If it says what you believe, sign it — your signature becomes a commit. The app links to it from the sidebar footer.
 
+The app itself is built with coding agents, following [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) ([ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) — executable guardrails, packaged workflows, a domain dictionary, ADRs and workflow evals. The [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) wiki page audits which patterns are actually in place.
+
 ## Install an AI coding assistant (for the parent career-ops CLI)
 
 career-ops runs as slash-commands **inside** an AI coding assistant — install **one** and log in before continuing (the parent's [Quick Start](https://career-ops.org/docs)):

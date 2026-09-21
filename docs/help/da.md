@@ -734,6 +734,40 @@ tracked_companies:
 Hver fastlåser sin host med et anchored regex + `redirect:'error'` (SSRF-sikkert). Se
 `docs/portals-examples.md` for fyldigere copy-paste-poster.
 
+**Fastgørelse af en Personio-tenant (v1.237.0).** Mange virksomheder indlejrer deres
+Personio-board som et **iframe** på en brandet karriereside, så `careers_url` peger på
+virksomhedens eget domæne, mens feedet faktisk ligger på `<slug>.jobs.personio.de`.
+Uden en pin resolver sådanne boards til ingenting. Angiv tenant-sluggen eksplicit, og
+den vinder over `careers_url`:
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+Sluggen er tegnsæt-begrænset (bogstaver, tal og bindestreger, må ikke starte med en
+bindestreg, højst 63 tegn), og den resulterende URL går stadig gennem den samme
+host-allowlist og HTTPS-tjek — en slug, der indeholder et punktum, skråstreg, `@` eller
+`:`, afvises, og posten falder tilbage til `careers_url`.
+
+**Visning af ansættelsestype i titlen (Jobstreet / SEEK, v1.237.0).** Slå det til med
+`appendWorkType`, og opslagets ansættelsestyper føjes til titlen, så titelfiltre og
+sortering kan se dem allerede ved scanningstidspunktet. Fra som standard:
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+`siteKey` vælger markedet: `ID-Main` (id.jobstreet.com), `SG-Main`, `MY-Main`,
+`HK-Main` (hk.jobsdb.com), `AU-Main` (www.seek.com.au) og `NZ-Main` (www.seek.co.nz).
+Joblinket bygges pr. marked — kun de indonesiske hosts bruger `/id/`-lokaleprefikset,
+så et link bygget til et hvilket som helst andet marked med det returnerer 404 (rettet
+i v1.237.0).
+
 ### `rss` (RSS / Atom-boards)
 
 ```yaml
@@ -2222,6 +2256,8 @@ Seks principper — "ansøg bedre, til færre", "signal frem for volumen", "evid
 ### Læsning og underskrivelse
 
 Linket i sidebjælke-footeren åbner manifest-siden. Du kan også læse `MANIFESTO.md` i moderprojektet eller køre `npm run manifesto` der for at åbne underskriftssiden. At underskrive er valgfrit og tager ti sekunder — din underskrift bliver et offentligt commit i moderprojektets `SIGNATURES.md`-register. Intet i appen afhænger af, om du underskriver.
+
+**Sådan er selve appen bygget.** Manifestet handler om, hvordan man driver en jobsøgning; softwaren, der sætter en brugerflade på det, er bygget med kodningsagenter, og den praksis har sit eget katalog: [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) af Kirill Mokevnin ([russisk udgave](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)). career-ops-ui følger det bevidst — eksekverbare autoværn i en committed pre-commit-hook, pakkede workflows som skills, isolerede parallelle fan-outs, en domæneordbog, ADR'er, en fremdriftslog og workflow-evalueringer. Hvad der rent faktisk er implementeret, og hvad der ikke er, revideres på projektets wiki-side *Agentic Practices*.
 
 ## 30. Hermes & Telegram
 

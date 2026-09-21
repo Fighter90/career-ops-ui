@@ -196,6 +196,7 @@
   "prov.lead": "信頼するモデルですべての求人を採点 — {n} の LLM プロバイダー、あなたのキー、または Ollama で完全ローカル。Anthropic、OpenAI、Gemini、DeepSeek、Mistral など。",
   "nav.methodology": "メソドロジー",
   "footer.parentMethodology": "career-ops メソドロジー",
+  "footer.patterns": "Agentic Coding Design Patterns",
   "meta.methodologyTitle": "メソドロジー — career-opsによる求人スコアリングの仕組み · career-ops-ui",
   "meta.methodologyDesc": "career-ops-uiのスコアリングメソドロジー: 6次元の0.0〜5.0ルーブリック、応募基準となる4.0のしきい値、そしてこのツールが絶対に破らないルール。",
   "meta.licenseTitle": "ライセンス — MIT · career-ops-ui",

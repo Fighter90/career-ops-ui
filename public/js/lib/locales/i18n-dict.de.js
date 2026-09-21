@@ -273,6 +273,7 @@ window.__I18N_DICT_DE = {
   'top.langhint': "Enter — suchen",
   'top.langLabel': "Sprache",
   'footer.manifesto': "Das CareerOps-Manifest",
+  'footer.patterns': "Agentic Coding Design Patterns",
   'common.loading': "Wird geladen…",
   'common.error': "Fehler",
   'common.retry': "Erneut versuchen",

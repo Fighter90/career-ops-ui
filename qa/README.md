@@ -90,3 +90,7 @@ a parent commit rewriting `modes/oferta.md` A–G → A–F must land **first**,
 `prompts.mjs` and the parent mode file contradict each other — strictly worse
 drift. The renderer is schema-tolerant, so this is nomenclature drift, not a
 functional break.
+
+---
+
+The per-release QA prompt is this project's guard against *premature success* — "the tests passed" is not "it works". The pattern, and the rest of the agent working practice this repo follows, is catalogued in [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/).

@@ -646,6 +646,44 @@ SmartRecruiters / Workday のエンドポイント)、`enabled: true|false`
 ATS を持たない企業はスキップされます (`/#/scan` の **Active
 Companies** カードがグレー `○` で表示します)。
 
+**Personio テナントの固定 (v1.237.0)。** 多くの企業は自社ブランドの
+採用ページに Personio ボードを **iframe** として埋め込むため、
+`careers_url` は自社ドメインを指す一方で、実際のフィードは
+`<slug>.jobs.personio.de` にあります。固定しないと、それらのボードは
+何も解決しません。テナントの slug を明示的に指定すると、
+`careers_url` より優先されます:
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+slug は使用可能な文字が制限されており(英字・数字・ハイフンのみ、
+ハイフンで始まらない、最大63文字)、生成される URL も同じホスト
+allowlist と HTTPS チェックを通過します — ドット、スラッシュ、`@`、
+`:` を含む slug は拒否され、そのエントリは `careers_url` に
+フォールバックします。
+
+**タイトルに雇用形態を表示する (Jobstreet / SEEK、v1.237.0)。**
+`appendWorkType` でオプトインすると、求人の雇用形態がタイトルに
+追加され、タイトルフィルタや triage がスキャン時点でそれを確認
+できます。デフォルトではオフです:
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+`siteKey` は市場を選択します: `ID-Main`(id.jobstreet.com)、
+`SG-Main`、`MY-Main`、`HK-Main`(hk.jobsdb.com)、
+`AU-Main`(www.seek.com.au)、`NZ-Main`(www.seek.co.nz)。求人リンクは
+市場ごとに構築されます — `/id/` ロケールプレフィックスを使うのは
+インドネシアのホストだけなので、他の市場向けに構築したリンクに
+これを付けると 404 になります(v1.237.0 で修正)。
+
 ### `rss` (RSS / Atom boards)
 
 ```yaml
@@ -2129,6 +2167,15 @@ career-ops — このアプリがフロントエンドとして載っている�
 ### 読む・署名する
 
 サイドバーのフッターにあるリンクからマニフェストのページが開きます。親プロジェクトの `MANIFESTO.md` を読むことも、そこで `npm run manifesto` を実行して署名ページを開くこともできます。署名は任意であり、10秒で終わります — あなたの署名は親リポジトリの `SIGNATURES.md` 台帳への公開コミットになります。アプリの動作は、あなたが署名するかどうかに一切依存しません。
+
+**このアプリ自体がどう作られているか。** マニフェストは求職活動をどう運営するかについての
+ものですが、その前面のソフトウェアはコーディングエージェントで作られており、この実践には
+独自のカタログがあります：キリル・モケヴニン(Kirill Mokevnin)による[Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+（[ロシア語版](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)）。
+career-ops-ui はこれを意図的に踏襲しています — コミットされた pre-commit フックに組み込まれた
+実行可能なガードレール、スキルとしてパッケージ化されたワークフロー、隔離された並列
+fan-out、ドメイン辞書、ADR、進捗ログ、そして workflow eval。実際に何が実装されており、
+何がまだなのかは、プロジェクト wiki の *Agentic Practices* ページで監査されています。
 
 ## 30. Hermes & Telegram
 

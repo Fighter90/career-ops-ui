@@ -73,6 +73,8 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 
 career-ops ist die erste Referenzimplementierung von [dem CareerOps-Manifest](https://career-ops.org/manifesto) — der Praxis, eine Jobsuche mit Evidenz, Disziplin und Werkzeugen auf der Seite des Kandidaten am Tisch zu betreiben. Lies es. Wenn es das sagt, woran du glaubst, unterzeichne es — deine Signatur wird zu einem Commit. Die App verlinkt darauf im Footer der Seitenleiste.
 
+Die App selbst ist mit Coding-Agenten gebaut, nach [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) ([ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) — ausführbare Guardrails, verpackte Workflows, ein Domain-Dictionary, ADRs und Workflow-Evals. Die [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices)-Wiki-Seite prüft, welche Muster tatsächlich umgesetzt sind.
+
 ## Einen KI-Coding-Assistenten installieren (für die übergeordnete career-ops-CLI)
 
 career-ops läuft als Slash-Befehle **innerhalb** eines KI-Coding-Assistenten — installieren Sie **einen** und melden Sie sich an, bevor Sie fortfahren (der [Quick Start](https://career-ops.org/docs) des übergeordneten Projekts):

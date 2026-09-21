@@ -758,6 +758,42 @@ Her biri sunucusunu bir sabitlenmiş regex + `redirect:'error'` ile
 sabitler (SSRF'ye karşı güvenli). Daha kapsamlı kopyala-yapıştır
 girdileri için `docs/portals-examples.md`'ye bakın.
 
+**Bir Personio kiracısını sabitleme (v1.237.0).** Birçok şirket Personio
+kartını markalı bir kariyer sayfasında **iframe** olarak gömer, bu yüzden
+`careers_url` şirketin kendi alan adını gösterirken besleme aslında
+`<slug>.jobs.personio.de` adresinde yaşar. Sabitleme olmadan bu kartlar
+hiçbir şeye çözümlenmez. Kiracı slug'ını açıkça verin, `careers_url`'e karşı
+kazanır:
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+Slug karakter kümesiyle sınırlıdır (harfler, rakamlar ve tireler, bir tire ile
+başlayamaz, en fazla 63 karakter) ve elde edilen URL yine de aynı sunucu izin
+listesinden ve HTTPS kontrolünden geçer — nokta, eğik çizgi, `@` veya `:`
+içeren bir slug reddedilir ve girdi `careers_url`'e geri döner.
+
+**Başlıkta istihdam türünü gösterme (Jobstreet / SEEK, v1.237.0).**
+`appendWorkType` ile katılın ve ilanın çalışma türleri başlığa eklenir,
+böylece başlık filtreleri ve triyaj bunları tarama anında görebilir.
+Varsayılan olarak kapalı:
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+`siteKey` pazarı seçer: `ID-Main` (id.jobstreet.com), `SG-Main`, `MY-Main`,
+`HK-Main` (hk.jobsdb.com), `AU-Main` (www.seek.com.au) ve `NZ-Main`
+(www.seek.co.nz). İş bağlantısı pazara göre oluşturulur — yalnızca Endonezya
+sunucuları `/id/` yerel ayar önekini kullanır, bu yüzden başka bir pazar için
+bu önekle oluşturulan bir bağlantı 404 döner (v1.237.0'da düzeltildi).
+
 ### `rss` (RSS / Atom kartları)
 
 ```yaml
@@ -2303,6 +2339,18 @@ Altı ilke — "daha az yere daha iyi başvur", "hacim yerine sinyal", "anahtar 
 ### Okuma ve imzalama
 
 Kenar çubuğu altbilgisindeki bağlantı manifesto sayfasını açar. `MANIFESTO.md` dosyasını üst projede de okuyabilir veya imza sayfasını açmak için orada `npm run manifesto` çalıştırabilirsin. İmzalamak isteğe bağlıdır ve on saniye sürer — imzan üst depodaki `SIGNATURES.md` defterinde herkese açık bir commit'e dönüşür. Uygulamadaki hiçbir şey imzalayıp imzalamadığına bağlı değildir.
+
+**Bu uygulamanın kendisi nasıl inşa edildi.** Manifesto bir iş aramasının
+nasıl yürütüleceğiyle ilgilidir; onun önyüzünü oluşturan yazılım kodlama
+ajanlarıyla inşa edilmiştir ve bu pratiğin kendi kataloğu vardır: Kirill
+Mokevnin'in [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+adlı eseri ([Rusça baskı](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)).
+career-ops-ui buna bilinçli olarak uyar — commit'lenmiş bir pre-commit
+hook içindeki çalıştırılabilir guardrail'ler, skill olarak paketlenmiş iş
+akışları, izole paralel fan-out'lar, bir alan sözlüğü, ADR'ler, bir
+ilerleme günlüğü ve iş akışı değerlendirmeleri. Neyin gerçekten uygulandığı
+ve neyin uygulanmadığı, proje wiki'sinin *Agentic Practices* sayfasında
+denetlenir.
 
 ## 30. Hermes & Telegram
 

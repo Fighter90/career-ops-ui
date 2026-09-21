@@ -272,6 +272,7 @@ window.__I18N_DICT_AR = {
   'top.langhint': "Enter — بحث",
   'top.langLabel': "اللغة",
   'footer.manifesto': "بيان CareerOps",
+  'footer.patterns': "Agentic Coding Design Patterns",
   'common.loading': "جارٍ التحميل…",
   'common.error': "خطأ",
   'common.retry': "إعادة المحاولة",
