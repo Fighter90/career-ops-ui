@@ -114,7 +114,11 @@ function gradeLocaleFanout() {
   const bad = locales.filter((l) => {
     const f = join(ROOT, `CHANGELOG.${l}.md`);
     if (!existsSync(f)) return true;
-    const n = (readFileSync(f, 'utf8').match(new RegExp(`^## \\[${v.replace(/\./g, '\\.')}\\]`, 'gm')) || []).length;
+    // Plain string comparison, not a regex built from `v`: escaping only `.` and
+    // not the backslash is incomplete sanitisation (CodeQL js/incomplete-sanitization),
+    // and a literal prefix match is what this grader actually means anyway.
+    const prefix = `## [${v}]`;
+    const n = readFileSync(f, 'utf8').split('\n').filter((line) => line.startsWith(prefix)).length;
     return n !== 1;
   });
   record(t, 'exactly one new entry in each of 16 locales', bad.length === 0 ? 'PASS' : 'FAIL',
