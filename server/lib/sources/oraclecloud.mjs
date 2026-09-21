@@ -271,8 +271,9 @@ function resolveMaxPages(company) {
 
 /**
  * Fetch + normalize an ORC tenant's requisitions (paginated by offset in steps
- * of PAGE_SIZE). Stops on an empty/short page, once past TotalJobsCount, or at
- * the page cap — `hasMore` is deliberately ignored (unreliable, see header).
+ * of PAGE_SIZE). Stops on an empty page, once past TotalJobsCount, or at the
+ * page cap; a short page ends the walk only when the tenant reports no total
+ * — `hasMore` is deliberately ignored (unreliable, see header).
  * A first-page failure throws (dead board); a mid-run blip keeps what's
  * already collected (same idiom as tencent/workday).
  *
@@ -317,11 +318,20 @@ export async function fetchOraclecloud(endpoint, opts = {}) {
     }
     if (total === null && pageTotal !== null) total = pageTotal;
 
-    // Stop conditions — hasMore is NOT consulted (see module header):
-    //   - an empty or short page means we've reached the end;
-    //   - once we've paged past TotalJobsCount there's nothing left to fetch.
-    if (listLen === 0 || listLen < PAGE_SIZE) break;
-    if (total !== null && offset + PAGE_SIZE >= total) break;
+    // Stop conditions — hasMore is NOT consulted (see module header).
+    //
+    // An empty page is always the end. A SHORT page is not: ORC serves fewer
+    // rows than the limit mid-list (American Express reports TotalJobsCount
+    // 454 and serves 200, 199, 54 — one row is filtered server-side), and
+    // treating that 199 as the end dropped the last 54 postings, 12% of the
+    // board. Matching the wider convention: "the API may return fewer results
+    // than the number requested … even if not at the end of the collection"
+    // (Google AIP-158). So a short page only ends the walk when the tenant
+    // reports no total to check it against.
+    if (listLen === 0) break;
+    if (total !== null) {
+      if (offset + PAGE_SIZE >= total) break;
+    } else if (listLen < PAGE_SIZE) break;
   }
   return [...seen.values()];
 }

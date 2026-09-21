@@ -9,6 +9,27 @@
 ---
 
 
+## [1.237.0] — 2026-09-21
+
+**父项目对齐 — career-ops `main` @ `93c4302b`（`VERSION` 为 1.33.0，从 `career-ops-hq/main` 拉取了 75 个提交）。本次未新增来源：四处镜像修复；其中两处此前一直在悄无声息地丢失这里的职位发布。**
+
+### 修复
+**Jobstreet / SEEK —— 每一条澳大利亚、新西兰、新加坡、马来西亚与香港的职位发布都链接到了一个死页面。** `parseJobstreetItem` 此前无条件地把详情 URL 拼成 `${baseUrl}/id/job/${id}`。`/id/` 这一段并不是一段路径——它是**印尼语区域前缀**，只存在于印尼主机上。其余每一个 SEEK 平台主机对 `/id/job/<id>` 都会返回 **404**。web-ui 此前已经把 `www.seek.com.au`、`www.seek.co.nz`、`sg.jobstreet.com`、`my.jobstreet.com` 与 `hk.jobsdb.com` 加入了 `ALLOWED_JOBSTREET_HOSTS`，于是扫描照常返回了这些职位发布——每一条都指向一个 404。路径现在按主机来确定：`ID_LOCALE_HOSTS`（`id.jobstreet.com`、`www.jobstreet.co.id`、`jobstreet.co.id`）保留 `/id/job/`，其余一律使用 `/job/`，而一个无法解析的源（origin）会落入通用路径，而不是抛出异常。我们自己的两个测试此前把这个缺陷写进了断言——分别断言了 `hk.jobsdb.com/id/job/…` 与 `www.jobstreet.com/id/job/…`——现已更正。
+**Oracle Cloud —— 列表中途出现的一个短页会结束整个遍历，并丢掉职位板的尾部。** 此前的停止条件是 `listLen === 0 || listLen < PAGE_SIZE`，但 ORC 会在*列表中途*返回比上限更少的行数，因为部分行在服务端就被过滤掉了。在上游对 American Express 的实测中：`TotalJobsCount` 为 **454**，分页为 **200 / 199 / 54**——199 那一页被当成了结尾，最后 **54 条职位发布，占整个职位板的 12%**，从未被抓取过。现在一个空页面才会结束遍历；当租户报告了总数时，分页会持续到 `offset + PAGE_SIZE >= total`；只有当租户没有可供核对的总数时，才会在一个短页上结束。这与更广泛的行业惯例相符——一个 API「即便尚未到达集合末尾……也可能返回比请求数量更少的结果」（Google AIP-158）。`hasMore` 依旧被刻意忽略——部分租户会在一个 7000 个职位的职位板上，每一页都返回 `hasMore:false`。既然短页不再结束遍历，`MAX_PAGES` 现在就是唯一能防止租户报告虚假总数的兜底手段，因此它由专门的测试覆盖。
+**Liveness —— `"This role is closed"` 未被识别，而一次错误的过期判定是永久性的。** 此前的模式是 `/this job (listing )?is closed/i`，遗漏了同样常见的 `role` 与 `position` 两种措辞；上游在某个职位板上实测，**111** 条不确定职位发布中的全部 **111** 条都使用了 `role` 这一措辞。现已放宽为 `/this (?:job|role|position)(?: listing)? is closed\b(?!-)/i`。末尾的 `\b(?!-)` 是一道复合形容词守卫：单独的 `\b` 会拒绝 `closedown`，却仍会匹配像 *"This role is closed-loop control of the platform"* 这样的真实文案，而正是这个前瞻断言阻止了这种情况。
+**Liveness —— `job expired` 现在被放进了一个较软的层级，不能再压过一个可见的 Apply 按钮。** `HARD_EXPIRED_PATTERNS` 是在 Apply 控件检测之前被检查的，因此凡是放在这里的模式都会压过一个仍在招聘的职位发布。`/\bjob expired\b/i` 会在四种真实存在的存活页面形态上误报——一个 `"Similar jobs"` 轮播条目、一个 `"Hide job expired"` 过滤器芯片、一个页脚 FAQ，以及上文提到的 `closed-loop` 文案——因为分类器接收到的是整页的文本。它现在被放进了 `SOFT_EXPIRED_PATTERNS`，在 Apply 控件检测之后、列表页启发式判断之前被检查，返回 `expired_body_soft`；一个没有任何 Apply 控件、只带一句 `"JOB EXPIRED"` 横幅的页面，依旧会被判定为过期。这个方向很重要，因为一次错误的 `expired` 判定会被以 `skipped_expired` 的形式写入扫描历史，并由此**把一个真实的职位从此后每一次扫描中都去重过滤掉，且是无限期的**，除非设置了 `scan_history.recheck_after_days`。
+
+### 新增
+**Personio —— 显式的 `personio: <slug>` 用于固定租户。** 许多公司会把自己的 Personio 职位板以 **iframe** 的形式嵌入到品牌招聘页面上，于是 `careers_url` 指向的是公司自己的域名，而实际的 feed 却位于 `<slug>.jobs.personio.de`；没有这个固定值，这些职位板就什么也解析不出来。这个 slug 受一个锚定的白名单字符集限制（`/^[a-z0-9][a-z0-9-]{0,62}$/i`），生成的 URL 依旧要经过既有的 `new URL()` 解析、HTTPS 检查以及 `PERSONIO_HOST_RE` 主机关卡——这个固定值绝不能被用来访问另一个主机。一个带有 `.`、`/`、`@`、`:`、`..`、空白字符、以连字符开头，或者超出 63 个字符 DNS 标签长度限制的 slug，都会落回今天的 `api`/`careers_url` 行为。与父项目不同，web-ui 的主机正则是大小写敏感的，因此这个固定值会先经过 `new URL()` 归一化——`AcmeGroup` 会解析为 `acmegroup.jobs.personio.de`，而不会拼出一个随后被自己的白名单拒绝的主机名。
+**Jobstreet —— 可选启用的 `appendWorkType`** 会把该职位发布的工作类型追加到标题末尾，例如 `Strategy Consultant [Part time]`，这样标题过滤与分诊在扫描时就能看到用工类型。默认关闭；缺失或为空的 `workTypes` 不会产生任何效果。
+
+### 说明
+来源与适配器数量维持不变：**94** 个来源（89 EN + 5 RU），89 个 EN 适配器。本次版本只改动了测试数量，**3164 → 3201**（+13 jobstreet、+7 Oracle Cloud、+9 liveness、+8 Personio）。
+父项目**删除了 `providers/telegram.mjs`**，统一并入 `telegram-channel`。web-ui 把两者都注册为面向用户的来源，因此这次删除**不予跟进**：跟进会把注册表从 94 降到 93，并悄无声息地弄坏任何配置了 `telegram` 的人。只有作为一次刻意的、经过公告的移除时，才会重新考虑这一点。
+`jd-skill-gap.mjs` 新增了一种不带缩写的 `"what we are looking for"` 标题形式，并新增了一道加粗标记剥离逻辑。web-ui 是**转发**这个脚本而不是镜像它，因此这项修复会随已部署的父项目一并到达，这里无需任何改动。
+未移植，并附上理由：`lib/latex-escape.mjs`、`browser-extract.mjs`、`openai-eval.mjs`、`update-system.mjs` 以及脚手架工具（web-ui 既不镜像也不外壳调用它们）；Go 版仪表板 TUI 与 `web/` 配置表单（属于独立的界面）；`doctor.mjs` 与 `analyze-patterns.mjs`（只读转发，其失败即降级的特性已经吸收了这次改动）。
+fork 自有的、位于 `providers/telegram-channel.mjs` 中的西里尔字母 `\p{L}` 分歧在这次上游合并中完好无损地留存了下来，并已与合并前的副本逐字节核实一致。
+
 ## [1.236.0] — 2026-09-18
 
 **父项目对齐 — career-ops `main` @ `6a9c84c`(`VERSION` 为 1.33.0,128 个提交)。两个新增来源,以及三处镜像修复——其中两处此前一直在悄无声息地丢失这里的职位发布。**

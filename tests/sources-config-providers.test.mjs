@@ -192,7 +192,7 @@ test('jobstreet: parseJobstreetItem reads the v5 item shape', () => {
     'https://hk.jobsdb.com', 'Fallback',
   );
   // URL is derived from the id — v5 ships no absolute job URL.
-  assert.equal(j.url, 'https://hk.jobsdb.com/id/job/92996157');
+  assert.equal(j.url, 'https://hk.jobsdb.com/job/92996157');
   // advertiser.description wins over the shorter companyName.
   assert.equal(j.company, 'PT YOFC International Indonesia');
   assert.equal(j.location, 'Karawang, West Java');

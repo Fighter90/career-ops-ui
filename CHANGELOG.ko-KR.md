@@ -9,6 +9,27 @@
 ---
 
 
+## [1.237.0] — 2026-09-21
+
+**상위 동등성 — career-ops `main` @ `93c4302b` (VERSION 1.33.0, `career-ops-hq/main`에서 가져온 커밋 75개). 이번에는 새 소스가 없습니다: 미러링된 수정 네 건, 그중 두 건은 여기서 공고를 소리 없이 잃고 있었습니다.**
+
+### 수정
+**Jobstreet / SEEK — 호주, 뉴질랜드, 싱가포르, 말레이시아, 홍콩의 모든 공고가 죽은 페이지로 연결되었습니다.** `parseJobstreetItem`은 상세 URL을 무조건 `${baseUrl}/id/job/${id}`로 만들었습니다. `/id/` 세그먼트는 경로가 아니라 **인도네시아 로케일 접두사**이며, 인도네시아 호스트에만 존재합니다. 그 밖의 모든 SEEK 플랫폼 호스트는 `/id/job/<id>`에 **404**로 답합니다. web-ui는 이미 `www.seek.com.au`, `www.seek.co.nz`, `sg.jobstreet.com`, `my.jobstreet.com`, `hk.jobsdb.com`을 `ALLOWED_JOBSTREET_HOSTS`에 추가해 두었으므로, 스캔은 그 공고들을 아무렇지 않게 돌려주었습니다 — 각각이 404를 가리키는 채로. 이제 경로는 호스트에 따라 결정됩니다: `ID_LOCALE_HOSTS`(`id.jobstreet.com`, `www.jobstreet.co.id`, `jobstreet.co.id`)는 `/id/job/`을 유지하고, 그 밖의 모든 호스트는 `/job/`을 받으며, 파싱할 수 없는 origin은 예외를 던지는 대신 공통 경로로 대체됩니다. 우리 자신의 테스트 두 건이 이 버그를 **그대로 코드화**하고 있었습니다 — `hk.jobsdb.com/id/job/…`와 `www.jobstreet.com/id/job/…`을 단언하고 있었고, 이제 수정되었습니다.
+**Oracle Cloud — 목록 중간의 짧은 페이지가 순회를 끝내고 게시판의 나머지를 놓쳤습니다.** 중단 조건은 `listLen === 0 || listLen < PAGE_SIZE`였지만, 일부 행이 서버 측에서 걸러지기 때문에 ORC는 *목록 중간에서도* 상한보다 적은 행을 돌려줍니다. 상위 저장소에서 American Express를 대상으로 측정한 결과: `TotalJobsCount` **454**, 페이지는 **200 / 199 / 54** — 199가 끝으로 읽혀서 마지막 **54건의 공고, 게시판의 12%**가 끝내 가져와지지 않았습니다. 이제 빈 페이지만이 항상 순회를 끝내며, 테넌트가 총계를 알려주면 페이지네이션은 `offset + PAGE_SIZE >= total`이 될 때까지 계속됩니다. 대조할 총계가 없는 테넌트만 짧은 페이지에서 끝납니다. 이는 API가 "요청한 결과 수보다 적게 반환할 수 있다 … 컬렉션의 끝이 아니더라도"라는 더 넓은 관례(Google AIP-158)와 일치합니다. `hasMore`는 여전히 의도적으로 무시됩니다 — 일부 테넌트는 7000건 규모 게시판의 모든 페이지에서 `hasMore:false`를 반환합니다. 짧은 페이지가 더 이상 순회를 끝내지 않게 되었으므로, 이제 `MAX_PAGES`만이 테넌트가 엉터리 총계를 보고하는 경우에 대한 유일한 방어선이며, 이는 자체 테스트로 다뤄집니다.
+**Liveness — "This role is closed"가 인식되지 않았고, 잘못된 만료 판정은 영구적입니다.** 패턴은 `/this job (listing )?is closed/i`였는데, 이는 그만큼 흔한 `role`과 `position` 표현을 놓칩니다 — 상위 저장소가 한 게시판에서 측정한 바로는, "role"을 쓰는 불확실한 공고 **111건 중 111건**이 여기 해당했습니다. `/this (?:job|role|position)(?: listing)? is closed\b(?!-)/i`로 넓혔습니다. 끝의 `\b(?!-)`는 복합 형용사를 막는 가드입니다: `\b` 단독으로는 `closedown`은 걸러내지만 *"This role is closed-loop control of the platform"* 같은 실제 문장은 여전히 일치시키며, 이를 막는 것은 바로 이 전방탐색(lookahead)입니다.
+**Liveness — `job expired`는 이제 눈에 보이는 Apply 버튼을 이길 수 없는 소프트 등급에 놓입니다.** `HARD_EXPIRED_PATTERNS`는 apply-control 테스트 *이전에* 검사되므로, 그곳에 놓인 것은 무엇이든 살아 있는 공고를 이겨 버립니다. `/\bjob expired\b/i`는 분류기가 페이지 전체 텍스트를 받기 때문에 실제로 살아 있는 페이지의 네 가지 형태 — "Similar jobs" 캐러셀 항목, "Hide job expired" 필터 칩, 푸터 FAQ, 그리고 위의 closed-loop 문장 — 에서 오탐합니다. 이제 이는 `SOFT_EXPIRED_PATTERNS`에 놓여 apply-control 이후, 목록 페이지 휴리스틱 이전에 검사되며 `expired_body_soft`를 반환합니다. apply-control이 없는 순수한 "JOB EXPIRED" 배너는 여전히 만료로 처리됩니다. 이 방향이 중요한 이유는, 잘못된 `expired`가 스캔 이력에 `skipped_expired`로 기록되면 `scan_history.recheck_after_days`가 설정되어 있지 않은 한 **이후의 모든 스캔에서 실제 공고 하나를 영구히 중복 제거 필터로 걸러내기** 때문입니다.
+
+### 추가
+**Personio — 명시적인 `personio: <slug>`가 테넌트를 고정합니다.** 많은 회사가 자사의 Personio 게시판을 브랜드가 입혀진 채용 페이지에 **iframe**으로 임베드합니다. 그래서 `careers_url`은 회사 자신의 도메인을 가리키지만 피드는 `<slug>.jobs.personio.de`에 있습니다 — 고정 없이는 그런 게시판이 아무것도 찾아내지 못합니다. 슬러그는 앵커된 허용목록(`/^[a-z0-9][a-z0-9-]{0,62}$/i`)으로 문자 집합이 제한되며, 만들어진 URL은 여전히 기존의 `new URL()` 파싱, HTTPS 검사, `PERSONIO_HOST_RE` 호스트 게이트를 그대로 거칩니다 — 이 고정이 다른 호스트에 도달하는 수단이 되는 일은 없습니다. `.`, `/`, `@`, `:`, `..`, 공백, 앞에 오는 `-`를 담고 있거나 63자 DNS 레이블 한도를 넘는 슬러그는 오늘의 `api`/`careers_url` 동작으로 대체됩니다. 부모 저장소와 달리 web-ui의 호스트 정규식은 대소문자를 구분하므로, 고정 값은 `new URL()`을 통해 정규화됩니다 — `AcmeGroup`은 자신의 허용목록이 결국 거부할 호스트를 만드는 대신 `acmegroup.jobs.personio.de`로 귀결됩니다.
+**Jobstreet — 옵트인 방식의 `appendWorkType`**은 공고의 근무 형태를 제목 뒤에 덧붙입니다. 예: `Strategy Consultant [Part time]`. 이로써 제목 필터와 트리아지가 스캔 시점에 고용 형태를 볼 수 있습니다. 기본값은 꺼짐이며, `workTypes`가 없거나 비어 있으면 아무 동작도 하지 않습니다.
+
+### 참고
+소스와 어댑터 개수는 변함없습니다: **94**개 소스(89 EN + 5 RU), 89개 EN 어댑터. 이번 릴리스는 테스트 개수만 움직입니다, **3164 → 3201**(+13 jobstreet, +7 Oracle Cloud, +9 liveness, +8 Personio).
+부모 저장소는 **`providers/telegram.mjs`를 삭제**하고 `telegram-channel`로 통합했습니다. web-ui는 둘 다 사용자에게 노출되는 소스로 등록하고 있으므로, 이 삭제는 **따르지 않습니다**: 그대로 따르면 레지스트리가 94에서 93으로 줄어들고 `telegram`을 설정해 둔 누구든 소리 없이 망가뜨리게 됩니다. 의도적으로 공지된 제거로서만 다시 검토할 것입니다.
+`jd-skill-gap.mjs`는 축약되지 않은 "what we are looking for" 헤딩 형태와 굵게 표시 마커 제거 기능을 얻었습니다. web-ui는 이 스크립트를 미러링하지 않고 **중계**하므로, 이 수정은 배포된 부모 저장소와 함께 도착하며 여기서는 변경이 필요 없습니다.
+이식하지 않은 항목과 그 이유: `lib/latex-escape.mjs`, `browser-extract.mjs`, `openai-eval.mjs`, `update-system.mjs`와 스캐폴더(web-ui는 이들을 미러링하지도, 셸 아웃하지도 않습니다); Go 대시보드 TUI와 `web/` 설정 폼(별개의 표면); `doctor.mjs`와 `analyze-patterns.mjs`(fail-soft가 변경을 흡수하는 읽기 전용 중계).
+`providers/telegram-channel.mjs`에 있는 포크의 키릴 문자 `\p{L}` 분기점은 상위 병합을 온전히 견뎌 냈으며, 병합 이전 사본과 바이트 단위로 대조하여 검증했습니다.
+
 ## [1.236.0] — 2026-09-18
 
 **상위 동등성 — career-ops `main` @ `6a9c84c` (VERSION 1.33.0, 커밋 128개). 새 소스 두 개, 그리고 미러링된 수정 세 건 — 그중 두 건은 여기서 공고를 소리 없이 잃고 있었습니다.**

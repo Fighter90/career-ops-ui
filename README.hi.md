@@ -9,16 +9,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-3164%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3201%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.236.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.236.0)
+[![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.236.0** — **मूल परियोजना career-ops की `main` शाखा @ `6a9c84c` के साथ समानता: दो नए स्रोत, और दो सुधार जो यहाँ चुपचाप पोस्टिंग खो रहे थे।** एक **Workday** भूमिका जो कई शहरों में खुली होती है, एक *गिनती* — `"53 Locations"` — बताती है, जहाँ बाक़ी हर पोस्टिंग एक जगह रखती है, इसलिए वह किसी `allow: [austin]` प्रविष्टि से मेल नहीं खाती थी और गिरा दी जाती थी (अपस्ट्रीम **53 of 291** पोस्टिंग)। उसकी असली जगहें अब CXS detail दस्तावेज़ से मिलती हैं, प्रति प्रविष्टि 200 लुकअप पर सीमित। **`role-matcher`** में स्तर-हैंडलिंग बिल्कुल भी नहीं थी, इसलिए `"Insurance Specialist"` और `"Insurance Specialist II"` एक ही रीपोस्ट में सिमट जाते थे — मूल परियोजना का पूरा तंत्र पोर्ट किया गया, रोमन/अरबी अंक मोड़े गए। किसी फ़िल्टर पर पिन किया गया **Avature** बोर्ड पूरा वैश्विक बोर्ड घूम रहा था, क्योंकि सर्च URL फिर से बनाते समय क्वेरी-स्ट्रिंग गिरा दी जाती थी। नए स्रोत: **Python.org Jobs** और **Generalist World** — **92 → 94** (89 EN + 5 RU)। साथ ही `devalue` 5.8.1 → 5.9.2, जिसने खुला Dependabot अलर्ट बंद किया। **3164 परीक्षण · 116 ब्राउज़र।**
+> **🆕 नवीनतम रिलीज़ — v1.237.0** — **मूल परियोजना career-ops की `main` शाखा @ `93c4302b` के साथ समानता: चार मिरर किए गए सुधार, जिनमें से दो यहाँ चुपचाप पोस्टिंग खो रहे थे।** **Jobstreet / SEEK** हर विवरण URL `/id/job/<id>` के रूप में बनाता था — पर `/id/` *इंडोनेशियाई स्थानीय उपसर्ग* है, और हर दूसरा SEEK होस्ट इस पर **404** देता है, इसलिए हर ऑस्ट्रेलियाई, न्यूज़ीलैंड, सिंगापुर, मलेशियाई और हांगकांग पोस्टिंग एक मृत पृष्ठ की ओर इशारा कर रही थी; पथ अब होस्ट पर आधारित है। **Oracle Cloud** एक छोटे पेज पर अपनी चाल ख़त्म कर देता था, पर ORC छोटे पेज *सूची के बीच में* भी देता है — American Express **454** नौकरियाँ बताता है और 200 / 199 / 54 देता है, इसलिए आख़िरी **54 पोस्टिंग, बोर्ड का 12%**, कभी नहीं लाई गईं। **Liveness** `"This role is closed"` को चूक जाता था (एक बोर्ड पर 111 में से 111 अनिश्चित पोस्टिंग) और अब `closed-loop` यौगिक शब्द से बचाव करता है; `job expired` अब एक नरम स्तर पर है जो किसी दृश्यमान Apply बटन को अब मात नहीं दे सकता — एक ग़लत expiry scan history में लिखी जाती है और हर बाद के स्कैन से एक असली नौकरी हटा देती है। साथ ही iframe-एम्बेडेड बोर्ड के लिए एक वैकल्पिक **Personio** `personio: <slug>` टेनेंट-पिन, और Jobstreet का `appendWorkType`। गिनती अपरिवर्तित: **94** स्रोत (89 EN + 5 RU)। **3201 परीक्षण · 116 ब्राउज़र।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

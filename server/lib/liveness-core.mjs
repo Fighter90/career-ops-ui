@@ -43,7 +43,21 @@ const HARD_EXPIRED_PATTERNS = [
   /job posting has expired/i,
   /no longer accepting applications/i,
   /this (position|role|job) (is )?no longer/i,
-  /this job (listing )?is closed/i,
+  // Widened from /this job (listing )?is closed/i, which only ever knew the
+  // noun "job": boards write the same banner with whichever noun names the req
+  // ("This role is closed" was 111 of 111 uncertain postings in one measured
+  // run; "position" is equally common), so the narrow pattern left genuinely
+  // dead postings sitting at no_apply_control → uncertain forever.
+  //
+  // The trailing \b(?!-) is a compound-adjective guard, and both halves earn
+  // their keep. \b alone rejects "closedown" (d→o is word→word) but NOT
+  // "closed-loop" (d→- is word→non-word, so the boundary matches) — and
+  // "This role is closed-loop control of the platform" is real prose in a
+  // control-systems JD. The (?!-) lookahead is what catches closed-loop /
+  // closed-form / closed-source. Erring here is cheap in one direction only:
+  // a missed banner costs one wasted re-check, a false match deletes a live
+  // job from every future scan (see the 429 guard below for the mechanism).
+  /this (?:job|role|position)(?: listing)? is closed\b(?!-)/i,
   /job (listing )?not found/i,
   /the page you are looking for doesn.t exist/i,
   /applications?\s+(?:(?:have|are|is)\s+)?closed/i,
@@ -64,6 +78,32 @@ const HARD_EXPIRED_PATTERNS = [
 const LISTING_PAGE_PATTERNS = [
   /\d+\s+jobs?\s+found/i,
   /search for jobs page is loaded/i,
+];
+
+// Weak expiry signals: real when nothing else on the page contradicts them,
+// but too broad to override a visible apply control. The tier exists because
+// HARD_EXPIRED_PATTERNS is checked BEFORE hasApplyControl — anything put in
+// that list wins over a live Apply button, which is the wrong default for a
+// phrase this generic.
+//
+// /\bjob expired\b/i belongs here and not up there because it false-fires on
+// four shapes measured on genuinely LIVE postings: a "Similar jobs" carousel
+// carrying a "Job Expired" entry, a "Hide job expired" filter chip, a footer
+// FAQ asking "what happens when a job expired?", and — before the closed-loop
+// guard above — "This role is closed-loop control of the platform" prose.
+// bodyText is the whole page's innerText plus same-origin iframe text, so all
+// of that chrome is in scope, not just the posting's own copy.
+//
+// Checked after hasApplyControl and before the listing-page heuristic, so the
+// dead-page shape the phrase was added for (a bare "JOB EXPIRED" banner with
+// no apply control anywhere) still resolves to expired. The comments on the
+// 5xx and 429 guards below spell out why the tiering is worth the complexity:
+// an `expired` result is written to scan-history as skipped_expired and
+// dedup-filters that URL out of every later scan — indefinitely, unless
+// scan_history.recheck_after_days is set — so a false positive here silently
+// removes a real job forever, while a false negative costs one wasted check.
+const SOFT_EXPIRED_PATTERNS = [
+  /\bjob expired\b/i,
 ];
 
 // Anti-bot interstitials (Cloudflare "Just a moment...", hCaptcha walls, etc.)
@@ -189,6 +229,13 @@ export function classifyLiveness({ status = 0, requestedUrl = '', finalUrl = '',
 
   if (hasApplyControl(applyControls)) {
     return { result: 'active', code: 'apply_control_visible', reason: 'visible apply control detected' };
+  }
+
+  // Weak expiry signals — see SOFT_EXPIRED_PATTERNS above for why these sit
+  // below the apply-control check instead of in HARD_EXPIRED_PATTERNS.
+  const softExpired = firstMatch(SOFT_EXPIRED_PATTERNS, bodyText);
+  if (softExpired) {
+    return { result: 'expired', code: 'expired_body_soft', reason: `pattern matched: ${softExpired.source}` };
   }
 
   const listingPage = firstMatch(LISTING_PAGE_PATTERNS, bodyText);
