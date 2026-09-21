@@ -15,6 +15,34 @@ validation-hardening from a full-project + all-locales audit). Skip Phases 1–2
 site changelog resync, wiki, cross-surface verify are all still mandatory. The
 count that moves on a fix-only release is usually just the **test count**.
 
+## Phase 0 — Load the working context, then defend it
+
+Do this before Phase 1, every time. It is three reads and one diff, and it is what
+stops a release from re-deciding things that were already decided.
+
+1. **Read [CONTEXT.md](../../../CONTEXT.md)** — the domain dictionary. It settles the
+   vocabulary this pipeline argues about every release: `source` vs `adapter` (94 vs 89
+   — the five RU sources have no adapter), `mirror` vs `relay`, `telegram` vs
+   `telegram-channel`. Using the wrong word here produces the wrong port.
+2. **Read [PROGRESS.md](../../../PROGRESS.md)** — in particular **Abandoned approaches**.
+   Every entry there is a thing that was tried and failed in a previous release
+   (blanket token sweeps, `\b` near non-Latin scripts, building the site mid-fan-out,
+   asserting a marker on the overall verdict). Do not retry them.
+3. **Read [docs/adr/](../../../docs/adr/)** — the standing decisions. `0001` keep both
+   telegram sources · `0002` defend fork divergences · `0003` mirror vs relay ·
+   `0004` liveness tiers. If the delta touches what a record covers, the record decides,
+   not this release.
+4. **Diff the fork's divergences BEFORE merging anything** (ADR-0002). A conflict is
+   not your safety net: on 2026-09-21 upstream reverted the Cyrillic `LOCATIONISH_RE`
+   and the merge carrying that revert produced **zero conflicts**.
+
+```bash
+git -C .. diff HEAD..upstream/main -- providers/telegram-channel.mjs   # read it
+cp ../providers/telegram-channel.mjs /tmp/tc.before                    # snapshot
+# … merge …
+diff /tmp/tc.before ../providers/telegram-channel.mjs                  # must be empty
+```
+
 ## Phase 1 — Pull & scope
 
 1. `cd .. && git rev-parse HEAD` (save OLD), `git pull` (confirm `origin` is the fork
@@ -227,3 +255,34 @@ confirm each surface:
   real fix (extraction + `===`).
 - Never point a running test at the real parent: `CAREER_OPS_ROOT=$(mktemp -d)`
   + dynamic imports inside `before()`.
+
+## Phase 8 — Write the knowledge down where it belongs
+
+A release that fixes something and explains it only in the chat has to be re-learned.
+Route each kind of knowledge to its file; none of these is optional.
+
+| What you learned | Where it goes | Test |
+|---|---|---|
+| A new or renamed concept, or two things a future session could confuse | **CONTEXT.md**, with the rejected variants marked *do not use* | Could someone rename or de-duplicate this by accident? |
+| A decision whose reasoning is not recoverable from the diff | a new numbered **docs/adr/** record | Will this look arbitrary — or wrong — in six months? |
+| An approach that was tried and rejected | **PROGRESS.md → Abandoned approaches**, with the evidence | Would a fresh session retry it? |
+| A trap that cost time this release | **PROGRESS.md → Known issues** AND this skill's *Known traps* | Will it recur next release? |
+| A durable rule for provider work | a numbered rule in the wiki's **Scanner-Providers** | Does it generalise past this one provider? |
+| What shipped | CHANGELOG ×17, README ×17, wiki | — |
+
+Then update **PROGRESS.md → Current state / Next step** so the next session opens with
+an accurate picture rather than reconstructing one from git.
+
+Add a regression case for anything that went wrong: a product test if the defect was in
+the product, a grader in **`evals/workflow/tasks.yml`** if the defect was in how the
+*pipeline* behaved (a missed no-port, a clobbered attribution, a partial site build).
+Run `node evals/workflow/run.mjs` — it must be green before you ship.
+
+**Guard against premature success.** "The suite is green" is not "it works". Gates prove
+the parts; this pipeline additionally requires behavioural markers run against the
+**deployed** server (Phase 6 step 8) and a human pass over `qa/QA-REGRESSION-PROMPT-*.md`
+§2 in a real browser. Two failure shapes seen here, both worth recognising on sight:
+a whole suite failing at once is almost always environment (a Playwright browser that
+was never downloaded), while a scattered failure is code. And a marker asserting the
+wrong thing fails like a real bug — assert the specific `code` a change is about, not
+the overall verdict.

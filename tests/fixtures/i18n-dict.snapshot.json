@@ -4996,6 +4996,25 @@
     "tr": "CareerOps Manifestosu",
     "hi": "CareerOps घोषणापत्र"
   },
+  "footer.patterns": {
+    "en": "Agentic Coding Design Patterns",
+    "es": "Agentic Coding Design Patterns",
+    "pt-BR": "Agentic Coding Design Patterns",
+    "ko": "Agentic Coding Design Patterns",
+    "ja": "Agentic Coding Design Patterns",
+    "ru": "Паттерны агентного кодинга",
+    "zh-CN": "Agentic Coding Design Patterns",
+    "zh-TW": "Agentic Coding Design Patterns",
+    "fr": "Agentic Coding Design Patterns",
+    "pl": "Agentic Coding Design Patterns",
+    "uk": "Agentic Coding Design Patterns",
+    "da": "Agentic Coding Design Patterns",
+    "ar": "Agentic Coding Design Patterns",
+    "de": "Agentic Coding Design Patterns",
+    "it": "Agentic Coding Design Patterns",
+    "tr": "Agentic Coding Design Patterns",
+    "hi": "Agentic Coding Design Patterns"
+  },
   "common.loading": {
     "en": "Loading…",
     "es": "Cargando…",

@@ -631,6 +631,42 @@ Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
 가능한 ATS가 없는 회사는 건너뜁니다 (`/#/scan`의 **Active
 Companies** 카드에서 회색 `○`로 표시).
 
+**Personio 테넌트 고정하기 (v1.237.0).** 많은 회사가 자사 브랜드의
+채용 페이지에 Personio 보드를 **iframe**으로 삽입하기 때문에,
+`careers_url`은 회사 자체 도메인을 가리키지만 실제 피드는
+`<slug>.jobs.personio.de`에 있습니다. 고정하지 않으면 이런 보드는
+아무것도 찾지 못합니다. 테넌트 slug를 명시적으로 지정하면
+`careers_url`보다 우선합니다:
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+slug는 문자 집합이 제한되어 있으며(문자, 숫자, 하이픈만 가능하고
+하이픈으로 시작할 수 없으며 최대 63자), 결과 URL도 동일한 호스트
+allowlist와 HTTPS 검사를 거칩니다 — 점, 슬래시, `@` 또는 `:`가
+포함된 slug는 거부되며 해당 항목은 `careers_url`로 대체됩니다.
+
+**제목에 고용 형태 표시하기 (Jobstreet / SEEK, v1.237.0).**
+`appendWorkType`으로 옵트인하면 공고의 고용 형태가 제목에 추가되어,
+제목 필터와 triage가 스캔 시점에 이를 확인할 수 있습니다. 기본값은
+꺼짐입니다:
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+`siteKey`는 시장을 선택합니다: `ID-Main`(id.jobstreet.com), `SG-Main`,
+`MY-Main`, `HK-Main`(hk.jobsdb.com), `AU-Main`(www.seek.com.au),
+`NZ-Main`(www.seek.co.nz). 채용 링크는 시장별로 생성됩니다 — `/id/`
+locale 접두사는 인도네시아 호스트에서만 사용되므로, 다른 시장용
+링크에 이를 붙이면 404가 반환됩니다 (v1.237.0에서 수정됨).
+
 ### `rss` (RSS / Atom boards)
 
 ```yaml
@@ -2103,6 +2139,15 @@ career-ops — 이 앱이 화면을 제공하는 상위 프로젝트 — 는 [th
 ### 읽고 서명하기
 
 사이드바 푸터의 링크를 클릭하면 선언문 페이지가 열립니다. 상위 프로젝트에서 `MANIFESTO.md`를 직접 읽거나, 그곳에서 `npm run manifesto`를 실행해 서명 페이지를 열 수도 있습니다. 서명은 선택 사항이며 10초면 충분합니다 — 서명하면 상위 저장소의 `SIGNATURES.md` 원장에 공개 커밋으로 기록됩니다. 이 앱의 어떤 기능도 서명 여부에 좌우되지 않습니다.
+
+**이 앱 자체는 어떻게 만들어졌는가.** 선언문은 구직 활동을 어떻게 운영할지에 관한 것이고, 그
+앞단의 소프트웨어는 코딩 에이전트로 만들어졌으며, 이 실천 방식에는 그 자체의 카탈로그가
+있습니다: 키릴 모케브닌(Kirill Mokevnin)의 [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+([러시아어판](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)).
+career-ops-ui는 이를 의도적으로 따릅니다 — 커밋된 pre-commit 훅에 실행 가능한 가드레일을
+두고, 워크플로우를 스킬로 패키징하고, 병렬 작업을 격리된 fan-out으로 나누며, 도메인
+사전과 ADR, 진행 로그, workflow eval을 갖춥니다. 실제로 무엇이 구현되어 있고 무엇이
+아닌지는 프로젝트 위키의 *Agentic Practices* 페이지에서 감사됩니다.
 
 ## 30. Hermes & Telegram
 

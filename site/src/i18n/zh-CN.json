@@ -196,6 +196,7 @@
   "prov.lead": "用你信任的模型为每个职位打分 —— {n} 家 LLM 提供方,自带密钥,或通过 Ollama 完全本地运行。Anthropic、OpenAI、Gemini、DeepSeek、Mistral 等。",
   "nav.methodology": "方法论",
   "footer.parentMethodology": "career-ops 方法论",
+  "footer.patterns": "Agentic Coding Design Patterns",
   "meta.methodologyTitle": "方法论 — career-ops 如何为职位评分 · career-ops-ui",
   "meta.methodologyDesc": "career-ops-ui 背后的评分方法论：五维加整体综合评分度 0.0–5.0 评分标准、4.0 分投递门槛，以及该工具绝不违反的规则。",
   "meta.licenseTitle": "许可证 — MIT · career-ops-ui",

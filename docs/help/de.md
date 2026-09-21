@@ -782,6 +782,43 @@ Jedes fixiert seinen Host mit einem verankerten Regex + `redirect:'error'`
 (SSRF-sicher). Siehe `docs/portals-examples.md` für vollständigere
 Kopier-Einfüge-Einträge.
 
+**Einen Personio-Mandanten fixieren (v1.237.0).** Viele Unternehmen betten ihr
+Personio-Board als **iframe** auf einer gebrandeten Karriereseite ein, sodass
+`careers_url` auf die eigene Domain des Unternehmens zeigt, während der Feed
+tatsächlich unter `<slug>.jobs.personio.de` liegt. Ohne Pin lösen sich solche
+Boards ins Nichts auf. Den Mandanten-Slug explizit angeben, und er gewinnt
+gegenüber `careers_url`:
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+Der Slug ist zeichensatzbeschränkt (Buchstaben, Ziffern und Bindestriche, darf
+nicht mit einem Bindestrich beginnen, höchstens 63 Zeichen), und die
+resultierende URL durchläuft weiterhin dieselbe Host-Allowlist- und
+HTTPS-Prüfung — ein Slug mit einem Punkt, Schrägstrich, `@` oder `:` wird
+abgelehnt, und der Eintrag fällt auf `careers_url` zurück.
+
+**Beschäftigungsart im Titel anzeigen (Jobstreet / SEEK, v1.237.0).** Mit
+`appendWorkType` opt-in werden die Beschäftigungsarten des Listings an den
+Titel angehängt, sodass Titelfilter und Triage sie bereits beim Scan sehen.
+Standardmäßig aus:
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+`siteKey` wählt den Markt: `ID-Main` (id.jobstreet.com), `SG-Main`, `MY-Main`,
+`HK-Main` (hk.jobsdb.com), `AU-Main` (www.seek.com.au) und `NZ-Main`
+(www.seek.co.nz). Der Job-Link wird pro Markt gebaut — nur die indonesischen
+Hosts verwenden das `/id/`-Locale-Präfix, sodass ein für jeden anderen Markt
+damit gebauter Link 404 zurückliefert (behoben in v1.237.0).
+
 ### `rss` (RSS-/Atom-Boards)
 
 ```yaml
@@ -2363,6 +2400,17 @@ Sechs Prinzipien — „besser auf weniger bewerben", „Signal statt Volumen", 
 ### Lesen und unterzeichnen
 
 Der Link im Footer der Seitenleiste öffnet die Manifest-Seite. Du kannst auch `MANIFESTO.md` im übergeordneten Projekt lesen oder dort `npm run manifesto` ausführen, um die Unterzeichnungsseite zu öffnen. Das Unterzeichnen ist optional und dauert zehn Sekunden — deine Signatur wird zu einem öffentlichen Commit im `SIGNATURES.md`-Register des übergeordneten Repositorys. Nichts in der App hängt davon ab, ob du unterzeichnest.
+
+**Wie diese App selbst gebaut ist.** Das Manifest handelt davon, wie man eine
+Jobsuche betreibt; die Software, die ihr eine Oberfläche gibt, ist selbst mit
+Coding-Agenten gebaut, und diese Praxis hat ihren eigenen Katalog: [Agentic
+Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+von Kirill Mokevnin ([russische Ausgabe](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)).
+career-ops-ui folgt ihm bewusst — ausführbare Guardrails in einem committeten
+Pre-commit-Hook, verpackte Workflows als Skills, isolierte parallele Fan-outs,
+ein Domain-Dictionary, ADRs, ein Progress-Log und Workflow-Evals. Was
+tatsächlich umgesetzt ist und was nicht, wird auf der *Agentic
+Practices*-Seite des Projekt-Wikis geprüft.
 
 ## 30. Hermes & Telegram
 

@@ -56,6 +56,8 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
 career-ops es la primera implementación de referencia de [el Manifiesto de CareerOps](https://career-ops.org/manifesto) — la práctica de llevar una búsqueda de empleo con evidencia, disciplina y herramientas del lado del candidato en la mesa. Léelo. Si dice lo que tú crees, fírmalo — tu firma se convierte en un commit. La app lo enlaza desde el pie de la barra lateral.
 
+La propia app está construida con agentes de código, siguiendo [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) ([ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) — barreras ejecutables, workflows empaquetados, un diccionario de dominio, ADRs y workflow evals. La página wiki [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) audita qué patrones están realmente implementados.
+
 ## Lanza e inicializa con un solo comando
 
 > **Importante — career-ops-ui es un panel *encima de* [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).** Se ejecuta **dentro** de un proyecto career-ops como `career-ops/web-ui/` y lee tu `cv.md`, `config/`, `data/` desde la carpeta padre mediante `../`. **No funciona de forma independiente** — también necesitas el repositorio padre `career-ops`. No lo clones por separado y ejecutes `init`; usa una de las dos opciones siguientes.

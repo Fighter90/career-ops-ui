@@ -587,6 +587,39 @@ Greenhouse 等)并直接调用每家公司的公共 boards-api。没有可识别
 的公司会被跳过(`/#/scan` 上的 **Active Companies** 卡片会用
 `○` 灰色显示)。
 
+**钉住 Personio 租户(v1.237.0)。** 许多公司将自己的 Personio 招聘板以
+**iframe** 形式嵌入品牌化的招聘页面，因此 `careers_url` 指向公司自己的域
+名，而实际的数据源却位于 `<slug>.jobs.personio.de`。如果不钉住，这些招聘
+板将无法解析出任何内容。显式指定租户 slug，它会优先于 `careers_url` 生
+效：
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+该 slug 的字符集受限（仅限字母、数字和连字符，不得以连字符开头，最多 63
+个字符），生成的 URL 仍会经过相同的主机白名单与 HTTPS 校验——包含点、斜
+杠、`@` 或 `:` 的 slug 会被拒绝，该条目会回退到 `careers_url`。
+
+**在标题中显示雇佣类型(Jobstreet / SEEK, v1.237.0)。** 选择启用
+`appendWorkType` 后，职位的雇佣类型会附加到标题中，方便标题筛选与初筛在
+扫描时就能看到它们。默认关闭：
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+`siteKey` 用于选择市场：`ID-Main`(id.jobstreet.com)、`SG-Main`、
+`MY-Main`、`HK-Main`(hk.jobsdb.com)、`AU-Main`(www.seek.com.au) 与
+`NZ-Main`(www.seek.co.nz)。职位链接按市场分别构建——只有印度尼西亚的主机
+使用 `/id/` 语言前缀，因此在其他任何市场构建的链接如果带上该前缀会返回
+404(已在 v1.237.0 中修复)。
+
 ### `rss` (RSS / Atom boards)
 
 ```yaml
@@ -1996,6 +2029,9 @@ career-ops——这款应用所依托的父项目——是 [CareerOps 宣言](ht
 ### 阅读与签署
 
 侧边栏页脚中的链接会打开宣言页面。你也可以阅读父项目中的 `MANIFESTO.md`，或在那里运行 `npm run manifesto` 打开签署页面。签署是可选的，只需十秒——你的签名会成为父项目仓库 `SIGNATURES.md` 名录中的一次公开提交。你是否签署，都不影响应用中的任何功能。
+
+**这款应用本身是如何构建的。** 宣言讲的是如何经营求职；而支撑它的这款软件本身是用编程智能体构建的，这种实践也有自己的一套典籍：[Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
+（[ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)），作者基里尔·莫克夫宁（Kirill Mokevnin）。career-ops-ui 刻意遵循这一实践——已提交的 pre-commit 钩子中的可执行护栏、打包成技能的工作流、彼此隔离的并行分支、领域词典、ADR、进度日志以及工作流评测。哪些确实已经落地、哪些尚未落地，记录在项目维基的 *Agentic Practices* 页面中。
 
 ## 30. Hermes & Telegram
 

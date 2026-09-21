@@ -272,6 +272,7 @@ window.__I18N_DICT_DA = {
   'top.langhint': "Enter — søg",
   'top.langLabel': "Sprog",
   'footer.manifesto': "CareerOps-manifestet",
+  'footer.patterns': "Agentic Coding Design Patterns",
   'common.loading': "Indlæser…",
   'common.error': "Fejl",
   'common.retry': "Prøv igen",

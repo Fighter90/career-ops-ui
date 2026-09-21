@@ -73,6 +73,8 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 career-ops er den første referenceimplementering af [CareerOps-manifestet](https://career-ops.org/manifesto) — praksissen med at drive en jobsøgning med evidens, disciplin og værktøjer på kandidatens side af bordet. Læs det. Hvis det siger, hvad du tror på, så underskriv det — din underskrift bliver et commit. Appen linker til det fra sidebjælke-footeren.
 
+Selve appen er bygget med kodningsagenter efter [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) ([ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) — eksekverbare autoværn, pakkede workflows, en domæneordbog, ADR'er og workflow-evalueringer. Wiki-siden [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) reviderer, hvilke mønstre der rent faktisk er på plads.
+
 ## Installér en AI-kodningsassistent (til forælderens career-ops-CLI)
 
 career-ops kører som slash-kommandoer **inde i** en AI-kodningsassistent — installér **én** og log ind, før du fortsætter (forælderens [Quick Start](https://career-ops.org/docs)):

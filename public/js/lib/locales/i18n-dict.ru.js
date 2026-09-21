@@ -273,6 +273,7 @@ window.__I18N_DICT_RU = {
   'top.langhint': "Enter — поиск",
   'top.langLabel': "Язык",
   'footer.manifesto': "Манифест CareerOps",
+  'footer.patterns': "Паттерны агентного кодинга",
   'common.loading': "Загрузка…",
   'common.error': "Ошибка",
   'common.retry': "Повторить",

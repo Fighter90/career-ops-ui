@@ -647,6 +647,43 @@ etc.) e busca a boards-api pública de cada empresa diretamente.
 Empresas sem um ATS reconhecível são puladas (o card **Active
 Companies** em `/#/scan` as mostra em cinza com `○`).
 
+**Fixando um tenant do Personio (v1.237.0).** Muitas empresas incorporam
+seu board do Personio como um **iframe** em uma página de carreiras com
+marca própria, então `careers_url` aponta para o domínio da própria
+empresa enquanto o feed na verdade vive em `<slug>.jobs.personio.de`. Sem
+um pin, esses boards não resolvem para nada. Informe o slug do tenant
+explicitamente e ele tem prioridade sobre `careers_url`:
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+O slug tem charset restrito (letras, dígitos e hífens, sem começar com
+hífen, no máximo 63 caracteres) e a URL resultante ainda passa pela mesma
+allowlist de hosts e verificação HTTPS — um slug contendo um ponto, uma
+barra, `@` ou `:` é recusado e a entrada volta para `careers_url`.
+
+**Exibindo o tipo de emprego no título (Jobstreet / SEEK, v1.237.0).**
+Ative com `appendWorkType` e os tipos de emprego do anúncio são anexados
+ao título, para que filtros de título e o triage possam vê-los no
+momento do scan. Desligado por padrão:
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+`siteKey` seleciona o mercado: `ID-Main` (id.jobstreet.com), `SG-Main`,
+`MY-Main`, `HK-Main` (hk.jobsdb.com), `AU-Main` (www.seek.com.au) e
+`NZ-Main` (www.seek.co.nz). O link da vaga é construído por mercado —
+apenas os hosts indonésios usam o prefixo de locale `/id/`, então um
+link construído para qualquer outro mercado com ele retorna 404
+(corrigido na v1.237.0).
+
 ### `rss` (RSS / Atom boards)
 
 ```yaml
@@ -2174,6 +2211,16 @@ Seis princípios — "candidate-se melhor a menos vagas", "sinal em vez de volum
 ### Lendo e assinando
 
 O link no rodapé da barra lateral abre a página do manifesto. Você também pode ler o `MANIFESTO.md` no projeto pai, ou rodar `npm run manifesto` lá para abrir a página de assinatura. Assinar é opcional e leva dez segundos — sua assinatura se torna um commit público no registro `SIGNATURES.md` do repositório pai. Nada no app depende de você assinar.
+
+**Como este próprio app é construído.** O manifesto trata de como conduzir
+uma busca de emprego; o software que o apresenta é construído com agentes de
+código, e essa prática tem seu próprio catálogo: [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/),
+de Kirill Mokevnin ([edição em russo](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)).
+O career-ops-ui o segue deliberadamente — barreiras executáveis em um hook de
+pre-commit versionado, workflows empacotados como skills, fan-outs paralelos
+isolados, um dicionário de domínio, ADRs, um log de progresso e workflow evals.
+O que de fato está implementado, e o que não está, é auditado na página
+*Agentic Practices* da wiki do projeto.
 
 ## 30. Hermes & Telegram
 

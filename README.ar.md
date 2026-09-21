@@ -57,6 +57,8 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 career-ops هو أول تطبيق مرجعي [لبيان CareerOps](https://career-ops.org/manifesto) — ممارسة إدارة البحث عن عمل بالأدلة والانضباط وبأدوات في صف المرشّح على طاولة المفاوضات. اقرأه. وإن كان يعبّر عمّا تؤمن به، وقّعه — يصبح توقيعك التزاماً (commit). يربط التطبيق إليه من تذييل الشريط الجانبي.
 
+التطبيق نفسه مبنيٌّ بوكلاء برمجة، اتّباعاً لكتالوج [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) ([بالروسية](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) — ضمانات تنفيذية، وسير عمل مُعلَّب، وقاموس نطاق، وسجلّات ADR، وتقييمات لسير العمل. وتراجع صفحة ويكي [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) أيّ الأنماط مطبَّقة فعلاً.
+
 ## الميزات الرئيسية
 
 | الصفحة | الوصف |

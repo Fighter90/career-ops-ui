@@ -73,6 +73,8 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 
 career-ops è la prima implementazione di riferimento del [Manifesto CareerOps](https://career-ops.org/manifesto) — la pratica di condurre una ricerca di lavoro con evidenze, disciplina e strumenti dalla parte del candidato. Leggilo. Se dice ciò in cui credi, firmalo — la tua firma diventa un commit. L'app vi rimanda tramite il link nel footer della barra laterale.
 
+L'app stessa è costruita con agenti di coding, seguendo [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) ([ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)) — guardrail eseguibili, flussi di lavoro pacchettizzati, un dizionario di dominio, ADR e valutazioni dei flussi di lavoro. La pagina wiki [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) verifica quali pattern sono effettivamente in uso.
+
 ## Installa un assistente di coding IA (per la CLI career-ops principale)
 
 career-ops gira come slash command **dentro** un assistente di coding IA — installane **uno** e accedi prima di continuare (la [Guida rapida](https://career-ops.org/docs) del progetto principale):

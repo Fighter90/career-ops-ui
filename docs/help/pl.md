@@ -686,6 +686,40 @@ publiczne API portalu każdej firmy bezpośrednio. Firmy bez rozpoznawalnego
 ATS są pomijane (karta **Active Companies** na `/#/scan` pokazuje je
 na szaro z `○`).
 
+**Przypinanie tenanta Personio (v1.237.0).** Wiele firm osadza swoją tablicę Personio jako
+**iframe** na własnej stronie kariery, więc `careers_url` wskazuje domenę firmy,
+podczas gdy kanał faktycznie znajduje się pod adresem `<slug>.jobs.personio.de`. Bez
+przypięcia takie tablice nie rozwiązują się do niczego. Podaj slug tenanta jawnie, a
+wygrywa on z `careers_url`:
+
+```yaml
+tracked_companies:
+  - { name: Acme, enabled: true, provider: personio, personio: acme, careers_url: https://acme.com/careers }
+```
+
+Slug ma ograniczony zestaw znaków (litery, cyfry i myślniki, bez myślnika na początku,
+maksymalnie 63 znaki), a wynikowy URL nadal przechodzi przez tę samą listę dozwolonych
+hostów i sprawdzenie HTTPS — slug zawierający kropkę, ukośnik, `@` lub `:` jest
+odrzucany, a wpis wraca do `careers_url`.
+
+**Pokazywanie typu zatrudnienia w tytule (Jobstreet / SEEK, v1.237.0).** Włącz to przez
+`appendWorkType`, a typy zatrudnienia z ogłoszenia zostaną dopisane do tytułu, dzięki
+czemu filtry tytułu i sortowanie widzą je już w momencie skanowania. Domyślnie wyłączone:
+
+```yaml
+tracked_companies:
+  - name: Acme
+    enabled: true
+    provider: jobstreet
+    jobstreet: { siteKey: AU-Main, appendWorkType: true }   # → "Strategy Consultant [Part time]"
+```
+
+`siteKey` wybiera rynek: `ID-Main` (id.jobstreet.com), `SG-Main`, `MY-Main`,
+`HK-Main` (hk.jobsdb.com), `AU-Main` (www.seek.com.au) i `NZ-Main` (www.seek.co.nz).
+Link do oferty budowany jest osobno dla każdego rynku — tylko hosty indonezyjskie
+używają prefiksu lokalizacji `/id/`, więc link zbudowany dla innego rynku z tym
+prefiksem zwraca 404 (naprawione w v1.237.0).
+
 ### `rss` (kanały RSS / Atom)
 
 ```yaml
@@ -2167,6 +2201,8 @@ Sześć zasad — „aplikuj lepiej do mniejszej liczby ofert", „sygnał ponad
 ### Czytanie i podpisywanie
 
 Link w stopce paska bocznego otwiera stronę manifestu. Możesz też przeczytać `MANIFESTO.md` w projekcie nadrzędnym albo uruchomić tam `npm run manifesto`, aby otworzyć stronę podpisu. Podpisanie jest opcjonalne i zajmuje dziesięć sekund — Twój podpis staje się publicznym commitem w rejestrze `SIGNATURES.md` repozytorium nadrzędnego. Nic w aplikacji nie zależy od tego, czy podpiszesz.
+
+**Jak zbudowana jest sama aplikacja.** Manifest mówi o tym, jak prowadzić poszukiwania pracy; oprogramowanie, które je obsługuje, jest budowane przez agentów kodujących, a ta praktyka ma własny katalog: [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/) autorstwa Kirilla Mokevnina ([rosyjskie wydanie](https://mokevnin.github.io/agentic-coding-design-patterns/ru/)). career-ops-ui stosuje go świadomie — egzekwowalne zabezpieczenia w zatwierdzonym hooku pre-commit, zapakowane przepływy pracy jako skille, izolowane równoległe rozgałęzienia, słownik domenowy, ADR-y, dziennik postępu i ewaluacje przepływów pracy. To, co faktycznie zostało wdrożone, a co nie, jest audytowane na stronie *Agentic Practices* wiki projektu.
 
 ## 30. Hermes & Telegram
 

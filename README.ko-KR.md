@@ -56,6 +56,8 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 career-ops는 [CareerOps 선언문](https://career-ops.org/manifesto) — 증거와 규율, 그리고 지원자 쪽에 놓인 도구로 구직 활동을 운영한다는 실천 방식 — 의 첫 번째 레퍼런스 구현입니다. 한번 읽어 보세요. 당신이 믿는 바와 일치한다면 서명하세요 — 서명은 하나의 커밋이 됩니다. 이 앱은 사이드바 푸터에서 그 페이지로 연결됩니다.
 
+이 앱 자체도 코딩 에이전트로 만들어졌으며, [Agentic Coding Design Patterns](https://mokevnin.github.io/agentic-coding-design-patterns/en/)([ru](https://mokevnin.github.io/agentic-coding-design-patterns/ru/))를 따릅니다 — 실행 가능한 가드레일, 패키징된 워크플로우, 도메인 사전, ADR, workflow eval을 갖추고 있습니다. [Agentic Practices](https://github.com/Fighter90/career-ops-ui/wiki/Agentic-Practices) 위키 페이지는 실제로 어떤 패턴이 적용되어 있는지 감사합니다.
+
 ## 한 줄 명령으로 실행 및 초기화
 
 > **중요 — career-ops-ui는 [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops) *위에* 올라가는 대시보드입니다.** `career-ops/web-ui/`로서 career-ops 프로젝트 **내부**에서 실행되며, `../`를 통해 부모 폴더의 `cv.md`, `config/`, `data/`를 읽습니다. **단독으로 작동하지 않습니다** — 부모 `career-ops` 저장소도 필요합니다. 단독으로 클론하여 `init`을 실행하지 마세요; 아래의 두 옵션 중 하나를 사용하세요.
