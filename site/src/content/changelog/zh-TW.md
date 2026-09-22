@@ -8,6 +8,20 @@
 
 ---
 
+## [1.237.1] — 2026-09-22
+
+**針對 v1.237.0 的一次外部 QA 複查修補。** Jobstreet 的修復已首次從外部獲得證實：在 AU、NZ、HK 與 MY 主機上，舊有的 `/id/job/<id>` 形式會回傳一個乾淨的 404，而新的 `/job/<id>` 能到達一個真實的、受 Cloudflare 保護的路由；在 `id.jobstreet.com` 上情況則正好相反。遺失的連結確實存在。發現了兩項缺陷，皆出在 v1.237.0 自身新增的內容裡。
+
+### 修復
+**書籍連結 ——文案翻譯了，目標網址卻沒有。** 全部 17 個 SPA 語系與全部 17 個 cvstart.org 語系，都把頁尾指向 *Agentic Coding Design Patterns* 的連結指向英文版，而唯一被翻譯的文案——俄語 «Паттерны агентного кодинга»——承諾的卻是一本俄語版的書。新增的 `data-i18n-href` 套用器（與 `data-i18n-title` 同形，僅限絕對的 `https://` 值）與 `footer.patternsUrl` 鍵，現在會把 `ru` 導向俄語版，其餘每個語系都導向英文版。回歸測試從兩個方向斷言這個不變式：翻譯過的標題意味著在地化的網址。
+**SEEK ——正在遷移主機，而傳輸層拒絕跟隨重新導向。** `www.seek.com.au` → `au.seek.com`、`www.seek.co.nz` → `nz.seek.com`：明細頁面如今已經回傳 301，這兩組主機目前也都以 200 提供 v5 搜尋 API。由於 `http-json.mjs` 設定了 `redirect:'error'`（一項值得保留的 SSRF 防護），一旦 API 路徑開始對舊主機上的 AU/NZ 項目發出重新導向，擷取就會失敗——而由於允許清單裡此前只有 `www.` 開頭的主機，根本沒有人能完成遷移。`au.seek.com` 與 `nz.seek.com` 現已加入 `ALLOWED_JOBSTREET_HOSTS`；舊主機仍保留，因此既有設定與已產生的連結照常可用。仿冒主機（`au.seek.com.evil.com`、`au-seek.com`）依然會被拒絕。
+**Wiki：** Home 文件地圖中的 *Agentic Practices* 那一列，是十二列裡唯一沒有在 `[[…|…]]` 內轉義 `|` 的一列，導致 GitHub 截斷了該儲存格——連結失效，描述被隱藏。只差一個字元。
+
+### 說明
+來源數量維持 **94** 個不變（89 EN + 5 RU），89 個配接器。測試 **3201 → 3210**（+5 頁尾連結語系，+4 SEEK 主機）。
+無法從外部關閉，只能記錄而非斷言：Oracle Cloud（Akamai 擋下了兩次 REST 探測）、Personio 的租戶釘選與 `appendWorkType`（需要在 `portals.yml` 新增一筆，而 UI 裡沒有其中一項的刪除功能），以及 liveness 的字串案例（沒有可控頁面；40 次存活探測得到 12 次存活、28 次不確定、**0** 次誤判到期）。
+Help ×17 現在同時列出 `AU-Main` 與 `NZ-Main` 的兩種主機形式。標題結構維持不變：32 個 H2 / 122 個 H3。
+
 ## [1.237.0] — 2026-09-21
 
 **父專案對齊 — career-ops `main` @ `93c4302b`（`VERSION` 為 1.33.0，取自 `career-ops-hq/main` 的 75 個提交）。這次沒有新增來源：四項鏡射修復，其中兩項曾悄悄讓本專案遺失職缺。**

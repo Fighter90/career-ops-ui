@@ -615,8 +615,8 @@ tracked_companies:
 ```
 
 `siteKey` 用于选择市场：`ID-Main`(id.jobstreet.com)、`SG-Main`、
-`MY-Main`、`HK-Main`(hk.jobsdb.com)、`AU-Main`(www.seek.com.au) 与
-`NZ-Main`(www.seek.co.nz)。职位链接按市场分别构建——只有印度尼西亚的主机
+`MY-Main`、`HK-Main`(hk.jobsdb.com)、`AU-Main`(au.seek.com, www.seek.com.au) 与
+`NZ-Main`(nz.seek.com, www.seek.co.nz)。职位链接按市场分别构建——只有印度尼西亚的主机
 使用 `/id/` 语言前缀，因此在其他任何市场构建的链接如果带上该前缀会返回
 404(已在 v1.237.0 中修复)。
 

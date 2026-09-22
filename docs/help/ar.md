@@ -475,7 +475,7 @@ tracked_companies:
 ```
 
 يختار `siteKey` السوق: `ID-Main` (id.jobstreet.com)، و`SG-Main`، و`MY-Main`،
-و`HK-Main` (hk.jobsdb.com)، و`AU-Main` (www.seek.com.au)، و`NZ-Main` (www.seek.co.nz).
+و`HK-Main` (hk.jobsdb.com)، و`AU-Main` (au.seek.com, www.seek.com.au)، و`NZ-Main` (nz.seek.com, www.seek.co.nz).
 يُبنى رابط الوظيفة بحسب كل سوق — مضيفو إندونيسيا وحدهم يستخدمون بادئة اللغة `/id/`،
 لذا فإن رابطاً مبنياً لأي سوق آخر بها يُعيد 404 (أُصلح في v1.237.0).
 

@@ -29,6 +29,24 @@ function applyI18n() {
     const key = el.getAttribute('data-i18n-title');
     el.title = I18n.t(key, el.title || '');
   });
+  // BOOK-1 (v1.237.1) — localize an outbound link's TARGET, not just its label.
+  // Introduced for the Agentic Coding Design Patterns footer link: the ru
+  // dictionary promised «Паттерны агентного кодинга» while every locale's href
+  // still pointed at the English edition.
+  //
+  // The key list lives HERE, not in markup. Reading it from a data-attribute made
+  // DOM text flow into setAttribute('href') (CodeQL js/xss-through-dom: on a
+  // missing key I18n.t returns the KEY itself, i.e. the raw attribute value). With
+  // the keys as code literals the only value that can reach an href is a
+  // dictionary entry, and that is additionally gated to absolute https://.
+  // To localize another link: add its key here and put data-i18n-href="<key>"
+  // on the anchor.
+  const I18N_HREF_KEYS = ['footer.patternsUrl'];
+  for (const key of I18N_HREF_KEYS) {
+    const url = I18n.t(key, '');
+    if (!/^https:\/\//.test(url)) continue;
+    document.querySelectorAll(`[data-i18n-href="${key}"]`).forEach((el) => el.setAttribute('href', url));
+  }
 }
 
 // I18N-EXPAND (v1.70.0) — a flag-prefixed <select> replaces the old wrapping

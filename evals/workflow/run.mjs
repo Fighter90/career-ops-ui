@@ -169,10 +169,17 @@ function gradeNoPortRecorded() {
   const t = 'parity-scope-noport';
   const v = currentVersion();
   const entry = read('CHANGELOG.md').split(`## [${v}]`)[1]?.split('\n## [')[0] ?? '';
-  const hasNotes = /### Notes/.test(entry);
-  record(t, 'release entry carries a Notes section', hasNotes ? 'PASS' : 'FAIL', '');
-  const explains = /relay|not mirrored|Not ported|not followed/i.test(entry);
-  record(t, 'Notes explain what was not ported and why', explains ? 'PASS' : 'FAIL', '');
+  // Scope to the actual Notes SECTION, not the whole version block — otherwise
+  // "relay" in a Fixed bullet satisfies a grader whose label says "Notes explain".
+  const notes = entry.split(/^### Notes\s*$/m)[1]?.split(/^### /m)[0] ?? '';
+  record(t, 'release entry carries a Notes section', notes.trim() ? 'PASS' : 'FAIL', '');
+  // Assert STRUCTURE rather than a growing list of phrases: at least one Notes bullet
+  // must state a deliberate non-action. That is the discipline being graded — a parity
+  // release's no-ports and a QA-patch's not-verifiable items are both instances of it.
+  const bullets = notes.split('\n').filter((l) => /^\s*[-*] /.test(l));
+  const deliberate = bullets.filter((l) => /\bnot\b/i.test(l));
+  record(t, 'Notes state at least one deliberate non-action', deliberate.length > 0 ? 'PASS' : 'FAIL',
+    `${deliberate.length} of ${bullets.length} Notes bullets`);
 }
 
 function reportTrajectorySkips() {

@@ -197,6 +197,7 @@
   "nav.methodology": "Méthodologie",
   "footer.parentMethodology": "méthodologie career-ops",
   "footer.patterns": "📘 Agentic Coding Design Patterns",
+  "footer.patternsUrl": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
   "meta.methodologyTitle": "Méthodologie — comment career-ops note les offres d'emploi · career-ops-ui",
   "meta.methodologyDesc": "La méthodologie de notation de career-ops-ui : une grille à cinq dimensions plus un score global holistique notée de 0,0 à 5,0, le seuil de candidature à 4,0, et les règles que l'outil refuse d'enfreindre.",
   "meta.licenseTitle": "Licence — MIT · career-ops-ui",

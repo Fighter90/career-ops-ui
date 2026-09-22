@@ -618,8 +618,8 @@ tracked_companies:
 ```
 
 `siteKey` 用於選擇市場：`ID-Main`(id.jobstreet.com)、`SG-Main`、
-`MY-Main`、`HK-Main`(hk.jobsdb.com)、`AU-Main`(www.seek.com.au) 與
-`NZ-Main`(www.seek.co.nz)。職缺連結會依市場分別建構——只有印尼的主機使用
+`MY-Main`、`HK-Main`(hk.jobsdb.com)、`AU-Main`(au.seek.com, www.seek.com.au) 與
+`NZ-Main`(nz.seek.com, www.seek.co.nz)。職缺連結會依市場分別建構——只有印尼的主機使用
 `/id/` 語系前綴，因此在其他任何市場建構的連結若帶上該前綴會回傳 404
 (已在 v1.237.0 中修復)。
 

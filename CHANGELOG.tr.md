@@ -2,6 +2,22 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.237.1] — 2026-09-22
+
+**v1.237.0 üzerinde harici bir QA geçişinden yama.** Jobstreet düzeltmesi ilk kez dışarıdan doğrulandı: AU, NZ, HK ve MY ana bilgisayarlarında eski `/id/job/<id>` biçimi temiz bir 404 döndürüyor ve yeni `/job/<id>` gerçek, Cloudflare korumalı bir rotaya ulaşıyor; `id.jobstreet.com` üzerinde ise tersi geçerli. Kaybolan bağlantılar gerçekti. v1.237.0'ın kendisinin eklediği şeyde iki kusur bulundu.
+
+### Düzeltildi
+
+- **Kitap bağlantısının etiketi yerelleştirilmişti, ama hedefi değil.** 17 SPA yerel ayarının ve 17 cvstart.org yerel ayarının tamamı, *Agentic Coding Design Patterns* footer bağlantısını İngilizce baskıya yönlendiriyordu; oysa çevrilmiş tek etiket — Rusça, «Паттерны агентного кодинга» — bir Rusça kitap vadediyordu. Yeni bir `data-i18n-href` uygulayıcısı (`data-i18n-title` ile aynı biçimde, mutlak `https://` değerleriyle sınırlı) ve bir `footer.patternsUrl` anahtarı, `ru`'yu Rusça baskıya, diğer her yerel ayarı İngilizce baskıya gönderiyor. Regresyon testi bu değişmezi iki yönde de doğruluyor: çevrilmiş bir başlık, yerelleştirilmiş bir URL'yi ima eder.
+- **SEEK ana bilgisayarlarını taşıyor, ve taşıma katmanı yönlendirmeleri reddediyor.** `www.seek.com.au` → `au.seek.com` ve `www.seek.co.nz` → `nz.seek.com`: detay sayfaları zaten 301 veriyor, ve her iki ana bilgisayar çifti de bugün v5 arama API'sini 200 ile sunuyor. `http-json.mjs`, `redirect:'error'` ayarladığından (korunmaya değer bir SSRF savunması), API yolunun yönlendirmeye başladığı gün eski ana bilgisayardaki bir AU/NZ girdisi başarısız olurdu — ve yalnızca `www.` ana bilgisayarları izin listesindeyken kimse taşınamazdı. `au.seek.com` ve `nz.seek.com` artık `ALLOWED_JOBSTREET_HOSTS` içinde; eski ana bilgisayarlar kalıyor, bu yüzden mevcut yapılandırma ve zaten oluşturulmuş bağlantılar çalışmaya devam ediyor. Taklitler (`au.seek.com.evil.com`, `au-seek.com`) hâlâ reddediliyor.
+- **Wiki:** Home belgeleme haritasındaki *Agentic Practices* satırı, on iki satırdan `[[…|…]]` içindeki `|`'yi kaçırmayan tek satırdı, bu yüzden GitHub hücreyi kesti — ölü bağlantı, açıklama gizlendi. Tek bir karakter.
+
+### Notlar
+
+- Sayılar **94** kaynakta (89 EN + 5 RU), 89 bağdaştırıcıda değişmedi. Testler **3201 → 3210** (+5 footer bağlantısı yerel ayarı, +4 SEEK ana bilgisayarı).
+- Dışarıdan kapatılamayan, iddia edilmek yerine kayda geçirilen: Oracle Cloud (Akamai her iki REST sondasını da engelledi), Personio sabitlemesi ve `appendWorkType` (bir `portals.yml` girdisi gerekiyor, ve arayüzde birini silme seçeneği yok), ve liveness dize durumları (kontrol edilebilir bir sayfa yok; 40 canlı sonda 12 canlı, 28 belirsiz, **0 yanlış süre dolumu** verdi).
+- Yardım ×17 artık `AU-Main` ve `NZ-Main` için her iki ana bilgisayar biçimini de listeliyor. Başlık yapısı 32 H2 / 122 H3'te değişmedi.
+
 ## [1.237.0] — 2026-09-21
 
 **Üst proje eşdeğerliği — career-ops `main` @ `93c4302b` (VERSION 1.33.0, `career-ops-hq/main`'den çekilen 75 commit). Bu sefer yeni kaynak yok: dört yansıtılmış düzeltme, bunlardan ikisi burada ilanları sessizce kaybediyordu.**

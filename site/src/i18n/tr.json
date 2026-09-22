@@ -197,6 +197,7 @@
   "nav.methodology": "Metodoloji",
   "footer.parentMethodology": "career-ops metodolojisi",
   "footer.patterns": "📘 Agentic Coding Design Patterns",
+  "footer.patternsUrl": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
   "meta.methodologyTitle": "Metodoloji — career-ops iş ilanlarını nasıl puanlar · career-ops-ui",
   "meta.methodologyDesc": "career-ops-ui'nin arkasındaki puanlama metodolojisi: beş boyut ve bütünsel bir genel puan içeren 0.0–5.0 ölçeği, 4.0 başvuru eşiği ve aracın asla ihlal etmeyeceği kurallar.",
   "meta.licenseTitle": "Lisans — MIT · career-ops-ui",

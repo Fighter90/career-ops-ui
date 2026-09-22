@@ -66,6 +66,14 @@ const ALLOWED_JOBSTREET_HOSTS = new Set([
   'hk.jobsdb.com',
   'www.seek.com.au',
   'www.seek.co.nz',
+  // SEEK is migrating www.seek.com.au -> au.seek.com and www.seek.co.nz ->
+  // nz.seek.com: the detail pages already 301 to the new hosts (verified
+  // 2026-09-22), and both hosts serve the v5 search API at 200 today. Our
+  // transport refuses redirects (`redirect:'error'`, an SSRF defence), so the
+  // day the API path starts redirecting too, an entry on the old host fails —
+  // and without these two here nobody could migrate to the new one.
+  'au.seek.com',
+  'nz.seek.com',
 ]);
 
 // Job-detail path by market. Only the Indonesian sites carry the `/id/` locale

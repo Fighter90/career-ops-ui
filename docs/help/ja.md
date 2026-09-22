@@ -679,7 +679,7 @@ tracked_companies:
 
 `siteKey` は市場を選択します: `ID-Main`(id.jobstreet.com)、
 `SG-Main`、`MY-Main`、`HK-Main`(hk.jobsdb.com)、
-`AU-Main`(www.seek.com.au)、`NZ-Main`(www.seek.co.nz)。求人リンクは
+`AU-Main`(au.seek.com, www.seek.com.au)、`NZ-Main`(nz.seek.com, www.seek.co.nz)。求人リンクは
 市場ごとに構築されます — `/id/` ロケールプレフィックスを使うのは
 インドネシアのホストだけなので、他の市場向けに構築したリンクに
 これを付けると 404 になります(v1.237.0 で修正)。

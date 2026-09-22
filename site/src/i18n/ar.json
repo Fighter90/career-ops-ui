@@ -197,6 +197,7 @@
   "nav.methodology": "المنهجية",
   "footer.parentMethodology": "منهجية career-ops",
   "footer.patterns": "📘 Agentic Coding Design Patterns",
+  "footer.patternsUrl": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
   "meta.methodologyTitle": "المنهجية — كيف يقيّم career-ops الوظائف المُدرجة · career-ops-ui",
   "meta.methodologyDesc": "منهجية التقييم وراء career-ops-ui: معيار من خمسة أبعاد إضافةً إلى تقييم عام شامل من 0.0 إلى 5.0، وعتبة التقديم عند 4.0، والقواعد التي ترفض الأداة كسرها.",
   "meta.licenseTitle": "الرخصة — MIT · career-ops-ui",

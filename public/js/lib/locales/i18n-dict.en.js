@@ -274,6 +274,7 @@ window.__I18N_DICT_EN = {
   'top.langLabel': "Language",
   'footer.manifesto': "The CareerOps Manifesto",
   'footer.patterns': "📘 Agentic Coding Design Patterns",
+  'footer.patternsUrl': "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
   'common.loading': "Loading…",
   'common.error': "Error",
   'common.retry': "Retry",

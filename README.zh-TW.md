@@ -7,17 +7,17 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-3201%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3210%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![release](https://img.shields.io/badge/release-v1.237.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.237.0** — **與 career-ops `main` @ `93c4302b` 的父專案對齊：四項鏡射修復，其中兩項曾悄悄讓本專案遺失職缺。** **Jobstreet / SEEK** 把每一個明細網址都組成 `/id/job/<id>`——但 `/id/` 是**印尼語系前綴**，其餘每一個 SEEK 主機在存取它時都回傳 **404**，於是我們回傳的每一則澳洲、紐西蘭、新加坡、馬來西亞與香港職缺都指向一個死頁面；路徑現在改依主機決定。**Oracle Cloud** 原本會在短頁面結束走訪，但 ORC 會在名單中途回傳短頁面——American Express 回報 **454** 筆職缺、分頁為 **200 / 199 / 54**，於是最後 **54 筆職缺，佔看板 12%**，從未被抓取。**Liveness** 未能辨識「This role is closed」（某看板上 **111 筆中有 111 筆**不確定的職缺屬此情況），現已防護 `closed-loop` 複合詞；`job expired` 移至一個無法勝過可見「Apply」按鈕的軟性分級——一次誤判的到期會寫入掃描歷史，並讓一則真實的職缺從*往後每一次*掃描中消失。另外新增選擇性加入的 **Personio** `personio: <slug>` 租戶釘選，供 iframe 嵌入的看板使用，以及 Jobstreet 的 `appendWorkType`。來源數維持在 **94** 個不變（89 EN + 5 RU）。**3201 項 · 瀏覽器 116 項。**
+> **🆕 最新版本 — v1.237.1** — **針對外部 QA 複查的修補。** Jobstreet 的修復已從外部獲得證實：在 AU/NZ/HK/MY 主機上 `/id/job/<id>` 會回傳一個乾淨的 404，而 `/job/<id>` 能到達一個真實的受保護路由——遺失的連結確實存在。v1.237.0 新增內容中的兩項缺陷：**書籍連結**——文案在地化了，目標網址卻沒有，於是俄語文案指向了英文版——`data-i18n-href` 套用器現在會把 `ru` 導向俄語版的書；以及 **SEEK 正在遷移主機**（`www.seek.com.au` → `au.seek.com`），因此在 API 路徑開始對我們採用 `redirect:'error'` 的傳輸層發出重新導向之前，`au.seek.com` 與 `nz.seek.com` 已被加入允許清單。來源數量維持 **94** 個不變。**3210 項測試 · 瀏覽器 116 項。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

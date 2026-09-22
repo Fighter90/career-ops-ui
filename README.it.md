@@ -7,17 +7,17 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3201%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3210%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![release](https://img.shields.io/badge/release-v1.237.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.237.0** — **Parità con il padre career-ops `main` @ `93c4302b`: quattro correzioni replicate, due delle quali qui perdevano silenziosamente le offerte.** **Jobstreet / SEEK** costruiva ogni URL di dettaglio come `/id/job/<id>` — ma `/id/` è il _prefisso di locale indonesiano_, e ogni altro host SEEK risponde **404** su di esso, quindi ogni offerta australiana, neozelandese, singaporiana, malese e di Hong Kong che restituivamo puntava a una pagina morta; il percorso ora è determinato dall'host. **Oracle Cloud** terminava la scansione su una pagina corta, ma ORC serve pagine corte _a metà elenco_ — American Express riporta **454** offerte e ne serve 200 / 199 / 54, quindi le ultime **54 offerte, il 12% della bacheca**, non venivano mai recuperate. **Liveness** non riconosceva `"This role is closed"` (111 su 111 offerte incerte su una bacheca) e ora si protegge dal composto `closed-loop`; `job expired` è stato spostato in un livello debole che non può più prevalere su un pulsante Candidati visibile — una scadenza falsa viene scritta nella cronologia delle scansioni e fa cadere un'offerta reale da _ogni_ scansione successiva. Inoltre un pin di tenant opzionale **Personio** `personio: <slug>` per le bacheche incorporate come iframe, e il Jobstreet `appendWorkType`. Conteggi invariati a **94** sorgenti (89 EN + 5 RU). **3201 test · 116 browser.**
+> **🆕 Ultima release — v1.237.1** — **Patch da una verifica QA esterna.** La correzione di Jobstreet è stata confermata dall'esterno: `/id/job/<id>` restituisce un 404 pulito sugli host AU/NZ/HK/MY e `/job/<id>` raggiunge una rotta reale protetta — i link persi erano reali. Due difetti in ciò che v1.237.0 aveva aggiunto: il **link al libro** localizzava l'etichetta ma non la destinazione, quindi l'etichetta russa portava all'edizione inglese — un applicatore `data-i18n-href` ora invia `ru` al libro russo; e **SEEK sta migrando gli host** (`www.seek.com.au` → `au.seek.com`), quindi `au.seek.com` e `nz.seek.com` sono in allowlist prima che il percorso dell'API inizi a reindirizzare nel nostro trasporto `redirect:'error'`. Conteggi invariati a **94** sorgenti. **3210 test · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
