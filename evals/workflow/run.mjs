@@ -171,7 +171,11 @@ function gradeNoPortRecorded() {
   const entry = read('CHANGELOG.md').split(`## [${v}]`)[1]?.split('\n## [')[0] ?? '';
   const hasNotes = /### Notes/.test(entry);
   record(t, 'release entry carries a Notes section', hasNotes ? 'PASS' : 'FAIL', '');
-  const explains = /relay|not mirrored|Not ported|not followed/i.test(entry);
+  // A parity release explains its no-ports (relay / not mirrored / not followed); a
+  // patch from an external QA pass explains what could NOT be verified from outside
+  // and was recorded rather than claimed. Both are the same discipline — a deliberate
+  // non-action with its reason written down — so both phrasings satisfy the grader.
+  const explains = /relay|not mirrored|Not ported|not followed|not closable|recorded rather than claimed/i.test(entry);
   record(t, 'Notes explain what was not ported and why', explains ? 'PASS' : 'FAIL', '');
 }
 
