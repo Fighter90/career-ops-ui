@@ -54,6 +54,25 @@ grep -c vpFixtureEnv test-all.mjs               # 9 — fixture isolation
 - The fork's source count and provider set will keep drifting from upstream. That is
   intended.
 
+## Erosion log
+
+A divergence can be lost **without any single merge looking wrong**, by being carried in
+files that upstream keeps restructuring. Record it here when it happens, so a later
+session does not "restore" something that was deliberately let go — or assume something
+is still defended when it is not.
+
+- **2026-09-22 — the Hermes README badge is gone; the Hermes CLI entry stands.**
+  `feat(cli): complete Hermes across the agent-runtime roster (#5)` added both a code
+  entry in `web/src/lib/clis.ts` and a badge in the parent's 17 localized READMEs.
+  Upstream has since rewritten those READMEs twice (README v2, Sponsors section). By the
+  2026-09-22 merge the badge survived in only **4 of 17** — and only because those four
+  happened to conflict instead of auto-merging; the other 13 had already taken upstream's
+  structure in earlier merges. Keeping it in four would have left the fork inconsistent
+  rather than defended, so those four took upstream's structure too.
+  **The functional half — the `hermes` entry in `web/src/lib/clis.ts` — is intact and
+  stays on the checklist.** The badge is not. If the badge is wanted back, it is a
+  deliberate re-add across all 17, not a merge resolution.
+
 ## Revisit when
 
 A divergence is accepted upstream — then it stops being a divergence and drops off
