@@ -34,10 +34,14 @@ function applyI18n() {
   // link: the ru dictionary promised «Паттерны агентного кодинга» while every
   // locale's href still pointed at the English edition. Only absolute https://
   // values are accepted, so a dictionary entry can never turn a footer anchor
-  // into a javascript: or same-origin href.
+  // into a javascript: or same-origin href. The ONLY source is the dictionary:
+  // there is deliberately no fallback to the element's current href, because a
+  // getAttribute('href') -> setAttribute('href') flow is DOM text re-entering the
+  // DOM (CodeQL js/xss-through-dom), and a missing key should simply leave the
+  // anchor as authored in index.html.
   document.querySelectorAll('[data-i18n-href]').forEach((el) => {
     const key = el.getAttribute('data-i18n-href');
-    const url = I18n.t(key, el.getAttribute('href') || '');
+    const url = I18n.t(key, '');
     if (/^https:\/\//.test(url)) el.setAttribute('href', url);
   });
 }
