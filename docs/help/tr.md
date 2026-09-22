@@ -789,8 +789,8 @@ tracked_companies:
 ```
 
 `siteKey` pazarı seçer: `ID-Main` (id.jobstreet.com), `SG-Main`, `MY-Main`,
-`HK-Main` (hk.jobsdb.com), `AU-Main` (www.seek.com.au) ve `NZ-Main`
-(www.seek.co.nz). İş bağlantısı pazara göre oluşturulur — yalnızca Endonezya
+`HK-Main` (hk.jobsdb.com), `AU-Main` (au.seek.com, www.seek.com.au) ve `NZ-Main`
+(nz.seek.com, www.seek.co.nz). İş bağlantısı pazara göre oluşturulur — yalnızca Endonezya
 sunucuları `/id/` yerel ayar önekini kullanır, bu yüzden başka bir pazar için
 bu önekle oluşturulan bir bağlantı 404 döner (v1.237.0'da düzeltildi).
 

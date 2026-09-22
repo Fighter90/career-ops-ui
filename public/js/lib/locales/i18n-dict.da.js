@@ -273,6 +273,7 @@ window.__I18N_DICT_DA = {
   'top.langLabel': "Sprog",
   'footer.manifesto': "CareerOps-manifestet",
   'footer.patterns': "📘 Agentic Coding Design Patterns",
+  'footer.patternsUrl': "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
   'common.loading': "Indlæser…",
   'common.error': "Fejl",
   'common.retry': "Prøv igen",

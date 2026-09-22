@@ -879,8 +879,8 @@ tracked_companies:
 ```
 
 `siteKey` मार्केट चुनता है: `ID-Main` (id.jobstreet.com), `SG-Main`,
-`MY-Main`, `HK-Main` (hk.jobsdb.com), `AU-Main` (www.seek.com.au) और
-`NZ-Main` (www.seek.co.nz)। जॉब लिंक हर मार्केट के हिसाब से बनाया जाता है
+`MY-Main`, `HK-Main` (hk.jobsdb.com), `AU-Main` (au.seek.com, www.seek.com.au) और
+`NZ-Main` (nz.seek.com, www.seek.co.nz)। जॉब लिंक हर मार्केट के हिसाब से बनाया जाता है
 — केवल इंडोनेशियाई होस्ट `/id/` लोकेल प्रीफ़िक्स का इस्तेमाल करते हैं,
 इसलिए किसी और मार्केट के लिए इसी प्रीफ़िक्स से बना लिंक 404 देता है
 (v1.237.0 में ठीक किया गया)।

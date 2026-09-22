@@ -671,8 +671,8 @@ tracked_companies:
 ```
 
 `siteKey` выбирает рынок: `ID-Main` (id.jobstreet.com), `SG-Main`, `MY-Main`,
-`HK-Main` (hk.jobsdb.com), `AU-Main` (www.seek.com.au) и `NZ-Main`
-(www.seek.co.nz). Ссылка на вакансию строится по-своему для каждого рынка —
+`HK-Main` (hk.jobsdb.com), `AU-Main` (au.seek.com, www.seek.com.au) и `NZ-Main`
+(nz.seek.com, www.seek.co.nz). Ссылка на вакансию строится по-своему для каждого рынка —
 только индонезийские хосты используют локальный префикс `/id/`, поэтому
 ссылка, построенная с ним для любого другого рынка, возвращает 404
 (исправлено в v1.237.0).

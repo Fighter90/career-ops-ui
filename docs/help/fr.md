@@ -747,8 +747,8 @@ tracked_companies:
 ```
 
 `siteKey` sélectionne le marché : `ID-Main` (id.jobstreet.com), `SG-Main`,
-`MY-Main`, `HK-Main` (hk.jobsdb.com), `AU-Main` (www.seek.com.au) et
-`NZ-Main` (www.seek.co.nz). Le lien de l'offre est construit par marché —
+`MY-Main`, `HK-Main` (hk.jobsdb.com), `AU-Main` (au.seek.com, www.seek.com.au) et
+`NZ-Main` (nz.seek.com, www.seek.co.nz). Le lien de l'offre est construit par marché —
 seuls les hôtes indonésiens utilisent le préfixe de locale `/id/`, donc un
 lien construit avec ce préfixe pour n'importe quel autre marché renvoie 404
 (corrigé en v1.237.0).

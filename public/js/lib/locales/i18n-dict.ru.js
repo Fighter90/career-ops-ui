@@ -274,6 +274,7 @@ window.__I18N_DICT_RU = {
   'top.langLabel': "Язык",
   'footer.manifesto': "Манифест CareerOps",
   'footer.patterns': "📘 Паттерны агентного кодинга",
+  'footer.patternsUrl': "https://mokevnin.github.io/agentic-coding-design-patterns/ru/",
   'common.loading': "Загрузка…",
   'common.error': "Ошибка",
   'common.retry': "Повторить",

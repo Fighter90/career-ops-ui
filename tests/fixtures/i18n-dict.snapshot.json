@@ -5015,6 +5015,25 @@
     "tr": "📘 Agentic Coding Design Patterns",
     "hi": "📘 Agentic Coding Design Patterns"
   },
+  "footer.patternsUrl": {
+    "en": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "es": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "pt-BR": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "ko": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "ja": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "ru": "https://mokevnin.github.io/agentic-coding-design-patterns/ru/",
+    "zh-CN": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "zh-TW": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "fr": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "pl": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "uk": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "da": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "ar": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "de": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "it": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "tr": "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
+    "hi": "https://mokevnin.github.io/agentic-coding-design-patterns/en/"
+  },
   "common.loading": {
     "en": "Loading…",
     "es": "Cargando…",

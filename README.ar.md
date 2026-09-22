@@ -7,17 +7,17 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-3201%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-3210%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![release](https://img.shields.io/badge/release-v1.237.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.237.0** — **تكافؤ مع career-ops عند الفرع `main` عند `93c4302b`: أربعة إصلاحاتٍ مُنسوخة، اثنان منها كانا يُضيّعان الإعلانات هنا بصمتٍ.** وبنت **Jobstreet / SEEK** كلّ عنوان تفصيلٍ بصيغة `/id/job/<id>` — لكنّ `/id/` هي _بادئة اللغة الإندونيسيّة_، وكلّ مضيفٍ آخر من SEEK يُجيب بـ**404** عليها، فكان كلّ إعلانٍ أستراليٍّ ونيوزيلنديٍّ وسنغافوريٍّ وماليزيٍّ وهونغ كونغيٍّ نُعيده يشير إلى صفحةٍ ميتة؛ وصار المسار الآن مفتاحه المضيف. وأنهت **Oracle Cloud** جولتها عند صفحةٍ قصيرة، لكنّ ORC يُقدِّم صفحاتٍ قصيرةً _في منتصف القائمة_ — فـAmerican Express يُبلِّغ بـ**454** وظيفةً ويُقدِّم 200 / 199 / 54، فلم تُجلَب أبدًا **54 وظيفةً أخيرةً، أي 12% من اللوحة**. وفاتت **Liveness** عبارة `"This role is closed"` (111 من 111 إعلانًا غير مؤكَّدٍ على لوحةٍ واحدة) وهي تحرس الآن الصفة المركَّبة `closed-loop`؛ وانتقل `job expired` إلى طبقةٍ رخوةٍ لم يعد بإمكانها التغلُّب على زرّ تقديمٍ ظاهر — إذ يُكتَب انتهاءٌ زائفٌ في تاريخ المسح ويُسقط وظيفةً حقيقيّةً من _كلّ_ مسحٍ لاحق. مع تثبيت مستأجرٍ اختياريٍّ لـ**Personio** عبر `personio: <slug>` للوحات المُضمَّنة بـiframe، وخيار Jobstreet `appendWorkType`. وتبقى الأعداد كما هي عند **94** مصدرًا (89 EN + 5 RU). **3201 اختبارًا · 116 في المتصفّح.**
+> **🆕 أحدث إصدار — v1.237.1** — **تصحيحٌ بعد جولة فحص جودة خارجيّة.** تأكَّد إصلاح Jobstreet من الخارج: يُعيد `/id/job/<id>` رمز 404 نظيفًا على مضيفات AU/NZ/HK/MY، ويصل `/job/<id>` إلى مسارٍ حقيقيٍّ محميّ — وكانت الروابط المفقودة حقيقيّةً. وعلّتان فيما أضافه v1.237.0: كانت مِسمَّاة **رابط الكتاب** مُترجَمةً دون وِجهته، فقادت المِسمَّاة الروسيّة إلى الطبعة الإنجليزيّة — ويُوجِّه مُطبِّق `data-i18n-href` الآن `ru` إلى الكتاب الروسيّ؛ و**تُهاجر SEEK مضيفاتها** (`www.seek.com.au` → `au.seek.com`)، فأُدرِج `au.seek.com` و`nz.seek.com` في قائمة السماح قبل أن يبدأ مسار الواجهة بإعادة التوجيه إلى نقلنا `redirect:'error'`. وتبقى الأعداد كما هي عند **94** مصدرًا. **3210 اختبارًا · 116 في المتصفّح.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

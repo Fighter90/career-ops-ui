@@ -29,6 +29,17 @@ function applyI18n() {
     const key = el.getAttribute('data-i18n-title');
     el.title = I18n.t(key, el.title || '');
   });
+  // BOOK-1 (v1.237.1) — `data-i18n-href` localizes an outbound link's TARGET,
+  // not just its label. Introduced for the Agentic Coding Design Patterns footer
+  // link: the ru dictionary promised «Паттерны агентного кодинга» while every
+  // locale's href still pointed at the English edition. Only absolute https://
+  // values are accepted, so a dictionary entry can never turn a footer anchor
+  // into a javascript: or same-origin href.
+  document.querySelectorAll('[data-i18n-href]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-href');
+    const url = I18n.t(key, el.getAttribute('href') || '');
+    if (/^https:\/\//.test(url)) el.setAttribute('href', url);
+  });
 }
 
 // I18N-EXPAND (v1.70.0) — a flag-prefixed <select> replaces the old wrapping

@@ -273,6 +273,7 @@ window.__I18N_DICT_UK = {
   'top.langLabel': "Мова",
   'footer.manifesto': "Маніфест CareerOps",
   'footer.patterns': "📘 Agentic Coding Design Patterns",
+  'footer.patternsUrl': "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
   'common.loading': "Завантаження…",
   'common.error': "Помилка",
   'common.retry': "Повторити",

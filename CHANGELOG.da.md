@@ -8,6 +8,22 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.237.1] — 2026-09-22
+
+**Patch fra et eksternt QA-gennemløb af v1.237.0.** Jobstreet-rettelsen blev bekræftet udefra for første gang: på AU-, NZ-, HK- og MY-værterne returnerer den gamle `/id/job/<id>`-form en ren 404, og den nye `/job/<id>` når en ægte Cloudflare-beskyttet rute; på `id.jobstreet.com` gælder det modsatte. De mistede links var ægte. Der blev fundet to defekter, begge i det, v1.237.0 selv tilføjede.
+
+### Rettet
+
+- **Bogens link-label var lokaliseret, men dets mål var det ikke.** Alle 17 SPA-lokaliseringer og alle 17 cvstart.org-lokaliseringer pegede footer-linket til *Agentic Coding Design Patterns* på den engelske udgave, mens den ene oversatte label — russisk, «Паттерны агентного кодинга» — lovede en russisk bog. En ny `data-i18n-href`-applier (samme form som `data-i18n-title`, begrænset til absolutte `https://`-værdier) og en `footer.patternsUrl`-nøgle sender `ru` til den russiske udgave og enhver anden lokalisering til den engelske. Regressionstesten påstår invarianten i begge retninger: en oversat titel indebærer en lokaliseret URL.
+- **SEEK migrerer værter, og transporten nægter redirects.** `www.seek.com.au` → `au.seek.com` og `www.seek.co.nz` → `nz.seek.com`: detaljesiderne giver allerede 301, og begge værtspar leverer v5-søge-API'et med 200 i dag. Fordi `http-json.mjs` sætter `redirect:'error'` (et SSRF-forsvar, det er værd at beholde), ville den dag, API-stien begynder at redirecte en AU/NZ-post på den gamle vært, fejle — og med kun `www.`-værterne på allowlisten kunne ingen migrere. `au.seek.com` og `nz.seek.com` er nu i `ALLOWED_JOBSTREET_HOSTS`; de gamle værter forbliver, så eksisterende konfiguration og allerede byggede links fortsat virker. Look-alikes (`au.seek.com.evil.com`, `au-seek.com`) afvises stadig.
+- **Wiki:** rækken *Agentic Practices* i Home-dokumentationskortet var den eneste af tolv, der ikke escapede `|` inde i `[[…|…]]`, så GitHub afskar cellen — dødt link, skjult beskrivelse. Ét tegn.
+
+### Noter
+
+- Antal uændret på **94** kilder (89 EN + 5 RU), 89 adaptere. Test **3201 → 3210** (+5 footer-link-lokalisering, +4 SEEK-værter).
+- Ikke lukkelig udefra, noteret snarere end hævdet: Oracle Cloud (Akamai blokerede begge REST-prober), Personio-fastgørelsen og `appendWorkType` (kræver en `portals.yml`-post, og UI'et har ingen sletning for én af dem), og liveness-strengtilfældene (ingen kontrollerbar side; 40 live-prober gav 12 live, 28 uafklarede, **0** falsk udløbne).
+- Hjælp ×17 lister nu begge værtsformer for `AU-Main` og `NZ-Main`. Overskriftsstruktur uændret på 32 H2 / 122 H3.
+
 ## [1.237.0] — 2026-09-21
 
 **Forælder-paritet — career-ops `main` @ `93c4302b` (VERSION 1.33.0, 75 commits hentet fra `career-ops-hq/main`). Ingen nye kilder denne gang: fire spejlede rettelser, og to af dem mistede opslag her, i stilhed.**

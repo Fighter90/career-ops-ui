@@ -2,6 +2,22 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.237.1] — 2026-09-22
+
+**Patch da una verifica QA esterna su v1.237.0.** La correzione di Jobstreet è stata confermata dall'esterno per la prima volta: sugli host AU, NZ, HK e MY la vecchia forma `/id/job/<id>` restituisce un 404 pulito e la nuova `/job/<id>` raggiunge una rotta reale protetta da Cloudflare; su `id.jobstreet.com` vale il contrario. I link persi erano reali. Sono stati trovati due difetti, entrambi in ciò che v1.237.0 stesso aveva aggiunto.
+
+### Corretto
+
+- **L'etichetta del link al libro era localizzata, ma la sua destinazione no.** Tutti i 17 locale della SPA e tutti i 17 locale di cvstart.org puntavano il link nel footer di *Agentic Coding Design Patterns* all'edizione inglese, mentre l'unica etichetta tradotta — russa, «Паттерны агентного кодинга» — prometteva un libro russo. Un nuovo applicatore `data-i18n-href` (stessa forma di `data-i18n-title`, limitato a valori assoluti `https://`) e una chiave `footer.patternsUrl` inviano `ru` all'edizione russa e ogni altro locale a quella inglese. Il test di regressione verifica l'invariante in entrambe le direzioni: un titolo tradotto implica un URL localizzato.
+- **SEEK sta migrando gli host, e il trasporto rifiuta i redirect.** `www.seek.com.au` → `au.seek.com` e `www.seek.co.nz` → `nz.seek.com`: le pagine di dettaglio fanno già 301, ed entrambe le coppie di host servono oggi l'API di ricerca v5 con 200. Poiché `http-json.mjs` imposta `redirect:'error'` (una difesa SSRF che vale la pena mantenere), il giorno in cui il percorso dell'API iniziasse a reindirizzare, una voce AU/NZ sull'host vecchio fallirebbe — e con solo gli host `www.` in allowlist nessuno potrebbe migrare. `au.seek.com` e `nz.seek.com` sono ora in `ALLOWED_JOBSTREET_HOSTS`; gli host vecchi restano, quindi la configurazione esistente e i link già costruiti continuano a funzionare. I sosia (`au.seek.com.evil.com`, `au-seek.com`) sono ancora rifiutati.
+- **Wiki:** la riga *Agentic Practices* nella mappa della documentazione della Home era l'unica su dodici a non fare l'escape di `|` dentro `[[…|…]]`, quindi GitHub ha tagliato la cella — link morto, descrizione nascosta. Un solo carattere.
+
+### Note
+
+- Conteggi invariati a **94** sorgenti (89 EN + 5 RU), 89 adattatori. Test **3201 → 3210** (+5 locale del link nel footer, +4 host SEEK).
+- Non chiudibile dall'esterno, registrato invece che dichiarato: Oracle Cloud (Akamai ha bloccato entrambe le sonde REST), il pin Personio e `appendWorkType` (serve una voce in `portals.yml`, e l'interfaccia non ha un modo per eliminarne una), e i casi di stringa di liveness (nessuna pagina controllabile; 40 sonde live hanno dato 12 live, 28 inconcludenti, **0 scadenze false**).
+- Help ×17 ora elenca entrambe le forme di host per `AU-Main` e `NZ-Main`. Struttura dei titoli invariata a 32 H2 / 122 H3.
+
 ## [1.237.0] — 2026-09-21
 
 **Parità con il padre — career-ops `main` @ `93c4302b` (`VERSION` 1.33.0, 75 commit tratti da `career-ops-hq/main`). Nessuna sorgente nuova questa volta: quattro correzioni replicate, e due di esse qui perdevano silenziosamente le offerte.**

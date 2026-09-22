@@ -662,8 +662,8 @@ tracked_companies:
 ```
 
 `siteKey`는 시장을 선택합니다: `ID-Main`(id.jobstreet.com), `SG-Main`,
-`MY-Main`, `HK-Main`(hk.jobsdb.com), `AU-Main`(www.seek.com.au),
-`NZ-Main`(www.seek.co.nz). 채용 링크는 시장별로 생성됩니다 — `/id/`
+`MY-Main`, `HK-Main`(hk.jobsdb.com), `AU-Main`(au.seek.com, www.seek.com.au),
+`NZ-Main`(nz.seek.com, www.seek.co.nz). 채용 링크는 시장별로 생성됩니다 — `/id/`
 locale 접두사는 인도네시아 호스트에서만 사용되므로, 다른 시장용
 링크에 이를 붙이면 404가 반환됩니다 (v1.237.0에서 수정됨).
 

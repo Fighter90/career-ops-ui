@@ -274,6 +274,7 @@ window.__I18N_DICT_ZH_CN = {
   'top.langLabel': "语言",
   'footer.manifesto': "CareerOps 宣言",
   'footer.patterns': "📘 Agentic Coding Design Patterns",
+  'footer.patternsUrl': "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
   'common.loading': "加载中…",
   'common.error': "错误",
   'common.retry': "重试",

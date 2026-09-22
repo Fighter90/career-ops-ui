@@ -7,17 +7,17 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-3201%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3210%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.237.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.0)
+[![release](https://img.shields.io/badge/release-v1.237.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.237.0** — **career-ops `main` @ `93c4302b` との親パリティ: ミラー修正 4 件、そのうち 2 件はここで求人情報を静かに失わせていました。** **Jobstreet / SEEK** はすべての詳細 URL を `/id/job/<id>` として組み立てていましたが——`/id/` は_インドネシアロケールのプレフィックス_であり、他のすべての SEEK ホストはこれに **404** を返すため、返していたオーストラリア、NZ、シンガポール、マレーシア、香港の各求人票はすべて無効なページを指していました。パスはいまホストに応じて決まります。**Oracle Cloud** は短いページで巡回を終了していましたが、ORC は_一覧の途中_で短いページを返すことがあります——American Express では **454** 件の求人が報告され、200 / 199 / 54 というページ構成で配信されていたため、最後の **54 件の求人、ボードの 12%** が一度も取得されていませんでした。**Liveness** は「This role is closed」を認識できておらず(あるボードでは不確実な求人票 **111 件中 111 件**が該当)、いまは `closed-loop` の複合語を保護します。`job expired` はソフトティアへ移動し、可視の Apply ボタンにはもう勝てなくなりました——誤った expired 判定はスキャン履歴に書き込まれ、以降の_すべての_スキャンから実在する求人を除外してしまいます。さらにオプトインの **Personio** `personio: <slug>` によるテナント固定(iframe 埋め込みボード向け)と、Jobstreet の `appendWorkType` を追加。件数は **94** ソース(89 EN + 5 RU)のまま変わりません。**3201 件 · ブラウザー 116 件。**
+> **🆕 最新リリース — v1.237.1** — **外部 QA パスから生まれたパッチ。** Jobstreet の修正が外部から確認されました:AU/NZ/HK/MY の各ホストでは `/id/job/<id>` がきれいな 404 を返し、`/job/<id>` は実際に保護されたルートに到達します——失われていたリンクは実在するものでした。前バージョンが追加した部分に 2 件の欠陥:**書籍リンク**はラベルはローカライズされていましたがリンク先はそうではなく、ロシア語ラベルが英語版へ導いていました——いまは `data-i18n-href` アプライヤーが `ru` をロシア語版へ送ります。そして **SEEK がホストを移行中**(`www.seek.com.au` → `au.seek.com`)のため、API パスが `redirect:'error'` のトランスポートへリダイレクトを始める前に `au.seek.com` と `nz.seek.com` を許可リストに追加しました。件数は **94** ソースのまま変わりません。**3210 件 · ブラウザー 116 件。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

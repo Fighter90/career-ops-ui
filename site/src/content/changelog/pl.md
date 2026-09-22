@@ -9,6 +9,22 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.237.1] — 2026-09-22
+
+**Poprawka po zewnętrznym przebiegu QA dla v1.237.0.** Poprawkę Jobstreet potwierdzono z zewnątrz po raz pierwszy: na hostach AU, NZ, HK i MY stara forma `/id/job/<id>` zwraca czyste 404, a nowa `/job/<id>` trafia na prawdziwą trasę chronioną przez Cloudflare; na `id.jobstreet.com` zachodzi sytuacja odwrotna. Utracone linki były prawdziwe. Znaleziono dwie wady, obie w tym, co samo v1.237.0 dodało.
+
+### Naprawiono
+
+- **Etykieta linku do książki była zlokalizowana, ale jej cel — nie.** Wszystkie 17 lokalizacji SPA i wszystkie 17 lokalizacji cvstart.org kierowało link stopki *Agentic Coding Design Patterns* do wydania angielskiego, podczas gdy jedyna przetłumaczona etykieta — rosyjska, «Паттерны агентного кодинга» — obiecywała rosyjską książkę. Nowy applier `data-i18n-href` (tego samego kształtu co `data-i18n-title`, ograniczony do bezwzględnych wartości `https://`) i klucz `footer.patternsUrl` kierują `ru` do rosyjskiego wydania, a każdą inną lokalizację do angielskiego. Test regresji sprawdza tę niezmienniczość w obu kierunkach: przetłumaczony tytuł implikuje zlokalizowany URL.
+- **SEEK migruje hosty, a transport odmawia przekierowań.** `www.seek.com.au` → `au.seek.com` i `www.seek.co.nz` → `nz.seek.com`: strony szczegółów już zwracają 301, a obie pary hostów obsługują dziś API wyszukiwania v5 z kodem 200. Ponieważ `http-json.mjs` ustawia `redirect:'error'` (obrona przed SSRF warta zachowania), dzień, w którym ścieżka API zacznie przekierowywać wpis AU/NZ na starym hoście, zakończyłby się błędem — a skoro na białej liście są tylko hosty `www.`, nikt nie mógłby migrować. `au.seek.com` i `nz.seek.com` są teraz w `ALLOWED_JOBSTREET_HOSTS`; stare hosty pozostają, więc istniejąca konfiguracja i już zbudowane linki nadal działają. Podszywające się hosty (`au.seek.com.evil.com`, `au-seek.com`) nadal są odrzucane.
+- **Wiki:** wiersz *Agentic Practices* na mapie dokumentacji Home był jedynym z dwunastu, który nie escape'ował `|` wewnątrz `[[…|…]]`, więc GitHub obciął komórkę — martwy link, ukryty opis. Jeden znak.
+
+### Uwagi
+
+- Liczby bez zmian: **94** źródła (89 EN + 5 RU), 89 adapterów. Testy **3201 → 3210** (+5 lokalizacja linku stopki, +4 hosty SEEK).
+- Nie do zamknięcia z zewnątrz, odnotowane, a nie zadeklarowane: Oracle Cloud (Akamai zablokował oba testy REST), przypięcie Personio i `appendWorkType` (wymagają wpisu w `portals.yml`, a UI nie ma usuwania dla jednego z nich) oraz przypadki ciągów liveness (brak strony kontrolowalnej; 40 sond na żywo dało 12 żywych, 28 niejednoznacznych, **0** fałszywie wygasłych).
+- Pomoc ×17 wymienia teraz obie formy hostów dla `AU-Main` i `NZ-Main`. Struktura nagłówków bez zmian: 32 H2 / 122 H3.
+
 ## [1.237.0] — 2026-09-21
 
 **Parytet z rodzicem — career-ops `main` @ `93c4302b` (VERSION 1.33.0, 75 commitów pobranych z `career-ops-hq/main`). Brak nowych źródeł tym razem: cztery odzwierciedlone poprawki, a dwie z nich po cichu gubiły tutaj oferty.**

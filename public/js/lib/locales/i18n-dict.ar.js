@@ -273,6 +273,7 @@ window.__I18N_DICT_AR = {
   'top.langLabel': "اللغة",
   'footer.manifesto': "بيان CareerOps",
   'footer.patterns': "📘 Agentic Coding Design Patterns",
+  'footer.patternsUrl': "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
   'common.loading': "جارٍ التحميل…",
   'common.error': "خطأ",
   'common.retry': "إعادة المحاولة",

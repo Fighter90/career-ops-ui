@@ -8,6 +8,22 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.237.1] — 2026-09-22
+
+**Patch de uma verificação de QA externa sobre a v1.237.0.** A correção do Jobstreet foi confirmada de fora pela primeira vez: nos hosts AU, NZ, HK e MY, a forma antiga `/id/job/<id>` retorna um 404 limpo e a nova `/job/<id>` alcança uma rota real protegida por Cloudflare; em `id.jobstreet.com` vale o inverso. Os links perdidos eram reais. Dois defeitos foram encontrados, ambos no que a própria v1.237.0 havia adicionado.
+
+### Corrigido
+
+- **O rótulo do link do livro estava localizado, mas seu destino não.** Todos os 17 locales da SPA e todos os 17 locales do cvstart.org apontavam o link de rodapé de *Agentic Coding Design Patterns* para a edição em inglês, enquanto o único rótulo traduzido — russo, «Паттерны агентного кодинга» — prometia um livro em russo. Um novo aplicador `data-i18n-href` (no mesmo formato de `data-i18n-title`, restrito a valores absolutos `https://`) e uma chave `footer.patternsUrl` enviam `ru` para a edição russa e todo o resto para a inglesa. O teste de regressão afirma o invariante nas duas direções: um título traduzido implica uma URL localizada.
+- **O SEEK está migrando de hosts, e o transporte recusa redirecionamentos.** `www.seek.com.au` → `au.seek.com` e `www.seek.co.nz` → `nz.seek.com`: as páginas de detalhe já retornam 301, e ambos os pares de hosts servem hoje a API de busca v5 com 200. Como `http-json.mjs` define `redirect:'error'` (uma defesa contra SSRF que vale a pena manter), no dia em que o caminho da API começar a redirecionar, uma entrada AU/NZ no host antigo falharia — e com apenas os hosts `www.` na allowlist, ninguém conseguiria migrar. `au.seek.com` e `nz.seek.com` agora estão em `ALLOWED_JOBSTREET_HOSTS`; os hosts antigos permanecem, então a configuração existente e os links já construídos continuam funcionando. Imitações (`au.seek.com.evil.com`, `au-seek.com`) continuam sendo recusadas.
+- **Wiki:** a linha de *Agentic Practices* no mapa de documentação da Home era a única entre doze que não fazia o escape de `|` dentro de `[[…|…]]`, então o GitHub cortava a célula — link morto, descrição oculta. Um único caractere.
+
+### Notas
+
+- Contagens inalteradas em **94** fontes (89 EN + 5 RU), 89 adaptadores. Testes **3201 → 3210** (+5 locale do link de rodapé, +4 hosts do SEEK).
+- Não fechável de fora, registrado em vez de reivindicado: Oracle Cloud (a Akamai bloqueou as duas sondas REST), a fixação do Personio e o `appendWorkType` (precisam de uma entrada em `portals.yml`, e a UI não tem como excluir uma), e os casos de string de liveness (sem página controlável; 40 sondas ao vivo deram 12 ao vivo, 28 inconclusivas, **0 falsas expiradas**).
+- O Help ×17 agora lista ambas as formas de host para `AU-Main` e `NZ-Main`. Estrutura de títulos inalterada em 32 H2 / 122 H3.
+
 ## [1.237.0] — 2026-09-21
 
 **Paridade com o pai — career-ops `main` @ `93c4302b` (VERSION 1.33.0, 75 commits trazidos de `career-ops-hq/main`). Nenhuma fonte nova desta vez: quatro correções espelhadas, duas das quais estavam perdendo vagas aqui, silenciosamente.**

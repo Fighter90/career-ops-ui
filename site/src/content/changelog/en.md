@@ -8,6 +8,22 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.237.1] — 2026-09-22
+
+**Patch from an external QA pass on v1.237.0.** The Jobstreet fix was confirmed from outside for the first time: on the AU, NZ, HK and MY hosts the old `/id/job/<id>` form returns a clean 404 and the new `/job/<id>` reaches a real Cloudflare-guarded route; on `id.jobstreet.com` the reverse holds. The lost links were real. Two defects were found, both in what v1.237.0 itself added.
+
+### Fixed
+
+- **The book link's label was localized but its target was not.** All 17 SPA locales and all 17 cvstart.org locales pointed the *Agentic Coding Design Patterns* footer link at the English edition, while the one translated label — Russian, «Паттерны агентного кодинга» — promised a Russian book. A new `data-i18n-href` applier (same shape as `data-i18n-title`, restricted to absolute `https://` values) and a `footer.patternsUrl` key send `ru` to the Russian edition and every other locale to the English one. The regression test asserts the invariant in both directions: a translated title implies a localized URL.
+- **SEEK is migrating hosts, and the transport refuses redirects.** `www.seek.com.au` → `au.seek.com` and `www.seek.co.nz` → `nz.seek.com`: the detail pages already 301, and both host pairs serve the v5 search API at 200 today. Because `http-json.mjs` sets `redirect:'error'` (an SSRF defence worth keeping), the day the API path starts redirecting an AU/NZ entry on the old host would fail — and with only the `www.` hosts allowlisted nobody could migrate. `au.seek.com` and `nz.seek.com` are now in `ALLOWED_JOBSTREET_HOSTS`; the old hosts stay, so existing config and already-built links keep working. Look-alikes (`au.seek.com.evil.com`, `au-seek.com`) are still refused.
+- **Wiki:** the *Agentic Practices* row in the Home documentation map was the only one of twelve not escaping `|` inside `[[…|…]]`, so GitHub cut the cell — dead link, description hidden. One character.
+
+### Notes
+
+- Counts unchanged at **94** sources (89 EN + 5 RU), 89 adapters. Tests **3201 → 3210** (+5 footer-link locale, +4 SEEK hosts).
+- Not closable from outside, recorded rather than claimed: Oracle Cloud (Akamai blocked both REST probes), the Personio pin and `appendWorkType` (need a `portals.yml` entry, and the UI has no delete for one), and the liveness string cases (no controllable page; 40 live probes gave 12 live, 28 inconclusive, **0 false expired**).
+- Help ×17 now list both host forms for `AU-Main` and `NZ-Main`. Heading structure unchanged at 32 H2 / 122 H3.
+
 ## [1.237.0] — 2026-09-21
 
 **Parent parity — career-ops `main` @ `93c4302b` (VERSION 1.33.0, 75 commits pulled from `career-ops-hq/main`). No new sources this time: four mirrored fixes, and two of them were losing postings here silently.**

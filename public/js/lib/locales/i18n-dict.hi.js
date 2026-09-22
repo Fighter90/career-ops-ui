@@ -275,6 +275,7 @@ window.__I18N_DICT_HI = {
   'top.langLabel': "भाषा",
   'footer.manifesto': "CareerOps घोषणापत्र",
   'footer.patterns': "📘 Agentic Coding Design Patterns",
+  'footer.patternsUrl': "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
   'common.loading': "लोड हो रहा है…",
   'common.error': "त्रुटि",
   'common.retry': "पुनः प्रयास करें",
