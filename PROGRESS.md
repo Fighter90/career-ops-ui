@@ -48,10 +48,11 @@ before any merge.**
 - **`raw.githubusercontent.com` caches wiki pages.** A pushed wiki change can read as
   missing for minutes. Verify with a fresh `git clone` of the wiki, not the raw URL.
 - **`tests/playwright-config-save-scope.mjs` → `CONFIG-2: clearing a filled field still unsets it` is flaky locally.**
-  Observed 2026-09-22: three consecutive runs gave 116 / 116 / 115 with no code change between them;
-  the one failure was this test. CI has been green on it. Timing-related, not a product defect —
-  a single scattered failure in this suite is this flake until proven otherwise, whereas a
-  whole-suite 116/116 failure is a missing Playwright browser. Worth a deterministic wait.
+  Observed 2026-09-22: three consecutive runs passed **116/116, 116/116, then 115/116** with no code
+  change between them; the single failure was this test. CI has been green on it. Timing-related, not a
+  product defect. To tell it from a regression: re-run that file alone —
+  `node --test tests/playwright-config-save-scope.mjs` — and if it passes, it is this flake. Contrast the
+  other shape: **0/116 passing** at once is a missing Playwright browser, not code. Worth a deterministic wait.
 - **SEEK is migrating hosts** (`www.seek.com.au` → `au.seek.com`, `www.seek.co.nz` →
   `nz.seek.com`). As of 2026-09-22 the detail pages already 301 and both host pairs serve
   the v5 API at 200. Both are allowlisted, so users can move whenever they like. The day
