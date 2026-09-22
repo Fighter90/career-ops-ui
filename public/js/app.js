@@ -29,21 +29,24 @@ function applyI18n() {
     const key = el.getAttribute('data-i18n-title');
     el.title = I18n.t(key, el.title || '');
   });
-  // BOOK-1 (v1.237.1) — `data-i18n-href` localizes an outbound link's TARGET,
-  // not just its label. Introduced for the Agentic Coding Design Patterns footer
-  // link: the ru dictionary promised «Паттерны агентного кодинга» while every
-  // locale's href still pointed at the English edition. Only absolute https://
-  // values are accepted, so a dictionary entry can never turn a footer anchor
-  // into a javascript: or same-origin href. The ONLY source is the dictionary:
-  // there is deliberately no fallback to the element's current href, because a
-  // getAttribute('href') -> setAttribute('href') flow is DOM text re-entering the
-  // DOM (CodeQL js/xss-through-dom), and a missing key should simply leave the
-  // anchor as authored in index.html.
-  document.querySelectorAll('[data-i18n-href]').forEach((el) => {
-    const key = el.getAttribute('data-i18n-href');
+  // BOOK-1 (v1.237.1) — localize an outbound link's TARGET, not just its label.
+  // Introduced for the Agentic Coding Design Patterns footer link: the ru
+  // dictionary promised «Паттерны агентного кодинга» while every locale's href
+  // still pointed at the English edition.
+  //
+  // The key list lives HERE, not in markup. Reading it from a data-attribute made
+  // DOM text flow into setAttribute('href') (CodeQL js/xss-through-dom: on a
+  // missing key I18n.t returns the KEY itself, i.e. the raw attribute value). With
+  // the keys as code literals the only value that can reach an href is a
+  // dictionary entry, and that is additionally gated to absolute https://.
+  // To localize another link: add its key here and put data-i18n-href="<key>"
+  // on the anchor.
+  const I18N_HREF_KEYS = ['footer.patternsUrl'];
+  for (const key of I18N_HREF_KEYS) {
     const url = I18n.t(key, '');
-    if (/^https:\/\//.test(url)) el.setAttribute('href', url);
-  });
+    if (!/^https:\/\//.test(url)) continue;
+    document.querySelectorAll(`[data-i18n-href="${key}"]`).forEach((el) => el.setAttribute('href', url));
+  }
 }
 
 // I18N-EXPAND (v1.70.0) — a flag-prefixed <select> replaces the old wrapping

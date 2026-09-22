@@ -58,7 +58,10 @@ test('index.html wires data-i18n-href on the book anchor and app.js applies it',
   assert.ok(anchor, 'book anchor not found');
   assert.match(anchor[0], /data-i18n-href="footer\.patternsUrl"/);
   const app = readFileSync(resolve(ROOT, 'public', 'js', 'app.js'), 'utf8');
-  assert.match(app, /querySelectorAll\('\[data-i18n-href\]'\)/, 'app.js does not apply data-i18n-href');
+  assert.match(app, /I18N_HREF_KEYS\s*=\s*\[[^\]]*'footer\.patternsUrl'/, 'footer.patternsUrl is not in the href key allowlist');
+  assert.match(app, /querySelectorAll\(`\[data-i18n-href="\$\{key\}"\]`\)/, 'app.js does not apply data-i18n-href per key');
+  // the key must be a code literal, never read back from the DOM (CodeQL js/xss-through-dom)
+  assert.doesNotMatch(app, /getAttribute\('data-i18n-href'\)/, 'data-i18n-href must not be read from the DOM');
   // the applier must refuse anything that is not an absolute https URL
   assert.match(app, /\^https:\\\/\\\//, 'data-i18n-href applier is not restricted to https://');
 });
