@@ -8,22 +8,26 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-22 · v1.237.0 shipped and deployed; external QA pass applied (BOOK-1, WIKI-1, SEEK hosts)_
+_Last updated: 2026-09-22 · v1.237.1 shipped and deployed; parent pulled to `de2224a9` (28 upstream commits, docs-only — no web-ui port)_
 
 ---
 
 ## Current state
 
-**Shipped and live: v1.237.0** (parent parity @ `93c4302b`). No new sources; four
-mirrored fixes. Counts frozen at **94 sources (89 EN + 5 RU) / 89 adapters**; tests
-**3164 → 3201**.
+**Shipped and live: v1.237.1** — a patch from an external QA pass on v1.237.0. Counts
+**94** sources (89 EN + 5 RU) / **89** adapters; tests **3210**. Verified on every
+surface: server + local `1.237.1` / parent `1.33.0`, web-ui 380/380 and parent 924/924
+sha256-identical, resumecraft.ru, cvstart.org (+`/ru/`, book link `ru`→`/ru/`),
+cvstart.ru, sergey-cv.com, chat-proxy, npm, release, wiki. 0 CodeQL / 0 Dependabot,
+0 open PRs.
 
-Verified live on every surface: server + local `1.237.0` / parent `1.33.0`, web-ui
-380/380 and parent 924/924 files sha256-identical, resumecraft.ru, cvstart.org (+`/ru/`),
-cvstart.ru, sergey-cv.com, chat-proxy origin allow/deny, npm, GitHub release, wiki.
-0 CodeQL / 0 Dependabot alerts, 0 open PRs. Six behavioural markers green on the server.
-
-**Parent:** fork `origin/main` at `0c2c1ff5`, behind `upstream/main` by 0.
+**Parent:** fork `origin/main` at `de2224a9`, behind `upstream/main` by 0. The
+2026-09-22 pull brought **28 upstream commits that were almost entirely README work**
+(README v2, a Sponsors section, the manifesto wall) — **no new provider and no change to
+any file web-ui mirrors**, so there was nothing to port and no web-ui release was cut.
+The pull did attack **all four** fork divergences at once; three were defended
+untouched, and the Hermes README badge was let go deliberately (see the erosion log in
+ADR-0002).
 
 ## Next step
 
@@ -53,6 +57,11 @@ before any merge.**
   product defect. To tell it from a regression: re-run that file alone —
   `node --test tests/playwright-config-save-scope.mjs` — and if it passes, it is this flake. Contrast the
   other shape: **0/116 passing** at once is a missing Playwright browser, not code. Worth a deterministic wait.
+- **A divergence can erode across merges without any single merge looking wrong.** The Hermes
+  README badge was down to 4 of 17 parent READMEs by 2026-09-22 — upstream had restructured
+  those files twice, and each time the non-conflicting ones silently took upstream's shape.
+  Check a divergence's FULL footprint, not just the files that happen to conflict; see the
+  erosion log in [ADR-0002](docs/adr/0002-defend-fork-divergences.md).
 - **SEEK is migrating hosts** (`www.seek.com.au` → `au.seek.com`, `www.seek.co.nz` →
   `nz.seek.com`). As of 2026-09-22 the detail pages already 301 and both host pairs serve
   the v5 API at 200. Both are allowlisted, so users can move whenever they like. The day
