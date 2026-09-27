@@ -34,7 +34,7 @@ on:
         default: /opt/career-ops/src
       parent_ref:
         description: 'Parent career-ops ref to deploy (tag, branch or sha)'
-        default: origin/main
+        default: f4f55def
       ui_ref:
         description: 'web-ui ref to deploy'
         default: v1.238.0
@@ -242,6 +242,7 @@ jobs:
               if [ "$(lock_sum "$d")" = "${prev_lock[$d]}" ] && [ -d "$d/node_modules" ]; then
                 echo "$d: lockfile unchanged, keeping node_modules"; continue
               fi
+              [ "$d" = "$APP_DIR" ] && [ ! -d "$d/node_modules" ] && { echo "$d: had no node_modules, not installing"; continue; }
               as_owner "$d" bash -c 'cd "$1" && npm ci --omit=dev --no-audit --no-fund' _ "$d" || return 1
             done
           }

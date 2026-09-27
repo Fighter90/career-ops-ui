@@ -56,7 +56,7 @@ fork's `origin/main` is `f4f55def` (993085ce + a test-harness-only CodeQL fix), 
 
 Remaining:
 - the user adds `DEPLOY_KNOWN_HOSTS` (the ed25519 line a recon run prints), then run `mode=deploy`
-  with parent `origin/main` + web-ui `v1.238.0`, and tick the resumecraft.ru line in
+  with parent `f4f55def` + web-ui `v1.238.0`, and tick the resumecraft.ru line in
   `qa/QA-REGRESSION-PROMPT-v1.238.0.md` §5;
 - Actions logs of this public repo are public: keep recon output to versions and states (the first run
   printed the profile name and which provider keys are set; its logs were deleted);
