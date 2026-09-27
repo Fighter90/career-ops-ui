@@ -42,3 +42,19 @@ test('an injected test transport is left alone (no DNS, stub hosts keep working)
   assert.equal(await res.text(), 'ok');
   assert.equal(called, 1);
 });
+
+test('a timeout that fires during the fetch itself (after the guard) rejects cleanly, no unhandled rejection', async () => {
+  const unhandled = [];
+  const onUnhandled = (e) => unhandled.push(e);
+  process.on('unhandledRejection', onUnhandled);
+  try {
+    const slow = (_u, opts) => new Promise((_, reject) => {
+      opts.signal.addEventListener('abort', () => reject(opts.signal.reason), { once: true });
+    });
+    await assert.rejects(makeTimeoutFetch(slow, 20)('https://stub.invalid/'), (e) => e.name === 'TimeoutError');
+    await new Promise((r) => setTimeout(r, 30));
+    assert.deepEqual(unhandled, []);
+  } finally {
+    process.off('unhandledRejection', onUnhandled);
+  }
+});

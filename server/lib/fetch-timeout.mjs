@@ -71,13 +71,20 @@ import { withPinnedEncoding, guardResolvedHost } from './http-json.mjs';
 
 export function makeTimeoutFetch(baseFetch = fetch, ms = DEFAULT_SCAN_TIMEOUT_MS) {
   return async function timeoutFetch(url, opts = {}) {
-    // DNS-rebinding guard. http-json's helpers only run it when handed the
-    // real global fetch — and the scanners never hand them that, they hand
-    // them THIS wrapper — so without the check here the guard never ran on a
-    // real scan. It still no-ops for an injected test transport.
-    await guardResolvedHost(baseFetch, String(url));
     const { signal, clear } = withTimeout(opts.signal, ms);
     try {
+      // DNS-rebinding guard. http-json's helpers only run it when handed the
+      // real global fetch — and the scanners never hand them that, they hand
+      // them THIS wrapper — so without the check here the guard never ran on a
+      // real scan. It no-ops for an injected test transport, and is raced
+      // against the same timeout so a stalled resolver cannot hang the scan.
+      // A Request object stringifies to a non-URL and fails open by design.
+      const aborted = new Promise((_, reject) => {
+        if (signal.aborted) reject(signal.reason);
+        else signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+      });
+      aborted.catch(() => {}); // a later timeout during the fetch itself must not surface as unhandled
+      await Promise.race([guardResolvedHost(baseFetch, String(url)), aborted]);
       // The pin belongs HERE, not only in the http-json helpers: 25 of the 92
       // sources call the injected `fetchImpl` directly (greenhouse, lever,
       // ashby, workday, hh, rss, …) and never pass through them. This wrapper
