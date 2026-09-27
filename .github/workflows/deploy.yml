@@ -261,6 +261,10 @@ jobs:
             if [ -n "$(g "$d" status --porcelain --untracked-files=no)" ]; then
               g "$d" stash push --quiet -m "pre-deploy $stamp" || rollback
               stash=$(g "$d" rev-parse 'stash@{0}')
+              if [ -n "$(g "$d" status --porcelain --untracked-files=no)" ]; then
+                echo "::error::$d still has tracked changes after stash; not checking out over them"
+                prev_stash[$d]=$stash; prev_head[$d]=$head; rollback
+              fi
             fi
             # Registered only once saved: rollback never force-checks-out a tree
             # whose changes are not in a stash.
