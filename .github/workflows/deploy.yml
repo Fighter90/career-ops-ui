@@ -1,0 +1,239 @@
+name: Deploy (server)
+
+# Manual deploy of the parent career-ops checkout + this web-ui to the
+# production box (Timeweb server 8801467, resumecraft.ru).
+#
+#   mode=recon   read-only: prints the layout of the app dir, its git state,
+#                the process manager / service, Hermes, and /api/health.
+#                Changes nothing on the server. Run this first.
+#   mode=deploy  checks out `parent_ref` in the app dir and `ui_ref` in its
+#                web-ui/ subdir, installs production deps, restarts the
+#                service and verifies /api/health. Aborts before touching
+#                anything if either checkout has tracked local changes, and
+#                rolls both checkouts back if the health check fails.
+#
+# Secrets (Settings → Secrets and variables → Actions):
+#   DEPLOY_SSH_KEY      private half of the passphrase-less `careerops-ci` key
+#   DEPLOY_HOST         server address
+#   DEPLOY_USER         ssh user
+#   DEPLOY_KNOWN_HOSTS  optional; pinned `known_hosts` line(s). Without it the
+#                       first connection trusts the host key it sees and the
+#                       job prints its fingerprint so it can be pinned.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'recon (read-only) or deploy'
+        type: choice
+        options: [recon, deploy]
+        default: recon
+      app_dir:
+        description: 'Parent career-ops checkout on the server'
+        default: /opt/career-ops
+      parent_ref:
+        description: 'Parent career-ops ref to deploy (tag, branch or sha)'
+        default: '993085ce'
+      ui_ref:
+        description: 'web-ui ref to deploy'
+        default: v1.238.0
+      service:
+        description: 'systemd unit or pm2 name; empty = auto-detect'
+        default: ''
+      public_url:
+        description: 'Public origin checked over HTTPS after the run'
+        default: https://resumecraft.ru
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-server
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: ${{ inputs.mode }} ${{ inputs.app_dir }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Configure ssh
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          APP_DIR: ${{ inputs.app_dir }}
+          PARENT_REF: ${{ inputs.parent_ref }}
+          UI_REF: ${{ inputs.ui_ref }}
+          SERVICE: ${{ inputs.service }}
+        run: |
+          set -euo pipefail
+          # These are spliced into a remote shell command line below.
+          for v in APP_DIR PARENT_REF UI_REF SERVICE; do
+            [[ "${!v}" =~ ^[A-Za-z0-9._/@-]*$ ]] || { echo "::error::input $v has characters outside [A-Za-z0-9._/@-]"; exit 1; }
+          done
+          for v in DEPLOY_SSH_KEY DEPLOY_HOST DEPLOY_USER; do
+            [ -n "${!v}" ] || { echo "::error::secret $v is not set"; exit 1; }
+          done
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          if [ -n "$DEPLOY_KNOWN_HOSTS" ]; then
+            printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+            hostcheck=yes
+          else
+            hostcheck=accept-new
+          fi
+          cat > ~/.ssh/config <<EOF
+          Host prod
+            HostName $DEPLOY_HOST
+            User $DEPLOY_USER
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            StrictHostKeyChecking $hostcheck
+            BatchMode yes
+            ConnectTimeout 20
+            ServerAliveInterval 15
+          EOF
+          chmod 600 ~/.ssh/config
+          ssh prod true
+          echo "Host key now trusted:"
+          ssh-keygen -lf ~/.ssh/known_hosts
+
+      - name: Recon (read-only)
+        env:
+          APP_DIR: ${{ inputs.app_dir }}
+        run: |
+          # shellcheck disable=SC2029  # APP_DIR is meant to expand locally
+          ssh prod "APP_DIR='$APP_DIR' bash -s" <<'REMOTE'
+          set -uo pipefail
+          sec() { printf '\n===== %s =====\n' "$1"; }
+          sec host;     uname -a; . /etc/os-release && echo "$PRETTY_NAME"; uptime; df -h / | tail -1
+          sec node;     command -v node && node -v; command -v npm && npm -v; command -v pm2 && pm2 -v
+          sec app_dir;  ls -la "$APP_DIR" 2>&1 | head -40
+          for d in "$APP_DIR" "$APP_DIR/web-ui"; do
+            sec "git $d"
+            if [ -d "$d/.git" ] || [ -f "$d/.git" ]; then
+              git -C "$d" remote -v
+              git -C "$d" log -1 --format='%H %d %s (%ci)'
+              git -C "$d" describe --tags --always 2>/dev/null
+              echo "--- tracked changes:"; git -C "$d" status --porcelain --untracked-files=no
+            else
+              echo "not a git checkout"
+            fi
+          done
+          sec versions
+          cat "$APP_DIR/VERSION" 2>/dev/null
+          node -p "require('$APP_DIR/web-ui/package.json').version" 2>/dev/null
+          sec systemd
+          systemctl list-units --type=service --all --no-pager 2>/dev/null | grep -iE 'career|hermes|resume|web-ui' || echo "no matching units"
+          for u in $(systemctl list-unit-files --type=service --no-legend 2>/dev/null | awk '{print $1}' | grep -iE 'career|hermes|resume'); do
+            sec "unit $u"; systemctl cat "$u" --no-pager 2>&1 | grep -vE '^Environment='
+          done
+          sec pm2; command -v pm2 >/dev/null && pm2 jlist 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{for(const p of JSON.parse(s))console.log(p.name,p.pm2_env.status,p.pm2_env.pm_cwd)}catch{console.log("pm2: no list")}})' || echo "pm2 not installed"
+          sec listeners; ss -ltnp 2>/dev/null | grep -E ':(4317|80|443|8642)\b' || true
+          sec proxy;    for f in /etc/nginx/sites-enabled/* /etc/caddy/Caddyfile; do [ -e "$f" ] && { echo "--- $f"; grep -nE 'server_name|proxy_pass|reverse_proxy|resumecraft' "$f"; }; done
+          sec hermes;   command -v hermes && hermes --version 2>/dev/null; ls -d ~/.hermes 2>/dev/null
+          sec health;   curl -fsS --max-time 10 http://127.0.0.1:4317/api/health | head -c 2000; echo
+          REMOTE
+
+      - name: Deploy
+        if: inputs.mode == 'deploy'
+        env:
+          APP_DIR: ${{ inputs.app_dir }}
+          PARENT_REF: ${{ inputs.parent_ref }}
+          UI_REF: ${{ inputs.ui_ref }}
+          SERVICE: ${{ inputs.service }}
+        run: |
+          # shellcheck disable=SC2029  # the inputs are meant to expand locally
+          ssh prod "APP_DIR='$APP_DIR' PARENT_REF='$PARENT_REF' UI_REF='$UI_REF' SERVICE='$SERVICE' bash -s" <<'REMOTE'
+          set -euo pipefail
+          UI_DIR="$APP_DIR/web-ui"
+          for d in "$APP_DIR" "$UI_DIR"; do
+            git -C "$d" rev-parse --git-dir >/dev/null
+            if [ -n "$(git -C "$d" status --porcelain --untracked-files=no)" ]; then
+              echo "::error::$d has tracked local changes; refusing to deploy"
+              git -C "$d" status --short --untracked-files=no
+              exit 1
+            fi
+          done
+
+          # Resolve how the app runs before changing anything.
+          mgr=""
+          if [ -n "$SERVICE" ]; then
+            if systemctl cat "$SERVICE" >/dev/null 2>&1; then mgr=systemd
+            elif command -v pm2 >/dev/null && pm2 describe "$SERVICE" >/dev/null 2>&1; then mgr=pm2; fi
+          else
+            SERVICE=$(systemctl list-unit-files --type=service --no-legend 2>/dev/null | awk '{print $1}' | grep -iE 'career' | head -1 || true)
+            if [ -n "$SERVICE" ]; then mgr=systemd
+            elif command -v pm2 >/dev/null; then
+              SERVICE=$(pm2 jlist | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const p=JSON.parse(s).find(p=>/career|web-ui/i.test(p.name+" "+p.pm2_env.pm_cwd));console.log(p?p.name:"")})')
+              [ -n "$SERVICE" ] && mgr=pm2
+            fi
+          fi
+          [ -n "$mgr" ] || { echo "::error::could not find the service; pass the 'service' input (see recon output)"; exit 1; }
+          echo "service: $SERVICE ($mgr)"
+
+          prev_parent=$(git -C "$APP_DIR" rev-parse HEAD)
+          prev_ui=$(git -C "$UI_DIR" rev-parse HEAD)
+          echo "rollback point: parent $prev_parent, web-ui $prev_ui"
+
+          restart() {
+            if [ "$mgr" = systemd ]; then systemctl restart "$SERVICE"; else pm2 restart "$SERVICE" --update-env; fi
+          }
+          install_deps() {
+            for d in "$APP_DIR" "$UI_DIR"; do
+              if [ -f "$d/package-lock.json" ]; then (cd "$d" && npm ci --omit=dev --no-audit --no-fund) || return 1; fi
+            done
+          }
+          healthy() {
+            for i in $(seq 1 30); do
+              if body=$(curl -fsS --max-time 5 http://127.0.0.1:4317/api/health 2>/dev/null); then
+                echo "$body" | head -c 2000; echo
+                echo "$body" | node -e '
+                  let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
+                    const h=JSON.parse(s), want=process.argv[1].replace(/^v/,"");
+                    if (/^\d+\.\d+\.\d+/.test(want) && h.version!==want) { console.error("version "+h.version+" != "+want); process.exit(1); }
+                    console.log("version="+h.version+" parentVersion="+h.parentVersion);
+                  })' "$UI_REF" && return 0
+                return 1
+              fi
+              sleep 2
+            done
+            return 1
+          }
+          rollback() {
+            echo "::error::health check failed; rolling back"
+            git -C "$APP_DIR" checkout -q "$prev_parent"
+            git -C "$UI_DIR" checkout -q "$prev_ui"
+            install_deps; restart
+            healthy || echo "::error::service still unhealthy after rollback"
+            exit 1
+          }
+
+          git -C "$APP_DIR" fetch --tags --quiet origin
+          git -C "$UI_DIR" fetch --tags --quiet origin
+          git -C "$APP_DIR" checkout -q --detach "$PARENT_REF"
+          git -C "$UI_DIR" checkout -q --detach "$UI_REF"
+          echo "parent now $(git -C "$APP_DIR" log -1 --format='%h %s') VERSION=$(cat "$APP_DIR/VERSION" 2>/dev/null)"
+          echo "web-ui now $(git -C "$UI_DIR" describe --tags --always)"
+          install_deps || rollback
+          restart
+          healthy || rollback
+          echo "deploy OK"
+          REMOTE
+
+      - name: Public check (HTTPS)
+        env:
+          PUBLIC_URL: ${{ inputs.public_url }}
+        run: |
+          set -euo pipefail
+          curl -sS -o /dev/null -w 'GET /            %{http_code}\n' "$PUBLIC_URL/"
+          curl -fsS --max-time 15 "$PUBLIC_URL/api/health" | head -c 2000; echo
+          echo "--- security headers on /"
+          curl -sSI --max-time 15 "$PUBLIC_URL/" | grep -iE '^(content-security-policy|strict-transport-security|x-content-type-options|x-frame-options):' || echo "(none)"
+
+      - name: Clean up key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
