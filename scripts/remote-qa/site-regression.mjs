@@ -9,7 +9,7 @@
  * requests and images, hreflang alternates, horizontal overflow at 1366 and
  * 390 px, and a HEAD/GET of every distinct same-origin link. Read-only.
  */
-import { readFileSync, appendFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
@@ -92,6 +92,8 @@ for (const [href, from] of links) {
 const nf = await fetch(SITE + '/definitely-not-a-page/').then((r) => r.status).catch(() => 0);
 if (nf !== 404) add('/definitely-not-a-page/', '404-status', `returned ${nf}`);
 
+// Markdown table cell: escape backslashes first, then pipes and newlines.
+const md = (v) => String(v).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ');
 const byKind = {};
 for (const f of findings) byKind[f.kind] = (byKind[f.kind] || 0) + 1;
 const lines = [
@@ -101,9 +103,8 @@ const lines = [
 ];
 if (findings.length) {
   lines.push('| where | kind | detail |', '|---|---|---|');
-  for (const f of findings.slice(0, 300)) lines.push(`| ${f.where} | ${f.kind} | ${f.msg.replace(/\|/g, '\\|')} |`);
+  for (const f of findings.slice(0, 300)) lines.push(`| ${md(f.where)} | ${md(f.kind)} | ${md(f.msg)} |`);
 }
 const out = lines.join('\n');
 console.log(out);
-if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, out + '\n');
 process.exit(findings.length ? 1 : 0);

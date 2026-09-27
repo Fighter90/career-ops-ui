@@ -9,7 +9,7 @@
  * DNS/connection failures are errors, 401/403/429 are reported as "unverified"
  * (bot walls on LinkedIn, npm, etc.), not as broken.
  */
-import { readFileSync, readdirSync, existsSync, appendFileSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -82,6 +82,8 @@ if (!SKIP_EXTERNAL) {
   await Promise.all(Array.from({ length: 8 }, worker));
 }
 
+// Markdown table cell: escape backslashes first, then pipes and newlines.
+const md = (v) => String(v).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ');
 const byKind = {};
 for (const f of findings) byKind[f.kind] = (byKind[f.kind] || 0) + 1;
 const lines = [
@@ -91,9 +93,8 @@ const lines = [
 ];
 if (findings.length) {
   lines.push('| file | kind | detail |', '|---|---|---|');
-  for (const f of findings.slice(0, 300)) lines.push(`| ${f.file} | ${f.kind} | ${f.msg.replace(/\|/g, '\\|')} |`);
+  for (const f of findings.slice(0, 300)) lines.push(`| ${md(f.file)} | ${md(f.kind)} | ${md(f.msg)} |`);
 }
 const out = lines.join('\n');
 console.log(out);
-if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, out + '\n');
 process.exit(findings.length ? 1 : 0);

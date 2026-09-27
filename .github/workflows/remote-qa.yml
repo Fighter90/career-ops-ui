@@ -51,7 +51,8 @@ jobs:
           BASIC_PASS: ${{ secrets.AUTH_PASSWORD }}
         run: |
           [ -n "$BASIC_USER" ] || { echo "::error::secret AUTH_LOGIN is not set"; exit 1; }
-          node scripts/remote-qa/prod-regression.mjs
+          set -o pipefail
+          node scripts/remote-qa/prod-regression.mjs | tee -a "$GITHUB_STEP_SUMMARY"
 
   site:
     name: site — all pages × all locales
@@ -65,7 +66,9 @@ jobs:
       - name: Regression
         env:
           SITE_URL: ${{ inputs.site_url || 'https://cvstart.org' }}
-        run: node scripts/remote-qa/site-regression.mjs
+        run: |
+          set -o pipefail
+          node scripts/remote-qa/site-regression.mjs | tee -a "$GITHUB_STEP_SUMMARY"
 
   links:
     name: links — README ×17 + wiki
@@ -79,4 +82,6 @@ jobs:
       - name: Link check
         env:
           WIKI_DIR: ${{ runner.temp }}/wiki
-        run: node scripts/remote-qa/link-check.mjs
+        run: |
+          set -o pipefail
+          node scripts/remote-qa/link-check.mjs | tee -a "$GITHUB_STEP_SUMMARY"

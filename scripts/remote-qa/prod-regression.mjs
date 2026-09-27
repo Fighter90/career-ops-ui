@@ -19,7 +19,7 @@
  *
  * Runs from CI (.github/workflows/remote-qa.yml). Not part of `npm test`.
  */
-import { readFileSync, appendFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
@@ -179,6 +179,8 @@ for (const locale of LOCALES) {
 await browser.close();
 
 // ── report ──
+// Markdown table cell: escape backslashes first, then pipes and newlines.
+const md = (v) => String(v).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ');
 const byKind = {};
 for (const f of findings) byKind[f.kind] = (byKind[f.kind] || 0) + 1;
 const lines = [
@@ -191,10 +193,9 @@ const lines = [
 ];
 if (findings.length) {
   lines.push('| locale | route | kind | detail |', '|---|---|---|---|');
-  for (const f of findings.slice(0, 300)) lines.push(`| ${f.locale} | ${f.route} | ${f.kind} | ${f.msg.replace(/\|/g, '\\|')} |`);
+  for (const f of findings.slice(0, 300)) lines.push(`| ${md(f.locale)} | ${md(f.route)} | ${md(f.kind)} | ${md(f.msg)} |`);
   if (findings.length > 300) lines.push(`| … | … | … | ${findings.length - 300} more |`);
 }
 const out = lines.join('\n');
 console.log(out);
-if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, out + '\n');
 process.exit(findings.length ? 1 : 0);
