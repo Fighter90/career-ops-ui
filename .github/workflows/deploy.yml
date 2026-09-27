@@ -40,6 +40,9 @@ on:
       service:
         description: 'systemd unit or pm2 name; empty = auto-detect'
         default: ''
+      port:
+        description: 'Port the app listens on at 127.0.0.1 (see recon)'
+        default: '4317'
       public_url:
         description: 'Public origin checked over HTTPS after the run'
         default: https://resumecraft.ru
@@ -56,6 +59,7 @@ jobs:
     name: ${{ inputs.mode }} ${{ inputs.app_dir }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    environment: production
     steps:
       - name: Configure ssh
         env:
@@ -67,9 +71,12 @@ jobs:
           PARENT_REF: ${{ inputs.parent_ref }}
           UI_REF: ${{ inputs.ui_ref }}
           SERVICE: ${{ inputs.service }}
+          PORT: ${{ inputs.port }}
+          MODE: ${{ inputs.mode }}
         run: |
           set -euo pipefail
           # These are spliced into a remote shell command line below.
+          [[ "$PORT" =~ ^[0-9]{1,5}$ ]] || { echo "::error::port must be numeric"; exit 1; }
           for v in APP_DIR PARENT_REF UI_REF SERVICE; do
             [[ "${!v}" =~ ^[A-Za-z0-9._/@-]*$ ]] || { echo "::error::input $v has characters outside [A-Za-z0-9._/@-]"; exit 1; }
           done
@@ -82,6 +89,8 @@ jobs:
           if [ -n "$DEPLOY_KNOWN_HOSTS" ]; then
             printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
             hostcheck=yes
+          elif [ "$MODE" = deploy ]; then
+            echo "::error::mode=deploy needs the DEPLOY_KNOWN_HOSTS secret (a recon run prints the key to pin)"; exit 1
           else
             hostcheck=accept-new
           fi
@@ -98,15 +107,17 @@ jobs:
           EOF
           chmod 600 ~/.ssh/config
           ssh prod true
-          echo "Host key now trusted:"
+          echo "Host key now trusted (pin it as DEPLOY_KNOWN_HOSTS):"
+          cat ~/.ssh/known_hosts
           ssh-keygen -lf ~/.ssh/known_hosts
 
       - name: Recon (read-only)
         env:
           APP_DIR: ${{ inputs.app_dir }}
+          PORT: ${{ inputs.port }}
         run: |
-          # shellcheck disable=SC2029  # APP_DIR is meant to expand locally
-          ssh prod "APP_DIR='$APP_DIR' bash -s" <<'REMOTE'
+          # shellcheck disable=SC2029  # APP_DIR/PORT are meant to expand locally
+          ssh prod "APP_DIR='$APP_DIR' PORT='$PORT' bash -s" <<'REMOTE'
           set -uo pipefail
           sec() { printf '\n===== %s =====\n' "$1"; }
           sec host;     uname -a; . /etc/os-release && echo "$PRETTY_NAME"; uptime; df -h / | tail -1
@@ -132,10 +143,10 @@ jobs:
             sec "unit $u"; systemctl cat "$u" --no-pager 2>&1 | grep -vE '^Environment='
           done
           sec pm2; command -v pm2 >/dev/null && pm2 jlist 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{for(const p of JSON.parse(s))console.log(p.name,p.pm2_env.status,p.pm2_env.pm_cwd)}catch{console.log("pm2: no list")}})' || echo "pm2 not installed"
-          sec listeners; ss -ltnp 2>/dev/null | grep -E ':(4317|80|443|8642)\b' || true
+          sec listeners; ss -ltnp 2>/dev/null
           sec proxy;    for f in /etc/nginx/sites-enabled/* /etc/caddy/Caddyfile; do [ -e "$f" ] && { echo "--- $f"; grep -nE 'server_name|proxy_pass|reverse_proxy|resumecraft' "$f"; }; done
           sec hermes;   command -v hermes && hermes --version 2>/dev/null; ls -d ~/.hermes 2>/dev/null
-          sec health;   curl -fsS --max-time 10 http://127.0.0.1:4317/api/health | head -c 2000; echo
+          sec health;   curl -fsS --max-time 10 "http://127.0.0.1:$PORT/api/health" | head -c 2000; echo
           REMOTE
 
       - name: Deploy
@@ -145,9 +156,10 @@ jobs:
           PARENT_REF: ${{ inputs.parent_ref }}
           UI_REF: ${{ inputs.ui_ref }}
           SERVICE: ${{ inputs.service }}
+          PORT: ${{ inputs.port }}
         run: |
           # shellcheck disable=SC2029  # the inputs are meant to expand locally
-          ssh prod "APP_DIR='$APP_DIR' PARENT_REF='$PARENT_REF' UI_REF='$UI_REF' SERVICE='$SERVICE' bash -s" <<'REMOTE'
+          ssh prod "APP_DIR='$APP_DIR' PARENT_REF='$PARENT_REF' UI_REF='$UI_REF' SERVICE='$SERVICE' PORT='$PORT' bash -s" <<'REMOTE'
           set -euo pipefail
           UI_DIR="$APP_DIR/web-ui"
           for d in "$APP_DIR" "$UI_DIR"; do
@@ -165,7 +177,7 @@ jobs:
             if systemctl cat "$SERVICE" >/dev/null 2>&1; then mgr=systemd
             elif command -v pm2 >/dev/null && pm2 describe "$SERVICE" >/dev/null 2>&1; then mgr=pm2; fi
           else
-            SERVICE=$(systemctl list-unit-files --type=service --no-legend 2>/dev/null | awk '{print $1}' | grep -iE 'career' | head -1 || true)
+            SERVICE=$(systemctl list-unit-files --type=service --no-legend 2>/dev/null | awk '{print $1}' | grep -iE 'career|resume|web-ui' | head -1 || true)
             if [ -n "$SERVICE" ]; then mgr=systemd
             elif command -v pm2 >/dev/null; then
               SERVICE=$(pm2 jlist | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const p=JSON.parse(s).find(p=>/career|web-ui/i.test(p.name+" "+p.pm2_env.pm_cwd));console.log(p?p.name:"")})')
@@ -175,8 +187,9 @@ jobs:
           [ -n "$mgr" ] || { echo "::error::could not find the service; pass the 'service' input (see recon output)"; exit 1; }
           echo "service: $SERVICE ($mgr)"
 
-          prev_parent=$(git -C "$APP_DIR" rev-parse HEAD)
-          prev_ui=$(git -C "$UI_DIR" rev-parse HEAD)
+          # Branch name when on one (so a rollback reattaches it), else the sha.
+          prev_parent=$(git -C "$APP_DIR" symbolic-ref -q --short HEAD || git -C "$APP_DIR" rev-parse HEAD)
+          prev_ui=$(git -C "$UI_DIR" symbolic-ref -q --short HEAD || git -C "$UI_DIR" rev-parse HEAD)
           echo "rollback point: parent $prev_parent, web-ui $prev_ui"
 
           restart() {
@@ -189,7 +202,7 @@ jobs:
           }
           healthy() {
             for i in $(seq 1 30); do
-              if body=$(curl -fsS --max-time 5 http://127.0.0.1:4317/api/health 2>/dev/null); then
+              if body=$(curl -fsS --max-time 5 "http://127.0.0.1:$PORT/api/health" 2>/dev/null); then
                 echo "$body" | head -c 2000; echo
                 echo "$body" | node -e '
                   let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
@@ -204,10 +217,13 @@ jobs:
             return 1
           }
           rollback() {
-            echo "::error::health check failed; rolling back"
+            # Best effort all the way through: one failing step must not skip the restart.
+            set +e
+            echo "::error::deploy failed; rolling back to parent $prev_parent, web-ui $prev_ui"
             git -C "$APP_DIR" checkout -q "$prev_parent"
             git -C "$UI_DIR" checkout -q "$prev_ui"
-            install_deps; restart
+            install_deps || echo "::error::npm ci failed during rollback"
+            restart || echo "::error::restart failed during rollback"
             healthy || echo "::error::service still unhealthy after rollback"
             exit 1
           }
@@ -219,7 +235,7 @@ jobs:
           echo "parent now $(git -C "$APP_DIR" log -1 --format='%h %s') VERSION=$(cat "$APP_DIR/VERSION" 2>/dev/null)"
           echo "web-ui now $(git -C "$UI_DIR" describe --tags --always)"
           install_deps || rollback
-          restart
+          restart || rollback
           healthy || rollback
           echo "deploy OK"
           REMOTE
