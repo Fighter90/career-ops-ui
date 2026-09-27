@@ -10,6 +10,24 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.238.2] — 2026-09-27
+
+**Corrección de los 502 que el servidor de producción aún mostraba durante el escaneo horario.**
+
+### Corregido
+
+- **Páginas y recursos devolvían 502 durante un escaneo.** Node cierra una conexión keep-alive inactiva a los 5 s; Caddy reutiliza conexiones inactivas hasta 2 minutos. Mientras un escaneo dentro del proceso mantenía ocupado el servidor, Node cerraba sockets por los que Caddy acababa de enviar una petición, y Caddy respondía 502 *connection reset by peer* (62 veces en un escaneo, con el servidor sano). Ahora el servidor mantiene las conexiones inactivas 125 s —más que el proxy—, así que el proxy siempre cierra primero.
+
+### Añadido
+
+- `deploy.yml` → `verify` muestra por qué el proxy respondió 502 (tipos de error, direcciones ocultas), los 502 por minuto desde el último reinicio y el resultado del escaneo horario.
+- `release.yml` puede crear una etiqueta que falta al lanzarse a mano, para publicar una versión donde no se pueden subir etiquetas.
+- Tests 3486 → 3488.
+
+### Notas
+
+- El escaneo sigue ejecutándose **dentro** del proceso del servidor y puede ocuparlo durante segundos; moverlo a un worker **no** forma parte de este parche.
+
 ## [1.238.1] — 2026-09-27
 
 **Parche de estabilidad tras la primera regresión en vivo del servidor de producción: un escaneo a la vez y arreglos del sitio.**

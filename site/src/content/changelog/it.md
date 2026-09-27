@@ -2,6 +2,24 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.238.2] — 2026-09-27
+
+**Correzione dei 502 che il server di produzione mostrava ancora durante la scansione oraria.**
+
+### Corretto
+
+- **Pagine e risorse restituivano 502 durante una scansione.** Node chiude una connessione keep-alive inattiva dopo 5 s; Caddy riusa le connessioni inattive fino a 2 minuti. Mentre una scansione nel processo teneva occupato il server, Node chiudeva socket su cui Caddy aveva appena inviato una richiesta, e Caddy rispondeva 502 *connection reset by peer* (62 volte in una scansione, con il server sano). Ora il server mantiene le connessioni inattive per 125 s — più del proxy — quindi chiude sempre prima il proxy.
+
+### Aggiunto
+
+- `deploy.yml` → `verify` mostra perché il proxy ha risposto 502 (tipi di errore, indirizzi mascherati), i 502 al minuto dall'ultimo riavvio e l'esito della scansione oraria.
+- `release.yml` può creare un tag mancante quando viene avviato a mano, così si può pubblicare una release dove i tag non possono essere inviati.
+- Test 3486 → 3488.
+
+### Note
+
+- La scansione gira ancora **dentro** il processo del server e può tenerlo occupato per secondi; spostarla in un worker **non** fa parte di questa patch.
+
 ## [1.238.1] — 2026-09-27
 
 **Patch di stabilità dopo la prima regressione dal vivo del server di produzione: una scansione alla volta e correzioni del sito.**

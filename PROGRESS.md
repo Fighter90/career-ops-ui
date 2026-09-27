@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-27 · v1.238.1 (single-flight scan + heap drop-in) — deploy to the prod server pending the PR_
+_Last updated: 2026-09-27 · v1.238.2 (proxy-safe keep-alive: no 502s while a scan runs) — v1.238.1 is deployed and released_
 
 ---
 
@@ -73,6 +73,10 @@ before any merge.**
 
 ## Known issues
 
+- **The scan runs inside the viewer process and blocks its event loop for seconds.** v1.238.1 made it
+  single-flight and raised the heap; v1.238.2 stopped the resulting keep-alive resets (502s). Pages
+  still answer slowly while a scan runs; the real fix is a worker thread or child process for the
+  scanner, with the SSE stream fed from it.
 - **The cloud sandbox's git proxy refuses tag pushes (and branch deletes).** Cut a release by
   dispatching `release.yml` on `main` with `tag=v<version>`: when the tag does not exist it is
   created at the dispatched commit, after the `package.json` version check. `deploy.yml` takes a

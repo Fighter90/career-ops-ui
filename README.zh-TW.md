@@ -7,7 +7,7 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3488%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,7 +17,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.238.1** — **穩定性修補:同一時間只執行一個掃描** — 兩個掃描同時執行(一次點擊加上每小時計時器)會耗盡伺服器記憶體並導致重啟;現在第二個掃描會收到清楚的「已在執行」提示。cvstart.org 在手機上不再橫向捲動,印地語頁面也回到了網站地圖。**3486 個測試 · 116 個瀏覽器測試。**
+> **🆕 最新版本 — v1.238.2** — **修正:掃描期間不再出現 502** — 在反向代理之後,伺服器 5 秒就關閉閒置連線,繁重掃描時代理會對部分頁面載入回傳 502;現在一律由代理先關閉連線。**3488 個測試 · 116 個瀏覽器測試。**
 >
 > **前一版本 — v1.237.1** — **針對外部 QA 複查的修補。** Jobstreet 的修復已從外部獲得證實：在 AU/NZ/HK/MY 主機上 `/id/job/<id>` 會回傳一個乾淨的 404，而 `/job/<id>` 能到達一個真實的受保護路由——遺失的連結確實存在。v1.237.0 新增內容中的兩項缺陷：**書籍連結**——文案在地化了，目標網址卻沒有，於是俄語文案指向了英文版——`data-i18n-href` 套用器現在會把 `ru` 導向俄語版的書；以及 **SEEK 正在遷移主機**（`www.seek.com.au` → `au.seek.com`），因此在 API 路徑開始對我們採用 `redirect:'error'` 的傳輸層發出重新導向之前，`au.seek.com` 與 `nz.seek.com` 已被加入允許清單。來源數量維持 **94** 個不變。**3210 項測試 · 瀏覽器 116 項。**
 

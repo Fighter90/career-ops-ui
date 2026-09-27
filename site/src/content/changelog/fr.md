@@ -10,6 +10,24 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.238.2] — 2026-09-27
+
+**Correctif des 502 que le serveur de production affichait encore pendant le scan horaire.**
+
+### Corrigé
+
+- **Pages et ressources renvoyaient 502 pendant un scan.** Node ferme une connexion keep-alive inactive au bout de 5 s ; Caddy réutilise les connexions inactives jusqu'à 2 minutes. Pendant qu'un scan dans le processus occupait le serveur, Node fermait des sockets sur lesquels Caddy venait d'envoyer une requête, et Caddy répondait 502 *connection reset by peer* (62 fois pendant un scan, serveur pourtant sain). Le serveur garde désormais les connexions inactives 125 s — plus longtemps que le proxy — qui ferme donc toujours en premier.
+
+### Ajouté
+
+- `deploy.yml` → `verify` montre pourquoi le proxy a répondu 502 (types d'erreur, adresses masquées), les 502 par minute depuis le dernier redémarrage et le résultat du scan horaire.
+- `release.yml` peut créer un tag manquant quand on le lance à la main, pour publier une version là où les tags ne peuvent pas être poussés.
+- Tests 3486 → 3488.
+
+### Notes
+
+- Le scan tourne toujours **dans** le processus serveur et peut l'occuper plusieurs secondes ; le déplacer dans un worker ne fait **pas** partie de ce correctif.
+
 ## [1.238.1] — 2026-09-27
 
 **Correctif de stabilité après la première régression en direct du serveur de production : un scan à la fois et corrections du site.**

@@ -7,7 +7,7 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3488%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,7 +17,7 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.238.1** — **Stabilitäts-Patch: ein Scan zur Zeit** — zwei gleichzeitige Scans (ein Klick plus der stündliche Timer) erschöpften den Speicher des Servers, der neu startete; ein zweiter Scan erhält jetzt eine klare „läuft bereits“-Meldung. cvstart.org scrollt auf Handys nicht mehr seitwärts, und die Hindi-Seiten sind wieder in der Sitemap. **3486 Tests · 116 Browser.**
+> **🆕 Neueste Version — v1.238.2** — **Fix: keine 502 mehr während eines Scans** — hinter einem Reverse-Proxy schloss der Server Leerlaufverbindungen nach 5 s, und bei einem schweren Scan beantwortete der Proxy manche Seitenaufrufe mit 502; jetzt schließt immer der Proxy zuerst. **3488 Tests · 116 Browser.**
 >
 > **Vorherige Version — v1.237.1** — **Patch aus einem externen QA-Durchlauf.** Der Jobstreet-Fix wurde von außen bestätigt: `/id/job/<id>` liefert auf den AU/NZ/HK/MY-Hosts einen sauberen 404, und `/job/<id>` erreicht eine echte, geschützte Route — die verlorenen Links waren real. Zwei Fehler in dem, was v1.237.0 hinzugefügt hatte: Der **Buch-Link** lokalisierte sein Label, aber nicht sein Ziel, sodass das russische Label zur englischen Ausgabe führte — ein `data-i18n-href`-Applier schickt `ru` jetzt zum russischen Buch; und **SEEK migriert Hosts** (`www.seek.com.au` → `au.seek.com`), weshalb `au.seek.com` und `nz.seek.com` auf der Allowlist stehen, bevor der API-Pfad beginnt, in unseren `redirect:'error'`-Transport umzuleiten. Zahlen unverändert bei **94** Quellen. **3210 Tests · 116 Browser.**
 

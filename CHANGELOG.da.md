@@ -8,6 +8,24 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.238.2] — 2026-09-27
+
+**Rettelse af de 502, som produktionsserveren stadig viste under den timevise scanning.**
+
+### Rettet
+
+- **Sider og filer returnerede 502 under en scanning.** Node lukker en inaktiv keep-alive-forbindelse efter 5 s; Caddy genbruger inaktive forbindelser i op til 2 minutter. Mens en scanning i processen holdt serveren optaget, lukkede Node sockets, som Caddy lige havde sendt en forespørgsel på, og Caddy svarede 502 *connection reset by peer* (62 gange under én scanning, mens serveren selv var sund). Serveren holder nu inaktive forbindelser i 125 s — længere end proxyen — så proxyen lukker altid først.
+
+### Tilføjet
+
+- `deploy.yml` → `verify` viser, hvorfor proxyen svarede 502 (fejltyper, adresser maskeret), 502 pr. minut siden sidste genstart og resultatet af den timevise scanning.
+- `release.yml` kan oprette et manglende tag, når den startes manuelt, så en udgivelse kan laves, hvor tags ikke kan pushes.
+- Tests 3486 → 3488.
+
+### Noter
+
+- Scanningen kører stadig **inde i** serverprocessen og kan holde den optaget i sekunder; at flytte den til en worker er **ikke** en del af denne rettelse.
+
 ## [1.238.1] — 2026-09-27
 
 **Stabilitetsrettelse efter den første live-regression af produktionsserveren: én scanning ad gangen og rettelser på sitet.**

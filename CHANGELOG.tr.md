@@ -2,6 +2,24 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.238.2] — 2026-09-27
+
+**Üretim sunucusunun saatlik tarama sırasında hâlâ verdiği 502'lerin düzeltmesi.**
+
+### Düzeltildi
+
+- **Tarama sırasında sayfalar ve dosyalar 502 dönüyordu.** Node boşta kalan keep-alive bağlantısını 5 sn sonra kapatır; Caddy boşta kalan bağlantıları 2 dakikaya kadar yeniden kullanır. Süreç içi tarama sunucuyu meşgul ederken Node, Caddy'nin az önce istek gönderdiği soketleri kapattı ve Caddy 502 *connection reset by peer* döndü (bir taramada 62 kez; sunucunun kendisi sağlıklıydı). Sunucu artık boşta kalan bağlantıları 125 sn — vekilden uzun — tutuyor, böylece her zaman önce vekil kapatıyor.
+
+### Eklendi
+
+- `deploy.yml` → `verify`, vekilin neden 502 döndüğünü (hata türleri, adresler maskeli), son yeniden başlatmadan beri dakika başına 502 sayısını ve saatlik taramanın sonucunu gösterir.
+- `release.yml` elle başlatıldığında eksik etiketi oluşturabilir; böylece etiket gönderilemeyen yerlerde de sürüm çıkarılabilir.
+- Testler 3486 → 3488.
+
+### Notlar
+
+- Tarama hâlâ sunucu sürecinin **içinde** çalışıyor ve sunucuyu saniyelerce meşgul edebilir; onu bir worker'a taşımak bu yamanın parçası **değil**.
+
 ## [1.238.1] — 2026-09-27
 
 **Üretim sunucusunun ilk canlı regresyonundan sonra kararlılık yaması: aynı anda tek tarama ve site düzeltmeleri.**

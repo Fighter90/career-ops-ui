@@ -389,7 +389,19 @@ jobs:
           systemctl show -p MemoryCurrent -p MemoryPeak -p MemoryMax --value "${SERVICE:-career-ops-ui}" 2>/dev/null | paste -sd' ' | sed 's/^/memory current|peak|max: /'
           c502=$(journalctl -u caddy --since "-24h" --no-pager 2>/dev/null | grep -c '"status":502' || true)
           echo "caddy 502 responses (24h): $c502"
-          journalctl -u caddy --since "-24h" --no-pager 2>/dev/null | grep -oE '"error":"[^"]{0,120}' | sed -E 's/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/<addr>/g' | sort | uniq -c | sort -rn | head -5
+          # Caddy's reverse-proxy failures are logged by http.log.error with the
+          # reason in "msg" (the "error" field is only QUIC/TLS chatter). Kinds
+          # only — addresses masked, no URIs or headers.
+          echo "--- caddy proxy errors since the viewer started (kinds)"
+          journalctl -u caddy --since "$since" --no-pager -o cat 2>/dev/null | grep '"logger":"http.log.error"' \
+            | grep -oE '"msg":"[^"]{0,140}' | sed -E 's/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(:[0-9]+)?/<addr>/g' \
+            | sort | uniq -c | sort -rn | head -8
+          echo "--- caddy 502s per minute since the viewer started (UTC)"
+          journalctl -u caddy --since "$since" --no-pager -o short-iso 2>/dev/null | grep '"status":502' \
+            | cut -c1-16 | sort | uniq -c | tail -30
+          echo "--- scan timer (last 3h): outcome lines only"
+          journalctl -u career-ops-scan --since "-3h" --no-pager -o short-iso 2>/dev/null \
+            | grep -E "scan (triggered|failed)|truncated|Deactivated successfully|Failed with result|Starting|Finished" | tail -12
           exit $fail
           REMOTE
 
