@@ -31,6 +31,7 @@ export default defineConfig({
           de: 'de',
           it: 'it',
           tr: 'tr',
+          hi: 'hi',
         },
       },
     }),

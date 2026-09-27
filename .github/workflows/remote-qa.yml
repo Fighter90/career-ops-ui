@@ -1,0 +1,82 @@
+name: Remote QA (prod, site, links)
+
+# Full regression of what is actually deployed, from a clean runner:
+#   prod   — resumecraft.ru behind HTTP basic auth: every route × every UI
+#            locale, read-only (non-GET /api and SSE are aborted in the browser)
+#   site   — cvstart.org: every page × every locale × two viewports + links
+#   links  — every link in README ×17 and in the wiki
+# Reports go to the job summary: counts, routes and short error lines only —
+# never page text or screenshots, because this repo's Actions logs are public.
+#
+# Secrets: AUTH_LOGIN / AUTH_PASSWORD (basic auth for the prod site).
+
+on:
+  workflow_dispatch:
+    inputs:
+      prod_url:
+        description: 'Deployed web-ui'
+        default: https://resumecraft.ru
+      site_url:
+        description: 'Public site'
+        default: https://cvstart.org
+  push:
+    branches: ['claude/**']
+    paths:
+      - 'scripts/remote-qa/**'
+      - '.github/workflows/remote-qa.yml'
+  schedule:
+    - cron: '17 5 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: remote-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prod:
+    name: prod — all routes × all locales
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - run: npm ci --no-audit --no-fund && npm i --no-save --no-audit --no-fund playwright@1.56 && npx playwright install --with-deps chromium
+      - name: Regression
+        env:
+          BASE_URL: ${{ inputs.prod_url || 'https://resumecraft.ru' }}
+          BASIC_USER: ${{ secrets.AUTH_LOGIN }}
+          BASIC_PASS: ${{ secrets.AUTH_PASSWORD }}
+        run: |
+          [ -n "$BASIC_USER" ] || { echo "::error::secret AUTH_LOGIN is not set"; exit 1; }
+          node scripts/remote-qa/prod-regression.mjs
+
+  site:
+    name: site — all pages × all locales
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - run: npm ci --no-audit --no-fund && npm i --no-save --no-audit --no-fund playwright@1.56 && npx playwright install --with-deps chromium
+      - name: Regression
+        env:
+          SITE_URL: ${{ inputs.site_url || 'https://cvstart.org' }}
+        run: node scripts/remote-qa/site-regression.mjs
+
+  links:
+    name: links — README ×17 + wiki
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - run: git clone --depth 1 "https://github.com/${{ github.repository }}.wiki.git" "$RUNNER_TEMP/wiki"
+      - name: Link check
+        env:
+          WIKI_DIR: ${{ runner.temp }}/wiki
+        run: node scripts/remote-qa/link-check.mjs

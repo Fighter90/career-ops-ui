@@ -124,6 +124,11 @@ body {
   .prose-help {
     @apply text-ink;
     max-width: 70ch;
+    /* Long identifiers, URLs and unbroken CJK+code runs must wrap instead of
+       widening the page (they pushed /help and /changelog 176–1225px past a
+       390px screen, and ja/zh changelog past 1366px). */
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   .prose-help h2 {
     @apply mt-12 mb-4 text-2xl font-bold tracking-tight scroll-mt-24;
@@ -155,6 +160,8 @@ body {
   }
   .prose-help code {
     @apply rounded bg-paper-alt px-1.5 py-0.5 font-mono text-[0.85em] border border-line;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   .prose-help pre {
     @apply mb-4 overflow-x-auto rounded-[12px] bg-[#1a1a1a] p-4 text-[0.85rem] leading-6;

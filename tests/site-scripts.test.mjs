@@ -39,7 +39,14 @@ function fixtureSite() {
     writeFileSync(join(dir, 'src', 'i18n', `${code}.json`),
       JSON.stringify({ 'hero.title': `title-${code}`, 'nav.faq': 'FAQ' }));
   }
+  writeFileSync(join(dir, 'astro.config.mjs'), astroConfig(CODES));
   return dir;
+}
+
+/** The sitemap i18n map in astro.config.mjs, in the real file's shape. */
+function astroConfig(codes) {
+  const entries = codes.map((c) => `          '${c.toLowerCase()}': '${c}',`).join('\n');
+  return `export default {\n  integrations: [\n    sitemap({\n      i18n: {\n        defaultLocale: 'en',\n        locales: {\n${entries}\n        },\n      },\n    }),\n  ],\n};\n`;
 }
 
 function run(script) {
@@ -60,6 +67,18 @@ test('check-i18n: FAILS when a locale is missing a key (the gate is real)', () =
   const dir = fixtureSite();
   writeFileSync(join(dir, 'src', 'i18n', 'ru.json'), JSON.stringify({ 'hero.title': 'x' })); // nav.faq dropped
   assert.notEqual(run(join(dir, 'scripts', 'check-i18n.mjs')), 0);
+});
+
+test('check-i18n: FAILS when the sitemap i18n map in astro.config.mjs lacks a locale', () => {
+  // hi was registered everywhere except the sitemap map, so its pages had no
+  // hreflang alternates in sitemap-0.xml.
+  const dir = fixtureSite();
+  writeFileSync(join(dir, 'astro.config.mjs'), astroConfig(CODES.filter((c) => c !== 'hi')));
+  assert.notEqual(run(join(dir, 'scripts', 'check-i18n.mjs')), 0);
+});
+
+test('check-i18n: the real astro.config.mjs sitemap map covers every locale', () => {
+  assert.equal(run(CHECK), 0);
 });
 
 test('check-i18n: FAILS when a locale dictionary file is missing entirely', () => {

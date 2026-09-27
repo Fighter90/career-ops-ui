@@ -55,5 +55,23 @@ for (const f of files) {
   }
 }
 
+// The sitemap's hreflang map in astro.config.mjs is a second copy of the
+// registry; a locale missing there silently loses its alternates (hi did).
+const astroConfig = readFileSync(join(SITE, 'astro.config.mjs'), 'utf8');
+const sitemapBlock = astroConfig.slice(astroConfig.indexOf('locales:'), astroConfig.indexOf('}', astroConfig.indexOf('locales:')));
+const sitemapCodes = [...sitemapBlock.matchAll(/:\s*'([A-Za-z-]+)'/g)].map((m) => m[1]);
+for (const code of CODES) {
+  if (!sitemapCodes.includes(code)) {
+    console.error(`[i18n] astro.config.mjs sitemap i18n map has no entry for ${code}`);
+    failed = true;
+  }
+}
+for (const code of sitemapCodes) {
+  if (!CODES.includes(code)) {
+    console.error(`[i18n] astro.config.mjs sitemap i18n map lists ${code}, which is not in the registry`);
+    failed = true;
+  }
+}
+
 if (failed) process.exit(1);
 console.log(`[i18n] OK — ${CODES.length} locales × ${enKeys.length} keys, full parity`);

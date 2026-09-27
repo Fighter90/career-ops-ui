@@ -2105,7 +2105,7 @@ Arayüz 17 dilde gönderilir (English, Español, Français, Português, 한국�
 
 **Çevirilerin bulunduğu yer.** v1.60.0'dan beri her dil, `public/js/lib/locales/` altında kendi dosyasıdır — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js` ve benzeri — basit bir `'key': 'text'` çiftleri listesi. Paylaşılan bir `i18n-dict.aliases.js`, her zaman aynı okunması gereken anahtarların (bir kenar çubuğu etiketi ve onun sayfa başlığı) tek bir çeviriye işaret etmesini sağlar. `i18n-dict.js` bunların hepsini sayfa yüklemede birleştirir; onu asla düzenlemezsiniz.
 
-**Bir ifadeyi düzeltin veya ekleyin.** Diliniz için dosyayı açın, anahtarı bulun (ör. `'nav.scan'`) ve metni düzenleyin. Yepyeni bir etiket eklemek için, aynı anahtarı çevrilmiş değerle **8 dil dosyasının tümüne** ekleyin, ardından sayfada `t('your.key')` aracılığıyla ona başvurun. `npm test` çalıştırın — herhangi bir dil anahtardan yoksunsa başarısız olur, böylece hiçbir şey yarı-çevrilmiş gönderilmez.
+**Bir ifadeyi düzeltin veya ekleyin.** Diliniz için dosyayı açın, anahtarı bulun (ör. `'nav.scan'`) ve metni düzenleyin. Yepyeni bir etiket eklemek için, aynı anahtarı çevrilmiş değerle **17 dil dosyasının tümüne** ekleyin, ardından sayfada `t('your.key')` aracılığıyla ona başvurun. `npm test` çalıştırın — herhangi bir dil anahtardan yoksunsa başarısız olur, böylece hiçbir şey yarı-çevrilmiş gönderilmez.
 
 **Yepyeni bir dilin tamamını ekleyin.** `i18n-dict.en.js`'yi `i18n-dict.<code>.js`'ye kopyalayın, her değeri çevirin, ardından kodu `i18n.js`'de (dil listesi + tarayıcı otomatik-tespit), `i18n-dict.js` birleştiricisinde kaydedin ve `index.html`'de bir `<script>` satırı ekleyin. Tam kontrol listesi — test anlık görüntüsü ve yardım / README eşlik dosyaları dahil — `docs/LOCALIZATION.md`'dedir.
 
