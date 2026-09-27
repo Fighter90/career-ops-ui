@@ -355,6 +355,16 @@ jobs:
           errs=$(journalctl -u "${SERVICE:-career-ops-ui}" --since "$since" -p err --no-pager -q 2>/dev/null | wc -l)
           echo "journal error lines for ${SERVICE:-career-ops-ui} since start: $errs"
           [ "$errs" = 0 ] || echo "::warning::$errs error lines in the journal since start (not printed: may contain personal data)"
+          echo "--- stability (last 24h): exits, OOM, memory, proxy errors — kinds only, no payloads"
+          journalctl -u "${SERVICE:-career-ops-ui}" --since "-24h" --no-pager -o short-iso 2>/dev/null \
+            | grep -E "Main process exited|Failed with result|Scheduled restart|Started |Stopped |FATAL ERROR|heap out of memory|RangeError|TypeError|ReferenceError|ERR_[A-Z_]+|uncaught|Unhandled" \
+            | sed -E 's/(Error: .{0,80}).*/\1…/' | tail -20
+          journalctl -k --since "-24h" --no-pager 2>/dev/null | grep -iE "out of memory|oom-kill|killed process" | sed -E 's/(task=|comm=)[^ ,]*/\1…/g' | tail -5 || true
+          free -m | head -2
+          systemctl show -p MemoryCurrent -p MemoryPeak -p MemoryMax --value "${SERVICE:-career-ops-ui}" 2>/dev/null | paste -sd' ' | sed 's/^/memory current|peak|max: /'
+          c502=$(journalctl -u caddy --since "-24h" --no-pager 2>/dev/null | grep -c '"status":502' || true)
+          echo "caddy 502 responses (24h): $c502"
+          journalctl -u caddy --since "-24h" --no-pager 2>/dev/null | grep -oE '"error":"[^"]{0,120}' | sed -E 's/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/<addr>/g' | sort | uniq -c | sort -rn | head -5
           exit $fail
           REMOTE
 
