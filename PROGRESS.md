@@ -33,7 +33,20 @@ it as a secret.
 
 ## Next step
 
-Nothing is in flight. The next parity release starts at
+**Server deploy via "path B" (chosen by the user 2026-09-27).** v1.238.0 is merged, tagged, released,
+published and on cvstart.org, but NOT on resumecraft.ru. The Timeweb server id is **8801467**. The
+deploy key `id_careerops_deploy` is unusable (passphrase lost). Plan for the next session, once the user
+has added `api.timeweb.cloud` to the environment's allowed domains and `TIMEWEB_TOKEN` +
+`GH_ADMIN_TOKEN` as environment variables (never ask for them in chat):
+1. generate a passphrase-less CI key; add its public half to server 8801467 via the Timeweb API;
+2. store the private half + host/user as Actions secrets (`DEPLOY_SSH_KEY`, `DEPLOY_HOST`, `DEPLOY_USER`);
+3. add `.github/workflows/deploy.yml` (first run = read-only recon of `/opt/career-ops`, service name,
+   Hermes), then deploy parent 1.34.0 + web-ui 1.238.0 and verify `/api/health`;
+4. delete `claude/zen-brahmagupta-m8zguo` in career-ops-ui, career-ops, career-ops-coworker; push the
+   wiki update (patch = the v1.238.0 wiki commit, re-derive from CHANGELOG if the scratchpad is gone).
+
+
+The next parity release starts at
 [`.claude/skills/parent-sync`](.claude/skills/parent-sync/SKILL.md) Phase 1 —
 **and its first action is the divergence diff from [ADR-0002](docs/adr/0002-defend-fork-divergences.md),
 before any merge.**
