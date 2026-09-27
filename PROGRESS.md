@@ -39,17 +39,25 @@ Ubuntu 26.04). Done:
 1. the user generated a passphrase-less key `careerops-ci` locally (private half stays with them);
    its public half is registered in Timeweb (ssh-key id **789655**) and attached to server 8801467;
 2. `.github/workflows/deploy.yml` added — manual `workflow_dispatch`, `mode=recon` (read-only) or
-   `mode=deploy` (refuses on tracked local changes, `npm ci --omit=dev`, restart, `/api/health`
-   version check, automatic rollback), then a public HTTPS check of resumecraft.ru.
+   `mode=deploy` (stash, checkout, `npm ci --omit=dev` only when a lockfile changed, restart,
+   `/api/health` version check, automatic rollback), then a public HTTPS check of resumecraft.ru;
+3. the user added `DEPLOY_SSH_KEY` / `DEPLOY_HOST` / `DEPLOY_USER`; recon over ssh works.
+
+Server layout (recon 2026-09-27): parent checkout `/opt/career-ops/src`, web-ui `/opt/career-ops/src/web-ui`,
+both owned by `careerops`; `career-ops-ui.service` (viewer, 127.0.0.1:4317, Caddy + basic auth in front),
+`hermes-gateway.service` (Telegram bot), `claude-bridge.service` (127.0.0.1:8788, the viewer's
+`HERMES_BASE_URL`), `career-ops-scan`/`career-ops-eval` timers. Earlier deploys **copied files over stale
+checkouts** (web-ui HEAD v1.198.0 with 1.237.1 on disk; parent HEAD 2bb8969 with 1.33.0 on disk), so
+`git status` shows hundreds of modified files that are not hand edits. `mode=deploy` stashes that tree
+first and restores it byte for byte on any failure (verified in a local simulation: success, bad health,
+bad parent ref, bad ui ref).
 
 Remaining:
-- the user adds Actions secrets `DEPLOY_SSH_KEY` (private half of `careerops-ci`), `DEPLOY_HOST`
-  (the server's public IPv4, from the Timeweb panel), `DEPLOY_USER` (`root` — Timeweb installs keys for root); optional
-  `DEPLOY_KNOWN_HOSTS` after the first run prints the fingerprint;
-- once deploy.yml is on `main`: run `mode=recon`, read the layout (app dir, web-ui subdir, service
-  name, Hermes), then `mode=deploy` with parent `993085ce` + web-ui `v1.238.0`;
-- verify Hermes / Telegram from the recon output; tick the resumecraft.ru line in
+- the user adds `DEPLOY_KNOWN_HOSTS` (the ed25519 line a recon run prints), then run `mode=deploy`
+  with parent `993085ce` + web-ui `v1.238.0`, and tick the resumecraft.ru line in
   `qa/QA-REGRESSION-PROMPT-v1.238.0.md` §5;
+- Actions logs of this public repo are public: keep recon output to versions and states (the first run
+  printed the profile name and which provider keys are set; its logs were deleted);
 - delete `claude/zen-brahmagupta-m8zguo` in career-ops-ui, career-ops, career-ops-coworker; push the
   wiki update (patch = the v1.238.0 wiki commit, re-derive from CHANGELOG if the scratchpad is gone).
 
