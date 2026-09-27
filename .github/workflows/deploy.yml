@@ -76,7 +76,9 @@ jobs:
         run: |
           set -euo pipefail
           # These are spliced into a remote shell command line below.
-          [[ "$PORT" =~ ^[0-9]{1,5}$ ]] || { echo "::error::port must be numeric"; exit 1; }
+          if ! [[ "$PORT" =~ ^[0-9]{1,5}$ ]] || (( PORT < 1 || PORT > 65535 )); then
+            echo "::error::port must be 1-65535"; exit 1
+          fi
           for v in APP_DIR PARENT_REF UI_REF SERVICE; do
             [[ "${!v}" =~ ^[A-Za-z0-9._/@-]*$ ]] || { echo "::error::input $v has characters outside [A-Za-z0-9._/@-]"; exit 1; }
           done
@@ -143,7 +145,7 @@ jobs:
             sec "unit $u"; systemctl cat "$u" --no-pager 2>&1 | grep -vE '^Environment='
           done
           sec pm2; command -v pm2 >/dev/null && pm2 jlist 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{for(const p of JSON.parse(s))console.log(p.name,p.pm2_env.status,p.pm2_env.pm_cwd)}catch{console.log("pm2: no list")}})' || echo "pm2 not installed"
-          sec listeners; ss -ltnp 2>/dev/null
+          sec listeners; ss -ltnp 2>/dev/null | grep -E "node|python|hermes|nginx|caddy" || true
           sec proxy;    for f in /etc/nginx/sites-enabled/* /etc/caddy/Caddyfile; do [ -e "$f" ] && { echo "--- $f"; grep -nE 'server_name|proxy_pass|reverse_proxy|resumecraft' "$f"; }; done
           sec hermes;   command -v hermes && hermes --version 2>/dev/null; ls -d ~/.hermes 2>/dev/null
           sec health;   curl -fsS --max-time 10 "http://127.0.0.1:$PORT/api/health" | head -c 2000; echo
